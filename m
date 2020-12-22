@@ -2,167 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 169A12E0540
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 05:07:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B416B2E0546
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 05:09:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725957AbgLVEHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 23:07:30 -0500
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:43949 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725785AbgLVEH3 (ORCPT
+        id S1726030AbgLVEJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 23:09:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725927AbgLVEJF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 23:07:29 -0500
-Received: by mail-ot1-f54.google.com with SMTP id q25so10817311otn.10;
-        Mon, 21 Dec 2020 20:07:13 -0800 (PST)
+        Mon, 21 Dec 2020 23:09:05 -0500
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DFA8C0613D3;
+        Mon, 21 Dec 2020 20:08:25 -0800 (PST)
+Received: by mail-qk1-x731.google.com with SMTP id p14so10908437qke.6;
+        Mon, 21 Dec 2020 20:08:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1lferK7S/WcuZtuM8G00rHoo+wxuBCDmc8Awl4Gm4XE=;
+        b=LcJ6hqjgmBAF3xenw/wLMRvZFXCxq5WfdX0WYJkCtYW+AWEWFGMR2Ejt+j75UFN9Zi
+         Q7j6VLS5nIvfMZJLi6g6fT+oqP766/otVRSBnLMYqA/pqOAT2Ftt3DoM/ApQKlUHigkX
+         3U8IrKrq1yuC7eIT12I4mjZ35Wwp16Y+R/Yl0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=q3IkBlOmHE3mDRbIb8lAHBUkpZJ3o80cNN5b/4sEG/I=;
-        b=j9Gg0OUtHoOw0PM6uk5aBZAoKIVgAS+aQ/cg8ESWVxBFUUcJCTksWdSqHAMGBt55fv
-         Vfb6BCyeailaRQuRWQ8D05fc6ZGU9A5Z8oUEejYbnk1qhSS0Hu8RKjGkT1pG0CZZ4dA2
-         6YqoJU23VuXfb3Y+2H/2HGSBhU83OkUXJjXLNLf6JEZKZQ6KXy1qoxb8t03WOq1SCq2k
-         Jb55mcpYVaI5g/IhPXLK+zlOsKL3M6a9QBaPCfzYITXKVwLyXcmPUYsSoSNBfDDEs1wM
-         dsWRThy1+w6lxVOHPECoUZh3vobeM/DOe5E/lK/rlTH2W8Q6Yi6OehcLTQqL5jjyIqyB
-         3eJQ==
-X-Gm-Message-State: AOAM530FcQ/nwrpMoEyDhW5Rr+rcNz/2DxelojGsrWkOqwR9qVv7ODHW
-        7qc7Tq7zPxkvZT/TwSdHYJ26sthN0g==
-X-Google-Smtp-Source: ABdhPJzc2AcXawDMexyhwX9kljUmHJGpp3yp74aSZqBghugGE4ma17w5UwkOCA62mhIs+ne0II6TKw==
-X-Received: by 2002:a05:6830:1189:: with SMTP id u9mr14233531otq.70.1608610007879;
-        Mon, 21 Dec 2020 20:06:47 -0800 (PST)
-Received: from xps15.herring.priv ([64.188.179.253])
-        by smtp.googlemail.com with ESMTPSA id m22sm4261765otr.79.2020.12.21.20.06.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 20:06:47 -0800 (PST)
-From:   Rob Herring <robh@kernel.org>
-To:     devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        dri-devel@lists.freedesktop.org, dmaengine@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-usb@vger.kernel.org
-Subject: [PATCH] dt-bindings: Drop redundant maxItems/items
-Date:   Mon, 21 Dec 2020 21:06:45 -0700
-Message-Id: <20201222040645.1323611-1-robh@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1lferK7S/WcuZtuM8G00rHoo+wxuBCDmc8Awl4Gm4XE=;
+        b=g9hPgQ2pUkae1ubMgCbcLbgi+hb8oY+PbsYiNe6owfnREd9XyWUjN6r1pS86RNCu5x
+         4F7U3ju9aaw+bk9zJeU2ycV1Axg5lWhPmg2NI/fWSakyzzUZVB16zd41nzmEMW61GtfS
+         yYn/Ig5eXSYR9CwCzRRMd7q1Njh//zTmX2KFeSsNeX3TfE4PcAXDPiCyLddxCrbuMNnb
+         34FjjXT+8mIL5cpDxFykjz7Bxu0rhh2w4hDsgZPuRkLsLpPpPq/aX/tBeJZmZKkXTeiP
+         /+MD8pYjemcVFXnE/ILRmgtTvZNSnYGrOEA1zFKgPGLzpmwqAqisRoosA3JAwMygnrZI
+         0GWA==
+X-Gm-Message-State: AOAM531qY81iGB7mwvoW4SFt1sf+a+o/fd2FwAhb9vdnNapJe4OzOrDQ
+        VZVbUkSIDCB76c2Ccd8rPRQHqZKYmY45dvW2ne0=
+X-Google-Smtp-Source: ABdhPJxOJe0aczqoEqz1cNRhFogu+B29Eal0/8X5iQGiNPeLLyhWKCYJdy4Trd8iFlfSL98eHlhm7D5RyKOBwJpQMIM=
+X-Received: by 2002:a05:620a:31a:: with SMTP id s26mr20267871qkm.66.1608610104425;
+ Mon, 21 Dec 2020 20:08:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200915184525.29665-1-zev@bewilderbeest.net> <20201218213952.refmqjlxdclsquzg@hatter.bewilderbeest.net>
+In-Reply-To: <20201218213952.refmqjlxdclsquzg@hatter.bewilderbeest.net>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Tue, 22 Dec 2020 04:08:12 +0000
+Message-ID: <CACPK8Xe9uPMHHkNGmUL+xm4MKBvOzNd-3bCLGc7UuZW_QkhUog@mail.gmail.com>
+Subject: Re: [PATCH] i2c: aspeed: disable additional device addresses on ast2[56]xx
+To:     Zev Weiss <zev@bewilderbeest.net>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Andrew Jeffery <andrew@aj.id.au>, linux-i2c@vger.kernel.org,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'maxItems' equal to the 'items' list length is redundant. 'maxItems' is
-preferred for a single entry while greater than 1 should have an 'items'
-list.
+On Fri, 18 Dec 2020 at 21:40, Zev Weiss <zev@bewilderbeest.net> wrote:
+>
+> On Tue, Sep 15, 2020 at 01:45:25PM CDT, Zev Weiss wrote:
+> >The ast25xx and ast26xx have, respectively, two and three configurable
+> >slave device addresses to the ast24xx's one.  We only support using
+> >one at a time, but the others may come up in an indeterminate state
+> >depending on hardware/bootloader behavior, so we need to make sure we
+> >disable them so as to avoid ending up with phantom devices on the bus.
+> >
+> >Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+> >---
+> > drivers/i2c/busses/i2c-aspeed.c | 50 +++++++++++++++++++++++++++------
+> > 1 file changed, 41 insertions(+), 9 deletions(-)
+> >
+> > <snip>
+>
+> Ping...any thoughts on this patch?
 
-A meta-schema check for this is pending once these existing cases are
-fixed.
+Apologies for the delay, this one slipped through the cracks.
 
-Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: Vinod Koul <vkoul@kernel.org>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Jassi Brar <jaswinder.singh@linaro.org>
-Cc: dri-devel@lists.freedesktop.org
-Cc: dmaengine@vger.kernel.org
-Cc: alsa-devel@alsa-project.org
-Cc: linux-usb@vger.kernel.org
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- .../devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.yaml    | 1 -
- Documentation/devicetree/bindings/dma/renesas,rcar-dmac.yaml   | 1 -
- Documentation/devicetree/bindings/mailbox/arm,mhu.yaml         | 1 -
- .../devicetree/bindings/sound/nvidia,tegra30-hda.yaml          | 2 --
- Documentation/devicetree/bindings/usb/renesas,usb-xhci.yaml    | 1 -
- Documentation/devicetree/bindings/usb/renesas,usbhs.yaml       | 3 ---
- 6 files changed, 9 deletions(-)
+The rework is fine, and lends itself to supporting the other addresses
+in the future. However, a simpler fix would be to construct reg 0x18
+from zero, so only the functions that are supported are enabled.
 
-diff --git a/Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.yaml b/Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.yaml
-index 7b9d468c3e52..403d57977ee7 100644
---- a/Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.yaml
-+++ b/Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.yaml
-@@ -98,7 +98,6 @@ properties:
-     maxItems: 1
- 
-   dmas:
--    maxItems: 4
-     items:
-       - description: Video layer, plane 0 (RGB or luma)
-       - description: Video layer, plane 1 (U/V or U)
-diff --git a/Documentation/devicetree/bindings/dma/renesas,rcar-dmac.yaml b/Documentation/devicetree/bindings/dma/renesas,rcar-dmac.yaml
-index b548e4723936..c07eb6f2fc8d 100644
---- a/Documentation/devicetree/bindings/dma/renesas,rcar-dmac.yaml
-+++ b/Documentation/devicetree/bindings/dma/renesas,rcar-dmac.yaml
-@@ -73,7 +73,6 @@ properties:
-     maxItems: 1
- 
-   clock-names:
--    maxItems: 1
-     items:
-       - const: fck
- 
-diff --git a/Documentation/devicetree/bindings/mailbox/arm,mhu.yaml b/Documentation/devicetree/bindings/mailbox/arm,mhu.yaml
-index d43791a2dde7..d07eb00b97c8 100644
---- a/Documentation/devicetree/bindings/mailbox/arm,mhu.yaml
-+++ b/Documentation/devicetree/bindings/mailbox/arm,mhu.yaml
-@@ -61,7 +61,6 @@ properties:
-       - description: low-priority non-secure
-       - description: high-priority non-secure
-       - description: Secure
--    maxItems: 3
- 
-   clocks:
-     maxItems: 1
-diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra30-hda.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra30-hda.yaml
-index e543a6123792..b55775e21de6 100644
---- a/Documentation/devicetree/bindings/sound/nvidia,tegra30-hda.yaml
-+++ b/Documentation/devicetree/bindings/sound/nvidia,tegra30-hda.yaml
-@@ -44,7 +44,6 @@ properties:
-     maxItems: 3
- 
-   clock-names:
--    maxItems: 3
-     items:
-       - const: hda
-       - const: hda2hdmi
-@@ -54,7 +53,6 @@ properties:
-     maxItems: 3
- 
-   reset-names:
--    maxItems: 3
-     items:
-       - const: hda
-       - const: hda2hdmi
-diff --git a/Documentation/devicetree/bindings/usb/renesas,usb-xhci.yaml b/Documentation/devicetree/bindings/usb/renesas,usb-xhci.yaml
-index 0f078bd0a3e5..22603256ddf8 100644
---- a/Documentation/devicetree/bindings/usb/renesas,usb-xhci.yaml
-+++ b/Documentation/devicetree/bindings/usb/renesas,usb-xhci.yaml
-@@ -51,7 +51,6 @@ properties:
-     maxItems: 1
- 
-   phy-names:
--    maxItems: 1
-     items:
-       - const: usb
- 
-diff --git a/Documentation/devicetree/bindings/usb/renesas,usbhs.yaml b/Documentation/devicetree/bindings/usb/renesas,usbhs.yaml
-index 737c1f47b7de..54c361d4a7af 100644
---- a/Documentation/devicetree/bindings/usb/renesas,usbhs.yaml
-+++ b/Documentation/devicetree/bindings/usb/renesas,usbhs.yaml
-@@ -74,11 +74,8 @@ properties:
- 
-   phys:
-     maxItems: 1
--    items:
--      - description: phandle + phy specifier pair.
- 
-   phy-names:
--    maxItems: 1
-     items:
-       - const: usb
- 
--- 
-2.27.0
+static void __aspeed_i2c_reg_slave(struct aspeed_i2c_bus *bus, u16 slave_addr)
+{
+    u32 addr_reg_val, func_ctrl_reg_val;
 
+    /* Set slave addr. */
+    addr_reg_val = slave_addr & ASPEED_I2CD_DEV_ADDR_MASK;
+    writel(addr_reg_val, bus->base + ASPEED_I2C_DEV_ADDR_REG);
+
+    /* Turn on slave mode. */
+    func_ctrl_reg_val = readl(bus->base + ASPEED_I2C_FUN_CTRL_REG);
+    func_ctrl_reg_val |= ASPEED_I2CD_SLAVE_EN;
+    writel(func_ctrl_reg_val, bus->base + ASPEED_I2C_FUN_CTRL_REG);
+}
+
+You could go further and ensure slave mode is always disabled unless
+requested by clearing 0x18 when 0x00 is cleared at aspeed_i2c_init.
+
+Cheers,
+
+Joel
+
+>
+>
+> Thanks,
+> Zev
+>
