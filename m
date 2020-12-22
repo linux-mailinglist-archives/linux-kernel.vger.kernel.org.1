@@ -2,105 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6359C2E0D2B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 17:19:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE54F2E0D2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 17:19:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727731AbgLVQTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 11:19:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56612 "EHLO
+        id S1727811AbgLVQTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 11:19:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727310AbgLVQTK (ORCPT
+        with ESMTP id S1727647AbgLVQTn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 11:19:10 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3AA5C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 08:18:29 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id t30so15099633wrb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 08:18:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=l5JYdO0G6caKQkYVzVbQBX05/Mxdx7EgBcRxn9TVNGI=;
-        b=Ck6iSSIq+tj4lktml/7YRcKCyqQ69s/LQqs0ziBFGo66Q/OtQigez0gK8x/iepV+IP
-         8+K2YAVKM2MWnZ4DcarCqKEIv/TE8qN/0F3bqHufQC76QDO8krjDa6OMmOkNobmcvmaZ
-         vzj6IQnZUT1eu4DQY67Rkr5AZy5MLSIPD8PgIAO9mKFTQ5Qiv6Pi10BK3EFI1dGkAU33
-         plfYRRByLPa9ioWo86am4Yl5ZrmY0vZEPysFvc/cRw5JKgIh+QJ1+l9dXOMCiBuQZ8RU
-         U6euyvK+k3G2HcGk8X3/ncLXQUvmEm2oIrZWmiuSj/CWOTYk5SVJITshqDr7GOmmE3KO
-         +Qwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=l5JYdO0G6caKQkYVzVbQBX05/Mxdx7EgBcRxn9TVNGI=;
-        b=rDJ/nC4HvGdt7693RQyg9L+Ciot3lqvkrKBqARMDC2RcxJvKuHaoQ/KsjhVjorATVx
-         jGtsMFcNYlGpqq5sLJoCdLWyWT/W1xRLagY9RvsdYEVWvg2RBpSx1OPnagS4V4hRqrEf
-         tpr4+wdhbiu6GJh+w1aOoty7qyOv1VRuk7buzQsJvPJUGO1DUDLdpCpVn6M7yGHokiLi
-         7ZZvkJll+oNwVfcPD9/LUdEzuUBO2t25Wp9W+JcEC+qMUuY7ZPLTTjQQ/gPKIvVvqJ9Q
-         xsuXsJpiv/ee0cLQ7pzJSXKEuWlSYVI1um33FfM9t4+nVdw+j5CtBDx/3mpj1jTLVcVZ
-         JoQg==
-X-Gm-Message-State: AOAM530ejuJB4/5TWdzGi2tMNkDXOQwpDKIAmqGttklN8nD5WBoZ5B7h
-        j5A9onFwNHZcXFlaE796BDElzEBq1bexew==
-X-Google-Smtp-Source: ABdhPJz0wfW54G46MT0SadD6GsZhf1tqvvXVF5nyJB8xMGHN4Itozx8PRRrdDIgJdQHPQSS6qD8MGg==
-X-Received: by 2002:adf:ee4a:: with SMTP id w10mr24388176wro.81.1608653908078;
-        Tue, 22 Dec 2020 08:18:28 -0800 (PST)
-Received: from [10.44.66.8] ([212.45.67.2])
-        by smtp.googlemail.com with ESMTPSA id l16sm32592752wrx.5.2020.12.22.08.18.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Dec 2020 08:18:27 -0800 (PST)
-Subject: Re: [PATCH net] net: ipa: fix interconnect enable bug
-To:     Alex Elder <elder@linaro.org>, davem@davemloft.net, kuba@kernel.org
-Cc:     evgreen@chromium.org, cpratapa@codeaurora.org,
-        bjorn.andersson@linaro.org, subashab@codeaurora.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201222151613.5730-1-elder@linaro.org>
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-Message-ID: <9601b599-3edb-8fff-5b22-904cca62fbda@linaro.org>
-Date:   Tue, 22 Dec 2020 18:18:31 +0200
+        Tue, 22 Dec 2020 11:19:43 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95F6CC061793;
+        Tue, 22 Dec 2020 08:19:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wQR/YgBWhGYrRRqTF0BOEXEvKg/409uuplzpqhvAfKE=; b=c4UFcqjSsnoRISaP7DnxM5hrVx
+        /cVdi2XikxsfNoGUsy/3QVJ1u39j5POoDySKkAQbFURDUvtcF8ZYPFkABcM7RlGWcfa19hUCNipf1
+        hBMcwE/UFQpFOQwhLB1Gbk4Ws524uMAsmB6yQj5aMZAadQChx5dFCtko6GAZuec9PvO5ACjnwAQOW
+        PyFb/KAhWeXBH9LcI8SHlyQoRHNCbTVz9AiphEBQ75b1BhaKpEoOYG6tfqrNEorqlmvUYufjoZtLp
+        Kx5jAFYiDPLDIfOwgsec8E4dWWQQ/DRPd47IIk8FyZw+3tHi+TbKU80PFKIfQp8NN6b49B4JJBL3N
+        k8Nd684A==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1krkNI-0004VE-TL; Tue, 22 Dec 2020 16:19:00 +0000
+Date:   Tue, 22 Dec 2020 16:19:00 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-unionfs@vger.kernel.org, jlayton@kernel.org,
+        amir73il@gmail.com, sargun@sargun.me, miklos@szeredi.hu,
+        jack@suse.cz, neilb@suse.com, viro@zeniv.linux.org.uk, hch@lst.de
+Subject: Re: [PATCH 2/3] vfs: Add a super block operation to check for
+ writeback errors
+Message-ID: <20201222161900.GI874@casper.infradead.org>
+References: <20201221195055.35295-1-vgoyal@redhat.com>
+ <20201221195055.35295-3-vgoyal@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20201222151613.5730-1-elder@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201221195055.35295-3-vgoyal@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/22/20 17:16, Alex Elder wrote:
-> When the core clock rate and interconnect bandwidth specifications
-> were moved into configuration data, a copy/paste bug was introduced,
-> causing the memory interconnect bandwidth to be set three times
-> rather than enabling the three different interconnects.
-> 
-> Fix this bug.
-> 
-> Fixes: 91d02f9551501 ("net: ipa: use config data for clocking")
-> Signed-off-by: Alex Elder <elder@linaro.org>
+On Mon, Dec 21, 2020 at 02:50:54PM -0500, Vivek Goyal wrote:
+> -	ret2 = errseq_check_and_advance(&sb->s_wb_err, &f.file->f_sb_err);
+> +	if (sb->s_op->errseq_check_advance)
+> +		ret2 = sb->s_op->errseq_check_advance(sb, f.file);
 
-Reviewed-by: Georgi Djakov <georgi.djakov@linaro.org>
+What a terrible name for an fs operation.  You don't seem to be able
+to distinguish between semantics and implementation.  How about
+check_error()?
 
-> ---
->   drivers/net/ipa/ipa_clock.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/ipa/ipa_clock.c b/drivers/net/ipa/ipa_clock.c
-> index 9dcf16f399b7a..135c393437f12 100644
-> --- a/drivers/net/ipa/ipa_clock.c
-> +++ b/drivers/net/ipa/ipa_clock.c
-> @@ -115,13 +115,13 @@ static int ipa_interconnect_enable(struct ipa *ipa)
->   		return ret;
->   
->   	data = &clock->interconnect_data[IPA_INTERCONNECT_IMEM];
-> -	ret = icc_set_bw(clock->memory_path, data->average_rate,
-> +	ret = icc_set_bw(clock->imem_path, data->average_rate,
->   			 data->peak_rate);
->   	if (ret)
->   		goto err_memory_path_disable;
->   
->   	data = &clock->interconnect_data[IPA_INTERCONNECT_CONFIG];
-> -	ret = icc_set_bw(clock->memory_path, data->average_rate,
-> +	ret = icc_set_bw(clock->config_path, data->average_rate,
->   			 data->peak_rate);
->   	if (ret)
->   		goto err_imem_path_disable;
-> 
