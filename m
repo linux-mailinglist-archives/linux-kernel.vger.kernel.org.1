@@ -2,73 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A27A2E0E70
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 19:54:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F4C82E0E74
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 19:55:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726305AbgLVSxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 13:53:16 -0500
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:36583 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725783AbgLVSxP (ORCPT
+        id S1726636AbgLVSyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 13:54:19 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:38580 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726356AbgLVSyT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 13:53:15 -0500
-Received: by mail-oi1-f177.google.com with SMTP id 9so15783071oiq.3;
-        Tue, 22 Dec 2020 10:53:00 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MnzMKZJC9bjmZCXHwrKg45wf6KEcS3z4p+ec+cH91Dw=;
-        b=HxK/6uszxbaZJoY7jfNDA16c+cz8ywuQj+0z92TQmChmrCmuynusOv74uOpYFO6rA0
-         H+qp8FViX2Zyvs32jJysRnDZhBU5o9ymUKfLVVCaVKV/hgb+EUSUeL4Bjgw/Ql72z3SX
-         QmzgEbx/2u6J/d8Tz/HAKkAf3iXCHeNPQ+AbPHiCBykYvQgbI9v+lCz7sdy7oJ0N3f6p
-         Rt05ks7aLIc2UBe8EOTZNbKJzpdt+0ZUhUAdff4tBn/1NpzmXcVRMz52Q8/dGJHUkoag
-         4X2+IZSQ21eNULRoJChSAzcBFeG81E7gkfiKibFVqN0j6Sm09+5AzDNO+0gSM5C63U1z
-         K5MQ==
-X-Gm-Message-State: AOAM533vP6Donms7QqTv7/7elq0nlEHyTMGOjOXxgOXCGzQglTdSwYq8
-        r3krXpI9D9s/mEAA5AJGuaoqZx/CyIBEm5BpD5g=
-X-Google-Smtp-Source: ABdhPJxjWgb5pJscChw+dwHpPJh4tqUnL7YSqZoAH5vteR69kMzD7osewkitWsChGn+9x1GzV4byYoYRESE7mPhiZqM=
-X-Received: by 2002:aca:4c1:: with SMTP id 184mr15794217oie.157.1608663155070;
- Tue, 22 Dec 2020 10:52:35 -0800 (PST)
+        Tue, 22 Dec 2020 13:54:19 -0500
+Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id C490C20B83DE;
+        Tue, 22 Dec 2020 10:53:37 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C490C20B83DE
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1608663218;
+        bh=//PxRnptZMzVjXYlyIzWx/0zydVkwQDoYcP2NBeyDZ8=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=Hb9HWHUZ+LQw+0OkX+tP5HdR/Q7wQOGoBlOskRnaFQ9kuqceUyz0iOqmuPLV+VsI6
+         V1Jtbm11qxpVrmrWUGgcl9d8+EW5IESynwTuFoKFmuHwK2PM/gmJU17L5+D/ZXVouc
+         gy+KEEVaVTjiZoJHevX/cRW3Nc/dI01qh7Y6625M=
+Subject: Re: [PATCH v13 2/6] powerpc: Move arch independent ima kexec
+ functions to drivers/of/kexec.c
+To:     Mimi Zohar <zohar@linux.ibm.com>, bauerman@linux.ibm.com,
+        robh@kernel.org, takahiro.akashi@linaro.org,
+        gregkh@linuxfoundation.org, will@kernel.org,
+        catalin.marinas@arm.com, mpe@ellerman.id.au
+Cc:     james.morse@arm.com, sashal@kernel.org, benh@kernel.crashing.org,
+        paulus@samba.org, frowand.list@gmail.com,
+        vincenzo.frascino@arm.com, mark.rutland@arm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        pasha.tatashin@soleen.com, allison@lohutok.net,
+        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
+        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
+References: <20201219175713.18888-1-nramas@linux.microsoft.com>
+ <20201219175713.18888-3-nramas@linux.microsoft.com>
+ <a1a4526c0759eb3b5d70fb8edc89360718376def.camel@linux.ibm.com>
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Message-ID: <e0d9398b-1b46-8115-7bf0-28e9826fcd6b@linux.microsoft.com>
+Date:   Tue, 22 Dec 2020 10:53:37 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201208164145.19493-1-daniel.lezcano@linaro.org>
- <ba9c6f75-3964-3ee9-c849-17db5ae51501@linaro.org> <CAJZ5v0infKumCmn77nzAN80G4bmF+_ZzgGkdaeMvczC_VyjyGg@mail.gmail.com>
-In-Reply-To: <CAJZ5v0infKumCmn77nzAN80G4bmF+_ZzgGkdaeMvczC_VyjyGg@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 22 Dec 2020 19:52:24 +0100
-Message-ID: <CAJZ5v0hbeeVHPAhm01W4NKNBNQo1xS0Dqa6C2h=zoo4hCjGPew@mail.gmail.com>
-Subject: Re: [PATCH v5 0/4] powercap/dtpm: Add the DTPM framework
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Ram Chandrasekar <rkumbako@codeaurora.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <a1a4526c0759eb3b5d70fb8edc89360718376def.camel@linux.ibm.com>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 8:15 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
->
-> On Fri, Dec 11, 2020 at 11:41 AM Daniel Lezcano
-> <daniel.lezcano@linaro.org> wrote:
-> >
-> >
-> > Hi Rafael,
-> >
-> > I believe I took into account all the comments, do you think it is
-> > possible to merge this series ?
->
-> It should be, unless more changes are requested.
->
-> I will be taking care of it next week and, if all goes well, it should
-> be possible to push it during the second half of the merge window.
+On 12/22/20 6:26 AM, Mimi Zohar wrote:
 
-Applied as 5.11-rc material now, sorry for the delay.
+Hi Mimi,
 
-Thanks!
+> 
+> On Sat, 2020-12-19 at 09:57 -0800, Lakshmi Ramasubramanian wrote:
+>>
+>> diff --git a/arch/powerpc/kexec/Makefile b/arch/powerpc/kexec/Makefile
+>> index 4aff6846c772..b6c52608cb49 100644
+>> --- a/arch/powerpc/kexec/Makefile
+>> +++ b/arch/powerpc/kexec/Makefile
+>> @@ -9,13 +9,6 @@ obj-$(CONFIG_PPC32)		+= relocate_32.o
+>>   
+>>   obj-$(CONFIG_KEXEC_FILE)	+= file_load.o ranges.o file_load_$(BITS).o elf_$(BITS).o
+>>   
+>> -ifdef CONFIG_HAVE_IMA_KEXEC
+>> -ifdef CONFIG_IMA
+>> -obj-y				+= ima.o
+>> -endif
+>> -endif
+> 
+> Notice how "kexec/ima.o" is only included if the architecture supports
+> it and IMA is configured.  In addition only if CONFIG_IMA_KEXEC is
+> configured, is the IMA measurement list carried across kexec.  After
+> moving the rest of ima.c to drivers/of/kexec.c, this changes.   Notice
+> how drivers/of/Kconfig includes kexec.o:
+> 
+> obj-$(CONFIG_KEXEC_FILE) += kexec.o
+> 
+> It is not dependent on CONFIG_HAVE_IMA_KEXEC.  Shouldn't all of the
+> functions defined in ima.c being moved to kexec.o be defined within a
+> CONFIG_HAVE_IMA_KEXEC ifdef?
+> 
+
+Thanks for reviewing the changes.
+
+In "drivers/of/kexec.c" the function remove_ima_buffer() is defined 
+under "#ifdef CONFIG_HAVE_IMA_KEXEC"
+
+setup_ima_buffer() is defined under "#ifdef CONFIG_IMA_KEXEC" - the same 
+way it was defined in "arch/powerpc/kexec/ima.c".
+
+As you know, CONFIG_IMA_KEXEC depends on CONFIG_HAVE_IMA_KEXEC (as 
+defined in "security/integrity/ima/Kconfig").
+
+ima_get_kexec_buffer() and ima_free_kexec_buffer() are unconditionally 
+defined in "drivers/of/kexec.c" even though they are called only when 
+CONFIG_HAVE_IMA_KEXEC is enabled. I will update these two functions to 
+be moved under "#ifdef CONFIG_HAVE_IMA_KEXEC"
+
+Rob/Mimi/Thiago - Please let me know if you have other comments in the 
+v13 patches. Will address those as well and post v14.
+
+thanks,
+  -lakshmi
