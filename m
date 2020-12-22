@@ -2,82 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 094B22E0B38
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 14:58:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F6BA2E0B3F
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 14:59:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727214AbgLVN5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 08:57:33 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:36882 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726868AbgLVN5d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 08:57:33 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kri9e-00DO62-Dz; Tue, 22 Dec 2020 14:56:46 +0100
-Date:   Tue, 22 Dec 2020 14:56:46 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Lars Povlsen <lars.povlsen@microchip.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        devicetree@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-kernel@vger.kernel.org,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        linux-gpio@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v10 3/3] arm64: dts: sparx5: Add SGPIO devices
-Message-ID: <20201222135646.GF3107610@lunn.ch>
-References: <20201113145151.68900-1-lars.povlsen@microchip.com>
- <20201113145151.68900-4-lars.povlsen@microchip.com>
- <20201220224804.GA3107610@lunn.ch>
- <87eejip2xm.fsf@microchip.com>
+        id S1727242AbgLVN70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 08:59:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726954AbgLVN7Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 08:59:25 -0500
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9ED7C0613D3;
+        Tue, 22 Dec 2020 05:58:44 -0800 (PST)
+Received: by mail-il1-x129.google.com with SMTP id r17so12018666ilo.11;
+        Tue, 22 Dec 2020 05:58:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6i7NrwLKDslBTejJUhiHwrawTUVbXT/BNONd/vz+wMw=;
+        b=dFQocZHAgVe5+oSTsSRYS7k1Y+hX5WOWcDN65k0FcxGHpDCpafbKBpUuS+KLs3cTgO
+         CGPNptel+VHIL89ETlx2VzXLKn0j2tlSlEc7Mfodz6Nmn0NCszG3lYl79dnPBeYuubXm
+         sjdHKDAl4BPcpgNWlfRmFZq9M/BGSLdX3myijNGMAaIr3+CTySruzftKB+OIsVPE6U/J
+         FOspbDbnu/ZgmuDS66F7SHSQtt1AbOaM4/Ium6OWL/ZOXzLMvwqDJw1NQJE5y/HQXCuj
+         4iY0IhlXiapV4pwL7RLRv1v2vokTu5Iuvtw13t1Z3S1smQf1P5ytRuY2vlbXXTn+4Tvd
+         lYqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6i7NrwLKDslBTejJUhiHwrawTUVbXT/BNONd/vz+wMw=;
+        b=tj3yV0W50gneSlG2JA+AlATuugLLe9Vo9WpAgsaciQOpJf4qkMxh0F3Po5J2iuekey
+         IDTrwQFzK/BTu4bz2zX558GXIXocTLtEZh+er1vgeJnk5wll38y8MxjwVfdtDR6jelrR
+         DLl0nZmIZ2TQDO3ZODF4GxiWoXx0KNmA8uLVrUQnoF6vyrshhDr93LOAw+l544kdZ+J7
+         RY65aqA9I0bcQDHnCgHjhZo69FHxw2dB+agf7bkNb5PnhpCOUGndI+6pbzTWDt6Tgao2
+         /QAZLQEJQb1gF5U1M84h/+r6JqskDM3HO6G9p0/aarImO6r1d+p24Fs5u5sJN8AEOPOn
+         dRoA==
+X-Gm-Message-State: AOAM531nqBDmI/VIBAL5yuzsPoU7YOOJzeDn3/2ANyLkWkAPq2eDECup
+        1FzY4BAF801EAZ9QSFnR3fBHuX8I2bjNZpFDLXSn5fwoaaY=
+X-Google-Smtp-Source: ABdhPJwYgwMXbi+Yk/cnr6cxtkRgpZGKk8ZSMGaQNUwYvN0cvcQaUj1UmhlHT9IRV1ry42oBJU9jIhZIMNHiS1hDRTQ=
+X-Received: by 2002:a92:d2cf:: with SMTP id w15mr21342632ilg.214.1608645524117;
+ Tue, 22 Dec 2020 05:58:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87eejip2xm.fsf@microchip.com>
+References: <20201213183759.223246-1-aford173@gmail.com> <20201213183759.223246-18-aford173@gmail.com>
+ <CAMuHMdWN91xmx5bVb2ww67iHm+b8umeB3WgBQdnR5M3_WcK=7Q@mail.gmail.com>
+In-Reply-To: <CAMuHMdWN91xmx5bVb2ww67iHm+b8umeB3WgBQdnR5M3_WcK=7Q@mail.gmail.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Tue, 22 Dec 2020 07:58:33 -0600
+Message-ID: <CAHCN7xKEBUjkgksdqP2V+P9wwC9ZH=EZg7kK=txxTWp8A8=rWA@mail.gmail.com>
+Subject: Re: [PATCH 17/18] arm64: dts: renesas: Introduce r8a774b1-beacon-rzg2n-kit
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 11:09:41AM +0100, Lars Povlsen wrote:
-> 
-> Andrew Lunn writes:
-> 
-> > On Fri, Nov 13, 2020 at 03:51:51PM +0100, Lars Povlsen wrote:
-> >> +             led@8 {
-> >> +                     label = "eth12:green";
-> >> +                     gpios = <&sgpio_out0 12 0 GPIO_ACTIVE_HIGH>;
-> >> +                     default-state = "off";
-> >> +             };
-> >> +             led@9 {
-> >> +                     label = "eth12:yellow";
-> >> +                     gpios = <&sgpio_out0 12 1 GPIO_ACTIVE_HIGH>;
-> >> +                     default-state = "off";
-> >> +             };
+On Thu, Dec 17, 2020 at 5:49 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Adam,
+>
+> On Sun, Dec 13, 2020 at 7:38 PM Adam Ford <aford173@gmail.com> wrote:
+> > Beacon EmebeddedWorks is introducing a new kit based on the
+> > RZ/G2N SoC from Renesas.
 > >
-> > Hi Lars
+> > The SOM supports eMMC, WiFi and Bluetooth, along with a Cat-M1
+> > cellular radio.
 > >
-> > I did not see these patches earlier, but i've been looking at the
-> > switch driver patches recently, so went digging.
+> > The Baseboard has Ethernet, USB, HDMI, stereo audio in and out,
+> > along with a variety of push buttons and LED's, and support for
+> > a parallel RGB and an LVDS display.  It uses the same baseboard
+> > and SOM as the RZ/G2M.
 > >
-> > Can the Ethernet switch itself control these LEDs for indicating
-> > things like packet receive/transmit, link state, and link speed? Or
-> > are they purely software controlled?
-> >
-> >     Thanks
-> >         Andrew
-> 
-> Hi Andrew!
-> 
-> No, the SGPIO device is separate from the switch device as such. I was
-> planning to couple the two by means of "led events" in a later patch.
+> > Signed-off-by: Adam Ford <aford173@gmail.com>
+>
+> Thanks for your patch!
 
-O.K, good.
+Thank you for the review!
 
-In the LED subsystem terminology, such an event would be a
-trigger. Link state, and copper speed should already be mostly covered
-by phylib triggers. What is missing is link activity.  Does the switch
-easily provide you with this information, or do you need to poll the
-switch statistics counters every 10ms to blink the LEDs?
+>
+> > --- /dev/null
+> > +++ b/arch/arm64/boot/dts/renesas/r8a774b1-beacon-rzg2n-kit.dts
+> > @@ -0,0 +1,43 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Copyright 2020, Compass Electronics Group, LLC
+> > + */
+> > +
+> > +/dts-v1/;
+> > +
+> > +#include "r8a774b1.dtsi"
+> > +#include "beacon-renesom-som.dtsi"
+> > +#include "beacon-renesom-baseboard.dtsi"
+> > +
+> > +/ {
+> > +       model = "Beacon Embedded Works RZ/G2N Development Kit";
+> > +       compatible =    "beacon,beacon-rzg2n", "renesas,r8a774b1";
+> > +
+> > +       aliases {
+> > +               serial0 = &scif2;
+> > +               serial1 = &hscif0;
+> > +               serial2 = &hscif1;
+> > +               serial3 = &scif0;
+> > +               serial4 = &hscif2;
+> > +               serial5 = &scif5;
+> > +               serial6 = &scif4;
+> > +               ethernet0 = &avb;
+> > +       };
+> > +
+> > +       chosen {
+> > +               stdout-path = "serial0:115200n8";
+> > +       };
+>
+> No memory nodes? Are you relying on U-Boot to fill them in?
+> If yes, why do you have them in the other board DTS files?
 
-     Andrew
+There is already a memory node included in the beacon-renesom.dtsi
+file which is defining memory@48000000 node which is common to the M,
+N and H.   If I understand it correctly, the extra memory nodes
+defined in the higher-level dts for M and H variation are not
+applicable on the N.
+
+>
+> > +};
+> > +
+> > +&du {
+> > +       status = "okay";
+>
+> Missing pinctrl properties?
+>
+oops.  I'll fix.
+> > +
+> > +       clocks = <&cpg CPG_MOD 724>,
+> > +               <&cpg CPG_MOD 723>,
+> > +               <&cpg CPG_MOD 721>,
+> > +               <&versaclock5 1>,
+> > +               <&x302_clk>,
+> > +               <&versaclock5 2>;
+> > +       clock-names = "du.0", "du.1", "du.3",
+> > +               "dclkin.0", "dclkin.1", "dclkin.3";
+> > +};
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
