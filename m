@@ -2,90 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B24772E08D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 11:31:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0125C2E08DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 11:33:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726564AbgLVKbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 05:31:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725994AbgLVKbl (ORCPT
+        id S1726604AbgLVKcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 05:32:33 -0500
+Received: from smtprelay0236.hostedemail.com ([216.40.44.236]:57638 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725985AbgLVKcc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 05:31:41 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2527C061793
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 02:31:00 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id g25so1337147wmh.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 02:31:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=yjWsKgpIrIMHJTkgfV3AITTW3X6hZ0tmorI+J4SlgHk=;
-        b=gSAX6vAp7rwGjwVr9KdZect0S7ffhHvL1frAWrbGRR/GIDButiKcd2wUo2svR67hsR
-         uRNYfkJswpDCN6kY8KVcoVxdapcpleB9lZPz1eEHcp8ec7/4q8a/i56kwP2DeegVsire
-         wXgZYHlmRvQP26en5WetBRRGrnmpnW39HajIpmljUANcMDtzc3++StWR2XK/8mgfG9+p
-         drlkAL33KQEKUd27DJmhfLlrPsGeqU6JRVMuM4Pv5UA2u47hhoWU5Gna425XQ15rQaL3
-         /a5tnvrJAue5thRnjUctDGyi9czxBXoIAKE+ziZjBaJ+UVD5k/jXdzJBJGgd7S8pQLEh
-         C5PQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=yjWsKgpIrIMHJTkgfV3AITTW3X6hZ0tmorI+J4SlgHk=;
-        b=VJHxPLkWZVjEPVIbf71QdLF6PwvbDmdJjDGIdlKrIf1rd689eCEfamKO6C01wFixT3
-         UuVSTFEWsk+7AnhQkDijXDVns9ZVqjn1VDeyhkriEOP+NTt3LiAIyQLAXfvV4Yqwm/Zj
-         9u5g/9NkATn4HAhaRCzUGi48DQSnOD2nl4/KTzg3z2CDq8UYJlJ9fTjTRfMTy4pNt9Fk
-         IsEs8NPyCQ8afBhFYuNayRpLXw6dAxvxazy/AGw7LGUaF123mOdk+/1J4NFz3HrypAMv
-         E5WH+qMlwyjiGQnFZt4V6yLh95+XK1piuVJKmn/8iJODeMONcf207xv+KzD10el5uq8X
-         WiBQ==
-X-Gm-Message-State: AOAM530ltOOOgrzJE1Gjl6fvxUX6L/GptGNf3E/F382Sdw/YXoxGGQeI
-        RxO0RO6mxUuLINZlJaEC20xoWg==
-X-Google-Smtp-Source: ABdhPJzXGpcJch3T0AHE5uG0+3OFzMr8Axaigdjj7H1XYyRyA28dVfzU/ffnNHOMoQnte5ehH+AC8Q==
-X-Received: by 2002:a1c:1d85:: with SMTP id d127mr20665428wmd.39.1608633059562;
-        Tue, 22 Dec 2020 02:30:59 -0800 (PST)
-Received: from dell ([91.110.221.175])
-        by smtp.gmail.com with ESMTPSA id w13sm29959833wrt.52.2020.12.22.02.30.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Dec 2020 02:30:58 -0800 (PST)
-Date:   Tue, 22 Dec 2020 10:30:56 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Gene Chen <gene.chen.richtek@gmail.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com,
-        benjamin.chao@mediatek.com
-Subject: Re: [PATCH] dt-bindings: mfd: mediatek: Add bindings for MT6360 PMIC
-Message-ID: <20201222103056.GF53991@dell>
-References: <1597912530-5374-1-git-send-email-gene.chen.richtek@gmail.com>
- <CAE+NS37_YY1aVYv-MBsxoBXCkvj7+fBK+vZke9yG7eY1aMHLKQ@mail.gmail.com>
- <CAE+NS36_HCJvk4_f_8G=5Lke87jCgHO-i0HJ-Q27vhDkacFGEw@mail.gmail.com>
+        Tue, 22 Dec 2020 05:32:32 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 98DC7182CF665;
+        Tue, 22 Dec 2020 10:31:51 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:800:960:966:968:973:988:989:1260:1277:1311:1313:1314:1345:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2196:2199:2393:2553:2559:2562:2828:2896:2899:3138:3139:3140:3141:3142:3352:3865:3867:3868:3871:4250:4321:4385:5007:6119:10004:10400:10848:11026:11232:11658:11914:12043:12296:12297:12438:12555:12760:13069:13095:13161:13229:13311:13357:13439:14181:14394:14659:14721:21080:21433:21451:21611:21627:21740:21990:30054:30090,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: limit40_2008c822745f
+X-Filterd-Recvd-Size: 2725
+Received: from XPS-9350.home (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf18.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 22 Dec 2020 10:31:50 +0000 (UTC)
+Message-ID: <45b260bfe6a3d3c11c48e76dd5de7fa40665154c.camel@perches.com>
+Subject: [PATCH] Bluetooth: btusb: Remove duplicate newlines from logging
+From:   Joe Perches <joe@perches.com>
+To:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc:     linux-bluetooth@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Tue, 22 Dec 2020 02:31:49 -0800
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAE+NS36_HCJvk4_f_8G=5Lke87jCgHO-i0HJ-Q27vhDkacFGEw@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Dec 2020, Gene Chen wrote:
+The bt_dev_<level> macros already append a newline.
 
-> Dear Reviewers,
-> 
->     Should I wait for all sub-devices dt-binding review done, then
-> send the integral binding document?
+Signed-off-by: Joe Perches <joe@perches.com>
+---
 
-Please re-send whatever you have.
+The "No memory" message could be removed as bt_skb_alloc already does
+a dump_stack() on allocation failure.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+ drivers/bluetooth/btusb.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index b630a1d54c02..9ff920de8d26 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -1899,7 +1899,7 @@ static int btusb_setup_csr(struct hci_dev *hdev)
+ 		    le16_to_cpu(rp->lmp_subver) == 0x1012 &&
+ 		    le16_to_cpu(rp->hci_rev) == 0x0810 &&
+ 		    le16_to_cpu(rp->hci_ver) == BLUETOOTH_VER_4_0) {
+-			bt_dev_warn(hdev, "CSR: detected a fake CSR dongle using a Barrot 8041a02 chip, this chip is very buggy and may have issues\n");
++			bt_dev_warn(hdev, "CSR: detected a fake CSR dongle using a Barrot 8041a02 chip, this chip is very buggy and may have issues");
+ 
+ 			pm_runtime_allow(&data->udev->dev);
+ 
+@@ -1907,7 +1907,7 @@ static int btusb_setup_csr(struct hci_dev *hdev)
+ 			if (ret >= 0)
+ 				msleep(200);
+ 			else
+-				bt_dev_err(hdev, "Failed to suspend the device for Barrot 8041a02 receive-issue workaround\n");
++				bt_dev_err(hdev, "Failed to suspend the device for Barrot 8041a02 receive-issue workaround");
+ 
+ 			pm_runtime_forbid(&data->udev->dev);
+ 
+@@ -3724,7 +3724,7 @@ static int marvell_config_oob_wake(struct hci_dev *hdev)
+ 
+ 	skb = bt_skb_alloc(sizeof(cmd), GFP_KERNEL);
+ 	if (!skb) {
+-		bt_dev_err(hdev, "%s: No memory\n", __func__);
++		bt_dev_err(hdev, "%s: No memory", __func__);
+ 		return -ENOMEM;
+ 	}
+ 
+@@ -3733,7 +3733,7 @@ static int marvell_config_oob_wake(struct hci_dev *hdev)
+ 
+ 	ret = btusb_send_frame(hdev, skb);
+ 	if (ret) {
+-		bt_dev_err(hdev, "%s: configuration failed\n", __func__);
++		bt_dev_err(hdev, "%s: configuration failed", __func__);
+ 		kfree_skb(skb);
+ 		return ret;
+ 	}
+
