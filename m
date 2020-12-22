@@ -2,116 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E1142E0BF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 15:43:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0475C2E0BF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 15:45:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727637AbgLVOnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 09:43:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726868AbgLVOnH (ORCPT
+        id S1727747AbgLVOpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 09:45:00 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:44385 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727693AbgLVOo7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 09:43:07 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 639B0C061793
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 06:42:27 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id a12so32518145lfl.6
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 06:42:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=QOsSeP8Izdxam9v2mGDHrUG4xsPA2erruOt/uVv66oE=;
-        b=HqWh94hUaTDliG35Zagh2f9xBEF/weISci7WNbqpEcNYYUgmXJ1eT3aYMRTcPtGzey
-         uKL8y5yEyMFZGUqJIYtd+D67pU8zOqcUk99fO18DohfDSO6o+fBr5bc+UqMBTFg5dQSd
-         BJkLqaW4aJIm4o5BvC1EMdP7rLo6TeWi1tcL8TbzB03rLcXJgPLzhFsk1dMlHwA1lf+o
-         rTB90BJBjfXtI7yonUC52lDUxrsgDMOtgFDfoDck01hcOx5PeyNHGpyr4bkB22HWdNx/
-         aEVmjaXpKzKEmx5YCuGOKsjVsgnzc4r33NB4BH9vM6P/4QcvWftZWySPfLttxIOFEu6v
-         VE3w==
+        Tue, 22 Dec 2020 09:44:59 -0500
+Received: by mail-io1-f70.google.com with SMTP id a1so7473939ioa.11
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 06:44:43 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=QOsSeP8Izdxam9v2mGDHrUG4xsPA2erruOt/uVv66oE=;
-        b=gEDUQOKmtMTZknY+0U+SAZ0aQoAtiDW3Y9O51s+Z2hoPwC3YCZfXvSgp70X+d0fdYv
-         EiskV/p4SjvHZQYqSvBI/PsLNlOayH9026swVRmq4TOqebFHpfFohzEG8TZh6ABxhxUO
-         59nijO+0BsALp9tO/aWqdFGuJhXSZuXPrwlm5zp9HiUecrefPRjJxwoV0u+X0yqHtLPM
-         dvXQ5Gcd1pBDDvpI0j1fOHFPs1FT4n79jBt/h0QAZSaIl64K2bYiENpGUh7YiwDldZ8U
-         crQKbpDZrD1VwLRgkYEO0/+utjpAtsm1Ys1l2ui6EQodI9IFD7iLOYKLILK/9q0qBpxu
-         sSOA==
-X-Gm-Message-State: AOAM532w6toP+tWBLi/cBA7cCZHyYE9YkSW+v1s6fLDqtxfxhc8kVe3b
-        KEFH6JijR36FGuZOpo+v0KJVhHsWghAdfvCYpI4=
-X-Google-Smtp-Source: ABdhPJxqqF6DeEfobHr4FNiEpBMxW4vxPKWsWcJjyGcXFw9khzRdoSAi//pN1D6khHbWpS/nxbl3E2oiIBNjy+9urAU=
-X-Received: by 2002:a05:651c:1068:: with SMTP id y8mr9567821ljm.76.1608648145923;
- Tue, 22 Dec 2020 06:42:25 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=lSpvPfHKy5MMJb/4IlgookwUdWGXdnIGkTfYTOdiS6s=;
+        b=jdhshcA8B03wsldwp31xH7AY9DkYoxtFha9v8Z8xx4DVkvZNwBiLXLP+mtz0s5YbLA
+         eGB/Fcs11iSLa1nk2/Q8dXbivc9doqjPODGK4alqZCXz4Z47eGxndJcNCZOE5POxM+fr
+         faVrJlq1JORE1ReDb99dx5K167HV88aZTiGw56TivILSiHlIA7o0/XinZBd9Yj3mfR8A
+         pPrMHQ4489+UY8d8ZOe9pQw2gu+JgxcudTOzzQUROk2GwZThZGVDf+YWcu7LE8XV+486
+         jUnHDQHyW2yDo7Fc01Jp4HFutJaoUOWVKjpx1Q+jM8z4n9GtktBtHrrk3hqKSt/w+5Sq
+         FRDQ==
+X-Gm-Message-State: AOAM5324GmLr2zk8q0Ms2y9Avk/8kt1Hjgtblb0HqIdiNR/OHpG4s0sB
+        GoV9n1WHNQsaSUWfQX1umfOhME4/RJG9LpXF36Xg33L/0rNh
+X-Google-Smtp-Source: ABdhPJzO+Xa22wZShSH2UAxVctto7w9362EjTW8gO3kxBl/A3SQo0GbXLRlvVRAcOiX2W+A5n6C9n0E1mU/IQRkfRt8PmSs25kUX
 MIME-Version: 1.0
-References: <20201221162519.GA22504@open-light-1.localdomain> <20201222122312.GH874@casper.infradead.org>
-In-Reply-To: <20201222122312.GH874@casper.infradead.org>
-From:   Liang Li <liliang324@gmail.com>
-Date:   Tue, 22 Dec 2020 22:42:13 +0800
-Message-ID: <CA+2MQi8GMLfSFN30G8EEeXXsC5M+Et2oRMnynUp==eRbY0Z2Wg@mail.gmail.com>
-Subject: Re: [RFC v2 PATCH 0/4] speed up page allocation for __GFP_ZERO
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Liang Li <liliangleo@didiglobal.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
+X-Received: by 2002:a92:1517:: with SMTP id v23mr21862018ilk.280.1608648258008;
+ Tue, 22 Dec 2020 06:44:18 -0800 (PST)
+Date:   Tue, 22 Dec 2020 06:44:18 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fcbe0705b70e9bd9@google.com>
+Subject: kernel BUG at lib/string.c:LINE! (6)
+From:   syzbot <syzbot+e86f7c428c8c50db65b4@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, coreteam@netfilter.org,
+        davem@davemloft.net, fw@strlen.de, jakub@redhat.com,
+        jiangshanlai@gmail.com, kadlec@netfilter.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
+        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
+        tj@kernel.org, torvalds@linux-foundation.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-> > QEMU use 4K pages, THP is off
-> >                   round1      round2      round3
-> > w/o this patch:    23.5s       24.7s       24.6s
-> > w/ this patch:     10.2s       10.3s       11.2s
-> >
-> > QEMU use 4K pages, THP is on
-> >                   round1      round2      round3
-> > w/o this patch:    17.9s       14.8s       14.9s
-> > w/ this patch:     1.9s        1.8s        1.9s
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
->
-> The cost of zeroing pages has to be paid somewhere.  You've successfully
-> moved it out of this path that you can measure.  So now you've put it
-> somewhere that you're not measuring.  Why is this a win?
+Hello,
 
-Win or not depends on its effect. For our case, it solves the issue that we
-faced, so it can be thought as a win for us.
-If others don't have the issue we faced, the result will be different,
-maybe they
-will be affected by the side effect of this feature. I think this is
-your concern
-behind the question. right? I will try to do more tests and provide more
-benchmark performance data.
+syzbot found the following issue on:
 
-> > Speed up kernel routine
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > This can=E2=80=99t be guaranteed because we don=E2=80=99t pre zero out =
-all the free pages,
-> > but is true for most case. It can help to speed up some important syste=
-m
-> > call just like fork, which will allocate zero pages for building page
-> > table. And speed up the process of page fault, especially for huge page
-> > fault. The POC of Hugetlb free page pre zero out has been done.
->
-> Try kernbench with and without your patch.
+HEAD commit:    d64c6f96 Merge tag 'net-5.11-rc1' of git://git.kernel.org/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10bc5613500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=aca0dc5c721fe9e5
+dashboard link: https://syzkaller.appspot.com/bug?extid=e86f7c428c8c50db65b4
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=169378a7500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=144692cb500000
 
-OK. Thanks for your suggestion!
+The issue was bisected to:
 
-Liang
+commit 2f78788b55baa3410b1ec91a576286abe1ad4d6a
+Author: Jakub Jelinek <jakub@redhat.com>
+Date:   Wed Dec 16 04:43:37 2020 +0000
+
+    ilog2: improve ilog2 for constant arguments
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1584f137500000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1784f137500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1384f137500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e86f7c428c8c50db65b4@syzkaller.appspotmail.com
+Fixes: 2f78788b55ba ("ilog2: improve ilog2 for constant arguments")
+
+detected buffer overflow in strlen
+------------[ cut here ]------------
+kernel BUG at lib/string.c:1149!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 8713 Comm: syz-executor731 Not tainted 5.10.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:fortify_panic+0xf/0x11 lib/string.c:1149
+Code: b5 78 a3 04 48 c7 c7 c0 8f c2 89 58 5b 5d 41 5c 41 5d 41 5e 41 5f e9 30 ba ee ff 48 89 fe 48 c7 c7 80 90 c2 89 e8 21 ba ee ff <0f> 0b e8 90 f9 97 f8 0f b6 f3 48 c7 c7 20 f4 10 8c e8 41 e8 fc fa
+RSP: 0018:ffffc900020af500 EFLAGS: 00010282
+RAX: 0000000000000022 RBX: ffff888011c26768 RCX: 0000000000000000
+RDX: ffff88801bad0000 RSI: ffffffff815a6925 RDI: fffff52000415e92
+RBP: ffff88801be7c220 R08: 0000000000000022 R09: 0000000000000000
+R10: ffffffff815a4d7b R11: 0000000000000000 R12: ffff88801180ec00
+R13: ffff888011c26700 R14: 1ffff92000415ea2 R15: 0000000000000010
+FS:  0000000000812880(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000006dcf60 CR3: 00000000141ee000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ strlen include/linux/string.h:325 [inline]
+ strlcpy include/linux/string.h:348 [inline]
+ xt_rateest_tg_checkentry+0x2a5/0x6b0 net/netfilter/xt_RATEEST.c:143
+ xt_check_target+0x26c/0x9e0 net/netfilter/x_tables.c:1019
+ check_target net/ipv6/netfilter/ip6_tables.c:529 [inline]
+ find_check_entry.constprop.0+0x7f1/0x9e0 net/ipv6/netfilter/ip6_tables.c:572
+ translate_table+0xc8b/0x1750 net/ipv6/netfilter/ip6_tables.c:734
+ do_replace net/ipv6/netfilter/ip6_tables.c:1152 [inline]
+ do_ip6t_set_ctl+0x553/0xb70 net/ipv6/netfilter/ip6_tables.c:1636
+ nf_setsockopt+0x83/0xe0 net/netfilter/nf_sockopt.c:101
+ ipv6_setsockopt+0x122/0x180 net/ipv6/ipv6_sockglue.c:1008
+ tcp_setsockopt+0x136/0x2440 net/ipv4/tcp.c:3597
+ __sys_setsockopt+0x2db/0x610 net/socket.c:2115
+ __do_sys_setsockopt net/socket.c:2126 [inline]
+ __se_sys_setsockopt net/socket.c:2123 [inline]
+ __x64_sys_setsockopt+0xba/0x150 net/socket.c:2123
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x4493d9
+Code: e8 0c ca 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 9b cb fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fff679a3898 EFLAGS: 00000246 ORIG_RAX: 0000000000000036
+RAX: ffffffffffffffda RBX: 00000000200002c0 RCX: 00000000004493d9
+RDX: 0000000000000040 RSI: 0000000000000029 RDI: 0000000000000006
+RBP: 00007fff679a38b0 R08: 0000000000000470 R09: 00000000000000c2
+R10: 0000000020000080 R11: 0000000000000246 R12: 00000000000112d5
+R13: 00000000006d7dc8 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+---[ end trace e17a915ca7e8b666 ]---
+RIP: 0010:fortify_panic+0xf/0x11 lib/string.c:1149
+Code: b5 78 a3 04 48 c7 c7 c0 8f c2 89 58 5b 5d 41 5c 41 5d 41 5e 41 5f e9 30 ba ee ff 48 89 fe 48 c7 c7 80 90 c2 89 e8 21 ba ee ff <0f> 0b e8 90 f9 97 f8 0f b6 f3 48 c7 c7 20 f4 10 8c e8 41 e8 fc fa
+RSP: 0018:ffffc900020af500 EFLAGS: 00010282
+RAX: 0000000000000022 RBX: ffff888011c26768 RCX: 0000000000000000
+RDX: ffff88801bad0000 RSI: ffffffff815a6925 RDI: fffff52000415e92
+RBP: ffff88801be7c220 R08: 0000000000000022 R09: 0000000000000000
+R10: ffffffff815a4d7b R11: 0000000000000000 R12: ffff88801180ec00
+R13: ffff888011c26700 R14: 1ffff92000415ea2 R15: 0000000000000010
+FS:  0000000000812880(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000006dcf60 CR3: 00000000141ee000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
