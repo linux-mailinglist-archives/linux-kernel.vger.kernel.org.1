@@ -2,169 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B767E2E0586
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 05:59:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5A402E0589
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 06:03:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725885AbgLVE7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 23:59:15 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:40060 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725811AbgLVE7O (ORCPT
+        id S1725854AbgLVFDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 00:03:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725780AbgLVFDc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 23:59:14 -0500
-X-UUID: 68aa42c75e9448d5bf8bb0c881120ccf-20201222
-X-UUID: 68aa42c75e9448d5bf8bb0c881120ccf-20201222
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <jamesjj.liao@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 327110763; Tue, 22 Dec 2020 12:58:30 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 22 Dec 2020 12:58:21 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 22 Dec 2020 12:58:21 +0800
-From:   James Liao <jamesjj.liao@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>,
-        James Liao <jamesjj.liao@mediatek.com>
-Subject: [PATCH] arm64: dts: mt8192: Add cpu-idle-states
-Date:   Tue, 22 Dec 2020 12:58:20 +0800
-Message-ID: <20201222045820.26355-1-jamesjj.liao@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+        Tue, 22 Dec 2020 00:03:32 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E837AC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 21:02:51 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id x12so6798182plr.10
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 21:02:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RpZ+wXfl2QotbYqPhv72PU/yTVx45uHY6nTFy9x2zvA=;
+        b=ALTnk7siuh07+b8/NS2YbaHb6lJA8nhq8iRcs3VOa76aaRGvdEuQn6i+3bs5kNbgBe
+         +D2voammdOWr66fe4oikCX1fCEvd9h8EUfX9HZQMv5er7CrIQN4J5ZjkkiMsUWrfk6fV
+         VI5CQOcExxe31qVzEGqeq3hCLZFi3z6Hu9+Ro1clfFqxMQbuv15DiMoWouT7vm9lzh3J
+         Rgqd4Y08TfXC2mphKWhoYVfi/03gtpDUDw+gkV0GNBPFTourrXsWa/rvwL/5+cxWU55O
+         wHB74H8I22nYDY/lLqtXyKuz6YwNRz8gNx3OdDniCiDVwgsgxjSmk9q2T37ui3v8Uc96
+         an5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=RpZ+wXfl2QotbYqPhv72PU/yTVx45uHY6nTFy9x2zvA=;
+        b=LfOuXGFCfgDfXq7QRrVbBvBp2dNoL3SbGVEQOUaOJqGI9YJQQhOvJx187DN7xdCoW3
+         UdOooRBC/97WIXAtYluwlG9d0B0GQaKE0bIIX3pM7JTUDf/aHPw8fi+bc/zMMEccdbcZ
+         9WuazuJ8WZL2S9H7BLPSa9ifvbmZgvAjgGEQWCUdQfXPvQEPotYMF4itDY41Zd0pZw8c
+         cIf/a9jEdTvql+bhYEd1MR6AyT2nC1mXDITDLKwhiSq6gxgL7F1znVg+C8ufMLq09Gf+
+         VrMaUtdpAFu5xv77thc5NtjJr3mZjgzVq21Y2bHCWaFt08l1K8ezfdL5537uoT2Q7B3d
+         Ne+Q==
+X-Gm-Message-State: AOAM5328m6Ko6g+ZnYTAOzzRDXVkBKCi/pHEqFZ7a7qEnJI+H+Xm8y+z
+        UfTm2jNEJj18Zg2K6QLk4nH6vgzsCu0FC0wn
+X-Google-Smtp-Source: ABdhPJxd/u78GqOJhoWzNph+XNE99fMyFxboDZVhN/a3J6FYMOa7bgl3N+Fcj7B8erZv7k6geDrFwg==
+X-Received: by 2002:a17:90a:e001:: with SMTP id u1mr18321209pjy.3.1608613371225;
+        Mon, 21 Dec 2020 21:02:51 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id l190sm18292642pfl.205.2020.12.21.21.02.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Dec 2020 21:02:50 -0800 (PST)
+Date:   Mon, 21 Dec 2020 21:02:50 -0800 (PST)
+X-Google-Original-Date: Mon, 21 Dec 2020 21:02:48 PST (-0800)
+Subject:     Re: [PATCH v2] RISC-V: Fix usage of memblock_enforce_memory_limit
+In-Reply-To: <20201219001356.2887782-1-atish.patra@wdc.com>
+CC:     linux-kernel@vger.kernel.org, Atish Patra <Atish.Patra@wdc.com>,
+        stable@vger.kernel.org, bin.meng@windriver.com, rppt@linux.ibm.com,
+        aou@eecs.berkeley.edu, akpm@linux-foundation.org,
+        Anup Patel <Anup.Patel@wdc.com>,
+        linux-riscv@lists.infradead.org, rppt@kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>, bmeng.cn@gmail.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Atish Patra <Atish.Patra@wdc.com>
+Message-ID: <mhng-35592185-e0e1-499f-8845-a4026154b983@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add idle states for cpu-off and cluster-off.
+On Fri, 18 Dec 2020 16:13:56 PST (-0800), Atish Patra wrote:
+> memblock_enforce_memory_limit accepts the maximum memory size not the
+> maximum address that can be handled by kernel. Fix the function invocation
+> accordingly.
+>
+> Fixes: 1bd14a66ee52 ("RISC-V: Remove any memblock representing unusable memory area")
+> Cc: stable@vger.kernel.org
+>
+> Reported-by: Bin Meng <bin.meng@windriver.com>
+> Tested-by: Bin Meng <bin.meng@windriver.com>
+> Acked-by: Mike Rapoport <rppt@linux.ibm.com>
+> Signed-off-by: Atish Patra <atish.patra@wdc.com>
+> ---
+> Changes from v1->v2:
+> 1. Added stable-kernel in cc.
+> 2. Added reported/tested by tag.
+> ---
+>  arch/riscv/mm/init.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> index 13ba533f462b..bf5379135e39 100644
+> --- a/arch/riscv/mm/init.c
+> +++ b/arch/riscv/mm/init.c
+> @@ -176,7 +176,7 @@ void __init setup_bootmem(void)
+>  	 * Make sure that any memory beyond mem_start + (-PAGE_OFFSET) is removed
+>  	 * as it is unusable by kernel.
+>  	 */
+> -	memblock_enforce_memory_limit(mem_start - PAGE_OFFSET);
+> +	memblock_enforce_memory_limit(-PAGE_OFFSET);
+>
+>  	/* Reserve from the start of the kernel to the end of the kernel */
+>  	memblock_reserve(vmlinux_start, vmlinux_end - vmlinux_start);
 
-Signed-off-by: James Liao <jamesjj.liao@mediatek.com>
----
- arch/arm64/boot/dts/mediatek/mt8192.dtsi | 44 ++++++++++++++++++++++++
- 1 file changed, 44 insertions(+)
-
-This patch bases on v5.10 and [1], adds idle-states for MT8192 CPUs.
-
-[1] https://lore.kernel.org/linux-arm-kernel/20201030092207.26488-2-seiya.wang@mediatek.com/
-
-diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-index e12e024de122..c7f2ec9ea4f1 100644
---- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-@@ -39,6 +39,7 @@
- 			reg = <0x000>;
- 			enable-method = "psci";
- 			clock-frequency = <1701000000>;
-+			cpu-idle-states = <&cpuoff_l &clusteroff_l>;
- 			next-level-cache = <&l2_0>;
- 			capacity-dmips-mhz = <530>;
- 		};
-@@ -49,6 +50,7 @@
- 			reg = <0x100>;
- 			enable-method = "psci";
- 			clock-frequency = <1701000000>;
-+			cpu-idle-states = <&cpuoff_l &clusteroff_l>;
- 			next-level-cache = <&l2_0>;
- 			capacity-dmips-mhz = <530>;
- 		};
-@@ -59,6 +61,7 @@
- 			reg = <0x200>;
- 			enable-method = "psci";
- 			clock-frequency = <1701000000>;
-+			cpu-idle-states = <&cpuoff_l &clusteroff_l>;
- 			next-level-cache = <&l2_0>;
- 			capacity-dmips-mhz = <530>;
- 		};
-@@ -69,6 +72,7 @@
- 			reg = <0x300>;
- 			enable-method = "psci";
- 			clock-frequency = <1701000000>;
-+			cpu-idle-states = <&cpuoff_l &clusteroff_l>;
- 			next-level-cache = <&l2_0>;
- 			capacity-dmips-mhz = <530>;
- 		};
-@@ -79,6 +83,7 @@
- 			reg = <0x400>;
- 			enable-method = "psci";
- 			clock-frequency = <2171000000>;
-+			cpu-idle-states = <&cpuoff_b &clusteroff_b>;
- 			next-level-cache = <&l2_1>;
- 			capacity-dmips-mhz = <1024>;
- 		};
-@@ -89,6 +94,7 @@
- 			reg = <0x500>;
- 			enable-method = "psci";
- 			clock-frequency = <2171000000>;
-+			cpu-idle-states = <&cpuoff_b &clusteroff_b>;
- 			next-level-cache = <&l2_1>;
- 			capacity-dmips-mhz = <1024>;
- 		};
-@@ -99,6 +105,7 @@
- 			reg = <0x600>;
- 			enable-method = "psci";
- 			clock-frequency = <2171000000>;
-+			cpu-idle-states = <&cpuoff_b &clusteroff_b>;
- 			next-level-cache = <&l2_1>;
- 			capacity-dmips-mhz = <1024>;
- 		};
-@@ -109,6 +116,7 @@
- 			reg = <0x700>;
- 			enable-method = "psci";
- 			clock-frequency = <2171000000>;
-+			cpu-idle-states = <&cpuoff_b &clusteroff_b>;
- 			next-level-cache = <&l2_1>;
- 			capacity-dmips-mhz = <1024>;
- 		};
-@@ -158,6 +166,42 @@
- 		l3_0: l3-cache {
- 			compatible = "cache";
- 		};
-+
-+		idle-states {
-+			entry-method = "arm,psci";
-+			cpuoff_l: cpuoff_l {
-+				compatible = "arm,idle-state";
-+				arm,psci-suspend-param = <0x00010001>;
-+				local-timer-stop;
-+				entry-latency-us = <55>;
-+				exit-latency-us = <140>;
-+				min-residency-us = <780>;
-+			};
-+			cpuoff_b: cpuoff_b {
-+				compatible = "arm,idle-state";
-+				arm,psci-suspend-param = <0x00010001>;
-+				local-timer-stop;
-+				entry-latency-us = <35>;
-+				exit-latency-us = <145>;
-+				min-residency-us = <720>;
-+			};
-+			clusteroff_l: clusteroff_l {
-+				compatible = "arm,idle-state";
-+				arm,psci-suspend-param = <0x01010002>;
-+				local-timer-stop;
-+				entry-latency-us = <60>;
-+				exit-latency-us = <155>;
-+				min-residency-us = <860>;
-+			};
-+			clusteroff_b: clusteroff_b {
-+				compatible = "arm,idle-state";
-+				arm,psci-suspend-param = <0x01010002>;
-+				local-timer-stop;
-+				entry-latency-us = <40>;
-+				exit-latency-us = <155>;
-+				min-residency-us = <780>;
-+			};
-+		};
- 	};
- 
- 	pmu-a55 {
--- 
-2.18.0
-
+Thanks, this is on fixes.
