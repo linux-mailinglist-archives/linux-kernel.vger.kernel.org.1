@@ -2,172 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 698F82E0473
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 03:48:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 293E22E0482
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 03:51:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725968AbgLVCqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 21:46:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35572 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725924AbgLVCqa (ORCPT
+        id S1726066AbgLVCuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 21:50:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725946AbgLVCuy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 21:46:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608605103;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mtrZTTJIr7oR1Tjy1htJ8dmZVuN7yGZCQoQCqS0N9aA=;
-        b=IOWNDpbMOf4VXM2Z4ZfL3zwHipsPL2xunAy06hjGmv0LrWMO4NshiSqhyx7RbDscbr/9q/
-        NBuXrlYf6PH+Gdf9udvY0ar68+Ar9xhkYCPh7MDumBR7KbwnlYfNdCz49ydJ+5V1HlQX+Q
-        Sv/oEvJ5HcIynGMcD3OIchOx3CH8KIk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-30-SL4XcIw9NsKPmHr7FDGARw-1; Mon, 21 Dec 2020 21:45:00 -0500
-X-MC-Unique: SL4XcIw9NsKPmHr7FDGARw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A3D26801817;
-        Tue, 22 Dec 2020 02:44:59 +0000 (UTC)
-Received: from [10.72.13.168] (ovpn-13-168.pek2.redhat.com [10.72.13.168])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3E66F5D6D1;
-        Tue, 22 Dec 2020 02:44:49 +0000 (UTC)
-Subject: Re: [PATCH RFC 00/12] vdpa: generalize vdpa simulator and add block
- device
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Laurent Vivier <lvivier@redhat.com>,
-        linux-kernel@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>
-References: <20201113134712.69744-1-sgarzare@redhat.com>
- <93f207c0-61e6-3696-f218-e7d7ea9a7c93@redhat.com>
- <20201218113816.zcyeyqipux4ao4cp@steredhat>
- <7dd3ed02-36c3-fcfd-0a1d-9c31af6f473e@redhat.com>
- <20201221111423.sestfroiw2dgpluc@steredhat>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <856d53c2-82e2-e408-76e6-24c92010f973@redhat.com>
-Date:   Tue, 22 Dec 2020 10:44:48 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 21 Dec 2020 21:50:54 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18C7EC061793
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 18:50:14 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id s15so2251368plr.9
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 18:50:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sCc2IFUwdvsSbaqGN4i+xoLYg8bo8q9GqOnadnWn86M=;
+        b=EFcweklmpZFX37UCEa3NG/H3IqUe54EEr8xpQ6AhjlUWmnNx+oFVTKuD+PJBMF9MC/
+         PuFFFg9DSJ5ZqAwIVFcWXhAKNGWPqqF9ssAWzic75Tq45wA8X+6NlRIq8tw9fSmh+5Q6
+         DyDpIAtBPi/QMJDfwtuXuWeDouFBQdcR2dzVjlrRLWskgwMzha9m8jXCTBq9loGrlbMP
+         0lR4bZyv8mKlXjD3CnQlEuePSSPV1H6noA2eO5XEJ71Qxf/Tuvq1jc8H7eGZjb7KKgOZ
+         WICiH3apu5X51ETJcKMrV8hF3Lh9xibTjcIzS9KvLcmNKrnGLrIBSRmPqvpdnxIOC/J6
+         PBqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sCc2IFUwdvsSbaqGN4i+xoLYg8bo8q9GqOnadnWn86M=;
+        b=o/Azdyehb6ko0PDmwoYDtP92SI845nXwpx+KK9zd6v+qW3hR5Y/C1VMv282dCscSGU
+         j0gCOjN9RH0M9Nt6n+HrZlbs8n2EAcsoGjzWzaoGKCYTYhmTroBR6nnHPLYLhfAyMV4O
+         hwzEB24YcP/HjZ5MKiGvDtwAQ1MTJc8aJ7bpwcjjbqSBoOFHRicylKGXisFpL9sJlLYa
+         ngSI3ldtpmqoyjuyRfgeVa8o1NCI6RzyDWe1nrHJv1bCZWCbLY7P1HvOC1YANNT2rfkh
+         dghmcNHi5g2kM6V8DCpxbZtQ1ztQ3UmJk6NUoWgSYNwAg9+Fsm70M/+Jcktyq4JFWGs0
+         Ntng==
+X-Gm-Message-State: AOAM532rGvT6mUidV3Q9P4sXJTmXBwib8J5cc+F/mPxVe7EPHogTrpv8
+        s5H1qwObYWat2TCtG3UXXZKxkJO6+/XKouCd7x5ZSzVhB9vbOg==
+X-Google-Smtp-Source: ABdhPJwN8zbi7sZTQVpPryOVuQt7CfApSm+iEg1iAxKHHrxnSB7kplgsZ+W7mu3itpRyCUFJ7EmCi7/nZfC9oacqVo4=
+X-Received: by 2002:a17:902:8503:b029:dc:44f:62d8 with SMTP id
+ bj3-20020a1709028503b02900dc044f62d8mr18889150plb.34.1608605413385; Mon, 21
+ Dec 2020 18:50:13 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201221111423.sestfroiw2dgpluc@steredhat>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20201217121303.13386-1-songmuchun@bytedance.com>
+ <20201217121303.13386-4-songmuchun@bytedance.com> <20201221091123.GB14343@linux>
+ <CAMZfGtVnS=_m4fpGBfDpOpdgzP02QCteUQn-gGiLADWfGiVJ=A@mail.gmail.com>
+ <20201221134345.GA19324@linux> <CAMZfGtVTqYXOvTHSay-6WS+gtDSCtcN5ksnkj8hJgrUs_XWoWQ@mail.gmail.com>
+ <20201221180019.GA2884@localhost.localdomain>
+In-Reply-To: <20201221180019.GA2884@localhost.localdomain>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 22 Dec 2020 10:49:35 +0800
+Message-ID: <CAMZfGtVsJz-vt-vsgGBAxGOKdibCAxBsnjEpupKX_=Tw9rZZ3A@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v10 03/11] mm/hugetlb: Free the vmemmap
+ pages associated with each HugeTLB page
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>, naoya.horiguchi@nec.com,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2020/12/21 下午7:14, Stefano Garzarella wrote:
-> On Mon, Dec 21, 2020 at 11:16:54AM +0800, Jason Wang wrote:
->>
->> On 2020/12/18 下午7:38, Stefano Garzarella wrote:
->>> On Mon, Nov 16, 2020 at 11:37:48AM +0800, Jason Wang wrote:
->>>>
->>>> On 2020/11/13 下午9:47, Stefano Garzarella wrote:
->>>>> Thanks to Max that started this work!
->>>>> I took his patches, and extended the block simulator a bit.
->>>>>
->>>>> This series moves the network device simulator in a new module
->>>>> (vdpa_sim_net) and leaves the generic functions in the vdpa_sim core
->>>>> module, allowing the possibility to add new vDPA device simulators.
->>>>> Then we added a new vdpa_sim_blk module to simulate a block device.
->>>>>
->>>>> I'm not sure about patch 11 ("vringh: allow vringh_iov_xfer() to skip
->>>>> bytes when ptr is NULL"), maybe we can add a new functions instead of
->>>>> modify vringh_iov_xfer().
->>>>>
->>>>> As Max reported, I'm also seeing errors with vdpa_sim_blk related to
->>>>> iotlb and vringh when there is high load, these are some of the error
->>>>> messages I can see randomly:
->>>>>
->>>>>   vringh: Failed to access avail idx at 00000000e8deb2cc
->>>>>   vringh: Failed to read head: idx 6289 address 00000000e1ad1d50
->>>>>   vringh: Failed to get flags at 000000006635d7a3
->>>>>
->>>>>   virtio_vdpa vdpa0: vringh_iov_push_iotlb() error: -14 offset:   
->>>>> 0x2840000 len: 0x20000
->>>>>   virtio_vdpa vdpa0: vringh_iov_pull_iotlb() error: -14 offset:   
->>>>> 0x58ee000 len: 0x3000
->>>>>
->>>>> These errors should all be related to the fact that iotlb_translate()
->>>>> fails with -EINVAL, so it seems that we miss some mapping.
->>>>
->>>>
->>>> Is this only reproducible when there's multiple co-current 
->>>> accessing of IOTLB? If yes, it's probably a hint that some kind of 
->>>> synchronization is still missed somewhere.
->>>>
->>>> It might be useful to log the dma_map/unmp in both virtio_ring and 
->>>> vringh to see who is missing the map.
->>>>
->>>
->>> Just an update about these issues with vdpa-sim-blk.
->>> I've been focusing a little bit on these failures over the last few 
->>> days and have found two issues related to the IOTLB/IOMMU:
->>>
->>> 1. Some requests coming from the block layer fills the SG list with 
->>> multiple buffers that had the same physical address. This happens 
->>> for example while using 'mkfs', at some points multiple sectors are 
->>> zeroed so multiple SG elements point to the same physical page that 
->>> is zeroed.
->>> Since we are using vhost_iotlb_del_range() in the 
->>> vdpasim_unmap_page(), this removes all the overlapped ranges. I 
->>> fixed removing a single map in vdpasim_unmap_page(), but has an 
->>> alternative we can implement some kind of reference counts.
->>
->>
->> I think we need to do what hardware do. So using refcount is probably 
->> not a good ida.
+On Tue, Dec 22, 2020 at 2:00 AM Oscar Salvador <osalvador@suse.de> wrote:
 >
-> Okay, so since we are using for simplicity an identical mapping, we 
-> are assigning the same dma_addr to multiple pages.
+> On Mon, Dec 21, 2020 at 11:52:30PM +0800, Muchun Song wrote:
+> > On Mon, Dec 21, 2020 at 9:44 PM Oscar Salvador <osalvador@suse.de> wrote:
+> > >
+> > > On Mon, Dec 21, 2020 at 07:25:15PM +0800, Muchun Song wrote:
+> > >
+> > > > Should we add a BUG_ON in vmemmap_remap_free() for now?
+> > > >
+> > > >         BUG_ON(reuse != start + PAGE_SIZE);
+> > >
+> > > I do not think we have to, plus we would be BUG_ing for some specific use
+> > > case in "generic" function.
+> >
+> > The vmemmap_remap_range() walks page table range [start, end),
+> > if reuse is equal to (start + PAGE_SIZE), the range can adjust to
+> > [start - PAGE_SIZE, end). But if not, we need some work to
+> > implement the "generic" function.
+> >
+> >   - adjust range to [min(start, reuse), end) and call
+> >     vmemmap_remap_rangeand which skip the hole
+> >     which is [reuse + PAGE_SIZE, start) or [end, reuse).
+> >   - call vmemmap_remap_range(reuse, reuse + PAGE_SIZE)
+> >     to get the reuse page.Then, call vmemmap_remap_range(start, end)
+> >     again to remap.
+> >
+> > Which one do you prefer?
+>
+> I would not overcomplicate things at this stage.
+> Just follow my sugestion and add a BUG_ON as you said, that might be the
+> easier way now.
+> We can overthink this in the future when some other usecases come
+> around, right?
 
-
-I think I get you now. That's the root cause for the failure.
-
-Then I think we need an simple iova allocator for vdpa simulator, and it 
-might be useful for VDUSE as well.
-
-Thanks
-
+You are right. Will do this. Thanks for your suggestions.
 
 >
-> So, it should be okay to remove a single mapping checking the others 
-> parameters (i.e. dir, size).
+> Thanks
 >
-> I'll send a patch, so with the code it should be easier :-)
 >
-> Thanks,
-> Stefano
->
->>
->>
->>>
->>> 2. There was a race between dma_map/unmap and the worker thread, 
->>> since both are accessing the IOMMU. Taking the iommu_lock while 
->>> using vhost_iotlb_* API in the worker thread fixes the "vringh: 
->>> Failed to *" issues.
->>>
->>> Whit these issues fixed the vdpa-blk simulator seems to work well.
->>> I'll send the patches next week or after the break.
->>
->>
->> Good to know this.
->>
->> Thanks
->>
->>
->>>
->>> Thanks,
->>> Stefano
->>>
->>
->
+> --
+> Oscar Salvador
+> SUSE L3
 
+
+
+-- 
+Yours,
+Muchun
