@@ -2,262 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 201582E0958
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 12:09:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7DF92E095B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 12:10:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726333AbgLVLIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 06:08:43 -0500
-Received: from smtp2.axis.com ([195.60.68.18]:19744 "EHLO smtp2.axis.com"
+        id S1726422AbgLVLJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 06:09:56 -0500
+Received: from mout.gmx.net ([212.227.15.15]:39793 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726016AbgLVLIm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 06:08:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1608635321;
-  x=1640171321;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=HzirOVZ373wV2sl40bL0BIwHXwwr5TlKszJVV58qQVs=;
-  b=Yte/VE5x7hVC/BNn6JuFsQ/l4s9X7rHKIM5/NSHhUjO+qcCigly5laot
-   hdcDT8VuMVxGp69IpOw0+lLO7/J7nH/YlJgUgky+EvYSpg1exMRkMeVFl
-   HHKvV5KvU2JfehhJ09NGXgkDIHe4zn92cgp5O9bt3wCrpMsSW0d0JpjoR
-   ZGA0RuksopQ0kZBR++JR3gN6rM3TWMqP2uVlKw/P9SyKtYeWnu9EYQC7j
-   /W1/4dAz5ho1mftJJFVjF+icR0+8yrVyv9rUqFxKhyDGVKUQgdCd25FFI
-   4nwhkvzweqsEeow7O328YSxACvqrQImzKCvkrZ8DpZt6YQWkoiMVsWdxu
-   Q==;
-From:   Hermes Zhang <chenhui.zhang@axis.com>
-To:     =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Dan Murphy <dmurphy@ti.com>, Sebastian Reichel <sre@kernel.org>
-CC:     <kernel@axis.com>, Hermes Zhang <chenhuiz@axis.com>,
-        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] power: supply: bq27xxx: Supporrt CHARGE_NOW for bq27z561/bq28z610/bq34z100
-Date:   Tue, 22 Dec 2020 19:07:20 +0800
-Message-ID: <20201222110720.20837-1-chenhui.zhang@axis.com>
-X-Mailer: git-send-email 2.20.1
+        id S1725847AbgLVLJ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 06:09:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1608635300;
+        bh=w3eF+si7e98IAYsFaPGDgdO3+FGxhhiRKm/JCEsQt9c=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=VN5NKVL6axuhBcpBY5CpatnyuAFi8vs0AyHQZ5NSf+FnSTgyujP3eTn5PYaW4VdWc
+         aQnW2SKMIdO/ERI/ROme1V2Z4wtbsQ338nIjjMgPyy1b+O1pU2nrAxK5taOR416gTo
+         s9snhap9UOLCQ4NyFs4x/NuZlZzwP1BBjvT8N1TM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from LT02.fritz.box ([62.143.246.89]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N5GDv-1jsjEf1R25-011E7m; Tue, 22
+ Dec 2020 12:08:20 +0100
+From:   Heinrich Schuchardt <xypron.glpk@gmx.de>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>
+Subject: [PATCH 1/1] dt-bindings: adc-keys.txt: clarify description
+Date:   Tue, 22 Dec 2020 12:08:15 +0100
+Message-Id: <20201222110815.24121-1-xypron.glpk@gmx.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:T38j14BVNR123t6GreLXV8CdLOXYQXkS20/t6TpFp9eD1nXX81+
+ VROophO1u084jvi68NSWgY5pmoIj0Cj7qfrNKOzu1mr425XhIk0R0wsT6tdR2xi4VFhL4YE
+ jLs9HWBU62cBB7Eb7JWFfJaHEltKxgpAiB9357UtI+xr2Ye/FOJuNyqqeHAxZsQGJhhKEIH
+ BjV9NXXyoTC/TH2R1+xoA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:iYz9xFU/6DE=:Kqj9JaHSVuDM58CIrnF0R0
+ /u7fUe8WrAOTZC2v7tRR8BX6HdFKu5+Jp49FH+1EGkiEQ6R1qXXYqD6zsnU1/H3XwVDiRcR0v
+ +/xm/vc16BCVx7VK5xrhsSrHlLIh9NjmdAW2TtUokzquqlgPgG0CJWKdps8g56r8ho18A5MhL
+ /OctsokZH7q5WjQzEzrxsC9znf+xTynXxYs2wq2MlmZceS/dWzfNYfODpp+e0pDUA5Te+vc30
+ lpVmjPQUgKXllXveZA0PaGyEjTiQ3T/UxZoCqGWgfya0GCAbdWZrhJBCcDGhowOvfEb2M+QoH
+ lxIGmybBXLjxctNhVpOW06z0Ipt5a5q/dWx216BER3A71yZ0ieaSscrlZz4wm1DqFY1j9hqWP
+ ujIDkahZTgvFL8p/FiI7VNExIBz6g8S5VQq4PZmOUvsjm/IuxHxkcctXx5VBNzKPjr2QYbKUq
+ zvPbZ3/9pdajEbry6X9l+0QWJ94Ajw0omeITm99oUE8ugzY8E4X1d3dhNJFdQhE217OYD9eV0
+ yAsYSQeOqIOXyFZ9iX7+mPA8zMy7EAaPZenZ7t5/MILXOBJxsPB+T6L53ljGH1P2B6fsC3cMn
+ 5qEL4E1ILDDRc2pusB6G8m+6bRUoO/4ZGo3SqIJ1CtD0USzWXY74MQxKNVt22rdXGIupnomS2
+ RY9NA4GWuQ5Zf0jI0nJqpn0YVRdmTWmgyRYjmZKyBjHi/2mKchbp4XvXI3jU1gsl5DDB8gHm2
+ fsEFEn2C3cdyFDEAesiwyfKY6LdKABc+0olaMJBFOZBaCYqEctbsfNX7+5K45htIjEYqgl0RM
+ NOQtvLCjts4woj/see8sGn5kOajOhzyb8MM+qxiFMvuIBh8ZnJHYy2tTiEOnBGKjqKv3zNq2x
+ aLHcRo3nyv/C9cOSQLcg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hermes Zhang <chenhuiz@axis.com>
+The current description of ADC keys is not precise enough.
 
-The CHARGE_NOW is map to REG_NAC for all the gauge chips beofre. But for
-some chips (e.g. bq27z561) which doesn't have the REG_NAC, we use REG_RC
-(remaining capacity) for CHARGE_NOW.
+"when this key is pressed" leaves it open if a key is considered pressed
+below or above the threshold. This has led to confusion:
+drivers/input/keyboard/adc-keys.c ignores the meaning of thresholds and
+sets the key that is closest to press-threshold-microvolt.
 
-Signed-off-by: Hermes Zhang <chenhuiz@axis.com>
----
+This patch nails down the definitions and provides an interpretation of th=
+e
+supplied example.
 
-Notes:
-    Set correct REG_RC for all the chips if have
-    
-    keep INVALID_REG_ADDR for bq27521, as we could not find
-    the datasheet and seems no one use it now.
+Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+=2D--
+I know that this file needs to be converted to YAML. But lets first get th=
+e
+text right.
+=2D--
+ .../devicetree/bindings/input/adc-keys.txt    | 22 +++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
 
- drivers/power/supply/bq27xxx_battery.c | 35 +++++++++++++++++++++++++-
- 1 file changed, 34 insertions(+), 1 deletion(-)
+diff --git a/Documentation/devicetree/bindings/input/adc-keys.txt b/Docume=
+ntation/devicetree/bindings/input/adc-keys.txt
+index e551814629b4..6c8be6a9ace2 100644
+=2D-- a/Documentation/devicetree/bindings/input/adc-keys.txt
++++ b/Documentation/devicetree/bindings/input/adc-keys.txt
+@@ -5,7 +5,8 @@ Required properties:
+  - compatible: "adc-keys"
+  - io-channels: Phandle to an ADC channel
+  - io-channel-names =3D "buttons";
+- - keyup-threshold-microvolt: Voltage at which all the keys are considere=
+d up.
++ - keyup-threshold-microvolt: Voltage above or equal to which all the key=
+s are
++			      considered up.
 
-diff --git a/drivers/power/supply/bq27xxx_battery.c b/drivers/power/supply/bq27xxx_battery.c
-index 315e0909e6a4..774aa376653e 100644
---- a/drivers/power/supply/bq27xxx_battery.c
-+++ b/drivers/power/supply/bq27xxx_battery.c
-@@ -110,6 +110,7 @@ enum bq27xxx_reg_index {
- 	BQ27XXX_REG_TTES,	/* Time-to-Empty Standby */
- 	BQ27XXX_REG_TTECP,	/* Time-to-Empty at Constant Power */
- 	BQ27XXX_REG_NAC,	/* Nominal Available Capacity */
-+	BQ27XXX_REG_RC,		/* Remaining Capacity */
- 	BQ27XXX_REG_FCC,	/* Full Charge Capacity */
- 	BQ27XXX_REG_CYCT,	/* Cycle Count */
- 	BQ27XXX_REG_AE,		/* Available Energy */
-@@ -145,6 +146,7 @@ static u8
- 		[BQ27XXX_REG_TTES] = 0x1c,
- 		[BQ27XXX_REG_TTECP] = 0x26,
- 		[BQ27XXX_REG_NAC] = 0x0c,
-+		[BQ27XXX_REG_RC] = INVALID_REG_ADDR,
- 		[BQ27XXX_REG_FCC] = 0x12,
- 		[BQ27XXX_REG_CYCT] = 0x2a,
- 		[BQ27XXX_REG_AE] = 0x22,
-@@ -169,6 +171,7 @@ static u8
- 		[BQ27XXX_REG_TTES] = 0x1c,
- 		[BQ27XXX_REG_TTECP] = 0x26,
- 		[BQ27XXX_REG_NAC] = 0x0c,
-+		[BQ27XXX_REG_RC] = INVALID_REG_ADDR,
- 		[BQ27XXX_REG_FCC] = 0x12,
- 		[BQ27XXX_REG_CYCT] = 0x2a,
- 		[BQ27XXX_REG_AE] = INVALID_REG_ADDR,
-@@ -193,6 +196,7 @@ static u8
- 		[BQ27XXX_REG_TTES] = 0x1a,
- 		[BQ27XXX_REG_TTECP] = INVALID_REG_ADDR,
- 		[BQ27XXX_REG_NAC] = 0x0c,
-+		[BQ27XXX_REG_RC] = 0x10,
- 		[BQ27XXX_REG_FCC] = 0x12,
- 		[BQ27XXX_REG_CYCT] = 0x2a,
- 		[BQ27XXX_REG_AE] = INVALID_REG_ADDR,
-@@ -215,6 +219,7 @@ static u8
- 		[BQ27XXX_REG_TTES] = 0x1c,
- 		[BQ27XXX_REG_TTECP] = 0x26,
- 		[BQ27XXX_REG_NAC] = 0x0c,
-+		[BQ27XXX_REG_RC] = 0x10,
- 		[BQ27XXX_REG_FCC] = 0x12,
- 		[BQ27XXX_REG_CYCT] = 0x2a,
- 		[BQ27XXX_REG_AE] = 0x22,
-@@ -237,6 +242,7 @@ static u8
- 		[BQ27XXX_REG_TTES] = 0x1a,
- 		[BQ27XXX_REG_TTECP] = INVALID_REG_ADDR,
- 		[BQ27XXX_REG_NAC] = 0x0c,
-+		[BQ27XXX_REG_RC] = 0x10,
- 		[BQ27XXX_REG_FCC] = 0x12,
- 		[BQ27XXX_REG_CYCT] = 0x1e,
- 		[BQ27XXX_REG_AE] = INVALID_REG_ADDR,
-@@ -257,6 +263,7 @@ static u8
- 		[BQ27XXX_REG_TTES] = 0x1c,
- 		[BQ27XXX_REG_TTECP] = 0x26,
- 		[BQ27XXX_REG_NAC] = 0x0c,
-+		[BQ27XXX_REG_RC] = 0x10,
- 		[BQ27XXX_REG_FCC] = 0x12,
- 		[BQ27XXX_REG_CYCT] = INVALID_REG_ADDR,
- 		[BQ27XXX_REG_AE] = 0x22,
-@@ -277,6 +284,7 @@ static u8
- 		[BQ27XXX_REG_TTES] = 0x1c,
- 		[BQ27XXX_REG_TTECP] = 0x26,
- 		[BQ27XXX_REG_NAC] = 0x0c,
-+		[BQ27XXX_REG_RC] = 0x10,
- 		[BQ27XXX_REG_FCC] = 0x12,
- 		[BQ27XXX_REG_CYCT] = 0x2a,
- 		[BQ27XXX_REG_AE] = 0x22,
-@@ -297,6 +305,7 @@ static u8
- 		[BQ27XXX_REG_TTES] = 0x1c,
- 		[BQ27XXX_REG_TTECP] = 0x26,
- 		[BQ27XXX_REG_NAC] = 0x0c,
-+		[BQ27XXX_REG_RC] = 0x10,
- 		[BQ27XXX_REG_FCC] = 0x12,
- 		[BQ27XXX_REG_CYCT] = 0x2a,
- 		[BQ27XXX_REG_AE] = 0x22,
-@@ -317,6 +326,7 @@ static u8
- 		[BQ27XXX_REG_TTES] = 0x1c,
- 		[BQ27XXX_REG_TTECP] = INVALID_REG_ADDR,
- 		[BQ27XXX_REG_NAC] = 0x0c,
-+		[BQ27XXX_REG_RC] = 0x10,
- 		[BQ27XXX_REG_FCC] = 0x12,
- 		[BQ27XXX_REG_CYCT] = 0x1e,
- 		[BQ27XXX_REG_AE] = INVALID_REG_ADDR,
-@@ -337,6 +347,7 @@ static u8
- 		[BQ27XXX_REG_TTES] = INVALID_REG_ADDR,
- 		[BQ27XXX_REG_TTECP] = INVALID_REG_ADDR,
- 		[BQ27XXX_REG_NAC] = INVALID_REG_ADDR,
-+		[BQ27XXX_REG_RC] = INVALID_REG_ADDR,
- 		[BQ27XXX_REG_FCC] = INVALID_REG_ADDR,
- 		[BQ27XXX_REG_CYCT] = INVALID_REG_ADDR,
- 		[BQ27XXX_REG_AE] = INVALID_REG_ADDR,
-@@ -361,6 +372,7 @@ static u8
- 		[BQ27XXX_REG_TTES] = INVALID_REG_ADDR,
- 		[BQ27XXX_REG_TTECP] = INVALID_REG_ADDR,
- 		[BQ27XXX_REG_NAC] = 0x0c,
-+		[BQ27XXX_REG_RC] = 0x10,
- 		[BQ27XXX_REG_FCC] = 0x12,
- 		[BQ27XXX_REG_CYCT] = 0x2a,
- 		[BQ27XXX_REG_AE] = INVALID_REG_ADDR,
-@@ -382,6 +394,7 @@ static u8
- 		[BQ27XXX_REG_TTES] = INVALID_REG_ADDR,
- 		[BQ27XXX_REG_TTECP] = INVALID_REG_ADDR,
- 		[BQ27XXX_REG_NAC] = 0x0c,
-+		[BQ27XXX_REG_RC] = 0x10,
- 		[BQ27XXX_REG_FCC] = 0x12,
- 		[BQ27XXX_REG_CYCT] = 0x2a,
- 		[BQ27XXX_REG_AE] = INVALID_REG_ADDR,
-@@ -405,6 +418,7 @@ static u8
- 		[BQ27XXX_REG_TTES] = INVALID_REG_ADDR,
- 		[BQ27XXX_REG_TTECP] = INVALID_REG_ADDR,
- 		[BQ27XXX_REG_NAC] = 0x0c,
-+		[BQ27XXX_REG_RC] = 0x10,
- 		[BQ27XXX_REG_FCC] = 0x12,
- 		[BQ27XXX_REG_CYCT] = 0x2a,
- 		[BQ27XXX_REG_AE] = INVALID_REG_ADDR,
-@@ -425,6 +439,7 @@ static u8
- 		[BQ27XXX_REG_TTES] = INVALID_REG_ADDR,
- 		[BQ27XXX_REG_TTECP] = INVALID_REG_ADDR,
- 		[BQ27XXX_REG_NAC] = 0x08,
-+		[BQ27XXX_REG_RC] = 0x0c,
- 		[BQ27XXX_REG_FCC] = 0x0e,
- 		[BQ27XXX_REG_CYCT] = INVALID_REG_ADDR,
- 		[BQ27XXX_REG_AE] = INVALID_REG_ADDR,
-@@ -450,6 +465,7 @@ static u8
- 		[BQ27XXX_REG_TTES] = INVALID_REG_ADDR,
- 		[BQ27XXX_REG_TTECP] = INVALID_REG_ADDR,
- 		[BQ27XXX_REG_NAC] = INVALID_REG_ADDR,
-+		[BQ27XXX_REG_RC] = 0x10,
- 		[BQ27XXX_REG_FCC] = 0x12,
- 		[BQ27XXX_REG_CYCT] = 0x2a,
- 		[BQ27XXX_REG_AE] = 0x22,
-@@ -470,6 +486,7 @@ static u8
- 		[BQ27XXX_REG_TTES] = INVALID_REG_ADDR,
- 		[BQ27XXX_REG_TTECP] = INVALID_REG_ADDR,
- 		[BQ27XXX_REG_NAC] = INVALID_REG_ADDR,
-+		[BQ27XXX_REG_RC] = 0x10,
- 		[BQ27XXX_REG_FCC] = 0x12,
- 		[BQ27XXX_REG_CYCT] = 0x2a,
- 		[BQ27XXX_REG_AE] = 0x22,
-@@ -490,6 +507,7 @@ static u8
- 		[BQ27XXX_REG_TTES] = 0x1e,
- 		[BQ27XXX_REG_TTECP] = INVALID_REG_ADDR,
- 		[BQ27XXX_REG_NAC] = INVALID_REG_ADDR,
-+		[BQ27XXX_REG_RC] = 0x04,
- 		[BQ27XXX_REG_FCC] = 0x06,
- 		[BQ27XXX_REG_CYCT] = 0x2c,
- 		[BQ27XXX_REG_AE] = 0x24,
-@@ -745,6 +763,7 @@ static enum power_supply_property bq27z561_props[] = {
- 	POWER_SUPPLY_PROP_TIME_TO_FULL_NOW,
- 	POWER_SUPPLY_PROP_TECHNOLOGY,
- 	POWER_SUPPLY_PROP_CHARGE_FULL,
-+	POWER_SUPPLY_PROP_CHARGE_NOW,
- 	POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN,
- 	POWER_SUPPLY_PROP_CYCLE_COUNT,
- 	POWER_SUPPLY_PROP_POWER_AVG,
-@@ -764,6 +783,7 @@ static enum power_supply_property bq28z610_props[] = {
- 	POWER_SUPPLY_PROP_TIME_TO_FULL_NOW,
- 	POWER_SUPPLY_PROP_TECHNOLOGY,
- 	POWER_SUPPLY_PROP_CHARGE_FULL,
-+	POWER_SUPPLY_PROP_CHARGE_NOW,
- 	POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN,
- 	POWER_SUPPLY_PROP_CYCLE_COUNT,
- 	POWER_SUPPLY_PROP_POWER_AVG,
-@@ -784,6 +804,7 @@ static enum power_supply_property bq34z100_props[] = {
- 	POWER_SUPPLY_PROP_TIME_TO_FULL_NOW,
- 	POWER_SUPPLY_PROP_TECHNOLOGY,
- 	POWER_SUPPLY_PROP_CHARGE_FULL,
-+	POWER_SUPPLY_PROP_CHARGE_NOW,
- 	POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN,
- 	POWER_SUPPLY_PROP_CYCLE_COUNT,
- 	POWER_SUPPLY_PROP_ENERGY_NOW,
-@@ -1518,6 +1539,15 @@ static inline int bq27xxx_battery_read_nac(struct bq27xxx_device_info *di)
- 	return bq27xxx_battery_read_charge(di, BQ27XXX_REG_NAC);
- }
- 
-+/*
-+ * Return the battery Remaining Capacity in µAh
-+ * Or < 0 if something fails.
-+ */
-+static inline int bq27xxx_battery_read_rc(struct bq27xxx_device_info *di)
-+{
-+	return bq27xxx_battery_read_charge(di, BQ27XXX_REG_RC);
-+}
+ Optional properties:
+ 	- poll-interval: Poll interval time in milliseconds
+@@ -17,7 +18,12 @@ Each button (key) is represented as a sub-node of "adc-=
+keys":
+ Required subnode-properties:
+ 	- label: Descriptive name of the key.
+ 	- linux,code: Keycode to emit.
+-	- press-threshold-microvolt: Voltage ADC input when this key is pressed.
++	- press-threshold-microvolt: voltage above or equal to which this key is
++				     considered pressed.
 +
- /*
-  * Return the battery Full Charge Capacity in µAh
-  * Or < 0 if something fails.
-@@ -1965,7 +1995,10 @@ static int bq27xxx_battery_get_property(struct power_supply *psy,
- 			val->intval = POWER_SUPPLY_TECHNOLOGY_LION;
- 		break;
- 	case POWER_SUPPLY_PROP_CHARGE_NOW:
--		ret = bq27xxx_simple_value(bq27xxx_battery_read_nac(di), val);
-+		if (di->regs[BQ27XXX_REG_NAC] != INVALID_REG_ADDR)
-+			ret = bq27xxx_simple_value(bq27xxx_battery_read_nac(di), val);
-+		else
-+			ret = bq27xxx_simple_value(bq27xxx_battery_read_rc(di), val);
- 		break;
- 	case POWER_SUPPLY_PROP_CHARGE_FULL:
- 		ret = bq27xxx_simple_value(di->cache.charge_full, val);
--- 
-2.20.1
++No two values of press-threshold-microvolt may be the same.
++All values of press-threshold-microvolt must be less than
++keyup-threshold-microvolt.
+
+ Example:
+
+@@ -47,3 +53,15 @@ Example:
+ 			press-threshold-microvolt =3D <500000>;
+ 		};
+ 	};
++
+++--------------------------------+------------------------+
++| 2.000.000 <=3D value             | no key pressed         |
+++--------------------------------+------------------------+
++| 1.500.000 <=3D value < 2.000.000 | KEY_VOLUMEUP pressed   |
+++--------------------------------+------------------------+
++| 1.000.000 <=3D value < 1.500.000 | KEY_VOLUMEDOWN pressed |
+++--------------------------------+------------------------+
++|   500.000 <=3D value < 1.000.000 | KEY_ENTER pressed      |
+++--------------------------------+------------------------+
++|              value <   500.000 | no key pressed         |
+++--------------------------------+------------------------+
+=2D-
+2.29.2
 
