@@ -2,225 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9DC22E0502
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 04:54:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E2462E0533
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 04:57:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726452AbgLVDxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 22:53:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54974 "EHLO
+        id S1726656AbgLVD4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 22:56:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725927AbgLVDxh (ORCPT
+        with ESMTP id S1725882AbgLVD4k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 22:53:37 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2BB3C0613D6;
-        Mon, 21 Dec 2020 19:52:57 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id x12so6723977plr.10;
-        Mon, 21 Dec 2020 19:52:57 -0800 (PST)
+        Mon, 21 Dec 2020 22:56:40 -0500
+Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93FAAC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 19:55:59 -0800 (PST)
+Received: by mail-vs1-xe2e.google.com with SMTP id e15so6392751vsa.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 19:55:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=6mHeOvsC1/VfoipE1phAyx1MUAsm4LKcmk+PFkZbut8=;
-        b=NYCj3A29szm82n3mdSoF5YgByunLd7CVq2C2Q+NNW4xFWFWhrTwagOakOJk18+/qtZ
-         fUETa9ybyUUJYDr7K9BBjPoRKj3GdWfiy+ckAA/hT1figu7SahGBYETSnyxzBxreNpGm
-         51cxdJrPmHIzGLEVepkS2LaGSPl8wp/J2ZFSRZ0a0sKKcFn9SVCaAsrW1Y8j+LKY1jNj
-         4xQSSCOKWpxWZ0qLr0qZT1Q9bfYVxRwRqHHUvxpWGnJqVLbZfNWQezfYCEZdb+IUwFJ2
-         6Eb6xfVi/BzRbdQnBcsuszRa9YUOk8cNi9VG/+ZhFuvlS3Mb9rOsYnZ7ISjDQIIH0Bje
-         4eQA==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zBdY+iGV2k1HyD2s2ItPRsC+/Ij4zOZsTARmabtWF14=;
+        b=BEtMAK/Ln7aSQYZB3kzWI2QxXg3ZjJTwvkkPaJIi8TiAvqmropOMZ2PHYAhx7rJzki
+         TlQGDs5l4Ngxi5eZ3K6mHDk7R5TIpMvxlnOWsdiA6wkNUiKMvFSVF9/fkj1lzGerCq/0
+         IPTWf4AApotLJTiBuuxr/E+GW0Eat60kG2B6A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=6mHeOvsC1/VfoipE1phAyx1MUAsm4LKcmk+PFkZbut8=;
-        b=AUhUyOG8JxbVBFdNBFpfK/u1cqeTROJXybflG8EvsccYqREVOE14qacDIhYemQbWBb
-         MiZgLWKmMdeDZ6CMH0vFf/4HU2/KPFMY52lhQ5pnH6zIFf08DobhwrziUk/CKK9+8cFh
-         10wbJIM4ryslY6LDwPTmZBxHmClAbr4QqBwb7/USptrJMe1on/iXDo7vg3WE7jnjN0yC
-         AO8bzFJ5ZEHRQWJER9DazXr7PImWEC55OFtWnLrUYqF21r7OdJQditK7lt5p8Un8L7G3
-         fDdl6Tv4eT2unkB+qbP+nPoTqINYgWDyXvRq0lmyIQX86cyHc4b6xwwdkTGDYUkqrlfh
-         u3AQ==
-X-Gm-Message-State: AOAM530bc7rqRMQGRAk31K6h1UDq3Tzqp0F25GBUbiInc38OUQOz9bie
-        MjlQ35Q+TjlXrpZGB3lWDVQ=
-X-Google-Smtp-Source: ABdhPJy5PqNQLS6C4x0e0+J1D43tyYjaUch/mM5pT/E1eKvMQGs9SjLQ1Na0Da6umudMBdS7DRerYg==
-X-Received: by 2002:a17:902:ab8b:b029:da:f377:e7d7 with SMTP id f11-20020a170902ab8bb02900daf377e7d7mr19403296plr.4.1608609177185;
-        Mon, 21 Dec 2020 19:52:57 -0800 (PST)
-Received: from localhost (193-116-97-30.tpgi.com.au. [193.116.97.30])
-        by smtp.gmail.com with ESMTPSA id s1sm18316617pjk.1.2020.12.21.19.52.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 19:52:56 -0800 (PST)
-Date:   Tue, 22 Dec 2020 13:52:50 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH 3/3] powerpc: rewrite atomics to use ARCH_ATOMIC
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>
-References: <20201111110723.3148665-1-npiggin@gmail.com>
-        <20201111110723.3148665-4-npiggin@gmail.com>
-        <20201113153012.GD286534@boqun-archlinux>
-In-Reply-To: <20201113153012.GD286534@boqun-archlinux>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zBdY+iGV2k1HyD2s2ItPRsC+/Ij4zOZsTARmabtWF14=;
+        b=HvQA7ghJBkVi/KeC6ghIQi/z9iKg4SGaevKiuAWdkUQzHf4fEVtGiu1VfNcyLXqVRN
+         PRsz3+vqdc/1c1eVwOarWi39BvFiTBXonN5t0ytV/OZ68HxsUQ1Fldvsa2kPdu+G5HWt
+         Lq0ZoODWsdFLPVFsoTqOTPJg0Te0b3DsXOjB5TR1qv0SX1AK91TiVv9RwjvVeyRvS4Ff
+         PaMe8naB6zJUr0r70/TJx9LwUet1GO0wQJ05QHIBs8eO4nskOIzBLrfkFKTfHXYW+P9v
+         FWq1lQ2/JHkqKMQhHUmHv2mI1Fygt1rnBHFUMP08kXHvf1T44forTBvDUwLCJp3zDbGA
+         rOZg==
+X-Gm-Message-State: AOAM531jvXsDh22Sf+AB0QLc/w0S+npPsWgtCx+KTOz9MZuLXruVwxw2
+        GnjGEoCAvnwA4MJo9wRXQRmcgusie933GCZ1WfSVQA==
+X-Google-Smtp-Source: ABdhPJzZ0hdnkwXJgJV2+C+Ef3YdVvAN8t9K9JjReqGbKUR1SNJ3k+OtA3Skw19bt8acyhLtegwBYiZy1L1X2Z295M8=
+X-Received: by 2002:a67:6182:: with SMTP id v124mr14263455vsb.16.1608609358592;
+ Mon, 21 Dec 2020 19:55:58 -0800 (PST)
 MIME-Version: 1.0
-Message-Id: <1608608903.7wgw6zmbi8.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+References: <20201202133813.6917-1-jianjun.wang@mediatek.com>
+ <20201202133813.6917-3-jianjun.wang@mediatek.com> <CANMq1KCSWf4PDMVhxFiLHOHe3dFqZbq1gzn4ph8aApVMX56MDg@mail.gmail.com>
+ <1608608319.14736.97.camel@mhfsdcap03>
+In-Reply-To: <1608608319.14736.97.camel@mhfsdcap03>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Tue, 22 Dec 2020 11:55:47 +0800
+Message-ID: <CANMq1KB3UXg8QKwuv3mFaodx-s_AXSrOWp6C+RN7LaA69nsTyg@mail.gmail.com>
+Subject: Re: [v5,2/3] PCI: mediatek-gen3: Add MediaTek Gen3 driver for MT8192
+To:     Jianjun Wang <jianjun.wang@mediatek.com>
+Cc:     youlin.pei@mediatek.com,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        qizhong.cheng@mediatek.com,
+        Chuanjia Liu <chuanjia.liu@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-pci@vger.kernel.org, Ryder Lee <ryder.lee@mediatek.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sj Huang <sj.huang@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Bjorn Helgaas <bhelgaas@google.com>, sin_jieyang@mediatek.com,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Boqun Feng's message of November 14, 2020 1:30 am:
-> Hi Nicholas,
->=20
-> On Wed, Nov 11, 2020 at 09:07:23PM +1000, Nicholas Piggin wrote:
->> All the cool kids are doing it.
->>=20
->> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
->> ---
->>  arch/powerpc/include/asm/atomic.h  | 681 ++++++++++-------------------
->>  arch/powerpc/include/asm/cmpxchg.h |  62 +--
->>  2 files changed, 248 insertions(+), 495 deletions(-)
->>=20
->> diff --git a/arch/powerpc/include/asm/atomic.h b/arch/powerpc/include/as=
-m/atomic.h
->> index 8a55eb8cc97b..899aa2403ba7 100644
->> --- a/arch/powerpc/include/asm/atomic.h
->> +++ b/arch/powerpc/include/asm/atomic.h
->> @@ -11,185 +11,285 @@
->>  #include <asm/cmpxchg.h>
->>  #include <asm/barrier.h>
->> =20
->> +#define ARCH_ATOMIC
->> +
->> +#ifndef CONFIG_64BIT
->> +#include <asm-generic/atomic64.h>
->> +#endif
->> +
->>  /*
->>   * Since *_return_relaxed and {cmp}xchg_relaxed are implemented with
->>   * a "bne-" instruction at the end, so an isync is enough as a acquire =
-barrier
->>   * on the platform without lwsync.
->>   */
->>  #define __atomic_acquire_fence()					\
->> -	__asm__ __volatile__(PPC_ACQUIRE_BARRIER "" : : : "memory")
->> +	asm volatile(PPC_ACQUIRE_BARRIER "" : : : "memory")
->> =20
->>  #define __atomic_release_fence()					\
->> -	__asm__ __volatile__(PPC_RELEASE_BARRIER "" : : : "memory")
->> +	asm volatile(PPC_RELEASE_BARRIER "" : : : "memory")
->> =20
->> -static __inline__ int atomic_read(const atomic_t *v)
->> -{
->> -	int t;
->> +#define __atomic_pre_full_fence		smp_mb
->> =20
->> -	__asm__ __volatile__("lwz%U1%X1 %0,%1" : "=3Dr"(t) : "m"(v->counter));
->> +#define __atomic_post_full_fence	smp_mb
->> =20
+On Tue, Dec 22, 2020 at 11:38 AM Jianjun Wang <jianjun.wang@mediatek.com> wrote:
+>
+> On Mon, 2020-12-21 at 10:18 +0800, Nicolas Boichat wrote:
+> > On Wed, Dec 2, 2020 at 9:39 PM Jianjun Wang <jianjun.wang@mediatek.com> wrote:
+> > > [snip]
+> > > +static irq_hw_number_t mtk_pcie_msi_get_hwirq(struct msi_domain_info *info,
+> > > +                                             msi_alloc_info_t *arg)
+> > > +{
+> > > +       struct msi_desc *entry = arg->desc;
+> > > +       struct mtk_pcie_port *port = info->chip_data;
+> > > +       int hwirq;
+> > > +
+> > > +       mutex_lock(&port->lock);
+> > > +
+> > > +       hwirq = bitmap_find_free_region(port->msi_irq_in_use, PCIE_MSI_IRQS_NUM,
+> > > +                                       order_base_2(entry->nvec_used));
+> > > +       if (hwirq < 0) {
+> > > +               mutex_unlock(&port->lock);
+> > > +               return -ENOSPC;
+> > > +       }
+> > > +
+> > > +       mutex_unlock(&port->lock);
+> > > +
+> > > +       return hwirq;
+> >
+> > Code is good, but I had to look twice to make sure the mutex is
+> > unlocked. Is the following marginally better?
+> >
+> > hwirq = ...;
+> >
+> > mutex_unlock(&port->lock);
+> >
+> > if (hwirq < 0)
+> >    return -ENOSPC;
+> >
+> > return hwirq;
+>
+> Impressive, I will fix it in the next version, and I think the hwirq can
+> be returned directly since it will be a negative value if
+> bitmap_find_free_region is failed. The code will be like the following:
+>
+> hwirq = ...;
+>
+> mutex_unlock(&port->lock);
+>
+> return hwirq;
 
-Thanks for the review.
+SG, as long as you're okay with returning -ENOMEM instead of -ENOSPC.
 
-> Do you need to define __atomic_{pre,post}_full_fence for PPC? IIRC, they
-> are default smp_mb__{before,atomic}_atomic(), so are smp_mb() defautly
-> on PPC.
+But now I'm having doubt if negative return values are ok, as
+irq_hw_number_t is unsigned long.
 
-Okay I didn't realise that's not required.
+msi_domain_alloc
+(https://elixir.bootlin.com/linux/latest/source/kernel/irq/msi.c#L143)
+uses it to call irq_find_mapping
+(https://elixir.bootlin.com/linux/latest/source/kernel/irq/irqdomain.c#L882)
+without check, and I'm not convinced irq_find_mapping will error out
+gracefully...
 
->> -	return t;
->> +#define arch_atomic_read(v)			__READ_ONCE((v)->counter)
->> +#define arch_atomic_set(v, i)			__WRITE_ONCE(((v)->counter), (i))
->> +#ifdef CONFIG_64BIT
->> +#define ATOMIC64_INIT(i)			{ (i) }
->> +#define arch_atomic64_read(v)			__READ_ONCE((v)->counter)
->> +#define arch_atomic64_set(v, i)			__WRITE_ONCE(((v)->counter), (i))
->> +#endif
->> +
-> [...]
->> =20
->> +#define ATOMIC_FETCH_OP_UNLESS_RELAXED(name, type, dtype, width, asm_op=
-) \
->> +static inline int arch_##name##_relaxed(type *v, dtype a, dtype u)	\
->=20
-> I don't think we have atomic_fetch_*_unless_relaxed() at atomic APIs,
-> ditto for:
->=20
-> 	atomic_fetch_add_unless_relaxed()
-> 	atomic_inc_not_zero_relaxed()
-> 	atomic_dec_if_positive_relaxed()
->=20
-> , and we don't have the _acquire() and _release() variants for them
-> either, and if you don't define their fully-ordered version (e.g.
-> atomic_inc_not_zero()), atomic-arch-fallback.h will use read and cmpxchg
-> to implement them, and I think not what we want.
+> >
+> > > +}
+> > > +
+> > > [snip]
+> > > +static void mtk_pcie_msi_handler(struct irq_desc *desc)
+> > > +{
+> > > +       struct mtk_pcie_msi *msi_info = irq_desc_get_handler_data(desc);
+> > > +       struct irq_chip *irqchip = irq_desc_get_chip(desc);
+> > > +       unsigned long msi_enable, msi_status;
+> > > +       unsigned int virq;
+> > > +       irq_hw_number_t bit, hwirq;
+> > > +
+> > > +       chained_irq_enter(irqchip, desc);
+> > > +
+> > > +       msi_enable = readl(msi_info->base + PCIE_MSI_ENABLE_OFFSET);
+> > > +       while ((msi_status = readl(msi_info->base + PCIE_MSI_STATUS_OFFSET))) {
+> > > +               msi_status &= msi_enable;
+> >
+> > I don't know much about MSI, but what happens if you have a bit that
+> > is set in PCIE_MSI_STATUS_OFFSET register, but not in msi_enable?
+>
+> If the bit that in PCIE_MSI_STATUS_OFFSET register is set but not in
+> msi_enable, it must be an abnormal usage of MSI or something goes wrong,
+> it should be ignored in case we can not find the corresponding handler.
+>
+> > Sounds like you'll just spin-loop forever without acknowledging the
+> > interrupt.
+>
+> The interrupt will be acknowledged in the irq_ack callback of
+> mtk_msi_irq_chip, which belongs to the msi_domain.
 
-Okay. How can those be added? The atoimc generation is pretty=20
-complicated.
+Let's try to go through it (and please explain to me if I get this wrong).
 
-> [...]
->> =20
->>  #endif /* __KERNEL__ */
->>  #endif /* _ASM_POWERPC_ATOMIC_H_ */
->> diff --git a/arch/powerpc/include/asm/cmpxchg.h b/arch/powerpc/include/a=
-sm/cmpxchg.h
->> index cf091c4c22e5..181f7e8b3281 100644
->> --- a/arch/powerpc/include/asm/cmpxchg.h
->> +++ b/arch/powerpc/include/asm/cmpxchg.h
->> @@ -192,7 +192,7 @@ __xchg_relaxed(void *ptr, unsigned long x, unsigned =
-int size)
->>       		(unsigned long)_x_, sizeof(*(ptr))); 			     \
->>    })
->> =20
->> -#define xchg_relaxed(ptr, x)						\
->> +#define arch_xchg_relaxed(ptr, x)					\
->>  ({									\
->>  	__typeof__(*(ptr)) _x_ =3D (x);					\
->>  	(__typeof__(*(ptr))) __xchg_relaxed((ptr),			\
->> @@ -448,35 +448,7 @@ __cmpxchg_relaxed(void *ptr, unsigned long old, uns=
-igned long new,
->>  	return old;
->>  }
->> =20
->> -static __always_inline unsigned long
->> -__cmpxchg_acquire(void *ptr, unsigned long old, unsigned long new,
->> -		  unsigned int size)
->> -{
->> -	switch (size) {
->> -	case 1:
->> -		return __cmpxchg_u8_acquire(ptr, old, new);
->> -	case 2:
->> -		return __cmpxchg_u16_acquire(ptr, old, new);
->> -	case 4:
->> -		return __cmpxchg_u32_acquire(ptr, old, new);
->> -#ifdef CONFIG_PPC64
->> -	case 8:
->> -		return __cmpxchg_u64_acquire(ptr, old, new);
->> -#endif
->> -	}
->> -	BUILD_BUG_ON_MSG(1, "Unsupported size for __cmpxchg_acquire");
->> -	return old;
->> -}
->> -#define cmpxchg(ptr, o, n)						 \
->> -  ({									 \
->> -     __typeof__(*(ptr)) _o_ =3D (o);					 \
->> -     __typeof__(*(ptr)) _n_ =3D (n);					 \
->> -     (__typeof__(*(ptr))) __cmpxchg((ptr), (unsigned long)_o_,		 \
->> -				    (unsigned long)_n_, sizeof(*(ptr))); \
->> -  })
->> -
->> -
->=20
-> If you remove {atomic_}_cmpxchg_{,_acquire}() and use the version
-> provided by atomic-arch-fallback.h, then a fail cmpxchg or
-> cmpxchg_acquire() will still result into a full barrier or a acquire
-> barrier after the RMW operation, the barrier is not necessary and
-> probably this is not what we want?
+Say we have:
 
-Why is that done? That seems like a very subtle difference. Shouldn't
-the fallback version skip the barrier?
+msi_enable = [PCIE_MSI_ENABLE_OFFSET] = 0x1;
 
-Thanks,
-Nick
+while loop:
+
+msi_status = [PCIE_MSI_STATUS_OFFSET] = 0x3;
+msi_status &= msi_enable => msi_status = 0x3 & 0x1 = 0x1;
+for_each_set_bit(msi_status) {
+   do something that presumably will disable the MSI interrupt status?
+}
+(next loop iteration)
+
+msi_status = [PCIE_MSI_STATUS_OFFSET] = 0x2;
+msi_status &= msi_enable => msi_status = 0x2 & 0x1 = 0x0;
+for_each_set_bit(msi_status) => does nothing.
+
+msi_status = [PCIE_MSI_STATUS_OFFSET] = 0x2;
+(infinite loop)
+
+Basically, I'm wondering if you should replace the while condition
+statement with:
+
+while ((msi_status = readl(msi_info->base + PCIE_MSI_STATUS_OFFSET) &
+msi_enable))
