@@ -2,129 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34DC92E048D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 04:04:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05A282E0498
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 04:07:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726033AbgLVDC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 22:02:29 -0500
-Received: from ZXSHCAS2.zhaoxin.com ([203.148.12.82]:14552 "EHLO
-        ZXSHCAS2.zhaoxin.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725782AbgLVDC3 (ORCPT
+        id S1725924AbgLVDHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 22:07:30 -0500
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:51439 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725780AbgLVDH3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 22:02:29 -0500
-Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHCAS2.zhaoxin.com
- (10.28.252.162) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Tue, 22 Dec
- 2020 11:01:44 +0800
-Received: from [192.168.0.102] (113.201.128.11) by zxbjmbx1.zhaoxin.com
- (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Tue, 22 Dec
- 2020 11:01:41 +0800
-Date:   Tue, 22 Dec 2020 11:01:39 +0800
-From:   <tonywwang-oc@zhaoxin.com>
-To:     <hpa@zytor.com>, Eric Biggers <ebiggers@kernel.org>
-CC:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <x86@kernel.org>, <linux-crypto@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <TimGuo-oc@zhaoxin.com>,
-        <CooperYan@zhaoxin.com>, <QiyuanWang@zhaoxin.com>,
-        <HerryYang@zhaoxin.com>, <CobeChen@zhaoxin.com>,
-        <SilviaZhao@zhaoxin.com>
-Subject: Re: [PATCH] crypto: x86/crc32c-intel - Don't match some Zhaoxin CPUs
-User-Agent: K-9 Mail for Android
-In-Reply-To: <AB43DE6C-BF23-4B72-B0C8-09FE0071B2C7@zytor.com>
-References: <1607686144-2604-1-git-send-email-TonyWWang-oc@zhaoxin.com> <X9Ov3RWDpUik7gXo@sol.localdomain> <1f8d17bf-c1d9-6496-d2f8-5773633011fb@zhaoxin.com> <X9fN7mOMdn1Dxn63@sol.localdomain> <a95984ea-7451-78fe-88c5-b81f633fecdf@zhaoxin.com> <X9j43b+JPbUUvCrH@sol.localdomain> <345BC725-406B-40C6-88E9-747DBEBE0493@zhaoxin.com> <AB43DE6C-BF23-4B72-B0C8-09FE0071B2C7@zytor.com>
-Message-ID: <4CDBFCA0-56B9-495B-9660-3BE9018BC8AE@zhaoxin.com>
+        Mon, 21 Dec 2020 22:07:29 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R711e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=liangyan.peng@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UJOaEn8_1608606387;
+Received: from localhost(mailfrom:liangyan.peng@linux.alibaba.com fp:SMTPD_---0UJOaEn8_1608606387)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 22 Dec 2020 11:06:35 +0800
+From:   Liangyan <liangyan.peng@linux.alibaba.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        joseph.qi@linux.alibaba.com, liangyan.peng@linux.alibaba.com
+Cc:     stable@vger.kernel.org
+Subject: [PATCH v4] ovl: fix  dentry leak in ovl_get_redirect
+Date:   Tue, 22 Dec 2020 11:06:26 +0800
+Message-Id: <20201222030626.181165-1-liangyan.peng@linux.alibaba.com>
+X-Mailer: git-send-email 2.14.4.44.g2045bb6
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [113.201.128.11]
-X-ClientProxiedBy: ZXSHCAS1.zhaoxin.com (10.28.252.161) To
- zxbjmbx1.zhaoxin.com (10.29.252.163)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On December 22, 2020 3:27:33 AM GMT+08:00, hpa@zytor.com wrote:
->On December 20, 2020 6:46:25 PM PST, tonywwang-oc@zhaoxin.com wrote:
->>On December 16, 2020 1:56:45 AM GMT+08:00, Eric Biggers
->><ebiggers@kernel.org> wrote:
->>>On Tue, Dec 15, 2020 at 10:15:29AM +0800, Tony W Wang-oc wrote:
->>>> 
->>>> On 15/12/2020 04:41, Eric Biggers wrote:
->>>> > On Mon, Dec 14, 2020 at 10:28:19AM +0800, Tony W Wang-oc wrote:
->>>> >> On 12/12/2020 01:43, Eric Biggers wrote:
->>>> >>> On Fri, Dec 11, 2020 at 07:29:04PM +0800, Tony W Wang-oc wrote:
->>>> >>>> The driver crc32c-intel match CPUs supporting
->>>X86_FEATURE_XMM4_2.
->>>> >>>> On platforms with Zhaoxin CPUs supporting this X86 feature,
->>When
->>>> >>>> crc32c-intel and crc32c-generic are both registered, system
->>will
->>>> >>>> use crc32c-intel because its .cra_priority is greater than
->>>> >>>> crc32c-generic. This case expect to use crc32c-generic driver
->>>for
->>>> >>>> some Zhaoxin CPUs to get performance gain, So remove these
->>>Zhaoxin
->>>> >>>> CPUs support from crc32c-intel.
->>>> >>>>
->>>> >>>> Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
->>>> >>>
->>>> >>> Does this mean that the performance of the crc32c instruction
->on
->>>those CPUs is
->>>> >>> actually slower than a regular C implementation?  That's very
->>>weird.
->>>> >>>
->>>> >>
->>>> >> From the lmbench3 Create and Delete file test on those chips, I
->>>think yes.
->>>> >>
->>>> > 
->>>> > Did you try measuring the performance of the hashing itself, and
->>>not some
->>>> > higher-level filesystem operations?
->>>> > 
->>>> 
->>>> Yes. Was testing on these Zhaoxin CPUs, the result is that with the
->>>same
->>>> input value the generic C implementation takes fewer time than the
->>>> crc32c instruction implementation.
->>>> 
->>>
->>>And that is really "working as intended"?
->>
->>These CPU's crc32c instruction is not working as intended.
->>
->>  Why do these CPUs even
->>>declare that
->>>they support the crc32c instruction, when it is so slow?
->>>
->>
->>The presence of crc32c and some other instructions supports are
->>enumerated by CPUID.01:ECX[SSE4.2] = 1,  other instructions are ok
->>except the crc32c instruction.
->>
->>>Are there any other instruction sets (AES-NI, PCLMUL, SSE, SSE2, AVX,
->>>etc.) that
->>>these CPUs similarly declare support for but they are uselessly slow?
->>
->>No.
->>
->>Sincerely
->>Tonyw
->>
->>>
->>>- Eric
->
->Then the right thing to do is to disable the CPUID bit in the
->vendor-specific startup code.
+We need to lock d_parent->d_lock before dget_dlock, or this may
+have d_lockref updated parallelly like calltrace below which will
+cause dentry->d_lockref leak and risk a crash.
 
-This way makes these CPUs do not support all instruction sets enumerated
-by CPUID.01:ECX[SSE4.2].
-While only crc32c instruction is slow, just expect the crc32c-intel driver do not
-match these CPUs.
+     CPU 0                                CPU 1
+ovl_set_redirect                       lookup_fast
+  ovl_get_redirect                       __d_lookup
+    dget_dlock
+      //no lock protection here            spin_lock(&dentry->d_lock)
+      dentry->d_lockref.count++            dentry->d_lockref.count++
 
-Sincerely
-Tonyw
+[   49.799059] PGD 800000061fed7067 P4D 800000061fed7067 PUD 61fec5067 PMD 0
+[   49.799689] Oops: 0002 [#1] SMP PTI
+[   49.800019] CPU: 2 PID: 2332 Comm: node Not tainted 4.19.24-7.20.al7.x86_64 #1
+[   49.800678] Hardware name: Alibaba Cloud Alibaba Cloud ECS, BIOS 8a46cfe 04/01/2014
+[   49.801380] RIP: 0010:_raw_spin_lock+0xc/0x20
+[   49.803470] RSP: 0018:ffffac6fc5417e98 EFLAGS: 00010246
+[   49.803949] RAX: 0000000000000000 RBX: ffff93b8da3446c0 RCX: 0000000a00000000
+[   49.804600] RDX: 0000000000000001 RSI: 000000000000000a RDI: 0000000000000088
+[   49.805252] RBP: 0000000000000000 R08: 0000000000000000 R09: ffffffff993cf040
+[   49.805898] R10: ffff93b92292e580 R11: ffffd27f188a4b80 R12: 0000000000000000
+[   49.806548] R13: 00000000ffffff9c R14: 00000000fffffffe R15: ffff93b8da3446c0
+[   49.807200] FS:  00007ffbedffb700(0000) GS:ffff93b927880000(0000) knlGS:0000000000000000
+[   49.807935] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   49.808461] CR2: 0000000000000088 CR3: 00000005e3f74006 CR4: 00000000003606a0
+[   49.809113] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[   49.809758] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[   49.810410] Call Trace:
+[   49.810653]  d_delete+0x2c/0xb0
+[   49.810951]  vfs_rmdir+0xfd/0x120
+[   49.811264]  do_rmdir+0x14f/0x1a0
+[   49.811573]  do_syscall_64+0x5b/0x190
+[   49.811917]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   49.812385] RIP: 0033:0x7ffbf505ffd7
+[   49.814404] RSP: 002b:00007ffbedffada8 EFLAGS: 00000297 ORIG_RAX: 0000000000000054
+[   49.815098] RAX: ffffffffffffffda RBX: 00007ffbedffb640 RCX: 00007ffbf505ffd7
+[   49.815744] RDX: 0000000004449700 RSI: 0000000000000000 RDI: 0000000006c8cd50
+[   49.816394] RBP: 00007ffbedffaea0 R08: 0000000000000000 R09: 0000000000017d0b
+[   49.817038] R10: 0000000000000000 R11: 0000000000000297 R12: 0000000000000012
+[   49.817687] R13: 00000000072823d8 R14: 00007ffbedffb700 R15: 00000000072823d8
+[   49.818338] Modules linked in: pvpanic cirrusfb button qemu_fw_cfg atkbd libps2 i8042
+[   49.819052] CR2: 0000000000000088
+[   49.819368] ---[ end trace 4e652b8aa299aa2d ]---
+[   49.819796] RIP: 0010:_raw_spin_lock+0xc/0x20
+[   49.821880] RSP: 0018:ffffac6fc5417e98 EFLAGS: 00010246
+[   49.822363] RAX: 0000000000000000 RBX: ffff93b8da3446c0 RCX: 0000000a00000000
+[   49.823008] RDX: 0000000000000001 RSI: 000000000000000a RDI: 0000000000000088
+[   49.823658] RBP: 0000000000000000 R08: 0000000000000000 R09: ffffffff993cf040
+[   49.825404] R10: ffff93b92292e580 R11: ffffd27f188a4b80 R12: 0000000000000000
+[   49.827147] R13: 00000000ffffff9c R14: 00000000fffffffe R15: ffff93b8da3446c0
+[   49.828890] FS:  00007ffbedffb700(0000) GS:ffff93b927880000(0000) knlGS:0000000000000000
+[   49.830725] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   49.832359] CR2: 0000000000000088 CR3: 00000005e3f74006 CR4: 00000000003606a0
+[   49.834085] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[   49.835792] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+Cc: <stable@vger.kernel.org>
+Fixes: a6c606551141 ("ovl: redirect on rename-dir")
+Signed-off-by: Liangyan <liangyan.peng@linux.alibaba.com>
+Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
+---
+ fs/overlayfs/dir.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/overlayfs/dir.c b/fs/overlayfs/dir.c
+index 28a075b5f5b2..d1efa3a5a503 100644
+--- a/fs/overlayfs/dir.c
++++ b/fs/overlayfs/dir.c
+@@ -992,8 +992,8 @@ static char *ovl_get_redirect(struct dentry *dentry, bool abs_redirect)
+ 
+ 		buflen -= thislen;
+ 		memcpy(&buf[buflen], name, thislen);
+-		tmp = dget_dlock(d->d_parent);
+ 		spin_unlock(&d->d_lock);
++		tmp = dget_parent(d);
+ 
+ 		dput(d);
+ 		d = tmp;
+-- 
+2.14.4.44.g2045bb6
 
