@@ -2,139 +2,435 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96AD22E0DEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 18:44:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 873152E0DEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 18:44:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728080AbgLVRmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 12:42:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41136 "EHLO
+        id S1727858AbgLVRnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 12:43:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727988AbgLVRmW (ORCPT
+        with ESMTP id S1726889AbgLVRnc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 12:42:22 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9843DC061793
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 09:41:42 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id f17so8813718pge.6
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 09:41:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Wl/m34cfT29L8x9YJJ07WrglAhvlzuwbzAXMtwjLDqs=;
-        b=Xcs3s6dUoU49zTj42FUTN0c8Q1qmmR7Aahy0+qgkt/nzM/0dpofhm8l7+6ZNb8vW21
-         ZZWzDW26Zihr1gwtLowjrQkHyMviPT9rAd2x5LyFY1WBSyMr2oyXm9m/nS7g1mXBuWo9
-         MEddoMGx2hhX8qPVuay8nMtQlNaWvgZsABJVGTTrxOjajSJlVJ5BIHDJM9KsNHwgCbLB
-         bd+5UF/8exzo99R+/gnN0vBm/14h4dqlwvBdoy1w+Mrsczen0C3tXFJkNtWURjmviaTz
-         VOXQuRmMPCpsLfGfFVzmUPju5bGMcVwgkL9W5IOi1WQDGE17V4pWIeT+IceHWAdRQWmZ
-         JIYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Wl/m34cfT29L8x9YJJ07WrglAhvlzuwbzAXMtwjLDqs=;
-        b=kflbZgGhK3djPo0qsahS76zk/vYvW/ajSHuYALaB5A4K3n/A2xTgFuOA1VJldQk93z
-         GJXnrim1z8y44n8+dUJXudEnMJdH7tWMSDnGx/QXO7PVZauxXbKAfdj9Sv4EBShjruy1
-         JFFkSBV6zZyeCmmXx9aIm+8/KmvfI81Ijv78+hoq2Zk+mcQAtYRBd7xGbblUIKxyvM1D
-         ckY2E/LNS591cZy0U35vAXsDCSsY3kqqNHEL+E4CDnYklcON9AXw3/DrLwAsInvHICXK
-         cBqUCjp0/jcTN0fJ0B3V18zX3o5eQHMyHplCFfUfSKWEY5XhVBNaCcKkTyOvtVuODGFu
-         E23g==
-X-Gm-Message-State: AOAM5338EfGHQvHUwV8ikOPRWnj0pewUew2oF9o9z2GuJylIo2Ej8NN/
-        dzVjvHXH7ImSpsA0dQxPl/pRgQ==
-X-Google-Smtp-Source: ABdhPJzJmLsjwvtHIrr7Rf9B1stJ0eSh5IU+5JT3nqkJJ7OGOO5GHBGeHytzs1Eji1L3ZxiTm41JHA==
-X-Received: by 2002:a62:1ad0:0:b029:197:e389:fb26 with SMTP id a199-20020a621ad00000b0290197e389fb26mr20811212pfa.20.1608658901964;
-        Tue, 22 Dec 2020 09:41:41 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id w27sm17226426pfq.104.2020.12.22.09.41.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Dec 2020 09:41:41 -0800 (PST)
-Date:   Tue, 22 Dec 2020 09:41:34 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Babu Moger <babu.moger@amd.com>
-Cc:     Jim Mattson <jmattson@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        kvm list <kvm@vger.kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        kyung.min.park@intel.com, LKML <linux-kernel@vger.kernel.org>,
-        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, mgross@linux.intel.com,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, kim.phillips@amd.com,
-        wei.huang2@amd.com
-Subject: Re: [PATCH 1/2] x86/cpufeatures: Add the Virtual SPEC_CTRL feature
-Message-ID: <X+IvzsazR8f2LjLw@google.com>
-References: <160738054169.28590.5171339079028237631.stgit@bmoger-ubuntu>
- <160738067105.28590.10158084163761735153.stgit@bmoger-ubuntu>
- <CALMp9eTk6B2832EN8EhL51m8UqmHLTfeOjdKs8TvFSSAUxGk2Q@mail.gmail.com>
- <2e929c9a-9da9-e7da-9fd4-8e0ea2163a19@amd.com>
- <CALMp9eRzYoVqr0zm60+pkJbGF+t0ry8k7y=X=R1paDhUUPSVCw@mail.gmail.com>
- <00fdc56a-5ac4-94a0-88b4-42e4cf46f083@amd.com>
+        Tue, 22 Dec 2020 12:43:32 -0500
+Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 356C8C0613D6;
+        Tue, 22 Dec 2020 09:42:52 -0800 (PST)
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4D0kFR0BpQz1s1KJ;
+        Tue, 22 Dec 2020 18:42:51 +0100 (CET)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4D0kFQ60Qsz1tSQV;
+        Tue, 22 Dec 2020 18:42:50 +0100 (CET)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id 5MH4ge1mi0Ri; Tue, 22 Dec 2020 18:42:48 +0100 (CET)
+X-Auth-Info: 7DsCkGSKO1Lcwkx1bMVcPZ/VBMyUaUGXcuhKawToJn8=
+Received: from jawa (89-64-25-12.dynamic.chello.pl [89.64.25.12])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Tue, 22 Dec 2020 18:42:48 +0100 (CET)
+Date:   Tue, 22 Dec 2020 18:42:48 +0100
+From:   Lukasz Majewski <lukma@denx.de>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>
+Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] ARM: dts: imx28: Add DTS description of imx28 based
+ XEA board
+Message-ID: <20201222184248.1d79c2a3@jawa>
+In-Reply-To: <20201209231141.377af967@jawa>
+References: <20201125161815.2361-1-lukma@denx.de>
+        <20201125161815.2361-3-lukma@denx.de>
+        <20201209231141.377af967@jawa>
+Organization: denx.de
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <00fdc56a-5ac4-94a0-88b4-42e4cf46f083@amd.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ boundary="Sig_/V7FuaNgqB+vX/Npg4EOHPPf"; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020, Babu Moger wrote:
-> 
-> On 12/9/20 5:11 PM, Jim Mattson wrote:
-> > On Wed, Dec 9, 2020 at 2:39 PM Babu Moger <babu.moger@amd.com> wrote:
-> >>
-> >> On 12/7/20 5:22 PM, Jim Mattson wrote:
-> >>> On Mon, Dec 7, 2020 at 2:38 PM Babu Moger <babu.moger@amd.com> wrote:
-> >>>> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-> >>>> index dad350d42ecf..d649ac5ed7c7 100644
-> >>>> --- a/arch/x86/include/asm/cpufeatures.h
-> >>>> +++ b/arch/x86/include/asm/cpufeatures.h
-> >>>> @@ -335,6 +335,7 @@
-> >>>>  #define X86_FEATURE_AVIC               (15*32+13) /* Virtual Interrupt Controller */
-> >>>>  #define X86_FEATURE_V_VMSAVE_VMLOAD    (15*32+15) /* Virtual VMSAVE VMLOAD */
-> >>>>  #define X86_FEATURE_VGIF               (15*32+16) /* Virtual GIF */
-> >>>> +#define X86_FEATURE_V_SPEC_CTRL                (15*32+20) /* Virtual SPEC_CTRL */
-> >>>
-> >>> Shouldn't this bit be reported by KVM_GET_SUPPORTED_CPUID when it's
-> >>> enumerated on the host?
-> >>
-> >> Jim, I am not sure if this needs to be reported by
-> >> KVM_GET_SUPPORTED_CPUID. I dont see V_VMSAVE_VMLOAD or VGIF being reported
-> >> via KVM_GET_SUPPORTED_CPUID. Do you see the need for that?
-> > 
-> > Every little bit helps. No, it isn't *needed*. But then again, this
-> > entire patchset isn't *needed*, is it?
-> > 
-> 
-> Working on v2 of these patches. Saw this code comment(in
-> arch/x86/kvm/cpuid.c) on about exposing SVM features to the guest.
-> 
-> 
->         /*
->          * Hide all SVM features by default, SVM will set the cap bits for
->          * features it emulates and/or exposes for L1.
->          */
->         kvm_cpu_cap_mask(CPUID_8000_000A_EDX, 0);
-> 
-> 
-> Should we go ahead with the changes here?
+--Sig_/V7FuaNgqB+vX/Npg4EOHPPf
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Probably not, as the current SVM implementation aligns with the intended use of
-KVM_GET_SUPPORTED_CPUID.  The current approach is to enumerate what SVM features
-KVM can virtualize or emulate for a nested VM, i.e. what SVM features an L1 VMM
-can use and thus can be set in a vCPU's CPUID model.  For V_SPEC_CTRL, I'm
-pretty sure Jim was providing feedback for the non-nested case of reporting
-host/KVM support of the feature itself.
+Hi Shawn,
 
-There is the question of whether or not KVM should have an ioctl() to report
-what virtualization features are supported/enabled.  AFAIK, it's not truly
-required as userspace can glean the information via /proc/cpuinfo (especially
-now that vmx_features exists), raw CPUID, and KVM module params.  Providing an
-ioctl() would likely be a bit cleaner for userspace, but I'm guessing that ship
-has already sailed for most VMMs.
+> Dear Community,
+>=20
+> > This patch adds DTS definition of the imx278 based XEA board.
+> >=20
+> > Signed-off-by: Lukasz Majewski <lukma@denx.de>
+> > ---
+> >  arch/arm/boot/dts/Makefile       |   3 +-
+> >  arch/arm/boot/dts/imx28-lwe.dtsi | 185
+> > +++++++++++++++++++++++++++++++ arch/arm/boot/dts/imx28-xea.dts  |
+> > 99 +++++++++++++++++ 3 files changed, 286 insertions(+), 1
+> > deletion(-) create mode 100644 arch/arm/boot/dts/imx28-lwe.dtsi
+> >  create mode 100644 arch/arm/boot/dts/imx28-xea.dts
+> >=20
+> > diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+> > index 4572db3fa5ae..c7c95ddc648b 100644
+> > --- a/arch/arm/boot/dts/Makefile
+> > +++ b/arch/arm/boot/dts/Makefile
+> > @@ -702,7 +702,8 @@ dtb-$(CONFIG_ARCH_MXS) +=3D \
+> >  	imx28-m28evk.dtb \
+> >  	imx28-sps1.dtb \
+> >  	imx28-ts4600.dtb \
+> > -	imx28-tx28.dtb
+> > +	imx28-tx28.dtb \
+> > +	imx28-xea.dtb
+> >  dtb-$(CONFIG_ARCH_NOMADIK) +=3D \
+> >  	ste-nomadik-s8815.dtb \
+> >  	ste-nomadik-nhk15.dtb
+> > diff --git a/arch/arm/boot/dts/imx28-lwe.dtsi
+> > b/arch/arm/boot/dts/imx28-lwe.dtsi new file mode 100644
+> > index 000000000000..cb2eb4377d9c
+> > --- /dev/null
+> > +++ b/arch/arm/boot/dts/imx28-lwe.dtsi
+> > @@ -0,0 +1,185 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+> > +/*
+> > + * Copyright 2020
+> > + * Lukasz Majewski, DENX Software Engineering, lukma@denx.de
+> > + */
+> > +
+> > +/dts-v1/;
+> > +#include "imx28.dtsi"
+> > +
+> > +/ {
+> > +	compatible =3D "fsl,imx28";
+> > +
+> > +	aliases {
+> > +		spi2 =3D &ssp3;
+> > +	};
+> > +
+> > +	chosen {
+> > +		bootargs =3D "root=3D/dev/mmcblk0p2 rootfstype=3Dext4 ro
+> > rootwait console=3DttyAMA0,115200 panic=3D1";
+> > +	};
+> > +
+> > +	memory {
+> > +		reg =3D <0x40000000 0x08000000>;
+> > +	};
+> > +
+> > +	regulators {
+> > +		compatible =3D "simple-bus";
+> > +		#address-cells =3D <1>;
+> > +		#size-cells =3D <0>;
+> > +
+> > +		reg_3v3: regulator@0 {
+> > +			compatible =3D "regulator-fixed";
+> > +			reg =3D <0>;
+> > +			regulator-name =3D "3V3";
+> > +			regulator-min-microvolt =3D <3300000>;
+> > +			regulator-max-microvolt =3D <3300000>;
+> > +			regulator-always-on;
+> > +		};
+> > +
+> > +		reg_usb_5v: regulator@1 {
+> > +			compatible =3D "regulator-fixed";
+> > +			reg =3D <1>;
+> > +			regulator-name =3D "usb_vbus";
+> > +			regulator-min-microvolt =3D <5000000>;
+> > +			regulator-max-microvolt =3D <5000000>;
+> > +			enable-active-high;
+> > +		};
+> > +
+> > +		reg_fec_3v3: regulator@2 {
+> > +			compatible =3D "regulator-fixed";
+> > +			reg =3D <2>;
+> > +			regulator-name =3D "fec-phy";
+> > +			regulator-min-microvolt =3D <3300000>;
+> > +			regulator-max-microvolt =3D <3300000>;
+> > +			enable-active-high;
+> > +			regulator-boot-on;
+> > +		};
+> > +	};
+> > +};
+> > +
+> > +&duart {
+> > +	pinctrl-names =3D "default";
+> > +	pinctrl-0 =3D <&duart_pins_a>;
+> > +	status =3D "okay";
+> > +};
+> > +
+> > +&i2c0 {
+> > +	pinctrl-names =3D "default";
+> > +	pinctrl-0 =3D <&i2c0_pins_a>;
+> > +	status =3D "okay";
+> > +};
+> > +
+> > +&saif0 {
+> > +	pinctrl-names =3D "default";
+> > +	pinctrl-0 =3D <&saif0_pins_a>;
+> > +	#sound-dai-cells =3D <0>;
+> > +	assigned-clocks =3D <&clks 53>;
+> > +	assigned-clock-rates =3D <12000000>;
+> > +	status =3D "okay";
+> > +};
+> > +
+> > +&saif1 {
+> > +	pinctrl-names =3D "default";
+> > +	pinctrl-0 =3D <&saif1_pins_a>;
+> > +	fsl,saif-master =3D <&saif0>;
+> > +	#sound-dai-cells =3D <0>;
+> > +	status =3D "okay";
+> > +};
+> > +
+> > +&spi3_pins_a {
+> > +	fsl,pinmux-ids =3D <
+> > +		MX28_PAD_AUART2_RX__SSP3_D4
+> > +		MX28_PAD_AUART2_TX__SSP3_D5
+> > +		MX28_PAD_SSP3_SCK__SSP3_SCK
+> > +		MX28_PAD_SSP3_MOSI__SSP3_CMD
+> > +		MX28_PAD_SSP3_MISO__SSP3_D0
+> > +		MX28_PAD_SSP3_SS0__SSP3_D3
+> > +		MX28_PAD_AUART2_TX__GPIO_3_9
+> > +	>;
+> > +};
+> > +
+> > +&ssp3 {
+> > +	compatible =3D "fsl,imx28-spi";
+> > +	pinctrl-names =3D "default";
+> > +	pinctrl-0 =3D <&spi3_pins_a>;
+> > +	status =3D "okay";
+> > +
+> > +	flash0: s25fl256s0@0 {
+> > +		compatible =3D "s25fl256s1", "jedec,spi-nor";
+> > +		spi-max-frequency =3D <40000000>;
+> > +		reg =3D <0>;
+> > +
+> > +		partitions {
+> > +			compatible =3D "fixed-partitions";
+> > +			#address-cells =3D <1>;
+> > +			#size-cells =3D <1>;
+> > +
+> > +			partition@0 {
+> > +				label =3D "u-boot";
+> > +				reg =3D <0 0x80000>;
+> > +				read-only;
+> > +			};
+> > +
+> > +			partition@80000 {
+> > +				label =3D "env0";
+> > +				reg =3D <0x80000 0x10000>;
+> > +			};
+> > +
+> > +			partition@90000 {
+> > +				label =3D "env1";
+> > +				reg =3D <0x90000 0x10000>;
+> > +			};
+> > +
+> > +			partition@100000 {
+> > +				label =3D "kernel";
+> > +				reg =3D <0x100000 0x400000>;
+> > +			};
+> > +
+> > +			partition@500000 {
+> > +				label =3D "swupdate";
+> > +				reg =3D <0x500000 0x800000>;
+> > +			};
+> > +		};
+> > +	};
+> > +};
+> > +
+> > +&ssp2 {
+> > +	compatible =3D "fsl,imx28-spi";
+> > +	pinctrl-names =3D "default";
+> > +	pinctrl-0 =3D <&spi2_pins_a>;
+> > +	status =3D "okay";
+> > +};
+> > +
+> > +&ssp0 {
+> > +	compatible =3D "fsl,imx28-mmc";
+> > +	pinctrl-names =3D "default";
+> > +	pinctrl-0 =3D <&mmc0_8bit_pins_a>;
+> > +	bus-width =3D <8>;
+> > +	vmmc-supply =3D <&reg_3v3>;
+> > +	non-removable;
+> > +	status =3D "okay";
+> > +};
+> > +
+> > +&usb0 {
+> > +	vbus-supply =3D <&reg_usb_5v>;
+> > +	pinctrl-names =3D "default";
+> > +	pinctrl-0 =3D <&usb0_pins_b>, <&usb0_id_pins_a>;
+> > +	dr_mode =3D "host";
+> > +	status =3D "okay";
+> > +};
+> > +
+> > +&usbphy0 {
+> > +	status =3D "okay";
+> > +};
+> > +
+> > +&usb1 {
+> > +	vbus-supply =3D <&reg_usb_5v>;
+> > +	pinctrl-names =3D "default";
+> > +	pinctrl-0 =3D <&usb1_pins_b>;
+> > +	dr_mode =3D "host";
+> > +	status =3D "okay";
+> > +};
+> > +
+> > +&usbphy1 {
+> > +	status =3D "okay";
+> > +};
+> > diff --git a/arch/arm/boot/dts/imx28-xea.dts
+> > b/arch/arm/boot/dts/imx28-xea.dts new file mode 100644
+> > index 000000000000..672080485b78
+> > --- /dev/null
+> > +++ b/arch/arm/boot/dts/imx28-xea.dts
+> > @@ -0,0 +1,99 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+> > +/*
+> > + * Copyright 2020
+> > + * Lukasz Majewski, DENX Software Engineering, lukma@denx.de
+> > + */
+> > +
+> > +/dts-v1/;
+> > +#include "imx28-lwe.dtsi"
+> > +
+> > +/ {
+> > +	model =3D "XEA";
+> > +};
+> > +
+> > +&can0 {
+> > +	pinctrl-names =3D "default";
+> > +	pinctrl-0 =3D <&can1_pins_a>;
+> > +	status =3D "okay";
+> > +};
+> > +
+> > +&i2c1 {
+> > +	pinctrl-names =3D "default";
+> > +	pinctrl-0 =3D <&i2c1_pins_b>;
+> > +	status =3D "okay";
+> > +};
+> > +
+> > +&pinctrl {
+> > +	pinctrl-names =3D "default";
+> > +	pinctrl-0 =3D <&hog_pins_a &hog_pins_tiva>;
+> > +
+> > +	hog_pins_a: hog@0 {
+> > +		reg =3D <0>;
+> > +		fsl,pinmux-ids =3D <
+> > +			MX28_PAD_GPMI_D00__GPIO_0_0
+> > +			MX28_PAD_GPMI_D02__GPIO_0_2
+> > +			MX28_PAD_GPMI_D05__GPIO_0_5
+> > +			MX28_PAD_GPMI_CE1N__GPIO_0_17
+> > +			MX28_PAD_GPMI_RDY0__GPIO_0_20
+> > +			MX28_PAD_GPMI_RDY1__GPIO_0_21
+> > +			MX28_PAD_GPMI_RDY2__GPIO_0_22
+> > +			MX28_PAD_GPMI_RDN__GPIO_0_24
+> > +			MX28_PAD_GPMI_CLE__GPIO_0_27
+> > +			MX28_PAD_LCD_VSYNC__GPIO_1_28
+> > +			MX28_PAD_SSP1_SCK__GPIO_2_12
+> > +			MX28_PAD_SSP1_CMD__GPIO_2_13
+> > +			MX28_PAD_SSP2_SS1__GPIO_2_20
+> > +			MX28_PAD_SSP2_SS2__GPIO_2_21
+> > +			MX28_PAD_LCD_D00__GPIO_1_0
+> > +			MX28_PAD_LCD_D01__GPIO_1_1
+> > +			MX28_PAD_LCD_D02__GPIO_1_2
+> > +			MX28_PAD_LCD_D03__GPIO_1_3
+> > +			MX28_PAD_LCD_D04__GPIO_1_4
+> > +			MX28_PAD_LCD_D05__GPIO_1_5
+> > +			MX28_PAD_LCD_D06__GPIO_1_6
+> > +		>;
+> > +		fsl,drive-strength =3D <MXS_DRIVE_4mA>;
+> > +		fsl,voltage =3D <MXS_VOLTAGE_HIGH>;
+> > +		fsl,pull-up =3D <MXS_PULL_DISABLE>;
+> > +	};
+> > +
+> > +	hog_pins_tiva: hog@1 {
+> > +		reg =3D <1>;
+> > +		fsl,pinmux-ids =3D <
+> > +			MX28_PAD_GPMI_RDY3__GPIO_0_23
+> > +			MX28_PAD_GPMI_WRN__GPIO_0_25
+> > +		>;
+> > +		fsl,voltage =3D <MXS_VOLTAGE_HIGH>;
+> > +		fsl,pull-up =3D <MXS_PULL_DISABLE>;
+> > +	};
+> > +
+> > +	hog_pins_coding: hog@2 {
+> > +		reg =3D <2>;
+> > +		fsl,pinmux-ids =3D <
+> > +			MX28_PAD_GPMI_D01__GPIO_0_1
+> > +			MX28_PAD_GPMI_D03__GPIO_0_3
+> > +			MX28_PAD_GPMI_D04__GPIO_0_4
+> > +			MX28_PAD_GPMI_D06__GPIO_0_6
+> > +			MX28_PAD_GPMI_D07__GPIO_0_7
+> > +		>;
+> > +		fsl,voltage =3D <MXS_VOLTAGE_HIGH>;
+> > +		fsl,pull-up =3D <MXS_PULL_DISABLE>;
+> > +	};
+> > +};
+> > +
+> > +&reg_fec_3v3 {
+> > +	gpio =3D <&gpio0 0 0>;
+> > +};
+> > +
+> > +&reg_usb_5v {
+> > +	gpio =3D <&gpio0 2 0>;
+> > +};
+> > +
+> > +&spi2_pins_a {
+> > +	fsl,pinmux-ids =3D <
+> > +		MX28_PAD_SSP2_SCK__SSP2_SCK
+> > +		MX28_PAD_SSP2_MOSI__SSP2_CMD
+> > +		MX28_PAD_SSP2_MISO__SSP2_D0
+> > +		MX28_PAD_SSP2_SS0__GPIO_2_19
+> > +	>;
+> > +}; =20
+>=20
+> Gentle ping on this patch.
+
+Gentle ping on this patch. Are there any comments regarding it?
+
+>=20
+>=20
+> Best regards,
+>=20
+> Lukasz Majewski
+>=20
+> --
+>=20
+> DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+> HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+> Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email:
+> lukma@denx.de
+
+
+
+
+Best regards,
+
+Lukasz Majewski
+
+--
+
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
+
+--Sig_/V7FuaNgqB+vX/Npg4EOHPPf
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAl/iMBgACgkQAR8vZIA0
+zr0qAgf/VzXnTx95PnMYmCy6X0HBmwKgcR9LcWJ933Et/SsjrW97LIr9a/4WeZHn
+r3OvqPCkUIwLq4FIPUw4/yyTFTnaEiJqzl1mm9MLYRHAWwt98159pKE9XFJ4wp1j
+vr1UwwfLnR0geAAxAnQy7clWPT0iq42V/rSTrreBPSu4a8V9UU7Vs4/QailJVO+L
+NOarmGUsupkys2Rm2vhgm2VEbAs9o2NI/iKzuF6JQEN6GrQ6e8d4egKc8gYbnUbk
+TNbJZTb27c1wX8+UpIEHIbqYrfCqzvCFO2mhSqh6vSmjtj/fv0JPJ111VLjPeZ2t
+x1WioZYUD6zoY3gf0cMegn/n/ySCJQ==
+=z7E+
+-----END PGP SIGNATURE-----
+
+--Sig_/V7FuaNgqB+vX/Npg4EOHPPf--
