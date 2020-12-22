@@ -2,108 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0972A2E106A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 23:57:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C1762E1070
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 00:01:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728021AbgLVW4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 17:56:44 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:52968 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726637AbgLVW4o (ORCPT
+        id S1728083AbgLVW5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 17:57:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56946 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727719AbgLVW5r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 17:56:44 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BMMpWlD174018;
-        Tue, 22 Dec 2020 22:55:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=N+6K3mCeYK/CoMCgVBBUHQgK04gVj9asaTrrtBEH5II=;
- b=xMjE8Cj23ZoYzPmldN5IYeUk4iWwtF72gnepmDtV597NPn+XfF/jb1Yqrc4kKLw8UPuO
- PuF+Gz3HXDcBc8LC/BTKqPlOSqus6fuXw1pYdzahisjKl8VvplckbgiyU4x5/a0YAlA5
- pvvmTYnW+6aTLZ+MmYu5u+nPG0qfNtOB+LJZVbltZ1NPMgEk+3WkY6XpZYmQqog0CkBa
- pBHUX6Ng/TtbZo+eFfHgMj8dxB2ZNakMuz8QmkhyC2kX5wLAuh4l+nO2UADVxEcBKLAK
- g5RCX73Cbryr+0+2pEz/MzI+NpM0d6/yup1ELAwRsjFUI1THCc84UNGYBpn1IWzB/fUQ iA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 35k0d15m2k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 22 Dec 2020 22:55:35 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BMMnvTk007881;
-        Tue, 22 Dec 2020 22:55:35 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 35k0ea3sym-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 22 Dec 2020 22:55:35 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0BMMtUxk026442;
-        Tue, 22 Dec 2020 22:55:31 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 22 Dec 2020 14:55:30 -0800
-Subject: Re: [RFC PATCH 1/3] mm: support hugetlb free page reporting
-To:     Alexander Duyck <alexander.duyck@gmail.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Liang Li <liliangleo@didiglobal.com>,
-        Liang Li <liliang324@gmail.com>, linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org, qemu-devel@nongnu.org
-References: <20201222074656.GA30035@open-light-1.localdomain>
- <CAKgT0Ucs4pv0+rcPi41uNDrav0sgOmLnVaD4NNWkg7=gncidnQ@mail.gmail.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <52a6cb93-1fed-dfd7-d21e-f14197a9c9dc@oracle.com>
-Date:   Tue, 22 Dec 2020 14:55:28 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
-MIME-Version: 1.0
-In-Reply-To: <CAKgT0Ucs4pv0+rcPi41uNDrav0sgOmLnVaD4NNWkg7=gncidnQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9843 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 mlxscore=0
- spamscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012220165
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9843 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 suspectscore=0
- adultscore=0 bulkscore=0 priorityscore=1501 mlxscore=0 clxscore=1011
- phishscore=0 mlxlogscore=999 spamscore=0 impostorscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012220165
+        Tue, 22 Dec 2020 17:57:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608677780;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=V7Cc/NanMe/ir/qcjakZDVITWKhc58yo1WDobbYxsY0=;
+        b=INGaaP5km6F9Hh96t9m9av3Zwl5xy4+ix22XBevjX+XBu0p9/02TXX9oSC0q4ISCa/kkP5
+        wY9e/johZ+pnwh8SIMCgx33OcbmqpRkK9uoVcKVvdb3K8wJLq1SsCUub+K7Pag9HiPIbEB
+        Mv8AidQdR9GQUGlQUSJk29+c4+suGnw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-516-GdbzA77bP-iXSv5GJlmVtQ-1; Tue, 22 Dec 2020 17:56:16 -0500
+X-MC-Unique: GdbzA77bP-iXSv5GJlmVtQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 744BC1800D42;
+        Tue, 22 Dec 2020 22:56:15 +0000 (UTC)
+Received: from llong.com (ovpn-116-221.rdu2.redhat.com [10.10.116.221])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9373E6F985;
+        Tue, 22 Dec 2020 22:56:11 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Will Deacon <will.deacon@arm.com>
+Cc:     linux-kernel@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH] locking/lockdep: Use local_irq_save() with call_rcu()
+Date:   Tue, 22 Dec 2020 17:55:53 -0500
+Message-Id: <20201222225553.15642-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/22/20 11:59 AM, Alexander Duyck wrote:
-> On Mon, Dec 21, 2020 at 11:47 PM Liang Li <liliang.opensource@gmail.com> wrote:
->> +
->> +       if (huge_page_order(h) > MAX_ORDER)
->> +               budget = HUGEPAGE_REPORTING_CAPACITY;
->> +       else
->> +               budget = HUGEPAGE_REPORTING_CAPACITY * 32;
-> 
-> Wouldn't huge_page_order always be more than MAX_ORDER? Seems like we
-> don't even really need budget since this should probably be pulling
-> out no more than one hugepage at a time.
+The following lockdep splat was hit:
 
-On standard x86_64 configs, 2MB huge pages are of order 9 < MAX_ORDER (11).
-What is important for hugetlb is the largest order that can be allocated
-from buddy.  Anything bigger is considered a gigantic page and has to be
-allocated differently.
+ [  560.638354] WARNING: CPU: 79 PID: 27458 at kernel/rcu/tree_plugin.h:1749 call_rcu+0x6dc/0xf00
+    :
+ [  560.647761] RIP: 0010:call_rcu+0x6dc/0xf00
+ [  560.647763] Code: 0f 8f 29 04 00 00 e8 93 da 1c 00 48 8b 3c 24 57 9d 0f 1f 44 00 00 e9 19 fa ff ff 65 8b 05 38 83 c4 49 85 c0 0f 84 cd fb ff ff <0f> 0b e9 c6 fb ff ff e8 b8 45 51 00 4c 89 f2 48 b8 00 00 00 00 00
+ [  560.647764] RSP: 0018:ff11001050097b58 EFLAGS: 00010002
+ [  560.647766] RAX: 0000000000000001 RBX: ffffffffbb1f3360 RCX: 0000000000000001
+ [  560.647766] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffffb99bac9c
+ [  560.647767] RBP: 1fe220020a012f73 R08: 000000010004005c R09: dffffc0000000000
+ [  560.647768] R10: dffffc0000000000 R11: 0000000000000003 R12: ff1100105b7f70e1
+ [  560.647769] R13: ffffffffb635d8a0 R14: ff1100105b7f72d8 R15: ff1100105b7f7040
+ [  560.647770] FS:  00007fd9b3437080(0000) GS:ff1100105b600000(0000) knlGS:0000000000000000
+ [  560.647771] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ [  560.647772] CR2: 00007fd9b30112bc CR3: 000000105e898006 CR4: 0000000000761ee0
+ [  560.647773] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+ [  560.647773] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+ [  560.647774] PKRU: 55555554
+ [  560.647774] Call Trace:
+ [  560.647778]  ? invoke_rcu_core+0x180/0x180
+ [  560.647782]  ? __is_module_percpu_address+0xed/0x440
+ [  560.647787]  lockdep_unregister_key+0x2ab/0x5b0
+ [  560.647791]  destroy_workqueue+0x40b/0x610
+ [  560.647862]  xlog_dealloc_log+0x216/0x2b0 [xfs]
+    :
 
-If the code above is trying to distinguish between huge and gigantic pages,
-it is off by 1.  The largest order that can be allocated from the buddy is
-(MAX_ORDER - 1).  So, the check should be '>='.
+This splat is caused by the fact that lockdep_unregister_key() uses
+raw_local_irq_save() which doesn't update the hardirqs_enabled
+percpu flag.  The call_rcu() function, however, will call
+lockdep_assert_irqs_disabled() to check the hardirqs_enabled flag which
+remained set in this case.
 
+Fix this problem by using local_irq_save()/local_irq_restore() pairs
+whenever call_rcu() is being called.
+
+I think raw_local_irq_save() function can be used if no external
+function is being called except maybe printk() as it means another
+lockdep problem exists.
+
+Fixes: a0b0fd53e1e67 ("locking/lockdep: Free lock classes that are no longer in use")
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ kernel/locking/lockdep.c | 20 ++++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
+
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index c1418b47f625..2a37af77ede6 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -5884,7 +5884,7 @@ static void free_zapped_rcu(struct rcu_head *ch)
+ 	if (WARN_ON_ONCE(ch != &delayed_free.rcu_head))
+ 		return;
+ 
+-	raw_local_irq_save(flags);
++	local_irq_save(flags);
+ 	lockdep_lock();
+ 
+ 	/* closed head */
+@@ -5898,7 +5898,7 @@ static void free_zapped_rcu(struct rcu_head *ch)
+ 	call_rcu_zapped(delayed_free.pf + delayed_free.index);
+ 
+ 	lockdep_unlock();
+-	raw_local_irq_restore(flags);
++	local_irq_restore(flags);
+ }
+ 
+ /*
+@@ -5941,13 +5941,13 @@ static void lockdep_free_key_range_reg(void *start, unsigned long size)
+ 
+ 	init_data_structures_once();
+ 
+-	raw_local_irq_save(flags);
++	local_irq_save(flags);
+ 	lockdep_lock();
+ 	pf = get_pending_free();
+ 	__lockdep_free_key_range(pf, start, size);
+ 	call_rcu_zapped(pf);
+ 	lockdep_unlock();
+-	raw_local_irq_restore(flags);
++	local_irq_restore(flags);
+ 
+ 	/*
+ 	 * Wait for any possible iterators from look_up_lock_class() to pass
+@@ -6043,7 +6043,7 @@ static void lockdep_reset_lock_reg(struct lockdep_map *lock)
+ 	unsigned long flags;
+ 	int locked;
+ 
+-	raw_local_irq_save(flags);
++	local_irq_save(flags);
+ 	locked = graph_lock();
+ 	if (!locked)
+ 		goto out_irq;
+@@ -6054,7 +6054,7 @@ static void lockdep_reset_lock_reg(struct lockdep_map *lock)
+ 
+ 	graph_unlock();
+ out_irq:
+-	raw_local_irq_restore(flags);
++	local_irq_restore(flags);
+ }
+ 
+ /*
+@@ -6098,7 +6098,11 @@ void lockdep_unregister_key(struct lock_class_key *key)
+ 	if (WARN_ON_ONCE(static_obj(key)))
+ 		return;
+ 
+-	raw_local_irq_save(flags);
++	/*
++	 * local_irq_save() should be used as call_rcu() will check
++	 * hardirqs_enabled state.
++	 */
++	local_irq_save(flags);
+ 	if (!graph_lock())
+ 		goto out_irq;
+ 
+@@ -6115,7 +6119,7 @@ void lockdep_unregister_key(struct lock_class_key *key)
+ 	call_rcu_zapped(pf);
+ 	graph_unlock();
+ out_irq:
+-	raw_local_irq_restore(flags);
++	local_irq_restore(flags);
+ 
+ 	/* Wait until is_dynamic_key() has finished accessing k->hash_entry. */
+ 	synchronize_rcu();
 -- 
-Mike Kravetz
+2.18.1
+
