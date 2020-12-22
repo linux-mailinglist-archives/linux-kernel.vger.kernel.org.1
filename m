@@ -2,83 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28A992E0CA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 16:25:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE2222E0CB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 16:28:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727906AbgLVPYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 10:24:52 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:23738 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727785AbgLVPYv (ORCPT
+        id S1727986AbgLVP10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 10:27:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727936AbgLVP1Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 10:24:51 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1608650679; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
- To: From: Sender; bh=Ptj5zSnNvuCBSRtlITspyWoblj0NS5WFVN+WtCGDrDk=; b=tzfO0201T6rv89uABjXaxcCcoeSPwp441dQbjFjrEwDuBjAiodNU1IdtjvBb3mbhb9EhevHz
- l53OipZ81Z7LgR/M3JRZFQpEPk8xbZYnyY1QWcfI+3fNguWopX1YlkvN9kEZNRhiz9bKV1SR
- mnZ6PyuLFyAtOWLUxiBDkTfwqKo=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 5fe20f92120d248bb53ad25a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Dec 2020 15:24:02
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9E074C43463; Tue, 22 Dec 2020 15:24:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from x230.qca.qualcomm.com (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 452F2C433CA;
-        Tue, 22 Dec 2020 15:23:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 452F2C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-mmc@vger.kernel.org,
-        Pali =?utf-8?Q?Roh?= =?utf-8?Q?=C3=A1r?= <pali@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH v3 00/24] wfx: get out from the staging area
-References: <20201104155207.128076-1-Jerome.Pouiller@silabs.com>
-Date:   Tue, 22 Dec 2020 17:23:55 +0200
-In-Reply-To: <20201104155207.128076-1-Jerome.Pouiller@silabs.com> (Jerome
-        Pouiller's message of "Wed, 4 Nov 2020 16:51:43 +0100")
-Message-ID: <87czz19850.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        Tue, 22 Dec 2020 10:27:25 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51072C0613D3;
+        Tue, 22 Dec 2020 07:26:45 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id s26so32801117lfc.8;
+        Tue, 22 Dec 2020 07:26:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+GMr5VCPTqCz2ZfWhdjCVasC/tsHX8qwCEfhYsLYdAg=;
+        b=pjBMMl7HgkRiFIGdJygUked00u2rRnsciWj9vSEfaT/mIpaxKhZufXxFk2vBRyY18S
+         qJ5uX+ckghvmzYTJDp2IzlzaQ2szcafhnR3gQnlaeu6IrOzdztqIVa9OzjBwtRObvM9/
+         qcDZ73SUtfEkc6UCCzA5al/d8cTdspT/HuZdxqJPwfeq2OHmrz3la33ZODuWkAzHpcRD
+         7lGHfN+LcOaTRA1pIOGSMrPBdMCz0dWBE5ADWtB3u62zAQF5FuLUfYjjn+ymfs7LOaNv
+         e5+RMSA6Kaf3RT5+50pHGKmQANRXGEZJ36FYs01w/7rMxKBmxAbb4ovJn+/RQKJVsoGi
+         bECw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+GMr5VCPTqCz2ZfWhdjCVasC/tsHX8qwCEfhYsLYdAg=;
+        b=HCv2s0r3qS9UGLY1q8/jN+ocZd4EbjKHJVvgp7zeoj+ywyzlUUu1SI/8w8+MiipftQ
+         InEkJdcEH98HSFhWjrgUIJauVEkkEjZXwIZiFlQY/ztc8AX6wLuPkVWyPJeRKbbgdNWw
+         KpcGuthwArcgJqvgs1rMbaKV68vrCw6M2pH1nDR+GY7cnrhSK/Zpm57/44jyFRp31gx7
+         w2X/RaT50+8YfCmRlEtrTCU1m46Jmwy0yMSqknDX4pRhzB9+oAMdkGh87IxLuiOo8ffJ
+         tJ72URG9F/zgbrLqAKEvQm4hG4N55LoTQP9CIqyMg43hajxrdL8wvE7ko1k8p2eb7VBV
+         nQNA==
+X-Gm-Message-State: AOAM533FMYX6TN9NT6v0YATS2HeEmZXY9RNHoBeffzfrK5qZzC5nVUhH
+        TJmt/w9z2H9tJdUzNdLW7Px96KC9JTB7bb0HKQ==
+X-Google-Smtp-Source: ABdhPJz537Kn4W1RrlvyWs6eRYuxgQbuy8tUZsNZm94P4bwr7Xj51Bl698w6GAPxN1is/kt4T7LI1NtskOJk2KmKP44=
+X-Received: by 2002:a19:23d8:: with SMTP id j207mr9670559lfj.144.1608650803872;
+ Tue, 22 Dec 2020 07:26:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <CAEJqkgiiU7miC13iT6DufjFAsHkNZk6rBAw=KRRnHe47kTZDnw@mail.gmail.com>
+ <9d621d34-e5ce-301a-1b89-92c0791fe348@roeck-us.net> <CAEJqkgjFVBEDxCVB+P3CjirRkCZW1_6s18AgOKpe+6er3VShpA@mail.gmail.com>
+ <20201222061630.GB76917@roeck-us.net>
+In-Reply-To: <20201222061630.GB76917@roeck-us.net>
+From:   Gabriel C <nix.or.die@googlemail.com>
+Date:   Tue, 22 Dec 2020 16:26:17 +0100
+Message-ID: <CAEJqkggMJMKS5E2n26nvoCfq1tnokQG+WQi+WH4J7gNNz+0o5A@mail.gmail.com>
+Subject: Re: k10temp: ZEN3 readings are broken
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-hwmon@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Wei Huang <wei.huang2@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
-
-> From: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
+Am Di., 22. Dez. 2020 um 07:16 Uhr schrieb Guenter Roeck <linux@roeck-us.net>:
 >
-> I think the wfx driver is now mature enough to be accepted in the
-> drivers/net/wireless directory.
+> On Tue, Dec 22, 2020 at 05:33:17AM +0100, Gabriel C wrote:
+> [ ... ]
+> > At least is what the weird amd_energy driver added and since is only supporting
+> > fam 17h model 0x31 which is TR 3000 & SP3 Rome, I guess fam 19h 0x1 is
+> > TR/SP3 ZEN3.
+>
+> The limited model support is because people nowadays are not willing to
+> accept that reported values may not always be perfect ... and the reported
+> energy for non-server parts is known to be not always perfect. Kind of an
+> odd situation: If we support non-server parts, we have people complain
+> that values are not perfect. If we only support server parts, we have
+> people complain that only server parts are supported. For us, that is
+> a lose-lose situation. I used to think that is is better to report
+> _something_, but the (sometimes loud) complaints about lack of perfection
+> teached me a lesson. So now my reaction is to drop support if I get
+> complaints about lack of perfection.
+>
 
-What's the status with firmware images? Can anyone take the latest
-kernel and linux-firmware and use this driver normally?
+I agree it is an odd situation with these modules, but having
+something is better than nothing.
+As for the amd_energy driver, yes it is off on some platforms by 2%-5%
+or alike but without having
+that support in the kernel, regardless of the module, we cannot ever
+come to perfection or near it.
 
---=20
-https://patchwork.kernel.org/project/linux-wireless/list/
+For both k10temp & amd_energy driver I suggest to not drop the support
+ but add kernel modules
+options disabled by default, much like a lot laptop platform drivers
+have for different reasons.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
+The amd_energy driver could have some any_ryzen option which turned
+off by default.
+That way people may decide if they want to use it even when not 100%
+perfect and can report
+back on platforms the reporting is accurate.
+Waiting for AMD to give us ID of what may be in their eyes accurate is
+like waiting for pigs to fly.
+
+The k10temp module much like the same, some experimental_voltage_report module
+option will be fine for now, I think.
+
+I'm also sure owner of AMD HW will help out optimizing and maintaining the code.
+
+> Guenter
+
+Best Regards,
+
+Gabriel C.
