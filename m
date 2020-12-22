@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 567922E068F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 08:08:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A6922E0693
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 08:08:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726504AbgLVHHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 02:07:20 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:54106 "EHLO
+        id S1726551AbgLVHHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 02:07:32 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:54114 "EHLO
         fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgLVHHR (ORCPT
+        with ESMTP id S1726475AbgLVHHT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 02:07:17 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BM76Dei064338;
-        Tue, 22 Dec 2020 01:06:13 -0600
+        Tue, 22 Dec 2020 02:07:19 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BM76GnR064352;
+        Tue, 22 Dec 2020 01:06:16 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1608620773;
-        bh=14cbnSxHB44iZkpTWbvcT9c4bCPw1pt8QKkVr6DRwOw=;
+        s=ti-com-17Q1; t=1608620776;
+        bh=JZPshwWVVHYyyVCfjW7JfaXlQvyXib/1joMtQSq41ig=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=vR+rr+Zo9MLESkQRQA67Sk6S3ilWJuNq0VwR9tEt+70u0mwTWOwOLTcCUQDiXTWlH
-         tIOXclliAv+AzLDJV5I7y6af6pkTkKY5aV1kyHfS2T+S4zlHtbwdffHVIpweF6lvrT
-         g4/uw9mIJP3y4ADuhYUvIwCzHF2m3SaHxr1BI8oE=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BM76DvR109324
+        b=iH6ItnEwqY88nkpJfjx63ytcaVeKH3yULaQAu4qdx5u6qM6ChypZ4mlOWkUow/+n6
+         TeQfYOqjeLw/xfe550wm7D41ZTeryAXTQZ54P396Fwq5PhJLoIAUQtlrOq7ygTS2vB
+         lhWmm1ERaQ38+ztnRRkYmnadRLQXzsgYr3E44qPA=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BM76GLf033092
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 22 Dec 2020 01:06:13 -0600
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+        Tue, 22 Dec 2020 01:06:16 -0600
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 22
- Dec 2020 01:06:12 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ Dec 2020 01:06:15 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 22 Dec 2020 01:06:12 -0600
+ Frontend Transport; Tue, 22 Dec 2020 01:06:15 -0600
 Received: from a0393678-ssd.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BM75N7M050344;
-        Tue, 22 Dec 2020 01:06:09 -0600
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BM75N7N050344;
+        Tue, 22 Dec 2020 01:06:13 -0600
 From:   Kishon Vijay Abraham I <kishon@ti.com>
 To:     Kishon Vijay Abraham I <kishon@ti.com>,
         Vinod Koul <vkoul@kernel.org>,
@@ -45,9 +45,9 @@ To:     Kishon Vijay Abraham I <kishon@ti.com>,
         <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>
 CC:     Nishanth Menon <nm@ti.com>, Philipp Zabel <p.zabel@pengutronix.de>
-Subject: [PATCH v2 13/14] arm64: dts: ti: k3-j721e-common-proc-board: Use external clock for SERDES
-Date:   Tue, 22 Dec 2020 12:35:19 +0530
-Message-ID: <20201222070520.28132-14-kishon@ti.com>
+Subject: [PATCH v2 14/14] arm64: dts: ti: k3-j721e-common-proc-board: Re-name "link" name as "phy"
+Date:   Tue, 22 Dec 2020 12:35:20 +0530
+Message-ID: <20201222070520.28132-15-kishon@ti.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201222070520.28132-1-kishon@ti.com>
 References: <20201222070520.28132-1-kishon@ti.com>
@@ -58,71 +58,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use external clock for all the SERDES used by PCIe controller. This will
-make the same clock used by the local SERDES as well as the clock
-provided to the PCIe connector.
+Commit 66db854b1f62d ("arm64: dts: ti: k3-j721e-common-proc-board:
+Configure the PCIe instances") and
+commit 02c35dca2b488 ("arm64: dts: ti: k3-j721e: Enable Super-Speed
+support for USB0") added PHY DT nodes with node name as "link"
+However nodes with #phy-cells should be named 'phy' as discussed in [1].
+Re-name subnodes of serdes in J721E to 'phy'.
 
+[1] -> http://lore.kernel.org/r/20200909203631.GA3026331@bogus
+Fixes: 66db854b1f62d ("arm64: dts: ti: k3-j721e-common-proc-board: Configure the PCIe instances")
+Fixes: 02c35dca2b488 ("arm64: dts: ti: k3-j721e: Enable Super-Speed support for USB0")
 Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
 ---
- .../dts/ti/k3-j721e-common-proc-board.dts     | 45 +++++++++++++++++++
- 1 file changed, 45 insertions(+)
+ arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
-index 86f7ab511ee8..788126daf91c 100644
+index 788126daf91c..13ae0d89caf2 100644
 --- a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
 +++ b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
-@@ -639,6 +639,51 @@
- 	clock-frequency = <100000000>;
+@@ -358,7 +358,7 @@
  };
  
-+&wiz0_pll1_refclk {
-+	assigned-clocks = <&wiz0_pll1_refclk>;
-+	assigned-clock-parents = <&cmn_refclk1>;
-+};
-+
-+&wiz0_refclk_dig {
-+	assigned-clocks = <&wiz0_refclk_dig>;
-+	assigned-clock-parents = <&cmn_refclk1>;
-+};
-+
-+&serdes0_pll_cmnlc {
-+	assigned-clocks = <&serdes0_pll_cmnlc>;
-+	assigned-clock-parents = <&serdes0_refrcv1>;
-+};
-+
-+&wiz1_pll1_refclk {
-+	assigned-clocks = <&wiz1_pll1_refclk>;
-+	assigned-clock-parents = <&cmn_refclk1>;
-+};
-+
-+&wiz1_refclk_dig {
-+	assigned-clocks = <&wiz1_refclk_dig>;
-+	assigned-clock-parents = <&cmn_refclk1>;
-+};
-+
-+&serdes1_pll_cmnlc {
-+	assigned-clocks = <&serdes1_pll_cmnlc>;
-+	assigned-clock-parents = <&serdes1_refrcv1>;
-+};
-+
-+&wiz2_pll1_refclk {
-+	assigned-clocks = <&wiz2_pll1_refclk>;
-+	assigned-clock-parents = <&cmn_refclk1>;
-+};
-+
-+&wiz2_refclk_dig {
-+	assigned-clocks = <&wiz2_refclk_dig>;
-+	assigned-clock-parents = <&cmn_refclk1>;
-+};
-+
-+&serdes2_pll_cmnlc {
-+	assigned-clocks = <&serdes2_pll_cmnlc>;
-+	assigned-clock-parents = <&serdes2_refrcv1>;
-+};
-+
- &serdes0 {
- 	serdes0_pcie_link: link@0 {
+ &serdes3 {
+-	serdes3_usb_link: link@0 {
++	serdes3_usb_link: phy@0 {
  		reg = <0>;
+ 		cdns,num-lanes = <2>;
+ 		#phy-cells = <0>;
+@@ -685,7 +685,7 @@
+ };
+ 
+ &serdes0 {
+-	serdes0_pcie_link: link@0 {
++	serdes0_pcie_link: phy@0 {
+ 		reg = <0>;
+ 		cdns,num-lanes = <1>;
+ 		#phy-cells = <0>;
+@@ -695,7 +695,7 @@
+ };
+ 
+ &serdes1 {
+-	serdes1_pcie_link: link@0 {
++	serdes1_pcie_link: phy@0 {
+ 		reg = <0>;
+ 		cdns,num-lanes = <2>;
+ 		#phy-cells = <0>;
+@@ -705,7 +705,7 @@
+ };
+ 
+ &serdes2 {
+-	serdes2_pcie_link: link@0 {
++	serdes2_pcie_link: phy@0 {
+ 		reg = <0>;
+ 		cdns,num-lanes = <2>;
+ 		#phy-cells = <0>;
 -- 
 2.17.1
 
