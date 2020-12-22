@@ -2,362 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C24862E0650
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 08:04:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BAB42E0662
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 08:06:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725907AbgLVHEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 02:04:05 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:41810 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725300AbgLVHEF (ORCPT
+        id S1726085AbgLVHGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 02:06:23 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:53846 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726035AbgLVHGW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 02:04:05 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id ECB619E6;
-        Tue, 22 Dec 2020 08:03:20 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1608620601;
-        bh=wr2c/JvrpoqpuCs/EGNX0coXs6l9cQeH37ivwLJhHX0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oRhDZ+hUb1+7clW6B0GbznIznWZFsOAtCA/OUxeJ/fHeXgZuNxhvHN1SdLok7c0eh
-         diGC0VvpIDLU16mWknRPfe5jGZRhUSrHH01XJbLMrchfnUsp1a+TPhNu/PBh2IehYO
-         7xG4UnwvoyxJvcKA+4KlGGVo2HZoErt8uMvA8GUc=
-Date:   Tue, 22 Dec 2020 09:03:13 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jonathan Cameron <jic23@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        dri-devel@lists.freedesktop.org, linux-iio@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: Drop unnecessary *-supply schemas properties
-Message-ID: <X+GaMWeSyGvt4S7Q@pendragon.ideasonboard.com>
-References: <20201221234659.824881-1-robh@kernel.org>
+        Tue, 22 Dec 2020 02:06:22 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BM75R2e064004;
+        Tue, 22 Dec 2020 01:05:27 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1608620727;
+        bh=IlOg2YWoIM40jZe6vAZLiNt+o8w4cd/ybCfCQGDBDRY=;
+        h=From:To:CC:Subject:Date;
+        b=zB5PSQK2LcL2gJOLSMvcgQeyNMN5SekGbDCTa0gB99uEMpJCd+4figFoXYHMo2ScV
+         8ttFf0iKxTRIefJedbyZzFmZrrBkCi1+lyYzLGYJKTB2wluyzYdGu/x1aCCzTv+gSw
+         8UdhPXOGlvAPy9L2DxX7igle/ueMN5BAWH1yNQNM=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BM75RLI014570
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 22 Dec 2020 01:05:27 -0600
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 22
+ Dec 2020 01:05:26 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 22 Dec 2020 01:05:26 -0600
+Received: from a0393678-ssd.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BM75N79050344;
+        Tue, 22 Dec 2020 01:05:23 -0600
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Swapnil Jakhade <sjakhade@cadence.com>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     Nishanth Menon <nm@ti.com>, Philipp Zabel <p.zabel@pengutronix.de>
+Subject: [PATCH v2 00/14] PHY: Add support in Sierra to use external clock
+Date:   Tue, 22 Dec 2020 12:35:06 +0530
+Message-ID: <20201222070520.28132-1-kishon@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201221234659.824881-1-robh@kernel.org>
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+The previous version of the patch series can be found @ [1]
 
-Thank you for the patch.
+Changes from v1:
+1) Remove the part that prevents configuration if the SERDES is already
+   configured and focus only on using external clock and the associated
+   cleanups
+2) Change patch ordering
+3) Use exclusive reset control APIs
+4) Fix error handling code
+5) Include DT patches in this series (I can send this separately to DT
+MAINTAINER once the driver patches are merged)
 
-On Mon, Dec 21, 2020 at 04:46:59PM -0700, Rob Herring wrote:
-> *-supply properties are always a single phandle, so binding schemas
-> don't need a type $ref nor 'maxItems'.
-> 
-> A meta-schema check for this is pending once these existing cases are
-> fixed.
-> 
-> Cc: Jonathan Cameron <jic23@kernel.org>
-> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Cc: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
-> Cc: Lee Jones <lee.jones@linaro.org>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-iio@vger.kernel.org
-> Cc: linux-input@vger.kernel.org
-> Cc: linux-media@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  Documentation/devicetree/bindings/display/bridge/anx6345.yaml | 2 --
->  .../devicetree/bindings/display/bridge/ite,it6505.yaml        | 2 --
->  .../devicetree/bindings/display/bridge/lvds-codec.yaml        | 3 +--
->  Documentation/devicetree/bindings/display/bridge/ps8640.yaml  | 2 --
->  .../devicetree/bindings/display/bridge/simple-bridge.yaml     | 1 -
->  .../bindings/display/bridge/thine,thc63lvd1024.yaml           | 1 -
->  .../devicetree/bindings/display/bridge/toshiba,tc358775.yaml  | 2 --
->  Documentation/devicetree/bindings/iio/adc/lltc,ltc2496.yaml   | 4 +---
->  .../devicetree/bindings/iio/humidity/ti,hdc2010.yaml          | 3 +--
->  .../devicetree/bindings/input/fsl,mpr121-touchkey.yaml        | 3 +--
->  .../devicetree/bindings/input/touchscreen/edt-ft5x06.yaml     | 3 +--
->  .../devicetree/bindings/media/i2c/maxim,max9286.yaml          | 1 -
->  Documentation/devicetree/bindings/media/i2c/mipi-ccs.yaml     | 3 ---
->  Documentation/devicetree/bindings/media/i2c/sony,imx214.yaml  | 3 ---
->  Documentation/devicetree/bindings/media/i2c/sony,imx274.yaml  | 3 ---
->  Documentation/devicetree/bindings/mfd/st,stmfx.yaml           | 3 +--
->  .../devicetree/bindings/regulator/anatop-regulator.yaml       | 1 -
->  17 files changed, 6 insertions(+), 34 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/display/bridge/anx6345.yaml b/Documentation/devicetree/bindings/display/bridge/anx6345.yaml
-> index 8c0e4f285fbc..fccd63521a8c 100644
-> --- a/Documentation/devicetree/bindings/display/bridge/anx6345.yaml
-> +++ b/Documentation/devicetree/bindings/display/bridge/anx6345.yaml
-> @@ -26,11 +26,9 @@ properties:
->      description: GPIO connected to active low reset
->  
->    dvdd12-supply:
-> -    maxItems: 1
->      description: Regulator for 1.2V digital core power.
->  
->    dvdd25-supply:
-> -    maxItems: 1
->      description: Regulator for 2.5V digital core power.
->  
->    ports:
-> diff --git a/Documentation/devicetree/bindings/display/bridge/ite,it6505.yaml b/Documentation/devicetree/bindings/display/bridge/ite,it6505.yaml
-> index efbb3d0117dc..02cfc0a3b550 100644
-> --- a/Documentation/devicetree/bindings/display/bridge/ite,it6505.yaml
-> +++ b/Documentation/devicetree/bindings/display/bridge/ite,it6505.yaml
-> @@ -35,11 +35,9 @@ properties:
->      maxItems: 1
->  
->    ovdd-supply:
-> -    maxItems: 1
->      description: I/O voltage
->  
->    pwr18-supply:
-> -    maxItems: 1
->      description: core voltage
->  
->    interrupts:
-> diff --git a/Documentation/devicetree/bindings/display/bridge/lvds-codec.yaml b/Documentation/devicetree/bindings/display/bridge/lvds-codec.yaml
-> index e5e3c72630cf..66a14d60ce1d 100644
-> --- a/Documentation/devicetree/bindings/display/bridge/lvds-codec.yaml
-> +++ b/Documentation/devicetree/bindings/display/bridge/lvds-codec.yaml
-> @@ -79,8 +79,7 @@ properties:
->        The GPIO used to control the power down line of this device.
->      maxItems: 1
->  
-> -  power-supply:
-> -    maxItems: 1
-> +  power-supply: true
->  
->  required:
->    - compatible
-> diff --git a/Documentation/devicetree/bindings/display/bridge/ps8640.yaml b/Documentation/devicetree/bindings/display/bridge/ps8640.yaml
-> index 7e27cfcf770d..763c7909473e 100644
-> --- a/Documentation/devicetree/bindings/display/bridge/ps8640.yaml
-> +++ b/Documentation/devicetree/bindings/display/bridge/ps8640.yaml
-> @@ -35,11 +35,9 @@ properties:
->      description: GPIO connected to active low reset.
->  
->    vdd12-supply:
-> -    maxItems: 1
->      description: Regulator for 1.2V digital core power.
->  
->    vdd33-supply:
-> -    maxItems: 1
->      description: Regulator for 3.3V digital core power.
->  
->    ports:
-> diff --git a/Documentation/devicetree/bindings/display/bridge/simple-bridge.yaml b/Documentation/devicetree/bindings/display/bridge/simple-bridge.yaml
-> index 3ddb35fcf0a2..64e8a1c24b40 100644
-> --- a/Documentation/devicetree/bindings/display/bridge/simple-bridge.yaml
-> +++ b/Documentation/devicetree/bindings/display/bridge/simple-bridge.yaml
-> @@ -60,7 +60,6 @@ properties:
->      description: GPIO controlling bridge enable
->  
->    vdd-supply:
-> -    maxItems: 1
->      description: Power supply for the bridge
->  
->  required:
-> diff --git a/Documentation/devicetree/bindings/display/bridge/thine,thc63lvd1024.yaml b/Documentation/devicetree/bindings/display/bridge/thine,thc63lvd1024.yaml
-> index 469ac4a34273..3d5ce08a5792 100644
-> --- a/Documentation/devicetree/bindings/display/bridge/thine,thc63lvd1024.yaml
-> +++ b/Documentation/devicetree/bindings/display/bridge/thine,thc63lvd1024.yaml
-> @@ -74,7 +74,6 @@ properties:
->      description: Power down GPIO signal, pin name "/PDWN", active low.
->  
->    vcc-supply:
-> -    maxItems: 1
->      description:
->        Power supply for the TTL output, TTL CLOCKOUT signal, LVDS input, PLL and
->        digital circuitry.
-> diff --git a/Documentation/devicetree/bindings/display/bridge/toshiba,tc358775.yaml b/Documentation/devicetree/bindings/display/bridge/toshiba,tc358775.yaml
-> index fd3113aa9ccd..b5959cc78b8d 100644
-> --- a/Documentation/devicetree/bindings/display/bridge/toshiba,tc358775.yaml
-> +++ b/Documentation/devicetree/bindings/display/bridge/toshiba,tc358775.yaml
-> @@ -28,11 +28,9 @@ properties:
->      description: i2c address of the bridge, 0x0f
->  
->    vdd-supply:
-> -    maxItems: 1
->      description: 1.2V LVDS Power Supply
->  
->    vddio-supply:
-> -    maxItems: 1
->      description: 1.8V IO Power Supply
->  
->    stby-gpios:
-> diff --git a/Documentation/devicetree/bindings/iio/adc/lltc,ltc2496.yaml b/Documentation/devicetree/bindings/iio/adc/lltc,ltc2496.yaml
-> index 6a991e9f78e2..f04084fae5e8 100644
-> --- a/Documentation/devicetree/bindings/iio/adc/lltc,ltc2496.yaml
-> +++ b/Documentation/devicetree/bindings/iio/adc/lltc,ltc2496.yaml
-> @@ -16,9 +16,7 @@ properties:
->      enum:
->        - lltc,ltc2496
->  
-> -  vref-supply:
-> -    description: phandle to an external regulator providing the reference voltage
-> -    $ref: /schemas/types.yaml#/definitions/phandle
-> +  vref-supply: true
+[1] -> http://lore.kernel.org/r/20201103035556.21260-1-kishon@ti.com
 
-I'd keep part of the description as it's not just the device's main
-power supply (at least if we can trust the current description).
+Kishon Vijay Abraham I (14):
+  phy: cadence: Sierra: Fix PHY power_on sequence
+  phy: ti: j721e-wiz: Invoke wiz_init() before
+    of_platform_device_create()
+  dt-bindings: phy: cadence-sierra: Add bindings for the PLLs within
+    SERDES
+  phy: ti: j721e-wiz: Get PHY properties only for "phy" or "link"
+    subnode
+  phy: cadence: cadence-sierra: Create PHY only for "phy" or "link"
+    sub-nodes
+  phy: cadence: cadence-sierra: Move all clk_get_*() to a separate
+    function
+  phy: cadence: cadence-sierra: Move all reset_control_get*() to a
+    separate function
+  phy: cadence: cadence-sierra: Explicitly request exclusive reset
+    control
+  phy: cadence: sierra: Model reference receiver as clocks (gate clocks)
+  phy: cadence: sierra: Enable pll_cmnlc and pll_cmnlc1 clocks
+  arm64: dts: ti: k3-j721e-main: Add DT nodes for clocks within Sierra
+    SERDES
+  arm64: dts: ti: k3-j721e-main: Fix external refclk input to SERDES
+  arm64: dts: ti: k3-j721e-common-proc-board: Use external clock for
+    SERDES
+  arm64: dts: ti: k3-j721e-common-proc-board: Re-name "link" name as
+    "phy"
 
-  vref-supply:
-    description: Power supply for the reference voltage
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
->    reg:
->      description: spi chipselect number according to the usual spi bindings
-> diff --git a/Documentation/devicetree/bindings/iio/humidity/ti,hdc2010.yaml b/Documentation/devicetree/bindings/iio/humidity/ti,hdc2010.yaml
-> index 7037f82ec753..88384b69f917 100644
-> --- a/Documentation/devicetree/bindings/iio/humidity/ti,hdc2010.yaml
-> +++ b/Documentation/devicetree/bindings/iio/humidity/ti,hdc2010.yaml
-> @@ -22,8 +22,7 @@ properties:
->        - ti,hdc2010
->        - ti,hdc2080
->  
-> -  vdd-supply:
-> -    maxItems: 1
-> +  vdd-supply: true
->  
->    reg:
->      maxItems: 1
-> diff --git a/Documentation/devicetree/bindings/input/fsl,mpr121-touchkey.yaml b/Documentation/devicetree/bindings/input/fsl,mpr121-touchkey.yaml
-> index 378a85c09d34..878464f128dc 100644
-> --- a/Documentation/devicetree/bindings/input/fsl,mpr121-touchkey.yaml
-> +++ b/Documentation/devicetree/bindings/input/fsl,mpr121-touchkey.yaml
-> @@ -31,8 +31,7 @@ properties:
->    interrupts:
->      maxItems: 1
->  
-> -  vdd-supply:
-> -    maxItems: 1
-> +  vdd-supply: true
->  
->    linux,keycodes:
->      minItems: 1
-> diff --git a/Documentation/devicetree/bindings/input/touchscreen/edt-ft5x06.yaml b/Documentation/devicetree/bindings/input/touchscreen/edt-ft5x06.yaml
-> index 4ce109476a0e..bfc3a8b5e118 100644
-> --- a/Documentation/devicetree/bindings/input/touchscreen/edt-ft5x06.yaml
-> +++ b/Documentation/devicetree/bindings/input/touchscreen/edt-ft5x06.yaml
-> @@ -55,8 +55,7 @@ properties:
->  
->    wakeup-source: true
->  
-> -  vcc-supply:
-> -    maxItems: 1
-> +  vcc-supply: true
->  
->    gain:
->      description: Allows setting the sensitivity in the range from 0 to 31.
-> diff --git a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
-> index 9ea827092fdd..68ee8c7d9e79 100644
-> --- a/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
-> +++ b/Documentation/devicetree/bindings/media/i2c/maxim,max9286.yaml
-> @@ -40,7 +40,6 @@ properties:
->  
->    poc-supply:
->      description: Regulator providing Power over Coax to the cameras
-> -    maxItems: 1
->  
->    enable-gpios:
->      description: GPIO connected to the \#PWDN pin with inverted polarity
-> diff --git a/Documentation/devicetree/bindings/media/i2c/mipi-ccs.yaml b/Documentation/devicetree/bindings/media/i2c/mipi-ccs.yaml
-> index 0df0334d2d0d..bb3528315f20 100644
-> --- a/Documentation/devicetree/bindings/media/i2c/mipi-ccs.yaml
-> +++ b/Documentation/devicetree/bindings/media/i2c/mipi-ccs.yaml
-> @@ -39,15 +39,12 @@ properties:
->  
->    vana-supply:
->      description: Analogue voltage supply (VANA), sensor dependent.
-> -    maxItems: 1
->  
->    vcore-supply:
->      description: Core voltage supply (VCore), sensor dependent.
-> -    maxItems: 1
->  
->    vio-supply:
->      description: I/O voltage supply (VIO), sensor dependent.
-> -    maxItems: 1
->  
->    clocks:
->      description: External clock to the sensor.
-> diff --git a/Documentation/devicetree/bindings/media/i2c/sony,imx214.yaml b/Documentation/devicetree/bindings/media/i2c/sony,imx214.yaml
-> index 1a3590dd0e98..eb12526a462f 100644
-> --- a/Documentation/devicetree/bindings/media/i2c/sony,imx214.yaml
-> +++ b/Documentation/devicetree/bindings/media/i2c/sony,imx214.yaml
-> @@ -37,15 +37,12 @@ properties:
->  
->    vdddo-supply:
->      description: Chip digital IO regulator (1.8V).
-> -    maxItems: 1
->  
->    vdda-supply:
->      description: Chip analog regulator (2.7V).
-> -    maxItems: 1
->  
->    vddd-supply:
->      description: Chip digital core regulator (1.12V).
-> -    maxItems: 1
->  
->    flash-leds:
->      description: See ../video-interfaces.txt
-> diff --git a/Documentation/devicetree/bindings/media/i2c/sony,imx274.yaml b/Documentation/devicetree/bindings/media/i2c/sony,imx274.yaml
-> index f697e1a20beb..a66acb20d59b 100644
-> --- a/Documentation/devicetree/bindings/media/i2c/sony,imx274.yaml
-> +++ b/Documentation/devicetree/bindings/media/i2c/sony,imx274.yaml
-> @@ -33,15 +33,12 @@ properties:
->  
->    vana-supply:
->      description: Sensor 2.8 V analog supply.
-> -    maxItems: 1
->  
->    vdig-supply:
->      description: Sensor 1.8 V digital core supply.
-> -    maxItems: 1
->  
->    vddl-supply:
->      description: Sensor digital IO 1.2 V supply.
-> -    maxItems: 1
->  
->    port:
->      type: object
-> diff --git a/Documentation/devicetree/bindings/mfd/st,stmfx.yaml b/Documentation/devicetree/bindings/mfd/st,stmfx.yaml
-> index 888ab4b5df45..19e9afb385ac 100644
-> --- a/Documentation/devicetree/bindings/mfd/st,stmfx.yaml
-> +++ b/Documentation/devicetree/bindings/mfd/st,stmfx.yaml
-> @@ -26,8 +26,7 @@ properties:
->  
->    drive-open-drain: true
->  
-> -  vdd-supply:
-> -    maxItems: 1
-> +  vdd-supply: true
->  
->    pinctrl:
->      type: object
-> diff --git a/Documentation/devicetree/bindings/regulator/anatop-regulator.yaml b/Documentation/devicetree/bindings/regulator/anatop-regulator.yaml
-> index e7b3abe30363..0a66338c7e5a 100644
-> --- a/Documentation/devicetree/bindings/regulator/anatop-regulator.yaml
-> +++ b/Documentation/devicetree/bindings/regulator/anatop-regulator.yaml
-> @@ -59,7 +59,6 @@ properties:
->      description: u32 value representing regulator enable bit offset.
->  
->    vin-supply:
-> -    $ref: '/schemas/types.yaml#/definitions/phandle'
->      description: input supply phandle.
->  
->  required:
+ .../bindings/phy/phy-cadence-sierra.yaml      |  89 ++-
+ .../dts/ti/k3-j721e-common-proc-board.dts     |  57 +-
+ arch/arm64/boot/dts/ti/k3-j721e-main.dtsi     | 186 ++++--
+ drivers/phy/cadence/phy-cadence-sierra.c      | 543 ++++++++++++++++--
+ drivers/phy/ti/phy-j721e-wiz.c                |  21 +-
+ 5 files changed, 808 insertions(+), 88 deletions(-)
 
 -- 
-Regards,
+2.17.1
 
-Laurent Pinchart
