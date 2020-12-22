@@ -2,91 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B9C22E087A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 11:04:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 733062E0885
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 11:11:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726274AbgLVKD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 05:03:56 -0500
-Received: from coyote.holtmann.net ([212.227.132.17]:51412 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725854AbgLVKD4 (ORCPT
+        id S1726101AbgLVKLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 05:11:02 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:37645 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725807AbgLVKLB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 05:03:56 -0500
-Received: from mac-pro.holtmann.net (p4ff9fbc9.dip0.t-ipconnect.de [79.249.251.201])
-        by mail.holtmann.org (Postfix) with ESMTPSA id E165FCED1D;
-        Tue, 22 Dec 2020 11:10:31 +0100 (CET)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.40.0.2.32\))
-Subject: Re: [PATCH v3 4/5] Bluetooth: advmon offload MSFT handle controller
- reset
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <CAJQfnxHrvnsLRDHNFWAN9uPJmWiTpE6x4YAmgs77KO6QQBFW7w@mail.gmail.com>
-Date:   Tue, 22 Dec 2020 11:03:13 +0100
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Miao-chen Chou <mcchou@chromium.org>,
-        Yun-Hao Chung <howardchung@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
-Content-Transfer-Encoding: 7bit
-Message-Id: <8EB5497C-1D36-42B5-946C-3CC60D6F98CB@holtmann.org>
-References: <20201216043335.2185278-1-apusaka@google.com>
- <20201216123317.v3.4.I215b0904cb68d68ac780a0c75c06f7d12e6147b7@changeid>
- <73E2D097-F8D4-4BFA-8EC1-C04B079F1BFC@holtmann.org>
- <CAJQfnxHrvnsLRDHNFWAN9uPJmWiTpE6x4YAmgs77KO6QQBFW7w@mail.gmail.com>
-To:     Archie Pusaka <apusaka@google.com>
-X-Mailer: Apple Mail (2.3654.40.0.2.32)
+        Tue, 22 Dec 2020 05:11:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1608631860; x=1640167860;
+  h=references:from:to:cc:subject:in-reply-to:date:
+   message-id:mime-version;
+  bh=mLxK7pdCxepvYeT16S70cUii2HXJKQUHNnyxW4YH+H8=;
+  b=BL9IsZM+4PcG4SBMu5wWjBX9K1+/tjMjZMf6LkdQN3emAm0cLODditEA
+   oYrylwGQXhYb9BlK75GMv4BowtvHB+3UBkJf1Yg3ssrzsvU0ldErrOzif
+   T+W05wQ3MOIWic8X1dV9MsfCC8HNeHZ17tvcR1UocOSKftVGZ/tRAlSsm
+   2uECJwFr/BDaeGTY+sUPWIpjzohg+iEPUgcAEPybgTpf7fNJo53vjsa+E
+   WIXm9h3W2MlzQd7SwKirj+o+wxv0LL+rClfnAaTbfg0QQVDxr/cS+Ps7g
+   CAiGoClFG4pxe8S8A6njUa4eKgaamaswWwnPYqNjP4iDcOMpM3p0TYr+V
+   g==;
+IronPort-SDR: 13GE3ImmUEBO77AzGj+1urChOLJ2YI/cgB+Z6/z8JGLyDHBvdFbWOsBhbKt2HqP9iqfYMIhRz8
+ bFYcr7rM9c98Np9AqYm3LUyl3KVN9kbmkVgNiCuNdKYDoi7V4fmqdlUQ6cfdRYtPfsuEIbm7Y8
+ CUATxCVHuCDG6pNaJYAZ8Rf+/eeEgMkQkbNpSJQZz6MF4L0AAyZUWyaSVzPVQnx+ySxaHw+WWe
+ pnmKkrA0W+R7jeyYJRxk4PGLgRDFnYzPyuDPoD0jH/6rcB16qxBFpNzSoCjBMyZ0cceFKFthU7
+ ncM=
+X-IronPort-AV: E=Sophos;i="5.78,438,1599548400"; 
+   d="scan'208";a="38261332"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 22 Dec 2020 03:09:44 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 22 Dec 2020 03:09:44 -0700
+Received: from soft-dev10.microchip.com (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
+ via Frontend Transport; Tue, 22 Dec 2020 03:09:42 -0700
+References: <20201113145151.68900-1-lars.povlsen@microchip.com> <20201113145151.68900-4-lars.povlsen@microchip.com> <20201220224804.GA3107610@lunn.ch>
+User-agent: mu4e 1.2.0; emacs 26.3
+From:   Lars Povlsen <lars.povlsen@microchip.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     Lars Povlsen <lars.povlsen@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        <devicetree@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        <linux-kernel@vger.kernel.org>,
+        "Microchip Linux Driver Support" <UNGLinuxDriver@microchip.com>,
+        <linux-gpio@vger.kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v10 3/3] arm64: dts: sparx5: Add SGPIO devices
+In-Reply-To: <20201220224804.GA3107610@lunn.ch>
+Date:   Tue, 22 Dec 2020 11:09:41 +0100
+Message-ID: <87eejip2xm.fsf@microchip.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Archie,
 
->>> When the controller is powered off, the registered advertising monitor
->>> is removed from the controller. This patch handles the re-registration
->>> of those monitors when the power is on.
->>> 
->>> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
->>> Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
->>> Reviewed-by: Yun-Hao Chung <howardchung@google.com>
->>> 
->>> ---
->>> 
->>> (no changes since v1)
->>> 
->>> net/bluetooth/msft.c | 79 +++++++++++++++++++++++++++++++++++++++++---
->>> 1 file changed, 74 insertions(+), 5 deletions(-)
->>> 
->>> diff --git a/net/bluetooth/msft.c b/net/bluetooth/msft.c
->>> index f5aa0e3b1b9b..7e33a85c3f1c 100644
->>> --- a/net/bluetooth/msft.c
->>> +++ b/net/bluetooth/msft.c
->>> @@ -82,8 +82,15 @@ struct msft_data {
->>>      struct list_head handle_map;
->>>      __u16 pending_add_handle;
->>>      __u16 pending_remove_handle;
->>> +
->>> +     struct {
->>> +             u8 reregistering:1;
->>> +     } flags;
->>> };
->> 
->> hmmm. Do you have bigger plans with this struct? I would just skip it.
->> 
-> This struct is also used in patch 5/5 to store the "enabled" status of
-> the filter.
-> Suspend/resume would need to enable/disable the filter, but it is not
-> yet implemented in this patch series.
+Andrew Lunn writes:
 
-just do it without the nested structs. I think you are overdoing it here.
+> On Fri, Nov 13, 2020 at 03:51:51PM +0100, Lars Povlsen wrote:
+>> +             led@8 {
+>> +                     label = "eth12:green";
+>> +                     gpios = <&sgpio_out0 12 0 GPIO_ACTIVE_HIGH>;
+>> +                     default-state = "off";
+>> +             };
+>> +             led@9 {
+>> +                     label = "eth12:yellow";
+>> +                     gpios = <&sgpio_out0 12 1 GPIO_ACTIVE_HIGH>;
+>> +                     default-state = "off";
+>> +             };
+>
+> Hi Lars
+>
+> I did not see these patches earlier, but i've been looking at the
+> switch driver patches recently, so went digging.
+>
+> Can the Ethernet switch itself control these LEDs for indicating
+> things like packet receive/transmit, link state, and link speed? Or
+> are they purely software controlled?
+>
+>     Thanks
+>         Andrew
 
-Regards
+Hi Andrew!
 
-Marcel
+No, the SGPIO device is separate from the switch device as such. I was
+planning to couple the two by means of "led events" in a later patch.
 
+---Lars
+
+--
+Lars Povlsen,
+Microchip
