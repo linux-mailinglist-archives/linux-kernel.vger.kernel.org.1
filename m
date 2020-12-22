@@ -2,67 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D8492E09BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 12:34:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C202E09C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 12:36:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726919AbgLVLep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 06:34:45 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:10057 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726463AbgLVLeo (ORCPT
+        id S1726957AbgLVLfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 06:35:04 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:14145 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726756AbgLVLfE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 06:34:44 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4D0Z2m0WCnzM7yQ;
-        Tue, 22 Dec 2020 19:33:04 +0800 (CST)
-Received: from [127.0.0.1] (10.40.192.131) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.498.0; Tue, 22 Dec 2020
- 19:33:53 +0800
-Subject: Re: [PATCH v1] gpio: hisi: delete some unused variables in
- hisi_gpio_probe()
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <1608539124-4914-1-git-send-email-luojiaxing@huawei.com>
- <CAHp75VcV2E+e9e_o7zwrL+gzZ3xUkZYOnTDACxH1j59bxTVifw@mail.gmail.com>
-From:   luojiaxing <luojiaxing@huawei.com>
-Message-ID: <5be97c5e-39fc-bf58-aee5-39438948b059@huawei.com>
-Date:   Tue, 22 Dec 2020 19:33:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.2.1
+        Tue, 22 Dec 2020 06:35:04 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1608636878; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=CGuxgbpv0qWFddC98LkeZGfeYaVURHqEjzHXuReTvxw=;
+ b=OOKFx9mzMdHZDnxvqNyWCeQOXhA5NO89qi20/roGIeebdxkCxtBTHytLwoJiYqBMufp6hfei
+ GXtpjLVrnyeYHGQtVkAvspGPtUh5sWhP5knGUlzPmvveRH1Anj0+kmqIpwhO1CrzE5liuwqO
+ p3gYA1UPQ2UGdHPybx+bO6vfovM=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5fe1d9af6d011aad668d2a0a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Dec 2020 11:34:07
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 54ED1C43464; Tue, 22 Dec 2020 11:34:07 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 49C85C433C6;
+        Tue, 22 Dec 2020 11:34:06 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VcV2E+e9e_o7zwrL+gzZ3xUkZYOnTDACxH1j59bxTVifw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.40.192.131]
-X-CFilter-Loop: Reflected
+Date:   Tue, 22 Dec 2020 19:34:06 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Stanley Chu <stanley.chu@mediatek.com>
+Cc:     linux-scsi@vger.kernel.org, martin.petersen@oracle.com,
+        avri.altman@wdc.com, alim.akhtar@samsung.com, jejb@linux.ibm.com,
+        beanhuo@micron.com, asutoshd@codeaurora.org,
+        matthias.bgg@gmail.com, bvanassche@acm.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kuohong.wang@mediatek.com, peter.wang@mediatek.com,
+        chun-hung.wu@mediatek.com, andy.teng@mediatek.com,
+        chaotian.jing@mediatek.com, cc.chou@mediatek.com,
+        jiajie.hao@mediatek.com, alice.chao@mediatek.com
+Subject: Re: [PATCH v2 2/2] scsi: ufs: Relax the condition of
+ UFSHCI_QUIRK_SKIP_MANUAL_WB_FLUSH_CTRL
+In-Reply-To: <20201222072905.32221-3-stanley.chu@mediatek.com>
+References: <20201222072905.32221-1-stanley.chu@mediatek.com>
+ <20201222072905.32221-3-stanley.chu@mediatek.com>
+Message-ID: <948718782f2a1f82b3c6de964a37f8ac@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020-12-22 15:29, Stanley Chu wrote:
+> UFSHCI_QUIRK_SKIP_MANUAL_WB_FLUSH_CTRL is aimed to skip enabling
+> fWriteBoosterBufferFlushEn while WriteBooster is initializing.
+> Therefore it is better to apply the checking during WriteBooster
+> initialization only.
+> 
+> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 9d61dc3eb842..e50b19925236 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -289,7 +289,8 @@ static inline void ufshcd_wb_config(struct ufs_hba 
+> *hba)
+>  	if (ret)
+>  		dev_err(hba->dev, "%s: En WB flush during H8: failed: %d\n",
+>  			__func__, ret);
+> -	ufshcd_wb_toggle_flush(hba, true);
+> +	if (!(hba->quirks & UFSHCI_QUIRK_SKIP_MANUAL_WB_FLUSH_CTRL))
+> +		ufshcd_wb_toggle_flush(hba, true);
+>  }
+> 
+>  static void ufshcd_scsi_unblock_requests(struct ufs_hba *hba)
+> @@ -5401,9 +5402,6 @@ static int
+> ufshcd_wb_toggle_flush_during_h8(struct ufs_hba *hba, bool set)
+> 
+>  static inline void ufshcd_wb_toggle_flush(struct ufs_hba *hba, bool 
+> enable)
+>  {
+> -	if (hba->quirks & UFSHCI_QUIRK_SKIP_MANUAL_WB_FLUSH_CTRL)
+> -		return;
+> -
+>  	if (enable)
+>  		ufshcd_wb_buf_flush_enable(hba);
+>  	else
 
-On 2020/12/21 18:35, Andy Shevchenko wrote:
-> On Mon, Dec 21, 2020 at 10:25 AM Luo Jiaxing <luojiaxing@huawei.com> wrote:
->> kernel test rebot report that dat, set and clr in hisi_gpio_probe() is
->> unused variables. So delete it.
-> Fixes: tag?
+Thanks for the change, I was thinking about the same.
 
-
-Fixes: 356b01a986a5 ("gpio: gpio-hisi: Add HiSilicon GPIO support")
-
-
-Should I send v2 to add this tag? or we can ask linus to help to add it 
-when apply this?
-
-
-Thanks
-
-Jiaxing
-
->
->> Reported-by: kernel test robot <lkp@intel.com>
->> Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
-
+Reviewed-by: Can Guo <cang@codeaurora.org>
