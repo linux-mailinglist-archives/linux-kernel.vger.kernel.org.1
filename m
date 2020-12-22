@@ -2,93 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EAA52E0FE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 22:44:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 526AF2E0FEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 22:48:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728028AbgLVVoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 16:44:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726534AbgLVVoH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 16:44:07 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFE72C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 13:43:27 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id r4so8075565pls.11
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 13:43:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=V18RJFVoSD2HfPTrMybJhWRx+16Y//JP10XUyAiF9C0=;
-        b=MoFoz97ipfgL0tskYxv3eUZrXs1Gtf4S6AIT48y4RoUx4gTy/pyHeDU0ASRe4+CTGV
-         6EQPpsfEG8ojet/F+BqJP7osfq2axER1b9OdQ5I7dbdF8eIZ5zNdTK9moJab2eBpN90w
-         Vqz2Kherc3CmoKwR9ICk4/+1KBetvtuXSFh+kNpzebgvZW1e10DodKAND41hjcHoL7O1
-         aPBdL2Cp6KXghjcUF5GrxhFp4g+00u7vCveST0JC+7XDzWJjhpp47uHFhFbzr8/ZqfKw
-         O4BIlbC80rAzXV+Cw98wRd4KHOlJJ73+yFwfcfXmpcLWmwDJ8GtjtZWcE5k59g3GypE5
-         qpPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=V18RJFVoSD2HfPTrMybJhWRx+16Y//JP10XUyAiF9C0=;
-        b=WAwTlepQBeY9pOIpu3CII6wHjluuKHN+ISVcMDarT5f2LhD2op804qOVTQDCBrNTe6
-         /4jfjco2GjcQTpbzoFid1C0BK0zIMzllmL9KhcXxdigf/zjYHvPThzVa0oMbA4uAkqal
-         gl/PFJLpXKm1rZMQsKv9uwQ3bPqq6yiM63ItgzXphgHTGFxM48bumDEGkXuzF7yqAKLe
-         f1dinLa5Abt+S2BylB95MzpTXJp13OEpz2Ligs5XvFD4Nv5H1G4ntpzgJhudWF92xcmL
-         SwRwR9MRwxbHCZ7nBW0o1wZcKGpKqooVYpt9fpvb8Ny9b6H3CvSoXgRsrPatD++KveDJ
-         WvJQ==
-X-Gm-Message-State: AOAM531K845FNSkld6yFveq9zr+HdhsOgH57tVLL8IECMVOGqAq5ifuT
-        ssPtT4R0WbdBMsN85nS+nl3kXA==
-X-Google-Smtp-Source: ABdhPJynPZBPU88MgcEl5WcwU0cdYjZC20/3FRJRStClymFa4iKtg9+XkPvnpAcMdwtKD+bNajR6Jw==
-X-Received: by 2002:a17:90a:fc83:: with SMTP id ci3mr24052182pjb.145.1608673407151;
-        Tue, 22 Dec 2020 13:43:27 -0800 (PST)
-Received: from google.com ([2620:15c:2ce:0:a6ae:11ff:fe11:4abb])
-        by smtp.gmail.com with ESMTPSA id s29sm22665086pgn.65.2020.12.22.13.43.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Dec 2020 13:43:26 -0800 (PST)
-Date:   Tue, 22 Dec 2020 13:43:23 -0800
-From:   Fangrui Song <maskray@google.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Guo Ren <guoren@kernel.org>, linux-csky@vger.kernel.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: building csky with CC=clang
-Message-ID: <20201222214323.655tjdqdvxhw3722@google.com>
-References: <CAKwvOdmnhsPU0UA9uEd1HTQ_yoBO8h741+sKrtebcPsXpXn8_g@mail.gmail.com>
+        id S1728090AbgLVVpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 16:45:25 -0500
+Received: from mail-co1nam11on2130.outbound.protection.outlook.com ([40.107.220.130]:29921
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728020AbgLVVpZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 16:45:25 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=H2vL6US+xAtBcRrRYftQQ7bATtHVPQMhFZfAcyEX/cpqQ4psgTO8Hj7dzetJHr1IaoPjQlHxXkvzD1NNLscmFbZMLHF4uPIHQcEJJAbgwmBFwID3J2sRfamwciq5DiZzQfmW4p/Qxfm4OdswS7rackjgQcjOifiiMU2wMRuU8wjH+MU5pa1cIm0Wm0sw+2CxsKCMMjD+4X3m7Riw1vMb/tk6wj2nSAmTTV7nTwPyGlJPsrdDF/DcYDKgFmWtn3u46Q0u6A+aCjYIKJ0zg99lhgvCFFCW+3TKsRJQFeHw363nGD7geEIZsRzUmuYG93J+J1nRc/Aw+gMHrU02Akbl/A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=V5WwUAe30zWOww0ysRjtaMicApVr9lfW9DGV9kRx4iQ=;
+ b=D2OfqIR0wSdSwkbJTKoBtnnYjHZT9gjRI9MhztvCL30VqmfFHuWmTp5gxsBeeAxlH35f0jfTi8h3fZqUuOBBcLr6Z2WPNVKanVAnnRC2ADqtfW5wJXLQyqTc6t9OlD/69FosAG4A8k+zuGwX9Qlez5Ae0q0tQgRytFA8hqu3SS2haRHJAx1i+6Zfljzy48Sd6fGV+lhjoLdH85CRGJuI3C+SAeW6SgjnEiVBY0Q7PB3EzW17RO21Z1vo1i59Z3QDdeHwX/G2PGjl63MbaWKleWxN72RrS4jbcccFfK2ss7v3A8lF41tMTGq7zeiKAaKpHjxV5aQIl6j2gjlX+N+N1A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=V5WwUAe30zWOww0ysRjtaMicApVr9lfW9DGV9kRx4iQ=;
+ b=PE+ESb0cqG3JUFb23BTh5WsfOlBn5f5WiTSuVBh6tOWVifK9AAKFn0qzCSKyD9eqyMyT5lkmghaH7AO4bM324sxbF43LsHQ+uHUvkSyrQLQecN2LEOKCxtxfLBuvUoSpd86kkiZr+hUedxQQxs7hqUJIQCgNdFGnZ2qwN5ai5s0=
+Received: from (2603:10b6:303:74::12) by
+ MWHPR21MB0638.namprd21.prod.outlook.com (2603:10b6:300:127::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.6; Tue, 22 Dec
+ 2020 21:44:37 +0000
+Received: from MW4PR21MB1857.namprd21.prod.outlook.com
+ ([fe80::f133:55b5:4633:c485]) by MW4PR21MB1857.namprd21.prod.outlook.com
+ ([fe80::f133:55b5:4633:c485%5]) with mapi id 15.20.3721.008; Tue, 22 Dec 2020
+ 21:44:37 +0000
+From:   Dexuan Cui <decui@microsoft.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+CC:     "mingo@redhat.com" <mingo@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "bristot@redhat.com" <bristot@redhat.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>
+Subject: RE: v5.10: sched_cpu_dying() hits BUG_ON during hibernation: kernel
+ BUG at kernel/sched/core.c:7596!
+Thread-Topic: v5.10: sched_cpu_dying() hits BUG_ON during hibernation: kernel
+ BUG at kernel/sched/core.c:7596!
+Thread-Index: AdbYQq18xc9NlU57RRyWL/lF+Wmp7AAJT/qAAA389SA=
+Date:   Tue, 22 Dec 2020 21:44:37 +0000
+Message-ID: <MW4PR21MB1857209BF0AB8C074FA4A5B6BFDF9@MW4PR21MB1857.namprd21.prod.outlook.com>
+References: <MW4PR21MB1857BF96E59E75EF9CE406E2BFDF9@MW4PR21MB1857.namprd21.prod.outlook.com>
+ <jhjlfdqrmc6.mognet@arm.com>
+In-Reply-To: <jhjlfdqrmc6.mognet@arm.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=fb843c89-09ad-4820-a28a-56ffa5c50622;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-12-22T20:20:24Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: arm.com; dkim=none (message not signed)
+ header.d=none;arm.com; dmarc=none action=none header.from=microsoft.com;
+x-originating-ip: [2601:600:a280:7f70:3591:4820:2a8b:862]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 9be2d7c1-aa32-49b6-7bed-08d8a6c2c78c
+x-ms-traffictypediagnostic: MWHPR21MB0638:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR21MB063828C199C123369CE9F56ABFDF9@MWHPR21MB0638.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:556;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: SbC+0wNP1S55B76qnSW0rTkCnVEXnTSLCzsRsY7GZAq/HV7DziaHNw60szdkduGIZrN1+RWQBs0Toah9zDbZuuogmx8cTuCVYMy0Z5/83Acj15kPya+qR+HUrE9d/Jem8fLhAuZ23RWZAJLND5Z3zGSg4AKcI5LNoNRWevp2HRFEAo4bXUDakrHF7YU+5bI36Hn7s7PLwTPV2G6OtdGuRP0x5Kjen6vwiFETeYjPrvgHvZbu3g3Nc8WX1mstAP1VY/TMOJSEIB7PSd9esO1OUbZ/UoaDXi/Da8ZBLUR0T2Y/zemxcJ4LLUdWNvmW4jcjKNkW7IgC3sDa21Ufugxzguvygc418ql8UyOcxhn1eMEQs2dM5uFMgsXhkmUDgEfRS1kQwHhCltvlOepC8+aY8JcCDKE7ybpfskOq5C6E6q0abmqj++qPL0nZQ/UotuYElN6V0OSC44XQklHfAPD1SA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR21MB1857.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(376002)(136003)(396003)(366004)(7696005)(66446008)(76116006)(86362001)(186003)(54906003)(66556008)(6916009)(33656002)(478600001)(9686003)(4326008)(66946007)(316002)(64756008)(83380400001)(66476007)(5660300002)(7416002)(107886003)(8676002)(52536014)(2906002)(966005)(53546011)(82950400001)(8936002)(82960400001)(8990500004)(6506007)(55016002)(10290500003)(71200400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?FUsixhVWT0K7CTQvApYUXTHb4T9D/OMW3bLhzN1n2ojWZTfAj/ULuoyhJwVc?=
+ =?us-ascii?Q?p82ug2nP1cajGgpHjuuTBluuutJOXSsy+sbo6++0PsxTAFGnyOqzwJDU8dsj?=
+ =?us-ascii?Q?h4v60POgx1yC0uaOi5YTUUc7KHLZHm6keSNUio/9AL5XkkoMwHp/4VzCF6gi?=
+ =?us-ascii?Q?S51Qg9xmyFYNlfwNqhgTE6Qiq6cs2YwWkILPV7eb71+SByVtvqePrOXKA/lV?=
+ =?us-ascii?Q?sof2wFvDL9/F4rvDyVSQhkew+QUDJ5CsTjvH1mKxO2MAYt0W3Rc6kbad1Brg?=
+ =?us-ascii?Q?Lkcl7LR9Re00WVfy51ZePtqRzLEFau1ETvil1oxpP4ZTOAydwzGIaU5o2Lzi?=
+ =?us-ascii?Q?gotyYNa6f6BluaC+JBvs7NU4DRQguVlAFfWZLZOG+mxep0CE2wV82bbv8MNM?=
+ =?us-ascii?Q?68fuByQKJUQQ+TLXMI0g1SYyjM6DWUosvePTPvd9TyioJzdPvcemovUKTGIs?=
+ =?us-ascii?Q?Bb6khKf/UKoAYI4hHT4cSxezGmtACVVJ75xAy+EmzNyARPTDFatrbBlCnTOt?=
+ =?us-ascii?Q?xgYHnOsxBJc5REmNseR7UbsAGYDUzAERdBmFErrPFKF3h4syq/0rlSfhgPWr?=
+ =?us-ascii?Q?KfoXwgMZE4/UX6GilKL46BN4FZ+Krd5m0fqKdVFaa3GN0ZXeIHtf6/vuV4Tn?=
+ =?us-ascii?Q?9Vj1a2HTWL9Rnr1RSkxAcVq0h8mvpXolkTo2dquBT8FNqX4O2c3t8Bcawmjr?=
+ =?us-ascii?Q?h96x6DZk9452x6G8JA20z+s5bODqNWofhZ17njPdUzTX7nUeHd6oFpwqk3bR?=
+ =?us-ascii?Q?90T0NuVLxdFsnKwX0q6/XSi2IF7D3EVAGk6BgXnaChFc6Ljgq6UXIPAzc+Lg?=
+ =?us-ascii?Q?Mate4xMR2IMSLewJo3bkNCSLrkkc3xFUyA70O5eR8hKQ8EFbqiJCsTcHugb1?=
+ =?us-ascii?Q?lJG2hodV7l5DutSgxJgZOIfLHemUWMROWXt4fBGmV+EQGuaFN0qZRHy0XPXb?=
+ =?us-ascii?Q?u/YETT8+Qa8Ah9pYiO1BYsd1W+oW/60MtyYhV5R6mZpEVtNJ1L5DaE8s2upq?=
+ =?us-ascii?Q?45rTRjlC4kKhf9QxGf/Z6mRQKfbR6m1FKI2XRS9FbKRAnjw=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CAKwvOdmnhsPU0UA9uEd1HTQ_yoBO8h741+sKrtebcPsXpXn8_g@mail.gmail.com>
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR21MB1857.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9be2d7c1-aa32-49b6-7bed-08d8a6c2c78c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Dec 2020 21:44:37.3608
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: AHnKklLLjPsjvFPJuQnSR2u+BiKecOtMQJHxcHNf1Y+q3fIptZWf9GGwnz20oRlRzOA1KhULv419QLhjZtbAew==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR21MB0638
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-22, 'Nick Desaulniers' via Clang Built Linux wrote:
->Hello!
->I was playing with some of LLVM's experimental backends (m68k) and saw
->there was a CSKY backend. I rebuilt LLVM to support CSKY, but I ran
->into trouble building the kernel before even getting to the compiler
->invocation:
->
->$ ARCH=csky CROSS_COMPILE=csky-linux-gnu- make CC=clang -j71 defconfig
->...
->scripts/Kconfig.include:40: linker 'csky-linux-gnu-ld' not found
->
->My distro doesn't package binutils-csky-linux-gnu, is there
->documentation on how to build the kernel targeting CSKY, starting with
->building GNU binutils configured with CSKY emulation?
+> From: Valentin Schneider <valentin.schneider@arm.com>
+> Sent: Tuesday, December 22, 2020 5:40 AM
+> To: Dexuan Cui <decui@microsoft.com>
+> Cc: mingo@redhat.com; peterz@infradead.org; juri.lelli@redhat.com;
+> vincent.guittot@linaro.org; dietmar.eggemann@arm.com;
+> rostedt@goodmis.org; bsegall@google.com; mgorman@suse.de;
+> bristot@redhat.com; x86@kernel.org; linux-pm@vger.kernel.org;
+> linux-kernel@vger.kernel.org; linux-hyperv@vger.kernel.org; Michael Kelle=
+y
+> <mikelley@microsoft.com>
+> Subject: Re: v5.10: sched_cpu_dying() hits BUG_ON during hibernation: ker=
+nel
+> BUG at kernel/sched/core.c:7596!
+>=20
+>=20
+> Hi,
+>=20
+> On 22/12/20 09:13, Dexuan Cui wrote:
+> > Hi,
+> > I'm running a Linux VM with the recent mainline (48342fc07272, 12/20/20=
+20)
+> on Hyper-V.
+> > When I test hibernation, the VM can easily hit the below BUG_ON during =
+the
+> resume
+> > procedure (I estimate this can repro about 1/5 of the time). BTW, my VM=
+ has
+> 40 vCPUs.
+> >
+> > I can't repro the BUG_ON with v5.9.0, so I suspect something in v5.10.0=
+ may
+> be broken?
+> >
+> > In v5.10.0, when the BUG_ON happens, rq->nr_running=3D=3D2, and
+> rq->nr_pinned=3D=3D0:
+> >
+> > 7587 int sched_cpu_dying(unsigned int cpu)
+> > 7588 {
+> > 7589         struct rq *rq =3D cpu_rq(cpu);
+> > 7590         struct rq_flags rf;
+> > 7591
+> > 7592         /* Handle pending wakeups and then migrate everything off
+> */
+> > 7593         sched_tick_stop(cpu);
+> > 7594
+> > 7595         rq_lock_irqsave(rq, &rf);
+> > 7596         BUG_ON(rq->nr_running !=3D 1 || rq_has_pinned_tasks(rq));
+> > 7597         rq_unlock_irqrestore(rq, &rf);
+> > 7598
+> > 7599         calc_load_migrate(rq);
+> > 7600         update_max_interval();
+> > 7601         nohz_balance_exit_idle(rq);
+> > 7602         hrtick_clear(rq);
+> > 7603         return 0;
+> > 7604 }
+> >
+> > The last commit that touches the BUG_ON line is the commit
+> > 3015ef4b98f5 ("sched/core: Make migrate disable and CPU hotplug
+> cooperative")
+> > but the commit looks good to me.
+> >
+> > Any idea?
+> >
+>=20
+> I'd wager this extra task is a kworker; could you give this series a try?
+>=20
+>=20
+> https ://lore.kernel.org/lkml/20201218170919.2950-1-jiangshanlai@gmail.co=
+m/
 
-Note also that the llvm/lib/Target/CSKY has not been fully upstreamed
-yet. It is a WIP https://lists.llvm.org/pipermail/llvm-dev/2020-August/144481.html
-I will not expect clang csky to work currently.
-(The latest committed LLVM patch is https://reviews.llvm.org/D93372
-Normally committing an important piece of a large patch series like this should take
-a bit longer time longer after someone in the community accepted it
-https://llvm.org/docs/CodeReview.html#can-code-be-reviewed-after-it-is-committed )
+Thanks, Valentin! It looks like the patchset can fix the BUG_ON, though I s=
+ee
+a warning, which I reported here: https://lkml.org/lkml/2020/12/22/648
 
-I do want to raise the recent LLVM M68k target. Its patches ([M67k] (Patch */8))
-are very organized and the main proposer shares updates to llvm-dev regularly.
-There is a lot from the process where the C-SKY target can learn from.
+Thanks,
+-- Dexuan
