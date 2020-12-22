@@ -2,99 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7B0A2E0851
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 10:53:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC542E0852
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 10:53:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726148AbgLVJwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 04:52:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725912AbgLVJwx (ORCPT
+        id S1726182AbgLVJxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 04:53:32 -0500
+Received: from smtprelay0042.hostedemail.com ([216.40.44.42]:45686 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725811AbgLVJxc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 04:52:53 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11401C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 01:52:13 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id v14so1334725wml.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 01:52:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=to:cc:references:from:subject:message-id:date:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=s8FlNBJc1tOTzj1/5kq2UR+5JabDHOpPzaLRtEUB/HU=;
-        b=gvvTyEq3lOW77ADAiTItaTJnUGezfK5apmO7swllVcsQZSe06cTh2e4paz8ofAf3NO
-         h/mXiSo7GQuyKJTRTuvXIJJ3dvlXHXGsOA3Urs1IRfx/8ebdhXfp3fNJs2a4+KmVygK+
-         ROpDp4kq6Tqu2uv5FLLlRjd+RjubqcvcZZFfylmKIbCTCUoIrzacxiu6s2XD3Oow2y8V
-         LQFKgGJxJJzJocKRxmlMHwV9fAHAYNWkl2N9d2JY5+leOndLXq0+tNCybHERqWg75RFR
-         1/RWsCVpt8uxjA2DS4k7pfHkat8iJghci11Po6iEmFOmy+FThuqd/0wRFg5MNAo6Da/2
-         CL0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=s8FlNBJc1tOTzj1/5kq2UR+5JabDHOpPzaLRtEUB/HU=;
-        b=sAUHFS6jIgHAuqveOagsnABX0HT/h9rGZXnC1qHDl20Pm+N0499P7LSrTrmHWO+1vS
-         6zow3BEZ51KIoaJgn37F45fyC6lS8c26gnWkRhXXlUS5VTKhLX2ePdppDdNJH9sDxJI6
-         z8ggAjy/+av0GOfx70agYo0ezjGF9jmiHL1Og+BOMZqNtL3bul/yGWF2qHrgj8NIjshj
-         68piADBE/DBZMbUKayc+y7aXswi7J0vc1XQiMfEfjFsIS2tTYusMI7Kj5DLwzEmFAEV8
-         Vhkl3dITPEZM23k6DLIFXqHtTcIvABJrgfryx8vmYa3ciYP2pXMqH1fwy79Y1+mcB3hA
-         05yw==
-X-Gm-Message-State: AOAM532F42BPmArXnx+tVVWmdCUpe5DWFLiuCB61mbsvSynX1AEReZlg
-        6nK3EvFIK1g7UDwuOX9614VLLw==
-X-Google-Smtp-Source: ABdhPJyfs5ZpTygXxaGZ5j8GtWYGKD6uk7BkURU0CRMiJrejb6fOEpzfcrY5OfLnYg+fJAPxGXnicQ==
-X-Received: by 2002:a1c:5410:: with SMTP id i16mr21190404wmb.30.1608630730769;
-        Tue, 22 Dec 2020 01:52:10 -0800 (PST)
-Received: from [10.44.66.8] ([212.45.67.2])
-        by smtp.googlemail.com with ESMTPSA id s20sm25149033wmj.46.2020.12.22.01.52.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Dec 2020 01:52:09 -0800 (PST)
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Li Yang <leoyang.li@nxp.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-References: <20201222043745.3420447-1-bjorn.andersson@linaro.org>
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-Subject: Re: [PATCH] arm64: defconfig: Make INTERCONNECT_QCOM_SDM845 builtin
-Message-ID: <41571e59-b9f4-3e59-e23b-d9fbda9bee18@linaro.org>
-Date:   Tue, 22 Dec 2020 11:52:13 +0200
+        Tue, 22 Dec 2020 04:53:32 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 1A3B21822186D;
+        Tue, 22 Dec 2020 09:52:51 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1434:1437:1515:1516:1518:1534:1543:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2692:2828:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3870:3871:3872:3874:4250:4321:4605:5007:6119:6248:7576:10004:10400:10848:11026:11232:11233:11473:11658:11914:12043:12296:12297:12555:12679:12740:12895:13439:13894:14096:14097:14181:14659:14721:21080:21324:21433:21451:21627:30012:30029:30054:30070:30075:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: straw06_580ca3a2745f
+X-Filterd-Recvd-Size: 3803
+Received: from XPS-9350.home (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf15.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 22 Dec 2020 09:52:50 +0000 (UTC)
+Message-ID: <6ea843411793073040bb8d518fca84f5b66b86aa.camel@perches.com>
+Subject: Re: [PATCH] usb: musb: add printf attribute to log function
+From:   Joe Perches <joe@perches.com>
+To:     Greg KH <gregkh@linuxfoundation.org>, trix@redhat.com
+Cc:     b-liu@ti.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 22 Dec 2020 01:52:48 -0800
+In-Reply-To: <X+Gzvo3vPBFGKAy+@kroah.com>
+References: <20201221162547.3756889-1-trix@redhat.com>
+         <X+Gzvo3vPBFGKAy+@kroah.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-In-Reply-To: <20201222043745.3420447-1-bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/22/20 06:37, Bjorn Andersson wrote:
-> As of v5.11-rc1 the QUP nodes of SDM845 has got their interconnect
-> properties specified, this means that the relevant interconnect provider
-> needs to be builtin for the UART device to probe and the console to be
-> registered before userspace needs to access it.
+On Tue, 2020-12-22 at 09:52 +0100, Greg KH wrote:
+> On Mon, Dec 21, 2020 at 08:25:47AM -0800, trix@redhat.com wrote:
+> > From: Tom Rix <trix@redhat.com>
+> > 
+> > Attributing the function allows the compiler to more thoroughly
+> > check the use of the function with -Wformat and similar flags.
+> > 
+> > Signed-off-by: Tom Rix <trix@redhat.com>
+> > ---
+> >  drivers/usb/musb/musb_debug.h | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/drivers/usb/musb/musb_debug.h b/drivers/usb/musb/musb_debug.h
+> > index e5b3506c7b3f..dfc0d02695fa 100644
+> > --- a/drivers/usb/musb/musb_debug.h
+> > +++ b/drivers/usb/musb/musb_debug.h
+> > @@ -17,6 +17,7 @@
+> >  #define INFO(fmt, args...) yprintk(KERN_INFO, fmt, ## args)
+> >  #define ERR(fmt, args...) yprintk(KERN_ERR, fmt, ## args)
+> >  
+> > 
+> > +__printf(2, 3)
+> >  void musb_dbg(struct musb *musb, const char *fmt, ...);
 > 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> While I understand the need for this, did this find any problems?
+> If not, then it's not worth adding,
 
-Reviewed-by: Georgi Djakov <georgi.djakov@linaro.org>
+I have to disagree with that Greg.  While the driver isn't in active
+development, a trivial mod to make it less likely a defect is introduced
+by any additional code is still a useful addition.
 
-> ---
->   arch/arm64/configs/defconfig | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-> index 838301650a79..3848ae99501c 100644
-> --- a/arch/arm64/configs/defconfig
-> +++ b/arch/arm64/configs/defconfig
-> @@ -1078,7 +1078,7 @@ CONFIG_INTERCONNECT=y
->   CONFIG_INTERCONNECT_QCOM=y
->   CONFIG_INTERCONNECT_QCOM_MSM8916=m
->   CONFIG_INTERCONNECT_QCOM_OSM_L3=m
-> -CONFIG_INTERCONNECT_QCOM_SDM845=m
-> +CONFIG_INTERCONNECT_QCOM_SDM845=y
->   CONFIG_INTERCONNECT_QCOM_SM8150=m
->   CONFIG_INTERCONNECT_QCOM_SM8250=m
->   CONFIG_EXT2_FS=y
-> 
+> the driver-specific debugging macros
+> should be removed entirely and just use dev_dbg() and friends instead.
+
+Read the suggested change I posted in reply.
+
+btw: the musb_dbg function is actually a trace function and not a
+dmesg/logging mechanism.
+
+drivers/usb/musb/musb_trace.c:void musb_dbg(struct musb *musb, const char *fmt, ...)
+drivers/usb/musb/musb_trace.c-{
+drivers/usb/musb/musb_trace.c-  struct va_format vaf;
+drivers/usb/musb/musb_trace.c-  va_list args;
+drivers/usb/musb/musb_trace.c-
+drivers/usb/musb/musb_trace.c-  va_start(args, fmt);
+drivers/usb/musb/musb_trace.c-  vaf.fmt = fmt;
+drivers/usb/musb/musb_trace.c-  vaf.va = &args;
+drivers/usb/musb/musb_trace.c-
+drivers/usb/musb/musb_trace.c-  trace_musb_log(musb, &vaf);
+drivers/usb/musb/musb_trace.c-
+drivers/usb/musb/musb_trace.c-  va_end(args);
+drivers/usb/musb/musb_trace.c-}
+
+drivers/usb/musb/musb_trace.h:TRACE_EVENT(musb_log,
+drivers/usb/musb/musb_trace.h-  TP_PROTO(struct musb *musb, struct va_format *vaf),
+drivers/usb/musb/musb_trace.h-  TP_ARGS(musb, vaf),
+drivers/usb/musb/musb_trace.h-  TP_STRUCT__entry(
+drivers/usb/musb/musb_trace.h-          __string(name, dev_name(musb->controller))
+drivers/usb/musb/musb_trace.h-          __dynamic_array(char, msg, MUSB_MSG_MAX)
+drivers/usb/musb/musb_trace.h-  ),
+drivers/usb/musb/musb_trace.h-  TP_fast_assign(
+drivers/usb/musb/musb_trace.h-          __assign_str(name, dev_name(musb->controller));
+drivers/usb/musb/musb_trace.h-          vsnprintf(__get_str(msg), MUSB_MSG_MAX, vaf->fmt, *vaf->va);
+drivers/usb/musb/musb_trace.h-  ),
+drivers/usb/musb/musb_trace.h-  TP_printk("%s: %s", __get_str(name), __get_str(msg))
+drivers/usb/musb/musb_trace.h-);
+
+Is that trace mechanism useful though?  I think it's somewhat odd.
+
