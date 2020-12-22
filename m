@@ -2,94 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A05232E056B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 05:38:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A22952E056E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 05:39:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726035AbgLVEho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 23:37:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33476 "EHLO
+        id S1726065AbgLVEiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 23:38:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725841AbgLVEho (ORCPT
+        with ESMTP id S1725964AbgLVEiu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 23:37:44 -0500
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3599C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 20:37:03 -0800 (PST)
-Received: by mail-ot1-x336.google.com with SMTP id i6so10917966otr.2
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 20:37:03 -0800 (PST)
+        Mon, 21 Dec 2020 23:38:50 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 609D1C0617A6
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 20:38:10 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id b5so658510pjk.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 20:38:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
          :content-transfer-encoding;
-        bh=Wy1gz9kjio0vb0pT053cREDywWupFHkrgigfRiFKKQE=;
-        b=Ce/+jTfY160zdkiluiCMIOjV8mHy78gD/+8KBpe2uMli99f5zKBfcndNx+K4h8kkF0
-         TIPwNbuPELC52D+Nnj3KUjHEeB1y146zjGwC9vhAi+/gbDJNaovuG+dfRwPcW+kjjuBm
-         Xk/0BystJw7g5pws2Hx40+iUQ1NZ55hwwTQC334F29YO7qcFGLh654/pI+JYIu0rDOd8
-         Ku7+A8/LWse7hgd7aybUVKdsWtmIngUrb+SUNbDiyZHTxYlADrLgvP4VqTvu2RR6Qy4A
-         ZiYvnRtLwFzvgRb0qwotRlzoP9FO/sxPiLIirD0ItRTo4MxvEuDCzb3h9HNK8LMogEwd
-         2/Zg==
+        bh=KMIz8Txzy6wjyHZ1wwNssQ3NrdVzopyLXnUTumDPEu4=;
+        b=f37eFkln4a/htDAWss+ZS1U+E4a3XjADVDLugAkDTqYfhz6h+hiYbGevReGFf4n1TK
+         3LcyVU0v8oEj/ldV2LwRorapAZA9fM+aEsLElWnlYinloCFhkUxXIG6IPajD8tgiJJea
+         DpV7MWDOXHzOuzTO/m9jSt14tPoJrM5KP18DX8I2/m7k1RJGMbdgBM9opD9aW4R0APi2
+         qwsxK5iRF4PUxhEWWnJeQbqIQ1L1pe/0UYpfefLQ75Em26FoNTFGgZaoz7DKALCRXLEX
+         ZOBQkG9jMif+c5JtWfTVjvIK0ay59QORO0oyT5r2YmuHYQtzadQyZ5I+40srrzB7gnDd
+         Pygw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Wy1gz9kjio0vb0pT053cREDywWupFHkrgigfRiFKKQE=;
-        b=Ugq/qNlrbBIGvrEA+kk42TUn0/gyG2u87Nth4HV8deEMivsTasXr8WaDPb4OxDx3z8
-         YsCwzBuV+m1sQN+kP2T5SSXM/ue8xc8O0oM004bHq5pPy93o0fFBVQmkhbk3MesXA4t+
-         qQ2xVulSbS17FGzftPNe0BeUtGC3OcQBzKwe6jwpGMQuiS3maPpcXO0b8DsKnypUfe7k
-         SM6LQUxHWibZ0/tWXjIGn+q7Xzt1oaPJuPzqhijNzEKmVYPLE1PYYyrYSYR4ACoAWwLt
-         LTlyEHtys8HrbaxJUpXCFU51TH+OU6hDakZ1m7N9CtZWpWt65XJbW3y4MdWVlvuyEaDF
-         8BoA==
-X-Gm-Message-State: AOAM530/Cfnc7preWwNkqVyp0vJTN5Lsjdi8HWAufdDjj/kVB/Al8i0P
-        PWEGOHTffFxGtGcSim9qUJTuWQ==
-X-Google-Smtp-Source: ABdhPJxkya4cEQ67S+i2hFbIDA+YlO4hEFVc2bpRDyn1asP29BOVsI1DPWxptztq7V4atvtvbkBdAw==
-X-Received: by 2002:a05:6830:4036:: with SMTP id i22mr14328301ots.127.1608611823396;
-        Mon, 21 Dec 2020 20:37:03 -0800 (PST)
-Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id x12sm4066214oic.51.2020.12.21.20.37.02
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=KMIz8Txzy6wjyHZ1wwNssQ3NrdVzopyLXnUTumDPEu4=;
+        b=UCq4GL0fXfDJNmfzN/T+CK0SHXNvoCp+yBtKjdK2VOPCL/s3W4P/7Rz4ornghvz449
+         z34AMQrl7Rtu1QT3dA6XyJNCGcs+GtzxnEt4q9GTVbDuo3o0p318TOSmVx/pw3VqBIBR
+         k9uVCBAHbChgxmqlNAJRkeRC/nstUbfaI79+0jNcZdGXiSsr1OjJlm23Z/KwstcDYDv5
+         j1C+MdO25usrigCMG7Pov4S/vf7y9DhHC5LEq7DPp7nxtUV4OiqxeBbPGcA1N13R3qy4
+         yTIkTq7lu/ztY0gaqoOMD0pp6KZlwTUx7XoKh5gYXNQCFi14b/7aewp7XqBwWIHFdJMQ
+         nGSA==
+X-Gm-Message-State: AOAM5312oLvjnwN3+8ZwwFFRL7CRB8hVWbKe+daEbSCDq/PQR/frr/O5
+        BCDny0bGpyS2Doyuu5mnyFWKSw==
+X-Google-Smtp-Source: ABdhPJxtuQf6v3NOjOt18j+2XE9PyJZOYNWFlG1D0U0wBxlkHbcyvIu7qM9Ho0qf5ZhZV4ECTna2pA==
+X-Received: by 2002:a17:902:694c:b029:da:afba:beab with SMTP id k12-20020a170902694cb02900daafbabeabmr19519669plt.32.1608611889761;
+        Mon, 21 Dec 2020 20:38:09 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id a136sm19619380pfd.149.2020.12.21.20.38.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 20:37:02 -0800 (PST)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: [PATCH] arm64: defconfig: Make INTERCONNECT_QCOM_SDM845 builtin
-Date:   Mon, 21 Dec 2020 20:37:45 -0800
-Message-Id: <20201222043745.3420447-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
+        Mon, 21 Dec 2020 20:38:09 -0800 (PST)
+Date:   Mon, 21 Dec 2020 20:38:09 -0800 (PST)
+X-Google-Original-Date: Mon, 21 Dec 2020 20:38:02 PST (-0800)
+Subject:     Re: [PATCH v2 0/9] arch: riscv: add board and SoC DT file support
+In-Reply-To: <1607403341-57214-1-git-send-email-yash.shah@sifive.com>
+CC:     linux-spi@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
+        broonie@kernel.org, Greg KH <gregkh@linuxfoundation.org>,
+        aou@eecs.berkeley.edu, lee.jones@linaro.org,
+        u.kleine-koenig@pengutronix.de, thierry.reding@gmail.com,
+        andrew@lunn.ch, peter@korsgaard.com,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        bgolaszewski@baylibre.com, linus.walleij@linaro.org,
+        yash.shah@sifive.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     yash.shah@sifive.com, robh+dt@kernel.org
+Message-ID: <mhng-711b1a2e-46bd-4169-841d-f18fe4bba6bb@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As of v5.11-rc1 the QUP nodes of SDM845 has got their interconnect
-properties specified, this means that the relevant interconnect provider
-needs to be builtin for the UART device to probe and the console to be
-registered before userspace needs to access it.
+On Mon, 07 Dec 2020 20:55:32 PST (-0800), yash.shah@sifive.com wrote:
+> Start board support by adding initial support for the SiFive FU740 SoC
+> and the first development board that uses it, the SiFive HiFive
+> Unmatched A00.
+>
+> Boot-tested on Linux 5.10-rc4 on a HiFive Unmatched A00 board using the
+> U-boot and OpenSBI.
+>
+> This patch series is dependent on Zong's Patchset[0]. The patchset also
+> adds two new nodes in dtsi file. The binding documentation patch
+> for these nodes are already posted on the mailing list[1][2].
+>
+> [0]: https://lore.kernel.org/linux-riscv/20201130082330.77268-4-zong.li@sifive.com/T/#u
+> [1]: https://lore.kernel.org/linux-riscv/1606714984-16593-1-git-send-email-yash.shah@sifive.com/T/#t
+> [2]: https://lore.kernel.org/linux-riscv/20201126030043.67390-1-zong.li@sifive.com/T/#u
+>
+> Changes in v2:
+> - The dt bindings patch is split into several individual patches.
+> - Expand the full list for compatible strings in i2c-ocores.txt
+>
+> Yash Shah (9):
+>   dt-bindings: riscv: Update DT binding docs to support SiFive FU740 SoC
+>   dt-bindings: spi: Update DT binding docs to support SiFive FU740 SoC
+>   dt-bindings: pwm: Update DT binding docs to support SiFive FU740 SoC
+>   dt-bindings: serial: Update DT binding docs to support SiFive FU740
+>     SoC
+>   dt-bindings: gpio: Update DT binding docs to support SiFive FU740 SoC
+>   dt-bindings: i2c: Update DT binding docs to support SiFive FU740 SoC
+>   riscv: dts: add initial support for the SiFive FU740-C000 SoC
+>   dt-bindings: riscv: Update YAML doc to support SiFive HiFive Unmatched
+>     board
+>   riscv: dts: add initial board data for the SiFive HiFive Unmatched
+>
+>  .../devicetree/bindings/gpio/sifive,gpio.yaml      |   4 +-
+>  .../devicetree/bindings/i2c/i2c-ocores.txt         |   8 +-
+>  .../devicetree/bindings/pwm/pwm-sifive.yaml        |   9 +-
+>  Documentation/devicetree/bindings/riscv/cpus.yaml  |   6 +
+>  .../devicetree/bindings/riscv/sifive.yaml          |  17 +-
+>  .../devicetree/bindings/serial/sifive-serial.yaml  |   4 +-
+>  .../devicetree/bindings/spi/spi-sifive.yaml        |  10 +-
+>  arch/riscv/boot/dts/sifive/Makefile                |   3 +-
+>  arch/riscv/boot/dts/sifive/fu740-c000.dtsi         | 293 +++++++++++++++++++++
+>  .../riscv/boot/dts/sifive/hifive-unmatched-a00.dts | 253 ++++++++++++++++++
+>  10 files changed, 590 insertions(+), 17 deletions(-)
+>  create mode 100644 arch/riscv/boot/dts/sifive/fu740-c000.dtsi
+>  create mode 100644 arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- arch/arm64/configs/defconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Aside from that question about the i2c bug these look good to me.  I don't see
+any Ack/Review on the DT side of things, though.  If you want to take them
+through a DT tree that's fine for me, I'll leave them in my inbox for now and
+if nobody says anything I'll look a bit more and take them for 5.12.
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 838301650a79..3848ae99501c 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -1078,7 +1078,7 @@ CONFIG_INTERCONNECT=y
- CONFIG_INTERCONNECT_QCOM=y
- CONFIG_INTERCONNECT_QCOM_MSM8916=m
- CONFIG_INTERCONNECT_QCOM_OSM_L3=m
--CONFIG_INTERCONNECT_QCOM_SDM845=m
-+CONFIG_INTERCONNECT_QCOM_SDM845=y
- CONFIG_INTERCONNECT_QCOM_SM8150=m
- CONFIG_INTERCONNECT_QCOM_SM8250=m
- CONFIG_EXT2_FS=y
--- 
-2.29.2
-
+Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
