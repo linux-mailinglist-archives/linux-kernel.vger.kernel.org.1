@@ -2,79 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF0FC2E0611
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 07:35:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6B8F2E0613
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 07:36:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725938AbgLVGet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 01:34:49 -0500
-Received: from asavdk3.altibox.net ([109.247.116.14]:46018 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725300AbgLVGet (ORCPT
+        id S1725973AbgLVGfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 01:35:50 -0500
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:34326 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725300AbgLVGfu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 01:34:49 -0500
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id 3BB8320024;
-        Tue, 22 Dec 2020 07:33:56 +0100 (CET)
-Date:   Tue, 22 Dec 2020 07:33:54 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        linux-iio@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        dri-devel@lists.freedesktop.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-input@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: Drop unnecessary *-supply schemas properties
-Message-ID: <20201222063354.GA3463004@ravnborg.org>
-References: <20201221234659.824881-1-robh@kernel.org>
+        Tue, 22 Dec 2020 01:35:50 -0500
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 0BM6YbD7006778
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 15:34:37 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 0BM6YbD7006778
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1608618877;
+        bh=fcWPiycUMYEZvg5xTDlQrU/QzmMQoGbU9q5Hj80KmkE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=DjNLHAKtl0GUcyHQMFYpgj7G2I7JahTPveWcelwIOt6w9unHcxMD2uW1LdfQn36Oz
+         UuS7eOjTDyZ2nPUe95drK+taPKM7LtgSqi0s9GlW3uJ2OlrW/nRQEmMnmppZnYsw5H
+         pi68Bhz5kp6EeGva5zW5jT+a8sWY0G5rZEWIF0xduDCslvq6o37hw6w4Gl+INXSOXy
+         8s97/tJiQc5qSjh5XigGuqsY3Nm+Qo+Ytzveq+FqJf9elaEZFpsYJGqZZQKEx1b813
+         4UYQfy7FweAODdwFXlaJ7legfIf0e2xY0uHtVld0oQpiQYQmrZoryVhBb5L2n7Kc3u
+         WGA5XXm7AKiSw==
+X-Nifty-SrcIP: [209.85.214.177]
+Received: by mail-pl1-f177.google.com with SMTP id x12so6901613plr.10
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 22:34:37 -0800 (PST)
+X-Gm-Message-State: AOAM5326Rfurpv5JeQqcF0b+mNWt+9s25Jbgeutr1dO1iSuNySV995m4
+        RBuBeGibQOIq3Ajodg7Vda8egSSf7DIe/6DmKyQ=
+X-Google-Smtp-Source: ABdhPJxmSLvlNRX7lmhEqGm+zyQSpGmhZhXx/5EOUzb2pTZvI0QAFZzlfaKqi1UeQ0+uN4ys1Vd51YkBKjjx31oVLos=
+X-Received: by 2002:a17:90a:fa0c:: with SMTP id cm12mr21001610pjb.87.1608618876748;
+ Mon, 21 Dec 2020 22:34:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201221234659.824881-1-robh@kernel.org>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=Ibmpp1ia c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=VwQbUJbxAAAA:8 a=pGLkceISAAAA:8 a=P1BnusSwAAAA:8
-        a=QyXUC8HyAAAA:8 a=KKAkSRfTAAAA:8 a=e5mUnYsNAAAA:8 a=7gkXJVJtAAAA:8
-        a=qi13JbtwXbsxw4tqeY4A:9 a=CjuIK1q_8ugA:10 a=AjGcO6oz07-iQ99wixmX:22
-        a=D0XLA9XvdZm18NrgonBM:22 a=cvBusfyB2V15izCimMoJ:22
-        a=Vxmtnl_E_bksehYqCbjh:22 a=E9Po1WZjFZOl8hwRPBS3:22
+References: <20201222061805.462460-1-joel@jms.id.au>
+In-Reply-To: <20201222061805.462460-1-joel@jms.id.au>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 22 Dec 2020 15:34:00 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATHTT2=e0VxxunLhAGP5yDeGcdunxgp2Ne_P1kRAifecg@mail.gmail.com>
+Message-ID: <CAK7LNATHTT2=e0VxxunLhAGP5yDeGcdunxgp2Ne_P1kRAifecg@mail.gmail.com>
+Subject: Re: [PATCH] openrisc: Add vmlinux.bin target
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        openrisc@lists.librecores.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        Karol Gugala <kgugala@antmicro.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob
+On Tue, Dec 22, 2020 at 3:18 PM Joel Stanley <joel@jms.id.au> wrote:
+>
+> Build it by default. This is commonly used by fpga targets.
+>
+> Signed-off-by: Joel Stanley <joel@jms.id.au>
+> ---
+>  arch/openrisc/Makefile      | 7 +++++++
+>  arch/openrisc/boot/Makefile | 8 ++++++++
+>  2 files changed, 15 insertions(+)
+>  create mode 100644 arch/openrisc/boot/Makefile
+>
+> diff --git a/arch/openrisc/Makefile b/arch/openrisc/Makefile
+> index bf10141c7426..239bca2d1925 100644
+> --- a/arch/openrisc/Makefile
+> +++ b/arch/openrisc/Makefile
+> @@ -24,6 +24,10 @@ LIBGCC               := $(shell $(CC) $(KBUILD_CFLAGS) -print-libgcc-file-name)
+>
+>  KBUILD_CFLAGS  += -pipe -ffixed-r10 -D__linux__
+>
+> +all: vmlinux.bin
+> +
+> +boot := arch/$(ARCH)/boot
+> +
+>  ifeq ($(CONFIG_OPENRISC_HAVE_INST_MUL),y)
+>         KBUILD_CFLAGS += $(call cc-option,-mhard-mul)
+>  else
+> @@ -49,3 +53,6 @@ else
+>  BUILTIN_DTB := n
+>  endif
+>  core-$(BUILTIN_DTB) += arch/openrisc/boot/dts/
+> +
 
-On Mon, Dec 21, 2020 at 04:46:59PM -0700, Rob Herring wrote:
-> *-supply properties are always a single phandle, so binding schemas
-> don't need a type $ref nor 'maxItems'.
-> 
-> A meta-schema check for this is pending once these existing cases are
-> fixed.
-> 
-> Cc: Jonathan Cameron <jic23@kernel.org>
-> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Cc: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
-> Cc: Lee Jones <lee.jones@linaro.org>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-iio@vger.kernel.org
-> Cc: linux-input@vger.kernel.org
-> Cc: linux-media@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
+Since vmlinux.bin is a phony target, you need this:
 
-For the Documentation/devicetree/bindings/display/* parts:
-Acked-by: Sam Ravnborg <sam@ravnborg.org>
+PHONY += vmlinux.bin
 
-	Sam
+
+> +vmlinux.bin: vmlinux
+> +       $(Q)$(MAKE) $(build)=$(boot) $(patsubst %,$(boot)/%,$@)
+
+
+This is simpler:
+
+          $(Q)$(MAKE) $(build)=$(boot) $(boot)/$@
+
+
+
+For clean-up, you need this:
+
+archclean:
+        $(Q)$(MAKE) $(clean)=$(boot)
+
+
+
+
+
+
+> diff --git a/arch/openrisc/boot/Makefile b/arch/openrisc/boot/Makefile
+> new file mode 100644
+> index 000000000000..0e71e8f78bb2
+> --- /dev/null
+> +++ b/arch/openrisc/boot/Makefile
+> @@ -0,0 +1,8 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +#
+> +# Makefile for bootable kernel images
+> +#
+> +
+> +OBJCOPYFLAGS_vmlinux.bin := -O binary
+> +$(obj)/vmlinux.bin: vmlinux FORCE
+> +       $(call if_changed,objcopy)
+
+Please add
+
+targets += vmlinux.bin
+
+
+
+
+Also, you need to add arch/openrisc/boot/.gitignore
+
+
+
+
+> --
+> 2.29.2
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
