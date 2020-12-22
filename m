@@ -2,322 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A602E0DE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 18:42:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96AD22E0DEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 18:44:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728024AbgLVRmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 12:42:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41098 "EHLO
+        id S1728080AbgLVRmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 12:42:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727094AbgLVRmI (ORCPT
+        with ESMTP id S1727988AbgLVRmW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 12:42:08 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3614C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 09:41:27 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id 3so2914552wmg.4
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 09:41:27 -0800 (PST)
+        Tue, 22 Dec 2020 12:42:22 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9843DC061793
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 09:41:42 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id f17so8813718pge.6
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 09:41:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=2tShhQx8mQBytbH6oSP/Lexw9bjVrbZJJZuL/Xlj3Jk=;
-        b=eoSMQdQoB6clWf0OIFF/G3eNNMD4UbmfsMSVcKbfZlIYXWsks4j8qWhnSKpMSE+aiU
-         XDxkPY0by/jTR1TNhMOWS2qpoxK5++qjXsuKoUt0HVgyZX4TPc5DuPh0lIdkfWj/DpNa
-         tWqGCePnf/qSXC2XvN9bPCPTLN15/eEq2NSqoNW+Oj8dkgkmgpHZ9bBFfhPZl0K6A49V
-         wpYmFRvfgXuuulHr9Sa5hy1wel3nOTPVPDBBv/vADj89B37oDYj0tnL917BGNwHXDMOv
-         fz9iwW9h9lnBTFslVjFtPGvghcivF2aLvdjXJEtdQyzvSBj/0PtacD4JJ8wsGf6BRxIP
-         es4Q==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Wl/m34cfT29L8x9YJJ07WrglAhvlzuwbzAXMtwjLDqs=;
+        b=Xcs3s6dUoU49zTj42FUTN0c8Q1qmmR7Aahy0+qgkt/nzM/0dpofhm8l7+6ZNb8vW21
+         ZZWzDW26Zihr1gwtLowjrQkHyMviPT9rAd2x5LyFY1WBSyMr2oyXm9m/nS7g1mXBuWo9
+         MEddoMGx2hhX8qPVuay8nMtQlNaWvgZsABJVGTTrxOjajSJlVJ5BIHDJM9KsNHwgCbLB
+         bd+5UF/8exzo99R+/gnN0vBm/14h4dqlwvBdoy1w+Mrsczen0C3tXFJkNtWURjmviaTz
+         VOXQuRmMPCpsLfGfFVzmUPju5bGMcVwgkL9W5IOi1WQDGE17V4pWIeT+IceHWAdRQWmZ
+         JIYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=2tShhQx8mQBytbH6oSP/Lexw9bjVrbZJJZuL/Xlj3Jk=;
-        b=d6F5Fli1wKQqWoyC0FdyRR7wpNYQN2CKWt0cWVymTV3zaF0ajfXlJWQY0R0j0dsXPO
-         HTzjCfB7gi87igbnN0HcaMY3tB98lXlGXz1KJjOHFcZI0g3SIFHJzCznOeBg5v91yGBC
-         Zwd1Dc5ADJWmsXRlKVwXI6Lfn/uNmzGlbTICWmdmYPrAYuigDTW/tHdJk1hykqg0CNfn
-         5Obvg1khS5wEqS5SDdluKxQYrpRx8PcJrPbY07RQ9TBWlbZj1tVr2ojHeMYHzu28TmM0
-         uhwRV74gPFhKS6QSkQgYciSCFLUznFnP3Paep8O9UrX6OHTIH5rXjcOpZOqECffAdEqZ
-         wz+A==
-X-Gm-Message-State: AOAM531vbIz5BHdJFCh8yhmQfxMTCV5YjNLU7iQ3xXBy8+Z4azIFldS6
-        w+8rUcJ7VD6A5YDszN+foeRWTjyG2/vqss8bt5qDIw==
-X-Google-Smtp-Source: ABdhPJxbM8Ww9Ypgamgu2x/v856Cynt1Ll2r1L4SxUKgct06akwCCGv5+MhMuKhKwWbBtSDr6Ilh7EdRVTrBBM62Cco=
-X-Received: by 2002:a1c:bc57:: with SMTP id m84mr22861339wmf.163.1608658884672;
- Tue, 22 Dec 2020 09:41:24 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Wl/m34cfT29L8x9YJJ07WrglAhvlzuwbzAXMtwjLDqs=;
+        b=kflbZgGhK3djPo0qsahS76zk/vYvW/ajSHuYALaB5A4K3n/A2xTgFuOA1VJldQk93z
+         GJXnrim1z8y44n8+dUJXudEnMJdH7tWMSDnGx/QXO7PVZauxXbKAfdj9Sv4EBShjruy1
+         JFFkSBV6zZyeCmmXx9aIm+8/KmvfI81Ijv78+hoq2Zk+mcQAtYRBd7xGbblUIKxyvM1D
+         ckY2E/LNS591cZy0U35vAXsDCSsY3kqqNHEL+E4CDnYklcON9AXw3/DrLwAsInvHICXK
+         cBqUCjp0/jcTN0fJ0B3V18zX3o5eQHMyHplCFfUfSKWEY5XhVBNaCcKkTyOvtVuODGFu
+         E23g==
+X-Gm-Message-State: AOAM5338EfGHQvHUwV8ikOPRWnj0pewUew2oF9o9z2GuJylIo2Ej8NN/
+        dzVjvHXH7ImSpsA0dQxPl/pRgQ==
+X-Google-Smtp-Source: ABdhPJzJmLsjwvtHIrr7Rf9B1stJ0eSh5IU+5JT3nqkJJ7OGOO5GHBGeHytzs1Eji1L3ZxiTm41JHA==
+X-Received: by 2002:a62:1ad0:0:b029:197:e389:fb26 with SMTP id a199-20020a621ad00000b0290197e389fb26mr20811212pfa.20.1608658901964;
+        Tue, 22 Dec 2020 09:41:41 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id w27sm17226426pfq.104.2020.12.22.09.41.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Dec 2020 09:41:41 -0800 (PST)
+Date:   Tue, 22 Dec 2020 09:41:34 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Babu Moger <babu.moger@amd.com>
+Cc:     Jim Mattson <jmattson@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "Yu, Fenghua" <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        kvm list <kvm@vger.kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        kyung.min.park@intel.com, LKML <linux-kernel@vger.kernel.org>,
+        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, mgross@linux.intel.com,
+        Vitaly Kuznetsov <vkuznets@redhat.com>, kim.phillips@amd.com,
+        wei.huang2@amd.com
+Subject: Re: [PATCH 1/2] x86/cpufeatures: Add the Virtual SPEC_CTRL feature
+Message-ID: <X+IvzsazR8f2LjLw@google.com>
+References: <160738054169.28590.5171339079028237631.stgit@bmoger-ubuntu>
+ <160738067105.28590.10158084163761735153.stgit@bmoger-ubuntu>
+ <CALMp9eTk6B2832EN8EhL51m8UqmHLTfeOjdKs8TvFSSAUxGk2Q@mail.gmail.com>
+ <2e929c9a-9da9-e7da-9fd4-8e0ea2163a19@amd.com>
+ <CALMp9eRzYoVqr0zm60+pkJbGF+t0ry8k7y=X=R1paDhUUPSVCw@mail.gmail.com>
+ <00fdc56a-5ac4-94a0-88b4-42e4cf46f083@amd.com>
 MIME-Version: 1.0
-References: <20201217230612.32397-1-john.stultz@linaro.org>
-In-Reply-To: <20201217230612.32397-1-john.stultz@linaro.org>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Tue, 22 Dec 2020 09:41:13 -0800
-Message-ID: <CAJuCfpGHGnMtfOr8S2zrCX+fBZErc+BWTsNHUi9-y1B-GN9bkQ@mail.gmail.com>
-Subject: Re: [RFC][PATCH 1/3] dma-buf: heaps: Add deferred-free-helper library code
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>, linux-media@vger.kernel.org,
-        DRI mailing list <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00fdc56a-5ac4-94a0-88b4-42e4cf46f083@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John,
-Just a couple nits, otherwise looks sane to me.
+On Tue, Dec 22, 2020, Babu Moger wrote:
+> 
+> On 12/9/20 5:11 PM, Jim Mattson wrote:
+> > On Wed, Dec 9, 2020 at 2:39 PM Babu Moger <babu.moger@amd.com> wrote:
+> >>
+> >> On 12/7/20 5:22 PM, Jim Mattson wrote:
+> >>> On Mon, Dec 7, 2020 at 2:38 PM Babu Moger <babu.moger@amd.com> wrote:
+> >>>> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+> >>>> index dad350d42ecf..d649ac5ed7c7 100644
+> >>>> --- a/arch/x86/include/asm/cpufeatures.h
+> >>>> +++ b/arch/x86/include/asm/cpufeatures.h
+> >>>> @@ -335,6 +335,7 @@
+> >>>>  #define X86_FEATURE_AVIC               (15*32+13) /* Virtual Interrupt Controller */
+> >>>>  #define X86_FEATURE_V_VMSAVE_VMLOAD    (15*32+15) /* Virtual VMSAVE VMLOAD */
+> >>>>  #define X86_FEATURE_VGIF               (15*32+16) /* Virtual GIF */
+> >>>> +#define X86_FEATURE_V_SPEC_CTRL                (15*32+20) /* Virtual SPEC_CTRL */
+> >>>
+> >>> Shouldn't this bit be reported by KVM_GET_SUPPORTED_CPUID when it's
+> >>> enumerated on the host?
+> >>
+> >> Jim, I am not sure if this needs to be reported by
+> >> KVM_GET_SUPPORTED_CPUID. I dont see V_VMSAVE_VMLOAD or VGIF being reported
+> >> via KVM_GET_SUPPORTED_CPUID. Do you see the need for that?
+> > 
+> > Every little bit helps. No, it isn't *needed*. But then again, this
+> > entire patchset isn't *needed*, is it?
+> > 
+> 
+> Working on v2 of these patches. Saw this code comment(in
+> arch/x86/kvm/cpuid.c) on about exposing SVM features to the guest.
+> 
+> 
+>         /*
+>          * Hide all SVM features by default, SVM will set the cap bits for
+>          * features it emulates and/or exposes for L1.
+>          */
+>         kvm_cpu_cap_mask(CPUID_8000_000A_EDX, 0);
+> 
+> 
+> Should we go ahead with the changes here?
 
-On Thu, Dec 17, 2020 at 3:06 PM John Stultz <john.stultz@linaro.org> wrote:
->
-> This patch provides infrastructure for deferring buffer frees.
->
-> This is a feature ION provided which when used with some form
-> of a page pool, provides a nice performance boost in an
-> allocation microbenchmark. The reason it helps is it allows the
-> page-zeroing to be done out of the normal allocation/free path,
-> and pushed off to a kthread.
+Probably not, as the current SVM implementation aligns with the intended use of
+KVM_GET_SUPPORTED_CPUID.  The current approach is to enumerate what SVM features
+KVM can virtualize or emulate for a nested VM, i.e. what SVM features an L1 VMM
+can use and thus can be set in a vCPU's CPUID model.  For V_SPEC_CTRL, I'm
+pretty sure Jim was providing feedback for the non-nested case of reporting
+host/KVM support of the feature itself.
 
-I suggest adding some more description for this API and how it can be
-used. IIUC there are 2 uses: lazy deferred freeing using kthread, and
-object pooling. no_pool parameter I think deserves some explanation
-(disallows pooling when system is under memory pressure).
-
->
-> As not all heaps will find this useful, its implemented as
-> a optional helper library that heaps can utilize.
->
-> Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> Cc: Liam Mark <lmark@codeaurora.org>
-> Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
-> Cc: Laura Abbott <labbott@kernel.org>
-> Cc: Brian Starkey <Brian.Starkey@arm.com>
-> Cc: Hridya Valsaraju <hridya@google.com>
-> Cc: Suren Baghdasaryan <surenb@google.com>
-> Cc: Sandeep Patil <sspatil@google.com>
-> Cc: Daniel Mentz <danielmentz@google.com>
-> Cc: =C3=98rjan Eide <orjan.eide@arm.com>
-> Cc: Robin Murphy <robin.murphy@arm.com>
-> Cc: Ezequiel Garcia <ezequiel@collabora.com>
-> Cc: Simon Ser <contact@emersion.fr>
-> Cc: James Jones <jajones@nvidia.com>
-> Cc: linux-media@vger.kernel.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: John Stultz <john.stultz@linaro.org>
-> ---
->  drivers/dma-buf/heaps/Kconfig                |   3 +
->  drivers/dma-buf/heaps/Makefile               |   1 +
->  drivers/dma-buf/heaps/deferred-free-helper.c | 136 +++++++++++++++++++
->  drivers/dma-buf/heaps/deferred-free-helper.h |  15 ++
->  4 files changed, 155 insertions(+)
->  create mode 100644 drivers/dma-buf/heaps/deferred-free-helper.c
->  create mode 100644 drivers/dma-buf/heaps/deferred-free-helper.h
->
-> diff --git a/drivers/dma-buf/heaps/Kconfig b/drivers/dma-buf/heaps/Kconfi=
-g
-> index a5eef06c4226..ecf65204f714 100644
-> --- a/drivers/dma-buf/heaps/Kconfig
-> +++ b/drivers/dma-buf/heaps/Kconfig
-> @@ -1,3 +1,6 @@
-> +config DMABUF_HEAPS_DEFERRED_FREE
-> +       bool
-> +
->  config DMABUF_HEAPS_SYSTEM
->         bool "DMA-BUF System Heap"
->         depends on DMABUF_HEAPS
-> diff --git a/drivers/dma-buf/heaps/Makefile b/drivers/dma-buf/heaps/Makef=
-ile
-> index 974467791032..4e7839875615 100644
-> --- a/drivers/dma-buf/heaps/Makefile
-> +++ b/drivers/dma-buf/heaps/Makefile
-> @@ -1,3 +1,4 @@
->  # SPDX-License-Identifier: GPL-2.0
-> +obj-$(CONFIG_DMABUF_HEAPS_DEFERRED_FREE) +=3D deferred-free-helper.o
->  obj-$(CONFIG_DMABUF_HEAPS_SYSTEM)      +=3D system_heap.o
->  obj-$(CONFIG_DMABUF_HEAPS_CMA)         +=3D cma_heap.o
-> diff --git a/drivers/dma-buf/heaps/deferred-free-helper.c b/drivers/dma-b=
-uf/heaps/deferred-free-helper.c
-> new file mode 100644
-> index 000000000000..b8f54860454f
-> --- /dev/null
-> +++ b/drivers/dma-buf/heaps/deferred-free-helper.c
-> @@ -0,0 +1,136 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Deferred dmabuf freeing helper
-> + *
-> + * Copyright (C) 2020 Linaro, Ltd.
-> + *
-> + * Based on the ION page pool code
-> + * Copyright (C) 2011 Google, Inc.
-> + */
-> +
-> +#include <linux/freezer.h>
-> +#include <linux/list.h>
-> +#include <linux/slab.h>
-> +#include <linux/swap.h>
-> +#include <linux/sched/signal.h>
-> +
-> +#include "deferred-free-helper.h"
-> +
-> +static LIST_HEAD(free_list);
-> +static size_t list_size;
-> +wait_queue_head_t freelist_waitqueue;
-> +struct task_struct *freelist_task;
-> +static DEFINE_MUTEX(free_list_lock);
-> +
-> +enum {
-> +       USE_POOL =3D 0,
-> +       SKIP_POOL =3D 1,
-> +};
-
-This enum is used for a bool parameter. Either make it part of the
-public API or eliminate and use bool instead.
-
-> +
-> +void deferred_free(struct deferred_freelist_item *item,
-> +                  void (*free)(struct deferred_freelist_item*, bool),
-> +                  size_t size)
-> +{
-> +       INIT_LIST_HEAD(&item->list);
-> +       item->size =3D size;
-> +       item->free =3D free;
-> +
-> +       mutex_lock(&free_list_lock);
-> +       list_add(&item->list, &free_list);
-> +       list_size +=3D size;
-> +       mutex_unlock(&free_list_lock);
-> +       wake_up(&freelist_waitqueue);
-> +}
-> +
-> +static size_t free_one_item(bool nopool)
-> +{
-> +       size_t size =3D 0;
-> +       struct deferred_freelist_item *item;
-> +
-> +       mutex_lock(&free_list_lock);
-> +       if (list_empty(&free_list)) {
-> +               mutex_unlock(&free_list_lock);
-> +               return 0;
-> +       }
-> +       item =3D list_first_entry(&free_list, struct deferred_freelist_it=
-em, list);
-> +       list_del(&item->list);
-> +       size =3D item->size;
-> +       list_size -=3D size;
-> +       mutex_unlock(&free_list_lock);
-> +
-> +       item->free(item, nopool);
-> +       return size;
-> +}
-> +
-> +static unsigned long get_freelist_size(void)
-> +{
-> +       unsigned long size;
-> +
-> +       mutex_lock(&free_list_lock);
-> +       size =3D list_size;
-> +       mutex_unlock(&free_list_lock);
-> +       return size;
-> +}
-> +
-> +static unsigned long freelist_shrink_count(struct shrinker *shrinker,
-> +                                          struct shrink_control *sc)
-> +{
-> +       return get_freelist_size();
-> +}
-> +
-> +static unsigned long freelist_shrink_scan(struct shrinker *shrinker,
-> +                                         struct shrink_control *sc)
-> +{
-> +       int total_freed =3D 0;
-> +
-> +       if (sc->nr_to_scan =3D=3D 0)
-> +               return 0;
-> +
-> +       while (total_freed < sc->nr_to_scan) {
-> +               int freed =3D free_one_item(SKIP_POOL);
-> +
-> +               if (!freed)
-> +                       break;
-> +
-> +               total_freed +=3D freed;
-> +       }
-> +
-> +       return total_freed;
-> +}
-> +
-> +static struct shrinker freelist_shrinker =3D {
-> +       .count_objects =3D freelist_shrink_count,
-> +       .scan_objects =3D freelist_shrink_scan,
-> +       .seeks =3D DEFAULT_SEEKS,
-> +       .batch =3D 0,
-> +};
-> +
-> +static int deferred_free_thread(void *data)
-> +{
-> +       while (true) {
-> +               wait_event_freezable(freelist_waitqueue,
-> +                                    get_freelist_size() > 0);
-> +
-> +               free_one_item(USE_POOL);
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static int deferred_freelist_init(void)
-> +{
-> +       list_size =3D 0;
-> +
-> +       init_waitqueue_head(&freelist_waitqueue);
-> +       freelist_task =3D kthread_run(deferred_free_thread, NULL,
-> +                                   "%s", "dmabuf-deferred-free-worker");
-> +       if (IS_ERR(freelist_task)) {
-> +               pr_err("%s: creating thread for deferred free failed\n",
-> +                      __func__);
-> +               return -1;
-> +       }
-> +       sched_set_normal(freelist_task, 19);
-> +
-> +       return register_shrinker(&freelist_shrinker);
-> +}
-> +device_initcall(deferred_freelist_init);
-> diff --git a/drivers/dma-buf/heaps/deferred-free-helper.h b/drivers/dma-b=
-uf/heaps/deferred-free-helper.h
-> new file mode 100644
-> index 000000000000..09a2274a897c
-> --- /dev/null
-> +++ b/drivers/dma-buf/heaps/deferred-free-helper.h
-> @@ -0,0 +1,15 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-> +#ifndef DEFERRED_FREE_HELPER_H
-> +#define DEFERRED_FREE_HELPER_H
-> +
-> +struct deferred_freelist_item {
-> +       size_t size;
-> +       void (*free)(struct deferred_freelist_item *i, bool no_pool);
-> +       struct list_head list;
-> +};
-
-I assume deferred_freelist_item gets embedded in a structure that is
-actually being freed?
-
-> +
-> +void deferred_free(struct deferred_freelist_item *item,
-> +                  void (*free)(struct deferred_freelist_item *i, bool no=
-_pool),
-> +                  size_t size);
-> +#endif
-> --
-> 2.17.1
->
+There is the question of whether or not KVM should have an ioctl() to report
+what virtualization features are supported/enabled.  AFAIK, it's not truly
+required as userspace can glean the information via /proc/cpuinfo (especially
+now that vmx_features exists), raw CPUID, and KVM module params.  Providing an
+ioctl() would likely be a bit cleaner for userspace, but I'm guessing that ship
+has already sailed for most VMMs.
