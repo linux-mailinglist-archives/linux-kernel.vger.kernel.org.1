@@ -2,172 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C1762E1070
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 00:01:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DCB82E1072
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 00:01:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728083AbgLVW5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 17:57:48 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56946 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727719AbgLVW5r (ORCPT
+        id S1727235AbgLVW6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 17:58:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726329AbgLVW6t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 17:57:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608677780;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=V7Cc/NanMe/ir/qcjakZDVITWKhc58yo1WDobbYxsY0=;
-        b=INGaaP5km6F9Hh96t9m9av3Zwl5xy4+ix22XBevjX+XBu0p9/02TXX9oSC0q4ISCa/kkP5
-        wY9e/johZ+pnwh8SIMCgx33OcbmqpRkK9uoVcKVvdb3K8wJLq1SsCUub+K7Pag9HiPIbEB
-        Mv8AidQdR9GQUGlQUSJk29+c4+suGnw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-516-GdbzA77bP-iXSv5GJlmVtQ-1; Tue, 22 Dec 2020 17:56:16 -0500
-X-MC-Unique: GdbzA77bP-iXSv5GJlmVtQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 744BC1800D42;
-        Tue, 22 Dec 2020 22:56:15 +0000 (UTC)
-Received: from llong.com (ovpn-116-221.rdu2.redhat.com [10.10.116.221])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9373E6F985;
-        Tue, 22 Dec 2020 22:56:11 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Will Deacon <will.deacon@arm.com>
-Cc:     linux-kernel@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH] locking/lockdep: Use local_irq_save() with call_rcu()
-Date:   Tue, 22 Dec 2020 17:55:53 -0500
-Message-Id: <20201222225553.15642-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        Tue, 22 Dec 2020 17:58:49 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A6DFC0613D3;
+        Tue, 22 Dec 2020 14:58:09 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1krqbM-003Lzr-T3; Tue, 22 Dec 2020 22:57:57 +0000
+Date:   Tue, 22 Dec 2020 22:57:56 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     "Maciej W. Rozycki" <macro@linux-mips.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linux-mips@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCHSET] saner elf compat
+Message-ID: <20201222225756.GV3579531@ZenIV.linux.org.uk>
+References: <20201203214529.GB3579531@ZenIV.linux.org.uk>
+ <CAHk-=wiRNT+-ahz2KRUE7buYJMZ84bp=h_vGLrAaOKW3n_xyXQ@mail.gmail.com>
+ <20201203230336.GC3579531@ZenIV.linux.org.uk>
+ <alpine.LFD.2.21.2012071741280.2104409@eddie.linux-mips.org>
+ <20201216030154.GL3579531@ZenIV.linux.org.uk>
+ <alpine.LFD.2.21.2012160924010.2104409@eddie.linux-mips.org>
+ <20201222200431.GT3579531@ZenIV.linux.org.uk>
+ <20201222213835.GU3579531@ZenIV.linux.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201222213835.GU3579531@ZenIV.linux.org.uk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following lockdep splat was hit:
+On Tue, Dec 22, 2020 at 09:38:35PM +0000, Al Viro wrote:
+> On Tue, Dec 22, 2020 at 08:04:31PM +0000, Al Viro wrote:
+> 
+> > FWIW, on debian/mips64el (both stretch and buster) the test fails with the
+> > distro kernels (4.9- and 4.19-based) as well as with 5.10-rc1 and
+> > 5.10-rc1+that series, all in the same way:
+> > [Current thread is 1 (LWP 4154)]
+> > (gdb) p/x foo
+> > Cannot find thread-local storage for LWP 4154, executable file <pathname>
+> > Cannot find thread-local variables on this target
+> > 
+> > buster has libc6-2.28, so that should be fine for the test in question
+> > (libthread_db definitely recent enough).  That was n32 gdb; considering
+> > how much time it had taken to build that sucker I hadn't tried o32
+> > yet.
+> > 
+> > Note that it's not just with native coredumps - gcore-produced ones give
+> > the same result.  That was gdb from binutils-gdb.git; I'm not familiar
+> > with gdb guts to start debugging it, so if you have any suggestions
+> > in that direction that do not include a full rebuild...  In any case,
+> > I won't get around to that until the next week.
+> > 
+> > Incidentally, build time is bloody awful - 3 days, with qemu-3.1 on
+> > 3.5GHz amd64 host, all spent pretty much entirely in userland (both
+> > from guest and host POV).  g++-8 is atrociously slow...
+> > 
+> > That said, I don't see what in that series could possibly mess the
+> > things up for tls, while leaving the registers working; the only
+> > thing that realistically might've been fucked up is prstatus layout
+> > (and possibly size), and that would've screwed the registers as
+> > well.
+> 
+> ... and it smells like the damn thing needs n32 debug info from libthread_db.so
+> and/or libpthread.so.  Which is not packaged by debian libc6 mips64el build.
+> Sorry, any debugging of that crap is going to happen in January ;-/
 
- [  560.638354] WARNING: CPU: 79 PID: 27458 at kernel/rcu/tree_plugin.h:1749 call_rcu+0x6dc/0xf00
-    :
- [  560.647761] RIP: 0010:call_rcu+0x6dc/0xf00
- [  560.647763] Code: 0f 8f 29 04 00 00 e8 93 da 1c 00 48 8b 3c 24 57 9d 0f 1f 44 00 00 e9 19 fa ff ff 65 8b 05 38 83 c4 49 85 c0 0f 84 cd fb ff ff <0f> 0b e9 c6 fb ff ff e8 b8 45 51 00 4c 89 f2 48 b8 00 00 00 00 00
- [  560.647764] RSP: 0018:ff11001050097b58 EFLAGS: 00010002
- [  560.647766] RAX: 0000000000000001 RBX: ffffffffbb1f3360 RCX: 0000000000000001
- [  560.647766] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffffb99bac9c
- [  560.647767] RBP: 1fe220020a012f73 R08: 000000010004005c R09: dffffc0000000000
- [  560.647768] R10: dffffc0000000000 R11: 0000000000000003 R12: ff1100105b7f70e1
- [  560.647769] R13: ffffffffb635d8a0 R14: ff1100105b7f72d8 R15: ff1100105b7f7040
- [  560.647770] FS:  00007fd9b3437080(0000) GS:ff1100105b600000(0000) knlGS:0000000000000000
- [  560.647771] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- [  560.647772] CR2: 00007fd9b30112bc CR3: 000000105e898006 CR4: 0000000000761ee0
- [  560.647773] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
- [  560.647773] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
- [  560.647774] PKRU: 55555554
- [  560.647774] Call Trace:
- [  560.647778]  ? invoke_rcu_core+0x180/0x180
- [  560.647782]  ? __is_module_percpu_address+0xed/0x440
- [  560.647787]  lockdep_unregister_key+0x2ab/0x5b0
- [  560.647791]  destroy_workqueue+0x40b/0x610
- [  560.647862]  xlog_dealloc_log+0x216/0x2b0 [xfs]
-    :
+Cute...  Completely unrelated, but there's a fun bug in mainline o32
+coredumps - say readelf -a core and watch NT_FILE section dump.
+Compare that for dumps done on mips32 and mips64 hosts (for the same
+o32 binaries, obviously).  Or to gcore(1) results on such processes,
+for that matter.
 
-This splat is caused by the fact that lockdep_unregister_key() uses
-raw_local_irq_save() which doesn't update the hardirqs_enabled
-percpu flag.  The call_rcu() function, however, will call
-lockdep_assert_irqs_disabled() to check the hardirqs_enabled flag which
-remained set in this case.
-
-Fix this problem by using local_irq_save()/local_irq_restore() pairs
-whenever call_rcu() is being called.
-
-I think raw_local_irq_save() function can be used if no external
-function is being called except maybe printk() as it means another
-lockdep problem exists.
-
-Fixes: a0b0fd53e1e67 ("locking/lockdep: Free lock classes that are no longer in use")
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- kernel/locking/lockdep.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
-
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index c1418b47f625..2a37af77ede6 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -5884,7 +5884,7 @@ static void free_zapped_rcu(struct rcu_head *ch)
- 	if (WARN_ON_ONCE(ch != &delayed_free.rcu_head))
- 		return;
- 
--	raw_local_irq_save(flags);
-+	local_irq_save(flags);
- 	lockdep_lock();
- 
- 	/* closed head */
-@@ -5898,7 +5898,7 @@ static void free_zapped_rcu(struct rcu_head *ch)
- 	call_rcu_zapped(delayed_free.pf + delayed_free.index);
- 
- 	lockdep_unlock();
--	raw_local_irq_restore(flags);
-+	local_irq_restore(flags);
- }
- 
- /*
-@@ -5941,13 +5941,13 @@ static void lockdep_free_key_range_reg(void *start, unsigned long size)
- 
- 	init_data_structures_once();
- 
--	raw_local_irq_save(flags);
-+	local_irq_save(flags);
- 	lockdep_lock();
- 	pf = get_pending_free();
- 	__lockdep_free_key_range(pf, start, size);
- 	call_rcu_zapped(pf);
- 	lockdep_unlock();
--	raw_local_irq_restore(flags);
-+	local_irq_restore(flags);
- 
- 	/*
- 	 * Wait for any possible iterators from look_up_lock_class() to pass
-@@ -6043,7 +6043,7 @@ static void lockdep_reset_lock_reg(struct lockdep_map *lock)
- 	unsigned long flags;
- 	int locked;
- 
--	raw_local_irq_save(flags);
-+	local_irq_save(flags);
- 	locked = graph_lock();
- 	if (!locked)
- 		goto out_irq;
-@@ -6054,7 +6054,7 @@ static void lockdep_reset_lock_reg(struct lockdep_map *lock)
- 
- 	graph_unlock();
- out_irq:
--	raw_local_irq_restore(flags);
-+	local_irq_restore(flags);
- }
- 
- /*
-@@ -6098,7 +6098,11 @@ void lockdep_unregister_key(struct lock_class_key *key)
- 	if (WARN_ON_ONCE(static_obj(key)))
- 		return;
- 
--	raw_local_irq_save(flags);
-+	/*
-+	 * local_irq_save() should be used as call_rcu() will check
-+	 * hardirqs_enabled state.
-+	 */
-+	local_irq_save(flags);
- 	if (!graph_lock())
- 		goto out_irq;
- 
-@@ -6115,7 +6119,7 @@ void lockdep_unregister_key(struct lock_class_key *key)
- 	call_rcu_zapped(pf);
- 	graph_unlock();
- out_irq:
--	raw_local_irq_restore(flags);
-+	local_irq_restore(flags);
- 
- 	/* Wait until is_dynamic_key() has finished accessing k->hash_entry. */
- 	synchronize_rcu();
--- 
-2.18.1
-
+What happens there is that 2aa362c49c31 ("coredump: extend core dump note
+section to contain file names of mapped files") that has introduced that
+section has added
+#define user_long_t            compat_long_t
+to fs/compat_binfmt_elf.c, but not to arch/mips/kernel/binfmt_elfo32.c,
+resulting in default (long) being used by fill_files_note().
