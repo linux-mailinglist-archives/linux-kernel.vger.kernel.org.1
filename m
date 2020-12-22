@@ -2,116 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10E2A2E0EB2
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 20:17:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 517702E0EB7
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 20:17:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727449AbgLVTQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 14:16:15 -0500
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:38834 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgLVTQO (ORCPT
+        id S1727562AbgLVTQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 14:16:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726316AbgLVTQf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 14:16:14 -0500
-Received: by mail-ot1-f44.google.com with SMTP id j20so12883838otq.5;
-        Tue, 22 Dec 2020 11:15:58 -0800 (PST)
+        Tue, 22 Dec 2020 14:16:35 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C436C0613D3;
+        Tue, 22 Dec 2020 11:15:54 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id y19so34370117lfa.13;
+        Tue, 22 Dec 2020 11:15:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=bPx7EE6PSbCPkDarnx0nbSqX4DyTXsuDpEiN7AF5ASk=;
+        b=by5CwRSkj7I1IIVMvp0X5QOxMswVE4c93suYm7juykVfkZccthrQYR/1LHg5tNX9Fs
+         G5RwLCFfqZuGdA/NMT84/GKhThuNV13dgCCXDs/xbrTgpQc5HAhUTsSNzuw3OAt9hmPF
+         rCBS/+GhCjpuMIBVDAodHt0e2K5MCFdMyRJCUenuFRI69khvLmnFtCssyFBTVA8mgAI3
+         +P71mriOwhz3yEpqEecEZB4c63IhIbysXU/t4EmQ7A6e7VqHYmWGP4lyIkwrmWQ8nyWi
+         oYy5aN+2WIyhWj0VJdqnrFFB/kKhcNWdk3BD+639Sf/Qe3l2191KixQ85whWtQvBNbO5
+         Japg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=ygKvG+Xi5YRuoJ8yhycwuvW5pwPVyAlu9r1/cRnWCXU=;
-        b=r6+ZgHQCCMc8flPWN+kLwLoO2RHtE+dEeDtPG4YPQuip8A2NfSWA3N6lGtMVVEYXMQ
-         ArGc1rAggtnLK9EVgEuKEDyZ4k2KuJ5Gt+xXVk1iSQr6VuIamrF9diQgTC4wgqvtjGzD
-         LRfT9qLm+AiFKCn5MZ1t8sJjU6P0AAbsi4RbHSMqdUHDv8hMdfgfxjOWqbDf07rW2Fsp
-         ndS90clUhtkyxTH5TRTCU+6D/sWZ6+yRvndEaLFY6m6MMNySjMmOkN2dD/7sP+abScrP
-         raao/kmX3cr2iUUrONQMLXarOzGOxESwrCFxKoMFH7KsnuvVt8um4CDAXmapKw9hQial
-         9U/A==
-X-Gm-Message-State: AOAM530GEQ7o9WY/J0lwL2/jS9leWh7qnybzSLRp8+k0uDO3L3+XtBlY
-        WZJWX/vqUN7sIwKISsMMEVZHW5Iy8WTA06NoAS9WcKDrLKM=
-X-Google-Smtp-Source: ABdhPJwE0AahC1wgufL8Le6mAiZdJqEXJP0NI3a0iUlXmOW+y/KD/53RuSiPhQavMMI/1Tu2DJ8NJpDb7uBH33PE7Kc=
-X-Received: by 2002:a9d:67da:: with SMTP id c26mr17221313otn.321.1608664533212;
- Tue, 22 Dec 2020 11:15:33 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bPx7EE6PSbCPkDarnx0nbSqX4DyTXsuDpEiN7AF5ASk=;
+        b=Fey+j64ifXLO4xycxCn46C77SC3vQCqakx1dN2M4ltplYRSRYXHk3t9I4GKaYL3yre
+         aX2bWLliU0t+mpjQUzpTuHvy4JLziPq3Rhgfh0NGXvDyaYLIeEUI7sX30BKmz80gpEa6
+         PWQDg2so5FFTRSaRtC0T4mGf0TnzjRv26GdYXWQoAUDgVagjjGthsOm+9TMr/sMyklz1
+         lRhE06/bTo5S9EdARs4ii+e89T3B58J7/YYh4Afu9lp2i2I6x8ruYksXAOXFP/cXV94K
+         LZirK0YLYWQZrpE3nkPBAlKtRGZ67SlVLmhAhGlRWjSDs8dD0i4CZa1+jy8cPHTGkf22
+         2zvg==
+X-Gm-Message-State: AOAM533z1ki7FDtSI3gKT4R+EJ7jWKBEXQMe36fvAc4xRQlcnP/fJpKV
+        Tt7XTd0S/Dxk60gnxier6lpAzo9yoR4=
+X-Google-Smtp-Source: ABdhPJzHaWjDXUMak9w+Uk5NxxvdBfxwblLdXjwl2xjCH+RslfqzQ0040C+FqW1K8XqCgG6Upk0xGA==
+X-Received: by 2002:a2e:9847:: with SMTP id e7mr10954928ljj.388.1608664553007;
+        Tue, 22 Dec 2020 11:15:53 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.googlemail.com with ESMTPSA id f23sm2788410lfh.196.2020.12.22.11.15.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Dec 2020 11:15:52 -0800 (PST)
+Subject: Re: [PATCH v2 11/48] opp: Add dev_pm_opp_find_level_ceil()
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-clk@vger.kernel.org
+References: <20201217180638.22748-1-digetx@gmail.com>
+ <20201217180638.22748-12-digetx@gmail.com>
+ <20201222064253.x7vsurh7q5k7qzb5@vireshk-i7>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <fd7b9f42-d0a7-45eb-2a17-d46779011c58@gmail.com>
+Date:   Tue, 22 Dec 2020 22:15:51 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 22 Dec 2020 20:15:22 +0100
-Message-ID: <CAJZ5v0jS2-kDBA70XwStNEg3pUusK_=h5P58d71cOx83zU-WOw@mail.gmail.com>
-Subject: [GIT PULL] More ACPI updates for v5.11-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201222064253.x7vsurh7q5k7qzb5@vireshk-i7>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+22.12.2020 09:42, Viresh Kumar пишет:
+> On 17-12-20, 21:06, Dmitry Osipenko wrote:
+>> Add a ceil version of the dev_pm_opp_find_level(). It's handy to have if
+>> levels don't start from 0 in OPP table and zero usually means a minimal
+>> level.
+>>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> 
+> Why doesn't the exact version work for you here ?
+> 
 
-Please pull from the tag
-
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- acpi-5.11-rc1-2
-
-with top-most commit 538fcf57aaee6ad78a05f52b69a99baa22b33418
-
- Merge branches 'acpi-scan', 'acpi-pnp' and 'acpi-sleep'
-
-on top of commit aab7ce2b099bd9df82573cd3170acf6518fdebeb
-
- Merge tag 'acpi-5.11-rc1' of
-git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
-
-to receive more ACPI updates for 5.11-rc1.
-
-These make the ACPI enumeration of devices take _DEP information
-into account more aggressively, fix device IDs matching in the ACPI
-part of the PNP devices framework and update the ACPI code related
-to suspend-to-idle to take systems based on AMD hardware into account
-properly.
-
-Specifics:
-
- - Modify the ACPI device enumeration code to defer the enumeration
-   of devices with an _HID whose lists of operation region
-   dependencies returned by _DEP are not empty after eliminating the
-   entries representing known-benign dependencies from them (Rafael
-   Wysocki, Hans de Goede).
-
- - Make the ACPI PNP code matching device IDs also take the length of
-   the given ID string into account (Hui Wang).
-
- - Add AMD systems support to the ACPI code handling suspend-to-idle
-   via the PNP0D80 (System Power Management Controller) device _DSM
-   interface (Shyam Sundar).
-
- - Move the suspend-to-idle handling code related to the PNP0D80
-   device _DSM interface, which is x86-specific, to a separate file
-   in the x86/ subdirectory (Rafael Wysocki).
-
-Thanks!
-
-
----------------
-
-Hans de Goede (1):
-      ACPI: scan: Add Intel Baytrail Mailbox Device to acpi_ignore_dep_ids
-
-Hui Wang (1):
-      ACPI: PNP: compare the string length in the matching_id()
-
-Rafael J. Wysocki (4):
-      ACPI: scan: Evaluate _DEP before adding the device
-      ACPI: scan: Defer enumeration of devices with _DEP lists
-      ACPI: scan: Avoid unnecessary second pass in acpi_bus_scan()
-      ACPI: PM: s2idle: Move x86-specific code to the x86 directory
-
-Shyam Sundar S K (1):
-      ACPI: PM: s2idle: Add AMD support to handle _DSM
-
----------------
-
- drivers/acpi/Makefile     |   1 +
- drivers/acpi/acpi_pnp.c   |   3 +
- drivers/acpi/scan.c       | 143 ++++++++++----
- drivers/acpi/sleep.c      | 305 ++----------------------------
- drivers/acpi/sleep.h      |  16 ++
- drivers/acpi/x86/s2idle.c | 460 ++++++++++++++++++++++++++++++++++++++++++++++
- 6 files changed, 598 insertions(+), 330 deletions(-)
+The exact version won't find OPP for level=0 if levels don't start with
+0, where 0 means that minimal level is desired.
