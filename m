@@ -2,266 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCD882E06DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 08:37:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CFCE2E06DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 08:42:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725968AbgLVHh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 02:37:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32770 "EHLO
+        id S1726057AbgLVHmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 02:42:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725300AbgLVHhZ (ORCPT
+        with ESMTP id S1725865AbgLVHmO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 02:37:25 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E9CCC0613D3;
-        Mon, 21 Dec 2020 23:36:45 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7312F9E6;
-        Tue, 22 Dec 2020 08:36:43 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1608622603;
-        bh=U3k6BPplY/jPjNfXOWlq97uZP2mqr5VB7uZ2dRRPzHQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iWTCYldF+LPS+j/5sLziALOv9gPft6oqDVTsHSYzOlxRsvNF1bwbiX31nz8Ws8XxG
-         fSJgN+5ZAWpgv8AgjmehsVvBYWWazYTvoOJHwHSbXahjr4yxaw399dwMVBLb8/k2yn
-         Vap4Xe1TCw4+ryYa4NM0068im4wFa/YM+BgYmHGE=
-Date:   Tue, 22 Dec 2020 09:36:35 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Liu Ying <victor.liu@nxp.com>
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, airlied@linux.ie, daniel@ffwll.ch,
-        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        mchehab@kernel.org, a.hajda@samsung.com, narmstrong@baylibre.com,
-        jonas@kwiboo.se, jernej.skrabec@siol.net, kishon@ti.com,
-        vkoul@kernel.org
-Subject: Re: [PATCH 11/14] dt-bindings: display: bridge: Add i.MX8qm/qxp LVDS
- display bridge binding
-Message-ID: <X+GiA4LqJTQR9vrz@pendragon.ideasonboard.com>
-References: <1608199173-28760-1-git-send-email-victor.liu@nxp.com>
- <1608199173-28760-12-git-send-email-victor.liu@nxp.com>
+        Tue, 22 Dec 2020 02:42:14 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD52FC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 23:41:33 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id w6so8000306pfu.1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 23:41:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=endlessos.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=msNvM5pzbAJYWbn5mWuzMEGirWXPRzYqMruqrj8OX6c=;
+        b=lQXUHk2Fsfs1sA+mkfafYI2CaAd1zQA6DfenVJTnQTN0i9Ss480VRYI/ng1ieVmoQ8
+         3PbGUHzhrLuxq2RX8DXV4q8TCLxDfx5wmJ3HV/aAvkT6mhJeugfpSea5sXsksPncLx1H
+         OskM58B1/4bzJjCExLl1lORWvSY2WCp8O5UUzALyeB5Uu8UyBJ50FurGtspMylRjGFBx
+         RYlDZZ16+RcXVb2ISf/QG//OQSVQtXrCnbJzRqTpyxmBOASWgan3o4bUFVEjJLJ5tDsS
+         6kXktKT5TcUL0QXyuo/fY70EZWzT3bbGR0b4dJPibUSwEHx+VWG+zn/4Ht7WWDQgtDYC
+         9c8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=msNvM5pzbAJYWbn5mWuzMEGirWXPRzYqMruqrj8OX6c=;
+        b=iYpdGvzFwx8jiU5y9xoGwn1woOUqDf9yFjxY+PldejsCmkYI3MNTLkMGrk9m2p2vq1
+         0SX8tgUHWpLuQrlb4RUXl7mTRrV/L4Zqk+Eq9+XU9CIyU/dFlYk42RoF9uwJk2Kuzjja
+         ltjrrU30XDiyXNgYwY/97FXcu2pGujk0ruF7VY6ZXgMDCFD6Jyd705SJNS1ccC9Ezxi7
+         OcyeDeM72acHIfIj+TYvaybORWcJiKTXiksw9PiTXJv7f3QaALYyUnVQv1Ne76xezN2j
+         diO+o+kJ0FaE6PCNYlpEsEYUEI784KwUlbE4Ig56K+XWXobOyDvt+h4o3UOchP8JP4eE
+         fxSw==
+X-Gm-Message-State: AOAM533dO9zLyZMKPEszTw+Ny/8RrJp+AjS06ONTpec4lASr/xBhK8T0
+        4Ei7AIINPRbp6/obbDh/RXn7nn1BHYKBa+c5
+X-Google-Smtp-Source: ABdhPJxIYOi2lMUhqM9FA9/s/YZgH4HhW0Ae+PRwIKVYgSaINEIiuKkYxnhczYPlCkvy0omsr7HE3g==
+X-Received: by 2002:a63:da58:: with SMTP id l24mr18497739pgj.178.1608622893189;
+        Mon, 21 Dec 2020 23:41:33 -0800 (PST)
+Received: from starnight.localdomain (123-204-46-122.static.seed.net.tw. [123.204.46.122])
+        by smtp.googlemail.com with ESMTPSA id cq15sm17680984pjb.27.2020.12.21.23.41.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Dec 2020 23:41:32 -0800 (PST)
+From:   Jian-Hong Pan <jhp@endlessos.org>
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux@endlessos.org, Jian-Hong Pan <jhp@endlessos.org>
+Subject: [PATCH] HID: Add Wireless Radio Control feature for Chicony devices
+Date:   Tue, 22 Dec 2020 15:38:56 +0800
+Message-Id: <20201222073855.98490-1-jhp@endlessos.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1608199173-28760-12-git-send-email-victor.liu@nxp.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Liu,
+Some Chicony's keyboards support airplane mode hotkey (Fn+F2) with
+"Wireless Radio Control" feature. For example, the wireless keyboard
+[04f2:1236] shipped with ASUS all-in-one desktop.
 
-Thank you for the patch.
+After consulting Chicony for this hotkey, learned the device will send
+with 0x11 as the report ID and 0x1 as the value when the key is pressed
+down.
 
-On Thu, Dec 17, 2020 at 05:59:30PM +0800, Liu Ying wrote:
-> This patch adds bindings for i.MX8qm/qxp LVDS display bridge(LDB).
-> 
-> Signed-off-by: Liu Ying <victor.liu@nxp.com>
-> ---
->  .../bindings/display/bridge/fsl,imx8qxp-ldb.yaml   | 185 +++++++++++++++++++++
->  1 file changed, 185 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-ldb.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-ldb.yaml b/Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-ldb.yaml
-> new file mode 100644
-> index 00000000..4e5ff6f
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-ldb.yaml
-> @@ -0,0 +1,185 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/bridge/fsl,imx8qxp-ldb.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Freescale i.MX8qm/qxp LVDS Display Bridge
-> +
-> +maintainers:
-> +  - Liu Ying <victor.liu@nxp.com>
-> +
-> +description: |
-> +  The Freescale i.MX8qm/qxp LVDS Display Bridge(LDB) has two channels.
-> +
-> +  For i.MX8qxp LDB, each channel supports up to 24bpp parallel input color
-> +  format and can map the input to VESA or JEIDA standards.  The two channels
-> +  cannot be used simultaneously, that is to say, the user should pick one of
-> +  them to use.  Two LDB channels from two LDB instances can work together in
-> +  LDB split mode to support a dual link LVDS display.  The channel indexes
-> +  have to be different.  Channel0 outputs odd pixels and channel1 outputs
-> +  even pixels.
+This patch maps the event as KEY_RFKILL.
 
-In this case, does the display controller output odd pixels and even
-pixels separately to the two LVDS channels, with each channel
-effectively be a separate LVDS encoder ? Could you give an example of DT
-integration for dual-link LVDS support, with the display controller, two
-LDB instances, and a dual-link LVDS panel ?
+Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
+---
+ drivers/hid/hid-chicony.c | 58 +++++++++++++++++++++++++++++++++++++++
+ drivers/hid/hid-ids.h     |  1 +
+ 2 files changed, 59 insertions(+)
 
-> +
-> +  For i.MX8qm LDB, each channel additionally supports up to 30bpp parallel
-> +  input color format.  The two channels can be used simultaneously, either
-> +  in dual mode or split mode.  In dual mode, the two channels output identical
-> +  data.  In split mode, channel0 outputs odd pixels and channel1 outputs even
-> +  pixels.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - fsl,imx8qm-ldb
-> +      - fsl,imx8qxp-ldb
-> +
-> +  "#address-cells":
-> +    const: 1
-> +
-> +  "#size-cells":
-> +    const: 0
-> +
-> +  clocks:
-> +    items:
-> +      - description: pixel clock
-> +      - description: bypass clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: pixel
-> +      - const: bypass
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  fsl,syscon:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: |
-> +      A phandle which points to Control and Status Registers(CSR) module.
-> +
-> +  fsl,companion-ldb:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: |
-> +      A phandle which points to companion LDB which is used in LDB split mode.
-> +
-> +patternProperties:
-> +  "^channel@[0-1]$":
-> +    type: object
-> +    description: Represents a channel of LDB.
-> +
-> +    properties:
-> +      "#address-cells":
-> +        const: 1
-> +
-> +      "#size-cells":
-> +        const: 0
-> +
-> +      reg:
-> +        description: The channel index.
-> +        enum: [ 0, 1 ]
-> +
-> +      phys:
-> +        description: A phandle to the phy module representing the LVDS PHY.
-> +        maxItems: 1
-> +
-> +      phy-names:
-> +        const: lvds_phy
-> +
-> +      port@0:
-> +        type: object
-> +        description: Input port of the channel.
-> +
-> +        properties:
-> +          reg:
-> +            const: 0
-> +
-> +        required:
-> +          - reg
-> +
-> +      port@1:
-> +        type: object
-> +        description: Output port of the channel.
-> +
-> +        properties:
-> +          reg:
-> +            const: 1
-> +
-> +        required:
-> +          - reg
-> +
-> +    required:
-> +      - "#address-cells"
-> +      - "#size-cells"
-> +      - reg
-> +      - phys
-> +      - phy-names
-> +
-> +    additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - "#address-cells"
-> +  - "#size-cells"
-> +  - clocks
-> +  - clock-names
-> +  - power-domains
-> +  - fsl,syscon
-> +  - channel@0
-> +  - channel@1
-> +
-> +allOf:
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: fsl,imx8qm-ldb
-> +    then:
-> +      properties:
-> +        fsl,companion-ldb: false
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/firmware/imx/rsrc.h>
-> +    ldb {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +        compatible = "fsl,imx8qxp-ldb";
-> +        clocks = <&clk IMX_SC_R_LVDS_0 IMX_SC_PM_CLK_MISC2>,
-> +                 <&clk IMX_SC_R_LVDS_0 IMX_SC_PM_CLK_BYPASS>;
-> +        clock-names = "pixel", "bypass";
-> +        power-domains = <&pd IMX_SC_R_LVDS_0>;
-> +        fsl,syscon = <&mipi_lvds_0_csr>;
-> +
-> +        channel@0 {
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +            reg = <0>;
-> +            phys = <&mipi_lvds_0_phy>;
-> +            phy-names = "lvds_phy";
-> +
-> +            port@0 {
-> +                reg = <0>;
-> +
-> +                mipi_lvds_0_ldb_ch0_mipi_lvds_0_pxl2dpi: endpoint {
-> +                    remote-endpoint = <&mipi_lvds_0_pxl2dpi_mipi_lvds_0_ldb_ch0>;
-> +                };
-> +            };
-> +        };
-> +
-> +        channel@1 {
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +            reg = <1>;
-> +            phys = <&mipi_lvds_0_phy>;
-> +            phy-names = "lvds_phy";
-> +
-> +            port@0 {
-> +                reg = <0>;
-> +
-> +                mipi_lvds_0_ldb_ch1_mipi_lvds_0_pxl2dpi: endpoint {
-> +                    remote-endpoint = <&mipi_lvds_0_pxl2dpi_mipi_lvds_0_ldb_ch1>;
-> +                };
-> +            };
-> +        };
-> +    };
-
+diff --git a/drivers/hid/hid-chicony.c b/drivers/hid/hid-chicony.c
+index 3f0ed6a95223..aca963aa0f1e 100644
+--- a/drivers/hid/hid-chicony.c
++++ b/drivers/hid/hid-chicony.c
+@@ -21,6 +21,42 @@
+ 
+ #include "hid-ids.h"
+ 
++#define KEY_PRESSED			0x01
++#define CH_WIRELESS_CTL_REPORT_ID	0x11
++
++static int ch_report_wireless(struct hid_report *report, u8 *data, int size)
++{
++	struct hid_device *hdev = report->device;
++	struct input_dev *input;
++
++	if (report->id != CH_WIRELESS_CTL_REPORT_ID ||
++	    report->maxfield != 1 ||
++	    *report->field[0]->value != KEY_PRESSED)
++		return 0;
++
++	input = report->field[0]->hidinput->input;
++	if (!input) {
++		hid_warn(hdev, "can't find wireless radio control's input");
++		return 0;
++	}
++
++	input_report_key(input, KEY_RFKILL, 1);
++	input_sync(input);
++	input_report_key(input, KEY_RFKILL, 0);
++	input_sync(input);
++
++	return 1;
++}
++
++static int ch_raw_event(struct hid_device *hdev,
++		struct hid_report *report, u8 *data, int size)
++{
++	if (report->application == HID_GD_WIRELESS_RADIO_CTLS)
++		return ch_report_wireless(report, data, size);
++
++	return 0;
++}
++
+ #define ch_map_key_clear(c)	hid_map_usage_clear(hi, usage, bit, max, \
+ 					EV_KEY, (c))
+ static int ch_input_mapping(struct hid_device *hdev, struct hid_input *hi,
+@@ -77,10 +113,30 @@ static __u8 *ch_switch12_report_fixup(struct hid_device *hdev, __u8 *rdesc,
+ 	return rdesc;
+ }
+ 
++static int ch_probe(struct hid_device *hdev, const struct hid_device_id *id)
++{
++	int ret;
++
++	hdev->quirks |= HID_QUIRK_INPUT_PER_APP;
++	ret = hid_parse(hdev);
++	if (ret) {
++		hid_err(hdev, "Chicony hid parse failed: %d\n", ret);
++		return ret;
++	}
++
++	ret = hid_hw_start(hdev, HID_CONNECT_DEFAULT);
++	if (ret) {
++		hid_err(hdev, "Chicony hw start failed: %d\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
+ 
+ static const struct hid_device_id ch_devices[] = {
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_CHICONY, USB_DEVICE_ID_CHICONY_TACTICAL_PAD) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_CHICONY, USB_DEVICE_ID_CHICONY_WIRELESS2) },
++	{ HID_USB_DEVICE(USB_VENDOR_ID_CHICONY, USB_DEVICE_ID_CHICONY_WIRELESS3) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_CHICONY, USB_DEVICE_ID_CHICONY_ACER_SWITCH12) },
+ 	{ }
+ };
+@@ -91,6 +147,8 @@ static struct hid_driver ch_driver = {
+ 	.id_table = ch_devices,
+ 	.report_fixup = ch_switch12_report_fixup,
+ 	.input_mapping = ch_input_mapping,
++	.probe = ch_probe,
++	.raw_event = ch_raw_event,
+ };
+ module_hid_driver(ch_driver);
+ 
+diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+index 4c5f23640f9c..06d90301a3dc 100644
+--- a/drivers/hid/hid-ids.h
++++ b/drivers/hid/hid-ids.h
+@@ -270,6 +270,7 @@
+ #define USB_DEVICE_ID_CHICONY_PIXART_USB_OPTICAL_MOUSE	0x1053
+ #define USB_DEVICE_ID_CHICONY_PIXART_USB_OPTICAL_MOUSE2	0x0939
+ #define USB_DEVICE_ID_CHICONY_WIRELESS2	0x1123
++#define USB_DEVICE_ID_CHICONY_WIRELESS3	0x1236
+ #define USB_DEVICE_ID_ASUS_AK1D		0x1125
+ #define USB_DEVICE_ID_CHICONY_TOSHIBA_WT10A	0x1408
+ #define USB_DEVICE_ID_CHICONY_ACER_SWITCH12	0x1421
 -- 
-Regards,
+2.29.2
 
-Laurent Pinchart
