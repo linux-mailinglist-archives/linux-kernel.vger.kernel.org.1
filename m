@@ -2,144 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C920D2E0EDD
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 20:21:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C31012E0EDF
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 20:21:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727871AbgLVTVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 14:21:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56350 "EHLO
+        id S1727306AbgLVTVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 14:21:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727502AbgLVTVF (ORCPT
+        with ESMTP id S1726620AbgLVTVq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 14:21:05 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6451C0613D6;
-        Tue, 22 Dec 2020 11:20:25 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id s21so8974674pfu.13;
-        Tue, 22 Dec 2020 11:20:25 -0800 (PST)
+        Tue, 22 Dec 2020 14:21:46 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12019C0613D3;
+        Tue, 22 Dec 2020 11:21:06 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id y19so34401813lfa.13;
+        Tue, 22 Dec 2020 11:21:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=F5AMnLvseBLwD4CSY72NfvaqVdYyFOwme+T8yzDx3b4=;
-        b=NAEFAdESyBeAhxfpWp0L2gvl3DEqFJ3nrPzeclRSSpJ8vtv9sAf6JBaOWZ/EuTduCg
-         eAAjkSWS3gkrV7xm0bWp5uBScT9aRj70jvUYSefltZvReHiKLVNbSJ6eoS6YwIhnX0O9
-         EIYBsprjoUSOzuApPGT/nXm8thSTvZV+iebQUZftF1jrLL+QXFuZwBbTXhN3FCVasCvq
-         VPlq/diIas69vWuOhV8v7V/MjoDy8aOSWRdqbZQ0Wd1Apx7tqai/LlJ4JPTNEJLubRuX
-         hVkzPuZb9UwyKGOfZ++fejJWnTXWEJWrBOFBFNW61I75vgt9K21iieIXVAfjsO7Qmr6s
-         FeVQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=0YzH8qFTgwShSHXjPQ/ih8sk32BJvJHUfZ62MJdnb4Q=;
+        b=cjuuNVp8wJ4Py/jZcvkjtwd+gc2aYRuxADY9gxQQ1BFMmuGUB+QpXlnKsJc4t6BtCL
+         KnGX5HHkPLoHg8NcbTRi//P/INJ7hF0Mt7Mg696geYuEi3wXX1JvDW6EQE3Sovz8NX+t
+         lFaTGtAHKDD5oXV+3gr2TFkuTLzSI6ZGfCmsppPN3+9iVTJmuVeFHGF8Fe2bKRhm87pv
+         bB6x6iQQhjZqDFLIAdl2dOjsTocH/K/GqNBn2WMEe3LKWzJstYv2DfJBuLBpNrjeZnvJ
+         GVJM4YnrqqstFT9iWTlRzs4LU5FMJbnvxzZWYbtw6Ps7yPs1l9ZSuum5Z9IQvJftfOSJ
+         zYGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=F5AMnLvseBLwD4CSY72NfvaqVdYyFOwme+T8yzDx3b4=;
-        b=Jp0BElNFqedCffz5bRE/95sgDffaPQe51aZ9/bk1LIZ+Y2jDM70Y3vM4O9qqDrYR3v
-         XXTbZgDIhQtlIUbySCUeAq0fwre2TcO2ZXh/7qPi3YW9mzq9KnR/DTgkuY8eLhMmwqYo
-         aIvIG2Zd0HrOMQ3+cMM3Ms5lv2bEd2Xf7N9CG15R6sAcS0hEkTwPBHW9UbwMkuM+im9u
-         977X7bGfHxx9qctGPNhtZCmGsvdibfFqzU6EoVNf1QftIIN0nyfa0/sz5Q28EGn9Frm1
-         7Zx6AB1z/oYA77gu1smkj6OoMVhW3L0bDhQklaVty3YxjpPB0CRovwiX0VW//qSF97l+
-         hPWQ==
-X-Gm-Message-State: AOAM532N2bjLKn8wM5wKg3/foso7zzVc9SVx9R/pT2n+UQL72sP4wjgQ
-        0Yw2T5fHpq7VpRlfUGHd2GY=
-X-Google-Smtp-Source: ABdhPJwUI29C82tgtHYmx78kGGb+xdlrRNFNTXAf8QZn5A/wiuk/5BA6I/kn1gFRkOwOEWcLf8jjBA==
-X-Received: by 2002:a05:6a00:22c9:b029:198:15b2:bbd3 with SMTP id f9-20020a056a0022c9b029019815b2bbd3mr928100pfj.64.1608664825069;
-        Tue, 22 Dec 2020 11:20:25 -0800 (PST)
-Received: from ?IPv6:2601:647:4700:9b2:9423:6a08:cbd0:8220? ([2601:647:4700:9b2:9423:6a08:cbd0:8220])
-        by smtp.gmail.com with ESMTPSA id t18sm21640050pfl.138.2020.12.22.11.20.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 22 Dec 2020 11:20:24 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-From:   Nadav Amit <nadav.amit@gmail.com>
-In-Reply-To: <X+I7TcwMsiS1Bhy/@google.com>
-Date:   Tue, 22 Dec 2020 11:20:21 -0800
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        linux-mm <linux-mm@kvack.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable <stable@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Will Deacon <will@kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <E36448EB-2888-42FE-A9F2-2DCF0508C138@gmail.com>
-References: <X97pprdcRXusLGnq@google.com>
- <DDA15360-D6D4-46A8-95A4-5EE34107A407@gmail.com>
- <20201221172711.GE6640@xz-x1>
- <76B4F49B-ED61-47EA-9BE4-7F17A26B610D@gmail.com>
- <X+D0hTZCrWS3P5Pi@google.com>
- <CAHk-=wg_UBuo7ro1fpEGkMyFKA1+PxrE85f9J_AhUfr-nJPpLQ@mail.gmail.com>
- <9E301C7C-882A-4E0F-8D6D-1170E792065A@gmail.com>
- <CAHk-=wg-Y+svNy3CDkJjj0X_CJkSbpERLg64-Vqwq5u7SC4z0g@mail.gmail.com>
- <X+ESkna2z3WjjniN@google.com>
- <D4916F41-DE4A-42C6-8702-944382631A02@gmail.com>
- <X+I7TcwMsiS1Bhy/@google.com>
-To:     Yu Zhao <yuzhao@google.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0YzH8qFTgwShSHXjPQ/ih8sk32BJvJHUfZ62MJdnb4Q=;
+        b=al4QxrVSCDc96CuiOTtRudL9r3hTn1HI2s3Z4BAU8PAJ4YoFoHIAyNr7Fe2gfq+sdh
+         UuKX7Z17HkzMAUffSu/zA36Fvqbc9HaUgKJXtevRHADZxrFT79bGMRTtGDbubCjmH8tL
+         qCcmpMQ+9+juRBA/k5m/iOFCPVSfEsw6BeQfnDik3gdFrACbB758ThLnYW6t8L6mcVux
+         27mkl5c+99wdBKM67ytslwE0KZs6D17ZKfPdNmqMym4ZIboi3c+CcPCWhf6gTCfLAHRZ
+         jZNCMTitbS+5WPUP/R0lMMgoFDLyrkhl2RbxhcQxo0TLaQ7+GOJfYH+rpVqHMTtVt8PS
+         uEVw==
+X-Gm-Message-State: AOAM530iX0q92ByPlWBtT5PaVvH+hl5xOd7gr/vVqLIFTB/eZ33QDY76
+        WYeMwlTVCSmZWcYfS6gpldw3fCjY4PA=
+X-Google-Smtp-Source: ABdhPJyTfRbQjmFtVPw92Y7UsE4CBIej0hVl2LRd1tte7JNX6Oy7N+3jhVtpYSR71T820OH/ZDlnJA==
+X-Received: by 2002:ac2:5597:: with SMTP id v23mr4071397lfg.649.1608664864385;
+        Tue, 22 Dec 2020 11:21:04 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.googlemail.com with ESMTPSA id k2sm2771430lfo.256.2020.12.22.11.21.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Dec 2020 11:21:03 -0800 (PST)
+Subject: Re: [PATCH v2 28/48] soc/tegra: Introduce core power domain driver
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-clk@vger.kernel.org
+References: <20201217180638.22748-1-digetx@gmail.com>
+ <20201217180638.22748-29-digetx@gmail.com>
+ <20201222064029.duuzcsj53rt7xzvt@vireshk-i7>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <c130f78d-3d97-9b26-be77-951fee0d8680@gmail.com>
+Date:   Tue, 22 Dec 2020 22:21:03 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
+MIME-Version: 1.0
+In-Reply-To: <20201222064029.duuzcsj53rt7xzvt@vireshk-i7>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Dec 22, 2020, at 10:30 AM, Yu Zhao <yuzhao@google.com> wrote:
->=20
-> On Tue, Dec 22, 2020 at 04:40:32AM -0800, Nadav Amit wrote:
->>> On Dec 21, 2020, at 1:24 PM, Yu Zhao <yuzhao@google.com> wrote:
->>>=20
->>> On Mon, Dec 21, 2020 at 12:26:22PM -0800, Linus Torvalds wrote:
->>>> On Mon, Dec 21, 2020 at 12:23 PM Nadav Amit <nadav.amit@gmail.com> =
-wrote:
->>>>> Using mmap_write_lock() was my initial fix and there was a strong =
-pushback
->>>>> on this approach due to its potential impact on performance.
->>>>=20
->>>> =46rom whom?
->>>>=20
->>>> Somebody who doesn't understand that correctness is more important
->>>> than performance? And that userfaultfd is not the most important =
-part
->>>> of the system?
->>>>=20
->>>> The fact is, userfaultfd is CLEARLY BUGGY.
->>>>=20
->>>>         Linus
->>>=20
->>> Fair enough.
->>>=20
->>> Nadav, for your patch (you might want to update the commit message).
->>>=20
->>> Reviewed-by: Yu Zhao <yuzhao@google.com>
->>>=20
->>> While we are all here, there is also clear_soft_dirty() that could
->>> use a similar fix=E2=80=A6
->>=20
->> Just an update as for why I have still not sent v2: I fixed
->> clear_soft_dirty(), created a reproducer, and the reproducer kept =
-failing.
->>=20
->> So after some debugging, it appears that clear_refs_write() does not =
-flush
->> the TLB. It indeed calls tlb_finish_mmu() but since 0758cd830494
->> ("asm-generic/tlb: avoid potential double flush=E2=80=9D), =
-tlb_finish_mmu() does not
->> flush the TLB since there is clear_refs_write() does not call to
->> __tlb_adjust_range() (unless there are nested TLBs are pending).
->=20
-> Sorry Nadav, I assumed you knew this existing problem fixed by:
-> =
-https://patchwork.kernel.org/project/linux-mm/cover/20201210121110.10094-1=
--will@kernel.org/
->=20
+22.12.2020 09:40, Viresh Kumar пишет:
+> On 17-12-20, 21:06, Dmitry Osipenko wrote:
+>> +++ b/drivers/soc/tegra/core-power-domain.c
+>> @@ -0,0 +1,125 @@
+>> +// SPDX-License-Identifier: GPL-2.0+
+>> +/*
+>> + * NVIDIA Tegra SoC Core Power Domain Driver
+>> + */
+>> +
+>> +#include <linux/of_device.h>
+>> +#include <linux/platform_device.h>
+>> +#include <linux/pm_domain.h>
+>> +#include <linux/pm_opp.h>
+>> +#include <linux/slab.h>
+>> +
+>> +#include <soc/tegra/common.h>
+>> +
+>> +static struct lock_class_key tegra_core_domain_lock_class;
+>> +static bool tegra_core_domain_state_synced;
+>> +
+>> +static int tegra_genpd_set_performance_state(struct generic_pm_domain *genpd,
+>> +					     unsigned int level)
+>> +{
+>> +	struct dev_pm_opp *opp;
+>> +	int err;
+>> +
+>> +	opp = dev_pm_opp_find_level_ceil(&genpd->dev, &level);
+> 
+> We don't need ceil or floor versions for level, but rather _exact() version. Or
+> maybe just call it dev_pm_opp_find_level().
 
-Thanks, Yu! For some reason I assumed it was already upstreamed and did =
-not
-look back (yet if I was cc=E2=80=99d on v2=E2=80=A6)
+The _exact() version won't find OPP for level=0 if levels don't start
+with 0.
 
-Yet, something still goes bad. Debugging.
+>> +	if (IS_ERR(opp)) {
+>> +		dev_err(&genpd->dev, "failed to find OPP for level %u: %pe\n",
+>> +			level, opp);
+>> +		return PTR_ERR(opp);
+>> +	}
+>> +
+>> +	err = dev_pm_opp_set_voltage(&genpd->dev, opp);
+> 
+> IIUC, you implemented this callback because you want to use the voltage triplet
+> present in the OPP table ?
+> 
+> And so you are setting the regulator ("power") later in this patch ?
 
+yes
+
+> I am not in favor of implementing this routine, as it just adds a wrapper above
+> the regulator API. What you should be doing rather is get the regulator by
+> yourself here (instead of depending on the OPP core). And then you can do
+> dev_pm_opp_get_voltage() here and set the voltage yourself. You may want to
+> implement a version supporting triplet here though for the same.
+> 
+> And you won't require the sync version of the API as well then.
+> 
+
+That's what I initially did for this driver. I don't mind to revert back
+to the initial variant in v3, it appeared to me that it will be nicer
+and cleaner to have OPP API managing everything here.
