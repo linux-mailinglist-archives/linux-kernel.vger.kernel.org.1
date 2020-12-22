@@ -2,117 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C9D12E0847
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 10:49:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7B0A2E0851
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 10:53:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726021AbgLVJtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 04:49:05 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:10758 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725300AbgLVJtF (ORCPT
+        id S1726148AbgLVJwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 04:52:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725912AbgLVJwx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 04:49:05 -0500
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BM9f0Sa027727;
-        Tue, 22 Dec 2020 04:48:11 -0500
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 35k0e11wb3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Dec 2020 04:48:10 -0500
-Received: from SCSQMBX11.ad.analog.com (SCSQMBX11.ad.analog.com [10.77.17.10])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 0BM9m89c061852
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Tue, 22 Dec 2020 04:48:09 -0500
-Received: from SCSQCASHYB7.ad.analog.com (10.77.17.133) by
- SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Tue, 22 Dec 2020 01:48:07 -0800
-Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
- SCSQCASHYB7.ad.analog.com (10.77.17.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.721.2;
- Tue, 22 Dec 2020 01:48:07 -0800
-Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
- (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Tue, 22 Dec 2020 01:48:07 -0800
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0BM9m2pL002106;
-        Tue, 22 Dec 2020 04:48:04 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <jic23@kernel.org>, <lars@metafoo.de>, <akpm@linux-foundation.org>,
-        <gregkh@linuxfoundation.org>, <andy.shevchenko@gmail.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH v5 2/2] iio: Handle enumerated properties with gaps
-Date:   Tue, 22 Dec 2020 11:52:10 +0200
-Message-ID: <20201222095210.61897-2-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201222095210.61897-1-alexandru.ardelean@analog.com>
-References: <20201222095210.61897-1-alexandru.ardelean@analog.com>
+        Tue, 22 Dec 2020 04:52:53 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11401C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 01:52:13 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id v14so1334725wml.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 01:52:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=to:cc:references:from:subject:message-id:date:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=s8FlNBJc1tOTzj1/5kq2UR+5JabDHOpPzaLRtEUB/HU=;
+        b=gvvTyEq3lOW77ADAiTItaTJnUGezfK5apmO7swllVcsQZSe06cTh2e4paz8ofAf3NO
+         h/mXiSo7GQuyKJTRTuvXIJJ3dvlXHXGsOA3Urs1IRfx/8ebdhXfp3fNJs2a4+KmVygK+
+         ROpDp4kq6Tqu2uv5FLLlRjd+RjubqcvcZZFfylmKIbCTCUoIrzacxiu6s2XD3Oow2y8V
+         LQFKgGJxJJzJocKRxmlMHwV9fAHAYNWkl2N9d2JY5+leOndLXq0+tNCybHERqWg75RFR
+         1/RWsCVpt8uxjA2DS4k7pfHkat8iJghci11Po6iEmFOmy+FThuqd/0wRFg5MNAo6Da/2
+         CL0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=s8FlNBJc1tOTzj1/5kq2UR+5JabDHOpPzaLRtEUB/HU=;
+        b=sAUHFS6jIgHAuqveOagsnABX0HT/h9rGZXnC1qHDl20Pm+N0499P7LSrTrmHWO+1vS
+         6zow3BEZ51KIoaJgn37F45fyC6lS8c26gnWkRhXXlUS5VTKhLX2ePdppDdNJH9sDxJI6
+         z8ggAjy/+av0GOfx70agYo0ezjGF9jmiHL1Og+BOMZqNtL3bul/yGWF2qHrgj8NIjshj
+         68piADBE/DBZMbUKayc+y7aXswi7J0vc1XQiMfEfjFsIS2tTYusMI7Kj5DLwzEmFAEV8
+         Vhkl3dITPEZM23k6DLIFXqHtTcIvABJrgfryx8vmYa3ciYP2pXMqH1fwy79Y1+mcB3hA
+         05yw==
+X-Gm-Message-State: AOAM532F42BPmArXnx+tVVWmdCUpe5DWFLiuCB61mbsvSynX1AEReZlg
+        6nK3EvFIK1g7UDwuOX9614VLLw==
+X-Google-Smtp-Source: ABdhPJyfs5ZpTygXxaGZ5j8GtWYGKD6uk7BkURU0CRMiJrejb6fOEpzfcrY5OfLnYg+fJAPxGXnicQ==
+X-Received: by 2002:a1c:5410:: with SMTP id i16mr21190404wmb.30.1608630730769;
+        Tue, 22 Dec 2020 01:52:10 -0800 (PST)
+Received: from [10.44.66.8] ([212.45.67.2])
+        by smtp.googlemail.com with ESMTPSA id s20sm25149033wmj.46.2020.12.22.01.52.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Dec 2020 01:52:09 -0800 (PST)
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Li Yang <leoyang.li@nxp.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+References: <20201222043745.3420447-1-bjorn.andersson@linaro.org>
+From:   Georgi Djakov <georgi.djakov@linaro.org>
+Subject: Re: [PATCH] arm64: defconfig: Make INTERCONNECT_QCOM_SDM845 builtin
+Message-ID: <41571e59-b9f4-3e59-e23b-d9fbda9bee18@linaro.org>
+Date:   Tue, 22 Dec 2020 11:52:13 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-22_04:2020-12-21,2020-12-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- adultscore=0 bulkscore=0 mlxlogscore=822 impostorscore=0 spamscore=0
- phishscore=0 priorityscore=1501 clxscore=1015 malwarescore=0 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012220073
+In-Reply-To: <20201222043745.3420447-1-bjorn.andersson@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lars-Peter Clausen <lars@metafoo.de>
+On 12/22/20 06:37, Bjorn Andersson wrote:
+> As of v5.11-rc1 the QUP nodes of SDM845 has got their interconnect
+> properties specified, this means that the relevant interconnect provider
+> needs to be builtin for the UART device to probe and the console to be
+> registered before userspace needs to access it.
+> 
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-Some enums might have gaps or reserved values in the middle of their value
-range. E.g. consider a 2-bit enum where the values 0, 1 and 3 have a
-meaning, but 2 is a reserved value and can not be used.
+Reviewed-by: Georgi Djakov <georgi.djakov@linaro.org>
 
-Add support for such enums to the IIO enum helper functions. A reserved
-values is marked by setting its entry in the items array to NULL rather
-than the normal descriptive string value.
-
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- drivers/iio/industrialio-core.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-index e9ee9363fed0..5f6211bfb428 100644
---- a/drivers/iio/industrialio-core.c
-+++ b/drivers/iio/industrialio-core.c
-@@ -470,8 +470,11 @@ ssize_t iio_enum_available_read(struct iio_dev *indio_dev,
- 	if (!e->num_items)
- 		return 0;
- 
--	for (i = 0; i < e->num_items; ++i)
-+	for (i = 0; i < e->num_items; ++i) {
-+		if (!e->items[i])
-+			continue;
- 		len += scnprintf(buf + len, PAGE_SIZE - len, "%s ", e->items[i]);
-+	}
- 
- 	/* replace last space with a newline */
- 	buf[len - 1] = '\n';
-@@ -492,7 +495,7 @@ ssize_t iio_enum_read(struct iio_dev *indio_dev,
- 	i = e->get(indio_dev, chan);
- 	if (i < 0)
- 		return i;
--	else if (i >= e->num_items)
-+	else if (i >= e->num_items || !e->items[i])
- 		return -EINVAL;
- 
- 	return snprintf(buf, PAGE_SIZE, "%s\n", e->items[i]);
-@@ -509,7 +512,7 @@ ssize_t iio_enum_write(struct iio_dev *indio_dev,
- 	if (!e->set)
- 		return -EINVAL;
- 
--	ret = __sysfs_match_string(e->items, e->num_items, buf);
-+	ret = __sysfs_match_string_with_gaps(e->items, e->num_items, buf);
- 	if (ret < 0)
- 		return ret;
- 
--- 
-2.17.1
-
+> ---
+>   arch/arm64/configs/defconfig | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+> index 838301650a79..3848ae99501c 100644
+> --- a/arch/arm64/configs/defconfig
+> +++ b/arch/arm64/configs/defconfig
+> @@ -1078,7 +1078,7 @@ CONFIG_INTERCONNECT=y
+>   CONFIG_INTERCONNECT_QCOM=y
+>   CONFIG_INTERCONNECT_QCOM_MSM8916=m
+>   CONFIG_INTERCONNECT_QCOM_OSM_L3=m
+> -CONFIG_INTERCONNECT_QCOM_SDM845=m
+> +CONFIG_INTERCONNECT_QCOM_SDM845=y
+>   CONFIG_INTERCONNECT_QCOM_SM8150=m
+>   CONFIG_INTERCONNECT_QCOM_SM8250=m
+>   CONFIG_EXT2_FS=y
+> 
