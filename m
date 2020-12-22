@@ -2,316 +2,420 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 428522E04C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 04:37:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A5D02E04C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 04:37:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726024AbgLVDhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 22:37:12 -0500
-Received: from mail-co1nam11on2120.outbound.protection.outlook.com ([40.107.220.120]:26337
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725869AbgLVDhL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 22:37:11 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DhEQ+ABktzrXssWOYUFNvLR9MZKvc8DsWMdepXtFNQjQcSz/kMWtj63EExUVwyvY3TXb9c1szIGwpQA6YqbDMpLyrb7RdGY0sGKytRYMMOcAaOCYQZY+3rFgDta5duf0z1vDtLJyalaOZWTWbo37TrKl2uSI18B3aQOfiAJM3J12G7HiCeKcQQmw5lDlNX9C9B8m7akgwepbxC4RbDbgHdzdeaDHHnPPjV1vS+sfI9MI30VzB3gbKiekH6cB9I7j2sr6n24o/kjxwOVKWkiBIYoE1XRXE1ZWMtmgfod66XxkmUSrcoiv7ljdFRs8/s1v1VAiS9OmeTFckZk/gpQZgg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PqTL9toNaYU5d+DCkslfYyA+e78yxWThi1RAVfuUH/g=;
- b=mx7XB9S5KMfBqSzbpLn7dGhG9Cmqnz+VNK41Cq5ZXZOQXbLo9TYLbHGALruqDM6xfvt4IPAcrB9xa2U7o9N0tfIHIZPSGyx4az6kn/1YKwtju3mSK2OV+irm/cxu6jsJk/VdOEiGrhxrY+PQ6hiVZVc5OjiIarN3CBKUu8W7crXJ6snWH6TrvlsA2Vl0GXmnzCpUolVIEAEc6rrm1mQ3oebjy0ZSeoIPLLHpDR2jY2ttflnwj9ltRuATtTLn1j5w26+CbakbZlgXBrb8D1//dd4vZRMDAfLu9nXayD+w3n+XjBzNRSIcxlnAdKajohu/9W48KNz6er+5/HErmn9Xng==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PqTL9toNaYU5d+DCkslfYyA+e78yxWThi1RAVfuUH/g=;
- b=ZRjZuNUGAYq8QqwPw4Xaq1+C0rmnc4iL2Ci8V09XweiKqC8TP4XFI/LP8xdWwkzIwjmYYWLEw4CtUqsHbJ7XYsN5qA79gApM/V5tu/hEOB5AglS5037zYJ7OKDgp2HR3HwTQ9Eq0FVz5me+/EmqlwqgqJFEojT7P+w/fPYWiGr0=
-Received: from (2603:10b6:302:a::16) by
- MWHPR21MB0799.namprd21.prod.outlook.com (2603:10b6:300:128::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.8; Tue, 22 Dec
- 2020 03:36:18 +0000
-Received: from MW2PR2101MB1052.namprd21.prod.outlook.com
- ([fe80::b8f6:e748:cdf2:1922]) by MW2PR2101MB1052.namprd21.prod.outlook.com
- ([fe80::b8f6:e748:cdf2:1922%8]) with mapi id 15.20.3721.008; Tue, 22 Dec 2020
- 03:36:18 +0000
-From:   Michael Kelley <mikelley@microsoft.com>
-To:     Dexuan Cui <decui@microsoft.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        vkuznets <vkuznets@redhat.com>,
-        "jwiesner@suse.com" <jwiesner@suse.com>,
-        "ohering@suse.com" <ohering@suse.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>
-Subject: RE: [PATCH] x86/hyperv: Fix kexec panic/hang issues
-Thread-Topic: [PATCH] x86/hyperv: Fix kexec panic/hang issues
-Thread-Index: AQHW1x+4gDeU8wnI6U2zhrRpW1B6M6oCL5eggAAJtpCAAD0rQA==
-Date:   Tue, 22 Dec 2020 03:36:17 +0000
-Message-ID: <MW2PR2101MB1052D798D9D292F6D43F85C4D7DF9@MW2PR2101MB1052.namprd21.prod.outlook.com>
-References: <20201220223014.14602-1-decui@microsoft.com>
- <MW2PR2101MB1052192A1BC63A1A3DC196C6D7C09@MW2PR2101MB1052.namprd21.prod.outlook.com>
- <MW4PR21MB1857877C13551B1618852F59BFDF9@MW4PR21MB1857.namprd21.prod.outlook.com>
-In-Reply-To: <MW4PR21MB1857877C13551B1618852F59BFDF9@MW4PR21MB1857.namprd21.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-12-21T23:33:11Z;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=a8aad501-3bf8-45a1-8f2a-10c18630a334;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
-authentication-results: microsoft.com; dkim=none (message not signed)
- header.d=none;microsoft.com; dmarc=none action=none
- header.from=microsoft.com;
-x-originating-ip: [24.22.167.197]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 22d57a4c-b281-4b31-7fec-08d8a62abe1c
-x-ms-traffictypediagnostic: MWHPR21MB0799:
-x-ms-exchange-transport-forked: True
-x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-x-microsoft-antispam-prvs: <MWHPR21MB079915E2057EBF3EB131B3F6D7DF9@MWHPR21MB0799.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 9oUJ5+Q6S28PnF3kXUVCn+gEAof3w8PwNbyakrDD7/amZIQCIctF0pqOEkmztOqDuTJ5S9px4W7y/BWFA12Z+C2s86w8iteNpdCbsHTzHtv6GPZCBDE+WfftbDPv5T7YRxmX0JL3DjyBY49fmWm21BEr8IQdAok6zCmNgxu+K0VVoAhKv0FWE3cf94WEU6uvYdNtDqI2tI8zISnHO6PH2175D/4oA9KzaKnaXVvg/WHQiMw5s3IrPAyQlnSXBzbQol3oDLSd6Pt+TjgNWRsKFS7Fg6mK1VFE9v1Y/+0hQa7uAsJY5Wjq5jbg3M/HIH/CouAVCJuFmJjamDw/AWrA9+hFGZ+kKGdO/bgKpoqGMf9pNUUEQrDbzH0tg83/mf3oOcqJwSA7otHmUtnqnRR/SUsZ4Yatg6KlX/G9Fdj0Fkm93JzYx60pgtVYqgNnBih2
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR2101MB1052.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(136003)(376002)(346002)(396003)(921005)(107886003)(7696005)(86362001)(110136005)(5660300002)(4326008)(2906002)(71200400001)(478600001)(8936002)(9686003)(55016002)(10290500003)(82960400001)(6506007)(82950400001)(66446008)(66476007)(66556008)(26005)(33656002)(83380400001)(76116006)(8990500004)(64756008)(7416002)(54906003)(186003)(66946007)(52536014)(8676002)(316002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?OD5lZKgrXrQ10i66tvFrH+vhsQ5UrFCsH8Q+gf9R1PkNUrwEeQ4K/TmogjyV?=
- =?us-ascii?Q?Ztkq6UftKb0oEN1mdWYaCZJDjHWES/Zw8LCpQsN6Qq4DwIvuIDXlcHxQPQC9?=
- =?us-ascii?Q?Y+7DfjUiFjuAQ6GJBBgLtI0QX6OuUAVu/7F5aWs+tZ2qYcJlP6O9GmV7Rj9G?=
- =?us-ascii?Q?36TMzTKJB0pY32o+/3gurCPIus8+vPuE3ORlkyIw76J5VNwzPA6+FqBAXU7X?=
- =?us-ascii?Q?4Wp2iaMUEp//LbTPa8tKYn6PwBJHkYkD0bo2wafUhTy35ROPNVP0v7i2/rSP?=
- =?us-ascii?Q?0tT/BsLpf6uXa1hmYiRrWhZ9wybMznjPZszP8HomupIhgHirQaXC8ZhDux0n?=
- =?us-ascii?Q?MAmt5UqXI5D9tlemBYzkq9jUD+s6x1nPcwnUSwfrC5bgXnLSU2vwYfzfZNd+?=
- =?us-ascii?Q?rUOAGywZ14iSRikKV4zkXp5xRO0h+zcznQWZ11X3cCof5UROH0G2D/bJuwVS?=
- =?us-ascii?Q?ut7B/pbLfOonVGXb1WPRr69omjQJpMBY0DK1H6xJqGvTt0p5t5VSZrtveyo/?=
- =?us-ascii?Q?2HEgSOVQEOVKNTAACiF2xBA4PHvh4NopxC53mtWkNApr1VZCBjTjcfBEyWRI?=
- =?us-ascii?Q?orIH4Iw7/ViA6BYsk3J+75ZNNiiaIWIkJLvlGxynaWbuQLxbH+VYgDwzfbVa?=
- =?us-ascii?Q?Z9e2ih85ZTe/UsaRKpNOnK+sjBNMdlX1i+YDPU7UW+AIg+APtxiYMTpvCn44?=
- =?us-ascii?Q?9DD553S27LK3pnsiJ1Tvi6cvhcvCt109t749iTClUthHBXHe3bPa4roxgv/n?=
- =?us-ascii?Q?UbNKn5U/N+3KnoADhdFBVGov/vHUG2PWqmEAQTTqJfEwOaIzThg0FYXbjUNp?=
- =?us-ascii?Q?VF5FFhgKR0rWb67CsxFB3gx1CiEbqpFrhSO4hXTaZpVn3yWZAJfSoOAGQSla?=
- =?us-ascii?Q?kBiu0D9wfLfUwu3RK8W7i0RkVUCS2qe5O3KIBOL+rJnrVv7vLecKfLzJtN2G?=
- =?us-ascii?Q?MhaazFpjpDGlszui9dei83suJ7RIFRPYzyaf492UHgg=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1725954AbgLVDhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 22:37:09 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:62011 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725869AbgLVDhI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 22:37:08 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1608608204; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=HvCT6XkTblevMVI37LuEtLt98Yo2suLAW3XBP2p9/Vs=;
+ b=oDAKCvTEF7WyDgt8twjwL9eKT30VkpNDckHNlmhKWcx40ATVWij1iSwQYfIvcn120+rpAxoG
+ hAZE8dgMHzSuTdqYxUlajFNxpIf8n7auBW6HpCyyOtZtudFmqZdxm1BrapPLFMrKIM0R1+VT
+ d3cuaF8BOIQlL2jPVnSx4RjB6mI=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
+ 5fe169c27bc801dc4f3e5802 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Dec 2020 03:36:34
+ GMT
+Sender: ziqichen=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 558DCC433C6; Tue, 22 Dec 2020 03:36:33 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: ziqichen)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BD682C433CA;
+        Tue, 22 Dec 2020 03:36:30 +0000 (UTC)
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW2PR2101MB1052.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 22d57a4c-b281-4b31-7fec-08d8a62abe1c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Dec 2020 03:36:17.9302
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: eBup4e9QIfeeoPZGMji72YTK7ucPB62wSrJG95iE1YlbOB9yH1gFSGYCMlwgfCihYrjmNeCT+6ckGU55jeYBL08+Qif4k/iTBox12mWaxt4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR21MB0799
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 22 Dec 2020 11:36:30 +0800
+From:   ziqichen@codeaurora.org
+To:     Kiwoong Kim <kwmad.kim@samsung.com>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        cang@codeaurora.org, hongwus@codeaurora.org, rnayak@codeaurora.org,
+        vinholikatti@gmail.com, jejb@linux.vnet.ibm.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
+        'Alim Akhtar' <alim.akhtar@samsung.com>,
+        'Avri Altman' <avri.altman@wdc.com>,
+        "'James E.J. Bottomley'" <jejb@linux.ibm.com>,
+        'Andy Gross' <agross@kernel.org>,
+        'Bjorn Andersson' <bjorn.andersson@linaro.org>,
+        'Matthias Brugger' <matthias.bgg@gmail.com>,
+        'Bean Huo' <beanhuo@micron.com>,
+        'Bart Van Assche' <bvanassche@acm.org>,
+        'Adrian Hunter' <adrian.hunter@intel.com>,
+        'Satya Tangirala' <satyat@google.com>,
+        "'moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER...'" 
+        <linux-mediatek@lists.infradead.org>,
+        'open list' <linux-kernel@vger.kernel.org>,
+        "'open list:ARM/QUALCOMM SUPPORT'" <linux-arm-msm@vger.kernel.org>,
+        "'moderated list:ARM/Mediatek SoC support'" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH RFC v3 1/1] scsi: ufs: Fix ufs power down/on specs
+ violation
+In-Reply-To: <009001d6d806$bbac1a30$33044e90$@samsung.com>
+References: <CGME20201221075209epcas2p489ef5a304a7227ae1ef20e581c08c043@epcas2p4.samsung.com>
+ <1608537091-78575-1-git-send-email-ziqichen@codeaurora.org>
+ <009001d6d806$bbac1a30$33044e90$@samsung.com>
+Message-ID: <ddaf73587964e543e916368db036f536@codeaurora.org>
+X-Sender: ziqichen@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dexuan Cui <decui@microsoft.com>  Sent: Monday, December 21, 2020 5:0=
-4 PM
->=20
-> > From: Michael Kelley
-> > Sent: Monday, December 21, 2020 3:33 PM
-> > From: Dexuan Cui
-> > Sent: Sunday, December 20, 2020 2:30 PM
-> > >
-> > > Currently the kexec kernel can panic or hang due to 2 causes:
-> > >
-> > > 1) hv_cpu_die() is not called upon kexec, so the hypervisor corrupts =
-the
-> > > VP Assist Pages when the kexec kernel runs. We ever fixed the same is=
-sue
-> >
-> > Spurious word "ever".  And avoid first person "we".  Perhaps:
-> >
-> > The same issue is fixed for hibernation in commit ..... .  Now fix it f=
-or
-> > kexec.
->=20
-> Thanks! Will use this in v2.
->=20
-> > > for hibernation in
-> > > commit 421f090c819d ("x86/hyperv: Suspend/resume the VP assist page f=
-or
-> > hibernation")
-> > > and now let's fix it for kexec.
-> >
-> > Is the VP Assist Page getting cleared anywhere on the panic path?  We c=
-an
->=20
-> It's not.
->=20
-> > only do it for the CPU that runs panic(), but I don't think it is getti=
-ng cleared
-> > even for that CPU.   It is cleared only in hv_cpu_die(), and that's not=
- called on
-> > the panic path.
->=20
-> IMO kdump is different from the non-kdump kexec in that the kdump kernel
-> runs without depending on the memory used by the first kernel, so it look=
-s
-> unnecessary to clear the first kernel's VP Assist Page (and the hypercall=
-page).
-> According to my test, the second kernel can re-enble the VP Asist Page an=
-d
-> the hypercall page using different GPAs, without disabling the old pages =
-first.
+On 2020-12-22 10:04, Kiwoong Kim wrote:
+>> As per specs, e.g, JESD220E chapter 7.2, while powering off/on the ufs
+>> device, RST_N signal and REF_CLK signal should be between VSS(Ground) 
+>> and
+>> VCCQ/VCCQ2.
+>> 
+>> To flexibly control device reset line, re-name the function
+>> ufschd_vops_device_reset(sturct ufs_hba *hba) to ufshcd_
+>> vops_toggle_device_reset(sturct ufs_hba *hba, bool down). The new
+>> parameter "bool down" is used to separate device reset line pulling 
+>> down
+>> from pulling up.
+>> 
+>> Cc: Kiwoong Kim <kwmad.kim@samsung.com>
+>> Cc: Stanley Chu <stanley.chu@mediatek.com>
+>> Signed-off-by: Ziqi Chen <ziqichen@codeaurora.org>
+>> ---
+>>  drivers/scsi/ufs/ufs-mediatek.c | 27 +++++++++-----------------
+>>  drivers/scsi/ufs/ufs-qcom.c     | 22 ++++++++++-----------
+>>  drivers/scsi/ufs/ufshcd.c       | 43 
+>> ++++++++++++++++++++++++++++++------
+> --
+>> ---
+>>  drivers/scsi/ufs/ufshcd.h       | 10 +++++-----
+>>  4 files changed, 56 insertions(+), 46 deletions(-)
+>> 
+>> diff --git a/drivers/scsi/ufs/ufs-mediatek.c b/drivers/scsi/ufs/ufs-
+>> mediatek.c index 80618af..bff2c42 100644
+>> --- a/drivers/scsi/ufs/ufs-mediatek.c
+>> +++ b/drivers/scsi/ufs/ufs-mediatek.c
+>> @@ -841,27 +841,18 @@ static int ufs_mtk_link_startup_notify(struct
+>> ufs_hba *hba,
+>>  	return ret;
+>>  }
+>> 
+>> -static int ufs_mtk_device_reset(struct ufs_hba *hba)
+>> +static int ufs_mtk_toggle_device_reset(struct ufs_hba *hba, bool 
+>> down)
+>>  {
+>>  	struct arm_smccc_res res;
+>> 
+>> -	ufs_mtk_device_reset_ctrl(0, res);
+>> -
+>> -	/*
+>> -	 * The reset signal is active low. UFS devices shall detect
+>> -	 * more than or equal to 1us of positive or negative RST_n
+>> -	 * pulse width.
+>> -	 *
+>> -	 * To be on safe side, keep the reset low for at least 10us.
+>> -	 */
+>> -	usleep_range(10, 15);
+>> -
+>> -	ufs_mtk_device_reset_ctrl(1, res);
+>> -
+>> -	/* Some devices may need time to respond to rst_n */
+>> -	usleep_range(10000, 15000);
+>> +	if (down) {
+>> +		ufs_mtk_device_reset_ctrl(0, res);
+>> +	} else {
+>> +		ufs_mtk_device_reset_ctrl(1, res);
+>> 
+>> -	dev_info(hba->dev, "device reset done\n");
+>> +		/* Some devices may need time to respond to rst_n */
+>> +		usleep_range(10000, 15000);
+>> +	}
+>> 
+>>  	return 0;
+>>  }
+>> @@ -1052,7 +1043,7 @@ static const struct ufs_hba_variant_ops
+>> ufs_hba_mtk_vops = {
+>>  	.suspend             = ufs_mtk_suspend,
+>>  	.resume              = ufs_mtk_resume,
+>>  	.dbg_register_dump   = ufs_mtk_dbg_register_dump,
+>> -	.device_reset        = ufs_mtk_device_reset,
+>> +	.toggle_device_reset        = ufs_mtk_toggle_device_reset,
+>>  	.event_notify        = ufs_mtk_event_notify,
+>>  };
+>> 
+>> diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
+>> index 2206b1e..c2ccaa5 100644
+>> --- a/drivers/scsi/ufs/ufs-qcom.c
+>> +++ b/drivers/scsi/ufs/ufs-qcom.c
+>> @@ -1404,12 +1404,13 @@ static void ufs_qcom_dump_dbg_regs(struct 
+>> ufs_hba
+>> *hba)  }
+>> 
+>>  /**
+>> - * ufs_qcom_device_reset() - toggle the (optional) device reset line
+>> + * ufs_qcom_toggle_device_reset() - toggle the (optional) device 
+>> reset
+>> + line
+>>   * @hba: per-adapter instance
+>> + * @down: pull down or pull up device reset line
+>>   *
+>>   * Toggles the (optional) reset line to reset the attached device.
+>>   */
+>> -static int ufs_qcom_device_reset(struct ufs_hba *hba)
+>> +static int ufs_qcom_toggle_device_reset(struct ufs_hba *hba, bool 
+>> down)
+>>  {
+>>  	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
+>> 
+>> @@ -1417,15 +1418,12 @@ static int ufs_qcom_device_reset(struct 
+>> ufs_hba
+>> *hba)
+>>  	if (!host->device_reset)
+>>  		return -EOPNOTSUPP;
+>> 
+>> -	/*
+>> -	 * The UFS device shall detect reset pulses of 1us, sleep for 10us
+>> to
+>> -	 * be on the safe side.
+>> -	 */
+>> -	gpiod_set_value_cansleep(host->device_reset, 1);
+>> -	usleep_range(10, 15);
+>> -
+>> -	gpiod_set_value_cansleep(host->device_reset, 0);
+>> -	usleep_range(10, 15);
+>> +	if (down) {
+>> +		gpiod_set_value_cansleep(host->device_reset, 1);
+>> +	} else {
+>> +		gpiod_set_value_cansleep(host->device_reset, 0);
+>> +		usleep_range(10, 15);
+>> +	}
+>> 
+>>  	return 0;
+>>  }
+>> @@ -1473,7 +1471,7 @@ static const struct ufs_hba_variant_ops
+>> ufs_hba_qcom_vops = {
+>>  	.suspend		= ufs_qcom_suspend,
+>>  	.resume			= ufs_qcom_resume,
+>>  	.dbg_register_dump	= ufs_qcom_dump_dbg_regs,
+>> -	.device_reset		= ufs_qcom_device_reset,
+>> +	.toggle_device_reset		= ufs_qcom_toggle_device_reset,
+>>  	.config_scaling_param = ufs_qcom_config_scaling_param,
+>>  	.program_key		= ufs_qcom_ice_program_key,
+>>  };
+>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c 
+>> index
+>> e221add..2ee905f 100644
+>> --- a/drivers/scsi/ufs/ufshcd.c
+>> +++ b/drivers/scsi/ufs/ufshcd.c
+>> @@ -585,7 +585,20 @@ static void ufshcd_device_reset(struct ufs_hba 
+>> *hba)
+>> {
+>>  	int err;
+>> 
+>> -	err = ufshcd_vops_device_reset(hba);
+>> +	err = ufshcd_vops_toggle_device_reset(hba, true);
+>> +	if (err) {
+>> +		dev_err(hba->dev, "device reset pulling down failure: %d\n",
+>> err);
+>> +		return;
+>> +	}
+>> +
+>> +	/*
+>> +	 * The reset signal is active low. The UFS device
+>> +	 * shall detect reset pulses of 1us, sleep for at
+>> +	 * least 10us to be on the safe side.
+>> +	 */
+>> +	usleep_range(10, 15);
+> 
+> Is there any point where UFS specification tells this explicitly?
+> I think this should be moved only if the number, i.e. 10 and 15  just
+> relies on hardware conditions.
+> 
+> 
+> Thanks.
+> Kiwoong Kim
 
-Ah yes.  You are right.  The kdump kernel must be using a disjoint area of
-physical memory,  so not clearing these per-CPU overlay pages shouldn't
-put the kdump kernel at risk.
+Hi Kiwoong,
 
-> Of course, in the future Hyper-V may require the guest to disable the pag=
-es first
-> before trying to re-enabling them, so I agree we'd better clear the pages=
- in the
-> first kernell like this:
->=20
-> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-> index 4638a52d8eae..8022f51c9c05 100644
-> --- a/arch/x86/hyperv/hv_init.c
-> +++ b/arch/x86/hyperv/hv_init.c
-> @@ -202,7 +202,7 @@ void clear_hv_tscchange_cb(void)
->  }
->  EXPORT_SYMBOL_GPL(clear_hv_tscchange_cb);
->=20
-> -static int hv_cpu_die(unsigned int cpu)
-> +int hv_cpu_die(unsigned int cpu)
->  {
->         struct hv_reenlightenment_control re_ctrl;
->         unsigned int new_cpu;
-> diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyp=
-erv.h
-> index 30f76b966857..d090e781d216 100644
-> --- a/arch/x86/include/asm/mshyperv.h
-> +++ b/arch/x86/include/asm/mshyperv.h
-> @@ -76,6 +76,8 @@ static inline void hv_disable_stimer0_percpu_irq(int ir=
-q) {}
->  #if IS_ENABLED(CONFIG_HYPERV)
->  extern int hyperv_init_cpuhp;
->=20
-> +int hv_cpu_die(unsigned int cpu);
-> +
->  extern void *hv_hypercall_pg;
->  extern void  __percpu  **hyperv_pcpu_input_arg;
->=20
-> diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyper=
-v.c
-> index 43b54bef5448..e54f8262bfe0 100644
-> --- a/arch/x86/kernel/cpu/mshyperv.c
-> +++ b/arch/x86/kernel/cpu/mshyperv.c
-> @@ -156,6 +156,9 @@ static void hv_machine_crash_shutdown(struct pt_regs =
-*regs)
->         if (hv_crash_handler)
->                 hv_crash_handler(regs);
->=20
-> +       /* Only call this on the faulting CPU. */
-> +       hv_cpu_die(raw_smp_processor_id());
-> +
->         /* The function calls crash_smp_send_stop(). */
->         native_machine_crash_shutdown(regs);
+Thanks for your comment. JESD220E Line 610~611 "The UFS device shall 
+detect more than or equal to 1us
+of positive or negative RST_n pulse". Both QCOM and Mediatek use 
+10~15us. What
+number do you think more appropriate?
 
-Since we don't *need* to do this, I think it might be less risky to just le=
-ave
-the code "as is".   But I'm OK either way.
+Best Regards,
+Ziqi
 
->=20
-> > > 2) hyperv_cleanup() is called too early. In the kexec path, the other=
- CPUs
-> > > are stopped in hv_machine_shutdown() -> native_machine_shutdown(), so
-> > > between hv_kexec_handler() and native_machine_shutdown(), the other
-> > CPUs
-> > > can still try to access the hypercall page and cause panic. The worka=
-round
-> > > "hv_hypercall_pg =3D NULL;" in hyperv_cleanup() can't work reliably.
-> >
-> > I would note that the comment in hv_suspend() is also incorrect on this
-> > point.  Setting hv_hypercall_pg to NULL does not cause subsequent
-> > hypercalls to fail safely.  The fast hypercalls don't test for it, and =
-even if they
-> > did test like hv_do_hypercall(), the test just creates a race condition=
-.
->=20
-> The comment in hv_suspend() should be correct because hv_suspend()
-> is only called during hibernation from the syscore_ops path where only
-> one CPU is active, e.g. for the suspend operation, it's called from
-> state_store
->   hibernate
->     hibernation_snapshot
->       create_image
->         suspend_disable_secondary_cpus
->         syscore_suspend
->           hv_suspend
->=20
-> It's similar for the resume operation:
-> resume_store
->   software_resume
->     load_image_and_restore
->       hibernation_restore
->         resume_target_kernel
->           hibernate_resume_nonboot_cpu_disable
->           syscore_suspend
->             hv_suspend
-
-I agree the hv_suspend() code is correct.  I read the second sentence of
-the comment as being a more general statement that hypercalls could be
-cleanly stopped by setting hv_hypercall_pg to NULL, which isn't true.
-
->=20
-> > >  static void hv_machine_crash_shutdown(struct pt_regs *regs)
-> > >  {
-> > >  	if (hv_crash_handler)
-> > >  		hv_crash_handler(regs);
-> > > +
-> > > +	/* The function calls crash_smp_send_stop(). */
-> >
-> > Actually, crash_smp_send_stop() or smp_send_stop() has already been
-> > called earlier by panic(),
->=20
-> This is true only when the Hyper-V host supports the feature
-> HV_FEATURE_GUEST_CRASH_MSR_AVAILABLE. On an old Hyper-V host
-> without the feature, ms_hyperv_init_platform() doesn't set
-> crash_kexec_post_notifiers, so crash_kexec_post_notifiers keeps its
-> initial value "false", and panic() calls smp_send_stop() *after*
-> __crash_kexec() (which calls machine_crash_shutdown() ->
-> hv_machine_crash_shutdown()).
-
-OK, I see your point.
-
->=20
-> >  so there's already only a single CPU running at
-> > this point.  crash_smp_send_stop() is called again in
-> > native_machine_crash_shutdown(), but it has a flag to prevent it from
-> > running again.
-> >
-> > >  	native_machine_crash_shutdown(regs);
-> > > +
-> > > +	/* Disable the hypercall page when there is only 1 active CPU. */
-> > > +	hyperv_cleanup();
-> >
-> > Moving the call to hyperv_cleanup() in the panic path is OK, and it mak=
-es
-> > the panic and kexec() paths more similar, but I don't think it is neces=
-sary.
-> > As noted above, the other CPUs have already been stopped, so they shoul=
-dn't
-> > be executing any hypercalls.
->=20
-> As I explained above, it's necessary for old Hyper-V hosts. :-)
-
-Agreed.
+> 
+>> +	err = ufshcd_vops_toggle_device_reset(hba, false);
+>> 
+>>  	if (!err) {
+>>  		ufshcd_set_ufs_dev_active(hba);
+>> @@ -593,7 +606,11 @@ static void ufshcd_device_reset(struct ufs_hba 
+>> *hba)
+>>  			hba->wb_enabled = false;
+>>  			hba->wb_buf_flush_enabled = false;
+>>  		}
+>> +		dev_info(hba->dev, "device reset done\n");
+>> +	} else {
+>> +		dev_err(hba->dev, "device reset pulling up failure: %d\n",
+>> err);
+>>  	}
+>> +
+>>  	if (err != -EOPNOTSUPP)
+>>  		ufshcd_update_evt_hist(hba, UFS_EVT_DEV_RESET, err);  } @@ -
+>> 8686,8 +8703,6 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum
+>> ufs_pm_op pm_op)
+>>  	if (ret)
+>>  		goto set_dev_active;
+>> 
+>> -	ufshcd_vreg_set_lpm(hba);
+>> -
+>>  disable_clks:
+>>  	/*
+>>  	 * Call vendor specific suspend callback. As these callbacks may
+>> access @@ -8703,6 +8718,9 @@ static int ufshcd_suspend(struct ufs_hba
+>> *hba,
+>> enum ufs_pm_op pm_op)
+>>  	 */
+>>  	ufshcd_disable_irq(hba);
+>> 
+>> +	if (ufshcd_is_link_off(hba))
+>> +		ufshcd_vops_toggle_device_reset(hba, true);
+>> +
+>>  	ufshcd_setup_clocks(hba, false);
+>> 
+>>  	if (ufshcd_is_clkgating_allowed(hba)) { @@ -8711,6 +8729,8 @@
+>> static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+>>  					hba->clk_gating.state);
+>>  	}
+>> 
+>> +	ufshcd_vreg_set_lpm(hba);
+>> +
+>>  	/* Put the host controller in low power mode if possible */
+>>  	ufshcd_hba_vreg_set_lpm(hba);
+>>  	goto out;
+>> @@ -8778,18 +8798,19 @@ static int ufshcd_resume(struct ufs_hba *hba, 
+>> enum
+>> ufs_pm_op pm_op)
+>>  	old_link_state = hba->uic_link_state;
+>> 
+>>  	ufshcd_hba_vreg_set_hpm(hba);
+>> +
+>> +	ret = ufshcd_vreg_set_hpm(hba);
+>> +	if (ret)
+>> +		goto out;
+>> +
+>>  	/* Make sure clocks are enabled before accessing controller */
+>>  	ret = ufshcd_setup_clocks(hba, true);
+>>  	if (ret)
+>> -		goto out;
+>> +		goto disable_vreg;
+>> 
+>>  	/* enable the host irq as host controller would be active soon */
+>>  	ufshcd_enable_irq(hba);
+>> 
+>> -	ret = ufshcd_vreg_set_hpm(hba);
+>> -	if (ret)
+>> -		goto disable_irq_and_vops_clks;
+>> -
+>>  	/*
+>>  	 * Call vendor specific resume callback. As these callbacks may
+>> access
+>>  	 * vendor specific host controller register space call them when
+>> the @@ -8797,7 +8818,7 @@ static int ufshcd_resume(struct ufs_hba 
+>> *hba,
+>> enum ufs_pm_op pm_op)
+>>  	 */
+>>  	ret = ufshcd_vops_resume(hba, pm_op);
+>>  	if (ret)
+>> -		goto disable_vreg;
+>> +		goto disable_irq_and_vops_clks;
+>> 
+>>  	/* For DeepSleep, the only supported option is to have the link off
+>> */
+>>  	WARN_ON(ufshcd_is_ufs_dev_deepsleep(hba)
+>> && !ufshcd_is_link_off(hba)); @@ -8864,8 +8885,6 @@ static int
+>> ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+>>  	ufshcd_link_state_transition(hba, old_link_state, 0);
+>>  vendor_suspend:
+>>  	ufshcd_vops_suspend(hba, pm_op);
+>> -disable_vreg:
+>> -	ufshcd_vreg_set_lpm(hba);
+>>  disable_irq_and_vops_clks:
+>>  	ufshcd_disable_irq(hba);
+>>  	if (hba->clk_scaling.is_allowed)
+>> @@ -8876,6 +8895,8 @@ static int ufshcd_resume(struct ufs_hba *hba, 
+>> enum
+>> ufs_pm_op pm_op)
+>>  		trace_ufshcd_clk_gating(dev_name(hba->dev),
+>>  					hba->clk_gating.state);
+>>  	}
+>> +disable_vreg:
+>> +	ufshcd_vreg_set_lpm(hba);
+>>  out:
+>>  	hba->pm_op_in_progress = 0;
+>>  	if (ret)
+>> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h 
+>> index
+>> 9bb5f0e..dccc3eb 100644
+>> --- a/drivers/scsi/ufs/ufshcd.h
+>> +++ b/drivers/scsi/ufs/ufshcd.h
+>> @@ -319,7 +319,7 @@ struct ufs_pwr_mode_info {
+>>   * @resume: called during host controller PM callback
+>>   * @dbg_register_dump: used to dump controller debug information
+>>   * @phy_initialization: used to initialize phys
+>> - * @device_reset: called to issue a reset pulse on the UFS device
+>> + * @toggle_device_reset: called to change logic level of reset gpio 
+>> on
+>> + the UFS device
+>>   * @program_key: program or evict an inline encryption key
+>>   * @event_notify: called to notify important events
+>>   */
+>> @@ -350,7 +350,7 @@ struct ufs_hba_variant_ops {
+>>  	int     (*resume)(struct ufs_hba *, enum ufs_pm_op);
+>>  	void	(*dbg_register_dump)(struct ufs_hba *hba);
+>>  	int	(*phy_initialization)(struct ufs_hba *);
+>> -	int	(*device_reset)(struct ufs_hba *hba);
+>> +	int	(*toggle_device_reset)(struct ufs_hba *hba, bool down);
+>>  	void	(*config_scaling_param)(struct ufs_hba *hba,
+>>  					struct devfreq_dev_profile *profile,
+>>  					void *data);
+>> @@ -1216,10 +1216,10 @@ static inline void
+>> ufshcd_vops_dbg_register_dump(struct ufs_hba *hba)
+>>  		hba->vops->dbg_register_dump(hba);
+>>  }
+>> 
+>> -static inline int ufshcd_vops_device_reset(struct ufs_hba *hba)
+>> +static inline int ufshcd_vops_toggle_device_reset(struct ufs_hba 
+>> *hba,
+>> +bool down)
+>>  {
+>> -	if (hba->vops && hba->vops->device_reset)
+>> -		return hba->vops->device_reset(hba);
+>> +	if (hba->vops && hba->vops->toggle_device_reset)
+>> +		return hba->vops->toggle_device_reset(hba, down);
+>> 
+>>  	return -EOPNOTSUPP;
+>>  }
+>> --
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+>> Forum,
+>> a Linux Foundation Collaborative Project
