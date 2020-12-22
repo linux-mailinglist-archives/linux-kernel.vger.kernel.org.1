@@ -2,90 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D8A22E0F3F
+	by mail.lfdr.de (Postfix) with ESMTP id E6BFB2E0F41
 	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 21:17:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727725AbgLVUPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 15:15:45 -0500
-Received: from atlmailgw2.ami.com ([63.147.10.42]:46440 "EHLO
-        atlmailgw2.ami.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725782AbgLVUPo (ORCPT
+        id S1727789AbgLVUQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 15:16:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725850AbgLVUQr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 15:15:44 -0500
-X-AuditID: ac10606f-231ff70000001934-51-5fe253ca7038
-Received: from atlms1.us.megatrends.com (atlms1.us.megatrends.com [172.16.96.144])
-        (using TLS with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by atlmailgw2.ami.com (Symantec Messaging Gateway) with SMTP id A2.71.06452.AC352EF5; Tue, 22 Dec 2020 15:15:06 -0500 (EST)
-Received: from ami-us-wk.us.megatrends.com (172.16.98.207) by
- atlms1.us.megatrends.com (172.16.96.144) with Microsoft SMTP Server (TLS) id
- 14.3.468.0; Tue, 22 Dec 2020 15:15:05 -0500
-From:   Hongwei Zhang <hongweiz@ami.com>
-To:     <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        <openbmc@lists.ozlabs.org>, Jakub Kicinski <kuba@kernel.org>,
-        David S Miller <davem@davemloft.net>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-CC:     Hongwei Zhang <hongweiz@ami.com>, netdev <netdev@vger.kernel.org>,
-        Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>
-Subject: [Aspeed, v2 2/2] net: ftgmac100: Change the order of getting MAC address
-Date:   Tue, 22 Dec 2020 15:14:37 -0500
-Message-ID: <20201222201437.5588-3-hongweiz@ami.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201221205157.31501-2-hongweiz@ami.com>
-References: <20201221205157.31501-2-hongweiz@ami.com>
+        Tue, 22 Dec 2020 15:16:47 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F79CC0613D3;
+        Tue, 22 Dec 2020 12:16:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Eb4oYoqAZRfDz+/ydpDOyvDen++mgZRQ1xf6qRXS0jM=; b=Kihezujl/NgUHtFjqSIBp8508s
+        psorRppd6ox/i/CY4WCRNyeLoeD57xRUpTBde984iYXHEW1IxLx/H7a+kbfXZH2dEJGBMz66om6Po
+        hVa523arlguvIchso5pVuVWOKfffwBthl4KDEeAMBnA/TnLCa96oDvgYur1Kc/5leh366YtOIdxlU
+        flB5B4SVpg5sN80NPoDn75QhtxTgbaPrGXPj+wHLnGwuZ1opwVBYcWtfmftnPMDowDOtB2bKZRgeJ
+        pkPpyqCsTR3dYQYTG6bD4CZH/VLVhLb4Ma/hnZtbTUmSc5vEuxEUK5BCYhnPmU0FBHmKrbLcWQDz/
+        /AzjaH/g==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kro4X-0002uj-Ti; Tue, 22 Dec 2020 20:15:54 +0000
+Date:   Tue, 22 Dec 2020 20:15:53 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Andrea Arcangeli <aarcange@redhat.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>,
+        Nadav Amit <nadav.amit@gmail.com>, Yu Zhao <yuzhao@google.com>,
+        linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kent Overstreet <kent.overstreet@gmail.com>
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+Message-ID: <20201222201553.GM874@casper.infradead.org>
+References: <X+D0hTZCrWS3P5Pi@google.com>
+ <CAHk-=wg_UBuo7ro1fpEGkMyFKA1+PxrE85f9J_AhUfr-nJPpLQ@mail.gmail.com>
+ <9E301C7C-882A-4E0F-8D6D-1170E792065A@gmail.com>
+ <CAHk-=wg-Y+svNy3CDkJjj0X_CJkSbpERLg64-Vqwq5u7SC4z0g@mail.gmail.com>
+ <X+ESkna2z3WjjniN@google.com>
+ <1FCC8F93-FF29-44D3-A73A-DF943D056680@gmail.com>
+ <20201221223041.GL6640@xz-x1>
+ <CAHk-=wh-bG4thjXUekLtrCg8FRrdWjtT40ibXXLSm_hzQG8eOw@mail.gmail.com>
+ <CALCETrV=8tY7h=aaudWBEn-MJnNkm2wz5qjH49SYqwkjYTpOaA@mail.gmail.com>
+ <X+JJqK91plkBVisG@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.16.98.207]
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrMLMWRmVeSWpSXmKPExsWyRiBhgu6p4EfxBgenSljsusxhMed8C4vF
-        ovczWC1+n//LbHFhWx+rRfPqc8wWl3fNYbM4tkDM4lTLCxYHTo+r7bvYPbasvMnksXPWXXaP
-        ix+PMXtsWtXJ5nF+xkJGj8+b5ALYo7hsUlJzMstSi/TtErgy1l28zlrQwFPx7GEfWwPjfs4u
-        Rk4OCQETids/7jF3MXJxCAnsYpLYNr2JBcphlHjeeoARpIpNQE1i7+Y5TCAJEYHLjBI3up6A
-        tTALdDBKTH3xlR2kSlggUOLpl0VMIDaLgKrEvJ6VYHFeoB0P711igtgnL7F6wwFmEJtTwEzi
-        QvcsFhBbSMBUYsXfj8wQ9YISJ2c+AYszC0hIHHzxghmiRlbi1qHHUHMUJR78+s46gVFgFpKW
-        WUhaFjAyrWIUSizJyU3MzEkvN9JLzM3US87P3cQICfj8HYwfP5ofYmTiYDzEKMHBrCTCayZ1
-        P16INyWxsiq1KD++qDQntfgQozQHi5I47yr3o/FCAumJJanZqakFqUUwWSYOTqkGxltFXUm5
-        r/TFMh7FMLO33LzheOeHZDXb7x4dH83nd2KF3XdVsbz8ffynRKkGV6iN6N1ALfmPFtxVHXyv
-        Z8ttcXOzPzxlusFae7csXvm1v48Zba4pm33u/X0xxv5AruevmlnyXn/oNW73XG0WsMuF4cXy
-        vOWXOk3C/r/52BK1Z8uZ0FkpF3wWKrEUZyQaajEXFScCAJCVVJ5mAgAA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X+JJqK91plkBVisG@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Reviewer,
-
-Use native MAC address is preferred over other choices, thus change the order
-of reading MAC address, try to read it from MAC chip first, if it's not
- availabe, then try to read it from device tree.
-
-
-Hi Heiner,
-
-> From:	Heiner Kallweit <hkallweit1@gmail.com>
-> Sent:	Monday, December 21, 2020 4:37 PM
-> > Change the order of reading MAC address, try to read it from MAC chip 
-> > first, if it's not availabe, then try to read it from device tree.
-> > 
-> This commit message leaves a number of questions. It seems the change isn't related at all to the 
-> change that it's supposed to fix.
+On Tue, Dec 22, 2020 at 02:31:52PM -0500, Andrea Arcangeli wrote:
+> My previous suggestion to use a mutex to serialize
+> userfaultfd_writeprotect with a mutex will still work, but we can run
+> as many wrprotect and un-wrprotect as we want in parallel, as long as
+> they're not simultaneous, we can do much better than a mutex.
 > 
-> - What is the issue that you're trying to fix?
-> - And what is wrong with the original change?
+> Ideally we would need a new two_group_semaphore, where each group can
+> run as many parallel instances as it wants, but no instance of one
+> group can run in parallel with any instance of the other group. AFIK
+> such a kind of lock doesn't exist right now.
 
-There is no bug or something wrong with the original code. This patch is for
-improving the code. We thought if the native MAC address is available, then
-it's preferred over MAC address from dts (assuming both sources are available).
+Kent and I worked on one for a bit, and we called it a red-black mutex.
+If team red had the lock, more members of team red could join in.
+If team black had the lock, more members of team black could join in.
+I forget what our rule was around fairness (if team red has the lock,
+and somebody from team black is waiting, can another member of team red
+take the lock, or must they block?)
 
-One possible scenario, a MAC address is set in dts and the BMC image is 
-compiled and loaded into more than one platform, then the platforms will
-have network issue due to the same MAC address they read.
-
-Thanks for your review, I've update the patch to fix the comments.
-> 
-> > Fixes: 35c54922dc97 ("ARM: dts: tacoma: Add reserved memory for 
-> > ramoops")
-> > Signed-off-by: Hongwei Zhang <hongweiz@ami.com>
-> > ---
-> >  drivers/net/ethernet/faraday/ftgmac100.c | 22 +++++++++++++---------
-> >  1 file changed, 13 insertions(+), 9 deletions(-)
-
---Hongwei
+It was to solve the direct-IO vs buffered-IO problem (you can have as many
+direct-IO readers/writers at once or you can have as many buffered-IO
+readers/writers at once, but exclude a mix of direct and buffered I/O).
+In the end, we decided it didn't work all that well.
