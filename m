@@ -2,173 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5BFC2E0CF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 17:00:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81FBB2E0CFE
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 17:02:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727303AbgLVP6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 10:58:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53440 "EHLO
+        id S1727276AbgLVQB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 11:01:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727180AbgLVP6g (ORCPT
+        with ESMTP id S1726931AbgLVQB4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 10:58:36 -0500
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C53C3C061793
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 07:57:55 -0800 (PST)
-Received: by mail-qk1-x734.google.com with SMTP id f26so10622337qka.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 07:57:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tSbt+6uAU0/n70HJg2Z4UTZW3SPBYifyx/RQerMQRfc=;
-        b=v7KC8FXXHyCRgKzSN1WdkZDILxNnZ3Tz50y2318GZEHFh2OgiVvbWtDas110A8j1bC
-         bEUiYC07U4pNjkhq5tMD+838LcJrm+4obowXGjaHsc3RA+uiGe0rNYbBNCKn52aZEwnC
-         BmcivK/TRVARKJegXMu8ZFzRsFfrV6Y7RPlm3CCXYLmXCCvVZPZII7ey3+RAXWnuHYkw
-         VbEPi9Vqp1tuNwtjvV0bwxS+nhv1FE0yn+SLr/afAFKEWLTfcHUaQtvx/8wiFeBmYSxX
-         ZjtuPMNqwpNZohmsmlH7kRYZXt9GF3YqcZAdXzrmFIEU9pwaL8VXAIbq3OJSqwbpIN0G
-         E/IQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tSbt+6uAU0/n70HJg2Z4UTZW3SPBYifyx/RQerMQRfc=;
-        b=XwhjIplszjkChOEUxYBWc8g0Dbhk02Qyk/bCLs+PbMrBrs90oc54dkBX6mIWvDP60w
-         nfBCs/++oBJAA3FZQ2RA1IRKx+Eh+ivFqceGlog8wULMLOBEzP+xdDHGNx0GR/uM0LKL
-         TIuahAfGWWcxZ2TfUHfP4zZrxUZUdBwBOA16cA4Y2r5uhNIERRN56wPtMFZ4ty+NY0eN
-         Cl1cKbeKeJMCngLoXOW3MZTmEkrg6A/QCtdCySUkVVw2nYR7k+ZjV3rJeOPyXbbvtnl/
-         ZgAS2XQE7oIh5E3REsPMlxx1YB8mPJEqU8dsHTNp8ykMUmfpPjgMwa6D8CZj6guW6UbT
-         +02w==
-X-Gm-Message-State: AOAM532kes2wdFmWQLbWZaLSL8zRKfeo5E1xd+2HpPHNeUxK5chmyi7i
-        F+vqouxrygztZUdLFFF9eIhMp8E48ZM8Y+UGklhipQ==
-X-Google-Smtp-Source: ABdhPJyepNPHP4E52r1tz6fvELiPwmDt6Q5gFH4TExNWOuUpN0HYpkwqkhdR3ClOmYLtVmWMmX7T7ktkH+FPYq0fd1o=
-X-Received: by 2002:a05:620a:12b9:: with SMTP id x25mr23021282qki.421.1608652674817;
- Tue, 22 Dec 2020 07:57:54 -0800 (PST)
+        Tue, 22 Dec 2020 11:01:56 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 433AFC0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 08:01:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=yykNsfBaPxMOZBrP4jnO9bz/8a3gTbpPD1bA3ocpIVA=; b=d6ucT97mlU3TE0F0TWJYB2Sjl4
+        ZC7jUQkSD9K3LQ+9brv6d1cbAEm9RdhwPAbzgfye7f/f29lRXJ9yNJ51qjmaUM97nrgAJVEN/2Ysv
+        o893hP1zABoA7j/uCfx7Vtu15jmau34pj2GuwX3zimXCjTkqgGGkp0FVe/uB7RuVgzaMtxMpOqZ00
+        rIvAk4bRfQwOAtH1MKpNPR/TBgPC1wO7x0wIjCDVSALPhK7lqpUUKxWamI+fm02xGoY9IawjQxrxf
+        i8dhPT+u7xmEyIayJWmdgf6JGdk/oElRqE/Jw8eoLefrFDMR0GHQdo0VXA+2qk2YzsK+U15k9SDiN
+        9KVlJsaA==;
+Received: from [2001:4bb8:180:8063:c70:4a89:bc61:2] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1krk65-0003Dg-9k; Tue, 22 Dec 2020 16:01:13 +0000
+Date:   Tue, 22 Dec 2020 17:01:12 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
+Subject: [GIT PULL] dma-mapping updates for 5.11
+Message-ID: <20201222160112.GA3019603@infradead.org>
 MIME-Version: 1.0
-References: <20201211142933.25784-1-grzegorz.jaszczyk@linaro.org>
- <20201211142933.25784-2-grzegorz.jaszczyk@linaro.org> <20201214225842.GA2537432@robh.at.kernel.org>
- <CAMxfBF65ve2Pk5Uz5V1V_LfOLFUFKebVE8bzSjLT0nonuH8TDg@mail.gmail.com> <CAL_JsqKpzZvdWJodzbqQBLZ-v98n3KaoTaYM-0iQ-_71hCbW8Q@mail.gmail.com>
-In-Reply-To: <CAL_JsqKpzZvdWJodzbqQBLZ-v98n3KaoTaYM-0iQ-_71hCbW8Q@mail.gmail.com>
-From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-Date:   Tue, 22 Dec 2020 16:57:43 +0100
-Message-ID: <CAMxfBF5q2hjiYANZNtxz-PD=pR73EpXBpnWuB4dqXD1a=f2=gg@mail.gmail.com>
-Subject: Re: [PATCH 1/5] dt-bindings: remoteproc: Add PRU consumer bindings
-To:     Rob Herring <robh@kernel.org>
-Cc:     Ohad Ben Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        "Anna, Suman" <s-anna@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
-        <linux-remoteproc@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "Bajjuri, Praneeth" <praneeth@ti.com>,
-        Roger Quadros <rogerq@ti.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+The following changes since commit 418baf2c28f3473039f2f7377760bd8f6897ae18:
 
-On Fri, 18 Dec 2020 at 23:51, Rob Herring <robh@kernel.org> wrote:
->
-> On Wed, Dec 16, 2020 at 9:55 AM Grzegorz Jaszczyk
-> <grzegorz.jaszczyk@linaro.org> wrote:
-> >
-> > Hi Rob,
-> >
-> > On Mon, 14 Dec 2020 at 23:58, Rob Herring <robh@kernel.org> wrote:
-> > >
-> > > On Fri, Dec 11, 2020 at 03:29:29PM +0100, Grzegorz Jaszczyk wrote:
-> > > > From: Suman Anna <s-anna@ti.com>
-> > > >
-> > > > Add a YAML binding document for PRU consumers. The binding includes
-> > > > all the common properties that can be used by different PRU consumer
-> > > > or application nodes and supported by the PRU remoteproc driver.
-> > > > These are used to configure the PRU hardware for specific user
-> > > > applications.
-> > > >
-> > > > The application nodes themselves should define their own bindings.
-> > > >
-> > > > Co-developed-by: Tero Kristo <t-kristo@ti.com>
-> > > > Signed-off-by: Tero Kristo <t-kristo@ti.com>
-> > > > Signed-off-by: Suman Anna <s-anna@ti.com>
-> > > > Co-developed-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-> > > > Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-> > > > ---
-> > > >  .../bindings/remoteproc/ti,pru-consumer.yaml  | 64 +++++++++++++++++++
-> > > >  1 file changed, 64 insertions(+)
-> > > >  create mode 100644 Documentation/devicetree/bindings/remoteproc/ti,pru-consumer.yaml
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/remoteproc/ti,pru-consumer.yaml b/Documentation/devicetree/bindings/remoteproc/ti,pru-consumer.yaml
-> > > > new file mode 100644
-> > > > index 000000000000..2c5c5e2b6159
-> > > > --- /dev/null
-> > > > +++ b/Documentation/devicetree/bindings/remoteproc/ti,pru-consumer.yaml
-> > > > @@ -0,0 +1,64 @@
-> > > > +# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
-> > > > +%YAML 1.2
-> > > > +---
-> > > > +$id: http://devicetree.org/schemas/remoteproc/ti,pru-consumer.yaml#
-> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > +
-> > > > +title: Common TI PRU Consumer Binding
-> > > > +
-> > > > +maintainers:
-> > > > +  - Suman Anna <s-anna@ti.com>
-> > > > +
-> > > > +description: |
-> > > > +  A PRU application/consumer/user node typically uses one or more PRU device
-> > > > +  nodes to implement a PRU application/functionality. Each application/client
-> > > > +  node would need a reference to at least a PRU node, and optionally define
-> > > > +  some properties needed for hardware/firmware configuration. The below
-> > > > +  properties are a list of common properties supported by the PRU remoteproc
-> > > > +  infrastructure.
-> > > > +
-> > > > +  The application nodes shall define their own bindings like regular platform
-> > > > +  devices, so below are in addition to each node's bindings.
-> > > > +
-> > > > +properties:
-> > > > +  prus:
-> > >
-> > > ti,prus
-> >
-> > Thank you - I will change and post v2 but with this I will run into
-> > issues when this binding will be referenced by some consumer YAML
-> > binding. Running dtbs_check in such case throws:
-> > ... k3-am654-base-board.dt.yaml: serial@28000: 'ti,prus' does not
-> > match any of the regexes: 'pinctrl-[0-9]+'
-> > In the same time if I will remove this property from that node I am getting:
-> > ... k3-am654-base-board.dt.yaml: serial@28000: 'ti,prus' is a required property
-> > as expected.
->
-> Sounds like you didn't update 'ti,prus' in whatever schema you include
-> this one from.
->
-> >
-> > Getting rid of the comma from this property name workarounds mentioned
-> > problem (which is not proper but allows me to correctly test this
-> > binding): e.g. s/ti,prus/ti-pruss/ or using the previous name without
-> > a comma.
-> > It seems to be an issue with dtbs_check itself which we will encounter
-> > in the future.
->
-> If not, can you point me to a branch having this problem.
+  Linux 5.10-rc5 (2020-11-22 15:36:08 -0800)
 
-Sure, here is temporary branch with 4 last commits demonstrating
-mentioned issues (when property name contains comma):
-https://git.linaro.org/people/grzegorz.jaszczyk/linux.git/log/?h=ti-pruss-binding-issue
+are available in the Git repository at:
 
-The last commit gets rid of the comma from properties names which
-successfully w/a the problem.
+  git://git.infradead.org/users/hch/dma-mapping.git tags/dma-mapping-5.11
 
-Please note that those are only TEMP commits which demonstrates the
-mentioned issue. I've put error logs with some notes in commit log to
-ease understanding what issues are seen when.
+for you to fetch changes up to 7679325702c90aecd393cd7cde685576c14489c0:
 
-Thank you in advance,
-Grzegorz
+  selftests/dma: add test application for DMA_MAP_BENCHMARK (2020-11-27 10:33:42 +0100)
+
+----------------------------------------------------------------
+dma-mapping updates for 5.11:
+
+ - support for a partial IOMMU bypass (Alexey Kardashevskiy)
+ - add a DMA API benchmark (Barry Song)
+ - misc fixes (Tiezhu Yang, tangjianqiang)
+
+----------------------------------------------------------------
+Alexey Kardashevskiy (2):
+      dma-mapping: Allow mixing bypass and mapped DMA operation
+      powerpc/dma: Fallback to dma_ops when persistent memory present
+
+Barry Song (2):
+      dma-mapping: add benchmark support for streaming DMA APIs
+      selftests/dma: add test application for DMA_MAP_BENCHMARK
+
+Tiezhu Yang (1):
+      dma-pool: no need to check return value of debugfs_create functions
+
+tangjianqiang (1):
+      dma-contiguous: fix a typo error in a comment
+
+ MAINTAINERS                                     |   6 +
+ arch/powerpc/Kconfig                            |   1 +
+ arch/powerpc/kernel/dma-iommu.c                 |  71 ++++-
+ arch/powerpc/platforms/pseries/iommu.c          |  51 +++-
+ include/linux/dma-map-ops.h                     |  14 +
+ kernel/dma/Kconfig                              |  13 +
+ kernel/dma/Makefile                             |   1 +
+ kernel/dma/contiguous.c                         |   2 +-
+ kernel/dma/map_benchmark.c                      | 361 ++++++++++++++++++++++++
+ kernel/dma/mapping.c                            |  12 +-
+ kernel/dma/pool.c                               |   3 -
+ tools/testing/selftests/dma/Makefile            |   6 +
+ tools/testing/selftests/dma/config              |   1 +
+ tools/testing/selftests/dma/dma_map_benchmark.c | 123 ++++++++
+ 14 files changed, 645 insertions(+), 20 deletions(-)
+ create mode 100644 kernel/dma/map_benchmark.c
+ create mode 100644 tools/testing/selftests/dma/Makefile
+ create mode 100644 tools/testing/selftests/dma/config
+ create mode 100644 tools/testing/selftests/dma/dma_map_benchmark.c
