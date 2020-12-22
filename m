@@ -2,314 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FDEB2E0F29
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 21:06:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A3452E0F2C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 21:06:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727326AbgLVUFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 15:05:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34866 "EHLO
+        id S1727502AbgLVUFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 15:05:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726039AbgLVUFN (ORCPT
+        with ESMTP id S1726039AbgLVUFT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 15:05:13 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D557BC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 12:04:32 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id y5so13081435iow.5
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 12:04:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kSpk1zeEhDoLh5bsqq9yVPc9+N8b5efRRkRUskDUITI=;
-        b=OzEGGHjPaieGGNgo9hNTR3cBHieBD02D+rN7pHRGJKCRpDUhTPl/MMoJwYkm2hWagX
-         cNpmbhk7cPy484245N5AlLMh3d0ucZJ9H6UBMTb5q/VBlPwRhl5gfktBkK0RMUGfrsi3
-         D961UyhCIA3N+uNFF3j99t8mVBY2N8U3k1Gmg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kSpk1zeEhDoLh5bsqq9yVPc9+N8b5efRRkRUskDUITI=;
-        b=KCmZ5WycsgtBIephTn1MfRVUBfjkbQ+m3ytnDjGpPECz9asGfLF3ixZlyCxyxfhOtE
-         MniqKzCz/ggBBzBhn0dODxUDA/U0AQ0nUAnF/KZtHBcFVrPFoLPvfIZIwWE6che6YIxX
-         3U23CmD6ICk32jTUUDlIY/OgviHoA6tuzlpP3HvlnR4CByfctuJ7xWqKeKyDRsfatG+4
-         AVON+Zip8ZmuyMtf6nqza2+2hxPZ9DZjLLrS18Ry6eYcQsGsIo0u/iJKEA8xryFWicoF
-         xhgnnUloIcoUZ7WyCs4KveYZ2T+bIdm50a784NsrP3zdGxMRt7TSwjtweU0gC+VQZz1T
-         53Jg==
-X-Gm-Message-State: AOAM5318hslK1V/T48NUcXPcQcmKdMV7QJOUDKUudCj6/uJiSX27lFOw
-        PzGY23PXIOf6egmx5YLMYXQx6GocxR7MGr02
-X-Google-Smtp-Source: ABdhPJyEX3Awh4LuH1jpaL/8I9sZcV/4pxi0RQ6IBTGmYTVGhyBi9RILwughXX2u/Kq7n5PjXEU/3g==
-X-Received: by 2002:a6b:bac3:: with SMTP id k186mr18984476iof.194.1608667471814;
-        Tue, 22 Dec 2020 12:04:31 -0800 (PST)
-Received: from mail-il1-f172.google.com (mail-il1-f172.google.com. [209.85.166.172])
-        by smtp.gmail.com with ESMTPSA id y12sm16951497ilk.32.2020.12.22.12.04.30
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Dec 2020 12:04:31 -0800 (PST)
-Received: by mail-il1-f172.google.com with SMTP id w12so13033565ilm.12
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 12:04:30 -0800 (PST)
-X-Received: by 2002:a92:1b43:: with SMTP id b64mr21353866ilb.71.1608667470394;
- Tue, 22 Dec 2020 12:04:30 -0800 (PST)
+        Tue, 22 Dec 2020 15:05:19 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37238C061793;
+        Tue, 22 Dec 2020 12:04:39 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1krntX-003JZt-E3; Tue, 22 Dec 2020 20:04:31 +0000
+Date:   Tue, 22 Dec 2020 20:04:31 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     "Maciej W. Rozycki" <macro@linux-mips.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linux-mips@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCHSET] saner elf compat
+Message-ID: <20201222200431.GT3579531@ZenIV.linux.org.uk>
+References: <20201203214529.GB3579531@ZenIV.linux.org.uk>
+ <CAHk-=wiRNT+-ahz2KRUE7buYJMZ84bp=h_vGLrAaOKW3n_xyXQ@mail.gmail.com>
+ <20201203230336.GC3579531@ZenIV.linux.org.uk>
+ <alpine.LFD.2.21.2012071741280.2104409@eddie.linux-mips.org>
+ <20201216030154.GL3579531@ZenIV.linux.org.uk>
+ <alpine.LFD.2.21.2012160924010.2104409@eddie.linux-mips.org>
 MIME-Version: 1.0
-References: <20201221164819.792019-1-ribalda@chromium.org> <20201221164819.792019-10-ribalda@chromium.org>
- <X+HKpxzbVC29lNlk@pendragon.ideasonboard.com>
-In-Reply-To: <X+HKpxzbVC29lNlk@pendragon.ideasonboard.com>
-From:   Ricardo Ribalda <ribalda@chromium.org>
-Date:   Tue, 22 Dec 2020 21:04:19 +0100
-X-Gmail-Original-Message-ID: <CANiDSCv_+Usx4QkG4ypGWbCKvusiugYGgeNRYP8GZJ_pvuhjEQ@mail.gmail.com>
-Message-ID: <CANiDSCv_+Usx4QkG4ypGWbCKvusiugYGgeNRYP8GZJ_pvuhjEQ@mail.gmail.com>
-Subject: Re: [PATCH v5 09/12] media: uvcvideo: Implement UVC_QUIRK_PRIVACY_DURING_STREAM
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LFD.2.21.2012160924010.2104409@eddie.linux-mips.org>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI Laurent
+On Wed, Dec 16, 2020 at 09:44:53AM +0000, Maciej W. Rozycki wrote:
+> On Wed, 16 Dec 2020, Al Viro wrote:
+> 
+> > >  It may be worth pushing through GDB's gdb.threads/tls-core.exp test case, 
+> > > making sure no UNSUPPORTED results have been produced due to resource 
+> > > limits preventing a core from being dumped (and no FAILs, of course), with 
+> > > o32/n32 native GDB.  This should guarantee our output is still as expected 
+> > > by an interpreter.  Sadly I'm currently not set up for such testing though 
+> > > eventually I mean to.
+> > 
+> > Umm...  What triple does one use for n32 gdb?
+> 
+>  I don't think there's a standardised one, just configure with CC/CXX set 
+> for n32 compilation, e.g.:
+> 
+> $ /path/to/configure CC="gcc -mabi=n32" CXX="g++ -mabi=n32"
+> 
+> (and any other options set as usually).  This has to be with CC/CXX rather 
+> than CFLAGS/CXXFLAGS so that it is guaranteed to be never overridden with 
+> any logic that might do any fiddling with compilation options.  This will 
+> set up the test suite accordingly.
+> 
+>  NB this may already be the compiler's default, depending on how it was 
+> configured, i.e. if `--with-abi=n32' was used, in which case no extra 
+> options will be required.  I don't know if any standard MIPS distribution 
+> does it though; 64-bit MIPS/Debian might.  This will be reported with `gcc 
+> --help -v', somewhere along the way.
+> 
+>  Let me know if there are issues with this approach.
 
-Thanks for your review!
+FWIW, on debian/mips64el (both stretch and buster) the test fails with the
+distro kernels (4.9- and 4.19-based) as well as with 5.10-rc1 and
+5.10-rc1+that series, all in the same way:
+[Current thread is 1 (LWP 4154)]
+(gdb) p/x foo
+Cannot find thread-local storage for LWP 4154, executable file <pathname>
+Cannot find thread-local variables on this target
 
-On Tue, Dec 22, 2020 at 11:30 AM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
->
-> Hi Ricardo,
->
-> Thank you for the patch.
->
-> On Mon, Dec 21, 2020 at 05:48:16PM +0100, Ricardo Ribalda wrote:
-> > Some devices, can only read the privacy_pin if the device is
->
-> s/devices,/devices/
->
-> > streaming.
-> >
-> > This patch implement a quirk for such devices, in order to avoid invalid
-> > reads and/or spurious events.
-> >
-> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> > ---
-> >  drivers/media/usb/uvc/uvc_driver.c | 57 ++++++++++++++++++++++++++++--
-> >  drivers/media/usb/uvc/uvc_queue.c  |  3 ++
-> >  drivers/media/usb/uvc/uvcvideo.h   |  4 +++
-> >  3 files changed, 61 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-> > index 72516101fdd0..7af37d4bd60a 100644
-> > --- a/drivers/media/usb/uvc/uvc_driver.c
-> > +++ b/drivers/media/usb/uvc/uvc_driver.c
-> > @@ -7,6 +7,7 @@
-> >   */
-> >
-> >  #include <linux/atomic.h>
-> > +#include <linux/dmi.h>
-> >  #include <linux/gpio/consumer.h>
-> >  #include <linux/kernel.h>
-> >  #include <linux/list.h>
-> > @@ -1472,6 +1473,17 @@ static int uvc_parse_control(struct uvc_device *dev)
-> >  /* -----------------------------------------------------------------------------
-> >   * Privacy GPIO
-> >   */
->
-> There should be a blank line here.
->
-> > +static bool uvc_gpio_is_streaming(struct uvc_device *dev)
-> > +{
-> > +     struct uvc_streaming *streaming;
-> > +
-> > +     list_for_each_entry(streaming, &dev->streams, list) {
-> > +             if (uvc_queue_streaming(&streaming->queue))
-> > +                     return true;
-> > +     }
-> > +
-> > +     return false;
-> > +}
-> >
-> >
->
-> But not too blank lines here.
->
-> >  static u8 uvc_gpio_update_value(struct uvc_device *dev,
-> > @@ -1499,7 +1511,12 @@ static int uvc_gpio_get_cur(struct uvc_device *dev, struct uvc_entity *entity,
-> >       if (cs != UVC_CT_PRIVACY_CONTROL || size < 1)
-> >               return -EINVAL;
-> >
-> > +     if ((dev->quirks & UVC_QUIRK_PRIVACY_DURING_STREAM) &&
-> > +         !uvc_gpio_is_streaming(dev))
-> > +             return -EBUSY;
-> > +
-> >       *(uint8_t *)data = uvc_gpio_update_value(dev, entity);
-> > +
-> >       return 0;
-> >  }
-> >
-> > @@ -1528,19 +1545,50 @@ static struct uvc_entity *uvc_gpio_find_entity(struct uvc_device *dev)
-> >       return NULL;
-> >  }
-> >
-> > -static irqreturn_t uvc_gpio_irq(int irq, void *data)
-> > +void uvc_privacy_gpio_event(struct uvc_device *dev)
-> >  {
-> > -     struct uvc_device *dev = data;
-> >       struct uvc_entity *unit;
-> >
-> > +
-> >       unit = uvc_gpio_find_entity(dev);
-> >       if (!unit)
-> > -             return IRQ_HANDLED;
-> > +             return;
-> >
-> >       uvc_gpio_update_value(dev, unit);
-> > +}
-> > +
-> > +static irqreturn_t uvc_gpio_irq(int irq, void *data)
-> > +{
-> > +     struct uvc_device *dev = data;
-> > +
-> > +     /* Ignore privacy events during streamoff */
-> > +     if (dev->quirks & UVC_QUIRK_PRIVACY_DURING_STREAM)
-> > +             if (!uvc_gpio_is_streaming(dev))
-> > +                     return IRQ_HANDLED;
->
-> I'm still a bit concerned of race conditions. When stopping the stream,
-> vb2_queue.streaming is set to 0 after calling the driver's .stop_stream()
-> handler. This means that the device will cut power before
-> uvc_gpio_is_streaming() can detect that streaming has stopped, and the
-> GPIO could thus trigger an IRQ.
+buster has libc6-2.28, so that should be fine for the test in question
+(libthread_db definitely recent enough).  That was n32 gdb; considering
+how much time it had taken to build that sucker I hadn't tried o32
+yet.
 
-On the affected devices I have not seen this. I guess it takes some
-time to discharge. Anyway I am implementing a workaround. Tell me if
-it is too ugly.
+Note that it's not just with native coredumps - gcore-produced ones give
+the same result.  That was gdb from binutils-gdb.git; I'm not familiar
+with gdb guts to start debugging it, so if you have any suggestions
+in that direction that do not include a full rebuild...  In any case,
+I won't get around to that until the next week.
 
->
-> You mentioned that devices have a pull-up or pull-down on the GPIO line.
-> As there are only two devices affected, do you know if it's a pull-up or
-> pull-down ? Would it be worse to expose that state to userspace than to
-> return -EBUSY when reading the control ?
+Incidentally, build time is bloody awful - 3 days, with qemu-3.1 on
+3.5GHz amd64 host, all spent pretty much entirely in userland (both
+from guest and host POV).  g++-8 is atrociously slow...
 
-The module has a 100K pull up. This is, it will return "Privacy = 0".
-
-We cannot return the default value, as it would make the user believe
-that the privacy is in a different state that currently is.
-In other words, userspace needs to know at all times if the privacy is
-in : unknow_state, on, off.
-
->
-> > +
-> > +     uvc_privacy_gpio_event(dev);
-> > +
-> >       return IRQ_HANDLED;
-> >  }
-> >
-> > +static const struct dmi_system_id privacy_valid_during_streamon[] = {
-> > +     {
-> > +             .ident = "HP Elite c1030 Chromebook",
-> > +             .matches = {
-> > +                     DMI_MATCH(DMI_SYS_VENDOR, "HP"),
-> > +                     DMI_MATCH(DMI_PRODUCT_NAME, "Jinlon"),
-> > +             },
-> > +     },
-> > +     {
-> > +             .ident = "HP Pro c640 Chromebook",
-> > +             .matches = {
-> > +                     DMI_MATCH(DMI_SYS_VENDOR, "HP"),
-> > +                     DMI_MATCH(DMI_PRODUCT_NAME, "Dratini"),
-> > +             },
-> > +     },
-> > +     { } /* terminate list */
-> > +};
-> > +
-> >  static int uvc_gpio_parse(struct uvc_device *dev)
-> >  {
-> >       struct uvc_entity *unit;
-> > @@ -1577,6 +1625,9 @@ static int uvc_gpio_parse(struct uvc_device *dev)
-> >
-> >       list_add_tail(&unit->list, &dev->entities);
-> >
-> > +     if (dmi_check_system(privacy_valid_during_streamon))
-> > +             dev->quirks |= UVC_QUIRK_PRIVACY_DURING_STREAM;
->
-> This will also match any external UVC camera plugged to one of the
-> affected systems, right ? It shouldn't matter in practice as those
-> devices won't have a GPIO entity.
-
-I did think about that but did not make it explicit in the code.
-Adding a comment.
-
->
-> I suppose we can't match on VID:PID instead because the same VID:PID is
-> used in both devices affected by this issue, and devices immune to it ?
-
-The problem with VID:PID, is that the manufacturer can decide to
-change the camera module and then the quirk will not work.
-
-We cannot rely ONLY in VID:PID as these modules are also used in other
-models not affected by the quirk.
-
-I believe that it is also correct to rely on the dmi, as the quirk is
-caused for the way the camera module is wired, which is on the
-motherboard.
-
-
->
-> > +
-> >       return 0;
-> >  }
-> >
-> > diff --git a/drivers/media/usb/uvc/uvc_queue.c b/drivers/media/usb/uvc/uvc_queue.c
-> > index cd60c6c1749e..e800d491303f 100644
-> > --- a/drivers/media/usb/uvc/uvc_queue.c
-> > +++ b/drivers/media/usb/uvc/uvc_queue.c
-> > @@ -337,9 +337,12 @@ int uvc_dequeue_buffer(struct uvc_video_queue *queue, struct v4l2_buffer *buf,
-> >  int uvc_queue_streamon(struct uvc_video_queue *queue, enum v4l2_buf_type type)
-> >  {
-> >       int ret;
-> > +     struct uvc_streaming *stream = uvc_queue_to_stream(queue);
->
-> Please swap the two lines.
->
-> >
-> >       mutex_lock(&queue->mutex);
-> >       ret = vb2_streamon(&queue->queue, type);
-> > +     if (stream->dev->quirks & UVC_QUIRK_PRIVACY_DURING_STREAM)
-> > +             uvc_privacy_gpio_event(stream->dev);
->
-> Even when vb2_streamon() failed ?
->
-> >       mutex_unlock(&queue->mutex);
-> >
-> >       return ret;
-> > diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> > index 079a407ebba5..32c1ba246d97 100644
-> > --- a/drivers/media/usb/uvc/uvcvideo.h
-> > +++ b/drivers/media/usb/uvc/uvcvideo.h
-> > @@ -209,6 +209,7 @@
-> >  #define UVC_QUIRK_RESTORE_CTRLS_ON_INIT      0x00000400
-> >  #define UVC_QUIRK_FORCE_Y8           0x00000800
-> >  #define UVC_QUIRK_FORCE_BPP          0x00001000
-> > +#define UVC_QUIRK_PRIVACY_DURING_STREAM      0x00002000
-> >
-> >  /* Format flags */
-> >  #define UVC_FMT_FLAG_COMPRESSED              0x00000001
-> > @@ -826,6 +827,9 @@ extern const struct v4l2_file_operations uvc_fops;
-> >  int uvc_mc_register_entities(struct uvc_video_chain *chain);
-> >  void uvc_mc_cleanup_entity(struct uvc_entity *entity);
-> >
-> > +/* Privacy gpio */
-> > +void uvc_privacy_gpio_event(struct uvc_device *dev);
-> > +
-> >  /* Video */
-> >  int uvc_video_init(struct uvc_streaming *stream);
-> >  int uvc_video_suspend(struct uvc_streaming *stream);
->
-> --
-> Regards,
->
-> Laurent Pinchart
-
-
-
--- 
-Ricardo Ribalda
+That said, I don't see what in that series could possibly mess the
+things up for tls, while leaving the registers working; the only
+thing that realistically might've been fucked up is prstatus layout
+(and possibly size), and that would've screwed the registers as
+well.
