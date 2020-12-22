@@ -2,180 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B0822E0E08
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 18:59:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E21772E0E0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 19:02:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728026AbgLVR7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 12:59:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727094AbgLVR7U (ORCPT
+        id S1728081AbgLVR7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 12:59:49 -0500
+Received: from bin-mail-out-05.binero.net ([195.74.38.228]:14203 "EHLO
+        bin-mail-out-05.binero.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727094AbgLVR7t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 12:59:20 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E7FC0613D3;
-        Tue, 22 Dec 2020 09:58:40 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id m12so33994417lfo.7;
-        Tue, 22 Dec 2020 09:58:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PfXAXQ8kBE2vb/nUDtD4To0JchlXyJ1Qy383TUCdL5w=;
-        b=bUt7/Ewoudd8Ppjf+R80lF3XO9mPK8pM3OhJPkyh7wcro70W1s2ps19o+kAMZu9Bo5
-         IamxHUDH1WQg7+353HzRyVnc84N3pGo1MkoWpdqQq2S/gGSvvU+VBQDQ1ZWH6IS9yvJx
-         uCPKZLZSOVX8lWdf3X4efSbHJb0LTFWLs69HHKjITTfrzqi/CSI38LH4wOt9kG8S9ldD
-         oqfc84awKOYe35uJWz33WRhGOv7p/UHi4pqaho4F7vvfb899441quA9DJVWo+Zjt8uCT
-         duCf3wDNI03Me+YoKe3sx4tBTiIH7N9py30uqYdRqCRgbknlP+0gaXWoUUgunOAx/lsp
-         CRLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PfXAXQ8kBE2vb/nUDtD4To0JchlXyJ1Qy383TUCdL5w=;
-        b=mGW4l+PVCnKf00cxvaYfXz9wZLi9G2HkDGuWBZnXhWw3PVeEKiWTm6lJ/blYYY12Ap
-         sn4q5qMD5yibY4jTayRFWapiuKop7I+uoXKoPmmB/ER+P/mhh4dBp/N90Jt+BrJru4VG
-         2BWCNjitydHIDXLx567Ms/WxoZOi/Y1FWcRdmkLqDzUJMu1/kij9557MrBbIMX7CrY2y
-         6ayJ5WBx/YoEFc6KDM9QP+qAPQZujHImcizpiJoHTLshxqWQ7HGYpDVVceaZwjXI2RBK
-         lOZLmMeF+6ArL8pQxH1S2U7mzUqPzGSh2GFfuPq4q1mji4v20RA0iduvdKc9V/8XOX4F
-         xbPA==
-X-Gm-Message-State: AOAM532e/E159kwNofEmlyrSDptMYDLKtLlMaYmG+31X0SodvkYrO43U
-        tgbc+JHgJlLNanwCYb/hfJhWq/7bxLGRolzydAlAcibmSjs=
-X-Google-Smtp-Source: ABdhPJxiMPW/bFl10CagAVMyf3CW3+lHjSBLbEcXhJeid36YohxQ09gShY8vDKRMIFXxt/2lq/4zLFC9vZRuRgXvJWw=
-X-Received: by 2002:ac2:4431:: with SMTP id w17mr8772863lfl.223.1608659918710;
- Tue, 22 Dec 2020 09:58:38 -0800 (PST)
+        Tue, 22 Dec 2020 12:59:49 -0500
+X-Halon-ID: 5e35e258-447f-11eb-b73f-0050569116f7
+Authorized-sender: andreas@gaisler.com
+Received: from andreas.got.gaisler.com (h-98-128-223-123.na.cust.bahnhof.se [98.128.223.123])
+        by bin-vsp-out-03.atm.binero.net (Halon) with ESMTPA
+        id 5e35e258-447f-11eb-b73f-0050569116f7;
+        Tue, 22 Dec 2020 18:59:04 +0100 (CET)
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        sparclinux <sparclinux@vger.kernel.org>, linux-mm@kvack.org
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>
+From:   Andreas Larsson <andreas@gaisler.com>
+Subject: sparc32: Init process fails to load with generic kmap atomic
+Message-ID: <c1dc2579-17b1-493b-ef23-0b9ed1ec13c3@gaisler.com>
+Date:   Tue, 22 Dec 2020 18:58:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201125161815.2361-1-lukma@denx.de> <20201125161815.2361-3-lukma@denx.de>
-In-Reply-To: <20201125161815.2361-3-lukma@denx.de>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Tue, 22 Dec 2020 14:58:27 -0300
-Message-ID: <CAOMZO5AkSZf3p7n1UdE9HXPcVciBATH1k5mZLCoNKZ6o2M8maQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] ARM: dts: imx28: Add DTS description of imx28 based
- XEA board
-To:     Lukasz Majewski <lukma@denx.de>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lukasz,
 
-On Wed, Nov 25, 2020 at 1:19 PM Lukasz Majewski <lukma@denx.de> wrote:
+Unfortunately I did not see this problem before I encountered it in
+master. Commit 3293efa9780712ad8504689e0c296d2bd33827d5
 
-> diff --git a/arch/arm/boot/dts/imx28-lwe.dtsi b/arch/arm/boot/dts/imx28-lwe.dtsi
-> new file mode 100644
-> index 000000000000..cb2eb4377d9c
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/imx28-lwe.dtsi
-> @@ -0,0 +1,185 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-> +/*
-> + * Copyright 2020
-> + * Lukasz Majewski, DENX Software Engineering, lukma@denx.de
-> + */
-> +
-> +/dts-v1/;
-> +#include "imx28.dtsi"
-> +
-> +/ {
-> +       compatible = "fsl,imx28";
+    sparc/mm/highmem: Switch to generic kmap atomic
 
-You can drop this one.
+     No reason having the same code in every architecture
 
-> +
-> +       aliases {
-> +               spi2 = &ssp3;
-> +       };
-> +
-> +       chosen {
-> +               bootargs = "root=/dev/mmcblk0p2 rootfstype=ext4 ro rootwait console=ttyAMA0,115200 panic=1";
+     Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+     Cc: "David S. Miller" <davem@davemloft.net>
+     Cc: Arnd Bergmann <arnd@arndb.de>
+     Link: https://lore.kernel.org/r/20201103095858.197568209@linutronix.de
 
-You could remove bootargs and let the bootloader pass it.
+prevents the init process to be started for me on a sparc32 LEON. On the
+commit before this it works. Details below from that commit but I get
+the same behavior on current master.
 
-We usually don't pass bootargs in the i.MX dts files.
+ From as far as I have gotten into hunting down the problem, I get a
+failure from load_elf_binary here:
 
-> +       };
-> +
-> +       memory {
+	/* First of all, some simple consistency checks */
+	if (memcmp(elf_ex->e_ident, ELFMAG, SELFMAG) != 0)
+		goto out;
 
-memory@40000000
+at least seemingly due to the kaddr from copy_page_to_iter in
+lib/iov_iter.c
 
-otherwise you will get dtc build warnings with W=1.
+	if (i->type & (ITER_BVEC|ITER_KVEC)) {
+		void *kaddr = kmap_atomic(page);
+		size_t wanted = copy_to_iter(kaddr + offset, bytes, i);
 
-> +               reg = <0x40000000 0x08000000>;
-> +       };
-> +
-> +       regulators {
-> +               compatible = "simple-bus";
-> +               #address-cells = <1>;
-> +               #size-cells = <0>;
+where kaddr points to memory with all zeroes (from an earlier bzero) in 
+this context:
 
-No need for this 'regulators' container.
+#0  _copy_to_iter (addr=0xfcffe000, bytes=0x100, i=0xf201fd78)
+                at lib/iov_iter.c:635
+#1  copy_to_iter (i=0xf201fd78, bytes=0x1ce, addr=0xfcffe000)
+                at include/linux/uio.h:137
+#2  copy_page_to_iter (page=0xf137ede0, offset=0x0, bytes=0x1ce, 
+i=0xf201fd78)
+                at lib/iov_iter.c:920
+#3  shmem_file_read_iter (iocb=0xf201fd90, to=0xf201fd78)
+                at mm/shmem.c:2661
+#4  __kernel_read (file=0xf2103900, buf=0xf241365c, count=0x100, 
+pos=0xf201fe80)
+                at fs/read_write.c:454
+#5  kernel_read (file=0xf2103900, buf=0xf241365c, count=0x100, 
+pos=0xf201fe80)
+                at fs/read_write.c:472
+#6  prepare_binprm (bprm=0xf2413600)
+                at fs/exec.c:1633
+#7  search_binary_handler (bprm=0xf2413600)
+                at fs/exec.c:1687
+#8  exec_binprm (bprm=0xf2413600)
+                at fs/exec.c:1744
+#9  bprm_execve (bprm=0xf2413600, fd=<opt>, filename=<opt>, flags=<opt>)
+                at fs/exec.c:1820
+#10 kernel_execve (kernel_filename=<opt>,
+                    argv=0xf050d4f0 <argv_init>,
+                    envp=0xf050d468 <envp_init>)
+                at fs/exec.c:1969
+#11 kernel_init (unused=0x0)
+                at init/main.c:1427
 
-> +
-> +               reg_3v3: regulator@0 {
+I will have to continue to dig deeper into this in January. If anyone
+has any ideas how this could stem from this kmap patch, I am all ears.
 
-reg_3v3: regulator-reg-3v3 {
-
-> +                       compatible = "regulator-fixed";
-> +                       reg = <0>;
-
-Remove the reg = <0>
-
-Same applies to other regulators.
-
-> +               reg_usb_5v: regulator@1 {
-> +                       compatible = "regulator-fixed";
-> +                       reg = <1>;
-> +                       regulator-name = "usb_vbus";
-> +                       regulator-min-microvolt = <5000000>;
-> +                       regulator-max-microvolt = <5000000>;
-> +                       enable-active-high;
-
-Why passing 'enable-active-high' when this is not gpio controlled?
-
-> +               };
-> +
-> +               reg_fec_3v3: regulator@2 {
-> +                       compatible = "regulator-fixed";
-> +                       reg = <2>;
-> +                       regulator-name = "fec-phy";
-> +                       regulator-min-microvolt = <3300000>;
-> +                       regulator-max-microvolt = <3300000>;
-> +                       enable-active-high;
-
-Same here.
-
-> +&ssp3 {
-> +       compatible = "fsl,imx28-spi";
-> +       pinctrl-names = "default";
-> +       pinctrl-0 = <&spi3_pins_a>;
-> +       status = "okay";
-> +
-> +       flash0: s25fl256s0@0 {
-
-Node names should be generic
-
-flash@0
-> +
-> +/dts-v1/;
-> +#include "imx28-lwe.dtsi"
-> +
-> +/ {
-> +       model = "XEA";
-
-compatible = "xea,imx20-lwe", "fsl,imx28";
-
-You should add xea to the vendor prefix in a separate patch.
-
-You also need to add thie board to
-Documentation/devicetree/bindings/arm/fsl.yaml
+-- 
+Andreas Larsson
+Software Engineer
+Cobham Gaisler
