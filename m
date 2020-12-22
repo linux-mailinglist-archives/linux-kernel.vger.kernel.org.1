@@ -2,82 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3FFF2E10A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 00:49:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 502452E10A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 00:52:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727742AbgLVXsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 18:48:12 -0500
-Received: from ozlabs.org ([203.11.71.1]:51625 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726072AbgLVXsM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 18:48:12 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4D0tL94z3Hz9sVj;
-        Wed, 23 Dec 2020 10:47:29 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1608680849;
-        bh=TFWgwqaVABLxmJK9b93kYixw0ANZLnTE3RszfaGlu0U=;
-        h=Date:From:To:Cc:Subject:From;
-        b=o8NlhBMJ/9Udv0rQB4GUtuUVTAGX+JeYMQjiIh+vNTNEPqc4ktRTBEYiYG3V60cC3
-         hzHNGQgcp8/48OJKuIySV2cUiHpDlJxdBbkAipd6uxZdFBZ5u6lXim0zrbhHJDBV2I
-         /0TiEOxK1DQXGcLNH8BNHZ5I8P0tLH9QFxDeyQdsMPvSW1EM60+atdfVie4kCC2t9J
-         SNs4sXpbaIRPp/VN8ZdSyRty8ome+L7/fDWgFtQOv4MEDZMYyFR9+Y+W4D4g2I2e3o
-         4UYfEkJwCSqQR9MBFFQf6dwRVrgh4KOZ37MjsiUFEr6qayMAG9A3sUCmWSzK4HlPG+
-         8CQ4TM4CorDPQ==
-Date:   Wed, 23 Dec 2020 10:47:26 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Pavel Begunkov <asml.silence@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the block tree
-Message-ID: <20201223104726.36ec2aaf@canb.auug.org.au>
+        id S1726269AbgLVXva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 18:51:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726016AbgLVXva (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 18:51:30 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7DCCC0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 15:50:49 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id l11so36037703lfg.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 15:50:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wT+z8aeZsnOOzxK6hRvN9mbQoYBCIG22xW14cZwa86w=;
+        b=MyXM9vqGI+WhI8Rv8h6RJuLl253A3dVDm7Wiw79euFHzsqdzhooZCUkLAygIrH6ipb
+         kAS54/dbjFQk681nMzW1KllhvwGrPLMHaiwMbXVIdiWMzE+LAAShC4Wb9zlbpq+nM4kS
+         fWHpqNltPGPg5x9GVJGujYfbWfRTyMdNA8src=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wT+z8aeZsnOOzxK6hRvN9mbQoYBCIG22xW14cZwa86w=;
+        b=mMovEaar5PVMNF8R0GRkie0ytMBhs8DPGY8HbZTX7Bkj3jyqdjkO0gVuJTG6OlVr7z
+         KlfmeJ+wVu0Vos3CsqJzgntjuHvmez6qC3Wajd2DIUydQBFEC/skQLff+lQnu6HhcMxL
+         yzc0QVsltU/0BsBP0yzjYkXwut44uBXrV/MPa08g3hiYzOgLcweWTjJkAZygt6zdAWEN
+         rchRNHRxL2MRVUk7DeS+rfxN5/8duCEgQxLfhDv9/vTD0OmkGFCC6BctmwGcOKj5Ylbs
+         8orLNxi3fd+v04VgrbcevJmFHvgohO5VGP/ny91MbEIVUkxI2WJNcy5lNeGyxrTiXXAb
+         LYEA==
+X-Gm-Message-State: AOAM530pURaHO2fCu7UfgZ8PFbA09Eqa9bRekzmfKVU3NiPdpL3u4Zte
+        lGn2fmfisECTGvh4omRK1Un2VTcF6UA93w==
+X-Google-Smtp-Source: ABdhPJwtzPFBaPcFEwqWvwkO7Odo8wLx3kIfkUO0laFl1zBVdNZo5PBRPmoI6TBvQj7+cfWwGXb3GA==
+X-Received: by 2002:a05:6512:3089:: with SMTP id z9mr10386215lfd.433.1608681047817;
+        Tue, 22 Dec 2020 15:50:47 -0800 (PST)
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
+        by smtp.gmail.com with ESMTPSA id l17sm2871075lfg.205.2020.12.22.15.50.46
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Dec 2020 15:50:46 -0800 (PST)
+Received: by mail-lf1-f48.google.com with SMTP id s26so35910093lfc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 15:50:46 -0800 (PST)
+X-Received: by 2002:a2e:9ad7:: with SMTP id p23mr10303284ljj.465.1608681045870;
+ Tue, 22 Dec 2020 15:50:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/hQE9kjucqLwVRemRJ5/5n3U";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <9E301C7C-882A-4E0F-8D6D-1170E792065A@gmail.com>
+ <CAHk-=wg-Y+svNy3CDkJjj0X_CJkSbpERLg64-Vqwq5u7SC4z0g@mail.gmail.com>
+ <X+ESkna2z3WjjniN@google.com> <1FCC8F93-FF29-44D3-A73A-DF943D056680@gmail.com>
+ <20201221223041.GL6640@xz-x1> <CAHk-=wh-bG4thjXUekLtrCg8FRrdWjtT40ibXXLSm_hzQG8eOw@mail.gmail.com>
+ <CALCETrV=8tY7h=aaudWBEn-MJnNkm2wz5qjH49SYqwkjYTpOaA@mail.gmail.com>
+ <X+JJqK91plkBVisG@redhat.com> <X+JhwVX3s5mU9ZNx@google.com>
+ <X+Js/dFbC5P7C3oO@redhat.com> <X+KDwu1PRQ93E2LK@google.com>
+In-Reply-To: <X+KDwu1PRQ93E2LK@google.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 22 Dec 2020 15:50:29 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiBWkgxLtwD7n01irD7hTQzuumtrqCkxxZx=6dbiGKUqQ@mail.gmail.com>
+Message-ID: <CAHk-=wiBWkgxLtwD7n01irD7hTQzuumtrqCkxxZx=6dbiGKUqQ@mail.gmail.com>
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/hQE9kjucqLwVRemRJ5/5n3U
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Dec 22, 2020 at 3:39 PM Yu Zhao <yuzhao@google.com> wrote:
+>
+> 2) is the false positive because of what we do, and it's causing the
+> memory corruption because do_wp_page() tries to make copies of pages
+> that seem to be RO but may have stale RW tlb entries pending flush.
 
-Hi all,
+Yeah, that's definitely a different bug.
 
-After merging the block tree, today's linux-next build (x86_64
-allmodconfig) produced this warning:
+The rule is that the TLB flush has to be done before the page table
+lock is released.
 
-fs/io_uring.c: In function 'io_uring_get_file':
-fs/io_uring.c:9408:6: warning: unused variable 'ret' [-Wunused-variable]
- 9408 |  int ret;
-      |      ^~~
+See zap_pte_range() for an example of doing it right, even in the
+presence of complexities (ie that has an example of both flushing the
+TLB, and doing the actual "free the pages after flush", and it does
+the two cases separately).
 
-Introduced by commit
-
-  efc2519f427b ("io_uring: fix double io_uring free")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/hQE9kjucqLwVRemRJ5/5n3U
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/ihY4ACgkQAVBC80lX
-0GyxBQf/Vt6ztSlHE0seAoG4P+2ZTkVT3dEfk8xc2lLVA8s06fG2GX2YvvqAXBU/
-eYDLsHnD7voLRKGdtYkDiVUXUZ6UdXngVJ1n9zz1l9JAzQxz1fHzT0jTDa4p17+t
-ROXWqXAz+jw8vksiNv2WPA+MTPzHGWJjH0e8LuHvSRIAGINxdMHZNIBJ2bPXb8Ef
-cmqEI1Rg5YTbHSm8UFrvuE/5odojOLBEiIg/3+cDhjs7jGF2S83eBBXWDt7f5dQL
-Ac8UqEDEDu5e2EZpPeXvFGtR9spq9HSSWZXH7Fehw/cZXFPjLCNtavfLicop4wl5
-KbgJwcROJzJBvjNMrOVKAARUd+r5OA==
-=bO5o
------END PGP SIGNATURE-----
-
---Sig_/hQE9kjucqLwVRemRJ5/5n3U--
+           Linus
