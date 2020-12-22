@@ -2,127 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A22952E056E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 05:39:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B1062E0576
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 05:41:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726065AbgLVEiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 23:38:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725964AbgLVEiu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 23:38:50 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 609D1C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 20:38:10 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id b5so658510pjk.2
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 20:38:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KMIz8Txzy6wjyHZ1wwNssQ3NrdVzopyLXnUTumDPEu4=;
-        b=f37eFkln4a/htDAWss+ZS1U+E4a3XjADVDLugAkDTqYfhz6h+hiYbGevReGFf4n1TK
-         3LcyVU0v8oEj/ldV2LwRorapAZA9fM+aEsLElWnlYinloCFhkUxXIG6IPajD8tgiJJea
-         DpV7MWDOXHzOuzTO/m9jSt14tPoJrM5KP18DX8I2/m7k1RJGMbdgBM9opD9aW4R0APi2
-         qwsxK5iRF4PUxhEWWnJeQbqIQ1L1pe/0UYpfefLQ75Em26FoNTFGgZaoz7DKALCRXLEX
-         ZOBQkG9jMif+c5JtWfTVjvIK0ay59QORO0oyT5r2YmuHYQtzadQyZ5I+40srrzB7gnDd
-         Pygw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=KMIz8Txzy6wjyHZ1wwNssQ3NrdVzopyLXnUTumDPEu4=;
-        b=UCq4GL0fXfDJNmfzN/T+CK0SHXNvoCp+yBtKjdK2VOPCL/s3W4P/7Rz4ornghvz449
-         z34AMQrl7Rtu1QT3dA6XyJNCGcs+GtzxnEt4q9GTVbDuo3o0p318TOSmVx/pw3VqBIBR
-         k9uVCBAHbChgxmqlNAJRkeRC/nstUbfaI79+0jNcZdGXiSsr1OjJlm23Z/KwstcDYDv5
-         j1C+MdO25usrigCMG7Pov4S/vf7y9DhHC5LEq7DPp7nxtUV4OiqxeBbPGcA1N13R3qy4
-         yTIkTq7lu/ztY0gaqoOMD0pp6KZlwTUx7XoKh5gYXNQCFi14b/7aewp7XqBwWIHFdJMQ
-         nGSA==
-X-Gm-Message-State: AOAM5312oLvjnwN3+8ZwwFFRL7CRB8hVWbKe+daEbSCDq/PQR/frr/O5
-        BCDny0bGpyS2Doyuu5mnyFWKSw==
-X-Google-Smtp-Source: ABdhPJxtuQf6v3NOjOt18j+2XE9PyJZOYNWFlG1D0U0wBxlkHbcyvIu7qM9Ho0qf5ZhZV4ECTna2pA==
-X-Received: by 2002:a17:902:694c:b029:da:afba:beab with SMTP id k12-20020a170902694cb02900daafbabeabmr19519669plt.32.1608611889761;
-        Mon, 21 Dec 2020 20:38:09 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id a136sm19619380pfd.149.2020.12.21.20.38.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 20:38:09 -0800 (PST)
-Date:   Mon, 21 Dec 2020 20:38:09 -0800 (PST)
-X-Google-Original-Date: Mon, 21 Dec 2020 20:38:02 PST (-0800)
-Subject:     Re: [PATCH v2 0/9] arch: riscv: add board and SoC DT file support
-In-Reply-To: <1607403341-57214-1-git-send-email-yash.shah@sifive.com>
-CC:     linux-spi@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
-        broonie@kernel.org, Greg KH <gregkh@linuxfoundation.org>,
-        aou@eecs.berkeley.edu, lee.jones@linaro.org,
-        u.kleine-koenig@pengutronix.de, thierry.reding@gmail.com,
-        andrew@lunn.ch, peter@korsgaard.com,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        bgolaszewski@baylibre.com, linus.walleij@linaro.org,
-        yash.shah@sifive.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     yash.shah@sifive.com, robh+dt@kernel.org
-Message-ID: <mhng-711b1a2e-46bd-4169-841d-f18fe4bba6bb@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        id S1725969AbgLVElR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 23:41:17 -0500
+Received: from mga12.intel.com ([192.55.52.136]:14686 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725907AbgLVElQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 23:41:16 -0500
+IronPort-SDR: eo8TqR+XHfZuh0v5D8G2hgoSjf09copDNEqqOBkUn6QkoZgB2Uphe+BeKMJT5y+CZGezUuDIFA
+ MZFdyYKnDbiA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9842"; a="155033635"
+X-IronPort-AV: E=Sophos;i="5.78,438,1599548400"; 
+   d="scan'208";a="155033635"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2020 20:40:35 -0800
+IronPort-SDR: ufAiMYL5Lx+RTpHKDfizMLNs++16pdRvw0EZlci2Ml/HXEiijn8+GKV7/Dl6yWF/hrv798Ef50
+ /J2kUZDpEV0Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,438,1599548400"; 
+   d="scan'208";a="382352934"
+Received: from lkp-server01.sh.intel.com (HELO 65587561063d) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 21 Dec 2020 20:40:33 -0800
+Received: from kbuild by 65587561063d with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1krZTN-0001IB-0A; Tue, 22 Dec 2020 04:40:33 +0000
+Date:   Tue, 22 Dec 2020 12:39:44 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:rcu/test] BUILD SUCCESS
+ 4c4c8e04a7f8522de634aa062f4cd6b8b80c151b
+Message-ID: <5fe17890.DgAUduMCiEob9Doo%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 07 Dec 2020 20:55:32 PST (-0800), yash.shah@sifive.com wrote:
-> Start board support by adding initial support for the SiFive FU740 SoC
-> and the first development board that uses it, the SiFive HiFive
-> Unmatched A00.
->
-> Boot-tested on Linux 5.10-rc4 on a HiFive Unmatched A00 board using the
-> U-boot and OpenSBI.
->
-> This patch series is dependent on Zong's Patchset[0]. The patchset also
-> adds two new nodes in dtsi file. The binding documentation patch
-> for these nodes are already posted on the mailing list[1][2].
->
-> [0]: https://lore.kernel.org/linux-riscv/20201130082330.77268-4-zong.li@sifive.com/T/#u
-> [1]: https://lore.kernel.org/linux-riscv/1606714984-16593-1-git-send-email-yash.shah@sifive.com/T/#t
-> [2]: https://lore.kernel.org/linux-riscv/20201126030043.67390-1-zong.li@sifive.com/T/#u
->
-> Changes in v2:
-> - The dt bindings patch is split into several individual patches.
-> - Expand the full list for compatible strings in i2c-ocores.txt
->
-> Yash Shah (9):
->   dt-bindings: riscv: Update DT binding docs to support SiFive FU740 SoC
->   dt-bindings: spi: Update DT binding docs to support SiFive FU740 SoC
->   dt-bindings: pwm: Update DT binding docs to support SiFive FU740 SoC
->   dt-bindings: serial: Update DT binding docs to support SiFive FU740
->     SoC
->   dt-bindings: gpio: Update DT binding docs to support SiFive FU740 SoC
->   dt-bindings: i2c: Update DT binding docs to support SiFive FU740 SoC
->   riscv: dts: add initial support for the SiFive FU740-C000 SoC
->   dt-bindings: riscv: Update YAML doc to support SiFive HiFive Unmatched
->     board
->   riscv: dts: add initial board data for the SiFive HiFive Unmatched
->
->  .../devicetree/bindings/gpio/sifive,gpio.yaml      |   4 +-
->  .../devicetree/bindings/i2c/i2c-ocores.txt         |   8 +-
->  .../devicetree/bindings/pwm/pwm-sifive.yaml        |   9 +-
->  Documentation/devicetree/bindings/riscv/cpus.yaml  |   6 +
->  .../devicetree/bindings/riscv/sifive.yaml          |  17 +-
->  .../devicetree/bindings/serial/sifive-serial.yaml  |   4 +-
->  .../devicetree/bindings/spi/spi-sifive.yaml        |  10 +-
->  arch/riscv/boot/dts/sifive/Makefile                |   3 +-
->  arch/riscv/boot/dts/sifive/fu740-c000.dtsi         | 293 +++++++++++++++++++++
->  .../riscv/boot/dts/sifive/hifive-unmatched-a00.dts | 253 ++++++++++++++++++
->  10 files changed, 590 insertions(+), 17 deletions(-)
->  create mode 100644 arch/riscv/boot/dts/sifive/fu740-c000.dtsi
->  create mode 100644 arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/test
+branch HEAD: 4c4c8e04a7f8522de634aa062f4cd6b8b80c151b  Merge commit 'e37b12e4bb21e7c81732370b0a2b34bd196f380b' into rcu/test
 
-Aside from that question about the i2c bug these look good to me.  I don't see
-any Ack/Review on the DT side of things, though.  If you want to take them
-through a DT tree that's fine for me, I'll leave them in my inbox for now and
-if nobody says anything I'll look a bit more and take them for 5.12.
+elapsed time: 720m
 
-Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+configs tested: 100
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                             allyesconfig
+mips                     cu1000-neo_defconfig
+sh                            titan_defconfig
+mips                        bcm47xx_defconfig
+sh                        dreamcast_defconfig
+arm                           viper_defconfig
+arm                         socfpga_defconfig
+powerpc                     pq2fads_defconfig
+ia64                        generic_defconfig
+mips                       lemote2f_defconfig
+sh                   sh7724_generic_defconfig
+c6x                                 defconfig
+xtensa                  audio_kc705_defconfig
+mips                        nlm_xlr_defconfig
+arm                        neponset_defconfig
+powerpc                 mpc85xx_cds_defconfig
+powerpc                    ge_imp3a_defconfig
+m68k                            q40_defconfig
+powerpc                 mpc8313_rdb_defconfig
+parisc                           allyesconfig
+powerpc                     kilauea_defconfig
+h8300                     edosk2674_defconfig
+sh                          rsk7269_defconfig
+powerpc                 linkstation_defconfig
+riscv                               defconfig
+powerpc64                        alldefconfig
+arm                          lpd270_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a001-20201221
+x86_64               randconfig-a006-20201221
+x86_64               randconfig-a002-20201221
+x86_64               randconfig-a004-20201221
+x86_64               randconfig-a003-20201221
+x86_64               randconfig-a005-20201221
+i386                 randconfig-a005-20201222
+i386                 randconfig-a002-20201222
+i386                 randconfig-a006-20201222
+i386                 randconfig-a004-20201222
+i386                 randconfig-a003-20201222
+i386                 randconfig-a001-20201222
+i386                 randconfig-a011-20201221
+i386                 randconfig-a016-20201221
+i386                 randconfig-a014-20201221
+i386                 randconfig-a012-20201221
+i386                 randconfig-a015-20201221
+i386                 randconfig-a013-20201221
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a015-20201221
+x86_64               randconfig-a014-20201221
+x86_64               randconfig-a016-20201221
+x86_64               randconfig-a012-20201221
+x86_64               randconfig-a013-20201221
+x86_64               randconfig-a011-20201221
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
