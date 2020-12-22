@@ -2,228 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 500292E1005
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 23:11:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89D992E1009
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 23:15:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727822AbgLVWIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 17:08:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53784 "EHLO
+        id S1727071AbgLVWM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 17:12:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727149AbgLVWIS (ORCPT
+        with ESMTP id S1726384AbgLVWM1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 17:08:18 -0500
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE73C0613D6;
-        Tue, 22 Dec 2020 14:07:37 -0800 (PST)
-Received: by mail-qk1-x736.google.com with SMTP id h4so13402499qkk.4;
-        Tue, 22 Dec 2020 14:07:37 -0800 (PST)
+        Tue, 22 Dec 2020 17:12:27 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0275C0613D6;
+        Tue, 22 Dec 2020 14:11:46 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id b9so20304624ejy.0;
+        Tue, 22 Dec 2020 14:11:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wVsqnRWq5YVDyYM+9ouMmzNX+6gKBrIxdO9dwgcVlc0=;
-        b=VKJ/hKsV7L80oATwiEzh781xkwXQrn95cwNJzp62RS8cSUtg6xsa6Po8Fs9MQ8AUiA
-         dR7tT3JGUje99Bx6/zM6L5rgtK6+BptIhYLl2/Sg+8cyiYR0Qb8DQAngK/FCbwk/T+pT
-         KGBblgOEWChiWFNvsP3cDHkwTQFXF0wjeP66m3P30fvpdP9vwa//4JeKttj+GjG+ySTr
-         7S3fiibv6xdGRmS0bvoTHnhoJBMUUGjiNzurv2HwDzqeddSWtX1qBO2SOO6YNKYePJU+
-         MSlgKQzscULlI+5AGkVGfgyJf7mU3MJsUA39ZENwgIIURadzH0eCOcDALu+Yw8blCEt3
-         Yaog==
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=6fjbj6zN8Pcd6q1ORs/Fz1E5K0tWXO14nIkNBitzKJs=;
+        b=mdJMcZjPuF9qBh9b/6l3hXvV1d0rkB/TPTKgH5iFINL38wp0cLIwP2SFVAvW6x0ZYw
+         jAaTMTk8P7VnPiwDVn7zAJ9iCLIDg5RyUj+T97cobnv1x5RDbLz07kmIuz0YbMvP66pR
+         yANsqyN6GNkqHu/cXm/OCsmDrGIHNKauSSNAa24+BJtShQda7xnn09SkNGYfsqfDKiVV
+         gCDlJlHlk8rF/qy6xbBoDTJSBL4ROvfmAyA/5kyxIRhSh31ibmN+iUrHe8TCBbPH8w3d
+         DXcxLBBPoHcG8b+xEIn3/t6CJteXe01cHFPMvrsRJSPCC6YUX+4//CAIag7jW85WFO4K
+         dETg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=wVsqnRWq5YVDyYM+9ouMmzNX+6gKBrIxdO9dwgcVlc0=;
-        b=kTV9H9CNng1FdK1LpMO24Wd8huo/pap0240MXFvgXi64omcfldB6WgOFwZohcUz9Sj
-         Nv/Mc249dCii4P9NcKpG0rD3GvqIb0rusBz8H32mSof702lgWe5lD+G24I0L3c5wms+I
-         aYKrL8rVf/BqCndGWk+l1PmSYo8PXpMAtKbJyApnp5M3Gd0R0PRSXyAIywfPKR/jk4mM
-         8M/qNaHznMTGzLEOnsFL+G8FfvKKcpFV5dwSDO8S9I3ELrK/Voc1wXkI02n0oWmESlOA
-         ctlRVn7jGlyXtdELdLA7c3A4CLatPNedqTd/l2X14WxlxGh4xMAZOoO1E2dTXL26abgo
-         MJTA==
-X-Gm-Message-State: AOAM532Kr+4IpaJygh9R6G+2n4WdOFYriprHPLU1CdRcaDRlhOyjqvjm
-        fuLK+tPnxCUhJtisUZOnEvfrqBPEat4OnIqI
-X-Google-Smtp-Source: ABdhPJxlD7C7mj1kU68NXtnVAVmbbVhc3DaEcqcv5NF5KhElG8Q6d1Eie7Eb1gMAZsce75mxvKlNZA==
-X-Received: by 2002:a37:8481:: with SMTP id g123mr23269087qkd.173.1608674856866;
-        Tue, 22 Dec 2020 14:07:36 -0800 (PST)
-Received: from fionn.redhat.com (bras-base-rdwyon0600w-grc-06-184-147-140-29.dsl.bell.ca. [184.147.140.29])
-        by smtp.gmail.com with ESMTPSA id l24sm14133716qkl.46.2020.12.22.14.07.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Dec 2020 14:07:36 -0800 (PST)
-Sender: John Kacur <jkacur@gmail.com>
-From:   John Kacur <jkacur@redhat.com>
-To:     RT <linux-rt-users@vger.kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Clark Williams <williams@redhat.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Peter Xu <peterx@redhat.com>,
-        Sebastian Siewior <bigeasy@linutronix.de>,
-        John Kacur <jkacur@redhat.com>
-Subject: [ANNOUNCE] rt-tests-1.10
-Date:   Tue, 22 Dec 2020 17:07:24 -0500
-Message-Id: <20201222220724.13052-1-jkacur@redhat.com>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=6fjbj6zN8Pcd6q1ORs/Fz1E5K0tWXO14nIkNBitzKJs=;
+        b=OaPgyk6E7a1IIOeZykdo9WYtqHQtWuLMbK11AUZw8HtKxBgwEOm3Jy48P7QO9yHh/K
+         t9oNbYE9U7QHGpPsr15uh2D4+E7rGSc7MmaM+Y3c0YpvlYZvNodNnPZHS1dGxgorWyf0
+         5Nb+urH2xiywFs42LZG59RHyH3/277VsWmjVHF9BASfYHNx4t47vWeJEm2OVTwbPN5mZ
+         t3qoqOIORCy7VPcwrFERYrZwQTsyx21mN11PGf8wFli5CqdaWU1tX1zJ98Vg7pBdcbJn
+         8Os3EBEqX+Ndkh52LXBUNuBKcqnFYmUrgpJ5+cVigZT0RJKxpcHxJgxNaGjkuAQEBjCM
+         vElg==
+X-Gm-Message-State: AOAM530Ezty+eHtI3RrckiNykgG5SBTIMTEPQtHtSK8Vi4u4b5oeQwlL
+        g2dtzsqcPkvy/pjJ7LBcvXU=
+X-Google-Smtp-Source: ABdhPJwN+SpqzBrvPoRyKl7GOqlZXhaK4bIoQp1zxYwg+mbvIRPzXHI6cgLvfK5yjWB5iZDZ/1ixow==
+X-Received: by 2002:a17:906:2755:: with SMTP id a21mr16147998ejd.374.1608675105465;
+        Tue, 22 Dec 2020 14:11:45 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
+        by smtp.googlemail.com with ESMTPSA id cb4sm4820273ejb.82.2020.12.22.14.11.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 22 Dec 2020 14:11:44 -0800 (PST)
+Message-ID: <28211d08700d1e4876a9aea342e8fcb79534cd2c.camel@gmail.com>
+Subject: Re: [PATCH v5 1/7] scsi: ufs: Add "wb_on" sysfs node to control WB
+ on/off
+From:   Bean Huo <huobean@gmail.com>
+To:     Can Guo <cang@codeaurora.org>,
+        Stanley Chu <stanley.chu@mediatek.com>
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, beanhuo@micron.com, bvanassche@acm.org,
+        tomas.winkler@intel.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 22 Dec 2020 23:11:43 +0100
+In-Reply-To: <eb4cd8f151c43e5754bb7725bce3e8ee34a49b51.camel@gmail.com>
+References: <20201215230519.15158-1-huobean@gmail.com>
+         <20201215230519.15158-2-huobean@gmail.com>
+         <1608617307.14045.3.camel@mtkswgap22>
+         <a01cdd4ff6afd2a9166741caed3c2b3d@codeaurora.org>
+         <eb4cd8f151c43e5754bb7725bce3e8ee34a49b51.camel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear RT Folks,
+On Tue, 2020-12-22 at 21:57 +0100, Bean Huo wrote:
+> > > May this operation race with UFS shutdown flow?
+> > > 
+> > > To be more clear, ufshcd_wb_ctrl() here may be executed after
+> > > host 
+> > > clock
+> > > is disabled by shutdown flow?
+> > > 
+> > > If yes, we need to avoid it.
+> > 
+> > I have the same doubt - can user still access sysfs nodes after
+> > system
+> > starts to run shutdown routines? If yes, then we need to remove all
+> > UFS
+> > sysfs nodes in ufshcd_shutdown().
+> > 
+> 
+> No, we shouldn't do in this way, user space complains this. I think
+> the nodes in the sysfs can be shileded write, but the nodes shouldn't
+> be flash of its presence frequently.
+> 
+> Thanks,
+> Bean 
+> 
+> 
+> > Thanks,
+> > 
+> > Can Guo.
 
-I'm pleased to announce rt-tests-1.10
 
-To download rt-tests:
-using git, clone one of the following
-git://git.kernel.org/pub/scm/utils/rt-tests/rt-tests.git
-https://git.kernel.org/pub/scm/utils/rt-tests/rt-tests.git
-https://kernel.googlesource.com/pub/scm/utils/rt-tests/rt-tests.git
+Hi Can
+Got your point, you don't want user space to interrupt UFS by sysyfs if
+UFS is in power down mode. if this is true, insteading of removing all
+sysfs node in ufshcd_shutdown, maybe just add this checkup before
+accessing UFS device descriptors/flag/attributes/LU:
 
-The latest tag is v1.10
-The correct branch is unstable/devel/latest
+for example, for the device descriptor:
 
-Tarballs are also available here:
-https://kernel.org/pub/linux/utils/rt-tests
 
-Older version tarballs are available here:
-https://kernel.org/pub/linux/utils/rt-tests/older
+diff --git a/drivers/scsi/ufs/ufs-sysfs.c b/drivers/scsi/ufs/ufs-
+sysfs.c       
+index b3bf7fca00e5..881fe1c24a9f 100644
+--- a/drivers/scsi/ufs/ufs-sysfs.c
++++ b/drivers/scsi/ufs/ufs-sysfs.c
+@@ -262,6 +262,9 @@ static ssize_t ufs_sysfs_read_desc_param(struct
+ufs_hba *hba,
+        u8 desc_buf[8] = {0};
+        int ret;
+ 
++       if (!ufshcd_is_ufs_dev_active(hba) ||
+!ufshcd_is_link_active(hba))
++               return -EACCES;
++
 
-Your fixes, development patches, comment and bug reports are always welcome!
+Bean
 
-Enjoy!
-
-John Kacur
-
-Anders Roxell (1):
-  Makefile: manpages: only add get_cyclictest_snapshot if PYLIB
-
-Daniel Wagner (36):
-  cyclictest: Use numa library helpers in get_available_cpus()
-  cyclicdeadline: Streamline usage output and man page
-  cyclicdeadline: Add long command line options
-  deadline_test: Streamline usage output and man page
-  oslat: Streamline usage output and man page
-  pip_stress: Add command line parser
-  pi_stress: Streamline usage output and man page
-  pmqtest: Streamline usage output and man page
-  ptsematest: Streamline usage output and man page
-  queuelat: Streamline usage and man page
-  rt-migrate-test: Streamline usage and man page
-  signaltest: Streamline usage and man page
-  sigwaittest: Streamline usage and man page
-  ssdd: Streamline usage and man page
-  svsematest: Streamline usage and man page
-  hackbench: Streamline usage and man page
-  rt-utils: Introduce parse_mem_string()
-  oslat: Use string parser utilies
-  cyclictest: Remove deadcode checking for NUMA
-  rt-numa: Introduce NUMA helpers
-  cyclictest: Use parse_cpumask() from rt-numa.h
-  oslat: Use parse_cpumask() from rt-numa.h
-  rt-numa: Move thread placement code to rt-numa library
-  signaltest: Implement thread placing
-  cyclicdeadline: Remove dead code
-  cyclicdeadline: Use common error handlers
-  cyclicdeadline: Add quiet command line option
-  pmqtest: Move statictic output into print_stat()
-  pmqtest: Add quiet command line option
-  ptsematest: Move statictic output into print_stat()
-  ptsematest: Add quiet command line option
-  svsematest: Move statictic output into print_stat()
-  svsematest: Add quiet command line option
-  sigwaittest: Move statictic output into print_stat()
-  sigwaittest: Add quiet command line option
-  rt-migrate-test: Add quiet command line option
-
-John Kacur (24):
-  rt-tests: makefile: undefine PYLIB if empty
-  rt-tests: queuelat: Remove unused variable 'index'
-  rt-tests: remove pi_tests.spec
-  rt-tests: cyclictest: A few style changes from checkpatch.pl
-  rt-tests: rt-sched.c: Style change
-  rt-tests: rt-utils.c: Correct mix of spaces and tabs in code
-    indentation
-  rt-tests: pi_stress.c: Change unsigned to unsigned int
-  rt-tests: pip_stress.c: Remove unnecessary brackets
-  rt-tests: pmqtest.c: Fix spacing around parentheses
-  rt-tests: ptsematest.c: Fix spacing around parentheses
-  rt-tests: queuelat.c: Fix various style problems
-  rt-tests: rt-migrate-test.c: Fix spacing around parentheses
-  rt-tests: cyclicdeadline.c: Fix spacing around commas
-  rt-tests: deadline_test.c: Fix spacing around commas
-  rt-tests: signaltest.c: Fix various style problems
-  rt-tests: sigwaittest.c: Fix spacing around brackets
-  rt-tests: ssdd.c: Remove unncessary "else"
-  rt-tests: svsematest.c: Fix various style problems
-  rt-tests: Don't compress man pages by default
-  rt-tests: determine_maximum_mpps.sh: Add a menu to get user settings.
-  rt-tests: queuelat: Remove get_cpuinfo_mhz.sh and old Makefile
-  rt-tests: queuelat: Add a manpage for determine_maximum_mpps.sh
-  rt-tests: determine_maximum_mpps.sh: Change the -c option to -a
-  rt-tests: Makefile - update version to v1.10
-
-Kurt Kanzenbach (4):
-  rt-tests: rt-utils: Mark internal functions static
-  rt-tests: rt-utils: Add function to close trace fds
-  rt-tests: cyclictest: Close correct trace fds
-  rt-tests: oslat: Close trace fds
-
-Peter Xu (1):
-  rt-tests: oslat: Allow build for not supported archs
-
-Sebastian Andrzej Siewior (4):
-  cyclictest: Only report the first incident
-  signaltest: Remove drunk code
-  signaltest: Don't expect trace interface at /proc
-  signaltest: Fix break value argument
-
- Makefile                               |  36 ++--
- src/cyclictest/cyclictest.c            | 276 +++++-------------------
- src/hackbench/hackbench.8              |  70 +++---
- src/hackbench/hackbench.c              | 102 +++++----
- src/include/rt-numa.h                  |  21 ++
- src/include/rt-utils.h                 |   2 +
- src/lib/rt-numa.c                      | 135 ++++++++++++
- src/lib/rt-sched.c                     |   2 +-
- src/lib/rt-utils.c                     |  60 +++++-
- src/oslat/oslat.8                      |   2 +-
- src/oslat/oslat.c                      | 210 ++++++------------
- src/pi_tests/pi_stress.8               |  79 ++++---
- src/pi_tests/pi_stress.c               | 152 +++++++------
- src/pi_tests/pi_tests.spec             |  81 -------
- src/pi_tests/pip_stress.c              |  40 +++-
- src/pmqtest/pmqtest.8                  |   8 +-
- src/pmqtest/pmqtest.c                  | 190 ++++++++--------
- src/ptsematest/ptsematest.8            |   8 +-
- src/ptsematest/ptsematest.c            | 167 ++++++++-------
- src/queuelat/Makefile                  |   9 -
- src/queuelat/determine_maximum_mpps.8  |  64 ++++++
- src/queuelat/determine_maximum_mpps.sh |  90 +++++++-
- src/queuelat/get_cpuinfo_mhz.sh        |   7 -
- src/queuelat/queuelat.8                |  41 ++--
- src/queuelat/queuelat.c                | 158 +++++++-------
- src/rt-migrate-test/rt-migrate-test.8  |  41 ++--
- src/rt-migrate-test/rt-migrate-test.c  |  92 ++++----
- src/sched_deadline/cyclicdeadline.8    |  27 +--
- src/sched_deadline/cyclicdeadline.c    | 286 +++++++++++--------------
- src/sched_deadline/deadline_test.8     |  37 ++--
- src/sched_deadline/deadline_test.c     |  72 +++----
- src/signaltest/signaltest.8            |  31 ++-
- src/signaltest/signaltest.c            | 219 ++++++++++++-------
- src/sigwaittest/sigwaittest.8          |   4 +-
- src/sigwaittest/sigwaittest.c          | 212 +++++++++---------
- src/ssdd/ssdd.8                        |  35 ++-
- src/ssdd/ssdd.c                        |  54 ++---
- src/svsematest/svsematest.8            |   9 +-
- src/svsematest/svsematest.c            | 244 ++++++++++-----------
- 39 files changed, 1747 insertions(+), 1626 deletions(-)
- create mode 100644 src/include/rt-numa.h
- create mode 100644 src/lib/rt-numa.c
- delete mode 100644 src/pi_tests/pi_tests.spec
- delete mode 100644 src/queuelat/Makefile
- create mode 100644 src/queuelat/determine_maximum_mpps.8
- delete mode 100755 src/queuelat/get_cpuinfo_mhz.sh
-
--- 
-2.26.2
 
