@@ -2,86 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F74C2E0C6C
+	by mail.lfdr.de (Postfix) with ESMTP id A82382E0C6D
 	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 16:09:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728049AbgLVPIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 10:08:36 -0500
-Received: from mail2.protonmail.ch ([185.70.40.22]:50555 "EHLO
-        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727229AbgLVPIg (ORCPT
+        id S1727891AbgLVPIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 10:08:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726920AbgLVPIs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 10:08:36 -0500
-Date:   Tue, 22 Dec 2020 15:07:43 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1608649672; bh=Qx0+gSCQI+zwlEgYtmJbydKr/M0gl5zfTxgSnTu7KjM=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=l8olzOOFqQl9PpAudL0kQlto9/wJQ3L9VKguKXGkYaEfDWjLD6fDIZuKb7U350kFv
-         pHdowhTtIOLbdW0JHiO+X4M35VvCLrYSvM5jeUaydv4TBQywZZWG2TY+QKFIxwXq7e
-         waOQLsroh4qjjR6LgXx2ytkd9qhe14JvyC+eVsYNqL5Qj6Bx8eV/lX+TKxgp5JbqyU
-         2kRlyer4REV/tAxZPd5S793BJ3wrfHAu92ExDOW3ikn6dxhp/XzSZzI3QoXsZNcFJW
-         OUw12ESRn/uDnK3d3AtJ/8g+ixZudY1oD/KkhJonL35OzTlzxcuVp477fUuXqojOII
-         xxnAezm/k28tQ==
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Rob Herring <robh@kernel.org>, Vidya Sagar <vidyas@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Alexander Lobakin <alobakin@pm.me>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH pci] PCI: dwc: fix inverted condition of DMA mask setup warning
-Message-ID: <20201222150708.67983-1-alobakin@pm.me>
+        Tue, 22 Dec 2020 10:08:48 -0500
+Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2FA8C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 07:08:08 -0800 (PST)
+Received: by mail-ua1-x933.google.com with SMTP id f16so4437802uav.12
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 07:08:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Vg4rXkTJ1RSjS9v+aXpVjxDf/4HIRC34j1tsJCwhiy0=;
+        b=EEq/OnT3s6THYE1mfOGdHX0XzUpZjLU87XJ256AUL7ssWp2wb2sMsIaLH7B8+h8Wwd
+         enqIS47nOCOHDhZX40eV9wnaBYjsWPLshftZBceKLyVTfTG4eVoILyo0N2Fh4+Ey6vO/
+         ODn+vaVqXEBho4XxnQXXbXA+KiLBSu+lht3FqsFwpQJ/gd6txg+WdVPNtfcCQaCrhkyU
+         Yz9vBgppwOVSoSGrIBuITgFlV/RT49VH8HkFZdqmY5MTVyR4aCC3KcImNdQcEOUzojYR
+         ygE9A1+NGYEDLUPBX915EnpUuk9gER/h2ZLvWVvylmK1SeNeIEOxPSPhXH2SoAKk8zXa
+         bsag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Vg4rXkTJ1RSjS9v+aXpVjxDf/4HIRC34j1tsJCwhiy0=;
+        b=hDlSswO/tr0aUaMqu9rsCXTK2+qGaUqqsItYLTEzhyk441AeBzwlKHNNP5CVFbFXGG
+         ec/wcyNkdkCtSGSlniWe9WvNyQo78YEl6YG4Px2dvLmiGd96RzXDWrdLkHP10UUxVLUN
+         7PoIG8QmckmQqbeGXPRBIc1VkTL8KeValAOHgb00vJO7WxwCXLNIYLP3u/tYs9fpjytG
+         ULws8vjevKIOVG8zRsgSk75Q3+UWDtaZ2aWjzzqeWWXs9C/bgQc3+rcgTJ0dRivRHlxc
+         sHrRMZoxnzq6lELt7WX8bkOEOCUnqMM6VB3XnX9XuQEX/cs9LRwyv29foZ22o8iR+5CC
+         n/1g==
+X-Gm-Message-State: AOAM5325V8Fbaf2y7lszayMg6fHwUPGwfAy1qbDoyoVuHOk91IWyvXQh
+        u8iUcGuWcdhfG6M688mL7YH8VE0GEvWWiOjfpXU=
+X-Google-Smtp-Source: ABdhPJz7xctMff6Y7t2PkT1UIdR/DFlB2RTAjl6gmUJvTWVB3c2qtLBZ7l29fXx5kKdM7Vs7cVMi+hNqyO3ISBvXGsY=
+X-Received: by 2002:ab0:1c0a:: with SMTP id a10mr15591875uaj.89.1608649687685;
+ Tue, 22 Dec 2020 07:08:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+References: <20201222121904.50845-1-qianjun.kernel@gmail.com>
+In-Reply-To: <20201222121904.50845-1-qianjun.kernel@gmail.com>
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+Date:   Tue, 22 Dec 2020 20:37:55 +0530
+Message-ID: <CAFqt6zbVSnHoU54ZaOEcHAEvO96h0X6wQaNrjxqgGkgmD4Vqdw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm:improve the performance during fork
+To:     qianjun.kernel@gmail.com
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 660c486590aa ("PCI: dwc: Set 32-bit DMA mask for MSI target
-address allocation") added dma_mask_set() call to explicitly set
-32-bit DMA mask for MSI message mapping, but for now it throws a
-warning on ret =3D=3D 0, while dma_set_mask() returns 0 in case of
-success.
-Fix this by inverting the condition.
+On Tue, Dec 22, 2020 at 5:49 PM <qianjun.kernel@gmail.com> wrote:
+>
+> From: jun qian <qianjun.kernel@gmail.com>
+>
+> In our project, Many business delays come from fork, so
+> we started looking for the reason why fork is time-consuming.
+> I used the ftrace with function_graph to trace the fork, found
+> that the vm_normal_page will be called tens of thousands and
+> the execution time of this vm_normal_page function is only a
+> few nanoseconds. And the vm_normal_page is not a inline function.
+> So I think if the function is inline style, it maybe reduce the
+> call time overhead.
+>
+> I did the following experiment:
+>
+> I have wrote the c test code, pls ignore the memory leak :)
+> Before fork, I will malloc 4G bytes, then acculate the fork
+> time.
+>
+> int main()
+> {
+>         char *p;
+>         unsigned long long i=0;
+>         float time_use=0;
+>         struct timeval start;
+>         struct timeval end;
+>
+>         for(i=0; i<LEN; i++) {
+>                 p = (char *)malloc(4096);
+>                 if (p == NULL) {
+>                         printf("malloc failed!\n");
+>                         return 0;
+>                 }
+>                 p[0] = 0x55;
+>         }
+>         gettimeofday(&start,NULL);
+>         fork();
+>         gettimeofday(&end,NULL);
+>
+>         time_use=(end.tv_sec * 1000000 + end.tv_usec) -
+>                 (start.tv_sec * 1000000 + start.tv_usec);
+>         printf("time_use is %.10f us\n",time_use);
+>
+>         return 0;
+> }
+>
+> We need to compare the changes in the size of vmlinux, the time of
+> fork in inline and non-inline cases, and the vm_normal_page will be
+> called in many function. So we also need to compare this function's
+> size. For examples, the do_wp_page will call vm_normal_page, so I
+> also calculated it's size.
+>
+>                   inline           non-inline       diff
+> vmlinux size      9709248 bytes    9709824 bytes    -576 bytes
+> fork time         23475ns          24638ns          -4.7%
 
-Misc: remove redundant braces around single statement.
+Do you have time diff for both parent and child process ?
 
-Fixes: 660c486590aa ("PCI: dwc: Set 32-bit DMA mask for MSI target address =
-allocation")
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- drivers/pci/controller/dwc/pcie-designware-host.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pc=
-i/controller/dwc/pcie-designware-host.c
-index 516b151e0ef3..fa40cc2e376f 100644
---- a/drivers/pci/controller/dwc/pcie-designware-host.c
-+++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-@@ -397,12 +397,11 @@ int dw_pcie_host_init(struct pcie_port *pp)
- =09=09=09=09=09=09=09    pp);
-=20
- =09=09=09ret =3D dma_set_mask(pci->dev, DMA_BIT_MASK(32));
--=09=09=09if (!ret) {
-+=09=09=09if (ret)
- =09=09=09=09dev_warn(pci->dev,
- =09=09=09=09=09 "Failed to set DMA mask to 32-bit. "
- =09=09=09=09=09 "Devices with only 32-bit MSI support"
- =09=09=09=09=09 " may not work properly\n");
--=09=09=09}
-=20
- =09=09=09pp->msi_data =3D dma_map_single_attrs(pci->dev, &pp->msi_msg,
- =09=09=09=09=09=09      sizeof(pp->msi_msg),
---=20
-2.29.2
-
-
+> do_wp_page size   972              743              +229
+>
+> According to the above test data, I think inline vm_normal_page can
+> reduce fork execution time.
+>
+> Signed-off-by: jun qian <qianjun.kernel@gmail.com>
+> ---
+>  mm/memory.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 7d608765932b..a689bb5d3842 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -591,7 +591,7 @@ static void print_bad_pte(struct vm_area_struct *vma, unsigned long addr,
+>   * PFNMAP mappings in order to support COWable mappings.
+>   *
+>   */
+> -struct page *vm_normal_page(struct vm_area_struct *vma, unsigned long addr,
+> +inline struct page *vm_normal_page(struct vm_area_struct *vma, unsigned long addr,
+>                             pte_t pte)
+>  {
+>         unsigned long pfn = pte_pfn(pte);
+> --
+> 2.18.2
+>
+>
