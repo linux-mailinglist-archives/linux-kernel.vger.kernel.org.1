@@ -2,467 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EBE32E073D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 09:35:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D245E2E0743
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 09:37:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726048AbgLVIel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 03:34:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725818AbgLVIek (ORCPT
+        id S1726204AbgLVIg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 03:36:59 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:36459 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725841AbgLVIg6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 03:34:40 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5959EC0613D3;
-        Tue, 22 Dec 2020 00:34:00 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C110F2CF;
-        Tue, 22 Dec 2020 09:33:58 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1608626039;
-        bh=N6SNCviXCYtZ4fHvegUiHGuo3KWavcLigo46YbJvDEM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ip/GsHJy7qm4UvzZZ+6GZLx1F2oQW8iKC+7LGNRZ9ifl0YJesE7Yoi9uwwnvWJVEw
-         ADjJv7jnUVInV6RmEvvuFem/+p+Kr3i5UeO7HKgoZCEViCFQCODiZRkRS29+Xd4Y47
-         L5xf6ZijChr8eeEdJqPcf03ROD6zTOOg19gfFXnU=
-Date:   Tue, 22 Dec 2020 10:33:50 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 07/12] media: uvcvideo: Implement UVC_EXT_GPIO_UNIT
-Message-ID: <X+GvbpC0vhitCHRo@pendragon.ideasonboard.com>
-References: <20201221164819.792019-1-ribalda@chromium.org>
- <20201221164819.792019-8-ribalda@chromium.org>
+        Tue, 22 Dec 2020 03:36:58 -0500
+Received: by mail-il1-f197.google.com with SMTP id z15so11223235ilb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 00:36:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=hbIYI2nNfJN0lgT9jqFdKDFFA7rUxry5dC2vCJ5BxXw=;
+        b=HLFlFV5nl4BoJivSWSQJ+8piYorq69228q28hL8ZdDcrZU+O8aOWeh8wZgrwbWWdgC
+         IUMEDqFe76XFgVuzc0OqsRgRXBDPB9zVzQcfHUxVq0xYk/0Ad+gU1S+I+b2dcDuuAmns
+         W6GsqCZrd+zBnM4fArHDvd1K5AJgWFBG7VSlO3cq2TwHQmZA2pwsaXWKBexR3yaUVrPC
+         kCBhXHn8Mtn7p0LEPqXof86S3X9EZ5YrkMGhTYNeJGuCJasLTbffm86jqqI6VbqulNiE
+         FeaSATBU5xs3u6lG/v2OFKczb+Ude+1TqHGPRpa4G6OOMKKH4RaGYpLf28ob/2GZ+Wxy
+         j9cA==
+X-Gm-Message-State: AOAM532y8q0FAC59nwqQZHwtn5eyU70KrKCyvBWWFHIWzIK7s5qW1Qxb
+        2JhsO73z+z9FSebrtXRzSEOKGXX0nR5bgn5itPjLusRszFzE
+X-Google-Smtp-Source: ABdhPJy9/gcTlDyiLUB3PnVSzz+gaZzjAIu3HCANs889rw+mhD89BT2CU12Z0k0Pqkxz+skRj5OGiblKY/H7djo88Iho4H9rg/9J
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201221164819.792019-8-ribalda@chromium.org>
+X-Received: by 2002:a6b:5006:: with SMTP id e6mr17160983iob.79.1608626176796;
+ Tue, 22 Dec 2020 00:36:16 -0800 (PST)
+Date:   Tue, 22 Dec 2020 00:36:16 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d82efe05b70977e2@google.com>
+Subject: general protection fault in find_match (2)
+From:   syzbot <syzbot+b08cdcfff539328e6c32@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        kuba@kernel.org, kuznet@ms2.inr.ac.ru,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricardo,
+Hello,
 
-Thank you for the patch.
+syzbot found the following issue on:
 
-On Mon, Dec 21, 2020 at 05:48:14PM +0100, Ricardo Ribalda wrote:
-> Some devices can implement a physical switch to disable the input of the
-> camera on demand. Think of it like an elegant privacy sticker.
-> 
-> The system can read the status of the privacy switch via a GPIO.
-> 
-> It is important to know the status of the switch, e.g. to notify the
-> user when the camera will produce black frames and a videochat
-> application is used.
-> 
-> In some systems, the GPIO is connected to main SoC instead of the
-> camera controller, with the connected reported by the system firmware
+HEAD commit:    3db1a3fa Merge tag 'staging-5.11-rc1' of git://git.kernel...
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1103eadf500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2764fc28a92339f9
+dashboard link: https://syzkaller.appspot.com/bug?extid=b08cdcfff539328e6c32
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-s/connected/connection/
+Unfortunately, I don't have any reproducer for this issue yet.
 
-> (ACPI or DT). In that case, the UVC device isn't aware of the GPIO. We
-> need to implement a virtual entity to handle the GPIO fully on the
-> driver side.
-> 
-> For example, for ACPI-based systems, the GPIO is reported in the USB
-> device object:
-> 
->   Scope (\_SB.PCI0.XHCI.RHUB.HS07)
->   {
-> 
-> 	  /.../
-> 
->     Name (_CRS, ResourceTemplate ()  // _CRS: Current Resource Settings
->     {
->         GpioIo (Exclusive, PullDefault, 0x0000, 0x0000, IoRestrictionOutputOnly,
->             "\\_SB.PCI0.GPIO", 0x00, ResourceConsumer, ,
->             )
->             {   // Pin list
->                 0x0064
->             }
->     })
->     Name (_DSD, Package (0x02)  // _DSD: Device-Specific Data
->     {
->         ToUUID ("daffd814-6eba-4d8c-8a91-bc9bbf4aa301") /* Device Properties for _DSD */,
->         Package (0x01)
->         {
->             Package (0x02)
->             {
->                 "privacy-gpio",
->                 Package (0x04)
->                 {
->                     \_SB.PCI0.XHCI.RHUB.HS07,
->                     Zero,
->                     Zero,
->                     One
->                 }
->             }
->         }
->     })
->   }
-> 
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> ---
->  drivers/media/usb/uvc/uvc_ctrl.c   |   7 ++
->  drivers/media/usb/uvc/uvc_driver.c | 156 +++++++++++++++++++++++++++++
->  drivers/media/usb/uvc/uvc_entity.c |   1 +
->  drivers/media/usb/uvc/uvcvideo.h   |  16 +++
->  4 files changed, 180 insertions(+)
-> 
-> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
-> index 528254230535..a430fa666897 100644
-> --- a/drivers/media/usb/uvc/uvc_ctrl.c
-> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
-> @@ -1300,6 +1300,10 @@ static void __uvc_ctrl_status_event_work(struct uvc_device *dev,
->  
->  	mutex_unlock(&chain->ctrl_mutex);
->  
-> +	/* Events not started by the UVC device. E.g. the GPIO unit */
-> +	if (!w->urb)
-> +		return;
-> +
->  	/* Resubmit the URB. */
->  	w->urb->interval = dev->int_ep->desc.bInterval;
->  	ret = usb_submit_urb(w->urb, GFP_KERNEL);
-> @@ -2317,6 +2321,9 @@ int uvc_ctrl_init_device(struct uvc_device *dev)
->  		} else if (UVC_ENTITY_TYPE(entity) == UVC_ITT_CAMERA) {
->  			bmControls = entity->camera.bmControls;
->  			bControlSize = entity->camera.bControlSize;
-> +		} else if (UVC_ENTITY_TYPE(entity) == UVC_EXT_GPIO_UNIT) {
-> +			bmControls = entity->gpio.bmControls;
-> +			bControlSize = entity->gpio.bControlSize;
->  		}
->  
->  		/* Remove bogus/blacklisted controls */
-> diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-> index c0c5f75ade40..72516101fdd0 100644
-> --- a/drivers/media/usb/uvc/uvc_driver.c
-> +++ b/drivers/media/usb/uvc/uvc_driver.c
-> @@ -7,6 +7,7 @@
->   */
->  
->  #include <linux/atomic.h>
-> +#include <linux/gpio/consumer.h>
->  #include <linux/kernel.h>
->  #include <linux/list.h>
->  #include <linux/module.h>
-> @@ -1020,6 +1021,7 @@ static int uvc_parse_streaming(struct uvc_device *dev,
->  }
->  
->  static const u8 uvc_camera_guid[16] = UVC_GUID_UVC_CAMERA;
-> +static const u8 uvc_gpio_guid[16] = UVC_GUID_EXT_GPIO_CONTROLLER;
->  static const u8 uvc_media_transport_input_guid[16] =
->  	UVC_GUID_UVC_MEDIA_TRANSPORT_INPUT;
->  static const u8 uvc_processing_guid[16] = UVC_GUID_UVC_PROCESSING;
-> @@ -1051,6 +1053,9 @@ static struct uvc_entity *uvc_alloc_entity(u16 type, u16 id,
->  	 * is initialized by the caller.
->  	 */
->  	switch (type) {
-> +	case UVC_EXT_GPIO_UNIT:
-> +		memcpy(entity->guid, uvc_gpio_guid, 16);
-> +		break;
->  	case UVC_ITT_CAMERA:
->  		memcpy(entity->guid, uvc_camera_guid, 16);
->  		break;
-> @@ -1464,6 +1469,137 @@ static int uvc_parse_control(struct uvc_device *dev)
->  	return 0;
->  }
->  
-> +/* -----------------------------------------------------------------------------
-> + * Privacy GPIO
-> + */
-> +
-> +
-> +static u8 uvc_gpio_update_value(struct uvc_device *dev,
-> +				struct uvc_entity *unit)
-> +{
-> +	struct uvc_video_chain *chain;
-> +	u8 gpio_val, old_val, new_val;
-> +
-> +	gpio_val = new_val = gpiod_get_value_cansleep(unit->gpio.gpio_privacy);
-> +
-> +	old_val = atomic_xchg(&unit->gpio.gpio_privacy_value, gpio_val);
-> +	if (new_val == old_val)
-> +		return new_val;
-> +
-> +	/* GPIO entities are always on the first chain. */
-> +	chain = list_first_entry(&dev->chains, struct uvc_video_chain, list);
-> +	uvc_ctrl_status_event(NULL, chain, unit->controls, &new_val);
-> +
-> +	return new_val;
-> +}
-> +
-> +static int uvc_gpio_get_cur(struct uvc_device *dev, struct uvc_entity *entity,
-> +			    u8 cs, void *data, u16 size)
-> +{
-> +	if (cs != UVC_CT_PRIVACY_CONTROL || size < 1)
-> +		return -EINVAL;
-> +
-> +	*(uint8_t *)data = uvc_gpio_update_value(dev, entity);
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b08cdcfff539328e6c32@syzkaller.appspotmail.com
 
-s/uint8_t/u8/
+general protection fault, probably for non-canonical address 0xdffffc000000004b: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000258-0x000000000000025f]
+CPU: 1 PID: 13682 Comm: syz-executor.5 Not tainted 5.10.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:ip6_ignore_linkdown include/net/addrconf.h:407 [inline]
+RIP: 0010:find_match.part.0+0xcc/0xc70 net/ipv6/route.c:753
+Code: f9 0f b6 45 c0 84 c0 0f 84 39 04 00 00 e8 ec a0 c4 f9 49 8d bf 5c 02 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 91
+RSP: 0018:ffffc900022cf000 EFLAGS: 00010207
+RAX: dffffc0000000000 RBX: ffff88801c2cc2a0 RCX: ffffc90013d33000
+RDX: 000000000000004b RSI: ffffffff87abfc74 RDI: 000000000000025c
+RBP: ffffc900022cf070 R08: 0000000000000001 R09: ffffc900022cf250
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000003
+R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000000
+FS:  00007f94614f2700(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f75a1fccdb8 CR3: 000000002d8c6000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ find_match net/ipv6/route.c:840 [inline]
+ __find_rr_leaf+0x17f/0xd10 net/ipv6/route.c:841
+ find_rr_leaf net/ipv6/route.c:862 [inline]
+ rt6_select net/ipv6/route.c:906 [inline]
+ fib6_table_lookup+0x5b3/0xa20 net/ipv6/route.c:2193
+ ip6_pol_route+0x1e1/0x11c0 net/ipv6/route.c:2229
+ pol_lookup_func include/net/ip6_fib.h:583 [inline]
+ fib6_rule_lookup+0x111/0x6f0 net/ipv6/fib6_rules.c:115
+ ip6_route_output_flags_noref+0x2c2/0x360 net/ipv6/route.c:2510
+ ip6_route_output_flags+0x8b/0x310 net/ipv6/route.c:2523
+ ip6_route_output include/net/ip6_route.h:98 [inline]
+ ip6_dst_lookup_tail+0xb3a/0x1700 net/ipv6/ip6_output.c:1024
+ ip6_dst_lookup_flow+0x8c/0x1d0 net/ipv6/ip6_output.c:1154
+ ip6_sk_dst_lookup_flow+0x55c/0x990 net/ipv6/ip6_output.c:1192
+ udpv6_sendmsg+0x18a5/0x2bd0 net/ipv6/udp.c:1508
+ inet6_sendmsg+0x99/0xe0 net/ipv6/af_inet6.c:638
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:672
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2336
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2390
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2423
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45e149
+Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f94614f1c68 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045e149
+RDX: 0000000000000000 RSI: 0000000020000040 RDI: 0000000000000005
+RBP: 000000000119bfc0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000119bf8c
+R13: 00007ffd9413345f R14: 00007f94614f29c0 R15: 000000000119bf8c
+Modules linked in:
+---[ end trace a9799337710952e8 ]---
+RIP: 0010:ip6_ignore_linkdown include/net/addrconf.h:407 [inline]
+RIP: 0010:find_match.part.0+0xcc/0xc70 net/ipv6/route.c:753
+Code: f9 0f b6 45 c0 84 c0 0f 84 39 04 00 00 e8 ec a0 c4 f9 49 8d bf 5c 02 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 91
+RSP: 0018:ffffc900022cf000 EFLAGS: 00010207
+RAX: dffffc0000000000 RBX: ffff88801c2cc2a0 RCX: ffffc90013d33000
+RDX: 000000000000004b RSI: ffffffff87abfc74 RDI: 000000000000025c
+RBP: ffffc900022cf070 R08: 0000000000000001 R09: ffffc900022cf250
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000003
+R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000000
+FS:  00007f94614f2700(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 000000002d8c6000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-Do we really need to generate an event when the GPIO is read, if there's
-no IRQ support ?
 
-> +	return 0;
-> +}
-> +
-> +static int uvc_gpio_get_info(struct uvc_device *dev, struct uvc_entity *entity,
-> +			     u8 cs, u8 *caps)
-> +{
-> +	if (cs != UVC_CT_PRIVACY_CONTROL)
-> +		return -EINVAL;
-> +
-> +	*caps = UVC_CONTROL_CAP_GET | UVC_CONTROL_CAP_AUTOUPDATE;
-> +	return 0;
-> +}
-> +
-> +static struct uvc_entity *uvc_gpio_find_entity(struct uvc_device *dev)
-> +{
-> +	struct uvc_video_chain *chain;
-> +	struct uvc_entity *unit;
-> +
-> +	/* GPIO entities are always on the first chain. */
-> +	chain = list_first_entry(&dev->chains, struct uvc_video_chain, list);
-> +	list_for_each_entry(unit, &chain->entities, chain) {
-> +		if (UVC_ENTITY_TYPE(unit) == UVC_EXT_GPIO_UNIT)
-> +			return unit;
-> +	}
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-As there can only be a single GPIO entity, would it make sense to store
-a pointer to it in struct uvc_device to avoid walking the chain every
-time ?
-
-> +
-> +	return NULL;
-> +}
-> +
-> +static irqreturn_t uvc_gpio_irq(int irq, void *data)
-> +{
-> +	struct uvc_device *dev = data;
-> +	struct uvc_entity *unit;
-> +
-> +	unit = uvc_gpio_find_entity(dev);
-> +	if (!unit)
-> +		return IRQ_HANDLED;
-> +
-> +	uvc_gpio_update_value(dev, unit);
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static int uvc_gpio_parse(struct uvc_device *dev)
-> +{
-> +	struct uvc_entity *unit;
-> +	struct gpio_desc *gpio_privacy;
-> +	int irq;
-> +
-> +	gpio_privacy = devm_gpiod_get_optional(&dev->udev->dev, "privacy",
-> +					       GPIOD_IN);
-> +	if (IS_ERR_OR_NULL(gpio_privacy))
-> +		return PTR_ERR_OR_ZERO(gpio_privacy);
-> +
-> +	unit = uvc_alloc_entity(UVC_EXT_GPIO_UNIT, UVC_EXT_GPIO_UNIT_ID, 0, 1);
-> +	if (!unit)
-> +		return -ENOMEM;
-> +
-> +	irq = gpiod_to_irq(gpio_privacy);
-> +	if (irq == -EPROBE_DEFER)
-> +		return -EPROBE_DEFER;
-> +
-> +	if (irq < 0)
-> +		dev_warn(&dev->udev->dev,
-> +		       "Unable to find privacy_gpio: %d\n", irq);
-
-That's not right, the GPIO is found, it's only the IRQ that is
-unsupported.
-
-		dev_warn(&dev->udev->dev,
-			 "No IRQ for privacy GPIO (%d)\n", irq);
-
-> +
-> +	atomic_set(&unit->gpio.gpio_privacy_value, -1);
-> +	unit->gpio.gpio_privacy = gpio_privacy;
-> +	unit->gpio.irq = irq;
-> +	unit->gpio.bControlSize = 1;
-> +	unit->gpio.bmControls = (u8 *)unit + sizeof(*unit);
-> +	unit->gpio.bmControls[0] = 1;
-> +	unit->get_cur = uvc_gpio_get_cur;
-> +	unit->get_info = uvc_gpio_get_info;
-> +
-> +	sprintf(unit->name, "GPIO");
-
-strncpy() would be simpler.
-
-> +
-> +	list_add_tail(&unit->list, &dev->entities);
-> +
-> +	return 0;
-> +}
-> +
-> +static int uvc_gpio_init_irq(struct uvc_device *dev)
-> +{
-> +	int ret;
-> +	struct uvc_entity *unit;
-
-Could you please swap those two lines ?
-
-> +
-> +	unit = uvc_gpio_find_entity(dev);
-> +	if (!unit)
-> +		return 0;
-> +
-> +	if (unit->gpio.irq < 0)
-> +		return 0;
-> +
-> +	ret = devm_request_threaded_irq(&dev->udev->dev, unit->gpio.irq, NULL,
-> +					uvc_gpio_irq,
-> +					IRQF_ONESHOT | IRQF_TRIGGER_FALLING |
-> +					 IRQF_TRIGGER_RISING,
-
-Extra space in the indentation.
-
-> +					"uvc_privacy_gpio", dev);
-> +	return ret;
-
-No need for a ret variable, you can write
-
-	return devm_request_threaded_irq(...);
-
-(unless you want to move the error message here, see below).
-
-> +}
-> +
->  /* ------------------------------------------------------------------------
->   * UVC device scan
->   */
-> @@ -1915,6 +2051,7 @@ static int uvc_scan_device(struct uvc_device *dev)
->  {
->  	struct uvc_video_chain *chain;
->  	struct uvc_entity *term;
-> +	struct uvc_entity *unit;
->  
->  	list_for_each_entry(term, &dev->entities, list) {
->  		if (!UVC_ENTITY_IS_OTERM(term))
-> @@ -1953,6 +2090,13 @@ static int uvc_scan_device(struct uvc_device *dev)
->  		return -1;
->  	}
->  
-> +	/* Add GPIO entities to the first chain. */
-> +	chain = list_first_entry(&dev->chains, struct uvc_video_chain, list);
-> +	list_for_each_entry(unit, &dev->entities, list) {
-> +		if (UVC_ENTITY_TYPE(unit) == UVC_EXT_GPIO_UNIT)
-> +			list_add_tail(&unit->chain, &chain->entities);
-> +	}
-> +
->  	return 0;
->  }
->  
-> @@ -2285,6 +2429,12 @@ static int uvc_probe(struct usb_interface *intf,
->  		goto error;
->  	}
->  
-> +	/* Parse the associated GPIOs. */
-> +	if (uvc_gpio_parse(dev) < 0) {
-> +		uvc_trace(UVC_TRACE_PROBE, "Unable to parse UVC GPIOs\n");
-> +		goto error;
-> +	}
-> +
->  	uvc_printk(KERN_INFO, "Found UVC %u.%02x device %s (%04x:%04x)\n",
->  		dev->uvc_version >> 8, dev->uvc_version & 0xff,
->  		udev->product ? udev->product : "<unnamed>",
-> @@ -2329,6 +2479,12 @@ static int uvc_probe(struct usb_interface *intf,
->  			"supported.\n", ret);
->  	}
->  
-> +	ret = uvc_gpio_init_irq(dev);
-> +	if (ret < 0)
-> +		dev_warn(&dev->udev->dev,
-> +			 "Unable to request uvc_privacy_gpio irq %d. Continuing wihtout privacy events\n",
-
-s/uvc_privacy_gpio irq/privacy GPIO IRQ/ ?
-
-> +			 ret);
-
-This could be moved to uvc_gpio_init_irq(), up to you.
-
-> +
->  	uvc_trace(UVC_TRACE_PROBE, "UVC device initialized.\n");
->  	usb_enable_autosuspend(udev);
->  	return 0;
-> diff --git a/drivers/media/usb/uvc/uvc_entity.c b/drivers/media/usb/uvc/uvc_entity.c
-> index ca3a9c2eec27..6a9ba5b498db 100644
-> --- a/drivers/media/usb/uvc/uvc_entity.c
-> +++ b/drivers/media/usb/uvc/uvc_entity.c
-> @@ -105,6 +105,7 @@ static int uvc_mc_init_entity(struct uvc_video_chain *chain,
->  		case UVC_OTT_DISPLAY:
->  		case UVC_OTT_MEDIA_TRANSPORT_OUTPUT:
->  		case UVC_EXTERNAL_VENDOR_SPECIFIC:
-> +		case UVC_EXT_GPIO_UNIT:
->  		default:
->  			function = MEDIA_ENT_F_V4L2_SUBDEV_UNKNOWN;
->  			break;
-> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> index 6edbf79b2ff1..079a407ebba5 100644
-> --- a/drivers/media/usb/uvc/uvcvideo.h
-> +++ b/drivers/media/usb/uvc/uvcvideo.h
-> @@ -6,6 +6,7 @@
->  #error "The uvcvideo.h header is deprecated, use linux/uvcvideo.h instead."
->  #endif /* __KERNEL__ */
->  
-> +#include <linux/atomic.h>
->  #include <linux/kernel.h>
->  #include <linux/poll.h>
->  #include <linux/usb.h>
-> @@ -37,6 +38,8 @@
->  	(UVC_ENTITY_IS_TERM(entity) && \
->  	((entity)->type & 0x8000) == UVC_TERM_OUTPUT)
->  
-> +#define UVC_EXT_GPIO_UNIT		0x7ffe
-> +#define UVC_EXT_GPIO_UNIT_ID		0x100
->  
->  /* ------------------------------------------------------------------------
->   * GUIDs
-> @@ -56,6 +59,9 @@
->  #define UVC_GUID_UVC_SELECTOR \
->  	{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, \
->  	 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x02}
-> +#define UVC_GUID_EXT_GPIO_CONTROLLER \
-> +	{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, \
-> +	 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x03}
->  
->  #define UVC_GUID_FORMAT_MJPEG \
->  	{ 'M',  'J',  'P',  'G', 0x00, 0x00, 0x10, 0x00, \
-> @@ -278,6 +284,8 @@ struct uvc_format_desc {
->  	u32 fcc;
->  };
->  
-> +struct gpio_desc;
-> +
-
-This could be moved a bit up, with the other forward declaration.
-
->  /* The term 'entity' refers to both UVC units and UVC terminals.
->   *
->   * The type field is either the terminal type (wTerminalType in the terminal
-> @@ -353,6 +361,14 @@ struct uvc_entity {
->  			u8  *bmControls;
->  			u8  *bmControlsType;
->  		} extension;
-> +
-> +		struct {
-> +			u8  bControlSize;
-> +			u8  *bmControls;
-> +			struct gpio_desc *gpio_privacy;
-> +			int irq;
-> +			atomic_t gpio_privacy_value;
-> +		} gpio;
->  	};
->  
->  	u8 bNrInPins;
-
--- 
-Regards,
-
-Laurent Pinchart
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
