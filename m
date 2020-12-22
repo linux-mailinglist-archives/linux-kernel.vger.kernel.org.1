@@ -2,267 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEABD2E0F76
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 21:40:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F9EF2E0F77
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 21:42:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727711AbgLVUjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 15:39:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40162 "EHLO
+        id S1727404AbgLVUkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 15:40:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727543AbgLVUju (ORCPT
+        with ESMTP id S1725913AbgLVUkn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 15:39:50 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC18C061282
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 12:38:45 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id y5so13162634iow.5
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 12:38:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Fs0wEultW9zvQel3qPl1so7Ch2WK22A6xYiOBL0kebU=;
-        b=GUOqVK2GKM6L9XvTXPd7UsU0AbRN112EvkhpERSk2KvSH+z0D2y7907p5uVvtTM4rh
-         yI2X+on0CziqmK9VkqSViFaFIKnhQOxKrkOMqtCvxOPpXA/iBeIll/+rPH3uKhVgOBlf
-         sjPryZ/C8wbToLv++MkCvvaTCRbKEneiuv3ug=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Fs0wEultW9zvQel3qPl1so7Ch2WK22A6xYiOBL0kebU=;
-        b=ll/Vb9cg3/RXq0gQx6Z1Husang5dkpYcFA+aRiXSjzatxzGZzUycra8XRHr+VhUf3f
-         BDMrXB9jsVl0Ccl/XGuUBWpcmUzDt5iUd4gBEG/eSgPhluRdcMD6EVIgpt7KtBbcgxIY
-         w+i4yj2qHsnPPTZwB0EdzRXRWoLT6NAWn09IPgvDkNIAN99HvMagJhF/0qv0RncPbogT
-         xYWhG8IpSSglhe4Bog8BO1fjMChodgwOYOGjYMnzfe5n26ny1bSVuh/yqZ21+3qLIQja
-         oPeFA4DnvpU9KKmY6IVgQRDFXyaBGMIZk4z5nY/HkCSqQzTR4Dxvx2umS5HuwWKNrb+/
-         0lbA==
-X-Gm-Message-State: AOAM532Y1LJNpopVuvoUJRJ8unPDtMuv+pEV7CcmGipeWsHx6uqQvq4n
-        yhiiAZPkjHW9WxO4f6sIwwZ1sZdm7aUQfddR/SVnIg==
-X-Google-Smtp-Source: ABdhPJzMylCygG0mT+xBD9KIIZ7/ktY12ovO2dEqB0OjSTEhRCtOO7W0DfI7euAu+vePQeRCdYi8drbee8x4VrzK6LI=
-X-Received: by 2002:a05:6638:1a:: with SMTP id z26mr20379959jao.52.1608669524643;
- Tue, 22 Dec 2020 12:38:44 -0800 (PST)
+        Tue, 22 Dec 2020 15:40:43 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D45C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 12:40:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=tQUpm8etH6snW7WfiSHzS0QYahDTXLO8tTkPD0yqoA8=; b=RpxeFr5fCcqPuMAQnJ1AEpis3c
+        Uo7BAVoGmBcllP1SzDaJt6IpQzBa50AB2BJUy/57FHoKe40nvWd7Eiez9vC08NqKSGVysAlUjQqeA
+        PWZ3ZDu/VmIgOH1UfqcyvulBLhOFFz8mrjEK/yn7zfNazRKBHI5wCSAUUKkUl5OuUu97mUWfY+/XM
+        lTuZpDKvGHcStdHGo+Goe2aZOn6MVKbo5QGPJ3JYMPlBZAblLMy2ueCEiKmuPs8yKlSAsAW/Owfta
+        NTBwAESFvYGFnah3R0YUCYJ7FZcQyHsxLjEcGk74T5ildogQJqXdJ2nT6pcHCqfMJSLJyoB4PkzNM
+        0GjR/e4A==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kroRs-0004Sj-Bf; Tue, 22 Dec 2020 20:40:00 +0000
+Date:   Tue, 22 Dec 2020 20:40:00 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Souptick Joarder <jrdr.linux@gmail.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Alex Shi <alex.shi@linux.alibaba.com>
+Subject: Re: [PATCH] mm: add prototype for __add_to_page_cache_locked()
+Message-ID: <20201222204000.GN874@casper.infradead.org>
+References: <1608646792-29073-1-git-send-email-jrdr.linux@gmail.com>
 MIME-Version: 1.0
-References: <e8b03cbc-c120-43d5-168c-cde5b6a97af8@fb.com> <CAEf4BzYz9Yf9abPBtP+swCuqvvhL0cbbbF1x-3stg9mp=a6+-A@mail.gmail.com>
- <194b5a6e6e30574a035a3e3baa98d7fde7f91f1c.camel@chromium.org>
- <CAADnVQK6GjmL19zQykYbh=THM9ktQUzfnwF_FfhUKimCxDnnkQ@mail.gmail.com>
- <CABRcYm+zjC-WH2gxtfEX5S6mZj-5_ByAzVd5zi3aRmQv-asYqg@mail.gmail.com>
- <221fb873-80fc-5407-965e-b075c964fa13@fb.com> <CABRcYmLL=SUsPS6qWVgTyYJ26r-QtECfeTZXkXSp7iRBDZRbZA@mail.gmail.com>
- <d29c2ed6-d99c-9d28-e6ea-d79ffd4d7e65@fb.com> <20201218032009.ycmyqn2kjs3ynfbp@ast-mbp>
- <CAEf4BzZagDk=HZMqnX_Vvm0Nf+YxjxYARan2hUWy5tyt7qCrFA@mail.gmail.com>
- <20201218203655.clqyeeamwicvej5z@ast-mbp> <CAEf4BzZ7Pk677ZjUprRpsKzF3epBvouogxMU7YKN9i5pH2zQRg@mail.gmail.com>
-In-Reply-To: <CAEf4BzZ7Pk677ZjUprRpsKzF3epBvouogxMU7YKN9i5pH2zQRg@mail.gmail.com>
-From:   Florent Revest <revest@chromium.org>
-Date:   Tue, 22 Dec 2020 21:38:33 +0100
-Message-ID: <CABRcYm+9j=bHW-bbLXnhRfNAApZJwt2tPRksCyyek5gVL2vrpg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@chromium.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1608646792-29073-1-git-send-email-jrdr.linux@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 9:47 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Fri, Dec 18, 2020 at 12:36 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Fri, Dec 18, 2020 at 10:53:57AM -0800, Andrii Nakryiko wrote:
-> > > On Thu, Dec 17, 2020 at 7:20 PM Alexei Starovoitov
-> > > <alexei.starovoitov@gmail.com> wrote:
-> > > >
-> > > > On Thu, Dec 17, 2020 at 09:26:09AM -0800, Yonghong Song wrote:
-> > > > >
-> > > > >
-> > > > > On 12/17/20 7:31 AM, Florent Revest wrote:
-> > > > > > On Mon, Dec 14, 2020 at 7:47 AM Yonghong Song <yhs@fb.com> wrote:
-> > > > > > > On 12/11/20 6:40 AM, Florent Revest wrote:
-> > > > > > > > On Wed, Dec 2, 2020 at 10:18 PM Alexei Starovoitov
-> > > > > > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > > > > > > I still think that adopting printk/vsnprintf for this instead of
-> > > > > > > > > reinventing the wheel
-> > > > > > > > > is more flexible and easier to maintain long term.
-> > > > > > > > > Almost the same layout can be done with vsnprintf
-> > > > > > > > > with exception of \0 char.
-> > > > > > > > > More meaningful names, etc.
-> > > > > > > > > See Documentation/core-api/printk-formats.rst
-> > > > > > > >
-> > > > > > > > I agree this would be nice. I finally got a bit of time to experiment
-> > > > > > > > with this and I noticed a few things:
-> > > > > > > >
-> > > > > > > > First of all, because helpers only have 5 arguments, if we use two for
-> > > > > > > > the output buffer and its size and two for the format string and its
-> > > > > > > > size, we are only left with one argument for a modifier. This is still
-> > > > > > > > enough for our usecase (where we'd only use "%ps" for example) but it
-> > > > > > > > does not strictly-speaking allow for the same layout that Andrii
-> > > > > > > > proposed.
-> > > > > > >
-> > > > > > > See helper bpf_seq_printf. It packs all arguments for format string and
-> > > > > > > puts them into an array. bpf_seq_printf will unpack them as it parsed
-> > > > > > > through the format string. So it should be doable to have more than
-> > > > > > > "%ps" in format string.
-> > > > > >
-> > > > > > This could be a nice trick, thank you for the suggestion Yonghong :)
-> > > > > >
-> > > > > > My understanding is that this would also require two extra args (one
-> > > > > > for the array of arguments and one for the size of this array) so it
-> > > > > > would still not fit the 5 arguments limit I described in my previous
-> > > > > > email.
-> > > > > > eg: this would not be possible:
-> > > > > > long bpf_snprintf(const char *out, u32 out_size,
-> > > > > >                    const char *fmt, u32 fmt_size,
-> > > > > >                   const void *data, u32 data_len)
-> > > > >
-> > > > > Right. bpf allows only up to 5 parameters.
-> > > > > >
-> > > > > > Would you then suggest that we also put the format string and its
-> > > > > > length in the first and second cells of this array and have something
-> > > > > > along the line of:
-> > > > > > long bpf_snprintf(const char *out, u32 out_size,
-> > > > > >                    const void *args, u32 args_len) ?
-> > > > > > This seems like a fairly opaque signature to me and harder to verify.
-> > > > >
-> > > > > One way is to define an explicit type for args, something like
-> > > > >    struct bpf_fmt_str_data {
-> > > > >       char *fmt;
-> > > > >       u64 fmt_len;
-> > > > >       u64 data[];
-> > > > >    };
-> > > >
-> > > > that feels a bit convoluted.
-> > > >
-> > > > The reason I feel unease with the helper as was originally proposed
-> > > > and with Andrii's proposal is all the extra strlen and strcpy that
-> > > > needs to be done. In the helper we have to call kallsyms_lookup()
+On Tue, Dec 22, 2020 at 07:49:52PM +0530, Souptick Joarder wrote:
+> Otherwise it cause gcc warning:
+>           ^~~~~~~~~~~~~~~
 
-Note that vsprintf itself calls  __sprint_symbol which does the same
-thing as my helper (a kallsyms_lookup followed by a strcpy and a
-strlen)
+That line is just confusing.
 
-> > > > which is ok interface for what it was desinged to do,
-> > > > but it's awkward to use to construct new string ("%s [%s]", sym, modname)
-> > > > or to send two strings into a ring buffer.
-> > > > Andrii's zero separator idea will simplify bpf prog, but user space
-> > > > would need to do strlen anyway if it needs to pretty print.
-> > > > If we take pain on converting addr to sym+modname let's figure out
-> > > > how to make it easy for the bpf prog to do and easy for user space to consume.
-> > > > That's why I proposed snprintf.
+> ../mm/filemap.c:830:14: warning: no previous prototype for
+> ‘__add_to_page_cache_locked’ [-Wmissing-prototypes]
+>  noinline int __add_to_page_cache_locked(struct page *page,
+>               ^~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Both solutions are fine with us but I feel that the snprintf would be
-generally more helpful for BPF.
+And I don't think those two lines add much value, do you?
 
-> > >
-> > > I have nothing against snprintf support for symbols. But
-> > > bpf_ksym_resolve() solves only a partially overlapping problem, so
-> > > deserves to be added in addition to snprintf support. With snprintf,
-> > > it will be hard to avoid two lookups of the same symbol to print "%s
-> > > [%s]" form, so there is a performance loss, which is probably bigger
-> > > than a simple search for a zero-byte.
-> >
-> > I suspect we're not on the same page in terms of what printf can do.
-> > See Documentation/core-api/printk-formats.rst and lib/vsprintf.c:symbol_string()
-> > It's exactly one lookup in sprintf implementation.
-> > bpf_snprintf(buf, "%ps", addr) would be equivalent to
-> > {
-> >   ksym_resolve(sym, modname, addr, SYM | MOD);
-> >   printf("%s [%s]", sym, modname);
-> > }
->
-> Ah, I missed that we'll have a single specifier for "%s [%s]" format.
-> My assumption was that we have one for symbol name only and another
-> for symbol module. Yeah, then it's fine from the performance
-> perspective.
->
-> >
-> > > But bpf_ksym_resolve() can be
-> > > used flexibly. You can either do two separate bpf_ksym_resolve() calls
-> > > to get symbol name (and its length) and symbol's module (and its
-> > > length), if you need to process it programmatically in BPF program. Or
-> > > you can bundle it together and let user-space process it. User-space
-> > > will need to copy data anyways because it can't stay in
-> > > perfbuf/ringbuf for long. So scanning for zero delimiters will be
-> > > negligible, it will just bring data into cache. All I'm saying is that
-> > > ksym_resolve() gives flexibility which snprintf can't provide.
-> >
-> > Well, with snprintf there will be no way to print mod symbol
-> > without modname, but imo it's a good thing.
-> > What is the use case for getting mod symbol without modname?
->
-> For easier post-processing on the user side. Instead of parsing
-> "vmlinux_symbol" or "module_symbol [module_name]" (two non-uniform
-> variants already), user-space would just get two separate strings. I
-> just like APIs that don't assume how I am going to use them :), so
-> "symbol [module]" format is a bit more inconvenient than decomposed
-> pieces.
-> >
-> > > Additionally, with ksym_resolve() being able to return base address,
-> > > it's now possible to do a bunch of new stuff, from in-BPF
-> > > symbolization to additional things like correlating memory accesses or
-> > > function calls, etc.
-> >
-> > Getting adjusted base address could be useful some day, but why now? What for?
->
-> I proposed that only if we do bpf_ksym_resolve(). No need to support
-> that in snprintf case, of course.
->
-> >
-> > > bits), my point is that ksym_resolve() is more powerful than
-> > > snprintf(): the latter can be used pretty much only for
-> > > pretty-printing.
-> >
-> > Potentially yes. I think the stated goal was pretty printing.
->
-> That's fine if we do only snprintf, yes. But if a separate helper,
-> then we should think more broadly.
+> A previous attempt to make this function static leads to
+> compile error for few architectures.
 
-Let's start with only snprintf then, this solves our usecase and if a
-different need arises in the future (eg: offset) we could design a new
-helper around that need.
+It might be better to say why it has to be non-static here (because it's
+an error injection point).  And it's not architecture dependent (afaik),
+it's whether error injection is enabled in the config.
 
-> >
-> > >
-> > > >
-> > > > As far as 6 arg issue:
-> > > > long bpf_snprintf(const char *out, u32 out_size,
-> > > >                   const char *fmt, u32 fmt_size,
-> > > >                   const void *data, u32 data_len);
-> > > > Yeah. It won't work as-is, but fmt_size is unnecessary nowadays.
-> > > > The verifier understands read-only data.
-> > > > Hence the helper can be:
-> > > > long bpf_snprintf(const char *out, u32 out_size,
-> > >
-> > > With the power of BTF, we can also put these two correlated values
-> > > into a single struct and pass a pointer to it. It will take only one
-> > > parameter for one memory region. Alternative is the "fat pointer"
-> > > approach that Go and Rust use, but it's less flexible overall.
-> >
-> > I think it will be less flexible when output size is fixed by the type info.
-> > With explicit size the bpf_snprintf() can print directly into ringbuffer.
-> > Multiple bpf_snprintf() will be able to fill it one by one reducing
-> > space available at every step.
-> > bpf_snprintf() would need to return the number of bytes, of course.
-> > Just like probe_read_str.
->
-> Ok, I should have probably demonstrated with an example. I don't
-> propose to specify the size through BTF itself. I was thinking about:
->
-> struct bpf_mem_ptr {
->     void *data;
->     size_t size;
-> };
->
->
-> struct bpf_mem_ptr p = { ptr, 123 };
-> bpf_whatever_helper(&p, ...);
->
->
-> bpf_whatever_helper() will specify that the first argument has to be
-> PTR_TO_BTF_ID where btf_id corresponds to struct bpf_mem_ptr. Hope
-> this helps.
+> Adding a prototype will silence the warning.
+> 
+> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+> Cc: Alex Shi <alex.shi@linux.alibaba.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> ---
+>  include/linux/mm.h | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 5299b90a..ac07f65 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -216,6 +216,12 @@ int overcommit_kbytes_handler(struct ctl_table *, int, void *, size_t *,
+>  		loff_t *);
+>  int overcommit_policy_handler(struct ctl_table *, int, void *, size_t *,
+>  		loff_t *);
+> +/*
+> + * Any attempt to mark this function as static leads to build failure
+> + * for few architectures. Adding a prototype to silence gcc warning.
+> + */
+
+We don't need a comment here for this.  The commit log is enough.
+
+> +int __add_to_page_cache_locked(struct page *page, struct address_space *mapping,
+> +		pgoff_t offset, gfp_t gfp, void **shadowp);
+
+Please name that 'index', not 'offset'.
+
