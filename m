@@ -2,118 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 978522E04A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 04:14:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B702E04AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 04:20:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726022AbgLVDNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 22:13:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48844 "EHLO
+        id S1725957AbgLVDUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 22:20:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725833AbgLVDNp (ORCPT
+        with ESMTP id S1725780AbgLVDUJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 22:13:45 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 113C5C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 19:13:05 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id 186so10849492qkj.3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 19:13:05 -0800 (PST)
+        Mon, 21 Dec 2020 22:20:09 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB9A9C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 19:19:28 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id n25so2000579pgb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 19:19:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=m05zgiVp7vEyQC1XJrHfLcHgUliHm1rlFtZRMu57ZTY=;
-        b=DrCYH2SJ9+T/fq+owxPY5/xY7kbiAWDSFkNPzFhLDl9xtPVRGE2JqP9thJKJ1L0V1r
-         Jd+HZ7Oaq8KegpckZov+nPsI2Bqrf+pfrZ+9yjBOLHt+Y5qwHRYTinkQdVd8OSAqZRUF
-         zpZTZLa+/mlR9xrRSxPbn09yOLixGRMHwNVIfYjIzKmu7uF8UehWjMTs1MgQbLbpAmR9
-         3t15F6SzGy6EBcKI/PBgeo4jEUuRit/FImgzQVx5Ah3QzbQ/yX3faHVxA+J+R14sTLcn
-         8GEMqTSnGxjqH60VjFhQhmgU5XJI6shJKCuQMn+fgJME16av5n60ixH5wpo9/v7u5ktD
-         9WhQ==
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UrETX7+k+oMxj1ADA1makxBY/fYwC199e2h31jHKq8Y=;
+        b=KzasxadSxuqu/PLzZSZMPjy96lKqpfxlIHGEgXKjyvGOEm+d1vBR8jgf8hcG9rNYbG
+         plpPQiiRh0x3aapu4u2TeYrHNsIhCv8e+WQ11hOIllsbmiuNIxqy6jx4zqpA2MXgmZUy
+         qLJwXzkxuxGTdqr2UGktmW+g9GPK/Ja4keSCMbEt+u5HWUKf6GBlAWwP+tYBDJoqRm7V
+         rcNU0jRSOzx1qjx2sl6LjFdUyREtXuPMYrHb6EUIBr8tBFKhWoc+3ukKcusoljLn1qvr
+         0+ZSzVEd+V1GjSyWuYKdagoDv7BTbeDJw02ZiMhfUDdsRf3S1JJkR25HKIejDt1SjOZe
+         6jMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=m05zgiVp7vEyQC1XJrHfLcHgUliHm1rlFtZRMu57ZTY=;
-        b=mydgc5V9c2MkwEY1K4GKAnPAgJBrDlDwTvvf0WWIimzu1mysLbu7pOStESw4qRG6kj
-         t+JSf3YlG+DFwjK8XZb4aHYTDCMKVKu8/OoC+J1FRt4FvTjNumpjpn6jLWJszPoI+2oy
-         OEFoL6yKPq5j8iec8vc30QsU+6tm22JOh/kdEkTkLlZfNO48L1Hm0wzApXFfvYahpxaG
-         zIZExgsf8KqYa43HniTss0cNmG6UyHxuzivFxfScxxH48K1hK3l6odACAQcLbkO5axrl
-         K0VFTgjTKtpX+I5IzZNiExKkF8lrmm/Hix4gVgUQHzlzAAtHYptRmcEHO8XHXvNF6ohB
-         XfxA==
-X-Gm-Message-State: AOAM533Gtu4R/0g9ynz+S5Os4Ll6kbvr4xBehBV+Mx9ULWNJTxITT065
-        kl0uaU4j3+JlZWnvJNb5Gd3KAQ==
-X-Google-Smtp-Source: ABdhPJxWptLxMFAJyPVKQHaofZKNgOqncOvoZhhaGhBgI+xsVtgSCXpubml5l6bSl97/zbU5tTt6Ig==
-X-Received: by 2002:a37:a950:: with SMTP id s77mr20614114qke.122.1608606784306;
-        Mon, 21 Dec 2020 19:13:04 -0800 (PST)
-Received: from xanadu.home (modemcable076.50-203-24.mc.videotron.ca. [24.203.50.76])
-        by smtp.gmail.com with ESMTPSA id d84sm3976584qke.47.2020.12.21.19.13.03
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=UrETX7+k+oMxj1ADA1makxBY/fYwC199e2h31jHKq8Y=;
+        b=jm0UgH3bMOeL5TJkBMrOqPtLy/i1J3M45hwXSu29yNIN5defZ/jXwRrrbPNakLDiOA
+         TTtrScPVB1kWGR1viGhXhbaTPyH9xRKAyM7dapB5dOUh6jo0bAcd1j65n60HqoD8cCbB
+         8Jnh5BbwyAGP0hhzDN1K+6fnvV0JEkn5joJzKNckiJlAnDIi9GCwRvVBy493sckHmPY7
+         sJB/RTmoO0vPGNqZmUbGTXY1WJWYDfzc8o3fWE+TwBIILGgCfIP9Xg8AYcE2o7YtVifK
+         8I+EaVQ+nEC7AuUJfFT3t5Xx7t4Q3Jl5i+8iPKqysuRqYHGFLAW+tPZVFRflXMohA2pC
+         9K8g==
+X-Gm-Message-State: AOAM532VC20loTJNWXkVjhV5v3ylQakBUIBNCfAZm0K41SI4YsIehSno
+        EvqBQmll5OM2CG9RzD1jCOblVh3BbI59BrlR
+X-Google-Smtp-Source: ABdhPJwKQozmbfZzu49I4FjagYuGJagnadN4PuqSMjW6Oa9r48r5iDvLi0AtL8lPQAXBh7WqDR6TlQ==
+X-Received: by 2002:a63:445a:: with SMTP id t26mr17871098pgk.402.1608607168059;
+        Mon, 21 Dec 2020 19:19:28 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id a29sm18424156pfr.73.2020.12.21.19.19.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 19:13:03 -0800 (PST)
-Date:   Mon, 21 Dec 2020 22:13:02 -0500 (EST)
-From:   Nicolas Pitre <npitre@baylibre.com>
-To:     Nathan Chancellor <natechancellor@gmail.com>
-cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] i3c/master/mipi-i3c-hci: Fix position of __maybe_unused
- in i3c_hci_of_match
-In-Reply-To: <20201222025931.3043480-1-natechancellor@gmail.com>
-Message-ID: <4q7rono-ssrr-r53-2796-o6924496p0qo@onlyvoer.pbz>
-References: <20201222025931.3043480-1-natechancellor@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Mon, 21 Dec 2020 19:19:27 -0800 (PST)
+Date:   Mon, 21 Dec 2020 19:19:27 -0800 (PST)
+X-Google-Original-Date: Mon, 21 Dec 2020 19:19:25 PST (-0800)
+Subject:     Re: [PATCH v3 0/5] Add Microchip PolarFire Soc Support 
+In-Reply-To: <20201204085835.2406541-1-atish.patra@wdc.com>
+CC:     linux-kernel@vger.kernel.org, Atish Patra <Atish.Patra@wdc.com>,
+        aou@eecs.berkeley.edu, Alistair Francis <Alistair.Francis@wdc.com>,
+        Anup Patel <Anup.Patel@wdc.com>, bin.meng@windriver.com,
+        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+        Paul Walmsley <paul.walmsley@sifive.com>, robh+dt@kernel.org,
+        Ivan.Griffin@microchip.com, Cyril.Jean@microchip.com,
+        daire.mcnamara@microchip.com, Conor.Dooley@microchip.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Atish Patra <Atish.Patra@wdc.com>
+Message-ID: <mhng-2a16d74b-c896-4ad0-9d02-87b3b09ee3be@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Dec 2020, Nathan Chancellor wrote:
+On Fri, 04 Dec 2020 00:58:30 PST (-0800), Atish Patra wrote:
+> This series adds minimal support for Microchip Polar Fire Soc Icicle kit.
+> It is rebased on v5.10-rc6 and depends on clock support.
+> Only MMC and ethernet drivers are enabled via this series.
+> The idea here is to add the foundational patches so that other drivers
+> can be added to on top of this. The device tree may change based on
+> feedback on bindings of individual driver support patches.
+>
+> This series has been tested on Qemu and Polar Fire Soc Icicle kit.
+> The following qemu series is necessary to test it on Qemu.
+>
+> The series can also be found at.
+> https://github.com/atishp04/linux/tree/polarfire_support_upstream_v3
+>
+> I noticed the latest version of mmc driver[2] hangs on the board with
+> the latest clock driver. That's why, I have tested with the old clock
+> driver available in the above github repo.
 
-> Clang warns:
-> 
->  ../drivers/i3c/master/mipi-i3c-hci/core.c:780:21: warning: attribute
->  declaration must precede definition [-Wignored-attributes]
->  static const struct __maybe_unused of_device_id i3c_hci_of_match[] = {
->                      ^
->  ../include/linux/compiler_attributes.h:267:56: note: expanded from macro
->  '__maybe_unused'
->  #define __maybe_unused                  __attribute__((__unused__))
->                                                         ^
->  ../include/linux/mod_devicetable.h:262:8: note: previous definition is
->  here
->  struct of_device_id {
->         ^
-> 1 warning generated.
-> 
-> 'struct of_device_id' should not be split, as it is a type. Move the
-> __maybe_unused attribute after the static and const qualifiers so that
-> there are no warnings about this variable, period.
-> 
-> Fixes: 95393f3e07ab ("i3c/master/mipi-i3c-hci: quiet maybe-unused variable warning")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1221
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+IIRC the previous version was an RFC, but this is a PATCH.  I'd be generally
+happy to take it on for-next, but I don't want to merge something that doesn't
+boot and that I don't have any way to fix (I don't have one of the boards yet).
 
-Acked-by: Nicolas Pitre <npitre@baylibre.com>
-
-> ---
->  drivers/i3c/master/mipi-i3c-hci/core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/i3c/master/mipi-i3c-hci/core.c b/drivers/i3c/master/mipi-i3c-hci/core.c
-> index 500abd27fb22..1b73647cc3b1 100644
-> --- a/drivers/i3c/master/mipi-i3c-hci/core.c
-> +++ b/drivers/i3c/master/mipi-i3c-hci/core.c
-> @@ -777,7 +777,7 @@ static int i3c_hci_remove(struct platform_device *pdev)
->  	return 0;
->  }
->  
-> -static const struct __maybe_unused of_device_id i3c_hci_of_match[] = {
-> +static const __maybe_unused struct of_device_id i3c_hci_of_match[] = {
->  	{ .compatible = "mipi-i3c-hci", },
->  	{},
->  };
-> 
-> base-commit: 95393f3e07ab53855b91881692a4a5b52dcdc03c
-> -- 
-> 2.30.0.rc1
-> 
-> 
+> [1] https://lists.nongnu.org/archive/html/qemu-devel/2020-10/msg08582.html
+> [2] https://www.spinics.net/lists/devicetree/msg383626.html
+>
+> Changes from v2->v3:
+> 1. Fixed a typo in dt binding.
+> 2. Included MAINTAINERS entry for PolarFire SoC.
+> 3. Improved the dts file by using lowercase clock names and keeping phy
+>    details in board specific dts file.
+>
+> Changes from v1->v2:
+> 1. Modified the DT to match the device tree in U-Boot.
+> 2. Added both eMMC & SDcard entries in DT. However, SD card is only enabled
+>    as it allows larger storage option for linux distros.
+>
+> Atish Patra (4):
+> RISC-V: Add Microchip PolarFire SoC kconfig option
+> dt-bindings: riscv: microchip: Add YAML documentation for the
+> PolarFire SoC
+> RISC-V: Initial DTS for Microchip ICICLE board
+> RISC-V: Enable Microchip PolarFire ICICLE SoC
+>
+> Conor Dooley (1):
+> MAINTAINERS: add microchip polarfire soc support
+>
+> .../devicetree/bindings/riscv/microchip.yaml  |  28 ++
+> MAINTAINERS                                   |   8 +
+> arch/riscv/Kconfig.socs                       |   7 +
+> arch/riscv/boot/dts/Makefile                  |   1 +
+> arch/riscv/boot/dts/microchip/Makefile        |   2 +
+> .../microchip/microchip-mpfs-icicle-kit.dts   |  72 ++++
+> .../boot/dts/microchip/microchip-mpfs.dtsi    | 331 ++++++++++++++++++
+> arch/riscv/configs/defconfig                  |   4 +
+> 8 files changed, 453 insertions(+)
+> create mode 100644 Documentation/devicetree/bindings/riscv/microchip.yaml
+> create mode 100644 arch/riscv/boot/dts/microchip/Makefile
+> create mode 100644 arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
+> create mode 100644 arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
