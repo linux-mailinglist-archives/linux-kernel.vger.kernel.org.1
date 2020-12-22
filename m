@@ -2,250 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ADF62E098D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 12:24:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 893F82E099F
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 12:24:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726944AbgLVLXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 06:23:06 -0500
-Received: from relmlor2.renesas.com ([210.160.252.172]:59808 "EHLO
-        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726894AbgLVLXD (ORCPT
+        id S1727150AbgLVLXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 06:23:50 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2279 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725985AbgLVLXt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 06:23:03 -0500
-X-IronPort-AV: E=Sophos;i="5.78,438,1599490800"; 
-   d="scan'208";a="66595847"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie6.idc.renesas.com with ESMTP; 22 Dec 2020 20:22:27 +0900
-Received: from localhost.localdomain (unknown [10.166.252.89])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id F19D4400092B;
-        Tue, 22 Dec 2020 20:22:26 +0900 (JST)
-From:   Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-To:     marek.vasut+renesas@gmail.com, lee.jones@linaro.org,
-        matti.vaittinen@fi.rohmeurope.com, lgirdwood@gmail.com,
-        broonie@kernel.org, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com
-Cc:     khiem.nguyen.xt@renesas.com, linux-power@fi.rohmeurope.com,
-        linux-gpio@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Subject: [PATCH v5 11/12] mfd: bd9571mwv: Make the driver more generic
-Date:   Tue, 22 Dec 2020 20:22:18 +0900
-Message-Id: <1608636139-564-12-git-send-email-yoshihiro.shimoda.uh@renesas.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1608636139-564-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
-References: <1608636139-564-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+        Tue, 22 Dec 2020 06:23:49 -0500
+Received: from fraeml742-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4D0Ykg1pttz67Qjn;
+        Tue, 22 Dec 2020 19:19:07 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml742-chm.china.huawei.com (10.206.15.223) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 22 Dec 2020 12:23:07 +0100
+Received: from [10.47.1.120] (10.47.1.120) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 22 Dec
+ 2020 11:23:05 +0000
+Subject: Re: [RFC PATCH v2 2/2] blk-mq: Lockout tagset iter when freeing rqs
+To:     Bart Van Assche <bvanassche@acm.org>, <axboe@kernel.dk>,
+        <ming.lei@redhat.com>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <hch@lst.de>, <hare@suse.de>, <kashyap.desai@broadcom.com>,
+        <linuxarm@huawei.com>
+References: <1608203273-170555-1-git-send-email-john.garry@huawei.com>
+ <1608203273-170555-3-git-send-email-john.garry@huawei.com>
+ <df44b73d-6c42-87ee-3c25-b95a44712e05@acm.org>
+ <4d2004bb-4444-7a63-7c72-1759e3037cfd@huawei.com>
+ <31de2806-bbc1-dcc3-b9eb-ce9257420432@acm.org>
+ <b2edab2b-8af7-816d-9da2-4720d19b96f8@huawei.com>
+ <e97a0603-f9e3-1b00-4a09-c569d4f73d7b@acm.org>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <2d985fbd-7a22-6399-e214-8052604a2a65@huawei.com>
+Date:   Tue, 22 Dec 2020 11:22:19 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
+MIME-Version: 1.0
+In-Reply-To: <e97a0603-f9e3-1b00-4a09-c569d4f73d7b@acm.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.1.120]
+X-ClientProxiedBy: lhreml716-chm.china.huawei.com (10.201.108.67) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Khiem Nguyen <khiem.nguyen.xt@renesas.com>
+Resend without ppvk@codeaurora.org, which bounces for me
 
-Since the driver supports BD9571MWV PMIC only, this patch makes
-the functions and data structure become more generic so that
-it can support other PMIC variants as well. Also remove printing
-part name which Lee Jones suggested.
+On 22/12/2020 02:13, Bart Van Assche wrote:
+ > On 12/21/20 10:47 AM, John Garry wrote:
+ >> Yes, I agree, and I'm not sure what I wrote to give that impression.
+ >>
+ >> About "root partition", above, I'm just saying that / is mounted on a
+ >> sda partition:
+ >>
+ >> root@ubuntu:/home/john# mount | grep sda
+ >> /dev/sda2 on / type ext4 (rw,relatime,errors=remount-ro,stripe=32)
+ >> /dev/sda1 on /boot/efi type vfat
+ >> 
+(rw,relatime,fmask=0077,dmask=0077,codepage=437,iocharset=iso8859-1,shortname=mixed,errors=remount-ro)
+ > Hi John,
+ >
 
-Signed-off-by: Khiem Nguyen <khiem.nguyen.xt@renesas.com>
-Co-developed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Reviewed-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
- drivers/mfd/bd9571mwv.c       | 89 +++++++++++++++++++++++++------------------
- include/linux/mfd/bd9571mwv.h | 18 +--------
- 2 files changed, 54 insertions(+), 53 deletions(-)
+Hi Bart, Ming,
 
-diff --git a/drivers/mfd/bd9571mwv.c b/drivers/mfd/bd9571mwv.c
-index 49e968e..c905ab4 100644
---- a/drivers/mfd/bd9571mwv.c
-+++ b/drivers/mfd/bd9571mwv.c
-@@ -3,6 +3,7 @@
-  * ROHM BD9571MWV-M MFD driver
-  *
-  * Copyright (C) 2017 Marek Vasut <marek.vasut+renesas@gmail.com>
-+ * Copyright (C) 2020 Renesas Electronics Corporation
-  *
-  * Based on the TPS65086 driver
-  */
-@@ -14,6 +15,14 @@
- 
- #include <linux/mfd/bd9571mwv.h>
- 
-+/* Driver data to distinguish bd957x variants */
-+struct bd957x_ddata {
-+	const struct regmap_config *regmap_config;
-+	const struct regmap_irq_chip *irq_chip;
-+	const struct mfd_cell *cells;
-+	int num_cells;
-+};
+ > Thanks for the clarification. I want to take back my suggestion about
+ > adding rcu_read_lock() / rcu_read_unlock() in blk_mq_tagset_busy_iter()
+ > since it is not allowed to sleep inside an RCU read-side critical
+ > section, since blk_mq_tagset_busy_iter() is used in request timeout
+ > handling and since there may be blk_mq_ops.timeout implementations that
+ > sleep.
+
+Yes, that's why I was going with atomic, rather than some 
+synchronization primitive which may sleep.
+
+ >
+ > Ming's suggestion to serialize blk_mq_tagset_busy_iter() and
+ > blk_mq_free_rqs() looks interesting to me.
+ >
+
+So then we could have something like this:
+
+---8<---
+
+  -435,9 +444,13 @@ void blk_mq_queue_tag_busy_iter(struct request_queue 
+*q, busy_iter_fn *fn,
+     if (!blk_mq_hw_queue_mapped(hctx))
+             continue;
+
++    while (!atomic_inc_not_zero(&tags->iter_usage_counter));
 +
- static const struct mfd_cell bd9571mwv_cells[] = {
- 	{ .name = "bd9571mwv-regulator", },
- 	{ .name = "bd9571mwv-gpio", },
-@@ -102,13 +111,19 @@ static struct regmap_irq_chip bd9571mwv_irq_chip = {
- 	.num_irqs	= ARRAY_SIZE(bd9571mwv_irqs),
- };
- 
--static int bd9571mwv_identify(struct bd9571mwv *bd)
-+static const struct bd957x_ddata bd9571mwv_ddata = {
-+	.regmap_config = &bd9571mwv_regmap_config,
-+	.irq_chip = &bd9571mwv_irq_chip,
-+	.cells = bd9571mwv_cells,
-+	.num_cells = ARRAY_SIZE(bd9571mwv_cells),
-+};
-+
-+static int bd957x_identify(struct device *dev, struct regmap *regmap)
- {
--	struct device *dev = bd->dev;
- 	unsigned int value;
- 	int ret;
- 
--	ret = regmap_read(bd->regmap, BD9571MWV_VENDOR_CODE, &value);
-+	ret = regmap_read(regmap, BD9571MWV_VENDOR_CODE, &value);
- 	if (ret) {
- 		dev_err(dev, "Failed to read vendor code register (ret=%i)\n",
- 			ret);
-@@ -121,66 +136,66 @@ static int bd9571mwv_identify(struct bd9571mwv *bd)
- 		return -EINVAL;
- 	}
- 
--	ret = regmap_read(bd->regmap, BD9571MWV_PRODUCT_CODE, &value);
-+	ret = regmap_read(regmap, BD9571MWV_PRODUCT_CODE, &value);
- 	if (ret) {
- 		dev_err(dev, "Failed to read product code register (ret=%i)\n",
- 			ret);
- 		return ret;
- 	}
--
--	if (value != BD9571MWV_PRODUCT_CODE_VAL) {
--		dev_err(dev, "Invalid product code ID %02x (expected %02x)\n",
--			value, BD9571MWV_PRODUCT_CODE_VAL);
--		return -EINVAL;
--	}
--
--	ret = regmap_read(bd->regmap, BD9571MWV_PRODUCT_REVISION, &value);
-+	ret = regmap_read(regmap, BD9571MWV_PRODUCT_REVISION, &value);
- 	if (ret) {
- 		dev_err(dev, "Failed to read revision register (ret=%i)\n",
- 			ret);
- 		return ret;
- 	}
- 
--	dev_info(dev, "Device: BD9571MWV rev. %d\n", value & 0xff);
--
- 	return 0;
- }
- 
- static int bd9571mwv_probe(struct i2c_client *client,
--			  const struct i2c_device_id *ids)
-+			   const struct i2c_device_id *ids)
- {
--	struct bd9571mwv *bd;
--	int ret;
--
--	bd = devm_kzalloc(&client->dev, sizeof(*bd), GFP_KERNEL);
--	if (!bd)
--		return -ENOMEM;
--
--	i2c_set_clientdata(client, bd);
--	bd->dev = &client->dev;
--	bd->irq = client->irq;
-+	const struct bd957x_ddata *ddata;
-+	struct device *dev = &client->dev;
-+	struct regmap *regmap;
-+	struct regmap_irq_chip_data *irq_data;
-+	int ret, irq = client->irq;
-+
-+	/* Read the PMIC product code */
-+	ret = i2c_smbus_read_byte_data(client, BD9571MWV_PRODUCT_CODE);
-+	if (ret < 0) {
-+		dev_err(dev, "Failed to read product code\n");
-+		return ret;
-+	}
-+	switch (ret) {
-+	case BD9571MWV_PRODUCT_CODE_BD9571MWV:
-+		ddata = &bd9571mwv_ddata;
-+		break;
-+	default:
-+		dev_err(dev, "Unsupported device 0x%x\n", ret);
-+		return -ENODEV;
-+	}
- 
--	bd->regmap = devm_regmap_init_i2c(client, &bd9571mwv_regmap_config);
--	if (IS_ERR(bd->regmap)) {
--		dev_err(bd->dev, "Failed to initialize register map\n");
--		return PTR_ERR(bd->regmap);
-+	regmap = devm_regmap_init_i2c(client, ddata->regmap_config);
-+	if (IS_ERR(regmap)) {
-+		dev_err(dev, "Failed to initialize register map\n");
-+		return PTR_ERR(regmap);
- 	}
- 
--	ret = bd9571mwv_identify(bd);
-+	ret = bd957x_identify(dev, regmap);
- 	if (ret)
- 		return ret;
- 
--	ret = devm_regmap_add_irq_chip(bd->dev, bd->regmap, bd->irq,
--				       IRQF_ONESHOT, 0, &bd9571mwv_irq_chip,
--				       &bd->irq_data);
-+	ret = devm_regmap_add_irq_chip(dev, regmap, irq, IRQF_ONESHOT, 0,
-+				       ddata->irq_chip, &irq_data);
- 	if (ret) {
--		dev_err(bd->dev, "Failed to register IRQ chip\n");
-+		dev_err(dev, "Failed to register IRQ chip\n");
- 		return ret;
- 	}
- 
--	return devm_mfd_add_devices(bd->dev, PLATFORM_DEVID_AUTO,
--				    bd9571mwv_cells, ARRAY_SIZE(bd9571mwv_cells),
--				    NULL, 0, regmap_irq_get_domain(bd->irq_data));
-+	return devm_mfd_add_devices(dev, PLATFORM_DEVID_AUTO, ddata->cells,
-+				    ddata->num_cells, NULL, 0,
-+				    regmap_irq_get_domain(irq_data));
- }
- 
- static const struct of_device_id bd9571mwv_of_match_table[] = {
-diff --git a/include/linux/mfd/bd9571mwv.h b/include/linux/mfd/bd9571mwv.h
-index bcc7092..e1716ec 100644
---- a/include/linux/mfd/bd9571mwv.h
-+++ b/include/linux/mfd/bd9571mwv.h
-@@ -3,6 +3,7 @@
-  * ROHM BD9571MWV-M driver
-  *
-  * Copyright (C) 2017 Marek Vasut <marek.vasut+renesas@gmail.com>
-+ * Copyright (C) 2020 Renesas Electronics Corporation
-  *
-  * Based on the TPS65086 driver
-  */
-@@ -17,7 +18,7 @@
- #define BD9571MWV_VENDOR_CODE			0x00
- #define BD9571MWV_VENDOR_CODE_VAL		0xdb
- #define BD9571MWV_PRODUCT_CODE			0x01
--#define BD9571MWV_PRODUCT_CODE_VAL		0x60
-+#define BD9571MWV_PRODUCT_CODE_BD9571MWV	0x60
- #define BD9571MWV_PRODUCT_REVISION		0x02
- 
- #define BD9571MWV_I2C_FUSA_MODE			0x10
-@@ -94,19 +95,4 @@ enum bd9571mwv_irqs {
- 	BD9571MWV_IRQ_WDT_OF,
- 	BD9571MWV_IRQ_BKUP_TRG,
- };
--
--/**
-- * struct bd9571mwv - state holder for the bd9571mwv driver
-- *
-- * Device data may be used to access the BD9571MWV chip
-- */
--struct bd9571mwv {
--	struct device *dev;
--	struct regmap *regmap;
--
--	/* IRQ Data */
--	int irq;
--	struct regmap_irq_chip_data *irq_data;
--};
--
- #endif /* __LINUX_MFD_BD9571MWV_H */
--- 
-2.7.4
+     if (tags->nr_reserved_tags)
+         bt_for_each(hctx, tags->breserved_tags, fn, priv, true);
+     bt_for_each(hctx, tags->bitmap_tags, fn, priv, false);
 
++    atomic_dec(&tags->iter_usage_counter);
+}
+
+blk_queue_exit(q);
+
+--->8---
+
+And similar for blk_mq_tagset_busy_iter(). How about it?
+
+Thanks,
+John
