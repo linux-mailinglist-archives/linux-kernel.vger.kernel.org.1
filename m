@@ -2,162 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A28852E0941
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 12:00:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F1B12E094F
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 12:05:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726317AbgLVK7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 05:59:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45186 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726719AbgLVK7H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 05:59:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608634660;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HUqZxqa8Hto+LIciCh/MDtUD1YZexx2bkHHuabHifwA=;
-        b=NQEHb3yVvZjdZv2JWgnUWnHAGnZggSngM+BOaL5LKlLwPuvHjp7uwQ8o4/Jf/1YQQFryjE
-        u59pvdd1nI/zeqsZv8lg6ViXVS6Dydgsf9zFwtFMZ21r5d8VWReJJ94tMH5/x0MicKIBjM
-        S9MNmCAb8dZFtMYx/rqAn1AAcE4t41g=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-16-xBrEE9qlO4mfjo23JrN9cA-1; Tue, 22 Dec 2020 05:57:39 -0500
-X-MC-Unique: xBrEE9qlO4mfjo23JrN9cA-1
-Received: by mail-wr1-f72.google.com with SMTP id y5so11026487wrs.15
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 02:57:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=HUqZxqa8Hto+LIciCh/MDtUD1YZexx2bkHHuabHifwA=;
-        b=O+gHXF8X7tnfuKhs9BGIAD++INIlZNFHrIrfU7sHzlimdE/fmZBxc2KJ/WknAhJ+2f
-         FBTlxWOPnAV5YU55v/tPWiZ1dCtZ7d69BpXHnLYNS21IV6dFdCgM3dCX4P2o1yAFO8Cr
-         CvW4tkLeOKPPwb1dhrF8XH2tCaGnc3ND5Tza8Ohtw0SDfWVUjEfKbW7H9t/aWuEviQ5X
-         Ecdii3UKCEgjQWjEGfe8SwNZJOkXrfPBE48/qDPskmMbPzdROGEQYw/FWJjEwqvLr7bK
-         Mz49YCrwZ3L3G6rM3l4WaP5kL8VrMCxQ/JgOpRmabfSRmrieVZgQ7gITSP7VPNpInvmk
-         Teew==
-X-Gm-Message-State: AOAM532ZmmAmr5yFaTIzT9x27Tj4Pog8qdKAmu7qjFuR8SEx20y3yJ5C
-        +6Ms8LEdWAIMa5VFgjHfuMsBExJcLXMBsR6QzmzC5uW91YZH8HyleMX/huIk5fVb+Ly/BYhMgRi
-        rdvwSzk33UUkEH6A4+xwQ5Jhs
-X-Received: by 2002:a1c:4684:: with SMTP id t126mr21204126wma.165.1608634657599;
-        Tue, 22 Dec 2020 02:57:37 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxnZK58B0WG9HQAYkhmv2Ni3xwkfZ+ilVxWV+8a3a96JzWjI13O3HYHbD/TbNH2vg1Rhw94SQ==
-X-Received: by 2002:a1c:4684:: with SMTP id t126mr21204104wma.165.1608634657357;
-        Tue, 22 Dec 2020 02:57:37 -0800 (PST)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id z22sm25892487wml.1.2020.12.22.02.57.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Dec 2020 02:57:36 -0800 (PST)
-Date:   Tue, 22 Dec 2020 11:57:33 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Laurent Vivier <lvivier@redhat.com>,
-        linux-kernel@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>
-Subject: Re: [PATCH RFC 00/12] vdpa: generalize vdpa simulator and add block
- device
-Message-ID: <20201222105733.4f6oou7lshi35qvc@steredhat>
-References: <20201113134712.69744-1-sgarzare@redhat.com>
- <93f207c0-61e6-3696-f218-e7d7ea9a7c93@redhat.com>
- <20201218113816.zcyeyqipux4ao4cp@steredhat>
- <7dd3ed02-36c3-fcfd-0a1d-9c31af6f473e@redhat.com>
- <20201221111423.sestfroiw2dgpluc@steredhat>
- <856d53c2-82e2-e408-76e6-24c92010f973@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <856d53c2-82e2-e408-76e6-24c92010f973@redhat.com>
+        id S1726214AbgLVLEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 06:04:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50280 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725913AbgLVLEl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 06:04:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 110BA23105;
+        Tue, 22 Dec 2020 11:03:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608635040;
+        bh=AqWmCDEh7lfnT1VIoAkL5fPXYe3cESUew2qgS4PNf2c=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=F7fJJsWPftHjGwDolXKUWRBDcdLHao32iufRj+BcnjbmSyLraz/p4SdHvsAm3V0zv
+         xvSbb6mMYtElBQxcFpT1LjRe1BXp/yWSOX8qzGRBG+8idTajPO0vrZSPMmypWeN1HH
+         ecYt4Rj/CMm+gyInsdmfY7vm3NBNTz9kOPSl98uPAQe5jDmg1mT1CC06y4dCbgi+Ma
+         4rjwBdcwYD8pFDO2JvkMP/3mBvAXb/1g87k/I6rr+4sMjMNLyERXskUXXyAPRoEf0S
+         wJQAAaHNuDm/FXnT5i5RwPRtRiNg15GVOyriZKIDnYmw/kdvytS7bQQxZN2orJUf+n
+         kTOXgQHx3cd4g==
+Date:   Tue, 22 Dec 2020 20:03:56 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     "Wangshaobo (bobo)" <bobo.shaobowang@huawei.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>, <naveen.n.rao@linux.ibm.com>,
+        <anil.s.keshavamurthy@intel.com>, <davem@davemloft.net>,
+        <linux-kernel@vger.kernel.org>, <huawei.libin@huawei.com>,
+        <cj.chengjian@huawei.com>
+Subject: Re: [PATCH] kretprobe: avoid re-registration of the same kretprobe
+ earlier
+Message-Id: <20201222200356.6910b42c165b8756878cc9b0@kernel.org>
+In-Reply-To: <c584f7e2-1d95-4f6a-7e36-4ff2d610bc78@huawei.com>
+References: <20201124115719.11799-1-bobo.shaobowang@huawei.com>
+        <20201130161850.34bcfc8a@gandalf.local.home>
+        <20201202083253.9dbc76704149261e131345bf@kernel.org>
+        <9dff21f8-4ab9-f9b2-64fd-cc8c5f731932@huawei.com>
+        <20201215123119.35258dd5006942be247600db@kernel.org>
+        <c584f7e2-1d95-4f6a-7e36-4ff2d610bc78@huawei.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 10:44:48AM +0800, Jason Wang wrote:
->
->On 2020/12/21 下午7:14, Stefano Garzarella wrote:
->>On Mon, Dec 21, 2020 at 11:16:54AM +0800, Jason Wang wrote:
->>>
->>>On 2020/12/18 下午7:38, Stefano Garzarella wrote:
->>>>On Mon, Nov 16, 2020 at 11:37:48AM +0800, Jason Wang wrote:
->>>>>
->>>>>On 2020/11/13 下午9:47, Stefano Garzarella wrote:
->>>>>>Thanks to Max that started this work!
->>>>>>I took his patches, and extended the block simulator a bit.
->>>>>>
->>>>>>This series moves the network device simulator in a new module
->>>>>>(vdpa_sim_net) and leaves the generic functions in the vdpa_sim core
->>>>>>module, allowing the possibility to add new vDPA device simulators.
->>>>>>Then we added a new vdpa_sim_blk module to simulate a block device.
->>>>>>
->>>>>>I'm not sure about patch 11 ("vringh: allow vringh_iov_xfer() to skip
->>>>>>bytes when ptr is NULL"), maybe we can add a new functions instead of
->>>>>>modify vringh_iov_xfer().
->>>>>>
->>>>>>As Max reported, I'm also seeing errors with vdpa_sim_blk related to
->>>>>>iotlb and vringh when there is high load, these are some of the error
->>>>>>messages I can see randomly:
->>>>>>
->>>>>>  vringh: Failed to access avail idx at 00000000e8deb2cc
->>>>>>  vringh: Failed to read head: idx 6289 address 00000000e1ad1d50
->>>>>>  vringh: Failed to get flags at 000000006635d7a3
->>>>>>
->>>>>>  virtio_vdpa vdpa0: vringh_iov_push_iotlb() error: -14 
->>>>>>offset:   0x2840000 len: 0x20000
->>>>>>  virtio_vdpa vdpa0: vringh_iov_pull_iotlb() error: -14 
->>>>>>offset:   0x58ee000 len: 0x3000
->>>>>>
->>>>>>These errors should all be related to the fact that iotlb_translate()
->>>>>>fails with -EINVAL, so it seems that we miss some mapping.
->>>>>
->>>>>
->>>>>Is this only reproducible when there's multiple co-current 
->>>>>accessing of IOTLB? If yes, it's probably a hint that some 
->>>>>kind of synchronization is still missed somewhere.
->>>>>
->>>>>It might be useful to log the dma_map/unmp in both virtio_ring 
->>>>>and vringh to see who is missing the map.
->>>>>
->>>>
->>>>Just an update about these issues with vdpa-sim-blk.
->>>>I've been focusing a little bit on these failures over the last 
->>>>few days and have found two issues related to the IOTLB/IOMMU:
->>>>
->>>>1. Some requests coming from the block layer fills the SG list 
->>>>with multiple buffers that had the same physical address. This 
->>>>happens for example while using 'mkfs', at some points multiple 
->>>>sectors are zeroed so multiple SG elements point to the same 
->>>>physical page that is zeroed.
->>>>Since we are using vhost_iotlb_del_range() in the 
->>>>vdpasim_unmap_page(), this removes all the overlapped ranges. I 
->>>>fixed removing a single map in vdpasim_unmap_page(), but has an 
->>>>alternative we can implement some kind of reference counts.
->>>
->>>
->>>I think we need to do what hardware do. So using refcount is 
->>>probably not a good ida.
->>
->>Okay, so since we are using for simplicity an identical mapping, we 
->>are assigning the same dma_addr to multiple pages.
->
->
->I think I get you now. That's the root cause for the failure.
+On Mon, 21 Dec 2020 21:31:42 +0800
+"Wangshaobo (bobo)" <bobo.shaobowang@huawei.com> wrote:
 
-Yes, sorry, I didn't explain well previously.
+> Hi steven, Masami,
+> We have encountered a problem, when we attempted to use steven's suggestion as following,
+> 
+> >>> If you call this here, you must make sure kprobe_addr() is called on rp->kp.
+> >>> But if kretprobe_blacklist_size == 0, kprobe_addr() is not called before
+> >>> this check. So it should be in between kprobe_on_func_entry() and
+> >>> kretprobe_blacklist_size check, like this
+> >>>
+> >>> 	if (!kprobe_on_func_entry(rp->kp.addr, rp->kp.symbol_name, rp->kp.offset))
+> >>> 		return -EINVAL;
+> >>>
+> >>> 	addr = kprobe_addr(&rp->kp);
+> >>> 	if (IS_ERR(addr))
+> >>> 		return PTR_ERR(addr);
+> >>> 	rp->kp.addr = addr;
+> 
+> //there exists no-atomic operation risk, we should not modify any rp->kp's information, not all arch ensure atomic operation here.
+> 
+> >>>
+> >>> 	ret = check_kprobe_rereg(&rp->kp);
+> >>> 	if (WARN_ON(ret))
+> >>> 		return ret;
+> >>>
+> >>>           if (kretprobe_blacklist_size) {
+> >>> 		for (i = 0; > > +	ret = check_kprobe_rereg(&rp->kp);
+> 
+> it returns failure from register_kprobe() end called by register_kretprobe() when
+> we registered a kretprobe through .symbol_name at first time(through .addr is OK),
+> kprobe_addr() called at the begaining of register_kprobe() will recheck and
+> failed at following place because at this time we symbol_name is not NULL and addr is also.
 
->
->Then I think we need an simple iova allocator for vdpa simulator, and 
->it might be useful for VDUSE as well.
+Good catch! Yes, it will reject if both kp->addr and kp->symbol are set.
 
-Okay, I'll work on it.
-If you have an example to follow or some pointers, they are welcome :-)
+> 
+>    static kprobe_opcode_t *_kprobe_addr(const char *symbol_name,
+>                           unsigned int offset)
+>     {
+>           if ((symbol_name && addr) || (!symbol_name && !addr))  //we failed here
+> 
+> 
+> So we attempted to move this sentence rp->kp.addr = addr to __get_valid_kprobe() like this to
+> avoid explict usage of rp->kp.addr = addr in register_kretprobe().
+> 
+> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> index dd5821f753e6..ea014779edfe 100644
+> --- a/kernel/kprobes.c
+> +++ b/kernel/kprobes.c
+> @@ -1502,10 +1502,15 @@ static kprobe_opcode_t *kprobe_addr(struct kprobe *p)
+>   static struct kprobe *__get_valid_kprobe(struct kprobe *p)
+>   {
+>          struct kprobe *ap, *list_p;
+> +       void *addr;
+> 
+>          lockdep_assert_held(&kprobe_mutex);
+> 
+> -       ap = get_kprobe(p->addr);
+> +       addr = kprobe_addr(p);
+> +       if (IS_ERR(addr))
+> +               return NULL;
+> +
+> +       ap = get_kprobe(addr);
+>          if (unlikely(!ap))
+>                  return NULL;
+> 
+> But it also failed when we second time attempted to register a same kretprobe, it is also
+> becasue symbol_name and addr is not NULL when we used __get_valid_kprobe().
 
-Thanks,
-Stefano
+What the "second time" means? If you reuse the kretprobe (and kprobe) you must
+reset (cleanup) the kp->addr or kp->symbol_name. That is the initial state.
+I think the API should not allow users to enter inconsistent information.
 
+> 
+> So it seems has no idea expect for modifying _kprobe_addr() like following this, the reason is that
+> the patch 0bd476e6c671 ("kallsyms: unexport kallsyms_lookup_name() and kallsyms_on_each_symbol()")
+> has telled us we'd better use symbol name to register but not address anymore.
+> 
+> -static kprobe_opcode_t *_kprobe_addr(kprobe_opcode_t *addr,
+> -                       const char *symbol_name, unsigned int offset)
+> +static kprobe_opcode_t *_kprobe_addr(const char *symbol_name,
+> +                       unsigned int offset)
+>   {
+> -       if ((symbol_name && addr) || (!symbol_name && !addr))
+> +       kprobe_opcode_t *addr;
+> +       if (!symbol_name)
+>                  goto invalid;
+
+No, there are cases that the user will set only kp->addr, but no kp->symbol_name.
+
+> 
+> For us, this modification has not caused a big impact on other modules, only expects a little
+> influence on bpf from calling trace_kprobe_on_func_entry(), it can not use addr to fill in
+> rp.kp in struct trace_event_call anymore.
+> 
+> So i want to know your views, and i will resend this patch soon.
+
+OK, I think it is simpler to check the rp->kp.addr && rp->kp.symbol_name
+because it is not allowed (it can lead inconsistent setting).
+
+How about this code? Is this work for you?
+
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 41fdbb7953c6..73500be564be 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -2103,6 +2103,14 @@ int register_kretprobe(struct kretprobe *rp)
+        int i;
+        void *addr;
+ 
++       /* It is not allowed to specify addr and symbol_name at the same time */
++       if (rp->kp.addr && rp->kp.symbol_name)
++               return -EINVAL;
++
++       /* If only rp->kp.addr is specified, check reregistering kprobes */
++       if (rp->kp.addr && check_kprobe_rereg(&rp->kp))
++               return -EINVAL;
++
+        if (!kprobe_on_func_entry(rp->kp.addr, rp->kp.symbol_name, rp->kp.offset))
+                return -EINVAL;
+ 
+
+Thank you,
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
