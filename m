@@ -2,98 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF792E06DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 08:40:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CE092E06E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 08:47:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726019AbgLVHjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 02:39:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33122 "EHLO
+        id S1725899AbgLVHq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 02:46:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725946AbgLVHjp (ORCPT
+        with ESMTP id S1725300AbgLVHqZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 02:39:45 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4395DC0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 23:39:05 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id g67so16847559ybb.9
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 23:39:05 -0800 (PST)
+        Tue, 22 Dec 2020 02:46:25 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8118BC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 23:45:45 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id m6so7974292pfm.6
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 23:45:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=lswzyGh/wqBVBArbTXet9XrVDeOvbwazZ0TIN1WlZU8=;
-        b=BVIGhmCp7okmhrxfAv3vg+iTduI+GtEk6bJF9ETLYZOQ/YSDMrE1lnPkdTNJfEvn9G
-         2i/G10wdh472dBfa1O013Vb6h2cqloICEwlw46TF73oo4NHvqDBPkajY305Tp3Ot1Agg
-         gMWN7q10k/hT6dAO2PMVl1ot0oBb38YSKWVvYk8cvgoOz9vDH4FEFWHnCqQJiUiq+jJ0
-         4zWft73Q2r17HtVhc1hP27SX5AWfNJULaILLE/BHWazaVxtLUkipd3wOG79Oj1zp5Wqz
-         xOKWxqHE1NCrhwDsNtpfSdLF01dACNj3ZvgHa8IO9N6v31JYmds1vRNnUuwf9luY4Ct/
-         bkIw==
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:mail-followup-to:mime-version
+         :content-disposition:user-agent;
+        bh=VRDkYo9thmerq4KdUChRDJwyIpvZR7iVG1d7W9YK664=;
+        b=kSA3yBOVbsQCzaPAuQH6tStOIQ/E8baYqDX1AfdkZa5M1+5DBspeYmZULpbRqxXD+U
+         fQaVv9kv+Mtf/igPfGPa7XawbyxVGxVKz//jFSXO9yeb8NJT8f8hmL7701bLv8J3eIxq
+         7nV38OJW1hpytEGlibXvXB5dUA8m0RLzNnynboN8stOQYjTUBCqNr6BtyeMCWd192ljP
+         rYcz2rqJlq8mB4D8jvuIInvBY8QVwyqd3o8dxktbz+SRltqqKld/55PyUgV0A9CHAfGH
+         TscoLv12DE8n1IVSDpXqUWoVvTqCapkRn50yVPRV2wCy5FfilnYL3JK2a2Iy21dCVGE6
+         +glQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=lswzyGh/wqBVBArbTXet9XrVDeOvbwazZ0TIN1WlZU8=;
-        b=BTTghHtVcwOEKiJR+pT72K2Qrj+l5er7E+BWfvNMbmReuLnqbA+VLot+Jr1z4VyjuR
-         w8VuBoq8q6GoZnzcARoBny8Kul+hkYmXz0zng+hFHekzs8Xisv0Qaz1al+/xvB4gpllD
-         wZADcQ1AXkx62TG4Z4ojsJFhGRMGXqoT5x/nfSNst35ZiM+Fn0HS0fxzY2LwLS4xlMP9
-         uEONR6JllAdvSHfydiTeQQmLaN34LQD8iKHBXRXSXQ+eSi5sKRQmH0fkfxQ/uoky6lIU
-         1qevHPvY+xcpORsQhX/bPFY9kI9BCHNzczs53JDcka805VE0zWpjPlmLwXjPe89de03A
-         xFpg==
-X-Gm-Message-State: AOAM533RyTwD+ZxvWXtMu/N8zDf6WKP9BBphsK1rmgir5cW8hZ+ilwqz
-        p+etg4NA16cBGnlUXBe5JEfrQVvd0ys2Fg==
-X-Google-Smtp-Source: ABdhPJycwxpLxeB7bb5anVq1PShQQNO5DGVwjQfW2TVGdVGvWLpFH7nISnFjv+cCelgfXqhy5ct1pan7Hk7MOw==
-Sender: "davidgow via sendgmr" <davidgow@spirogrip.svl.corp.google.com>
-X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:42a8:f0ff:fe4d:3548])
- (user=davidgow job=sendgmr) by 2002:a25:9902:: with SMTP id
- z2mr27142126ybn.339.1608622744383; Mon, 21 Dec 2020 23:39:04 -0800 (PST)
-Date:   Mon, 21 Dec 2020 23:39:00 -0800
-Message-Id: <20201222073900.3490607-1-davidgow@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
-Subject: [PATCH] kunit: tool: Force the use of the 'tty' console for UML
-From:   David Gow <davidgow@google.com>
-To:     Brendan Higgins <brendanhiggins@google.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        h=x-gm-message-state:from:date:to:cc:subject:message-id
+         :mail-followup-to:mime-version:content-disposition:user-agent;
+        bh=VRDkYo9thmerq4KdUChRDJwyIpvZR7iVG1d7W9YK664=;
+        b=QBjQVL0Geyw0qbUT4aC/DQDizbLPIXI0OpeWn9+7yYeIk+ERdowddhMLyS9LfD9tbO
+         ZFYDB9uLB1D/LFKnwpRiRbSb3fySNrh9VoP3TNKXjrRS46bQF5xYGdaxC9aYG5jPDxZ7
+         xkvVjJz9JnBGLe+OmT1kowh56VUTzpo7zBATzsalVKX1Oy2PbYoZHbvjOaoQ2HYzMD0m
+         nQVqbrWwVd1PvRxindglXOCWpCNAPfyH8ZRFRVJEQRhUxzhlQROb/fJI5hUDrvM0xvkw
+         fTB7ZDWXS8MXn6Bipf9PQYR0G2OZWzzGsO+IGal/q05E/DeySg2zvPWfmKCWax9QZNMq
+         2zIA==
+X-Gm-Message-State: AOAM530x85Mkr8pP1SuIQQLZ6gliJV9Ab2FP7/99pU8NsOqaAEbILfbz
+        l2GKxydKZYB9tATvEIKr0QI=
+X-Google-Smtp-Source: ABdhPJwnYhUGB++74vbn5Y7LHAg9vDYkiZvJGTA7VuCwD2GqRVWfe30wNWf3GCWk4V3zvNw0Ev2joA==
+X-Received: by 2002:a63:f745:: with SMTP id f5mr18596744pgk.119.1608623144989;
+        Mon, 21 Dec 2020 23:45:44 -0800 (PST)
+Received: from open-light-1.localdomain (66.98.113.28.16clouds.com. [66.98.113.28])
+        by smtp.gmail.com with ESMTPSA id mj5sm18247451pjb.20.2020.12.21.23.45.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 21 Dec 2020 23:45:44 -0800 (PST)
+From:   Liang Li <liliang.opensource@gmail.com>
+X-Google-Original-From: Liang Li <liliangleo@didiglobal.com>
+Date:   Tue, 22 Dec 2020 02:45:41 -0500
+To:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Liang Li <liliangleo@didiglobal.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Liang Li <liliang324@gmail.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, qemu-devel@nongnu.org
+Subject: [RFC PATCH 0/3] add support for free hugepage reporting
+Message-ID: <20201222074538.GA30029@open-light-1.localdomain>
+Mail-Followup-To: Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Dave Hansen <dave.hansen@intel.com>, Michal Hocko <mhocko@suse.com>,
+        Liang Li <liliangleo@didiglobal.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Liang Li <liliang324@gmail.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        David Gow <davidgow@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        virtualization@lists.linux-foundation.org, qemu-devel@nongnu.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kunit_tool relies on the UML console outputting printk() output to the
-tty in order to get results. Since the default console driver could
-change, pass 'console=tty' to the kernel.
+A typical usage of hugetlbfs it's to reserve amount of memory when
+the during kernel booting stage, and the reserved pages are unlikely
+to return to the buddy system. When application need hugepages, kernel
+will allocate them from the reserved pool. when application terminates,
+huge pages will return to the reserved pool and are kept in the free
+list for hugetlb, these free pages will not return to buddy freelist
+unless the size fo reserved pool is changed. 
+Free page reporting only supports buddy pages, it can't report the
+free pages reserved for hugetlbfs. On the other hand, hugetlbfs
+is a good choice for system with a huge amount of RAM, because it
+can help to reduce the memory management overhead and improve system
+performance.
+This patch add the support for reporting hugepages in the free list
+of hugetlb, it can be used by virtio_balloon driver for memory
+overcommit and pre zero out free pages for speeding up memory
+population and page fault handling.
 
-This is triggered by a change[1] to use ttynull as a fallback console
-driver which -- by chance or by design -- seems to have changed the
-default console output on UML, breaking kunit_tool. While this may be
-fixed, we should be less fragile to such changes in the default.
+Most of the code are 'copied' from free page reporting because they
+are working in the same way. So the code can be refined to remove
+the duplication code. Since this is an RFC, I didn't do that.
 
-[1]:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=757055ae8dedf5333af17b3b5b4b70ba9bc9da4e
+For the virtio_balloon driver, changes for the virtio spec are needed.
+Before that, I need the feedback of the comunity about this new feature.
 
-Signed-off-by: David Gow <davidgow@google.com>
-Fixes: 757055ae8ded ("init/console: Use ttynull as a fallback when there is no console")
----
- tools/testing/kunit/kunit_kernel.py | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Liang Li (3):
+  mm: support hugetlb free page reporting
+  virtio-balloon: add support for providing free huge page reports to
+    host
+  mm: support free hugepage pre zero out
 
-diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-index 57c1724b7e5d..698358c9c0d6 100644
---- a/tools/testing/kunit/kunit_kernel.py
-+++ b/tools/testing/kunit/kunit_kernel.py
-@@ -198,7 +198,7 @@ class LinuxSourceTree(object):
- 		return self.validate_config(build_dir)
- 
- 	def run_kernel(self, args=[], build_dir='', timeout=None):
--		args.extend(['mem=1G'])
-+		args.extend(['mem=1G', 'console=tty'])
- 		self._ops.linux_bin(args, timeout, build_dir)
- 		outfile = get_outfile_path(build_dir)
- 		subprocess.call(['stty', 'sane'])
+ drivers/virtio/virtio_balloon.c     |  61 ++++++
+ include/linux/hugetlb.h             |   3 +
+ include/linux/page_reporting.h      |   5 +
+ include/uapi/linux/virtio_balloon.h |   1 +
+ mm/hugetlb.c                        |  29 +++
+ mm/page_prezero.c                   |  17 ++
+ mm/page_reporting.c                 | 287 ++++++++++++++++++++++++++++
+ mm/page_reporting.h                 |  34 ++++
+ 8 files changed, 437 insertions(+)
+
+Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Dave Hansen <dave.hansen@intel.com>
+Cc: David Hildenbrand <david@redhat.com>  
+Cc: Michal Hocko <mhocko@suse.com> 
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Alex Williamson <alex.williamson@redhat.com>
+Cc: Michael S. Tsirkin <mst@redhat.com>
+Cc: Jason Wang <jasowang@redhat.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Liang Li <liliang324@gmail.com>
 -- 
-2.29.2.729.g45daf8777d-goog
+2.18.2
 
