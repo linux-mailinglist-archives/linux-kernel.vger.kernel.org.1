@@ -2,245 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B64462E08D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 11:31:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44B582E08D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 11:31:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726830AbgLVKau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 05:30:50 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:43752 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726333AbgLVKat (ORCPT
+        id S1726511AbgLVKbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 05:31:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726333AbgLVKbV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 05:30:49 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C6B6C9E6;
-        Tue, 22 Dec 2020 11:30:06 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1608633007;
-        bh=Yzzayy1jXlp0/639WscGDZbsKqyI1CX8/CSqZKJW5Ms=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aF4v5R0xHOgJg1bh1cylglnVJbVxLF5ENpCbWHQwRXk7yiCICiQIiMo8QGg99Mhmz
-         V+FUFuf+eIqXN5IU55eZ5IrrSWbsYj36mf9PBtYd/JnIUy9JSYUmWL6QJixXhGJmL9
-         +Q9ZnMyHEF3SX0WZqlUnbyuzDeHA13K4lmb85XoU=
-Date:   Tue, 22 Dec 2020 12:29:59 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 09/12] media: uvcvideo: Implement
- UVC_QUIRK_PRIVACY_DURING_STREAM
-Message-ID: <X+HKpxzbVC29lNlk@pendragon.ideasonboard.com>
-References: <20201221164819.792019-1-ribalda@chromium.org>
- <20201221164819.792019-10-ribalda@chromium.org>
+        Tue, 22 Dec 2020 05:31:21 -0500
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C9A4C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 02:30:41 -0800 (PST)
+Received: by mail-lf1-x143.google.com with SMTP id m12so30787680lfo.7
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 02:30:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=arLJjw4ajAn6LC2XU3pN5oUvvehh5rZnK18PYWOQ1S8=;
+        b=o6Q9fwRVgw6bWHybczbcfqvQJFgkuSl3ScafbSdShVN2OMZ0Ob11syixrdzhEjm3zR
+         NjK3O4Mfz6XjlB8KQVPrH3XOxSgQ8P/+UAe39b78DSvpHr/356uTlRf5edVnCXgOxGKv
+         dukFeU5clpiVo+Qa7MNQansZAL+qKHqyac6nlpKxJY7XrrOaK8UNGjsPUmKsbnt8O/gG
+         IAuCO7Aum357sy6nDCXYqs+fqXr25QT6cW2ecSWsslHJamtk7fwyQOYgm5v/SetbJjAX
+         6E3abnS6G6FNuY3XZQXjlUsdaXytsh4/jtRpaj8tJWWG9d5D5gKwifXofu9sSj0OQUSK
+         XcjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=arLJjw4ajAn6LC2XU3pN5oUvvehh5rZnK18PYWOQ1S8=;
+        b=rt1t/Zw4W5AhYWDmZeXhfOv8eQT7ebT+1QPG0Xg7An7TWhaE29/+VdejRtpUyERNPX
+         6QsfRsB95SZ6fl+3oclv50BheIxGxbnoD/yLAEMHAUq/gir5p28I5Skzbq92Law0gsFs
+         OPOLbYnkW0FPNLxKhvNw/i7S8DoWqtxFhROqmi6cr0MDTaoPFavOvzFvktU7GLBya/Yd
+         cn5xsARaxna4ggs3TtKvzVinru3epyaT3vJULmS53EwHAQ36uC0Em0XFxuHvJM+uL4Eg
+         wQFsIpqx5DGg7QyS3xOZ7b/ZCAxCYj7wTqHWSA88qeoXScXM+R+PrmeR+srHD3U+fEAJ
+         pU1g==
+X-Gm-Message-State: AOAM531vogmNLQdQ7FrBFChUhLGecbe8Ten5JoCxvdKr3Yu315N81vXg
+        S2lDdLvhRFD2K751igNHP5S5RWrMe2ZyzKXS9tI=
+X-Google-Smtp-Source: ABdhPJza0fOZCF5L+dsfluzobGiGPTiC4ZtaxzRO1XdZ7nNBsen0lbSE90mA3rfxPvZkCux/SKzY9MLBWWMo1ADR7HA=
+X-Received: by 2002:a2e:9101:: with SMTP id m1mr9105433ljg.231.1608633039640;
+ Tue, 22 Dec 2020 02:30:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201221164819.792019-10-ribalda@chromium.org>
+Received: by 2002:a2e:9988:0:0:0:0:0 with HTTP; Tue, 22 Dec 2020 02:30:39
+ -0800 (PST)
+Reply-To: elizabethhedw@gmail.com
+From:   "Mrs. Elizabeth Edward" <mjimoh052@gmail.com>
+Date:   Tue, 22 Dec 2020 10:30:39 +0000
+Message-ID: <CAAad0w+izuF21Fiii-1X3j1Wr_NhpfJJjpR9qkdJqjHdzFEKDg@mail.gmail.com>
+Subject: REPLY ME URGENTLY
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricardo,
+Greeting
 
-Thank you for the patch.
+Please forgive me for stressing you with my predicaments and I sorry
+to approach you through this media it is because it serves the fastest
+means of communication. I came across your E-mail from my personal
+search and I decided to contact you believing you will be honest to
+fulfill my final wish before I die.
 
-On Mon, Dec 21, 2020 at 05:48:16PM +0100, Ricardo Ribalda wrote:
-> Some devices, can only read the privacy_pin if the device is
+I am Mrs. Elizabeth Edward, 63 years, from USA, I am childless and I
+am suffering from a pro-long critical cancer, my doctors confirmed I
+may not live beyond two months from now as my ill health has defiled
+all forms of medical treatment.
 
-s/devices,/devices/
+Since my days are numbered, I=E2=80=99ve decided willingly to fulfill my
+long-time promise to donate you the sum ($5.000.000.00) million
+dollars I inherited from my late husband Mr. Edward Herbart, foreign
+bank account over years. I need a very honest person who can assist in
+transfer of this money to his or her account and use the funds for
+charities work of God while you use 50% for yourself. I want you to
+know there are no risk involved, it is 100% hitch free & safe. If you
+will be interesting to assist in getting this fund into your account
+for charity project to fulfill my promise before I die please let me
+know immediately. I will appreciate your utmost confidentiality as I
+wait for your reply.
 
-> streaming.
-> 
-> This patch implement a quirk for such devices, in order to avoid invalid
-> reads and/or spurious events.
-> 
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> ---
->  drivers/media/usb/uvc/uvc_driver.c | 57 ++++++++++++++++++++++++++++--
->  drivers/media/usb/uvc/uvc_queue.c  |  3 ++
->  drivers/media/usb/uvc/uvcvideo.h   |  4 +++
->  3 files changed, 61 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-> index 72516101fdd0..7af37d4bd60a 100644
-> --- a/drivers/media/usb/uvc/uvc_driver.c
-> +++ b/drivers/media/usb/uvc/uvc_driver.c
-> @@ -7,6 +7,7 @@
->   */
->  
->  #include <linux/atomic.h>
-> +#include <linux/dmi.h>
->  #include <linux/gpio/consumer.h>
->  #include <linux/kernel.h>
->  #include <linux/list.h>
-> @@ -1472,6 +1473,17 @@ static int uvc_parse_control(struct uvc_device *dev)
->  /* -----------------------------------------------------------------------------
->   * Privacy GPIO
->   */
+Best Regards
 
-There should be a blank line here.
-
-> +static bool uvc_gpio_is_streaming(struct uvc_device *dev)
-> +{
-> +	struct uvc_streaming *streaming;
-> +
-> +	list_for_each_entry(streaming, &dev->streams, list) {
-> +		if (uvc_queue_streaming(&streaming->queue))
-> +			return true;
-> +	}
-> +
-> +	return false;
-> +}
->  
->  
-
-But not too blank lines here.
-
->  static u8 uvc_gpio_update_value(struct uvc_device *dev,
-> @@ -1499,7 +1511,12 @@ static int uvc_gpio_get_cur(struct uvc_device *dev, struct uvc_entity *entity,
->  	if (cs != UVC_CT_PRIVACY_CONTROL || size < 1)
->  		return -EINVAL;
->  
-> +	if ((dev->quirks & UVC_QUIRK_PRIVACY_DURING_STREAM) &&
-> +	    !uvc_gpio_is_streaming(dev))
-> +		return -EBUSY;
-> +
->  	*(uint8_t *)data = uvc_gpio_update_value(dev, entity);
-> +
->  	return 0;
->  }
->  
-> @@ -1528,19 +1545,50 @@ static struct uvc_entity *uvc_gpio_find_entity(struct uvc_device *dev)
->  	return NULL;
->  }
->  
-> -static irqreturn_t uvc_gpio_irq(int irq, void *data)
-> +void uvc_privacy_gpio_event(struct uvc_device *dev)
->  {
-> -	struct uvc_device *dev = data;
->  	struct uvc_entity *unit;
->  
-> +
->  	unit = uvc_gpio_find_entity(dev);
->  	if (!unit)
-> -		return IRQ_HANDLED;
-> +		return;
->  
->  	uvc_gpio_update_value(dev, unit);
-> +}
-> +
-> +static irqreturn_t uvc_gpio_irq(int irq, void *data)
-> +{
-> +	struct uvc_device *dev = data;
-> +
-> +	/* Ignore privacy events during streamoff */
-> +	if (dev->quirks & UVC_QUIRK_PRIVACY_DURING_STREAM)
-> +		if (!uvc_gpio_is_streaming(dev))
-> +			return IRQ_HANDLED;
-
-I'm still a bit concerned of race conditions. When stopping the stream,
-vb2_queue.streaming is set to 0 after calling the driver's .stop_stream()
-handler. This means that the device will cut power before
-uvc_gpio_is_streaming() can detect that streaming has stopped, and the
-GPIO could thus trigger an IRQ.
-
-You mentioned that devices have a pull-up or pull-down on the GPIO line.
-As there are only two devices affected, do you know if it's a pull-up or
-pull-down ? Would it be worse to expose that state to userspace than to
-return -EBUSY when reading the control ?
-
-> +
-> +	uvc_privacy_gpio_event(dev);
-> +
->  	return IRQ_HANDLED;
->  }
->  
-> +static const struct dmi_system_id privacy_valid_during_streamon[] = {
-> +	{
-> +		.ident = "HP Elite c1030 Chromebook",
-> +		.matches = {
-> +			DMI_MATCH(DMI_SYS_VENDOR, "HP"),
-> +			DMI_MATCH(DMI_PRODUCT_NAME, "Jinlon"),
-> +		},
-> +	},
-> +	{
-> +		.ident = "HP Pro c640 Chromebook",
-> +		.matches = {
-> +			DMI_MATCH(DMI_SYS_VENDOR, "HP"),
-> +			DMI_MATCH(DMI_PRODUCT_NAME, "Dratini"),
-> +		},
-> +	},
-> +	{ } /* terminate list */
-> +};
-> +
->  static int uvc_gpio_parse(struct uvc_device *dev)
->  {
->  	struct uvc_entity *unit;
-> @@ -1577,6 +1625,9 @@ static int uvc_gpio_parse(struct uvc_device *dev)
->  
->  	list_add_tail(&unit->list, &dev->entities);
->  
-> +	if (dmi_check_system(privacy_valid_during_streamon))
-> +		dev->quirks |= UVC_QUIRK_PRIVACY_DURING_STREAM;
-
-This will also match any external UVC camera plugged to one of the
-affected systems, right ? It shouldn't matter in practice as those
-devices won't have a GPIO entity.
-
-I suppose we can't match on VID:PID instead because the same VID:PID is
-used in both devices affected by this issue, and devices immune to it ?
-
-> +
->  	return 0;
->  }
->  
-> diff --git a/drivers/media/usb/uvc/uvc_queue.c b/drivers/media/usb/uvc/uvc_queue.c
-> index cd60c6c1749e..e800d491303f 100644
-> --- a/drivers/media/usb/uvc/uvc_queue.c
-> +++ b/drivers/media/usb/uvc/uvc_queue.c
-> @@ -337,9 +337,12 @@ int uvc_dequeue_buffer(struct uvc_video_queue *queue, struct v4l2_buffer *buf,
->  int uvc_queue_streamon(struct uvc_video_queue *queue, enum v4l2_buf_type type)
->  {
->  	int ret;
-> +	struct uvc_streaming *stream = uvc_queue_to_stream(queue);
-
-Please swap the two lines.
-
->  
->  	mutex_lock(&queue->mutex);
->  	ret = vb2_streamon(&queue->queue, type);
-> +	if (stream->dev->quirks & UVC_QUIRK_PRIVACY_DURING_STREAM)
-> +		uvc_privacy_gpio_event(stream->dev);
-
-Even when vb2_streamon() failed ?
-
->  	mutex_unlock(&queue->mutex);
->  
->  	return ret;
-> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> index 079a407ebba5..32c1ba246d97 100644
-> --- a/drivers/media/usb/uvc/uvcvideo.h
-> +++ b/drivers/media/usb/uvc/uvcvideo.h
-> @@ -209,6 +209,7 @@
->  #define UVC_QUIRK_RESTORE_CTRLS_ON_INIT	0x00000400
->  #define UVC_QUIRK_FORCE_Y8		0x00000800
->  #define UVC_QUIRK_FORCE_BPP		0x00001000
-> +#define UVC_QUIRK_PRIVACY_DURING_STREAM	0x00002000
->  
->  /* Format flags */
->  #define UVC_FMT_FLAG_COMPRESSED		0x00000001
-> @@ -826,6 +827,9 @@ extern const struct v4l2_file_operations uvc_fops;
->  int uvc_mc_register_entities(struct uvc_video_chain *chain);
->  void uvc_mc_cleanup_entity(struct uvc_entity *entity);
->  
-> +/* Privacy gpio */
-> +void uvc_privacy_gpio_event(struct uvc_device *dev);
-> +
->  /* Video */
->  int uvc_video_init(struct uvc_streaming *stream);
->  int uvc_video_suspend(struct uvc_streaming *stream);
-
--- 
-Regards,
-
-Laurent Pinchart
+Mrs. Elizabeth Edward
