@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B41C92E0723
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 09:18:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AD492E0725
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 09:22:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726111AbgLVISO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 03:18:14 -0500
-Received: from mailoutvs27.siol.net ([185.57.226.218]:49084 "EHLO
+        id S1725924AbgLVIVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 03:21:47 -0500
+Received: from mailoutvs16.siol.net ([185.57.226.207]:46716 "EHLO
         mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725782AbgLVISO (ORCPT
+        with ESMTP id S1725300AbgLVIVr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 03:18:14 -0500
+        Tue, 22 Dec 2020 03:21:47 -0500
 Received: from localhost (localhost [127.0.0.1])
-        by mail.siol.net (Zimbra) with ESMTP id CBF74522976;
-        Tue, 22 Dec 2020 09:17:31 +0100 (CET)
-X-Virus-Scanned: amavisd-new at psrvmta12.zcs-production.pri
+        by mail.siol.net (Postfix) with ESMTP id EC04E5214DE;
+        Tue, 22 Dec 2020 09:21:04 +0100 (CET)
+X-Virus-Scanned: amavisd-new at psrvmta11.zcs-production.pri
 Received: from mail.siol.net ([127.0.0.1])
-        by localhost (psrvmta12.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id ZBVoPNRPswOR; Tue, 22 Dec 2020 09:17:31 +0100 (CET)
+        by localhost (psrvmta11.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id LyxO0tTR1YJW; Tue, 22 Dec 2020 09:21:04 +0100 (CET)
 Received: from mail.siol.net (localhost [127.0.0.1])
-        by mail.siol.net (Zimbra) with ESMTPS id 907D45226FB;
-        Tue, 22 Dec 2020 09:17:31 +0100 (CET)
+        by mail.siol.net (Postfix) with ESMTPS id AA6275213E3;
+        Tue, 22 Dec 2020 09:21:04 +0100 (CET)
 Received: from jernej-laptop.localnet (89-212-178-211.dynamic.t-2.net [89.212.178.211])
         (Authenticated sender: jernej.skrabec@siol.net)
-        by mail.siol.net (Zimbra) with ESMTPA id BD2B3522996;
-        Tue, 22 Dec 2020 09:17:30 +0100 (CET)
+        by mail.siol.net (Postfix) with ESMTPA id 657DF52134B;
+        Tue, 22 Dec 2020 09:21:04 +0100 (CET)
 From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
 To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, Paul Kocialkowski <contact@paulk.fr>
-Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
         Paul Kocialkowski <contact@paulk.fr>
-Subject: Re: [PATCH] ARM: dts: sun8i-v3s: Add CSI0 MCLK pin definition
-Date:   Tue, 22 Dec 2020 09:17:30 +0100
-Message-ID: <3035881.9zrMQt1rZd@jernej-laptop>
-In-Reply-To: <20201218195033.2301127-1-contact@paulk.fr>
-References: <20201218195033.2301127-1-contact@paulk.fr>
+Subject: Re: [PATCH v2 1/2] dt-bindings: pwm: allwinner: Add V3s compatible description
+Date:   Tue, 22 Dec 2020 09:21:04 +0100
+Message-ID: <2475548.3AtxBWxPV6@jernej-laptop>
+In-Reply-To: <20201218205436.2326872-1-contact@paulk.fr>
+References: <20201218205436.2326872-1-contact@paulk.fr>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
@@ -45,40 +47,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi!
 
-Dne petek, 18. december 2020 ob 20:50:33 CET je Paul Kocialkowski napisal(a):
-> This adds a device-tree definition for the CSI0 MCLK pin,
-> which can be used for feeding MIPI CSI-2 sensors.
+Dne petek, 18. december 2020 ob 21:54:35 CET je Paul Kocialkowski napisal(a):
+> Introduce bindings description for the V3s PWM, which is
+> register-compatible with the A20 PWM.
 > 
 > Signed-off-by: Paul Kocialkowski <contact@paulk.fr>
 
-Is this used anywhere? Current policy is to add pin definitions only if any 
-user exists.
+This is meant to be used together with V3s PWM patch you recently send? Can 
+you please resend them together, with fixed compatible in DT node? Currently 
+it's not clear why this patch is needed and PWM patch will need fix anyway.
 
 Best regards,
 Jernej
 
 > ---
->  arch/arm/boot/dts/sun8i-v3s.dtsi | 6 ++++++
->  1 file changed, 6 insertions(+)
+>  .../devicetree/bindings/pwm/allwinner,sun4i-a10-pwm.yaml       | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> diff --git a/arch/arm/boot/dts/sun8i-v3s.dtsi
-> b/arch/arm/boot/dts/sun8i-v3s.dtsi index a9f5795d4e57..bff822b9fa01 100644
-> --- a/arch/arm/boot/dts/sun8i-v3s.dtsi
-> +++ b/arch/arm/boot/dts/sun8i-v3s.dtsi
-> @@ -337,6 +337,12 @@ pio: pinctrl@1c20800 {
->  			interrupt-controller;
->  			#interrupt-cells = <3>;
-> 
-> +			/omit-if-no-ref/
-> +			csi0_mclk_pin: csi0-mclk-pin {
-> +				pins = "PE20";
-> +				function = "csi_mipi";
-> +			};
-> +
->  			/omit-if-no-ref/
->  			csi1_8bit_pins: csi1-8bit-pins {
->  				pins = "PE0", "PE2", "PE3", 
-"PE8", "PE9",
+> diff --git
+> a/Documentation/devicetree/bindings/pwm/allwinner,sun4i-a10-pwm.yaml
+> b/Documentation/devicetree/bindings/pwm/allwinner,sun4i-a10-pwm.yaml index
+> 7dcab2bf8128..04ff708fdc86 100644
+> --- a/Documentation/devicetree/bindings/pwm/allwinner,sun4i-a10-pwm.yaml
+> +++ b/Documentation/devicetree/bindings/pwm/allwinner,sun4i-a10-pwm.yaml
+> @@ -24,6 +24,9 @@ properties:
+>        - items:
+>            - const: allwinner,sun8i-a83t-pwm
+>            - const: allwinner,sun8i-h3-pwm
+> +      - items:
+> +          - const: allwinner,sun8i-v3s-pwm
+> +          - const: allwinner,sun7i-a20-pwm
+>        - items:
+>            - const: allwinner,sun50i-a64-pwm
+>            - const: allwinner,sun5i-a13-pwm
 
 
 
