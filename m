@@ -2,115 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFD792E0AA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 14:30:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37BBD2E0AA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 14:30:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727177AbgLVN3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 08:29:16 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:8189 "EHLO pegase1.c-s.fr"
+        id S1727204AbgLVN3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 08:29:51 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:1325 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726756AbgLVN3P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 08:29:15 -0500
+        id S1726637AbgLVN3t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 08:29:49 -0500
 Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4D0cbt6DPNz9v1w3;
-        Tue, 22 Dec 2020 14:28:26 +0100 (CET)
+        by localhost (Postfix) with ESMTP id 4D0cbw1x4Pz9v1wH;
+        Tue, 22 Dec 2020 14:28:28 +0100 (CET)
 X-Virus-Scanned: Debian amavisd-new at c-s.fr
 Received: from pegase1.c-s.fr ([192.168.12.234])
         by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id dtpUDLkFgp3Y; Tue, 22 Dec 2020 14:28:26 +0100 (CET)
+        with ESMTP id sDRYXgDRTno3; Tue, 22 Dec 2020 14:28:28 +0100 (CET)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4D0cbt3Ntyz9v1vl;
-        Tue, 22 Dec 2020 14:28:26 +0100 (CET)
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4D0cbw0NW6z9v1vl;
+        Tue, 22 Dec 2020 14:28:28 +0100 (CET)
 Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1D4648B812;
-        Tue, 22 Dec 2020 14:28:27 +0100 (CET)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 48CE88B81B;
+        Tue, 22 Dec 2020 14:28:29 +0100 (CET)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id Q5n7FFkUfKck; Tue, 22 Dec 2020 14:28:27 +0100 (CET)
+        with ESMTP id 7DqYX_mvUlT9; Tue, 22 Dec 2020 14:28:29 +0100 (CET)
 Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id BEAC68B81C;
-        Tue, 22 Dec 2020 14:28:26 +0100 (CET)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id CBDDE8B81C;
+        Tue, 22 Dec 2020 14:28:28 +0100 (CET)
 Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 9E5B366969; Tue, 22 Dec 2020 13:28:26 +0000 (UTC)
-Message-Id: <34fde63f403eca009921fee44176f16a43a8d57d.1608641533.git.christophe.leroy@csgroup.eu>
+        id ABFEC66969; Tue, 22 Dec 2020 13:28:28 +0000 (UTC)
+Message-Id: <0246430576c2ff0aed1d35ccbd6f44e658908102.1608641533.git.christophe.leroy@csgroup.eu>
 In-Reply-To: <cover.1608641532.git.christophe.leroy@csgroup.eu>
 References: <cover.1608641532.git.christophe.leroy@csgroup.eu>
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v1 04/15] powerpc/32s: Do DABR match out of
- handle_page_fault()
+Subject: [PATCH v1 06/15] powerpc: Remove address and errorcode arguments from
+ do_break()
 To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
         Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com
 Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Tue, 22 Dec 2020 13:28:26 +0000 (UTC)
+Date:   Tue, 22 Dec 2020 13:28:28 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-handle_page_fault() has some code dedicated to book3s/32 to
-call do_break() when the DSI is a DABR match.
+Let do_break() retrieve address and errorcode from regs.
 
-On other platforms, do_break() is handled separately.
+This simplifies the code and shouldn't impeed performance as
+address and errorcode are likely still hot in the cache.
 
-Do the same for book3s/32, do it earlier in the process of DSI.
-
-This change also avoid doing the test on ISI.
-
+Suggested-by: Nicholas Piggin <npiggin@gmail.com>
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- arch/powerpc/kernel/entry_32.S       | 15 ---------------
- arch/powerpc/kernel/head_book3s_32.S |  3 +++
- 2 files changed, 3 insertions(+), 15 deletions(-)
+ arch/powerpc/include/asm/debug.h     | 3 +--
+ arch/powerpc/kernel/exceptions-64s.S | 2 --
+ arch/powerpc/kernel/head_8xx.S       | 5 -----
+ arch/powerpc/kernel/process.c        | 8 +++-----
+ 4 files changed, 4 insertions(+), 14 deletions(-)
 
-diff --git a/arch/powerpc/kernel/entry_32.S b/arch/powerpc/kernel/entry_32.S
-index 1c9b0ccc2172..238eacfda7b0 100644
---- a/arch/powerpc/kernel/entry_32.S
-+++ b/arch/powerpc/kernel/entry_32.S
-@@ -670,10 +670,6 @@ ppc_swapcontext:
- 	.globl	handle_page_fault
- handle_page_fault:
+diff --git a/arch/powerpc/include/asm/debug.h b/arch/powerpc/include/asm/debug.h
+index ec57daf87f40..0550eceab3ca 100644
+--- a/arch/powerpc/include/asm/debug.h
++++ b/arch/powerpc/include/asm/debug.h
+@@ -52,8 +52,7 @@ extern void do_send_trap(struct pt_regs *regs, unsigned long address,
+ 			 unsigned long error_code, int brkpt);
+ #else
+ 
+-extern void do_break(struct pt_regs *regs, unsigned long address,
+-		     unsigned long error_code);
++void do_break(struct pt_regs *regs);
+ #endif
+ 
+ #endif /* _ASM_POWERPC_DEBUG_H */
+diff --git a/arch/powerpc/kernel/exceptions-64s.S b/arch/powerpc/kernel/exceptions-64s.S
+index cfbd1d690033..3ea067bcbb95 100644
+--- a/arch/powerpc/kernel/exceptions-64s.S
++++ b/arch/powerpc/kernel/exceptions-64s.S
+@@ -3262,8 +3262,6 @@ handle_page_fault:
+ 
+ /* We have a data breakpoint exception - handle it */
+ handle_dabr_fault:
+-	ld      r4,_DAR(r1)
+-	ld      r5,_DSISR(r1)
+ 	addi    r3,r1,STACK_FRAME_OVERHEAD
+ 	bl      do_break
+ 	/*
+diff --git a/arch/powerpc/kernel/head_8xx.S b/arch/powerpc/kernel/head_8xx.S
+index 52702f3db6df..81f3c984f50c 100644
+--- a/arch/powerpc/kernel/head_8xx.S
++++ b/arch/powerpc/kernel/head_8xx.S
+@@ -364,11 +364,6 @@ do_databreakpoint:
  	addi	r3,r1,STACK_FRAME_OVERHEAD
--#ifdef CONFIG_PPC_BOOK3S_32
--	andis.  r0,r5,DSISR_DABRMATCH@h
--	bne-    handle_dabr_fault
+ 	mfspr	r4,SPRN_BAR
+ 	stw	r4,_DAR(r11)
+-#ifdef CONFIG_VMAP_STACK
+-	lwz	r5,_DSISR(r11)
+-#else
+-	mfspr	r5,SPRN_DSISR
 -#endif
- 	bl	do_page_fault
- 	cmpwi	r3,0
- 	beq+	ret_from_except
-@@ -687,17 +683,6 @@ handle_page_fault:
- 	bl	__bad_page_fault
- 	b	ret_from_except_full
+ 	EXC_XFER_STD(0x1c00, do_break)
  
--#ifdef CONFIG_PPC_BOOK3S_32
--	/* We have a data breakpoint exception - handle it */
--handle_dabr_fault:
--	SAVE_NVGPRS(r1)
--	lwz	r0,_TRAP(r1)
--	clrrwi	r0,r0,1
--	stw	r0,_TRAP(r1)
--	bl      do_break
--	b	ret_from_except_full
--#endif
--
- /*
-  * This routine switches between two different tasks.  The process
-  * state of one is saved on its kernel stack.  Then the state
-diff --git a/arch/powerpc/kernel/head_book3s_32.S b/arch/powerpc/kernel/head_book3s_32.S
-index f6355fcca86a..15e6003fd3b8 100644
---- a/arch/powerpc/kernel/head_book3s_32.S
-+++ b/arch/powerpc/kernel/head_book3s_32.S
-@@ -697,7 +697,10 @@ handle_page_fault_tramp_1:
- 	lwz	r5, _DSISR(r11)
- 	/* fall through */
- handle_page_fault_tramp_2:
-+	andis.	r0, r5, DSISR_DABRMATCH@h
-+	bne-	1f
- 	EXC_XFER_LITE(0x300, handle_page_fault)
-+1:	EXC_XFER_STD(0x300, do_break)
+ 	. = 0x1c00
+diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
+index a66f435dabbf..99c5e4fc5ff1 100644
+--- a/arch/powerpc/kernel/process.c
++++ b/arch/powerpc/kernel/process.c
+@@ -659,12 +659,10 @@ static void do_break_handler(struct pt_regs *regs)
+ 	}
+ }
  
- #ifdef CONFIG_VMAP_STACK
- #ifdef CONFIG_PPC_BOOK3S_604
+-void do_break (struct pt_regs *regs, unsigned long address,
+-		    unsigned long error_code)
++void do_break(struct pt_regs *regs)
+ {
+ 	current->thread.trap_nr = TRAP_HWBKPT;
+-	if (notify_die(DIE_DABR_MATCH, "dabr_match", regs, error_code,
+-			11, SIGSEGV) == NOTIFY_STOP)
++	if (notify_die(DIE_DABR_MATCH, "dabr_match", regs, regs->dsisr, 11, SIGSEGV) == NOTIFY_STOP)
+ 		return;
+ 
+ 	if (debugger_break_match(regs))
+@@ -681,7 +679,7 @@ void do_break (struct pt_regs *regs, unsigned long address,
+ 		do_break_handler(regs);
+ 
+ 	/* Deliver the signal to userspace */
+-	force_sig_fault(SIGTRAP, TRAP_HWBKPT, (void __user *)address);
++	force_sig_fault(SIGTRAP, TRAP_HWBKPT, (void __user *)regs->dar);
+ }
+ #endif	/* CONFIG_PPC_ADV_DEBUG_REGS */
+ 
 -- 
 2.25.0
 
