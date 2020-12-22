@@ -2,154 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3FEC2E0569
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 05:36:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A05232E056B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 05:38:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726025AbgLVEfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 23:35:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33180 "EHLO
+        id S1726035AbgLVEho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 23:37:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725945AbgLVEfv (ORCPT
+        with ESMTP id S1725841AbgLVEho (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 23:35:51 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CFA6C06179C
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 20:35:11 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id x1so2015905pgh.12
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 20:35:11 -0800 (PST)
+        Mon, 21 Dec 2020 23:37:44 -0500
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3599C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 20:37:03 -0800 (PST)
+Received: by mail-ot1-x336.google.com with SMTP id i6so10917966otr.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 20:37:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=efVgO12y6qfjlIavBoObF8HNxu4Hvm/8sbVusrJEyQg=;
-        b=gcGcsrRKLFZqUishLYUK2rrAojhE9KbDilt+wO3akI1bUTMp6W4g6QDuvluwKINvEL
-         LPQJwcQesfB7tbcvglhfu/eDlPpLMgIABhch24FsZA3KmDR5YnK4Jf8Ij8kyMStXn0PD
-         eWrEAmPy2T8neKZkvacTysW0dP1CPT0DnemUt9jwi+Nx4w2NaxhUEDnLXb1QS18HYoks
-         r2JGrQ7jj61jt/hpzITPtrXoSmH3d5GRx/0w2CbDGyKlSWKXNYq53HXZCg8RcdvG2LID
-         +lGBlkcfXuKgcYgzovKXbGfJNYLh782NpxjOHrljhj2ug57mZoDd8Nu++wsQhMiCD6G4
-         yKWw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Wy1gz9kjio0vb0pT053cREDywWupFHkrgigfRiFKKQE=;
+        b=Ce/+jTfY160zdkiluiCMIOjV8mHy78gD/+8KBpe2uMli99f5zKBfcndNx+K4h8kkF0
+         TIPwNbuPELC52D+Nnj3KUjHEeB1y146zjGwC9vhAi+/gbDJNaovuG+dfRwPcW+kjjuBm
+         Xk/0BystJw7g5pws2Hx40+iUQ1NZ55hwwTQC334F29YO7qcFGLh654/pI+JYIu0rDOd8
+         Ku7+A8/LWse7hgd7aybUVKdsWtmIngUrb+SUNbDiyZHTxYlADrLgvP4VqTvu2RR6Qy4A
+         ZiYvnRtLwFzvgRb0qwotRlzoP9FO/sxPiLIirD0ItRTo4MxvEuDCzb3h9HNK8LMogEwd
+         2/Zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=efVgO12y6qfjlIavBoObF8HNxu4Hvm/8sbVusrJEyQg=;
-        b=q5eI6s3mHIg/jiUCNvIx8BGSOyyCpIiLrEl1MYx5UTTZfpANjiRU4NK6cEKsc8+q3i
-         JeJVxeHUTQIG4scNdvXQUgw671ve+Gqw5HCJjOr/dg7MuE3guZGn/aBl9lCu8YT/dTB2
-         /trYDJQaSX8CBve1M1e01cV/BI28yo4+IFk1ar/7VvT1a1LcZDdf9yXXhtI/7fagc1OE
-         /z+PklhWcwpRmiJbR1j30fFtw/SLCQxTEbCV9bvZLj+lJKVcnAlzoUgZeeYtl7xThmNq
-         /8OywJBzF0LOJRpZq3nM1adDa3CE9bq569yB0VY8daHFlRxakL7qiXfvFBFhOWqeFz4Q
-         ZG8g==
-X-Gm-Message-State: AOAM531fx27BYZBzXlj93oXTBzoBkVmsJhjNJdAMReEm7s0inPZTLMMy
-        55rHkswBy/ixYcT7FyH7AYrrZA==
-X-Google-Smtp-Source: ABdhPJyIViesLe5L57QCib4Tc30kaHqp521NAFEgLLhIV79uAFs5gXWHG0AJbrltGyBakJ301c0CIQ==
-X-Received: by 2002:a65:5b47:: with SMTP id y7mr16390380pgr.221.1608611710462;
-        Mon, 21 Dec 2020 20:35:10 -0800 (PST)
-Received: from localhost ([122.172.20.109])
-        by smtp.gmail.com with ESMTPSA id 6sm18090487pfj.216.2020.12.21.20.35.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 21 Dec 2020 20:35:09 -0800 (PST)
-Date:   Tue, 22 Dec 2020 10:05:05 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     mmayer@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
-        rjw@rjwysocki.net, f.fainelli@gmail.com, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] cpufreq: brcmstb-avs-cpufreq: Fix some resource leaks in
- the error handling path of the probe function
-Message-ID: <20201222043505.rq3cmajc3mxv3p2z@vireshk-i7>
-References: <20201219101751.181783-1-christophe.jaillet@wanadoo.fr>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Wy1gz9kjio0vb0pT053cREDywWupFHkrgigfRiFKKQE=;
+        b=Ugq/qNlrbBIGvrEA+kk42TUn0/gyG2u87Nth4HV8deEMivsTasXr8WaDPb4OxDx3z8
+         YsCwzBuV+m1sQN+kP2T5SSXM/ue8xc8O0oM004bHq5pPy93o0fFBVQmkhbk3MesXA4t+
+         qQ2xVulSbS17FGzftPNe0BeUtGC3OcQBzKwe6jwpGMQuiS3maPpcXO0b8DsKnypUfe7k
+         SM6LQUxHWibZ0/tWXjIGn+q7Xzt1oaPJuPzqhijNzEKmVYPLE1PYYyrYSYR4ACoAWwLt
+         LTlyEHtys8HrbaxJUpXCFU51TH+OU6hDakZ1m7N9CtZWpWt65XJbW3y4MdWVlvuyEaDF
+         8BoA==
+X-Gm-Message-State: AOAM530/Cfnc7preWwNkqVyp0vJTN5Lsjdi8HWAufdDjj/kVB/Al8i0P
+        PWEGOHTffFxGtGcSim9qUJTuWQ==
+X-Google-Smtp-Source: ABdhPJxkya4cEQ67S+i2hFbIDA+YlO4hEFVc2bpRDyn1asP29BOVsI1DPWxptztq7V4atvtvbkBdAw==
+X-Received: by 2002:a05:6830:4036:: with SMTP id i22mr14328301ots.127.1608611823396;
+        Mon, 21 Dec 2020 20:37:03 -0800 (PST)
+Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id x12sm4066214oic.51.2020.12.21.20.37.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Dec 2020 20:37:02 -0800 (PST)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: [PATCH] arm64: defconfig: Make INTERCONNECT_QCOM_SDM845 builtin
+Date:   Mon, 21 Dec 2020 20:37:45 -0800
+Message-Id: <20201222043745.3420447-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201219101751.181783-1-christophe.jaillet@wanadoo.fr>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19-12-20, 11:17, Christophe JAILLET wrote:
-> If 'cpufreq_register_driver()' fails, we must release the resources
-> allocated in 'brcm_avs_prepare_init()' as already done in the remove
-> function.
-> 
-> To do that, introduce a new function 'brcm_avs_prepare_uninit()' in order
-> to avoid code duplication. This also makes the code more readable (IMHO).
-> 
-> Fixes: de322e085995 ("cpufreq: brcmstb-avs-cpufreq: AVS CPUfreq driver for Broadcom STB SoCs")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
-> I'm not sure that the existing error handling in the remove function is
-> correct and/or needed.
-> ---
->  drivers/cpufreq/brcmstb-avs-cpufreq.c | 25 ++++++++++++++++++++-----
->  1 file changed, 20 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/cpufreq/brcmstb-avs-cpufreq.c b/drivers/cpufreq/brcmstb-avs-cpufreq.c
-> index 3e31e5d28b79..750ca7cfccb0 100644
-> --- a/drivers/cpufreq/brcmstb-avs-cpufreq.c
-> +++ b/drivers/cpufreq/brcmstb-avs-cpufreq.c
-> @@ -597,6 +597,16 @@ static int brcm_avs_prepare_init(struct platform_device *pdev)
->  	return ret;
->  }
->  
-> +static void brcm_avs_prepare_uninit(struct platform_device *pdev)
-> +{
-> +	struct private_data *priv;
-> +
-> +	priv = platform_get_drvdata(pdev);
-> +
-> +	iounmap(priv->avs_intr_base);
-> +	iounmap(priv->base);
-> +}
-> +
->  static int brcm_avs_cpufreq_init(struct cpufreq_policy *policy)
->  {
->  	struct cpufreq_frequency_table *freq_table;
-> @@ -732,21 +742,26 @@ static int brcm_avs_cpufreq_probe(struct platform_device *pdev)
->  
->  	brcm_avs_driver.driver_data = pdev;
->  
-> -	return cpufreq_register_driver(&brcm_avs_driver);
-> +	ret = cpufreq_register_driver(&brcm_avs_driver);
-> +	if (ret)
-> +		goto err_uninit;
-> +
-> +	return 0;
-> +
-> +err_uninit:
-> +	brcm_avs_prepare_uninit(pdev);
-> +	return ret;
+As of v5.11-rc1 the QUP nodes of SDM845 has got their interconnect
+properties specified, this means that the relevant interconnect provider
+needs to be builtin for the UART device to probe and the console to be
+registered before userspace needs to access it.
 
-Maybe rewrite as:
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+ arch/arm64/configs/defconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-	ret = cpufreq_register_driver(&brcm_avs_driver);
-	if (ret)
-                brcm_avs_prepare_uninit(pdev);
-	return ret;
-
->  }
->  
->  static int brcm_avs_cpufreq_remove(struct platform_device *pdev)
->  {
-> -	struct private_data *priv;
->  	int ret;
->  
->  	ret = cpufreq_unregister_driver(&brcm_avs_driver);
->  	if (ret)
->  		return ret;
-
-Instead of returning here, it can be just WARN_ON(ret); and then go on and free
-the resources and this needs to be done in a separate patch.
-
->  
-> -	priv = platform_get_drvdata(pdev);
-> -	iounmap(priv->base);
-> -	iounmap(priv->avs_intr_base);
-> +	brcm_avs_prepare_uninit(pdev);
->  
->  	return 0;
->  }
-
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index 838301650a79..3848ae99501c 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -1078,7 +1078,7 @@ CONFIG_INTERCONNECT=y
+ CONFIG_INTERCONNECT_QCOM=y
+ CONFIG_INTERCONNECT_QCOM_MSM8916=m
+ CONFIG_INTERCONNECT_QCOM_OSM_L3=m
+-CONFIG_INTERCONNECT_QCOM_SDM845=m
++CONFIG_INTERCONNECT_QCOM_SDM845=y
+ CONFIG_INTERCONNECT_QCOM_SM8150=m
+ CONFIG_INTERCONNECT_QCOM_SM8250=m
+ CONFIG_EXT2_FS=y
 -- 
-viresh
+2.29.2
+
