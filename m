@@ -2,96 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E4442E0B0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 14:45:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3EC2E0B10
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 14:47:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727178AbgLVNpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 08:45:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727062AbgLVNph (ORCPT
+        id S1727255AbgLVNp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 08:45:58 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:10065 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726903AbgLVNp5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 08:45:37 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 423A5C0613D3;
-        Tue, 22 Dec 2020 05:44:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=eXSyGreQyqo1MSmMoq/qMuV3OWCVLUj1olxIkYhTkl0=; b=Ix8mJC38mYvh+lNbE2zOg73S2V
-        aW8+bJnapCtY5yvKkPflK2jIdDa2nZaR3ghWYIzq0sfRZ02qOCAZfEHG/mQxOfcyk+/5GLm05CZQ9
-        1//PIsYFfsPOM9YnsFc0MK/+cW401LKBSC2npcgsbbVx1H8rIZUUCGQvsW/j3gF48T2Ea/CWgFu1O
-        I9Naeba9H0I76TnpqQ+UlimvfzMahfalNYx17Dgwpb1XFwQw7Ul9big6pvyPf8LViAJOc/g7sy+8P
-        nJ0DkW1OpNbL/pl3rC86J8zT2uhv7RCpK+zUzX7Ig0Fjcsl47jE82uuldUA8ToZjHCcGMET5UW5we
-        NmGAkx3g==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1krhxu-0002DJ-GS; Tue, 22 Dec 2020 13:44:38 +0000
-Date:   Tue, 22 Dec 2020 13:44:38 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jann Horn <jannh@google.com>
-Cc:     Minchan Kim <minchan@kernel.org>, Christoph Hellwig <hch@lst.de>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
-        Christian Brauner <christian@brauner.io>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Tim Murray <timmurray@google.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Subject: Re: [PATCH 1/2] mm/madvise: allow process_madvise operations on
- entire memory range
-Message-ID: <20201222134438.GA7170@infradead.org>
-References: <20201124053943.1684874-1-surenb@google.com>
- <20201124053943.1684874-2-surenb@google.com>
- <20201125231322.GF1484898@google.com>
- <CAG48ez0UKYCdgyW91SmOcT52vbLFz9RjLpaucWpj6bTrgQCwnA@mail.gmail.com>
+        Tue, 22 Dec 2020 08:45:57 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4D0cy65Bv6zLxlQ;
+        Tue, 22 Dec 2020 21:44:14 +0800 (CST)
+Received: from [10.67.102.197] (10.67.102.197) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 22 Dec 2020 21:45:03 +0800
+Subject: Re: [PATCH] powerpc:Don't print raw EIP/LR hex values in dump_stack()
+ and show_regs()
+To:     Segher Boessenkool <segher@kernel.crashing.org>,
+        David Laight <David.Laight@aculab.com>
+CC:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "ravi.bangoria@linux.ibm.com" <ravi.bangoria@linux.ibm.com>,
+        "mikey@neuling.org" <mikey@neuling.org>,
+        "yanaijie@huawei.com" <yanaijie@huawei.com>,
+        "haren@linux.ibm.com" <haren@linux.ibm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "npiggin@gmail.com" <npiggin@gmail.com>,
+        "wangle6@huawei.com" <wangle6@huawei.com>,
+        "paulus@samba.org" <paulus@samba.org>,
+        "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+References: <20201221032758.12143-1-nixiaoming@huawei.com>
+ <2279fc96-1f10-0c3f-64d9-734f18758620@csgroup.eu>
+ <20201221163130.GZ2672@gate.crashing.org>
+ <ad814ccf34c14c76b45e50b6e7741c3a@AcuMS.aculab.com>
+ <20201221171228.GA2672@gate.crashing.org>
+From:   Xiaoming Ni <nixiaoming@huawei.com>
+Message-ID: <9b874bd4-9ac8-eb94-8432-8d6193c3feaf@huawei.com>
+Date:   Tue, 22 Dec 2020 21:45:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.0.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAG48ez0UKYCdgyW91SmOcT52vbLFz9RjLpaucWpj6bTrgQCwnA@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20201221171228.GA2672@gate.crashing.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.102.197]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 09:27:46PM +0100, Jann Horn wrote:
-> > Can we just use one element in iovec to indicate entire address rather
-> > than using up the reserved flags?
-> >
-> >         struct iovec {
-> >                 .iov_base = NULL,
-> >                 .iov_len = (~(size_t)0),
-> >         };
+On 2020/12/22 1:12, Segher Boessenkool wrote:
+> On Mon, Dec 21, 2020 at 04:42:23PM +0000, David Laight wrote:
+>> From: Segher Boessenkool
+>>> Sent: 21 December 2020 16:32
+>>>
+>>> On Mon, Dec 21, 2020 at 04:17:21PM +0100, Christophe Leroy wrote:
+>>>> Le 21/12/2020 à 04:27, Xiaoming Ni a écrit :
+>>>>> Since the commit 2b0e86cc5de6 ("powerpc/fsl_booke/32: implement KASLR
+>>>>> infrastructure"), the powerpc system is ready to support KASLR.
+>>>>> To reduces the risk of invalidating address randomization, don't print the
+>>>>> EIP/LR hex values in dump_stack() and show_regs().
+>>>
+>>>> I think your change is not enough to hide EIP address, see below a dump
+>>>> with you patch, you get "Faulting instruction address: 0xc03a0c14"
+>>>
+>>> As far as I can see the patch does nothing to the GPR printout.  Often
+>>> GPRs contain code addresses.  As one example, the LR is moved via a GPR
+>>> (often GPR0, but not always) for storing on the stack.
+>>>
+>>> So this needs more work.
+>>
+>> If the dump_stack() is from an oops you need the real EIP value
+>> on order to stand any chance of making headway.
 > 
-> In addition to Suren's objections, I think it's also worth considering
-> how this looks in terms of compat API. If a compat process does
-> process_madvise() on another compat process, it would be specifying
-> the maximum 32-bit number, rather than the maximum 64-bit number, so
-> you'd need special code to catch that case, which would be ugly.
+> Or at least the function name + offset, yes.
 > 
-> And when a compat process uses this API on a non-compat process, it
-> semantically gets really weird: The actual address range covered would
-> be larger than the address range specified.
-> 
-> And if we want different access checks for the two flavors in the
-> future, gating that different behavior on special values in the iovec
-> would feel too magical to me.
-> 
-> And the length value SIZE_MAX doesn't really make sense anyway because
-> the length of the whole address space would be SIZE_MAX+1, which you
-> can't express.
-> 
-> So I'm in favor of a new flag, and strongly against using SIZE_MAX as
-> a magic number here.
+When the system is healthy, only symbols and offsets are printed,
+Output address and symbol + offset when the system is dying
+Does this meet both debugging and security requirements?
+For example:
 
-Yes, using SIZE_MAX is a horrible interface in this case.  I'm not
-a huge fan of a flag either.  What is the use case for the madvise
-to all of a processes address space anyway?
++static void __show_regs_ip_lr(const char *flag, unsigned long addr)
++{
++ if (system_going_down()) { /* panic oops reboot */
++         pr_cont("%s["REG"] %pS", flag, addr, (void *)addr);
++ } else {
++         pr_cont("%s%pS", flag, (void *)addr);
++ }
++}
++
+  static void __show_regs(struct pt_regs *regs)
+  {
+         int i, trap;
+
+-   printk("NIP:  "REG" LR: "REG" CTR: "REG"\n",
+-          regs->nip, regs->link, regs->ctr);
++ __show_regs_ip_lr("NIP: ", regs->nip);
++ __show_regs_ip_lr(" LR: ", regs->link);
++ pr_cont(" CTR: "REG"\n", regs->ctr);
+         printk("REGS: %px TRAP: %04lx   %s  (%s)\n",
+                regs, regs->trap, print_tainted(), init_utsname()->release);
+         printk("MSR:  "REG" ", regs->msr);
+
+
+
+
+>> Otherwise you might just as well just print 'borked - tough luck'.
+> 
+> Yes.  ASLR is a house of cards.  But that isn't constructive wrt this
+> patch :-)
+> 
+> 
+> Segher
+> .
+> 
+
+Thanks
+Xiaoming Ni
