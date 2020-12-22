@@ -2,161 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27C742E0CCD
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 16:34:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23B612E0CD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 16:38:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728014AbgLVPdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 10:33:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727974AbgLVPdk (ORCPT
+        id S1727801AbgLVPhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 10:37:48 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:35242 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727224AbgLVPhs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 10:33:40 -0500
-Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8EE3C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 07:32:59 -0800 (PST)
-Received: by mail-vk1-xa2c.google.com with SMTP id o195so3106708vka.9
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 07:32:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=sCCWkD/7cQKPFXtewXveIGY2SqGtgyK9cV2bzmLn1iY=;
-        b=eJ9AZPbWNoxrprRr7Td1v3jTzH5E7goKQ08BrweW7k7WC7UYuAREWRWJ1hwoMkL6/v
-         a6S2ulSlqsq9T75ssxl6m4wYB3+0M/Kc8JKlhDYAGGwP8vRu1n5BraDIybrvZ9tzlkGJ
-         WXKksnT1J14sMbzI1C/DATLEyYSkr2cXxIVKSMbDz7r04WK7jVxTdd9uQktNv5F90eaA
-         KSgukhsE1y0aLn4WffVlKr2hzxy7YoVPkGWu/KLi2+gPADfzIcUWcUXsSgvkmOpxQq3c
-         TGxBC4H0o8DmGFUalrBswoSYf4peX5jvvTf9Mtve94lP0Aa16NVm6WAPUswUbtJ93AMP
-         Y2BQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=sCCWkD/7cQKPFXtewXveIGY2SqGtgyK9cV2bzmLn1iY=;
-        b=hW5eiDicmXFYIkWdFZRFeBvr0A86MmQuNFQdlmZzG5qny7NUKXl34SVA7JgJ/ImkAs
-         QKbW/N/ke63CUcAaEaOo3IGcu7dyPjRGZJMa2mX/J/wfmqOqOwBMP86zdSOD1AOvPxWb
-         qeAUXp8eQ9kHyMmt3nZnf8xKlh5UDJKIe9aU9zGh189n8pkMTUvEbS6ZTc25UdHoWktK
-         srbsTn8QVYiMqx+CIYAVz1ipVs5bLeCwHK0sg0FXc3veWA6MHAethEzyOKH2+yY3U1tP
-         XEYIlE0MWePpXB2zq96CmQFnF5V5a7HMiEgI1nQ4H3uxIfio/+58wPEb7VziLGTrcBmJ
-         Cv5g==
-X-Gm-Message-State: AOAM532p83LwXJSrfPcFZ7wmczMl1glF8+Ds793zxkrCDJ2oI5mHEQAh
-        bg+afj+T1u0QhfwaUTG0LyQSoKj5owK7nm+b+kM=
-X-Google-Smtp-Source: ABdhPJw9mRX/xeSGCJ1cnXOEv2fpcO1VPs/9HviH6a5y1VLGkIkoB8tS6sbhoTzLipJDioUaypwXyAH3A63WH1enEsg=
-X-Received: by 2002:a1f:a796:: with SMTP id q144mr8906878vke.19.1608651178945;
- Tue, 22 Dec 2020 07:32:58 -0800 (PST)
+        Tue, 22 Dec 2020 10:37:48 -0500
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BMFXThA053438;
+        Tue, 22 Dec 2020 10:37:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=oqxOgppJ0v2QYv80hbQ7WCuvAaXCbnFr+L7o8WmZtrw=;
+ b=SQzCjDULH57W5wzk9XScAiHcjMCHkIFiMdJVuCAeeQ/NiIxBgz+LAf/ne3D2OoC732h4
+ aYc4uyMk5F7k7HRNszL42M6ypusSNamDAL8B6++05+i8/cqs1fg60CzkokO+haAVHczl
+ 0gYSIQMs7KnA71Si/he6aSbUzvWQwo3DBMwIpUd+zpcOwJeCcMGmbHL6SqF29kcaQKip
+ Nj+jQLILvInMQ4VwWwQARY/OdEPWwAeKEOC08ThDk2Ryjhq0LXtpcaolG0UVv4gNGB/Y
+ HFEBg6yrQ3DdEOLcie7JjcjbgrY01x4NT+7eUlzL10rdHkJnCyDyNWX76juiWcKXwQnQ 3A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35kh4scj1b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Dec 2020 10:37:06 -0500
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BMFXT9Z053412;
+        Tue, 22 Dec 2020 10:37:06 -0500
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35kh4scj0h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Dec 2020 10:37:06 -0500
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BMFR8fc028871;
+        Tue, 22 Dec 2020 15:37:05 GMT
+Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
+        by ppma03dal.us.ibm.com with ESMTP id 35k02erfrb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Dec 2020 15:37:05 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BMFb3a012059370
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 22 Dec 2020 15:37:03 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 60A53BE04F;
+        Tue, 22 Dec 2020 15:37:03 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 27EA0BE059;
+        Tue, 22 Dec 2020 15:37:02 +0000 (GMT)
+Received: from cpe-66-24-58-13.stny.res.rr.com (unknown [9.85.193.150])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 22 Dec 2020 15:37:01 +0000 (GMT)
+Subject: Re: [PATCH v4] s390/vfio-ap: clean up vfio_ap resources when KVM
+ pointer invalidated
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, stable@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com, kwankhede@nvidia.com,
+        pbonzini@redhat.com, alex.williamson@redhat.com,
+        pasic@linux.vnet.ibm.com
+References: <20201221185625.24914-1-akrowiak@linux.ibm.com>
+ <20201222050521.46af2bf1.pasic@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <853da84f-092b-6b94-62d5-628f440abc40@linux.ibm.com>
+Date:   Tue, 22 Dec 2020 10:37:01 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <20201222121904.50845-1-qianjun.kernel@gmail.com> <CAFqt6zbVSnHoU54ZaOEcHAEvO96h0X6wQaNrjxqgGkgmD4Vqdw@mail.gmail.com>
-In-Reply-To: <CAFqt6zbVSnHoU54ZaOEcHAEvO96h0X6wQaNrjxqgGkgmD4Vqdw@mail.gmail.com>
-From:   jun qian <qianjun.kernel@gmail.com>
-Date:   Tue, 22 Dec 2020 23:32:48 +0800
-Message-ID: <CAKc596KAQodOKCraMy=rcFBsh_CbaV2YG61QRqX8HqutGnE52g@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm:improve the performance during fork
-To:     Souptick Joarder <jrdr.linux@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201222050521.46af2bf1.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-22_07:2020-12-21,2020-12-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 adultscore=0
+ malwarescore=0 clxscore=1015 impostorscore=0 spamscore=0
+ priorityscore=1501 bulkscore=0 lowpriorityscore=0 suspectscore=0
+ phishscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012220115
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Souptick Joarder <jrdr.linux@gmail.com> =E4=BA=8E2020=E5=B9=B412=E6=9C=8822=
-=E6=97=A5=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=8811:08=E5=86=99=E9=81=93=EF=BC=
-=9A
->
-> On Tue, Dec 22, 2020 at 5:49 PM <qianjun.kernel@gmail.com> wrote:
-> >
-> > From: jun qian <qianjun.kernel@gmail.com>
-> >
-> > In our project, Many business delays come from fork, so
-> > we started looking for the reason why fork is time-consuming.
-> > I used the ftrace with function_graph to trace the fork, found
-> > that the vm_normal_page will be called tens of thousands and
-> > the execution time of this vm_normal_page function is only a
-> > few nanoseconds. And the vm_normal_page is not a inline function.
-> > So I think if the function is inline style, it maybe reduce the
-> > call time overhead.
-> >
-> > I did the following experiment:
-> >
-> > I have wrote the c test code, pls ignore the memory leak :)
-> > Before fork, I will malloc 4G bytes, then acculate the fork
-> > time.
-> >
-> > int main()
-> > {
-> >         char *p;
-> >         unsigned long long i=3D0;
-> >         float time_use=3D0;
-> >         struct timeval start;
-> >         struct timeval end;
-> >
-> >         for(i=3D0; i<LEN; i++) {
-> >                 p =3D (char *)malloc(4096);
-> >                 if (p =3D=3D NULL) {
-> >                         printf("malloc failed!\n");
-> >                         return 0;
-> >                 }
-> >                 p[0] =3D 0x55;
-> >         }
-> >         gettimeofday(&start,NULL);
-> >         fork();
-> >         gettimeofday(&end,NULL);
-> >
-> >         time_use=3D(end.tv_sec * 1000000 + end.tv_usec) -
-> >                 (start.tv_sec * 1000000 + start.tv_usec);
-> >         printf("time_use is %.10f us\n",time_use);
-> >
-> >         return 0;
-> > }
-> >
-> > We need to compare the changes in the size of vmlinux, the time of
-> > fork in inline and non-inline cases, and the vm_normal_page will be
-> > called in many function. So we also need to compare this function's
-> > size. For examples, the do_wp_page will call vm_normal_page, so I
-> > also calculated it's size.
-> >
-> >                   inline           non-inline       diff
-> > vmlinux size      9709248 bytes    9709824 bytes    -576 bytes
-> > fork time         23475ns          24638ns          -4.7%
->
-> Do you have time diff for both parent and child process ?
 
-yes, the child time diff and the parent time diff are almost same,
-just like this, a.out is the test program.
 
-./a.out
-time_use is 23342.0000000000 us
-time_use is 23404.0000000000 us
+On 12/21/20 11:05 PM, Halil Pasic wrote:
+> On Mon, 21 Dec 2020 13:56:25 -0500
+> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+>
+>> The vfio_ap device driver registers a group notifier with VFIO when the
+>> file descriptor for a VFIO mediated device for a KVM guest is opened to
+>> receive notification that the KVM pointer is set (VFIO_GROUP_NOTIFY_SET_KVM
+>> event). When the KVM pointer is set, the vfio_ap driver takes the
+>> following actions:
+>> 1. Stashes the KVM pointer in the vfio_ap_mdev struct that holds the state
+>>     of the mediated device.
+>> 2. Calls the kvm_get_kvm() function to increment its reference counter.
+>> 3. Sets the function pointer to the function that handles interception of
+>>     the instruction that enables/disables interrupt processing.
+>> 4. Sets the masks in the KVM guest's CRYCB to pass AP resources through to
+>>     the guest.
+>>
+>> In order to avoid memory leaks, when the notifier is called to receive
+>> notification that the KVM pointer has been set to NULL, the vfio_ap device
+>> driver should reverse the actions taken when the KVM pointer was set.
+>>
+>> Fixes: 258287c994de ("s390: vfio-ap: implement mediated device open callback")
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+>> Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
+>> Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+> [..]
+>
+>>   static int vfio_ap_mdev_group_notifier(struct notifier_block *nb,
+>>   				       unsigned long action, void *data)
+>>   {
+>> -	int ret;
+>> +	int ret, notify_rc = NOTIFY_DONE;
+>>   	struct ap_matrix_mdev *matrix_mdev;
+>>   
+>>   	if (action != VFIO_GROUP_NOTIFY_SET_KVM)
+>>   		return NOTIFY_OK;
+>>   
+>>   	matrix_mdev = container_of(nb, struct ap_matrix_mdev, group_notifier);
+>> +	mutex_lock(&matrix_dev->lock);
+>>   
+>>   	if (!data) {
+>> -		matrix_mdev->kvm = NULL;
+>> -		return NOTIFY_OK;
+>> +		if (matrix_mdev->kvm)
+>> +			vfio_ap_mdev_unset_kvm(matrix_mdev);
+>> +		notify_rc = NOTIFY_OK;
+>> +		goto notify_done;
+>>   	}
+>>   
+>>   	ret = vfio_ap_mdev_set_kvm(matrix_mdev, data);
+>>   	if (ret)
+>> -		return NOTIFY_DONE;
+>> +		goto notify_done;
+>>   
+>>   	/* If there is no CRYCB pointer, then we can't copy the masks */
+>>   	if (!matrix_mdev->kvm->arch.crypto.crycbd)
+>> -		return NOTIFY_DONE;
+>> +		goto notify_done;
+>>   
+>>   	kvm_arch_crypto_set_masks(matrix_mdev->kvm, matrix_mdev->matrix.apm,
+>>   				  matrix_mdev->matrix.aqm,
+>>   				  matrix_mdev->matrix.adm);
+>>   
+>> -	return NOTIFY_OK;
+> Shouldn't there be an
+>   +	notify_rc = NOTIFY_OK;
+> here? I mean you initialize notify_rc to NOTIFY_DONE, in the !data branch
+> on success you set notify_rc to NOTIFY_OK, but in the !!data branch it
+> just stays NOTIFY_DONE. Or am I missing something?
+
+I don't think it matters much since NOTIFY_OK and NOTIFY_DONE have
+no further effect on processing of the notification queue, but I believe
+you are correct, this is a change from what we originally had. I can
+restore the original return values if you'd prefer.
 
 >
-> > do_wp_page size   972              743              +229
-> >
-> > According to the above test data, I think inline vm_normal_page can
-> > reduce fork execution time.
-> >
-> > Signed-off-by: jun qian <qianjun.kernel@gmail.com>
-> > ---
-> >  mm/memory.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/mm/memory.c b/mm/memory.c
-> > index 7d608765932b..a689bb5d3842 100644
-> > --- a/mm/memory.c
-> > +++ b/mm/memory.c
-> > @@ -591,7 +591,7 @@ static void print_bad_pte(struct vm_area_struct *vm=
-a, unsigned long addr,
-> >   * PFNMAP mappings in order to support COWable mappings.
-> >   *
-> >   */
-> > -struct page *vm_normal_page(struct vm_area_struct *vma, unsigned long =
-addr,
-> > +inline struct page *vm_normal_page(struct vm_area_struct *vma, unsigne=
-d long addr,
-> >                             pte_t pte)
-> >  {
-> >         unsigned long pfn =3D pte_pfn(pte);
-> > --
-> > 2.18.2
-> >
-> >
+> Otherwise LGTM!
+>
+> Regards,
+> Halil
+>
+>> +notify_done:
+>> +	mutex_unlock(&matrix_dev->lock);
+>> +	return notify_rc;
+>>   }
+>>
+> [..]
+
