@@ -2,136 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 624832E08FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 11:52:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50EF42E091B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 12:00:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726488AbgLVKw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 05:52:26 -0500
-Received: from mail-eopbgr1400092.outbound.protection.outlook.com ([40.107.140.92]:63674
-        "EHLO JPN01-TY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726340AbgLVKwZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 05:52:25 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LHnI5psOw4LJshBoUtrxxgKTMkkULneWghcQwqCw3nUhUll35FjpjGq+ZR/yZXCpuEgZ/wJa14xx6gQ7QGpQF5x05LEKVr/xowvhUJAcsLXuXR0dC5XPPd6daAX68mHKNvRxYzAb5VnvMcux+vPmZiIS+dkkCYsDHwO16WGfuZ9aVmhUQwEVBDsAbbIYAk9ojYdzf2bIkwjWIJA97DUiZvTuo6gnznMHxk1Svl9ZhxaBRkK2mhk+P95//yVsRVv5Mq/SqywYk+WJNhmB8Ybu9dnUq0J+epsUe3rzUOfpsf53lrdcUtbQSF3j9yZAmD+94PL0YYPsMA+50HdBDF1J5Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bJo05MF2RkJdXyosOonyfU4sqqFdljSJ8AGjYD2CfP8=;
- b=TxOHLdQ7uwQPrNVbJnujLNlsf0vp7TcJAqp86a8YV39pZyQiGeAn4eMbd8/F7eEGNwxjZ+J1vwhQd/YV3WC9PTnu+8GdUANzRwfYVlnhXMsxcyxndQHzmYCfTaIWiZ1npI7T5e2GNdoZiKZ2TpjnqpxhNeJGmx9BgwaJBauo5AEXV+rGfagUbRRhNGXso74xwfqLGGRRKIqIy2gSrfdtcACqiTX/FzEVfuc6gXlQfwsuXj/3b1XmeZbgYYOMg+La5TeKEg3anD0yvHwiCh+f6g6sRzaY5OpZYjjftjxU5iKNgPkTg/NqMh57rwI1bID0hZOFE31nNEjaruwPpVPgbw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bJo05MF2RkJdXyosOonyfU4sqqFdljSJ8AGjYD2CfP8=;
- b=eZ+t8lHtBQiYjDK4Etn6bgA8VB2u0DTe664Paz2EBFwFsSiAnGHuWvW7DxgQL86gyGExVzTtlFfF6hLLrSqUm7RPHTzAowIkBuTiN0r+oRUSrSv17zuvGa+Ay5HHsc2N5415b+d2JY3wbON95UAbDG4uz070Ux+OP/0h6OBq0xY=
-Received: from TY2PR01MB3692.jpnprd01.prod.outlook.com (2603:1096:404:d5::22)
- by TYAPR01MB2224.jpnprd01.prod.outlook.com (2603:1096:404:4::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.29; Tue, 22 Dec
- 2020 10:51:35 +0000
-Received: from TY2PR01MB3692.jpnprd01.prod.outlook.com
- ([fe80::2023:7ed1:37c3:8037]) by TY2PR01MB3692.jpnprd01.prod.outlook.com
- ([fe80::2023:7ed1:37c3:8037%5]) with mapi id 15.20.3676.033; Tue, 22 Dec 2020
- 10:51:35 +0000
-From:   Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>,
-        "geert@linux-m68k.org" <geert@linux-m68k.org>
-CC:     Khiem Nguyen <khiem.nguyen.xt@renesas.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
-        linux-power <linux-power@fi.rohmeurope.com>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "marek.vasut+renesas@gmail.com" <marek.vasut+renesas@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v4 12/12] mfd: bd9571mwv: Add support for BD9574MWF
-Thread-Topic: [PATCH v4 12/12] mfd: bd9571mwv: Add support for BD9574MWF
-Thread-Index: AQHW10Sk0N1z3uPelU2TClNF0Jib9KoC0R+AgAAHfyCAAAV/gIAAE6EA
-Date:   Tue, 22 Dec 2020 10:51:34 +0000
-Message-ID: <TY2PR01MB369273CD7B38140D1BCCA32ED8DF0@TY2PR01MB3692.jpnprd01.prod.outlook.com>
-References: <1608519279-13341-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
-         <1608519279-13341-13-git-send-email-yoshihiro.shimoda.uh@renesas.com>
-         <CAMuHMdXkRUbjQk=1mqn0b7PeGX0ir=s4UwbCHfw_2mWaVEVPTg@mail.gmail.com>
-         <TY2PR01MB36920B85DFCE969BF8AF229CD8DF0@TY2PR01MB3692.jpnprd01.prod.outlook.com>
- <1f13ab9c0902ed23511b0d393e633e0d7a7abc71.camel@fi.rohmeurope.com>
-In-Reply-To: <1f13ab9c0902ed23511b0d393e633e0d7a7abc71.camel@fi.rohmeurope.com>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: fi.rohmeurope.com; dkim=none (message not signed)
- header.d=none;fi.rohmeurope.com; dmarc=none action=none
- header.from=renesas.com;
-x-originating-ip: [240f:60:5f3e:1:21dc:f9ce:ff84:4ded]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 4147a000-2814-430f-7684-08d8a6678cfb
-x-ms-traffictypediagnostic: TYAPR01MB2224:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <TYAPR01MB2224C19E5630CC2B6E346613D8DF0@TYAPR01MB2224.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3173;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: SFbat8LzZtzpzmZUl8/QOHjwM0mTGszlclHuz6aE3o1svQGc/2G+tQmY6NCSMq0gJbRwcKmQ1vygn0Sipg/bE0EuQpQkydIbXlkjfTWs+6kSQH6ICAOkZ2m1Hbt0TUJApz20tyqYCfN0yTJTSt+62xXHq6KHLJCcnJka8+noO7Vm9WHsHc28vqvzSoCaZbWu8kJx/hW7sIYYa3uH94FSRuFfaLPtsKo6q+WeGqB7Nr3g0bl26r5jNkGux98azWL9z3Opds+MoKVwXDj3ZNNX6W/os08nittyzYTtgG0BqtPXWC/dv6/9/EiPAcKsZ55OCSKulVybwKsh/OKOz7JhC05EObKvwGreqDqR13F8AoQeV6mHeKEBtDW3BBU8Mbwg7qTSLaqVkT6r6CmPMfwS6Q==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR01MB3692.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(366004)(39860400002)(396003)(136003)(76116006)(7696005)(4326008)(478600001)(5660300002)(66476007)(55016002)(6506007)(33656002)(8676002)(4744005)(66946007)(54906003)(110136005)(316002)(86362001)(9686003)(52536014)(186003)(8936002)(2906002)(66446008)(7416002)(83380400001)(64756008)(71200400001)(66556008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?NTFWanV5U1Z5OHJlcWtJUWNtWjR0UDhxaDJBRHVtVWZ4aFVxcUZWMjMwVkts?=
- =?utf-8?B?aXIwWDYwam9rWlE2L1dSd2orckg0MFJMR0Z4Y1BKR3VydnFNbTdhajNqRFcw?=
- =?utf-8?B?V1RJODJ0VkdVSWlKZWVwY2ZEbk5iRE5TR1FJUi9BN3AxcWYyR3F5T0RkYXY4?=
- =?utf-8?B?OS9pS1dLMFhPQmlNcXJDODMyeWQydFZhQUZYUmpucnBKdWdIczl0Q3N5V0xu?=
- =?utf-8?B?c1Z6c1Q4RnRIOHBaY1c4by9wMDdUWHpxQVU2UDNaWHZiQkp1MmlENS9TbVRn?=
- =?utf-8?B?YUNPTnlJcDAwSVVCOCt4cVFmaElXQjc0U09EOGVrME5sb0dWeURGaUdOK3dP?=
- =?utf-8?B?Yk1ENlR1WitVV0hMbitRS0l6SXRtMTgyNkh5MVQxeEFMdEZXY0hWZHl0dmtR?=
- =?utf-8?B?ekNRdUd3N05hUU82VTl2T0ZuVzcxblZ2QUtKWUFJVnB2UmRpNTBUVHF0QU9h?=
- =?utf-8?B?SndORG9VT25HUGFEVEFuK2VwSWJFb1VOcERuUHNIUG96VmdWdzE4MmxXYUdE?=
- =?utf-8?B?MVdhTk9OcXdaNzYzYjBKaHhqWUY5NzBvN25zNTZ2djNaNldKZlpVdk54R3dp?=
- =?utf-8?B?NVpra29jK2hhZnJmZWtQTHRiRTVPVGJkNDdEZHBieFhuUjBFaEhibi9oUW1C?=
- =?utf-8?B?eUdFMGNJWW1wa0NUdUVmOGJvNVNLWjlVOEdFbkpaZ0J5dG1yNXNJNVVka09j?=
- =?utf-8?B?dzE2d3JmRmQwRFlVaDhvRTVYSVpTdXZQWGk4T1pmYkpXT0xCRDhHS05iS2Rz?=
- =?utf-8?B?S3Vra3hlMUxNUkVneW9zTkpTMHk4L2hadjlHOGFrejRjckJpSWd0NGk1dXFH?=
- =?utf-8?B?eTNNSWpnallhaTdJRHdmYXJmVXhXWnRMTmw5dnJlai9scHgyY0syT25LT1Zq?=
- =?utf-8?B?SjZ4dTNrcEp2d01JYWg3aC8xTGtydDY5d2dsUkpabmI5dmdpR04vbUVUZWhF?=
- =?utf-8?B?T1R3cE0yRFUvZVVzYW9pU0VhV3FoK3JKWEQ3L25PNTNMSlFNRDFod2MxVGYz?=
- =?utf-8?B?akdlODM2VUp5OTlueDdTMjQzVTg2dWYxb0wycC93Y2RWTC9kVUUrZ3Z3c0lC?=
- =?utf-8?B?OFhld2RHVFR3QTBWYmFRdGM2OWF4NDJURmMweFUvbS94OTl5OXpmamhQOUtJ?=
- =?utf-8?B?S1VVNFlhSnYyL2l6NWVIZ2JuK1VwZ3F6OTd4OC9HRDJlMjBLM3h4dGxSRDVi?=
- =?utf-8?B?bHNlWjZXY2x2VDVPVVUwODhDNWZnbkcyNGMrOXRMVE9lOC9CQTlXTGFnQU81?=
- =?utf-8?B?R0x6d2dJTHptZ0pRbko1QmUwcUZXYnhycFdKVDBTUkwrWVMwRVNEV0p1MVN2?=
- =?utf-8?B?bXZIVVF1WnNjeGplUkVPeHZtRkdNQmNlQXJoTDJlTzRtSXVoWm9DSFgxaTNK?=
- =?utf-8?Q?lVOQbGxrEPWAR6q+svt+jmoHheC/i1fQ=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726138AbgLVK6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 05:58:47 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:7242 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725785AbgLVK6q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 05:58:46 -0500
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BMAvIsl004047;
+        Tue, 22 Dec 2020 11:57:59 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=udCeyTxsbq23gfM8tPSsY63UuxyyFwwhHocq4F3kNCU=;
+ b=s/qo5F1LSfov3N6KiW7oLo+tngFJCqliBam3XojjcsJNelPXI++XReLYrh2S+tuk7tR0
+ HhmXNUVDiXK8woiBTEdPDQ9pdmWUX7Ic8OJTGR9x048/YQ6xW1Iw22aGh4g0uAamnazh
+ WzAEylJnd6dOtKUfzjIok/gYbSJQea3fy5EStc6bArzVkAiadmG5m2ws7qsH47e667RU
+ F77uPo33yqJshZxx1NA5CHBna8R4wbBVbGV5/qasradtL9UFvkb2sk82ewJ/XVg5yr8M
+ zqGxNup3SJF99kXZ6C3A3ojZvf5LibGv26MD2DbdaCvkSucRTAmP1RnKnqfhtvtfpsYF MQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 35k0d1bjtd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Dec 2020 11:57:59 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0A4F710002A;
+        Tue, 22 Dec 2020 11:57:59 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E36EB231602;
+        Tue, 22 Dec 2020 11:57:58 +0100 (CET)
+Received: from localhost (10.75.127.48) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 22 Dec 2020 11:57:58
+ +0100
+From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Andy Gross <agross@kernel.org>
+CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-msm@vger.kernel.org>, <arnaud.pouliquen@foss.st.com>
+Subject: [PATCH v2 00/16] introduce generic IOCTL interface for RPMsg channels management
+Date:   Tue, 22 Dec 2020 11:57:10 +0100
+Message-ID: <20201222105726.16906-1-arnaud.pouliquen@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB3692.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4147a000-2814-430f-7684-08d8a6678cfb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Dec 2020 10:51:34.9507
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: BqqLRZniShAtLKm7X1TswdhQ3ETQ03MbCSfym9+rvPpvStAIfXCAfRmrUL1mSpaen3+M/vVsYkMluQWqt0lzgodm9gj2mOGwwdqaoPLwSocgMzIZruqRuxaIVYmIpKQU
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB2224
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG3NODE2.st.com (10.75.127.8) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-22_04:2020-12-21,2020-12-22 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgTWF0dGktc2FuLA0KDQo+IEZyb206IFZhaXR0aW5lbiwgTWF0dGksIFNlbnQ6IFR1ZXNkYXks
-IERlY2VtYmVyIDIyLCAyMDIwIDY6MzkgUE0NCjxzbmlwPg0KPiA+IEFsc28sIEkgdGhpbmsgSSBz
-aG91bGQgcmVtb3ZlIHRoZSBmb2xsb3dpbmcgcGF0Y2guDQo+ID4NCj4gPiBbUEFUQ0ggdjQgMDgv
-MTJdIGdwaW86IGJkOTU3MW13djogQWRkIEJEOTU3NE1XRiBzdXBwb3J0DQo+IA0KPiBJIHRoaW5r
-IHRoaXMgZGVwZW5kcyBvbiB3aGV0aGVyIHlvdSB3aXNoIHRvIGFkZCBzdXBwb3J0IGZvciB0aGUN
-Cj4gDQo+ID4gIlJFQ09WX0dQT1VUIiwgIkZSRVFTRUwiIGFuZCAiUlRDX0lOIiwNCj4gDQo+IHdo
-aWNoIHlvdSBtZW50aW9uIGluIEdQSU8gY29tbWl0IG1lc3NhZ2UuIElmIHlvdSBwbGFuIG9uIGFk
-ZGluZyB0aGUNCj4gc3VwcG9ydCwgdGhlbiB5b3UgbmVlZCB0byBkaWZmZXJlbnRpYXRlIHRoZSBJ
-Q3Mgb24gR1BJTyBkcml2ZXIsIHJpZ2h0Pw0KDQpUaGFuayB5b3UgZm9yIHRoZSByZXBseS4NCkFz
-IEkgcmVwbGllZCB0byBHZWVydC1zYW4sIGF0IGxlYXN0IHRoaXMgTUZEIGRyaXZlciB1c2VzICJi
-ZDk1NzRtd2YtZ3BpbyINCmZvciBwcm9iaW5nLiBTbywgSSdsbCBrZWVwIHRoYXQgcGF0Y2ggYXMt
-aXMuDQoNCkJlc3QgcmVnYXJkcywNCllvc2hpaGlybyBTaGltb2RhDQoNCg==
+This series is a restructuring of the RPMsg char driver, to create a generic
+RPMsg ioctl interface for all rpmsg services.
+
+The RPMsg char driver provides interfaces that:
+- expose a char RPMsg device for communication with the remote processor,
+- expose controls interface for applications to create and release endpoints.
+
+The objective of this series is to decorrelate the two interfaces:
+  - Provide a char device for a RPMsg raw service in the rpmsg_char that can be
+    probed by a RPMsg bus on a ns announcement.
+  - Generalize the use of the ioctl for all RPMsg services by creating the
+    rpmsg_ctrl, but keep it compatibile with the legacy.
+
+If the V1 create a new rpmsg_raw driver in addition to the rpmsg_ctrl this
+version try to reuse the rpmsg_char driver by addapting QCOM GLINK and SMD
+drivers.
+So a goal of this version is to help to determine the best strategy to move
+forward:
+  - reuse rpmsg_char.
+  - introduce a new driver and keep rpmsg_char as a legacy driver for a while.
+
+Notice that SMD and GLINK patches have to be tested, only build has been tested.
+
+1) RPMsg control driver: rpmsg_ctrl.c
+  This driver is based on the control part of the RPMsg_char driver. 
+  On probe a /dev/rpmsg_ctrl<X> interface is created to allow to manage the
+  channels.
+  The principles are the following:
+  - The RPMsg service driver registers it's name and the associated service
+    using the rpmsg_ctrl_unregister_ctl API. The list of supported services
+    is defined in  include/uapi/linux/rpmsg.h and exposed to the
+    application thanks to a new field in rpmsg_endpoint_info struct.
+  - On the RPMsg bus probe(e.g virtio bus) an rpmsg_ctrl device is
+    registered that creates the control interface.
+  - The application can then create or release a channel by specifying:
+       - the name service
+       - the source address.
+       - the destination address.
+  - The rpmsg_ctrl uses the same interface than the ns announcement to
+    create and release the associated channel but using the driver_override
+    field to force the service name.
+    The  "driver_override" allows to force the name service associated to
+    an RPMsg driver, bypassing the rpmsg_device_id based match check.
+  - At least for virtio bus, an associated ns announcement is sent to the
+    remote side.  
+
+2) rpmsg char driver: rpmsg_char.c
+    - The rpmsg class has not been removed. The associated attributes
+      are already available in /sys/bus/rpmsg/.
+    - The eptdev device is now an RPMsg device probed by a RPMsg bus driver
+      (probed only by the ioctl in rpmsg_char driver).
+
+Know current Limitations:
+- Tested only with virtio RPMsg bus and for one vdev instance.
+- The glink and smd drivers adaptations have not been tested (not able to test).
+- To limit commit and not update the IOCT interface some features have been not
+  implemented in this first step:
+    - the NS announcement as not been updated, it is not possible to create an
+      endpoint with a destibnation address set to RPMSG_ADDR_ANY (-1),
+    - not possible to destroy the channel,
+    - only the "rpmsg-raw" service is supported.
+
+This series can be applied in Bjorn's rpmsg-next branch on top of the
+RPMsg_ns series(4c0943255805).
+
+This series can be tested using rpmsgexport tools available here:
+https://github.com/andersson/rpmsgexport.
+---
+new from V1[1]:
+- In V1 the rpmsg_char.c was not impacted, a rpmsg_raw.c has been created
+  instead.
+- IOCTL interface as not been updated (to go by steps).
+- smd and glink drivers has been updated to support channels creation and
+  release.
+
+[1] https://patchwork.kernel.org/project/linux-remoteproc/list/?series=327277
+
+Arnaud Pouliquen (16):
+  rpmsg: introduce RPMsg control driver for channel creation
+  rpmsg: add RPMsg control API to register service
+  rpmsg: add override field in channel info
+  rpmsg: ctrl: implement the ioctl function to create device
+  rpmsg: ns: initialize channel info override field
+  rpmsg: add helper to register the rpmsg ctrl device
+  rpmsg: char: clean up rpmsg class
+  rpmsg: char: make char rpmsg a rpmsg device without the control part
+  rpmsg: char: register RPMsg raw service to the ioctl interface.
+  rpmsg: char: allow only one endpoint per device
+  rpmsg: char: check destination address is not null
+  rpmsg: virtio: use the driver_override in channel creation ops
+  rpmsg: virtio: probe the rpmsg_ctl device
+  rpmsg: glink: add create and release rpmsg channel ops
+  rpmsg: smd: add create and release rpmsg channel ops
+  rpmsg: replace rpmsg_chrdev_register_device use
+
+ drivers/rpmsg/Kconfig             |   8 +
+ drivers/rpmsg/Makefile            |   1 +
+ drivers/rpmsg/qcom_glink_native.c |  96 +++++++--
+ drivers/rpmsg/qcom_smd.c          |  59 +++++-
+ drivers/rpmsg/rpmsg_char.c        | 246 ++++++-----------------
+ drivers/rpmsg/rpmsg_ctrl.c        | 320 ++++++++++++++++++++++++++++++
+ drivers/rpmsg/rpmsg_internal.h    |  14 --
+ drivers/rpmsg/rpmsg_ns.c          |   1 +
+ drivers/rpmsg/virtio_rpmsg_bus.c  |  38 +++-
+ include/linux/rpmsg.h             |  40 ++++
+ include/uapi/linux/rpmsg.h        |  14 ++
+ 11 files changed, 606 insertions(+), 231 deletions(-)
+ create mode 100644 drivers/rpmsg/rpmsg_ctrl.c
+
+-- 
+2.17.1
+
