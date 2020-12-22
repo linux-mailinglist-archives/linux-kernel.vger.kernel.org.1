@@ -2,128 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41EBD2E0FDD
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 22:37:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2A2E2E0FDF
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 22:40:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727948AbgLVVfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 16:35:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39532 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726384AbgLVVfu (ORCPT
+        id S1728004AbgLVVjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 16:39:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727344AbgLVVjU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 16:35:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608672864;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yBqsHakSTD7XDsy5mwErSb3uXLotZdoXMrPlsNRLmNc=;
-        b=Jz9UJGvPaT8so7nYVhOSqVLBI7jvRszuYMIJR2t0mQdhXB59IFIgMopdYk65qriFJnYBS/
-        aOL0hEIdqQJsCLXT5xKLw5x210ZMRnivgwem8G0Rjux+cW1c8TY4q7yD7YdcaVzs12Ebe+
-        ODNE1s2qJdYUrW+qZ1lfTceVbPPd+0I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-124-yRAbj35rPkKUEfuqOGmmYg-1; Tue, 22 Dec 2020 16:34:20 -0500
-X-MC-Unique: yRAbj35rPkKUEfuqOGmmYg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6AD9C1005513;
-        Tue, 22 Dec 2020 21:34:18 +0000 (UTC)
-Received: from mail (ovpn-112-5.rdu2.redhat.com [10.10.112.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 43C8E10013C1;
-        Tue, 22 Dec 2020 21:34:15 +0000 (UTC)
-Date:   Tue, 22 Dec 2020 16:34:14 -0500
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     Andy Lutomirski <luto@kernel.org>, linux-mm <linux-mm@kvack.org>,
-        Peter Xu <peterx@redhat.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable <stable@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-Message-ID: <X+JmVmDvBOYuw5Zl@redhat.com>
-References: <20201219043006.2206347-1-namit@vmware.com>
- <X95RRZ3hkebEmmaj@redhat.com>
- <EDC00345-B46E-4396-8379-98E943723809@gmail.com>
- <DD367393-D1B3-4A84-AF92-9C6BAEAB40DC@gmail.com>
- <CALCETrXLH7vPep-h4fBFSft1YEkyZQo_7W2uh017rHKYT=Occw@mail.gmail.com>
- <719DF2CD-A0BC-4B67-9FBA-A9E0A98AA45E@gmail.com>
+        Tue, 22 Dec 2020 16:39:20 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32D1C0613D3;
+        Tue, 22 Dec 2020 13:38:39 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1krpMZ-003KnC-QC; Tue, 22 Dec 2020 21:38:35 +0000
+Date:   Tue, 22 Dec 2020 21:38:35 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     "Maciej W. Rozycki" <macro@linux-mips.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linux-mips@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCHSET] saner elf compat
+Message-ID: <20201222213835.GU3579531@ZenIV.linux.org.uk>
+References: <20201203214529.GB3579531@ZenIV.linux.org.uk>
+ <CAHk-=wiRNT+-ahz2KRUE7buYJMZ84bp=h_vGLrAaOKW3n_xyXQ@mail.gmail.com>
+ <20201203230336.GC3579531@ZenIV.linux.org.uk>
+ <alpine.LFD.2.21.2012071741280.2104409@eddie.linux-mips.org>
+ <20201216030154.GL3579531@ZenIV.linux.org.uk>
+ <alpine.LFD.2.21.2012160924010.2104409@eddie.linux-mips.org>
+ <20201222200431.GT3579531@ZenIV.linux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <719DF2CD-A0BC-4B67-9FBA-A9E0A98AA45E@gmail.com>
-User-Agent: Mutt/2.0.3 (2020-12-04)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20201222200431.GT3579531@ZenIV.linux.org.uk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 12:58:18PM -0800, Nadav Amit wrote:
-> I had somewhat similar ideas - saving in each page-struct the generation,
-> which would allow to: (1) extend pte_same() to detect interim changes
-> that were reverted (RO->RW->RO) and (2) per-PTE pending flushes.
+On Tue, Dec 22, 2020 at 08:04:31PM +0000, Al Viro wrote:
 
-What don't you feel safe about, what's the problem with RO->RO->RO, I
-don't get it.
+> FWIW, on debian/mips64el (both stretch and buster) the test fails with the
+> distro kernels (4.9- and 4.19-based) as well as with 5.10-rc1 and
+> 5.10-rc1+that series, all in the same way:
+> [Current thread is 1 (LWP 4154)]
+> (gdb) p/x foo
+> Cannot find thread-local storage for LWP 4154, executable file <pathname>
+> Cannot find thread-local variables on this target
+> 
+> buster has libc6-2.28, so that should be fine for the test in question
+> (libthread_db definitely recent enough).  That was n32 gdb; considering
+> how much time it had taken to build that sucker I hadn't tried o32
+> yet.
+> 
+> Note that it's not just with native coredumps - gcore-produced ones give
+> the same result.  That was gdb from binutils-gdb.git; I'm not familiar
+> with gdb guts to start debugging it, so if you have any suggestions
+> in that direction that do not include a full rebuild...  In any case,
+> I won't get around to that until the next week.
+> 
+> Incidentally, build time is bloody awful - 3 days, with qemu-3.1 on
+> 3.5GHz amd64 host, all spent pretty much entirely in userland (both
+> from guest and host POV).  g++-8 is atrociously slow...
+> 
+> That said, I don't see what in that series could possibly mess the
+> things up for tls, while leaving the registers working; the only
+> thing that realistically might've been fucked up is prstatus layout
+> (and possibly size), and that would've screwed the registers as
+> well.
 
-The pte_same is perfectly ok without sequence counter in my view, I
-never seen anything that would not be ok with pte_same given all the
-invariant are respected. It's actually a great optimization compared
-to any unscalable sequence counter.
-
-The counter would slowdown everything, having to increase a counter
-every time you change a pte, no matter if it's a counter per pgtable
-or per-vma or per-mm, sounds very bad.
-
-I'd rather prefer to take mmap_lock_write across the whole userfaultfd
-ioctl, than having to deal with a new sequence counter increase for
-every pte modification on a heavily contended cacheline.
-
-Also note the counter would have solved nothing for
-userfaultfd_writeprotect, it's useless to detect stale TLB entries.
-
-See how !pte_write check happens after the counter was already increased:
-
-CPU0			CPU 1		CPU 2
-------			--------	-------
-userfaultfd_wrprotect(mode_wp = true)
-PT lock
-atomic set _PAGE_UFFD_WP and clear _PAGE_WRITE
-false_shared_counter_counter++ 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-PT unlock
-
-			do_page_fault FAULT_FLAG_WRITE
-					userfaultfd_wrprotect(mode_wp = false)
-					PT lock
-					ATOMIC clear _PAGE_UFFD_WP <- problem
-					/* _PAGE_WRITE not set */
-					false_shared_counter_counter++ 
-					^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-					PT unlock
-					XXXXXXXXXXXXXX BUG RACE window open here
-
-			PT lock
-			counter = false_shared_counter_counter
-			^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-			FAULT_FLAG_WRITE is set by CPU
-			_PAGE_WRITE is still clear in pte
-			PT unlock
-
-			wp_page_copy
-			copy_user_page runs with stale TLB
-
-			pte_same(counter, orig_pte, pte) -> PASS
-				 ^^^^^^^                    ^^^^
-			commit the copy to the pte with the lost writes
-
-deferred tlb flush <- too late
-XXXXXXXXXXXXXX BUG RACE window close here
-================================================================================
-
+... and it smells like the damn thing needs n32 debug info from libthread_db.so
+and/or libpthread.so.  Which is not packaged by debian libc6 mips64el build.
+Sorry, any debugging of that crap is going to happen in January ;-/
