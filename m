@@ -2,93 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DCB82E1072
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 00:01:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AB782E1079
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 00:05:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727235AbgLVW6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 17:58:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33332 "EHLO
+        id S1728022AbgLVXFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 18:05:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726329AbgLVW6t (ORCPT
+        with ESMTP id S1727905AbgLVXFa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 17:58:49 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A6DFC0613D3;
-        Tue, 22 Dec 2020 14:58:09 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1krqbM-003Lzr-T3; Tue, 22 Dec 2020 22:57:57 +0000
-Date:   Tue, 22 Dec 2020 22:57:56 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     "Maciej W. Rozycki" <macro@linux-mips.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linux-mips@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCHSET] saner elf compat
-Message-ID: <20201222225756.GV3579531@ZenIV.linux.org.uk>
-References: <20201203214529.GB3579531@ZenIV.linux.org.uk>
- <CAHk-=wiRNT+-ahz2KRUE7buYJMZ84bp=h_vGLrAaOKW3n_xyXQ@mail.gmail.com>
- <20201203230336.GC3579531@ZenIV.linux.org.uk>
- <alpine.LFD.2.21.2012071741280.2104409@eddie.linux-mips.org>
- <20201216030154.GL3579531@ZenIV.linux.org.uk>
- <alpine.LFD.2.21.2012160924010.2104409@eddie.linux-mips.org>
- <20201222200431.GT3579531@ZenIV.linux.org.uk>
- <20201222213835.GU3579531@ZenIV.linux.org.uk>
+        Tue, 22 Dec 2020 18:05:30 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20DB1C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 15:04:50 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id m5so16619540wrx.9
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 15:04:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bxxupScKkQylTgnzT1jQfJoerVH6s89+gfUZG72kVPM=;
+        b=MVCR6f45O68amRjy6JOuaNJmfDEGVnpIF2mDSapSMTbXpdqXspqepYxxp7vu4y+Smp
+         jmQ5nKLR+4nIehdk7+SrYe5ugoypMzJI8rkzjR6zmVjSz4t4VBnNgoAuP6eNKVJOOsnc
+         HU8aEtiHyHjERvWzODBiPYWn7h/TzVP9+ux/Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bxxupScKkQylTgnzT1jQfJoerVH6s89+gfUZG72kVPM=;
+        b=GCLRCmF3yrn0C9UCtJSwVW0oNsqG/L1xVDzqwY7szLkxD8sBvhXgZeaH1uAZKyekGT
+         +r7injNRTP5crhehsUHUBQeYF7dN0Py6z1/LkBpgzXS6w//yxkq+nYJzXMq2DLs+g2LF
+         HTo9Vd+g5ldXo2qkPA+qDDQI/BSR80wXchkpXf/GCzlxFxubjORpgJAfxNjx1yVYJtGX
+         r81PxK+IXIMxyWhepmNEoJNgfZ7cZXoGrwiJ/ZmL/uOuhVgw9oyVMV+Btq6CG9Qv3ejh
+         KtEFmLCe0saR6QmGXinwzNCa2yt14k+ieqDcbolH+aQykGyvufHdYoH2El5ZHCgUuumU
+         cPOw==
+X-Gm-Message-State: AOAM530dgl68PGKT61dV/CdtgrEJgA50X6TenJ8I4AfkFvBn2udyhnH/
+        lwcIOkt38e3ky0hmKWWRm2K2IQ==
+X-Google-Smtp-Source: ABdhPJzPAAf/t30zcDZA03v+hjXJLfzNdOs2DTGTT2VPaETefMMFTTxqII3if/q2O/QNd9B9/JYaCg==
+X-Received: by 2002:adf:f10f:: with SMTP id r15mr26982951wro.302.1608678288761;
+        Tue, 22 Dec 2020 15:04:48 -0800 (PST)
+Received: from alco.lan ([80.71.134.83])
+        by smtp.gmail.com with ESMTPSA id r16sm34463401wrx.36.2020.12.22.15.04.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Dec 2020 15:04:48 -0800 (PST)
+From:   Ricardo Ribalda <ribalda@chromium.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Ricardo Ribalda <ribalda@chromium.org>
+Subject: [PATCH v6 00/11] Show privacy_gpio as a v4l2_ctrl
+Date:   Wed, 23 Dec 2020 00:04:35 +0100
+Message-Id: <20201222230446.1027916-1-ribalda@chromium.org>
+X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201222213835.GU3579531@ZenIV.linux.org.uk>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 09:38:35PM +0000, Al Viro wrote:
-> On Tue, Dec 22, 2020 at 08:04:31PM +0000, Al Viro wrote:
-> 
-> > FWIW, on debian/mips64el (both stretch and buster) the test fails with the
-> > distro kernels (4.9- and 4.19-based) as well as with 5.10-rc1 and
-> > 5.10-rc1+that series, all in the same way:
-> > [Current thread is 1 (LWP 4154)]
-> > (gdb) p/x foo
-> > Cannot find thread-local storage for LWP 4154, executable file <pathname>
-> > Cannot find thread-local variables on this target
-> > 
-> > buster has libc6-2.28, so that should be fine for the test in question
-> > (libthread_db definitely recent enough).  That was n32 gdb; considering
-> > how much time it had taken to build that sucker I hadn't tried o32
-> > yet.
-> > 
-> > Note that it's not just with native coredumps - gcore-produced ones give
-> > the same result.  That was gdb from binutils-gdb.git; I'm not familiar
-> > with gdb guts to start debugging it, so if you have any suggestions
-> > in that direction that do not include a full rebuild...  In any case,
-> > I won't get around to that until the next week.
-> > 
-> > Incidentally, build time is bloody awful - 3 days, with qemu-3.1 on
-> > 3.5GHz amd64 host, all spent pretty much entirely in userland (both
-> > from guest and host POV).  g++-8 is atrociously slow...
-> > 
-> > That said, I don't see what in that series could possibly mess the
-> > things up for tls, while leaving the registers working; the only
-> > thing that realistically might've been fucked up is prstatus layout
-> > (and possibly size), and that would've screwed the registers as
-> > well.
-> 
-> ... and it smells like the damn thing needs n32 debug info from libthread_db.so
-> and/or libpthread.so.  Which is not packaged by debian libc6 mips64el build.
-> Sorry, any debugging of that crap is going to happen in January ;-/
+Some devices can implement a physical switch to disable the input of the
+camera on demand. Think of it like an elegant privacy sticker.
 
-Cute...  Completely unrelated, but there's a fun bug in mainline o32
-coredumps - say readelf -a core and watch NT_FILE section dump.
-Compare that for dumps done on mips32 and mips64 hosts (for the same
-o32 binaries, obviously).  Or to gcore(1) results on such processes,
-for that matter.
+The system can read the status of the privacy switch via a GPIO.
 
-What happens there is that 2aa362c49c31 ("coredump: extend core dump note
-section to contain file names of mapped files") that has introduced that
-section has added
-#define user_long_t            compat_long_t
-to fs/compat_binfmt_elf.c, but not to arch/mips/kernel/binfmt_elfo32.c,
-resulting in default (long) being used by fill_files_note().
+The ACPI table maps this GPIO to the USB device via _CRS and _DSD
+descriptors, so the kernel can find it.
+
+The userspace applications need to know if the privacy pin is enabled
+or not.
+
+The obvious way to show it to userspace is via the V4L2_CID_PRIVACY
+control.
+
+This patchset implement this functionality.
+
+v6: Thanks to all the comments from Laurent!
+  - Remove multiple async_ctrls from v5, it is not needed
+  - Split event handling in two parts, so it can be triggered without wq
+  - Save pointer to the privacy entity in the main structure
+  - Handle the quirk in a different location to avoid races
+  - CodeStyle
+
+v5: Thanks to all the comments from Laurent!
+  - Allow multiple async_ctrls
+  - Use dev_dbg() for uvc_trace
+  - Major redesing of "Implement UVC_EXT_GPIO_UNIT"
+  - Major redesing of "Implement UVC_QUIRK_PRIVACY_DURING_STREAM"
+
+v4: Implement UVC_QUIRK_PRIVACY_DURING_STREAM
+
+v3: Thanks to all the comments from Joe Perches
+  - Rework of printk macros
+
+v2: Thanks to all the comments from Laurent!
+  - move guid to unit
+  - support entities with no pads
+  - CodeStyle
+  - Irq handling
+  - pr_cont
+  - new ids
+
+Ricardo Ribalda (11):
+  media: uvcvideo: Move guid to entity
+  media: uvcvideo: Allow extra entities
+  media: uvcvideo: Allow entities with no pads
+  media: uvcvideo: Add uvc_ctrl_status_event_direct
+  media: uvcvideo: Allow entity-defined get_info and get_cur
+  media: uvcvideo: Implement UVC_EXT_GPIO_UNIT
+  media: uvcvideo: Add Privacy control based on EXT_GPIO
+  media: uvcvideo: Implement UVC_QUIRK_PRIVACY_DURING_STREAM
+  media: uvcvideo: Use dev_ printk aliases
+  media: uvcvideo: New macro uvc_trace_cont
+  media: uvcvideo: use dev_printk() for uvc_trace()
+
+ drivers/media/usb/uvc/uvc_ctrl.c   | 184 +++++----
+ drivers/media/usb/uvc/uvc_driver.c | 603 +++++++++++++++++++----------
+ drivers/media/usb/uvc/uvc_entity.c |  11 +-
+ drivers/media/usb/uvc/uvc_isight.c |  16 +-
+ drivers/media/usb/uvc/uvc_queue.c  |   9 +-
+ drivers/media/usb/uvc/uvc_status.c |  32 +-
+ drivers/media/usb/uvc/uvc_v4l2.c   |  53 ++-
+ drivers/media/usb/uvc/uvc_video.c  | 147 ++++---
+ drivers/media/usb/uvc/uvcvideo.h   |  76 +++-
+ 9 files changed, 727 insertions(+), 404 deletions(-)
+
+-- 
+2.29.2.729.g45daf8777d-goog
+
