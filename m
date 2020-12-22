@@ -2,259 +2,313 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00CAA2E0399
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 01:56:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB0662E039E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 02:01:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725899AbgLVAzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 19:55:55 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:39613 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbgLVAzz (ORCPT
+        id S1725962AbgLVBAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 20:00:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725782AbgLVBAn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 19:55:55 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1608598534; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=YK/eYV9zEDRtsog1iTnXgmXquyS/SZNGMqbSGrb3cWg=;
- b=LZ6C9/StismQA03aG1kc9tJEv9Up2D0usPVobPpkfiPuSn9JpQgEd4K5qcO99N1uhsybqF+8
- oORSCKqkYMXbVUZz6sY6kXWOwT0TEDUukw3SwGHvKZf2euIYpEJKVG7F7yg9trEKaFMT/OKF
- rVqSpaYcCyTXwmhIoRHrR27EEyo=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 5fe143de6d2f42c6668f2590 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Dec 2020 00:54:54
- GMT
-Sender: isaacm=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8B7A8C43463; Tue, 22 Dec 2020 00:54:54 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: isaacm)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 09C31C433CA;
-        Tue, 22 Dec 2020 00:54:52 +0000 (UTC)
+        Mon, 21 Dec 2020 20:00:43 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F47EC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 17:00:03 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id m25so27992405lfc.11
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 17:00:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=konsulko.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=unwUyXsIQFBGADwzup4YbErIrYsTO70qoKOp/mP9m7g=;
+        b=kXMHYGhmBLXfy8WA818C/uCk+zQn58dRt9ezQbXbhwXOSn1neYEU2FsRJq+PcjZ+7G
+         Mms0OaBI0P2fBY+L8QdFHspM8/y+ngvzSAnU3uGzdZ2LDEV7kW2d1XNB2KLxJcbGjZG8
+         Rd7emn0wX94USg2kZgY8Uj4KhtWguc5vvX99U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=unwUyXsIQFBGADwzup4YbErIrYsTO70qoKOp/mP9m7g=;
+        b=JjaP1b+IOvHEoMfa7Vs5cw/C+cydcWLOC97HzM0shORrMup2bPI1H0/T+Z9TjTUGkN
+         w7/4hQ3n0/ADXZF/ijTgQ0XBoY7mspeefDVbnQQW52TbPFX2Do13PKGRXpwJ4IwlT5Oc
+         oCK7NezRyUFGPvrLL4FNEI50CQ1E5c3s+/bBqhs+LyQoeO9E0eKKsKr2CavTYgxOALkM
+         MzTtuIjf+YvzORXPubL56SRfY2eAewkxtzlJrVURxUEHMRFZ1r60tdpx7Yi2Z1PyhuzM
+         EInWb7CJYid/YapexAn5d6mIF42Be4wNJg9CJmkFEr2omYv2CmASLLPWo3YPj8zTxNEW
+         KHPg==
+X-Gm-Message-State: AOAM532xMUrSvEnDcdperOlqMA6Y67dS99t3eiI3/bGvi81RihzNsDSf
+        kvw47lJjnhmtUM8PA2aoethLM4c8B/rkMSQGmPQ6JA==
+X-Google-Smtp-Source: ABdhPJyPNP8N6flp0lbEJVi3fEBAmkWtCyZJU32+Ia7rLGoNKKxkJWxPUTaUN0dRt7fmBUSguG511qx91AVMQkMSY9Q=
+X-Received: by 2002:a05:6512:6cd:: with SMTP id u13mr7563309lff.288.1608598801791;
+ Mon, 21 Dec 2020 17:00:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Mon, 21 Dec 2020 16:54:52 -0800
-From:   isaacm@codeaurora.org
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        will@kernel.org, joro@8bytes.org, pdaly@codeaurora.org,
-        pratikp@codeaurora.org, kernel-team@android.com
-Subject: Re: [PATCH 1/3] iommu/io-pgtable-arm: Prepare for modularization
-In-Reply-To: <370f7c90-a3e3-57d9-1830-8abe5134e004@arm.com>
-References: <1608280722-19841-1-git-send-email-isaacm@codeaurora.org>
- <1608280722-19841-2-git-send-email-isaacm@codeaurora.org>
- <309ff39d-5fc5-83c6-d423-2d66f503c60c@arm.com>
- <34ea1af8569e4115e2dd1de61ae95bb6@codeaurora.org>
- <370f7c90-a3e3-57d9-1830-8abe5134e004@arm.com>
-Message-ID: <c35a517f25d88212ef4a14fdbef5f035@codeaurora.org>
-X-Sender: isaacm@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <18669bd607ae9efbf4e00e36532c7aa167d0fa12.camel@gmx.de>
+ <20201220002228.38697-1-vitaly.wool@konsulko.com> <X+DaMSJE22nUC0tl@google.com>
+ <CAM4kBBKnW6K-mbPno4SpvhUBiykP4zeFm_CNzssDkReURbuU7w@mail.gmail.com>
+ <CALvZod69OtXkdOJPzuY5XfXz_ro0V7OmqW4OY9B_emqwroxW4w@mail.gmail.com>
+ <e5cd8a0a5df84081a11359ede6e746bc@hisilicon.com> <CALvZod7EZnEWb_65FjSNdx+-S_4pLHyS5rYiU-D3hFLRMXS6Lw@mail.gmail.com>
+ <8cc0e01fd03245a4994f2e0f54b264fa@hisilicon.com> <CAM4kBB+xUa8zXSRSuB0z5FCdPNmUpDfcC4Vqu7wzAkf0b+RXqw@mail.gmail.com>
+ <f0ca46a830e54f4482fb4f46df9675f5@hisilicon.com>
+In-Reply-To: <f0ca46a830e54f4482fb4f46df9675f5@hisilicon.com>
+From:   Vitaly Wool <vitaly.wool@konsulko.com>
+Date:   Tue, 22 Dec 2020 01:59:51 +0100
+Message-ID: <CAM4kBBKD6MAOaBvwC_Wedf_zmzmt-gm=TrAF1Lh7pVbNtcsFZg@mail.gmail.com>
+Subject: Re: [PATCH] zsmalloc: do not use bit_spin_lock
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Mike Galbraith <efault@gmx.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        NitinGupta <ngupta@vflare.org>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-21 07:22, Robin Murphy wrote:
-> On 2020-12-18 18:59, isaacm@codeaurora.org wrote:
->> On 2020-12-18 04:38, Robin Murphy wrote:
->>> On 2020-12-18 08:38, Isaac J. Manjarres wrote:
->>>> The io-pgtable-arm and io-pgtable-arm-v7s source files will
->>>> be compiled as separate modules, along with the io-pgtable
->>>> source. Export the symbols for the io-pgtable init function
->>>> structures for the io-pgtable module to use.
->>> 
->>> In my current build tree, the io-pgtable glue itself is a whopping 
->>> 379
->>> bytes of code and data - is there really any benefit to all the
->>> additional overhead of making that modular? Given the number of
->>> different users (including AMD now), I think at this point we should
->>> start considering this as part of the IOMMU core, and just tweak the
->>> interface such that formats can register their own init_fns
->>> dynamically instead of the static array that's always horrible.
->>> 
->>> Robin.
->>> 
->> Thanks for the feedback, Robin. This is an avenue I had explored a bit 
->> when modularizing the code. However,
->> I came up with a few problems that I couldn't get around.
->> 
->> 1) If we leave the io-pgtable glue as part of the core kernel, we need 
->> to ensure that the io-pgtable format
->> modules get loaded prior to any driver that might use them (e.g. IOMMU 
->> drivers/other callers of alloc_io_pgtable_ops).
->>      a) This can get a bit messy, as there's no symbol dependencies 
->> between the callers of the io-pgtable
->>         code, and the page table format modules, since everything is 
->> through function pointers. This is handled
->>         for the IOMMU drivers through the devlink feature, but I don't 
->> see how we can leverage something like that
->>         here. I guess this isn't too much of a problem when everything 
->> is built-in, as the registration can happen
->>         in one of the earlier initcall levels.
->> 
->>      b) If we do run into a scenario where a client of io-pgtable 
->> tries to allocate a page table instance prior
->>         to the io-pgtable format module being loaded, I couldn't come 
->> up with a way of distinguishing between
->>         format module is not available at the moment vs  format module 
->> will never be available. I don't think
->>         returning EPROBE_DEFER would be something nice to do in that 
->> case.
-> 
-> Urgh, I see... yes, the current approach does work out as an
-> unexpectedly neat way to avoid many of the pitfalls. However I'm not
-> sure it actually avoids all of them - say you have a config like this:
-> 
-> IPMMU_VMSA=y
-> -> IO_PGTABLE_ARM_LPAE=y
->    -> IO_PGTABLE=y
-> MTK_IOMMU=m
-> -> IO_PGTABLE_ARMV7S=m
-> 
-> won't that still fail to link io-pgtable.o?
-> 
-Yes, you are correct, that would be problematic.
->> 2) We would have to ensure that the format module cannot be unloaded 
->> while other clients are using it. I suppose
->> this isn't as big as point #1 though, since it's something that can 
->> probably be handled through a similar ref count
->> mechanism that we're using for modular IOMMU drivers.
-> 
-> FWIW I think that would come out in the wash from resolving 1b - I'd
-> assume there would have to be some sort of module_get() in there
-> somewhere. I should probably go and look at how the crypto API handles
-> its modular algorithms for more inspiration...
-So I looked through the crypto dir, and it seems like they--along with a 
-few other kernel drivers--are using MODULE_SOFTDEP()
-to sort out these dependencies.
-> 
->> Given the two reasons above, I went with the current approach, since 
->> it avoids both issues by creating symbol dependencies
->> between client drivers, the io-pgtable drivers, and the io-pgtable 
->> format drivers, so that ensures that they are loaded
->> in the correct order, and also prevents them from being removed, 
->> unless there aren't any users present.
-> 
-> Having thought all that over, I'm now wondering what we really gain
-> from this either way - if vendors can build and ship SoC-tailored
-> configs, then they can already turn off formats they don't care about.
-> If the aim is to ship a single config everywhere, then you'll still
-> have to provision and load all possible formats on any system that
-> needs any one of them, thanks to those "convenient" symbol
-> dependencies. The promise in the cover letter doesn't seem to
-> materialise :/
-> 
-> Robin.
-> 
-Given the feedback, this makes sense. I've come up with a second version 
-of the patches that leaves
-the io-pgtable code in the kernel, and allows the formats to be modules, 
-which better achieves what
-the cover-letter is trying to express :) I believe that with the second 
-patch, we should be able to
-get to a place where the kernel just needs to provide io-pgtable, while 
-vendors can provide either
-io-pgtable-arm or io-pgtable-arm-v7s or both, as needed.
-Here are the patches: 
-https://lore.kernel.org/linux-iommu/1608597876-32367-1-git-send-email-isaacm@codeaurora.org/T/#t
+On Tue, Dec 22, 2020 at 12:37 AM Song Bao Hua (Barry Song)
+<song.bao.hua@hisilicon.com> wrote:
+>
+>
+>
+> > -----Original Message-----
+> > From: Song Bao Hua (Barry Song)
+> > Sent: Tuesday, December 22, 2020 11:38 AM
+> > To: 'Vitaly Wool' <vitaly.wool@konsulko.com>
+> > Cc: Shakeel Butt <shakeelb@google.com>; Minchan Kim <minchan@kernel.org>; Mike
+> > Galbraith <efault@gmx.de>; LKML <linux-kernel@vger.kernel.org>; linux-mm
+> > <linux-mm@kvack.org>; Sebastian Andrzej Siewior <bigeasy@linutronix.de>;
+> > NitinGupta <ngupta@vflare.org>; Sergey Senozhatsky
+> > <sergey.senozhatsky.work@gmail.com>; Andrew Morton
+> > <akpm@linux-foundation.org>
+> > Subject: RE: [PATCH] zsmalloc: do not use bit_spin_lock
+> >
+> >
+> >
+> > > -----Original Message-----
+> > > From: Vitaly Wool [mailto:vitaly.wool@konsulko.com]
+> > > Sent: Tuesday, December 22, 2020 11:12 AM
+> > > To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> > > Cc: Shakeel Butt <shakeelb@google.com>; Minchan Kim <minchan@kernel.org>;
+> > Mike
+> > > Galbraith <efault@gmx.de>; LKML <linux-kernel@vger.kernel.org>; linux-mm
+> > > <linux-mm@kvack.org>; Sebastian Andrzej Siewior <bigeasy@linutronix.de>;
+> > > NitinGupta <ngupta@vflare.org>; Sergey Senozhatsky
+> > > <sergey.senozhatsky.work@gmail.com>; Andrew Morton
+> > > <akpm@linux-foundation.org>
+> > > Subject: Re: [PATCH] zsmalloc: do not use bit_spin_lock
+> > >
+> > > On Mon, Dec 21, 2020 at 10:30 PM Song Bao Hua (Barry Song)
+> > > <song.bao.hua@hisilicon.com> wrote:
+> > > >
+> > > >
+> > > >
+> > > > > -----Original Message-----
+> > > > > From: Shakeel Butt [mailto:shakeelb@google.com]
+> > > > > Sent: Tuesday, December 22, 2020 10:03 AM
+> > > > > To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> > > > > Cc: Vitaly Wool <vitaly.wool@konsulko.com>; Minchan Kim
+> > > <minchan@kernel.org>;
+> > > > > Mike Galbraith <efault@gmx.de>; LKML <linux-kernel@vger.kernel.org>;
+> > > linux-mm
+> > > > > <linux-mm@kvack.org>; Sebastian Andrzej Siewior <bigeasy@linutronix.de>;
+> > > > > NitinGupta <ngupta@vflare.org>; Sergey Senozhatsky
+> > > > > <sergey.senozhatsky.work@gmail.com>; Andrew Morton
+> > > > > <akpm@linux-foundation.org>
+> > > > > Subject: Re: [PATCH] zsmalloc: do not use bit_spin_lock
+> > > > >
+> > > > > On Mon, Dec 21, 2020 at 12:06 PM Song Bao Hua (Barry Song)
+> > > > > <song.bao.hua@hisilicon.com> wrote:
+> > > > > >
+> > > > > >
+> > > > > >
+> > > > > > > -----Original Message-----
+> > > > > > > From: Shakeel Butt [mailto:shakeelb@google.com]
+> > > > > > > Sent: Tuesday, December 22, 2020 8:50 AM
+> > > > > > > To: Vitaly Wool <vitaly.wool@konsulko.com>
+> > > > > > > Cc: Minchan Kim <minchan@kernel.org>; Mike Galbraith <efault@gmx.de>;
+> > > LKML
+> > > > > > > <linux-kernel@vger.kernel.org>; linux-mm <linux-mm@kvack.org>; Song
+> > > Bao
+> > > > > Hua
+> > > > > > > (Barry Song) <song.bao.hua@hisilicon.com>; Sebastian Andrzej Siewior
+> > > > > > > <bigeasy@linutronix.de>; NitinGupta <ngupta@vflare.org>; Sergey
+> > > > > Senozhatsky
+> > > > > > > <sergey.senozhatsky.work@gmail.com>; Andrew Morton
+> > > > > > > <akpm@linux-foundation.org>
+> > > > > > > Subject: Re: [PATCH] zsmalloc: do not use bit_spin_lock
+> > > > > > >
+> > > > > > > On Mon, Dec 21, 2020 at 11:20 AM Vitaly Wool <vitaly.wool@konsulko.com>
+> > > > > wrote:
+> > > > > > > >
+> > > > > > > > On Mon, Dec 21, 2020 at 6:24 PM Minchan Kim <minchan@kernel.org>
+> > wrote:
+> > > > > > > > >
+> > > > > > > > > On Sun, Dec 20, 2020 at 02:22:28AM +0200, Vitaly Wool wrote:
+> > > > > > > > > > zsmalloc takes bit spinlock in its _map() callback and releases
+> > > it
+> > > > > > > > > > only in unmap() which is unsafe and leads to zswap complaining
+> > > > > > > > > > about scheduling in atomic context.
+> > > > > > > > > >
+> > > > > > > > > > To fix that and to improve RT properties of zsmalloc, remove
+> > that
+> > > > > > > > > > bit spinlock completely and use a bit flag instead.
+> > > > > > > > >
+> > > > > > > > > I don't want to use such open code for the lock.
+> > > > > > > > >
+> > > > > > > > > I see from Mike's patch, recent zswap change introduced the lockdep
+> > > > > > > > > splat bug and you want to improve zsmalloc to fix the zswap bug
+> > > and
+> > > > > > > > > introduce this patch with allowing preemption enabling.
+> > > > > > > >
+> > > > > > > > This understanding is upside down. The code in zswap you are referring
+> > > > > > > > to is not buggy.  You may claim that it is suboptimal but there is
+> > > > > > > > nothing wrong in taking a mutex.
+> > > > > > > >
+> > > > > > >
+> > > > > > > Is this suboptimal for all or just the hardware accelerators? Sorry,
+> > > I
+> > > > > > > am not very familiar with the crypto API. If I select lzo or lz4 as
+> > > a
+> > > > > > > zswap compressor will the [de]compression be async or sync?
+> > > > > >
+> > > > > > Right now, in crypto subsystem, new drivers are required to write based
+> > > on
+> > > > > > async APIs. The old sync API can't work in new accelerator drivers as
+> > > they
+> > > > > > are not supported at all.
+> > > > > >
+> > > > > > Old drivers are used to sync, but they've got async wrappers to support
+> > > async
+> > > > > > APIs. Eg.
+> > > > > > crypto: acomp - add support for lz4 via scomp
+> > > > > >
+> > > > >
+> > >
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/
+> > > > > crypto/lz4.c?id=8cd9330e0a615c931037d4def98b5ce0d540f08d
+> > > > > >
+> > > > > > crypto: acomp - add support for lzo via scomp
+> > > > > >
+> > > > >
+> > >
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/
+> > > > > crypto/lzo.c?id=ac9d2c4b39e022d2c61486bfc33b730cfd02898e
+> > > > > >
+> > > > > > so they are supporting async APIs but they are still working in sync
+> > mode
+> > > > > as
+> > > > > > those old drivers don't sleep.
+> > > > > >
+> > > > >
+> > > > > Good to know that those are sync because I want them to be sync.
+> > > > > Please note that zswap is a cache in front of a real swap and the load
+> > > > > operation is latency sensitive as it comes in the page fault path and
+> > > > > directly impacts the applications. I doubt decompressing synchronously
+> > > > > a 4k page on a cpu will be costlier than asynchronously decompressing
+> > > > > the same page from hardware accelerators.
+> > > >
+> > > > If you read the old paper:
+> > > >
+> > >
+> > https://www.ibm.com/support/pages/new-linux-zswap-compression-functionalit
+> > > y
+> > > > Because the hardware accelerator speeds up compression, looking at the zswap
+> > > > metrics we observed that there were more store and load requests in a given
+> > > > amount of time, which filled up the zswap pool faster than a software
+> > > > compression run. Because of this behavior, we set the max_pool_percent
+> > > > parameter to 30 for the hardware compression runs - this means that zswap
+> > > > can use up to 30% of the 10GB of total memory.
+> > > >
+> > > > So using hardware accelerators, we get a chance to speed up compression
+> > > > while decreasing cpu utilization.
+> > > >
+> > > > BTW, If it is not easy to change zsmalloc, one quick workaround we might
+> > do
+> > > > in zswap is adding the below after applying Mike's original patch:
+> > > >
+> > > > if(in_atomic()) /* for zsmalloc */
+> > > >         while(!try_wait_for_completion(&req->done);
+> > > > else /* for zbud, z3fold */
+> > > >         crypto_wait_req(....);
+> > >
+> > > I don't think I'm going to ack this, sorry.
+> > >
+> >
+> > Fair enough. And I am also thinking if we can move zpool_unmap_handle()
+> > quite after zpool_map_handle() as below:
+> >
+> >       dlen = PAGE_SIZE;
+> >       src = zpool_map_handle(entry->pool->zpool, entry->handle, ZPOOL_MM_RO);
+> >       if (zpool_evictable(entry->pool->zpool))
+> >               src += sizeof(struct zswap_header);
+> > +     zpool_unmap_handle(entry->pool->zpool, entry->handle);
+> >
+> >       acomp_ctx = raw_cpu_ptr(entry->pool->acomp_ctx);
+> >       mutex_lock(acomp_ctx->mutex);
+> >       sg_init_one(&input, src, entry->length);
+> >       sg_init_table(&output, 1);
+> >       sg_set_page(&output, page, PAGE_SIZE, 0);
+> >       acomp_request_set_params(acomp_ctx->req, &input, &output, entry->length,
+> > dlen);
+> >       ret = crypto_wait_req(crypto_acomp_decompress(acomp_ctx->req),
+> > &acomp_ctx->wait);
+> >       mutex_unlock(acomp_ctx->mutex);
+> >
+> > -     zpool_unmap_handle(entry->pool->zpool, entry->handle);
+> >
+> > Since src is always low memory and we only need its virtual address
+> > to get the page of src in sg_init_one(). We don't actually read it
+> > by CPU anywhere.
+>
+> The below code might be better:
+>
+>         dlen = PAGE_SIZE;
+>         src = zpool_map_handle(entry->pool->zpool, entry->handle, ZPOOL_MM_RO);
+>         if (zpool_evictable(entry->pool->zpool))
+>                 src += sizeof(struct zswap_header);
+>
+>         acomp_ctx = raw_cpu_ptr(entry->pool->acomp_ctx);
+>
+> +       zpool_unmap_handle(entry->pool->zpool, entry->handle);
+>
+>         mutex_lock(acomp_ctx->mutex);
+>         sg_init_one(&input, src, entry->length);
+>         sg_init_table(&output, 1);
+>         sg_set_page(&output, page, PAGE_SIZE, 0);
+>         acomp_request_set_params(acomp_ctx->req, &input, &output, entry->length, dlen);
+>         ret = crypto_wait_req(crypto_acomp_decompress(acomp_ctx->req), &acomp_ctx->wait);
+>         mutex_unlock(acomp_ctx->mutex);
+>
+> -       zpool_unmap_handle(entry->pool->zpool, entry->handle);
 
-Thanks,
-Isaac
->> 
->> Thanks,
->> Isaac
->>>> Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
->>>> ---
->>>>   drivers/iommu/io-pgtable-arm-v7s.c | 4 ++++
->>>>   drivers/iommu/io-pgtable-arm.c     | 8 ++++++++
->>>>   2 files changed, 12 insertions(+)
->>>> 
->>>> diff --git a/drivers/iommu/io-pgtable-arm-v7s.c 
->>>> b/drivers/iommu/io-pgtable-arm-v7s.c
->>>> index 1d92ac9..f062c1c 100644
->>>> --- a/drivers/iommu/io-pgtable-arm-v7s.c
->>>> +++ b/drivers/iommu/io-pgtable-arm-v7s.c
->>>> @@ -28,6 +28,7 @@
->>>>   #include <linux/iommu.h>
->>>>   #include <linux/kernel.h>
->>>>   #include <linux/kmemleak.h>
->>>> +#include <linux/module.h>
->>>>   #include <linux/sizes.h>
->>>>   #include <linux/slab.h>
->>>>   #include <linux/spinlock.h>
->>>> @@ -839,6 +840,7 @@ struct io_pgtable_init_fns 
->>>> io_pgtable_arm_v7s_init_fns = {
->>>>       .alloc    = arm_v7s_alloc_pgtable,
->>>>       .free    = arm_v7s_free_pgtable,
->>>>   };
->>>> +EXPORT_SYMBOL_GPL(io_pgtable_arm_v7s_init_fns);
->>>>     #ifdef CONFIG_IOMMU_IO_PGTABLE_ARMV7S_SELFTEST
->>>>   @@ -984,3 +986,5 @@ static int __init arm_v7s_do_selftests(void)
->>>>   }
->>>>   subsys_initcall(arm_v7s_do_selftests);
->>>>   #endif
->>>> +
->>>> +MODULE_LICENSE("GPL v2");
->>>> diff --git a/drivers/iommu/io-pgtable-arm.c 
->>>> b/drivers/iommu/io-pgtable-arm.c
->>>> index 87def58..2623d57 100644
->>>> --- a/drivers/iommu/io-pgtable-arm.c
->>>> +++ b/drivers/iommu/io-pgtable-arm.c
->>>> @@ -13,6 +13,7 @@
->>>>   #include <linux/bitops.h>
->>>>   #include <linux/io-pgtable.h>
->>>>   #include <linux/kernel.h>
->>>> +#include <linux/module.h>
->>>>   #include <linux/sizes.h>
->>>>   #include <linux/slab.h>
->>>>   #include <linux/types.h>
->>>> @@ -1047,26 +1048,31 @@ struct io_pgtable_init_fns 
->>>> io_pgtable_arm_64_lpae_s1_init_fns = {
->>>>       .alloc    = arm_64_lpae_alloc_pgtable_s1,
->>>>       .free    = arm_lpae_free_pgtable,
->>>>   };
->>>> +EXPORT_SYMBOL_GPL(io_pgtable_arm_64_lpae_s1_init_fns);
->>>>     struct io_pgtable_init_fns io_pgtable_arm_64_lpae_s2_init_fns = 
->>>> {
->>>>       .alloc    = arm_64_lpae_alloc_pgtable_s2,
->>>>       .free    = arm_lpae_free_pgtable,
->>>>   };
->>>> +EXPORT_SYMBOL_GPL(io_pgtable_arm_64_lpae_s2_init_fns);
->>>>     struct io_pgtable_init_fns io_pgtable_arm_32_lpae_s1_init_fns = 
->>>> {
->>>>       .alloc    = arm_32_lpae_alloc_pgtable_s1,
->>>>       .free    = arm_lpae_free_pgtable,
->>>>   };
->>>> +EXPORT_SYMBOL_GPL(io_pgtable_arm_32_lpae_s1_init_fns);
->>>>     struct io_pgtable_init_fns io_pgtable_arm_32_lpae_s2_init_fns = 
->>>> {
->>>>       .alloc    = arm_32_lpae_alloc_pgtable_s2,
->>>>       .free    = arm_lpae_free_pgtable,
->>>>   };
->>>> +EXPORT_SYMBOL_GPL(io_pgtable_arm_32_lpae_s2_init_fns);
->>>>     struct io_pgtable_init_fns io_pgtable_arm_mali_lpae_init_fns = {
->>>>       .alloc    = arm_mali_lpae_alloc_pgtable,
->>>>       .free    = arm_lpae_free_pgtable,
->>>>   };
->>>> +EXPORT_SYMBOL_GPL(io_pgtable_arm_mali_lpae_init_fns);
->>>>     #ifdef CONFIG_IOMMU_IO_PGTABLE_LPAE_SELFTEST
->>>>   @@ -1252,3 +1258,5 @@ static int __init 
->>>> arm_lpae_do_selftests(void)
->>>>   }
->>>>   subsys_initcall(arm_lpae_do_selftests);
->>>>   #endif
->>>> +
->>>> +MODULE_LICENSE("GPL v2");
->>>> 
+I don't see how this is going to work since we can't guarantee src
+will be a valid pointer after the zpool_unmap_handle() call, can we?
+Could you please elaborate?
+
+~Vitaly
+
+> >
+> > > Best regards,
+> > >    Vitaly
+> > >
+> > > > crypto_wait_req() is actually doing wait_for_completion():
+> > > > static inline int crypto_wait_req(int err, struct crypto_wait *wait)
+> > > > {
+> > > >         switch (err) {
+> > > >         case -EINPROGRESS:
+> > > >         case -EBUSY:
+> > > >                 wait_for_completion(&wait->completion);
+> > > >                 reinit_completion(&wait->completion);
+> > > >                 err = wait->err;
+> > > >                 break;
+> > > >         }
+> > > >
+> > > >         return err;
+> > > > }
+>
+> Thanks
+> Barry
