@@ -2,135 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8ADA2E0825
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 10:36:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 482D62E0832
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 10:39:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725964AbgLVJfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 04:35:45 -0500
-Received: from mailgw02.mediatek.com ([1.203.163.81]:3991 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725895AbgLVJfo (ORCPT
+        id S1726175AbgLVJjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 04:39:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725946AbgLVJjL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 04:35:44 -0500
-X-UUID: 1f47d6a946494a5996f43e801bdcac1f-20201222
-X-UUID: 1f47d6a946494a5996f43e801bdcac1f-20201222
-Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 253076222; Tue, 22 Dec 2020 17:34:59 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- MTKMBS31N2.mediatek.inc (172.27.4.87) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 22 Dec 2020 17:34:57 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 22 Dec 2020 17:34:55 +0800
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Ikjoon Jang <ikjn@chromium.org>
-CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Tianping Fang <tianping.fang@mediatek.com>,
-        Zhanyong Wang <zhangyong.wang@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Zhanyong Wang <zhanyong.wang@mediatek.com>
-Subject: [RFC PATCH v3 5/5] arm64: dts: mt8192: add SSUSB related nodes
-Date:   Tue, 22 Dec 2020 17:34:42 +0800
-Message-ID: <1608629682-8535-5-git-send-email-chunfeng.yun@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1608629682-8535-1-git-send-email-chunfeng.yun@mediatek.com>
-References: <1608629682-8535-1-git-send-email-chunfeng.yun@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 13DABBDEFD78ED4A7DB3C280B058F72B960972A49665467DDC424A771ACA78A32000:8
-X-MTK:  N
+        Tue, 22 Dec 2020 04:39:11 -0500
+Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE63EC0613D3;
+        Tue, 22 Dec 2020 01:38:30 -0800 (PST)
+Received: by mail-oo1-xc31.google.com with SMTP id j8so2836865oon.3;
+        Tue, 22 Dec 2020 01:38:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=GdOuNcmMMWH4z8sKpbvhRSL0GxJAY00N8icJZcixgRw=;
+        b=KnWDrnUIm/QDsqn03+KLVq7vICriGback2SD3UVuwGF4E8dfq/oGJ4UdMf33MCSS3Q
+         /Qs242BaKjd5AsW/liitV+duls56pSRtKmbpbcasJLfnW1v4eFPhVRZz6CY1AwTmhcUc
+         z8Oe+E6mcNKVOHL1wfsBPTmvK1Xgs9Q0+YnmqPxIFO8ydN8ZHlz8AOQq9pl4WRZLxs2I
+         ug8V3GALqSXCFhC/O+ebCIHUEDTVbOhjrp0KlEoxSvjgi3sfo6gx6wVFucrObaOLWlV0
+         /Pe3cLmVVk7SLqrfmmDAM1hw/LTHpl8j/RZCk1PA8Y4KgIm4RU4XftWIK6IouGEIUOOY
+         zfMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=GdOuNcmMMWH4z8sKpbvhRSL0GxJAY00N8icJZcixgRw=;
+        b=WPsdk4MKdqYTGptwpqP86u/H35e+MHQGjrEreBAm+T0ZR+DIDkSBhppGVX0N8clU7t
+         Vo14kP/uwzeobqzFs6ctyROB0wTcdhEWt7JXgrz6VrAy4F94q7oGZwLI5jaHNNLkO7PC
+         iKyEZNtknbZxD6BUJ4r1TsQrHZi5qu/UK9O+S9MIGOFkMTtk8jqQu5GZ0Zh2pwwGftaY
+         oPyuAjRKACKLoc+PdzRzq3W/ro/usxyVcW3jAV607U5sPTdC7+pnsdxjQH+9zFG5YmTv
+         6K8vAFTSunM++dgN5buXVNSjcp/CveqD+rXngPFcDznpFf9OcMrKvVBmv6J9G39XsKb3
+         dH3g==
+X-Gm-Message-State: AOAM530JDMboNBUHEoHo9YNQVu1eYxdJ12eIqUGfmadY1Eq7ZYlp/WV5
+        ZvpJHZlY3rV+nrncxtZ5gt4=
+X-Google-Smtp-Source: ABdhPJzv2y/wl75u+LajXaDBgiMwbLVLmfiq0P2hPYaynriPLuJgfYNAVHm2Te03f2t6xsOg2yxGIQ==
+X-Received: by 2002:a4a:9c01:: with SMTP id y1mr14202402ooj.15.1608629910042;
+        Tue, 22 Dec 2020 01:38:30 -0800 (PST)
+Received: from ?IPv6:2601:647:4700:9b2:9423:6a08:cbd0:8220? ([2601:647:4700:9b2:9423:6a08:cbd0:8220])
+        by smtp.gmail.com with ESMTPSA id i194sm2011461oib.30.2020.12.22.01.38.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 22 Dec 2020 01:38:29 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+From:   Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <CALCETrV=8tY7h=aaudWBEn-MJnNkm2wz5qjH49SYqwkjYTpOaA@mail.gmail.com>
+Date:   Tue, 22 Dec 2020 01:38:27 -0800
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>, Yu Zhao <yuzhao@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <757EEA98-4935-4283-849B-22CBFC352C45@gmail.com>
+References: <X97pprdcRXusLGnq@google.com>
+ <DDA15360-D6D4-46A8-95A4-5EE34107A407@gmail.com>
+ <20201221172711.GE6640@xz-x1>
+ <76B4F49B-ED61-47EA-9BE4-7F17A26B610D@gmail.com>
+ <X+D0hTZCrWS3P5Pi@google.com>
+ <CAHk-=wg_UBuo7ro1fpEGkMyFKA1+PxrE85f9J_AhUfr-nJPpLQ@mail.gmail.com>
+ <9E301C7C-882A-4E0F-8D6D-1170E792065A@gmail.com>
+ <CAHk-=wg-Y+svNy3CDkJjj0X_CJkSbpERLg64-Vqwq5u7SC4z0g@mail.gmail.com>
+ <X+ESkna2z3WjjniN@google.com>
+ <1FCC8F93-FF29-44D3-A73A-DF943D056680@gmail.com>
+ <20201221223041.GL6640@xz-x1>
+ <CAHk-=wh-bG4thjXUekLtrCg8FRrdWjtT40ibXXLSm_hzQG8eOw@mail.gmail.com>
+ <CALCETrV=8tY7h=aaudWBEn-MJnNkm2wz5qjH49SYqwkjYTpOaA@mail.gmail.com>
+To:     Andy Lutomirski <luto@kernel.org>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhanyong Wang <zhanyong.wang@mediatek.com>
+> On Dec 21, 2020, at 7:19 PM, Andy Lutomirski <luto@kernel.org> wrote:
+>=20
+> On Mon, Dec 21, 2020 at 3:22 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+>> On Mon, Dec 21, 2020 at 2:30 PM Peter Xu <peterx@redhat.com> wrote:
+>>> AFAIU mprotect() is the only one who modifies the pte using the mmap =
+write
+>>> lock.  NUMA balancing is also using read mmap lock when changing pte
+>>> protections, while my understanding is mprotect() used write lock =
+only because
+>>> it manipulates the address space itself (aka. vma layout) rather =
+than modifying
+>>> the ptes, so it needs to.
+>>=20
+>> So it's ok to change the pte holding only the PTE lock, if it's a
+>> *one*way* conversion.
+>>=20
+>> That doesn't break the "re-check the PTE contents" model (which
+>> predates _all_ of the rest: NUMA, userfaultfd, everything - it's
+>> pretty much the original model for our page table operations, and =
+goes
+>> back to the dark ages even before SMP and the existence of a page
+>> table lock).
+>>=20
+>> So for example, a COW will always create a different pte (not just
+>> because the page number itself changes - you could imagine a page
+>> getting re-used and changing back - but because it's always a RO->RW
+>> transition).
+>>=20
+>> So two COW operations cannot "undo" each other and fool us into
+>> thinking nothing changed.
+>>=20
+>> Anything that changes RW->RO - like fork(), for example - needs to
+>> take the mmap_lock.
+>=20
+> Ugh, this is unpleasantly complicated.  I will admit that any API that
+> takes an address and more-or-less-blindly marks it RO makes me quite
+> nervous even assuming all the relevant locks are held.  At least
+> userfaultfd refuses to operate on VM_SHARED VMAs, but we have another
+> instance of this (with mmap_sem held for write) in x86:
+> mark_screen_rdonly().  Dare I ask how broken this is?  We could likely
+> get away with deleting it entirely.
 
-Add SSUSB related nodes for mt8192
+If you only look at the function in isolation, it seems broken. It =
+should
+have flushed the TLB before releasing the mmap_lock. After the
+mmap_write_unlock() and before the actual flush, a #PF on another thread =
+can
+happen, and a similar scenario to the one that is mentioned in this =
+thread
+(copying while a stale PTE in the TLBs is not-writeprotected) might =
+happen.
 
-Signed-off-by: Zhanyong Wang <zhanyong.wang@mediatek.com>
-Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
----
-v3: rename node as 'usb' instead of xhci
+Having said that, I do not know this code and the context in which this
+function is called, so I do not know whether there are other mitigating
+factors.
 
-v2: include phy.h file
+Funny, I had a deja-vu and indeed you have already raised (other) TLB =
+issues
+with mark_screen_rdonly() 3 years ago. At the time you said "I'd like to
+delete it.=E2=80=9D [1]
 
-Depends on:
-https://patchwork.kernel.org/patch/11713559/
-[v4,1/3] arm64: dts: Add Mediatek SoC MT8192 and evaluation board dts and Makefile
----
- arch/arm64/boot/dts/mediatek/mt8192.dtsi | 49 ++++++++++++++++++++++++
- 1 file changed, 49 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-index 69d45c7b31f1..82d9f6eee404 100644
---- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-@@ -9,6 +9,7 @@
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/interrupt-controller/irq.h>
- #include <dt-bindings/pinctrl/mt8192-pinfunc.h>
-+#include <dt-bindings/phy/phy.h>
- 
- / {
- 	compatible = "mediatek,mt8192";
-@@ -416,6 +417,54 @@
- 			status = "disabled";
- 		};
- 
-+		xhci: usb@11200000 {
-+			compatible = "mediatek,mt8192-xhci",
-+				     "mediatek,mtk-xhci";
-+			reg = <0 0x11200000 0 0x1000>,
-+			      <0 0x11203e00 0 0x0100>;
-+			reg-names = "mac", "ippc";
-+			interrupts-extended = <&gic GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH 0>,
-+					      <&pio 211 IRQ_TYPE_LEVEL_LOW>;
-+			phys = <&u2port0 PHY_TYPE_USB2>,
-+			       <&u3port0 PHY_TYPE_USB3>;
-+			assigned-clocks = <&topckgen CLK_TOP_USB_TOP_SEL>,
-+					  <&topckgen CLK_TOP_SSUSB_XHCI_SEL>;
-+			assigned-clock-parents = <&topckgen CLK_TOP_UNIVPLL_D5_D4>,
-+						 <&topckgen CLK_TOP_UNIVPLL_D5_D4>;
-+			clocks = <&infracfg CLK_INFRA_SSUSB>,
-+				 <&infracfg CLK_INFRA_SSUSB_XHCI>,
-+				 <&apmixedsys CLK_APMIXED_USBPLL>;
-+			clock-names = "sys_ck", "xhci_ck", "ref_ck";
-+			mediatek,syscon-wakeup = <&pericfg 0x420 3>;
-+			#address-cells = <2>;
-+			#size-cells = <2>;
-+		};
-+
-+		u3phy0: usb-phy@11e40000 {
-+			compatible = "mediatek,mt8192-tphy",
-+				     "mediatek,generic-tphy-v2";
-+			#address-cells = <2>;
-+			#size-cells = <2>;
-+			ranges;
-+			status = "okay";
-+
-+			u2port0: usb-phy@11e40000 {
-+				reg = <0 0x11e40000 0 0x700>;
-+				clocks = <&clk26m>;
-+				clock-names = "ref";
-+				#phy-cells = <1>;
-+				status = "okay";
-+			};
-+
-+			u3port0: usb-phy@11e40700 {
-+				reg = <0 0x11e40700 0 0x900>;
-+				clocks = <&clk26m>;
-+				clock-names = "ref";
-+				#phy-cells = <1>;
-+				status = "okay";
-+			};
-+		};
-+
- 		audsys: syscon@11210000 {
- 			compatible = "mediatek,mt8192-audsys", "syscon";
- 			reg = <0 0x11210000 0 0x1000>;
--- 
-2.18.0
-
+[1] https://lore.kernel.org/patchwork/patch/782486/#976151=
