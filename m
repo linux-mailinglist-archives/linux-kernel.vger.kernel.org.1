@@ -2,150 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C52F2E0AFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 14:43:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E4442E0B0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 14:45:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727135AbgLVNmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 08:42:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60610 "EHLO
+        id S1727178AbgLVNpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 08:45:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726557AbgLVNmo (ORCPT
+        with ESMTP id S1727062AbgLVNph (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 08:42:44 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A10F5C0613D3;
-        Tue, 22 Dec 2020 05:42:04 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id n25so2869271pgb.0;
-        Tue, 22 Dec 2020 05:42:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DKstfCrObaRIVnqNYrHwR48s9bbWISBjfF34z/wJe/E=;
-        b=oCBl7iB7PMfcwhhQw64sG0dJ6RT8pDv0C6PS50UNZMli/J5vz8kXBoaB75lrFuBzBp
-         tlg7Le/pB2rD+9WTcUXtf7IaFiJTeaERbM8wwywdzky2HJQRl84Zvvr71KpT5Gq+3WM4
-         b04nyYeacZvAoWVnXCUxKg+/V/HrE/usT5NzTEzx8SMVmAYL1IAlYRGNtIHD8EcvEBgK
-         HELLecUMqnWpzDWXLP6xnF4sKM1cUaLFfj4EWi8P9GMtX6PZVsFb8j45HSupcmYI1zhG
-         pS7JnTYltmjyDmRA8c15lY6zaLiiy1KuqpoQGRc6HNsk8kavPFGAuS8V80chNswu8JYR
-         QCDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DKstfCrObaRIVnqNYrHwR48s9bbWISBjfF34z/wJe/E=;
-        b=U43twcgQ4E4vNtggHL5HcTJVbj3niVdUo48rbzI2l3qG4+ARl/SnV9mz+V7xaBYW0z
-         7n2EpDLlx5Ga7AantmIjb8g6DqXxVb9d+tMmvDRbst5s0Y8KVvr8622pZBQ62ghqYGxb
-         72hyJ3g3Tm8J4X4zhtsV0a1C8vFws56BuJdA1fTCxYbQj5lfFkHrMygVaYY5eflJHV8n
-         4GIqCheKMVnLl9o5KukUtB1eas+HG4rlEl9r4HhIGUyFQoAtcTEAUrW7AjVO6yIvhbWd
-         CMo8m6mjC+VW2PHAekO38BtZK+nqch3CrEhsSGgfgZiGaJLnvqhpzt72A7t+10xe1b97
-         187Q==
-X-Gm-Message-State: AOAM531KFYV1nQrPnHtfVxkwyCoSAo2EOi5CIRI+Gvmq4cOSXS+x4jeP
-        Rh+geYQsTZzi3v6OFOK1ZFRg1iqLgGlLeTe/Nn8=
-X-Google-Smtp-Source: ABdhPJzpY3/aKsMoLdWp7h3b2adg/iZaJX9Avp3qIUV0USJTNTDkvMwSKaZTSqcs9UTPxQuG554ia4SkNDbTtlQs0Fs=
-X-Received: by 2002:a63:74b:: with SMTP id 72mr19918744pgh.4.1608644524210;
- Tue, 22 Dec 2020 05:42:04 -0800 (PST)
-MIME-Version: 1.0
-References: <20201222131312.64957-1-alexandru.ardelean@analog.com>
-In-Reply-To: <20201222131312.64957-1-alexandru.ardelean@analog.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 22 Dec 2020 15:42:52 +0200
-Message-ID: <CAHp75Ve06gYFE+U_XNZfTFceMEzmADR6wd0OYr+tVMQ6hW3MLQ@mail.gmail.com>
-Subject: Re: [PATCH v6 1/2] lib/string.c: add __sysfs_match_string_with_gaps() helper
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
+        Tue, 22 Dec 2020 08:45:37 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 423A5C0613D3;
+        Tue, 22 Dec 2020 05:44:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=eXSyGreQyqo1MSmMoq/qMuV3OWCVLUj1olxIkYhTkl0=; b=Ix8mJC38mYvh+lNbE2zOg73S2V
+        aW8+bJnapCtY5yvKkPflK2jIdDa2nZaR3ghWYIzq0sfRZ02qOCAZfEHG/mQxOfcyk+/5GLm05CZQ9
+        1//PIsYFfsPOM9YnsFc0MK/+cW401LKBSC2npcgsbbVx1H8rIZUUCGQvsW/j3gF48T2Ea/CWgFu1O
+        I9Naeba9H0I76TnpqQ+UlimvfzMahfalNYx17Dgwpb1XFwQw7Ul9big6pvyPf8LViAJOc/g7sy+8P
+        nJ0DkW1OpNbL/pl3rC86J8zT2uhv7RCpK+zUzX7Ig0Fjcsl47jE82uuldUA8ToZjHCcGMET5UW5we
+        NmGAkx3g==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1krhxu-0002DJ-GS; Tue, 22 Dec 2020 13:44:38 +0000
+Date:   Tue, 22 Dec 2020 13:44:38 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jann Horn <jannh@google.com>
+Cc:     Minchan Kim <minchan@kernel.org>, Christoph Hellwig <hch@lst.de>,
+        Suren Baghdasaryan <surenb@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+        Michal Hocko <mhocko@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Rik van Riel <riel@surriel.com>,
+        Christian Brauner <christian@brauner.io>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Tim Murray <timmurray@google.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Subject: Re: [PATCH 1/2] mm/madvise: allow process_madvise operations on
+ entire memory range
+Message-ID: <20201222134438.GA7170@infradead.org>
+References: <20201124053943.1684874-1-surenb@google.com>
+ <20201124053943.1684874-2-surenb@google.com>
+ <20201125231322.GF1484898@google.com>
+ <CAG48ez0UKYCdgyW91SmOcT52vbLFz9RjLpaucWpj6bTrgQCwnA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAG48ez0UKYCdgyW91SmOcT52vbLFz9RjLpaucWpj6bTrgQCwnA@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 3:09 PM Alexandru Ardelean
-<alexandru.ardelean@analog.com> wrote:
->
-> The original docstring of the __sysfs_match_string() and match_string()
-> helper, implied that -1 could be used to search through NULL terminated
-> arrays, and positive 'n' could be used to go through arrays that may have
-> NULL elements in the middle of the array.
->
-> This isn't true. Regardless of the value of 'n', the first NULL element in
-> the array will stop the search, even if the element may be after a NULL
-> element.
->
-> To allow for a behavior where we can use the __sysfs_match_string() to
-> search over arrays with NULL elements in the middle, the
-> __sysfs_match_string_with_gaps() helper is added.
-> If n > 0, the search will continue until the element is found or n is
-> reached.
-> If n < 0, the search will continue until the element is found or a NULL
-> character is found.
+On Fri, Dec 11, 2020 at 09:27:46PM +0100, Jann Horn wrote:
+> > Can we just use one element in iovec to indicate entire address rather
+> > than using up the reserved flags?
+> >
+> >         struct iovec {
+> >                 .iov_base = NULL,
+> >                 .iov_len = (~(size_t)0),
+> >         };
+> 
+> In addition to Suren's objections, I think it's also worth considering
+> how this looks in terms of compat API. If a compat process does
+> process_madvise() on another compat process, it would be specifying
+> the maximum 32-bit number, rather than the maximum 64-bit number, so
+> you'd need special code to catch that case, which would be ugly.
+> 
+> And when a compat process uses this API on a non-compat process, it
+> semantically gets really weird: The actual address range covered would
+> be larger than the address range specified.
+> 
+> And if we want different access checks for the two flavors in the
+> future, gating that different behavior on special values in the iovec
+> would feel too magical to me.
+> 
+> And the length value SIZE_MAX doesn't really make sense anyway because
+> the length of the whole address space would be SIZE_MAX+1, which you
+> can't express.
+> 
+> So I'm in favor of a new flag, and strongly against using SIZE_MAX as
+> a magic number here.
 
-I'm wondering if we can leave __sysfs_match_string() alone (w/o adding
-unnecessary branch).
-
-int __sysfs_match_string_with_gaps(const char * const *array, size_t
-n, const char *str)
-{
-       const char *item;
-       int index;
-
-       for (index = 0; index < n; index++) {
-               item = array[index];
-               if (!item)
-                       continue;
-               if (sysfs_streq(item, str))
-                       return index;
-       }
-       return -EINVAL;
-}
-
-Note, the check n>0 seems redundant for this particular function.
-
-> +static int __sysfs_match_string_common(const char * const *array, ssize_t n,
-> +                                      const char *str, bool gaps)
-> +{
-> +       const char *item;
-> +       int index;
-> +
-> +       for (index = 0; index < n; index++) {
-> +               item = array[index];
-> +               if (!item) {
-> +                       if (gaps && n > 0)
-> +                               continue;
-> +                       break;
-> +               }
-> +               if (sysfs_streq(item, str))
-> +                       return index;
-> +       }
-> +
-> +       return -EINVAL;
-> +}
-> +
->  /**
->   * __sysfs_match_string - matches given string in an array
->   * @array: array of strings
-> @@ -770,21 +790,32 @@ EXPORT_SYMBOL(match_string);
->   */
->  int __sysfs_match_string(const char * const *array, size_t n, const char *str)
->  {
-> -       const char *item;
-> -       int index;
-> -
-> -       for (index = 0; index < n; index++) {
-> -               item = array[index];
-> -               if (!item)
-> -                       break;
-> -               if (sysfs_streq(item, str))
-> -                       return index;
-> -       }
-> -
-> -       return -EINVAL;
-> +       return __sysfs_match_string_common(array, n, str, false);
->  }
-
--- 
-With Best Regards,
-Andy Shevchenko
+Yes, using SIZE_MAX is a horrible interface in this case.  I'm not
+a huge fan of a flag either.  What is the use case for the madvise
+to all of a processes address space anyway?
