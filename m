@@ -2,111 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE26A2E0565
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 05:36:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3FEC2E0569
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 05:36:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725993AbgLVEfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 23:35:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33098 "EHLO
+        id S1726025AbgLVEfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 23:35:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725945AbgLVEfT (ORCPT
+        with ESMTP id S1725945AbgLVEfv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 23:35:19 -0500
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 685A2C0613D3;
-        Mon, 21 Dec 2020 20:34:39 -0800 (PST)
-Received: by mail-qk1-x734.google.com with SMTP id 19so10935848qkm.8;
-        Mon, 21 Dec 2020 20:34:39 -0800 (PST)
+        Mon, 21 Dec 2020 23:35:51 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CFA6C06179C
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 20:35:11 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id x1so2015905pgh.12
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 20:35:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PmY1Zbvh4P5fvr7vf3dYvsRt7lpuDqOG99f8cRvMW2Y=;
-        b=GrKyju7r5Q55J4AEUPA+SDTGZg+Q0Rl8bpjFEOY7Wf1W7lvAh+3vJzCVrUF51b8DOJ
-         zMZtths6IEkGwaO9na4a4ouDj76WbiJDCdRm8q61C6r1Ubxb+5iNB2coHyViB+Gvs14J
-         KggaDh8uAa9rgGhcc9pFidYBFp8jRHg8c2wBg=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=efVgO12y6qfjlIavBoObF8HNxu4Hvm/8sbVusrJEyQg=;
+        b=gcGcsrRKLFZqUishLYUK2rrAojhE9KbDilt+wO3akI1bUTMp6W4g6QDuvluwKINvEL
+         LPQJwcQesfB7tbcvglhfu/eDlPpLMgIABhch24FsZA3KmDR5YnK4Jf8Ij8kyMStXn0PD
+         eWrEAmPy2T8neKZkvacTysW0dP1CPT0DnemUt9jwi+Nx4w2NaxhUEDnLXb1QS18HYoks
+         r2JGrQ7jj61jt/hpzITPtrXoSmH3d5GRx/0w2CbDGyKlSWKXNYq53HXZCg8RcdvG2LID
+         +lGBlkcfXuKgcYgzovKXbGfJNYLh782NpxjOHrljhj2ug57mZoDd8Nu++wsQhMiCD6G4
+         yKWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PmY1Zbvh4P5fvr7vf3dYvsRt7lpuDqOG99f8cRvMW2Y=;
-        b=e+k2tE3pxKVC/8eNONFrh2kLFIXshFKJF05fGwj/4+/J5k+0c3OnJ4wZIjoKHrQ5PD
-         XDf/JGhbaEVOzXO6Fb6zdlCYc/QkOj4mM2I/uRLFIE9G3S7yTN6Hp7+iCFKNeBcXlRwW
-         Le6RIycOXQyH0Eqm1lNZm/DoYAqNIwCbAEYnk+q0vZP6msAWh+JtD9My5rc/IP8Ismxa
-         0XO2Rz926+kAdEb4iuI9nA7hZt1vyEVud0QSwpJxKNClYeKVpUyAkfpTDLJR6YEolpBa
-         86dehc5giCDS8WmoPXbfW7mCeM4vx/8+rlxbhfK3TADaaKOvuQFNafWJdqJ7WQUcvMES
-         lWmQ==
-X-Gm-Message-State: AOAM530Xpoj4jOquPd+JmWREFWgGSR8UeFdwH1I2JllGxW1S0f7QgdGE
-        ufmobPparrqJWEpPyRWjUMKG9jV4bHlVyuN7VNI=
-X-Google-Smtp-Source: ABdhPJwphoIU/ETccJ0+oBIrWPt5ewRHb2AZGa28DlUbwZupNShcyclpTxbkFNL6J4Za9zG8/A4dFQpfPCoTBgNIOyA=
-X-Received: by 2002:a05:620a:4155:: with SMTP id k21mr20507246qko.55.1608611678607;
- Mon, 21 Dec 2020 20:34:38 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=efVgO12y6qfjlIavBoObF8HNxu4Hvm/8sbVusrJEyQg=;
+        b=q5eI6s3mHIg/jiUCNvIx8BGSOyyCpIiLrEl1MYx5UTTZfpANjiRU4NK6cEKsc8+q3i
+         JeJVxeHUTQIG4scNdvXQUgw671ve+Gqw5HCJjOr/dg7MuE3guZGn/aBl9lCu8YT/dTB2
+         /trYDJQaSX8CBve1M1e01cV/BI28yo4+IFk1ar/7VvT1a1LcZDdf9yXXhtI/7fagc1OE
+         /z+PklhWcwpRmiJbR1j30fFtw/SLCQxTEbCV9bvZLj+lJKVcnAlzoUgZeeYtl7xThmNq
+         /8OywJBzF0LOJRpZq3nM1adDa3CE9bq569yB0VY8daHFlRxakL7qiXfvFBFhOWqeFz4Q
+         ZG8g==
+X-Gm-Message-State: AOAM531fx27BYZBzXlj93oXTBzoBkVmsJhjNJdAMReEm7s0inPZTLMMy
+        55rHkswBy/ixYcT7FyH7AYrrZA==
+X-Google-Smtp-Source: ABdhPJyIViesLe5L57QCib4Tc30kaHqp521NAFEgLLhIV79uAFs5gXWHG0AJbrltGyBakJ301c0CIQ==
+X-Received: by 2002:a65:5b47:: with SMTP id y7mr16390380pgr.221.1608611710462;
+        Mon, 21 Dec 2020 20:35:10 -0800 (PST)
+Received: from localhost ([122.172.20.109])
+        by smtp.gmail.com with ESMTPSA id 6sm18090487pfj.216.2020.12.21.20.35.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 21 Dec 2020 20:35:09 -0800 (PST)
+Date:   Tue, 22 Dec 2020 10:05:05 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     mmayer@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
+        rjw@rjwysocki.net, f.fainelli@gmail.com, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] cpufreq: brcmstb-avs-cpufreq: Fix some resource leaks in
+ the error handling path of the probe function
+Message-ID: <20201222043505.rq3cmajc3mxv3p2z@vireshk-i7>
+References: <20201219101751.181783-1-christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-References: <20201215024542.18888-1-zev@bewilderbeest.net> <20201215024542.18888-2-zev@bewilderbeest.net>
-In-Reply-To: <20201215024542.18888-2-zev@bewilderbeest.net>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Tue, 22 Dec 2020 04:34:26 +0000
-Message-ID: <CACPK8XfPCjBbjM2V1oiD=di6MD6ewJs0NFewA0=kZfx_eL29gQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] aspeed-video: add error message for unhandled interrupts
-To:     Zev Weiss <zev@bewilderbeest.net>,
-        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
-        Ryan Chen <ryan_chen@aspeedtech.com>
-Cc:     Eddie James <eajames@linux.ibm.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>, linux-media@vger.kernel.org,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201219101751.181783-1-christophe.jaillet@wanadoo.fr>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Dec 2020 at 02:46, Zev Weiss <zev@bewilderbeest.net> wrote:
->
-> This device seems to have a propensity for asserting interrupts that
-> aren't enabled -- in addition to the CAPTURE_COMPLETE and FRAME_COMPLETE
-> interrupts squashed in commit 65d270acb2d662c3346793663ac3a759eb4491b8,
-> COMP_READY has also been observed.  Adding a message diagnosing what
-> happened in the event of unhandled interrupt status bits should
-> hopefully make the debugging process simpler for any others that pop up
-> in the future.
-
-Ryan, is this a known issue with the video engine hardware?
-
->
-> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+On 19-12-20, 11:17, Christophe JAILLET wrote:
+> If 'cpufreq_register_driver()' fails, we must release the resources
+> allocated in 'brcm_avs_prepare_init()' as already done in the remove
+> function.
+> 
+> To do that, introduce a new function 'brcm_avs_prepare_uninit()' in order
+> to avoid code duplication. This also makes the code more readable (IMHO).
+> 
+> Fixes: de322e085995 ("cpufreq: brcmstb-avs-cpufreq: AVS CPUfreq driver for Broadcom STB SoCs")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 > ---
->  drivers/media/platform/aspeed-video.c | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
-> index 7d98db1d9b52..eb02043532e3 100644
-> --- a/drivers/media/platform/aspeed-video.c
-> +++ b/drivers/media/platform/aspeed-video.c
-> @@ -562,6 +562,7 @@ static irqreturn_t aspeed_video_irq(int irq, void *arg)
->  {
->         struct aspeed_video *video = arg;
->         u32 sts = aspeed_video_read(video, VE_INTERRUPT_STATUS);
-> +       u32 orig_sts = sts;
->
->         /*
->          * Resolution changed or signal was lost; reset the engine and
-> @@ -639,6 +640,10 @@ static irqreturn_t aspeed_video_irq(int irq, void *arg)
->         if (sts & VE_INTERRUPT_FRAME_COMPLETE)
->                 sts &= ~VE_INTERRUPT_FRAME_COMPLETE;
->
-> +       if (sts)
-> +               dev_err_ratelimited(video->dev, "unexpected interrupt asserted:"
-> +                                   " sts=%08x, orig_sts=%08x", sts, orig_sts);
-
-Do you want to do this before clearing the FRAME and CAPTURE bits?
-
-> +
->         return sts ? IRQ_NONE : IRQ_HANDLED;
+> I'm not sure that the existing error handling in the remove function is
+> correct and/or needed.
+> ---
+>  drivers/cpufreq/brcmstb-avs-cpufreq.c | 25 ++++++++++++++++++++-----
+>  1 file changed, 20 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/cpufreq/brcmstb-avs-cpufreq.c b/drivers/cpufreq/brcmstb-avs-cpufreq.c
+> index 3e31e5d28b79..750ca7cfccb0 100644
+> --- a/drivers/cpufreq/brcmstb-avs-cpufreq.c
+> +++ b/drivers/cpufreq/brcmstb-avs-cpufreq.c
+> @@ -597,6 +597,16 @@ static int brcm_avs_prepare_init(struct platform_device *pdev)
+>  	return ret;
 >  }
->
-> --
-> 2.29.2
->
+>  
+> +static void brcm_avs_prepare_uninit(struct platform_device *pdev)
+> +{
+> +	struct private_data *priv;
+> +
+> +	priv = platform_get_drvdata(pdev);
+> +
+> +	iounmap(priv->avs_intr_base);
+> +	iounmap(priv->base);
+> +}
+> +
+>  static int brcm_avs_cpufreq_init(struct cpufreq_policy *policy)
+>  {
+>  	struct cpufreq_frequency_table *freq_table;
+> @@ -732,21 +742,26 @@ static int brcm_avs_cpufreq_probe(struct platform_device *pdev)
+>  
+>  	brcm_avs_driver.driver_data = pdev;
+>  
+> -	return cpufreq_register_driver(&brcm_avs_driver);
+> +	ret = cpufreq_register_driver(&brcm_avs_driver);
+> +	if (ret)
+> +		goto err_uninit;
+> +
+> +	return 0;
+> +
+> +err_uninit:
+> +	brcm_avs_prepare_uninit(pdev);
+> +	return ret;
+
+Maybe rewrite as:
+
+	ret = cpufreq_register_driver(&brcm_avs_driver);
+	if (ret)
+                brcm_avs_prepare_uninit(pdev);
+	return ret;
+
+>  }
+>  
+>  static int brcm_avs_cpufreq_remove(struct platform_device *pdev)
+>  {
+> -	struct private_data *priv;
+>  	int ret;
+>  
+>  	ret = cpufreq_unregister_driver(&brcm_avs_driver);
+>  	if (ret)
+>  		return ret;
+
+Instead of returning here, it can be just WARN_ON(ret); and then go on and free
+the resources and this needs to be done in a separate patch.
+
+>  
+> -	priv = platform_get_drvdata(pdev);
+> -	iounmap(priv->base);
+> -	iounmap(priv->avs_intr_base);
+> +	brcm_avs_prepare_uninit(pdev);
+>  
+>  	return 0;
+>  }
+
+-- 
+viresh
