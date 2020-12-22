@@ -2,94 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D14582E0C60
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 16:07:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D942E0C61
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 16:07:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727961AbgLVPFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 10:05:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45296 "EHLO
+        id S1727989AbgLVPFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 10:05:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727635AbgLVPFq (ORCPT
+        with ESMTP id S1727635AbgLVPFt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 10:05:46 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D72EC0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 07:05:06 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id c22so8500539pgg.13
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 07:05:06 -0800 (PST)
+        Tue, 22 Dec 2020 10:05:49 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39BBAC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 07:05:09 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id x1so2938928pgh.12
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 07:05:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=endlessos.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+mDMj1VhS1g9ZAydEXjYxo+LFu7baJkisWPTmeHryq4=;
-        b=HkRAe48kmhhdtqn526nFfNaVz5YDjvAHem15pAA1tH2xPajKeNawB4hMOddDcGBvRs
-         n9Ahdraj8di2Bw+ju2Qhj+uFiFf02l853SnlzIqJSIrXe7hrNcubbWXOvY62xmgyp4/a
-         aVB4C/sPqQC9Iy3WiI/60pUJFq3PI96QMes5e3euokL0gJ90o9OkzhEqt/+XCpwvBm+G
-         Axji+O5gqnBF7RRy6ZNlM0mAUKN/avuS/ijjROTjesFj8xoKdTjVWtUPqh2VhHOcPQqk
-         nvFRLv+USeuK9J7XeYi8JAzGwGmj6TvN/Bg4uwvLZXAVSlQlRR5cKxEVeLw6Bt6sxi2e
-         2cQQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=7Hrgc2vErdduBB9qM7RbOF/nuu0syt0R9KKjGGJCpoc=;
+        b=EqRZ/gRPWI+a3OaYV+YvH80ky5fZtAnCqzWOHvrGTYHYUqe9/QKO7dz0T5yrWbIWLS
+         Z0hn/fe/f8Hi1isP0zvWIzHjfFOP/96EaZ1REeAfypGnHGFcqUA1Gx5Opw2chy/BTlBg
+         ALJpyv7ya0FAvYQD1a+szxZ/vaiuOVN0a/VxXYU1mWIwk3lsmFyXVNmQXdQXgCpOteJh
+         mRWzHRI94UgUom2tHJRsqxcBSlpbhGjmqmRmrHo/96lOKtI5873x+DZw66kgdlU3c64A
+         cMhno0qLS06NpfkneAyGWwXGNCyCltXrCl7CB+c6uKw8+u8ExVlTwOBNZF2nvzDw8z2i
+         bzfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+mDMj1VhS1g9ZAydEXjYxo+LFu7baJkisWPTmeHryq4=;
-        b=f11cQx1hgcruHxmCEtiIUCiF9M3/kAFWPPhQW/o8Ls3VrhuFBY6Y8NfWyZkYinUPTg
-         xN/Yl5uuMjl2wX6NBPwSNbaQCYIo2t9kdIXvoOAaPbiBLUHnNwjKLkxB5irrX2cvxz2d
-         Vu/BUV3dADQOWPeclY2YmL8yY3/zeKE3TKt4fvQP0T+jq5dclxZnj5KBmyhX5qOzFZyE
-         GWyiByEyaUu2QAA/HOK8gL+my/elqf1Q9Z6PNhFj4FI4R8wEcPQp6P+g2RrvOu2wWCef
-         LsDvNa2teWsrU0YWnlDL2bqyN/w5albh4E0nX7R9SX1V1tSOneoqB21wE7Wm6OiZMnRZ
-         439A==
-X-Gm-Message-State: AOAM532Ndzf5r0ZLPpIZYnXIP0G+3SyGhFpwsLf1DWRmjEsQSRgBGgx3
-        rudVNTe1+3QhZrYHn7zknYtScW+DVfkK9w==
-X-Google-Smtp-Source: ABdhPJxFVIxjenBWQ4dL+giI/9f1UeSo9v0t064Em0SPBDUGBx4YI6ZLA3x6/jbmTJB3ErbMoty2mQ==
-X-Received: by 2002:a63:470b:: with SMTP id u11mr20100411pga.436.1608649506157;
-        Tue, 22 Dec 2020 07:05:06 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=7Hrgc2vErdduBB9qM7RbOF/nuu0syt0R9KKjGGJCpoc=;
+        b=KhBIwucM1kwiQTchnKwVjwha+qW4tJUbhb3T92H528qPL1VZG5DTGfWeBtnkvd2xY8
+         pyy/W4NYp3cxJjf7K1F2vftQrmu8/C4XrnxPOmdoVCqreCVM0zcXSF06Ev3Bv1MLp6C3
+         nA0zpNRCcMgfBwe4+Gp0m+vlD+4lL65KXXdDTj+/KOsXkGv5I060K1Jbw6gwq4R004xl
+         KNQqKnBeqaypUp6bmV12VVX8XAEzn/KxzeNOYwhfiwoKvU1/CMFNxV7ZFQKmisau/bg1
+         EbXmx3qEhbrPdTYIJjJyFEBUuRL2MThPhbZ+LEhDr+lUL/hiNzsC3XlgdLnzDg4bE39v
+         YBUw==
+X-Gm-Message-State: AOAM531BLGD9Xz4/E20H0pm6Tm1Sks4Ujj8rpm6Qx1ubFLEP6h9Jb2FU
+        dktn9gAC98aiKKXbaCfsJcoi9Q==
+X-Google-Smtp-Source: ABdhPJx//2nSKhHTG8gyFHAn9MT2fZxkt0i1lk3RChMj03CHREE0oJTSOQ7Wbcrh7D+i0dOzhq6CqQ==
+X-Received: by 2002:a63:4f64:: with SMTP id p36mr12935334pgl.374.1608649508742;
+        Tue, 22 Dec 2020 07:05:08 -0800 (PST)
 Received: from localhost.localdomain (2001-b011-3814-dae9-4a2f-9772-47bc-5b94.dynamic-ip6.hinet.net. [2001:b011:3814:dae9:4a2f:9772:47bc:5b94])
-        by smtp.googlemail.com with ESMTPSA id u14sm19000202pfk.111.2020.12.22.07.05.03
+        by smtp.googlemail.com with ESMTPSA id u14sm19000202pfk.111.2020.12.22.07.05.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Dec 2020 07:05:05 -0800 (PST)
+        Tue, 22 Dec 2020 07:05:08 -0800 (PST)
 From:   Chris Chiu <chiu@endlessos.org>
 To:     tiwai@suse.com, kailang@realtek.com
 Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        linux@endlessos.org, Chris Chiu <chiu@endlessos.org>
-Subject: [PATCH 1/2] ALSA: hda/realtek: Apply jack fixup for Quanta NL3
-Date:   Tue, 22 Dec 2020 23:04:58 +0800
-Message-Id: <20201222150459.9545-1-chiu@endlessos.org>
+        linux@endlessos.org, Chris Chiu <chiu@endlessos.org>,
+        Jian-Hong Pan <jhp@endlessos.org>
+Subject: [PATCH 2/2] ALSA/hda: apply jack fixup for the Acer Veriton N4640G/N6640G/N2510G
+Date:   Tue, 22 Dec 2020 23:04:59 +0800
+Message-Id: <20201222150459.9545-2-chiu@endlessos.org>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201222150459.9545-1-chiu@endlessos.org>
+References: <20201222150459.9545-1-chiu@endlessos.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Quanta NL3 laptop has both a headphone output jack and a headset
-jack, on the right edge of the chassis.
+This Acer Veriton N4640G/N6640G/N2510G desktops have 2 headphone
+jacks(front and rear), and a separate Mic In jack.
 
-The pin information suggests that both of these are at the Front.
-The PulseAudio is confused to differentiate them so one of the jack
-can neither get the jack sense working nor the audio output.
-
-The ALC269_FIXUP_LIFEBOOK chained with ALC269_FIXUP_QUANTA_MUTE can
-help to differentiate 2 jacks and get the 'Auto-Mute Mode' working
-correctly.
+The rear headphone jack is actually a line out jack but always silent
+while playing audio. The front 'Mic In' also fails the jack sensing.
+Apply the ALC269_FIXUP_LIFEBOOK to have all audio jacks to work as
+expected.
 
 Signed-off-by: Chris Chiu <chiu@endlessos.org>
+Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
 ---
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/pci/hda/patch_realtek.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 8616c5624870..bb1010d78717 100644
+index bb1010d78717..9eb43d827bda 100644
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -8013,6 +8013,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1458, 0xfa53, "Gigabyte BXBT-2807", ALC283_FIXUP_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1462, 0xb120, "MSI Cubi MS-B120", ALC283_FIXUP_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1462, 0xb171, "Cubi N 8GL (MS-B171)", ALC283_FIXUP_HEADSET_MIC),
-+	SND_PCI_QUIRK(0x152d, 0x1082, "Quanta NL3", ALC269_FIXUP_LIFEBOOK),
- 	SND_PCI_QUIRK(0x1558, 0x1323, "Clevo N130ZU", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x1325, "System76 Darter Pro (darp5)", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x1401, "Clevo L140[CZ]U", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+@@ -7803,11 +7803,14 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1025, 0x0762, "Acer Aspire E1-472", ALC271_FIXUP_HP_GATE_MIC_JACK_E1_572),
+ 	SND_PCI_QUIRK(0x1025, 0x0775, "Acer Aspire E1-572", ALC271_FIXUP_HP_GATE_MIC_JACK_E1_572),
+ 	SND_PCI_QUIRK(0x1025, 0x079b, "Acer Aspire V5-573G", ALC282_FIXUP_ASPIRE_V5_PINS),
++	SND_PCI_QUIRK(0x1025, 0x101c, "Acer Veriton N2510G", ALC269_FIXUP_LIFEBOOK),
+ 	SND_PCI_QUIRK(0x1025, 0x102b, "Acer Aspire C24-860", ALC286_FIXUP_ACER_AIO_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1025, 0x1065, "Acer Aspire C20-820", ALC269VC_FIXUP_ACER_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1025, 0x106d, "Acer Cloudbook 14", ALC283_FIXUP_CHROME_BOOK),
+ 	SND_PCI_QUIRK(0x1025, 0x1099, "Acer Aspire E5-523G", ALC255_FIXUP_ACER_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1025, 0x110e, "Acer Aspire ES1-432", ALC255_FIXUP_ACER_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1025, 0x1166, "Acer Veriton N4640G", ALC269_FIXUP_LIFEBOOK),
++	SND_PCI_QUIRK(0x1025, 0x1167, "Acer Veriton N6640G", ALC269_FIXUP_LIFEBOOK),
+ 	SND_PCI_QUIRK(0x1025, 0x1246, "Acer Predator Helios 500", ALC299_FIXUP_PREDATOR_SPK),
+ 	SND_PCI_QUIRK(0x1025, 0x1247, "Acer vCopperbox", ALC269VC_FIXUP_ACER_VCOPPERBOX_PINS),
+ 	SND_PCI_QUIRK(0x1025, 0x1248, "Acer Veriton N4660G", ALC269VC_FIXUP_ACER_MIC_NO_PRESENCE),
 -- 
 2.20.1
 
