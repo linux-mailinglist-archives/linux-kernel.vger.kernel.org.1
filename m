@@ -2,93 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A5B92E0B97
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 15:19:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22FFC2E0B99
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 15:19:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727630AbgLVOSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 09:18:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37842 "EHLO
+        id S1727476AbgLVOTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 09:19:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727196AbgLVOSW (ORCPT
+        with ESMTP id S1726802AbgLVOTE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 09:18:22 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30664C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 06:17:42 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id r7so14673053wrc.5
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 06:17:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+wHA7WXGOL2zkCUojHptt6INoc65BByl7E6rlCw2sxA=;
-        b=giumZz5lWfQ6wDWtD+QCrYmrw+MG7A5NmanW/wuHomvTLKCY5aRw36EL4yNmcrQSQh
-         R9LnV3xvALyoi802pQJwaDJddUR464t9UJgcWGdKIKBjtpdaUEGNMx7VSjL2GfZFxQ6E
-         PY8OySYW1sMc8tC9gnujIxNFVz9Iawyzt8/Vx+Dgy8Q7O4jomR2E76bH/DJoWzIsDvS3
-         6RK7nLICLqxZdbx/YaSiPaz3Izd/MBIoFHG2p1Z2c8qQo9hTy8nvyjqCzTxhCKkAZB38
-         fcX5NDsYwEs306jyDh9m0ILgTWoB+bJ9j6HFJE63rLjH7WlieNPdNzOGmrOGN+STjmc4
-         R5DA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+wHA7WXGOL2zkCUojHptt6INoc65BByl7E6rlCw2sxA=;
-        b=do1CFQ10ahgRzJbyvoHJ0M5TXlb2nwVq/9OfbEHpM75s5p1OD6as9VBQshZdUPQc8M
-         nYeXTE7aFb8NikwKRa7L44IKAT0tDHsNV+X5+fqc0vmE23pyIsPAWGbxgE55nB+NyQfw
-         5vFn8cLP2rhNGlNn8OC1mRaw2fswSyVAWRH0BAN9H+OA2NMc3wYEzwVI3AkYvBPjzEQE
-         nkGovvysXus8qT0jHEGAp3L9gXxh8ONrY0pZvqxkFrVype06ombGJsv7KSPjxEJ6jwX8
-         S5k3a0yM/28AwkaLSbVvOous2NCB3eXuUx4tWAZdLquCXZ3l1BVRtgC1RcpE9tkqQAfg
-         wJtw==
-X-Gm-Message-State: AOAM531a/8sjLReup8S9g9/S77y5CANhhfNARnYY1mkTn/ArEftbm3Vg
-        G9rmiofCNKzSa5sTOXAArhg=
-X-Google-Smtp-Source: ABdhPJzTIHuJ7tMEv2l3nlo7ir99sq6qaFsEI3BElB3lbgqYzQ30tA5GzaOCa9Ysqq4m5ZVaU08DgQ==
-X-Received: by 2002:a5d:4b4c:: with SMTP id w12mr24136139wrs.402.1608646660863;
-        Tue, 22 Dec 2020 06:17:40 -0800 (PST)
-Received: from tumbleweed.fritz.box (dslb-002-204-143-153.002.204.pools.vodafone-ip.de. [2.204.143.153])
-        by smtp.gmail.com with ESMTPSA id l20sm35597178wrh.82.2020.12.22.06.17.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Dec 2020 06:17:40 -0800 (PST)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH] staging: rtl8723bs: clean up brace coding style issues
-Date:   Tue, 22 Dec 2020 15:17:07 +0100
-Message-Id: <20201222141707.31972-1-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        Tue, 22 Dec 2020 09:19:04 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F1F9C0613D3;
+        Tue, 22 Dec 2020 06:18:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Czhr0lZ6q7lggbyK5BscVjMM51bWnt+mp2M9jPtWApM=; b=OYm3LQIX07Nw82C/3BFSqrMbww
+        w8YueS8jraJ7fHEdX4kWtlkFiQ5UU6juC18/mY8mLT7tTJQtWc9iIzLFwdEirmXZyyxnXUtEgCphb
+        CbrwGhniNr/l0GMrPftPvhCAqMJUljn+wED/f79le8Aa+DlqcrUXDcEu8kZAdwIyGMHSRG6MsLG4z
+        D49Maf+QHKenhKjXA4FJl5eitKhVThAdppdwprBdi8ty3q7vID4rVk7CMUTxSYFXpnr/wc04qgvLZ
+        EiuUcvImrPFeTFVn+FVzhjvG3wXo/0ewNw3ACLsN+16qneZP2PpA9zdmw2NbD9FdL+nBnAcULahl0
+        SGI2wVdQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kriUU-0004aY-3u; Tue, 22 Dec 2020 14:18:18 +0000
+Date:   Tue, 22 Dec 2020 14:18:18 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Florent Revest <revest@chromium.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Florent Revest <revest@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
+Message-ID: <20201222141818.GA17056@infradead.org>
+References: <20201126165748.1748417-1-revest@google.com>
+ <50047415-cafe-abab-a6ba-e85bb6a9b651@fb.com>
+ <CACYkzJ7T4y7in1AsCvJ2izA3yiAke8vE9SRFRCyTPeqMnDHoyQ@mail.gmail.com>
+ <e8b03cbc-c120-43d5-168c-cde5b6a97af8@fb.com>
+ <CAEf4BzYz9Yf9abPBtP+swCuqvvhL0cbbbF1x-3stg9mp=a6+-A@mail.gmail.com>
+ <194b5a6e6e30574a035a3e3baa98d7fde7f91f1c.camel@chromium.org>
+ <CAADnVQK6GjmL19zQykYbh=THM9ktQUzfnwF_FfhUKimCxDnnkQ@mail.gmail.com>
+ <CABRcYm+zjC-WH2gxtfEX5S6mZj-5_ByAzVd5zi3aRmQv-asYqg@mail.gmail.com>
+ <221fb873-80fc-5407-965e-b075c964fa13@fb.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <221fb873-80fc-5407-965e-b075c964fa13@fb.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing braces around else arm of if else statement to clear
-style issues reported by checkpatch.
-
-CHECK: braces {} should be used on all arms of this statement
-CHECK: Unbalanced braces around else statement
-
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
----
- drivers/staging/rtl8723bs/core/rtw_efuse.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/staging/rtl8723bs/core/rtw_efuse.c b/drivers/staging/rtl8723bs/core/rtw_efuse.c
-index 32ca10f01413..a6c43bc4f62a 100644
---- a/drivers/staging/rtl8723bs/core/rtw_efuse.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_efuse.c
-@@ -245,8 +245,9 @@ u16 	Address)
- 				break;
- 		}
- 		return rtw_read8(Adapter, EFUSE_CTRL);
--	} else
-+	} else {
- 		return 0xFF;
-+	}
- 
- } /* EFUSE_Read1Byte */
- 
--- 
-2.29.2
-
+FYI, there is a reason why kallsyms_lookup is not exported any more.
+I don't think adding that back through a backdoor is a good idea.
