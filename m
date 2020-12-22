@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8C82E0A4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 14:11:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C0732E0A6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 14:13:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727036AbgLVNKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 08:10:41 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:33847 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726683AbgLVNKk (ORCPT
+        id S1727367AbgLVNLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 08:11:49 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:56699 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727338AbgLVNLs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 08:10:40 -0500
-X-UUID: 369ec4d9f51048a6b0c8a3caec1e4948-20201222
-X-UUID: 369ec4d9f51048a6b0c8a3caec1e4948-20201222
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        Tue, 22 Dec 2020 08:11:48 -0500
+X-UUID: 535f44544f9a411a81d61139e9c11d65-20201222
+X-UUID: 535f44544f9a411a81d61139e9c11d65-20201222
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
         (envelope-from <weiyi.lu@mediatek.com>)
         (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 639159414; Tue, 22 Dec 2020 21:09:55 +0800
+        with ESMTP id 785108831; Tue, 22 Dec 2020 21:10:15 +0800
 Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
  15.0.1497.2; Tue, 22 Dec 2020 21:09:51 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
@@ -34,9 +34,9 @@ CC:     <linux-arm-kernel@lists.infradead.org>,
         <srv_heupstream@mediatek.com>,
         <Project_Global_Chrome_Upstream_Group@mediatek.com>,
         Weiyi Lu <weiyi.lu@mediatek.com>
-Subject: [PATCH v6 17/22] clk: mediatek: Add MT8192 mfgcfg clock support
-Date:   Tue, 22 Dec 2020 21:09:42 +0800
-Message-ID: <1608642587-15634-18-git-send-email-weiyi.lu@mediatek.com>
+Subject: [PATCH v6 18/22] clk: mediatek: Add MT8192 mmsys clock support
+Date:   Tue, 22 Dec 2020 21:09:43 +0800
+Message-ID: <1608642587-15634-19-git-send-email-weiyi.lu@mediatek.com>
 X-Mailer: git-send-email 1.8.1.1.dirty
 In-Reply-To: <1608642587-15634-1-git-send-email-weiyi.lu@mediatek.com>
 References: <1608642587-15634-1-git-send-email-weiyi.lu@mediatek.com>
@@ -47,57 +47,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add MT8192 mfgcfg clock provider
+Add MT8192 mmsys clock provider
 
 Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
 ---
- drivers/clk/mediatek/Kconfig          |  6 +++++
- drivers/clk/mediatek/Makefile         |  1 +
- drivers/clk/mediatek/clk-mt8192-mfg.c | 50 +++++++++++++++++++++++++++++++++++
- 3 files changed, 57 insertions(+)
- create mode 100644 drivers/clk/mediatek/clk-mt8192-mfg.c
+ drivers/clk/mediatek/Kconfig         |   6 ++
+ drivers/clk/mediatek/Makefile        |   1 +
+ drivers/clk/mediatek/clk-mt8192-mm.c | 108 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 115 insertions(+)
+ create mode 100644 drivers/clk/mediatek/clk-mt8192-mm.c
 
 diff --git a/drivers/clk/mediatek/Kconfig b/drivers/clk/mediatek/Kconfig
-index a0a2efa9..3db8670 100644
+index 3db8670..bc92611 100644
 --- a/drivers/clk/mediatek/Kconfig
 +++ b/drivers/clk/mediatek/Kconfig
-@@ -533,6 +533,12 @@ config COMMON_CLK_MT8192_MDPSYS
+@@ -539,6 +539,12 @@ config COMMON_CLK_MT8192_MFGCFG
  	help
- 	  This driver supports MediaTek MT8192 mdpsys clocks.
+ 	  This driver supports MediaTek MT8192 mfgcfg clocks.
  
-+config COMMON_CLK_MT8192_MFGCFG
-+	bool "Clock driver for MediaTek MT8192 mfgcfg"
++config COMMON_CLK_MT8192_MMSYS
++	bool "Clock driver for MediaTek MT8192 mmsys"
 +	depends on COMMON_CLK_MT8192
 +	help
-+	  This driver supports MediaTek MT8192 mfgcfg clocks.
++	  This driver supports MediaTek MT8192 mmsys clocks.
 +
  config COMMON_CLK_MT8516
  	bool "Clock driver for MediaTek MT8516"
  	depends on ARCH_MEDIATEK || COMPILE_TEST
 diff --git a/drivers/clk/mediatek/Makefile b/drivers/clk/mediatek/Makefile
-index 7b258cb..024841a 100644
+index 024841a..838bb01 100644
 --- a/drivers/clk/mediatek/Makefile
 +++ b/drivers/clk/mediatek/Makefile
-@@ -74,5 +74,6 @@ obj-$(CONFIG_COMMON_CLK_MT8192_IMGSYS) += clk-mt8192-img.o
- obj-$(CONFIG_COMMON_CLK_MT8192_IMP_IIC_WRAP) += clk-mt8192-imp_iic_wrap.o
+@@ -75,5 +75,6 @@ obj-$(CONFIG_COMMON_CLK_MT8192_IMP_IIC_WRAP) += clk-mt8192-imp_iic_wrap.o
  obj-$(CONFIG_COMMON_CLK_MT8192_IPESYS) += clk-mt8192-ipe.o
  obj-$(CONFIG_COMMON_CLK_MT8192_MDPSYS) += clk-mt8192-mdp.o
-+obj-$(CONFIG_COMMON_CLK_MT8192_MFGCFG) += clk-mt8192-mfg.o
+ obj-$(CONFIG_COMMON_CLK_MT8192_MFGCFG) += clk-mt8192-mfg.o
++obj-$(CONFIG_COMMON_CLK_MT8192_MMSYS) += clk-mt8192-mm.o
  obj-$(CONFIG_COMMON_CLK_MT8516) += clk-mt8516.o
  obj-$(CONFIG_COMMON_CLK_MT8516_AUDSYS) += clk-mt8516-aud.o
-diff --git a/drivers/clk/mediatek/clk-mt8192-mfg.c b/drivers/clk/mediatek/clk-mt8192-mfg.c
+diff --git a/drivers/clk/mediatek/clk-mt8192-mm.c b/drivers/clk/mediatek/clk-mt8192-mm.c
 new file mode 100644
-index 0000000..510be98
+index 0000000..dfdfb21
 --- /dev/null
-+++ b/drivers/clk/mediatek/clk-mt8192-mfg.c
-@@ -0,0 +1,50 @@
++++ b/drivers/clk/mediatek/clk-mt8192-mm.c
+@@ -0,0 +1,108 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +//
 +// Copyright (c) 2020 MediaTek Inc.
 +// Author: Weiyi Lu <weiyi.lu@mediatek.com>
 +
 +#include <linux/clk-provider.h>
-+#include <linux/of_device.h>
 +#include <linux/platform_device.h>
 +
 +#include "clk-mtk.h"
@@ -105,42 +104,101 @@ index 0000000..510be98
 +
 +#include <dt-bindings/clock/mt8192-clk.h>
 +
-+static const struct mtk_gate_regs mfg_cg_regs = {
-+	.set_ofs = 0x4,
-+	.clr_ofs = 0x8,
-+	.sta_ofs = 0x0,
++static const struct mtk_gate_regs mm0_cg_regs = {
++	.set_ofs = 0x104,
++	.clr_ofs = 0x108,
++	.sta_ofs = 0x100,
 +};
 +
-+#define GATE_MFG(_id, _name, _parent, _shift)	\
-+	GATE_MTK(_id, _name, _parent, &mfg_cg_regs, _shift, &mtk_clk_gate_ops_setclr)
-+
-+static const struct mtk_gate mfg_clks[] = {
-+	GATE_MFG(CLK_MFG_BG3D, "mfg_bg3d", "mfg_pll_sel", 0),
++static const struct mtk_gate_regs mm1_cg_regs = {
++	.set_ofs = 0x114,
++	.clr_ofs = 0x118,
++	.sta_ofs = 0x110,
 +};
 +
-+static const struct mtk_clk_desc mfg_desc = {
-+	.clks = mfg_clks,
-+	.num_clks = ARRAY_SIZE(mfg_clks),
++static const struct mtk_gate_regs mm2_cg_regs = {
++	.set_ofs = 0x1a4,
++	.clr_ofs = 0x1a8,
++	.sta_ofs = 0x1a0,
 +};
 +
-+static const struct of_device_id of_match_clk_mt8192_mfg[] = {
-+	{
-+		.compatible = "mediatek,mt8192-mfgcfg",
-+		.data = &mfg_desc,
-+	}, {
-+		/* sentinel */
-+	}
++#define GATE_MM0(_id, _name, _parent, _shift)	\
++	GATE_MTK(_id, _name, _parent, &mm0_cg_regs, _shift, &mtk_clk_gate_ops_setclr)
++
++#define GATE_MM1(_id, _name, _parent, _shift)	\
++	GATE_MTK(_id, _name, _parent, &mm1_cg_regs, _shift, &mtk_clk_gate_ops_setclr)
++
++#define GATE_MM2(_id, _name, _parent, _shift)	\
++	GATE_MTK(_id, _name, _parent, &mm2_cg_regs, _shift, &mtk_clk_gate_ops_setclr)
++
++static const struct mtk_gate mm_clks[] = {
++	/* MM0 */
++	GATE_MM0(CLK_MM_DISP_MUTEX0, "mm_disp_mutex0", "disp_sel", 0),
++	GATE_MM0(CLK_MM_DISP_CONFIG, "mm_disp_config", "disp_sel", 1),
++	GATE_MM0(CLK_MM_DISP_OVL0, "mm_disp_ovl0", "disp_sel", 2),
++	GATE_MM0(CLK_MM_DISP_RDMA0, "mm_disp_rdma0", "disp_sel", 3),
++	GATE_MM0(CLK_MM_DISP_OVL0_2L, "mm_disp_ovl0_2l", "disp_sel", 4),
++	GATE_MM0(CLK_MM_DISP_WDMA0, "mm_disp_wdma0", "disp_sel", 5),
++	GATE_MM0(CLK_MM_DISP_UFBC_WDMA0, "mm_disp_ufbc_wdma0", "disp_sel", 6),
++	GATE_MM0(CLK_MM_DISP_RSZ0, "mm_disp_rsz0", "disp_sel", 7),
++	GATE_MM0(CLK_MM_DISP_AAL0, "mm_disp_aal0", "disp_sel", 8),
++	GATE_MM0(CLK_MM_DISP_CCORR0, "mm_disp_ccorr0", "disp_sel", 9),
++	GATE_MM0(CLK_MM_DISP_DITHER0, "mm_disp_dither0", "disp_sel", 10),
++	GATE_MM0(CLK_MM_SMI_INFRA, "mm_smi_infra", "disp_sel", 11),
++	GATE_MM0(CLK_MM_DISP_GAMMA0, "mm_disp_gamma0", "disp_sel", 12),
++	GATE_MM0(CLK_MM_DISP_POSTMASK0, "mm_disp_postmask0", "disp_sel", 13),
++	GATE_MM0(CLK_MM_DISP_DSC_WRAP0, "mm_disp_dsc_wrap0", "disp_sel", 14),
++	GATE_MM0(CLK_MM_DSI0, "mm_dsi0", "disp_sel", 15),
++	GATE_MM0(CLK_MM_DISP_COLOR0, "mm_disp_color0", "disp_sel", 16),
++	GATE_MM0(CLK_MM_SMI_COMMON, "mm_smi_common", "disp_sel", 17),
++	GATE_MM0(CLK_MM_DISP_FAKE_ENG0, "mm_disp_fake_eng0", "disp_sel", 18),
++	GATE_MM0(CLK_MM_DISP_FAKE_ENG1, "mm_disp_fake_eng1", "disp_sel", 19),
++	GATE_MM0(CLK_MM_MDP_TDSHP4, "mm_mdp_tdshp4", "disp_sel", 20),
++	GATE_MM0(CLK_MM_MDP_RSZ4, "mm_mdp_rsz4", "disp_sel", 21),
++	GATE_MM0(CLK_MM_MDP_AAL4, "mm_mdp_aal4", "disp_sel", 22),
++	GATE_MM0(CLK_MM_MDP_HDR4, "mm_mdp_hdr4", "disp_sel", 23),
++	GATE_MM0(CLK_MM_MDP_RDMA4, "mm_mdp_rdma4", "disp_sel", 24),
++	GATE_MM0(CLK_MM_MDP_COLOR4, "mm_mdp_color4", "disp_sel", 25),
++	GATE_MM0(CLK_MM_DISP_Y2R0, "mm_disp_y2r0", "disp_sel", 26),
++	GATE_MM0(CLK_MM_SMI_GALS, "mm_smi_gals", "disp_sel", 27),
++	GATE_MM0(CLK_MM_DISP_OVL2_2L, "mm_disp_ovl2_2l", "disp_sel", 28),
++	GATE_MM0(CLK_MM_DISP_RDMA4, "mm_disp_rdma4", "disp_sel", 29),
++	GATE_MM0(CLK_MM_DISP_DPI0, "mm_disp_dpi0", "disp_sel", 30),
++	/* MM1 */
++	GATE_MM1(CLK_MM_SMI_IOMMU, "mm_smi_iommu", "disp_sel", 0),
++	/* MM2 */
++	GATE_MM2(CLK_MM_DSI_DSI0, "mm_dsi_dsi0", "disp_sel", 0),
++	GATE_MM2(CLK_MM_DPI_DPI0, "mm_dpi_dpi0", "dpi_sel", 8),
++	GATE_MM2(CLK_MM_26MHZ, "mm_26mhz", "clk26m", 24),
++	GATE_MM2(CLK_MM_32KHZ, "mm_32khz", "clk32k", 25),
 +};
 +
-+static struct platform_driver clk_mt8192_mfg_drv = {
-+	.probe = mtk_clk_simple_probe,
++static int clk_mt8192_mm_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct device_node *node = dev->parent->of_node;
++	struct clk_onecell_data *clk_data;
++	int r;
++
++	clk_data = mtk_alloc_clk_data(CLK_MM_NR_CLK);
++	if (!clk_data)
++		return -ENOMEM;
++
++	r = mtk_clk_register_gates(node, mm_clks, ARRAY_SIZE(mm_clks), clk_data);
++	if (r)
++		return r;
++
++	return of_clk_add_provider(node, of_clk_src_onecell_get, clk_data);
++}
++
++static struct platform_driver clk_mt8192_mm_drv = {
++	.probe = clk_mt8192_mm_probe,
 +	.driver = {
-+		.name = "clk-mt8192-mfg",
-+		.of_match_table = of_match_clk_mt8192_mfg,
++		.name = "clk-mt8192-mm",
 +	},
 +};
 +
-+builtin_platform_driver(clk_mt8192_mfg_drv);
++builtin_platform_driver(clk_mt8192_mm_drv);
 -- 
 1.8.1.1.dirty
 
