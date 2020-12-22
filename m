@@ -2,222 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34FDB2E0FE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 22:40:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB77A2E0FE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 22:44:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728047AbgLVVkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 16:40:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727787AbgLVVkL (ORCPT
+        id S1727922AbgLVVny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 16:43:54 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:10458 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727691AbgLVVny (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 16:40:11 -0500
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8ABBC0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 13:39:30 -0800 (PST)
-Received: by mail-qk1-x72d.google.com with SMTP id v126so8785745qkd.11
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 13:39:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IImkDqRj3QCMRS+jrjWTLtSWZ54BkmhkfBRrueaoLMc=;
-        b=Ua+6WnvIc3bmGie5yp9mjitSfdDFtIab3LNvt4uGG52XInLY+sw1FPQ9HcpY2fhzPy
-         SDnguCyVZEdddT0gJx9buqyMCjj8hU7lqPH9cQyhb29iuN5DFk1Oju6T0gA3vMRLPV7P
-         Z0zBZ8JK/S6ueJSmH9q4HY46jNe3Eu1U2pTkGL6yflctjVZLHi1ieL0CIQbvy1aQy8QJ
-         taqmdMTr0y/usDErAU4lO/QDOazToIvYpJiCFG6CKZWXkvGTRg/Z7IEqyuqfwWfJUBut
-         PRPwUDWjWjkjvnU5okVfPToe1W7sb1snsHHQDhoc1xfi1ecJ43YRnCBAHIahF24H+h9W
-         7pUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IImkDqRj3QCMRS+jrjWTLtSWZ54BkmhkfBRrueaoLMc=;
-        b=MDPKUhmffvst/nEE61gMy97+htGBNse0qV08L1y04zx0Go5qM+dfcKGMrI5JWxkAqC
-         oKXHwD0NruSicuqgYjYKUUaKOH9EXkWzSHn7T3qjMON6cIn9ARFQVsm4NAmQSd+dBAtX
-         52PCbRio0wllIbyzA3j7GeL1z5kNoFc0KN4oab7JMyxUMHQbs+lCX1jmLLCtM1qDALnu
-         s/gq9Zx6VExXj+sgmVLEjEBFvYBKIEWvpdULuZuqOMNaubutwlfFXHX3t/x5EsXKKgZ0
-         3+kHl3K3FOWncEroPbmvngUxv5Mehkx9+X7q35z0VFko/wdtTthFdJpbhXILeY79PaVZ
-         0VwQ==
-X-Gm-Message-State: AOAM532o8+DISeYs1M1rK0UlEiULJVxFx7DCQemN4OTRVunvjFaj/YKs
-        Mq0Efa/J6tw/QeV7EcLSVup8t/wxKpscmBTjfNRb/zU+0is=
-X-Google-Smtp-Source: ABdhPJwDOo0ws/0+sWPaFvP9+qbOh1uDA3knqFJ4UvmT0yvZbb1QMfJcyWvrUWhvRU+rQrJpgF4BMRtcHUYkk4TPf9s=
-X-Received: by 2002:a37:7444:: with SMTP id p65mr12030908qkc.476.1608673170090;
- Tue, 22 Dec 2020 13:39:30 -0800 (PST)
+        Tue, 22 Dec 2020 16:43:54 -0500
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BMLWFjs009803;
+        Tue, 22 Dec 2020 16:42:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
+ cc : subject : in-reply-to : date : message-id : mime-version :
+ content-type; s=pp1; bh=R7AU34tNfE0Ufx8iMqWSvclFjcXLGDL0cBWvu+QX9Hk=;
+ b=O3bMEIg/1UBrc8niWJJ/PGGYTnZjWypnNsIHGm52Eltj5YlsxTBfgTV2brm53NU0VI8W
+ OH4TOiqbORYzdynjjJ9hH9toMtRWqAPqefiDrGuQLbkqAGDsAi4IUnd9tVrbMJyTxqFo
+ 4YDWSJyeEwutZN0SoDT/zltX+Isk2Z7zQl3+fkWw/2UV8HqxW9CyMMaMQ7JnNd0xJGSv
+ JMuvNCOrPaUzv+NdeV58PHyo++GpqPc5tmKkinKppczSiQKkZT/lnI12KYOmlP2tixMW
+ +54/wtP4kNzjuA5fk3xop5XAUGMifSJ5D96TVqPhLsrZXXH/yH9hgXRLv/uJFY1pV+7W Ig== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 35kqaxt91g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Dec 2020 16:42:32 -0500
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BMLbTR6029051;
+        Tue, 22 Dec 2020 16:42:31 -0500
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 35kqaxt917-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Dec 2020 16:42:31 -0500
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BMLajgI010111;
+        Tue, 22 Dec 2020 21:42:30 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma01dal.us.ibm.com with ESMTP id 35kejb4rc3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Dec 2020 21:42:30 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BMLgTCh11993416
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 22 Dec 2020 21:42:30 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E3FC7112061;
+        Tue, 22 Dec 2020 21:42:29 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 31DC5112062;
+        Tue, 22 Dec 2020 21:42:23 +0000 (GMT)
+Received: from manicouagan.localdomain (unknown [9.80.219.136])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTPS;
+        Tue, 22 Dec 2020 21:42:22 +0000 (GMT)
+References: <20201211221006.1052453-1-robh@kernel.org>
+ <20201211221006.1052453-2-robh@kernel.org>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        takahiro.akashi@linaro.org, will@kernel.org,
+        catalin.marinas@arm.com, mpe@ellerman.id.au, zohar@linux.ibm.com,
+        james.morse@arm.com, sashal@kernel.org, benh@kernel.crashing.org,
+        paulus@samba.org, frowand.list@gmail.com,
+        vincenzo.frascino@arm.com, mark.rutland@arm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        pasha.tatashin@soleen.com, allison@lohutok.net,
+        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
+        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com
+Subject: Re: [RFC PATCH 1/4] powerpc: Rename kexec elfcorehdr_addr to
+ elf_headers_mem
+In-reply-to: <20201211221006.1052453-2-robh@kernel.org>
+Date:   Tue, 22 Dec 2020 18:42:21 -0300
+Message-ID: <87pn31ldqa.fsf@manicouagan.localdomain>
 MIME-Version: 1.0
-References: <20201218170919.2950-1-jiangshanlai@gmail.com>
-In-Reply-To: <20201218170919.2950-1-jiangshanlai@gmail.com>
-From:   Dexuan-Linux Cui <dexuan.linux@gmail.com>
-Date:   Tue, 22 Dec 2020 13:39:19 -0800
-Message-ID: <CAA42JLa=r5c7_D5K1rHr5Tx5Enrib3rAdFZzajXumCq7-i-Q+g@mail.gmail.com>
-Subject: Re: [PATCH -tip V2 00/10] workqueue: break affinity initiatively
-To:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        Dexuan Cui <decui@microsoft.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Qian Cai <cai@redhat.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Hillf Danton <hdanton@sina.com>, Tejun Heo <tj@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-22_11:2020-12-21,2020-12-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ adultscore=0 mlxscore=0 malwarescore=0 clxscore=1015 bulkscore=0
+ suspectscore=0 spamscore=0 phishscore=0 mlxlogscore=999 impostorscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012220153
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 8:11 AM Lai Jiangshan <jiangshanlai@gmail.com> wrote:
->
-> From: Lai Jiangshan <laijs@linux.alibaba.com>
->
-> 06249738a41a ("workqueue: Manually break affinity on hotplug")
-> said that scheduler will not force break affinity for us.
->
-> But workqueue highly depends on the old behavior. Many parts of the codes
-> relies on it, 06249738a41a ("workqueue: Manually break affinity on hotplug")
-> is not enough to change it, and the commit has flaws in itself too.
->
-> It doesn't handle for worker detachment.
-> It doesn't handle for worker attachement, mainly worker creation
->   which is handled by Valentin Schneider's patch [1].
-> It doesn't handle for unbound workers which might be possible
-> per-cpu-kthread.
->
-> We need to thoroughly update the way workqueue handles affinity
-> in cpu hot[un]plug, what is this patchset intends to do and
-> replace the Valentin Schneider's patch [1].  The equivalent patch
-> is patch 10.
->
-> Patch 1 fixes a flaw reported by Hillf Danton <hdanton@sina.com>.
-> I have to include this fix because later patches depends on it.
->
-> The patchset is based on tip/master rather than workqueue tree,
-> because the patchset is a complement for 06249738a41a ("workqueue:
-> Manually break affinity on hotplug") which is only in tip/master by now.
->
-> And TJ acked to route the series through tip.
->
-> Changed from V1:
->         Add TJ's acked-by for the whole patchset
->
->         Add more words to the comments and the changelog, mainly derived
->         from discussion with Peter.
->
->         Update the comments as TJ suggested.
->
->         Update a line of code as Valentin suggested.
->
->         Add Valentin's ack for patch 10 because "Seems alright to me." and
->         add Valentin's comments to the changelog which is integral.
->
-> [1]: https://lore.kernel.org/r/ff62e3ee994efb3620177bf7b19fab16f4866845.camel@redhat.com
-> [V1 patcheset]: https://lore.kernel.org/lkml/20201214155457.3430-1-jiangshanlai@gmail.com/
->
-> Cc: Hillf Danton <hdanton@sina.com>
-> Cc: Valentin Schneider <valentin.schneider@arm.com>
-> Cc: Qian Cai <cai@redhat.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Vincent Donnefort <vincent.donnefort@arm.com>
-> Cc: Tejun Heo <tj@kernel.org>
->
-> Lai Jiangshan (10):
->   workqueue: restore unbound_workers' cpumask correctly
->   workqueue: use cpu_possible_mask instead of cpu_active_mask to break
->     affinity
->   workqueue: Manually break affinity on pool detachment
->   workqueue: don't set the worker's cpumask when kthread_bind_mask()
->   workqueue: introduce wq_online_cpumask
->   workqueue: use wq_online_cpumask in restore_unbound_workers_cpumask()
->   workqueue: Manually break affinity on hotplug for unbound pool
->   workqueue: reorganize workqueue_online_cpu()
->   workqueue: reorganize workqueue_offline_cpu() unbind_workers()
->   workqueue: Fix affinity of kworkers when attaching into pool
->
->  kernel/workqueue.c | 214 ++++++++++++++++++++++++++++-----------------
->  1 file changed, 132 insertions(+), 82 deletions(-)
->
-> --
-> 2.19.1.6.gb485710b
 
-Hi,
-I tested this patchset on today's tip.git's master branch
-(981316394e35 ("Merge branch 'locking/urgent'")).
+Hello Rob,
 
-Every time the kernel boots with 32 CPUs (I'm running the Linux VM on
-Hyper-V), I get the below warning.
-(BTW, with 8 or 16 CPUs, I don't see the warning).
-By printing the cpumasks with "%*pbl", I know the warning happens because:
-new_mask = 16-31
-cpu_online_mask= 0-16
-cpu_active_mask= 0-15
-p->nr_cpus_allowed=16
+Thank you for making this series.
 
-2374         if (p->flags & PF_KTHREAD) {
-2375                 /*
-2376                  * For kernel threads that do indeed end up on online &&
-2377                  * !active we want to ensure they are strict
-per-CPU threads.
-2378                  */
-2379                 WARN_ON(cpumask_intersects(new_mask, cpu_online_mask) &&
-2380                         !cpumask_intersects(new_mask, cpu_active_mask) &&
-2381                         p->nr_cpus_allowed != 1);
-2382         }
-2383
+Rob Herring <robh@kernel.org> writes:
 
-(FWIW, it looks like this patchset can fix a panic I noticed during
-hibernation:
-https://lkml.org/lkml/2020/12/22/141, though I see the same warning
-during hibernation.)
+> Align with arm64 name so common code can use it.
+>
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  arch/powerpc/include/asm/kexec.h  | 2 +-
+>  arch/powerpc/kexec/file_load.c    | 4 ++--
+>  arch/powerpc/kexec/file_load_64.c | 4 ++--
+>  3 files changed, 5 insertions(+), 5 deletions(-)
 
-[    1.698042] smp: Bringing up secondary CPUs ...
-[    1.701707] x86: Booting SMP configuration:
-[    1.705368] .... node  #0, CPUs:        #1  #2  #3  #4  #5  #6  #7
-#8  #9 #10 #11 #12 #13 #14 #15
-[    1.721589] .... node  #1, CPUs:   #16
-[    1.013388] smpboot: CPU 16 Converting physical 0 to logical die 1
-[    1.809716] ------------[ cut here ]------------
-[    1.813553] WARNING: CPU: 16 PID: 90 at kernel/sched/core.c:2381
-__set_cpus_allowed_ptr+0x19e/0x1b0
-[    1.813553] Modules linked in:
-[    1.813553] CPU: 16 PID: 90 Comm: cpuhp/16 Not tainted 5.10.0+ #1
-[    1.813553] Hardware name: Microsoft Corporation Virtual
-Machine/Virtual Machine, BIOS 090008  12/07/2018
-[    1.813553] RIP: 0010:__set_cpus_allowed_ptr+0x19e/0x1b0
-[    1.813553] Code: e8 e7 a3 39 00 85 c0 74 a7 ba 00 02 00 00 48 c7
-c6 20 4b 9b 84 4c 89 ff e8 cf a3 39 00 85 c0 75 8f 83 bb a0 03 00 00
-01 74 86 <0f> 0b eb 82 e8 49 ba 74 00 66 0f 1f 84 00 00 00 00 00 0f 1f
-44 00
-[    1.813553] RSP: 0000:ffffba9bc1ca7cf8 EFLAGS: 00010016
-[    1.813553] RAX: 0000000000000000 RBX: ffff98ed48d58000 RCX: 0000000000000008
-[    1.813553] RDX: 0000000000000200 RSI: ffffffff849b4b20 RDI: ffff98ed48d035a8
-[    1.813553] RBP: ffff98ed42a2ac00 R08: 0000000000000008 R09: 0000000000000008
-[    1.813553] R10: ffff98ed48d035a8 R11: ffffffff8484da40 R12: 0000000000000000
-[    1.813553] R13: 0000000000000010 R14: ffffffff849b4ba0 R15: ffff98ed48d035a8
-[    1.813553] FS:  0000000000000000(0000) GS:ffff98ee3aa00000(0000)
-knlGS:0000000000000000
-[    1.813553] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    1.813553] CR2: 0000000000000000 CR3: 000000019980a001 CR4: 00000000003706e0
-[    1.813553] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[    1.813553] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[    1.813553] Call Trace:
-[    1.813553]  worker_attach_to_pool+0x53/0xd0
-[    1.813553]  create_worker+0xf9/0x190
-[    1.813553]  alloc_unbound_pwq+0x3a5/0x3b0
-[    1.813553]  wq_update_unbound_numa+0x112/0x1c0
-[    1.813553]  workqueue_online_cpu+0x1d0/0x220
-[    1.813553]  ? workqueue_prepare_cpu+0x70/0x70
-[    1.813553]  cpuhp_invoke_callback+0x82/0x4a0
-[    1.813553]  ? sort_range+0x20/0x20
-[    1.813553]  cpuhp_thread_fun+0xb8/0x120
-[    1.813553]  smpboot_thread_fn+0x198/0x230
-[    1.813553]  kthread+0x13d/0x160
-[    1.813553]  ? kthread_create_on_node+0x60/0x60
-[    1.813553]  ret_from_fork+0x22/0x30
-[    1.813553] ---[ end trace bc73d8bab71235fe ]---
-[    1.817553]  #17 #18 #19 #20 #21 #22 #23 #24 #25 #26 #27 #28 #29 #30 #31
-[    1.826499] smp: Brought up 2 nodes, 32 CPUs
-[    1.833345] smpboot: Max logical packages: 2
-[    1.833574] smpboot: Total of 32 processors activated (146959.07 BogoMIPS)
+Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
 
-
-Thanks,
-Dexuan
+-- 
+Thiago Jung Bauermann
+IBM Linux Technology Center
