@@ -2,106 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B2882E0E92
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 20:13:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D2032E0E9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 20:15:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726667AbgLVTMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 14:12:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726246AbgLVTMO (ORCPT
+        id S1726716AbgLVTO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 14:14:27 -0500
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:38231 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725782AbgLVTO1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 14:12:14 -0500
-Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [IPv6:2605:2700:0:5::4713:9cab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 793A7C0613D3;
-        Tue, 22 Dec 2020 11:11:34 -0800 (PST)
-Received: from hatter.bewilderbeest.net (unknown [IPv6:2600:6c44:7f:ba20:1c66:ab2d:5a3:5a9e])
-        (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: zev)
-        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 82E95806F7;
-        Tue, 22 Dec 2020 11:11:32 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 thorn.bewilderbeest.net 82E95806F7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-        s=thorn; t=1608664293;
-        bh=Jb/eAFSraSSe36siZ7ttAXCaK7RraW2W9WezyRTcKok=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Sk0oHyGomWoDAgtkbg4sxv04aqH/T0JleemSI5w3FSx4IJ3NE5tXh5SFnGXLkVA6Q
-         AV0eQ4POcVPhHYLiYdk8F2e5IIJncPdXAQxiMOBJAGMykwiLq+dpDtmOVtKEnQRlLZ
-         iRLfUqQ8ezNnqoOc/QkWL3H8UR6VaAnBJkt1g19Q=
-Date:   Tue, 22 Dec 2020 13:11:26 -0600
-From:   Zev Weiss <zev@bewilderbeest.net>
-To:     Joel Stanley <joel@jms.id.au>
-Cc:     Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        Eddie James <eajames@linux.ibm.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>, linux-media@vger.kernel.org,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] aspeed-video: add error message for unhandled
- interrupts
-Message-ID: <20201222191126.uh3psmc4l74dulwb@hatter.bewilderbeest.net>
-References: <20201215024542.18888-1-zev@bewilderbeest.net>
- <20201215024542.18888-2-zev@bewilderbeest.net>
- <CACPK8XfPCjBbjM2V1oiD=di6MD6ewJs0NFewA0=kZfx_eL29gQ@mail.gmail.com>
+        Tue, 22 Dec 2020 14:14:27 -0500
+Received: by mail-oi1-f182.google.com with SMTP id x13so15859574oic.5;
+        Tue, 22 Dec 2020 11:14:11 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=1Eh7m3hFGprfwN/8YW291dz5yjJJmnCPD2wugr7INuE=;
+        b=bOzuFCC8V8ZHc48pAIh7olxkhPSzc0/N+pUkXayWznhanp8DbRIQplTeH++TBFglQn
+         0rKSHTtzGwtAHx6FH8O1iJNorBf9DMxn6OnWQWH/vwJYUq5JWGfHlK7KkmzixguiWBfL
+         pV23gH7VchMz6pZ39aA32Gl5bdbyjRzSr7j4CZtZKi7wTqYiumPazlUCYDPYpTwL7qbR
+         tMpSNEAnPDCcuRT6uRBQ49r93/rFWPxeCq9nii+tkpyfDzGkAraFLzCG4o2BcOcNGINJ
+         1eevK84UDF01Dn4BEOQPc09w+SffM/PuBPYD9SoSRaxMww/uzmxef1fXaEPBTJ/nPi7Q
+         SMVg==
+X-Gm-Message-State: AOAM531w3BY86XUHHRsitq+qgwTrk81fZA6bk9CblvQPBYjrGJXYFr8I
+        D7FnKYJ57wxZ9Kizgn40tjKdyECwOpg9zl9cpsVgkWQpHLc=
+X-Google-Smtp-Source: ABdhPJzxRHHCBlqNA0kd9DowFvps1I/s4YnaTlhdkSEgHi+JH4x0MhlTBOatlp7o6Uqxdm/pBG3QQsso3DTz7jGGogI=
+X-Received: by 2002:aca:4c1:: with SMTP id 184mr15863763oie.157.1608664426224;
+ Tue, 22 Dec 2020 11:13:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CACPK8XfPCjBbjM2V1oiD=di6MD6ewJs0NFewA0=kZfx_eL29gQ@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 22 Dec 2020 20:13:35 +0100
+Message-ID: <CAJZ5v0iS-Dv2iRkVGPhOLiP5-5D1vx+=9Nr7rtKtVbWmdrx=pg@mail.gmail.com>
+Subject: [GIT PULL] More power management updates for v5.11-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 10:34:26PM CST, Joel Stanley wrote:
->On Tue, 15 Dec 2020 at 02:46, Zev Weiss <zev@bewilderbeest.net> wrote:
->>
->> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
->> ---
->>  drivers/media/platform/aspeed-video.c | 5 +++++
->>  1 file changed, 5 insertions(+)
->>
->> diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
->> index 7d98db1d9b52..eb02043532e3 100644
->> --- a/drivers/media/platform/aspeed-video.c
->> +++ b/drivers/media/platform/aspeed-video.c
->> @@ -562,6 +562,7 @@ static irqreturn_t aspeed_video_irq(int irq, void *arg)
->>  {
->>         struct aspeed_video *video = arg;
->>         u32 sts = aspeed_video_read(video, VE_INTERRUPT_STATUS);
->> +       u32 orig_sts = sts;
->>
->>         /*
->>          * Resolution changed or signal was lost; reset the engine and
->> @@ -639,6 +640,10 @@ static irqreturn_t aspeed_video_irq(int irq, void *arg)
->>         if (sts & VE_INTERRUPT_FRAME_COMPLETE)
->>                 sts &= ~VE_INTERRUPT_FRAME_COMPLETE;
->>
->> +       if (sts)
->> +               dev_err_ratelimited(video->dev, "unexpected interrupt asserted:"
->> +                                   " sts=%08x, orig_sts=%08x", sts, orig_sts);
->
->Do you want to do this before clearing the FRAME and CAPTURE bits?
->
+Hi Linus,
 
-My intent was to only issue the message for unexpectedly-asserted 
-interrupts that aren't among the ones already known to happen despite 
-being disabled -- basically just indicating that a new bit might need to 
-be added to the spurious-interrupt mask added in the second patch.  (I 
-included the orig_sts element in case there's any useful debugging 
-information to be gleaned from what other interrupts got asserted along 
-with it, which would also include FRAME, CAPTURE, and any others 
-explicitly cleared.)
+Please pull from the tag
 
-And incidentally, in the handful of instances I captured in which this 
-problem arose, it seemed to be "sticky" in that it continued occurring 
-on every frame until the device was reset, so it seems like it would be 
-likely to lead to a fair amount of log spam for a condition where it's 
-basically just "we're ignoring known misbehavior" and there's not much 
-else to do about it.
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ pm-5.11-rc1-2
+
+with top-most commit c3a74f8e25e97166ca0f954414825ae98a3209f6
+
+ Merge branch 'pm-cpufreq'
+
+on top of commit b4ec805464a4a0299216a003278351d0b4806450
+
+ Merge tag 'pm-5.11-rc1' of
+git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
+
+to receive more power management updates for 5.11-rc1.
+
+These update the CPPC cpufreq driver and intel_pstate (which
+involves updating the cpufreq core and the schedutil governor)
+and make janitorial changes in the ACPI code handling processor
+objects.
+
+Specifics:
+
+ - Rework the passive-mode "fast switch" path in the intel_pstate
+   driver to allow it receive the minimum (required) and target
+   (desired) performance information from the schedutil governor so
+   as to avoid running some workloads too fast (Rafael Wysocki).
+
+ - Make the intel_pstate driver allow the policy max limit to be
+   increased after the guaranteed performance value for the given
+   CPU has increased (Rafael Wysocki).
+
+ - Clean up the handling of CPU coordination types in the CPPC
+   cpufreq driver and make it export frequency domains information
+   to user space via sysfs (Ionela Voinescu).
+
+ - Fix the ACPI code handling processor objects to use a correct
+   coordination type when it fails to map frequency domains and drop
+   a redundant CPU map initialization from it (Ionela Voinescu, Punit
+   Agrawal).
+
+Thanks!
 
 
-Zev
+---------------
 
+Ionela Voinescu (5):
+      ACPI: processor: fix NONE coordination for domain mapping failure
+      cppc_cpufreq: use policy->cpu as driver of frequency setting
+      cppc_cpufreq: clarify support for coordination types
+      cppc_cpufreq: expose information on frequency domains
+      cppc_cpufreq: replace per-cpu data array with a list
+
+Punit Agrawal (1):
+      ACPI: processor: Drop duplicate setting of shared_cpu_map
+
+Rafael J. Wysocki (4):
+      cpufreq: schedutil: Add util to struct sg_cpu
+      cpufreq: Add special-purpose fast-switching callback for drivers
+      cpufreq: intel_pstate: Implement the ->adjust_perf() callback
+      cpufreq: intel_pstate: Use most recent guaranteed performance values
+
+---------------
+
+ Documentation/ABI/testing/sysfs-devices-system-cpu |   3 +-
+ drivers/acpi/cppc_acpi.c                           | 141 ++++++--------
+ drivers/acpi/processor_perflib.c                   |   3 +-
+ drivers/cpufreq/cppc_cpufreq.c                     | 204 ++++++++++++---------
+ drivers/cpufreq/cpufreq.c                          |  40 ++++
+ drivers/cpufreq/intel_pstate.c                     |  86 +++++++--
+ include/acpi/cppc_acpi.h                           |   6 +-
+ include/linux/cpufreq.h                            |  14 ++
+ include/linux/sched/cpufreq.h                      |   5 +
+ kernel/sched/cpufreq_schedutil.c                   | 106 ++++++++---
+ 10 files changed, 388 insertions(+), 220 deletions(-)
