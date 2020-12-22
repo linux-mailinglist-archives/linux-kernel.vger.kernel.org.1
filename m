@@ -2,143 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 662852E0AB6
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 14:31:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA4E92E0AB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 14:31:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727519AbgLVNbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 08:31:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45392 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727146AbgLVNbe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 08:31:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C7C09229C6;
-        Tue, 22 Dec 2020 13:30:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608643853;
-        bh=1WvxvtX20HsPEDDPqNB0howPhU2hqueA4ilWZni7BSQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LVEjdkyEec4DNI0h6cFv/S11CfyPsNRZY8nwEUIBdNAn33FLcIT2At9h8WY0eUOkQ
-         GoCFwbvJj9SisZdTbjW5vXtx4tW8MNXjJUmgJAPQgdSAuVwY5Q6s+iRlbh8ik9r/p2
-         iucShZb4Do74KGM3jXBwkyddVKDMRJhv/FkNaaETocGQnmgwzvtdGWlDukUJNujv0H
-         BFruNq9Q6mdwCyD1SuPFYw8K4dyJzzudMMtrgX4icgUfqOJV7fdHMQ1VkDqE9rOSqO
-         rSDiGAH9roSF6OVrdqOglp1CMhL6oqrTHY8jiMG3vbhlhOP3LgjisY0V0z9gt6CEdS
-         X4iUSe+xZP4AQ==
-Received: by pali.im (Postfix)
-        id A2D4B848; Tue, 22 Dec 2020 14:30:51 +0100 (CET)
-Date:   Tue, 22 Dec 2020 14:30:51 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Peter Chen <peter.chen@nxp.com>
-Cc:     Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jun Li <jun.li@nxp.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] usb: host: xhci-plat: fix support for XHCI_SKIP_PHY_INIT
- quirk
-Message-ID: <20201222133051.jfvrgkcdhjnldz3z@pali>
-References: <20201221150903.26630-1-pali@kernel.org>
- <20201222021416.GB4706@b29397-desktop>
- <20201222092327.jq5b7g4bffeccq3o@pali>
+        id S1727481AbgLVNb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 08:31:26 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9236 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727146AbgLVNbZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 08:31:25 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4D0cdS3dhXzkv1G;
+        Tue, 22 Dec 2020 21:29:48 +0800 (CST)
+Received: from ubuntu.network (10.175.138.68) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 22 Dec 2020 21:30:34 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <airlied@linux.ie>, <daniel@ffwll.ch>,
+        <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH -next] gpu/drm/radeon: use DIV_ROUND_UP macro to do calculation
+Date:   Tue, 22 Dec 2020 21:31:00 +0800
+Message-ID: <20201222133100.19470-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201222092327.jq5b7g4bffeccq3o@pali>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.138.68]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 22 December 2020 10:23:27 Pali Rohár wrote:
-> On Tuesday 22 December 2020 02:14:45 Peter Chen wrote:
-> > On 20-12-21 16:09:03, Pali Rohár wrote:
-> > > Currently init_quirk callbacks for xhci platform drivers are called
-> > > xhci_plat_setup() function which is called after chip reset completes.
-> > > It happens in the middle of the usb_add_hcd() function.
-> > > 
-> > > But XHCI_SKIP_PHY_INIT quirk is checked in the xhci_plat_probe() function
-> > > prior calling usb_add_hcd() function. Therefore this XHCI_SKIP_PHY_INIT
-> > > currently does nothing as prior xhci_plat_setup() it is not set.
-> > > 
-> > > Quirk XHCI_SKIP_PHY_INIT is only setting hcd->skip_phy_initialization value
-> > > which really needs to be set prior calling usb_add_hcd() as this function
-> > > at its beginning skips PHY init if this member is set.
-> > > 
-> > > This patch fixes implementation of the XHCI_SKIP_PHY_INIT quirk by calling
-> > > init_quirk callbacks (via xhci_priv_init_quirk()) prior checking if
-> > > XHCI_SKIP_PHY_INIT is set.
-> > > 
-> > > Fixes: f768e718911e0 ("usb: host: xhci-plat: add priv quirk for skip PHY initialization")
-> > > Signed-off-by: Pali Rohár <pali@kernel.org>
-> > > ---
-> > >  drivers/usb/host/xhci-plat.c | 14 +++++++-------
-> > >  1 file changed, 7 insertions(+), 7 deletions(-)
-> > > 
-> > > diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
-> > > index 4d34f6005381..58704c5b002b 100644
-> > > --- a/drivers/usb/host/xhci-plat.c
-> > > +++ b/drivers/usb/host/xhci-plat.c
-> > > @@ -89,13 +89,6 @@ static void xhci_plat_quirks(struct device *dev, struct xhci_hcd *xhci)
-> > >  /* called during probe() after chip reset completes */
-> > >  static int xhci_plat_setup(struct usb_hcd *hcd)
-> > >  {
-> > > -	int ret;
-> > > -
-> > > -
-> > > -	ret = xhci_priv_init_quirk(hcd);
-> > > -	if (ret)
-> > > -		return ret;
-> > > -
-> > >  	return xhci_gen_setup(hcd, xhci_plat_quirks);
-> > >  }
-> > >  
-> > > @@ -330,6 +323,13 @@ static int xhci_plat_probe(struct platform_device *pdev)
-> > >  
-> > >  	hcd->tpl_support = of_usb_host_tpl_support(sysdev->of_node);
-> > >  	xhci->shared_hcd->tpl_support = hcd->tpl_support;
-> > > +
-> > > +	if (priv) {
-> > > +		ret = xhci_priv_init_quirk(hcd);
-> > > +		if (ret)
-> > > +			goto disable_usb_phy;
-> > > +	}
-> > > +
-> > >  	if (priv && (priv->quirks & XHCI_SKIP_PHY_INIT))
-> > >  		hcd->skip_phy_initialization = 1;
-> > >  
-> > 
-> > Hi Pali,
-> > 
-> > What's problem you have met? In structure xhci_plat_priv, the quirks are
-> > defined at .quirks entry which is got at below code. .init_quirk is the
-> > routine if special initializations are needed.
-> 
-> Hello!
-> 
-> I'm talking about .init_quirk. And if XHCI_SKIP_PHY_INIT quirk is set in
-> this function then has no effect.
+Don't open-code DIV_ROUND_UP() kernel macro.
 
-Ok, this patch is not enough, I will send V2.
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+ drivers/gpu/drm/radeon/r600_cs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> I'm working currently on patch for xhci mvebu which conditionally enable
-> or disable XHCI_SKIP_PHY_INIT quirk (it is going to fix existing
-> regression since v5.1 kernel) and without this patch XHCI_SKIP_PHY_INIT
-> quirk from the init_quirk does not work.
+diff --git a/drivers/gpu/drm/radeon/r600_cs.c b/drivers/gpu/drm/radeon/r600_cs.c
+index 390a9621604a..a3aea5329712 100644
+--- a/drivers/gpu/drm/radeon/r600_cs.c
++++ b/drivers/gpu/drm/radeon/r600_cs.c
+@@ -219,7 +219,7 @@ int r600_fmt_get_nblocksx(u32 format, u32 w)
+ 	if (bw == 0)
+ 		return 0;
+ 
+-	return (w + bw - 1) / bw;
++	return DIV_ROUND_UP(w, bw);
+ }
+ 
+ int r600_fmt_get_nblocksy(u32 format, u32 h)
+@@ -233,7 +233,7 @@ int r600_fmt_get_nblocksy(u32 format, u32 h)
+ 	if (bh == 0)
+ 		return 0;
+ 
+-	return (h + bh - 1) / bh;
++	return DIV_ROUND_UP(h, bh);
+ }
+ 
+ struct array_mode_checker {
+-- 
+2.22.0
 
-And now I have tested V2 with my mvebu regression fix. I will send it to
-mailing list for review.
-
-> > 	if (pdev->dev.of_node)
-> > 		priv_match = of_device_get_match_data(&pdev->dev);
-> > 	else
-> > 		priv_match = dev_get_platdata(&pdev->dev);
-> > 
-> > 	if (priv_match) {
-> > 		priv = hcd_to_xhci_priv(hcd);
-> > 		/* Just copy data for now */
-> > 		*priv = *priv_match;
-> > 	}
-> > -- 
-> > 
-> > Thanks,
-> > Peter Chen
