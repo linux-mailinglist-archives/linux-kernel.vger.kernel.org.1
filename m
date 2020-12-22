@@ -2,79 +2,319 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1DF82E0D97
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 17:58:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A62EA2E0DA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 18:06:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727735AbgLVQ4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 11:56:50 -0500
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:62701 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726991AbgLVQ4u (ORCPT
+        id S1727365AbgLVRGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 12:06:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726889AbgLVRGY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 11:56:50 -0500
-X-Originating-IP: 176.167.34.245
-Received: from localhost (unknown [176.167.34.245])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 75EA424000E;
-        Tue, 22 Dec 2020 16:56:03 +0000 (UTC)
-Date:   Tue, 22 Dec 2020 17:56:00 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Steen Hegelund <steen.hegelund@microchip.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Mark Einon <mark.einon@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [RFC PATCH v2 2/8] net: sparx5: add the basic sparx5 driver
-Message-ID: <20201222165600.GE3819852@piout.net>
-References: <20201217075134.919699-1-steen.hegelund@microchip.com>
- <20201217075134.919699-3-steen.hegelund@microchip.com>
- <20201219191157.GC3026679@lunn.ch>
- <37309f64bf0bb94e55bc2db4c482c1e3e7f1be6f.camel@microchip.com>
- <20201222150122.GM3107610@lunn.ch>
+        Tue, 22 Dec 2020 12:06:24 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25502C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 09:05:44 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id q22so19193195eja.2
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 09:05:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=jIW+vUoOdue2hhN/Ujgl1CaxmMgqO9c+436UlQtsK48=;
+        b=wTPC2qFpoYogKzqyjMg2r2smp3XDtjFTNO3+PywbsJVSsFgIqFmtafgGN1sryZOF8o
+         ClUaL4KLzwRAyOON74CjdIkXBsMKzcAxb9cuISs+VpD6fsTHYIsjhKUzGBMBD1lvXZBS
+         aCDkGWqJsKY3YJdhKTkt1su0OVv+W0DkwOZWLsj645EX8+aJLS7oInqk1cUimYoY3xsk
+         lila6e8I6Leg6QlJrGR3pJFTIO+hfEQwKgywF3iAOEwBPYSqbecZQQlcBAl6V9Kpb02K
+         4yap/4s7GjLjFApc3iMVmRhXF6BH/XmuCJQvrRQcTDcfD8LV8PMpK1Z6UdZc5BGrEGzQ
+         EhyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jIW+vUoOdue2hhN/Ujgl1CaxmMgqO9c+436UlQtsK48=;
+        b=p60xXK/2K981OmlCfUKOx/0IxfSj1yJJrmc1Aj3+WKNWy1QiRed8REWO6x8Ha4emOj
+         rLf6Twyp5o8oX9Jvd2gt7pawpCVPtXdS2k+4m0gcP8YHOklF6pklSA643xlTkgbMWGHN
+         SXhUOh5EuQmEliUlJtR+M1mudAtEdM894wJEs1lBENxkEQzTp0ddyrqabTYZmzPw5vNs
+         OIFyjjui5kvcHKNYr5JiIlaVIjMjniPpMO/qieYTiF9qi1HfdCgNytKXasbBlHMTJlt6
+         3i82k6aPdcMGjpV0pRjdjoRlXzMUypZNkV2Rc57nf/sbizmtPZH4A2QlHstayDgKgYUT
+         E1YQ==
+X-Gm-Message-State: AOAM533XpIVRaOwtYda5a8xlfMIvIgN205DF2toKTknyX75nd+aTsMFx
+        x9ZE4mWiIq/L5CNbAiK22R4bJA==
+X-Google-Smtp-Source: ABdhPJzFniJz8KrkwqHVsXeIYwZ/LAAwKLcxxE4ilqtqhkIjz7PMhLIP5MyxC8RNMafJOgU8He2xbA==
+X-Received: by 2002:a17:906:3f8d:: with SMTP id b13mr7539181ejj.464.1608656742735;
+        Tue, 22 Dec 2020 09:05:42 -0800 (PST)
+Received: from [192.168.0.41] (lns-bzn-59-82-252-148-164.adsl.proxad.net. [82.252.148.164])
+        by smtp.googlemail.com with ESMTPSA id i18sm16278580edt.68.2020.12.22.09.05.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Dec 2020 09:05:41 -0800 (PST)
+Subject: Re: [PATCH 1/6] thermal/core: Remove the 'forced_passive' option
+To:     rui.zhang@intel.com
+Cc:     mjg59@codon.org.uk, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, amitk@kernel.org,
+        thara.gopinath@linaro.org, Jonathan Corbet <corbet@lwn.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+References: <20201214233811.485669-1-daniel.lezcano@linaro.org>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <7fe76a95-fe92-386d-7ff7-4c2a0b478724@linaro.org>
+Date:   Tue, 22 Dec 2020 18:05:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201222150122.GM3107610@lunn.ch>
+In-Reply-To: <20201214233811.485669-1-daniel.lezcano@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/12/2020 16:01:22+0100, Andrew Lunn wrote:
-> > The problem is that the switch core reset also affects (reset) the
-> > SGPIO controller.
-> > 
-> > We tried to put this in the reset driver, but it was rejected. If the
-> > reset is done at probe time, the SGPIO driver may already have
-> > initialized state.
-> > 
-> > The switch core reset will then reset all SGPIO registers. 
+On 15/12/2020 00:38, Daniel Lezcano wrote:
+> The code was reorganized in 2012 with the commit 0c01ebbfd3caf1.
 > 
-> Ah, O.K. Dumb question. Why is the SGPIO driver a separate driver? It
-> sounds like it should be embedded inside this driver if it is sharing
-> hardware.
+> The main change is a loop on the trip points array and a unconditional
+> call to the throttle() ops of the governors for each of them even if
+> the trip temperature is not reached yet.
 > 
-> Another option would be to look at the reset subsystem, and have this
-> driver export a reset controller, which the SGPIO driver can bind to.
-> Given that the GPIO driver has been merged, if this will work, it is
-> probably a better solution.
+> With this change, the 'forced_passive' is no longer checked in the
+> thermal_zone_device_update() function but in the step wise governor's
+> throttle() callback.
 > 
+> As the force_passive does no belong to the trip point array, the
+> thermal_zone_device_update() can not compare with the specified
+> passive temperature, thus does not detect the passive limit has been
+> crossed. Consequently, throttle() is never called and the
+> 'forced_passive' branch is unreached.
+> 
+> In addition, the default processor cooling device is not automatically
+> bound to the thermal zone if there is not passive trip point, thus the
+> 'forced_passive' can not operate.
+> 
+> If there is an active trip point, then the throttle function will be
+> called to mitigate at this temperature and the 'forced_passive' will
+> override the mitigation of the active trip point in this case but with
+> the default cooling device bound to the thermal zone, so usually a
+> fan, and that is not a passive cooling effect.
+> 
+> Given the regression exists since more than 8 years, nobody complained
+> and at the best of my knowledge there is no bug open in
+> https://bugzilla.kernel.org, it is reasonable to say it is unused.
+> 
+> Remove the 'forced_passive' related code.
+> 
+> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 
-That was my suggestion. Then you can ensure from the reset controller
-driver that this is done exactly once, either from the sgpio driver or
-from the switchdev driver. IIRC, the sgpio from the other SoCs are not
-affected by the reset.
+Is there any concern with this series ?
+
+
+> ---
+>  .../driver-api/thermal/sysfs-api.rst          | 13 ---
+>  drivers/thermal/gov_step_wise.c               | 14 +---
+>  drivers/thermal/thermal_sysfs.c               | 80 -------------------
+>  include/linux/thermal.h                       |  4 -
+>  4 files changed, 3 insertions(+), 108 deletions(-)
+> 
+> diff --git a/Documentation/driver-api/thermal/sysfs-api.rst b/Documentation/driver-api/thermal/sysfs-api.rst
+> index e7520cb439ac..a4969c474cc3 100644
+> --- a/Documentation/driver-api/thermal/sysfs-api.rst
+> +++ b/Documentation/driver-api/thermal/sysfs-api.rst
+> @@ -520,19 +520,6 @@ available_policies
+>  
+>  	RW, Optional
+>  
+> -passive
+> -	Attribute is only present for zones in which the passive cooling
+> -	policy is not supported by native thermal driver. Default is zero
+> -	and can be set to a temperature (in millidegrees) to enable a
+> -	passive trip point for the zone. Activation is done by polling with
+> -	an interval of 1 second.
+> -
+> -	Unit: millidegrees Celsius
+> -
+> -	Valid values: 0 (disabled) or greater than 1000
+> -
+> -	RW, Optional
+> -
+>  emul_temp
+>  	Interface to set the emulated temperature method in thermal zone
+>  	(sensor). After setting this temperature, the thermal zone may pass
+> diff --git a/drivers/thermal/gov_step_wise.c b/drivers/thermal/gov_step_wise.c
+> index 2ae7198d3067..12acb12aac50 100644
+> --- a/drivers/thermal/gov_step_wise.c
+> +++ b/drivers/thermal/gov_step_wise.c
+> @@ -109,7 +109,7 @@ static void update_passive_instance(struct thermal_zone_device *tz,
+>  	 * If value is +1, activate a passive instance.
+>  	 * If value is -1, deactivate a passive instance.
+>  	 */
+> -	if (type == THERMAL_TRIP_PASSIVE || type == THERMAL_TRIPS_NONE)
+> +	if (type == THERMAL_TRIP_PASSIVE)
+>  		tz->passive += value;
+>  }
+>  
+> @@ -122,13 +122,8 @@ static void thermal_zone_trip_update(struct thermal_zone_device *tz, int trip)
+>  	bool throttle = false;
+>  	int old_target;
+>  
+> -	if (trip == THERMAL_TRIPS_NONE) {
+> -		trip_temp = tz->forced_passive;
+> -		trip_type = THERMAL_TRIPS_NONE;
+> -	} else {
+> -		tz->ops->get_trip_temp(tz, trip, &trip_temp);
+> -		tz->ops->get_trip_type(tz, trip, &trip_type);
+> -	}
+> +	tz->ops->get_trip_temp(tz, trip, &trip_temp);
+> +	tz->ops->get_trip_type(tz, trip, &trip_type);
+>  
+>  	trend = get_tz_trend(tz, trip);
+>  
+> @@ -189,9 +184,6 @@ static int step_wise_throttle(struct thermal_zone_device *tz, int trip)
+>  
+>  	thermal_zone_trip_update(tz, trip);
+>  
+> -	if (tz->forced_passive)
+> -		thermal_zone_trip_update(tz, THERMAL_TRIPS_NONE);
+> -
+>  	mutex_lock(&tz->lock);
+>  
+>  	list_for_each_entry(instance, &tz->thermal_instances, tz_node)
+> diff --git a/drivers/thermal/thermal_sysfs.c b/drivers/thermal/thermal_sysfs.c
+> index 0866e949339b..4e7f9e880d76 100644
+> --- a/drivers/thermal/thermal_sysfs.c
+> +++ b/drivers/thermal/thermal_sysfs.c
+> @@ -216,49 +216,6 @@ trip_point_hyst_show(struct device *dev, struct device_attribute *attr,
+>  	return ret ? ret : sprintf(buf, "%d\n", temperature);
+>  }
+>  
+> -static ssize_t
+> -passive_store(struct device *dev, struct device_attribute *attr,
+> -	      const char *buf, size_t count)
+> -{
+> -	struct thermal_zone_device *tz = to_thermal_zone(dev);
+> -	int state;
+> -
+> -	if (sscanf(buf, "%d\n", &state) != 1)
+> -		return -EINVAL;
+> -
+> -	/* sanity check: values below 1000 millicelcius don't make sense
+> -	 * and can cause the system to go into a thermal heart attack
+> -	 */
+> -	if (state && state < 1000)
+> -		return -EINVAL;
+> -
+> -	if (state && !tz->forced_passive) {
+> -		if (!tz->passive_delay)
+> -			tz->passive_delay = 1000;
+> -		thermal_zone_device_rebind_exception(tz, "Processor",
+> -						     sizeof("Processor"));
+> -	} else if (!state && tz->forced_passive) {
+> -		tz->passive_delay = 0;
+> -		thermal_zone_device_unbind_exception(tz, "Processor",
+> -						     sizeof("Processor"));
+> -	}
+> -
+> -	tz->forced_passive = state;
+> -
+> -	thermal_zone_device_update(tz, THERMAL_EVENT_UNSPECIFIED);
+> -
+> -	return count;
+> -}
+> -
+> -static ssize_t
+> -passive_show(struct device *dev, struct device_attribute *attr,
+> -	     char *buf)
+> -{
+> -	struct thermal_zone_device *tz = to_thermal_zone(dev);
+> -
+> -	return sprintf(buf, "%d\n", tz->forced_passive);
+> -}
+> -
+>  static ssize_t
+>  policy_store(struct device *dev, struct device_attribute *attr,
+>  	     const char *buf, size_t count)
+> @@ -403,7 +360,6 @@ static DEVICE_ATTR_RW(sustainable_power);
+>  
+>  /* These thermal zone device attributes are created based on conditions */
+>  static DEVICE_ATTR_RW(mode);
+> -static DEVICE_ATTR_RW(passive);
+>  
+>  /* These attributes are unconditionally added to a thermal zone */
+>  static struct attribute *thermal_zone_dev_attrs[] = {
+> @@ -438,45 +394,9 @@ static const struct attribute_group thermal_zone_mode_attribute_group = {
+>  	.attrs = thermal_zone_mode_attrs,
+>  };
+>  
+> -/* We expose passive only if passive trips are present */
+> -static struct attribute *thermal_zone_passive_attrs[] = {
+> -	&dev_attr_passive.attr,
+> -	NULL,
+> -};
+> -
+> -static umode_t thermal_zone_passive_is_visible(struct kobject *kobj,
+> -					       struct attribute *attr,
+> -					       int attrno)
+> -{
+> -	struct device *dev = kobj_to_dev(kobj);
+> -	struct thermal_zone_device *tz;
+> -	enum thermal_trip_type trip_type;
+> -	int count, passive = 0;
+> -
+> -	tz = container_of(dev, struct thermal_zone_device, device);
+> -
+> -	for (count = 0; count < tz->trips && !passive; count++) {
+> -		tz->ops->get_trip_type(tz, count, &trip_type);
+> -
+> -		if (trip_type == THERMAL_TRIP_PASSIVE)
+> -			passive = 1;
+> -	}
+> -
+> -	if (!passive)
+> -		return attr->mode;
+> -
+> -	return 0;
+> -}
+> -
+> -static const struct attribute_group thermal_zone_passive_attribute_group = {
+> -	.attrs = thermal_zone_passive_attrs,
+> -	.is_visible = thermal_zone_passive_is_visible,
+> -};
+> -
+>  static const struct attribute_group *thermal_zone_attribute_groups[] = {
+>  	&thermal_zone_attribute_group,
+>  	&thermal_zone_mode_attribute_group,
+> -	&thermal_zone_passive_attribute_group,
+>  	/* This is not NULL terminated as we create the group dynamically */
+>  };
+>  
+> diff --git a/include/linux/thermal.h b/include/linux/thermal.h
+> index c80032322158..a57232a9a6f9 100644
+> --- a/include/linux/thermal.h
+> +++ b/include/linux/thermal.h
+> @@ -131,9 +131,6 @@ struct thermal_cooling_device {
+>  			trip point.
+>   * @prev_high_trip:	the above current temperature if you've crossed a
+>  			passive trip point.
+> - * @forced_passive:	If > 0, temperature at which to switch on all ACPI
+> - *			processor cooling devices.  Currently only used by the
+> - *			step-wise governor.
+>   * @need_update:	if equals 1, thermal_zone_device_update needs to be invoked.
+>   * @ops:	operations this &thermal_zone_device supports
+>   * @tzp:	thermal zone parameters
+> @@ -167,7 +164,6 @@ struct thermal_zone_device {
+>  	int passive;
+>  	int prev_low_trip;
+>  	int prev_high_trip;
+> -	unsigned int forced_passive;
+>  	atomic_t need_update;
+>  	struct thermal_zone_device_ops *ops;
+>  	struct thermal_zone_params *tzp;
+> 
 
 
 -- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
