@@ -2,93 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3FB42E0D4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 17:24:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 528082E0D55
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 17:28:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728086AbgLVQX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 11:23:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57270 "EHLO
+        id S1728119AbgLVQYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 11:24:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727827AbgLVQX2 (ORCPT
+        with ESMTP id S1727790AbgLVQYE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 11:23:28 -0500
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E95B6C0613D3;
-        Tue, 22 Dec 2020 08:22:47 -0800 (PST)
-Received: by mail-ot1-x335.google.com with SMTP id x13so12366220oto.8;
-        Tue, 22 Dec 2020 08:22:47 -0800 (PST)
+        Tue, 22 Dec 2020 11:24:04 -0500
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34507C0613D6;
+        Tue, 22 Dec 2020 08:23:24 -0800 (PST)
+Received: by mail-io1-xd34.google.com with SMTP id d9so12460066iob.6;
+        Tue, 22 Dec 2020 08:23:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id;
-        bh=6ew9qbzNLraaN+foW5JE4dmX208tLCsl+zWQ19IzhC8=;
-        b=SSEat8yfatElTLyK8rphkk2sBsjNcDGLNkbpArUyqZYqUb5A3n18fP6aZ32ADNLT+X
-         k2MNiDQSXhb9+OnbdizF9hdqczTHXVNUPY+n1OS5bj1yVvfKBiyF2asA8CrjLUc4G0AE
-         GZtRv8yWOZzX5kEPhjdq4QBtHFc530CXenbZEcee1NJ1biLwAtX8uYhJdedVKy6deWt7
-         tk/QvCPIxwwYHhq5YS73jh7bgGsNSriLBDjuAWQc35HLSeUF38JXX/gp1Q2EPukSlB8z
-         UlOb9iQk9Cre6rdXvwTum3ejh/17VVGLP4dvqzzEjPtso2/8+HTK6B3czNKTI+88uyHD
-         1uxQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ANErGQVIqQj48QsZur9ujVXtxW39rQn+lJjWeUAYdrA=;
+        b=veeydcPeh0M2CCM3R/Rh0jUfggTZDkL8vqlYZxVAiCvkzpGWTEZ614+2DnsCHMmlz3
+         pQMKSKTCZDlI40VbP2PmVD6SvrYFINcKscFIY/MXeJDR63rAFqGVP1+jwSwVx4QcXd65
+         GU5QAE7gY6Tbcrt7HaFXvzavk7xeSwlu7vbC9S5bGWwNCnLVbtj4pdATxlEpQ/mCr+pG
+         31OGYoIVphYuh8wbdZ4qgLjp7QidVe8iEnTJBtyMLFnrglMZ0MAQppx1GobNoHof810i
+         S1876VV7fWF7H2CvpdNV0srMdydKxnOcCVFwG+BO1qkBuGqsDWczT8oyFSCu/tLaeynS
+         2Orw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id;
-        bh=6ew9qbzNLraaN+foW5JE4dmX208tLCsl+zWQ19IzhC8=;
-        b=kluPWB2b9QWEsnNly1gOM5DxXQJUwi0XOcgBQM5tpFRrrbP5iZzgjZmkCO7mpSY5Du
-         7RACnv4FnfdVh0jDmi7nxKK5QDb0H9ycpwVtdZDR98wpqOF09K8E4UkD9GTo5NLL+mG2
-         IuCH071KyJDmyFa8Tl+7h3bBRX5wMxH5xm4GAE5sxef8a4dZhRx/UggvjmFdyGjjrvVC
-         6/j/5ZybVliIoCBQ5r1iAAojD7CvKYONDdU++MylyZvb1rtLcRHijrqW8gUp29zjAGEw
-         XFdXUWrjaFrELjf5qzrgdJPBooj2euAyXNqA33sDqqbs5ksEjCrBsrmqpCh2dExhXzrK
-         Z0Yg==
-X-Gm-Message-State: AOAM531OIOMHadJxGt2GHU5O68MDXir98xv8REhaMzZOBmDAO0HygkNn
-        PMEOgRr6SiM745gjwZ9AO7v9/Co3xkk=
-X-Google-Smtp-Source: ABdhPJzmDTduxE7D9jkLlR27P4g2ni135Hbif6RNC692cOVpKggTitoPAggzbO4vKbFJ/6/eDs1OnQ==
-X-Received: by 2002:a05:6830:188:: with SMTP id q8mr16411290ota.96.1608654166302;
-        Tue, 22 Dec 2020 08:22:46 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id n13sm4561465otk.58.2020.12.22.08.22.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 22 Dec 2020 08:22:45 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] hwmon updates for v5.11-take2
-Date:   Tue, 22 Dec 2020 08:22:44 -0800
-Message-Id: <20201222162244.181444-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ANErGQVIqQj48QsZur9ujVXtxW39rQn+lJjWeUAYdrA=;
+        b=S1Zik3QputyUYnmoGXRm/TbwgEYl35Nx++FAVBHHFW71AWcSVdknhabfPmgcQIpOpb
+         9kmD/86IduCLfryZvn4tl1pFAx53JF6NSb8ZpFjZxV0OEkys3o6sfc9XYRhWWdjcaoHO
+         UXDofnevBUp3JVOoTT+95T+m6QtPoVnkWiz+KCD7Vd6SciKLHYbatcRHOLiDe+DMX0rt
+         5dOQ/N4sZZF5++peiwPHdlr9msC+t9q6BdTLaJqOuMNaMZ5+tZvpEb/Qkbv/4pXmoY5R
+         3LLRKNyrZVdo1rCkjG2IOtgNAQlni5w23QXSfvTdGZWAyuB7uo6ZqzYCDNib5WNEH13n
+         3o7g==
+X-Gm-Message-State: AOAM5330ytPjISvm5KFaOvryz5ZaxCVpoyizguzUAm7r8shKO9GYz4Kl
+        8HO4FPH+J7fMiaz3FK0GEDf0i7cGNSyWL0o7RC79AakKuZw=
+X-Google-Smtp-Source: ABdhPJzhlQMVpEILVIPZ4JARLz6t9lY6qdQHVYRORmaQ6AhXWklFhgpJy6oI+dXqc9s8dBMn078l7xs0TMk8vnh+yHk=
+X-Received: by 2002:a6b:6d1a:: with SMTP id a26mr18703014iod.158.1608654203503;
+ Tue, 22 Dec 2020 08:23:23 -0800 (PST)
+MIME-Version: 1.0
+References: <1608064956-5512-1-git-send-email-milan.lakhani@codethink.co.uk> <20201221095209.4dd4233e@lwn.net>
+In-Reply-To: <20201221095209.4dd4233e@lwn.net>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Tue, 22 Dec 2020 17:23:18 +0100
+Message-ID: <CAKXUXMwR9i5bJx+_rXkv4SK0yU1cHpGexH9RjsN7UFqJ-Ozsew@mail.gmail.com>
+Subject: Re: [PATCH v2] Documentation: process: Correct numbering
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Milan Lakhani <milan.lakhani@codethink.co.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-safety@lists.elisa.tech,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>,
+        Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Mon, Dec 21, 2020 at 5:52 PM Jonathan Corbet <corbet@lwn.net> wrote:
+>
+> On Tue, 15 Dec 2020 20:42:36 +0000
+> Milan Lakhani <milan.lakhani@codethink.co.uk> wrote:
+>
+> > Renumber the steps in submit-checklist.rst as some numbers were skipped.
+> >
+> > Fixes: 72deb455b5ec ("block: remove CONFIG_LBDAF")
+> > Signed-off-by: Milan Lakhani <milan.lakhani@codethink.co.uk>
+> > ---
+> >  Documentation/process/submit-checklist.rst | 24 ++++++++++++------------
+> >  1 file changed, 12 insertions(+), 12 deletions(-)
+> >
+> > diff --git a/Documentation/process/submit-checklist.rst b/Documentation/process/submit-checklist.rst
+> > index 1879f88..230ee42 100644
+> > --- a/Documentation/process/submit-checklist.rst
+> > +++ b/Documentation/process/submit-checklist.rst
+> > @@ -75,44 +75,44 @@ and elsewhere regarding submitting Linux kernel patches.
+> >  13) Has been build- and runtime tested with and without ``CONFIG_SMP`` and
+> >      ``CONFIG_PREEMPT.``
+> >
+> > -16) All codepaths have been exercised with all lockdep features enabled.
+> > +14) All codepaths have been exercised with all lockdep features enabled.
+> >
+> > -17) All new ``/proc`` entries are documented under ``Documentation/``
+> > +15) All new ``/proc`` entries are documented under ``Documentation/``
+> [...]
+>
+> I've applied this, but, if you're going to stick a "Fixes" tag onto a
+> patch, it's probably only polite to copy the original author.  I'm not
+> fully convinced that the tag is warranted in this case.
+>
+> This document seems out of date in a number of ways; it could really use a
+> rather more thorough updating than this.
+>
 
-Please pull hwmon updates for Linux v5.11-take2 from signed tag:
+Jon, I completely agree on your out-of-date comment. That is why we
+pointed Milan to that checklist to start with some small basic changes
+and continue with increasingly more challenging and complex updates.
 
-    git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-for-v5.11-take2
+Milan, next update for you to consider: what does "make headers_check"
+do nowadays? (spoiler alert: it does nothing) Adjust the documentation
+for that.
 
-Thanks,
-Guenter
-------
+Then, a more general improvement: think about structuring the
+checklist to follow the structure of the other submission guidelines.
+So, reorder the current checklist and check if the step is mentioned
+in submitting-patches and where and make the checklist much more
+aligned to submitting-patches.
 
-The following changes since commit 8653b778e454a7708847aeafe689bce07aeeb94e:
-
-  Merge tag 'clk-for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/clk/linux (2020-12-21 10:39:37 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git tags/hwmon-for-v5.11-take2
-
-for you to fetch changes up to 0a4e668b5d52eed8026f5d717196b02b55fb2dc6:
-
-  hwmon: (k10temp) Remove support for displaying voltage and current on Zen CPUs (2020-12-22 08:18:36 -0800)
-
-----------------------------------------------------------------
-hwmon patches for v5.11 (take 2)
-
-The only patch in this series is removal of voltage and current reporting
-for AMD Zen CPUs. Turns out that was not worth the trouble.
-
-----------------------------------------------------------------
-Guenter Roeck (1):
-      hwmon: (k10temp) Remove support for displaying voltage and current on Zen CPUs
-
- drivers/hwmon/k10temp.c | 98 -------------------------------------------------
- 1 file changed, 98 deletions(-)
+Lukas
