@@ -2,195 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B96532E0E2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 19:20:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB6DB2E0E38
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 19:29:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727308AbgLVSUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 13:20:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53406 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726039AbgLVSUE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 13:20:04 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2379A22510;
-        Tue, 22 Dec 2020 18:19:21 +0000 (UTC)
-Date:   Tue, 22 Dec 2020 13:19:19 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        "linux-trace-users@vger.kernel.org" 
-        <linux-trace-users@vger.kernel.org>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Cc:     Zamir SUN <sztsian@gmail.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, zsun@redhat.com,
-        Vitaly Chikunov <vt@altlinux.org>,
-        Tzvetomir Stoyanov <tstoyanov@vmware.com>,
-        Yordan Karadzhov <ykaradzhov@vmware.com>,
-        Ben Hutchings <ben@decadent.org.uk>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Tony Jones <tonyj@suse.de>, John Kacur <jkacur@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        Al Stone <ahs3@debian.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Jes Sorensen <jes.sorensen@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>
-Subject: [ANNOUNCE] libtracefs 1.0.0
-Message-ID: <20201222131919.56be2da8@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726166AbgLVS3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 13:29:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725961AbgLVS3g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 13:29:36 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59F2EC061793
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 10:28:56 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id g20so19547541ejb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 10:28:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hESG9UKwjjD/S2wid9cDDihOcqi7xLn6ltJQh3ZQhIw=;
+        b=Ao+v0fik8uwEpkyYsZtDsrfl2EVTaUXpPZ/9xymU/DDU+nYFvZPgJYUVmqVsSs77zf
+         kKIDktED9PDTQ6wB4+SZ/Vg3YXM5xhqRVdXoeSCbP9XJHH5c6RawHiNO+xvvWq8c9Kgw
+         45zssytIlK2bL3CuBrbRcYiPdTwn9MeAcnjBc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hESG9UKwjjD/S2wid9cDDihOcqi7xLn6ltJQh3ZQhIw=;
+        b=f9YuG/t3FrlYqnmr1WDxayyzVQFizXzN3iy+hLTNGDlykDFuhx50G1HKtDU2/OwlUU
+         xKEcu0diguy7l1xRFmZ2K64bWchhD3iWpaIrxBTmoFnGvFAmiYzUbOHnizU/Lku6XAJn
+         6o3W4uYbKO7ggHeMUxwb+Tm97oXzVH12R9hA5vzeTXRCKW2fjr+j+LGRys1xWEtda6mO
+         hYQexlAfGr9lYh9AeG2fzmKYHd1epcrwDLwquy6ldjnxFFEP9NbvwZ245uDSRvIzbYsu
+         Zj9hEnGt8kd9t/f+plTWz959ii3LZmu8jVSb/3R/GPWpEUpQ/ltfLoDDJVyfmELK5vtT
+         IbZg==
+X-Gm-Message-State: AOAM53054LJZvhhJtxc+O5+YdfrW/0Hynomokyh/0vQB/SwW3CSv84+F
+        jtFjH5P3Qex/3cULPMV2xxPT/8OkPbB6GHncP4LVMA==
+X-Google-Smtp-Source: ABdhPJxK0nngyZUDb6zuuobNnh5aY2C7rqJLlI1jiiPrwB/zHnYF8tEFCdHwD3Tr11aNX1qpb07DCzJNCQN4t7mqvNE=
+X-Received: by 2002:a17:906:2707:: with SMTP id z7mr21173163ejc.418.1608661734951;
+ Tue, 22 Dec 2020 10:28:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20201221113151.94515-1-jagan@amarulasolutions.com>
+ <20201221113151.94515-3-jagan@amarulasolutions.com> <20201221134625.GB31176@kozik-lap>
+ <CAMty3ZAi0B=fSRfpQG4bgE+Jt6GVhzRb_FZjCL3VQXp9vn-FEw@mail.gmail.com>
+ <20201221140501.GE31176@kozik-lap> <CAMty3ZA4K8GvTfmrV1Mz6zp1w+iF0FvE04CODZUsHvg+J+a1nw@mail.gmail.com>
+ <20201221144206.GA36114@kozik-lap> <CAMty3ZD8JAp3UGuOS2zTsOZ5QcFE6_Ba_UjtmhKpD3R3qra5jg@mail.gmail.com>
+In-Reply-To: <CAMty3ZD8JAp3UGuOS2zTsOZ5QcFE6_Ba_UjtmhKpD3R3qra5jg@mail.gmail.com>
+From:   Jagan Teki <jagan@amarulasolutions.com>
+Date:   Tue, 22 Dec 2020 23:58:43 +0530
+Message-ID: <CAMty3ZCzB87_NGTRRvugcurSHWikcaCvKPuBBJJ1ocmqDQ8wzw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/6] dt-bindings: arm: fsl: Add Engicam i.Core MX8M
+ Mini C.TOUCH 2.0
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Li Yang <leoyang.li@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-amarula <linux-amarula@amarulasolutions.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-libtracefs has finally been officially released. The code that interacts
-with the tracefs file system in trace-cmd has been extracted out into its
-own library. This will facilitate other applications that need to
-manipulate or simply read the trace event file formats. 
+On Mon, Dec 21, 2020 at 8:17 PM Jagan Teki <jagan@amarulasolutions.com> wrote:
+>
+> On Mon, Dec 21, 2020 at 8:12 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> >
+> > On Mon, Dec 21, 2020 at 08:09:47PM +0530, Jagan Teki wrote:
+> > > On Mon, Dec 21, 2020 at 7:35 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> > > >
+> > > > On Mon, Dec 21, 2020 at 07:29:22PM +0530, Jagan Teki wrote:
+> > > > > On Mon, Dec 21, 2020 at 7:16 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> > > > > >
+> > > > > > On Mon, Dec 21, 2020 at 05:01:47PM +0530, Jagan Teki wrote:
+> > > > > > > i.Core MX8M Mini is an EDIMM SoM based on NXP i.MX8M Mini from Engicam.
+> > > > > > >
+> > > > > > > C.TOUCH 2.0 is a general purpose carrier board with capacitive
+> > > > > > > touch interface support.
+> > > > > > >
+> > > > > > > i.Core MX8M Mini needs to mount on top of this Carrier board for
+> > > > > > > creating complete i.Core MX8M Mini C.TOUCH 2.0 board.
+> > > > > > >
+> > > > > > > Add bindings for it.
+> > > > > > >
+> > > > > > > Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+> > > > > > > ---
+> > > > > > > Changes for v2:
+> > > > > > > - updated commit message
+> > > > > > >
+> > > > > > >  Documentation/devicetree/bindings/arm/fsl.yaml | 2 ++
+> > > > > > >  1 file changed, 2 insertions(+)
+> > > > > > >
+> > > > > > > diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+> > > > > > > index 67980dcef66d..e653e0a43016 100644
+> > > > > > > --- a/Documentation/devicetree/bindings/arm/fsl.yaml
+> > > > > > > +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+> > > > > > > @@ -667,6 +667,8 @@ properties:
+> > > > > > >          items:
+> > > > > > >            - enum:
+> > > > > > >                - beacon,imx8mm-beacon-kit  # i.MX8MM Beacon Development Kit
+> > > > > > > +              - engicam,icore-mx8mm               # i.MX8MM Engicam i.Core MX8M Mini SOM
+> > > > > > > +              - engicam,icore-mx8mm-ctouch2       # i.MX8MM Engicam i.Core MX8M Mini C.TOUCH 2.0
+> > > > > >
+> > > > > > Please test your DTS against new schema with dtbs_check. This won't
+> > > > > > match.
+> > > > >
+> > > > > Sorry, not sure I understand clearly here.
+> > > > >
+> > > > > This the dts file ie used matched compatible.
+> > > > > compatible = "engicam,icore-mx8mm-ctouch2", "engicam,icore-mx8mm",
+> > > > >                      "fsl,imx8mm";
+> > > > >
+> > > > > I did build the dtbs_check without showing any issues like,
+> > > > >
+> > > > > $ make ARCH=arm64 dtbs_check
+> > > > > ...
+> > > > >
+> > > > >     From schema: /w/dt-schema/dt-schema/dtschema/schemas/property-units.yaml
+> > > > >   DTC     arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm-ctouch2.dtb
+> > > > >   DTC     arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm-ctouch2-of10.dtb
+> > > > >   DTC     arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm-edimm2.2.dtb
+> > > > > ..
+> > > > >
+> > > > > Can you let me know what I missed here?
+> > > >
+> > > > You pasted here output of validating with property-units.yaml (or
+> > > > something else), not the schema which you changed. If you want to limit
+> > > > the tests, use DT_SCHEMA_FILES.
+> > > >
+> > > > I mentioned about exactly the same problem in yout previous v1
+> > > > at patch #5. No changes here stil.
+> > >
+> > > Yes, I usually did that check before posting. Please check the build
+> > > log below and fsl.yaml binding is fine to build.
+> > >
+> > > # make dt_binding_check DT_SCHEMA_FILES=arm/fsl.yaml
+> >
+> > 1. Wrong path to schema file,
+> > 2. Bindings pass, they are not a problem. You were running dtbs_check,
+> > right?
+>
+> But kbuild is building the fsl.yaml I did verify with by adding some
+> wrong character in the file, it is showing build issues.
+>
+> Please check the clean log.
+>
+> # make mrproper
+>   CLEAN   Documentation/devicetree/bindings
+>   CLEAN   scripts/basic
+>   CLEAN   scripts/dtc
+> # make dt_binding_check
+> DT_SCHEMA_FILES=Documentation/devicetree/bindings/arm/fsl.yaml
+>   HOSTCC  scripts/basic/fixdep
+>   HOSTCC  scripts/dtc/dtc.o
+>   HOSTCC  scripts/dtc/flattree.o
+>   HOSTCC  scripts/dtc/fstree.o
+>   HOSTCC  scripts/dtc/data.o
+>   HOSTCC  scripts/dtc/livetree.o
+>   HOSTCC  scripts/dtc/treesource.o
+>   HOSTCC  scripts/dtc/srcpos.o
+>   HOSTCC  scripts/dtc/checks.o
+>   HOSTCC  scripts/dtc/util.o
+>   LEX     scripts/dtc/dtc-lexer.lex.c
+>   YACC    scripts/dtc/dtc-parser.tab.[ch]
+>   HOSTCC  scripts/dtc/dtc-lexer.lex.o
+>   HOSTCC  scripts/dtc/dtc-parser.tab.o
+>   HOSTCC  scripts/dtc/yamltree.o
+>   HOSTLD  scripts/dtc/dtc
+>   CHKDT   Documentation/devicetree/bindings/processed-schema-examples.json
+> /w/linux/Documentation/devicetree/bindings/soc/litex/litex,soc-controller.yaml:
+> 'additionalProperties' is a required property
+> /w/linux/Documentation/devicetree/bindings/soc/mediatek/devapc.yaml:
+> 'additionalProperties' is a required property
+> /w/linux/Documentation/devicetree/bindings/media/coda.yaml:
+> 'additionalProperties' is a required property
+> /w/linux/Documentation/devicetree/bindings/serial/litex,liteuart.yaml:
+> 'additionalProperties' is a required property
+>   SCHEMA  Documentation/devicetree/bindings/processed-schema-examples.json
+> /w/linux/Documentation/devicetree/bindings/soc/litex/litex,soc-controller.yaml:
+> ignoring, error in schema:
+> warning: no schema found in file:
+> ./Documentation/devicetree/bindings/soc/litex/litex,soc-controller.yaml
+> /w/linux/Documentation/devicetree/bindings/soc/mediatek/devapc.yaml:
+> ignoring, error in schema:
+> warning: no schema found in file:
+> ./Documentation/devicetree/bindings/soc/mediatek/devapc.yaml
+> /w/linux/Documentation/devicetree/bindings/media/coda.yaml: ignoring,
+> error in schema:
+> warning: no schema found in file:
+> ./Documentation/devicetree/bindings/media/coda.yaml
+> /w/linux/Documentation/devicetree/bindings/serial/litex,liteuart.yaml:
+> ignoring, error in schema:
+> warning: no schema found in file:
+> ./Documentation/devicetree/bindings/serial/litex,liteuart.yaml
+>   DTEX    Documentation/devicetree/bindings/arm/fsl.example.dts
+>   DTC     Documentation/devicetree/bindings/arm/fsl.example.dt.yaml
+>   CHECK   Documentation/devicetree/bindings/arm/fsl.example.dt.yaml
 
- https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/snapshot/libtracefs-1.0.0.tar.gz
- https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
+Any further comments? I'm planning to send v3.
 
-All exposed functions have man pages. We do plan on extending the functions
-that tracefs will include. Some have already been added to bugzilla, but
-feel free to request your own features you would like to have for your
-applications, to easily manipulate ftrace.
-
- https://bugzilla.kernel.org/buglist.cgi?component=Trace-cmd%2FKernelshark&list_id=1079173&product=Tools&resolution=---
-
-
-Here are the list of functions that libtracefs provides. Along with
-libtraceevent
-(https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git/) making
-programs that interact with the ftrace file system has greatly become more
-simplified!
-
-Enjoy,
-
--- Steve
-
-The following interfaces come with libtracefs 1.0.0:
-
-const char *tracefs_tracing_dir(void);
-    Return the string holding the tracefs mount point.
-
-struct tep_handle *tracefs_local_events(const char *tracing_dir);
-   This will allocate and fill in a libtraceevent tep structure with information
-   on how to parse raw events. If tracing_dir is NULL, it will use the tracefs
-   mount point. tracing_dir may also be a path to a copy of a tracefs file
-   system taken from another machine.
-
-struct tep_handle *tracefs_local_events_system(const char *tracing_dir,
-					       const char * const *sys_names);
-
-   Similar to tracefs_local_events(), but may filter a subset of the systems
-   to be loaded, by passing in an array of system names.
-
-int tracefs_fill_local_events(const char *tracing_dir,
-			       struct tep_handle *tep, int *parsing_failures);
-    Similar to tracefs_local_events() but works on an already allocated
-    libtraceveent tep handle.
-
-char *tracefs_get_tracing_file(const char *name);
-     Return a file name with the tracefs mount point prefixed to it.
-
-void tracefs_put_tracing_file(char *name);
-     Free the name returned from tracefs_get_tracing_file()
-
-struct tracefs_instance *tracefs_instance_create(const char *name);
-   Create a tracing instance (sub buffer) with the given name.
-
-void tracefs_instance_free(struct tracefs_instance *instance);
-   Free an instance returned from tracefs_instance_create().
-
-int tracefs_instance_destroy(struct tracefs_instance *instance);
-   Free the instance returned from tracefs_instance_create() and also
-   remove it (the sub buffer) from the tracefs file system.
-
-bool tracefs_instance_is_new(struct tracefs_instance *instance);
-   Retuns true if tracefs_instance_create() created a new instance in
-   the tracefs file system, otherwise it returns false if the instance
-   already existed.
-
-const char *tracefs_instance_get_name(struct tracefs_instance *instance);
-   Returns the name used to create the instance.
-
-char * tracefs_instance_get_file(struct tracefs_instance *instance, const
-char *file); Returns a file name with the path of the instance in the
-tracefs file system prefixed to it. (Note, passing in NULL, will return a
-   name with just the tracefs mount point prefixed, making it
-   equivalent to tracefs_get_tracing_file()).
-
-char *tracefs_instance_get_dir(struct tracefs_instance *instance);
-   Returns the full path of the instance sub buffer that exists in
-   the tracefs file system.
-
-int tracefs_instance_file_write(struct tracefs_instance *instance,
-				const char *file, const char *str);
-   Writes a string to the file that exists in the instance sub buffer
-   on the tracefs file system. Note, file is a relative path from
-   the instance sub buffer location.
-
-char *tracefs_instance_file_read(struct tracefs_instance *instance,
-				 char *file, int *psize);
-   Reads a string to the file that exists in the instance sub buffer
-   on the tracefs file system. Note, file is a relative path from
-   the instance sub buffer location.
-
-int tracefs_instances_walk(int (*callback)(const char *, void *), void
-*context); Executes the function callback() for each sub buffer instance
-(does not execute on the top level mount point). It can stop the walk if
-callback() returns a non-zero number.
-
-bool tracefs_instance_exists(const char *name);
-   Returns true if the given name of a instance sub buffer exists in the
-tracefs file system.
-
-bool tracefs_file_exists(struct tracefs_instance *instance, char *name);
-   Returns true if a file exists in the instance sub buffer, in the tracefs
-   file system.
-
-bool tracefs_dir_exists(struct tracefs_instance *instance, char *name);
-   Returns true if a directory exists in the instance sub buffer, in the
-tracefs file system.
-
-char **tracefs_event_systems(const char *tracing_dir);
-   Returns an array of event system names from the tracing_dir path. If
-tracing_dir is NULL, then the tracefs mount point is used. The tracing_dir
-could also be a path to a copy of the tracefs file system from another
-machine.
-
-char **tracefs_system_events(const char *tracing_dir, const char *system);
-   Returns an array of events for a given system from the tracing_dir path.
-If tracing_dir is NULL, then the tracefs mount point is used. The
-tracing_dir could also be a path to a copy of the tracefs file system from
-another machine.
-
-void tracefs_list_free(char **list);
-   Frees the list returned by tracefs_event_systems() or
-tracefs_system_events().
-
-int tracefs_iterate_raw_events(struct tep_handle *tep,
-				struct tracefs_instance *instance,
-				cpu_set_t *cpus, int cpu_size,
-				int (*callback)(struct tep_event *,
-						struct tep_record *,
-						int, void *),
-				void *callback_context);
-   This will read the binary raw ring buffers from the tracefs file system
-   and call the callback() for each event it encounters with that event
-   given by a tep_record. This iterates over all CPUs or a subset of
-   CPUs if a cpu_set is passed in. But the iteration will happen for one
-   CPU at a time.
-
-char **tracefs_tracers(const char *tracing_dir);
-   Returns an array of available tracers. If tracing_dir is NULL, it will
-use the tracefs mount point.
-
-char *tracefs_get_clock(struct tracefs_instance *instance);
-    Returns the clock name being used by a given instance, or the top level
-    tracefs system if NULL is passed in.
+Jagan.
