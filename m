@@ -2,121 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40BC32E1057
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 23:43:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 176752E105B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 23:43:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728574AbgLVWiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 17:38:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728449AbgLVWiA (ORCPT
+        id S1728359AbgLVWi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 17:38:57 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:42405 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728341AbgLVWi4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 17:38:00 -0500
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBF3BC0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 14:37:19 -0800 (PST)
-Received: by mail-io1-xd35.google.com with SMTP id z136so13444378iof.3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 14:37:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=djZGsbrkmGA94jAXMOhutdjZdetBTqkQXt4zsACd0OM=;
-        b=Z8Ugi74CxfCPMN3s/HZNn1ukTSQh20jHPmxZYidK/tLBsgUU85LmLkEK9m8Tiva5Du
-         9cVovmwScoIvz0x072sABbgGW852qliKBHsMYTnzCy4u5UtU/fx0an7c/QOq8EHgQZth
-         S7BTWvhvN8nhQkA6W/noUD1I18PhFFoisCdFQ=
+        Tue, 22 Dec 2020 17:38:56 -0500
+Received: by mail-il1-f200.google.com with SMTP id p10so12905989ilo.9
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 14:38:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=djZGsbrkmGA94jAXMOhutdjZdetBTqkQXt4zsACd0OM=;
-        b=DY+wOcNcEpY8igEHNE7n0hRY5/ofxrRU3GYT2rVflQt4rP2eduLEsvYf6QW5JbxO0E
-         cVfHJ0l3U/BfslSRxeHJuu5MSqw3HV1AY0tga1Q0pt4MQe96AaMw3XsHYm7h0e0ou0aJ
-         tnZvTW/uR7uhFaKVlXWuMtxUICGk4T7Mu2NfmGnreoqT71SQF0Vr+5L/SBa9nSvvq6FM
-         jC4T23zCOCUGSfdSIkMZDglnxkKiw9ct5JaKiLWgX3T+HU1t1Wpc74l0vLAPoUqZGmhc
-         R2s60er++MeCGSX9GS9ynRTVlLeSH8KspYndo53fJEQD6JTHcZY6vG1ZXEI12wETu622
-         Y97A==
-X-Gm-Message-State: AOAM53346KoTvoOfxlQRDp6PY2c0FB+5Cvn1Q9lOqz0cB+ZJy4Wlsw+f
-        5PZwTzZ5w3ZRmGbcMcxJcHULxer0CUm03bV1Y2EUSQ==
-X-Google-Smtp-Source: ABdhPJzjPE3ifZKjaoRV9kaxRig0JeWpFArkXbVay9Rq/k+MZUU5lRDgK84v6MDTfAop8WyZlSSNI01+2WrWzmEqp2k=
-X-Received: by 2002:a02:a304:: with SMTP id q4mr20446611jai.97.1608676639053;
- Tue, 22 Dec 2020 14:37:19 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=phZcz8GHgDbMEr4XKo0BIqA5dWEQGOsnMVPYM3W1vas=;
+        b=trU4Pms7z1bZhSjh6/b4Tdwde2v5fbJkTriyLZ6rijUkOE4uGVbLbfU5bbqMJvq5oJ
+         JvdWbAvKEx/pKvmC7KKlAa9nKGJNM+LQMDzP81XISXOWt1lgQejM/yv/xr5AjGNNAk7h
+         Z+s4MfhceBHztFM8hVJeDuwFg9BowZUoKSywnlx1Z2CSf4rbEzhxqn5CVdAyVhWkx8FZ
+         uWEfd5rXZPIRIAQL2jxIdiII2ckVe26vTVrxumdi55C/FxDe3KJAQ1+vJqW1F4AVEWtp
+         Xt2kDEId/gpn6SdK0JdkpeppZXrcS9slq+OXZe++fO/eGM9C8/PZJXaVcS2z0Js6GPq+
+         LXmA==
+X-Gm-Message-State: AOAM532fS2Pkel6e7/7T4qW9oAOrquBBXSDC9sPqvNYUX95xHA/UMQsu
+        RlMGZbGkY2K6s8pUU4OzliY4ceYm9RX7OXk847P2b/scDmw8
+X-Google-Smtp-Source: ABdhPJyzjApcIzyu+k2K45bHD2KJm7nZ64jl/4wd4RpcvpOn88al+Y1kV/d84Xc7zi+ObDycuo8uB5ddCijryWgpoBms91IDki9i
 MIME-Version: 1.0
-References: <20201215172435.5388-1-youghand@codeaurora.org>
-In-Reply-To: <20201215172435.5388-1-youghand@codeaurora.org>
-From:   Abhishek Kumar <kuabhs@chromium.org>
-Date:   Tue, 22 Dec 2020 14:36:58 -0800
-Message-ID: <CACTWRwsM_RJnssBpxDpRSbex4_1T9QDv3+ZT7eLnYsgOgtGFQw@mail.gmail.com>
-Subject: Re: [PATCH 3/3] ath10k: Set wiphy flag to trigger sta disconnect on
- hardware restart
-To:     Youghandhar Chintala <youghand@codeaurora.org>
-Cc:     ath10k <ath10k@lists.infradead.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Brian Norris <briannorris@chromium.org>,
-        Rakesh Pillai <pillair@codeaurora.org>
+X-Received: by 2002:a92:bf09:: with SMTP id z9mr22316997ilh.194.1608676695952;
+ Tue, 22 Dec 2020 14:38:15 -0800 (PST)
+Date:   Tue, 22 Dec 2020 14:38:15 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000555a005b7153b7a@google.com>
+Subject: UBSAN: shift-out-of-bounds in snd_usbmidi_get_ms_info
+From:   syzbot <syzbot+92e45ae45543f89e8c88@syzkaller.appspotmail.com>
+To:     alsa-devel@alsa-project.org, clemens@ladisch.de,
+        linux-kernel@vger.kernel.org, perex@perex.cz,
+        syzkaller-bugs@googlegroups.com, tiwai@suse.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 9:24 AM Youghandhar Chintala
-<youghand@codeaurora.org> wrote:
->
-> From: Rakesh Pillai <pillair@codeaurora.org>
->
-> Currently after the hardware restart triggered from the driver,
-> the station interface connection remains intact, since a disconnect
-> trigger is not sent to userspace. This can lead to a problem in
-> hardwares where the wifi mac sequence is added by the firmware.
->
-> After the firmware restart, during subsytem recovery, the firmware
-> restarts its wifi mac sequence number. Hence AP to which our device
-> is connected will receive frames with a  wifi mac sequence number jump
-> to the past, thereby resulting in the AP dropping all these frames,
-> until the frame arrives with a wifi mac sequence number which AP was
-> expecting.
->
-> To avoid such frame drops, its better to trigger a station disconnect
-> upon the  hardware restart. Indicate this support via a WIPHY flag
-> to mac80211, if the hardware params flag mentions the support to
-> add wifi mac sequence numbers for TX frames in the firmware.
->
-> All the other hardwares, except WCN3990, are not affected by this
-> change, since the hardware params flag is not set for any hardware
-> except for WCN3990
->
-> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
-> Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00110-QCARMSWP-1
-> Tested-on: QCA6174 hw3.2 SDIO WLAN.RMH.4.4.1-00048
->
-> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
-> Signed-off-by: Youghandhar Chintala <youghand@codeaurora.org>
-> ---
->  drivers/net/wireless/ath/ath10k/core.c | 15 +++++++++++++++
->  drivers/net/wireless/ath/ath10k/hw.h   |  3 +++
->  drivers/net/wireless/ath/ath10k/mac.c  |  3 +++
->  3 files changed, 21 insertions(+)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-> index 796107b..4155f94 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.c
-> +++ b/drivers/net/wireless/ath/ath10k/core.c
-> @@ -90,6 +90,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
->                 .hw_filter_reset_required = true,
->                 .fw_diag_ce_download = false,
->                 .tx_stats_over_pktlog = true,
-> +               .tx_mac_seq_by_fw = false,
-Probably orthogonal to this patch, there is a static array maintained
-for different hardware configs and the structure members like
-"tx_mac_seq_by_fw" are initialized. This does not seem to be scalable
-and probably these parameters can be auto populated based on FW
-capabilities and so we don't have to maintain the static array.
-Thoughts?
+Hello,
 
--Abhishek
+syzbot found the following issue on:
+
+HEAD commit:    8653b778 Merge tag 'clk-for-linus' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=109531a3500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=98408202fed1f636
+dashboard link: https://syzkaller.appspot.com/bug?extid=92e45ae45543f89e8c88
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1421ec47500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12bfa077500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+92e45ae45543f89e8c88@syzkaller.appspotmail.com
+
+usb 1-1: config 0 interface 0 altsetting 0 bulk endpoint 0x8A has invalid maxpacket 31
+usb 1-1: New USB device found, idVendor=324b, idProduct=5963, bcdDevice= 0.d2
+usb 1-1: New USB device strings: Mfr=0, Product=0, SerialNumber=0
+usb 1-1: config 0 descriptor??
+usb 1-1: MIDIStreaming interface descriptor not found
+================================================================================
+UBSAN: shift-out-of-bounds in sound/usb/midi.c:1928:8
+shift exponent 244 is too large for 32-bit type 'int'
+CPU: 1 PID: 17 Comm: kworker/1:0 Not tainted 5.10.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
+ snd_usbmidi_get_ms_info.cold+0x83/0xd4 sound/usb/midi.c:1928
+ __snd_usbmidi_create+0x380/0x2320 sound/usb/midi.c:2404
+ snd_usb_create_quirk+0xa5/0xe0 sound/usb/quirks.c:562
+ usb_audio_probe+0x623/0x2ab0 sound/usb/card.c:795
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
