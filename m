@@ -2,89 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B35B2E07F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 10:22:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3B552E0813
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 10:25:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725881AbgLVJVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 04:21:52 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:28169 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725300AbgLVJVw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 04:21:52 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-38-Z7fxBD-GO2SfkPVjEoYDtg-1; Tue, 22 Dec 2020 09:20:13 +0000
-X-MC-Unique: Z7fxBD-GO2SfkPVjEoYDtg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Tue, 22 Dec 2020 09:20:12 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Tue, 22 Dec 2020 09:20:12 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "'Song Bao Hua (Barry Song)'" <song.bao.hua@hisilicon.com>,
-        Shakeel Butt <shakeelb@google.com>
-CC:     Vitaly Wool <vitaly.wool@konsulko.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Mike Galbraith <efault@gmx.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        NitinGupta <ngupta@vflare.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: RE: [PATCH] zsmalloc: do not use bit_spin_lock
-Thread-Topic: [PATCH] zsmalloc: do not use bit_spin_lock
-Thread-Index: AQHW1mZAeBjE5clI7UKUuMSOCQsyuqoBSTyAgAAghwCAAAhXgIAAhndA//+NyICAAIW5IP//l0EAgACHqyCAAK0zQA==
-Date:   Tue, 22 Dec 2020 09:20:12 +0000
-Message-ID: <0777a34e3e9246fe83e693ba07405d28@AcuMS.aculab.com>
-References: <18669bd607ae9efbf4e00e36532c7aa167d0fa12.camel@gmx.de>
- <20201220002228.38697-1-vitaly.wool@konsulko.com>
- <X+DaMSJE22nUC0tl@google.com>
- <CAM4kBBKnW6K-mbPno4SpvhUBiykP4zeFm_CNzssDkReURbuU7w@mail.gmail.com>
- <CALvZod69OtXkdOJPzuY5XfXz_ro0V7OmqW4OY9B_emqwroxW4w@mail.gmail.com>
- <e5cd8a0a5df84081a11359ede6e746bc@hisilicon.com>
- <CALvZod7EZnEWb_65FjSNdx+-S_4pLHyS5rYiU-D3hFLRMXS6Lw@mail.gmail.com>
- <8cc0e01fd03245a4994f2e0f54b264fa@hisilicon.com>
- <CALvZod7rj4X3M5o5agCzzSKkuLhb8z0Q+41sqNN2bcJLa=z5vA@mail.gmail.com>
- <8f17abe06057498dba9413f706b86207@hisilicon.com>
-In-Reply-To: <8f17abe06057498dba9413f706b86207@hisilicon.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1726162AbgLVJY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 04:24:56 -0500
+Received: from mga04.intel.com ([192.55.52.120]:56926 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725785AbgLVJY4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 04:24:56 -0500
+IronPort-SDR: kH5i1PUbxzDfTz9+tWLby1wN5qDfnK0FRMQ9Btuy841FsO2r41whz/X3wkmmbI9FwyHtHYZmnx
+ epMWItf8PnIQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9842"; a="173273938"
+X-IronPort-AV: E=Sophos;i="5.78,438,1599548400"; 
+   d="scan'208";a="173273938"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2020 01:23:09 -0800
+IronPort-SDR: JMAsj9jWUD+gm6jC1vHK9PSdc0vZZ5HHoFlTSWEaJ2Bw56XUQVi33qh58ebt6X18C5P9sr4XjT
+ A9S6EmqrHEPQ==
+X-IronPort-AV: E=Sophos;i="5.78,438,1599548400"; 
+   d="scan'208";a="492127221"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2020 01:23:06 -0800
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id 257FC205FC; Tue, 22 Dec 2020 11:23:04 +0200 (EET)
+Date:   Tue, 22 Dec 2020 11:23:04 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jonathan Cameron <jic23@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-iio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: Drop unnecessary *-supply schemas properties
+Message-ID: <20201222092304.GQ26370@paasikivi.fi.intel.com>
+References: <20201221234659.824881-1-robh@kernel.org>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201221234659.824881-1-robh@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogU29uZyBCYW8gSHVhDQo+IFNlbnQ6IDIxIERlY2VtYmVyIDIwMjAgMjM6MDINCi4uLg0K
-PiA+IEZvciBkZWNvbXByZXNzaW9uLCBJIHdvdWxkIGxpa2UgYXMgbG93IGxhdGVuY3kgYXMgcG9z
-c2libGUgd2hpY2ggSQ0KPiA+IHRoaW5rIGlzIG9ubHkgcG9zc2libGUgYnkgZG9pbmcgZGVjb21w
-cmVzc2lvbiBvbiBhIGNwdSBzeW5jaHJvbm91c2x5Lg0KPiANCj4gT25lIHBvc3NpYmlsaXR5IGlz
-IHRoYXQgd2UgY2hhbmdlIEhXIGFjY2VsZXJhdG9yIGRyaXZlciB0byBiZSBzeW5jDQo+IHBvbGxp
-bmcgZm9yIGRlY29tcHJlc3Npb24uIEJ1dCB0aGlzIHN0aWxsIGRlcGVuZHMgb24gYXN5bmMgYXBp
-IGFzDQo+IHRoaXMgaXMgdGhlIGZyYW1ld29yayBub3dhZGF5cywgdGhlIGRpZmZlcmVuY2Ugd291
-bGQgYmUgdGhlIGRyaXZlcg0KPiB3b24ndCByZWFsbHkgYmxvY2suIGNyeXB0b193YWl0X3JlcSgp
-IHdpbGwgcmV0dXJuIHdpdGhvdXQgYWN0dWFsDQo+IHNsZWVwLg0KDQpIb3cgbG9uZyBkb2VzIHRo
-ZSBIVyBhY2NlbGVyYXRlZCBjb21wcmVzcy9kZWNvbXByZXNzIG5lZWQgdG8gYmUgYmVmb3JlDQpp
-dCBpcyBhY3R1YWxseSB3b3J0aCBzbGVlcGluZyB0aGUgcHJvY2Vzcz8NCldoaWxlIHRoZSBIVyB2
-ZXJzaW9uIG1pZ2h0IGJlIGZhc3RlciB0aGFuIHRoZSBTVyBvbmUsIGl0IG1heSBub3QgYmUNCmVu
-b3VnaCBmYXN0ZXIgdG8gYWxsb3cgZm9yIHRoZSBoYXJkd2FyZSBpbnRlcnJ1cHQgYW5kIHByb2Nl
-c3Mgc2xlZXAuDQpTbyBpdCBtYXkgYmUgd29ydGgganVzdCBzcGlubmluZyAocG9sbGluZyB0aGUg
-aGFyZHdhcmUgcmVnaXN0ZXIpDQp1bnRpbCB0aGUgcmVxdWVzdCBjb21wbGV0ZXMuDQoNCklmIGRl
-Y29tcHJlc3MgYXJlIGRvbmUgdGhhdCB3YXksIGJ1dCBjb21wcmVzcyBsZWZ0IGFzeW5jLCB0aGVu
-DQp0aGUgZGVjb21wcmVzcyBtaWdodCBuZWVkIHRvIGZhbGxiYWNrIHRvIFNXIGlmIHRoZSBIVyBp
-cyBidXN5Lg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFt
-bGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3Ry
-YXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+Hi Rob,
 
+On Mon, Dec 21, 2020 at 04:46:59PM -0700, Rob Herring wrote:
+> *-supply properties are always a single phandle, so binding schemas
+> don't need a type $ref nor 'maxItems'.
+> 
+> A meta-schema check for this is pending once these existing cases are
+> fixed.
+> 
+> Cc: Jonathan Cameron <jic23@kernel.org>
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Cc: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
+> Cc: Lee Jones <lee.jones@linaro.org>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Maxime Ripard <mripard@kernel.org>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-iio@vger.kernel.org
+> Cc: linux-input@vger.kernel.org
+> Cc: linux-media@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
+
+On media bits:
+
+Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+
+-- 
+Sakari Ailus
