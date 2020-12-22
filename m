@@ -2,105 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16EDF2E0C65
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 16:07:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B64CE2E0C6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 16:09:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728037AbgLVPGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 10:06:15 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:29766 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728016AbgLVPGO (ORCPT
+        id S1728044AbgLVPIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 10:08:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727843AbgLVPIJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 10:06:14 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1608649551; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
- To: From: Sender; bh=nBdti4p145SybWnCMKjk232I8BcskhOJcfGH3EeiP68=; b=lEMk/hrmvaRDAQ8TU15Sm0luc5VsvuXbzCjwxOapP16GjBuEkGQjhLNh/QWJlxP+2sA9qZsl
- 6Jjq65kk6NZ4qRY/HnMUtqyn7q2hEuuc9HGgkEl2nB+WUoPSIes1dj6eNeAUVClcpFxGw4Lx
- 9ky762BSa3pGMcg1I+99Pn9yGlM=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
- 5fe20b4b7bc801dc4f99888b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Dec 2020 15:05:47
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 206A6C43461; Tue, 22 Dec 2020 15:05:47 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from x230.qca.qualcomm.com (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 94631C433C6;
-        Tue, 22 Dec 2020 15:05:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 94631C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-mmc@vger.kernel.org,
-        Pali =?utf-8?Q?Roh?= =?utf-8?Q?=C3=A1r?= <pali@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH v3 03/24] wfx: add Makefile/Kconfig
-References: <20201104155207.128076-1-Jerome.Pouiller@silabs.com>
-        <20201104155207.128076-4-Jerome.Pouiller@silabs.com>
-Date:   Tue, 22 Dec 2020 17:05:41 +0200
-In-Reply-To: <20201104155207.128076-4-Jerome.Pouiller@silabs.com> (Jerome
-        Pouiller's message of "Wed, 4 Nov 2020 16:51:46 +0100")
-Message-ID: <87tusd98ze.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        Tue, 22 Dec 2020 10:08:09 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03DABC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 07:07:29 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id d9so12235647iob.6
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 07:07:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=endlessos.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LSZe6kdgOB0LR7hxUYry4TSc2IqyZGUCr8x+rBs0II4=;
+        b=stLyfZX9Skp5SLTWBml7TFa94b0bTpk5Ro8RzqZgC9zFYtCKD32c2oQqpG9VvBH3h/
+         wXuBzMfbxr8mzVyKsb+gUDBMvJcqKIzXPRtNIB5/bTNmMVSrs91CVQPvKXHcmUrT2m45
+         B8vNToRWL7cIAlqAg8oYtn5cI0sZdHgBcwW+UQQwhQ2HPdDUwdQ2ldXzWbptBMQQnQCa
+         tueD22hG/kisdnGEYkgrPFd3iOxvP7Rs34jlh2+TlSoX6rbNFhJ6IWyLUlYRsWgB0qPI
+         6Oq0ZXBdK33YCJppiDKXQTGmXU8Mb6RBToaK8DjY1Mha4hiJZ42q60iDys972RzI6rWM
+         37Cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LSZe6kdgOB0LR7hxUYry4TSc2IqyZGUCr8x+rBs0II4=;
+        b=KsNcP/3bv8VrC16afJkpuWSkPEGQ3iwZOCSDrnColjQjW6PAZQR4xHo68ZSQxkrbbp
+         /poqGTX05hFqBiP1iFqhY4H0c2Pn1aRK2gd+Mc1bLJ4mKStL2Vv56vrGLYSFTRxm3XhE
+         JOgzg9cqkxjFYAaTE55w2pFRqJrUj4iD0o3FulKiWx2R4dUNtn4ddqooix5FYK0prUe1
+         uzv5UtflgTzJ3z0/j++MIBYnLye4vrWiLxEzj5GrJ6TLzSVIA3S9aTXuuH0MmdzoYyDL
+         Vddf1QihKPJhJ7SafpirziCUf7GfMyldVlBLnSawQPjeQ/Xlvse9OSzGIVDyzyn3esPD
+         jmqg==
+X-Gm-Message-State: AOAM531OH8/ElonW1E4I/CcCvrqR738QQSlOMt1jvmQldzlBJgxvEiVT
+        wGDVXnFaoED1aN4zZdlAKDC2FEqvshRiv3ULOUpSMCZEieg5ow==
+X-Google-Smtp-Source: ABdhPJya2Rc2FuYnx7qQ8kNuOFwBx/CjbaZOp1sskB17DKL1QreHIAiw/9FVnptaAl45cj+IcGM9oYcwm3wnp22jkw0=
+X-Received: by 2002:a02:8622:: with SMTP id e31mr19093651jai.88.1608649647844;
+ Tue, 22 Dec 2020 07:07:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <20201216041601.5993-1-chiu@endlessos.org>
+In-Reply-To: <20201216041601.5993-1-chiu@endlessos.org>
+From:   Chris Chiu <chiu@endlessos.org>
+Date:   Tue, 22 Dec 2020 23:07:17 +0800
+Message-ID: <CAB4CAwcAbZYa7NS-Kxd60gN_Z1qv2C-SxMsTvgqWSfmcD=s3Kw@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: Intel: bytcr_rt5640: Add quirks for DeeQ X5-Z8300
+To:     cezary.rojewski@intel.com,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        yang.jie@linux.intel.com
+Cc:     alsa-devel@alsa-project.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        linux@endlessos.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
-
-> From: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
+On Wed, Dec 16, 2020 at 12:18 PM Chris Chiu <chiu@endlessos.org> wrote:
 >
-> Signed-off-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
+> DeeQ X5-Z8300 is a laptop empowered by Intel Atom Cherry Trail. Add
+> quirks to select the correct input map, jack-detect options to enable
+> jack sensing and internal/headset microphones.
+>
+> Signed-off-by: Chris Chiu <chiu@endlessos.org>
 > ---
->  drivers/net/wireless/silabs/wfx/Kconfig  |  8 ++++++++
->  drivers/net/wireless/silabs/wfx/Makefile | 25 ++++++++++++++++++++++++
->  2 files changed, 33 insertions(+)
->  create mode 100644 drivers/net/wireless/silabs/wfx/Kconfig
->  create mode 100644 drivers/net/wireless/silabs/wfx/Makefile
+>  sound/soc/intel/boards/bytcr_rt5651.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 >
-> diff --git a/drivers/net/wireless/silabs/wfx/Kconfig
-> b/drivers/net/wireless/silabs/wfx/Kconfig
-> new file mode 100644
-> index 000000000000..83ee4d0ca8c6
-> --- /dev/null
-> +++ b/drivers/net/wireless/silabs/wfx/Kconfig
-> @@ -0,0 +1,8 @@
-> +config WFX
-> +	tristate "Silicon Labs wireless chips WF200 and further"
-> +	depends on MAC80211
-> +	depends on MMC || !MMC # do not allow WFX=3Dy if MMC=3Dm
-> +	depends on (SPI || MMC)
-> +	help
-> +	  This is a driver for Silicons Labs WFxxx series (WF200 and further)
-> +	  chipsets. This chip can be found on SPI or SDIO buses.
+> diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+> index 688b5e0a49e3..9df09e26b05a 100644
+> --- a/sound/soc/intel/boards/bytcr_rt5651.c
+> +++ b/sound/soc/intel/boards/bytcr_rt5651.c
+> @@ -507,6 +507,14 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
+>                                         BYT_RT5651_SSP0_AIF1 |
+>                                         BYT_RT5651_MONO_SPEAKER),
+>         },
+> +       {
+> +               .callback = byt_rt5651_quirk_cb,
+> +               .matches = {
+> +                       DMI_MATCH(DMI_SYS_VENDOR, "DeeQ"),
+> +                       DMI_MATCH(DMI_PRODUCT_NAME, "X5-Z8300"),
+> +               },
+> +               .driver_data = (void *)(BYT_RT5651_IN1_IN2_MAP | BYT_RT5651_JD1_1),
+> +       },
+>         {}
+>  };
+>
+> --
+> 2.20.1
+>
 
-Kconfig should mention about the SDIO id snafu and that Device Tree is
-required.
+Gentle ping. Cheers.
 
---=20
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
+Chris
