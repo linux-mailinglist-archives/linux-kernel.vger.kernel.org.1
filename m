@@ -2,136 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0100E2E080D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 10:25:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C28892E0819
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 10:26:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726017AbgLVJYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 04:24:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53146 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725947AbgLVJYK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 04:24:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C88DF23103;
-        Tue, 22 Dec 2020 09:23:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608629009;
-        bh=qCqELfT57AvpMFFVLIkE1zpXaxirvic0pVHoJrdiDf0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VXG6q1jDnolpc2Kco5fiYlkd1rYrT7BhErvPLh1wTOdPE3UaR8NT5QnzffHEX5/Y3
-         3Mq4rBK4Q4NVT/7dMsnRGi9seBbVZhH1wlEfWRgffmC/7H3AgoVcUKpRjjWTDELEbU
-         yPmZb+25uO9fYz8uhk1Yx6j/YrkntiJGSx3DNrPY8tBBvV0ayJiTR5BoAQmtjs6n2i
-         CGmxviehaIdo/3+OZC90LSBzdi7XHGPd8sccX5LV9An1akhAlMUJo4CS8PbHZHfP6m
-         XIUF0vPu0AkFve+KcXryLWhkKVFDpG1Wu8JULU3qT6V4ZIUl3OjhTR6nj6mkNdPH3M
-         nbqooLM6dhBPA==
-Received: by pali.im (Postfix)
-        id 7CA6C848; Tue, 22 Dec 2020 10:23:27 +0100 (CET)
-Date:   Tue, 22 Dec 2020 10:23:27 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Peter Chen <peter.chen@nxp.com>
-Cc:     Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jun Li <jun.li@nxp.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        id S1726209AbgLVJ0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 04:26:06 -0500
+Received: from mail-eopbgr1400108.outbound.protection.outlook.com ([40.107.140.108]:36027
+        "EHLO JPN01-TY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725885AbgLVJ0E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 04:26:04 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UlJHgFAQXsGfuy1WHeyQ6O6Jr0HCvJdIdES1011cglpeLi5q70blBmSKmyDEw08AE5THS2T1Hz/3xpN55DFoNxNZ8NlMs6hwOPVI6dmbJ1FhlmJ9IzFSq3RYrkgIjLnUKMSYaB25cApS412TKEHwGMgDOVSpYLao/5wceBCwVnzTcbn43aYAcxM0PbElhSUVeJtFw9ZLJpV5Spc/0DgYlZShCYfz4Mojx7AXQPAtcPrwpWsWAyBwXP5Rg0PAE2Fpi6J055/Q5jQ/dZOt66rzginDJqEm0IehEPoRf7UPyElppV0KUJboRYIQC7uD/huUvigCDLQd25ICvvtEkMYErg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5LLxtMylsUu+3TVxdP37OrNEGhikyBFcCFSRaexn9ak=;
+ b=meUpnYneDaqgfUTEcpTV2f3+1fio6Vl1yJZ3dI+HQUmzK602vsPTOtmLdY1NBv49Refq6/qrQmSDE3E6Amhj4LQtfWHt5t4jgDRNFWVdmT+yGE31tWZsCeGKdbBOGBBhfIw992JOfbJa5yTa2CIvsG6YXzkt8nxKzJu+4g7D+591bUlzS592Db16esk+TQkeD3pwB9Pngy5Vh4gE+tq6ueXq0LzbTjg3Pk1Ult6I5elcyZcuivC1TvKUyyzVMM6NX9xI0iKrEc4jlBSIBh6EhX00qJISHFiJz74uErVAG91OcfZAS7RCW9Ykgl6KUN1xMDjFqUt9Qge0qMNSZh+eHA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
+ dkim=pass header.d=renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5LLxtMylsUu+3TVxdP37OrNEGhikyBFcCFSRaexn9ak=;
+ b=AOl+FK561ZGjIEX9a0D/BhuX108abWvF8HgQvKU3H5Lo6kN+qIA7Rx+ccbHEHT5n5WM1nnjeqmpJxx/e+aQj5RDCxnarsyDGXpvPWFTC0eAOlmP4rz1bOpuiUm5es6CSlgRnd4j0CbW7ACMeqkCKPdaPrM8+/0f1mscHjXp2iRs=
+Received: from TY2PR01MB3692.jpnprd01.prod.outlook.com (2603:1096:404:d5::22)
+ by TYAPR01MB3647.jpnprd01.prod.outlook.com (2603:1096:404:bf::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.29; Tue, 22 Dec
+ 2020 09:25:16 +0000
+Received: from TY2PR01MB3692.jpnprd01.prod.outlook.com
+ ([fe80::2023:7ed1:37c3:8037]) by TY2PR01MB3692.jpnprd01.prod.outlook.com
+ ([fe80::2023:7ed1:37c3:8037%5]) with mapi id 15.20.3676.033; Tue, 22 Dec 2020
+ 09:25:16 +0000
+From:   Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>,
+        "geert@linux-m68k.org" <geert@linux-m68k.org>
+CC:     Khiem Nguyen <khiem.nguyen.xt@renesas.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
+        linux-power <linux-power@fi.rohmeurope.com>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "marek.vasut+renesas@gmail.com" <marek.vasut+renesas@gmail.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] usb: host: xhci-plat: fix support for XHCI_SKIP_PHY_INIT
- quirk
-Message-ID: <20201222092327.jq5b7g4bffeccq3o@pali>
-References: <20201221150903.26630-1-pali@kernel.org>
- <20201222021416.GB4706@b29397-desktop>
+Subject: RE: [PATCH v4 10/12] mfd: bd9571mwv: Use devm_regmap_add_irq_chip()
+Thread-Topic: [PATCH v4 10/12] mfd: bd9571mwv: Use devm_regmap_add_irq_chip()
+Thread-Index: AQHW10SlPV/4ngF3JE6rHPoSH4m/D6oC0DsAgAAHJQCAAAJQAA==
+Date:   Tue, 22 Dec 2020 09:25:16 +0000
+Message-ID: <TY2PR01MB3692B09ECBAD4FFDB885E530D8DF0@TY2PR01MB3692.jpnprd01.prod.outlook.com>
+References: <1608519279-13341-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+         <1608519279-13341-11-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+         <CAMuHMdVw_+dj78oygsVFnc4j9sTj97h1Q0GBp7oGWzakxCPfQA@mail.gmail.com>
+ <c15b40d02d75a613194a454b4d8a2586639bda93.camel@fi.rohmeurope.com>
+In-Reply-To: <c15b40d02d75a613194a454b4d8a2586639bda93.camel@fi.rohmeurope.com>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: fi.rohmeurope.com; dkim=none (message not signed)
+ header.d=none;fi.rohmeurope.com; dmarc=none action=none
+ header.from=renesas.com;
+x-originating-ip: [240f:60:5f3e:1:21dc:f9ce:ff84:4ded]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: a98c2e49-fb77-4261-f391-08d8a65b7e5f
+x-ms-traffictypediagnostic: TYAPR01MB3647:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <TYAPR01MB3647B814DCC4E2635C5EE6ECD8DF0@TYAPR01MB3647.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2449;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: WMwEUohmVOHlCZbyrr+emKtU+7LvY9b52FNR2vcYenXq3OlxnyggK5IHGYiCs3/RlBbx4MfQ3JqEUFa7sbBEfhOCULbNiPXhkEV8AVwprtywC50xUDEQTaUJTzOnsbXTf1y7g9GI9YlfNOrliLgN3fQ307nXj7XLeWb+1a9tdcnPBqSQNRHDp60tQs3L6Ddjm0ISE8VMCddZz6mIZPcO129w2DslZe17m7rPCiL/IbqOCGjY/9N9pZk0l1njz/qffqA3LQr91JghQk0RnGC7SYmRDq+7UAfhWwgANbMNr8mVDTX3uRo5ZZHIQTX8j9azbX8f1cyum+cyRbegZdM+Ms6u2PTfGFhHd9RweHaQxBmVleth+tT5hOiOVFZBOBYuuLa+QpKJwjQRMvDcXdilQQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR01MB3692.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(136003)(346002)(376002)(366004)(66946007)(4001150100001)(110136005)(7416002)(6506007)(7696005)(478600001)(66476007)(66556008)(76116006)(186003)(4326008)(86362001)(5660300002)(64756008)(53546011)(71200400001)(8676002)(2906002)(52536014)(8936002)(33656002)(55016002)(9686003)(54906003)(316002)(66446008)(4744005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?SytXTVBZYUNtOWtBSDhaNzZodjdXeDZQakp3WFdEdTJvcTZJMXp1U1QzQVdh?=
+ =?utf-8?B?dDIzdzNuQjhnT3RydGx4bDlJWHBvQU5XcTY5VjN2c094Qmxwb3JwVktuclk4?=
+ =?utf-8?B?OVZGalRSN3h4aUJMZVhJbm5jMmxqYTVrTXltN0ZFSmxGQzlBclVxTXZnbjhC?=
+ =?utf-8?B?TWJtcGRGZ3JMb29tckg3UEFvaWZReGcyU3d6Znp3ZmNiOW9xSGhMODMyZklt?=
+ =?utf-8?B?RDI4VWhqRnVaR0lRVDFISklLa1NVa0QyaFVnQzdxUFBNTjYzT29lb1RNb29G?=
+ =?utf-8?B?c3dONkxyYzRpUzZPMjFHVTFWS1BWMHI5VlR3dGt6T3pZYTE1YzJsT0dtNVBQ?=
+ =?utf-8?B?WEViZmFON3VwSGpxVnMzL2Q3MEF0RldxTitvcU5TeFViSnJXemYvUTJHZ2Rh?=
+ =?utf-8?B?UGpZZFhxaXRST1ZVWm52VFByeDNrOVJSM1YyaFFGcEJCb3lhdER3MFZMMlc4?=
+ =?utf-8?B?Q0VuYnBMRm5nS0hOdGNLOW1pVTA3RVhDY3FURzZXOG9XTnFMRXpneGc4QXAr?=
+ =?utf-8?B?QUNiZjNZNGhiQ0Z3ejZ3V1R0a3ltclJzVmp3SHBBSzdCaTl2clpYc1I4THhn?=
+ =?utf-8?B?VGVodFI4YldUR0RrM2J6KzdLT3FHL041NjhDWEJ1UEpvQkQ3dW1IaDN0YVh6?=
+ =?utf-8?B?dWE0SmtKL2hmRmM0dTlLblBKcEVPY040M3dsVUIzYTBFK0xZV0UrZ0FkL0p0?=
+ =?utf-8?B?d0syc1RIMFV6NGxSckUzSjJWRUN5UC9neXFZb3NtbnBoeXJKVmU2dGlXY0tF?=
+ =?utf-8?B?TDRnSDJOaXR4OGhSQTcrandyWGl6RWJ2ZXZES0phRFZnZ2lvdHprRHZ0M25y?=
+ =?utf-8?B?bms1dGNSbklCSW9RWGdIQjZ5Ukh0ak9PZXhaMUtremx2UUhPdW95Z2w5eHNy?=
+ =?utf-8?B?ZHBYZStrQXE0ZkxUSk9VeGFsbTk4Z2taL2xIVmpsVFR5NTNranBJMEFjelYy?=
+ =?utf-8?B?dHRTVEtXOW5RVHg0VHA2SnFmZzIwdmhRaFRFSktQdkVPVjl5MFRNbldoelk2?=
+ =?utf-8?B?V3VqU000OFRISUxCQTc1YWZhSmpydWRsK2xSWG1Fbnh1SWdUaUo5dGMrUXdC?=
+ =?utf-8?B?Vkwzc3hIaktidVhEUDNwZmFhN2FGTkNpMU1QM3RuMTJIQW9RSldzU1E4VEJ3?=
+ =?utf-8?B?bVNESHdpcUQxOVdPL3ZwMjlaa2lDeTl0Y1Y3TU50UzNVaFlrV3VZMnY1eC9S?=
+ =?utf-8?B?NFBmTHQ3aHhQcWlmK0tkTTQvenpELzNTekdEYXBQYnRZU09UMzdRS2VnRWx3?=
+ =?utf-8?B?YW0xMmFQM3EzbHMxblFtV2k1ODRadkFvcEd4dmk0QkpVTVNsYlpoOXRuTzk0?=
+ =?utf-8?B?VjFqTmt5NjhjNFdJQ0tZMEwwWlBlT3ZrVnNiRDl0VENpSGd0RmhwMm1kVnhB?=
+ =?utf-8?Q?N0s/B0Kn2tko8fNidK/aKjpggipVbNcM=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201222021416.GB4706@b29397-desktop>
-User-Agent: NeoMutt/20180716
+X-OriginatorOrg: renesas.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB3692.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a98c2e49-fb77-4261-f391-08d8a65b7e5f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Dec 2020 09:25:16.4737
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: XEcNuDsP7+xvCbJmWWcbkImkwnCPT6YTuUes5aH1z67CQ7nzsndIkWouOVUVUb+hvkioVZYXUtleisxFO4y8FzlR07OHImwQKloZlhgAIdt7jKbySJ0OL0L7sY08XDWf
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB3647
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 22 December 2020 02:14:45 Peter Chen wrote:
-> On 20-12-21 16:09:03, Pali Rohár wrote:
-> > Currently init_quirk callbacks for xhci platform drivers are called
-> > xhci_plat_setup() function which is called after chip reset completes.
-> > It happens in the middle of the usb_add_hcd() function.
-> > 
-> > But XHCI_SKIP_PHY_INIT quirk is checked in the xhci_plat_probe() function
-> > prior calling usb_add_hcd() function. Therefore this XHCI_SKIP_PHY_INIT
-> > currently does nothing as prior xhci_plat_setup() it is not set.
-> > 
-> > Quirk XHCI_SKIP_PHY_INIT is only setting hcd->skip_phy_initialization value
-> > which really needs to be set prior calling usb_add_hcd() as this function
-> > at its beginning skips PHY init if this member is set.
-> > 
-> > This patch fixes implementation of the XHCI_SKIP_PHY_INIT quirk by calling
-> > init_quirk callbacks (via xhci_priv_init_quirk()) prior checking if
-> > XHCI_SKIP_PHY_INIT is set.
-> > 
-> > Fixes: f768e718911e0 ("usb: host: xhci-plat: add priv quirk for skip PHY initialization")
-> > Signed-off-by: Pali Rohár <pali@kernel.org>
-> > ---
-> >  drivers/usb/host/xhci-plat.c | 14 +++++++-------
-> >  1 file changed, 7 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
-> > index 4d34f6005381..58704c5b002b 100644
-> > --- a/drivers/usb/host/xhci-plat.c
-> > +++ b/drivers/usb/host/xhci-plat.c
-> > @@ -89,13 +89,6 @@ static void xhci_plat_quirks(struct device *dev, struct xhci_hcd *xhci)
-> >  /* called during probe() after chip reset completes */
-> >  static int xhci_plat_setup(struct usb_hcd *hcd)
-> >  {
-> > -	int ret;
-> > -
-> > -
-> > -	ret = xhci_priv_init_quirk(hcd);
-> > -	if (ret)
-> > -		return ret;
-> > -
-> >  	return xhci_gen_setup(hcd, xhci_plat_quirks);
-> >  }
-> >  
-> > @@ -330,6 +323,13 @@ static int xhci_plat_probe(struct platform_device *pdev)
-> >  
-> >  	hcd->tpl_support = of_usb_host_tpl_support(sysdev->of_node);
-> >  	xhci->shared_hcd->tpl_support = hcd->tpl_support;
-> > +
-> > +	if (priv) {
-> > +		ret = xhci_priv_init_quirk(hcd);
-> > +		if (ret)
-> > +			goto disable_usb_phy;
-> > +	}
-> > +
-> >  	if (priv && (priv->quirks & XHCI_SKIP_PHY_INIT))
-> >  		hcd->skip_phy_initialization = 1;
-> >  
-> 
-> Hi Pali,
-> 
-> What's problem you have met? In structure xhci_plat_priv, the quirks are
-> defined at .quirks entry which is got at below code. .init_quirk is the
-> routine if special initializations are needed.
-
-Hello!
-
-I'm talking about .init_quirk. And if XHCI_SKIP_PHY_INIT quirk is set in
-this function then has no effect.
-
-I'm working currently on patch for xhci mvebu which conditionally enable
-or disable XHCI_SKIP_PHY_INIT quirk (it is going to fix existing
-regression since v5.1 kernel) and without this patch XHCI_SKIP_PHY_INIT
-quirk from the init_quirk does not work.
-
-> 	if (pdev->dev.of_node)
-> 		priv_match = of_device_get_match_data(&pdev->dev);
-> 	else
-> 		priv_match = dev_get_platdata(&pdev->dev);
-> 
-> 	if (priv_match) {
-> 		priv = hcd_to_xhci_priv(hcd);
-> 		/* Just copy data for now */
-> 		*priv = *priv_match;
-> 	}
-> -- 
-> 
-> Thanks,
-> Peter Chen
+SGkgTWF0dGktc2FuLA0KDQo+IEZyb206IFZhaXR0aW5lbiwgTWF0dGksIFNlbnQ6IFR1ZXNkYXks
+IERlY2VtYmVyIDIyLCAyMDIwIDY6MTUgUE0NCj4gDQo+IE9uIFR1ZSwgMjAyMC0xMi0yMiBhdCAw
+OTo0OSArMDEwMCwgR2VlcnQgVXl0dGVyaG9ldmVuIHdyb3RlOg0KPiA+IE9uIE1vbiwgRGVjIDIx
+LCAyMDIwIGF0IDM6NTcgQU0gWW9zaGloaXJvIFNoaW1vZGENCj4gPiA8eW9zaGloaXJvLnNoaW1v
+ZGEudWhAcmVuZXNhcy5jb20+IHdyb3RlOg0KPiA+ID4gVXNlIGRldl9yZWdtYXBfYWRkX2lycV9j
+aGlwKCkgdG8gc2ltcGxpZnkgdGhlIGNvZGUuDQo+ID4gPg0KPiA+ID4gU2lnbmVkLW9mZi1ieTog
+WW9zaGloaXJvIFNoaW1vZGEgPHlvc2hpaGlyby5zaGltb2RhLnVoQHJlbmVzYXMuY29tPg0KPiA+
+ID4gQWNrZWQtZm9yLU1GRC1ieTogTGVlIEpvbmVzIDxsZWUuam9uZXNAbGluYXJvLm9yZz4NCj4g
+Pg0KPiA+IFJldmlld2VkLWJ5OiBHZWVydCBVeXR0ZXJob2V2ZW4gPGdlZXJ0K3JlbmVzYXNAZ2xp
+ZGVyLmJlPg0KPiBSZXZpZXdlZC1ieTogTWF0dGkgVmFpdHRpbmVuIDxtYXR0aS52YWl0dGluZW5A
+Zmkucm9obWV1cm9wZS5jb20+DQoNClRoYW5rIHlvdSBmb3IgeW91ciByZXZpZXchDQoNCj4gSSB0
+aG91Z2h0IEkgZGlkIHJldmlldyB0aGlzIGVhcmxpZXIuLi4NCg0KWW91J3JlIGNvcnJlY3QuIEkn
+bSBzb3JyeSwgSSBjb21wbGV0ZWx5IG92ZXJsb29rZWQgeW91ciBSZXZpZXdlZC1ieQ0KdGFnIGlu
+IHByZXZpb3VzLg0KDQpCZXN0IHJlZ2FyZHMsDQpZb3NoaWhpcm8gU2hpbW9kYQ0KDQo=
