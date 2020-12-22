@@ -2,128 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A8262E0FF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 22:57:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD59B2E0FFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 23:03:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727590AbgLVV5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 16:57:10 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:22542 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726652AbgLVV5K (ORCPT
+        id S1727298AbgLVWCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 17:02:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726685AbgLVWCU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 16:57:10 -0500
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BMLfxX9136729;
-        Tue, 22 Dec 2020 16:55:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
- cc : subject : in-reply-to : date : message-id : mime-version :
- content-type; s=pp1; bh=FAc1IQmdafHY9AKekQNsVmVp6hRooYpZU9GsWSMzLKI=;
- b=ZS2aXl5pKqKvZqjgR2J76L0P9n0DYw43FLf4LdIEnT7u7CSE752ZYpeQUkBmNXAc0xnG
- 15wmdYpycAat6n6/NIrP3IcWuZSaH7irSkUAy20siWiR81a9sWOjy7tOpsRLKr15HH1Z
- ERin9eS++SV46pSTMrUZtxSuzr0MslirdmfShrufauhWM3lJqaWELKyTIAg//IhkJAuQ
- sRNqrRefR09QkIdnLiTKMpjoY0jMHAyRE9fpO5T9WWhUfzkjYQDLlkkJnutBzq74ZvZU
- S0OjWkp5etkyWwKUSxMw2RGmv8UViT7ik4jXEKIZ/kZQOr4oIIjWFh3+9N2IbhtTRw6S GQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35krxj07a3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Dec 2020 16:55:59 -0500
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BMLtPHQ180183;
-        Tue, 22 Dec 2020 16:55:58 -0500
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35krxj079v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Dec 2020 16:55:58 -0500
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BMLbZwQ008813;
-        Tue, 22 Dec 2020 21:55:57 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma01wdc.us.ibm.com with ESMTP id 35kh8etxg4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Dec 2020 21:55:57 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BMLtuSG21561846
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 22 Dec 2020 21:55:56 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9CE2CC6059;
-        Tue, 22 Dec 2020 21:55:56 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 09829C6057;
-        Tue, 22 Dec 2020 21:55:48 +0000 (GMT)
-Received: from manicouagan.localdomain (unknown [9.80.219.136])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTPS;
-        Tue, 22 Dec 2020 21:55:48 +0000 (GMT)
-References: <20201211221006.1052453-1-robh@kernel.org>
- <20201211221006.1052453-5-robh@kernel.org>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        takahiro.akashi@linaro.org, will@kernel.org,
-        catalin.marinas@arm.com, mpe@ellerman.id.au, zohar@linux.ibm.com,
-        james.morse@arm.com, sashal@kernel.org, benh@kernel.crashing.org,
-        paulus@samba.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
-        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com
-Subject: Re: [RFC PATCH 4/4] powerpc: Use common of_kexec_setup_new_fdt()
-In-reply-to: <20201211221006.1052453-5-robh@kernel.org>
-Date:   Tue, 22 Dec 2020 18:55:46 -0300
-Message-ID: <87h7odld3x.fsf@manicouagan.localdomain>
+        Tue, 22 Dec 2020 17:02:20 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1559BC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 14:01:40 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id o13so35476761lfr.3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 14:01:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sWeDwihFxTAhPlT/W6WCEEMXK+OSXU/rLqIMA122Kog=;
+        b=GjeV9Ro1lac75aJ1KhE1sLyHOPZXVUp/KPe4acgRmCwKMsU9DeFCk+XqwMBKtfrRVH
+         FaezK4cxCAXlid5LxjkWJT0btYkMqhexFp2DXti9Vq/0oH/3FpIXcfV9VGJLdEjS/1XP
+         BAPUt7f+o5dbn1daNL+Qkzu9xrbRHZq9ha5ZI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sWeDwihFxTAhPlT/W6WCEEMXK+OSXU/rLqIMA122Kog=;
+        b=KcvCdMAwwmoFR3FirxFYupI9jcyaU4QGMLcGl+a/F9lSZR4nqDf+dAiz5o07IlV2Q7
+         uMV3g2ZTUFEhzos2hS2rJmTjC53WnFdZ3wUOHakmlcD4wsWb5VkjRx+JT11dkTQWKNqU
+         WAfs8rfeEeWJt0fHqSzT0ya2wF325kgmM0iUYHi9RSGltIbMOfqr0t9WHS8Eti7QIxl2
+         EeNNC4Rm8FSV9JIkwNeNbsO/ciyFWuXqqiILVKkamFEVlowldC1UP9QiTlE723T4xfUo
+         gcTvNuzWtqC/YguWxc9HfLfKtLV4vE2+8Zr7ys2QChutBoSSROz4uaCJRZ3KrBw1X+Qw
+         2FOA==
+X-Gm-Message-State: AOAM531K9kECm0FLo6Eo1B7uqFF/Bvhbwp+9Cc+JUk45B5Hnrhwnb3Df
+        2Y5VcckfVsofp/rnwuEY1qK4T440hupoqQ==
+X-Google-Smtp-Source: ABdhPJwcvIXRWBNDaUzTyaXcWUooDGVLyTB0dQvIjXfClgtVLD1aUMNAeOKEjf9O9lPuxOT9d3tviA==
+X-Received: by 2002:a19:8182:: with SMTP id c124mr9179926lfd.106.1608674498507;
+        Tue, 22 Dec 2020 14:01:38 -0800 (PST)
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
+        by smtp.gmail.com with ESMTPSA id g2sm2825598lfb.255.2020.12.22.14.01.38
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Dec 2020 14:01:38 -0800 (PST)
+Received: by mail-lf1-f47.google.com with SMTP id m12so35469668lfo.7
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 14:01:38 -0800 (PST)
+X-Received: by 2002:a2e:3211:: with SMTP id y17mr10182715ljy.61.1608674497556;
+ Tue, 22 Dec 2020 14:01:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-22_11:2020-12-21,2020-12-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- impostorscore=0 suspectscore=0 mlxscore=0 spamscore=0 phishscore=0
- malwarescore=0 priorityscore=1501 bulkscore=0 clxscore=1015
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2012220153
+References: <000000000000fcbe0705b70e9bd9@google.com>
+In-Reply-To: <000000000000fcbe0705b70e9bd9@google.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 22 Dec 2020 14:01:21 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgfRnXz0W3D37d01q3JFkr_i_uTL=V6A6G1oUZcprmknw@mail.gmail.com>
+Message-ID: <CAHk-=wgfRnXz0W3D37d01q3JFkr_i_uTL=V6A6G1oUZcprmknw@mail.gmail.com>
+Subject: Re: kernel BUG at lib/string.c:LINE! (6)
+To:     syzbot <syzbot+e86f7c428c8c50db65b4@syzkaller.appspotmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, coreteam@netfilter.org,
+        David Miller <davem@davemloft.net>,
+        Florian Westphal <fw@strlen.de>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        NetFilter <netfilter-devel@vger.kernel.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Tejun Heo <tj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Rob Herring <robh@kernel.org> writes:
-
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
+On Tue, Dec 22, 2020 at 6:44 AM syzbot
+<syzbot+e86f7c428c8c50db65b4@syzkaller.appspotmail.com> wrote:
 >
-> After the IMA changes, delete_fdt_mem_rsv() can also be removed.
+> The issue was bisected to:
 >
->  arch/powerpc/kexec/file_load.c | 125 ++-------------------------------
->  1 file changed, 6 insertions(+), 119 deletions(-)
+> commit 2f78788b55ba ("ilog2: improve ilog2 for constant arguments")
 
-Reviewed-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
+That looks unlikely, although possibly some constant folding
+improvement might make the fortify code notice something with it.
 
-Shouldn't this series also be Cc'd to the linuxppc-dev mailing list?
+> detected buffer overflow in strlen
+> ------------[ cut here ]------------
+> kernel BUG at lib/string.c:1149!
+> Call Trace:
+>  strlen include/linux/string.h:325 [inline]
+>  strlcpy include/linux/string.h:348 [inline]
+>  xt_rateest_tg_checkentry+0x2a5/0x6b0 net/netfilter/xt_RATEEST.c:143
 
-I just noticed that the ARM64 IMA kexec series hasn't been copying the
-linuxppc-dev mailing list, so perhaps this is why this series isn't
-doing that, either.
+Honestly, this just looks like the traditional bug in "strlcpy()".
 
-> diff --git a/arch/powerpc/kexec/file_load.c b/arch/powerpc/kexec/file_load.c
-> index e452b11df631..956bcb2d1ec2 100644
-> --- a/arch/powerpc/kexec/file_load.c
-> +++ b/arch/powerpc/kexec/file_load.c
-> @@ -16,6 +16,7 @@
->
->  #include <linux/slab.h>
->  #include <linux/kexec.h>
-> +#include <linux/of.h>
->  #include <linux/of_fdt.h>
->  #include <linux/libfdt.h>
->  #include <asm/setup.h>
+That BSD function is complete garbage, exactly because it doesn't
+limit the source length. People tend to _think_ it does ("what's that
+size_t argument for?") but strlcpy() only limits the *destination*
+size, and the source is always read fully.
 
-It's possible to remove the <linux/of_fdt.h> include now.
+So it's a completely useless function if you can't implicitly trust
+the source string - but that is almost always why people think they
+should use it!
 
--- 
-Thiago Jung Bauermann
-IBM Linux Technology Center
+Nobody should use it. I really would like to remove it, and let
+everybody know how incredibly broken sh*t that function is.
+
+Can we please have everybody stop using strlcpy(). But in this
+particular case, it's that xt_rateest_tg_checkentry() in
+net/netfilter/xt_RATEEST.c
+
+That said, this may be a real FORTIFY report if that info->name is
+*supposed* to be trustworthy? The xt_RATETEST code does use
+"info->name" a few lines earlier when it does
+
+        est = __xt_rateest_lookup(xn, info->name);
+
+or maybe the bisection is right, and this points to some problem with
+__builtin_clzll?
+
+                 Linus
