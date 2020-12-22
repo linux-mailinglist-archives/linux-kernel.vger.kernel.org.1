@@ -2,69 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A380D2E048C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 04:01:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 282352E048F
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 04:04:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726019AbgLVDA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 22:00:57 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:45532 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725954AbgLVDA4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 22:00:56 -0500
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Ax2ck7YeFfBDMDAA--.8525S2;
-        Tue, 22 Dec 2020 11:00:12 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH] Makefile: Remove Module.symvers when make clean
-Date:   Tue, 22 Dec 2020 11:00:10 +0800
-Message-Id: <1608606010-7412-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Ax2ck7YeFfBDMDAA--.8525S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrtF4UJw45Cw1kAr4rGw43trb_yoWxAFb_K3
-        9rJrWqg345Xrsa9w4UuFyrur9aqr1rKanY9F98JrnrA347t3ZxWF9rXr9xWF1rCFZrurZa
-        qFs7Xry8Zr42kjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb48FF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
-        Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr
-        1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8
-        GwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
-        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij
-        64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
-        0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4U
-        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUj8uctUUUU
-        U==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S1726081AbgLVDCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 22:02:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725782AbgLVDCb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 22:02:31 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DF14C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 19:01:51 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id hk16so555698pjb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 19:01:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=xZEe9nKbt22VK8Tq7L3dwCEv8d6KPrIVgCMxlhwxx3Q=;
+        b=ToNIvWYMRuu67rHR26AoZ8LITvFFxwKDzFXUBeCMHNVl9SKWs2JiL/rESRW/P6aWJy
+         K6uYZlQtdKrjpUypOhtUEmTbzBVZ1JnAbGM/S6YJMjCxSnF+nSUXZCn3KOFY2LvCS6yz
+         yc7Ey0QONEBlbY7YFA13knO/pXtKTn6amSjABq3fNCUIvqUyZI1X2Z8kVdkrs0YKXy/X
+         dEzx3hydhKrzU/EAU6oDiekbRHBwAXYr4n9POMB0yGtPsLSNA9+Be7PDY1SzMd5y2a+n
+         5SeCwkA5h823mfelQnl3wo05eq4v51qbunVKJ1C1tFvEVszIU8m/T2XG6s27myJXTfMl
+         pMlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=xZEe9nKbt22VK8Tq7L3dwCEv8d6KPrIVgCMxlhwxx3Q=;
+        b=IztqieCBpGjxlHyEN/jt6RoJOQZ7vvCZSG4D1ucWqWWcaI7fD61wA3TIGuFqniuZjh
+         Iajb6x/uWRiemt76l24ZO71OFrzw5edoKedqQvp8Y1SHe/Kk2Ga+XdW/Vqim16juNyI4
+         lPzA//vSL6xVeZIr4urY/w++nnnW0zVIGqHPeXtg+ccWOJL7xUM7fhink6UZNAP59iiK
+         E9MRnTM0Wjqd8zPrT2F9T6exKpoBNPd0PWMask35mAvIGTP+xqqQYumgh9OCfNxG9cRF
+         xOibW4XwDxxigH8E0MGParicpml60Um+lGOvzxjFwwgt7jQLrk8lo6twSwrSmNDRRg4y
+         ZO2w==
+X-Gm-Message-State: AOAM532Ac7peU8hv7nv1uecOheS+Nszk9anNkXhBbivP0l9ibbpRVFxj
+        nv5OjKTq+Nw2cM0bDVRifdIgpg==
+X-Google-Smtp-Source: ABdhPJxQKMQbikVhTLg7WnCqu4OC1ZFMiEFMVD8hOqdAYJTeB8Tk5LqWtoWGAW9lEgvQaZgWv4IFDw==
+X-Received: by 2002:a17:90a:d502:: with SMTP id t2mr19389131pju.131.1608606110682;
+        Mon, 21 Dec 2020 19:01:50 -0800 (PST)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id t22sm17623091pgm.18.2020.12.21.19.01.49
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Mon, 21 Dec 2020 19:01:49 -0800 (PST)
+Date:   Mon, 21 Dec 2020 19:01:37 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] mm/memcg: revise the using condition of lock_page_lruvec
+ function series
+In-Reply-To: <1608186532-81218-1-git-send-email-alex.shi@linux.alibaba.com>
+Message-ID: <alpine.LSU.2.11.2012211827560.1045@eggly.anvils>
+References: <1608186532-81218-1-git-send-email-alex.shi@linux.alibaba.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Module.symvers still exists when make clean, remove it.
+On Thu, 17 Dec 2020, Alex Shi wrote:
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> The series function could be used under lock_page_memcg(), add this and
+> a bit style changes following commit_charge().
+> 
+> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> Cc: Hugh Dickins <hughd@google.com>
 
-diff --git a/Makefile b/Makefile
-index e30cf02..8235bb7 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1468,7 +1468,7 @@ endif # CONFIG_MODULES
- 
- # Directories & files removed with 'make clean'
- CLEAN_FILES += include/ksym vmlinux.symvers \
--	       modules.builtin modules.builtin.modinfo modules.nsdeps \
-+	       modules.builtin modules.builtin.modinfo modules.nsdeps Module.symvers\
- 	       compile_commands.json
- 
- # Directories & files removed with 'make mrproper'
--- 
-2.1.0
+This patch, or its intention,
+Acked-by: Hugh Dickins <hughd@google.com>
+but rewording suggested below, and requested above -
+which left me very puzzled before eventually I understood it.
+I don't think we need to talk about "a bit style changes",
+but the cross-reference to commit_charge() is helpful.
 
+"
+lock_page_lruvec() and its variants are safe to use under the same
+conditions as commit_charge(): add lock_page_memcg() to the comment.
+"
+
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Michal Hocko <mhocko@kernel.org>
+> Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: cgroups@vger.kernel.org
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>  mm/memcontrol.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index b80328f52fb4..e6b50d068b2f 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -1345,10 +1345,11 @@ void lruvec_memcg_debug(struct lruvec *lruvec, struct page *page)
+>   * lock_page_lruvec - lock and return lruvec for a given page.
+>   * @page: the page
+>   *
+> - * This series functions should be used in either conditions:
+> - * PageLRU is cleared or unset
+> - * or page->_refcount is zero
+> - * or page is locked.
+> + * This series functions should be used in any one of following conditions:
+
+These functions are safe to use under any of the following conditions:
+
+> + * - PageLRU is cleared or unset
+> + * - page->_refcount is zero
+> + * - page is locked.
+
+Remove that full stop...
+
+> + * - lock_page_memcg()
+
+... and, if you wish (I don't care), add full stop at the end of that line.
+
+Maybe reorder those to the same order as listed in commit_charge().
+Copy its text exactly? I don't think so, actually, I find your wording
+(e.g. _refcount is zero) more explicit: good to have both descriptions.
+
+>   */
+>  struct lruvec *lock_page_lruvec(struct page *page)
+>  {
+> -- 
+> 2.29.GIT
