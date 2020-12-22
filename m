@@ -2,87 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DD4A2E074F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 09:39:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E3D32E074C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 09:39:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726257AbgLVIiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 03:38:24 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:34650 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725841AbgLVIiY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 03:38:24 -0500
-Received: from localhost.localdomain (unknown [112.20.110.48])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxGcpNsOFfAlkDAA--.8814S2;
-        Tue, 22 Dec 2020 16:37:34 +0800 (CST)
-From:   siyanteng@loongson.cn
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        siyanteng <siyanteng@loongson.cn>
-Subject: [PATCH] MIPS: loongson64: smp.c: Fix block comment coding style
-Date:   Tue, 22 Dec 2020 16:37:00 +0800
-Message-Id: <20201222083700.3651527-1-siyanteng@loongson.cn>
-X-Mailer: git-send-email 2.27.0
+        id S1726089AbgLVIiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 03:38:08 -0500
+Received: from mail-wr1-f48.google.com ([209.85.221.48]:39475 "EHLO
+        mail-wr1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725818AbgLVIiH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 03:38:07 -0500
+Received: by mail-wr1-f48.google.com with SMTP id c5so13649002wrp.6;
+        Tue, 22 Dec 2020 00:37:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=L7VUupdwNKXioiFOmlRnQkfKJa6jZJuHBhu7Vo4dJ4M=;
+        b=k8X+ap1wCDfTMtAw4UVTaE6C4r1uAtRl7EAfoQ/yMyiBMgxUxkd4GBiDuCpC1+5vbN
+         ZLr8YnB74NWJbLF7JcG4e+PHrU2FC5qeIqs6y/t9DQ5sKCrILLpnZy9iDhK3J6f5otG4
+         y/JOcRW7Cu6Aj/bBN/VjXcSAGbSt1lYHPnFLNx3OzElyjvdYem6kVOxqNbwlaBB7vHTj
+         Hn4DRGgEFfKMdGM6iILHpUpg5isLZNJ9aOsxB5xr+m2wdhuWzv01JPdWuvdIrb9XK2kH
+         3ZNXan8E2Q8PO/P/4frFBhk1swhotxHy0WkOqPBkmo4tZp6VVMmqblJEOMLiRc5EQsd/
+         k7Zw==
+X-Gm-Message-State: AOAM533uYJyb50uDPlTSARL3jg3xKnoUA5nL9SYyHoWByvzJ7UgTCymZ
+        UcwrzZUD7P063pLp4lnxWQg=
+X-Google-Smtp-Source: ABdhPJy4bDDXomIKstNtdXKh1RyDFfWuauh6UN/7NZ8qIwAkneojarrmfS4jrRmwLK5kMW83KV+cAw==
+X-Received: by 2002:adf:c14d:: with SMTP id w13mr22491009wre.383.1608626245596;
+        Tue, 22 Dec 2020 00:37:25 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id w18sm31476679wrn.2.2020.12.22.00.37.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Dec 2020 00:37:24 -0800 (PST)
+Date:   Tue, 22 Dec 2020 09:37:23 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Timon Baetz <timon.baetz@protonmail.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH v3 2/7] regulator: dt-bindings: Document max8997-pmic
+ nodes
+Message-ID: <20201222083723.GB5026@kozik-lap>
+References: <20201222070520.710096-1-timon.baetz@protonmail.com>
+ <20201222070520.710096-2-timon.baetz@protonmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9AxGcpNsOFfAlkDAA--.8814S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7tFykur4rKFyxur4ruFW7Jwb_yoW8GF4fpr
-        WfZa4DGF45WF10va4fJFyUJry8C39xJF9ruF42qrW5uasxGr12qrW8K3Z8XF47ZFsYgF17
-        W348Cw4Uua1rtwUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvq14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWUWVWUuwAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26r
-        xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4kE6xkIj40Ew7xC
-        0wCY02Avz4vE14v_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2
-        IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v2
-        6r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2
-        IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E
-        87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0x
-        ZFpf9x0JU2ZXOUUUUU=
-X-CM-SenderInfo: pvl1t0pwhqwqxorr0wxvrqhubq/
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201222070520.710096-2-timon.baetz@protonmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: siyanteng <siyanteng@loongson.cn>
+On Tue, Dec 22, 2020 at 07:31:21AM +0000, Timon Baetz wrote:
+> Add maxim,max8997-battery and maxim,max8997-muic optional nodes.
+> 
+> Signed-off-by: Timon Baetz <timon.baetz@protonmail.com>
+> ---
+>  .../bindings/regulator/max8997-regulator.txt          | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
 
-This patch fixes:
-"WARNING: Block comments use a trailing */ on a separate line"
-by checkpatch.pl
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Signed-off-by: siyanteng <siyanteng@loongson.cn>
----
- arch/mips/loongson64/smp.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/arch/mips/loongson64/smp.c b/arch/mips/loongson64/smp.c
-index b8c1fc3158fd..459ea5b7a1b0 100644
---- a/arch/mips/loongson64/smp.c
-+++ b/arch/mips/loongson64/smp.c
-@@ -483,7 +483,8 @@ static void __init loongson3_smp_setup(void)
- 	init_cpu_possible(cpu_none_mask);
- 
- 	/* For unified kernel, NR_CPUS is the maximum possible value,
--	 * loongson_sysconf.nr_cpus is the really present value */
-+	 * loongson_sysconf.nr_cpus is the really present value
-+	 */
- 	while (i < loongson_sysconf.nr_cpus) {
- 		if (loongson_sysconf.reserved_cpus_mask & (1<<i)) {
- 			/* Reserved physical CPU cores */
-@@ -567,7 +568,8 @@ static void loongson3_cpu_die(unsigned int cpu)
- /* To shutdown a core in Loongson 3, the target core should go to CKSEG1 and
-  * flush all L1 entries at first. Then, another core (usually Core 0) can
-  * safely disable the clock of the target core. loongson3_play_dead() is
-- * called via CKSEG1 (uncached and unmmaped) */
-+ * called via CKSEG1 (uncached and unmmaped)
-+ */
- static void loongson3_type1_play_dead(int *state_addr)
- {
- 	register int val;
--- 
-2.27.0
-
+Best regards,
+Krzysztof
