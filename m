@@ -2,44 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C64B02E0B29
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 14:52:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C1062E0B2C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 14:52:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727355AbgLVNvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 08:51:43 -0500
-Received: from verein.lst.de ([213.95.11.211]:59129 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727269AbgLVNvm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 08:51:42 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 07C7967373; Tue, 22 Dec 2020 14:51:00 +0100 (CET)
-Date:   Tue, 22 Dec 2020 14:50:59 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     zhenwei pi <pizhenwei@bytedance.com>
-Cc:     hch@lst.de, sagi@grimberg.me, chaitanya.kulkarni@wdc.com,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v2] nvmet: fix mismatched serial
-Message-ID: <20201222135059.GA32569@lst.de>
-References: <20201212075801.1393924-1-pizhenwei@bytedance.com>
+        id S1727429AbgLVNv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 08:51:57 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:9472 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726904AbgLVNv4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 08:51:56 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4D0d515ddDzhvQW;
+        Tue, 22 Dec 2020 21:50:13 +0800 (CST)
+Received: from ubuntu.network (10.175.138.68) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 22 Dec 2020 21:50:40 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <kvalo@codeaurora.org>, <davem@davemloft.net>, <kuba@kernel.org>,
+        <linux-wireless@vger.kernel.org>,
+        <brcm80211-dev-list.pdl@broadcom.com>,
+        <SHA-cyfmac-dev-list@infineon.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <Markus.Elfring@web.de>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH wireless v3 -next] brcmfmac: Delete useless kfree code
+Date:   Tue, 22 Dec 2020 21:51:13 +0800
+Message-ID: <20201222135113.20680-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201212075801.1393924-1-pizhenwei@bytedance.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.138.68]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 12, 2020 at 03:58:01PM +0800, zhenwei pi wrote:
-> Target side uses 'bin2hex' to convert u64 serial number to a hex
-> string, saving serial number as be64 to keep the right byte order.
-> Also use format '%016llx' to show the full serial string to avoid
-> to drop prefixed zero.
-> 
-> Test on x86 server, config '0123456789abcdef' to 'attr_serial' on
-> target side, and run 'nvme id-ctrl /dev/nvme0' on initiator side,
-> then we can get the same SN string.
+A null pointer will be passed to a kfree() call after a kzalloc() call failed.
+This code is useless. Thus delete the extra function call.
 
-We can't change this interface any more, as it can break tons of user
-space.
+A goto statement is also no longer needed. Thus adjust an if branch.
+
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+ .../wireless/broadcom/brcm80211/brcmfmac/firmware.c    | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c
+index d821a4758f8c..d40104b8df55 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c
+@@ -319,8 +319,10 @@ static void brcmf_fw_strip_multi_v2(struct nvram_parser *nvp, u16 domain_nr,
+ 	u8 *nvram;
+ 
+ 	nvram = kzalloc(nvp->nvram_len + 1 + 3 + sizeof(u32), GFP_KERNEL);
+-	if (!nvram)
+-		goto fail;
++	if (!nvram) {
++		nvp->nvram_len = 0;
++		return;
++	}
+ 
+ 	/* Copy all valid entries, release old nvram and assign new one.
+ 	 * Valid entries are of type pcie/X/Y/ where X = domain_nr and
+@@ -350,10 +352,6 @@ static void brcmf_fw_strip_multi_v2(struct nvram_parser *nvp, u16 domain_nr,
+ 	kfree(nvp->nvram);
+ 	nvp->nvram = nvram;
+ 	nvp->nvram_len = j;
+-	return;
+-fail:
+-	kfree(nvram);
+-	nvp->nvram_len = 0;
+ }
+ 
+ static void brcmf_fw_add_defaults(struct nvram_parser *nvp)
+-- 
+2.22.0
+
