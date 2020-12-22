@@ -2,182 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CFCE2E06DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 08:42:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEF792E06DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 08:40:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726057AbgLVHmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 02:42:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33508 "EHLO
+        id S1726019AbgLVHjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 02:39:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725865AbgLVHmO (ORCPT
+        with ESMTP id S1725946AbgLVHjp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 02:42:14 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD52FC0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 23:41:33 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id w6so8000306pfu.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 23:41:33 -0800 (PST)
+        Tue, 22 Dec 2020 02:39:45 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4395DC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 23:39:05 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id g67so16847559ybb.9
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 23:39:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endlessos.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=msNvM5pzbAJYWbn5mWuzMEGirWXPRzYqMruqrj8OX6c=;
-        b=lQXUHk2Fsfs1sA+mkfafYI2CaAd1zQA6DfenVJTnQTN0i9Ss480VRYI/ng1ieVmoQ8
-         3PbGUHzhrLuxq2RX8DXV4q8TCLxDfx5wmJ3HV/aAvkT6mhJeugfpSea5sXsksPncLx1H
-         OskM58B1/4bzJjCExLl1lORWvSY2WCp8O5UUzALyeB5Uu8UyBJ50FurGtspMylRjGFBx
-         RYlDZZ16+RcXVb2ISf/QG//OQSVQtXrCnbJzRqTpyxmBOASWgan3o4bUFVEjJLJ5tDsS
-         6kXktKT5TcUL0QXyuo/fY70EZWzT3bbGR0b4dJPibUSwEHx+VWG+zn/4Ht7WWDQgtDYC
-         9c8w==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=lswzyGh/wqBVBArbTXet9XrVDeOvbwazZ0TIN1WlZU8=;
+        b=BVIGhmCp7okmhrxfAv3vg+iTduI+GtEk6bJF9ETLYZOQ/YSDMrE1lnPkdTNJfEvn9G
+         2i/G10wdh472dBfa1O013Vb6h2cqloICEwlw46TF73oo4NHvqDBPkajY305Tp3Ot1Agg
+         gMWN7q10k/hT6dAO2PMVl1ot0oBb38YSKWVvYk8cvgoOz9vDH4FEFWHnCqQJiUiq+jJ0
+         4zWft73Q2r17HtVhc1hP27SX5AWfNJULaILLE/BHWazaVxtLUkipd3wOG79Oj1zp5Wqz
+         xOKWxqHE1NCrhwDsNtpfSdLF01dACNj3ZvgHa8IO9N6v31JYmds1vRNnUuwf9luY4Ct/
+         bkIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=msNvM5pzbAJYWbn5mWuzMEGirWXPRzYqMruqrj8OX6c=;
-        b=iYpdGvzFwx8jiU5y9xoGwn1woOUqDf9yFjxY+PldejsCmkYI3MNTLkMGrk9m2p2vq1
-         0SX8tgUHWpLuQrlb4RUXl7mTRrV/L4Zqk+Eq9+XU9CIyU/dFlYk42RoF9uwJk2Kuzjja
-         ltjrrU30XDiyXNgYwY/97FXcu2pGujk0ruF7VY6ZXgMDCFD6Jyd705SJNS1ccC9Ezxi7
-         OcyeDeM72acHIfIj+TYvaybORWcJiKTXiksw9PiTXJv7f3QaALYyUnVQv1Ne76xezN2j
-         diO+o+kJ0FaE6PCNYlpEsEYUEI784KwUlbE4Ig56K+XWXobOyDvt+h4o3UOchP8JP4eE
-         fxSw==
-X-Gm-Message-State: AOAM533dO9zLyZMKPEszTw+Ny/8RrJp+AjS06ONTpec4lASr/xBhK8T0
-        4Ei7AIINPRbp6/obbDh/RXn7nn1BHYKBa+c5
-X-Google-Smtp-Source: ABdhPJxIYOi2lMUhqM9FA9/s/YZgH4HhW0Ae+PRwIKVYgSaINEIiuKkYxnhczYPlCkvy0omsr7HE3g==
-X-Received: by 2002:a63:da58:: with SMTP id l24mr18497739pgj.178.1608622893189;
-        Mon, 21 Dec 2020 23:41:33 -0800 (PST)
-Received: from starnight.localdomain (123-204-46-122.static.seed.net.tw. [123.204.46.122])
-        by smtp.googlemail.com with ESMTPSA id cq15sm17680984pjb.27.2020.12.21.23.41.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 23:41:32 -0800 (PST)
-From:   Jian-Hong Pan <jhp@endlessos.org>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux@endlessos.org, Jian-Hong Pan <jhp@endlessos.org>
-Subject: [PATCH] HID: Add Wireless Radio Control feature for Chicony devices
-Date:   Tue, 22 Dec 2020 15:38:56 +0800
-Message-Id: <20201222073855.98490-1-jhp@endlessos.org>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=lswzyGh/wqBVBArbTXet9XrVDeOvbwazZ0TIN1WlZU8=;
+        b=BTTghHtVcwOEKiJR+pT72K2Qrj+l5er7E+BWfvNMbmReuLnqbA+VLot+Jr1z4VyjuR
+         w8VuBoq8q6GoZnzcARoBny8Kul+hkYmXz0zng+hFHekzs8Xisv0Qaz1al+/xvB4gpllD
+         wZADcQ1AXkx62TG4Z4ojsJFhGRMGXqoT5x/nfSNst35ZiM+Fn0HS0fxzY2LwLS4xlMP9
+         uEONR6JllAdvSHfydiTeQQmLaN34LQD8iKHBXRXSXQ+eSi5sKRQmH0fkfxQ/uoky6lIU
+         1qevHPvY+xcpORsQhX/bPFY9kI9BCHNzczs53JDcka805VE0zWpjPlmLwXjPe89de03A
+         xFpg==
+X-Gm-Message-State: AOAM533RyTwD+ZxvWXtMu/N8zDf6WKP9BBphsK1rmgir5cW8hZ+ilwqz
+        p+etg4NA16cBGnlUXBe5JEfrQVvd0ys2Fg==
+X-Google-Smtp-Source: ABdhPJycwxpLxeB7bb5anVq1PShQQNO5DGVwjQfW2TVGdVGvWLpFH7nISnFjv+cCelgfXqhy5ct1pan7Hk7MOw==
+Sender: "davidgow via sendgmr" <davidgow@spirogrip.svl.corp.google.com>
+X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:42a8:f0ff:fe4d:3548])
+ (user=davidgow job=sendgmr) by 2002:a25:9902:: with SMTP id
+ z2mr27142126ybn.339.1608622744383; Mon, 21 Dec 2020 23:39:04 -0800 (PST)
+Date:   Mon, 21 Dec 2020 23:39:00 -0800
+Message-Id: <20201222073900.3490607-1-davidgow@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
+Subject: [PATCH] kunit: tool: Force the use of the 'tty' console for UML
+From:   David Gow <davidgow@google.com>
+To:     Brendan Higgins <brendanhiggins@google.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        David Gow <davidgow@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some Chicony's keyboards support airplane mode hotkey (Fn+F2) with
-"Wireless Radio Control" feature. For example, the wireless keyboard
-[04f2:1236] shipped with ASUS all-in-one desktop.
+kunit_tool relies on the UML console outputting printk() output to the
+tty in order to get results. Since the default console driver could
+change, pass 'console=tty' to the kernel.
 
-After consulting Chicony for this hotkey, learned the device will send
-with 0x11 as the report ID and 0x1 as the value when the key is pressed
-down.
+This is triggered by a change[1] to use ttynull as a fallback console
+driver which -- by chance or by design -- seems to have changed the
+default console output on UML, breaking kunit_tool. While this may be
+fixed, we should be less fragile to such changes in the default.
 
-This patch maps the event as KEY_RFKILL.
+[1]:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=757055ae8dedf5333af17b3b5b4b70ba9bc9da4e
 
-Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
+Signed-off-by: David Gow <davidgow@google.com>
+Fixes: 757055ae8ded ("init/console: Use ttynull as a fallback when there is no console")
 ---
- drivers/hid/hid-chicony.c | 58 +++++++++++++++++++++++++++++++++++++++
- drivers/hid/hid-ids.h     |  1 +
- 2 files changed, 59 insertions(+)
+ tools/testing/kunit/kunit_kernel.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/hid/hid-chicony.c b/drivers/hid/hid-chicony.c
-index 3f0ed6a95223..aca963aa0f1e 100644
---- a/drivers/hid/hid-chicony.c
-+++ b/drivers/hid/hid-chicony.c
-@@ -21,6 +21,42 @@
+diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
+index 57c1724b7e5d..698358c9c0d6 100644
+--- a/tools/testing/kunit/kunit_kernel.py
++++ b/tools/testing/kunit/kunit_kernel.py
+@@ -198,7 +198,7 @@ class LinuxSourceTree(object):
+ 		return self.validate_config(build_dir)
  
- #include "hid-ids.h"
- 
-+#define KEY_PRESSED			0x01
-+#define CH_WIRELESS_CTL_REPORT_ID	0x11
-+
-+static int ch_report_wireless(struct hid_report *report, u8 *data, int size)
-+{
-+	struct hid_device *hdev = report->device;
-+	struct input_dev *input;
-+
-+	if (report->id != CH_WIRELESS_CTL_REPORT_ID ||
-+	    report->maxfield != 1 ||
-+	    *report->field[0]->value != KEY_PRESSED)
-+		return 0;
-+
-+	input = report->field[0]->hidinput->input;
-+	if (!input) {
-+		hid_warn(hdev, "can't find wireless radio control's input");
-+		return 0;
-+	}
-+
-+	input_report_key(input, KEY_RFKILL, 1);
-+	input_sync(input);
-+	input_report_key(input, KEY_RFKILL, 0);
-+	input_sync(input);
-+
-+	return 1;
-+}
-+
-+static int ch_raw_event(struct hid_device *hdev,
-+		struct hid_report *report, u8 *data, int size)
-+{
-+	if (report->application == HID_GD_WIRELESS_RADIO_CTLS)
-+		return ch_report_wireless(report, data, size);
-+
-+	return 0;
-+}
-+
- #define ch_map_key_clear(c)	hid_map_usage_clear(hi, usage, bit, max, \
- 					EV_KEY, (c))
- static int ch_input_mapping(struct hid_device *hdev, struct hid_input *hi,
-@@ -77,10 +113,30 @@ static __u8 *ch_switch12_report_fixup(struct hid_device *hdev, __u8 *rdesc,
- 	return rdesc;
- }
- 
-+static int ch_probe(struct hid_device *hdev, const struct hid_device_id *id)
-+{
-+	int ret;
-+
-+	hdev->quirks |= HID_QUIRK_INPUT_PER_APP;
-+	ret = hid_parse(hdev);
-+	if (ret) {
-+		hid_err(hdev, "Chicony hid parse failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = hid_hw_start(hdev, HID_CONNECT_DEFAULT);
-+	if (ret) {
-+		hid_err(hdev, "Chicony hw start failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
- 
- static const struct hid_device_id ch_devices[] = {
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_CHICONY, USB_DEVICE_ID_CHICONY_TACTICAL_PAD) },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_CHICONY, USB_DEVICE_ID_CHICONY_WIRELESS2) },
-+	{ HID_USB_DEVICE(USB_VENDOR_ID_CHICONY, USB_DEVICE_ID_CHICONY_WIRELESS3) },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_CHICONY, USB_DEVICE_ID_CHICONY_ACER_SWITCH12) },
- 	{ }
- };
-@@ -91,6 +147,8 @@ static struct hid_driver ch_driver = {
- 	.id_table = ch_devices,
- 	.report_fixup = ch_switch12_report_fixup,
- 	.input_mapping = ch_input_mapping,
-+	.probe = ch_probe,
-+	.raw_event = ch_raw_event,
- };
- module_hid_driver(ch_driver);
- 
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index 4c5f23640f9c..06d90301a3dc 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -270,6 +270,7 @@
- #define USB_DEVICE_ID_CHICONY_PIXART_USB_OPTICAL_MOUSE	0x1053
- #define USB_DEVICE_ID_CHICONY_PIXART_USB_OPTICAL_MOUSE2	0x0939
- #define USB_DEVICE_ID_CHICONY_WIRELESS2	0x1123
-+#define USB_DEVICE_ID_CHICONY_WIRELESS3	0x1236
- #define USB_DEVICE_ID_ASUS_AK1D		0x1125
- #define USB_DEVICE_ID_CHICONY_TOSHIBA_WT10A	0x1408
- #define USB_DEVICE_ID_CHICONY_ACER_SWITCH12	0x1421
+ 	def run_kernel(self, args=[], build_dir='', timeout=None):
+-		args.extend(['mem=1G'])
++		args.extend(['mem=1G', 'console=tty'])
+ 		self._ops.linux_bin(args, timeout, build_dir)
+ 		outfile = get_outfile_path(build_dir)
+ 		subprocess.call(['stty', 'sane'])
 -- 
-2.29.2
+2.29.2.729.g45daf8777d-goog
 
