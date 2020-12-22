@@ -2,170 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E58BE2E1047
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 23:37:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D06A2E1033
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 23:37:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728432AbgLVW3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 17:29:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57070 "EHLO
+        id S1728347AbgLVW11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 17:27:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728103AbgLVW3h (ORCPT
+        with ESMTP id S1728323AbgLVW1Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 17:29:37 -0500
-X-Greylist: delayed 431 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 22 Dec 2020 14:28:57 PST
-Received: from mx-rz-2.rrze.uni-erlangen.de (mx-rz-2.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 589BBC0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 14:28:57 -0800 (PST)
-Received: from mx-rz-smart.rrze.uni-erlangen.de (mx-rz-smart.rrze.uni-erlangen.de [IPv6:2001:638:a000:1025::1e])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx-rz-2.rrze.uni-erlangen.de (Postfix) with ESMTPS id 4D0rRV63r4zPkWd;
-        Tue, 22 Dec 2020 23:21:58 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fau.de; s=fau-2013;
-        t=1608675718; bh=OHt9TpRCia/phItTsOgtpk7eBGKywdOoLJ5h33EkzDo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From:To:CC:
-         Subject;
-        b=MlYEhOMXtvIHQkE9a+DnAyblY/tVCGx5CJ7p9yeINbTM0zQ/7pP2ucLZPh0qMWfOU
-         yw6DUnVNRDF7kJ5pOYnT25BZsc8ZAQMq3atwm15NOOaCfAEVngb845pMprbtfkz/dl
-         RTfegFRb3GMAPEUc4mq+AmXABF0dyM2zxnHTrEhIpw3QRAcAgHhIGHF6VgOdEKlcc0
-         22I7DKBSCF6OB54kO88YW+XcEaOOGVQkI51jCTPfcuWL2Ed6nNU40NC3GZ3Yw7mhza
-         TshQxq6YkIM0d6EpfrbQLgQwvuEPm0udhCCHOdSSVVFSU1AqE88JvYI/TXefqSKP7L
-         bhDvZWtWsDySw==
-X-Virus-Scanned: amavisd-new at boeck1.rrze.uni-erlangen.de (RRZE)
-X-RRZE-Flag: Not-Spam
-X-RRZE-Submit-IP: 2001:a62:19fa:6f01:10d5:3d50:1797:6266
-Received: from shaun-PC.fritz.box (unknown [IPv6:2001:a62:19fa:6f01:10d5:3d50:1797:6266])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: U2FsdGVkX19ISDaKZS3RfVmKMY605MWWXgTogt88QBo=)
-        by smtp-auth.uni-erlangen.de (Postfix) with ESMTPSA id 4D0rRS0wHxzPkgy;
-        Tue, 22 Dec 2020 23:21:56 +0100 (CET)
-From:   Johannes Czekay <johannes.czekay@fau.de>
-To:     linux-kernel@vger.kernel.org
-Cc:     johannes.czekay@fau.de, nicolai.fischer@fau.de,
-        gustavo@embeddedor.com, hannes@cmpxchg.org, longman@redhat.com,
-        mhocko@suse.com, adawesomeguy222@gmail.com,
-        igormtorrente@gmail.com, sylphrenadin@gmail.com,
-        izabela.bakollari@gmail.com, colin.king@canonical.com,
-        steff.richards.the.third@gmail.com
-Subject: [PATCH 6/6] wlan-ng: clean up reused macros
-Date:   Tue, 22 Dec 2020 23:20:17 +0100
-Message-Id: <20201222222015.20558-7-johannes.czekay@fau.de>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201222222015.20558-1-johannes.czekay@fau.de>
-References: <20201222222015.20558-1-johannes.czekay@fau.de>
+        Tue, 22 Dec 2020 17:27:25 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A8FC0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 14:26:45 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id h16so14382410edt.7
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 14:26:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=w7THJPT2rmU60w+DOPskH6aoP7sduDFS77dfdLYEIZU=;
+        b=h+CwsmNz+UUYAshh+EopcCW0ZE3Ddn8dsBvVMc8IdKlLt46OMkA6rTXL4f++nt/zMa
+         0rVR0tTLFR0v7sKXCYF3o/jqewIDXcX77hY5VHpKiM9zxAnlOXGp9ehQmwh5CMwdpyel
+         VAHAF2P+jFAyrV8R2nHhppr5X8KSgcb2EkZ2HRPjU+vaV60TBn221PxISNt2EBe4IIiF
+         G+7UwEKYa1YkDsxEs/+GxGYLdQud7RzCyEqSruSdk+Yh2h9QZfNuPKtriR/74tFUfvx+
+         vM9pCJDIg7PBNOs6n6WyBF4n6gVJdpbEZo691kbxO5aTerl/u5pAhtsYljprYq2kAs8k
+         g/uQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=w7THJPT2rmU60w+DOPskH6aoP7sduDFS77dfdLYEIZU=;
+        b=sNM8qki6nDmqOQ4PhUIxNXJjBb0nP4/s1PrpJqGqTzB+7hMXKkphFt/3hbXac6vBMN
+         8kZHNK/0FgCb/YtYAF8bh/YVb+/h5QSLk8+6qtdIWtxkSZnIqrIMAucE2u9xIsk3jI0A
+         5Gp51rhXxXesKfmVbfIErA22jM9MUGkx8nQFFf6SbwdAgJRl/CwdDsfcVUt2PtVjYuMi
+         Um9mAsodmMK8O6i6Lpg+AJKghcW3sJ0t3Dy3GZIntyh6cYfFTZbbCuH8Kr7JVUoP6VsU
+         SSaDJ7JWcCS3WIz3hveepgGSMYyRAQ9vAebeuq4RtcyVZr9hFeuEZ7/dIkKiY9t5AFUh
+         OVaQ==
+X-Gm-Message-State: AOAM531ZWp4RSMGSSQDWwYoYzzyoRlcVzCZ8zMvhZdOzmRFIfQAMJ9nD
+        CppEnF5LzYb/+T0MujTkWVT+ig==
+X-Google-Smtp-Source: ABdhPJwz8RD/hCOnHNBxhotKvch3DxJ6xlTIWUPkc/Xy1HTxsZhKhXvvw6293WCr7pwBrg/w3whqQQ==
+X-Received: by 2002:a05:6402:1352:: with SMTP id y18mr22371623edw.178.1608676004134;
+        Tue, 22 Dec 2020 14:26:44 -0800 (PST)
+Received: from localhost.localdomain (dh207-99-167.xnet.hr. [88.207.99.167])
+        by smtp.googlemail.com with ESMTPSA id c23sm30515385eds.88.2020.12.22.14.26.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Dec 2020 14:26:43 -0800 (PST)
+From:   Robert Marko <robert.marko@sartura.hr>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, andrew@lunn.ch, linux@armlinux.org.uk
+Cc:     Robert Marko <robert.marko@sartura.hr>
+Subject: [PATCH 0/4] Add support for Qualcomm QCA807x PHYs
+Date:   Tue, 22 Dec 2020 23:26:33 +0100
+Message-Id: <20201222222637.3204929-1-robert.marko@sartura.hr>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch cleans up two "macro argument reuse" warnings by checkpatch.
-This should also make the code much more readable.
+This patch series adds support for Qualcomm QCA807x PHYs.
 
-Signed-off-by: Johannes Czekay <johannes.czekay@fau.de>
-Co-developed-by: Nicolai Fischer <nicolai.fischer@fau.de>
-Signed-off-by: Nicolai Fischer <nicolai.fischer@fau.de>
----
- drivers/staging/wlan-ng/p80211metastruct.h | 18 +-------
- drivers/staging/wlan-ng/prism2mgmt.c       | 48 ++++++----------------
- 2 files changed, 14 insertions(+), 52 deletions(-)
+These are really common companion PHYs on boards featuring
+Qualcomm IPQ40xx, IPQ60xx and IPQ807x SoCs.
 
-diff --git a/drivers/staging/wlan-ng/p80211metastruct.h b/drivers/staging/wlan-ng/p80211metastruct.h
-index 4adc64580185..e963227f797c 100644
---- a/drivers/staging/wlan-ng/p80211metastruct.h
-+++ b/drivers/staging/wlan-ng/p80211metastruct.h
-@@ -114,22 +114,8 @@ struct p80211msg_dot11req_scan_results {
- 	struct p80211item_uint32 cfpollreq;
- 	struct p80211item_uint32 privacy;
- 	struct p80211item_uint32 capinfo;
--	struct p80211item_uint32 basicrate1;
--	struct p80211item_uint32 basicrate2;
--	struct p80211item_uint32 basicrate3;
--	struct p80211item_uint32 basicrate4;
--	struct p80211item_uint32 basicrate5;
--	struct p80211item_uint32 basicrate6;
--	struct p80211item_uint32 basicrate7;
--	struct p80211item_uint32 basicrate8;
--	struct p80211item_uint32 supprate1;
--	struct p80211item_uint32 supprate2;
--	struct p80211item_uint32 supprate3;
--	struct p80211item_uint32 supprate4;
--	struct p80211item_uint32 supprate5;
--	struct p80211item_uint32 supprate6;
--	struct p80211item_uint32 supprate7;
--	struct p80211item_uint32 supprate8;
-+	struct p80211item_uint32 basicrate[8];
-+	struct p80211item_uint32 supprate[8];
- } __packed;
- 
- struct p80211msg_dot11req_start {
-diff --git a/drivers/staging/wlan-ng/prism2mgmt.c b/drivers/staging/wlan-ng/prism2mgmt.c
-index 1bd36dc2b7ff..8540c3336907 100644
---- a/drivers/staging/wlan-ng/prism2mgmt.c
-+++ b/drivers/staging/wlan-ng/prism2mgmt.c
-@@ -388,6 +388,7 @@ int prism2mgmt_scan_results(struct wlandevice *wlandev, void *msgp)
- 	struct hfa384x_hscan_result_sub *item = NULL;
- 
- 	int count;
-+	int i;
- 
- 	req = msgp;
- 
-@@ -437,42 +438,17 @@ int prism2mgmt_scan_results(struct wlandevice *wlandev, void *msgp)
- 		if (item->supprates[count] == 0)
- 			break;
- 
--#define REQBASICRATE(N) \
--	do { \
--		if ((count >= (N)) && DOT11_RATE5_ISBASIC_GET(	\
--			item->supprates[(N) - 1])) { \
--			req->basicrate ## N .data = item->supprates[(N) - 1]; \
--			req->basicrate ## N .status = \
--				P80211ENUM_msgitem_status_data_ok; \
--		} \
--	} while (0)
--
--	REQBASICRATE(1);
--	REQBASICRATE(2);
--	REQBASICRATE(3);
--	REQBASICRATE(4);
--	REQBASICRATE(5);
--	REQBASICRATE(6);
--	REQBASICRATE(7);
--	REQBASICRATE(8);
--
--#define REQSUPPRATE(N) \
--	do { \
--		if (count >= (N)) {					\
--			req->supprate ## N .data = item->supprates[(N) - 1]; \
--			req->supprate ## N .status = \
--				P80211ENUM_msgitem_status_data_ok; \
--		} \
--	} while (0)
--
--	REQSUPPRATE(1);
--	REQSUPPRATE(2);
--	REQSUPPRATE(3);
--	REQSUPPRATE(4);
--	REQSUPPRATE(5);
--	REQSUPPRATE(6);
--	REQSUPPRATE(7);
--	REQSUPPRATE(8);
-+	for (i = 0; i < 8; i++) {
-+		if (count > 1) {
-+			if (DOT11_RATE5_ISBASIC_GET(item->supprates[i])) {
-+				req->basicrate[i].data = item->supprates[i];
-+				req->basicrate[i].status = P80211ENUM_msgitem_status_data_ok;
-+			}
-+
-+			req->supprate[i].data = item->supprates[i];
-+			req->supprate[i].status = P80211ENUM_msgitem_status_data_ok;
-+		}
-+	}
- 
- 	/* beacon period */
- 	req->beaconperiod.status = P80211ENUM_msgitem_status_data_ok;
+They are 2 or 5 port IEEE 802.3 clause 22 compliant
+10BASE-Te, 100BASE-TX and 1000BASE-T PHY-s.
+
+They feature 2 SerDes, one for PSGMII or QSGMII connection with MAC,
+while second one is SGMII for connection to MAC or fiber.
+
+Both models have a combo port that supports 1000BASE-X and 100BASE-FX
+fiber.
+
+Each PHY inside of QCA807x series has 2 digitally controlled output only
+pins that natively drive LED-s.
+But some vendors used these to driver generic LED-s controlled by
+user space, so lets enable registering each PHY as GPIO controller and
+add driver for it.
+
+Robert Marko (4):
+  dt-bindings: net: Add QCA807x PHY
+  dt-bindings: net: Add bindings for Qualcomm QCA807x
+  net: phy: Add Qualcomm QCA807x driver
+  MAINTAINERS: Add entry for Qualcomm QCA807x PHY driver
+
+ .../devicetree/bindings/net/qcom,qca807x.yaml |  88 ++
+ MAINTAINERS                                   |   9 +
+ drivers/net/phy/Kconfig                       |  10 +
+ drivers/net/phy/Makefile                      |   1 +
+ drivers/net/phy/qca807x.c                     | 811 ++++++++++++++++++
+ include/dt-bindings/net/qcom-qca807x.h        |  45 +
+ 6 files changed, 964 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/qcom,qca807x.yaml
+ create mode 100644 drivers/net/phy/qca807x.c
+ create mode 100644 include/dt-bindings/net/qcom-qca807x.h
+
 -- 
-2.25.1
+2.29.2
 
