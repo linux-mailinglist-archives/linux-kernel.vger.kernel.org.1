@@ -2,115 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 219312E0EF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 20:27:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B1292E0EFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 20:29:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727762AbgLVT0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 14:26:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726958AbgLVT03 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 14:26:29 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C87C0613D3;
-        Tue, 22 Dec 2020 11:25:48 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id 23so34505642lfg.10;
-        Tue, 22 Dec 2020 11:25:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9+keXiLEk5gQGJPiWQkNdVYaSlolI1HV8zcJ2QbRMaQ=;
-        b=cwmcOiIr56V+aHnviMOFhw4VD72whd2PBync3o2+Hbov28yOUg+OUoW9TCbUrF9P1z
-         iCRrQp9DPbIlRmFAPpxKl10fINbO2txdguE4fAtCEdBTFYfMxy4ma+XExex7QQ3gFSeJ
-         nC5LDYQ+63FHdkW7zMlIxWgJ0wJ+v7KvHPjTJB+RafkLgtHDhMnywSssMjo/Gfn6wYeU
-         fDyHODxQh4aeFeVk6uVvyTBf9nNKrE+DRPAEGtvHoNOFhgLj6Swvyjx1qn8C2H09a4Ev
-         ICJ8rRt14rTpnFJqgWe75rftGv5vf1RMl4t91L00Om2U2JCDPdmm82uzrx5BnSy8/cQ3
-         JgNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9+keXiLEk5gQGJPiWQkNdVYaSlolI1HV8zcJ2QbRMaQ=;
-        b=i9Oc3P2NaujvYsRnOqhStWJY6CUP4BdMtcCehalOLlCrsIAmOBkWSAf7yP+LES/vUY
-         nZ0aOStVL382b7N4g2bMwszbAbmz6FrQCQMUAZYzhHuzFVO4wJVT+g9fskHQ0BEdxSZI
-         u/gxl5jjpSgnWVFtGz5c6YhCJ8fvKV7Wjg0c9DbY01Ou3KjBaHyZsQF5SHIFaecsjN3W
-         2jjZ6LMiRGFZ5PUPaYtCM1lMhIW3bbMaVD2VRq5iT9u76RyBH+NY/sEf+wJ2FQq0/ILG
-         qBzOpFQB+sRloHCRMMxpIvL6qSphEJ/cRZKE74O2our2hwg/792PAAUclZbEFV28Rqz4
-         jXGQ==
-X-Gm-Message-State: AOAM530VLw33VXeYoMGS3VYCQP+gSGdREYWdskHfSjx+NYkUGde4145I
-        IY5UvnInMaOB+m7YB/1ewDKi7KHN0U4=
-X-Google-Smtp-Source: ABdhPJyXtIjDqUhu/7BRrpZ/tJi+1x7pRk7GyjlCea8ARaozHJ2tNG8EUYgfA3mlRH1V24zHnzlI9w==
-X-Received: by 2002:a2e:b8d3:: with SMTP id s19mr10050098ljp.35.1608665147257;
-        Tue, 22 Dec 2020 11:25:47 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.googlemail.com with ESMTPSA id d23sm3012942ljj.24.2020.12.22.11.25.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Dec 2020 11:25:46 -0800 (PST)
-Subject: Re: [PATCH v2 44/48] ARM: tegra: Add OPP tables and power domains to
- Tegra30 device-tree
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-clk@vger.kernel.org
-References: <20201217180638.22748-1-digetx@gmail.com>
- <20201217180638.22748-45-digetx@gmail.com>
- <20201222091408.vvputqs27olywdxq@vireshk-i7>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <c00dbbb3-88fc-6606-e5b1-dcd6a3e60383@gmail.com>
-Date:   Tue, 22 Dec 2020 22:25:45 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        id S1727770AbgLVT2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 14:28:09 -0500
+Received: from foss.arm.com ([217.140.110.172]:39142 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725811AbgLVT2I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 14:28:08 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C19081FB;
+        Tue, 22 Dec 2020 11:27:22 -0800 (PST)
+Received: from [10.57.34.90] (unknown [10.57.34.90])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D97A93F6CF;
+        Tue, 22 Dec 2020 11:27:20 -0800 (PST)
+Subject: Re: [PATCH v2 3/7] iommu/arm-smmu: Add dependency on io-pgtable
+ format modules
+To:     "Isaac J. Manjarres" <isaacm@codeaurora.org>,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     will@kernel.org, joro@8bytes.org, pdaly@codeaurora.org,
+        pratikp@codeaurora.org, kernel-team@android.com
+References: <1608597876-32367-1-git-send-email-isaacm@codeaurora.org>
+ <1608597876-32367-4-git-send-email-isaacm@codeaurora.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <3b0c191d-3fd0-73db-c1e3-4a80aa7953d7@arm.com>
+Date:   Tue, 22 Dec 2020 19:27:18 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20201222091408.vvputqs27olywdxq@vireshk-i7>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1608597876-32367-4-git-send-email-isaacm@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-22.12.2020 12:14, Viresh Kumar пишет:
-> On 17-12-20, 21:06, Dmitry Osipenko wrote:
->> diff --git a/arch/arm/boot/dts/tegra30-peripherals-opp.dtsi b/arch/arm/boot/dts/tegra30-peripherals-opp.dtsi
->> index cbe84d25e726..983db1a06682 100644
->> --- a/arch/arm/boot/dts/tegra30-peripherals-opp.dtsi
->> +++ b/arch/arm/boot/dts/tegra30-peripherals-opp.dtsi
->> @@ -1,6 +1,56 @@
->>  // SPDX-License-Identifier: GPL-2.0
->>  
->>  / {
->> +	core_opp_table: core-power-domain-opp-table {
->> +		compatible = "operating-points-v2";
->> +		opp-shared;
->> +
->> +		core_opp_950: opp@950000 {
->> +			opp-microvolt = <950000 950000 1350000>;
->> +			opp-level = <950000>;
+On 2020-12-22 00:44, Isaac J. Manjarres wrote:
+> The SMMU driver depends on the availability of the ARM LPAE and
+> ARM V7S io-pgtable format code to work properly. In preparation
+
+Nit: we don't really depend on v7s - we *can* use it if it's available, 
+address constraints are suitable, and the SMMU implementation actually 
+supports it (many don't), but we can still quite happily not use it even 
+so. LPAE is mandatory in the architecture so that's our only hard 
+requirement, embodied in the kconfig select.
+
+This does mean there may technically still be a corner case involving 
+ARM_SMMU=y and IO_PGTABLE_ARM_V7S=m, but at worst it's now a runtime 
+failure rather than a build error, so unless and until anyone 
+demonstrates that it actually matters I don't feel particularly inclined 
+to give it much thought.
+
+Robin.
+
+> for having the io-pgtable formats as modules, add a "pre"
+> dependency with MODULE_SOFTDEP() to ensure that the io-pgtable
+> format modules are loaded before loading the ARM SMMU driver module.
 > 
-> Perhaps you don't need to exactly copy the voltage value into the level field.
-> The level field can just be kept to 0, 1,2, 3, etc..
-
-It's much more convenient to set both fields to the same value because
-the level values are shown in GENPD debugfs and the 0,1,2 values are
-meaningless from the debugging perspective.
-
+> Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
+> ---
+>   drivers/iommu/arm/arm-smmu/arm-smmu.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> index d8c6bfd..a72649f 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> @@ -2351,3 +2351,4 @@ MODULE_DESCRIPTION("IOMMU API for ARM architected SMMU implementations");
+>   MODULE_AUTHOR("Will Deacon <will@kernel.org>");
+>   MODULE_ALIAS("platform:arm-smmu");
+>   MODULE_LICENSE("GPL v2");
+> +MODULE_SOFTDEP("pre: io-pgtable-arm io-pgtable-arm-v7s");
+> 
