@@ -2,319 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A62EA2E0DA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 18:06:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC692E0DB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 18:13:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727365AbgLVRGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 12:06:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35616 "EHLO
+        id S1727674AbgLVRMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 12:12:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726889AbgLVRGY (ORCPT
+        with ESMTP id S1727225AbgLVRMG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 12:06:24 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25502C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 09:05:44 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id q22so19193195eja.2
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 09:05:44 -0800 (PST)
+        Tue, 22 Dec 2020 12:12:06 -0500
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0384CC0613D6;
+        Tue, 22 Dec 2020 09:11:26 -0800 (PST)
+Received: by mail-il1-x12f.google.com with SMTP id q5so12597957ilc.10;
+        Tue, 22 Dec 2020 09:11:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jIW+vUoOdue2hhN/Ujgl1CaxmMgqO9c+436UlQtsK48=;
-        b=wTPC2qFpoYogKzqyjMg2r2smp3XDtjFTNO3+PywbsJVSsFgIqFmtafgGN1sryZOF8o
-         ClUaL4KLzwRAyOON74CjdIkXBsMKzcAxb9cuISs+VpD6fsTHYIsjhKUzGBMBD1lvXZBS
-         aCDkGWqJsKY3YJdhKTkt1su0OVv+W0DkwOZWLsj645EX8+aJLS7oInqk1cUimYoY3xsk
-         lila6e8I6Leg6QlJrGR3pJFTIO+hfEQwKgywF3iAOEwBPYSqbecZQQlcBAl6V9Kpb02K
-         4yap/4s7GjLjFApc3iMVmRhXF6BH/XmuCJQvrRQcTDcfD8LV8PMpK1Z6UdZc5BGrEGzQ
-         EhyQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AINn8Nb9q8jvWLVllpPnrH3quR2dm0zbu53bd3Z1QEM=;
+        b=OcnlWLaXZ87Ny1FYkp/STIe/tMokwF7G5NePJX6JueRCVHVN/2elCWq2SdIGJ+rY4C
+         WH+fYThmcMzOFbPb3aZDAq6R8Hp3I3GU3DhkM59IaSAEAtbu7D5R8mQQnLMg48Kf6Xck
+         aVYsLGe1sQph/M5JrGLLxs+Bo3SoQgp/0CT3j1pR8v2iXgXYoT4UM8F6JVi3oAki5C5S
+         WHMhCtf5tbsXXvY1cxBQbAUKF2aS8XdZBTAG5chy17i+MaSk/g1Yz3EZDvkaOoajYk1O
+         mF0zht+fjY0wjO6sfSUJsBROKOP/hzXMomaO0ly0MEx+7kxnrpVUCaMQIKiQw914b3Dy
+         v8pA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jIW+vUoOdue2hhN/Ujgl1CaxmMgqO9c+436UlQtsK48=;
-        b=p60xXK/2K981OmlCfUKOx/0IxfSj1yJJrmc1Aj3+WKNWy1QiRed8REWO6x8Ha4emOj
-         rLf6Twyp5o8oX9Jvd2gt7pawpCVPtXdS2k+4m0gcP8YHOklF6pklSA643xlTkgbMWGHN
-         SXhUOh5EuQmEliUlJtR+M1mudAtEdM894wJEs1lBENxkEQzTp0ddyrqabTYZmzPw5vNs
-         OIFyjjui5kvcHKNYr5JiIlaVIjMjniPpMO/qieYTiF9qi1HfdCgNytKXasbBlHMTJlt6
-         3i82k6aPdcMGjpV0pRjdjoRlXzMUypZNkV2Rc57nf/sbizmtPZH4A2QlHstayDgKgYUT
-         E1YQ==
-X-Gm-Message-State: AOAM533XpIVRaOwtYda5a8xlfMIvIgN205DF2toKTknyX75nd+aTsMFx
-        x9ZE4mWiIq/L5CNbAiK22R4bJA==
-X-Google-Smtp-Source: ABdhPJzFniJz8KrkwqHVsXeIYwZ/LAAwKLcxxE4ilqtqhkIjz7PMhLIP5MyxC8RNMafJOgU8He2xbA==
-X-Received: by 2002:a17:906:3f8d:: with SMTP id b13mr7539181ejj.464.1608656742735;
-        Tue, 22 Dec 2020 09:05:42 -0800 (PST)
-Received: from [192.168.0.41] (lns-bzn-59-82-252-148-164.adsl.proxad.net. [82.252.148.164])
-        by smtp.googlemail.com with ESMTPSA id i18sm16278580edt.68.2020.12.22.09.05.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Dec 2020 09:05:41 -0800 (PST)
-Subject: Re: [PATCH 1/6] thermal/core: Remove the 'forced_passive' option
-To:     rui.zhang@intel.com
-Cc:     mjg59@codon.org.uk, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, amitk@kernel.org,
-        thara.gopinath@linaro.org, Jonathan Corbet <corbet@lwn.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-References: <20201214233811.485669-1-daniel.lezcano@linaro.org>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <7fe76a95-fe92-386d-7ff7-4c2a0b478724@linaro.org>
-Date:   Tue, 22 Dec 2020 18:05:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AINn8Nb9q8jvWLVllpPnrH3quR2dm0zbu53bd3Z1QEM=;
+        b=MdxDozQCov6df3OGOOpUj29fCroOFn5Rjgm4xq1OuY4IgjBVTnFwqmSzcWvm25bsIq
+         zkAvOKxdbxMJnHx+8J5hCNU0sg+dODA2O4ldzKmNmJvlTlu0t16hB/B++O5g6L0kigrG
+         w38rkbqc5Dvd47mP9JLQ2iDUN5BiAgzkt3CdmOBpmamAwhUX1RNuBSqaenuMtSh762HQ
+         nb+cTpt1QqfyEIpouw4Lufwu+cvrdT9/KIz+LDW0f2EcrMT8HvR/ej21Y+vvyZDrIc/h
+         S6wZEp3w+sGzNppnqloRt3IkomBb6jtrleApTtNFuRfF8Y7DOtdBl3XUwJJSGEbJGBVv
+         ciDA==
+X-Gm-Message-State: AOAM533E/z3TuleBLVYkDAIitwNcTO/gj33M3/XD98Dw9L7QB/z/dQ1p
+        2bKd5tEaUMQC4fLKoydY2XtOfoZDQM9TbZUVAgIMAmTl+5E=
+X-Google-Smtp-Source: ABdhPJyjewsF6LN9BzDE3u42TsMLG/EfcpvoC9t225/gplNBE3msFizR70EcnejPc1vXA1P5F1kTLaVC8Y3sxdjTJRk=
+X-Received: by 2002:a92:512:: with SMTP id q18mr21940753ile.147.1608657085336;
+ Tue, 22 Dec 2020 09:11:25 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201214233811.485669-1-daniel.lezcano@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <1608064956-5512-1-git-send-email-milan.lakhani@codethink.co.uk>
+ <20201221095209.4dd4233e@lwn.net> <CAKXUXMwR9i5bJx+_rXkv4SK0yU1cHpGexH9RjsN7UFqJ-Ozsew@mail.gmail.com>
+ <7a6ab1d3-a5f5-d4ae-61e2-0a52419732f6@infradead.org>
+In-Reply-To: <7a6ab1d3-a5f5-d4ae-61e2-0a52419732f6@infradead.org>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Tue, 22 Dec 2020 18:11:14 +0100
+Message-ID: <CAKXUXMxU1EQ+n+AsiQWNPxx=iO-U_e1V6dwqABbn=uJ8CCxepw@mail.gmail.com>
+Subject: Re: [PATCH v2] Documentation: process: Correct numbering
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Milan Lakhani <milan.lakhani@codethink.co.uk>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-safety@lists.elisa.tech,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>,
+        Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/12/2020 00:38, Daniel Lezcano wrote:
-> The code was reorganized in 2012 with the commit 0c01ebbfd3caf1.
-> 
-> The main change is a loop on the trip points array and a unconditional
-> call to the throttle() ops of the governors for each of them even if
-> the trip temperature is not reached yet.
-> 
-> With this change, the 'forced_passive' is no longer checked in the
-> thermal_zone_device_update() function but in the step wise governor's
-> throttle() callback.
-> 
-> As the force_passive does no belong to the trip point array, the
-> thermal_zone_device_update() can not compare with the specified
-> passive temperature, thus does not detect the passive limit has been
-> crossed. Consequently, throttle() is never called and the
-> 'forced_passive' branch is unreached.
-> 
-> In addition, the default processor cooling device is not automatically
-> bound to the thermal zone if there is not passive trip point, thus the
-> 'forced_passive' can not operate.
-> 
-> If there is an active trip point, then the throttle function will be
-> called to mitigate at this temperature and the 'forced_passive' will
-> override the mitigation of the active trip point in this case but with
-> the default cooling device bound to the thermal zone, so usually a
-> fan, and that is not a passive cooling effect.
-> 
-> Given the regression exists since more than 8 years, nobody complained
-> and at the best of my knowledge there is no bug open in
-> https://bugzilla.kernel.org, it is reasonable to say it is unused.
-> 
-> Remove the 'forced_passive' related code.
-> 
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+On Tue, Dec 22, 2020 at 5:36 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> On 12/22/20 8:23 AM, Lukas Bulwahn wrote:
+> > On Mon, Dec 21, 2020 at 5:52 PM Jonathan Corbet <corbet@lwn.net> wrote:
+> >>
+> >> On Tue, 15 Dec 2020 20:42:36 +0000
+> >> Milan Lakhani <milan.lakhani@codethink.co.uk> wrote:
+> >>
+> >>> Renumber the steps in submit-checklist.rst as some numbers were skipped.
+> >>>
+> >>> Fixes: 72deb455b5ec ("block: remove CONFIG_LBDAF")
+> >>> Signed-off-by: Milan Lakhani <milan.lakhani@codethink.co.uk>
+> >>> ---
+> >>>  Documentation/process/submit-checklist.rst | 24 ++++++++++++------------
+> >>>  1 file changed, 12 insertions(+), 12 deletions(-)
+> >>>
+> >>> diff --git a/Documentation/process/submit-checklist.rst b/Documentation/process/submit-checklist.rst
+> >>> index 1879f88..230ee42 100644
+> >>> --- a/Documentation/process/submit-checklist.rst
+> >>> +++ b/Documentation/process/submit-checklist.rst
+> >>> @@ -75,44 +75,44 @@ and elsewhere regarding submitting Linux kernel patches.
+> >>>  13) Has been build- and runtime tested with and without ``CONFIG_SMP`` and
+> >>>      ``CONFIG_PREEMPT.``
+> >>>
+> >>> -16) All codepaths have been exercised with all lockdep features enabled.
+> >>> +14) All codepaths have been exercised with all lockdep features enabled.
+> >>>
+> >>> -17) All new ``/proc`` entries are documented under ``Documentation/``
+> >>> +15) All new ``/proc`` entries are documented under ``Documentation/``
+> >> [...]
+> >>
+> >> I've applied this, but, if you're going to stick a "Fixes" tag onto a
+> >> patch, it's probably only polite to copy the original author.  I'm not
+> >> fully convinced that the tag is warranted in this case.
+> >>
+> >> This document seems out of date in a number of ways; it could really use a
+> >> rather more thorough updating than this.
+> >>
+> >
+> > Jon, I completely agree on your out-of-date comment. That is why we
+> > pointed Milan to that checklist to start with some small basic changes
+> > and continue with increasingly more challenging and complex updates.
+> >
+> > Milan, next update for you to consider: what does "make headers_check"
+> > do nowadays? (spoiler alert: it does nothing) Adjust the documentation
+> > for that.
+> >
+> > Then, a more general improvement: think about structuring the
+> > checklist to follow the structure of the other submission guidelines.
+> > So, reorder the current checklist and check if the step is mentioned
+> > in submitting-patches and where and make the checklist much more
+> > aligned to submitting-patches.
+>
+> Please do not move item #1. It is #1 for a reason.
+>
 
-Is there any concern with this series ?
+Randy, thanks for your hint.
 
+We will consider that. I never considered this list ordered by
+priority but maybe somebody did really consider it with those
+priorities. To me, it seemed rather randomly sorted (with some
+duplicates) or somehow sorted by the various topics a patch might
+touch (e.g., some rules on Kconfig, then some rules for device
+drivers, then some on documenting APIs, then some on testing options).
 
-> ---
->  .../driver-api/thermal/sysfs-api.rst          | 13 ---
->  drivers/thermal/gov_step_wise.c               | 14 +---
->  drivers/thermal/thermal_sysfs.c               | 80 -------------------
->  include/linux/thermal.h                       |  4 -
->  4 files changed, 3 insertions(+), 108 deletions(-)
-> 
-> diff --git a/Documentation/driver-api/thermal/sysfs-api.rst b/Documentation/driver-api/thermal/sysfs-api.rst
-> index e7520cb439ac..a4969c474cc3 100644
-> --- a/Documentation/driver-api/thermal/sysfs-api.rst
-> +++ b/Documentation/driver-api/thermal/sysfs-api.rst
-> @@ -520,19 +520,6 @@ available_policies
->  
->  	RW, Optional
->  
-> -passive
-> -	Attribute is only present for zones in which the passive cooling
-> -	policy is not supported by native thermal driver. Default is zero
-> -	and can be set to a temperature (in millidegrees) to enable a
-> -	passive trip point for the zone. Activation is done by polling with
-> -	an interval of 1 second.
-> -
-> -	Unit: millidegrees Celsius
-> -
-> -	Valid values: 0 (disabled) or greater than 1000
-> -
-> -	RW, Optional
-> -
->  emul_temp
->  	Interface to set the emulated temperature method in thermal zone
->  	(sensor). After setting this temperature, the thermal zone may pass
-> diff --git a/drivers/thermal/gov_step_wise.c b/drivers/thermal/gov_step_wise.c
-> index 2ae7198d3067..12acb12aac50 100644
-> --- a/drivers/thermal/gov_step_wise.c
-> +++ b/drivers/thermal/gov_step_wise.c
-> @@ -109,7 +109,7 @@ static void update_passive_instance(struct thermal_zone_device *tz,
->  	 * If value is +1, activate a passive instance.
->  	 * If value is -1, deactivate a passive instance.
->  	 */
-> -	if (type == THERMAL_TRIP_PASSIVE || type == THERMAL_TRIPS_NONE)
-> +	if (type == THERMAL_TRIP_PASSIVE)
->  		tz->passive += value;
->  }
->  
-> @@ -122,13 +122,8 @@ static void thermal_zone_trip_update(struct thermal_zone_device *tz, int trip)
->  	bool throttle = false;
->  	int old_target;
->  
-> -	if (trip == THERMAL_TRIPS_NONE) {
-> -		trip_temp = tz->forced_passive;
-> -		trip_type = THERMAL_TRIPS_NONE;
-> -	} else {
-> -		tz->ops->get_trip_temp(tz, trip, &trip_temp);
-> -		tz->ops->get_trip_type(tz, trip, &trip_type);
-> -	}
-> +	tz->ops->get_trip_temp(tz, trip, &trip_temp);
-> +	tz->ops->get_trip_type(tz, trip, &trip_type);
->  
->  	trend = get_tz_trend(tz, trip);
->  
-> @@ -189,9 +184,6 @@ static int step_wise_throttle(struct thermal_zone_device *tz, int trip)
->  
->  	thermal_zone_trip_update(tz, trip);
->  
-> -	if (tz->forced_passive)
-> -		thermal_zone_trip_update(tz, THERMAL_TRIPS_NONE);
-> -
->  	mutex_lock(&tz->lock);
->  
->  	list_for_each_entry(instance, &tz->thermal_instances, tz_node)
-> diff --git a/drivers/thermal/thermal_sysfs.c b/drivers/thermal/thermal_sysfs.c
-> index 0866e949339b..4e7f9e880d76 100644
-> --- a/drivers/thermal/thermal_sysfs.c
-> +++ b/drivers/thermal/thermal_sysfs.c
-> @@ -216,49 +216,6 @@ trip_point_hyst_show(struct device *dev, struct device_attribute *attr,
->  	return ret ? ret : sprintf(buf, "%d\n", temperature);
->  }
->  
-> -static ssize_t
-> -passive_store(struct device *dev, struct device_attribute *attr,
-> -	      const char *buf, size_t count)
-> -{
-> -	struct thermal_zone_device *tz = to_thermal_zone(dev);
-> -	int state;
-> -
-> -	if (sscanf(buf, "%d\n", &state) != 1)
-> -		return -EINVAL;
-> -
-> -	/* sanity check: values below 1000 millicelcius don't make sense
-> -	 * and can cause the system to go into a thermal heart attack
-> -	 */
-> -	if (state && state < 1000)
-> -		return -EINVAL;
-> -
-> -	if (state && !tz->forced_passive) {
-> -		if (!tz->passive_delay)
-> -			tz->passive_delay = 1000;
-> -		thermal_zone_device_rebind_exception(tz, "Processor",
-> -						     sizeof("Processor"));
-> -	} else if (!state && tz->forced_passive) {
-> -		tz->passive_delay = 0;
-> -		thermal_zone_device_unbind_exception(tz, "Processor",
-> -						     sizeof("Processor"));
-> -	}
-> -
-> -	tz->forced_passive = state;
-> -
-> -	thermal_zone_device_update(tz, THERMAL_EVENT_UNSPECIFIED);
-> -
-> -	return count;
-> -}
-> -
-> -static ssize_t
-> -passive_show(struct device *dev, struct device_attribute *attr,
-> -	     char *buf)
-> -{
-> -	struct thermal_zone_device *tz = to_thermal_zone(dev);
-> -
-> -	return sprintf(buf, "%d\n", tz->forced_passive);
-> -}
-> -
->  static ssize_t
->  policy_store(struct device *dev, struct device_attribute *attr,
->  	     const char *buf, size_t count)
-> @@ -403,7 +360,6 @@ static DEVICE_ATTR_RW(sustainable_power);
->  
->  /* These thermal zone device attributes are created based on conditions */
->  static DEVICE_ATTR_RW(mode);
-> -static DEVICE_ATTR_RW(passive);
->  
->  /* These attributes are unconditionally added to a thermal zone */
->  static struct attribute *thermal_zone_dev_attrs[] = {
-> @@ -438,45 +394,9 @@ static const struct attribute_group thermal_zone_mode_attribute_group = {
->  	.attrs = thermal_zone_mode_attrs,
->  };
->  
-> -/* We expose passive only if passive trips are present */
-> -static struct attribute *thermal_zone_passive_attrs[] = {
-> -	&dev_attr_passive.attr,
-> -	NULL,
-> -};
-> -
-> -static umode_t thermal_zone_passive_is_visible(struct kobject *kobj,
-> -					       struct attribute *attr,
-> -					       int attrno)
-> -{
-> -	struct device *dev = kobj_to_dev(kobj);
-> -	struct thermal_zone_device *tz;
-> -	enum thermal_trip_type trip_type;
-> -	int count, passive = 0;
-> -
-> -	tz = container_of(dev, struct thermal_zone_device, device);
-> -
-> -	for (count = 0; count < tz->trips && !passive; count++) {
-> -		tz->ops->get_trip_type(tz, count, &trip_type);
-> -
-> -		if (trip_type == THERMAL_TRIP_PASSIVE)
-> -			passive = 1;
-> -	}
-> -
-> -	if (!passive)
-> -		return attr->mode;
-> -
-> -	return 0;
-> -}
-> -
-> -static const struct attribute_group thermal_zone_passive_attribute_group = {
-> -	.attrs = thermal_zone_passive_attrs,
-> -	.is_visible = thermal_zone_passive_is_visible,
-> -};
-> -
->  static const struct attribute_group *thermal_zone_attribute_groups[] = {
->  	&thermal_zone_attribute_group,
->  	&thermal_zone_mode_attribute_group,
-> -	&thermal_zone_passive_attribute_group,
->  	/* This is not NULL terminated as we create the group dynamically */
->  };
->  
-> diff --git a/include/linux/thermal.h b/include/linux/thermal.h
-> index c80032322158..a57232a9a6f9 100644
-> --- a/include/linux/thermal.h
-> +++ b/include/linux/thermal.h
-> @@ -131,9 +131,6 @@ struct thermal_cooling_device {
->  			trip point.
->   * @prev_high_trip:	the above current temperature if you've crossed a
->  			passive trip point.
-> - * @forced_passive:	If > 0, temperature at which to switch on all ACPI
-> - *			processor cooling devices.  Currently only used by the
-> - *			step-wise governor.
->   * @need_update:	if equals 1, thermal_zone_device_update needs to be invoked.
->   * @ops:	operations this &thermal_zone_device supports
->   * @tzp:	thermal zone parameters
-> @@ -167,7 +164,6 @@ struct thermal_zone_device {
->  	int passive;
->  	int prev_low_trip;
->  	int prev_high_trip;
-> -	unsigned int forced_passive;
->  	atomic_t need_update;
->  	struct thermal_zone_device_ops *ops;
->  	struct thermal_zone_params *tzp;
-> 
+Interestingly, I could not find any mention of checklist item #1 in
+development-process.rst and further linked pages, despite it being
+very explicit on various other points.
 
+Just for the record on my investigation, it is also not mentioned in
+submitting-patches, which I did not expect, though, because that guide
+touches more on the specific stage of preparing a submission than on
+the creation of a code change.
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+So, if item #1 is so important to the development process, it might
+deserve to be mentioned elsewhere with some explanation as well.
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Side remark: I am also wondering if a clang-tidy check could actually
+check that property of proper includes with a quick rule; that would
+be a nice showcase for clang-tidy if that can be implemented quickly.
+
+Milan, you see there is quite some potential work here.
+
+Milan, maybe you can find some good way of structuring the checklist
+and make sure that #1 is still clear to be most important.
+
+I am happy to assist you, Milan, on improving this checklist.
+
+Lukas
