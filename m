@@ -2,145 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A82382E0C6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 16:09:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 804B02E0C72
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 16:09:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727891AbgLVPIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 10:08:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726920AbgLVPIs (ORCPT
+        id S1728057AbgLVPJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 10:09:04 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:26748 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727715AbgLVPJD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 10:08:48 -0500
-Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2FA8C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 07:08:08 -0800 (PST)
-Received: by mail-ua1-x933.google.com with SMTP id f16so4437802uav.12
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 07:08:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Vg4rXkTJ1RSjS9v+aXpVjxDf/4HIRC34j1tsJCwhiy0=;
-        b=EEq/OnT3s6THYE1mfOGdHX0XzUpZjLU87XJ256AUL7ssWp2wb2sMsIaLH7B8+h8Wwd
-         enqIS47nOCOHDhZX40eV9wnaBYjsWPLshftZBceKLyVTfTG4eVoILyo0N2Fh4+Ey6vO/
-         ODn+vaVqXEBho4XxnQXXbXA+KiLBSu+lht3FqsFwpQJ/gd6txg+WdVPNtfcCQaCrhkyU
-         Yz9vBgppwOVSoSGrIBuITgFlV/RT49VH8HkFZdqmY5MTVyR4aCC3KcImNdQcEOUzojYR
-         ygE9A1+NGYEDLUPBX915EnpUuk9gER/h2ZLvWVvylmK1SeNeIEOxPSPhXH2SoAKk8zXa
-         bsag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Vg4rXkTJ1RSjS9v+aXpVjxDf/4HIRC34j1tsJCwhiy0=;
-        b=hDlSswO/tr0aUaMqu9rsCXTK2+qGaUqqsItYLTEzhyk441AeBzwlKHNNP5CVFbFXGG
-         ec/wcyNkdkCtSGSlniWe9WvNyQo78YEl6YG4Px2dvLmiGd96RzXDWrdLkHP10UUxVLUN
-         7PoIG8QmckmQqbeGXPRBIc1VkTL8KeValAOHgb00vJO7WxwCXLNIYLP3u/tYs9fpjytG
-         ULws8vjevKIOVG8zRsgSk75Q3+UWDtaZ2aWjzzqeWWXs9C/bgQc3+rcgTJ0dRivRHlxc
-         sHrRMZoxnzq6lELt7WX8bkOEOCUnqMM6VB3XnX9XuQEX/cs9LRwyv29foZ22o8iR+5CC
-         n/1g==
-X-Gm-Message-State: AOAM5325V8Fbaf2y7lszayMg6fHwUPGwfAy1qbDoyoVuHOk91IWyvXQh
-        u8iUcGuWcdhfG6M688mL7YH8VE0GEvWWiOjfpXU=
-X-Google-Smtp-Source: ABdhPJz7xctMff6Y7t2PkT1UIdR/DFlB2RTAjl6gmUJvTWVB3c2qtLBZ7l29fXx5kKdM7Vs7cVMi+hNqyO3ISBvXGsY=
-X-Received: by 2002:ab0:1c0a:: with SMTP id a10mr15591875uaj.89.1608649687685;
- Tue, 22 Dec 2020 07:08:07 -0800 (PST)
+        Tue, 22 Dec 2020 10:09:03 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1608649722; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
+ To: From: Sender; bh=ZlCng/8clulWrjBwm8L11jZK1Evn1oWxnBMS0ZVA4DU=; b=AsQB8JHC1nrA6bSbo/A16rpAonwIoPsZx6cQ3Hz3QYASkSs8tBeH4vGWq16KY/8ire4jGahf
+ uTHpbxo74RiaUeAb2v/Rwl6mKo/DkyNEJfDtTmUckgcL6Su2uNlkDyPphue3WHl/qfIQyH0y
+ 3Xrzocoj3fHxciZa1Y5Fkx2Ngmo=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5fe20bd2b00c0d7ad40ad45b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Dec 2020 15:08:02
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 05981C433ED; Tue, 22 Dec 2020 15:08:02 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from x230.qca.qualcomm.com (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 587E1C433C6;
+        Tue, 22 Dec 2020 15:07:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 587E1C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-mmc@vger.kernel.org,
+        Pali =?utf-8?Q?Roh?= =?utf-8?Q?=C3=A1r?= <pali@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: Re: [PATCH v3 05/24] wfx: add main.c/main.h
+References: <20201104155207.128076-1-Jerome.Pouiller@silabs.com>
+        <20201104155207.128076-6-Jerome.Pouiller@silabs.com>
+Date:   Tue, 22 Dec 2020 17:07:56 +0200
+In-Reply-To: <20201104155207.128076-6-Jerome.Pouiller@silabs.com> (Jerome
+        Pouiller's message of "Wed, 4 Nov 2020 16:51:48 +0100")
+Message-ID: <87pn3198vn.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-References: <20201222121904.50845-1-qianjun.kernel@gmail.com>
-In-Reply-To: <20201222121904.50845-1-qianjun.kernel@gmail.com>
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-Date:   Tue, 22 Dec 2020 20:37:55 +0530
-Message-ID: <CAFqt6zbVSnHoU54ZaOEcHAEvO96h0X6wQaNrjxqgGkgmD4Vqdw@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm:improve the performance during fork
-To:     qianjun.kernel@gmail.com
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 5:49 PM <qianjun.kernel@gmail.com> wrote:
->
-> From: jun qian <qianjun.kernel@gmail.com>
->
-> In our project, Many business delays come from fork, so
-> we started looking for the reason why fork is time-consuming.
-> I used the ftrace with function_graph to trace the fork, found
-> that the vm_normal_page will be called tens of thousands and
-> the execution time of this vm_normal_page function is only a
-> few nanoseconds. And the vm_normal_page is not a inline function.
-> So I think if the function is inline style, it maybe reduce the
-> call time overhead.
->
-> I did the following experiment:
->
-> I have wrote the c test code, pls ignore the memory leak :)
-> Before fork, I will malloc 4G bytes, then acculate the fork
-> time.
->
-> int main()
-> {
->         char *p;
->         unsigned long long i=0;
->         float time_use=0;
->         struct timeval start;
->         struct timeval end;
->
->         for(i=0; i<LEN; i++) {
->                 p = (char *)malloc(4096);
->                 if (p == NULL) {
->                         printf("malloc failed!\n");
->                         return 0;
->                 }
->                 p[0] = 0x55;
->         }
->         gettimeofday(&start,NULL);
->         fork();
->         gettimeofday(&end,NULL);
->
->         time_use=(end.tv_sec * 1000000 + end.tv_usec) -
->                 (start.tv_sec * 1000000 + start.tv_usec);
->         printf("time_use is %.10f us\n",time_use);
->
->         return 0;
-> }
->
-> We need to compare the changes in the size of vmlinux, the time of
-> fork in inline and non-inline cases, and the vm_normal_page will be
-> called in many function. So we also need to compare this function's
-> size. For examples, the do_wp_page will call vm_normal_page, so I
-> also calculated it's size.
->
->                   inline           non-inline       diff
-> vmlinux size      9709248 bytes    9709824 bytes    -576 bytes
-> fork time         23475ns          24638ns          -4.7%
+Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
 
-Do you have time diff for both parent and child process ?
+> From: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
+>
+> Signed-off-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
 
-> do_wp_page size   972              743              +229
->
-> According to the above test data, I think inline vm_normal_page can
-> reduce fork execution time.
->
-> Signed-off-by: jun qian <qianjun.kernel@gmail.com>
-> ---
->  mm/memory.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 7d608765932b..a689bb5d3842 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -591,7 +591,7 @@ static void print_bad_pte(struct vm_area_struct *vma, unsigned long addr,
->   * PFNMAP mappings in order to support COWable mappings.
->   *
->   */
-> -struct page *vm_normal_page(struct vm_area_struct *vma, unsigned long addr,
-> +inline struct page *vm_normal_page(struct vm_area_struct *vma, unsigned long addr,
->                             pte_t pte)
->  {
->         unsigned long pfn = pte_pfn(pte);
-> --
-> 2.18.2
->
->
+[...]
+
+> +static const struct ieee80211_supported_band wfx_band_2ghz =3D {
+> +	.channels =3D wfx_2ghz_chantable,
+> +	.n_channels =3D ARRAY_SIZE(wfx_2ghz_chantable),
+> +	.bitrates =3D wfx_rates,
+> +	.n_bitrates =3D ARRAY_SIZE(wfx_rates),
+> +	.ht_cap =3D {
+> +		// Receive caps
+
+This driver is full of C++ comments, please convert them to network
+style comments. More info in the coding style doc.
+
+--=20
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes
