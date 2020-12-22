@@ -2,78 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2A2E2E0FDF
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 22:40:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34FDB2E0FE0
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 22:40:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728004AbgLVVjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 16:39:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49336 "EHLO
+        id S1728047AbgLVVkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 16:40:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727344AbgLVVjU (ORCPT
+        with ESMTP id S1727787AbgLVVkL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 16:39:20 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32D1C0613D3;
-        Tue, 22 Dec 2020 13:38:39 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1krpMZ-003KnC-QC; Tue, 22 Dec 2020 21:38:35 +0000
-Date:   Tue, 22 Dec 2020 21:38:35 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     "Maciej W. Rozycki" <macro@linux-mips.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linux-mips@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCHSET] saner elf compat
-Message-ID: <20201222213835.GU3579531@ZenIV.linux.org.uk>
-References: <20201203214529.GB3579531@ZenIV.linux.org.uk>
- <CAHk-=wiRNT+-ahz2KRUE7buYJMZ84bp=h_vGLrAaOKW3n_xyXQ@mail.gmail.com>
- <20201203230336.GC3579531@ZenIV.linux.org.uk>
- <alpine.LFD.2.21.2012071741280.2104409@eddie.linux-mips.org>
- <20201216030154.GL3579531@ZenIV.linux.org.uk>
- <alpine.LFD.2.21.2012160924010.2104409@eddie.linux-mips.org>
- <20201222200431.GT3579531@ZenIV.linux.org.uk>
+        Tue, 22 Dec 2020 16:40:11 -0500
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8ABBC0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 13:39:30 -0800 (PST)
+Received: by mail-qk1-x72d.google.com with SMTP id v126so8785745qkd.11
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 13:39:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IImkDqRj3QCMRS+jrjWTLtSWZ54BkmhkfBRrueaoLMc=;
+        b=Ua+6WnvIc3bmGie5yp9mjitSfdDFtIab3LNvt4uGG52XInLY+sw1FPQ9HcpY2fhzPy
+         SDnguCyVZEdddT0gJx9buqyMCjj8hU7lqPH9cQyhb29iuN5DFk1Oju6T0gA3vMRLPV7P
+         Z0zBZ8JK/S6ueJSmH9q4HY46jNe3Eu1U2pTkGL6yflctjVZLHi1ieL0CIQbvy1aQy8QJ
+         taqmdMTr0y/usDErAU4lO/QDOazToIvYpJiCFG6CKZWXkvGTRg/Z7IEqyuqfwWfJUBut
+         PRPwUDWjWjkjvnU5okVfPToe1W7sb1snsHHQDhoc1xfi1ecJ43YRnCBAHIahF24H+h9W
+         7pUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IImkDqRj3QCMRS+jrjWTLtSWZ54BkmhkfBRrueaoLMc=;
+        b=MDPKUhmffvst/nEE61gMy97+htGBNse0qV08L1y04zx0Go5qM+dfcKGMrI5JWxkAqC
+         oKXHwD0NruSicuqgYjYKUUaKOH9EXkWzSHn7T3qjMON6cIn9ARFQVsm4NAmQSd+dBAtX
+         52PCbRio0wllIbyzA3j7GeL1z5kNoFc0KN4oab7JMyxUMHQbs+lCX1jmLLCtM1qDALnu
+         s/gq9Zx6VExXj+sgmVLEjEBFvYBKIEWvpdULuZuqOMNaubutwlfFXHX3t/x5EsXKKgZ0
+         3+kHl3K3FOWncEroPbmvngUxv5Mehkx9+X7q35z0VFko/wdtTthFdJpbhXILeY79PaVZ
+         0VwQ==
+X-Gm-Message-State: AOAM532o8+DISeYs1M1rK0UlEiULJVxFx7DCQemN4OTRVunvjFaj/YKs
+        Mq0Efa/J6tw/QeV7EcLSVup8t/wxKpscmBTjfNRb/zU+0is=
+X-Google-Smtp-Source: ABdhPJwDOo0ws/0+sWPaFvP9+qbOh1uDA3knqFJ4UvmT0yvZbb1QMfJcyWvrUWhvRU+rQrJpgF4BMRtcHUYkk4TPf9s=
+X-Received: by 2002:a37:7444:: with SMTP id p65mr12030908qkc.476.1608673170090;
+ Tue, 22 Dec 2020 13:39:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201222200431.GT3579531@ZenIV.linux.org.uk>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+References: <20201218170919.2950-1-jiangshanlai@gmail.com>
+In-Reply-To: <20201218170919.2950-1-jiangshanlai@gmail.com>
+From:   Dexuan-Linux Cui <dexuan.linux@gmail.com>
+Date:   Tue, 22 Dec 2020 13:39:19 -0800
+Message-ID: <CAA42JLa=r5c7_D5K1rHr5Tx5Enrib3rAdFZzajXumCq7-i-Q+g@mail.gmail.com>
+Subject: Re: [PATCH -tip V2 00/10] workqueue: break affinity initiatively
+To:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        Dexuan Cui <decui@microsoft.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Qian Cai <cai@redhat.com>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Hillf Danton <hdanton@sina.com>, Tejun Heo <tj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 08:04:31PM +0000, Al Viro wrote:
+On Fri, Dec 18, 2020 at 8:11 AM Lai Jiangshan <jiangshanlai@gmail.com> wrote:
+>
+> From: Lai Jiangshan <laijs@linux.alibaba.com>
+>
+> 06249738a41a ("workqueue: Manually break affinity on hotplug")
+> said that scheduler will not force break affinity for us.
+>
+> But workqueue highly depends on the old behavior. Many parts of the codes
+> relies on it, 06249738a41a ("workqueue: Manually break affinity on hotplug")
+> is not enough to change it, and the commit has flaws in itself too.
+>
+> It doesn't handle for worker detachment.
+> It doesn't handle for worker attachement, mainly worker creation
+>   which is handled by Valentin Schneider's patch [1].
+> It doesn't handle for unbound workers which might be possible
+> per-cpu-kthread.
+>
+> We need to thoroughly update the way workqueue handles affinity
+> in cpu hot[un]plug, what is this patchset intends to do and
+> replace the Valentin Schneider's patch [1].  The equivalent patch
+> is patch 10.
+>
+> Patch 1 fixes a flaw reported by Hillf Danton <hdanton@sina.com>.
+> I have to include this fix because later patches depends on it.
+>
+> The patchset is based on tip/master rather than workqueue tree,
+> because the patchset is a complement for 06249738a41a ("workqueue:
+> Manually break affinity on hotplug") which is only in tip/master by now.
+>
+> And TJ acked to route the series through tip.
+>
+> Changed from V1:
+>         Add TJ's acked-by for the whole patchset
+>
+>         Add more words to the comments and the changelog, mainly derived
+>         from discussion with Peter.
+>
+>         Update the comments as TJ suggested.
+>
+>         Update a line of code as Valentin suggested.
+>
+>         Add Valentin's ack for patch 10 because "Seems alright to me." and
+>         add Valentin's comments to the changelog which is integral.
+>
+> [1]: https://lore.kernel.org/r/ff62e3ee994efb3620177bf7b19fab16f4866845.camel@redhat.com
+> [V1 patcheset]: https://lore.kernel.org/lkml/20201214155457.3430-1-jiangshanlai@gmail.com/
+>
+> Cc: Hillf Danton <hdanton@sina.com>
+> Cc: Valentin Schneider <valentin.schneider@arm.com>
+> Cc: Qian Cai <cai@redhat.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Vincent Donnefort <vincent.donnefort@arm.com>
+> Cc: Tejun Heo <tj@kernel.org>
+>
+> Lai Jiangshan (10):
+>   workqueue: restore unbound_workers' cpumask correctly
+>   workqueue: use cpu_possible_mask instead of cpu_active_mask to break
+>     affinity
+>   workqueue: Manually break affinity on pool detachment
+>   workqueue: don't set the worker's cpumask when kthread_bind_mask()
+>   workqueue: introduce wq_online_cpumask
+>   workqueue: use wq_online_cpumask in restore_unbound_workers_cpumask()
+>   workqueue: Manually break affinity on hotplug for unbound pool
+>   workqueue: reorganize workqueue_online_cpu()
+>   workqueue: reorganize workqueue_offline_cpu() unbind_workers()
+>   workqueue: Fix affinity of kworkers when attaching into pool
+>
+>  kernel/workqueue.c | 214 ++++++++++++++++++++++++++++-----------------
+>  1 file changed, 132 insertions(+), 82 deletions(-)
+>
+> --
+> 2.19.1.6.gb485710b
 
-> FWIW, on debian/mips64el (both stretch and buster) the test fails with the
-> distro kernels (4.9- and 4.19-based) as well as with 5.10-rc1 and
-> 5.10-rc1+that series, all in the same way:
-> [Current thread is 1 (LWP 4154)]
-> (gdb) p/x foo
-> Cannot find thread-local storage for LWP 4154, executable file <pathname>
-> Cannot find thread-local variables on this target
-> 
-> buster has libc6-2.28, so that should be fine for the test in question
-> (libthread_db definitely recent enough).  That was n32 gdb; considering
-> how much time it had taken to build that sucker I hadn't tried o32
-> yet.
-> 
-> Note that it's not just with native coredumps - gcore-produced ones give
-> the same result.  That was gdb from binutils-gdb.git; I'm not familiar
-> with gdb guts to start debugging it, so if you have any suggestions
-> in that direction that do not include a full rebuild...  In any case,
-> I won't get around to that until the next week.
-> 
-> Incidentally, build time is bloody awful - 3 days, with qemu-3.1 on
-> 3.5GHz amd64 host, all spent pretty much entirely in userland (both
-> from guest and host POV).  g++-8 is atrociously slow...
-> 
-> That said, I don't see what in that series could possibly mess the
-> things up for tls, while leaving the registers working; the only
-> thing that realistically might've been fucked up is prstatus layout
-> (and possibly size), and that would've screwed the registers as
-> well.
+Hi,
+I tested this patchset on today's tip.git's master branch
+(981316394e35 ("Merge branch 'locking/urgent'")).
 
-... and it smells like the damn thing needs n32 debug info from libthread_db.so
-and/or libpthread.so.  Which is not packaged by debian libc6 mips64el build.
-Sorry, any debugging of that crap is going to happen in January ;-/
+Every time the kernel boots with 32 CPUs (I'm running the Linux VM on
+Hyper-V), I get the below warning.
+(BTW, with 8 or 16 CPUs, I don't see the warning).
+By printing the cpumasks with "%*pbl", I know the warning happens because:
+new_mask = 16-31
+cpu_online_mask= 0-16
+cpu_active_mask= 0-15
+p->nr_cpus_allowed=16
+
+2374         if (p->flags & PF_KTHREAD) {
+2375                 /*
+2376                  * For kernel threads that do indeed end up on online &&
+2377                  * !active we want to ensure they are strict
+per-CPU threads.
+2378                  */
+2379                 WARN_ON(cpumask_intersects(new_mask, cpu_online_mask) &&
+2380                         !cpumask_intersects(new_mask, cpu_active_mask) &&
+2381                         p->nr_cpus_allowed != 1);
+2382         }
+2383
+
+(FWIW, it looks like this patchset can fix a panic I noticed during
+hibernation:
+https://lkml.org/lkml/2020/12/22/141, though I see the same warning
+during hibernation.)
+
+[    1.698042] smp: Bringing up secondary CPUs ...
+[    1.701707] x86: Booting SMP configuration:
+[    1.705368] .... node  #0, CPUs:        #1  #2  #3  #4  #5  #6  #7
+#8  #9 #10 #11 #12 #13 #14 #15
+[    1.721589] .... node  #1, CPUs:   #16
+[    1.013388] smpboot: CPU 16 Converting physical 0 to logical die 1
+[    1.809716] ------------[ cut here ]------------
+[    1.813553] WARNING: CPU: 16 PID: 90 at kernel/sched/core.c:2381
+__set_cpus_allowed_ptr+0x19e/0x1b0
+[    1.813553] Modules linked in:
+[    1.813553] CPU: 16 PID: 90 Comm: cpuhp/16 Not tainted 5.10.0+ #1
+[    1.813553] Hardware name: Microsoft Corporation Virtual
+Machine/Virtual Machine, BIOS 090008  12/07/2018
+[    1.813553] RIP: 0010:__set_cpus_allowed_ptr+0x19e/0x1b0
+[    1.813553] Code: e8 e7 a3 39 00 85 c0 74 a7 ba 00 02 00 00 48 c7
+c6 20 4b 9b 84 4c 89 ff e8 cf a3 39 00 85 c0 75 8f 83 bb a0 03 00 00
+01 74 86 <0f> 0b eb 82 e8 49 ba 74 00 66 0f 1f 84 00 00 00 00 00 0f 1f
+44 00
+[    1.813553] RSP: 0000:ffffba9bc1ca7cf8 EFLAGS: 00010016
+[    1.813553] RAX: 0000000000000000 RBX: ffff98ed48d58000 RCX: 0000000000000008
+[    1.813553] RDX: 0000000000000200 RSI: ffffffff849b4b20 RDI: ffff98ed48d035a8
+[    1.813553] RBP: ffff98ed42a2ac00 R08: 0000000000000008 R09: 0000000000000008
+[    1.813553] R10: ffff98ed48d035a8 R11: ffffffff8484da40 R12: 0000000000000000
+[    1.813553] R13: 0000000000000010 R14: ffffffff849b4ba0 R15: ffff98ed48d035a8
+[    1.813553] FS:  0000000000000000(0000) GS:ffff98ee3aa00000(0000)
+knlGS:0000000000000000
+[    1.813553] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    1.813553] CR2: 0000000000000000 CR3: 000000019980a001 CR4: 00000000003706e0
+[    1.813553] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[    1.813553] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[    1.813553] Call Trace:
+[    1.813553]  worker_attach_to_pool+0x53/0xd0
+[    1.813553]  create_worker+0xf9/0x190
+[    1.813553]  alloc_unbound_pwq+0x3a5/0x3b0
+[    1.813553]  wq_update_unbound_numa+0x112/0x1c0
+[    1.813553]  workqueue_online_cpu+0x1d0/0x220
+[    1.813553]  ? workqueue_prepare_cpu+0x70/0x70
+[    1.813553]  cpuhp_invoke_callback+0x82/0x4a0
+[    1.813553]  ? sort_range+0x20/0x20
+[    1.813553]  cpuhp_thread_fun+0xb8/0x120
+[    1.813553]  smpboot_thread_fn+0x198/0x230
+[    1.813553]  kthread+0x13d/0x160
+[    1.813553]  ? kthread_create_on_node+0x60/0x60
+[    1.813553]  ret_from_fork+0x22/0x30
+[    1.813553] ---[ end trace bc73d8bab71235fe ]---
+[    1.817553]  #17 #18 #19 #20 #21 #22 #23 #24 #25 #26 #27 #28 #29 #30 #31
+[    1.826499] smp: Brought up 2 nodes, 32 CPUs
+[    1.833345] smpboot: Max logical packages: 2
+[    1.833574] smpboot: Total of 32 processors activated (146959.07 BogoMIPS)
+
+
+Thanks,
+Dexuan
