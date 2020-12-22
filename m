@@ -2,167 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4FA42E053B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 05:06:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 169A12E0540
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 05:07:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725937AbgLVEGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 23:06:12 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:30720 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725850AbgLVEGL (ORCPT
+        id S1725957AbgLVEHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 23:07:30 -0500
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:43949 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725785AbgLVEH3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 23:06:11 -0500
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BM42l9c089894;
-        Mon, 21 Dec 2020 23:05:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=DeTNwgybqVw97C4oNA36gGo6Ss+jL03FUh0IHNhc/vg=;
- b=l0u5RnbWX2cii3EYk3iFQ3OdSOs1xhXdicJXkj4SuxskkGFixLaZO/ODlvF0LhKkZJad
- bf7IW5bfaFdhUAsZDc8S1Q/5Y2x+aDFIqDFUtkS8O2HoUzQoUabqTe58uWOXC3XRtBmY
- FvTzCP/7ePxCufW9RN8mU3pci7H+EOe3TP25IWuRfRcN06dTHHAfTvqOAXh+PSmdWZLF
- EB9XuvPq5SuRaUdz7Rlp89+EMhHg/ylHr8PSkdabPVeUAE81MAVDFvzPPLbWWMBM5HiU
- rt7b/lyHveGuvB0q0dkTdDzxvyEulwS/rFaPt6EUxP4c5DDijd0ZCg0mwJDvyPA628w0 7Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35k8r9grkm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Dec 2020 23:05:28 -0500
-Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BM43GkB093502;
-        Mon, 21 Dec 2020 23:05:28 -0500
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35k8r9grjt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Dec 2020 23:05:28 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BM3wTlZ005600;
-        Tue, 22 Dec 2020 04:05:26 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06ams.nl.ibm.com with ESMTP id 35h8sh2ned-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Dec 2020 04:05:26 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BM45Ngh50397654
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 22 Dec 2020 04:05:23 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 93C7F5204E;
-        Tue, 22 Dec 2020 04:05:23 +0000 (GMT)
-Received: from oc2783563651 (unknown [9.171.5.180])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with SMTP id 0043B5204F;
-        Tue, 22 Dec 2020 04:05:22 +0000 (GMT)
-Date:   Tue, 22 Dec 2020 05:05:21 +0100
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, stable@vger.kernel.org,
-        borntraeger@de.ibm.com, cohuck@redhat.com, kwankhede@nvidia.com,
-        pbonzini@redhat.com, alex.williamson@redhat.com,
-        pasic@linux.vnet.ibm.com
-Subject: Re: [PATCH v4] s390/vfio-ap: clean up vfio_ap resources when KVM
- pointer invalidated
-Message-ID: <20201222050521.46af2bf1.pasic@linux.ibm.com>
-In-Reply-To: <20201221185625.24914-1-akrowiak@linux.ibm.com>
-References: <20201221185625.24914-1-akrowiak@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
+        Mon, 21 Dec 2020 23:07:29 -0500
+Received: by mail-ot1-f54.google.com with SMTP id q25so10817311otn.10;
+        Mon, 21 Dec 2020 20:07:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=q3IkBlOmHE3mDRbIb8lAHBUkpZJ3o80cNN5b/4sEG/I=;
+        b=j9Gg0OUtHoOw0PM6uk5aBZAoKIVgAS+aQ/cg8ESWVxBFUUcJCTksWdSqHAMGBt55fv
+         Vfb6BCyeailaRQuRWQ8D05fc6ZGU9A5Z8oUEejYbnk1qhSS0Hu8RKjGkT1pG0CZZ4dA2
+         6YqoJU23VuXfb3Y+2H/2HGSBhU83OkUXJjXLNLf6JEZKZQ6KXy1qoxb8t03WOq1SCq2k
+         Jb55mcpYVaI5g/IhPXLK+zlOsKL3M6a9QBaPCfzYITXKVwLyXcmPUYsSoSNBfDDEs1wM
+         dsWRThy1+w6lxVOHPECoUZh3vobeM/DOe5E/lK/rlTH2W8Q6Yi6OehcLTQqL5jjyIqyB
+         3eJQ==
+X-Gm-Message-State: AOAM530FcQ/nwrpMoEyDhW5Rr+rcNz/2DxelojGsrWkOqwR9qVv7ODHW
+        7qc7Tq7zPxkvZT/TwSdHYJ26sthN0g==
+X-Google-Smtp-Source: ABdhPJzc2AcXawDMexyhwX9kljUmHJGpp3yp74aSZqBghugGE4ma17w5UwkOCA62mhIs+ne0II6TKw==
+X-Received: by 2002:a05:6830:1189:: with SMTP id u9mr14233531otq.70.1608610007879;
+        Mon, 21 Dec 2020 20:06:47 -0800 (PST)
+Received: from xps15.herring.priv ([64.188.179.253])
+        by smtp.googlemail.com with ESMTPSA id m22sm4261765otr.79.2020.12.21.20.06.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Dec 2020 20:06:47 -0800 (PST)
+From:   Rob Herring <robh@kernel.org>
+To:     devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jassi Brar <jaswinder.singh@linaro.org>,
+        dri-devel@lists.freedesktop.org, dmaengine@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-usb@vger.kernel.org
+Subject: [PATCH] dt-bindings: Drop redundant maxItems/items
+Date:   Mon, 21 Dec 2020 21:06:45 -0700
+Message-Id: <20201222040645.1323611-1-robh@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-22_01:2020-12-21,2020-12-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- mlxscore=0 adultscore=0 mlxlogscore=999 bulkscore=0 lowpriorityscore=0
- malwarescore=0 spamscore=0 clxscore=1015 priorityscore=1501 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012220023
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Dec 2020 13:56:25 -0500
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+'maxItems' equal to the 'items' list length is redundant. 'maxItems' is
+preferred for a single entry while greater than 1 should have an 'items'
+list.
 
-> The vfio_ap device driver registers a group notifier with VFIO when the
-> file descriptor for a VFIO mediated device for a KVM guest is opened to
-> receive notification that the KVM pointer is set (VFIO_GROUP_NOTIFY_SET_KVM
-> event). When the KVM pointer is set, the vfio_ap driver takes the
-> following actions:
-> 1. Stashes the KVM pointer in the vfio_ap_mdev struct that holds the state
->    of the mediated device.
-> 2. Calls the kvm_get_kvm() function to increment its reference counter.
-> 3. Sets the function pointer to the function that handles interception of
->    the instruction that enables/disables interrupt processing.
-> 4. Sets the masks in the KVM guest's CRYCB to pass AP resources through to
->    the guest.
-> 
-> In order to avoid memory leaks, when the notifier is called to receive
-> notification that the KVM pointer has been set to NULL, the vfio_ap device
-> driver should reverse the actions taken when the KVM pointer was set.
-> 
-> Fixes: 258287c994de ("s390: vfio-ap: implement mediated device open callback")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
-> Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+A meta-schema check for this is pending once these existing cases are
+fixed.
 
-[..]
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Vinod Koul <vkoul@kernel.org>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jassi Brar <jaswinder.singh@linaro.org>
+Cc: dri-devel@lists.freedesktop.org
+Cc: dmaengine@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
+Cc: linux-usb@vger.kernel.org
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ .../devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.yaml    | 1 -
+ Documentation/devicetree/bindings/dma/renesas,rcar-dmac.yaml   | 1 -
+ Documentation/devicetree/bindings/mailbox/arm,mhu.yaml         | 1 -
+ .../devicetree/bindings/sound/nvidia,tegra30-hda.yaml          | 2 --
+ Documentation/devicetree/bindings/usb/renesas,usb-xhci.yaml    | 1 -
+ Documentation/devicetree/bindings/usb/renesas,usbhs.yaml       | 3 ---
+ 6 files changed, 9 deletions(-)
 
->  static int vfio_ap_mdev_group_notifier(struct notifier_block *nb,
->  				       unsigned long action, void *data)
->  {
-> -	int ret;
-> +	int ret, notify_rc = NOTIFY_DONE;
->  	struct ap_matrix_mdev *matrix_mdev;
->  
->  	if (action != VFIO_GROUP_NOTIFY_SET_KVM)
->  		return NOTIFY_OK;
->  
->  	matrix_mdev = container_of(nb, struct ap_matrix_mdev, group_notifier);
-> +	mutex_lock(&matrix_dev->lock);
->  
->  	if (!data) {
-> -		matrix_mdev->kvm = NULL;
-> -		return NOTIFY_OK;
-> +		if (matrix_mdev->kvm)
-> +			vfio_ap_mdev_unset_kvm(matrix_mdev);
-> +		notify_rc = NOTIFY_OK;
-> +		goto notify_done;
->  	}
->  
->  	ret = vfio_ap_mdev_set_kvm(matrix_mdev, data);
->  	if (ret)
-> -		return NOTIFY_DONE;
-> +		goto notify_done;
->  
->  	/* If there is no CRYCB pointer, then we can't copy the masks */
->  	if (!matrix_mdev->kvm->arch.crypto.crycbd)
-> -		return NOTIFY_DONE;
-> +		goto notify_done;
->  
->  	kvm_arch_crypto_set_masks(matrix_mdev->kvm, matrix_mdev->matrix.apm,
->  				  matrix_mdev->matrix.aqm,
->  				  matrix_mdev->matrix.adm);
->  
-> -	return NOTIFY_OK;
+diff --git a/Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.yaml b/Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.yaml
+index 7b9d468c3e52..403d57977ee7 100644
+--- a/Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.yaml
++++ b/Documentation/devicetree/bindings/display/xlnx/xlnx,zynqmp-dpsub.yaml
+@@ -98,7 +98,6 @@ properties:
+     maxItems: 1
+ 
+   dmas:
+-    maxItems: 4
+     items:
+       - description: Video layer, plane 0 (RGB or luma)
+       - description: Video layer, plane 1 (U/V or U)
+diff --git a/Documentation/devicetree/bindings/dma/renesas,rcar-dmac.yaml b/Documentation/devicetree/bindings/dma/renesas,rcar-dmac.yaml
+index b548e4723936..c07eb6f2fc8d 100644
+--- a/Documentation/devicetree/bindings/dma/renesas,rcar-dmac.yaml
++++ b/Documentation/devicetree/bindings/dma/renesas,rcar-dmac.yaml
+@@ -73,7 +73,6 @@ properties:
+     maxItems: 1
+ 
+   clock-names:
+-    maxItems: 1
+     items:
+       - const: fck
+ 
+diff --git a/Documentation/devicetree/bindings/mailbox/arm,mhu.yaml b/Documentation/devicetree/bindings/mailbox/arm,mhu.yaml
+index d43791a2dde7..d07eb00b97c8 100644
+--- a/Documentation/devicetree/bindings/mailbox/arm,mhu.yaml
++++ b/Documentation/devicetree/bindings/mailbox/arm,mhu.yaml
+@@ -61,7 +61,6 @@ properties:
+       - description: low-priority non-secure
+       - description: high-priority non-secure
+       - description: Secure
+-    maxItems: 3
+ 
+   clocks:
+     maxItems: 1
+diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra30-hda.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra30-hda.yaml
+index e543a6123792..b55775e21de6 100644
+--- a/Documentation/devicetree/bindings/sound/nvidia,tegra30-hda.yaml
++++ b/Documentation/devicetree/bindings/sound/nvidia,tegra30-hda.yaml
+@@ -44,7 +44,6 @@ properties:
+     maxItems: 3
+ 
+   clock-names:
+-    maxItems: 3
+     items:
+       - const: hda
+       - const: hda2hdmi
+@@ -54,7 +53,6 @@ properties:
+     maxItems: 3
+ 
+   reset-names:
+-    maxItems: 3
+     items:
+       - const: hda
+       - const: hda2hdmi
+diff --git a/Documentation/devicetree/bindings/usb/renesas,usb-xhci.yaml b/Documentation/devicetree/bindings/usb/renesas,usb-xhci.yaml
+index 0f078bd0a3e5..22603256ddf8 100644
+--- a/Documentation/devicetree/bindings/usb/renesas,usb-xhci.yaml
++++ b/Documentation/devicetree/bindings/usb/renesas,usb-xhci.yaml
+@@ -51,7 +51,6 @@ properties:
+     maxItems: 1
+ 
+   phy-names:
+-    maxItems: 1
+     items:
+       - const: usb
+ 
+diff --git a/Documentation/devicetree/bindings/usb/renesas,usbhs.yaml b/Documentation/devicetree/bindings/usb/renesas,usbhs.yaml
+index 737c1f47b7de..54c361d4a7af 100644
+--- a/Documentation/devicetree/bindings/usb/renesas,usbhs.yaml
++++ b/Documentation/devicetree/bindings/usb/renesas,usbhs.yaml
+@@ -74,11 +74,8 @@ properties:
+ 
+   phys:
+     maxItems: 1
+-    items:
+-      - description: phandle + phy specifier pair.
+ 
+   phy-names:
+-    maxItems: 1
+     items:
+       - const: usb
+ 
+-- 
+2.27.0
 
-Shouldn't there be an 
- +	notify_rc = NOTIFY_OK;
-here? I mean you initialize notify_rc to NOTIFY_DONE, in the !data branch
-on success you set notify_rc to NOTIFY_OK, but in the !!data branch it
-just stays NOTIFY_DONE. Or am I missing something?
-
-Otherwise LGTM!
-
-Regards,
-Halil
-
-> +notify_done:
-> +	mutex_unlock(&matrix_dev->lock);
-> +	return notify_rc;
->  }
-> 
-
-[..] 
