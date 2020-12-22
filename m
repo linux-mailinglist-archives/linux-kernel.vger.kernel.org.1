@@ -2,59 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91FBF2E0C0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 15:52:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48BC82E0C2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 15:55:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727582AbgLVOwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 09:52:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727172AbgLVOwW (ORCPT
+        id S1727944AbgLVOzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 09:55:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39838 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727897AbgLVOzH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 09:52:22 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E6EEC0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 06:51:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=0yQ8UYqXYhuWeo88yhwpae0/ouSJbgBQji4T5APlSZo=; b=lJcTKd0y1qgaGiy6Xvw8aQkzsN
-        tl8FNYsXi9WQht26DlkWcH12TWUtegtaNDHLtiiW79CwVUicw5/u4SSNOAzB+Y7jE/w6fKPChOAx7
-        9AbuP0fhQTja6ZjKRCainCiAbfnrU5jQCVnQLEYYQiTqPIe517eRvDF2eALdVo2TYo7j33A2us2Le
-        RZW2/IXi8V+GFpmYehzHHJ9SADstknPLqUmAT2MFEo+LQOafP+Uc6vTiPVpzEsRY/hHWOUkaotDpK
-        u94rkoJwDguo5d7Qhk//ZpLiwjkoyAeLPxQPVCFYs+xqW8ukmyUkGJnxXFx4MN0POQII4gjq4XbsN
-        fytn2dMw==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1krj0k-0006s1-FV; Tue, 22 Dec 2020 14:51:38 +0000
-Date:   Tue, 22 Dec 2020 14:51:38 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Adrian Huang <adrianhuang0701@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Adrian Huang <ahuang12@lenovo.com>
-Subject: Re: [PATCH 1/1] x86/mm: Refine mmap syscall implementation
-Message-ID: <20201222145138.GA25752@infradead.org>
-References: <20201217052648.24656-1-adrianhuang0701@gmail.com>
+        Tue, 22 Dec 2020 09:55:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608648820;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eqMIkvTz7uu9Y4W+7+KTuA9zT7kqeu1yghivuXElVxY=;
+        b=RGcoY1tg7lhIwm6Dqwii0fZwaZcbrhT5c7kqkitOqBVMgAFb5MFPtWsdvar9QDiE/9HoN5
+        WmmvCdmcp/5DsNSWKOz95Tcz0AvwCK8JYp5EhUWwTmAYn5EUc5aPB+xMianCmYnaJ9E8Zs
+        NW6a/tgmQ619NRx5u6rcBMfiT3rp2j8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-165-fH06cAeYNqitoxiEO983TA-1; Tue, 22 Dec 2020 09:53:37 -0500
+X-MC-Unique: fH06cAeYNqitoxiEO983TA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 666E5800D62;
+        Tue, 22 Dec 2020 14:53:36 +0000 (UTC)
+Received: from localhost (unknown [10.18.25.174])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C21AC5D9CC;
+        Tue, 22 Dec 2020 14:53:27 +0000 (UTC)
+Date:   Tue, 22 Dec 2020 09:53:27 -0500
+From:   Mike Snitzer <snitzer@redhat.com>
+To:     Christoph Hellwig <hch@lst.de>, linux-block@vger.kernel.org,
+        dm-devel@redhat.com
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Alasdair G Kergon <agk@redhat.com>,
+        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: DM's filesystem lookup in dm_get_dev_t() [was: Re: linux-next:
+ manual merge of the device-mapper tree with Linus' tree]
+Message-ID: <20201222145327.GC12885@redhat.com>
+References: <20201222095056.7a5ac0a0@canb.auug.org.au>
+ <20201222131528.GA29822@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201217052648.24656-1-adrianhuang0701@gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20201222131528.GA29822@lst.de>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 01:26:48PM +0800, Adrian Huang wrote:
-> From: Adrian Huang <ahuang12@lenovo.com>
+[added linux-block and dm-devel, if someone replies to this email to
+continue "proper discussion" _please_ at least drop sfr and linux-next
+from Cc]
+
+On Tue, Dec 22 2020 at  8:15am -0500,
+Christoph Hellwig <hch@lst.de> wrote:
+
+> Mike, Hannes,
 > 
-> It is unnecessary to use the local variable 'error' in the mmap
-> syscall implementation function, so use the return statement
-> instead of it.
+> I think this patch is rather harmful.  Why does device mapper even
+> mix file system path with a dev_t and all the other weird forms
+> parsed by name_to_dev_t, which was supposed to be be for the early
+> init code where no file system is available.
 
-I'm normally not a fan of standalone cleanup patches, but this one
-actually improves the function a lot, so:
+OK, I'll need to revisit (unless someone beats me to it) because this
+could've easily been a blind-spot for me when the dm-init code went in.
+Any dm-init specific enabling interface shouldn't be used by more
+traditional DM interfaces.  So Hannes' change might be treating symptom
+rather than the core problem (which would be better treated by factoring
+out dm-init requirements for a name_to_dev_t()-like interface?).
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+DM has supported passing maj:min and blockdev names on DM table lines
+forever... so we'll need to be very specific about where/why things
+regressed.
+
+> Can we please kick off a proper discussion for this on the linux-block
+> list?
+
+Sure, done. But I won't drive that discussion in the near-term. I need
+to take some time off for a few weeks.
+
+In the meantime I'll drop Hannes' patch for 5.11; I'm open to an
+alternative fix that I'd pickup during 5.11-rcX.
+
+Thanks,
+Mike
+
