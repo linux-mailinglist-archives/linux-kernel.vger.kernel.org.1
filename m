@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09F6D2E0627
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 07:43:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7E282E062D
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 07:43:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726114AbgLVGmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 01:42:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52522 "EHLO
+        id S1726140AbgLVGmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 01:42:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725964AbgLVGmK (ORCPT
+        with ESMTP id S1725841AbgLVGmu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 01:42:10 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 005B5C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 22:41:29 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id j1so6932582pld.3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 22:41:29 -0800 (PST)
+        Tue, 22 Dec 2020 01:42:50 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30135C061282
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 22:41:45 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id e2so7769994pgi.5
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 22:41:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=qCUDEuOxwnC1AGuwl6fnluLE3mg41lKSQCQsRBnikAE=;
-        b=SLqK80aWe80/oOFjlKAkk5jqsLmB6RoEBWiQMpcRzPAse5ZgDQA6H/f2QcYQaYX+Sk
-         j72VoUeumbbh4H7SoJchN3WQ4I8yPJLZcR2WOnDQDMCzorCW4hJclXsTQgFoRz22RdKG
-         b36kXTEMnqcyvZ4P8k2BHIQ3OnbkH5vPepxZyzfdedwjW/vFkSQupF0OBKJtYCIUOXd+
-         tnsNf4Jyrnc5hEpCgs3Ty8sMXZ+Y1xPDWrfNT0FgbK/gljhOZLN19WV5tE5Pm7gIZMx/
-         BqJRbe7G+WxvEmQbKhOkP8Fkwv3F+QpBIqDZjzxrC/La6nliwsr0G5LVDTCHzO75q9IH
-         T1IQ==
+        bh=mdb8ubeZUDajJW+FcHgYac1dD8MByc7AxGNoAnUULbI=;
+        b=npm8TWA8O2hsE4I05GLXYUgOLq1zgQjekB/Y4euzum/q0sfwISRV8ojNFw9xBetHYG
+         evQHh7Im53EF1KPazTUM6tG5aazhT/xA3W29tAzWofCmWnBLUvHwm07XeX/ejN4ZKNp+
+         GG1EIaznfaIPh04fh8Vuf5DnthO72+88HGixBcUWvlVGWbNtuglnZU0e7Z08HgxGdv8S
+         NU/vtGF3TDtC2JLVLs4AZIpRX70hZbTJkcb96VBSFOPBpkbXmP1YGrK7ObL+Aiz9SArD
+         8vn+yrLPGr5ZiIMK5ZKv0qTkSfbBMVYVUkMsjTy7Z0aDg9Kb2OysaSGaZdGGmigLzN/I
+         S2rA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=qCUDEuOxwnC1AGuwl6fnluLE3mg41lKSQCQsRBnikAE=;
-        b=I0Qb1ciYCfwaz580mMIABWv3adhIbNwwlWKOkYePlSSvZWXyOY8QkfYeHrNJRdjI2q
-         m/ZyQtJjCqlcWD3jIhlPJH2SjINmDsJt6t2NBrsHlzGC2M/dqDMBPTslttoiSFb5r98K
-         QgH85PduAxlbHlJvTjXaGZgUAFg6pml1iwYbx0EmjO7MEu5ix/Kcmli5/qoFajNQRtGy
-         ht4kpT77ICnxM0mjmlEiYDxkG5b97CTfEbRtWyARYmqfUY+LNWN7WqqTzFJn9BZWYhum
-         UIJsQy4Zjs6Lk+C3PnVPiPrkHYfncY6tD9ZI1Qh3Zyioi0mWLBkkpsByYqtwFAUHh9U9
-         pqig==
-X-Gm-Message-State: AOAM530ccRRsU1A1H/M3+r3RIj8FOR2pQlNgspd4gLsj9UyYmru0uO86
-        uNXc1Xan6+W/5e7fVRPzR2Y0Nw==
-X-Google-Smtp-Source: ABdhPJxN42pTclkBGDeXVc+JmlXJ2Zqv4ydgjwhoQWE66qXHkx0fFIYjfke1IlzZt4m8tXjIu/60fA==
-X-Received: by 2002:a17:902:b94a:b029:dc:18f2:8063 with SMTP id h10-20020a170902b94ab02900dc18f28063mr20113799pls.8.1608619289583;
-        Mon, 21 Dec 2020 22:41:29 -0800 (PST)
+        bh=mdb8ubeZUDajJW+FcHgYac1dD8MByc7AxGNoAnUULbI=;
+        b=ZfOGQxarjMFczhk/+vDxrqX9hlBU1fOZQxBtUsh86fQSwDjx2iFaeVn9QYxIu2CYb6
+         V1pI0eAQIwTq3/NzwPH2xdekJhgid1QaHhYsHPYICv/b05do520HVJFzWdsERHO8Vm8f
+         jTVGBICQvkQVsgxi2xUkH63UgTcA+zOxvswXGe7AgqxLERACWSLAWEK6VEpaMRQSMvpq
+         eiGCCNy5Us2KW1ds6i5APjp/KQ5xxLlfxy4dG0xBxfJr4mAW5C+xq0uewQo33pF7Egjc
+         79aGP9SQSHnmpJ46L6WFntAVX/RR1XiwRay8+m2UfZ9Z+yj6y8Qdi9R5OTgoIPn9xT7C
+         LWWA==
+X-Gm-Message-State: AOAM532tLfZRQX6wBUQx5hKcB++mAZe3WVdnHoJvig9hMx6xuxvn2j6o
+        mTI/CdAY+Mt+bIz/EkMp0n1Yag==
+X-Google-Smtp-Source: ABdhPJw7BD4Js7XMjl68MHqDPRxBWn/XxIVoOlLeKMWzpyH+qOtOrTPdNalPZDEVDwvJf8LazuKUiw==
+X-Received: by 2002:a63:2265:: with SMTP id t37mr18196221pgm.336.1608619304758;
+        Mon, 21 Dec 2020 22:41:44 -0800 (PST)
 Received: from localhost ([122.172.20.109])
-        by smtp.gmail.com with ESMTPSA id z2sm7851394pgl.49.2020.12.21.22.41.28
+        by smtp.gmail.com with ESMTPSA id x1sm18440611pfc.112.2020.12.21.22.41.43
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 21 Dec 2020 22:41:28 -0800 (PST)
-Date:   Tue, 22 Dec 2020 12:11:27 +0530
+        Mon, 21 Dec 2020 22:41:44 -0800 (PST)
+Date:   Tue, 22 Dec 2020 12:11:42 +0530
 From:   Viresh Kumar <viresh.kumar@linaro.org>
 To:     Dmitry Osipenko <digetx@gmail.com>
 Cc:     Thierry Reding <thierry.reding@gmail.com>,
@@ -71,22 +71,24 @@ Cc:     Thierry Reding <thierry.reding@gmail.com>,
         devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
         linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
         linux-clk@vger.kernel.org
-Subject: Re: [PATCH v2 09/48] opp: Add dev_pm_opp_sync_regulators()
-Message-ID: <20201222064127.cn7tagfwpi5tu4zk@vireshk-i7>
+Subject: Re: [PATCH v2 10/48] opp: Add dev_pm_opp_set_voltage()
+Message-ID: <20201222064142.pidafbhcbrecz57z@vireshk-i7>
 References: <20201217180638.22748-1-digetx@gmail.com>
- <20201217180638.22748-10-digetx@gmail.com>
+ <20201217180638.22748-11-digetx@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201217180638.22748-10-digetx@gmail.com>
+In-Reply-To: <20201217180638.22748-11-digetx@gmail.com>
 User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17-12-20, 21:05, Dmitry Osipenko wrote:
-> Extend OPP API with dev_pm_opp_sync_regulators() function, which syncs
-> voltage state of regulators.
+On 17-12-20, 21:06, Dmitry Osipenko wrote:
+> Add dev_pm_opp_set_voltage() which allows OPP table users to set voltage
+> in accordance to a given OPP. In particular this is needed for driving
+> voltage of a generic power domain which uses OPPs and doesn't have a
+> clock.
 > 
 > Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 
