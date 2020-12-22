@@ -2,208 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D39F42E0F1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 20:52:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B08672E0F18
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 20:51:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726703AbgLVTvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 14:51:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725850AbgLVTvi (ORCPT
+        id S1726472AbgLVTuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 14:50:22 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:35396 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725931AbgLVTuW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 14:51:38 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79E5DC0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 11:50:58 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id j1so7964547pld.3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 11:50:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=platinasystems-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gnrWzcZcKCPPQwHRjj320KhXxSg0ErADEbe3H1rw//0=;
-        b=gGUrUFMiw4JWsWifL0TXf2jyogF2W8pHnJa+hyI4msW+Mh9cnxp6FXcKIxFRNMD4Jj
-         DH8BAGHgXF6wc4ZqBJzj2PVQzGyaZdAPRPBr77Ibt2uPXm6Wmgjl0i8G5MQt+jXDGHx1
-         EJRJN+g0KIrsQZP02GadFsj42H1BN/PBaNLuph4my0rmWq/xt3GF0AhQjCbK1Ght+hNT
-         uAfsziMBPy9G4q/NfE0dknSHClk1pSZZjZLF+yCa/scL2yFYMfH1gtTYyLjTlfGfg89a
-         n1jHUIsvZp9tXlP6b7HhmVQCzgUPXfv2OQlVzFEXYBSttDt6/XkQmYyOB4TaQ2BPLgeF
-         PMZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=gnrWzcZcKCPPQwHRjj320KhXxSg0ErADEbe3H1rw//0=;
-        b=XYVDfbXoqhTwwJ/ixfN4L5mWbJ7LKPMxT74ihD1WBP2RVbJ6p4VXBMIhq2+15d9O7H
-         MGh080FHiKjU7YeiT+vvBueWKUnH+03gtA3YRyFw7oSA3eCso5MGFteRFpk2H0EpjPeC
-         X5vkqxBjjHB/f5QYCmF4bQm7gerrctDFwU8PTMm8Sfih29jzTN1fZz1+KFxHcZvaLmo/
-         +YuXlyd5nqn0MlBCb8x/1dJ8CTFXO703vAeg/qNkcRjG/QvwKGeQ5rKMqOk3fbj8jXee
-         9x6xTfxjuVXraFVrGRIUWXoLCjtfY5xtvS+tWDu8CFwhrsuy6d/ZR/gK8Bn+yVo5xtXc
-         mEbw==
-X-Gm-Message-State: AOAM531Q6K8ntN/4vrS59Gq2QWiyVJMk90SVpd2gXEh1Khzsh5cpOjgw
-        Hgf+H1kbz9u6Qo3tWCqVKxhRbQ==
-X-Google-Smtp-Source: ABdhPJwcc+tKiFWFDEimn0YEP31KJTEdUFiu3Aj7QQrs+YsH75VI7hSfoHDyKmNPOdLKF1L/tN9FdQ==
-X-Received: by 2002:a17:90a:8985:: with SMTP id v5mr22935126pjn.27.1608666657981;
-        Tue, 22 Dec 2020 11:50:57 -0800 (PST)
-Received: from localhost.localdomain ([207.53.255.56])
-        by smtp.gmail.com with ESMTPSA id b72sm20770253pfb.129.2020.12.22.11.50.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Dec 2020 11:50:57 -0800 (PST)
-From:   Kevin Paul Herbert <kph@platinasystems.com>
-To:     biwen.li@nxp.com, leoyang.li@nxp.com, linux@rempel-privat.de,
-        kernel@pengutronix.de, wsa@the-dreams.de, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, festevam@gmail.com, aisheng.dong@nxp.com,
-        xiaoning.wang@nxp.com, o.rempel@pengutronix.de,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jiafei.pan@nxp.com, xiaobo.xie@nxp.com,
-        linux-arm-kernel@lists.infradead.org, biwen.li@oss.nxp.com,
-        kph@platinasystems.com
-Subject: [PATCH] i2c-imx.c: Synthesize end of transaction events without idle interrupts
-Date:   Tue, 22 Dec 2020 11:48:50 -0800
-Message-Id: <20201222194850.2274527-1-kph@platinasystems.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 22 Dec 2020 14:50:22 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1608666602; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=1/n4spgUgB5z8HHtSAnD/C3uM02O7wS2g73gRhhMe3Y=;
+ b=Z2P/8SeQtisXnK1YkQdZD3/t0JjWaSOkGBs/ONtEZ2fPbVHv4YRh0yRQ35Mp3Kt77q+17SbG
+ 5Q6M5zqf1AJfh3fjYqsUWJH+lo9Ht29nCbbcrtxGZWMqosb+F99/UPS/Y/76YTdxYqeirbjw
+ akmXVNF2XQOqPaRE1TqyF8Z6UWI=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5fe24dcd7036173f4f7d6267 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Dec 2020 19:49:33
+ GMT
+Sender: isaacm=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 27C43C43462; Tue, 22 Dec 2020 19:49:33 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: isaacm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 43125C433CA;
+        Tue, 22 Dec 2020 19:49:32 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 22 Dec 2020 11:49:32 -0800
+From:   isaacm@codeaurora.org
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, pratikp@codeaurora.org,
+        joro@8bytes.org, kernel-team@android.com, will@kernel.org,
+        pdaly@codeaurora.org
+Subject: Re: [PATCH v2 3/7] iommu/arm-smmu: Add dependency on io-pgtable
+ format modules
+In-Reply-To: <3b0c191d-3fd0-73db-c1e3-4a80aa7953d7@arm.com>
+References: <1608597876-32367-1-git-send-email-isaacm@codeaurora.org>
+ <1608597876-32367-4-git-send-email-isaacm@codeaurora.org>
+ <3b0c191d-3fd0-73db-c1e3-4a80aa7953d7@arm.com>
+Message-ID: <e47f14b81d90772346ef28c9a7fd3365@codeaurora.org>
+X-Sender: isaacm@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Only the Layerscape SoCs have interrupts on bus idle, which facilitate
-sending events which complete slave bus transactions.
+On 2020-12-22 11:27, Robin Murphy wrote:
+> On 2020-12-22 00:44, Isaac J. Manjarres wrote:
+>> The SMMU driver depends on the availability of the ARM LPAE and
+>> ARM V7S io-pgtable format code to work properly. In preparation
+> 
+> Nit: we don't really depend on v7s - we *can* use it if it's
+> available, address constraints are suitable, and the SMMU
+> implementation actually supports it (many don't), but we can still
+> quite happily not use it even so. LPAE is mandatory in the
+> architecture so that's our only hard requirement, embodied in the
+> kconfig select.
+> 
+> This does mean there may technically still be a corner case involving
+> ARM_SMMU=y and IO_PGTABLE_ARM_V7S=m, but at worst it's now a runtime
+> failure rather than a build error, so unless and until anyone
+> demonstrates that it actually matters I don't feel particularly
+> inclined to give it much thought.
+> 
+> Robin.
+> 
+Okay, I'll fix up the commit message, as well as the code, so that it
+only depends on io-pgtable-arm.
 
-Add support for synthesizing missing events. If we see a master request,
-or a newly addressed slave request, if the last event sent to the backend
-was I2C_SLAVE_READ_REQUESTED, send the backend a I2C_SLAVE_READ_PROCESSED
-followed by I2C_SLAVE_STOP. For all other events, send an I2C_SLAVE_STOP.
-
-Signed-off-by: Kevin Paul Herbert <kph@platinasystems.com>
----
- drivers/i2c/busses/i2c-imx.c | 59 +++++++++++++++++++++++++++++++-----
- 1 file changed, 52 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/i2c/busses/i2c-imx.c b/drivers/i2c/busses/i2c-imx.c
-index b444fbf1a262..b3e2a6a7fc19 100644
---- a/drivers/i2c/busses/i2c-imx.c
-+++ b/drivers/i2c/busses/i2c-imx.c
-@@ -209,6 +209,7 @@ struct imx_i2c_struct {
- 
- 	struct imx_i2c_dma	*dma;
- 	struct i2c_client	*slave;
-+	enum i2c_slave_event last_slave_event;
- };
- 
- static const struct imx_i2c_hwdata imx1_i2c_hwdata = {
-@@ -662,6 +663,36 @@ static void i2c_imx_enable_bus_idle(struct imx_i2c_struct *i2c_imx)
- 	}
- }
- 
-+static void i2c_imx_slave_event(struct imx_i2c_struct *i2c_imx,
-+				enum i2c_slave_event event, u8 *val)
-+{
-+	i2c_slave_event(i2c_imx->slave, event, val);
-+	i2c_imx->last_slave_event = event;
-+}
-+
-+static void i2c_imx_slave_finish_op(struct imx_i2c_struct *i2c_imx)
-+{
-+	u8 val;
-+
-+	while (i2c_imx->last_slave_event != I2C_SLAVE_STOP) {
-+		switch (i2c_imx->last_slave_event) {
-+		case I2C_SLAVE_READ_REQUESTED:
-+			i2c_imx_slave_event(i2c_imx, I2C_SLAVE_READ_PROCESSED,
-+					    &val);
-+			break;
-+
-+		case I2C_SLAVE_WRITE_REQUESTED:
-+		case I2C_SLAVE_READ_PROCESSED:
-+		case I2C_SLAVE_WRITE_RECEIVED:
-+			i2c_imx_slave_event(i2c_imx, I2C_SLAVE_STOP, &val);
-+			break;
-+
-+		case I2C_SLAVE_STOP:
-+			break;
-+		}
-+	}
-+}
-+
- static irqreturn_t i2c_imx_slave_isr(struct imx_i2c_struct *i2c_imx,
- 				     unsigned int status, unsigned int ctl)
- {
-@@ -674,9 +705,11 @@ static irqreturn_t i2c_imx_slave_isr(struct imx_i2c_struct *i2c_imx,
- 	}
- 
- 	if (status & I2SR_IAAS) { /* Addressed as a slave */
-+		i2c_imx_slave_finish_op(i2c_imx);
- 		if (status & I2SR_SRW) { /* Master wants to read from us*/
- 			dev_dbg(&i2c_imx->adapter.dev, "read requested");
--			i2c_slave_event(i2c_imx->slave, I2C_SLAVE_READ_REQUESTED, &value);
-+			i2c_imx_slave_event(i2c_imx,
-+					    I2C_SLAVE_READ_REQUESTED, &value);
- 
- 			/* Slave transmit */
- 			ctl |= I2CR_MTX;
-@@ -686,7 +719,8 @@ static irqreturn_t i2c_imx_slave_isr(struct imx_i2c_struct *i2c_imx,
- 			imx_i2c_write_reg(value, i2c_imx, IMX_I2C_I2DR);
- 		} else { /* Master wants to write to us */
- 			dev_dbg(&i2c_imx->adapter.dev, "write requested");
--			i2c_slave_event(i2c_imx->slave,	I2C_SLAVE_WRITE_REQUESTED, &value);
-+			i2c_imx_slave_event(i2c_imx,
-+					    I2C_SLAVE_WRITE_REQUESTED, &value);
- 
- 			/* Slave receive */
- 			ctl &= ~I2CR_MTX;
-@@ -697,17 +731,20 @@ static irqreturn_t i2c_imx_slave_isr(struct imx_i2c_struct *i2c_imx,
- 	} else if (!(ctl & I2CR_MTX)) { /* Receive mode */
- 		if (status & I2SR_IBB) { /* No STOP signal detected */
- 			value = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2DR);
--			i2c_slave_event(i2c_imx->slave,	I2C_SLAVE_WRITE_RECEIVED, &value);
-+			i2c_imx_slave_event(i2c_imx,
-+					    I2C_SLAVE_WRITE_RECEIVED, &value);
- 		} else { /* STOP signal is detected */
- 			dev_dbg(&i2c_imx->adapter.dev,
- 				"STOP signal detected");
--			i2c_slave_event(i2c_imx->slave, I2C_SLAVE_STOP, &value);
-+			i2c_imx_slave_event(i2c_imx,
-+					    I2C_SLAVE_STOP, &value);
- 		}
- 	} else if (!(status & I2SR_RXAK)) { /* Transmit mode received ACK */
- 		ctl |= I2CR_MTX;
- 		imx_i2c_write_reg(ctl, i2c_imx, IMX_I2C_I2CR);
- 
--		i2c_slave_event(i2c_imx->slave,	I2C_SLAVE_READ_PROCESSED, &value);
-+		i2c_imx_slave_event(i2c_imx,
-+				    I2C_SLAVE_READ_PROCESSED, &value);
- 
- 		imx_i2c_write_reg(value, i2c_imx, IMX_I2C_I2DR);
- 	} else { /* Transmit mode received NAK */
-@@ -748,6 +785,7 @@ static int i2c_imx_reg_slave(struct i2c_client *client)
- 		return -EBUSY;
- 
- 	i2c_imx->slave = client;
-+	i2c_imx->last_slave_event = I2C_SLAVE_STOP;
- 
- 	/* Resume */
- 	ret = pm_runtime_get_sync(i2c_imx->adapter.dev.parent);
-@@ -800,10 +838,17 @@ static irqreturn_t i2c_imx_isr(int irq, void *dev_id)
- 
- 	status = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2SR);
- 	ctl = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2CR);
-+
- 	if (status & I2SR_IIF) {
- 		i2c_imx_clear_irq(i2c_imx, I2SR_IIF);
--		if (i2c_imx->slave && !(ctl & I2CR_MSTA))
--			return i2c_imx_slave_isr(i2c_imx, status, ctl);
-+		if (i2c_imx->slave) {
-+			if (!(ctl & I2CR_MSTA)) {
-+				return i2c_imx_slave_isr(i2c_imx, status, ctl);
-+			} else if (i2c_imx->last_slave_event !=
-+				   I2C_SLAVE_STOP) {
-+				i2c_imx_slave_finish_op(i2c_imx);
-+			}
-+		}
- 		return i2c_imx_master_isr(i2c_imx, status);
- 	}
- 
--- 
-2.25.1
-
+Thanks,
+Isaac
+>> for having the io-pgtable formats as modules, add a "pre"
+>> dependency with MODULE_SOFTDEP() to ensure that the io-pgtable
+>> format modules are loaded before loading the ARM SMMU driver module.
+>> 
+>> Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
+>> ---
+>>   drivers/iommu/arm/arm-smmu/arm-smmu.c | 1 +
+>>   1 file changed, 1 insertion(+)
+>> 
+>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c 
+>> b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>> index d8c6bfd..a72649f 100644
+>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>> @@ -2351,3 +2351,4 @@ MODULE_DESCRIPTION("IOMMU API for ARM 
+>> architected SMMU implementations");
+>>   MODULE_AUTHOR("Will Deacon <will@kernel.org>");
+>>   MODULE_ALIAS("platform:arm-smmu");
+>>   MODULE_LICENSE("GPL v2");
+>> +MODULE_SOFTDEP("pre: io-pgtable-arm io-pgtable-arm-v7s");
+>> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
