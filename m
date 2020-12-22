@@ -2,93 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 636362E09F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 13:15:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A73222E09FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 13:19:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726616AbgLVMOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 07:14:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726239AbgLVMOI (ORCPT
+        id S1726598AbgLVMT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 07:19:27 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:63292 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726166AbgLVMT0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 07:14:08 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B80FC0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 04:13:27 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id b26so21940409lff.9
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 04:13:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XDqWemTZAr3Yf5zc0WPnza6SJa69M9w7Rj4fQPF3P5o=;
-        b=tPpOPFZiOO+7bXVYjFI5JFD6T6i0npRgJb2VT4lieoQIF08DoFCYSGjj9UtUf7OlOT
-         k59s2Xvq/lfysj+/GyyxJvQlfo02nL1EuA2PBhI+xh9pDS5Yg5bPQ4Zt7jO0QiFdxGdp
-         dKcuZ4zXWF5bWyAxUTzFny3vMoMajws16JY40rUn6sUIVqICCZSBYnX5i8M7E+Z0u3CT
-         lTPukRJlbMMNBCD78ibfqd94YssAxc4XtIpdyd2C7HlUWeqJ17NRIF47bAm5ugtNHU68
-         U4khUQcaFfH58dRFjW4SmhGv0p2aKTkWcwPPS4ZUSjxZrs0qCCkJW8Il2Xt6AJjLwQiX
-         KhqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XDqWemTZAr3Yf5zc0WPnza6SJa69M9w7Rj4fQPF3P5o=;
-        b=bpQiufEbc2zRi/eKmb6jPQ0AIodjnQsUxibRezVEbjBTY6mwgqFYldMq293dF0T0dk
-         A5o3nej1jgZjd0Bhcd2POmzRBBXly81QjlZbepM+1X6ilQYN+8ukA62xZRCkcQOWuGQh
-         f5M+0espnjsUafFixFJVCJoQA3K3XlqMWL9heQo2QFd6b3MvGa/qze+YdeI8KrJI1GI7
-         k30hAjElRXGahrMWPZkykwM0NjlQU+SS287Bha63AhtKtAi2ounyDhQolTAC4+UwGXni
-         mOuyfabNTq8Vw1FEz7X5EAglZGQtuyHdMQNkvxaQeNeF5avJPjq+9oCQ36WAjkh3DRYS
-         rxcQ==
-X-Gm-Message-State: AOAM5308iH78yqrCnRtFvdgpBNmlBYEUT3GkI++Pk86JoIsf28OUEcFN
-        BsNz6yxBj0HZ3frP4bal3kEDUBpy9X22j3X6M9E=
-X-Google-Smtp-Source: ABdhPJy//mXDzhSL1YWk1GnMAjPpsove6BusTlVwzWEpUuwAUeHj+jE+6K6s+3pbthcvs1KaZqTkjZMhul0rQkreE6s=
-X-Received: by 2002:a2e:b8d1:: with SMTP id s17mr10053775ljp.472.1608639206075;
- Tue, 22 Dec 2020 04:13:26 -0800 (PST)
+        Tue, 22 Dec 2020 07:19:26 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1608639547; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=4Pjy6oXt8m46ugTOK9z6c9JGgi4a6imnMwcwh9QIWLA=;
+ b=I2Zpx4oW9zU4wJTvaz3s7Hdv/3Ecxyr9v4Ahj5yimmZTkWYCdsfk2KE6vSL7FOlw4RoYK2g/
+ tohC5uUYRaVla5lQxWLJ10vKcQ+Pdg8IiY8+FyO3RaiiYhhyXT5rhM/jRS7oXuHuy+z5IK+j
+ 6OJ1wtTXjjOedufEA0+8PMGugY4=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 5fe1e418db8e07fa6c20411c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Dec 2020 12:18:32
+ GMT
+Sender: mdalam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7EDD9C43461; Tue, 22 Dec 2020 12:18:32 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: mdalam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B11F4C433CA;
+        Tue, 22 Dec 2020 12:18:31 +0000 (UTC)
 MIME-Version: 1.0
-References: <20201222074910.GA30051@open-light-1.localdomain>
- <585791f4-4b41-5e73-296e-691d5478a915@redhat.com> <a0bee19a-0703-54b1-2903-60383ab7da64@redhat.com>
-In-Reply-To: <a0bee19a-0703-54b1-2903-60383ab7da64@redhat.com>
-From:   Liang Li <liliang324@gmail.com>
-Date:   Tue, 22 Dec 2020 20:13:12 +0800
-Message-ID: <CA+2MQi8kupPHetMhH97fn+toFk9HUYeVPnwdzrpyiS6Necn0CA@mail.gmail.com>
-Subject: Re: [RFC PATCH 3/3] mm: support free hugepage pre zero out
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Liang Li <liliangleo@didiglobal.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, qemu-devel@nongnu.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 22 Dec 2020 17:48:31 +0530
+From:   mdalam@codeaurora.org
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     vkoul@kernel.org, corbet@lwn.net, agross@kernel.org,
+        bjorn.andersson@linaro.org, dan.j.williams@intel.com,
+        dmaengine@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        sricharan@codeaurora.org
+Subject: Re: [PATCH] dmaengine: qcom: bam_dma: Add LOCK and UNLOCK flag bit
+ support
+In-Reply-To: <8c86f4db-9956-10d1-b380-a207137b50ef@linaro.org>
+References: <1608215842-15381-1-git-send-email-mdalam@codeaurora.org>
+ <6c85436d-e064-367e-736b-951af82256c8@linaro.org>
+ <9769c54acf54617a17346fea60ee38b6@codeaurora.org>
+ <8c86f4db-9956-10d1-b380-a207137b50ef@linaro.org>
+Message-ID: <11f538a697de934551bcec5036d7fb17@codeaurora.org>
+X-Sender: mdalam@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > Free page reporting in virtio-balloon doesn't give you any guarantees
-> > regarding zeroing of pages. Take a look at the QEMU implementation -
-> > e.g., with vfio all reports are simply ignored.
-> >
-> > Also, I am not sure if mangling such details ("zeroing of pages") into
-> > the page reporting infrastructure is a good idea.
-> >
->
-> Oh, now I get what you are doing here, you rely on zero_free_pages of
-> your other patch series and are not relying on virtio-balloon free page
-> reporting to do the zeroing.
->
-> You really should have mentioned that this patch series relies on the
-> other one and in which way.
+On 2020-12-21 23:39, Thara Gopinath wrote:
+> On 12/21/20 2:35 AM, mdalam@codeaurora.org wrote:
+>> On 2020-12-19 09:05, Thara Gopinath wrote:
+>>> On 12/17/20 9:37 AM, Md Sadre Alam wrote:
+>>>> This change will add support for LOCK & UNLOCK flag bit support
+>>>> on CMD descriptor.
+>>>> 
+>>>> If DMA_PREP_LOCK flag passed in prep_slave_sg then requester of this
+>>>> transaction wanted to lock the DMA controller for this transaction 
+>>>> so
+>>>> BAM driver should set LOCK bit for the HW descriptor.
+>>>> 
+>>>> If DMA_PREP_UNLOCK flag passed in prep_slave_sg then requester of 
+>>>> this
+>>>> transaction wanted to unlock the DMA controller.so BAM driver should 
+>>>> set
+>>>> UNLOCK bit for the HW descriptor.
+>>> Hi,
+>>> 
+>>> This is a generic question. What is the point of LOCK/UNLOCK with
+>>> allocating LOCK groups to the individual dma channels? By default
+>>> doesn't all channels fall in the same group. This would mean that
+>>> a lock does not prevent the dma controller from not executing a
+>>> transaction on the other channels.
+>>> 
+>> 
+>> The Pipe Locking/Unlocking will be only on command-descriptor.
+>> Upon encountering a command descriptor with LOCK bit set, the BAM
+>> will lock all other pipes not related to the current pipe group, and 
+>> keep
+>> handling the current pipe only until it sees the UNLOCK set then it 
+>> will
+>> release all locked pipes.
+> 
+> So unless you assign pipe groups, this will not work as intended
+> right? So this patch is only half of the solution. There should also
+> be a patch allowing pipe groups to be assigned. Without that extra bit
+> this patch does nothing , right ?
 
-I am sorry for that. After I sent out the patch, I realized I should
-mention that, so I sent out an updated version which added the
-information you mentioned :)
-
-Thanks !
-Liang
+Yes you are right.
+We are having some register which will configure the pipe lock group.
+But these registers are not exposed to non-secure world. These registers
+only accessible through secure world. Currently in IPQ5018 SoC we are 
+configuring
+these register in secure world to configure pipe lock group.
