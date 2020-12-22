@@ -2,92 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 176752E105B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 23:43:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B2E52E1060
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 23:51:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728359AbgLVWi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 17:38:57 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:42405 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728341AbgLVWi4 (ORCPT
+        id S1727673AbgLVWuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 17:50:00 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:59072 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726329AbgLVWt7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 17:38:56 -0500
-Received: by mail-il1-f200.google.com with SMTP id p10so12905989ilo.9
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 14:38:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=phZcz8GHgDbMEr4XKo0BIqA5dWEQGOsnMVPYM3W1vas=;
-        b=trU4Pms7z1bZhSjh6/b4Tdwde2v5fbJkTriyLZ6rijUkOE4uGVbLbfU5bbqMJvq5oJ
-         JvdWbAvKEx/pKvmC7KKlAa9nKGJNM+LQMDzP81XISXOWt1lgQejM/yv/xr5AjGNNAk7h
-         Z+s4MfhceBHztFM8hVJeDuwFg9BowZUoKSywnlx1Z2CSf4rbEzhxqn5CVdAyVhWkx8FZ
-         uWEfd5rXZPIRIAQL2jxIdiII2ckVe26vTVrxumdi55C/FxDe3KJAQ1+vJqW1F4AVEWtp
-         Xt2kDEId/gpn6SdK0JdkpeppZXrcS9slq+OXZe++fO/eGM9C8/PZJXaVcS2z0Js6GPq+
-         LXmA==
-X-Gm-Message-State: AOAM532fS2Pkel6e7/7T4qW9oAOrquBBXSDC9sPqvNYUX95xHA/UMQsu
-        RlMGZbGkY2K6s8pUU4OzliY4ceYm9RX7OXk847P2b/scDmw8
-X-Google-Smtp-Source: ABdhPJyzjApcIzyu+k2K45bHD2KJm7nZ64jl/4wd4RpcvpOn88al+Y1kV/d84Xc7zi+ObDycuo8uB5ddCijryWgpoBms91IDki9i
+        Tue, 22 Dec 2020 17:49:59 -0500
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0BMMnA9N006812
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Dec 2020 17:49:10 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 15152420280; Tue, 22 Dec 2020 17:49:10 -0500 (EST)
+Date:   Tue, 22 Dec 2020 17:49:10 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] ext4 updates for v5.11-rc1
+Message-ID: <X+J35oGDo2HnOuOP@mit.edu>
 MIME-Version: 1.0
-X-Received: by 2002:a92:bf09:: with SMTP id z9mr22316997ilh.194.1608676695952;
- Tue, 22 Dec 2020 14:38:15 -0800 (PST)
-Date:   Tue, 22 Dec 2020 14:38:15 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000555a005b7153b7a@google.com>
-Subject: UBSAN: shift-out-of-bounds in snd_usbmidi_get_ms_info
-From:   syzbot <syzbot+92e45ae45543f89e8c88@syzkaller.appspotmail.com>
-To:     alsa-devel@alsa-project.org, clemens@ladisch.de,
-        linux-kernel@vger.kernel.org, perex@perex.cz,
-        syzkaller-bugs@googlegroups.com, tiwai@suse.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The following changes since commit 418baf2c28f3473039f2f7377760bd8f6897ae18:
 
-syzbot found the following issue on:
+  Linux 5.10-rc5 (2020-11-22 15:36:08 -0800)
 
-HEAD commit:    8653b778 Merge tag 'clk-for-linus' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=109531a3500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=98408202fed1f636
-dashboard link: https://syzkaller.appspot.com/bug?extid=92e45ae45543f89e8c88
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1421ec47500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12bfa077500000
+are available in the Git repository at:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+92e45ae45543f89e8c88@syzkaller.appspotmail.com
+  git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus
 
-usb 1-1: config 0 interface 0 altsetting 0 bulk endpoint 0x8A has invalid maxpacket 31
-usb 1-1: New USB device found, idVendor=324b, idProduct=5963, bcdDevice= 0.d2
-usb 1-1: New USB device strings: Mfr=0, Product=0, SerialNumber=0
-usb 1-1: config 0 descriptor??
-usb 1-1: MIDIStreaming interface descriptor not found
-================================================================================
-UBSAN: shift-out-of-bounds in sound/usb/midi.c:1928:8
-shift exponent 244 is too large for 32-bit type 'int'
-CPU: 1 PID: 17 Comm: kworker/1:0 Not tainted 5.10.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: usb_hub_wq hub_event
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
- __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
- snd_usbmidi_get_ms_info.cold+0x83/0xd4 sound/usb/midi.c:1928
- __snd_usbmidi_create+0x380/0x2320 sound/usb/midi.c:2404
- snd_usb_create_quirk+0xa5/0xe0 sound/usb/quirks.c:562
- usb_audio_probe+0x623/0x2ab0 sound/usb/card.c:795
+for you to fetch changes up to be993933d2e997fdb72b8b1418d2a84df79b8962:
 
+  ext4: remove unnecessary wbc parameter from ext4_bio_write_page (2020-12-22 13:08:45 -0500)
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+NOTE: The reason why the branch had recently changed was to add a
+one-line fix which added flush_work() call to an error/cleanup patgh,
+to address a syzbot reported failure.  See the thread at:
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+http://lore.kernel.org/r/0000000000001faff305b709b8ad@google.com
+
+There were also some commit description updates to add some Cc:
+stable@kernel.org tags.
+
+This branch was tested and passes xfstests regression tests, and in
+any case, it's all bug fixes and cleanups:
+
+TESTRUNID: tytso-20201222152130
+KERNEL:    5.10.0-rc5-xfstests-00029-gbe993933d2e9 #2064 SMP Tue Dec 22 15:19:12 EST 2020 x86_64
+CMDLINE:   -c ext4/4k -g auto
+CPUS:      2
+MEM:       7680
+
+ext4/4k: 520 tests, 43 skipped, 6608 seconds
+Totals: 477 tests, 43 skipped, 0 failures, 0 errors, 6554s
+
+----------------------------------------------------------------
+Various bug fixes and cleanups for ext4; no new features this cycle.
+
+----------------------------------------------------------------
+
+Alexander Lochmann (1):
+      Updated locking documentation for transaction_t
+
+Chunguang Xu (7):
+      ext4: use ASSERT() to replace J_ASSERT()
+      ext4: remove redundant mb_regenerate_buddy()
+      ext4: simplify the code of mb_find_order_for_block
+      ext4: update ext4_data_block_valid related comments
+      ext4: delete nonsensical (commented-out) code inside ext4_xattr_block_set()
+      ext4: fix a memory leak of ext4_free_data
+      ext4: avoid s_mb_prefetch to be zero in individual scenarios
+
+Colin Ian King (1):
+      ext4: remove redundant assignment of variable ex
+
+Dan Carpenter (1):
+      ext4: fix an IS_ERR() vs NULL check
+
+Gustavo A. R. Silva (1):
+      ext4: fix fall-through warnings for Clang
+
+Harshad Shirwadkar (3):
+      ext4: add docs about fast commit idempotence
+      ext4: make fast_commit.h byte identical with e2fsprogs/fast_commit.h
+      jbd2: add a helper to find out number of fast commit blocks
+
+Jan Kara (8):
+      ext4: fix deadlock with fs freezing and EA inodes
+      ext4: don't remount read-only with errors=continue on reboot
+      ext4: remove redundant sb checksum recomputation
+      ext4: standardize error message in ext4_protect_reserved_inode()
+      ext4: make ext4_abort() use __ext4_error()
+      ext4: move functions in super.c
+      ext4: simplify ext4 error translation
+      ext4: defer saving error info from atomic context
+
+Kaixu Xia (2):
+      ext4: remove redundant operation that set bh to NULL
+      ext4: remove the unused EXT4_CURRENT_REV macro
+
+Lei Chen (1):
+      ext4: remove unnecessary wbc parameter from ext4_bio_write_page
+
+Roman Anufriev (2):
+      ext4: add helpers for checking whether quota can be enabled/is journalled
+      ext4: print quota journalling mode on (re-)mount
+
+Theodore Ts'o (1):
+      ext4: check for invalid block size early when mounting a file system
+
+Xianting Tian (1):
+      ext4: remove the null check of bio_vec page
+
+ Documentation/filesystems/ext4/journal.rst |  50 ++++++
+ fs/ext4/balloc.c                           |   2 +-
+ fs/ext4/block_validity.c                   |  16 +-
+ fs/ext4/ext4.h                             |  77 ++++++---
+ fs/ext4/ext4_jbd2.c                        |   4 +-
+ fs/ext4/ext4_jbd2.h                        |   9 +-
+ fs/ext4/extents.c                          |   5 +-
+ fs/ext4/fast_commit.c                      |  99 +++++++-----
+ fs/ext4/fast_commit.h                      |  78 +++++++--
+ fs/ext4/fsync.c                            |   2 +-
+ fs/ext4/indirect.c                         |   4 +-
+ fs/ext4/inode.c                            |  35 ++--
+ fs/ext4/mballoc.c                          |  39 ++---
+ fs/ext4/namei.c                            |  12 +-
+ fs/ext4/page-io.c                          |   5 +-
+ fs/ext4/super.c                            | 422 ++++++++++++++++++++++++-------------------------
+ fs/ext4/xattr.c                            |   1 -
+ fs/jbd2/journal.c                          |   8 +-
+ include/linux/jbd2.h                       |  14 +-
+ 19 files changed, 504 insertions(+), 378 deletions(-)
