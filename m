@@ -2,162 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B1062E0576
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 05:41:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 028412E057C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 05:49:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725969AbgLVElR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 23:41:17 -0500
-Received: from mga12.intel.com ([192.55.52.136]:14686 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725907AbgLVElQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 23:41:16 -0500
-IronPort-SDR: eo8TqR+XHfZuh0v5D8G2hgoSjf09copDNEqqOBkUn6QkoZgB2Uphe+BeKMJT5y+CZGezUuDIFA
- MZFdyYKnDbiA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9842"; a="155033635"
-X-IronPort-AV: E=Sophos;i="5.78,438,1599548400"; 
-   d="scan'208";a="155033635"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2020 20:40:35 -0800
-IronPort-SDR: ufAiMYL5Lx+RTpHKDfizMLNs++16pdRvw0EZlci2Ml/HXEiijn8+GKV7/Dl6yWF/hrv798Ef50
- /J2kUZDpEV0Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,438,1599548400"; 
-   d="scan'208";a="382352934"
-Received: from lkp-server01.sh.intel.com (HELO 65587561063d) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 21 Dec 2020 20:40:33 -0800
-Received: from kbuild by 65587561063d with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1krZTN-0001IB-0A; Tue, 22 Dec 2020 04:40:33 +0000
-Date:   Tue, 22 Dec 2020 12:39:44 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:rcu/test] BUILD SUCCESS
- 4c4c8e04a7f8522de634aa062f4cd6b8b80c151b
-Message-ID: <5fe17890.DgAUduMCiEob9Doo%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1725878AbgLVEsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 23:48:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725782AbgLVEsb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 23:48:31 -0500
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43700C0613D3;
+        Mon, 21 Dec 2020 20:47:51 -0800 (PST)
+Received: by mail-qk1-x732.google.com with SMTP id 143so10939236qke.10;
+        Mon, 21 Dec 2020 20:47:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jhzT8c0zSzP0ywXe5TKHFtbJ3WCUgeB9D75CgQh7hjY=;
+        b=VklhxX/oiWTdbSURqiK31rNW6JMHcT6Ep31a432CZZQM0IvJFJX2k1+IATEO2ePMz7
+         xz/E+mLiY1Dm5reX4xJ1Xl+eVifZhfkDgdKLX1GnwL82vb5VwQxda/MUOU/imtaJDb21
+         JewxqSqvO27q/0USJ6ebhXPsW8ZQM1bWtpoS4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jhzT8c0zSzP0ywXe5TKHFtbJ3WCUgeB9D75CgQh7hjY=;
+        b=g1DNrQLRMtkbBSUp3eeoGWVsGzg4u2qQrHHMKlnBSVBfY1FVuJgazqXrB8YxIq3goc
+         Y3dUYEWJzy+E0j27+DWnTkspNCwSZ/4bBjnYLdJfMXYA8bM6S2hmj9USDWSA4OPTZvhm
+         eV44ATd74WQfgyxlY7LoqgTw0dfVi7bRfLMw75jFZqYI2zcJjAoAl35IudP2KVkl80Nf
+         cuwpiWNXlpFrptncA8YxJxZynFgyMpOPzxZn+ftl6GTd788ExRX8Q54xzSCpaJIPlGE5
+         QXrqCIIitQ1t0dGKMc9Lw7lTSLROX9Y+ySdVc68gpsZdQ4ymCuIbaqqTX0ygx/+xwc2Q
+         a61A==
+X-Gm-Message-State: AOAM533xCAetD0k6OF188zQ8IsIdduhxRTmVGx3UaKGD4OVFr7vHueUF
+        T33tupt8JrZZjYoyQUpjFcmPtzkAHntBxP6Q3ME=
+X-Google-Smtp-Source: ABdhPJzD0mDzK0fUtV/9AAtwg4ua0v3wjsKGJfAQ/B8NgTaVsPevS7zOz/Ys2pLUkzNHs67W6zSSHmAlRj/2PPj9vaY=
+X-Received: by 2002:a05:620a:4155:: with SMTP id k21mr20539624qko.55.1608612469458;
+ Mon, 21 Dec 2020 20:47:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20201215024542.18888-1-zev@bewilderbeest.net> <20201215024542.18888-3-zev@bewilderbeest.net>
+In-Reply-To: <20201215024542.18888-3-zev@bewilderbeest.net>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Tue, 22 Dec 2020 04:47:37 +0000
+Message-ID: <CACPK8XczCUgqOENABoDbc-qwbMxOh=1OUyBtuHSmDG_Zo571Wg@mail.gmail.com>
+Subject: Re: [PATCH 2/3] aspeed-video: clear spurious interrupt bits unconditionally
+To:     Zev Weiss <zev@bewilderbeest.net>
+Cc:     Eddie James <eajames@linux.ibm.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>, linux-media@vger.kernel.org,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/test
-branch HEAD: 4c4c8e04a7f8522de634aa062f4cd6b8b80c151b  Merge commit 'e37b12e4bb21e7c81732370b0a2b34bd196f380b' into rcu/test
+On Tue, 15 Dec 2020 at 02:46, Zev Weiss <zev@bewilderbeest.net> wrote:
+>
+> Instead of testing and conditionally clearing them one by one, we can
+> instead just unconditionally clear them all at once.
+>
+> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
 
-elapsed time: 720m
+I had a poke at the assembly and it looks like GCC is clearing the
+bits unconditionally anyway, so removing the tests provides no change.
 
-configs tested: 100
-configs skipped: 2
+Combining them is a good further optimization.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Reviewed-by: Joel Stanley <joel@jms.id.au>
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                             allyesconfig
-mips                     cu1000-neo_defconfig
-sh                            titan_defconfig
-mips                        bcm47xx_defconfig
-sh                        dreamcast_defconfig
-arm                           viper_defconfig
-arm                         socfpga_defconfig
-powerpc                     pq2fads_defconfig
-ia64                        generic_defconfig
-mips                       lemote2f_defconfig
-sh                   sh7724_generic_defconfig
-c6x                                 defconfig
-xtensa                  audio_kc705_defconfig
-mips                        nlm_xlr_defconfig
-arm                        neponset_defconfig
-powerpc                 mpc85xx_cds_defconfig
-powerpc                    ge_imp3a_defconfig
-m68k                            q40_defconfig
-powerpc                 mpc8313_rdb_defconfig
-parisc                           allyesconfig
-powerpc                     kilauea_defconfig
-h8300                     edosk2674_defconfig
-sh                          rsk7269_defconfig
-powerpc                 linkstation_defconfig
-riscv                               defconfig
-powerpc64                        alldefconfig
-arm                          lpd270_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a001-20201221
-x86_64               randconfig-a006-20201221
-x86_64               randconfig-a002-20201221
-x86_64               randconfig-a004-20201221
-x86_64               randconfig-a003-20201221
-x86_64               randconfig-a005-20201221
-i386                 randconfig-a005-20201222
-i386                 randconfig-a002-20201222
-i386                 randconfig-a006-20201222
-i386                 randconfig-a004-20201222
-i386                 randconfig-a003-20201222
-i386                 randconfig-a001-20201222
-i386                 randconfig-a011-20201221
-i386                 randconfig-a016-20201221
-i386                 randconfig-a014-20201221
-i386                 randconfig-a012-20201221
-i386                 randconfig-a015-20201221
-i386                 randconfig-a013-20201221
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+A question unrelated to this patch: Do you know why the driver doesn't
+clear the status bits in the interrupt handler? I would expect it to
+write the value of sts back to the register to ack the pending
+interrupt.
 
-clang tested configs:
-x86_64               randconfig-a015-20201221
-x86_64               randconfig-a014-20201221
-x86_64               randconfig-a016-20201221
-x86_64               randconfig-a012-20201221
-x86_64               randconfig-a013-20201221
-x86_64               randconfig-a011-20201221
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> ---
+>  drivers/media/platform/aspeed-video.c | 19 ++++++++++---------
+>  1 file changed, 10 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/media/platform/aspeed-video.c b/drivers/media/platform/aspeed-video.c
+> index eb02043532e3..218aae3be809 100644
+> --- a/drivers/media/platform/aspeed-video.c
+> +++ b/drivers/media/platform/aspeed-video.c
+> @@ -558,6 +558,14 @@ static void aspeed_video_irq_res_change(struct aspeed_video *video, ulong delay)
+>         schedule_delayed_work(&video->res_work, delay);
+>  }
+>
+> +/*
+> + * Interrupts that we don't use but have to explicitly ignore because the
+> + * hardware asserts them even when they're disabled in the VE_INTERRUPT_CTRL
+> + * register.
+> + */
+> +#define VE_SPURIOUS_IRQS \
+> +       (VE_INTERRUPT_CAPTURE_COMPLETE | VE_INTERRUPT_FRAME_COMPLETE)
+> +
+>  static irqreturn_t aspeed_video_irq(int irq, void *arg)
+>  {
+>         struct aspeed_video *video = arg;
+> @@ -630,15 +638,8 @@ static irqreturn_t aspeed_video_irq(int irq, void *arg)
+>                         aspeed_video_start_frame(video);
+>         }
+>
+> -       /*
+> -        * CAPTURE_COMPLETE and FRAME_COMPLETE interrupts come even when these
+> -        * are disabled in the VE_INTERRUPT_CTRL register so clear them to
+> -        * prevent unnecessary interrupt calls.
+> -        */
+> -       if (sts & VE_INTERRUPT_CAPTURE_COMPLETE)
+> -               sts &= ~VE_INTERRUPT_CAPTURE_COMPLETE;
+> -       if (sts & VE_INTERRUPT_FRAME_COMPLETE)
+> -               sts &= ~VE_INTERRUPT_FRAME_COMPLETE;
+> +       /* Squash known bogus interrupts */
+> +       sts &= ~VE_SPURIOUS_IRQS;
+>
+>         if (sts)
+>                 dev_err_ratelimited(video->dev, "unexpected interrupt asserted:"
+> --
+> 2.29.2
+>
