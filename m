@@ -2,95 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55D3F2E0F08
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 20:42:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFF472E0F05
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 20:40:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726575AbgLVTkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 14:40:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30751 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725902AbgLVTkm (ORCPT
+        id S1726452AbgLVTkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 14:40:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59244 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725912AbgLVTkH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 14:40:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608665955;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5tsCMd9Nfdq9n0ayDvsC2lk0uNSEwrw9mxvuZSf1qkQ=;
-        b=cIt9xSgztQF42RsjQiBEtvGn9H2C9QcEByLQVXIPsH32b3wg8jjFUGC8087xcL95EeRzEs
-        Jasu72grbDD7+3orD5anvbdDdUHTsxxfaB7NDWaCKCjVaPND+yF1V8ZpfqzkFQYQf2nyjU
-        49pM5ekSnKOjm8LZNkUYjb1csvoGFoc=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-265-yw9uQnqcOJaoVPnHOiD1DA-1; Tue, 22 Dec 2020 14:39:13 -0500
-X-MC-Unique: yw9uQnqcOJaoVPnHOiD1DA-1
-Received: by mail-pf1-f200.google.com with SMTP id l11so7326820pfc.16
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 11:39:13 -0800 (PST)
+        Tue, 22 Dec 2020 14:40:07 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E868BC0613D3;
+        Tue, 22 Dec 2020 11:39:26 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id o13so34669925lfr.3;
+        Tue, 22 Dec 2020 11:39:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=AXmwUpuWNJn38cCoFNVuvHMmW9DPfBIkbJHgySbTrrw=;
+        b=qhbp83oxkp+XKHpp/ipG3+4cYLILpTA8B3LPXYULko36eEYzEuLQ6PIIkqkjjp8jca
+         F8zkjPrGbcKZlopCxg9/W8ccSpILDTeoZDhOs8SqSe0WnuKj1Rg8MkCvV/Y+xPVr4/T2
+         bySWKhGFfBl9ztrnVtCscB1PK+uxrauYIT98LJ+e3cnfQGmSp+uOGOrKcGkCDXu53Htd
+         FWOlK/EGCABxVZIgoJzsN6DzFDiyMH7NjRPDpJKpl7ACruUSNzwurgEMRHJiOARXRjid
+         n3DcfHOJotZPDU/dmSbiZD+2y999MlbTquJMsSHAf8Ia5pGCUqSphvVBwzsiLeVpUkR9
+         wzIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=5tsCMd9Nfdq9n0ayDvsC2lk0uNSEwrw9mxvuZSf1qkQ=;
-        b=QHny63oIq3Tx2SSHMdHNZkfQJw4BkNAHeIVYJdvHuhCc+iEVHfHL1MK4DRJMHu5qz4
-         ie/99y0V3mWmzUfcHbqadXCQbYhvjqF8oaRrk1oo4R0PCWllFTys/PMCKSxr1Dwcdvme
-         5Dh8q9SEZTkypg4nTW/3s1JPcvU6UIvOH+rYzu+CghxVZxXC0590EvloGGi7rQgiyGZO
-         Qra2CvpS+wEXWUO1gSomJAOBGoF4FI0GfdQnPeaJMcFCjfWKuO0vNulbzgRqlOXj25ik
-         dp/MgezBarghGVbR0/BhbggD5KK0y2rah209EQYnZjBro7sQL1JO0BFy7gNzJQkpKV1b
-         a2Ag==
-X-Gm-Message-State: AOAM5300XzOiq6TWEicEgg3y6TdA6P1bYu7AC3CqIRhIWDaYY9iFspQv
-        zTCk1MLjuWVlgEK4cHPlqoklTwjZ6gXybpbumdP+ycS/9iwdksMGxMYWbahKlWtRgLpaxM11cI4
-        dF0WggPnMYEBCQOiXYneeMkvn
-X-Received: by 2002:a62:7857:0:b029:19d:fe6a:3069 with SMTP id t84-20020a6278570000b029019dfe6a3069mr21223284pfc.3.1608665952719;
-        Tue, 22 Dec 2020 11:39:12 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxiytS6W//zDGdZqsS2j37qTS3snbiPRUfNBd0oZl7T0AOd+Z8EYMV0Xj4leWnaUJxCM0pRgQ==
-X-Received: by 2002:a62:7857:0:b029:19d:fe6a:3069 with SMTP id t84-20020a6278570000b029019dfe6a3069mr21223273pfc.3.1608665952512;
-        Tue, 22 Dec 2020 11:39:12 -0800 (PST)
-Received: from xiangao.remote.csb ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id 7sm21372646pfh.142.2020.12.22.11.39.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Dec 2020 11:39:12 -0800 (PST)
-Date:   Wed, 23 Dec 2020 03:39:01 +0800
-From:   Gao Xiang <hsiangkao@redhat.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Huang Jianan <huangjianan@oppo.com>, guoweichao@oppo.com,
-        linux-erofs@lists.ozlabs.org, zhangshiming@oppo.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] erofs: support direct IO for uncompressed file
-Message-ID: <20201222193901.GA1892159@xiangao.remote.csb>
-References: <20201214140428.44944-1-huangjianan@oppo.com>
- <20201222142234.GB17056@infradead.org>
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AXmwUpuWNJn38cCoFNVuvHMmW9DPfBIkbJHgySbTrrw=;
+        b=sVFC+8tfxEpaNV4al8tHznbkjsY3hSUbMd1xpePAnkdvGIy03RU/ES1Cj5lfSKTFjL
+         F1mJ+tOtzFWAtMGJSlaMCuvOmUuWaxbrVDCYVPJ0sNUXrD18mPTgmxeczqWJgpJXcovO
+         qw0OHP+/ietr0yBa0/r0aXu6E3ArDnwMpXctULbedl3Ds70C9a3M1bHFXJ36o1/CxZcJ
+         IwDEtO9P5FqksTEPCEyY9wmcf9I+ZW3Q49k5k462s4idp9uy+9Jq+xnborSicuF+q8Zs
+         B+wBlqpya4uH9Yclcd6/9EmBxckguApAA0whZYRqqVwKxyU/Iie8/GwkN0R1cVAvN/vQ
+         ZUMA==
+X-Gm-Message-State: AOAM533oTi0E0T8SflgXrgmamF15VScFQGglhqfmiwCXq8fV+bI1e5Wp
+        E13T3iUO1zXVcso0s1oI0pvyvflshjc=
+X-Google-Smtp-Source: ABdhPJyfrGeIpedHRTkfPq2OVXdao1RLts2GM3W0hdHjDi2n640b5Lr3eO6uGqFDdIWm1uuJlaO1/g==
+X-Received: by 2002:a19:5e5b:: with SMTP id z27mr9862776lfi.143.1608665965040;
+        Tue, 22 Dec 2020 11:39:25 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.googlemail.com with ESMTPSA id f24sm2769025lfc.231.2020.12.22.11.39.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Dec 2020 11:39:24 -0800 (PST)
+Subject: Re: [PATCH v2 28/48] soc/tegra: Introduce core power domain driver
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-clk@vger.kernel.org
+References: <20201217180638.22748-1-digetx@gmail.com>
+ <20201217180638.22748-29-digetx@gmail.com>
+ <20201222064029.duuzcsj53rt7xzvt@vireshk-i7>
+ <c130f78d-3d97-9b26-be77-951fee0d8680@gmail.com>
+Message-ID: <3a5c00e5-2cdd-35ce-2714-d4ffbf9d516a@gmail.com>
+Date:   Tue, 22 Dec 2020 22:39:23 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
+In-Reply-To: <c130f78d-3d97-9b26-be77-951fee0d8680@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201222142234.GB17056@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
-
-On Tue, Dec 22, 2020 at 02:22:34PM +0000, Christoph Hellwig wrote:
-> Please do not add new callers of __blockdev_direct_IO and use the modern
-> iomap variant instead.
-
-We've talked about this topic before. The current status is that iomap
-doesn't support tail-packing inline data yet (Chao once sent out a version),
-and erofs only cares about read intrastructure for now (So we don't think
-more about how to deal with tail-packing inline write path). Plus, the
-original patch was once lack of inline data regression test from gfs2 folks.
-
-The main use case I know so far is to enable direct I/O and leave loop images
-uncompressed for loop devices. And making the content of the loop images
-compressed to avoid double caching.
-
-Personally, I'd like to convert it to iomap infrastructure as well. So if it
-has some concern for __blockdev_direct_IO as an interim solution, hope that
-Jianan could pick this work up. That would be better.
-
-Thanks,
-Gao Xiang
-
+22.12.2020 22:21, Dmitry Osipenko пишет:
+>>> +	if (IS_ERR(opp)) {
+>>> +		dev_err(&genpd->dev, "failed to find OPP for level %u: %pe\n",
+>>> +			level, opp);
+>>> +		return PTR_ERR(opp);
+>>> +	}
+>>> +
+>>> +	err = dev_pm_opp_set_voltage(&genpd->dev, opp);
+>> IIUC, you implemented this callback because you want to use the voltage triplet
+>> present in the OPP table ?
+>>
+>> And so you are setting the regulator ("power") later in this patch ?
+> yes
 > 
+>> I am not in favor of implementing this routine, as it just adds a wrapper above
+>> the regulator API. What you should be doing rather is get the regulator by
+>> yourself here (instead of depending on the OPP core). And then you can do
+>> dev_pm_opp_get_voltage() here and set the voltage yourself. You may want to
+>> implement a version supporting triplet here though for the same.
+>>
+>> And you won't require the sync version of the API as well then.
+>>
+> That's what I initially did for this driver. I don't mind to revert back
+> to the initial variant in v3, it appeared to me that it will be nicer
+> and cleaner to have OPP API managing everything here.
 
+I forgot one important detail (why the initial variant wasn't good)..
+OPP entries that have unsupportable voltages should be filtered out and
+OPP core performs the filtering only if regulator is assigned to the OPP
+table.
+
+If regulator is assigned to the OPP table, then we need to use OPP API
+for driving the regulator, hence that's why I added
+dev_pm_opp_sync_regulators() and dev_pm_opp_set_voltage().
+
+Perhaps it should be possible to add dev_pm_opp_get_regulator() that
+will return the OPP table regulator in order to allow driver to use the
+regulator directly. But I'm not sure whether this is a much better
+option than the opp_sync_regulators() and opp_set_voltage() APIs.
