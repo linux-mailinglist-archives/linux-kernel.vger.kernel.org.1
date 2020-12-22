@@ -2,69 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95FE92E0D39
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 17:23:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5672E0D4D
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 17:24:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727423AbgLVQVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 11:21:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726991AbgLVQVI (ORCPT
+        id S1728074AbgLVQWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 11:22:51 -0500
+Received: from smtprelay0114.hostedemail.com ([216.40.44.114]:35312 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727254AbgLVQWu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 11:21:08 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5CCFC0613D3;
-        Tue, 22 Dec 2020 08:20:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bmiJUuE3elrojnPzvTQfgWJNXDypdX6aMf0bUhQi8/I=; b=vojOpjv8r5W2anVf+CyXq2Ke33
-        q0Zf+ZdtH/ednPVUbwj8AGfXtJqX2ZSVSDDq30I2vUg82lSOag8TWFVml1+gIUzoydHyys+89+bhq
-        15tgsYSFCoI6B+woT6nshIH/58kTzu60v0KLcu8Mmyd4Xg+V2uLLj0PpuzU6tYYDenL3QGQu+G0v+
-        S63xO0su3T1e1n2XnTur8v8Q9PSTGr2sAozvfe2KwcdoQdd9ZTjF5a/5Wyfu+4ndMPVoM8a08PyPk
-        5f/Ej1OF29j+NgXpLjKFRTPX5vS78ve1nfvY/m5mTxGSFv20oTgQtRucQ3GF+T9MuSdZ7TkirmCUC
-        TXA+ZLAg==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1krkOh-0004ed-AE; Tue, 22 Dec 2020 16:20:27 +0000
-Date:   Tue, 22 Dec 2020 16:20:27 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, jlayton@kernel.org,
-        amir73il@gmail.com, sargun@sargun.me, miklos@szeredi.hu,
-        jack@suse.cz, neilb@suse.com, viro@zeniv.linux.org.uk, hch@lst.de
-Subject: Re: [PATCH 3/3] overlayfs: Report writeback errors on upper
-Message-ID: <20201222162027.GJ874@casper.infradead.org>
-References: <20201221195055.35295-1-vgoyal@redhat.com>
- <20201221195055.35295-4-vgoyal@redhat.com>
+        Tue, 22 Dec 2020 11:22:50 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 48F1E100E7B46;
+        Tue, 22 Dec 2020 16:22:09 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3355:3622:3865:3866:3867:3868:3870:3871:3872:3874:4321:5007:10004:10400:10848:11232:11658:11914:12043:12294:12297:12438:12663:12740:12760:12895:13095:13161:13229:13255:13439:14096:14097:14659:14721:21080:21212:21365:21433:21451:21627:21990:30003:30012:30030:30054:30080:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: shock82_5013a7b27461
+X-Filterd-Recvd-Size: 3498
+Received: from XPS-9350.home (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf03.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 22 Dec 2020 16:22:07 +0000 (UTC)
+Message-ID: <983e6452a7f2af14ca7edfa56cd2e2997172a771.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: make the line length warnings match the
+ coding style document
+From:   Joe Perches <joe@perches.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Matthew Wilcox <willy@infradead.org>, apw@canonical.com,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
+        linux-doc <linux-doc@vger.kernel.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Tue, 22 Dec 2020 08:22:06 -0800
+In-Reply-To: <20201222131234.GA29028@lst.de>
+References: <20201210082251.2717564-1-hch@lst.de>
+         <c3f1d9de2e5a61588f64e69a1309968d84a2dd12.camel@perches.com>
+         <20201210200930.GB7338@casper.infradead.org>
+         <4898c0c03d370a23b1b98ddabb72e70ec8d430fa.camel@perches.com>
+         <93a470c7631d2607e7b2a12e9cc5d8e930911989.camel@perches.com>
+         <20201222131234.GA29028@lst.de>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201221195055.35295-4-vgoyal@redhat.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 02:50:55PM -0500, Vivek Goyal wrote:
-> +static int ovl_errseq_check_advance(struct super_block *sb, struct file *file)
-> +{
-> +	struct ovl_fs *ofs = sb->s_fs_info;
-> +	struct super_block *upper_sb;
-> +	int ret;
-> +
-> +	if (!ovl_upper_mnt(ofs))
-> +		return 0;
-> +
-> +	upper_sb = ovl_upper_mnt(ofs)->mnt_sb;
-> +
-> +	if (!errseq_check(&upper_sb->s_wb_err, file->f_sb_err))
-> +		return 0;
-> +
-> +	/* Something changed, must use slow path */
-> +	spin_lock(&file->f_lock);
-> +	ret = errseq_check_and_advance(&upper_sb->s_wb_err, &file->f_sb_err);
-> +	spin_unlock(&file->f_lock);
+On Tue, 2020-12-22 at 14:12 +0100, Christoph Hellwig wrote:
+> On Mon, Dec 21, 2020 at 08:08:20PM -0800, Joe Perches wrote:
+> > On Thu, 2020-12-10 at 13:27 -0800, Joe Perches wrote:
+> > > On Thu, 2020-12-10 at 20:09 +0000, Matthew Wilcox wrote:
+> > > > On Thu, Dec 10, 2020 at 12:05:04PM -0800, Joe Perches wrote:
+> > > > > Also, given the ever increasing average identifier length, strict
+> > > > > adherence to 80 columns is sometimes just not possible without silly
+> > > > > visual gymnastics.  The kernel now has quite a lot of 30+ character
+> > > > > length function names, constants, and structs.
+> > > > 
+> > > > maybe checkpatch should warn for identifiers that are 30+ characters
+> > > > long?  address the problem at its source ..
+> > > 
+> > > Hard to know when to warn as patches could just add uses of already
+> > > existing names and emitting warnings for those would just be annoying.
+> > > 
+> > > Maybe something that tests long identifier additions of
+> > > defines/functions/macros/structs but not their uses and maybe only
+> > > then in patches and not files.
+> > > 
+> > > Perhaps:
+> > 
+> > Anyone care that this should be added or not added to checkpatch?
+> 
+> It is pretty useless.
 
-Why are you microoptimising syncfs()?  Are there really applications which
-call syncfs() in a massively parallel manner on the same file descriptor?
+Maybe so, if only because I chose a high value for the max id length
+to avoid controversy.  I would prefer something like 20.
+
+> What we need is a patch that doesn't make people
+> uselessly add overly long lines against the intent of the coding style
+> document.  I have submitted a pretty reasonable one, and I'm open to
+> alternatives, but we need to to stop people submitting code that does
+> not fit the coding style all the time because checkpatch doesn't
+> complain.
+
+Having checkpatch complain about > 80 column lines didn't stop
+patches before, likely it wouldn't stop patches now.
+
+Emitting yet more messages for trivial lines > 80 columns is also
+against the intent of the commit that changed the line length maximum.
+
+commit bdc48fa11e46f867ea4d75fa59ee87a7f48be144
+checkpatch/coding-style: deprecate 80-column warning
+
+The effect of your patch might as well revert the checkpatch portion
+of that commit.
+
+I think that's not a great idea for the reason in the commit message.
+
+
