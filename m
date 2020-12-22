@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E3712E102B
+	by mail.lfdr.de (Postfix) with ESMTP id 2212A2E102A
 	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 23:26:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728162AbgLVWZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 17:25:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50080 "EHLO mail.kernel.org"
+        id S1728142AbgLVWZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 17:25:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50082 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728096AbgLVWZY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728100AbgLVWZY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 22 Dec 2020 17:25:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 4F8E62312E;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 9BFA523130;
         Tue, 22 Dec 2020 22:24:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1608675865;
-        bh=L+v7KsBpMe+X45wwGxsyBRz+we2itVL+HC6Ia+0nnLM=;
+        bh=oolGpAUxz9OUv+nPj1sSNuAAT6lRoBcG7xNKhnAC1HU=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=Ua4imAIQ/OV5PF+7rxGj/5im95O/1I6UrO0IzP3RNrv2/btkJehPyJMmerK+viRKP
-         49meuv+kIwpgd6EnlsCZXJglGmTSD2VmhJgnoUV2qjupJXGeW73IY1ps2yrHa1WgGi
-         X7V2MyRfEdHx1UosZxQeZwIeSHMFOFMkHpueVqNhLtbaoClHsskiu0DBjgFmGwWvi/
-         8tdSO55q7GtdAWCp/HVr8LqO1uJWBEH2IcF59wDPV8bt1fs277PyVYa7pOb9Ya6dcc
-         IbPrnNA/dL+JHf+PCvSAujbb/wXoyMBmd7Eh2x0DezVVvAw+zQpHeC75Hiz2ZWkR8f
-         2sFrvS3w746qw==
+        b=G14HxV+WE96gc9uNt7ZPACbXnMkNvvN//tq6UtBWo2CVSaMZbOMamTue4R5lj2m3p
+         jG+wFrPfm3ubZcE9F3pbjOIz5RNOVqqM/E2y2h75PaYQyu5HYvil902NM2nzICADMJ
+         ufunuUud5PQyZY8sdGNspf/34+X5pF5Eoa+8/rBZ+xDwyE5L3i3mL+i46H49fvZz4L
+         qNmwoRDFc5NQrwwlemX2ck6TVL11+Nfp4AlQr1gefLUrwmAUvA7XxwhVazbpmG32LK
+         yYiYuavWwKvtbyQ6957FNMScJD+GlGZjti+8WsRG1JvGNeyLJpEyKZxdXp9/lCxAoN
+         zBgoJdvCM55QQ==
 Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 47C8B6019C;
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 94FCF60113;
         Tue, 22 Dec 2020 22:24:25 +0000 (UTC)
-Subject: Re: [GIT PULL] exfat update for 5.11-rc1
+Subject: Re: [GIT PULL] configfs updates for 5.11
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <00ac01d6d82f$cb740850$625c18f0$@samsung.com>
-References: <CGME20201222065804epcas1p4968e405d34b6c0ef755c55d3dae624c6@epcas1p4.samsung.com> <00ac01d6d82f$cb740850$625c18f0$@samsung.com>
+In-Reply-To: <20201222160341.GA3019774@infradead.org>
+References: <20201222160341.GA3019774@infradead.org>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <00ac01d6d82f$cb740850$625c18f0$@samsung.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/linkinjeon/exfat.git tags/exfat-for-5.11-rc1
-X-PR-Tracked-Commit-Id: 9eb78c25327548b905598975aa3ded4ef244b94a
+X-PR-Tracked-Message-Id: <20201222160341.GA3019774@infradead.org>
+X-PR-Tracked-Remote: git://git.infradead.org/users/hch/configfs.git tags/configfs-5.11
+X-PR-Tracked-Commit-Id: 65cdb4a214c0015c19fc1876896746c05396f45d
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: e9e541ecfee39745da042ff5194b0813bb4c3f9c
-Message-Id: <160867586528.8550.7672301131391321827.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 4f06f210673e6841439a0f91fcde64960cdbeb5c
+Message-Id: <160867586560.8550.11240184533040418804.pr-tracker-bot@kernel.org>
 Date:   Tue, 22 Dec 2020 22:24:25 +0000
-To:     Namjae Jeon <namjae.jeon@samsung.com>
-Cc:     'Linus Torvalds' <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        'Sungjong Seo' <sj1557.seo@samsung.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Joel Becker <jlbec@evilplan.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 22 Dec 2020 15:58:04 +0900:
+The pull request you sent on Tue, 22 Dec 2020 17:03:41 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/linkinjeon/exfat.git tags/exfat-for-5.11-rc1
+> git://git.infradead.org/users/hch/configfs.git tags/configfs-5.11
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/e9e541ecfee39745da042ff5194b0813bb4c3f9c
+https://git.kernel.org/torvalds/c/4f06f210673e6841439a0f91fcde64960cdbeb5c
 
 Thank you!
 
