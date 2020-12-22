@@ -2,47 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D245E2E0743
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 09:37:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9CFB2E0741
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 09:37:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726204AbgLVIg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 03:36:59 -0500
-Received: from mail-il1-f197.google.com ([209.85.166.197]:36459 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725841AbgLVIg6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726137AbgLVIg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 22 Dec 2020 03:36:58 -0500
-Received: by mail-il1-f197.google.com with SMTP id z15so11223235ilb.3
+Received: from mail-io1-f72.google.com ([209.85.166.72]:46161 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725785AbgLVIg5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 03:36:57 -0500
+Received: by mail-io1-f72.google.com with SMTP id a2so6999756iod.13
         for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 00:36:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=hbIYI2nNfJN0lgT9jqFdKDFFA7rUxry5dC2vCJ5BxXw=;
-        b=HLFlFV5nl4BoJivSWSQJ+8piYorq69228q28hL8ZdDcrZU+O8aOWeh8wZgrwbWWdgC
-         IUMEDqFe76XFgVuzc0OqsRgRXBDPB9zVzQcfHUxVq0xYk/0Ad+gU1S+I+b2dcDuuAmns
-         W6GsqCZrd+zBnM4fArHDvd1K5AJgWFBG7VSlO3cq2TwHQmZA2pwsaXWKBexR3yaUVrPC
-         kCBhXHn8Mtn7p0LEPqXof86S3X9EZ5YrkMGhTYNeJGuCJasLTbffm86jqqI6VbqulNiE
-         FeaSATBU5xs3u6lG/v2OFKczb+Ude+1TqHGPRpa4G6OOMKKH4RaGYpLf28ob/2GZ+Wxy
-         j9cA==
-X-Gm-Message-State: AOAM532y8q0FAC59nwqQZHwtn5eyU70KrKCyvBWWFHIWzIK7s5qW1Qxb
-        2JhsO73z+z9FSebrtXRzSEOKGXX0nR5bgn5itPjLusRszFzE
-X-Google-Smtp-Source: ABdhPJy9/gcTlDyiLUB3PnVSzz+gaZzjAIu3HCANs889rw+mhD89BT2CU12Z0k0Pqkxz+skRj5OGiblKY/H7djo88Iho4H9rg/9J
+        bh=6myWaa8K9xi7b8Wgl0oK5a7b+azrf32/eUO0QSEaWnw=;
+        b=nqCsOhN4N+gwBsSjVsRVMxkTYP89Inn3U79hGdS/rTe9PTBPPAe2HsEFASKN5uuJnX
+         NTpuhBRpl3c/nS2QKKCReIP+QBseh9qg5iQvzxep/13sl6AJzfUpRc6EYsT7c5NnJVXe
+         3YJ2QKSktOHDdULGMRSs/6bi7kQo+pb8jdGt9JlODlkeRR2D/CaGEut6qA0yRVJ/gxo0
+         QWVvJjI4ZaEXgNsbB8+LKiqb1iUaaxGzsW1J9HErRQWzus88HjunxcXJCT9hrtdZR6LI
+         IJ0n66v5sz6I6v6V/jkob7xH/2MIumlibg+oXUxyUHCiaXlOJT3FWaM966Tq7/PCR2Ie
+         /HIA==
+X-Gm-Message-State: AOAM5334zX1wkZO2fdLSfpt7eCCnXYn/ZRx4ZRf/gxrlDDUR1ioOieY7
+        9kT7exRhyYjXklyxZSe0zfOo+m5SvERcLGZ6hliy5JpAfERo
+X-Google-Smtp-Source: ABdhPJw19rvJhuyRqPbLIQThv+MeiywSWq0qGCnFzM0se/RZMldtYABf1arArUipx8jI1HrZhjzhf2nLweWYWXsVQtDzGETbqANF
 MIME-Version: 1.0
-X-Received: by 2002:a6b:5006:: with SMTP id e6mr17160983iob.79.1608626176796;
+X-Received: by 2002:a05:6e02:8aa:: with SMTP id a10mr8245101ilt.157.1608626176594;
  Tue, 22 Dec 2020 00:36:16 -0800 (PST)
 Date:   Tue, 22 Dec 2020 00:36:16 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d82efe05b70977e2@google.com>
-Subject: general protection fault in find_match (2)
-From:   syzbot <syzbot+b08cdcfff539328e6c32@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, kuznet@ms2.inr.ac.ru,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com,
-        yoshfuji@linux-ipv6.org
+Message-ID: <000000000000d5173d05b7097755@google.com>
+Subject: UBSAN: shift-out-of-bounds in kvm_vcpu_after_set_cpuid
+From:   syzbot <syzbot+e87846c48bf72bc85311@syzkaller.appspotmail.com>
+To:     bp@alien8.de, hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, pbonzini@redhat.com, seanjc@google.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        vkuznets@redhat.com, wanpengli@tencent.com, x86@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -52,84 +50,49 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    3db1a3fa Merge tag 'staging-5.11-rc1' of git://git.kernel...
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1103eadf500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2764fc28a92339f9
-dashboard link: https://syzkaller.appspot.com/bug?extid=b08cdcfff539328e6c32
+HEAD commit:    5e60366d Merge tag 'fallthrough-fixes-clang-5.11-rc1' of g..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11c7046b500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=db720fe37a6a41d8
+dashboard link: https://syzkaller.appspot.com/bug?extid=e87846c48bf72bc85311
 compiler:       gcc (GCC) 10.1.0-syz 20200507
+userspace arch: i386
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b08cdcfff539328e6c32@syzkaller.appspotmail.com
+Reported-by: syzbot+e87846c48bf72bc85311@syzkaller.appspotmail.com
 
-general protection fault, probably for non-canonical address 0xdffffc000000004b: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000258-0x000000000000025f]
-CPU: 1 PID: 13682 Comm: syz-executor.5 Not tainted 5.10.0-syzkaller #0
+================================================================================
+UBSAN: shift-out-of-bounds in arch/x86/kvm/mmu.h:52:16
+shift exponent 64 is too large for 64-bit type 'long long unsigned int'
+CPU: 1 PID: 11156 Comm: syz-executor.1 Not tainted 5.10.0-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:ip6_ignore_linkdown include/net/addrconf.h:407 [inline]
-RIP: 0010:find_match.part.0+0xcc/0xc70 net/ipv6/route.c:753
-Code: f9 0f b6 45 c0 84 c0 0f 84 39 04 00 00 e8 ec a0 c4 f9 49 8d bf 5c 02 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 91
-RSP: 0018:ffffc900022cf000 EFLAGS: 00010207
-RAX: dffffc0000000000 RBX: ffff88801c2cc2a0 RCX: ffffc90013d33000
-RDX: 000000000000004b RSI: ffffffff87abfc74 RDI: 000000000000025c
-RBP: ffffc900022cf070 R08: 0000000000000001 R09: ffffc900022cf250
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000003
-R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000000
-FS:  00007f94614f2700(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f75a1fccdb8 CR3: 000000002d8c6000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- find_match net/ipv6/route.c:840 [inline]
- __find_rr_leaf+0x17f/0xd10 net/ipv6/route.c:841
- find_rr_leaf net/ipv6/route.c:862 [inline]
- rt6_select net/ipv6/route.c:906 [inline]
- fib6_table_lookup+0x5b3/0xa20 net/ipv6/route.c:2193
- ip6_pol_route+0x1e1/0x11c0 net/ipv6/route.c:2229
- pol_lookup_func include/net/ip6_fib.h:583 [inline]
- fib6_rule_lookup+0x111/0x6f0 net/ipv6/fib6_rules.c:115
- ip6_route_output_flags_noref+0x2c2/0x360 net/ipv6/route.c:2510
- ip6_route_output_flags+0x8b/0x310 net/ipv6/route.c:2523
- ip6_route_output include/net/ip6_route.h:98 [inline]
- ip6_dst_lookup_tail+0xb3a/0x1700 net/ipv6/ip6_output.c:1024
- ip6_dst_lookup_flow+0x8c/0x1d0 net/ipv6/ip6_output.c:1154
- ip6_sk_dst_lookup_flow+0x55c/0x990 net/ipv6/ip6_output.c:1192
- udpv6_sendmsg+0x18a5/0x2bd0 net/ipv6/udp.c:1508
- inet6_sendmsg+0x99/0xe0 net/ipv6/af_inet6.c:638
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2336
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2390
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2423
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45e149
-Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f94614f1c68 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045e149
-RDX: 0000000000000000 RSI: 0000000020000040 RDI: 0000000000000005
-RBP: 000000000119bfc0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000119bf8c
-R13: 00007ffd9413345f R14: 00007f94614f29c0 R15: 000000000119bf8c
-Modules linked in:
----[ end trace a9799337710952e8 ]---
-RIP: 0010:ip6_ignore_linkdown include/net/addrconf.h:407 [inline]
-RIP: 0010:find_match.part.0+0xcc/0xc70 net/ipv6/route.c:753
-Code: f9 0f b6 45 c0 84 c0 0f 84 39 04 00 00 e8 ec a0 c4 f9 49 8d bf 5c 02 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 91
-RSP: 0018:ffffc900022cf000 EFLAGS: 00010207
-RAX: dffffc0000000000 RBX: ffff88801c2cc2a0 RCX: ffffc90013d33000
-RDX: 000000000000004b RSI: ffffffff87abfc74 RDI: 000000000000025c
-RBP: ffffc900022cf070 R08: 0000000000000001 R09: ffffc900022cf250
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000003
-R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000000
-FS:  00007f94614f2700(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 000000002d8c6000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
+ rsvd_bits arch/x86/kvm/mmu.h:52 [inline]
+ kvm_vcpu_after_set_cpuid.cold+0x35/0x3a arch/x86/kvm/cpuid.c:181
+ kvm_vcpu_ioctl_set_cpuid+0x28e/0x970 arch/x86/kvm/cpuid.c:273
+ kvm_arch_vcpu_ioctl+0x1091/0x2d70 arch/x86/kvm/x86.c:4699
+ kvm_vcpu_ioctl+0x7b9/0xdb0 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3386
+ kvm_vcpu_compat_ioctl+0x1a2/0x340 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3430
+ __do_compat_sys_ioctl+0x1d3/0x230 fs/ioctl.c:842
+ do_syscall_32_irqs_on arch/x86/entry/common.c:78 [inline]
+ __do_fast_syscall_32+0x56/0x80 arch/x86/entry/common.c:137
+ do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:160
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7fe8549
+Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
+RSP: 002b:00000000f55e20cc EFLAGS: 00000296 ORIG_RAX: 0000000000000036
+RAX: ffffffffffffffda RBX: 0000000000000005 RCX: 000000004008ae8a
+RDX: 00000000200000c0 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+================================================================================
 
 
 ---
