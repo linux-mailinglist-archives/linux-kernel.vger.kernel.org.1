@@ -2,176 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 679C72E0A1F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 13:44:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 946D42E0A2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 13:57:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726821AbgLVMno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 07:43:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34262 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726642AbgLVMno (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 07:43:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D902F2312E;
-        Tue, 22 Dec 2020 12:43:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608640983;
-        bh=T99t2LQMV+DJflQNBVMt8iDeZR9CErI0osB/univ9cA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=OJ0akUAA1OXDemhKkxzIpH/T8JUV3hjuyJCFQ03RRXqYlIAa3zDAUCsomlKTDhc+e
-         0v2zablLgTUtMooXXoe0hlvGantO8yhDOjzFmdncOVcIyLwtvi3Z9LizGLlUUrfu/G
-         1JtqHs0Cdwh0iZ6vq9LsZck11wCs7RdK6CVL8dPFDi6+sMkTSIwc1Mr+i5Vy8deqEM
-         8fLUHgdF2JU6aUA5/uLxR/K24I4Zp6IROo+TOFEA9wsuteE5DAN+UGUXdy2mDH2JWv
-         QQnx6A3EibwRqo5T8NwzKPnxTGxsle+7lr0WjeLs788iPI8uNQBUatqQgY4eSGvEED
-         y5bkOkjXVbCcQ==
-Date:   Tue, 22 Dec 2020 21:42:59 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Tom Zanussi <zanussi@kernel.org>
-Cc:     rostedt@goodmis.org, axelrasmussen@google.com, mhiramat@kernel.org,
-        dan.carpenter@oracle.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/5] tracing: Rework synthetic event command parsing
-Message-Id: <20201222214259.464311df07a343de821db568@kernel.org>
-In-Reply-To: <cc39d3737ffa8b330c3d3754b062709dbc1c50f6.1608586464.git.zanussi@kernel.org>
-References: <cover.1608586464.git.zanussi@kernel.org>
-        <cc39d3737ffa8b330c3d3754b062709dbc1c50f6.1608586464.git.zanussi@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726680AbgLVM4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 07:56:30 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2280 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725846AbgLVM43 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 07:56:29 -0500
+Received: from fraeml738-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4D0bnb1Xt4z67QJC;
+        Tue, 22 Dec 2020 20:51:47 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml738-chm.china.huawei.com (10.206.15.219) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 22 Dec 2020 13:55:47 +0100
+Received: from [10.47.1.120] (10.47.1.120) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 22 Dec
+ 2020 12:55:44 +0000
+Subject: Re: [PATCH 00/11] scsi: libsas: Remove in_interrupt() check
+To:     Jason Yan <yanaijie@huawei.com>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Daniel Wagner <dwagner@suse.de>,
+        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>
+CC:     <linux-scsi@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
+        Hannes Reinecke <hare@suse.com>
+References: <20201218204354.586951-1-a.darwish@linutronix.de>
+ <9674052e-3deb-2a45-6082-4a40a472a219@huawei.com>
+ <7456f628-5e97-42ce-8738-9e661ad2f12a@huawei.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <2672812e-91bd-4c60-696d-4000b1914ac6@huawei.com>
+Date:   Tue, 22 Dec 2020 12:54:58 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
+MIME-Version: 1.0
+In-Reply-To: <7456f628-5e97-42ce-8738-9e661ad2f12a@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.47.1.120]
+X-ClientProxiedBy: lhreml716-chm.china.huawei.com (10.201.108.67) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tom,
+On 22/12/2020 12:30, Jason Yan wrote:
+>>      return event;
+>>
+>>
+>> So default for phy->ha->event_thres is 32, and I can't imagine that 
+> 
+> The default value is 1024.
 
-On Mon, 21 Dec 2020 15:44:28 -0600
-Tom Zanussi <zanussi@kernel.org> wrote:
+Ah, 32 is the minimum allowed set via sysfs.
 
+> 
+>> anyone has ever reconfigured this via sysfs or even required a value 
+>> that large. Maybe Jason (cc'ed) knows better. It's an arbitrary value 
+>> to say that the PHY is malfunctioning. I do note that there is the 
+>> circular path sas_alloc_event() -> sas_notify_phy_event() -> 
+>> sas_alloc_event() there also.
+>>
+>> Anyway, if the 32x event memories were per-allocated, maybe there is a 
+>> clean method to manage this memory, which even works in atomic 
+>> context, so we could avoid this rework (ignoring the context bugs you 
+>> reported for a moment). I do also note that the sas_event_cache size 
+>> is not huge.
+>>
+> 
+> Pre-allocated memory is an option.(Which we have tried at the very 
+> beginnig by Wang Yijing.)
 
-> @@ -656,7 +651,6 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
->  
->  	size = synth_field_size(field->type);
->  	if (size < 0) {
-> -		synth_err(SYNTH_ERR_INVALID_TYPE, errpos(field_type));
+Right, I remember this, but I think the concern was having a proper 
+method to manage this pre-allocated memory then. And same problem now.
 
-Why did you remove this error message?
+> 
+> Or directly use GFP_ATOMIC is maybe better than passing flags from lldds.
+> 
 
-[..]
-> @@ -1228,26 +1189,47 @@ static int __create_synth_event(int argc, const char *name, const char **argv)
->  		goto out;
->  	}
->  
-> -	for (i = 0; i < argc - 1; i++) {
-> -		if (strcmp(argv[i], ";") == 0)
-> -			continue;
-> +	tmp_fields = saved_fields = kstrdup(raw_fields, GFP_KERNEL);
-> +	if (!tmp_fields) {
-> +		ret = -ENOMEM;
-> +		goto out;
-> +	}
-> +
-> +	while ((field_str = strsep(&tmp_fields, ";")) != NULL) {
->  		if (n_fields == SYNTH_FIELDS_MAX) {
->  			synth_err(SYNTH_ERR_TOO_MANY_FIELDS, 0);
->  			ret = -EINVAL;
->  			goto err;
->  		}
->  
-> -		field = parse_synth_field(argc - i, &argv[i], &consumed);
-> +		argv = argv_split(GFP_KERNEL, field_str, &argc);
-> +		if (!argv) {
-> +			ret = -ENOMEM;
-> +			goto err;
-> +		}
-> +
-> +		if (!argc)
-> +			continue;
-> +
-> +		field = parse_synth_field(argc, argv, &consumed);
->  		if (IS_ERR(field)) {
-> +			argv_free(argv);
->  			ret = PTR_ERR(field);
->  			goto err;
->  		}
-> +
-> +		argv_free(argv);
-> +
-> +		if (consumed < argc) {
-> +			ret = -EINVAL;
-> +			goto err;
-> +		}
+I think that if we don't really need this, then should not use it.
 
-You can check the consumed < argc in parse_synth_field(), unless
-you keep the backward compatibility - I think you can add an
-inner loop for it, something like
-
-while ((field_str = strsep(&tmp_fields, ";")) != NULL) {
-    argv = argv_split(...);
-    consumed = 0;
-    while (argc > consumed) {
-        // increment consumed in parse_synth_field()
-        field = parse_synth_field(argc - consumed, argv + consumed, &consumed);
-        if (IS_ERR(field)) {...}
-
-        fields[n_fields++] = field;
-        if (n_fields == SYNTH_FIELDS_MAX) {...}
-     }
-
-    argv_free(argv);
-}
-
-what would you think?
-
-> +
->  		fields[n_fields++] = field;
-> -		i += consumed - 1;
->  	}
->  
-> -	if (i < argc && strcmp(argv[i], ";") != 0) {
-> -		synth_err(SYNTH_ERR_INVALID_FIELD, errpos(argv[i]));
-> +	if (n_fields == 0) {
-> +		synth_err(SYNTH_ERR_CMD_INCOMPLETE, 0);
->  		ret = -EINVAL;
->  		goto err;
->  	}
-> @@ -1266,6 +1248,8 @@ static int __create_synth_event(int argc, const char *name, const char **argv)
->   out:
->  	mutex_unlock(&event_mutex);
->  
-> +	kfree(saved_fields);
-> +
->  	return ret;
->   err:
->  	for (i = 0; i < n_fields; i++)
-> @@ -1385,29 +1369,35 @@ EXPORT_SYMBOL_GPL(synth_event_delete);
->  
->  static int create_or_delete_synth_event(const char *raw_command)
->  {
-> -	char **argv, *name = NULL;
-> -	int argc = 0, ret = 0;
-> +	char *name = NULL, *fields, *p;
-> +	int ret = 0;
->  
-> -	argv = argv_split(GFP_KERNEL, raw_command, &argc);
-> -	if (!argv)
-> -		return -ENOMEM;
-> +	raw_command = skip_spaces(raw_command);
-> +	if (raw_command[0] == '\0')
-> +		return ret;
->  
-> -	if (!argc)
-> -		goto free;
-> +	last_cmd_set(raw_command);
->  
-> -	name = argv[0];
-> +	p = strpbrk(raw_command, " \t");
-> +	if (!p)
-> +		return -EINVAL;
-
-Hmm, this may drop the ability to delete an event with "!name",
-it always requires some spaces after the name.
-
-Thank you,
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Thanks,
+John
