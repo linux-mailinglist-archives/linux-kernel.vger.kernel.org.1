@@ -2,171 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6163E2E09E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 13:00:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BA2F2E09EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 13:08:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726694AbgLVL7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 06:59:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30471 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726591AbgLVL7f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 06:59:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608638288;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=c2qf5gIhcMVQKS3hR+V8X3H/dCp3GvNlzpFYpp+NKNs=;
-        b=KWsIq3ETq7JinqnJVkQF2kCdpiMoD5BIp96GJ43HAkL+cWDAG+lYdbpEp52rgDjcK2YezO
-        Qce44mlBM6hqpOF3J5RDxI/v51Z6Qxmiizp3WVxQwYGAVDdDl0w5wgsgqt/RL0/JVKMqlL
-        952hUBnCyhyAdm3vK2Ws9pZUIGOLV7w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-309-gXb2fMU9PgO7SaOF_AZm0g-1; Tue, 22 Dec 2020 06:58:04 -0500
-X-MC-Unique: gXb2fMU9PgO7SaOF_AZm0g-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4B30F1084C89;
-        Tue, 22 Dec 2020 11:58:02 +0000 (UTC)
-Received: from [10.36.113.220] (ovpn-113-220.ams2.redhat.com [10.36.113.220])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4FDC75E1B4;
-        Tue, 22 Dec 2020 11:57:55 +0000 (UTC)
-Subject: Re: [RFC v2 PATCH 0/4] speed up page allocation for __GFP_ZERO
-To:     Liang Li <liliang324@gmail.com>
-Cc:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Liang Li <liliangleo@didiglobal.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-References: <20201221162519.GA22504@open-light-1.localdomain>
- <7bf0e895-52d6-9e2d-294b-980c33cf08e4@redhat.com>
- <CA+2MQi89v=DZJZ7b-QaMsU2f42j4SRW47XcZvLtBj10YeqRGgQ@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <840ff69d-20d5-970a-1635-298000196f3e@redhat.com>
-Date:   Tue, 22 Dec 2020 12:57:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1726601AbgLVMIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 07:08:09 -0500
+Received: from mail-eopbgr750089.outbound.protection.outlook.com ([40.107.75.89]:40694
+        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725950AbgLVMII (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 07:08:08 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=h0wRfAAVSYrueR0Z2pFbyz/GnhSYXJSbo6c93vgN5T9g7v6oZUtyDzTwezAjjSCix9QmVYqjBP6b0sYk3ET8iFHzE2Tb/oZviz4Q4ny4fwtJiG02lkAZUI2/cK6jwuc4nZk/+HOx0d+xjWuaSxog2hY8VBNesviaYIVI5E8G0tO8972tpgFfa+XyBCENkrOLbvlTwHbG40lb7KHyNBvJZQZqm9yOVhxR0oli87cTzJTlTOXvqq9sklExgoIKvpbIbW6jbd0pOIJm/Psmk2zR8B0QPeIVTNeFB8MrznrOwlx5NJEfp7iNjjX8QhA/9pPQUcnlCg2XtceKUFg5fsmX2g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XS8GcIQUwIwhTvf6JcQ8VV94yjtp3TFatrbuqvn9cIg=;
+ b=lhCj0Tb7DosA8DsHjyB0WBFzpAAc5AEuWxPC3G/iYcO//jZ/GtqTNm9JGJXr5jfxhTU2V0+QooU3V22nT9zka6xbTkdxhSiDyH4p0tPOQ9vPUG3lF8uV1CxIuidbocHNahrJLieCQJnlKo97/vxB5545tT+Vkwle/yxDPmQTxnNMjTNGl8YPnHdp0IDIL3mT3N8dPU2+zmDeg02hfgiMlswXWWiHFEd4LkkkcBBjMZqeCHkVXwoGpfX97/O6CLNntR79C1gJIFYPqqpgoCEu+A4M9riJwjXyuzKxY+efmv8Ko2v2lJdNNCCrU3Hrw9QFA5jEVo1nXSSxqdHriRmyVg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
+ is 165.204.84.17) smtp.rcpttodomain=gmail.com smtp.mailfrom=amd.com;
+ dmarc=fail (p=none sp=none pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XS8GcIQUwIwhTvf6JcQ8VV94yjtp3TFatrbuqvn9cIg=;
+ b=YabiQDGY6+Zcm5k4k+T5BqR/pcMich17gvgdhBAGUTg56EtzNQT2P0kzO6weocVvIJGEzuL9rH/G06+uVoWKMKacy/WmAJH2+QOH0+2GzVi5T5tQUCFim/5EG2m90/kv0ladY0NUbyW6yxAxwJ9B8kniHJo8nx1irLQnh6LsZhY=
+Received: from BN1PR10CA0024.namprd10.prod.outlook.com (2603:10b6:408:e0::29)
+ by CY4PR12MB1799.namprd12.prod.outlook.com (2603:10b6:903:11c::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.30; Tue, 22 Dec
+ 2020 12:07:19 +0000
+Received: from BN8NAM11FT068.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:e0:cafe::48) by BN1PR10CA0024.outlook.office365.com
+ (2603:10b6:408:e0::29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.27 via Frontend
+ Transport; Tue, 22 Dec 2020 12:07:18 +0000
+X-MS-Exchange-Authentication-Results: spf=softfail (sender IP is
+ 165.204.84.17) smtp.mailfrom=amd.com; gmail.com; dkim=none (message not
+ signed) header.d=none;gmail.com; dmarc=fail action=none header.from=amd.com;
+Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
+ amd.com discourages use of 165.204.84.17 as permitted sender)
+Received: from SATLEXMB01.amd.com (165.204.84.17) by
+ BN8NAM11FT068.mail.protection.outlook.com (10.13.177.69) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3676.25 via Frontend Transport; Tue, 22 Dec 2020 12:07:17 +0000
+Received: from SATLEXMB02.amd.com (10.181.40.143) by SATLEXMB01.amd.com
+ (10.181.40.142) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Tue, 22 Dec
+ 2020 06:07:16 -0600
+Received: from vishnu-All-Series.amd.com (10.180.168.240) by
+ SATLEXMB02.amd.com (10.181.40.143) with Microsoft SMTP Server id 15.1.1979.3
+ via Frontend Transport; Tue, 22 Dec 2020 06:07:13 -0600
+From:   Ravulapati Vishnu vardhan rao 
+        <Vishnuvardhanrao.Ravulapati@amd.com>
+CC:     <Alexander.Deucher@amd.com>,
+        Ravulapati Vishnu vardhan rao 
+        <Vishnuvardhanrao.Ravulapati@amd.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        "Takashi Iwai" <tiwai@suse.com>,
+        Akshu Agrawal <akshu.agrawal@amd.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
+        <alsa-devel@alsa-project.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: [PATCH] ASoC: amd:Replacing MSI with Legacy IRQ model
+Date:   Tue, 22 Dec 2020 17:29:18 +0530
+Message-ID: <20201222115929.11222-1-Vishnuvardhanrao.Ravulapati@amd.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <CA+2MQi89v=DZJZ7b-QaMsU2f42j4SRW47XcZvLtBj10YeqRGgQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 166cabef-dc8a-4eaa-c75d-08d8a672207a
+X-MS-TrafficTypeDiagnostic: CY4PR12MB1799:
+X-Microsoft-Antispam-PRVS: <CY4PR12MB1799560966B1F0AA53F84B7BE7DF0@CY4PR12MB1799.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: m9Ut5QIfmMhi5THJidDsqJSs1M0YdkjkFFi1reqLOywvPW5h+vf+cKkwWu9WncR5b6EwAPU0aHs+H3Ob5oWvP6wNp8NcmZXGUUW6M0x8Qcv+MGhDJIS9jqeUojHOkIYfUjI2q6k4ZFEF1K1VavVL7PQVdtzuAeMYtxXONsq0fAtMvq6IRU72XQvKl7JzrlFBmaSgCE1SSyw0AXe548O5/lPgVgrh2PmFK2ZRBQgDNc5BXK550HgbbH5LpecSUY2wwuLsAihCHJdxJtYkl+St0zsPfwOoLHn9+n63EKnzPOQyR0wXjL3b9oB8RZ4IaqMBe0g8wUqXPpZfVMbJiUH/EH+fs5+hh6icJuc3bHdO0i7ogLbf7H9hno6LEYoLaykkgpbUAXrXWbq0n2jCMGUEYDva4wLcTAdGEunMvABsPLXisUG0imQ8Mb900LV3HNygB/Ck2ChwprTMbNq21Q9zEfyDk3Y+qrD+KC8dJmOEMJE=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SATLEXMB01.amd.com;PTR:ErrorRetry;CAT:NONE;SFS:(4636009)(39860400002)(136003)(346002)(376002)(396003)(46966005)(336012)(2906002)(70206006)(4326008)(186003)(109986005)(54906003)(81166007)(356005)(2616005)(26005)(478600001)(47076004)(83380400001)(82740400003)(8936002)(426003)(316002)(82310400003)(70586007)(36756003)(5660300002)(7696005)(1076003)(86362001)(8676002)(266003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Dec 2020 12:07:17.3885
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 166cabef-dc8a-4eaa-c75d-08d8a672207a
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB01.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT068.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1799
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> 
->>>
->>> Virtulization
->>> =============
->>> Speed up VM creation and shorten guest boot time, especially for PCI
->>> SR-IOV device passthrough scenario. Compared with some of the para
->>> vitalization solutions, it is easy to deploy because it’s transparent
->>> to guest and can handle DMA properly in BIOS stage, while the para
->>> virtualization solution can’t handle it well.
->>
->> What is the "para virtualization" approach you are talking about?
-> 
-> I refer two topic in the KVM forum 2020, the doc can give more details :
-> https://static.sched.com/hosted_files/kvmforum2020/48/coIOMMU.pdf
-> https://static.sched.com/hosted_files/kvmforum2020/51/The%20Practice%20Method%20to%20Speed%20Up%2010x%20Boot-up%20Time%20for%20Guest%20in%20Alibaba%20Cloud.pdf
-> 
-> and the flowing link is mine:
-> https://static.sched.com/hosted_files/kvmforum2020/90/Speed%20Up%20Creation%20of%20a%20VM%20With%20Passthrough%20GPU.pdf
+When we try to play and capture simultaneously we see that
+interrupts are genrated but our handler is not being acknowledged,
+After investigating further more in detail on this issue we found
+that IRQ delivery via MSI from the ACP IP is unreliable and so sometimes
+interrupt generated will not be acknowledged so MSI model shouldn't be used
+and using legacy IRQs will resolve interrupt handling issue.
 
-Thanks for the pointers! I actually did watch your presentation.
+This patch replaces MSI interrupt handling with legacy IRQ model.
 
->>
->>>
->>> Improve guest performance when use VIRTIO_BALLOON_F_REPORTING for memory
->>> overcommit. The VIRTIO_BALLOON_F_REPORTING feature will report guest page
->>> to the VMM, VMM will unmap the corresponding host page for reclaim,
->>> when guest allocate a page just reclaimed, host will allocate a new page
->>> and zero it out for guest, in this case pre zero out free page will help
->>> to speed up the proccess of fault in and reduce the performance impaction.
->>
->> Such faults in the VMM are no different to other faults, when first
->> accessing a page to be populated. Again, I wonder how much of a
->> difference it actually makes.
->>
-> 
-> I am not just referring to faults in the VMM, I mean the whole process
-> that handles guest page faults.
-> without VIRTIO_BALLOON_F_REPORTING, pages used by guests will be zero
-> out only once by host. With VIRTIO_BALLOON_F_REPORTING, free pages are
-> reclaimed by the host and may return to the host buddy
-> free list. When the pages are given back to the guest, the host kernel
-> needs to zero out it again. It means
-> with VIRTIO_BALLOON_F_REPORTING, guest memory performance will be
-> degraded for frequently
-> zero out operation on host side. The performance degradation will be
-> obvious for huge page case. Free
-> page pre zero out can help to make guest memory performance almost the
-> same as without
-> VIRTIO_BALLOON_F_REPORTING.
+Issue can be reproduced easily by running below python script:
 
-Yes, what I am saying is that this fault handling is no different to
-ordinary faults when accessing a virtual memory location the first time
-and populating a page. The only difference is that it happens
-continuously, not only the first time we touch a page.
+import subprocess
+import time
+import threading
 
-And we might be able to improve handling in the hypervisor in the
-future. We have been discussing using MADV_FREE instead of MADV_DONTNEED
-in QEMU for handling free page reporting. Then, guest reported pages
-will only get reclaimed by the hypervisor when there is actual memory
-pressure in the hypervisor (e.g., when about to swap). And zeroing a
-page is an obvious improvement over going to swap. The price for zeroing
-pages has to be paid at one point.
+def do2():
+  cmd = 'aplay -f dat -D hw:2,1 /dev/zero -d 1'
+    subprocess.call(cmd, stdin=subprocess.PIPE,
+			stderr=subprocess.PIPE, shell=True)
+    print('Play Done')
 
-Also note that we've been discussing cache-related things already. If
-you zero out before giving the page to the guest, the page will already
-be in the cache - where the guest directly wants to access it.
+def run():
+	for i in range(1000):
+		do2()
 
-[...]
+def do(i):
+    cmd = 'arecord -f dat -D hw:2,2 /dev/null -d 1'
+    subprocess.call(cmd, stdout=subprocess.PIPE,
+			stderr=subprocess.PIPE, shell=True)
+    print(datetime.datetime.now(), i)
 
->>>
->>> Security
->>> ========
->>> This is a weak version of "introduce init_on_alloc=1 and init_on_free=1
->>> boot options", which zero out page in a asynchronous way. For users can't
->>> tolerate the impaction of 'init_on_alloc=1' or 'init_on_free=1' brings,
->>> this feauture provide another choice.
->> "we don’t pre zero out all the free pages" so this is of little actual use.
-> 
-> OK. It seems none of the reasons listed above is strong enough for
+t = threading.Thread(target=run)
+t.start()
+for i in range(1000):
+	do(i)
 
-I was rather saying that for security it's of little use IMHO.
-Application/VM start up time might be improved by using huge pages (and
-pre-zeroing these). Free page reporting might be improved by using
-MADV_FREE instead of MADV_DONTNEED in the hypervisor.
+t.join()
 
-> this feature, above all of them, which one is likely to become the
-> most strong one?  From the implementation, you will find it is
-> configurable, users don't want to use it can turn it off.  This is not
-> an option?
+After applying this patch issue is resolved.
 
-Well, we have to maintain the feature and sacrifice a page flag. For
-example, do we expect someone explicitly enabling the feature just to
-speed up startup time of an app that consumes a lot of memory? I highly
-doubt it.
+Signed-off-by: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
+---
+ sound/soc/amd/raven/pci-acp3x.c | 16 +++-------------
+ 1 file changed, 3 insertions(+), 13 deletions(-)
 
-I'd love to hear opinions of other people. (a lot of people are offline
-until beginning of January, including, well, actually me :) )
-
+diff --git a/sound/soc/amd/raven/pci-acp3x.c b/sound/soc/amd/raven/pci-acp3x.c
+index 8c138e490f0c..d3536fd6a124 100644
+--- a/sound/soc/amd/raven/pci-acp3x.c
++++ b/sound/soc/amd/raven/pci-acp3x.c
+@@ -140,21 +140,14 @@ static int snd_acp3x_probe(struct pci_dev *pci,
+ 		goto release_regions;
+ 	}
+ 
+-	/* check for msi interrupt support */
+-	ret = pci_enable_msi(pci);
+-	if (ret)
+-		/* msi is not enabled */
+-		irqflags = IRQF_SHARED;
+-	else
+-		/* msi is enabled */
+-		irqflags = 0;
++	irqflags = IRQF_SHARED;
+ 
+ 	addr = pci_resource_start(pci, 0);
+ 	adata->acp3x_base = devm_ioremap(&pci->dev, addr,
+ 					pci_resource_len(pci, 0));
+ 	if (!adata->acp3x_base) {
+ 		ret = -ENOMEM;
+-		goto disable_msi;
++		goto release_regions;
+ 	}
+ 	pci_set_master(pci);
+ 	pci_set_drvdata(pci, adata);
+@@ -162,7 +155,7 @@ static int snd_acp3x_probe(struct pci_dev *pci,
+ 	adata->pme_en = rv_readl(adata->acp3x_base + mmACP_PME_EN);
+ 	ret = acp3x_init(adata);
+ 	if (ret)
+-		goto disable_msi;
++		goto release_regions;
+ 
+ 	val = rv_readl(adata->acp3x_base + mmACP_I2S_PIN_CONFIG);
+ 	switch (val) {
+@@ -251,8 +244,6 @@ static int snd_acp3x_probe(struct pci_dev *pci,
+ de_init:
+ 	if (acp3x_deinit(adata->acp3x_base))
+ 		dev_err(&pci->dev, "ACP de-init failed\n");
+-disable_msi:
+-	pci_disable_msi(pci);
+ release_regions:
+ 	pci_release_regions(pci);
+ disable_pci:
+@@ -311,7 +302,6 @@ static void snd_acp3x_remove(struct pci_dev *pci)
+ 		dev_err(&pci->dev, "ACP de-init failed\n");
+ 	pm_runtime_forbid(&pci->dev);
+ 	pm_runtime_get_noresume(&pci->dev);
+-	pci_disable_msi(pci);
+ 	pci_release_regions(pci);
+ 	pci_disable_device(pci);
+ }
 -- 
-Thanks,
-
-David / dhildenb
+2.17.1
 
