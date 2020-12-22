@@ -2,234 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11C3D2E09B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 12:33:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D26A22E09BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 12:34:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726848AbgLVLcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 06:32:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726525AbgLVLcX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 06:32:23 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE81C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 03:31:43 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id o17so31220880lfg.4
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 03:31:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=dktppCPPYMDKn4HOO01Dz0vwMPZoiSAvjPyH/cDbuxs=;
-        b=KCGAbCNSCZqsh0bouzDx+e4SdfpeS2sEpYp+e+JcX50HpbmSNuBOisfejMHsiuXydD
-         x3RaIE6VxrDWm5lbBzACSxu2qoOHstuBnunt33AszjmHk621Uo7Gf42PI0mYmJe2jHlz
-         wzJeVzlCSKaIqSebn7GzqfttH4bVeWWosE9ZQDjB3Ks8b9/sl5+vPwcAOTKSHPKc9QNI
-         0EFMED45qG9163hZu7spfwpAR0XOutzytX5A59ruf0MHxyeumAsHr1ymWg61GSRh48OQ
-         PbI221ZHXDoSUU9shBxsfM83wyBp3FNQCuR9sPDIJJtNw5Jiie6TY1/Kht8fvrVvbdjB
-         6eow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=dktppCPPYMDKn4HOO01Dz0vwMPZoiSAvjPyH/cDbuxs=;
-        b=SXd45AHR0m14iizSj8ZOobdUuo8iZWRt4KKGAg0aejx2t2/coWtHIcFgb4UNF+SQAF
-         I9CcvW5v2WoiL5fxyZ+VSxpC414ojawFiQXManXm4WNrHHdfcK69Sykhnkzg8nvStVEW
-         YVQtzVZcRhG7vBf+byOYiSvqDVNMhi/Du/BtSk9brNwK+58kftgXZWhvVABdZ3nWja8a
-         IfS6x8MoeXpMRLALaI3fJ4xw+xE4MAqxM/luZHnuMJ/Q0jxZoasPCVMISzI6bmpIr+oA
-         W+oISBDWHUXdpSwPGIohm1l3+CnK29gCjxAOHbwhTDuGDthElB0qCGCj7bXuFYEWkK0m
-         Xr6g==
-X-Gm-Message-State: AOAM530ItG9EXyXbSGN7pSERFBfHy18kUpz4RCYag7KmCqGJGg87nlEX
-        13LQq/YEB0rmgDSi/CYa5kO537jb/TQDW9NxrP3Axt7iYlU=
-X-Google-Smtp-Source: ABdhPJz2RX/hH/l6q8Lu1P56grKew2x2adDu0FLbY8RKWdzQEwckfLp/pTFh9j2MvfDUWnBkxH2BqHfa4+kPCnD41ZU=
-X-Received: by 2002:a05:6512:3238:: with SMTP id f24mr8589581lfe.29.1608636701577;
- Tue, 22 Dec 2020 03:31:41 -0800 (PST)
+        id S1726707AbgLVLdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 06:33:54 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46662 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725985AbgLVLdx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 06:33:53 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B624CACF5;
+        Tue, 22 Dec 2020 11:33:10 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 31BEB1E1370; Tue, 22 Dec 2020 12:33:10 +0100 (CET)
+Date:   Tue, 22 Dec 2020 12:33:10 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     syzbot <syzbot+3002ac6b4fd242a64228@syzkaller.appspotmail.com>
+Cc:     adilger.kernel@dilger.ca, clang-built-linux@googlegroups.com,
+        jack@suse.cz, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, natechancellor@gmail.com,
+        ndesaulniers@google.com, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+Subject: Re: WARNING: ODEBUG bug in ext4_fill_super (2)
+Message-ID: <20201222113310.GG13601@quack2.suse.cz>
+References: <000000000000c2877f05b708e1a5@google.com>
 MIME-Version: 1.0
-References: <20201221162519.GA22504@open-light-1.localdomain> <7bf0e895-52d6-9e2d-294b-980c33cf08e4@redhat.com>
-In-Reply-To: <7bf0e895-52d6-9e2d-294b-980c33cf08e4@redhat.com>
-From:   Liang Li <liliang324@gmail.com>
-Date:   Tue, 22 Dec 2020 19:31:29 +0800
-Message-ID: <CA+2MQi89v=DZJZ7b-QaMsU2f42j4SRW47XcZvLtBj10YeqRGgQ@mail.gmail.com>
-Subject: Re: [RFC v2 PATCH 0/4] speed up page allocation for __GFP_ZERO
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Liang Li <liliangleo@didiglobal.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000c2877f05b708e1a5@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 4:47 PM David Hildenbrand <david@redhat.com> wrote:
->
-> On 21.12.20 17:25, Liang Li wrote:
-> > The first version can be found at: https://lkml.org/lkml/2020/4/12/42
-> >
-> > Zero out the page content usually happens when allocating pages with
-> > the flag of __GFP_ZERO, this is a time consuming operation, it makes
-> > the population of a large vma area very slowly. This patch introduce
-> > a new feature for zero out pages before page allocation, it can help
-> > to speed up page allocation with __GFP_ZERO.
-> >
-> > My original intention for adding this feature is to shorten VM
-> > creation time when SR-IOV devicde is attached, it works good and the
-> > VM creation time is reduced by about 90%.
-> >
-> > Creating a VM [64G RAM, 32 CPUs] with GPU passthrough
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-> > QEMU use 4K pages, THP is off
-> >                   round1      round2      round3
-> > w/o this patch:    23.5s       24.7s       24.6s
-> > w/ this patch:     10.2s       10.3s       11.2s
-> >
-> > QEMU use 4K pages, THP is on
-> >                   round1      round2      round3
-> > w/o this patch:    17.9s       14.8s       14.9s
-> > w/ this patch:     1.9s        1.8s        1.9s
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-> >
->
-> I am still not convinces that we want/need this for this (main) use
-> case. Why can't we use huge pages for such use cases (that really care
-> about VM creation time) and rather deal with pre-zeroing of huge pages
-> instead?
->
-> If possible, I'd like to avoid GFP_ZERO (for reasons already discussed).
->
+#syz dup: general protection fault in ext4_commit_super
 
-Yes, for VM creation, we can simply use hugetlb for that, just like what
-I have done in the other series 'mm: support free hugepage pre zero out'
-I send the v2 because I think VM creation is just one example we can benefi=
-t
-from.
-
-> > Obviously, it can do more than this. We can benefit from this feature
-> > in the flowing case:
-> >
-> > Interactive sence
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > Shorten application lunch time on desktop or mobile phone, it can help
-> > to improve the user experience. Test shows on a
-> > server [Intel(R) Xeon(R) CPU E5-2620 v3 @ 2.40GHz], zero out 1GB RAM by
-> > the kernel will take about 200ms, while some mainly used application
-> > like Firefox browser, Office will consume 100 ~ 300 MB RAM just after
-> > launch, by pre zero out free pages, it means the application launch
-> > time will be reduced about 20~60ms (can be visual sensed?). May be
-> > we can make use of this feature to speed up the launch of Andorid APP
-> > (I didn't do any test for Android).
->
-> I am not really sure if you can actually visually sense a difference in
-> your examples. Startup time of an application is not just memory
-> allocation (page zeroing) time. It would be interesting of much of a
-> difference this actually makes in practice. (e.g., firefox startup time
-> etc.)
-
-Yes, using Firefox and Office as an example seems not convincing, maybe a
-large Game APP which consumes several GB of RAM is better.
-
-> >
-> > Virtulization
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > Speed up VM creation and shorten guest boot time, especially for PCI
-> > SR-IOV device passthrough scenario. Compared with some of the para
-> > vitalization solutions, it is easy to deploy because it=E2=80=99s trans=
-parent
-> > to guest and can handle DMA properly in BIOS stage, while the para
-> > virtualization solution can=E2=80=99t handle it well.
->
-> What is the "para virtualization" approach you are talking about?
-
-I refer two topic in the KVM forum 2020, the doc can give more details :
-https://static.sched.com/hosted_files/kvmforum2020/48/coIOMMU.pdf
-https://static.sched.com/hosted_files/kvmforum2020/51/The%20Practice%20Meth=
-od%20to%20Speed%20Up%2010x%20Boot-up%20Time%20for%20Guest%20in%20Alibaba%20=
-Cloud.pdf
-
-and the flowing link is mine:
-https://static.sched.com/hosted_files/kvmforum2020/90/Speed%20Up%20Creation=
-%20of%20a%20VM%20With%20Passthrough%20GPU.pdf
->
-> >
-> > Improve guest performance when use VIRTIO_BALLOON_F_REPORTING for memor=
-y
-> > overcommit. The VIRTIO_BALLOON_F_REPORTING feature will report guest pa=
-ge
-> > to the VMM, VMM will unmap the corresponding host page for reclaim,
-> > when guest allocate a page just reclaimed, host will allocate a new pag=
-e
-> > and zero it out for guest, in this case pre zero out free page will hel=
-p
-> > to speed up the proccess of fault in and reduce the performance impacti=
-on.
->
-> Such faults in the VMM are no different to other faults, when first
-> accessing a page to be populated. Again, I wonder how much of a
-> difference it actually makes.
->
-
-I am not just referring to faults in the VMM, I mean the whole process
-that handles guest page faults.
-without VIRTIO_BALLOON_F_REPORTING, pages used by guests will be zero
-out only once by host. With VIRTIO_BALLOON_F_REPORTING, free pages are
-reclaimed by the host and may return to the host buddy
-free list. When the pages are given back to the guest, the host kernel
-needs to zero out it again. It means
-with VIRTIO_BALLOON_F_REPORTING, guest memory performance will be
-degraded for frequently
-zero out operation on host side. The performance degradation will be
-obvious for huge page case. Free
-page pre zero out can help to make guest memory performance almost the
-same as without
-VIRTIO_BALLOON_F_REPORTING.
-
-> >
-> > Speed up kernel routine
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > This can=E2=80=99t be guaranteed because we don=E2=80=99t pre zero out =
-all the free pages,
-> > but is true for most case. It can help to speed up some important syste=
-m
-> > call just like fork, which will allocate zero pages for building page
-> > table. And speed up the process of page fault, especially for huge page
-> > fault. The POC of Hugetlb free page pre zero out has been done.
->
-> Would be interesting to have an actual example with some numbers.
-
-I will try to do some tests to get some numbers.
-
-> >
-> > Security
-> > =3D=3D=3D=3D=3D=3D=3D=3D
-> > This is a weak version of "introduce init_on_alloc=3D1 and init_on_free=
-=3D1
-> > boot options", which zero out page in a asynchronous way. For users can=
-'t
-> > tolerate the impaction of 'init_on_alloc=3D1' or 'init_on_free=3D1' bri=
-ngs,
-> > this feauture provide another choice.
-> "we don=E2=80=99t pre zero out all the free pages" so this is of little a=
-ctual use.
-
-OK. It seems none of the reasons listed above is strong enough for
-this feature, above all of them, which one is likely to become the
-most strong one?  From the implementation, you will find it is
-configurable, users don't want to use it can turn it off.  This is not
-an option?
-
-Thanks for your comments,  David.
-
-Liang
+On Mon 21-12-20 23:54:18, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    0d52778b Add linux-next specific files for 20201218
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=16190613500000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=5c81cc44aa25b5b3
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3002ac6b4fd242a64228
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=128f5123500000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14f9f30f500000
+> 
+> The issue was bisected to:
+> 
+> commit e810c942a325cf749e859d7aa3a43dc219cea299
+> Author: Jan Kara <jack@suse.cz>
+> Date:   Wed Dec 16 10:18:40 2020 +0000
+> 
+>     ext4: save error info to sb through journal if available
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12d9df07500000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=11d9df07500000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=16d9df07500000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+3002ac6b4fd242a64228@syzkaller.appspotmail.com
+> Fixes: e810c942a325 ("ext4: save error info to sb through journal if available")
+> 
+> EXT4-fs error (device loop3): ext4_fill_super:4943: inode #2: comm syz-executor723: iget: root inode unallocated
+> EXT4-fs (loop3): get root inode failed
+> EXT4-fs (loop3): mount failed
+> ------------[ cut here ]------------
+> ODEBUG: free active (active state 0) object type: work_struct hint: flush_stashed_error_work+0x0/0x2a0 fs/ext4/ext4.h:2040
+> WARNING: CPU: 0 PID: 13670 at lib/debugobjects.c:505 debug_print_object+0x16e/0x250 lib/debugobjects.c:505
+> Modules linked in:
+> CPU: 0 PID: 13670 Comm: syz-executor723 Not tainted 5.10.0-next-20201218-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:debug_print_object+0x16e/0x250 lib/debugobjects.c:505
+> Code: ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 af 00 00 00 48 8b 14 dd 20 af bf 89 4c 89 ee 48 c7 c7 20 a3 bf 89 e8 30 78 05 05 <0f> 0b 83 05 55 8a b9 09 01 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e c3
+> RSP: 0018:ffffc90001d0f9b8 EFLAGS: 00010282
+> RAX: 0000000000000000 RBX: 0000000000000003 RCX: 0000000000000000
+> RDX: ffff888024b63600 RSI: ffffffff815b95f5 RDI: fffff520003a1f29
+> RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
+> R10: ffffffff815b7a4b R11: 0000000000000000 R12: ffffffff896ae040
+> R13: ffffffff89bfa920 R14: ffffffff814911f0 R15: dffffc0000000000
+> FS:  000000000163a940(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 000000000043fb60 CR3: 000000001226b000 CR4: 00000000001506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  __debug_check_no_obj_freed lib/debugobjects.c:987 [inline]
+>  debug_check_no_obj_freed+0x309/0x430 lib/debugobjects.c:1018
+>  slab_free_hook mm/slub.c:1540 [inline]
+>  slab_free_freelist_hook+0x12b/0x1d0 mm/slub.c:1586
+>  slab_free mm/slub.c:3157 [inline]
+>  kfree+0xdb/0x3c0 mm/slub.c:4156
+>  ext4_fill_super+0x86c/0xdf40 fs/ext4/super.c:5174
+>  mount_bdev+0x34d/0x410 fs/super.c:1366
+>  legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+>  vfs_get_tree+0x89/0x2f0 fs/super.c:1496
+>  do_new_mount fs/namespace.c:2896 [inline]
+>  path_mount+0x12ae/0x1e70 fs/namespace.c:3227
+>  do_mount fs/namespace.c:3240 [inline]
+>  __do_sys_mount fs/namespace.c:3448 [inline]
+>  __se_sys_mount fs/namespace.c:3425 [inline]
+>  __x64_sys_mount+0x27f/0x300 fs/namespace.c:3425
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x44873a
+> Code: b8 08 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 cd a2 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 aa a2 fb ff c3 66 0f 1f 84 00 00 00 00 00
+> RSP: 002b:00007fff16496da8 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
+> RAX: ffffffffffffffda RBX: 00007fff16496e00 RCX: 000000000044873a
+> RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007fff16496dc0
+> RBP: 00007fff16496dc0 R08: 00007fff16496e00 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000006
+> R13: 0000000000000005 R14: 0000000000000004 R15: 0000000000000004
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> syzbot can test patches for this issue, for details see:
+> https://goo.gl/tpsmEJ#testing-patches
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
