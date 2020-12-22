@@ -2,142 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FFF72E09FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 13:21:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E34F2E0A01
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 13:25:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726697AbgLVMUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 07:20:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47992 "EHLO
+        id S1726688AbgLVMYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 07:24:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726166AbgLVMUQ (ORCPT
+        with ESMTP id S1726549AbgLVMYT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 07:20:16 -0500
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E26ACC0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 04:19:35 -0800 (PST)
-Received: by mail-ot1-x331.google.com with SMTP id i6so11750532otr.2
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 04:19:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MSZyi2h29d/pc/zMIRyzuH+lEXfDxQm0cbyH2qdw1U4=;
-        b=jl/5+5wku6WpeCVsW3YLsJk595mxsP2Gdh7aac0/fiEswu+Km8PpqnzR6X9DKyLug2
-         a180ENrSt0nRr7UbMRER+qh9S804yURja6flvNp6PRp0PKpCSBKZEvvaPaNVHSJ0Ticd
-         ViBbR3Rq3QKEGpLa8F3WqwzDNhsr0rMLGxYO2TAlTrhzHq+UxDYZ+wjysFsF85rqJKN3
-         H7lsIudB1H3GtEjs2ZIyKGa0IH+6a6EfvF7DHJk29n1VIxqEO1R7WmBFRn+gqpMV/qwz
-         eRvwzmm2Galo4Trb8dtq5M9lR9KsvLXe6gy4ULMrcqxTHFU872kWS8eWaiycemBmZdkY
-         KouQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MSZyi2h29d/pc/zMIRyzuH+lEXfDxQm0cbyH2qdw1U4=;
-        b=iVI5x8tzTSFkG4vm3Z/FKL3Kbc40P3eVMuel+51ONpgKPOg5lo2f8O311XPWjtoFV6
-         GPsSo9k46gdMNFcpkmmDt7rD/KAp5aDgAbrPzVNasQBaoLo7fijcElQFqeJhhazBfvEB
-         mrAS1NHwslS7X1zTmsDh9pJecYnfDGREALkAaOgqNYcRFULRK3nv9DGyQ6zVevR0Kaon
-         1s13mmJP8aXQ5RP/2bqoPYVl97uKR6kT6I/SRcIeVYI5IzSd1dBnx5LJriirh7eXoQzE
-         0ltTwuoIDNwKQ/SEhg0gWxyaR2slWh1Anhx6kT9a+5owgYAKshkc3jjxV0OSksLlJQb2
-         z/OQ==
-X-Gm-Message-State: AOAM533S6oGpC0hpquVwhIMEysdpZwr0Y1Z0pmmHfD3xTUCLYSLzUvcn
-        NV5mXvp5qga2R4XPEJgy47E=
-X-Google-Smtp-Source: ABdhPJzZpP1vlG4raT6ssXYp9jHbcTrMu/sjKBenhHMuFdnNde7uG0JADT3NS/4ELZ3FPAa8U0cb+A==
-X-Received: by 2002:a05:6830:1ac3:: with SMTP id r3mr16155256otc.363.1608639575217;
-        Tue, 22 Dec 2020 04:19:35 -0800 (PST)
-Received: from localhost.localdomain ([50.236.19.102])
-        by smtp.gmail.com with ESMTPSA id z14sm4350985oot.5.2020.12.22.04.19.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 22 Dec 2020 04:19:34 -0800 (PST)
-From:   qianjun.kernel@gmail.com
-To:     akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        jun qian <qianjun.kernel@gmail.com>
-Subject: [PATCH 1/1] mm:improve the performance during fork
-Date:   Tue, 22 Dec 2020 20:19:04 +0800
-Message-Id: <20201222121904.50845-1-qianjun.kernel@gmail.com>
-X-Mailer: git-send-email 2.20.1 (Apple Git-117)
+        Tue, 22 Dec 2020 07:24:19 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77978C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 04:23:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:To:From:Date:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=Osd9g2TNV5QvdwHKZvb3omjfetHJzVWlGemenPIEwH4=; b=gqW4nps1XLdJsgPKF5WzJ7KVqt
+        9iMHScrzgpCF3rdWxXCCC2XRkMT5vxYMkfK0OpqvmTBst7MS5GZVtY0Lv+akjSGUWQqPQ+SyJ42ct
+        3iHv53xIpSUpOE8AIbePdekzSJ02yvo6gw6urNLCRah1b7iMr0dfqFJVqKk3ner7+gmZmLRijTCH2
+        G0+u5GyVEnmZu6TWn0j4Qa3PTytk3lJcrkoAxtkeHFLnrdd9nmAQTpMwPJqoaQNDkQwpTSlFfp502
+        ezJzwmLTSgWXDlk5MEOnhWWn6zjmBhTvTzTjs10WUHUdQ+sjQ7+6atEnqz5VEI+nebWmnUd5t0YxT
+        OAcHsVEA==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1krgh6-0005Uy-E9; Tue, 22 Dec 2020 12:23:12 +0000
+Date:   Tue, 22 Dec 2020 12:23:12 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Liang Li <liliangleo@didiglobal.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [RFC v2 PATCH 0/4] speed up page allocation for __GFP_ZERO
+Message-ID: <20201222122312.GH874@casper.infradead.org>
+References: <20201221162519.GA22504@open-light-1.localdomain>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201221162519.GA22504@open-light-1.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: jun qian <qianjun.kernel@gmail.com>
+On Mon, Dec 21, 2020 at 11:25:22AM -0500, Liang Li wrote:
+> Creating a VM [64G RAM, 32 CPUs] with GPU passthrough
+> =====================================================
+> QEMU use 4K pages, THP is off
+>                   round1      round2      round3
+> w/o this patch:    23.5s       24.7s       24.6s
+> w/ this patch:     10.2s       10.3s       11.2s
+> 
+> QEMU use 4K pages, THP is on
+>                   round1      round2      round3
+> w/o this patch:    17.9s       14.8s       14.9s
+> w/ this patch:     1.9s        1.8s        1.9s
+> =====================================================
 
-In our project, Many business delays come from fork, so
-we started looking for the reason why fork is time-consuming.
-I used the ftrace with function_graph to trace the fork, found
-that the vm_normal_page will be called tens of thousands and
-the execution time of this vm_normal_page function is only a
-few nanoseconds. And the vm_normal_page is not a inline function.
-So I think if the function is inline style, it maybe reduce the
-call time overhead.
+The cost of zeroing pages has to be paid somewhere.  You've successfully
+moved it out of this path that you can measure.  So now you've put it
+somewhere that you're not measuring.  Why is this a win?
 
-I did the following experiment:
+> Speed up kernel routine
+> =======================
+> This can’t be guaranteed because we don’t pre zero out all the free pages,
+> but is true for most case. It can help to speed up some important system
+> call just like fork, which will allocate zero pages for building page
+> table. And speed up the process of page fault, especially for huge page
+> fault. The POC of Hugetlb free page pre zero out has been done.
 
-I have wrote the c test code, pls ignore the memory leak :)
-Before fork, I will malloc 4G bytes, then acculate the fork
-time.
-
-int main()
-{
-        char *p;
-        unsigned long long i=0;
-        float time_use=0;
-        struct timeval start;
-        struct timeval end;
-
-        for(i=0; i<LEN; i++) {
-                p = (char *)malloc(4096);
-                if (p == NULL) {
-                        printf("malloc failed!\n");
-                        return 0;
-                }
-                p[0] = 0x55;
-        }
-        gettimeofday(&start,NULL);
-        fork();
-        gettimeofday(&end,NULL);
-
-        time_use=(end.tv_sec * 1000000 + end.tv_usec) -
-                (start.tv_sec * 1000000 + start.tv_usec);
-        printf("time_use is %.10f us\n",time_use);
-
-        return 0;
-}
-
-We need to compare the changes in the size of vmlinux, the time of
-fork in inline and non-inline cases, and the vm_normal_page will be
-called in many function. So we also need to compare this function's
-size. For examples, the do_wp_page will call vm_normal_page, so I
-also calculated it's size.
-
-		  inline           non-inline       diff
-vmlinux size      9709248 bytes    9709824 bytes    -576 bytes
-fork time         23475ns          24638ns          -4.7%
-do_wp_page size   972              743              +229
-
-According to the above test data, I think inline vm_normal_page can
-reduce fork execution time.
-
-Signed-off-by: jun qian <qianjun.kernel@gmail.com>
----
- mm/memory.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/mm/memory.c b/mm/memory.c
-index 7d608765932b..a689bb5d3842 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -591,7 +591,7 @@ static void print_bad_pte(struct vm_area_struct *vma, unsigned long addr,
-  * PFNMAP mappings in order to support COWable mappings.
-  *
-  */
--struct page *vm_normal_page(struct vm_area_struct *vma, unsigned long addr,
-+inline struct page *vm_normal_page(struct vm_area_struct *vma, unsigned long addr,
- 			    pte_t pte)
- {
- 	unsigned long pfn = pte_pfn(pte);
--- 
-2.18.2
-
+Try kernbench with and without your patch.
