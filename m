@@ -2,162 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D06EA2E0966
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 12:14:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E96502E096E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 12:17:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726681AbgLVLOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 06:14:03 -0500
-Received: from mx2.suse.de ([195.135.220.15]:57448 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726016AbgLVLOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 06:14:03 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 691C1ACF5;
-        Tue, 22 Dec 2020 11:13:21 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 084F11E1364; Tue, 22 Dec 2020 12:13:21 +0100 (CET)
-Date:   Tue, 22 Dec 2020 12:13:21 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     syzbot <syzbot+77779c9b52ab78154b08@syzkaller.appspotmail.com>
-Cc:     jack@suse.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: memory leak in v2_read_file_info
-Message-ID: <20201222111321.GE13601@quack2.suse.cz>
-References: <0000000000002c029c05b70afacd@google.com>
+        id S1726698AbgLVLQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 06:16:50 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2278 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726179AbgLVLQu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 06:16:50 -0500
+Received: from fraeml737-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4D0Ybg20Yxz67PcC;
+        Tue, 22 Dec 2020 19:13:03 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml737-chm.china.huawei.com (10.206.15.218) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 22 Dec 2020 12:16:08 +0100
+Received: from [10.47.1.120] (10.47.1.120) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 22 Dec
+ 2020 11:16:07 +0000
+Subject: Re: [RFC PATCH v2 2/2] blk-mq: Lockout tagset iter when freeing rqs
+To:     Bart Van Assche <bvanassche@acm.org>, <axboe@kernel.dk>,
+        <ming.lei@redhat.com>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <hch@lst.de>, <hare@suse.de>, <ppvk@codeaurora.org>,
+        <kashyap.desai@broadcom.com>, <linuxarm@huawei.com>
+References: <1608203273-170555-1-git-send-email-john.garry@huawei.com>
+ <1608203273-170555-3-git-send-email-john.garry@huawei.com>
+ <df44b73d-6c42-87ee-3c25-b95a44712e05@acm.org>
+ <4d2004bb-4444-7a63-7c72-1759e3037cfd@huawei.com>
+ <31de2806-bbc1-dcc3-b9eb-ce9257420432@acm.org>
+ <b2edab2b-8af7-816d-9da2-4720d19b96f8@huawei.com>
+ <e97a0603-f9e3-1b00-4a09-c569d4f73d7b@acm.org>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <f98fd31e-89d4-523f-df70-4bd5f39ccbd5@huawei.com>
+Date:   Tue, 22 Dec 2020 11:15:20 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="ftEhullJWpWg/VHq"
-Content-Disposition: inline
-In-Reply-To: <0000000000002c029c05b70afacd@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <e97a0603-f9e3-1b00-4a09-c569d4f73d7b@acm.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.1.120]
+X-ClientProxiedBy: lhreml716-chm.china.huawei.com (10.201.108.67) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---ftEhullJWpWg/VHq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hello,
-
-attached patch should fix this. I'll queue it to my tree.
-
-								Honza
-
-On Tue 22-12-20 02:24:18, syzbot wrote:
-> Hello,
+On 22/12/2020 02:13, Bart Van Assche wrote:
+> On 12/21/20 10:47 AM, John Garry wrote:
+>> Yes, I agree, and I'm not sure what I wrote to give that impression.
+>>
+>> About "root partition", above, I'm just saying that / is mounted on a
+>> sda partition:
+>>
+>> root@ubuntu:/home/john# mount | grep sda
+>> /dev/sda2 on / type ext4 (rw,relatime,errors=remount-ro,stripe=32)
+>> /dev/sda1 on /boot/efi type vfat
+>> (rw,relatime,fmask=0077,dmask=0077,codepage=437,iocharset=iso8859-1,shortname=mixed,errors=remount-ro)
+> Hi John,
 > 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    8653b778 Merge tag 'clk-for-linus' of git://git.kernel.org..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=153fc4db500000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=faf2996955887e91
-> dashboard link: https://syzkaller.appspot.com/bug?extid=77779c9b52ab78154b08
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11c44960d00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13bc8c0b500000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+77779c9b52ab78154b08@syzkaller.appspotmail.com
-> 
-> BUG: memory leak
-> unreferenced object 0xffff888110974f00 (size 64):
->   comm "syz-executor849", pid 8516, jiffies 4294942501 (age 13.960s)
->   hex dump (first 32 bytes):
->     00 30 ee 0d 81 88 ff ff 00 00 00 00 00 00 00 00  .0..............
->     00 00 00 00 00 00 00 00 0a 00 00 00 48 00 00 00  ............H...
->   backtrace:
->     [<0000000018aa1939>] kmalloc include/linux/slab.h:552 [inline]
->     [<0000000018aa1939>] v2_read_file_info+0x1ae/0x430 fs/quota/quota_v2.c:122
->     [<000000001061252b>] dquot_load_quota_sb+0x351/0x650 fs/quota/dquot.c:2387
->     [<000000006c1f70f9>] dquot_load_quota_inode fs/quota/dquot.c:2423 [inline]
->     [<000000006c1f70f9>] dquot_load_quota_inode+0xda/0x160 fs/quota/dquot.c:2415
->     [<00000000abace495>] ext4_quota_enable fs/ext4/super.c:6362 [inline]
->     [<00000000abace495>] ext4_enable_quotas+0x1b2/0x2f0 fs/ext4/super.c:6388
->     [<00000000b6d6a975>] ext4_fill_super+0x3bc5/0x5ac0 fs/ext4/super.c:5046
->     [<0000000003a869bd>] mount_bdev+0x223/0x260 fs/super.c:1366
->     [<000000002138e18c>] legacy_get_tree+0x2b/0x90 fs/fs_context.c:592
->     [<0000000096e90d3d>] vfs_get_tree+0x28/0x100 fs/super.c:1496
->     [<00000000eddeeb8e>] do_new_mount fs/namespace.c:2875 [inline]
->     [<00000000eddeeb8e>] path_mount+0xc5e/0x1170 fs/namespace.c:3205
->     [<00000000c52e2f18>] do_mount fs/namespace.c:3218 [inline]
->     [<00000000c52e2f18>] __do_sys_mount fs/namespace.c:3426 [inline]
->     [<00000000c52e2f18>] __se_sys_mount fs/namespace.c:3403 [inline]
->     [<00000000c52e2f18>] __x64_sys_mount+0x18e/0x1d0 fs/namespace.c:3403
->     [<00000000e70a31f4>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->     [<000000007f651b8c>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> syzbot can test patches for this issue, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
 
---ftEhullJWpWg/VHq
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment; filename="0001-quota-Fix-memory-leak-when-handling-corrupted-quota-.patch"
+Hi Bart, Ming,
 
-From 4d76181dc109d8a0c8ce74325ee5e885734d5ab8 Mon Sep 17 00:00:00 2001
-From: Jan Kara <jack@suse.cz>
-Date: Tue, 22 Dec 2020 12:09:53 +0100
-Subject: [PATCH] quota: Fix memory leak when handling corrupted quota file
+> Thanks for the clarification. I want to take back my suggestion about
+> adding rcu_read_lock() / rcu_read_unlock() in blk_mq_tagset_busy_iter()
+> since it is not allowed to sleep inside an RCU read-side critical
+> section, since blk_mq_tagset_busy_iter() is used in request timeout
+> handling and since there may be blk_mq_ops.timeout implementations that
+> sleep.
 
-When checking corrupted quota file we can bail out and leak allocated
-info structure. Properly free info structure on error return.
+Yes, that's why I was going with atomic, rather than some 
+synchronization primitive which may sleep.
 
-Reported-by: syzbot+77779c9b52ab78154b08@syzkaller.appspotmail.com
-Fixes: 11c514a99bb9 ("quota: Sanity-check quota file headers on load")
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/quota/quota_v2.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+> 
+> Ming's suggestion to serialize blk_mq_tagset_busy_iter() and
+> blk_mq_free_rqs() looks interesting to me.
+> 
 
-diff --git a/fs/quota/quota_v2.c b/fs/quota/quota_v2.c
-index c21106557a37..b1467f3921c2 100644
---- a/fs/quota/quota_v2.c
-+++ b/fs/quota/quota_v2.c
-@@ -164,19 +164,24 @@ static int v2_read_file_info(struct super_block *sb, int type)
- 		quota_error(sb, "Number of blocks too big for quota file size (%llu > %llu).",
- 		    (loff_t)qinfo->dqi_blocks << qinfo->dqi_blocksize_bits,
- 		    i_size_read(sb_dqopt(sb)->files[type]));
--		goto out;
-+		goto out_free;
- 	}
- 	if (qinfo->dqi_free_blk >= qinfo->dqi_blocks) {
- 		quota_error(sb, "Free block number too big (%u >= %u).",
- 			    qinfo->dqi_free_blk, qinfo->dqi_blocks);
--		goto out;
-+		goto out_free;
- 	}
- 	if (qinfo->dqi_free_entry >= qinfo->dqi_blocks) {
- 		quota_error(sb, "Block with free entry too big (%u >= %u).",
- 			    qinfo->dqi_free_entry, qinfo->dqi_blocks);
--		goto out;
-+		goto out_free;
- 	}
- 	ret = 0;
-+out_free:
-+	if (ret) {
-+		kfree(info->dqi_priv);
-+		info->dqi_priv = NULL;
-+	}
- out:
- 	up_read(&dqopt->dqio_sem);
- 	return ret;
--- 
-2.16.4
+So then we could have something like this:
 
+---8<---
 
---ftEhullJWpWg/VHq--
+  -435,9 +444,13 @@ void blk_mq_queue_tag_busy_iter(struct request_queue 
+*q, busy_iter_fn *fn,
+	if (!blk_mq_hw_queue_mapped(hctx))
+			continue;
+
++	while (!atomic_inc_not_zero(&tags->iter_usage_counter));
++
+	if (tags->nr_reserved_tags)
+		bt_for_each(hctx, tags->breserved_tags, fn, priv, true);
+	bt_for_each(hctx, tags->bitmap_tags, fn, priv, false);
+
++	atomic_dec(&tags->iter_usage_counter);
+}
+
+blk_queue_exit(q);
+
+--->8---
+
+And similar for blk_mq_tagset_busy_iter(). How about it?
+
+Thanks,
+John
