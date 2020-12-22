@@ -2,220 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C01B82E0476
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 03:48:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 698F82E0473
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 03:48:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726035AbgLVCqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 21:46:43 -0500
-Received: from mail-eopbgr20057.outbound.protection.outlook.com ([40.107.2.57]:19998
-        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725902AbgLVCqm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 21:46:42 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jadeX7tFiyFo5BW3qJDF97o91/jW6gPpSXQ1tumCL5dPWfVsgIoUIno7DKnBiWHx/4vgXHMoP9Xq0OUiJxSfwPM0wmr+auAms1HKVnzBXWwRu2HRNJufJlU/Lf8Kimc4QddqilQqRzzh7ticXZzjpGUhh6gGjG2UOPFtrE8Cqpm5402vrNpEGM+wjsUr6QrDzD6c8CjXYGo70q5Fg5O/Rbjv+Vrm/FvYhILwiFzKFn5IbSLxD5as+b0cfBmg5x/vk25+ANhF5GA2S2535P/72wdh9+4xw/A/FTFgvas7cqoeCTyNWkwuQ05zvDaYpI3hcknOFqnfBZncpLcabR7g/A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vggVu17d3YBYzCc+Tjj3SQjEOIj6DxkU3khCmKOrjps=;
- b=KDXdV2SK1V9Z4GI/cQbnZC5oHMlGSnx5/3Qufdc7eWQy8l9zvJXVDKwpeNjrHaoRN/0hOHfq9fHjWmc3PnvHl3WJ4sCp/nqbMFq8DKwWoAok13rKLEQooTCmCHkxA8g6f2TUWNWnWcv2OIbuZpVrXf6QDW6He1rJKzd1l6GZqmfDtJCuKA5e497igIUzmSxRmepqJfmrp5VJUa59hxz+zWJ03wWXyo99WQzfN27axY8oSpb5ULuNn0MGCmWsaR/oo+l/MHoZ09g9L0xf/3Br1dns8d2H25NvWMBV9Tqirduraici/XSKIAxn2xZpkucKSvxaMuObMyWbFTYsGq6HLw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vggVu17d3YBYzCc+Tjj3SQjEOIj6DxkU3khCmKOrjps=;
- b=d9UjjSPv2KbgDDuw6fh51ZwT0fVzKtIPyWEDPeqWxar4yV6EOyISeQkUfbE0rR/uZkiasS8qYEbHrNVJVGdgsc9StEnMdg9Dysb2PzdWhkCowtepVYi7q6GlGEfOhvpKP/JXdO7AEoe8Q58bMTQRONyZB45wKXccMkjldp5qBIY=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
- by VI1PR04MB6144.eurprd04.prod.outlook.com (2603:10a6:803:fd::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.25; Tue, 22 Dec
- 2020 02:45:53 +0000
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::dcb7:6117:3def:2685]) by VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::dcb7:6117:3def:2685%7]) with mapi id 15.20.3676.033; Tue, 22 Dec 2020
- 02:45:53 +0000
-Message-ID: <885f512c730f0b40e53cddc1e8cc82272b412642.camel@nxp.com>
-Subject: Re: [PATCH 04/14] dt-bindings: display: bridge: Add i.MX8qm/qxp
- pixel combiner binding
-From:   Liu Ying <victor.liu@nxp.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Andrzej Hajda <a.hajda@samsung.com>, Vinod <vkoul@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org, Sascha Hauer <kernel@pengutronix.de>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Fabio Estevam <festevam@gmail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Date:   Tue, 22 Dec 2020 10:44:00 +0800
-In-Reply-To: <CAL_JsqLCvAWQN=54Rp08bPxLjeXZKo5Pc1a=hoNBFjcGdLGvcg@mail.gmail.com>
-References: <1608199173-28760-1-git-send-email-victor.liu@nxp.com>
-         <1608199173-28760-5-git-send-email-victor.liu@nxp.com>
-         <1608231036.357497.50647.nullmailer@robh.at.kernel.org>
-         <e2edc2e37b6905fd19ada4c212338c6978200fa5.camel@nxp.com>
-         <CAL_JsqLcyUJWt_gc3B01C0Y+NC61ucYNA8j1jnxTs8U1kudM=Q@mail.gmail.com>
-         <1e0b6178033c064b99546d09b4b3ef9dda3cb1ad.camel@nxp.com>
-         <CAL_JsqLCvAWQN=54Rp08bPxLjeXZKo5Pc1a=hoNBFjcGdLGvcg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: SG2PR03CA0106.apcprd03.prod.outlook.com
- (2603:1096:4:7c::34) To VI1PR04MB3983.eurprd04.prod.outlook.com
- (2603:10a6:803:4c::16)
+        id S1725968AbgLVCqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 21:46:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35572 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725924AbgLVCqa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 21:46:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608605103;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mtrZTTJIr7oR1Tjy1htJ8dmZVuN7yGZCQoQCqS0N9aA=;
+        b=IOWNDpbMOf4VXM2Z4ZfL3zwHipsPL2xunAy06hjGmv0LrWMO4NshiSqhyx7RbDscbr/9q/
+        NBuXrlYf6PH+Gdf9udvY0ar68+Ar9xhkYCPh7MDumBR7KbwnlYfNdCz49ydJ+5V1HlQX+Q
+        Sv/oEvJ5HcIynGMcD3OIchOx3CH8KIk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-30-SL4XcIw9NsKPmHr7FDGARw-1; Mon, 21 Dec 2020 21:45:00 -0500
+X-MC-Unique: SL4XcIw9NsKPmHr7FDGARw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A3D26801817;
+        Tue, 22 Dec 2020 02:44:59 +0000 (UTC)
+Received: from [10.72.13.168] (ovpn-13-168.pek2.redhat.com [10.72.13.168])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3E66F5D6D1;
+        Tue, 22 Dec 2020 02:44:49 +0000 (UTC)
+Subject: Re: [PATCH RFC 00/12] vdpa: generalize vdpa simulator and add block
+ device
+To:     Stefano Garzarella <sgarzare@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Laurent Vivier <lvivier@redhat.com>,
+        linux-kernel@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>
+References: <20201113134712.69744-1-sgarzare@redhat.com>
+ <93f207c0-61e6-3696-f218-e7d7ea9a7c93@redhat.com>
+ <20201218113816.zcyeyqipux4ao4cp@steredhat>
+ <7dd3ed02-36c3-fcfd-0a1d-9c31af6f473e@redhat.com>
+ <20201221111423.sestfroiw2dgpluc@steredhat>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <856d53c2-82e2-e408-76e6-24c92010f973@redhat.com>
+Date:   Tue, 22 Dec 2020 10:44:48 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from blueberry.ap.freescale.net (119.31.174.66) by SG2PR03CA0106.apcprd03.prod.outlook.com (2603:1096:4:7c::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.19 via Frontend Transport; Tue, 22 Dec 2020 02:45:47 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: e5816d48-e304-440f-dded-08d8a623b2fe
-X-MS-TrafficTypeDiagnostic: VI1PR04MB6144:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB61443183DCBE7ACC045D95BB98DF0@VI1PR04MB6144.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: enVjvhm163sfAxOkt3pskL7p/kzzOMnvR5hOUuP0qiciakrMJHSZHhmqfZOdEWPgz4wh+GiFffdOOCCszbKNG2phJoGa1d8LW60WVaB2QM+5NQM23/Fb53DD4dEMKqMbeWqDufG9Bf0RtVIgP2823mNYivQlzGp7SB/iCKDmHZYkwbiNYhmpn2xNVoSf6bNU88Xt6iTGRPdfUckTmda7H1+yHtjjYg8Ntk3icOlpft2MmA+qKyp3LVxA6hMZ0/9FkEkbUoUVsbUd91OJ/Nh0PY8B37phivFVJQbHVDWhpeMSvaZHg89t5x4rL0vRndNTZ4JLsgdvYEF5SkSKTYMq1mlBSfqAdWUMP0gz7PzmlR3/Q3e2Rtw3Xcmul0buJ5OOiodGh3LAbbJFA6wgCi+G7PXfa+McjuPwLGKkDfpAvpIOFJpSvg4qSX5Ls2GmKeoM18aYVTxX2lgELjFm4Uiing==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(366004)(346002)(136003)(376002)(6506007)(36756003)(8936002)(16526019)(52116002)(53546011)(66476007)(66556008)(478600001)(7416002)(8676002)(66946007)(966005)(186003)(6666004)(4326008)(6486002)(6916009)(2906002)(45080400002)(83380400001)(86362001)(6512007)(5660300002)(316002)(956004)(4001150100001)(26005)(2616005)(54906003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?bHM0YjVUR0NFNmFBWldnRWNTb1NBVXJLbHoyVVg3WnNhQ1MvM0ZIbGl2UFdF?=
- =?utf-8?B?UG1kdnNNR1ZCMXJBNzlnWU0zVWgrbUIwMndWVkJkbFF6TTBjOEowQW5OSjVz?=
- =?utf-8?B?djNic2xuK0ExU2tiQnJ5alFlL3R6VG03eGJRd2Q5clhiN2RNU1BpcGk3VWxU?=
- =?utf-8?B?YXdDMXA0SXBLeGppck9lQWZyNTN6aUwrOHYwTjNiajdZcFlmNWJpV2hxdW84?=
- =?utf-8?B?NmtiT3lTL09YSldCNnpDRVQ0K0x3OEd6dGdHdldzTHJTSFlsKzg3UXNhVUdu?=
- =?utf-8?B?aHhmcUpkUHNZTVJ5eU5ueGFiNnBwd0lFbVVrbGtuVVpkbDFnVlpkenNiZllD?=
- =?utf-8?B?eUZxQm55NUdDK2pBdUpmR1VTWGQxcE1mSzNCUkkxQVpxVjE3Sm5ZTnczYVFr?=
- =?utf-8?B?TFdQZCtZY3R6cm1LVmNzRjNIUTVBWWRNZU8wNG9Cc244L2tBYmFrRjFiTi9y?=
- =?utf-8?B?L0lPcUdiSC8xNE81VzhLaEZSUWcvZzh0VUJvdUs3ajdQZE15UVdReUFBM1NB?=
- =?utf-8?B?dFpVa1JnbWVwR2VkWjk0bEUxZnJmakhpTzNHWmJ1YURFcXZhdDgrZk9IckpL?=
- =?utf-8?B?UmtNaThRRlRIV1Z4T3FmSXFCSDBoRXcyalNBaGs3blhGNTkzSmlmcTR5RTF3?=
- =?utf-8?B?SGhZUW91eUxxMUxwUXpTby92cGxReEhJWTZCbTZQSEJWMXVPbW5rT0hMalJV?=
- =?utf-8?B?U2gwY2NhNzNBanhvMlVHV0h3N203ZDA5OXE3TW8rOW1FUWF5M0NZOXp3QldN?=
- =?utf-8?B?RkgzMUd0Z0o0NTJlLytieEkvYU93SjYvNmJOK0sybjdpN1RKYXNqaUlrUi9M?=
- =?utf-8?B?MnRlcWtwb2VVSVIxU0xrdzFZbXBnM2xqeHJaTEM5aHJtdk5Nb3B5ZlhSYnRL?=
- =?utf-8?B?TU1LRjNvZDV5OHdUYUxDTm9kUkhiUERLaytNc2dKU0EwRGVuSlU2TFpIY3hS?=
- =?utf-8?B?cXVFaE9na2hNUVUvNTJsbXQxSkxmWkFrcW9aeHBpVFpQWTBkVlZUdjB0Szg5?=
- =?utf-8?B?bExoU3hiQ0piRDJaSU96amt4aFp1NmQ3b0l6UWZ4WHZmV1FIM1l4OVlwZTBv?=
- =?utf-8?B?UnF6K09FWmhqdE50NlFRbTBEZXliR2RWdnhabmlzc0JZaTJnaHM5L2gwelV2?=
- =?utf-8?B?OXNzWnJ3RDBSMFN3N25hRXdxaGRPV1M0eU8xb2tQOVNzMEtSVy9JcHlML0NV?=
- =?utf-8?B?NXhaK1Y0STRiWU9EWGtZZnZmQk12d3hLQ0tJWmcwNjFzQlQvNzZFaDFkbTVY?=
- =?utf-8?B?TnMwTUlJS1l5akJlRUVudmIwa2c2NlBTT3dXbUY3T0VpOEdiVUZ4NnA2SGMv?=
- =?utf-8?Q?b5bd3S1KVSH50A/5qxKbkNkJ/zRgNYSbrz?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Dec 2020 02:45:52.9599
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-Network-Message-Id: e5816d48-e304-440f-dded-08d8a623b2fe
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: O8js8v/ItQmdaMWz57ypZZ942IWxKAW8DJUztc/Dgl2IYcFup4afbuLyalUoG22XO4cwVfiC4mJnmlnNUjRO0g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6144
+In-Reply-To: <20201221111423.sestfroiw2dgpluc@steredhat>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-12-21 at 10:02 -0700, Rob Herring wrote:
-> On Fri, Dec 18, 2020 at 9:15 PM Liu Ying <victor.liu@nxp.com> wrote:
-> > Hi,
-> > 
-> > On Fri, 2020-12-18 at 16:42 -0600, Rob Herring wrote:
-> > > On Thu, Dec 17, 2020 at 7:48 PM Liu Ying <victor.liu@nxp.com> wrote:
-> > > > Hi,
-> > > > 
-> > > > On Thu, 2020-12-17 at 12:50 -0600, Rob Herring wrote:
-> > > > > On Thu, 17 Dec 2020 17:59:23 +0800, Liu Ying wrote:
-> > > > > > This patch adds bindings for i.MX8qm/qxp pixel combiner.
-> > > > > > 
-> > > > > > Signed-off-by: Liu Ying <victor.liu@nxp.com>
-> > > > > > ---
-> > > > > >  .../display/bridge/fsl,imx8qxp-pixel-combiner.yaml | 160
-> > > > > > +++++++++++++++++++++
-> > > > > >  1 file changed, 160 insertions(+)
-> > > > > >  create mode 100644
-> > > > > > Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-
-> > > > > > pixel-combiner.yaml
-> > > > > > 
-> > > > > 
-> > > > > My bot found errors running 'make dt_binding_check' on your
-> > > > > patch:
-> > > > > 
-> > > > > yamllint warnings/errors:
-> > > > > 
-> > > > > dtschema/dtc warnings/errors:
-> > > > > Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-
-> > > > > pixel-combiner.example.dts:19:18: fatal error: dt-
-> > > > > bindings/clock/imx8-lpcg.h: No such file or directory
-> > > > >    19 |         #include <dt-bindings/clock/imx8-lpcg.h>
-> > > > >       |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > > > compilation terminated.
-> > > > > make[1]: *** [scripts/Makefile.lib:342:
-> > > > > Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-
-> > > > > pixel-combiner.example.dt.yaml] Error 1
-> > > > > make[1]: *** Waiting for unfinished jobs....
-> > > > > make: *** [Makefile:1364: dt_binding_check] Error 2
-> > > > > 
-> > > > > See
-> > > > > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fpatchwork.ozlabs.org%2Fpatch%2F1417599&amp;data=04%7C01%7Cvictor.liu%40nxp.com%7C7cd8e43f582b48535f8f08d8a5d235eb%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C637441669585674325%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=%2BWYPU1JU4sLsE8ULeoAKvaEUBqHQAPyuydkA50%2Ffjvs%3D&amp;reserved=0
-> > > > > 
-> > > > > This check can fail if there are any dependencies. The base for a
-> > > > > patch
-> > > > > series is generally the most recent rc1.
-> > > > 
-> > > > This series can be applied to linux-next/master branch.
-> > > 
-> > > I can't know that to apply and run checks automatically. I guessed
-> > > that reviewing this before sending, but I want it abundantly clear
-> > > what the result of applying this might be and it wasn't mentioned in
-> > > this patch.
-> > > 
-> > > Plus linux-next is a base no one can apply patches to, so should you
-> > > be sending patches based on it? It's also the merge window, so maybe
-> > 
-> > I sent this series based on drm-misc-next.  This series is applicable
-> > to linux-next/master, and may pass 'make dt_binding_check' there.
-> 
-> But to be clear, 'make dt_binding_check' would fail on drm-misc-next
-> until 5.11-rc1 is merged in. The drm-misc maintainers need to know
-> that.
 
-Ok, will mention the dependency.  Thanks.
+On 2020/12/21 下午7:14, Stefano Garzarella wrote:
+> On Mon, Dec 21, 2020 at 11:16:54AM +0800, Jason Wang wrote:
+>>
+>> On 2020/12/18 下午7:38, Stefano Garzarella wrote:
+>>> On Mon, Nov 16, 2020 at 11:37:48AM +0800, Jason Wang wrote:
+>>>>
+>>>> On 2020/11/13 下午9:47, Stefano Garzarella wrote:
+>>>>> Thanks to Max that started this work!
+>>>>> I took his patches, and extended the block simulator a bit.
+>>>>>
+>>>>> This series moves the network device simulator in a new module
+>>>>> (vdpa_sim_net) and leaves the generic functions in the vdpa_sim core
+>>>>> module, allowing the possibility to add new vDPA device simulators.
+>>>>> Then we added a new vdpa_sim_blk module to simulate a block device.
+>>>>>
+>>>>> I'm not sure about patch 11 ("vringh: allow vringh_iov_xfer() to skip
+>>>>> bytes when ptr is NULL"), maybe we can add a new functions instead of
+>>>>> modify vringh_iov_xfer().
+>>>>>
+>>>>> As Max reported, I'm also seeing errors with vdpa_sim_blk related to
+>>>>> iotlb and vringh when there is high load, these are some of the error
+>>>>> messages I can see randomly:
+>>>>>
+>>>>>   vringh: Failed to access avail idx at 00000000e8deb2cc
+>>>>>   vringh: Failed to read head: idx 6289 address 00000000e1ad1d50
+>>>>>   vringh: Failed to get flags at 000000006635d7a3
+>>>>>
+>>>>>   virtio_vdpa vdpa0: vringh_iov_push_iotlb() error: -14 offset:   
+>>>>> 0x2840000 len: 0x20000
+>>>>>   virtio_vdpa vdpa0: vringh_iov_pull_iotlb() error: -14 offset:   
+>>>>> 0x58ee000 len: 0x3000
+>>>>>
+>>>>> These errors should all be related to the fact that iotlb_translate()
+>>>>> fails with -EINVAL, so it seems that we miss some mapping.
+>>>>
+>>>>
+>>>> Is this only reproducible when there's multiple co-current 
+>>>> accessing of IOTLB? If yes, it's probably a hint that some kind of 
+>>>> synchronization is still missed somewhere.
+>>>>
+>>>> It might be useful to log the dma_map/unmp in both virtio_ring and 
+>>>> vringh to see who is missing the map.
+>>>>
+>>>
+>>> Just an update about these issues with vdpa-sim-blk.
+>>> I've been focusing a little bit on these failures over the last few 
+>>> days and have found two issues related to the IOTLB/IOMMU:
+>>>
+>>> 1. Some requests coming from the block layer fills the SG list with 
+>>> multiple buffers that had the same physical address. This happens 
+>>> for example while using 'mkfs', at some points multiple sectors are 
+>>> zeroed so multiple SG elements point to the same physical page that 
+>>> is zeroed.
+>>> Since we are using vhost_iotlb_del_range() in the 
+>>> vdpasim_unmap_page(), this removes all the overlapped ranges. I 
+>>> fixed removing a single map in vdpasim_unmap_page(), but has an 
+>>> alternative we can implement some kind of reference counts.
+>>
+>>
+>> I think we need to do what hardware do. So using refcount is probably 
+>> not a good ida.
+>
+> Okay, so since we are using for simplicity an identical mapping, we 
+> are assigning the same dma_addr to multiple pages.
 
-> 
-> 
-> > I'll mention dependencies in the future where similar situations
-> > appear. Thanks.
-> > 
-> > BTW, does it make sense for the bot to additionaly try linux-next if
-> > needed?  Maybe, that'll be helpful?
-> 
-> Sure, and when I've got nothing else to do maybe I'll do that. Though
-> maintainers still need to know what the dependencies are. The real
-> solution here is to make 'base-commit' tags more common or required so
-> that neither scripts/bots nor humans have to guess what the base is.
 
-Yeah, 'base-commit' is good, but a base commit should be 'well-known'
-as doc[1] indicates, otherwise, it is likely unfound.  So, it seems
-that linux-next is worthy of a try.
+I think I get you now. That's the root cause for the failure.
 
-[1] https://git-scm.com/docs/git-format-patch
+Then I think we need an simple iova allocator for vdpa simulator, and it 
+might be useful for VDUSE as well.
 
-Regards,
-Liu Ying
+Thanks
 
-> 
-> Rob
+
+>
+> So, it should be okay to remove a single mapping checking the others 
+> parameters (i.e. dir, size).
+>
+> I'll send a patch, so with the code it should be easier :-)
+>
+> Thanks,
+> Stefano
+>
+>>
+>>
+>>>
+>>> 2. There was a race between dma_map/unmap and the worker thread, 
+>>> since both are accessing the IOMMU. Taking the iommu_lock while 
+>>> using vhost_iotlb_* API in the worker thread fixes the "vringh: 
+>>> Failed to *" issues.
+>>>
+>>> Whit these issues fixed the vdpa-blk simulator seems to work well.
+>>> I'll send the patches next week or after the break.
+>>
+>>
+>> Good to know this.
+>>
+>> Thanks
+>>
+>>
+>>>
+>>> Thanks,
+>>> Stefano
+>>>
+>>
+>
 
