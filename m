@@ -2,106 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8C3B2E034F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 01:12:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4C942E0349
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 01:12:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727088AbgLVAMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 19:12:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49254 "EHLO
+        id S1726979AbgLVALD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 19:11:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725783AbgLVAMC (ORCPT
+        with ESMTP id S1725938AbgLVALC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 19:12:02 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2064C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 16:11:21 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id m25so27795464lfc.11
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 16:11:21 -0800 (PST)
+        Mon, 21 Dec 2020 19:11:02 -0500
+Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A75DC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 16:10:22 -0800 (PST)
+Received: by mail-oo1-xc2c.google.com with SMTP id k7so2608150ooa.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 16:10:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hTuaw61/vu6Ch8LghemKyv8ZjkRGc9Bd4nL0SHS84i8=;
-        b=XRqPvAjqNYfYvdTAPbyVeX/6O742pr4s6sQMYn9OH27FKmpUFDXDQcK9Tl2txOM6YO
-         vqCZR/1DVmPxmcBQfj8ygABjF6pmB8V6dG3OaZcI7+9pJSjvqpbcqzrEpWL97R7G4EDm
-         qS6LzBxmqQ8dWZpVnIRQLX6xY4Ofvg3UtYHJE=
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lkeUuRBSMYupYeqs3Fxfe8LsOkubv80hcNOts5V5138=;
+        b=wgzgkG6AhM1e2Ul0DpLAewBrwAlTmaXBEYZ+gZExTiD8OwqTsiWnvD0+p02e0Zu/LU
+         xA4JixDrlt/T8Dpv6l/Aoc0QdNQQnj+6ju0qvBDIbJbB9HHrreFIihMhDtRqlYNmgtkW
+         PVRAebnY/pdj5HHP7ml2vXsWmGA+jSevIHbO4QfbkrGLO+i9w4HpkTibM+rzesdXbpLV
+         t9gGejJDr33juy2WA4fWeORmGuqDsuO3rE9TsCmJTMtv3p40X9D6iPFmdEWwVhZg5Mer
+         sQbwGKbu6Bix6GSRagImADIq4T4zZwUPUnd15wfS4wUDxboPoX97Er2gRSYN/bEbJIvq
+         ZqgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hTuaw61/vu6Ch8LghemKyv8ZjkRGc9Bd4nL0SHS84i8=;
-        b=oVKmEuhZk1HLuRK+sOP2i85Lye+IN9qu1P8Wlt6KCU4t4PP8NAeQJ7dDqoFv0Mi0sj
-         PJG2oLA7LwTvkw648utP6RHGqYKf/uLiTH7ur4MBvnhmooKcoZlp12+Tr3aA6qQvbFYS
-         z8GtNwGBvVKgoVEFdkOh5b0Ya1/r5L0LL/G8xUcOquw94399/eoJsXrTo+cdWFHUfcSW
-         YsiIch4VBmqpYgd5KR9j+FxUbQOUIx321hMW65yqj1u1Lhv6SR8haatnr3+kt4c0UuwN
-         SUl25tdhP6xV0Lr2RpLkbg2ULnqt3jEdCvX3HkIhoAVlHxUCcOzErhZJuY5B1I2q6/21
-         Wxbw==
-X-Gm-Message-State: AOAM532RovPWvleieHlHQpWVJUqeQr/ZO2I/BbmGNSd+Rzq/Ff9rMPiV
-        V0XIuq2LgirKH1d2erfmiUhPQ0OeUNRqkA==
-X-Google-Smtp-Source: ABdhPJwWEcgkz3m1P7Jph0GqQIOwcg0VPDNDUGQTP6VS+DAzqPvq4JhyCXeOqqLYo+SW4SHiPXk8YA==
-X-Received: by 2002:a05:6512:108a:: with SMTP id j10mr7609677lfg.381.1608595879913;
-        Mon, 21 Dec 2020 16:11:19 -0800 (PST)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id h13sm2321309lfj.110.2020.12.21.16.11.18
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Dec 2020 16:11:18 -0800 (PST)
-Received: by mail-lf1-f47.google.com with SMTP id o17so27916415lfg.4
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 16:11:18 -0800 (PST)
-X-Received: by 2002:ac2:41d9:: with SMTP id d25mr7001569lfi.377.1608595877900;
- Mon, 21 Dec 2020 16:11:17 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lkeUuRBSMYupYeqs3Fxfe8LsOkubv80hcNOts5V5138=;
+        b=rVbd8WSQuX/VjQ/FE93SF5aLL/0Ev+uyoz9LTiWF+16eY96SfSCy5DRWK+t1aP4g+2
+         PcDWa/J0pa1P1pos0ZX595Fm93s4E4B3aruReCuug2hLFqaJ7zaxDcXBNPvBHeKPh4XA
+         j3tLUFpq2FXXbt+yobai17F5NGLnsknVb2dngRTE9lpiZu034JtmgJf8qBkQhgL6uzEY
+         gMEFV3giR0Cu66MEJc0yssAqqlTGTJ76YlTRYhTUZ3WizVlUhRvFbVF6Rqnpf+WRFr7K
+         BsY39t32yIwG1sIHKS1H5I2SnnfY83ltGb8NxXhWvEggw5mzxKOgUolzR+V2cX0eqq/d
+         Qbow==
+X-Gm-Message-State: AOAM532TDdUrWO7Pwa15EdGvosvhCLwoEf12CLSNSczjoooCM87JI2wI
+        GQEV0Bbp8RXRvzLEgg28BgsQsg==
+X-Google-Smtp-Source: ABdhPJz3lSFUkmACZL9GfaZlGA7JuhqWjNMRj0w2yYSCcHavfnN0W6pig+ORUGr8NpUzuHIgFm0M3g==
+X-Received: by 2002:a4a:3001:: with SMTP id q1mr13229599oof.88.1608595821650;
+        Mon, 21 Dec 2020 16:10:21 -0800 (PST)
+Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id u3sm4143813otk.31.2020.12.21.16.10.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Dec 2020 16:10:20 -0800 (PST)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: qcom: sdm845: Reserve LPASS clocks in gcc
+Date:   Mon, 21 Dec 2020 16:11:03 -0800
+Message-Id: <20201222001103.3112306-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <76B4F49B-ED61-47EA-9BE4-7F17A26B610D@gmail.com>
- <X+D0hTZCrWS3P5Pi@google.com> <CAHk-=wg_UBuo7ro1fpEGkMyFKA1+PxrE85f9J_AhUfr-nJPpLQ@mail.gmail.com>
- <9E301C7C-882A-4E0F-8D6D-1170E792065A@gmail.com> <CAHk-=wg-Y+svNy3CDkJjj0X_CJkSbpERLg64-Vqwq5u7SC4z0g@mail.gmail.com>
- <X+ESkna2z3WjjniN@google.com> <1FCC8F93-FF29-44D3-A73A-DF943D056680@gmail.com>
- <20201221223041.GL6640@xz-x1> <X+Er1Rjv1W7rzcw7@google.com>
- <CAHk-=wiEp-D36h972CBHqJ-c8tR9fytg9tesZ1j_9B0ax9Ad_Q@mail.gmail.com> <X+E3FmxrEVfc0B/X@google.com>
-In-Reply-To: <X+E3FmxrEVfc0B/X@google.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 21 Dec 2020 16:11:01 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiWkZGSsPXAbonBoNLYj3vETkoB+9eKOxoFZutPgqkYzA@mail.gmail.com>
-Message-ID: <CAHk-=wiWkZGSsPXAbonBoNLYj3vETkoB+9eKOxoFZutPgqkYzA@mail.gmail.com>
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     Peter Xu <peterx@redhat.com>, Nadav Amit <nadav.amit@gmail.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        linux-mm <linux-mm@kvack.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable <stable@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 4:00 PM Yu Zhao <yuzhao@google.com> wrote:
->
-> My first instinct is to be conservative and revert 09854ba94c6a ("mm:
-> do_wp_page() simplification") so people are less likely to come back
-> and complain about performance issues from holding mmap lock for
-> write when clearing pte_write.
+The GCC_LPASS_Q6_AXI_CLK and GCC_LPASS_SWAY_CLK clocks may not be
+touched on a typical UEFI based SDM845 device, but when the kernel is
+built with CONFIG_SDM_LPASSCC_845 this happens, unless they are marked
+as protected-clocks in the DT.
 
-Well, the thing is, that simplificaiton was actually part of fixing a
-real regression wrt GUP.
+This was done for the MTP and the Pocophone, but not for DB845c and the
+Lenovo Yoga C630 - causing these to fail to boot if the LPASS clock
+controller is enabled (which it typically isn't).
 
-Reverting that would break a308c71bf1e6 ("mm/gup: Remove enfornced COW
-mechanism").
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+ arch/arm64/boot/dts/qcom/sdm845-db845c.dts           | 4 +++-
+ arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 4 +++-
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
-And that one was the (better) fix for commit 17839856fd58 that fixed a
-real security issue, but did it with a big hammer that then caused
-problems for uffd-wp (and some other loads). There's a bit more
-context in the merge message in commit b25d1dc9474e Merge branch
-'simplify-do_wp_page'.
+diff --git a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
+index 7cc236575ee2..c0b93813ea9a 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
++++ b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
+@@ -415,7 +415,9 @@ &dsi0_phy {
+ &gcc {
+ 	protected-clocks = <GCC_QSPI_CORE_CLK>,
+ 			   <GCC_QSPI_CORE_CLK_SRC>,
+-			   <GCC_QSPI_CNOC_PERIPH_AHB_CLK>;
++			   <GCC_QSPI_CNOC_PERIPH_AHB_CLK>,
++			   <GCC_LPASS_Q6_AXI_CLK>,
++			   <GCC_LPASS_SWAY_CLK>;
+ };
+ 
+ &gpu {
+diff --git a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+index 13fdd02cffe6..87ffbb89fbc7 100644
+--- a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
++++ b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+@@ -302,7 +302,9 @@ &dsi0_phy {
+ &gcc {
+ 	protected-clocks = <GCC_QSPI_CORE_CLK>,
+ 			   <GCC_QSPI_CORE_CLK_SRC>,
+-			   <GCC_QSPI_CNOC_PERIPH_AHB_CLK>;
++			   <GCC_QSPI_CNOC_PERIPH_AHB_CLK>,
++			   <GCC_LPASS_Q6_AXI_CLK>,
++			   <GCC_LPASS_SWAY_CLK>;
+ };
+ 
+ &gpu {
+-- 
+2.29.2
 
-So while that commit 09854ba94c6a on its own is "just" a
-simplification, it's actually part of a bigger series that fixes
-serious problems.
-
-                Linus
