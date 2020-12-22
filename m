@@ -2,143 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E316E2E0ED7
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 20:21:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C920D2E0EDD
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 20:21:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727785AbgLVTUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 14:20:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56206 "EHLO
+        id S1727871AbgLVTVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 14:21:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727298AbgLVTUK (ORCPT
+        with ESMTP id S1727502AbgLVTVF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 14:20:10 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22759C0613D3;
-        Tue, 22 Dec 2020 11:19:30 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id a12so34548474lfl.6;
-        Tue, 22 Dec 2020 11:19:30 -0800 (PST)
+        Tue, 22 Dec 2020 14:21:05 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6451C0613D6;
+        Tue, 22 Dec 2020 11:20:25 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id s21so8974674pfu.13;
+        Tue, 22 Dec 2020 11:20:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ulrdoVbGsjwhkH0t5gig0hbyBd9UYXc8gP96903YDxw=;
-        b=TfyVQnVt/DSKdLojw95WJ4Y3kr9B3JreJXSNeZLBEluhzjCcPf6K2C/ui4C3A+RAcn
-         NzqrO2ZQ73TaLD5uGBoTA4sttmca1xpwHqU863FtGcUC88cxmEAsuxQikrmwuidA4uCP
-         nm3AAm9TZcl214JdJVxmbY480arDu40d/ZRO/LMZqIPpdTU56ZnmabVMuRGGAvhILYBZ
-         Lo8a4O4xH2G8xK6eSxS2dJykl50tEw6QNTNuUIOxtAh5QuaHw5oC9C+9K8KQXGYHYHDU
-         yCrcC+UxT5hZUbtUNDzWRin0i+Cl3uko4BCCxLbueXyFERpjQkeXnBMSkzUwEXUzI6/8
-         3Csg==
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=F5AMnLvseBLwD4CSY72NfvaqVdYyFOwme+T8yzDx3b4=;
+        b=NAEFAdESyBeAhxfpWp0L2gvl3DEqFJ3nrPzeclRSSpJ8vtv9sAf6JBaOWZ/EuTduCg
+         eAAjkSWS3gkrV7xm0bWp5uBScT9aRj70jvUYSefltZvReHiKLVNbSJ6eoS6YwIhnX0O9
+         EIYBsprjoUSOzuApPGT/nXm8thSTvZV+iebQUZftF1jrLL+QXFuZwBbTXhN3FCVasCvq
+         VPlq/diIas69vWuOhV8v7V/MjoDy8aOSWRdqbZQ0Wd1Apx7tqai/LlJ4JPTNEJLubRuX
+         hVkzPuZb9UwyKGOfZ++fejJWnTXWEJWrBOFBFNW61I75vgt9K21iieIXVAfjsO7Qmr6s
+         FeVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ulrdoVbGsjwhkH0t5gig0hbyBd9UYXc8gP96903YDxw=;
-        b=dsoeetUwex5UebJxUv84mb4Vs1xaKKF2Q9XEKlDDB/PAxF+LhRd9kq2qOyO91XkuWZ
-         FH6jXitwHL23gonl/VgJNPxPaZE8z2zPiU3T2+DqMMqfrlc57sS4xU2Qc95guptKGaH4
-         9PotBAowkweOIoLdOnAzPHizf59JUpUcRWxT4WMOdknjfn3GzUyMbVYZX/sg+Ez1IcZM
-         jdIbM67HA/TpVjT+dSxXTcK9QmygC4+X0Wnf42VVaP9SLEPC8cj3ze8IpMP8uxILUiBb
-         XM8EW7iRRryWKLjmvh9d+tUimbR2FWvPjFPz6pm7SvZTcdnalCek9YtFAoYBdvOiIz5K
-         iWxg==
-X-Gm-Message-State: AOAM5336fVnJPkK6YjvMNVhV2LwICm871pRIORHsGwDFEvK8gHgtqEBY
-        3gbcJC0Qw2v3gd/BWvppGe+z6DyelkI=
-X-Google-Smtp-Source: ABdhPJyniuH4JIVLYX09aJTJXG2DPOZ3u4RjQh1NfGfdwzaSui65HwnwuqSmtJhso1bwXfgrrij1mg==
-X-Received: by 2002:ac2:46e4:: with SMTP id q4mr8665320lfo.413.1608664768348;
-        Tue, 22 Dec 2020 11:19:28 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.googlemail.com with ESMTPSA id w6sm3032131lji.74.2020.12.22.11.19.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Dec 2020 11:19:27 -0800 (PST)
-Subject: Re: [PATCH v2 19/48] opp: Fix adding OPP entries in a wrong order if
- rate is unavailable
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-clk@vger.kernel.org
-References: <20201217180638.22748-1-digetx@gmail.com>
- <20201217180638.22748-20-digetx@gmail.com>
- <20201222091255.wentz5hyt726qezg@vireshk-i7>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <db6273e6-8406-b7ae-b51d-48ceb6d21962@gmail.com>
-Date:   Tue, 22 Dec 2020 22:19:26 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
-MIME-Version: 1.0
-In-Reply-To: <20201222091255.wentz5hyt726qezg@vireshk-i7>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=F5AMnLvseBLwD4CSY72NfvaqVdYyFOwme+T8yzDx3b4=;
+        b=Jp0BElNFqedCffz5bRE/95sgDffaPQe51aZ9/bk1LIZ+Y2jDM70Y3vM4O9qqDrYR3v
+         XXTbZgDIhQtlIUbySCUeAq0fwre2TcO2ZXh/7qPi3YW9mzq9KnR/DTgkuY8eLhMmwqYo
+         aIvIG2Zd0HrOMQ3+cMM3Ms5lv2bEd2Xf7N9CG15R6sAcS0hEkTwPBHW9UbwMkuM+im9u
+         977X7bGfHxx9qctGPNhtZCmGsvdibfFqzU6EoVNf1QftIIN0nyfa0/sz5Q28EGn9Frm1
+         7Zx6AB1z/oYA77gu1smkj6OoMVhW3L0bDhQklaVty3YxjpPB0CRovwiX0VW//qSF97l+
+         hPWQ==
+X-Gm-Message-State: AOAM532N2bjLKn8wM5wKg3/foso7zzVc9SVx9R/pT2n+UQL72sP4wjgQ
+        0Yw2T5fHpq7VpRlfUGHd2GY=
+X-Google-Smtp-Source: ABdhPJwUI29C82tgtHYmx78kGGb+xdlrRNFNTXAf8QZn5A/wiuk/5BA6I/kn1gFRkOwOEWcLf8jjBA==
+X-Received: by 2002:a05:6a00:22c9:b029:198:15b2:bbd3 with SMTP id f9-20020a056a0022c9b029019815b2bbd3mr928100pfj.64.1608664825069;
+        Tue, 22 Dec 2020 11:20:25 -0800 (PST)
+Received: from ?IPv6:2601:647:4700:9b2:9423:6a08:cbd0:8220? ([2601:647:4700:9b2:9423:6a08:cbd0:8220])
+        by smtp.gmail.com with ESMTPSA id t18sm21640050pfl.138.2020.12.22.11.20.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 22 Dec 2020 11:20:24 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+From:   Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <X+I7TcwMsiS1Bhy/@google.com>
+Date:   Tue, 22 Dec 2020 11:20:21 -0800
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Will Deacon <will@kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <E36448EB-2888-42FE-A9F2-2DCF0508C138@gmail.com>
+References: <X97pprdcRXusLGnq@google.com>
+ <DDA15360-D6D4-46A8-95A4-5EE34107A407@gmail.com>
+ <20201221172711.GE6640@xz-x1>
+ <76B4F49B-ED61-47EA-9BE4-7F17A26B610D@gmail.com>
+ <X+D0hTZCrWS3P5Pi@google.com>
+ <CAHk-=wg_UBuo7ro1fpEGkMyFKA1+PxrE85f9J_AhUfr-nJPpLQ@mail.gmail.com>
+ <9E301C7C-882A-4E0F-8D6D-1170E792065A@gmail.com>
+ <CAHk-=wg-Y+svNy3CDkJjj0X_CJkSbpERLg64-Vqwq5u7SC4z0g@mail.gmail.com>
+ <X+ESkna2z3WjjniN@google.com>
+ <D4916F41-DE4A-42C6-8702-944382631A02@gmail.com>
+ <X+I7TcwMsiS1Bhy/@google.com>
+To:     Yu Zhao <yuzhao@google.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-22.12.2020 12:12, Viresh Kumar пишет:
-> On 17-12-20, 21:06, Dmitry Osipenko wrote:
->> Fix adding OPP entries in a wrong (opposite) order if OPP rate is
->> unavailable. The OPP comparison is erroneously skipped if OPP rate is
->> missing, thus OPPs are left unsorted.
->>
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
->>  drivers/opp/core.c | 23 ++++++++++++-----------
->>  drivers/opp/opp.h  |  2 +-
->>  2 files changed, 13 insertions(+), 12 deletions(-)
->>
->> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
->> index 34f7e530d941..5c7f130a8de2 100644
->> --- a/drivers/opp/core.c
->> +++ b/drivers/opp/core.c
->> @@ -1531,9 +1531,10 @@ static bool _opp_supported_by_regulators(struct dev_pm_opp *opp,
->>  	return true;
->>  }
->>  
->> -int _opp_compare_key(struct dev_pm_opp *opp1, struct dev_pm_opp *opp2)
->> +int _opp_compare_key(struct dev_pm_opp *opp1, struct dev_pm_opp *opp2,
->> +		     bool rate_not_available)
->>  {
->> -	if (opp1->rate != opp2->rate)
->> +	if (!rate_not_available && opp1->rate != opp2->rate)
-> 
-> rate will be 0 for both the OPPs here if rate_not_available is true and so this
-> change shouldn't be required.
+> On Dec 22, 2020, at 10:30 AM, Yu Zhao <yuzhao@google.com> wrote:
+>=20
+> On Tue, Dec 22, 2020 at 04:40:32AM -0800, Nadav Amit wrote:
+>>> On Dec 21, 2020, at 1:24 PM, Yu Zhao <yuzhao@google.com> wrote:
+>>>=20
+>>> On Mon, Dec 21, 2020 at 12:26:22PM -0800, Linus Torvalds wrote:
+>>>> On Mon, Dec 21, 2020 at 12:23 PM Nadav Amit <nadav.amit@gmail.com> =
+wrote:
+>>>>> Using mmap_write_lock() was my initial fix and there was a strong =
+pushback
+>>>>> on this approach due to its potential impact on performance.
+>>>>=20
+>>>> =46rom whom?
+>>>>=20
+>>>> Somebody who doesn't understand that correctness is more important
+>>>> than performance? And that userfaultfd is not the most important =
+part
+>>>> of the system?
+>>>>=20
+>>>> The fact is, userfaultfd is CLEARLY BUGGY.
+>>>>=20
+>>>>         Linus
+>>>=20
+>>> Fair enough.
+>>>=20
+>>> Nadav, for your patch (you might want to update the commit message).
+>>>=20
+>>> Reviewed-by: Yu Zhao <yuzhao@google.com>
+>>>=20
+>>> While we are all here, there is also clear_soft_dirty() that could
+>>> use a similar fix=E2=80=A6
+>>=20
+>> Just an update as for why I have still not sent v2: I fixed
+>> clear_soft_dirty(), created a reproducer, and the reproducer kept =
+failing.
+>>=20
+>> So after some debugging, it appears that clear_refs_write() does not =
+flush
+>> the TLB. It indeed calls tlb_finish_mmu() but since 0758cd830494
+>> ("asm-generic/tlb: avoid potential double flush=E2=80=9D), =
+tlb_finish_mmu() does not
+>> flush the TLB since there is clear_refs_write() does not call to
+>> __tlb_adjust_range() (unless there are nested TLBs are pending).
+>=20
+> Sorry Nadav, I assumed you knew this existing problem fixed by:
+> =
+https://patchwork.kernel.org/project/linux-mm/cover/20201210121110.10094-1=
+-will@kernel.org/
+>=20
 
-The rate_not_available is negated in the condition. This change is
-required because both rates are 0 and then we should proceed to the
-levels comparison.
+Thanks, Yu! For some reason I assumed it was already upstreamed and did =
+not
+look back (yet if I was cc=E2=80=99d on v2=E2=80=A6)
 
-I guess it's not clear by looking at this patch, please see a full
-version of the function:
-
-int _opp_compare_key(struct dev_pm_opp *opp1, struct dev_pm_opp *opp2,
-         bool rate_not_available)
-{
-  if (!rate_not_available && opp1->rate != opp2->rate)
-    return opp1->rate < opp2->rate ? -1 : 1;
-  if (opp1->bandwidth && opp2->bandwidth &&
-      opp1->bandwidth[0].peak != opp2->bandwidth[0].peak)
-    return opp1->bandwidth[0].peak < opp2->bandwidth[0].peak ? -1 : 1;
-  if (opp1->level != opp2->level)
-    return opp1->level < opp2->level ? -1 : 1;
-  return 0;
-}
-
-Perhaps we could check whether opp1->rate=0, like it's done for the
-opp1->bandwidth. I'll consider this variant for v3, thanks.
+Yet, something still goes bad. Debugging.
 
