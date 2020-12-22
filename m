@@ -2,96 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C64E2E0E0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 19:02:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A0822E0E13
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 19:02:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728129AbgLVSA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 13:00:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44052 "EHLO
+        id S1728170AbgLVSBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 13:01:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726889AbgLVSA4 (ORCPT
+        with ESMTP id S1728138AbgLVSA6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 13:00:56 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C0F8C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 10:00:16 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id z136so12766147iof.3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 10:00:16 -0800 (PST)
+        Tue, 22 Dec 2020 13:00:58 -0500
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A00FC06179C
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 10:00:18 -0800 (PST)
+Received: by mail-il1-x12b.google.com with SMTP id w17so6113326ilj.8
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 10:00:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lzbNETM/VQ0CF6UoqqNA9CDEiZmVI79DsLSU1ICVIv0=;
-        b=BYipllSzhxkdhGE/W+0NoBr/XmDKFCO07Zlxles9TAUWpznadJrUXHAQEez69aTb0U
-         JItlAujNywUKOb0Z6e1/BfBWI3kJlyr6O7zT79j2CqT0HRVrgtg6Y7vIP0Ye68J06Xj9
-         aS2Qe6nUy+zI5hXr7OFQGx4L9Gp7Bjwmui8R1kwaYn0dOI399HH11UY7GMPOW8/uSm2u
-         91HEziwTEAFxZGKOcn5Y9tu5kNtSWu7gu+eYIWkJqAF723PrA8bbYaxEzFlV0on8nDfx
-         L74stBC+/I9/quPOMfDFjpxi2mdpF603r78frjcOt6BZaSeRia6umcka8GF4XCCyvKyE
-         wOVw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=X9vpT9HP+T68ID/sfzmEYx652yUR/SG2I6ViTerD2lk=;
+        b=ChyVeNDiVBOQvYIrrBXZaHw5Cuajv/Io2nJlEgzp43ppcE0lvyMBltZdDWZrDHcuXt
+         eWhveSXSTjOjso+jCpS58vuiJuzcMVXoiiQpfbV3dBIc42iXX9AabXkVO/5LRas6DX4h
+         XkLhA5VhEFkglsiURfapN2VnlXD4lpO+IogNWutN4ryCT6tRa0KrlrEMelqXFE6H6NK8
+         vWkVUaG3FDIjY4EhPN1cyd7yqzJ+1BLW+Swzkr8lYnMriKKVv3ASTvqre9+D164xwpof
+         MkO9FUlGg3yxXCNFnhqLvcfkSwgvG0RJfmqp5F+51W2x0NBJHMG8EDu0Z5ke0tkoQEgr
+         05Ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lzbNETM/VQ0CF6UoqqNA9CDEiZmVI79DsLSU1ICVIv0=;
-        b=pqiXhhOlR0UyuK+K3m7BdlvtiuWAH/dm0qvXOTd6hNqRN2m7z92XYmys/ZnCAHDQmJ
-         e1Xn1jD1v1hU9YAIw70ef+Z1zf6cTMUdB10Dq6uza+ODwzj+WINKb26KINzldvylhAak
-         XMEsGYRUUELRFQ8CzMJjDCLUH+S6CoCyO+M2LVKDAnXEwnnX29bEwgLdsRYkzudziyD7
-         H+TkW/D3zuK4LEDefX6LOAP9GxcBIFEdZg/6dV2RUAd6dMxsGxuiGhCRG3KHNWTAzhVy
-         ag0/ITEpnGH+5Pd9ul1vYQAfTEVSJAz4KQeRvfsDwziM2P7YG6i2ff8yLOlbEYyoSuQF
-         Fkjg==
-X-Gm-Message-State: AOAM530iECI+HLcxgBjSGtH66W/LJjEDoYEc8tltSM3LTiaVwJs8AZKp
-        24/LPO0JHDcMZS1YamfbTdYSdWanx7uBQw==
-X-Google-Smtp-Source: ABdhPJxCwCT+337xsgtQzriREKmGL1xkST3e+zgjk0XP9aBBWEjfwqO5w5BeYU9lFeuNJ2q9ozZKew==
-X-Received: by 2002:a05:6602:152:: with SMTP id v18mr18904967iot.187.1608660015989;
-        Tue, 22 Dec 2020 10:00:15 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=X9vpT9HP+T68ID/sfzmEYx652yUR/SG2I6ViTerD2lk=;
+        b=aUtMRPmK7bRQ0bpN2BcAEz1NznXT7/1vLFvMOVu9gQXpCk74tpSPzOrH4pPAEjWEvV
+         O/UAmDgFz8stkZIh1qSxOc03ywjcYgKisT+VukmJAJGgkUAtZ65UnbvKLGs2onCVqER1
+         R0xbGNN2K0bsQAtqlMyrrslBeFXUvhMAPpgIQySDzNRlDbN2ieGbYieygium70GS1lsG
+         gNPzjTp3EPpmIyBc11vsPMSHT18y+rBNdQvAT48tDWy4FsVRLnzBb+jLoQU9ofCFgiqh
+         1/yshahxLvdlt32znQhjvQM2S5pUPITs4oniN3adaDknKgeDxkhF28M+5sjV4n4lP80u
+         UL3Q==
+X-Gm-Message-State: AOAM5325b6N19UdV6Db3QCKZ/Zg/x46iP65akvxtB1wFUyQfkksIFCvE
+        /hfEMApOBgf7ZEJPYJqTfBpXoQ==
+X-Google-Smtp-Source: ABdhPJwf9k+EGBXvvozvppnvJUQj0BLY6EiXuGKelYEk8M8NAqORgLzPjOHCRWqPdBibsaBj6TK2AQ==
+X-Received: by 2002:a05:6e02:1a6b:: with SMTP id w11mr22572947ilv.112.1608660017131;
+        Tue, 22 Dec 2020 10:00:17 -0800 (PST)
 Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id f29sm16328385ilg.3.2020.12.22.10.00.14
+        by smtp.gmail.com with ESMTPSA id f29sm16328385ilg.3.2020.12.22.10.00.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Dec 2020 10:00:15 -0800 (PST)
+        Tue, 22 Dec 2020 10:00:16 -0800 (PST)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     evgreen@chromium.org, cpratapa@codeaurora.org,
         bjorn.andersson@linaro.org, subashab@codeaurora.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net 0/3] net: ipa: GSI interrupt handling fixes
-Date:   Tue, 22 Dec 2020 12:00:09 -0600
-Message-Id: <20201222180012.22489-1-elder@linaro.org>
+Subject: [PATCH net 1/3] net: ipa: clear pending interrupts before enabling
+Date:   Tue, 22 Dec 2020 12:00:10 -0600
+Message-Id: <20201222180012.22489-2-elder@linaro.org>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201222180012.22489-1-elder@linaro.org>
+References: <20201222180012.22489-1-elder@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series implements fixes for some issues related to handling
-interrupts when GSI channel and event ring commands complete.
+We enable the completion interrupt for channel or event ring
+commands only when we issue them.  The interrupt is disabled after
+the interrupt has fired, or after we have timed out waiting for it.
 
-The first issue is that the completion condition for an event ring
-or channel command could occur while the associated interrupt is
-disabled.  This would cause the interrupt to fire when it is
-subsequently enabled, even if the condition it signals had already
-been handled.  The fix is to clear any pending interrupt conditions
-before re-enabling the interrupt.
+If we time out, the command could complete after the interrupt has
+been disabled, causing a state change in the channel or event ring.
+The interrupt associated with that state change would be delivered
+the next time the completion interrupt is enabled.
 
-The second and third patches change how the success of an event ring
-or channel command is determined.  These commands change the state
-of an event ring or channel.  Previously the receipt of a completion
-interrupt was required to consider a command successful.  Instead, a
-command is successful if it changes the state of the target event
-ring or channel in the way expected.  This way the command can
-succeed even if the completion interrupt did not arrive while it was
-enabled.
+To avoid previous command completions interfering with new commands,
+clear all pending completion interrupts before re-enabling them for
+a new command.
 
-					-Alex
+Fixes: b4175f8731f78 ("net: ipa: only enable GSI event control IRQs when needed")
+Signed-off-by: Alex Elder <elder@linaro.org>
+---
+ drivers/net/ipa/gsi.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-Alex Elder (3):
-  net: ipa: clear pending interrupts before enabling
-  net: ipa: use state to determine channel command success
-  net: ipa: use state to determine event ring command success
-
- drivers/net/ipa/gsi.c | 89 +++++++++++++++++++++++++++----------------
- 1 file changed, 56 insertions(+), 33 deletions(-)
-
+diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
+index c4795249719d4..4aee60d62ab09 100644
+--- a/drivers/net/ipa/gsi.c
++++ b/drivers/net/ipa/gsi.c
+@@ -340,7 +340,13 @@ static int evt_ring_command(struct gsi *gsi, u32 evt_ring_id,
+ 	 * is issued here.  Only permit *this* event ring to trigger
+ 	 * an interrupt, and only enable the event control IRQ type
+ 	 * when we expect it to occur.
++	 *
++	 * There's a small chance that a previous command completed
++	 * after the interrupt was disabled, so make sure we have no
++	 * pending interrupts before we enable them.
+ 	 */
++	iowrite32(~0, gsi->virt + GSI_CNTXT_SRC_EV_CH_IRQ_CLR_OFFSET);
++
+ 	val = BIT(evt_ring_id);
+ 	iowrite32(val, gsi->virt + GSI_CNTXT_SRC_EV_CH_IRQ_MSK_OFFSET);
+ 	gsi_irq_type_enable(gsi, GSI_EV_CTRL);
+@@ -453,7 +459,13 @@ gsi_channel_command(struct gsi_channel *channel, enum gsi_ch_cmd_opcode opcode)
+ 	 * issued here.  So we only permit *this* channel to trigger
+ 	 * an interrupt and only enable the channel control IRQ type
+ 	 * when we expect it to occur.
++	 *
++	 * There's a small chance that a previous command completed
++	 * after the interrupt was disabled, so make sure we have no
++	 * pending interrupts before we enable them.
+ 	 */
++	iowrite32(~0, gsi->virt + GSI_CNTXT_SRC_CH_IRQ_CLR_OFFSET);
++
+ 	val = BIT(channel_id);
+ 	iowrite32(val, gsi->virt + GSI_CNTXT_SRC_CH_IRQ_MSK_OFFSET);
+ 	gsi_irq_type_enable(gsi, GSI_CH_CTRL);
 -- 
 2.20.1
 
