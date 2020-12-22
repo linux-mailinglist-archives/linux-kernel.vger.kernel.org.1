@@ -2,76 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28F222E03F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 02:41:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D2302E03F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 02:43:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726517AbgLVBks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 20:40:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53078 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726351AbgLVBkr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 20:40:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 0100922B3B;
-        Tue, 22 Dec 2020 01:40:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608601207;
-        bh=mFJ9uJwG/Ga4MBEeCXkFIM3OnCeCKygT8n1845OcY4E=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=LVbQLHHUkbQqGhfVjObiEm68l1iDj02izZ8rQY7OmMZnQuixhMRvpmMULIDAMDoQg
-         c/6JE+VxHM92WsKeSwbygp8/lwiFBKSGBqxnSizZmOWxfbqBJw3ypa3oCk1XDsXohj
-         7HeAySIwTh9gFXmZN4V2vIhklxcmw0m7K//Cuugn2VE8hsK+uJh+zro6W/S8TtF/eh
-         XiQTD8+KgI1XZg+C7+4XdcdLoQU+ERbBiOKtfDqz0eHICZTfw91sx1CoMKXNoaJX0R
-         PBIyV3ck0/BnVfF4xc2SsGljlQG9I7t7MUAL3cTnkEJ/US+L7pbkfRM351/WQXEmGt
-         dAYUUXUemyqUw==
-Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id E7AC3603F8;
-        Tue, 22 Dec 2020 01:40:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S1726032AbgLVBmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 20:42:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30994 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725783AbgLVBmP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 20:42:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608601248;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KRRvKU+EXcp4nwVeh9OjdOtZKDLzmxvTspfH8E8JPAA=;
+        b=X9Rs6shTNtVpHb5mBI3bBt69B9e8mTbjESO5aLyd8ajG09QLZncexaUl9Q+aNm2u3WcPEd
+        2JAT6/QYfd8Q24venZ8201DKaVcBVYXCqXFdbWUib6pjYuZ7yYiKjKngHTHTeOfCtrdqgJ
+        3rqJytgy9kToCgrm7MfOeb+XGZcZ8eI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-393-HmDTTF-2P0OIxqcHUCxYxA-1; Mon, 21 Dec 2020 20:40:44 -0500
+X-MC-Unique: HmDTTF-2P0OIxqcHUCxYxA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E9E39180A089;
+        Tue, 22 Dec 2020 01:40:42 +0000 (UTC)
+Received: from localhost (ovpn-12-69.pek2.redhat.com [10.72.12.69])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 40FD4369A;
+        Tue, 22 Dec 2020 01:40:41 +0000 (UTC)
+Date:   Tue, 22 Dec 2020 09:40:39 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Eric DeVolder <eric.devolder@oracle.com>
+Cc:     ebiederm@xmission.com, linux-kernel@vger.kernel.org,
+        "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Subject: Re: [RFC]: kexec: change to handle memory/cpu changes
+Message-ID: <20201222014039.GA2237@MiWiFi-R3L-srv>
+References: <b04ed259-dc5f-7f30-6661-c26f92d9096a@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v2 0/3] ucc_geth fixes
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160860120694.2677.17012683397474495715.git-patchwork-notify@kernel.org>
-Date:   Tue, 22 Dec 2020 01:40:06 +0000
-References: <20201218105538.30563-1-rasmus.villemoes@prevas.dk>
-In-Reply-To: <20201218105538.30563-1-rasmus.villemoes@prevas.dk>
-To:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        qiang.zhao@nxp.com, leoyang.li@nxp.com, andrew@lunn.ch,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b04ed259-dc5f-7f30-6661-c26f92d9096a@oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net.git (refs/heads/master):
-
-On Fri, 18 Dec 2020 11:55:35 +0100 you wrote:
-> This is three bug fixes that fell out of a series of cleanups of the
-> ucc_geth driver. Please consider applying via the net tree.
+On 12/14/20 at 10:50am, Eric DeVolder wrote:
+...
+> The cell contents show the number of seconds it took for the system to
+> process all of the 3840 memblocks. The value in parenthesis is the
+> number of kdump unload-then-reload operations per second.
 > 
-> v2: reorder and split off from larger series; add Andrew's R-b to
-> patch 1; only move the free_netdev() call in patch 3.
+>           1 480GB DIMM   480 1GB DIMMs
+> -------+-----------------+----------------+
+>  RHEL7 | 181s (21.2 ops) | 389s (9.8 ops) |
+> -------+-----------------+----------------+
+>  RHEL8 |  86s (44.7 ops) | 419s (9.2 ops) |
+> -------+-----------------+----------------+
 > 
-> Rasmus Villemoes (3):
->   ethernet: ucc_geth: set dev->max_mtu to 1518
->   ethernet: ucc_geth: fix definition and size of ucc_geth_tx_global_pram
->   ethernet: ucc_geth: fix use-after-free in ucc_geth_remove()
+> The scenario of adding 480 1GiB virtual DIMMs takes more time given
+> the larger number of round trips of QEMU -> kernel -> udev -> kernel ->
+> QEMU, and are both roughly 400s.
 > 
-> [...]
+> The RHEL7 system process all 3840 memblocks individually and perform
+> 3840 kdump unload-then-reload operations.
+> 
+> However, RHEL8 data in the best case scenario (1 480GiB DIMM) suggests
+> that approximately 86/4= 21 kdump unload-then-reload operations
+> happened, and in the worst case scenario (480 1GiB DIMMs), the data
+> suggests that approximately 419/4 = 105 kdump unload-then-reload
+> operations happened. For RHEL8, the final number of kdump
+> unload-then-reload operations are 0.5% (21 of 3840) and 2.7% (105 of
+> 3840), respectively, compared to that of the RHEL7 system.
+> 
+> The throttle approach is quite effective in reducing the number of
+> kdump unload-then-reload operations. However, the kdump capture kernel
+> is still reloaded multiple times, and each kdump capture kernel reload
+> is a race window in which kdump can fail.
+> 
+> A quick peek at Ubuntu 20.04 LTS reveals it has 50-kdump-tools.rules
+> that looks like:
+> 
+>   SUBSYSTEM=="memory", ACTION=="online", PROGRAM="/usr/sbin/kdump-config try-reload"
+>   SUBSYSTEM=="memory", ACTION=="offline", PROGRAM="/usr/sbin/kdump-config try-reload"
+>   SUBSYSTEM=="cpu", ACTION=="add", PROGRAM="/usr/sbin/kdump-config try-reload"
+>   SUBSYSTEM=="cpu", ACTION=="remove", PROGRAM="/usr/sbin/kdump-config try-reload"
+>   SUBSYSTEM=="cpu", ACTION=="offline", PROGRAM="/usr/sbin/kdump-config try-reload"
+> 
+> which produces the equivalent behavior to RHEL7 whereby every event
+> results in a kdump capture kernel reload.
+> 
+> Fedora 33 and CentOS 8-stream behave the same as RHEL8.
+> 
+> Perhaps a better solution is to rewrite the vmcoreinfo structure that
+> contains the memory and CPU layout information, as those changes to
+> memory and CPUs occur. Rewriting vmcoreinfo is an in-kernel activity
+> and would certainly avoid the relatively large unload-then-reload
+> times of the kdump capture kernel. The pointer to the vmcoreinfo
+> structure is provided to the capture kernel via the elfcorehdr=
+> parameter to the capture kernel cmdline. Rewriting the vmcoreinfo
+> structure as well as rewriting the capture kernel cmdline parameter is
+> needed to utilize this approach.
 
-Here is the summary with links:
-  - [net,v2,1/3] ethernet: ucc_geth: set dev->max_mtu to 1518
-    https://git.kernel.org/netdev/net/c/1385ae5c30f2
-  - [net,v2,2/3] ethernet: ucc_geth: fix definition and size of ucc_geth_tx_global_pram
-    https://git.kernel.org/netdev/net/c/887078de2a23
-  - [net,v2,3/3] ethernet: ucc_geth: fix use-after-free in ucc_geth_remove()
-    https://git.kernel.org/netdev/net/c/e925e0cd2a70
+Great investigation and conclusion, and very nice idea as below. When I
+read the first half of this mail, I thought maybe we could add a new
+option to kexec-tools utility for updating eflcorehdr only when hotplug
+udev events detected. Then come to this part, I would say yes, doing it
+inside kernel looks better. A special handling for hotplug looks
+necessary as you have said, I will check what we can do and give back
+some details, thanks for doing these.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Thanks
+Baoquan
 
+> 
+> Based upon some amount of examining code, I think the challenges
+> involved in updating the CPU and memory layout in-kernel are:
+> 
+>  - adding call-outs on the add_memory()/try_remove_memory() and
+>    cpu_up()/cpu_down() paths for notifying the kdump subsystem of
+>    memory and/or CPU changes.
+> 
+>  - updating the struct kimage with the memory or CPU changes
+> 
+>  - Rewriting the vmcoreinfo structure from the data contained
+>    in struct kimage, eg crash_prepare_elf64_headers()
+> 
+>  - Installing the updated vmcoreinfo struct via
+>    kimage_crash_copy_vmcoreinfo() and rewriting the kdump kernel
+>    cmdline in order to update parameter elfcorehdr= with the
+>    new address
+> 
+> As I am not overly familiar with all the code paths involved, yet, I'm
+> sure the devil is in the details. However, due the kexec_file_load
+> syscall, it appears most of the infrastructure is already in place,
+> and we essentially need to tap into it again for memory and cpu
+> changes.
+> 
+> It appears that this change could be applicable to both kexec_load and
+> kexec_file_load, it has the potential to (eventually) simplify the
+> userland kexec utility for kexec_load, and would eliminate the need
+> for 98-kexec.rules and the associated churn.
+> 
+> Comments please!
+> eric
+> 
+> _______________________________________________
+> kexec mailing list
+> kexec@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/kexec
+> 
 
