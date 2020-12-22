@@ -2,143 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EA362E0FCC
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 22:22:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EEF62E0FCE
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 22:22:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727960AbgLVVTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 16:19:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58916 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726540AbgLVVTb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 16:19:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608671884;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AkoOcriox08aICF4e6yOPafNyaUMgYdVf0PsmAE3Q6M=;
-        b=EwAp5cDOU7AMAmgzokH6l3fF/vSPzcNrvK8UaYDNoleEAnkIBkLWc8EHZnp9JS2rsZqDoE
-        4buVCDukP/XHNL29io/TiR/AyXGhDid/mqq1ApljiTR75xXcApr1olsksUJp5NuW4dfm/c
-        1MrQCqgxwjMir0Cxvq8TpHpZ3nhiuA4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-213-JTGTxLJxM1aM-UHzYI6zKg-1; Tue, 22 Dec 2020 16:18:00 -0500
-X-MC-Unique: JTGTxLJxM1aM-UHzYI6zKg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F14028042A2;
-        Tue, 22 Dec 2020 21:17:57 +0000 (UTC)
-Received: from mail (ovpn-112-5.rdu2.redhat.com [10.10.112.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C4B5960BF1;
-        Tue, 22 Dec 2020 21:17:53 +0000 (UTC)
-Date:   Tue, 22 Dec 2020 16:17:53 -0500
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     Peter Xu <peterx@redhat.com>, Yu Zhao <yuzhao@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable <stable@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-Message-ID: <X+JigY1DLyafCBJW@redhat.com>
-References: <X+D0hTZCrWS3P5Pi@google.com>
- <CAHk-=wg_UBuo7ro1fpEGkMyFKA1+PxrE85f9J_AhUfr-nJPpLQ@mail.gmail.com>
- <9E301C7C-882A-4E0F-8D6D-1170E792065A@gmail.com>
- <CAHk-=wg-Y+svNy3CDkJjj0X_CJkSbpERLg64-Vqwq5u7SC4z0g@mail.gmail.com>
- <X+ESkna2z3WjjniN@google.com>
- <1FCC8F93-FF29-44D3-A73A-DF943D056680@gmail.com>
- <20201221223041.GL6640@xz-x1>
- <B8095F3C-81E3-4AF9-A6A5-F597D51264BD@gmail.com>
- <X+JMiHv+EktzyZgr@redhat.com>
- <E9A1084A-30B3-4328-8B0D-31AD978375AD@gmail.com>
+        id S1728072AbgLVVUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 16:20:42 -0500
+Received: from mail-eopbgr700072.outbound.protection.outlook.com ([40.107.70.72]:4609
+        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726956AbgLVVUl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 16:20:41 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=N2pbrt1/B5Ys+UNTwcxW4TuP1lv0WurkOCA6a4SAan/LNINH9tthxG0AsKw1qQb8fbtKYMPkHlfSPDx9BN5a4yNN6f6+mLIVU1hrqUUHj6iAmXiBVerfbEIBquEPQP1MleefR7EySmBRAlUaAvhk/lwx/bIvnvufb1mwZm4xCb4zfObrk8ODIhsZe+G/zR71jOFVdDmR21G3gImcONaYf/6wAP8A3rPHWVr5VOC0X7uoB/W3nG2uY+m3nHUG/pHUNMnq1fDuIi52Xs9rQh0tuA6ax2mTXxZX6orl0gszOmTwafL8dTe5qhqwUd0UIbHmrDPUpeJE59OYJMsHIZ+Gpw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2H65VfoglVU7uCSWkPYTYyM4ek3Snpa6OxsdklT6its=;
+ b=n2Z7gEHFve28gL9OPy9GjteE3QqSG+878WjU6q3vvCxjLD3paiSP3tdFfgnGjSjL6t3W+Q79yqwsSSPAhGsgWl1G5ikqwlJIN297Bkk/EILRB2WGQrtMFacK9yxYu6dcyN77ipXZ0TubMUy7ATDoqJOQQcHpybZXMFK69lAcnvQqL6lpTPXmRgPrlEoqywMVnd1OYXoGr2NAqa4Aa0VJHFftKi4HMFTA1Da3ZNFpNpTGENOKiieIY98gMDMWCU3joaxgJUvUT4qMRMj28ZqQe7RegexG6oWoNc9elQt7OLYNb5KOcCTto1GZOwhf8zWmgX0uF5dCjxJ9pv488R8s7A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=silabs.com; dmarc=pass action=none header.from=silabs.com;
+ dkim=pass header.d=silabs.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=silabs.onmicrosoft.com; s=selector2-silabs-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2H65VfoglVU7uCSWkPYTYyM4ek3Snpa6OxsdklT6its=;
+ b=FPJep2fPFh0RMvMPoIQnpmPioHm969i2eTNjWZkwo485WzE+m53bY/Y+UI8DwwXQlddkGs9H5eCRhW3NEq67qfBgZhzbikbdAkCJg2rHomFlihU/xFw3VY51shIHv17ACKNqTC4jYk1gwHpmHbb22BJOjxBGOMxBM0YFzFZUlek=
+Authentication-Results: codeaurora.org; dkim=none (message not signed)
+ header.d=none;codeaurora.org; dmarc=none action=none header.from=silabs.com;
+Received: from SN6PR11MB2718.namprd11.prod.outlook.com (2603:10b6:805:63::18)
+ by SA0PR11MB4637.namprd11.prod.outlook.com (2603:10b6:806:97::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.29; Tue, 22 Dec
+ 2020 21:19:56 +0000
+Received: from SN6PR11MB2718.namprd11.prod.outlook.com
+ ([fe80::a989:f850:6736:97ca]) by SN6PR11MB2718.namprd11.prod.outlook.com
+ ([fe80::a989:f850:6736:97ca%5]) with mapi id 15.20.3700.026; Tue, 22 Dec 2020
+ 21:19:56 +0000
+From:   =?ISO-8859-1?Q?J=E9r=F4me?= Pouiller <jerome.pouiller@silabs.com>
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-mmc@vger.kernel.org,
+        Pali =?ISO-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: Re: [PATCH v3 03/24] wfx: add Makefile/Kconfig
+Date:   Tue, 22 Dec 2020 22:19:52 +0100
+Message-ID: <9810105.nUPlyArG6x@pc-42>
+Organization: Silicon Labs
+In-Reply-To: <8735zxanox.fsf@codeaurora.org>
+References: <20201104155207.128076-1-Jerome.Pouiller@silabs.com> <20201104155207.128076-4-Jerome.Pouiller@silabs.com> <8735zxanox.fsf@codeaurora.org>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+X-Originating-IP: [82.67.86.106]
+X-ClientProxiedBy: SA0PR11CA0107.namprd11.prod.outlook.com
+ (2603:10b6:806:d1::22) To SN6PR11MB2718.namprd11.prod.outlook.com
+ (2603:10b6:805:63::18)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <E9A1084A-30B3-4328-8B0D-31AD978375AD@gmail.com>
-User-Agent: Mutt/2.0.3 (2020-12-04)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pc-42.localnet (82.67.86.106) by SA0PR11CA0107.namprd11.prod.outlook.com (2603:10b6:806:d1::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.27 via Frontend Transport; Tue, 22 Dec 2020 21:19:54 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b92f5a8c-1311-410b-1ea0-08d8a6bf54f9
+X-MS-TrafficTypeDiagnostic: SA0PR11MB4637:
+X-Microsoft-Antispam-PRVS: <SA0PR11MB46371B6EDD267A3FA9F578A593DF0@SA0PR11MB4637.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 99L3hI0mk1ojn7DljnWCRGwU5Gbcsq8/M8e7iSIULRjVb7ix1MuCoaQXpzvkDdZpJq4s0ZpZCMz8HiAjkEon39LLcRTrCnqoT4WsqThH/RfCz8W4asi7f53FtpyBNEnaZbO1ME/mM3cNNhsM3oV93bUs3oU/GYnMeA5TqDNwpaqHPwreBnCEujniXtvIYHvFwmjmAq8LUiqhfzu4K6kihEii8gk2icXCDkYHv0qWA3LObECwD0Oz18oO2BMKQcXU6QAXJ/MiWTxirpvAMmaIafOJZv792XA0tKfR/MG57ZEC7jBekPVLrqCdkKl8/dd/rrKocGJld5aWw5Y44qsYOU+h7ADUIdi/yQbXQ/76xthKi5vMXBIfFtSq0yENgAS7O1aRcvTIl6dW2F4hsjgpkyENOeSwwhXVCtxgjyEa/WIdyKaGeyfDza7YBpiNRVMO
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB2718.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39850400004)(346002)(366004)(376002)(136003)(478600001)(33716001)(6916009)(956004)(6506007)(4744005)(8936002)(5660300002)(26005)(8676002)(52116002)(7416002)(9686003)(66476007)(2906002)(6486002)(54906003)(66946007)(66556008)(6512007)(4326008)(316002)(186003)(36916002)(16526019)(86362001)(39026012);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?iso-8859-1?Q?I5u2OfllaY56m+hmFlXAWvgcUAOOtQA86eKQd79alU8pfluDZ8Iys2EEXK?=
+ =?iso-8859-1?Q?8jT640Hq4ZlUa2Kh0x4CwSHabWWoLj8J68qjXVerWbuOBB7PcTwJfmoF2i?=
+ =?iso-8859-1?Q?leBVDveU39TshGxpdArXa8B4TccR4oVybyvoi35nIPL/CrUWNLxiroo1B6?=
+ =?iso-8859-1?Q?LxvblEytecMm5h5I4FDqGubCpDdAUS3b9e5dfKBOO2gOBfpEZ8nB8P14v+?=
+ =?iso-8859-1?Q?Ua8jvXoYVJ4DXct5vDIF0GDJPjJw9lweIfBehD8vgbD5nemWOCn78AamQF?=
+ =?iso-8859-1?Q?X9kyxlRUh93OL4nCYl2UMKs5ZIl1pA/oviEQBxK35JzHDxBjRebqp1iv5E?=
+ =?iso-8859-1?Q?Ahi63E4yoGiRQvLU4hYUkvYWiEwd2m3xMcFlyTSUaJjbb/utHzMaXtAoE9?=
+ =?iso-8859-1?Q?jpqCz0EMH6UMuJfzERPGBFLevxUeCMxM5u2GstIcMvt9osz0wptPOuHD5N?=
+ =?iso-8859-1?Q?JtnKsMHXDlKJdld31fNuHzVLwAxARMj4K5HYlePYirCZxv7n7U8fn0QxBq?=
+ =?iso-8859-1?Q?M+ZQXQsq3ADxJRRquJrpQGxopGm5i69RcIe7j3IktoGPJPWWkoH4sEBW6O?=
+ =?iso-8859-1?Q?jIUt8FJXw672D+ZzwXjks7FvAANoRtpNoP+QMHGEe2qmqjNFepChU+CjLx?=
+ =?iso-8859-1?Q?zigrVIY1wCjeYjs6zWPS2PzVuc1nN4LjEbjXAMTzEOqJmUQbGPaTsOXkQh?=
+ =?iso-8859-1?Q?Y6IM/A/YM3YJQeIVD5rRjYuVoDGK/VlIZwcB6z//A2EjLHQHszjjKDS21U?=
+ =?iso-8859-1?Q?BkRdL/Mu2rfweiyQ0USMcU+L1pmDDbOlmaoNDANaWf/o8VWK8+B3SyZ88Q?=
+ =?iso-8859-1?Q?PunZNZEQvyRHW2hsN+KkK+xL0JmEkK/b/dY1pOBQTzO71xus3dDyYdHgva?=
+ =?iso-8859-1?Q?cvRRRRaCcXtRwA08f+av2IimpGFDqCkSP+2O/HNFvdJKnEENKykr5ICB32?=
+ =?iso-8859-1?Q?j3woVl47foVC+HUWHJQTim57KAE1Gk3E4rEhx3WZIQGZS550J846FgBuf5?=
+ =?iso-8859-1?Q?c43PsLsbzcWNQvbtnegowQXLdaG9Hpj481bljI?=
+X-OriginatorOrg: silabs.com
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB2718.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Dec 2020 21:19:56.6702
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 54dbd822-5231-4b20-944d-6f4abcd541fb
+X-MS-Exchange-CrossTenant-Network-Message-Id: b92f5a8c-1311-410b-1ea0-08d8a6bf54f9
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: monzteXiqpMyUZIaNGqy05B+TKQm/6QViz8sb++VN4c4GESGhxxXHqfFrgCoyS897kp440lEPabD9wK7zQEYFg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR11MB4637
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 12:19:49PM -0800, Nadav Amit wrote:
-> Perhaps any change to PTE in a page-table should increase a page-table
-> generation that we would save in the page-table page-struct (next to the
+On Tuesday 22 December 2020 16:02:38 CET Kalle Valo wrote:
+> Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
+>=20
+> > From: J=E9r=F4me Pouiller <jerome.pouiller@silabs.com>
+> >
+> > Signed-off-by: J=E9r=F4me Pouiller <jerome.pouiller@silabs.com>
+>=20
+> [...]
+>=20
+> > +wfx-$(CONFIG_SPI) +=3D bus_spi.o
+> > +wfx-$(subst m,y,$(CONFIG_MMC)) +=3D bus_sdio.o
+>=20
+> Why this subst? And why only for MMC?
 
-The current rule is that by the time in the page fault we find a
-pte/hugepmd in certain state under the "PT lock", the TLB cannot be
-left stale with a more permissive state at that point.
+CONFIG_SPI is a boolean (y or empty). The both values make senses.
 
-So if under "PT lock" the page fault sees !pte_write, it means no
-other CPU can possibly modify the page anymore.
+CONFIG_MMC is a tristate (y, m or empty). The substitution above
+ensure that bus_sdio.o will included in wfx.ko if CONFIG_MMC is 'm'
+("wfx-$(CONFIG_MMC) +=3D bus_sdio.o" wouldn't make the job).
 
-That must be enforced at all times, no sequence number is required if
-you enforce that and the whole point of the fix is to enforce that.
+You may want to know what it happens if CONFIG_MMC=3Dm while CONFIG_WFX=3Dy=
+.
+This line in Kconfig prevents to compile wfx statically if MMC is a
+module:
+       depends on MMC || !MMC # do not allow WFX=3Dy if MMC=3Dm
 
-This is how things always worked in the page fault and it's perfectly
-fine.
 
-For the record I never suggested to change anything in the page fault
-code.
+--=20
+J=E9r=F4me Pouiller
 
-So the only way we can leave stale TLB after dropping PT lock with the
-mmap_read_lock and concurrent page faults is with a marker:
-
-1) take PT lock
-2) leave in the pte/hugepmd a unique identifiable marker
-3) change the pte to downgrade permissions
-4) drop PT lock and leave stale TLB entries with the upgraded permissions
-
-In point 3) the pte is built in a way that is guaranteed to trigger a
-deterministic path in the page fault. And in the way of that
-deterministic path you put the marker check for 2) to send the fault
-to a dead-end where the stale TLB is actually irrelevant and harmless.
-
-No change to the page fault is needed if you only enforce the above.
-
-Even if we'd take the mmap_write_lock in userfaultfd_writeprotect, you
-will still have to deal with the above technique because of
-change_prot_numa().
-
-Would you suggest to add a sequence counter and to change all pte_same
-in order to make change_prot_numa safer or is it safe enough already
-using the above technique that checks the marker in the page fault?
-
-To be safe NUMA balancing is using the same mechanism above of sending
-the page fault into a dead end, in order to call the very same
-function (change_permissions) with the very same lock (mmap_read_lock)
-as userfaultfd_writeprotect.
-
-What happens then in do_numa_page then is different than what happens
-in handle_userfault, but both are a dead ends as far as the page fault
-code is concerned and they will never come back to the page fault
-code. That's how they avoid breaking the page fault.
-
-The final rule for the above logic to work safe for uffd, is that the
-marker cannot be cleared until after the deferred TLB flush is
-executed (that's where the window for the race existed, and the fix
-closed such window).
-
-do_numa_page differs in clearing the marker while the TLB flush still
-pending, but it can do that because it puts the same exact pte value
-(with the upgraded permissions) that was there before it put the
-marker in the pte. In turn do_numa_page makes the pending TLB flush
-becomes a noop and it doesn't need to wait for it before removing the
-marker. Does that last difference in how the marker is cleared,
-warrant to consider what NUMA balancing radically different so to
-forbid userfaultfd_writeprotect to use the same logic in the very same
-function with the very same lock in order to decrease the VM
-complexity? In my view no.
-
-Thanks,
-Andrea
 
