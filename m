@@ -2,179 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A3F92E0FBC
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 22:18:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D13EF2E0FC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 22:18:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727843AbgLVVMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 16:12:38 -0500
-Received: from relay08.th.seeweb.it ([5.144.164.169]:59387 "EHLO
-        relay08.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727691AbgLVVMi (ORCPT
+        id S1727831AbgLVVOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 16:14:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726540AbgLVVOq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 16:12:38 -0500
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 62B943F343;
-        Tue, 22 Dec 2020 22:11:54 +0100 (CET)
-Subject: Re: [PATCH 13/13] dt-bindings: cpufreq: qcom-hw: Add bindings for
- 8998
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        ulf.hansson@linaro.org, jorge.ramirez-ortiz@linaro.org,
-        broonie@kernel.org, lgirdwood@gmail.com, daniel.lezcano@linaro.org,
-        nks@flawful.org, bjorn.andersson@linaro.org, agross@kernel.org,
-        viresh.kumar@linaro.org, rjw@rjwysocki.net,
-        konrad.dybcio@somainline.org, martin.botka@somainline.org,
-        marijn.suijten@somainline.org, phone-devel@vger.kernel.org
-References: <20201126184559.3052375-1-angelogioacchino.delregno@somainline.org>
- <20201126184559.3052375-14-angelogioacchino.delregno@somainline.org>
- <20201208181103.GA2795715@robh.at.kernel.org>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Message-ID: <ea5cb3fc-3bda-e220-c0ba-6fd50d648737@somainline.org>
-Date:   Tue, 22 Dec 2020 22:11:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Tue, 22 Dec 2020 16:14:46 -0500
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2DC3C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 13:14:05 -0800 (PST)
+Received: by mail-qk1-x734.google.com with SMTP id p14so13225935qke.6
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 13:14:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=xj/9AB7heM4ibinaJbTQm3ldpvGz50ZCpwfKeLCSO54=;
+        b=AjxlXRONTQz0UwWYDxXI4OZJ+JJ+7EI2J+joueAq9T6Tk3NlXDx7EZp0Z1VIaZIp/z
+         iMIOO4f55l7P0Y77j29e6JND8N8fBpxX0+a27qt2u6fyE5ctl0dnu45M0czSUmZJZYu9
+         tEvKUyLtga0uCRLgRCU0q/lK5y7qnwLtUL+C2FvEOv5exGFrRD6/V+R9RLOi6qLVf8Qo
+         HDRWSeRma8qFIxQNXpAdgZJSX0Qb3ygQeF1OL7Y+s34Beym6/YENn5Cm0fzNzlH+r77B
+         RMJhhywqQhVmm393/HElD9igggh5fzfm+G66B7elXCqda6IE5sDObXGCzbGJRwOESB58
+         deAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=xj/9AB7heM4ibinaJbTQm3ldpvGz50ZCpwfKeLCSO54=;
+        b=jCRj0aE9s8tM2L2AXbnHn24/8QUei1LH9E7bAuTYk5wIZ2WD32PLF9mDXv7Bg9QbX0
+         iZFsrbBYMjrAZq8F9sdU9u1ljMUOd2jC28vXWn/oZZwiYzggCMKdQHEpA9s92D6GM6jU
+         Mb7lllGbthPI+JHpQz/kPqsX+jHcThVt94Quj9vB6Gn67IxqPRF8ENZgS0DI3Sl+x8mg
+         pbOrtueA8+Kjv94hNn7HQEVjIW0xDwSxvTYi8mez+q04LPtCkbAw567stIvalROrNJD+
+         H5SOLTaO2HRlrmZV4r3dv5wAslo/sy7ueX9vRjMJFqmgcVtOtc4OOWq2gtFxvsP8dGCE
+         FjTg==
+X-Gm-Message-State: AOAM533wnJAdKIMh1SfTE+JEgABXoYPc/mNgBdL2Dmw7RACr0cSbzKN7
+        1tfPuhtrgcdVknu+TKddF3Ih04YM+5ie6j2tk/4=
+X-Google-Smtp-Source: ABdhPJxuBjgpUSikcDdv8ReGd9ZbWs/ww0K/mACUGvbsgfdF7dHpu69mBvv24iMftqadmk8oA6hAXMCu5iVxqbLBdaI=
+X-Received: by 2002:a37:70d:: with SMTP id 13mr8039863qkh.326.1608671645123;
+ Tue, 22 Dec 2020 13:14:05 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201208181103.GA2795715@robh.at.kernel.org>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Sender: sonapost.companybf@gmail.com
+Received: by 2002:ac8:4249:0:0:0:0:0 with HTTP; Tue, 22 Dec 2020 13:14:04
+ -0800 (PST)
+From:   "MRS. ROSETTA DOUGLASS" <rosettadouglass3@gmail.com>
+Date:   Tue, 22 Dec 2020 22:14:04 +0100
+X-Google-Sender-Auth: 00GZ39SJdEora_XZRMTI4i06qtI
+Message-ID: <CAP_V9RBVwe2Q-ueQoBMbCPXqs9n=ZAHJLWPHvNG9eOWtPgEt0g@mail.gmail.com>
+Subject: Hello My Dearest,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 08/12/20 19:11, Rob Herring ha scritto:
+Greetings!
 
-Hello! Replying very late seem to be obligatory for me nowadays
-so for this and for any other late replies: I'm sorry!
+I am Mrs. Rosetta Douglass, I have decided to donate what I have to
+you/Churches/ Motherless babies/Less privileged/Widows' because I have
+been suffering from throat cancer for two years now and I have a short
+life to leave according to my doctor, I am entrusting this charity
+project to you, I do not have formal relationship with you but because
+of my present predicament and circumstances I am, I made to contact
+you.
 
-> On Thu, Nov 26, 2020 at 07:45:59PM +0100, AngeloGioacchino Del Regno wrote:
->> The OSM programming addition has been done under the
->> qcom,cpufreq-hw-8998 compatible name: specify the requirement
->> of two additional register spaces for this functionality.
->>
->> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
->> ---
->>   .../bindings/cpufreq/qcom,cpufreq-hw.yaml     | 31 ++++++++++++++++---
->>   1 file changed, 27 insertions(+), 4 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.yaml b/Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.yaml
->> index 94a56317b14b..f64cea73037e 100644
->> --- a/Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.yaml
->> +++ b/Documentation/devicetree/bindings/cpufreq/qcom,cpufreq-hw.yaml
->> @@ -23,17 +23,21 @@ properties:
->>             - qcom,cpufreq-epss
->>   
->>     reg:
->> +    description: Base address and size of the RBCPR register region
-> 
-> That doesn't make sense given you have 2 regions.
-> 
->>       minItems: 2
->>       maxItems: 2
-> 
-> maxItems: 4
-> 
-Indeed it doesn't make sense.
+ I have made up my mind to donate my inheritance of $19.5million to
+the less p rivileged please help me to fulfill my last wish.  At the
+momentI cannot take any telephone calls right now due to the fact that
+I am unable to talk due to my health status. I have adjusted my will
+and my lawyer is aware.
 
->>   
->>     reg-names:
->>       description:
->> -      Frequency domain register region for each domain.
->> -    items:
->> -      - const: "freq-domain0"
->> -      - const: "freq-domain1"
->> +      Frequency domain register region for each domain. If OSM programming
->> +      does not happen in the bootloader and has to be done in this driver,
->> +      then also the OSM domain region osm-domain[0-1] has to be provided.
-> 
-> Don't write free form text for what can be expressed as schema.
-> 
-I guess the later 'if' for 8998 is sufficient to express that, then...
-right?
+I have willed those properties to you by quoting my Personal File
+Routing and Account Information. And I have also notified the bank
+that I am willing that properties to you for a good, effective and
+prudent work. I know I don't know you but I have been directed to do
+this by God. I will be going in for a surgery soon and I want to make
+sure that I make this donation before undergoing this surgery.
 
->> +    minItems: 2
->> +    maxItems: 2
-> 
-> You obviously haven't tried this change with 8998. It will fail with
-> more than 2. What you need here is:
-> 
-My testing methodology must be flawed. Or perhaps I just need some more 
-sleep... probably the latter.
+I will need your support to make this dream come through, could you
+let me know your interest to enable me give you further information? I
+hereby advice to contact me by this email address
 
-> minItems: 2
-> maxItems: 4
-> 
-> items:
->    - const: "freq-domain0"
->    - const: "freq-domain1"
->    - const: "osm-domain0"
->    - const: "osm-domain1"
-> 
-> And then...
-> 
->>   
->>     clock-names:
->> +    minItems: 2
->> +    maxItems: 2
->>       - const: xo
->>       - const: ref
->>   
->> @@ -53,9 +57,28 @@ properties:
->>         property with phandle to a cpufreq_hw followed by the Domain ID(0/1)
->>         in the CPU DT node.
->>   
->> +allOf:
->> + - if:
->> +     properties:
->> +       reg-names:
->> +         contains:
->> +           const: qcom,cpufreq-hw-8998
->> +   then:
->> +     properties:
->> +       reg:
->> +         minItems: 4
->> +         maxItems: 4
->> +       reg-names:
-> 
-> ...here just:
-> 
-> minItems: 4
-> 
-> And you'll need an 'else' clause with 'maxItems: 2' for reg and
-> reg-names.
-> 
-Big thank you for that!!!
-
->> +         items:
->> +           - const: "freq-domain0"
->> +           - const: "freq-domain1"
->> +           - const: "osm-domain0"
->> +           - const: "osm-domain1"
->> +
->>   required:
->>     - compatible
->>     - reg
->> +  - reg-names
-> 
-> You can't make something that was optional now required. (Unless it was
-> a mistake and all existing users always had 'reg-names'.)
-> 
-Well, yes. All existing users are already declaring reg-names, no DT 
-changes to do for them.
-
->>     - clock-names
->>     - clocks
->>     - "#freq-domain-cells"
->> -- 
->> 2.29.2
->>
-
-Thanks for the review.
-A V2 of the entire series will come soon!
-
--- Angelo
+(rosettadouglass3@gmail.com)
+Yours Faithfully,
+Mrs. Rosetta Douglass.
