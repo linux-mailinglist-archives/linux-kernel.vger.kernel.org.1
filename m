@@ -2,204 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA2F2E09EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 13:08:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 636362E09F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 13:15:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726601AbgLVMIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 07:08:09 -0500
-Received: from mail-eopbgr750089.outbound.protection.outlook.com ([40.107.75.89]:40694
-        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725950AbgLVMII (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 07:08:08 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h0wRfAAVSYrueR0Z2pFbyz/GnhSYXJSbo6c93vgN5T9g7v6oZUtyDzTwezAjjSCix9QmVYqjBP6b0sYk3ET8iFHzE2Tb/oZviz4Q4ny4fwtJiG02lkAZUI2/cK6jwuc4nZk/+HOx0d+xjWuaSxog2hY8VBNesviaYIVI5E8G0tO8972tpgFfa+XyBCENkrOLbvlTwHbG40lb7KHyNBvJZQZqm9yOVhxR0oli87cTzJTlTOXvqq9sklExgoIKvpbIbW6jbd0pOIJm/Psmk2zR8B0QPeIVTNeFB8MrznrOwlx5NJEfp7iNjjX8QhA/9pPQUcnlCg2XtceKUFg5fsmX2g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XS8GcIQUwIwhTvf6JcQ8VV94yjtp3TFatrbuqvn9cIg=;
- b=lhCj0Tb7DosA8DsHjyB0WBFzpAAc5AEuWxPC3G/iYcO//jZ/GtqTNm9JGJXr5jfxhTU2V0+QooU3V22nT9zka6xbTkdxhSiDyH4p0tPOQ9vPUG3lF8uV1CxIuidbocHNahrJLieCQJnlKo97/vxB5545tT+Vkwle/yxDPmQTxnNMjTNGl8YPnHdp0IDIL3mT3N8dPU2+zmDeg02hfgiMlswXWWiHFEd4LkkkcBBjMZqeCHkVXwoGpfX97/O6CLNntR79C1gJIFYPqqpgoCEu+A4M9riJwjXyuzKxY+efmv8Ko2v2lJdNNCCrU3Hrw9QFA5jEVo1nXSSxqdHriRmyVg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
- is 165.204.84.17) smtp.rcpttodomain=gmail.com smtp.mailfrom=amd.com;
- dmarc=fail (p=none sp=none pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
+        id S1726616AbgLVMOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 07:14:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726239AbgLVMOI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 07:14:08 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B80FC0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 04:13:27 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id b26so21940409lff.9
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 04:13:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XS8GcIQUwIwhTvf6JcQ8VV94yjtp3TFatrbuqvn9cIg=;
- b=YabiQDGY6+Zcm5k4k+T5BqR/pcMich17gvgdhBAGUTg56EtzNQT2P0kzO6weocVvIJGEzuL9rH/G06+uVoWKMKacy/WmAJH2+QOH0+2GzVi5T5tQUCFim/5EG2m90/kv0ladY0NUbyW6yxAxwJ9B8kniHJo8nx1irLQnh6LsZhY=
-Received: from BN1PR10CA0024.namprd10.prod.outlook.com (2603:10b6:408:e0::29)
- by CY4PR12MB1799.namprd12.prod.outlook.com (2603:10b6:903:11c::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.30; Tue, 22 Dec
- 2020 12:07:19 +0000
-Received: from BN8NAM11FT068.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:e0:cafe::48) by BN1PR10CA0024.outlook.office365.com
- (2603:10b6:408:e0::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.27 via Frontend
- Transport; Tue, 22 Dec 2020 12:07:18 +0000
-X-MS-Exchange-Authentication-Results: spf=softfail (sender IP is
- 165.204.84.17) smtp.mailfrom=amd.com; gmail.com; dkim=none (message not
- signed) header.d=none;gmail.com; dmarc=fail action=none header.from=amd.com;
-Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
- amd.com discourages use of 165.204.84.17 as permitted sender)
-Received: from SATLEXMB01.amd.com (165.204.84.17) by
- BN8NAM11FT068.mail.protection.outlook.com (10.13.177.69) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3676.25 via Frontend Transport; Tue, 22 Dec 2020 12:07:17 +0000
-Received: from SATLEXMB02.amd.com (10.181.40.143) by SATLEXMB01.amd.com
- (10.181.40.142) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Tue, 22 Dec
- 2020 06:07:16 -0600
-Received: from vishnu-All-Series.amd.com (10.180.168.240) by
- SATLEXMB02.amd.com (10.181.40.143) with Microsoft SMTP Server id 15.1.1979.3
- via Frontend Transport; Tue, 22 Dec 2020 06:07:13 -0600
-From:   Ravulapati Vishnu vardhan rao 
-        <Vishnuvardhanrao.Ravulapati@amd.com>
-CC:     <Alexander.Deucher@amd.com>,
-        Ravulapati Vishnu vardhan rao 
-        <Vishnuvardhanrao.Ravulapati@amd.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        "Takashi Iwai" <tiwai@suse.com>,
-        Akshu Agrawal <akshu.agrawal@amd.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
-        <alsa-devel@alsa-project.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: [PATCH] ASoC: amd:Replacing MSI with Legacy IRQ model
-Date:   Tue, 22 Dec 2020 17:29:18 +0530
-Message-ID: <20201222115929.11222-1-Vishnuvardhanrao.Ravulapati@amd.com>
-X-Mailer: git-send-email 2.17.1
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XDqWemTZAr3Yf5zc0WPnza6SJa69M9w7Rj4fQPF3P5o=;
+        b=tPpOPFZiOO+7bXVYjFI5JFD6T6i0npRgJb2VT4lieoQIF08DoFCYSGjj9UtUf7OlOT
+         k59s2Xvq/lfysj+/GyyxJvQlfo02nL1EuA2PBhI+xh9pDS5Yg5bPQ4Zt7jO0QiFdxGdp
+         dKcuZ4zXWF5bWyAxUTzFny3vMoMajws16JY40rUn6sUIVqICCZSBYnX5i8M7E+Z0u3CT
+         lTPukRJlbMMNBCD78ibfqd94YssAxc4XtIpdyd2C7HlUWeqJ17NRIF47bAm5ugtNHU68
+         U4khUQcaFfH58dRFjW4SmhGv0p2aKTkWcwPPS4ZUSjxZrs0qCCkJW8Il2Xt6AJjLwQiX
+         KhqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XDqWemTZAr3Yf5zc0WPnza6SJa69M9w7Rj4fQPF3P5o=;
+        b=bpQiufEbc2zRi/eKmb6jPQ0AIodjnQsUxibRezVEbjBTY6mwgqFYldMq293dF0T0dk
+         A5o3nej1jgZjd0Bhcd2POmzRBBXly81QjlZbepM+1X6ilQYN+8ukA62xZRCkcQOWuGQh
+         f5M+0espnjsUafFixFJVCJoQA3K3XlqMWL9heQo2QFd6b3MvGa/qze+YdeI8KrJI1GI7
+         k30hAjElRXGahrMWPZkykwM0NjlQU+SS287Bha63AhtKtAi2ounyDhQolTAC4+UwGXni
+         mOuyfabNTq8Vw1FEz7X5EAglZGQtuyHdMQNkvxaQeNeF5avJPjq+9oCQ36WAjkh3DRYS
+         rxcQ==
+X-Gm-Message-State: AOAM5308iH78yqrCnRtFvdgpBNmlBYEUT3GkI++Pk86JoIsf28OUEcFN
+        BsNz6yxBj0HZ3frP4bal3kEDUBpy9X22j3X6M9E=
+X-Google-Smtp-Source: ABdhPJy//mXDzhSL1YWk1GnMAjPpsove6BusTlVwzWEpUuwAUeHj+jE+6K6s+3pbthcvs1KaZqTkjZMhul0rQkreE6s=
+X-Received: by 2002:a2e:b8d1:: with SMTP id s17mr10053775ljp.472.1608639206075;
+ Tue, 22 Dec 2020 04:13:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 166cabef-dc8a-4eaa-c75d-08d8a672207a
-X-MS-TrafficTypeDiagnostic: CY4PR12MB1799:
-X-Microsoft-Antispam-PRVS: <CY4PR12MB1799560966B1F0AA53F84B7BE7DF0@CY4PR12MB1799.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: m9Ut5QIfmMhi5THJidDsqJSs1M0YdkjkFFi1reqLOywvPW5h+vf+cKkwWu9WncR5b6EwAPU0aHs+H3Ob5oWvP6wNp8NcmZXGUUW6M0x8Qcv+MGhDJIS9jqeUojHOkIYfUjI2q6k4ZFEF1K1VavVL7PQVdtzuAeMYtxXONsq0fAtMvq6IRU72XQvKl7JzrlFBmaSgCE1SSyw0AXe548O5/lPgVgrh2PmFK2ZRBQgDNc5BXK550HgbbH5LpecSUY2wwuLsAihCHJdxJtYkl+St0zsPfwOoLHn9+n63EKnzPOQyR0wXjL3b9oB8RZ4IaqMBe0g8wUqXPpZfVMbJiUH/EH+fs5+hh6icJuc3bHdO0i7ogLbf7H9hno6LEYoLaykkgpbUAXrXWbq0n2jCMGUEYDva4wLcTAdGEunMvABsPLXisUG0imQ8Mb900LV3HNygB/Ck2ChwprTMbNq21Q9zEfyDk3Y+qrD+KC8dJmOEMJE=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SATLEXMB01.amd.com;PTR:ErrorRetry;CAT:NONE;SFS:(4636009)(39860400002)(136003)(346002)(376002)(396003)(46966005)(336012)(2906002)(70206006)(4326008)(186003)(109986005)(54906003)(81166007)(356005)(2616005)(26005)(478600001)(47076004)(83380400001)(82740400003)(8936002)(426003)(316002)(82310400003)(70586007)(36756003)(5660300002)(7696005)(1076003)(86362001)(8676002)(266003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Dec 2020 12:07:17.3885
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 166cabef-dc8a-4eaa-c75d-08d8a672207a
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB01.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT068.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1799
-To:     unlisted-recipients:; (no To-header on input)
+References: <20201222074910.GA30051@open-light-1.localdomain>
+ <585791f4-4b41-5e73-296e-691d5478a915@redhat.com> <a0bee19a-0703-54b1-2903-60383ab7da64@redhat.com>
+In-Reply-To: <a0bee19a-0703-54b1-2903-60383ab7da64@redhat.com>
+From:   Liang Li <liliang324@gmail.com>
+Date:   Tue, 22 Dec 2020 20:13:12 +0800
+Message-ID: <CA+2MQi8kupPHetMhH97fn+toFk9HUYeVPnwdzrpyiS6Necn0CA@mail.gmail.com>
+Subject: Re: [RFC PATCH 3/3] mm: support free hugepage pre zero out
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Liang Li <liliangleo@didiglobal.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, qemu-devel@nongnu.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When we try to play and capture simultaneously we see that
-interrupts are genrated but our handler is not being acknowledged,
-After investigating further more in detail on this issue we found
-that IRQ delivery via MSI from the ACP IP is unreliable and so sometimes
-interrupt generated will not be acknowledged so MSI model shouldn't be used
-and using legacy IRQs will resolve interrupt handling issue.
+> > Free page reporting in virtio-balloon doesn't give you any guarantees
+> > regarding zeroing of pages. Take a look at the QEMU implementation -
+> > e.g., with vfio all reports are simply ignored.
+> >
+> > Also, I am not sure if mangling such details ("zeroing of pages") into
+> > the page reporting infrastructure is a good idea.
+> >
+>
+> Oh, now I get what you are doing here, you rely on zero_free_pages of
+> your other patch series and are not relying on virtio-balloon free page
+> reporting to do the zeroing.
+>
+> You really should have mentioned that this patch series relies on the
+> other one and in which way.
 
-This patch replaces MSI interrupt handling with legacy IRQ model.
+I am sorry for that. After I sent out the patch, I realized I should
+mention that, so I sent out an updated version which added the
+information you mentioned :)
 
-Issue can be reproduced easily by running below python script:
-
-import subprocess
-import time
-import threading
-
-def do2():
-  cmd = 'aplay -f dat -D hw:2,1 /dev/zero -d 1'
-    subprocess.call(cmd, stdin=subprocess.PIPE,
-			stderr=subprocess.PIPE, shell=True)
-    print('Play Done')
-
-def run():
-	for i in range(1000):
-		do2()
-
-def do(i):
-    cmd = 'arecord -f dat -D hw:2,2 /dev/null -d 1'
-    subprocess.call(cmd, stdout=subprocess.PIPE,
-			stderr=subprocess.PIPE, shell=True)
-    print(datetime.datetime.now(), i)
-
-t = threading.Thread(target=run)
-t.start()
-for i in range(1000):
-	do(i)
-
-t.join()
-
-After applying this patch issue is resolved.
-
-Signed-off-by: Ravulapati Vishnu vardhan rao <Vishnuvardhanrao.Ravulapati@amd.com>
----
- sound/soc/amd/raven/pci-acp3x.c | 16 +++-------------
- 1 file changed, 3 insertions(+), 13 deletions(-)
-
-diff --git a/sound/soc/amd/raven/pci-acp3x.c b/sound/soc/amd/raven/pci-acp3x.c
-index 8c138e490f0c..d3536fd6a124 100644
---- a/sound/soc/amd/raven/pci-acp3x.c
-+++ b/sound/soc/amd/raven/pci-acp3x.c
-@@ -140,21 +140,14 @@ static int snd_acp3x_probe(struct pci_dev *pci,
- 		goto release_regions;
- 	}
- 
--	/* check for msi interrupt support */
--	ret = pci_enable_msi(pci);
--	if (ret)
--		/* msi is not enabled */
--		irqflags = IRQF_SHARED;
--	else
--		/* msi is enabled */
--		irqflags = 0;
-+	irqflags = IRQF_SHARED;
- 
- 	addr = pci_resource_start(pci, 0);
- 	adata->acp3x_base = devm_ioremap(&pci->dev, addr,
- 					pci_resource_len(pci, 0));
- 	if (!adata->acp3x_base) {
- 		ret = -ENOMEM;
--		goto disable_msi;
-+		goto release_regions;
- 	}
- 	pci_set_master(pci);
- 	pci_set_drvdata(pci, adata);
-@@ -162,7 +155,7 @@ static int snd_acp3x_probe(struct pci_dev *pci,
- 	adata->pme_en = rv_readl(adata->acp3x_base + mmACP_PME_EN);
- 	ret = acp3x_init(adata);
- 	if (ret)
--		goto disable_msi;
-+		goto release_regions;
- 
- 	val = rv_readl(adata->acp3x_base + mmACP_I2S_PIN_CONFIG);
- 	switch (val) {
-@@ -251,8 +244,6 @@ static int snd_acp3x_probe(struct pci_dev *pci,
- de_init:
- 	if (acp3x_deinit(adata->acp3x_base))
- 		dev_err(&pci->dev, "ACP de-init failed\n");
--disable_msi:
--	pci_disable_msi(pci);
- release_regions:
- 	pci_release_regions(pci);
- disable_pci:
-@@ -311,7 +302,6 @@ static void snd_acp3x_remove(struct pci_dev *pci)
- 		dev_err(&pci->dev, "ACP de-init failed\n");
- 	pm_runtime_forbid(&pci->dev);
- 	pm_runtime_get_noresume(&pci->dev);
--	pci_disable_msi(pci);
- 	pci_release_regions(pci);
- 	pci_disable_device(pci);
- }
--- 
-2.17.1
-
+Thanks !
+Liang
