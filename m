@@ -2,103 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8BE02E05F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 07:15:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 419D52E05F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 07:15:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726129AbgLVGOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 01:14:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726085AbgLVGOH (ORCPT
+        id S1726046AbgLVGOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 01:14:44 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:14823 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725790AbgLVGOo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 01:14:07 -0500
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C56AC0613D6;
-        Mon, 21 Dec 2020 22:13:27 -0800 (PST)
-Received: by mail-qv1-xf31.google.com with SMTP id p12so5541464qvj.13;
-        Mon, 21 Dec 2020 22:13:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7wb5VtdufCwOz31lMm71cppG/BIQULhNFkKIAClQoAk=;
-        b=GETCxh4rtSWYDy51oM9tjkbdR4CHz6y5kpRkMZ42XgRc2YpW6yFInGNlq9Eu/DYVrL
-         voYvEDZ8+llf6njmfVHFj5P6Ut9y4qecbnU9+NIozICvazkOSK4MqDg3Y12cLZ+cbNq6
-         rfVL0w46e5Dkb9vsQ1LU6C6Q+/vw5DTkz2v3U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7wb5VtdufCwOz31lMm71cppG/BIQULhNFkKIAClQoAk=;
-        b=pJJpzCYXjlywDCOxBvgY/kegEAOEHQlWPRaM5DdUl6OpKq/7uRKP8y4xgILMBihLIg
-         Qq1sGs5x6QqN1GcD7YiXIlHl8jsSLmVfqjtV2MMsvEqsRjZ4l1jKuSWPjDVaYJLKnpik
-         AL9gLsjIGbu9WmuAbaephMVMVpSPtOSl7wDPrK58WrEmxEIQE8mRK584wV0C5J7KIOP7
-         Sbi3s1TEgUYYmuokysKxs7NsZelr2h65gWJGOtfnG67atP8wXJ7oI6bshaeqe3bnFd+c
-         9tEI1If9pyOVN8lbnJOOHgTEp/bQWv7Y9bnE49ojZ2GJBDN5RRFn84C7VToVGCa2ebt3
-         Zf6Q==
-X-Gm-Message-State: AOAM533swPea37a/dmJsiYfxceaJuZlYp4noluDg8Sc1VPWBUOSx3ASw
-        S9hwYV/Wer/0IgNzMTGrW8vEMJClTqFp1bj72Nc=
-X-Google-Smtp-Source: ABdhPJwbjhU+YCBC2Mm9YIY3cpWyvRTwGsIKnPLIkE2RD/yjTtgl6fUaMv2uEHxAl95LexUArLaU9iLU9qaSrKuPR7o=
-X-Received: by 2002:a0c:b20d:: with SMTP id x13mr20757880qvd.18.1608617606420;
- Mon, 21 Dec 2020 22:13:26 -0800 (PST)
+        Tue, 22 Dec 2020 01:14:44 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1608617663; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=/q3dGheHBelER20ImuCZIS2a3WdkHlIdCKxbC6QSlUk=;
+ b=smM6JIZaHEREaieb9jJLpH+seLVang5mnckEK+YzLwv3t+BtJaTOCa8oEFJbsG98fi9fWfvu
+ P1GdTRwchMmm7Z/V63eLj/I1W2RUGwXXhaTabcO3wiutUdj82LaEXd7jeUsLsWcCL3e/UAZS
+ cl5RYSx4Qh81Ki1HYY9V+kbZix0=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5fe18ebfcfd94dd328da9875 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Dec 2020 06:14:23
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7FE26C433ED; Tue, 22 Dec 2020 06:14:23 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 88C8DC433CA;
+        Tue, 22 Dec 2020 06:14:21 +0000 (UTC)
 MIME-Version: 1.0
-References: <20201220123957.1694-1-wangzhiqiang.bj@bytedance.com>
-In-Reply-To: <20201220123957.1694-1-wangzhiqiang.bj@bytedance.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Tue, 22 Dec 2020 06:13:14 +0000
-Message-ID: <CACPK8XexOmUOdGmHCYVXVgA0z5m99XCAbixcgODSoUSRNCY+zA@mail.gmail.com>
-Subject: Re: [PATCH] net/ncsi: Use real net-device for response handler
-To:     John Wang <wangzhiqiang.bj@bytedance.com>
-Cc:     xuxiaohan@bytedance.com,
-        =?UTF-8?B?6YOB6Zu3?= <yulei.sh@bytedance.com>,
-        Samuel Mendoza-Jonas <sam@mendozajonas.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Gavin Shan <gwshan@linux.vnet.ibm.com>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 22 Dec 2020 14:14:21 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bean Huo <huobean@gmail.com>
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 6/7] scsi: ufs: Cleanup WB buffer flush toggle
+ implementation
+In-Reply-To: <20201215230519.15158-7-huobean@gmail.com>
+References: <20201215230519.15158-1-huobean@gmail.com>
+ <20201215230519.15158-7-huobean@gmail.com>
+Message-ID: <e98421b3b26e22941db25e3a31e500cd@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 20 Dec 2020 at 12:40, John Wang <wangzhiqiang.bj@bytedance.com> wrote:
->
-> When aggregating ncsi interfaces and dedicated interfaces to bond
-> interfaces, the ncsi response handler will use the wrong net device to
-> find ncsi_dev, so that the ncsi interface will not work properly.
-> Here, we use the net device registered to packet_type to fix it.
->
-> Fixes: 138635cc27c9 ("net/ncsi: NCSI response packet handler")
-> Signed-off-by: John Wang <wangzhiqiang.bj@bytedance.com>
+On 2020-12-16 07:05, Bean Huo wrote:
+> From: Bean Huo <beanhuo@micron.com>
+> 
+> Delete ufshcd_wb_buf_flush_enable() and ufshcd_wb_buf_flush_disable(),
+> move the implementation into ufshcd_wb_toggle_flush().
+> 
 
-Can you show me how to reproduce this?
+Reviewed-by: Can Guo <cang@codeaurora.org>
 
-I don't know the ncsi or net code well enough to know if this is the
-correct fix. If you are confident it is correct then I have no
-objections.
-
-Cheers,
-
-Joel
-
+> Signed-off-by: Bean Huo <beanhuo@micron.com>
 > ---
->  net/ncsi/ncsi-rsp.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/net/ncsi/ncsi-rsp.c b/net/ncsi/ncsi-rsp.c
-> index a94bb59793f0..60ae32682904 100644
-> --- a/net/ncsi/ncsi-rsp.c
-> +++ b/net/ncsi/ncsi-rsp.c
-> @@ -1120,7 +1120,7 @@ int ncsi_rcv_rsp(struct sk_buff *skb, struct net_device *dev,
->         int payload, i, ret;
->
->         /* Find the NCSI device */
-> -       nd = ncsi_find_dev(dev);
-> +       nd = ncsi_find_dev(pt->dev);
->         ndp = nd ? TO_NCSI_DEV_PRIV(nd) : NULL;
->         if (!ndp)
->                 return -ENODEV;
-> --
-> 2.25.1
->
+>  drivers/scsi/ufs/ufshcd.c | 66 +++++++++++++--------------------------
+>  1 file changed, 21 insertions(+), 45 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 466a85051d54..ba8298f0d017 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -244,10 +244,8 @@ static int ufshcd_setup_vreg(struct ufs_hba *hba, 
+> bool on);
+>  static inline int ufshcd_config_vreg_hpm(struct ufs_hba *hba,
+>  					 struct ufs_vreg *vreg);
+>  static int ufshcd_try_to_abort_task(struct ufs_hba *hba, int tag);
+> -static int ufshcd_wb_buf_flush_enable(struct ufs_hba *hba);
+> -static int ufshcd_wb_buf_flush_disable(struct ufs_hba *hba);
+>  static int ufshcd_wb_toggle_flush_during_h8(struct ufs_hba *hba, bool 
+> set);
+> -static inline void ufshcd_wb_toggle_flush(struct ufs_hba *hba, bool 
+> enable);
+> +static inline int ufshcd_wb_toggle_flush(struct ufs_hba *hba, bool 
+> enable);
+>  static void ufshcd_hba_vreg_set_lpm(struct ufs_hba *hba);
+>  static void ufshcd_hba_vreg_set_hpm(struct ufs_hba *hba);
+> 
+> @@ -5398,60 +5396,38 @@ static int
+> ufshcd_wb_toggle_flush_during_h8(struct ufs_hba *hba, bool set)
+>  				index, NULL);
+>  }
+> 
+> -static inline void ufshcd_wb_toggle_flush(struct ufs_hba *hba, bool 
+> enable)
+> -{
+> -	if (hba->quirks & UFSHCI_QUIRK_SKIP_MANUAL_WB_FLUSH_CTRL)
+> -		return;
+> -
+> -	if (enable)
+> -		ufshcd_wb_buf_flush_enable(hba);
+> -	else
+> -		ufshcd_wb_buf_flush_disable(hba);
+> -
+> -}
+> -
+> -static int ufshcd_wb_buf_flush_enable(struct ufs_hba *hba)
+> +static inline int ufshcd_wb_toggle_flush(struct ufs_hba *hba, bool 
+> enable)
+>  {
+>  	int ret;
+>  	u8 index;
+> +	enum query_opcode opcode;
+> 
+> -	if (!ufshcd_is_wb_allowed(hba) || hba->dev_info.wb_buf_flush_enabled)
+> +	if (hba->quirks & UFSHCI_QUIRK_SKIP_MANUAL_WB_FLUSH_CTRL)
+>  		return 0;
+> 
+> -	index = ufshcd_wb_get_query_index(hba);
+> -	ret = ufshcd_query_flag_retry(hba, UPIU_QUERY_OPCODE_SET_FLAG,
+> -				      QUERY_FLAG_IDN_WB_BUFF_FLUSH_EN,
+> -				      index, NULL);
+> -	if (ret)
+> -		dev_err(hba->dev, "%s WB - buf flush enable failed %d\n",
+> -			__func__, ret);
+> -	else
+> -		hba->dev_info.wb_buf_flush_enabled = true;
+> -
+> -	dev_dbg(hba->dev, "WB - Flush enabled: %d\n", ret);
+> -	return ret;
+> -}
+> -
+> -static int ufshcd_wb_buf_flush_disable(struct ufs_hba *hba)
+> -{
+> -	int ret;
+> -	u8 index;
+> -
+> -	if (!ufshcd_is_wb_allowed(hba) || 
+> !hba->dev_info.wb_buf_flush_enabled)
+> +	if (!ufshcd_is_wb_allowed(hba) ||
+> +	    hba->dev_info.wb_buf_flush_enabled == enable)
+>  		return 0;
+> 
+> +	if (enable)
+> +		opcode = UPIU_QUERY_OPCODE_SET_FLAG;
+> +	else
+> +		opcode = UPIU_QUERY_OPCODE_CLEAR_FLAG;
+> +
+>  	index = ufshcd_wb_get_query_index(hba);
+> -	ret = ufshcd_query_flag_retry(hba, UPIU_QUERY_OPCODE_CLEAR_FLAG,
+> -				      QUERY_FLAG_IDN_WB_BUFF_FLUSH_EN,
+> -				      index, NULL);
+> +	ret = ufshcd_query_flag_retry(hba, opcode,
+> +				      QUERY_FLAG_IDN_WB_BUFF_FLUSH_EN, index,
+> +				      NULL);
+>  	if (ret) {
+> -		dev_warn(hba->dev, "%s: WB - buf flush disable failed %d\n",
+> -			 __func__, ret);
+> -	} else {
+> -		hba->dev_info.wb_buf_flush_enabled = false;
+> -		dev_dbg(hba->dev, "WB - Flush disabled: %d\n", ret);
+> +		dev_err(hba->dev, "%s WB-Buf Flush %s failed %d\n", __func__,
+> +			enable ? "enable" : "disable", ret);
+> +		goto out;
+>  	}
+> 
+> +	hba->dev_info.wb_buf_flush_enabled = enable;
+> +
+> +	dev_dbg(hba->dev, "WB-Buf Flush %s\n", enable ? "enabled" : 
+> "disabled");
+> +out:
+>  	return ret;
+>  }
