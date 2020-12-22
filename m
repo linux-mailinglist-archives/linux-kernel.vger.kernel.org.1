@@ -2,164 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 359592E0A20
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 13:44:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5B52E0A19
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 13:42:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726896AbgLVMnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 07:43:50 -0500
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:47483 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726644AbgLVMnu (ORCPT
+        id S1726661AbgLVMlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 07:41:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725985AbgLVMlR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 07:43:50 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R881e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=weichen.chen@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0UJRQD2S_1608640950;
-Received: from localhost(mailfrom:weichen.chen@linux.alibaba.com fp:SMTPD_---0UJRQD2S_1608640950)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 22 Dec 2020 20:43:00 +0800
-From:   weichenchen <weichen.chen@linux.alibaba.com>
-Cc:     splendidsky.cwc@alibaba-inc.com, yanxu.zw@alibaba-inc.com,
-        weichenchen <weichen.chen@linux.alibaba.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Hangbin Liu <liuhangbin@gmail.com>,
-        David Ahern <dsahern@kernel.org>, Jeff Dike <jdike@akamai.com>,
-        Roman Mashak <mrv@mojatatu.com>,
-        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
-        Roopa Prabhu <roopa@cumulusnetworks.com>,
-        Li RongQing <lirongqing@baidu.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3] net: neighbor: fix a crash caused by mod zero
-Date:   Tue, 22 Dec 2020 20:38:33 +0800
-Message-Id: <20201222123838.12951-1-weichen.chen@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1 (Apple Git-117)
-In-Reply-To: <20201221113240.2ae38a77@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20201221113240.2ae38a77@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+        Tue, 22 Dec 2020 07:41:17 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AE02C0613D3;
+        Tue, 22 Dec 2020 04:40:37 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id c12so8384027pfo.10;
+        Tue, 22 Dec 2020 04:40:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=TB4F60QO548pCqHomnEaCL5+ozw68NytWoP38NBnKCA=;
+        b=MsREq1tExtJV2BAThYcxaf49OalulhowQcAw9CjEiAmzDCkyTr99T54YBESlUsfL62
+         592K8hp+ZHbEPrvvdTNtNDQOjugc8a8SDR5nipb1SE8ansRqJ/cCx/2v7HMvf4puQrwQ
+         Z6XfgVHi2obKxYzzmuGD4FLqrCZxBcrZfner7j0kVAm3Oi39KZHKrecBCAQ5eKI1/QaI
+         R5UA6lxXwPts77gW+ODB2nUgo3GL0CFhVJM3uFtrqpQdDMQ8CVO9ev1x7UAKufQ5f8Ir
+         uk0NfdJ919QtqwuoQgGqnZDFIebhiGssqQozElOXy2dCTqqx0UaI3Ly60OXgZLWQ0k7V
+         I3sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=TB4F60QO548pCqHomnEaCL5+ozw68NytWoP38NBnKCA=;
+        b=iKbTwRPGqJjgVhnAQSkBsClrfQQAixXJDBDvdTjrth2JWJo0U/+cshrxbFEvc1wvFt
+         wUjwWYVtJNdvOo/9GxnGNck+uQXxM/n4wQIUJpuJX7D57e0jPEhicFw7FSyWV7yXBWrW
+         b41cuK5Sf/nySbEUjqeSDI8kVenacyPYkG3lISEpfcaa/RKj2BKkI6C3TUuOVXBO254t
+         qmFkYKJZmAgsRE2vwvuHPw5eqgIr6s4GCSlW12jtjs4zeFRyi7AyRs8x0XhCEz4+uwyO
+         B16pnZ0fYW5x7nevnKaxPXwu72vAR3A/l4yknzN5rfSssbgvJWRAOelfCqDtDY4fGc92
+         Gz4g==
+X-Gm-Message-State: AOAM533Bc50Xv6riAhozah9iozKtY4XIMNi8FIRnq17a/0jQnOE16vZn
+        8266NzjQTkqobwuXZqqDUL0=
+X-Google-Smtp-Source: ABdhPJwjprE2TAyp1wE5q3AFxp4Fw9HXS0whMqpa8aqqpRtLkvBsQ+hzg92IXN/hqbV44unM9rAo5Q==
+X-Received: by 2002:a63:3247:: with SMTP id y68mr19750692pgy.10.1608640836390;
+        Tue, 22 Dec 2020 04:40:36 -0800 (PST)
+Received: from ?IPv6:2601:647:4700:9b2:9423:6a08:cbd0:8220? ([2601:647:4700:9b2:9423:6a08:cbd0:8220])
+        by smtp.gmail.com with ESMTPSA id b197sm15226113pfb.42.2020.12.22.04.40.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 22 Dec 2020 04:40:35 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+From:   Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <X+ESkna2z3WjjniN@google.com>
+Date:   Tue, 22 Dec 2020 04:40:32 -0800
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Will Deacon <will@kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <D4916F41-DE4A-42C6-8702-944382631A02@gmail.com>
+References: <X95RRZ3hkebEmmaj@redhat.com>
+ <EDC00345-B46E-4396-8379-98E943723809@gmail.com>
+ <X97pprdcRXusLGnq@google.com>
+ <DDA15360-D6D4-46A8-95A4-5EE34107A407@gmail.com>
+ <20201221172711.GE6640@xz-x1>
+ <76B4F49B-ED61-47EA-9BE4-7F17A26B610D@gmail.com>
+ <X+D0hTZCrWS3P5Pi@google.com>
+ <CAHk-=wg_UBuo7ro1fpEGkMyFKA1+PxrE85f9J_AhUfr-nJPpLQ@mail.gmail.com>
+ <9E301C7C-882A-4E0F-8D6D-1170E792065A@gmail.com>
+ <CAHk-=wg-Y+svNy3CDkJjj0X_CJkSbpERLg64-Vqwq5u7SC4z0g@mail.gmail.com>
+ <X+ESkna2z3WjjniN@google.com>
+To:     Yu Zhao <yuzhao@google.com>, Peter Zijlstra <peterz@infradead.org>,
+        Minchan Kim <minchan@kernel.org>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pneigh_enqueue() tries to obtain a random delay by mod
-NEIGH_VAR(p, PROXY_DELAY). However, NEIGH_VAR(p, PROXY_DELAY)
-migth be zero at that point because someone could write zero
-to /proc/sys/net/ipv4/neigh/[device]/proxy_delay after the
-callers check it.
+> On Dec 21, 2020, at 1:24 PM, Yu Zhao <yuzhao@google.com> wrote:
+>=20
+> On Mon, Dec 21, 2020 at 12:26:22PM -0800, Linus Torvalds wrote:
+>> On Mon, Dec 21, 2020 at 12:23 PM Nadav Amit <nadav.amit@gmail.com> =
+wrote:
+>>> Using mmap_write_lock() was my initial fix and there was a strong =
+pushback
+>>> on this approach due to its potential impact on performance.
+>>=20
+>> =46rom whom?
+>>=20
+>> Somebody who doesn't understand that correctness is more important
+>> than performance? And that userfaultfd is not the most important part
+>> of the system?
+>>=20
+>> The fact is, userfaultfd is CLEARLY BUGGY.
+>>=20
+>>          Linus
+>=20
+> Fair enough.
+>=20
+> Nadav, for your patch (you might want to update the commit message).
+>=20
+> Reviewed-by: Yu Zhao <yuzhao@google.com>
+>=20
+> While we are all here, there is also clear_soft_dirty() that could
+> use a similar fix=E2=80=A6
 
-This patch makes pneigh_enqueue() get a delay time passed in
-by the callers and the callers guarantee it is not zero.
+Just an update as for why I have still not sent v2: I fixed
+clear_soft_dirty(), created a reproducer, and the reproducer kept =
+failing.
 
-Signed-off-by: weichenchen <weichen.chen@linux.alibaba.com>
----
-V3:
-    - Callers need to pass the delay time to pneigh_enqueue()
-      now and they should guarantee it is not zero.
-    - Use READ_ONCE() to read NEIGH_VAR(p, PROXY_DELAY) in both
-      of the existing callers of pneigh_enqueue() and then pass
-      it to pneigh_enqueue().
-V2:
-    - Use READ_ONCE() to prevent the complier from re-reading
-      NEIGH_VAR(p, PROXY_DELAY).
-    - Give a hint to the complier that delay <= 0 is unlikely
-      to happen.
----
- include/net/neighbour.h | 2 +-
- net/core/neighbour.c    | 5 ++---
- net/ipv4/arp.c          | 8 +++++---
- net/ipv6/ndisc.c        | 6 +++---
- 4 files changed, 11 insertions(+), 10 deletions(-)
+So after some debugging, it appears that clear_refs_write() does not =
+flush
+the TLB. It indeed calls tlb_finish_mmu() but since 0758cd830494
+("asm-generic/tlb: avoid potential double flush=E2=80=9D), =
+tlb_finish_mmu() does not
+flush the TLB since there is clear_refs_write() does not call to
+__tlb_adjust_range() (unless there are nested TLBs are pending).
 
-diff --git a/include/net/neighbour.h b/include/net/neighbour.h
-index 22ced1381ede..f7564dc5304d 100644
---- a/include/net/neighbour.h
-+++ b/include/net/neighbour.h
-@@ -352,7 +352,7 @@ struct net *neigh_parms_net(const struct neigh_parms *parms)
- unsigned long neigh_rand_reach_time(unsigned long base);
- 
- void pneigh_enqueue(struct neigh_table *tbl, struct neigh_parms *p,
--		    struct sk_buff *skb);
-+		    struct sk_buff *skb, int delay);
- struct pneigh_entry *pneigh_lookup(struct neigh_table *tbl, struct net *net,
- 				   const void *key, struct net_device *dev,
- 				   int creat);
-diff --git a/net/core/neighbour.c b/net/core/neighbour.c
-index 9500d28a43b0..b440f966d109 100644
---- a/net/core/neighbour.c
-+++ b/net/core/neighbour.c
-@@ -1567,12 +1567,11 @@ static void neigh_proxy_process(struct timer_list *t)
- }
- 
- void pneigh_enqueue(struct neigh_table *tbl, struct neigh_parms *p,
--		    struct sk_buff *skb)
-+		    struct sk_buff *skb, int delay)
- {
- 	unsigned long now = jiffies;
- 
--	unsigned long sched_next = now + (prandom_u32() %
--					  NEIGH_VAR(p, PROXY_DELAY));
-+	unsigned long sched_next = now + (prandom_u32() % delay);
- 
- 	if (tbl->proxy_queue.qlen > NEIGH_VAR(p, PROXY_QLEN)) {
- 		kfree_skb(skb);
-diff --git a/net/ipv4/arp.c b/net/ipv4/arp.c
-index 922dd73e5740..6ddce6e0a648 100644
---- a/net/ipv4/arp.c
-+++ b/net/ipv4/arp.c
-@@ -841,20 +841,22 @@ static int arp_process(struct net *net, struct sock *sk, struct sk_buff *skb)
- 			     arp_fwd_pvlan(in_dev, dev, rt, sip, tip) ||
- 			     (rt->dst.dev != dev &&
- 			      pneigh_lookup(&arp_tbl, net, &tip, dev, 0)))) {
-+				int delay;
-+
- 				n = neigh_event_ns(&arp_tbl, sha, &sip, dev);
- 				if (n)
- 					neigh_release(n);
- 
-+				delay = READ_ONCE(NEIGH_VAR(in_dev->arp_parms, PROXY_DELAY));
- 				if (NEIGH_CB(skb)->flags & LOCALLY_ENQUEUED ||
--				    skb->pkt_type == PACKET_HOST ||
--				    NEIGH_VAR(in_dev->arp_parms, PROXY_DELAY) == 0) {
-+				    skb->pkt_type == PACKET_HOST || delay == 0) {
- 					arp_send_dst(ARPOP_REPLY, ETH_P_ARP,
- 						     sip, dev, tip, sha,
- 						     dev->dev_addr, sha,
- 						     reply_dst);
- 				} else {
- 					pneigh_enqueue(&arp_tbl,
--						       in_dev->arp_parms, skb);
-+						       in_dev->arp_parms, skb, delay);
- 					goto out_free_dst;
- 				}
- 				goto out_consume_skb;
-diff --git a/net/ipv6/ndisc.c b/net/ipv6/ndisc.c
-index 76717478f173..efdaaab47535 100644
---- a/net/ipv6/ndisc.c
-+++ b/net/ipv6/ndisc.c
-@@ -892,10 +892,10 @@ static void ndisc_recv_ns(struct sk_buff *skb)
- 		    (idev->cnf.forwarding &&
- 		     (net->ipv6.devconf_all->proxy_ndp || idev->cnf.proxy_ndp) &&
- 		     (is_router = pndisc_is_router(&msg->target, dev)) >= 0)) {
-+			int delay = READ_ONCE(NEIGH_VAR(idev->nd_parms, PROXY_DELAY));
- 			if (!(NEIGH_CB(skb)->flags & LOCALLY_ENQUEUED) &&
- 			    skb->pkt_type != PACKET_HOST &&
--			    inc &&
--			    NEIGH_VAR(idev->nd_parms, PROXY_DELAY) != 0) {
-+			    inc && delay != 0) {
- 				/*
- 				 * for anycast or proxy,
- 				 * sender should delay its response
-@@ -905,7 +905,7 @@ static void ndisc_recv_ns(struct sk_buff *skb)
- 				 */
- 				struct sk_buff *n = skb_clone(skb, GFP_ATOMIC);
- 				if (n)
--					pneigh_enqueue(&nd_tbl, idev->nd_parms, n);
-+					pneigh_enqueue(&nd_tbl, idev->nd_parms, n, delay);
- 				goto out;
- 			}
- 		} else
--- 
-2.20.1 (Apple Git-117)
+So I have a patch for this issue too: arguably the tlb_gather interface =
+is
+not the right one for clear_refs_write() that does not clear PTEs but
+changes them.
 
+Yet, sadly, my reproducer keeps falling (less frequently, but still). So =
+I
+will keep debugging to see what goes wrong. I will send v2 once I figure =
+out
+what the heck is wrong in the code or my reproducer.
+
+For the reference, here is my reproducer:
+
+-- >8 --
+
+#define _GNU_SOURCE
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/mman.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+#include <fcntl.h>
+#include <string.h>
+#include <threads.h>
+#include <stdatomic.h>
+
+#define PAGE_SIZE	(4096)
+#define TLB_SIZE	(2000)
+#define N_PAGES		(300000)
+#define ITERATIONS	(100)
+#define N_THREADS	(2)
+
+static int stop;
+static char *m;
+
+static int writer(void *argp)
+{
+	unsigned long t_idx =3D (unsigned long)argp;
+	int i, cnt =3D 0;
+
+	while (!atomic_load(&stop)) {
+		cnt++;
+		atomic_fetch_add((atomic_int *)m, 1);
+
+		/*
+		 * First thread only accesses the page to have it cached =
+in the
+		 * TLB.
+		 */
+		if (t_idx =3D=3D 0)
+			continue;
+
+		/*
+		 * Other threads access enough entries to cause eviction =
+from
+		 * the TLB and trigger #PF upon the next access (before =
+the TLB
+		 * flush of clear_ref actually takes place).
+		 */
+		for (i =3D 1; i < TLB_SIZE; i++) {
+			if (atomic_load((atomic_int *)(m + PAGE_SIZE * =
+i))) {
+				fprintf(stderr, "unexpected error\n");
+				exit(1);
+			}
+		}
+	}
+	return cnt;
+}
+
+/*
+ * Runs mlock/munlock in the background to raise the page-count of the =
+page and
+ * force copying instead of reusing the page.
+ */
+static int do_mlock(void *argp)
+{
+	while (!atomic_load(&stop)) {
+		if (mlock(m, PAGE_SIZE) || munlock(m, PAGE_SIZE)) {
+			perror("mlock/munlock");
+			exit(1);
+		}
+	}
+	return 0;
+}
+
+int main(void)
+{
+	int r, cnt, fd, total =3D 0;
+	long i;
+	thrd_t thr[N_THREADS];
+	thrd_t mlock_thr[N_THREADS];
+
+	fd =3D open("/proc/self/clear_refs", O_WRONLY, 0666);
+	if (fd < 0) {
+		perror("open");
+		exit(1);
+	}
+
+	/*
+	 * Have large memory for clear_ref, so there would be some time =
+between
+	 * the unmap and the actual deferred flush.
+	 */
+	m =3D mmap(NULL, PAGE_SIZE * N_PAGES, PROT_READ|PROT_WRITE,
+			MAP_PRIVATE|MAP_ANONYMOUS|MAP_POPULATE, -1, 0);
+	if (m =3D=3D MAP_FAILED) {
+		perror("mmap");
+		exit(1);
+	}
+
+	for (i =3D 0; i < N_THREADS; i++) {
+		r =3D thrd_create(&thr[i], writer, (void *)i);
+		assert(r =3D=3D thrd_success);
+	}
+
+	for (i =3D 0; i < N_THREADS; i++) {
+		r =3D thrd_create(&mlock_thr[i], do_mlock, (void *)i);
+		assert(r =3D=3D thrd_success);
+	}
+
+	for (i =3D 0; i < ITERATIONS; i++) {
+		for (i =3D 0; i < ITERATIONS; i++) {
+			r =3D pwrite(fd, "4", 1, 0);
+			if (r < 0) {
+				perror("pwrite");
+				exit(1);
+			}
+		}
+	}
+
+	atomic_store(&stop, 1);
+
+	for (i =3D 0; i < N_THREADS; i++) {
+		r =3D thrd_join(mlock_thr[i], NULL);
+		assert(r =3D=3D thrd_success);
+	}
+
+	for (i =3D 0; i < N_THREADS; i++) {
+		r =3D thrd_join(thr[i], &cnt);
+		assert(r =3D=3D thrd_success);
+		total +=3D cnt;
+	}
+
+	r =3D atomic_load((atomic_int *)(m));
+	if (r !=3D total) {
+		fprintf(stderr, "failed - expected=3D%d actual=3D%d\n", =
+total, r);
+		exit(-1);
+	}
+
+	fprintf(stderr, "ok\n");
+	return 0;
+}=
