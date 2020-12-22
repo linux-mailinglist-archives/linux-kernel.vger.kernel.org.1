@@ -2,119 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9F572E038B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 01:46:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52B722E0393
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 01:46:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726569AbgLVApv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 19:45:51 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:34710 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726492AbgLVApu (ORCPT
+        id S1726693AbgLVAqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 19:46:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726429AbgLVAqV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 19:45:50 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1608597931; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=1bjQCUDo6TkclQdX/S/yzQuV1vY9gcmjTKp7aSEvBh8=; b=F/ztfKzyiFDdueAg5wCthtmWSGAc/HzLVjprJpJQSk0Xq4uRIqVWjqUPVwhp6Z2L4XRKdmwu
- 5dAwOwd2uRFIxz8lrSA6E7LVQTtzhF/yuU0oE/PUOJOR/g9S/ACNyHxbpaLDYysMOTQWpxgv
- xS1IcLba+Lhg9JdW+GI2oceCz5E=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 5fe1418adb8e07fa6c477cc8 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Dec 2020 00:44:58
- GMT
-Sender: isaacm=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 28BAEC43462; Tue, 22 Dec 2020 00:44:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from isaacm-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: isaacm)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id EBEE0C4346B;
-        Tue, 22 Dec 2020 00:44:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EBEE0C4346B
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=isaacm@codeaurora.org
-From:   "Isaac J. Manjarres" <isaacm@codeaurora.org>
-To:     iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     "Isaac J. Manjarres" <isaacm@codeaurora.org>, will@kernel.org,
-        joro@8bytes.org, pdaly@codeaurora.org, pratikp@codeaurora.org,
-        kernel-team@android.com, robin.murphy@arm.com
-Subject: [PATCH v2 7/7] iommu/io-pgtable-arm: Allow building modular io-pgtable fmts
-Date:   Mon, 21 Dec 2020 16:44:36 -0800
-Message-Id: <1608597876-32367-8-git-send-email-isaacm@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1608597876-32367-1-git-send-email-isaacm@codeaurora.org>
-References: <1608597876-32367-1-git-send-email-isaacm@codeaurora.org>
+        Mon, 21 Dec 2020 19:46:21 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2332C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 16:45:40 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id j1so6536286pld.3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 16:45:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vguIITGYik298tZjiRhsb9faiY6NgmDMyom+xtgPKKU=;
+        b=krA8Jx27hTvRfr1bEBDRfKptm2xC8I/6gjD2XRUXKAFxLBiZ5SYGPo+I7DLaFKO+km
+         RgcJdjJaaXA9UbSYOTGjGMyCS2s3+GWyeJMniMEx9RQS6Qz/REfd107sUd9adxLbD76B
+         YIqssSk9wHPZzVgXCG7Xwcs0Gq1q5vJusqTQg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vguIITGYik298tZjiRhsb9faiY6NgmDMyom+xtgPKKU=;
+        b=V9i/VqS+den3gBzdwrDEkErovvk+fylZ8qMGmykFFPm+6V8SKq8Da7/IYRAFOAsZ8s
+         3Ey9essJ8g/AMUgz8HSL2DG6TaxKb2W96lC/U0XXsrKg6b73PKreViShdi+YSTUPiYOS
+         O6v0JlvkqOkjhNTCZhzV4PWBSEhu6TydeZdHvoIOlNW6CSrvND/bWUvAg5QSK4epg9g+
+         haVXaxD9WhEWvmmEeX7TU6LdeBmcJx+ak1VgZxiAm42/09bzsAhl3Lg+lwa1HdtPcGo6
+         7I9EHrZ5d5WdGo2gnEU7SKe0WYUoCBF/XFYpKwMxKe65hhL0NLusG3QhPFh7yRmtvuIj
+         v7qQ==
+X-Gm-Message-State: AOAM530S++k6k8yHMFIGuZCzjBrfBCcu2N1PMtvATr0e9D6BnqZ4lCO1
+        5c9Ta17V5VenqM8FsZryXEyvQQ==
+X-Google-Smtp-Source: ABdhPJy/s4Ym9J+sghrKuHZstUVRTTXvDD+/M+1lOVT+m75qrhHrPrwNe1K0UVpK7eQfo2rNc1uajQ==
+X-Received: by 2002:a17:90b:388b:: with SMTP id mu11mr19901275pjb.17.1608597940448;
+        Mon, 21 Dec 2020 16:45:40 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a28c:fdff:fef0:49dd])
+        by smtp.gmail.com with ESMTPSA id ci2sm16172825pjb.40.2020.12.21.16.45.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Dec 2020 16:45:39 -0800 (PST)
+Date:   Mon, 21 Dec 2020 16:45:38 -0800
+From:   Prashant Malani <pmalani@chromium.org>
+To:     Utkarsh Patel <utkarsh.h.patel@intel.com>
+Cc:     linux-kernel@vger.kernel.org, enric.balletbo@collabora.com,
+        bleung@chromium.org, heikki.krogerus@linux.intel.com,
+        rajmohan.mani@intel.com
+Subject: Re: [PATCH 2/2] platform/chrome: cros_ec_typec: Send mux
+ configuration acknowledgment to EC
+Message-ID: <X+FBsu+VNsEJlgBp@google.com>
+References: <20201210060903.2205-1-utkarsh.h.patel@intel.com>
+ <20201210060903.2205-3-utkarsh.h.patel@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201210060903.2205-3-utkarsh.h.patel@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that everything is in place for modular io-pgtable formats,
-allow the ARM LPAE and ARMV7S io-pgtable formats to be built
-as modules.
+Hi Utkarsh,
 
-Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
----
- drivers/iommu/Kconfig              | 4 ++--
- drivers/iommu/io-pgtable-arm-v7s.c | 2 ++
- drivers/iommu/io-pgtable-arm.c     | 2 ++
- 3 files changed, 6 insertions(+), 2 deletions(-)
+On Wed, Dec 09, 2020 at 10:09:03PM -0800, Utkarsh Patel wrote:
+> In some corner cases downgrade of the superspeed typec device(e.g. Dell
+> typec Dock, apple dongle) was seen because before the SOC mux configuration
+> finishes, EC starts configuring the next mux state.
+> 
+> With this change, once the SOC mux is configured, kernel will send an
+> acknowledgment to EC via Host command EC_CMD_USB_PD_MUX_ACK [1].
+> After sending the host event EC will wait for the acknowledgment from
+> kernel before starting the PD negotiation for the next mux state. This
+> helps to have a framework to build better error handling along with the
+> synchronization of timing sensitive mux states.
+> 
+> This change also brings in corresponding EC header updates from the EC code
+> base [1].
+> 
+> [1]:
+> https://chromium.googlesource.com/chromiumos/platform/ec/+/refs/heads/master/include/ec_commands.h
+> 
+> Signed-off-by: Utkarsh Patel <utkarsh.h.patel@intel.com>
 
-diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
-index 192ef8f..7e4f44f 100644
---- a/drivers/iommu/Kconfig
-+++ b/drivers/iommu/Kconfig
-@@ -30,7 +30,7 @@ config IOMMU_IO_PGTABLE
- 	bool
- 
- config IOMMU_IO_PGTABLE_LPAE
--	bool "ARMv7/v8 Long Descriptor Format"
-+	tristate "ARMv7/v8 Long Descriptor Format"
- 	select IOMMU_IO_PGTABLE
- 	depends on ARM || ARM64 || (COMPILE_TEST && !GENERIC_ATOMIC64)
- 	help
-@@ -49,7 +49,7 @@ config IOMMU_IO_PGTABLE_LPAE_SELFTEST
- 	  If unsure, say N here.
- 
- config IOMMU_IO_PGTABLE_ARMV7S
--	bool "ARMv7/v8 Short Descriptor Format"
-+	tristate "ARMv7/v8 Short Descriptor Format"
- 	select IOMMU_IO_PGTABLE
- 	depends on ARM || ARM64 || COMPILE_TEST
- 	help
-diff --git a/drivers/iommu/io-pgtable-arm-v7s.c b/drivers/iommu/io-pgtable-arm-v7s.c
-index a5cb755a..9d9f08f 100644
---- a/drivers/iommu/io-pgtable-arm-v7s.c
-+++ b/drivers/iommu/io-pgtable-arm-v7s.c
-@@ -1015,3 +1015,5 @@ static void __exit arm_v7s_exit(void)
- 	io_pgtable_ops_unregister(&io_pgtable_arm_v7s_init_fns);
- }
- module_exit(arm_v7s_exit);
-+
-+MODULE_LICENSE("GPL v2");
-diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
-index e8b1e34..e0de4ad 100644
---- a/drivers/iommu/io-pgtable-arm.c
-+++ b/drivers/iommu/io-pgtable-arm.c
-@@ -1299,3 +1299,5 @@ static void __exit arm_lpae_exit(void)
- 		io_pgtable_ops_unregister(&io_pgtable_arm_lpae_init_fns[i]);
- }
- module_exit(arm_lpae_exit);
-+
-+MODULE_LICENSE("GPL v2");
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+I'm not sure what the maintainers' preference is for the header (same
+patch or separate patch). FWIW:
 
+Reviewed-by: Prashant Malani <pmalani@chromium.org>
+
+Thanks,
+
+-Prashant
