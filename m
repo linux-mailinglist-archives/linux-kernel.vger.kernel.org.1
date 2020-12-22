@@ -2,97 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D40FE2E06AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 08:23:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B55B42E06AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 08:25:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725856AbgLVHWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 02:22:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725782AbgLVHWo (ORCPT
+        id S1725937AbgLVHXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 02:23:49 -0500
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:17055 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725878AbgLVHXt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 02:22:44 -0500
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E87C6C0613D3;
-        Mon, 21 Dec 2020 23:22:03 -0800 (PST)
-Received: by mail-il1-x12a.google.com with SMTP id w17so4530204ilj.8;
-        Mon, 21 Dec 2020 23:22:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=I2u/p95HFAgUInWm+oTbwloJHBZZQQY403Ouq8HbVgs=;
-        b=AwIv6s55JEf1nH8N7x2Zv2dps4FbCsh63q0Ml7aDOcZls2PW4sYpgu0DhbJ67gOiHo
-         0y2qnkvwXFSmi+P22mBJU+sZv3/37aiiyOKGHhzys7EP69b2nEwig16l8dUbzRT70AM/
-         AFa72XA+z2JYJLczhqgbFOvKNUqN2Mq07M+DsPvzUUt/ODArTrv2OZ6jqTOXFIU2dA6I
-         Cu/ESC5BeqVZc2tlcg1sSItO/66M4pPMAYrcYjwz9mzXVnSEIPNyhM87YB22lu3Ui+nQ
-         WjxRcMjtv9XmLts2IHGoJDln8Goc+fB/mz2hXyFk5iJf8f6o7xaKRV9B9AZZYyyI5wQg
-         LzRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I2u/p95HFAgUInWm+oTbwloJHBZZQQY403Ouq8HbVgs=;
-        b=i2kpIkUxbdJPdDBnAyJnUjYdL2bT26YfaH4SeA1caj88+Yy+vtNBAuBmRe3vDzSCyr
-         3RrbPjzHtToCXmo8U1Px5SwBrtMNdJha5+kh0v9GBARwJYuqS+scUOYGdsD4yQ/7HH88
-         0YwpNmYvZYjLYpUpTaHrTT/mF0EKla6kI39khD2WAzuPb62cNvV6qQSPwC1CzxH8PRR9
-         MOlyLT8q8Dj5Kvvkki87ZtsDVrZA30QR2twfTuRN//q33X6gGM1M243EWIO2vzGnt2TK
-         aMX7D3UszHccf2OIJ1FJYEOZfqQwmmda5ZyfQ2hqlcYRVoAGZm50kJ9uzn//N4bQq/Lo
-         8jSw==
-X-Gm-Message-State: AOAM5316aQF+doubodXSlt4RcQJuShuzhqU4f4PUF2OBqwdiyFgTBGDa
-        qTMTWRazkel3j2gI0T4Pnw5B2NALYECB4PXfymq1+74yA39ydg==
-X-Google-Smtp-Source: ABdhPJyxI331doQShMhYnTgKTb2dBJtom9BVR2JnkLAOtcmIT31qMr8g/Xh+Ad8LWnbsFTYDFnA1+4MeuIk2n2BYNzA=
-X-Received: by 2002:a92:155b:: with SMTP id v88mr20184086ilk.303.1608621723257;
- Mon, 21 Dec 2020 23:22:03 -0800 (PST)
+        Tue, 22 Dec 2020 02:23:49 -0500
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 0BM7MrmD009582
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 16:22:53 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 0BM7MrmD009582
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1608621773;
+        bh=MdgXeZjPAoG2zgI/9PTUDD5lMHdp0LVzaQZKW55s0K8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ZbuEyMFceehMIfQ6+TGp1jlwAdr/PmfbjB2ZZOdKoMGLu46/jZZVSKYfxJxJb6jCF
+         K7mZR71BMyGBqMfvxHGVxuwj9X4QaHBho4/c9jpW8PWAERygVFC0u2/NhcxPbNsv/5
+         t3YSiuigBc/9NCRESaf7kqJPMB1f4qpsylR6zJu0T9U7iojyTWGcmWN2Hw22fIzssi
+         uS0+sayk+Ui8WbC9CzHDBkvFzttZxof3ZHb7Px6mpJAnijg6CjHyKS7THeHmySBpc0
+         uQeXP3zrtTDZX+MQo4JjPW4Jc77OQ6r+Fse2b5rcV59Q1DionMg0DE5LC1TjgzTShy
+         xZpLYFNa9mJ3Q==
+X-Nifty-SrcIP: [209.85.210.175]
+Received: by mail-pf1-f175.google.com with SMTP id d2so7945262pfq.5
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 23:22:53 -0800 (PST)
+X-Gm-Message-State: AOAM531ctb+R5Stl8OaBGDkRZ23Ox+Pv39Gugeaomk1qiFntemV5ukIl
+        oJMiF5+OGGVRqI1UYHguwgO9ER/kT6AAb9adxK4=
+X-Google-Smtp-Source: ABdhPJzIeir2iJm8v1W9WsUYckuHzNmooqeZY18Zn2T6uMlQt8USjCn1jMSlEheCXNwLC+uM60dUv6dwww6kOOuriZs=
+X-Received: by 2002:a65:6a16:: with SMTP id m22mr18613405pgu.175.1608621772952;
+ Mon, 21 Dec 2020 23:22:52 -0800 (PST)
 MIME-Version: 1.0
-References: <20201221151551.52511-1-alexandru.ardelean@analog.com> <CAHp75Ve6GHU50WO3Ygmfz8GU=22jpLi+JeDoA3TiY8bp76T09A@mail.gmail.com>
-In-Reply-To: <CAHp75Ve6GHU50WO3Ygmfz8GU=22jpLi+JeDoA3TiY8bp76T09A@mail.gmail.com>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Tue, 22 Dec 2020 09:21:52 +0200
-Message-ID: <CA+U=Dsont-N2Ev3bbO+O_v23OAx11MhkLYsHJjAisNyu4kO2Bw@mail.gmail.com>
-Subject: Re: [PATCH v4] iio: Handle enumerated properties with gaps
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
+References: <20201222070731.491076-1-joel@jms.id.au>
+In-Reply-To: <20201222070731.491076-1-joel@jms.id.au>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 22 Dec 2020 16:22:16 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAS_+VTDspmBNXPZzMKDhzDz9+TyKjrOs_Xho-ZMEPGDKA@mail.gmail.com>
+Message-ID: <CAK7LNAS_+VTDspmBNXPZzMKDhzDz9+TyKjrOs_Xho-ZMEPGDKA@mail.gmail.com>
+Subject: Re: [PATCH v2] openrisc: Add vmlinux.bin target
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        openrisc@lists.librecores.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>
+        Mateusz Holenko <mholenko@antmicro.com>,
+        Karol Gugala <kgugala@antmicro.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 8:02 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
+On Tue, Dec 22, 2020 at 4:07 PM Joel Stanley <joel@jms.id.au> wrote:
 >
-> On Mon, Dec 21, 2020 at 5:11 PM Alexandru Ardelean
-> <alexandru.ardelean@analog.com> wrote:
-> >
-> > From: Lars-Peter Clausen <lars@metafoo.de>
-> >
-> > Some enums might have gaps or reserved values in the middle of their value
-> > range. E.g. consider a 2-bit enum where the values 0, 1 and 3 have a
-> > meaning, but 2 is a reserved value and can not be used.
-> >
-> > Add support for such enums to the IIO enum helper functions. A reserved
-> > values is marked by setting its entry in the items array to NULL rather
-> > than the normal descriptive string value.
+> Build it by default. This is commonly used by fpga targets.
 >
-> ...
+> Signed-off-by: Joel Stanley <joel@jms.id.au>
+> ---
+> v2: Address review from Masahiro
 >
-> > I tried a few shots at working with 'lib/string.c', and that went
-> > slow. The __sysfs_match_string_with_gaps() approach has stalled.
-> > https://lore.kernel.org/linux-iio/20190422140251.8960-1-alexandru.ardelean@analog.com/
->
-> Hmm... If you are not going to push that forward, perhaps better is to  provide
-> iio_sysfs_match_string() and if we need it in the future for other
-> users, it would be easier to find and export. Also it will be a matter
-> of one line change in the caller.
+>  - Add vmlinux.bin to phony target
+>  - simplfy vmlinux.bin rule
+>  - add cleanup rule
+>  - add vmlinux.bin to targets
+>  - Add gitignore
 
-That can work as well.
-Maybe add the __sysfs_match_string_with_gaps() here directly?
 
->
-> --
-> With Best Regards,
-> Andy Shevchenko
+ Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
+
+---
+Best Regards
+Masahiro Yamada
