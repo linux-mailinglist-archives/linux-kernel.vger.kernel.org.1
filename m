@@ -2,100 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 434402E0C90
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 16:18:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D70E22E0C94
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 16:20:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728040AbgLVPQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 10:16:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727301AbgLVPQ6 (ORCPT
+        id S1727870AbgLVPTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 10:19:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42791 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727792AbgLVPTY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 10:16:58 -0500
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD461C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 07:16:17 -0800 (PST)
-Received: by mail-il1-x12f.google.com with SMTP id n9so12324591ili.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 07:16:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vFVTJ+0eHU766NlPjzayRjSs+Vk0hqn0SrA9Il/j3JU=;
-        b=sSZ3NgXR3fJvfO5KGnv/psaGcLEYQx0ftL8WbaYkt8YldWrlXDxO++LjxIQlaQp2Gc
-         OgeLUUG3UQ2h2zHrrl3apTSKHaGHKooKuTysvMaGtrWMsGBMFVHJzrzJank70A3eNjRE
-         VE0x6tKeooyjNNQzhdzDM8H5Hcp85GyoldwT3wfua1IK6NehDHUti7oaQ8+DgzV0gFUA
-         pB0OJ8mYiHHYhJfiVti+d93k7FG3ri+F2MxaCtnXXVM9YFBF6K4CM9HGJavi4cDbVGbm
-         DWjzXdINbuB/YhGtk8jPzqwbAmzRq/4d+f79gnv67on9zioICf8uxrHr4QFwZH2wRIJv
-         LExw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vFVTJ+0eHU766NlPjzayRjSs+Vk0hqn0SrA9Il/j3JU=;
-        b=OOuHdUAhVjq0HJxyp2EOyzZv3NjP1UxeipRdS1Hj/b8NFKy9wud/9LjnZTA27uP4VF
-         zud+0TdLpz2R+r8rw0KcxZZrgHEDtMKfVLiij1w37SCMt6FXQ9qBxjjyWrG0cXPc8u7g
-         iUSkJxiqvEK2gG6NlzHR6hme+HWTGGRPiUdC9fbMXva6RJy/LnuPiXVogT15j7cjc8OE
-         866AQMYQauxgcEULfDhRYz+krvziS11KZCsvU+i3jenfT1tez/DAwyW/cI/CDWb9K0ui
-         M5oU/1KSyZN83FUqkfQMDYs9G9dua4ITvQdt74LFN1wDCbg1Ot9NTfhXtp/of5XQK7cG
-         m04Q==
-X-Gm-Message-State: AOAM531IjjKnuoeZMP4sD1ZDggNmvXehc34fjtYZPhDXaUEfaWLUB2dV
-        8of9b4zSmlP85ELx5D52huq5ig==
-X-Google-Smtp-Source: ABdhPJwaOHaof7kWQzq09EHsW3c4mVjlyzv7VpeJxVjjJGoRP/WrHHG5ESBgvzgjiV+0jk1k664e9A==
-X-Received: by 2002:a05:6e02:1bcb:: with SMTP id x11mr20217449ilv.32.1608650177174;
-        Tue, 22 Dec 2020 07:16:17 -0800 (PST)
-Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id e25sm24018458iom.40.2020.12.22.07.16.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Dec 2020 07:16:16 -0800 (PST)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     evgreen@chromium.org, cpratapa@codeaurora.org,
-        bjorn.andersson@linaro.org, subashab@codeaurora.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net] net: ipa: fix interconnect enable bug
-Date:   Tue, 22 Dec 2020 09:16:13 -0600
-Message-Id: <20201222151613.5730-1-elder@linaro.org>
-X-Mailer: git-send-email 2.20.1
+        Tue, 22 Dec 2020 10:19:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608650277;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9tTFkFhqQiFvkcjFjc4tkOpbQPJev2vnoHc/ozrwHws=;
+        b=Uxe4+pUvEpPH4bN6Ey47ytxc2em1+y0AT2HgNmcsN25eilKXQxQwH4daFAgTjt7m6nYSlo
+        J2liz7zV0yJnMKCv63f/D1sqLbp+LmH+PrZAVKPXX/XKZbJUzMf4hRBq7noiPxHTCvOHOq
+        rwqe1cSA3kh6kKFPwSLKmpK3pZhPql0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-267-Xve2CONNOLCdr03yvpH2uQ-1; Tue, 22 Dec 2020 10:17:55 -0500
+X-MC-Unique: Xve2CONNOLCdr03yvpH2uQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 85EB1107ACE4;
+        Tue, 22 Dec 2020 15:17:53 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-114-207.rdu2.redhat.com [10.10.114.207])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 10F9C1971C;
+        Tue, 22 Dec 2020 15:17:53 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 934A0220BCF; Tue, 22 Dec 2020 10:17:52 -0500 (EST)
+Date:   Tue, 22 Dec 2020 10:17:52 -0500
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     NeilBrown <neilb@suse.de>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-unionfs@vger.kernel.org, jlayton@kernel.org,
+        amir73il@gmail.com, sargun@sargun.me, miklos@szeredi.hu,
+        willy@infradead.org, jack@suse.cz, neilb@suse.com,
+        viro@zeniv.linux.org.uk, hch@lst.de
+Subject: Re: [PATCH 1/3] vfs: Do not ignore return code from s_op->sync_fs
+Message-ID: <20201222151752.GA3248@redhat.com>
+References: <20201221195055.35295-1-vgoyal@redhat.com>
+ <20201221195055.35295-2-vgoyal@redhat.com>
+ <878s9qmy68.fsf@notabene.neil.brown.name>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <878s9qmy68.fsf@notabene.neil.brown.name>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the core clock rate and interconnect bandwidth specifications
-were moved into configuration data, a copy/paste bug was introduced,
-causing the memory interconnect bandwidth to be set three times
-rather than enabling the three different interconnects.
+On Tue, Dec 22, 2020 at 12:23:11PM +1100, NeilBrown wrote:
 
-Fix this bug.
+[...]
+> > diff --git a/fs/sync.c b/fs/sync.c
+> > index 1373a610dc78..b5fb83a734cd 100644
+> > --- a/fs/sync.c
+> > +++ b/fs/sync.c
+> > @@ -30,14 +30,18 @@
+> >   */
+> >  static int __sync_filesystem(struct super_block *sb, int wait)
+> >  {
+> > +	int ret, ret2;
+> > +
+> >  	if (wait)
+> >  		sync_inodes_sb(sb);
+> >  	else
+> >  		writeback_inodes_sb(sb, WB_REASON_SYNC);
+> >  
+> >  	if (sb->s_op->sync_fs)
+> > -		sb->s_op->sync_fs(sb, wait);
+> > -	return __sync_blockdev(sb->s_bdev, wait);
+> > +		ret = sb->s_op->sync_fs(sb, wait);
+> > +	ret2 = __sync_blockdev(sb->s_bdev, wait);
+> > +
+> > +	return ret ? ret : ret2;
+> 
+> I'm surprised that the compiler didn't complain that 'ret' might be used
+> uninitialized.
 
-Fixes: 91d02f9551501 ("net: ipa: use config data for clocking")
-Signed-off-by: Alex Elder <elder@linaro.org>
+Indeed. That "ret" can be used uninitialized. Here is the fixed patch.
+
+
+Subject: vfs: Do not ignore return code from s_op->sync_fs
+
+Current implementation of __sync_filesystem() ignores the
+return code from ->sync_fs(). I am not sure why that's the case.
+
+Ignoring ->sync_fs() return code is problematic for overlayfs where
+it can return error if sync_filesystem() on upper super block failed.
+That error will simply be lost and sycnfs(overlay_fd), will get
+success (despite the fact it failed).
+
+Al Viro noticed that there are other filesystems which can sometimes
+return error in ->sync_fs() and these errors will be ignored too.
+
+fs/btrfs/super.c:2412:  .sync_fs        = btrfs_sync_fs,
+fs/exfat/super.c:204:   .sync_fs        = exfat_sync_fs,
+fs/ext4/super.c:1674:   .sync_fs        = ext4_sync_fs,
+fs/f2fs/super.c:2480:   .sync_fs        = f2fs_sync_fs,
+fs/gfs2/super.c:1600:   .sync_fs                = gfs2_sync_fs,
+fs/hfsplus/super.c:368: .sync_fs        = hfsplus_sync_fs,
+fs/nilfs2/super.c:689:  .sync_fs        = nilfs_sync_fs,
+fs/ocfs2/super.c:139:   .sync_fs        = ocfs2_sync_fs,
+fs/overlayfs/super.c:399:	.sync_fs        = ovl_sync_fs,
+fs/ubifs/super.c:2052:  .sync_fs       = ubifs_sync_fs,
+
+Hence, this patch tries to fix it and capture error returned
+by ->sync_fs() and return to caller. I am specifically interested
+in syncfs() path and return error to user.
+
+I am assuming that we want to continue to call __sync_blockdev()
+despite the fact that there have been errors reported from
+->sync_fs(). So this patch continues to call __sync_blockdev()
+even if ->sync_fs() returns an error.
+
+Al noticed that there are few other callsites where ->sync_fs() error
+code is being ignored. 
+
+sync_fs_one_sb(): For this it seems desirable to ignore the return code.
+
+dquot_disable(): Jan Kara mentioned that ignoring return code here is fine
+		 because we don't want to fail dquot_disable() just beacuse
+		 caches might be incoherent.
+
+dquot_quota_sync(): Jan thinks that it might make some sense to capture
+		    return code here. But I am leaving it untouched for
+		   now. When somebody needs it, they can easily fix it.
+
+Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
 ---
- drivers/net/ipa/ipa_clock.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/sync.c |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ipa/ipa_clock.c b/drivers/net/ipa/ipa_clock.c
-index 9dcf16f399b7a..135c393437f12 100644
---- a/drivers/net/ipa/ipa_clock.c
-+++ b/drivers/net/ipa/ipa_clock.c
-@@ -115,13 +115,13 @@ static int ipa_interconnect_enable(struct ipa *ipa)
- 		return ret;
+Index: redhat-linux/fs/sync.c
+===================================================================
+--- redhat-linux.orig/fs/sync.c	2020-12-22 09:56:04.543483440 -0500
++++ redhat-linux/fs/sync.c	2020-12-22 10:01:28.560483440 -0500
+@@ -30,14 +30,18 @@
+  */
+ static int __sync_filesystem(struct super_block *sb, int wait)
+ {
++	int ret = 0, ret2;
++
+ 	if (wait)
+ 		sync_inodes_sb(sb);
+ 	else
+ 		writeback_inodes_sb(sb, WB_REASON_SYNC);
  
- 	data = &clock->interconnect_data[IPA_INTERCONNECT_IMEM];
--	ret = icc_set_bw(clock->memory_path, data->average_rate,
-+	ret = icc_set_bw(clock->imem_path, data->average_rate,
- 			 data->peak_rate);
- 	if (ret)
- 		goto err_memory_path_disable;
+ 	if (sb->s_op->sync_fs)
+-		sb->s_op->sync_fs(sb, wait);
+-	return __sync_blockdev(sb->s_bdev, wait);
++		ret = sb->s_op->sync_fs(sb, wait);
++	ret2 = __sync_blockdev(sb->s_bdev, wait);
++
++	return ret ? ret : ret2;
+ }
  
- 	data = &clock->interconnect_data[IPA_INTERCONNECT_CONFIG];
--	ret = icc_set_bw(clock->memory_path, data->average_rate,
-+	ret = icc_set_bw(clock->config_path, data->average_rate,
- 			 data->peak_rate);
- 	if (ret)
- 		goto err_imem_path_disable;
--- 
-2.20.1
+ /*
 
