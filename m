@@ -2,53 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03D7D2E0960
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 12:12:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D06EA2E0966
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 12:14:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726628AbgLVLLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 06:11:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51966 "EHLO mail.kernel.org"
+        id S1726681AbgLVLOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 06:14:03 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57448 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726095AbgLVLLv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 06:11:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7393722516;
-        Tue, 22 Dec 2020 11:11:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1608635470;
-        bh=Q1euM+YOvuQwr69t7zFVYW1zAzkMWO7kDxvDMc9dnsg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Od9CKyEvTeGsf0XvRzL/O85XlE9fnPXq/6T2OJSSuTZcWBkf0YqDNfsjtFyMkEn5r
-         vMa+RPKkCGIbeXH3KA3oWCG0tVzQ5jOEQDOIkhwdER8GSiFm3em6Fx7ntKhZZ+OebE
-         f4713+QEDVSyToHkKAuwvH+Ce0y/29ZvAqfgKDDM=
-Date:   Tue, 22 Dec 2020 12:12:24 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jic23@kernel.org, lars@metafoo.de, akpm@linux-foundation.org,
-        andy.shevchenko@gmail.com
-Subject: Re: [PATCH v5 1/2] lib/string.c: add
- __sysfs_match_string_with_gaps() helper
-Message-ID: <X+HUmERYPLyM+oz5@kroah.com>
-References: <20201222095210.61897-1-alexandru.ardelean@analog.com>
+        id S1726016AbgLVLOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 06:14:03 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 691C1ACF5;
+        Tue, 22 Dec 2020 11:13:21 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 084F11E1364; Tue, 22 Dec 2020 12:13:21 +0100 (CET)
+Date:   Tue, 22 Dec 2020 12:13:21 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     syzbot <syzbot+77779c9b52ab78154b08@syzkaller.appspotmail.com>
+Cc:     jack@suse.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: memory leak in v2_read_file_info
+Message-ID: <20201222111321.GE13601@quack2.suse.cz>
+References: <0000000000002c029c05b70afacd@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/mixed; boundary="ftEhullJWpWg/VHq"
 Content-Disposition: inline
-In-Reply-To: <20201222095210.61897-1-alexandru.ardelean@analog.com>
+In-Reply-To: <0000000000002c029c05b70afacd@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 11:52:09AM +0200, Alexandru Ardelean wrote:
-> The original docstring of the __sysfs_match_string() and match_string()
-> helper, implied that -1 could be used to search through NULL terminated
-> arrays, and positive 'n' can be used to go through arrays that may have
-> NULL elements in the middle of the array.
+
+--ftEhullJWpWg/VHq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hello,
+
+attached patch should fix this. I'll queue it to my tree.
+
+								Honza
+
+On Tue 22-12-20 02:24:18, syzbot wrote:
+> Hello,
 > 
-> This isn't true. Regardless of the value of 'n', the first NULL element in
-> the array.
+> syzbot found the following issue on:
+> 
+> HEAD commit:    8653b778 Merge tag 'clk-for-linus' of git://git.kernel.org..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=153fc4db500000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=faf2996955887e91
+> dashboard link: https://syzkaller.appspot.com/bug?extid=77779c9b52ab78154b08
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11c44960d00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13bc8c0b500000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+77779c9b52ab78154b08@syzkaller.appspotmail.com
+> 
+> BUG: memory leak
+> unreferenced object 0xffff888110974f00 (size 64):
+>   comm "syz-executor849", pid 8516, jiffies 4294942501 (age 13.960s)
+>   hex dump (first 32 bytes):
+>     00 30 ee 0d 81 88 ff ff 00 00 00 00 00 00 00 00  .0..............
+>     00 00 00 00 00 00 00 00 0a 00 00 00 48 00 00 00  ............H...
+>   backtrace:
+>     [<0000000018aa1939>] kmalloc include/linux/slab.h:552 [inline]
+>     [<0000000018aa1939>] v2_read_file_info+0x1ae/0x430 fs/quota/quota_v2.c:122
+>     [<000000001061252b>] dquot_load_quota_sb+0x351/0x650 fs/quota/dquot.c:2387
+>     [<000000006c1f70f9>] dquot_load_quota_inode fs/quota/dquot.c:2423 [inline]
+>     [<000000006c1f70f9>] dquot_load_quota_inode+0xda/0x160 fs/quota/dquot.c:2415
+>     [<00000000abace495>] ext4_quota_enable fs/ext4/super.c:6362 [inline]
+>     [<00000000abace495>] ext4_enable_quotas+0x1b2/0x2f0 fs/ext4/super.c:6388
+>     [<00000000b6d6a975>] ext4_fill_super+0x3bc5/0x5ac0 fs/ext4/super.c:5046
+>     [<0000000003a869bd>] mount_bdev+0x223/0x260 fs/super.c:1366
+>     [<000000002138e18c>] legacy_get_tree+0x2b/0x90 fs/fs_context.c:592
+>     [<0000000096e90d3d>] vfs_get_tree+0x28/0x100 fs/super.c:1496
+>     [<00000000eddeeb8e>] do_new_mount fs/namespace.c:2875 [inline]
+>     [<00000000eddeeb8e>] path_mount+0xc5e/0x1170 fs/namespace.c:3205
+>     [<00000000c52e2f18>] do_mount fs/namespace.c:3218 [inline]
+>     [<00000000c52e2f18>] __do_sys_mount fs/namespace.c:3426 [inline]
+>     [<00000000c52e2f18>] __se_sys_mount fs/namespace.c:3403 [inline]
+>     [<00000000c52e2f18>] __x64_sys_mount+0x18e/0x1d0 fs/namespace.c:3403
+>     [<00000000e70a31f4>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>     [<000000007f651b8c>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> syzbot can test patches for this issue, for details see:
+> https://goo.gl/tpsmEJ#testing-patches
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
-I can not parse this last sentence, is it missing something?
+--ftEhullJWpWg/VHq
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="0001-quota-Fix-memory-leak-when-handling-corrupted-quota-.patch"
 
-thanks,
+From 4d76181dc109d8a0c8ce74325ee5e885734d5ab8 Mon Sep 17 00:00:00 2001
+From: Jan Kara <jack@suse.cz>
+Date: Tue, 22 Dec 2020 12:09:53 +0100
+Subject: [PATCH] quota: Fix memory leak when handling corrupted quota file
 
-greg k-h
+When checking corrupted quota file we can bail out and leak allocated
+info structure. Properly free info structure on error return.
+
+Reported-by: syzbot+77779c9b52ab78154b08@syzkaller.appspotmail.com
+Fixes: 11c514a99bb9 ("quota: Sanity-check quota file headers on load")
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ fs/quota/quota_v2.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/fs/quota/quota_v2.c b/fs/quota/quota_v2.c
+index c21106557a37..b1467f3921c2 100644
+--- a/fs/quota/quota_v2.c
++++ b/fs/quota/quota_v2.c
+@@ -164,19 +164,24 @@ static int v2_read_file_info(struct super_block *sb, int type)
+ 		quota_error(sb, "Number of blocks too big for quota file size (%llu > %llu).",
+ 		    (loff_t)qinfo->dqi_blocks << qinfo->dqi_blocksize_bits,
+ 		    i_size_read(sb_dqopt(sb)->files[type]));
+-		goto out;
++		goto out_free;
+ 	}
+ 	if (qinfo->dqi_free_blk >= qinfo->dqi_blocks) {
+ 		quota_error(sb, "Free block number too big (%u >= %u).",
+ 			    qinfo->dqi_free_blk, qinfo->dqi_blocks);
+-		goto out;
++		goto out_free;
+ 	}
+ 	if (qinfo->dqi_free_entry >= qinfo->dqi_blocks) {
+ 		quota_error(sb, "Block with free entry too big (%u >= %u).",
+ 			    qinfo->dqi_free_entry, qinfo->dqi_blocks);
+-		goto out;
++		goto out_free;
+ 	}
+ 	ret = 0;
++out_free:
++	if (ret) {
++		kfree(info->dqi_priv);
++		info->dqi_priv = NULL;
++	}
+ out:
+ 	up_read(&dqopt->dqio_sem);
+ 	return ret;
+-- 
+2.16.4
+
+
+--ftEhullJWpWg/VHq--
