@@ -2,181 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D5012E0A39
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 14:04:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 649A22E0A3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 14:04:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726799AbgLVM6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 07:58:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52629 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725846AbgLVM6G (ORCPT
+        id S1726883AbgLVNAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 08:00:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726631AbgLVNAy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 07:58:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608641799;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ogZRhqVu5q9mojvGMAotSvNvS5JdueUvVG0eDaDK5jw=;
-        b=BpjFRhCD9tGGEbbGUIUngYCiT3uSDzgWu+szuWZOSLTrx7ClfXoQDbIyLMdE52yMP7lO5e
-        8Yg7sP31MWpkplQfDYZWlepXVzY/9YZu5XQfESzgvJsLUvigfwxsjN11Q6fzzcU5afQiML
-        hYl1rTCQ1MEk2pE3nsPgtBz55HMIImc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-36-J9s2d9tfOFmaagKMummreA-1; Tue, 22 Dec 2020 07:56:35 -0500
-X-MC-Unique: J9s2d9tfOFmaagKMummreA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 10EF61005504;
-        Tue, 22 Dec 2020 12:56:34 +0000 (UTC)
-Received: from [10.72.13.168] (ovpn-13-168.pek2.redhat.com [10.72.13.168])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 28B5039A62;
-        Tue, 22 Dec 2020 12:56:23 +0000 (UTC)
-Subject: Re: [PATCH RFC 00/12] vdpa: generalize vdpa simulator and add block
- device
-From:   Jason Wang <jasowang@redhat.com>
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Laurent Vivier <lvivier@redhat.com>,
-        linux-kernel@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>
-References: <20201113134712.69744-1-sgarzare@redhat.com>
- <93f207c0-61e6-3696-f218-e7d7ea9a7c93@redhat.com>
- <20201218113816.zcyeyqipux4ao4cp@steredhat>
- <7dd3ed02-36c3-fcfd-0a1d-9c31af6f473e@redhat.com>
- <20201221111423.sestfroiw2dgpluc@steredhat>
- <856d53c2-82e2-e408-76e6-24c92010f973@redhat.com>
- <20201222105733.4f6oou7lshi35qvc@steredhat>
- <cc913954-135d-da5a-1acd-38c3ecb77dfa@redhat.com>
-Message-ID: <0a3c1304-6ed3-d68d-848c-1c9871f8dd53@redhat.com>
-Date:   Tue, 22 Dec 2020 20:56:16 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 22 Dec 2020 08:00:54 -0500
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23438C0613D3;
+        Tue, 22 Dec 2020 05:00:14 -0800 (PST)
+Received: by mail-io1-xd30.google.com with SMTP id w18so11940719iot.0;
+        Tue, 22 Dec 2020 05:00:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fJyVygM9usbbscAGY5ErpD/5E8JGRMWrDOuSU55v38c=;
+        b=mEsUgJpnnDf8lfTbqdSw+tbF4/6uf3qIGMxJIbSYNVQU7eE2AGUdL0/hms56wKhP5Y
+         n/6kbkRfxz+9G47gxsl2A0GTMgM+Fm9+KzGpBdjvImmhOi9Di35PhjodY7BtWdSSCQpJ
+         UzoA30DBVJppftRz3mIUrbkN+ibHJ5x7PyLk8rt6bINL+00cz9D9iRdVeL92IGsLRbKA
+         gPVwSRalT44FTBr4oUWTk/eRgZoEVOUKNaV798Ij7i4PW0dqDwLwRBmBbvTE1QXAWpIQ
+         pV7HeXV28uasXmHoCpz18BuMOD4I0Bc/AUZsL1Fx6wNnXwvavHKEUkw2qZlBW98p7uz3
+         Poow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fJyVygM9usbbscAGY5ErpD/5E8JGRMWrDOuSU55v38c=;
+        b=WbzqYcBR9F+NTfQA0VhFFONPCBhGa4rnagdslrJ+4+tErLVzP0y6wy36xO9BxF64dB
+         tlM8FiMGTjJX+yKJa53NRtkOGEJZfiVFdzYQY6Fzt1+p0+iRMVPKcbC9CQxQfoiK0teg
+         mIZimCoxztZQbrVR3WfRvI3EB54IX3Tt/WtAt6yUccaDHiwZnS8nU7RF9PkwN5/Z9xwT
+         kAkyPwDWzNd+Uf+Mqwm+GkFQ+282sDPlzUU9l6rQTs6Z2/SmVSNh1XapNAF24GC0Ob1D
+         tqHhgA4ssnohFAf9iVxOitx2PZPo+l+KsCfWxT6SXx135cuj3pyr7u2/AhYYxw9xSKAr
+         t0Zw==
+X-Gm-Message-State: AOAM532BDF+m1qaOk83Iak8yz+eJCD6C/1F2pLSq6h5rzy4+DDd1awP6
+        FPpDYz4gnCbkA6qKOaVg8fGDXDiIWx0bxggkNdaGqCSq9TU=
+X-Google-Smtp-Source: ABdhPJwHX4kjEIJFx7o5zVOJayaWTausYX44iZoYMuceCM9RLJ1s7KFyfKc0yQBvL/WBFwcWVw7qNOj+3tMpgsMbhdE=
+X-Received: by 2002:a02:3f62:: with SMTP id c34mr19087118jaf.16.1608642013470;
+ Tue, 22 Dec 2020 05:00:13 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <cc913954-135d-da5a-1acd-38c3ecb77dfa@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <20201222095210.61897-1-alexandru.ardelean@analog.com> <X+HUmERYPLyM+oz5@kroah.com>
+In-Reply-To: <X+HUmERYPLyM+oz5@kroah.com>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Tue, 22 Dec 2020 15:00:02 +0200
+Message-ID: <CA+U=Dsr3agzr1jMPex7xxyPcyBGdw3tZNOqUQoeMJVkG+WutOw@mail.gmail.com>
+Subject: Re: [PATCH v5 1/2] lib/string.c: add __sysfs_match_string_with_gaps() helper
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        akpm@linux-foundation.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2020/12/22 下午8:29, Jason Wang wrote:
+On Tue, Dec 22, 2020 at 1:13 PM Greg KH <gregkh@linuxfoundation.org> wrote:
 >
-> On 2020/12/22 下午6:57, Stefano Garzarella wrote:
->> On Tue, Dec 22, 2020 at 10:44:48AM +0800, Jason Wang wrote:
->>>
->>> On 2020/12/21 下午7:14, Stefano Garzarella wrote:
->>>> On Mon, Dec 21, 2020 at 11:16:54AM +0800, Jason Wang wrote:
->>>>>
->>>>> On 2020/12/18 下午7:38, Stefano Garzarella wrote:
->>>>>> On Mon, Nov 16, 2020 at 11:37:48AM +0800, Jason Wang wrote:
->>>>>>>
->>>>>>> On 2020/11/13 下午9:47, Stefano Garzarella wrote:
->>>>>>>> Thanks to Max that started this work!
->>>>>>>> I took his patches, and extended the block simulator a bit.
->>>>>>>>
->>>>>>>> This series moves the network device simulator in a new module
->>>>>>>> (vdpa_sim_net) and leaves the generic functions in the vdpa_sim 
->>>>>>>> core
->>>>>>>> module, allowing the possibility to add new vDPA device 
->>>>>>>> simulators.
->>>>>>>> Then we added a new vdpa_sim_blk module to simulate a block 
->>>>>>>> device.
->>>>>>>>
->>>>>>>> I'm not sure about patch 11 ("vringh: allow vringh_iov_xfer() 
->>>>>>>> to skip
->>>>>>>> bytes when ptr is NULL"), maybe we can add a new functions 
->>>>>>>> instead of
->>>>>>>> modify vringh_iov_xfer().
->>>>>>>>
->>>>>>>> As Max reported, I'm also seeing errors with vdpa_sim_blk 
->>>>>>>> related to
->>>>>>>> iotlb and vringh when there is high load, these are some of the 
->>>>>>>> error
->>>>>>>> messages I can see randomly:
->>>>>>>>
->>>>>>>>   vringh: Failed to access avail idx at 00000000e8deb2cc
->>>>>>>>   vringh: Failed to read head: idx 6289 address 00000000e1ad1d50
->>>>>>>>   vringh: Failed to get flags at 000000006635d7a3
->>>>>>>>
->>>>>>>>   virtio_vdpa vdpa0: vringh_iov_push_iotlb() error: -14 offset: 
->>>>>>>>   0x2840000 len: 0x20000
->>>>>>>>   virtio_vdpa vdpa0: vringh_iov_pull_iotlb() error: -14 offset: 
->>>>>>>>   0x58ee000 len: 0x3000
->>>>>>>>
->>>>>>>> These errors should all be related to the fact that 
->>>>>>>> iotlb_translate()
->>>>>>>> fails with -EINVAL, so it seems that we miss some mapping.
->>>>>>>
->>>>>>>
->>>>>>> Is this only reproducible when there's multiple co-current 
->>>>>>> accessing of IOTLB? If yes, it's probably a hint that some kind 
->>>>>>> of synchronization is still missed somewhere.
->>>>>>>
->>>>>>> It might be useful to log the dma_map/unmp in both virtio_ring 
->>>>>>> and vringh to see who is missing the map.
->>>>>>>
->>>>>>
->>>>>> Just an update about these issues with vdpa-sim-blk.
->>>>>> I've been focusing a little bit on these failures over the last 
->>>>>> few days and have found two issues related to the IOTLB/IOMMU:
->>>>>>
->>>>>> 1. Some requests coming from the block layer fills the SG list 
->>>>>> with multiple buffers that had the same physical address. This 
->>>>>> happens for example while using 'mkfs', at some points multiple 
->>>>>> sectors are zeroed so multiple SG elements point to the same 
->>>>>> physical page that is zeroed.
->>>>>> Since we are using vhost_iotlb_del_range() in the 
->>>>>> vdpasim_unmap_page(), this removes all the overlapped ranges. I 
->>>>>> fixed removing a single map in vdpasim_unmap_page(), but has an 
->>>>>> alternative we can implement some kind of reference counts.
->>>>>
->>>>>
->>>>> I think we need to do what hardware do. So using refcount is 
->>>>> probably not a good ida.
->>>>
->>>> Okay, so since we are using for simplicity an identical mapping, we 
->>>> are assigning the same dma_addr to multiple pages.
->>>
->>>
->>> I think I get you now. That's the root cause for the failure.
->>
->> Yes, sorry, I didn't explain well previously.
->>
->>>
->>> Then I think we need an simple iova allocator for vdpa simulator, 
->>> and it might be useful for VDUSE as well.
->>
->> Okay, I'll work on it.
->> If you have an example to follow or some pointers, they are welcome :-)
+> On Tue, Dec 22, 2020 at 11:52:09AM +0200, Alexandru Ardelean wrote:
+> > The original docstring of the __sysfs_match_string() and match_string()
+> > helper, implied that -1 could be used to search through NULL terminated
+> > arrays, and positive 'n' can be used to go through arrays that may have
+> > NULL elements in the middle of the array.
+> >
+> > This isn't true. Regardless of the value of 'n', the first NULL element in
+> > the array.
 >
->
-> Kernel had implemented one in iova.c but I'm not sure we need the 
-> complexity like that. Or we can just use rbtree or idr to implement a 
-> simpler one.
+> I can not parse this last sentence, is it missing something?
 
-
-VDUSE[1] implements another allocator, but it's still complicated since 
-it needs to track bounce pages. I feel like we'd better start from a 
-simple one.
-
-Thanks
-
-[1] https://www.spinics.net/lists/linux-mm/msg231576.html
+oh, my bad;
+will fix this and send a new version
 
 >
-> Thanks
+> thanks,
 >
->
->>
->> Thanks,
->> Stefano
->>
-
+> greg k-h
