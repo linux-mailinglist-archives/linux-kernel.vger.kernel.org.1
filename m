@@ -2,74 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D678F2E0417
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 02:51:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D2F12E041B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 02:54:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726361AbgLVBvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 20:51:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56736 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725938AbgLVBvf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 20:51:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id E1E7622B3B;
-        Tue, 22 Dec 2020 01:50:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608601854;
-        bh=fhDEJKcSp76v5b8A714FLOPeK0bkDcfBNhK4T/8mRwY=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=I1yN3pBicd7o/JDpvyVQYR1qT552fuJ1uDO1MCBMLEZAjI6GwwACBBBZD4BH1Fq7S
-         7WrZBuy4c0pGpOmigO/o1LGss4l1H7g9vb72ykH56nh9r5/KTddJc9Ltqr2UgrHdBX
-         AcPDk58m2Q9+mdk/KI4JRfuC5kVbcmGUQ88OYfH4Gxv3o36PNj4hqVvVLw3YlpwnVJ
-         Ru+RMDNf5VJSpCnEG1VWE1dCg3r9zycyl10XYGtfJSlrdijgAxUmHCBKG9Od2Nof+k
-         +ENY12gzfpVuLNsTLVH7WwVPmEBGdUDrXvky6stxgwy3wSRti1QLNfK1bd20c+5jjv
-         3PrszQLpBmdAw==
-Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id D7B9260387;
-        Tue, 22 Dec 2020 01:50:54 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S1725964AbgLVBxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 20:53:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725852AbgLVBxu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Dec 2020 20:53:50 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD3EFC0613D3;
+        Mon, 21 Dec 2020 17:53:08 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1krWrG-00368L-Jw; Tue, 22 Dec 2020 01:53:02 +0000
+Date:   Tue, 22 Dec 2020 01:53:02 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Liangyan <liangyan.peng@linux.alibaba.com>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>, linux-unionfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, joseph.qi@linux.alibaba.com
+Subject: Re: [PATCH v3] ovl: fix  dentry leak in ovl_get_redirect
+Message-ID: <20201222015302.GR3579531@ZenIV.linux.org.uk>
+References: <20201221183327.134077-1-liangyan.peng@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v4] net: mvpp2: Fix GoP port 3 Networking Complex Control
- configurations
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160860185487.6881.12430244209662770782.git-patchwork-notify@kernel.org>
-Date:   Tue, 22 Dec 2020 01:50:54 +0000
-References: <1608462149-1702-1-git-send-email-stefanc@marvell.com>
-In-Reply-To: <1608462149-1702-1-git-send-email-stefanc@marvell.com>
-To:     Stefan Chulski <stefanc@marvell.com>
-Cc:     netdev@vger.kernel.org, thomas.petazzoni@bootlin.com,
-        davem@davemloft.net, nadavh@marvell.com, ymarkman@marvell.com,
-        linux-kernel@vger.kernel.org, kuba@kernel.org,
-        linux@armlinux.org.uk, mw@semihalf.com, andrew@lunn.ch,
-        rmk+kernel@armlinux.org.uk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201221183327.134077-1-liangyan.peng@linux.alibaba.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Tue, Dec 22, 2020 at 02:33:27AM +0800, Liangyan wrote:
 
-This patch was applied to netdev/net.git (refs/heads/master):
+> diff --git a/fs/overlayfs/dir.c b/fs/overlayfs/dir.c
+> index 28a075b5f5b2..e9aa4a12ad82 100644
+> --- a/fs/overlayfs/dir.c
+> +++ b/fs/overlayfs/dir.c
+> @@ -973,6 +973,7 @@ static char *ovl_get_redirect(struct dentry *dentry, bool abs_redirect)
+>  	for (d = dget(dentry); !IS_ROOT(d);) {
+>  		const char *name;
+>  		int thislen;
+> +		struct dentry *parent = NULL;
+>  
+>  		spin_lock(&d->d_lock);
+>  		name = ovl_dentry_get_redirect(d);
+> @@ -992,11 +993,10 @@ static char *ovl_get_redirect(struct dentry *dentry, bool abs_redirect)
+>  
+>  		buflen -= thislen;
+>  		memcpy(&buf[buflen], name, thislen);
+> -		tmp = dget_dlock(d->d_parent);
+>  		spin_unlock(&d->d_lock);
+> -
+> +		parent = dget_parent(d);
+>  		dput(d);
+> -		d = tmp;
+> +		d = parent;
+>  
+>  		/* Absolute redirect: finished */
+>  		if (buf[buflen] == '/')
 
-On Sun, 20 Dec 2020 13:02:29 +0200 you wrote:
-> From: Stefan Chulski <stefanc@marvell.com>
-> 
-> During GoP port 2 Networking Complex Control mode of operation configurations,
-> also GoP port 3 mode of operation was wrongly set.
-> Patch removes these configurations.
-> 
-> Fixes: f84bf386f395 ("net: mvpp2: initialize the GoP")
-> Acked-by: Marcin Wojtas <mw@semihalf.com>
-> Signed-off-by: Stefan Chulski <stefanc@marvell.com>
-> 
-> [...]
+FWIW, I'd suggest this:
 
-Here is the summary with links:
-  - [net,v4] net: mvpp2: Fix GoP port 3 Networking Complex Control configurations
-    https://git.kernel.org/netdev/net/c/2575bc1aa9d5
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+dget_dlock(d->d_parent) is unsafe - it requires ->d_lock on
+dentry we are grabbing and that's not what we are holding
+here.  It's the wrong way to grab the parent anyway; use
+dget_parent(d) instead.
 
 
+diff --git a/fs/overlayfs/dir.c b/fs/overlayfs/dir.c
+index 28a075b5f5b2..d1efa3a5a503 100644
+--- a/fs/overlayfs/dir.c
++++ b/fs/overlayfs/dir.c
+@@ -992,8 +992,8 @@ static char *ovl_get_redirect(struct dentry *dentry, bool abs_redirect)
+ 
+ 		buflen -= thislen;
+ 		memcpy(&buf[buflen], name, thislen);
+-		tmp = dget_dlock(d->d_parent);
+ 		spin_unlock(&d->d_lock);
++		tmp = dget_parent(d);
+ 
+ 		dput(d);
+ 		d = tmp;
