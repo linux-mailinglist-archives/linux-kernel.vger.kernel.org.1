@@ -2,184 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54B5F2E0D23
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 17:17:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DEDC2E0D25
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 17:17:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727416AbgLVQPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 11:15:34 -0500
-Received: from mail-eopbgr700054.outbound.protection.outlook.com ([40.107.70.54]:56513
-        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727040AbgLVQPd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 11:15:33 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PE2TEbTAljI7PknU7OuNdYIUBdEYDm5fN8c3BP2on9EQjWg7T9DPryypfZG1rh5bLw6dWpaUXP5RPqESU3iQxqXIr0QxWmGNDrwyV2S6J6lr9PTUuIc1jWbnBagxMKsuDkX4hGqkcGTSle3qGYm6OjoF8z95yvfGC0jbfueZl6eaFrscMdZINtNrmi7qDIUbPSKFwogR7zkDvxnx0DXQW4t050Hb0SyIafwhSg0NDNeoU9UV+rB6BuAzVcktMly0C58Oxci8Dil4AsgQDp/UD83IGDCmQpv/bsyMhboI/jstn2MuyIjFEebWAtNa3BvfzcAiczuu3bdStGtnrnVBqQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4h89+PAemGRpFfPNz31gQ1zlrmXfOn+kJbczcYQlocw=;
- b=PfEAqgcEBEQ+4d0+XZi10MuE27Vl96P0uEQ0rO+1lTgt+3OIcVSvY9MvWrrJiyrLk7bA560Rj91Lgw1hSeexFvJZND8IE6/eqA8mM9aiA3hRRo8TNkz+enmOsGNvNxGRwSVdXR9EewptWKU0mfSzT8P3JlBt+GjU0E2Zg7y3fqugmTKW3aA+Xvf/cNG0N7PG7ycv05ML8kT8f/DbXUTY5r5S9sAhjauwqyotMT2Mi+0Jr5ebgrDmvLpveNXPeFnTXYP1TCQpam9+CSOgjxYkMQUGp0/kMW/47VwNB5nJIDh51LEqGd64Td7CUpqUrGUfQozIRa2imG0UqebRLwcJNA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4h89+PAemGRpFfPNz31gQ1zlrmXfOn+kJbczcYQlocw=;
- b=En6vMrdlcDAOxAnwgkD4kYeAwC0C/BakQ7ThFxIJA4cI5pX28GHZV1GqG7j9HYs+s5tkpjByYLMgYh1PGMF99gWECV1e+wWaJvUIjzcfm0/iwmpY1o8dH5H3EYmmOpny6PbpB1gC7PArmZiDOQ7AD+zxDoE0CinSrwJbSYRDrco=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from SN1PR12MB2560.namprd12.prod.outlook.com (2603:10b6:802:26::19)
- by SN1PR12MB2383.namprd12.prod.outlook.com (2603:10b6:802:26::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.27; Tue, 22 Dec
- 2020 16:14:44 +0000
-Received: from SN1PR12MB2560.namprd12.prod.outlook.com
- ([fe80::8c0e:9a64:673b:4fff]) by SN1PR12MB2560.namprd12.prod.outlook.com
- ([fe80::8c0e:9a64:673b:4fff%5]) with mapi id 15.20.3676.033; Tue, 22 Dec 2020
- 16:14:44 +0000
-From:   Babu Moger <babu.moger@amd.com>
-Subject: Re: [PATCH 1/2] x86/cpufeatures: Add the Virtual SPEC_CTRL feature
-To:     Jim Mattson <jmattson@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        kvm list <kvm@vger.kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        kyung.min.park@intel.com, LKML <linux-kernel@vger.kernel.org>,
-        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, mgross@linux.intel.com,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, kim.phillips@amd.com,
-        wei.huang2@amd.com
-References: <160738054169.28590.5171339079028237631.stgit@bmoger-ubuntu>
- <160738067105.28590.10158084163761735153.stgit@bmoger-ubuntu>
- <CALMp9eTk6B2832EN8EhL51m8UqmHLTfeOjdKs8TvFSSAUxGk2Q@mail.gmail.com>
- <2e929c9a-9da9-e7da-9fd4-8e0ea2163a19@amd.com>
- <CALMp9eRzYoVqr0zm60+pkJbGF+t0ry8k7y=X=R1paDhUUPSVCw@mail.gmail.com>
-Message-ID: <00fdc56a-5ac4-94a0-88b4-42e4cf46f083@amd.com>
-Date:   Tue, 22 Dec 2020 10:14:42 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <CALMp9eRzYoVqr0zm60+pkJbGF+t0ry8k7y=X=R1paDhUUPSVCw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [165.204.77.1]
-X-ClientProxiedBy: SA9PR13CA0203.namprd13.prod.outlook.com
- (2603:10b6:806:26::28) To SN1PR12MB2560.namprd12.prod.outlook.com
- (2603:10b6:802:26::19)
+        id S1727679AbgLVQQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 11:16:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57606 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727527AbgLVQQW (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 11:16:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2908B23105;
+        Tue, 22 Dec 2020 16:15:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608653741;
+        bh=nnBXHt9vnr33JSMrmV2ByU1sUIIDzbFUIZWLcwHgTQU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fHb+xtUCX+WGmk+FtngMNy6cj//jKyQG27OljZTZnW7r6rjXLSk5qXWLyjsjj6gO4
+         igmKKzu8xUVMzDDcYqS/oE6KgolmLDNDf/QhgywEuDJbPcIJxSSmI3v5JgXCf5G34t
+         HSkbBxVAqpxYYKTuep4WKFpBPAqrkKxMYIc9xRQj9u1YisRnALQHiV+F1U2PZbY95s
+         cyzcrXKwg0A83egt0j47C3wVjRh60o4vpgwndTFLX/vpSU+Q8aJcDDXxmnmh71+v+Y
+         n7VZZcACL49l/5gjf7mGEb1z2Ig6GaIr9zRETeSFt+CYt3nXy0PA/PNUzzgf7Py+vP
+         T1v7IaPM7Qh1Q==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 7B8AE411E9; Tue, 22 Dec 2020 13:15:55 -0300 (-03)
+Date:   Tue, 22 Dec 2020 13:15:55 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jin Yao <yao.jin@linux.intel.com>
+Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
+        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
+        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH] perf stat: Create '--add-default' option to append
+ default list
+Message-ID: <20201222161555.GD433286@kernel.org>
+References: <20201222011131.12326-1-yao.jin@linux.intel.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.236.31.136] (165.204.77.1) by SA9PR13CA0203.namprd13.prod.outlook.com (2603:10b6:806:26::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.22 via Frontend Transport; Tue, 22 Dec 2020 16:14:43 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 96a1fd05-6071-477d-42d0-08d8a694b22d
-X-MS-TrafficTypeDiagnostic: SN1PR12MB2383:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN1PR12MB2383D8561091ED871EC4273095DF0@SN1PR12MB2383.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jO7GqdvXEYlCHCpF1/1ivjjyrUshnOWUwSxKBnDK37Tp9IlSaw9PSyw9AR1wWrxpYlxVc/z2O1k2rUYe/RjTu2p2Y/vSXzNjlkjSOOl0kgTOATU2x64hPiZwkPsrA6ObmdzVoXmv3DKyrd4VFnaLjjg+ge/GEx33l3Men5LcQyXTNb0lMaQ5fBEP+hdfiPpal8bvI/LkPDIubfs2uvF9Sty5Zic8sunIM2plPWuoD1aPb/4EC54lSKVuuetNX6XZlmQySlMIW6LboX5CifE5PXj5wtvPODDdoj7+CPQ2x572EDdluEQMwK1XmjKXgj5huMDTVw7RCxZAKJaZRn6BHWU4F+UC7Dy5LAvY7ZhqtnOXAZrZ4pZjkZ6BIBAd2C1B5OrsafSvingzLXbPjdQjWnEB3wLKZFlKROz4EsdZ1ZrJsJNSk7rHdI4kyCup0PUWZyfzKo9KnZanCflSy69MTjxQfuUyye4P+dfZbU5suZI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN1PR12MB2560.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(366004)(39860400002)(136003)(396003)(53546011)(7416002)(86362001)(31696002)(66556008)(66476007)(66946007)(4326008)(8936002)(6916009)(36756003)(316002)(16576012)(31686004)(54906003)(2906002)(52116002)(478600001)(6486002)(26005)(5660300002)(44832011)(186003)(16526019)(8676002)(2616005)(956004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?TG4vQ0hVc1hlaGtGWU1OMUJIdWh1QmprZCs5YnduTmpUTVdLZ3g2TlZla0w0?=
- =?utf-8?B?K3BMaGp0aWxmb2xEanRhdXFmZGpmcHd6K09BSmpvNlFpbUd1VkJuVnBjbjRP?=
- =?utf-8?B?bVBNNGQ2RDNOWSt1ZzNHUVc2VTRIK2ZBWWY4cnBPa1B3RU0xVHcvdS9jR1dL?=
- =?utf-8?B?L0Q0WmdYYVZueVJmUklGa0QzS0dTaTkwOG1EZy8yTkh4K0doa3BBWk54L3Nr?=
- =?utf-8?B?THdzZDMzdDJ5TlhYV3FhY3hxMDdjczYxOTVXWkR5UHF3K3R5UVhvQUg3RE8y?=
- =?utf-8?B?Y1o1aUlmUHp3OWRFamRzU3YzRCtrTkVLYk1ScitvTXorNmhoM2VudXBWQTZt?=
- =?utf-8?B?c2lEMU1COVV3czBqMXJycVFiZEdCNHRTaHJxMWF1cnRkL1VNWHc1bElvTE1l?=
- =?utf-8?B?Y2Z4TlRjS2FkOE9TRGp3aDlLVkxxWFBYU1NLOFk4TEtCVTdaRzhOblpKQjE2?=
- =?utf-8?B?aE0yTXgyT3JJNHM5N29pMjI3OXBpWnN1SjIzV3AzQlNiQjhVZkwxMVh4cDFO?=
- =?utf-8?B?dlRKL01hNXU0WmpWZWliNTB6SWJjQUx0Z016RncrZmR5WEhESVpWRmJjcUJN?=
- =?utf-8?B?UkpYQlRXeVdmd2xJaUQ3RkhLREFQc3lyTm9OeEZ1Y2xXQWxrUmxuVlc0WGpo?=
- =?utf-8?B?MWoxRTNWUFRMalVKQVNVaFo2R3pMMHJaa2p5OFBCeUo0VW9PMTdoWk43V011?=
- =?utf-8?B?RktEZ0hSdXRYK1JDcFhrK1hzVC9CWThyNlBFUlh5SHdpc3dnbGVpdjhZQkZK?=
- =?utf-8?B?UHY2S1FseTlzd0Y3NEJSUGpEL0orbEd5dVBBR3E0UW5EMGUwSUNPaS9YZE9p?=
- =?utf-8?B?T0RNaW5UaGQ3UEZSeS93bmJ1clV2b0duaEVFR200bkRQOFpyZW53WThDbXV3?=
- =?utf-8?B?ZzBoa2cxTWtFQUJOZVowZGlneHRZc0FMSjVka1lodHFkTnMwamFjZktHZS9G?=
- =?utf-8?B?aFYwVXE2bGE3UE5XMXJ3akVEOUVZVkhmNWsrbDBPaHhJVGVtNWtOTGdIbVdE?=
- =?utf-8?B?YTV3NHFIbm15UEtIS29Jay8vcGFjdzArSFlNM3dMNVVvMCt4cmRvc1piMkFj?=
- =?utf-8?B?SXl0Y0N2Um5Qb20rNDRjT3dyc0VVMUN0dHFZeW95Szl1MmUrTzlSZDRsU0V0?=
- =?utf-8?B?S0gzei83elhmbnVzejQvS0Rxcm4vQ1JmbDMrYlB6eW1HRmc4TWVzQUtLWXpp?=
- =?utf-8?B?STVibXJHZDBzanF2Q242MVd5ZEpVaUQ1ZUorM3ZpUml1WDFvdzBpQjloWU96?=
- =?utf-8?B?eHUzdXBYWU96bnRxcjZNZG5JSTNTOWthNmVOUzBpa2d0VWsyV2p1bUdJSkh3?=
- =?utf-8?Q?qCOluWEsHZ6EU=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthSource: SN1PR12MB2560.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Dec 2020 16:14:44.5957
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-Network-Message-Id: 96a1fd05-6071-477d-42d0-08d8a694b22d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nKz8N6FruDGKnW0WAN08Di9LnMhGy9uPJZWdWJt2SdoUOu4g45lVROfVVfbbJwFk
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2383
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201222011131.12326-1-yao.jin@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/9/20 5:11 PM, Jim Mattson wrote:
-> On Wed, Dec 9, 2020 at 2:39 PM Babu Moger <babu.moger@amd.com> wrote:
->>
->>
->>
->> On 12/7/20 5:22 PM, Jim Mattson wrote:
->>> On Mon, Dec 7, 2020 at 2:38 PM Babu Moger <babu.moger@amd.com> wrote:
->>>>
->>>> Newer AMD processors have a feature to virtualize the use of the SPEC_CTRL
->>>> MSR. This feature is identified via CPUID 0x8000000A_EDX[20]. When present,
->>>> the SPEC_CTRL MSR is automatically virtualized and no longer requires
->>>> hypervisor intervention.
->>>>
->>>> Signed-off-by: Babu Moger <babu.moger@amd.com>
->>>> ---
->>>>  arch/x86/include/asm/cpufeatures.h |    1 +
->>>>  1 file changed, 1 insertion(+)
->>>>
->>>> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
->>>> index dad350d42ecf..d649ac5ed7c7 100644
->>>> --- a/arch/x86/include/asm/cpufeatures.h
->>>> +++ b/arch/x86/include/asm/cpufeatures.h
->>>> @@ -335,6 +335,7 @@
->>>>  #define X86_FEATURE_AVIC               (15*32+13) /* Virtual Interrupt Controller */
->>>>  #define X86_FEATURE_V_VMSAVE_VMLOAD    (15*32+15) /* Virtual VMSAVE VMLOAD */
->>>>  #define X86_FEATURE_VGIF               (15*32+16) /* Virtual GIF */
->>>> +#define X86_FEATURE_V_SPEC_CTRL                (15*32+20) /* Virtual SPEC_CTRL */
->>>
->>> Shouldn't this bit be reported by KVM_GET_SUPPORTED_CPUID when it's
->>> enumerated on the host?
->>
->> Jim, I am not sure if this needs to be reported by
->> KVM_GET_SUPPORTED_CPUID. I dont see V_VMSAVE_VMLOAD or VGIF being reported
->> via KVM_GET_SUPPORTED_CPUID. Do you see the need for that?
+Em Tue, Dec 22, 2020 at 09:11:31AM +0800, Jin Yao escreveu:
+> The event default list includes the most common events which are widely
+> used by users. But with -e option, the current perf only counts the events
+> assigned by -e option. Users may want to collect some extra events with
+> the default list. For this case, users have to manually add all the events
+> from the default list. It's inconvenient. Also, users may don't know how to
+> get the default list.
 > 
-> Every little bit helps. No, it isn't *needed*. But then again, this
-> entire patchset isn't *needed*, is it?
+> It's better to add a new option to append default list to the -e events.
+> The new option is '--add-default'.
+> 
+> Before:
+> 
+> root@kbl-ppc:~# ./perf stat -e power/energy-pkg/ -a -- sleep 1
+> 
+>  Performance counter stats for 'system wide':
+> 
+>               2.05 Joules power/energy-pkg/
+> 
+>        1.000857974 seconds time elapsed
+> 
+> After:
+> 
+> root@kbl-ppc:~# ./perf stat -e power/energy-pkg/ -a --add-default -- sleep 1
+
+I thought about:
+
+    perf stat -e +power/energy-pkg/ -a -- sleep 1
+
+Which would have its counterpart:
+
+    perf stat -e -cycles -0a --sleep 1
+
+To remove an event from the defaults, perhaps to deal with some specific
+hardware where the default or what is in -d, -dd, -ddd, etc can't all be
+counted. I.e. - and + would remove or add from whaver list was there at
+that point.
+
+- Arnaldo
+ 
+>  Performance counter stats for 'system wide':
+> 
+>               2.10 Joules power/energy-pkg/         #    0.000 K/sec
+>           8,009.89 msec   cpu-clock                 #    7.995 CPUs utilized
+>                140        context-switches          #    0.017 K/sec
+>                  9        cpu-migrations            #    0.001 K/sec
+>                 66        page-faults               #    0.008 K/sec
+>         10,671,929        cycles                    #    0.001 GHz
+>          4,736,880        instructions              #    0.44  insn per cycle
+>            942,951        branches                  #    0.118 M/sec
+>             76,096        branch-misses             #    8.07% of all branches
+> 
+>        1.001809960 seconds time elapsed
+> 
+> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+> ---
+>  tools/perf/Documentation/perf-stat.txt | 5 +++++
+>  tools/perf/builtin-stat.c              | 4 +++-
+>  tools/perf/util/stat.h                 | 1 +
+>  3 files changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/Documentation/perf-stat.txt b/tools/perf/Documentation/perf-stat.txt
+> index 5d4a673d7621..75a83c2e4dc5 100644
+> --- a/tools/perf/Documentation/perf-stat.txt
+> +++ b/tools/perf/Documentation/perf-stat.txt
+> @@ -438,6 +438,11 @@ convenient for post processing.
+>  --summary::
+>  Print summary for interval mode (-I).
+>  
+> +--add-default::
+> +The default event list includes the most common events which are widely
+> +used by users. But with -e option, the perf only counts the events assigned
+> +by -e option. This options appends the default event list to the -e events.
+> +
+>  EXAMPLES
+>  --------
+>  
+> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+> index 89c32692f40c..6ac7b946f9a7 100644
+> --- a/tools/perf/builtin-stat.c
+> +++ b/tools/perf/builtin-stat.c
+> @@ -1173,6 +1173,8 @@ static struct option stat_options[] = {
+>  		       "print summary for interval mode"),
+>  	OPT_BOOLEAN(0, "quiet", &stat_config.quiet,
+>  			"don't print output (useful with record)"),
+> +	OPT_BOOLEAN(0, "add-default", &stat_config.add_default,
+> +		       "add default events"),
+>  #ifdef HAVE_LIBPFM
+>  	OPT_CALLBACK(0, "pfm-events", &evsel_list, "event",
+>  		"libpfm4 event selector. use 'perf list' to list available events",
+> @@ -1755,7 +1757,7 @@ static int add_default_attributes(void)
+>  		free(str);
+>  	}
+>  
+> -	if (!evsel_list->core.nr_entries) {
+> +	if (!evsel_list->core.nr_entries || stat_config.add_default) {
+>  		if (target__has_cpu(&target))
+>  			default_attrs0[0].config = PERF_COUNT_SW_CPU_CLOCK;
+>  
+> diff --git a/tools/perf/util/stat.h b/tools/perf/util/stat.h
+> index 9979b4b100f2..6ccc6936348c 100644
+> --- a/tools/perf/util/stat.h
+> +++ b/tools/perf/util/stat.h
+> @@ -123,6 +123,7 @@ struct perf_stat_config {
+>  	bool			 metric_no_merge;
+>  	bool			 stop_read_counter;
+>  	bool			 quiet;
+> +	bool			 add_default;
+>  	FILE			*output;
+>  	unsigned int		 interval;
+>  	unsigned int		 timeout;
+> -- 
+> 2.17.1
 > 
 
-Working on v2 of these patches. Saw this code comment(in
-arch/x86/kvm/cpuid.c) on about exposing SVM features to the guest.
+-- 
 
-
-        /*
-         * Hide all SVM features by default, SVM will set the cap bits for
-         * features it emulates and/or exposes for L1.
-         */
-        kvm_cpu_cap_mask(CPUID_8000_000A_EDX, 0);
-
-
-Should we go ahead with the changes here?
-
-Thanks
-Babu
+- Arnaldo
