@@ -2,133 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BBF32E0DE3
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 18:40:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2C522E0DE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 18:42:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727992AbgLVRjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 12:39:42 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:15320 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727084AbgLVRjl (ORCPT
+        id S1728050AbgLVRmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 12:42:20 -0500
+Received: from mail-out.m-online.net ([212.18.0.10]:43497 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727988AbgLVRmU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 12:39:41 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BMHMY9l144137;
-        Tue, 22 Dec 2020 12:38:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=mzxAJ2qdjDobwjZYtIc9FAiKEaQborbGTrAtKji3Sl4=;
- b=kaF4LqkXSahyPn3BiKIoRWHfIqFMBHf5gtGGlrAcsepsLNhhZ5USsLMdBnHl6WhdUR2L
- qmnz1TY/0qEdNLKUaR5RtCcMyYFjM/+tEjTMJwsS9Jm+QTYl7HZwSR/WAhJR58+oqRzM
- Vg1cdniVcl9hl2jO4OljplJd/Reyh67Q9ym3vfXX6gegTL5UYhSGEioRFvcMBIU6l7Kv
- Kt5+PD2GZ3x+VGQEUEBxCuwybpGJfCV4LlN6noasMdOzpNgL0JecTpzlQEVUl9NocPcV
- xSJDFBFe8oU2mjwpv5YHqF9hLeSGfX5bcN/96uGtoWgfxE7gzvG9tYyVDkDWyqSA4Ary og== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35kn510aeg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Dec 2020 12:38:51 -0500
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BMHOeBK155030;
-        Tue, 22 Dec 2020 12:38:51 -0500
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35kn510ae9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Dec 2020 12:38:50 -0500
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BMHSRDu029108;
-        Tue, 22 Dec 2020 17:38:49 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma03wdc.us.ibm.com with ESMTP id 35kdqy2wym-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Dec 2020 17:38:49 +0000
-Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BMHcmrX28770794
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 22 Dec 2020 17:38:49 GMT
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D32E96A05A;
-        Tue, 22 Dec 2020 17:38:48 +0000 (GMT)
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4C13B6A057;
-        Tue, 22 Dec 2020 17:38:47 +0000 (GMT)
-Received: from oc6857751186.ibm.com (unknown [9.160.78.58])
-        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 22 Dec 2020 17:38:47 +0000 (GMT)
-Subject: Re: [PATCH 3/3] ibmvfc: use correlation token to tag commands
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     james.bottomley@hansenpartnership.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, brking@linux.ibm.com,
-        clang-built-linux@googlegroups.com
-References: <20201117185031.129939-1-tyreld@linux.ibm.com>
- <20201117185031.129939-3-tyreld@linux.ibm.com>
- <20201222062403.GA2190683@ubuntu-m3-large-x86>
-From:   Tyrel Datwyler <tyreld@linux.ibm.com>
-Message-ID: <b71fcc6f-bb07-f02d-8e1e-79fe4f5802dc@linux.ibm.com>
-Date:   Tue, 22 Dec 2020 09:38:46 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Tue, 22 Dec 2020 12:42:20 -0500
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4D0kCX2VQXz1rxwf;
+        Tue, 22 Dec 2020 18:41:12 +0100 (CET)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4D0kCX1F2sz1tSQV;
+        Tue, 22 Dec 2020 18:41:12 +0100 (CET)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id 72ugdAVwJ_R2; Tue, 22 Dec 2020 18:41:10 +0100 (CET)
+X-Auth-Info: 85OJrTyGy1GjlWs8OTVX2YEXxAWPd/RAt92k05x/mMo=
+Received: from jawa (89-64-25-12.dynamic.chello.pl [89.64.25.12])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Tue, 22 Dec 2020 18:41:10 +0100 (CET)
+Date:   Tue, 22 Dec 2020 18:41:09 +0100
+From:   Lukasz Majewski <lukma@denx.de>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>
+Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Mans Rullgard <mans@mansr.com>
+Subject: Re: [PATCH v2] ARM: dts: imx28: add pinmux for USB1 overcurrent on
+ pwm2
+Message-ID: <20201222184109.20706806@jawa>
+In-Reply-To: <20201209220903.27058-1-lukma@denx.de>
+References: <20201209220903.27058-1-lukma@denx.de>
+Organization: denx.de
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20201222062403.GA2190683@ubuntu-m3-large-x86>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-22_09:2020-12-21,2020-12-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- lowpriorityscore=0 bulkscore=0 impostorscore=0 priorityscore=1501
- spamscore=0 mlxscore=0 suspectscore=0 malwarescore=0 clxscore=1011
- adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012220126
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ boundary="Sig_/yhu8Rxil7jL.3=Bnzi_r8lt"; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/21/20 10:24 PM, Nathan Chancellor wrote:
-> On Tue, Nov 17, 2020 at 12:50:31PM -0600, Tyrel Datwyler wrote:
->> The vfcFrame correlation field is 64bit handle that is intended to trace
->> I/O operations through both the client stack and VIOS stack when the
->> underlying physical FC adapter supports tagging.
->>
->> Tag vfcFrames with the associated ibmvfc_event pointer handle.
->>
->> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
->> ---
->>  drivers/scsi/ibmvscsi/ibmvfc.c | 4 ++++
->>  1 file changed, 4 insertions(+)
->>
->> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
->> index 0cab4b852b48..3922441a117d 100644
->> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
->> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
->> @@ -1693,6 +1693,8 @@ static int ibmvfc_queuecommand_lck(struct scsi_cmnd *cmnd,
->>  		vfc_cmd->iu.pri_task_attr = IBMVFC_SIMPLE_TASK;
->>  	}
->>  
->> +	vfc_cmd->correlation = cpu_to_be64(evt);
->> +
->>  	if (likely(!(rc = ibmvfc_map_sg_data(cmnd, evt, vfc_cmd, vhost->dev))))
->>  		return ibmvfc_send_event(evt, vhost, 0);
->>  
->> @@ -2370,6 +2372,8 @@ static int ibmvfc_abort_task_set(struct scsi_device *sdev)
->>  		tmf->iu.tmf_flags = IBMVFC_ABORT_TASK_SET;
->>  		evt->sync_iu = &rsp_iu;
->>  
->> +		tmf->correlation = cpu_to_be64(evt);
->> +
->>  		init_completion(&evt->comp);
->>  		rsp_rc = ibmvfc_send_event(evt, vhost, default_timeout);
->>  	}
->> -- 
->> 2.27.0
->>
-> 
-> This patch introduces a clang warning, is this intentional behavior?
+--Sig_/yhu8Rxil7jL.3=Bnzi_r8lt
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Nope, I just missed the required cast. I've got a fixes patch queued up. I just
-haven't sent it yet.
+Hi Shawn,
 
--Tyrel
+> From: Mans Rullgard <mans@mansr.com>
+>=20
+> Add pinmux setting for USB1 overcurrent on pwm2 pad.
+>=20
 
+Gentle ping on this patch.
+
+> Signed-off-by: Mans Rullgard <mans@mansr.com>
+> Signed-off-by: Lukasz Majewski <lukma@denx.de>
+> ---
+> Changes for v2:
+> - Add S-o-B
+> ---
+>  arch/arm/boot/dts/imx28.dtsi | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+>=20
+> diff --git a/arch/arm/boot/dts/imx28.dtsi
+> b/arch/arm/boot/dts/imx28.dtsi index bbe52150b165..84d0176d5193 100644
+> --- a/arch/arm/boot/dts/imx28.dtsi
+> +++ b/arch/arm/boot/dts/imx28.dtsi
+> @@ -948,6 +948,16 @@
+>  					fsl,pull-up =3D
+> <MXS_PULL_DISABLE>; };
+> =20
+> +				usb1_pins_b: usb1@1 {
+> +					reg =3D <1>;
+> +					fsl,pinmux-ids =3D <
+> +
+> MX28_PAD_PWM2__USB1_OVERCURRENT
+> +					>;
+> +					fsl,drive-strength =3D
+> <MXS_DRIVE_12mA>;
+> +					fsl,voltage =3D
+> <MXS_VOLTAGE_HIGH>;
+> +					fsl,pull-up =3D
+> <MXS_PULL_DISABLE>;
+> +				};
+> +
+>  				usb0_id_pins_a: usb0id@0 {
+>  					reg =3D <0>;
+>  					fsl,pinmux-ids =3D <
+
+
+
+
+Best regards,
+
+Lukasz Majewski
+
+--
+
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
+
+--Sig_/yhu8Rxil7jL.3=Bnzi_r8lt
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAl/iL7UACgkQAR8vZIA0
+zr1wJQgA5J9GLb1+eSFThGphhuOPNgM3b2xHROd7wdWfVXHLt9S4TTcAamlvFeKH
+AVmeyAJ/z292hsRasYYbZGdFpej6NhZEJuRF1gwYSXy9wzebNYMj6my/NgnRJW1K
+3cZQLdP2mqvWscf0LYuMUx1wuN7j4EkI+NSOv8KmpVqaVb4dRrSxwoSX1UhNanxH
+NXm9mKknQk+RZ/VgW3x8B7ImH6ocYnnQ+Z3QAG+EJYahQiQGUSlBD455zHpBPDuO
+HySjsgNGf8YQF5jKscseU13/g5XOCYzQKmOrvyCShfmVj7wreFP71q/sqozICBi2
+tuPbBJhS739XW0wHIBJJ8CLecJe5KQ==
+=OB9q
+-----END PGP SIGNATURE-----
+
+--Sig_/yhu8Rxil7jL.3=Bnzi_r8lt--
