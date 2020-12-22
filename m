@@ -2,92 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 098E12E05CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 06:36:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C05082E05D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 06:48:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725870AbgLVFe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 00:34:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42124 "EHLO
+        id S1725885AbgLVFsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 00:48:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725300AbgLVFe1 (ORCPT
+        with ESMTP id S1725300AbgLVFs3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 00:34:27 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52DC1C0613D3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 21:33:47 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id g18so7686983pgk.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 21:33:47 -0800 (PST)
+        Tue, 22 Dec 2020 00:48:29 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 883DCC0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 21:47:49 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id x126so7817995pfc.7
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 21:47:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:date:message-id:mime-version:content-transfer-encoding:cc
-         :from:to;
-        bh=YUHAHbCI0drInzG6ELg3dNzK8EoYj1q2s5BJB3ePa6k=;
-        b=mfoIMfTH5lPKKTgLC8+6cOI8s0gn4w1bAIST6om7gq0J+FRqknNgFnQMReL7PA6Moh
-         o3xKvlyl5mZvTzJ51m4rIraymck6lybAXUHgMcDKKt3TbS8q779vvJ2L4nIrOxRkF321
-         5duto+vveHCKWLil7dA69JaahAiu/8oww8g1J3HD1H3qduhdT+aCRuBYaCvCFcGe2BQS
-         Ccsb+qsIEyk1io5osSV9yhMZR2cUfFFKY2c87Kabf5QJCnkMknMhwCQ9yOxQ7iyjm4Ob
-         W61EmqJEtszqk7dijzU9j9NqxWeL5lwQv59LiAh5uDu4mKZVWWpNV1Vos6/mtfpaNUho
-         p20A==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=cCGMbIqC4XxP3YzkMZr/q4dVBJexuv/rEbrwR/RfRdY=;
+        b=Srk+K+UPjswKkg/1tVgElwXk8iXMo12S4lotAPM6oNqJRfLX4Akb4jCzrEVhJFkNcN
+         KwmEReFJdIBHT2WSRvLkd8i7wVFSz7dFKJm/2rVvjMB6ZGvTiX6hGy+DN4X/ZM868V00
+         73HzbED5vDA3gtnluSyszbP9FxpDsO4c7ybd4Z2kxt3KPzrU9HDkl0eZjifyL6ThwXeR
+         k0KGy+QQ3/ZEWuzY9D28U31GnJbEv+Z2ji2hUUETC1Z5OcgNUbZ9jIW5JLBjioaJAzAK
+         jXto8mCy8uH+aG0s1Wrs8f12pwSFRlOMMfPi/A2aGQydtoLszXVJRV7ZUkW2dkIIR5ja
+         0K2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:date:message-id:mime-version
-         :content-transfer-encoding:cc:from:to;
-        bh=YUHAHbCI0drInzG6ELg3dNzK8EoYj1q2s5BJB3ePa6k=;
-        b=rPecvOg5XWSzzsukUA9BeVggFJ3+o/c2ApQZNgVSX/uFA7PMV0FBze6IRN9Kr0YTk6
-         AxKaciEWKMcXWiywVsR7eKz/xYk6HpOB+t+PEu47xz8ZXYwdvlQzUUUKTAO/OfP0SUre
-         OqzXoKzZGiSU6de+N9falXrT6tBTdMPPndo8iQEpysktNY2DWbNM7nj3ujbTsdwtt5ib
-         JhgUwaRQMGCNh1lo3nQG1XS1UAx2JaY811FggS0VuPINDZbfbLMUi6U1P7zb7MK5/y9O
-         T1OadhCpn/LYnyYTAe7iii0eV0L3ijkm8viOVuQTI9nESXX3cS5YsTe5Q7f6jKSAr8tv
-         qVDQ==
-X-Gm-Message-State: AOAM532qjxyEwXWLSV7eryL0i68yBMFak/EkKlUKb1zNk5fiEgdzsfTD
-        T0Fm+Lq1tbmkDA+ggRNwHw+nAQ==
-X-Google-Smtp-Source: ABdhPJy498vO/gKUa4ozY9NZj7sN3umFjDxqbk8GZR+n2Ua9kgSLm6fENuOvhUBCMwhkH9nSj9edGA==
-X-Received: by 2002:a62:7586:0:b029:19d:9ba9:c1bd with SMTP id q128-20020a6275860000b029019d9ba9c1bdmr18355393pfc.27.1608615226660;
-        Mon, 21 Dec 2020 21:33:46 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id d6sm18702609pfd.69.2020.12.21.21.33.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Dec 2020 21:33:46 -0800 (PST)
-Subject: [PATCH] clocksource: clint: Avoid remove __iomem in get_cycles_hi()
-Date:   Mon, 21 Dec 2020 21:32:30 -0800
-Message-Id: <20201222053230.3229427-1-palmer@dabbelt.com>
-X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=cCGMbIqC4XxP3YzkMZr/q4dVBJexuv/rEbrwR/RfRdY=;
+        b=sEXI7BjKKv33Tr0P+0V0c6Pr6Dct+qIXvRChklqQKPbbYdfl4b22dLZR5tUAc6gsD9
+         jfSm6iWSOon7NflyPJsfvr+rgKI3UrnSjJzacS7g/Q7WWiPsaBJNJ3g2YG/DU6eLgQj0
+         rFXRmJ3+H18br5bPtS+liuPxLbhthliDGtdITBDyHrbI+eLTJXEYPuPdoAltIVR8uJ6B
+         F92zzDAANXWkKbt176g0l9xRXS5LXSJIU27Whaqo1zN6xb6jdznlNBqYibV8GRiXShxN
+         b+ZPZNgZrMi6oHYMJnabqdQPoG5hkGmr+FrMGtOO5/3ecLOACmZg7Y3VDwaY9aAp3WdJ
+         2t7Q==
+X-Gm-Message-State: AOAM532Ity3e6IQlb7wtgvKqfmbUIbR0RUDAIb4QjZ+GOHpvFXnAXSRj
+        +ytQ4DQZqSmmXh86H4Yumhu1Tg==
+X-Google-Smtp-Source: ABdhPJwP8rj+wVobkUZDGozTZvrM4sLI7dbTq8nO4cY0ZzqShz5ME0L2t66M0IEjW5YQ3Z5zCN6kng==
+X-Received: by 2002:a62:e30c:0:b029:19d:932b:a1e2 with SMTP id g12-20020a62e30c0000b029019d932ba1e2mr18342199pfh.78.1608616068942;
+        Mon, 21 Dec 2020 21:47:48 -0800 (PST)
+Received: from localhost ([122.172.20.109])
+        by smtp.gmail.com with ESMTPSA id f29sm18854172pfk.32.2020.12.21.21.47.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 21 Dec 2020 21:47:47 -0800 (PST)
+Date:   Tue, 22 Dec 2020 11:17:45 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Subject: Re: [PATCH v2 43/48] ARM: tegra: Add OPP tables and power domains to
+ Tegra20 device-tree
+Message-ID: <20201222054745.2am4bcbk5df5aqzj@vireshk-i7>
+References: <20201217180638.22748-1-digetx@gmail.com>
+ <20201217180638.22748-44-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc:     daniel.lezcano@linaro.org, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        kernel test robot <lkp@intel.com>
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:         linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201217180638.22748-44-digetx@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Palmer Dabbelt <palmerdabbelt@google.com>
+On 17-12-20, 21:06, Dmitry Osipenko wrote:
+> diff --git a/arch/arm/boot/dts/tegra20-peripherals-opp.dtsi b/arch/arm/boot/dts/tegra20-peripherals-opp.dtsi
+> index b84afecea154..7e015cdfbc55 100644
+> --- a/arch/arm/boot/dts/tegra20-peripherals-opp.dtsi
+> +++ b/arch/arm/boot/dts/tegra20-peripherals-opp.dtsi
+> @@ -1,6 +1,46 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  
+>  / {
+> +	core_opp_table: core-power-domain-opp-table {
+> +		compatible = "operating-points-v2";
+> +		opp-shared;
+> +
+> +		core_opp_950: opp@950000 {
+> +			opp-microvolt = <950000 950000 1300000>;
+> +			opp-level = <950000>;
+> +		};
 
-This cast loses the __iomem qualifier from clint_timer_val, which
-triggers an sparse warning.
+I am not sure I fully understand this, why does it have both microvolt and level
+properties ?
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
----
- drivers/clocksource/timer-clint.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/clocksource/timer-clint.c b/drivers/clocksource/timer-clint.c
-index 6cfe2ab73eb0..83a8b38d46f6 100644
---- a/drivers/clocksource/timer-clint.c
-+++ b/drivers/clocksource/timer-clint.c
-@@ -63,7 +63,7 @@ static struct riscv_ipi_ops clint_ipi_ops = {
- #define clint_get_cycles()	readq_relaxed(clint_timer_val)
- #else
- #define clint_get_cycles()	readl_relaxed(clint_timer_val)
--#define clint_get_cycles_hi()	readl_relaxed(((u32 *)clint_timer_val) + 1)
-+#define clint_get_cycles_hi()	readl_relaxed(((u32 __iomem *)clint_timer_val) + 1)
- #endif
- 
- #ifdef CONFIG_64BIT
 -- 
-2.29.2.729.g45daf8777d-goog
-
+viresh
