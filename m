@@ -2,78 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1CC02E0D15
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 17:10:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ED062E0D18
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 17:10:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727236AbgLVQHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 11:07:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55808 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726991AbgLVQHe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 11:07:34 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AD36422955;
-        Tue, 22 Dec 2020 16:06:53 +0000 (UTC)
-Received: from 91-161-240-24.subs.proxad.net ([91.161.240.24] helo=localhost.localdomain)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1krkBX-0037LH-K0; Tue, 22 Dec 2020 16:06:51 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     David Brazdil <dbrazdil@google.com>, kvmarm@lists.cs.columbia.edu
-Cc:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH 0/6] Fixes and cleanups of PSCI relay for kvmarm/next
-Date:   Tue, 22 Dec 2020 16:06:33 +0000
-Message-Id: <160865317053.248882.14763900616940105510.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201208142452.87237-1-dbrazdil@google.com>
-References: <20201208142452.87237-1-dbrazdil@google.com>
+        id S1727722AbgLVQIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 11:08:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727432AbgLVQIo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 11:08:44 -0500
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E652EC0613D3;
+        Tue, 22 Dec 2020 08:08:03 -0800 (PST)
+Received: by mail-ot1-x329.google.com with SMTP id d20so12358350otl.3;
+        Tue, 22 Dec 2020 08:08:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=5mhuNOKxkmBBrmIsUzS9fwD7Nuv7mqMKloOUqDCzlT8=;
+        b=PVUKWx0s5bxl/Eh9d3rMm1aOJZm1w8O8u1DH6W4E4WjZP+EGdw9SRW/TBmXYslgxCi
+         zATFwj44Ww7EuOtXpBWG9og2xSNsaWefpledBqorUarQ+XOiWw4unc97g/YsxGMF/bWA
+         eS1ZQ/9470ynzhkGTPa7HUpnRoyIaHdoYpoVIRlLjUKGMpFgntSsn6mjmMufA/lHEAnl
+         9/r3Sw/LGTaEGmmidMNRobzWnJKNaRaaQLk9dudhD5R5nvGxIvz5fE2UWeWRI1AK1P2w
+         Kk+LfocyJj0Z83Dkb3ALYkyNo0yErh7UC8scViKP10YOLOMc6DM2sgQfAwp22ThrgjfK
+         vnbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=5mhuNOKxkmBBrmIsUzS9fwD7Nuv7mqMKloOUqDCzlT8=;
+        b=RfWvwyQWpUO9PI5NScs6y+e3bWR4YJlyBICKd+hnnGpOHiIV4788oW8IHH2fTA1CvW
+         5baMXw1M47jwAeKdb9e7zCBpVCMmX3LxwHLfvZDjk+eKh7+7m2DFInHh5n5Vi/Pn77WY
+         O8Pu0bbymTdcJ2CwDC6ki6qx2wYnAOLmH7iuJt1S+yibwiDxXiXColaKm/Jz/nQ+lR83
+         I0pGkm6qU+uqDqevnUnovXqBluYBQOG1HXXpKJoav27jOqkOcAtq5ghp0iXXAx11XZ+p
+         UBsANUO3Q+bp5UpDp4bWhS3PDzo/T3TpWXIa+NH2pT1rTu1U8cIWoW0ZzvYZXgz+MVl1
+         XidA==
+X-Gm-Message-State: AOAM531d9GlNVf5JxcgtbY8O4YObOlGYkqDqau2makUUtI8iaQCjK10y
+        LKg3qEHuDEHRS92q7T8xpX9+pfgNTG8xsn//D8M=
+X-Google-Smtp-Source: ABdhPJwqSycFpxX9Jz7U16TejFgMqh1yhHCGmKgIfuXWwA9aEHG/qyeZHSoqcZhDg2nkpc80bEAesVHCPShEHxndzP0=
+X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr16278124otc.145.1608653283153;
+ Tue, 22 Dec 2020 08:08:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 91.161.240.24
-X-SA-Exim-Rcpt-To: dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, will@kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <20201127164131.2244124-1-daniel.vetter@ffwll.ch> <20201127164131.2244124-5-daniel.vetter@ffwll.ch>
+In-Reply-To: <20201127164131.2244124-5-daniel.vetter@ffwll.ch>
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+Date:   Tue, 22 Dec 2020 18:07:36 +0200
+Message-ID: <CAFCwf12yMvw8t_RvxDweWVQFfQLE=S8UAiMwTALQ-nvVyx=psA@mail.gmail.com>
+Subject: Re: [PATCH v7 04/17] misc/habana: Use FOLL_LONGTERM for userptr
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pawel Piskorski <ppiskorski@habana.ai>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 8 Dec 2020 14:24:46 +0000, David Brazdil wrote:
-> Small batch of improvements for the 'Opt-in always-on nVHE hypervisor'
-> series, now merged in kvmarm/next.
-> 
-> Patch #1 fixes potential use of invalid v0.1 functions IDs reported
-> by Mark Rutland, patch #2 fixes a warning reported by Qian Cai.
-> Patch #3 avoids a code path not used in VHE, can be dropped if any
-> concerns arise. The remaining patches are minor cleanups from review.
-> 
-> [...]
+On Fri, Nov 27, 2020 at 6:42 PM Daniel Vetter <daniel.vetter@ffwll.ch> wrot=
+e:
+>
+> These are persistent, not just for the duration of a dma operation.
+>
+> Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
+> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: John Hubbard <jhubbard@nvidia.com>
+> Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: linux-mm@kvack.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-samsung-soc@vger.kernel.org
+> Cc: linux-media@vger.kernel.org
+> Cc: Oded Gabbay <oded.gabbay@gmail.com>
+> Cc: Omer Shpigelman <oshpigelman@habana.ai>
+> Cc: Ofir Bitton <obitton@habana.ai>
+> Cc: Tomer Tayar <ttayar@habana.ai>
+> Cc: Moti Haimovski <mhaimovski@habana.ai>
+> Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Pawel Piskorski <ppiskorski@habana.ai>
+> Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> ---
+>  drivers/misc/habanalabs/common/memory.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/misc/habanalabs/common/memory.c b/drivers/misc/haban=
+alabs/common/memory.c
+> index 2c59fa869684..0d25ae1d5f3e 100644
+> --- a/drivers/misc/habanalabs/common/memory.c
+> +++ b/drivers/misc/habanalabs/common/memory.c
+> @@ -1296,7 +1296,8 @@ static int get_user_memory(struct hl_device *hdev, =
+u64 addr, u64 size,
+>         if (!userptr->pages)
+>                 return -ENOMEM;
+>
+> -       rc =3D pin_user_pages_fast(start, npages, FOLL_FORCE | FOLL_WRITE=
+,
+> +       rc =3D pin_user_pages_fast(start, npages,
+> +                                FOLL_FORCE | FOLL_WRITE | FOLL_LONGTERM,
+>                                  userptr->pages);
+>
+>         if (rc !=3D npages) {
+> --
+> 2.29.2
+>
 
-Applied to next, thanks!
+Hi Daniel,
+Is this patch-set going to be in 5.11 ?
+If not, can I just pick the two patches relevant to my driver and push
+them through my tree ?
 
-[1/6] kvm: arm64: Prevent use of invalid PSCI v0.1 function IDs
-      commit: ff367fe473a9857160c17827931375a899076394
-[2/6] kvm: arm64: Use lm_alias in nVHE-only VA conversion
-      commit: 7a96a0687b80a1870c689418d7b72012c8bdd53d
-[3/6] kvm: arm64: Skip computing hyp VA layout for VHE
-      commit: c3e181aec96f6ada84df1cb72a72be8970f8b284
-[4/6] kvm: arm64: Minor cleanup of hyp variables used in host
-      commit: 61fe0c37af57ac35472a870581a7d0bb5ac2f63a
-[5/6] kvm: arm64: Remove unused includes in psci-relay.c
-      commit: e6829e0384a49efe68537298132230bebd8bd1b3
-[6/6] kvm: arm64: Move skip_host_instruction to adjust_pc.h
-      commit: 860a4c3d1e04a3c3e62bacbbba64417bf49768e2
-
-Cheers,
-
-	M.
--- 
-Without deviation from the norm, progress is not possible.
-
-
+Thanks,
+Oded
