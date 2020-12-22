@@ -2,125 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD59B2E0FFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 23:03:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 066682E1000
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 23:08:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727298AbgLVWCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 17:02:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726685AbgLVWCU (ORCPT
+        id S1727665AbgLVWEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 17:04:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43961 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726685AbgLVWEM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 17:02:20 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1559BC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 14:01:40 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id o13so35476761lfr.3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 14:01:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sWeDwihFxTAhPlT/W6WCEEMXK+OSXU/rLqIMA122Kog=;
-        b=GjeV9Ro1lac75aJ1KhE1sLyHOPZXVUp/KPe4acgRmCwKMsU9DeFCk+XqwMBKtfrRVH
-         FaezK4cxCAXlid5LxjkWJT0btYkMqhexFp2DXti9Vq/0oH/3FpIXcfV9VGJLdEjS/1XP
-         BAPUt7f+o5dbn1daNL+Qkzu9xrbRHZq9ha5ZI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sWeDwihFxTAhPlT/W6WCEEMXK+OSXU/rLqIMA122Kog=;
-        b=KcvCdMAwwmoFR3FirxFYupI9jcyaU4QGMLcGl+a/F9lSZR4nqDf+dAiz5o07IlV2Q7
-         uMV3g2ZTUFEhzos2hS2rJmTjC53WnFdZ3wUOHakmlcD4wsWb5VkjRx+JT11dkTQWKNqU
-         WAfs8rfeEeWJt0fHqSzT0ya2wF325kgmM0iUYHi9RSGltIbMOfqr0t9WHS8Eti7QIxl2
-         EeNNC4Rm8FSV9JIkwNeNbsO/ciyFWuXqqiILVKkamFEVlowldC1UP9QiTlE723T4xfUo
-         gcTvNuzWtqC/YguWxc9HfLfKtLV4vE2+8Zr7ys2QChutBoSSROz4uaCJRZ3KrBw1X+Qw
-         2FOA==
-X-Gm-Message-State: AOAM531K9kECm0FLo6Eo1B7uqFF/Bvhbwp+9Cc+JUk45B5Hnrhwnb3Df
-        2Y5VcckfVsofp/rnwuEY1qK4T440hupoqQ==
-X-Google-Smtp-Source: ABdhPJwcvIXRWBNDaUzTyaXcWUooDGVLyTB0dQvIjXfClgtVLD1aUMNAeOKEjf9O9lPuxOT9d3tviA==
-X-Received: by 2002:a19:8182:: with SMTP id c124mr9179926lfd.106.1608674498507;
-        Tue, 22 Dec 2020 14:01:38 -0800 (PST)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id g2sm2825598lfb.255.2020.12.22.14.01.38
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Dec 2020 14:01:38 -0800 (PST)
-Received: by mail-lf1-f47.google.com with SMTP id m12so35469668lfo.7
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 14:01:38 -0800 (PST)
-X-Received: by 2002:a2e:3211:: with SMTP id y17mr10182715ljy.61.1608674497556;
- Tue, 22 Dec 2020 14:01:37 -0800 (PST)
+        Tue, 22 Dec 2020 17:04:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608674565;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=urX6b7Ar6vf2kG6DWZuX4Gwil4+VQz0Wx+qVJUk6lNk=;
+        b=CpTMyTP8Ypzqz/lF66NWyQie0EmIrbmkGn6ydR7TvGk1sUcUxHbmWkd88Kner6ZlupnaG3
+        nqsDuiYWkg/fanlSdj9LAo08zZ8zgJPaNDcsk+q2lb62gRCEMkwQrcPelz8aQEidp2YOvC
+        0CeHauo5EKWt2Qjitfk9p4FOklA2SRw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-263-bjp8P9mIOo6Shx9mSuMVew-1; Tue, 22 Dec 2020 17:02:43 -0500
+X-MC-Unique: bjp8P9mIOo6Shx9mSuMVew-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C5502801817;
+        Tue, 22 Dec 2020 22:02:41 +0000 (UTC)
+Received: from mail (ovpn-112-5.rdu2.redhat.com [10.10.112.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7C97D60C66;
+        Tue, 22 Dec 2020 22:02:38 +0000 (UTC)
+Date:   Tue, 22 Dec 2020 17:02:37 -0500
+From:   Andrea Arcangeli <aarcange@redhat.com>
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+Message-ID: <X+Js/dFbC5P7C3oO@redhat.com>
+References: <CAHk-=wg_UBuo7ro1fpEGkMyFKA1+PxrE85f9J_AhUfr-nJPpLQ@mail.gmail.com>
+ <9E301C7C-882A-4E0F-8D6D-1170E792065A@gmail.com>
+ <CAHk-=wg-Y+svNy3CDkJjj0X_CJkSbpERLg64-Vqwq5u7SC4z0g@mail.gmail.com>
+ <X+ESkna2z3WjjniN@google.com>
+ <1FCC8F93-FF29-44D3-A73A-DF943D056680@gmail.com>
+ <20201221223041.GL6640@xz-x1>
+ <CAHk-=wh-bG4thjXUekLtrCg8FRrdWjtT40ibXXLSm_hzQG8eOw@mail.gmail.com>
+ <CALCETrV=8tY7h=aaudWBEn-MJnNkm2wz5qjH49SYqwkjYTpOaA@mail.gmail.com>
+ <X+JJqK91plkBVisG@redhat.com>
+ <X+JhwVX3s5mU9ZNx@google.com>
 MIME-Version: 1.0
-References: <000000000000fcbe0705b70e9bd9@google.com>
-In-Reply-To: <000000000000fcbe0705b70e9bd9@google.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 22 Dec 2020 14:01:21 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgfRnXz0W3D37d01q3JFkr_i_uTL=V6A6G1oUZcprmknw@mail.gmail.com>
-Message-ID: <CAHk-=wgfRnXz0W3D37d01q3JFkr_i_uTL=V6A6G1oUZcprmknw@mail.gmail.com>
-Subject: Re: kernel BUG at lib/string.c:LINE! (6)
-To:     syzbot <syzbot+e86f7c428c8c50db65b4@syzkaller.appspotmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, coreteam@netfilter.org,
-        David Miller <davem@davemloft.net>,
-        Florian Westphal <fw@strlen.de>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        NetFilter <netfilter-devel@vger.kernel.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Tejun Heo <tj@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X+JhwVX3s5mU9ZNx@google.com>
+User-Agent: Mutt/2.0.3 (2020-12-04)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 6:44 AM syzbot
-<syzbot+e86f7c428c8c50db65b4@syzkaller.appspotmail.com> wrote:
->
-> The issue was bisected to:
->
-> commit 2f78788b55ba ("ilog2: improve ilog2 for constant arguments")
+On Tue, Dec 22, 2020 at 02:14:41PM -0700, Yu Zhao wrote:
+> This works but I don't prefer this option because 1) this is new
+> way of making pte_wrprotect safe and 2) it's specific to ufd and
+> can't be applied to clear_soft_dirty() which has no "catcher". No
 
-That looks unlikely, although possibly some constant folding
-improvement might make the fortify code notice something with it.
+I didn't look into clear_soft_dirty issue, I can look into that.
 
-> detected buffer overflow in strlen
-> ------------[ cut here ]------------
-> kernel BUG at lib/string.c:1149!
-> Call Trace:
->  strlen include/linux/string.h:325 [inline]
->  strlcpy include/linux/string.h:348 [inline]
->  xt_rateest_tg_checkentry+0x2a5/0x6b0 net/netfilter/xt_RATEEST.c:143
+To avoid having to deal with a 3rd solution it will have to use one of
+the two:
 
-Honestly, this just looks like the traditional bug in "strlcpy()".
+1) avoid deferring tlb flush and enforce a sync flush before dropping
+  the PT lock even if mm_mm_tlb_flush_pending is true ->
+  write_protect_page in KSM
 
-That BSD function is complete garbage, exactly because it doesn't
-limit the source length. People tend to _think_ it does ("what's that
-size_t argument for?") but strlcpy() only limits the *destination*
-size, and the source is always read fully.
+2) add its own new catcher for its own specific marker (for UFFD-WP
+   the marker is _PAGE_UFFD_WP, for change_prot_numa is PROT_NONE on a
+   vma->vm_pgprot not PROT_NONE, for soft dirty it could be
+   _PAGE_SOFT_DIRTY) to send the page fault to a dead end before the
+   pte value is interpreted.
 
-So it's a completely useless function if you can't implicitly trust
-the source string - but that is almost always why people think they
-should use it!
+> matter how good the documentation about this new way is now, it
+> will be out of date, speaking from my personal experience.
 
-Nobody should use it. I really would like to remove it, and let
-everybody know how incredibly broken sh*t that function is.
+A common catcher for all 3 is not possible because each catcher
+depends on whatever marker and whatever pte value they set that may
+lead to a different deterministic path where to put the catcher or
+multiple paths even. do_numa_page requires a catcher in a different
+place already.
 
-Can we please have everybody stop using strlcpy(). But in this
-particular case, it's that xt_rateest_tg_checkentry() in
-net/netfilter/xt_RATEEST.c
+Or well, a common catcher for all 3 is technically possible but it'd
+perform slower requiring to check things twice.
 
-That said, this may be a real FORTIFY report if that info->name is
-*supposed* to be trustworthy? The xt_RATETEST code does use
-"info->name" a few lines earlier when it does
+But perhaps the soft_dirty can use the same catcher of uffd-wp given
+the similarity?
 
-        est = __xt_rateest_lookup(xn, info->name);
+> I'd go with what Nadav has -- the memory corruption problem has been
+> there for a while and nobody has complained except Nadav. This makes
+> me think people is less likely to notice any performance issues from
+> holding mmap_lock for write in his patch either.
 
-or maybe the bisection is right, and this points to some problem with
-__builtin_clzll?
+uffd-wp is a fairly new feature, the current users are irrelevant,
+keeping it optimal is just for the future potential.
 
-                 Linus
+> But I can't say I have zero concern with the potential performance
+> impact given that I have been expecting the fix to go to stable,
+> which I care most. So the next option on my list is to have a
+
+Actually stable would be very fine to go with Nadav patch and use the
+mmap_lock_write unconditionally. The optimal fix is only relevant for
+the future potential, so it's only relevant for Linus's tree.
+
+However the feature is recent enough that it won't require a deep
+backport so the optimal fix is likely fine for stable as well,
+generally stable prefers the same fix as in the upstream when there's
+no major backport rejection issue.
+
+The alternative solution for uffd is to do the deferred flush under
+mmap_lock_write if len is > HPAGE_PMD_SIZE, or to tell
+change_protection not to defer the flush and to take the
+mmap_lock_read for <= HPAGE_PMD_SIZE. That will avoid depending on the
+catcher and then userfaultfd_writeprotect(mode_wp=true)
+userfaultfd_writeprotect(mode_wp=false) can even run in parallel at
+all times. The cons is large userfaultfd_writeprotect will block for
+I/O and those would happen at least in the postcopy live snapshotting
+use case.
+
+The main cons is that it'd require modification to change_protection
+so it actually looks more intrusive, not less.
+
+Overall anything that allows to wrprotect 1 pte with only the
+mmap_lock_read exactly like KSM write_protect_page, would be enough for
+uffd-wp.
+
+What isn't ok in terms of future potential is unconditional
+mmap_lock_write as in the original suggested patch in my view. It
+doesn't mean we can take mmap_lock_write when the operation is large
+and there is actually more benefit from deferring the flush.
+
+> common "catcher" in do_wp_page() which singles out pages that have
+> page_mapcount equal to one and reuse them instead of trying to
+
+I don't think the page_mapcount matters here. If the wp page reuse was
+more accurate (as it was before) we wouldn't notice this issue, but it
+still would be a bug that there were stale TLB entries. It worked by
+luck.
+
+Thanks,
+Andrea
+
