@@ -2,92 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3502F2E070A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 09:06:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E83F2E070C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 09:08:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726008AbgLVIFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 03:05:23 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:42222 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725811AbgLVIFW (ORCPT
+        id S1726065AbgLVIIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 03:08:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725300AbgLVIIM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 03:05:22 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7A1C39E6;
-        Tue, 22 Dec 2020 09:04:40 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1608624280;
-        bh=u9ey3spq/ryytAsWdO8BpNmB77m31wxs7DKBWTLcGQ4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JdIQv2IWvf2m95HlOkHlJ/foyoJOE9gi/4EPlVO/WR/oQzBFvl8wW1pIMUgCfPBcb
-         o27gwQ4KxLtb5uLFtLrPR9faCTPueGPKq1zxsWFy+lvwaCTlGDJCqOjXONDVTHSJrh
-         +nOG5IyoCVT187jWQErVMoVVZwteOCeLpLshZQs8=
-Date:   Tue, 22 Dec 2020 10:04:32 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 01/12] media: uvcvideo: Fix race condition handling
- events
-Message-ID: <X+GokHQbUHcquCnm@pendragon.ideasonboard.com>
-References: <20201221164819.792019-1-ribalda@chromium.org>
- <20201221164819.792019-2-ribalda@chromium.org>
+        Tue, 22 Dec 2020 03:08:12 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22869C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 00:07:32 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id y8so7018931plp.8
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 00:07:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:mail-followup-to:mime-version
+         :content-disposition:user-agent;
+        bh=vZw5nI+kCEEx1ompDMl4HBZSoNTPvUzGrnmedcFZpg8=;
+        b=JaROmKllcxZJVSF/7f9ajF4vZ/3yI3Ppuoc9yGHEnIiI0Bm+YkKpjmdV9Cl4vLEfrk
+         GxXkm9MIxo35fXB1bSqq0QILocaPg8WSo56E345ryIV0sAtyi9mG3BKjKi5hcFdwehPX
+         bFrwLCmhAgRsMVx4Y64dbMDB+dvj69VpdrMyYkz02CkoPFz23ssTuqCiLfZr21ZXjA7G
+         oxZ7hur2XCUhVBwP9QcyLLxgpRY/A0aoR8TBCaB8Y40JdxwjLjEj0WVLo7b1d4IHib2h
+         hEIr7+oTGM5fnPYVtiF/+bn7XSSqLZ1QRRsW2QC89QuWBkolBXs9JquUFPyJPfNDu3p/
+         etOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id
+         :mail-followup-to:mime-version:content-disposition:user-agent;
+        bh=vZw5nI+kCEEx1ompDMl4HBZSoNTPvUzGrnmedcFZpg8=;
+        b=HDG0FoIoCiksoC2Iwa/dMWJGj0rY6zRs5bf/ufaXxdyuwWrnSjgWa5EU83ZKTOGMsF
+         rAEHeo2KsIvhrA2lZ4+xcHzfot0u91e/elEYxvoKQ/0B4nQr3NLagVIW0DHUVxAFnhKp
+         NRKm9fZNMXaMy0KXb0d+2LsfT7rdA4XSOHSAqUHiquUh8fuTqG9pwaD9SUXv5Lr5pDWl
+         yeGeIZfcTdyJ5PF1zXTwuMwg57wV5AxjcUL8XI0lmCfoTmEYGKfV5hBcm51ZSXEX6ckM
+         iwMXlUMokAcmD8dIooXUbK5Nn9XKPIfMSZ1HhE+fsgP76oih/nnSpFztl14yJ0OHEcF0
+         AfhA==
+X-Gm-Message-State: AOAM531LKYwkdvhU3GXLl64s/ZMmfQmeaQbRhgpxMWcez9Abv6OQmiMU
+        M/XXePqOJHbfeq7YhM1PknE=
+X-Google-Smtp-Source: ABdhPJw8bdnstDutKrG4AgPCG0dKtYaUoLX0FqgRoWULLnzBH3nde0MHSy5P0vurfiRkRGXT96XM3w==
+X-Received: by 2002:a17:902:b706:b029:dc:3817:4da5 with SMTP id d6-20020a170902b706b02900dc38174da5mr12068668pls.23.1608624450476;
+        Tue, 22 Dec 2020 00:07:30 -0800 (PST)
+Received: from open-light-1.localdomain (66.98.113.28.16clouds.com. [66.98.113.28])
+        by smtp.gmail.com with ESMTPSA id b7sm7126753pff.96.2020.12.22.00.07.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 22 Dec 2020 00:07:29 -0800 (PST)
+From:   Liang Li <liliang.opensource@gmail.com>
+X-Google-Original-From: Liang Li <liliangleo@didiglobal.com>
+Date:   Tue, 22 Dec 2020 03:07:27 -0500
+To:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Liang Li <liliangleo@didiglobal.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Liang Li <liliang324@gmail.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, qemu-devel@nongnu.org
+Subject: [RFC PATCH 0/3 updated] add support for free hugepage reporting
+Message-ID: <20201222080724.GA30239@open-light-1.localdomain>
+Mail-Followup-To: Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Dave Hansen <dave.hansen@intel.com>, Michal Hocko <mhocko@suse.com>,
+        Liang Li <liliangleo@didiglobal.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Liang Li <liliang324@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, qemu-devel@nongnu.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201221164819.792019-2-ribalda@chromium.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricardo,
+A typical usage of hugetlbfs it's to reserve amount of memory during 
+kernel booting, and the reserved pages are unlikely to return to the
+buddy system. When application need hugepages, kernel will allocate 
+them from the reserved pool. when application terminates, huge pages
+will return to the reserved pool and are kept in the free list for
+hugetlb, these free pages will not return to buddy freelist unless
+the size fo reserved pool is changed. 
+Free page reporting only supports buddy pages, it can't report the
+free pages reserved for hugetlbfs. On the other hand, hugetlbfs
+is a good choice for system with a huge amount of RAM, because it
+can help to reduce the memory management overhead and improve system
+performance.
+This patch add the support for reporting hugepages in the free list
+of hugetlb, it can be used by virtio_balloon driver for memory
+overcommit and pre zero out free pages for speeding up memory
+population and page fault handling.
 
-Thank you for the patch.
+Most of the code are 'copied' from free page reporting because they
+are working in the same way. So the code can be refined to remove
+the duplicated code. Since this is an RFC, I didn't do that.
 
-On Mon, Dec 21, 2020 at 05:48:08PM +0100, Ricardo Ribalda wrote:
-> The control and its data needs to be copied to the workqueue at the same
-> time to avoid half-updates of the events.
-> This is, events reported to userspace were the control id does not match
-> its value.
+For the virtio_balloon driver, changes for the virtio spec are needed.
+Before that, I need the feedback of the comunity about this new feature.
 
-Actually, after discussing this with you on IRC, I'm not sure there's a
-problem. The URB is resubmitted by uvc_ctrl_status_event_work(), so the
-data shouldn't be overwritten before it is processed.
+This RFC is baed on my previous series:
+  '[RFC v2 PATCH 0/4] speed up page allocation for __GFP_ZERO' 
 
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> ---
->  drivers/media/usb/uvc/uvc_ctrl.c | 2 +-
->  drivers/media/usb/uvc/uvcvideo.h | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
-> index 011e69427b7c..aa18dcdf8165 100644
-> --- a/drivers/media/usb/uvc/uvc_ctrl.c
-> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
-> @@ -1332,7 +1332,7 @@ bool uvc_ctrl_status_event(struct urb *urb, struct uvc_video_chain *chain,
->  		return false;
->  	}
->  
-> -	w->data = data;
-> +	memcpy(w->data, data, ctrl->info.size);
->  	w->urb = urb;
->  	w->chain = chain;
->  	w->ctrl = ctrl;
-> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> index a3dfacf069c4..0db6c2e0bd98 100644
-> --- a/drivers/media/usb/uvc/uvcvideo.h
-> +++ b/drivers/media/usb/uvc/uvcvideo.h
-> @@ -678,7 +678,7 @@ struct uvc_device {
->  		struct urb *urb;
->  		struct uvc_video_chain *chain;
->  		struct uvc_control *ctrl;
-> -		const void *data;
-> +		u8 data[UVC_MAX_STATUS_SIZE];
->  	} async_ctrl;
->  };
->  
+Liang Li (3):
+  mm: support hugetlb free page reporting
+  virtio-balloon: add support for providing free huge page reports to
+    host
+  mm: support free hugepage pre zero out
 
+ drivers/virtio/virtio_balloon.c     |  61 ++++++
+ include/linux/hugetlb.h             |   3 +
+ include/linux/page_reporting.h      |   5 +
+ include/uapi/linux/virtio_balloon.h |   1 +
+ mm/hugetlb.c                        |  29 +++
+ mm/page_prezero.c                   |  17 ++
+ mm/page_reporting.c                 | 287 ++++++++++++++++++++++++++++
+ mm/page_reporting.h                 |  34 ++++
+ 8 files changed, 437 insertions(+)
+
+Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Dave Hansen <dave.hansen@intel.com>
+Cc: David Hildenbrand <david@redhat.com>  
+Cc: Michal Hocko <mhocko@suse.com> 
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Alex Williamson <alex.williamson@redhat.com>
+Cc: Michael S. Tsirkin <mst@redhat.com>
+Cc: Jason Wang <jasowang@redhat.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Liang Li <liliang324@gmail.com>
 -- 
-Regards,
+2.18.2
 
-Laurent Pinchart
