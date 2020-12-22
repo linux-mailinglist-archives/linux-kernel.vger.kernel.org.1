@@ -2,274 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D4C62E06F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 08:50:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68E392E06FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 08:56:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726174AbgLVHui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 02:50:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725947AbgLVHui (ORCPT
+        id S1725878AbgLVHzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 02:55:00 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:41298 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725782AbgLVHy7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 02:50:38 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D78BC0613D3;
-        Mon, 21 Dec 2020 23:49:57 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id B6445122D;
-        Tue, 22 Dec 2020 08:49:55 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1608623395;
-        bh=Exqr1U7ZK5QA2QmOpysmWhIMOufJ5nlRZH7MblTh1xg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ufqjcqB8eooPQQUZwxD210unOKskt2p0/MyNZi0Xw53oJm1TBoJCi88YSTSfY2O1/
-         cX/C058N4t6QxvrRO2lEHXqCk83fkAbwtr8NTsND9LRTmWp47LHlbM0RU+ccGYpaoX
-         pM2rqLghSRJ3GVrKQN0Uyo5dxPK8nxgJho2HgpPI=
-Date:   Tue, 22 Dec 2020 09:49:47 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Liu Ying <victor.liu@nxp.com>
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, airlied@linux.ie, daniel@ffwll.ch,
-        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        mchehab@kernel.org, a.hajda@samsung.com, narmstrong@baylibre.com,
-        jonas@kwiboo.se, jernej.skrabec@siol.net, kishon@ti.com,
-        vkoul@kernel.org
-Subject: Re: [PATCH 11/14] dt-bindings: display: bridge: Add i.MX8qm/qxp LVDS
- display bridge binding
-Message-ID: <X+GlG3iEM2IXhVNP@pendragon.ideasonboard.com>
-References: <1608199173-28760-1-git-send-email-victor.liu@nxp.com>
- <1608199173-28760-12-git-send-email-victor.liu@nxp.com>
- <X+GiA4LqJTQR9vrz@pendragon.ideasonboard.com>
+        Tue, 22 Dec 2020 02:54:59 -0500
+Received: by mail-il1-f200.google.com with SMTP id f19so11155401ilk.8
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 23:54:44 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=+3sNvl7/QSHl39uxlPG0jsZu7BL9zj0pQ6s3H/yv4X8=;
+        b=dzdTwROt1Ag3euTOXKuooh4ozDyU1aHt6hgg9yHZE/B/Qv6NE26cv0cKv5RPP+6GkY
+         DuPBmcvd3e2yxp/58cT4qbS2fMNW6NT7EVYtz41o4AAW5Iq1P20FFS9pqU2KpB5eBTpO
+         EyuKnITzU05NgmNclQZxaYcahtqg8dyDWnxfvy34ja1JHZLYlCiRgYRAZOgFgNrp7rL3
+         RQTM4ttqA95y1/3q8x0W02Jn8DCrZ4HEkj9vFhL6sFqCdu0I2Zu3EEZ6vovjuZ/auWyd
+         MD2InF6gJVXbQDTqfg1tymufMXWbnPf28USf8Ek8qKrbO2/HRe0V0rlG/+LN754HDlFi
+         CNOg==
+X-Gm-Message-State: AOAM533LO0wGtFbo8cJBQnaaDBuOwLcV727gy0SeRct0lv4QitbKera6
+        9fikmVn4TLbGRiNLrwKWZMCHyLHxU5TpUYS+sTFHTQhoXgA6
+X-Google-Smtp-Source: ABdhPJyWyGv19J7btbOf5mVhqJtXur7SuUDuAkRiR+3zBBkYG1bH/NjYvBz+ifg2ChRU7msSu5X0dX6nLvUq4PevqVxSTPoWh/YR
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <X+GiA4LqJTQR9vrz@pendragon.ideasonboard.com>
+X-Received: by 2002:a92:ae06:: with SMTP id s6mr20668626ilh.282.1608623658795;
+ Mon, 21 Dec 2020 23:54:18 -0800 (PST)
+Date:   Mon, 21 Dec 2020 23:54:18 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c2877f05b708e1a5@google.com>
+Subject: WARNING: ODEBUG bug in ext4_fill_super (2)
+From:   syzbot <syzbot+3002ac6b4fd242a64228@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, clang-built-linux@googlegroups.com,
+        jack@suse.cz, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, natechancellor@gmail.com,
+        ndesaulniers@google.com, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Liu,
+Hello,
 
-On Tue, Dec 22, 2020 at 09:36:37AM +0200, Laurent Pinchart wrote:
-> On Thu, Dec 17, 2020 at 05:59:30PM +0800, Liu Ying wrote:
-> > This patch adds bindings for i.MX8qm/qxp LVDS display bridge(LDB).
-> > 
-> > Signed-off-by: Liu Ying <victor.liu@nxp.com>
-> > ---
-> >  .../bindings/display/bridge/fsl,imx8qxp-ldb.yaml   | 185 +++++++++++++++++++++
-> >  1 file changed, 185 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-ldb.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-ldb.yaml b/Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-ldb.yaml
-> > new file mode 100644
-> > index 00000000..4e5ff6f
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-ldb.yaml
-> > @@ -0,0 +1,185 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/display/bridge/fsl,imx8qxp-ldb.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Freescale i.MX8qm/qxp LVDS Display Bridge
-> > +
-> > +maintainers:
-> > +  - Liu Ying <victor.liu@nxp.com>
-> > +
-> > +description: |
-> > +  The Freescale i.MX8qm/qxp LVDS Display Bridge(LDB) has two channels.
-> > +
-> > +  For i.MX8qxp LDB, each channel supports up to 24bpp parallel input color
-> > +  format and can map the input to VESA or JEIDA standards.  The two channels
-> > +  cannot be used simultaneously, that is to say, the user should pick one of
-> > +  them to use.  Two LDB channels from two LDB instances can work together in
-> > +  LDB split mode to support a dual link LVDS display.  The channel indexes
-> > +  have to be different.  Channel0 outputs odd pixels and channel1 outputs
-> > +  even pixels.
-> 
-> In this case, does the display controller output odd pixels and even
-> pixels separately to the two LVDS channels, with each channel
-> effectively be a separate LVDS encoder ? Could you give an example of DT
-> integration for dual-link LVDS support, with the display controller, two
-> LDB instances, and a dual-link LVDS panel ?
+syzbot found the following issue on:
 
-I also can't find any mention of the LDB in IMX8MDQLQRM or IMX8DQXPRM.
-Am I missing something ?
+HEAD commit:    0d52778b Add linux-next specific files for 20201218
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=16190613500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5c81cc44aa25b5b3
+dashboard link: https://syzkaller.appspot.com/bug?extid=3002ac6b4fd242a64228
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=128f5123500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14f9f30f500000
 
-> > +
-> > +  For i.MX8qm LDB, each channel additionally supports up to 30bpp parallel
-> > +  input color format.  The two channels can be used simultaneously, either
-> > +  in dual mode or split mode.  In dual mode, the two channels output identical
-> > +  data.  In split mode, channel0 outputs odd pixels and channel1 outputs even
-> > +  pixels.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - fsl,imx8qm-ldb
-> > +      - fsl,imx8qxp-ldb
-> > +
-> > +  "#address-cells":
-> > +    const: 1
-> > +
-> > +  "#size-cells":
-> > +    const: 0
-> > +
-> > +  clocks:
-> > +    items:
-> > +      - description: pixel clock
-> > +      - description: bypass clock
-> > +
-> > +  clock-names:
-> > +    items:
-> > +      - const: pixel
-> > +      - const: bypass
-> > +
-> > +  power-domains:
-> > +    maxItems: 1
-> > +
-> > +  fsl,syscon:
-> > +    $ref: /schemas/types.yaml#/definitions/phandle
-> > +    description: |
-> > +      A phandle which points to Control and Status Registers(CSR) module.
-> > +
-> > +  fsl,companion-ldb:
-> > +    $ref: /schemas/types.yaml#/definitions/phandle
-> > +    description: |
-> > +      A phandle which points to companion LDB which is used in LDB split mode.
-> > +
-> > +patternProperties:
-> > +  "^channel@[0-1]$":
-> > +    type: object
-> > +    description: Represents a channel of LDB.
-> > +
-> > +    properties:
-> > +      "#address-cells":
-> > +        const: 1
-> > +
-> > +      "#size-cells":
-> > +        const: 0
-> > +
-> > +      reg:
-> > +        description: The channel index.
-> > +        enum: [ 0, 1 ]
-> > +
-> > +      phys:
-> > +        description: A phandle to the phy module representing the LVDS PHY.
-> > +        maxItems: 1
-> > +
-> > +      phy-names:
-> > +        const: lvds_phy
-> > +
-> > +      port@0:
-> > +        type: object
-> > +        description: Input port of the channel.
-> > +
-> > +        properties:
-> > +          reg:
-> > +            const: 0
-> > +
-> > +        required:
-> > +          - reg
-> > +
-> > +      port@1:
-> > +        type: object
-> > +        description: Output port of the channel.
-> > +
-> > +        properties:
-> > +          reg:
-> > +            const: 1
-> > +
-> > +        required:
-> > +          - reg
-> > +
-> > +    required:
-> > +      - "#address-cells"
-> > +      - "#size-cells"
-> > +      - reg
-> > +      - phys
-> > +      - phy-names
-> > +
-> > +    additionalProperties: false
-> > +
-> > +required:
-> > +  - compatible
-> > +  - "#address-cells"
-> > +  - "#size-cells"
-> > +  - clocks
-> > +  - clock-names
-> > +  - power-domains
-> > +  - fsl,syscon
-> > +  - channel@0
-> > +  - channel@1
-> > +
-> > +allOf:
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          contains:
-> > +            const: fsl,imx8qm-ldb
-> > +    then:
-> > +      properties:
-> > +        fsl,companion-ldb: false
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/firmware/imx/rsrc.h>
-> > +    ldb {
-> > +        #address-cells = <1>;
-> > +        #size-cells = <0>;
-> > +        compatible = "fsl,imx8qxp-ldb";
-> > +        clocks = <&clk IMX_SC_R_LVDS_0 IMX_SC_PM_CLK_MISC2>,
-> > +                 <&clk IMX_SC_R_LVDS_0 IMX_SC_PM_CLK_BYPASS>;
-> > +        clock-names = "pixel", "bypass";
-> > +        power-domains = <&pd IMX_SC_R_LVDS_0>;
-> > +        fsl,syscon = <&mipi_lvds_0_csr>;
-> > +
-> > +        channel@0 {
-> > +            #address-cells = <1>;
-> > +            #size-cells = <0>;
-> > +            reg = <0>;
-> > +            phys = <&mipi_lvds_0_phy>;
-> > +            phy-names = "lvds_phy";
-> > +
-> > +            port@0 {
-> > +                reg = <0>;
-> > +
-> > +                mipi_lvds_0_ldb_ch0_mipi_lvds_0_pxl2dpi: endpoint {
-> > +                    remote-endpoint = <&mipi_lvds_0_pxl2dpi_mipi_lvds_0_ldb_ch0>;
-> > +                };
-> > +            };
-> > +        };
-> > +
-> > +        channel@1 {
-> > +            #address-cells = <1>;
-> > +            #size-cells = <0>;
-> > +            reg = <1>;
-> > +            phys = <&mipi_lvds_0_phy>;
-> > +            phy-names = "lvds_phy";
-> > +
-> > +            port@0 {
-> > +                reg = <0>;
-> > +
-> > +                mipi_lvds_0_ldb_ch1_mipi_lvds_0_pxl2dpi: endpoint {
-> > +                    remote-endpoint = <&mipi_lvds_0_pxl2dpi_mipi_lvds_0_ldb_ch1>;
-> > +                };
-> > +            };
-> > +        };
-> > +    };
-> 
-> -- 
-> Regards,
-> 
-> Laurent Pinchart
+The issue was bisected to:
 
--- 
-Regards,
+commit e810c942a325cf749e859d7aa3a43dc219cea299
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Dec 16 10:18:40 2020 +0000
 
-Laurent Pinchart
+    ext4: save error info to sb through journal if available
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12d9df07500000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=11d9df07500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=16d9df07500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3002ac6b4fd242a64228@syzkaller.appspotmail.com
+Fixes: e810c942a325 ("ext4: save error info to sb through journal if available")
+
+EXT4-fs error (device loop3): ext4_fill_super:4943: inode #2: comm syz-executor723: iget: root inode unallocated
+EXT4-fs (loop3): get root inode failed
+EXT4-fs (loop3): mount failed
+------------[ cut here ]------------
+ODEBUG: free active (active state 0) object type: work_struct hint: flush_stashed_error_work+0x0/0x2a0 fs/ext4/ext4.h:2040
+WARNING: CPU: 0 PID: 13670 at lib/debugobjects.c:505 debug_print_object+0x16e/0x250 lib/debugobjects.c:505
+Modules linked in:
+CPU: 0 PID: 13670 Comm: syz-executor723 Not tainted 5.10.0-next-20201218-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:debug_print_object+0x16e/0x250 lib/debugobjects.c:505
+Code: ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 af 00 00 00 48 8b 14 dd 20 af bf 89 4c 89 ee 48 c7 c7 20 a3 bf 89 e8 30 78 05 05 <0f> 0b 83 05 55 8a b9 09 01 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e c3
+RSP: 0018:ffffc90001d0f9b8 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 0000000000000003 RCX: 0000000000000000
+RDX: ffff888024b63600 RSI: ffffffff815b95f5 RDI: fffff520003a1f29
+RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815b7a4b R11: 0000000000000000 R12: ffffffff896ae040
+R13: ffffffff89bfa920 R14: ffffffff814911f0 R15: dffffc0000000000
+FS:  000000000163a940(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000000043fb60 CR3: 000000001226b000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __debug_check_no_obj_freed lib/debugobjects.c:987 [inline]
+ debug_check_no_obj_freed+0x309/0x430 lib/debugobjects.c:1018
+ slab_free_hook mm/slub.c:1540 [inline]
+ slab_free_freelist_hook+0x12b/0x1d0 mm/slub.c:1586
+ slab_free mm/slub.c:3157 [inline]
+ kfree+0xdb/0x3c0 mm/slub.c:4156
+ ext4_fill_super+0x86c/0xdf40 fs/ext4/super.c:5174
+ mount_bdev+0x34d/0x410 fs/super.c:1366
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x89/0x2f0 fs/super.c:1496
+ do_new_mount fs/namespace.c:2896 [inline]
+ path_mount+0x12ae/0x1e70 fs/namespace.c:3227
+ do_mount fs/namespace.c:3240 [inline]
+ __do_sys_mount fs/namespace.c:3448 [inline]
+ __se_sys_mount fs/namespace.c:3425 [inline]
+ __x64_sys_mount+0x27f/0x300 fs/namespace.c:3425
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x44873a
+Code: b8 08 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 cd a2 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 aa a2 fb ff c3 66 0f 1f 84 00 00 00 00 00
+RSP: 002b:00007fff16496da8 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007fff16496e00 RCX: 000000000044873a
+RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007fff16496dc0
+RBP: 00007fff16496dc0 R08: 00007fff16496e00 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000006
+R13: 0000000000000005 R14: 0000000000000004 R15: 0000000000000004
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
