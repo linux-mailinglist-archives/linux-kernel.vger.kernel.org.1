@@ -2,94 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F9EF2E0F77
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 21:42:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60D832E0F7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 21:49:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727404AbgLVUkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 15:40:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40296 "EHLO
+        id S1727307AbgLVUrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 15:47:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725913AbgLVUkn (ORCPT
+        with ESMTP id S1725850AbgLVUrj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 15:40:43 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D45C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 12:40:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=tQUpm8etH6snW7WfiSHzS0QYahDTXLO8tTkPD0yqoA8=; b=RpxeFr5fCcqPuMAQnJ1AEpis3c
-        Uo7BAVoGmBcllP1SzDaJt6IpQzBa50AB2BJUy/57FHoKe40nvWd7Eiez9vC08NqKSGVysAlUjQqeA
-        PWZ3ZDu/VmIgOH1UfqcyvulBLhOFFz8mrjEK/yn7zfNazRKBHI5wCSAUUKkUl5OuUu97mUWfY+/XM
-        lTuZpDKvGHcStdHGo+Goe2aZOn6MVKbo5QGPJ3JYMPlBZAblLMy2ueCEiKmuPs8yKlSAsAW/Owfta
-        NTBwAESFvYGFnah3R0YUCYJ7FZcQyHsxLjEcGk74T5ildogQJqXdJ2nT6pcHCqfMJSLJyoB4PkzNM
-        0GjR/e4A==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kroRs-0004Sj-Bf; Tue, 22 Dec 2020 20:40:00 +0000
-Date:   Tue, 22 Dec 2020 20:40:00 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Souptick Joarder <jrdr.linux@gmail.com>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Alex Shi <alex.shi@linux.alibaba.com>
-Subject: Re: [PATCH] mm: add prototype for __add_to_page_cache_locked()
-Message-ID: <20201222204000.GN874@casper.infradead.org>
-References: <1608646792-29073-1-git-send-email-jrdr.linux@gmail.com>
+        Tue, 22 Dec 2020 15:47:39 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0944FC0613D3;
+        Tue, 22 Dec 2020 12:46:59 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id i24so14185366edj.8;
+        Tue, 22 Dec 2020 12:46:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=e7CXBCcrPKIQsc3r8jYzWjstSIIKZ5ePIODHJXTON8o=;
+        b=PgLKPYpZotcmlM54p4+vEvRXDPGAM4sLUieycdmuLoGsRbJQSiQz5tuXYNnwDHhWSC
+         mk6stdUrbkJUPukEz1Vmc7RLimb2bEfXVifjKhB4GEvdDHjLIAfsnmO2aA/fvemnFfd7
+         Igvz92uupbPZT3YbiYnlsUzFNWYOMe/Q1iHM8nFj0YbCHXn+bJeCPJjePUHJd/AcVEw7
+         tSh3f8KBNQcEUJPju252bFTbSMgwV9hx0DNTsM1umQ5J/Qv/2indThVo9SqufA705+c4
+         OfZoBp3YjRxZkB3fe+C3t3OLHu9oLdQsdYzTwT97fFAqg6fN3MotjtjSDvHrq3vX9PL5
+         ePaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=e7CXBCcrPKIQsc3r8jYzWjstSIIKZ5ePIODHJXTON8o=;
+        b=VR2xsBwzmoy9RDJFcovU7I3+YjXInYECPMVlkzHFcslnZhDNHIUP6EC2x/Ski8yznY
+         RmLkwn68m7D0KuPIC6RTqDbUgrRd/u4NEGeQf2ZTpqEP+as587KQB2XOj0ip7A/OJWpf
+         JtAaR/tvcCcm3eMUNIy2el9GgD5npyh4JeGYbJf+B+pSz1qPP3BrJp0e4ved+HeXpnr6
+         NiQgABzmH0Hb1h7WW3WLT87gn1NTNFz6vPjeJvRfhqVSkg2cN4SdC2pl7zw2tfv89LCI
+         v6wr/n4A+mdgInbRdJQyAhFtQm3XHSFmgfasATkNH878FYDhB0t6nVWrLJubeB0rjqxM
+         vMtQ==
+X-Gm-Message-State: AOAM5319E45EUIQk2agtU4YjlZERTQ7DiG2DPeF91Ym7+Q+oU99DN5nA
+        Os+56dcrKqHarVxAvVm9X21FoSMMSTQ=
+X-Google-Smtp-Source: ABdhPJzdZW1LjSMBcunMTun0V0jqEQJGgdpP+1uUJK5SmYQ6MR8bNwz0NDm+Za4eCy48lbT+riDXDA==
+X-Received: by 2002:a05:6402:45:: with SMTP id f5mr21793304edu.273.1608670017538;
+        Tue, 22 Dec 2020 12:46:57 -0800 (PST)
+Received: from ?IPv6:2003:ea:8f06:5500:dc3c:aa51:b1e8:8e1d? (p200300ea8f065500dc3caa51b1e88e1d.dip0.t-ipconnect.de. [2003:ea:8f06:5500:dc3c:aa51:b1e8:8e1d])
+        by smtp.googlemail.com with ESMTPSA id v18sm29819463edx.30.2020.12.22.12.46.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Dec 2020 12:46:56 -0800 (PST)
+Subject: Re: [Aspeed, v2 2/2] net: ftgmac100: Change the order of getting MAC
+ address
+To:     Hongwei Zhang <hongweiz@ami.com>, linux-aspeed@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        David S Miller <davem@davemloft.net>
+Cc:     netdev <netdev@vger.kernel.org>, Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>
+References: <20201221205157.31501-2-hongweiz@ami.com>
+ <20201222201437.5588-3-hongweiz@ami.com>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Message-ID: <96c355a2-ab7e-3cf0-57e7-16369da78035@gmail.com>
+Date:   Tue, 22 Dec 2020 21:46:52 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
+In-Reply-To: <20201222201437.5588-3-hongweiz@ami.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1608646792-29073-1-git-send-email-jrdr.linux@gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 07:49:52PM +0530, Souptick Joarder wrote:
-> Otherwise it cause gcc warning:
->           ^~~~~~~~~~~~~~~
-
-That line is just confusing.
-
-> ../mm/filemap.c:830:14: warning: no previous prototype for
-> ‘__add_to_page_cache_locked’ [-Wmissing-prototypes]
->  noinline int __add_to_page_cache_locked(struct page *page,
->               ^~~~~~~~~~~~~~~~~~~~~~~~~~
-
-And I don't think those two lines add much value, do you?
-
-> A previous attempt to make this function static leads to
-> compile error for few architectures.
-
-It might be better to say why it has to be non-static here (because it's
-an error injection point).  And it's not architecture dependent (afaik),
-it's whether error injection is enabled in the config.
-
-> Adding a prototype will silence the warning.
+On 22.12.2020 21:14, Hongwei Zhang wrote:
+> Dear Reviewer,
 > 
-> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-> Cc: Alex Shi <alex.shi@linux.alibaba.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> ---
->  include/linux/mm.h | 6 ++++++
->  1 file changed, 6 insertions(+)
+> Use native MAC address is preferred over other choices, thus change the order
+> of reading MAC address, try to read it from MAC chip first, if it's not
+>  availabe, then try to read it from device tree.
 > 
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 5299b90a..ac07f65 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -216,6 +216,12 @@ int overcommit_kbytes_handler(struct ctl_table *, int, void *, size_t *,
->  		loff_t *);
->  int overcommit_policy_handler(struct ctl_table *, int, void *, size_t *,
->  		loff_t *);
-> +/*
-> + * Any attempt to mark this function as static leads to build failure
-> + * for few architectures. Adding a prototype to silence gcc warning.
-> + */
+> 
+> Hi Heiner,
+> 
+>> From:	Heiner Kallweit <hkallweit1@gmail.com>
+>> Sent:	Monday, December 21, 2020 4:37 PM
+>>> Change the order of reading MAC address, try to read it from MAC chip 
+>>> first, if it's not availabe, then try to read it from device tree.
+>>>
+>> This commit message leaves a number of questions. It seems the change isn't related at all to the 
+>> change that it's supposed to fix.
+>>
+>> - What is the issue that you're trying to fix?
+>> - And what is wrong with the original change?
+> 
+> There is no bug or something wrong with the original code. This patch is for
+> improving the code. We thought if the native MAC address is available, then
+> it's preferred over MAC address from dts (assuming both sources are available).
+> 
+> One possible scenario, a MAC address is set in dts and the BMC image is 
+> compiled and loaded into more than one platform, then the platforms will
+> have network issue due to the same MAC address they read.
+> 
 
-We don't need a comment here for this.  The commit log is enough.
+Typically the DTS MAC address is overwritten by the boot loader, e.g. uboot.
+And the boot loader can read it from chip registers. There are more drivers
+trying to read the MAC address from DTS first. Eventually, I think, the code
+here will read the same MAC address from chip registers as uboot did before.
 
-> +int __add_to_page_cache_locked(struct page *page, struct address_space *mapping,
-> +		pgoff_t offset, gfp_t gfp, void **shadowp);
-
-Please name that 'index', not 'offset'.
+> Thanks for your review, I've update the patch to fix the comments.
+>>
+>>> Fixes: 35c54922dc97 ("ARM: dts: tacoma: Add reserved memory for 
+>>> ramoops")
+>>> Signed-off-by: Hongwei Zhang <hongweiz@ami.com>
+>>> ---
+>>>  drivers/net/ethernet/faraday/ftgmac100.c | 22 +++++++++++++---------
+>>>  1 file changed, 13 insertions(+), 9 deletions(-)
+> 
+> --Hongwei
+> 
 
