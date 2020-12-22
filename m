@@ -2,114 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6918C2E0404
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 02:45:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17ABA2E0407
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 02:46:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725924AbgLVBpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Dec 2020 20:45:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35230 "EHLO
+        id S1726210AbgLVBqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Dec 2020 20:46:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725825AbgLVBpA (ORCPT
+        with ESMTP id S1726094AbgLVBqK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Dec 2020 20:45:00 -0500
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B308C061793
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 17:44:20 -0800 (PST)
-Received: by mail-yb1-xb32.google.com with SMTP id v67so10455825ybi.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Dec 2020 17:44:20 -0800 (PST)
+        Mon, 21 Dec 2020 20:46:10 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1FECC0613D3;
+        Mon, 21 Dec 2020 17:45:29 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id o13so28282470lfr.3;
+        Mon, 21 Dec 2020 17:45:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YH3kWY/9FTGGbdzmNW9iq4F93NRlfV9MWRvEtUM4SS0=;
-        b=rjmLASfuwY28xHGdpeV19G1UBOLlHHOdWjZgjVW/XmS9DcoS+OXS0kiWoh4378uujl
-         jy4nUBTNtXJeExUNXmxcA5VTBzKFrJlOJ2sOZyQv11+B4iXErsaCHCzUoxMX725JJSVF
-         zhQkcLI14tlflcdajcQWTyYJbAeqtkDPCmbJc9Ln8iqPqk8msY9HfFKhXbY99zj3UD/I
-         VvsXaWkO+OWCkmvrE/ekjrAjVWSkBOBNBorhdxd2kdrigyouJPKHQXxvgwBRDuvfNvDZ
-         p/HhrGC5McY2W+sJ3ZvDlJc3TYVljC4KerJW6Fvm3XpnZxaPUs39Ms8QfdI1c8QUVIDL
-         ueJw==
+        d=googlemail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=pWOHnkyedFGnfyVoxalADGXLfdGf7ijaBF8UEcICmqs=;
+        b=sOAO3Y04WoeC/sysqNZlY9oviUjLGxr//USG6CG8DA8aJ3cnupJGVKiN3ruS/0Rv8R
+         Kt6Bx0cpL/wdecZ7fms2mjbde3zWAgvzKKVzAq8otVc7JkNHFTcvj3vepsc/CV0MY3Q+
+         iIDjLg01vwM0d+JCDJt2wKPmREwRo1qldoXM5qDu3j0wKlQCv6PRoFEYbv6lFMsZyb7d
+         SXmGJgHJVYB5KGoWHx/1A31MMd4XpXwVYTUAxdX9MGHmYYTMG6fRfWRHcPLeirMU19zm
+         JOmGTGwJwqlEmlmP40cwlzsC+nr6ZhhXVKpAX/Sc9I9PXF/aXqRn52jzPkXmkgzVcFtr
+         flzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YH3kWY/9FTGGbdzmNW9iq4F93NRlfV9MWRvEtUM4SS0=;
-        b=CPtKdgDH42C8snxE6Zh0XmfROsf1PSgZktu9xZdUo2uWwr0LCO8lI1YUHlFCnUN6Lo
-         p7u3HlgP/uj8xr4aM5S+D93W4F8Iw8jXFIXmZjC4Yg4VzJp3/KhrNr/iW2TZIFOQq9pI
-         +5FXlV1Bw49svevDdPCxKWtmKWpv3AnAevMY77QDV1VEIU0kh1QnIsyNDErOx+rOpGEX
-         4DSnrLu16bxarSbIG68BMPPS7G0ZLtHzZqq3DDx/yKjNsIg3u4YdU9W6ohJNTuyCndVE
-         ZrKx5nD9/vGj+dndMeLfVFxXRJAovargH8JoXJtvGcgJOq0/rTNarVK9gWswWRcevxRj
-         u9Pg==
-X-Gm-Message-State: AOAM5316Dms65AJQZcPKp85+9ReDMrGke6ZO83Vgeg1ZH4mJpj441zr2
-        rhKbSwKze4ioqIadAfEGjKLACDKs26dERe/c3NQ=
-X-Google-Smtp-Source: ABdhPJysp9vMmw/VrIF8je/96pRXtsRwVglS1oOcwhaM9qgwQUdK1kNb9gWC9DWMJURPZkbZN/TYBVB5HPX0fjC4np8=
-X-Received: by 2002:a05:6902:210:: with SMTP id j16mr26754851ybs.122.1608601459692;
- Mon, 21 Dec 2020 17:44:19 -0800 (PST)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=pWOHnkyedFGnfyVoxalADGXLfdGf7ijaBF8UEcICmqs=;
+        b=Bv3C8X4LycV5escMjCXROHaYk8C8PeKPnMrwmbAb53VMCt2EWIxXEE1vSnblN87GSm
+         8y2WVJ/2sigF0QyR+DHRMCzgUd0t4RLlwc8RUsNhyLYkmuLWSGWpTAseAmxqJm1ktwyT
+         e83y2nWkDGwP3Rp2nGim0Up7ZMMihBHmTocTG4+1m1MUQdDETHKVacnV40YU18tRTr8M
+         NrWjU50ZuVWuJMuYoKoWOnb7rCMaXSEJsA0UyzZibhBp9edqDReEL1IbI7CHLJx0Mhnd
+         ZmkjxV5nKBQqvzVDS/Rsc3JKUZu7FVB36ynqllSthSv8lrifHK6WMmM1sY20A4VxUStE
+         dj+A==
+X-Gm-Message-State: AOAM532TqjiEoO7Mjvmscgj5NP3Luqsw1GYSHOF/jn8kbPBA2Wut4TRg
+        gJtjYGCO39xh3xVw45QbJ8H9cuVKu50KBbt+qw==
+X-Google-Smtp-Source: ABdhPJymZXmHXyf7LSX05ukC5WX7Ww4PjzkUcvMIOdMk3FUXgCzTxZUAQUIKxx2tKtrM7TZ0hrv+do1hHtKB4EKSGbA=
+X-Received: by 2002:a2e:a547:: with SMTP id e7mr8425929ljn.108.1608601528357;
+ Mon, 21 Dec 2020 17:45:28 -0800 (PST)
 MIME-Version: 1.0
-References: <20201221203719.15988-1-vitaly.wool@konsulko.com>
-In-Reply-To: <20201221203719.15988-1-vitaly.wool@konsulko.com>
-From:   Bin Meng <bmeng.cn@gmail.com>
-Date:   Tue, 22 Dec 2020 09:44:08 +0800
-Message-ID: <CAEUhbmVrMEWCds2QRgnUGE4KGakxrYi6Z_EY-meyX33Fy_teoA@mail.gmail.com>
-Subject: Re: [PATCH v3] RISC-V: enable XIP
-To:     Vitaly Wool <vitaly.wool@konsulko.com>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Bin Meng <bin.meng@windriver.com>,
-        Anup Patel <anup@brainfault.org>,
-        Alistair Francis <alistair.francis@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Nicolas Pitre <nico@fluxnic.net>
+From:   Gabriel C <nix.or.die@googlemail.com>
+Date:   Tue, 22 Dec 2020 02:45:02 +0100
+Message-ID: <CAEJqkgiiU7miC13iT6DufjFAsHkNZk6rBAw=KRRnHe47kTZDnw@mail.gmail.com>
+Subject: k10temp: ZEN3 readings are broken
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-hwmon@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Wei Huang <wei.huang2@amd.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vitaly,
+Hello Guenter,
 
-On Tue, Dec 22, 2020 at 4:39 AM Vitaly Wool <vitaly.wool@konsulko.com> wrote:
->
-> Introduce XIP (eXecute In Place) support for RISC-V platforms.
-> It allows code to be executed directly from non-volatile storage
-> directly addressable by the CPU, such as QSPI NOR flash which can
-> be found on many RISC-V platforms. This makes way for significant
-> optimization of RAM footprint. The XIP kernel is not compressed
-> since it has to run directly from flash, so it will occupy more
-> space on the non-volatile storage to The physical flash address
-> used to link the kernel object files and for storing it has to
-> be known at compile time and is represented by a Kconfig option.
->
-> XIP on RISC-V will currently only work on MMU-enabled kernels.
->
-> Changed in v2:
-> - dedicated macro for XIP address fixup when MMU is not enabled yet
->   o both for 32-bit and 64-bit RISC-V
-> - SP is explicitly set to a safe place in RAM before __copy_data call
-> - removed redundant alignment requirements in vmlinux-xip.lds.S
-> - changed long -> uintptr_t typecast in __XIP_FIXUP macro.
->
-> Changed in v3:
-> - rebased against latest for-next
-> - XIP address fixup macro now takes an argument
-> - SMP related fixes
+while trying to add ZEN3 support for zenpower out of tree modules, I find out
+the in-kernel k10temp driver is broken with ZEN3 ( and partially ZEN2 even ).
 
-The above changelogs should go below ---
+commit 55163a1c00fcb526e2aa9f7f952fb38d3543da5e added:
 
-> Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.com>
-> ---
->  arch/riscv/Kconfig                  |  46 ++++++++-
->  arch/riscv/Makefile                 |   8 +-
->  arch/riscv/boot/Makefile            |  13 +++
->  arch/riscv/include/asm/pgtable.h    |  56 +++++++++--
->  arch/riscv/kernel/cpu_ops_sbi.c     |   3 +
->  arch/riscv/kernel/head.S            |  69 +++++++++++++-
->  arch/riscv/kernel/head.h            |   3 +
->  arch/riscv/kernel/setup.c           |   8 +-
->  arch/riscv/kernel/vmlinux-xip.lds.S | 132 ++++++++++++++++++++++++++
->  arch/riscv/kernel/vmlinux.lds.S     |   6 ++
->  arch/riscv/mm/init.c                | 142 +++++++++++++++++++++++++---
->  11 files changed, 460 insertions(+), 26 deletions(-)
->  create mode 100644 arch/riscv/kernel/vmlinux-xip.lds.S
->
+case 0x0 ... 0x1:       /* Zen3 */
 
-Regards,
-Bin
+however, this is wrong, we look for a model which is 0x21 for ZEN3,
+these seem to
+be steppings?
+
+Also, PLANE0/1 are wrong too, Icore has zero readouts even when fixing
+the model.
+
+Looking at these ( there is something missing for 0x71 ZEN2 Ryzens
+also ) that should be:
+
+PLANE0  (ZEN_SVI_BASE + 0x10)
+PLANE1  (ZEN_SVI_BASE + 0xc)
+
+Which is the same as for ZEN2 >= 0x71. Since this is not really
+documented and I have some
+confirmations of these numbers from *somewhere* :-) I created a demo patch only.
+
+I would like AMD people to really have a look at the driver and
+confirm the changes, since
+getting information from *somewhere*,  dosen't mean they are 100%
+correct. However, the driver
+is working with these changes.
+
+In any way the model needs changing to 0x21 even if we let the other
+readings broken.
+
+There is my demo patch:
+
+https://crazy.dev.frugalware.org/fix-ZEN2-ZEN3-test1.patch
+
+Also, there is some discuss and testing for both drivers:
+
+https://github.com/ocerman/zenpower/issues/39
+
+
+Best Regards,
+
+Gabriel C
