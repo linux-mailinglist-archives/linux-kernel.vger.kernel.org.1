@@ -2,115 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 528082E0D55
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 17:28:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4200E2E0D57
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 17:28:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728119AbgLVQYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 11:24:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727790AbgLVQYE (ORCPT
+        id S1728059AbgLVQ0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 11:26:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40521 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727080AbgLVQ0m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 11:24:04 -0500
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34507C0613D6;
-        Tue, 22 Dec 2020 08:23:24 -0800 (PST)
-Received: by mail-io1-xd34.google.com with SMTP id d9so12460066iob.6;
-        Tue, 22 Dec 2020 08:23:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ANErGQVIqQj48QsZur9ujVXtxW39rQn+lJjWeUAYdrA=;
-        b=veeydcPeh0M2CCM3R/Rh0jUfggTZDkL8vqlYZxVAiCvkzpGWTEZ614+2DnsCHMmlz3
-         pQMKSKTCZDlI40VbP2PmVD6SvrYFINcKscFIY/MXeJDR63rAFqGVP1+jwSwVx4QcXd65
-         GU5QAE7gY6Tbcrt7HaFXvzavk7xeSwlu7vbC9S5bGWwNCnLVbtj4pdATxlEpQ/mCr+pG
-         31OGYoIVphYuh8wbdZ4qgLjp7QidVe8iEnTJBtyMLFnrglMZ0MAQppx1GobNoHof810i
-         S1876VV7fWF7H2CvpdNV0srMdydKxnOcCVFwG+BO1qkBuGqsDWczT8oyFSCu/tLaeynS
-         2Orw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ANErGQVIqQj48QsZur9ujVXtxW39rQn+lJjWeUAYdrA=;
-        b=S1Zik3QputyUYnmoGXRm/TbwgEYl35Nx++FAVBHHFW71AWcSVdknhabfPmgcQIpOpb
-         9kmD/86IduCLfryZvn4tl1pFAx53JF6NSb8ZpFjZxV0OEkys3o6sfc9XYRhWWdjcaoHO
-         UXDofnevBUp3JVOoTT+95T+m6QtPoVnkWiz+KCD7Vd6SciKLHYbatcRHOLiDe+DMX0rt
-         5dOQ/N4sZZF5++peiwPHdlr9msC+t9q6BdTLaJqOuMNaMZ5+tZvpEb/Qkbv/4pXmoY5R
-         3LLRKNyrZVdo1rCkjG2IOtgNAQlni5w23QXSfvTdGZWAyuB7uo6ZqzYCDNib5WNEH13n
-         3o7g==
-X-Gm-Message-State: AOAM5330ytPjISvm5KFaOvryz5ZaxCVpoyizguzUAm7r8shKO9GYz4Kl
-        8HO4FPH+J7fMiaz3FK0GEDf0i7cGNSyWL0o7RC79AakKuZw=
-X-Google-Smtp-Source: ABdhPJzhlQMVpEILVIPZ4JARLz6t9lY6qdQHVYRORmaQ6AhXWklFhgpJy6oI+dXqc9s8dBMn078l7xs0TMk8vnh+yHk=
-X-Received: by 2002:a6b:6d1a:: with SMTP id a26mr18703014iod.158.1608654203503;
- Tue, 22 Dec 2020 08:23:23 -0800 (PST)
+        Tue, 22 Dec 2020 11:26:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608654316;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VS6Vdqur46sIrPZ2F0w/ptGx4OB9WKm/fQfIUku24Qg=;
+        b=MQCUjAkzdYrMtMBQ+2EZRZle14RXH8vr6D8WGxOfHCxOUcU9DAouULLPs+Dc1YaqqzICH3
+        QUFKXv9EUEnK6H2PINAgtSIPodP0Ha1P+w4uP5fpLdnd2WZunz7C0kiwfy1gu4gAldMrQQ
+        AElOu4Pbk6MDBqTPFipo9NMb6Ia0nCc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-437-79ttlIdQPpyGqaRS7q1Mkw-1; Tue, 22 Dec 2020 11:25:11 -0500
+X-MC-Unique: 79ttlIdQPpyGqaRS7q1Mkw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D1AA9190D376;
+        Tue, 22 Dec 2020 16:25:09 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-114-207.rdu2.redhat.com [10.10.114.207])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9D9B060C5B;
+        Tue, 22 Dec 2020 16:25:09 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 18CC9220BCF; Tue, 22 Dec 2020 11:25:09 -0500 (EST)
+Date:   Tue, 22 Dec 2020 11:25:09 -0500
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-unionfs@vger.kernel.org, jlayton@kernel.org,
+        amir73il@gmail.com, sargun@sargun.me, miklos@szeredi.hu,
+        jack@suse.cz, neilb@suse.com, viro@zeniv.linux.org.uk, hch@lst.de
+Subject: Re: [PATCH 2/3] vfs: Add a super block operation to check for
+ writeback errors
+Message-ID: <20201222162509.GB3248@redhat.com>
+References: <20201221195055.35295-1-vgoyal@redhat.com>
+ <20201221195055.35295-3-vgoyal@redhat.com>
+ <20201222161900.GI874@casper.infradead.org>
 MIME-Version: 1.0
-References: <1608064956-5512-1-git-send-email-milan.lakhani@codethink.co.uk> <20201221095209.4dd4233e@lwn.net>
-In-Reply-To: <20201221095209.4dd4233e@lwn.net>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Tue, 22 Dec 2020 17:23:18 +0100
-Message-ID: <CAKXUXMwR9i5bJx+_rXkv4SK0yU1cHpGexH9RjsN7UFqJ-Ozsew@mail.gmail.com>
-Subject: Re: [PATCH v2] Documentation: process: Correct numbering
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Milan Lakhani <milan.lakhani@codethink.co.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-safety@lists.elisa.tech,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>,
-        Christoph Hellwig <hch@lst.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201222161900.GI874@casper.infradead.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 5:52 PM Jonathan Corbet <corbet@lwn.net> wrote:
->
-> On Tue, 15 Dec 2020 20:42:36 +0000
-> Milan Lakhani <milan.lakhani@codethink.co.uk> wrote:
->
-> > Renumber the steps in submit-checklist.rst as some numbers were skipped.
-> >
-> > Fixes: 72deb455b5ec ("block: remove CONFIG_LBDAF")
-> > Signed-off-by: Milan Lakhani <milan.lakhani@codethink.co.uk>
-> > ---
-> >  Documentation/process/submit-checklist.rst | 24 ++++++++++++------------
-> >  1 file changed, 12 insertions(+), 12 deletions(-)
-> >
-> > diff --git a/Documentation/process/submit-checklist.rst b/Documentation/process/submit-checklist.rst
-> > index 1879f88..230ee42 100644
-> > --- a/Documentation/process/submit-checklist.rst
-> > +++ b/Documentation/process/submit-checklist.rst
-> > @@ -75,44 +75,44 @@ and elsewhere regarding submitting Linux kernel patches.
-> >  13) Has been build- and runtime tested with and without ``CONFIG_SMP`` and
-> >      ``CONFIG_PREEMPT.``
-> >
-> > -16) All codepaths have been exercised with all lockdep features enabled.
-> > +14) All codepaths have been exercised with all lockdep features enabled.
-> >
-> > -17) All new ``/proc`` entries are documented under ``Documentation/``
-> > +15) All new ``/proc`` entries are documented under ``Documentation/``
-> [...]
->
-> I've applied this, but, if you're going to stick a "Fixes" tag onto a
-> patch, it's probably only polite to copy the original author.  I'm not
-> fully convinced that the tag is warranted in this case.
->
-> This document seems out of date in a number of ways; it could really use a
-> rather more thorough updating than this.
->
+On Tue, Dec 22, 2020 at 04:19:00PM +0000, Matthew Wilcox wrote:
+> On Mon, Dec 21, 2020 at 02:50:54PM -0500, Vivek Goyal wrote:
+> > -	ret2 = errseq_check_and_advance(&sb->s_wb_err, &f.file->f_sb_err);
+> > +	if (sb->s_op->errseq_check_advance)
+> > +		ret2 = sb->s_op->errseq_check_advance(sb, f.file);
+> 
+> What a terrible name for an fs operation.  You don't seem to be able
+> to distinguish between semantics and implementation.  How about
+> check_error()?
 
-Jon, I completely agree on your out-of-date comment. That is why we
-pointed Milan to that checklist to start with some small basic changes
-and continue with increasingly more challenging and complex updates.
+check_error() sounds better. I was not very happy with the name either.
+Thought of starting with something.
 
-Milan, next update for you to consider: what does "make headers_check"
-do nowadays? (spoiler alert: it does nothing) Adjust the documentation
-for that.
+Vivek
 
-Then, a more general improvement: think about structuring the
-checklist to follow the structure of the other submission guidelines.
-So, reorder the current checklist and check if the step is mentioned
-in submitting-patches and where and make the checklist much more
-aligned to submitting-patches.
-
-Lukas
