@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B412E0733
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 09:30:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A68F82E073B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 09:33:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725997AbgLVI3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 03:29:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34851 "EHLO
+        id S1725954AbgLVIdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 03:33:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21393 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725300AbgLVI3p (ORCPT
+        by vger.kernel.org with ESMTP id S1725820AbgLVIdO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 03:29:45 -0500
+        Tue, 22 Dec 2020 03:33:14 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608625699;
+        s=mimecast20190719; t=1608625907;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=JMn1z+3qEykzQHkIqp2VNssqA3PWvgFfJWR1Q6w9VTw=;
-        b=Q6Ut4ZFm2CQuB77sAXJG+EA2HOgYvQC7takHL5cvUqUPX3Tbnm6ySEV4/by7xfqY/aSIHS
-        mu8HBT/p3KNb/8vci/rBGaUB9tCIZxu+nD89enWjIMFLTjG2u9hK/5HLnr3mnFYm+LoJtB
-        hhLrCxRStiTX0HW++vo6GoWDizJvmIo=
+        bh=/WoEGZEowYO96BAO0eOM0n/UUR242urezSyPqGgvq0g=;
+        b=g7QVCeYc+qDUftiiqZiYQMar1WdfHjf/HWyOcEbNEnJMb5scZKnS/F7Ba3eV71Nb3ohtOh
+        Xx0NtZHYFinb+pM8HbaOkQ2YgVE1vm/aedUyD/JtcTHYOOtp1kB4sRwqNshmtYmZq3SEVe
+        fUqjavMfs3UgUi2XqX0xJ04x6KEQ8Ag=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-61-Q9G-OknUPU6OWsvwirBTBg-1; Tue, 22 Dec 2020 03:28:14 -0500
-X-MC-Unique: Q9G-OknUPU6OWsvwirBTBg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+ us-mta-587-wqzghbuGNi6tQ04mWrWqPA-1; Tue, 22 Dec 2020 03:31:43 -0500
+X-MC-Unique: wqzghbuGNi6tQ04mWrWqPA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4C301107ACE8;
-        Tue, 22 Dec 2020 08:28:12 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B5972800D53;
+        Tue, 22 Dec 2020 08:31:41 +0000 (UTC)
 Received: from [10.36.113.220] (ovpn-113-220.ams2.redhat.com [10.36.113.220])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DDF0C5D9D3;
-        Tue, 22 Dec 2020 08:28:05 +0000 (UTC)
-Subject: Re: [RFC PATCH 2/3] virtio-balloon: add support for providing free
- huge page reports to host
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5DD431002382;
+        Tue, 22 Dec 2020 08:31:35 +0000 (UTC)
+Subject: Re: [RFC PATCH 3/3] mm: support free hugepage pre zero out
 To:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
         Mel Gorman <mgorman@techsingularity.net>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -50,30 +49,99 @@ To:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
         Liang Li <liliang324@gmail.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org,
         virtualization@lists.linux-foundation.org, qemu-devel@nongnu.org
-References: <20201222074810.GA30047@open-light-1.localdomain>
+References: <20201222074910.GA30051@open-light-1.localdomain>
 From:   David Hildenbrand <david@redhat.com>
 Organization: Red Hat GmbH
-Message-ID: <6846ff7a-b302-a0fd-1cd9-af0f2ee733ea@redhat.com>
-Date:   Tue, 22 Dec 2020 09:28:04 +0100
+Message-ID: <585791f4-4b41-5e73-296e-691d5478a915@redhat.com>
+Date:   Tue, 22 Dec 2020 09:31:34 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <20201222074810.GA30047@open-light-1.localdomain>
+In-Reply-To: <20201222074910.GA30051@open-light-1.localdomain>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.12.20 08:48, Liang Li wrote:
-> Free page reporting only supports buddy pages, it can't report the
-> free pages reserved for hugetlbfs case. On the other hand, hugetlbfs
+On 22.12.20 08:49, Liang Li wrote:
+> This patch add support of pre zero out free hugepage, we can use
+> this feature to speed up page population and page fault handing.
+> 
+> Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> Cc: Mel Gorman <mgorman@techsingularity.net>
+> Cc: Andrea Arcangeli <aarcange@redhat.com>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Dave Hansen <dave.hansen@intel.com>
+> Cc: David Hildenbrand <david@redhat.com>  
+> Cc: Michal Hocko <mhocko@suse.com> 
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Alex Williamson <alex.williamson@redhat.com>
+> Cc: Michael S. Tsirkin <mst@redhat.com>
+> Cc: Jason Wang <jasowang@redhat.com>
+> Cc: Mike Kravetz <mike.kravetz@oracle.com>
+> Cc: Liang Li <liliang324@gmail.com>
+> Signed-off-by: Liang Li <liliangleo@didiglobal.com>
+> ---
+>  mm/page_prezero.c | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+> 
+> diff --git a/mm/page_prezero.c b/mm/page_prezero.c
+> index c8ce720bfc54..dff4e0adf402 100644
+> --- a/mm/page_prezero.c
+> +++ b/mm/page_prezero.c
+> @@ -26,6 +26,7 @@ static unsigned long delay_millisecs = 1000;
+>  static unsigned long zeropage_enable __read_mostly;
+>  static DEFINE_MUTEX(kzeropaged_mutex);
+>  static struct page_reporting_dev_info zero_page_dev_info;
+> +static struct page_reporting_dev_info zero_hugepage_dev_info;
+>  
+>  inline void clear_zero_page_flag(struct page *page, int order)
+>  {
+> @@ -69,9 +70,17 @@ static int start_kzeropaged(void)
+>  		zero_page_dev_info.delay_jiffies = msecs_to_jiffies(delay_millisecs);
+>  
+>  		err = page_reporting_register(&zero_page_dev_info);
+> +
+> +		zero_hugepage_dev_info.report = zero_free_pages;
+> +		zero_hugepage_dev_info.mini_order = mini_page_order;
+> +		zero_hugepage_dev_info.batch_size = batch_size;
+> +		zero_hugepage_dev_info.delay_jiffies = msecs_to_jiffies(delay_millisecs);
+> +
+> +		err |= hugepage_reporting_register(&zero_hugepage_dev_info);
+>  		pr_info("Zero page enabled\n");
+>  	} else {
+>  		page_reporting_unregister(&zero_page_dev_info);
+> +		hugepage_reporting_unregister(&zero_hugepage_dev_info);
+>  		pr_info("Zero page disabled\n");
+>  	}
+>  
+> @@ -90,7 +99,15 @@ static int restart_kzeropaged(void)
+>  		zero_page_dev_info.batch_size = batch_size;
+>  		zero_page_dev_info.delay_jiffies = msecs_to_jiffies(delay_millisecs);
+>  
+> +		hugepage_reporting_unregister(&zero_hugepage_dev_info);
+> +
+> +		zero_hugepage_dev_info.report = zero_free_pages;
+> +		zero_hugepage_dev_info.mini_order = mini_page_order;
+> +		zero_hugepage_dev_info.batch_size = batch_size;
+> +		zero_hugepage_dev_info.delay_jiffies = msecs_to_jiffies(delay_millisecs);
+> +
+>  		err = page_reporting_register(&zero_page_dev_info);
+> +		err |= hugepage_reporting_register(&zero_hugepage_dev_info);
+>  		pr_info("Zero page enabled\n");
+>  	}
+>  
+> 
 
-The virtio-balloon free page reporting interface accepts a generic sg,
-so it isn't glue to buddy pages. There is no need for a new interface.
+Free page reporting in virtio-balloon doesn't give you any guarantees
+regarding zeroing of pages. Take a look at the QEMU implementation -
+e.g., with vfio all reports are simply ignored.
 
+Also, I am not sure if mangling such details ("zeroing of pages") into
+the page reporting infrastructure is a good idea.
 
 -- 
 Thanks,
