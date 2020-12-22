@@ -2,119 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B08672E0F18
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 20:51:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E7F2E0F1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 20:54:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726472AbgLVTuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 14:50:22 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:35396 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725931AbgLVTuW (ORCPT
+        id S1726921AbgLVTx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 14:53:58 -0500
+Received: from mout.kundenserver.de ([217.72.192.73]:36251 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726319AbgLVTx5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 14:50:22 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1608666602; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=1/n4spgUgB5z8HHtSAnD/C3uM02O7wS2g73gRhhMe3Y=;
- b=Z2P/8SeQtisXnK1YkQdZD3/t0JjWaSOkGBs/ONtEZ2fPbVHv4YRh0yRQ35Mp3Kt77q+17SbG
- 5Q6M5zqf1AJfh3fjYqsUWJH+lo9Ht29nCbbcrtxGZWMqosb+F99/UPS/Y/76YTdxYqeirbjw
- akmXVNF2XQOqPaRE1TqyF8Z6UWI=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5fe24dcd7036173f4f7d6267 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Dec 2020 19:49:33
- GMT
-Sender: isaacm=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 27C43C43462; Tue, 22 Dec 2020 19:49:33 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: isaacm)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 43125C433CA;
-        Tue, 22 Dec 2020 19:49:32 +0000 (UTC)
+        Tue, 22 Dec 2020 14:53:57 -0500
+Received: from [192.168.1.155] ([95.118.68.26]) by mrelayeu.kundenserver.de
+ (mreue108 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1MG9Xu-1kqjsd39oK-00GbOJ; Tue, 22 Dec 2020 20:51:15 +0100
+Subject: Re: [PATCH v3] drivers: clk: make gpio-gated clock support optional
+To:     Stephen Boyd <sboyd@kernel.org>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        linux-kernel@vger.kernel.org
+Cc:     mturquette@baylibre.com, matthias.bgg@gmail.com,
+        linux-clk@vger.kernel.org, linux-riscv@lists.infradead.org
+References: <20201202123446.21902-1-info@metux.net>
+ <160842266128.1580929.15786525540819499647@swboyd.mtv.corp.google.com>
+ <160844222880.1580929.12780984836660049815@swboyd.mtv.corp.google.com>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <d98dff5f-5880-9ecf-b102-79ec64a11537@metux.net>
+Date:   Tue, 22 Dec 2020 20:51:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 22 Dec 2020 11:49:32 -0800
-From:   isaacm@codeaurora.org
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, pratikp@codeaurora.org,
-        joro@8bytes.org, kernel-team@android.com, will@kernel.org,
-        pdaly@codeaurora.org
-Subject: Re: [PATCH v2 3/7] iommu/arm-smmu: Add dependency on io-pgtable
- format modules
-In-Reply-To: <3b0c191d-3fd0-73db-c1e3-4a80aa7953d7@arm.com>
-References: <1608597876-32367-1-git-send-email-isaacm@codeaurora.org>
- <1608597876-32367-4-git-send-email-isaacm@codeaurora.org>
- <3b0c191d-3fd0-73db-c1e3-4a80aa7953d7@arm.com>
-Message-ID: <e47f14b81d90772346ef28c9a7fd3365@codeaurora.org>
-X-Sender: isaacm@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+In-Reply-To: <160844222880.1580929.12780984836660049815@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:g6HZ6qzFtmVXhWZbGpRPlXB6w4VSxc6zp0//8UzR9CPGvlhGagq
+ YF7m3h3xt+rRpKRQZH3ME0SJBafNNhyN+MN8UDt/z2e5orDqWL8uxlmvQ25sJM45IfG06ua
+ 9rO7pzkR+cMwxF98WuOe6jVdFs1dWL0AXbEVr3Z31aByWwmjpceWT0MN+AhWemXCu/0qLXp
+ OrZPU3w2vStxQ7WKS/DsA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:SI6s/J81h8I=:DuVCewtS/SQfXUaPMapQZd
+ oL1GhVuV71HDvs8uKKX3W+9IJC+oribbWSkVLne14ANICco2xQIZ97pDG6DK1h8yBQwV4fFWM
+ uQvJn0/N66F52q8ebOiAL7gzc9zJ4XF7YGA8qFFaWOYrtwJe5YBd8SYeGPHJUWPvH/QAzR17c
+ iq0DZBY7jvoQq9HGt2Mamm41VoT8+io/o1/1KMDe9jlegiQZOAahjqT6zzLxSWnNYxF2FBnYo
+ IBV4Vnmljc7Fj2cZ1imCyJyQToPvyPbACm1hLVJKmCN66OqPeuhXwidLyxuEAtgvBpXlCNQcF
+ rTEpvi35+5x4Ad1TwYxcRV/BZ53Z8kPjHr8ambA2xbV4XJuM2EKDxgJtmWU6LI9SC2ueV7vr/
+ I/Z39sVlRiQS7u9lADvcNjCA1Y2rvaW931gGzY/V7jwpJWLdHvmvX6NujBFy6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-22 11:27, Robin Murphy wrote:
-> On 2020-12-22 00:44, Isaac J. Manjarres wrote:
->> The SMMU driver depends on the availability of the ARM LPAE and
->> ARM V7S io-pgtable format code to work properly. In preparation
-> 
-> Nit: we don't really depend on v7s - we *can* use it if it's
-> available, address constraints are suitable, and the SMMU
-> implementation actually supports it (many don't), but we can still
-> quite happily not use it even so. LPAE is mandatory in the
-> architecture so that's our only hard requirement, embodied in the
-> kconfig select.
-> 
-> This does mean there may technically still be a corner case involving
-> ARM_SMMU=y and IO_PGTABLE_ARM_V7S=m, but at worst it's now a runtime
-> failure rather than a build error, so unless and until anyone
-> demonstrates that it actually matters I don't feel particularly
-> inclined to give it much thought.
-> 
-> Robin.
-> 
-Okay, I'll fix up the commit message, as well as the code, so that it
-only depends on io-pgtable-arm.
+On 20.12.20 06:30, Stephen Boyd wrote:
 
-Thanks,
-Isaac
->> for having the io-pgtable formats as modules, add a "pre"
->> dependency with MODULE_SOFTDEP() to ensure that the io-pgtable
->> format modules are loaded before loading the ARM SMMU driver module.
->> 
->> Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
->> ---
->>   drivers/iommu/arm/arm-smmu/arm-smmu.c | 1 +
->>   1 file changed, 1 insertion(+)
->> 
->> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c 
->> b/drivers/iommu/arm/arm-smmu/arm-smmu.c
->> index d8c6bfd..a72649f 100644
->> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
->> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
->> @@ -2351,3 +2351,4 @@ MODULE_DESCRIPTION("IOMMU API for ARM 
->> architected SMMU implementations");
->>   MODULE_AUTHOR("Will Deacon <will@kernel.org>");
->>   MODULE_ALIAS("platform:arm-smmu");
->>   MODULE_LICENSE("GPL v2");
->> +MODULE_SOFTDEP("pre: io-pgtable-arm io-pgtable-arm-v7s");
->> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> It looks like it needs to be a bool Kconfig to match how it used to be.
+> A module would be interesting, but would require more changes
+> presumably, like getting rid of builtin_platform_driver() and replacing
+> it with module_platform_driver().
+
+Okay, I'll rework it and post a v4.
+
+thx.
+--mtx
+
+
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
