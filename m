@@ -2,100 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B94B22E0F87
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 21:56:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7C9A2E0F8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 22:01:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727727AbgLVUyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 15:54:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42466 "EHLO
+        id S1727781AbgLVU54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 15:57:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726340AbgLVUyx (ORCPT
+        with ESMTP id S1727590AbgLVU5z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 15:54:53 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFF4EC0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 12:54:12 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id m203so19340774ybf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 12:54:12 -0800 (PST)
+        Tue, 22 Dec 2020 15:57:55 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33B75C0613D3;
+        Tue, 22 Dec 2020 12:57:15 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id qw4so19981127ejb.12;
+        Tue, 22 Dec 2020 12:57:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=/9QkJtGrDHYGlOeTvRf6aI/jOSpy3JILOtXVR8pD5Bg=;
-        b=OdfKo0GyVnWedvMBm0zf561kxeucBXA18KqGvJwTxhnAVORS5IoBE/fCt5/BOUkzJx
-         UTeEuaLfNgVW4XJXeduSaoPgr1Mw6zzqTJz4/XRaTqpHea0+ATsSFsurQ9Dqb2IJjqLN
-         wGJ9MruXqUFOiQtI6nagP+VUFEPKLZ4FGKJJzX0137FlB172LXVRqQvrALDXEsSWkibl
-         egQ9tbdyh5uh1E1/HK82+wbSm6f4f2afcWCK6T0FOxUeODHCSwup4BvU8PgVeAqkFtst
-         Se+tdQeqfOHb9xPM54QctQKo4XNRvuEpaZEXWKgqUk4cStc/xJPXphYiME0eFayGvN8l
-         0kQg==
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=zUWKl7dvt8OlTSLdq8E8E3SrHTkmLLGK9+sNIq8RkLU=;
+        b=G/FjNgjV8WDYYnE5GWldP59qbvJszG4VYfMK20v/u9megbPD7nOLcjQyWiPaligPzN
+         DtOaaWNWN1nRYPMo9JGu2Fu+REwrF/DlQsmodGPFdfg3FglxIbMUHEj2rRQX5zSYnCiw
+         KYBPUFsVO8DGeKKKmWiIwUMKp2EcOskGT0nk69/YloGvFJ349SrKi+qiUozwipdUxkZb
+         IHo5DpAlcw5aNuOs+fP2NG13ZjkPY9YzrEWNAUg8i5NMA9toRI2/rsQJd+me9Butbjih
+         R7Ho1B2x2w0l2mJUGDgbm4j+XqqYxNzPs3AZOBTFY0qO6uP1fZm2UEUUj3KPLsu33GFy
+         fr4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=/9QkJtGrDHYGlOeTvRf6aI/jOSpy3JILOtXVR8pD5Bg=;
-        b=HIqPF++tbmc6QbK6WlWsVEH1BUJxcbKL9ieRBHVSu5JR5i1AtlmnShQnxZP2zQDD4t
-         C6KpdGWhhx++tm/xslkSgDTIwe0fV91422z3wSrwIF6uS+LF/b8FxgfXaBi9SrMClB5q
-         ZmBv4t3WLWMrIWcgMu98TCU0zYhiBjg5JdIKBCDwtC3u6dxXS3lMvTHfetkvMWQxS9yS
-         LEF6uLiUU6Nn+gibgQ85sZfkz8oHNzREwSKrSjKZlYkEHD11cbpbk8hPrzW4M2AxxMl8
-         h5IRwoCSNMevLkoYc6Lx3XZjb20alH/vZ0whCGggCeQw6tdGW6Wx82QTKZ/SiYRJbvoy
-         WAPQ==
-X-Gm-Message-State: AOAM533QTNuCKmBwN+vgcI0TJPcGg3QRFzdauoXbIf90cJSUvCgvailN
-        I/qYtT5JKUqvXPAMXLWqNckYGCQJHpoxLcykvR4=
-X-Google-Smtp-Source: ABdhPJyGzD8kYhSUj1EYwgmEauHr5nDb/sLbvusrTMRh3O6TYPvjVAfr82coan1uHwx9Q+puKngANzZ1nSavTD9pjrE=
-Sender: "ndesaulniers via sendgmr" 
-        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
- (user=ndesaulniers job=sendgmr) by 2002:a25:73c3:: with SMTP id
- o186mr31889461ybc.182.1608670452024; Tue, 22 Dec 2020 12:54:12 -0800 (PST)
-Date:   Tue, 22 Dec 2020 12:54:01 -0800
-In-Reply-To: <20201212161831.GA28098@roeck-us.net>
-Message-Id: <20201222205402.2269377-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-References: <20201212161831.GA28098@roeck-us.net>
-X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
-Subject: [PATCH] sh: check return code of request_irq
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Paul Mundt <lethal@linux-sh.org>,
-        Guenter Roeck <linux@roeck-us.net>, linux-sh@vger.kernel.org,
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=zUWKl7dvt8OlTSLdq8E8E3SrHTkmLLGK9+sNIq8RkLU=;
+        b=lWet8imSZk5I+Og7BUnvmk8nOpb0WcJ0pqJT06Okl9HxGC0q3LvJBv+3AIC6M20yrW
+         W9dt8M97GsQ2Hqi8B8MzzMKDs201o4rQqneoP1Xk7N67OgYKpBz1KgtqwWJDu+3sUtZ+
+         reYggEz0871aoIOEMKruc3tQ1ea0rsKlGhuTFWs9vEsg5I5iRHesEg4o9XX/oHZO99lk
+         lHFfJXUh3l0h0ZZCQGMj3RXj7mdZOro/0pP8ukfo5uc8Fp3r7K8+LlmRd6JPRWHFPPw8
+         EJGaTXFTi6H/jdlxBmI44Y+uk4pavkZHvN/lhHCrpAmhH3IFVFxstQu9JOBLAHb3Rfay
+         7h4g==
+X-Gm-Message-State: AOAM531AIYk/lfpAdP9SUMbfL7X7s5Q7tdPfqb/PTVAqggOGQnNZJP2a
+        cUnMUxdI1ni14YD1ITpuhESITD1KteZgtw==
+X-Google-Smtp-Source: ABdhPJzLLuq/35dh7eBlVk7/nQ+Hd+ys73cY/rwHx3B80440wYfIF18YAVH/nzGL0oRGnjLv/bbW3g==
+X-Received: by 2002:a17:907:a8a:: with SMTP id by10mr21163548ejc.423.1608670633938;
+        Tue, 22 Dec 2020 12:57:13 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
+        by smtp.googlemail.com with ESMTPSA id v18sm10669550ejw.18.2020.12.22.12.57.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 22 Dec 2020 12:57:13 -0800 (PST)
+Message-ID: <eb4cd8f151c43e5754bb7725bce3e8ee34a49b51.camel@gmail.com>
+Subject: Re: [PATCH v5 1/7] scsi: ufs: Add "wb_on" sysfs node to control WB
+ on/off
+From:   Bean Huo <huobean@gmail.com>
+To:     Can Guo <cang@codeaurora.org>,
+        Stanley Chu <stanley.chu@mediatek.com>
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, beanhuo@micron.com, bvanassche@acm.org,
+        tomas.winkler@intel.com, linux-scsi@vger.kernel.org,
         linux-kernel@vger.kernel.org
+Date:   Tue, 22 Dec 2020 21:57:12 +0100
+In-Reply-To: <a01cdd4ff6afd2a9166741caed3c2b3d@codeaurora.org>
+References: <20201215230519.15158-1-huobean@gmail.com>
+         <20201215230519.15158-2-huobean@gmail.com>
+         <1608617307.14045.3.camel@mtkswgap22>
+         <a01cdd4ff6afd2a9166741caed3c2b3d@codeaurora.org>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-request_irq is marked __must_check, but the call in shx3_prepare_cpus
-has a void return type, so it can't propagate failure to the caller.
-Follow cues from hexagon and just print an error.
+On Tue, 2020-12-22 at 14:12 +0800, Can Guo wrote:
+> > > +            return -EOPNOTSUPP;
+> > > +
+> > > +    if (kstrtouint(buf, 0, &wb_enable))
+> > > +            return -EINVAL;
+> > > +
+> > > +    if (wb_enable != 0 && wb_enable != 1)
+> > > +            return -EINVAL;
+> > > +
+> > > +    pm_runtime_get_sync(hba->dev);
+> > > +    res = ufshcd_wb_ctrl(hba, wb_enable);
+> > 
+> > May this operation race with UFS shutdown flow?
+> > 
+> > To be more clear, ufshcd_wb_ctrl() here may be executed after host 
+> > clock
+> > is disabled by shutdown flow?
+> > 
+> > If yes, we need to avoid it.
+> 
+> I have the same doubt - can user still access sysfs nodes after
+> system
+> starts to run shutdown routines? If yes, then we need to remove all
+> UFS
+> sysfs nodes in ufshcd_shutdown().
+> 
 
-Fixes: c7936b9abcf5 ("sh: smp: Hook in to the generic IPI handler for SH-X3 SMP.")
-Cc: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc: Paul Mundt <lethal@linux-sh.org>
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
- arch/sh/kernel/cpu/sh4a/smp-shx3.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+No, we shouldn't do in this way, user space complains this. I think
+the nodes in the sysfs can be shileded write, but the nodes shouldn't
+be flash of its presence frequently.
 
-diff --git a/arch/sh/kernel/cpu/sh4a/smp-shx3.c b/arch/sh/kernel/cpu/sh4a/smp-shx3.c
-index f8a2bec0f260..1261dc7b84e8 100644
---- a/arch/sh/kernel/cpu/sh4a/smp-shx3.c
-+++ b/arch/sh/kernel/cpu/sh4a/smp-shx3.c
-@@ -73,8 +73,9 @@ static void shx3_prepare_cpus(unsigned int max_cpus)
- 	BUILD_BUG_ON(SMP_MSG_NR >= 8);
- 
- 	for (i = 0; i < SMP_MSG_NR; i++)
--		request_irq(104 + i, ipi_interrupt_handler,
--			    IRQF_PERCPU, "IPI", (void *)(long)i);
-+		if (request_irq(104 + i, ipi_interrupt_handler,
-+			    IRQF_PERCPU, "IPI", (void *)(long)i))
-+			pr_err("Failed to request irq %d\n", i);
- 
- 	for (i = 0; i < max_cpus; i++)
- 		set_cpu_present(i, true);
--- 
-2.29.2.729.g45daf8777d-goog
+Thanks,
+Bean 
+
+
+> Thanks,
+> 
+> Can Guo.
 
