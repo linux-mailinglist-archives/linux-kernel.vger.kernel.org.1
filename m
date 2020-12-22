@@ -2,105 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 217352E0D8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 17:50:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1DF82E0D97
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 17:58:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728027AbgLVQtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 11:49:40 -0500
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:64881 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727844AbgLVQtj (ORCPT
+        id S1727735AbgLVQ4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 11:56:50 -0500
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:62701 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726991AbgLVQ4u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 11:49:39 -0500
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 0BMGmWT5023148;
-        Wed, 23 Dec 2020 01:48:32 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 0BMGmWT5023148
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1608655712;
-        bh=x1tnfiPN6W9cdaNaJK7MVlfRuAUdVikoJdzn1wAK29o=;
-        h=From:Date:Subject:To:Cc:From;
-        b=o6B9KWk/rG3OUBmqOFk6cCHhoMnWt/9ZIIo/sXSvkRJ2Iu4jLRmUjmihkDsMmXsd5
-         sJpNcyIjLGA/oxnXeQNRxgOrSrwvQc9cdBdR9pPzP12Gzq4yXCgKbAUAT0gdkpG0G0
-         1JvLsn/MSGJ/UkKRX4Ry6rXQVCzI6z/EZNnXb4GpwpxyDOi8OumVuPWvtS0MKB0UOa
-         EVZzoMMD9sbg5H3fJ2t2xAjcHOsFjnHUqTfk46A9Ft6VBS/CsPfLymyX1urln+yThO
-         Xahi48ZfF9u2XkHSwLY05IYZ0F9xvmrby/rZqqZ65xuofA4K6XUekUL3q4rsItnRWL
-         uiRO0+LJfXVgA==
-X-Nifty-SrcIP: [209.85.215.173]
-Received: by mail-pg1-f173.google.com with SMTP id c22so8698638pgg.13;
-        Tue, 22 Dec 2020 08:48:32 -0800 (PST)
-X-Gm-Message-State: AOAM531BiJM8tODrFaNuF3hVmGtE/rPgVhhNPTKYOWijzoQ7WSyHqORC
-        ig8p1w1zq0bAzUb+fbV2vHmamINhZ8Yuz66Rbpk=
-X-Google-Smtp-Source: ABdhPJzSD1x01p8O0z31C8Yw5wXyLGj88hxzkl7jYf8K3AqQd3CUANznU3IYBcVvSvGUZgCG524xGgtwgGIbB9gkIGU=
-X-Received: by 2002:a62:d142:0:b029:19e:62a0:ca1a with SMTP id
- t2-20020a62d1420000b029019e62a0ca1amr20393091pfl.80.1608655711782; Tue, 22
- Dec 2020 08:48:31 -0800 (PST)
+        Tue, 22 Dec 2020 11:56:50 -0500
+X-Originating-IP: 176.167.34.245
+Received: from localhost (unknown [176.167.34.245])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 75EA424000E;
+        Tue, 22 Dec 2020 16:56:03 +0000 (UTC)
+Date:   Tue, 22 Dec 2020 17:56:00 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Steen Hegelund <steen.hegelund@microchip.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Mark Einon <mark.einon@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [RFC PATCH v2 2/8] net: sparx5: add the basic sparx5 driver
+Message-ID: <20201222165600.GE3819852@piout.net>
+References: <20201217075134.919699-1-steen.hegelund@microchip.com>
+ <20201217075134.919699-3-steen.hegelund@microchip.com>
+ <20201219191157.GC3026679@lunn.ch>
+ <37309f64bf0bb94e55bc2db4c482c1e3e7f1be6f.camel@microchip.com>
+ <20201222150122.GM3107610@lunn.ch>
 MIME-Version: 1.0
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 23 Dec 2020 01:47:55 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARRsx+bTOW+y-u8z91NvBZfC9HMbB0i1if+SbjMh=vNpA@mail.gmail.com>
-Message-ID: <CAK7LNARRsx+bTOW+y-u8z91NvBZfC9HMbB0i1if+SbjMh=vNpA@mail.gmail.com>
-Subject: [GIT PULL 2/2] Kconfig updates for v5.11-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201222150122.GM3107610@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On 22/12/2020 16:01:22+0100, Andrew Lunn wrote:
+> > The problem is that the switch core reset also affects (reset) the
+> > SGPIO controller.
+> > 
+> > We tried to put this in the reset driver, but it was rejected. If the
+> > reset is done at probe time, the SGPIO driver may already have
+> > initialized state.
+> > 
+> > The switch core reset will then reset all SGPIO registers. 
+> 
+> Ah, O.K. Dumb question. Why is the SGPIO driver a separate driver? It
+> sounds like it should be embedded inside this driver if it is sharing
+> hardware.
+> 
+> Another option would be to look at the reset subsystem, and have this
+> driver export a reset controller, which the SGPIO driver can bind to.
+> Given that the GPIO driver has been merged, if this will work, it is
+> probably a better solution.
+> 
 
-Please pull Kconfig updates for v5.11
-Thanks.
+That was my suggestion. Then you can ensure from the reset controller
+driver that this is done exactly once, either from the sgpio driver or
+from the switchdev driver. IIRC, the sgpio from the other SoCs are not
+affected by the reset.
 
-
-The following changes since commit 0477e92881850d44910a7e94fc2c46f96faa131f:
-
-  Linux 5.10-rc7 (2020-12-06 14:25:12 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
-tags/kconfig-v5.11
-
-for you to fetch changes up to 90d39628ac799e93c0f7a56763eed5029632f1ba:
-
-  kconfig: doc: fix $(fileno) to $(filename) (2020-12-21 16:01:44 +0900)
-
-----------------------------------------------------------------
-Kconfig updates for v5.11
-
- - Support only Qt5 for qconf
-
- - Validate signal/slot connection at compile time of qconf
-
- - Sanitize header includes
-
-----------------------------------------------------------------
-Boris Kolpackov (2):
-      kconfig: make lkc.h self-sufficient #include-wise
-      kconfig: clean up header inclusion
-
-Masahiro Yamada (6):
-      kconfig: qconf: drop Qt4 support
-      kconfig: qconf: use a variable to pass packages to pkg-config
-      kconfig: qconf: convert to Qt5 new signal/slot connection syntax
-      kconfig: qconf: show Qt version in the About dialog
-      kconfig: fix return value of do_error_if()
-      kconfig: doc: fix $(fileno) to $(filename)
-
- Documentation/kbuild/kconfig-macro-language.rst |   2 +-
- scripts/kconfig/conf.c                          |   1 -
- scripts/kconfig/confdata.c                      |   1 +
- scripts/kconfig/lexer.l                         |   1 -
- scripts/kconfig/lkc.h                           |   4 +
- scripts/kconfig/preprocess.c                    |   2 +-
- scripts/kconfig/qconf-cfg.sh                    |  14 +--
- scripts/kconfig/qconf.cc                        | 145 +++++++++++++---------
- scripts/kconfig/symbol.c                        |   2 +-
- 9 files changed, 95 insertions(+), 77 deletions(-)
 
 -- 
-Best Regards
-Masahiro Yamada
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
