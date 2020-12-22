@@ -2,120 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3BBA2E0EE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 20:27:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E2572E0EF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 20:27:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726620AbgLVTZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 14:25:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725300AbgLVTZQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 14:25:16 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51348C0613D3;
-        Tue, 22 Dec 2020 11:24:36 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id l11so34635605lfg.0;
-        Tue, 22 Dec 2020 11:24:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bAwwHu8Zr+LCIdaN1acypQRIs//vA5Gvg6O61PVJ5mE=;
-        b=c2K1a/cpIhUUaOI0qDQpFJM2ZCQd5hThZcs2neSK9H1wGNa8CimSkraGF0sL1scq/8
-         WswPZF4gZBN9DVesn7KAGoVxq3+CKFwEFKk8eMLcQwmI8tXlheOlQToM5e+qq5x9CH7d
-         gGRnePeI58LqvhhZAh0PDxDXGBGsFxAbPqQ1eT7AdcAZSTO/TVQ/YqJC7j/D6x5lmzkY
-         2rhI+dRUkVgurQcXCc1VApxu6CelcvRBFzPcKnKksOnC41AncyxrO8+GRWqQq4tHF1bj
-         iB16a4iL8DG35UcBGIPZnG4mgTkXMbKFZAqjBJmhYgupC5zTIdYps8IKTSrONTFdafOj
-         69Rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bAwwHu8Zr+LCIdaN1acypQRIs//vA5Gvg6O61PVJ5mE=;
-        b=s6xb257ABVcWG03ZLfWdONaFHVH3RTyfhnx2ydOq5b2FiGgnNhbVzX6zrsd10cemxM
-         kWS9Yx4YFbRvJOhX8Dx6RqyXrg+mtcbBe+8LjVPOvzASLleZdF0Som3JUjQF+QNEh1s4
-         j9SH3iJZc1mLIsFjoP+AgbPT0R5O9aEdAj5Ri4ABA9kF3jlA3SuFk9mIzfgCvZKJOo4o
-         /hoB+MFv9WUNTW9ezIMizOF598BPonqfkbSXKs/fQ/38aqveu08XC6/Cnc55kIz37sTH
-         7u2FuafSxw7hXkBPBopUkCkuvQIllCJ6tRM41M25bsfY/pqTtfEtVLm9qGjWw9zxKgLA
-         xiRA==
-X-Gm-Message-State: AOAM533CxBEky40dDbvxIlR9vVBBv37zHhE/uIWyGPiiNVsfZr3hzKju
-        of2LNxiiR7EvccY149eAMUCK1V1AxHo=
-X-Google-Smtp-Source: ABdhPJx317Mwb/pjlxKQylOoep3u9EFCLyet/MQ0xMeM0WG7ENaXqps6+2cF3iNKM4R0oCScJj45zw==
-X-Received: by 2002:ac2:5ec1:: with SMTP id d1mr8840565lfq.589.1608665074730;
-        Tue, 22 Dec 2020 11:24:34 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.googlemail.com with ESMTPSA id n22sm2806790lfe.230.2020.12.22.11.24.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Dec 2020 11:24:34 -0800 (PST)
-Subject: Re: [PATCH v2 43/48] ARM: tegra: Add OPP tables and power domains to
- Tegra20 device-tree
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-clk@vger.kernel.org
-References: <20201217180638.22748-1-digetx@gmail.com>
- <20201217180638.22748-44-digetx@gmail.com>
- <20201222054745.2am4bcbk5df5aqzj@vireshk-i7>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <e3ed3b17-b549-860b-1dc2-cb1d6eb3b90b@gmail.com>
-Date:   Tue, 22 Dec 2020 22:24:33 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        id S1727169AbgLVT1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 14:27:02 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:40062 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725938AbgLVT0C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 14:26:02 -0500
+Received: from zn.tnic (p200300ec2f0ef2002f9d5453c68bf448.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:f200:2f9d:5453:c68b:f448])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 069C71EC0516;
+        Tue, 22 Dec 2020 20:25:21 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1608665121;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=WbFzFiZYs65Vkt660aD//2c0YmnCgd1HRy7MBsnYFYE=;
+        b=IZFENNdimKt8iTQHjsvDmHHbwFolfn67G03ScVG2FofEWiN8fIfP/WoSEdL5oakg1VVPvn
+        nYomLFlvMTxvIbDTWOOCcZG+fv5v1YShRwn0v2zUmFEKrULe6uSXZpr7WvDJhIj5zwJkhO
+        xw8Uj62Cg2YMF7wtMK6C9R/2Z7IQofM=
+Date:   Tue, 22 Dec 2020 20:25:17 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>, x86-ml <x86@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] Documentation/submitting-patches: Add blurb about
+ backtraces in commit messages
+Message-ID: <20201222192517.GE13463@zn.tnic>
+References: <20201217183756.GE23634@zn.tnic>
+ <20201221095425.6da68163@lwn.net>
+ <20201222130555.GA13463@zn.tnic>
+ <X+JCCqTJkgZASj7T@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20201222054745.2am4bcbk5df5aqzj@vireshk-i7>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+In-Reply-To: <X+JCCqTJkgZASj7T@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-22.12.2020 08:47, Viresh Kumar пишет:
-> On 17-12-20, 21:06, Dmitry Osipenko wrote:
->> diff --git a/arch/arm/boot/dts/tegra20-peripherals-opp.dtsi b/arch/arm/boot/dts/tegra20-peripherals-opp.dtsi
->> index b84afecea154..7e015cdfbc55 100644
->> --- a/arch/arm/boot/dts/tegra20-peripherals-opp.dtsi
->> +++ b/arch/arm/boot/dts/tegra20-peripherals-opp.dtsi
->> @@ -1,6 +1,46 @@
->>  // SPDX-License-Identifier: GPL-2.0
->>  
->>  / {
->> +	core_opp_table: core-power-domain-opp-table {
->> +		compatible = "operating-points-v2";
->> +		opp-shared;
->> +
->> +		core_opp_950: opp@950000 {
->> +			opp-microvolt = <950000 950000 1300000>;
->> +			opp-level = <950000>;
->> +		};
+On Tue, Dec 22, 2020 at 10:59:22AM -0800, Sean Christopherson wrote:
+> On Tue, Dec 22, 2020, Borislav Petkov wrote:
+> > Ok, here's the next one which I think, is also, not really controversial.
 > 
-> I am not sure I fully understand this, why does it have both microvolt and level
-> properties ?
+> Heh, are you trying to jinx yourself?
+
+I was trying to conjure up some bikeshedding... and there it is! :-)
+
+> > +Backtraces help document the call chain leading to a problem. However,
+> > +not all backtraces are helpful. For example, early boot call chains are
+> > +unique and obvious.
 > 
+> I'd argue that there is still value in the backtrace though, e.g. I find them
+> very helpful when doing git archaeology.  A backtrace is an easily recognizable
+> signature (don't have to read a bunch of text to understand there was a splat of
+> some kind), and the call stack is often helpful even if it is unique, e.g. for
+> unfamiliar code (including early boot chains) and/or code that is substantially
+> different from the current upstream.
 
-The level is used by everything related to GENPD, while voltage is used
-by the domain driver.
+I think the intent of the text is to say not to include callchains which
+are *really* obvious. As in, there's no ambiguity as to how one has
+landed here.
 
-I think it's cleaner to separate the level from voltage, even though
-they are set to the same values, which is done purely for convenience.
-The 0,1,2,3 levels are meaningless in the context of this power domain,
-while voltages make total sense.
+Also, sometimes people paste backtraces from a WARN* which are almost
+always superfluous - only the warn's address is important. This is at
+least how I go about debugging those.
+
+Maybe the text should be made more precise.
+
+> I'd prefer not to encourage people to strip the info after the function name,
+> though I do agree it's somewhat distracting (especially the offset/size).
+
+Yes. Especially since they don't make any sense on another system or
+even on the same system but with a different .config.
+
+> The module, call site in the function, exact file/line if available,
+> etc... provides context that I find helpful for building a mental
+> model of what went wrong.
+
+File/line is more useful, yes, but only for the current code snapshot.
+When time passes and stuff gets changed, those file/line things are not
+correct anymore so one would have to checkout the tree on which the
+splat happened.
+
+I guess I need to make that aspect more precise too.
+
+> E.g. which modules are in play, which short wrapper functions can
+> likely be glossed over, etc...
+
+That example doesn't have modules. I guess I'll generate a new one.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
