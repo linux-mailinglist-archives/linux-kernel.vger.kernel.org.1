@@ -2,96 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E8932E0961
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 12:12:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81BC52E0963
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 12:14:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726571AbgLVLLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 06:11:48 -0500
-Received: from mga11.intel.com ([192.55.52.93]:59960 "EHLO mga11.intel.com"
+        id S1726669AbgLVLM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 06:12:57 -0500
+Received: from smtp.hosts.co.uk ([85.233.160.19]:44108 "EHLO smtp.hosts.co.uk"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726095AbgLVLLs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 06:11:48 -0500
-IronPort-SDR: 4SmKW9mHX43zEDD9gF2ztnQpkenjk3rd8LSKPbXBVU+4002QEfp+iSkTuJUO5xMmQe8/6wxZAr
- MY7Dw5aEFI9A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9842"; a="172342971"
-X-IronPort-AV: E=Sophos;i="5.78,438,1599548400"; 
-   d="scan'208";a="172342971"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2020 03:10:02 -0800
-IronPort-SDR: xejfehk0d88A6yQrfKVc8UtAOaWxGdogAvpcAz5zG67R9KrHTpSVJ1+Cdos5CrmvSSo4zHaHy/
- QRYMmtezbW3A==
-X-IronPort-AV: E=Sophos;i="5.78,438,1599548400"; 
-   d="scan'208";a="416468213"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2020 03:10:00 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1krfZG-00GXwb-4i; Tue, 22 Dec 2020 13:11:02 +0200
-Date:   Tue, 22 Dec 2020 13:11:02 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     David Gow <davidgow@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kunit: tool: Force the use of the 'tty' console for UML
-Message-ID: <20201222111102.GC4077@smile.fi.intel.com>
-References: <20201222073900.3490607-1-davidgow@google.com>
+        id S1726095AbgLVLM5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 06:12:57 -0500
+Received: from host86-149-69-253.range86-149.btcentralplus.com ([86.149.69.253] helo=[192.168.1.65])
+        by smtp.hosts.co.uk with esmtpa (Exim)
+        (envelope-from <antlists@youngman.org.uk>)
+        id 1krfaQ-000BhF-5h; Tue, 22 Dec 2020 11:12:14 +0000
+Subject: Re: [RFC PATCH] badblocks: Improvement badblocks_set() for handling
+ multiple ranges
+To:     Coly Li <colyli@suse.de>, axboe@kernel.dk,
+        dan.j.williams@intel.com, vishal.l.verma@intel.com
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-nvdimm@lists.01.org
+References: <20201203171535.67715-1-colyli@suse.de>
+ <3f4bf4c4-1f1f-b1a6-5d91-2dbe02f61e67@youngman.org.uk>
+ <c50e7c65-d7bf-e957-d8eb-efed6c24f089@suse.de>
+From:   antlists <antlists@youngman.org.uk>
+Message-ID: <3233b821-4674-b45a-cad4-4943401eff3d@youngman.org.uk>
+Date:   Tue, 22 Dec 2020 11:12:14 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201222073900.3490607-1-davidgow@google.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <c50e7c65-d7bf-e957-d8eb-efed6c24f089@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 11:39:00PM -0800, David Gow wrote:
-> kunit_tool relies on the UML console outputting printk() output to the
-> tty in order to get results. Since the default console driver could
-> change, pass 'console=tty' to the kernel.
+On 20/12/2020 09:46, Coly Li wrote:
+> Currently blocks/badblocks.c is used by md raid and nvdimm code, and the
+> badblocks table is irrelevant to any of these two subsystems.
+
+Good to know.
 > 
-> This is triggered by a change[1] to use ttynull as a fallback console
-> driver which -- by chance or by design -- seems to have changed the
-> default console output on UML, breaking kunit_tool. While this may be
-> fixed, we should be less fragile to such changes in the default.
+> If there will be better code for similar or better functionality, it
+> should be cool. For me, if the reporting bug is fixed, no difference in
+> my view:-)
 > 
-> [1]:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=757055ae8dedf5333af17b3b5b4b70ba9bc9da4e
+Hopefully that will improve the badblocks handling in md. Sounds like 
+that could in part be the problems we've been seeing.
 
-Reported-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Tested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+If I integrate dm-integrity into md, badblocks should be mutually 
+exclusive with it, but because dm-integrity is both a performance and 
+disk-space hit, people might well not want to enable it.
 
-Thanks!
-
-> Signed-off-by: David Gow <davidgow@google.com>
-> Fixes: 757055ae8ded ("init/console: Use ttynull as a fallback when there is no console")
-
-
-> ---
->  tools/testing/kunit/kunit_kernel.py | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-> index 57c1724b7e5d..698358c9c0d6 100644
-> --- a/tools/testing/kunit/kunit_kernel.py
-> +++ b/tools/testing/kunit/kunit_kernel.py
-> @@ -198,7 +198,7 @@ class LinuxSourceTree(object):
->  		return self.validate_config(build_dir)
->  
->  	def run_kernel(self, args=[], build_dir='', timeout=None):
-> -		args.extend(['mem=1G'])
-> +		args.extend(['mem=1G', 'console=tty'])
->  		self._ops.linux_bin(args, timeout, build_dir)
->  		outfile = get_outfile_path(build_dir)
->  		subprocess.call(['stty', 'sane'])
-> -- 
-> 2.29.2.729.g45daf8777d-goog
-> 
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Cheers,
+Wol
