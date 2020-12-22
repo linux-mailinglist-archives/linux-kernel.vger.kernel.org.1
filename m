@@ -2,31 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F2DF2E059B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 06:22:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C08A02E059A
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Dec 2020 06:22:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725912AbgLVFVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 00:21:47 -0500
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:35224 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725782AbgLVFVr (ORCPT
+        id S1725985AbgLVFWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 00:22:02 -0500
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:50236 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725911AbgLVFWC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 00:21:47 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R741e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UJPqUQy_1608614460;
+        Tue, 22 Dec 2020 00:22:02 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UJPqUQy_1608614460;
 Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UJPqUQy_1608614460)
           by smtp.aliyun-inc.com(127.0.0.1);
           Tue, 22 Dec 2020 13:21:00 +0800
 From:   Alex Shi <alex.shi@linux.alibaba.com>
 To:     hughd@google.com
 Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/3] mm/memcg: remove rcu locking for lock_page_lruvec function series
-Date:   Tue, 22 Dec 2020 13:20:52 +0800
-Message-Id: <1608614453-10739-2-git-send-email-alex.shi@linux.alibaba.com>
+Subject: [PATCH v2 3/3] mm/compaction: remove rcu_read_lock during page compaction
+Date:   Tue, 22 Dec 2020 13:20:53 +0800
+Message-Id: <1608614453-10739-3-git-send-email-alex.shi@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1608614453-10739-1-git-send-email-alex.shi@linux.alibaba.com>
 References: <1608614453-10739-1-git-send-email-alex.shi@linux.alibaba.com>
@@ -34,65 +31,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-lock_page_lruvec() and its variants used rcu_read_lock() with the
-intention of safeguarding against the mem_cgroup being destroyed
-concurrently; but so long as they are called under the specified
-conditions (as they are), there is no way for the page's mem_cgroup
-to be destroyed.  Delete the unnecessary rcu_read_lock() and _unlock().
+isolate_migratepages_block() used rcu_read_lock() with the intention
+of safeguarding against the mem_cgroup being destroyed concurrently;
+but its TestClearPageLRU already protects against that.  Delete the
+unnecessary rcu_read_lock() and _unlock().
 
-Hugh Dickin's polished the commit log, Thanks a lot!
+Hugh Dickin' helped on commit log polishing, Thanks!
 
 Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
 Acked-by: Hugh Dickins <hughd@google.com>
 Cc: Hugh Dickins <hughd@google.com>
 Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: cgroups@vger.kernel.org
 Cc: linux-mm@kvack.org
 Cc: linux-kernel@vger.kernel.org
 ---
- mm/memcontrol.c | 6 ------
- 1 file changed, 6 deletions(-)
+ mm/compaction.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 8d400efc81b9..0af13c4fe4b3 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1356,10 +1356,8 @@ struct lruvec *lock_page_lruvec(struct page *page)
- 	struct lruvec *lruvec;
- 	struct pglist_data *pgdat = page_pgdat(page);
+diff --git a/mm/compaction.c b/mm/compaction.c
+index 8049d3530812..02af220fb992 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -995,7 +995,6 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+ 		if (!TestClearPageLRU(page))
+ 			goto isolate_fail_put;
  
--	rcu_read_lock();
- 	lruvec = mem_cgroup_page_lruvec(page, pgdat);
- 	spin_lock(&lruvec->lru_lock);
--	rcu_read_unlock();
+-		rcu_read_lock();
+ 		lruvec = mem_cgroup_page_lruvec(page, pgdat);
  
- 	lruvec_memcg_debug(lruvec, page);
+ 		/* If we already hold the lock, we can skip some rechecking */
+@@ -1005,7 +1004,6 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
  
-@@ -1371,10 +1369,8 @@ struct lruvec *lock_page_lruvec_irq(struct page *page)
- 	struct lruvec *lruvec;
- 	struct pglist_data *pgdat = page_pgdat(page);
+ 			compact_lock_irqsave(&lruvec->lru_lock, &flags, cc);
+ 			locked = lruvec;
+-			rcu_read_unlock();
  
--	rcu_read_lock();
- 	lruvec = mem_cgroup_page_lruvec(page, pgdat);
- 	spin_lock_irq(&lruvec->lru_lock);
--	rcu_read_unlock();
+ 			lruvec_memcg_debug(lruvec, page);
  
- 	lruvec_memcg_debug(lruvec, page);
+@@ -1026,8 +1024,7 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+ 				SetPageLRU(page);
+ 				goto isolate_fail_put;
+ 			}
+-		} else
+-			rcu_read_unlock();
++		}
  
-@@ -1386,10 +1382,8 @@ struct lruvec *lock_page_lruvec_irqsave(struct page *page, unsigned long *flags)
- 	struct lruvec *lruvec;
- 	struct pglist_data *pgdat = page_pgdat(page);
- 
--	rcu_read_lock();
- 	lruvec = mem_cgroup_page_lruvec(page, pgdat);
- 	spin_lock_irqsave(&lruvec->lru_lock, *flags);
--	rcu_read_unlock();
- 
- 	lruvec_memcg_debug(lruvec, page);
- 
+ 		/* The whole page is taken off the LRU; skip the tail pages. */
+ 		if (PageCompound(page))
 -- 
 2.29.GIT
 
