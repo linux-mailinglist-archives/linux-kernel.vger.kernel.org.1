@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34BAD2E13A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:37:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AF582E139B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:37:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730599AbgLWCcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:32:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54080 "EHLO mail.kernel.org"
+        id S1730698AbgLWCb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:31:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730450AbgLWCZT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:25:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E93C23159;
-        Wed, 23 Dec 2020 02:25:02 +0000 (UTC)
+        id S1728889AbgLWCZZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:25:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA93A2256F;
+        Wed, 23 Dec 2020 02:25:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690303;
-        bh=TFGy+LQiUGgRTyrcomJE+0sOywuluX9VF45YyfZGh7g=;
+        s=k20201202; t=1608690305;
+        bh=uOn4KuImGI6YWXKxFLzAQRXB6bKZf/q2T+OvJ/Btyac=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TR5PDbG5OYOiZBUiQVstA/wj6WF1lMJ8ZzFTFTJZp5YYonVbCppHySjWWtrfXrN3c
-         JQ4OF9V3Dvbktba4M75Ov3s+JnSuUkOxW7ynE9kHSj1O8X69Av7Cuvs8EMFO2CG6AG
-         R7p1kznlprIqki8lBkOguDgBRochh1tABugrweKSXPyjuPxkqscNIABHLR6dyLV97d
-         7Ggp7NekusaCRF2RTSnussceN3kvodqzgPKEJitvrsGbUva6OKr3+r9FiQunTdJnAE
-         oWW5M4u9CrJsVZ/pkKzgO88A8W4QWDNUSOuXdvboFaq/tfP5UA7X92emmnMxk+4XFQ
-         VCn4Zw/gs8I2w==
+        b=I06+xGprfhd+DgIR5iQAlsMXCNPYaQhhuo+oeHAMiZLuagiH8AJ/lHmXa1F6oulQG
+         yUMhY/YzFyvpA3dinqJqBHWwarQu8Sjnu1n0F/f/swXlU/YczQd+vFJQKBPqGx2bKo
+         F48Z1YUmR8pt5IWggcQn6MIvJiFSNlryE3p9tszLIe0YFYIGQgGh+dJ/1JEpTM62Kx
+         PzorIJ+BRoT09cbkZVDNtqSxzHoy/gTj2j8K+Epi4TMJYdvwVTOq5fZyQW6wycPCxo
+         WoFS9KaB4UeLJG4qu3LdgseMrJaiPaxQQLGCqbjmuXcKN84VTUvuI6H9R3VYYNwZI7
+         krqJrFrcF6uPQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        syzbot+a79e17c39564bedf0930@syzkaller.appspotmail.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.9 38/48] misc: vmw_vmci: fix kernel info-leak by initializing dbells in vmci_ctx_get_chkpt_doorbells()
-Date:   Tue, 22 Dec 2020 21:24:06 -0500
-Message-Id: <20201223022417.2794032-38-sashal@kernel.org>
+Cc:     Johannes Berg <johannes.berg@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.9 40/48] iwlwifi: add an extra firmware state in the transport
+Date:   Tue, 22 Dec 2020 21:24:08 -0500
+Message-Id: <20201223022417.2794032-40-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223022417.2794032-1-sashal@kernel.org>
 References: <20201223022417.2794032-1-sashal@kernel.org>
@@ -43,37 +43,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 31dcb6c30a26d32650ce134820f27de3c675a45a ]
+[ Upstream commit b2ed841ed070ccbe908016537f429a3a8f0221bf ]
 
-A kernel-infoleak was reported by syzbot, which was caused because
-dbells was left uninitialized.
-Using kzalloc() instead of kmalloc() fixes this issue.
+Start tracking not just if the firmware is dead or alive,
+but also if it's starting.
 
-Reported-by: syzbot+a79e17c39564bedf0930@syzkaller.appspotmail.com
-Tested-by: syzbot+a79e17c39564bedf0930@syzkaller.appspotmail.com
-Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Link: https://lore.kernel.org/r/20201122224534.333471-1-anant.thazhemadam@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Link: https://lore.kernel.org/r/iwlwifi.20201209231352.33e50d40b688.I8bbd41af7aa5e769273a6fc1c06fbf548dd2eb26@changeid
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/vmw_vmci/vmci_context.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/intel/iwlwifi/iwl-trans.h | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/misc/vmw_vmci/vmci_context.c b/drivers/misc/vmw_vmci/vmci_context.c
-index b9da2c6cc9818..0bdfa90ea6cda 100644
---- a/drivers/misc/vmw_vmci/vmci_context.c
-+++ b/drivers/misc/vmw_vmci/vmci_context.c
-@@ -750,7 +750,7 @@ static int vmci_ctx_get_chkpt_doorbells(struct vmci_ctx *context,
- 			return VMCI_ERROR_MORE_DATA;
- 		}
+diff --git a/drivers/net/wireless/intel/iwlwifi/iwl-trans.h b/drivers/net/wireless/intel/iwlwifi/iwl-trans.h
+index 360554727a817..b1cc2b9f82ab6 100644
+--- a/drivers/net/wireless/intel/iwlwifi/iwl-trans.h
++++ b/drivers/net/wireless/intel/iwlwifi/iwl-trans.h
+@@ -681,12 +681,14 @@ struct iwl_trans_ops {
+ /**
+  * enum iwl_trans_state - state of the transport layer
+  *
+- * @IWL_TRANS_NO_FW: no fw has sent an alive response
+- * @IWL_TRANS_FW_ALIVE: a fw has sent an alive response
++ * @IWL_TRANS_NO_FW: firmware wasn't started yet, or crashed
++ * @IWL_TRANS_FW_STARTED: FW was started, but not alive yet
++ * @IWL_TRANS_FW_ALIVE: FW has sent an alive response
+  */
+ enum iwl_trans_state {
+-	IWL_TRANS_NO_FW = 0,
+-	IWL_TRANS_FW_ALIVE	= 1,
++	IWL_TRANS_NO_FW,
++	IWL_TRANS_FW_STARTED,
++	IWL_TRANS_FW_ALIVE,
+ };
  
--		dbells = kmalloc(data_size, GFP_ATOMIC);
-+		dbells = kzalloc(data_size, GFP_ATOMIC);
- 		if (!dbells)
- 			return VMCI_ERROR_NO_MEM;
+ /**
+@@ -909,12 +911,18 @@ static inline int iwl_trans_start_fw(struct iwl_trans *trans,
+ 				     const struct fw_img *fw,
+ 				     bool run_in_rfkill)
+ {
++	int ret;
++
+ 	might_sleep();
  
+ 	WARN_ON_ONCE(!trans->rx_mpdu_cmd);
+ 
+ 	clear_bit(STATUS_FW_ERROR, &trans->status);
+-	return trans->ops->start_fw(trans, fw, run_in_rfkill);
++	ret = trans->ops->start_fw(trans, fw, run_in_rfkill);
++	if (ret == 0)
++		trans->state = IWL_TRANS_FW_STARTED;
++
++	return ret;
+ }
+ 
+ static inline int iwl_trans_update_sf(struct iwl_trans *trans,
 -- 
 2.27.0
 
