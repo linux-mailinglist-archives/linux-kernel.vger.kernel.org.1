@@ -2,100 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DA672E207D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 19:40:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41CCE2E2078
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 19:36:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728227AbgLWSir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 13:38:47 -0500
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:4854 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726923AbgLWSir (ORCPT
+        id S1727934AbgLWSgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 13:36:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727063AbgLWSgq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 13:38:47 -0500
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BNIHKCu029568;
-        Wed, 23 Dec 2020 10:35:43 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=pfpt0220;
- bh=P+WpMiPyk7oIrJqS4VH5QprshtGLxMyxirTRn4K0GVM=;
- b=RRQZmjEExJnk1pAHgv+LZYkaH5YVk9MqYNJQwa+TNdzBx+D91JNj5GN1pZwYyw3wqf/e
- afVJNMk6j3Iliko+QNWGQITJF/olJt+XbtpXMwIwoJQl4MI9BgI3Bv4ui8nLzi6YXtmQ
- szeD3oBc43w0Xn/ShcXK1nnnrwrDsrREpuD2NBPJefKvbvQ/Gtv2ZXHLFu5cCP6aId+a
- 6XjCcoJn1/BdaoX2AewmcmAOH+cJ0Uko3q0qSnTrZfVOpamnOA0pqx9GyolDKo5r2iJc
- VVV4y2i6mv2J30ZT3Wvq4bcFQPnIwHPJifL+BpFvnoFrf8JvWWgqKijyWIMJBB0iVEfD eQ== 
-Received: from sc-exch02.marvell.com ([199.233.58.182])
-        by mx0a-0016f401.pphosted.com with ESMTP id 35k0ebevr2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 23 Dec 2020 10:35:43 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH02.marvell.com
- (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 23 Dec
- 2020 10:35:42 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 23 Dec 2020 10:35:42 -0800
-Received: from stefan-pc.marvell.com (unknown [10.5.25.21])
-        by maili.marvell.com (Postfix) with ESMTP id 96A753F703F;
-        Wed, 23 Dec 2020 10:35:39 -0800 (PST)
-From:   <stefanc@marvell.com>
-To:     <netdev@vger.kernel.org>
-CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
-        <nadavh@marvell.com>, <ymarkman@marvell.com>,
-        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
-        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
-        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>,
-        <atenart@kernel.org>
-Subject: [PATCH net] net: mvpp2: fix pkt coalescing int-threshold configuration
-Date:   Wed, 23 Dec 2020 20:35:21 +0200
-Message-ID: <1608748521-11033-1-git-send-email-stefanc@marvell.com>
-X-Mailer: git-send-email 1.9.1
+        Wed, 23 Dec 2020 13:36:46 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52FC4C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 10:36:06 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0de6004e8e0a920ee38f04.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:e600:4e8e:a92:ee3:8f04])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AC06B1EC04A6;
+        Wed, 23 Dec 2020 19:36:04 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1608748564;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=T3szGHnqh9g5WowsiNoMytWNIPTlrye+Cl/FcvQGf0s=;
+        b=VrjvyS4C+uRU4RdoJN3Wt2B6lC3DAjFtEMhFrzxRihsyWJUEw+Ou1No+fB20cNGd2+Jxm8
+        ds9WBqYI0zsSlPa/RLiGJtp7o+QY74jPJBtyC27SQMdJQr5oGgMYBZF2S5rxNn3yvcwcYm
+        B1zct207fSLuB6Q/68G61Qnwpewo60Y=
+Date:   Wed, 23 Dec 2020 19:36:06 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [tip:efi/core 3/7] /tmp/slab-258052.s:9870: Error: unrecognized
+ opcode `zext.b a2,a2'
+Message-ID: <20201223183606.GB29011@zn.tnic>
+References: <202012180909.WhlTpWrS-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-23_10:2020-12-23,2020-12-23 signatures=0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <202012180909.WhlTpWrS-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Chulski <stefanc@marvell.com>
+On Fri, Dec 18, 2020 at 09:03:14AM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git efi/core
+> head:   b283477d394ac41ca59ee20eb9293ae9002eb1d7
+> commit: 6edcf9dc2e1aff3aa1f5a69ee420fb30dd0e968a [3/7] efi/libstub: EFI_GENERIC_STUB_INITRD_CMDLINE_LOADER should not default to yes
+> config: riscv-randconfig-r022-20201217 (attached as .config)
+> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project cee1e7d14f4628d6174b33640d502bff3b54ae45)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install riscv cross compiling tool for clang build
+>         # apt-get install binutils-riscv64-linux-gnu
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=6edcf9dc2e1aff3aa1f5a69ee420fb30dd0e968a
+>         git remote add tip https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git
+>         git fetch --no-tags tip efi/core
+>         git checkout 6edcf9dc2e1aff3aa1f5a69ee420fb30dd0e968a
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=riscv 
 
-The packet coalescing interrupt threshold has separated registers
-for different aggregated/cpu (sw-thread). The required value should
-be loaded for every thread but not only for 1 current cpu.
+Something's still not good with that test - it fails much earlier for me:
 
-Fixes: 213f428f5056 ("net: mvpp2: add support for TX interrupts and RX queue distribution modes")
-Signed-off-by: Stefan Chulski <stefanc@marvell.com>
----
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+$ COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang /tmp/make.cross ARCH=riscv
+Compiler will be installed in /home/boris/0day
+cd: received redirection to `https://download.01.org/0day-ci/cross-package/'  
+lftpget -c https://download.01.org/0day-ci/cross-package/./clang-latest/clang.tar.xz
+tar Jxf clang-latest/clang.tar.xz -C /home/boris/0day                                                     
+make W=1 CONFIG_OF_ALL_DTBS=y CONFIG_DTC=y HOSTCC=/home/boris/0day/clang-latest/bin/clang CC=/home/boris/0day/clang-latest/bin/clang LD=/home/boris/0day/clang-latest/bin/ld.lld HOSTLD=/home/boris/0day/clang-latest/bin/ld.lld AR=/home/boris/0day/clang-latest/bin/llvm-ar NM=/home/boris/0day/clang-latest/bin/llvm-nm STRIP=/home/boris/0day/clang-latest/bin/llvm-strip OBJDUMP=/home/boris/0day/clang-latest/bin/llvm-objdump OBJSIZE=/home/boris/0day/clang-latest/bin/llvm-size READELF=/home/boris/0day/clang-latest/bin/llvm-readelf HOSTCXX=/home/boris/0day/clang-latest/bin/clang++ HOSTAR=/home/boris/0day/clang-latest/bin/llvm-ar CROSS_COMPILE=riscv-linux-gnu- --jobs=32 ARCH=riscv
+  SYNC    include/config/auto.conf.cmd
+...
 
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-index 87068eb..3982956 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -2370,17 +2370,18 @@ static void mvpp2_rx_pkts_coal_set(struct mvpp2_port *port,
- static void mvpp2_tx_pkts_coal_set(struct mvpp2_port *port,
- 				   struct mvpp2_tx_queue *txq)
- {
--	unsigned int thread = mvpp2_cpu_to_thread(port->priv, get_cpu());
-+	unsigned int thread;
- 	u32 val;
- 
- 	if (txq->done_pkts_coal > MVPP2_TXQ_THRESH_MASK)
- 		txq->done_pkts_coal = MVPP2_TXQ_THRESH_MASK;
- 
- 	val = (txq->done_pkts_coal << MVPP2_TXQ_THRESH_OFFSET);
--	mvpp2_thread_write(port->priv, thread, MVPP2_TXQ_NUM_REG, txq->id);
--	mvpp2_thread_write(port->priv, thread, MVPP2_TXQ_THRESH_REG, val);
--
--	put_cpu();
-+	/* PKT-coalescing registers are per-queue + per-thread */
-+	for (thread = 0; thread < MVPP2_MAX_THREADS; thread++) {
-+		mvpp2_thread_write(port->priv, thread, MVPP2_TXQ_NUM_REG, txq->id);
-+		mvpp2_thread_write(port->priv, thread, MVPP2_TXQ_THRESH_REG, val);
-+	}
- }
- 
- static u32 mvpp2_usec_to_cycles(u32 usec, unsigned long clk_hz)
+scripts/genksyms/parse.y: warning: 9 shift/reduce conflicts [-Wconflicts-sr]
+scripts/genksyms/parse.y: warning: 5 reduce/reduce conflicts [-Wconflicts-rr]
+  DTC     arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dtb
+  DTC     arch/riscv/boot/dts/kendryte/k210.dtb
+  HOSTCC  scripts/genksyms/parse.tab.o
+  HOSTCC  scripts/genksyms/lex.lex.o
+  HOSTLD  scripts/genksyms/genksyms
+  CC      scripts/mod/empty.o
+  HOSTCC  scripts/mod/mk_elfconfig
+  CC      scripts/mod/devicetable-offsets.s
+error: unknown target triple 'riscv-unknown-linux-gnu', please use -triple or -arch
+make[1]: *** [scripts/Makefile.build:117: scripts/mod/devicetable-offsets.s] Error 1
+make[1]: *** Waiting for unfinished jobs....
+error: unknown target triple 'riscv-unknown-linux-gnu', please use -triple or -arch
+make[1]: *** [scripts/Makefile.build:283: scripts/mod/empty.o] Error 1
+make: *** [Makefile:1199: prepare0] Error 2
+$
+
 -- 
-1.9.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
