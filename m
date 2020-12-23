@@ -2,103 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F4D32E19EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 09:28:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 233842E19F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 09:30:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728062AbgLWI2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 03:28:04 -0500
-Received: from mail-wr1-f48.google.com ([209.85.221.48]:35728 "EHLO
-        mail-wr1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727719AbgLWI2D (ORCPT
+        id S1728096AbgLWI3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 03:29:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727050AbgLWI33 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 03:28:03 -0500
-Received: by mail-wr1-f48.google.com with SMTP id r3so17757876wrt.2;
-        Wed, 23 Dec 2020 00:27:47 -0800 (PST)
+        Wed, 23 Dec 2020 03:29:29 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FF57C0613D6;
+        Wed, 23 Dec 2020 00:28:48 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id j22so21694095eja.13;
+        Wed, 23 Dec 2020 00:28:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=vOvsdrMTBeh+0VgWngn+23DuawjliOPcgqQaj1GbRKY=;
+        b=DIKBb/BUNSgro3YLF+P7soDLRNBMrBtdteYuQb14lgDvYCKS/ge1o6u1zEHW0BN9JI
+         cghO6l/Run/1lyge+5qq+OuqwtQRoA+eh/wMZR8yddT8hvoqv9BCD8hwV+Of729kyZJF
+         8bXcpum4J2rE8SklE2KH8FFiN1PZFghxOUEP6IqQbKUkDmGJaWvXXcfKp9LyNwM2nnB2
+         y6xLMXFHg8gUh7VwdL/blGZMg+E9GXEgG4rBP+930WPW77iX4v4uYhHEIuL16MWPrs+r
+         +PoS3z2eednzSkahv0bPZexLS1ehpTMNlf0XsVg+0TCV9SGBMWFzX3Ptm1mgMw/ZedZZ
+         6kQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mUVBf1H4BZsLh5EiHS+l8aTe/qKRYRM0fwXYQnOuMno=;
-        b=HIQaBD1sU+67Bvzp3J4WY3IkgOsnxH89ELXHMyhMziirZlTjtol3/O7ldRMaBM68A3
-         NI9s1O3MCroFCIOqQVn4+PPHDA4eQUiHj5nXDIImhrWvw9TQw1T3OpR1pOcDBBoQKoEv
-         1c6h8wtqEpGp6aEpk2AMGrYqeThUANulvYfQ96ovuizwPyAhmnc6IZOJDYxL0FUz5ANV
-         +17dBzTACENmwozwXUCrUf2GSgP1SJBerOJ9A7tm0zppnWlnGedkQLWT64DTh40Qc3qE
-         JfTxShTcrbzLt6FXOnvTWB1Ycq/fprfGZ5XgLxfXxqPRT9XJ0DPGLp935HGgioxRrngI
-         EOnQ==
-X-Gm-Message-State: AOAM5320tVERD8ZJPMie8dlK+XqdVFYCBXusvutOfLKrOSxom1n5dR0D
-        pDOsbz0+yGCwp0jTiEk5sCM=
-X-Google-Smtp-Source: ABdhPJz5X6Cf0bT7wSFl1EyCVBJePEFERj0lAztwVNT4Nv4+gegPgh9sxDuQYcJ9POAVur3wpM3Ldw==
-X-Received: by 2002:a5d:684b:: with SMTP id o11mr28315130wrw.157.1608712041535;
-        Wed, 23 Dec 2020 00:27:21 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id c81sm31699679wmd.6.2020.12.23.00.27.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Dec 2020 00:27:20 -0800 (PST)
-Date:   Wed, 23 Dec 2020 09:27:18 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Timon Baetz <timon.baetz@protonmail.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH v3 4/7] power: supply: max8997_charger: Set CHARGER
- current limit
-Message-ID: <20201223082718.GA5472@kozik-lap>
-References: <20201222070520.710096-1-timon.baetz@protonmail.com>
- <20201222070520.710096-4-timon.baetz@protonmail.com>
- <20201222084004.GD5026@kozik-lap>
- <20201223090114.750664cd.timon.baetz@protonmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201223090114.750664cd.timon.baetz@protonmail.com>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=vOvsdrMTBeh+0VgWngn+23DuawjliOPcgqQaj1GbRKY=;
+        b=h8Kv1jI2OXvuqMXwytEVvS2BGC+7wLR/JImWqYGT/f3kY2xVYkaHTQI9CXir4S/UsJ
+         Ug5aa/dv/nN7F5F9t46dJWlMw8g6D/TfXrOu/dM+dJ5OQXTcyc5GRkM+EfFbuUOodLPP
+         9AO0A0aDHJMSUjKtbIL5PFYh5XMPt+CKkaYZ4oUXq69o9RHhdo8Ek7qMq+AzGJjhtDPf
+         6QAsvebQYoR41jMiokDhDfPeDi7Todfhsy6b3mFZNqMWIm3Xm/fuUXgR46eZ4eE5FvP5
+         h/svNG7KTNqUrQFlUgi/9EUdmDqUslJFuJdp7Ijyq8wt4hDJnhBOJRKOiLC4nx70HqId
+         2pbQ==
+X-Gm-Message-State: AOAM531PQPwbveY0v0gx2RZ6XgMQYwDZzck8njxqUqnJsFYk0gwzI43g
+        bHyoKkwP8UEl8IzaMMGo7VM=
+X-Google-Smtp-Source: ABdhPJzba+QgayosWbyCokQxYLM3wIJswYeIWFvwSMMTL1kAlBUJ6ZoGALd4bXXBUkb1tnG1XW2CGQ==
+X-Received: by 2002:a17:907:d9e:: with SMTP id go30mr22395664ejc.488.1608712127247;
+        Wed, 23 Dec 2020 00:28:47 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
+        by smtp.googlemail.com with ESMTPSA id ca4sm30369009edb.80.2020.12.23.00.28.46
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 23 Dec 2020 00:28:46 -0800 (PST)
+Message-ID: <9ac61bb53d1f33797107577f66aefe95e3e35bb9.camel@gmail.com>
+Subject: Re: [PATCH v5 1/7] scsi: ufs: Add "wb_on" sysfs node to control WB
+ on/off
+From:   Bean Huo <huobean@gmail.com>
+To:     Can Guo <cang@codeaurora.org>
+Cc:     Stanley Chu <stanley.chu@mediatek.com>, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, beanhuo@micron.com, bvanassche@acm.org,
+        tomas.winkler@intel.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 23 Dec 2020 09:28:45 +0100
+In-Reply-To: <862483add1462510b809aee6d3678435@codeaurora.org>
+References: <20201215230519.15158-1-huobean@gmail.com>
+         <20201215230519.15158-2-huobean@gmail.com>
+         <1608617307.14045.3.camel@mtkswgap22>
+         <a01cdd4ff6afd2a9166741caed3c2b3d@codeaurora.org>
+         <eb4cd8f151c43e5754bb7725bce3e8ee34a49b51.camel@gmail.com>
+         <28211d08700d1e4876a9aea342e8fcb79534cd2c.camel@gmail.com>
+         <862483add1462510b809aee6d3678435@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 08:09:55AM +0000, Timon Baetz wrote:
-> On Tue, 22 Dec 2020 09:40:04 +0100, Krzysztof Kozlowski wrote:
+On Wed, 2020-12-23 at 09:31 +0800, Can Guo wrote:
+> I don't see why removing the sysfs nodes during ufshcd_shutdown() is
+> a
+> concern to customer - we should do whatever is needed to protect LLD
+> contexts from user space intervene. What do you think?
 
-(...)
-> > >  	.name		= "max8997_pmic",
-> > >  	.type		= POWER_SUPPLY_TYPE_BATTERY,
-> > > @@ -170,6 +237,33 @@ static int max8997_battery_probe(struct platform_device *pdev)
-> > >  		return PTR_ERR(charger->battery);
-> > >  	}
-> > >
-> > > +	charger->reg = devm_regulator_get(&pdev->dev, "charger");  
-> > 
-> > The code looks good but isn't it breaking all existing platforms?
-> 
-> So there is 2 other DTS in the kernel sources that are using MAX8997
-> pmic:
->  - Insignal Origen evaluation board
->  - Samsung Trats
-> Non of them have charging regulators.
+The sysfs nodes can be removed only when the device is remvoed.
 
-But still the power supply was probing on them (if not the error you
-mentioned).  Now, the charger will fail.
+Bean
 
-> Also probing of the charger has been failing for long time because of 
-> https://lore.kernel.org/lkml/20201109194251.562203-2-timon.baetz@protonmail.com/
-> but that seems to land in 5.11.
-
-That's a good argument supporting introduced breakage. Use it in commit
-message. Don't hide such information.
-
-> That being said, I guess I could make extcon and charger-supply
-> optional if you prefer.
-
-Since at least two boards will loose now power supply, I don't think you
-have a choice.
-
-Best regards,
-Krzysztof
 
