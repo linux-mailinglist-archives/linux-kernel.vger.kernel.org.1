@@ -2,118 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C16A2E1D7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 15:39:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E54532E1D7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 15:41:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727838AbgLWOie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 09:38:34 -0500
-Received: from mga07.intel.com ([134.134.136.100]:6845 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727102AbgLWOie (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 09:38:34 -0500
-IronPort-SDR: cE9gPum3hjrLaW3aw04/mqq+GLL+zYpD4id0TAHsHnAl/56TsSL0LIesbSdvryYUhrLaV8bbtU
- r0jSUUuK5jEA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9843"; a="240105442"
-X-IronPort-AV: E=Sophos;i="5.78,441,1599548400"; 
-   d="scan'208";a="240105442"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Dec 2020 06:36:47 -0800
-IronPort-SDR: 80K/mTCNmPhhIRSC7EIJV9oNpwHZLirsQPx/xvUJ/YSMvnnwUp3UW0UW40pcsRRFePhHaIa4i2
- lC5eSRmZimwQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,441,1599548400"; 
-   d="scan'208";a="457991758"
-Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 23 Dec 2020 06:36:45 -0800
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>
-Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Moody Salem <moody@uniswap.org>, stable@vger.kernel.org
-Subject: [PATCH] ACPI / scan: Don't create platform device for INT3515 ACPI nodes
-Date:   Wed, 23 Dec 2020 17:36:44 +0300
-Message-Id: <20201223143644.33341-1-heikki.krogerus@linux.intel.com>
-X-Mailer: git-send-email 2.29.2
+        id S1727889AbgLWOl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 09:41:28 -0500
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:48284 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727057AbgLWOl1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 09:41:27 -0500
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BNEbFKk022240;
+        Wed, 23 Dec 2020 06:40:44 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=4+e4XRkngAgRt5Vk2OG8INWx+UVQ+jDAX73WsUzeUn8=;
+ b=XcH3eBybT5j55bMwiJL03PJytHlLSGKSCrdgDEh4iguXQAzjKIA6MTSEBqlAgi48k+uV
+ JBPqNfXbXp5rhttkbTPbviykMJOhUEaU2+2WWmSaS3XVazFymPCee0essHafm8kssUbW
+ 3FZ/GPZ8eNhWmr4mneR91XGZGMagJKswqCbGm6gfZ/Uy4x3kqrRFuAF3H3gC8s4dJeQQ
+ suo6MdgdQume6g21osSiUNUjwM4JLl1ib5lWcHDIWn1YTN2NylfhGOc+waCK6SXJgGP6
+ 3FGd4iVMhNHmDLHYespm0F6nUCG27zMwTa5ZCX2iF6LZ7sMHMVDs9jpJiwfQ9tpvGlx9 ow== 
+Received: from sc-exch03.marvell.com ([199.233.58.183])
+        by mx0a-0016f401.pphosted.com with ESMTP id 35k0ebebew-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 23 Dec 2020 06:40:44 -0800
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH03.marvell.com
+ (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 23 Dec
+ 2020 06:40:43 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 23 Dec 2020 06:40:44 -0800
+Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
+        by maili.marvell.com (Postfix) with ESMTP id 8139B3F7041;
+        Wed, 23 Dec 2020 06:40:41 -0800 (PST)
+From:   Bhaskara Budiredla <bbudiredla@marvell.com>
+To:     <ulf.hansson@linaro.org>, <keescook@chromium.org>,
+        <ccross@android.com>, <tony.luck@intel.com>, <sgoutham@marvell.com>
+CC:     <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Bhaskara Budiredla" <bbudiredla@marvell.com>
+Subject: [PATCH v4 0/2] mmc: support crash logging to MMC block devices
+Date:   Wed, 23 Dec 2020 20:10:31 +0530
+Message-ID: <20201223144033.32571-1-bbudiredla@marvell.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-23_06:2020-12-23,2020-12-23 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are several reports about the tps6598x causing
-interrupt flood on boards with the INT3515 ACPI node, which
-then causes instability. There appears to be several
-problems with the interrupt. One problem is that the
-I2CSerialBus resources do not always map to the Interrupt
-resource with the same index, but that is not the only
-problem. We have not been able to come up with a solution
-for all the issues, and because of that disabling the device
-for now.
+This patch introduces to mmcpstore.
 
-The PD controller on these platforms is autonomous, and the
-purpose for the driver is primarily to supply status to the
-userspace, so this will not affect any functionality.
+v4:
+ - Fix claiming host if host was already held or
+   if the device claiming host is not runtime active
 
-Reported-by: Moody Salem <moody@uniswap.org>
-Fixes: a3dd034a1707 ("ACPI / scan: Create platform device for INT3515 ACPI nodes")
-Cc: stable@vger.kernel.org
-Link: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1883511
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
----
- drivers/platform/x86/i2c-multi-instantiate.c | 31 +++++++++++++++-----
- 1 file changed, 23 insertions(+), 8 deletions(-)
+v3:
+ - Justify new host ops requirement through commit msg
+ - Remove 'default n' in Kconfig
 
-diff --git a/drivers/platform/x86/i2c-multi-instantiate.c b/drivers/platform/x86/i2c-multi-instantiate.c
-index 6acc8457866e1..e1df665d3ad31 100644
---- a/drivers/platform/x86/i2c-multi-instantiate.c
-+++ b/drivers/platform/x86/i2c-multi-instantiate.c
-@@ -166,13 +166,29 @@ static const struct i2c_inst_data bsg2150_data[]  = {
- 	{}
- };
- 
--static const struct i2c_inst_data int3515_data[]  = {
--	{ "tps6598x", IRQ_RESOURCE_APIC, 0 },
--	{ "tps6598x", IRQ_RESOURCE_APIC, 1 },
--	{ "tps6598x", IRQ_RESOURCE_APIC, 2 },
--	{ "tps6598x", IRQ_RESOURCE_APIC, 3 },
--	{}
--};
-+/*
-+ * Device with _HID INT3515 (TI PD controllers) has some unresolved interrupt
-+ * issues. The most common problem seen is interrupt flood.
-+ *
-+ * There are at least two known causes. Firstly, on some boards, the
-+ * I2CSerialBus resource index does not match the Interrupt resource, i.e. they
-+ * are not one-to-one mapped like in the array below. Secondly, on some boards
-+ * the irq line from the PD controller is not actually connected at all. But the
-+ * interrupt flood is also seen on some boards where those are not a problem, so
-+ * there are some other problems as well.
-+ *
-+ * Because of the issues with the interrupt, the device is disabled for now. If
-+ * you wish to debug the issues, uncomment the below, and add an entry for the
-+ * INT3515 device to the i2c_multi_instance__ids table.
-+ *
-+ * static const struct i2c_inst_data int3515_data[]  = {
-+ *	{ "tps6598x", IRQ_RESOURCE_APIC, 0 },
-+ *	{ "tps6598x", IRQ_RESOURCE_APIC, 1 },
-+ *	{ "tps6598x", IRQ_RESOURCE_APIC, 2 },
-+ *	{ "tps6598x", IRQ_RESOURCE_APIC, 3 },
-+ *	{ }
-+ * };
-+ */
- 
- /*
-  * Note new device-ids must also be added to i2c_multi_instantiate_ids in
-@@ -181,7 +197,6 @@ static const struct i2c_inst_data int3515_data[]  = {
- static const struct acpi_device_id i2c_multi_inst_acpi_ids[] = {
- 	{ "BSG1160", (unsigned long)bsg1160_data },
- 	{ "BSG2150", (unsigned long)bsg2150_data },
--	{ "INT3515", (unsigned long)int3515_data },
- 	{ }
- };
- MODULE_DEVICE_TABLE(acpi, i2c_multi_inst_acpi_ids);
+v2:
+ - Fix modpost issue with ARCH=sh
+ - Fix usage of ifdefs in common functions
+ - Add justification of new APIs to mmc_host_ops
+ - Compile mmcpstore as part of mmc blk
+
+v1: https://lore.kernel.org/linux-mmc/20201112062422.32212-1-bbudiredla@marvell.com/T/#t
+v2: https://lore.kernel.org/linux-mmc/6762a763-5284-04dc-e636-486c74dedd34@alum.wpi.edu/T/#u
+v3: https://lore.kernel.org/linux-mmc/20201207115753.21728-1-bbudiredla@marvell.com/T/#t
+
+Bhaskara Budiredla (2):
+  mmc: Support kmsg dumper based on pstore/blk
+  mmc: cavium: Add MMC polling method to support kmsg panic/oops write
+
+ drivers/mmc/core/Kconfig           |  14 +-
+ drivers/mmc/core/Makefile          |   1 +
+ drivers/mmc/core/block.c           |  19 ++
+ drivers/mmc/core/block.h           |   9 +
+ drivers/mmc/core/core.c            |  44 ++++
+ drivers/mmc/core/mmcpstore.c       | 310 +++++++++++++++++++++++++++++
+ drivers/mmc/host/cavium-thunderx.c |  10 +
+ drivers/mmc/host/cavium.c          |  67 +++++++
+ drivers/mmc/host/cavium.h          |   3 +
+ include/linux/mmc/core.h           |   5 +
+ include/linux/mmc/host.h           |  12 ++
+ 11 files changed, 493 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/mmc/core/mmcpstore.c
+
 -- 
-2.29.2
+2.17.1
 
