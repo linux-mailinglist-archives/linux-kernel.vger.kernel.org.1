@@ -2,94 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C04422E116E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 02:39:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 383B02E116F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 02:39:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727091AbgLWBii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 20:38:38 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:44081 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726614AbgLWBii (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 20:38:38 -0500
-X-UUID: f5a2956beaf046c48bfb24a60aa9f527-20201223
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:Reply-To:From:Subject:Message-ID; bh=xbwGmFFXUIPvzjsYAQjwo15U9o4mg+NebaRJaHTcEIw=;
-        b=tpfp7Ou+xiR9ZTfnxWFpc4Fs/XQXJUiWNqdkSazWyQkNobDZVNKYWH8FCamid47vW08Q8809rVmC6+NFPFSU/pyp9lrFeIwFtWpqwOUa1Dy9G48qAOZoWWMPV63R4sIULTen+Q5N/oIx+M3tUBY/YB5bRXLzvKjSSHhUC7aUGvI=;
-X-UUID: f5a2956beaf046c48bfb24a60aa9f527-20201223
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <yongqiang.niu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1184589703; Wed, 23 Dec 2020 09:37:54 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by mtkmbs05n2.mediatek.inc
- (172.21.101.140) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 23 Dec
- 2020 09:37:52 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 23 Dec 2020 09:37:50 +0800
-Message-ID: <1608687471.18252.10.camel@mhfsdcap03>
-Subject: Re: [PATCH v2, 12/17] drm/mediatek: fix gamma size config
-From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
-Reply-To: Yongqiang Niu <yongqiang.niu@mediatek.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-CC:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        DTML <devicetree@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Date:   Wed, 23 Dec 2020 09:37:51 +0800
-In-Reply-To: <CAAOTY_9gzncFEFe8uyhNSO0Mr9SnQ0b5oCC31_4QSdMtwOx0Mw@mail.gmail.com>
-References: <1607746317-4696-1-git-send-email-yongqiang.niu@mediatek.com>
-         <1607746317-4696-13-git-send-email-yongqiang.niu@mediatek.com>
-         <CAAOTY_9gzncFEFe8uyhNSO0Mr9SnQ0b5oCC31_4QSdMtwOx0Mw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
-MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        id S1727192AbgLWBi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 20:38:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34876 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727147AbgLWBi4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 20:38:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B67122517;
+        Wed, 23 Dec 2020 01:38:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1608687495;
+        bh=cFaKE3vGIfqZ2OWUcxLmVPja2ddM4C1CVmCyiVTqL3M=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=qRAxJZkt5lq4AjMrnRgIwDi6kdHFYWc1Gw0YS1gDONE8AtAmOGYXtqe38gd5Dhyjt
+         Wb6cZGLXTtkGx4zv5DSn06TC3EDULwQooVw6mLhJjFJLzHQGXDRcByy07viH9seNKL
+         SzWzNXlI2pOEf4gFSs+tWykht1iSuqGt7T1j0R1E=
+Date:   Tue, 22 Dec 2020 17:38:14 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     Nicolai Fischer <nicolai.fischer@fau.de>,
+        linux-kernel@vger.kernel.org, apw@canonical.com,
+        johannes.czekay@fau.de, linux-kernel@i4.cs.fau.de
+Subject: Re: [PATCH 1/2] checkpatch: kconfig: replace '---help---' with
+ 'help'
+Message-Id: <20201222173814.f25e03a748559ec7efed9c27@linux-foundation.org>
+In-Reply-To: <6f5c18acb8bac6f2d8c24e50eabc0f163c062475.camel@perches.com>
+References: <eed0902b-2c5d-61fc-bb88-7edf286832c7@fau.de>
+        <6f5c18acb8bac6f2d8c24e50eabc0f163c062475.camel@perches.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIwLTEyLTE1IGF0IDA3OjQwICswODAwLCBDaHVuLUt1YW5nIEh1IHdyb3RlOg0K
-PiBIaSwgWW9uZ3FpYW5nOg0KPiANCj4gWW9uZ3FpYW5nIE5pdSA8eW9uZ3FpYW5nLm5pdUBtZWRp
-YXRlay5jb20+IOaWvCAyMDIw5bm0MTLmnIgxMuaXpSDpgLHlha0g5LiL5Y2IMTI6MTPlr6vpgZPv
-vJoNCj4gPg0KPiA+IGZpeCBnYW1tYSBzaXplIGNvbmZpZw0KPiANCj4gSSB3b3VsZCBsaWtlIHlv
-dSB0byBwcm92aWRlIG1vcmUgaW5mb3JtYXRpb24uIFRoZSBvcmlnaW5hbCBjb2RlIHdvcmtzDQo+
-IGluIG10ODE3Mywgd2h5IGRvIHlvdSBtb2RpZnkgdGhpcz8gVGhlIGRlc2NyaXB0aW9uIG1heSBi
-ZSBzb21ldGhpbmcNCj4gbGlrZSB0aGlzOg0KPiANCj4gQWNjb3JkaW5nIHRvIGRhdGEgc2hlZXQs
-IHRoZSB3aWR0aCBpcyBpbiBiaXRzIFszMSwgMTZdIGFuZCBoZWlnaHQgaXMNCj4gaW4gYml0cyBb
-MTUsIDBdLiBFdmVuIHRob3VnaCB3cm9uZyBzZXR0aW5nIG1heSB3b3JrcyBpbiBzb21lIFNvQyBz
-dWNoDQo+IGFzIG10ODE3MywgYnV0IGl0IGRvZXMgbm90IHdvcmsgaW4gbXQ4MTkyLg0KPiANCj4g
-UmVnYXJkcywNCj4gQ2h1bi1LdWFuZy4NCg0KaXQgc3RpbGwgd29ya3MgaW4gbXQ4MTkyLg0KanVz
-dCBtb2RpZnkgdGhpcyBmb2xsb3cgZGF0YSBzaGVldA0KDQo+IA0KPiA+DQo+ID4gRml4ZXM6IGUw
-YTVkMzM3MDI0NSAoZHJtL21lZGlhdGVrOiBBZGQgR0FNTUEgZW5naW5lIGJhc2ljIGZ1bmN0aW9u
-KQ0KPiA+IFNpZ25lZC1vZmYtYnk6IFlvbmdxaWFuZyBOaXUgPHlvbmdxaWFuZy5uaXVAbWVkaWF0
-ZWsuY29tPg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9k
-ZHBfY29tcC5jIHwgMiArLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEg
-ZGVsZXRpb24oLSkNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0
-ZWsvbXRrX2RybV9kZHBfY29tcC5jIGIvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1f
-ZGRwX2NvbXAuYw0KPiA+IGluZGV4IDAwZDU2ODcuLjUyYjZmYzcgMTAwNjQ0DQo+ID4gLS0tIGEv
-ZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1fZGRwX2NvbXAuYw0KPiA+ICsrKyBiL2Ry
-aXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHJtX2RkcF9jb21wLmMNCj4gPiBAQCAtMjk3LDcg
-KzI5Nyw3IEBAIHN0YXRpYyB2b2lkIG10a19nYW1tYV9jb25maWcoc3RydWN0IG10a19kZHBfY29t
-cCAqY29tcCwgdW5zaWduZWQgaW50IHcsDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICB1bnNpZ25lZCBpbnQgaCwgdW5zaWduZWQgaW50IHZyZWZyZXNoLA0KPiA+ICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgdW5zaWduZWQgaW50IGJwYywgc3RydWN0IGNtZHFfcGt0ICpjbWRx
-X3BrdCkNCj4gPiAgew0KPiA+IC0gICAgICAgbXRrX2RkcF93cml0ZShjbWRxX3BrdCwgaCA8PCAx
-NiB8IHcsIGNvbXAsIERJU1BfR0FNTUFfU0laRSk7DQo+ID4gKyAgICAgICBtdGtfZGRwX3dyaXRl
-KGNtZHFfcGt0LCB3IDw8IDE2IHwgaCwgY29tcCwgRElTUF9HQU1NQV9TSVpFKTsNCj4gPiAgICAg
-ICAgIG10a19kaXRoZXJfc2V0KGNvbXAsIGJwYywgRElTUF9HQU1NQV9DRkcsIGNtZHFfcGt0KTsN
-Cj4gPiAgfQ0KPiA+DQo+ID4gLS0NCj4gPiAxLjguMS4xLmRpcnR5DQo+ID4gX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCj4gPiBMaW51eC1tZWRpYXRlayBt
-YWlsaW5nIGxpc3QNCj4gPiBMaW51eC1tZWRpYXRla0BsaXN0cy5pbmZyYWRlYWQub3JnDQo+ID4g
-aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tZWRpYXRl
-aw0KDQo=
+On Sun, 20 Dec 2020 11:02:15 -0800 Joe Perches <joe@perches.com> wrote:
+
+> On Mon, 2020-12-14 at 11:23 +0100, Nicolai Fischer wrote:
+> > All '---help---' lines have been replaced by just 'help'.
+> > Therefore it is no longer necessary to include '---' in the regex.
+> > 
+> > Signed-off-by: Nicolai Fischer <nicolai.fischer@fau.de>
+> > Co-developed-by: Johannes Czekay <johannes.czekay@fau.de>
+> > Signed-off-by: Johannes Czekay <johannes.czekay@fau.de>
+> 
+> Acked-by: Joe Perches <joe@perches.com>
+
+Seems that [2/2] will be reissued.  Nicolai, please cc me on the v2
+series?
 
