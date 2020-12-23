@@ -2,205 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDE212E1D81
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 15:41:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 464C62E1D82
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 15:41:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727954AbgLWOlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 09:41:35 -0500
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:64870 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727158AbgLWOle (ORCPT
+        id S1727985AbgLWOls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 09:41:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725957AbgLWOlr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 09:41:34 -0500
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BNEb1YR022190;
-        Wed, 23 Dec 2020 06:40:51 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0220; bh=3TXqj1IKWDJvWf7QNtGMDFnQ22mG8KVQZxTTv7BIfm4=;
- b=BdpTkQzVGn9rCha3QHpBjEJXFAA5WsU/PZD3bXC0SEHxu5dUy8C5xz6FotHeRC8h6W1m
- Yr/QOKdbSLpHIt343WCK23D7YP4En6CVd000f1KsmAk0PkIjhHZ2F8Kn2gx0A1U1RJNB
- G6ruH4TU++yFbQckcr6UtYvADY9iEwcNfcsRXEQW792Ck9lfcvF/bTyGG1i3kmVOAXCJ
- xMysG4IKyorbcwnkszcURgZK/kBB45ecQSV7sj5zrdqGzBtgdnQlO3AvRML/JP6Oqodt
- waPXne9RV7EBeY/IxUl4Z6msStBEbj45/PjBo/6vOPi0oSmnld703kSoH7MUL0scna3X Ig== 
-Received: from sc-exch01.marvell.com ([199.233.58.181])
-        by mx0a-0016f401.pphosted.com with ESMTP id 35k0ebebf2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 23 Dec 2020 06:40:51 -0800
-Received: from SC-EXCH04.marvell.com (10.93.176.84) by SC-EXCH01.marvell.com
- (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 23 Dec
- 2020 06:40:50 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH04.marvell.com
- (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 23 Dec
- 2020 06:40:49 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 23 Dec 2020 06:40:49 -0800
-Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
-        by maili.marvell.com (Postfix) with ESMTP id 694F03F703F;
-        Wed, 23 Dec 2020 06:40:47 -0800 (PST)
-From:   Bhaskara Budiredla <bbudiredla@marvell.com>
-To:     <ulf.hansson@linaro.org>, <keescook@chromium.org>,
-        <ccross@android.com>, <tony.luck@intel.com>, <sgoutham@marvell.com>
-CC:     <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Bhaskara Budiredla" <bbudiredla@marvell.com>
-Subject: [PATCH v4 2/2] mmc: cavium: Add MMC polling method to support kmsg panic/oops write
-Date:   Wed, 23 Dec 2020 20:10:33 +0530
-Message-ID: <20201223144033.32571-3-bbudiredla@marvell.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201223144033.32571-1-bbudiredla@marvell.com>
-References: <20201223144033.32571-1-bbudiredla@marvell.com>
+        Wed, 23 Dec 2020 09:41:47 -0500
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3332CC0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 06:41:07 -0800 (PST)
+Received: by mail-qk1-x733.google.com with SMTP id w79so15050916qkb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 06:41:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TyB5HqZGghDqQHiswidE0Nhl7bc1fz9iuEH17F6HS7o=;
+        b=IgDeBDPev8DvZ4oaMbBRJxjg1MAgyoPY7166NixyJvkYllxi7/p5kshNjanc9HtTq6
+         sYiKXh7tNOVrkLuVBGcKEwm5x7HBcJsdcxs5yXmSJyLaVXBrqnZ9nLmMk7GaKy9goTgx
+         AsV9Hjpq8Z4uM9zAfHPPwRUlc3zf5y6KvcWo1x4h/zhdryrGq3ClbRppdJBFaPuehdMn
+         I8NwLTQ2quDHkqPvXp39O8XGx7SjzKTG0cka0nGhJtO8WW0ExIYDTsZM+C76kia1TXrP
+         bYLX6d2SVIqaA0WSilV717axihAAEID9HoAiC3RvsVA5+4SOMjcT4T8On5QRvtCI+non
+         QMjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TyB5HqZGghDqQHiswidE0Nhl7bc1fz9iuEH17F6HS7o=;
+        b=ikxzNlQ7dhcSA8x+u7UOgDTdu09cEh357NT5d/qkvw8vGIoPLpfVMMEBgGk4zDL2Uw
+         MXKoxuiv0x159nwbeXHCcbL2fw7iEdkXN4aWGRQ3RbP7AaxV+KFgMZlv7B0jCyHk81xH
+         32vLC4p5lHLo2MPV2byAxEB53sbjTXmUWr9KxrZs2Qoyg1uyNKet7HyVpK8F5uSq2iKN
+         5ABqv3eaXGQuh71C8q9yi8JMpaL6GiFVSzteKKMD7mA9JOJwnzPKIKP4Dh+sncBlOlEj
+         NlcKG32ZFNSDu34m/PS1pgoPh3tlfmfScFuhqh7lGr7Ggb9O+X8ClifanjoL2SQc9dSf
+         f8Ng==
+X-Gm-Message-State: AOAM531sjTdhNLmPU7xjbLEnV0flQ/UBgp+XUfn6mr3+RlriDXdCE+sN
+        L4rl25hyUk/nLLrQp9zAjg5rcYHIupXp2GPYfRUYfg==
+X-Google-Smtp-Source: ABdhPJysJd2t4COKogdQKzy4ot2WGRAvIzKHkmy7YpYmNbYXSk3vLuWgyIr4YuTWsYV57jPoX5GeEx2ZBduATggTEBs=
+X-Received: by 2002:a37:a747:: with SMTP id q68mr27163288qke.352.1608734466216;
+ Wed, 23 Dec 2020 06:41:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-23_06:2020-12-23,2020-12-23 signatures=0
+References: <CAG_fn=UjJQP_gfDm3eJTPY371QTwyDJKXBCN2gs4DvnLP2pbyQ@mail.gmail.com>
+ <7f2e171f-fa44-ef96-6cc6-14e615e3e457@codeaurora.org> <CAG_fn=VihkHLx7nHRrzQRuHeL-UYRezcyGLDQMJY+d1O5AkJfA@mail.gmail.com>
+ <601d4b1a-8526-f7ad-d0f3-305894682109@codeaurora.org> <CAG_fn=V8e8y1fbOaYUD5SfDSQ9+Tc3r7w6ZSoJ-ZNFJvvq-Aeg@mail.gmail.com>
+ <9e0d2c07-af1f-a1d3-fb0d-dbf2ae669f96@codeaurora.org> <CAG_fn=UXQUGiDqmChqD-xX-yF5Jp+7K+oHwKPrO9DZL-zW_4KQ@mail.gmail.com>
+ <48df48fe-dc36-83a4-1c11-e9d0cf230372@codeaurora.org> <6110a26b-dc87-b6f9-e679-aa60917403de@codeaurora.org>
+ <CAG_fn=VjejHtY8=cuuFkixpXd6A6q1C==6RAaUC3Vb5_4hZkcg@mail.gmail.com>
+ <X+EFmQz6JKfpdswG@google.com> <d769a7b1-89a2-aabe-f274-db132f7229d1@codeaurora.org>
+In-Reply-To: <d769a7b1-89a2-aabe-f274-db132f7229d1@codeaurora.org>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Wed, 23 Dec 2020 15:40:54 +0100
+Message-ID: <CAG_fn=UUo3tP1XtdOntNG1krvbPV7pmE9XXwMyuhL2gMUoc4Jw@mail.gmail.com>
+Subject: Re: [PATCH v3] lib: stackdepot: Add support to configure STACK_HASH_SIZE
+To:     Vijayanand Jitta <vjitta@codeaurora.org>
+Cc:     Minchan Kim <minchan@kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        dan.j.williams@intel.com, broonie@kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Konovalov <andreyknvl@google.com>, qcai@redhat.com,
+        ylal@codeaurora.org, vinmenon@codeaurora.org,
+        kasan-dev <kasan-dev@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To enable the writing of panic and oops logs, a cavium specific MMC
-polling method is defined and thereby ensure the functioning of mmcpstore.
+>
+> Michan, We would still need config option so that we can reduce the
+> memory consumption on low ram devices using config.
+>
+> Alex, On this,
+> "I also suppose device vendors may prefer setting a fixed (maybe
+> non-default) hash size for low-memory devices rather than letting the
+> admins increase it."
+> I see kernel param swiotlb does similar thing i.e; '0' to disable and
+> set a value to configure size.
+>
+> I am fine with either of the approaches,
+>
+> 1. I can split this patch into two
+>    i)  A bool variable to enable/disable stack depot.
+>    ii) A config for the size.
 
-Signed-off-by: Bhaskara Budiredla <bbudiredla@marvell.com>
----
- drivers/mmc/host/cavium-thunderx.c | 10 +++++
- drivers/mmc/host/cavium.c          | 67 ++++++++++++++++++++++++++++++
- drivers/mmc/host/cavium.h          |  3 ++
- 3 files changed, 80 insertions(+)
+I still believe this is a more appropriate solution.
 
-diff --git a/drivers/mmc/host/cavium-thunderx.c b/drivers/mmc/host/cavium-thunderx.c
-index 76013bbbcff3..83f25dd6820a 100644
---- a/drivers/mmc/host/cavium-thunderx.c
-+++ b/drivers/mmc/host/cavium-thunderx.c
-@@ -19,12 +19,22 @@
- 
- static void thunder_mmc_acquire_bus(struct cvm_mmc_host *host)
- {
-+#if IS_ENABLED(CONFIG_MMC_PSTORE)
-+	if (!host->pstore)
-+		down(&host->mmc_serializer);
-+#else
- 	down(&host->mmc_serializer);
-+#endif
- }
- 
- static void thunder_mmc_release_bus(struct cvm_mmc_host *host)
- {
-+#if IS_ENABLED(CONFIG_MMC_PSTORE)
-+	if (!host->pstore)
-+		up(&host->mmc_serializer);
-+#else
- 	up(&host->mmc_serializer);
-+#endif
- }
- 
- static void thunder_mmc_int_enable(struct cvm_mmc_host *host, u64 val)
-diff --git a/drivers/mmc/host/cavium.c b/drivers/mmc/host/cavium.c
-index c5da3aaee334..708bec9d0345 100644
---- a/drivers/mmc/host/cavium.c
-+++ b/drivers/mmc/host/cavium.c
-@@ -510,6 +510,66 @@ irqreturn_t cvm_mmc_interrupt(int irq, void *dev_id)
- 	return IRQ_RETVAL(emm_int != 0);
- }
- 
-+#if IS_ENABLED(CONFIG_MMC_PSTORE)
-+static int cvm_req_completion_poll(struct mmc_host *host, unsigned long msecs)
-+{
-+	struct cvm_mmc_slot *slot = mmc_priv(host);
-+	struct cvm_mmc_host *cvm_host = slot->host;
-+	u64 emm_int;
-+
-+	while (msecs) {
-+		emm_int = readq(cvm_host->base + MIO_EMM_INT(cvm_host));
-+
-+		if (emm_int & MIO_EMM_INT_DMA_DONE)
-+			return 0;
-+		else if (emm_int & MIO_EMM_INT_DMA_ERR)
-+			return -EIO;
-+		mdelay(1);
-+		msecs--;
-+	}
-+
-+	return -ETIMEDOUT;
-+}
-+
-+static void cvm_req_cleanup_pending(struct mmc_host *host)
-+{
-+	struct cvm_mmc_slot *slot = mmc_priv(host);
-+	struct cvm_mmc_host *cvm_host = slot->host;
-+	u64 fifo_cfg;
-+	u64 dma_cfg;
-+	u64 emm_int;
-+
-+	cvm_host->pstore = 1;
-+
-+	/* Clear pending DMA FIFO queue */
-+	fifo_cfg = readq(cvm_host->dma_base + MIO_EMM_DMA_FIFO_CFG(cvm_host));
-+	if (FIELD_GET(MIO_EMM_DMA_FIFO_CFG_COUNT, fifo_cfg))
-+		writeq(MIO_EMM_DMA_FIFO_CFG_CLR,
-+			cvm_host->dma_base + MIO_EMM_DMA_FIFO_CFG(cvm_host));
-+
-+	/* Clear ongoing DMA, if there is any */
-+	dma_cfg = readq(cvm_host->dma_base + MIO_EMM_DMA_CFG(cvm_host));
-+	if (dma_cfg & MIO_EMM_DMA_CFG_EN) {
-+		dma_cfg |= MIO_EMM_DMA_CFG_CLR;
-+		writeq(dma_cfg, cvm_host->dma_base +
-+				MIO_EMM_DMA_CFG(cvm_host));
-+		do {
-+			dma_cfg = readq(cvm_host->dma_base +
-+					MIO_EMM_DMA_CFG(cvm_host));
-+		} while (dma_cfg & MIO_EMM_DMA_CFG_EN);
-+	}
-+
-+	/* Clear pending DMA interrupts */
-+	emm_int = readq(cvm_host->base + MIO_EMM_INT(cvm_host));
-+	if (emm_int)
-+		writeq(emm_int, cvm_host->base + MIO_EMM_INT(cvm_host));
-+
-+	/* Clear prepared and yet to be fired DMA requests */
-+	cvm_host->current_req = NULL;
-+	cvm_host->dma_active = false;
-+}
-+#endif
-+
- /*
-  * Program DMA_CFG and if needed DMA_ADR.
-  * Returns 0 on error, DMA address otherwise.
-@@ -901,6 +961,10 @@ static const struct mmc_host_ops cvm_mmc_ops = {
- 	.set_ios        = cvm_mmc_set_ios,
- 	.get_ro		= mmc_gpio_get_ro,
- 	.get_cd		= mmc_gpio_get_cd,
-+#if IS_ENABLED(CONFIG_MMC_PSTORE)
-+	.req_cleanup_pending = cvm_req_cleanup_pending,
-+	.req_completion_poll = cvm_req_completion_poll,
-+#endif
- };
- 
- static void cvm_mmc_set_clock(struct cvm_mmc_slot *slot, unsigned int clock)
-@@ -1058,6 +1122,9 @@ int cvm_mmc_of_slot_probe(struct device *dev, struct cvm_mmc_host *host)
- 	slot->bus_id = id;
- 	slot->cached_rca = 1;
- 
-+#if IS_ENABLED(CONFIG_MMC_PSTORE)
-+	host->pstore = 0;
-+#endif
- 	host->acquire_bus(host);
- 	host->slot[id] = slot;
- 	cvm_mmc_switch_to(slot);
-diff --git a/drivers/mmc/host/cavium.h b/drivers/mmc/host/cavium.h
-index f3eea5eaa678..248a5a6e3522 100644
---- a/drivers/mmc/host/cavium.h
-+++ b/drivers/mmc/host/cavium.h
-@@ -75,6 +75,9 @@ struct cvm_mmc_host {
- 	spinlock_t irq_handler_lock;
- 	struct semaphore mmc_serializer;
- 
-+#if IS_ENABLED(CONFIG_MMC_PSTORE)
-+	bool pstore;
-+#endif
- 	struct gpio_desc *global_pwr_gpiod;
- 	atomic_t shared_power_users;
- 
--- 
-2.17.1
-
+Thanks in advance!
