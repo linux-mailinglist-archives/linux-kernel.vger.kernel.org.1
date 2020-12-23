@@ -2,79 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 656302E1C31
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 13:20:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F2DD2E1C0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 13:04:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728582AbgLWMSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 07:18:46 -0500
-Received: from m12-13.163.com ([220.181.12.13]:39023 "EHLO m12-13.163.com"
+        id S1728436AbgLWMC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 07:02:58 -0500
+Received: from foss.arm.com ([217.140.110.172]:49412 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728546AbgLWMSp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 07:18:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=FcPx2
-        DZiZ+GuOrv1VYhC+mYz5zqBfydTQJenNzGD+AM=; b=jZ9SR+Uo8mIjpduP0Fq++
-        KBlpTHLf2wDD8BzcuLO56OMLGSqmdeBLNYy0i4PHH8vYi2JM+j0LufixmKpnzq86
-        4is0efWBRIL11rz+oPVIEFYhfdkU7QLRoFSyUW2cGsX93WbatGO0Ev96geMmT0zY
-        5Exq2Ngvi/0MiEaKseWHVU=
-Received: from localhost (unknown [101.86.213.121])
-        by smtp9 (Coremail) with SMTP id DcCowACn9ir12OJf4AawXQ--.17510S2;
-        Wed, 23 Dec 2020 13:43:17 +0800 (CST)
-Date:   Wed, 23 Dec 2020 13:43:17 +0800
-From:   Hui Su <sh_def@163.com>
-To:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     sh_def@163.com, songmuchun@bytedance.com
-Subject: [PATCH v2] blokc/blk-merge: remove the next_bvec label in
- __blk_bios_map_sg()
-Message-ID: <20201223054317.GA1518010@ubuntu-A520I-AC>
+        id S1728307AbgLWMC5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 07:02:57 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CE243101E;
+        Wed, 23 Dec 2020 04:02:11 -0800 (PST)
+Received: from e107158-lin (unknown [10.1.194.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5FC9E3F6CF;
+        Wed, 23 Dec 2020 04:02:10 -0800 (PST)
+Date:   Wed, 23 Dec 2020 12:02:07 +0000
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: sched: Reenable interrupts in do sched_yield()
+Message-ID: <20201223120207.csiynjfmzavveesf@e107158-lin>
+References: <87r1pt7y5c.fsf@nanos.tec.linutronix.de>
+ <20201020113830.378b4a4c@gandalf.local.home>
+ <87o8kw93n4.fsf@nanos.tec.linutronix.de>
+ <20201020160732.5f8fc24e@oasis.local.home>
+ <87h7qo6ntx.fsf@nanos.tec.linutronix.de>
+ <20201021100714.5ba25a96@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-CM-TRANSID: DcCowACn9ir12OJf4AawXQ--.17510S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrKw43Wr1UKF18XF47Zw18Zrb_yoWfCFg_CF
-        4Iyryxta9rAr4S934vy3Z5Xr92krW7Xr1jy343tay7AFWIgFWrCw17AFZxX393GayfC3s8
-        J3WkXry5KF40qjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRirb17UUUUU==
-X-Originating-IP: [101.86.213.121]
-X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbiJhUEX1v2fmOcoAAAsk
+In-Reply-To: <20201021100714.5ba25a96@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove the next_bvec label in __blk_bios_map_sg(),
-simplify the logic of traversal bvec.
+On 10/21/20 10:07, Steven Rostedt wrote:
+> On Wed, 21 Oct 2020 09:27:22 +0200
+> Thomas Gleixner <tglx@linutronix.de> wrote:
+> 
+> > On Tue, Oct 20 2020 at 16:07, Steven Rostedt wrote:
+> > > On Tue, 20 Oct 2020 20:02:55 +0200
+> > > Thomas Gleixner <tglx@linutronix.de> wrote:
+> > > What I wrote wasn't exactly what I meant. What I meant to have:
+> > >
+> > > 	/*
+> > > 	 * Since we are going to call schedule() anyways, there's
+> > > 	 * no need to do the preemption check when the rq_lock is released.
+> > > 	 */
+> > >
+> > > That is, to document why we have the preempt_disable() before the unlock:  
+> > 
+> > which is pretty obvious, but I let Peter decide on that.
+> 
+> To us maybe, but I like to have comments that explain why things are done to
+> average people. ;-)
+> 
+> If I go to another kernel developer outside the core kernel, would they know
+> why there's a preempt_disable() there?
+> 
+> 
+>  	preempt_disable();
+> 	rq_unlock_irq(rq, &rf);
+>  	sched_preempt_enable_no_resched();
+>  
+>  	schedule();
+> 
+> 
+> Not everyone knows that the rq_unlock_irq() would trigger a schedule if an
+> interrupt happened as soon as irqs were enabled again and need_resched was
+> set.
 
-Signed-off-by: Hui Su <sh_def@163.com>
----
- block/blk-merge.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Sorry a bit late to the party.
 
-diff --git a/block/blk-merge.c b/block/blk-merge.c
-index 808768f6b174..aa113cbc0f35 100644
---- a/block/blk-merge.c
-+++ b/block/blk-merge.c
-@@ -494,15 +494,15 @@ static int __blk_bios_map_sg(struct request_queue *q, struct bio *bio,
- 			 * to bio
- 			 */
- 			if (new_bio &&
--			    __blk_segment_map_sg_merge(q, &bvec, &bvprv, sg))
--				goto next_bvec;
-+			    __blk_segment_map_sg_merge(q, &bvec, &bvprv, sg)) {
-+				new_bio = false;
-+				continue;
-+			}
- 
- 			if (bvec.bv_offset + bvec.bv_len <= PAGE_SIZE)
- 				nsegs += __blk_bvec_map_sg(bvec, sglist, sg);
- 			else
- 				nsegs += blk_bvec_map_sg(q, &bvec, sglist, sg);
-- next_bvec:
--			new_bio = false;
- 		}
- 		if (likely(bio->bi_iter.bi_size)) {
- 			bvprv = bvec;
--- 
-2.25.1
+Personally, what actually is tripping me off is that rq_unlock_irq() will end
+up calling preempt_enable(), and then we do sched_preempt_enable_no_resched().
+Was there an earlier preempt_disable() called up in the chain that I couldn't
+figure out that's why it's okay to do the 2? Otherwise I see we have imbalanced
+preempt_disable/enable.
 
+	preempt_disable()
+	rq_unlock_irq()
+		__raw_spin_unlock_irq()
+			local_irq_enable()
+			preempt_enable()	// first preempt_count_dec()
+	sched_preempt_enable_no_resched()	// second preempt_count_dec()
 
+Thanks
+
+--
+Qais Yousef
