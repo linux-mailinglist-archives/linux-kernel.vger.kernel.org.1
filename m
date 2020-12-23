@@ -2,115 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5223A2E2121
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 21:09:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7A4B2E2124
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 21:09:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728506AbgLWUH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 15:07:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58416 "EHLO
+        id S1728819AbgLWUIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 15:08:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728141AbgLWUH1 (ORCPT
+        with ESMTP id S1727671AbgLWUIa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 15:07:27 -0500
+        Wed, 23 Dec 2020 15:08:30 -0500
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80800C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 12:06:47 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DACCEC061794;
+        Wed, 23 Dec 2020 12:07:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=/XGhmNEZTpPJCX62t02DiBjSjy1hIi2rcp47hYiKmMo=; b=J5/xKlcVg07JYbXnHEqIivqaFS
-        KlFdFMEO2PGh9lomH23hEbSTRK4re7NKja3ndEDkwIULyuNaToTLoaHl7Wwdx9SlqRduRtDt3xgFv
-        12KipUR/pBR+jmybW0kmBLpqSWgDYCZOzRSynNjpYiZuZWInkcdhu/RP1a9si4TYJXdNykwc+nXYp
-        GUMKZky+GBFGKZJdXoIaHc61A5pfuSgIrMwZJ09GgvsQiwgnY+vSmHJ+ZJ2RdjmTeSeGZUr95TPJ6
-        1poMzh9OY+mtlf1sF29+yx53ywniheU/IdaZuYjZRXqfLfNT8mPtoJ18u9X8uZ1Ir8OF/dReLzppR
-        DdKcJh4w==;
-Received: from [2601:1c0:6280:3f0::3758]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ksAPE-0008Lb-KQ; Wed, 23 Dec 2020 20:06:44 +0000
-Subject: Re: update.c:undefined reference to `irq_work_queue'
-To:     paulmck@kernel.org, kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-References: <202012221118.j0EcAlVl-lkp@intel.com>
- <20201222050305.GA2657@paulmck-ThinkPad-P72>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <02b0dfb2-b3bd-be13-515c-515b49a32fe8@infradead.org>
-Date:   Wed, 23 Dec 2020 12:06:07 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=JqAs7/IqK/ESG/Ka9oK25ik6wVg0igAJShtBSVYvteg=; b=elzZw5E5Vk0tIi7tAwVX+Jr2j6
+        bdRWFl/AsoFrR3ZXNZ3/LOskVP+LQK3uhA8TsdM0ipj+0kAbaQ6etRqsEGUfuCeM2m2pgO37Y+FKB
+        WUrX7vn42dRYR6wHBnNGseflCneg/D2nMAiyvDzQqrVpuvAqGF4KoLqi+OVf7Rh27Nic6/jliSEnI
+        K7tVzNrI7RmNgoWlRgiiJms0tj32zWllxNbRS/ScbtIO2uVVIrdj+yp2jC40qRMNssvEy/Ef8BSZE
+        Dm3P8YaqF1BhXaXXHeHKss4pfygaIMaVNtTQbKw/MRS892HN3GJrkuAFEKvpvKzEm8y6AIR2T1lAK
+        UHxwPZRg==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1ksAQE-0008P2-Su; Wed, 23 Dec 2020 20:07:47 +0000
+Date:   Wed, 23 Dec 2020 20:07:46 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Sargun Dhillon <sargun@sargun.me>
+Cc:     Vivek Goyal <vgoyal@redhat.com>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org,
+        jlayton@kernel.org, amir73il@gmail.com, miklos@szeredi.hu,
+        jack@suse.cz, neilb@suse.com, viro@zeniv.linux.org.uk, hch@lst.de
+Subject: Re: [PATCH 3/3] overlayfs: Report writeback errors on upper
+Message-ID: <20201223200746.GR874@casper.infradead.org>
+References: <20201221195055.35295-1-vgoyal@redhat.com>
+ <20201221195055.35295-4-vgoyal@redhat.com>
+ <20201223182026.GA9935@ircssh-2.c.rugged-nimbus-611.internal>
+ <20201223185044.GQ874@casper.infradead.org>
+ <20201223192940.GA11012@ircssh-2.c.rugged-nimbus-611.internal>
 MIME-Version: 1.0
-In-Reply-To: <20201222050305.GA2657@paulmck-ThinkPad-P72>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201223192940.GA11012@ircssh-2.c.rugged-nimbus-611.internal>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/21/20 9:03 PM, Paul E. McKenney wrote:
-> On Tue, Dec 22, 2020 at 11:24:22AM +0800, kernel test robot wrote:
->> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->> head:   8653b778e454a7708847aeafe689bce07aeeb94e
->> commit: b38f57c1fe64276773b124dffb0a139cc32ab3cb rcu-tasks: Allow rcu_read_unlock_trace() under scheduler locks
->> date:   8 months ago
->> config: h8300-randconfig-s032-20201220 (attached as .config)
->> compiler: h8300-linux-gcc (GCC) 9.3.0
->> reproduce:
->>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>          chmod +x ~/bin/make.cross
->>          # apt-get install sparse
->>          # sparse version: v0.6.3-184-g1b896707-dirty
->>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=b38f57c1fe64276773b124dffb0a139cc32ab3cb
->>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>          git fetch --no-tags linus master
->>          git checkout b38f57c1fe64276773b124dffb0a139cc32ab3cb
->>          # save the attached .config to linux build tree
->>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=h8300
->>
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
->>
->> All errors (new ones prefixed by >>):
->>
->>     h8300-linux-ld: section .init.text LMA [000000000043a160,0000000000452569] overlaps section .rodata LMA [00000000003ff420,000000000047df2f]
->>     h8300-linux-ld: section .data VMA [0000000000400000,000000000043a15f] overlaps section .rodata VMA [00000000003ff420,000000000047df2f]
->>     h8300-linux-ld: section __ksymtab VMA [000000000047df30,000000000048611f] overlaps section .bss VMA [000000000045ebd0,000000000056a053]
->>     h8300-linux-ld: kernel/rcu/update.o: in function `rcu_read_unlock_trace_special':
->>>> update.c:(.text+0x8f9): undefined reference to `irq_work_queue'
+On Wed, Dec 23, 2020 at 07:29:41PM +0000, Sargun Dhillon wrote:
+> On Wed, Dec 23, 2020 at 06:50:44PM +0000, Matthew Wilcox wrote:
+> > On Wed, Dec 23, 2020 at 06:20:27PM +0000, Sargun Dhillon wrote:
+> > > I fail to see why this is neccessary if you incorporate error reporting into the 
+> > > sync_fs callback. Why is this separate from that callback? If you pickup Jeff's
+> > > patch that adds the 2nd flag to errseq for "observed", you should be able to
+> > > stash the first errseq seen in the ovl_fs struct, and do the check-and-return
+> > > in there instead instead of adding this new infrastructure.
+> > 
+> > You still haven't explained why you want to add the "observed" flag.
 > 
-> Does the patch below help?
 > 
-> 							Thanx, Paul
+> In the overlayfs model, many users may be using the same filesystem (super block)
+> for their upperdir. Let's say you have something like this:
 > 
-> ------------------------------------------------------------------------
+> /workdir [Mounted FS]
+> /workdir/upperdir1 [overlayfs upperdir]
+> /workdir/upperdir2 [overlayfs upperdir]
+> /workdir/userscratchspace
 > 
-> commit cb7220ed05190c9a92df95b52a21525a7e08a449
-> Author: Paul E. McKenney <paulmck@kernel.org>
-> Date:   Mon Dec 21 21:00:18 2020 -0800
+> The user needs to be able to do something like:
+> sync -f ${overlayfs1}/file
 > 
->      rcu: Make TASKS_TRACE_RCU select IRQ_WORK
->      
->      Tasks Trace RCU uses irq_work_queue() to safely awaken its grace-period
->      kthread, so this commit therefore causes the TASKS_TRACE_RCU Kconfig
->      option select the IRQ_WORK Kconfig option.
->      
->      Reported-by: kernel test robot <lkp@intel.com>
->      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-> index aa8cc8c9..3128b7c 100644
-> --- a/kernel/rcu/Kconfig
-> +++ b/kernel/rcu/Kconfig
-> @@ -95,6 +95,7 @@ config TASKS_RUDE_RCU
->   
->   config TASKS_TRACE_RCU
->   	def_bool 0
-> +	select IRQ_WORK
->   	help
->   	  This option enables a task-based RCU implementation that uses
->   	  explicit rcu_read_lock_trace() read-side markers, and allows
-> 
+> which in turn will call sync on the the underlying filesystem (the one mounted 
+> on /workdir), and can check if the errseq has changed since the overlayfs was
+> mounted, and use that to return an error to the user.
 
-WorksForMe. Thanks.
+OK, but I don't see why the current scheme doesn't work for this.  If
+(each instance of) overlayfs samples the errseq at mount time and then
+check_and_advances it at sync time, it will see any error that has occurred
+since the mount happened (and possibly also an error which occurred before
+the mount happened, but hadn't been reported to anybody before).
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+> If we do not advance the errseq on the upperdir to "mark it as seen", that means 
+> future errors will not be reported if the user calls sync -f ${overlayfs1}/file,
+> because errseq will not increment the value if the seen bit is unset.
+> 
+> On the other hand, if we mark it as seen, then if the user calls sync on 
+> /workdir/userscratchspace/file, they wont see the error since we just set the 
+> SEEN flag.
+
+While we set the SEEN flag, if the file were opened before the error
+occurred, we would still report the error because the sequence is higher
+than it was when we sampled the error.
+
