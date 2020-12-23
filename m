@@ -2,116 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F39AF2E1952
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 08:14:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D9FC2E1959
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 08:21:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727792AbgLWHNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 02:13:50 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:55942 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727338AbgLWHNt (ORCPT
+        id S1727525AbgLWHTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 02:19:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727207AbgLWHTm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 02:13:49 -0500
-X-UUID: d0e66fb2314149519e6d18e548e4a2f3-20201223
-X-UUID: d0e66fb2314149519e6d18e548e4a2f3-20201223
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1526241365; Wed, 23 Dec 2020 15:13:02 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 23 Dec 2020 15:13:00 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 23 Dec 2020 15:13:00 +0800
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
-        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
-        <jejb@linux.ibm.com>, <matthias.bgg@gmail.com>,
-        <robh+dt@kernel.org>, <devicetree@vger.kernel.org>
-CC:     <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
-        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
-        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
-        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
-        <alice.chao@mediatek.com>, <hanks.chen@mediatek.com>,
-        Stanley Chu <stanley.chu@mediatek.com>
-Subject: [PATCH v2 2/2] arm64: dts: mt6779: Support ufshci and ufsphy
-Date:   Wed, 23 Dec 2020 15:12:59 +0800
-Message-ID: <20201223071259.764-3-stanley.chu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20201223071259.764-1-stanley.chu@mediatek.com>
-References: <20201223071259.764-1-stanley.chu@mediatek.com>
+        Wed, 23 Dec 2020 02:19:42 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16F30C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 23:19:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=K3gRouJVTsjpLtwGhImyl3xulbQkaa/U1IM2NyJKtZY=; b=qT99f2Htr47uwnMZdcrOrOdgnX
+        GqR8X00rPRlbJ8izs+mlqDzxEUJS67zRmK0cJTpxC3CcTJOe+Gfrg0YFxWjMrX4ww+NvPSu9B1xN1
+        arsOBvzU4N1wAoTrR0arMZ3O6jWLXXxEx+gV4MKm2zU47MKHKTl4wOstqP40DvUeKw7LKVukx8i6H
+        daI1F5a9Xt5bIA7A7lnATrvwhl+Gawt8V3DfEA2a2mgpiN6XsKjCdFcfCabBxTsDLZ7qgVHIn2LqK
+        fMFCrhIu8KAjpYfCgcqc1QZ0SVHYnld77YceMe8Ljq2woWegFEjyom8ty7FBqMJ5u1+wFd8VOT3wm
+        dVUvR3RQ==;
+Received: from [2601:1c0:6280:3f0::64ea]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kryQG-0002HR-3C; Wed, 23 Dec 2020 07:19:00 +0000
+Subject: Re: [PATCH] mm/uaccess: Use 'unsigned long' to placate UBSAN
+ warnings, again
+To:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+References: <590998aa9cc50f431343f76cae72b2abf8ac1fdd.1608699683.git.jpoimboe@redhat.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <6823854f-019f-f9db-7fd8-da8e7a0016d1@infradead.org>
+Date:   Tue, 22 Dec 2020 23:18:56 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+In-Reply-To: <590998aa9cc50f431343f76cae72b2abf8ac1fdd.1608699683.git.jpoimboe@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support UFS on MT6779 platforms by adding ufshci and ufsphy
-nodes in dts file.
+On 12/22/20 9:04 PM, Josh Poimboeuf wrote:
+> GCC 7 has a known bug where UBSAN ignores '-fwrapv' and generates false
+> signed-overflow-UB warnings.  The type mismatch between 'i' and
+> 'nr_segs' in copy_compat_iovec_from_user() is causing such a warning,
+> which also happens to violate uaccess rules:
+> 
+>   lib/iov_iter.o: warning: objtool: iovec_from_user()+0x22d: call to __ubsan_handle_add_overflow() with UACCESS enabled
+> 
+> Fix it by making the variable types match.
+> 
+> This is similar to a previous commit:
+> 
+>   29da93fea3ea ("mm/uaccess: Use 'unsigned long' to placate UBSAN warnings on older GCC versions")
+> 
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
 
-Reviewed-by: Hanks Chen <hanks.chen@mediatek.com>
-Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
----
- arch/arm64/boot/dts/mediatek/mt6779.dtsi | 36 +++++++++++++++++++++++-
- 1 file changed, 35 insertions(+), 1 deletion(-)
+All good. Thanks.
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt6779.dtsi b/arch/arm64/boot/dts/mediatek/mt6779.dtsi
-index 370f309d32de..6eaf230bb0d1 100644
---- a/arch/arm64/boot/dts/mediatek/mt6779.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt6779.dtsi
-@@ -225,6 +225,41 @@
- 			#clock-cells = <1>;
- 		};
- 
-+		ufshci: ufshci@11270000 {
-+			compatible = "mediatek,mt8183-ufshci";
-+			reg = <0 0x11270000 0 0x2300>;
-+			interrupts = <GIC_SPI 104 IRQ_TYPE_LEVEL_LOW>;
-+			phys = <&ufsphy>;
-+
-+			clocks = <&infracfg_ao CLK_INFRA_UFS>,
-+				 <&infracfg_ao CLK_INFRA_UFS_TICK>,
-+				 <&infracfg_ao CLK_INFRA_UFS_AXI>,
-+				 <&infracfg_ao CLK_INFRA_UNIPRO_TICK>,
-+				 <&infracfg_ao CLK_INFRA_UNIPRO_MBIST>,
-+				 <&topckgen CLK_TOP_FAES_UFSFDE>,
-+				 <&infracfg_ao CLK_INFRA_AES_UFSFDE>,
-+				 <&infracfg_ao CLK_INFRA_AES_BCLK>;
-+			clock-names = "ufs", "ufs_tick", "ufs_axi",
-+				      "unipro_tick", "unipro_mbist",
-+				      "aes_top", "aes_infra", "aes_bclk";
-+			freq-table-hz = <0 0>, <0 0>, <0 0>,
-+					<0 0>, <0 0>, <0 0>,
-+					<0 0>, <0 0>;
-+
-+			mediatek,ufs-disable-ah8;
-+			mediatek,ufs-support-va09;
-+		};
-+
-+		ufsphy: phy@11fa0000 {
-+			compatible = "mediatek,mt8183-ufsphy";
-+			reg = <0 0x11fa0000 0 0xc000>;
-+			#phy-cells = <0>;
-+
-+			clocks = <&infracfg_ao CLK_INFRA_UNIPRO_SCK>,
-+				 <&infracfg_ao CLK_INFRA_UFS_MP_SAP_BCLK>;
-+			clock-names = "unipro", "mp";
-+		};
-+
- 		mfgcfg: clock-controller@13fbf000 {
- 			compatible = "mediatek,mt6779-mfgcfg", "syscon";
- 			reg = <0 0x13fbf000 0 0x1000>;
-@@ -266,6 +301,5 @@
- 			reg = <0 0x1b000000 0 0x1000>;
- 			#clock-cells = <1>;
- 		};
--
- 	};
- };
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+
+
+> ---
+>  lib/iov_iter.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/lib/iov_iter.c b/lib/iov_iter.c
+> index 1635111c5bd2..2e6a42f5d1df 100644
+> --- a/lib/iov_iter.c
+> +++ b/lib/iov_iter.c
+> @@ -1656,7 +1656,8 @@ static int copy_compat_iovec_from_user(struct iovec *iov,
+>  {
+>  	const struct compat_iovec __user *uiov =
+>  		(const struct compat_iovec __user *)uvec;
+> -	int ret = -EFAULT, i;
+> +	int ret = -EFAULT;
+> +	unsigned long i;
+>  
+>  	if (!user_access_begin(uvec, nr_segs * sizeof(*uvec)))
+>  		return -EFAULT;
+> 
+
+
 -- 
-2.18.0
-
+~Randy
