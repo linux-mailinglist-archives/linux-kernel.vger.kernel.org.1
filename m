@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9BEB2E1286
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:27:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C502E1287
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:27:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729379AbgLWCVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:21:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46354 "EHLO mail.kernel.org"
+        id S1729409AbgLWCVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:21:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729264AbgLWCVP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:21:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2530123159;
-        Wed, 23 Dec 2020 02:20:57 +0000 (UTC)
+        id S1727757AbgLWCVW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:21:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EC3EF2256F;
+        Wed, 23 Dec 2020 02:21:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690057;
-        bh=0d00F80+U8kMZ21VJjFI0YdSZN9PalaSgFSCylhm5tY=;
+        s=k20201202; t=1608690066;
+        bh=SlXT8szZKSZsLWWHMYmsFWGBamP8ytWKV+iCTXyRrX8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RV70dsEvxmXoD/wpl5GECkVlxpZH75KBMrpTx5h1F9kXI9NUkYmRd2dvNQGU92pgS
-         JlpWg6DZag6I0UW1EZbbcITTDw0ANEoQQvAqtwTqikXDXxZilAkqCugofHyucgfp5v
-         WpvNuMJIG2Y98BfIouUxmG3gDWFJlb6TO5R1L11fvHBDNhegbHOOoa/IvTWrtbLDt5
-         zSSpMaZXqVFzxwqx4849esS/dIof8lIT/HQwJOXIg8d6aa5p1UbhGMg5ic6JZDaCOY
-         HfIrzu45h7fAQ1PCCOkHhQB9vCnXNkmefEx/TW3pqwAYwNIh1H1Sqq+QrG5Mnuhdx1
-         X7PCOWMRdbxpw==
+        b=rKpzl2HErxIsxoml3y+TJwD46yo+P4j4NnxCeLAQipNk0QlCj2Qpj3rSP7FGHHwLG
+         LDmmbq8X9rmCgMCyJKT7zRy5U4sAmRAf7mx4Jrs6C1aA59QU1OiqzUHV8KPOWyuOJl
+         daXhoa/IGs3tPo2wiSngEe9W5yDt/BFIbq+EQBXe2jYTD79kNThTqsvqEVHhdB3Atw
+         qBmUsMHyXppRv6dIIa6Lx+iVTmyuF4fYUHEVnQcjv8xu1h6A4xLCS77wE3yiasVXv3
+         YFI69qnb5MVPm7w/GSXgJLGgMWU7umtdPWgFaITxBAezFwPhlxH2ieeP3phSrxNUBs
+         YuC79y3DPdkQA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Wang ShaoBo <bobo.shaobowang@huawei.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Sasha Levin <sashal@kernel.org>, linux-pm@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 127/130] cpufreq: Fix cpufreq_online() return value on errors
-Date:   Tue, 22 Dec 2020 21:18:10 -0500
-Message-Id: <20201223021813.2791612-127-sashal@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-security-module@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: [PATCH AUTOSEL 4.19 02/87] tomoyo: fix clang pointer arithmetic warning
+Date:   Tue, 22 Dec 2020 21:19:38 -0500
+Message-Id: <20201223022103.2792705-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201223021813.2791612-1-sashal@kernel.org>
-References: <20201223021813.2791612-1-sashal@kernel.org>
+In-Reply-To: <20201223022103.2792705-1-sashal@kernel.org>
+References: <20201223022103.2792705-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -42,45 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang ShaoBo <bobo.shaobowang@huawei.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit b96f038432362a20b96d4c52cefeb2936e2cfd2f ]
+[ Upstream commit d9594e0409651a237903a13c9718df889f43d43b ]
 
-Make cpufreq_online() return negative error codes on all errors that
-cause the policy to be destroyed, as appropriate.
+clang warns about additions on NULL pointers being undefined in C:
 
-Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
-[ rjw: Subject and changelog edits ]
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+security/tomoyo/securityfs_if.c:226:59: warning: arithmetic on a null pointer treated as a cast from integer to pointer is a GNU extension [-Wnull-pointer-arithmetic]
+        securityfs_create_file(name, mode, parent, ((u8 *) NULL) + key,
+
+Change the code to instead use a cast through uintptr_t to avoid
+the warning.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpufreq/cpufreq.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ security/tomoyo/securityfs_if.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-index 194a6587a1de1..1178ac323a9e0 100644
---- a/drivers/cpufreq/cpufreq.c
-+++ b/drivers/cpufreq/cpufreq.c
-@@ -1384,8 +1384,10 @@ static int cpufreq_online(unsigned int cpu)
+diff --git a/security/tomoyo/securityfs_if.c b/security/tomoyo/securityfs_if.c
+index 1d3d7e7a1f055..6f1161f4e613d 100644
+--- a/security/tomoyo/securityfs_if.c
++++ b/security/tomoyo/securityfs_if.c
+@@ -131,8 +131,8 @@ static const struct file_operations tomoyo_self_operations = {
+  */
+ static int tomoyo_open(struct inode *inode, struct file *file)
+ {
+-	const int key = ((u8 *) file_inode(file)->i_private)
+-		- ((u8 *) NULL);
++	const u8 key = (uintptr_t) file_inode(file)->i_private;
++
+ 	return tomoyo_open_control(key, file);
+ }
  
- 		policy->min_freq_req = kzalloc(2 * sizeof(*policy->min_freq_req),
- 					       GFP_KERNEL);
--		if (!policy->min_freq_req)
-+		if (!policy->min_freq_req) {
-+			ret = -ENOMEM;
- 			goto out_destroy_policy;
-+		}
+@@ -223,7 +223,7 @@ static const struct file_operations tomoyo_operations = {
+ static void __init tomoyo_create_entry(const char *name, const umode_t mode,
+ 				       struct dentry *parent, const u8 key)
+ {
+-	securityfs_create_file(name, mode, parent, ((u8 *) NULL) + key,
++	securityfs_create_file(name, mode, parent, (void *) (uintptr_t) key,
+ 			       &tomoyo_operations);
+ }
  
- 		ret = freq_qos_add_request(&policy->constraints,
- 					   policy->min_freq_req, FREQ_QOS_MIN,
-@@ -1422,6 +1424,7 @@ static int cpufreq_online(unsigned int cpu)
- 	if (cpufreq_driver->get && has_target()) {
- 		policy->cur = cpufreq_driver->get(policy->cpu);
- 		if (!policy->cur) {
-+			ret = -EIO;
- 			pr_err("%s: ->get() failed\n", __func__);
- 			goto out_destroy_policy;
- 		}
 -- 
 2.27.0
 
