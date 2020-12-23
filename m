@@ -2,92 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBAD82E1D57
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 15:19:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 352592E1D58
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 15:19:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729248AbgLWOQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 09:16:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56306 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728251AbgLWOP7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 09:15:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4065423331;
-        Wed, 23 Dec 2020 14:15:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608732918;
-        bh=8kcJj7Lo6P8Yx3r8Ze6xv4FrAFZhiQyP2nsPWFkYvWM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fH3GtIOh16iKkiwT0JJuvhm+MMAFN/aG19JDCj9FFFTEtc8Y3WNjD7hYxk8VHTdk1
-         3zrrPLHAaiYpr7gRzfD0QuAmw440auTw3Ylw8H9vZSPTcmGT5U50/tmQve8oS8GRFk
-         yKLwWem7OhjRyACzficat2i2rD4imLrcEF0HZu2HRMA/Q5ExUL8BR9wBcT00OsLItf
-         /0J+eRRXcQtYj4lUWbrtzV0u9yRRPmdrWJdhpH5gHvkCyYZUfzz/P+fvZHykw0gn8W
-         smmxUU1GzxvQZyBK4v1lKWQaFHquT4UodiqheujUisNLKu7rq0nChJCQdeKFcvxcup
-         SYQ2jmgB5YVJg==
-Date:   Wed, 23 Dec 2020 09:15:17 -0500
-From:   Sasha Levin <sashal@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, netdev@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.4 008/130] staging: wimax: depends on NET
-Message-ID: <20201223141517.GD2790422@sasha-vm>
-References: <20201223021813.2791612-1-sashal@kernel.org>
- <20201223021813.2791612-8-sashal@kernel.org>
- <X+Lx4wtqgIRwqaQO@kroah.com>
+        id S1728926AbgLWOQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 09:16:25 -0500
+Received: from out28-99.mail.aliyun.com ([115.124.28.99]:48463 "EHLO
+        out28-99.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728827AbgLWOQX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 09:16:23 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.08652065|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.496146-0.000596255-0.503258;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047213;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.JAd2Ezk_1608732932;
+Received: from 192.168.10.118(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.JAd2Ezk_1608732932)
+          by smtp.aliyun-inc.com(10.147.44.118);
+          Wed, 23 Dec 2020 22:15:32 +0800
+Subject: Re: [PATCH] phy: ingenic: Remove useless field .version
+To:     Paul Cercueil <paul@crapouillou.net>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>
+Cc:     =?UTF-8?B?5ryG6bmP5oyv?= <aric.pzqi@ingenic.com>,
+        linux-kernel@vger.kernel.org
+References: <20201223124505.40792-1-paul@crapouillou.net>
+From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Message-ID: <67564e1e-a5a8-9e0f-6dc1-5e2ce1df5e5b@wanyeetech.com>
+Date:   Wed, 23 Dec 2020 22:15:32 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <X+Lx4wtqgIRwqaQO@kroah.com>
+In-Reply-To: <20201223124505.40792-1-paul@crapouillou.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 08:29:39AM +0100, Greg Kroah-Hartman wrote:
->On Tue, Dec 22, 2020 at 09:16:11PM -0500, Sasha Levin wrote:
->> From: Randy Dunlap <rdunlap@infradead.org>
->>
->> [ Upstream commit 9364a2cf567187c0a075942c22d1f434c758de5d ]
->>
->> Fix build errors when CONFIG_NET is not enabled. E.g. (trimmed):
->>
->> ld: drivers/staging/wimax/op-msg.o: in function `wimax_msg_alloc':
->> op-msg.c:(.text+0xa9): undefined reference to `__alloc_skb'
->> ld: op-msg.c:(.text+0xcc): undefined reference to `genlmsg_put'
->> ld: op-msg.c:(.text+0xfc): undefined reference to `nla_put'
->> ld: op-msg.c:(.text+0x168): undefined reference to `kfree_skb'
->> ld: drivers/staging/wimax/op-msg.o: in function `wimax_msg_data_len':
->> op-msg.c:(.text+0x1ba): undefined reference to `nla_find'
->> ld: drivers/staging/wimax/op-msg.o: in function `wimax_msg_send':
->> op-msg.c:(.text+0x311): undefined reference to `init_net'
->> ld: op-msg.c:(.text+0x326): undefined reference to `netlink_broadcast'
->> ld: drivers/staging/wimax/stack.o: in function `__wimax_state_change':
->> stack.c:(.text+0x433): undefined reference to `netif_carrier_off'
->> ld: stack.c:(.text+0x46b): undefined reference to `netif_carrier_on'
->> ld: stack.c:(.text+0x478): undefined reference to `netif_tx_wake_queue'
->> ld: drivers/staging/wimax/stack.o: in function `wimax_subsys_exit':
->> stack.c:(.exit.text+0xe): undefined reference to `genl_unregister_family'
->> ld: drivers/staging/wimax/stack.o: in function `wimax_subsys_init':
->> stack.c:(.init.text+0x1a): undefined reference to `genl_register_family'
->>
->> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> Cc: Jakub Kicinski <kuba@kernel.org>
->> Cc: Arnd Bergmann <arnd@arndb.de>
->> Cc: netdev@vger.kernel.org
->> Acked-by: Arnd Bergmann <arnd@arndb.de>
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Link: https://lore.kernel.org/r/20201102072456.20303-1-rdunlap@infradead.org
->> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> Signed-off-by: Sasha Levin <sashal@kernel.org>
->> ---
->>  net/wimax/Kconfig | 1 +
->>  1 file changed, 1 insertion(+)
+Hi Paul,
+
+On 2020/12/23 下午8:45, Paul Cercueil wrote:
+> Remove the useless field .version from the private structure, which is
+> set but never read.
 >
->This isn't needed in any backported kernel as it only is relevant when
->the code moved to drivers/staging/
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+>   drivers/phy/ingenic/phy-ingenic-usb.c | 23 -----------------------
+>   1 file changed, 23 deletions(-)
 
-I'll drop it, thanks.
 
--- 
-Thanks,
-Sasha
+Reviewed-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+
+
+Thanks and best regards!
+
+
+>
+> diff --git a/drivers/phy/ingenic/phy-ingenic-usb.c b/drivers/phy/ingenic/phy-ingenic-usb.c
+> index 4d1587d82286..ea127b177f46 100644
+> --- a/drivers/phy/ingenic/phy-ingenic-usb.c
+> +++ b/drivers/phy/ingenic/phy-ingenic-usb.c
+> @@ -82,18 +82,7 @@
+>   #define USBPCR1_PORT_RST			BIT(21)
+>   #define USBPCR1_WORD_IF_16BIT		BIT(19)
+>   
+> -enum ingenic_usb_phy_version {
+> -	ID_JZ4770,
+> -	ID_JZ4775,
+> -	ID_JZ4780,
+> -	ID_X1000,
+> -	ID_X1830,
+> -	ID_X2000,
+> -};
+> -
+>   struct ingenic_soc_info {
+> -	enum ingenic_usb_phy_version version;
+> -
+>   	void (*usb_phy_init)(struct phy *phy);
+>   };
+>   
+> @@ -300,38 +289,26 @@ static void x2000_usb_phy_init(struct phy *phy)
+>   }
+>   
+>   static const struct ingenic_soc_info jz4770_soc_info = {
+> -	.version = ID_JZ4770,
+> -
+>   	.usb_phy_init = jz4770_usb_phy_init,
+>   };
+>   
+>   static const struct ingenic_soc_info jz4775_soc_info = {
+> -	.version = ID_JZ4775,
+> -
+>   	.usb_phy_init = jz4775_usb_phy_init,
+>   };
+>   
+>   static const struct ingenic_soc_info jz4780_soc_info = {
+> -	.version = ID_JZ4780,
+> -
+>   	.usb_phy_init = jz4780_usb_phy_init,
+>   };
+>   
+>   static const struct ingenic_soc_info x1000_soc_info = {
+> -	.version = ID_X1000,
+> -
+>   	.usb_phy_init = x1000_usb_phy_init,
+>   };
+>   
+>   static const struct ingenic_soc_info x1830_soc_info = {
+> -	.version = ID_X1830,
+> -
+>   	.usb_phy_init = x1830_usb_phy_init,
+>   };
+>   
+>   static const struct ingenic_soc_info x2000_soc_info = {
+> -	.version = ID_X2000,
+> -
+>   	.usb_phy_init = x2000_usb_phy_init,
+>   };
+>   
