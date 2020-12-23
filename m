@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE1D32E12D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:28:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4577F2E12E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:28:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730372AbgLWCZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:25:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54022 "EHLO mail.kernel.org"
+        id S1730547AbgLWCZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:25:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730351AbgLWCZA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:25:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0134C22248;
-        Wed, 23 Dec 2020 02:24:43 +0000 (UTC)
+        id S1730491AbgLWCZ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:25:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A62C22525;
+        Wed, 23 Dec 2020 02:24:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690284;
-        bh=dFcys3ZL5MvO2jIt6slZwoRGePr4D8Y6S3Ao4OJr5K0=;
+        s=k20201202; t=1608690286;
+        bh=KUEnrIs0D42/+C4dmqdpOYzNx6TIP+q1Cl9AJKQgwbI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T+4cbDXZA+c2Ic3pJwKGfDachglIZ4iK4/pAoTXkXGxdUtc5QsbymCEFhW7PAEsnB
-         XCTzX5gSeE6bGx5khPDQGXwK3dqQyfICF9+ilt+0MGpzbsEd1vGSfSJYxOzZEYsnZs
-         6DKkJPPxO4H7ITdV4Y/2gJplT+iBzSfPVb9UGb2JjCRZ6Q+sKMtouKjHBj9DBqwPQe
-         mmQSPeZplkeXnB3wnGX46dvRFW9TdoZZFLj32X8Pn2aY+6ZJdJerr8qBRXKOasJD50
-         F9WLKNabxTXT7+T8122kWgSWvbdzZ+3zqGbbzggYKXrakyW4ms6lhIosB/RiWB2B/n
-         COIiSdlTq0Fbw==
+        b=lbZpYtW+KMJUCO3zKscfmgoSmb/ReicFGvlO2N9dcUXYjlmT2VgGPkjucxGwyGq7F
+         bWikXON6PfRchWZmv5cmyAPQCzsdm3TcGkS7L00jKphznVtEWzD5lFhDl4z0bWveLK
+         8+rqe8PhOtLhDFkf+cqzowiwBbMk+uU+qnLAoAvtqmBjQAevHhMU2MbpDd1pocWqeT
+         cKZeDMn4bTmmpyjtIaCNoJOfCknidgvjHZDpLqZkuyLmk2CVTxhDjWlq1y5cxaXv+L
+         W2es4kO/lcN9BgVCfFDcI9Y0/awNtgrjGPfThaDeCK0ScBhtZumoGIYdR2g51HK0KE
+         TRddBVwtVqLuA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     David Howells <dhowells@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, linux-afs@lists.infradead.org,
-        keyrings@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 23/48] rxrpc: Don't leak the service-side session key to userspace
-Date:   Tue, 22 Dec 2020 21:23:51 -0500
-Message-Id: <20201223022417.2794032-23-sashal@kernel.org>
+Cc:     Finn Thain <fthain@telegraphics.com.au>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.9 24/48] scsi: atari_scsi: Fix race condition between .queuecommand and EH
+Date:   Tue, 22 Dec 2020 21:23:52 -0500
+Message-Id: <20201223022417.2794032-24-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223022417.2794032-1-sashal@kernel.org>
 References: <20201223022417.2794032-1-sashal@kernel.org>
@@ -42,60 +43,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells <dhowells@redhat.com>
+From: Finn Thain <fthain@telegraphics.com.au>
 
-[ Upstream commit d2ae4e918218f543214fbd906db68a6c580efbbb ]
+[ Upstream commit 03fe6a640a05c5dc04b6bcdddfb981d015e84ed4 ]
 
-Don't let someone reading a service-side rxrpc-type key get access to the
-session key that was exchanged with the client.  The server application
-will, at some point, need to be able to read the information in the ticket,
-but this probably shouldn't include the key material.
+It is possible that bus_reset_cleanup() or .eh_abort_handler could be
+invoked during NCR5380_queuecommand(). If that takes place before the new
+command is enqueued and after the ST-DMA "lock" has been acquired, the
+ST-DMA "lock" will be released again. This will result in a lost DMA
+interrupt and a command timeout. Fix this by excluding EH and interrupt
+handlers while the new command is enqueued.
 
-Signed-off-by: David Howells <dhowells@redhat.com>
+Link: https://lore.kernel.org/r/af25163257796b50bb99d4ede4025cea55787b8f.1605847196.git.fthain@telegraphics.com.au
+Tested-by: Michael Schmitz <schmitzmic@gmail.com>
+Reviewed-by: Michael Schmitz <schmitzmic@gmail.com>
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/keys/rxrpc-type.h | 1 +
- net/rxrpc/key.c           | 8 ++++++--
- 2 files changed, 7 insertions(+), 2 deletions(-)
+ drivers/scsi/NCR5380.c    |  9 ++++++---
+ drivers/scsi/atari_scsi.c | 10 +++-------
+ 2 files changed, 9 insertions(+), 10 deletions(-)
 
-diff --git a/include/keys/rxrpc-type.h b/include/keys/rxrpc-type.h
-index 5de0673f333b7..865629c5484f5 100644
---- a/include/keys/rxrpc-type.h
-+++ b/include/keys/rxrpc-type.h
-@@ -88,6 +88,7 @@ struct rxk5_key {
-  */
- struct rxrpc_key_token {
- 	u16	security_index;		/* RxRPC header security index */
-+	bool	no_leak_key;		/* Don't copy the key to userspace */
- 	struct rxrpc_key_token *next;	/* the next token in the list */
- 	union {
- 		struct rxkad_key *kad;
-diff --git a/net/rxrpc/key.c b/net/rxrpc/key.c
-index fa475b02bdceb..beb30cca5a4b9 100644
---- a/net/rxrpc/key.c
-+++ b/net/rxrpc/key.c
-@@ -1071,7 +1071,8 @@ static long rxrpc_read(const struct key *key,
- 		case RXRPC_SECURITY_RXKAD:
- 			toksize += 8 * 4;	/* viceid, kvno, key*2, begin,
- 						 * end, primary, tktlen */
--			toksize += RND(token->kad->ticket_len);
-+			if (!token->no_leak_key)
-+				toksize += RND(token->kad->ticket_len);
- 			break;
+diff --git a/drivers/scsi/NCR5380.c b/drivers/scsi/NCR5380.c
+index 27270631c70c2..c689b0e8ce4c9 100644
+--- a/drivers/scsi/NCR5380.c
++++ b/drivers/scsi/NCR5380.c
+@@ -659,11 +659,14 @@ static int NCR5380_queue_command(struct Scsi_Host *instance,
  
- 		case RXRPC_SECURITY_RXK5:
-@@ -1180,7 +1181,10 @@ static long rxrpc_read(const struct key *key,
- 			ENCODE(token->kad->start);
- 			ENCODE(token->kad->expiry);
- 			ENCODE(token->kad->primary_flag);
--			ENCODE_DATA(token->kad->ticket_len, token->kad->ticket);
-+			if (token->no_leak_key)
-+				ENCODE(0);
-+			else
-+				ENCODE_DATA(token->kad->ticket_len, token->kad->ticket);
- 			break;
+ 	cmd->result = 0;
  
- 		case RXRPC_SECURITY_RXK5:
+-	if (!NCR5380_acquire_dma_irq(instance))
+-		return SCSI_MLQUEUE_HOST_BUSY;
+-
+ 	spin_lock_irqsave(&hostdata->lock, flags);
+ 
++	if (!NCR5380_acquire_dma_irq(instance)) {
++		spin_unlock_irqrestore(&hostdata->lock, flags);
++
++		return SCSI_MLQUEUE_HOST_BUSY;
++	}
++
+ 	/*
+ 	 * Insert the cmd into the issue queue. Note that REQUEST SENSE
+ 	 * commands are added to the head of the queue since any command will
+diff --git a/drivers/scsi/atari_scsi.c b/drivers/scsi/atari_scsi.c
+index 9dc4b689f94b0..de06ce9f18810 100644
+--- a/drivers/scsi/atari_scsi.c
++++ b/drivers/scsi/atari_scsi.c
+@@ -411,15 +411,11 @@ static int falcon_get_lock(struct Scsi_Host *instance)
+ 	if (IS_A_TT())
+ 		return 1;
+ 
+-	if (stdma_is_locked_by(scsi_falcon_intr) &&
+-	    instance->hostt->can_queue > 1)
++	if (stdma_is_locked_by(scsi_falcon_intr))
+ 		return 1;
+ 
+-	if (in_interrupt())
+-		return stdma_try_lock(scsi_falcon_intr, instance);
+-
+-	stdma_lock(scsi_falcon_intr, instance);
+-	return 1;
++	/* stdma_lock() may sleep which means it can't be used here */
++	return stdma_try_lock(scsi_falcon_intr, instance);
+ }
+ 
+ #ifndef MODULE
 -- 
 2.27.0
 
