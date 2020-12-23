@@ -2,29 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53CCD2E1D15
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 15:14:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B09502E1D18
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 15:14:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728977AbgLWOMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 09:12:32 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:9914 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728742AbgLWOMb (ORCPT
+        id S1728992AbgLWOMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 09:12:40 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9678 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728578AbgLWOMj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 09:12:31 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4D1FVZ2fmhz7K95;
-        Wed, 23 Dec 2020 22:11:02 +0800 (CST)
+        Wed, 23 Dec 2020 09:12:39 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4D1FVW5McjzkvT3;
+        Wed, 23 Dec 2020 22:10:59 +0800 (CST)
 Received: from ubuntu.network (10.175.138.68) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 23 Dec 2020 22:11:38 +0800
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 23 Dec 2020 22:11:47 +0800
 From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <colyli@suse.de>, <kent.overstreet@gmail.com>,
-        <linux-bcache@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+To:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
 CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] md: bcache: use DEFINE_MUTEX (and mutex_init() had been too late)
-Date:   Wed, 23 Dec 2020 22:12:15 +0800
-Message-ID: <20201223141215.32727-1-zhengyongjun3@huawei.com>
+Subject: [PATCH -next] mlx5: use DEFINE_MUTEX (and mutex_init() had been too late)
+Date:   Wed, 23 Dec 2020 22:12:23 +0800
+Message-ID: <20201223141223.313-1-zhengyongjun3@huawei.com>
 X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -37,30 +36,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- drivers/md/bcache/super.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/infiniband/hw/mlx5/main.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-index 46a00134a36a..963d62a15f37 100644
---- a/drivers/md/bcache/super.c
-+++ b/drivers/md/bcache/super.c
-@@ -40,7 +40,7 @@ static const char invalid_uuid[] = {
- };
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index 246e3cbe0b2c..8a260773722f 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -79,7 +79,7 @@ static DEFINE_MUTEX(mlx5_ib_multiport_mutex);
+  * doesn't work on kernel modules memory
+  */
+ static unsigned long xlt_emergency_page;
+-static struct mutex xlt_emergency_page_mutex;
++static DEFINE_MUTEX(xlt_emergency_page_mutex);
  
- static struct kobject *bcache_kobj;
--struct mutex bch_register_lock;
-+DEFINE_MUTEX(bch_register_lock);
- bool bcache_is_reboot;
- LIST_HEAD(bch_cache_sets);
- static LIST_HEAD(uncached_devices);
-@@ -2832,7 +2832,6 @@ static int __init bcache_init(void)
+ struct mlx5_ib_dev *mlx5_ib_get_ibdev_from_mpi(struct mlx5_ib_multiport_info *mpi)
+ {
+@@ -4874,8 +4874,6 @@ static int __init mlx5_ib_init(void)
+ 	if (!xlt_emergency_page)
+ 		return -ENOMEM;
  
- 	check_module_parameters();
- 
--	mutex_init(&bch_register_lock);
- 	init_waitqueue_head(&unregister_wait);
- 	register_reboot_notifier(&reboot);
- 
+-	mutex_init(&xlt_emergency_page_mutex);
+-
+ 	mlx5_ib_event_wq = alloc_ordered_workqueue("mlx5_ib_event_wq", 0);
+ 	if (!mlx5_ib_event_wq) {
+ 		free_page(xlt_emergency_page);
 -- 
 2.22.0
 
