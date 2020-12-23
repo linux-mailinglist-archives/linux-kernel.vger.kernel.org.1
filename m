@@ -2,94 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D9FC2E1959
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 08:21:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 323E22E195E
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 08:31:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727525AbgLWHTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 02:19:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727207AbgLWHTm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 02:19:42 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16F30C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 23:19:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=K3gRouJVTsjpLtwGhImyl3xulbQkaa/U1IM2NyJKtZY=; b=qT99f2Htr47uwnMZdcrOrOdgnX
-        GqR8X00rPRlbJ8izs+mlqDzxEUJS67zRmK0cJTpxC3CcTJOe+Gfrg0YFxWjMrX4ww+NvPSu9B1xN1
-        arsOBvzU4N1wAoTrR0arMZ3O6jWLXXxEx+gV4MKm2zU47MKHKTl4wOstqP40DvUeKw7LKVukx8i6H
-        daI1F5a9Xt5bIA7A7lnATrvwhl+Gawt8V3DfEA2a2mgpiN6XsKjCdFcfCabBxTsDLZ7qgVHIn2LqK
-        fMFCrhIu8KAjpYfCgcqc1QZ0SVHYnld77YceMe8Ljq2woWegFEjyom8ty7FBqMJ5u1+wFd8VOT3wm
-        dVUvR3RQ==;
-Received: from [2601:1c0:6280:3f0::64ea]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kryQG-0002HR-3C; Wed, 23 Dec 2020 07:19:00 +0000
-Subject: Re: [PATCH] mm/uaccess: Use 'unsigned long' to placate UBSAN
- warnings, again
-To:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
-References: <590998aa9cc50f431343f76cae72b2abf8ac1fdd.1608699683.git.jpoimboe@redhat.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <6823854f-019f-f9db-7fd8-da8e7a0016d1@infradead.org>
-Date:   Tue, 22 Dec 2020 23:18:56 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1727434AbgLWHaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 02:30:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38446 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726463AbgLWHaX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 02:30:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BCF0E222F9;
+        Wed, 23 Dec 2020 07:29:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1608708582;
+        bh=PF5HuekUsT713qQgf2j3FzPybto+Ng9waUvqmkHycKE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cthZNCYtfZy3W3g0+zfB6bDi4zo6q8YLbCgwJ5mulh5BSyK1qVd3xvGCWpnb1z48s
+         2KeV4eDpZ6WAbhoFySGDOE0WHQsw8amBZcRi0aDUBIoJGeqBOxCDk9ioRYaeq3vrMQ
+         caGmL1GcpfUXP8o6JCTJNWnGuFT47T/QwlRsg7SM=
+Date:   Wed, 23 Dec 2020 08:29:39 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, netdev@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.4 008/130] staging: wimax: depends on NET
+Message-ID: <X+Lx4wtqgIRwqaQO@kroah.com>
+References: <20201223021813.2791612-1-sashal@kernel.org>
+ <20201223021813.2791612-8-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <590998aa9cc50f431343f76cae72b2abf8ac1fdd.1608699683.git.jpoimboe@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201223021813.2791612-8-sashal@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/22/20 9:04 PM, Josh Poimboeuf wrote:
-> GCC 7 has a known bug where UBSAN ignores '-fwrapv' and generates false
-> signed-overflow-UB warnings.  The type mismatch between 'i' and
-> 'nr_segs' in copy_compat_iovec_from_user() is causing such a warning,
-> which also happens to violate uaccess rules:
+On Tue, Dec 22, 2020 at 09:16:11PM -0500, Sasha Levin wrote:
+> From: Randy Dunlap <rdunlap@infradead.org>
 > 
->   lib/iov_iter.o: warning: objtool: iovec_from_user()+0x22d: call to __ubsan_handle_add_overflow() with UACCESS enabled
+> [ Upstream commit 9364a2cf567187c0a075942c22d1f434c758de5d ]
 > 
-> Fix it by making the variable types match.
+> Fix build errors when CONFIG_NET is not enabled. E.g. (trimmed):
 > 
-> This is similar to a previous commit:
+> ld: drivers/staging/wimax/op-msg.o: in function `wimax_msg_alloc':
+> op-msg.c:(.text+0xa9): undefined reference to `__alloc_skb'
+> ld: op-msg.c:(.text+0xcc): undefined reference to `genlmsg_put'
+> ld: op-msg.c:(.text+0xfc): undefined reference to `nla_put'
+> ld: op-msg.c:(.text+0x168): undefined reference to `kfree_skb'
+> ld: drivers/staging/wimax/op-msg.o: in function `wimax_msg_data_len':
+> op-msg.c:(.text+0x1ba): undefined reference to `nla_find'
+> ld: drivers/staging/wimax/op-msg.o: in function `wimax_msg_send':
+> op-msg.c:(.text+0x311): undefined reference to `init_net'
+> ld: op-msg.c:(.text+0x326): undefined reference to `netlink_broadcast'
+> ld: drivers/staging/wimax/stack.o: in function `__wimax_state_change':
+> stack.c:(.text+0x433): undefined reference to `netif_carrier_off'
+> ld: stack.c:(.text+0x46b): undefined reference to `netif_carrier_on'
+> ld: stack.c:(.text+0x478): undefined reference to `netif_tx_wake_queue'
+> ld: drivers/staging/wimax/stack.o: in function `wimax_subsys_exit':
+> stack.c:(.exit.text+0xe): undefined reference to `genl_unregister_family'
+> ld: drivers/staging/wimax/stack.o: in function `wimax_subsys_init':
+> stack.c:(.init.text+0x1a): undefined reference to `genl_register_family'
 > 
->   29da93fea3ea ("mm/uaccess: Use 'unsigned long' to placate UBSAN warnings on older GCC versions")
-> 
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-
-All good. Thanks.
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-
-
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: netdev@vger.kernel.org
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Link: https://lore.kernel.org/r/20201102072456.20303-1-rdunlap@infradead.org
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 > ---
->  lib/iov_iter.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/lib/iov_iter.c b/lib/iov_iter.c
-> index 1635111c5bd2..2e6a42f5d1df 100644
-> --- a/lib/iov_iter.c
-> +++ b/lib/iov_iter.c
-> @@ -1656,7 +1656,8 @@ static int copy_compat_iovec_from_user(struct iovec *iov,
->  {
->  	const struct compat_iovec __user *uiov =
->  		(const struct compat_iovec __user *)uvec;
-> -	int ret = -EFAULT, i;
-> +	int ret = -EFAULT;
-> +	unsigned long i;
->  
->  	if (!user_access_begin(uvec, nr_segs * sizeof(*uvec)))
->  		return -EFAULT;
-> 
+>  net/wimax/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
 
+This isn't needed in any backported kernel as it only is relevant when
+the code moved to drivers/staging/
 
--- 
-~Randy
+thanks,
+
+greg k-h
