@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CD342E1296
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:27:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 958B82E1299
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:27:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729635AbgLWCWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:22:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45492 "EHLO mail.kernel.org"
+        id S1729680AbgLWCW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:22:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728418AbgLWCWN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:22:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 20D7022285;
-        Wed, 23 Dec 2020 02:21:53 +0000 (UTC)
+        id S1729596AbgLWCWR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:22:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 10CD222D57;
+        Wed, 23 Dec 2020 02:21:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690113;
-        bh=x4x2qurclqAAQlUlOxY6ngwdEcIS4O6lf09e4G51B0Y=;
+        s=k20201202; t=1608690118;
+        bh=ZyApZxQZVk6sKMiHL/zzmD4bkGQiWvE7rBwr+GXas2s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ERi1EiRGT1DkEBGSkjvWuIWaMnw1v0pQvJZUpF73qGgVs5oebfrP0PualaYXxR+VM
-         KV6PTcRiWNaoIcqehXaYGEz9TsAV8NY1ugiNcEWO2+3pE0jf4O2tDCYsbCB90af6RF
-         37UKBXYYj/urRsjP79DFF9VX/srxeTmeu6+tUWB40GJ1q34m6Ty9Y+QmCvk826Wagp
-         EEuZxx8AF9qddVgHkyz/Rtl58sAWE4kR58bLiTaGguBjlHRWlif8Z0ZuZHisOOwHR3
-         2WLmpkRLg3vwlh707lBaoj6TwFaGY5sFeeoplWREj91ufg+mtQ5+4urKLAvYdhqp0w
-         SEE0ljroJ8LIw==
+        b=EDtOZEMNgCspd+JB+D3ICleCjH3Rtcf+V3iSBrE7qFMKh00i0J344KewI0b0/XMzK
+         NjcjsvwYMeMzrs31EJHTiToEYONCjnUzW4EA44FOChw4Dks0BZXvzMOTbzT3nPb4aF
+         Ap7yHJiltlPK2Nn3M4l325TZ9Giw0eIJt8d5XXeMzMaK/kEsWAnr6C2qqLGJ33Wjpc
+         zYOVjwHLOlNXm43J1J5wyPY09brag2g/4hSOUdONYc5bxJDmLeLkoBY2GcY5m17JwZ
+         jbD+S4l5PFZ3cWzkUc4O7dfR+deJIrQ6xpnyqk9dzCuKUrvzvv9HOvycZp25jIByYh
+         cRNqmu1JkZkrg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Wei Xu <xuwei5@hisilicon.com>, Sasha Levin <sashal@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 41/87] ARM: dts: hisilicon: fix errors detected by pl011.yaml
-Date:   Tue, 22 Dec 2020 21:20:17 -0500
-Message-Id: <20201223022103.2792705-41-sashal@kernel.org>
+Cc:     Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@suse.de>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 45/87] selftests/x86/fsgsbase: Fix GS == 1, 2, and 3 tests
+Date:   Tue, 22 Dec 2020 21:20:21 -0500
+Message-Id: <20201223022103.2792705-45-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223022103.2792705-1-sashal@kernel.org>
 References: <20201223022103.2792705-1-sashal@kernel.org>
@@ -42,271 +42,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Andy Lutomirski <luto@kernel.org>
 
-[ Upstream commit e5e225fd495ef1dffc64b81b2094e427f9cc4016 ]
+[ Upstream commit 716572b0003ef67a4889bd7d85baf5099c5a0248 ]
 
-1. Change node name to match '^serial(@[0-9a-f,]+)*$'
-2. Change clock-names to "uartclk", "apb_pclk". Both of them use the same
-   clock.
-3. Change pinctrl-names to "default", "sleep".
+Setting GS to 1, 2, or 3 causes a nonsensical part of the IRET microcode
+to change GS back to zero on a return from kernel mode to user mode. The
+result is that these tests fail randomly depending on when interrupts
+happen. Detect when this happens and let the test pass.
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Signed-off-by: Wei Xu <xuwei5@hisilicon.com>
+Signed-off-by: Andy Lutomirski <luto@kernel.org>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/7567fd44a1d60a9424f25b19a998f12149993b0d.1604346596.git.luto@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/hi3519.dtsi       | 20 +++++++++----------
- arch/arm/boot/dts/hi3620-hi4511.dts | 20 +++++++++----------
- arch/arm/boot/dts/hi3620.dtsi       | 30 ++++++++++++++---------------
- arch/arm/boot/dts/hisi-x5hd2.dtsi   | 30 ++++++++++++++---------------
- 4 files changed, 50 insertions(+), 50 deletions(-)
+ tools/testing/selftests/x86/fsgsbase.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/hi3519.dtsi b/arch/arm/boot/dts/hi3519.dtsi
-index 5729ecfcdc8bf..7df6358081d29 100644
---- a/arch/arm/boot/dts/hi3519.dtsi
-+++ b/arch/arm/boot/dts/hi3519.dtsi
-@@ -65,8 +65,8 @@ uart0: serial@12100000 {
- 			compatible = "arm,pl011", "arm,primecell";
- 			reg = <0x12100000 0x1000>;
- 			interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
--			clocks = <&crg HI3519_UART0_CLK>;
--			clock-names = "apb_pclk";
-+			clocks = <&crg HI3519_UART0_CLK>, <&crg HI3519_UART0_CLK>;
-+			clock-names = "uartclk", "apb_pclk";
- 			status = "disable";
- 		};
+diff --git a/tools/testing/selftests/x86/fsgsbase.c b/tools/testing/selftests/x86/fsgsbase.c
+index f249e042b3b51..026cd644360f6 100644
+--- a/tools/testing/selftests/x86/fsgsbase.c
++++ b/tools/testing/selftests/x86/fsgsbase.c
+@@ -318,8 +318,8 @@ static void set_gs_and_switch_to(unsigned long local,
+ 		local = read_base(GS);
  
-@@ -74,8 +74,8 @@ uart1: serial@12101000 {
- 			compatible = "arm,pl011", "arm,primecell";
- 			reg = <0x12101000 0x1000>;
- 			interrupts = <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>;
--			clocks = <&crg HI3519_UART1_CLK>;
--			clock-names = "apb_pclk";
-+			clocks = <&crg HI3519_UART1_CLK>, <&crg HI3519_UART1_CLK>;
-+			clock-names = "uartclk", "apb_pclk";
- 			status = "disable";
- 		};
- 
-@@ -83,8 +83,8 @@ uart2: serial@12102000 {
- 			compatible = "arm,pl011", "arm,primecell";
- 			reg = <0x12102000 0x1000>;
- 			interrupts = <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
--			clocks = <&crg HI3519_UART2_CLK>;
--			clock-names = "apb_pclk";
-+			clocks = <&crg HI3519_UART2_CLK>, <&crg HI3519_UART2_CLK>;
-+			clock-names = "uartclk", "apb_pclk";
- 			status = "disable";
- 		};
- 
-@@ -92,8 +92,8 @@ uart3: serial@12103000 {
- 			compatible = "arm,pl011", "arm,primecell";
- 			reg = <0x12103000 0x1000>;
- 			interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
--			clocks = <&crg HI3519_UART3_CLK>;
--			clock-names = "apb_pclk";
-+			clocks = <&crg HI3519_UART3_CLK>, <&crg HI3519_UART3_CLK>;
-+			clock-names = "uartclk", "apb_pclk";
- 			status = "disable";
- 		};
- 
-@@ -101,8 +101,8 @@ uart4: serial@12104000 {
- 			compatible = "arm,pl011", "arm,primecell";
- 			reg = <0x12104000 0x1000>;
- 			interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
--			clocks = <&crg HI3519_UART4_CLK>;
--			clock-names = "apb_pclk";
-+			clocks = <&crg HI3519_UART4_CLK>, <&crg HI3519_UART4_CLK>;
-+			clock-names = "uartclk", "apb_pclk";
- 			status = "disable";
- 		};
- 
-diff --git a/arch/arm/boot/dts/hi3620-hi4511.dts b/arch/arm/boot/dts/hi3620-hi4511.dts
-index a579fbf13b5f5..847920004f34c 100644
---- a/arch/arm/boot/dts/hi3620-hi4511.dts
-+++ b/arch/arm/boot/dts/hi3620-hi4511.dts
-@@ -30,36 +30,36 @@ dual_timer0: dual_timer@800000 {
- 			status = "ok";
- 		};
- 
--		uart0: uart@b00000 {	/* console */
--			pinctrl-names = "default", "idle";
-+		uart0: serial@b00000 {	/* console */
-+			pinctrl-names = "default", "sleep";
- 			pinctrl-0 = <&uart0_pmx_func &uart0_cfg_func>;
- 			pinctrl-1 = <&uart0_pmx_idle &uart0_cfg_idle>;
- 			status = "ok";
- 		};
- 
--		uart1: uart@b01000 { /* modem */
--			pinctrl-names = "default", "idle";
-+		uart1: serial@b01000 { /* modem */
-+			pinctrl-names = "default", "sleep";
- 			pinctrl-0 = <&uart1_pmx_func &uart1_cfg_func>;
- 			pinctrl-1 = <&uart1_pmx_idle &uart1_cfg_idle>;
- 			status = "ok";
- 		};
- 
--		uart2: uart@b02000 { /* audience */
--			pinctrl-names = "default", "idle";
-+		uart2: serial@b02000 { /* audience */
-+			pinctrl-names = "default", "sleep";
- 			pinctrl-0 = <&uart2_pmx_func &uart2_cfg_func>;
- 			pinctrl-1 = <&uart2_pmx_idle &uart2_cfg_idle>;
- 			status = "ok";
- 		};
- 
--		uart3: uart@b03000 {
--			pinctrl-names = "default", "idle";
-+		uart3: serial@b03000 {
-+			pinctrl-names = "default", "sleep";
- 			pinctrl-0 = <&uart3_pmx_func &uart3_cfg_func>;
- 			pinctrl-1 = <&uart3_pmx_idle &uart3_cfg_idle>;
- 			status = "ok";
- 		};
- 
--		uart4: uart@b04000 {
--			pinctrl-names = "default", "idle";
-+		uart4: serial@b04000 {
-+			pinctrl-names = "default", "sleep";
- 			pinctrl-0 = <&uart4_pmx_func &uart4_cfg_func>;
- 			pinctrl-1 = <&uart4_pmx_idle &uart4_cfg_func>;
- 			status = "ok";
-diff --git a/arch/arm/boot/dts/hi3620.dtsi b/arch/arm/boot/dts/hi3620.dtsi
-index 541d700945444..9c12f3df78fd7 100644
---- a/arch/arm/boot/dts/hi3620.dtsi
-+++ b/arch/arm/boot/dts/hi3620.dtsi
-@@ -165,48 +165,48 @@ timer5: timer@600 {
- 			interrupts = <1 13 0xf01>;
- 		};
- 
--		uart0: uart@b00000 {
-+		uart0: serial@b00000 {
- 			compatible = "arm,pl011", "arm,primecell";
- 			reg = <0xb00000 0x1000>;
- 			interrupts = <0 20 4>;
--			clocks = <&clock HI3620_UARTCLK0>;
--			clock-names = "apb_pclk";
-+			clocks = <&clock HI3620_UARTCLK0>, <&clock HI3620_UARTCLK0>;
-+			clock-names = "uartclk", "apb_pclk";
- 			status = "disabled";
- 		};
- 
--		uart1: uart@b01000 {
-+		uart1: serial@b01000 {
- 			compatible = "arm,pl011", "arm,primecell";
- 			reg = <0xb01000 0x1000>;
- 			interrupts = <0 21 4>;
--			clocks = <&clock HI3620_UARTCLK1>;
--			clock-names = "apb_pclk";
-+			clocks = <&clock HI3620_UARTCLK1>, <&clock HI3620_UARTCLK1>;
-+			clock-names = "uartclk", "apb_pclk";
- 			status = "disabled";
- 		};
- 
--		uart2: uart@b02000 {
-+		uart2: serial@b02000 {
- 			compatible = "arm,pl011", "arm,primecell";
- 			reg = <0xb02000 0x1000>;
- 			interrupts = <0 22 4>;
--			clocks = <&clock HI3620_UARTCLK2>;
--			clock-names = "apb_pclk";
-+			clocks = <&clock HI3620_UARTCLK2>, <&clock HI3620_UARTCLK2>;
-+			clock-names = "uartclk", "apb_pclk";
- 			status = "disabled";
- 		};
- 
--		uart3: uart@b03000 {
-+		uart3: serial@b03000 {
- 			compatible = "arm,pl011", "arm,primecell";
- 			reg = <0xb03000 0x1000>;
- 			interrupts = <0 23 4>;
--			clocks = <&clock HI3620_UARTCLK3>;
--			clock-names = "apb_pclk";
-+			clocks = <&clock HI3620_UARTCLK3>, <&clock HI3620_UARTCLK3>;
-+			clock-names = "uartclk", "apb_pclk";
- 			status = "disabled";
- 		};
- 
--		uart4: uart@b04000 {
-+		uart4: serial@b04000 {
- 			compatible = "arm,pl011", "arm,primecell";
- 			reg = <0xb04000 0x1000>;
- 			interrupts = <0 24 4>;
--			clocks = <&clock HI3620_UARTCLK4>;
--			clock-names = "apb_pclk";
-+			clocks = <&clock HI3620_UARTCLK4>, <&clock HI3620_UARTCLK4>;
-+			clock-names = "uartclk", "apb_pclk";
- 			status = "disabled";
- 		};
- 
-diff --git a/arch/arm/boot/dts/hisi-x5hd2.dtsi b/arch/arm/boot/dts/hisi-x5hd2.dtsi
-index 50d3f8426da17..3e8395f9c8d8f 100644
---- a/arch/arm/boot/dts/hisi-x5hd2.dtsi
-+++ b/arch/arm/boot/dts/hisi-x5hd2.dtsi
-@@ -89,48 +89,48 @@ timer4: timer@a81000 {
- 				status = "disabled";
- 			};
- 
--			uart0: uart@b00000 {
-+			uart0: serial@b00000 {
- 				compatible = "arm,pl011", "arm,primecell";
- 				reg = <0x00b00000 0x1000>;
- 				interrupts = <0 49 4>;
--				clocks = <&clock HIX5HD2_FIXED_83M>;
--				clock-names = "apb_pclk";
-+				clocks = <&clock HIX5HD2_FIXED_83M>, <&clock HIX5HD2_FIXED_83M>;
-+				clock-names = "uartclk", "apb_pclk";
- 				status = "disabled";
- 			};
- 
--			uart1: uart@6000 {
-+			uart1: serial@6000 {
- 				compatible = "arm,pl011", "arm,primecell";
- 				reg = <0x00006000 0x1000>;
- 				interrupts = <0 50 4>;
--				clocks = <&clock HIX5HD2_FIXED_83M>;
--				clock-names = "apb_pclk";
-+				clocks = <&clock HIX5HD2_FIXED_83M>, <&clock HIX5HD2_FIXED_83M>;
-+				clock-names = "uartclk", "apb_pclk";
- 				status = "disabled";
- 			};
- 
--			uart2: uart@b02000 {
-+			uart2: serial@b02000 {
- 				compatible = "arm,pl011", "arm,primecell";
- 				reg = <0x00b02000 0x1000>;
- 				interrupts = <0 51 4>;
--				clocks = <&clock HIX5HD2_FIXED_83M>;
--				clock-names = "apb_pclk";
-+				clocks = <&clock HIX5HD2_FIXED_83M>, <&clock HIX5HD2_FIXED_83M>;
-+				clock-names = "uartclk", "apb_pclk";
- 				status = "disabled";
- 			};
- 
--			uart3: uart@b03000 {
-+			uart3: serial@b03000 {
- 				compatible = "arm,pl011", "arm,primecell";
- 				reg = <0x00b03000 0x1000>;
- 				interrupts = <0 52 4>;
--				clocks = <&clock HIX5HD2_FIXED_83M>;
--				clock-names = "apb_pclk";
-+				clocks = <&clock HIX5HD2_FIXED_83M>, <&clock HIX5HD2_FIXED_83M>;
-+				clock-names = "uartclk", "apb_pclk";
- 				status = "disabled";
- 			};
- 
--			uart4: uart@b04000 {
-+			uart4: serial@b04000 {
- 				compatible = "arm,pl011", "arm,primecell";
- 				reg = <0xb04000 0x1000>;
- 				interrupts = <0 53 4>;
--				clocks = <&clock HIX5HD2_FIXED_83M>;
--				clock-names = "apb_pclk";
-+				clocks = <&clock HIX5HD2_FIXED_83M>, <&clock HIX5HD2_FIXED_83M>;
-+				clock-names = "uartclk", "apb_pclk";
- 				status = "disabled";
- 			};
- 
+ 		/*
+-		 * Signal delivery seems to mess up weird selectors.  Put it
+-		 * back.
++		 * Signal delivery is quite likely to change a selector
++		 * of 1, 2, or 3 back to 0 due to IRET being defective.
+ 		 */
+ 		asm volatile ("mov %0, %%gs" : : "rm" (force_sel));
+ 	} else {
+@@ -337,6 +337,14 @@ static void set_gs_and_switch_to(unsigned long local,
+ 	if (base == local && sel_pre_sched == sel_post_sched) {
+ 		printf("[OK]\tGS/BASE remained 0x%hx/0x%lx\n",
+ 		       sel_pre_sched, local);
++	} else if (base == local && sel_pre_sched >= 1 && sel_pre_sched <= 3 &&
++		   sel_post_sched == 0) {
++		/*
++		 * IRET is misdesigned and will squash selectors 1, 2, or 3
++		 * to zero.  Don't fail the test just because this happened.
++		 */
++		printf("[OK]\tGS/BASE changed from 0x%hx/0x%lx to 0x%hx/0x%lx because IRET is defective\n",
++		       sel_pre_sched, local, sel_post_sched, base);
+ 	} else {
+ 		nerrs++;
+ 		printf("[FAIL]\tGS/BASE changed from 0x%hx/0x%lx to 0x%hx/0x%lx\n",
 -- 
 2.27.0
 
