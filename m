@@ -2,50 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E017B2E19F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 09:31:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B52CA2E19FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 09:31:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728183AbgLWIae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 03:30:34 -0500
-Received: from verein.lst.de ([213.95.11.211]:33782 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728002AbgLWIad (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 03:30:33 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 9E9CA67373; Wed, 23 Dec 2020 09:29:50 +0100 (CET)
-Date:   Wed, 23 Dec 2020 09:29:50 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Joe Perches <joe@perches.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Matthew Wilcox <willy@infradead.org>, apw@canonical.com,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        linux-doc <linux-doc@vger.kernel.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Subject: Re: [PATCH] checkpatch: make the line length warnings match the
- coding style document
-Message-ID: <20201223082950.GA7129@lst.de>
-References: <20201210082251.2717564-1-hch@lst.de> <c3f1d9de2e5a61588f64e69a1309968d84a2dd12.camel@perches.com> <20201210200930.GB7338@casper.infradead.org> <4898c0c03d370a23b1b98ddabb72e70ec8d430fa.camel@perches.com> <93a470c7631d2607e7b2a12e9cc5d8e930911989.camel@perches.com> <20201222131234.GA29028@lst.de> <983e6452a7f2af14ca7edfa56cd2e2997172a771.camel@perches.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <983e6452a7f2af14ca7edfa56cd2e2997172a771.camel@perches.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+        id S1728202AbgLWIba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 03:31:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727744AbgLWIb3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 03:31:29 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A3D1C0613D6;
+        Wed, 23 Dec 2020 00:30:49 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id d17so21716077ejy.9;
+        Wed, 23 Dec 2020 00:30:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=WtYexIyhlM9lX5mngNLqPuHefdFfD3uM5BTMUld2bcc=;
+        b=mbm1QT+KJePLw8j1NViPPEgVFnTlG7QHzCjaH7cwaw43zHsBrPnl26NsYuV4/KO1OP
+         egsSIGsRl3XMEoeUknuGThQUGGfeNBEM5TV3q8qxz2raRAuTpXeTVikfkLO6ENSPo1gQ
+         uzae7pCWLIPOlJhXb3G0Jq/dIze7etT3TJA/31lETWgoM4XtLt+oQo5tUemzwZMwqjef
+         hZbu/oJtzcu042/eFqQP9EHrWHCt/Hrdd6iR+njuK1qWmOJkp3HfhEhqDEAPYkHZ35Ia
+         e07qNGM1YIkT5APV+tBEovpopeh6XAXkH40nW9hjrLhawC/mfNvZOM16PtPLqLqrtj8C
+         AwGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=WtYexIyhlM9lX5mngNLqPuHefdFfD3uM5BTMUld2bcc=;
+        b=fM6VuafHop/nN3uu02KgRk+icPeUfTsd+SDU6rc0oy5jyjJNiSlq299P76rdEkXQB2
+         eZdEx+wnlS2wB+prRjTbSp4d7dxDGcM7djpD9cXhPMm6c/otnY9Gw4+2LiqC4EAugmgU
+         zjGWNKW9pUsyHvP4o8iLEsxyGElsZmzWvTo8XXw2brkQ8Oh+0zIUbaDOe5tN3H0nNeyF
+         RdoaT+GMUUf26wlT2phlG9Aa3VX842ZPUr8scQBIEd3m35kdrn15vWSccnQnqcp3IV/q
+         jxOMR7SH6/T5eIWSEeYDkCopO5Lt534P6RdWPxKvCP7W8UoK9VIruaIJiRiukdSawSSs
+         D1yw==
+X-Gm-Message-State: AOAM530O2p1kvbTdezTtapZxBWEPCQNUPVW5CWNacrScPNmAkEs9c6dH
+        Ob5FQN8esVekfHczHDGDTVSQmwEJdE0Wpg==
+X-Google-Smtp-Source: ABdhPJwSZF6ixpvIm6gsX+1JFIH9IVgJTuAunOdpXPZ3Ar3yfbWZsburaMs7OJyDN85/PkMfeo9MHw==
+X-Received: by 2002:a17:906:55d0:: with SMTP id z16mr22986625ejp.466.1608712248053;
+        Wed, 23 Dec 2020 00:30:48 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
+        by smtp.googlemail.com with ESMTPSA id d6sm11161702ejy.114.2020.12.23.00.30.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 23 Dec 2020 00:30:47 -0800 (PST)
+Message-ID: <729eb3500cd89cdad13414f9f867f9f69848712e.camel@gmail.com>
+Subject: Re: [PATCH v5 1/7] scsi: ufs: Add "wb_on" sysfs node to control WB
+ on/off
+From:   Bean Huo <huobean@gmail.com>
+To:     Can Guo <cang@codeaurora.org>
+Cc:     Stanley Chu <stanley.chu@mediatek.com>, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, beanhuo@micron.com, bvanassche@acm.org,
+        tomas.winkler@intel.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 23 Dec 2020 09:30:46 +0100
+In-Reply-To: <862483add1462510b809aee6d3678435@codeaurora.org>
+References: <20201215230519.15158-1-huobean@gmail.com>
+         <20201215230519.15158-2-huobean@gmail.com>
+         <1608617307.14045.3.camel@mtkswgap22>
+         <a01cdd4ff6afd2a9166741caed3c2b3d@codeaurora.org>
+         <eb4cd8f151c43e5754bb7725bce3e8ee34a49b51.camel@gmail.com>
+         <28211d08700d1e4876a9aea342e8fcb79534cd2c.camel@gmail.com>
+         <862483add1462510b809aee6d3678435@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 08:22:06AM -0800, Joe Perches wrote:
-> Having checkpatch complain about > 80 column lines didn't stop
-> patches before, likely it wouldn't stop patches now.
-> 
-> Emitting yet more messages for trivial lines > 80 columns is also
-> against the intent of the commit that changed the line length maximum.
+On Wed, 2020-12-23 at 09:31 +0800, Can Guo wrote:
+> First of all, this check is not helping at all, during 
+> ufshcd_shutdown(),
+> both the link and dev can be active for a moment, so this check is
+> not
+> helping the race condition.
 
-It certainly helped.  Since that checkpatch change I waste a lot more
-of my time on finding all this crap, and people are confused because
-they only rely on checkpatch.  Other maintainers are similarly annoyed
-or just silently fix things up.
+yes, This checkup doesn't fix race, it is to address your remove of
+sysfs nodes in the ufshcd_shutdown().
 
-Right now this is making things much worse.
+Bean
+
