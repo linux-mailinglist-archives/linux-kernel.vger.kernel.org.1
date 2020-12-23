@@ -2,78 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12C982E22D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 00:42:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9829E2E22D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 00:42:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728415AbgLWXmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1728491AbgLWXmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 23 Dec 2020 18:42:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39384 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:39440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727012AbgLWXmA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 18:42:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 02F2321D79;
+        id S1728168AbgLWXmB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 18:42:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 9D01A224B1;
         Wed, 23 Dec 2020 23:41:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1608766880;
-        bh=xmMk6t/Y0Hs1WsIXbGW+WhVtvvSi3xAZPRQ0JWzoz5k=;
+        bh=iSPCUBipfR5Ed0KycDAZp3FJhncXpiVyfgX5DfYWbzw=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=YNChb6fK/UJt4omIdD3u6k7Rk7jguDiyYPF7z6K14IA/XCO2heEGKe7pKBc2JAYru
-         UneTz+D8opvI7UccZNXmpn7y8XCd2fhY7JwaMMfbldAflXmSJCmoEBzPzLQ2DDLe/z
-         LmvJfVVQvuo9RcEETgtOU776Px34xDKqP+lkl78Sk9kS42a1eWVALZRF5mkYsc4bMa
-         TlA2TUrBtGYjWc/x1xmZj43iccplHXRSpiRduKVQVxkMPXJyD0ZleK6Urs83p2KC52
-         fYuLlmBUcC+ceyTOFmJoD04H0IU++WBsvlt773SbdLFxcHLkhsf7qRmzAUfGXslyb0
-         //BreXOEQrFJQ==
+        b=ja7HzD0eCWU712u7zfRGrH88C4ueTWR2yh0VXS0QruWnV73Zy1sWXWuPcvp6iXuM5
+         QORFO3Ll45xe00PN9PMuiXXXskogsir22nnD4qf2OqQ9DptU28OjRZkLbB/MHJszq+
+         p9IexiCFSMYUkVk6OkYUNDyVK3mBkSYOlfy+GPayzgmok0BaXtVq5kTx84zMUMZ1Iw
+         JSu4vmIzyZM+HooItOuO+A137oRequEAi7mGYiX3wb+bS5KOt4niW2DIHlnntOqbYL
+         uzn5PTJO+RvWZPlZgGtt3EuFnSHBIbwvZg99/xBN6DvPQNuWWy1ok7qDMUmXXcO6At
+         ybxp56ETC8Rhw==
 Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id E14C8603F8;
-        Wed, 23 Dec 2020 23:41:19 +0000 (UTC)
-Subject: Re: [GIT PULL REQUEST] watchdog - v5.11 Merge window
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 9838B603F8;
+        Wed, 23 Dec 2020 23:41:20 +0000 (UTC)
+Subject: Re: [GIT PULL] sound fixes for 5.11-rc1
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201222163452.GA1524@www.linux-watchdog.org>
-References: <20201222163452.GA1524@www.linux-watchdog.org>
+In-Reply-To: <s5hwnx8diuc.wl-tiwai@suse.de>
+References: <s5hwnx8diuc.wl-tiwai@suse.de>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201222163452.GA1524@www.linux-watchdog.org>
-X-PR-Tracked-Remote: git://www.linux-watchdog.org/linux-watchdog.git linux-watchdog-5.11-rc1
-X-PR-Tracked-Commit-Id: 0b9491b621196a5d7f163dde81d98e0687bdba97
+X-PR-Tracked-Message-Id: <s5hwnx8diuc.wl-tiwai@suse.de>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-fix-5.11-rc1
+X-PR-Tracked-Commit-Id: 13be30f156fda725b168ac89fc91f78651575307
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 6755f4563144e38f375f43dbb01926fd4ce08620
-Message-Id: <160876687985.7832.2291710904978088213.pr-tracker-bot@kernel.org>
-Date:   Wed, 23 Dec 2020 23:41:19 +0000
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>
+X-PR-Merge-Commit-Id: 58cf05f597b03a8212d9ecf2c79ee046d3ee8ad9
+Message-Id: <160876688061.7832.3405701135911915691.pr-tracker-bot@kernel.org>
+Date:   Wed, 23 Dec 2020 23:41:20 +0000
+To:     Takashi Iwai <tiwai@suse.de>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Watchdog Mailing List <linux-watchdog@vger.kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        EnricoWeigelt@www.linux-watchdog.org,
-        metux IT consult <info@metux.net>,
-        Etienne Carriere <etienne.carriere@st.com>,
-        Jerry Hoemann <jerry.hoemann@hpe.com>,
-        Johan Jonker <jbx6244@gmail.com>,
-        Lingling Xu <ling_ling.xu@unisoc.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Robert Marko <robert.marko@sartura.hr>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Tom Rix <trix@redhat.com>,
-        Wang Wensheng <wangwensheng4@huawei.com>,
-        Wong Vee Khee <vee.khee.wong@intel.com>,
-        Yangtao Li <frank@allwinnertech.com>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        Zhao Qiang <qiang.zhao@nxp.com>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 22 Dec 2020 17:34:52 +0100:
+The pull request you sent on Wed, 23 Dec 2020 09:31:23 +0100:
 
-> git://www.linux-watchdog.org/linux-watchdog.git linux-watchdog-5.11-rc1
+> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-fix-5.11-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/6755f4563144e38f375f43dbb01926fd4ce08620
+https://git.kernel.org/torvalds/c/58cf05f597b03a8212d9ecf2c79ee046d3ee8ad9
 
 Thank you!
 
