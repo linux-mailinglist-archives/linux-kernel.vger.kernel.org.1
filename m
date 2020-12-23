@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FAC12E1243
+	by mail.lfdr.de (Postfix) with ESMTP id 8701F2E1244
 	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:21:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729010AbgLWCUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:20:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46354 "EHLO mail.kernel.org"
+        id S1729024AbgLWCUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:20:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728792AbgLWCTw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:19:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DDDDF22D57;
-        Wed, 23 Dec 2020 02:19:28 +0000 (UTC)
+        id S1728819AbgLWCT7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:19:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EE61225AB;
+        Wed, 23 Dec 2020 02:19:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608689969;
-        bh=Im+LAXDPFddxeDvhkRC+9JfDjYX3yDxIEwOJUvcqXYo=;
+        s=k20201202; t=1608689984;
+        bh=ESDOidCTiUNEdcaAW0GLG4M5bunsCs4flgEgwwblDRw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fH8S9SR08JhZGbZgvaY1He2IgfPU8Oz10Xtw7YdmUeMGcResoF8W3Ta9A9rGNJdSB
-         X+DIl2e/OSLSxlaJAHEaZqn/WGKT+oZ5W+CQgjPgmygr7aJ7WtRXAwuyoIgtjWfdgQ
-         QajDlgpGMg0IwkaOF2KkchJJORGuEIOafUrui7I2eNOTBe+HP3Dde9fxixUhingPPu
-         cWLvf/1bugQM3XQZgYNq1Qi5pJwSpth/UCr0LWjAWDPLLUTcIjUqHy5Ccxk6kuRcgz
-         DkD5fp8Gj8e8Q9kVXKDGEtGXkNTeTlNZe++Sbbe13IDURl+4CCnLHnOgnKpx2v8Vv7
-         Q+1mpG16q0YBg==
+        b=RELys2dV+q8QbeesCyVNdtS9T1Oz8WYv1vHG9NUFlTXR8zuknyLGWdJjSLXgBvOcu
+         SRSxbVc30KKaEpW2Tf+MeZ2SI7XnM3UzgiV8Pxv/kPJX0THRnF3fc/dLLEWUYcCn4M
+         8jceQyGKkqjiJI6Cjw7zcA6gyJdVBR+sEDZCXaqCgm5x5gWD5bZAuzI5gvnvmyYhuM
+         wWwDWV9AcN+TO1GI8XbZszhOBv6R7JD0+Cb0fq2u1yZ9bNyFJC8gzs6zR2MzC7PwQ/
+         VPtAvMk3dyQdYIEMeqczsLuIXGko7gjeEStH3BM4rLuIHo7lggl88xAtuF0Z6kHc9h
+         5rVB47Rdf0+Tw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Finn Thain <fthain@telegraphics.com.au>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 059/130] scsi: atari_scsi: Fix race condition between .queuecommand and EH
-Date:   Tue, 22 Dec 2020 21:17:02 -0500
-Message-Id: <20201223021813.2791612-59-sashal@kernel.org>
+Cc:     Nicolin Chen <nicoleotsuka@gmail.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org
+Subject: [PATCH AUTOSEL 5.4 070/130] iommu/tegra-smmu: Expand mutex protection range
+Date:   Tue, 22 Dec 2020 21:17:13 -0500
+Message-Id: <20201223021813.2791612-70-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223021813.2791612-1-sashal@kernel.org>
 References: <20201223021813.2791612-1-sashal@kernel.org>
@@ -43,73 +44,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Finn Thain <fthain@telegraphics.com.au>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
 
-[ Upstream commit 03fe6a640a05c5dc04b6bcdddfb981d015e84ed4 ]
+[ Upstream commit d5f583bf8654c231b781096bc1a186065cda72b3 ]
 
-It is possible that bus_reset_cleanup() or .eh_abort_handler could be
-invoked during NCR5380_queuecommand(). If that takes place before the new
-command is enqueued and after the ST-DMA "lock" has been acquired, the
-ST-DMA "lock" will be released again. This will result in a lost DMA
-interrupt and a command timeout. Fix this by excluding EH and interrupt
-handlers while the new command is enqueued.
+This is used to protect potential race condition at use_count.
+since probes of client drivers, calling attach_dev(), may run
+concurrently.
 
-Link: https://lore.kernel.org/r/af25163257796b50bb99d4ede4025cea55787b8f.1605847196.git.fthain@telegraphics.com.au
-Tested-by: Michael Schmitz <schmitzmic@gmail.com>
-Reviewed-by: Michael Schmitz <schmitzmic@gmail.com>
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Tested-by: Dmitry Osipenko <digetx@gmail.com>
+Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
+Acked-by: Thierry Reding <treding@nvidia.com>
+Link: https://lore.kernel.org/r/20201125101013.14953-3-nicoleotsuka@gmail.com
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/NCR5380.c    |  9 ++++++---
- drivers/scsi/atari_scsi.c | 10 +++-------
- 2 files changed, 9 insertions(+), 10 deletions(-)
+ drivers/iommu/tegra-smmu.c | 34 +++++++++++++++++++++-------------
+ 1 file changed, 21 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/scsi/NCR5380.c b/drivers/scsi/NCR5380.c
-index d4401c768a0c7..5db10a16a743a 100644
---- a/drivers/scsi/NCR5380.c
-+++ b/drivers/scsi/NCR5380.c
-@@ -567,11 +567,14 @@ static int NCR5380_queue_command(struct Scsi_Host *instance,
+diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
+index dd486233e2828..41be3e2202971 100644
+--- a/drivers/iommu/tegra-smmu.c
++++ b/drivers/iommu/tegra-smmu.c
+@@ -247,26 +247,19 @@ static int tegra_smmu_alloc_asid(struct tegra_smmu *smmu, unsigned int *idp)
+ {
+ 	unsigned long id;
  
- 	cmd->result = 0;
- 
--	if (!NCR5380_acquire_dma_irq(instance))
--		return SCSI_MLQUEUE_HOST_BUSY;
+-	mutex_lock(&smmu->lock);
 -
- 	spin_lock_irqsave(&hostdata->lock, flags);
+ 	id = find_first_zero_bit(smmu->asids, smmu->soc->num_asids);
+-	if (id >= smmu->soc->num_asids) {
+-		mutex_unlock(&smmu->lock);
++	if (id >= smmu->soc->num_asids)
+ 		return -ENOSPC;
+-	}
  
-+	if (!NCR5380_acquire_dma_irq(instance)) {
-+		spin_unlock_irqrestore(&hostdata->lock, flags);
-+
-+		return SCSI_MLQUEUE_HOST_BUSY;
-+	}
-+
- 	/*
- 	 * Insert the cmd into the issue queue. Note that REQUEST SENSE
- 	 * commands are added to the head of the queue since any command will
-diff --git a/drivers/scsi/atari_scsi.c b/drivers/scsi/atari_scsi.c
-index a82b63a666356..95d7a35860836 100644
---- a/drivers/scsi/atari_scsi.c
-+++ b/drivers/scsi/atari_scsi.c
-@@ -376,15 +376,11 @@ static int falcon_get_lock(struct Scsi_Host *instance)
- 	if (IS_A_TT())
- 		return 1;
+ 	set_bit(id, smmu->asids);
+ 	*idp = id;
  
--	if (stdma_is_locked_by(scsi_falcon_intr) &&
--	    instance->hostt->can_queue > 1)
-+	if (stdma_is_locked_by(scsi_falcon_intr))
- 		return 1;
- 
--	if (in_interrupt())
--		return stdma_try_lock(scsi_falcon_intr, instance);
--
--	stdma_lock(scsi_falcon_intr, instance);
--	return 1;
-+	/* stdma_lock() may sleep which means it can't be used here */
-+	return stdma_try_lock(scsi_falcon_intr, instance);
+-	mutex_unlock(&smmu->lock);
+ 	return 0;
  }
  
- #ifndef MODULE
+ static void tegra_smmu_free_asid(struct tegra_smmu *smmu, unsigned int id)
+ {
+-	mutex_lock(&smmu->lock);
+ 	clear_bit(id, smmu->asids);
+-	mutex_unlock(&smmu->lock);
+ }
+ 
+ static bool tegra_smmu_capable(enum iommu_cap cap)
+@@ -404,17 +397,21 @@ static int tegra_smmu_as_prepare(struct tegra_smmu *smmu,
+ 				 struct tegra_smmu_as *as)
+ {
+ 	u32 value;
+-	int err;
++	int err = 0;
++
++	mutex_lock(&smmu->lock);
+ 
+ 	if (as->use_count > 0) {
+ 		as->use_count++;
+-		return 0;
++		goto unlock;
+ 	}
+ 
+ 	as->pd_dma = dma_map_page(smmu->dev, as->pd, 0, SMMU_SIZE_PD,
+ 				  DMA_TO_DEVICE);
+-	if (dma_mapping_error(smmu->dev, as->pd_dma))
+-		return -ENOMEM;
++	if (dma_mapping_error(smmu->dev, as->pd_dma)) {
++		err = -ENOMEM;
++		goto unlock;
++	}
+ 
+ 	/* We can't handle 64-bit DMA addresses */
+ 	if (!smmu_dma_addr_valid(smmu, as->pd_dma)) {
+@@ -437,24 +434,35 @@ static int tegra_smmu_as_prepare(struct tegra_smmu *smmu,
+ 	as->smmu = smmu;
+ 	as->use_count++;
+ 
++	mutex_unlock(&smmu->lock);
++
+ 	return 0;
+ 
+ err_unmap:
+ 	dma_unmap_page(smmu->dev, as->pd_dma, SMMU_SIZE_PD, DMA_TO_DEVICE);
++unlock:
++	mutex_unlock(&smmu->lock);
++
+ 	return err;
+ }
+ 
+ static void tegra_smmu_as_unprepare(struct tegra_smmu *smmu,
+ 				    struct tegra_smmu_as *as)
+ {
+-	if (--as->use_count > 0)
++	mutex_lock(&smmu->lock);
++
++	if (--as->use_count > 0) {
++		mutex_unlock(&smmu->lock);
+ 		return;
++	}
+ 
+ 	tegra_smmu_free_asid(smmu, as->id);
+ 
+ 	dma_unmap_page(smmu->dev, as->pd_dma, SMMU_SIZE_PD, DMA_TO_DEVICE);
+ 
+ 	as->smmu = NULL;
++
++	mutex_unlock(&smmu->lock);
+ }
+ 
+ static int tegra_smmu_attach_dev(struct iommu_domain *domain,
 -- 
 2.27.0
 
