@@ -2,127 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 807692E1A7D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 10:24:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94B802E1AA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 10:54:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728187AbgLWJX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 04:23:57 -0500
-Received: from mail-eopbgr1310131.outbound.protection.outlook.com ([40.107.131.131]:17376
-        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727892AbgLWJX4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 04:23:56 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oLI6rwdC8TsAXqe7GSd9GhpJHHis/d4M/yTgApr/vEAUdH1vtOZ32gRiWQ48oyYJOvmOvZv7EwPDee1DQB9ThIC+AGU70EZQkiFXX2RvSCUFoAOQ1Sz0Qmo9VypbczXCUOi0RMT/fzJLVEwEsU/qb8XZb6Tkqi4qp0qT1Ta8PPFYdWe9n9szuu0sLzQo+7QdcfxbO0tOivkrhB/6q91NGnb8DECRfc3omilGYqoWV863+U771ekheqfU9+DVXA2POx0DcXojK/B5qFDE4y01z9ShSBTExBISw+lLqfkbf47k+dscsvF/G4fgr5vhTsOKg6EApWwBC2Y7wOYAYealxQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cHk5FOcmj24oi1FyME6Na6TXvHCZgf3NWBitDIGOrgM=;
- b=W5mWY2qXTjhnQHuooMVHmufm393xdzlB+ECkSNL0YYwXOEWB/Bjti0Uj9Jfh8ZkFtgcZ/t+W0AQkG9XQ8LNLXamRKdhnH78sFTRJw1Xs3xsgdVYwKRjfwI/5mgr+MZPNJySHUvWYugBXfPc6C8wfDSmcjpvei9MqdNfz1nxDZ9Mt82NnQbMA6ioOmVRo2iKyTMrGPlG9MPLMuPxm+zQ+63YnQTdyIPcTKRfkdUe72G38OMZBh1F4Khs1fsCFTZH+BCDXGWDmVUHW/UL0iUMuVi30gD77XOmNuMlRx6kjqm13AtDmWT32fmynySFjc6ZpISVx3KllAfmn1XqX3tUAcg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cHk5FOcmj24oi1FyME6Na6TXvHCZgf3NWBitDIGOrgM=;
- b=f88o9ovkvdbrurgNcQmE5cxuRQD405Td+tejG7BHeEIdpNbbjvEJH8vPZs9elIaf4jwQ2EIgUnymul5UD3gHgOmW0RxaylU8kYyQ6pueJX153xtf5pC1oBEdAl7PvMrilSvYDfk0uRhbGC2T/NAt+tBeZ1SmOoOKClcgm85F1/s=
-Received: from TY2PR01MB3692.jpnprd01.prod.outlook.com (2603:1096:404:d5::22)
- by TY2PR01MB5002.jpnprd01.prod.outlook.com (2603:1096:404:119::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.27; Wed, 23 Dec
- 2020 09:22:17 +0000
-Received: from TY2PR01MB3692.jpnprd01.prod.outlook.com
- ([fe80::2023:7ed1:37c3:8037]) by TY2PR01MB3692.jpnprd01.prod.outlook.com
- ([fe80::2023:7ed1:37c3:8037%5]) with mapi id 15.20.3676.033; Wed, 23 Dec 2020
- 09:22:17 +0000
-From:   Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>
-CC:     Khiem Nguyen <khiem.nguyen.xt@renesas.com>,
-        "linux-power@fi.rohmeurope.com" <linux-power@fi.rohmeurope.com>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "marek.vasut+renesas@gmail.com" <marek.vasut+renesas@gmail.com>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "matti.vaittinen@fi.rohmeurope.com" 
-        <matti.vaittinen@fi.rohmeurope.com>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>
-Subject: RE: [PATCH v5 05/12] regulator: bd9571mwv: Add BD9574MWF support
-Thread-Topic: [PATCH v5 05/12] regulator: bd9571mwv: Add BD9574MWF support
-Thread-Index: AQHW2FS6Pnc2o50fQkyF3DxfwoHR7aoEZ36AgAABuNA=
-Date:   Wed, 23 Dec 2020 09:22:17 +0000
-Message-ID: <TY2PR01MB3692A8A89B398207ACD198B2D8DE0@TY2PR01MB3692.jpnprd01.prod.outlook.com>
-References: <1608636139-564-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
- <1608636139-564-6-git-send-email-yoshihiro.shimoda.uh@renesas.com>
- <7fcdab0e-7330-ee7c-abb8-7d89078a9621@gmail.com>
-In-Reply-To: <7fcdab0e-7330-ee7c-abb8-7d89078a9621@gmail.com>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=renesas.com;
-x-originating-ip: [124.210.22.195]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 03792628-8c27-4d20-9223-08d8a7243e3b
-x-ms-traffictypediagnostic: TY2PR01MB5002:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <TY2PR01MB5002FB798F94B9171210E77ED8DE0@TY2PR01MB5002.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4303;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: KGrrdPr/Bn47S2L4o+alJS0QzJcCWqKLPlp/b2lfsy1DMY0Ev95mbI5QwpuuYJXSXQ3F5p/NvWf6fDkuvYc0E4U8/Dnlh+pyluanuFrYn+n6d9ZdoGh+VRlRg7zEuo2jfnRrADLsAxLwnDg1kxEp8pUtDSJ0iITpPPxPjz3VYEKXebWfip9IMfeOS8P5Qr0AXQDCYZSIBZmgl0s+e4Zz6sR76jX//jJqfeVECKFI0Jp448tX/y/WcEPGBwNPCkwyXatEq2dUIkBjzAqHLpMKo7geVHy/uesR85ogbD8klg/ahMdNKGgVck38MkzWHWZddsIkkM/2bKCoRU/WBeGce4wBJIXykAb7wBHUIaaz3Ev77RRMF0kupUtqUwGFI1XNc7F+bCEO7tM2DHgvDSk7vw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR01MB3692.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(346002)(136003)(39860400002)(396003)(6916009)(6506007)(5660300002)(2906002)(26005)(55236004)(53546011)(55016002)(4326008)(76116006)(86362001)(66476007)(66946007)(9686003)(316002)(71200400001)(66446008)(4744005)(66556008)(64756008)(52536014)(478600001)(33656002)(7696005)(54906003)(8936002)(7416002)(8676002)(186003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?QVFVdDZZcDYwdVlTNXdSc2tSOER3cU94N1lMNlc1aWN6QW84Q21VL2Jxak1Q?=
- =?utf-8?B?Y0tEa0tlSVRlS21GSUNzNFlSWXh6SSthRkMxRkpCeklmVGpvRStjNGJGTVpy?=
- =?utf-8?B?T091a242bmsyTHVHUDZ3NTlhaFlsaUR6dDMvaDlFRGV3eUxzbUowbWc3L2pC?=
- =?utf-8?B?SWlOQS9kMGdNc3luMVJWUkUxeFhvcnk2ZDNONlNHVTBwaEdadDlEQVNrZ1Rr?=
- =?utf-8?B?WGhnWXIvV2dpTFpwajdQeGE4N00ySDl6WkViaXFUYjZWandDZW5oMDZsaFZI?=
- =?utf-8?B?L2dDN253bmF2OVZZRERMaXlCTXdsQ1JSVUtMaTUvUnhwTHRvOFVVeHhQQXdj?=
- =?utf-8?B?OWlaa2xBNjlkazJKczdweGZpMFZSRTFjV1VRZTQwdnRtVjJ1VTE1cE9HZUlo?=
- =?utf-8?B?amhqQ2doRGVLNUNocWpPZ29kL0hDb1JNSTFtMW52K0ZWUG5HUUQ4VU5DMEVN?=
- =?utf-8?B?Q1k3SG44TU9vQlVpeXNYTnEvZXVmQlQ5V3BYVHFpazBndzYvY3kya2x2MjND?=
- =?utf-8?B?d2lrZzM5bmVvcTJNcUZyTGs4TU9xRi84RUNBQWkwbFdYc3NueWRUaHJXZzQz?=
- =?utf-8?B?LzY5MlprekpEdjlaM2R1TGg0clVRK1JpV29xWk9pMjJZQkhiNEVNbTZXTnV1?=
- =?utf-8?B?Q1dlSzdaUmxkS1psZFVLM0d1SVZiTERHV0F3amhGRnhpY05BRWIzWmxGVjJS?=
- =?utf-8?B?UUdNV0lRZUgrSzc5UXFSTGNRQjJ4NG85eEhVbnNKSGNWaFEwQXlLQzJFa3RZ?=
- =?utf-8?B?bHZCUzZrcDlQU1dtM3BCTWtwa1hGZ0tHKzBPVWxjOWs2Q3NLWm1sTFE5cldK?=
- =?utf-8?B?aDZMVExOMCtMVS82ZTVvZlQvdHJGTG5XQmJBSFFURHYzWDRpcmtKSkVGV2xS?=
- =?utf-8?B?bDdLRGJhSmxQWlZuejN5OU4xTThhbEJrTmdJby9ZRk9HZkU4bVFlUmdPbEpU?=
- =?utf-8?B?T3ZuRS9vaWdNVEU3UWFvRUM4WDNLcDlNYTdXQXkrZVB6Yk5uakV6TW04NVN5?=
- =?utf-8?B?UldIM2hiZ3hwODdzUmc0QndReGI4Rld6T0Z1SmRQSXNaV3JPanN1YmhaYXNV?=
- =?utf-8?B?TTBvY1ZCU1gvVjU5dS9TWGc4dWFQMUR1UzIydC9UYWpFcnpzYzNEMlBVNHFU?=
- =?utf-8?B?dUtxZm0xQ0ovWFdHbndhQUErSXp0KzFQWDRCMFJqUUM0MHI2MVA1Y0JlU212?=
- =?utf-8?B?TUVKUUhpckhmK2ptbkF6NnBYcGZkeEYra2QrVXR0c1J0UXdFMGxoWnZhMDdL?=
- =?utf-8?B?eHZEeExVSFZLOXlFSlRFckVQUVlYYUhNbWcwT1VRblNGVXlFSWhSSEd2dzJL?=
- =?utf-8?Q?dCI5UagfGdXo4=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB3692.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 03792628-8c27-4d20-9223-08d8a7243e3b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Dec 2020 09:22:17.6438
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: MOV1JRM7+dkEX0sLdd3MehdjT5elRFQVLoSDuWg1JfTDmRY+VcJKq+D+Lhv8BDeXiV9vui1DMflo54O8XX+pg6eWuqLR2rsDjBl9Vp0cZgCN3AtGjrfXurPgdJPUpZtl
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR01MB5002
+        id S1728253AbgLWJwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 04:52:31 -0500
+Received: from m12-14.163.com ([220.181.12.14]:47036 "EHLO m12-14.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728147AbgLWJwa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 04:52:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=i8T2Cm6FnxE8zbZXoy
+        WDy2tvwCF9gtslIKw21Zf+WAg=; b=FL3R1PvJCdYCWLYTCzn6Ui927l8tOC577p
+        fymgaHobLiQhXdsF00JK3wRgzJyyfW9Ibe9KEXkSLvlA+6aj1FfLbBRuiR499hsx
+        XfYv9/jGa3RR9bW8btvbUIuK/Z/T1VwacrUcoFZCrur4KnvGWoZBSHsWH/X5Ty2z
+        zekGK5Tow=
+Received: from localhost.localdomain (unknown [14.17.22.31])
+        by smtp10 (Coremail) with SMTP id DsCowAA3Sno6++JfDt+dcQ--.47865S3;
+        Wed, 23 Dec 2020 16:09:31 +0800 (CST)
+From:   ultrachin@163.com
+To:     linux-kernel@vger.kernel.org
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, heddchen@tencent.com, xiaoggchen@tencent.com
+Subject: [PATCH] sched: pull tasks when CPU is about to run SCHED_IDLE tasks
+Date:   Wed, 23 Dec 2020 16:09:28 +0800
+Message-Id: <1608710968-31475-1-git-send-email-ultrachin@163.com>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID: DsCowAA3Sno6++JfDt+dcQ--.47865S3
+X-Coremail-Antispam: 1Uf129KBjvdXoWrtFykKFyUXw45Xr18Xw45trb_yoW3Arc_ua
+        n3Crsakr15tw1jyFWxurW7XFyFqa40gF95Cw12yrW5G3sYyws3JrZ5AFyrGrs3KrWUCF97
+        Ar98WF92qr1xGjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0DUUUUUUUU==
+X-Originating-IP: [14.17.22.31]
+X-CM-SenderInfo: xxow2thfkl0qqrwthudrp/1tbivxsEWFWBtFpCkQAAsR
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgU2VyZ2VpLA0KDQo+IEZyb206IFNlcmdlaSBTaHR5bHlvdiwgU2VudDogV2VkbmVzZGF5LCBE
-ZWNlbWJlciAyMywgMjAyMCA2OjE1IFBNDQo+IA0KPiBPbiAyMi4xMi4yMDIwIDE0OjIyLCBZb3No
-aWhpcm8gU2hpbW9kYSB3cm90ZToNCj4gDQo+ID4gQWRkIHN1cHBvcnQgZm9yIEJEOTU3NE1XRiB3
-aGljaCBpcyBzaWxpbWFyIGNoaXAgd2l0aCBCRDk1NzFNV1YuDQo+IA0KPiAgICAgU2ltaWxhciAo
-YWdhaW4pPyA6LSkNCg0KVGhhbmsgeW91IGZvciBwb2ludGVkIGl0IG91dCEgSSdsbCBmaXggdGhp
-cyBhbmQgcGF0Y2ggOC8xMi4NCg0KQmVzdCByZWdhcmRzLA0KWW9zaGloaXJvIFNoaW1vZGENCg0K
+From: Chen Xiaoguang <xiaoggchen@tencent.com>
+
+Before a CPU switches from running SCHED_NORMAL task to
+SCHED_IDLE task, trying to pull SCHED_NORMAL tasks from other
+CPU by doing load_balance first.
+
+Signed-off-by: Chen Xiaoguang <xiaoggchen@tencent.com>
+Signed-off-by: Chen He <heddchen@tencent.com>
+---
+ kernel/sched/fair.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index ae7ceba..0a26132 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -7004,6 +7004,11 @@ struct task_struct *
+ 	struct task_struct *p;
+ 	int new_tasks;
+ 
++	if (prev &&
++	    fair_policy(prev->policy) &&
++	    sched_idle_cpu(rq->cpu))
++		goto idle;
++
+ again:
+ 	if (!sched_fair_runnable(rq))
+ 		goto idle;
+-- 
+1.8.3.1
+
+
