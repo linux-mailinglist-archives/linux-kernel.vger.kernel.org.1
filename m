@@ -2,212 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32D0F2E1155
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 02:22:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4062F2E1157
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 02:22:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727281AbgLWBVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 20:21:09 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:3644 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726514AbgLWBVH (ORCPT
+        id S1726612AbgLWBWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 20:22:33 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:34021 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725985AbgLWBWc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 20:21:07 -0500
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BN13OVN186260;
-        Tue, 22 Dec 2020 20:20:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=D+EFG/gc3p78ZE8Oc9NsUtkZSWv2wrbRfIoTzSXMAds=;
- b=oXmZhCspfvG0uyTwNozePbIlXP/eYeeyQrX5veLysnTffU4pL4EXA510xaRgpdEWTaR0
- yL8Lcu0TQH+a/X1xoirgn73PO4Vii40Ll15usmWjb0KXL/DUdmdkrnA0+ODqzNPVASid
- I24kdVovMP3/p6T8bhNYKRR8bDpFXVChuFCuYIc3QLNSkP60bmzUNYP6pp3N6uIIWGPd
- kprGitm1GTvW06UxNv6pJAlDGhBnF0GoDSrvzaLXhHAi0znS65+r8vu1i/fqIxI4288d
- aBkfYYhjAhhrDDDdXCce7y4JyiUizbwGtTBTPQ/aP9e2Dq0zVK16LL676pCwAXBzp1mt EQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35ku7ts4qf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Dec 2020 20:20:24 -0500
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BN1KEM4088148;
-        Tue, 22 Dec 2020 20:20:24 -0500
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35ku7ts4q8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Dec 2020 20:20:24 -0500
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BN1DETt000491;
-        Wed, 23 Dec 2020 01:20:23 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma03dal.us.ibm.com with ESMTP id 35k02ev7r0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Dec 2020 01:20:23 +0000
-Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BN1KLkC22020606
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 23 Dec 2020 01:20:21 GMT
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 96F7E13604F;
-        Wed, 23 Dec 2020 01:20:21 +0000 (GMT)
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 15424136051;
-        Wed, 23 Dec 2020 01:20:19 +0000 (GMT)
-Received: from cpe-66-24-58-13.stny.res.rr.com.com (unknown [9.85.193.150])
-        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed, 23 Dec 2020 01:20:19 +0000 (GMT)
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     stable@vger.kernel.org, borntraeger@de.ibm.com, cohuck@redhat.com,
-        kwankhede@nvidia.com, pbonzini@redhat.com,
-        alex.williamson@redhat.com, pasic@linux.vnet.ibm.com,
-        Tony Krowiak <akrowiak@linux.ibm.com>,
-        Halil Pasic <pasic@linux.ibm.com>
-Subject: [PATCH v5] s390/vfio-ap: clean up vfio_ap resources when KVM pointer invalidated
-Date:   Tue, 22 Dec 2020 20:20:13 -0500
-Message-Id: <20201223012013.5418-1-akrowiak@linux.ibm.com>
-X-Mailer: git-send-email 2.21.1
+        Tue, 22 Dec 2020 20:22:32 -0500
+X-UUID: 8f3f8bc72d484bc2b9c2c87cf3720d59-20201223
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:Reply-To:From:Subject:Message-ID; bh=wA1tMPUl7qbOsFxNAFBWpezyTlJCvJZ/9bkweVhcykY=;
+        b=gZ6jTh+3zXk760/4J8t3vKmYOO+KGo5QpK3tV6orsj9n6CU35gGzVXeqfFH0GmVk3kb+5+BdEEY6urRchNa68uI5wIsbCuQx1tY1sRIrMe806yyZpXxYpxSvNb3gM4XpHDedQ4iSa93m6sXN2F+NfWpEx5JFfuDUXQa1GRItkVI=;
+X-UUID: 8f3f8bc72d484bc2b9c2c87cf3720d59-20201223
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <yongqiang.niu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 124569288; Wed, 23 Dec 2020 09:21:49 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by mtkmbs05n1.mediatek.inc
+ (172.21.101.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 23 Dec
+ 2020 09:21:44 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 23 Dec 2020 09:21:40 +0800
+Message-ID: <1608686503.18252.7.camel@mhfsdcap03>
+Subject: Re: [PATCH v2, 04/17] drm/mediatek: add component OVL_2L2
+From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
+Reply-To: Yongqiang Niu <yongqiang.niu@mediatek.com>
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
+CC:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        DTML <devicetree@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Date:   Wed, 23 Dec 2020 09:21:43 +0800
+In-Reply-To: <CAAOTY_8bsmRtt9Kpd1__iEuPJ3Ox7jbn_yXnUeUoj041AhjSkQ@mail.gmail.com>
+References: <1607746317-4696-1-git-send-email-yongqiang.niu@mediatek.com>
+         <1607746317-4696-5-git-send-email-yongqiang.niu@mediatek.com>
+         <CAAOTY_8bsmRtt9Kpd1__iEuPJ3Ox7jbn_yXnUeUoj041AhjSkQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-22_13:2020-12-21,2020-12-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- impostorscore=0 priorityscore=1501 mlxscore=0 phishscore=0 spamscore=0
- lowpriorityscore=0 suspectscore=0 clxscore=1015 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012230007
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The vfio_ap device driver registers a group notifier with VFIO when the
-file descriptor for a VFIO mediated device for a KVM guest is opened to
-receive notification that the KVM pointer is set (VFIO_GROUP_NOTIFY_SET_KVM
-event). When the KVM pointer is set, the vfio_ap driver takes the
-following actions:
-1. Stashes the KVM pointer in the vfio_ap_mdev struct that holds the state
-   of the mediated device.
-2. Calls the kvm_get_kvm() function to increment its reference counter.
-3. Sets the function pointer to the function that handles interception of
-   the instruction that enables/disables interrupt processing.
-4. Sets the masks in the KVM guest's CRYCB to pass AP resources through to
-   the guest.
-
-In order to avoid memory leaks, when the notifier is called to receive
-notification that the KVM pointer has been set to NULL, the vfio_ap device
-driver should reverse the actions taken when the KVM pointer was set.
-
-Fixes: 258287c994de ("s390: vfio-ap: implement mediated device open callback")
-Cc: stable@vger.kernel.org
-Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
----
- drivers/s390/crypto/vfio_ap_ops.c | 49 ++++++++++++++++++-------------
- 1 file changed, 28 insertions(+), 21 deletions(-)
-
-diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-index e0bde8518745..7339043906cf 100644
---- a/drivers/s390/crypto/vfio_ap_ops.c
-+++ b/drivers/s390/crypto/vfio_ap_ops.c
-@@ -1037,19 +1037,14 @@ static int vfio_ap_mdev_set_kvm(struct ap_matrix_mdev *matrix_mdev,
- {
- 	struct ap_matrix_mdev *m;
- 
--	mutex_lock(&matrix_dev->lock);
--
- 	list_for_each_entry(m, &matrix_dev->mdev_list, node) {
--		if ((m != matrix_mdev) && (m->kvm == kvm)) {
--			mutex_unlock(&matrix_dev->lock);
-+		if ((m != matrix_mdev) && (m->kvm == kvm))
- 			return -EPERM;
--		}
- 	}
- 
- 	matrix_mdev->kvm = kvm;
- 	kvm_get_kvm(kvm);
- 	kvm->arch.crypto.pqap_hook = &matrix_mdev->pqap_hook;
--	mutex_unlock(&matrix_dev->lock);
- 
- 	return 0;
- }
-@@ -1083,35 +1078,52 @@ static int vfio_ap_mdev_iommu_notifier(struct notifier_block *nb,
- 	return NOTIFY_DONE;
- }
- 
-+static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev)
-+{
-+	kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
-+	matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
-+	vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
-+	kvm_put_kvm(matrix_mdev->kvm);
-+	matrix_mdev->kvm = NULL;
-+}
-+
- static int vfio_ap_mdev_group_notifier(struct notifier_block *nb,
- 				       unsigned long action, void *data)
- {
--	int ret;
-+	int ret, notify_rc = NOTIFY_OK;
- 	struct ap_matrix_mdev *matrix_mdev;
- 
- 	if (action != VFIO_GROUP_NOTIFY_SET_KVM)
- 		return NOTIFY_OK;
- 
- 	matrix_mdev = container_of(nb, struct ap_matrix_mdev, group_notifier);
-+	mutex_lock(&matrix_dev->lock);
- 
- 	if (!data) {
--		matrix_mdev->kvm = NULL;
--		return NOTIFY_OK;
-+		if (matrix_mdev->kvm)
-+			vfio_ap_mdev_unset_kvm(matrix_mdev);
-+		goto notify_done;
- 	}
- 
- 	ret = vfio_ap_mdev_set_kvm(matrix_mdev, data);
--	if (ret)
--		return NOTIFY_DONE;
-+	if (ret) {
-+		notify_rc = NOTIFY_DONE;
-+		goto notify_done;
-+	}
- 
- 	/* If there is no CRYCB pointer, then we can't copy the masks */
--	if (!matrix_mdev->kvm->arch.crypto.crycbd)
--		return NOTIFY_DONE;
-+	if (!matrix_mdev->kvm->arch.crypto.crycbd) {
-+		notify_rc = NOTIFY_DONE;
-+		goto notify_done;
-+	}
- 
- 	kvm_arch_crypto_set_masks(matrix_mdev->kvm, matrix_mdev->matrix.apm,
- 				  matrix_mdev->matrix.aqm,
- 				  matrix_mdev->matrix.adm);
- 
--	return NOTIFY_OK;
-+notify_done:
-+	mutex_unlock(&matrix_dev->lock);
-+	return notify_rc;
- }
- 
- static void vfio_ap_irq_disable_apqn(int apqn)
-@@ -1222,13 +1234,8 @@ static void vfio_ap_mdev_release(struct mdev_device *mdev)
- 	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
- 
- 	mutex_lock(&matrix_dev->lock);
--	if (matrix_mdev->kvm) {
--		kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
--		matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
--		vfio_ap_mdev_reset_queues(mdev);
--		kvm_put_kvm(matrix_mdev->kvm);
--		matrix_mdev->kvm = NULL;
--	}
-+	if (matrix_mdev->kvm)
-+		vfio_ap_mdev_unset_kvm(matrix_mdev);
- 	mutex_unlock(&matrix_dev->lock);
- 
- 	vfio_unregister_notifier(mdev_dev(mdev), VFIO_IOMMU_NOTIFY,
--- 
-2.21.1
+T24gU3VuLCAyMDIwLTEyLTEzIGF0IDA5OjE1ICswODAwLCBDaHVuLUt1YW5nIEh1IHdyb3RlOg0K
+PiBIaSwgWW9uZ3FpYW5nOg0KPiANCj4gWW9uZ3FpYW5nIE5pdSA8eW9uZ3FpYW5nLm5pdUBtZWRp
+YXRlay5jb20+IOaWvCAyMDIw5bm0MTLmnIgxMuaXpSDpgLHlha0g5LiL5Y2IMTI6MTLlr6vpgZPv
+vJoNCj4gPg0KPiA+IFRoaXMgcGF0Y2ggYWRkIGNvbXBvbmVudCBPVkxfMkwyDQo+IA0KPiBCcmVh
+ayBkcm0gcGFydCBhbmQgc29jIHBhcnQgaW50byBkaWZmZXJlbnQgcGF0Y2hlcy4NCj4gDQo+IFJl
+Z2FyZHMsDQo+IENodW4tS3VhbmcuDQoNCndpbGwgYmUgZml4ZWQgaW4gbmV4dCB2ZXJzaW9uDQo+
+IA0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogWW9uZ3FpYW5nIE5pdSA8eW9uZ3FpYW5nLm5pdUBt
+ZWRpYXRlay5jb20+DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtf
+ZHJtX2RkcF9jb21wLmMgfCAxICsNCj4gPiAgaW5jbHVkZS9saW51eC9zb2MvbWVkaWF0ZWsvbXRr
+LW1tc3lzLmggICAgICB8IDEgKw0KPiA+ICAyIGZpbGVzIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygr
+KQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHJt
+X2RkcF9jb21wLmMgYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9kZHBfY29tcC5j
+DQo+ID4gaW5kZXggOGViYTQ0Yi4uODkzODU1NCAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL2dw
+dS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9kZHBfY29tcC5jDQo+ID4gKysrIGIvZHJpdmVycy9ncHUv
+ZHJtL21lZGlhdGVrL210a19kcm1fZGRwX2NvbXAuYw0KPiA+IEBAIC00MDMsNiArNDAzLDcgQEAg
+c3RydWN0IG10a19kZHBfY29tcF9tYXRjaCB7DQo+ID4gICAgICAgICBbRERQX0NPTVBPTkVOVF9P
+VkwxXSAgICA9IHsgTVRLX0RJU1BfT1ZMLCAgICAgICAxLCBOVUxMIH0sDQo+ID4gICAgICAgICBb
+RERQX0NPTVBPTkVOVF9PVkxfMkwwXSA9IHsgTVRLX0RJU1BfT1ZMXzJMLCAgICAwLCBOVUxMIH0s
+DQo+ID4gICAgICAgICBbRERQX0NPTVBPTkVOVF9PVkxfMkwxXSA9IHsgTVRLX0RJU1BfT1ZMXzJM
+LCAgICAxLCBOVUxMIH0sDQo+ID4gKyAgICAgICBbRERQX0NPTVBPTkVOVF9PVkxfMkwyXSA9IHsg
+TVRLX0RJU1BfT1ZMXzJMLCAgICAyLCBOVUxMIH0sDQo+ID4gICAgICAgICBbRERQX0NPTVBPTkVO
+VF9QV00wXSAgICA9IHsgTVRLX0RJU1BfUFdNLCAgICAgICAwLCBOVUxMIH0sDQo+ID4gICAgICAg
+ICBbRERQX0NPTVBPTkVOVF9QV00xXSAgICA9IHsgTVRLX0RJU1BfUFdNLCAgICAgICAxLCBOVUxM
+IH0sDQo+ID4gICAgICAgICBbRERQX0NPTVBPTkVOVF9QV00yXSAgICA9IHsgTVRLX0RJU1BfUFdN
+LCAgICAgICAyLCBOVUxMIH0sDQo+ID4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvc29jL21l
+ZGlhdGVrL210ay1tbXN5cy5oIGIvaW5jbHVkZS9saW51eC9zb2MvbWVkaWF0ZWsvbXRrLW1tc3lz
+LmgNCj4gPiBpbmRleCA0YjZjNTE0Li40MjQ3NmMyIDEwMDY0NA0KPiA+IC0tLSBhL2luY2x1ZGUv
+bGludXgvc29jL21lZGlhdGVrL210ay1tbXN5cy5oDQo+ID4gKysrIGIvaW5jbHVkZS9saW51eC9z
+b2MvbWVkaWF0ZWsvbXRrLW1tc3lzLmgNCj4gPiBAQCAtMjksNiArMjksNyBAQCBlbnVtIG10a19k
+ZHBfY29tcF9pZCB7DQo+ID4gICAgICAgICBERFBfQ09NUE9ORU5UX09WTDAsDQo+ID4gICAgICAg
+ICBERFBfQ09NUE9ORU5UX09WTF8yTDAsDQo+ID4gICAgICAgICBERFBfQ09NUE9ORU5UX09WTF8y
+TDEsDQo+ID4gKyAgICAgICBERFBfQ09NUE9ORU5UX09WTF8yTDIsDQo+ID4gICAgICAgICBERFBf
+Q09NUE9ORU5UX09WTDEsDQo+ID4gICAgICAgICBERFBfQ09NUE9ORU5UX1BXTTAsDQo+ID4gICAg
+ICAgICBERFBfQ09NUE9ORU5UX1BXTTEsDQo+ID4gLS0NCj4gPiAxLjguMS4xLmRpcnR5DQo+ID4g
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCj4gPiBMaW51
+eC1tZWRpYXRlayBtYWlsaW5nIGxpc3QNCj4gPiBMaW51eC1tZWRpYXRla0BsaXN0cy5pbmZyYWRl
+YWQub3JnDQo+ID4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9s
+aW51eC1tZWRpYXRlaw0KDQo=
 
