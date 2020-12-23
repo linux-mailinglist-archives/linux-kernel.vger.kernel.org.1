@@ -2,77 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 702152E1193
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:14:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C9B22E1203
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:20:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726846AbgLWCNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:13:48 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:9910 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725300AbgLWCNs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:13:48 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4D0xYL2T42z6vD5;
-        Wed, 23 Dec 2020 10:12:22 +0800 (CST)
-Received: from [10.174.178.154] (10.174.178.154) by smtp.huawei.com
- (10.3.19.210) with Microsoft SMTP Server (TLS) id 14.3.498.0; Wed, 23 Dec
- 2020 10:13:04 +0800
-Subject: Re: [RESEND] usb: dwc3: meson-g12a: disable clk on error handling
- path in probe
-To:     <balbi@kernel.org>, <gregkh@linuxfoundation.org>,
-        <khilman@baylibre.com>, <narmstrong@baylibre.com>,
-        <jbrunet@baylibre.com>, <martin.blumenstingl@googlemail.com>
-CC:     <linux-usb@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20201215025459.91794-1-zhengzengkai@huawei.com>
-From:   Zheng Zengkai <zhengzengkai@huawei.com>
-Message-ID: <c069b566-224d-f938-089c-6a69d1ec9d55@huawei.com>
-Date:   Wed, 23 Dec 2020 10:13:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1727738AbgLWCR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:17:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45510 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727612AbgLWCRy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:17:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F4C4225AC;
+        Wed, 23 Dec 2020 02:16:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608689806;
+        bh=v0oZvUtokxvo39/NdM+fLn468wX5yHrFHPEcQw3Zl2U=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=oxNQ7v1YSxh1C1Jh/fDOPHOJUvil3tGgR7nc8laYELaI+3yY+cRYd291AqkmHfadB
+         DgkviNIBpq8AqNTdH9ottx56C7AkXSJv135oE7YyDDCrr7I2lB1KXLBcyzSPBgFlF1
+         mSoVntPEqx9w4NgXaml/kxhB/QQtmLHtjFZHw6a2qy3OvtGi7CJzNNUR9fpwwLf+rR
+         eikQdptedpKYHiCTmg6qq9r+jhP2AWHAhh8wot51AC2j+X47g5kmghPLTKq28Z7t6z
+         1O+NFsEI4FOmGLpA2WIoiUrXEMqN20gJsnpMPQSPskBLzqINrDAiV6bd/B3UjOv3Dl
+         PT9ZlJSE3C5QA==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Krishna Manikandan <mkrishn@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Sasha Levin <sashal@kernel.org>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.10 015/217] drm/msm: Fix race condition in msm driver with async layer updates
+Date:   Tue, 22 Dec 2020 21:13:04 -0500
+Message-Id: <20201223021626.2790791-15-sashal@kernel.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20201223021626.2790791-1-sashal@kernel.org>
+References: <20201223021626.2790791-1-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20201215025459.91794-1-zhengzengkai@huawei.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.154]
-X-CFilter-Loop: Reflected
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi everyone,
+From: Krishna Manikandan <mkrishn@codeaurora.org>
 
-Friendly ping:
+[ Upstream commit b3d91800d9ac35014e0349292273a6fa7938d402 ]
 
-Just want to know why this patch was ignored,
+When there are back to back commits with async cursor update,
+there is a case where second commit can program the DPU hw
+blocks while first didn't complete flushing config to HW.
 
-Am I missing something?
+Synchronize the compositions such that second commit waits
+until first commit flushes the composition.
 
-Merry Christmas and Happy New Year!
+This change also introduces per crtc commit lock, such that
+commits on different crtcs are not blocked by each other.
 
-> dwc3_meson_g12a_probe() does not invoke clk_bulk_disable_unprepare()
-> on one error handling path. This patch fixes that.
->
-> Fixes: 347052e3bf1b ("usb: dwc3: meson-g12a: fix USB2 PHY initialization on G12A and A1 SoCs")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zheng Zengkai <zhengzengkai@huawei.com>
-> Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> ---
->   drivers/usb/dwc3/dwc3-meson-g12a.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/usb/dwc3/dwc3-meson-g12a.c b/drivers/usb/dwc3/dwc3-meson-g12a.c
-> index 417e05381b5d..bdf1f98dfad8 100644
-> --- a/drivers/usb/dwc3/dwc3-meson-g12a.c
-> +++ b/drivers/usb/dwc3/dwc3-meson-g12a.c
-> @@ -754,7 +754,7 @@ static int dwc3_meson_g12a_probe(struct platform_device *pdev)
->   
->   	ret = priv->drvdata->setup_regmaps(priv, base);
->   	if (ret)
-> -		return ret;
-> +		goto err_disable_clks;
->   
->   	if (priv->vbus) {
->   		ret = regulator_enable(priv->vbus);
+Changes in v2:
+	- Use an array of mutexes in kms to handle commit
+	  lock per crtc. (Rob Clark)
+
+Changes in v3:
+	- Add wrapper functions to handle lock and unlock of
+	  commit_lock for each crtc. (Rob Clark)
+
+Signed-off-by: Krishna Manikandan <mkrishn@codeaurora.org>
+Reviewed-by: Rob Clark <robdclark@gmail.com>
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/gpu/drm/msm/msm_atomic.c | 37 +++++++++++++++++++++-----------
+ drivers/gpu/drm/msm/msm_kms.h    |  6 ++++--
+ 2 files changed, 28 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/msm_atomic.c b/drivers/gpu/drm/msm/msm_atomic.c
+index 561bfa48841c3..575e9af9b6fc9 100644
+--- a/drivers/gpu/drm/msm/msm_atomic.c
++++ b/drivers/gpu/drm/msm/msm_atomic.c
+@@ -55,16 +55,32 @@ static void vblank_put(struct msm_kms *kms, unsigned crtc_mask)
+ 	}
+ }
+ 
++static void lock_crtcs(struct msm_kms *kms, unsigned int crtc_mask)
++{
++	struct drm_crtc *crtc;
++
++	for_each_crtc_mask(kms->dev, crtc, crtc_mask)
++		mutex_lock(&kms->commit_lock[drm_crtc_index(crtc)]);
++}
++
++static void unlock_crtcs(struct msm_kms *kms, unsigned int crtc_mask)
++{
++	struct drm_crtc *crtc;
++
++	for_each_crtc_mask(kms->dev, crtc, crtc_mask)
++		mutex_unlock(&kms->commit_lock[drm_crtc_index(crtc)]);
++}
++
+ static void msm_atomic_async_commit(struct msm_kms *kms, int crtc_idx)
+ {
+ 	unsigned crtc_mask = BIT(crtc_idx);
+ 
+ 	trace_msm_atomic_async_commit_start(crtc_mask);
+ 
+-	mutex_lock(&kms->commit_lock);
++	lock_crtcs(kms, crtc_mask);
+ 
+ 	if (!(kms->pending_crtc_mask & crtc_mask)) {
+-		mutex_unlock(&kms->commit_lock);
++		unlock_crtcs(kms, crtc_mask);
+ 		goto out;
+ 	}
+ 
+@@ -79,7 +95,6 @@ static void msm_atomic_async_commit(struct msm_kms *kms, int crtc_idx)
+ 	 */
+ 	trace_msm_atomic_flush_commit(crtc_mask);
+ 	kms->funcs->flush_commit(kms, crtc_mask);
+-	mutex_unlock(&kms->commit_lock);
+ 
+ 	/*
+ 	 * Wait for flush to complete:
+@@ -90,9 +105,8 @@ static void msm_atomic_async_commit(struct msm_kms *kms, int crtc_idx)
+ 
+ 	vblank_put(kms, crtc_mask);
+ 
+-	mutex_lock(&kms->commit_lock);
+ 	kms->funcs->complete_commit(kms, crtc_mask);
+-	mutex_unlock(&kms->commit_lock);
++	unlock_crtcs(kms, crtc_mask);
+ 	kms->funcs->disable_commit(kms);
+ 
+ out:
+@@ -189,12 +203,11 @@ void msm_atomic_commit_tail(struct drm_atomic_state *state)
+ 	 * Ensure any previous (potentially async) commit has
+ 	 * completed:
+ 	 */
++	lock_crtcs(kms, crtc_mask);
+ 	trace_msm_atomic_wait_flush_start(crtc_mask);
+ 	kms->funcs->wait_flush(kms, crtc_mask);
+ 	trace_msm_atomic_wait_flush_finish(crtc_mask);
+ 
+-	mutex_lock(&kms->commit_lock);
+-
+ 	/*
+ 	 * Now that there is no in-progress flush, prepare the
+ 	 * current update:
+@@ -232,8 +245,7 @@ void msm_atomic_commit_tail(struct drm_atomic_state *state)
+ 		}
+ 
+ 		kms->funcs->disable_commit(kms);
+-		mutex_unlock(&kms->commit_lock);
+-
++		unlock_crtcs(kms, crtc_mask);
+ 		/*
+ 		 * At this point, from drm core's perspective, we
+ 		 * are done with the atomic update, so we can just
+@@ -260,8 +272,7 @@ void msm_atomic_commit_tail(struct drm_atomic_state *state)
+ 	 */
+ 	trace_msm_atomic_flush_commit(crtc_mask);
+ 	kms->funcs->flush_commit(kms, crtc_mask);
+-	mutex_unlock(&kms->commit_lock);
+-
++	unlock_crtcs(kms, crtc_mask);
+ 	/*
+ 	 * Wait for flush to complete:
+ 	 */
+@@ -271,9 +282,9 @@ void msm_atomic_commit_tail(struct drm_atomic_state *state)
+ 
+ 	vblank_put(kms, crtc_mask);
+ 
+-	mutex_lock(&kms->commit_lock);
++	lock_crtcs(kms, crtc_mask);
+ 	kms->funcs->complete_commit(kms, crtc_mask);
+-	mutex_unlock(&kms->commit_lock);
++	unlock_crtcs(kms, crtc_mask);
+ 	kms->funcs->disable_commit(kms);
+ 
+ 	drm_atomic_helper_commit_hw_done(state);
+diff --git a/drivers/gpu/drm/msm/msm_kms.h b/drivers/gpu/drm/msm/msm_kms.h
+index 1cbef6b200b70..2049847b66428 100644
+--- a/drivers/gpu/drm/msm/msm_kms.h
++++ b/drivers/gpu/drm/msm/msm_kms.h
+@@ -155,7 +155,7 @@ struct msm_kms {
+ 	 * For async commit, where ->flush_commit() and later happens
+ 	 * from the crtc's pending_timer close to end of the frame:
+ 	 */
+-	struct mutex commit_lock;
++	struct mutex commit_lock[MAX_CRTCS];
+ 	unsigned pending_crtc_mask;
+ 	struct msm_pending_timer pending_timers[MAX_CRTCS];
+ };
+@@ -165,7 +165,9 @@ static inline void msm_kms_init(struct msm_kms *kms,
+ {
+ 	unsigned i;
+ 
+-	mutex_init(&kms->commit_lock);
++	for (i = 0; i < ARRAY_SIZE(kms->commit_lock); i++)
++		mutex_init(&kms->commit_lock[i]);
++
+ 	kms->funcs = funcs;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(kms->pending_timers); i++)
+-- 
+2.27.0
+
