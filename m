@@ -2,226 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 155892E1D78
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 15:39:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C16A2E1D7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 15:39:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727704AbgLWOiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 09:38:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22794 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726514AbgLWOiU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 09:38:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608734213;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=dUU452tRqrvkfJMA+eezzExr3vkzl56EFOyXCB1EYnQ=;
-        b=ZU3/CSMDhow18S+Maf1HEuJM9sMcHZXY62P3WszdU6DFIP69+72iz/QcAnE9S19MhYaqYu
-        1m4sozdviREq4kiVR1jwfMI5OtLWA7C7oMm/MsfxRh2nTXaZjojVBo96/VwuFcLiTlB7/j
-        uSbnvspCEn75inU0umM0jNWS4Skls/g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-462--u0xtbG2N-2sRj1vrceUuw-1; Wed, 23 Dec 2020 09:36:49 -0500
-X-MC-Unique: -u0xtbG2N-2sRj1vrceUuw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9091E180A097;
-        Wed, 23 Dec 2020 14:36:48 +0000 (UTC)
-Received: from steredhat.redhat.com (ovpn-112-247.ams2.redhat.com [10.36.112.247])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 89294614F5;
-        Wed, 23 Dec 2020 14:36:39 +0000 (UTC)
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     virtualization@lists.linux-foundation.org
-Cc:     netdev@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Stefan Hajnoczi <stefanha@redhat.com>
-Subject: [PATCH v2] vhost/vsock: add IOTLB API support
-Date:   Wed, 23 Dec 2020 15:36:38 +0100
-Message-Id: <20201223143638.123417-1-sgarzare@redhat.com>
+        id S1727838AbgLWOie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 09:38:34 -0500
+Received: from mga07.intel.com ([134.134.136.100]:6845 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727102AbgLWOie (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 09:38:34 -0500
+IronPort-SDR: cE9gPum3hjrLaW3aw04/mqq+GLL+zYpD4id0TAHsHnAl/56TsSL0LIesbSdvryYUhrLaV8bbtU
+ r0jSUUuK5jEA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9843"; a="240105442"
+X-IronPort-AV: E=Sophos;i="5.78,441,1599548400"; 
+   d="scan'208";a="240105442"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Dec 2020 06:36:47 -0800
+IronPort-SDR: 80K/mTCNmPhhIRSC7EIJV9oNpwHZLirsQPx/xvUJ/YSMvnnwUp3UW0UW40pcsRRFePhHaIa4i2
+ lC5eSRmZimwQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,441,1599548400"; 
+   d="scan'208";a="457991758"
+Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 23 Dec 2020 06:36:45 -0800
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Moody Salem <moody@uniswap.org>, stable@vger.kernel.org
+Subject: [PATCH] ACPI / scan: Don't create platform device for INT3515 ACPI nodes
+Date:   Wed, 23 Dec 2020 17:36:44 +0300
+Message-Id: <20201223143644.33341-1-heikki.krogerus@linux.intel.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch enables the IOTLB API support for vhost-vsock devices,
-allowing the userspace to emulate an IOMMU for the guest.
+There are several reports about the tps6598x causing
+interrupt flood on boards with the INT3515 ACPI node, which
+then causes instability. There appears to be several
+problems with the interrupt. One problem is that the
+I2CSerialBus resources do not always map to the Interrupt
+resource with the same index, but that is not the only
+problem. We have not been able to come up with a solution
+for all the issues, and because of that disabling the device
+for now.
 
-These changes were made following vhost-net, in details this patch:
-- exposes VIRTIO_F_ACCESS_PLATFORM feature and inits the iotlb
-  device if the feature is acked
-- implements VHOST_GET_BACKEND_FEATURES and
-  VHOST_SET_BACKEND_FEATURES ioctls
-- calls vq_meta_prefetch() before vq processing to prefetch vq
-  metadata address in IOTLB
-- provides .read_iter, .write_iter, and .poll callbacks for the
-  chardev; they are used by the userspace to exchange IOTLB messages
+The PD controller on these platforms is autonomous, and the
+purpose for the driver is primarily to supply status to the
+userspace, so this will not affect any functionality.
 
-This patch was tested specifying "intel_iommu=strict" in the guest
-kernel command line. I used QEMU with a patch applied [1] to fix a
-simple issue (that patch was merged in QEMU v5.2.0):
-    $ qemu -M q35,accel=kvm,kernel-irqchip=split \
-           -drive file=fedora.qcow2,format=qcow2,if=virtio \
-           -device intel-iommu,intremap=on,device-iotlb=on \
-           -device vhost-vsock-pci,guest-cid=3,iommu_platform=on,ats=on
-
-[1] https://lists.gnu.org/archive/html/qemu-devel/2020-10/msg09077.html
-
-Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+Reported-by: Moody Salem <moody@uniswap.org>
+Fixes: a3dd034a1707 ("ACPI / scan: Create platform device for INT3515 ACPI nodes")
+Cc: stable@vger.kernel.org
+Link: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1883511
+Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 ---
+ drivers/platform/x86/i2c-multi-instantiate.c | 31 +++++++++++++++-----
+ 1 file changed, 23 insertions(+), 8 deletions(-)
 
-The patch is the same of v1, but I re-tested it with:
-- QEMU v5.2.0-551-ga05f8ecd88
-- Linux 5.9.15 (host)
-- Linux 5.9.15 and 5.10.0 (guest)
-Now, enabling 'ats' it works well, there are just a few simple changes.
-
-v1: https://www.spinics.net/lists/kernel/msg3716022.html
-v2:
-- updated commit message about QEMU version and string used to test
-- rebased on mst/vhost branch
-
-Thanks,
-Stefano
----
- drivers/vhost/vsock.c | 68 +++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 65 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
-index a483cec31d5c..5e78fb719602 100644
---- a/drivers/vhost/vsock.c
-+++ b/drivers/vhost/vsock.c
-@@ -30,7 +30,12 @@
- #define VHOST_VSOCK_PKT_WEIGHT 256
- 
- enum {
--	VHOST_VSOCK_FEATURES = VHOST_FEATURES,
-+	VHOST_VSOCK_FEATURES = VHOST_FEATURES |
-+			       (1ULL << VIRTIO_F_ACCESS_PLATFORM)
-+};
-+
-+enum {
-+	VHOST_VSOCK_BACKEND_FEATURES = (1ULL << VHOST_BACKEND_F_IOTLB_MSG_V2)
+diff --git a/drivers/platform/x86/i2c-multi-instantiate.c b/drivers/platform/x86/i2c-multi-instantiate.c
+index 6acc8457866e1..e1df665d3ad31 100644
+--- a/drivers/platform/x86/i2c-multi-instantiate.c
++++ b/drivers/platform/x86/i2c-multi-instantiate.c
+@@ -166,13 +166,29 @@ static const struct i2c_inst_data bsg2150_data[]  = {
+ 	{}
  };
  
- /* Used to track all the vhost_vsock instances on the system. */
-@@ -94,6 +99,9 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
- 	if (!vhost_vq_get_backend(vq))
- 		goto out;
+-static const struct i2c_inst_data int3515_data[]  = {
+-	{ "tps6598x", IRQ_RESOURCE_APIC, 0 },
+-	{ "tps6598x", IRQ_RESOURCE_APIC, 1 },
+-	{ "tps6598x", IRQ_RESOURCE_APIC, 2 },
+-	{ "tps6598x", IRQ_RESOURCE_APIC, 3 },
+-	{}
+-};
++/*
++ * Device with _HID INT3515 (TI PD controllers) has some unresolved interrupt
++ * issues. The most common problem seen is interrupt flood.
++ *
++ * There are at least two known causes. Firstly, on some boards, the
++ * I2CSerialBus resource index does not match the Interrupt resource, i.e. they
++ * are not one-to-one mapped like in the array below. Secondly, on some boards
++ * the irq line from the PD controller is not actually connected at all. But the
++ * interrupt flood is also seen on some boards where those are not a problem, so
++ * there are some other problems as well.
++ *
++ * Because of the issues with the interrupt, the device is disabled for now. If
++ * you wish to debug the issues, uncomment the below, and add an entry for the
++ * INT3515 device to the i2c_multi_instance__ids table.
++ *
++ * static const struct i2c_inst_data int3515_data[]  = {
++ *	{ "tps6598x", IRQ_RESOURCE_APIC, 0 },
++ *	{ "tps6598x", IRQ_RESOURCE_APIC, 1 },
++ *	{ "tps6598x", IRQ_RESOURCE_APIC, 2 },
++ *	{ "tps6598x", IRQ_RESOURCE_APIC, 3 },
++ *	{ }
++ * };
++ */
  
-+	if (!vq_meta_prefetch(vq))
-+		goto out;
-+
- 	/* Avoid further vmexits, we're already processing the virtqueue */
- 	vhost_disable_notify(&vsock->dev, vq);
- 
-@@ -449,6 +457,9 @@ static void vhost_vsock_handle_tx_kick(struct vhost_work *work)
- 	if (!vhost_vq_get_backend(vq))
- 		goto out;
- 
-+	if (!vq_meta_prefetch(vq))
-+		goto out;
-+
- 	vhost_disable_notify(&vsock->dev, vq);
- 	do {
- 		u32 len;
-@@ -766,8 +777,12 @@ static int vhost_vsock_set_features(struct vhost_vsock *vsock, u64 features)
- 	mutex_lock(&vsock->dev.mutex);
- 	if ((features & (1 << VHOST_F_LOG_ALL)) &&
- 	    !vhost_log_access_ok(&vsock->dev)) {
--		mutex_unlock(&vsock->dev.mutex);
--		return -EFAULT;
-+		goto err;
-+	}
-+
-+	if ((features & (1ULL << VIRTIO_F_ACCESS_PLATFORM))) {
-+		if (vhost_init_device_iotlb(&vsock->dev, true))
-+			goto err;
- 	}
- 
- 	for (i = 0; i < ARRAY_SIZE(vsock->vqs); i++) {
-@@ -778,6 +793,10 @@ static int vhost_vsock_set_features(struct vhost_vsock *vsock, u64 features)
- 	}
- 	mutex_unlock(&vsock->dev.mutex);
- 	return 0;
-+
-+err:
-+	mutex_unlock(&vsock->dev.mutex);
-+	return -EFAULT;
- }
- 
- static long vhost_vsock_dev_ioctl(struct file *f, unsigned int ioctl,
-@@ -811,6 +830,18 @@ static long vhost_vsock_dev_ioctl(struct file *f, unsigned int ioctl,
- 		if (copy_from_user(&features, argp, sizeof(features)))
- 			return -EFAULT;
- 		return vhost_vsock_set_features(vsock, features);
-+	case VHOST_GET_BACKEND_FEATURES:
-+		features = VHOST_VSOCK_BACKEND_FEATURES;
-+		if (copy_to_user(argp, &features, sizeof(features)))
-+			return -EFAULT;
-+		return 0;
-+	case VHOST_SET_BACKEND_FEATURES:
-+		if (copy_from_user(&features, argp, sizeof(features)))
-+			return -EFAULT;
-+		if (features & ~VHOST_VSOCK_BACKEND_FEATURES)
-+			return -EOPNOTSUPP;
-+		vhost_set_backend_features(&vsock->dev, features);
-+		return 0;
- 	default:
- 		mutex_lock(&vsock->dev.mutex);
- 		r = vhost_dev_ioctl(&vsock->dev, ioctl, argp);
-@@ -823,6 +854,34 @@ static long vhost_vsock_dev_ioctl(struct file *f, unsigned int ioctl,
- 	}
- }
- 
-+static ssize_t vhost_vsock_chr_read_iter(struct kiocb *iocb, struct iov_iter *to)
-+{
-+	struct file *file = iocb->ki_filp;
-+	struct vhost_vsock *vsock = file->private_data;
-+	struct vhost_dev *dev = &vsock->dev;
-+	int noblock = file->f_flags & O_NONBLOCK;
-+
-+	return vhost_chr_read_iter(dev, to, noblock);
-+}
-+
-+static ssize_t vhost_vsock_chr_write_iter(struct kiocb *iocb,
-+					struct iov_iter *from)
-+{
-+	struct file *file = iocb->ki_filp;
-+	struct vhost_vsock *vsock = file->private_data;
-+	struct vhost_dev *dev = &vsock->dev;
-+
-+	return vhost_chr_write_iter(dev, from);
-+}
-+
-+static __poll_t vhost_vsock_chr_poll(struct file *file, poll_table *wait)
-+{
-+	struct vhost_vsock *vsock = file->private_data;
-+	struct vhost_dev *dev = &vsock->dev;
-+
-+	return vhost_chr_poll(file, dev, wait);
-+}
-+
- static const struct file_operations vhost_vsock_fops = {
- 	.owner          = THIS_MODULE,
- 	.open           = vhost_vsock_dev_open,
-@@ -830,6 +889,9 @@ static const struct file_operations vhost_vsock_fops = {
- 	.llseek		= noop_llseek,
- 	.unlocked_ioctl = vhost_vsock_dev_ioctl,
- 	.compat_ioctl   = compat_ptr_ioctl,
-+	.read_iter      = vhost_vsock_chr_read_iter,
-+	.write_iter     = vhost_vsock_chr_write_iter,
-+	.poll           = vhost_vsock_chr_poll,
+ /*
+  * Note new device-ids must also be added to i2c_multi_instantiate_ids in
+@@ -181,7 +197,6 @@ static const struct i2c_inst_data int3515_data[]  = {
+ static const struct acpi_device_id i2c_multi_inst_acpi_ids[] = {
+ 	{ "BSG1160", (unsigned long)bsg1160_data },
+ 	{ "BSG2150", (unsigned long)bsg2150_data },
+-	{ "INT3515", (unsigned long)int3515_data },
+ 	{ }
  };
- 
- static struct miscdevice vhost_vsock_misc = {
+ MODULE_DEVICE_TABLE(acpi, i2c_multi_inst_acpi_ids);
 -- 
-2.26.2
+2.29.2
 
