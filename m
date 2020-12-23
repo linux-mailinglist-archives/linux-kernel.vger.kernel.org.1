@@ -2,100 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A2FC2E1D74
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 15:36:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 155892E1D78
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 15:39:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727670AbgLWOdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 09:33:51 -0500
-Received: from mail.zx2c4.com ([192.95.5.64]:59529 "EHLO mail.zx2c4.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725957AbgLWOdu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 09:33:50 -0500
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id d384b19b;
-        Wed, 23 Dec 2020 14:24:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
-        :references:in-reply-to:from:date:message-id:subject:to:cc
-        :content-type; s=mail; bh=Io97KoT2j7fFJotgUUvzrUqa2Fs=; b=W4yfNf
-        DK9bpU0jmM48T0SxjV+mlpxoJdqoVrWhV7FvACcDI7ZnpR7nrIEZmiHI7VkyjyEV
-        4YKwZPrWXBsR/izUJsioqXlrUfErXy6qr0gLUKzaYSojKrvoil8UWy4qwJkdV4vn
-        eP84gLsa0zmG+ZgqnJ5SutjLdLhuV/UraS0K1z/Vzg6KdJfdwpDv//JjRYtNCmkC
-        CETvOc7D77HhSoujAJbDdKJOp5hVLxB/F0tgbmlEitEekkMSN8ZaH4Z9SBqkYE/K
-        unFKyQB+Cvj+ldTlY/V+ic/kDJRNvQ5mlr4MLoaeeh1+zfGXO0xZRio4SPmDjzks
-        wLbNkZXJaRW0n9Bw==
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 7db949a5 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Wed, 23 Dec 2020 14:24:35 +0000 (UTC)
-Received: by mail-yb1-f174.google.com with SMTP id a16so14747620ybh.5;
-        Wed, 23 Dec 2020 06:33:07 -0800 (PST)
-X-Gm-Message-State: AOAM532iUhGsJx2fpR7HHDz7Ku8oJQ+rzudBOoDt2fggfhA8GBwebKFk
-        g+jPWsevxS4EAL1Ai2usJUcuRrwW5d0+HCJj4p0=
-X-Google-Smtp-Source: ABdhPJw7i8d5iEIXttO/QVmZY12Qr9HAJyMwlDNwLzajdLyZHEmgxeBea/AGlLWEmrAt/27a69foGdtbtoXFZCLvBzg=
-X-Received: by 2002:a5b:78d:: with SMTP id b13mr36070834ybq.123.1608733985640;
- Wed, 23 Dec 2020 06:33:05 -0800 (PST)
+        id S1727704AbgLWOiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 09:38:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22794 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726514AbgLWOiU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 09:38:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608734213;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=dUU452tRqrvkfJMA+eezzExr3vkzl56EFOyXCB1EYnQ=;
+        b=ZU3/CSMDhow18S+Maf1HEuJM9sMcHZXY62P3WszdU6DFIP69+72iz/QcAnE9S19MhYaqYu
+        1m4sozdviREq4kiVR1jwfMI5OtLWA7C7oMm/MsfxRh2nTXaZjojVBo96/VwuFcLiTlB7/j
+        uSbnvspCEn75inU0umM0jNWS4Skls/g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-462--u0xtbG2N-2sRj1vrceUuw-1; Wed, 23 Dec 2020 09:36:49 -0500
+X-MC-Unique: -u0xtbG2N-2sRj1vrceUuw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9091E180A097;
+        Wed, 23 Dec 2020 14:36:48 +0000 (UTC)
+Received: from steredhat.redhat.com (ovpn-112-247.ams2.redhat.com [10.36.112.247])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 89294614F5;
+        Wed, 23 Dec 2020 14:36:39 +0000 (UTC)
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     virtualization@lists.linux-foundation.org
+Cc:     netdev@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Stefan Hajnoczi <stefanha@redhat.com>
+Subject: [PATCH v2] vhost/vsock: add IOTLB API support
+Date:   Wed, 23 Dec 2020 15:36:38 +0100
+Message-Id: <20201223143638.123417-1-sgarzare@redhat.com>
 MIME-Version: 1.0
-References: <20201130151231.GA24862@lst.de> <CAHmME9p4vFGWh7+CKF4f3dw5r+ru5PVG0-vP77JowX8sPhin1g@mail.gmail.com>
- <20201130165339.GE5364@mit.edu> <CAHmME9pksS8ec17RAwCNJimt4B0xZgd3qYHUPnaT4Bj4CF7n0A@mail.gmail.com>
- <20201218132519.kj3nz7swsx7vvlr5@valinor.lan> <20201223132851.55d19271@blackhole.lan>
- <20201223151014.57caf98b@ezekiel.suse.cz>
-In-Reply-To: <20201223151014.57caf98b@ezekiel.suse.cz>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Wed, 23 Dec 2020 15:32:55 +0100
-X-Gmail-Original-Message-ID: <CAHmME9ooV1HRGO4bLsNKqv1EjDsUYsM6TcMbmEL=4CejTB+1ZQ@mail.gmail.com>
-Message-ID: <CAHmME9ooV1HRGO4bLsNKqv1EjDsUYsM6TcMbmEL=4CejTB+1ZQ@mail.gmail.com>
-Subject: Re: drivers/char/random.c needs a (new) maintainer
-To:     Petr Tesarik <ptesarik@suse.cz>
-Cc:     Torsten Duwe <duwe@lst.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        =?UTF-8?Q?Stephan_M=C3=BCller?= <smueller@chronox.de>,
-        Willy Tarreau <w@1wt.eu>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Nicolai Stange <nstange@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Peter Matthias <matthias.peter@bsi.bund.de>,
-        Neil Horman <nhorman@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        And y Lavr <andy.lavr@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>, simo@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 3:17 PM Petr Tesarik <ptesarik@suse.cz> wrote:
-> Upfront, let me admit that SUSE has a vested interest in a FIPS-certifiable Linux kernel.
+This patch enables the IOTLB API support for vhost-vsock devices,
+allowing the userspace to emulate an IOMMU for the guest.
 
-Sorry, but just because you have a "vested interest", or a financial
-interest, or because you want it does not suddenly make it a good
-idea. The idea is to have good crypto, not to merely check some boxes
-for the bean counters.
+These changes were made following vhost-net, in details this patch:
+- exposes VIRTIO_F_ACCESS_PLATFORM feature and inits the iotlb
+  device if the feature is acked
+- implements VHOST_GET_BACKEND_FEATURES and
+  VHOST_SET_BACKEND_FEATURES ioctls
+- calls vq_meta_prefetch() before vq processing to prefetch vq
+  metadata address in IOTLB
+- provides .read_iter, .write_iter, and .poll callbacks for the
+  chardev; they are used by the userspace to exchange IOTLB messages
 
-For example, it's very unlikely that future kernel RNGs will move to
-using AES, due to the performance overhead involved on non-table-based
-implementations, and the lack of availability of FPU/AES-NI in all the
-contexts we need. NT's fortuna machine can use AES, because NT allows
-the FPU in all contexts. We don't have that luxury (or associated
-performance penalty).
+This patch was tested specifying "intel_iommu=strict" in the guest
+kernel command line. I used QEMU with a patch applied [1] to fix a
+simple issue (that patch was merged in QEMU v5.2.0):
+    $ qemu -M q35,accel=kvm,kernel-irqchip=split \
+           -drive file=fedora.qcow2,format=qcow2,if=virtio \
+           -device intel-iommu,intremap=on,device-iotlb=on \
+           -device vhost-vsock-pci,guest-cid=3,iommu_platform=on,ats=on
 
-I would, however, be interested in a keccak-based construction. But
-just using the keccak permutation does not automatically make it
-"SHA-3", so we're back at the same issue again. FIPS is simply not
-interesting for our requirements.
+[1] https://lists.gnu.org/archive/html/qemu-devel/2020-10/msg09077.html
 
-Jason
+Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
+Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+---
+
+The patch is the same of v1, but I re-tested it with:
+- QEMU v5.2.0-551-ga05f8ecd88
+- Linux 5.9.15 (host)
+- Linux 5.9.15 and 5.10.0 (guest)
+Now, enabling 'ats' it works well, there are just a few simple changes.
+
+v1: https://www.spinics.net/lists/kernel/msg3716022.html
+v2:
+- updated commit message about QEMU version and string used to test
+- rebased on mst/vhost branch
+
+Thanks,
+Stefano
+---
+ drivers/vhost/vsock.c | 68 +++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 65 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
+index a483cec31d5c..5e78fb719602 100644
+--- a/drivers/vhost/vsock.c
++++ b/drivers/vhost/vsock.c
+@@ -30,7 +30,12 @@
+ #define VHOST_VSOCK_PKT_WEIGHT 256
+ 
+ enum {
+-	VHOST_VSOCK_FEATURES = VHOST_FEATURES,
++	VHOST_VSOCK_FEATURES = VHOST_FEATURES |
++			       (1ULL << VIRTIO_F_ACCESS_PLATFORM)
++};
++
++enum {
++	VHOST_VSOCK_BACKEND_FEATURES = (1ULL << VHOST_BACKEND_F_IOTLB_MSG_V2)
+ };
+ 
+ /* Used to track all the vhost_vsock instances on the system. */
+@@ -94,6 +99,9 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
+ 	if (!vhost_vq_get_backend(vq))
+ 		goto out;
+ 
++	if (!vq_meta_prefetch(vq))
++		goto out;
++
+ 	/* Avoid further vmexits, we're already processing the virtqueue */
+ 	vhost_disable_notify(&vsock->dev, vq);
+ 
+@@ -449,6 +457,9 @@ static void vhost_vsock_handle_tx_kick(struct vhost_work *work)
+ 	if (!vhost_vq_get_backend(vq))
+ 		goto out;
+ 
++	if (!vq_meta_prefetch(vq))
++		goto out;
++
+ 	vhost_disable_notify(&vsock->dev, vq);
+ 	do {
+ 		u32 len;
+@@ -766,8 +777,12 @@ static int vhost_vsock_set_features(struct vhost_vsock *vsock, u64 features)
+ 	mutex_lock(&vsock->dev.mutex);
+ 	if ((features & (1 << VHOST_F_LOG_ALL)) &&
+ 	    !vhost_log_access_ok(&vsock->dev)) {
+-		mutex_unlock(&vsock->dev.mutex);
+-		return -EFAULT;
++		goto err;
++	}
++
++	if ((features & (1ULL << VIRTIO_F_ACCESS_PLATFORM))) {
++		if (vhost_init_device_iotlb(&vsock->dev, true))
++			goto err;
+ 	}
+ 
+ 	for (i = 0; i < ARRAY_SIZE(vsock->vqs); i++) {
+@@ -778,6 +793,10 @@ static int vhost_vsock_set_features(struct vhost_vsock *vsock, u64 features)
+ 	}
+ 	mutex_unlock(&vsock->dev.mutex);
+ 	return 0;
++
++err:
++	mutex_unlock(&vsock->dev.mutex);
++	return -EFAULT;
+ }
+ 
+ static long vhost_vsock_dev_ioctl(struct file *f, unsigned int ioctl,
+@@ -811,6 +830,18 @@ static long vhost_vsock_dev_ioctl(struct file *f, unsigned int ioctl,
+ 		if (copy_from_user(&features, argp, sizeof(features)))
+ 			return -EFAULT;
+ 		return vhost_vsock_set_features(vsock, features);
++	case VHOST_GET_BACKEND_FEATURES:
++		features = VHOST_VSOCK_BACKEND_FEATURES;
++		if (copy_to_user(argp, &features, sizeof(features)))
++			return -EFAULT;
++		return 0;
++	case VHOST_SET_BACKEND_FEATURES:
++		if (copy_from_user(&features, argp, sizeof(features)))
++			return -EFAULT;
++		if (features & ~VHOST_VSOCK_BACKEND_FEATURES)
++			return -EOPNOTSUPP;
++		vhost_set_backend_features(&vsock->dev, features);
++		return 0;
+ 	default:
+ 		mutex_lock(&vsock->dev.mutex);
+ 		r = vhost_dev_ioctl(&vsock->dev, ioctl, argp);
+@@ -823,6 +854,34 @@ static long vhost_vsock_dev_ioctl(struct file *f, unsigned int ioctl,
+ 	}
+ }
+ 
++static ssize_t vhost_vsock_chr_read_iter(struct kiocb *iocb, struct iov_iter *to)
++{
++	struct file *file = iocb->ki_filp;
++	struct vhost_vsock *vsock = file->private_data;
++	struct vhost_dev *dev = &vsock->dev;
++	int noblock = file->f_flags & O_NONBLOCK;
++
++	return vhost_chr_read_iter(dev, to, noblock);
++}
++
++static ssize_t vhost_vsock_chr_write_iter(struct kiocb *iocb,
++					struct iov_iter *from)
++{
++	struct file *file = iocb->ki_filp;
++	struct vhost_vsock *vsock = file->private_data;
++	struct vhost_dev *dev = &vsock->dev;
++
++	return vhost_chr_write_iter(dev, from);
++}
++
++static __poll_t vhost_vsock_chr_poll(struct file *file, poll_table *wait)
++{
++	struct vhost_vsock *vsock = file->private_data;
++	struct vhost_dev *dev = &vsock->dev;
++
++	return vhost_chr_poll(file, dev, wait);
++}
++
+ static const struct file_operations vhost_vsock_fops = {
+ 	.owner          = THIS_MODULE,
+ 	.open           = vhost_vsock_dev_open,
+@@ -830,6 +889,9 @@ static const struct file_operations vhost_vsock_fops = {
+ 	.llseek		= noop_llseek,
+ 	.unlocked_ioctl = vhost_vsock_dev_ioctl,
+ 	.compat_ioctl   = compat_ptr_ioctl,
++	.read_iter      = vhost_vsock_chr_read_iter,
++	.write_iter     = vhost_vsock_chr_write_iter,
++	.poll           = vhost_vsock_chr_poll,
+ };
+ 
+ static struct miscdevice vhost_vsock_misc = {
+-- 
+2.26.2
+
