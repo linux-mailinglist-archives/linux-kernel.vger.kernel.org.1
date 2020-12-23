@@ -2,153 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A2A22E217A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 21:37:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6FC42E2161
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 21:34:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728967AbgLWUf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 15:35:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41356 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726159AbgLWUf2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 15:35:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608755642;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OGTIr6a89HgqbH7yTRjoe+GO8SUBG8fEbsZOo6NPZe4=;
-        b=DaouclyTsWoBtEwdNOh2dyUvLtlOblBlTLBR+b/uF58lCUj1BGC67EdPri5eiEho6i/rby
-        dG2Uoslcz8c80Bpq0IcSh4gBmf06MJtNcwi74+UA7ucFAPQp4tIeOh3gsNCCdKjERHMYhI
-        iPw6uatNMzkRL4utP3j/Ri/KcxqmKJw=
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
- [209.85.210.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-47-bMZlSnvjNMyjWwHgnLF5Gg-1; Wed, 23 Dec 2020 15:34:00 -0500
-X-MC-Unique: bMZlSnvjNMyjWwHgnLF5Gg-1
-Received: by mail-ot1-f71.google.com with SMTP id j22so103813otq.16
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 12:34:00 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=OGTIr6a89HgqbH7yTRjoe+GO8SUBG8fEbsZOo6NPZe4=;
-        b=JdJPiZZLk+1NB+ZnMAIJfG6g4AWc64ED9+RyPgCBNlCbqaWBe0GIKcyPxj1H5fJ4M3
-         kvjkbzenHqRh0YbxxDcJlbNy3AMgSqbuzs0+uegbaz0F8CKcs+TC0NBSCnQWauvc9sGC
-         +DNIUCxg9u354GcOilWxOiFZG9RdY2fYLt/ToPzXbsvm8TuD7OUbM4uZPFkqjcHc8axc
-         zuXQLI8jLrUVcoC6b1vgWbzCrYlXBQ45Z3xHqVdEpuTf/3Cfgp37PV9lDI8T5eGLWLFj
-         q5kwvNw0fIqBOnSmZWOv/0iOgY5V6yMqmJbJ+aG0fzXrKoFSD7Gjv7NSw92yLUpsWX9t
-         hL8Q==
-X-Gm-Message-State: AOAM53347I2xxozXaRp2NdHSDdPLjSuFbsCfx7uXgYiq1TKAkPQREFlp
-        k7VU4y0HkktpHYCF8IzpEUwzimQVTVNURMTCZQffeeOQaD55QUCfZwvdC/NK6Sf/N1oHZ7hZmVj
-        tZQA778R3YGdUjVvuJKKOmtUnTgV+bIMlyBQEOTNmEPwlkdmXNDuygT0RZsRAKvtHM7g5z/E=
-X-Received: by 2002:a4a:c503:: with SMTP id i3mr18716560ooq.6.1608755639610;
-        Wed, 23 Dec 2020 12:33:59 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJztzzfuO6HS1xto1fsgsDfbSz1aW7zP99Tr8269WBaPCFtrQ4oY+gCF7HuJrdOsZ5o4XkjCBA==
-X-Received: by 2002:a4a:c503:: with SMTP id i3mr18716549ooq.6.1608755639308;
-        Wed, 23 Dec 2020 12:33:59 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id r204sm6128940oif.0.2020.12.23.12.33.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Dec 2020 12:33:58 -0800 (PST)
-Subject: Re: [PATCH] amd-xgbe: remove h from printk format specifier
-To:     Joe Perches <joe@perches.com>, thomas.lendacky@amd.com,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201223194345.125205-1-trix@redhat.com>
- <46b3bba25d09e89471048ae119a2c3b460b6b7be.camel@perches.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <d1257604-c462-8fbc-612e-41ec2f552ff8@redhat.com>
-Date:   Wed, 23 Dec 2020 12:33:56 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1728913AbgLWUeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 15:34:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40500 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726159AbgLWUeq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 15:34:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E5B93224B0;
+        Wed, 23 Dec 2020 20:34:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608755645;
+        bh=KjJsg8AZUftQqGocU/eSTcEZqpjvbqUtQRkYl1ogUiw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=ZVEW79RSwD4+/ME2eRqrtJc8rv/gDoR9dz7klfUU94kloC3EqChVrBKp/VoAmUtfx
+         hKjIqvgNZwoMKFg3XpHSwO6pPJgbGk8Sdoo+aP6MWkFi31DSxTESDGDa22WphkajVx
+         x8xIYsOkbd2e3o/TfC0wJSMoZEZVZgPVK1AlcA7DSiVx24/rnxid+2w5KcaXAATCet
+         6seWXT2wUDyCGBj7XrHVennonWRZaAdg5L2AjhkniX45eEPES/zBhMGXDkhRy09PrT
+         CyNr2hOLJKWYzz/r7FrUyu13aF9/K7w1bElRK9ymLxi+BSeIvvB72XaBEE0bWkZiTr
+         cobx2kzEau82A==
+Date:   Wed, 23 Dec 2020 14:34:03 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Shradha Todi <shradha.t@samsung.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        kishon@ti.com, lorenzo.pieralisi@arm.com, bhelgaas@google.com,
+        pankaj.dubey@samsung.com, Sriram Dash <sriram.dash@samsung.com>
+Subject: Re: [PATCH v2] PCI: endpoint: Fix NULL pointer dereference for
+ ->get_features()
+Message-ID: <20201223203403.GA320059@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <46b3bba25d09e89471048ae119a2c3b460b6b7be.camel@perches.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1608306316-32096-1-git-send-email-shradha.t@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Dec 18, 2020 at 09:15:16PM +0530, Shradha Todi wrote:
+> get_features ops of pci_epc_ops may return NULL, causing NULL pointer
+> dereference in pci_epf_test_bind function. Let us add a check for
+> pci_epc_feature pointer in pci_epf_test_bind before we access it to
+> avoid any such NULL pointer dereference and return -ENOTSUPP in case
+> pci_epc_feature is not found.
 
-On 12/23/20 12:14 PM, Joe Perches wrote:
-> On Wed, 2020-12-23 at 11:43 -0800, trix@redhat.com wrote:
->> From: Tom Rix <trix@redhat.com>
->>
->> This change fixes the checkpatch warning described in this commit
->> commit cbacb5ab0aa0 ("docs: printk-formats: Stop encouraging use of unnecessary %h[xudi] and %hh[xudi]")
->>
->> Standard integer promotion is already done and %hx and %hhx is useless
->> so do not encourage the use of %hh[xudi] or %h[xudi].
-> Why only xgbe-ethtool?
->
-> Perhaps your script only converts direct uses of functions
-> marked with __printf and not any uses of the same functions
-> via macros.
+Can you add a Fixes: tag to identify where this broke to help people
+decide where to backport the fix?
 
-The fixer may have issues.
-
-A works as designed by not desired is it only fixes what it compiles and if a
-
-macro is #if-def away then it will not do the fix.  This is troublesome for the
-
-the *_debug() routines.  So I am rejecting files with partial fixes.
-
-It is also likely I missed adding __printf attributes.
-
-There will be enough changes for this pass through to count as my feat of strength for today.
-
-Tom
-
-> $ git grep -P '%[\w\d\.]*h\w' drivers/net/ethernet/amd/xgbe/
-> drivers/net/ethernet/amd/xgbe/xgbe-dcb.c:                         "TC%u: tx_bw=%hhu, rx_bw=%hhu, tsa=%hhu\n", i,
-> drivers/net/ethernet/amd/xgbe/xgbe-dcb.c:               netif_dbg(pdata, drv, netdev, "PRIO%u: TC=%hhu\n", i,
-> drivers/net/ethernet/amd/xgbe/xgbe-dcb.c:                                 "unsupported TSA algorithm (%hhu)\n",
-> drivers/net/ethernet/amd/xgbe/xgbe-dcb.c:                 "cap=%hhu, en=%#hhx, mbc=%hhu, delay=%hhu\n",
-> drivers/net/ethernet/amd/xgbe/xgbe-dev.c:       netif_dbg(pdata, drv, pdata->netdev, "VXLAN tunnel id set to %hx\n",
-> drivers/net/ethernet/amd/xgbe/xgbe-ethtool.c:           netdev_err(netdev, "invalid phy address %hhu\n",
-> drivers/net/ethernet/amd/xgbe/xgbe-ethtool.c:           netdev_err(netdev, "unsupported autoneg %hhu\n",
-> drivers/net/ethernet/amd/xgbe/xgbe-ethtool.c:                   netdev_err(netdev, "unsupported duplex %hhu\n",
->
->> Signed-off-by: Tom Rix <trix@redhat.com>
->> ---
->>  drivers/net/ethernet/amd/xgbe/xgbe-ethtool.c | 6 +++---
->>  1 file changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-ethtool.c b/drivers/net/ethernet/amd/xgbe/xgbe-ethtool.c
->> index 61f39a0e04f9..3c18f26bf2a5 100644
->> --- a/drivers/net/ethernet/amd/xgbe/xgbe-ethtool.c
->> +++ b/drivers/net/ethernet/amd/xgbe/xgbe-ethtool.c
->> @@ -339,14 +339,14 @@ static int xgbe_set_link_ksettings(struct net_device *netdev,
->>  	speed = cmd->base.speed;
->>  
->>
->>  	if (cmd->base.phy_address != pdata->phy.address) {
->> -		netdev_err(netdev, "invalid phy address %hhu\n",
->> +		netdev_err(netdev, "invalid phy address %u\n",
->>  			   cmd->base.phy_address);
->>  		return -EINVAL;
->>  	}
->>  
->>
->>  	if ((cmd->base.autoneg != AUTONEG_ENABLE) &&
->>  	    (cmd->base.autoneg != AUTONEG_DISABLE)) {
->> -		netdev_err(netdev, "unsupported autoneg %hhu\n",
->> +		netdev_err(netdev, "unsupported autoneg %u\n",
->>  			   cmd->base.autoneg);
->>  		return -EINVAL;
->>  	}
->> @@ -358,7 +358,7 @@ static int xgbe_set_link_ksettings(struct net_device *netdev,
->>  		}
->>  
->>
->>  		if (cmd->base.duplex != DUPLEX_FULL) {
->> -			netdev_err(netdev, "unsupported duplex %hhu\n",
->> +			netdev_err(netdev, "unsupported duplex %u\n",
->>  				   cmd->base.duplex);
->>  			return -EINVAL;
->>  		}
->
-
+> Reviewed-by: Pankaj Dubey <pankaj.dubey@samsung.com>
+> Signed-off-by: Sriram Dash <sriram.dash@samsung.com>
+> Signed-off-by: Shradha Todi <shradha.t@samsung.com>
+> ---
+> v2:
+>  rebase on v1
+>  v1: https://lore.kernel.org/patchwork/patch/1208269/
+> 
+>  drivers/pci/endpoint/functions/pci-epf-test.c | 13 ++++++++-----
+>  1 file changed, 8 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
+> index 66723d5..f1842e6 100644
+> --- a/drivers/pci/endpoint/functions/pci-epf-test.c
+> +++ b/drivers/pci/endpoint/functions/pci-epf-test.c
+> @@ -835,13 +835,16 @@ static int pci_epf_test_bind(struct pci_epf *epf)
+>  		return -EINVAL;
+>  
+>  	epc_features = pci_epc_get_features(epc, epf->func_no);
+> -	if (epc_features) {
+> -		linkup_notifier = epc_features->linkup_notifier;
+> -		core_init_notifier = epc_features->core_init_notifier;
+> -		test_reg_bar = pci_epc_get_first_free_bar(epc_features);
+> -		pci_epf_configure_bar(epf, epc_features);
+> +	if (!epc_features) {
+> +		dev_err(&epf->dev, "epc_features not implemented\n");
+> +		return -EOPNOTSUPP;
+>  	}
+>  
+> +	linkup_notifier = epc_features->linkup_notifier;
+> +	core_init_notifier = epc_features->core_init_notifier;
+> +	test_reg_bar = pci_epc_get_first_free_bar(epc_features);
+> +	pci_epf_configure_bar(epf, epc_features);
+> +
+>  	epf_test->test_reg_bar = test_reg_bar;
+>  	epf_test->epc_features = epc_features;
+>  
+> -- 
+> 2.7.4
+> 
