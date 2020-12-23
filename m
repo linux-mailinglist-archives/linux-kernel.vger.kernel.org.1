@@ -2,246 +2,376 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5179E2E20EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 20:34:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 387F32E20EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 20:34:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728743AbgLWTdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 14:33:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44386 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726147AbgLWTdn (ORCPT
+        id S1728755AbgLWTe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 14:34:27 -0500
+Received: from 14.mo6.mail-out.ovh.net ([46.105.56.113]:46999 "EHLO
+        14.mo6.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728345AbgLWTe1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 14:33:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608751935;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZpuwPNWQw8WW4GTdxbZORbcdcCxr9sb+UGLMJpc4PZM=;
-        b=MTaYsfZgwt6iwfC8chevJLWPuP5nfLs6yMCW/6kyf0tRvQh3lIR8xDSMf8e30nLi/yUrqT
-        LScqFnHNkodzOiYGK8+WPb8JwAYxprPsjRh2lo/6VGHWchWXWINpAGkx098DtigOu6zja4
-        yj3I/V2qe+IE/URx4I1gTNbPAgXCVH0=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-470-FlHHoFIHPnquSXtOEBreuA-1; Wed, 23 Dec 2020 14:32:14 -0500
-X-MC-Unique: FlHHoFIHPnquSXtOEBreuA-1
-Received: by mail-qv1-f71.google.com with SMTP id m8so193751qvk.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 11:32:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZpuwPNWQw8WW4GTdxbZORbcdcCxr9sb+UGLMJpc4PZM=;
-        b=tU+tWGaPNI0GwVTxVnmR96RuFr1iiyH4JoXeIVrzzHf2da+p6dn3A3tEgAosDUFJ5I
-         wetmHKTAqAT8sFFAJZScqJAWR6JC/haPrzLezpUTltsFn27c0B0XygX5ghzoPQVQT5Ey
-         Pk6VacOFQFGzH0Gepg0HJp/8RssOiMcMpEfx3pl9PZBUex6+LJc7kHs8LQ9skrdbQVNz
-         qko05hFo6Qv6LytWYkX7h9CgpfUCNP4rx5mYjfEhYUjZ4Y6J5Q0p9rzkuZjMoL1n+7+i
-         f9b8sYXroJPfOnChanzdAmWgxqmJJMNj1/fFumU9meJoslKH0CfJietMXdFAHYpu5CCG
-         jQOg==
-X-Gm-Message-State: AOAM530R7jmjpfCStkcgKc95FPJ7bkwU3URTnLlrv68v71Lk9PxDX6+4
-        sEXkoT1m5vVFnaS4YenqawyRxqzZoxBg+hAXSY4wEQVM7yukdMmGkh12LaZwD83iCStNmqxHj6u
-        IBvko3EG+Hw+UliMx8VuXbmbe
-X-Received: by 2002:a37:5103:: with SMTP id f3mr27474883qkb.460.1608751933563;
-        Wed, 23 Dec 2020 11:32:13 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyMBeUpbZecFmWck0VbU0ibiK5+XnHGUwrWqpp+VhetYuSSfmU1u1OKVTqV7Orgd45RrNLDfw==
-X-Received: by 2002:a37:5103:: with SMTP id f3mr27474870qkb.460.1608751933258;
-        Wed, 23 Dec 2020 11:32:13 -0800 (PST)
-Received: from xz-x1 ([142.126.83.202])
-        by smtp.gmail.com with ESMTPSA id 134sm15685648qkh.62.2020.12.23.11.32.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Dec 2020 11:32:12 -0800 (PST)
-Date:   Wed, 23 Dec 2020 14:32:10 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        linux-mm <linux-mm@kvack.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable <stable@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-Message-ID: <20201223193210.GE6404@xz-x1>
-References: <X+JJqK91plkBVisG@redhat.com>
- <X+JhwVX3s5mU9ZNx@google.com>
- <X+Js/dFbC5P7C3oO@redhat.com>
- <X+KDwu1PRQ93E2LK@google.com>
- <CAHk-=wiBWkgxLtwD7n01irD7hTQzuumtrqCkxxZx=6dbiGKUqQ@mail.gmail.com>
- <CAHk-=wjG7xx7Gsb=K0DteB1SPcKjus02zY2gFUoxMY5mm7tfsA@mail.gmail.com>
- <CAHk-=wjNv1GQn+8stK419HAqK0ofkJ1vOR9YSWSNjbW3T5as9A@mail.gmail.com>
- <X+MWppLjiR7hLgg9@google.com>
- <20201223162416.GD6404@xz-x1>
- <X+OWl0C51/06C8WT@google.com>
+        Wed, 23 Dec 2020 14:34:27 -0500
+Received: from player729.ha.ovh.net (unknown [10.108.35.232])
+        by mo6.mail-out.ovh.net (Postfix) with ESMTP id 2157B237119
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 20:33:43 +0100 (CET)
+Received: from sk2.org (82-65-25-201.subs.proxad.net [82.65.25.201])
+        (Authenticated sender: steve@sk2.org)
+        by player729.ha.ovh.net (Postfix) with ESMTPSA id D14D01998742E;
+        Wed, 23 Dec 2020 19:33:35 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-100R003c40b052f-6eb0-4cb6-9757-ec6aa81b0749,
+                    B22B5ECD272A742FD8B69EBC4CA2EEA784988800) smtp.auth=steve@sk2.org
+X-OVh-ClientIp: 82.65.25.201
+Date:   Wed, 23 Dec 2020 20:33:29 +0100
+From:   Stephen Kitt <steve@sk2.org>
+To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Cc:     linux-man@vger.kernel.org,
+        Alejandro Colomar <alx.manpages@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5] close_range.2: new page documenting close_range(2)
+Message-ID: <20201223203329.71a94a3b@heffalump.sk2.org>
+In-Reply-To: <174e60ee-aaad-ed16-186e-d199014dfc0c@gmail.com>
+References: <20201221194656.22111-1-steve@sk2.org>
+        <174e60ee-aaad-ed16-186e-d199014dfc0c@gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <X+OWl0C51/06C8WT@google.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ boundary="Sig_/uWTqlZog+MHZlqiB/OPHkoj"; protocol="application/pgp-signature"
+X-Ovh-Tracer-Id: 11211148323014331773
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedujedrvddtjedguddvjecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpeffhffvuffkjghfofggtgesghdtreerredtjeenucfhrhhomhepufhtvghphhgvnhcumfhithhtuceoshhtvghvvgesshhkvddrohhrgheqnecuggftrfgrthhtvghrnhepveelvdeufedvieevffdtueegkeevteehffdtffetleehjeekjeejudffieduteeknecukfhppedtrddtrddtrddtpdekvddrieehrddvhedrvddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejvdelrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepshhtvghvvgesshhkvddrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 12:12:23PM -0700, Yu Zhao wrote:
-> On Wed, Dec 23, 2020 at 11:24:16AM -0500, Peter Xu wrote:
-> > On Wed, Dec 23, 2020 at 03:06:30AM -0700, Yu Zhao wrote:
-> > > On Wed, Dec 23, 2020 at 01:44:42AM -0800, Linus Torvalds wrote:
-> > > > On Tue, Dec 22, 2020 at 4:01 PM Linus Torvalds
-> > > > <torvalds@linux-foundation.org> wrote:
-> > > > >
-> > > > > The more I look at the mprotect code, the less I like it. We seem to
-> > > > > be much better about the TLB flushes in other places (looking at
-> > > > > mremap, for example). The mprotect code seems to be very laissez-faire
-> > > > > about the TLB flushing.
-> > > > 
-> > > > No, this doesn't help.
-> > > > 
-> > > > > Does adding a TLB flush to before that
-> > > > >
-> > > > >         pte_unmap_unlock(pte - 1, ptl);
-> > > > >
-> > > > > fix things for you?
-> > > > 
-> > > > It really doesn't fix it. Exactly because - as pointed out earlier -
-> > > > the actual page *copy* happens outside the pte lock.
-> > > 
-> > > I appreciate all the pointers. It seems to me it does.
-> > > 
-> > > > So what can happen is:
-> > > > 
-> > > >  - CPU 1 holds the page table lock, while doing the write protect. It
-> > > > has cleared the writable bit, but hasn't flushed the TLB's yet
-> > > > 
-> > > >  - CPU 2 did *not* have the TLB entry, sees the new read-only state,
-> > > > takes a COW page fault, and reads the PTE from memory (into
-> > > > vmf->orig_pte)
-> > > 
-> > > In handle_pte_fault(), we lock page table and check pte_write(), so
-> > > we either see a RW pte before CPU 1 runs or a RO one with no stale tlb
-> > > entries after CPU 1 runs, assume CPU 1 flushes tlb while holding the
-> > > same page table lock (not mmap_lock).
-> > 
-> > I think this is not against Linus's example - where cpu2 does not have tlb
-> > cached so it sees RO while cpu3 does have tlb cached so cpu3 can still modify
-> > it.  So IMHO there's no problem here.
-> 
-> None of the CPUs has stale entries when CPU 2 sees a RO PTE.
+--Sig_/uWTqlZog+MHZlqiB/OPHkoj
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-In this example we have - Please see [1] below.
+Hi Michael,
 
-> We are
-> assuming that TLB flush will be done on CPU 1 while it's still holding
-> page table lock.
-> 
-> CPU 2 (re)locks page table and (re)checks the PTE under question when
-> it decides if copy is necessary. If it sees a RO PTE, it means the
-> flush has been done on all CPUs, therefore it fixes the problem.
+On Tue, 22 Dec 2020 21:36:28 +0100, "Michael Kerrisk (man-pages)"
+<mtk.manpages@gmail.com> wrote:
+> On 12/21/20 8:46 PM, Stephen Kitt wrote:
+[...]
+> > +Errors closing a given file descriptor are currently ignored.
+> > +.PP
+> > +.I flags
+> > +can be 0 or set to one or both of the following: =20
+>=20
+> Better, I think:
+> "flags is a bit mask containing 0 or more of the following:"
 
-I guess you had the assumption that pgtable lock released in step 1 already.
-But it's not happening in this specific example, not until step5 [2] below.
+Indeed, thanks!
 
-Indeed if pgtable lock is not released from cpu1, then COW path won't even
-triger, afaiu... do_wp_page() needs the pgtable lock.  It seems just even safer.
+> > +.TP
+> > +.BR CLOSE_RANGE_CLOEXEC " (since Linux 5.10)" =20
+>=20
+> s/5.10/5.11/ ?
 
-Irrelevant of the small confusions here and there... I believe we're always on
-the same page, at least the conclusion.
+Oops, yes, 5.11.
+
+> > +sets the close-on-exec bit instead of =20
+>=20
+> s/close-on-exec bit/file descriptor's close-on-exec flag/
+
+Noted.
+
+> > +immediately closing the file descriptors.
+> > +.TP
+> > +.B CLOSE_RANGE_UNSHARE
+> > +unshares the range of file descriptors from any other processes,
+> > +before closing them,
+> > +avoiding races with other threads sharing the file descriptor table.
+> > +.SH RETURN VALUE
+> > +On success,
+> > +.BR close_range ()
+> > +returns 0.
+> > +On error, \-1 is returned and
+> > +.I errno
+> > +is set to indicate the cause of the error.
+> > +.SH ERRORS
+> > +.TP
+> > +.B EINVAL
+> > +.I flags
+> > +is not valid, or
+> > +.I first
+> > +is greater than
+> > +.IR last .
+> > +.PP
+> > +The following can occur with
+> > +.B CLOSE_RANGE_UNSHARE
+> > +(when constructing the new descriptor table):
+> > +.TP
+> > +.B EMFILE
+> > +The per-process limit on the number of open file descriptors has been
+> > reached +(see the description of
+> > +.B RLIMIT_NOFILE
+> > +in
+> > +.BR getrlimit (2)).
+> > +.TP
+> > +.B ENOMEM
+> > +Insufficient kernel memory was available.
+> > +.SH VERSIONS
+> > +.BR close_range ()
+> > +first appeared in Linux 5.9.
+> > +.SH CONFORMING TO
+> > +.BR close_range ()
+> > +is a nonstandard function that is also present on FreeBSD.
+> > +.SH NOTES
+> > +Glibc does not provide a wrapper for this system call; call it using
+> > +.BR syscall (2).
+> > +.SS Closing all open file descriptors
+> > +.\" 278a5fbaed89dacd04e9d052f4594ffd0e0585de
+> > +To avoid blindly closing file descriptors
+> > +in the range of possible file descriptors,
+> > +this is sometimes implemented (on Linux)
+> > +by listing open file descriptors in
+> > +.I /proc/self/fd/
+> > +and calling
+> > +.BR close (2)
+> > +on each one.
+> > +.BR close_range ()
+> > +can take care of this without requiring
+> > +.I /proc
+> > +and within a single system call,
+> > +which provides significant performance benefits.
+> > +.SS Closing file descriptors before exec
+> > +.\" 60997c3d45d9a67daf01c56d805ae4fec37e0bd8
+> > +File descriptors can be closed safely using
+> > +.PP
+> > +.in +4n
+> > +.EX
+> > +/* we don't want anything past stderr here */
+> > +close_range(3, ~0U, CLOSE_RANGE_UNSHARE);
+> > +execve(....);
+> > +.EE
+> > +.in
+> > +.PP
+> > +.B CLOSE_RANGE_UNSHARE
+> > +is conceptually equivalent to
+> > +.PP
+> > +.in +4n
+> > +.EX
+> > +unshare(CLONE_FILES);
+> > +close_range(first, last, 0);
+> > +.EE
+> > +.in
+> > +.PP
+> > +but can be more efficient:
+> > +if the unshared range extends past
+> > +the current maximum number of file descriptors allocated
+> > +in the caller's file descriptor table
+> > +(the common case when
+> > +.I last
+> > +is ~0U),
+> > +the kernel will unshare a new file descriptor table for the caller up =
+to
+> > +.IR first .
+> > +This avoids subsequent close calls entirely; =20
+>=20
+> s/close/.BR close (2)/
+
+Noted.
+
+> > +the whole operation is complete once the table is unshared.
+> > +.SS Closing files on \fBexec\fP
+> > +.\" 582f1fb6b721facf04848d2ca57f34468da1813e
+> > +This is particularly useful in cases where multiple
+> > +.RB pre- exec
+> > +setup steps risk conflicting with each other.
+> > +For example, setting up a
+> > +.BR seccomp (2)
+> > +profile can conflict with a
+> > +.BR close_range ()
+> > +call:
+> > +if the file descriptors are closed before the
+> > +.BR seccomp (2)
+> > +profile is set up,
+> > +the profile setup can't use them itself,
+> > +or control their closure;
+> > +if the file descriptors are closed afterwards,
+> > +the seccomp profile can't block the
+> > +.BR close_range ()
+> > +call or any fallbacks.
+> > +Using
+> > +.B CLOSE_RANGE_CLOEXEC
+> > +avoids this:
+> > +the descriptors can be marked before the
+> > +.BR seccomp (2)
+> > +profile is set up,
+> > +and the profile can control access to
+> > +.BR close_range ()
+> > +without affecting the calling process.
+> > +.SH EXAMPLES
+> > +The following program is designed to be execed by the second program
+> > +below. =20
+>=20
+> I have some specific comments below, but a more general comment
+> to start with: why use two programs here? It seems to add complexity
+> without demonstrating anything that couldn't also be demonstrated
+> with a simpler single program, or have I missed something?
+
+I based the example on the test code in the kernel and the examples from
+execve(2), since close_range(2) is mostly useful in preparation for an
+execve(2) call.
+
+> > +It lists its open file descriptors:
+> > +.PP
+> > +.in +4n
+> > +.EX
+> > +/* listopen.c */
+> > +
+> > +#include <stdio.h>
+> > +#include <sys/stat.h>
+> > +
+> > +int
+> > +main(int argc, char *argv[])
+> > +{
+> > +    struct stat buf;
+> > +
+> > +    for (int i =3D 0; i < 100; i++) {
+> > +        if (!fstat(i, &buf)) =20
+>=20
+> I kind of prefer "fstat(...) =3D=3D 0"
+
+Ah yes, that makes sense.
+
+> > +            printf("FD %d is open.\en", i);
+> > +    }
+> > +
+> > +    exit(EXIT_SUCCESS);
+> > +)
+> > +.EE
+> > +.in
+> > +.PP
+> > +This program executes the command given on its command-line,
+> > +after opening the files listed after the command
+> > +and then using
+> > +.BR close_range ()
+> > +to close them:
+> > +.PP
+> > +.in +4n
+> > +.EX
+> > +/* close_range.c */
+> > +
+> > +#include <fcntl.h>
+> > +#include <linux/close_range.h>
+> > +#include <stdio.h>
+> > +#include <stdlib.h>
+> > +#include <sys/stat.h>
+> > +#include <sys/syscall.h>
+> > +#include <sys/types.h>
+> > +#include <unistd.h>
+> > +
+> > +int
+> > +main(int argc, char *argv[])
+> > +{
+> > +    char *newargv[] =3D { NULL };
+> > +    char *newenviron[] =3D { NULL };
+> > +
+> > +    if (argc < 3) {
+> > +        fprintf(stderr, "Usage: %s <command-to-run> <files-to-open>\en=
+",
+> > argv[0]); =20
+>=20
+> Line too long. Please break it up so that it renders well on
+> an 80-column terminal.
+>=20
+> Or, alternatively:=20
+>=20
+>         fprintf(stderr, "Usage: %s <command> <file>...\en", argv[0]);
+
+Noted.
+
+> > +        exit(EXIT_FAILURE);
+> > +    }
+> > +
+> > +    for (int i =3D 2; i < argc; i++) {
+> > +        if (open(argv[i], O_RDONLY) =3D=3D -1) {
+> > +            perror(argv[i]);
+> > +            exit(EXIT_FAILURE);
+> > +        }
+> > +    }
+> > +
+> > +    if (syscall(__NR_close_range, 3, ~0U, CLOSE_RANGE_UNSHARE) =3D=3D =
+-1) { =20
+>=20
+> Line too long.
+>=20
+> Alternatively, what about s/CLOSE_RANGE_UNSHARE/0/? Or it
+> considered best practice to always use CLOSE_RANGE_UNSHARE?
+
+In this particular context it=E2=80=99s not required, but I would argue tha=
+t it=E2=80=99s
+better to use _UNSHARE in general =E2=80=94 it avoids the risk of forgettin=
+g to add
+it in long-lived code which ends up using threads at some point...
+
+> > +        perror("close_range");
+> > +        exit(EXIT_FAILURE);
+> > +    }
+> > +
+> > +    execve(argv[1], newargv, newenviron);
+> > +    perror("execve");
+> > +    exit(EXIT_FAILURE);
+> > +}
+> > +.EE
+> > +.in
+> > +.PP
+> > +We can use the second program to exec the first as follows:
+> > +.PP
+> > +.in +4n
+> > +.EX
+> > +.RB "$" " make listopen close_range" =20
+>=20
+> Perhaps we don't really need the preceding line?
+
+I was following the examples in execve(2) which show how to build the
+programs.
+
+> > +.RB "$" " ./close_range ./listopen /dev/null /dev/zero"
+> > +FD 0 is open.
+> > +FD 1 is open.
+> > +FD 2 is open.
+> > +.EE
+> > +.in
+> > +.PP
+> > +Removing the call to
+> > +.BR close_range ()
+> > +will show different output,
+> > +with the file descriptors for the named files still open.
+> > +.SH SEE ALSO
+> > +.BR close (2)
+> >=20
+> > base-commit: b5dae3959625f5ff378e9edf9139057d1c06bb55 =20
 
 Thanks,
 
-> 
-> > But I do think in step 2 here we overlooked _PAGE_UFFD_WP bit.  Note that if
-> > it's uffd-wp wr-protection it's always applied along with removing of the write
-> > bit in change_pte_range():
-> > 
-> >         if (uffd_wp) {
-> >                 ptent = pte_wrprotect(ptent);
-> >                 ptent = pte_mkuffd_wp(ptent);
-> >         }
-> > 
-> > So instead of being handled as COW page do_wp_page() will always trap
-> > userfaultfd-wp first, hence no chance to race with COW.
-> > 
-> > COW could only trigger after another uffd-wp-resolve ioctl which could remove
-> > the _PAGE_UFFD_WP bit, but with Andrea's theory unprotect will only happen
-> > after all wr-protect completes, which guarantees that when reaching the COW
-> > path the tlb must has been flushed anyways.  Then no one should be modifying
-> > the page anymore even without pgtable lock in COW path.
-> > 
-> > So IIUC what Linus proposed on "flushing tlb within pgtable lock" seems to
-> > work, but it just may cause more tlb flush than Andrea's proposal especially
-> > when the protection range is large (it's common to have a huge protection range
-> > for e.g. VM live snapshotting, where we'll protect all guest rw ram).
-> > 
-> > My understanding of current issue is that either we can take Andrea's proposal
-> > (although I think the group rwsem may not be extremely better than a per-mm
-> > rwsem, which I don't know... at least not worst than that?), or we can also go
-> > the other way (also as Andrea mentioned) so that when wr-protect:
-> > 
-> >   - for <=2M range (pmd or less), we take read rwsem, but flush tlb within
-> >     pgtable lock
-> > 
-> >   - for >2M range, we take write rwsem directly but flush tlb once
-> >   
-> > Thanks,
-> > 
-> > > 
-> > > >  - CPU 2 correctly decides it needs to be a COW, and copies the page contents
-> > > > 
-> > > >  - CPU 3 *does* have a stale TLB (because TLB invalidation hasn't
-> > > > happened yet), and writes to that page in users apce
+Stephen
 
-[1]
+--Sig_/uWTqlZog+MHZlqiB/OPHkoj
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-> > > > 
-> > > >  - CPU 1 now does the TLB invalidate, and releases the page table lock
+-----BEGIN PGP SIGNATURE-----
 
-[2]
+iQIzBAEBCgAdFiEEnPVX/hPLkMoq7x0ggNMC9Yhtg5wFAl/jm4kACgkQgNMC9Yht
+g5xpNg/9HEV0DjwPTqJj4icH3TlxVTL3Qln1esFW71ArKi/+I3weQZbLiNhVkX1P
+APSnf1WnU8s5LCDMVCGLzQaSXaJGNa7XdI+/251geNhWuC0E79HirW7SKv0kd0fO
+BYFEGNSVJsdbiE7x8RELva+xUsIh+VO5wePXumL1sAlpc6G0JydqZkR7m88M8+9X
+Uls3U9PGilUIPc1n28+LCAi9TyU/b+UEcwtXY97FeJXdnAGLUSaNkLmAheywZERn
+1Ho/jP7J8PPliBSc+0h9urgH1DgkHZXZBUwxWpm1mqKto7Kf4lD3laqy26L43qdl
+juIj9GdRymLns+HG5tjtPoL1rNmW3oy6BBHXV34aDFbeDvdyZZ3kGi1DHuddwj/j
+MFycT5EZm8FFj7DL5MDkS0ARodzrbpuxAHozLBgCV4BixJ5jSTUGHumIJv4fLlnU
+zj/DkXn/hOzpbrsLMQdFq3CY3E5pT9SgC9cM99yItEfaLWg8At1Hf5ONyBaDnj+3
+a8QilYeJ7qHwDd6IzxzQQhEXcj17WqK79rrMqAOc7z4m6lcCVRojnwd24At5plbo
+EZMBbzMJJ0XuLBaeKpGPSTprnJFMjE2u48VLtm2AhwKoy19v+J49W/f6N4loVqlC
+c6v9QqSeAUDwZlJL2pXk28rjYaIBEXlAe7h+MB6Up+De5arDH/c=
+=cvcg
+-----END PGP SIGNATURE-----
 
-> > > > 
-> > > >  - CPU 2 gets the page table lock, sees that its PTE matches
-> > > > vmf->orig_pte, and switches it to be that writable copy of the page.
-> > > > 
-> > > > where the copy happened before CPU 3 had stopped writing to the page.
-> > > > 
-> > > > So the pte lock doesn't actually matter, unless we actually do the
-> > > > page copy inside of it (on CPU2), in addition to doing the TLB flush
-> > > > inside of it (on CPU1).
-> > > > 
-> > > > mprotect() is actually safe for two independent reasons: (a) it does
-> > > > the mmap_sem for writing (so mprotect can't race with the COW logic at
-> > > > all), and (b) it changes the vma permissions so turning something
-> > > > read-only actually disables COW anyway, since it won't be a COW, it
-> > > > will be a SIGSEGV.
-> > > > 
-> > > > So mprotect() is irrelevant, other than the fact that it shares some
-> > > > code with that "turn it read-only in the page tables".
-> > > > 
-> > > > fork() is a much closer operation, in that it actually triggers that
-> > > > COW behavior, but fork() takes the mmap_sem for writing, so it avoids
-> > > > this too.
-> > > > 
-> > > > So it's really just userfaultfd and that kind of ilk that is relevant
-> > > > here, I think. But that "you need to flush the TLB before releasing
-> > > > the page table lock" was not true (well, it's true in other
-> > > > circumstances - just not *here*), and is not part of the solution.
-> > > > 
-> > > > Or rather, if it's part of the solution here, it would have to be
-> > > > matched with that "page copy needs to be done under the page table
-> > > > lock too".
-> > > > 
-> > > >               Linus
-> > > > 
-> > > 
-> > 
-> > -- 
-> > Peter Xu
-> > 
-> 
-
--- 
-Peter Xu
-
+--Sig_/uWTqlZog+MHZlqiB/OPHkoj--
