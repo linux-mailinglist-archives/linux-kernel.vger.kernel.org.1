@@ -2,143 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0803E2E2263
+	by mail.lfdr.de (Postfix) with ESMTP id E7ABF2E2265
 	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 23:21:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726969AbgLWWTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 17:19:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38584 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725811AbgLWWTW (ORCPT
+        id S1727100AbgLWWU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 17:20:57 -0500
+Received: from mail-40134.protonmail.ch ([185.70.40.134]:24497 "EHLO
+        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725811AbgLWWU4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 17:19:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608761875;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6Ck1I5IrcfRnzD5SQ2UFbqmp5MXdOKhjN9/IxJ3cG8s=;
-        b=YzI3ckzqZ7Fh7hsfh3Sp3ozoYDSB9I9DKPIe5bSb2Bukb8yU/p3L8fuKF5cOOo0CB40dvy
-        qQscD1KClopBarEFIPRxQdsuJy85qRvMNJUUvUSKXjWLmtRoCPz8in87beAiZLLzPf6Uo2
-        dNMWrn9FyuzGOrQH9SsxEII7GdxiuDU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-226-5aHaB8T0OqWGAb0lOIsWTw-1; Wed, 23 Dec 2020 17:17:51 -0500
-X-MC-Unique: 5aHaB8T0OqWGAb0lOIsWTw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F3716801AB3;
-        Wed, 23 Dec 2020 22:17:49 +0000 (UTC)
-Received: from krava (unknown [10.40.192.56])
-        by smtp.corp.redhat.com (Postfix) with SMTP id DFF662BFE3;
-        Wed, 23 Dec 2020 22:17:47 +0000 (UTC)
-Date:   Wed, 23 Dec 2020 23:17:47 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        James Clark <james.clark@arm.com>
-Cc:     linux-perf-users@vger.kernel.org,
-        John Garry <john.garry@huawei.com>,
-        linux-kernel@vger.kernel.org, namhyung@kernel.org,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH v6 00/12] perf tools: fix perf stat with large socket IDs
-Message-ID: <20201223221747.GB236568@krava>
-References: <20201126141328.6509-1-james.clark@arm.com>
- <20201203153923.GA3613481@krava>
- <30c4426d-b314-98ff-e6d5-6d5152f316e8@huawei.com>
+        Wed, 23 Dec 2020 17:20:56 -0500
+Date:   Wed, 23 Dec 2020 22:20:04 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
+        s=protonmail2; t=1608762014;
+        bh=EK/kRuktdtjfQl45kjvt1uNuLM2wx6A+3pLRg30o7AI=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=HQBB7c4AzpvPt+F0PSqxFQgiWKTPWDOo2evV4XsOQYMJf3Cxfd/j6F1dkf+Q8tpsH
+         QgUOKzxBfeNBFvKU/kzeO+6LcZL7j6dGJNR89FR87faPSBijOKDdG9RpoORiB90Iu6
+         W7/TBErmSmocrT3LO4fW56DkeRM1T+xCMTgV03X26cKEvwoK8xHVzqtXqklQLNIxoX
+         +r4YGNcJ7OxghwrWKuZcSU/L/Bg9j62uLUDBxmRKdiccPmrvQw7YCcH1dUKy5OwxoJ
+         bY8aWa6WRRlDEM+xY9YxcRRT666H/BfDhri4m9s06fwqIwUvR/Vp25CEvaQFD/nT2k
+         MKScipIHD5S0g==
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+From:   Simon Ser <contact@emersion.fr>
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>
+Reply-To: Simon Ser <contact@emersion.fr>
+Subject: Re: [PATCH v8 4/4] NOTFORMERGE: drm/logicvc: Add plane colorkey support
+Message-ID: <oDsOkjfTYKa11LxfNy4LBLqutkVidfFn8--tjQPZj4w9gzCYNTOFglHqxXohsrYqTJ4uDv2xgJNKXPHzgAsACGnCkbKQis95SScGucOb1PI=@emersion.fr>
+In-Reply-To: <20201223212947.160565-5-paul.kocialkowski@bootlin.com>
+References: <20201223212947.160565-1-paul.kocialkowski@bootlin.com> <20201223212947.160565-5-paul.kocialkowski@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <30c4426d-b314-98ff-e6d5-6d5152f316e8@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 11:48:36AM +0000, John Garry wrote:
-> On 03/12/2020 15:39, Jiri Olsa wrote:
-> 
-> +
-> 
-> > On Thu, Nov 26, 2020 at 04:13:16PM +0200, James Clark wrote:
-> > > Changes since v5:
-> > >    * Fix test for cpu_map__get_die() by shifting id before testing.
-> > >    * Fix test for cpu_map__get_socket() by not using cpu_map__id_to_socket()
-> > >      which is only valid in CPU aggregation mode.
-> > > 
-> > > James Clark (12):
-> > >    perf tools: Improve topology test
-> > >    perf tools: Use allocator for perf_cpu_map
-> > >    perf tools: Add new struct for cpu aggregation
-> > >    perf tools: Replace aggregation ID with a struct
-> > >    perf tools: add new map type for aggregation
-> > >    perf tools: drop in cpu_aggr_map struct
-> > >    perf tools: Start using cpu_aggr_id in map
-> > >    perf tools: Add separate node member
-> > >    perf tools: Add separate socket member
-> > >    perf tools: Add separate die member
-> > >    perf tools: Add separate core member
-> > >    perf tools: Add separate thread member
-> > 
-> > Acked-by: Jiri Olsa <jolsa@redhat.com>
-> > 
-> 
-> Tested-by: John Garry <john.garry@huawei.com>
+nouveau already has something for colorkey:
+https://drmdb.emersion.fr/properties/4008636142/colorkey
 
-hi,
-I was wondering where this went, and noticed that
-Arnaldo was not CC-ed on the cover letter ;-)
-
-jirka
-
-> 
-> I still think that vendors (like us) need to fix/improve their firmware
-> tables so that we don't get silly big numbers for socket/package IDs, like
-> S5418-D0, below:
-> 
-> $./perf stat -a --per-die
-> 
->  Performance counter stats for 'system wide':
-> 
-> S36-D0   48   72,216.31 msec cpu-clock      #   47.933 CPUs utilized
-> S36-D0   48        174     context-switches #   0.002 K/sec
-> S36-D0   48         48     cpu-migrations   #   0.001 K/sec
-> S36-D0   48         0     page-faults    #   0.000 K/sec
-> S36-D0   48   7,991,698     cycles    #   0.000 GHz
-> S36-D0   48   4,750,040     instructions   #   0.59  insn per cycle
-> S36-D0    1   <not supported>     branches
-> S36-D0   48      32,928     branch-misses    #   0.00% of all branches
-> S5418-D0   48   72,189.54 msec cpu-clock     #   47.915 CPUs utilized
-> S5418-D0   48        176     context-switches  #   0.002 K/sec
-> S5418-D0   48         48     cpu-migrations   #   0.001 K/sec
-> S5418-D0   48         0     page-faults     #   0.000 K/sec
-> S5418-D0   48   5,677,218     cycles    #    0.000 GHz
-> S5418-D0   48   3,872,285     instructions   #  0.68  insn per cycle
-> S5418-D0    1   <not supported>     branches
-> S5418-D0   48      29,208     branch-misses   #  0.00% of all branches
-> 
->       1.506615297 seconds time elapsed
-> 
-> but at least it works now. Thanks.
-> 
-> > 
-> > > 
-> > >   tools/perf/builtin-stat.c      | 128 ++++++++++++------------
-> > >   tools/perf/tests/topology.c    |  64 ++++++++++--
-> > >   tools/perf/util/cpumap.c       | 171 ++++++++++++++++++++++-----------
-> > >   tools/perf/util/cpumap.h       |  55 ++++++-----
-> > >   tools/perf/util/stat-display.c | 102 ++++++++++++--------
-> > >   tools/perf/util/stat.c         |   2 +-
-> > >   tools/perf/util/stat.h         |   9 +-
-> > >   7 files changed, 337 insertions(+), 194 deletions(-)
-> > > 
-> > > -- 
-> > > 2.28.0
-> > > 
-> > 
-> > .
-> > 
-> 
-
+I know this is marked "not for merge", but it would be nice to discuss
+with them and come up with a standardized property.
