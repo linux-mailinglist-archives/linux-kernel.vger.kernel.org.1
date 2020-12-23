@@ -2,131 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 395BB2E22AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 00:22:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 001622E22B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 00:32:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727373AbgLWXWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 18:22:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59982 "EHLO
+        id S1727512AbgLWXbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 18:31:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725372AbgLWXWP (ORCPT
+        with ESMTP id S1726611AbgLWXbT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 18:22:15 -0500
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A316EC061794
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 15:21:35 -0800 (PST)
-Received: by mail-pj1-x104a.google.com with SMTP id gv14so1834488pjb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 15:21:35 -0800 (PST)
+        Wed, 23 Dec 2020 18:31:19 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB56AC061794;
+        Wed, 23 Dec 2020 15:30:38 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id t30so724185wrb.0;
+        Wed, 23 Dec 2020 15:30:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=OpeQspjNfc+YtA5Luu2f8A+bIc+qEdp7z4+y4LvF6NY=;
-        b=IL6aTVxWbJFR9k/6V2lhp8lxWK/zbQUEVKmPso1N+eNFQZJCyNBXdWCw/4+Q8AWkz3
-         e/Ly3UZjlZrMbpfqsQA8Aj9P+D/09RMrQGecE6r/pDI4RjOUtceQiD7d8+vOG14nktCj
-         eKO0R4rbhmpYDjCCzFc+rytHppd1TJKdl7gd4FbWNPxdK3GHQKDjYsqJAikUyYL7Sd2i
-         1xz6VeIzqRAGICJCiYMweFvV6g87tp9Pj7Nd/ea0SXxe5NojszFOJVawxdC3LbawmMAr
-         YZeO2OsmtyHLBbaK9EA6YHOlHlokpyiGmzabcHBet9SyLitJ4VX14qyhKVYtM5dzSJqc
-         w78g==
+        d=googlemail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=d0QCnb34c04FUIUph7Atv00YFsD83+fw9aPx7/l0+OY=;
+        b=lJAsDsYmIDdsffMxA2rZbm43WXPHBC7WLpNYUeTylT8vMumehFIWy9smiJziGDx5Ii
+         uBOEiUx1pMsDuEIT0yi3c1X4fQ559oMLwQx+UU2FgfA7nzwgUApyvn5th111FZkuGnM5
+         WU4O0bP0blUA/dkHymZDLXRDIrPAbXxLo7O6R30qnAQi+zksuGu8g9Ss9Owv7yoFe+TA
+         rNa94y2mqMFAXLh1mT1T9fJSsL8VyL4dDgBbu1kdzPhxScmEPxU6AIxXaoobKj7qzHsY
+         T1yRW6q013b84ySt2ccFs+w9Hs3iTNNQkMnhs8SItUmkIjGrGgYWyqEfgYK7FcTmeEsb
+         ypCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=OpeQspjNfc+YtA5Luu2f8A+bIc+qEdp7z4+y4LvF6NY=;
-        b=TZXGvN/02Jc6sGSZLvuhL9toATgmOKzMm1UnK+R3G1nRCnHZd/J5/6jzFn6vT3jkb8
-         l5bFsVPot/WcvLww61zsE7f5sWiBJhhNjbRFfFV7SQzCIVBolLxm89ihsn7QjIdhfXAm
-         /8UE7eZswFKoKAzVaDF3CyTnB848yU0zQALPU8jSnlUImx1sExweBHaL5vnwDjJQgj59
-         zujOE5+gykWIUtrEoBNTKFozzVcjtC6DIF3rBCBSoU2WmwKTbFEi9gK35WOlerbwyGZi
-         zk1XLiBF++cKwurOpvjYzCrryIxz0ftJI4beE8yFcW38YnJeX1anSNRqfo38qsUd1YqV
-         2aFQ==
-X-Gm-Message-State: AOAM5332eiSG9C9/KQmF5osXDkRovET/mqMAzyutW4lXQxUKnTm7CD6p
-        xiJxhqnb6WD8cwAPzKeDssVEFRkpfzxE/1OCHYU=
-X-Google-Smtp-Source: ABdhPJxCoTZVJOlJ0h93BIEDs1u7pBw7aTTE0xuGV/SKr1jlMefUS3JMCbFZaaav0OA+rxKLPdrcMJH0nrJip40xbEI=
-Sender: "ndesaulniers via sendgmr" 
-        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
- (user=ndesaulniers job=sendgmr) by 2002:a17:902:a5cb:b029:dc:2706:4cc8 with
- SMTP id t11-20020a170902a5cbb02900dc27064cc8mr8357472plq.62.1608765695098;
- Wed, 23 Dec 2020 15:21:35 -0800 (PST)
-Date:   Wed, 23 Dec 2020 15:21:26 -0800
-Message-Id: <20201223232126.759416-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
-Subject: [PATCH] x86/entry: use STB_GLOBAL for register restoring thunk
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Fangrui Song <maskray@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=d0QCnb34c04FUIUph7Atv00YFsD83+fw9aPx7/l0+OY=;
+        b=cGxG913E+6IrMRORkmX5McSiaxY2PEJLW9UJOwMmvP4Mmb4xPgZIbdw596D7cUaRXE
+         VhhfFN16cOiklveui1C1udmvqnBVwWeLfCZYnuWVaf2zgrkR5l8XsTCyy01uDso7Gvjg
+         +YwRX6A7JC8EIvSA88bPq/NKS/61bFZbGCjWP2/YIaCZDoPAeb/QTT8bG4nOa7PNaXqM
+         ejs6FFfZujt6PLsvaqwm1QWKrdokSUw5UTJUQZ8ODBVarzdE+fxI8LlfM1LXFdOYv9zn
+         SmR/T3Vgmkqh7dhiKYwMD8SOSf0ZNlxTkE0wi3rtNMuDq6KXQ8r2DNkKhuNeBoGAolgp
+         CEkA==
+X-Gm-Message-State: AOAM530NtpXItEKiQyZWzMnySjzYXB5tubJyyuqeJO/ATECc9dHVBzRQ
+        ///3XhlIMr1cN0VzujIpHzE=
+X-Google-Smtp-Source: ABdhPJxq+f5gRLUxPkgo6Y1oMCTTfqeQdiK+rbwX9uaakYBSBIg/QlWSR0j/XXXO9fsiKTUxQ5cfEg==
+X-Received: by 2002:adf:a29d:: with SMTP id s29mr31181017wra.272.1608766237686;
+        Wed, 23 Dec 2020 15:30:37 -0800 (PST)
+Received: from localhost.localdomain (p200300f1371a0900428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:371a:900:428d:5cff:feb9:9db8])
+        by smtp.googlemail.com with ESMTPSA id l16sm37926657wrx.5.2020.12.23.15.30.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Dec 2020 15:30:36 -0800 (PST)
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To:     linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        andrew@lunn.ch, f.fainelli@gmail.com, jianxin.pan@amlogic.com,
+        narmstrong@baylibre.com, khilman@baylibre.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        jbrunet@baylibre.com,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH v3 0/5] dwmac-meson8b: picosecond precision RX delay support
+Date:   Thu, 24 Dec 2020 00:29:00 +0100
+Message-Id: <20201223232905.2958651-1-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd found a randconfig that produces the warning:
+Hello,
 
-arch/x86/entry/thunk_64.o: warning: objtool: missing symbol for insn at
-offset 0x3e
+with the help of Jianxin Pan (many thanks!) the meaning of the "new"
+PRG_ETH1[19:16] register bits on Amlogic Meson G12A, G12B and SM1 SoCs
+are finally known. These SoCs allow fine-tuning the RGMII RX delay in
+200ps steps (contrary to what I have thought in the past [0] these are
+not some "calibration" values).
 
-when building with LLVM_IAS=1 (use Clang's integrated assembler). Josh
-notes:
+The vendor u-boot has code to automatically detect the best RX/TX delay
+settings. For now we keep it simple and add a device-tree property with
+200ps precision to select the "right" RX delay for each board.
 
-  With the LLVM assembler stripping the .text section symbol, objtool
-  has no way to reference this code when it generates ORC unwinder
-  entries, because this code is outside of any ELF function.
+While here, deprecate the "amlogic,rx-delay-ns" property as it's not
+used on any upstream .dts (yet). The driver is backwards compatible.
 
-This behavior was implemented as an optimization in LLVM 5 years ago,
-but it's not the first time this has caused issues for objtool.  A patch
-has been authored against LLVM to revert the behavior, which may or may
-not be accepted.  Until then use a global symbol for the thunk that way
-objtool can generate proper unwind info here with LLVM_IAS=1.
+I have tested this on an X96 Air 4GB board (not upstream yet). Testing
+with iperf3 gives 938 Mbits/sec in both directions (RX and TX). The
+following network settings were used in the .dts (2ns TX delay
+generated by the PHY, 800ps RX delay generated by the MAC as the PHY
+only supports 0ns or 2ns RX delays):
+        &ext_mdio {
+                external_phy: ethernet-phy@0 {
+                        /* Realtek RTL8211F (0x001cc916) */
+                        reg = <0>;
+                        eee-broken-1000t;
 
-Cc: Fangrui Song <maskray@google.com>
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Link: https://github.com/ClangBuiltLinux/linux/issues/1209
-Link: https://reviews.llvm.org/D93783
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
- arch/x86/entry/thunk_64.S | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+                        reset-assert-us = <10000>;
+                        reset-deassert-us = <30000>;
+                        reset-gpios = <&gpio GPIOZ_15 (GPIO_ACTIVE_LOW |
+                                                GPIO_OPEN_DRAIN)>;
 
-diff --git a/arch/x86/entry/thunk_64.S b/arch/x86/entry/thunk_64.S
-index ccd32877a3c4..878816034a73 100644
---- a/arch/x86/entry/thunk_64.S
-+++ b/arch/x86/entry/thunk_64.S
-@@ -31,7 +31,7 @@ SYM_FUNC_START_NOALIGN(\name)
- 	.endif
- 
- 	call \func
--	jmp  .L_restore
-+	jmp  __thunk_restore
- SYM_FUNC_END(\name)
- 	_ASM_NOKPROBE(\name)
- 	.endm
-@@ -44,7 +44,7 @@ SYM_FUNC_END(\name)
- #endif
- 
- #ifdef CONFIG_PREEMPTION
--SYM_CODE_START_LOCAL_NOALIGN(.L_restore)
-+SYM_CODE_START_NOALIGN(__thunk_restore)
- 	popq %r11
- 	popq %r10
- 	popq %r9
-@@ -56,6 +56,6 @@ SYM_CODE_START_LOCAL_NOALIGN(.L_restore)
- 	popq %rdi
- 	popq %rbp
- 	ret
--	_ASM_NOKPROBE(.L_restore)
--SYM_CODE_END(.L_restore)
-+	_ASM_NOKPROBE(__thunk_restore)
-+SYM_CODE_END(__thunk_restore)
- #endif
+                        interrupt-parent = <&gpio_intc>;
+                        /* MAC_INTR on GPIOZ_14 */
+                        interrupts = <26 IRQ_TYPE_LEVEL_LOW>;
+                };
+        };
+
+        &ethmac {
+                status = "okay";
+
+                pinctrl-0 = <&eth_pins>, <&eth_rgmii_pins>;
+                pinctrl-names = "default";
+
+                phy-mode = "rgmii-txid";
+                phy-handle = <&external_phy>;
+
+                amlogic,rgmii-rx-delay-ps = <800>;
+        };
+
+To use the same settings from vendor u-boot (which in my case has broken
+Ethernet) the following commands can be used:
+  mw.l 0xff634540 0x1621
+  mw.l 0xff634544 0x30000
+  phyreg w 0x0 0x1040
+  phyreg w 0x1f 0xd08
+  phyreg w 0x11 0x9
+  phyreg w 0x15 0x11
+  phyreg w 0x1f 0x0
+  phyreg w 0x0 0x9200
+
+Also I have tested this on a X96 Max board without any .dts changes
+to confirm that other boards with the same IP block still work fine
+with these changes.
+
+
+Changes since v2 at [2]:
+- use the generic property name "rx-internal-delay-ps" as suggested by
+  Rob (thanks!). This affects patches #1 and #3. The biggest change is
+  is in patch #1 which is why I didn't add Florian's and Andrew's
+  Reviewed-by
+- added Andrew's and Florian's Reviewed-by to patches 2, 3, 4, 5 (many
+  thanks to both!). I decided to do this despite renaming the property
+  to the generic name "rx-internal-delay-ps" as it only affects the
+  patch description and one line of code
+- updated patch description of patch #3 to explain why there's not a
+  lot of validation when parsing the old device-tree property (in
+  nanosecond precision)
+- dropped RFC status
+
+Changes since v1 at [1]:
+- updated patch 1 by making it more clear when the RX delay is applied.
+  Thanks to Andrew for the suggestion!
+- added a fix to enabling the timing-adjustment clock only when really
+  needed. Found by Andrew - thanks!
+- added testing not about X96 Max
+- v1 did not go to the netdev mailing list, v2 fixes this
+
+
+[0] https://lore.kernel.org/netdev/CAFBinCATt4Hi9rigj52nMf3oygyFbnopZcsakGL=KyWnsjY3JA@mail.gmail.com/
+[1] https://patchwork.kernel.org/project/linux-amlogic/list/?series=384279
+[2] https://patchwork.kernel.org/project/linux-amlogic/list/?series=384491&state=%2A&archive=both
+
+
+Martin Blumenstingl (5):
+  dt-bindings: net: dwmac-meson: use picoseconds for the RGMII RX delay
+  net: stmmac: dwmac-meson8b: fix enabling the timing-adjustment clock
+  net: stmmac: dwmac-meson8b: use picoseconds for the RGMII RX delay
+  net: stmmac: dwmac-meson8b: move RGMII delays into a separate function
+  net: stmmac: dwmac-meson8b: add support for the RGMII RX delay on G12A
+
+ .../bindings/net/amlogic,meson-dwmac.yaml     | 55 +++++++++--
+ .../ethernet/stmicro/stmmac/dwmac-meson8b.c   | 91 +++++++++++++++----
+ 2 files changed, 120 insertions(+), 26 deletions(-)
+
 -- 
-2.29.2.729.g45daf8777d-goog
+2.29.2
 
