@@ -2,94 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3106B2E214D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 21:26:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA6332E2143
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 21:26:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729050AbgLWUZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 15:25:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52201 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729020AbgLWUZA (ORCPT
+        id S1729011AbgLWUYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 15:24:45 -0500
+Received: from mail-1.ca.inter.net ([208.85.220.69]:57480 "EHLO
+        mail-1.ca.inter.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727195AbgLWUYo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 15:25:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608755014;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=jEGCTVE9ATlTdf8ZAj1SWqLSDSDRJD/XzKNah8054b8=;
-        b=AHlAMYcaRPRNwiBsobD2ml70F4X0ITzIGrNM/12ZI/EglEMkTVzD9q0OM+Y/2bQbp3kjUR
-        y0nip7POYx92FQf0EE+cPVMvcDQ7vmo74j9AUbqVGgHZhB/McYM1mlP5MsMmgMnTVUon0L
-        UB3GRvD/Ob4UaRSbtGN3jY+w3SUD8TA=
-Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
- [209.85.210.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-179-rSvWOZuwO1OZBNw9S6ePKw-1; Wed, 23 Dec 2020 15:23:32 -0500
-X-MC-Unique: rSvWOZuwO1OZBNw9S6ePKw-1
-Received: by mail-ot1-f69.google.com with SMTP id g25so95584ots.14
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 12:23:31 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jEGCTVE9ATlTdf8ZAj1SWqLSDSDRJD/XzKNah8054b8=;
-        b=inS7YPD3ez3+A3482uYTB/dzXIic0KKljNMWVAjOoMXQUXsevbLcjmdKy1rfrA4MXn
-         YU9iWly9IydfTP4rpKJIE71j221ihY2IPco3gImGboXKPVR4dFpbV3zSubq8NlB7AlzH
-         xpljV+4jXd1zpLXIybOSgB/NGtM4jGqBlc9vQGOODI00arryI+xPNBkIO8iEBJ33qYyR
-         7pSj43ZI9JAu3mm2s/E21x6+rFrxZADtTChmwu6l6dL1jXT9IyrKTnDCSdz2IrFaMe0v
-         2b3ZiT9/CPge3OEx9HwYjiSAZKSO7YA9a52uChfv89quzALj/119J9Yzj1BszToRnbNB
-         rcFg==
-X-Gm-Message-State: AOAM530ZGiKo9bJKJE8JxbGVXP5eDkLCZeovEDVzhSIHnfEabPuLcp3r
-        3e4gXjWR3n0645Zmwd2PXo1+d2mdMzvbvY4rvW8+rWzwxJaKaYwX5rfErLpgtXPdO84hKnitBKI
-        H8GbrLyCKiMM+wtX2CX2/uQob
-X-Received: by 2002:a9d:1720:: with SMTP id i32mr20877433ota.84.1608755011396;
-        Wed, 23 Dec 2020 12:23:31 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyFbSWkQxwEnx6ttmV2i8WlJq8bdhyK9MqNLBTw0YAoOpjxrAWooucw9P+vlT0EwJQN/JS9SA==
-X-Received: by 2002:a9d:1720:: with SMTP id i32mr20877423ota.84.1608755011205;
-        Wed, 23 Dec 2020 12:23:31 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id r204sm6107896oif.0.2020.12.23.12.23.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Dec 2020 12:23:30 -0800 (PST)
-From:   trix@redhat.com
-To:     romieu@fr.zoreil.com, davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH] via-velocity: remove h from printk format specifier
-Date:   Wed, 23 Dec 2020 12:23:26 -0800
-Message-Id: <20201223202326.132054-1-trix@redhat.com>
-X-Mailer: git-send-email 2.27.0
+        Wed, 23 Dec 2020 15:24:44 -0500
+Received: from localhost (offload-3.ca.inter.net [208.85.220.70])
+        by mail-1.ca.inter.net (Postfix) with ESMTP id CCEBC2EA28A;
+        Wed, 23 Dec 2020 15:24:02 -0500 (EST)
+Received: from mail-1.ca.inter.net ([208.85.220.69])
+        by localhost (offload-3.ca.inter.net [208.85.220.70]) (amavisd-new, port 10024)
+        with ESMTP id 0NtYbbCfRz7B; Wed, 23 Dec 2020 15:12:11 -0500 (EST)
+Received: from [192.168.48.23] (host-104-157-204-209.dyn.295.ca [104.157.204.209])
+        (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dgilbert@interlog.com)
+        by mail-1.ca.inter.net (Postfix) with ESMTPSA id 169332EA054;
+        Wed, 23 Dec 2020 15:23:58 -0500 (EST)
+Reply-To: dgilbert@interlog.com
+Subject: Re: [PATCH v1 0/6] no-copy bvec
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Pavel Begunkov <asml.silence@gmail.com>
+Cc:     Ming Lei <ming.lei@redhat.com>, linux-block@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-doc@vger.kernel.org
+References: <cover.1607976425.git.asml.silence@gmail.com>
+ <20201215014114.GA1777020@T590>
+ <103235c1-e7d0-0b55-65d0-013d1a09304e@gmail.com>
+ <20201215120357.GA1798021@T590>
+ <e755fec3-4181-1414-0603-02e1a1f4e9eb@gmail.com>
+ <20201222141112.GE13079@infradead.org>
+ <933030f0-e428-18fd-4668-68db4f14b976@gmail.com>
+ <20201223155145.GA5902@infradead.org>
+ <f06ece44a86eb9c8ef07bbd9f6f53342366b7751.camel@HansenPartnership.com>
+From:   Douglas Gilbert <dgilbert@interlog.com>
+Message-ID: <8abc56c2-4db8-5ee3-ab2d-8960d0eeeb0d@interlog.com>
+Date:   Wed, 23 Dec 2020 15:23:57 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <f06ece44a86eb9c8ef07bbd9f6f53342366b7751.camel@HansenPartnership.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On 2020-12-23 11:04 a.m., James Bottomley wrote:
+> On Wed, 2020-12-23 at 15:51 +0000, Christoph Hellwig wrote:
+>> On Wed, Dec 23, 2020 at 12:52:59PM +0000, Pavel Begunkov wrote:
+>>> Can scatterlist have 0-len entries? Those are directly translated
+>>> into bvecs, e.g. in nvme/target/io-cmd-file.c and
+>>> target/target_core_file.c. I've audited most of others by this
+>>> moment, they're fine.
+>>
+>> For block layer SGLs we should never see them, and for nvme neither.
+>> I think the same is true for the SCSI target code, but please double
+>> check.
+> 
+> Right, no-one ever wants to see a 0-len scatter list entry.  The reason
+> is that every driver uses the sgl to program the device DMA engine in
+> the way NVME does.  a 0 length sgl would be a dangerous corner case:
+> some DMA engines would ignore it and others would go haywire, so if we
+> ever let a 0 length list down into the driver, they'd have to
+> understand the corner case behaviour of their DMA engine and filter it
+> accordingly, which is why we disallow them in the upper levels, since
+> they're effective nops anyway.
 
-This change fixes the checkpatch warning described in this commit
-commit cbacb5ab0aa0 ("docs: printk-formats: Stop encouraging use of unnecessary %h[xudi] and %hh[xudi]")
+When using scatter gather lists at the far end (i.e. on the storage device)
+the T10 examples (WRITE SCATTERED and POPULATE TOKEN in SBC-4) explicitly
+allow the "number of logical blocks" in their sgl_s to be zero and state
+that it is _not_ to be considered an error.
 
-Standard integer promotion is already done and %hx and %hhx is useless
-so do not encourage the use of %hh[xudi] or %h[xudi].
-
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/net/ethernet/via/via-velocity.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/via/via-velocity.c b/drivers/net/ethernet/via/via-velocity.c
-index b65767f9e499..119439f78c1b 100644
---- a/drivers/net/ethernet/via/via-velocity.c
-+++ b/drivers/net/ethernet/via/via-velocity.c
-@@ -1823,7 +1823,7 @@ static void velocity_error(struct velocity_info *vptr, int status)
- 	if (status & ISR_TXSTLI) {
- 		struct mac_regs __iomem *regs = vptr->mac_regs;
- 
--		netdev_err(vptr->netdev, "TD structure error TDindex=%hx\n",
-+		netdev_err(vptr->netdev, "TD structure error TDindex=%x\n",
- 			   readw(&regs->TDIdx[0]));
- 		BYTE_REG_BITS_ON(TXESR_TDSTR, &regs->TXESR);
- 		writew(TRDCSR_RUN, &regs->TDCSRClr);
--- 
-2.27.0
+Doug Gilbert
 
