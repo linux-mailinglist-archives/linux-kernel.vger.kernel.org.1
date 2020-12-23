@@ -2,101 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41CCE2E2078
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 19:36:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE0142E2080
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 19:40:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727934AbgLWSgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 13:36:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727063AbgLWSgq (ORCPT
+        id S1728302AbgLWSiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 13:38:52 -0500
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:61521 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727207AbgLWSiw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 13:36:46 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52FC4C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 10:36:06 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0de6004e8e0a920ee38f04.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:e600:4e8e:a92:ee3:8f04])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AC06B1EC04A6;
-        Wed, 23 Dec 2020 19:36:04 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1608748564;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=T3szGHnqh9g5WowsiNoMytWNIPTlrye+Cl/FcvQGf0s=;
-        b=VrjvyS4C+uRU4RdoJN3Wt2B6lC3DAjFtEMhFrzxRihsyWJUEw+Ou1No+fB20cNGd2+Jxm8
-        ds9WBqYI0zsSlPa/RLiGJtp7o+QY74jPJBtyC27SQMdJQr5oGgMYBZF2S5rxNn3yvcwcYm
-        B1zct207fSLuB6Q/68G61Qnwpewo60Y=
-Date:   Wed, 23 Dec 2020 19:36:06 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [tip:efi/core 3/7] /tmp/slab-258052.s:9870: Error: unrecognized
- opcode `zext.b a2,a2'
-Message-ID: <20201223183606.GB29011@zn.tnic>
-References: <202012180909.WhlTpWrS-lkp@intel.com>
+        Wed, 23 Dec 2020 13:38:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1608748732; x=1640284732;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   mime-version;
+  bh=PMQG4qz/czIhu/3Vb66DfarbU9VPAw72RQIGHA4B6zU=;
+  b=fCYdRZh9d5cM3hF2hQNeZKPl/maSbdB3g3dOE2C9gClhmWUTAyKAITCM
+   0OHhiwiuhA354Vtj7Jxp3/Pt2YJyRIF2RCc220aGW4gzj5cbqMZ27M3TO
+   zOR6Vvtq7UOZzqTSfzJscDVBVkGmmOSzHqCHx+LqR097A4tVBneqtDmaW
+   c=;
+X-IronPort-AV: E=Sophos;i="5.78,442,1599523200"; 
+   d="scan'208";a="73319603"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1e-303d0b0e.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 23 Dec 2020 18:38:04 +0000
+Received: from EX13D31EUA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1e-303d0b0e.us-east-1.amazon.com (Postfix) with ESMTPS id 81C9BA1F19;
+        Wed, 23 Dec 2020 18:37:52 +0000 (UTC)
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.160.66) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 23 Dec 2020 18:37:35 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     SeongJae Park <sjpark@amazon.com>
+CC:     <akpm@linux-foundation.org>, <Jonathan.Cameron@Huawei.com>,
+        <aarcange@redhat.com>, <acme@kernel.org>,
+        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
+        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
+        <brendanhiggins@google.com>, <cai@lca.pw>,
+        <colin.king@canonical.com>, <corbet@lwn.net>, <david@redhat.com>,
+        <dwmw@amazon.com>, <elver@google.com>, <fan.du@intel.com>,
+        <foersleo@amazon.de>, <gthelen@google.com>, <irogers@google.com>,
+        <jolsa@redhat.com>, <kirill@shutemov.name>, <mark.rutland@arm.com>,
+        <mgorman@suse.de>, <minchan@kernel.org>, <mingo@redhat.com>,
+        <namhyung@kernel.org>, <peterz@infradead.org>,
+        <rdunlap@infradead.org>, <riel@surriel.com>, <rientjes@google.com>,
+        <rostedt@goodmis.org>, <rppt@kernel.org>, <sblbir@amazon.com>,
+        <shakeelb@google.com>, <shuah@kernel.org>, <sj38.park@gmail.com>,
+        <snu@amazon.de>, <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
+        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
+        <zgf574564920@gmail.com>, <linux-damon@amazon.com>,
+        <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v23 11/15] tools: Introduce a minimal user-space tool for DAMON
+Date:   Wed, 23 Dec 2020 19:37:21 +0100
+Message-ID: <20201223183721.8898-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201215115448.25633-12-sjpark@amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <202012180909.WhlTpWrS-lkp@intel.com>
+Content-Type: text/plain
+X-Originating-IP: [10.43.160.66]
+X-ClientProxiedBy: EX13D35UWB003.ant.amazon.com (10.43.161.65) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 09:03:14AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git efi/core
-> head:   b283477d394ac41ca59ee20eb9293ae9002eb1d7
-> commit: 6edcf9dc2e1aff3aa1f5a69ee420fb30dd0e968a [3/7] efi/libstub: EFI_GENERIC_STUB_INITRD_CMDLINE_LOADER should not default to yes
-> config: riscv-randconfig-r022-20201217 (attached as .config)
-> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project cee1e7d14f4628d6174b33640d502bff3b54ae45)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install riscv cross compiling tool for clang build
->         # apt-get install binutils-riscv64-linux-gnu
->         # https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=6edcf9dc2e1aff3aa1f5a69ee420fb30dd0e968a
->         git remote add tip https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git
->         git fetch --no-tags tip efi/core
->         git checkout 6edcf9dc2e1aff3aa1f5a69ee420fb30dd0e968a
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=riscv 
+On Tue, 15 Dec 2020 12:54:44 +0100 SeongJae Park <sjpark@amazon.com> wrote:
 
-Something's still not good with that test - it fails much earlier for me:
+> From: SeongJae Park <sjpark@amazon.de>
+> 
+> 'damon-dbgfs' provides simple user space interface for DAMON, but using
+> the interface for complex usages could require annoying repetitive
+> works.  Writing a user space data access monitoring applications on top
+> of the debugfs interface and using the application would be better for
+> such complex cases.
+> 
+> This commit introduces a reference implementation of such user space
+> application built on top of the debugfs interface, namely 'DAMon
+> Operator' (DAMO).  It contains a shallow wrapper python script of the
+> debugfs interface and various visualization of the monitoring results
+> convenient user interface.
+> 
+> Note that it is initially aimed to be used for minimal reference of the
+> 'damon-dbgfs' interface and for debugging of the DAMON itself.
+> 
+> Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> ---
+>  tools/damon/.gitignore    |   1 +
+>  tools/damon/_damon.py     | 130 ++++++++++++++
+>  tools/damon/_dist.py      |  35 ++++
+>  tools/damon/_recfile.py   |  23 +++
+>  tools/damon/bin2txt.py    |  67 +++++++
+>  tools/damon/damo          |  37 ++++
+>  tools/damon/heats.py      | 362 ++++++++++++++++++++++++++++++++++++++
+>  tools/damon/nr_regions.py |  91 ++++++++++
+>  tools/damon/record.py     | 135 ++++++++++++++
+>  tools/damon/report.py     |  45 +++++
+>  tools/damon/wss.py        | 100 +++++++++++
+>  11 files changed, 1026 insertions(+)
 
-$ COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang /tmp/make.cross ARCH=riscv
-Compiler will be installed in /home/boris/0day
-cd: received redirection to `https://download.01.org/0day-ci/cross-package/'  
-lftpget -c https://download.01.org/0day-ci/cross-package/./clang-latest/clang.tar.xz
-tar Jxf clang-latest/clang.tar.xz -C /home/boris/0day                                                     
-make W=1 CONFIG_OF_ALL_DTBS=y CONFIG_DTC=y HOSTCC=/home/boris/0day/clang-latest/bin/clang CC=/home/boris/0day/clang-latest/bin/clang LD=/home/boris/0day/clang-latest/bin/ld.lld HOSTLD=/home/boris/0day/clang-latest/bin/ld.lld AR=/home/boris/0day/clang-latest/bin/llvm-ar NM=/home/boris/0day/clang-latest/bin/llvm-nm STRIP=/home/boris/0day/clang-latest/bin/llvm-strip OBJDUMP=/home/boris/0day/clang-latest/bin/llvm-objdump OBJSIZE=/home/boris/0day/clang-latest/bin/llvm-size READELF=/home/boris/0day/clang-latest/bin/llvm-readelf HOSTCXX=/home/boris/0day/clang-latest/bin/clang++ HOSTAR=/home/boris/0day/clang-latest/bin/llvm-ar CROSS_COMPILE=riscv-linux-gnu- --jobs=32 ARCH=riscv
-  SYNC    include/config/auto.conf.cmd
-...
-
-scripts/genksyms/parse.y: warning: 9 shift/reduce conflicts [-Wconflicts-sr]
-scripts/genksyms/parse.y: warning: 5 reduce/reduce conflicts [-Wconflicts-rr]
-  DTC     arch/riscv/boot/dts/sifive/hifive-unleashed-a00.dtb
-  DTC     arch/riscv/boot/dts/kendryte/k210.dtb
-  HOSTCC  scripts/genksyms/parse.tab.o
-  HOSTCC  scripts/genksyms/lex.lex.o
-  HOSTLD  scripts/genksyms/genksyms
-  CC      scripts/mod/empty.o
-  HOSTCC  scripts/mod/mk_elfconfig
-  CC      scripts/mod/devicetable-offsets.s
-error: unknown target triple 'riscv-unknown-linux-gnu', please use -triple or -arch
-make[1]: *** [scripts/Makefile.build:117: scripts/mod/devicetable-offsets.s] Error 1
-make[1]: *** Waiting for unfinished jobs....
-error: unknown target triple 'riscv-unknown-linux-gnu', please use -triple or -arch
-make[1]: *** [scripts/Makefile.build:283: scripts/mod/empty.o] Error 1
-make: *** [Makefile:1199: prepare0] Error 2
-$
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+I will drop this patch from the next version of this patchset, because this is
+not the essential part but could only make the code review time consuming.  I
+will post another DAMON RFC patchset for convenient user space usages including
+this and the perf integration.
