@@ -2,128 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25F3F2E2046
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 19:00:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D6262E204A
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 19:09:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728251AbgLWSA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 13:00:28 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:53779 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726554AbgLWSA1 (ORCPT
+        id S1727293AbgLWSHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 13:07:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726396AbgLWSHM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 13:00:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1608746427; x=1640282427;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=47r11GPRFhq3kFKg3DEtYYb9IpOCEZgBgEMABlO6tnQ=;
-  b=K78l9kP6cv7pXXDye8hsQ9+Zztb/ba48efmGMdQvOd+mKfn2lhWaqNxn
-   WsGu1cZg8UoUKsIBckzSIHhQahgsexyel3wdGD1gIjpFfaiiDCt0bNm2w
-   XhPMagy79gSCD2HQ4yLKh/eds/rvJvfTEvGVJTtF+HP6ojaLAfevwuVhT
-   qD2Ys+0TYYna3zwAne1rYxk/MoJ6B1ZazMgyeJ0Ys6+9uM3xnpnvlPGqc
-   x09wsHSowg/TWBDMXPU6zCmDB3Nw5xxF95y6B+Pph/9tLTzkPWGVdCibc
-   kYmgHljgTR9dhuJMxc91CO+3kP1iYIGgO0cw+CIgSQ1NhbouyE6DbHkph
-   Q==;
-IronPort-SDR: VbMItp7eqgc6S1n0XuY9L3oN/3JOHEV5urxycxQ78oZy7UX33+VepDUFlH4w2nNTzNNRFWgdyk
- Yd7wq3OaODn/Ope0K1IvCTA3PQDGm4IjzLQKLXTZ1uq5l3T0v8dXmTG80X/oxghIfLYwA+b81B
- C4E9nSs39d2SOa8N2qLCZok9JIB+U0ygEcLecAbHwl6AemmB5y0H2Ygt1Zs9NEhCXSd3H4b2BI
- 6Q98u6W8VixUYIqON/esoAPdNIYS7mfM30loudA1xKTXDITWjTnCAdM3Bfhd7/RxejA7cCWiku
- YU8=
-X-IronPort-AV: E=Sophos;i="5.78,441,1599548400"; 
-   d="scan'208";a="98105173"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Dec 2020 10:59:11 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 23 Dec 2020 10:59:11 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Wed, 23 Dec 2020 10:59:10 -0700
-Date:   Wed, 23 Dec 2020 18:59:10 +0100
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH net 1/2] net: mrp: fix definitions of MRP test packets
-Message-ID: <20201223175910.2ipmowhcn63mqtqt@soft-dev3.localdomain>
-References: <20201223144533.4145-1-rasmus.villemoes@prevas.dk>
- <20201223144533.4145-2-rasmus.villemoes@prevas.dk>
+        Wed, 23 Dec 2020 13:07:12 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42208C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 10:06:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=0+zfOiUzZlDzLOfq1/XE/in0lna9jZAN4JnZpaidAHQ=; b=veq6cqFzRYETeA5CKr8RmXxj7e
+        aUaZZxCkjIlhVuqEpluHsmID4Fndvv59UGRQnxwYrERVGgecMkIIBrcF7xdhgjGToOohNQdZPiUy+
+        Ngj8VQTtY3SfV0KWIgnfxlg0W13iED92gem5wBUabHvsdzLHXEm/TrbC4zEzsDMmZnfOq5d/uG7In
+        FqhHBV7pVrfdDD4wadYv1R2Y2flOCWYbkMGUg7sv2nhvVCiwlCR2c5FrrsysVE17EPHqflme9jg0f
+        CNMgJFqCSbRgqeGLgEHZmRDqH/+WVKT7FLS2XsrcR2BKsUqDdOBXNO6p744XzuzKUM2auJNkm9q36
+        s0NU2Svw==;
+Received: from [2601:1c0:6280:3f0::64ea]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1ks8Ws-0001hm-5l; Wed, 23 Dec 2020 18:06:30 +0000
+Subject: Re: [PATCH] kdev_t: Always inline major/minor helper functions
+To:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>
+References: <984353b44a4484d86ba9f73884b7306232e25e30.1608737428.git.jpoimboe@redhat.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <65e00871-ee50-54a2-cec0-9e1d10e4a9b6@infradead.org>
+Date:   Wed, 23 Dec 2020 10:06:26 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20201223144533.4145-2-rasmus.villemoes@prevas.dk>
+In-Reply-To: <984353b44a4484d86ba9f73884b7306232e25e30.1608737428.git.jpoimboe@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 12/23/2020 15:45, Rasmus Villemoes wrote:
+On 12/23/20 7:30 AM, Josh Poimboeuf wrote:
+> Silly GCC doesn't always inline these trivial functions.
+> 
+> Fixes the following warning:
+> 
+>   arch/x86/kernel/sys_ia32.o: warning: objtool: cp_stat64()+0xd8: call to new_encode_dev() with UACCESS enabled
+> 
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
 
-Hi Rasmus,
-> 
-> Wireshark says that the MRP test packets cannot be decoded - and the
-> reason for that is that there's a two-byte hole filled with garbage
-> between the "transitions" and "timestamp" members.
-> 
-> So Wireshark decodes the two garbage bytes and the top two bytes of
-> the timestamp written by the kernel as the timestamp value (which thus
-> fluctuates wildly), and interprets the lower two bytes of the
-> timestamp as a new (type, length) pair, which is of course broken.
-> 
-> While my copy of the MRP standard is still under way [*], I cannot
-> imagine the standard specifying a two-byte hole here, and whoever
-> wrote the Wireshark decoding code seems to agree with that.
-> 
-> The struct definitions live under include/uapi/, but they are not
-> really part of any kernel<->userspace API/ABI, so fixing the
-> definitions by adding the packed attribute should not cause any
-> compatibility issues.
-> 
-> The remaining on-the-wire packet formats likely also don't contain
-> holes, but pahole and manual inspection says the current definitions
-> suffice. So adding the packed attribute to those is not strictly
-> needed, but might be done for good measure.
-> 
-> [*] I will never understand how something hidden behind a +1000$
-> paywall can be called a standard.
-> 
-> Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+
+Thanks.
+
+
 > ---
->  include/uapi/linux/mrp_bridge.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/uapi/linux/mrp_bridge.h b/include/uapi/linux/mrp_bridge.h
-> index 6aeb13ef0b1e..d1d0cf65916d 100644
-> --- a/include/uapi/linux/mrp_bridge.h
-> +++ b/include/uapi/linux/mrp_bridge.h
-> @@ -96,7 +96,7 @@ struct br_mrp_ring_test_hdr {
->         __be16 state;
->         __be16 transitions;
->         __be32 timestamp;
-> -};
-> +} __attribute__((__packed__));
+>  include/linux/kdev_t.h | 22 +++++++++++-----------
+>  1 file changed, 11 insertions(+), 11 deletions(-)
 
-Yes, I agree that this should be packed but it also needs to be 32 bit
-alligned, so extra 2 bytes are needed.
-The same will apply also for 'br_mrp_ring_topo_hdr'
-
-> 
->  struct br_mrp_ring_topo_hdr {
->         __be16 prio;
-> @@ -141,7 +141,7 @@ struct br_mrp_in_test_hdr {
->         __be16 state;
->         __be16 transitions;
->         __be32 timestamp;
-> -};
-> +} __attribute__((__packed__));
-> 
->  struct br_mrp_in_topo_hdr {
->         __u8 sa[ETH_ALEN];
-> --
-> 2.23.0
-> 
-
--- 
-/Horatiu
+~Randy
