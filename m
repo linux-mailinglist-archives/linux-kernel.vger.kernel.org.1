@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 603492E15A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:58:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E82722E1517
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:49:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730736AbgLWCuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:50:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49658 "EHLO mail.kernel.org"
+        id S1730196AbgLWCro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:47:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729471AbgLWCVr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:21:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DF5F122A99;
-        Wed, 23 Dec 2020 02:21:31 +0000 (UTC)
+        id S1729615AbgLWCWT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:22:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 958EE22273;
+        Wed, 23 Dec 2020 02:21:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690092;
-        bh=3ZACMQIcQWnmZL9ULyup2SrmOjvIT27EZp63RBPbbSc=;
+        s=k20201202; t=1608690098;
+        bh=YFCf/K6x0IbCVbZnAKkWfkebrtjn3sDvj8SZ8ephOYE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jbvaU/ner6An0EqLSPjbGlv53Pto/UEIuko/fs0SaMpoYHfhSeT2tQb9hTFUypDQb
-         CmSwkFzOUYhhsQsDKflyIXDoNBAt6mvxXwjhlcB/xo78jflfD7RbE4oevV0zOq8CQ9
-         3jD1yYulZvszJ3ibAdVfz3Fd1dkzUIbNqmSb7C7ZLV3jKagSI2/eTqtfzfkmt/seLh
-         y2NFKVVllc0hdVK01+Jojs5FEfgn471MYXpi9rlpKQ8+BzUfIn/ZNU5hj+khPXJ8lJ
-         Bhvf72Pop9mZNEE4ppjpH0yIx1nFXbvocZc99VWH1MkMGjOxZQgbtVFXXfY9y6k4Ug
-         x/xdiYnic9+oQ==
+        b=K9vesQ6M8M1AL8GMqXdcMBeVuZfjbOSvoRlwjf2mzNct7RBFcBXrljiSDAlKo3+en
+         nae34/PBW31fMAs50PuCbFzA8wQPWhqBXNHaCkqhD1t891SZZZcQ4MAmK7zYlyiJyn
+         lS+jItFU4AGF7/zzOJIxBewkIV25/L/J7EhazKHGpMBptbOGNTC1volAVMBBoR1kp4
+         Bmggz1imyjJzHZwRZjGsNKntcl5tDwy8CB/qKvQLPo6i1ihUtPCQ8XJPqCE5RXtjGR
+         XFFMaIy7Jfxx2XBvLaujQgeEnK3Yupo9hFfPnqZ6HDURHTYnXvgTQXQgWmPNsnuxy6
+         gnnXhMl6dJsQQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 23/87] MIPS: BMC47xx: fix kconfig dependency bug for BCM47XX_SSB
-Date:   Tue, 22 Dec 2020 21:19:59 -0500
-Message-Id: <20201223022103.2792705-23-sashal@kernel.org>
+Cc:     Evgeny Novikov <novikov@ispras.ru>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 28/87] media: isif: reset global state
+Date:   Tue, 22 Dec 2020 21:20:04 -0500
+Message-Id: <20201223022103.2792705-28-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223022103.2792705-1-sashal@kernel.org>
 References: <20201223022103.2792705-1-sashal@kernel.org>
@@ -42,46 +43,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+From: Evgeny Novikov <novikov@ispras.ru>
 
-[ Upstream commit 09a48cbcd7af9203296938044f1100bb113ce01a ]
+[ Upstream commit 6651dba2bd838f34cf5a1e84229aaa579b1a94fe ]
 
-When BCM47XX_SSB is enabled and SSB_PCIHOST is disabled, it results in the
-following Kbuild warning:
+isif_probe() invokes iounmap() on error handling paths, but it does not
+reset the global state. So, later it can invoke iounmap() even when
+ioremap() fails. This is the case also for isif_remove(). The patch
+resets the global state after invoking iounmap() to avoid this.
 
-WARNING: unmet direct dependencies detected for SSB_B43_PCI_BRIDGE
-  Depends on [n]: SSB [=y] && SSB_PCIHOST [=n]
-  Selected by [y]:
-  - BCM47XX_SSB [=y] && BCM47XX [=y] && PCI [=y]
+Found by Linux Driver Verification project (linuxtesting.org).
 
-The reason is that BCM47XX_SSB selects SSB_B43_PCI_BRIDGE without
-depending on or selecting SSB_PCIHOST while SSB_B43_PCI_BRIDGE depends on
-SSB_PCIHOST. This can also fail building the kernel as demonstrated in a
-bug report.
-
-Honor the kconfig dependency to remove unmet direct dependency warnings
-and avoid any potential build failures.
-
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=210051
-Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/bcm47xx/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/media/platform/davinci/isif.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/bcm47xx/Kconfig b/arch/mips/bcm47xx/Kconfig
-index 29471038d817e..54e79f3047a14 100644
---- a/arch/mips/bcm47xx/Kconfig
-+++ b/arch/mips/bcm47xx/Kconfig
-@@ -9,6 +9,7 @@ config BCM47XX_SSB
- 	select SSB_DRIVER_MIPS
- 	select SSB_DRIVER_EXTIF
- 	select SSB_EMBEDDED
-+	select SSB_PCIHOST if PCI
- 	select SSB_B43_PCI_BRIDGE if PCI
- 	select SSB_DRIVER_PCICORE if PCI
- 	select SSB_PCICORE_HOSTMODE if PCI
+diff --git a/drivers/media/platform/davinci/isif.c b/drivers/media/platform/davinci/isif.c
+index 80fa60a4c4489..d91634d529bb3 100644
+--- a/drivers/media/platform/davinci/isif.c
++++ b/drivers/media/platform/davinci/isif.c
+@@ -1084,10 +1084,14 @@ static int isif_probe(struct platform_device *pdev)
+ 	release_mem_region(res->start, resource_size(res));
+ 	i--;
+ fail_nobase_res:
+-	if (isif_cfg.base_addr)
++	if (isif_cfg.base_addr) {
+ 		iounmap(isif_cfg.base_addr);
+-	if (isif_cfg.linear_tbl0_addr)
++		isif_cfg.base_addr = NULL;
++	}
++	if (isif_cfg.linear_tbl0_addr) {
+ 		iounmap(isif_cfg.linear_tbl0_addr);
++		isif_cfg.linear_tbl0_addr = NULL;
++	}
+ 
+ 	while (i >= 0) {
+ 		res = platform_get_resource(pdev, IORESOURCE_MEM, i);
+@@ -1105,8 +1109,11 @@ static int isif_remove(struct platform_device *pdev)
+ 	int i = 0;
+ 
+ 	iounmap(isif_cfg.base_addr);
++	isif_cfg.base_addr = NULL;
+ 	iounmap(isif_cfg.linear_tbl0_addr);
++	isif_cfg.linear_tbl0_addr = NULL;
+ 	iounmap(isif_cfg.linear_tbl1_addr);
++	isif_cfg.linear_tbl1_addr = NULL;
+ 	while (i < 3) {
+ 		res = platform_get_resource(pdev, IORESOURCE_MEM, i);
+ 		if (res)
 -- 
 2.27.0
 
