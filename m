@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7400B2E1369
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:37:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2822E1366
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:37:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730626AbgLWC3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:29:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55876 "EHLO mail.kernel.org"
+        id S1730798AbgLWC3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:29:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55146 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730599AbgLWCZr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:25:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0DEF225AC;
-        Wed, 23 Dec 2020 02:25:31 +0000 (UTC)
+        id S1730626AbgLWCZx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:25:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 39C8822D73;
+        Wed, 23 Dec 2020 02:25:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690332;
-        bh=TfDWUcl0vAODPs76zq2CyzeCyKorb9dNWNx5tVF4Gis=;
+        s=k20201202; t=1608690337;
+        bh=THXEJ2+KwvgBooBQ7/cKKxZhDPTzR9NF/UkHJgtdvjg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pAGKUmuYZk5ECoiRjEDIZhDZvMZNLTL7C76bk2zHbO//TvIcmhrR1EUDG/JUrPeoC
-         nW6hL0qU1aH/RCldOPiOp1jff1c/62OFQdErH1Qf+aZQfna040iZyNQBJUUP769nEF
-         E1VtNNwIDoZd9t1zMb+4AiiX7jheH2Xorr4IngP8MnGoMf8H52c4GT1LBFVZAZ7bG3
-         3ArmSmvNIaUjRA7pWnxYItWO7qtP1f/44+UN5eC5jD7+0Sll219JmluUzpqrWyHPGN
-         +OESocEap4KZx+BL/rumCK7VXuvVDhZrY/Px3hJkPpz43Ow690QWeWJXy3JvDuS7Hi
-         v2HOVkEdijNtQ==
+        b=cYajFohQmCYCLVpMLnPmbbICyMlvpUB8/ryu36gLsW2LseB3sw0KOYUdA42Zajp8P
+         qiEAFw6CNEPbLcpX1hflrTgR8YOTy/GeLF2/qaP0g4Ysxb22na8XeNG3fQ5SBxsqZM
+         g1KN9vxRD+3fqE148AXYLiMh2jjRvygjnlr7GpXNO28zPbfSoe5gNroQ/xHRxLN7+z
+         az7jB336CwHNo1q5W5dCsKIwT7mefFh5vDCF5zbQ3vh8eCNIVxXrKB97uDN1d3qvrd
+         k64cx7OUbbI3mPlX6qBnAPDir+l1wiK2Le4GYCFoHVKljcvA3G8EhvNjQigONz7T3z
+         SiRPWEywU9cFw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 12/38] net: skb_vlan_untag(): don't reset transport offset if set by GRO layer
-Date:   Tue, 22 Dec 2020 21:24:50 -0500
-Message-Id: <20201223022516.2794471-12-sashal@kernel.org>
+Cc:     Evgeny Novikov <novikov@ispras.ru>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.4 16/38] media: isif: reset global state
+Date:   Tue, 22 Dec 2020 21:24:54 -0500
+Message-Id: <20201223022516.2794471-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223022516.2794471-1-sashal@kernel.org>
 References: <20201223022516.2794471-1-sashal@kernel.org>
@@ -42,48 +43,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Lobakin <alobakin@pm.me>
+From: Evgeny Novikov <novikov@ispras.ru>
 
-[ Upstream commit 8be33ecfc1ffd2da20cc29e957e4cb6eb99310cb ]
+[ Upstream commit 6651dba2bd838f34cf5a1e84229aaa579b1a94fe ]
 
-Similar to commit fda55eca5a33f
-("net: introduce skb_transport_header_was_set()"), avoid resetting
-transport offsets that were already set by GRO layer. This not only
-mirrors the behavior of __netif_receive_skb_core(), but also makes
-sense when it comes to UDP GSO fraglists forwarding: transport offset
-of such skbs is set only once by GRO receive callback and remains
-untouched and correct up to the xmitting driver in 1:1 case, but
-becomes junk after untagging in ingress VLAN case and breaks UDP
-GSO offload. This does not happen after this change, and all types
-of forwarding of UDP GSO fraglists work as expected.
+isif_probe() invokes iounmap() on error handling paths, but it does not
+reset the global state. So, later it can invoke iounmap() even when
+ioremap() fails. This is the case also for isif_remove(). The patch
+resets the global state after invoking iounmap() to avoid this.
 
-Since v1 [1]:
- - keep the code 1:1 with __netif_receive_skb_core() (Jakub).
+Found by Linux Driver Verification project (linuxtesting.org).
 
-[1] https://lore.kernel.org/netdev/zYurwsZRN7BkqSoikWQLVqHyxz18h4LhHU4NFa2Vw@cp4-web-038.plabs.ch
-
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-Link: https://lore.kernel.org/r/7JgIkgEztzt0W6ZtC9V9Cnk5qfkrUFYcpN871syCi8@cp4-web-040.plabs.ch
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/skbuff.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/media/platform/davinci/isif.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index e87ec3659ef61..c3993afc32e2c 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -4386,7 +4386,8 @@ struct sk_buff *skb_vlan_untag(struct sk_buff *skb)
- 		goto err_free;
+diff --git a/drivers/media/platform/davinci/isif.c b/drivers/media/platform/davinci/isif.c
+index b51b875c5a612..3507aa867ba12 100644
+--- a/drivers/media/platform/davinci/isif.c
++++ b/drivers/media/platform/davinci/isif.c
+@@ -1090,10 +1090,14 @@ static int isif_probe(struct platform_device *pdev)
+ 	release_mem_region(res->start, resource_size(res));
+ 	i--;
+ fail_nobase_res:
+-	if (isif_cfg.base_addr)
++	if (isif_cfg.base_addr) {
+ 		iounmap(isif_cfg.base_addr);
+-	if (isif_cfg.linear_tbl0_addr)
++		isif_cfg.base_addr = NULL;
++	}
++	if (isif_cfg.linear_tbl0_addr) {
+ 		iounmap(isif_cfg.linear_tbl0_addr);
++		isif_cfg.linear_tbl0_addr = NULL;
++	}
  
- 	skb_reset_network_header(skb);
--	skb_reset_transport_header(skb);
-+	if (!skb_transport_header_was_set(skb))
-+		skb_reset_transport_header(skb);
- 	skb_reset_mac_len(skb);
+ 	while (i >= 0) {
+ 		res = platform_get_resource(pdev, IORESOURCE_MEM, i);
+@@ -1111,8 +1115,11 @@ static int isif_remove(struct platform_device *pdev)
+ 	int i = 0;
  
- 	return skb;
+ 	iounmap(isif_cfg.base_addr);
++	isif_cfg.base_addr = NULL;
+ 	iounmap(isif_cfg.linear_tbl0_addr);
++	isif_cfg.linear_tbl0_addr = NULL;
+ 	iounmap(isif_cfg.linear_tbl1_addr);
++	isif_cfg.linear_tbl1_addr = NULL;
+ 	while (i < 3) {
+ 		res = platform_get_resource(pdev, IORESOURCE_MEM, i);
+ 		if (res)
 -- 
 2.27.0
 
