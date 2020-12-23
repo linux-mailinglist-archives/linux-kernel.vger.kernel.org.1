@@ -2,54 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C117A2E18D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 07:20:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6FD72E18DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 07:23:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727292AbgLWGUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 01:20:31 -0500
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:46978 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726069AbgLWGUb (ORCPT
+        id S1727448AbgLWGWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 01:22:50 -0500
+Received: from coyote.holtmann.net ([212.227.132.17]:55596 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726969AbgLWGWu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 01:20:31 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R511e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=liangyan.peng@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UJVvGLe_1608704385;
-Received: from LiangyandeMacBook-Pro.local(mailfrom:liangyan.peng@linux.alibaba.com fp:SMTPD_---0UJVvGLe_1608704385)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 23 Dec 2020 14:19:46 +0800
-Subject: Re: [PATCH v4] ovl: fix dentry leak in ovl_get_redirect
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        Miklos Szeredi <miklos@szeredi.hu>
-Cc:     linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        joseph.qi@linux.alibaba.com, stable@vger.kernel.org
-References: <20201222030626.181165-1-liangyan.peng@linux.alibaba.com>
- <20201222032633.GS3579531@ZenIV.linux.org.uk>
-From:   Liangyan <liangyan.peng@linux.alibaba.com>
-Message-ID: <fb1dac63-34aa-b72f-e7f5-12703eba0578@linux.alibaba.com>
-Date:   Wed, 23 Dec 2020 14:19:45 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.0
-MIME-Version: 1.0
-In-Reply-To: <20201222032633.GS3579531@ZenIV.linux.org.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Wed, 23 Dec 2020 01:22:50 -0500
+Received: from [172.20.10.2] (tmo-108-60.customers.d1-online.com [80.187.108.60])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 63BB2CECD2;
+        Wed, 23 Dec 2020 07:29:25 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.40.0.2.32\))
+Subject: Re: [PATCH] Bluetooth: btrtl: Add null check in setup
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20201222184753.1.I9438ef1f79fa1132e74c67b489123291080b9a8c@changeid>
+Date:   Wed, 23 Dec 2020 07:22:06 +0100
+Cc:     CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Daniel Winkler <danielwinkler@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Content-Transfer-Encoding: 7bit
+Message-Id: <2CD614F7-0E7D-4BC2-AF81-50A1962DC760@holtmann.org>
+References: <20201222184753.1.I9438ef1f79fa1132e74c67b489123291080b9a8c@changeid>
+To:     Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+X-Mailer: Apple Mail (2.3654.40.0.2.32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Viro.
+Hi Abhishek,
 
-@Miklos, can you please advise?
+> btrtl_dev->ic_info is only available from the controller on cold boot
+> (the lmp subversion matches the device model and this is used to look up
+> the ic_info). On warm boots (firmware already loaded),
+> btrtl_dev->ic_info is null.
+> 
+> Fixes: 05672a2c14a4 (Bluetooth: btrtl: Enable central-peripheral role)
+> Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+> ---
+> 
+> drivers/bluetooth/btrtl.c | 23 +++++++++++++----------
+> 1 file changed, 13 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
+> index 1abf6a4d672734f..978f3c773856b05 100644
+> --- a/drivers/bluetooth/btrtl.c
+> +++ b/drivers/bluetooth/btrtl.c
+> @@ -719,16 +719,19 @@ int btrtl_setup_realtek(struct hci_dev *hdev)
+> 	 */
+> 	set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &hdev->quirks);
+> 
+> -	/* Enable central-peripheral role (able to create new connections with
+> -	 * an existing connection in slave role).
+> -	 */
+> -	switch (btrtl_dev->ic_info->lmp_subver) {
+> -	case RTL_ROM_LMP_8822B:
+> -		set_bit(HCI_QUIRK_VALID_LE_STATES, &hdev->quirks);
+> -		break;
+> -	default:
+> -		rtl_dev_dbg(hdev, "Central-peripheral role not enabled.");
+> -		break;
+> +	if (btrtl_dev->ic_info) {
+> +		/* Enable central-peripheral role (able to create new
+> +		 * connections with an existing connection in slave role).
+> +		 */
+> +		switch (btrtl_dev->ic_info->lmp_subver) {
+> +		case RTL_ROM_LMP_8822B:
+> +			set_bit(HCI_QUIRK_VALID_LE_STATES, &hdev->quirks);
+> +			break;
+> +		default:
+> +			rtl_dev_dbg(hdev,
+> +				    "Central-peripheral role not enabled.");
+> +			break;
+> +		}
+> 	}
 
-On 20/12/22 上午11:26, Al Viro wrote:
-> On Tue, Dec 22, 2020 at 11:06:26AM +0800, Liangyan wrote:
+
+	if (!btrtl_dev->ic_info)
+		goto done;
+
 > 
->> Cc: <stable@vger.kernel.org>
->> Fixes: a6c606551141 ("ovl: redirect on rename-dir")
->> Signed-off-by: Liangyan <liangyan.peng@linux.alibaba.com>
->> Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
->> Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
-> 
-> Fine by me...  I can put it through vfs.git#fixes, but IMO
-> that would be better off in overlayfs tree.
-> 
+> 	btrtl_free(btrtl_dev);
+
+Regards
+
+Marcel
+
