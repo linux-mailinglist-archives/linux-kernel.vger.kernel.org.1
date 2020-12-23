@@ -2,135 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD592E1DE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 16:28:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD57E2E1DDE
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 16:26:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727321AbgLWP0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 10:26:43 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:64366 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725267AbgLWP0m (ORCPT
+        id S1726960AbgLWPZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 10:25:59 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:42613 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725536AbgLWPZ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 10:26:42 -0500
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BNFD6XG145489;
-        Wed, 23 Dec 2020 10:25:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
- to : cc : references : in-reply-to : mime-version : message-id :
- content-type : content-transfer-encoding; s=pp1;
- bh=BQoM7V/Ioibi44I4VpkdVsX5sQhSQZwAfazieUxQWZU=;
- b=aVRS2XrMdhoiux/IbYbZIHMKwAlhvL6QfQJZloQ/v+I3u9GixbUtb5bIZvaMsOne0uiy
- ZjkX7MBQ0w0cUnSabnPpO+rTSPIBZ0cV9MI74KN+g1qL8XrPYfaW1UZGKvj+6xNHymhK
- OPs9PRyIfAUfj3n/Tx9vY5oRCHCa/i0f1j3zrrNCVMHlAoI4OHeyJUlmTx7uHaklY8jq
- wPVqUmkJu7k5FYfTHkUF32ERN9U7b9hfoWHeip1oIoFdjR21Y4/+agNq5EIXSRyCZrXI
- zctLuxh46agR6Qv/ngbteuOlnDinlB1daCLkY834faPA5SO0TQVaZbmaqpTio1tZSWwI /Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35m8b7r8pt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Dec 2020 10:25:06 -0500
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BNFDA3x145706;
-        Wed, 23 Dec 2020 10:25:05 -0500
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35m8b7r8pb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Dec 2020 10:25:05 -0500
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BNFDBng020061;
-        Wed, 23 Dec 2020 15:25:04 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03ams.nl.ibm.com with ESMTP id 35k906sf2x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Dec 2020 15:25:03 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BNFP0tG24314332
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 23 Dec 2020 15:25:00 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 955BAA404D;
-        Wed, 23 Dec 2020 15:25:01 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 06712A4057;
-        Wed, 23 Dec 2020 15:25:01 +0000 (GMT)
-Received: from localhost (unknown [9.85.92.32])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 23 Dec 2020 15:25:00 +0000 (GMT)
-Date:   Wed, 23 Dec 2020 20:54:59 +0530
-From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Subject: Re: [PATCH 3/4] perf tools: Update powerpc's syscall.tbl
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>
-References: <1608278364-6733-1-git-send-email-yangtiezhu@loongson.cn>
-        <1608278364-6733-4-git-send-email-yangtiezhu@loongson.cn>
-        <20201218112659.GB325926@kernel.org> <20201218113209.GD325926@kernel.org>
-        <1608301824.eljlhiafee.naveen@linux.ibm.com>
-        <20201221234755.GC433286@kernel.org>
-In-Reply-To: <20201221234755.GC433286@kernel.org>
+        Wed, 23 Dec 2020 10:25:58 -0500
+Received: by mail-io1-f72.google.com with SMTP id m9so9610027ioa.9
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 07:25:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=ccI8XWc2bkBr3nAUmdNVuOgWrLgiP4ffUXMAehqESVc=;
+        b=Ehy1ylApotKrZtI+gUWcMutgkPJFZFgCWq5zVzcskpaq1o5O/Mlw7FPqjlNmBIMR5V
+         maS4DVg33QRgUTAw4Yomo8336qKFSHiqL6HdVOMrJPxWKcdF6jI/BwWJV7NXuyGAm1wq
+         kuWTyDXnnrhFDvfmu4CWYoIfxNMIO8873f+1UDEEQwQe5iSCgq4XFju4Mg+pRrCeD2vt
+         KRaZW7p3vzQA2wJJrflXVcarFTe3zBNGDvbMgJ7kjzQElR7mCvTtxT1ZTea3Sm6ioLT2
+         Y5iDHu4gLBHEvitK2G39MtZkO07eVpGMnmF6aO4CHA3imBeQOKa3F8UujMaghwg0Zg3Z
+         Xj4A==
+X-Gm-Message-State: AOAM531nhtIKWwZLgK+fcGIajxsuN/y7VounM80arczTDPMGiKDmmmjh
+        ku0+jX64n81B+ZwLE1fqbt9BPg+Sao136P6XPHr/XxZTspsy
+X-Google-Smtp-Source: ABdhPJx8vo7Y8yQHtUlIQ7SkyfkLzF0E+/Q5kGXsq5O9xMo9J7lBurcirREzhK+dz6cv/+m3tOhl7tmLnP8Wj5+4rpQPQytNgWbu
 MIME-Version: 1.0
-User-Agent: astroid/v0.15-13-gb675b421
- (https://github.com/astroidmail/astroid)
-Message-Id: <1608737054.bq8cv7ll62.naveen@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-23_07:2020-12-23,2020-12-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
- suspectscore=0 impostorscore=0 mlxscore=0 bulkscore=0 malwarescore=0
- lowpriorityscore=0 adultscore=0 clxscore=1015 priorityscore=1501
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012230109
+X-Received: by 2002:a92:db42:: with SMTP id w2mr25735842ilq.113.1608737117405;
+ Wed, 23 Dec 2020 07:25:17 -0800 (PST)
+Date:   Wed, 23 Dec 2020 07:25:17 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006b86be05b7234cc1@google.com>
+Subject: memory leak in zr364xx_probe
+From:   syzbot <syzbot+b4d54814b339b5c6bbd4@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-usb@vger.kernel.org, mchehab@kernel.org, royale@zerezo.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnaldo Carvalho de Melo wrote:
-> Em Fri, Dec 18, 2020 at 08:08:56PM +0530, Naveen N. Rao escreveu:
->> Hi Arnaldo,
->>=20
->> Arnaldo Carvalho de Melo wrote:
->> > Em Fri, Dec 18, 2020 at 08:26:59AM -0300, Arnaldo Carvalho de Melo esc=
-reveu:
->> > > Em Fri, Dec 18, 2020 at 03:59:23PM +0800, Tiezhu Yang escreveu:
->> > > > This silences the following tools/perf/ build warning:
->> > > > Warning: Kernel ABI header at 'tools/perf/arch/powerpc/entry/sysca=
-lls/syscall.tbl' differs from latest version at 'arch/powerpc/kernel/syscal=
-ls/syscall.tbl'
->> > >=20
->> > > Hi Ravi, Naveen,
->> > >=20
->> > > 	Can I get your Reviewed-by or Acked-by for this change and the
->> > > other that adds s390's syscall.tbl to check_headers.sh so that we ge=
-t
->> >=20
->> > oops s/s390/powerpc/g :-)
->> >=20
->> > > notified when the copy drifts, so that we can see if it still contin=
-ues
->> > > working and we can get new syscalls to be supported in things like '=
-perf
->> > > trace'?
->>=20
->> Yes, this looks good to me:
->> Reviewed-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
->>=20
->> FWIW, I had posted a similar patch back in April, but glad to have this =
-go
->> in ;)
->> http://lkml.kernel.org/r/20200220063740.785913-1-naveen.n.rao@linux.vnet=
-.ibm.com
->=20
-> My bad :-\
+Hello,
 
-No worries, thanks for checking on this one.
+syzbot found the following issue on:
 
-- Naveen
+HEAD commit:    3644e2d2 mm/filemap: fix infinite loop in generic_file_buf..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16f80eff500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=37c889fb8b2761af
+dashboard link: https://syzkaller.appspot.com/bug?extid=b4d54814b339b5c6bbd4
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1089df07500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1671c77f500000
 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b4d54814b339b5c6bbd4@syzkaller.appspotmail.com
+
+BUG: memory leak
+unreferenced object 0xffffc90000e71000 (size 200704):
+  comm "kworker/0:2", pid 3653, jiffies 4294942426 (age 13.820s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000110a155e>] __vmalloc_node_range+0x3a5/0x410 mm/vmalloc.c:2585
+    [<000000008a1ee970>] __vmalloc_node mm/vmalloc.c:2617 [inline]
+    [<000000008a1ee970>] vmalloc+0x49/0x50 mm/vmalloc.c:2650
+    [<00000000a6a3abfa>] zr364xx_board_init drivers/media/usb/zr364xx/zr364xx.c:1348 [inline]
+    [<00000000a6a3abfa>] zr364xx_probe+0x60b/0x833 drivers/media/usb/zr364xx/zr364xx.c:1509
+    [<0000000014a572f5>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+    [<00000000f30ee977>] really_probe+0x159/0x480 drivers/base/dd.c:561
+    [<00000000ddb29374>] driver_probe_device+0x84/0x100 drivers/base/dd.c:745
+    [<0000000073c89cb9>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:851
+    [<000000009f56a99c>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
+    [<00000000848d591a>] __device_attach+0x122/0x250 drivers/base/dd.c:919
+    [<00000000168be5bb>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
+    [<00000000464f40a6>] device_add+0x5be/0xc30 drivers/base/core.c:3091
+    [<000000008c75a2b5>] usb_set_configuration+0x9d9/0xb90 drivers/usb/core/message.c:2164
+    [<00000000071d14a5>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
+    [<00000000f325b973>] usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
+    [<00000000f30ee977>] really_probe+0x159/0x480 drivers/base/dd.c:561
+    [<00000000ddb29374>] driver_probe_device+0x84/0x100 drivers/base/dd.c:745
+
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
