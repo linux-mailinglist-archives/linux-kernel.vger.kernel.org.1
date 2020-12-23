@@ -2,198 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 868DB2E19AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 09:10:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F33E2E19B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 09:13:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728135AbgLWIKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 03:10:40 -0500
-Received: from mail-40136.protonmail.ch ([185.70.40.136]:27952 "EHLO
-        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727168AbgLWIKk (ORCPT
+        id S1727937AbgLWILs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 03:11:48 -0500
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:41605 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727050AbgLWILs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 03:10:40 -0500
-Date:   Wed, 23 Dec 2020 08:09:55 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1608710997;
-        bh=GMlfVIZL/UQ0llYJN+djOiQkhs6kpbE53PRyZR6cwiY=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=w6Qjq3FtWNe6QHjBkYROPa/fkU26bkUpSb1Xm2wYNZu89Iz8+TUU5I4Ow4ORC+cZK
-         JP6BrFQao1WAhgeVXET3hfHbPva6Kvem4MNGb93XZiHlwswCAws8GTjSabS/pXf+hx
-         3TVcC/MZKUNJs61kAMgyX7apAmtxmliby/AinP8g=
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-From:   Timon Baetz <timon.baetz@protonmail.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Reply-To: Timon Baetz <timon.baetz@protonmail.com>
-Subject: Re: [PATCH v3 4/7] power: supply: max8997_charger: Set CHARGER current limit
-Message-ID: <20201223090114.750664cd.timon.baetz@protonmail.com>
-In-Reply-To: <20201222084004.GD5026@kozik-lap>
-References: <20201222070520.710096-1-timon.baetz@protonmail.com> <20201222070520.710096-4-timon.baetz@protonmail.com> <20201222084004.GD5026@kozik-lap>
+        Wed, 23 Dec 2020 03:11:48 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id AE8FC5C013C;
+        Wed, 23 Dec 2020 03:10:41 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Wed, 23 Dec 2020 03:10:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=JLMW/D+ECKxiFyolA2zYLf4S7Yi
+        Cp4T5fFM4pjEOdX4=; b=f34H+NPrkQKiXR5MI2HH+EAgaeNGhntrItL+tKYF4HB
+        iQeEC3bjH/cxNWNL3bkIeYWDoIUmdnY+j/JDbcN3mk/A+E7ht3iU1MgPkeLRFOJT
+        2gdzqnkkhBhUGxC3FjdElXiLkYWH2kxRj1d+5IrgWLr03lZXDH5y+ecvGPmULe3Y
+        Dp+PZa4lDC2FtE5evEcHKOg5yVZ1Tk3dD6rjqaqaPOMyuyBHKfxw/CL19zP1SZno
+        xhsgGIcl5z6sZ3ZXaJ5N5+Htqeq03J16Cu/irNrrtAtqEg//ZF04gAeSbJblKzvS
+        NMkUanXSHE0QFn8BnyinYSqW7CrBcvkzfG+2HOzaeRw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=JLMW/D
+        +ECKxiFyolA2zYLf4S7YiCp4T5fFM4pjEOdX4=; b=iFt5NUptiZ7imZfhUQxsYy
+        aWJCOHdMSjhG84tB7kCoq5H/ZwcJAgX8VpjMywrfl65hLFM7rCsVHbnCxHgGJb9s
+        vrqYAZ/C2LSLpR/NCY9DZXxp3OAGjW4AaUrk+HVOAZGlpD98QfJR40pcLj60EdMc
+        5HERDeeLFcUluh77yfvjL7z5XqTM0XmkUBIlTO7ECLZWDMbe4/eEJNZAML1k76f6
+        PDGQd9FC04f5acR+6kKDcRvZTzbUfKMMxrGodhqMKHCRnZ9zQ22XDulCV3P7X2sD
+        JPkz29XD8FiEe/fe/YiyZHnAqcxZ1YV6EuyzAAjdIqOUaHSY4Ylx0LhCcV5nwELA
+        ==
+X-ME-Sender: <xms:gPviXy21pn-IFzS6LmsaidGTJ_NDcVNHX2ggCztNdzdWkOJNDTkhVw>
+    <xme:gPviX2qORPXUFXOadtY8T1Qb7r6Dp-ceNOgkzPH-ZZ8DDk1QqrsQXmeJaWhKu6yIP
+    HGzB7JuAAlnNw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvddtiedgkedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesthdtre
+    dttddtvdenucfhrhhomhepifhrvghgucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheq
+    necuggftrfgrthhtvghrnhepveeuheejgfffgfeivddukedvkedtleelleeghfeljeeiue
+    eggeevueduudekvdetnecukfhppeekfedrkeeirdejgedrieegnecuvehluhhsthgvrhfu
+    ihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrdgtoh
+    hm
+X-ME-Proxy: <xmx:gPviXxPGp7PeQJNHVHgn7lVTjx8aZGYwxgLh8cWRv9LzkgZfRCH1_A>
+    <xmx:gPviX_qgjsGZqzya1l-ZDVDycbEDkqPPbVVoRpbDCAECytOdolB5aA>
+    <xmx:gPviX8snSPG3ZeuU4Hf3yitsKL8cHQAMjLS-Q_oX23DjarmdcD2sJQ>
+    <xmx:gfviX6UbIaKAbjep1yODn90-Aoc4FjKqiPYMIQPQ0VKBcaj1ZnqkOQ>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 0FA87240062;
+        Wed, 23 Dec 2020 03:10:39 -0500 (EST)
+Date:   Wed, 23 Dec 2020 09:10:38 +0100
+From:   Greg KH <greg@kroah.com>
+To:     chensong <chensong_2000@189.cn>
+Cc:     linux-kernel@vger.kernel.org, abbotti@mev.co.uk,
+        hsweeten@visionengravers.com, chensong@tj.kylinos.cn
+Subject: Re: [PATCH] staging: comedi: clean up debugging code in #if 0 or 1
+Message-ID: <X+L7fjlFKWHEwwJh@kroah.com>
+References: <1608690044-26710-1-git-send-email-chensong_2000@189.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1608690044-26710-1-git-send-email-chensong_2000@189.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Dec 2020 09:40:04 +0100, Krzysztof Kozlowski wrote:
-> On Tue, Dec 22, 2020 at 07:31:40AM +0000, Timon Baetz wrote:
-> > Register for extcon notification and set charging current depending on
-> > the detected cable type. Current values are taken from vendor kernel,
-> > where most charger types end up setting 650mA [0].
-> >
-> > Also enable and disable the CHARGER regulator based on extcon events.
-> >
-> > [0] https://github.com/krzk/linux-vendor-backup/blob/samsung/galaxy-s2-=
-epic-4g-touch-sph-d710-exynos4210-dump/drivers/misc/max8997-muic.c#L1675-L1=
-678
-> >
-> > Signed-off-by: Timon Baetz <timon.baetz@protonmail.com>
-> > ---
-> >  drivers/power/supply/max8997_charger.c | 94 ++++++++++++++++++++++++++
-> >  1 file changed, 94 insertions(+)
-> >
-> > diff --git a/drivers/power/supply/max8997_charger.c b/drivers/power/sup=
-ply/max8997_charger.c
-> > index 1947af25879a..673ffff14ae0 100644
-> > --- a/drivers/power/supply/max8997_charger.c
-> > +++ b/drivers/power/supply/max8997_charger.c
-> > @@ -6,12 +6,14 @@
-> >  //  MyungJoo Ham <myungjoo.ham@samsung.com>
-> >
-> >  #include <linux/err.h>
-> > +#include <linux/extcon.h>
-> >  #include <linux/module.h>
-> >  #include <linux/slab.h>
-> >  #include <linux/platform_device.h>
-> >  #include <linux/power_supply.h>
-> >  #include <linux/mfd/max8997.h>
-> >  #include <linux/mfd/max8997-private.h>
-> > +#include <linux/regulator/consumer.h>
-> >
-> >  /* MAX8997_REG_STATUS4 */
-> >  #define DCINOK_SHIFT=09=091
-> > @@ -31,6 +33,10 @@ struct charger_data {
-> >  =09struct device *dev;
-> >  =09struct max8997_dev *iodev;
-> >  =09struct power_supply *battery;
-> > +=09struct regulator *reg;
-> > +=09struct extcon_dev *edev;
-> > +=09struct notifier_block extcon_nb;
-> > +=09struct work_struct extcon_work;
-> >  };
-> >
-> >  static enum power_supply_property max8997_battery_props[] =3D {
-> > @@ -88,6 +94,67 @@ static int max8997_battery_get_property(struct power=
-_supply *psy,
-> >  =09return 0;
-> >  }
-> >
-> > +static void max8997_battery_extcon_evt_stop_work(void *data)
-> > +{
-> > +=09struct charger_data *charger =3D data;
-> > +
-> > +=09cancel_work_sync(&charger->extcon_work);
-> > +}
-> > +
-> > +static void max8997_battery_extcon_evt_worker(struct work_struct *work=
-)
-> > +{
-> > +=09struct charger_data *charger =3D
-> > +=09    container_of(work, struct charger_data, extcon_work);
-> > +=09struct extcon_dev *edev =3D charger->edev;
-> > +=09int current_limit;
-> > +
-> > +=09if (extcon_get_state(edev, EXTCON_CHG_USB_SDP) > 0) {
-> > +=09=09dev_dbg(charger->dev, "USB SDP charger is connected\n");
-> > +=09=09current_limit =3D 450000;
-> > +=09} else if (extcon_get_state(edev, EXTCON_CHG_USB_DCP) > 0) {
-> > +=09=09dev_dbg(charger->dev, "USB DCP charger is connected\n");
-> > +=09=09current_limit =3D 650000;
-> > +=09} else if (extcon_get_state(edev, EXTCON_CHG_USB_FAST) > 0) {
-> > +=09=09dev_dbg(charger->dev, "USB FAST charger is connected\n");
-> > +=09=09current_limit =3D 650000;
-> > +=09} else if (extcon_get_state(edev, EXTCON_CHG_USB_SLOW) > 0) {
-> > +=09=09dev_dbg(charger->dev, "USB SLOW charger is connected\n");
-> > +=09=09current_limit =3D 650000;
-> > +=09} else if (extcon_get_state(edev, EXTCON_CHG_USB_CDP) > 0) {
-> > +=09=09dev_dbg(charger->dev, "USB CDP charger is connected\n");
-> > +=09=09current_limit =3D 650000;
-> > +=09} else {
-> > +=09=09dev_dbg(charger->dev, "USB charger is diconnected\n");
-> > +=09=09current_limit =3D -1;
-> > +=09}
-> > +
-> > +=09if (current_limit > 0) {
-> > +=09=09int ret =3D regulator_set_current_limit(charger->reg, current_li=
-mit, current_limit);
-> > +
-> > +=09=09if (ret) {
-> > +=09=09=09dev_err(charger->dev, "failed to set current limit: %d\n", re=
-t);
-> > +=09=09=09return;
-> > +=09=09}
-> > +=09=09ret =3D regulator_enable(charger->reg);
-> > +=09=09if (ret)
-> > +=09=09=09dev_err(charger->dev, "failed to enable regulator: %d\n", ret=
-);
-> > +=09} else {
-> > +=09=09int ret  =3D regulator_disable(charger->reg);
-> > +
-> > +=09=09if (ret)
-> > +=09=09=09dev_err(charger->dev, "failed to disable regulator: %d\n", re=
-t);
-> > +=09}
-> > +}
-> > +
-> > +static int max8997_battery_extcon_evt(struct notifier_block *nb,
-> > +=09=09=09=09unsigned long event, void *param)
-> > +{
-> > +=09struct charger_data *charger =3D
-> > +=09=09container_of(nb, struct charger_data, extcon_nb);
-> > +=09schedule_work(&charger->extcon_work);
-> > +=09return NOTIFY_OK;
-> > +}
-> > +
-> >  static const struct power_supply_desc max8997_battery_desc =3D {
-> >  =09.name=09=09=3D "max8997_pmic",
-> >  =09.type=09=09=3D POWER_SUPPLY_TYPE_BATTERY,
-> > @@ -170,6 +237,33 @@ static int max8997_battery_probe(struct platform_d=
-evice *pdev)
-> >  =09=09return PTR_ERR(charger->battery);
-> >  =09}
-> >
-> > +=09charger->reg =3D devm_regulator_get(&pdev->dev, "charger"); =20
->=20
-> The code looks good but isn't it breaking all existing platforms?
+On Wed, Dec 23, 2020 at 10:20:44AM +0800, chensong wrote:
+> There are a log of "#if 0" or "#if 1" in comedi driver which
+> cause warning when running checkpatch.pl, they are supposed to
+> be cleaned up before release.
+> 
+> Signed-off-by: chensong <chensong_2000@189.cn>
 
-So there is 2 other DTS in the kernel sources that are using MAX8997
-pmic:
- - Insignal Origen evaluation board
- - Samsung Trats
-Non of them have charging regulators.
-Also probing of the charger has been failing for long time because of=20
-https://lore.kernel.org/lkml/20201109194251.562203-2-timon.baetz@protonmail=
-.com/
-but that seems to land in 5.11.
 
-That being said, I guess I could make extcon and charger-supply
-optional if you prefer.
+Hi,
 
-Thanks again for reviewing,
-Timon
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
+You are receiving this message because of the following common error(s)
+as indicated below:
+
+- It looks like you did not use your "real" name for the patch on either
+  the Signed-off-by: line, or the From: line (both of which have to
+  match).  Please read the kernel file, Documentation/SubmittingPatches
+  for how to do this correctly.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
