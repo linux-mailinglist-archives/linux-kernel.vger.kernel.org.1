@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C9B22E1203
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:20:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E54042E1206
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:20:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727738AbgLWCR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:17:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45510 "EHLO mail.kernel.org"
+        id S1727826AbgLWCSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:18:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727612AbgLWCRy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:17:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F4C4225AC;
-        Wed, 23 Dec 2020 02:16:45 +0000 (UTC)
+        id S1726931AbgLWCSG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:18:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF67622D73;
+        Wed, 23 Dec 2020 02:16:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608689806;
-        bh=v0oZvUtokxvo39/NdM+fLn468wX5yHrFHPEcQw3Zl2U=;
+        s=k20201202; t=1608689807;
+        bh=f78yVkOu3m3B+MmO4CWx/crRGEC09+OLcpZdW7IS3AI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oxNQ7v1YSxh1C1Jh/fDOPHOJUvil3tGgR7nc8laYELaI+3yY+cRYd291AqkmHfadB
-         DgkviNIBpq8AqNTdH9ottx56C7AkXSJv135oE7YyDDCrr7I2lB1KXLBcyzSPBgFlF1
-         mSoVntPEqx9w4NgXaml/kxhB/QQtmLHtjFZHw6a2qy3OvtGi7CJzNNUR9fpwwLf+rR
-         eikQdptedpKYHiCTmg6qq9r+jhP2AWHAhh8wot51AC2j+X47g5kmghPLTKq28Z7t6z
-         1O+NFsEI4FOmGLpA2WIoiUrXEMqN20gJsnpMPQSPskBLzqINrDAiV6bd/B3UjOv3Dl
-         PT9ZlJSE3C5QA==
+        b=JDiSmlDQvn4n1PS/lyvX61BrPtsLvpgmPw4PLSt2WwvDGz/lVKFy2N1iPbyh+eyFW
+         NqRg9T0Gz4pm3vANfwlZRDololCpzujH3HriauV49myJxD6PS1wEhff5v0F16z/A1T
+         tW1E6pbhwXLo5fRNFOvtnOwpno/qTTcS4IGLm53gmB4PvQrneZEoDL0Eir9+1cCNJn
+         pXQd/LDNKeMVX+HJd4hLv8GTYA9F6FTes3Jcve/jivAu8E+hsQHjHP2J0mkWJUQYoY
+         BWmraHjvZpoEEeRXFN+JeMZ5jJFxjSw64W492R39txY5hv2VaE9lGKoV1pUc4BPwbq
+         IhbT6m4xEdQag==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Krishna Manikandan <mkrishn@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Sasha Levin <sashal@kernel.org>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.10 015/217] drm/msm: Fix race condition in msm driver with async layer updates
-Date:   Tue, 22 Dec 2020 21:13:04 -0500
-Message-Id: <20201223021626.2790791-15-sashal@kernel.org>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, netdev@vger.kernel.org,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 016/217] staging: wimax: depends on NET
+Date:   Tue, 22 Dec 2020 21:13:05 -0500
+Message-Id: <20201223021626.2790791-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223021626.2790791-1-sashal@kernel.org>
 References: <20201223021626.2790791-1-sashal@kernel.org>
@@ -44,165 +44,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krishna Manikandan <mkrishn@codeaurora.org>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit b3d91800d9ac35014e0349292273a6fa7938d402 ]
+[ Upstream commit 9364a2cf567187c0a075942c22d1f434c758de5d ]
 
-When there are back to back commits with async cursor update,
-there is a case where second commit can program the DPU hw
-blocks while first didn't complete flushing config to HW.
+Fix build errors when CONFIG_NET is not enabled. E.g. (trimmed):
 
-Synchronize the compositions such that second commit waits
-until first commit flushes the composition.
+ld: drivers/staging/wimax/op-msg.o: in function `wimax_msg_alloc':
+op-msg.c:(.text+0xa9): undefined reference to `__alloc_skb'
+ld: op-msg.c:(.text+0xcc): undefined reference to `genlmsg_put'
+ld: op-msg.c:(.text+0xfc): undefined reference to `nla_put'
+ld: op-msg.c:(.text+0x168): undefined reference to `kfree_skb'
+ld: drivers/staging/wimax/op-msg.o: in function `wimax_msg_data_len':
+op-msg.c:(.text+0x1ba): undefined reference to `nla_find'
+ld: drivers/staging/wimax/op-msg.o: in function `wimax_msg_send':
+op-msg.c:(.text+0x311): undefined reference to `init_net'
+ld: op-msg.c:(.text+0x326): undefined reference to `netlink_broadcast'
+ld: drivers/staging/wimax/stack.o: in function `__wimax_state_change':
+stack.c:(.text+0x433): undefined reference to `netif_carrier_off'
+ld: stack.c:(.text+0x46b): undefined reference to `netif_carrier_on'
+ld: stack.c:(.text+0x478): undefined reference to `netif_tx_wake_queue'
+ld: drivers/staging/wimax/stack.o: in function `wimax_subsys_exit':
+stack.c:(.exit.text+0xe): undefined reference to `genl_unregister_family'
+ld: drivers/staging/wimax/stack.o: in function `wimax_subsys_init':
+stack.c:(.init.text+0x1a): undefined reference to `genl_register_family'
 
-This change also introduces per crtc commit lock, such that
-commits on different crtcs are not blocked by each other.
-
-Changes in v2:
-	- Use an array of mutexes in kms to handle commit
-	  lock per crtc. (Rob Clark)
-
-Changes in v3:
-	- Add wrapper functions to handle lock and unlock of
-	  commit_lock for each crtc. (Rob Clark)
-
-Signed-off-by: Krishna Manikandan <mkrishn@codeaurora.org>
-Reviewed-by: Rob Clark <robdclark@gmail.com>
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: netdev@vger.kernel.org
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Link: https://lore.kernel.org/r/20201102072456.20303-1-rdunlap@infradead.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/msm_atomic.c | 37 +++++++++++++++++++++-----------
- drivers/gpu/drm/msm/msm_kms.h    |  6 ++++--
- 2 files changed, 28 insertions(+), 15 deletions(-)
+ net/wimax/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/msm/msm_atomic.c b/drivers/gpu/drm/msm/msm_atomic.c
-index 561bfa48841c3..575e9af9b6fc9 100644
---- a/drivers/gpu/drm/msm/msm_atomic.c
-+++ b/drivers/gpu/drm/msm/msm_atomic.c
-@@ -55,16 +55,32 @@ static void vblank_put(struct msm_kms *kms, unsigned crtc_mask)
- 	}
- }
+diff --git a/net/wimax/Kconfig b/net/wimax/Kconfig
+index d13762bc4abca..4dcb5eba720a3 100644
+--- a/net/wimax/Kconfig
++++ b/net/wimax/Kconfig
+@@ -5,6 +5,7 @@
  
-+static void lock_crtcs(struct msm_kms *kms, unsigned int crtc_mask)
-+{
-+	struct drm_crtc *crtc;
-+
-+	for_each_crtc_mask(kms->dev, crtc, crtc_mask)
-+		mutex_lock(&kms->commit_lock[drm_crtc_index(crtc)]);
-+}
-+
-+static void unlock_crtcs(struct msm_kms *kms, unsigned int crtc_mask)
-+{
-+	struct drm_crtc *crtc;
-+
-+	for_each_crtc_mask(kms->dev, crtc, crtc_mask)
-+		mutex_unlock(&kms->commit_lock[drm_crtc_index(crtc)]);
-+}
-+
- static void msm_atomic_async_commit(struct msm_kms *kms, int crtc_idx)
- {
- 	unsigned crtc_mask = BIT(crtc_idx);
+ menuconfig WIMAX
+ 	tristate "WiMAX Wireless Broadband support"
++	depends on NET
+ 	depends on RFKILL || !RFKILL
+ 	help
  
- 	trace_msm_atomic_async_commit_start(crtc_mask);
- 
--	mutex_lock(&kms->commit_lock);
-+	lock_crtcs(kms, crtc_mask);
- 
- 	if (!(kms->pending_crtc_mask & crtc_mask)) {
--		mutex_unlock(&kms->commit_lock);
-+		unlock_crtcs(kms, crtc_mask);
- 		goto out;
- 	}
- 
-@@ -79,7 +95,6 @@ static void msm_atomic_async_commit(struct msm_kms *kms, int crtc_idx)
- 	 */
- 	trace_msm_atomic_flush_commit(crtc_mask);
- 	kms->funcs->flush_commit(kms, crtc_mask);
--	mutex_unlock(&kms->commit_lock);
- 
- 	/*
- 	 * Wait for flush to complete:
-@@ -90,9 +105,8 @@ static void msm_atomic_async_commit(struct msm_kms *kms, int crtc_idx)
- 
- 	vblank_put(kms, crtc_mask);
- 
--	mutex_lock(&kms->commit_lock);
- 	kms->funcs->complete_commit(kms, crtc_mask);
--	mutex_unlock(&kms->commit_lock);
-+	unlock_crtcs(kms, crtc_mask);
- 	kms->funcs->disable_commit(kms);
- 
- out:
-@@ -189,12 +203,11 @@ void msm_atomic_commit_tail(struct drm_atomic_state *state)
- 	 * Ensure any previous (potentially async) commit has
- 	 * completed:
- 	 */
-+	lock_crtcs(kms, crtc_mask);
- 	trace_msm_atomic_wait_flush_start(crtc_mask);
- 	kms->funcs->wait_flush(kms, crtc_mask);
- 	trace_msm_atomic_wait_flush_finish(crtc_mask);
- 
--	mutex_lock(&kms->commit_lock);
--
- 	/*
- 	 * Now that there is no in-progress flush, prepare the
- 	 * current update:
-@@ -232,8 +245,7 @@ void msm_atomic_commit_tail(struct drm_atomic_state *state)
- 		}
- 
- 		kms->funcs->disable_commit(kms);
--		mutex_unlock(&kms->commit_lock);
--
-+		unlock_crtcs(kms, crtc_mask);
- 		/*
- 		 * At this point, from drm core's perspective, we
- 		 * are done with the atomic update, so we can just
-@@ -260,8 +272,7 @@ void msm_atomic_commit_tail(struct drm_atomic_state *state)
- 	 */
- 	trace_msm_atomic_flush_commit(crtc_mask);
- 	kms->funcs->flush_commit(kms, crtc_mask);
--	mutex_unlock(&kms->commit_lock);
--
-+	unlock_crtcs(kms, crtc_mask);
- 	/*
- 	 * Wait for flush to complete:
- 	 */
-@@ -271,9 +282,9 @@ void msm_atomic_commit_tail(struct drm_atomic_state *state)
- 
- 	vblank_put(kms, crtc_mask);
- 
--	mutex_lock(&kms->commit_lock);
-+	lock_crtcs(kms, crtc_mask);
- 	kms->funcs->complete_commit(kms, crtc_mask);
--	mutex_unlock(&kms->commit_lock);
-+	unlock_crtcs(kms, crtc_mask);
- 	kms->funcs->disable_commit(kms);
- 
- 	drm_atomic_helper_commit_hw_done(state);
-diff --git a/drivers/gpu/drm/msm/msm_kms.h b/drivers/gpu/drm/msm/msm_kms.h
-index 1cbef6b200b70..2049847b66428 100644
---- a/drivers/gpu/drm/msm/msm_kms.h
-+++ b/drivers/gpu/drm/msm/msm_kms.h
-@@ -155,7 +155,7 @@ struct msm_kms {
- 	 * For async commit, where ->flush_commit() and later happens
- 	 * from the crtc's pending_timer close to end of the frame:
- 	 */
--	struct mutex commit_lock;
-+	struct mutex commit_lock[MAX_CRTCS];
- 	unsigned pending_crtc_mask;
- 	struct msm_pending_timer pending_timers[MAX_CRTCS];
- };
-@@ -165,7 +165,9 @@ static inline void msm_kms_init(struct msm_kms *kms,
- {
- 	unsigned i;
- 
--	mutex_init(&kms->commit_lock);
-+	for (i = 0; i < ARRAY_SIZE(kms->commit_lock); i++)
-+		mutex_init(&kms->commit_lock[i]);
-+
- 	kms->funcs = funcs;
- 
- 	for (i = 0; i < ARRAY_SIZE(kms->pending_timers); i++)
 -- 
 2.27.0
 
