@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8701F2E1244
+	by mail.lfdr.de (Postfix) with ESMTP id F415B2E1245
 	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:21:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729024AbgLWCUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:20:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45428 "EHLO mail.kernel.org"
+        id S1729035AbgLWCUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:20:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728819AbgLWCT7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:19:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EE61225AB;
-        Wed, 23 Dec 2020 02:19:43 +0000 (UTC)
+        id S1728853AbgLWCUE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:20:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BFE9322273;
+        Wed, 23 Dec 2020 02:19:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608689984;
-        bh=ESDOidCTiUNEdcaAW0GLG4M5bunsCs4flgEgwwblDRw=;
+        s=k20201202; t=1608689985;
+        bh=BpYYrIroZeEadG384ALHViSRfqvGh85UKmTLB9sMrvw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RELys2dV+q8QbeesCyVNdtS9T1Oz8WYv1vHG9NUFlTXR8zuknyLGWdJjSLXgBvOcu
-         SRSxbVc30KKaEpW2Tf+MeZ2SI7XnM3UzgiV8Pxv/kPJX0THRnF3fc/dLLEWUYcCn4M
-         8jceQyGKkqjiJI6Cjw7zcA6gyJdVBR+sEDZCXaqCgm5x5gWD5bZAuzI5gvnvmyYhuM
-         wWwDWV9AcN+TO1GI8XbZszhOBv6R7JD0+Cb0fq2u1yZ9bNyFJC8gzs6zR2MzC7PwQ/
-         VPtAvMk3dyQdYIEMeqczsLuIXGko7gjeEStH3BM4rLuIHo7lggl88xAtuF0Z6kHc9h
-         5rVB47Rdf0+Tw==
+        b=XcQdkC0GoWA/zWXA+6BdjfdGAybt0MqhHGtG83IWOOLcXeGqPt8qX1MDMuNLGvJFz
+         KsFGd+uA2uCCCPLQnk5zR9s+aDcGYj5Gg7K5z4IRIbmsqwrFdVXPf21FNKTnUgscoP
+         +ZaZPd/ka7w23ZDVa4d33+OzqtDh2LeTsdL/o40s46ONfXP7XkOBmngeMC1G17/5z4
+         icsXX/zkwqKArfhN2i4JMzNuLfTjmcHqJCAv0BArgmKwkL02N3xcbnjX9r/2BM/0Q7
+         YemBUrEgUrKh/4Au6meke0GwkDc+Cu2ltexILlNRgJRuzTAOpfjA1lqfONHIfax0D3
+         322I1D0tZFo2g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Nicolin Chen <nicoleotsuka@gmail.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org
-Subject: [PATCH AUTOSEL 5.4 070/130] iommu/tegra-smmu: Expand mutex protection range
-Date:   Tue, 22 Dec 2020 21:17:13 -0500
-Message-Id: <20201223021813.2791612-70-sashal@kernel.org>
+Cc:     Ethan Warth <redyoshi49q@gmail.com>,
+        "Wladimir J . van der Laan" <laanwj@gmail.com>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>,
+        linux-input@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 071/130] HID: mf: add support for 0079:1846 Mayflash/Dragonrise USB Gamecube Adapter
+Date:   Tue, 22 Dec 2020 21:17:14 -0500
+Message-Id: <20201223021813.2791612-71-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223021813.2791612-1-sashal@kernel.org>
 References: <20201223021813.2791612-1-sashal@kernel.org>
@@ -44,120 +43,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolin Chen <nicoleotsuka@gmail.com>
+From: Ethan Warth <redyoshi49q@gmail.com>
 
-[ Upstream commit d5f583bf8654c231b781096bc1a186065cda72b3 ]
+[ Upstream commit 1008230f2abeb624f6d71b2e1c424fa4eeebbf84 ]
 
-This is used to protect potential race condition at use_count.
-since probes of client drivers, calling attach_dev(), may run
-concurrently.
+Mayflash/Dragonrise seems to have yet another device ID for one of their
+Gamecube controller adapters.  Previous to this commit, the adapter
+registered only one /dev/input/js* device, and all controller inputs (from
+any controller) were mapped to this device.  This patch defines the 1846
+USB device ID and enables the HID_QUIRK_MULTI_INPUT quirk for it, which
+fixes that (with the patch, four /dev/input/js* devices are created, one
+for each of the four controller ports).
 
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Tested-by: Dmitry Osipenko <digetx@gmail.com>
-Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
-Acked-by: Thierry Reding <treding@nvidia.com>
-Link: https://lore.kernel.org/r/20201125101013.14953-3-nicoleotsuka@gmail.com
-Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Ethan Warth <redyoshi49q@gmail.com>
+Tested-by: Wladimir J. van der Laan <laanwj@gmail.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iommu/tegra-smmu.c | 34 +++++++++++++++++++++-------------
- 1 file changed, 21 insertions(+), 13 deletions(-)
+ drivers/hid/hid-ids.h    | 1 +
+ drivers/hid/hid-mf.c     | 2 ++
+ drivers/hid/hid-quirks.c | 2 ++
+ 3 files changed, 5 insertions(+)
 
-diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
-index dd486233e2828..41be3e2202971 100644
---- a/drivers/iommu/tegra-smmu.c
-+++ b/drivers/iommu/tegra-smmu.c
-@@ -247,26 +247,19 @@ static int tegra_smmu_alloc_asid(struct tegra_smmu *smmu, unsigned int *idp)
- {
- 	unsigned long id;
+diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+index 2aa810665a78c..d28b9ac8b9959 100644
+--- a/drivers/hid/hid-ids.h
++++ b/drivers/hid/hid-ids.h
+@@ -365,6 +365,7 @@
+ #define USB_DEVICE_ID_DRAGONRISE_DOLPHINBAR	0x1803
+ #define USB_DEVICE_ID_DRAGONRISE_GAMECUBE1	0x1843
+ #define USB_DEVICE_ID_DRAGONRISE_GAMECUBE2	0x1844
++#define USB_DEVICE_ID_DRAGONRISE_GAMECUBE3	0x1846
  
--	mutex_lock(&smmu->lock);
--
- 	id = find_first_zero_bit(smmu->asids, smmu->soc->num_asids);
--	if (id >= smmu->soc->num_asids) {
--		mutex_unlock(&smmu->lock);
-+	if (id >= smmu->soc->num_asids)
- 		return -ENOSPC;
--	}
- 
- 	set_bit(id, smmu->asids);
- 	*idp = id;
- 
--	mutex_unlock(&smmu->lock);
- 	return 0;
- }
- 
- static void tegra_smmu_free_asid(struct tegra_smmu *smmu, unsigned int id)
- {
--	mutex_lock(&smmu->lock);
- 	clear_bit(id, smmu->asids);
--	mutex_unlock(&smmu->lock);
- }
- 
- static bool tegra_smmu_capable(enum iommu_cap cap)
-@@ -404,17 +397,21 @@ static int tegra_smmu_as_prepare(struct tegra_smmu *smmu,
- 				 struct tegra_smmu_as *as)
- {
- 	u32 value;
--	int err;
-+	int err = 0;
-+
-+	mutex_lock(&smmu->lock);
- 
- 	if (as->use_count > 0) {
- 		as->use_count++;
--		return 0;
-+		goto unlock;
- 	}
- 
- 	as->pd_dma = dma_map_page(smmu->dev, as->pd, 0, SMMU_SIZE_PD,
- 				  DMA_TO_DEVICE);
--	if (dma_mapping_error(smmu->dev, as->pd_dma))
--		return -ENOMEM;
-+	if (dma_mapping_error(smmu->dev, as->pd_dma)) {
-+		err = -ENOMEM;
-+		goto unlock;
-+	}
- 
- 	/* We can't handle 64-bit DMA addresses */
- 	if (!smmu_dma_addr_valid(smmu, as->pd_dma)) {
-@@ -437,24 +434,35 @@ static int tegra_smmu_as_prepare(struct tegra_smmu *smmu,
- 	as->smmu = smmu;
- 	as->use_count++;
- 
-+	mutex_unlock(&smmu->lock);
-+
- 	return 0;
- 
- err_unmap:
- 	dma_unmap_page(smmu->dev, as->pd_dma, SMMU_SIZE_PD, DMA_TO_DEVICE);
-+unlock:
-+	mutex_unlock(&smmu->lock);
-+
- 	return err;
- }
- 
- static void tegra_smmu_as_unprepare(struct tegra_smmu *smmu,
- 				    struct tegra_smmu_as *as)
- {
--	if (--as->use_count > 0)
-+	mutex_lock(&smmu->lock);
-+
-+	if (--as->use_count > 0) {
-+		mutex_unlock(&smmu->lock);
- 		return;
-+	}
- 
- 	tegra_smmu_free_asid(smmu, as->id);
- 
- 	dma_unmap_page(smmu->dev, as->pd_dma, SMMU_SIZE_PD, DMA_TO_DEVICE);
- 
- 	as->smmu = NULL;
-+
-+	mutex_unlock(&smmu->lock);
- }
- 
- static int tegra_smmu_attach_dev(struct iommu_domain *domain,
+ #define USB_VENDOR_ID_DWAV		0x0eef
+ #define USB_DEVICE_ID_EGALAX_TOUCHCONTROLLER	0x0001
+diff --git a/drivers/hid/hid-mf.c b/drivers/hid/hid-mf.c
+index fc75f30f537c9..92d7ecd41a78f 100644
+--- a/drivers/hid/hid-mf.c
++++ b/drivers/hid/hid-mf.c
+@@ -153,6 +153,8 @@ static const struct hid_device_id mf_devices[] = {
+ 		.driver_data = HID_QUIRK_MULTI_INPUT },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_DRAGONRISE, USB_DEVICE_ID_DRAGONRISE_GAMECUBE2),
+ 		.driver_data = 0 }, /* No quirk required */
++	{ HID_USB_DEVICE(USB_VENDOR_ID_DRAGONRISE, USB_DEVICE_ID_DRAGONRISE_GAMECUBE3),
++		.driver_data = HID_QUIRK_MULTI_INPUT },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(hid, mf_devices);
+diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
+index 60d188a704e5e..f35d919c4ebab 100644
+--- a/drivers/hid/hid-quirks.c
++++ b/drivers/hid/hid-quirks.c
+@@ -72,6 +72,7 @@ static const struct hid_device_id hid_quirks[] = {
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_DRAGONRISE, USB_DEVICE_ID_REDRAGON_SEYMUR2), HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_DRAGONRISE, USB_DEVICE_ID_DRAGONRISE_DOLPHINBAR), HID_QUIRK_MULTI_INPUT },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_DRAGONRISE, USB_DEVICE_ID_DRAGONRISE_GAMECUBE1), HID_QUIRK_MULTI_INPUT },
++	{ HID_USB_DEVICE(USB_VENDOR_ID_DRAGONRISE, USB_DEVICE_ID_DRAGONRISE_GAMECUBE3), HID_QUIRK_MULTI_INPUT },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_DRAGONRISE, USB_DEVICE_ID_DRAGONRISE_PS3), HID_QUIRK_MULTI_INPUT },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_DRAGONRISE, USB_DEVICE_ID_DRAGONRISE_WIIU), HID_QUIRK_MULTI_INPUT },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_DWAV, USB_DEVICE_ID_EGALAX_TOUCHCONTROLLER), HID_QUIRK_MULTI_INPUT | HID_QUIRK_NOGET },
+@@ -491,6 +492,7 @@ static const struct hid_device_id hid_have_special_driver[] = {
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_DRAGONRISE, USB_DEVICE_ID_DRAGONRISE_DOLPHINBAR) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_DRAGONRISE, USB_DEVICE_ID_DRAGONRISE_GAMECUBE1) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_DRAGONRISE, USB_DEVICE_ID_DRAGONRISE_GAMECUBE2) },
++	{ HID_USB_DEVICE(USB_VENDOR_ID_DRAGONRISE, USB_DEVICE_ID_DRAGONRISE_GAMECUBE3) },
+ #endif
+ #if IS_ENABLED(CONFIG_HID_MICROSOFT)
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_MICROSOFT, USB_DEVICE_ID_MS_COMFORT_MOUSE_4500) },
 -- 
 2.27.0
 
