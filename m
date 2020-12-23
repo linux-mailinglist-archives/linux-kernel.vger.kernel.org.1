@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 879612E14D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:48:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68B772E14AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:48:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730443AbgLWCof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:44:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49956 "EHLO mail.kernel.org"
+        id S1731106AbgLWCl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:41:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728662AbgLWCWv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:22:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F42A22A99;
-        Wed, 23 Dec 2020 02:22:35 +0000 (UTC)
+        id S1729957AbgLWCXT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:23:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D51422D57;
+        Wed, 23 Dec 2020 02:22:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690156;
-        bh=70J+aBobIR4CTICimnNAgLI1F8pKSO0ZZzo/AfAcl3Q=;
+        s=k20201202; t=1608690159;
+        bh=EkYHASMxe69mxWaSDobST7ZfA03gtcpPRhoeHRkwEUU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L2y1Lmd5lyFOP6pszpCyIhyVRgxXMbqSF5q0i/C/1b4X+fmi7suWljYRwfk2iLivV
-         vRDsn71ggl0vsS7IQBgGc41yDIBpQay7ygsyXKrUZXGbZfpGdxWhcs/vqA3JR3IqUv
-         WZFnAQgXiM+zYrQIihZSci3kRubD6RlFxusmDl5Fe5ip8fpgDsucUwCZH2o4VAJ0De
-         znDcJP9Ruo6io61jAJ2F43pm3bh75MvNCl5hNjLtPQu0f7+FfqyPiNnnPDMc6Xe+Iy
-         DJAIw1PTIIDQYjr9pTUM/mOIlnIIjB1eNxBtXuLP6R6PFSFDwylw1yiAXV4UOKT2CZ
-         P9tZue8pgmI/w==
+        b=iC9EXNBgRAInE8EL3QyvuqcpbJbKYl449Z018vXIYpvkUftxuwvv5sMX0K+a/2gkh
+         8EzyOOwmhsZqGviACVDrqqr3eTy45aKeBPOgXLcVlSABa19bxhbeIZ3gm21a3/awAc
+         MqTwaJORAdIIzFBk6/OR2mztuwyP3Cwy64dL1KI0TnKFxoGZxcVSoTx6vUSHpOw+kn
+         u36ru/er9woF01w9N07qgEBFF50FXDjq7bUU2wblM3Ze1cHmjKOG3v0EITvO8qvmwn
+         NJLr+z41MHiHaSn7rsBVAiSOfJvl/9oZhYudb72fSDYGHVyz5rVTi3gTuAO8ifJIZG
+         u46YxWvDNlKSw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Kyle Tso <kyletso@google.com>, Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Badhri Jagan Sridharan <badhri@google.com>,
-        Will McVicker <willmcvicker@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, linux-usb@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 75/87] USB: typec: tcpm: Fix PR_SWAP error handling
-Date:   Tue, 22 Dec 2020 21:20:51 -0500
-Message-Id: <20201223022103.2792705-75-sashal@kernel.org>
+Cc:     Avraham Stern <avraham.stern@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 77/87] nl80211: always accept scan request with the duration set
+Date:   Tue, 22 Dec 2020 21:20:53 -0500
+Message-Id: <20201223022103.2792705-77-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223022103.2792705-1-sashal@kernel.org>
 References: <20201223022103.2792705-1-sashal@kernel.org>
@@ -45,42 +44,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kyle Tso <kyletso@google.com>
+From: Avraham Stern <avraham.stern@intel.com>
 
-[ Upstream commit 301a633c1b5b2caa4c4b97a83270d4a1d60c53bf ]
+[ Upstream commit c837cbad40d949feaff86734d637c7602ae0b56b ]
 
-PD rev3.0 8.3.3.16.3.6 PE_PRS_SRC_SNK_Wait_Source_on State
-The Policy Enging Shall transition to the ErrorRecovery state when the
-PSSourceOnTimer times out ...
+Accept a scan request with the duration set even if the driver
+does not support setting the scan dwell. The duration can be used
+as a hint to the driver, but the driver may use its internal logic
+for setting the scan dwell.
 
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc: Badhri Jagan Sridharan <badhri@google.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Signed-off-by: Kyle Tso <kyletso@google.com>
-Signed-off-by: Will McVicker <willmcvicker@google.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Link: https://lore.kernel.org/r/20201210160521.3417426-4-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Avraham Stern <avraham.stern@intel.com>
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Link: https://lore.kernel.org/r/iwlwifi.20201129172929.9491a12f9226.Ia9c5b24fcefc5ce5592537507243391633a27e5f@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/typec/tcpm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/wireless/nl80211.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/drivers/usb/typec/tcpm.c b/drivers/usb/typec/tcpm.c
-index af41d4dce3adb..9c901e3b17472 100644
---- a/drivers/usb/typec/tcpm.c
-+++ b/drivers/usb/typec/tcpm.c
-@@ -3455,7 +3455,7 @@ static void run_state_machine(struct tcpm_port *port)
- 			tcpm_set_state(port, ERROR_RECOVERY, 0);
- 			break;
- 		}
--		tcpm_set_state_cond(port, SNK_UNATTACHED, PD_T_PS_SOURCE_ON);
-+		tcpm_set_state(port, ERROR_RECOVERY, PD_T_PS_SOURCE_ON);
- 		break;
- 	case PR_SWAP_SRC_SNK_SINK_ON:
- 		tcpm_set_state(port, SNK_STARTUP, 0);
+diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
+index fbc8875502c3e..a5383de7a796d 100644
+--- a/net/wireless/nl80211.c
++++ b/net/wireless/nl80211.c
+@@ -7289,12 +7289,6 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
+ 	}
+ 
+ 	if (info->attrs[NL80211_ATTR_MEASUREMENT_DURATION]) {
+-		if (!wiphy_ext_feature_isset(wiphy,
+-					NL80211_EXT_FEATURE_SET_SCAN_DWELL)) {
+-			err = -EOPNOTSUPP;
+-			goto out_free;
+-		}
+-
+ 		request->duration =
+ 			nla_get_u16(info->attrs[NL80211_ATTR_MEASUREMENT_DURATION]);
+ 		request->duration_mandatory =
 -- 
 2.27.0
 
