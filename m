@@ -2,194 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7783E2E1AC4
+	by mail.lfdr.de (Postfix) with ESMTP id E65192E1AC5
 	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 11:12:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728371AbgLWKLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 05:11:45 -0500
-Received: from mga06.intel.com ([134.134.136.31]:6877 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728214AbgLWKLo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 05:11:44 -0500
-IronPort-SDR: +Nt7X/0Cc04cuO2hEDAs2hFDTPCyr7baQU1mSW3Q7U/y5rlYJa71Q3A9jPCzuuiK+OGuBZxV+O
- lbutTWspXC+A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9843"; a="237554434"
-X-IronPort-AV: E=Sophos;i="5.78,441,1599548400"; 
-   d="scan'208";a="237554434"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Dec 2020 02:09:59 -0800
-IronPort-SDR: ZVdrO9nG7xzKLhM7QSvFAzVsLK1/FyPy8bPAawVG5tUoYDsKFYf9wyPsBvvzZJ6JkCrU8+Vr3v
- VXn0EiQdL2kg==
-X-IronPort-AV: E=Sophos;i="5.78,441,1599548400"; 
-   d="scan'208";a="417147655"
-Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.209.13]) ([10.254.209.13])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Dec 2020 02:09:56 -0800
-Cc:     baolu.lu@linux.intel.com, kevin.tian@intel.com,
-        ashok.raj@intel.com, jun.j.tian@intel.com, yi.y.sun@intel.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] iommu/vt-d: Fix ineffective devTLB invalidation
- for subdevices
-To:     Liu Yi L <yi.l.liu@intel.com>, joro@8bytes.org, will@kernel.org,
-        jacob.jun.pan@linux.intel.com
-References: <20201223062720.29364-1-yi.l.liu@intel.com>
- <20201223062720.29364-4-yi.l.liu@intel.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <176f7835-a5cf-e049-22b7-724636f74af0@linux.intel.com>
-Date:   Wed, 23 Dec 2020 18:09:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+        id S1728287AbgLWKMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 05:12:34 -0500
+Received: from www262.sakura.ne.jp ([202.181.97.72]:51200 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727158AbgLWKMe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 05:12:34 -0500
+Received: from fsav305.sakura.ne.jp (fsav305.sakura.ne.jp [153.120.85.136])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 0BNABeL4021663;
+        Wed, 23 Dec 2020 19:11:40 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav305.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav305.sakura.ne.jp);
+ Wed, 23 Dec 2020 19:11:40 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav305.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 0BNABe05021659
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Wed, 23 Dec 2020 19:11:40 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: Does uaccess_kernel() work for detecting kernel thread?
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <0bcc0c63-31a3-26fd-bccb-b28af0375c34@i-love.sakura.ne.jp>
+ <20201223075307.GA4185@lst.de>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <239a6775-c514-e752-2520-16668b8bc344@i-love.sakura.ne.jp>
+Date:   Wed, 23 Dec 2020 19:11:38 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20201223062720.29364-4-yi.l.liu@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201223075307.GA4185@lst.de>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yi,
-
-On 2020/12/23 14:27, Liu Yi L wrote:
-> iommu_flush_dev_iotlb() is called to invalidate caches on device. It only
-> loops the devices which are full-attached to the domain. For sub-devices,
-> this is ineffective. This results in invalid caching entries left on the
-> device. Fix it by adding loop for subdevices as well. Also, the domain->
-> has_iotlb_device needs to be updated when attaching to subdevices.
+On 2020/12/23 16:53, Christoph Hellwig wrote:
+> On Tue, Dec 22, 2020 at 11:39:08PM +0900, Tetsuo Handa wrote:
+>> For example, if uaccess_kernel() is "false" due to CONFIG_SET_FS=n,
+>> isn't sg_check_file_access() failing to detect kernel context?
 > 
-> Fixes: 67b8e02b5e761 ("iommu/vt-d: Aux-domain specific domain attach/detach")
-> Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
-> ---
->   drivers/iommu/intel/iommu.c | 63 +++++++++++++++++++++++++++----------
->   1 file changed, 47 insertions(+), 16 deletions(-)
+> sg_check_file_access does exactly the right thing - fail for all kernel
+> threads as those can't support the magic it does.
+
+My question is, in Linux 5.10, sg_check_file_access() for x86 became
+
+static int sg_check_file_access(struct file *filp, const char *caller)
+{
+	if (filp->f_cred != current_real_cred()) {
+		pr_err_once("%s: process %d (%s) changed security contexts after opening file descriptor, this is not allowed.\n",
+			caller, task_tgid_vnr(current), current->comm);
+		return -EPERM;
+	}
+	if (0) {
+		pr_err_once("%s: process %d (%s) called from kernel context, this is not allowed.\n",
+			caller, task_tgid_vnr(current), current->comm);
+		return -EACCES;
+	}
+	return 0;
+}
+
+due to commit 5e6e9852d6f76e01 ("uaccess: add infrastructure for kernel
+builds with set_fs()") and follow up changes. Don't we need to change this
+"uaccess_kernel()" with "(current->flags & PF_KTHREAD)" ?
+
 > 
-> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-> index acfe0a5b955e..e97c5ac1d7fc 100644
-> --- a/drivers/iommu/intel/iommu.c
-> +++ b/drivers/iommu/intel/iommu.c
-> @@ -726,6 +726,8 @@ static int domain_update_device_node(struct dmar_domain *domain)
->   	return nid;
->   }
->   
-> +static void domain_update_iotlb(struct dmar_domain *domain);
-> +
->   /* Some capabilities may be different across iommus */
->   static void domain_update_iommu_cap(struct dmar_domain *domain)
->   {
-> @@ -739,6 +741,8 @@ static void domain_update_iommu_cap(struct dmar_domain *domain)
->   	 */
->   	if (domain->nid == NUMA_NO_NODE)
->   		domain->nid = domain_update_device_node(domain);
-> +
-> +	domain_update_iotlb(domain);
->   }
->   
->   struct context_entry *iommu_context_addr(struct intel_iommu *iommu, u8 bus,
-> @@ -1459,6 +1463,18 @@ iommu_support_dev_iotlb (struct dmar_domain *domain, struct intel_iommu *iommu,
->   	return NULL;
->   }
->   
-> +static bool dev_iotlb_enabled(struct device_domain_info *info)
-> +{
-> +	struct pci_dev *pdev;
-> +
-> +	if (!info->dev || !dev_is_pci(info->dev))
-> +		return false;
-> +
-> +	pdev = to_pci_dev(info->dev);
-> +
-> +	return !!pdev->ats_enabled;
-> +}
-
-I know this is just separated from below function. But isn't "(info &&
-info->ats_enabled)" is enough?
-
-> +
->   static void domain_update_iotlb(struct dmar_domain *domain)
->   {
->   	struct device_domain_info *info;
-> @@ -1466,17 +1482,20 @@ static void domain_update_iotlb(struct dmar_domain *domain)
->   
->   	assert_spin_locked(&device_domain_lock);
->   
-> -	list_for_each_entry(info, &domain->devices, link) {
-> -		struct pci_dev *pdev;
-> -
-> -		if (!info->dev || !dev_is_pci(info->dev))
-> -			continue;
-> -
-> -		pdev = to_pci_dev(info->dev);
-> -		if (pdev->ats_enabled) {
-> +	list_for_each_entry(info, &domain->devices, link)
-> +		if (dev_iotlb_enabled(info)) {
->   			has_iotlb_device = true;
->   			break;
->   		}
-> +
-> +	if (!has_iotlb_device) {
-> +		struct subdev_domain_info *sinfo;
-> +
-> +		list_for_each_entry(sinfo, &domain->subdevices, link_domain)
-> +			if (dev_iotlb_enabled(get_domain_info(sinfo->pdev))) {
-
-Please make the code easier for reading by:
-
-			info = get_domain_info(sinfo->pdev);
-			if (dev_iotlb_enabled(info))
-				....
-
-Best regards,
-baolu
-
-> +				has_iotlb_device = true;
-> +				break;
-> +			}
->   	}
->   
->   	domain->has_iotlb_device = has_iotlb_device;
-> @@ -1557,25 +1576,37 @@ static void iommu_disable_dev_iotlb(struct device_domain_info *info)
->   #endif
->   }
->   
-> +static void __iommu_flush_dev_iotlb(struct device_domain_info *info,
-> +				    u64 addr, unsigned int mask)
-> +{
-> +	u16 sid, qdep;
-> +
-> +	if (!info || !info->ats_enabled)
-> +		return;
-> +
-> +	sid = info->bus << 8 | info->devfn;
-> +	qdep = info->ats_qdep;
-> +	qi_flush_dev_iotlb(info->iommu, sid, info->pfsid,
-> +			   qdep, addr, mask);
-> +}
-> +
->   static void iommu_flush_dev_iotlb(struct dmar_domain *domain,
->   				  u64 addr, unsigned mask)
->   {
-> -	u16 sid, qdep;
->   	unsigned long flags;
->   	struct device_domain_info *info;
-> +	struct subdev_domain_info *sinfo;
->   
->   	if (!domain->has_iotlb_device)
->   		return;
->   
->   	spin_lock_irqsave(&device_domain_lock, flags);
-> -	list_for_each_entry(info, &domain->devices, link) {
-> -		if (!info->ats_enabled)
-> -			continue;
-> +	list_for_each_entry(info, &domain->devices, link)
-> +		__iommu_flush_dev_iotlb(info, addr, mask);
->   
-> -		sid = info->bus << 8 | info->devfn;
-> -		qdep = info->ats_qdep;
-> -		qi_flush_dev_iotlb(info->iommu, sid, info->pfsid,
-> -				qdep, addr, mask);
-> +	list_for_each_entry(sinfo, &domain->subdevices, link_domain) {
-> +		__iommu_flush_dev_iotlb(get_domain_info(sinfo->pdev),
-> +					addr, mask);
->   	}
->   	spin_unlock_irqrestore(&device_domain_lock, flags);
->   }
+>> For another example, if uaccess_kernel() is "false" due to CONFIG_SET_FS=n,
+>> isn't TOMOYO unexpectedly checking permissions for socket operations?
 > 
+> Can someone explain WTF TOMOYO is even doing there?  A security module
+> has absolutely no business checking what context it is called from, but
+> must check the process credentials instead.
+> 
+
+TOMOYO distinguishes userspace processes and kernel threads, and grants
+kernel threads implicit permissions to perform socket operations.
+Since "uaccess_kernel()" became "0" for x86, TOMOYO is no longer able to
+grant kernel threads implicit permissions to perform socket operations.
+Since Eric says "For PF_IO_WORKER kernel threads which are running code on behalf
+of a user we want to perform the ordinary permission checks.", I think that
+TOMOYO wants to use "(current->flags & (PF_KTHREAD | PF_IO_WORKER)) == PF_KTHREAD"
+instead.
+
