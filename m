@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9956F2E1724
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 04:11:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 438372E166C
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 04:10:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731845AbgLWDGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 22:06:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46328 "EHLO mail.kernel.org"
+        id S1728527AbgLWCTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:19:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46354 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728477AbgLWCTF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728479AbgLWCTF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 22 Dec 2020 21:19:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 86616235F8;
-        Wed, 23 Dec 2020 02:18:08 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 957A6221E5;
+        Wed, 23 Dec 2020 02:18:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608689889;
-        bh=dSKaEjABsu3I40sGE2bbbn00CsFmFpI5AvkjtJluISE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PmD8wjzDUip8zTR1eM4JcSMZYuT116WbhYyvw3u4H8dq85ezBbZWpAeZ75F02xQ7i
-         FbJgu33pFv2hsHzPEELCw1xPGlAllykV/7CW7F1CSC387lvD+UyCBIbo+YY+B8mlI0
-         sMzWhVn0ujiTBoVRvZ7xWYCRjI3FqKh2I/Xxu8ka2T5G3i1E06XTZR8e3lhVPC/pV2
-         ftPpmkoliH83Y8P187P9D075keaqjCdn60GQJGzizBkTLr6tihnsmHihWD3ChMRu9x
-         S+UhEzuinOFUPatdCilsooDBJqSN/tqK5WhnFAThqqamHwDnZr6nZrwcE7UuFdkOnQ
-         AxY5ReyFl5aOw==
+        s=k20201202; t=1608689895;
+        bh=YsnGpQ60SFScxNogHK+LJ5qgKN29yodapC7t1SN1R6s=;
+        h=From:To:Cc:Subject:Date:From;
+        b=LwtqYI1r/nnaEG5L6bCJT3fSK6/QekXbyBE93+cgekRWNdAgq0UQlqB4PMc4H0KbY
+         71IMTWLlVqjDm+Fm4WbgcwY5Cw7D6x20w/uxe/Uloqpx5R28l06sRefLVWPOY3XGxf
+         klBH/AMStjGtfyQaharRd6ljolpuVOr/qEWh2YkCpLHLfCHqEfoYBoMrBnY/4P786j
+         dlOdxl7LmlUsR995ZebrtCqvWYUMXTTb6304s8cVmvTKuq8cjHu/N37m1DvTeupdFJ
+         rSiK7JqpkbAzRtkKzmWrQ+ABjMJ8NPp6wPItt+73ZBjyVlofv1szAvBuhlyH1BvgRq
+         TNkDrjv3sC1tQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 077/217] r8169: use READ_ONCE in rtl_tx_slots_avail
-Date:   Tue, 22 Dec 2020 21:14:06 -0500
-Message-Id: <20201223021626.2790791-77-sashal@kernel.org>
+Cc:     Andrew Jeffery <andrew@aj.id.au>, Joel Stanley <joel@jms.id.au>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org
+Subject: [PATCH AUTOSEL 5.4 001/130] soc: aspeed-lpc-ctrl: Fail probe of lpc-ctrl if reserved memory is not aligned
+Date:   Tue, 22 Dec 2020 21:16:04 -0500
+Message-Id: <20201223021813.2791612-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201223021626.2790791-1-sashal@kernel.org>
-References: <20201223021626.2790791-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -42,36 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiner Kallweit <hkallweit1@gmail.com>
+From: Andrew Jeffery <andrew@aj.id.au>
 
-[ Upstream commit 95f3c5458dfa5856bb110e31d156e00d894d0134 ]
+[ Upstream commit 6bf4ddbe2b4805f0628922446a7e85e34013cd10 ]
 
-tp->dirty_tx and tp->cur_tx may be changed by a racing rtl_tx() or
-rtl8169_start_xmit(). Use READ_ONCE() to annotate the races and ensure
-that the compiler doesn't use cached values.
+Alignment is a hardware constraint of the LPC2AHB bridge, and misaligned
+reserved memory will present as corrupted data.
 
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-Link: https://lore.kernel.org/r/5676fee3-f6b4-84f2-eba5-c64949a371ad@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+Reviewed-by: Joel Stanley <joel@jms.id.au>
+Link: https://lore.kernel.org/r/20191016233950.10100-1-andrew@aj.id.au
+Signed-off-by: Joel Stanley <joel@jms.id.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/realtek/r8169_main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/soc/aspeed/aspeed-lpc-ctrl.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-index 85d9c3e30c699..67918feed307e 100644
---- a/drivers/net/ethernet/realtek/r8169_main.c
-+++ b/drivers/net/ethernet/realtek/r8169_main.c
-@@ -4173,7 +4173,8 @@ static bool rtl8169_tso_csum_v2(struct rtl8169_private *tp,
- static bool rtl_tx_slots_avail(struct rtl8169_private *tp,
- 			       unsigned int nr_frags)
- {
--	unsigned int slots_avail = tp->dirty_tx + NUM_TX_DESC - tp->cur_tx;
-+	unsigned int slots_avail = READ_ONCE(tp->dirty_tx) + NUM_TX_DESC
-+					- READ_ONCE(tp->cur_tx);
+diff --git a/drivers/soc/aspeed/aspeed-lpc-ctrl.c b/drivers/soc/aspeed/aspeed-lpc-ctrl.c
+index 01ed21e8bfee5..dd147af494fdf 100644
+--- a/drivers/soc/aspeed/aspeed-lpc-ctrl.c
++++ b/drivers/soc/aspeed/aspeed-lpc-ctrl.c
+@@ -4,6 +4,7 @@
+  */
  
- 	/* A skbuff with nr_frags needs nr_frags+1 entries in the tx queue */
- 	return slots_avail > nr_frags;
+ #include <linux/clk.h>
++#include <linux/log2.h>
+ #include <linux/mfd/syscon.h>
+ #include <linux/miscdevice.h>
+ #include <linux/mm.h>
+@@ -241,6 +242,18 @@ static int aspeed_lpc_ctrl_probe(struct platform_device *pdev)
+ 
+ 		lpc_ctrl->mem_size = resource_size(&resm);
+ 		lpc_ctrl->mem_base = resm.start;
++
++		if (!is_power_of_2(lpc_ctrl->mem_size)) {
++			dev_err(dev, "Reserved memory size must be a power of 2, got %u\n",
++			       (unsigned int)lpc_ctrl->mem_size);
++			return -EINVAL;
++		}
++
++		if (!IS_ALIGNED(lpc_ctrl->mem_base, lpc_ctrl->mem_size)) {
++			dev_err(dev, "Reserved memory must be naturally aligned for size %u\n",
++			       (unsigned int)lpc_ctrl->mem_size);
++			return -EINVAL;
++		}
+ 	}
+ 
+ 	lpc_ctrl->regmap = syscon_node_to_regmap(
 -- 
 2.27.0
 
