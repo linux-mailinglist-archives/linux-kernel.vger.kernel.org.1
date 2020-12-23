@@ -2,108 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 501402E10D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 01:45:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AFCC2E10DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 01:50:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726491AbgLWAoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 19:44:19 -0500
-Received: from sonic312-31.consmr.mail.ne1.yahoo.com ([66.163.191.212]:43440
-        "EHLO sonic312-31.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725902AbgLWAoS (ORCPT
+        id S1726260AbgLWAt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 19:49:29 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:15584 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725946AbgLWAt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 19:44:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1608684212; bh=N68+AYAdVrOEguPtAI62OQ6I1lQV7E57rwyr7F+n4Y8=; h=To:Cc:From:Subject:Date:References:From:Subject; b=cdyn77FlL9GrrPCS2aBin2lMj0zHi5XSo9VcNJhCReIDkAn1ca8XLI3DU+Di9a4+BiLzTRpNdP+dcljzDNVQQIhct+WUtNZuPo7Vx9miYQ1Vw4SFpNeVZDIKuZjnY0EwPXRWKIxMlEYJuZ//BEeHpWTtHgGaFBdf2QHZrJ+c66gNnRyYvKYZrOxAkbORjHl69a8Ic6BcG4+KJ6/N4fk/DacucdXF2XhL9KxQqdn1/grfTVWxVTeFcV/PeuP0o0hm5k/QChOLXl/xlfzmBnv3HP4eEL0A64l4VDSXVa1ygb1ableb2yoCczxNswBdNhYYHCKtUwfXmSGLh3BHQHO5JQ==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1608684212; bh=JcMSfnphoNswQsAaDPMCfPLdzRrW/H+LLWn32+Co/7i=; h=To:From:Subject:Date:From:Subject; b=muKME7YRT/VsGZRV05Prbc9/tL0b5Vt0/Q32SXg25QbppsMK5bxZ4EuXBr2nq19EvGLc1IcewwvRh+/20OuoimJSeqV7yMadkyXsstorweS7bjcq2Oxs4yDWfQ9nAYH/zpKpPcLKjzgIN44FDf57R0gBWYg4c9mE51sOu7UrGQ2CaTC8u8xGu2w6tavIgDATcz6OFZ0V96oQM+/X/CvhEvDE+QTz7xYcvDSH4gVszBw487Xr8XZncZqt7xrtzHD3DD5UIl2UJsUkSD8P72II1XUt0T/9TFA+rddblvPTICs1kOH/Pd0RMSZsBzv5L815HZGlZBfT2u9lpYaqcTeCEw==
-X-YMail-OSG: 3PvlXKEVM1n.GmGDoQNJK5jkQ54k5okhgatBb_FmIXBQXR0Fc0QSVO30KJ3EbZb
- tqd15AllONnohYXM498nvGH3KWZ5UZXozTFS5icz4mRWGfG.0SuXs61R4jNZMpi9Z7tIFiRMJSN0
- DloXzbi.9jsD_3QGf2.k2iycNL14a03Zxi0CjJ3y9788so1uB8DZ.AsWYHb.K9JI1TPML6MfLdd0
- 4xgK9j9RhcnGD5hsmLmhNtffXB3hx7nlnNRRFSbf0R8OiA5sbUCSGfCt5ZYbEVzB2A.84Qnyx32N
- Y40q_XniKyZRJwFVngGxCxzsIhV9_cfe7D0RWx24bRHqidex6SLsrm3ZWsEJqhFAM0o3i9EroSJs
- KUh4kb3BFw_9KCtp6a8GcRYpyYOru7_eioT5PE0ejBVg6p4zEuoRRuZa5Mzeqo3SHtVB4cZwKVtN
- 4UFZjCQaXBS1SXKgM0NZbzG594VB0FZ0Q0cGi9DlGOGuESlwtIlNE6HpZcB1xujaLWlLWcg9bjsh
- 8rdKSnGTZ267AyoiYEXHoR5yaf5LodIHMNlbCRVFg4PG84aUZjg3hpV9lAcVImiU_JBsxccEsPR_
- hbSmU0gyT3dPyVAUydAja78_uv4P97FITEtjeiqrs9V3b.b8NrZ34dK4okYAz66VRXlzyV.p9zmw
- tCgofBGpaVx3TTKg60Ny7yr8jpjwR5jQt2.HtmeiptiyK7DIdy7uajRcE3ScKhoNRzpoRfnd83Qd
- bXq1XMo4d83N8cbuKWgno03yUtZRbdsQefo4zmcO40h592zyFlLg9DjD.D_.G_A5u7YGNZj5uum6
- TbyKk8iVNc.0NncWJTT0MkR4CzrNTFtwHUhRfTSfXm1BTo5gufFL2QQfBN6pdAXCaQowLwjSbJSj
- LTJDvLI3K2dOm1ZzUrvA5T4U6C29iJerlYEY8OznlVkOWudTiE6aYvxUgwveCZMk1M2oBscvS7Wj
- yj_qo5jN4PvTpIAaU9jzYO0tShQeTxVNF19KKmTLT.3.zVgKbazqKvuLOF.nByVuWC0bYH4w9UUN
- 6frfXFlfa9e5Gk36SAcZccNcyrjCELPsClHc78zC8EX1JsDqitYNSScEkjr6p6yVAF3u7tSmadMB
- H74BNRkLnWepmxgyCdwYErI_SYU4fnWGWBb5JY5Te84PH4lxlHRIxcqlM7sb5BxFWNDkHQLZFhZO
- iSm6lDs4._FEg_mXb3235JcmP3Q145grz7FOPk5pqy5aKBc1jN4GII2_xVmkuQtC8udIrn8Bf27M
- moe40QpX1GUadaMA74.Aq4ETEnjmQ2vh9t2dpSa2AV0bDmRovE2A9qPp_34AlhBkJZDReB9krBmr
- GcnFwKw3FkfEUAV7cYxRE_MkQ9YaVNH4CB7MRMXz7a6PuDaHvRwWVxtJkOxkf3EVG2oDa4_SpJHQ
- l75xZvxE_NRduVBzzLiuNfFMXy0Magbjci.VPmiEt8gNyqEojiW3DF.u20qzz2hi2GGCJ94jA50f
- yRz2BDbeeos8RITQRKhE0hl3mPP1uW2Mr.lQLc6L0tdnViWyS2MO1WGAxho8OBEFtajx1FAThsC9
- tIwbtQ1EtRBA_QGoQAgsZ8eqcj5GB1YVk6apeYWKxXSYKLLgeac1lCdmoSllkn1BgqoDFNnILkt.
- 6yLhtl5J9Uv_MB2_k289NWSt71znJmVbCZfqHbrnpj4SW35lJkeyCyXm6Ixe.L6VhF_1U0KJXfK_
- vtR3oz34n81VIdLWBEQu5T9tnu3MEA_qY2lEqI7CzkXgO401XtydXh20XuAVUeGowNJI61O8kBQg
- toqp1ogJjzCqiI6molmqb.AM2orw8MJxSla_4A_Lk4QTLCpS06rw_P03XExj34hADJZB_avud2j1
- _VoSMcjcM_1Es063Rn.OqO3SadnDL5k_PmY7Y6jVxRvDOynqSyyYBzU0O9JugiyKkJExSOYVU6nZ
- RPo.AmDBIqTwCzLJeKSztDofhnQGf25YLiEP5To8aGKBfnMk2z9ZfP9Oo1cAxykG5n7YKfoOm4eq
- krIZNgrx7IFXpVkEWOhg5aZ2UhNzzLhtnZ8720N3B8nWDMz0.a0FM8XdF_EHpz4KI9eI2_Z8IYqy
- ZojNMLQpslYkUOit39mbOfLwqLgL4eShKl2qMm86GKzaJ.z0Nro1JwtV60hv1AcmO63tXsp1NWUi
- 9L64giYbUeQd5MiDf_Hx0ILfEUFkNgGcR1rPKJ9DIOoa202VSPFXm3Pcc5ul8UqNdtGTMJkEv8bc
- Wq0WZcZE5SyZZ3p93W56XgXC6qhzYYfcW0Uhneo7OBY3RoxnIn9vr39B000XG1vqjI0YCUjcDsGb
- cvqgue5IussfAH9zuRZ8cwDqhVxvvpWOzEuFTbomp2HDky6ORH_Si1HBEvLS26WG67HPtC48K8P3
- gGrkVixZnrIM7nAKgA5PTI_A.FmmHoyaHDifxPWkr5XhOwYfa4Tm4vKoYY55sULM_NrvJO2LxDFG
- U7AcItbU2x2kcp3Dj2qp7.9Jln4_YWsIz_dncjw8xqkb9qqvnhOLOrWBfqnRhxfLPd.A7DWG8ZS0
- y0XuaFYBgzX1J2dHM9a.mdtfbi9pc2Lkj5Bet3IU.GeuPi65DJCMJf8wblrWuSMfAhTO9MC42sRb
- 9LCUR2ooEIpqzSWshpm.3s._Z0JcbcN3vCIR1Oxt.aibtgUNFE_pVpMXTAthkow.Wt7OBEqswrZN
- HB34.lgL9N5fXTJHs5cC_GTgipFF5tYIrlwOdDr8-
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.ne1.yahoo.com with HTTP; Wed, 23 Dec 2020 00:43:32 +0000
-Received: by smtp422.mail.ne1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 3bdd598f8bc27446db9757c9c3c1be42;
-          Wed, 23 Dec 2020 00:43:26 +0000 (UTC)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-Subject: [GIT PULL] Smack additional patch for v5.11
-Message-ID: <b73e7af1-25d3-1e68-c810-3858abc489d7@schaufler-ca.com>
-Date:   Tue, 22 Dec 2020 16:43:25 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 22 Dec 2020 19:49:28 -0500
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BN0Ur45131527;
+        Tue, 22 Dec 2020 19:48:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
+ cc : subject : in-reply-to : date : message-id : mime-version :
+ content-type; s=pp1; bh=yX4u3TsiaR+dHf00AtWdm0Ob3ShwkyqY8C7skDPUdcA=;
+ b=qUw3gybXeFmDLxDw4i6e/VMbb+Y/SHAmLoBDxukwTqfoE/2A+JfoVBACdKmdqW7kI4PG
+ tNgcwsU/slF95EkTCEbWreP9DqX/P5cGXMOAVG9GRiEVDq+SRudXDohBpJsA4OJvWTDK
+ kVYfgnI2HzCIs5eGWzlpuIGEQbimrZRmxvZlS7t6OQEYYwPxhCaacQGpW4zwRRD6jVG7
+ evems8n0cbU0HCmlPTF2HlRqe2p3iisuKgRJR5QUkgNloVFt+BOJu+6AW7R0XyL2v0mp
+ ySgeev2hCAZGmFgxknVwOkFVp3BBNv3iov65LVUGuemoiIBMDcu1dEyi0WesbFK7ofnK yg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 35ku9wrd38-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Dec 2020 19:48:16 -0500
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BN0mFps195475;
+        Tue, 22 Dec 2020 19:48:16 -0500
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 35ku9wrd2y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Dec 2020 19:48:15 -0500
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BN0jFD4005772;
+        Wed, 23 Dec 2020 00:48:14 GMT
+Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
+        by ppma02wdc.us.ibm.com with ESMTP id 35km4gtka9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Dec 2020 00:48:14 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BN0mBnN26935638
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 23 Dec 2020 00:48:11 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 50123BE054;
+        Wed, 23 Dec 2020 00:48:11 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2BDA3BE051;
+        Wed, 23 Dec 2020 00:48:04 +0000 (GMT)
+Received: from manicouagan.localdomain (unknown [9.80.219.136])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTPS;
+        Wed, 23 Dec 2020 00:48:03 +0000 (GMT)
+References: <20201219175713.18888-1-nramas@linux.microsoft.com>
+ <20201219175713.18888-3-nramas@linux.microsoft.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com, robh@kernel.org, takahiro.akashi@linaro.org,
+        gregkh@linuxfoundation.org, will@kernel.org,
+        catalin.marinas@arm.com, mpe@ellerman.id.au, james.morse@arm.com,
+        sashal@kernel.org, benh@kernel.crashing.org, paulus@samba.org,
+        frowand.list@gmail.com, vincenzo.frascino@arm.com,
+        mark.rutland@arm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
+        serge@hallyn.com, pasha.tatashin@soleen.com, allison@lohutok.net,
+        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
+        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v13 2/6] powerpc: Move arch independent ima kexec
+ functions to drivers/of/kexec.c
+In-reply-to: <20201219175713.18888-3-nramas@linux.microsoft.com>
+Date:   Tue, 22 Dec 2020 21:48:02 -0300
+Message-ID: <875z4tl54t.fsf@manicouagan.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-References: <b73e7af1-25d3-1e68-c810-3858abc489d7.ref@schaufler-ca.com>
-X-Mailer: WebService/1.1.17278 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.8)
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-22_13:2020-12-21,2020-12-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ priorityscore=1501 mlxscore=0 clxscore=1015 spamscore=0 impostorscore=0
+ suspectscore=0 lowpriorityscore=0 phishscore=0 mlxlogscore=999
+ adultscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012220175
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus
 
-Sorry for the 2nd pull request, but this is a fairly important fix
-for the privilege handling of smackfs in the face of io_uring. The
-novel use of kernel threads in io_uring invalidated an long standing
-assumption regarding the privilege of kernel threads. The fix is
-simple and safe. It was provided by Jens Axboe <axboe@kernel.dk>
-and has been tested.
+Actually, I have one more comment on this patch:
 
---
-The following changes since commit 9b0072e2b2b588ad75c94f2c6e6c52c8f4bd26=
-57:
+Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
 
-  security/smack: remove unused varible 'rc' (2020-11-16 17:26:31 -0800)
+> diff --git a/arch/powerpc/kexec/file_load.c b/arch/powerpc/kexec/file_load.c
+> index 956bcb2d1ec2..9f3ec0b239ef 100644
+> --- a/arch/powerpc/kexec/file_load.c
+> +++ b/arch/powerpc/kexec/file_load.c
+> @@ -20,7 +20,6 @@
+>  #include <linux/of_fdt.h>
+>  #include <linux/libfdt.h>
+>  #include <asm/setup.h>
+> -#include <asm/ima.h>
+>  
+>  #define SLAVE_CODE_SIZE		256	/* First 0x100 bytes */
+>  
+> @@ -163,12 +162,6 @@ int setup_new_fdt(const struct kimage *image, void *fdt,
+>  	if (ret)
+>  		goto err;
+>  
+> -	ret = setup_ima_buffer(image, fdt, fdt_path_offset(fdt, "/chosen"));
+> -	if (ret) {
+> -		pr_err("Error setting up the new device tree.\n");
+> -		return ret;
+> -	}
+> -
+>  	return 0;
+>  
+>  err:
 
-are available in the Git repository at:
+With this change, setup_new_fdt() is nothing more than a call to
+of_kexec_setup_new_fdt(). It should be removed, and its caller should
+call of_kexec_setup_new_fdt() directly.
 
-  https://github.com/cschaufler/smack-next smack-for-5.11
+This change could be done in patch 4 of this series, to keep this patch
+simpler.
 
-for you to fetch changes up to 942cb357ae7d9249088e3687ee6a00ed2745a0c7:
-
-  Smack: Handle io_uring kernel thread privileges (2020-12-22 15:34:24 -0=
-800)
-
-----------------------------------------------------------------
-Casey Schaufler (1):
-      Smack: Handle io_uring kernel thread privileges
-
- security/smack/smack_access.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-
+-- 
+Thiago Jung Bauermann
+IBM Linux Technology Center
