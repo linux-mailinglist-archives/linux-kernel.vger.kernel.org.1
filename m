@@ -2,98 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DFEC2E18A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 06:56:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB55D2E18B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 07:00:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727653AbgLWF4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 00:56:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40876 "EHLO
+        id S1727415AbgLWF6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 00:58:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727292AbgLWF4I (ORCPT
+        with ESMTP id S1726558AbgLWF6j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 00:56:08 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93178C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 21:55:28 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id h186so9786910pfe.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 21:55:28 -0800 (PST)
+        Wed, 23 Dec 2020 00:58:39 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF638C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 21:57:43 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id c22so9910295pgg.13
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 21:57:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=luZFFagd87vDIlnKDKZn89F7j3Vyv8O6SeaQb577baY=;
-        b=DjAbJLLcDIf5eydQfRUEtGL4NrNMYD6ew6cWB/NkrRhSROFfr9cgZDODRriJoa0u9i
-         z730UgZzt9X6g3xhOKfqjW9s1HUY3HU/lYREOoT4wIvt03oJploSmR43Y32jpab8ZXWg
-         0w0EvhPbTk1s7ivYjGV3wUKnyUz13KXUQ6W5gJHLj57T/ghnAlA4A4UoZO7i9EHnhkIP
-         k7PdvD03mtSzB8necuZ1t1R4C2bOODb3NQIG0EfUZRdlfq+K5fjVYZtMs4FP77/JnE+j
-         oiQleGpUPZE9nnQdv6zt1Mcbp3Gozls50qkZadhb+NCg88528EcCITGFfan3BZ0ZGCor
-         /jng==
+        d=endlessos.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=CiAgmQ36u6t1yLjWQZDdT7pzao39fW0trdj2Djils5w=;
+        b=Aj9AiNmpI3ngrDbHOyqi+PQNIbGBhjx3ScIHMIS/espemOofGoMO18eMcFt87Dnb3d
+         Z/niVLsxw7lIwymZEm32hNNRKtK5LvrGhtEra13GrNzq7+vVEijz0jLVKugWW4ESPrad
+         hZqFUFtcwumKeyMs4tAJB6VFCVUlDRQ9rFou1Z2Gmj36wkVfs0cF5QWtN84Xp8fnho+X
+         SdFeH3ieNMql/EAAzMwJaEHnR0Dte1ghYJH/WMytRHI9bCQjcz6Vv+x9cu5Y/WBOVFqe
+         aCdfsExgxXmPHPT2h8TPyR1YqzbM9RkrrcQopiRJKtScfvFPZliBi7t3r7MjpZ/6zm2j
+         M76Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=luZFFagd87vDIlnKDKZn89F7j3Vyv8O6SeaQb577baY=;
-        b=Fz5O7Xc4+g8EPzLNqb6b+UY/rIHdHRV6x3CT/e3eXjtEA7+b8a/F2Yx5wT7HKLWSmO
-         hCUkMdMmbd21//NquEvNy1mUR5NrvqGDNy4A8z076f7R+1EVtGEK6/COpvOCkiRLOXpK
-         Uzx5IQ+WuN5eVXE66lfth9YaWAknG/SfGM6PHVmp4UJ7m/AhqP1vg9TlP4v3Ftejgk87
-         vHBNRx8QqFaFVNQAedj1bkht83lNBhV2y70rBRhaA9gYIYrkGd+j/LMWBug7Z0Kb2O80
-         G+RabfWOLv+fe2OO1qL8TYQ+zoR7Mq40xwrYThZorBjNk5wFHX7Grtqpr7WCHxZDNN6z
-         lPpQ==
-X-Gm-Message-State: AOAM5324H/0FDvHR6Ij1XYuFJhdnqbQ/XEs7OrCOUGofuY3nQ9Hs7mC0
-        75Qxw2NowipwNS7AEotZX6QBVw==
-X-Google-Smtp-Source: ABdhPJwd+SJvLoKr81bJQE3UHfFGwhLCqBn9EnA7MyPUR7TcXqmnJ1SMYeVUrBbd7iQcnxx5+UaCsw==
-X-Received: by 2002:a62:303:0:b029:1a5:a6f7:ac0d with SMTP id 3-20020a6203030000b02901a5a6f7ac0dmr23111393pfd.63.1608702928015;
-        Tue, 22 Dec 2020 21:55:28 -0800 (PST)
-Received: from localhost ([61.120.150.75])
-        by smtp.gmail.com with ESMTPSA id a31sm22979810pgb.93.2020.12.22.21.55.26
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=CiAgmQ36u6t1yLjWQZDdT7pzao39fW0trdj2Djils5w=;
+        b=PwTaevnVxF5eOSHDYIEaRhz2I6xXJMeUhE6YBPb4MREUBXIj4EvPP7jabBginujGMp
+         IdVsF9XbWNABUWUkFWTwh9r6rrKyMX9EtPQYhGc4Gz8aje+DxBtMqQhOMQG3yhqvSd/k
+         VxeLpbc2Na1ixt/3JTrXNbUtBJl6iESFciysR+V1cUc0PcsqcFHFo0qW6T1lNkN+CvY3
+         q92Xkxc7UyClbyX5piYMrcPhGuc8SB9yOVlwGGoX0VUnDwueBdpiZc5Ub3JyLPFDRsCQ
+         6uw8wadt/sSfWALgIhSlMrF1dNHDwxnsBQut+qDGncooXjJfr5ulJL/csZStmKFBQrID
+         xJOA==
+X-Gm-Message-State: AOAM532QQ1cjJeB3OFloUL0W1Og+1C+Tc/OuusYCT+BrtddE+LH3Rmp1
+        SEqRWvnGXYt7t7W9I44D9dH0tw==
+X-Google-Smtp-Source: ABdhPJy/Mna24FjtVPdXq1LCAcAPodL3GkBJzm6psYz8+aLYqqfRLVyJy2BH/2KXr4OlWPjvjBPIJw==
+X-Received: by 2002:a63:2045:: with SMTP id r5mr23301752pgm.6.1608703063365;
+        Tue, 22 Dec 2020 21:57:43 -0800 (PST)
+Received: from starnight.localdomain (123-204-46-122.static.seed.net.tw. [123.204.46.122])
+        by smtp.googlemail.com with ESMTPSA id h12sm22403656pgs.7.2020.12.22.21.57.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Dec 2020 21:55:27 -0800 (PST)
-From:   John Wang <wangzhiqiang.bj@bytedance.com>
-To:     xuxiaohan@bytedance.com, yulei.sh@bytedance.com,
-        chenbo.gil@bytedance.com, joel@jms.id.au
-Cc:     Samuel Mendoza-Jonas <sam@mendozajonas.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Gavin Shan <gwshan@linux.vnet.ibm.com>,
-        netdev@vger.kernel.org (open list:NETWORKING [GENERAL]),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2] net/ncsi: Use real net-device for response handler
-Date:   Wed, 23 Dec 2020 13:55:23 +0800
-Message-Id: <20201223055523.2069-1-wangzhiqiang.bj@bytedance.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 22 Dec 2020 21:57:42 -0800 (PST)
+From:   Jian-Hong Pan <jhp@endlessos.org>
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Chris Chiu <chiu@endlessos.org>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux@endlessos.org, Jian-Hong Pan <jhp@endlessos.org>
+Subject: [PATCH v2] HID: Add Wireless Radio Control feature for Chicony devices
+Date:   Wed, 23 Dec 2020 13:55:41 +0800
+Message-Id: <20201223055540.204685-1-jhp@endlessos.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <CAB4CAwfFQrMDYuzjL2nuUnHgXO031ty-mA7GGxW+-nHFkZTGTg@mail.gmail.com>
+References: <CAB4CAwfFQrMDYuzjL2nuUnHgXO031ty-mA7GGxW+-nHFkZTGTg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When aggregating ncsi interfaces and dedicated interfaces to bond
-interfaces, the ncsi response handler will use the wrong net device to
-find ncsi_dev, so that the ncsi interface will not work properly.
-Here, we use the original net device to fix it.
+Some Chicony's keyboards support airplane mode hotkey (Fn+F2) with
+"Wireless Radio Control" feature. For example, the wireless keyboard
+[04f2:1236] shipped with ASUS all-in-one desktop.
 
-Fixes: 138635cc27c9 ("net/ncsi: NCSI response packet handler")
-Signed-off-by: John Wang <wangzhiqiang.bj@bytedance.com>
----
-v2:
-  Use orig_dev instead of pt->dev
----
- net/ncsi/ncsi-rsp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+After consulting Chicony for this hotkey, learned the device will send
+with 0x11 as the report ID and 0x1 as the value when the key is pressed
+down.
 
-diff --git a/net/ncsi/ncsi-rsp.c b/net/ncsi/ncsi-rsp.c
-index a94bb59793f0..e1c6bb4ab98f 100644
---- a/net/ncsi/ncsi-rsp.c
-+++ b/net/ncsi/ncsi-rsp.c
-@@ -1120,7 +1120,7 @@ int ncsi_rcv_rsp(struct sk_buff *skb, struct net_device *dev,
- 	int payload, i, ret;
+This patch maps the event as KEY_RFKILL.
+
+Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
+---
+v2: Remove the duplicated key pressed check.
+
+ drivers/hid/hid-chicony.c | 55 +++++++++++++++++++++++++++++++++++++++
+ drivers/hid/hid-ids.h     |  1 +
+ 2 files changed, 56 insertions(+)
+
+diff --git a/drivers/hid/hid-chicony.c b/drivers/hid/hid-chicony.c
+index 3f0ed6a95223..ca556d39da2a 100644
+--- a/drivers/hid/hid-chicony.c
++++ b/drivers/hid/hid-chicony.c
+@@ -21,6 +21,39 @@
  
- 	/* Find the NCSI device */
--	nd = ncsi_find_dev(dev);
-+	nd = ncsi_find_dev(orig_dev);
- 	ndp = nd ? TO_NCSI_DEV_PRIV(nd) : NULL;
- 	if (!ndp)
- 		return -ENODEV;
+ #include "hid-ids.h"
+ 
++#define CH_WIRELESS_CTL_REPORT_ID	0x11
++
++static int ch_report_wireless(struct hid_report *report, u8 *data, int size)
++{
++	struct hid_device *hdev = report->device;
++	struct input_dev *input;
++
++	if (report->id != CH_WIRELESS_CTL_REPORT_ID || report->maxfield != 1)
++		return 0;
++
++	input = report->field[0]->hidinput->input;
++	if (!input) {
++		hid_warn(hdev, "can't find wireless radio control's input");
++		return 0;
++	}
++
++	input_report_key(input, KEY_RFKILL, 1);
++	input_sync(input);
++	input_report_key(input, KEY_RFKILL, 0);
++	input_sync(input);
++
++	return 1;
++}
++
++static int ch_raw_event(struct hid_device *hdev,
++		struct hid_report *report, u8 *data, int size)
++{
++	if (report->application == HID_GD_WIRELESS_RADIO_CTLS)
++		return ch_report_wireless(report, data, size);
++
++	return 0;
++}
++
+ #define ch_map_key_clear(c)	hid_map_usage_clear(hi, usage, bit, max, \
+ 					EV_KEY, (c))
+ static int ch_input_mapping(struct hid_device *hdev, struct hid_input *hi,
+@@ -77,10 +110,30 @@ static __u8 *ch_switch12_report_fixup(struct hid_device *hdev, __u8 *rdesc,
+ 	return rdesc;
+ }
+ 
++static int ch_probe(struct hid_device *hdev, const struct hid_device_id *id)
++{
++	int ret;
++
++	hdev->quirks |= HID_QUIRK_INPUT_PER_APP;
++	ret = hid_parse(hdev);
++	if (ret) {
++		hid_err(hdev, "Chicony hid parse failed: %d\n", ret);
++		return ret;
++	}
++
++	ret = hid_hw_start(hdev, HID_CONNECT_DEFAULT);
++	if (ret) {
++		hid_err(hdev, "Chicony hw start failed: %d\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
+ 
+ static const struct hid_device_id ch_devices[] = {
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_CHICONY, USB_DEVICE_ID_CHICONY_TACTICAL_PAD) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_CHICONY, USB_DEVICE_ID_CHICONY_WIRELESS2) },
++	{ HID_USB_DEVICE(USB_VENDOR_ID_CHICONY, USB_DEVICE_ID_CHICONY_WIRELESS3) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_CHICONY, USB_DEVICE_ID_CHICONY_ACER_SWITCH12) },
+ 	{ }
+ };
+@@ -91,6 +144,8 @@ static struct hid_driver ch_driver = {
+ 	.id_table = ch_devices,
+ 	.report_fixup = ch_switch12_report_fixup,
+ 	.input_mapping = ch_input_mapping,
++	.probe = ch_probe,
++	.raw_event = ch_raw_event,
+ };
+ module_hid_driver(ch_driver);
+ 
+diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+index 4c5f23640f9c..06d90301a3dc 100644
+--- a/drivers/hid/hid-ids.h
++++ b/drivers/hid/hid-ids.h
+@@ -270,6 +270,7 @@
+ #define USB_DEVICE_ID_CHICONY_PIXART_USB_OPTICAL_MOUSE	0x1053
+ #define USB_DEVICE_ID_CHICONY_PIXART_USB_OPTICAL_MOUSE2	0x0939
+ #define USB_DEVICE_ID_CHICONY_WIRELESS2	0x1123
++#define USB_DEVICE_ID_CHICONY_WIRELESS3	0x1236
+ #define USB_DEVICE_ID_ASUS_AK1D		0x1125
+ #define USB_DEVICE_ID_CHICONY_TOSHIBA_WT10A	0x1408
+ #define USB_DEVICE_ID_CHICONY_ACER_SWITCH12	0x1421
 -- 
-2.25.1
+2.29.2
 
