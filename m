@@ -2,219 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 232D62E10D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 01:41:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D5152E10D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 01:42:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726070AbgLWAky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 19:40:54 -0500
-Received: from smtp2.axis.com ([195.60.68.18]:44289 "EHLO smtp2.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725300AbgLWAkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 19:40:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1608684051;
-  x=1640220051;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=TgLEA2OIKalGPhnzhoPPHKr2lksZY/DM0TqygjSwNzc=;
-  b=QvXXuBMvR7aaA7AkkHEYprWcwhW6WXaSbj8Nz+sXBOz0G4fJFBjfpNoR
-   JxiCkhWt4tli0zBaQBv58Fw9X0VR0UqzC5JIEOOQk9ThQeGVBnJ1M+FDt
-   C13MZRS2ON8tE06V4OQhYm2AzWqx3jWdd2o3NEbTN62DGeoupbJeQSuhz
-   R8bjnS/65iWgk1ki6c7SLOc7hFCcIiq6awyWb/jL0eWJITJFY7RxI8t60
-   10gYLvHeyMrX+s6Fmym++Kg1imaemizkKvn2fRrJB7t76ZRAX7BQZgEXq
-   vN8SVP7ZniF4KJFpRCTdleQSivayCx+wHiDaMrf/D9F5+ZDEmtATg/e8r
-   w==;
-From:   Hermes Zhang <Hermes.Zhang@axis.com>
-To:     =?utf-8?B?UGFsaSBSb2jDoXI=?= <pali@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>
-CC:     Dan Murphy <dmurphy@ti.com>, Sebastian Reichel <sre@kernel.org>,
-        kernel <kernel@axis.com>, Hermes Zhang <Hermes.Zhang@axis.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] power: supply: bq27xxx: Supporrt CHARGE_NOW for
- bq27z561/bq28z610/bq34z100
-Thread-Topic: [PATCH v2] power: supply: bq27xxx: Supporrt CHARGE_NOW for
- bq27z561/bq28z610/bq34z100
-Thread-Index: AQHW2FK2PcVd3oCXu0e22tCBWY69SaoC8KMAgADWRwA=
-Date:   Wed, 23 Dec 2020 00:40:09 +0000
-Message-ID: <d220eb7d-91b5-244e-f0d5-d10eae34decb@axis.com>
-References: <20201222110720.20837-1-chenhui.zhang@axis.com>
- <20201222115312.dbrlup5gzkv2oykz@pali>
-In-Reply-To: <20201222115312.dbrlup5gzkv2oykz@pali>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.0.5.60]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <2174E4E206F14944A9DF59140A78916A@exhub.se.axis.com>
-Content-Transfer-Encoding: base64
+        id S1726327AbgLWAlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 19:41:55 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:49872 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726128AbgLWAly (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 19:41:54 -0500
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BN0VvdO159797;
+        Tue, 22 Dec 2020 19:40:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
+ cc : subject : in-reply-to : date : message-id : mime-version :
+ content-type; s=pp1; bh=LQNrZt7cXaf8edxCI1c85/3rx53hHhlzwFwn6ESYwPA=;
+ b=F3zc6jfoE6T5bwHaXkaVqB70dnNzDYKuD1o+vB9/mAI21EY3+0O3yoF89cx0jQmsCy94
+ lGSdCljH8wSrRfZQgTi9OJ1H1U93BW3rG/moAwRKoDDg+7fD4waKtC62jfTI3vrMhUdN
+ H/ktE6VioQmvH/Ihybq8kz+TeVxKH2BFWx8a+BQGyuaw7ST3JPSCIuwtZIVDZjfvhZhL
+ 82ZxLysO+kupDFuS1v/YV/l+aXjOa1x2vG1U9tqnXqUcXu2fb7zf2S2BF+OUSrJUaM0I
+ Szo9iCTIEJNXVzoWLuKhKaKDdzReRV++KrycJsnpjYKzr5eKcIm/DWs4/iwXZllzwjRN NA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35kt0a1tu9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Dec 2020 19:40:45 -0500
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BN0YAqq164499;
+        Tue, 22 Dec 2020 19:40:44 -0500
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35kt0a1ttu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Dec 2020 19:40:44 -0500
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BN0XMbc011912;
+        Wed, 23 Dec 2020 00:40:43 GMT
+Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
+        by ppma05wdc.us.ibm.com with ESMTP id 35kferccxh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Dec 2020 00:40:43 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BN0eg6t16974200
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 23 Dec 2020 00:40:43 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E0AEBBE056;
+        Wed, 23 Dec 2020 00:40:42 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 01D7FBE053;
+        Wed, 23 Dec 2020 00:40:34 +0000 (GMT)
+Received: from manicouagan.localdomain (unknown [9.80.219.136])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTPS;
+        Wed, 23 Dec 2020 00:40:34 +0000 (GMT)
+References: <20201219175713.18888-1-nramas@linux.microsoft.com>
+ <20201219175713.18888-3-nramas@linux.microsoft.com>
+ <a1a4526c0759eb3b5d70fb8edc89360718376def.camel@linux.ibm.com>
+ <e0d9398b-1b46-8115-7bf0-28e9826fcd6b@linux.microsoft.com>
+ <7a347c8f2a76fc80551a3dfcb66b0eec9b024a90.camel@linux.ibm.com>
+ <71764175-4007-2828-f882-9215c062330a@linux.microsoft.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>, robh@kernel.org,
+        takahiro.akashi@linaro.org, gregkh@linuxfoundation.org,
+        will@kernel.org, catalin.marinas@arm.com, mpe@ellerman.id.au,
+        james.morse@arm.com, sashal@kernel.org, benh@kernel.crashing.org,
+        paulus@samba.org, frowand.list@gmail.com,
+        vincenzo.frascino@arm.com, mark.rutland@arm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        pasha.tatashin@soleen.com, allison@lohutok.net,
+        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
+        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v13 2/6] powerpc: Move arch independent ima kexec
+ functions to drivers/of/kexec.c
+In-reply-to: <71764175-4007-2828-f882-9215c062330a@linux.microsoft.com>
+Date:   Tue, 22 Dec 2020 21:40:32 -0300
+Message-ID: <878s9pl5hb.fsf@manicouagan.localdomain>
 MIME-Version: 1.0
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-22_13:2020-12-21,2020-12-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
+ impostorscore=0 mlxscore=0 lowpriorityscore=0 spamscore=0 phishscore=0
+ clxscore=1015 adultscore=0 mlxlogscore=999 suspectscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012220175
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMTIvMjIvMjAgNzo1MyBQTSwgUGFsaSBSb2jDoXIgd3JvdGU6DQo+IE9uIFR1ZXNkYXkgMjIg
-RGVjZW1iZXIgMjAyMCAxOTowNzoyMCBIZXJtZXMgWmhhbmcgd3JvdGU6DQo+PiBGcm9tOiBIZXJt
-ZXMgWmhhbmcgPGNoZW5odWl6QGF4aXMuY29tPg0KPj4NCj4+IFRoZSBDSEFSR0VfTk9XIGlzIG1h
-cCB0byBSRUdfTkFDIGZvciBhbGwgdGhlIGdhdWdlIGNoaXBzIGJlb2ZyZS4gQnV0IGZvcg0KPj4g
-c29tZSBjaGlwcyAoZS5nLiBicTI3ejU2MSkgd2hpY2ggZG9lc24ndCBoYXZlIHRoZSBSRUdfTkFD
-LCB3ZSB1c2UgUkVHX1JDDQo+PiAocmVtYWluaW5nIGNhcGFjaXR5KSBmb3IgQ0hBUkdFX05PVy4N
-Cj4+DQo+PiBTaWduZWQtb2ZmLWJ5OiBIZXJtZXMgWmhhbmcgPGNoZW5odWl6QGF4aXMuY29tPg0K
-Pj4gLS0tDQo+Pg0KPj4gTm90ZXM6DQo+PiAgICAgIFNldCBjb3JyZWN0IFJFR19SQyBmb3IgYWxs
-IHRoZSBjaGlwcyBpZiBoYXZlDQo+PiAgICAgIA0KPj4gICAgICBrZWVwIElOVkFMSURfUkVHX0FE
-RFIgZm9yIGJxMjc1MjEsIGFzIHdlIGNvdWxkIG5vdCBmaW5kDQo+PiAgICAgIHRoZSBkYXRhc2hl
-ZXQgYW5kIHNlZW1zIG5vIG9uZSB1c2UgaXQgbm93Lg0KPiBUaGlzIGNoaXAgaXMgdXNlZCBpbiBO
-b2tpYSBOOTUwIGFuZCBOb2tpYSBOOS4gUGF2ZWwgaW1wbGVtZW50ZWQga2VybmVsDQo+IHN1cHBv
-cnQsIGFkZGluZyB0byBsb29wLg0KPg0KPiBQdWJsaWMgaW5mb3JtYXRpb24gYWJvdXQgaXQgYXJl
-IGF0Og0KPiBodHRwczovL2VsaW51eC5vcmcvTjk1MCNzbjI3NTIxX3JlZ2lzdGVyX21hcA0KDQpU
-aGFua3MgZm9yIHRoZSBpbmZvLiBGcm9tIHRoZSBsaW5rIGl0IHNlZW0gYnEyNzUyMSBoYXZlIG5l
-aXRoZXIgTkFDIGFuZCANClJDIHJlZ2lzdGVyLg0KDQoNCkJlc3QgUmVnYXJkcywNCg0KSGVybWVz
-DQoNCj4NCj4+ICAgZHJpdmVycy9wb3dlci9zdXBwbHkvYnEyN3h4eF9iYXR0ZXJ5LmMgfCAzNSAr
-KysrKysrKysrKysrKysrKysrKysrKysrLQ0KPj4gICAxIGZpbGUgY2hhbmdlZCwgMzQgaW5zZXJ0
-aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPj4NCj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3Bvd2Vy
-L3N1cHBseS9icTI3eHh4X2JhdHRlcnkuYyBiL2RyaXZlcnMvcG93ZXIvc3VwcGx5L2JxMjd4eHhf
-YmF0dGVyeS5jDQo+PiBpbmRleCAzMTVlMDkwOWU2YTQuLjc3NGFhMzc2NjUzZSAxMDA2NDQNCj4+
-IC0tLSBhL2RyaXZlcnMvcG93ZXIvc3VwcGx5L2JxMjd4eHhfYmF0dGVyeS5jDQo+PiArKysgYi9k
-cml2ZXJzL3Bvd2VyL3N1cHBseS9icTI3eHh4X2JhdHRlcnkuYw0KPj4gQEAgLTExMCw2ICsxMTAs
-NyBAQCBlbnVtIGJxMjd4eHhfcmVnX2luZGV4IHsNCj4+ICAgCUJRMjdYWFhfUkVHX1RURVMsCS8q
-IFRpbWUtdG8tRW1wdHkgU3RhbmRieSAqLw0KPj4gICAJQlEyN1hYWF9SRUdfVFRFQ1AsCS8qIFRp
-bWUtdG8tRW1wdHkgYXQgQ29uc3RhbnQgUG93ZXIgKi8NCj4+ICAgCUJRMjdYWFhfUkVHX05BQywJ
-LyogTm9taW5hbCBBdmFpbGFibGUgQ2FwYWNpdHkgKi8NCj4+ICsJQlEyN1hYWF9SRUdfUkMsCQkv
-KiBSZW1haW5pbmcgQ2FwYWNpdHkgKi8NCj4+ICAgCUJRMjdYWFhfUkVHX0ZDQywJLyogRnVsbCBD
-aGFyZ2UgQ2FwYWNpdHkgKi8NCj4+ICAgCUJRMjdYWFhfUkVHX0NZQ1QsCS8qIEN5Y2xlIENvdW50
-ICovDQo+PiAgIAlCUTI3WFhYX1JFR19BRSwJCS8qIEF2YWlsYWJsZSBFbmVyZ3kgKi8NCj4+IEBA
-IC0xNDUsNiArMTQ2LDcgQEAgc3RhdGljIHU4DQo+PiAgIAkJW0JRMjdYWFhfUkVHX1RURVNdID0g
-MHgxYywNCj4+ICAgCQlbQlEyN1hYWF9SRUdfVFRFQ1BdID0gMHgyNiwNCj4+ICAgCQlbQlEyN1hY
-WF9SRUdfTkFDXSA9IDB4MGMsDQo+PiArCQlbQlEyN1hYWF9SRUdfUkNdID0gSU5WQUxJRF9SRUdf
-QUREUiwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfRkNDXSA9IDB4MTIsDQo+PiAgIAkJW0JRMjdYWFhf
-UkVHX0NZQ1RdID0gMHgyYSwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfQUVdID0gMHgyMiwNCj4+IEBA
-IC0xNjksNiArMTcxLDcgQEAgc3RhdGljIHU4DQo+PiAgIAkJW0JRMjdYWFhfUkVHX1RURVNdID0g
-MHgxYywNCj4+ICAgCQlbQlEyN1hYWF9SRUdfVFRFQ1BdID0gMHgyNiwNCj4+ICAgCQlbQlEyN1hY
-WF9SRUdfTkFDXSA9IDB4MGMsDQo+PiArCQlbQlEyN1hYWF9SRUdfUkNdID0gSU5WQUxJRF9SRUdf
-QUREUiwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfRkNDXSA9IDB4MTIsDQo+PiAgIAkJW0JRMjdYWFhf
-UkVHX0NZQ1RdID0gMHgyYSwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfQUVdID0gSU5WQUxJRF9SRUdf
-QUREUiwNCj4+IEBAIC0xOTMsNiArMTk2LDcgQEAgc3RhdGljIHU4DQo+PiAgIAkJW0JRMjdYWFhf
-UkVHX1RURVNdID0gMHgxYSwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfVFRFQ1BdID0gSU5WQUxJRF9S
-RUdfQUREUiwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfTkFDXSA9IDB4MGMsDQo+PiArCQlbQlEyN1hY
-WF9SRUdfUkNdID0gMHgxMCwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfRkNDXSA9IDB4MTIsDQo+PiAg
-IAkJW0JRMjdYWFhfUkVHX0NZQ1RdID0gMHgyYSwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfQUVdID0g
-SU5WQUxJRF9SRUdfQUREUiwNCj4+IEBAIC0yMTUsNiArMjE5LDcgQEAgc3RhdGljIHU4DQo+PiAg
-IAkJW0JRMjdYWFhfUkVHX1RURVNdID0gMHgxYywNCj4+ICAgCQlbQlEyN1hYWF9SRUdfVFRFQ1Bd
-ID0gMHgyNiwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfTkFDXSA9IDB4MGMsDQo+PiArCQlbQlEyN1hY
-WF9SRUdfUkNdID0gMHgxMCwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfRkNDXSA9IDB4MTIsDQo+PiAg
-IAkJW0JRMjdYWFhfUkVHX0NZQ1RdID0gMHgyYSwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfQUVdID0g
-MHgyMiwNCj4+IEBAIC0yMzcsNiArMjQyLDcgQEAgc3RhdGljIHU4DQo+PiAgIAkJW0JRMjdYWFhf
-UkVHX1RURVNdID0gMHgxYSwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfVFRFQ1BdID0gSU5WQUxJRF9S
-RUdfQUREUiwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfTkFDXSA9IDB4MGMsDQo+PiArCQlbQlEyN1hY
-WF9SRUdfUkNdID0gMHgxMCwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfRkNDXSA9IDB4MTIsDQo+PiAg
-IAkJW0JRMjdYWFhfUkVHX0NZQ1RdID0gMHgxZSwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfQUVdID0g
-SU5WQUxJRF9SRUdfQUREUiwNCj4+IEBAIC0yNTcsNiArMjYzLDcgQEAgc3RhdGljIHU4DQo+PiAg
-IAkJW0JRMjdYWFhfUkVHX1RURVNdID0gMHgxYywNCj4+ICAgCQlbQlEyN1hYWF9SRUdfVFRFQ1Bd
-ID0gMHgyNiwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfTkFDXSA9IDB4MGMsDQo+PiArCQlbQlEyN1hY
-WF9SRUdfUkNdID0gMHgxMCwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfRkNDXSA9IDB4MTIsDQo+PiAg
-IAkJW0JRMjdYWFhfUkVHX0NZQ1RdID0gSU5WQUxJRF9SRUdfQUREUiwNCj4+ICAgCQlbQlEyN1hY
-WF9SRUdfQUVdID0gMHgyMiwNCj4+IEBAIC0yNzcsNiArMjg0LDcgQEAgc3RhdGljIHU4DQo+PiAg
-IAkJW0JRMjdYWFhfUkVHX1RURVNdID0gMHgxYywNCj4+ICAgCQlbQlEyN1hYWF9SRUdfVFRFQ1Bd
-ID0gMHgyNiwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfTkFDXSA9IDB4MGMsDQo+PiArCQlbQlEyN1hY
-WF9SRUdfUkNdID0gMHgxMCwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfRkNDXSA9IDB4MTIsDQo+PiAg
-IAkJW0JRMjdYWFhfUkVHX0NZQ1RdID0gMHgyYSwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfQUVdID0g
-MHgyMiwNCj4+IEBAIC0yOTcsNiArMzA1LDcgQEAgc3RhdGljIHU4DQo+PiAgIAkJW0JRMjdYWFhf
-UkVHX1RURVNdID0gMHgxYywNCj4+ICAgCQlbQlEyN1hYWF9SRUdfVFRFQ1BdID0gMHgyNiwNCj4+
-ICAgCQlbQlEyN1hYWF9SRUdfTkFDXSA9IDB4MGMsDQo+PiArCQlbQlEyN1hYWF9SRUdfUkNdID0g
-MHgxMCwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfRkNDXSA9IDB4MTIsDQo+PiAgIAkJW0JRMjdYWFhf
-UkVHX0NZQ1RdID0gMHgyYSwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfQUVdID0gMHgyMiwNCj4+IEBA
-IC0zMTcsNiArMzI2LDcgQEAgc3RhdGljIHU4DQo+PiAgIAkJW0JRMjdYWFhfUkVHX1RURVNdID0g
-MHgxYywNCj4+ICAgCQlbQlEyN1hYWF9SRUdfVFRFQ1BdID0gSU5WQUxJRF9SRUdfQUREUiwNCj4+
-ICAgCQlbQlEyN1hYWF9SRUdfTkFDXSA9IDB4MGMsDQo+PiArCQlbQlEyN1hYWF9SRUdfUkNdID0g
-MHgxMCwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfRkNDXSA9IDB4MTIsDQo+PiAgIAkJW0JRMjdYWFhf
-UkVHX0NZQ1RdID0gMHgxZSwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfQUVdID0gSU5WQUxJRF9SRUdf
-QUREUiwNCj4+IEBAIC0zMzcsNiArMzQ3LDcgQEAgc3RhdGljIHU4DQo+PiAgIAkJW0JRMjdYWFhf
-UkVHX1RURVNdID0gSU5WQUxJRF9SRUdfQUREUiwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfVFRFQ1Bd
-ID0gSU5WQUxJRF9SRUdfQUREUiwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfTkFDXSA9IElOVkFMSURf
-UkVHX0FERFIsDQo+PiArCQlbQlEyN1hYWF9SRUdfUkNdID0gSU5WQUxJRF9SRUdfQUREUiwNCj4+
-ICAgCQlbQlEyN1hYWF9SRUdfRkNDXSA9IElOVkFMSURfUkVHX0FERFIsDQo+PiAgIAkJW0JRMjdY
-WFhfUkVHX0NZQ1RdID0gSU5WQUxJRF9SRUdfQUREUiwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfQUVd
-ID0gSU5WQUxJRF9SRUdfQUREUiwNCj4+IEBAIC0zNjEsNiArMzcyLDcgQEAgc3RhdGljIHU4DQo+
-PiAgIAkJW0JRMjdYWFhfUkVHX1RURVNdID0gSU5WQUxJRF9SRUdfQUREUiwNCj4+ICAgCQlbQlEy
-N1hYWF9SRUdfVFRFQ1BdID0gSU5WQUxJRF9SRUdfQUREUiwNCj4+ICAgCQlbQlEyN1hYWF9SRUdf
-TkFDXSA9IDB4MGMsDQo+PiArCQlbQlEyN1hYWF9SRUdfUkNdID0gMHgxMCwNCj4+ICAgCQlbQlEy
-N1hYWF9SRUdfRkNDXSA9IDB4MTIsDQo+PiAgIAkJW0JRMjdYWFhfUkVHX0NZQ1RdID0gMHgyYSwN
-Cj4+ICAgCQlbQlEyN1hYWF9SRUdfQUVdID0gSU5WQUxJRF9SRUdfQUREUiwNCj4+IEBAIC0zODIs
-NiArMzk0LDcgQEAgc3RhdGljIHU4DQo+PiAgIAkJW0JRMjdYWFhfUkVHX1RURVNdID0gSU5WQUxJ
-RF9SRUdfQUREUiwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfVFRFQ1BdID0gSU5WQUxJRF9SRUdfQURE
-UiwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfTkFDXSA9IDB4MGMsDQo+PiArCQlbQlEyN1hYWF9SRUdf
-UkNdID0gMHgxMCwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfRkNDXSA9IDB4MTIsDQo+PiAgIAkJW0JR
-MjdYWFhfUkVHX0NZQ1RdID0gMHgyYSwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfQUVdID0gSU5WQUxJ
-RF9SRUdfQUREUiwNCj4+IEBAIC00MDUsNiArNDE4LDcgQEAgc3RhdGljIHU4DQo+PiAgIAkJW0JR
-MjdYWFhfUkVHX1RURVNdID0gSU5WQUxJRF9SRUdfQUREUiwNCj4+ICAgCQlbQlEyN1hYWF9SRUdf
-VFRFQ1BdID0gSU5WQUxJRF9SRUdfQUREUiwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfTkFDXSA9IDB4
-MGMsDQo+PiArCQlbQlEyN1hYWF9SRUdfUkNdID0gMHgxMCwNCj4+ICAgCQlbQlEyN1hYWF9SRUdf
-RkNDXSA9IDB4MTIsDQo+PiAgIAkJW0JRMjdYWFhfUkVHX0NZQ1RdID0gMHgyYSwNCj4+ICAgCQlb
-QlEyN1hYWF9SRUdfQUVdID0gSU5WQUxJRF9SRUdfQUREUiwNCj4+IEBAIC00MjUsNiArNDM5LDcg
-QEAgc3RhdGljIHU4DQo+PiAgIAkJW0JRMjdYWFhfUkVHX1RURVNdID0gSU5WQUxJRF9SRUdfQURE
-UiwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfVFRFQ1BdID0gSU5WQUxJRF9SRUdfQUREUiwNCj4+ICAg
-CQlbQlEyN1hYWF9SRUdfTkFDXSA9IDB4MDgsDQo+PiArCQlbQlEyN1hYWF9SRUdfUkNdID0gMHgw
-YywNCj4+ICAgCQlbQlEyN1hYWF9SRUdfRkNDXSA9IDB4MGUsDQo+PiAgIAkJW0JRMjdYWFhfUkVH
-X0NZQ1RdID0gSU5WQUxJRF9SRUdfQUREUiwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfQUVdID0gSU5W
-QUxJRF9SRUdfQUREUiwNCj4+IEBAIC00NTAsNiArNDY1LDcgQEAgc3RhdGljIHU4DQo+PiAgIAkJ
-W0JRMjdYWFhfUkVHX1RURVNdID0gSU5WQUxJRF9SRUdfQUREUiwNCj4+ICAgCQlbQlEyN1hYWF9S
-RUdfVFRFQ1BdID0gSU5WQUxJRF9SRUdfQUREUiwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfTkFDXSA9
-IElOVkFMSURfUkVHX0FERFIsDQo+PiArCQlbQlEyN1hYWF9SRUdfUkNdID0gMHgxMCwNCj4+ICAg
-CQlbQlEyN1hYWF9SRUdfRkNDXSA9IDB4MTIsDQo+PiAgIAkJW0JRMjdYWFhfUkVHX0NZQ1RdID0g
-MHgyYSwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfQUVdID0gMHgyMiwNCj4+IEBAIC00NzAsNiArNDg2
-LDcgQEAgc3RhdGljIHU4DQo+PiAgIAkJW0JRMjdYWFhfUkVHX1RURVNdID0gSU5WQUxJRF9SRUdf
-QUREUiwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfVFRFQ1BdID0gSU5WQUxJRF9SRUdfQUREUiwNCj4+
-ICAgCQlbQlEyN1hYWF9SRUdfTkFDXSA9IElOVkFMSURfUkVHX0FERFIsDQo+PiArCQlbQlEyN1hY
-WF9SRUdfUkNdID0gMHgxMCwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfRkNDXSA9IDB4MTIsDQo+PiAg
-IAkJW0JRMjdYWFhfUkVHX0NZQ1RdID0gMHgyYSwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfQUVdID0g
-MHgyMiwNCj4+IEBAIC00OTAsNiArNTA3LDcgQEAgc3RhdGljIHU4DQo+PiAgIAkJW0JRMjdYWFhf
-UkVHX1RURVNdID0gMHgxZSwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfVFRFQ1BdID0gSU5WQUxJRF9S
-RUdfQUREUiwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfTkFDXSA9IElOVkFMSURfUkVHX0FERFIsDQo+
-PiArCQlbQlEyN1hYWF9SRUdfUkNdID0gMHgwNCwNCj4+ICAgCQlbQlEyN1hYWF9SRUdfRkNDXSA9
-IDB4MDYsDQo+PiAgIAkJW0JRMjdYWFhfUkVHX0NZQ1RdID0gMHgyYywNCj4+ICAgCQlbQlEyN1hY
-WF9SRUdfQUVdID0gMHgyNCwNCj4+IEBAIC03NDUsNiArNzYzLDcgQEAgc3RhdGljIGVudW0gcG93
-ZXJfc3VwcGx5X3Byb3BlcnR5IGJxMjd6NTYxX3Byb3BzW10gPSB7DQo+PiAgIAlQT1dFUl9TVVBQ
-TFlfUFJPUF9USU1FX1RPX0ZVTExfTk9XLA0KPj4gICAJUE9XRVJfU1VQUExZX1BST1BfVEVDSE5P
-TE9HWSwNCj4+ICAgCVBPV0VSX1NVUFBMWV9QUk9QX0NIQVJHRV9GVUxMLA0KPj4gKwlQT1dFUl9T
-VVBQTFlfUFJPUF9DSEFSR0VfTk9XLA0KPj4gICAJUE9XRVJfU1VQUExZX1BST1BfQ0hBUkdFX0ZV
-TExfREVTSUdOLA0KPj4gICAJUE9XRVJfU1VQUExZX1BST1BfQ1lDTEVfQ09VTlQsDQo+PiAgIAlQ
-T1dFUl9TVVBQTFlfUFJPUF9QT1dFUl9BVkcsDQo+PiBAQCAtNzY0LDYgKzc4Myw3IEBAIHN0YXRp
-YyBlbnVtIHBvd2VyX3N1cHBseV9wcm9wZXJ0eSBicTI4ejYxMF9wcm9wc1tdID0gew0KPj4gICAJ
-UE9XRVJfU1VQUExZX1BST1BfVElNRV9UT19GVUxMX05PVywNCj4+ICAgCVBPV0VSX1NVUFBMWV9Q
-Uk9QX1RFQ0hOT0xPR1ksDQo+PiAgIAlQT1dFUl9TVVBQTFlfUFJPUF9DSEFSR0VfRlVMTCwNCj4+
-ICsJUE9XRVJfU1VQUExZX1BST1BfQ0hBUkdFX05PVywNCj4+ICAgCVBPV0VSX1NVUFBMWV9QUk9Q
-X0NIQVJHRV9GVUxMX0RFU0lHTiwNCj4+ICAgCVBPV0VSX1NVUFBMWV9QUk9QX0NZQ0xFX0NPVU5U
-LA0KPj4gICAJUE9XRVJfU1VQUExZX1BST1BfUE9XRVJfQVZHLA0KPj4gQEAgLTc4NCw2ICs4MDQs
-NyBAQCBzdGF0aWMgZW51bSBwb3dlcl9zdXBwbHlfcHJvcGVydHkgYnEzNHoxMDBfcHJvcHNbXSA9
-IHsNCj4+ICAgCVBPV0VSX1NVUFBMWV9QUk9QX1RJTUVfVE9fRlVMTF9OT1csDQo+PiAgIAlQT1dF
-Ul9TVVBQTFlfUFJPUF9URUNITk9MT0dZLA0KPj4gICAJUE9XRVJfU1VQUExZX1BST1BfQ0hBUkdF
-X0ZVTEwsDQo+PiArCVBPV0VSX1NVUFBMWV9QUk9QX0NIQVJHRV9OT1csDQo+PiAgIAlQT1dFUl9T
-VVBQTFlfUFJPUF9DSEFSR0VfRlVMTF9ERVNJR04sDQo+PiAgIAlQT1dFUl9TVVBQTFlfUFJPUF9D
-WUNMRV9DT1VOVCwNCj4+ICAgCVBPV0VSX1NVUFBMWV9QUk9QX0VORVJHWV9OT1csDQo+PiBAQCAt
-MTUxOCw2ICsxNTM5LDE1IEBAIHN0YXRpYyBpbmxpbmUgaW50IGJxMjd4eHhfYmF0dGVyeV9yZWFk
-X25hYyhzdHJ1Y3QgYnEyN3h4eF9kZXZpY2VfaW5mbyAqZGkpDQo+PiAgIAlyZXR1cm4gYnEyN3h4
-eF9iYXR0ZXJ5X3JlYWRfY2hhcmdlKGRpLCBCUTI3WFhYX1JFR19OQUMpOw0KPj4gICB9DQo+PiAg
-IA0KPj4gKy8qDQo+PiArICogUmV0dXJuIHRoZSBiYXR0ZXJ5IFJlbWFpbmluZyBDYXBhY2l0eSBp
-biDCtUFoDQo+PiArICogT3IgPCAwIGlmIHNvbWV0aGluZyBmYWlscy4NCj4+ICsgKi8NCj4+ICtz
-dGF0aWMgaW5saW5lIGludCBicTI3eHh4X2JhdHRlcnlfcmVhZF9yYyhzdHJ1Y3QgYnEyN3h4eF9k
-ZXZpY2VfaW5mbyAqZGkpDQo+PiArew0KPj4gKwlyZXR1cm4gYnEyN3h4eF9iYXR0ZXJ5X3JlYWRf
-Y2hhcmdlKGRpLCBCUTI3WFhYX1JFR19SQyk7DQo+PiArfQ0KPj4gKw0KPj4gICAvKg0KPj4gICAg
-KiBSZXR1cm4gdGhlIGJhdHRlcnkgRnVsbCBDaGFyZ2UgQ2FwYWNpdHkgaW4gwrVBaA0KPj4gICAg
-KiBPciA8IDAgaWYgc29tZXRoaW5nIGZhaWxzLg0KPj4gQEAgLTE5NjUsNyArMTk5NSwxMCBAQCBz
-dGF0aWMgaW50IGJxMjd4eHhfYmF0dGVyeV9nZXRfcHJvcGVydHkoc3RydWN0IHBvd2VyX3N1cHBs
-eSAqcHN5LA0KPj4gICAJCQl2YWwtPmludHZhbCA9IFBPV0VSX1NVUFBMWV9URUNITk9MT0dZX0xJ
-T047DQo+PiAgIAkJYnJlYWs7DQo+PiAgIAljYXNlIFBPV0VSX1NVUFBMWV9QUk9QX0NIQVJHRV9O
-T1c6DQo+PiAtCQlyZXQgPSBicTI3eHh4X3NpbXBsZV92YWx1ZShicTI3eHh4X2JhdHRlcnlfcmVh
-ZF9uYWMoZGkpLCB2YWwpOw0KPj4gKwkJaWYgKGRpLT5yZWdzW0JRMjdYWFhfUkVHX05BQ10gIT0g
-SU5WQUxJRF9SRUdfQUREUikNCj4+ICsJCQlyZXQgPSBicTI3eHh4X3NpbXBsZV92YWx1ZShicTI3
-eHh4X2JhdHRlcnlfcmVhZF9uYWMoZGkpLCB2YWwpOw0KPj4gKwkJZWxzZQ0KPj4gKwkJCXJldCA9
-IGJxMjd4eHhfc2ltcGxlX3ZhbHVlKGJxMjd4eHhfYmF0dGVyeV9yZWFkX3JjKGRpKSwgdmFsKTsN
-Cj4+ICAgCQlicmVhazsNCj4+ICAgCWNhc2UgUE9XRVJfU1VQUExZX1BST1BfQ0hBUkdFX0ZVTEw6
-DQo+PiAgIAkJcmV0ID0gYnEyN3h4eF9zaW1wbGVfdmFsdWUoZGktPmNhY2hlLmNoYXJnZV9mdWxs
-LCB2YWwpOw0KPj4gLS0gDQo+PiAyLjIwLjENCj4+DQoNCg==
+
+Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
+
+> On 12/22/20 11:45 AM, Mimi Zohar wrote:
+>> On Tue, 2020-12-22 at 10:53 -0800, Lakshmi Ramasubramanian wrote:
+>>> On 12/22/20 6:26 AM, Mimi Zohar wrote:
+>>>
+>>> Hi Mimi,
+>>>
+>>>>
+>>>> On Sat, 2020-12-19 at 09:57 -0800, Lakshmi Ramasubramanian wrote:
+>>>>>
+>>>>> diff --git a/arch/powerpc/kexec/Makefile b/arch/powerpc/kexec/Makefile
+>>>>> index 4aff6846c772..b6c52608cb49 100644
+>>>>> --- a/arch/powerpc/kexec/Makefile
+>>>>> +++ b/arch/powerpc/kexec/Makefile
+>>>>> @@ -9,13 +9,6 @@ obj-$(CONFIG_PPC32)		+= relocate_32.o
+>>>>>       obj-$(CONFIG_KEXEC_FILE)	+= file_load.o ranges.o
+>>>>> file_load_$(BITS).o elf_$(BITS).o
+>>>>>    -ifdef CONFIG_HAVE_IMA_KEXEC
+>>>>> -ifdef CONFIG_IMA
+>>>>> -obj-y				+= ima.o
+>>>>> -endif
+>>>>> -endif
+>>>>
+>>>> Notice how "kexec/ima.o" is only included if the architecture supports
+>>>> it and IMA is configured.  In addition only if CONFIG_IMA_KEXEC is
+>>>> configured, is the IMA measurement list carried across kexec.  After
+>>>> moving the rest of ima.c to drivers/of/kexec.c, this changes.   Notice
+>>>> how drivers/of/Kconfig includes kexec.o:
+>>>>
+>>>> obj-$(CONFIG_KEXEC_FILE) += kexec.o
+>>>>
+>>>> It is not dependent on CONFIG_HAVE_IMA_KEXEC.  Shouldn't all of the
+>>>> functions defined in ima.c being moved to kexec.o be defined within a
+>>>> CONFIG_HAVE_IMA_KEXEC ifdef?
+>>>>
+>>>
+>>> Thanks for reviewing the changes.
+>>>
+>>> In "drivers/of/kexec.c" the function remove_ima_buffer() is defined
+>>> under "#ifdef CONFIG_HAVE_IMA_KEXEC"
+>>>
+>>> setup_ima_buffer() is defined under "#ifdef CONFIG_IMA_KEXEC" - the same
+>>> way it was defined in "arch/powerpc/kexec/ima.c".
+>>>
+>>> As you know, CONFIG_IMA_KEXEC depends on CONFIG_HAVE_IMA_KEXEC (as
+>>> defined in "security/integrity/ima/Kconfig").
+>>>
+>>> ima_get_kexec_buffer() and ima_free_kexec_buffer() are unconditionally
+>>> defined in "drivers/of/kexec.c" even though they are called only when
+>>> CONFIG_HAVE_IMA_KEXEC is enabled. I will update these two functions to
+>>> be moved under "#ifdef CONFIG_HAVE_IMA_KEXEC"
+>> The issue is the reverse.  CONFIG_HAVE_IMA_KEXEC may be enabled without
+>> CONFIG_IMA_KEXEC being enabled.  This allows the architecture to
+>> support carrying the measurement list across kexec, but requires
+>> enabling it at build time.
+>> Only if CONFIG_HAVE_IMA_KEXEC is enabled should any of these functions
+>> be compiled at build.  This allows restoring the previous IMA
+>> measurement list, even if CONFIG_IMA_KEXEC is not enabled.
+>> Only if CONFIG_IMA_KEXEC is enabled, should carrying the measurement
+>> list across kexec be enabled.  See how arch_ima_add_kexec_buffer,
+>> write_number, setup_ima_buffer are ifdef'ed in
+>> arch/powerpc/kexec/ima.c.
+>> 
+>
+> Yes - I agree. I will make the following changes:
+>
+> => Enable the functions moved from "arch/powerpc/kexec/ima.c" to
+> "drivers/of/kexec.c" only when CONFIG_HAVE_IMA_KEXEC is enabled.
+>
+> => Also, compile write_number() and setup_ima_buffer() only when
+> CONFIG_IMA_KEXEC is enabled.
+
+Sounds good, with one additional change:
+
+So far, CONFIG_HAVE_IMA_KEXEC was tested only in files that were built
+when CONFIG_IMA was set. With this series this is not the case anymore
+(in drivers/of/kexec.c). The simplest way to keep this consistent is to
+only enable CONFIG_HAVE_IMA_KEXEC if CONFIG_IMA is also set.
+
+For example, with this:
+
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index e9f13fe08492..4ddd17215ecf 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -548,7 +548,7 @@ config KEXEC
+ config KEXEC_FILE
+ 	bool "kexec file based system call"
+ 	select KEXEC_CORE
+-	select HAVE_IMA_KEXEC
++	select HAVE_IMA_KEXEC if IMA
+ 	select BUILD_BIN2C
+ 	select KEXEC_ELF
+ 	depends on PPC64
+
+And then the same thing on the arm64 patch.
+
+-- 
+Thiago Jung Bauermann
+IBM Linux Technology Center
