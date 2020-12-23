@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C7E52E1312
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:28:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7514C2E1639
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:59:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730156AbgLWC1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:27:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55796 "EHLO mail.kernel.org"
+        id S1728894AbgLWCUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:20:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730856AbgLWC0T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:26:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA4B322482;
-        Wed, 23 Dec 2020 02:26:03 +0000 (UTC)
+        id S1727314AbgLWCTm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:19:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DD5F229C5;
+        Wed, 23 Dec 2020 02:19:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690364;
-        bh=/BtB7X0mFViLHPMe49bObwfi69oqmf3DXJFj3M85d+8=;
+        s=k20201202; t=1608689952;
+        bh=y4Yf4nMDHlDva8VK0qSvEb9qVjG00BlVP8FH46u0Dxw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UtIdjM2uJHwWphQa9NdhKnwb3XHY6li24nmGCWC+U4rpq7EcrlnfMY+bmjA3GSAk8
-         RHpEPtfHAVHGuQydN2GspjORMZnQV9eswwuLAbM7Nze+4vv7NJu77stMAYspY9LvVv
-         4whQkAxwHEUFhjwHRI0+q36w9PCZezrRsoaI6QB855xISECn6IFTLFGaxgBV8y4e80
-         9xSaYLpDMMv0gV13kGxLiHrNPGQboN7FapOKqGMvY0VQs5U0T36gNanHphuLkrN3vE
-         9buun2bMXxc3ByS/RdGJ3sZJshwEGmyp8fQyU+b/JV3N4sJexeq0m6IWepRK+Rcv2w
-         U0tDz2LQtFdpw==
+        b=UCGYjBhhwooxJFexTLNgGbS3AWqR5w1Dy0j0yJ5BOqFYaq1iU0uSrq8RAtv9glwEW
+         oh42Of0QadGADEW6+dl3+T38yYe35Moxx2FGVAdARve5+YKUJ6cm+TbnqERRM2K3os
+         bwYw8jVulvWLhu4eN4Q66RrwAxI6MPBBjsB/yYL5ynbYico+cpRSerKZZi/J9s/0Yh
+         uedyOlWNgl5ZpukYJ3x9I1NlBGUVHRM1YnbdpvKC3yZMTiBigbix+k0HlvSbMk0toc
+         KOYHCOkLp5Eg15Aqa3IQm+9Ps4z/lIM5O/PKvj+L/ASLg92YyE8bcBI8UK2qAS9l5y
+         zr2bMBp0Mkjyw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        John Smith <LK7S2ED64JHGLKj75shg9klejHWG49h5hk@protonmail.com>,
-        Sasha Levin <sashal@kernel.org>, linux-pci@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 38/38] PCI: Add function 1 DMA alias quirk for Marvell 9215 SATA controller
-Date:   Tue, 22 Dec 2020 21:25:16 -0500
-Message-Id: <20201223022516.2794471-38-sashal@kernel.org>
+Cc:     Zheng Liang <zhengliang6@huawei.com>,
+        Hulk Robot <hulkci@huawei.com>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>, linux-mmc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.4 045/130] mmc: mediatek: fix mem leak in msdc_drv_probe
+Date:   Tue, 22 Dec 2020 21:16:48 -0500
+Message-Id: <20201223021813.2791612-45-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201223022516.2794471-1-sashal@kernel.org>
-References: <20201223022516.2794471-1-sashal@kernel.org>
+In-Reply-To: <20201223021813.2791612-1-sashal@kernel.org>
+References: <20201223021813.2791612-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -42,35 +46,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bjorn Helgaas <bhelgaas@google.com>
+From: Zheng Liang <zhengliang6@huawei.com>
 
-[ Upstream commit 059983790a4c963d92943e55a61fca55be427d55 ]
+[ Upstream commit bbba85fae44134e00c493705bd5604fd63958315 ]
 
-Add function 1 DMA alias quirk for Marvell 88SS9215 PCIe SSD Controller.
+It should use mmc_free_host to free mem in error patch of
+msdc_drv_probe.
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=42679#c135
-Link: https://lore.kernel.org/r/20201110220516.697934-1-helgaas@kernel.org
-Reported-by: John Smith <LK7S2ED64JHGLKj75shg9klejHWG49h5hk@protonmail.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zheng Liang <zhengliang6@huawei.com>
+Reviewed-by: Chaotian Jing <chaotian.jing@mediatek.com>
+Link: https://lore.kernel.org/r/20201112092530.32446-1-zhengliang6@huawei.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/quirks.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/mmc/host/mtk-sd.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index bdaeccafa261b..bc0aa0849e72e 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -3649,6 +3649,9 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_MARVELL_EXT, 0x917a,
- /* https://bugzilla.kernel.org/show_bug.cgi?id=42679#c46 */
- DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_MARVELL_EXT, 0x91a0,
- 			 quirk_dma_func1_alias);
-+/* https://bugzilla.kernel.org/show_bug.cgi?id=42679#c135 */
-+DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_MARVELL_EXT, 0x9215,
-+			 quirk_dma_func1_alias);
- /* https://bugzilla.kernel.org/show_bug.cgi?id=42679#c127 */
- DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_MARVELL_EXT, 0x9220,
- 			 quirk_dma_func1_alias);
+diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
+index 9d47a2bd2546b..3c11bd5a3b86c 100644
+--- a/drivers/mmc/host/mtk-sd.c
++++ b/drivers/mmc/host/mtk-sd.c
+@@ -2242,8 +2242,10 @@ static int msdc_drv_probe(struct platform_device *pdev)
+ 
+ 	host->reset = devm_reset_control_get_optional_exclusive(&pdev->dev,
+ 								"hrst");
+-	if (IS_ERR(host->reset))
+-		return PTR_ERR(host->reset);
++	if (IS_ERR(host->reset)) {
++		ret = PTR_ERR(host->reset);
++		goto host_free;
++	}
+ 
+ 	host->irq = platform_get_irq(pdev, 0);
+ 	if (host->irq < 0) {
 -- 
 2.27.0
 
