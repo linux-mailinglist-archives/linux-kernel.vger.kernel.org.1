@@ -2,170 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB60C2E2230
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 22:40:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBF322E2236
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 22:41:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726685AbgLWVjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 16:39:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725536AbgLWVjV (ORCPT
+        id S1726923AbgLWVki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 16:40:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32112 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725270AbgLWVkh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 16:39:21 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37DA9C0617A6;
-        Wed, 23 Dec 2020 13:38:41 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id d17so982919ejy.9;
-        Wed, 23 Dec 2020 13:38:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=M/LQBu//i4RMgFaViCE8yWcfBThRAvtu9np9/z5UKcA=;
-        b=JZ8POMQIpp9nX9ywg7hCQh3AQe14rgom6PSXxOY75H/lREoS25BiYPMYZPSWQm/trh
-         RLExldw0tS/QtYvXDryEH8cDvhFLpVCyRxJT3HJXZaCsnfTJmBHfxWiRvq4Cp4glNTbd
-         QPiralQN9hM7AcznYpCqfD0DmPGnY9NUPAcDf8oGdpjFEzzZ8vXslWp2zbvLuCj8ouMU
-         Bg+1ruziIM+oEDPAJGtq+sV/pBB5UtoGydfSJDsbTuWHKxNuwLI+I6muSBgUtiWoOCos
-         ASLxBJhoBt0bpFCwmx+W21Gq5Mo7gmk4MhrjK/gF2m03gaWrBeQGe0sNLAA6zUbGPRT6
-         DX3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=M/LQBu//i4RMgFaViCE8yWcfBThRAvtu9np9/z5UKcA=;
-        b=lV4u5Sun7+29L7L3srwKYu1MgFqAFnXCUwk+pkJNkxH6Co0Hw49RrGERBj71iOlNfD
-         yQW4B+u66bdseHpqgPne860NpagpBbNY+VvD894S6naR9ma3/9fszrynmlPYvIFfwXEc
-         avQrebscfWXaDyfmfarfXWd8u2EZuiaZ9K2eLNlr+wcnXBJFCe2feh/c2RcTQ2woNPBS
-         R69IDlYwlYzFIeP/rqhIBuHPN3DjnQx+wKC3OwFqpi8F+qUT9qVb1f1bsUCT8lrh7w3w
-         LJAB+6GW2qA1MdVv+R5jk4isDX+13v3h+rjxyhXU4ZbMtUXdYv50KfR3T4vjTtyMHJvp
-         lQhQ==
-X-Gm-Message-State: AOAM531EwAmCW+1jYxJCVSIoy0nvWxTAm2ERqCC1TzqZPObet77n68Lf
-        /v2cKSgfQuUVG2+XVf74khk=
-X-Google-Smtp-Source: ABdhPJxiTEDxNroZp+SyHRVp7Kg5p38KDfFQ6UV5GxrQsfB8uydvCz2jxXpkAWtqFDp0ikoql4Zpdg==
-X-Received: by 2002:a17:906:94d4:: with SMTP id d20mr25475975ejy.475.1608759520016;
-        Wed, 23 Dec 2020 13:38:40 -0800 (PST)
-Received: from localhost.localdomain (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
-        by smtp.gmail.com with ESMTPSA id p12sm11896994ejc.116.2020.12.23.13.38.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Dec 2020 13:38:39 -0800 (PST)
-From:   Bean Huo <huobean@gmail.com>
-To:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
-        cang@codeaurora.org
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rjw@rjwysocki.net
-Subject: [PATCH v1 2/2] scsi: ufs: Add handling of the return value of pm_runtime_get_sync()
-Date:   Wed, 23 Dec 2020 22:38:26 +0100
-Message-Id: <20201223213826.20252-3-huobean@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201223213826.20252-1-huobean@gmail.com>
-References: <20201223213826.20252-1-huobean@gmail.com>
+        Wed, 23 Dec 2020 16:40:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608759550;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=n4KJUOQ5ygu+EEs0eGeRkAyIIxVGqGUkA4CfFbcmhdE=;
+        b=dKRNeKokM7953ig9GpA/D8VHXCIld4sC9AzkEenCnL+4qFXZqFfhTG7VQeB+m57jvlshwI
+        4fEPHKnfepeodhJK81jOxqXokYjCyQ/8lQsJqaLIHHBpRrKVrKxOQJcnJbUUohLt26l72J
+        HGCymxzlWbicmHzwKXLh/ZKc4q/hUKQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-464-IH7l51CUNKGXJql0Seo12g-1; Wed, 23 Dec 2020 16:39:06 -0500
+X-MC-Unique: IH7l51CUNKGXJql0Seo12g-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A7CFB803622;
+        Wed, 23 Dec 2020 21:39:04 +0000 (UTC)
+Received: from mail (ovpn-112-5.rdu2.redhat.com [10.10.112.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id F33BD614F5;
+        Wed, 23 Dec 2020 21:39:00 +0000 (UTC)
+Date:   Wed, 23 Dec 2020 16:39:00 -0500
+From:   Andrea Arcangeli <aarcange@redhat.com>
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+Message-ID: <X+O49HrcK1fBDk0Q@redhat.com>
+References: <1FCC8F93-FF29-44D3-A73A-DF943D056680@gmail.com>
+ <20201221223041.GL6640@xz-x1>
+ <CAHk-=wh-bG4thjXUekLtrCg8FRrdWjtT40ibXXLSm_hzQG8eOw@mail.gmail.com>
+ <CALCETrV=8tY7h=aaudWBEn-MJnNkm2wz5qjH49SYqwkjYTpOaA@mail.gmail.com>
+ <X+JJqK91plkBVisG@redhat.com>
+ <X+JhwVX3s5mU9ZNx@google.com>
+ <X+Js/dFbC5P7C3oO@redhat.com>
+ <X+KDwu1PRQ93E2LK@google.com>
+ <X+Kxy3oBMSLz8Eaq@redhat.com>
+ <X+K7JMrTEC9SpVIB@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X+K7JMrTEC9SpVIB@google.com>
+User-Agent: Mutt/2.0.3 (2020-12-04)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bean Huo <beanhuo@micron.com>
+On Tue, Dec 22, 2020 at 08:36:04PM -0700, Yu Zhao wrote:
+> Thanks for the details.
 
-The race issue may exist between UFS access in UFS sysfs context and UFS
-shutdown, thus will cause pm_runtime_get_sync() resume failure.
-Add handling of the return value of pm_runtime_get_sync(). Let it return
-in case pm_runtime_get_sync() resume failed.
+I hope we can find a way put the page_mapcount back where there's a
+page_count right now.
 
-Signed-off-by: Bean Huo <beanhuo@micron.com>
----
- drivers/scsi/ufs/ufs-sysfs.c | 38 ++++++++++++++++++++++++++++++------
- 1 file changed, 32 insertions(+), 6 deletions(-)
+If you're so worried about having to maintain a all defined well
+documented (or to be documented even better if you ACK it)
+marker/catcher for userfaultfd_writeprotect, I can't see how you could
+consider to maintain the page fault safe against any random code
+leaving too permissive TLB entries out of sync of the more restrictive
+pte permissions as it was happening with clear_refs_write, which
+worked by luck until page_mapcount was changed to page_count.
 
-diff --git a/drivers/scsi/ufs/ufs-sysfs.c b/drivers/scsi/ufs/ufs-sysfs.c
-index 0e1438485133..8e5e36e01bee 100644
---- a/drivers/scsi/ufs/ufs-sysfs.c
-+++ b/drivers/scsi/ufs/ufs-sysfs.c
-@@ -154,12 +154,17 @@ static ssize_t auto_hibern8_show(struct device *dev,
- 				 struct device_attribute *attr, char *buf)
- {
- 	u32 ahit;
-+	int ret;
- 	struct ufs_hba *hba = dev_get_drvdata(dev);
- 
- 	if (!ufshcd_is_auto_hibern8_supported(hba))
- 		return -EOPNOTSUPP;
- 
--	pm_runtime_get_sync(hba->dev);
-+	ret = pm_runtime_get_sync(hba->dev);
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(hba->dev);
-+		return ret;
-+	}
- 	ufshcd_hold(hba, false);
- 	ahit = ufshcd_readl(hba, REG_AUTO_HIBERNATE_IDLE_TIMER);
- 	ufshcd_release(hba);
-@@ -225,7 +230,12 @@ static ssize_t ufs_sysfs_read_desc_param(struct ufs_hba *hba,
- 	if (param_size > 8)
- 		return -EINVAL;
- 
--	pm_runtime_get_sync(hba->dev);
-+	ret = pm_runtime_get_sync(hba->dev);
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(hba->dev);
-+		return ret;
-+	}
-+
- 	ret = ufshcd_read_desc_param(hba, desc_id, desc_index,
- 				param_offset, desc_buf, param_size);
- 	pm_runtime_put_sync(hba->dev);
-@@ -594,7 +604,11 @@ static ssize_t _name##_show(struct device *dev,				\
- 	desc_buf = kzalloc(QUERY_DESC_MAX_SIZE, GFP_ATOMIC);		\
- 	if (!desc_buf)                                                  \
- 		return -ENOMEM;                                         \
--	pm_runtime_get_sync(hba->dev);					\
-+	ret = pm_runtime_get_sync(hba->dev);				\
-+	if (ret < 0) {							\
-+		pm_runtime_put_noidle(hba->dev);			\
-+		return ret;						\
-+	}								\
- 	ret = ufshcd_query_descriptor_retry(hba,			\
- 		UPIU_QUERY_OPCODE_READ_DESC, QUERY_DESC_IDN_DEVICE,	\
- 		0, 0, desc_buf, &desc_len);				\
-@@ -653,7 +667,11 @@ static ssize_t _name##_show(struct device *dev,				\
- 	struct ufs_hba *hba = dev_get_drvdata(dev);			\
- 	if (ufshcd_is_wb_flags(QUERY_FLAG_IDN##_uname))			\
- 		index = ufshcd_wb_get_query_index(hba);			\
--	pm_runtime_get_sync(hba->dev);					\
-+	ret = pm_runtime_get_sync(hba->dev);				\
-+	if (ret < 0) {							\
-+		pm_runtime_put_noidle(hba->dev);			\
-+		return ret;						\
-+	}								\
- 	ret = ufshcd_query_flag(hba, UPIU_QUERY_OPCODE_READ_FLAG,	\
- 		QUERY_FLAG_IDN##_uname, index, &flag);			\
- 	pm_runtime_put_sync(hba->dev);					\
-@@ -711,7 +729,11 @@ static ssize_t _name##_show(struct device *dev,				\
- 	u8 index = 0;							\
- 	if (ufshcd_is_wb_attrs(QUERY_ATTR_IDN##_uname))			\
- 		index = ufshcd_wb_get_query_index(hba);			\
--	pm_runtime_get_sync(hba->dev);					\
-+	ret = pm_runtime_get_sync(hba->dev);				\
-+	if (ret < 0) {							\
-+		pm_runtime_put_noidle(hba->dev);			\
-+		return ret;						\
-+	}								\
- 	ret = ufshcd_query_attr(hba, UPIU_QUERY_OPCODE_READ_ATTR,	\
- 		QUERY_ATTR_IDN##_uname, index, 0, &value);		\
- 	pm_runtime_put_sync(hba->dev);					\
-@@ -850,7 +872,11 @@ static ssize_t dyn_cap_needed_attribute_show(struct device *dev,
- 	u8 lun = ufshcd_scsi_to_upiu_lun(sdev->lun);
- 	int ret;
- 
--	pm_runtime_get_sync(hba->dev);
-+	ret = pm_runtime_get_sync(hba->dev);
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(hba->dev);
-+		return ret;
-+	}
- 	ret = ufshcd_query_attr(hba, UPIU_QUERY_OPCODE_READ_ATTR,
- 		QUERY_ATTR_IDN_DYN_CAP_NEEDED, lun, 0, &value);
- 	pm_runtime_put_sync(hba->dev);
--- 
-2.17.1
+page_count is far from optimal, but it is a feature it finally allowed
+us to notice that various code (clear_refs_write included apparently
+even after the fix) leaves stale too permissive TLB entries when it
+shouldn't.
+
+The question is only which way you prefer to fix clear_refs_write and
+I don't think we can deviate from those 3 methods that already exist
+today. So clear_refs_write will have to pick one of those and
+currently it's not falling in the same category with mprotect even
+after the fix.
+
+I think if clear_refs_write starts to take the mmap_write_lock and
+really start to operate like mprotect, only then we can consider to
+make userfaultfd_writeprotect also operate like mprotect.
+
+Even then I'd hope we can at least be allowed to make it operate like
+KSM write_protect_page for len <= HPAGE_PMD_SIZE, something that
+clear_refs_write cannot do since it works in O(N) and tends to scan
+everything at once, so there would be no point to optimize not to
+defer the flush, for a process with a tiny amount of virtual memory
+mapped.
+
+vm86 also should be fixed to fall in the same category with mprotect,
+since performance there is irrelevant.
+
+Thanks,
+Andrea
 
