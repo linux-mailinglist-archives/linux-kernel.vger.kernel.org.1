@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 438372E166C
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 04:10:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38AA42E1721
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 04:11:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728527AbgLWCTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:19:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46354 "EHLO mail.kernel.org"
+        id S1728401AbgLWDGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 22:06:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728479AbgLWCTF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:19:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 957A6221E5;
-        Wed, 23 Dec 2020 02:18:14 +0000 (UTC)
+        id S1728483AbgLWCTG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:19:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DDA64225AB;
+        Wed, 23 Dec 2020 02:18:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608689895;
-        bh=YsnGpQ60SFScxNogHK+LJ5qgKN29yodapC7t1SN1R6s=;
-        h=From:To:Cc:Subject:Date:From;
-        b=LwtqYI1r/nnaEG5L6bCJT3fSK6/QekXbyBE93+cgekRWNdAgq0UQlqB4PMc4H0KbY
-         71IMTWLlVqjDm+Fm4WbgcwY5Cw7D6x20w/uxe/Uloqpx5R28l06sRefLVWPOY3XGxf
-         klBH/AMStjGtfyQaharRd6ljolpuVOr/qEWh2YkCpLHLfCHqEfoYBoMrBnY/4P786j
-         dlOdxl7LmlUsR995ZebrtCqvWYUMXTTb6304s8cVmvTKuq8cjHu/N37m1DvTeupdFJ
-         rSiK7JqpkbAzRtkKzmWrQ+ABjMJ8NPp6wPItt+73ZBjyVlofv1szAvBuhlyH1BvgRq
-         TNkDrjv3sC1tQ==
+        s=k20201202; t=1608689896;
+        bh=9x/T/Z55N6/yaqi6zvXtK3CggfKRO3A/Ys2xb4KgvwU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=uIQ587/0/8ljrhayJMZzCfJlPJ5I6gyUYSVlvJqvtuae/CI2HTjRBjpe0Mw5lb9cE
+         rxAFZrrJX9iRfatsiruh6jQegYc0kB3AyM34vC7Bw2rysd4q7YoA4rcBwdHAmvtAc6
+         R2NuemuvublynxvInXSF4anGaMIhzkh+AQ4GC9YND9uQAfdgSuCTb+7pgsXLnC9bmk
+         IRMRxx2QfuDGrcZeTJbdUlt9O3kbUk+8dW2chiMmVpfmZLBt+Ne3UPiQfAMzuOSEVB
+         i5+eq/+A42yeFHy38vth77T/zTa7I7V8tIDBFm6WTET2pjs5DNBUZuusXQIN7TgZsA
+         RJDkzfVpfCfjg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Andrew Jeffery <andrew@aj.id.au>, Joel Stanley <joel@jms.id.au>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org
-Subject: [PATCH AUTOSEL 5.4 001/130] soc: aspeed-lpc-ctrl: Fail probe of lpc-ctrl if reserved memory is not aligned
-Date:   Tue, 22 Dec 2020 21:16:04 -0500
-Message-Id: <20201223021813.2791612-1-sashal@kernel.org>
+Cc:     Luo Meng <luomeng12@huawei.com>, Jeff Layton <jlayton@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-fsdevel@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 002/130] locks: Fix UBSAN undefined behaviour in flock64_to_posix_lock
+Date:   Tue, 22 Dec 2020 21:16:05 -0500
+Message-Id: <20201223021813.2791612-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20201223021813.2791612-1-sashal@kernel.org>
+References: <20201223021813.2791612-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -40,53 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrew Jeffery <andrew@aj.id.au>
+From: Luo Meng <luomeng12@huawei.com>
 
-[ Upstream commit 6bf4ddbe2b4805f0628922446a7e85e34013cd10 ]
+[ Upstream commit 16238415eb9886328a89fe7a3cb0b88c7335fe16 ]
 
-Alignment is a hardware constraint of the LPC2AHB bridge, and misaligned
-reserved memory will present as corrupted data.
+When the sum of fl->fl_start and l->l_len overflows,
+UBSAN shows the following warning:
 
-Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
-Reviewed-by: Joel Stanley <joel@jms.id.au>
-Link: https://lore.kernel.org/r/20191016233950.10100-1-andrew@aj.id.au
-Signed-off-by: Joel Stanley <joel@jms.id.au>
+UBSAN: Undefined behaviour in fs/locks.c:482:29
+signed integer overflow: 2 + 9223372036854775806
+cannot be represented in type 'long long int'
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0xe4/0x14e lib/dump_stack.c:118
+ ubsan_epilogue+0xe/0x81 lib/ubsan.c:161
+ handle_overflow+0x193/0x1e2 lib/ubsan.c:192
+ flock64_to_posix_lock fs/locks.c:482 [inline]
+ flock_to_posix_lock+0x595/0x690 fs/locks.c:515
+ fcntl_setlk+0xf3/0xa90 fs/locks.c:2262
+ do_fcntl+0x456/0xf60 fs/fcntl.c:387
+ __do_sys_fcntl fs/fcntl.c:483 [inline]
+ __se_sys_fcntl fs/fcntl.c:468 [inline]
+ __x64_sys_fcntl+0x12d/0x180 fs/fcntl.c:468
+ do_syscall_64+0xc8/0x5a0 arch/x86/entry/common.c:293
+ entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+Fix it by parenthesizing 'l->l_len - 1'.
+
+Signed-off-by: Luo Meng <luomeng12@huawei.com>
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soc/aspeed/aspeed-lpc-ctrl.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ fs/locks.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/soc/aspeed/aspeed-lpc-ctrl.c b/drivers/soc/aspeed/aspeed-lpc-ctrl.c
-index 01ed21e8bfee5..dd147af494fdf 100644
---- a/drivers/soc/aspeed/aspeed-lpc-ctrl.c
-+++ b/drivers/soc/aspeed/aspeed-lpc-ctrl.c
-@@ -4,6 +4,7 @@
-  */
+diff --git a/fs/locks.c b/fs/locks.c
+index b8a31c1c4fff3..323e6ee6a6533 100644
+--- a/fs/locks.c
++++ b/fs/locks.c
+@@ -542,7 +542,7 @@ static int flock64_to_posix_lock(struct file *filp, struct file_lock *fl,
+ 	if (l->l_len > 0) {
+ 		if (l->l_len - 1 > OFFSET_MAX - fl->fl_start)
+ 			return -EOVERFLOW;
+-		fl->fl_end = fl->fl_start + l->l_len - 1;
++		fl->fl_end = fl->fl_start + (l->l_len - 1);
  
- #include <linux/clk.h>
-+#include <linux/log2.h>
- #include <linux/mfd/syscon.h>
- #include <linux/miscdevice.h>
- #include <linux/mm.h>
-@@ -241,6 +242,18 @@ static int aspeed_lpc_ctrl_probe(struct platform_device *pdev)
- 
- 		lpc_ctrl->mem_size = resource_size(&resm);
- 		lpc_ctrl->mem_base = resm.start;
-+
-+		if (!is_power_of_2(lpc_ctrl->mem_size)) {
-+			dev_err(dev, "Reserved memory size must be a power of 2, got %u\n",
-+			       (unsigned int)lpc_ctrl->mem_size);
-+			return -EINVAL;
-+		}
-+
-+		if (!IS_ALIGNED(lpc_ctrl->mem_base, lpc_ctrl->mem_size)) {
-+			dev_err(dev, "Reserved memory must be naturally aligned for size %u\n",
-+			       (unsigned int)lpc_ctrl->mem_size);
-+			return -EINVAL;
-+		}
- 	}
- 
- 	lpc_ctrl->regmap = syscon_node_to_regmap(
+ 	} else if (l->l_len < 0) {
+ 		if (fl->fl_start + l->l_len < 0)
 -- 
 2.27.0
 
