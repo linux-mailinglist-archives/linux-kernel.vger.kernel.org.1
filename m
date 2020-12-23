@@ -2,91 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2D5F2E20A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 20:03:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E982E20A7
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 20:03:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728306AbgLWS6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 13:58:54 -0500
-Received: from aquckbulck.top ([117.50.12.210]:42437 "EHLO aquckbulck.top"
+        id S1728372AbgLWS7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 13:59:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727207AbgLWS6x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 13:58:53 -0500
-X-Greylist: delayed 641 seconds by postgrey-1.27 at vger.kernel.org; Wed, 23 Dec 2020 13:58:52 EST
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; s=default; d=aquckbulck.top;
- h=Reply-To:From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding; i=sales@aquckbulck.top;
- bh=MDtVvOBFMmp+704YsIBqQ6FpA/M=;
- b=S/gPP7sAcdqHA0cmrF/tJ2LILxedCXXdh93nspKWwmVm6erSrPeQN91Wa6QUQPnNskVBQ+gYxfIA
-   d7y8t0qAEML0/3AAvrkKoBHmtoF3ZNDUgp5xoX2Rvut9aMZtNw38YSvW8ITyrIn0EOKesRx+J8ke
-   xwrFglxpmnVF23lIEUQ=
-DomainKey-Signature: a=rsa-sha1; c=nofws; q=dns; s=default; d=aquckbulck.top;
- b=MU6uUPWVB+SQJCmBgs2culn26ERU3Ih4O5pvijia7Fr+z6REJ9tzxcJM0Rdv8Ig0f8LAGnds6PAV
-   9Zy59rQsz1rXOEPsiWLbtfxVEN4MmcB9zDwOeWU3VPhxuEEWIgTDtG83z7/Jg+eaoLDwzhB3e9fo
-   wgUfsq4w61DExqiXCD4=;
-Reply-To: andrewgraham267@gmail.com
-From:   TWP PROGRAM 2021 <sales@aquckbulck.top>
-To:     linux-kernel@vger.kernel.org
-Subject: =?UTF-8?B?TWFucG93ZXIgUmVjcnVpdG1lbnQgRm9yIENhbmFkYeKEog==?=
-Date:   23 Dec 2020 19:47:23 +0100
-Message-ID: <20201223194723.BAD384C23953D7F0@aquckbulck.top>
+        id S1727207AbgLWS7J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 13:59:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AAA122225;
+        Wed, 23 Dec 2020 18:58:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608749909;
+        bh=vLh2hwI5HuBwbica7jhrzWGB4C1u8uENLeADqYz1zP0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=i3BYi4+ftGJxXXuiQskbCYWpUaAwk94LoSBVURpDdXd3wscMqTVftY2QIS5w6KvB0
+         QZw53KT7FHi0lzITD7KhRVwls2r5OwlRvjYbpaK0OrF0mUJhFcshgLQ2mgeoiRkX2W
+         aJ+fKU8J8TRynf3z/nx1WbGupuLrz5NSxLKQMgaIy3KJ7LcBdoXW7AOx04BvnlVRBX
+         9woO57e6gWfU3jDC2J5/PEyUxRAwpKDd1QlI8o572YmXg4UojP8q7+7uIKHE5G5zr9
+         EnDe6CrtWrvIR0gobOOyuocIsZuIqywUC4pnps+AQRQ1nFjFlXqXYyKwzGnlvOhgQn
+         TjwApfAaZ9Wtg==
+Date:   Wed, 23 Dec 2020 12:58:27 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Alexander Lobakin <alobakin@pm.me>, Vidya Sagar <vidyas@nvidia.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Rob Herring <robh@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH pci] PCI: dwc: fix inverted condition of DMA mask setup
+ warning
+Message-ID: <20201223185827.GA312001@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201222150708.67983-1-alobakin@pm.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Sir/Madam,
+On Tue, Dec 22, 2020 at 03:07:43PM +0000, Alexander Lobakin wrote:
+> Commit 660c486590aa ("PCI: dwc: Set 32-bit DMA mask for MSI target
+> address allocation") added dma_mask_set() call to explicitly set
+> 32-bit DMA mask for MSI message mapping, but for now it throws a
+> warning on ret == 0, while dma_set_mask() returns 0 in case of
+> success.
+> Fix this by inverting the condition.
+> 
+> Misc: remove redundant braces around single statement.
+> 
+> Fixes: 660c486590aa ("PCI: dwc: Set 32-bit DMA mask for MSI target address allocation")
+> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
 
-We are authorized to recruit 120 unskilled workers to work in=20
-Canada on a two years contract. Please kindly let us know if you=20
-can supply the same workers as my client's requirements for the=20
-following positions. Fish Packers, Cleaners, Laborers, Fruit=20
-packers, Supervisors, supermarket manager, salesman/woman,=20
-Storekeeper, Ground Maintenance, Gardener, Truck Drivers.
-Age from 20 to 55 years old is eligible to work, Primary=20
-Location: Montreal Quebec Canada.
+I joined the string to make it greppable and applied to for-linus for
+v5.11, thanks!
 
-NOTE: No qualification is needed.
+Vidya, speak up if this isn't right.  I assume you should have seen
+this spurious warning while testing 660c486590aa.
 
-TERMS AND CONDITIONS:
-
-1. Accommodation =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 - Provided.
-2. Ticket =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0-Pr=
-ovided.
-3. Medical =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 - Provid=
-ed.
-4. Transportation =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0- Provided.
-5. Working hours =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 - 8a.m-4p.m [Mon-Sat]
-6. Vacation =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0- 28.5 d=
-ays every year
-7. Salary =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0- C=
-a$20 per hourly
-8. Contract =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0- 2 year=
-s. Renewable
-9. Extra time =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0- Ca$22per ho=
-urly
-10. Insurance & Pension =C2=A0 =C2=A0 - According to Quebec Labor laws.
-11. Requirement =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 120 worker=
-s
-12. job description =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Laborers
-13. Skilled required =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Physically fit
-Other Benefits =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Famil=
-y Status, group benefit, and=20
-other fringe benefits.
-
-
-If you need more information regards to this recruitment please=20
-feel free to contact us at your most convenient time. Your Quick=20
-and Favorable Response would be highly appreciated.
-
-Best Regards
-
-
-Mr. Andrew Graham
-7450 Rue des Loutres
-Quebec City,
-Canada
-Phone: +1-581-533-6655
-Whats-app: +1-581-533-6655
-E-mail | andrewgraham267@gmail.com=20
+> ---
+>  drivers/pci/controller/dwc/pcie-designware-host.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+> index 516b151e0ef3..fa40cc2e376f 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
+> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+> @@ -397,12 +397,11 @@ int dw_pcie_host_init(struct pcie_port *pp)
+>  							    pp);
+>  
+>  			ret = dma_set_mask(pci->dev, DMA_BIT_MASK(32));
+> -			if (!ret) {
+> +			if (ret)
+>  				dev_warn(pci->dev,
+>  					 "Failed to set DMA mask to 32-bit. "
+>  					 "Devices with only 32-bit MSI support"
+>  					 " may not work properly\n");
+> -			}
+>  
+>  			pp->msi_data = dma_map_single_attrs(pci->dev, &pp->msi_msg,
+>  						      sizeof(pp->msi_msg),
+> -- 
+> 2.29.2
+> 
+> 
