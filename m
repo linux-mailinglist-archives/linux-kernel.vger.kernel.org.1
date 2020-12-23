@@ -2,278 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93E2E2E1A2B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 09:55:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9133E2E1A2F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 09:55:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728226AbgLWIxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 03:53:49 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:35321 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727050AbgLWIxt (ORCPT
+        id S1728257AbgLWIyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 03:54:06 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:51614 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727050AbgLWIyF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 03:53:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1608713628; x=1640249628;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=TSmKTyHc2jaui3o38iq/w2NSuARTV6K4GQMrYPxvfFg=;
-  b=pMupRQ2vsotGqoUpfq6lkj9CRv/HXxEXWygW83oDOe8GKjh2nh1NB1iz
-   2/IQHgV2HA6WF6ScUnqXAPJx/LZOkjtI3jFAPiIGJ4mCIU8qD3GkwZtpx
-   OGFCJjnfFttjL9MkGuIgJbqc/FUQElx6wgeYcGwDwCkvaRezLolr4ZsDk
-   ybJtrPB3mYjsrGB3vP9L4eln7fz2L6h3v+fBIjPGYd3sjGzcLguw9+BLh
-   f6qsCwVVgG0H4pJE7d2S4jEMviJxeDjpkhCl4W0r+ftBXmXjE+KxIS8El
-   0D5fKsXYBzepNKIu4enB3Jbzawb8fcg3zd+eQmfO/3Nz12Uv0ystmiXvs
-   A==;
-IronPort-SDR: oqx7q5fJZOzirDPEeRjA8eOJtP5WwuF6PgDQSPJWjLNbjG/lyWXRvP81auxsOD7Vx0ijzF4snx
- acbKM0xWl8MIdtCoeM7s0jCy+XnSGkabZaaCnlNb2qq9EvGn/Xo1HbvfxfHSKRAA5amhWwZ6LH
- ywNICLI0k5W9p+bRrMiaadAPM01cs1d6AqngfwxPAp4tguTmtGghIx4lhNfpM/ILV1AS/3s45G
- w5DXGQ7v//FKRrZ1fg4NGh8TI1mFZynwWB337adEyTk3r2YQ34nMpGOOmFCSice3cFANRRAEHG
- Uek=
-X-IronPort-AV: E=Sophos;i="5.78,441,1599548400"; 
-   d="scan'208";a="103259080"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Dec 2020 01:52:23 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 23 Dec 2020 01:52:22 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Wed, 23 Dec 2020 01:52:22 -0700
-Date:   Wed, 23 Dec 2020 09:52:21 +0100
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Mark Einon <mark.einon@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [RFC PATCH v2 2/8] net: sparx5: add the basic sparx5 driver
-Message-ID: <20201223085221.3yu4qpp2erjqqp3b@mchp-dev-shegelun>
-References: <20201217075134.919699-1-steen.hegelund@microchip.com>
- <20201217075134.919699-3-steen.hegelund@microchip.com>
- <20201219191157.GC3026679@lunn.ch>
- <37309f64bf0bb94e55bc2db4c482c1e3e7f1be6f.camel@microchip.com>
- <20201222150122.GM3107610@lunn.ch>
+        Wed, 23 Dec 2020 03:54:05 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4577AA32;
+        Wed, 23 Dec 2020 09:53:22 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1608713602;
+        bh=5GX1JyWecfHUWLK8aJoyu/c1Nfv3NybhlapwK2TIvfg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vpK417Fq/kdfUVcjxPTtpHUBXkxREiKupacdBYQhgg/YxZXu3QTY1iF7qIuCeU4ID
+         Mz0tjpvl2BMMqDr39rADhH6rbLiETlLPSmmt7JxyMornJ/TZdNjpP76z++EDz/UHx+
+         rCW/zB7niGjKBlve9Z6jpVnqSE7Tk5gksbR7fUi0=
+Date:   Wed, 23 Dec 2020 10:53:14 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Ricardo Ribalda <ribalda@chromium.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 04/11] media: uvcvideo: Add
+ uvc_ctrl_status_event_direct
+Message-ID: <X+MFevKFqk+ESlzo@pendragon.ideasonboard.com>
+References: <20201222230446.1027916-1-ribalda@chromium.org>
+ <20201222230446.1027916-5-ribalda@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201222150122.GM3107610@lunn.ch>
+In-Reply-To: <20201222230446.1027916-5-ribalda@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.12.2020 16:01, Andrew Lunn wrote:
->EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->
->> > > +static void sparx5_board_init(struct sparx5 *sparx5)
->> > > +{
->> > > +     int idx;
->> > > +
->> > > +     if (!sparx5->sd_sgpio_remapping)
->> > > +             return;
->> > > +
->> > > +     /* Enable SGPIO Signal Detect remapping */
->> > > +     spx5_rmw(GCB_HW_SGPIO_SD_CFG_SD_MAP_SEL,
->> > > +              GCB_HW_SGPIO_SD_CFG_SD_MAP_SEL,
->> > > +              sparx5,
->> > > +              GCB_HW_SGPIO_SD_CFG);
->> > > +
->> > > +     /* Refer to LOS SGPIO */
->> > > +     for (idx = 0; idx < SPX5_PORTS; idx++) {
->> > > +             if (sparx5->ports[idx]) {
->> > > +                     if (sparx5->ports[idx]->conf.sd_sgpio != ~0)
->> > > {
->> > > +                             spx5_wr(sparx5->ports[idx]-
->> > > >conf.sd_sgpio,
->> > > +                                     sparx5,
->> > > +
->> > > GCB_HW_SGPIO_TO_SD_MAP_CFG(idx));
->> > > +                     }
->> > > +             }
->> > > +     }
->> > > +}
->> >
->> > I've not looked at how you do SFP integration yet. Is this the LOS
->> > from the SFP socket? Is there a Linux GPIO controller exported by
->> > this
->> > driver, so the SFP driver can use the GPIOs?
->>
->> Yes the SFP driver (used by the Sparx5 SerDes driver) will use the
->> SGPIO LOS, Module Detect etc, and the Port Modules are aware of the
->> location of the LOS, and use this by default without any driver
->> configuration.
->> But on the PCB134 the SGPIOs are shifted one bit by a mistake, and they
->> are not located in the expected position, so we have this board
->> remapping function to handle that aspect.
->
->Is it possible to turn this off in the hardware? It might be less
->confusing if LOS it determined by phylink, not phylink and the switch
->itself. Especially when we get into race conditions between PHYLINK
->polling the GPIO and the hardware taking the short cut?
->
-OK - I get you point, but I think the message I got when investigating
-this, was that it was not possible to turn it off.  I will check that
-again.
-On the other hand this is also used by our bare-metal API (MESA) so in
-that context it simpifies the setup, since the port modules are aware of
-the SFP state.
->
->> > > +static int mchp_sparx5_probe(struct platform_device *pdev)
->> > > +{
->> > > +     struct device_node *np = pdev->dev.of_node;
->> > > +     struct sparx5 *sparx5;
->> > > +     struct device_node *ports, *portnp;
->> > > +     const u8 *mac_addr;
->> > > +     int err = 0;
->> > > +
->> > > +     if (!np && !pdev->dev.platform_data)
->> > > +             return -ENODEV;
->> > > +
->> > > +     sparx5 = devm_kzalloc(&pdev->dev, sizeof(*sparx5),
->> > > GFP_KERNEL);
->> > > +     if (!sparx5)
->> > > +             return -ENOMEM;
->> > > +
->> > > +     platform_set_drvdata(pdev, sparx5);
->> > > +     sparx5->pdev = pdev;
->> > > +     sparx5->dev = &pdev->dev;
->> > > +
->> > > +     /* Default values, some from DT */
->> > > +     sparx5->coreclock = SPX5_CORE_CLOCK_DEFAULT;
->> > > +
->> > > +     mac_addr = of_get_mac_address(np);
->> > > +     if (IS_ERR_OR_NULL(mac_addr)) {
->> > > +             dev_info(sparx5->dev, "MAC addr was not set, use
->> > > random MAC\n");
->> > > +             eth_random_addr(sparx5->base_mac);
->> > > +             sparx5->base_mac[5] = 0;
->> > > +     } else {
->> > > +             ether_addr_copy(sparx5->base_mac, mac_addr);
->> > > +     }
->> >
->> > The binding document does not say anything about a MAC address at the
->> > top level. What is this used for?
->>
->> This the base MAC address used for generating the the switch NI's MAC
->> addresses.
->
->Yes, that is obvious from the code. But all DT properties must be in
->the binding Documentation. The DT verifier is going to complain when
->it finds a mac-address property which is not described in the yaml
->file.
+Hi Ricardo,
 
-I will add a description for the MAC address to the bindings.
+Thank you for the patch.
 
->
->> > > +             config.media_type = ETH_MEDIA_DAC;
->> > > +             config.serdes_reset = true;
->> > > +             config.portmode = config.phy_mode;
->> > > +             err = sparx5_probe_port(sparx5, portnp, serdes,
->> > > portno, &config);
->> > > +             if (err) {
->> > > +                     dev_err(sparx5->dev, "port probe error\n");
->> > > +                     goto cleanup_ports;
->> > > +             }
->> > > +     }
->> > > +     sparx5_board_init(sparx5);
->> > > +
->> > > +cleanup_ports:
->> > > +     return err;
->> >
->> > Seems missed named, no cleanup.
->>
->> Ah - this comes later (as the driver was split in functional groups for
->> reviewing). I hope this is OK, as it is only temporary - I could add a
->> comment to that effect.
->
->Yes, this is fine. Here, and in other places, a comment like:
->
->/* More code to be added in later patches */
->
->would of been nice, just as a heads up. That is the problem with
->linear patch review.
+On Wed, Dec 23, 2020 at 12:04:39AM +0100, Ricardo Ribalda wrote:
+> Provide a code path for events that can be sent without a work-queue,
+> this is, that do not belong to an URB and are not handled in the top
+> half on an irq-handled.
+> 
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> ---
+>  drivers/media/usb/uvc/uvc_ctrl.c | 35 +++++++++++++++++++++++++++-----
+>  drivers/media/usb/uvc/uvcvideo.h |  2 ++
+>  2 files changed, 32 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
+> index 9f6174a10e73..5fe228a3213b 100644
+> --- a/drivers/media/usb/uvc/uvc_ctrl.c
+> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
+> @@ -1254,17 +1254,14 @@ static void uvc_ctrl_send_slave_event(struct uvc_video_chain *chain,
+>  	uvc_ctrl_send_event(chain, handle, ctrl, mapping, val, changes);
+>  }
+>  
+> -static void uvc_ctrl_status_event_work(struct work_struct *work)
+> +static void __uvc_ctrl_status_event(struct uvc_device *dev,
+> +				    struct uvc_ctrl_work *w)
 
-Will do
->
->> > > +static int __init sparx5_switch_reset(void)
->> > > +{
->> > > +     const char *syscon_cpu = "microchip,sparx5-cpu-syscon",
->> > > +             *syscon_gcb = "microchip,sparx5-gcb-syscon";
->> > > +     struct regmap *cpu_ctrl, *gcb_ctrl;
->> > > +     u32 val;
->> > > +
->> > > +     cpu_ctrl = syscon_regmap_lookup_by_compatible(syscon_cpu);
->> > > +     if (IS_ERR(cpu_ctrl)) {
->> > > +             pr_err("No '%s' syscon map\n", syscon_cpu);
->> > > +             return PTR_ERR(cpu_ctrl);
->> > > +     }
->> > > +
->> > > +     gcb_ctrl = syscon_regmap_lookup_by_compatible(syscon_gcb);
->> > > +     if (IS_ERR(gcb_ctrl)) {
->> > > +             pr_err("No '%s' syscon map\n", syscon_gcb);
->> > > +             return PTR_ERR(gcb_ctrl);
->> > > +     }
->> > > +
->> > > +     /* Make sure the core is PROTECTED from reset */
->> > > +     regmap_update_bits(cpu_ctrl, RESET_PROT_STAT,
->> > > +                        SYS_RST_PROT_VCORE, SYS_RST_PROT_VCORE);
->> > > +
->> > > +     regmap_write(gcb_ctrl, spx5_offset(GCB_SOFT_RST),
->> > > +                  GCB_SOFT_RST_SOFT_SWC_RST_SET(1));
->> > > +
->> > > +     return readx_poll_timeout(sparx5_read_gcb_soft_rst, gcb_ctrl,
->> > > val,
->> > > +                               GCB_SOFT_RST_SOFT_SWC_RST_GET(val)
->> > > == 0,
->> > > +                               1, 100);
->> > > +}
->> > > +postcore_initcall(sparx5_switch_reset);
->> >
->> > That is pretty unusual. Why cannot this be done at probe time?
->>
->> The problem is that the switch core reset also affects (reset) the
->> SGPIO controller.
->>
->> We tried to put this in the reset driver, but it was rejected. If the
->> reset is done at probe time, the SGPIO driver may already have
->> initialized state.
->>
->> The switch core reset will then reset all SGPIO registers.
->
->Ah, O.K. Dumb question. Why is the SGPIO driver a separate driver? It
->sounds like it should be embedded inside this driver if it is sharing
->hardware.
+As this function doesn't deal with the work queue, should it receive the
+members of uvc_ctrl_work as direct arguments ? You could then drop the
+separate uvc_ctrl_status_event_direct(), or rather rename this function
+to uvc_ctrl_status_event_direct().
 
-The same SGPIO block is present (with suitable scaling of the number of
-SGPIOS) in all our switches, so this driver will be reused on all the
-platforms when we get them upstreamed (or at least that is the plan).
+Speaking of names, maybe uvc_ctrl_status_event() should be renamed to
+uvc_ctrl_status_event_async(), and this function become
+uvc_ctrl_status_event() ?
 
->
->Another option would be to look at the reset subsystem, and have this
->driver export a reset controller, which the SGPIO driver can bind to.
->Given that the GPIO driver has been merged, if this will work, it is
->probably a better solution.
+>  {
+> -	struct uvc_device *dev = container_of(work, struct uvc_device,
+> -					      async_ctrl.work);
+> -	struct uvc_ctrl_work *w = &dev->async_ctrl;
+>  	struct uvc_video_chain *chain = w->chain;
+>  	struct uvc_control_mapping *mapping;
+>  	struct uvc_control *ctrl = w->ctrl;
+>  	struct uvc_fh *handle;
+>  	unsigned int i;
+> -	int ret;
+>  
+>  	mutex_lock(&chain->ctrl_mutex);
+>  
+> @@ -1291,6 +1288,16 @@ static void uvc_ctrl_status_event_work(struct work_struct *work)
+>  	}
+>  
+>  	mutex_unlock(&chain->ctrl_mutex);
+> +}
+> +
+> +static void uvc_ctrl_status_event_work(struct work_struct *work)
+> +{
+> +	struct uvc_device *dev = container_of(work, struct uvc_device,
+> +					      async_ctrl.work);
+> +	struct uvc_ctrl_work *w = &dev->async_ctrl;
+> +	int ret;
+> +
+> +	__uvc_ctrl_status_event(dev, w);
+>  
+>  	/* Resubmit the URB. */
+>  	w->urb->interval = dev->int_ep->desc.bInterval;
+> @@ -1321,6 +1328,24 @@ bool uvc_ctrl_status_event(struct urb *urb, struct uvc_video_chain *chain,
+>  	return true;
+>  }
+>  
+> +void uvc_ctrl_status_event_direct(struct uvc_video_chain *chain,
+> +				  struct uvc_control *ctrl, const u8 *data)
+> +{
+> +	struct uvc_device *dev = chain->dev;
+> +	struct uvc_ctrl_work w;
+> +
+> +	if (list_empty(&ctrl->info.mappings)) {
+> +		ctrl->handle = NULL;
+> +		return;
+> +	}
+> +
+> +	w.data = data;
+> +	w.chain = chain;
+> +	w.ctrl = ctrl;
+> +
+> +	__uvc_ctrl_status_event(dev, &w);
+> +}
+> +
+>  static bool uvc_ctrl_xctrls_has_control(const struct v4l2_ext_control *xctrls,
+>  					unsigned int xctrls_count, u32 id)
+>  {
+> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+> index c50b0546901f..d7954dcc2b60 100644
+> --- a/drivers/media/usb/uvc/uvcvideo.h
+> +++ b/drivers/media/usb/uvc/uvcvideo.h
+> @@ -845,6 +845,8 @@ void uvc_ctrl_cleanup_device(struct uvc_device *dev);
+>  int uvc_ctrl_restore_values(struct uvc_device *dev);
+>  bool uvc_ctrl_status_event(struct urb *urb, struct uvc_video_chain *chain,
+>  			   struct uvc_control *ctrl, const u8 *data);
+> +void uvc_ctrl_status_event_direct(struct uvc_video_chain *chain,
+> +				  struct uvc_control *ctrl, const u8 *data);
+>  
+>  int uvc_ctrl_begin(struct uvc_video_chain *chain);
+>  int __uvc_ctrl_commit(struct uvc_fh *handle, int rollback,
 
-Alex has already commented on this, but this is probably the goal as I
-understand.
->
->       Andrew
+-- 
+Regards,
 
-
-BR
-Steen
-
----------------------------------------
-Steen Hegelund
-steen.hegelund@microchip.com
+Laurent Pinchart
