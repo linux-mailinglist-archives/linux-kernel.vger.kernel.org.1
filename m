@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 928C02E14F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:48:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06C132E14E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:48:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731123AbgLWCqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:46:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51348 "EHLO mail.kernel.org"
+        id S1730597AbgLWCp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:45:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729715AbgLWCWd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:22:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F577229C5;
-        Wed, 23 Dec 2020 02:22:17 +0000 (UTC)
+        id S1729726AbgLWCWf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:22:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BC0C23355;
+        Wed, 23 Dec 2020 02:22:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690138;
-        bh=PZkgTS62SlZ9oyrHhbnmA49Yyl+63TAaiWIp/xvU5dw=;
+        s=k20201202; t=1608690140;
+        bh=wJAXHu7zSNDaN3aC8gmRAMD2V4kupXCh6Z8grumo4Wc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VV+BAtdOQI21R1SRiMfAmZvnZdp31QEfxJ9yrP5LFR6UdyoqIpFjLCu66optHGXyZ
-         burR5vi6MwiHkKaNfo5z5d9Vmtnbyh7LdR39N6TmJIIzwT5lupMVshdZjkoAg/zVA1
-         bxkloqoVtMxjrQwTqYv+ns71H13A9YVy/zVA7QsNfha4QYHcpGKjcNTwmufVxgyuAm
-         xaRjbxc9N4HxNZZrMYgAzECruR067fzp/wptMIvbc2Pk5m9jwGK85s3r1zuztKDJk1
-         9Rj4ufI5GaoonOPKK8xMWVVSVnJBTuiB3/BgNqTdqLVwGsuYXftq69r41jl0ffKU0J
-         vIBFGY3Ik8KdA==
+        b=Ro9KIr9RJGSmrgdRFDp1C6B3xbMUevOmB07QV5/l2CxdmhD6u5SFOwuXV8TROP0yD
+         Moth2SEfGXcjZWAllarSQqrhfDdMr4bFcvScy9kinbF43zMWPBJu8RCn+Pgv9div8e
+         f1+xH6PQL2ui+ovBTXxd0BiPij6XdkND4aB+UeF6d8p+tlh70RFKLFMqb3FQdTyI20
+         +/uw9E0fjmOToT4iu3aNPL5SmzzLgB7C0Aql5mIbmSYkADLXbpxeIjNhmL2dYB4nWU
+         ArZIPJmKRBbK87Crj2T1OymHURDZNdxbzOecrWwwZMUrsUDK2B5mKRRi/q3Fojz0zD
+         4HveqXFEVHyQg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jinyang He <hejinyang@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 60/87] MIPS: KASLR: Avoid endless loop in sync_icache if synci_step is zero
-Date:   Tue, 22 Dec 2020 21:20:36 -0500
-Message-Id: <20201223022103.2792705-60-sashal@kernel.org>
+Cc:     Yangtao Li <tiny.windzz@gmail.com>,
+        Yangtao Li <frank@allwinnertech.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 62/87] cpufreq: sti-cpufreq: fix mem leak in sti_cpufreq_set_opp_info()
+Date:   Tue, 22 Dec 2020 21:20:38 -0500
+Message-Id: <20201223022103.2792705-62-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223022103.2792705-1-sashal@kernel.org>
 References: <20201223022103.2792705-1-sashal@kernel.org>
@@ -42,42 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jinyang He <hejinyang@loongson.cn>
+From: Yangtao Li <tiny.windzz@gmail.com>
 
-[ Upstream commit c0aac3a51cb6364bed367ee3e1a96ed414f386b4 ]
+[ Upstream commit 3a5e6732a74c44d7c78a764b9a7701135565df8f ]
 
-Most platforms do not need to do synci instruction operations when
-synci_step is 0. But for example, the synci implementation on Loongson64
-platform has some changes. On the one hand, it ensures that the memory
-access instructions have been completed. On the other hand, it guarantees
-that all prefetch instructions need to be fetched again. And its address
-information is useless. Thus, only one synci operation is required when
-synci_step is 0 on Loongson64 platform. I guess that some other platforms
-have similar implementations on synci, so add judgment conditions in
-`while` to ensure that at least all platforms perform synci operations
-once. For those platforms that do not need synci, they just do one more
-operation similar to nop.
+Use dev_pm_opp_put_prop_name() to avoid mem leak, which free opp_table.
 
-Signed-off-by: Jinyang He <hejinyang@loongson.cn>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
+Signed-off-by: Yangtao Li <frank@allwinnertech.com>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/kernel/relocate.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/cpufreq/sti-cpufreq.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/kernel/relocate.c b/arch/mips/kernel/relocate.c
-index cbf4cc0b0b6cf..5639c2d5cf0e4 100644
---- a/arch/mips/kernel/relocate.c
-+++ b/arch/mips/kernel/relocate.c
-@@ -64,7 +64,7 @@ static void __init sync_icache(void *kbase, unsigned long kernel_length)
- 			: "r" (kbase));
+diff --git a/drivers/cpufreq/sti-cpufreq.c b/drivers/cpufreq/sti-cpufreq.c
+index 6b5d241c30b70..01bf9e3a85772 100644
+--- a/drivers/cpufreq/sti-cpufreq.c
++++ b/drivers/cpufreq/sti-cpufreq.c
+@@ -226,7 +226,8 @@ static int sti_cpufreq_set_opp_info(void)
+ 	opp_table = dev_pm_opp_set_supported_hw(dev, version, VERSION_ELEMENTS);
+ 	if (IS_ERR(opp_table)) {
+ 		dev_err(dev, "Failed to set supported hardware\n");
+-		return PTR_ERR(opp_table);
++		ret = PTR_ERR(opp_table);
++		goto err_put_prop_name;
+ 	}
  
- 		kbase += step;
--	} while (kbase < kend);
-+	} while (step && kbase < kend);
+ 	dev_dbg(dev, "pcode: %d major: %d minor: %d substrate: %d\n",
+@@ -235,6 +236,10 @@ static int sti_cpufreq_set_opp_info(void)
+ 		version[0], version[1], version[2]);
  
- 	/* Completion barrier */
- 	__sync();
+ 	return 0;
++
++err_put_prop_name:
++	dev_pm_opp_put_prop_name(opp_table);
++	return ret;
+ }
+ 
+ static int sti_cpufreq_fetch_syscon_registers(void)
 -- 
 2.27.0
 
