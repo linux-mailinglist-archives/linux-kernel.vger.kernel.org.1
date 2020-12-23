@@ -2,108 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3D4A2E2254
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 23:09:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA7102E224F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 23:02:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726949AbgLWWIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 17:08:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725270AbgLWWIx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 17:08:53 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AA79C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 14:08:13 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id y19so670457lfa.13
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 14:08:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PoQlpaNI1/l22p0KY/MaQ96Dou9p/HLpoR9DVa4LJh8=;
-        b=giGTxA/mxQx+XNfe8QbMHFkMxauB+o9JgajRnbIVQvV2WUIsFUTtYQiZimQfDBK4Si
-         AueOX8SxNXBi/ULV8E5WHBMbPVvm4KL2Xf3G7gUH2RlljAPls4Gg7nODbKM1xcqER6cX
-         a0MgrXFP51furYSyTt8rCXnmWC0s2wGW7AiJRcPYcknhrh70u2WQRz9FRotvdlwfOsae
-         463WoX6OLSTIdNM88A2GE2UO76k+JjJ5+1vj/d6qYCbfpkc3l+eEkk4eSx1yyx0YMPKV
-         6f2J8wtixvO9Pg5Xmn0vpCr09CuRdNN2E9buWaf55xaky+TKUJAzS7ERK2fdHzdYU4p8
-         sC8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PoQlpaNI1/l22p0KY/MaQ96Dou9p/HLpoR9DVa4LJh8=;
-        b=AJeHdOIB65VMwXe05qSS2UyXp+ckFtgCCTlkB1sPCtFe0X2/CZisnhSuIN1LqnzE3r
-         4+M/+AmVRwsZUREN1sO8Ey2jOHkvjoo9iFJr/WJAZ/M2kINOmTli/noKpcebrq3wpvzT
-         0A56egJkvqHeHIZnjE2Gonr3drtIdy8UnpnqcwGjO+1vV7ta6SWxmSI+MigG9Itoq6rq
-         7ubQ0i59WnIXJxwHClfb7iB2w5ysEePZJnkZzcKL89YFgtSyM2Fi2gavx8ZwYCD13faC
-         yhEjlhp354/LaqPWkL4efg4/TIwPvOayphoMiy9TyqpawSjAYgDvOR3x7DO62c4hrmOx
-         IqsQ==
-X-Gm-Message-State: AOAM531suQ2ZiPHOimGnIFmO2SKUdKdjb24YlEn1k17tqVJ0nm+lb9M+
-        XufNzczvQgChR0KQwXJ2fGfbForblF8Rz/FaOurazw==
-X-Google-Smtp-Source: ABdhPJwItxbkVp5l3S4sVv5L5p6m6OcrDlyJ9HNCuUjJgAORrTajFEr+f7dOofD6bYEpqh2xngBMcGIYlMA35D31J2c=
-X-Received: by 2002:ac2:46d4:: with SMTP id p20mr11022767lfo.299.1608761291314;
- Wed, 23 Dec 2020 14:08:11 -0800 (PST)
-MIME-Version: 1.0
-References: <20201217034356.4708-1-songmuchun@bytedance.com> <20201217034356.4708-3-songmuchun@bytedance.com>
-In-Reply-To: <20201217034356.4708-3-songmuchun@bytedance.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 23 Dec 2020 14:08:00 -0800
-Message-ID: <CALvZod7kMhb7k6rDZj18JTE=RMji-SinJmfdcPbN9PUL9Off_w@mail.gmail.com>
-Subject: Re: [PATCH v5 2/7] mm: memcontrol: convert NR_ANON_THPS account to pages
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>, rafael@kernel.org,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Hugh Dickins <hughd@google.com>, Roman Gushchin <guro@fb.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Feng Tang <feng.tang@intel.com>, Neil Brown <neilb@suse.de>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726558AbgLWWA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 17:00:56 -0500
+Received: from mga09.intel.com ([134.134.136.24]:4211 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725270AbgLWWAz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 17:00:55 -0500
+IronPort-SDR: Jh6X9WtI3fPv9J/1VwHMiyXgE+HeQHcsqYOsUJ7kZSiAIAl+E9CJXf8eWACrXZOsclibCKWw9J
+ nDxBb7+6QoFg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9844"; a="176227051"
+X-IronPort-AV: E=Sophos;i="5.78,442,1599548400"; 
+   d="scan'208";a="176227051"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Dec 2020 14:00:13 -0800
+IronPort-SDR: ZE9vjT+jio/b1tX/7pX6GuRO1MMz0A/r592uY2dF3aio3SMMoiiIkjBp9UmgFnM3q33hFK7d/E
+ VHy+ZG29weww==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,442,1599548400"; 
+   d="scan'208";a="398209958"
+Received: from sbensaid-test1.sc.intel.com ([172.25.206.207])
+  by FMSMGA003.fm.intel.com with ESMTP; 23 Dec 2020 14:00:12 -0800
+From:   lalithambika.krishnakumar@intel.com
+To:     kbusch@kernel.org, hch@lst.de, axboe@fb.com, sagi@grimberg.me
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        dan.j.williams@intel.com, lalithambika.krishnakumar@intel.com
+Subject: [PATCH] nvme: avoid possible double fetch in handling CQE
+Date:   Wed, 23 Dec 2020 14:09:00 -0800
+Message-Id: <20201223220900.11234-1-lalithambika.krishnakumar@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 7:45 PM Muchun Song <songmuchun@bytedance.com> wrote:
->
-> Currently we use struct per_cpu_nodestat to cache the vmstat
-> counters, which leads to inaccurate statistics expecially THP
+From: Lalithambika Krishnakumar <lalithambika.krishnakumar@intel.com>
 
-*especially
+While handling the completion queue, keep a local copy of the command id
+from the DMA-accessible completion entry. This silences a time-of-check
+to time-of-use (TOCTOU) warning from KF/x[1], with respect to a
+Thunderclap[2] vulnerability analysis. The double-read impact appears
+benign.
 
-> vmstat counters. In the systems with hundreads of processors
+There may be a theoretical window for @command_id to be used as an
+adversary-controlled array-index-value for mounting a speculative
+execution attack, but that mitigation is saved for a potential follow-on.
+A man-in-the-middle attack on the data payload is out of scope for this
+analysis and is hopefully mitigated by filesystem integrity mechanisms.
 
-*hundreds
+[1] https://github.com/intel/kernel-fuzzer-for-xen-project
+[2] http://thunderclap.io/thunderclap-paper-ndss2019.pdf
+Signed-off-by: Lalithambika Krishna Kumar <lalithambika.krishnakumar@intel.com>
+---
+ drivers/nvme/host/pci.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-> it can be GBs of memory. For example, for a 96 CPUs system,
-> the threshold is the maximum number of 125. And the per cpu
-> counters can cache 23.4375 GB in total.
->
-> The THP page is already a form of batched addition (it will
-> add 512 worth of memory in one go) so skipping the batching
-> seems like sensible. Although every THP stats update overflows
-> the per-cpu counter, resorting to atomic global updates. But
-> it can make the statistics more accuracy for the THP vmstat
-> counters.
->
-> So we convert the NR_ANON_THPS account to pages. This patch
-> is consistent with 8f182270dfec ("mm/swap.c: flush lru pvecs
-> on compound page arrival"). Doing this also can make the unit
-> of vmstat counters more unified. Finally, the unit of the vmstat
-> counters are pages, kB and bytes. The B/KB suffix can tell us
-> that the unit is bytes or kB. The rest which is without suffix
-> are pages.
->
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index b4385cb0ff60..88a7cb3fe2a2 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -967,6 +967,7 @@ static inline struct blk_mq_tags *nvme_queue_tagset(struct nvme_queue *nvmeq)
+ static inline void nvme_handle_cqe(struct nvme_queue *nvmeq, u16 idx)
+ {
+ 	struct nvme_completion *cqe = &nvmeq->cqes[idx];
++	__u16 command_id = READ_ONCE(cqe->command_id);
+ 	struct request *req;
+ 
+ 	/*
+@@ -975,17 +976,17 @@ static inline void nvme_handle_cqe(struct nvme_queue *nvmeq, u16 idx)
+ 	 * aborts.  We don't even bother to allocate a struct request
+ 	 * for them but rather special case them here.
+ 	 */
+-	if (unlikely(nvme_is_aen_req(nvmeq->qid, cqe->command_id))) {
++	if (unlikely(nvme_is_aen_req(nvmeq->qid, command_id))) {
+ 		nvme_complete_async_event(&nvmeq->dev->ctrl,
+ 				cqe->status, &cqe->result);
+ 		return;
+ 	}
+ 
+-	req = blk_mq_tag_to_rq(nvme_queue_tagset(nvmeq), cqe->command_id);
++	req = blk_mq_tag_to_rq(nvme_queue_tagset(nvmeq), command_id);
+ 	if (unlikely(!req)) {
+ 		dev_warn(nvmeq->dev->ctrl.device,
+ 			"invalid id %d completed on queue %d\n",
+-			cqe->command_id, le16_to_cpu(cqe->sq_id));
++			command_id, le16_to_cpu(cqe->sq_id));
+ 		return;
+ 	}
+ 
+-- 
+2.29.2
 
-I agree with the motivation behind this patch but I would like to see
-some performance numbers in the commit message. We might agree to pay
-the price but at least we will know what exactly that cost is.
