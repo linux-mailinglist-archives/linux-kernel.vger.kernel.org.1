@@ -2,115 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F43A2E225F
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 23:19:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0803E2E2263
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 23:21:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726844AbgLWWSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 17:18:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725811AbgLWWSO (ORCPT
+        id S1726969AbgLWWTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 17:19:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38584 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725811AbgLWWTW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 17:18:14 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 744C2C061794;
-        Wed, 23 Dec 2020 14:17:34 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id n10so411083pgl.10;
-        Wed, 23 Dec 2020 14:17:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QmB0Ticp/tS8X0FdCEKnZeU/ip7BBBIBzLSTbjOnxGQ=;
-        b=qOvLOqtRbq9OzMxu5LTpISYUGutCXGWR+pvrejukARfRSct6+a8sy9drxZov4AvVpX
-         ZP15CxL5O5bk05470gEEdFj+Ngbve52JWjBtyPPeJX//UOJ0WKnUU6gl3GKy2h20G2Di
-         heJNUvA/swWkfmW/Ptqr844gXIlovrYUOEKqn4C2y4g16TQ5fSG1rb63qO2nQBSVo2WB
-         px9z0uRmuWaIif9eycIEskwDAqniWJh1zbkfCl8ZHY6+0SPAhciR9Ju/xu3j35xEwwqH
-         iUZT/KITYc8JzJZmX/oO9vizqs2KAzCGJhCG/pjxYJ40Z0pb2yTfJyFtMV17ixM1KHWb
-         L8YA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QmB0Ticp/tS8X0FdCEKnZeU/ip7BBBIBzLSTbjOnxGQ=;
-        b=epJMBmEYgraA3HtCSO+RVMrqN4moIu7g7nIuQiSsZcbjaFBTU9jSQysYFSqw2rQ87O
-         /ZfStnNplc5NISvXGXiGa+I7y4KLHAs9Zae7u5FnE8amb/LGerDdKYuqLV0w6e5JPh62
-         bQS6KtL4qf1r76SLX7JaVHYS1CFVoKFMfoa2X+40+YeEu98oxz6ZCmMepaBhffm09eAs
-         wZSenBcZEtu7k5cgPIaABs/6HNXffkb0gvX5zLlKU5tZh2dJbcsuhTbHJlAnt5SrGNmd
-         qRIBREEkNvdqBuycnX03MUX3a7QrWcmejUwuJLDCPQs4sQNjRJpt83Z+F7ovN3KEztao
-         Lvag==
-X-Gm-Message-State: AOAM530xqMu+rc4Ppo3TR1+H6G1GIiRy+2oL/xtLss+vk/y033GetTzK
-        agm7SlFO3I6b685EhUG38y7Rgd/Bgmc=
-X-Google-Smtp-Source: ABdhPJyum+KJDvB6VjV136DIRAMGxPKbKGTARtEIQ+2s7GSaQuMCo1PeheSgynyQsckDB4zhrS71Yw==
-X-Received: by 2002:a62:1596:0:b029:19d:a1c6:13f1 with SMTP id 144-20020a6215960000b029019da1c613f1mr25324453pfv.34.1608761853463;
-        Wed, 23 Dec 2020 14:17:33 -0800 (PST)
-Received: from [10.230.29.27] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id 82sm25029747pfv.117.2020.12.23.14.17.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Dec 2020 14:17:32 -0800 (PST)
-Subject: Re: [PATCH] net: ethernet: Fix memleak in ethoc_probe
-To:     Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>
-Cc:     Dinghao Liu <dinghao.liu@zju.edu.cn>, kjlu@umn.edu,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201223110615.31389-1-dinghao.liu@zju.edu.cn>
- <20201223153304.GD3198262@lunn.ch>
- <20201223123218.1cf7d9cb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20201223210044.GA3253993@lunn.ch>
- <20201223131149.15fff8d2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <680850a9-8ab0-4672-498e-6dc740720da3@gmail.com>
-Date:   Wed, 23 Dec 2020 14:17:29 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.6.0
+        Wed, 23 Dec 2020 17:19:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608761875;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6Ck1I5IrcfRnzD5SQ2UFbqmp5MXdOKhjN9/IxJ3cG8s=;
+        b=YzI3ckzqZ7Fh7hsfh3Sp3ozoYDSB9I9DKPIe5bSb2Bukb8yU/p3L8fuKF5cOOo0CB40dvy
+        qQscD1KClopBarEFIPRxQdsuJy85qRvMNJUUvUSKXjWLmtRoCPz8in87beAiZLLzPf6Uo2
+        dNMWrn9FyuzGOrQH9SsxEII7GdxiuDU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-226-5aHaB8T0OqWGAb0lOIsWTw-1; Wed, 23 Dec 2020 17:17:51 -0500
+X-MC-Unique: 5aHaB8T0OqWGAb0lOIsWTw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F3716801AB3;
+        Wed, 23 Dec 2020 22:17:49 +0000 (UTC)
+Received: from krava (unknown [10.40.192.56])
+        by smtp.corp.redhat.com (Postfix) with SMTP id DFF662BFE3;
+        Wed, 23 Dec 2020 22:17:47 +0000 (UTC)
+Date:   Wed, 23 Dec 2020 23:17:47 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        James Clark <james.clark@arm.com>
+Cc:     linux-perf-users@vger.kernel.org,
+        John Garry <john.garry@huawei.com>,
+        linux-kernel@vger.kernel.org, namhyung@kernel.org,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: Re: [PATCH v6 00/12] perf tools: fix perf stat with large socket IDs
+Message-ID: <20201223221747.GB236568@krava>
+References: <20201126141328.6509-1-james.clark@arm.com>
+ <20201203153923.GA3613481@krava>
+ <30c4426d-b314-98ff-e6d5-6d5152f316e8@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20201223131149.15fff8d2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <30c4426d-b314-98ff-e6d5-6d5152f316e8@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/23/2020 1:11 PM, Jakub Kicinski wrote:
-> On Wed, 23 Dec 2020 22:00:44 +0100 Andrew Lunn wrote:
->> On Wed, Dec 23, 2020 at 12:32:18PM -0800, Jakub Kicinski wrote:
->>> On Wed, 23 Dec 2020 16:33:04 +0100 Andrew Lunn wrote:  
->>>> On Wed, Dec 23, 2020 at 07:06:12PM +0800, Dinghao Liu wrote:  
->>>>> When mdiobus_register() fails, priv->mdio allocated
->>>>> by mdiobus_alloc() has not been freed, which leads
->>>>> to memleak.
->>>>>
->>>>> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>    
->>>>
->>>> Fixes: bfa49cfc5262 ("net/ethoc: fix null dereference on error exit path")
->>>>
->>>> Reviewed-by: Andrew Lunn <andrew@lunn.ch>  
->>>
->>> Ooof, I applied without looking at your email and I added:
->>>
->>> Fixes: e7f4dc3536a4 ("mdio: Move allocation of interrupts into core")  
->>
->> [Goes and looks deeper]
->>
->> Yes, commit e7f4dc3536a4 looks like it introduced the original
->> problem. bfa49cfc5262 just moved to code around a bit.
->>
->> Does patchwork not automagically add Fixes: lines from full up emails?
->> That seems like a reasonable automation.
+On Fri, Dec 04, 2020 at 11:48:36AM +0000, John Garry wrote:
+> On 03/12/2020 15:39, Jiri Olsa wrote:
 > 
-> Looks like it's been a TODO for 3 years now:
+> +
 > 
-> https://github.com/getpatchwork/patchwork/issues/151
+> > On Thu, Nov 26, 2020 at 04:13:16PM +0200, James Clark wrote:
+> > > Changes since v5:
+> > >    * Fix test for cpu_map__get_die() by shifting id before testing.
+> > >    * Fix test for cpu_map__get_socket() by not using cpu_map__id_to_socket()
+> > >      which is only valid in CPU aggregation mode.
+> > > 
+> > > James Clark (12):
+> > >    perf tools: Improve topology test
+> > >    perf tools: Use allocator for perf_cpu_map
+> > >    perf tools: Add new struct for cpu aggregation
+> > >    perf tools: Replace aggregation ID with a struct
+> > >    perf tools: add new map type for aggregation
+> > >    perf tools: drop in cpu_aggr_map struct
+> > >    perf tools: Start using cpu_aggr_id in map
+> > >    perf tools: Add separate node member
+> > >    perf tools: Add separate socket member
+> > >    perf tools: Add separate die member
+> > >    perf tools: Add separate core member
+> > >    perf tools: Add separate thread member
+> > 
+> > Acked-by: Jiri Olsa <jolsa@redhat.com>
+> > 
+> 
+> Tested-by: John Garry <john.garry@huawei.com>
 
-It was proposed before, but rejected. You can have your local patchwork
-admin take care of that for you though and add custom tags:
+hi,
+I was wondering where this went, and noticed that
+Arnaldo was not CC-ed on the cover letter ;-)
 
-https://lists.ozlabs.org/pipermail/patchwork/2017-January/003910.html
--- 
-Florian
+jirka
+
+> 
+> I still think that vendors (like us) need to fix/improve their firmware
+> tables so that we don't get silly big numbers for socket/package IDs, like
+> S5418-D0, below:
+> 
+> $./perf stat -a --per-die
+> 
+>  Performance counter stats for 'system wide':
+> 
+> S36-D0   48   72,216.31 msec cpu-clock      #   47.933 CPUs utilized
+> S36-D0   48        174     context-switches #   0.002 K/sec
+> S36-D0   48         48     cpu-migrations   #   0.001 K/sec
+> S36-D0   48         0     page-faults    #   0.000 K/sec
+> S36-D0   48   7,991,698     cycles    #   0.000 GHz
+> S36-D0   48   4,750,040     instructions   #   0.59  insn per cycle
+> S36-D0    1   <not supported>     branches
+> S36-D0   48      32,928     branch-misses    #   0.00% of all branches
+> S5418-D0   48   72,189.54 msec cpu-clock     #   47.915 CPUs utilized
+> S5418-D0   48        176     context-switches  #   0.002 K/sec
+> S5418-D0   48         48     cpu-migrations   #   0.001 K/sec
+> S5418-D0   48         0     page-faults     #   0.000 K/sec
+> S5418-D0   48   5,677,218     cycles    #    0.000 GHz
+> S5418-D0   48   3,872,285     instructions   #  0.68  insn per cycle
+> S5418-D0    1   <not supported>     branches
+> S5418-D0   48      29,208     branch-misses   #  0.00% of all branches
+> 
+>       1.506615297 seconds time elapsed
+> 
+> but at least it works now. Thanks.
+> 
+> > 
+> > > 
+> > >   tools/perf/builtin-stat.c      | 128 ++++++++++++------------
+> > >   tools/perf/tests/topology.c    |  64 ++++++++++--
+> > >   tools/perf/util/cpumap.c       | 171 ++++++++++++++++++++++-----------
+> > >   tools/perf/util/cpumap.h       |  55 ++++++-----
+> > >   tools/perf/util/stat-display.c | 102 ++++++++++++--------
+> > >   tools/perf/util/stat.c         |   2 +-
+> > >   tools/perf/util/stat.h         |   9 +-
+> > >   7 files changed, 337 insertions(+), 194 deletions(-)
+> > > 
+> > > -- 
+> > > 2.28.0
+> > > 
+> > 
+> > .
+> > 
+> 
+
