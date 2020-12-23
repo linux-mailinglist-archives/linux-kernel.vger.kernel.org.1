@@ -2,534 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 338522E1378
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:37:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2BF02E14BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:48:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730540AbgLWCa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:30:29 -0500
-Received: from ptr.189.cn ([183.61.185.103]:11409 "EHLO 189.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730379AbgLWCa0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:30:26 -0500
-HMM_SOURCE_IP: 10.64.10.45:39910.2102962921
-HMM_ATTACHE_NUM: 0000
-HMM_SOURCE_TYPE: SMTP
-Received: from clientip-123.150.8.42 (unknown [10.64.10.45])
-        by 189.cn (HERMES) with SMTP id 0451F10070A;
-        Wed, 23 Dec 2020 10:20:35 +0800 (CST)
-Received: from  ([10.64.8.33])
-        by gateway-151646-dep-54888d799-vh9dt with ESMTP id 2a53f61060f54f9fb6312112dd14c7e1 for greg@kroah.com;
-        Wed Dec 23 10:20:36 2020
-X-Transaction-ID: 2a53f61060f54f9fb6312112dd14c7e1
-X-filter-score: 
-X-Real-From: chensong_2000@189.cn
-X-Receive-IP: 10.64.8.33
-X-MEDUSA-Status: 0
-Sender: chensong_2000@189.cn
-From:   chensong <chensong_2000@189.cn>
-To:     greg@kroah.com, linux-kernel@vger.kernel.org
-Cc:     abbotti@mev.co.uk, hsweeten@visionengravers.com,
-        chensong@tj.kylinos.cn, chensong <chensong_2000@189.cn>
-Subject: [PATCH] staging: comedi: clean up debugging code in #if 0 or 1
-Date:   Wed, 23 Dec 2020 10:20:44 +0800
-Message-Id: <1608690044-26710-1-git-send-email-chensong_2000@189.cn>
-X-Mailer: git-send-email 2.7.4
+        id S1730894AbgLWCnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:43:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52526 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729907AbgLWCXI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:23:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 214022256F;
+        Wed, 23 Dec 2020 02:22:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608690147;
+        bh=UkGeKJkcCoTLxKNZoeNdLRsTAEj6DMtSyChkrv5bYHw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=gyAyVxIM4L6T+uvTjRbOtdUtPbDu4y35Z1fdU6J48UOgH5xoSG7ro3DwV1FQj+ZAU
+         wzHVTADVXncSaLZKAjxY7+gumkStjZqM7pm7sqzPPIt/FTPkd2d3ZqAD1uMcp+QR9S
+         VRrq5GTzqCeEGB/YtMi+8d8yURWVpCdqd0sTiU1YoHWy9KyO2CT/haBPK4ofx/citN
+         wbyOdw97tT5nWAFzr6Eq02BdkWehtMxAX9u06d+8EGM+fkGkWPLE3nQ6r8yT34M3oW
+         z/EzASYTCP4kMp2fT5yHi8c8ZuSwMAKpJi2xGIEsO3JWPyaCPHn4thEcmtQLkJ6vH0
+         XC+6I5DOb6mlw==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Michal Simek <michal.simek@xilinx.com>,
+        Sasha Levin <sashal@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 4.19 68/87] ARM: zynq: Fix leds subnode name for zc702/zybo-z7
+Date:   Tue, 22 Dec 2020 21:20:44 -0500
+Message-Id: <20201223022103.2792705-68-sashal@kernel.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20201223022103.2792705-1-sashal@kernel.org>
+References: <20201223022103.2792705-1-sashal@kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are a log of "#if 0" or "#if 1" in comedi driver which
-cause warning when running checkpatch.pl, they are supposed to
-be cleaned up before release.
+From: Michal Simek <michal.simek@xilinx.com>
 
-Signed-off-by: chensong <chensong_2000@189.cn>
+[ Upstream commit 38d1985fdfcf20dc246b552580479ae602f735d1 ]
+
+Fix the leds subnode names to match (^led-[0-9a-f]$|led).
+
+Similar change has been also done by commit 9a19a39ee48b ("arm64: dts:
+zynqmp: Fix leds subnode name for zcu100/ultra96 v1").
+
+The patch is fixing these warnings:
+.../zynq-zc702.dt.yaml: leds: 'ds23' does not match any of the regexes:
+'(^led-[0-9a-f]$|led)', 'pinctrl-[0-9]+'
+>From schema: .../Documentation/devicetree/bindings/leds/leds-gpio.yaml
+.../zynq-zybo-z7.dt.yaml: gpio-leds: 'ld4' does not match any of the
+regexes: '(^led-[0-9a-f]$|led)', 'pinctrl-[0-9]+'
+>From schema: .../Documentation/devicetree/bindings/leds/leds-gpio.yaml
+
+Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+Link: https://lore.kernel.org/r/607a66783b129294364abf09a6fc8abd241ff4ee.1606397101.git.michal.simek@xilinx.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/comedi/drivers/cb_pcidas64.c   | 95 --------------------------
- drivers/staging/comedi/drivers/dt2801.c        | 29 --------
- drivers/staging/comedi/drivers/ni_atmio16d.c   |  9 ---
- drivers/staging/comedi/drivers/ni_mio_common.c | 37 +---------
- drivers/staging/comedi/drivers/ni_mio_cs.c     | 10 ---
- drivers/staging/comedi/drivers/ni_pcidio.c     |  5 --
- drivers/staging/comedi/drivers/ni_pcimio.c     | 48 -------------
- drivers/staging/comedi/drivers/s526.c          | 49 -------------
- drivers/staging/comedi/drivers/s626.c          | 45 ------------
- 9 files changed, 1 insertion(+), 326 deletions(-)
+ arch/arm/boot/dts/zynq-zc702.dts   | 2 +-
+ arch/arm/boot/dts/zynq-zybo-z7.dts | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/staging/comedi/drivers/cb_pcidas64.c b/drivers/staging/comedi/drivers/cb_pcidas64.c
-index fa987bb..2d74ec9 100644
---- a/drivers/staging/comedi/drivers/cb_pcidas64.c
-+++ b/drivers/staging/comedi/drivers/cb_pcidas64.c
-@@ -998,101 +998,6 @@ static const struct pcidas64_board pcidas64_boards[] = {
- 		.ai_fifo	= &ai_fifo_4020,
- 		.has_8255	= 1,
- 	},
--#if 0
--	/* The device id for these boards is unknown */
--
--	[BOARD_PCIDAS6402_16_JR] = {
--		.name		= "pci-das6402/16/jr",
--		.ai_se_chans	= 64,
--		.ai_bits	= 16,
--		.ai_speed	= 5000,
--		.ao_nchan	= 0,
--		.ao_scan_speed	= 10000,
--		.layout		= LAYOUT_64XX,
--		.ai_range_table	= &ai_ranges_64xx,
--		.ai_range_code	= ai_range_code_64xx,
--		.ai_fifo	= ai_fifo_64xx,
--		.has_8255	= 1,
--	},
--	[BOARD_PCIDAS64_M1_16_JR] = {
--		.name		= "pci-das64/m1/16/jr",
--		.ai_se_chans	= 64,
--		.ai_bits	= 16,
--		.ai_speed	= 1000,
--		.ao_nchan	= 0,
--		.ao_scan_speed	= 10000,
--		.layout		= LAYOUT_64XX,
--		.ai_range_table	= &ai_ranges_64_mx,
--		.ai_range_code	= ai_range_code_64_mx,
--		.ai_fifo	= ai_fifo_64xx,
--		.has_8255	= 1,
--	},
--	[BOARD_PCIDAS64_M2_16_JR] = {
--		.name = "pci-das64/m2/16/jr",
--		.ai_se_chans	= 64,
--		.ai_bits	= 16,
--		.ai_speed	= 500,
--		.ao_nchan	= 0,
--		.ao_scan_speed	= 10000,
--		.layout		= LAYOUT_64XX,
--		.ai_range_table	= &ai_ranges_64_mx,
--		.ai_range_code	= ai_range_code_64_mx,
--		.ai_fifo	= ai_fifo_64xx,
--		.has_8255	= 1,
--	},
--	[BOARD_PCIDAS64_M3_16_JR] = {
--		.name		= "pci-das64/m3/16/jr",
--		.ai_se_chans	= 64,
--		.ai_bits	= 16,
--		.ai_speed	= 333,
--		.ao_nchan	= 0,
--		.ao_scan_speed	= 10000,
--		.layout		= LAYOUT_64XX,
--		.ai_range_table	= &ai_ranges_64_mx,
--		.ai_range_code	= ai_range_code_64_mx,
--		.ai_fifo	= ai_fifo_64xx,
--		.has_8255	= 1,
--	},
--	[BOARD_PCIDAS64_M1_14] = {
--		.name		= "pci-das64/m1/14",
--		.ai_se_chans	= 64,
--		.ai_bits	= 14,
--		.ai_speed	= 1000,
--		.ao_nchan	= 2,
--		.ao_scan_speed	= 10000,
--		.layout		= LAYOUT_64XX,
--		.ai_range_table	= &ai_ranges_64_mx,
--		.ai_range_code	= ai_range_code_64_mx,
--		.ai_fifo	= ai_fifo_64xx,
--		.has_8255	= 1,
--	},
--	[BOARD_PCIDAS64_M2_14] = {
--		.name		= "pci-das64/m2/14",
--		.ai_se_chans	= 64,
--		.ai_bits	= 14,
--		.ai_speed	= 500,
--		.ao_nchan	= 2,
--		.ao_scan_speed	= 10000,
--		.layout		= LAYOUT_64XX,
--		.ai_range_table	= &ai_ranges_64_mx,
--		.ai_range_code	= ai_range_code_64_mx,
--		.ai_fifo	= ai_fifo_64xx,
--		.has_8255	= 1,
--	},
--	[BOARD_PCIDAS64_M3_14] = {
--		.name		= "pci-das64/m3/14",
--		.ai_se_chans	= 64,
--		.ai_bits	= 14,
--		.ai_speed	= 333,
--		.ao_nchan	= 2,
--		.ao_scan_speed	= 10000,
--		.layout		= LAYOUT_64XX,
--		.ai_range_table	= &ai_ranges_64_mx,
--		.ai_range_code	= ai_range_code_64_mx,
--		.ai_fifo	= ai_fifo_64xx,
--		.has_8255	= 1,
--	},
--#endif
- };
+diff --git a/arch/arm/boot/dts/zynq-zc702.dts b/arch/arm/boot/dts/zynq-zc702.dts
+index 27cd6cb52f1ba..10a7d0b8cf8b9 100644
+--- a/arch/arm/boot/dts/zynq-zc702.dts
++++ b/arch/arm/boot/dts/zynq-zc702.dts
+@@ -49,7 +49,7 @@ sw13 {
+ 	leds {
+ 		compatible = "gpio-leds";
  
- static inline unsigned short se_diff_bit_6xxx(struct comedi_device *dev,
-diff --git a/drivers/staging/comedi/drivers/dt2801.c b/drivers/staging/comedi/drivers/dt2801.c
-index 0d571d8..bb01416 100644
---- a/drivers/staging/comedi/drivers/dt2801.c
-+++ b/drivers/staging/comedi/drivers/dt2801.c
-@@ -87,17 +87,6 @@
- #define DT2801_STATUS		1
- #define DT2801_CMD		1
+-		ds23 {
++		led-ds23 {
+ 			label = "ds23";
+ 			gpios = <&gpio0 10 0>;
+ 			linux,default-trigger = "heartbeat";
+diff --git a/arch/arm/boot/dts/zynq-zybo-z7.dts b/arch/arm/boot/dts/zynq-zybo-z7.dts
+index 357b78a5c11b1..7b87e10d3953b 100644
+--- a/arch/arm/boot/dts/zynq-zybo-z7.dts
++++ b/arch/arm/boot/dts/zynq-zybo-z7.dts
+@@ -25,7 +25,7 @@ chosen {
+ 	gpio-leds {
+ 		compatible = "gpio-leds";
  
--#if 0
--/* ignore 'defined but not used' warning */
--static const struct comedi_lrange range_dt2801_ai_pgh_bipolar = {
--	4, {
--		BIP_RANGE(10),
--		BIP_RANGE(5),
--		BIP_RANGE(2.5),
--		BIP_RANGE(1.25)
--	}
--};
--#endif
- static const struct comedi_lrange range_dt2801_ai_pgl_bipolar = {
- 	4, {
- 		BIP_RANGE(10),
-@@ -107,17 +96,6 @@ static const struct comedi_lrange range_dt2801_ai_pgl_bipolar = {
- 	}
- };
- 
--#if 0
--/* ignore 'defined but not used' warning */
--static const struct comedi_lrange range_dt2801_ai_pgh_unipolar = {
--	4, {
--		UNI_RANGE(10),
--		UNI_RANGE(5),
--		UNI_RANGE(2.5),
--		UNI_RANGE(1.25)
--	}
--};
--#endif
- static const struct comedi_lrange range_dt2801_ai_pgl_unipolar = {
- 	4, {
- 		UNI_RANGE(10),
-@@ -580,14 +558,7 @@ static int dt2801_attach(struct comedi_device *dev, struct comedi_devconfig *it)
- 	/* ai subdevice */
- 	s->type = COMEDI_SUBD_AI;
- 	s->subdev_flags = SDF_READABLE | SDF_GROUND;
--#if 1
- 	s->n_chan = n_ai_chans;
--#else
--	if (it->options[2])
--		s->n_chan = board->ad_chan;
--	else
--		s->n_chan = board->ad_chan / 2;
--#endif
- 	s->maxdata = (1 << board->adbits) - 1;
- 	s->range_table = ai_range_lkup(board->adrangetype, it->options[3]);
- 	s->insn_read = dt2801_ai_insn_read;
-diff --git a/drivers/staging/comedi/drivers/ni_atmio16d.c b/drivers/staging/comedi/drivers/ni_atmio16d.c
-index dffce1a..972e220 100644
---- a/drivers/staging/comedi/drivers/ni_atmio16d.c
-+++ b/drivers/staging/comedi/drivers/ni_atmio16d.c
-@@ -685,15 +685,6 @@ static int atmio16d_attach(struct comedi_device *dev,
- 		s->type = COMEDI_SUBD_UNUSED;
- 	}
- 
--/* don't yet know how to deal with counter/timers */
--#if 0
--	s = &dev->subdevices[4];
--	/* do */
--	s->type = COMEDI_SUBD_TIMER;
--	s->n_chan = 0;
--	s->maxdata = 0
--#endif
--
- 	return 0;
- }
- 
-diff --git a/drivers/staging/comedi/drivers/ni_mio_common.c b/drivers/staging/comedi/drivers/ni_mio_common.c
-index 4f80a49..85ab35ed 100644
---- a/drivers/staging/comedi/drivers/ni_mio_common.c
-+++ b/drivers/staging/comedi/drivers/ni_mio_common.c
-@@ -795,18 +795,6 @@ static void ni_clear_ai_fifo(struct comedi_device *dev)
- 		if (devpriv->is_625x) {
- 			ni_writeb(dev, 0, NI_M_STATIC_AI_CTRL_REG(0));
- 			ni_writeb(dev, 1, NI_M_STATIC_AI_CTRL_REG(0));
--#if 0
--			/*
--			 * The NI example code does 3 convert pulses for 625x
--			 * boards, But that appears to be wrong in practice.
--			 */
--			ni_stc_writew(dev, NISTC_AI_CMD1_CONVERT_PULSE,
--				      NISTC_AI_CMD1_REG);
--			ni_stc_writew(dev, NISTC_AI_CMD1_CONVERT_PULSE,
--				      NISTC_AI_CMD1_REG);
--			ni_stc_writew(dev, NISTC_AI_CMD1_CONVERT_PULSE,
--				      NISTC_AI_CMD1_REG);
--#endif
- 		}
- 	}
- }
-@@ -2930,21 +2918,7 @@ static void ni_ao_cmd_personalize(struct comedi_device *dev,
- 	  (board->ao_fifo_depth ?
- 	    NISTC_AO_PERSONAL_FIFO_ENA : NISTC_AO_PERSONAL_DMA_PIO_CTRL)
- 	  ;
--#if 0
--	/*
--	 * FIXME:
--	 * add something like ".has_individual_dacs = 0" to ni_board_struct
--	 * since, as F Hess pointed out, not all in m series have singles.  not
--	 * sure if e-series all have duals...
--	 */
- 
--	/*
--	 * F Hess: windows driver does not set NISTC_AO_PERSONAL_NUM_DAC bit for
--	 * 6281, verified with bus analyzer.
--	 */
--	if (devpriv->is_m_series)
--		bits |= NISTC_AO_PERSONAL_NUM_DAC;
--#endif
- 	ni_stc_writew(dev, bits, NISTC_AO_PERSONAL_REG);
- 
- 	ni_stc_writew(dev, NISTC_RESET_AO_CFG_END, NISTC_RESET_REG);
-@@ -4857,21 +4831,12 @@ static int init_cs5529(struct comedi_device *dev)
- 	unsigned int config_bits = CS5529_CFG_PORT_FLAG |
- 				   CS5529_CFG_WORD_RATE_2180;
- 
--#if 1
- 	/* do self-calibration */
- 	cs5529_config_write(dev, config_bits | CS5529_CFG_CALIB_BOTH_SELF,
- 			    CS5529_CFG_REG);
- 	/* need to force a conversion for calibration to run */
- 	cs5529_do_conversion(dev, NULL);
--#else
--	/* force gain calibration to 1 */
--	cs5529_config_write(dev, 0x400000, CS5529_GAIN_REG);
--	cs5529_config_write(dev, config_bits | CS5529_CFG_CALIB_OFFSET_SELF,
--			    CS5529_CFG_REG);
--	if (cs5529_wait_for_idle(dev))
--		dev_err(dev->class_dev,
--			"timeout or signal in %s\n", __func__);
--#endif
-+
- 	return 0;
- }
- 
-diff --git a/drivers/staging/comedi/drivers/ni_mio_cs.c b/drivers/staging/comedi/drivers/ni_mio_cs.c
-index 4f37b4e..7abd64b 100644
---- a/drivers/staging/comedi/drivers/ni_mio_cs.c
-+++ b/drivers/staging/comedi/drivers/ni_mio_cs.c
-@@ -100,16 +100,6 @@ static const struct ni_board_struct ni_boards[] = {
- 		.ao_speed	= 1000000,
- 		.caldac		= { ad8804_debug },
- 	 },
--#if 0
--	{
--		.name		= "DAQCard-6715",
--		.device_id	= 0x0000,	/* unknown */
--		.n_aochan	= 8,
--		.ao_maxdata	= 0x0fff,
--		.ao_671x	= 8192,
--		.caldac		= { mb88341, mb88341 },
--	},
--#endif
- };
- 
- #include "ni_mio_common.c"
-diff --git a/drivers/staging/comedi/drivers/ni_pcidio.c b/drivers/staging/comedi/drivers/ni_pcidio.c
-index 623f8d0..579d8eb 100644
---- a/drivers/staging/comedi/drivers/ni_pcidio.c
-+++ b/drivers/staging/comedi/drivers/ni_pcidio.c
-@@ -455,11 +455,6 @@ static irqreturn_t nidio_interrupt(int irq, void *d)
- 
- out:
- 	comedi_handle_events(dev, s);
--#if 0
--	if (!tag)
--		writeb(0x03, dev->mmio + MASTER_DMA_AND_INTERRUPT_CONTROL);
--#endif
--
- 	spin_unlock(&dev->spinlock);
- 	return IRQ_HANDLED;
- }
-diff --git a/drivers/staging/comedi/drivers/ni_pcimio.c b/drivers/staging/comedi/drivers/ni_pcimio.c
-index 6c813a4..8b716ed 100644
---- a/drivers/staging/comedi/drivers/ni_pcimio.c
-+++ b/drivers/staging/comedi/drivers/ni_pcimio.c
-@@ -481,43 +481,6 @@ static const struct ni_board_struct ni_boards[] = {
- 		.ao_speed	= 250,
- 		.caldac		= { ad8804, ad8804 },
- 	},
--#if 0
--	/* The 6115 boards probably need their own driver */
--	[BOARD_PCI6115] = {	/* .device_id = 0x2ed0, */
--		.name		= "pci-6115",
--		.n_adchan	= 4,
--		.ai_maxdata	= 0x0fff,
--		.ai_fifo_depth	= 8192,
--		.gainlkup	= ai_gain_611x,
--		.ai_speed	= 100,
--		.n_aochan	= 2,
--		.ao_maxdata	= 0xffff,
--		.ao_671x	= 1,
--		.ao_fifo_depth	= 2048,
--		.ao_speed	= 250,
--		.reg_611x	= 1,
--		/* XXX */
--		.caldac		= { ad8804_debug, ad8804_debug, ad8804_debug },
--	},
--#endif
--#if 0
--	[BOARD_PXI6115] = {	/* .device_id = ????, */
--		.name		= "pxi-6115",
--		.n_adchan	= 4,
--		.ai_maxdata	= 0x0fff,
--		.ai_fifo_depth	= 8192,
--		.gainlkup	= ai_gain_611x,
--		.ai_speed	= 100,
--		.n_aochan	= 2,
--		.ao_maxdata	= 0xffff,
--		.ao_671x	= 1,
--		.ao_fifo_depth	= 2048,
--		.ao_speed	= 250,
--		.reg_611x	= 1,
--		/* XXX */
--		.caldac		= { ad8804_debug, ad8804_debug, ad8804_debug },
--	},
--#endif
- 	[BOARD_PCI6711] = {
- 		.name = "pci-6711",
- 		.n_aochan	= 4,
-@@ -569,17 +532,6 @@ static const struct ni_board_struct ni_boards[] = {
- 		.reg_type	= ni_reg_6711,
- 		.caldac		= { ad8804_debug },
- 	},
--#if 0
--	[BOARD_PXI6731] = {	/* .device_id = ????, */
--		.name		= "pxi-6731",
--		.n_aochan	= 4,
--		.ao_maxdata	= 0xffff,
--		.ao_fifo_depth	= 8192,
--		.ao_range_table	= &range_bipolar10,
--		.reg_type	= ni_reg_6711,
--		.caldac		= { ad8804_debug },
--	},
--#endif
- 	[BOARD_PCI6733] = {
- 		.name		= "pci-6733",
- 		.n_aochan	= 8,
-diff --git a/drivers/staging/comedi/drivers/s526.c b/drivers/staging/comedi/drivers/s526.c
-index 085cf5b..7f3c59e 100644
---- a/drivers/staging/comedi/drivers/s526.c
-+++ b/drivers/staging/comedi/drivers/s526.c
-@@ -229,7 +229,6 @@ static int s526_gpct_insn_config(struct comedi_device *dev,
- 		 */
- 		devpriv->gpct_config[chan] = data[0];
- 
--#if 1
- 		/*  Set Counter Mode Register */
- 		val = data[1] & 0xffff;
- 		outw(val, dev->iobase + S526_GPCT_MODE_REG(chan));
-@@ -246,54 +245,6 @@ static int s526_gpct_insn_config(struct comedi_device *dev,
- 			 *      dev->iobase + S526_GPCT_CTRL_REG(chan));
- 			 */
- 		}
--#else
--		val = S526_GPCT_MODE_CTDIR_CTRL_QUAD;
--
--		/*  data[1] contains GPCT_X1, GPCT_X2 or GPCT_X4 */
--		if (data[1] == GPCT_X2)
--			val |= S526_GPCT_MODE_CLK_SRC_QUADX2;
--		else if (data[1] == GPCT_X4)
--			val |= S526_GPCT_MODE_CLK_SRC_QUADX4;
--		else
--			val |= S526_GPCT_MODE_CLK_SRC_QUADX1;
--
--		/*  When to take into account the indexpulse: */
--		/*
--		 * if (data[2] == GPCT_IndexPhaseLowLow) {
--		 * } else if (data[2] == GPCT_IndexPhaseLowHigh) {
--		 * } else if (data[2] == GPCT_IndexPhaseHighLow) {
--		 * } else if (data[2] == GPCT_IndexPhaseHighHigh) {
--		 * }
--		 */
--		/*  Take into account the index pulse? */
--		if (data[3] == GPCT_RESET_COUNTER_ON_INDEX) {
--			/*  Auto load with INDEX^ */
--			val |= S526_GPCT_MODE_AUTOLOAD_IXRISE;
--		}
--
--		/*  Set Counter Mode Register */
--		val = data[1] & 0xffff;
--		outw(val, dev->iobase + S526_GPCT_MODE_REG(chan));
--
--		/*  Load the pre-load register */
--		s526_gpct_write(dev, chan, data[2]);
--
--		/*  Write the Counter Control Register */
--		if (data[3])
--			outw(data[3] & 0xffff,
--			     dev->iobase + S526_GPCT_CTRL_REG(chan));
--
--		/*  Reset the counter if it is software preload */
--		if ((val & S526_GPCT_MODE_AUTOLOAD_MASK) ==
--		    S526_GPCT_MODE_AUTOLOAD_NONE) {
--			/*  Reset the counter */
--			outw(S526_GPCT_CTRL_CT_RESET,
--			     dev->iobase + S526_GPCT_CTRL_REG(chan));
--			/*  Load the counter from PR0 */
--			outw(S526_GPCT_CTRL_CT_LOAD,
--			     dev->iobase + S526_GPCT_CTRL_REG(chan));
--		}
--#endif
- 		break;
- 
- 	case INSN_CONFIG_GPCT_SINGLE_PULSE_GENERATOR:
-diff --git a/drivers/staging/comedi/drivers/s626.c b/drivers/staging/comedi/drivers/s626.c
-index e7aba93..5ff33c4 100644
---- a/drivers/staging/comedi/drivers/s626.c
-+++ b/drivers/staging/comedi/drivers/s626.c
-@@ -2255,51 +2255,6 @@ static int s626_initialize(struct comedi_device *dev)
- 	/* Disable RPS timeouts */
- 	writel(0, dev->mmio + S626_P_RPS1_TOUT);
- 
--#if 0
--	/*
--	 * SAA7146 BUG WORKAROUND
--	 *
--	 * Initialize SAA7146 ADC interface to a known state by
--	 * invoking ADCs until FB BUFFER 1 register shows that it
--	 * is correctly receiving ADC data. This is necessary
--	 * because the SAA7146 ADC interface does not start up in
--	 * a defined state after a PCI reset.
--	 */
--	{
--		struct comedi_subdevice *s = dev->read_subdev;
--		u8 poll_list;
--		u16 adc_data;
--		u16 start_val;
--		u16 index;
--		unsigned int data[16];
--
--		/* Create a simple polling list for analog input channel 0 */
--		poll_list = S626_EOPL;
--		s626_reset_adc(dev, &poll_list);
--
--		/* Get initial ADC value */
--		s626_ai_rinsn(dev, s, NULL, data);
--		start_val = data[0];
--
--		/*
--		 * VERSION 2.01 CHANGE: TIMEOUT ADDED TO PREVENT HANGED
--		 * EXECUTION.
--		 *
--		 * Invoke ADCs until the new ADC value differs from the initial
--		 * value or a timeout occurs.  The timeout protects against the
--		 * possibility that the driver is restarting and the ADC data is
--		 * a fixed value resulting from the applied ADC analog input
--		 * being unusually quiet or at the rail.
--		 */
--		for (index = 0; index < 500; index++) {
--			s626_ai_rinsn(dev, s, NULL, data);
--			adc_data = data[0];
--			if (adc_data != start_val)
--				break;
--		}
--	}
--#endif	/* SAA7146 BUG WORKAROUND */
--
- 	/*
- 	 * Initialize the DAC interface
- 	 */
+-		ld4 {
++		led-ld4 {
+ 			label = "zynq-zybo-z7:green:ld4";
+ 			gpios = <&gpio0 7 GPIO_ACTIVE_HIGH>;
+ 		};
 -- 
-2.7.4
+2.27.0
 
