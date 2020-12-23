@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F86C2E1226
+	by mail.lfdr.de (Postfix) with ESMTP id BD6062E1227
 	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:21:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728634AbgLWCT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:19:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46290 "EHLO mail.kernel.org"
+        id S1728657AbgLWCTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:19:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46354 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728560AbgLWCTT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:19:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D595423331;
-        Wed, 23 Dec 2020 02:18:35 +0000 (UTC)
+        id S1728597AbgLWCTV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:19:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A3B322955;
+        Wed, 23 Dec 2020 02:18:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608689916;
-        bh=saxJV46MuKRNndViJBgAO/+pmg7QGSYPkXKtESLKSLk=;
+        s=k20201202; t=1608689918;
+        bh=/miiF3NYHv/ngXlvYwmcgZu50Pq/GYCPZDKS7OIoEeo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bWlSi0aCxjGglcwvMuYEk2vbbPT4EdUY18iHKrlp/gtqmDRCorqKN6deqqyoobsO7
-         AbRnJ0B3XHseoKxLxbBK/ucQQAK4t/KoYQy4fbY6btvcBWrrjnNpSwznQrFrPW1qzT
-         cZyqwdSk1sCUqUc2fpBcgIBhVbcVJ5p9u/VcEPVSoKvB66tNDeh6Chw27hkMg7tqYN
-         SdG7SLzl9I37ZHq7Ya2zvghCEbSMJ1bsMn9UFx3JVO7WKMP50oSzswYAqIcX26VCcp
-         nbDuXOt69IwkTpb8AhDEs1MXiTPKCYY4Y40wtXU5UlN3v2kIgDAmNTml1VXZdUnQBX
-         KRbAt/8igxTzQ==
+        b=ZAb+U/xBclSpDDgBqwSNZFUF3qMWYEkrpmGhbnjiXbmOmrCZWMdHtVg78Tw3BleAC
+         8Tg0c12zu9Ei3iXboSPLcjTJLxNsa4SQ374e1N2bb2Rg+nxbNE207/2LEMP6EZ1BZp
+         eM47rjEGhtemDtLBPdlAP0Jh1sWK1ehHjlUjO+kUyydgGsxOIdG0x4JEIAvIiQItWW
+         WT9GwTPjg84RDRAKTG0Ai/LOJZQl1Qzvd2HLTw/ignZ86rsU6UFJaRCs+EUZnvSKCt
+         CiJgRmkbHKhg/HkC04uIu8efibLN8fBBGNv30PeHDYlq7XnxuDbr+Nnbi4j2KLeqBt
+         2LHTFir/dHQ5w==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zhang Qilong <zhangqilong3@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, devel@driverdev.osuosl.org
-Subject: [PATCH AUTOSEL 5.4 017/130] staging: rtl8192u: fix wrong judgement in rtl8192_rx_isr
-Date:   Tue, 22 Dec 2020 21:16:20 -0500
-Message-Id: <20201223021813.2791612-17-sashal@kernel.org>
+Cc:     Qinglang Miao <miaoqinglang@huawei.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 019/130] mips: cm: add missing iounmap() on error in mips_cm_probe()
+Date:   Tue, 22 Dec 2020 21:16:22 -0500
+Message-Id: <20201223021813.2791612-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223021813.2791612-1-sashal@kernel.org>
 References: <20201223021813.2791612-1-sashal@kernel.org>
@@ -42,42 +42,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Qinglang Miao <miaoqinglang@huawei.com>
 
-[ Upstream commit 071dc1787a2f8bb636f864c1f306280deea3b1d5 ]
+[ Upstream commit 2673ecf9586551c5bcee499c1cc1949f6f7cc9a1 ]
 
-The 'EPERM' cannot appear in the previous path, we
-should use '-EPERM' to check it. For example:
+Add the missing iounmap() of iounmap(mips_gcr_base) before
+return from mips_cm_probe() in the error handling case.
 
-Call trace:
-->rtl8192_rx_isr
-    ->usb_submit_urb
-       ->usb_hcd_submit_urb
-           ->rh_urb_enqueue
-	       ->rh_queue_status
-	           ->usb_hcd_link_urb_to_ep
-
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201028122648.47959-1-zhangqilong3@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/rtl8192u/r8192U_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/kernel/mips-cm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/staging/rtl8192u/r8192U_core.c b/drivers/staging/rtl8192u/r8192U_core.c
-index ddc09616248a5..56655a0b16906 100644
---- a/drivers/staging/rtl8192u/r8192U_core.c
-+++ b/drivers/staging/rtl8192u/r8192U_core.c
-@@ -883,7 +883,7 @@ static void rtl8192_rx_isr(struct urb *urb)
- 	urb->context = skb;
- 	skb_queue_tail(&priv->rx_queue, skb);
- 	err = usb_submit_urb(urb, GFP_ATOMIC);
--	if (err && err != EPERM)
-+	if (err && err != -EPERM)
- 		netdev_err(dev,
- 			   "can not submit rxurb, err is %x, URB status is %x\n",
- 			   err, urb->status);
+diff --git a/arch/mips/kernel/mips-cm.c b/arch/mips/kernel/mips-cm.c
+index a9eab83d9148d..f6a82ad010603 100644
+--- a/arch/mips/kernel/mips-cm.c
++++ b/arch/mips/kernel/mips-cm.c
+@@ -224,6 +224,7 @@ int mips_cm_probe(void)
+ 	if ((base_reg & CM_GCR_BASE_GCRBASE) != addr) {
+ 		pr_err("GCRs appear to have been moved (expected them at 0x%08lx)!\n",
+ 		       (unsigned long)addr);
++		iounmap(mips_gcr_base);
+ 		mips_gcr_base = NULL;
+ 		return -ENODEV;
+ 	}
 -- 
 2.27.0
 
