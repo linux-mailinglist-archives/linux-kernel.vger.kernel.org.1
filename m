@@ -2,135 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C93EA2E2077
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 19:36:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DA672E207D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 19:40:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728145AbgLWSd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 13:33:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47382 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726554AbgLWSd4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 13:33:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F192422202;
-        Wed, 23 Dec 2020 18:33:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608748395;
-        bh=S5iXmgD7c/eHqeOr783zJ0y/+5ryHc+hdT/v5SPBZJA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=RQXlxEG0cdSj/ARFCFyLG9vP7kXgHLqlbL4npEezInQQvQmFgvh63k2SFwjVzCM6G
-         LLBANuaxu7wBw40xUqY5Hg7wqraQWYd5ktyl19v2S6Oci9XLH+jdLu7Qv0OCEZmVu+
-         hQG7cZa1jnz4i5sWhoGiMeeP/1yJ7NMmuXwWy2QCW4jTLSXRboztEg3O5leUcRkrlL
-         pNyRMqlAo+FnXZaUgZWaxiJ5ZZw5Yf4YocUZcOZcmiL8QbJ/MmZNtgG1a4LB9E69wS
-         Q+qp9iikE6Pb9u6fyZ3zq3oNTygaxzxRJoFqDH9lV8tF452dkMiyVMNWFO+whdz1Vz
-         xP8bjQRQ1f2+A==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id B673C3522E72; Wed, 23 Dec 2020 10:33:14 -0800 (PST)
-Date:   Wed, 23 Dec 2020 10:33:14 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: Re: [rcu:rcu/test 136/143] kernel/rcu/tree_plugin.h:2696:25: error:
- 'struct task_struct' has no member named 'on_cpu'
-Message-ID: <20201223183314.GF2657@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <202012232351.OhLvWNy8-lkp@intel.com>
+        id S1728227AbgLWSir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 13:38:47 -0500
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:4854 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726923AbgLWSir (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 13:38:47 -0500
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BNIHKCu029568;
+        Wed, 23 Dec 2020 10:35:43 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=P+WpMiPyk7oIrJqS4VH5QprshtGLxMyxirTRn4K0GVM=;
+ b=RRQZmjEExJnk1pAHgv+LZYkaH5YVk9MqYNJQwa+TNdzBx+D91JNj5GN1pZwYyw3wqf/e
+ afVJNMk6j3Iliko+QNWGQITJF/olJt+XbtpXMwIwoJQl4MI9BgI3Bv4ui8nLzi6YXtmQ
+ szeD3oBc43w0Xn/ShcXK1nnnrwrDsrREpuD2NBPJefKvbvQ/Gtv2ZXHLFu5cCP6aId+a
+ 6XjCcoJn1/BdaoX2AewmcmAOH+cJ0Uko3q0qSnTrZfVOpamnOA0pqx9GyolDKo5r2iJc
+ VVV4y2i6mv2J30ZT3Wvq4bcFQPnIwHPJifL+BpFvnoFrf8JvWWgqKijyWIMJBB0iVEfD eQ== 
+Received: from sc-exch02.marvell.com ([199.233.58.182])
+        by mx0a-0016f401.pphosted.com with ESMTP id 35k0ebevr2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 23 Dec 2020 10:35:43 -0800
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH02.marvell.com
+ (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 23 Dec
+ 2020 10:35:42 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 23 Dec 2020 10:35:42 -0800
+Received: from stefan-pc.marvell.com (unknown [10.5.25.21])
+        by maili.marvell.com (Postfix) with ESMTP id 96A753F703F;
+        Wed, 23 Dec 2020 10:35:39 -0800 (PST)
+From:   <stefanc@marvell.com>
+To:     <netdev@vger.kernel.org>
+CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
+        <nadavh@marvell.com>, <ymarkman@marvell.com>,
+        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
+        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
+        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>,
+        <atenart@kernel.org>
+Subject: [PATCH net] net: mvpp2: fix pkt coalescing int-threshold configuration
+Date:   Wed, 23 Dec 2020 20:35:21 +0200
+Message-ID: <1608748521-11033-1-git-send-email-stefanc@marvell.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202012232351.OhLvWNy8-lkp@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-23_10:2020-12-23,2020-12-23 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 11:28:58PM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/test
-> head:   4c4c8e04a7f8522de634aa062f4cd6b8b80c151b
-> commit: 72351a864d02b480a5c237144033e21be816f29f [136/143] fixup! rcu/nocb: Add grace period and task state to show_rcu_nocb_state() output
-> config: nds32-randconfig-r014-20201221 (attached as .config)
-> compiler: nds32le-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/commit/?id=72351a864d02b480a5c237144033e21be816f29f
->         git remote add rcu https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
->         git fetch --no-tags rcu rcu/test
->         git checkout 72351a864d02b480a5c237144033e21be816f29f
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=nds32 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->    In file included from include/linux/kernel.h:16,
->                     from kernel/rcu/tree.c:21:
->    kernel/rcu/tree_plugin.h: In function 'show_rcu_nocb_gp_state':
-> >> kernel/rcu/tree_plugin.h:2696:25: error: 'struct task_struct' has no member named 'on_cpu'
->     2696 |    !rdp->nocb_cb_kthread->on_cpu ? "!" : "");
->          |                         ^~
->    include/linux/printk.h:373:34: note: in definition of macro 'pr_info'
->      373 |  printk(KERN_INFO pr_fmt(fmt), ##__VA_ARGS__)
->          |                                  ^~~~~~~~~~~
->    kernel/rcu/tree_plugin.h: In function 'show_rcu_nocb_state':
->    kernel/rcu/tree_plugin.h:2737:25: error: 'struct task_struct' has no member named 'on_cpu'
->     2737 |    !rdp->nocb_cb_kthread->on_cpu ? "!" : "");
->          |                         ^~
->    include/linux/printk.h:373:34: note: in definition of macro 'pr_info'
->      373 |  printk(KERN_INFO pr_fmt(fmt), ##__VA_ARGS__)
->          |                                  ^~~~~~~~~~~
+From: Stefan Chulski <stefanc@marvell.com>
 
-Good catch, I missed the case of !SMP and rcu_nocbs CPUs, thank you!
+The packet coalescing interrupt threshold has separated registers
+for different aggregated/cpu (sw-thread). The required value should
+be loaded for every thread but not only for 1 current cpu.
 
-Does the following fix this for you?  (To be folded into the original
-with attribution.)
+Fixes: 213f428f5056 ("net: mvpp2: add support for TX interrupts and RX queue distribution modes")
+Signed-off-by: Stefan Chulski <stefanc@marvell.com>
+---
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 2c16fa8..f97c991 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -2668,6 +2668,19 @@ void rcu_bind_current_to_nocb(void)
- }
- EXPORT_SYMBOL_GPL(rcu_bind_current_to_nocb);
+diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+index 87068eb..3982956 100644
+--- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
++++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+@@ -2370,17 +2370,18 @@ static void mvpp2_rx_pkts_coal_set(struct mvpp2_port *port,
+ static void mvpp2_tx_pkts_coal_set(struct mvpp2_port *port,
+ 				   struct mvpp2_tx_queue *txq)
+ {
+-	unsigned int thread = mvpp2_cpu_to_thread(port->priv, get_cpu());
++	unsigned int thread;
+ 	u32 val;
  
-+// The ->on_cpu field is available only in CONFIG_SMP=y, so...
-+#ifdef CONFIG_SMP
-+static char *show_rcu_should_be_on_cpu(struct task_struct *tsp)
-+{
-+	return tsp && tsp->state == TASK_RUNNING && !tsp->on_cpu ? "!" : "";
-+}
-+#else // #ifdef CONFIG_SMP
-+static char *show_rcu_should_be_on_cpu(struct task_struct *tsp)
-+{
-+	return "";
-+}
-+#endif // #else #ifdef CONFIG_SMP
-+
- /*
-  * Dump out nocb grace-period kthread state for the specified rcu_data
-  * structure.
-@@ -2693,8 +2706,7 @@ static void show_rcu_nocb_gp_state(struct rcu_data *rdp)
- 		rnp->grplo, rnp->grphi, READ_ONCE(rdp->nocb_gp_loops),
- 		rdp->nocb_gp_kthread ? task_state_to_char(rdp->nocb_gp_kthread) : '.',
- 		rdp->nocb_cb_kthread ? (int)task_cpu(rdp->nocb_gp_kthread) : -1,
--		rdp->nocb_cb_kthread && rdp->nocb_cb_kthread->state == TASK_RUNNING &&
--			!rdp->nocb_cb_kthread->on_cpu ? "!" : "");
-+		show_rcu_should_be_on_cpu(rdp->nocb_cb_kthread));
+ 	if (txq->done_pkts_coal > MVPP2_TXQ_THRESH_MASK)
+ 		txq->done_pkts_coal = MVPP2_TXQ_THRESH_MASK;
+ 
+ 	val = (txq->done_pkts_coal << MVPP2_TXQ_THRESH_OFFSET);
+-	mvpp2_thread_write(port->priv, thread, MVPP2_TXQ_NUM_REG, txq->id);
+-	mvpp2_thread_write(port->priv, thread, MVPP2_TXQ_THRESH_REG, val);
+-
+-	put_cpu();
++	/* PKT-coalescing registers are per-queue + per-thread */
++	for (thread = 0; thread < MVPP2_MAX_THREADS; thread++) {
++		mvpp2_thread_write(port->priv, thread, MVPP2_TXQ_NUM_REG, txq->id);
++		mvpp2_thread_write(port->priv, thread, MVPP2_TXQ_THRESH_REG, val);
++	}
  }
  
- /* Dump out nocb kthread state for the specified rcu_data structure. */
-@@ -2734,8 +2746,7 @@ static void show_rcu_nocb_state(struct rcu_data *rdp)
- 		rcu_segcblist_n_cbs(&rdp->cblist),
- 		rdp->nocb_cb_kthread ? task_state_to_char(rdp->nocb_cb_kthread) : '.',
- 		rdp->nocb_cb_kthread ? (int)task_cpu(rdp->nocb_gp_kthread) : -1,
--		rdp->nocb_cb_kthread && rdp->nocb_cb_kthread->state == TASK_RUNNING &&
--			!rdp->nocb_cb_kthread->on_cpu ? "!" : "");
-+		show_rcu_should_be_on_cpu(rdp->nocb_cb_kthread));
- 
- 	/* It is OK for GP kthreads to have GP state. */
- 	if (rdp->nocb_gp_rdp == rdp)
+ static u32 mvpp2_usec_to_cycles(u32 usec, unsigned long clk_hz)
+-- 
+1.9.1
+
