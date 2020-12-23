@@ -2,68 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFDA02E17D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 04:48:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88BF42E17E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 04:55:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728217AbgLWDq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 22:46:26 -0500
-Received: from smtprelay0009.hostedemail.com ([216.40.44.9]:34596 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727396AbgLWDq0 (ORCPT
+        id S1727793AbgLWDyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 22:54:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726756AbgLWDyk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 22:46:26 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 7165A181D3028;
-        Wed, 23 Dec 2020 03:45:45 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:800:960:967:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1431:1437:1515:1516:1518:1534:1540:1593:1594:1711:1714:1730:1747:1777:1792:2393:2525:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3350:3653:3865:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:8957:9025:10004:10400:10848:11026:11658:11914:12043:12297:12438:12555:12760:12986:13069:13311:13357:13439:14181:14394:14659:14721:14777:21080:21451:21627:30054,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: truck68_080733e27465
-X-Filterd-Recvd-Size: 1673
-Received: from XPS-9350.home (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf04.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 23 Dec 2020 03:45:44 +0000 (UTC)
-Message-ID: <19fe91084890e2c16fe56f960de6c570a93fa99b.camel@perches.com>
-Subject: [PATCH] checkpatch: Prefer strscpy to strlcpy
-From:   Joe Perches <joe@perches.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Yu Zhao <yuzhao@google.com>
-Date:   Tue, 22 Dec 2020 19:45:43 -0800
-In-Reply-To: <20201222155852.54d9393837ec884870ab4c3b@linux-foundation.org>
-References: <20201222155852.54d9393837ec884870ab4c3b@linux-foundation.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Tue, 22 Dec 2020 22:54:40 -0500
+Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [IPv6:2605:2700:0:5::4713:9cab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E8F3C0613D3;
+        Tue, 22 Dec 2020 19:54:00 -0800 (PST)
+Received: from hatter.bewilderbeest.net (unknown [IPv6:2600:6c44:7f:ba20:1c66:ab2d:5a3:5a9e])
+        (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: zev)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id B2D99806F7;
+        Tue, 22 Dec 2020 19:53:58 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 thorn.bewilderbeest.net B2D99806F7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
+        s=thorn; t=1608695639;
+        bh=UkEGylhrdt8z9hX+GY1d6wW/RLqoqo23ET3G6KBW12A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EuqG2WVFsZMIebMeVg+hIzhIuIBAWpjuaouck7qEvF+MZ4Knw2bS2SxoWuw+Gf2pF
+         Lpc901GW0brm5cmwHVKXs+GqZuK+BLqwsmWLZ0EVI7umLbp5Vl6x5e4oRCIpjSposk
+         NYe/dao6uzh8gknvwxu/Bo3+7Lx1mioJfQ4hVIBo=
+Date:   Tue, 22 Dec 2020 21:53:53 -0600
+From:   Zev Weiss <zev@bewilderbeest.net>
+To:     Ryan Chen <ryan_chen@aspeedtech.com>
+Cc:     Joel Stanley <joel@jms.id.au>, Eddie James <eajames@linux.ibm.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
+Subject: Re: [PATCH 2/3] aspeed-video: clear spurious interrupt bits
+ unconditionally
+Message-ID: <20201223035353.omn5ebut62sb7mxh@hatter.bewilderbeest.net>
+References: <20201215024542.18888-1-zev@bewilderbeest.net>
+ <20201215024542.18888-3-zev@bewilderbeest.net>
+ <CACPK8XczCUgqOENABoDbc-qwbMxOh=1OUyBtuHSmDG_Zo571Wg@mail.gmail.com>
+ <20201222191433.3dgnfwyrod4tnvaf@hatter.bewilderbeest.net>
+ <CACPK8XeOZEkpAKcyhZLeMdGzbwtFmdGEnL6QXp0VK1HL_O2pSg@mail.gmail.com>
+ <HK0PR06MB338018668005D679C51EF69AF2DE0@HK0PR06MB3380.apcprd06.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <HK0PR06MB338018668005D679C51EF69AF2DE0@HK0PR06MB3380.apcprd06.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prefer strscpy over the deprecated strlcpy function.
+On Tue, Dec 22, 2020 at 08:53:33PM CST, Ryan Chen wrote:
+>> -----Original Message-----
+>> From: Joel Stanley <joel@jms.id.au>
+>> Sent: Wednesday, December 23, 2020 9:07 AM
+>> To: Zev Weiss <zev@bewilderbeest.net>; Ryan Chen
+>> <ryan_chen@aspeedtech.com>
+>> Cc: Eddie James <eajames@linux.ibm.com>; Mauro Carvalho Chehab
+>> <mchehab@kernel.org>; Andrew Jeffery <andrew@aj.id.au>;
+>> linux-media@vger.kernel.org; OpenBMC Maillist <openbmc@lists.ozlabs.org>;
+>> Linux ARM <linux-arm-kernel@lists.infradead.org>; linux-aspeed
+>> <linux-aspeed@lists.ozlabs.org>; Linux Kernel Mailing List
+>> <linux-kernel@vger.kernel.org>; Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
+>> Subject: Re: [PATCH 2/3] aspeed-video: clear spurious interrupt bits
+>> unconditionally
+>>
+>> On Tue, 22 Dec 2020 at 19:14, Zev Weiss <zev@bewilderbeest.net> wrote:
+>> >
+>> > On Mon, Dec 21, 2020 at 10:47:37PM CST, Joel Stanley wrote:
+>> > >On Tue, 15 Dec 2020 at 02:46, Zev Weiss <zev@bewilderbeest.net> wrote:
+>> > >>
+>> > >> Instead of testing and conditionally clearing them one by one, we
+>> > >> can instead just unconditionally clear them all at once.
+>> > >>
+>> > >> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+>> > >
+>> > >I had a poke at the assembly and it looks like GCC is clearing the
+>> > >bits unconditionally anyway, so removing the tests provides no change.
+>> > >
+>> > >Combining them is a good further optimization.
+>> > >
+>> > >Reviewed-by: Joel Stanley <joel@jms.id.au>
+>> > >
+>> > >A question unrelated to this patch: Do you know why the driver
+>> > >doesn't clear the status bits in the interrupt handler? I would
+>> > >expect it to write the value of sts back to the register to ack the
+>> > >pending interrupt.
+>> > >
+>> >
+>> > No, I don't, and I was sort of wondering the same thing actually --
+>> > I'm not deeply familiar with this hardware or driver though, so I was
+>> > a bit hesitant to start messing with things.  (Though maybe doing so
+>> > would address the "stickiness" aspect when it does manifest.)  Perhaps
+>> > Eddie or Jae can shed some light here?
+>>
+>> I think you're onto something here - this would be why the status bits seem to
+>> stick until the device is reset.
+>>
+>> Until Aspeed can clarify if this is a hardware or software issue, I suggest we ack
+>> the bits and log a message when we see them, instead of always ignoring them
+>> without taking any action.
+>>
+>> Can you write a patch that changes the interrupt handler to ack status bits as it
+>> handles each of them?
+>>
+>Hello Zev, before the patch, do you met issue with irq handler? [continuous incoming?]
+>
+>In aspeed_video_irq handler should only handle enable interrupt expected.
+>   u32 sts = aspeed_video_read(video, VE_INTERRUPT_STATUS);
+> + sts &= aspeed_video_read(video, VE_INTERRUPT_CTRL);
+>
+>Ryan
+>
 
-Requested-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Joe Perches <joe@perches.com>
----
- scripts/checkpatch.pl | 6 ++++++
- 1 file changed, 6 insertions(+)
+Hi Ryan,
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 00085308ed9d..27679cc0ec17 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -6646,6 +6646,12 @@ sub process {
- #			}
- #		}
- 
-+# strlcpy uses that should likely be strscpy
-+		if ($line =~ /\bstrlcpy\s*\(/) {
-+			WARN("STRLCPY",
-+			     "Prefer strscpy over strlcpy - see: https://lore.kernel.org/r/CAHk-=wgfRnXz0W3D37d01q3JFkr_i_uTL=V6A6G1oUZcprmknw\@mail.gmail.com/\n" . $herecurr);
-+		}
-+
- # typecasts on min/max could be min_t/max_t
- 		if ($perl_version_ok &&
- 		    defined $stat &&
+Prior to any of these patches I encountered a problem pretty much 
+exactly like what Jae described in his commit message in 65d270acb2d 
+(but the kernel I was running included that patch).  Adding the 
+diagnostic in patch #1 of this series showed that it was apparently the 
+same problem, just with a different interrupt that Jae's patch didn't 
+include.
+
+ From what you wrote above, I gather that it is in fact expected for the 
+hardware to assert interrupts that aren't enabled in VE_INTERRUPT_CTRL?  
+If so, I guess something like that would obviate the need for both Jae's 
+earlier patch and this whole series.
+
+I think the question Joel raised is somewhat independent though -- if 
+the VE_INTERRUPT_STATUS register asserts interrupts we're not actually 
+using, should the driver acknowledge them anyway or just leave them 
+alone?  (Though if we're just going to ignore them anyway maybe it 
+doesn't ultimately matter very much.)
+
+
+Zev
 
