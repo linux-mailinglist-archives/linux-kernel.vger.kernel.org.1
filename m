@@ -2,99 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D97AC2E2299
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 23:57:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E9842E229F
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 00:07:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727706AbgLWW5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 17:57:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727141AbgLWW5D (ORCPT
+        id S1727554AbgLWXGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 18:06:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30937 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727254AbgLWXGe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 17:57:03 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B987EC061794
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 14:56:22 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id s26so951291lfc.8
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 14:56:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DhR9g6GISx+3RIJSrNoTktJAD8JqDRQmJMtw4uaGJsY=;
-        b=wRdmlgV8vdm/6G9QgvJneWx8kAFhz2u+kJWZjg5Ut6glF0olLdK7qL+Tu3mDgLpqVI
-         3VZejIMoM4rNmLWxdsG0Tbtv6UrvsUaS0z6L+gZ9I8wW+xD1W0q6X+xza/WewluIRA/y
-         RseS1q2rkxaZmgL+mMUDrB+HkiYwbq6n85vTXBc4KNSP1U519L10WxI8n8zv+bJygb8O
-         z98YGG39NFtconBm6oX63ItClE/OcsTrIT79+bwjjEuEWoitHNJbvRgf134QOqWpFlLP
-         mwkBbGBR1eZj0PYt2EJT1KTl9o2Dd9ou32u2Tr8VyFiJbsjYB9Z58N1e34WzA3SbqtSV
-         CH7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DhR9g6GISx+3RIJSrNoTktJAD8JqDRQmJMtw4uaGJsY=;
-        b=B+l2ylezQlXCA76uX4nqVO6CVjs8HXdrm9Ing0nhhN+bC9CqOdRrfcfIyYr41clqO5
-         cRPrdKFv3drQuM/1IRtWpmQrdQaMCitUlz+3YYGCSIlzmYsRwrzqG+K5S3xxw8lSEFau
-         jlkXY2/+yAzrhHDF/s2i1NbiK+iXx74lQIXbFjSSkUWZutv9kqjePu745Z4Kb5RADGT3
-         qg+egjq0Rzr86xkMikg1SHH7+ib82GkmzuT57Bv4voD/XWfuxkW6wEtVaN1zQ1o7PmWa
-         nE4psQji/HGN/FZoDtprQrDz+C71ADOhnbkjuInX01Rk/fQyukEK6w8ljALJmgFfbag4
-         sOJQ==
-X-Gm-Message-State: AOAM530M0VEcuMZEpYc0tNDpoYZnwKKVRklmxjJjQ4+wsNFzud4HEFoW
-        EBtovjg1VtrN0BvF/18U6+I7XxvS5OFnV3jN/fyAuA==
-X-Google-Smtp-Source: ABdhPJxv1e3/W5GCN0xsKQTeeBsZi/Yh4mkxtO4TeDf6EejDKtjr0Gvi+BshysmBZUN39882t7NWdwHy7c2TwPMebgY=
-X-Received: by 2002:a2e:9605:: with SMTP id v5mr12220313ljh.81.1608764181058;
- Wed, 23 Dec 2020 14:56:21 -0800 (PST)
+        Wed, 23 Dec 2020 18:06:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608764708;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4IW+6Ci7VWnkZSEHQFQsV4N3ToaQGHBeykrTby9wxas=;
+        b=NC4AKFw531KPD4dcvwrFk6dKvYYAX6E6XfLtVVGD7NH29XQtGz3VKMifUPje+W2qrF/uUi
+        JgEKLa6DPj9n5jgwIs2nu+ZRO8h2Ao9L4N2DyNIDGkZ5WGYe7IgFrv7wG7A9SFFaMbv+5j
+        pZT0BPsiDn44KjawBiCMwYIuRsM+UHg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-333-wDBks589Py2W9rDH4oAFuQ-1; Wed, 23 Dec 2020 18:05:04 -0500
+X-MC-Unique: wDBks589Py2W9rDH4oAFuQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E5A721005504;
+        Wed, 23 Dec 2020 23:05:01 +0000 (UTC)
+Received: from mail (ovpn-112-5.rdu2.redhat.com [10.10.112.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 47D0D63747;
+        Wed, 23 Dec 2020 23:04:58 +0000 (UTC)
+Date:   Wed, 23 Dec 2020 18:04:57 -0500
+From:   Andrea Arcangeli <aarcange@redhat.com>
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+Message-ID: <X+PNGYH6LkzZo0SU@redhat.com>
+References: <CAHk-=wh-bG4thjXUekLtrCg8FRrdWjtT40ibXXLSm_hzQG8eOw@mail.gmail.com>
+ <CALCETrV=8tY7h=aaudWBEn-MJnNkm2wz5qjH49SYqwkjYTpOaA@mail.gmail.com>
+ <X+JJqK91plkBVisG@redhat.com>
+ <X+JhwVX3s5mU9ZNx@google.com>
+ <X+Js/dFbC5P7C3oO@redhat.com>
+ <X+KDwu1PRQ93E2LK@google.com>
+ <X+Kxy3oBMSLz8Eaq@redhat.com>
+ <X+K7JMrTEC9SpVIB@google.com>
+ <X+O49HrcK1fBDk0Q@redhat.com>
+ <X+PE38s2Egq4nzKv@google.com>
 MIME-Version: 1.0
-References: <20201215115448.25633-12-sjpark@amazon.com> <20201223183721.8898-1-sjpark@amazon.com>
-In-Reply-To: <20201223183721.8898-1-sjpark@amazon.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 23 Dec 2020 14:56:10 -0800
-Message-ID: <CALvZod5dxOJMNP3HhwYc0ePN+0V8YXruXDtQQRuy+eKsJTYhcw@mail.gmail.com>
-Subject: Re: [PATCH v23 11/15] tools: Introduce a minimal user-space tool for DAMON
-To:     SeongJae Park <sjpark@amazon.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan.Cameron@huawei.com,
-        Andrea Arcangeli <aarcange@redhat.com>, acme@kernel.org,
-        alexander.shishkin@linux.intel.com, amit@kernel.org,
-        benh@kernel.crashing.org, brendan.d.gregg@gmail.com,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Qian Cai <cai@lca.pw>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Hildenbrand <david@redhat.com>, dwmw@amazon.com,
-        Marco Elver <elver@google.com>, "Du, Fan" <fan.du@intel.com>,
-        foersleo@amazon.de, Greg Thelen <gthelen@google.com>,
-        Ian Rogers <irogers@google.com>, jolsa@redhat.com,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mel Gorman <mgorman@suse.de>, Minchan Kim <minchan@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, namhyung@kernel.org,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Rik van Riel <riel@surriel.com>,
-        David Rientjes <rientjes@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mike Rapoport <rppt@kernel.org>, sblbir@amazon.com,
-        Shuah Khan <shuah@kernel.org>, sj38.park@gmail.com,
-        snu@amazon.de, Vlastimil Babka <vbabka@suse.cz>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Huang Ying <ying.huang@intel.com>, zgf574564920@gmail.com,
-        linux-damon@amazon.com, Linux MM <linux-mm@kvack.org>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X+PE38s2Egq4nzKv@google.com>
+User-Agent: Mutt/2.0.3 (2020-12-04)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 10:38 AM SeongJae Park <sjpark@amazon.com> wrote:
->
-[snip]
->
-> I will drop this patch from the next version of this patchset, because this is
-> not the essential part but could only make the code review time consuming.  I
-> will post another DAMON RFC patchset for convenient user space usages including
-> this and the perf integration.
+On Wed, Dec 23, 2020 at 03:29:51PM -0700, Yu Zhao wrote:
+> I was hesitant to suggest the following because it isn't that straight
+> forward. But since you seem to be less concerned with the complexity,
+> I'll just bring it on the table -- it would take care of both ufd and
+> clear_refs_write, wouldn't it?
 
-You can just add the link to your github repo with commit/tag
-containing the usage examples in the cover letter.
+It certainly would since this is basically declaring "leaving stale
+TLB entries past mmap_read_lock" is now permitted as long as the
+pending flush counter is elevated under mmap_sem for reading.
+
+Anything that prevents uffd-wp to take mmap_write_lock looks great to
+me, anything, the below included, as long as it looks like easy to
+enforce and understand. And the below certainly is.
+
+My view is that the below is at the very least an improvement in terms
+of total complexity, compared to v5.10. At least it'll be documented.
+
+So what would be not ok to me is to depend on undocumented not
+guaranteed behavior in do_wp_page like the page_mapcount, which is
+what we had until now in clear_refs_write and in uffd-wp (but only if
+wrprotect raced against un-wrprotect, a tiny window if compared to
+clear_refs_write).
+
+Documenting that clearing pte_write and deferring the flush is allowed
+if mm_tlb_flush_pending was elevated before taking the PT lock is less
+complex and very well defined rule, if compared to what we had before
+in the page_mapcount dependency of clear_refs_write which was prone to
+break, and in fact it just did.
+
+We'll need a commentary in both userfaultfd_writeprotect and
+clear_refs_write that links to the below snippet.
+
+If we abstract it in a header we can hide there also a #ifdef
+CONFIG_HAVE_ARCH_SOFT_DIRTY=y && CONFIG_HAVE_ARCH_USERFAULTFD_WP=y &&
+CONFIG_USERFAULTFD=y to make it even more explicit.
+
+However it may be simpler to keep it unconditional, I don't mind
+either ways. If it was up to me I'd write it to those 3 config options
+to be sure I remember where it comes from and to force any other user
+to register to be explicit they depend on that.
+
+> 
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 5e9ca612d7d7..af38c5ee327e 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -4403,8 +4403,11 @@ static vm_fault_t handle_pte_fault(struct vm_fault *vmf)
+>  		goto unlock;
+>  	}
+>  	if (vmf->flags & FAULT_FLAG_WRITE) {
+> -		if (!pte_write(entry))
+> +		if (!pte_write(entry)) {
+> +			if (mm_tlb_flush_pending(vmf->vma->vm_mm))
+> +				flush_tlb_page(vmf->vma, vmf->address);
+>  			return do_wp_page(vmf);
+> +		}
+>  		entry = pte_mkdirty(entry);
+>  	}
+>  	entry = pte_mkyoung(entry);
+> 
+
