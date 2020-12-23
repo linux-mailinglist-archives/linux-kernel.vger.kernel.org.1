@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3CDE2E1614
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:59:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BB882E15CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:59:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730103AbgLWC5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:57:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46404 "EHLO mail.kernel.org"
+        id S1731175AbgLWCxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:53:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729077AbgLWCUp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:20:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 56672229C5;
-        Wed, 23 Dec 2020 02:20:29 +0000 (UTC)
+        id S1729230AbgLWCVN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:21:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DBBBA23137;
+        Wed, 23 Dec 2020 02:20:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690030;
-        bh=CLpvyJm6ey7siVxyqi+mtoGI9mlj4GFiKdSRV/eta8w=;
+        s=k20201202; t=1608690032;
+        bh=uc2zw3ThyR4wHAex+t9uG3MLBOkmmhPTciDcxbPNCZk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bQLATC8+z/sKizgIv+Z/8+XYSJj1k4GDJz1+RVsfr6HcLBLrCohPxVyh1MXXoWB6d
-         Nkrp8MPmbZsI+eNmKyI8aQGLrWgoikDeMI2Kqydy36M1KeEZZhy3Z3pRbNhQM/wB8+
-         6muKQrqRwW8WQ2fi5I8tUmZ+JvARYxKfpL7ETOjBNkDHMVyq/ZQ8tly7u3bE+XerdU
-         oI9SZ0vwms77af8jLB8fxU5/N5NKzTkmPTNcrwyQUMGyomNA9O+aDzYY7kU9yIuOiw
-         C/tQYZ/VC3sVvhT59k3pSpfsAGIN8UX1crRGeyAzRdDxYpyz9p2f/Q/Jyan5SuckM4
-         ZKtRUxr0xopwA==
+        b=FJ3GdFQbg8g6mId4DOd+DK0ZPfJyoQetI4cMFv/m51uVVoPENKXHkjBnwDg+nFt5S
+         XsVZRxOf5WFwYBAgl3IZz/gA0TGvG0L88VLdY6uGROqQsd53K/YJkjwf0keWwYEMzI
+         3gouPELEKDVqs8l92gT0WMOtMwuXT9yhIVAtuD0USQTqd/R1+nTCskZtACUauuyQtQ
+         otFWj/UyhQwye/2GS729zfgX8u9XzXuTFhLwzPJURhZqkb7I7WMzNM3S4qH8Xex7pk
+         t8NAU2bNOSzcb2Xp5dBPgcpCW51ea9XVbx21FXA3GZuIuSbzisnFtfKKcJXZgieiHm
+         xS15k5Sl+PqWg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mordechay Goodstein <mordechay.goodstein@intel.com>,
+Cc:     Johannes Berg <johannes.berg@intel.com>,
         Luca Coelho <luciano.coelho@intel.com>,
         Sasha Levin <sashal@kernel.org>,
         linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 106/130] iwlwifi: avoid endless HW errors at assert time
-Date:   Tue, 22 Dec 2020 21:17:49 -0500
-Message-Id: <20201223021813.2791612-106-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 108/130] iwlwifi: pcie: validate RX descriptor length
+Date:   Tue, 22 Dec 2020 21:17:51 -0500
+Message-Id: <20201223021813.2791612-108-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223021813.2791612-1-sashal@kernel.org>
 References: <20201223021813.2791612-1-sashal@kernel.org>
@@ -43,48 +43,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mordechay Goodstein <mordechay.goodstein@intel.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 861bae42e1f125a5a255ace3ccd731e59f58ddec ]
+[ Upstream commit df72138de4bc4e85e427aabc60fc51be6cc57fc7 ]
 
-Curretly we only mark HW error state "after" trying to collect HW data,
-but if any HW error happens while colleting HW data we go into endless
-loop. avoid this by setting HW error state "before" collecting HW data.
+Validate the maximum RX descriptor length against the size
+of the buffers we gave the device - if it doesn't fit then
+the hardware messed up.
 
-Signed-off-by: Mordechay Goodstein <mordechay.goodstein@intel.com>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Link: https://lore.kernel.org/r/iwlwifi.20201209231352.4c7e5a87da15.Ic35b2f28ff08f7ac23143c80f224d52eb97a0454@changeid
+Link: https://lore.kernel.org/r/iwlwifi.20201209231352.6378fb435cc0.Ib07485f3dc5999c74b03f21e7a808c50a05e353c@changeid
 Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/iwlwifi/mvm/ops.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/net/wireless/intel/iwlwifi/pcie/rx.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/ops.c b/drivers/net/wireless/intel/iwlwifi/mvm/ops.c
-index 3acbd5b7ab4b2..87f53810fdac3 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/ops.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/ops.c
-@@ -1291,6 +1291,12 @@ void iwl_mvm_nic_restart(struct iwl_mvm *mvm, bool fw_error)
- 	} else if (mvm->fwrt.cur_fw_img == IWL_UCODE_REGULAR &&
- 		   mvm->hw_registered &&
- 		   !test_bit(STATUS_TRANS_DEAD, &mvm->trans->status)) {
-+		/* This should be first thing before trying to collect any
-+		 * data to avoid endless loops if any HW error happens while
-+		 * collecting debug data.
-+		 */
-+		set_bit(IWL_MVM_STATUS_HW_RESTART_REQUESTED, &mvm->status);
-+
- 		if (mvm->fw->ucode_capa.error_log_size) {
- 			u32 src_size = mvm->fw->ucode_capa.error_log_size;
- 			u32 src_addr = mvm->fw->ucode_capa.error_log_addr;
-@@ -1309,7 +1315,6 @@ void iwl_mvm_nic_restart(struct iwl_mvm *mvm, bool fw_error)
+diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/rx.c b/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
+index 64c74acadb998..72ec2ddcaecd4 100644
+--- a/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
++++ b/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
+@@ -1292,6 +1292,13 @@ static void iwl_pcie_rx_handle_rb(struct iwl_trans *trans,
  
- 		if (fw_error && mvm->fw_restart > 0)
- 			mvm->fw_restart--;
--		set_bit(IWL_MVM_STATUS_HW_RESTART_REQUESTED, &mvm->status);
- 		ieee80211_restart_hw(mvm->hw);
+ 		len = iwl_rx_packet_len(pkt);
+ 		len += sizeof(u32); /* account for status word */
++
++		offset += ALIGN(len, FH_RSCSR_FRAME_ALIGN);
++
++		/* check that what the device tells us made sense */
++		if (offset > max_len)
++			break;
++
+ 		trace_iwlwifi_dev_rx(trans->dev, trans, pkt, len);
+ 		trace_iwlwifi_dev_rx_data(trans->dev, trans, pkt, len);
+ 
+@@ -1349,7 +1356,6 @@ static void iwl_pcie_rx_handle_rb(struct iwl_trans *trans,
+ 		page_stolen |= rxcb._page_stolen;
+ 		if (trans->trans_cfg->device_family >= IWL_DEVICE_FAMILY_22560)
+ 			break;
+-		offset += ALIGN(len, FH_RSCSR_FRAME_ALIGN);
  	}
- }
+ 
+ 	/* page was stolen from us -- free our reference */
 -- 
 2.27.0
 
