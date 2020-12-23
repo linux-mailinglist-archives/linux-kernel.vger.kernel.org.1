@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 492842E12AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:27:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D4C22E12A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:27:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729997AbgLWCXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:23:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52738 "EHLO mail.kernel.org"
+        id S1729910AbgLWCXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:23:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51318 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729968AbgLWCXW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:23:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C3138229CA;
-        Wed, 23 Dec 2020 02:22:40 +0000 (UTC)
+        id S1729870AbgLWCXD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:23:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A6BC0225AB;
+        Wed, 23 Dec 2020 02:22:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690161;
-        bh=RsKqvpTWRMGO19pQbyx25KClsdDeOiMRfeaF3Z3H4FQ=;
+        s=k20201202; t=1608690165;
+        bh=+q+gSVCRGwd6pCl4K2v/dH+8UUl1ZK+npmBeqtDjgck=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Zt9yBpwVaWXUPrYT+jd7Tucc3F1RucF/VljzW1e1sCtv4aejKEPIXapncJN/086KE
-         fGOIuZrMiSu0gOhVEEZlBnHoMdgFC4HdAB8yuokWSiNzFj2f7iR7b3BYNr5OD0PuZ7
-         s3HxAHvqloeyjTUgcSCIppD1Rbcew/4Gskd6rTisr975MkI79dkbIWjbGU8P64ZY8r
-         65bUXJv5jXfUnBIFU7b0OoneHDiP1IdYk+/6FwA44t6saabLuMWSmgusUQqP6rZ8xD
-         GqWGovf9WgXCiBo1v1SEwSu0FVkA1P3ruqe3VQnygNUYCmmb5j3FpOR39Qk7DfARbk
-         QCQFTLpejGBrw==
+        b=B+5LD3Maws5ZC/WBttyYWrHi42HsxEZd3rLspncMASS+U+yJ1jC72TeKqH8nsJYxn
+         hPRAQvXz248a7HVRjfAptYQfAwmCyixXMxn3m6Z7yjfrqwpQv376w7hscon6fJHPJo
+         9qVYVn1VTvtGXLdSMdU+FeT0KBvR2/Hxm2Sn5i/ipbaKwEAV8zo8FuIi1X6PT4zsbq
+         VkTX91q4mW8Dzl7KOEUfDraJbWqwhl6CMCzxgA3iScg991xAVsnhY+6m2E9v8NBqrW
+         iWTGWZ/fZsfcxzrzHzfdAfQTUql9KI+KRit+3pfVeT7bTh3qaGfxHzcICotV2SmX5l
+         inJFzaaNmJluA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Johannes Berg <johannes.berg@intel.com>,
+Cc:     Ilan Peer <ilan.peer@intel.com>,
         Luca Coelho <luciano.coelho@intel.com>,
+        Johannes Berg <johannes.berg@intel.com>,
         Sasha Levin <sashal@kernel.org>,
         linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 79/87] mac80211: disallow band-switch during CSA
-Date:   Tue, 22 Dec 2020 21:20:55 -0500
-Message-Id: <20201223022103.2792705-79-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 82/87] mac80211: Fix calculation of minimal channel width
+Date:   Tue, 22 Dec 2020 21:20:58 -0500
+Message-Id: <20201223022103.2792705-82-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223022103.2792705-1-sashal@kernel.org>
 References: <20201223022103.2792705-1-sashal@kernel.org>
@@ -43,69 +44,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Ilan Peer <ilan.peer@intel.com>
 
-[ Upstream commit 3660944a37ce73890292571f44f04891834f9044 ]
+[ Upstream commit bbf31e88df2f5da20ce613c340ce508d732046b3 ]
 
-If the AP advertises a band switch during CSA, we will not have
-the right information to continue working with it, since it will
-likely (have to) change its capabilities and we don't track any
-capability changes at all. Additionally, we store e.g. supported
-rates per band, and that information would become invalid.
+When calculating the minimal channel width for channel context,
+the current operation Rx channel width of a station was used and not
+the overall channel width capability of the station, i.e., both for
+Tx and Rx.
 
-Since this is a fringe scenario, just disconnect explicitly.
+Fix ieee80211_get_sta_bw() to use the maximal channel width the
+station is capable. While at it make the function static.
 
+Signed-off-by: Ilan Peer <ilan.peer@intel.com>
 Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Link: https://lore.kernel.org/r/iwlwifi.20201129172929.0e2327107c06.I461adb07704e056b054a4a7c29b80c95a9f56637@changeid
+Link: https://lore.kernel.org/r/iwlwifi.20201206145305.4387040b99a0.I74bcf19238f75a5960c4098b10e355123d933281@changeid
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/mlme.c | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
+ net/mac80211/chan.c        | 10 ++++++----
+ net/mac80211/ieee80211_i.h |  1 -
+ 2 files changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/net/mac80211/mlme.c b/net/mac80211/mlme.c
-index c53a332f7d65a..eb711475cb140 100644
---- a/net/mac80211/mlme.c
-+++ b/net/mac80211/mlme.c
-@@ -1261,6 +1261,17 @@ ieee80211_sta_process_chanswitch(struct ieee80211_sub_if_data *sdata,
- 	if (res)
- 		return;
+diff --git a/net/mac80211/chan.c b/net/mac80211/chan.c
+index d9558ffb8acf7..b58813568c9ff 100644
+--- a/net/mac80211/chan.c
++++ b/net/mac80211/chan.c
+@@ -190,11 +190,13 @@ ieee80211_find_reservation_chanctx(struct ieee80211_local *local,
+ 	return NULL;
+ }
  
-+	if (sdata->vif.bss_conf.chandef.chan->band !=
-+	    csa_ie.chandef.chan->band) {
-+		sdata_info(sdata,
-+			   "AP %pM switches to different band (%d MHz, width:%d, CF1/2: %d/%d MHz), disconnecting\n",
-+			   ifmgd->associated->bssid,
-+			   csa_ie.chandef.chan->center_freq,
-+			   csa_ie.chandef.width, csa_ie.chandef.center_freq1,
-+			   csa_ie.chandef.center_freq2);
-+		goto lock_and_drop_connection;
-+	}
+-enum nl80211_chan_width ieee80211_get_sta_bw(struct ieee80211_sta *sta)
++static enum nl80211_chan_width ieee80211_get_sta_bw(struct sta_info *sta)
+ {
+-	switch (sta->bandwidth) {
++	enum ieee80211_sta_rx_bandwidth width = ieee80211_sta_cap_rx_bw(sta);
 +
- 	if (!cfg80211_chandef_usable(local->hw.wiphy, &csa_ie.chandef,
- 				     IEEE80211_CHAN_DISABLED)) {
- 		sdata_info(sdata,
-@@ -1269,9 +1280,7 @@ ieee80211_sta_process_chanswitch(struct ieee80211_sub_if_data *sdata,
- 			   csa_ie.chandef.chan->center_freq,
- 			   csa_ie.chandef.width, csa_ie.chandef.center_freq1,
- 			   csa_ie.chandef.center_freq2);
--		ieee80211_queue_work(&local->hw,
--				     &ifmgd->csa_connection_drop_work);
--		return;
-+		goto lock_and_drop_connection;
- 	}
++	switch (width) {
+ 	case IEEE80211_STA_RX_BW_20:
+-		if (sta->ht_cap.ht_supported)
++		if (sta->sta.ht_cap.ht_supported)
+ 			return NL80211_CHAN_WIDTH_20;
+ 		else
+ 			return NL80211_CHAN_WIDTH_20_NOHT;
+@@ -231,7 +233,7 @@ ieee80211_get_max_required_bw(struct ieee80211_sub_if_data *sdata)
+ 		    !(sta->sdata->bss && sta->sdata->bss == sdata->bss))
+ 			continue;
  
- 	if (cfg80211_chandef_identical(&csa_ie.chandef,
-@@ -1361,6 +1370,9 @@ ieee80211_sta_process_chanswitch(struct ieee80211_sub_if_data *sdata,
- 			  TU_TO_EXP_TIME((csa_ie.count - 1) *
- 					 cbss->beacon_interval));
- 	return;
-+ lock_and_drop_connection:
-+	mutex_lock(&local->mtx);
-+	mutex_lock(&local->chanctx_mtx);
-  drop_connection:
- 	/*
- 	 * This is just so that the disconnect flow will know that
+-		max_bw = max(max_bw, ieee80211_get_sta_bw(&sta->sta));
++		max_bw = max(max_bw, ieee80211_get_sta_bw(sta));
+ 	}
+ 	rcu_read_unlock();
+ 
+diff --git a/net/mac80211/ieee80211_i.h b/net/mac80211/ieee80211_i.h
+index 43edb903be693..285a541549aaa 100644
+--- a/net/mac80211/ieee80211_i.h
++++ b/net/mac80211/ieee80211_i.h
+@@ -2165,7 +2165,6 @@ int ieee80211_check_combinations(struct ieee80211_sub_if_data *sdata,
+ 				 enum ieee80211_chanctx_mode chanmode,
+ 				 u8 radar_detect);
+ int ieee80211_max_num_channels(struct ieee80211_local *local);
+-enum nl80211_chan_width ieee80211_get_sta_bw(struct ieee80211_sta *sta);
+ void ieee80211_recalc_chanctx_chantype(struct ieee80211_local *local,
+ 				       struct ieee80211_chanctx *ctx);
+ 
 -- 
 2.27.0
 
