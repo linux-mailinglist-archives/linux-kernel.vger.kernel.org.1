@@ -2,95 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7A4B2E2124
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 21:09:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71EF82E2128
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 21:09:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728819AbgLWUIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 15:08:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58574 "EHLO
+        id S1728858AbgLWUJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 15:09:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727671AbgLWUIa (ORCPT
+        with ESMTP id S1728189AbgLWUJa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 15:08:30 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DACCEC061794;
-        Wed, 23 Dec 2020 12:07:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=JqAs7/IqK/ESG/Ka9oK25ik6wVg0igAJShtBSVYvteg=; b=elzZw5E5Vk0tIi7tAwVX+Jr2j6
-        bdRWFl/AsoFrR3ZXNZ3/LOskVP+LQK3uhA8TsdM0ipj+0kAbaQ6etRqsEGUfuCeM2m2pgO37Y+FKB
-        WUrX7vn42dRYR6wHBnNGseflCneg/D2nMAiyvDzQqrVpuvAqGF4KoLqi+OVf7Rh27Nic6/jliSEnI
-        K7tVzNrI7RmNgoWlRgiiJms0tj32zWllxNbRS/ScbtIO2uVVIrdj+yp2jC40qRMNssvEy/Ef8BSZE
-        Dm3P8YaqF1BhXaXXHeHKss4pfygaIMaVNtTQbKw/MRS892HN3GJrkuAFEKvpvKzEm8y6AIR2T1lAK
-        UHxwPZRg==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ksAQE-0008P2-Su; Wed, 23 Dec 2020 20:07:47 +0000
-Date:   Wed, 23 Dec 2020 20:07:46 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Sargun Dhillon <sargun@sargun.me>
-Cc:     Vivek Goyal <vgoyal@redhat.com>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        jlayton@kernel.org, amir73il@gmail.com, miklos@szeredi.hu,
-        jack@suse.cz, neilb@suse.com, viro@zeniv.linux.org.uk, hch@lst.de
-Subject: Re: [PATCH 3/3] overlayfs: Report writeback errors on upper
-Message-ID: <20201223200746.GR874@casper.infradead.org>
-References: <20201221195055.35295-1-vgoyal@redhat.com>
- <20201221195055.35295-4-vgoyal@redhat.com>
- <20201223182026.GA9935@ircssh-2.c.rugged-nimbus-611.internal>
- <20201223185044.GQ874@casper.infradead.org>
- <20201223192940.GA11012@ircssh-2.c.rugged-nimbus-611.internal>
+        Wed, 23 Dec 2020 15:09:30 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B133C061794;
+        Wed, 23 Dec 2020 12:08:50 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id c133so414976wme.4;
+        Wed, 23 Dec 2020 12:08:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=vcjD/mgYco37bqn/aZEyfuF3IgLhY02B5goKU5qZcxo=;
+        b=rUDf234NiSP758+M2W5vQ+0Ku77iK8kg1QCuRfFzDRzkDQx5+4Bs7fSoYMZw5KZP+x
+         tF+Ts+Z2y4cWebyggBuWo4yxD0uhyrMuJ7dtamkDqv7jccabeEf6kJPm8jKBhNkOMgJH
+         p1fBvcf9o67YzWX2HZ4sPZQDeZA7sjQffBXoLL5/qyo9X+3dCD4fYkMCXGfACGY/nDPb
+         BlrgbmInSz8aeyhjwjbNFOEUzJjS73Tr7weUw/NCWJqlg+frAh3lkxYysn0i+Kon4bRJ
+         9p33I4+k1bC55UHGF4Yqgz3kWVaep48rGOWioEZO9CxnvaGwf3Qip96jXVdp5wxpflZt
+         pVrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-transfer-encoding:content-language;
+        bh=vcjD/mgYco37bqn/aZEyfuF3IgLhY02B5goKU5qZcxo=;
+        b=lrDwfubO7CEdh2da7W9FK506KgjRbdkdds3SnT3/pYsX6U91yv0WLiexAETXa9XW2t
+         fGcBpFZhf0WfZ99LeP4kWa5aQI+8c6UNyfIQQeeRmUGQRvM7SugKHnrZuBi5Zl5ePG44
+         OcrwbLAsWkEryQptCkwaEHh1msqh44lR4nHDwiUsoMogDeFNcMhefgo8xeOiQHoPTts0
+         8Q90FU01pCL5TemtaC0mJdGsdzN3IAI8kGtRmS7XO3JexapgfGlRzJy2wIp93aAONOao
+         kZXYmbHwvWXE9Nnx2zCpDyVwXhiGufjLwfUb1fLQXT1ejoa29lEATA//U5fKGzWIoROQ
+         /Hhg==
+X-Gm-Message-State: AOAM533p4iGQGxgHaumkCe0eji38oh1YHCnWdfURV8rX2T4lsAbLTW4p
+        NoW0ATrXr+wbdGXGT5LrbZg=
+X-Google-Smtp-Source: ABdhPJxjSVqlOdnskT38CNxvzl3/d6kZiQDNtr09R3jbK1dJVqne3d+TZItMdVDRy5CyAuSSQyFX7w==
+X-Received: by 2002:a1c:64c4:: with SMTP id y187mr1214986wmb.165.1608754129000;
+        Wed, 23 Dec 2020 12:08:49 -0800 (PST)
+Received: from [192.168.1.113] (250.red-81-35-222.dynamicip.rima-tde.net. [81.35.222.250])
+        by smtp.gmail.com with ESMTPSA id b7sm34100997wrv.47.2020.12.23.12.08.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Dec 2020 12:08:48 -0800 (PST)
+To:     robh+dt@kernel.org
+Cc:     mripard@kernel.org, wens@csie.org, jernej.skrabec@siol.net,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, pikaslabs@gmail.com
+From:   Sergio Sota <pikaslabs@gmail.com>
+Subject: [PATCH] ARM: dts sunxi: add A10s/A13 mali gpu support
+Message-ID: <eeba726d-40fd-48cf-9587-8f801f3d6cf7@gmail.com>
+Date:   Wed, 23 Dec 2020 21:08:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201223192940.GA11012@ircssh-2.c.rugged-nimbus-611.internal>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 07:29:41PM +0000, Sargun Dhillon wrote:
-> On Wed, Dec 23, 2020 at 06:50:44PM +0000, Matthew Wilcox wrote:
-> > On Wed, Dec 23, 2020 at 06:20:27PM +0000, Sargun Dhillon wrote:
-> > > I fail to see why this is neccessary if you incorporate error reporting into the 
-> > > sync_fs callback. Why is this separate from that callback? If you pickup Jeff's
-> > > patch that adds the 2nd flag to errseq for "observed", you should be able to
-> > > stash the first errseq seen in the ovl_fs struct, and do the check-and-return
-> > > in there instead instead of adding this new infrastructure.
-> > 
-> > You still haven't explained why you want to add the "observed" flag.
-> 
-> 
-> In the overlayfs model, many users may be using the same filesystem (super block)
-> for their upperdir. Let's say you have something like this:
-> 
-> /workdir [Mounted FS]
-> /workdir/upperdir1 [overlayfs upperdir]
-> /workdir/upperdir2 [overlayfs upperdir]
-> /workdir/userscratchspace
-> 
-> The user needs to be able to do something like:
-> sync -f ${overlayfs1}/file
-> 
-> which in turn will call sync on the the underlying filesystem (the one mounted 
-> on /workdir), and can check if the errseq has changed since the overlayfs was
-> mounted, and use that to return an error to the user.
+ From c45753026b4868e32132348f8f2bf59e6ce5c820 Mon Sep 17 00:00:00 2001
+From: Sergio Sota <pikaslabs@gmail.com>
+Date: Wed, 23 Dec 2020 21:00:35 +0100
+Subject: [PATCH] ARM: dts sunxi: add A10s/A13 mali gpu support
 
-OK, but I don't see why the current scheme doesn't work for this.  If
-(each instance of) overlayfs samples the errseq at mount time and then
-check_and_advances it at sync time, it will see any error that has occurred
-since the mount happened (and possibly also an error which occurred before
-the mount happened, but hadn't been reported to anybody before).
+The A10s/A13 mali gpu was not defined in device tree
+The A10 has a compatible mali gpu driver (same device)
 
-> If we do not advance the errseq on the upperdir to "mark it as seen", that means 
-> future errors will not be reported if the user calls sync -f ${overlayfs1}/file,
-> because errseq will not increment the value if the seen bit is unset.
-> 
-> On the other hand, if we mark it as seen, then if the user calls sync on 
-> /workdir/userscratchspace/file, they wont see the error since we just set the 
-> SEEN flag.
+Signed-off-by: Sergio Sota <pikaslabs@gmail.com>
+---
+  arch/arm/boot/dts/sun5i.dtsi | 12 ++++++++++++
+  1 file changed, 12 insertions(+)
 
-While we set the SEEN flag, if the file were opened before the error
-occurred, we would still report the error because the sequence is higher
-than it was when we sampled the error.
+diff --git a/arch/arm/boot/dts/sun5i.dtsi b/arch/arm/boot/dts/sun5i.dtsi
+index 4ef14a8695ef..b4d46ecdf7ad 100644
+--- a/arch/arm/boot/dts/sun5i.dtsi
++++ b/arch/arm/boot/dts/sun5i.dtsi
+@@ -726,6 +726,18 @@ i2c2: i2c@1c2b400 {
+              #size-cells = <0>;
+          };
+
++        mali: gpu@1c40000 {
++            compatible = "allwinner,sun4i-a10-mali", "arm,mali-400";
++            reg = <0x01c40000 0x10000>;
++            interrupts = <69>, <70>, <71>, <72>,  <73>;
++            interrupt-names = "gp", "gpmmu", "pp0", "ppmmu0", "pmu";
++            clocks = <&ccu CLK_AHB_GPU>, <&ccu CLK_GPU>;
++            clock-names = "bus", "core";
++            resets = <&ccu RST_GPU>;
++            assigned-clocks = <&ccu CLK_GPU>;
++            assigned-clock-rates = <320000000>;
++        };
++
+          timer@1c60000 {
+              compatible = "allwinner,sun5i-a13-hstimer";
+              reg = <0x01c60000 0x1000>;
+-- 
+2.25.1
 
