@@ -2,132 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AFCC2E10DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 01:50:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65CC82E10E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 01:54:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726260AbgLWAt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 19:49:29 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:15584 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725946AbgLWAt2 (ORCPT
+        id S1726487AbgLWAyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 19:54:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726069AbgLWAya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 19:49:28 -0500
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BN0Ur45131527;
-        Tue, 22 Dec 2020 19:48:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
- cc : subject : in-reply-to : date : message-id : mime-version :
- content-type; s=pp1; bh=yX4u3TsiaR+dHf00AtWdm0Ob3ShwkyqY8C7skDPUdcA=;
- b=qUw3gybXeFmDLxDw4i6e/VMbb+Y/SHAmLoBDxukwTqfoE/2A+JfoVBACdKmdqW7kI4PG
- tNgcwsU/slF95EkTCEbWreP9DqX/P5cGXMOAVG9GRiEVDq+SRudXDohBpJsA4OJvWTDK
- kVYfgnI2HzCIs5eGWzlpuIGEQbimrZRmxvZlS7t6OQEYYwPxhCaacQGpW4zwRRD6jVG7
- evems8n0cbU0HCmlPTF2HlRqe2p3iisuKgRJR5QUkgNloVFt+BOJu+6AW7R0XyL2v0mp
- ySgeev2hCAZGmFgxknVwOkFVp3BBNv3iov65LVUGuemoiIBMDcu1dEyi0WesbFK7ofnK yg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35ku9wrd38-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Dec 2020 19:48:16 -0500
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BN0mFps195475;
-        Tue, 22 Dec 2020 19:48:16 -0500
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35ku9wrd2y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Dec 2020 19:48:15 -0500
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BN0jFD4005772;
-        Wed, 23 Dec 2020 00:48:14 GMT
-Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
-        by ppma02wdc.us.ibm.com with ESMTP id 35km4gtka9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Dec 2020 00:48:14 +0000
-Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BN0mBnN26935638
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 23 Dec 2020 00:48:11 GMT
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 50123BE054;
-        Wed, 23 Dec 2020 00:48:11 +0000 (GMT)
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2BDA3BE051;
-        Wed, 23 Dec 2020 00:48:04 +0000 (GMT)
-Received: from manicouagan.localdomain (unknown [9.80.219.136])
-        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTPS;
-        Wed, 23 Dec 2020 00:48:03 +0000 (GMT)
-References: <20201219175713.18888-1-nramas@linux.microsoft.com>
- <20201219175713.18888-3-nramas@linux.microsoft.com>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     zohar@linux.ibm.com, robh@kernel.org, takahiro.akashi@linaro.org,
-        gregkh@linuxfoundation.org, will@kernel.org,
-        catalin.marinas@arm.com, mpe@ellerman.id.au, james.morse@arm.com,
-        sashal@kernel.org, benh@kernel.crashing.org, paulus@samba.org,
-        frowand.list@gmail.com, vincenzo.frascino@arm.com,
-        mark.rutland@arm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
-        serge@hallyn.com, pasha.tatashin@soleen.com, allison@lohutok.net,
-        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
-        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v13 2/6] powerpc: Move arch independent ima kexec
- functions to drivers/of/kexec.c
-In-reply-to: <20201219175713.18888-3-nramas@linux.microsoft.com>
-Date:   Tue, 22 Dec 2020 21:48:02 -0300
-Message-ID: <875z4tl54t.fsf@manicouagan.localdomain>
+        Tue, 22 Dec 2020 19:54:30 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F3F1C0613D3;
+        Tue, 22 Dec 2020 16:53:50 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id g20so20683017ejb.1;
+        Tue, 22 Dec 2020 16:53:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jhwq8dFCnYRB1GRDZAa/1oWzJtmgPF7TILAcsF6Iqv0=;
+        b=QpxCpqkRXdK+CKFv29ntOoplOxMiYGDU6xEVbswo2Fjw2p5tWIgtFrJkSUo0EZjSUF
+         50ldsbvfJvwlqllT19d5ZjFj1FJzykrE86RcSmTd1hmaWurzBQWXYBFVpaezqXHeuS9y
+         z3N34e9eriU00qmRlaZVEr6Uud6ML3gHiRJn/IrvJGcIDsiEwcx1xz+dHyG3YMNZHdqN
+         5Ic8XdSRwoyhY869ZDrxFqnlL+gwzkBUGw8GBGNpBJuPUjC+KOuY/SP8M+h/OrYq7YKs
+         X+Ki5zsUSeIfIrLzFZ39/z543soIBaHlYXc9hfXoCmuPXW9ePI0z3OYz5tJiC8lE1J/T
+         Gr4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jhwq8dFCnYRB1GRDZAa/1oWzJtmgPF7TILAcsF6Iqv0=;
+        b=hViat7m2RV6Ga8p8iPkUStVjjtlpREQvEe1tQHD56PCAXN0pPo66KRUGnQJNR3JdqW
+         MtOgpEgsosJVsYgV/2i1+0NOCzmEsJyvbpiMGF8fYVuoalamm+wSO0uM5R8VUNmY/YAU
+         A9cZnQjYcM/LcUbbfzLyRn89PWpQ+c+xJW3+99zkl3JBDk5DIfqvPbhs6ZkIFWkSRFin
+         rldGJWX1ZPD/Vs8Ijod04HCvBVav9pyzXz2Nj11fnF3t0zTdLQvhwVTAAJ3ECy72kWSt
+         IKVaIRcB1bUQ8R+7ejwEpXw2gsJuPJWbmREOanQyl39SPG4SIy13ss+T/UvfA23KZsNw
+         KUYw==
+X-Gm-Message-State: AOAM53206JnqNxJ0l0t+UP70bOi/sBkW7fYz2b5/MFpNaM1Rk6Q5PYFp
+        4t3jV+aFOXgK+Wvj01bzXg==
+X-Google-Smtp-Source: ABdhPJxXgrXvFDYDXXlnCyFl+1D630wBoTUdP8V0HxqwsqR/txVDpIsK7cOzOgC7GCm6FH/bN5ohvw==
+X-Received: by 2002:a17:906:a2d0:: with SMTP id by16mr21599305ejb.207.1608684829109;
+        Tue, 22 Dec 2020 16:53:49 -0800 (PST)
+Received: from crazy-nitroan51543.fritz.box (business-24-134-37-65.pool2.vodafone-ip.de. [24.134.37.65])
+        by smtp.gmail.com with ESMTPSA id k21sm31625058edq.26.2020.12.22.16.53.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Dec 2020 16:53:47 -0800 (PST)
+From:   Gabriel Craciunescu <nix.or.die@googlemail.com>
+X-Google-Original-From: Gabriel Craciunescu <nix.or.die@gmail.com>
+To:     linux-hwmon@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Gabriel Craciunescu <nix.or.die@gmail.com>
+Subject: [PATCH] hwmon: k10temp: Zen3 Ryzen Desktop CPUs support
+Date:   Wed, 23 Dec 2020 01:53:15 +0100
+Message-Id: <20201223005315.20077-1-nix.or.die@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-22_13:2020-12-21,2020-12-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- priorityscore=1501 mlxscore=0 clxscore=1015 spamscore=0 impostorscore=0
- suspectscore=0 lowpriorityscore=0 phishscore=0 mlxlogscore=999
- adultscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012220175
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The module has only support for Zen3 server CPUs right now.
+Add support for Family 0x19, model 0x21 which are Zen3 Ryzen Desktop CPUs.
+Tested on 5800x, 5900x and 5950x CPUs.
 
-Actually, I have one more comment on this patch:
+Signed-off-by: Gabriel Craciunescu <nix.or.die@gmail.com>
+---
+ drivers/hwmon/k10temp.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
-
-> diff --git a/arch/powerpc/kexec/file_load.c b/arch/powerpc/kexec/file_load.c
-> index 956bcb2d1ec2..9f3ec0b239ef 100644
-> --- a/arch/powerpc/kexec/file_load.c
-> +++ b/arch/powerpc/kexec/file_load.c
-> @@ -20,7 +20,6 @@
->  #include <linux/of_fdt.h>
->  #include <linux/libfdt.h>
->  #include <asm/setup.h>
-> -#include <asm/ima.h>
->  
->  #define SLAVE_CODE_SIZE		256	/* First 0x100 bytes */
->  
-> @@ -163,12 +162,6 @@ int setup_new_fdt(const struct kimage *image, void *fdt,
->  	if (ret)
->  		goto err;
->  
-> -	ret = setup_ima_buffer(image, fdt, fdt_path_offset(fdt, "/chosen"));
-> -	if (ret) {
-> -		pr_err("Error setting up the new device tree.\n");
-> -		return ret;
-> -	}
-> -
->  	return 0;
->  
->  err:
-
-With this change, setup_new_fdt() is nothing more than a call to
-of_kexec_setup_new_fdt(). It should be removed, and its caller should
-call of_kexec_setup_new_fdt() directly.
-
-This change could be done in patch 4 of this series, to keep this patch
-simpler.
-
+diff --git a/drivers/hwmon/k10temp.c b/drivers/hwmon/k10temp.c
+index 3bc2551577a3..5b1677d85b3f 100644
+--- a/drivers/hwmon/k10temp.c
++++ b/drivers/hwmon/k10temp.c
+@@ -448,7 +448,8 @@ static int k10temp_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 		data->is_zen = true;
+ 
+ 		switch (boot_cpu_data.x86_model) {
+-		case 0x0 ... 0x1:	/* Zen3 */
++		case 0x0 ... 0x1:	/* Zen3 SP3/TR */
++		case 0x21:		/* ZEN3 Ryzen Desktop */
+ 			k10temp_get_ccd_support(pdev, data, 8);
+ 			break;
+ 		}
 -- 
-Thiago Jung Bauermann
-IBM Linux Technology Center
+2.29.2
+
