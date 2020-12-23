@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4491B2E123F
+	by mail.lfdr.de (Postfix) with ESMTP id B21062E1240
 	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:21:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728929AbgLWCUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:20:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45510 "EHLO mail.kernel.org"
+        id S1727290AbgLWCUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:20:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45490 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728756AbgLWCTs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728757AbgLWCTs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 22 Dec 2020 21:19:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD2AE22D73;
-        Wed, 23 Dec 2020 02:19:19 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3290F2332A;
+        Wed, 23 Dec 2020 02:19:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608689960;
-        bh=h2zF7WsF0kn+m51N13kQ8pFg/eImiX8gIVmjxPTyqio=;
+        s=k20201202; t=1608689962;
+        bh=Vcf1KZNula0B3d6tguNttEK09J/wHmlkr4IZJGbreyE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PIe6lrOCT6v/28k8cj/gr3WStdLMSiu0lxF3mg4KOaiUcIY70lRE6N8KM0fts43ow
-         P/fuEbAxA3LqDhyrEOfpI/YyYOFax/paEO+FaWgT0SLBw9jwSmTgqFEsMQnl/cE/Y8
-         IDZoifVGEEpULLDbYNUOnAxlD3lIhoACXVi71GLmhQdwwl0xLpe1kZWfQM8OaFHZiq
-         lGQt65GiTQ6R9ss97lWPBKnnT9FS2gGSGURXE2nc4/0fqJE9fGiyqFZ2c/x8i75UL9
-         dRcpOj5xHff0UAvrxVEo5ZWijOKxw9NXR2n/Sgq/fivQAFsGbYFU98G9YUimY33t3o
-         bdKyBf8qQ65RA==
+        b=puKZ+bVcQTEBWmLbpUTe3eh8IcC1t9gsUCGGEpbvrPkVYWKc13xPua95qRXq6/4R1
+         gy/OB+iiDcVBNDUMzPnEMtYkypzyIIibmJ8E50ZqeAdsUPdaz10fDqwEiiY09vw07S
+         FsKatbQVM2SPn9nB7RApw6TGgGfh9P1ydZBaViMoZCGCrUzkZPqTgOQQM11FIlCeP/
+         gvUJpgpvJpt4w3dZB/4SGq10B/1zkyppRMKYIH+gY2EOH+BuZyNL2bsmMoxWQiF5+k
+         hi8deDQscMj8StN29iLvy63KtblcFhic6Jzirx0rqq0GLK7iOmI/HkA1MQhS2rYFV6
+         Xyv8ZjiU/rf1Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Christian Eggers <ceggers@arri.de>,
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
         Vladimir Oltean <olteanv@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 052/130] net: dsa: avoid potential use-after-free error
-Date:   Tue, 22 Dec 2020 21:16:55 -0500
-Message-Id: <20201223021813.2791612-52-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.4 053/130] ARM: dts: NSP: Fix Ethernet switch SGMII register name
+Date:   Tue, 22 Dec 2020 21:16:56 -0500
+Message-Id: <20201223021813.2791612-53-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223021813.2791612-1-sashal@kernel.org>
 References: <20201223021813.2791612-1-sashal@kernel.org>
@@ -44,42 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Eggers <ceggers@arri.de>
+From: Florian Fainelli <f.fainelli@gmail.com>
 
-[ Upstream commit 30abc9cd9c6bdd44d23fc49a9c2526a86fba4305 ]
+[ Upstream commit 8b0235d1deace8f1bd8cdd149d698fee3974fdf4 ]
 
-If dsa_switch_ops::port_txtstamp() returns false, clone will be freed
-immediately. Shouldn't store a pointer to freed memory.
+The register name should be "sgmii_config", not "sgmii", this is not a
+functional change since no code is currently looking for that register
+by name (or at all).
 
-Signed-off-by: Christian Eggers <ceggers@arri.de>
 Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
-Tested-by: Vladimir Oltean <olteanv@gmail.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Link: https://lore.kernel.org/r/20201119110906.25558-1-ceggers@arri.de
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/dsa/slave.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/arm/boot/dts/bcm-nsp.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/dsa/slave.c b/net/dsa/slave.c
-index f734ce0bcb56e..2b657e88d8017 100644
---- a/net/dsa/slave.c
-+++ b/net/dsa/slave.c
-@@ -476,10 +476,10 @@ static void dsa_skb_tx_timestamp(struct dsa_slave_priv *p,
- 	if (!clone)
- 		return;
- 
--	DSA_SKB_CB(skb)->clone = clone;
--
--	if (ds->ops->port_txtstamp(ds, p->dp->index, clone, type))
-+	if (ds->ops->port_txtstamp(ds, p->dp->index, clone, type)) {
-+		DSA_SKB_CB(skb)->clone = clone;
- 		return;
-+	}
- 
- 	kfree_skb(clone);
- }
+diff --git a/arch/arm/boot/dts/bcm-nsp.dtsi b/arch/arm/boot/dts/bcm-nsp.dtsi
+index 8615d89fa4690..eff99bd44b38e 100644
+--- a/arch/arm/boot/dts/bcm-nsp.dtsi
++++ b/arch/arm/boot/dts/bcm-nsp.dtsi
+@@ -388,7 +388,7 @@ srab: srab@36000 {
+ 			reg = <0x36000 0x1000>,
+ 			      <0x3f308 0x8>,
+ 			      <0x3f410 0xc>;
+-			reg-names = "srab", "mux_config", "sgmii";
++			reg-names = "srab", "mux_config", "sgmii_config";
+ 			interrupts = <GIC_SPI 95 IRQ_TYPE_LEVEL_HIGH>,
+ 				     <GIC_SPI 96 IRQ_TYPE_LEVEL_HIGH>,
+ 				     <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>,
 -- 
 2.27.0
 
