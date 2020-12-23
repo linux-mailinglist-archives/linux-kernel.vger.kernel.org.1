@@ -2,90 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA8142E181A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 05:24:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA5A2E181E
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 05:30:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727807AbgLWEXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 23:23:48 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:49896 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726969AbgLWEXs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 23:23:48 -0500
-X-UUID: 1686acba1394405bb4355d821770f93f-20201223
-X-UUID: 1686acba1394405bb4355d821770f93f-20201223
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
-        (envelope-from <bayi.cheng@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1030565150; Wed, 23 Dec 2020 12:23:04 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 23 Dec 2020 12:23:04 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 23 Dec 2020 12:23:02 +0800
-From:   Bayi Cheng <bayi.cheng@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>
-CC:     Matthias Brugger <matthias.bgg@gmail.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Ikjoon Jang <ikjn@chromium.org>,
-        Chuanhong Guo <gch981213@gmail.com>,
-        <srv_heupstream@mediatek.com>, bayi cheng <bayi.cheng@mediatek.com>
-Subject: [PATCH v2] arm64: dts: mt8192: add nor_flash device node
-Date:   Wed, 23 Dec 2020 12:22:59 +0800
-Message-ID: <1608697379-22025-1-git-send-email-bayi.cheng@mediatek.com>
-X-Mailer: git-send-email 1.9.1
+        id S1727088AbgLWEaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 23:30:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45134 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725300AbgLWEaO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 23:30:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B6B0120857;
+        Wed, 23 Dec 2020 04:29:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608697773;
+        bh=CPq6biGO5phYDl1PaVoSU6adJOVYTlt+awaTwSBditk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SfPm+G1aQAOOXbQRT+lXwz8F5oaPoiGRA5NL7hKBTBrO0cKhambYIw3rG1qpA4/Gx
+         t76XfLZQsbNhSzKGg/2BzOYAoCyJuODtZAtw0n7zIL7hy0Luf3CMUP5f0tTP5N17KX
+         98dwxERkMhSL/E5e8fzIBc/pqs9lTA0Hn1g3V2onj8543cO95s/5SUOAij4U8VMYk1
+         BU9DQFwG04s4HcAD6EnHVFRxJxYj9RkgWz1k8cQ80J6QyzkNXnvFy9b9lve1sx0YOM
+         Nt0MFS5zW+R+YG34K+QQWHVZ0DLqVOqSxp6CCrvCnDfvnQTt2JmTgPGPEwt3+PsF4K
+         DZ0JZxUDFzk0Q==
+Date:   Wed, 23 Dec 2020 09:59:29 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        =?utf-8?B?5ryG6bmP5oyv?= <aric.pzqi@ingenic.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        =?utf-8?B?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH phy] PHY: Ingenic: fix unconditional build of
+ phy-ingenic-usb
+Message-ID: <20201223042929.GC120946@vkoul-mobl>
+References: <20201222131021.4751-1-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201222131021.4751-1-alobakin@pm.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: bayi cheng <bayi.cheng@mediatek.com>
+On 22-12-20, 13:10, Alexander Lobakin wrote:
+> Currently drivers/phy/ingenic/Makefile adds phy-ingenic-usb to targets
+> not depending on actual Kconfig symbol CONFIG_PHY_INGENIC_USB, so this
+> driver always gets built[-in] on every system.
+> Add missing dependency.
 
-add nor_flash device node
+Applied, thanks
 
-Change-Id: I79f0228529bd8a33e5f354b7a861a4ec8d92e9ba
-Signed-off-by: bayi cheng <bayi.cheng@mediatek.com>
----
-Change in v2:
-1: add dependent patch of arm soc
-2: change compatible name
-
-Depends on:
-https://patchwork.kernel.org/patch/11713559/
-[v4,1/3] arm64: dts: Add Mediatek SoC MT8192 and evaluation board dts and Makefile
----
- arch/arm64/boot/dts/mediatek/mt8192.dtsi | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-index e12e024..751c877 100644
---- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-@@ -379,6 +379,19 @@
- 			status = "disabled";
- 		};
- 
-+		nor_flash: spi@11234000 {
-+			compatible = "mediatek,mt8192-nor";
-+			reg = <0 0x11234000 0 0xe0>;
-+			interrupts = <GIC_SPI 431 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&clk26m>,
-+				 <&clk26m>,
-+				 <&clk26m>;
-+			clock-names = "spi", "sf", "axi";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disable";
-+		};
-+
- 		i2c3: i2c3@11cb0000 {
- 			compatible = "mediatek,mt8192-i2c";
- 			reg = <0 0x11cb0000 0 0x1000>,
 -- 
-1.9.1
-
+~Vinod
