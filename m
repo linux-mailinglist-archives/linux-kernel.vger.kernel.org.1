@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DCF02E15AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:58:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FFF62E1534
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:49:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729621AbgLWCvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:51:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45492 "EHLO mail.kernel.org"
+        id S1731062AbgLWCsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:48:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729426AbgLWCVk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:21:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B06DF221E5;
-        Wed, 23 Dec 2020 02:21:24 +0000 (UTC)
+        id S1729563AbgLWCWJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:22:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F9C12222D;
+        Wed, 23 Dec 2020 02:21:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690085;
-        bh=VvXvEW1RDgg5wGctb1IXHpEUGrkdqawmRiT3EwkA874=;
+        s=k20201202; t=1608690088;
+        bh=q5lnLKhN6/PAD3aGTO5DXqsgsw59pUGaN75CuoZMLZA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E1QTp/rFKy8ZTfUEi6XgjPdx7XxSwxoC0h56hd3jageacL1BqMZ803OedzdmlpMJ3
-         OjOSxaV3Xq9KA8AJ0NrTnH95viOGdtgfuMHJFNVzuJ/2qj77Z8PqTRerG7+I+HasnT
-         z4Ld3yXXhq6z4+6tS9Fc1IWLljgPd8WO9hPEVWKsrkrHlX+9PNv1d+btPLMuciAaNw
-         EIeMAoPEBY0tYnju7ktfMOkS8E9yUZ0ejJPVl3QtjoqwjBHvnNuTVS4L/Md7e4Ui8k
-         km4b5T1PoKM5xjRoaiNKJ8djfrDwl1bYH5k1kazHLUuR3oI+ez4Hi0xjE071Rm5R7m
-         Q4jeZw2t6Bo4A==
+        b=JH+ykgISKHXySb14PVeGm2VL4dbN59O6jsEiWNpOL3oIJziZ9OvhyhVDfU6d7d49X
+         /vcjY/2eyCqpehye0Qhdiyys0WHZuYW68NeNZmOA+rjzT0DR2DaiAAZcHTOVfp6DmP
+         zfHr8WE1NhxSrSm5f61laYZgxIr9lj2+bfrItXXN8uS0Vlq+I1A3MsOcTtUSSRyvAs
+         J0Bvkhnia2schKNbZyxOtkYCyjYboXf6yUlMmw44BJdj/fIsqvlBeYPvupU7Gir4cc
+         4QXvfEofOrLvM+D5aVFOHYeu1RiCkPdmJs7MLG/3C/4yWZZuacFP/CLbIFVCIlmCWI
+         Ckwaes6gH5Flg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Sasha Levin <sashal@kernel.org>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 4.19 17/87] drm/ast: Fixed 1920x1080 sync. polarity issue
-Date:   Tue, 22 Dec 2020 21:19:53 -0500
-Message-Id: <20201223022103.2792705-17-sashal@kernel.org>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 20/87] net: skb_vlan_untag(): don't reset transport offset if set by GRO layer
+Date:   Tue, 22 Dec 2020 21:19:56 -0500
+Message-Id: <20201223022103.2792705-20-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223022103.2792705-1-sashal@kernel.org>
 References: <20201223022103.2792705-1-sashal@kernel.org>
@@ -43,38 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
+From: Alexander Lobakin <alobakin@pm.me>
 
-[ Upstream commit 2d26123dd9075df82f217364f585a3a6aab5412d ]
+[ Upstream commit 8be33ecfc1ffd2da20cc29e957e4cb6eb99310cb ]
 
-[Bug] Change the vertical synchroous polary of 1920x1080 @60Hz
-      from  Negtive to Positive
+Similar to commit fda55eca5a33f
+("net: introduce skb_transport_header_was_set()"), avoid resetting
+transport offsets that were already set by GRO layer. This not only
+mirrors the behavior of __netif_receive_skb_core(), but also makes
+sense when it comes to UDP GSO fraglists forwarding: transport offset
+of such skbs is set only once by GRO receive callback and remains
+untouched and correct up to the xmitting driver in 1:1 case, but
+becomes junk after untagging in ingress VLAN case and breaks UDP
+GSO offload. This does not happen after this change, and all types
+of forwarding of UDP GSO fraglists work as expected.
 
-Signed-off-by: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
-Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-Link: https://patchwork.freedesktop.org/patch/msgid/20201105094729.106059-1-kuohsiang_chou@aspeedtech.com
+Since v1 [1]:
+ - keep the code 1:1 with __netif_receive_skb_core() (Jakub).
+
+[1] https://lore.kernel.org/netdev/zYurwsZRN7BkqSoikWQLVqHyxz18h4LhHU4NFa2Vw@cp4-web-038.plabs.ch
+
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+Link: https://lore.kernel.org/r/7JgIkgEztzt0W6ZtC9V9Cnk5qfkrUFYcpN871syCi8@cp4-web-040.plabs.ch
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/ast/ast_tables.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/core/skbuff.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/ast/ast_tables.h b/drivers/gpu/drm/ast/ast_tables.h
-index d665dd5af5dd8..dbe1cc620f6e6 100644
---- a/drivers/gpu/drm/ast/ast_tables.h
-+++ b/drivers/gpu/drm/ast/ast_tables.h
-@@ -293,10 +293,10 @@ static const struct ast_vbios_enhtable res_1600x900[] = {
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index b5d9c9b2c7028..57fdf450fd6fe 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -5144,7 +5144,8 @@ struct sk_buff *skb_vlan_untag(struct sk_buff *skb)
+ 		goto err_free;
  
- static const struct ast_vbios_enhtable res_1920x1080[] = {
- 	{2200, 1920, 88, 44, 1125, 1080, 4, 5, VCLK148_5,	/* 60Hz */
--	 (SyncNP | Charx8Dot | LineCompareOff | WideScreenMode | NewModeInfo |
-+	 (SyncPP | Charx8Dot | LineCompareOff | WideScreenMode | NewModeInfo |
- 	  AST2500PreCatchCRT), 60, 1, 0x38 },
- 	{2200, 1920, 88, 44, 1125, 1080, 4, 5, VCLK148_5,	/* 60Hz */
--	 (SyncNP | Charx8Dot | LineCompareOff | WideScreenMode | NewModeInfo |
-+	 (SyncPP | Charx8Dot | LineCompareOff | WideScreenMode | NewModeInfo |
- 	  AST2500PreCatchCRT), 0xFF, 1, 0x38 },
- };
+ 	skb_reset_network_header(skb);
+-	skb_reset_transport_header(skb);
++	if (!skb_transport_header_was_set(skb))
++		skb_reset_transport_header(skb);
+ 	skb_reset_mac_len(skb);
  
+ 	return skb;
 -- 
 2.27.0
 
