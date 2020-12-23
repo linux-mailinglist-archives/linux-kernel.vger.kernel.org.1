@@ -2,114 +2,491 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A06C2E1F52
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 17:13:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABF2A2E1F5D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 17:19:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727790AbgLWQNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 11:13:23 -0500
-Received: from mail.zx2c4.com ([192.95.5.64]:43381 "EHLO mail.zx2c4.com"
+        id S1726194AbgLWQTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 11:19:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725957AbgLWQNX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 11:13:23 -0500
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 3f69d1df;
-        Wed, 23 Dec 2020 16:04:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
-        :references:in-reply-to:from:date:message-id:subject:to:cc
-        :content-type; s=mail; bh=23j/ro/omc+K4mkuzhNgYX2FZxM=; b=On/eTE
-        gPYJkYIs2BR/TqifUzqYEOfJwbLiyGYyr7xqE+nL5nuLFIGZ5Q/iP6IiNoYgr6JC
-        GXfdxMRa3ZpzwFDQQG667xD3DqKS2KMMT8WOebkeU/iU/xuo3iZgdi5VXZESwXmu
-        fxqk2CeDJKwmYfi3nXHnWpvFvf/gxf4w9zmJWCzSB4xGfyZwKHkR6+Qqta1ZW+Fw
-        C//zU+TE5FyRGt3LUtIxH+9YF+X0k1HdqLMrK033YbUpySdh9a/vykTDT8F6bcfB
-        bqfUXcu/OjhuGJ4p0MXKpdXHXIeAp2vHbZvATPImMSw1hYd9xiro6QcsYPjtvBA6
-        LmOxDHoUBdmdFj0w==
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 2312aa93 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Wed, 23 Dec 2020 16:04:06 +0000 (UTC)
-Received: by mail-yb1-f178.google.com with SMTP id v67so30855ybi.1;
-        Wed, 23 Dec 2020 08:12:38 -0800 (PST)
-X-Gm-Message-State: AOAM532DKmS7rL6jrRnvcv08eabGbDGSYPjz3oPXjos8BymlQC7GzbEP
-        OD78+EQJkdiaeSMXqFZ+GKSlwuR8wfWOSz5r1bU=
-X-Google-Smtp-Source: ABdhPJxDWhGj7/8vz7+ShPV+WT7rQZnLHkriPqtBNsJmX+vTPV/r2/2yNJUrZAkKoMNR4Ffaps9YGnbbDMhR3Kx6W+M=
-X-Received: by 2002:a5b:78d:: with SMTP id b13mr36642356ybq.123.1608739957120;
- Wed, 23 Dec 2020 08:12:37 -0800 (PST)
-MIME-Version: 1.0
-References: <20201130151231.GA24862@lst.de> <CAHmME9p4vFGWh7+CKF4f3dw5r+ru5PVG0-vP77JowX8sPhin1g@mail.gmail.com>
- <20201130165339.GE5364@mit.edu> <CAHmME9pksS8ec17RAwCNJimt4B0xZgd3qYHUPnaT4Bj4CF7n0A@mail.gmail.com>
- <20201218132519.kj3nz7swsx7vvlr5@valinor.lan> <20201223132851.55d19271@blackhole.lan>
- <20201223151014.57caf98b@ezekiel.suse.cz> <CAHmME9ooV1HRGO4bLsNKqv1EjDsUYsM6TcMbmEL=4CejTB+1ZQ@mail.gmail.com>
- <20201223170057.7c8fd710@ezekiel.suse.cz> <CAHmME9oE4sHC2hxMYFRz1xFMTKxBJub74Tka6KkfYOUfMjLSUA@mail.gmail.com>
-In-Reply-To: <CAHmME9oE4sHC2hxMYFRz1xFMTKxBJub74Tka6KkfYOUfMjLSUA@mail.gmail.com>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Wed, 23 Dec 2020 17:12:26 +0100
-X-Gmail-Original-Message-ID: <CAHmME9oDA1ch3_3EdVhEHAE5Rk7QxMwS8g9e87aet_8ohEJ3Gw@mail.gmail.com>
-Message-ID: <CAHmME9oDA1ch3_3EdVhEHAE5Rk7QxMwS8g9e87aet_8ohEJ3Gw@mail.gmail.com>
-Subject: Re: drivers/char/random.c needs a (new) maintainer
-To:     Petr Tesarik <ptesarik@suse.cz>
-Cc:     Torsten Duwe <duwe@lst.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        =?UTF-8?Q?Stephan_M=C3=BCller?= <smueller@chronox.de>,
-        Willy Tarreau <w@1wt.eu>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Nicolai Stange <nstange@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Peter Matthias <matthias.peter@bsi.bund.de>,
-        Neil Horman <nhorman@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        And y Lavr <andy.lavr@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>, simo@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+        id S1725807AbgLWQTA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 11:19:00 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3164E2229C;
+        Wed, 23 Dec 2020 16:18:19 +0000 (UTC)
+Received: from 91-161-240-24.subs.proxad.net ([91.161.240.24] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1ks6q9-003NJl-1B; Wed, 23 Dec 2020 16:18:17 +0000
+Date:   Wed, 23 Dec 2020 16:18:16 +0000
+Message-ID: <87o8ikqywn.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Bert Vermeulen <bert@biot.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        Stafford Horne <shorne@gmail.com>,
+        Pawel Czarnecki <pczarnecki@internships.antmicro.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        =?UTF-8?B?Q8OpZHJpYw==?= Le Goater <clg@kaod.org>,
+        Shawn Guo <shawnguo@kernel.org>, Joel Stanley <joel@jms.id.au>,
+        Leonard Crestez <leonard.crestez@nxp.com>,
+        Peng Fan <peng.fan@nxp.com>,
+        linux-mips@vger.kernel.org (open list:MIPS),
+        linux-kernel@vger.kernel.org (open list),
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS)
+Subject: Re: [PATCH v2] Add support for Realtek RTL838x/RTL839x switch SoCs
+In-Reply-To: <20201223150648.1633113-1-bert@biot.com>
+References: <20201223150648.1633113-1-bert@biot.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 91.161.240.24
+X-SA-Exim-Rcpt-To: bert@biot.com, tsbogend@alpha.franken.de, robh+dt@kernel.org, paulburton@kernel.org, tglx@linutronix.de, damien.lemoal@wdc.com, mholenko@antmicro.com, shorne@gmail.com, pczarnecki@internships.antmicro.com, palmerdabbelt@google.com, clg@kaod.org, shawnguo@kernel.org, joel@jms.id.au, leonard.crestez@nxp.com, peng.fan@nxp.com, linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 5:03 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
->
-> Hi Peter,
->
-> On Wed, Dec 23, 2020 at 5:01 PM Petr Tesarik <ptesarik@suse.cz> wrote:
-> > I never suggested that this should serve as a supportive argument. I was just trying to be honest about our motivations.
-> >
-> > I'm a bit sad that this discussion has quickly gone back to the choice of algorithms and how they can be implemented.
->
-> Why are you sad? You are interested in FIPS. FIPS indicates a certain
-> set of algorithms. The ones most suitable to the task seem like they'd
-> run into real practical problems in the kernel's RNG.
->
-> That's not the _only_ reason I'm not keen on FIPS, but it does seem
-> like a very basic one.
->
-> Jason
+On Wed, 23 Dec 2020 15:06:24 +0000,
+Bert Vermeulen <bert@biot.com> wrote:
+> 
+> This adds basic system support for the Realtek RTL838x/RTL839x switch
+> SoCs. These are used in many inexpensive switches.
+> 
+> This patch also paves the way for the RTL930x/RTL931x series.
+> 
+> Signed-off-by: Bert Vermeulen <bert@biot.com>
+> ---
+> v2:
+> - Removed all new arch/mips/ code, using arch/mips/generic/ instead.
+> - Use device tree ranges instead of hardcoded addresses for ioremap.
+> - Moved IRQ driver to drivers/irqchip/
+> - Removed reset handling code, will be replaced by device tree config.
+> - All SoC family id code moved to new soc driver.
+> - Header moved to realtek/ instead of mach-realtek/
+> - As more of the base system now depends on device tree, a sample
+>   dts for the Cisco SG220-26 switch is included. This will be further
+>   filled out, and bindings documented, as drivers get merged.
+> 
+>  arch/mips/Kconfig                             |  31 +++
+>  arch/mips/boot/dts/Makefile                   |   1 +
+>  arch/mips/boot/dts/realtek/Makefile           |   2 +
+>  arch/mips/boot/dts/realtek/cisco_sg220-26.dts |  25 +++
+>  arch/mips/boot/dts/realtek/rtl838x.dtsi       |  28 +++
+>  arch/mips/boot/dts/realtek/rtl839x.dtsi       |  28 +++
+>  arch/mips/boot/dts/realtek/rtl83xx.dtsi       |  74 +++++++
+>  arch/mips/generic/Platform                    |   1 +
+>  arch/mips/include/asm/realtek/ioremap.h       |  48 +++++
+>  arch/mips/include/asm/realtek/mach-realtek.h  |  94 +++++++++
+>  drivers/irqchip/Makefile                      |   1 +
+>  drivers/irqchip/irq-realtek.c                 | 148 ++++++++++++++
+>  drivers/soc/Kconfig                           |   1 +
+>  drivers/soc/Makefile                          |   1 +
+>  drivers/soc/realtek/Kconfig                   |  14 ++
+>  drivers/soc/realtek/Makefile                  |   3 +
+>  drivers/soc/realtek/realtek-chipid.c          | 187 ++++++++++++++++++
+>  17 files changed, 687 insertions(+)
+>  create mode 100644 arch/mips/boot/dts/realtek/Makefile
+>  create mode 100644 arch/mips/boot/dts/realtek/cisco_sg220-26.dts
+>  create mode 100644 arch/mips/boot/dts/realtek/rtl838x.dtsi
+>  create mode 100644 arch/mips/boot/dts/realtek/rtl839x.dtsi
+>  create mode 100644 arch/mips/boot/dts/realtek/rtl83xx.dtsi
+>  create mode 100644 arch/mips/include/asm/realtek/ioremap.h
+>  create mode 100644 arch/mips/include/asm/realtek/mach-realtek.h
+>  create mode 100644 drivers/irqchip/irq-realtek.c
+>  create mode 100644 drivers/soc/realtek/Kconfig
+>  create mode 100644 drivers/soc/realtek/Makefile
+>  create mode 100644 drivers/soc/realtek/realtek-chipid.c
 
-And just to add to that: in working through Nicholai's patches (an
-ongoing process), I'm reminded of his admonishment in the 00 cover
-letter that at some point chacha20 will have to be replaced, due to
-FIPS. So it seems like that's very much on the table. I brought it up
-here as an example ("For example, " is how I began that sentence), but
-it is a concern. If you want to make lots of changes for cryptographic
-or technical reasons, that seems like a decent way to engage. But if
-the motivation for each of these is the bean counting, then again, I'm
-pretty wary of churn for nothing. And if that bean counting will
-eventually lead us into bad corners, like the concerns I brought up
-about FPU usage in the kernel, then I'm even more hesitant. However, I
-think there may be good arguments to be made that some of Nicholai's
-patches stand on their own, without the FIPS motivation. And that's
-the set of arguments that are compelling.
+For a start, please split this very large patch into multiple patches:
+- DT stuff (preferably multiple patches)
+- irqchip code
+- chipid code
 
-Jason
+[...]
+
+> diff --git a/arch/mips/include/asm/realtek/ioremap.h b/arch/mips/include/asm/realtek/ioremap.h
+> new file mode 100644
+> index 000000000000..9141283d116c
+> --- /dev/null
+> +++ b/arch/mips/include/asm/realtek/ioremap.h
+> @@ -0,0 +1,48 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +#ifndef _RTL8380_IOREMAP_H_
+> +#define _RTL8380_IOREMAP_H_
+> +
+> +#include <linux/of.h>
+> +
+> +static inline int is_rtl8380_internal_registers(phys_addr_t offset)
+> +{
+> +	struct device_node *np = NULL;
+> +	const __be32 *prop;
+> +	int lenp;
+> +	u32 start, stop;
+> +
+> +	if (offset & BIT(31))
+> +		/* already mapped into register space */
+> +		return 1;
+> +
+> +	do {
+> +		np = of_find_node_with_property(np, "ranges");
+> +		if (!np)
+> +			continue;
+> +		prop = of_get_property(np, "ranges", &lenp);
+> +		if (lenp != 12)
+> +			continue;
+
+This all looks terribly cumbersome, and despite not being a DT expert,
+I have the ugly feeling that you are reinventing the wheel. Surely the
+node providing this address range has a compatible you could match,
+and isn't some random node?
+
+And do we need this to be *inlined*? Probably not. It looks like an
+attempt at DT-fying some code, without building the required
+infrastructure (it cannot be built as a multi-platform kernel
+anyway). To be honest, I'd rather see something like
+arch/mips/include/asm/mach-bcm63xx/ioremap.h, which plainly shows that
+multi-platform builds is the least of their concern.
+
+> +		start = be32_to_cpup(prop + 1);
+> +		stop = start + be32_to_cpup(prop + 2);
+> +		of_node_put(np);
+> +		if (offset >= start && offset < stop)
+> +			return 1;
+> +
+> +	} while (np);
+> +	return 0;
+> +}
+> +
+> +static inline void __iomem *plat_ioremap(phys_addr_t offset, unsigned long size,
+> +					 unsigned long flags)
+> +{
+> +	if (is_rtl8380_internal_registers(offset))
+> +		return (void __iomem *)offset;
+> +	return NULL;
+> +}
+> +
+> +static inline int plat_iounmap(const volatile void __iomem *addr)
+> +{
+> +	return is_rtl8380_internal_registers((unsigned long)addr);
+> +}
+> +
+> +#endif /* _RTL8380_IOREMAP_H_ */
+> diff --git a/arch/mips/include/asm/realtek/mach-realtek.h b/arch/mips/include/asm/realtek/mach-realtek.h
+> new file mode 100644
+> index 000000000000..446c99b19411
+> --- /dev/null
+> +++ b/arch/mips/include/asm/realtek/mach-realtek.h
+> @@ -0,0 +1,94 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (C) 2006-2012 Tony Wu <tonywu@realtek.com>
+> + * Copyright (C) 2020 Birger Koblitz <mail@birger-koblitz.de>
+> + * Copyright (C) 2020 Bert Vermeulen <bert@biot.com>
+> + * Copyright (C) 2020 John Crispin <john@phrozen.org>
+> + */
+> +
+> +#ifndef _MACH_REALTEK_H_
+> +#define _MACH_REALTEK_H_
+> +
+> +struct realtek_soc_info {
+> +	unsigned char *name;
+> +	unsigned int id;
+> +	unsigned int family;
+> +};
+> +
+> +/* Interrupt numbers/bits */
+> +#define RTL8380_IRQ_UART0		31
+> +#define RTL8380_IRQ_UART1		30
+> +#define RTL8380_IRQ_TC0			29
+> +#define RTL8380_IRQ_TC1			28
+> +#define RTL8380_IRQ_OCPTO		27
+> +#define RTL8380_IRQ_HLXTO		26
+> +#define RTL8380_IRQ_SLXTO		25
+> +#define RTL8380_IRQ_NIC			24
+> +#define RTL8380_IRQ_GPIO_ABCD		23
+> +#define RTL8380_IRQ_GPIO_EFGH		22
+> +#define RTL8380_IRQ_RTC			21
+> +#define RTL8380_IRQ_SWCORE		20
+> +#define RTL8380_IRQ_WDT_IP1		19
+> +#define RTL8380_IRQ_WDT_IP2		18
+
+Why do we need any of this? The mapping should be explicit in the DT.
+
+> +
+> +/* Global Interrupt Mask Register */
+> +#define RTL8380_ICTL_GIMR	0x00
+> +/* Global Interrupt Status Register */
+> +#define RTL8380_ICTL_GISR	0x04
+> +
+> +/* Cascaded interrupts */
+> +#define RTL8380_CPU_IRQ_SHARED0		(MIPS_CPU_IRQ_BASE + 2)
+> +#define RTL8380_CPU_IRQ_UART		(MIPS_CPU_IRQ_BASE + 3)
+> +#define RTL8380_CPU_IRQ_SWITCH		(MIPS_CPU_IRQ_BASE + 4)
+> +#define RTL8380_CPU_IRQ_SHARED1		(MIPS_CPU_IRQ_BASE + 5)
+> +#define RTL8380_CPU_IRQ_EXTERNAL	(MIPS_CPU_IRQ_BASE + 6)
+> +#define RTL8380_CPU_IRQ_COUNTER		(MIPS_CPU_IRQ_BASE + 7)
+> +
+> +
+> +/* Interrupt routing register */
+> +#define RTL8380_IRR0		0x08
+> +#define RTL8380_IRR1		0x0c
+> +#define RTL8380_IRR2		0x10
+> +#define RTL8380_IRR3		0x14
+> +
+> +/* Cascade map */
+> +#define RTL8380_IRQ_CASCADE_UART0	2
+> +#define RTL8380_IRQ_CASCADE_UART1	1
+> +#define RTL8380_IRQ_CASCADE_TC0		5
+> +#define RTL8380_IRQ_CASCADE_TC1		1
+> +#define RTL8380_IRQ_CASCADE_OCPTO	1
+> +#define RTL8380_IRQ_CASCADE_HLXTO	1
+> +#define RTL8380_IRQ_CASCADE_SLXTO	1
+> +#define RTL8380_IRQ_CASCADE_NIC		4
+> +#define RTL8380_IRQ_CASCADE_GPIO_ABCD	4
+> +#define RTL8380_IRQ_CASCADE_GPIO_EFGH	4
+> +#define RTL8380_IRQ_CASCADE_RTC		4
+> +#define RTL8380_IRQ_CASCADE_SWCORE	3
+> +#define RTL8380_IRQ_CASCADE_WDT_IP1	4
+> +#define RTL8380_IRQ_CASCADE_WDT_IP2	5
+> +
+> +/* Pack cascade map into interrupt routing registers */
+> +#define RTL8380_IRR0_SETTING (\
+> +	(RTL8380_IRQ_CASCADE_UART0	<< 28) | \
+> +	(RTL8380_IRQ_CASCADE_UART1	<< 24) | \
+> +	(RTL8380_IRQ_CASCADE_TC0	<< 20) | \
+> +	(RTL8380_IRQ_CASCADE_TC1	<< 16) | \
+> +	(RTL8380_IRQ_CASCADE_OCPTO	<< 12) | \
+> +	(RTL8380_IRQ_CASCADE_HLXTO	<< 8)  | \
+> +	(RTL8380_IRQ_CASCADE_SLXTO	<< 4)  | \
+> +	(RTL8380_IRQ_CASCADE_NIC	<< 0))
+> +#define RTL8380_IRR1_SETTING (\
+> +	(RTL8380_IRQ_CASCADE_GPIO_ABCD	<< 28) | \
+> +	(RTL8380_IRQ_CASCADE_GPIO_EFGH	<< 24) | \
+> +	(RTL8380_IRQ_CASCADE_RTC	<< 20) | \
+> +	(RTL8380_IRQ_CASCADE_SWCORE	<< 16))
+> +#define RTL8380_IRR2_SETTING	0
+> +#define RTL8380_IRR3_SETTING	0
+> +
+> +/* Used to detect address length pin strapping on RTL833x/RTL838x */
+> +#define RTL8380_INT_RW_CTRL		(RTL8380_SWITCH_BASE + 0x58)
+> +#define RTL8380_EXT_VERSION		(RTL8380_SWITCH_BASE + 0xD0)
+> +#define RTL8380_PLL_CML_CTRL		(RTL8380_SWITCH_BASE + 0xFF8)
+> +#define RTL8380_STRAP_DBG		(RTL8380_SWITCH_BASE + 0x100C)
+> +
+> +#endif /* _MACH_RTL8380_H_ */
+> diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
+> index 0ac93bfaec61..9c4acb4e9b5f 100644
+> --- a/drivers/irqchip/Makefile
+> +++ b/drivers/irqchip/Makefile
+> @@ -113,3 +113,4 @@ obj-$(CONFIG_LOONGSON_PCH_PIC)		+= irq-loongson-pch-pic.o
+>  obj-$(CONFIG_LOONGSON_PCH_MSI)		+= irq-loongson-pch-msi.o
+>  obj-$(CONFIG_MST_IRQ)			+= irq-mst-intc.o
+>  obj-$(CONFIG_SL28CPLD_INTC)		+= irq-sl28cpld.o
+> +obj-$(CONFIG_MACH_REALTEK)		+= irq-realtek.o
+> diff --git a/drivers/irqchip/irq-realtek.c b/drivers/irqchip/irq-realtek.c
+> new file mode 100644
+> index 000000000000..827a6d891b76
+> --- /dev/null
+> +++ b/drivers/irqchip/irq-realtek.c
+> @@ -0,0 +1,148 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (C) 2006-2012 Tony Wu <tonywu@realtek.com>
+> + * Copyright (C) 2020 Birger Koblitz <mail@birger-koblitz.de>
+> + * Copyright (C) 2020 Bert Vermeulen <bert@biot.com>
+> + * Copyright (C) 2020 John Crispin <john@phrozen.org>
+> + */
+> +
+> +#include <linux/irqchip.h>
+> +#include <linux/spinlock.h>
+> +#include <linux/of_address.h>
+> +#include <asm/irq_cpu.h>
+> +#include <linux/of_irq.h>
+> +#include <asm/cevt-r4k.h>
+> +
+> +#include <mach-realtek.h>
+> +
+> +#define REG(x)		(realtek_ictl_base + x)
+> +
+> +static DEFINE_RAW_SPINLOCK(irq_lock);
+> +static void __iomem *realtek_ictl_base;
+> +
+> +
+> +static void realtek_ictl_enable_irq(struct irq_data *i)
+> +{
+> +	unsigned long flags;
+> +	u32 value;
+> +
+> +	raw_spin_lock_irqsave(&irq_lock, flags);
+> +
+> +	value = readl(REG(RTL8380_ICTL_GIMR));
+> +	value |= BIT(i->hwirq);
+> +	writel(value, REG(RTL8380_ICTL_GIMR));
+> +
+> +	raw_spin_unlock_irqrestore(&irq_lock, flags);
+> +}
+> +
+> +static void realtek_ictl_disable_irq(struct irq_data *i)
+> +{
+> +	unsigned long flags;
+> +	u32 value;
+> +
+> +	raw_spin_lock_irqsave(&irq_lock, flags);
+> +
+> +	value = readl(REG(RTL8380_ICTL_GIMR));
+> +	value &= ~BIT(i->hwirq);
+> +	writel(value, REG(RTL8380_ICTL_GIMR));
+> +
+> +	raw_spin_unlock_irqrestore(&irq_lock, flags);
+> +}
+> +
+> +static struct irq_chip realtek_ictl_irq = {
+> +	.name = "rtl8380",
+> +	.irq_enable = realtek_ictl_enable_irq,
+> +	.irq_disable = realtek_ictl_disable_irq,
+> +	.irq_ack = realtek_ictl_disable_irq,
+
+No. irq_ack() isn't a disable. Please consult the documentation for
+your SoC to understand the is the expected flow for this interrupt
+controller.
+
+> +	.irq_mask = realtek_ictl_disable_irq,
+> +	.irq_unmask = realtek_ictl_enable_irq,
+
+Having both enable/disable and mask/unmask is pointless. Please drop
+the former.
+
+> +	.irq_eoi = realtek_ictl_enable_irq,
+
+Neither. Please don't make things up, as this is very unlikely to
+reliably work as is.
+
+> +};
+
+No affinity setting? Is this system purely UP?
+
+> +
+> +static int intc_map(struct irq_domain *d, unsigned int irq, irq_hw_number_t hw)
+> +{
+> +	irq_set_chip_and_handler(hw, &realtek_ictl_irq, handle_level_irq);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct irq_domain_ops irq_domain_ops = {
+> +	.map = intc_map,
+> +	.xlate = irq_domain_xlate_onecell,
+> +};
+> +
+> +static void realtek_irq_dispatch(struct irq_desc *desc)
+> +{
+> +	unsigned int pending = readl(REG(RTL8380_ICTL_GIMR)) & readl(REG(RTL8380_ICTL_GISR));
+> +
+> +	if (pending) {
+> +		struct irq_domain *domain = irq_desc_get_handler_data(desc);
+> +		generic_handle_irq(irq_find_mapping(domain, __ffs(pending)));
+> +	} else {
+> +		spurious_interrupt();
+> +	}
+
+This isn't how a chained interrupt handler is supposed to be
+written. You are missing the chained_irq_{enter,exit} calls.
+
+> +}
+> +
+> +asmlinkage void plat_irq_dispatch(void)
+> +{
+> +	unsigned int pending;
+> +
+> +	pending =  read_c0_cause() & read_c0_status() & ST0_IM;
+> +
+> +	if (pending & CAUSEF_IP7)
+> +		do_IRQ(RTL8380_CPU_IRQ_COUNTER);
+> +
+> +	else if (pending & CAUSEF_IP6)
+> +		do_IRQ(RTL8380_CPU_IRQ_EXTERNAL);
+> +
+> +	else if (pending & CAUSEF_IP5)
+> +		do_IRQ(RTL8380_CPU_IRQ_SHARED1);
+> +
+> +	else if (pending & CAUSEF_IP4)
+> +		do_IRQ(RTL8380_CPU_IRQ_SWITCH);
+> +
+> +	else if (pending & CAUSEF_IP3)
+> +		do_IRQ(RTL8380_CPU_IRQ_UART);
+> +
+> +	else if (pending & CAUSEF_IP2)
+> +		do_IRQ(RTL8380_CPU_IRQ_SHARED0);
+> +
+> +	else
+> +		spurious_interrupt();
+
+Why isn't this a lookup in an irqdomain?
+
+> +}
+> +
+> +static int __init rtl8380_of_init(struct device_node *node, struct device_node *parent)
+> +{
+> +	struct irq_domain *domain;
+> +
+> +	domain = irq_domain_add_simple(node, 32, 0,
+> +				       &irq_domain_ops, NULL);
+> +        irq_set_chained_handler_and_data(2, realtek_irq_dispatch, domain);
+> +        irq_set_chained_handler_and_data(5, realtek_irq_dispatch, domain);
+> +
+
+Indentation.
+
+> +	realtek_ictl_base = of_iomap(node, 0);
+> +	if (!realtek_ictl_base)
+> +		return -ENXIO;
+> +
+> +	/* Disable all cascaded interrupts */
+> +	writel(0, REG(RTL8380_ICTL_GIMR));
+> +
+> +	/* Set up interrupt routing */
+> +	writel(RTL8380_IRR0_SETTING, REG(RTL8380_IRR0));
+> +	writel(RTL8380_IRR1_SETTING, REG(RTL8380_IRR1));
+> +	writel(RTL8380_IRR2_SETTING, REG(RTL8380_IRR2));
+> +	writel(RTL8380_IRR3_SETTING, REG(RTL8380_IRR3));
+
+What is this doing?
+
+> +
+> +	/* Clear timer interrupt */
+> +	write_c0_compare(0);
+> +
+> +	/* Enable all CPU interrupts */
+> +	write_c0_status(read_c0_status() | ST0_IM);
+> +
+> +	/* Enable timer0 and uart0 interrupts */
+> +	writel(BIT(RTL8380_IRQ_TC0) | BIT(RTL8380_IRQ_UART0), REG(RTL8380_ICTL_GIMR));
+> +
+
+Interrupts are supposed to be enabled when they are requested. Not before.
+
+> +	return 0;
+> +}
+> +
+> +IRQCHIP_DECLARE(realtek_rtl8380_intc, "realtek,rtl8380-intc", rtl8380_of_init);
+
+Where is the binding documentation?
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
