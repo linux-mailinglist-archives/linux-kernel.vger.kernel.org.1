@@ -2,150 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FBE92E1177
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 02:52:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D80E02E117F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 02:58:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726955AbgLWBvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 20:51:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726734AbgLWBvl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 20:51:41 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDC6FC0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 17:51:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=Y/ki+pwiajt1JGckMLPHR2xc4WDa7IQDL+LHZUzD3iA=; b=bS5HJD18j31Q+5eh0KZPDYrfP3
-        HSXt662IfbFyfBOCC+BEL0uRp8jyfjaojciTHRc9uyP3pnB6vIp2bGYVkfH5NsccYlfix2LrYHLsn
-        XLj8umTznJGKEaDTGMZN36n2lEkclfTB5M0+Fn+hE3KQhs0xVBC2IzxD+wBzjRA1yCwvIP8MdYmwY
-        dOEirZbCqKt9IRVRu8PXfxpTz1hpV9oJ5AL612jdWfJ+xzjA+V9SP5Iwu6YTg8D73oDAGuSrMqQ1H
-        F5OOMqpGj0/X8iIPISOvUCWxcykHEehyA9uMJk8ULbK3vNTc193DhxViBDg/EFM6xZGAb8mED7JOm
-        6eSNXE6Q==;
-Received: from [2601:1c0:6280:3f0::64ea]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1krtIn-0006V8-92; Wed, 23 Dec 2020 01:50:57 +0000
-Subject: Re: [RFC PATCH 2/2] mm: readahead: handle LARGE input to
- get_init_ra_size()
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        =?UTF-8?Q?Toralf_F=c3=b6rster?= <toralf.foerster@gmx.de>,
-        linux-mm@kvack.org
-References: <20201220211051.1416-1-rdunlap@infradead.org>
- <20201222173533.c9e28416835d7487b0e28cda@linux-foundation.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <6a595671-20a8-e63f-f3ea-f4749a574efa@infradead.org>
-Date:   Tue, 22 Dec 2020 17:50:52 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <20201222173533.c9e28416835d7487b0e28cda@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1726920AbgLWB6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 20:58:17 -0500
+Received: from mga06.intel.com ([134.134.136.31]:49021 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726361AbgLWB6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 20:58:16 -0500
+IronPort-SDR: 6/5/hEI65WYj41wI9AjeK0K8Sw31TSmCAF0vpOJQa/wmDTtp2dTW2gDU5BAbvCW11Wku9+ytCj
+ 0ZI9gVN0ikSA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9843"; a="237508790"
+X-IronPort-AV: E=Sophos;i="5.78,440,1599548400"; 
+   d="scan'208";a="237508790"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2020 17:57:34 -0800
+IronPort-SDR: yKGf3adYatD3eoY0tuXwgz1+NJhRrMtTFTzMfHezOqij4PZBXBtISpD1hyJUM8IP5GEQlaQXYY
+ CdJHd91uQlVQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,440,1599548400"; 
+   d="scan'208";a="457755715"
+Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
+  by fmsmga001.fm.intel.com with ESMTP; 22 Dec 2020 17:57:33 -0800
+From:   "Chang S. Bae" <chang.seok.bae@intel.com>
+To:     bp@suse.de, tglx@linutronix.de, mingo@kernel.org, luto@kernel.org,
+        x86@kernel.org
+Cc:     len.brown@intel.com, dave.hansen@intel.com, hjl.tools@gmail.com,
+        Dave.Martin@arm.com, jannh@google.com, mpe@ellerman.id.au,
+        tony.luck@intel.com, ravi.v.shankar@intel.com,
+        libc-alpha@sourceware.org, linux-arch@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
+        chang.seok.bae@intel.com
+Subject: [PATCH v3 0/4] x86: Improve Minimum Alternate Stack Size
+Date:   Tue, 22 Dec 2020 17:53:08 -0800
+Message-Id: <20201223015312.4882-1-chang.seok.bae@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/22/20 5:35 PM, Andrew Morton wrote:
-> On Sun, 20 Dec 2020 13:10:51 -0800 Randy Dunlap <rdunlap@infradead.org> wrote:
-> 
->> Add a test to detect if the input ra request size has its high order
->> bit set (is negative when tested as a signed long). This would be a
->> really Huge readahead.
->>
->> If so, WARN() with the value and a stack trace so that we can see
->> where this is happening and then make further corrections later.
->> Then adjust the size value so that it is not so Huge (although
->> this may not be needed).
-> 
-> What motivates this change?  Is there any reason to think this can
-> happen?
+During signal entry, the kernel pushes data onto the normal userspace
+stack. On x86, the data pushed onto the user stack includes XSAVE state,
+which has grown over time as new features and larger registers have been
+added to the architecture.
 
-Spotted in the wild:
+MINSIGSTKSZ is a constant provided in the kernel signal.h headers and
+typically distributed in lib-dev(el) packages, e.g. [1]. Its value is
+compiled into programs and is part of the user/kernel ABI. The MINSIGSTKSZ
+constant indicates to userspace how much data the kernel expects to push on
+the user stack, [2][3].
 
-mr-fox kernel: [ 1974.206977] UBSAN: shift-out-of-bounds in ./include/linux/log2.h:57:13
-mr-fox kernel: [ 1974.206980] shift exponent 64 is too large for 64-bit type 'long unsigned int'
+However, this constant is much too small and does not reflect recent
+additions to the architecture. For instance, when AVX-512 states are in
+use, the signal frame size can be 3.5KB while MINSIGSTKSZ remains 2KB.
 
-Original report:
-https://lore.kernel.org/lkml/c6e5eb81-680f-dd5c-8a81-62041a5ce50c@gmx.de/
+The bug report [4] explains this as an ABI issue. The small MINSIGSTKSZ can
+cause user stack overflow when delivering a signal.
 
+In this series, we suggest a couple of things:
+1. Provide a variable minimum stack size to userspace, as a similar
+   approach to [5]
+2. Avoid using a too-small alternate stack
 
-Willy suggested that get_init_ra_size() was being called with a size of 0,
-which would cause this (instead of some Huge value), so I made a follow-up
-patch that only checks size for 0 and if 0, defaults it to 32 (pages).
+Changes from v2 [7]:
+* Simplified the sigaltstack overflow prevention (Jann Horn)
+* Renamed fpstate size helper with cleanup (Borislav Petkov)
+* Cleaned up the signframe struct size defines (Borislav Petkov)
+* Revised the selftest messages (Borislav Petkov)
+* Revised a changelog (Borislav Petkov)
 
----
- mm/readahead.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+Changes from v1 [6]:
+* Took stack alignment into account for sigframe size (Dave Martin)
 
---- linux-5.10.1.orig/mm/readahead.c
-+++ linux-5.10.1/mm/readahead.c
-@@ -310,7 +310,11 @@ void force_page_cache_ra(struct readahea
-  */
- static unsigned long get_init_ra_size(unsigned long size, unsigned long max)
- {
--	unsigned long newsize = roundup_pow_of_two(size);
-+	unsigned long newsize;
-+
-+	if (!size)
-+		size = 32;
-+	newsize = roundup_pow_of_two(size);
- 
- 	if (newsize <= max / 32)
- 		newsize = newsize * 4;
+[1]: https://sourceware.org/git/?p=glibc.git;a=blob;f=sysdeps/unix/sysv/linux/bits/sigstack.h;h=b9dca794da093dc4d41d39db9851d444e1b54d9b;hb=HEAD
+[2]: https://www.gnu.org/software/libc/manual/html_node/Signal-Stack.html
+[3]: https://man7.org/linux/man-pages/man2/sigaltstack.2.html
+[4]: https://bugzilla.kernel.org/show_bug.cgi?id=153531
+[5]: https://blog.linuxplumbersconf.org/2017/ocw/system/presentations/4671/original/plumbers-dm-2017.pdf
+[6]: https://lore.kernel.org/lkml/20200929205746.6763-1-chang.seok.bae@intel.com/
+[7]: https://lore.kernel.org/lkml/20201119190237.626-1-chang.seok.bae@intel.com/
 
+Chang S. Bae (4):
+  x86/signal: Introduce helpers to get the maximum signal frame size
+  x86/elf: Support a new ELF aux vector AT_MINSIGSTKSZ
+  x86/signal: Prevent an alternate stack overflow before a signal
+    delivery
+  selftest/x86/signal: Include test cases for validating sigaltstack
 
-Toralf has only seen this problem one time.
-
-
-> Also, everything in there *should* be unsigned, because a negative
-> readahead is semantically nonsensical.  Is our handling of this
-> inherently unsigned quantity incorrect somewhere?
-> 
->> --- linux-5.10.1.orig/mm/readahead.c
->> +++ linux-5.10.1/mm/readahead.c
->>
->> ...
->>
->> @@ -303,14 +304,21 @@ void force_page_cache_ra(struct readahea
->>  }
->>  
->>  /*
->> - * Set the initial window size, round to next power of 2 and square
->> + * Set the initial window size, round to next power of 2
->>   * for small size, x 4 for medium, and x 2 for large
->>   * for 128k (32 page) max ra
->>   * 1-8 page = 32k initial, > 8 page = 128k initial
->>   */
->>  static unsigned long get_init_ra_size(unsigned long size, unsigned long max)
->>  {
->> -	unsigned long newsize = roundup_pow_of_two(size);
->> +	unsigned long newsize;
->> +
->> +	if ((signed long)size < 0) { /* high bit is set: ultra-large ra req */
->> +		WARN_ONCE(1, "%s: size=0x%lx\n", __func__, size);
->> +		size = -size;	/* really only need to flip the high/sign bit */
->> +	}
->> +
->> +	newsize = roundup_pow_of_two(size);
-> 
-> Is there any way in which userspace can deliberately trigger warning?
-> Via sys_readadhead() or procfs tuning or whatever?
-> 
-> I guess that permitting a user-triggerable WARN_ONCE() isn't a huuuuge
-> problem - it isn't a DoS if it only triggers a single time.  It does
-> permit the malicious user to disable future valid warnings, but I don't
-> see what incentive there would be for this.  But still, it seems
-> desirable to avoid it.
-
-Sure. I think that we can drop RFC patches 1/2 and 2/2 and just consider the
-other one above.
-
+ arch/x86/include/asm/elf.h                |   4 +
+ arch/x86/include/asm/fpu/signal.h         |   2 +
+ arch/x86/include/asm/sigframe.h           |   2 +
+ arch/x86/include/uapi/asm/auxvec.h        |   6 +-
+ arch/x86/kernel/cpu/common.c              |   3 +
+ arch/x86/kernel/fpu/signal.c              |  19 ++++
+ arch/x86/kernel/signal.c                  |  69 +++++++++++-
+ tools/testing/selftests/x86/Makefile      |   2 +-
+ tools/testing/selftests/x86/sigaltstack.c | 128 ++++++++++++++++++++++
+ 9 files changed, 228 insertions(+), 7 deletions(-)
+ create mode 100644 tools/testing/selftests/x86/sigaltstack.c
 
 -- 
-~Randy
+2.17.1
 
