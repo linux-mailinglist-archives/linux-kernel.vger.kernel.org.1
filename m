@@ -2,477 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8252E223D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 22:49:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3783D2E2244
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 22:52:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726617AbgLWVsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 16:48:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45682 "EHLO
+        id S1726644AbgLWVwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 16:52:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725846AbgLWVsg (ORCPT
+        with ESMTP id S1725270AbgLWVwu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 16:48:36 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98954C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 13:47:55 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id b8so353949plx.0
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 13:47:55 -0800 (PST)
+        Wed, 23 Dec 2020 16:52:50 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68B65C06179C;
+        Wed, 23 Dec 2020 13:52:10 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id p22so520883edu.11;
+        Wed, 23 Dec 2020 13:52:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=TQto1Gt763qBXEPL2QcHipTsjHNUyBzNZjtQfJUxTpE=;
-        b=l0kbchz+9MxLerdD6n6+ITxO/NFCe8S8adGeO9Vcb8Ori8/0u+2BDFz3sfFimkETe0
-         NnPnBgVddAs5gaMY3qY7DUJG77noQPPl8CedXIHffFTIl5z4ebie5zuQWwqvW9JhCxtV
-         hS/Kn07zxzyo+eyZ9jlcM8i/T7TS0i6XzDKFjRDPjj2fV3UAsOIBQSBen66ouaHhEGWs
-         coj27w7b523/+tLqJkWrCxS250OKHotpKOeUumjJAgXsWR0vv3xWxPjWzTD6T7M/iBWP
-         KeaKNu4tpQX17dAlOGkDla64Sc0oz7ZNKGHRLh1rKcvLTfqkqoNMjRAVZxCy/qMlpTOX
-         Yr3A==
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=p5iLfKkBg3fOu7QXEPh0AZUTyrdm0RzyifElTy/WSKU=;
+        b=LjuAQqiNqfCq7YVehPzNBgTMUKQT5mb4oGBW/comqK5jipzCQo6VXlY0ynG/ritRLo
+         lG25NJ2FhB4rBowKADLZdMFXEBQaUjfEDupixz1neYsJZ+uXWl3GF8AaFcvW1cVvgYe4
+         fDF7D5g+tTWmsu+TWvgXzZ49IsUxcoROXfMjTrEr62aUpJmj2yw/v+x/lMeGDGvUiBz9
+         uQQe1bptU33xpOSuT3fV/QDsQTM9GjNiXjebPZA93TR+i7ZvZlrxRvjwfjQ1dGgKWqim
+         9Wn7wKkeelmZ+SkFlj3cURcnzK8YDXXaHzksm53jDlhqN/7o0Teyo1fU42Szaogy081M
+         Ho6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=TQto1Gt763qBXEPL2QcHipTsjHNUyBzNZjtQfJUxTpE=;
-        b=UTsEyqhlEd0tFzyHHLkVGLPMDjrIYFnDt5e2C2qmC4ngh6K+b2sTykqhJ+msApSUHC
-         PkhyQVPqHw0WMysL/yQC/l4zxVwGt4sHEfH8zb8a603W8OEpGJ+ClmnOOs+/yI01kHLv
-         LWvNGfyVW/5FCb3aO+2Rf8hGuZIXyIR1slsCpwrm+OzKQ+CJy3Duv7a+rwTmgtDLipnR
-         OEZP1YjP54OgUUs9lSxma0BauvHE6utoNwqrZ2/9eg2o7xt5itFbKVUiVK85AunTeCVo
-         o3Ylbrc2dF7e7bdcdL0h+gVKgs8BW/RRB+hM2YLJLh7f8OMYUMCyiAbJQJ4jgRFWHdts
-         kkWA==
-X-Gm-Message-State: AOAM5305eFn9+UOsDfq3nK+kVzHIXRFGxkBykxwPBgE2IAmAFPGFgfNt
-        EpEBlEqkex/mOKTeOjz95hl0PVYz7G8=
-X-Google-Smtp-Source: ABdhPJzoXMWqvcCt+Uk9VbEWSWXpOM2jw4gkZxVctCvMm92tle/WunyRhueqQEtEbmiO4tSxGg5OUg==
-X-Received: by 2002:a17:902:694c:b029:db:d939:1061 with SMTP id k12-20020a170902694cb02900dbd9391061mr27168064plt.80.1608760074943;
-        Wed, 23 Dec 2020 13:47:54 -0800 (PST)
-Received: from localhost (g39.222-224-245.ppp.wakwak.ne.jp. [222.224.245.39])
-        by smtp.gmail.com with ESMTPSA id gz5sm507642pjb.15.2020.12.23.13.47.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Dec 2020 13:47:54 -0800 (PST)
-Date:   Thu, 24 Dec 2020 06:47:51 +0900
-From:   Stafford Horne <shorne@gmail.com>
-To:     Gabriel Somlo <gsomlo@gmail.com>
-Cc:     mholenko@antmicro.com, kgugala@antmicro.com,
-        linux-kernel@vger.kernel.org, pczarnecki@internships.antmicro.com,
-        f.kermarrec@gmail.com, gregkh@linuxfoundation.org
-Subject: Re: [PATCH v2] drivers/soc/litex: support 32-bit subregisters,
- 64-bit CPUs
-Message-ID: <20201223214751.GM3168563@lianli.shorne-pla.net>
-References: <20201222144826.1775064-1-gsomlo@gmail.com>
- <20201222220446.1827126-1-gsomlo@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201222220446.1827126-1-gsomlo@gmail.com>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=p5iLfKkBg3fOu7QXEPh0AZUTyrdm0RzyifElTy/WSKU=;
+        b=WG/LZyczK7kB4B07/lKV5kJ4aCQIgUPbeqrFVK8c1jAkqaLlKDY4XoFgvZCJYTd/+K
+         WBGDztLh50OC3djWP8o8WZZIIb+J6XyL4hToW9Q6YjpTkhhoU+2ZF8HKipnppeNQNnDt
+         +xvJ6GtK4d56rDAdASVW6tCT021uh6TNK7Vu95k2+E9P2f66qQJ0RL1lkVt+7fuOYifO
+         UAwwYgeC9Z00Y/SEcK5jbthRMjWMjMcmRPECBSfly2Fjrs2XhvqdI0LutYoiTFkGD56d
+         f7xxDz6vvEs1g26iWajDNyJelisYMdp/qc2ExM4ysjJZ4q+culTi3LfETtltU51v8SYm
+         VlGw==
+X-Gm-Message-State: AOAM532BgfnqD+wfRFpZ5qtkeaPw/sqQniO7N8lnYKz5jpFClZYdcaXE
+        EcJ4gHxhzh8qt8v0H/DR2IY=
+X-Google-Smtp-Source: ABdhPJwnehi9G/EDEJRwD0+iawl6Zbk4blCcSfZIHiYOOrzSlIULvG0FWBDWmzuYR9LAYERFW3cPfg==
+X-Received: by 2002:a50:ccdb:: with SMTP id b27mr27329078edj.20.1608760329175;
+        Wed, 23 Dec 2020 13:52:09 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
+        by smtp.googlemail.com with ESMTPSA id i18sm17684002edt.68.2020.12.23.13.52.08
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 23 Dec 2020 13:52:08 -0800 (PST)
+Message-ID: <1fa9d66079d34768f16fb0ef8d8c46ceead7bff6.camel@gmail.com>
+Subject: Re: [PATCH v5 1/7] scsi: ufs: Add "wb_on" sysfs node to control WB
+ on/off
+From:   Bean Huo <huobean@gmail.com>
+To:     Stanley Chu <stanley.chu@mediatek.com>
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, beanhuo@micron.com, bvanassche@acm.org,
+        tomas.winkler@intel.com, cang@codeaurora.org,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 23 Dec 2020 22:52:07 +0100
+In-Reply-To: <1608617307.14045.3.camel@mtkswgap22>
+References: <20201215230519.15158-1-huobean@gmail.com>
+         <20201215230519.15158-2-huobean@gmail.com>
+         <1608617307.14045.3.camel@mtkswgap22>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Tue, Dec 22, 2020 at 05:04:46PM -0500, Gabriel Somlo wrote:
-> The upstream LiteX project now defaults to using 32-bit subregisters
-> (see https://github.com/enjoy-digital/litex/commit/a2b71fde).
+On Tue, 2020-12-22 at 14:08 +0800, Stanley Chu wrote:
+> Hi Bean,
 > 
-> This patch expands on commit 22447a99c97e, adding support for handling
-> both 8 and 32 bit LiteX CSR (MMIO) subregisters, as controlled by the
-> LITEX_SUBREG_SIZE Kconfig option.
-
-The commit should be written in the format:
-  22447a99c97e ("drivers/soc/litex: add LiteX SoC Controller driver")
-
-> Signed-off-by: Gabriel Somlo <gsomlo@gmail.com>
-
-Gabriel thanks for submitting this.
-
-> ---
+> On Wed, 2020-12-16 at 00:05 +0100, Bean Huo wrote:
+> > From: Bean Huo <beanhuo@micron.com>
+> > 
+> > Currently UFS WriteBooster driver uses clock scaling up/down to set
+> > WB on/off, for the platform which doesn't support
+> > UFSHCD_CAP_CLK_SCALING,
+> > WB will be always on. Provide a sysfs attribute to enable/disable
+> > WB
+> > during runtime. Write 1/0 to "wb_on" sysfs node to enable/disable
+> > UFS WB.
+> > 
+> > Reviewed-by: Avri Altman <avri.altman@wdc.com>
+> > Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
+> > Signed-off-by: Bean Huo <beanhuo@micron.com>
+> > ---
+> >  drivers/scsi/ufs/ufs-sysfs.c | 41
+> > ++++++++++++++++++++++++++++++++++++
+> >  drivers/scsi/ufs/ufshcd.c    |  3 +--
+> >  drivers/scsi/ufs/ufshcd.h    |  2 ++
+> >  3 files changed, 44 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/scsi/ufs/ufs-sysfs.c b/drivers/scsi/ufs/ufs-
+> > sysfs.c
+> > index 08e72b7eef6a..f3ca3d6b82c4 100644
+> > --- a/drivers/scsi/ufs/ufs-sysfs.c
+> > +++ b/drivers/scsi/ufs/ufs-sysfs.c
+> > @@ -189,6 +189,45 @@ static ssize_t auto_hibern8_store(struct
+> > device *dev,
+> >  	return count;
+> >  }
+> >  
+> > +static ssize_t wb_on_show(struct device *dev, struct
+> > device_attribute *attr,
+> > +			  char *buf)
+> > +{
+> > +	struct ufs_hba *hba = dev_get_drvdata(dev);
+> > +
+> > +	return sysfs_emit(buf, "%d\n", hba->wb_enabled);
+> > +}
+> > +
+> > +static ssize_t wb_on_store(struct device *dev, struct
+> > device_attribute *attr,
+> > +			   const char *buf, size_t count)
+> > +{
+> > +	struct ufs_hba *hba = dev_get_drvdata(dev);
+> > +	unsigned int wb_enable;
+> > +	ssize_t res;
+> > +
+> > +	if (ufshcd_is_clkscaling_supported(hba)) {
+> > +		/*
+> > +		 * If the platform supports UFSHCD_CAP_CLK_SCALING,
+> > turn WB
+> > +		 * on/off will be done while clock scaling up/down.
+> > +		 */
+> > +		dev_warn(dev, "To control WB through wb_on is not
+> > allowed!\n");
+> > +		return -EOPNOTSUPP;
+> > +	}
+> > +	if (!ufshcd_is_wb_allowed(hba))
+> > +		return -EOPNOTSUPP;
+> > +
+> > +	if (kstrtouint(buf, 0, &wb_enable))
+> > +		return -EINVAL;
+> > +
+> > +	if (wb_enable != 0 && wb_enable != 1)
+> > +		return -EINVAL;
+> > +
+> > +	pm_runtime_get_sync(hba->dev);
+> > +	res = ufshcd_wb_ctrl(hba, wb_enable);
 > 
-> Notes v2:
-> 	- fix typo (s/u32/u64/) in litex_read64().
+> May this operation race with UFS shutdown flow?
 > 
-> Notes v1:
->         - LITEX_SUBREG_SIZE now provided by Kconfig.
->         - it's not LITEX_REG_SIZE, but rather LITEX_SUBREG_ALIGN!
->         - move litex_[get|set]_reg() to include/linux/litex.h and mark
->           them as "static inline";
->         - redo litex_[read|write][8|16|32|64]() using litex_[get|set]_reg()
->           (compiler should produce code as efficient as hardcoded shifts,
->            but also automatically matching LITEX_SUBREG_SIZE).
+> To be more clear, ufshcd_wb_ctrl() here may be executed after host
+> clock
+> is disabled by shutdown flow?
 > 
->  drivers/soc/litex/Kconfig          |  12 ++
->  drivers/soc/litex/litex_soc_ctrl.c |  76 +-----------
->  include/linux/litex.h              | 179 +++++++++++++++++++++--------
->  3 files changed, 143 insertions(+), 124 deletions(-)
+> If yes, we need to avoid it.
 > 
-> diff --git a/drivers/soc/litex/Kconfig b/drivers/soc/litex/Kconfig
-> index 7c6b009b6f6c..973f8d2fe1a7 100644
-> --- a/drivers/soc/litex/Kconfig
-> +++ b/drivers/soc/litex/Kconfig
-> @@ -16,4 +16,16 @@ config LITEX_SOC_CONTROLLER
->  	  All drivers that use functions from litex.h must depend on
->  	  LITEX.
->  
-> +config LITEX_SUBREG_SIZE
-> +	int "Size of a LiteX CSR subregister, in bytes"
-> +	depends on LITEX
-> +	range 1 4
-> +	default 4
-> +	help
-> +	LiteX MMIO registers (referred to as Configuration and Status
-> +	registers, or CSRs) are spread across adjacent 8- or 32-bit
-> +	subregisters, located at 32-bit aligned MMIO addresses. Use
-> +	this to select the appropriate size (1 or 4 bytes) matching
-> +	your particular LiteX build.
-
-Could this config be moved to device tree?  I see not as you want to compiler to
-use hard coded shifts.  Can you mention this in the commit message not just
-the v1 notes?
-
->  endmenu
-> diff --git a/drivers/soc/litex/litex_soc_ctrl.c b/drivers/soc/litex/litex_soc_ctrl.c
-> index 1217cafdfd4d..da17ba56b795 100644
-> --- a/drivers/soc/litex/litex_soc_ctrl.c
-> +++ b/drivers/soc/litex/litex_soc_ctrl.c
-> @@ -16,79 +16,6 @@
->  #include <linux/errno.h>
->  #include <linux/io.h>
->  
-> -/*
-> - * LiteX SoC Generator, depending on the configuration, can split a single
-> - * logical CSR (Control&Status Register) into a series of consecutive physical
-> - * registers.
-> - *
-> - * For example, in the configuration with 8-bit CSR Bus, 32-bit aligned (the
-> - * default one for 32-bit CPUs) a 32-bit logical CSR will be generated as four
-> - * 32-bit physical registers, each one containing one byte of meaningful data.
-> - *
-> - * For details see: https://github.com/enjoy-digital/litex/wiki/CSR-Bus
-> - *
-> - * The purpose of `litex_set_reg`/`litex_get_reg` is to implement the logic
-> - * of writing to/reading from the LiteX CSR in a single place that can be
-> - * then reused by all LiteX drivers.
-> - */
-> -
-> -/**
-> - * litex_set_reg() - Writes the value to the LiteX CSR (Control&Status Register)
-> - * @reg: Address of the CSR
-> - * @reg_size: The width of the CSR expressed in the number of bytes
-> - * @val: Value to be written to the CSR
-> - *
-> - * In the currently supported LiteX configuration (8-bit CSR Bus, 32-bit aligned),
-> - * a 32-bit LiteX CSR is generated as 4 consecutive 32-bit physical registers,
-> - * each one containing one byte of meaningful data.
-> - *
-> - * This function splits a single possibly multi-byte write into a series of
-> - * single-byte writes with a proper offset.
-> - */
-> -void litex_set_reg(void __iomem *reg, unsigned long reg_size,
-> -		    unsigned long val)
-> -{
-> -	unsigned long shifted_data, shift, i;
-> -
-> -	for (i = 0; i < reg_size; ++i) {
-> -		shift = ((reg_size - i - 1) * LITEX_SUBREG_SIZE_BIT);
-> -		shifted_data = val >> shift;
-> -
-> -		WRITE_LITEX_SUBREGISTER(shifted_data, reg, i);
-> -	}
-> -}
-> -EXPORT_SYMBOL_GPL(litex_set_reg);
-> -
-> -/**
-> - * litex_get_reg() - Reads the value of the LiteX CSR (Control&Status Register)
-> - * @reg: Address of the CSR
-> - * @reg_size: The width of the CSR expressed in the number of bytes
-> - *
-> - * Return: Value read from the CSR
-> - *
-> - * In the currently supported LiteX configuration (8-bit CSR Bus, 32-bit aligned),
-> - * a 32-bit LiteX CSR is generated as 4 consecutive 32-bit physical registers,
-> - * each one containing one byte of meaningful data.
-> - *
-> - * This function generates a series of single-byte reads with a proper offset
-> - * and joins their results into a single multi-byte value.
-> - */
-> -unsigned long litex_get_reg(void __iomem *reg, unsigned long reg_size)
-> -{
-> -	unsigned long shifted_data, shift, i;
-> -	unsigned long result = 0;
-> -
-> -	for (i = 0; i < reg_size; ++i) {
-> -		shifted_data = READ_LITEX_SUBREGISTER(reg, i);
-> -
-> -		shift = ((reg_size - i - 1) * LITEX_SUBREG_SIZE_BIT);
-> -		result |= (shifted_data << shift);
-> -	}
-> -
-> -	return result;
-> -}
-> -EXPORT_SYMBOL_GPL(litex_get_reg);
-> -
->  #define SCRATCH_REG_OFF         0x04
->  #define SCRATCH_REG_VALUE       0x12345678
->  #define SCRATCH_TEST_VALUE      0xdeadbeef
-> @@ -131,7 +58,8 @@ static int litex_check_csr_access(void __iomem *reg_addr)
->  	/* restore original value of the SCRATCH register */
->  	litex_write32(reg_addr + SCRATCH_REG_OFF, SCRATCH_REG_VALUE);
->  
-> -	pr_info("LiteX SoC Controller driver initialized");
-> +	pr_info("LiteX SoC Controller driver initialized: subreg:%d, align:%d",
-> +		LITEX_SUBREG_SIZE, LITEX_SUBREG_ALIGN);
->  
->  	return 0;
->  }
-> diff --git a/include/linux/litex.h b/include/linux/litex.h
-> index 40f5be503593..71f8110ed98d 100644
-> --- a/include/linux/litex.h
-> +++ b/include/linux/litex.h
-> @@ -3,9 +3,6 @@
->   * Common LiteX header providing
->   * helper functions for accessing CSRs.
->   *
-> - * Implementation of the functions is provided by
-> - * the LiteX SoC Controller driver.
-> - *
->   * Copyright (C) 2019-2020 Antmicro <www.antmicro.com>
->   */
->  
-> @@ -13,90 +10,172 @@
->  #define _LINUX_LITEX_H
->  
->  #include <linux/io.h>
-> -#include <linux/types.h>
-> -#include <linux/compiler_types.h>
->  
-> -/*
-> - * The parameters below are true for LiteX SoCs configured for 8-bit CSR Bus,
-> - * 32-bit aligned.
-> - *
-> - * Supporting other configurations will require extending the logic in this
-> - * header and in the LiteX SoC controller driver.
-> - */
-> -#define LITEX_REG_SIZE	  0x4
-> -#define LITEX_SUBREG_SIZE	0x1
-> +/* LiteX SoCs support 8- or 32-bit CSR Bus data width (i.e., subreg. size) */
-> +#if defined(CONFIG_LITEX_SUBREG_SIZE) && \
-> +	(CONFIG_LITEX_SUBREG_SIZE == 1 || CONFIG_LITEX_SUBREG_SIZE == 4)
-> +#define LITEX_SUBREG_SIZE      CONFIG_LITEX_SUBREG_SIZE
-> +#else
-> +#error LiteX subregister size (LITEX_SUBREG_SIZE) must be 4 or 1!
-> +#endif
->  #define LITEX_SUBREG_SIZE_BIT	 (LITEX_SUBREG_SIZE * 8)
->  
-> -#define WRITE_LITEX_SUBREGISTER(val, base_offset, subreg_id) \
-> -	writel((u32 __force)cpu_to_le32(val), base_offset + (LITEX_REG_SIZE * subreg_id))
-> +/* LiteX subregisters of any width are always aligned on a 4-byte boundary */
-> +#define LITEX_SUBREG_ALIGN	  0x4
->  
-> -#define READ_LITEX_SUBREGISTER(base_offset, subreg_id) \
-> -	le32_to_cpu((__le32 __force)readl(base_offset + (LITEX_REG_SIZE * subreg_id)))
-> +static inline void _write_litex_subregister(u32 val, void __iomem *addr)
-> +{
-> +	writel((u32 __force)cpu_to_le32(val), addr);
-> +}
->  
-> -void litex_set_reg(void __iomem *reg, unsigned long reg_sz, unsigned long val);
-> +static inline u32 _read_litex_subregister(void __iomem *addr)
-> +{
-> +	return le32_to_cpu((__le32 __force)readl(addr));
-> +}
->  
-> -unsigned long litex_get_reg(void __iomem *reg, unsigned long reg_sz);
-> +#define _WRITE_LITEX_SUBREGISTER(val, base_offset, subreg_id) \
-> +	_write_litex_subregister(val, (base_offset) + \
-> +					LITEX_SUBREG_ALIGN * (subreg_id))
-> +
-> +#define _READ_LITEX_SUBREGISTER(base_offset, subreg_id) \
-> +	_read_litex_subregister((base_offset) + \
-> +					LITEX_SUBREG_ALIGN * (subreg_id))
-> +
-> +/*
-> + * LiteX SoC Generator, depending on the configuration, can split a single
-> + * logical CSR (Control&Status Register) into a series of consecutive physical
-> + * registers.
-> + *
-> + * For example, in the configuration with 8-bit CSR Bus, 32-bit aligned
-> + * a 32-bit logical CSR will be generated as four 32-bit physical registers,
-> + * each one containing one byte of meaningful data.
-> + *
-> + * For details see: https://github.com/enjoy-digital/litex/wiki/CSR-Bus
-> + */
-> +
-> +/* number of LiteX subregisters needed to store a register of given reg_size */
-> +#define _litex_num_subregs(reg_size) \
-> +	(((reg_size) - 1) / LITEX_SUBREG_SIZE + 1)
-> +
-> +/* since the number of 4-byte aligned subregisters required to store a single
-> + * LiteX CSR (MMIO) register varies with LITEX_SUBREG_SIZE, the offset of the
-> + * next adjacent LiteX CSR register w.r.t. the offset of the current one also
-> + * depends on how many subregisters the latter is spread across
-> + */
-> +#define _next_reg_off(off, size) \
-> +	((off) + _litex_num_subregs(size) * LITEX_SUBREG_ALIGN)
-> +
-> +/*
-> + * The purpose of `litex_set_reg`/`litex_get_reg` is to implement the logic
-> + * of writing to/reading from the LiteX CSR in a single place that can be
-> + * then reused by all LiteX drivers.
-> + */
-> +
-> +/**
-> + * litex_set_reg() - Writes the value to the LiteX CSR (Control&Status Register)
-> + * @reg: Address of the CSR
-> + * @reg_size: The width of the CSR expressed in the number of bytes
-> + * @val: Value to be written to the CSR
-> + *
-> + * This function splits a single (possibly multi-byte) LiteX CSR write into
-> + * a series of subregister writes with a proper offset.
-> + */
-> +static inline void litex_set_reg(void __iomem *reg, ulong reg_size, ulong val)
-> +{
-> +	u8 ns, shift, i;
-> +
-> +	ns = _litex_num_subregs(reg_size);
-> +	for (i = 0; i < ns; i++) {
-> +		shift = LITEX_SUBREG_SIZE_BIT * (ns - 1 - i);
-> +		_write_litex_subregister(val >> shift, reg);
-> +		reg += LITEX_SUBREG_ALIGN;
-> +	}
-> +}
-> +
-> +/**
-> + * litex_get_reg() - Reads the value of the LiteX CSR (Control&Status Register)
-> + * @reg: Address of the CSR
-> + * @reg_size: The width of the CSR expressed in the number of bytes
-> + *
-> + * Return: Value read from the CSR
-> + *
-> + * This function generates a series of subregister reads with a proper offset
-> + * and joins their results into a single (possibly multi-byte) LiteX CSR value.
-> + */
-> +static inline ulong litex_get_reg(void __iomem *reg, ulong reg_size)
-> +{
-> +	ulong r;
-> +	u8 i;
-> +
-> +	r = _read_litex_subregister(reg);
-> +	for (i = 1; i < _litex_num_subregs(reg_size); i++) {
-> +		r <<= LITEX_SUBREG_SIZE_BIT;
-> +		reg += LITEX_SUBREG_ALIGN;
-> +		r |= _read_litex_subregister(reg);
-> +	}
-> +	return r;
-> +}
-
-Why move these definitions from the .c file to the .h file and make the comments
-smaller?  This is not mentioned in the commit message?  Perhaps the move
-(non-functional change) should be moved in a separate commit?
-
-Also, this is causing problems building on 32-bit systems.  I get a warning:
-
-In file included from drivers/tty/serial/liteuart.c:9:
-./include/linux/litex.h: In function ‘litex_get_reg’:
-./include/linux/litex.h:112:5: warning: left shift count >= width of type [-Wshift-count-overflow]
-  112 |   r <<= LITEX_SUBREG_SIZE_BIT;
-      |     ^~~
-
->  static inline void litex_write8(void __iomem *reg, u8 val)
->  {
-> -	WRITE_LITEX_SUBREGISTER(val, reg, 0);
-> +	litex_set_reg(reg, sizeof(u8), val);
->  }
->  
->  static inline void litex_write16(void __iomem *reg, u16 val)
->  {
-> -	WRITE_LITEX_SUBREGISTER(val >> 8, reg, 0);
-> -	WRITE_LITEX_SUBREGISTER(val, reg, 1);
-> +	litex_set_reg(reg, sizeof(u16), val);
->  }
->  
->  static inline void litex_write32(void __iomem *reg, u32 val)
->  {
-> -	WRITE_LITEX_SUBREGISTER(val >> 24, reg, 0);
-> -	WRITE_LITEX_SUBREGISTER(val >> 16, reg, 1);
-> -	WRITE_LITEX_SUBREGISTER(val >> 8, reg, 2);
-> -	WRITE_LITEX_SUBREGISTER(val, reg, 3);
-> +	litex_set_reg(reg, sizeof(u32), val);
->  }
->  
->  static inline void litex_write64(void __iomem *reg, u64 val)
->  {
-> -	WRITE_LITEX_SUBREGISTER(val >> 56, reg, 0);
-> -	WRITE_LITEX_SUBREGISTER(val >> 48, reg, 1);
-> -	WRITE_LITEX_SUBREGISTER(val >> 40, reg, 2);
-> -	WRITE_LITEX_SUBREGISTER(val >> 32, reg, 3);
-> -	WRITE_LITEX_SUBREGISTER(val >> 24, reg, 4);
-> -	WRITE_LITEX_SUBREGISTER(val >> 16, reg, 5);
-> -	WRITE_LITEX_SUBREGISTER(val >> 8, reg, 6);
-> -	WRITE_LITEX_SUBREGISTER(val, reg, 7);
-> +#ifdef CONFIG_64BIT
-> +	litex_set_reg(reg, sizeof(u64), val);
-I think 64-bit support should be split to a separate patch too.
-
-Look at: https://www.kernel.org/doc/html/v4.17/process/submitting-patches.html#separate-your-changes
-
-> +#else
-> +	_WRITE_LITEX_SUBREGISTER(val >> 56, reg, 0);
-> +	_WRITE_LITEX_SUBREGISTER(val >> 48, reg, 1);
-> +	_WRITE_LITEX_SUBREGISTER(val >> 40, reg, 2);
-> +	_WRITE_LITEX_SUBREGISTER(val >> 32, reg, 3);
-> +	_WRITE_LITEX_SUBREGISTER(val >> 24, reg, 4);
-> +	_WRITE_LITEX_SUBREGISTER(val >> 16, reg, 5);
-> +	_WRITE_LITEX_SUBREGISTER(val >> 8, reg, 6);
-> +	_WRITE_LITEX_SUBREGISTER(val, reg, 7);
-> +#endif
->  }
->  
->  static inline u8 litex_read8(void __iomem *reg)
->  {
-> -	return READ_LITEX_SUBREGISTER(reg, 0);
-> +	return litex_get_reg(reg, sizeof(u8));
->  }
->  
->  static inline u16 litex_read16(void __iomem *reg)
->  {
-> -	return (READ_LITEX_SUBREGISTER(reg, 0) << 8)
-> -		| (READ_LITEX_SUBREGISTER(reg, 1));
-> +	return litex_get_reg(reg, sizeof(u16));
->  }
->  
->  static inline u32 litex_read32(void __iomem *reg)
->  {
-> -	return (READ_LITEX_SUBREGISTER(reg, 0) << 24)
-> -		| (READ_LITEX_SUBREGISTER(reg, 1) << 16)
-> -		| (READ_LITEX_SUBREGISTER(reg, 2) << 8)
-> -		| (READ_LITEX_SUBREGISTER(reg, 3));
-> +	return litex_get_reg(reg, sizeof(u32));
->  }
->  
->  static inline u64 litex_read64(void __iomem *reg)
->  {
-> -	return ((u64)READ_LITEX_SUBREGISTER(reg, 0) << 56)
-> -		| ((u64)READ_LITEX_SUBREGISTER(reg, 1) << 48)
-> -		| ((u64)READ_LITEX_SUBREGISTER(reg, 2) << 40)
-> -		| ((u64)READ_LITEX_SUBREGISTER(reg, 3) << 32)
-> -		| ((u64)READ_LITEX_SUBREGISTER(reg, 4) << 24)
-> -		| ((u64)READ_LITEX_SUBREGISTER(reg, 5) << 16)
-> -		| ((u64)READ_LITEX_SUBREGISTER(reg, 6) << 8)
-> -		| ((u64)READ_LITEX_SUBREGISTER(reg, 7));
-> +#ifdef CONFIG_64BIT
-> +	return litex_get_reg(reg, sizeof(u64));
-> +#else
-> +	return ((u64)_READ_LITEX_SUBREGISTER(reg, 0) << 56)
-> +		| ((u64)_READ_LITEX_SUBREGISTER(reg, 1) << 48)
-> +		| ((u64)_READ_LITEX_SUBREGISTER(reg, 2) << 40)
-> +		| ((u64)_READ_LITEX_SUBREGISTER(reg, 3) << 32)
-> +		| ((u64)_READ_LITEX_SUBREGISTER(reg, 4) << 24)
-> +		| ((u64)_READ_LITEX_SUBREGISTER(reg, 5) << 16)
-> +		| ((u64)_READ_LITEX_SUBREGISTER(reg, 6) << 8)
-> +		| ((u64)_READ_LITEX_SUBREGISTER(reg, 7));
-> +#endif
->  }
->  
->  #endif /* _LINUX_LITEX_H */
-> -- 
-> 2.26.2
+> Thanks,
+> Stanley Chu
 > 
+
+
+
+Hi Stanley and Can
+
+I just sent a new patch to address this issue, let's discusss in that
+patch set, I added PM maintainer in the mail as well to help us address
+concern about pm_runtime_get_sync and shutdown flow. If that way can
+fix this issue, then I will update this patch again.
+
+one note:
+
+I didn't add "if (!ufshcd_is_ufs_dev_active(hba) ||
+!ufshcd_is_link_active(hba))" checkup, since sysfs node access is a
+normal request as well, UFS driver should give correct response as
+possbile as it can, even if device/link is lower power mode.
+
+Thanks,
+Bean
+
+
+
