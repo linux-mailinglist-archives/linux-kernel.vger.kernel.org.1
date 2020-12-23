@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 259F72E12B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:27:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64A382E12B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:27:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730028AbgLWCXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:23:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52508 "EHLO mail.kernel.org"
+        id S1730065AbgLWCXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:23:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728152AbgLWCXX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:23:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D4B632333B;
-        Wed, 23 Dec 2020 02:23:01 +0000 (UTC)
+        id S1729999AbgLWCX2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:23:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 89D8B23381;
+        Wed, 23 Dec 2020 02:23:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690182;
-        bh=kwr7vOqLTHit+B0tLX6e2t6x/SRPTCIFmBpxO580gAc=;
+        s=k20201202; t=1608690189;
+        bh=d+jnG9khOxDlTsbt+UFQssINvJMTzV+aT2ypQH3ZMMo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=crCliLiKg8k/+408wHv5HFjB99HlyEEAvHQB7Dq6TJV2dLleHzpVO4+bxKF1KqYHu
-         I76rkBhe4YUzfI6r+29rQxCajddQPrHEVMQ1ojHSso69x0qA1j1nbQuQ3lcoYlTugu
-         ZCItLHqvNMp6/geDKyAOr7gEfsyN4loZWm0CnK1cJhbqjeJSTbdgB//ySHc3vBM0TF
-         ksvPN4QOuq59i35UBhf/3hhFKSzGwmWJdyaNhu+A/kfbQaFMeqH0D3ibYWeldyG6HD
-         H0VdIrjVM3tUGkM0kgpgit6OpMGTIaaCNGnMdMjw2hSZ/GXZVHlAlf4PWUjm7kuAzI
-         R/+ZAN1gU2WGQ==
+        b=sgJORgoiL3j0yBi7h/HGTHghhdVEKcDzFCbZ5UGz4oeDnO78hPxqBNnQaQxhHi5LO
+         UUjRgZXptZYQxzcsZwTNa5CC4tW9/DYiGo/DTq/dfKuVGA5i4kdhkNnrnCx6eJDw6r
+         GV0QHq+xDO51S+HkXH7RlPZqtJNUCaIxjirCg4HY6cbCHjh6H8OCV1F63jeX8/23us
+         WmjgnSOtQLTuYlEXPtix1/icii2i57lsv9gKjNCFLrL4KJdLr8eOC8eGRSHp9ZXqR4
+         fffgT+OFeWWf3MAatErcJozC9Kr/JEXEAA6pZQBsIAeu1F1SunDtYGbRaGvs3NVLMi
+         nq8PRDf9Tn7mg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Qinglang Miao <miaoqinglang@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, devel@driverdev.osuosl.org
-Subject: [PATCH AUTOSEL 4.14 07/66] staging: ks7010: fix missing destroy_workqueue() on error in ks7010_sdio_probe
-Date:   Tue, 22 Dec 2020 21:21:53 -0500
-Message-Id: <20201223022253.2793452-7-sashal@kernel.org>
+        Sam Ravnborg <sam@ravnborg.org>,
+        Sasha Levin <sashal@kernel.org>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 4.14 13/66] drm: panel: simple: add missing platform_driver_unregister() in panel_simple_init
+Date:   Tue, 22 Dec 2020 21:21:59 -0500
+Message-Id: <20201223022253.2793452-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223022253.2793452-1-sashal@kernel.org>
 References: <20201223022253.2793452-1-sashal@kernel.org>
@@ -44,37 +45,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Qinglang Miao <miaoqinglang@huawei.com>
 
-[ Upstream commit d1e7550ad081fa5e9260f636dd51e1c496e0fd5f ]
+[ Upstream commit f2e66f212a9de04afc2caa5ec79057c0ac75c728 ]
 
-Add the missing destroy_workqueue() before return from
-ks7010_sdio_probe in the error handling case.
+Add the missing platform_driver_unregister() before return
+from panel_simple_init in the error handling case when failed
+to register panel_simple_dsi_driver with CONFIG_DRM_MIPI_DSI
+enabled.
 
 Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-Link: https://lore.kernel.org/r/20201028091552.136445-1-miaoqinglang@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20201031011856.137307-1-miaoqinglang@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/ks7010/ks7010_sdio.c | 4 +++-
+ drivers/gpu/drm/panel/panel-simple.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/staging/ks7010/ks7010_sdio.c b/drivers/staging/ks7010/ks7010_sdio.c
-index 8cfdff198334b..46d26423d3935 100644
---- a/drivers/staging/ks7010/ks7010_sdio.c
-+++ b/drivers/staging/ks7010/ks7010_sdio.c
-@@ -952,10 +952,12 @@ static int ks7010_sdio_probe(struct sdio_func *func,
+diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+index 6df312ba1826b..37b018a81ee0e 100644
+--- a/drivers/gpu/drm/panel/panel-simple.c
++++ b/drivers/gpu/drm/panel/panel-simple.c
+@@ -2417,8 +2417,10 @@ static int __init panel_simple_init(void)
  
- 	ret = register_netdev(priv->net_dev);
- 	if (ret)
--		goto err_free_netdev;
-+		goto err_destroy_wq;
+ 	if (IS_ENABLED(CONFIG_DRM_MIPI_DSI)) {
+ 		err = mipi_dsi_driver_register(&panel_simple_dsi_driver);
+-		if (err < 0)
++		if (err < 0) {
++			platform_driver_unregister(&panel_simple_platform_driver);
+ 			return err;
++		}
+ 	}
  
  	return 0;
- 
-+ err_destroy_wq:
-+	destroy_workqueue(priv->wq);
-  err_free_netdev:
- 	free_netdev(priv->net_dev);
- 	card->priv = NULL;
 -- 
 2.27.0
 
