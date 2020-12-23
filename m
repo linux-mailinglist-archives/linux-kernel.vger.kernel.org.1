@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A5CF2E148A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:48:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B3612E1458
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:47:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728960AbgLWCkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:40:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51014 "EHLO mail.kernel.org"
+        id S1730105AbgLWCX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:23:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730031AbgLWCXg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730034AbgLWCXg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 22 Dec 2020 21:23:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F74022A83;
-        Wed, 23 Dec 2020 02:23:17 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C4B9723333;
+        Wed, 23 Dec 2020 02:23:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690198;
-        bh=YrbTY5JpEvTtuhqP3HWPxAhzZ0+tfCCafdmz15WdEwE=;
+        s=k20201202; t=1608690200;
+        bh=7CGrK35cEN11pVpSMg2wMmiuJgUhYG+i/WSrNIA4OIU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yjz3jnc5y/Zpw0e6AJWJXUhcaYg72nr2qQ3kX0ANLD0NJmRsyvdTfcqa24cCwHSmU
-         OVED8R5GzTy+9/g2KQUc5919DJyogiMo6Ibe0Gwc3Jyi9bdf5KZhl0kLOM0Zokx9gk
-         gQoKgeE5XNQC3NvN2S6fVfNb54uxzQH4vF++aTrZjDZlmxKw8FsXLY1f+fPe/8XsYn
-         gaVtHJ3PrA56Ja0gwL/jcAkDrcfL1DSy7AjPqe+cqsPUeoQwuiT7Smoz8DnFuwdgTm
-         uZjKGQA0JbGCqI8dZzNka0oTy6HJ6FahpgRZu5UHTLy/Esc+QgxWvc8N+M3hIvgw7Z
-         +2wMmW1mGBOwg==
+        b=btWFgjYCqgTZaskJ7AWgJA1h/rdwzDblsD1Ax/NAQvhWtS/BXvp0Jxxch67iFohhS
+         uMFlb2XM2x/SCElowtFM5aeWzH5pxFuwQ6z6CKV5/vb2tCZScMxO/FGeEuLhoWCBgY
+         S2TQF41MvedjHL8cai688m9mgiS74NiB9hJbbGRJXQXTsjEbM46y2+nWR8XiG124Gs
+         cxk9eCCbG7MAxUKu1OLcfKdADlnXAogXlLpzkp0xnFn73cPxAXud2wm5x3emCx25xr
+         n36dEtSp29JBavNXix5wWqvkuUrwMW/13La9dIfkxGmTdHv9IHY2DXsqr+XyxIavWg
+         lp4x4q+AW7blw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Dave Kleikamp <dave.kleikamp@oracle.com>,
-        Sasha Levin <sashal@kernel.org>,
-        jfs-discussion@lists.sourceforge.net
-Subject: [PATCH AUTOSEL 4.14 20/66] jfs: Fix memleak in dbAdjCtl
-Date:   Tue, 22 Dec 2020 21:22:06 -0500
-Message-Id: <20201223022253.2793452-20-sashal@kernel.org>
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 22/66] media: cec-core: first mark device unregistered, then wake up fhs
+Date:   Tue, 22 Dec 2020 21:22:08 -0500
+Message-Id: <20201223022253.2793452-22-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223022253.2793452-1-sashal@kernel.org>
 References: <20201223022253.2793452-1-sashal@kernel.org>
@@ -43,46 +42,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 
-[ Upstream commit 751341b4d7841e2b76e78eec382c2e119165497f ]
+[ Upstream commit e91c255733d9bbb4978a372f44fb5ed689ccdbd1 ]
 
-When dbBackSplit() fails, mp should be released to
-prevent memleak. It's the same when dbJoin() fails.
+If a CEC device node is unregistered, then it should be marked as
+unregistered before waking up any filehandles that are waiting for
+an event.
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
+This ensures that there is no race condition where an application can
+call CEC_DQEVENT and have the ioctl return 0 instead of ENODEV.
+
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/jfs/jfs_dmap.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/media/cec/cec-core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/jfs/jfs_dmap.c b/fs/jfs/jfs_dmap.c
-index 2d514c7affc2a..fa14a01950853 100644
---- a/fs/jfs/jfs_dmap.c
-+++ b/fs/jfs/jfs_dmap.c
-@@ -2562,15 +2562,19 @@ dbAdjCtl(struct bmap * bmp, s64 blkno, int newval, int alloc, int level)
- 		 */
- 		if (oldval == NOFREE) {
- 			rc = dbBackSplit((dmtree_t *) dcp, leafno);
--			if (rc)
-+			if (rc) {
-+				release_metapage(mp);
- 				return rc;
-+			}
- 			oldval = dcp->stree[ti];
- 		}
- 		dbSplit((dmtree_t *) dcp, leafno, dcp->budmin, newval);
- 	} else {
- 		rc = dbJoin((dmtree_t *) dcp, leafno, newval);
--		if (rc)
-+		if (rc) {
-+			release_metapage(mp);
- 			return rc;
-+		}
+diff --git a/drivers/media/cec/cec-core.c b/drivers/media/cec/cec-core.c
+index 648136e552d5b..7c585e05c6311 100644
+--- a/drivers/media/cec/cec-core.c
++++ b/drivers/media/cec/cec-core.c
+@@ -175,12 +175,12 @@ static void cec_devnode_unregister(struct cec_devnode *devnode)
+ 		mutex_unlock(&devnode->lock);
+ 		return;
  	}
++	devnode->registered = false;
++	devnode->unregistered = true;
  
- 	/* check if the root of the current dmap control page changed due
+ 	list_for_each_entry(fh, &devnode->fhs, list)
+ 		wake_up_interruptible(&fh->wait);
+ 
+-	devnode->registered = false;
+-	devnode->unregistered = true;
+ 	mutex_unlock(&devnode->lock);
+ 
+ 	cdev_device_del(&devnode->cdev, &devnode->dev);
 -- 
 2.27.0
 
