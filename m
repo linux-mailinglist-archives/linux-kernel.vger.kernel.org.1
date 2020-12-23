@@ -2,140 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F69F2E1B50
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 12:02:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAC972E1B55
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 12:05:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728343AbgLWLB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 06:01:27 -0500
-Received: from foss.arm.com ([217.140.110.172]:48702 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728214AbgLWLB0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 06:01:26 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C09CE101E;
-        Wed, 23 Dec 2020 03:00:40 -0800 (PST)
-Received: from [10.57.34.90] (unknown [10.57.34.90])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3889E3F6CF;
-        Wed, 23 Dec 2020 03:00:38 -0800 (PST)
-Subject: Re: [PATCH v3 6/7] iommu/mediatek: Gather iova in iommu_unmap to
- achieve tlb sync once
-To:     Tomasz Figa <tfiga@chromium.org>, Yong Wu <yong.wu@mediatek.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        youlin.pei@mediatek.com, anan.sun@mediatek.com,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        srv_heupstream@mediatek.com, chao.hao@mediatek.com,
-        linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Tomasz Figa <tfiga@google.com>,
-        iommu@lists.linux-foundation.org,
-        linux-mediatek@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Greg Kroah-Hartman <gregkh@google.com>,
-        kernel-team@android.com, linux-arm-kernel@lists.infradead.org
-References: <20201216103607.23050-1-yong.wu@mediatek.com>
- <20201216103607.23050-7-yong.wu@mediatek.com> <X+MGKBYKdmPNz7VL@chromium.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <1de76b46-d9c1-4011-c087-1df236f442c3@arm.com>
-Date:   Wed, 23 Dec 2020 11:00:37 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1728332AbgLWLE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 06:04:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728233AbgLWLE6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 06:04:58 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39BE8C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 03:04:18 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id 11so10174746pfu.4
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 03:04:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9wr04wRtfr+9xAJATRoyW0Odw47YG07e8A4tfkmKY6o=;
+        b=la+BDoB97R8Zm2+gkZTx0LdGGdRFU5HMRB8H7Q/qdsGyuyLFPsb2rf0BHO9Oa02td3
+         +0FLQP0BEYMmqcaqjbConn9GwLnFpkYdlmR2xa0KcOMRTq9E8beL/mvQtC+AoHqNLtQO
+         5pw3ql63taEt54JevUkXkuZnwSxy76szfH7rU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9wr04wRtfr+9xAJATRoyW0Odw47YG07e8A4tfkmKY6o=;
+        b=sjC1bnSpH9hyzqSe61UKC2IMkKligje3vCal6NA7apETKqDWYbr7r6vYdBAWH6UuSE
+         VuWSenIZUPAdbfV21EDoeJD9u1LjSVE6q2/9JCKUSg3lrAEOdrjJ7JLuv/ERps76Yg0z
+         c1Tx14/jn4+vk5fm1H7NHCyn+FsrN7lqmnYW3Btt4cJQ6bEm0Cu+6qSJvJ0lSDE84XWx
+         3NS2WbEqlSR4q7BnFex4HXPjQLc7/TZg6OPdSJNomnOi0f8cWlANVeriWeaoJzBshsOf
+         B4kgI6n2dTCDKW2gfduKsA/aD2JLscqBlHNXax8lWcysi3wH6D/1tXS3vxT/wwSVuQct
+         q7yg==
+X-Gm-Message-State: AOAM532aIwRYRhuYIrL/1r4Sxf86ekIfRFPndwZJzLXj6Mkxu8OxD4dv
+        qKTZHAvDKCQAfi1zjkC8EZ4NgA==
+X-Google-Smtp-Source: ABdhPJy11noMdaqdZLEFb6GtB8b60kIlaNhnZT03fFHUBdVURtMnO5Z2Ij68gj6AlDw3ZSquz7Pbvw==
+X-Received: by 2002:aa7:9501:0:b029:155:3b11:d5c4 with SMTP id b1-20020aa795010000b02901553b11d5c4mr4555036pfp.76.1608721457374;
+        Wed, 23 Dec 2020 03:04:17 -0800 (PST)
+Received: from localhost.localdomain ([2405:201:c00a:a884:eca4:40c1:8784:571c])
+        by smtp.gmail.com with ESMTPSA id 3sm23275909pfv.92.2020.12.23.03.04.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Dec 2020 03:04:16 -0800 (PST)
+From:   Jagan Teki <jagan@amarulasolutions.com>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Li Yang <leoyang.li@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-amarula@amarulasolutions.com,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH v3 0/6] arm64: dts: imx8mm: Add Engicam i.Core MX8M Mini
+Date:   Wed, 23 Dec 2020 16:33:37 +0530
+Message-Id: <20201223110343.126638-1-jagan@amarulasolutions.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <X+MGKBYKdmPNz7VL@chromium.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-23 08:56, Tomasz Figa wrote:
-> On Wed, Dec 16, 2020 at 06:36:06PM +0800, Yong Wu wrote:
->> In current iommu_unmap, this code is:
->>
->> 	iommu_iotlb_gather_init(&iotlb_gather);
->> 	ret = __iommu_unmap(domain, iova, size, &iotlb_gather);
->> 	iommu_iotlb_sync(domain, &iotlb_gather);
->>
->> We could gather the whole iova range in __iommu_unmap, and then do tlb
->> synchronization in the iommu_iotlb_sync.
->>
->> This patch implement this, Gather the range in mtk_iommu_unmap.
->> then iommu_iotlb_sync call tlb synchronization for the gathered iova range.
->> we don't call iommu_iotlb_gather_add_page since our tlb synchronization
->> could be regardless of granule size.
->>
->> In this way, gather->start is impossible ULONG_MAX, remove the checking.
->>
->> This patch aims to do tlb synchronization *once* in the iommu_unmap.
->>
->> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
->> ---
->>   drivers/iommu/mtk_iommu.c | 8 +++++---
->>   1 file changed, 5 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
->> index db7d43adb06b..89cec51405cd 100644
->> --- a/drivers/iommu/mtk_iommu.c
->> +++ b/drivers/iommu/mtk_iommu.c
->> @@ -506,7 +506,12 @@ static size_t mtk_iommu_unmap(struct iommu_domain *domain,
->>   			      struct iommu_iotlb_gather *gather)
->>   {
->>   	struct mtk_iommu_domain *dom = to_mtk_domain(domain);
->> +	unsigned long long end = iova + size;
->>   
->> +	if (gather->start > iova)
->> +		gather->start = iova;
->> +	if (gather->end < end)
->> +		gather->end = end;
-> 
-> I don't know how common the case is, but what happens if
-> gather->start...gather->end is a disjoint range from iova...end? E.g.
-> 
->   | gather      | ..XXX... | iova |
->   |             |          |      |
->   gather->start |          iova   |
->                 gather->end       end
-> 
-> We would also end up invalidating the TLB for the XXX area, which could
-> affect the performance.
+This is the initial series to support Engicam i.Core MX8M Mini SOM
+and it's associated carrier board dts(i) support.
 
-Take a closer look at iommu_unmap() - the gather data is scoped to each 
-individual call, so that can't possibly happen.
+i.Core MX8M Mini is an EDIMM SOM based on NXP i.MX8MM from Engicam.
 
-> Also, why is the existing code in __arm_v7s_unmap() not enough? It seems
-> to call io_pgtable_tlb_add_page() already, so it should be batching the
-> flushes.
+i.Core MX8M Mini needs to mount on top of Engicam baseboards for
+creating complete platform boards.
 
-Because if we leave io-pgtable in charge of maintenance it will also 
-inject additional invalidations and syncs for the sake of strictly 
-correct walk cache maintenance. Apparently we can get away without that 
-on this hardware, so the fundamental purpose of this series is to 
-sidestep it.
+Possible baseboards are,
+- EDIMM2.2
+- C.TOUCH 2.0
 
-It's proven to be cleaner overall to devolve this kind of "non-standard" 
-TLB maintenance back to drivers rather than try to cram yet more 
-special-case complexity into io-pgtable itself. I'm planning to clean up 
-the remains of the TLBI_ON_MAP quirk entirely after this.
+Changes for v3:
+- don't maintain common nodes and include it, if no feature diff
+- keep min/max regulator hoping
+- collect Krzysztof r-b
+- fix dt-bindings
 
-Robin.
+Any inputs?
+Jagan.
 
->>   	return dom->iop->unmap(dom->iop, iova, size, gather);
->>   }
->>   
->> @@ -523,9 +528,6 @@ static void mtk_iommu_iotlb_sync(struct iommu_domain *domain,
->>   	struct mtk_iommu_domain *dom = to_mtk_domain(domain);
->>   	size_t length = gather->end - gather->start;
->>   
->> -	if (gather->start == ULONG_MAX)
->> -		return;
->> -
->>   	mtk_iommu_tlb_flush_range_sync(gather->start, length, gather->pgsize,
->>   				       dom->data);
->>   }
->> -- 
->> 2.18.0
->>
->> _______________________________________________
->> iommu mailing list
->> iommu@lists.linux-foundation.org
->> https://lists.linuxfoundation.org/mailman/listinfo/iommu
+Jagan Teki (6):
+  arm64: defconfig: Enable REGULATOR_PF8X00
+  dt-bindings: arm: fsl: Add Engicam i.Core MX8M Mini C.TOUCH 2.0
+  arm64: dts: imx8mm: Add Engicam i.Core MX8M Mini SoM
+  arm64: dts: imx8mm: Add Engicam i.Core MX8M Mini C.TOUCH 2.0
+  dt-bindings: arm: fsl: Add Engicam i.Core MX8M Mini EDIMM2.2 Starter Kit
+  arm64: dts: imx8mm: Add Engicam i.Core MX8M Mini EDIMM2.2 Starter Kit
+
+ .../devicetree/bindings/arm/fsl.yaml          |   8 +
+ arch/arm64/boot/dts/freescale/Makefile        |   2 +
+ .../dts/freescale/imx8mm-engicam-ctouch2.dtsi |  82 +++++++
+ .../freescale/imx8mm-engicam-edimm2.2.dtsi    |  82 +++++++
+ .../freescale/imx8mm-icore-mx8mm-ctouch2.dts  |  21 ++
+ .../freescale/imx8mm-icore-mx8mm-edimm2.2.dts |  21 ++
+ .../dts/freescale/imx8mm-icore-mx8mm.dtsi     | 232 ++++++++++++++++++
+ arch/arm64/configs/defconfig                  |   1 +
+ 8 files changed, 449 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-engicam-ctouch2.dtsi
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-engicam-edimm2.2.dtsi
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm-ctouch2.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm-edimm2.2.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm.dtsi
+
+-- 
+2.25.1
+
