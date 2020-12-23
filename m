@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 020092E1284
+	by mail.lfdr.de (Postfix) with ESMTP id E9BEB2E1286
 	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:27:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729368AbgLWCVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:21:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49658 "EHLO mail.kernel.org"
+        id S1729379AbgLWCVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:21:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46354 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729251AbgLWCVO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:21:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 37393225AA;
-        Wed, 23 Dec 2020 02:20:53 +0000 (UTC)
+        id S1729264AbgLWCVP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:21:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2530123159;
+        Wed, 23 Dec 2020 02:20:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690054;
-        bh=B6gMvVcQGWw+yIct8QLLq777HCeZBqK6uUk2SPyejB8=;
+        s=k20201202; t=1608690057;
+        bh=0d00F80+U8kMZ21VJjFI0YdSZN9PalaSgFSCylhm5tY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cLnXRjfN8GmC9w0n2b4XtmcNiRnfOSgesQpq/UPRPAMTaicyd2wwRxxFnbrHuQqI4
-         Fnr3+enAbxKuVjQlEjpOnjwryLFNlKFNzvN/xEsPgNGnNT8qP9XSpa01eUuvHva+dP
-         0urvIgEosJ8ji/EfGtJXla62A97Y1Vqw5zvyadkEx5htoPmV6uVrnEO56Ez6PeX3DB
-         BsNjip2SOuryIHYuvR9AxywXNTQhOUKoVL7O+WlgJMkPhmwEP2xX0jjS0dqnjID4Oc
-         poZHWvAAAdpLi8TSoDwvf8lVMoxTtJGW4K9LJpox8O2vQtzTi+PzIm/S5Jp/GprabG
-         /MWBKhHoCOWWA==
+        b=RV70dsEvxmXoD/wpl5GECkVlxpZH75KBMrpTx5h1F9kXI9NUkYmRd2dvNQGU92pgS
+         JlpWg6DZag6I0UW1EZbbcITTDw0ANEoQQvAqtwTqikXDXxZilAkqCugofHyucgfp5v
+         WpvNuMJIG2Y98BfIouUxmG3gDWFJlb6TO5R1L11fvHBDNhegbHOOoa/IvTWrtbLDt5
+         zSSpMaZXqVFzxwqx4849esS/dIof8lIT/HQwJOXIg8d6aa5p1UbhGMg5ic6JZDaCOY
+         HfIrzu45h7fAQ1PCCOkHhQB9vCnXNkmefEx/TW3pqwAYwNIh1H1Sqq+QrG5Mnuhdx1
+         X7PCOWMRdbxpw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 124/130] mac80211: don't filter out beacons once we start CSA
-Date:   Tue, 22 Dec 2020 21:18:07 -0500
-Message-Id: <20201223021813.2791612-124-sashal@kernel.org>
+Cc:     Wang ShaoBo <bobo.shaobowang@huawei.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>, linux-pm@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 127/130] cpufreq: Fix cpufreq_online() return value on errors
+Date:   Tue, 22 Dec 2020 21:18:10 -0500
+Message-Id: <20201223021813.2791612-127-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223021813.2791612-1-sashal@kernel.org>
 References: <20201223021813.2791612-1-sashal@kernel.org>
@@ -44,49 +42,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
+From: Wang ShaoBo <bobo.shaobowang@huawei.com>
 
-[ Upstream commit 189a164d0fc6c59a22c4486d641d0a0a0d33387a ]
+[ Upstream commit b96f038432362a20b96d4c52cefeb2936e2cfd2f ]
 
-I hit a bug in which we started a CSA with an action frame,
-but the AP changed its mind and didn't change the beacon.
-The CSA wasn't cancelled and we lost the connection.
+Make cpufreq_online() return negative error codes on all errors that
+cause the policy to be destroyed, as appropriate.
 
-The beacons were ignored because they never changed: they
-never contained any CSA IE. Because they never changed, the
-CRC of the beacon didn't change either which made us ignore
-the beacons instead of processing them.
-
-Now what happens is:
-1) beacon has CRC X and it is valid. No CSA IE in the beacon
-2) as long as beacon's CRC X, don't process their IEs
-3) rx action frame with CSA
-4) invalidate the beacon's CRC
-5) rx beacon, CRC is still X, but now it is invalid
-6) process the beacon, detect there is no CSA IE
-7) abort CSA
-
-Signed-off-by: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Link: https://lore.kernel.org/r/iwlwifi.20201206145305.83470b8407e6.I739b907598001362744692744be15335436b8351@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
+[ rjw: Subject and changelog edits ]
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/mlme.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/cpufreq/cpufreq.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/net/mac80211/mlme.c b/net/mac80211/mlme.c
-index ba1e5cac32adb..ed12519e3a634 100644
---- a/net/mac80211/mlme.c
-+++ b/net/mac80211/mlme.c
-@@ -1415,6 +1415,7 @@ ieee80211_sta_process_chanswitch(struct ieee80211_sub_if_data *sdata,
- 	sdata->csa_chandef = csa_ie.chandef;
- 	sdata->csa_block_tx = csa_ie.mode;
- 	ifmgd->csa_ignored_same_chan = false;
-+	ifmgd->beacon_crc_valid = false;
+diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+index 194a6587a1de1..1178ac323a9e0 100644
+--- a/drivers/cpufreq/cpufreq.c
++++ b/drivers/cpufreq/cpufreq.c
+@@ -1384,8 +1384,10 @@ static int cpufreq_online(unsigned int cpu)
  
- 	if (sdata->csa_block_tx)
- 		ieee80211_stop_vif_queues(local, sdata,
+ 		policy->min_freq_req = kzalloc(2 * sizeof(*policy->min_freq_req),
+ 					       GFP_KERNEL);
+-		if (!policy->min_freq_req)
++		if (!policy->min_freq_req) {
++			ret = -ENOMEM;
+ 			goto out_destroy_policy;
++		}
+ 
+ 		ret = freq_qos_add_request(&policy->constraints,
+ 					   policy->min_freq_req, FREQ_QOS_MIN,
+@@ -1422,6 +1424,7 @@ static int cpufreq_online(unsigned int cpu)
+ 	if (cpufreq_driver->get && has_target()) {
+ 		policy->cur = cpufreq_driver->get(policy->cpu);
+ 		if (!policy->cur) {
++			ret = -EIO;
+ 			pr_err("%s: ->get() failed\n", __func__);
+ 			goto out_destroy_policy;
+ 		}
 -- 
 2.27.0
 
