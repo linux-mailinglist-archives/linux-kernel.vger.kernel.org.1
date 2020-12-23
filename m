@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0ED22E123B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:21:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4491B2E123F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:21:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728879AbgLWCUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:20:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46424 "EHLO mail.kernel.org"
+        id S1728929AbgLWCUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:20:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728722AbgLWCTk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:19:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E539622A99;
-        Wed, 23 Dec 2020 02:19:09 +0000 (UTC)
+        id S1728756AbgLWCTs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:19:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD2AE22D73;
+        Wed, 23 Dec 2020 02:19:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608689950;
-        bh=oTkdwe/HtLkDFjopoFjvh7xHmrD822H3xtWYFnLOq6Y=;
+        s=k20201202; t=1608689960;
+        bh=h2zF7WsF0kn+m51N13kQ8pFg/eImiX8gIVmjxPTyqio=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mpIxK0qjpP2L9iaznp9QrGkKunjToXxvapTw7RDN4Nfl4co4+/q+jKHB83jRIBt7Y
-         uUU60GRLT7eXLzMD5TBSJIME1KyvhKBzcqASLB9MVj3j4blTTXb2ZDmKFuttlJv4+S
-         HEeSgghoQ/tPQu3Cw4+jMpawWYPm5rb3wg2/cILN96Ba4ZFaTJAcHWf2RIfgVtcqwW
-         fjZbxs1BMbbgtW0Ck7rUT/jiThlyWaXEEvIl6psgCfNxWVfNq0fBEEehriDWVjngxO
-         aTfFQiieWYN7QQscBjPPuThFeVwmbJKrtwFmSy9WOrZTz8tXTEuDV4Pul973ZIUQ41
-         6oUO00VBnjH2A==
+        b=PIe6lrOCT6v/28k8cj/gr3WStdLMSiu0lxF3mg4KOaiUcIY70lRE6N8KM0fts43ow
+         P/fuEbAxA3LqDhyrEOfpI/YyYOFax/paEO+FaWgT0SLBw9jwSmTgqFEsMQnl/cE/Y8
+         IDZoifVGEEpULLDbYNUOnAxlD3lIhoACXVi71GLmhQdwwl0xLpe1kZWfQM8OaFHZiq
+         lGQt65GiTQ6R9ss97lWPBKnnT9FS2gGSGURXE2nc4/0fqJE9fGiyqFZ2c/x8i75UL9
+         dRcpOj5xHff0UAvrxVEo5ZWijOKxw9NXR2n/Sgq/fivQAFsGbYFU98G9YUimY33t3o
+         bdKyBf8qQ65RA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dinghao Liu <dinghao.liu@zju.edu.cn>, Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 044/130] media: dvbdev: Fix memleak in dvb_register_device
-Date:   Tue, 22 Dec 2020 21:16:47 -0500
-Message-Id: <20201223021813.2791612-44-sashal@kernel.org>
+Cc:     Christian Eggers <ceggers@arri.de>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 052/130] net: dsa: avoid potential use-after-free error
+Date:   Tue, 22 Dec 2020 21:16:55 -0500
+Message-Id: <20201223021813.2791612-52-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223021813.2791612-1-sashal@kernel.org>
 References: <20201223021813.2791612-1-sashal@kernel.org>
@@ -42,35 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Christian Eggers <ceggers@arri.de>
 
-[ Upstream commit 167faadfcf9339088910e9e85a1b711fcbbef8e9 ]
+[ Upstream commit 30abc9cd9c6bdd44d23fc49a9c2526a86fba4305 ]
 
-When device_create() fails, dvbdev and dvbdevfops should
-be freed just like when dvb_register_media_device() fails.
+If dsa_switch_ops::port_txtstamp() returns false, clone will be freed
+immediately. Shouldn't store a pointer to freed memory.
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Christian Eggers <ceggers@arri.de>
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+Tested-by: Vladimir Oltean <olteanv@gmail.com>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Link: https://lore.kernel.org/r/20201119110906.25558-1-ceggers@arri.de
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/dvb-core/dvbdev.c | 3 +++
- 1 file changed, 3 insertions(+)
+ net/dsa/slave.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/dvb-core/dvbdev.c b/drivers/media/dvb-core/dvbdev.c
-index 032b6d7dd5821..cfe983e78102f 100644
---- a/drivers/media/dvb-core/dvbdev.c
-+++ b/drivers/media/dvb-core/dvbdev.c
-@@ -539,6 +539,9 @@ int dvb_register_device(struct dvb_adapter *adap, struct dvb_device **pdvbdev,
- 	if (IS_ERR(clsdev)) {
- 		pr_err("%s: failed to create device dvb%d.%s%d (%ld)\n",
- 		       __func__, adap->num, dnames[type], id, PTR_ERR(clsdev));
-+		dvb_media_device_free(dvbdev);
-+		kfree(dvbdevfops);
-+		kfree(dvbdev);
- 		return PTR_ERR(clsdev);
- 	}
- 	dprintk("DVB: register adapter%d/%s%d @ minor: %i (0x%02x)\n",
+diff --git a/net/dsa/slave.c b/net/dsa/slave.c
+index f734ce0bcb56e..2b657e88d8017 100644
+--- a/net/dsa/slave.c
++++ b/net/dsa/slave.c
+@@ -476,10 +476,10 @@ static void dsa_skb_tx_timestamp(struct dsa_slave_priv *p,
+ 	if (!clone)
+ 		return;
+ 
+-	DSA_SKB_CB(skb)->clone = clone;
+-
+-	if (ds->ops->port_txtstamp(ds, p->dp->index, clone, type))
++	if (ds->ops->port_txtstamp(ds, p->dp->index, clone, type)) {
++		DSA_SKB_CB(skb)->clone = clone;
+ 		return;
++	}
+ 
+ 	kfree_skb(clone);
+ }
 -- 
 2.27.0
 
