@@ -2,95 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA7102E224F
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 23:02:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69EDF2E2256
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 23:13:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbgLWWA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 17:00:56 -0500
-Received: from mga09.intel.com ([134.134.136.24]:4211 "EHLO mga09.intel.com"
+        id S1727046AbgLWWL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 17:11:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725270AbgLWWAz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 17:00:55 -0500
-IronPort-SDR: Jh6X9WtI3fPv9J/1VwHMiyXgE+HeQHcsqYOsUJ7kZSiAIAl+E9CJXf8eWACrXZOsclibCKWw9J
- nDxBb7+6QoFg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9844"; a="176227051"
-X-IronPort-AV: E=Sophos;i="5.78,442,1599548400"; 
-   d="scan'208";a="176227051"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Dec 2020 14:00:13 -0800
-IronPort-SDR: ZE9vjT+jio/b1tX/7pX6GuRO1MMz0A/r592uY2dF3aio3SMMoiiIkjBp9UmgFnM3q33hFK7d/E
- VHy+ZG29weww==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,442,1599548400"; 
-   d="scan'208";a="398209958"
-Received: from sbensaid-test1.sc.intel.com ([172.25.206.207])
-  by FMSMGA003.fm.intel.com with ESMTP; 23 Dec 2020 14:00:12 -0800
-From:   lalithambika.krishnakumar@intel.com
-To:     kbusch@kernel.org, hch@lst.de, axboe@fb.com, sagi@grimberg.me
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        dan.j.williams@intel.com, lalithambika.krishnakumar@intel.com
-Subject: [PATCH] nvme: avoid possible double fetch in handling CQE
-Date:   Wed, 23 Dec 2020 14:09:00 -0800
-Message-Id: <20201223220900.11234-1-lalithambika.krishnakumar@intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726282AbgLWWL2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 17:11:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8353222202;
+        Wed, 23 Dec 2020 22:10:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608761447;
+        bh=bC4arC7kCsqpAI2Kec7Pwm949X5SiBOT2DcjnCTGTHA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WGWyz95x9D5GpEGsWUSwuSBB4YjS0CuTyDRhnhPPw6mjJL/6lXRsVZ48PQqgZY+F4
+         n9rYfqc0Gn53kvczMG5ug4VJivqLGV7hxZA2CRdHMCAS/8Y2U0yFIkUgzJTXY9EvLz
+         E6YirwPUdTVj/33KvFNEv03PBI3Qbjh1L4KmKvWqnXPPq2P2bqA1YVWwaBjxLdAk4n
+         5XPUz+g277LddH759VU7P55Acv35YBUoHiqyKk2t4c1XwO0vvMS8ElXpuixAq3Cs+c
+         uB1xkce/fhHWuqAUE8HymjrzcOsgoCiUMUG6pUbkWM/T7l+iIZAllm6UsoMj+Q7okU
+         p5Xa6JxDZYTZg==
+Date:   Thu, 24 Dec 2020 00:10:39 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Rik van Riel <riel@surriel.com>,
+        Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH v2 1/2] mm: cma: allocate cma areas bottom-up
+Message-ID: <20201223221039.GH392325@kernel.org>
+References: <20201217201214.3414100-1-guro@fb.com>
+ <20201220064848.GA392325@kernel.org>
+ <20201221170551.GB3428478@carbon.DHCP.thefacebook.com>
+ <20201222200606.fe4444f1f0ba008ee9fda091@linux-foundation.org>
+ <20201223163537.GA4011967@carbon.DHCP.thefacebook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201223163537.GA4011967@carbon.DHCP.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lalithambika Krishnakumar <lalithambika.krishnakumar@intel.com>
+On Wed, Dec 23, 2020 at 08:35:37AM -0800, Roman Gushchin wrote:
+> On Tue, Dec 22, 2020 at 08:06:06PM -0800, Andrew Morton wrote:
+> > On Mon, 21 Dec 2020 09:05:51 -0800 Roman Gushchin <guro@fb.com> wrote:
+> > 
+> > > Subject: [PATCH v3 1/2] mm: cma: allocate cma areas bottom-up
+> > 
+> > i386 allmodconfig:
+> > 
+> > In file included from ./include/vdso/const.h:5,
+> >                  from ./include/linux/const.h:4,
+> >                  from ./include/linux/bits.h:5,
+> >                  from ./include/linux/bitops.h:6,
+> >                  from ./include/linux/kernel.h:11,
+> >                  from ./include/asm-generic/bug.h:20,
+> >                  from ./arch/x86/include/asm/bug.h:93,
+> >                  from ./include/linux/bug.h:5,
+> >                  from ./include/linux/mmdebug.h:5,
+> >                  from ./include/linux/mm.h:9,
+> >                  from ./include/linux/memblock.h:13,
+> >                  from mm/cma.c:24:
+> > mm/cma.c: In function ‘cma_declare_contiguous_nid’:
+> > ./include/uapi/linux/const.h:20:19: warning: conversion from ‘long long unsigned int’ to ‘phys_addr_t’ {aka ‘unsigned int’} changes value from ‘4294967296’ to ‘0’ [-Woverflow]
+> >  #define __AC(X,Y) (X##Y)
+> >                    ^~~~~~
+> > ./include/uapi/linux/const.h:21:18: note: in expansion of macro ‘__AC’
+> >  #define _AC(X,Y) __AC(X,Y)
+> >                   ^~~~
+> > ./include/linux/sizes.h:46:18: note: in expansion of macro ‘_AC’
+> >  #define SZ_4G    _AC(0x100000000, ULL)
+> >                   ^~~
+> > mm/cma.c:349:53: note: in expansion of macro ‘SZ_4G’
+> >     addr = memblock_alloc_range_nid(size, alignment, SZ_4G,
+> >                                                      ^~~~~
+> > 
+> 
+> I thought that (!memblock_bottom_up() && memblock_end >= SZ_4G + size)
+> can't be true on a 32-bit platform, so the whole if clause can be compiled out.
+> Maybe it's because memblock_end can be equal to SZ_4G and if the size == 0...
+> 
+> I have no better idea than wrapping everything into
+> #if BITS_PER_LONG > 32
+> #endif.
 
-While handling the completion queue, keep a local copy of the command id
-from the DMA-accessible completion entry. This silences a time-of-check
-to time-of-use (TOCTOU) warning from KF/x[1], with respect to a
-Thunderclap[2] vulnerability analysis. The double-read impact appears
-benign.
-
-There may be a theoretical window for @command_id to be used as an
-adversary-controlled array-index-value for mounting a speculative
-execution attack, but that mitigation is saved for a potential follow-on.
-A man-in-the-middle attack on the data payload is out of scope for this
-analysis and is hopefully mitigated by filesystem integrity mechanisms.
-
-[1] https://github.com/intel/kernel-fuzzer-for-xen-project
-[2] http://thunderclap.io/thunderclap-paper-ndss2019.pdf
-Signed-off-by: Lalithambika Krishna Kumar <lalithambika.krishnakumar@intel.com>
----
- drivers/nvme/host/pci.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index b4385cb0ff60..88a7cb3fe2a2 100644
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -967,6 +967,7 @@ static inline struct blk_mq_tags *nvme_queue_tagset(struct nvme_queue *nvmeq)
- static inline void nvme_handle_cqe(struct nvme_queue *nvmeq, u16 idx)
- {
- 	struct nvme_completion *cqe = &nvmeq->cqes[idx];
-+	__u16 command_id = READ_ONCE(cqe->command_id);
- 	struct request *req;
+32-bit systems can have more than 32 bit in the physical address.
+I think a better option would be to use CONFIG_PHYS_ADDR_T_64BIT
  
- 	/*
-@@ -975,17 +976,17 @@ static inline void nvme_handle_cqe(struct nvme_queue *nvmeq, u16 idx)
- 	 * aborts.  We don't even bother to allocate a struct request
- 	 * for them but rather special case them here.
- 	 */
--	if (unlikely(nvme_is_aen_req(nvmeq->qid, cqe->command_id))) {
-+	if (unlikely(nvme_is_aen_req(nvmeq->qid, command_id))) {
- 		nvme_complete_async_event(&nvmeq->dev->ctrl,
- 				cqe->status, &cqe->result);
- 		return;
- 	}
- 
--	req = blk_mq_tag_to_rq(nvme_queue_tagset(nvmeq), cqe->command_id);
-+	req = blk_mq_tag_to_rq(nvme_queue_tagset(nvmeq), command_id);
- 	if (unlikely(!req)) {
- 		dev_warn(nvmeq->dev->ctrl.device,
- 			"invalid id %d completed on queue %d\n",
--			cqe->command_id, le16_to_cpu(cqe->sq_id));
-+			command_id, le16_to_cpu(cqe->sq_id));
- 		return;
- 	}
- 
+> Thanks!
+> 
+> --
+> 
+> diff --git a/mm/cma.c b/mm/cma.c
+> index 4fe74c9d83b0..5d69b498603a 100644
+> --- a/mm/cma.c
+> +++ b/mm/cma.c
+> @@ -344,12 +344,14 @@ int __init cma_declare_contiguous_nid(phys_addr_t base,
+>                  * Avoid using first 4GB to not interfere with constrained zones
+>                  * like DMA/DMA32.
+>                  */
+> +#if BITS_PER_LONG > 32
+>                 if (!memblock_bottom_up() && memblock_end >= SZ_4G + size) {
+>                         memblock_set_bottom_up(true);
+>                         addr = memblock_alloc_range_nid(size, alignment, SZ_4G,
+>                                                         limit, nid, true);
+>                         memblock_set_bottom_up(false);
+>                 }
+> +#endif
+>  
+>                 if (!addr) {
+>                         addr = memblock_alloc_range_nid(size, alignment, base,
+
 -- 
-2.29.2
-
+Sincerely yours,
+Mike.
