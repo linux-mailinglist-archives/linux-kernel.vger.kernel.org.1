@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F31982E129C
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:27:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC5B32E129E
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:27:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728164AbgLWCWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:22:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51404 "EHLO mail.kernel.org"
+        id S1729783AbgLWCWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:22:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729677AbgLWCWh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:22:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CDB1A2312E;
-        Wed, 23 Dec 2020 02:22:20 +0000 (UTC)
+        id S1729762AbgLWCWk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:22:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A987F225AB;
+        Wed, 23 Dec 2020 02:22:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690141;
-        bh=X9kGNPC/uquO0NuoTTHGigG2uPGOTanUbGBEW4NI0RQ=;
+        s=k20201202; t=1608690145;
+        bh=ZqsyhDJr975uH78eq9vlqfIjc4P44FyApTZEkqL50qQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XafFF0MZCVIKw94Jw8h06JqWUoKppNVwItAmNXPpFr1i0cHknoDZzXqhfZMss/LSj
-         H4JBwcluspG93oQKqV/dKjDrcjsgzhnpZmjCbLYBur71K5Os/YVJq1MPJE9aJcAg6k
-         TMdJL60iRQVzLALAWzgLEIRrL9ylPtqML/dEC7rgAp0LRElsPtNYRZkMM2nICWbKbt
-         3APjodKNvT57rnzoPHb6gUTc4R7npBil0kAT0h+xAVx+LMiPoxs3O6vMgChrUBfRO8
-         8jo0UqprxgYF10T+LgBex5JRcIyjKsJEjZOol3cL1OlW6IiSusYIhQbHZe+ZLXH6In
-         SNSabgTERRNpQ==
+        b=WsJERloCOO1sEcnC3KH3uUL1DqJTLCoTslLq6iZ0XN/CTCPQrRUlII5NV6bybneJp
+         zSveHGUUqwr0Ufk02PxN1hmKKc/9nwsbzyGKdK5Cuh7pT/c4jiasNCpJgN67Pry57C
+         LrCSXn4WdRYRagKPr0S2Ka59WY8BfGqNIm/fek0/1N+hoi0eb4n8CoqJ9bM4+5ZouT
+         exjh33OMIJLIu4ttHkJwaGRChRLkHTjpq1UPuLD+rn05zu80ChEXTi5oBly1MhWrF8
+         Efjy5x4YBW70+9TmH0cVV37rcK7XtjFYPcE471kYXuDR9zMQVQ7NX7d7hUcQbg+qe2
+         +ZBCYX8CtdZgQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Qinglang Miao <miaoqinglang@huawei.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Sasha Levin <sashal@kernel.org>, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH AUTOSEL 4.19 63/87] cpufreq: mediatek: add missing platform_driver_unregister() on error in mtk_cpufreq_driver_init
-Date:   Tue, 22 Dec 2020 21:20:39 -0500
-Message-Id: <20201223022103.2792705-63-sashal@kernel.org>
+Cc:     Zhang Xiaohui <ruc_zhangxiaohui@163.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 66/87] mwifiex: Fix possible buffer overflows in mwifiex_cmd_802_11_ad_hoc_start
+Date:   Tue, 22 Dec 2020 21:20:42 -0500
+Message-Id: <20201223022103.2792705-66-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223022103.2792705-1-sashal@kernel.org>
 References: <20201223022103.2792705-1-sashal@kernel.org>
@@ -44,33 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qinglang Miao <miaoqinglang@huawei.com>
+From: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
 
-[ Upstream commit 2f05c19d9ef4f5a42634f83bdb0db596ffc0dd30 ]
+[ Upstream commit 5c455c5ab332773464d02ba17015acdca198f03d ]
 
-Add the missing platform_driver_unregister() before return from
-mtk_cpufreq_driver_init in the error handling case when failed
-to register mtk-cpufreq platform device
+mwifiex_cmd_802_11_ad_hoc_start() calls memcpy() without checking
+the destination size may trigger a buffer overflower,
+which a local user could use to cause denial of service
+or the execution of arbitrary code.
+Fix it by putting the length check before calling memcpy().
 
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20201206084801.26479-1-ruc_zhangxiaohui@163.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpufreq/mediatek-cpufreq.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/wireless/marvell/mwifiex/join.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/cpufreq/mediatek-cpufreq.c b/drivers/cpufreq/mediatek-cpufreq.c
-index eb8920d398181..83c0c078d3048 100644
---- a/drivers/cpufreq/mediatek-cpufreq.c
-+++ b/drivers/cpufreq/mediatek-cpufreq.c
-@@ -586,6 +586,7 @@ static int __init mtk_cpufreq_driver_init(void)
- 	pdev = platform_device_register_simple("mtk-cpufreq", -1, NULL, 0);
- 	if (IS_ERR(pdev)) {
- 		pr_err("failed to register mtk-cpufreq platform device\n");
-+		platform_driver_unregister(&mtk_cpufreq_platdrv);
- 		return PTR_ERR(pdev);
- 	}
+diff --git a/drivers/net/wireless/marvell/mwifiex/join.c b/drivers/net/wireless/marvell/mwifiex/join.c
+index d87aeff70cefb..c2cb1e711c06e 100644
+--- a/drivers/net/wireless/marvell/mwifiex/join.c
++++ b/drivers/net/wireless/marvell/mwifiex/join.c
+@@ -877,6 +877,8 @@ mwifiex_cmd_802_11_ad_hoc_start(struct mwifiex_private *priv,
  
+ 	memset(adhoc_start->ssid, 0, IEEE80211_MAX_SSID_LEN);
+ 
++	if (req_ssid->ssid_len > IEEE80211_MAX_SSID_LEN)
++		req_ssid->ssid_len = IEEE80211_MAX_SSID_LEN;
+ 	memcpy(adhoc_start->ssid, req_ssid->ssid, req_ssid->ssid_len);
+ 
+ 	mwifiex_dbg(adapter, INFO, "info: ADHOC_S_CMD: SSID = %s\n",
 -- 
 2.27.0
 
