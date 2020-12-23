@@ -2,86 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E51362E1DBD
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 16:08:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 069F42E1DC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 16:12:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727890AbgLWPHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 10:07:46 -0500
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:23038 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727176AbgLWPHp (ORCPT
+        id S1726614AbgLWPLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 10:11:48 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:32639 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725267AbgLWPLr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 10:07:45 -0500
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 0BNF6Z1U031951;
-        Thu, 24 Dec 2020 00:06:36 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 0BNF6Z1U031951
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1608735996;
-        bh=rVleOCwdA5mNcHzx2fk9F0Qc+X+VP6kaTvPtwieTX9o=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GUb3J/lvEcnx5jM74AWQpKMYWQID2N+iJGg4E5mV5Qs3XN15V/maSlCtMhcDJVgCY
-         SKWmVkvnHTaS4kozn/ZOdREtjK8O5SlNboQPHKHNrpVDJuNbSzYcgDKCa7WdyffEjw
-         yqSDlqOpgQWX/9VRR+cd0DWNqD2MWRV1+fiZ0cGcOkBsf6YvgnBwSU6fhNWL91U/0x
-         qLq9jStlDtLvuk7L3okDItHbIAu/0lutVS9Rz3vYe0aIexqN2g0bvzP2Xoc2KQ5K/g
-         TtHg2TtcT3wuWUaTUy/zzoaqQoRastd3o0ofL6VlzSWacUzp0WW3zRV1GtPu2uMC+D
-         Tzk/r89oOnAkQ==
-X-Nifty-SrcIP: [209.85.210.177]
-Received: by mail-pf1-f177.google.com with SMTP id c79so10530484pfc.2;
-        Wed, 23 Dec 2020 07:06:36 -0800 (PST)
-X-Gm-Message-State: AOAM530KPAfftiW3aSQWHHGihF+ZBo4B3Lz7G003/71MPE/ithg7Pged
-        6echfWeCUBh25ppC6mEZCGNkXfUnPlJdmjB3TJE=
-X-Google-Smtp-Source: ABdhPJyG0PVPLrfWb+gE/h6hG28LKhOLIsv7LZcm00nbzrKSKvxq5R5+PcMkkB4imNBKyhEkWxpIqQw8LcNZAoYstIg=
-X-Received: by 2002:a63:ff09:: with SMTP id k9mr6019331pgi.175.1608735995368;
- Wed, 23 Dec 2020 07:06:35 -0800 (PST)
+        Wed, 23 Dec 2020 10:11:47 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1608736287; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=0aAZ/bMuIrvzWM9gWlmih4RGaEX1HT300DY+Q/rbUMw=;
+ b=Cs1W0vOaOd3Igb2WuyBsr4/k+bk3Vb8KIvpRRzQVaJIoprWgzzIz7RiigLAd8cU3hjMaixwA
+ LCzvOehqC6luX4V5Sn7hl63UMRTDObE4xUpjVsjxZEGyFnLLtMrkJjFbkBZGogXgY7wCXjPr
+ BAWeAPcT3xvhUXIvl+NfsGiDbF4=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 5fe35e02b00c0d7ad475ea3f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 23 Dec 2020 15:10:58
+ GMT
+Sender: isaacm=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7046EC43461; Wed, 23 Dec 2020 15:10:57 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: isaacm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4E4CBC433C6;
+        Wed, 23 Dec 2020 15:10:56 +0000 (UTC)
 MIME-Version: 1.0
-References: <20201219170805.7151-1-rdunlap@infradead.org>
-In-Reply-To: <20201219170805.7151-1-rdunlap@infradead.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 24 Dec 2020 00:05:58 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARBo-Kww4PQmZseoYddWiFFSbZeNkaoOTik9bFjMM__-Q@mail.gmail.com>
-Message-ID: <CAK7LNARBo-Kww4PQmZseoYddWiFFSbZeNkaoOTik9bFjMM__-Q@mail.gmail.com>
-Subject: Re: [PATCH v2] kconfig: config script: add a little user help
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Wed, 23 Dec 2020 07:10:56 -0800
+From:   isaacm@codeaurora.org
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, pratikp@codeaurora.org,
+        joro@8bytes.org, kernel-team@android.com, will@kernel.org,
+        pdaly@codeaurora.org
+Subject: Re: [PATCH v2 3/7] iommu/arm-smmu: Add dependency on io-pgtable
+ format modules
+In-Reply-To: <b86f5972-2e9c-20bd-eee3-ee3ea53d5fe6@arm.com>
+References: <1608597876-32367-1-git-send-email-isaacm@codeaurora.org>
+ <1608597876-32367-4-git-send-email-isaacm@codeaurora.org>
+ <3b0c191d-3fd0-73db-c1e3-4a80aa7953d7@arm.com>
+ <e47f14b81d90772346ef28c9a7fd3365@codeaurora.org>
+ <b86f5972-2e9c-20bd-eee3-ee3ea53d5fe6@arm.com>
+Message-ID: <d2af5f0b1543ad374bc419507455a3cf@codeaurora.org>
+X-Sender: isaacm@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 20, 2020 at 2:08 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> Give the user a clue about the problem along with the 35 lines of
-> usage/help text.
->
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Andi Kleen <ak@linux.intel.com>
-> Cc: Masahiro Yamada <masahiroy@kernel.org>
-> Cc: linux-kbuild@vger.kernel.org
-> ---
-> v2: spell out "command" & send to STDERR; (Yamada-san)
+On 2020-12-23 05:05, Robin Murphy wrote:
+> On 2020-12-22 19:49, isaacm@codeaurora.org wrote:
+>> On 2020-12-22 11:27, Robin Murphy wrote:
+>>> On 2020-12-22 00:44, Isaac J. Manjarres wrote:
+>>>> The SMMU driver depends on the availability of the ARM LPAE and
+>>>> ARM V7S io-pgtable format code to work properly. In preparation
+>>> 
+>>> Nit: we don't really depend on v7s - we *can* use it if it's
+>>> available, address constraints are suitable, and the SMMU
+>>> implementation actually supports it (many don't), but we can still
+>>> quite happily not use it even so. LPAE is mandatory in the
+>>> architecture so that's our only hard requirement, embodied in the
+>>> kconfig select.
+>>> 
+>>> This does mean there may technically still be a corner case involving
+>>> ARM_SMMU=y and IO_PGTABLE_ARM_V7S=m, but at worst it's now a runtime
+>>> failure rather than a build error, so unless and until anyone
+>>> demonstrates that it actually matters I don't feel particularly
+>>> inclined to give it much thought.
+>>> 
+>>> Robin.
+>>> 
+>> Okay, I'll fix up the commit message, as well as the code, so that it
+>> only depends on io-pgtable-arm.
+> 
+> Well, IIUC it would make sense to keep the softdep for when the v7s
+> module *is* present; I just wanted to clarify that it's more of a
+> nice-to-have rather than a necessity.
+> 
+> Robin.
+> 
+Understood, I will keep it there and reword the commit msg. I just tried 
+it out in an environment
+where the io-pgtable-arm-v7s module isn't present, and I didn't see any
+warnings or error messages, and the SMMU driver module was loaded 
+properly,
+so yes, it's good to have it.
 
-Applied to linux-kbuild. Thanks.
-
-
->  scripts/config |    1 +
->  1 file changed, 1 insertion(+)
->
-> --- linux-next-20201218.orig/scripts/config
-> +++ linux-next-20201218/scripts/config
-> @@ -223,6 +223,7 @@ while [ "$1" != "" ] ; do
->                 ;;
->
->         *)
-> +               echo "bad command: $CMD" >&2
->                 usage
->                 ;;
->         esac
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+Thanks,
+Isaac
+>> Thanks,
+>> Isaac
+>>>> for having the io-pgtable formats as modules, add a "pre"
+>>>> dependency with MODULE_SOFTDEP() to ensure that the io-pgtable
+>>>> format modules are loaded before loading the ARM SMMU driver module.
+>>>> 
+>>>> Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
+>>>> ---
+>>>>   drivers/iommu/arm/arm-smmu/arm-smmu.c | 1 +
+>>>>   1 file changed, 1 insertion(+)
+>>>> 
+>>>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c 
+>>>> b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>>>> index d8c6bfd..a72649f 100644
+>>>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>>>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>>>> @@ -2351,3 +2351,4 @@ MODULE_DESCRIPTION("IOMMU API for ARM 
+>>>> architected SMMU implementations");
+>>>>   MODULE_AUTHOR("Will Deacon <will@kernel.org>");
+>>>>   MODULE_ALIAS("platform:arm-smmu");
+>>>>   MODULE_LICENSE("GPL v2");
+>>>> +MODULE_SOFTDEP("pre: io-pgtable-arm io-pgtable-arm-v7s");
+>>>> 
+>>> 
+>>> _______________________________________________
+>>> linux-arm-kernel mailing list
+>>> linux-arm-kernel@lists.infradead.org
+>>> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
