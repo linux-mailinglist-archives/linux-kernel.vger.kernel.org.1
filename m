@@ -2,31 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 322BE2E1CFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 15:11:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B82ED2E1CFC
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 15:11:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728767AbgLWOLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 09:11:00 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9637 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728449AbgLWOLA (ORCPT
+        id S1728792AbgLWOLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 09:11:01 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:9912 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728650AbgLWOLA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 23 Dec 2020 09:11:00 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4D1FSj52hsz15hr7;
-        Wed, 23 Dec 2020 22:09:25 +0800 (CST)
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4D1FSs6nd4z7K9P;
+        Wed, 23 Dec 2020 22:09:33 +0800 (CST)
 Received: from ubuntu.network (10.175.138.68) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 23 Dec 2020 22:09:58 +0800
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 23 Dec 2020 22:10:08 +0800
 From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <lee.jones@linaro.org>, <daniel.thompson@linaro.org>,
-        <jingoohan1@gmail.com>, <b.zolnierkie@samsung.com>,
-        <dri-devel@lists.freedesktop.org>, <linux-fbdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
+To:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
 CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] video: backlight: use DEFINE_MUTEX (and mutex_init() had been too late)
-Date:   Wed, 23 Dec 2020 22:10:35 +0800
-Message-ID: <20201223141035.32178-1-zhengyongjun3@huawei.com>
+Subject: [PATCH -next] usb: misc: use DEFINE_MUTEX (and mutex_init() had been too late)
+Date:   Wed, 23 Dec 2020 22:10:44 +0800
+Message-ID: <20201223141044.32235-1-zhengyongjun3@huawei.com>
 X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -39,30 +36,30 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- drivers/video/backlight/backlight.c | 3 +--
+ drivers/usb/misc/ftdi-elan.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/video/backlight/backlight.c b/drivers/video/backlight/backlight.c
-index 537fe1b376ad..d7a09c422547 100644
---- a/drivers/video/backlight/backlight.c
-+++ b/drivers/video/backlight/backlight.c
-@@ -64,7 +64,7 @@
+diff --git a/drivers/usb/misc/ftdi-elan.c b/drivers/usb/misc/ftdi-elan.c
+index 8a3d9c0c8d8b..bfb538f2cac1 100644
+--- a/drivers/usb/misc/ftdi-elan.c
++++ b/drivers/usb/misc/ftdi-elan.c
+@@ -61,7 +61,7 @@ extern struct platform_driver u132_platform_driver;
+  * ftdi_module_lock exists to protect access to global variables
+  *
   */
- 
- static struct list_head backlight_dev_list;
--static struct mutex backlight_dev_list_mutex;
-+static DEFINE_MUTEX(backlight_dev_list_mutex);
- static struct blocking_notifier_head backlight_notifier;
- 
- static const char *const backlight_types[] = {
-@@ -757,7 +757,6 @@ static int __init backlight_class_init(void)
- 	backlight_class->dev_groups = bl_device_groups;
- 	backlight_class->pm = &backlight_class_dev_pm_ops;
- 	INIT_LIST_HEAD(&backlight_dev_list);
--	mutex_init(&backlight_dev_list_mutex);
- 	BLOCKING_INIT_NOTIFIER_HEAD(&backlight_notifier);
- 
- 	return 0;
+-static struct mutex ftdi_module_lock;
++static DEFINE_MUTEX(ftdi_module_lock);
+ static int ftdi_instances = 0;
+ static struct list_head ftdi_static_list;
+ /*
+@@ -2761,7 +2761,6 @@ static int __init ftdi_elan_init(void)
+ {
+ 	int result;
+ 	pr_info("driver %s\n", ftdi_elan_driver.name);
+-	mutex_init(&ftdi_module_lock);
+ 	INIT_LIST_HEAD(&ftdi_static_list);
+ 	result = usb_register(&ftdi_elan_driver);
+ 	if (result) {
 -- 
 2.22.0
 
