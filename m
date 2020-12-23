@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02EC32E13A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:37:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D81C2E1348
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:36:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730585AbgLWCcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:32:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54022 "EHLO mail.kernel.org"
+        id S1729573AbgLWCZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:25:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728868AbgLWCZQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:25:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 56D922333D;
-        Wed, 23 Dec 2020 02:25:00 +0000 (UTC)
+        id S1729535AbgLWCZS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:25:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7078D23333;
+        Wed, 23 Dec 2020 02:25:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690301;
-        bh=q486Ccf37EISGzSH2d4Tt5pJpsZ9Y1IrmDAlGJlUEaA=;
+        s=k20201202; t=1608690302;
+        bh=tRYjj1tnATnvy2ObahLEndF8reBD0F02HwaULfa6ITU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=atIL0AdnFa/2z8ewEG0zPBwZGVqtGPC6YJYpMPDAvVXTU/Pb5PGaAbDApaC/fLeno
-         H3CXbg2eofBEWS9ILnpZI9d/RB4NNeDbwf5PRaPQkbBbbiI5YRTJoa4diLh5yE6hw9
-         mRihWJqbCEEz7YOVUwTXGu0ZenG2PhSxZbDby+6L6CQUBNxiVljWDjzrO6NqkyS6I6
-         zYv5ysf2efgnNwa1bBeE7rJRtrxziduGDc5qVCbCtGioaNdmwPfM80u4i+NC9bEVcD
-         oWgkxSpcMPukiz6Dhhw/pb960/BC6hfMJ1T1d/cx1VaPpn6rbEaDK82Viy/5Urunuy
-         BX6kTyzgjHppg==
+        b=HkPra7B5v2utUino4gPdmx14PHSGy3FHse56daOBzP+thPC1Ivx2hwvBG9CUDtFJ+
+         AeOCnnoc0nPA471GfRpOTF+sm7Lt/2F2hN7jiR1nmUrQuzOT7G70OcqqKzC9GkgZdo
+         H+6/y1iVtd9wX3kZIR4648SI11Le9MlqVZVNsbQhOUdrmWIAE3uQkmWT+6qAaoFkis
+         pq0lwBEeQBIKz4YaswhQHwsNJfT8NDWLNlpp23N64UNCwVICqlMl47Ph26iRiriD04
+         DOVxFvav4jf36J+2ip7zKCOV6KS3Zuq2Pdmb837RagVtoV5RJrzs31ylys2T7ona0o
+         tPbTRnTAkGRWw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jinyang He <hejinyang@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 36/48] MIPS: KASLR: Avoid endless loop in sync_icache if synci_step is zero
-Date:   Tue, 22 Dec 2020 21:24:04 -0500
-Message-Id: <20201223022417.2794032-36-sashal@kernel.org>
+Cc:     Zhang Xiaohui <ruc_zhangxiaohui@163.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.9 37/48] mwifiex: Fix possible buffer overflows in mwifiex_cmd_802_11_ad_hoc_start
+Date:   Tue, 22 Dec 2020 21:24:05 -0500
+Message-Id: <20201223022417.2794032-37-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223022417.2794032-1-sashal@kernel.org>
 References: <20201223022417.2794032-1-sashal@kernel.org>
@@ -42,42 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jinyang He <hejinyang@loongson.cn>
+From: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
 
-[ Upstream commit c0aac3a51cb6364bed367ee3e1a96ed414f386b4 ]
+[ Upstream commit 5c455c5ab332773464d02ba17015acdca198f03d ]
 
-Most platforms do not need to do synci instruction operations when
-synci_step is 0. But for example, the synci implementation on Loongson64
-platform has some changes. On the one hand, it ensures that the memory
-access instructions have been completed. On the other hand, it guarantees
-that all prefetch instructions need to be fetched again. And its address
-information is useless. Thus, only one synci operation is required when
-synci_step is 0 on Loongson64 platform. I guess that some other platforms
-have similar implementations on synci, so add judgment conditions in
-`while` to ensure that at least all platforms perform synci operations
-once. For those platforms that do not need synci, they just do one more
-operation similar to nop.
+mwifiex_cmd_802_11_ad_hoc_start() calls memcpy() without checking
+the destination size may trigger a buffer overflower,
+which a local user could use to cause denial of service
+or the execution of arbitrary code.
+Fix it by putting the length check before calling memcpy().
 
-Signed-off-by: Jinyang He <hejinyang@loongson.cn>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20201206084801.26479-1-ruc_zhangxiaohui@163.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/kernel/relocate.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/marvell/mwifiex/join.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/mips/kernel/relocate.c b/arch/mips/kernel/relocate.c
-index 1958910b75c07..f759aae1e1f3d 100644
---- a/arch/mips/kernel/relocate.c
-+++ b/arch/mips/kernel/relocate.c
-@@ -52,7 +52,7 @@ static void __init sync_icache(void *kbase, unsigned long kernel_length)
- 			: "r" (kbase));
+diff --git a/drivers/net/wireless/marvell/mwifiex/join.c b/drivers/net/wireless/marvell/mwifiex/join.c
+index b89596c18b41a..313b5d9fd08ed 100644
+--- a/drivers/net/wireless/marvell/mwifiex/join.c
++++ b/drivers/net/wireless/marvell/mwifiex/join.c
+@@ -877,6 +877,8 @@ mwifiex_cmd_802_11_ad_hoc_start(struct mwifiex_private *priv,
  
- 		kbase += step;
--	} while (kbase < kend);
-+	} while (step && kbase < kend);
+ 	memset(adhoc_start->ssid, 0, IEEE80211_MAX_SSID_LEN);
  
- 	/* Completion barrier */
- 	__sync();
++	if (req_ssid->ssid_len > IEEE80211_MAX_SSID_LEN)
++		req_ssid->ssid_len = IEEE80211_MAX_SSID_LEN;
+ 	memcpy(adhoc_start->ssid, req_ssid->ssid, req_ssid->ssid_len);
+ 
+ 	mwifiex_dbg(adapter, INFO, "info: ADHOC_S_CMD: SSID = %s\n",
 -- 
 2.27.0
 
