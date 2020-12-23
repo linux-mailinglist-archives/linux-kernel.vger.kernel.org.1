@@ -2,110 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5D5E2E1F62
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 17:21:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1242E1F65
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 17:24:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727363AbgLWQTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 11:19:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56768 "EHLO mail.kernel.org"
+        id S1726221AbgLWQYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 11:24:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726247AbgLWQTm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 11:19:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D25A2222BB;
-        Wed, 23 Dec 2020 16:19:01 +0000 (UTC)
+        id S1725807AbgLWQYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 11:24:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6ED1E2229C;
+        Wed, 23 Dec 2020 16:23:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608740342;
-        bh=RhCqbYrptTdNjk/lDP4Bb4JHZUu7nVCpfKronRSYbGo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CkUqls+Xl8IAfZj1LPNUr40yVDRD8GjmG6+by017JywYFztlz/WoHfBV2vK+puH1t
-         7TpOpjF569OJ4d6ll+WIMXEnVNC+rxc53ZQpOLongfc8SM7d2l7I8daV5LK0jU/mei
-         CJ9ZHD5uIhCgbblYRQeqIN4obdKbMFezfaE9NdF0JTc0W+9mjWpHG4IHofv2E/Skyp
-         lGLgWvPpK6XQMR45JzkrsiMXGdNzOUcR9edBOhZ71GobuUTIrrXWLZ1rCrBJvyx/Jm
-         Rf28Um8NdAzNHwxtu+QnsJ4fK1VEswNymPOkGFXW+lAD3Fw0aMj3HHmKMxJBJcfq7M
-         K0/C/JgqR7g+A==
-Received: by pali.im (Postfix)
-        id 796FF7F0; Wed, 23 Dec 2020 17:18:59 +0100 (CET)
-From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To:     Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Chen <peter.chen@nxp.com>
-Cc:     Jun Li <jun.li@nxp.com>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] usb: host: xhci-plat: fix support for XHCI_SKIP_PHY_INIT quirk
-Date:   Wed, 23 Dec 2020 17:18:47 +0100
-Message-Id: <20201223161847.10811-1-pali@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201221150903.26630-1-pali@kernel.org>
-References: <20201221150903.26630-1-pali@kernel.org>
+        s=k20201202; t=1608740611;
+        bh=JGM+26aHL4PtP44Zg8xOYHbq6LRGGL7oFlrZL0Y3xx4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WiVzcUdXRW1Pd8E9I9Pip4Mr0xbK1ynGN7oZ+yJseqr+P3f6PM4AJtesIPRJfkaLZ
+         wj4TNCsvRVVJNyyyxHopbcughBpG72EX3K2tJdkcmOkAp+vTJlW61J9S8lcKvGAuK8
+         JiqqirlP4idJizlgQnkGXfJTumL3VpgU5wKM8zTGCdPkFJJuOl36AbL0uA5pfee6TB
+         Ymv05AGVfJ+CTbcD6/OGkXhB8CYNZWtE95Ge/p0clmZibJNaUX+Yb4eqgNTOdhOsvm
+         aTuPsG4uuHYQFkm/XDjrjCoIJdVLPyZXbq8Gzds/oPIgVkTyTKUWFanZ1CtbRJyqxx
+         HZ9us+z5DBO6A==
+Date:   Wed, 23 Dec 2020 16:23:26 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     Yu Zhao <yuzhao@google.com>, Peter Zijlstra <peterz@infradead.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+Message-ID: <20201223162325.GA22699@willie-the-truck>
+References: <20201221172711.GE6640@xz-x1>
+ <76B4F49B-ED61-47EA-9BE4-7F17A26B610D@gmail.com>
+ <X+D0hTZCrWS3P5Pi@google.com>
+ <CAHk-=wg_UBuo7ro1fpEGkMyFKA1+PxrE85f9J_AhUfr-nJPpLQ@mail.gmail.com>
+ <9E301C7C-882A-4E0F-8D6D-1170E792065A@gmail.com>
+ <CAHk-=wg-Y+svNy3CDkJjj0X_CJkSbpERLg64-Vqwq5u7SC4z0g@mail.gmail.com>
+ <X+ESkna2z3WjjniN@google.com>
+ <D4916F41-DE4A-42C6-8702-944382631A02@gmail.com>
+ <X+I7TcwMsiS1Bhy/@google.com>
+ <E36448EB-2888-42FE-A9F2-2DCF0508C138@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <E36448EB-2888-42FE-A9F2-2DCF0508C138@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently init_quirk callbacks for xhci platform drivers are called
-xhci_plat_setup() function which is called after chip reset completes.
-It happens in the middle of the usb_add_hcd() function.
+On Tue, Dec 22, 2020 at 11:20:21AM -0800, Nadav Amit wrote:
+> > On Dec 22, 2020, at 10:30 AM, Yu Zhao <yuzhao@google.com> wrote:
+> > 
+> > On Tue, Dec 22, 2020 at 04:40:32AM -0800, Nadav Amit wrote:
+> >>> On Dec 21, 2020, at 1:24 PM, Yu Zhao <yuzhao@google.com> wrote:
+> >>> 
+> >>> On Mon, Dec 21, 2020 at 12:26:22PM -0800, Linus Torvalds wrote:
+> >>>> On Mon, Dec 21, 2020 at 12:23 PM Nadav Amit <nadav.amit@gmail.com> wrote:
+> >>>>> Using mmap_write_lock() was my initial fix and there was a strong pushback
+> >>>>> on this approach due to its potential impact on performance.
+> >>>> 
+> >>>> From whom?
+> >>>> 
+> >>>> Somebody who doesn't understand that correctness is more important
+> >>>> than performance? And that userfaultfd is not the most important part
+> >>>> of the system?
+> >>>> 
+> >>>> The fact is, userfaultfd is CLEARLY BUGGY.
+> >>>> 
+> >>>>         Linus
+> >>> 
+> >>> Fair enough.
+> >>> 
+> >>> Nadav, for your patch (you might want to update the commit message).
+> >>> 
+> >>> Reviewed-by: Yu Zhao <yuzhao@google.com>
+> >>> 
+> >>> While we are all here, there is also clear_soft_dirty() that could
+> >>> use a similar fix…
+> >> 
+> >> Just an update as for why I have still not sent v2: I fixed
+> >> clear_soft_dirty(), created a reproducer, and the reproducer kept failing.
+> >> 
+> >> So after some debugging, it appears that clear_refs_write() does not flush
+> >> the TLB. It indeed calls tlb_finish_mmu() but since 0758cd830494
+> >> ("asm-generic/tlb: avoid potential double flush”), tlb_finish_mmu() does not
+> >> flush the TLB since there is clear_refs_write() does not call to
+> >> __tlb_adjust_range() (unless there are nested TLBs are pending).
+> > 
+> > Sorry Nadav, I assumed you knew this existing problem fixed by:
+> > https://patchwork.kernel.org/project/linux-mm/cover/20201210121110.10094-1-will@kernel.org/
+> > 
+> 
+> Thanks, Yu! For some reason I assumed it was already upstreamed and did not
+> look back (yet if I was cc’d on v2…)
 
-But XHCI_SKIP_PHY_INIT quirk is checked in the xhci_plat_probe() function
-prior calling usb_add_hcd() function. Therefore this XHCI_SKIP_PHY_INIT
-currently does nothing as prior xhci_plat_setup() it is not set.
+I'll repost in the new year, as it was a bit tight for the merge window.
+I've made a note to put you on cc.
 
-Quirk XHCI_SKIP_PHY_INIT is only setting hcd->skip_phy_initialization value
-which really needs to be set prior calling usb_add_hcd() as this function
-at its beginning skips PHY init if this member is set.
+> Yet, something still goes bad. Debugging.
 
-This patch fixes implementation of the XHCI_SKIP_PHY_INIT quirk by calling
-init_quirk callbacks (via xhci_priv_init_quirk()) prior checking if
-XHCI_SKIP_PHY_INIT is set. Also checking if either xhci->quirks or
-priv->quirks contains this XHCI_SKIP_PHY_INIT quirk.
+Did you figure this out? I tried to read the whole thread, but it's a bit
+of a rollercoaster.
 
-Signed-off-by: Pali Rohár <pali@kernel.org>
-
----
-Changes in v2:
-* Check also xhci->quirks as xhci_priv_init_quirk() callbacks are setting xhci->quirks
-* Tested with "usb: host: xhci: mvebu: make USB 3.0 PHY optional for Armada 3720" patch
-* Removed Fixes: line
----
- drivers/usb/host/xhci-plat.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
-index 4d34f6005381..0eab7cb5a767 100644
---- a/drivers/usb/host/xhci-plat.c
-+++ b/drivers/usb/host/xhci-plat.c
-@@ -89,13 +89,6 @@ static void xhci_plat_quirks(struct device *dev, struct xhci_hcd *xhci)
- /* called during probe() after chip reset completes */
- static int xhci_plat_setup(struct usb_hcd *hcd)
- {
--	int ret;
--
--
--	ret = xhci_priv_init_quirk(hcd);
--	if (ret)
--		return ret;
--
- 	return xhci_gen_setup(hcd, xhci_plat_quirks);
- }
- 
-@@ -330,7 +323,14 @@ static int xhci_plat_probe(struct platform_device *pdev)
- 
- 	hcd->tpl_support = of_usb_host_tpl_support(sysdev->of_node);
- 	xhci->shared_hcd->tpl_support = hcd->tpl_support;
--	if (priv && (priv->quirks & XHCI_SKIP_PHY_INIT))
-+
-+	if (priv) {
-+		ret = xhci_priv_init_quirk(hcd);
-+		if (ret)
-+			goto disable_usb_phy;
-+	}
-+
-+	if ((xhci->quirks & XHCI_SKIP_PHY_INIT) || (priv && (priv->quirks & XHCI_SKIP_PHY_INIT)))
- 		hcd->skip_phy_initialization = 1;
- 
- 	if (priv && (priv->quirks & XHCI_SG_TRB_CACHE_SIZE_QUIRK))
--- 
-2.20.1
-
+Will
