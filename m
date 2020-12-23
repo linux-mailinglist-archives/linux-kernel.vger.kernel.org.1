@@ -2,178 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 228C72E1FC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 18:14:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 319B22E1FCC
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 18:18:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726475AbgLWRN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 12:13:59 -0500
-Received: from mga18.intel.com ([134.134.136.126]:24910 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725807AbgLWRN6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 12:13:58 -0500
-IronPort-SDR: HdGn+CY8CVKo60kZFnvst30T4ylzBFQDQGUmlGB+7j42wd1Y7ilw+uEtWd43OzEUE8ykRwNmPp
- bqOZEwoTl09Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9844"; a="163766154"
-X-IronPort-AV: E=Sophos;i="5.78,441,1599548400"; 
-   d="scan'208";a="163766154"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Dec 2020 09:13:09 -0800
-IronPort-SDR: ZRDYyDgII9EV81cbu9GINTG/C+CEGbePUs2x/sqVgpJv3PLp/5cL5qe48KmzkvWK+9b/xnpHTR
- 1VfY1CzlJBvA==
-X-IronPort-AV: E=Sophos;i="5.78,441,1599548400"; 
-   d="scan'208";a="374062808"
-Received: from odonov3x-mobl.ger.corp.intel.com (HELO localhost) ([10.213.250.144])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Dec 2020 09:12:58 -0800
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Lyude Paul <lyude@redhat.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Dave Airlie <airlied@gmail.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Cc:     thaytan@noraisin.net, Vasily Khoruzhick <anarsoul@gmail.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Juha-Pekka Heikkila <juhapekka.heikkila@gmail.com>,
-        Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 8/9] drm/i915/dp: Allow forcing specific interfaces through enable_dpcd_backlight
-In-Reply-To: <20201204223603.249878-9-lyude@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20201204223603.249878-1-lyude@redhat.com> <20201204223603.249878-9-lyude@redhat.com>
-Date:   Wed, 23 Dec 2020 19:12:53 +0200
-Message-ID: <87tuscmooa.fsf@intel.com>
+        id S1727041AbgLWRRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 12:17:12 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:61352 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726012AbgLWRRL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 12:17:11 -0500
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BNH2xUr001091;
+        Wed, 23 Dec 2020 12:16:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=wZ/er/0/M4r2p33K9bkRZvIZvNiN0ENPgw3pdqo3T7M=;
+ b=d0gFgAIt4lkcjAsSpwpgmlo0lPixzenLxbMEU/JwQnUsVfab+59wPJ/2Ux7EbEXgfvzi
+ eSwCfb3g62RoBBHe4DFlPNnhcsrgGyZ0+5yRxJNqUROryaD4VWVEQy3W6Cebb6IocqTW
+ SLKpItbIBNI+SlB2oocf0EUif/Zdw46GwHFIiVTASsyxTy/g5+3bWnBe39lSUzqYsW24
+ YLDkQIE3P9qDnNLWOqiaLymqYD2AS+VGUxH/qUUMrdZU+eOt4XG979L1u35GuWLJT9K4
+ Dzm+DyQVtshlYXljGL0nkemud/2yQI1F1rtGvP+F1avf8+U37EDIhsIGjFYhb+RBWFQ4 0Q== 
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35m7xxbgph-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Dec 2020 12:16:24 -0500
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BNHDMjU005772;
+        Wed, 23 Dec 2020 17:16:22 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma01fra.de.ibm.com with ESMTP id 35h958a5ku-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Dec 2020 17:16:22 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BNHGIPT18416124
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 23 Dec 2020 17:16:18 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5B979AE051;
+        Wed, 23 Dec 2020 17:16:19 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F3399AE045;
+        Wed, 23 Dec 2020 17:16:18 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.59.200])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 23 Dec 2020 17:16:18 +0000 (GMT)
+Subject: Re: [PATCH] zlib: move EXPORT_SYMBOL() and MODULE_LICENSE() out of
+ dfltcc_syms.c
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     Zaslonko Mikhail <zaslonko@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Acked-by : Ilya Leoshkevich" <iii@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+References: <20201219052530.28461-1-rdunlap@infradead.org>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <ec3e254f-c84f-33e3-138a-980d7eea796b@de.ibm.com>
+Date:   Wed, 23 Dec 2020 18:16:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20201219052530.28461-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-23_07:2020-12-23,2020-12-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
+ suspectscore=0 adultscore=0 mlxlogscore=999 mlxscore=0 lowpriorityscore=0
+ clxscore=1015 priorityscore=1501 bulkscore=0 spamscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012230125
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 04 Dec 2020, Lyude Paul <lyude@redhat.com> wrote:
-> Since we now support controlling panel backlights through DPCD using
-> both the standard VESA interface, and Intel's proprietary HDR backlight
-> interface, we should allow the user to be able to explicitly choose
-> between one or the other in the event that we're wrong about panels
-> reliably reporting support for the Intel HDR interface.
->
-> So, this commit adds support for this by introducing two new
-> enable_dpcd_backlight options: 2 which forces i915 to only probe for the
-> VESA interface, and 3 which forces i915 to only probe for the Intel
-> backlight interface (might be useful if we find panels in the wild that
-> report the VESA interface in their VBT, but actually only support the
-> Intel backlight interface).
->
-> v3:
-> * Rebase
->
-> Signed-off-by: Lyude Paul <lyude@redhat.com>
-> Cc: thaytan@noraisin.net
-> Cc: Vasily Khoruzhick <anarsoul@gmail.com>
+
+
+On 19.12.20 06:25, Randy Dunlap wrote:
+> In 11fb479ff5d9 ("zlib: export S390 symbols for zlib modules"), I added
+> EXPORT_SYMBOL()s to dfltcc_inflate.c but then Mikhail said that these
+> should probably be in dfltcc_syms.c with the other EXPORT_SYMBOL()s.
+> 
+> However, that is contrary to the current kernel style, which places
+> EXPORT_SYMBOL() immediately after the function that it applies to,
+> so move all EXPORT_SYMBOL()s to their respective function locations
+> and drop the dfltcc_syms.c file. Also move MODULE_LICENSE() from the
+> deleted file to dfltcc.c.
+> 
+> Fixes: 11fb479ff5d9 ("zlib: export S390 symbols for zlib modules")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Zaslonko Mikhail <zaslonko@linux.ibm.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> Cc: Heiko Carstens <hca@linux.ibm.com>
+> Cc: Vasily Gorbik <gor@linux.ibm.com>
+> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+
+Makes sense
+I see that Andrew has already picked this up, in case this helps
+
+Acked-by: Christian Borntraeger <borntraeger@de.ibm.com>
 > ---
->  .../drm/i915/display/intel_dp_aux_backlight.c | 45 +++++++++++++++++--
->  drivers/gpu/drm/i915/i915_params.c            |  2 +-
->  2 files changed, 43 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> index 9a3ff3ffc158..eef14ab6bddc 100644
-> --- a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> +++ b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> @@ -609,15 +609,54 @@ static const struct intel_panel_bl_funcs intel_dp_vesa_bl_funcs = {
->  	.get = intel_dp_aux_vesa_get_backlight,
->  };
+>  lib/zlib_dfltcc/dfltcc.c         |    6 +++++-
+>  lib/zlib_dfltcc/dfltcc_deflate.c |    3 +++
+>  lib/zlib_dfltcc/dfltcc_syms.c    |   17 -----------------
+>  3 files changed, 8 insertions(+), 18 deletions(-)
+> 
+> --- linux-next-20201218.orig/lib/zlib_dfltcc/dfltcc.c
+> +++ linux-next-20201218/lib/zlib_dfltcc/dfltcc.c
+> @@ -1,7 +1,8 @@
+>  // SPDX-License-Identifier: Zlib
+>  /* dfltcc.c - SystemZ DEFLATE CONVERSION CALL support. */
 >  
-> +enum intel_dp_aux_backlight_modparam {
-> +	INTEL_DP_AUX_BACKLIGHT_AUTO = -1,
-> +	INTEL_DP_AUX_BACKLIGHT_OFF = 0,
-> +	INTEL_DP_AUX_BACKLIGHT_ON = 1,
-> +	INTEL_DP_AUX_BACKLIGHT_FORCE_VESA = 2,
-> +	INTEL_DP_AUX_BACKLIGHT_FORCE_INTEL = 3,
-> +};
+> -#include <linux/zutil.h>
+> +#include <linux/export.h>
+> +#include <linux/module.h>
+>  #include "dfltcc_util.h"
+>  #include "dfltcc.h"
+>  
+> @@ -53,3 +54,6 @@ void dfltcc_reset(
+>      dfltcc_state->dht_threshold = DFLTCC_DHT_MIN_SAMPLE_SIZE;
+>      dfltcc_state->param.ribm = DFLTCC_RIBM;
+>  }
+> +EXPORT_SYMBOL(dfltcc_reset);
 > +
->  int intel_dp_aux_init_backlight_funcs(struct intel_connector *connector)
->  {
->  	struct drm_device *dev = connector->base.dev;
->  	struct intel_panel *panel = &connector->panel;
->  	struct intel_dp *intel_dp = enc_to_intel_dp(connector->encoder);
->  	struct drm_i915_private *i915 = dp_to_i915(intel_dp);
-> +	bool try_intel_interface = false, try_vesa_interface = false;
+> +MODULE_LICENSE("GPL");
+> --- linux-next-20201218.orig/lib/zlib_dfltcc/dfltcc_deflate.c
+> +++ linux-next-20201218/lib/zlib_dfltcc/dfltcc_deflate.c
+> @@ -4,6 +4,7 @@
+>  #include "dfltcc_util.h"
+>  #include "dfltcc.h"
+>  #include <asm/setup.h>
+> +#include <linux/export.h>
+>  #include <linux/zutil.h>
 >  
-> -	if (i915->params.enable_dpcd_backlight == 0)
-> +	/* Check the VBT and user's module parameters to figure out which
-> +	 * interfaces to probe
-> +	 */
-> +	switch (i915->params.enable_dpcd_backlight) {
-> +	case INTEL_DP_AUX_BACKLIGHT_OFF:
->  		return -ENODEV;
-> +	case INTEL_DP_AUX_BACKLIGHT_AUTO:
-> +		switch (i915->vbt.backlight.type) {
-> +		case INTEL_BACKLIGHT_VESA_EDP_AUX_INTERFACE:
-> +			try_vesa_interface = true;
-> +			break;
-> +		case INTEL_BACKLIGHT_DISPLAY_DDI:
-> +			try_intel_interface = true;
-
-I take it this is what the machines report? *rolls eyes*.
-
-> +			try_vesa_interface = true;
-> +			break;
-> +		default:
-> +			return -ENODEV;
-> +		}
-> +		break;
-> +	case INTEL_DP_AUX_BACKLIGHT_ON:
-> +		if (i915->vbt.backlight.type != INTEL_BACKLIGHT_VESA_EDP_AUX_INTERFACE)
-> +			try_intel_interface = true;
-
-This could use an explanation - why not try the intel interface in this
-case?
-
-Anyway, good enough,
-
-Reviewed-by: Jani Nikula <jani.nikula@intel.com>
-
-> +
-> +		try_vesa_interface = true;
-> +		break;
-> +	case INTEL_DP_AUX_BACKLIGHT_FORCE_VESA:
-> +		try_vesa_interface = true;
-> +		break;
-> +	case INTEL_DP_AUX_BACKLIGHT_FORCE_INTEL:
-> +		try_intel_interface = true;
-> +		break;
-> +	}
+>  /*
+> @@ -34,6 +35,7 @@ int dfltcc_can_deflate(
 >  
->  	/*
->  	 * A lot of eDP panels in the wild will report supporting both the
-> @@ -626,13 +665,13 @@ int intel_dp_aux_init_backlight_funcs(struct intel_connector *connector)
->  	 * and will only work with the Intel interface. So, always probe for
->  	 * that first.
->  	 */
-> -	if (intel_dp_aux_supports_hdr_backlight(connector)) {
-> +	if (try_intel_interface && intel_dp_aux_supports_hdr_backlight(connector)) {
->  		drm_dbg(dev, "Using Intel proprietary eDP backlight controls\n");
->  		panel->backlight.funcs = &intel_dp_hdr_bl_funcs;
->  		return 0;
->  	}
+>      return 1;
+>  }
+> +EXPORT_SYMBOL(dfltcc_can_deflate);
 >  
-> -	if (intel_dp_aux_supports_vesa_backlight(connector)) {
-> +	if (try_vesa_interface && intel_dp_aux_supports_vesa_backlight(connector)) {
->  		drm_dbg(dev, "Using VESA eDP backlight controls\n");
->  		panel->backlight.funcs = &intel_dp_vesa_bl_funcs;
->  		return 0;
-> diff --git a/drivers/gpu/drm/i915/i915_params.c b/drivers/gpu/drm/i915/i915_params.c
-> index 7f139ea4a90b..6939634e56ed 100644
-> --- a/drivers/gpu/drm/i915/i915_params.c
-> +++ b/drivers/gpu/drm/i915/i915_params.c
-> @@ -185,7 +185,7 @@ i915_param_named_unsafe(inject_probe_failure, uint, 0400,
->  
->  i915_param_named(enable_dpcd_backlight, int, 0400,
->  	"Enable support for DPCD backlight control"
-> -	"(-1=use per-VBT LFP backlight type setting [default], 0=disabled, 1=enabled)");
-> +	"(-1=use per-VBT LFP backlight type setting [default], 0=disabled, 1=enable, 2=force VESA interface, 3=force Intel interface)");
->  
->  #if IS_ENABLED(CONFIG_DRM_I915_GVT)
->  i915_param_named(enable_gvt, bool, 0400,
-
--- 
-Jani Nikula, Intel Open Source Graphics Center
+>  static void dfltcc_gdht(
+>      z_streamp strm
+> @@ -277,3 +279,4 @@ again:
+>          goto again; /* deflate() must use all input or all output */
+>      return 1;
+>  }
+> +EXPORT_SYMBOL(dfltcc_deflate);
+> --- linux-next-20201218.orig/lib/zlib_dfltcc/dfltcc_syms.c
+> +++ /dev/null
+> @@ -1,17 +0,0 @@
+> -// SPDX-License-Identifier: GPL-2.0-only
+> -/*
+> - * linux/lib/zlib_dfltcc/dfltcc_syms.c
+> - *
+> - * Exported symbols for the s390 zlib dfltcc support.
+> - *
+> - */
+> -
+> -#include <linux/init.h>
+> -#include <linux/module.h>
+> -#include <linux/zlib.h>
+> -#include "dfltcc.h"
+> -
+> -EXPORT_SYMBOL(dfltcc_can_deflate);
+> -EXPORT_SYMBOL(dfltcc_deflate);
+> -EXPORT_SYMBOL(dfltcc_reset);
+> -MODULE_LICENSE("GPL");
+> 
