@@ -2,202 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77BC32E1AB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 11:05:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 803442E1AC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 11:09:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728410AbgLWKFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 05:05:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50856 "EHLO
+        id S1728560AbgLWKHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 05:07:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726022AbgLWKFL (ORCPT
+        with ESMTP id S1728214AbgLWKHQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 05:05:11 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FAC0C0613D3;
-        Wed, 23 Dec 2020 02:04:31 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id n3so879099pjm.1;
-        Wed, 23 Dec 2020 02:04:31 -0800 (PST)
+        Wed, 23 Dec 2020 05:07:16 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6C67C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 02:06:35 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id i18so14651981ioa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 02:06:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=d5XHgKNmGxjNiDE5b2KtQ27P+6FboVI+ofwBHe/X6fw=;
-        b=C7EU8nzzmc83zR6nl8GTUmbIR4hYm+QIReH0eCNJtTacD/CPyEnb9xZEFzLAMA6lX1
-         TpNp/9Fv/882R1br8UjpWXqL/sHqyXuMEeQh8LE6fB+GOKqs/mPcJ5ilTUSnkUT/yMyv
-         vEWAVspbSxUWcZhcdN2GKHRqSYHjF+QZ4mITkWV4GKPbu6HOPwAYuYP2jZT1upLbEDwA
-         EtM+QGS9N+g/kdZbsHb7ultxZ9TIfKOM5q7GHE2eeHggfaGL+OS/WmqE/jd/N7NmBmMt
-         Ryrk065EHvlYdRwsd0bE2XkNjUkhiT9eT2kH7JH1rxrxCxdgmOAo8OFGo3vjo0E9TkK1
-         kcZg==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TsZfeXRM1ReVd7eBjQcIMfaYnF6JpJXqu5pz2p0wGEQ=;
+        b=CNmoLodAEpv7gOwb8VpGyiCO30xoo2vCseCl7Eji3i9ZVItKzd5J+ZHmP4Q90yW9SF
+         v9/P4uSVz7jVdIkY/Q7aJORA3LOHdltQkbnFMryoxugSt3lIs3VvpBheK+VoEHaroXxq
+         GrILcIEPhED0FYieTZbeY6px2c/7Y+7nHdeWGGqdoSpqu0F+ojsemeGhHiIY8iO5KauO
+         vYeFCrHb+nlpRHSDYs+V3QZIxHwep2HohggzXgELErQKjWM2g8p/N9RjYIY+sOMCzknf
+         W/tq16osSog5ItcqmtldMo0KTddd4OEAdZzG2SgrPWKfdkqAfUfij21WlwmTwR4h8ro5
+         yNXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d5XHgKNmGxjNiDE5b2KtQ27P+6FboVI+ofwBHe/X6fw=;
-        b=OLfvzCe+KpcJjJJSzRUcm4A9AKjzttla7kWuEaMp6kWqSpGF1yNBuJojgsRTgniIYP
-         7hXGxjwVd1CYANZdB6HTbFtjqKYxQ0/tA007o4N/iQagpSr5jvQrGvets0R/l1zTGEgz
-         VHpcjuoujQ2F0soczv+qHllJlTG3W2HJ4MTX61/dS24ClqBHKmhcHQkpxtGi1bP42m6p
-         QgntWhmsrIVG6mWu7b0nC4908TaWJXSQO/h9Q/6D2QVhraEp+2k2Usj3N1ZzIjOIRX2o
-         HAXz/X46qH6x7DWKF3wgYqAtHqh/Ge5gtO+2LaY73h1r9RvuCRXj1Jxq5E01WuEnMS9k
-         Xpvg==
-X-Gm-Message-State: AOAM532rGHvVH/ggJ9N9RSErVsOF9x8U6Iwlei4rHaGRqB+HhurPS29Y
-        fbeJ1Ov5kBhZxdVxUVnUSt2jmBvCzkkjNK+fPL0=
-X-Google-Smtp-Source: ABdhPJyIYYgicvnsR+BGJ3UdRrM2LeQbrvQwy5ibqijTo2qKHPufau8DK2LwgA8tFMCTQ4O7xn3hqrACF9krZXKK+Eo=
-X-Received: by 2002:a17:902:d38b:b029:db:e003:3ff0 with SMTP id
- e11-20020a170902d38bb02900dbe0033ff0mr93725pld.7.1608717870664; Wed, 23 Dec
- 2020 02:04:30 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TsZfeXRM1ReVd7eBjQcIMfaYnF6JpJXqu5pz2p0wGEQ=;
+        b=dnSYf+dfktJ7g/eVurdqqgZbAlCXL/+USBHy0kPn/E+t6On8HqjpOabmdS2WdXJmYQ
+         jteo+1Lscs8inVEkB8TCOSnkrFVEdFDs6CHlz0fFhaRqvoDbjxjEzHGRsFq+hGHy/zqT
+         yD9o3x/lxAGbew98d9vvFOUPVOi6Xey/9WYlQN9hjeKHCZxcNJ3ZvDbJLWBGkXY5+KO/
+         LjL0+nfRGdn8cyJoPFtlNpPg2fKR2X2CMj8f8QROFGWXwBCaX/UBoKcBA6jejeTzxvSo
+         tbP/fWp6XF6TbDZePZa5f2hPc9AOOCNQOd8Rguc9UNDOBUKVQ18xAckfRAjB1ylUepSd
+         l6LQ==
+X-Gm-Message-State: AOAM531gMU0EvNQuQAHjvDjpfS71umHDBKgCzemh9DT0UTmIhIJ4Qetb
+        vv0ebTSHTz6VbH6RBE7t0V5u+w==
+X-Google-Smtp-Source: ABdhPJzBINtZwYQUDT2fyB7vaQAbu2xabNp/ZkzWZgkh5VIkMKAYi1A0wfAjRz9FwcP8I8BS4yHZEQ==
+X-Received: by 2002:a05:6602:387:: with SMTP id f7mr21085021iov.209.1608717994800;
+        Wed, 23 Dec 2020 02:06:34 -0800 (PST)
+Received: from google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
+        by smtp.gmail.com with ESMTPSA id 12sm17304825ily.42.2020.12.23.02.06.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Dec 2020 02:06:34 -0800 (PST)
+Date:   Wed, 23 Dec 2020 03:06:30 -0700
+From:   Yu Zhao <yuzhao@google.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+Message-ID: <X+MWppLjiR7hLgg9@google.com>
+References: <20201221223041.GL6640@xz-x1>
+ <CAHk-=wh-bG4thjXUekLtrCg8FRrdWjtT40ibXXLSm_hzQG8eOw@mail.gmail.com>
+ <CALCETrV=8tY7h=aaudWBEn-MJnNkm2wz5qjH49SYqwkjYTpOaA@mail.gmail.com>
+ <X+JJqK91plkBVisG@redhat.com>
+ <X+JhwVX3s5mU9ZNx@google.com>
+ <X+Js/dFbC5P7C3oO@redhat.com>
+ <X+KDwu1PRQ93E2LK@google.com>
+ <CAHk-=wiBWkgxLtwD7n01irD7hTQzuumtrqCkxxZx=6dbiGKUqQ@mail.gmail.com>
+ <CAHk-=wjG7xx7Gsb=K0DteB1SPcKjus02zY2gFUoxMY5mm7tfsA@mail.gmail.com>
+ <CAHk-=wjNv1GQn+8stK419HAqK0ofkJ1vOR9YSWSNjbW3T5as9A@mail.gmail.com>
 MIME-Version: 1.0
-References: <9830fcef7159a47bae361fc213c589449f6a77d3.1608713585.git.xuanzhuo@linux.alibaba.com>
-In-Reply-To: <9830fcef7159a47bae361fc213c589449f6a77d3.1608713585.git.xuanzhuo@linux.alibaba.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Wed, 23 Dec 2020 11:04:19 +0100
-Message-ID: <CAJ8uoz2Enx-WwY6RmCp0RXBG2U3BUpagw-X8hQChPResHCM-XA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] xsk: build skb by page
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "open list:XDP SOCKETS (AF_XDP)" <netdev@vger.kernel.org>,
-        "open list:XDP SOCKETS (AF_XDP)" <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjNv1GQn+8stK419HAqK0ofkJ1vOR9YSWSNjbW3T5as9A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 9:57 AM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
->
-> This patch is used to construct skb based on page to save memory copy
-> overhead.
->
-> Taking into account the problem of addr unaligned, and the
-> possibility of frame size greater than page in the future.
+On Wed, Dec 23, 2020 at 01:44:42AM -0800, Linus Torvalds wrote:
+> On Tue, Dec 22, 2020 at 4:01 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > The more I look at the mprotect code, the less I like it. We seem to
+> > be much better about the TLB flushes in other places (looking at
+> > mremap, for example). The mprotect code seems to be very laissez-faire
+> > about the TLB flushing.
+> 
+> No, this doesn't help.
+> 
+> > Does adding a TLB flush to before that
+> >
+> >         pte_unmap_unlock(pte - 1, ptl);
+> >
+> > fix things for you?
+> 
+> It really doesn't fix it. Exactly because - as pointed out earlier -
+> the actual page *copy* happens outside the pte lock.
 
-Thanks Xuan for the patch set. Could you please share performance
-numbers so we know how much this buys us? Would be good if you could
-produce them for 64 bytes, 1500 bytes and something in the middle so
-we can judge the benefits of this.
+I appreciate all the pointers. It seems to me it does.
 
-Please note that responses will be delayed this week and next due to
-the Christmas and New Years holidays over here.
+> So what can happen is:
+> 
+>  - CPU 1 holds the page table lock, while doing the write protect. It
+> has cleared the writable bit, but hasn't flushed the TLB's yet
+> 
+>  - CPU 2 did *not* have the TLB entry, sees the new read-only state,
+> takes a COW page fault, and reads the PTE from memory (into
+> vmf->orig_pte)
 
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> ---
->  net/xdp/xsk.c | 68 ++++++++++++++++++++++++++++++++++++++++++++---------------
->  1 file changed, 51 insertions(+), 17 deletions(-)
->
-> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index ac4a317..7cab40f 100644
-> --- a/net/xdp/xsk.c
-> +++ b/net/xdp/xsk.c
-> @@ -430,6 +430,55 @@ static void xsk_destruct_skb(struct sk_buff *skb)
->         sock_wfree(skb);
->  }
->
-> +static struct sk_buff *xsk_build_skb_bypage(struct xdp_sock *xs, struct xdp_desc *desc)
-> +{
-> +       char *buffer;
-> +       u64 addr;
-> +       u32 len, offset, copy, copied;
-> +       int err, i;
-> +       struct page *page;
-> +       struct sk_buff *skb;
-> +
-> +       skb = sock_alloc_send_skb(&xs->sk, 0, 1, &err);
-> +       if (unlikely(!skb))
-> +               return NULL;
-> +
-> +       addr = desc->addr;
-> +       len = desc->len;
-> +
-> +       buffer = xsk_buff_raw_get_data(xs->pool, addr);
-> +       offset = offset_in_page(buffer);
-> +       addr = buffer - (char *)xs->pool->addrs;
-> +
-> +       for (copied = 0, i = 0; copied < len; ++i) {
-> +               page = xs->pool->umem->pgs[addr >> PAGE_SHIFT];
-> +
-> +               get_page(page);
-> +
-> +               copy = min((u32)(PAGE_SIZE - offset), len - copied);
-> +
-> +               skb_fill_page_desc(skb, i, page, offset, copy);
-> +
-> +               copied += copy;
-> +               addr += copy;
-> +               offset = 0;
-> +       }
-> +
-> +       skb->len += len;
-> +       skb->data_len += len;
-> +       skb->truesize += len;
-> +
-> +       refcount_add(len, &xs->sk.sk_wmem_alloc);
-> +
-> +       skb->dev = xs->dev;
-> +       skb->priority = xs->sk.sk_priority;
-> +       skb->mark = xs->sk.sk_mark;
-> +       skb_shinfo(skb)->destructor_arg = (void *)(long)addr;
-> +       skb->destructor = xsk_destruct_skb;
-> +
-> +       return skb;
-> +}
-> +
->  static int xsk_generic_xmit(struct sock *sk)
->  {
->         struct xdp_sock *xs = xdp_sk(sk);
-> @@ -445,40 +494,25 @@ static int xsk_generic_xmit(struct sock *sk)
->                 goto out;
->
->         while (xskq_cons_peek_desc(xs->tx, &desc, xs->pool)) {
-> -               char *buffer;
-> -               u64 addr;
-> -               u32 len;
-> -
->                 if (max_batch-- == 0) {
->                         err = -EAGAIN;
->                         goto out;
->                 }
->
-> -               len = desc.len;
-> -               skb = sock_alloc_send_skb(sk, len, 1, &err);
-> +               skb = xsk_build_skb_bypage(xs, &desc);
->                 if (unlikely(!skb))
->                         goto out;
->
-> -               skb_put(skb, len);
-> -               addr = desc.addr;
-> -               buffer = xsk_buff_raw_get_data(xs->pool, addr);
-> -               err = skb_store_bits(skb, 0, buffer, len);
->                 /* This is the backpressure mechanism for the Tx path.
->                  * Reserve space in the completion queue and only proceed
->                  * if there is space in it. This avoids having to implement
->                  * any buffering in the Tx path.
->                  */
-> -               if (unlikely(err) || xskq_prod_reserve(xs->pool->cq)) {
-> +               if (xskq_prod_reserve(xs->pool->cq)) {
->                         kfree_skb(skb);
->                         goto out;
->                 }
->
-> -               skb->dev = xs->dev;
-> -               skb->priority = sk->sk_priority;
-> -               skb->mark = sk->sk_mark;
-> -               skb_shinfo(skb)->destructor_arg = (void *)(long)desc.addr;
-> -               skb->destructor = xsk_destruct_skb;
-> -
->                 err = __dev_direct_xmit(skb, xs->queue_id);
->                 if  (err == NETDEV_TX_BUSY) {
->                         /* Tell user-space to retry the send */
-> --
-> 1.8.3.1
->
+In handle_pte_fault(), we lock page table and check pte_write(), so
+we either see a RW pte before CPU 1 runs or a RO one with no stale tlb
+entries after CPU 1 runs, assume CPU 1 flushes tlb while holding the
+same page table lock (not mmap_lock).
+
+>  - CPU 2 correctly decides it needs to be a COW, and copies the page contents
+> 
+>  - CPU 3 *does* have a stale TLB (because TLB invalidation hasn't
+> happened yet), and writes to that page in users apce
+> 
+>  - CPU 1 now does the TLB invalidate, and releases the page table lock
+> 
+>  - CPU 2 gets the page table lock, sees that its PTE matches
+> vmf->orig_pte, and switches it to be that writable copy of the page.
+> 
+> where the copy happened before CPU 3 had stopped writing to the page.
+> 
+> So the pte lock doesn't actually matter, unless we actually do the
+> page copy inside of it (on CPU2), in addition to doing the TLB flush
+> inside of it (on CPU1).
+> 
+> mprotect() is actually safe for two independent reasons: (a) it does
+> the mmap_sem for writing (so mprotect can't race with the COW logic at
+> all), and (b) it changes the vma permissions so turning something
+> read-only actually disables COW anyway, since it won't be a COW, it
+> will be a SIGSEGV.
+> 
+> So mprotect() is irrelevant, other than the fact that it shares some
+> code with that "turn it read-only in the page tables".
+> 
+> fork() is a much closer operation, in that it actually triggers that
+> COW behavior, but fork() takes the mmap_sem for writing, so it avoids
+> this too.
+> 
+> So it's really just userfaultfd and that kind of ilk that is relevant
+> here, I think. But that "you need to flush the TLB before releasing
+> the page table lock" was not true (well, it's true in other
+> circumstances - just not *here*), and is not part of the solution.
+> 
+> Or rather, if it's part of the solution here, it would have to be
+> matched with that "page copy needs to be done under the page table
+> lock too".
+> 
+>               Linus
+> 
