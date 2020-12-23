@@ -2,72 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49D982E21AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 21:44:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25DE32E21AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 21:45:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729137AbgLWUmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 15:42:16 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:31669 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728751AbgLWUmO (ORCPT
+        id S1728968AbgLWUpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 15:45:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726979AbgLWUpL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 15:42:14 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1608756111; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=bK0JQ5aHvWgFVGDljY6IMqP9mCAVBz5q0wqXMU8WjzA=; b=vzdsZtzIqOvELFYTKK9Eq5ZEgNk3XFjTmjlq2mU5puj7AM0Tn7GIEzWZInSIz9yNIz/ccZot
- TnLFL6GUHZSdmBjwQRDBwDcnEN4NjzHREMnchXf0UjQlPn3qqeVZS5O4Z6+Ges3T5vMn6xag
- D53eswj6Jyavc4aNayINNUQaXdg=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 5fe3ab73db8e07fa6c734dea (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 23 Dec 2020 20:41:23
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 49BABC43461; Wed, 23 Dec 2020 20:41:23 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from x230.qca.qualcomm.com (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 70C43C433C6;
-        Wed, 23 Dec 2020 20:41:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 70C43C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     <davem@davemloft.net>, <kuba@kernel.org>,
-        <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next] atmel/at76c50x-usb: use DEFINE_MUTEX (and mutex_init() had been too late)
-References: <20201223141200.32619-1-zhengyongjun3@huawei.com>
-Date:   Wed, 23 Dec 2020 22:41:18 +0200
-In-Reply-To: <20201223141200.32619-1-zhengyongjun3@huawei.com> (Zheng
-        Yongjun's message of "Wed, 23 Dec 2020 22:12:00 +0800")
-Message-ID: <874kkc5k7l.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        Wed, 23 Dec 2020 15:45:11 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 743C9C061794;
+        Wed, 23 Dec 2020 12:44:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=QGI1zaRzLH7OjqhLVtBefIeJ3lFzVBVBxUXhU6Kpg2Q=; b=ZGG3c7jOGeOmrWqRW8tX376I6/
+        xZuLgCrqoih3ISyFJoO1MC0eQkVReoeZ4h3NtcNnG291yamhYdOWUcLVxiWfjTCfZFC/SMdt+iDBi
+        sA/GcjhindrIKT0dehSRaMpy0XqvBQVynN6d7JtGqwWje4+gAt0DPdxSO3lJBkyS1dFn+cqmtsRdn
+        u2gOpCTF+awOEHd7SuQLLsMj+l1rpf6MaySltkyKCYZAifi8MAXVri0NOnaJdpCsharsiPLl14dsg
+        8bpJOoCENzMIiwxBcmywCPssPwP1XU29J7SPitt/CI2tEXteTy0wwC3ZPq8C2n98N2v/fuXU8OsV3
+        TJiDj/vw==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1ksAzk-0002MC-Q4; Wed, 23 Dec 2020 20:44:28 +0000
+Date:   Wed, 23 Dec 2020 20:44:28 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Sargun Dhillon <sargun@sargun.me>
+Cc:     Vivek Goyal <vgoyal@redhat.com>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org,
+        jlayton@kernel.org, amir73il@gmail.com, miklos@szeredi.hu,
+        jack@suse.cz, neilb@suse.com, viro@zeniv.linux.org.uk, hch@lst.de
+Subject: Re: [PATCH 3/3] overlayfs: Report writeback errors on upper
+Message-ID: <20201223204428.GS874@casper.infradead.org>
+References: <20201221195055.35295-1-vgoyal@redhat.com>
+ <20201221195055.35295-4-vgoyal@redhat.com>
+ <20201223182026.GA9935@ircssh-2.c.rugged-nimbus-611.internal>
+ <20201223185044.GQ874@casper.infradead.org>
+ <20201223192940.GA11012@ircssh-2.c.rugged-nimbus-611.internal>
+ <20201223200746.GR874@casper.infradead.org>
+ <20201223202140.GB11012@ircssh-2.c.rugged-nimbus-611.internal>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201223202140.GB11012@ircssh-2.c.rugged-nimbus-611.internal>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Zheng Yongjun <zhengyongjun3@huawei.com> writes:
+On Wed, Dec 23, 2020 at 08:21:41PM +0000, Sargun Dhillon wrote:
+> On Wed, Dec 23, 2020 at 08:07:46PM +0000, Matthew Wilcox wrote:
+> > On Wed, Dec 23, 2020 at 07:29:41PM +0000, Sargun Dhillon wrote:
+> > > On Wed, Dec 23, 2020 at 06:50:44PM +0000, Matthew Wilcox wrote:
+> > > > On Wed, Dec 23, 2020 at 06:20:27PM +0000, Sargun Dhillon wrote:
+> > > > > I fail to see why this is neccessary if you incorporate error reporting into the 
+> > > > > sync_fs callback. Why is this separate from that callback? If you pickup Jeff's
+> > > > > patch that adds the 2nd flag to errseq for "observed", you should be able to
+> > > > > stash the first errseq seen in the ovl_fs struct, and do the check-and-return
+> > > > > in there instead instead of adding this new infrastructure.
+> > > > 
+> > > > You still haven't explained why you want to add the "observed" flag.
+> > > 
+> > > 
+> > > In the overlayfs model, many users may be using the same filesystem (super block)
+> > > for their upperdir. Let's say you have something like this:
+> > > 
+> > > /workdir [Mounted FS]
+> > > /workdir/upperdir1 [overlayfs upperdir]
+> > > /workdir/upperdir2 [overlayfs upperdir]
+> > > /workdir/userscratchspace
+> > > 
+> > > The user needs to be able to do something like:
+> > > sync -f ${overlayfs1}/file
+> > > 
+> > > which in turn will call sync on the the underlying filesystem (the one mounted 
+> > > on /workdir), and can check if the errseq has changed since the overlayfs was
+> > > mounted, and use that to return an error to the user.
+> > 
+> > OK, but I don't see why the current scheme doesn't work for this.  If
+> > (each instance of) overlayfs samples the errseq at mount time and then
+> > check_and_advances it at sync time, it will see any error that has occurred
+> > since the mount happened (and possibly also an error which occurred before
+> > the mount happened, but hadn't been reported to anybody before).
+> > 
+> 
+> If there is an outstanding error at mount time, and the SEEN flag is unset, 
+> subsequent errors will not increment the counter, until the user calls sync on
+> the upperdir's filesystem. If overlayfs calls check_and_advance on the upperdir's
+> super block at any point, it will then set the seen block, and if the user calls
+> syncfs on the upperdir, it will not return that there is an outstanding error,
+> since overlayfs just cleared it.
 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+Your concern is this case:
 
-Empty commit log.
+fs is mounted on /workdir
+/workdir/A is written to and then closed.
+writeback happens and -EIO happens, but there's nobody around to care.
+/workdir/upperdir1 becomes part of an overlayfs mount
+overlayfs samples the error
+a user writes to /workdir/B, another -EIO occurs, but nothing happens
+someone calls syncfs on /workdir/upperdir/A, gets the EIO.
+a user opens /workdir/B and calls syncfs, but sees no error
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+do i have that right?  or is it something else?
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+> > > If we do not advance the errseq on the upperdir to "mark it as seen", that means 
+> > > future errors will not be reported if the user calls sync -f ${overlayfs1}/file,
+> > > because errseq will not increment the value if the seen bit is unset.
+> > > 
+> > > On the other hand, if we mark it as seen, then if the user calls sync on 
+> > > /workdir/userscratchspace/file, they wont see the error since we just set the 
+> > > SEEN flag.
+> > 
+> > While we set the SEEN flag, if the file were opened before the error
+> > occurred, we would still report the error because the sequence is higher
+> > than it was when we sampled the error.
+> > 
+> 
+> Right, this isn't a problem for people calling f(data)sync on a particular file, 
+> because it takes its own snapshot of errseq. This is only problematic for folks 
+> calling syncfs. In Jeff's other messages, it sounded like this behaviour is
+> pretty important, and the likes of postgresql depend on it.
+
+i would suggest that in the example above, the error _didn't_ occur
+while calling syncfs(), it occurred before we synced the filesystem,
+and we don't have to report it in that case.
