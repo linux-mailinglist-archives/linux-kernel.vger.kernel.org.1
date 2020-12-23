@@ -2,143 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 640F12E1C1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 13:13:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 937892E1C25
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 13:15:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728594AbgLWMMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 07:12:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728409AbgLWMMv (ORCPT
+        id S1728658AbgLWMOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 07:14:54 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:37591 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728330AbgLWMOw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 07:12:51 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70016C061793
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 04:12:10 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id m12so39599279lfo.7
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 04:12:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/wIYMsJQZ3iQsBLuaM3BKXb1BHAX1SBVB27T+5mB2YE=;
-        b=by/eFrNKLecUUvgYEmFr+diz0SlI/quL8lPzJ/YxvQYp0kjYupCwPospTA7Y5qNJmN
-         6yb30XMZLcQ/iyxdEruILIxjEbFW4gQ31OflZaJASF4XAKAW+iIhrR7XMC51F3QDvv0z
-         X9yaOlhOzwmn2oWlCVY4U4t42uWkdbaqFty0ACEP9FpkONaYC2qqKNxyg+lS/3OI/EQ+
-         rUa5KdN6jxJdkSTGUet0xlCWKk8UdFGcWosIHmEOymSkWDnOyUE32CPiUt6N6odjv43A
-         Yzh2xQEHvF4sWXB+vjOhxPVsW/gx9lGnmEHaWiD2qhN5o5xZQIj4Als/dT1zOjVL4O9s
-         oZUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/wIYMsJQZ3iQsBLuaM3BKXb1BHAX1SBVB27T+5mB2YE=;
-        b=Nl7X34j+lstpThwnkCHIQc4EgC1SsV7Xrof6X1QK3z1jwjKSMrFAyejPOoo6cInB0z
-         Zac/frvXed+dfV1O1BqpPXZOgrqs7IBQz8fMOPRRxexRJKdJGlQd4C5sB2tjvq/EwcOC
-         pqM55kLOvnulkc8Fcbm5esBUXtYeUkFJncY5O13OTLkWAjogt95kD9TaKal/JCWF+XXY
-         xE4+eaM62nXiQ/mLSdkSk3NWUxBI6NEaE2tS+qwz31Zh9/slrM/XpdChQdQE0Dyb6P9R
-         JrKoKloO0mX0ruH9UMaAUJPPbcHaVG9mdzK7zVfFcm5Ptxj5bhAtoeUdSCPkzTIOtSuf
-         XXeQ==
-X-Gm-Message-State: AOAM530Uxiint3HTyFy43ykmuaD5hhuhHKKc5ZydnsgzwMUi0AXnIjgB
-        cU+pBaScBqGyarlE7UsBaszMDot3MEjxLMf67UE=
-X-Google-Smtp-Source: ABdhPJxu0iGpRpL6oyLN/jLqLsq4DbkuVOieU+xjWhjSOyJi5zSINrSFL3JcdP4Hj/0Gdo7ocnDeRvnWTdQ+ZU0iWyI=
-X-Received: by 2002:a05:6512:1112:: with SMTP id l18mr10219334lfg.538.1608725528976;
- Wed, 23 Dec 2020 04:12:08 -0800 (PST)
+        Wed, 23 Dec 2020 07:14:52 -0500
+X-UUID: cf142bb577984ca19cedf7ebae6db2b2-20201223
+X-UUID: cf142bb577984ca19cedf7ebae6db2b2-20201223
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <hsin-hsiung.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 75795305; Wed, 23 Dec 2020 20:14:09 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 23 Dec 2020 20:13:46 +0800
+Received: from mtksdaap41.mediatek.inc (172.21.77.4) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 23 Dec 2020 20:13:45 +0800
+From:   Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <drinkcat@chromium.org>
+CC:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Subject: [PATCH v3 0/3] Add support for MT6315 regulator
+Date:   Wed, 23 Dec 2020 20:13:41 +0800
+Message-ID: <1608725624-30594-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+X-Mailer: git-send-email 2.6.4
 MIME-Version: 1.0
-References: <20201221162519.GA22504@open-light-1.localdomain>
- <7bf0e895-52d6-9e2d-294b-980c33cf08e4@redhat.com> <CA+2MQi89v=DZJZ7b-QaMsU2f42j4SRW47XcZvLtBj10YeqRGgQ@mail.gmail.com>
- <840ff69d-20d5-970a-1635-298000196f3e@redhat.com> <CA+2MQi87+N87x+gLuJPurst38AfFQhnc9eyHr8On55d1+WY5zQ@mail.gmail.com>
- <55052a91-64f9-b343-a1c4-f059ca50ecf3@redhat.com>
-In-Reply-To: <55052a91-64f9-b343-a1c4-f059ca50ecf3@redhat.com>
-From:   Liang Li <liliang324@gmail.com>
-Date:   Wed, 23 Dec 2020 20:11:57 +0800
-Message-ID: <CA+2MQi_C-PTqyrqBprhtGBAiDBnPQBzwu6hvyuk+QiKy0L3sHw@mail.gmail.com>
-Subject: Re: [RFC v2 PATCH 0/4] speed up page allocation for __GFP_ZERO
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Liang Li <liliangleo@didiglobal.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 4:41 PM David Hildenbrand <david@redhat.com> wrote:
->
-> [...]
->
-> >> I was rather saying that for security it's of little use IMHO.
-> >> Application/VM start up time might be improved by using huge pages (and
-> >> pre-zeroing these). Free page reporting might be improved by using
-> >> MADV_FREE instead of MADV_DONTNEED in the hypervisor.
-> >>
-> >>> this feature, above all of them, which one is likely to become the
-> >>> most strong one?  From the implementation, you will find it is
-> >>> configurable, users don't want to use it can turn it off.  This is not
-> >>> an option?
-> >>
-> >> Well, we have to maintain the feature and sacrifice a page flag. For
-> >> example, do we expect someone explicitly enabling the feature just to
-> >> speed up startup time of an app that consumes a lot of memory? I highly
-> >> doubt it.
-> >
-> > In our production environment, there are three main applications have such
-> > requirement, one is QEMU [creating a VM with SR-IOV passthrough device],
-> > anther other two are DPDK related applications, DPDK OVS and SPDK vhost,
-> > for best performance, they populate memory when starting up. For SPDK vhost,
-> > we make use of the VHOST_USER_GET/SET_INFLIGHT_FD feature for
-> > vhost 'live' upgrade, which is done by killing the old process and
-> > starting a new
-> > one with the new binary. In this case, we want the new process started as quick
-> > as possible to shorten the service downtime. We really enable this feature
-> > to speed up startup time for them  :)
->
-> Thanks for info on the use case!
->
-> All of these use cases either already use, or could use, huge pages
-> IMHO. It's not your ordinary proprietary gaming app :) This is where
-> pre-zeroing of huge pages could already help.
+This patch series adds support for MediaTek PMIC MT6315 regulator driver,
+which adds MT6315 related buck voltage data to the driver.
+This series is based on below patch[1].
 
-You are welcome.  For some historical reason, some of our services are
-not using hugetlbfs, that is why I didn't start with hugetlbfs.
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git/commit/?h=char-misc-next&id=d40c2d4ed62df64ce603c208bceff25245380157
 
-> Just wondering, wouldn't it be possible to use tmpfs/hugetlbfs ...
-> creating a file and pre-zeroing it from another process, or am I missing
-> something important? At least for QEMU this should work AFAIK, where you
-> can just pass the file to be use using memory-backend-file.
->
-If using another process to create a file, we can offload the overhead to
-another process, and there is no need to pre-zeroing it's content, just
-populating the memory is enough.
-If we do it that way, then how to determine the size of the file? it depends
-on the RAM size of the VM the customer buys. Maybe we can create a file
-large enough in advance and truncate it to the right size just before the
-VM is created. Then, how many large files should be created on a host?
-You will find there are a lot of things that have to be handled properly.
-I think it's possible to make it work well, but we will transfer the
-management complexity to up layer components. It's a bad practice to let
-upper layer components process such low level details which should be
-handled in the OS layer.
+changes since v2:
+- fix the error of binding document.
+- refine the mt6315 regulator for better code quality.
+- add mt6315 regulator node into mt8192-evb.dts.
 
-> >
-> >> I'd love to hear opinions of other people. (a lot of people are offline
-> >> until beginning of January, including, well, actually me :) )
-> >
-> > OK. I will wait some time for others' feedback. Happy holidays!
->
-> To you too, cheers!
->
+Hsin-Hsiung Wang (3):
+  dt-bindings: regulator: document binding for MT6315 regulator
+  regulator: mt6315: Add support for MT6315 regulator
+  arm64: dts: mt8192: add mt6315 regulator nodes
 
-I have to work at least two months before the vacation. :(
+ .../bindings/regulator/mt6315-regulator.yaml  |  71 +++++
+ arch/arm64/boot/dts/mediatek/mt8192-evb.dts   |  46 +++
+ drivers/regulator/Kconfig                     |  10 +
+ drivers/regulator/Makefile                    |   1 +
+ drivers/regulator/mt6315-regulator.c          | 298 ++++++++++++++++++
+ include/linux/regulator/mt6315-regulator.h    |  45 +++
+ 6 files changed, 471 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/regulator/mt6315-regulator.yaml
+ create mode 100644 drivers/regulator/mt6315-regulator.c
+ create mode 100644 include/linux/regulator/mt6315-regulator.h
 
-Liang
+-- 
+2.18.0
+
