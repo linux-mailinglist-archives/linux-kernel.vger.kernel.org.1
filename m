@@ -2,147 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C874F2E1BCB
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 12:24:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B70772E1BCD
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 12:24:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728502AbgLWLWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 06:22:47 -0500
-Received: from mail-dm6nam11on2070.outbound.protection.outlook.com ([40.107.223.70]:9056
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726022AbgLWLWq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 06:22:46 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QxGDTjI6n5YDSjaNFMQrChSvtx9nxD4VAQ6Yd9T5P/doe38ZCGNUoWnjomJDHZaUx2xl8SN6wblQ+s7ObUF5giNYdXImo51ZP58AOh2+EQ16umVQNwNdR5ifywfHGu5yeo+Acg8rzdCBWblb4GGgNLZCNJI+7LVObizOwogMr+2mgBk3ltYp+IAs9VZvngbuAFgxdqDR/c5H5Dsciqr9KbGSVjVeSuWc94CiyQlWHX2C2DglifIyD3YRuMVTTm2awZlfGR5tzGn8OQtmt+dFx6pDXkLlu74DwUjKVBvWmI157dhbye9pq3mlupcQNkdWUOMDxI1GBTk4J6kz3pphHg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+y7nffqDx0UUI+Po3O45Do6Y03d26ArWoSlxtC2Vvsk=;
- b=l+kOoNWpvIcafskVqpHpd5rvZzZC8AJmo7T7ONc2bFaaPuqBYSw9UrpjW0lhkYKvrxwRBeuEcMF7dKJ/ok59iQxILCi/p/crQaXqRhYhreaEDRKYACBmKy0nZlfiGihkGVqWW2DpXOv+CbcUOwrWJF8htJ/lQuQvBQBLBNCV6kjmPY3KnhsmsW86lR/XXn09qTjOuvAxtn4/B099cy4Ajy+HWBeG17NDa1rQYd7MkxRi7KqnSsSlPg6hyvcUYaCg37rkTCeGKe9jIQWdtv4h7T8Pi38aHfH5WWsCoOtsn9FoamQCoZyZiDayvi+bg6Mv1ndBE9Kn92n5CIRKNToYGg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=gmail.com smtp.mailfrom=xilinx.com;
- dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
- not signed); arc=none
+        id S1728539AbgLWLXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 06:23:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728513AbgLWLXh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 06:23:37 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E312C0613D3;
+        Wed, 23 Dec 2020 03:22:57 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id h205so39288612lfd.5;
+        Wed, 23 Dec 2020 03:22:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+y7nffqDx0UUI+Po3O45Do6Y03d26ArWoSlxtC2Vvsk=;
- b=BGCfuMWRxRJlUmRg/Elptt/DUZacHwqhS5i1VdZacoXDMha6/r/xU/llm4+zTFfOLmLVlhrRRMj16fzxweUgfoSXMKC/3tGUzT3t71eClrmmVjvzJQx58GEJQbq5cMU8MHwenVCFOWzdmIndUPw99wokqXsWkTwdJwf1QozrXVI=
-Received: from DS7PR03CA0134.namprd03.prod.outlook.com (2603:10b6:5:3b4::19)
- by SN6PR02MB4607.namprd02.prod.outlook.com (2603:10b6:805:b3::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.25; Wed, 23 Dec
- 2020 11:21:53 +0000
-Received: from CY1NAM02FT003.eop-nam02.prod.protection.outlook.com
- (2603:10b6:5:3b4:cafe::e1) by DS7PR03CA0134.outlook.office365.com
- (2603:10b6:5:3b4::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.27 via Frontend
- Transport; Wed, 23 Dec 2020 11:21:53 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=bestguesspass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
-Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
- CY1NAM02FT003.mail.protection.outlook.com (10.152.74.151) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3676.25 via Frontend Transport; Wed, 23 Dec 2020 11:21:53 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Wed, 23 Dec 2020 03:21:49 -0800
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.1913.5 via Frontend Transport; Wed, 23 Dec 2020 03:21:49 -0800
-Envelope-to: git@xilinx.com,
- michal.simek@xilinx.com,
- andrea.merello@gmail.com,
- nick.graumann@gmail.com,
- dan.j.williams@intel.com,
- mcgrof@kernel.org,
- vkoul@kernel.org,
- dmaengine@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Received: from [172.23.64.106] (port=34659 helo=xhdvnc125.xilinx.com)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <radhey.shyam.pandey@xilinx.com>)
-        id 1ks2DE-0007kA-9o; Wed, 23 Dec 2020 03:21:48 -0800
-Received: by xhdvnc125.xilinx.com (Postfix, from userid 13245)
-        id 06AB81217F9; Wed, 23 Dec 2020 16:51:08 +0530 (IST)
-From:   Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
-To:     <vkoul@kernel.org>, <dan.j.williams@intel.com>,
-        <michal.simek@xilinx.com>, <nick.graumann@gmail.com>,
-        <andrea.merello@gmail.com>, <appana.durga.rao@xilinx.com>,
-        <mcgrof@kernel.org>
-CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <git@xilinx.com>, Shravya Kumbham <shravya.kumbham@xilinx.com>,
-        "Radhey Shyam Pandey" <radhey.shyam.pandey@xilinx.com>
-Subject: [PATCH v2 3/3] dmaengine: xilinx_dma: fix mixed_enum_type coverity warning
-Date:   Wed, 23 Dec 2020 16:51:02 +0530
-Message-ID: <1608722462-29519-4-git-send-email-radhey.shyam.pandey@xilinx.com>
-X-Mailer: git-send-email 2.1.1
-In-Reply-To: <1608722462-29519-1-git-send-email-radhey.shyam.pandey@xilinx.com>
-References: <1608722462-29519-1-git-send-email-radhey.shyam.pandey@xilinx.com>
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=wtmoM2gTNMAoOmqHB9IXXwDSaYAevxlwFgLMl64mT4M=;
+        b=nRiCydouktHzieyRmD1QIuw6Git/kHZm2GtrtPqEIAyqn7sQF7p8/UJDCFjYQLmsZG
+         X12dzYATusSI1AjA4A1oMoewuxXy9QCDgqWbSGnv3BtJhbyKsezAeJwr+tNa2EYz/LlV
+         0rJfFW/6JYMKcFW2uF11bdWR43ggfjpja5OkGSnszuceoD8a1VMewt94/kZifeBdMXks
+         VHYQjYtYQMyAtCX8u454qSWoXIOKp8/ApWIs8HImFzarKtcesy4YNDSqMIDerZMQspOg
+         /VE/TwNVfvZSSY9EgzM5CNLA4mAApiNRcwDif6TGxVYsyjGJuIBEIvukykS1E2dqaqQC
+         3o/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=wtmoM2gTNMAoOmqHB9IXXwDSaYAevxlwFgLMl64mT4M=;
+        b=ELsesh5dr/W2G/Ovg9yjCnsNgAbFNPSY1rtRnXHG44jF7pSJInJo06+EsuiekuNPf6
+         qR1dihf4d32TVMFX4l/idI2j+nUpIWdmfgXp4BGIQg9RjUJylBgRwqNyIRihfRQ3DcZR
+         FUswfnxPxvS0TVUHZeYD9HFQZlNa8gXuCXyKjINJ3/rlhPVHiB4x/+Y0hiOm+D4oUfRy
+         +6MXeo3ypul2eAbWwX1G/1OXSq2gYeWoG5ZzV8vyWGx8C2msgbiN7Eg93lt+JnDlVDUz
+         TZ4UgWMmZFAq7WaeTdK6pQhzDXFiS8F+u41Tl4AkdYBiUr0JbtvpePG8eNj1ZdkF15Zq
+         +Kmw==
+X-Gm-Message-State: AOAM533gBPyAKlui3T8dgX0IC0QuSgVMFi/WVlyPkLyETVbwIk2irMgz
+        lpxRazmm1jXc/dTwXE+pdZkWnP1Wu3Kd50TzQHnQ6Ys=
+X-Google-Smtp-Source: ABdhPJzd6dPV9ceE8ThPQ6pOMT3rR5MDgxYUiNhqod80hib/q0FYgi7uMtn6T6UY8DHmKnw4a6KbIBd2iVCWXYpYxzA=
+X-Received: by 2002:a19:8c04:: with SMTP id o4mr10443458lfd.333.1608722575571;
+ Wed, 23 Dec 2020 03:22:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 451f0e82-e8c8-48ff-3ba2-08d8a734f332
-X-MS-TrafficTypeDiagnostic: SN6PR02MB4607:
-X-Microsoft-Antispam-PRVS: <SN6PR02MB4607775F1A36C080F3F65689C7DE0@SN6PR02MB4607.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PvVtfEMJDFJgoTe3HjXRomZED5bqRdSrzOdrGYPTyeBoei7OTWmLn1Q7MZujeeJq7vSDgjsHHyy4LX7Axih1bjSDS9v4VG7s3819X9N8vG8pRRuuS1EygB2uUNXXs9uSQA9I3RoDEvRnVBcrtDsyOGEmh8qQkKXY/Jzq9qiGlVLxd2+pDuJm72HOHKndCkhbKXVX1DqCaLCQ+nqbW1cWQdQu5qL8w8dgafrjfnJ+KqAXT6RCwKutPNfhyqeuU81I7Eydp3sM4xLtcLizEk+zqnzo+r5/ujQOc+9AOeNiYZwmkKvcrJqhG5BeMjkakB2tKECv1mklOYVPXKyBzlk0B5b2a6CpX2rEhVp9LyrT0+DBWqTmbDdHx7AuXJvGb8iVCWOADtuWQWobabhPwTYInTc6m8UofNoQKKimuUKNh1X0Zsm6Ju0QhyXAbh4ZpRITK4HmmeeeWvkOq3fWBh6DMbI+id9WejNxAfjFCnUzhsBPOiJ6Slb2h4VKFa06051styAbZZPQ5YlPk45DXYyxkg==
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(376002)(39860400002)(346002)(136003)(396003)(46966006)(6266002)(54906003)(107886003)(336012)(70206006)(82310400003)(42186006)(8676002)(2616005)(36906005)(110136005)(316002)(426003)(478600001)(4326008)(8936002)(26005)(83380400001)(82740400003)(186003)(356005)(47076005)(6666004)(36756003)(70586007)(5660300002)(7636003)(2906002)(102446001)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Dec 2020 11:21:53.2599
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 451f0e82-e8c8-48ff-3ba2-08d8a734f332
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT003.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR02MB4607
+References: <CAEJqkgiiU7miC13iT6DufjFAsHkNZk6rBAw=KRRnHe47kTZDnw@mail.gmail.com>
+ <9d621d34-e5ce-301a-1b89-92c0791fe348@roeck-us.net> <4483r6o2-245o-147-s71r-s64ss3nqr8ps@vanv.qr>
+In-Reply-To: <4483r6o2-245o-147-s71r-s64ss3nqr8ps@vanv.qr>
+From:   Gabriel C <nix.or.die@googlemail.com>
+Date:   Wed, 23 Dec 2020 12:22:29 +0100
+Message-ID: <CAEJqkghfOODze7eKO=+45eevx2KN-u275qU7j1mFYyVVDMy9uw@mail.gmail.com>
+Subject: Re: k10temp: ZEN3 readings are broken
+To:     Jan Engelhardt <jengelh@inai.de>
+Cc:     Guenter Roeck <linux@roeck-us.net>, linux-hwmon@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Wei Huang <wei.huang2@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shravya Kumbham <shravya.kumbham@xilinx.com>
+Am Mi., 23. Dez. 2020 um 11:41 Uhr schrieb Jan Engelhardt <jengelh@inai.de>=
+:
+>
+>
+> On Tuesday 2020-12-22 04:58, Guenter Roeck wrote:
+> >On 12/21/20 5:45 PM, Gabriel C wrote:
+> >> Hello Guenter,
+> >>
+> >> while trying to add ZEN3 support for zenpower out of tree modules, I f=
+ind out
+> >> the in-kernel k10temp driver is broken with ZEN3 ( and partially ZEN2 =
+even ).
+> >
+> >[...] since I do not have time to actively maintain
+> >the driver, since each chip variant seems to use different addresses and=
+ scales,
+> >and since the information about voltages and currents is unpublished by =
+AMD,
+> >I'll remove support for voltage/current readings from the upstream drive=
+r.
+>
+> I support that decision.
+>
+> /proc/cpuinfo::AMD Ryzen 7 3700X 8-Core Processor, fam 23 model 113 step =
+0
+>
+> A synthetic load (perl -e '1 while 1') x 16 shows:
+> Adapter: PCI adapter
+> Vcore:        +1.28 V
+> Vsoc:         +1.02 V
+> Tctl:         +94.8=C2=B0C
+> Tdie:         +94.8=C2=B0C
+> Tccd1:        +94.8=C2=B0C
+> Icore:       +76.00 A
+> Isoc:         +6.75 A
+>
+> A BOINC workload on average:
+> k10temp-pci-00c3
+> Adapter: PCI adapter
+> Vcore:        +1.17 V
+> Vsoc:         +1.02 V
+> Tctl:         +94.9=C2=B0C
+> Tdie:         +94.9=C2=B0C
+> Tccd1:        +95.0=C2=B0C
+> Icore:       +88.00 A
+> Isoc:         +8.00 A
+>
+> The BOINC workload, when it momentarily spikes:
+> Adapter: PCI adapter
+> Vcore:        +1.32 V
+> Vsoc:         +1.02 V
+> Tctl:         +94.1=C2=B0C
+> Tdie:         +94.1=C2=B0C
+> Tccd1:        +96.0=C2=B0C
+> Icore:       +105.00 A
+> Isoc:         +7.75 A
+>
+> For a processor sold as a 65 W part, observing reported sensors as
+> 88 A x 1.17 V + 8 A x 1.02 V =3D 111.12 W just can't be. We are off by a
+> factor of about 2.
 
-Typecast the fls(width -1) with (enum dmaengine_alignment) in
-xilinx_dma_chan_probe function to fix the coverity warning.
+Yes, those are wrong, bc the code is wrong.
+ZEN2 desktop is mixed with ZEN2 Server/TR code.
 
-Addresses-Coverity: Event mixed_enum_type.
-Fixes: 9cd4360de609 ("dma: Add Xilinx AXI Video Direct Memory Access Engine driver support")
-Signed-off-by: Shravya Kumbham <shravya.kumbham@xilinx.com>
-Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
----
-Changes for v2:
-- Include fixes tag.
-- Keep typecasting changes in the same line to increase readability.
----
- drivers/dma/xilinx/xilinx_dma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Best Reagrds,
 
-diff --git a/drivers/dma/xilinx/xilinx_dma.c b/drivers/dma/xilinx/xilinx_dma.c
-index cf75e2af6381..7639fd07e280 100644
---- a/drivers/dma/xilinx/xilinx_dma.c
-+++ b/drivers/dma/xilinx/xilinx_dma.c
-@@ -2801,7 +2801,7 @@ static int xilinx_dma_chan_probe(struct xilinx_dma_device *xdev,
- 		has_dre = false;
- 
- 	if (!has_dre)
--		xdev->common.copy_align = fls(width - 1);
-+		xdev->common.copy_align = (enum dmaengine_alignment)fls(width - 1);
- 
- 	if (of_device_is_compatible(node, "xlnx,axi-vdma-mm2s-channel") ||
- 	    of_device_is_compatible(node, "xlnx,axi-dma-mm2s-channel") ||
--- 
-2.7.4
-
+Gabriel C
