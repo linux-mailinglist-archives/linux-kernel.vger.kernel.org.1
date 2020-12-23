@@ -2,57 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2A4E2E1949
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 08:14:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 998692E194B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 08:14:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727294AbgLWHM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 02:12:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726960AbgLWHM7 (ORCPT
+        id S1727635AbgLWHNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 02:13:46 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:36117 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726960AbgLWHNq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 02:12:59 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB0E8C0613D3;
-        Tue, 22 Dec 2020 23:12:18 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kryJh-003SSq-KZ; Wed, 23 Dec 2020 07:12:13 +0000
-Date:   Wed, 23 Dec 2020 07:12:13 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     "Maciej W. Rozycki" <macro@linux-mips.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linux-mips@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Denys Vlasenko <dvlasenk@redhat.com>
-Subject: Re: [PATCHSET] saner elf compat
-Message-ID: <20201223071213.GX3579531@ZenIV.linux.org.uk>
-References: <20201203214529.GB3579531@ZenIV.linux.org.uk>
- <CAHk-=wiRNT+-ahz2KRUE7buYJMZ84bp=h_vGLrAaOKW3n_xyXQ@mail.gmail.com>
- <20201203230336.GC3579531@ZenIV.linux.org.uk>
- <alpine.LFD.2.21.2012071741280.2104409@eddie.linux-mips.org>
- <20201216030154.GL3579531@ZenIV.linux.org.uk>
- <alpine.LFD.2.21.2012160924010.2104409@eddie.linux-mips.org>
- <20201223070320.GW3579531@ZenIV.linux.org.uk>
+        Wed, 23 Dec 2020 02:13:46 -0500
+X-UUID: 3398d094232945dfb3b3905cd577c339-20201223
+X-UUID: 3398d094232945dfb3b3905cd577c339-20201223
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1961225076; Wed, 23 Dec 2020 15:13:03 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 23 Dec 2020 15:13:01 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 23 Dec 2020 15:13:00 +0800
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
+        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
+        <jejb@linux.ibm.com>, <matthias.bgg@gmail.com>,
+        <robh+dt@kernel.org>, <devicetree@vger.kernel.org>
+CC:     <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
+        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
+        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
+        <alice.chao@mediatek.com>, <hanks.chen@mediatek.com>,
+        Stanley Chu <stanley.chu@mediatek.com>
+Subject: [PATCH v2 0/2] arm64: Support Universal Flash Storage on MediaTek MT6779 platform
+Date:   Wed, 23 Dec 2020 15:12:57 +0800
+Message-ID: <20201223071259.764-1-stanley.chu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201223070320.GW3579531@ZenIV.linux.org.uk>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 4A44233D09EE66442D84A68BB2555E347F5CB8A1A9DB9CB15F6B567F866156F62000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 07:03:20AM +0000, Al Viro wrote:
+Hi,
+This series adds UFS (Universal Flash Storage) support on MediaTek MT6779 SoC platform.
 
-	Argh....  Wrong commit blamed - the parent of the correct one.
-It's actually 2aa362c49c31 ("coredump: extend core dump note section to
-contain file names of mapped files").  My apologies - fat-fingered
-cut'n'paste...
+Changes since v1:
+  - Fix irq attribute in dts in patch [2/2]
 
-	siginfo commit does suffer the same problem, but it becomes an issue
-only for 32bit processes under mips64 big-endian kernel (there it yields
-e.g. zero .__sigfault.si_addr in $_siginfo when using gdb with a coredump
-of 32bit process, whatever the actual faulting address had been).  And
-b-e mips64 is rather uncommon, so that's less of an issue.
+Stanley Chu (2):
+  arm64: configs: Support Universal Flash Storage on MediaTek platforms
+  arm64: dts: mt6779: Support ufshci and ufsphy
+
+ arch/arm64/boot/dts/mediatek/mt6779.dtsi | 36 +++++++++++++++++++++++-
+ arch/arm64/configs/defconfig             |  1 +
+ 2 files changed, 36 insertions(+), 1 deletion(-)
+
+-- 
+2.18.0
+
