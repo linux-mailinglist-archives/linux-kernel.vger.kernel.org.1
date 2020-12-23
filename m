@@ -2,244 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF2AE2E1BF1
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 12:36:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9772A2E1BF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 12:36:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728556AbgLWLdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 06:33:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727300AbgLWLd2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 06:33:28 -0500
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9398EC0613D3
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 03:32:48 -0800 (PST)
-Received: by mail-io1-xd36.google.com with SMTP id i18so14844893ioa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 03:32:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MfphX/3jcL+adOexPe8EyhNRZOELS86em6ZhMXdrk+U=;
-        b=BAMu0GCh2386bD+56EKunaR+96enjoTDX0HBnMPj3ffQRgoWO0m+NXH+Cx7fpkEbQo
-         oDyvTL+ECfiCt9rd+OviSa3LqSxCsREa8UNbNvZXV9QrJOPXPgmwfebcG76CrSV7UCkX
-         X8faOahfWIeKVZOSkV+gm1RGwfJ2tQV0i2PSxX/U5MjSQ+ML8IyvU5V2+ewB9hICAfNL
-         KJHwzMkDVxGxnk+tyYCP4lfyMBtqBl2pugXSV4dd+psBifpbTm2wbKSEHXYq87GDoIDN
-         IUC0F2jug2Y1RFhCN6IA8fb4TjgvMFB0Ai+4CG2C7grg41H201Uf3xMnuYpkZdmcweJU
-         3r5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MfphX/3jcL+adOexPe8EyhNRZOELS86em6ZhMXdrk+U=;
-        b=uc/gSLtEkP5lRCDeBvQ3NLO4VVREQMooJ+98i8N0kQn9dj4clL4Oajgu8aYWozKsze
-         vpvBX4eEFlmGGAj0MSytfunjHgUN0CZq/9M5MeGs0C9vjj/jUewb4UucCBSgbxTVoSeK
-         gCyg6ZofdE5uZIP+quiwT0bNRrXEgLNX1Nw43t/2XooTEbAJf9jnJLVwgaCBQJNWqLl4
-         yh5bjD7isX3qZmz1LIQEF6C8DiwfjMqE1DKqXlnIzqR/hMDYLCSS7eOnq9cHwpBU+SGX
-         Q8Zzq1KxAl84l7KzXe9I1ijDD1Thegb9cqBTuIi6GtGCqHS66gK8yKvGzUy+ZaOE7YLG
-         IQfA==
-X-Gm-Message-State: AOAM533Qd1GpS6AIxb3w/IQFHzqEze9BZ+7gsRGVx4cB2Bx1VoDdZD/d
-        aqNHKpW2Cjph0R1PhBVE6CTTIQFo9pPjxIud22k=
-X-Google-Smtp-Source: ABdhPJx7rSYcaqnsQ/tg8lvaK4RV1dU+OYPd71RPP+3dhtFKnlH8fyQpu9DC74w1BCVKi506EhVUr8Ia6vVlsX0BHao=
-X-Received: by 2002:a05:6602:388:: with SMTP id f8mr21209108iov.56.1608723167974;
- Wed, 23 Dec 2020 03:32:47 -0800 (PST)
+        id S1728579AbgLWLfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 06:35:05 -0500
+Received: from mout02.posteo.de ([185.67.36.66]:51099 "EHLO mout02.posteo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728415AbgLWLfE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 06:35:04 -0500
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id 5F8C72400FE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 12:34:06 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1608723246; bh=zw4e+htmhPInAC/8ULoYjG/tSsCu5ivmULEhGDZziVs=;
+        h=Date:From:To:Cc:Subject:From;
+        b=QIRoIDHvUnVRoqYUPvyn/TMHqIVUY9/na6prx4s0KRrO3jLgdjOnz9wSynl0zOWOk
+         qMK0hvQGxJkNyMFNkK33KSqa+VULR0IN4h7Elron/pIdTUu8yoy594tAyZVZ8XBR6X
+         yU/JcgDeypQRLAml9n/0hYa8U3UF6vsKeAMdTzSc6VsAUiFFe1r8eAbht+W+3FM+xo
+         6e3kKU03gFjBX0Hr/u/m1V0puIF7YMEc+9NviCKvB6/7xKqC3+kE27qQDXY9ctHimG
+         5YpnxOw9xuJJCDP1UFFw0UQRZCotFPIXNOFOB8DUUPBZnO+qxDNJew2dr/u214ErA7
+         shvUSwgFS4O9w==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4D1B1S53z9z6tm5;
+        Wed, 23 Dec 2020 12:34:04 +0100 (CET)
+Date:   Wed, 23 Dec 2020 12:34:03 +0100
+From:   Wilken Gottwalt <wilken.gottwalt@posteo.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Subject: [PATCH v5 0/2] hwspinlock: add sun6i hardware spinlock support
+Message-ID: <cover.1608721968.git.wilken.gottwalt@posteo.net>
 MIME-Version: 1.0
-References: <20201218170919.2950-1-jiangshanlai@gmail.com> <CAA42JLa=r5c7_D5K1rHr5Tx5Enrib3rAdFZzajXumCq7-i-Q+g@mail.gmail.com>
-In-Reply-To: <CAA42JLa=r5c7_D5K1rHr5Tx5Enrib3rAdFZzajXumCq7-i-Q+g@mail.gmail.com>
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-Date:   Wed, 23 Dec 2020 19:32:36 +0800
-Message-ID: <CAJhGHyDCD5wK6X40kCNV-AZBSHHC7tK06HATy+CYvvcqvHuE9A@mail.gmail.com>
-Subject: Re: [PATCH -tip V2 00/10] workqueue: break affinity initiatively
-To:     Dexuan-Linux Cui <dexuan.linux@gmail.com>
-Cc:     Dexuan Cui <decui@microsoft.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Qian Cai <cai@redhat.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Hillf Danton <hdanton@sina.com>, Tejun Heo <tj@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 5:39 AM Dexuan-Linux Cui <dexuan.linux@gmail.com> wrote:
->
-> On Fri, Dec 18, 2020 at 8:11 AM Lai Jiangshan <jiangshanlai@gmail.com> wrote:
-> >
-> > From: Lai Jiangshan <laijs@linux.alibaba.com>
-> >
-> > 06249738a41a ("workqueue: Manually break affinity on hotplug")
-> > said that scheduler will not force break affinity for us.
-> >
-> > But workqueue highly depends on the old behavior. Many parts of the codes
-> > relies on it, 06249738a41a ("workqueue: Manually break affinity on hotplug")
-> > is not enough to change it, and the commit has flaws in itself too.
-> >
-> > It doesn't handle for worker detachment.
-> > It doesn't handle for worker attachement, mainly worker creation
-> >   which is handled by Valentin Schneider's patch [1].
-> > It doesn't handle for unbound workers which might be possible
-> > per-cpu-kthread.
-> >
-> > We need to thoroughly update the way workqueue handles affinity
-> > in cpu hot[un]plug, what is this patchset intends to do and
-> > replace the Valentin Schneider's patch [1].  The equivalent patch
-> > is patch 10.
-> >
-> > Patch 1 fixes a flaw reported by Hillf Danton <hdanton@sina.com>.
-> > I have to include this fix because later patches depends on it.
-> >
-> > The patchset is based on tip/master rather than workqueue tree,
-> > because the patchset is a complement for 06249738a41a ("workqueue:
-> > Manually break affinity on hotplug") which is only in tip/master by now.
-> >
-> > And TJ acked to route the series through tip.
-> >
-> > Changed from V1:
-> >         Add TJ's acked-by for the whole patchset
-> >
-> >         Add more words to the comments and the changelog, mainly derived
-> >         from discussion with Peter.
-> >
-> >         Update the comments as TJ suggested.
-> >
-> >         Update a line of code as Valentin suggested.
-> >
-> >         Add Valentin's ack for patch 10 because "Seems alright to me." and
-> >         add Valentin's comments to the changelog which is integral.
-> >
-> > [1]: https://lore.kernel.org/r/ff62e3ee994efb3620177bf7b19fab16f4866845.camel@redhat.com
-> > [V1 patcheset]: https://lore.kernel.org/lkml/20201214155457.3430-1-jiangshanlai@gmail.com/
-> >
-> > Cc: Hillf Danton <hdanton@sina.com>
-> > Cc: Valentin Schneider <valentin.schneider@arm.com>
-> > Cc: Qian Cai <cai@redhat.com>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Vincent Donnefort <vincent.donnefort@arm.com>
-> > Cc: Tejun Heo <tj@kernel.org>
-> >
-> > Lai Jiangshan (10):
-> >   workqueue: restore unbound_workers' cpumask correctly
-> >   workqueue: use cpu_possible_mask instead of cpu_active_mask to break
-> >     affinity
-> >   workqueue: Manually break affinity on pool detachment
-> >   workqueue: don't set the worker's cpumask when kthread_bind_mask()
-> >   workqueue: introduce wq_online_cpumask
-> >   workqueue: use wq_online_cpumask in restore_unbound_workers_cpumask()
-> >   workqueue: Manually break affinity on hotplug for unbound pool
-> >   workqueue: reorganize workqueue_online_cpu()
-> >   workqueue: reorganize workqueue_offline_cpu() unbind_workers()
-> >   workqueue: Fix affinity of kworkers when attaching into pool
-> >
-> >  kernel/workqueue.c | 214 ++++++++++++++++++++++++++++-----------------
-> >  1 file changed, 132 insertions(+), 82 deletions(-)
-> >
-> > --
-> > 2.19.1.6.gb485710b
->
-> Hi,
+Most of the Allwinner sun6i compatible devices contain a spinlock unit
+which can be used to sync access to devices shared between the ARM cores
+and the embedded companion core. According to the datasheets at least 32
+spinlocks are supported. The implementation supports 32, 64, 128 and 256
+spinlock setups, but there is no known SoC yet, which implements more
+than 32 spinlocks.
 
-Hello,
+This driver adds support for this hardware spinlock unit to Linux
+including all 4 possible setups. The driver reports the found setup via
+debugfs. It can be build as a builtin and normal module by using the
+HWSPINLOCK_SUN8I symbol.
 
-thanks for reporting.
+This driver is the first step to enable hwspinlock support in Linux, but
+also requires support in the firmware of the companion core. This patch
+provides the driver and binding documentation but is not yet included
+into the sunxi files. Also not every sunxi seem to have support for this
+hardware, but it can be found in sun6i, sun8i, sun9i and sun50i devices.
 
-I have just been debugging it in a short time, I will continue tomorrow.
+The spinlock hardware has two ways to figure out if a lock is taken. The
+lock can simply be readi, or bits of a 32bit wide status register can be
+checked. The status register only supports the first 32 locks and may
+not cover bigger spinlock setups. Therefore reading/writing a specific
+spinlock is used in the driver for checking the status of a lock.
 
+The status register is now free for debugging/testing purposes and can
+completely bypass the Linux hwspinlock ABI. This status register will be
+used in some additional kernel modules to test the hwspinlock driver.
 
-> I tested this patchset on today's tip.git's master branch
-> (981316394e35 ("Merge branch 'locking/urgent'")).
->
-> Every time the kernel boots with 32 CPUs (I'm running the Linux VM on
-> Hyper-V), I get the below warning.
-> (BTW, with 8 or 16 CPUs, I don't see the warning).
-> By printing the cpumasks with "%*pbl", I know the warning happens because:
-> new_mask = 16-31
-> cpu_online_mask= 0-16
-> cpu_active_mask= 0-15
-> p->nr_cpus_allowed=16
+Testing the driver.
 
+To run all tests it is necessary to take locks on the companion core and
+show on the Linux side that the locks were taken by an external event.
+This can be achived by using an Allwinner SoC which includes an OpenRisc
+companion core and can use the free crust firmware. For this the crust
+firmware needs to be changed to take and release spinlocks (a simple
+MMIO operation on the hwlock registers), which is currently not
+supported by the current crust firmware. The necessary crust fork can
+be found here https://github.com/wgottwalt/crust (hwspinlock branch).
+It is also necessary to build u-boot with support for this crust/SCP
+firmware. This u-boot fork can be found here
+https://github.com/crust-firmware/u-boot (crust branch).
 
-From the call stack, we can see that we are bringing cpu#16 up.
-And workqueue_online_cpu is being called and sched_cpu_activate()
-is not called. So cpu_online_mask= 0-16, cpu_active_mask= 0-15.
+To test this driver it is also necessary to pick a device that is fully
+supported by the crust firmware. For this the H5 based Friendlyarm
+NanoPi NEO2 was used. It is fully supported by u-boot (and the fork),
+the crust firmware (via H5 target) and current Linux kernels. In the
+crust fork it is necessary to go into debug menu of "make nconfig" and
+select the hwspinlock test loop. This debug option enables a loop that
+goes through the first 32 spinlocks. It takes/releases a lock one after
+another using the timeout functions (and hw timers) of the crust
+firmware. A timeout can be set in the debug menu.
 
-Why isn't it legitimate to set the worker's cpumask
-to be new_mask(16-31) since cpu#16 is being brought up?
+Test 1:
 
-Anyway, it revealed there must be a problem in the patchset
-which raised the warning.
+This test was done using a mainline u-boot and a crust enabled u-boot.
+For this a simple second kernel module was used, which can be found here
+https://github.com/wgottwalt/sunxi_hwspinlock/tree/main/test.
 
->
-> 2374         if (p->flags & PF_KTHREAD) {
-> 2375                 /*
-> 2376                  * For kernel threads that do indeed end up on online &&
-> 2377                  * !active we want to ensure they are strict
-> per-CPU threads.
-> 2378                  */
-> 2379                 WARN_ON(cpumask_intersects(new_mask, cpu_online_mask) &&
-> 2380                         !cpumask_intersects(new_mask, cpu_active_mask) &&
-> 2381                         p->nr_cpus_allowed != 1);
-> 2382         }
-> 2383
->
-> (FWIW, it looks like this patchset can fix a panic I noticed during
-> hibernation:
-> https://lkml.org/lkml/2020/12/22/141, though I see the same warning
-> during hibernation.)
->
-> [    1.698042] smp: Bringing up secondary CPUs ...
-> [    1.701707] x86: Booting SMP configuration:
-> [    1.705368] .... node  #0, CPUs:        #1  #2  #3  #4  #5  #6  #7
-> #8  #9 #10 #11 #12 #13 #14 #15
-> [    1.721589] .... node  #1, CPUs:   #16
-> [    1.013388] smpboot: CPU 16 Converting physical 0 to logical die 1
-> [    1.809716] ------------[ cut here ]------------
-> [    1.813553] WARNING: CPU: 16 PID: 90 at kernel/sched/core.c:2381
-> __set_cpus_allowed_ptr+0x19e/0x1b0
-> [    1.813553] Modules linked in:
-> [    1.813553] CPU: 16 PID: 90 Comm: cpuhp/16 Not tainted 5.10.0+ #1
-> [    1.813553] Hardware name: Microsoft Corporation Virtual
-> Machine/Virtual Machine, BIOS 090008  12/07/2018
-> [    1.813553] RIP: 0010:__set_cpus_allowed_ptr+0x19e/0x1b0
-> [    1.813553] Code: e8 e7 a3 39 00 85 c0 74 a7 ba 00 02 00 00 48 c7
-> c6 20 4b 9b 84 4c 89 ff e8 cf a3 39 00 85 c0 75 8f 83 bb a0 03 00 00
-> 01 74 86 <0f> 0b eb 82 e8 49 ba 74 00 66 0f 1f 84 00 00 00 00 00 0f 1f
-> 44 00
-> [    1.813553] RSP: 0000:ffffba9bc1ca7cf8 EFLAGS: 00010016
-> [    1.813553] RAX: 0000000000000000 RBX: ffff98ed48d58000 RCX: 0000000000000008
-> [    1.813553] RDX: 0000000000000200 RSI: ffffffff849b4b20 RDI: ffff98ed48d035a8
-> [    1.813553] RBP: ffff98ed42a2ac00 R08: 0000000000000008 R09: 0000000000000008
-> [    1.813553] R10: ffff98ed48d035a8 R11: ffffffff8484da40 R12: 0000000000000000
-> [    1.813553] R13: 0000000000000010 R14: ffffffff849b4ba0 R15: ffff98ed48d035a8
-> [    1.813553] FS:  0000000000000000(0000) GS:ffff98ee3aa00000(0000)
-> knlGS:0000000000000000
-> [    1.813553] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [    1.813553] CR2: 0000000000000000 CR3: 000000019980a001 CR4: 00000000003706e0
-> [    1.813553] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [    1.813553] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [    1.813553] Call Trace:
-> [    1.813553]  worker_attach_to_pool+0x53/0xd0
-> [    1.813553]  create_worker+0xf9/0x190
-> [    1.813553]  alloc_unbound_pwq+0x3a5/0x3b0
-> [    1.813553]  wq_update_unbound_numa+0x112/0x1c0
-> [    1.813553]  workqueue_online_cpu+0x1d0/0x220
-> [    1.813553]  ? workqueue_prepare_cpu+0x70/0x70
-> [    1.813553]  cpuhp_invoke_callback+0x82/0x4a0
-> [    1.813553]  ? sort_range+0x20/0x20
-> [    1.813553]  cpuhp_thread_fun+0xb8/0x120
-> [    1.813553]  smpboot_thread_fn+0x198/0x230
-> [    1.813553]  kthread+0x13d/0x160
-> [    1.813553]  ? kthread_create_on_node+0x60/0x60
-> [    1.813553]  ret_from_fork+0x22/0x30
-> [    1.813553] ---[ end trace bc73d8bab71235fe ]---
-> [    1.817553]  #17 #18 #19 #20 #21 #22 #23 #24 #25 #26 #27 #28 #29 #30 #31
-> [    1.826499] smp: Brought up 2 nodes, 32 CPUs
-> [    1.833345] smpboot: Max logical packages: 2
-> [    1.833574] smpboot: Total of 32 processors activated (146959.07 BogoMIPS)
->
->
-> Thanks,
-> Dexuan
+Using mainline u-boot it shows that the Linux side correctly takes a
+lock, tries to recursively take a lock again (which does not happen) and
+releases a lock. This is done for all 32 locks several times.
+
+# modprobe sun6i_hwspinlock_test
+[  472.182172] [init]--- SUN6I HWSPINLOCK DRIVER TEST ---
+[  472.187491] [run ]--- testing locks 0 to 31 ---
+[  472.192058] [test] testing lock 0
+[  472.195371] [test]+++ attempt #0 succeded
+[  472.199394] [test]+++ attempt #1 succeded
+[  472.203411] [test]+++ attempt #2 succeded
+[  472.207433] [test] testing lock 1
+[  472.210755] [test]+++ attempt #0 succeded
+...
+[  472.665684] [test]+++ attempt #2 succeded
+[  472.669704] [test] testing lock 31
+[  472.673117] [test]+++ attempt #0 succeded
+[  472.677137] [test]+++ attempt #1 succeded
+[  472.681152] [test]+++ attempt #2 succeded
+
+If the same test is done with the hwspinlock loop enabled crust firmware
+and the crust enabled u-boot fork, the Linux test kernel module hits the
+one lock taken by the crust firmware.
+
+# modprobe sun6i_hwspinlock_test
+...
+[  945.871840] [test]+++ attempt #1 succeded
+[  945.875854] [test]+++ attempt #2 succeded
+[  945.879875] [test] testing lock 18
+[  945.883273] [test]+++ attempt #0 succeded
+[  945.887293] [test]+++ attempt #1 succeded
+[  945.891310] [test]+++ attempt #2 succeded
+[  945.895329] [test] testing lock 19
+[  945.898738] [test] taking lock attempt #0 failed (-16)
+[  945.903886] [run ]--- testing specific lock 19 failed (-14) ---
+[  945.909811] [test] testing lock 20
+[  945.913224] [test]+++ attempt #0 succeded
+[  945.917245] [test]+++ attempt #1 succeded
+[  945.921265] [test]+++ attempt #2 succeded
+[  945.925281] [test] testing lock 21
+[  945.928694] [test]+++ attempt #0 succeded
+[  945.932709] [test]+++ attempt #1 succeded
+...
+
+Test 2:
+
+This is a more complex test which uses the status register to bypass the
+Linux hwspinlock ABI. For this to work a slightly modified driver is
+used. It can be found here
+https://github.com/wgottwalt/sunxi_hwspinlock/tree/main/modified.
+This modified driver splits the 4K memory range into two and leaves the
+status register untouched. It can now be used by another test kernel
+module, which can be found here
+https://github.com/wgottwalt/sunxi_hwspinlock/tree/main/test2.
+It is also necessary to change the device tree entries to get both
+kernel modules working in parallel.
+
+hwspinlock-mod@1c18000 {
+        compatible = "allwinner,sun6i-a31-hwspinlock-mod";
+        reg = <0x01c18000 0x4 0x01c18100 0x400>;
+        clocks = <&ccu CLK_BUS_SPINLOCK>;
+        clock-names = "ahb";
+        resets = <&ccu RST_BUS_SPINLOCK>;
+        reset-names = "ahb";
+        status = "okay";
+};
+
+hwspinlock-stat@1c18010 {
+        compatible = "allwinner,sun6i-a31-hwspinlock-stat";
+        reg = <0x01c18010 0x4>;
+        status = "okay";
+};
+
+The extended test kernel module supports four different modes to test
+the hwspinlocks. Two of them are sufficient to show the spinlock
+mechanism working.
+
+Test 2 Mode 1:
+
+This test reads and prints the status register continuously. The crust
+firmware and the test are set to a hwspinlock timeout of one second. The
+test kernel module code runs a bit slower because of more code executed
+and all the printing. Because of that you can see how one lock is missed
+completely between entry 8 and 9.
+
+# modprobe sun6i_hwspinlock_test2 mode=1 loops=10
+[  179.611838] [init]--- SUN6I HWSPINLOCK DRIVER ENHANCED TEST ---
+[  179.618114] [sreg] 10000000_00000000_00000000_00000000
+[  180.643989] [sreg] 01000000_00000000_00000000_00000000
+[  181.668006] [sreg] 00100000_00000000_00000000_00000000
+[  182.691985] [sreg] 00010000_00000000_00000000_00000000
+[  183.715985] [sreg] 00001000_00000000_00000000_00000000
+[  184.739987] [sreg] 00000100_00000000_00000000_00000000
+[  185.763986] [sreg] 00000010_00000000_00000000_00000000
+[  186.787985] [sreg] 00000001_00000000_00000000_00000000
+[  187.811985] [sreg] 00000000_01000000_00000000_00000000
+[  188.835985] [sreg] 00000000_00100000_00000000_00000000
+
+Test 2 Mode 3:
+
+This test combines the Linux hwspinlock ABI approach from the first test
+and the status register access. The "after" reads show the locks taken
+by both sides until the Linux hwspinlock driver tries to take the lock
+taken by the crust firmware.
+
+# modprobe sun6i_hwspinlock_test2 mode=3
+[  454.734821] [init]--- SUN6I HWSPINLOCK DRIVER ENHANCED TEST ---
+...
+[  455.897153] [test]+++ attempt #1 succeded
+[  455.901178] [sreg] before take 00000000_00000000_00000000_00100000
+[  455.907372] [sreg] after take 00000000_00000000_00000000_01100000
+[  455.913478] [sreg] after recursive take 00000000_00000000_00000000_01100000
+[  455.920455] [sreg] after untake 00000000_00000000_00000000_00100000
+[  455.926721] [test]+++ attempt #2 succeded
+[  455.930741] [test] testing lock 26
+[  455.934157] [sreg] before take 00000000_00000000_00000000_00100000
+[  455.940345] [test] taking lock attempt #0 failed (-16)
+[  455.945492] [run ]--- testing specific lock 26 failed (-14) ---
+[  455.951419] [test] testing lock 27
+[  455.954836] [sreg] before take 00000000_00000000_00000000_00100000
+[  455.961034] [sreg] after take 00000000_00000000_00000000_00110000
+[  455.967135] [sreg] after recursive take 00000000_00000000_00000000_00110000
+[  455.974109] [sreg] after untake 00000000_00000000_00000000_00100000
+[  455.980375] [test]+++ attempt #0 succeded
+[  455.984400] [sreg] before take 00000000_00000000_00000000_00100000
+
+This patch adds:
+- hwspinlock driver sun6i_hwspinlock
+- updates makefiles
+- hwspinlock dt bindings documentation
+- updates MAINTAINERS
+
+Signed-off-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
+
+Changes in v5:
+  - changed symbols to earliest known supported SoC (A31)
+  - simplified dt documentation
+  - fixed several types
+  - updated test description
+  - changed init back to classic probe/remove callbacks
+
+Changes in v4:
+  - changed binding from sun8i-hwspinlock to sun8i-a33-hwspinlock
+  - fixed several issues in the dt documentation
+  - further simplified driver
+  - fixed an add_action_and_reset_* function issue
+  - fixed some typos
+
+Changes in v3:
+  - moved test description to cover letter
+  - changed name and symbols from sunxi to sun8i
+  - improved driver description
+  - further simplified driver
+  - fully switched to devm_* and devm_add_action_* functions
+
+Changes in v2:
+  - redone coverletter
+  - fixed ranges in the device tree description
+  - added suggestions from Bjorn Andersson and Maxime Ripard to the driver
+  - provided better driver and test description
+
+Wilken Gottwalt (2):
+  dt-bindings: hwlock: add sun6i_hwspinlock
+  hwspinlock: add sun6i hardware spinlock support
+
+ .../bindings/hwlock/sun6i-a31-hwspinlock.yaml |  44 ++++
+ MAINTAINERS                                   |   6 +
+ drivers/hwspinlock/Kconfig                    |   9 +
+ drivers/hwspinlock/Makefile                   |   1 +
+ drivers/hwspinlock/sun6i_hwspinlock.c         | 214 ++++++++++++++++++
+ 5 files changed, 274 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/hwlock/sun6i-a31-hwspinlock.yaml
+ create mode 100644 drivers/hwspinlock/sun6i_hwspinlock.c
+
+-- 
+2.29.2
+
