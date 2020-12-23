@@ -2,86 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D55D62E1FA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 18:00:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 417212E1FA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 18:00:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726615AbgLWRAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 12:00:23 -0500
-Received: from mail-pl1-f170.google.com ([209.85.214.170]:34504 "EHLO
-        mail-pl1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725807AbgLWRAX (ORCPT
+        id S1727006AbgLWRAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 12:00:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726626AbgLWRAj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 12:00:23 -0500
-Received: by mail-pl1-f170.google.com with SMTP id t6so9426640plq.1;
-        Wed, 23 Dec 2020 09:00:07 -0800 (PST)
+        Wed, 23 Dec 2020 12:00:39 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2699FC06179C
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 08:59:58 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id m5so77415pjv.5
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 08:59:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=G8haU6BgXULIrV8nV+mOGhVrtDsLgWYDMHodNPq2c+k=;
+        b=nxPF6DLi6PTF0R1avGovdGl1yW4NZ8C/usi9HXWThHlIk3eOQOakcdVAxyVpWPeTb4
+         hRUF9h797fyDzMLZrR5R67Rn8/aPmRk8aNiI6SJP0fqqgn1PymMpQy2ILAHN2gMyjef4
+         Cgun7GK5wQGeJzB4iOZGUjuqJj2hWsNonS4uyEGEbcamplVyUZ9aXFwl3HGW2ypZwT9+
+         21Xn2uDfssm05OHOinVd9t+3nRpXfXre6mcx7gX1TUChiVl7YdsYcxlZZ05JbyfJLB4P
+         swIXgLROgVYIZFem4Z+BPeH/bni5xVKztZ9/KwgU5fuLQrojhgnyGvlDZ3s6sw4o6aZM
+         Hr0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=C5J0im/g/lziWkOXhLJMkLHB39Y3IwOJRzVpXSFIMwo=;
-        b=b7FVHvlxZxgfeH70dfJLxtdeSo+wXThcBKdgGERIWTOI5L5I1oCrHxVRjOc/QM1QE/
-         XAZAYx/wf7IF2iqzGrel57kS4MBRpvgE3bjjhJYqsjnoAruEN53BxmkKkrPF0g2qdGkO
-         ixsyUqwkR6jEICWv3js50/+qXyuUzI6gC0A8/uDEKn8GtxscNMx5Qzgo+A0TMH6dqZCS
-         xNK5h/7r2b+Gp3XbHeUFV61UPPOj75yu+JJyGhXQutlba/I4oA5B884Ml5mEJ2d/0+GV
-         lIyddkVteXIkfbDepHQANFZw4pEZO0sMA5ChirvtOp+zWZO6TIzVzmtM6A7PsmFGUFR8
-         vt8g==
-X-Gm-Message-State: AOAM531qEV/o/DkBQufxCKDOg4WbBhtGy0QWM3+2HtCqwO8AVgje3Xpe
-        U3z/lcw+7lrt1sI2v2O50g69mS/yoxM=
-X-Google-Smtp-Source: ABdhPJzqv31c8q2ac9TtdhmNSe0N38boCxuCdDiKIhDRPStVefyp5/WAIeJm9xrsMsbN4NqKKvm8qw==
-X-Received: by 2002:a17:902:523:b029:dc:1aa4:28e7 with SMTP id 32-20020a1709020523b02900dc1aa428e7mr26256507plf.4.1608742781850;
-        Wed, 23 Dec 2020 08:59:41 -0800 (PST)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id b10sm24081106pgh.15.2020.12.23.08.59.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Dec 2020 08:59:40 -0800 (PST)
-Subject: Re: [PATCH v1 0/5] dm: dm-user: New target that proxies BIOs to
- userspace
-To:     Christoph Hellwig <hch@infradead.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     snitzer@redhat.com, josef@toxicpanda.com, corbet@lwn.net,
-        kernel-team@android.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
-        song@kernel.org, dm-devel@redhat.com,
-        linux-kselftest@vger.kernel.org, shuah@kernel.org, agk@redhat.com,
-        michael.christie@oracle.com
-References: <20201222143616.GB12885@redhat.com>
- <mhng-26d96d8e-77aa-415b-a8ee-518a0e91b6ef@palmerdabbelt-glaptop>
- <20201223074850.GA15369@infradead.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <8f09b196-0977-3b81-2bfe-4a97b1e0e3aa@acm.org>
-Date:   Wed, 23 Dec 2020 08:59:38 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=G8haU6BgXULIrV8nV+mOGhVrtDsLgWYDMHodNPq2c+k=;
+        b=AFuRI3PHXPCVI0hAPx2FTQB2MSeepIZzb0qYjq0ULKFLF+huAVCauM5d6Xo3mSKI4E
+         XeY3SkY7aEtiZcyZn+SNvPvUKn4Dv/kCKzkQvEC0i/lvV2jjvGEEPzHYSkSWIYEYwYFN
+         9xV/ddaWT6LBOtWQ1kynupwZ2GUGeOlgDT3DRIdeTQyQQ3Pv4mGoMaA6O3qyFJkPiBUQ
+         gw6rTNUaVKH+cQEBSCv90lOWny0M9lsy3CjCuyVQ/A9ijPeTu7XbrqaMKFwDYa4cqxtd
+         zDGsNxdAUKWYqfIUVBYZeJNJWqI1H4H3lvXOqoQ18LB2xMbmDxiGpdRoN6qieIYkuLOw
+         XvEw==
+X-Gm-Message-State: AOAM532Pn+Q05dbYY/JAO7ORnlBzOT4q6DqxSyuqNPBHbm4Xd/l/EqTB
+        dBJzH0Igj0vw7G9jr7LRXXgNkMprzGZpyg==
+X-Google-Smtp-Source: ABdhPJwrxbMbXNCeVLzSh02VxbXirb6C3y1Atdo4OBb9bMh8QwovcHwhyJG3rO4RvsGQ8ZU5NM09Sw==
+X-Received: by 2002:a17:902:34f:b029:dc:3032:e47d with SMTP id 73-20020a170902034fb02900dc3032e47dmr23626341pld.15.1608742798161;
+        Wed, 23 Dec 2020 08:59:58 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id h20sm24177929pgv.23.2020.12.23.08.59.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Dec 2020 08:59:57 -0800 (PST)
+Date:   Wed, 23 Dec 2020 08:59:51 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     David Laight <David.Laight@aculab.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "syzbot+e87846c48bf72bc85311@syzkaller.appspotmail.com" 
+        <syzbot+e87846c48bf72bc85311@syzkaller.appspotmail.com>
+Subject: Re: [PATCH] KVM: x86: fix shift out of bounds reported by UBSAN
+Message-ID: <X+N3h9b5ieAxl6n/@google.com>
+References: <20201222102132.1920018-1-pbonzini@redhat.com>
+ <X+I3SFzLGhEZIzEa@google.com>
+ <01b7c21e3a864c0cb89fd036ebe03ccf@AcuMS.aculab.com>
+ <64932096-22a8-27dd-a8d6-1e40f3119db4@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20201223074850.GA15369@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <64932096-22a8-27dd-a8d6-1e40f3119db4@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/22/20 11:48 PM, Christoph Hellwig wrote:
-> FYI, a few years ago I spent some time helping a customer to prepare
-> their block device in userspace using fuse code for upstreaming, but
-> at some point they abandoned the project.  But if for some reason we
-> don't want to use nbd I think a driver using the fuse infrastructure
-> would be the next logical choice.
+On Tue, Dec 22, 2020, Paolo Bonzini wrote:
+> On 22/12/20 19:31, David Laight wrote:
+> > > 	/*
+> > > 	 * Use 2ULL to incorporate the necessary +1 in the shift; adding +1 in
+> > > 	 * the shift count will overflow SHL's max shift of 63 if s=0 and e=63.
+> > > 	 */
+> > A comment of the desired output value would be more use.
+> > I think it is:
+> > 	return 'e-s' ones followed by 's' zeros without shifting by 64.
+> > 
+> 
+> What about a mix of the two:
+> 
+> 	/*
+> 	 * Return 'e-s' ones followed by 's' zeros.  Note that the
+> 	 * apparently obvious 1ULL << (e - s + 1) can shift by 64 if
+> 	 * s=0 and e=63, which is undefined behavior.
+> 	 */
 
-Hi Christoph,
-
-Thanks for having shared this information. Since I'm not familiar with the
-FUSE code: does this mean translating block device accesses into FUSE_READ
-and FUSE_WRITE messages? Does the FUSE kernel code only support exchanging
-such messages between kernel and user space via the read() and write()
-system calls? I'm asking this since there is already an interface in the
-Linux kernel for implementing block devices in user space that uses another
-approach, namely a ring buffer for messages and data that is shared between
-kernel and user space (documented in Documentation/target/tcmu-design.rst).
-Is one system call per read and per write operation fast enough for all
-block-device-in-user-space implementations?
-
-Thanks,
-
-Bart.
+Works for me, thanks!
