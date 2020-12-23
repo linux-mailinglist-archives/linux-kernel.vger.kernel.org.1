@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B051A2E120C
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:20:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DAE02E120D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:20:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727942AbgLWCSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:18:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45508 "EHLO mail.kernel.org"
+        id S1728055AbgLWCS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:18:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45396 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727828AbgLWCSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:18:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C951221E5;
-        Wed, 23 Dec 2020 02:17:11 +0000 (UTC)
+        id S1727898AbgLWCSX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:18:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E2A472222A;
+        Wed, 23 Dec 2020 02:17:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608689832;
-        bh=yYA+MGHW/+TtHZWGYi2rBWDMZ0naSYSzdR8S3kuTsrE=;
+        s=k20201202; t=1608689836;
+        bh=55FbdZozjY9wsOB2yAn394jO2YjjJI+sp8UYjuYc7aM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Zx88YomxhB5Kw3zBAtaWmBB89/MDI996ICvSEIdBZOwjXIC0HGzfMjdtAY1NMb85g
-         igmGvEjO97wKIMgFBJ65iDmEeZaJoch8Kb08niOkvZPLHSNvBmTwrVaIGO4f+VtFG2
-         8jbWOA83UvJy0r7wWUkCBusH+todr5v/fwfPRzdAXehUYXWYu7W7BT5NS/AwA4Youz
-         1Nsysa+Gr/bEj9+Ro3L6ZpnL9ZD+qdykaulDcEvuwdLSzgaRoOU0ekbZnHIMzz6E4h
-         0C3tNJZVqC8VN3zNpjDGbIERrTMqJQNXp7SfpGS8No0gTfT/VuEUpcU/8IJwoehvcY
-         Tx1i+DMNRe/3Q==
+        b=LdHLz//Al/C241hU3rDkSn10rFYH9hiA4pdHL0GR3DtXbLpFxxqVDR4TTLZXubdEC
+         xBA/C2lpN1fJLHh4TACxlrZTCQr4kqKXh/x+/aR0991oPjm5IrCboXGNC4GEOFqJVu
+         cQ/82fCrwDXGR6e4TCu+8s5oV4QayAmLxoEJiAH6HYK+REaju0ZTJsSBbbJqsCczPa
+         +4S2u1M5l5ByVsFxDer8Muug10uE2MvqRUrfoI5/I7+v0fAT4b4GTlfjS8N6sJQ1Ep
+         SFyU5EeHAYS8/GgFq8tMWfs6HImCKR3M6yc2XJuJ1+fleiUNZjg9WMUh8cnE4nNRBd
+         THWO3sbxPfF2w==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean huo <beanhuo@micron.com>, Can Guo <cang@codeaurora.org>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.10 034/217] scsi: ufs: Allow an error return value from ->device_reset()
-Date:   Tue, 22 Dec 2020 21:13:23 -0500
-Message-Id: <20201223021626.2790791-34-sashal@kernel.org>
+Cc:     Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 037/217] mac80211: don't overwrite QoS TID of injected frames
+Date:   Tue, 22 Dec 2020 21:13:26 -0500
+Message-Id: <20201223021626.2790791-37-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223021626.2790791-1-sashal@kernel.org>
 References: <20201223021626.2790791-1-sashal@kernel.org>
@@ -47,111 +43,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adrian Hunter <adrian.hunter@intel.com>
+From: Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>
 
-[ Upstream commit 151f1b664ffbb847c7fbbce5a5b8580f1b9b1d98 ]
+[ Upstream commit 527d675969a1dff17baa270d4447ac1c87058299 ]
 
-It is simpler for drivers to provide a ->device_reset() callback
-irrespective of whether the GPIO, or firmware interface necessary to do the
-reset, is discovered during probe.
+Currently ieee80211_set_qos_hdr sets the QoS TID of all frames based
+on the value assigned to skb->priority. This means it will also
+overwrite the QoS TID of injected frames. The commit 753ffad3d624
+("mac80211: fix TID field in monitor mode transmit") prevented
+injected frames from being modified because of this by setting
+skb->priority to the TID of the injected frame, which assured the
+QoS TID will not be changed to a different value. Unfortunately,
+this workaround complicates the handling of injected frames because
+we can't set skb->priority without affecting the TID value in the
+QoS field of injected frames.
 
-Change ->device_reset() to return an error code.  Drivers that provide the
-callback, but do not do the reset operation should return -EOPNOTSUPP.
+To avoid this, and to simplify the next patch, detect if a frame is
+injected in ieee80211_set_qos_hdr and if so do not change its QoS
+field.
 
-Link: https://lore.kernel.org/r/20201103141403.2142-3-adrian.hunter@intel.com
-Reviewed-by: Asutosh Das <asutoshd@codeaurora.org>
-Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
-Reviewed-by: Bean huo <beanhuo@micron.com>
-Reviewed-by: Can Guo <cang@codeaurora.org>
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>
+Link: https://lore.kernel.org/r/20201104061823.197407-4-Mathy.Vanhoef@kuleuven.be
+[fix typos in commit message]
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/ufs/ufs-mediatek.c |  4 +++-
- drivers/scsi/ufs/ufs-qcom.c     |  6 ++++--
- drivers/scsi/ufs/ufshcd.h       | 11 +++++++----
- 3 files changed, 14 insertions(+), 7 deletions(-)
+ net/mac80211/tx.c  | 5 +----
+ net/mac80211/wme.c | 8 ++++++++
+ 2 files changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/scsi/ufs/ufs-mediatek.c b/drivers/scsi/ufs/ufs-mediatek.c
-index 8df73bc2f8cb2..914a827a93ee8 100644
---- a/drivers/scsi/ufs/ufs-mediatek.c
-+++ b/drivers/scsi/ufs/ufs-mediatek.c
-@@ -743,7 +743,7 @@ static int ufs_mtk_link_startup_notify(struct ufs_hba *hba,
- 	return ret;
- }
+diff --git a/net/mac80211/tx.c b/net/mac80211/tx.c
+index 56a4d0d20a267..bedb9d85f3d65 100644
+--- a/net/mac80211/tx.c
++++ b/net/mac80211/tx.c
+@@ -2279,10 +2279,7 @@ netdev_tx_t ieee80211_monitor_start_xmit(struct sk_buff *skb,
+ 						    payload[7]);
+ 	}
  
--static void ufs_mtk_device_reset(struct ufs_hba *hba)
-+static int ufs_mtk_device_reset(struct ufs_hba *hba)
- {
- 	struct arm_smccc_res res;
+-	/*
+-	 * Initialize skb->priority for QoS frames. This is put in the TID field
+-	 * of the frame before passing it to the driver.
+-	 */
++	/* Initialize skb->priority for QoS frames */
+ 	if (ieee80211_is_data_qos(hdr->frame_control)) {
+ 		u8 *p = ieee80211_get_qos_ctl(hdr);
+ 		skb->priority = *p & IEEE80211_QOS_CTL_TAG1D_MASK;
+diff --git a/net/mac80211/wme.c b/net/mac80211/wme.c
+index 2fb99325135a0..b74cd9bd5f95e 100644
+--- a/net/mac80211/wme.c
++++ b/net/mac80211/wme.c
+@@ -249,6 +249,14 @@ void ieee80211_set_qos_hdr(struct ieee80211_sub_if_data *sdata,
  
-@@ -764,6 +764,8 @@ static void ufs_mtk_device_reset(struct ufs_hba *hba)
- 	usleep_range(10000, 15000);
+ 	p = ieee80211_get_qos_ctl(hdr);
  
- 	dev_info(hba->dev, "device reset done\n");
++	/* don't overwrite the QoS field of injected frames */
++	if (info->flags & IEEE80211_TX_CTL_INJECTED) {
++		/* do take into account Ack policy of injected frames */
++		if (*p & IEEE80211_QOS_CTL_ACK_POLICY_NOACK)
++			info->flags |= IEEE80211_TX_CTL_NO_ACK;
++		return;
++	}
 +
-+	return 0;
- }
- 
- static int ufs_mtk_link_set_hpm(struct ufs_hba *hba)
-diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
-index f9d6ef3565407..a244c8ae1b4eb 100644
---- a/drivers/scsi/ufs/ufs-qcom.c
-+++ b/drivers/scsi/ufs/ufs-qcom.c
-@@ -1421,13 +1421,13 @@ static void ufs_qcom_dump_dbg_regs(struct ufs_hba *hba)
-  *
-  * Toggles the (optional) reset line to reset the attached device.
-  */
--static void ufs_qcom_device_reset(struct ufs_hba *hba)
-+static int ufs_qcom_device_reset(struct ufs_hba *hba)
- {
- 	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
- 
- 	/* reset gpio is optional */
- 	if (!host->device_reset)
--		return;
-+		return -EOPNOTSUPP;
+ 	/* set up the first byte */
  
  	/*
- 	 * The UFS device shall detect reset pulses of 1us, sleep for 10us to
-@@ -1438,6 +1438,8 @@ static void ufs_qcom_device_reset(struct ufs_hba *hba)
- 
- 	gpiod_set_value_cansleep(host->device_reset, 0);
- 	usleep_range(10, 15);
-+
-+	return 0;
- }
- 
- #if IS_ENABLED(CONFIG_DEVFREQ_GOV_SIMPLE_ONDEMAND)
-diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-index e0f00a42371c5..de97971e2d865 100644
---- a/drivers/scsi/ufs/ufshcd.h
-+++ b/drivers/scsi/ufs/ufshcd.h
-@@ -318,7 +318,7 @@ struct ufs_hba_variant_ops {
- 	int     (*resume)(struct ufs_hba *, enum ufs_pm_op);
- 	void	(*dbg_register_dump)(struct ufs_hba *hba);
- 	int	(*phy_initialization)(struct ufs_hba *);
--	void	(*device_reset)(struct ufs_hba *hba);
-+	int	(*device_reset)(struct ufs_hba *hba);
- 	void	(*config_scaling_param)(struct ufs_hba *hba,
- 					struct devfreq_dev_profile *profile,
- 					void *data);
-@@ -1181,9 +1181,12 @@ static inline void ufshcd_vops_dbg_register_dump(struct ufs_hba *hba)
- static inline void ufshcd_vops_device_reset(struct ufs_hba *hba)
- {
- 	if (hba->vops && hba->vops->device_reset) {
--		hba->vops->device_reset(hba);
--		ufshcd_set_ufs_dev_active(hba);
--		ufshcd_update_reg_hist(&hba->ufs_stats.dev_reset, 0);
-+		int err = hba->vops->device_reset(hba);
-+
-+		if (!err)
-+			ufshcd_set_ufs_dev_active(hba);
-+		if (err != -EOPNOTSUPP)
-+			ufshcd_update_reg_hist(&hba->ufs_stats.dev_reset, err);
- 	}
- }
- 
 -- 
 2.27.0
 
