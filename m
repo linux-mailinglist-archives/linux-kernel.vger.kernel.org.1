@@ -2,161 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 803442E1AC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 11:09:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7783E2E1AC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 11:12:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728560AbgLWKHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 05:07:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728214AbgLWKHQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 05:07:16 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6C67C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 02:06:35 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id i18so14651981ioa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 02:06:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TsZfeXRM1ReVd7eBjQcIMfaYnF6JpJXqu5pz2p0wGEQ=;
-        b=CNmoLodAEpv7gOwb8VpGyiCO30xoo2vCseCl7Eji3i9ZVItKzd5J+ZHmP4Q90yW9SF
-         v9/P4uSVz7jVdIkY/Q7aJORA3LOHdltQkbnFMryoxugSt3lIs3VvpBheK+VoEHaroXxq
-         GrILcIEPhED0FYieTZbeY6px2c/7Y+7nHdeWGGqdoSpqu0F+ojsemeGhHiIY8iO5KauO
-         vYeFCrHb+nlpRHSDYs+V3QZIxHwep2HohggzXgELErQKjWM2g8p/N9RjYIY+sOMCzknf
-         W/tq16osSog5ItcqmtldMo0KTddd4OEAdZzG2SgrPWKfdkqAfUfij21WlwmTwR4h8ro5
-         yNXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TsZfeXRM1ReVd7eBjQcIMfaYnF6JpJXqu5pz2p0wGEQ=;
-        b=dnSYf+dfktJ7g/eVurdqqgZbAlCXL/+USBHy0kPn/E+t6On8HqjpOabmdS2WdXJmYQ
-         jteo+1Lscs8inVEkB8TCOSnkrFVEdFDs6CHlz0fFhaRqvoDbjxjEzHGRsFq+hGHy/zqT
-         yD9o3x/lxAGbew98d9vvFOUPVOi6Xey/9WYlQN9hjeKHCZxcNJ3ZvDbJLWBGkXY5+KO/
-         LjL0+nfRGdn8cyJoPFtlNpPg2fKR2X2CMj8f8QROFGWXwBCaX/UBoKcBA6jejeTzxvSo
-         tbP/fWp6XF6TbDZePZa5f2hPc9AOOCNQOd8Rguc9UNDOBUKVQ18xAckfRAjB1ylUepSd
-         l6LQ==
-X-Gm-Message-State: AOAM531gMU0EvNQuQAHjvDjpfS71umHDBKgCzemh9DT0UTmIhIJ4Qetb
-        vv0ebTSHTz6VbH6RBE7t0V5u+w==
-X-Google-Smtp-Source: ABdhPJzBINtZwYQUDT2fyB7vaQAbu2xabNp/ZkzWZgkh5VIkMKAYi1A0wfAjRz9FwcP8I8BS4yHZEQ==
-X-Received: by 2002:a05:6602:387:: with SMTP id f7mr21085021iov.209.1608717994800;
-        Wed, 23 Dec 2020 02:06:34 -0800 (PST)
-Received: from google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
-        by smtp.gmail.com with ESMTPSA id 12sm17304825ily.42.2020.12.23.02.06.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Dec 2020 02:06:34 -0800 (PST)
-Date:   Wed, 23 Dec 2020 03:06:30 -0700
-From:   Yu Zhao <yuzhao@google.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        linux-mm <linux-mm@kvack.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable <stable@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-Message-ID: <X+MWppLjiR7hLgg9@google.com>
-References: <20201221223041.GL6640@xz-x1>
- <CAHk-=wh-bG4thjXUekLtrCg8FRrdWjtT40ibXXLSm_hzQG8eOw@mail.gmail.com>
- <CALCETrV=8tY7h=aaudWBEn-MJnNkm2wz5qjH49SYqwkjYTpOaA@mail.gmail.com>
- <X+JJqK91plkBVisG@redhat.com>
- <X+JhwVX3s5mU9ZNx@google.com>
- <X+Js/dFbC5P7C3oO@redhat.com>
- <X+KDwu1PRQ93E2LK@google.com>
- <CAHk-=wiBWkgxLtwD7n01irD7hTQzuumtrqCkxxZx=6dbiGKUqQ@mail.gmail.com>
- <CAHk-=wjG7xx7Gsb=K0DteB1SPcKjus02zY2gFUoxMY5mm7tfsA@mail.gmail.com>
- <CAHk-=wjNv1GQn+8stK419HAqK0ofkJ1vOR9YSWSNjbW3T5as9A@mail.gmail.com>
+        id S1728371AbgLWKLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 05:11:45 -0500
+Received: from mga06.intel.com ([134.134.136.31]:6877 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728214AbgLWKLo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 05:11:44 -0500
+IronPort-SDR: +Nt7X/0Cc04cuO2hEDAs2hFDTPCyr7baQU1mSW3Q7U/y5rlYJa71Q3A9jPCzuuiK+OGuBZxV+O
+ lbutTWspXC+A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9843"; a="237554434"
+X-IronPort-AV: E=Sophos;i="5.78,441,1599548400"; 
+   d="scan'208";a="237554434"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Dec 2020 02:09:59 -0800
+IronPort-SDR: ZVdrO9nG7xzKLhM7QSvFAzVsLK1/FyPy8bPAawVG5tUoYDsKFYf9wyPsBvvzZJ6JkCrU8+Vr3v
+ VXn0EiQdL2kg==
+X-IronPort-AV: E=Sophos;i="5.78,441,1599548400"; 
+   d="scan'208";a="417147655"
+Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.209.13]) ([10.254.209.13])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Dec 2020 02:09:56 -0800
+Cc:     baolu.lu@linux.intel.com, kevin.tian@intel.com,
+        ashok.raj@intel.com, jun.j.tian@intel.com, yi.y.sun@intel.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] iommu/vt-d: Fix ineffective devTLB invalidation
+ for subdevices
+To:     Liu Yi L <yi.l.liu@intel.com>, joro@8bytes.org, will@kernel.org,
+        jacob.jun.pan@linux.intel.com
+References: <20201223062720.29364-1-yi.l.liu@intel.com>
+ <20201223062720.29364-4-yi.l.liu@intel.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <176f7835-a5cf-e049-22b7-724636f74af0@linux.intel.com>
+Date:   Wed, 23 Dec 2020 18:09:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjNv1GQn+8stK419HAqK0ofkJ1vOR9YSWSNjbW3T5as9A@mail.gmail.com>
+In-Reply-To: <20201223062720.29364-4-yi.l.liu@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 01:44:42AM -0800, Linus Torvalds wrote:
-> On Tue, Dec 22, 2020 at 4:01 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > The more I look at the mprotect code, the less I like it. We seem to
-> > be much better about the TLB flushes in other places (looking at
-> > mremap, for example). The mprotect code seems to be very laissez-faire
-> > about the TLB flushing.
-> 
-> No, this doesn't help.
-> 
-> > Does adding a TLB flush to before that
-> >
-> >         pte_unmap_unlock(pte - 1, ptl);
-> >
-> > fix things for you?
-> 
-> It really doesn't fix it. Exactly because - as pointed out earlier -
-> the actual page *copy* happens outside the pte lock.
+Hi Yi,
 
-I appreciate all the pointers. It seems to me it does.
+On 2020/12/23 14:27, Liu Yi L wrote:
+> iommu_flush_dev_iotlb() is called to invalidate caches on device. It only
+> loops the devices which are full-attached to the domain. For sub-devices,
+> this is ineffective. This results in invalid caching entries left on the
+> device. Fix it by adding loop for subdevices as well. Also, the domain->
+> has_iotlb_device needs to be updated when attaching to subdevices.
+> 
+> Fixes: 67b8e02b5e761 ("iommu/vt-d: Aux-domain specific domain attach/detach")
+> Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
+> ---
+>   drivers/iommu/intel/iommu.c | 63 +++++++++++++++++++++++++++----------
+>   1 file changed, 47 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+> index acfe0a5b955e..e97c5ac1d7fc 100644
+> --- a/drivers/iommu/intel/iommu.c
+> +++ b/drivers/iommu/intel/iommu.c
+> @@ -726,6 +726,8 @@ static int domain_update_device_node(struct dmar_domain *domain)
+>   	return nid;
+>   }
+>   
+> +static void domain_update_iotlb(struct dmar_domain *domain);
+> +
+>   /* Some capabilities may be different across iommus */
+>   static void domain_update_iommu_cap(struct dmar_domain *domain)
+>   {
+> @@ -739,6 +741,8 @@ static void domain_update_iommu_cap(struct dmar_domain *domain)
+>   	 */
+>   	if (domain->nid == NUMA_NO_NODE)
+>   		domain->nid = domain_update_device_node(domain);
+> +
+> +	domain_update_iotlb(domain);
+>   }
+>   
+>   struct context_entry *iommu_context_addr(struct intel_iommu *iommu, u8 bus,
+> @@ -1459,6 +1463,18 @@ iommu_support_dev_iotlb (struct dmar_domain *domain, struct intel_iommu *iommu,
+>   	return NULL;
+>   }
+>   
+> +static bool dev_iotlb_enabled(struct device_domain_info *info)
+> +{
+> +	struct pci_dev *pdev;
+> +
+> +	if (!info->dev || !dev_is_pci(info->dev))
+> +		return false;
+> +
+> +	pdev = to_pci_dev(info->dev);
+> +
+> +	return !!pdev->ats_enabled;
+> +}
 
-> So what can happen is:
-> 
->  - CPU 1 holds the page table lock, while doing the write protect. It
-> has cleared the writable bit, but hasn't flushed the TLB's yet
-> 
->  - CPU 2 did *not* have the TLB entry, sees the new read-only state,
-> takes a COW page fault, and reads the PTE from memory (into
-> vmf->orig_pte)
+I know this is just separated from below function. But isn't "(info &&
+info->ats_enabled)" is enough?
 
-In handle_pte_fault(), we lock page table and check pte_write(), so
-we either see a RW pte before CPU 1 runs or a RO one with no stale tlb
-entries after CPU 1 runs, assume CPU 1 flushes tlb while holding the
-same page table lock (not mmap_lock).
+> +
+>   static void domain_update_iotlb(struct dmar_domain *domain)
+>   {
+>   	struct device_domain_info *info;
+> @@ -1466,17 +1482,20 @@ static void domain_update_iotlb(struct dmar_domain *domain)
+>   
+>   	assert_spin_locked(&device_domain_lock);
+>   
+> -	list_for_each_entry(info, &domain->devices, link) {
+> -		struct pci_dev *pdev;
+> -
+> -		if (!info->dev || !dev_is_pci(info->dev))
+> -			continue;
+> -
+> -		pdev = to_pci_dev(info->dev);
+> -		if (pdev->ats_enabled) {
+> +	list_for_each_entry(info, &domain->devices, link)
+> +		if (dev_iotlb_enabled(info)) {
+>   			has_iotlb_device = true;
+>   			break;
+>   		}
+> +
+> +	if (!has_iotlb_device) {
+> +		struct subdev_domain_info *sinfo;
+> +
+> +		list_for_each_entry(sinfo, &domain->subdevices, link_domain)
+> +			if (dev_iotlb_enabled(get_domain_info(sinfo->pdev))) {
 
->  - CPU 2 correctly decides it needs to be a COW, and copies the page contents
-> 
->  - CPU 3 *does* have a stale TLB (because TLB invalidation hasn't
-> happened yet), and writes to that page in users apce
-> 
->  - CPU 1 now does the TLB invalidate, and releases the page table lock
-> 
->  - CPU 2 gets the page table lock, sees that its PTE matches
-> vmf->orig_pte, and switches it to be that writable copy of the page.
-> 
-> where the copy happened before CPU 3 had stopped writing to the page.
-> 
-> So the pte lock doesn't actually matter, unless we actually do the
-> page copy inside of it (on CPU2), in addition to doing the TLB flush
-> inside of it (on CPU1).
-> 
-> mprotect() is actually safe for two independent reasons: (a) it does
-> the mmap_sem for writing (so mprotect can't race with the COW logic at
-> all), and (b) it changes the vma permissions so turning something
-> read-only actually disables COW anyway, since it won't be a COW, it
-> will be a SIGSEGV.
-> 
-> So mprotect() is irrelevant, other than the fact that it shares some
-> code with that "turn it read-only in the page tables".
-> 
-> fork() is a much closer operation, in that it actually triggers that
-> COW behavior, but fork() takes the mmap_sem for writing, so it avoids
-> this too.
-> 
-> So it's really just userfaultfd and that kind of ilk that is relevant
-> here, I think. But that "you need to flush the TLB before releasing
-> the page table lock" was not true (well, it's true in other
-> circumstances - just not *here*), and is not part of the solution.
-> 
-> Or rather, if it's part of the solution here, it would have to be
-> matched with that "page copy needs to be done under the page table
-> lock too".
-> 
->               Linus
+Please make the code easier for reading by:
+
+			info = get_domain_info(sinfo->pdev);
+			if (dev_iotlb_enabled(info))
+				....
+
+Best regards,
+baolu
+
+> +				has_iotlb_device = true;
+> +				break;
+> +			}
+>   	}
+>   
+>   	domain->has_iotlb_device = has_iotlb_device;
+> @@ -1557,25 +1576,37 @@ static void iommu_disable_dev_iotlb(struct device_domain_info *info)
+>   #endif
+>   }
+>   
+> +static void __iommu_flush_dev_iotlb(struct device_domain_info *info,
+> +				    u64 addr, unsigned int mask)
+> +{
+> +	u16 sid, qdep;
+> +
+> +	if (!info || !info->ats_enabled)
+> +		return;
+> +
+> +	sid = info->bus << 8 | info->devfn;
+> +	qdep = info->ats_qdep;
+> +	qi_flush_dev_iotlb(info->iommu, sid, info->pfsid,
+> +			   qdep, addr, mask);
+> +}
+> +
+>   static void iommu_flush_dev_iotlb(struct dmar_domain *domain,
+>   				  u64 addr, unsigned mask)
+>   {
+> -	u16 sid, qdep;
+>   	unsigned long flags;
+>   	struct device_domain_info *info;
+> +	struct subdev_domain_info *sinfo;
+>   
+>   	if (!domain->has_iotlb_device)
+>   		return;
+>   
+>   	spin_lock_irqsave(&device_domain_lock, flags);
+> -	list_for_each_entry(info, &domain->devices, link) {
+> -		if (!info->ats_enabled)
+> -			continue;
+> +	list_for_each_entry(info, &domain->devices, link)
+> +		__iommu_flush_dev_iotlb(info, addr, mask);
+>   
+> -		sid = info->bus << 8 | info->devfn;
+> -		qdep = info->ats_qdep;
+> -		qi_flush_dev_iotlb(info->iommu, sid, info->pfsid,
+> -				qdep, addr, mask);
+> +	list_for_each_entry(sinfo, &domain->subdevices, link_domain) {
+> +		__iommu_flush_dev_iotlb(get_domain_info(sinfo->pdev),
+> +					addr, mask);
+>   	}
+>   	spin_unlock_irqrestore(&device_domain_lock, flags);
+>   }
 > 
