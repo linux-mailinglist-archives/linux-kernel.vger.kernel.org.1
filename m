@@ -2,162 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F37A2E10C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 01:21:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69BEC2E10C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 01:23:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726030AbgLWAVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 19:21:15 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:18558 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725782AbgLWAVP (ORCPT
+        id S1726285AbgLWAVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 19:21:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726039AbgLWAVs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 19:21:15 -0500
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BN03Fmk096601;
-        Tue, 22 Dec 2020 19:19:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
- cc : subject : in-reply-to : date : message-id : mime-version :
- content-type; s=pp1; bh=FA2R8FGvQ3oXchyFVhZ2m1CpE/JjhFLNqwf7Z3lLGd0=;
- b=hZBp4GWpZYI2WLl/i6sooWsjPoIe5ZIq+DuynO1BlrlwZINRIzdrb8YrzUMySmtG2NEB
- ClruhVb7xGswuRd4DdrArPygpCwTOBXtlaqGRd0PAHs7M3fsFcf3IjCoBhe5rAhLTNny
- 6msSf6oDxBzmCMLe2hhOCnSDZr9Mhv5650uVwMzAEf0t6IXErx7D+88Ol8tEgSYElf65
- vxCL6mpQfiI8iil3gO2xtJFpsCq49swqo83nuB0buCoNKXF7zyY3BTcJM9vvXShJXlj3
- pjd7TpDkvPHAOnhZgpEXQT4iAwBpw8yxUHO0O/luUbxNzi/7YgTtUI0Zir41DjJHsHkF +Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35kty5gaed-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Dec 2020 19:19:55 -0500
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BN03P9S097316;
-        Tue, 22 Dec 2020 19:19:55 -0500
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35kty5gae7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Dec 2020 19:19:55 -0500
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BN0CM3I025995;
-        Wed, 23 Dec 2020 00:19:54 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma02wdc.us.ibm.com with ESMTP id 35km4gteqp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Dec 2020 00:19:53 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BN0JqQg24642004
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 23 Dec 2020 00:19:52 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 65727C6055;
-        Wed, 23 Dec 2020 00:19:52 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0AB3CC605A;
-        Wed, 23 Dec 2020 00:19:43 +0000 (GMT)
-Received: from manicouagan.localdomain (unknown [9.80.219.136])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTPS;
-        Wed, 23 Dec 2020 00:19:43 +0000 (GMT)
-References: <20201219175713.18888-1-nramas@linux.microsoft.com>
- <20201219175713.18888-3-nramas@linux.microsoft.com>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     zohar@linux.ibm.com, robh@kernel.org, takahiro.akashi@linaro.org,
-        gregkh@linuxfoundation.org, will@kernel.org,
-        catalin.marinas@arm.com, mpe@ellerman.id.au, james.morse@arm.com,
-        sashal@kernel.org, benh@kernel.crashing.org, paulus@samba.org,
-        frowand.list@gmail.com, vincenzo.frascino@arm.com,
-        mark.rutland@arm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
-        serge@hallyn.com, pasha.tatashin@soleen.com, allison@lohutok.net,
-        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
-        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v13 2/6] powerpc: Move arch independent ima kexec
- functions to drivers/of/kexec.c
-In-reply-to: <20201219175713.18888-3-nramas@linux.microsoft.com>
-Date:   Tue, 22 Dec 2020 21:19:41 -0300
-Message-ID: <87blell6g2.fsf@manicouagan.localdomain>
+        Tue, 22 Dec 2020 19:21:48 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83E82C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 16:21:07 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id o17so36138947lfg.4
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 16:21:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DLFc43+zWZaHz7DJE5w0IA8m/d3/STNRHdNjNBYY/r8=;
+        b=Kv96F1RjqhLKNH4Di/XoAkh4fGcFanJF/35mBeZg8s5yZd6emVuhDTmAbKdCOPjTHy
+         2Flkg4YAHNfaKVQVpWzaowFcfIsg0qWnCHYScg1wPkWTGMP48AsbRBDUDmFxjUz6rUTh
+         Xoab7E7PwRF0MbFD3jGQK+ux0O7RWJxy/Q1DA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DLFc43+zWZaHz7DJE5w0IA8m/d3/STNRHdNjNBYY/r8=;
+        b=QB1p5IMaP4oNvylLh3DN1K11OodNO6PLWQfkE2q466DuddHXoHiOlGpj9Zaqei88Sv
+         gte7Tqg/RsiT8VHiCQj/VA71OYVoqq3vP+25KI7NdZr/fxUK/EMcD82vf5oJF2Wy3mbO
+         OF96py4RT3Wu0VTPNXiDcp8tZu+KOC9NWDBtw0gDBnVRBgp+6TrE33Uw2BTluxPy90/i
+         iEyHqrfVpu+h+rMEnWEh1eDvI9pFDr1MHnwmtRw9OHou6YoG9G6QFw72OHhrF5jeiLAU
+         Nn8xJctCIQFi9ocXF/SwzfzLTD6lu1dd5AIH/wHEtaA1ErASO+4KHaM+7z6NoAn6tO2N
+         BoJw==
+X-Gm-Message-State: AOAM532xyrgF7PpvY+VgIVmtAyhuSqs6VnBH2aWIENFMDkYJoCQFLGSP
+        JnH/MBkAX9XuI5fbBVQPxIOS6I2Dc78HmQ==
+X-Google-Smtp-Source: ABdhPJytMSTqWgxkf4kWLXYHjMZ/hFVu6Obar87/hQMXdv8nDYZ72u40AZozJseC0Krw8XCaLXtBZg==
+X-Received: by 2002:ac2:4463:: with SMTP id y3mr9261320lfl.94.1608682865330;
+        Tue, 22 Dec 2020 16:21:05 -0800 (PST)
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
+        by smtp.gmail.com with ESMTPSA id o138sm2528357lfa.171.2020.12.22.16.21.03
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Dec 2020 16:21:04 -0800 (PST)
+Received: by mail-lf1-f44.google.com with SMTP id m12so36107395lfo.7
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 16:21:03 -0800 (PST)
+X-Received: by 2002:a05:6512:338f:: with SMTP id h15mr9238858lfg.40.1608682863624;
+ Tue, 22 Dec 2020 16:21:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-22_13:2020-12-21,2020-12-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- mlxlogscore=999 priorityscore=1501 lowpriorityscore=0 malwarescore=0
- spamscore=0 bulkscore=0 clxscore=1015 mlxscore=0 adultscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012220175
+References: <9E301C7C-882A-4E0F-8D6D-1170E792065A@gmail.com>
+ <CAHk-=wg-Y+svNy3CDkJjj0X_CJkSbpERLg64-Vqwq5u7SC4z0g@mail.gmail.com>
+ <X+ESkna2z3WjjniN@google.com> <1FCC8F93-FF29-44D3-A73A-DF943D056680@gmail.com>
+ <20201221223041.GL6640@xz-x1> <CAHk-=wh-bG4thjXUekLtrCg8FRrdWjtT40ibXXLSm_hzQG8eOw@mail.gmail.com>
+ <CALCETrV=8tY7h=aaudWBEn-MJnNkm2wz5qjH49SYqwkjYTpOaA@mail.gmail.com>
+ <X+JJqK91plkBVisG@redhat.com> <X+JhwVX3s5mU9ZNx@google.com>
+ <X+Js/dFbC5P7C3oO@redhat.com> <X+KDwu1PRQ93E2LK@google.com> <CAHk-=wiBWkgxLtwD7n01irD7hTQzuumtrqCkxxZx=6dbiGKUqQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wiBWkgxLtwD7n01irD7hTQzuumtrqCkxxZx=6dbiGKUqQ@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 22 Dec 2020 16:20:47 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjNedWcjAfPW7pdPTM0-gSXABsv9AA+wCebXbh3tuRTRQ@mail.gmail.com>
+Message-ID: <CAHk-=wjNedWcjAfPW7pdPTM0-gSXABsv9AA+wCebXbh3tuRTRQ@mail.gmail.com>
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
-
-> The functions defined in "arch/powerpc/kexec/ima.c" handle setting up
-> and freeing the resources required to carry over the IMA measurement
-> list from the current kernel to the next kernel across kexec system call.
-> These functions do not have architecture specific code, but are
-> currently limited to powerpc.
+On Tue, Dec 22, 2020 at 3:50 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> Move setup_ima_buffer() call into of_kexec_setup_new_fdt() defined in
-> "drivers/of/kexec.c".
->
-> Move the remaining architecture independent functions from
-> "arch/powerpc/kexec/ima.c" to "drivers/of/kexec.c".
-> Delete "arch/powerpc/kexec/ima.c" and "arch/powerpc/include/asm/ima.h".
-> Remove references to the deleted files in powerpc and in ima.
->
-> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-> ---
->  arch/powerpc/include/asm/ima.h     |  27 ----
->  arch/powerpc/kexec/Makefile        |   7 -
->  arch/powerpc/kexec/file_load.c     |   7 -
->  arch/powerpc/kexec/ima.c           | 202 -------------------------
->  drivers/of/kexec.c                 | 235 +++++++++++++++++++++++++++++
->  include/linux/of.h                 |   2 +
->  security/integrity/ima/ima.h       |   4 -
->  security/integrity/ima/ima_kexec.c |   1 +
->  8 files changed, 238 insertions(+), 247 deletions(-)
->  delete mode 100644 arch/powerpc/include/asm/ima.h
->  delete mode 100644 arch/powerpc/kexec/ima.c
+> The rule is that the TLB flush has to be done before the page table
+> lock is released.
 
-This looks good, provided the changes from the discussion with Mimi are
-made. Also, minor nits below.
+I take that back. I guess it's ok as long as the mmap_sem is held for
+writing. Then the TLB flush can be delayed until just before releasing
+the mmap_sem. I think.
 
-> diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
-> index 6ebefec616e4..7c3947ad3773 100644
-> --- a/security/integrity/ima/ima.h
-> +++ b/security/integrity/ima/ima.h
-> @@ -24,10 +24,6 @@
->  
->  #include "../integrity.h"
->  
-> -#ifdef CONFIG_HAVE_IMA_KEXEC
-> -#include <asm/ima.h>
-> -#endif
-> -
->  enum ima_show_type { IMA_SHOW_BINARY, IMA_SHOW_BINARY_NO_FIELD_LEN,
->  		     IMA_SHOW_BINARY_OLD_STRING_FMT, IMA_SHOW_ASCII };
->  enum tpm_pcrs { TPM_PCR0 = 0, TPM_PCR8 = 8, TPM_PCR10 = 10 };
+The stale TLB entries still mean that somebody else can write through
+them in another thread, but as long as anybody who actually unmaps the
+page (and frees it - think rmap etc) is being careful, mprotect()
+itself can probably afford to be a bit laissez-faire.
 
-This belongs in patch 1.
+So mprotect() itself should be ok, I think, because it takes things for writing.
 
-> diff --git a/security/integrity/ima/ima_kexec.c b/security/integrity/ima/ima_kexec.c
-> index 38bcd7543e27..8a6712981dee 100644
-> --- a/security/integrity/ima/ima_kexec.c
-> +++ b/security/integrity/ima/ima_kexec.c
-> @@ -10,6 +10,7 @@
->  #include <linux/seq_file.h>
->  #include <linux/vmalloc.h>
->  #include <linux/kexec.h>
-> +#include <linux/of.h>
->  #include <linux/ima.h>
->  #include "ima.h"
+Even with the mmap_sem held for writing, truncate and friends can see
+the read-only page table entries (because they can look things up
+using the file i_mmap thing instead), but then they rely on the page
+table lock and they'll also be careful if they then change that PTE
+and will force their own TLB flushes.
 
-This include isn't necessary.
+So I think a pending TLB flush outside the page table lock is fine -
+but once again only if you hold the mmap_sem for writing. Not for
+reading, because then the page tables need to be synchronized with the
+TLB so that other readers don't see the not-yet-synchronized state.
 
--- 
-Thiago Jung Bauermann
-IBM Linux Technology Center
+It once again looks like it's just userfaultfd that would trigger this
+due to the read-lock on the mmap_sem. And mprotect() itself is fine.
+
+Am I missing something?
+
+But apparently Nadav sees problems even with that lock changed to a
+write lock. Navad?
+
+           Linus
