@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 527572E1248
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:21:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A6062E124A
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:21:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729084AbgLWCUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:20:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46336 "EHLO mail.kernel.org"
+        id S1729140AbgLWCU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:20:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726969AbgLWCUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:20:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CBC8922A83;
-        Wed, 23 Dec 2020 02:19:54 +0000 (UTC)
+        id S1728906AbgLWCUP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:20:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5194423357;
+        Wed, 23 Dec 2020 02:19:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608689995;
-        bh=2Z3yb9p6tF4duZkuu2uM73Oj92pH5ojf+kvRAhwP5ZQ=;
+        s=k20201202; t=1608690000;
+        bh=4cFHR5YE9cqHcWM2vuonEFf7LB+PRgE6dNlV76YCjsI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X0Ecei9hUPHas4B3v7H99doz9N22KOUjqVAuRyTpLVk/YpwyqIpsLZ2aKzIjkUTRr
-         yhPf0whg/pSvScjnUSPRb8ENFkF4o7KkIzMjBTLCBBxicDKtGCZ4zwgBjVfHuowAfi
-         fe6qVQK3jQ/GUXOY1SP7YpHHRGXGjRxil8lLmFHGhhm9mZQ0DXk9ytbsiu8iDT8mnl
-         GwQnEpZddq1y4265Um7UuJ8PI212wQ6TpaUVKprTfqAhbvdoftkgRRhn0AgdbBCYxW
-         IC3CtoavOxK/oq1DsUu8uyvM56NYMAbG/8PrthBCEPtgpt8BiNLHeIU8+riuYQetpt
-         r5TU9ONsLEs4A==
+        b=jQ5pJNx+Hx4LxSja5cXMxRzWIDlQHajHSolMri4yZzzEBw/3XGefDVqvDEneug7ku
+         1G+X3Fzjllk75XNFzRaRCGgrSiqrs+cBpnW3BRdvMb9dSi3HMQ699hHBCEzKarYTBX
+         GBQRVhD0PN9TqdP8eRSC/9N2cZOyeCFCGAjBFW2GKiBP4vlSmu7MN2E47uqMqLgBaq
+         RXqHEHO6m2OQ8+Eevrz7VonIIGZaYOD9v6NTpu9++yIT79HZMIb4A7prpDLfQPNTQg
+         y0tI7ywLuWViX40Lh+YjoI7w8MlPp3jD+U+FxF6s3OFfc48i0En3jrLqOpwPJQp6KK
+         ndnUo7XFZGLsg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Gabriele Paoloni <gabriele.paoloni@intel.com>,
-        Borislav Petkov <bp@suse.de>, Tony Luck <tony.luck@intel.com>,
-        Sasha Levin <sashal@kernel.org>, linux-edac@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 079/130] x86/mce: Panic for LMCE only if mca_cfg.tolerant < 3
-Date:   Tue, 22 Dec 2020 21:17:22 -0500
-Message-Id: <20201223021813.2791612-79-sashal@kernel.org>
+Cc:     Daniel Lee Kruse <daniel.lee.kruse@protonmail.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 082/130] media: cx23885: add more quirks for reset DMA on some AMD IOMMU
+Date:   Tue, 22 Dec 2020 21:17:25 -0500
+Message-Id: <20201223021813.2791612-82-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223021813.2791612-1-sashal@kernel.org>
 References: <20201223021813.2791612-1-sashal@kernel.org>
@@ -42,40 +43,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gabriele Paoloni <gabriele.paoloni@intel.com>
+From: Daniel Lee Kruse <daniel.lee.kruse@protonmail.com>
 
-[ Upstream commit 3a866b16fd2360a9c4ebf71cfbf7ebfe968c1409 ]
+[ Upstream commit dbf0b3a7b719eb3f72cb53c2ce7d34a012a9c261 ]
 
-Right now for LMCE, if no_way_out is set, mce_panic() is called
-regardless of mca_cfg.tolerant. This is not correct as, if
-mca_cfg.tolerant = 3, the code should never panic.
+On AMD Family 15h (Models 30h-3fh), I/O Memory Management Unit
+RiSC engine sometimes stalls, requiring a reset.
 
-Add that check.
+As result, MythTV and w-scan won't scan channels on the AMD Kaveri
+APU with the Hauppauge QuadHD TV tuner card.
 
- [ bp: use local ptr 'cfg'. ]
+For the solution I added the Input/Output Memory Management Unit's PCI
+Identity of 0x1423 to the broken_dev_id[] array, which is used by
+a quirks logic meant to fix similar problems with other AMD
+chipsets.
 
-Signed-off-by: Gabriele Paoloni <gabriele.paoloni@intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Link: https://lkml.kernel.org/r/20201127161819.3106432-4-gabriele.paoloni@intel.com
+Signed-off-by: Daniel Lee Kruse <daniel.lee.kruse@protonmail.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/cpu/mce/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/pci/cx23885/cx23885-core.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index 10f69e045d3ea..344fe08779824 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -1344,7 +1344,7 @@ void do_machine_check(struct pt_regs *regs, long error_code)
- 	 * to see it will clear it.
+diff --git a/drivers/media/pci/cx23885/cx23885-core.c b/drivers/media/pci/cx23885/cx23885-core.c
+index 7e0b0b7cc2a35..ead0acb7807c8 100644
+--- a/drivers/media/pci/cx23885/cx23885-core.c
++++ b/drivers/media/pci/cx23885/cx23885-core.c
+@@ -2074,6 +2074,10 @@ static struct {
+ 	 * 0x1451 is PCI ID for the IOMMU found on Ryzen
  	 */
- 	if (lmce) {
--		if (no_way_out)
-+		if (no_way_out && cfg->tolerant < 3)
- 			mce_panic("Fatal local machine check", &m, msg);
- 	} else {
- 		order = mce_start(&no_way_out);
+ 	{ PCI_VENDOR_ID_AMD, 0x1451 },
++	/* According to sudo lspci -nn,
++	 * 0x1423 is the PCI ID for the IOMMU found on Kaveri
++	 */
++	{ PCI_VENDOR_ID_AMD, 0x1423 },
+ };
+ 
+ static bool cx23885_does_need_dma_reset(void)
 -- 
 2.27.0
 
