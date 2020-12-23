@@ -2,96 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA5542E2029
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 18:50:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C243B2E2034
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 18:55:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728209AbgLWRsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 12:48:45 -0500
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:34836 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726384AbgLWRso (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 12:48:44 -0500
-Received: by mail-ot1-f53.google.com with SMTP id i6so15741345otr.2;
-        Wed, 23 Dec 2020 09:48:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=K5Yix/37ki3dCZFopkSSkjKG5evvMj86JkeiVkAJ78g=;
-        b=QuOpbnlLbsSmLmldLs32r/uNlUxqfAuC1Mg1NbCKLy8UCSlGNU/rSnU/Jv+/7I99iI
-         9ORidiHPcb64fBA4Vgl1U3vo9rhV/gc6FA8DLcGLutO7KnQqz1qqjLi8fBo5KzVWgCkB
-         +7G+uZmaonqsEeecKhUMXz6NxeGUebf3WTfrrJGuOdeAEg5iHvK6LSY38UKkaUUOZ0D6
-         tIA5VcEIS96OXIdVl/KK1fQoxuqyqGV0/9cyWlfW/SX8KjuDDjHeZukXfUeVrf1XdDQF
-         1kTqPBaY7hyWt/fUc3dFuAiLVTPaUvOHZF1UQTIFTF0bmZlVlzr4KWwN8GNQewF3lpqr
-         BjoQ==
-X-Gm-Message-State: AOAM5334vGT2yCkl4lDsBwSlNYIvFsLWJtfLb5vJt4ilcNZpZOAFRy2l
-        hrQSDW9rbs6bA/T5hJXjBg==
-X-Google-Smtp-Source: ABdhPJwwkIwBeMc0P36eD46ujc2g7Yxv3OUhQoIQbvvQcZl95unXLd2lLce2YlPC5c6HviQS6uif0g==
-X-Received: by 2002:a9d:640b:: with SMTP id h11mr8626511otl.224.1608745683770;
-        Wed, 23 Dec 2020 09:48:03 -0800 (PST)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id j10sm5938165otn.63.2020.12.23.09.48.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Dec 2020 09:48:03 -0800 (PST)
-Received: (nullmailer pid 762424 invoked by uid 1000);
-        Wed, 23 Dec 2020 17:47:58 -0000
+        id S1727468AbgLWRzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 12:55:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60102 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726396AbgLWRzU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 12:55:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CDF56222BB;
+        Wed, 23 Dec 2020 17:54:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608746080;
+        bh=oPqcaaIT1m4gIwPH079KHo8KUmZzg7kgDIJDYuGMcvY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=bGpft4Kpb7t5T4fX8lhByN60ObxwL55nWpJzhHIelAITSWX0bvXmtegxYSTJN4Zxl
+         T4sw2s1rmwoiwLPiUIW7JGyIM7tfyWPnaZisRDvAs56K9bnVV2r258Zllrq3efIw60
+         Xqk7ptA15HCr4vleatHRwHYA+XPQo+P9s0tUyVvqfM28vAKVchNYK9O9jkO7C/YG3J
+         N3N0SD38qtziXLRLBOdDTI40f9Ewmzt3R/AhxsHnnvnilbxQYSPWroVyn6u2P8sFfD
+         AHY6JNQEDjZCOeioDkjceA8EfiEeZB5mmjnxg6UiXX0BLHhkUQ1hp7GaO94jA5tBIo
+         4fWkBpGhcIocg==
+Received: by mail-ej1-f50.google.com with SMTP id qw4so223776ejb.12;
+        Wed, 23 Dec 2020 09:54:39 -0800 (PST)
+X-Gm-Message-State: AOAM533Ut4SxzECyeT7Irb9wI1UpolSpZIkcrMPdrYgXBjbjJfDL0aSh
+        XEYerjstm6eVqVJ00yWnDMjwnOmvxmDlY8/b9g==
+X-Google-Smtp-Source: ABdhPJz3x4J2zw5Y7TPch4DTKXpgAX9t6V701Sxc80NsHgTOESjuz9DoVFaywy8F4VyXHmox/Q09SCSZQsxP2YotFOM=
+X-Received: by 2002:a17:906:4146:: with SMTP id l6mr25366789ejk.341.1608746078387;
+ Wed, 23 Dec 2020 09:54:38 -0800 (PST)
+MIME-Version: 1.0
+References: <20201222040645.1323611-1-robh@kernel.org> <20201222063908.GB3463004@ravnborg.org>
+In-Reply-To: <20201222063908.GB3463004@ravnborg.org>
 From:   Rob Herring <robh@kernel.org>
-To:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Stephen Boyd <sboyd@kernel.org>, srv_heupstream@mediatek.com,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-In-Reply-To: <1608691469-20919-2-git-send-email-hsin-hsiung.wang@mediatek.com>
-References: <1608691469-20919-1-git-send-email-hsin-hsiung.wang@mediatek.com> <1608691469-20919-2-git-send-email-hsin-hsiung.wang@mediatek.com>
-Subject: Re: [PATCH v5 1/4] dt-bindings: spmi: modify the constraint 'maxItems' to 'minItems'
-Date:   Wed, 23 Dec 2020 10:47:58 -0700
-Message-Id: <1608745678.788845.762423.nullmailer@robh.at.kernel.org>
+Date:   Wed, 23 Dec 2020 10:54:26 -0700
+X-Gmail-Original-Message-ID: <CAL_JsqJLw_RtLehYDLu_HKCoxDHsx-AdGTWfN0JMJhgNqLeFng@mail.gmail.com>
+Message-ID: <CAL_JsqJLw_RtLehYDLu_HKCoxDHsx-AdGTWfN0JMJhgNqLeFng@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: Drop redundant maxItems/items
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     devicetree@vger.kernel.org,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Jassi Brar <jaswinder.singh@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        "open list:DMA GENERIC OFFLOAD ENGINE SUBSYSTEM" 
+        <dmaengine@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Dec 2020 10:44:26 +0800, Hsin-Hsiung Wang wrote:
-> The constraint of 'maxItem: 1' might be larger than 1, so we modify it
-> to 'minItem: 0'.
-> 
-> Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-> ---
->  Documentation/devicetree/bindings/spmi/spmi.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
+On Mon, Dec 21, 2020 at 11:39 PM Sam Ravnborg <sam@ravnborg.org> wrote:
+>
+> Hi Rob,
+>
+> On Mon, Dec 21, 2020 at 09:06:45PM -0700, Rob Herring wrote:
+> > 'maxItems' equal to the 'items' list length is redundant. 'maxItems' is
+> > preferred for a single entry while greater than 1 should have an 'items'
+> > list.
+> >
+> > A meta-schema check for this is pending once these existing cases are
+> > fixed.
+> >
+> > Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > Cc: Vinod Koul <vkoul@kernel.org>
+> > Cc: Mark Brown <broonie@kernel.org>
+> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Cc: Jassi Brar <jaswinder.singh@linaro.org>
+> > Cc: dri-devel@lists.freedesktop.org
+> > Cc: dmaengine@vger.kernel.org
+> > Cc: alsa-devel@alsa-project.org
+> > Cc: linux-usb@vger.kernel.org
+> > Signed-off-by: Rob Herring <robh@kernel.org>
+>
+> With one comment below,
+> Acked-by: Sam Ravnborg <sam@ravnborg.org>
+>
+> > ---
+> > diff --git a/Documentation/devicetree/bindings/usb/renesas,usbhs.yaml b/Documentation/devicetree/bindings/usb/renesas,usbhs.yaml
+> > index 737c1f47b7de..54c361d4a7af 100644
+> > --- a/Documentation/devicetree/bindings/usb/renesas,usbhs.yaml
+> > +++ b/Documentation/devicetree/bindings/usb/renesas,usbhs.yaml
+> > @@ -74,11 +74,8 @@ properties:
+> >
+> >    phys:
+> >      maxItems: 1
+> > -    items:
+> > -      - description: phandle + phy specifier pair.
+>
+> The description may help some people, so keeping the
+> description and deleting maxItems would maybe be better.
 
-My bot found errors running 'make dt_binding_check' on your patch:
+Do we really want to describe 'phys' hundreds of times? No. The
+question I ask on the descriptions is could it be generated instead.
 
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/spmi/spmi.yaml: properties:reg: 'anyOf' conditional failed, one must be fixed:
-	'maxItems' is a required property
-	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/spmi/spmi.yaml: properties:reg: 'oneOf' conditional failed, one must be fixed:
-		'minItems' is not one of ['maxItems']
-		'minItems' is not one of ['description', 'deprecated', 'const', 'enum', 'minimum', 'maximum', 'default', '$ref']
-	0 is less than the minimum of 1
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/spmi/spmi.yaml: ignoring, error in schema: properties: reg
-warning: no schema found in file: ./Documentation/devicetree/bindings/spmi/spmi.yaml
-
-See https://patchwork.ozlabs.org/patch/1419575
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+Rob
