@@ -2,133 +2,518 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E9842E229F
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 00:07:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA3852E229D
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 00:07:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727554AbgLWXGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 18:06:35 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30937 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727254AbgLWXGe (ORCPT
+        id S1727239AbgLWXF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 18:05:58 -0500
+Received: from pb-smtp2.pobox.com ([64.147.108.71]:58854 "EHLO
+        pb-smtp2.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726319AbgLWXF5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 18:06:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608764708;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4IW+6Ci7VWnkZSEHQFQsV4N3ToaQGHBeykrTby9wxas=;
-        b=NC4AKFw531KPD4dcvwrFk6dKvYYAX6E6XfLtVVGD7NH29XQtGz3VKMifUPje+W2qrF/uUi
-        JgEKLa6DPj9n5jgwIs2nu+ZRO8h2Ao9L4N2DyNIDGkZ5WGYe7IgFrv7wG7A9SFFaMbv+5j
-        pZT0BPsiDn44KjawBiCMwYIuRsM+UHg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-333-wDBks589Py2W9rDH4oAFuQ-1; Wed, 23 Dec 2020 18:05:04 -0500
-X-MC-Unique: wDBks589Py2W9rDH4oAFuQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Wed, 23 Dec 2020 18:05:57 -0500
+Received: from pb-smtp2.pobox.com (unknown [127.0.0.1])
+        by pb-smtp2.pobox.com (Postfix) with ESMTP id 70EDC9A2E8;
+        Wed, 23 Dec 2020 18:05:10 -0500 (EST)
+        (envelope-from junio@pobox.com)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=from:to:cc
+        :subject:date:message-id:mime-version:content-type
+        :content-transfer-encoding; s=sasl; bh=Q8k5DvvEx71ZgOdnVo9Q5TDez
+        0Y=; b=WdfB6T0uVZM0MxhPK9FluVkSB7RRJA1alhxRwOG6wQydGRA1WbYBQSben
+        rcvS9drN2wOfDhueCjHS8FXk3t2NqyUXAJYV8Hv1g07OXxNuHAtG0g/JWZm2+byt
+        aeljVAgQ8FzQYnJ1g0VmJohYQ73F+JpAS9GybREpvVUSPFw0D4=
+DomainKey-Signature: a=rsa-sha1; c=nofws; d=pobox.com; h=from:to:cc
+        :subject:date:message-id:mime-version:content-type
+        :content-transfer-encoding; q=dns; s=sasl; b=sBYvestpA2x0vn5E71m
+        2uWFKXchQ633/LuERBWPTjAq1y3LviC5Hh9X7FlGIO54coFCmtXvpb+zpXoI+foq
+        mfbi3lIH8fMX72JIWyaGOVMa/e3T4YxzP4wORRiUQTo5A+2vtQzKVzbaJ8s9iUsw
+        cihAeiOJKr8CZLnkOxjTqca0=
+Received: from pb-smtp2.nyi.icgroup.com (unknown [127.0.0.1])
+        by pb-smtp2.pobox.com (Postfix) with ESMTP id 64FB99A2E6;
+        Wed, 23 Dec 2020 18:05:10 -0500 (EST)
+        (envelope-from junio@pobox.com)
+Received: from pobox.com (unknown [35.196.173.25])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E5A721005504;
-        Wed, 23 Dec 2020 23:05:01 +0000 (UTC)
-Received: from mail (ovpn-112-5.rdu2.redhat.com [10.10.112.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 47D0D63747;
-        Wed, 23 Dec 2020 23:04:58 +0000 (UTC)
-Date:   Wed, 23 Dec 2020 18:04:57 -0500
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        linux-mm <linux-mm@kvack.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable <stable@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-Message-ID: <X+PNGYH6LkzZo0SU@redhat.com>
-References: <CAHk-=wh-bG4thjXUekLtrCg8FRrdWjtT40ibXXLSm_hzQG8eOw@mail.gmail.com>
- <CALCETrV=8tY7h=aaudWBEn-MJnNkm2wz5qjH49SYqwkjYTpOaA@mail.gmail.com>
- <X+JJqK91plkBVisG@redhat.com>
- <X+JhwVX3s5mU9ZNx@google.com>
- <X+Js/dFbC5P7C3oO@redhat.com>
- <X+KDwu1PRQ93E2LK@google.com>
- <X+Kxy3oBMSLz8Eaq@redhat.com>
- <X+K7JMrTEC9SpVIB@google.com>
- <X+O49HrcK1fBDk0Q@redhat.com>
- <X+PE38s2Egq4nzKv@google.com>
+        by pb-smtp2.pobox.com (Postfix) with ESMTPSA id B108B9A2E5;
+        Wed, 23 Dec 2020 18:05:09 -0500 (EST)
+        (envelope-from junio@pobox.com)
+From:   Junio C Hamano <gitster@pobox.com>
+To:     git@vger.kernel.org
+Cc:     Linux Kernel <linux-kernel@vger.kernel.org>,
+        git-packagers@googlegroups.com
+Subject: [ANNOUNCE] Git v2.30.0-rc2
+Date:   Wed, 23 Dec 2020 15:05:08 -0800
+Message-ID: <xmqqtusc5djv.fsf@gitster.c.googlers.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X+PE38s2Egq4nzKv@google.com>
-User-Agent: Mutt/2.0.3 (2020-12-04)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=utf-8
+X-Pobox-Relay-ID: 4E05DFAE-4573-11EB-AAA5-74DE23BA3BAF-77302942!pb-smtp2.pobox.com
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 03:29:51PM -0700, Yu Zhao wrote:
-> I was hesitant to suggest the following because it isn't that straight
-> forward. But since you seem to be less concerned with the complexity,
-> I'll just bring it on the table -- it would take care of both ufd and
-> clear_refs_write, wouldn't it?
+A release candidate Git v2.30.0-rc2 is now available for testing
+at the usual places.  It is comprised of 19 non-merge commits since
+v2.30.0-rc1, contributed by 5 people, none of which are new faces.
 
-It certainly would since this is basically declaring "leaving stale
-TLB entries past mmap_read_lock" is now permitted as long as the
-pending flush counter is elevated under mmap_sem for reading.
+The tarballs are found at:
 
-Anything that prevents uffd-wp to take mmap_write_lock looks great to
-me, anything, the below included, as long as it looks like easy to
-enforce and understand. And the below certainly is.
+    https://www.kernel.org/pub/software/scm/git/testing/
 
-My view is that the below is at the very least an improvement in terms
-of total complexity, compared to v5.10. At least it'll be documented.
+The following public repositories all have a copy of the
+'v2.30.0-rc2' tag and the 'master' branch that the tag points at:
 
-So what would be not ok to me is to depend on undocumented not
-guaranteed behavior in do_wp_page like the page_mapcount, which is
-what we had until now in clear_refs_write and in uffd-wp (but only if
-wrprotect raced against un-wrprotect, a tiny window if compared to
-clear_refs_write).
+  url =3D https://kernel.googlesource.com/pub/scm/git/git
+  url =3D git://repo.or.cz/alt-git.git
+  url =3D https://github.com/gitster/git
 
-Documenting that clearing pte_write and deferring the flush is allowed
-if mm_tlb_flush_pending was elevated before taking the PT lock is less
-complex and very well defined rule, if compared to what we had before
-in the page_mapcount dependency of clear_refs_write which was prone to
-break, and in fact it just did.
+----------------------------------------------------------------
 
-We'll need a commentary in both userfaultfd_writeprotect and
-clear_refs_write that links to the below snippet.
+Git 2.30 Release Notes (draft)
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
 
-If we abstract it in a header we can hide there also a #ifdef
-CONFIG_HAVE_ARCH_SOFT_DIRTY=y && CONFIG_HAVE_ARCH_USERFAULTFD_WP=y &&
-CONFIG_USERFAULTFD=y to make it even more explicit.
+Updates since v2.29
+-------------------
 
-However it may be simpler to keep it unconditional, I don't mind
-either ways. If it was up to me I'd write it to those 3 config options
-to be sure I remember where it comes from and to force any other user
-to register to be explicit they depend on that.
+UI, Workflows & Features
 
-> 
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 5e9ca612d7d7..af38c5ee327e 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -4403,8 +4403,11 @@ static vm_fault_t handle_pte_fault(struct vm_fault *vmf)
->  		goto unlock;
->  	}
->  	if (vmf->flags & FAULT_FLAG_WRITE) {
-> -		if (!pte_write(entry))
-> +		if (!pte_write(entry)) {
-> +			if (mm_tlb_flush_pending(vmf->vma->vm_mm))
-> +				flush_tlb_page(vmf->vma, vmf->address);
->  			return do_wp_page(vmf);
-> +		}
->  		entry = pte_mkdirty(entry);
->  	}
->  	entry = pte_mkyoung(entry);
-> 
+ * Userdiff for PHP update.
+
+ * Userdiff for Rust update.
+
+ * Userdiff for CSS update.
+
+ * The command line completion script (in contrib/) learned that "git
+   stash show" takes the options "git diff" takes.
+
+ * "git worktree list" now shows if each worktree is locked.  This
+   possibly may open us to show other kinds of states in the future.
+
+ * "git maintenance", an extended big brother of "git gc", continues
+   to evolve.
+
+ * "git push --force-with-lease[=3D<ref>]" can easily be misused to lose
+   commits unless the user takes good care of their own "git fetch".
+   A new option "--force-if-includes" attempts to ensure that what is
+   being force-pushed was created after examining the commit at the
+   tip of the remote ref that is about to be force-replaced.
+
+ * "git clone" learned clone.defaultremotename configuration variable
+   to customize what nickname to use to call the remote the repository
+   was cloned from.
+
+ * "git checkout" learned to use checkout.guess configuration variable
+   and enable/disable its "--[no-]guess" option accordingly.
+
+ * "git resurrect" script (in contrib/) learned that the object names
+   may be longer than 40-hex depending on the hash function in use.
+
+ * "git diff A...B" learned "git diff --merge-base A B", which is a
+   longer short-hand to say the same thing.
+
+ * A sample 'push-to-checkout' hook, that performs the same as
+   what the built-in default action does, has been added.
+
+ * "git diff" family of commands learned the "-I<regex>" option to
+   ignore hunks whose changed lines all match the given pattern.
+
+ * The userdiff pattern learned to identify the function definition in
+   POSIX shells and bash.
+
+ * "git checkout-index" did not consistently signal an error with its
+   exit status, but now it does.
+
+ * A commit and tag object may have CR at the end of each and
+   every line (you can create such an object with hash-object or
+   using --cleanup=3Dverbatim to decline the default clean-up
+   action), but it would make it impossible to have a blank line
+   to separate the title from the body of the message.  We are now
+   more lenient and accept a line with lone CR on it as a blank line,
+   too.
+
+ * Exit codes from "git remote add" etc. were not usable by scripted
+   callers, but now they are.
+
+ * "git archive" now allows compression level higher than "-9"
+   when generating tar.gz output.
+
+ * Zsh autocompletion (in contrib/) update.
+
+ * The maximum length of output filenames "git format-patch" creates
+   has become configurable (used to be capped at 64).
+
+ * "git rev-parse" learned the "--end-of-options" to help scripts to
+   safely take a parameter that is supposed to be a revision, e.g.
+   "git rev-parse --verify -q --end-of-options $rev".
+
+ * The command line completion script (in contrib/) learned to expand
+   commands that are alias of alias.
+
+ * "git update-ref --stdin" learns to take multiple transactions in a
+   single session.
+
+ * Various subcommands of "git config" that takes value_regex
+   learn the "--literal-value" option to take the value_regex option
+   as a literal string.
+
+ * The transport layer was taught to optionally exchange the session
+   ID assigned by the trace2 subsystem during fetch/push transactions.
+
+ * "git imap-send" used to ignore configuration variables like
+   core.askpass; this has been corrected.
+
+ * "git $cmd $args", when $cmd is not a recognised subcommand, by
+   default tries to see if $cmd is a typo of an existing subcommand
+   and optionally executes the corrected command if there is only one
+   possibility, depending on the setting of help.autocorrect; the
+   users can now disable the whole thing, including the cycles spent
+   to find a likely typo, by setting the configuration variable to
+   'never'.
+
+ * "@" sometimes worked (e.g. "git push origin @:there") as a part of
+   a refspec element, but "git push origin @" did not work, which has
+   been corrected.
+
+
+Performance, Internal Implementation, Development Support etc.
+
+ * Use "git archive" more to produce the release tarball.
+
+ * GitHub Actions automated test improvement to skip tests on a tree
+   identical to what has already been tested.
+
+ * Test-coverage for running commit-graph task "git maintenance" has
+   been extended.
+
+ * Our test scripts can be told to run only individual pieces while
+   skipping others with the "--run=3D..." option; they were taught to
+   take a substring of test title, in addition to numbers, to name the
+   test pieces to run.
+
+ * Adjust tests so that they won't scream when the default initial
+   branch name is changed to 'main'.
+
+ * Rewriting "git bisect" in C continues.
+
+ * More preliminary tests have been added to document desired outcome
+   of various "directory rename" situations.
+
+ * Micro clean-up of a couple of test scripts.
+
+ * "git diff" and other commands that share the same machinery to
+   compare with working tree files have been taught to take advantage
+   of the fsmonitor data when available.
+
+ * The code to detect premature EOF in the sideband demultiplexer has
+   been cleaned up.
+
+ * Test scripts are being prepared to transition of the default branch
+   name to 'main'.
+
+ * "git fetch --depth=3D<n>" over the stateless RPC / smart HTTP
+   transport handled EOF from the client poorly at the server end.
+
+ * A specialization of hashmap that uses a string as key has been
+   introduced.  Hopefully it will see wider use over time.
+
+ * "git bisect start/next" in a large span of history spends a lot of
+   time trying to come up with exactly the half-way point; this can be
+   optimized by stopping when we see a commit that is close enough to
+   the half-way point.
+
+ * A lazily defined test prerequisite can now be defined in terms of
+   another lazily defined test prerequisite.
+
+ * Expectation for the original contributor after responding to a
+   review comment to use the explanation in a patch update has been
+   described.
+
+ * Multiple "credential-store" backends can race to lock the same
+   file, causing everybody else but one to fail---reattempt locking
+   with some timeout to reduce the rate of the failure.
+
+ * "git-parse-remote" shell script library outlived its usefulness.
+
+ * Like die() and error(), a call to warning() will also trigger a
+   trace2 event.
+
+ * Use of non-reentrant localtime() has been removed.
+
+ * Non-reentrant time-related library functions and ctime/asctime with
+   awkward calling interfaces are banned from the codebase.
+
+
+Fixes since v2.29
+-----------------
+
+ * In 2.29, "--committer-date-is-author-date" option of "rebase" and
+   "am" subcommands lost the e-mail address by mistake, which has been
+   corrected.
+   (merge 5f35edd9d7 jk/committer-date-is-author-date-fix later to maint)=
+.
+
+ * "git checkout -p A...B [-- <path>]" did not work, even though the
+   same command without "-p" correctly used the merge-base between
+   commits A and B.
+   (merge 35166b1fb5 dl/checkout-p-merge-base later to maint).
+
+ * The side-band status report can be sent at the same time as the
+   primary payload multiplexed, but the demultiplexer on the receiving
+   end incorrectly split a single status report into two, which has
+   been corrected.
+   (merge 712b0377db js/avoid-split-sideband-message later to maint).
+
+ * "git fast-import" wasted a lot of memory when many marks were in use.
+   (merge 3f018ec716 jk/fast-import-marks-alloc-fix later to maint).
+
+ * A test helper "test_cmp A B" was taught to diagnose missing files A
+   or B as a bug in test, but some tests legitimately wanted to notice
+   a failure to even create file B as an error, in addition to leaving
+   the expected result in it, and were misdiagnosed as a bug.  This
+   has been corrected.
+   (merge 262d5ad5a5 es/test-cmp-typocatcher later to maint).
+
+ * When "git commit-graph" detects the same commit recorded more than
+   once while it is merging the layers, it used to die.  The code now
+   ignores all but one of them and continues.
+   (merge 85102ac71b ds/commit-graph-merging-fix later to maint).
+
+ * The meaning of a Signed-off-by trailer can vary from project to
+   project; this and also what it means to this project has been
+   clarified in the documentation.
+   (merge 3abd4a67d9 bk/sob-dco later to maint).
+
+ * "git credential' didn't honor the core.askPass configuration
+   variable (among other things), which has been corrected.
+   (merge 567ad2c0f9 tk/credential-config later to maint).
+
+ * Dev support to catch a tentative definition of a variable in our C
+   code as an error.
+   (merge 5539183622 jk/no-common later to maint).
+
+ * "git rebase --rebase-merges" did not correctly pass --gpg-sign
+   command line option to underlying "git merge" when replaying a merge
+   using non-default merge strategy or when replaying an octopus merge
+   (because replaying a two-head merge with the default strategy was
+   done in a separate codepath, the problem did not trigger for most
+   users), which has been corrected.
+   (merge 43ad4f2eca sc/sequencer-gpg-octopus later to maint).
+
+ * "git apply -R" did not handle patches that touch the same path
+   twice correctly, which has been corrected.  This is most relevant
+   in a patch that changes a path from a regular file to a symbolic
+   link (and vice versa).
+   (merge b0f266de11 jt/apply-reverse-twice later to maint).
+
+ * A recent oid->hash conversion missed one spot, breaking "git svn".
+   (merge 03bb366de4 bc/svn-hash-oid-fix later to maint).
+
+ * The documentation on the "--abbrev=3D<n>" option did not say the
+   output may be longer than "<n>" hexdigits, which has been
+   clarified.
+   (merge cda34e0d0c jc/abbrev-doc later to maint).
+
+ * "git p4" now honors init.defaultBranch configuration.
+   (merge 1b09d1917f js/p4-default-branch later to maint).
+
+ * Recently the format of an internal state file "rebase -i" uses has
+   been tightened up for consistency, which would hurt those who start
+   "rebase -i" with old git and then continue with new git.  Loosen
+   the reader side a bit (which we may want to tighten again in a year
+   or so).
+   (merge c779386182 jc/sequencer-stopped-sha-simplify later to maint).
+
+ * The code to see if "git stash drop" can safely remove refs/stash
+   has been made more carerful.
+   (merge 4f44c5659b rs/empty-reflog-check-fix later to maint).
+
+ * "git log -L<range>:<path>" is documented to take no pathspec, but
+   this was not enforced by the command line option parser, which has
+   been corrected.
+   (merge 39664cb0ac jc/line-log-takes-no-pathspec later to maint).
+
+ * "git format-patch --output=3Dthere" did not work as expected and
+   instead crashed.  The option is now supported.
+   (merge dc1672dd10 jk/format-patch-output later to maint).
+
+ * Define ARM64 compiled with MSVC to be little-endian.
+   (merge 0c038fc65a dg/bswap-msvc later to maint).
+
+ * "git rebase -i" did not store ORIG_HEAD correctly.
+   (merge 8843302307 pw/rebase-i-orig-head later to maint).
+
+ * "git blame -L :funcname -- path" did not work well for a path for
+   which a userdiff driver is defined.
+
+ * "make DEVELOPER=3D1 sparse" used to run sparse and let it emit
+   warnings; now such warnings will cause an error.
+   (merge 521dc56270 jc/sparse-error-for-developer-build later to maint).
+
+ * "git blame --ignore-revs-file=3D<file>" learned to ignore a
+   non-existent object name in the input, instead of complaining.
+   (merge c714d05875 jc/blame-ignore-fix later to maint).
+
+ * Running "git diff" while allowing external diff in a state with
+   unmerged paths used to segfault, which has been corrected.
+   (merge d66851806f jk/diff-release-filespec-fix later to maint).
+
+ * Build configuration cleanup.
+   (merge b990f02fd8 ab/config-mak-uname-simplify later to maint).
+
+ * Fix regression introduced when nvimdiff support in mergetool was added=
+.
+   (merge 12026f46e7 pd/mergetool-nvimdiff later to maint).
+
+ * The exchange between receive-pack and proc-receive hook did not
+   carefully check for errors.
+
+ * The code was not prepared to deal with pack .idx file that is
+   larger than 4GB.
+   (merge 81c4c5cf2e jk/4gb-idx later to maint).
+
+ * Since jgit does not yet work with SHA-256 repositories, mark the
+   tests that uses it not to run unless we are testing with ShA-1
+   repositories.
+   (merge ea699b4adc sg/t5310-jgit-wants-sha1 later to maint).
+
+ * Config parser fix for "git notes".
+   (merge 45fef1599a na/notes-displayref-is-not-boolean later to maint).
+
+ * Move a definition of compatibility wrapper from cache.h to
+   git-compat-util.h
+   (merge a76b138daa hn/sleep-millisec-decl later to maint).
+
+ * Error message fix.
+   (merge eaf5341538 km/stash-error-message-fix later to maint).
+
+ * "git pull --rebase --recurse-submodules" checked for local changes
+   in a wrong range and failed to run correctly when it should.
+   (merge 5176f20ffe pb/pull-rebase-recurse-submodules later to maint).
+
+ * "git push" that is killed may leave a pack-objects process behind,
+   still computing to find a good compression, wasting cycles.  This
+   has been corrected.
+   (merge 8b59935114 jk/stop-pack-objects-when-push-is-killed later to ma=
+int).
+
+ * "git fetch" that is killed may leave a pack-objects process behind,
+   still computing to find a good compression, wasting cycles.  This
+   has been corrected.
+   (merge 309a4028e7 jk/stop-pack-objects-when-fetch-is-killed later to m=
+aint).
+
+ * "git add -i" failed to honor custom colors configured to show
+   patches, which has been corrected.
+   (merge 96386faa03 js/add-i-color-fix later to maint).
+
+ * Processes that access packdata while the .idx file gets removed
+   (e.g. while repacking) did not fail or fall back gracefully as they
+   could.
+   (merge 506ec2fbda tb/idx-midx-race-fix later to maint).
+
+ * "git apply" adjusted the permission bits of working-tree files and
+   directories according core.sharedRepository setting by mistake and
+   for a long time, which has been corrected.
+   (merge eb3c027e17 mt/do-not-use-scld-in-working-tree later to maint).
+
+ * "fetch-pack" could pass NULL pointer to unlink(2) when it sees an
+   invalid filename; the error checking has been tightened to make
+   this impossible.
+   (merge 6031af387e rs/fetch-pack-invalid-lockfile later to maint).
+
+ * "git maintenance run/start/stop" needed to be run in a repository
+   to hold the lockfile they use, but didn't make sure they are
+   actually in a repository, which has been corrected.
+
+ * The glossary described a branch as an "active" line of development,
+   which is misleading---a stale and non-moving branch is still a
+   branch.
+   (merge eef1ceabd8 so/glossary-branch-is-not-necessarily-active later t=
+o maint).
+
+ * Newer versions of xsltproc can assign IDs in HTML documents it
+   generates in a consistent manner.  Use the feature to help format
+   HTML version of the user manual reproducibly.
+   (merge 3569e11d69 ae/doc-reproducible-html later to maint).
+
+ * Tighten error checking in the codepath that responds to "git fetch".
+   (merge d43a21bdbb jk/check-config-parsing-error-in-upload-pack later t=
+o maint).
+
+ * "git pack-redandant" when there is only one packfile used to crash,
+   which has been corrected.
+   (merge 0696232390 jx/pack-redundant-on-single-pack later to maint).
+
+ * Other code cleanup, docfix, build fix, etc.
+   (merge 3e0a5dc9af cc/doc-filter-branch-typofix later to maint).
+   (merge 32c83afc2c cw/ci-ghwf-check-ws-errors later to maint).
+   (merge 5eb2ed691b rs/tighten-callers-of-deref-tag later to maint).
+   (merge 6db29ab213 jk/fast-import-marks-cleanup later to maint).
+   (merge e5cf6d3df4 nk/dir-c-comment-update later to maint).
+   (merge 5710dcce74 jk/report-fn-typedef later to maint).
+   (merge 9a82db1056 en/sequencer-rollback-lock-cleanup later to maint).
+   (merge 4e1bee9a99 js/t7006-cleanup later to maint).
+   (merge f5bcde6c58 es/tutorial-mention-asciidoc-early later to maint).
+   (merge 714d491af0 so/format-patch-doc-on-default-diff-format later to =
+maint).
+   (merge 0795df4b9b rs/clear-commit-marks-in-repo later to maint).
+   (merge 9542d56379 sd/prompt-local-variable later to maint).
+   (merge 06d43fad18 rs/pack-write-hashwrite-simplify later to maint).
+   (merge b7e20b4373 mc/typofix later to maint).
+   (merge f6bcd9a8a4 js/test-whitespace-fixes later to maint).
+   (merge 53b67a801b js/test-file-size later to maint).
+   (merge 970909c2a7 rs/hashwrite-be64 later to maint).
+   (merge 5a923bb1f0 ma/list-object-filter-opt-msgfix later to maint).
+   (merge 1c3e412916 rs/archive-plug-leak-refname later to maint).
+   (merge d44e5267ea rs/plug-diff-cache-leak later to maint).
+   (merge 793c1464d3 ab/gc-keep-base-option later to maint).
+   (merge b86339b12b mt/worktree-error-message-fix later to maint).
+   (merge e01ae2a4a7 js/pull-rebase-use-advise later to maint).
+   (merge e63d774242 sn/config-doc-typofix later to maint).
+   (merge 08e9df2395 jk/multi-line-indent-style-fix later to maint).
+   (merge e66590348a da/vs-build-iconv-fix later to maint).
+   (merge 7fe07275be js/cmake-extra-built-ins-fix later to maint).
+   (merge 633eebe142 jb/midx-doc-update later to maint).
+   (merge 5885367e8f jh/index-v2-doc-on-fsmn later to maint).
+   (merge 14639a4779 jc/compat-util-setitimer-fix later to maint).
+   (merge 56f56ac50b ab/unreachable-break later to maint).
+   (merge 731d578b4f rb/nonstop-config-mak-uname-update later to maint).
+   (merge f4698738f9 es/perf-export-fix later to maint).
+   (merge 773c694142 nk/refspecs-negative-fix later to maint).
+
+----------------------------------------------------------------
+
+Changes since v2.30.0-rc1 are as follows:
+
+Jiang Xin (1):
+      pack-redundant: fix crash when one packfile in repo
+
+Johannes Schindelin (12):
+      t1400: use `main` as initial branch name
+      t3200: finish transitioning to the initial branch name `main`
+      t3201: finalize transitioning to using the branch name `main`
+      t3203: complete the transition to using the branch name `main`
+      t3205: finalize transitioning to using the branch name `main`
+      t5505: finalize transitioning to using the branch name `main`
+      t5510: use `main` as initial branch name
+      t5703: use `main` as initial branch name
+      t6302: use `main` as initial branch name
+      t9902: use `main` as initial branch name
+      tests: drop the `PREPARE_FOR_MAIN_BRANCH` prereq
+      checkout -p: handle tree arguments correctly again
+
+Junio C Hamano (1):
+      Git 2.30-rc2
+
+Martin =C3=85gren (3):
+      git-maintenance.txt: add missing word
+      gc: fix handling of crontab magic markers
+      t7900-maintenance: test for magic markers
+
+Nipunn Koorapati (2):
+      negative-refspec: fix segfault on : refspec
+      negative-refspec: improve comment on query_matches_negative_refspec
 
