@@ -2,91 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE672E219F
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 21:41:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 641672E21A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 21:41:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729197AbgLWUjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 15:39:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41454 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728941AbgLWUjD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 15:39:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71680224B2;
-        Wed, 23 Dec 2020 20:38:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608755902;
-        bh=Rry62Bs5KnI+jRK13Lj/HY3xNzvPcT6WuC5Ha51ZJIk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=IWRrs5Rx9bUpQbdZGqZuan1m5RyFe47jb7HjsDlKwynd64FBGKd6hm7Qmue7KyWCe
-         AC9R3e7H6NIHNuwy90qVE6WNaO8uuTpP7q3Wx1Jk6VbyNEbDQV9eCbBrz2taC5lLQt
-         0TeP21cn1pUeF4ti3rgUptl02rYWThZsIR/4JnnTlbTSbaq9ErevFZAkBo8fxKrEjN
-         Cdrqe3QZthGHosL9G3EW1yS2nexcebBM2pmkDmaK+H7XQEJDXxTvbUJHRLRNcTCeTS
-         Fz/r7G83rkhQoB5S/Yz6q7yAK0SBRybehd4f+hy9c/GOyX8R11rbXqLjmq3J4UwEOD
-         HwgIldGmfTAOQ==
-Date:   Wed, 23 Dec 2020 14:38:21 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Shradha Todi <shradha.t@samsung.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        jingoohan1@gmail.com, gustavo.pimentel@synopsys.com,
-        lorenzo.pieralisi@arm.com, robh@kernel.org, bhelgaas@google.com,
-        pankaj.dubey@samsung.com
-Subject: Re: [PATCH] PCI: dwc: Change size to u64 for EP outbound iATU
-Message-ID: <20201223203821.GA320232@bjorn-Precision-5520>
+        id S1729206AbgLWUj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 15:39:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727498AbgLWUj2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 15:39:28 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FC16C061794;
+        Wed, 23 Dec 2020 12:38:48 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id 23so253318lfg.10;
+        Wed, 23 Dec 2020 12:38:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=BZZtJhCkWZc0cTu4suSdN5Dy6qe4mWg5o8z0m1xWmmw=;
+        b=ryiTXp95qJn3hFRmeJjFriZA3fRZe1LJkWmcStreS7S1HQzZvQ0MFhnfpf8nwhNZ+4
+         byR/kGF7kq8hlx5i8bOSUk5NbfdQl49IIHl5VzTJhFAUygr8vLTNhJ6H9Fr/z4s+Who0
+         JSriRDvMEt/sMeC73CcldS07HXFoDDBz34L54otuUG5Pah50GAz4ZCG0agHFcRBy4X2B
+         uyI9p6Hg2CYCO7Yg+T9pERyUpRZJUMR2bvIpKnby2t9wroelhS9PxVj2Q6pIuSrKlNIU
+         RU2TtFLooW88UoEwgf+7Giff7nBqFk13MWhzd5vTNj//iXu3ditDHhkIaXA/gzp/AW4E
+         TNOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BZZtJhCkWZc0cTu4suSdN5Dy6qe4mWg5o8z0m1xWmmw=;
+        b=Aq94JeFAYshv6j108td46upSWxVu9zLt/MGZlJYnooKT0lOlCzDN7nj2Hv2YMn32AG
+         bU2xbfSIrlqAfZHnafJ+mtp1OvNTbVgReX2ZZRjPf2pRtOMu80wYtv/w/9PoKQ/Es3el
+         4r92PUNXIO73w0oNVw4LDto8n6p1tOf5QrhYSsWb/fLMB+tBNJv11SVs8CAS+6QqwPtV
+         ZxmVdx28yPCLPA08duTgHVNXnkbmCZe767PuRcrlzIDip4rtq+JmjuASbuTmCLAFueZS
+         +DFlmK4R+ig2PJFEr3qrBFXhzYrDgKJQPz57vEa2HJuATx3uyk7xVNpiRjQNeebmUMHb
+         kZsg==
+X-Gm-Message-State: AOAM532bnOiVHX+G8DcQp346vfIAblsi2ewfiQXdfROjCKDEqykXai9C
+        TyWeIjD5C4qDE6q76Qh+xbrEReT3t8Y=
+X-Google-Smtp-Source: ABdhPJwfBMyGf+UGyLbLjeTseB6B9wXUQfbXnzUgDrthVMBm31fXo34JrVL1gowO+ssG8p2R1uqvrg==
+X-Received: by 2002:a19:f718:: with SMTP id z24mr12249722lfe.532.1608755926503;
+        Wed, 23 Dec 2020 12:38:46 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.googlemail.com with ESMTPSA id z3sm3378258lfj.140.2020.12.23.12.38.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Dec 2020 12:38:46 -0800 (PST)
+Subject: Re: [PATCH v2 15/48] opp: Support set_opp() customization without
+ requiring to use regulators
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-clk@vger.kernel.org
+References: <20201217180638.22748-1-digetx@gmail.com>
+ <20201217180638.22748-16-digetx@gmail.com>
+ <20201223060101.v2qihvvgsmpahg24@vireshk-i7>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <ea025b0f-bb2a-d075-4c8e-45831fa9cd93@gmail.com>
+Date:   Wed, 23 Dec 2020 23:38:44 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1608305648-31816-1-git-send-email-shradha.t@samsung.com>
+In-Reply-To: <20201223060101.v2qihvvgsmpahg24@vireshk-i7>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 09:04:08PM +0530, Shradha Todi wrote:
-> Since outbound iATU permits size to be greater than
-> 4GB for which the support is also available, allow
-> EP function to send u64 size instead of truncating
-> to u32.
-
-Please wrap your commit messages so they use more of an 80-column
-window.  I use "set textwidth=75" for vim to account for git log
-indenting by 4 characters.
-
-I know 80 isn't a magic width, but it's the convention in drivers/pci.
-
-This also affects other patches from you, e.g., "PCI: dwc: Add upper
-limit address for outbound iATU".
-
-> Signed-off-by: Shradha Todi <shradha.t@samsung.com>
-> ---
->  drivers/pci/controller/dwc/pcie-designware.c | 2 +-
->  drivers/pci/controller/dwc/pcie-designware.h | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+23.12.2020 09:01, Viresh Kumar пишет:
+> On 17-12-20, 21:06, Dmitry Osipenko wrote:
+>> Support set_opp() customization without requiring to use regulators. This
+>> is needed by drivers which want to use dev_pm_opp_set_rate() for changing
+>> rates of a multiple clocks and don't need to touch regulator.
+>>
+>> One example is NVIDIA Tegra30/114 SoCs which have two sibling 3D hardware
+>> units which should be use to the same clock rate, meanwhile voltage
+>> scaling is done using a power domain. In this case OPP table doesn't have
+>> a regulator, causing a NULL dereference in _set_opp_custom().
+>>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>  drivers/opp/core.c | 16 ++++++++++++----
+>>  1 file changed, 12 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
+>> index 3d02fe33630b..625dae7a5ecb 100644
+>> --- a/drivers/opp/core.c
+>> +++ b/drivers/opp/core.c
+>> @@ -828,17 +828,25 @@ static int _set_opp_custom(const struct opp_table *opp_table,
+>>  			   struct dev_pm_opp_supply *old_supply,
+>>  			   struct dev_pm_opp_supply *new_supply)
+>>  {
+>> -	struct dev_pm_set_opp_data *data;
+>> +	struct dev_pm_set_opp_data *data, tmp_data;
+>> +	unsigned int regulator_count;
+>>  	int size;
+>>  
+>> -	data = opp_table->set_opp_data;
+>> +	if (opp_table->set_opp_data) {
+>> +		data = opp_table->set_opp_data;
+>> +		regulator_count = opp_table->regulator_count;
+>> +	} else {
+>> +		data = &tmp_data;
+>> +		regulator_count = 0;
+>> +	}
+>> +
 > 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
-> index 7eba3b2..6298212 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware.c
-> @@ -325,7 +325,7 @@ void dw_pcie_prog_outbound_atu(struct dw_pcie *pci, int index, int type,
->  
->  void dw_pcie_prog_ep_outbound_atu(struct dw_pcie *pci, u8 func_no, int index,
->  				  int type, u64 cpu_addr, u64 pci_addr,
-> -				  u32 size)
-> +				  u64 size)
->  {
->  	__dw_pcie_prog_outbound_atu(pci, func_no, index, type,
->  				    cpu_addr, pci_addr, size);
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-> index 28b72fb..bb33f28 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.h
-> +++ b/drivers/pci/controller/dwc/pcie-designware.h
-> @@ -307,7 +307,7 @@ void dw_pcie_prog_outbound_atu(struct dw_pcie *pci, int index,
->  			       u64 size);
->  void dw_pcie_prog_ep_outbound_atu(struct dw_pcie *pci, u8 func_no, int index,
->  				  int type, u64 cpu_addr, u64 pci_addr,
-> -				  u32 size);
-> +				  u64 size);
->  int dw_pcie_prog_inbound_atu(struct dw_pcie *pci, u8 func_no, int index,
->  			     int bar, u64 cpu_addr,
->  			     enum dw_pcie_as_type as_type);
-> -- 
-> 2.7.4
-> 
+> We should use the same structure, you can add some checks but not replace the
+> structure altogether.
+
+Well, there is no "same structure", the opp_table->set_opp_data is NULL
+there.
+
+I can re-write it like this if it looks better to you:
+
+static int _set_opp_custom(...)
+{
+	struct dev_pm_set_opp_data *data;
+	unsigned int regulator_count;
+	int size;
+
++	if (!opp_table->set_opp_data) {
++		struct dev_pm_set_opp_data freq_data = {};
++
++		freq_data.dev = dev;
++		freq_data.clk = opp_table->clk;
++		freq_data.new_opp.rate = freq;
++		freq_data.old_opp.rate = old_freq;
++
++		return opp_table->set_opp(&freq_data);
++	}
