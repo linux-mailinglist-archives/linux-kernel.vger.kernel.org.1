@@ -2,116 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 841382E1D71
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 15:33:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A2FC2E1D74
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 15:36:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727432AbgLWOcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 09:32:43 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:9399 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725957AbgLWOcm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 09:32:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1608733962; x=1640269962;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=mCXL6f9tv64JDm7NFojUga1H6cDJs67q/mMzoMR+F6o=;
-  b=j5CXUGTzsHG+ZZZwF0FKf6ChKJABmVy9Th4TfEW1F0HurEPspl7t01b5
-   STtRpoQprP8MKkct3uCOG0q21Kqvn2xFNPwfyQwgRxaaMyc8i00M//Qi5
-   2p/mAqgUujNJn4y33Xmb8Q1NS8K/jRG0NjXpXGxXoiv//ueVbE6zWl7b2
-   7TrULt+6GLXXx3cVvLgS757nOD/CF8Jue2HnfKddoZ7LULkaW5EvAFlkj
-   5Z40KT6NqgWf8vsn9/AM33mQlL1jdT1X8rrf60jfldp2GRAlGNgl9So0n
-   qvSaeHPvhgBIyw2s1DHnZz/jInYEnXr96YQWolLrltSrzgKBBPQQRK0dm
-   g==;
-IronPort-SDR: XCNArEeyOBPN8MtiaCVgnuE8FzgmXjXzIk+Nw5p7b7ARTv2oGMHdjg0r1nMc1L7FVBYsPMaHDL
- 2kJGCJjInutd3mgrv1HCOhEdNFqhZBGtsP4oquGt7nPekeM9HfKwqOKHYz2jQWxDf5ofWfT3kn
- rQJdP5JpWHdvRneFEkxNujRqdNRtpZg2TWPUjvHTFDS7C9IC1qdl2hw5PiKyDJ+84Epm6QNP4T
- Fs8fmtTP2XKnU25lqZgD+df7mlkfa1+UGOzKHCJNXVi89QQ1TWgXq/aEcH7d0P2H7D36VQyKS5
- BXg=
-X-IronPort-AV: E=Sophos;i="5.78,441,1599548400"; 
-   d="scan'208";a="100844053"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Dec 2020 07:31:26 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 23 Dec 2020 07:31:26 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Wed, 23 Dec 2020 07:31:25 -0700
-Date:   Wed, 23 Dec 2020 15:31:24 +0100
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Device Tree List <devicetree@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        "Lars Povlsen" <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Mark Einon <mark.einon@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [RFC PATCH v2 8/8] arm64: dts: sparx5: Add the Sparx5 switch node
-Message-ID: <20201223143124.tr2vejqgpf2qsot2@mchp-dev-shegelun>
-References: <20201217075134.919699-1-steen.hegelund@microchip.com>
- <20201217075134.919699-9-steen.hegelund@microchip.com>
- <20201219202448.GE3026679@lunn.ch>
+        id S1727670AbgLWOdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 09:33:51 -0500
+Received: from mail.zx2c4.com ([192.95.5.64]:59529 "EHLO mail.zx2c4.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725957AbgLWOdu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 09:33:50 -0500
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id d384b19b;
+        Wed, 23 Dec 2020 14:24:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
+        :references:in-reply-to:from:date:message-id:subject:to:cc
+        :content-type; s=mail; bh=Io97KoT2j7fFJotgUUvzrUqa2Fs=; b=W4yfNf
+        DK9bpU0jmM48T0SxjV+mlpxoJdqoVrWhV7FvACcDI7ZnpR7nrIEZmiHI7VkyjyEV
+        4YKwZPrWXBsR/izUJsioqXlrUfErXy6qr0gLUKzaYSojKrvoil8UWy4qwJkdV4vn
+        eP84gLsa0zmG+ZgqnJ5SutjLdLhuV/UraS0K1z/Vzg6KdJfdwpDv//JjRYtNCmkC
+        CETvOc7D77HhSoujAJbDdKJOp5hVLxB/F0tgbmlEitEekkMSN8ZaH4Z9SBqkYE/K
+        unFKyQB+Cvj+ldTlY/V+ic/kDJRNvQ5mlr4MLoaeeh1+zfGXO0xZRio4SPmDjzks
+        wLbNkZXJaRW0n9Bw==
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 7db949a5 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Wed, 23 Dec 2020 14:24:35 +0000 (UTC)
+Received: by mail-yb1-f174.google.com with SMTP id a16so14747620ybh.5;
+        Wed, 23 Dec 2020 06:33:07 -0800 (PST)
+X-Gm-Message-State: AOAM532iUhGsJx2fpR7HHDz7Ku8oJQ+rzudBOoDt2fggfhA8GBwebKFk
+        g+jPWsevxS4EAL1Ai2usJUcuRrwW5d0+HCJj4p0=
+X-Google-Smtp-Source: ABdhPJw7i8d5iEIXttO/QVmZY12Qr9HAJyMwlDNwLzajdLyZHEmgxeBea/AGlLWEmrAt/27a69foGdtbtoXFZCLvBzg=
+X-Received: by 2002:a5b:78d:: with SMTP id b13mr36070834ybq.123.1608733985640;
+ Wed, 23 Dec 2020 06:33:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20201219202448.GE3026679@lunn.ch>
+References: <20201130151231.GA24862@lst.de> <CAHmME9p4vFGWh7+CKF4f3dw5r+ru5PVG0-vP77JowX8sPhin1g@mail.gmail.com>
+ <20201130165339.GE5364@mit.edu> <CAHmME9pksS8ec17RAwCNJimt4B0xZgd3qYHUPnaT4Bj4CF7n0A@mail.gmail.com>
+ <20201218132519.kj3nz7swsx7vvlr5@valinor.lan> <20201223132851.55d19271@blackhole.lan>
+ <20201223151014.57caf98b@ezekiel.suse.cz>
+In-Reply-To: <20201223151014.57caf98b@ezekiel.suse.cz>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Wed, 23 Dec 2020 15:32:55 +0100
+X-Gmail-Original-Message-ID: <CAHmME9ooV1HRGO4bLsNKqv1EjDsUYsM6TcMbmEL=4CejTB+1ZQ@mail.gmail.com>
+Message-ID: <CAHmME9ooV1HRGO4bLsNKqv1EjDsUYsM6TcMbmEL=4CejTB+1ZQ@mail.gmail.com>
+Subject: Re: drivers/char/random.c needs a (new) maintainer
+To:     Petr Tesarik <ptesarik@suse.cz>
+Cc:     Torsten Duwe <duwe@lst.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        =?UTF-8?Q?Stephan_M=C3=BCller?= <smueller@chronox.de>,
+        Willy Tarreau <w@1wt.eu>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Nicolai Stange <nstange@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        zhangjs <zachary@baishancloud.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Peter Matthias <matthias.peter@bsi.bund.de>,
+        Neil Horman <nhorman@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        And y Lavr <andy.lavr@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, simo@redhat.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.12.2020 21:24, Andrew Lunn wrote:
->EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->
->> +             port13: port@13 {
->> +                     reg = <13>;
->> +                     /* Example: CU SFP, 1G speed */
->> +                     max-speed = <10000>;
->
->One too many 0's for 1G.
+On Wed, Dec 23, 2020 at 3:17 PM Petr Tesarik <ptesarik@suse.cz> wrote:
+> Upfront, let me admit that SUSE has a vested interest in a FIPS-certifiable Linux kernel.
 
-Ah, but this is allocation for the port, not the speed.  This just
-used by the calendar module to allocate slots on the taxis as requested.
-So I would say it is OK to overallocate in this case (but you could
-argue it does not make much sense).
+Sorry, but just because you have a "vested interest", or a financial
+interest, or because you want it does not suddenly make it a good
+idea. The idea is to have good crypto, not to merely check some boxes
+for the bean counters.
 
->
->> +             /* 25G SFPs */
->> +             port56: port@56 {
->> +                     reg = <56>;
->> +                     max-speed = <10000>;
->
->Why limit a 25G SFP to 10G?
+For example, it's very unlikely that future kernel RNGs will move to
+using AES, due to the performance overhead involved on non-table-based
+implementations, and the lack of availability of FPU/AES-NI in all the
+contexts we need. NT's fortuna machine can use AES, because NT allows
+the FPU in all contexts. We don't have that luxury (or associated
+performance penalty).
 
-In the PCB134 case it is to keep the total allocation below 200Gbits
-((12+8)*10G).  There is a port mux mode that provides 8*25G on the 25G
-SerDes'es, but that would be a different DT.
+I would, however, be interested in a keccak-based construction. But
+just using the keccak permutation does not automatically make it
+"SHA-3", so we're back at the same issue again. FIPS is simply not
+interesting for our requirements.
 
-The Datasheet shows which port mux combinations are possible, and not
-all combinations of SerDes, Speed and interface are allowed.
-
-The PCB134 was designed to showcase this "many 10G ports" mode, so that
-is why we have the current DT.
-
->
->    Andrew
-
-BR
-Steen
-
----------------------------------------
-Steen Hegelund
-steen.hegelund@microchip.com
+Jason
