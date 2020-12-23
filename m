@@ -2,128 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08EAF2E1581
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:58:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E748E2E1538
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:49:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730991AbgLWCtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:49:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40462 "EHLO
+        id S1731133AbgLWCs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:48:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729560AbgLWCtR (ORCPT
+        with ESMTP id S1731142AbgLWCsx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:49:17 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C0CC061793
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 18:48:37 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id c22so9654216pgg.13
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 18:48:37 -0800 (PST)
+        Tue, 22 Dec 2020 21:48:53 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB088C061794;
+        Tue, 22 Dec 2020 18:48:12 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id f9so9530785pfc.11;
+        Tue, 22 Dec 2020 18:48:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wP7Uq2lowyz2FH8P5+5koRz57WTCSgXorU4PTle7rdo=;
-        b=bI+yNYRnrvlvKm0GFWJ0h8Zo4CX+ntNyT8egYkggS18UBmlB5Ej5FmqGO/cmC3a6io
-         rjiGb4MIW9QvltzrZxdJDzjP+HmGGr5CTERjUc21VMF44i38G1LMaWQLTgrM96CfxFn7
-         OHEBz4+sDNwo1WVSAhW+l3nQjVStyrz8JeZdfW5gSfDdodXi7/SWiyuWPdb+Y4OdrSY0
-         qrE5QZFwaicGQDZ3c3tyX5pIzN+bjhBHG7uGbox0Hr6tS7uoZZsNklQGcEz9jqgvjR9z
-         5dkVJSklQB4IqZEVi5p0kBVeJaOfBJh5fgfsaUpmA25RoNGn4WfFbNliDSRu8yCgpVOt
-         hNzA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+PL75IV1YIOve5Jg9V8yrYGzWUBBJbAWUFCp/xwOrcw=;
+        b=p0s/urqh8Vx0Vgs8W2NcMs80gJsnxRCC1jlOJH5PKFFFJ8c8bTADFis/oHZ9ZTidWa
+         HcT3xHBlkLvT9HwRUjhRhpffGd9F42GGOa9XG3WEYj2L4CIjUxC8C4S6vRYGCauBDhXV
+         JjuBq3y4yhhOBesUJLHkYv1a18jax0IfWW6zQnGo4EUpgULI1KA88Ig2dIX4u4Kz4G4s
+         bjODtJ8A5SASKSSh3R9otp0j1P/99wf8i2CRtnAaJsP1jjcohC7CUTny9HRkaVu2yta7
+         zCZ9PxWyil7FXvYdAef8KDyJ0pn0/ir2+gNXjBXqgTabASB5/6Wpke6piVEOD+/1Eei1
+         z1GA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wP7Uq2lowyz2FH8P5+5koRz57WTCSgXorU4PTle7rdo=;
-        b=mX2dLmqDvfwZ9Q0PHMm7zPVqcJXk3fXJBS0YPeXf0zpg0TvTR2j35Z2eCpTUuiM/Fb
-         mKTBmjf6W387LEcvXyxFs8bUrjxFoDt1QYYT6UlZr6yFmcFa91V5xkFsxYVtmFscvV7I
-         wlr9Khb60z/pUzIiQDK+h1xLlaMaaVhrE9NH069lQZJ5AdDrUzB+lw0sXMKIdf2ZW8dN
-         Ipv19FKLbnV+Oo/stcCbmUKYOSj8uyDpOTsiSv+Yd6qUgpY27Hlsdv5wIXpulmuW27+j
-         t7Cy54nN1H/wD6TAGRL22EjnGpNT/JllxyvLy+XUTJYzjlzHqqowXVowcMrYR2T3r+6C
-         hz5w==
-X-Gm-Message-State: AOAM530uklW/2le2uEbAR6w7UQlhQpoMDJfvZnXdG6qr6L6Sq0rfUjat
-        UMml08FhFgTbaqGcYFFoyQHz6pwGJ6erFJr0JBZXeg==
-X-Google-Smtp-Source: ABdhPJyZhq4UXodKoW1yonKLx7SJbDUeopHTSj9WphsfAsFA9xHEfINldXo3tXZS2SFAgF7o8OQRmc7gOerPeZ7KwJo=
-X-Received: by 2002:a63:480f:: with SMTP id v15mr9021169pga.341.1608691717231;
- Tue, 22 Dec 2020 18:48:37 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+PL75IV1YIOve5Jg9V8yrYGzWUBBJbAWUFCp/xwOrcw=;
+        b=ZHDoT4PYiEnmVImQk+IZ9WlJ9juWZDtz2sTf0lOoTIebuYNmOeVJZDtWkcXGDnBAJ0
+         f5o1ErfKiyvTyQEIe3ZkTcVcxsq22N1I+J6mE/pzqS9Vyp6sHf6ZYnVgxKHnp4Oy7z/z
+         57vHQf1fF5/B1NL0VYHTE+UFB4qXZYK97vvi9Fg/8Eoo10AR24UmMVOaVdTn45I2AAwW
+         UtKDed/2hVN56DjPq9oP9SMWPFJaIdezA16YBUsIfP7TUsLdqe7dnHZqL2bJrYAHeMXu
+         KyrOhLBnrR0GHmQZP8UzxCgD1jrvEzxlRY+05yiC9OxMsTmCrwpHyP+gicLTPKAOnWCe
+         qJFw==
+X-Gm-Message-State: AOAM530/L7DFpD3Ci50FOp3iiPEejBETVYxuPbggQqb0Vd+/RUvFdbX4
+        L90KkyBn6Tl+rj+yaRSh/cY6qrlve4U=
+X-Google-Smtp-Source: ABdhPJzzRUw15Y3l8aYDZrE5BwmmYrfjOeWjbCjMBEKO8TbxkfCsaquNLvgH9mJqutbVODIKDFvd0A==
+X-Received: by 2002:a63:af50:: with SMTP id s16mr22903348pgo.448.1608691692119;
+        Tue, 22 Dec 2020 18:48:12 -0800 (PST)
+Received: from [10.230.29.166] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id y3sm21796984pjb.18.2020.12.22.18.48.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Dec 2020 18:48:11 -0800 (PST)
+Subject: Re: [PATCH v4 1/2] dt-bindings: arm: Add optional interrupt to
+ smc/hvc SCMI transport
+To:     Jim Quinlan <jim2101024@gmail.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        "open list:SYSTEM CONTROL & POWER/MANAGEMENT INTERFACE Mes..." 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20201222145603.40192-1-jim2101024@gmail.com>
+ <20201222145603.40192-2-jim2101024@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <62da340d-282a-b3cf-5366-18617c03e513@gmail.com>
+Date:   Tue, 22 Dec 2020 18:48:07 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20201222142440.28930-1-songmuchun@bytedance.com>
- <20201222142440.28930-4-songmuchun@bytedance.com> <20201222163248.GB31385@linux>
-In-Reply-To: <20201222163248.GB31385@linux>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 23 Dec 2020 10:47:59 +0800
-Message-ID: <CAMZfGtU5x6kcdL32zL8Mz6DBp3pEQ+kMC5=yOda9arUm5p0=Xg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v11 03/11] mm/hugetlb: Free the vmemmap
- pages associated with each HugeTLB page
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>, naoya.horiguchi@nec.com,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201222145603.40192-2-jim2101024@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 12:32 AM Oscar Salvador <osalvador@suse.de> wrote:
->
-> On Tue, Dec 22, 2020 at 10:24:32PM +0800, Muchun Song wrote:
-> > diff --git a/include/linux/mmdebug.h b/include/linux/mmdebug.h
-> > index 5d0767cb424a..eff5b13a6945 100644
-> > --- a/include/linux/mmdebug.h
-> > +++ b/include/linux/mmdebug.h
-> > @@ -37,6 +37,13 @@ void dump_mm(const struct mm_struct *mm);
-> >                       BUG();                                          \
-> >               }                                                       \
-> >       } while (0)
-> > +#define VM_WARN_ON_PAGE(cond, page)                                  \
-> > +     do {                                                            \
-> > +             if (unlikely(cond)) {                                   \
-> > +                     dump_page(page, "VM_WARN_ON_PAGE(" __stringify(cond)")");\
-> > +                     WARN_ON(1);                                     \
-> > +             }                                                       \
-> > +     } while (0)
-> >  #define VM_WARN_ON_ONCE_PAGE(cond, page)     ({                      \
-> >       static bool __section(".data.once") __warned;                   \
-> >       int __ret_warn_once = !!(cond);                                 \
-> > @@ -60,6 +67,7 @@ void dump_mm(const struct mm_struct *mm);
-> >  #define VM_BUG_ON_MM(cond, mm) VM_BUG_ON(cond)
-> >  #define VM_WARN_ON(cond) BUILD_BUG_ON_INVALID(cond)
-> >  #define VM_WARN_ON_ONCE(cond) BUILD_BUG_ON_INVALID(cond)
-> > +#define VM_WARN_ON_PAGE(cond, page) BUILD_BUG_ON_INVALID(cond)
-> >  #define VM_WARN_ON_ONCE_PAGE(cond, page)  BUILD_BUG_ON_INVALID(cond)
-> >  #define VM_WARN_ONCE(cond, format...) BUILD_BUG_ON_INVALID(cond)
-> >  #define VM_WARN(cond, format...) BUILD_BUG_ON_INVALID(cond)
->
-> Take this off this patch and make it a preparation patch prior to this one.
-> A new VM_WARN_ON_ macro does not make much sense in this patch as it is
-> not related.
-
-OK. Will do in the next version. Thanks.
-
->
-> I will have a look later today at the other changes, but so far looks good.
->
-> --
-> Oscar Salvador
-> SUSE L3
 
 
+On 12/22/2020 6:56 AM, Jim Quinlan wrote:
+> In normal use of smc/hvc transport in SCMI the message completion is
+> indicated by the return of the SMC call.  This commit provides for an
+> optional interrupt named "a2p" which is used instead to
+> indicate the completion of a message.
+> 
+> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
 
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-Yours,
-Muchun
+Florian
