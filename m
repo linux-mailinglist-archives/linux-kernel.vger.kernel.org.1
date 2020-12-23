@@ -2,84 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C631D2E1A91
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 10:34:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D68422E1A96
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 10:40:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728325AbgLWJeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 04:34:12 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:50962 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727823AbgLWJeL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 04:34:11 -0500
-X-UUID: b6f541f005474e5abe27c413f415f52c-20201223
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=FCTr7Meo/1gfNbE3HTrp4APnGU2TY3DudOiD1TClv6w=;
-        b=HXqQPQP6amc9CvIp1zGwUIyLapW+Lk0dIi35u+l8PQOsZUHkywDIFwN/6uNR7w/gy/pSe3LV/PF7vX1dXCL5Gsbfd8DN6RKB2/Lje7a7Ehqlc8dRHnsAphrhRDb36bm9CkWwmAYKD5itneSWtj1yqP9md5LiW/NBxaDYdvaqcNg=;
-X-UUID: b6f541f005474e5abe27c413f415f52c-20201223
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1221856157; Wed, 23 Dec 2020 17:33:26 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 23 Dec 2020 17:33:17 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 23 Dec 2020 17:33:18 +0800
-Message-ID: <1608715998.14045.8.camel@mtkswgap22>
-Subject: Re: [PATCH RFC v4 1/1] scsi: ufs: Fix ufs power down/on specs
- violation
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Ziqi Chen <ziqichen@codeaurora.org>
-CC:     <asutoshd@codeaurora.org>, <nguyenb@codeaurora.org>,
-        <cang@codeaurora.org>, <hongwus@codeaurora.org>,
-        <rnayak@codeaurora.org>, <vinholikatti@gmail.com>,
-        <jejb@linux.vnet.ibm.com>, <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>, <kernel-team@android.com>,
-        <saravanak@google.com>, <salyzyn@google.com>,
-        <kwmad.kim@samsung.com>, Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Andy Gross <agross@kernel.org>,
-        "Bjorn Andersson" <bjorn.andersson@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "Satya Tangirala" <satyat@google.com>,
-        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
-        <linux-mediatek@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>
-Date:   Wed, 23 Dec 2020 17:33:18 +0800
-In-Reply-To: <1608644981-46267-1-git-send-email-ziqichen@codeaurora.org>
-References: <1608644981-46267-1-git-send-email-ziqichen@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
-MIME-Version: 1.0
-X-TM-SNTS-SMTP: 2E82613DAED4FA8FF2D640B8A13FCC1CB8454CFBFE82D18528678A7423E615532000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        id S1728269AbgLWJjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 04:39:36 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:10997 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727014AbgLWJja (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 04:39:30 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4D17SP6pvjz9v1yT;
+        Wed, 23 Dec 2020 10:38:45 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id aaWSSNKmWPJn; Wed, 23 Dec 2020 10:38:45 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4D17SP5sG6z9v1yS;
+        Wed, 23 Dec 2020 10:38:45 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E9E758B81D;
+        Wed, 23 Dec 2020 10:38:46 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id vBDlujpSTbIq; Wed, 23 Dec 2020 10:38:46 +0100 (CET)
+Received: from localhost.localdomain (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 96E7A8B75F;
+        Wed, 23 Dec 2020 10:38:46 +0100 (CET)
+Received: by localhost.localdomain (Postfix, from userid 0)
+        id 526F96696F; Wed, 23 Dec 2020 09:38:46 +0000 (UTC)
+Message-Id: <e4471bf81089252470efb3eed735d71a5b32adbd.1608716197.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] tty: serial: cpm_uart: Add udbg support for enabling xmon
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Wed, 23 Dec 2020 09:38:46 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIwLTEyLTIyIGF0IDIxOjQ5ICswODAwLCBaaXFpIENoZW4gd3JvdGU6DQo+IEFz
-IHBlciBzcGVjcywgZS5nLCBKRVNEMjIwRSBjaGFwdGVyIDcuMiwgd2hpbGUgcG93ZXJpbmcNCj4g
-b2ZmL29uIHRoZSB1ZnMgZGV2aWNlLCBSU1RfTiBzaWduYWwgYW5kIFJFRl9DTEsgc2lnbmFsDQo+
-IHNob3VsZCBiZSBiZXR3ZWVuIFZTUyhHcm91bmQpIGFuZCBWQ0NRL1ZDQ1EyLg0KPiANCj4gVG8g
-ZmxleGlibHkgY29udHJvbCBkZXZpY2UgcmVzZXQgbGluZSwgcmVmYWN0b3IgdGhlIGZ1bmN0aW9u
-DQo+IHVmc2NoZF92b3BzX2RldmljZV9yZXNldChzdHVyY3QgdWZzX2hiYSAqaGJhKSB0byB1ZnNo
-Y2RfDQo+IHZvcHNfZGV2aWNlX3Jlc2V0KHN0dXJjdCB1ZnNfaGJhICpoYmEsIGJvb2wgYXNzZXJ0
-ZWQpLiBUaGUNCj4gbmV3IHBhcmFtZXRlciAiYm9vbCBhc3NlcnRlZCIgaXMgdXNlZCB0byBzZXBh
-cmF0ZSBkZXZpY2UgcmVzZXQNCj4gbGluZSBwdWxsaW5nIGRvd24gZnJvbSBwdWxsaW5nIHVwLg0K
-PiANCj4gQ2M6IEtpd29vbmcgS2ltIDxrd21hZC5raW1Ac2Ftc3VuZy5jb20+DQo+IENjOiBTdGFu
-bGV5IENodSA8c3RhbmxleS5jaHVAbWVkaWF0ZWsuY29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBaaXFp
-IENoZW4gPHppcWljaGVuQGNvZGVhdXJvcmEub3JnPg0KDQpUaGFua3MgZm9yIHRoaXMgZml4IGlu
-Y2x1ZGluZyB1ZnMtbWVkaWF0ZWsgY2hhbmdlIGFzIHdlbGwuDQoNClJldmlld2VkLWJ5OiBTdGFu
-bGV5IENodSA8c3RhbmxleS5jaHVAbWVkaWF0ZWsuY29tPg0KVGVzdGVkLWJ5OiBTdGFubGV5IENo
-dSA8c3RhbmxleS5jaHVAbWVkaWF0ZWsuY29tPg0KDQoNCg0K
+In order to use xmon with powerpc 8xx, the serial driver
+must provide udbg_putc() and udpb_getc().
+
+Provide them via cpm_put_poll_char() and cpm_get_poll_char().
+
+This requires CONFIG_CONSOLE_POLL.
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ drivers/tty/serial/cpm_uart/cpm_uart_core.c | 40 ++++++++++++++++++++-
+ 1 file changed, 39 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/tty/serial/cpm_uart/cpm_uart_core.c b/drivers/tty/serial/cpm_uart/cpm_uart_core.c
+index ba14ec5b9bc4..2920b9b602b3 100644
+--- a/drivers/tty/serial/cpm_uart/cpm_uart_core.c
++++ b/drivers/tty/serial/cpm_uart/cpm_uart_core.c
+@@ -1145,6 +1145,32 @@ static void cpm_put_poll_char(struct uart_port *port,
+ 	ch[0] = (char)c;
+ 	cpm_uart_early_write(pinfo, ch, 1, false);
+ }
++
++static struct uart_port *udbg_port;
++
++static void udbg_cpm_putc(char c)
++{
++	if (c == '\n')
++		cpm_put_poll_char(udbg_port, '\r');
++	cpm_put_poll_char(udbg_port, c);
++}
++
++static int udbg_cpm_getc_poll(void)
++{
++	int c = cpm_get_poll_char(udbg_port);
++
++	return c == NO_POLL_CHAR ? -1 : c;
++}
++
++static int udbg_cpm_getc(void)
++{
++	int c;
++
++	while ((c = udbg_cpm_getc_poll()) == -1)
++		cpu_relax();
++	return c;
++}
++
+ #endif /* CONFIG_CONSOLE_POLL */
+ 
+ static const struct uart_ops cpm_uart_pops = {
+@@ -1251,7 +1277,10 @@ static int cpm_uart_init_port(struct device_node *np,
+ 		pinfo->gpios[i] = NULL;
+ 
+ #ifdef CONFIG_PPC_EARLY_DEBUG_CPM
+-	udbg_putc = NULL;
++#ifdef CONFIG_CONSOLE_POLL
++	if (!udbg_port)
++#endif
++		udbg_putc = NULL;
+ #endif
+ 
+ 	return cpm_uart_request_port(&pinfo->port);
+@@ -1370,6 +1399,15 @@ static int __init cpm_uart_console_setup(struct console *co, char *options)
+ 	uart_set_options(port, co, baud, parity, bits, flow);
+ 	cpm_line_cr_cmd(pinfo, CPM_CR_RESTART_TX);
+ 
++#ifdef CONFIG_CONSOLE_POLL
++	if (!udbg_port) {
++		udbg_port = &pinfo->port;
++		udbg_putc = udbg_cpm_putc;
++		udbg_getc = udbg_cpm_getc;
++		udbg_getc_poll = udbg_cpm_getc_poll;
++	}
++#endif
++
+ 	return 0;
+ }
+ 
+-- 
+2.25.0
 
