@@ -2,609 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 868622E1C46
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 13:31:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5759D2E1C49
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 13:36:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728559AbgLWMan convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 23 Dec 2020 07:30:43 -0500
-Received: from aposti.net ([89.234.176.197]:52758 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726266AbgLWMam (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 07:30:42 -0500
-Date:   Wed, 23 Dec 2020 12:29:47 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v4 4/5] clk: Ingenic: Add missing clocks for Ingenic SoCs.
-To:     =?UTF-8?b?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
-Cc:     sboyd@kernel.org, robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        mturquette@baylibre.com, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        yanfei.li@ingenic.com, sihui.liu@ingenic.com,
-        sernia.zhou@foxmail.com
-Message-Id: <NDLSLQ.4XPUV7PHX1V32@crapouillou.net>
-In-Reply-To: <1608565971-23895-5-git-send-email-zhouyanjie@wanyeetech.com>
-References: <1608565971-23895-1-git-send-email-zhouyanjie@wanyeetech.com>
-        <1608565971-23895-5-git-send-email-zhouyanjie@wanyeetech.com>
+        id S1728523AbgLWMez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 07:34:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726266AbgLWMey (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 07:34:54 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3654BC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 04:34:14 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id w5so18454623wrm.11
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 04:34:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent:content-language;
+        bh=46s9iCozNdwklFRP9JAUtjF3UizZ0VgnsLK944MzeQA=;
+        b=AIfxhgWzlR35+vH7QotuaW/iEHUPQbqrwNJlpdrmYnTHhSA+E+Xizja8tXSv8yumNW
+         FmWlJU+hiPjh7OheGEOFB7RZefUT6vwPfIz/FTfOU+MK1fHuXpdnO4ZySgiPI5iQtPeq
+         yPVzcsLmKd1jfC+6ASw4V1Pe7SpqPBZIhfJQUXMgOzSCYQYNJ5fluRSmWD7GkmaeFfTv
+         geVDzBZTnkjD7KA+MXEumxBNrmcQC8wI2OCbpRBR9aBXkJZ9X+Al6QGDMP32Ew1oTvQE
+         wNFFrXtsDJMSrXVMWIloEPmFy53koesH7EuGG/fK+N0d+3FpBpgHX5cW90O+79vJxDvS
+         y9bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent:content-language;
+        bh=46s9iCozNdwklFRP9JAUtjF3UizZ0VgnsLK944MzeQA=;
+        b=H4pUkAOReMrio5Nqfn4J7soij54FzQioZVPqw9BNk8+83ATcXPIlNlB2Cw4WKZkJT7
+         Roa+EDq2+tziCazu8D4Vmb0oO02oMP/iy6LwrSzsjOwG6A66C2Km1cBNfz1VkXLAXjOj
+         gAzr+WQ/VUvpuxuEFMu9fugyL8Ep2DMcU/WLJJNcWktAGewPjwUk1f5nRzY/6Lysf9Io
+         inVvefy0WTPsTzn5ANY/1E74YM/8FQhwwvKjFR/4irgbM6IbGnXAamiBXlrxvx2WDopQ
+         GWHEwc3tmUMcKxmXlrwEhF/NfiOPS/zMV5v4PA3hRWxtIrIA9gWDqyCqSQSY16r1HvHQ
+         qRlg==
+X-Gm-Message-State: AOAM530lwwD/ItjejGE9NAlEIu0vyzroFQqke41lFyDQuSEEZT1U2KzO
+        VCsFvm2/JlDHzTInCnYrbAFRDQ==
+X-Google-Smtp-Source: ABdhPJwOkSM8Qc8pGGgU1U4SiH/0CnCXZ3kVzavCyqdHyvPoWRa06GmRQrbNHpV201JI6MGhft6XOA==
+X-Received: by 2002:a5d:4a06:: with SMTP id m6mr30207013wrq.189.1608726852733;
+        Wed, 23 Dec 2020 04:34:12 -0800 (PST)
+Received: from linaro.org (lns-bzn-59-82-252-148-164.adsl.proxad.net. [82.252.148.164])
+        by smtp.gmail.com with ESMTPSA id j9sm35164716wrm.14.2020.12.23.04.34.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Dec 2020 04:34:12 -0800 (PST)
+Date:   Wed, 23 Dec 2020 13:34:09 +0100
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        Lina Iyer <ilina@codeaurora.org>,
+        Ram Chandrasekar <rkumbako@codeaurora.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Lukasz Luba <lukasz.luba@arm.com>
+Subject: Re: [PATCH v5 0/4] powercap/dtpm: Add the DTPM framework
+Message-ID: <784894c4-36d3-7eae-ac82-ca0ef68772a2@linaro.org>
+References: <20201208164145.19493-1-daniel.lezcano@linaro.org>
+ <ba9c6f75-3964-3ee9-c849-17db5ae51501@linaro.org>
+ <CAJZ5v0infKumCmn77nzAN80G4bmF+_ZzgGkdaeMvczC_VyjyGg@mail.gmail.com>
+ <CAJZ5v0hbeeVHPAhm01W4NKNBNQo1xS0Dqa6C2h=zoo4hCjGPew@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0hbeeVHPAhm01W4NKNBNQo1xS0Dqa6C2h=zoo4hCjGPew@mail.gmail.com>
+X-Identity-Key: id8
+X-Account-Key: account12
+X-Enigmail-Draft-Status: N11100
+X-Mozilla-Draft-Info: internal/draft; vcard=0; receipt=0; DSN=0; uuencode=0;
+ attachmentreminder=0; deliveryformat=4
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+Content-Language: en-US
+X-TUID: ARMoOqCpfDUp
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhou,
+On 22/12/2020 19:52, Rafael J. Wysocki wrote:
+> On Fri, Dec 11, 2020 at 8:15 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+>>
+>> On Fri, Dec 11, 2020 at 11:41 AM Daniel Lezcano
+>> <daniel.lezcano@linaro.org> wrote:
+>>>
+>>>
+>>> Hi Rafael,
+>>>
+>>> I believe I took into account all the comments, do you think it is
+>>> possible to merge this series ?
+>>
+>> It should be, unless more changes are requested.
+>>
+>> I will be taking care of it next week and, if all goes well, it should
+>> be possible to push it during the second half of the merge window.
+> 
+> Applied as 5.11-rc material now, sorry for the delay.
 
-Le lun. 21 déc. 2020 à 23:52, 周琰杰 (Zhou Yanjie) 
-<zhouyanjie@wanyeetech.com> a écrit :
-> Add CIM, AIC, DMIC, I2S clocks for the X1000 SoC and the
-> X1830 SoC from Ingenic.
-> 
-> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-> ---
-> 
-> Notes:
->     v1->v2:
->     Add I2S clock for X1000.
-> 
->     v2->v3:
->     Correct the comment in x1000-cgu.c, change it from
->     "Custom (SoC-specific) OTG PHY" to "Custom (SoC-specific)",
->     since there is more than just the "OTG PHY" clock.
-> 
->     v3->v4:
->     No change.
-> 
->  drivers/clk/ingenic/x1000-cgu.c | 207 
-> +++++++++++++++++++++++++++++++++++++++-
->  drivers/clk/ingenic/x1830-cgu.c | 207 
-> +++++++++++++++++++++++++++++++++++++++-
->  2 files changed, 412 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/clk/ingenic/x1000-cgu.c 
-> b/drivers/clk/ingenic/x1000-cgu.c
-> index 53e5fe0..f03dd47 100644
-> --- a/drivers/clk/ingenic/x1000-cgu.c
-> +++ b/drivers/clk/ingenic/x1000-cgu.c
-> @@ -58,6 +58,17 @@
->  #define USBPCR1_REFCLKDIV_24	(0x1 << USBPCR1_REFCLKDIV_SHIFT)
->  #define USBPCR1_REFCLKDIV_12	(0x0 << USBPCR1_REFCLKDIV_SHIFT)
-> 
-> +/* bits within the I2SCDR register */
-> +#define I2SCDR_I2PCS_SHIFT		31
-> +#define I2SCDR_I2PCS_MASK		(0x1 << I2SCDR_I2PCS_SHIFT)
-> +#define I2SCDR_I2CS_SHIFT		30
-> +#define I2SCDR_I2CS_MASK		(0x1 << I2SCDR_I2CS_SHIFT)
-> +#define I2SCDR_I2SDIV_M_SHIFT	13
-> +#define I2SCDR_I2SDIV_M_MASK	(0x1ff << I2SCDR_I2SDIV_M_SHIFT)
-> +#define I2SCDR_I2SDIV_N_SHIFT	0
-> +#define I2SCDR_I2SDIV_N_MASK	(0x1fff << I2SCDR_I2SDIV_N_SHIFT)
-> +#define I2SCDR_CE_I2S			BIT(29)
-> +
->  static struct ingenic_cgu *cgu;
-> 
->  static unsigned long x1000_otg_phy_recalc_rate(struct clk_hw *hw,
-> @@ -168,6 +179,175 @@ static const struct clk_ops x1000_otg_phy_ops = 
-> {
->  	.is_enabled	= x1000_usb_phy_is_enabled,
->  };
-> 
-> +static u8 x1000_i2s_get_parent(struct clk_hw *hw)
-> +{
-> +	u32 i2scdr;
-> +
-> +	i2scdr = readl(cgu->base + CGU_REG_I2SCDR);
-> +
-> +	return (i2scdr & (I2SCDR_I2PCS_MASK | I2SCDR_I2CS_MASK)) >> 
-> I2SCDR_I2CS_SHIFT;
-> +}
-> +
-> +static int x1000_i2s_set_parent(struct clk_hw *hw, u8 idx)
-> +{
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&cgu->lock, flags);
-> +	writel(idx << I2SCDR_I2CS_SHIFT, cgu->base + CGU_REG_I2SCDR);
-> +	spin_unlock_irqrestore(&cgu->lock, flags);
-> +
-> +	return 0;
-> +}
-> +
-> +static unsigned long x1000_i2s_recalc_rate(struct clk_hw *hw,
-> +						unsigned long parent_rate)
-> +{
-> +	unsigned m, n;
-> +	u32 i2scdr;
-> +
-> +	i2scdr = readl(cgu->base + CGU_REG_I2SCDR);
-> +
-> +	m = (i2scdr & I2SCDR_I2SDIV_M_MASK) >> I2SCDR_I2SDIV_M_SHIFT;
-> +	n = (i2scdr & I2SCDR_I2SDIV_N_MASK) >> I2SCDR_I2SDIV_N_SHIFT;
-> +
-> +	return div_u64((u64)parent_rate * m, n);
-> +}
-> +
-> +static unsigned long x1000_i2s_calc(unsigned long rate, unsigned 
-> long parent_rate,
-> +						unsigned *pm, unsigned *pn)
-> +{
-> +	u64 curr_delta, curr_m, curr_n, delta, m, n;
-> +
-> +	if ((parent_rate % rate == 0) && ((parent_rate / rate) > 1)) {
-> +		m = 1;
-> +		n = parent_rate / rate;
-> +		goto out;
-> +	}
-> +
-> +	delta = rate;
-> +
-> +	/*
-> +	 * The length of M is 9 bits, its value must be between 1 and 511.
-> +	 * The length of N is 13 bits, its value must be between 2 and 8191,
-> +	 * and must not be less than 2 times of the value of M.
-> +	 */
-> +	for (curr_m = 511; curr_m >= 1; curr_m--) {
-> +		curr_n = parent_rate * curr_m;
-> +		curr_delta = do_div(curr_n, rate);
-> +
-> +		if (curr_n < 2 * curr_m || curr_n > 8191)
-> +			continue;
-> +
-> +		if (curr_delta == 0)
-> +			break;
-> +
-> +		if (curr_delta < delta) {
-> +			m = curr_m;
-> +			n = curr_n;
-> +			delta = curr_delta;
-> +		}
-> +	}
-> +
-> +out:
-> +	if (pm)
-> +		*pm = m;
-> +	if (pn)
-> +		*pn = n;
-> +
-> +	return div_u64((u64)parent_rate * m, n);
-> +}
-> +
-> +static long x1000_i2s_round_rate(struct clk_hw *hw, unsigned long 
-> req_rate,
-> +						unsigned long *prate)
-> +{
-> +	return x1000_i2s_calc(req_rate, *prate, NULL, NULL);
-> +}
-> +
-> +static int x1000_i2s_set_rate(struct clk_hw *hw, unsigned long 
-> req_rate,
-> +						unsigned long parent_rate)
-> +{
-> +	unsigned long rate, flags;
-> +	unsigned m, n;
-> +	u32 ctl;
-> +
-> +	/*
-> +	 * The parent clock rate of I2S must not be lower than 2 times
-> +	 * of the target clock rate.
-> +	 */
-> +	if (parent_rate < 2 * req_rate)
-> +		return -EINVAL;
-> +
-> +	rate = x1000_i2s_calc(req_rate, parent_rate, &m, &n);
-> +	if (rate != req_rate)
-> +		pr_info("%s: request I2S rate %luHz, actual %luHz\n", __func__,
-> +			req_rate, rate);
-> +
-> +	spin_lock_irqsave(&cgu->lock, flags);
-> +
-> +	ctl = readl(cgu->base + CGU_REG_I2SCDR);
-> +	ctl &= ~I2SCDR_I2SDIV_M_MASK;
-> +	ctl |= m << I2SCDR_I2SDIV_M_SHIFT;
-> +	ctl &= ~I2SCDR_I2SDIV_N_MASK;
-> +	ctl |= n << I2SCDR_I2SDIV_N_SHIFT;
-> +	writel(ctl, cgu->base + CGU_REG_I2SCDR);
-> +
-> +	spin_unlock_irqrestore(&cgu->lock, flags);
-> +
-> +	return 0;
-> +}
-> +
-> +static int x1000_i2s_enable(struct clk_hw *hw)
-> +{
-> +	unsigned long flags;
-> +	u32 ctl;
-> +
-> +	spin_lock_irqsave(&cgu->lock, flags);
-> +
-> +	ctl = readl(cgu->base + CGU_REG_I2SCDR);
-> +	ctl |= I2SCDR_CE_I2S;
-> +	writel(ctl, cgu->base + CGU_REG_I2SCDR);
-> +
-> +	spin_unlock_irqrestore(&cgu->lock, flags);
-> +
-> +	return 0;
-> +}
-> +
-> +static void x1000_i2s_disable(struct clk_hw *hw)
-> +{
-> +	unsigned long flags;
-> +	u32 ctl;
-> +
-> +	spin_lock_irqsave(&cgu->lock, flags);
-> +
-> +	ctl = readl(cgu->base + CGU_REG_I2SCDR);
-> +	ctl &= ~I2SCDR_CE_I2S;
-> +	writel(ctl, cgu->base + CGU_REG_I2SCDR);
-> +
-> +	spin_unlock_irqrestore(&cgu->lock, flags);
-> +}
-> +
-> +static int x1000_i2s_is_enabled(struct clk_hw *hw)
-> +{
-> +	u32 ctl;
-> +
-> +	ctl = readl(cgu->base + CGU_REG_I2SCDR);
-> +
-> +	return !!(ctl & I2SCDR_CE_I2S);
-> +}
-> +
-> +static const struct clk_ops x1000_i2s_ops = {
-> +	.get_parent = x1000_i2s_get_parent,
-> +	.set_parent = x1000_i2s_set_parent,
-> +
-> +	.recalc_rate = x1000_i2s_recalc_rate,
-> +	.round_rate = x1000_i2s_round_rate,
-> +	.set_rate = x1000_i2s_set_rate,
-> +
-> +	.enable = x1000_i2s_enable,
-> +	.disable = x1000_i2s_disable,
-> +	.is_enabled = x1000_i2s_is_enabled,
-> +};
-> +
->  static const s8 pll_od_encoding[8] = {
->  	0x0, 0x1, -1, 0x2, -1, -1, -1, 0x3,
->  };
-> @@ -227,7 +407,7 @@ static const struct ingenic_cgu_clk_info 
-> x1000_cgu_clocks[] = {
->  		},
->  	},
-> 
-> -	/* Custom (SoC-specific) OTG PHY */
-> +	/* Custom (SoC-specific) */
-> 
->  	[X1000_CLK_OTGPHY] = {
->  		"otg_phy", CGU_CLK_CUSTOM,
-> @@ -235,6 +415,12 @@ static const struct ingenic_cgu_clk_info 
-> x1000_cgu_clocks[] = {
->  		.custom = { &x1000_otg_phy_ops },
->  	},
-> 
-> +	[X1000_CLK_I2S] = {
-> +		"i2s", CGU_CLK_CUSTOM,
-> +		.parents = { X1000_CLK_EXCLK, X1000_CLK_SCLKA, -1, X1000_CLK_MPLL 
-> },
-> +		.custom = { &x1000_i2s_ops },
-> +	},
+No problem, thank you for taking care of the series.
 
-I still think this should be a PLL - even though we have to update the 
-PLL code in cgu.c. I am working on JZ4760 support now, and the PLLs 
-require M>=4 and N>=2. We could have for instance a (*calc_m_n_od)() 
-callback that would be called in ingenic_pll_calc().
+I did not want to add another entry in the MAINTAINER file as you are
+the maintainer of the powercap framework and that is fine.
 
-Cheers,
--Paul
+However the get_maintainer script (and default cccmd) does not return me
+as part of the maintainer/author of the dtpm or idle_inject. I would
+like to be at least Cc'ed to review the changes related to those files
+to make sure they stay aligned with the direction we are taking.
 
-> +
->  	/* Muxes & dividers */
-> 
->  	[X1000_CLK_SCLKA] = {
-> @@ -359,6 +545,13 @@ static const struct ingenic_cgu_clk_info 
-> x1000_cgu_clocks[] = {
->  		.mux = { CGU_REG_SSICDR, 30, 1 },
->  	},
-> 
-> +	[X1000_CLK_CIM] = {
-> +		"cim", CGU_CLK_MUX | CGU_CLK_DIV,
-> +		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL, -1, -1 },
-> +		.mux = { CGU_REG_CIMCDR, 31, 1 },
-> +		.div = { CGU_REG_CIMCDR, 0, 1, 8, 29, 28, 27 },
-> +	},
-> +
->  	[X1000_CLK_EXCLK_DIV512] = {
->  		"exclk_div512", CGU_CLK_FIXDIV,
->  		.parents = { X1000_CLK_EXCLK },
-> @@ -410,6 +603,12 @@ static const struct ingenic_cgu_clk_info 
-> x1000_cgu_clocks[] = {
->  		.gate = { CGU_REG_CLKGR, 9 },
->  	},
-> 
-> +	[X1000_CLK_AIC] = {
-> +		"aic", CGU_CLK_GATE,
-> +		.parents = { X1000_CLK_EXCLK, -1, -1, -1 },
-> +		.gate = { CGU_REG_CLKGR, 11 },
-> +	},
-> +
->  	[X1000_CLK_UART0] = {
->  		"uart0", CGU_CLK_GATE,
->  		.parents = { X1000_CLK_EXCLK, -1, -1, -1 },
-> @@ -428,6 +627,12 @@ static const struct ingenic_cgu_clk_info 
-> x1000_cgu_clocks[] = {
->  		.gate = { CGU_REG_CLKGR, 16 },
->  	},
-> 
-> +	[X1000_CLK_DMIC] = {
-> +		"dmic", CGU_CLK_GATE,
-> +		.parents = { X1000_CLK_PCLK, -1, -1, -1 },
-> +		.gate = { CGU_REG_CLKGR, 17 },
-> +	},
-> +
->  	[X1000_CLK_TCU] = {
->  		"tcu", CGU_CLK_GATE,
->  		.parents = { X1000_CLK_EXCLK, -1, -1, -1 },
-> diff --git a/drivers/clk/ingenic/x1830-cgu.c 
-> b/drivers/clk/ingenic/x1830-cgu.c
-> index 59342bc..d93cefa 100644
-> --- a/drivers/clk/ingenic/x1830-cgu.c
-> +++ b/drivers/clk/ingenic/x1830-cgu.c
-> @@ -52,6 +52,15 @@
->  #define USBPCR_SIDDQ		BIT(21)
->  #define USBPCR_OTG_DISABLE	BIT(20)
-> 
-> +/* bits within the I2SCDR register */
-> +#define I2SCDR_I2PCS_SHIFT	30
-> +#define I2SCDR_I2PCS_MASK	(0x3 << I2SCDR_I2PCS_SHIFT)
-> +#define I2SCDR_I2SDIV_M_SHIFT	20
-> +#define I2SCDR_I2SDIV_M_MASK	(0x1ff << I2SCDR_I2SDIV_M_SHIFT)
-> +#define I2SCDR_I2SDIV_N_SHIFT	0
-> +#define I2SCDR_I2SDIV_N_MASK	(0xfffff << I2SCDR_I2SDIV_N_SHIFT)
-> +#define I2SCDR_CE_I2S		BIT(29)
-> +
->  static struct ingenic_cgu *cgu;
-> 
->  static int x1830_usb_phy_enable(struct clk_hw *hw)
-> @@ -89,6 +98,175 @@ static const struct clk_ops x1830_otg_phy_ops = {
->  	.is_enabled	= x1830_usb_phy_is_enabled,
->  };
-> 
-> +static u8 x1830_i2s_get_parent(struct clk_hw *hw)
-> +{
-> +	u32 i2scdr;
-> +
-> +	i2scdr = readl(cgu->base + CGU_REG_I2SCDR);
-> +
-> +	return (i2scdr & I2SCDR_I2PCS_MASK) >> I2SCDR_I2PCS_SHIFT;
-> +}
-> +
-> +static int x1830_i2s_set_parent(struct clk_hw *hw, u8 idx)
-> +{
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&cgu->lock, flags);
-> +	writel(idx << I2SCDR_I2PCS_SHIFT, cgu->base + CGU_REG_I2SCDR);
-> +	spin_unlock_irqrestore(&cgu->lock, flags);
-> +
-> +	return 0;
-> +}
-> +
-> +static unsigned long x1830_i2s_recalc_rate(struct clk_hw *hw,
-> +						unsigned long parent_rate)
-> +{
-> +	unsigned m, n;
-> +	u32 i2scdr;
-> +
-> +	i2scdr = readl(cgu->base + CGU_REG_I2SCDR);
-> +
-> +	m = (i2scdr & I2SCDR_I2SDIV_M_MASK) >> I2SCDR_I2SDIV_M_SHIFT;
-> +	n = (i2scdr & I2SCDR_I2SDIV_N_MASK) >> I2SCDR_I2SDIV_N_SHIFT;
-> +
-> +	return div_u64((u64)parent_rate * m, n);
-> +}
-> +
-> +static unsigned long x1830_i2s_calc(unsigned long rate, unsigned 
-> long parent_rate,
-> +						unsigned *pm, unsigned *pn)
-> +{
-> +	u64 curr_delta, curr_m, curr_n, delta, m, n;
-> +
-> +	if ((parent_rate % rate == 0) && ((parent_rate / rate) > 1)) {
-> +		m = 1;
-> +		n = parent_rate / rate;
-> +		goto out;
-> +	}
-> +
-> +	delta = rate;
-> +
-> +	/*
-> +	 * The length of M is 9 bits, its value must be between 1 and 511.
-> +	 * The length of N is 20 bits, its value must be between 2 and 
-> 1048575,
-> +	 * and must not be less than 2 times of the value of M.
-> +	 */
-> +	for (curr_m = 511; curr_m >= 1; curr_m--) {
-> +		curr_n = parent_rate * curr_m;
-> +		curr_delta = do_div(curr_n, rate);
-> +
-> +		if (curr_n < 2 * curr_m || curr_n > 1048575)
-> +			continue;
-> +
-> +		if (curr_delta == 0)
-> +			break;
-> +
-> +		if (curr_delta < delta) {
-> +			m = curr_m;
-> +			n = curr_n;
-> +			delta = curr_delta;
-> +		}
-> +	}
-> +
-> +out:
-> +	if (pm)
-> +		*pm = m;
-> +	if (pn)
-> +		*pn = n;
-> +
-> +	return div_u64((u64)parent_rate * m, n);
-> +}
-> +
-> +static long x1830_i2s_round_rate(struct clk_hw *hw, unsigned long 
-> req_rate,
-> +						unsigned long *prate)
-> +{
-> +	return x1830_i2s_calc(req_rate, *prate, NULL, NULL);
-> +}
-> +
-> +static int x1830_i2s_set_rate(struct clk_hw *hw, unsigned long 
-> req_rate,
-> +						unsigned long parent_rate)
-> +{
-> +	unsigned long rate, flags;
-> +	unsigned m, n;
-> +	u32 ctl;
-> +
-> +	/*
-> +	 * The parent clock rate of I2S must not be lower than 2 times
-> +	 * of the target clock rate.
-> +	 */
-> +	if (parent_rate < 2 * req_rate)
-> +		return -EINVAL;
-> +
-> +	rate = x1830_i2s_calc(req_rate, parent_rate, &m, &n);
-> +	if (rate != req_rate)
-> +		pr_info("%s: request I2S rate %luHz, actual %luHz\n", __func__,
-> +			req_rate, rate);
-> +
-> +	spin_lock_irqsave(&cgu->lock, flags);
-> +
-> +	ctl = readl(cgu->base + CGU_REG_I2SCDR);
-> +	ctl &= ~I2SCDR_I2SDIV_M_MASK;
-> +	ctl |= m << I2SCDR_I2SDIV_M_SHIFT;
-> +	ctl &= ~I2SCDR_I2SDIV_N_MASK;
-> +	ctl |= n << I2SCDR_I2SDIV_N_SHIFT;
-> +	writel(ctl, cgu->base + CGU_REG_I2SCDR);
-> +
-> +	spin_unlock_irqrestore(&cgu->lock, flags);
-> +
-> +	return 0;
-> +}
-> +
-> +static int x1830_i2s_enable(struct clk_hw *hw)
-> +{
-> +	unsigned long flags;
-> +	u32 ctl;
-> +
-> +	spin_lock_irqsave(&cgu->lock, flags);
-> +
-> +	ctl = readl(cgu->base + CGU_REG_I2SCDR);
-> +	ctl |= I2SCDR_CE_I2S;
-> +	writel(ctl, cgu->base + CGU_REG_I2SCDR);
-> +
-> +	spin_unlock_irqrestore(&cgu->lock, flags);
-> +
-> +	return 0;
-> +}
-> +
-> +static void x1830_i2s_disable(struct clk_hw *hw)
-> +{
-> +	unsigned long flags;
-> +	u32 ctl;
-> +
-> +	spin_lock_irqsave(&cgu->lock, flags);
-> +
-> +	ctl = readl(cgu->base + CGU_REG_I2SCDR);
-> +	ctl &= ~I2SCDR_CE_I2S;
-> +	writel(ctl, cgu->base + CGU_REG_I2SCDR);
-> +
-> +	spin_unlock_irqrestore(&cgu->lock, flags);
-> +}
-> +
-> +static int x1830_i2s_is_enabled(struct clk_hw *hw)
-> +{
-> +	u32 ctl;
-> +
-> +	ctl = readl(cgu->base + CGU_REG_I2SCDR);
-> +
-> +	return !!(ctl & I2SCDR_CE_I2S);
-> +}
-> +
-> +static const struct clk_ops x1830_i2s_ops = {
-> +	.get_parent = x1830_i2s_get_parent,
-> +	.set_parent = x1830_i2s_set_parent,
-> +
-> +	.recalc_rate = x1830_i2s_recalc_rate,
-> +	.round_rate = x1830_i2s_round_rate,
-> +	.set_rate = x1830_i2s_set_rate,
-> +
-> +	.enable = x1830_i2s_enable,
-> +	.disable = x1830_i2s_disable,
-> +	.is_enabled = x1830_i2s_is_enabled,
-> +};
-> +
->  static const s8 pll_od_encoding[64] = {
->  	0x0, 0x1,  -1, 0x2,  -1,  -1,  -1, 0x3,
->  	 -1,  -1,  -1,  -1,  -1,  -1,  -1, 0x4,
-> @@ -201,7 +379,7 @@ static const struct ingenic_cgu_clk_info 
-> x1830_cgu_clocks[] = {
->  		},
->  	},
-> 
-> -	/* Custom (SoC-specific) OTG PHY */
-> +	/* Custom (SoC-specific) */
-> 
->  	[X1830_CLK_OTGPHY] = {
->  		"otg_phy", CGU_CLK_CUSTOM,
-> @@ -209,6 +387,13 @@ static const struct ingenic_cgu_clk_info 
-> x1830_cgu_clocks[] = {
->  		.custom = { &x1830_otg_phy_ops },
->  	},
-> 
-> +	[X1830_CLK_I2S] = {
-> +		"i2s", CGU_CLK_CUSTOM,
-> +		.parents = { X1830_CLK_SCLKA, X1830_CLK_MPLL,
-> +					 X1830_CLK_VPLL, X1830_CLK_EPLL },
-> +		.custom = { &x1830_i2s_ops },
-> +	},
-> +
->  	/* Muxes & dividers */
-> 
->  	[X1830_CLK_SCLKA] = {
-> @@ -328,6 +513,14 @@ static const struct ingenic_cgu_clk_info 
-> x1830_cgu_clocks[] = {
->  		.mux = { CGU_REG_SSICDR, 29, 1 },
->  	},
-> 
-> +	[X1830_CLK_CIM] = {
-> +		"cim", CGU_CLK_MUX | CGU_CLK_DIV,
-> +		.parents = { X1830_CLK_SCLKA, X1830_CLK_MPLL,
-> +					 X1830_CLK_VPLL, X1830_CLK_EPLL },
-> +		.mux = { CGU_REG_CIMCDR, 30, 2 },
-> +		.div = { CGU_REG_CIMCDR, 0, 1, 8, 29, 28, 27 },
-> +	},
-> +
->  	[X1830_CLK_EXCLK_DIV512] = {
->  		"exclk_div512", CGU_CLK_FIXDIV,
->  		.parents = { X1830_CLK_EXCLK },
-> @@ -385,6 +578,18 @@ static const struct ingenic_cgu_clk_info 
-> x1830_cgu_clocks[] = {
->  		.gate = { CGU_REG_CLKGR0, 9 },
->  	},
-> 
-> +	[X1830_CLK_AIC] = {
-> +		"aic", CGU_CLK_GATE,
-> +		.parents = { X1830_CLK_EXCLK, -1, -1, -1 },
-> +		.gate = { CGU_REG_CLKGR0, 11 },
-> +	},
-> +
-> +	[X1830_CLK_DMIC] = {
-> +		"dmic", CGU_CLK_GATE,
-> +		.parents = { X1830_CLK_PCLK, -1, -1, -1 },
-> +		.gate = { CGU_REG_CLKGR0, 12 },
-> +	},
-> +
->  	[X1830_CLK_UART0] = {
->  		"uart0", CGU_CLK_GATE,
->  		.parents = { X1830_CLK_EXCLK, -1, -1, -1 },
-> --
-> 2.7.4
-> 
+Is it possible to be automatically Cc'ed for the proposed changes in these
+files ?
 
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
