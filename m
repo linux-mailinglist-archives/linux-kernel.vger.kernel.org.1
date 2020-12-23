@@ -2,130 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6E262E2139
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 21:23:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3251B2E2142
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 21:26:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728834AbgLWUW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 15:22:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60692 "EHLO
+        id S1728966AbgLWUYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 15:24:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728735AbgLWUW2 (ORCPT
+        with ESMTP id S1728942AbgLWUYW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 15:22:28 -0500
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAF7EC061794
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 12:21:43 -0800 (PST)
-Received: by mail-il1-x132.google.com with SMTP id w17so222331ilj.8
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 12:21:43 -0800 (PST)
+        Wed, 23 Dec 2020 15:24:22 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 156FEC061794
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 12:23:42 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id t30so391959wrb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 12:23:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sargun.me; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=YIp/BzkdOvytsQ2dfltPyb5qXUBQynTBvMwCQ2WlfQc=;
-        b=eaGf/NZR63/J9T+0MxEFv22j+c3hPJvY2DdmuKQZGoQYGkpZGzm4mrP6XHW+v/982h
-         cCMxGbMo6/j9dbsjJF5trpKHNUlrHo8RsfpEznEwj/jebMWzWmIlkYMiEqUD9kWvg1Ml
-         HNDEFICvL+8Y9O8JVhsPK+cTcawSA+EMvWxz4=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=ZXRFrrDcrww8M8vgWXxY6IWFUaHEFqtQgKS5bQBGth8=;
+        b=QU8lfLzf4X8n0hsshRASMf0d1ZrTY42pNDYqPstCmueqUnzcJUdxY5Hcp//Yg97XaD
+         cyl1lbTuHcKGHrmoVOWRf18ARq9jzDDydPOPNM4j1xbUEoenmlwrl/MqzQR5xf8Dc9ab
+         SnG4O/tw6zdLRP8nHlBrLWknHYPFCkE0Pd1w5xkMruwfRxpgyYNuT00OagRWymcFoKXE
+         ZkqsWgjB/uB/88BgXYATrQuzngqjCXYPfQdKtSKt1xBrsd8uPpxsGpr64EOe0yrroB/h
+         ySSj4bAv14MMGeyRDlaZ+iU0G0bGzfHD7Bsr9jMmIxlLdwItdlVXh4AFtzd70xWP6k95
+         g78w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=YIp/BzkdOvytsQ2dfltPyb5qXUBQynTBvMwCQ2WlfQc=;
-        b=fT6JHNaebGAAlhi+WtiCubiM0CIDOhSvLHy3JBvc+VIQ0NcIaDglsWs6g9yTiJDOxY
-         2FCVa5uXJxxrvi8XsfVpR/eLHSsY0to7/hqHsZLeagigBD9AONcI4C98wkAr9PDJxfSW
-         ojGX2/v4tYQqi497/MUFEQIgBzEUvHb42gBe/PE4o45W24D7nkmTm4zeJsZ0TzAv3fTp
-         H1liyGfFTV94XrlwXcOinnOmM+fS2eBc6/6tcJi0INrvU8TuvQfFHmWV+6Eiy3axQ8xx
-         orr3gOohEZzof/RxPtWr4oFP2Ikmvqh1EUMmF44Nib3Ic1+vTVsL1Nw+su6SzOJlfFTa
-         c1dg==
-X-Gm-Message-State: AOAM533ukGSmqNEByMdfz36OOgXZWn3xHawT0S1oyHNm5LfDzOg5P6wy
-        mO2vXcw/qrsH65tk/q0EMvBXNA==
-X-Google-Smtp-Source: ABdhPJwJbX9fw50loVbIqJtPIKvnqXU8eAPFRgZx2132KVN4ygd+pgSFEQ7+FyYDGtda7kOaRmztpw==
-X-Received: by 2002:a92:b6c7:: with SMTP id m68mr26322693ill.95.1608754902781;
-        Wed, 23 Dec 2020 12:21:42 -0800 (PST)
-Received: from ircssh-2.c.rugged-nimbus-611.internal (80.60.198.104.bc.googleusercontent.com. [104.198.60.80])
-        by smtp.gmail.com with ESMTPSA id l6sm19034195ili.78.2020.12.23.12.21.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 23 Dec 2020 12:21:42 -0800 (PST)
-Date:   Wed, 23 Dec 2020 20:21:41 +0000
-From:   Sargun Dhillon <sargun@sargun.me>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Vivek Goyal <vgoyal@redhat.com>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        jlayton@kernel.org, amir73il@gmail.com, miklos@szeredi.hu,
-        jack@suse.cz, neilb@suse.com, viro@zeniv.linux.org.uk, hch@lst.de
-Subject: Re: [PATCH 3/3] overlayfs: Report writeback errors on upper
-Message-ID: <20201223202140.GB11012@ircssh-2.c.rugged-nimbus-611.internal>
-References: <20201221195055.35295-1-vgoyal@redhat.com>
- <20201221195055.35295-4-vgoyal@redhat.com>
- <20201223182026.GA9935@ircssh-2.c.rugged-nimbus-611.internal>
- <20201223185044.GQ874@casper.infradead.org>
- <20201223192940.GA11012@ircssh-2.c.rugged-nimbus-611.internal>
- <20201223200746.GR874@casper.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201223200746.GR874@casper.infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ZXRFrrDcrww8M8vgWXxY6IWFUaHEFqtQgKS5bQBGth8=;
+        b=ZXWlBZHBuZ5yZMztRQX+7ykSuPrGaHFkRXZOs0DoyU6q7fRS5LmGOBFQYo7BfUeq8H
+         hR+QIcHjhFXzxjOIB4xHMC8VFadguN32ocOC1BFf6whXMNGBImETi1laax/D6w+i6s3s
+         Wpajv4j1QDLAkggX0RY+8SJE0zNeD1uSK/YofZNI/wddsiAsNlaiTnPFD70aHR9NpDzb
+         3amwGewR8iEReCSqORBKJAcGBB0fEupDc9NC8iG7OAIzhMxSxnbDRjHIHmv/PvcDhWTa
+         l1grogGKvnnJnNbcL3wJ2odpYwli9A1H8Cid/GclzTyGD/z8uYrV4LZn0pO4AOsTqg/a
+         12kA==
+X-Gm-Message-State: AOAM5301T+4taIlmDGiSELsVDClkqdS0GvBRS0U6g3zadRa7fcvSBKh3
+        VHyn9hkq75m3i6ZFyzsHbCs=
+X-Google-Smtp-Source: ABdhPJzgMmrmGKfnLCEtJGssuAwfvqcUohyxIw40FBih0zYT+eZzNBcVdDXG3P3p1KZx1oMd6/37jg==
+X-Received: by 2002:adf:b1ca:: with SMTP id r10mr31166674wra.252.1608755020829;
+        Wed, 23 Dec 2020 12:23:40 -0800 (PST)
+Received: from localhost.localdomain (eth-east-parth2-46-193-67-123.wb.wifirst.net. [46.193.67.123])
+        by smtp.gmail.com with ESMTPSA id r16sm38371141wrx.36.2020.12.23.12.23.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Dec 2020 12:23:40 -0800 (PST)
+From:   Ayoub Soussi <ayoubfme@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Ayoub Soussi <ayoubfme@gmail.com>
+Subject: [PATCH] staging: ralink-gdma: Fixed blank line coding style issue
+Date:   Wed, 23 Dec 2020 21:22:30 +0100
+Message-Id: <20201223202230.31325-1-ayoubfme@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 08:07:46PM +0000, Matthew Wilcox wrote:
-> On Wed, Dec 23, 2020 at 07:29:41PM +0000, Sargun Dhillon wrote:
-> > On Wed, Dec 23, 2020 at 06:50:44PM +0000, Matthew Wilcox wrote:
-> > > On Wed, Dec 23, 2020 at 06:20:27PM +0000, Sargun Dhillon wrote:
-> > > > I fail to see why this is neccessary if you incorporate error reporting into the 
-> > > > sync_fs callback. Why is this separate from that callback? If you pickup Jeff's
-> > > > patch that adds the 2nd flag to errseq for "observed", you should be able to
-> > > > stash the first errseq seen in the ovl_fs struct, and do the check-and-return
-> > > > in there instead instead of adding this new infrastructure.
-> > > 
-> > > You still haven't explained why you want to add the "observed" flag.
-> > 
-> > 
-> > In the overlayfs model, many users may be using the same filesystem (super block)
-> > for their upperdir. Let's say you have something like this:
-> > 
-> > /workdir [Mounted FS]
-> > /workdir/upperdir1 [overlayfs upperdir]
-> > /workdir/upperdir2 [overlayfs upperdir]
-> > /workdir/userscratchspace
-> > 
-> > The user needs to be able to do something like:
-> > sync -f ${overlayfs1}/file
-> > 
-> > which in turn will call sync on the the underlying filesystem (the one mounted 
-> > on /workdir), and can check if the errseq has changed since the overlayfs was
-> > mounted, and use that to return an error to the user.
-> 
-> OK, but I don't see why the current scheme doesn't work for this.  If
-> (each instance of) overlayfs samples the errseq at mount time and then
-> check_and_advances it at sync time, it will see any error that has occurred
-> since the mount happened (and possibly also an error which occurred before
-> the mount happened, but hadn't been reported to anybody before).
-> 
+Fixed coding style issue.
 
-If there is an outstanding error at mount time, and the SEEN flag is unset, 
-subsequent errors will not increment the counter, until the user calls sync on
-the upperdir's filesystem. If overlayfs calls check_and_advance on the upperdir's
-super block at any point, it will then set the seen block, and if the user calls
-syncfs on the upperdir, it will not return that there is an outstanding error,
-since overlayfs just cleared it.
+Signed-off-by: Ayoub Soussi <ayoubfme@gmail.com>
+---
+ drivers/staging/ralink-gdma/ralink-gdma.c | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/drivers/staging/ralink-gdma/ralink-gdma.c b/drivers/staging/ralink-gdma/ralink-gdma.c
+index 655df317d0ee..a6181a167814 100644
+--- a/drivers/staging/ralink-gdma/ralink-gdma.c
++++ b/drivers/staging/ralink-gdma/ralink-gdma.c
+@@ -122,6 +122,7 @@ struct gdma_dma_dev {
+ 	struct gdma_data *data;
+ 	void __iomem *base;
+ 	struct tasklet_struct task;
++
+ 	volatile unsigned long chan_issued;
+ 	atomic_t cnt;
+ 
+-- 
+2.17.1
 
-> > If we do not advance the errseq on the upperdir to "mark it as seen", that means 
-> > future errors will not be reported if the user calls sync -f ${overlayfs1}/file,
-> > because errseq will not increment the value if the seen bit is unset.
-> > 
-> > On the other hand, if we mark it as seen, then if the user calls sync on 
-> > /workdir/userscratchspace/file, they wont see the error since we just set the 
-> > SEEN flag.
-> 
-> While we set the SEEN flag, if the file were opened before the error
-> occurred, we would still report the error because the sequence is higher
-> than it was when we sampled the error.
-> 
-
-Right, this isn't a problem for people calling f(data)sync on a particular file, 
-because it takes its own snapshot of errseq. This is only problematic for folks 
-calling syncfs. In Jeff's other messages, it sounded like this behaviour is
-pretty important, and the likes of postgresql depend on it.
