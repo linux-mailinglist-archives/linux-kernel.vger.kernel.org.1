@@ -2,109 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9340B2E1813
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 05:20:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7682E180F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 05:20:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727148AbgLWEUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 23:20:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726611AbgLWEUS (ORCPT
+        id S1727325AbgLWEUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 23:20:20 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:45359 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725938AbgLWEUT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 23:20:18 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57FDCC06179C
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 20:19:38 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id q22so9629737pfk.12
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 20:19:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=26Fr+AtJaqoWMCq9NSUD8XDm547WXau8kIa+Po3ijaQ=;
-        b=sT3RPi0cmSySv3TpxqXakwSZd4+TeVAbgUtHRhhkr9zD2oKndQhh3nAF2ZWRKFEwst
-         fxL85ZuUBFNAQ5onTZ3nMEdhsWGrllkYRYl1tGbri1cjmNeEdBXqoR00oFAdZlinf2sG
-         i3trnl1FImHrkHWsQjqfYqktVg5C0p9hGp3zMs/4X0+liPYJ7Fj35h7EVOzzqMQQ4BmP
-         NoOLT9BhfddUa5brM8O18Y39e3dDinW3tOqST333s6BHhsMhvIuY7sARBYQPtJaNRvta
-         GBJlJv49y/k+55A3aNfm4MsUIuzj/qy5vzUrSvfzWGdcTkTePTwKJsgOch7YgnJiucC7
-         W3zQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=26Fr+AtJaqoWMCq9NSUD8XDm547WXau8kIa+Po3ijaQ=;
-        b=RWgoTzj7ncrhDoBHgbcWzqtKWWBP0ZPwqSKDJ0bvR+cg2m0heoNSUW8CBJ7+JityJs
-         qJU3rPiZds6JojCHhyJCMNxEECZk1BE+93Q2WGDGtpdXncYCZ5q09aHvFw7d+rDLQ2iP
-         AJdBzvzfsPUc1eD4d6XJlUEo1p7poLxncQsuB0sQbxHNnE+K9SgbDBCDS1jEV0MXK85m
-         14TZCjU/bsQphQxhE1fG+PoG+39AnTJy92gakBrydKUqBqOjdDMISq2Ky8xDEXcU3c9J
-         n7TFAnTOSqgbMwsG4w3tn3arH4kIb2rOYC12yAKeYfB5Am16HDN618CElvugiT/plwwj
-         8/gg==
-X-Gm-Message-State: AOAM532RW9wMh7uHRM6N/3Di7XcQ6aFeI98xkmO8LouSThYEiqUwr4WG
-        LwRScs3nEWrCVZ9yz3/dZkoN9A==
-X-Google-Smtp-Source: ABdhPJz3XTw78JGZT3bqt2E1D4SaVZTnIQudWjGvtEJkaUATY8WvaXe+1UR/zVBvhFKdu72MF7n3JA==
-X-Received: by 2002:a63:c205:: with SMTP id b5mr310031pgd.281.1608697177622;
-        Tue, 22 Dec 2020 20:19:37 -0800 (PST)
-Received: from localhost ([122.172.20.109])
-        by smtp.gmail.com with ESMTPSA id j23sm2918258pgj.34.2020.12.22.20.19.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 22 Dec 2020 20:19:36 -0800 (PST)
-Date:   Wed, 23 Dec 2020 09:49:31 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Subject: Re: [PATCH v2 11/48] opp: Add dev_pm_opp_find_level_ceil()
-Message-ID: <20201223041931.klnppy4fu3sdgtsz@vireshk-i7>
-References: <20201217180638.22748-1-digetx@gmail.com>
- <20201217180638.22748-12-digetx@gmail.com>
- <20201222064253.x7vsurh7q5k7qzb5@vireshk-i7>
- <fd7b9f42-d0a7-45eb-2a17-d46779011c58@gmail.com>
+        Tue, 22 Dec 2020 23:20:19 -0500
+X-UUID: d58441f1a9184174b9bdf26846151279-20201223
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=kYN1DWi9igwrEB93WIlp6S0R6r48fxzlcC3ib2X5TZs=;
+        b=h2OV6eEjoq7IrpJwqNcUEL+asBwoEMeqWtsr5MSASGZh5cjNnof0TSvWoOkySwJNAcSLpv8DCr1G9zVFnHm6qJ6fY+npASbLzMa9zRi3QBRoG3vrvqul/tiyRVfZf/zA1S76UENintfX09mT+VMr7ubWjNxcxY1BJiRN1nSZKNs=;
+X-UUID: d58441f1a9184174b9bdf26846151279-20201223
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1430516392; Wed, 23 Dec 2020 12:19:34 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 23 Dec 2020 12:19:32 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 23 Dec 2020 12:19:32 +0800
+Message-ID: <1608697172.14045.5.camel@mtkswgap22>
+Subject: Re: [PATCH v1] scsi: ufs-mediatek: Enable
+ UFSHCI_QUIRK_SKIP_MANUAL_WB_FLUSH_CTRL
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     Can Guo <cang@codeaurora.org>
+CC:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
+        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
+        <jejb@linux.ibm.com>, <beanhuo@micron.com>,
+        <asutoshd@codeaurora.org>, <matthias.bgg@gmail.com>,
+        <bvanassche@acm.org>, <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
+        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
+        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
+        <cc.chou@mediatek.com>, <jiajie.hao@mediatek.com>,
+        <alice.chao@mediatek.com>
+Date:   Wed, 23 Dec 2020 12:19:32 +0800
+In-Reply-To: <c862866ec97516a7ffb891e5de3d132d@codeaurora.org>
+References: <20201222072928.32328-1-stanley.chu@mediatek.com>
+         <c862866ec97516a7ffb891e5de3d132d@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <fd7b9f42-d0a7-45eb-2a17-d46779011c58@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+X-TM-SNTS-SMTP: A1C1952DF2610A7DE2CA026817120AE71FBD8C43C672D8A99274B3DC4ECF07F02000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22-12-20, 22:15, Dmitry Osipenko wrote:
-> 22.12.2020 09:42, Viresh Kumar пишет:
-> > On 17-12-20, 21:06, Dmitry Osipenko wrote:
-> >> Add a ceil version of the dev_pm_opp_find_level(). It's handy to have if
-> >> levels don't start from 0 in OPP table and zero usually means a minimal
-> >> level.
-> >>
-> >> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> > 
-> > Why doesn't the exact version work for you here ?
-> > 
-> 
-> The exact version won't find OPP for level=0 if levels don't start with
-> 0, where 0 means that minimal level is desired.
+SGkgQ2FuLA0KDQpPbiBUdWUsIDIwMjAtMTItMjIgYXQgMTk6MzQgKzA4MDAsIENhbiBHdW8gd3Jv
+dGU6DQo+IE9uIDIwMjAtMTItMjIgMTU6MjksIFN0YW5sZXkgQ2h1IHdyb3RlOg0KPiA+IEZsdXNo
+IGR1cmluZyBoaWJlcm44IGlzIHN1ZmZpY2llbnQgb24gTWVkaWFUZWsgcGxhdGZvcm1zLCB0aHVz
+DQo+ID4gZW5hYmxlIFVGU0hDSV9RVUlSS19TS0lQX01BTlVBTF9XQl9GTFVTSF9DVFJMIHRvIHNr
+aXAgZW5hYmxpbmcNCj4gPiBmV3JpdGVCb29zdGVyQnVmZmVyRmx1c2ggZHVyaW5nIFdyaXRlQm9v
+c3RlciBpbml0aWFsaXphdGlvbi4NCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBTdGFubGV5IENo
+dSA8c3RhbmxleS5jaHVAbWVkaWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL3Njc2kv
+dWZzL3Vmcy1tZWRpYXRlay5jIHwgMSArDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlv
+bigrKQ0KPiA+IA0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3Njc2kvdWZzL3Vmcy1tZWRpYXRl
+ay5jIA0KPiA+IGIvZHJpdmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWsuYw0KPiA+IGluZGV4IDgw
+NjE4YWY3Yzg3Mi4uYzU1MjAyYjkyYTQzIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvc2NzaS91
+ZnMvdWZzLW1lZGlhdGVrLmMNCj4gPiArKysgYi9kcml2ZXJzL3Njc2kvdWZzL3Vmcy1tZWRpYXRl
+ay5jDQo+ID4gQEAgLTY2MSw2ICs2NjEsNyBAQCBzdGF0aWMgaW50IHVmc19tdGtfaW5pdChzdHJ1
+Y3QgdWZzX2hiYSAqaGJhKQ0KPiA+IA0KPiA+ICAJLyogRW5hYmxlIFdyaXRlQm9vc3RlciAqLw0K
+PiA+ICAJaGJhLT5jYXBzIHw9IFVGU0hDRF9DQVBfV0JfRU47DQo+ID4gKwloYmEtPnF1aXJrcyB8
+PSBVRlNIQ0lfUVVJUktfU0tJUF9NQU5VQUxfV0JfRkxVU0hfQ1RSTDsNCj4gPiAgCWhiYS0+dnBz
+LT53Yl9mbHVzaF90aHJlc2hvbGQgPSBVRlNfV0JfQlVGX1JFTUFJTl9QRVJDRU5UKDgwKTsNCj4g
+PiANCj4gPiAgCWlmIChob3N0LT5jYXBzICYgVUZTX01US19DQVBfRElTQUJMRV9BSDgpDQo+IA0K
+PiBJIGd1ZXNzIHdlIG5lZWQgaXQgdG9vLi4uDQoNCkFISEEsIGlmIHlvdSBkZWNpZGUgdG8gYWRk
+IHRoaXMgaW4geW91ciBwbGF0Zm9ybSB0b28gbGF0ZXIsIG1heWJlIHdlDQpjb3VsZCBjaGFuZ2Ug
+dGhlIHdheSBpdCBkb2VzOiBLZWVwIG1hbnVhbCBmbHVzaCBkaXNhYmxlZCBieSBkZWZhdWx0IGFu
+ZA0KcmVtb3ZlIHRoaXMgcXVpcmsuDQoNClRoYW5rcywNClN0YW5sZXkgQ2h1DQo+IA0KPiBDaGFu
+Z2UgTEdUTS4NCj4gDQo+IFJlZ2FyZHMsDQo+IA0KPiBDYW4gR3VvLg0KDQo=
 
-Right, but why do you need to send 0 for your platform ?
-
--- 
-viresh
