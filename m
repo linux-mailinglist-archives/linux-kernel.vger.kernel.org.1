@@ -2,98 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 309342E1E71
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 16:43:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45BA32E1E73
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 16:43:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729131AbgLWPl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 10:41:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45954 "EHLO
+        id S1729172AbgLWPlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 10:41:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729093AbgLWPlY (ORCPT
+        with ESMTP id S1729104AbgLWPlZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 10:41:24 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3039C06179C
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 07:40:43 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id r7so18999287wrc.5
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 07:40:43 -0800 (PST)
+        Wed, 23 Dec 2020 10:41:25 -0500
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46F12C061285;
+        Wed, 23 Dec 2020 07:40:45 -0800 (PST)
+Received: by mail-ot1-x331.google.com with SMTP id j12so15314498ota.7;
+        Wed, 23 Dec 2020 07:40:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=MaasKCRffzpgJIsv9ZS58ZVtANtZw9D3YuGI24EnoRk=;
-        b=V4DhD7ksO0QmeHWhje0vJbqSgsaBE4IhbygRi9luIJBHokyot5N2VmQi5Tc43w9uNA
-         IJmoxooqSOcd0aFDIaConksC2vlk+4PLBUHe+isdf6JU+CGRPx4tSbPHznz8BtWOfU34
-         DOT4xUR4oA+GswKFNRiThEGGmtuS2uO6gulRgHCY7GKtbmhCtNjgUI5O8ZbVn77toyB4
-         IlqBAAuDB5kA232Fn7/8+paQFvYBxuIfbj4w3GSDNB5DLNcnzR9dRo4UNNhgRNR3KQzn
-         FuX4QvgBmrGC53bsuegWuHf6VBll/faVjgY5vdU0gTYrmAZOpAHvY45rrx5FXH6RgLEb
-         4W+g==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=6Wiq5FgkNEMxTeNNHguYsV5m8V7ZroVN8cO5RrKewIw=;
+        b=huDDDzEOGpCU46nPfJjLVwoCGQTj1nhXACMxp7IIxY997P14eBvWYSAvh3q6DO6zcq
+         Tg1dCjTntKYqv/H8y8+49bSkX3Nf4pxpAijXhTKXG38oTkkcTHM58P5aVtpLd0t88uKe
+         WD5D8Ay2qNVulvW+m2sbOpR/WwAdMHZnfjiJ6MhqmLR9Pbx+Sb9zSiT1wZl7l1owqZYO
+         k046R0l7191XjtWxv+PEySTs+WA6svXVefdAQnBLc20hrFM810uP3kKhCOZsGj8ZKhwO
+         CcvvVt0m3FSuR31oinazDy7XnsU7UL5QX6SNDdxiBeXH2Wbz5o8BFZ3vktzltY0AAdPQ
+         Ph1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=MaasKCRffzpgJIsv9ZS58ZVtANtZw9D3YuGI24EnoRk=;
-        b=okEywYGSHsJPJmPCjnZRpZszFp8TegAMd1kQkalNNwrK1MJ75QD1lNXX4C9XdAGCl1
-         ZU7yGqIawot9Qclh2tfbUvxpfe4IpgjMaZiHVI74h5KeTXy/MlHFK59HdR319X/j2cX+
-         qW5T1g9/ODwe+B5b2cZatKim8IIwfhrM+MoIudQyL203i4roXEp2UwuxQdY6RGl70utg
-         ZEeKq+gwBr+FgANbTZ7I7jyxQD8vFfBeQIraI9tfrOW5LQtWISb5ilfwtMKQ983eIrDI
-         3qWlsnHVaXQrHrC2EhiV4AaTk791FcoURIhPvMTC9JjZIfCDyqDOZOF+E4foi3PIVDtz
-         2XOg==
-X-Gm-Message-State: AOAM532jkOWlg+8KxDUdT9ZxTcel5mqfEKpRPgp72tYFQRuMsYLZ5luj
-        P3hQ3dHP8vECrS/pAmq/idVvzw==
-X-Google-Smtp-Source: ABdhPJwsm6rpQpwFXUJAOgKiT+pcDnsVjvWAL78BjVFBjIMwy7/Ip7nETfrrRZCiR1ZdKZWaHCzbFw==
-X-Received: by 2002:adf:e452:: with SMTP id t18mr28767589wrm.177.1608738042440;
-        Wed, 23 Dec 2020 07:40:42 -0800 (PST)
-Received: from dell ([91.110.221.175])
-        by smtp.gmail.com with ESMTPSA id f9sm39630956wrw.81.2020.12.23.07.40.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Dec 2020 07:40:41 -0800 (PST)
-Date:   Wed, 23 Dec 2020 15:40:39 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Cc:     marek.vasut+renesas@gmail.com, matti.vaittinen@fi.rohmeurope.com,
-        lgirdwood@gmail.com, broonie@kernel.org, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, khiem.nguyen.xt@renesas.com,
-        linux-power@fi.rohmeurope.com, linux-gpio@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 12/12] mfd: bd9571mwv: Add support for BD9574MWF
-Message-ID: <20201223154039.GB681741@dell>
-References: <1608718963-21818-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
- <1608718963-21818-13-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=6Wiq5FgkNEMxTeNNHguYsV5m8V7ZroVN8cO5RrKewIw=;
+        b=YuA+z8LJPcfZCbHcWnnjK0hzgJrHunU0qhih2W8Ysg47eeFxZNuK0f1Dx8LeYNkjEI
+         HYygjr8rmN6eMTIQ0/EVAHrfSU9x09v1xkBdDv1PmEJoGk8ErMq9wwEeSv66dhCdmJ4A
+         gN34/Vg2dd8kySfgTCTrSEEKGJFkfoH1EFDlcK9QL8uiRn7dTkn/PDuFJvHJimo7jvo7
+         kIb9/zSIpjxrKy9HkMi73hWNg5CE3Vt5AhzZ9o4nVdd0tlOPpKly6nTxLtNARRrYWAzm
+         zqmYpLKz1bgHUZ+XAj1VP0UfT/aoQ0r0fapQ0vMLEQ3aWjny9Z6kSzFS/F9SsUAN1Png
+         3fqg==
+X-Gm-Message-State: AOAM531Xi6ZM9ang1oUMk7Jo2SB+zwdbNnIwMmNkySI7rszNUDMMrL2K
+        zEetAGrC35i3gtET1t2idNY=
+X-Google-Smtp-Source: ABdhPJwgFXiJRJqKOFKWcMCXO/N8H/wWJB7WcEJHNNu8zAbsxuBPxsUw+SVJePqSCgqknXHz+GqCsw==
+X-Received: by 2002:a9d:7407:: with SMTP id n7mr19636507otk.189.1608738044790;
+        Wed, 23 Dec 2020 07:40:44 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id b19sm3133837oib.6.2020.12.23.07.40.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 23 Dec 2020 07:40:44 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 23 Dec 2020 07:40:43 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Eddie James <eajames@linux.ibm.com>
+Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jdelvare@suse.com, bjwyman@gmail.com
+Subject: Re: [PATCH v2 2/2] hwmon: (pmbus/ibm-cffps) Set the
+ PMBUS_NO_CAPABILITY flag
+Message-ID: <20201223154042.GA65400@roeck-us.net>
+References: <20201222152640.27749-1-eajames@linux.ibm.com>
+ <20201222152640.27749-3-eajames@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1608718963-21818-13-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+In-Reply-To: <20201222152640.27749-3-eajames@linux.ibm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Dec 2020, Yoshihiro Shimoda wrote:
-
-> From: Khiem Nguyen <khiem.nguyen.xt@renesas.com>
+On Tue, Dec 22, 2020 at 09:26:40AM -0600, Eddie James wrote:
+> Several power supplies supported by the IBM CFFPS driver don't
+> report valid data in the CAPABILITY register. This results in PEC
+> being enabled when it's not supported by the device, and since
+> the automatic version detection might fail, disable use of the
+> CAPABILITY register across the board for this driver.
 > 
-> The new PMIC BD9574MWF inherits features from BD9571MWV.
-> Add the support of new PMIC to existing bd9571mwv driver.
-> 
-> Signed-off-by: Khiem Nguyen <khiem.nguyen.xt@renesas.com>
-> Co-developed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-> Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-> Reviewed-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> ---
->  drivers/mfd/bd9571mwv.c       | 80 ++++++++++++++++++++++++++++++++++++++++++-
->  include/linux/mfd/bd9571mwv.h | 17 +++++++--
->  2 files changed, 93 insertions(+), 4 deletions(-)
+> Signed-off-by: Eddie James <eajames@linux.ibm.com>
 
-Once you've taking mfd_cells out of ddata:
+Applied.
 
-For my own reference (apply this as-is to your sign-off block):
-
-  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Thanks,
+Guenter
