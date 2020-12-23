@@ -2,69 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34E9D2E1C7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 14:06:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 193702E1C7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 14:06:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728688AbgLWNF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 08:05:27 -0500
-Received: from mga02.intel.com ([134.134.136.20]:55068 "EHLO mga02.intel.com"
+        id S1728709AbgLWNGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 08:06:16 -0500
+Received: from foss.arm.com ([217.140.110.172]:49954 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727422AbgLWNF0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 08:05:26 -0500
-IronPort-SDR: UCfpe0Z+DCX3OhqlLJqoB76kvl2u0fli6Kf6Dk7htbAZO9vwk7dNvyLKa1rtbg8q/qBZqMvi1g
- 6FneBXMDPcpw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9843"; a="163068607"
-X-IronPort-AV: E=Sophos;i="5.78,441,1599548400"; 
-   d="scan'208";a="163068607"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Dec 2020 05:03:41 -0800
-IronPort-SDR: ONeVYJx0LOtsgRMl1ME+5zlsVj7j+q18+OlnfU/pw62aadIMAUsshq8TTnOZI8REsXpYgFMDZK
- ARUrRTB6kQyg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,441,1599548400"; 
-   d="scan'208";a="393087816"
-Received: from nntpdsd52-183.inn.intel.com ([10.125.52.183])
-  by fmsmga002.fm.intel.com with ESMTP; 23 Dec 2020 05:03:38 -0800
-From:   Alexander Antonov <alexander.antonov@linux.intel.com>
-To:     acme@kernel.org
-Cc:     linux-kernel@vger.kernel.org, jolsa@redhat.com, ak@linux.intel.com,
-        alexander.shishkin@linux.intel.com, mark.rutland@arm.com,
-        namhyung@kernel.org, irogers@google.com, mingo@redhat.com,
-        peterz@infradead.org, alexander.antonov@linux.intel.com
-Subject: [PATCH v2 6/6] perf: Update .gitignore file
-Date:   Wed, 23 Dec 2020 16:03:20 +0300
-Message-Id: <20201223130320.3930-7-alexander.antonov@linux.intel.com>
-X-Mailer: git-send-email 2.19.1
-In-Reply-To: <20201223130320.3930-1-alexander.antonov@linux.intel.com>
-References: <20201223130320.3930-1-alexander.antonov@linux.intel.com>
+        id S1728649AbgLWNGQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 08:06:16 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5D5B330E;
+        Wed, 23 Dec 2020 05:05:30 -0800 (PST)
+Received: from [10.57.34.90] (unknown [10.57.34.90])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7B1333F66E;
+        Wed, 23 Dec 2020 05:05:28 -0800 (PST)
+Subject: Re: [PATCH v2 3/7] iommu/arm-smmu: Add dependency on io-pgtable
+ format modules
+To:     isaacm@codeaurora.org
+Cc:     iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, pratikp@codeaurora.org,
+        joro@8bytes.org, kernel-team@android.com, will@kernel.org,
+        pdaly@codeaurora.org
+References: <1608597876-32367-1-git-send-email-isaacm@codeaurora.org>
+ <1608597876-32367-4-git-send-email-isaacm@codeaurora.org>
+ <3b0c191d-3fd0-73db-c1e3-4a80aa7953d7@arm.com>
+ <e47f14b81d90772346ef28c9a7fd3365@codeaurora.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <b86f5972-2e9c-20bd-eee3-ee3ea53d5fe6@arm.com>
+Date:   Wed, 23 Dec 2020 13:05:25 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
+In-Reply-To: <e47f14b81d90772346ef28c9a7fd3365@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After a "make -C tools/perf", git reports the following untracked file:
-perf-iiostat
+On 2020-12-22 19:49, isaacm@codeaurora.org wrote:
+> On 2020-12-22 11:27, Robin Murphy wrote:
+>> On 2020-12-22 00:44, Isaac J. Manjarres wrote:
+>>> The SMMU driver depends on the availability of the ARM LPAE and
+>>> ARM V7S io-pgtable format code to work properly. In preparation
+>>
+>> Nit: we don't really depend on v7s - we *can* use it if it's
+>> available, address constraints are suitable, and the SMMU
+>> implementation actually supports it (many don't), but we can still
+>> quite happily not use it even so. LPAE is mandatory in the
+>> architecture so that's our only hard requirement, embodied in the
+>> kconfig select.
+>>
+>> This does mean there may technically still be a corner case involving
+>> ARM_SMMU=y and IO_PGTABLE_ARM_V7S=m, but at worst it's now a runtime
+>> failure rather than a build error, so unless and until anyone
+>> demonstrates that it actually matters I don't feel particularly
+>> inclined to give it much thought.
+>>
+>> Robin.
+>>
+> Okay, I'll fix up the commit message, as well as the code, so that it
+> only depends on io-pgtable-arm.
 
-Add this generated file to perf's .gitignore file.
+Well, IIUC it would make sense to keep the softdep for when the v7s 
+module *is* present; I just wanted to clarify that it's more of a 
+nice-to-have rather than a necessity.
 
-Signed-off-by: Alexander Antonov <alexander.antonov@linux.intel.com>
----
- tools/perf/.gitignore | 1 +
- 1 file changed, 1 insertion(+)
+Robin.
 
-diff --git a/tools/perf/.gitignore b/tools/perf/.gitignore
-index f3f84781fd74..ab826736e677 100644
---- a/tools/perf/.gitignore
-+++ b/tools/perf/.gitignore
-@@ -20,6 +20,7 @@ perf.data.old
- output.svg
- perf-archive
- perf-with-kcore
-+perf-iiostat
- tags
- TAGS
- cscope*
--- 
-2.19.1
-
+> Thanks,
+> Isaac
+>>> for having the io-pgtable formats as modules, add a "pre"
+>>> dependency with MODULE_SOFTDEP() to ensure that the io-pgtable
+>>> format modules are loaded before loading the ARM SMMU driver module.
+>>>
+>>> Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
+>>> ---
+>>>   drivers/iommu/arm/arm-smmu/arm-smmu.c | 1 +
+>>>   1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c 
+>>> b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>>> index d8c6bfd..a72649f 100644
+>>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+>>> @@ -2351,3 +2351,4 @@ MODULE_DESCRIPTION("IOMMU API for ARM 
+>>> architected SMMU implementations");
+>>>   MODULE_AUTHOR("Will Deacon <will@kernel.org>");
+>>>   MODULE_ALIAS("platform:arm-smmu");
+>>>   MODULE_LICENSE("GPL v2");
+>>> +MODULE_SOFTDEP("pre: io-pgtable-arm io-pgtable-arm-v7s");
+>>>
+>>
+>> _______________________________________________
+>> linux-arm-kernel mailing list
+>> linux-arm-kernel@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
