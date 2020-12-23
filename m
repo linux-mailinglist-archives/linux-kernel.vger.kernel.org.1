@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB0E02E178E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 04:12:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C53AC2E178C
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 04:12:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731933AbgLWDL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 22:11:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45428 "EHLO mail.kernel.org"
+        id S1731862AbgLWDLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 22:11:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727775AbgLWCSH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:18:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E9739227BF;
-        Wed, 23 Dec 2020 02:16:54 +0000 (UTC)
+        id S1727794AbgLWCSI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:18:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B500223139;
+        Wed, 23 Dec 2020 02:16:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608689815;
-        bh=vou7UbMuIOlHogC+JSLYKs9mEKu8zPb4x7tIQAWA6J8=;
+        s=k20201202; t=1608689818;
+        bh=nA1IdGe3B+/2p3KYi1kkF0FwnQzejUL02uJ+uHEq1uE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lBekCYQBHBoiEr92GmKjCl5XEPCQNJcOlmgfmyy/B6jzIK9ZL7pTJc2pWYbn8cKEq
-         9M1H6/i6/8GgWgTg78mlt/CmJdfAQvBJ8YybEIh7UvfeNWXgE/XBD5VOYhC2EJovXp
-         poFpqUvGScCZhblLqmaRwJdJyQ4ZS+RrAmkX8YV+b8Z6ry50wlUe49OJ49XjftWHt6
-         084Zls17e765taDK9UPcMA5FKVpE9IvUI1ZxfzUwAdbdK3VycTl1DM+aKhWd7pNMJz
-         h+4JO28+WAIVdEzvPRQdplbEA3/jhRtFViNFCofFXe7ihXcaHJnUDUuWyrCMBkfsHl
-         ubFDWzOGp0qnA==
+        b=BwZXr/2zBRZQLixaFMzoSAf/LULe5lvCzLHSMkdMH6dk2Wtand3K+OpSoCQL+8T4b
+         cVNM/yaJeZo+J6tvZJbZltC7Bda38Ra0BC6YCsm9K/Hi9h6BTPJ82c/0px2XzjnOC0
+         dzs+eTAkPm3psI8hnBbA7FCCq5QZ4ahYiFlzPf1o9I9+7P8oo/y4syEgq9Pz/WtFa3
+         16WQYVxPQMQ3sQgdFopKmsJ1RGbqqldEzdceZT5iuC78MGiOR+71NdSfMFMYr7oInA
+         d4hiNH6L+tq7EGT8589D1zP5J0e3YT4VbO8rLDI6ZN2P3ELyGoY9gLWrMVV0rz9FIe
+         I9vyL7nwkqWew==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hugo Hu <hugo.hu@amd.com>, Charlene Liu <Charlene.Liu@amd.com>,
+Cc:     Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>,
+        Hersen Wu <hersenxs.wu@amd.com>,
         Qingqing Zhuo <qingqing.zhuo@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>, amd-gfx@lists.freedesktop.org,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.10 022/217] drm/amd/display: correct eDP T9 delay
-Date:   Tue, 22 Dec 2020 21:13:11 -0500
-Message-Id: <20201223021626.2790791-22-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 024/217] drm/amd/display: fix recout calculation for left side clip
+Date:   Tue, 22 Dec 2020 21:13:13 -0500
+Message-Id: <20201223021626.2790791-24-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223021626.2790791-1-sashal@kernel.org>
 References: <20201223021626.2790791-1-sashal@kernel.org>
@@ -44,122 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hugo Hu <hugo.hu@amd.com>
+From: Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>
 
-[ Upstream commit 3a372bed1e337efa450d8288bc75cfc9237b7bad ]
+[ Upstream commit 84aef2ab0977199784671295a07043191233d7c7 ]
 
-[Why]
-The current end of T9 delay is relay on polling
-sink status by DPCD. But the polling for sink
-status change after NoVideoStream_flag set to 0.
+Recout calculation does not corrrectly handle plane
+clip rect that extends beyond the left most border
+of stream source rect. This change adds handling by
+truncating the invisible clip rect.
 
-[How]
-Add function edp_add_delay_for_T9 to add T9 delay.
-Move the sink status polling after blank.
-
-Signed-off-by: Hugo Hu <hugo.hu@amd.com>
-Reviewed-by: Charlene Liu <Charlene.Liu@amd.com>
+Signed-off-by: Dmytro Laktyushkin <Dmytro.Laktyushkin@amd.com>
+Reviewed-by: Hersen Wu <hersenxs.wu@amd.com>
 Acked-by: Qingqing Zhuo <qingqing.zhuo@amd.com>
 Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../gpu/drm/amd/display/dc/core/dc_link_hwss.c   | 13 ++++++++-----
- .../amd/display/dc/dce110/dce110_hw_sequencer.c  | 16 ++++++++--------
- drivers/gpu/drm/amd/display/dc/inc/link_hwss.h   |  1 +
- 3 files changed, 17 insertions(+), 13 deletions(-)
+ drivers/gpu/drm/amd/display/dc/core/dc_resource.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link_hwss.c b/drivers/gpu/drm/amd/display/dc/core/dc_link_hwss.c
-index 11a619befb425..124ce215fca53 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc_link_hwss.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc_link_hwss.c
-@@ -156,6 +156,13 @@ void dp_enable_link_phy(
- 	dp_receiver_power_ctrl(link, true);
- }
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
+index 59d48cf819ea8..6d606cc32b09e 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc_resource.c
+@@ -796,6 +796,8 @@ static void calculate_recout(struct pipe_ctx *pipe_ctx)
+ 	} else
+ 		data->recout.x = 0;
  
-+void edp_add_delay_for_T9(struct dc_link *link)
-+{
-+	if (link->local_sink &&
-+			link->local_sink->edid_caps.panel_patch.extra_delay_backlight_off > 0)
-+		udelay(link->local_sink->edid_caps.panel_patch.extra_delay_backlight_off * 1000);
-+}
-+
- bool edp_receiver_ready_T9(struct dc_link *link)
- {
- 	unsigned int tries = 0;
-@@ -165,7 +172,7 @@ bool edp_receiver_ready_T9(struct dc_link *link)
++	if (stream->src.x > surf_clip.x)
++		surf_clip.width -= stream->src.x - surf_clip.x;
+ 	data->recout.width = surf_clip.width * stream->dst.width / stream->src.width;
+ 	if (data->recout.width + data->recout.x > stream->dst.x + stream->dst.width)
+ 		data->recout.width = stream->dst.x + stream->dst.width - data->recout.x;
+@@ -804,6 +806,8 @@ static void calculate_recout(struct pipe_ctx *pipe_ctx)
+ 	if (stream->src.y < surf_clip.y)
+ 		data->recout.y += (surf_clip.y - stream->src.y) * stream->dst.height
+ 						/ stream->src.height;
++	else if (stream->src.y > surf_clip.y)
++		surf_clip.height -= stream->src.y - surf_clip.y;
  
- 	result = core_link_read_dpcd(link, DP_EDP_DPCD_REV, &edpRev, sizeof(edpRev));
- 
--     /* start from eDP version 1.2, SINK_STAUS indicate the sink is ready.*/
-+    /* start from eDP version 1.2, SINK_STAUS indicate the sink is ready.*/
- 	if (result == DC_OK && edpRev >= DP_EDP_12) {
- 		do {
- 			sinkstatus = 1;
-@@ -178,10 +185,6 @@ bool edp_receiver_ready_T9(struct dc_link *link)
- 		} while (++tries < 50);
- 	}
- 
--	if (link->local_sink &&
--			link->local_sink->edid_caps.panel_patch.extra_delay_backlight_off > 0)
--		udelay(link->local_sink->edid_caps.panel_patch.extra_delay_backlight_off * 1000);
--
- 	return result;
- }
- bool edp_receiver_ready_T7(struct dc_link *link)
-diff --git a/drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c b/drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c
-index 3ac6c7b65a45a..9f56887029ca6 100644
---- a/drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c
-+++ b/drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c
-@@ -992,8 +992,6 @@ void dce110_edp_backlight_control(
- 
- 	link_transmitter_control(ctx->dc_bios, &cntl);
- 
--
--
- 	if (enable && link->dpcd_sink_ext_caps.bits.oled)
- 		msleep(OLED_POST_T7_DELAY);
- 
-@@ -1004,7 +1002,7 @@ void dce110_edp_backlight_control(
- 
- 	/*edp 1.2*/
- 	if (cntl.action == TRANSMITTER_CONTROL_BACKLIGHT_OFF)
--		edp_receiver_ready_T9(link);
-+		edp_add_delay_for_T9(link);
- 
- 	if (!enable && link->dpcd_sink_ext_caps.bits.oled)
- 		msleep(OLED_PRE_T11_DELAY);
-@@ -1145,12 +1143,14 @@ void dce110_blank_stream(struct pipe_ctx *pipe_ctx)
- 	if (dc_is_dp_signal(pipe_ctx->stream->signal)) {
- 		pipe_ctx->stream_res.stream_enc->funcs->dp_blank(pipe_ctx->stream_res.stream_enc);
- 
--		/*
--		 * After output is idle pattern some sinks need time to recognize the stream
--		 * has changed or they enter protection state and hang.
--		 */
--		if (!dc_is_embedded_signal(pipe_ctx->stream->signal))
-+		if (!dc_is_embedded_signal(pipe_ctx->stream->signal)) {
-+			/*
-+			 * After output is idle pattern some sinks need time to recognize the stream
-+			 * has changed or they enter protection state and hang.
-+			 */
- 			msleep(60);
-+		} else if (pipe_ctx->stream->signal == SIGNAL_TYPE_EDP)
-+			edp_receiver_ready_T9(link);
- 	}
- 
- }
-diff --git a/drivers/gpu/drm/amd/display/dc/inc/link_hwss.h b/drivers/gpu/drm/amd/display/dc/inc/link_hwss.h
-index 9af7ee5bc8ee1..33590a728fc53 100644
---- a/drivers/gpu/drm/amd/display/dc/inc/link_hwss.h
-+++ b/drivers/gpu/drm/amd/display/dc/inc/link_hwss.h
-@@ -51,6 +51,7 @@ void dp_enable_link_phy(
- 	const struct dc_link_settings *link_settings);
- 
- void dp_receiver_power_ctrl(struct dc_link *link, bool on);
-+void edp_add_delay_for_T9(struct dc_link *link);
- bool edp_receiver_ready_T9(struct dc_link *link);
- bool edp_receiver_ready_T7(struct dc_link *link);
- 
+ 	data->recout.height = surf_clip.height * stream->dst.height / stream->src.height;
+ 	if (data->recout.height + data->recout.y > stream->dst.y + stream->dst.height)
 -- 
 2.27.0
 
