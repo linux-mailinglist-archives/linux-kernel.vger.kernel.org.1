@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9916C2E1589
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:58:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90B022E1535
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:49:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731158AbgLWCtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:49:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45508 "EHLO mail.kernel.org"
+        id S1730629AbgLWCsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:48:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50890 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729547AbgLWCWE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:22:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C0F522573;
-        Wed, 23 Dec 2020 02:21:47 +0000 (UTC)
+        id S1729560AbgLWCWJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:22:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77169229C5;
+        Wed, 23 Dec 2020 02:21:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690108;
-        bh=r6ATr39LdH2Wgn+rfcjhGAkUmoykTGGDmnds48iQwYI=;
+        s=k20201202; t=1608690111;
+        bh=A//1FcQ0hG5Dy2GXj2HyetJnjQgebC+vhG8uDwqR5DQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OVynjc+Omiou4avRIXun5Elr4dAom1Is/6bOLTK1ItvqXlNK4/b/CPYtjTLPmJH2V
-         +/mI5Jt9who0NTXaq42rx1tSL24uwy4S8m82qD37mAt1mtW/Bl0ua6HvVFhyNycU8u
-         tUAYqkn3qq6D2dQUiqIdQOWAJD6cAUe40DWPG06BwBBevFqzT0XhUbI1LxIANfm+GH
-         AYm0x1rdlfKZNLdpOsvmoDJJtX/Gc/nvN3BakH7W6blSA0tWX4XrW9ctWP3uKCBjoK
-         1bvXdNtA3uEOWz0VQC7P0teNY7ni9F6UlkYamVtkLUz2wKp3nS7AA8uC1O/95jxPFh
-         btKlO2YmdCemQ==
+        b=KYUIzaVsBx09aXkzAMDCOjg2ZyZQxXYvSCiIrVFiwR1qG8LodVWC0u68i32tf1fqH
+         Jig3zc0LSj/XVMroI/ovx9NBgYUK3DpZxeJSfLMgkxtujVB3zqJrL4R63yLwclAD72
+         gx8nU66oa1W3SU6uwE8xKOZaH/Vjpj+K8V41iv1OGJFm+I14l8BgrrDpHpm1YBHYcI
+         rNoTwEC+pqCGc5tDHZjsb49cNHqxJl5RRWeRowdR56udJd19VLibMCAoICiqLjXacj
+         r2SE1cjtEtigILFto06HbbwD8n6yRAeIpMnSULel8c5CUChELfql33I/UUjH7ow0cC
+         2iseFbASpHvsQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Takashi Iwai <tiwai@suse.de>,
-        Keith Milner <kamilner@superlative.org>,
-        Dylan Robinson <dylan_robinson@motu.com>,
-        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 4.19 37/87] ALSA: usb-audio: Don't call usb_set_interface() at trigger callback
-Date:   Tue, 22 Dec 2020 21:20:13 -0500
-Message-Id: <20201223022103.2792705-37-sashal@kernel.org>
+Cc:     Finn Thain <fthain@telegraphics.com.au>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 39/87] scsi: atari_scsi: Fix race condition between .queuecommand and EH
+Date:   Tue, 22 Dec 2020 21:20:15 -0500
+Message-Id: <20201223022103.2792705-39-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223022103.2792705-1-sashal@kernel.org>
 References: <20201223022103.2792705-1-sashal@kernel.org>
@@ -43,73 +43,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Finn Thain <fthain@telegraphics.com.au>
 
-[ Upstream commit 4974b7950929e4a28d4eaee48e4ad07f168ac132 ]
+[ Upstream commit 03fe6a640a05c5dc04b6bcdddfb981d015e84ed4 ]
 
-The PCM trigger callback is atomic, hence we must not call a function
-like usb_set_interface() there.  Calling it from there would lead to a
-kernel Oops.
+It is possible that bus_reset_cleanup() or .eh_abort_handler could be
+invoked during NCR5380_queuecommand(). If that takes place before the new
+command is enqueued and after the ST-DMA "lock" has been acquired, the
+ST-DMA "lock" will be released again. This will result in a lost DMA
+interrupt and a command timeout. Fix this by excluding EH and interrupt
+handlers while the new command is enqueued.
 
-Fix it by moving the usb_set_interface() call to set_sync_endpoint().
-
-Also, apply the snd_usb_set_interface_quirk() for consistency, too.
-
-Tested-by: Keith Milner <kamilner@superlative.org>
-Tested-by: Dylan Robinson <dylan_robinson@motu.com>
-Link: https://lore.kernel.org/r/20201123085347.19667-3-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lore.kernel.org/r/af25163257796b50bb99d4ede4025cea55787b8f.1605847196.git.fthain@telegraphics.com.au
+Tested-by: Michael Schmitz <schmitzmic@gmail.com>
+Reviewed-by: Michael Schmitz <schmitzmic@gmail.com>
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/pcm.c | 28 +++++++++++++---------------
- 1 file changed, 13 insertions(+), 15 deletions(-)
+ drivers/scsi/NCR5380.c    |  9 ++++++---
+ drivers/scsi/atari_scsi.c | 10 +++-------
+ 2 files changed, 9 insertions(+), 10 deletions(-)
 
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index e4d2fcc89c306..5ff51c2983a19 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -243,21 +243,6 @@ static int start_endpoints(struct snd_usb_substream *subs)
- 	    !test_and_set_bit(SUBSTREAM_FLAG_SYNC_EP_STARTED, &subs->flags)) {
- 		struct snd_usb_endpoint *ep = subs->sync_endpoint;
+diff --git a/drivers/scsi/NCR5380.c b/drivers/scsi/NCR5380.c
+index 95a3e3bf2b431..7907694013fc1 100644
+--- a/drivers/scsi/NCR5380.c
++++ b/drivers/scsi/NCR5380.c
+@@ -559,11 +559,14 @@ static int NCR5380_queue_command(struct Scsi_Host *instance,
  
--		if (subs->data_endpoint->iface != subs->sync_endpoint->iface ||
--		    subs->data_endpoint->altsetting != subs->sync_endpoint->altsetting) {
--			err = usb_set_interface(subs->dev,
--						subs->sync_endpoint->iface,
--						subs->sync_endpoint->altsetting);
--			if (err < 0) {
--				clear_bit(SUBSTREAM_FLAG_SYNC_EP_STARTED, &subs->flags);
--				dev_err(&subs->dev->dev,
--					   "%d:%d: cannot set interface (%d)\n",
--					   subs->sync_endpoint->iface,
--					   subs->sync_endpoint->altsetting, err);
--				return -EIO;
--			}
--		}
+ 	cmd->result = 0;
+ 
+-	if (!NCR5380_acquire_dma_irq(instance))
+-		return SCSI_MLQUEUE_HOST_BUSY;
 -
- 		dev_dbg(&subs->dev->dev, "Starting sync EP @%p\n", ep);
+ 	spin_lock_irqsave(&hostdata->lock, flags);
  
- 		ep->sync_slave = subs->data_endpoint;
-@@ -501,6 +486,19 @@ static int set_sync_endpoint(struct snd_usb_substream *subs,
- 
- 	subs->data_endpoint->sync_master = subs->sync_endpoint;
- 
-+	if (subs->data_endpoint->iface != subs->sync_endpoint->iface ||
-+	    subs->data_endpoint->altsetting != subs->sync_endpoint->altsetting) {
-+		err = usb_set_interface(subs->dev,
-+					subs->sync_endpoint->iface,
-+					subs->sync_endpoint->altsetting);
-+		if (err < 0)
-+			return err;
-+		dev_dbg(&dev->dev, "setting usb interface %d:%d\n",
-+			subs->sync_endpoint->iface,
-+			subs->sync_endpoint->altsetting);
-+		snd_usb_set_interface_quirk(dev);
++	if (!NCR5380_acquire_dma_irq(instance)) {
++		spin_unlock_irqrestore(&hostdata->lock, flags);
++
++		return SCSI_MLQUEUE_HOST_BUSY;
 +	}
 +
- 	return 0;
+ 	/*
+ 	 * Insert the cmd into the issue queue. Note that REQUEST SENSE
+ 	 * commands are added to the head of the queue since any command will
+diff --git a/drivers/scsi/atari_scsi.c b/drivers/scsi/atari_scsi.c
+index 764c46d7333e6..42f11c8815a7f 100644
+--- a/drivers/scsi/atari_scsi.c
++++ b/drivers/scsi/atari_scsi.c
+@@ -376,15 +376,11 @@ static int falcon_get_lock(struct Scsi_Host *instance)
+ 	if (IS_A_TT())
+ 		return 1;
+ 
+-	if (stdma_is_locked_by(scsi_falcon_intr) &&
+-	    instance->hostt->can_queue > 1)
++	if (stdma_is_locked_by(scsi_falcon_intr))
+ 		return 1;
+ 
+-	if (in_interrupt())
+-		return stdma_try_lock(scsi_falcon_intr, instance);
+-
+-	stdma_lock(scsi_falcon_intr, instance);
+-	return 1;
++	/* stdma_lock() may sleep which means it can't be used here */
++	return stdma_try_lock(scsi_falcon_intr, instance);
  }
  
+ #ifndef MODULE
 -- 
 2.27.0
 
