@@ -2,145 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 572BF2E114C
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 02:20:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D7292E114E
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 02:20:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727485AbgLWBTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 20:19:10 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:47964 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725300AbgLWBTH (ORCPT
+        id S1726998AbgLWBUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 20:20:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725985AbgLWBUX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 20:19:07 -0500
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BN1Ctlq051015;
-        Tue, 22 Dec 2020 20:17:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
- cc : subject : in-reply-to : date : message-id : mime-version :
- content-type; s=pp1; bh=Xqj4XnC91lloERXo758sMR6xKYMKm2wGq3qvpsAxQ1E=;
- b=M4MQzIhJ6rkD1twjow4VT1fj/PAvEIzGA+oPDoomT+b1ngtfAD8l7DxcfdeZG7JSsRVn
- 9kBhqT6wDdbjtboSRKfpGWxqOmX0VuTfrehUyHoKbqVRwYnwp4xXkTnyDQFXpKmfxEOX
- aJyhE8RuomKpiGr/TtHejveOKYVJv1JKS2rFPJ6BlMuv4ZNZSzkdznmXjl/TQ2SDeCr7
- MPEE226j1Up1K2mWG15CZ46oJKKZvVXKXrYCQ1519mrn++cz8huLQdLmYQLkUJfBWOmb
- rUQqVFmgb39j993ypShia2iaqPi63NKWUQkwbr2SSeqSRv13UDAHq7P3Q05Wvt7dv1bq ug== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35kv1g02rs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Dec 2020 20:17:58 -0500
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BN1EuqW058860;
-        Tue, 22 Dec 2020 20:17:57 -0500
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35kv1g02rf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Dec 2020 20:17:57 -0500
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BN1DEon004574;
-        Wed, 23 Dec 2020 01:17:56 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma02dal.us.ibm.com with ESMTP id 35kj7qvbyb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Dec 2020 01:17:56 +0000
-Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BN1Ht9A27460002
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 23 Dec 2020 01:17:55 GMT
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 55434BE053;
-        Wed, 23 Dec 2020 01:17:55 +0000 (GMT)
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8397BBE051;
-        Wed, 23 Dec 2020 01:17:46 +0000 (GMT)
-Received: from manicouagan.localdomain (unknown [9.80.219.136])
-        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTPS;
-        Wed, 23 Dec 2020 01:17:46 +0000 (GMT)
-References: <20201219175713.18888-1-nramas@linux.microsoft.com>
- <20201219175713.18888-7-nramas@linux.microsoft.com>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     zohar@linux.ibm.com, robh@kernel.org, takahiro.akashi@linaro.org,
-        gregkh@linuxfoundation.org, will@kernel.org,
-        catalin.marinas@arm.com, mpe@ellerman.id.au, james.morse@arm.com,
-        sashal@kernel.org, benh@kernel.crashing.org, paulus@samba.org,
-        frowand.list@gmail.com, vincenzo.frascino@arm.com,
-        mark.rutland@arm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
-        serge@hallyn.com, pasha.tatashin@soleen.com, allison@lohutok.net,
-        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
-        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v13 6/6] arm64: Add IMA log information in kimage used
- for kexec
-In-reply-to: <20201219175713.18888-7-nramas@linux.microsoft.com>
-Date:   Tue, 22 Dec 2020 22:17:44 -0300
-Message-ID: <87sg7xjp6v.fsf@manicouagan.localdomain>
+        Tue, 22 Dec 2020 20:20:23 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 270EDC0613D3;
+        Tue, 22 Dec 2020 17:19:43 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id c12so9428112pfo.10;
+        Tue, 22 Dec 2020 17:19:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=sh+f0OQIJac0vHlzJ912CDuEKoFfDRc2vYNfYgcFedM=;
+        b=By+C5Rg0iMuR+8eNBcMxkTiv6hsbzEyuwUDvoIfsF+lF+BR8uiC4J1dO22/oU/kbzs
+         qWeREFnJfrgrwUMpxWtsQs6Q1Rr0sIaAqoGvHmh/DX5cCaNpb+wAiGBpDZJK8SDe9isD
+         9ZyeQnUlgbfNlDT0NX1QWSPznH/+mjkxTc3gdYPyGY1GoNas5qJaLbU8lvtjlfpe4Hy3
+         zimBNuattNet/whmcsI5u3sKP7R8NMr6LGk0vvO8GgbdUB4q8onuaKG9wA5v/X5CAJAK
+         lpMbEm/yX+Lf1OuNZ7MjeA8hSxGWNKDnVwoVBlUg4YYzZo67vdvcVnnxG3+3sbBLCxxx
+         cQZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=sh+f0OQIJac0vHlzJ912CDuEKoFfDRc2vYNfYgcFedM=;
+        b=M+i+dF6s4Kz9TGCnb6EpTRz3uUtDOYCFIwQErlVPWEQswJbnImUNX98ildzqaTqfzF
+         /z8cU1drtcs9j3j9mzrwndDx54pNfELvw+s8IekOkvfPmHHMLCZflWBuUFnn9Jw4cTOW
+         knSyIbtxXrdHWFUnFPgQyD4MjYJMMK+PWr6LMyThO/bsjXmI3pT31AmBzHwlZzfGASIw
+         fZHMYzHT5wDWy9OJ3jUf3JS7B/0nud7E2/cf+KlY8q80rj9MRI/L6DlzYzNZXMPpKkoJ
+         5vwAT1Z4FITv9FDE3Q+RHjz+28ZjiIN6qyEerpQLywxksu985+2dtQngQcpyYGzAoZ6Z
+         ptRw==
+X-Gm-Message-State: AOAM533AhXfpJx+uRDRLlgIZxwOlrXMHXK0BCC0e/lY28dlldFrmMROY
+        5kYuz8DTb7im97e4hSzGO/pqwOBf/fGw13hDVovr2Q0CK20rNg==
+X-Google-Smtp-Source: ABdhPJxLIby81dh+ty3F1cUbhJkPv65atOIUZVuBsTg1WvjwQHR6bzmGRFIAj6JjWDkqw/ZFt7xjk1lkcF+ISGPI+Iw=
+X-Received: by 2002:a62:7715:0:b029:19e:26e7:7c87 with SMTP id
+ s21-20020a6277150000b029019e26e77c87mr1502305pfc.18.1608686382618; Tue, 22
+ Dec 2020 17:19:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-22_13:2020-12-21,2020-12-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxscore=0
- priorityscore=1501 phishscore=0 malwarescore=0 bulkscore=0 clxscore=1015
- lowpriorityscore=0 mlxlogscore=999 spamscore=0 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012230003
+From:   =?UTF-8?B?5b6Q5aSp5a6H?= <xu2tianyu@gmail.com>
+Date:   Wed, 23 Dec 2020 09:19:31 +0800
+Message-ID: <CA+tJOF9VqCC1y5RtN-i=zN5QHpPQddXg6JR6FDL3d3BrCmBfiA@mail.gmail.com>
+Subject: SDHCI: problem of RV_BOOT.bin run on pynq
+To:     linux-fpga@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When I run the RV_BOOT.bin, which is generated by riscv-pk with
+linux-5.9.4 as payload, on xilinx pynq-z2, I met the problem below:
 
-Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
+mmc0: Timeout waiting for hardware cmd interrupt.
+mmc0: sdhci: ============ SDHCI REGISTER DUMP ===========
+mmc0: sdhci: Sys addr:  0x00000000 | Version:  0x00008901
+mmc0: sdhci: Blk size:  0x00000000 | Blk cnt:  0x00000000
+mmc0: sdhci: Argument:  0x00000c00 | Trn mode: 0x00000000
+mmc0: sdhci: Present:   0x01ff0001 | Host ctl: 0x00000001
+mmc0: sdhci: Power:     0x0000000f | Blk gap:  0x00000000
+mmc0: sdhci: Wake-up:   0x00000000 | Clock:    0x00004007
+mmc0: sdhci: Timeout:   0x00000000 | Int stat: 0x00018000
+mmc0: sdhci: Int enab:  0x00ff0083 | Sig enab: 0x00ff0083
+mmc0: sdhci: ACmd stat: 0x00000000 | Slot int: 0x00000001
+mmc0: sdhci: Caps:      0x69ec0080 | Caps_1:   0x00000000
+mmc0: sdhci: Cmd:       0x0000341a | Max curr: 0x00000001
+mmc0: sdhci: Resp[0]:   0x00000000 | Resp[1]:  0x00000000
+mmc0: sdhci: Resp[2]:   0x00000000 | Resp[3]:  0x00000000
+mmc0: sdhci: Host ctl2: 0x00000000
+mmc0: sdhci: ADMA Err:  0x00000000 | ADMA Ptr: 0x00000000
+mmc0: sdhci:
 
-> Address and size of the buffer containing the IMA measurement log need
-> to be passed from the current kernel to the next kernel on kexec.
->
-> Any existing "linux,ima-kexec-buffer" property in the device tree
-> needs to be removed and its corresponding memory reservation in
-> the currently running kernel needs to be freed. The address and
-> size of the current kernel's IMA measurement log need to be added
-> to the device tree's IMA kexec buffer node and memory for the buffer
-> needs to be reserved for the log to be carried over to the next kernel
-> on the kexec call.
->
-> Add address and size fields to "struct kimage_arch" for ARM64 platform
-> to hold the address and size of the IMA measurement log buffer. Remove
-> any existing "linux,ima-kexec-buffer" property in the device tree and
-> free the corresponding memory reservation in the currently running
-> kernel. Add "linux,ima-kexec-buffer" property to the device tree and
-> reserve the memory for storing the IMA log that needs to be passed from
-> the current kernel to the next one.
->
-> Update CONFIG_KEXEC_FILE to select CONFIG_HAVE_IMA_KEXEC to indicate
-> that the IMA measurement log information is present in the device tree
-> for ARM64.
->
-> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-> ---
->  arch/arm64/Kconfig             | 1 +
->  arch/arm64/include/asm/kexec.h | 5 +++++
->  2 files changed, 6 insertions(+)
->
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index 1d466addb078..c85d18b1f2fd 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -1094,6 +1094,7 @@ config KEXEC
->  config KEXEC_FILE
->  	bool "kexec file based system call"
->  	select KEXEC_CORE
-> +	select HAVE_IMA_KEXEC
->  	help
->  	  This is new version of kexec system call. This system call is
->  	  file based and takes file descriptors as system call argument
-
-As I suggested in the other email, this should be:
-
-	select HAVE_IMA_KEXEC if IMA
-
--- 
-Thiago Jung Bauermann
-IBM Linux Technology Center
+Does anyone have any idea about this problem? Thanks a lot.
