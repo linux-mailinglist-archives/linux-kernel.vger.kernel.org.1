@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72E282E13BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:37:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD442E13E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:38:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730574AbgLWCeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:34:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55146 "EHLO mail.kernel.org"
+        id S1730662AbgLWCgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:36:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730347AbgLWCY7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:24:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B1CF22202;
-        Wed, 23 Dec 2020 02:24:18 +0000 (UTC)
+        id S1729358AbgLWCYg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:24:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 71A34225AB;
+        Wed, 23 Dec 2020 02:24:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690258;
-        bh=Y0pqD/Y6bPrDTC6zxax75R6Nyx+Z583bWU9ltQ+v5Rk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=AlFaFsvBLUAoZA59XEbPOqbDXiOy6zxgncnS78o/EuU/SCQJmuTDsK6qRw+gUxWPF
-         Pij9NSle/PRBfCkKEZ1HEisflVMNVZpws4P+LWWHPmFz5T+84IApCeOuaBffoHP/r6
-         H2Sadcg/pY826qUrLqTUn5XG9ax4nHqjv0MtVldAJH8cqVvtsEpcRXynaUTXi9hQzB
-         x44uaNSsQx3+kyzNJDtMc2/2ee4za8M+pdnsuzLzC8LQenxFkEEM8Cxi2Q8fDMyjxR
-         YVjT4NN2PWJJ84u3zk4KIwXT8WYNKNrmMJJjRSaA6al06WoUt+cAXQLZPdCu+9LsYO
-         C/iAPWWbGCyxw==
+        s=k20201202; t=1608690261;
+        bh=bDkRmOk5xWiufWsEudftt83U7NscQvi6wj1oRpyNZZk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Oi+pCOFXxNn4S7q8NckhQl5vnzXLCSWm3Zde9BVnpkV8qnnJyTUbMLeIn79Vc0Pia
+         Z0z1Pt363YFurD9IVxAJfnELHsOf8JzJmJ1UKxczm4ujhzqK5mWcG3Lwa4rn0txuGg
+         VPa5h9G5U9KmlE1N8ktq1aX7BE5fY9ocvNtTxY2pZXwMwNvhqZaQvHLiPK7Q5MbOIn
+         MAomgOwWh0kukECaweobTQQt7ey3kNWHjVVpE3ZuiGulhRJJZpr0yibAujFLVGvAJs
+         wy5bo8EWaI5guVrz9Km67LnlNVJnWLNoFNxFjVuKqWf5m6tW/XkWyrOY4fVc60Uqe3
+         egeFPQicsJgiA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Luo Meng <luomeng12@huawei.com>, Jeff Layton <jlayton@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-fsdevel@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 01/48] locks: Fix UBSAN undefined behaviour in flock64_to_posix_lock
-Date:   Tue, 22 Dec 2020 21:23:29 -0500
-Message-Id: <20201223022417.2794032-1-sashal@kernel.org>
+Cc:     Zhang Qilong <zhangqilong3@huawei.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>, linux-crypto@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.9 03/48] crypto: omap-aes - fix the reference count leak of omap device
+Date:   Tue, 22 Dec 2020 21:23:31 -0500
+Message-Id: <20201223022417.2794032-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20201223022417.2794032-1-sashal@kernel.org>
+References: <20201223022417.2794032-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -39,53 +42,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luo Meng <luomeng12@huawei.com>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit 16238415eb9886328a89fe7a3cb0b88c7335fe16 ]
+[ Upstream commit 383e8a823014532ffd81c787ef9009f1c2bd3b79 ]
 
-When the sum of fl->fl_start and l->l_len overflows,
-UBSAN shows the following warning:
+pm_runtime_get_sync() will increment  pm usage counter even
+when it returns an error code. We should call put operation
+in error handling paths of omap_aes_hw_init.
 
-UBSAN: Undefined behaviour in fs/locks.c:482:29
-signed integer overflow: 2 + 9223372036854775806
-cannot be represented in type 'long long int'
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0xe4/0x14e lib/dump_stack.c:118
- ubsan_epilogue+0xe/0x81 lib/ubsan.c:161
- handle_overflow+0x193/0x1e2 lib/ubsan.c:192
- flock64_to_posix_lock fs/locks.c:482 [inline]
- flock_to_posix_lock+0x595/0x690 fs/locks.c:515
- fcntl_setlk+0xf3/0xa90 fs/locks.c:2262
- do_fcntl+0x456/0xf60 fs/fcntl.c:387
- __do_sys_fcntl fs/fcntl.c:483 [inline]
- __se_sys_fcntl fs/fcntl.c:468 [inline]
- __x64_sys_fcntl+0x12d/0x180 fs/fcntl.c:468
- do_syscall_64+0xc8/0x5a0 arch/x86/entry/common.c:293
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-Fix it by parenthesizing 'l->l_len - 1'.
-
-Signed-off-by: Luo Meng <luomeng12@huawei.com>
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/locks.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/crypto/omap-aes.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/locks.c b/fs/locks.c
-index 8252647c6084f..edae232dfc864 100644
---- a/fs/locks.c
-+++ b/fs/locks.c
-@@ -471,7 +471,7 @@ static int flock64_to_posix_lock(struct file *filp, struct file_lock *fl,
- 	if (l->l_len > 0) {
- 		if (l->l_len - 1 > OFFSET_MAX - fl->fl_start)
- 			return -EOVERFLOW;
--		fl->fl_end = fl->fl_start + l->l_len - 1;
-+		fl->fl_end = fl->fl_start + (l->l_len - 1);
+diff --git a/drivers/crypto/omap-aes.c b/drivers/crypto/omap-aes.c
+index fe32dd95ae4ff..717cde167873a 100644
+--- a/drivers/crypto/omap-aes.c
++++ b/drivers/crypto/omap-aes.c
+@@ -251,6 +251,7 @@ static int omap_aes_hw_init(struct omap_aes_dev *dd)
  
- 	} else if (l->l_len < 0) {
- 		if (fl->fl_start + l->l_len < 0)
+ 	err = pm_runtime_get_sync(dd->dev);
+ 	if (err < 0) {
++		pm_runtime_put_noidle(dd->dev);
+ 		dev_err(dd->dev, "failed to get sync: %d\n", err);
+ 		return err;
+ 	}
 -- 
 2.27.0
 
