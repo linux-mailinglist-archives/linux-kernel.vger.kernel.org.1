@@ -2,302 +2,628 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DB122E1CE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 14:57:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57DF62E1CEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 15:07:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728746AbgLWNza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 08:55:30 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:49329 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728581AbgLWNz3 (ORCPT
+        id S1728680AbgLWOFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 09:05:47 -0500
+Received: from out28-147.mail.aliyun.com ([115.124.28.147]:53551 "EHLO
+        out28-147.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728251AbgLWOFq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 08:55:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1608731729; x=1640267729;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=0baOEf/dlj0n6rdHsUM8wiZs8wduZgzozALMV9bUji4=;
-  b=MGbJvprX/TCEfjgcj3BpeRl95GgLSyEsyCsoyA0ID7Gj9RLdavnWe3Bo
-   YUveByVYWmIeoWkhJMH/OQ25vmTRAiiC3bAW60E6ixjHbpa0L/Gbw/4cM
-   9gfSvhjjiJy7M/YuI6Pb9+kIOl0Rfnigq0G/VMZm4CNGQVRtYdWKdGbeA
-   oQl3NnXGHf2w7ZDAJHYsxEBhBF3rMe0fROfeanCiHQuu+zfTeB+qOmCdm
-   Ul2kpvMIvbeQNBmzAcOcVIfIZOsKuIkjiGZjMUVW6vOFI7tBD/dPeL+ns
-   P0kItZ5fjhF8/ryT7HHagMtkh/0lLiKzRd072ycVEgnPskT4ZumucQBVs
-   w==;
-IronPort-SDR: 6EvuGI0Ar1AW5mM5mGzskubsadcHIEgtHUesu9I12AUnIfpjRRSunWAsmS25WWeTFCkRgS6qLJ
- +Gtju27pU6s7zy0d5HQeBp8wdntgB3FgrafCSHcUzkJsioszCLgCAcEFyZbP+rnWJljdCZIgwO
- FYILuXs6bH9wQElRM6fZhmqow6cXY5m6NTW3A97NKEopG8tPKZdyspEYc9ICa0yG7ArgLIzrYQ
- 6uZ+lBMoqfWiCBfhYnlMMmoGd+RBuQYerUkXUN2JKUlAwBQqNmrsrto7lStRg4dgxlibPNTgCS
- IBY=
-X-IronPort-AV: E=Sophos;i="5.78,441,1599548400"; 
-   d="scan'208";a="98083193"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Dec 2020 06:54:12 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 23 Dec 2020 06:54:12 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex02.mchp-main.com
- (10.10.85.144) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Wed, 23 Dec 2020 06:54:12 -0700
-Date:   Wed, 23 Dec 2020 14:54:11 +0100
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Mark Einon <mark.einon@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [RFC PATCH v2 5/8] net: sparx5: add switching, vlan and mactable
- support
-Message-ID: <20201223135411.qca4ury2h44yxbzu@mchp-dev-shegelun>
-References: <20201217075134.919699-1-steen.hegelund@microchip.com>
- <20201217075134.919699-6-steen.hegelund@microchip.com>
- <20201221002556.GC3107610@lunn.ch>
+        Wed, 23 Dec 2020 09:05:46 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436282|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.142914-0.000426341-0.85666;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047206;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=13;RT=13;SR=0;TI=SMTPD_---.JAd2A3c_1608732214;
+Received: from 192.168.10.118(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.JAd2A3c_1608732214)
+          by smtp.aliyun-inc.com(10.147.44.118);
+          Wed, 23 Dec 2020 22:03:35 +0800
+Subject: Re: [PATCH v4 4/5] clk: Ingenic: Add missing clocks for Ingenic SoCs.
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     sboyd@kernel.org, robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        mturquette@baylibre.com, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        yanfei.li@ingenic.com, sihui.liu@ingenic.com,
+        sernia.zhou@foxmail.com
+References: <1608565971-23895-1-git-send-email-zhouyanjie@wanyeetech.com>
+ <1608565971-23895-5-git-send-email-zhouyanjie@wanyeetech.com>
+ <NDLSLQ.4XPUV7PHX1V32@crapouillou.net>
+From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Message-ID: <903d29e6-2897-9d19-eb0a-7fc1fedf49b5@wanyeetech.com>
+Date:   Wed, 23 Dec 2020 22:03:32 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20201221002556.GC3107610@lunn.ch>
+In-Reply-To: <NDLSLQ.4XPUV7PHX1V32@crapouillou.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+Hi Paul,
 
-On 21.12.2020 01:25, Andrew Lunn wrote:
->EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+On 2020/12/23 下午8:29, Paul Cercueil wrote:
+> Hi Zhou,
 >
->> +++ b/drivers/net/ethernet/microchip/sparx5/sparx5_mactable.c
+> Le lun. 21 déc. 2020 à 23:52, 周琰杰 (Zhou Yanjie) 
+> <zhouyanjie@wanyeetech.com> a écrit :
+>> Add CIM, AIC, DMIC, I2S clocks for the X1000 SoC and the
+>> X1830 SoC from Ingenic.
+>>
+>> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+>> ---
+>>
+>> Notes:
+>>     v1->v2:
+>>     Add I2S clock for X1000.
+>>
+>>     v2->v3:
+>>     Correct the comment in x1000-cgu.c, change it from
+>>     "Custom (SoC-specific) OTG PHY" to "Custom (SoC-specific)",
+>>     since there is more than just the "OTG PHY" clock.
+>>
+>>     v3->v4:
+>>     No change.
+>>
+>>  drivers/clk/ingenic/x1000-cgu.c | 207 
+>> +++++++++++++++++++++++++++++++++++++++-
+>>  drivers/clk/ingenic/x1830-cgu.c | 207 
+>> +++++++++++++++++++++++++++++++++++++++-
+>>  2 files changed, 412 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/clk/ingenic/x1000-cgu.c 
+>> b/drivers/clk/ingenic/x1000-cgu.c
+>> index 53e5fe0..f03dd47 100644
+>> --- a/drivers/clk/ingenic/x1000-cgu.c
+>> +++ b/drivers/clk/ingenic/x1000-cgu.c
+>> @@ -58,6 +58,17 @@
+>>  #define USBPCR1_REFCLKDIV_24    (0x1 << USBPCR1_REFCLKDIV_SHIFT)
+>>  #define USBPCR1_REFCLKDIV_12    (0x0 << USBPCR1_REFCLKDIV_SHIFT)
+>>
+>> +/* bits within the I2SCDR register */
+>> +#define I2SCDR_I2PCS_SHIFT        31
+>> +#define I2SCDR_I2PCS_MASK        (0x1 << I2SCDR_I2PCS_SHIFT)
+>> +#define I2SCDR_I2CS_SHIFT        30
+>> +#define I2SCDR_I2CS_MASK        (0x1 << I2SCDR_I2CS_SHIFT)
+>> +#define I2SCDR_I2SDIV_M_SHIFT    13
+>> +#define I2SCDR_I2SDIV_M_MASK    (0x1ff << I2SCDR_I2SDIV_M_SHIFT)
+>> +#define I2SCDR_I2SDIV_N_SHIFT    0
+>> +#define I2SCDR_I2SDIV_N_MASK    (0x1fff << I2SCDR_I2SDIV_N_SHIFT)
+>> +#define I2SCDR_CE_I2S            BIT(29)
 >> +
->> +static inline int sparx5_mact_get_status(struct sparx5 *sparx5)
+>>  static struct ingenic_cgu *cgu;
+>>
+>>  static unsigned long x1000_otg_phy_recalc_rate(struct clk_hw *hw,
+>> @@ -168,6 +179,175 @@ static const struct clk_ops x1000_otg_phy_ops = {
+>>      .is_enabled    = x1000_usb_phy_is_enabled,
+>>  };
+>>
+>> +static u8 x1000_i2s_get_parent(struct clk_hw *hw)
 >> +{
->> +     return spx5_rd(sparx5, LRN_COMMON_ACCESS_CTRL);
+>> +    u32 i2scdr;
+>> +
+>> +    i2scdr = readl(cgu->base + CGU_REG_I2SCDR);
+>> +
+>> +    return (i2scdr & (I2SCDR_I2PCS_MASK | I2SCDR_I2CS_MASK)) >> 
+>> I2SCDR_I2CS_SHIFT;
 >> +}
 >> +
->> +static inline int sparx5_mact_wait_for_completion(struct sparx5 *sparx5)
+>> +static int x1000_i2s_set_parent(struct clk_hw *hw, u8 idx)
 >> +{
->> +     u32 val;
+>> +    unsigned long flags;
 >> +
->> +     return readx_poll_timeout(sparx5_mact_get_status,
->> +             sparx5, val,
->> +             LRN_COMMON_ACCESS_CTRL_MAC_TABLE_ACCESS_SHOT_GET(val) == 0,
->> +             TABLE_UPDATE_SLEEP_US, TABLE_UPDATE_TIMEOUT_US);
+>> +    spin_lock_irqsave(&cgu->lock, flags);
+>> +    writel(idx << I2SCDR_I2CS_SHIFT, cgu->base + CGU_REG_I2SCDR);
+>> +    spin_unlock_irqrestore(&cgu->lock, flags);
+>> +
+>> +    return 0;
 >> +}
->
->No inline functions in C files please.
-
-OK.
-
->
->> +void sparx5_mact_init(struct sparx5 *sparx5)
+>> +
+>> +static unsigned long x1000_i2s_recalc_rate(struct clk_hw *hw,
+>> +                        unsigned long parent_rate)
 >> +{
->> +     mutex_init(&sparx5->lock);
+>> +    unsigned m, n;
+>> +    u32 i2scdr;
 >> +
->> +     mutex_lock(&sparx5->lock);
+>> +    i2scdr = readl(cgu->base + CGU_REG_I2SCDR);
 >> +
->> +     /*  Flush MAC table */
->> +     spx5_wr(LRN_COMMON_ACCESS_CTRL_CPU_ACCESS_CMD_SET(MAC_CMD_CLEAR_ALL) |
->> +             LRN_COMMON_ACCESS_CTRL_MAC_TABLE_ACCESS_SHOT_SET(1),
->> +             sparx5, LRN_COMMON_ACCESS_CTRL);
+>> +    m = (i2scdr & I2SCDR_I2SDIV_M_MASK) >> I2SCDR_I2SDIV_M_SHIFT;
+>> +    n = (i2scdr & I2SCDR_I2SDIV_N_MASK) >> I2SCDR_I2SDIV_N_SHIFT;
 >> +
->> +     if (sparx5_mact_wait_for_completion(sparx5) != 0)
->> +             dev_warn(sparx5->dev, "MAC flush error\n");
->> +
->> +     mutex_unlock(&sparx5->lock);
->
->It always seems odd to me, when you initialise a mutex, and then
->immediately take it. Who are you locking against? I'm not saying it is
->wrong though, especially if you have code in spx5_wr() and spx5_rd()
->which check the lock is actually taken. I've found a number of locking
->bugs in mv88e6xxx by having such checks.
-
-The driver has a workqueue and a notifier callback that may want to
-access the table, and will have to wait in line to be served, but since
-they have not yet been activated at this point, you are probably correct
-in saying that locking is not needed at init time.
-I will investigate this..
-
->
->> +
->> +     sparx5_set_ageing(sparx5, 10 * MSEC_PER_SEC); /* 10 sec */
->
->BR_DEFAULT_AGEING_TIME is 300 seconds. Is this the same thing?
-
-Same thing but different value.  I think this should change to same
-default, but I will test it out.
->
->> +static int sparx5_port_bridge_join(struct sparx5_port *port,
->> +                                struct net_device *bridge)
->> +{
->> +     struct sparx5 *sparx5 = port->sparx5;
->> +
->> +     if (bitmap_empty(sparx5->bridge_mask, SPX5_PORTS))
->> +             /* First bridged port */
->> +             sparx5->hw_bridge_dev = bridge;
->> +     else
->> +             if (sparx5->hw_bridge_dev != bridge)
->> +                     /* This is adding the port to a second bridge, this is
->> +                      * unsupported
->> +                      */
->> +                     return -ENODEV;
->
->Just checking my understanding. You have a 64 port switch, which only
->supports a single bridge?
-
-Yes, at least for the initial version. The switch has some
-virtualization features, but were not using that just yet.
-
->
->-EOPNOTSUPP seems like a better return code.
->
->> +
->> +     set_bit(port->portno, sparx5->bridge_mask);
->> +
->> +     /* Port enters in bridge mode therefor don't need to copy to CPU
->> +      * frames for multicast in case the bridge is not requesting them
->> +      */
->> +     __dev_mc_unsync(port->ndev, sparx5_mc_unsync);
->
->Did you copy that from the mellanox driver? I think in DSA we take the
->opposite approach. Multicast/broadcast goes to the CPU until the CPU
->says it does not want it.
->
->
-It is "inspired" by the Ocelot driver. MC is explicitly opted in.
-
->> +static void sparx5_port_bridge_leave(struct sparx5_port *port,
->> +                                  struct net_device *bridge)
->> +{
->> +     struct sparx5 *sparx5 = port->sparx5;
->> +
->> +     clear_bit(port->portno, sparx5->bridge_mask);
->> +     if (bitmap_empty(sparx5->bridge_mask, SPX5_PORTS))
->> +             sparx5->hw_bridge_dev = NULL;
->> +
->> +     /* Clear bridge vlan settings before updating the port settings */
->> +     port->vlan_aware = 0;
->> +     port->pvid = NULL_VID;
->> +     port->vid = NULL_VID;
->> +
->> +     /* Port enters in host more therefore restore mc list */
->
->s/more/mode
-
-OK.
-
->
->> +++ b/drivers/net/ethernet/microchip/sparx5/sparx5_vlan.c
->> @@ -0,0 +1,223 @@
->> +// SPDX-License-Identifier: GPL-2.0+
->> +/* Microchip Sparx5 Switch driver
->> + *
->> + * Copyright (c) 2020 Microchip Technology Inc. and its subsidiaries.
->> + */
->> +
->> +#include "sparx5_main.h"
->> +
->> +static int sparx5_vlant_set_mask(struct sparx5 *sparx5, u16 vid)
->
->Is the t in vlant typ0?
-
-No, it is probably short for "vlan table". Again the inspiration comes
-from the Ocelot implementation.
-
->
->> +int sparx5_vlan_vid_add(struct sparx5_port *port, u16 vid, bool pvid,
->> +                     bool untagged)
->> +{
->> +     struct sparx5 *sparx5 = port->sparx5;
->> +     int ret;
->> +
->> +     /* Make the port a member of the VLAN */
->> +     set_bit(port->portno, sparx5->vlan_mask[vid]);
->> +     ret = sparx5_vlant_set_mask(sparx5, vid);
->> +     if (ret)
->> +             return ret;
->> +
->> +     /* Default ingress vlan classification */
->> +     if (pvid)
->> +             port->pvid = vid;
->> +
->> +     /* Untagged egress vlan clasification */
->
->classification
-
-OK.
-
->
->> +     if (untagged && port->vid != vid) {
->> +             if (port->vid) {
->> +                     netdev_err(port->ndev,
->> +                                "Port already has a native VLAN: %d\n",
->> +                                port->vid);
->> +                     return -EBUSY;
->> +             }
->> +             port->vid = vid;
->> +     }
->> +
->> +     sparx5_vlan_port_apply(sparx5, port);
->> +
->> +     return 0;
+>> +    return div_u64((u64)parent_rate * m, n);
 >> +}
->
->
->> +void sparx5_update_fwd(struct sparx5 *sparx5)
+>> +
+>> +static unsigned long x1000_i2s_calc(unsigned long rate, unsigned 
+>> long parent_rate,
+>> +                        unsigned *pm, unsigned *pn)
 >> +{
->> +     u32 mask[3];
->> +     DECLARE_BITMAP(workmask, SPX5_PORTS);
->> +     int port;
+>> +    u64 curr_delta, curr_m, curr_n, delta, m, n;
 >> +
->> +     /* Divide up fwd mask in 32 bit words */
->> +     bitmap_to_arr32(mask, sparx5->bridge_fwd_mask, SPX5_PORTS);
+>> +    if ((parent_rate % rate == 0) && ((parent_rate / rate) > 1)) {
+>> +        m = 1;
+>> +        n = parent_rate / rate;
+>> +        goto out;
+>> +    }
 >> +
->> +     /* Update flood masks */
->> +     for (port = PGID_UC_FLOOD; port <= PGID_BCAST; port++) {
->> +             spx5_wr(mask[0], sparx5, ANA_AC_PGID_CFG(port));
->> +             spx5_wr(mask[1], sparx5, ANA_AC_PGID_CFG1(port));
->> +             spx5_wr(mask[2], sparx5, ANA_AC_PGID_CFG2(port));
->> +     }
+>> +    delta = rate;
 >> +
->> +     /* Update SRC masks */
->> +     for (port = 0; port < SPX5_PORTS; port++) {
->> +             if (test_bit(port, sparx5->bridge_fwd_mask)) {
->> +                     /* Allow to send to all bridged but self */
->> +                     bitmap_copy(workmask, sparx5->bridge_fwd_mask, SPX5_PORTS);
->> +                     clear_bit(port, workmask);
->> +                     bitmap_to_arr32(mask, workmask, SPX5_PORTS);
->> +                     spx5_wr(mask[0], sparx5, ANA_AC_SRC_CFG(port));
->> +                     spx5_wr(mask[1], sparx5, ANA_AC_SRC_CFG1(port));
->> +                     spx5_wr(mask[2], sparx5, ANA_AC_SRC_CFG2(port));
->> +             } else {
->> +                     spx5_wr(0, sparx5, ANA_AC_SRC_CFG(port));
->> +                     spx5_wr(0, sparx5, ANA_AC_SRC_CFG1(port));
->> +                     spx5_wr(0, sparx5, ANA_AC_SRC_CFG2(port));
->> +             }
+>> +    /*
+>> +     * The length of M is 9 bits, its value must be between 1 and 511.
+>> +     * The length of N is 13 bits, its value must be between 2 and 
+>> 8191,
+>> +     * and must not be less than 2 times of the value of M.
+>> +     */
+>> +    for (curr_m = 511; curr_m >= 1; curr_m--) {
+>> +        curr_n = parent_rate * curr_m;
+>> +        curr_delta = do_div(curr_n, rate);
+>> +
+>> +        if (curr_n < 2 * curr_m || curr_n > 8191)
+>> +            continue;
+>> +
+>> +        if (curr_delta == 0)
+>> +            break;
+>> +
+>> +        if (curr_delta < delta) {
+>> +            m = curr_m;
+>> +            n = curr_n;
+>> +            delta = curr_delta;
+>> +        }
+>> +    }
+>> +
+>> +out:
+>> +    if (pm)
+>> +        *pm = m;
+>> +    if (pn)
+>> +        *pn = n;
+>> +
+>> +    return div_u64((u64)parent_rate * m, n);
+>> +}
+>> +
+>> +static long x1000_i2s_round_rate(struct clk_hw *hw, unsigned long 
+>> req_rate,
+>> +                        unsigned long *prate)
+>> +{
+>> +    return x1000_i2s_calc(req_rate, *prate, NULL, NULL);
+>> +}
+>> +
+>> +static int x1000_i2s_set_rate(struct clk_hw *hw, unsigned long 
+>> req_rate,
+>> +                        unsigned long parent_rate)
+>> +{
+>> +    unsigned long rate, flags;
+>> +    unsigned m, n;
+>> +    u32 ctl;
+>> +
+>> +    /*
+>> +     * The parent clock rate of I2S must not be lower than 2 times
+>> +     * of the target clock rate.
+>> +     */
+>> +    if (parent_rate < 2 * req_rate)
+>> +        return -EINVAL;
+>> +
+>> +    rate = x1000_i2s_calc(req_rate, parent_rate, &m, &n);
+>> +    if (rate != req_rate)
+>> +        pr_info("%s: request I2S rate %luHz, actual %luHz\n", __func__,
+>> +            req_rate, rate);
+>> +
+>> +    spin_lock_irqsave(&cgu->lock, flags);
+>> +
+>> +    ctl = readl(cgu->base + CGU_REG_I2SCDR);
+>> +    ctl &= ~I2SCDR_I2SDIV_M_MASK;
+>> +    ctl |= m << I2SCDR_I2SDIV_M_SHIFT;
+>> +    ctl &= ~I2SCDR_I2SDIV_N_MASK;
+>> +    ctl |= n << I2SCDR_I2SDIV_N_SHIFT;
+>> +    writel(ctl, cgu->base + CGU_REG_I2SCDR);
+>> +
+>> +    spin_unlock_irqrestore(&cgu->lock, flags);
+>> +
+>> +    return 0;
+>> +}
+>> +
+>> +static int x1000_i2s_enable(struct clk_hw *hw)
+>> +{
+>> +    unsigned long flags;
+>> +    u32 ctl;
+>> +
+>> +    spin_lock_irqsave(&cgu->lock, flags);
+>> +
+>> +    ctl = readl(cgu->base + CGU_REG_I2SCDR);
+>> +    ctl |= I2SCDR_CE_I2S;
+>> +    writel(ctl, cgu->base + CGU_REG_I2SCDR);
+>> +
+>> +    spin_unlock_irqrestore(&cgu->lock, flags);
+>> +
+>> +    return 0;
+>> +}
+>> +
+>> +static void x1000_i2s_disable(struct clk_hw *hw)
+>> +{
+>> +    unsigned long flags;
+>> +    u32 ctl;
+>> +
+>> +    spin_lock_irqsave(&cgu->lock, flags);
+>> +
+>> +    ctl = readl(cgu->base + CGU_REG_I2SCDR);
+>> +    ctl &= ~I2SCDR_CE_I2S;
+>> +    writel(ctl, cgu->base + CGU_REG_I2SCDR);
+>> +
+>> +    spin_unlock_irqrestore(&cgu->lock, flags);
+>> +}
+>> +
+>> +static int x1000_i2s_is_enabled(struct clk_hw *hw)
+>> +{
+>> +    u32 ctl;
+>> +
+>> +    ctl = readl(cgu->base + CGU_REG_I2SCDR);
+>> +
+>> +    return !!(ctl & I2SCDR_CE_I2S);
+>> +}
+>> +
+>> +static const struct clk_ops x1000_i2s_ops = {
+>> +    .get_parent = x1000_i2s_get_parent,
+>> +    .set_parent = x1000_i2s_set_parent,
+>> +
+>> +    .recalc_rate = x1000_i2s_recalc_rate,
+>> +    .round_rate = x1000_i2s_round_rate,
+>> +    .set_rate = x1000_i2s_set_rate,
+>> +
+>> +    .enable = x1000_i2s_enable,
+>> +    .disable = x1000_i2s_disable,
+>> +    .is_enabled = x1000_i2s_is_enabled,
+>> +};
+>> +
+>>  static const s8 pll_od_encoding[8] = {
+>>      0x0, 0x1, -1, 0x2, -1, -1, -1, 0x3,
+>>  };
+>> @@ -227,7 +407,7 @@ static const struct ingenic_cgu_clk_info 
+>> x1000_cgu_clocks[] = {
+>>          },
+>>      },
+>>
+>> -    /* Custom (SoC-specific) OTG PHY */
+>> +    /* Custom (SoC-specific) */
+>>
+>>      [X1000_CLK_OTGPHY] = {
+>>          "otg_phy", CGU_CLK_CUSTOM,
+>> @@ -235,6 +415,12 @@ static const struct ingenic_cgu_clk_info 
+>> x1000_cgu_clocks[] = {
+>>          .custom = { &x1000_otg_phy_ops },
+>>      },
+>>
+>> +    [X1000_CLK_I2S] = {
+>> +        "i2s", CGU_CLK_CUSTOM,
+>> +        .parents = { X1000_CLK_EXCLK, X1000_CLK_SCLKA, -1, 
+>> X1000_CLK_MPLL },
+>> +        .custom = { &x1000_i2s_ops },
+>> +    },
 >
->Humm, interesting. This seems to control what other ports a port can
->send to. That is one of the basic features you need for supporting
->multiple bridges. So i assume your problems is you cannot partition
->the MAC table?
+> I still think this should be a PLL - even though we have to update the 
+> PLL code in cgu.c. I am working on JZ4760 support now, and the PLLs 
+> require M>=4 and N>=2. We could have for instance a (*calc_m_n_od)() 
+> callback that would be called in ingenic_pll_calc().
 >
-No, the MAC table is VLAN aware.
 
+Sure, I will wait for your new patch, and then refer to your patch to 
+modify mine.
+
+
+Thanks and best regards!
+
+
+> Cheers,
+> -Paul
 >
->    Andrew
-
-BR
-Steen
-
----------------------------------------
-Steen Hegelund
-steen.hegelund@microchip.com
+>> +
+>>      /* Muxes & dividers */
+>>
+>>      [X1000_CLK_SCLKA] = {
+>> @@ -359,6 +545,13 @@ static const struct ingenic_cgu_clk_info 
+>> x1000_cgu_clocks[] = {
+>>          .mux = { CGU_REG_SSICDR, 30, 1 },
+>>      },
+>>
+>> +    [X1000_CLK_CIM] = {
+>> +        "cim", CGU_CLK_MUX | CGU_CLK_DIV,
+>> +        .parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL, -1, -1 },
+>> +        .mux = { CGU_REG_CIMCDR, 31, 1 },
+>> +        .div = { CGU_REG_CIMCDR, 0, 1, 8, 29, 28, 27 },
+>> +    },
+>> +
+>>      [X1000_CLK_EXCLK_DIV512] = {
+>>          "exclk_div512", CGU_CLK_FIXDIV,
+>>          .parents = { X1000_CLK_EXCLK },
+>> @@ -410,6 +603,12 @@ static const struct ingenic_cgu_clk_info 
+>> x1000_cgu_clocks[] = {
+>>          .gate = { CGU_REG_CLKGR, 9 },
+>>      },
+>>
+>> +    [X1000_CLK_AIC] = {
+>> +        "aic", CGU_CLK_GATE,
+>> +        .parents = { X1000_CLK_EXCLK, -1, -1, -1 },
+>> +        .gate = { CGU_REG_CLKGR, 11 },
+>> +    },
+>> +
+>>      [X1000_CLK_UART0] = {
+>>          "uart0", CGU_CLK_GATE,
+>>          .parents = { X1000_CLK_EXCLK, -1, -1, -1 },
+>> @@ -428,6 +627,12 @@ static const struct ingenic_cgu_clk_info 
+>> x1000_cgu_clocks[] = {
+>>          .gate = { CGU_REG_CLKGR, 16 },
+>>      },
+>>
+>> +    [X1000_CLK_DMIC] = {
+>> +        "dmic", CGU_CLK_GATE,
+>> +        .parents = { X1000_CLK_PCLK, -1, -1, -1 },
+>> +        .gate = { CGU_REG_CLKGR, 17 },
+>> +    },
+>> +
+>>      [X1000_CLK_TCU] = {
+>>          "tcu", CGU_CLK_GATE,
+>>          .parents = { X1000_CLK_EXCLK, -1, -1, -1 },
+>> diff --git a/drivers/clk/ingenic/x1830-cgu.c 
+>> b/drivers/clk/ingenic/x1830-cgu.c
+>> index 59342bc..d93cefa 100644
+>> --- a/drivers/clk/ingenic/x1830-cgu.c
+>> +++ b/drivers/clk/ingenic/x1830-cgu.c
+>> @@ -52,6 +52,15 @@
+>>  #define USBPCR_SIDDQ        BIT(21)
+>>  #define USBPCR_OTG_DISABLE    BIT(20)
+>>
+>> +/* bits within the I2SCDR register */
+>> +#define I2SCDR_I2PCS_SHIFT    30
+>> +#define I2SCDR_I2PCS_MASK    (0x3 << I2SCDR_I2PCS_SHIFT)
+>> +#define I2SCDR_I2SDIV_M_SHIFT    20
+>> +#define I2SCDR_I2SDIV_M_MASK    (0x1ff << I2SCDR_I2SDIV_M_SHIFT)
+>> +#define I2SCDR_I2SDIV_N_SHIFT    0
+>> +#define I2SCDR_I2SDIV_N_MASK    (0xfffff << I2SCDR_I2SDIV_N_SHIFT)
+>> +#define I2SCDR_CE_I2S        BIT(29)
+>> +
+>>  static struct ingenic_cgu *cgu;
+>>
+>>  static int x1830_usb_phy_enable(struct clk_hw *hw)
+>> @@ -89,6 +98,175 @@ static const struct clk_ops x1830_otg_phy_ops = {
+>>      .is_enabled    = x1830_usb_phy_is_enabled,
+>>  };
+>>
+>> +static u8 x1830_i2s_get_parent(struct clk_hw *hw)
+>> +{
+>> +    u32 i2scdr;
+>> +
+>> +    i2scdr = readl(cgu->base + CGU_REG_I2SCDR);
+>> +
+>> +    return (i2scdr & I2SCDR_I2PCS_MASK) >> I2SCDR_I2PCS_SHIFT;
+>> +}
+>> +
+>> +static int x1830_i2s_set_parent(struct clk_hw *hw, u8 idx)
+>> +{
+>> +    unsigned long flags;
+>> +
+>> +    spin_lock_irqsave(&cgu->lock, flags);
+>> +    writel(idx << I2SCDR_I2PCS_SHIFT, cgu->base + CGU_REG_I2SCDR);
+>> +    spin_unlock_irqrestore(&cgu->lock, flags);
+>> +
+>> +    return 0;
+>> +}
+>> +
+>> +static unsigned long x1830_i2s_recalc_rate(struct clk_hw *hw,
+>> +                        unsigned long parent_rate)
+>> +{
+>> +    unsigned m, n;
+>> +    u32 i2scdr;
+>> +
+>> +    i2scdr = readl(cgu->base + CGU_REG_I2SCDR);
+>> +
+>> +    m = (i2scdr & I2SCDR_I2SDIV_M_MASK) >> I2SCDR_I2SDIV_M_SHIFT;
+>> +    n = (i2scdr & I2SCDR_I2SDIV_N_MASK) >> I2SCDR_I2SDIV_N_SHIFT;
+>> +
+>> +    return div_u64((u64)parent_rate * m, n);
+>> +}
+>> +
+>> +static unsigned long x1830_i2s_calc(unsigned long rate, unsigned 
+>> long parent_rate,
+>> +                        unsigned *pm, unsigned *pn)
+>> +{
+>> +    u64 curr_delta, curr_m, curr_n, delta, m, n;
+>> +
+>> +    if ((parent_rate % rate == 0) && ((parent_rate / rate) > 1)) {
+>> +        m = 1;
+>> +        n = parent_rate / rate;
+>> +        goto out;
+>> +    }
+>> +
+>> +    delta = rate;
+>> +
+>> +    /*
+>> +     * The length of M is 9 bits, its value must be between 1 and 511.
+>> +     * The length of N is 20 bits, its value must be between 2 and 
+>> 1048575,
+>> +     * and must not be less than 2 times of the value of M.
+>> +     */
+>> +    for (curr_m = 511; curr_m >= 1; curr_m--) {
+>> +        curr_n = parent_rate * curr_m;
+>> +        curr_delta = do_div(curr_n, rate);
+>> +
+>> +        if (curr_n < 2 * curr_m || curr_n > 1048575)
+>> +            continue;
+>> +
+>> +        if (curr_delta == 0)
+>> +            break;
+>> +
+>> +        if (curr_delta < delta) {
+>> +            m = curr_m;
+>> +            n = curr_n;
+>> +            delta = curr_delta;
+>> +        }
+>> +    }
+>> +
+>> +out:
+>> +    if (pm)
+>> +        *pm = m;
+>> +    if (pn)
+>> +        *pn = n;
+>> +
+>> +    return div_u64((u64)parent_rate * m, n);
+>> +}
+>> +
+>> +static long x1830_i2s_round_rate(struct clk_hw *hw, unsigned long 
+>> req_rate,
+>> +                        unsigned long *prate)
+>> +{
+>> +    return x1830_i2s_calc(req_rate, *prate, NULL, NULL);
+>> +}
+>> +
+>> +static int x1830_i2s_set_rate(struct clk_hw *hw, unsigned long 
+>> req_rate,
+>> +                        unsigned long parent_rate)
+>> +{
+>> +    unsigned long rate, flags;
+>> +    unsigned m, n;
+>> +    u32 ctl;
+>> +
+>> +    /*
+>> +     * The parent clock rate of I2S must not be lower than 2 times
+>> +     * of the target clock rate.
+>> +     */
+>> +    if (parent_rate < 2 * req_rate)
+>> +        return -EINVAL;
+>> +
+>> +    rate = x1830_i2s_calc(req_rate, parent_rate, &m, &n);
+>> +    if (rate != req_rate)
+>> +        pr_info("%s: request I2S rate %luHz, actual %luHz\n", __func__,
+>> +            req_rate, rate);
+>> +
+>> +    spin_lock_irqsave(&cgu->lock, flags);
+>> +
+>> +    ctl = readl(cgu->base + CGU_REG_I2SCDR);
+>> +    ctl &= ~I2SCDR_I2SDIV_M_MASK;
+>> +    ctl |= m << I2SCDR_I2SDIV_M_SHIFT;
+>> +    ctl &= ~I2SCDR_I2SDIV_N_MASK;
+>> +    ctl |= n << I2SCDR_I2SDIV_N_SHIFT;
+>> +    writel(ctl, cgu->base + CGU_REG_I2SCDR);
+>> +
+>> +    spin_unlock_irqrestore(&cgu->lock, flags);
+>> +
+>> +    return 0;
+>> +}
+>> +
+>> +static int x1830_i2s_enable(struct clk_hw *hw)
+>> +{
+>> +    unsigned long flags;
+>> +    u32 ctl;
+>> +
+>> +    spin_lock_irqsave(&cgu->lock, flags);
+>> +
+>> +    ctl = readl(cgu->base + CGU_REG_I2SCDR);
+>> +    ctl |= I2SCDR_CE_I2S;
+>> +    writel(ctl, cgu->base + CGU_REG_I2SCDR);
+>> +
+>> +    spin_unlock_irqrestore(&cgu->lock, flags);
+>> +
+>> +    return 0;
+>> +}
+>> +
+>> +static void x1830_i2s_disable(struct clk_hw *hw)
+>> +{
+>> +    unsigned long flags;
+>> +    u32 ctl;
+>> +
+>> +    spin_lock_irqsave(&cgu->lock, flags);
+>> +
+>> +    ctl = readl(cgu->base + CGU_REG_I2SCDR);
+>> +    ctl &= ~I2SCDR_CE_I2S;
+>> +    writel(ctl, cgu->base + CGU_REG_I2SCDR);
+>> +
+>> +    spin_unlock_irqrestore(&cgu->lock, flags);
+>> +}
+>> +
+>> +static int x1830_i2s_is_enabled(struct clk_hw *hw)
+>> +{
+>> +    u32 ctl;
+>> +
+>> +    ctl = readl(cgu->base + CGU_REG_I2SCDR);
+>> +
+>> +    return !!(ctl & I2SCDR_CE_I2S);
+>> +}
+>> +
+>> +static const struct clk_ops x1830_i2s_ops = {
+>> +    .get_parent = x1830_i2s_get_parent,
+>> +    .set_parent = x1830_i2s_set_parent,
+>> +
+>> +    .recalc_rate = x1830_i2s_recalc_rate,
+>> +    .round_rate = x1830_i2s_round_rate,
+>> +    .set_rate = x1830_i2s_set_rate,
+>> +
+>> +    .enable = x1830_i2s_enable,
+>> +    .disable = x1830_i2s_disable,
+>> +    .is_enabled = x1830_i2s_is_enabled,
+>> +};
+>> +
+>>  static const s8 pll_od_encoding[64] = {
+>>      0x0, 0x1,  -1, 0x2,  -1,  -1,  -1, 0x3,
+>>       -1,  -1,  -1,  -1,  -1,  -1,  -1, 0x4,
+>> @@ -201,7 +379,7 @@ static const struct ingenic_cgu_clk_info 
+>> x1830_cgu_clocks[] = {
+>>          },
+>>      },
+>>
+>> -    /* Custom (SoC-specific) OTG PHY */
+>> +    /* Custom (SoC-specific) */
+>>
+>>      [X1830_CLK_OTGPHY] = {
+>>          "otg_phy", CGU_CLK_CUSTOM,
+>> @@ -209,6 +387,13 @@ static const struct ingenic_cgu_clk_info 
+>> x1830_cgu_clocks[] = {
+>>          .custom = { &x1830_otg_phy_ops },
+>>      },
+>>
+>> +    [X1830_CLK_I2S] = {
+>> +        "i2s", CGU_CLK_CUSTOM,
+>> +        .parents = { X1830_CLK_SCLKA, X1830_CLK_MPLL,
+>> +                     X1830_CLK_VPLL, X1830_CLK_EPLL },
+>> +        .custom = { &x1830_i2s_ops },
+>> +    },
+>> +
+>>      /* Muxes & dividers */
+>>
+>>      [X1830_CLK_SCLKA] = {
+>> @@ -328,6 +513,14 @@ static const struct ingenic_cgu_clk_info 
+>> x1830_cgu_clocks[] = {
+>>          .mux = { CGU_REG_SSICDR, 29, 1 },
+>>      },
+>>
+>> +    [X1830_CLK_CIM] = {
+>> +        "cim", CGU_CLK_MUX | CGU_CLK_DIV,
+>> +        .parents = { X1830_CLK_SCLKA, X1830_CLK_MPLL,
+>> +                     X1830_CLK_VPLL, X1830_CLK_EPLL },
+>> +        .mux = { CGU_REG_CIMCDR, 30, 2 },
+>> +        .div = { CGU_REG_CIMCDR, 0, 1, 8, 29, 28, 27 },
+>> +    },
+>> +
+>>      [X1830_CLK_EXCLK_DIV512] = {
+>>          "exclk_div512", CGU_CLK_FIXDIV,
+>>          .parents = { X1830_CLK_EXCLK },
+>> @@ -385,6 +578,18 @@ static const struct ingenic_cgu_clk_info 
+>> x1830_cgu_clocks[] = {
+>>          .gate = { CGU_REG_CLKGR0, 9 },
+>>      },
+>>
+>> +    [X1830_CLK_AIC] = {
+>> +        "aic", CGU_CLK_GATE,
+>> +        .parents = { X1830_CLK_EXCLK, -1, -1, -1 },
+>> +        .gate = { CGU_REG_CLKGR0, 11 },
+>> +    },
+>> +
+>> +    [X1830_CLK_DMIC] = {
+>> +        "dmic", CGU_CLK_GATE,
+>> +        .parents = { X1830_CLK_PCLK, -1, -1, -1 },
+>> +        .gate = { CGU_REG_CLKGR0, 12 },
+>> +    },
+>> +
+>>      [X1830_CLK_UART0] = {
+>>          "uart0", CGU_CLK_GATE,
+>>          .parents = { X1830_CLK_EXCLK, -1, -1, -1 },
+>> -- 
+>> 2.7.4
+>>
+>
