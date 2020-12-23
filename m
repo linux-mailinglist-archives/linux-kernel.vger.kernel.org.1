@@ -2,256 +2,534 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAE062E14DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:48:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 338522E1378
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:37:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730542AbgLWCpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:45:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49658 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729753AbgLWCWj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:22:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 867F422202;
-        Wed, 23 Dec 2020 02:22:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690144;
-        bh=+CvmP7h7ifvCjPAvGp8HAlcP5mWWxkFw3PAXocRx5yQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gBFwF7vy+iBV4hzz1rX9VbcDXchQ87poXEyfynd62zCencsciHAF9Eok9xdznEmDV
-         +hE5Vwq5qtzWQQyD0NWJ1xYkHOgs0rEdHzZTwABjmzE2PaLlrYb+5sG/cRHc6VdP28
-         +NxuR4br31LccqMzEpjK6uzZKWHPcQfy691xN+gNorDQX2qr2UctDQyzzxMMjYKz6D
-         N5mL7v8pGFtwyHSwbP0bs6AHuDdJEQ78q+GYTl5Vlb6SB4mA3ahswqCbnSeAGSOoVV
-         r/fReuH2tyqvJfQ153tmoBm9UPt0T1ZnJ8rQTe+hwa7lFc0s+7QBhwXtvS3YyCLEOu
-         Tcgky5ks+gODA==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 65/87] clocksource/drivers/sh_cmt: Fix potential deadlock when calling runtime PM
-Date:   Tue, 22 Dec 2020 21:20:41 -0500
-Message-Id: <20201223022103.2792705-65-sashal@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201223022103.2792705-1-sashal@kernel.org>
-References: <20201223022103.2792705-1-sashal@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        id S1730540AbgLWCa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:30:29 -0500
+Received: from ptr.189.cn ([183.61.185.103]:11409 "EHLO 189.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730379AbgLWCa0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:30:26 -0500
+HMM_SOURCE_IP: 10.64.10.45:39910.2102962921
+HMM_ATTACHE_NUM: 0000
+HMM_SOURCE_TYPE: SMTP
+Received: from clientip-123.150.8.42 (unknown [10.64.10.45])
+        by 189.cn (HERMES) with SMTP id 0451F10070A;
+        Wed, 23 Dec 2020 10:20:35 +0800 (CST)
+Received: from  ([10.64.8.33])
+        by gateway-151646-dep-54888d799-vh9dt with ESMTP id 2a53f61060f54f9fb6312112dd14c7e1 for greg@kroah.com;
+        Wed Dec 23 10:20:36 2020
+X-Transaction-ID: 2a53f61060f54f9fb6312112dd14c7e1
+X-filter-score: 
+X-Real-From: chensong_2000@189.cn
+X-Receive-IP: 10.64.8.33
+X-MEDUSA-Status: 0
+Sender: chensong_2000@189.cn
+From:   chensong <chensong_2000@189.cn>
+To:     greg@kroah.com, linux-kernel@vger.kernel.org
+Cc:     abbotti@mev.co.uk, hsweeten@visionengravers.com,
+        chensong@tj.kylinos.cn, chensong <chensong_2000@189.cn>
+Subject: [PATCH] staging: comedi: clean up debugging code in #if 0 or 1
+Date:   Wed, 23 Dec 2020 10:20:44 +0800
+Message-Id: <1608690044-26710-1-git-send-email-chensong_2000@189.cn>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+There are a log of "#if 0" or "#if 1" in comedi driver which
+cause warning when running checkpatch.pl, they are supposed to
+be cleaned up before release.
 
-[ Upstream commit 8ae954caf49ac403c177d117fb8e05cbc866aa3c ]
-
-The ch->lock is used to protect the whole enable() and read() of
-sh_cmt's implementation of struct clocksource. The enable()
-implementation calls pm_runtime_get_sync() which may result in the clock
-source to be read() triggering a cyclic lockdep warning for the
-ch->lock.
-
-The sh_cmt driver implement its own balancing of calls to
-sh_cmt_{enable,disable}() with flags in sh_cmt_{start,stop}(). It does
-this to deal with that start and stop are shared between the clock
-source and clock event providers. While this could be improved on
-verifying corner cases based on any substantial rework on all devices
-this driver supports might prove hard.
-
-As a first step separate the PM handling for clock event and clock
-source. Always put/get the device when enabling/disabling the clock
-source but keep the clock event logic unchanged. This allows the sh_cmt
-implementation of struct clocksource to call PM without holding the
-ch->lock and avoiding the deadlock.
-
-Triggering and log of the deadlock warning,
-
-  # echo e60f0000.timer > /sys/devices/system/clocksource/clocksource0/current_clocksource
-  [   46.948370] ======================================================
-  [   46.954730] WARNING: possible circular locking dependency detected
-  [   46.961094] 5.10.0-rc6-arm64-renesas-00001-g0e5fd7414e8b #36 Not tainted
-  [   46.967985] ------------------------------------------------------
-  [   46.974342] migration/0/11 is trying to acquire lock:
-  [   46.979543] ffff0000403ed220 (&dev->power.lock){-...}-{2:2}, at: __pm_runtime_resume+0x40/0x74
-  [   46.988445]
-  [   46.988445] but task is already holding lock:
-  [   46.994441] ffff000040ad0298 (&ch->lock){....}-{2:2}, at: sh_cmt_start+0x28/0x210
-  [   47.002173]
-  [   47.002173] which lock already depends on the new lock.
-  [   47.002173]
-  [   47.010573]
-  [   47.010573] the existing dependency chain (in reverse order) is:
-  [   47.018262]
-  [   47.018262] -> #3 (&ch->lock){....}-{2:2}:
-  [   47.024033]        lock_acquire.part.0+0x120/0x330
-  [   47.028970]        lock_acquire+0x64/0x80
-  [   47.033105]        _raw_spin_lock_irqsave+0x7c/0xc4
-  [   47.038130]        sh_cmt_start+0x28/0x210
-  [   47.042352]        sh_cmt_clocksource_enable+0x28/0x50
-  [   47.047644]        change_clocksource+0x9c/0x160
-  [   47.052402]        multi_cpu_stop+0xa4/0x190
-  [   47.056799]        cpu_stopper_thread+0x90/0x154
-  [   47.061557]        smpboot_thread_fn+0x244/0x270
-  [   47.066310]        kthread+0x154/0x160
-  [   47.070175]        ret_from_fork+0x10/0x20
-  [   47.074390]
-  [   47.074390] -> #2 (tk_core.seq.seqcount){----}-{0:0}:
-  [   47.081136]        lock_acquire.part.0+0x120/0x330
-  [   47.086070]        lock_acquire+0x64/0x80
-  [   47.090203]        seqcount_lockdep_reader_access.constprop.0+0x74/0x100
-  [   47.097096]        ktime_get+0x28/0xa0
-  [   47.100960]        hrtimer_start_range_ns+0x210/0x2dc
-  [   47.106164]        generic_sched_clock_init+0x70/0x88
-  [   47.111364]        sched_clock_init+0x40/0x64
-  [   47.115853]        start_kernel+0x494/0x524
-  [   47.120156]
-  [   47.120156] -> #1 (hrtimer_bases.lock){-.-.}-{2:2}:
-  [   47.126721]        lock_acquire.part.0+0x120/0x330
-  [   47.136042]        lock_acquire+0x64/0x80
-  [   47.144461]        _raw_spin_lock_irqsave+0x7c/0xc4
-  [   47.153721]        hrtimer_start_range_ns+0x68/0x2dc
-  [   47.163054]        rpm_suspend+0x308/0x5dc
-  [   47.171473]        rpm_idle+0xc4/0x2a4
-  [   47.179550]        pm_runtime_work+0x98/0xc0
-  [   47.188209]        process_one_work+0x294/0x6f0
-  [   47.197142]        worker_thread+0x70/0x45c
-  [   47.205661]        kthread+0x154/0x160
-  [   47.213673]        ret_from_fork+0x10/0x20
-  [   47.221957]
-  [   47.221957] -> #0 (&dev->power.lock){-...}-{2:2}:
-  [   47.236292]        check_noncircular+0x128/0x140
-  [   47.244907]        __lock_acquire+0x13b0/0x204c
-  [   47.253332]        lock_acquire.part.0+0x120/0x330
-  [   47.262033]        lock_acquire+0x64/0x80
-  [   47.269826]        _raw_spin_lock_irqsave+0x7c/0xc4
-  [   47.278430]        __pm_runtime_resume+0x40/0x74
-  [   47.286758]        sh_cmt_start+0x84/0x210
-  [   47.294537]        sh_cmt_clocksource_enable+0x28/0x50
-  [   47.303449]        change_clocksource+0x9c/0x160
-  [   47.311783]        multi_cpu_stop+0xa4/0x190
-  [   47.319720]        cpu_stopper_thread+0x90/0x154
-  [   47.328022]        smpboot_thread_fn+0x244/0x270
-  [   47.336298]        kthread+0x154/0x160
-  [   47.343708]        ret_from_fork+0x10/0x20
-  [   47.351445]
-  [   47.351445] other info that might help us debug this:
-  [   47.351445]
-  [   47.370225] Chain exists of:
-  [   47.370225]   &dev->power.lock --> tk_core.seq.seqcount --> &ch->lock
-  [   47.370225]
-  [   47.392003]  Possible unsafe locking scenario:
-  [   47.392003]
-  [   47.405314]        CPU0                    CPU1
-  [   47.413569]        ----                    ----
-  [   47.421768]   lock(&ch->lock);
-  [   47.428425]                                lock(tk_core.seq.seqcount);
-  [   47.438701]                                lock(&ch->lock);
-  [   47.447930]   lock(&dev->power.lock);
-  [   47.455172]
-  [   47.455172]  *** DEADLOCK ***
-  [   47.455172]
-  [   47.471433] 3 locks held by migration/0/11:
-  [   47.479099]  #0: ffff8000113c9278 (timekeeper_lock){-.-.}-{2:2}, at: change_clocksource+0x2c/0x160
-  [   47.491834]  #1: ffff8000113c8f88 (tk_core.seq.seqcount){----}-{0:0}, at: multi_cpu_stop+0xa4/0x190
-  [   47.504727]  #2: ffff000040ad0298 (&ch->lock){....}-{2:2}, at: sh_cmt_start+0x28/0x210
-  [   47.516541]
-  [   47.516541] stack backtrace:
-  [   47.528480] CPU: 0 PID: 11 Comm: migration/0 Not tainted 5.10.0-rc6-arm64-renesas-00001-g0e5fd7414e8b #36
-  [   47.542147] Hardware name: Renesas Salvator-X 2nd version board based on r8a77965 (DT)
-  [   47.554241] Call trace:
-  [   47.560832]  dump_backtrace+0x0/0x190
-  [   47.568670]  show_stack+0x14/0x30
-  [   47.576144]  dump_stack+0xe8/0x130
-  [   47.583670]  print_circular_bug+0x1f0/0x200
-  [   47.592015]  check_noncircular+0x128/0x140
-  [   47.600289]  __lock_acquire+0x13b0/0x204c
-  [   47.608486]  lock_acquire.part.0+0x120/0x330
-  [   47.616953]  lock_acquire+0x64/0x80
-  [   47.624582]  _raw_spin_lock_irqsave+0x7c/0xc4
-  [   47.633114]  __pm_runtime_resume+0x40/0x74
-  [   47.641371]  sh_cmt_start+0x84/0x210
-  [   47.649115]  sh_cmt_clocksource_enable+0x28/0x50
-  [   47.657916]  change_clocksource+0x9c/0x160
-  [   47.666165]  multi_cpu_stop+0xa4/0x190
-  [   47.674056]  cpu_stopper_thread+0x90/0x154
-  [   47.682308]  smpboot_thread_fn+0x244/0x270
-  [   47.690560]  kthread+0x154/0x160
-  [   47.697927]  ret_from_fork+0x10/0x20
-  [   47.708447] clocksource: Switched to clocksource e60f0000.timer
-
-Signed-off-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20201205021921.1456190-2-niklas.soderlund+renesas@ragnatech.se
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: chensong <chensong_2000@189.cn>
 ---
- drivers/clocksource/sh_cmt.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+ drivers/staging/comedi/drivers/cb_pcidas64.c   | 95 --------------------------
+ drivers/staging/comedi/drivers/dt2801.c        | 29 --------
+ drivers/staging/comedi/drivers/ni_atmio16d.c   |  9 ---
+ drivers/staging/comedi/drivers/ni_mio_common.c | 37 +---------
+ drivers/staging/comedi/drivers/ni_mio_cs.c     | 10 ---
+ drivers/staging/comedi/drivers/ni_pcidio.c     |  5 --
+ drivers/staging/comedi/drivers/ni_pcimio.c     | 48 -------------
+ drivers/staging/comedi/drivers/s526.c          | 49 -------------
+ drivers/staging/comedi/drivers/s626.c          | 45 ------------
+ 9 files changed, 1 insertion(+), 326 deletions(-)
 
-diff --git a/drivers/clocksource/sh_cmt.c b/drivers/clocksource/sh_cmt.c
-index cec90a4c79b34..8eeaaaa4b6e32 100644
---- a/drivers/clocksource/sh_cmt.c
-+++ b/drivers/clocksource/sh_cmt.c
-@@ -323,7 +323,6 @@ static int sh_cmt_enable(struct sh_cmt_channel *ch)
- {
- 	int k, ret;
+diff --git a/drivers/staging/comedi/drivers/cb_pcidas64.c b/drivers/staging/comedi/drivers/cb_pcidas64.c
+index fa987bb..2d74ec9 100644
+--- a/drivers/staging/comedi/drivers/cb_pcidas64.c
++++ b/drivers/staging/comedi/drivers/cb_pcidas64.c
+@@ -998,101 +998,6 @@ static const struct pcidas64_board pcidas64_boards[] = {
+ 		.ai_fifo	= &ai_fifo_4020,
+ 		.has_8255	= 1,
+ 	},
+-#if 0
+-	/* The device id for these boards is unknown */
+-
+-	[BOARD_PCIDAS6402_16_JR] = {
+-		.name		= "pci-das6402/16/jr",
+-		.ai_se_chans	= 64,
+-		.ai_bits	= 16,
+-		.ai_speed	= 5000,
+-		.ao_nchan	= 0,
+-		.ao_scan_speed	= 10000,
+-		.layout		= LAYOUT_64XX,
+-		.ai_range_table	= &ai_ranges_64xx,
+-		.ai_range_code	= ai_range_code_64xx,
+-		.ai_fifo	= ai_fifo_64xx,
+-		.has_8255	= 1,
+-	},
+-	[BOARD_PCIDAS64_M1_16_JR] = {
+-		.name		= "pci-das64/m1/16/jr",
+-		.ai_se_chans	= 64,
+-		.ai_bits	= 16,
+-		.ai_speed	= 1000,
+-		.ao_nchan	= 0,
+-		.ao_scan_speed	= 10000,
+-		.layout		= LAYOUT_64XX,
+-		.ai_range_table	= &ai_ranges_64_mx,
+-		.ai_range_code	= ai_range_code_64_mx,
+-		.ai_fifo	= ai_fifo_64xx,
+-		.has_8255	= 1,
+-	},
+-	[BOARD_PCIDAS64_M2_16_JR] = {
+-		.name = "pci-das64/m2/16/jr",
+-		.ai_se_chans	= 64,
+-		.ai_bits	= 16,
+-		.ai_speed	= 500,
+-		.ao_nchan	= 0,
+-		.ao_scan_speed	= 10000,
+-		.layout		= LAYOUT_64XX,
+-		.ai_range_table	= &ai_ranges_64_mx,
+-		.ai_range_code	= ai_range_code_64_mx,
+-		.ai_fifo	= ai_fifo_64xx,
+-		.has_8255	= 1,
+-	},
+-	[BOARD_PCIDAS64_M3_16_JR] = {
+-		.name		= "pci-das64/m3/16/jr",
+-		.ai_se_chans	= 64,
+-		.ai_bits	= 16,
+-		.ai_speed	= 333,
+-		.ao_nchan	= 0,
+-		.ao_scan_speed	= 10000,
+-		.layout		= LAYOUT_64XX,
+-		.ai_range_table	= &ai_ranges_64_mx,
+-		.ai_range_code	= ai_range_code_64_mx,
+-		.ai_fifo	= ai_fifo_64xx,
+-		.has_8255	= 1,
+-	},
+-	[BOARD_PCIDAS64_M1_14] = {
+-		.name		= "pci-das64/m1/14",
+-		.ai_se_chans	= 64,
+-		.ai_bits	= 14,
+-		.ai_speed	= 1000,
+-		.ao_nchan	= 2,
+-		.ao_scan_speed	= 10000,
+-		.layout		= LAYOUT_64XX,
+-		.ai_range_table	= &ai_ranges_64_mx,
+-		.ai_range_code	= ai_range_code_64_mx,
+-		.ai_fifo	= ai_fifo_64xx,
+-		.has_8255	= 1,
+-	},
+-	[BOARD_PCIDAS64_M2_14] = {
+-		.name		= "pci-das64/m2/14",
+-		.ai_se_chans	= 64,
+-		.ai_bits	= 14,
+-		.ai_speed	= 500,
+-		.ao_nchan	= 2,
+-		.ao_scan_speed	= 10000,
+-		.layout		= LAYOUT_64XX,
+-		.ai_range_table	= &ai_ranges_64_mx,
+-		.ai_range_code	= ai_range_code_64_mx,
+-		.ai_fifo	= ai_fifo_64xx,
+-		.has_8255	= 1,
+-	},
+-	[BOARD_PCIDAS64_M3_14] = {
+-		.name		= "pci-das64/m3/14",
+-		.ai_se_chans	= 64,
+-		.ai_bits	= 14,
+-		.ai_speed	= 333,
+-		.ao_nchan	= 2,
+-		.ao_scan_speed	= 10000,
+-		.layout		= LAYOUT_64XX,
+-		.ai_range_table	= &ai_ranges_64_mx,
+-		.ai_range_code	= ai_range_code_64_mx,
+-		.ai_fifo	= ai_fifo_64xx,
+-		.has_8255	= 1,
+-	},
+-#endif
+ };
  
--	pm_runtime_get_sync(&ch->cmt->pdev->dev);
- 	dev_pm_syscore_device(&ch->cmt->pdev->dev, true);
+ static inline unsigned short se_diff_bit_6xxx(struct comedi_device *dev,
+diff --git a/drivers/staging/comedi/drivers/dt2801.c b/drivers/staging/comedi/drivers/dt2801.c
+index 0d571d8..bb01416 100644
+--- a/drivers/staging/comedi/drivers/dt2801.c
++++ b/drivers/staging/comedi/drivers/dt2801.c
+@@ -87,17 +87,6 @@
+ #define DT2801_STATUS		1
+ #define DT2801_CMD		1
  
- 	/* enable clock */
-@@ -398,7 +397,6 @@ static void sh_cmt_disable(struct sh_cmt_channel *ch)
- 	clk_disable(ch->cmt->clk);
+-#if 0
+-/* ignore 'defined but not used' warning */
+-static const struct comedi_lrange range_dt2801_ai_pgh_bipolar = {
+-	4, {
+-		BIP_RANGE(10),
+-		BIP_RANGE(5),
+-		BIP_RANGE(2.5),
+-		BIP_RANGE(1.25)
+-	}
+-};
+-#endif
+ static const struct comedi_lrange range_dt2801_ai_pgl_bipolar = {
+ 	4, {
+ 		BIP_RANGE(10),
+@@ -107,17 +96,6 @@ static const struct comedi_lrange range_dt2801_ai_pgl_bipolar = {
+ 	}
+ };
  
- 	dev_pm_syscore_device(&ch->cmt->pdev->dev, false);
--	pm_runtime_put(&ch->cmt->pdev->dev);
+-#if 0
+-/* ignore 'defined but not used' warning */
+-static const struct comedi_lrange range_dt2801_ai_pgh_unipolar = {
+-	4, {
+-		UNI_RANGE(10),
+-		UNI_RANGE(5),
+-		UNI_RANGE(2.5),
+-		UNI_RANGE(1.25)
+-	}
+-};
+-#endif
+ static const struct comedi_lrange range_dt2801_ai_pgl_unipolar = {
+ 	4, {
+ 		UNI_RANGE(10),
+@@ -580,14 +558,7 @@ static int dt2801_attach(struct comedi_device *dev, struct comedi_devconfig *it)
+ 	/* ai subdevice */
+ 	s->type = COMEDI_SUBD_AI;
+ 	s->subdev_flags = SDF_READABLE | SDF_GROUND;
+-#if 1
+ 	s->n_chan = n_ai_chans;
+-#else
+-	if (it->options[2])
+-		s->n_chan = board->ad_chan;
+-	else
+-		s->n_chan = board->ad_chan / 2;
+-#endif
+ 	s->maxdata = (1 << board->adbits) - 1;
+ 	s->range_table = ai_range_lkup(board->adrangetype, it->options[3]);
+ 	s->insn_read = dt2801_ai_insn_read;
+diff --git a/drivers/staging/comedi/drivers/ni_atmio16d.c b/drivers/staging/comedi/drivers/ni_atmio16d.c
+index dffce1a..972e220 100644
+--- a/drivers/staging/comedi/drivers/ni_atmio16d.c
++++ b/drivers/staging/comedi/drivers/ni_atmio16d.c
+@@ -685,15 +685,6 @@ static int atmio16d_attach(struct comedi_device *dev,
+ 		s->type = COMEDI_SUBD_UNUSED;
+ 	}
+ 
+-/* don't yet know how to deal with counter/timers */
+-#if 0
+-	s = &dev->subdevices[4];
+-	/* do */
+-	s->type = COMEDI_SUBD_TIMER;
+-	s->n_chan = 0;
+-	s->maxdata = 0
+-#endif
+-
+ 	return 0;
  }
  
- /* private flags */
-@@ -566,10 +564,16 @@ static int sh_cmt_start(struct sh_cmt_channel *ch, unsigned long flag)
- 	int ret = 0;
- 	unsigned long flags;
+diff --git a/drivers/staging/comedi/drivers/ni_mio_common.c b/drivers/staging/comedi/drivers/ni_mio_common.c
+index 4f80a49..85ab35ed 100644
+--- a/drivers/staging/comedi/drivers/ni_mio_common.c
++++ b/drivers/staging/comedi/drivers/ni_mio_common.c
+@@ -795,18 +795,6 @@ static void ni_clear_ai_fifo(struct comedi_device *dev)
+ 		if (devpriv->is_625x) {
+ 			ni_writeb(dev, 0, NI_M_STATIC_AI_CTRL_REG(0));
+ 			ni_writeb(dev, 1, NI_M_STATIC_AI_CTRL_REG(0));
+-#if 0
+-			/*
+-			 * The NI example code does 3 convert pulses for 625x
+-			 * boards, But that appears to be wrong in practice.
+-			 */
+-			ni_stc_writew(dev, NISTC_AI_CMD1_CONVERT_PULSE,
+-				      NISTC_AI_CMD1_REG);
+-			ni_stc_writew(dev, NISTC_AI_CMD1_CONVERT_PULSE,
+-				      NISTC_AI_CMD1_REG);
+-			ni_stc_writew(dev, NISTC_AI_CMD1_CONVERT_PULSE,
+-				      NISTC_AI_CMD1_REG);
+-#endif
+ 		}
+ 	}
+ }
+@@ -2930,21 +2918,7 @@ static void ni_ao_cmd_personalize(struct comedi_device *dev,
+ 	  (board->ao_fifo_depth ?
+ 	    NISTC_AO_PERSONAL_FIFO_ENA : NISTC_AO_PERSONAL_DMA_PIO_CTRL)
+ 	  ;
+-#if 0
+-	/*
+-	 * FIXME:
+-	 * add something like ".has_individual_dacs = 0" to ni_board_struct
+-	 * since, as F Hess pointed out, not all in m series have singles.  not
+-	 * sure if e-series all have duals...
+-	 */
  
-+	if (flag & FLAG_CLOCKSOURCE)
-+		pm_runtime_get_sync(&ch->cmt->pdev->dev);
+-	/*
+-	 * F Hess: windows driver does not set NISTC_AO_PERSONAL_NUM_DAC bit for
+-	 * 6281, verified with bus analyzer.
+-	 */
+-	if (devpriv->is_m_series)
+-		bits |= NISTC_AO_PERSONAL_NUM_DAC;
+-#endif
+ 	ni_stc_writew(dev, bits, NISTC_AO_PERSONAL_REG);
+ 
+ 	ni_stc_writew(dev, NISTC_RESET_AO_CFG_END, NISTC_RESET_REG);
+@@ -4857,21 +4831,12 @@ static int init_cs5529(struct comedi_device *dev)
+ 	unsigned int config_bits = CS5529_CFG_PORT_FLAG |
+ 				   CS5529_CFG_WORD_RATE_2180;
+ 
+-#if 1
+ 	/* do self-calibration */
+ 	cs5529_config_write(dev, config_bits | CS5529_CFG_CALIB_BOTH_SELF,
+ 			    CS5529_CFG_REG);
+ 	/* need to force a conversion for calibration to run */
+ 	cs5529_do_conversion(dev, NULL);
+-#else
+-	/* force gain calibration to 1 */
+-	cs5529_config_write(dev, 0x400000, CS5529_GAIN_REG);
+-	cs5529_config_write(dev, config_bits | CS5529_CFG_CALIB_OFFSET_SELF,
+-			    CS5529_CFG_REG);
+-	if (cs5529_wait_for_idle(dev))
+-		dev_err(dev->class_dev,
+-			"timeout or signal in %s\n", __func__);
+-#endif
 +
- 	raw_spin_lock_irqsave(&ch->lock, flags);
- 
--	if (!(ch->flags & (FLAG_CLOCKEVENT | FLAG_CLOCKSOURCE)))
-+	if (!(ch->flags & (FLAG_CLOCKEVENT | FLAG_CLOCKSOURCE))) {
-+		if (flag & FLAG_CLOCKEVENT)
-+			pm_runtime_get_sync(&ch->cmt->pdev->dev);
- 		ret = sh_cmt_enable(ch);
-+	}
- 
- 	if (ret)
- 		goto out;
-@@ -594,14 +598,20 @@ static void sh_cmt_stop(struct sh_cmt_channel *ch, unsigned long flag)
- 	f = ch->flags & (FLAG_CLOCKEVENT | FLAG_CLOCKSOURCE);
- 	ch->flags &= ~flag;
- 
--	if (f && !(ch->flags & (FLAG_CLOCKEVENT | FLAG_CLOCKSOURCE)))
-+	if (f && !(ch->flags & (FLAG_CLOCKEVENT | FLAG_CLOCKSOURCE))) {
- 		sh_cmt_disable(ch);
-+		if (flag & FLAG_CLOCKEVENT)
-+			pm_runtime_put(&ch->cmt->pdev->dev);
-+	}
- 
- 	/* adjust the timeout to maximum if only clocksource left */
- 	if ((flag == FLAG_CLOCKEVENT) && (ch->flags & FLAG_CLOCKSOURCE))
- 		__sh_cmt_set_next(ch, ch->max_match_value);
- 
- 	raw_spin_unlock_irqrestore(&ch->lock, flags);
-+
-+	if (flag & FLAG_CLOCKSOURCE)
-+		pm_runtime_put(&ch->cmt->pdev->dev);
+ 	return 0;
  }
  
- static struct sh_cmt_channel *cs_to_sh_cmt(struct clocksource *cs)
+diff --git a/drivers/staging/comedi/drivers/ni_mio_cs.c b/drivers/staging/comedi/drivers/ni_mio_cs.c
+index 4f37b4e..7abd64b 100644
+--- a/drivers/staging/comedi/drivers/ni_mio_cs.c
++++ b/drivers/staging/comedi/drivers/ni_mio_cs.c
+@@ -100,16 +100,6 @@ static const struct ni_board_struct ni_boards[] = {
+ 		.ao_speed	= 1000000,
+ 		.caldac		= { ad8804_debug },
+ 	 },
+-#if 0
+-	{
+-		.name		= "DAQCard-6715",
+-		.device_id	= 0x0000,	/* unknown */
+-		.n_aochan	= 8,
+-		.ao_maxdata	= 0x0fff,
+-		.ao_671x	= 8192,
+-		.caldac		= { mb88341, mb88341 },
+-	},
+-#endif
+ };
+ 
+ #include "ni_mio_common.c"
+diff --git a/drivers/staging/comedi/drivers/ni_pcidio.c b/drivers/staging/comedi/drivers/ni_pcidio.c
+index 623f8d0..579d8eb 100644
+--- a/drivers/staging/comedi/drivers/ni_pcidio.c
++++ b/drivers/staging/comedi/drivers/ni_pcidio.c
+@@ -455,11 +455,6 @@ static irqreturn_t nidio_interrupt(int irq, void *d)
+ 
+ out:
+ 	comedi_handle_events(dev, s);
+-#if 0
+-	if (!tag)
+-		writeb(0x03, dev->mmio + MASTER_DMA_AND_INTERRUPT_CONTROL);
+-#endif
+-
+ 	spin_unlock(&dev->spinlock);
+ 	return IRQ_HANDLED;
+ }
+diff --git a/drivers/staging/comedi/drivers/ni_pcimio.c b/drivers/staging/comedi/drivers/ni_pcimio.c
+index 6c813a4..8b716ed 100644
+--- a/drivers/staging/comedi/drivers/ni_pcimio.c
++++ b/drivers/staging/comedi/drivers/ni_pcimio.c
+@@ -481,43 +481,6 @@ static const struct ni_board_struct ni_boards[] = {
+ 		.ao_speed	= 250,
+ 		.caldac		= { ad8804, ad8804 },
+ 	},
+-#if 0
+-	/* The 6115 boards probably need their own driver */
+-	[BOARD_PCI6115] = {	/* .device_id = 0x2ed0, */
+-		.name		= "pci-6115",
+-		.n_adchan	= 4,
+-		.ai_maxdata	= 0x0fff,
+-		.ai_fifo_depth	= 8192,
+-		.gainlkup	= ai_gain_611x,
+-		.ai_speed	= 100,
+-		.n_aochan	= 2,
+-		.ao_maxdata	= 0xffff,
+-		.ao_671x	= 1,
+-		.ao_fifo_depth	= 2048,
+-		.ao_speed	= 250,
+-		.reg_611x	= 1,
+-		/* XXX */
+-		.caldac		= { ad8804_debug, ad8804_debug, ad8804_debug },
+-	},
+-#endif
+-#if 0
+-	[BOARD_PXI6115] = {	/* .device_id = ????, */
+-		.name		= "pxi-6115",
+-		.n_adchan	= 4,
+-		.ai_maxdata	= 0x0fff,
+-		.ai_fifo_depth	= 8192,
+-		.gainlkup	= ai_gain_611x,
+-		.ai_speed	= 100,
+-		.n_aochan	= 2,
+-		.ao_maxdata	= 0xffff,
+-		.ao_671x	= 1,
+-		.ao_fifo_depth	= 2048,
+-		.ao_speed	= 250,
+-		.reg_611x	= 1,
+-		/* XXX */
+-		.caldac		= { ad8804_debug, ad8804_debug, ad8804_debug },
+-	},
+-#endif
+ 	[BOARD_PCI6711] = {
+ 		.name = "pci-6711",
+ 		.n_aochan	= 4,
+@@ -569,17 +532,6 @@ static const struct ni_board_struct ni_boards[] = {
+ 		.reg_type	= ni_reg_6711,
+ 		.caldac		= { ad8804_debug },
+ 	},
+-#if 0
+-	[BOARD_PXI6731] = {	/* .device_id = ????, */
+-		.name		= "pxi-6731",
+-		.n_aochan	= 4,
+-		.ao_maxdata	= 0xffff,
+-		.ao_fifo_depth	= 8192,
+-		.ao_range_table	= &range_bipolar10,
+-		.reg_type	= ni_reg_6711,
+-		.caldac		= { ad8804_debug },
+-	},
+-#endif
+ 	[BOARD_PCI6733] = {
+ 		.name		= "pci-6733",
+ 		.n_aochan	= 8,
+diff --git a/drivers/staging/comedi/drivers/s526.c b/drivers/staging/comedi/drivers/s526.c
+index 085cf5b..7f3c59e 100644
+--- a/drivers/staging/comedi/drivers/s526.c
++++ b/drivers/staging/comedi/drivers/s526.c
+@@ -229,7 +229,6 @@ static int s526_gpct_insn_config(struct comedi_device *dev,
+ 		 */
+ 		devpriv->gpct_config[chan] = data[0];
+ 
+-#if 1
+ 		/*  Set Counter Mode Register */
+ 		val = data[1] & 0xffff;
+ 		outw(val, dev->iobase + S526_GPCT_MODE_REG(chan));
+@@ -246,54 +245,6 @@ static int s526_gpct_insn_config(struct comedi_device *dev,
+ 			 *      dev->iobase + S526_GPCT_CTRL_REG(chan));
+ 			 */
+ 		}
+-#else
+-		val = S526_GPCT_MODE_CTDIR_CTRL_QUAD;
+-
+-		/*  data[1] contains GPCT_X1, GPCT_X2 or GPCT_X4 */
+-		if (data[1] == GPCT_X2)
+-			val |= S526_GPCT_MODE_CLK_SRC_QUADX2;
+-		else if (data[1] == GPCT_X4)
+-			val |= S526_GPCT_MODE_CLK_SRC_QUADX4;
+-		else
+-			val |= S526_GPCT_MODE_CLK_SRC_QUADX1;
+-
+-		/*  When to take into account the indexpulse: */
+-		/*
+-		 * if (data[2] == GPCT_IndexPhaseLowLow) {
+-		 * } else if (data[2] == GPCT_IndexPhaseLowHigh) {
+-		 * } else if (data[2] == GPCT_IndexPhaseHighLow) {
+-		 * } else if (data[2] == GPCT_IndexPhaseHighHigh) {
+-		 * }
+-		 */
+-		/*  Take into account the index pulse? */
+-		if (data[3] == GPCT_RESET_COUNTER_ON_INDEX) {
+-			/*  Auto load with INDEX^ */
+-			val |= S526_GPCT_MODE_AUTOLOAD_IXRISE;
+-		}
+-
+-		/*  Set Counter Mode Register */
+-		val = data[1] & 0xffff;
+-		outw(val, dev->iobase + S526_GPCT_MODE_REG(chan));
+-
+-		/*  Load the pre-load register */
+-		s526_gpct_write(dev, chan, data[2]);
+-
+-		/*  Write the Counter Control Register */
+-		if (data[3])
+-			outw(data[3] & 0xffff,
+-			     dev->iobase + S526_GPCT_CTRL_REG(chan));
+-
+-		/*  Reset the counter if it is software preload */
+-		if ((val & S526_GPCT_MODE_AUTOLOAD_MASK) ==
+-		    S526_GPCT_MODE_AUTOLOAD_NONE) {
+-			/*  Reset the counter */
+-			outw(S526_GPCT_CTRL_CT_RESET,
+-			     dev->iobase + S526_GPCT_CTRL_REG(chan));
+-			/*  Load the counter from PR0 */
+-			outw(S526_GPCT_CTRL_CT_LOAD,
+-			     dev->iobase + S526_GPCT_CTRL_REG(chan));
+-		}
+-#endif
+ 		break;
+ 
+ 	case INSN_CONFIG_GPCT_SINGLE_PULSE_GENERATOR:
+diff --git a/drivers/staging/comedi/drivers/s626.c b/drivers/staging/comedi/drivers/s626.c
+index e7aba93..5ff33c4 100644
+--- a/drivers/staging/comedi/drivers/s626.c
++++ b/drivers/staging/comedi/drivers/s626.c
+@@ -2255,51 +2255,6 @@ static int s626_initialize(struct comedi_device *dev)
+ 	/* Disable RPS timeouts */
+ 	writel(0, dev->mmio + S626_P_RPS1_TOUT);
+ 
+-#if 0
+-	/*
+-	 * SAA7146 BUG WORKAROUND
+-	 *
+-	 * Initialize SAA7146 ADC interface to a known state by
+-	 * invoking ADCs until FB BUFFER 1 register shows that it
+-	 * is correctly receiving ADC data. This is necessary
+-	 * because the SAA7146 ADC interface does not start up in
+-	 * a defined state after a PCI reset.
+-	 */
+-	{
+-		struct comedi_subdevice *s = dev->read_subdev;
+-		u8 poll_list;
+-		u16 adc_data;
+-		u16 start_val;
+-		u16 index;
+-		unsigned int data[16];
+-
+-		/* Create a simple polling list for analog input channel 0 */
+-		poll_list = S626_EOPL;
+-		s626_reset_adc(dev, &poll_list);
+-
+-		/* Get initial ADC value */
+-		s626_ai_rinsn(dev, s, NULL, data);
+-		start_val = data[0];
+-
+-		/*
+-		 * VERSION 2.01 CHANGE: TIMEOUT ADDED TO PREVENT HANGED
+-		 * EXECUTION.
+-		 *
+-		 * Invoke ADCs until the new ADC value differs from the initial
+-		 * value or a timeout occurs.  The timeout protects against the
+-		 * possibility that the driver is restarting and the ADC data is
+-		 * a fixed value resulting from the applied ADC analog input
+-		 * being unusually quiet or at the rail.
+-		 */
+-		for (index = 0; index < 500; index++) {
+-			s626_ai_rinsn(dev, s, NULL, data);
+-			adc_data = data[0];
+-			if (adc_data != start_val)
+-				break;
+-		}
+-	}
+-#endif	/* SAA7146 BUG WORKAROUND */
+-
+ 	/*
+ 	 * Initialize the DAC interface
+ 	 */
 -- 
-2.27.0
+2.7.4
 
