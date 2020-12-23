@@ -2,124 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5759D2E1C49
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 13:36:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4127E2E1C4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 13:42:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728523AbgLWMez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 07:34:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726266AbgLWMey (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 07:34:54 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3654BC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 04:34:14 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id w5so18454623wrm.11
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 04:34:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent:content-language;
-        bh=46s9iCozNdwklFRP9JAUtjF3UizZ0VgnsLK944MzeQA=;
-        b=AIfxhgWzlR35+vH7QotuaW/iEHUPQbqrwNJlpdrmYnTHhSA+E+Xizja8tXSv8yumNW
-         FmWlJU+hiPjh7OheGEOFB7RZefUT6vwPfIz/FTfOU+MK1fHuXpdnO4ZySgiPI5iQtPeq
-         yPVzcsLmKd1jfC+6ASw4V1Pe7SpqPBZIhfJQUXMgOzSCYQYNJ5fluRSmWD7GkmaeFfTv
-         geVDzBZTnkjD7KA+MXEumxBNrmcQC8wI2OCbpRBR9aBXkJZ9X+Al6QGDMP32Ew1oTvQE
-         wNFFrXtsDJMSrXVMWIloEPmFy53koesH7EuGG/fK+N0d+3FpBpgHX5cW90O+79vJxDvS
-         y9bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent:content-language;
-        bh=46s9iCozNdwklFRP9JAUtjF3UizZ0VgnsLK944MzeQA=;
-        b=H4pUkAOReMrio5Nqfn4J7soij54FzQioZVPqw9BNk8+83ATcXPIlNlB2Cw4WKZkJT7
-         Roa+EDq2+tziCazu8D4Vmb0oO02oMP/iy6LwrSzsjOwG6A66C2Km1cBNfz1VkXLAXjOj
-         gAzr+WQ/VUvpuxuEFMu9fugyL8Ep2DMcU/WLJJNcWktAGewPjwUk1f5nRzY/6Lysf9Io
-         inVvefy0WTPsTzn5ANY/1E74YM/8FQhwwvKjFR/4irgbM6IbGnXAamiBXlrxvx2WDopQ
-         GWHEwc3tmUMcKxmXlrwEhF/NfiOPS/zMV5v4PA3hRWxtIrIA9gWDqyCqSQSY16r1HvHQ
-         qRlg==
-X-Gm-Message-State: AOAM530lwwD/ItjejGE9NAlEIu0vyzroFQqke41lFyDQuSEEZT1U2KzO
-        VCsFvm2/JlDHzTInCnYrbAFRDQ==
-X-Google-Smtp-Source: ABdhPJwOkSM8Qc8pGGgU1U4SiH/0CnCXZ3kVzavCyqdHyvPoWRa06GmRQrbNHpV201JI6MGhft6XOA==
-X-Received: by 2002:a5d:4a06:: with SMTP id m6mr30207013wrq.189.1608726852733;
-        Wed, 23 Dec 2020 04:34:12 -0800 (PST)
-Received: from linaro.org (lns-bzn-59-82-252-148-164.adsl.proxad.net. [82.252.148.164])
-        by smtp.gmail.com with ESMTPSA id j9sm35164716wrm.14.2020.12.23.04.34.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Dec 2020 04:34:12 -0800 (PST)
-Date:   Wed, 23 Dec 2020 13:34:09 +0100
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Ram Chandrasekar <rkumbako@codeaurora.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>
-Subject: Re: [PATCH v5 0/4] powercap/dtpm: Add the DTPM framework
-Message-ID: <784894c4-36d3-7eae-ac82-ca0ef68772a2@linaro.org>
-References: <20201208164145.19493-1-daniel.lezcano@linaro.org>
- <ba9c6f75-3964-3ee9-c849-17db5ae51501@linaro.org>
- <CAJZ5v0infKumCmn77nzAN80G4bmF+_ZzgGkdaeMvczC_VyjyGg@mail.gmail.com>
- <CAJZ5v0hbeeVHPAhm01W4NKNBNQo1xS0Dqa6C2h=zoo4hCjGPew@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0hbeeVHPAhm01W4NKNBNQo1xS0Dqa6C2h=zoo4hCjGPew@mail.gmail.com>
-X-Identity-Key: id8
-X-Account-Key: account12
-X-Enigmail-Draft-Status: N11100
-X-Mozilla-Draft-Info: internal/draft; vcard=0; receipt=0; DSN=0; uuencode=0;
- attachmentreminder=0; deliveryformat=4
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-Content-Language: en-US
-X-TUID: ARMoOqCpfDUp
+        id S1728520AbgLWMjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 07:39:53 -0500
+Received: from spam.zju.edu.cn ([61.164.42.155]:39946 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726266AbgLWMjw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 07:39:52 -0500
+Received: from localhost.localdomain (unknown [10.192.85.18])
+        by mail-app4 (Coremail) with SMTP id cS_KCgCHb35EOuNfbdQAAA--.1428S4;
+        Wed, 23 Dec 2020 20:38:31 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Christian Benvenuti <benve@cisco.com>,
+        Govindarajulu Varadarajan <_govind@gmx.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] enic: Remove redundant free in enic_set_ringparam
+Date:   Wed, 23 Dec 2020 20:38:33 +0800
+Message-Id: <20201223123833.14733-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cS_KCgCHb35EOuNfbdQAAA--.1428S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7Xr1xAry3tw17urWUJw1rtFb_yoWfWwcEkF
+        4j9r1xC3yIq3sFkw1jkw40v34SvFnrWr95XFy7ta9xG347Z3yUX3WkXF1xJw13CFn2yF9r
+        XrnIqFW5A3y2vjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2AFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
+        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
+        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
+        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
+        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv
+        6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
+        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48J
+        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
+        IF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
+        x4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgkDBlZdtRp0WwATsW
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/12/2020 19:52, Rafael J. Wysocki wrote:
-> On Fri, Dec 11, 2020 at 8:15 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
->>
->> On Fri, Dec 11, 2020 at 11:41 AM Daniel Lezcano
->> <daniel.lezcano@linaro.org> wrote:
->>>
->>>
->>> Hi Rafael,
->>>
->>> I believe I took into account all the comments, do you think it is
->>> possible to merge this series ?
->>
->> It should be, unless more changes are requested.
->>
->> I will be taking care of it next week and, if all goes well, it should
->> be possible to push it during the second half of the merge window.
-> 
-> Applied as 5.11-rc material now, sorry for the delay.
+The error handling paths in enic_alloc_vnic_resources()
+have called enic_free_vnic_resources() before returning.
+So we may not need to call it again on failure at caller
+side.
 
-No problem, thank you for taking care of the series.
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ drivers/net/ethernet/cisco/enic/enic_ethtool.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-I did not want to add another entry in the MAINTAINER file as you are
-the maintainer of the powercap framework and that is fine.
-
-However the get_maintainer script (and default cccmd) does not return me
-as part of the maintainer/author of the dtpm or idle_inject. I would
-like to be at least Cc'ed to review the changes related to those files
-to make sure they stay aligned with the direction we are taking.
-
-Is it possible to be automatically Cc'ed for the proposed changes in these
-files ?
-
+diff --git a/drivers/net/ethernet/cisco/enic/enic_ethtool.c b/drivers/net/ethernet/cisco/enic/enic_ethtool.c
+index 1a9803f2073e..85a139d39f27 100644
+--- a/drivers/net/ethernet/cisco/enic/enic_ethtool.c
++++ b/drivers/net/ethernet/cisco/enic/enic_ethtool.c
+@@ -235,7 +235,6 @@ static int enic_set_ringparam(struct net_device *netdev,
+ 	if (err) {
+ 		netdev_err(netdev,
+ 			   "Failed to alloc vNIC resources, aborting\n");
+-		enic_free_vnic_resources(enic);
+ 		goto err_out;
+ 	}
+ 	enic_init_vnic_resources(enic);
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+2.17.1
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
