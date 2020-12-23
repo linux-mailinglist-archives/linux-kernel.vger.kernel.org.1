@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA9D12E1200
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:20:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 050EC2E1202
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:20:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727395AbgLWCRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:17:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45394 "EHLO mail.kernel.org"
+        id S1727771AbgLWCR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:17:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726319AbgLWCRv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:17:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6298522273;
-        Wed, 23 Dec 2020 02:16:34 +0000 (UTC)
+        id S1727605AbgLWCRy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:17:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E47E3229CA;
+        Wed, 23 Dec 2020 02:16:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608689795;
-        bh=539rzbf8rQ7ehmxt1SF+EL4om810xyXqMCZFOHMRSF4=;
+        s=k20201202; t=1608689803;
+        bh=6m4j7PoAUO6tgvACC/ztjfDAnaIcgyfLORwev4jkTp4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l0qMCMaaJhBoLqnhlxyMiBtZ4Z8HZR1cIWomZjrRVMDlccRFq87nnJ7vwKBmV/w70
-         24jJp0u5QI8GuqpXIA3n6C7/ZhWLiyeoARZwQDUnGSEhD9ydV1e8hcXNxzVRRHLr8d
-         jyCDyXlSEqxsaQRo3Cz7y0Vy/4ljZ7z3UASTPaxIAp5S4gb7Uuoo6sA9nL867NZADa
-         JwqC+TiCoyZ3ias/9lavdaCAa6WMKjmG87sgiuIajYiRzZ6jU9em1LE9halBLgoJ7T
-         H7fZb+kdCbnjoYw9/8va7l+7nFGFezi84hwfdR50KAAYJsVE0U0EqzwweRJ2beQcBk
-         kXyB5h+ERD2Pw==
+        b=O3M4nxp0MAUFYLPn+e+ctbgLa5pyaCQzReroMxq8RI8Sr3SnZ6ZJ7KvyR5uB8z4vc
+         JzrT95tVN0WjVHAO4P93qpUzLZ9hm8ikjD6M2pA4vXWKB9ulRIDmis4CtFKs0V1Q4z
+         3HuX1QD7EuwAjV3/JzLhX4V+bBNiHIgluDi+jJP8yQT+Ru9+9zcjcHXwFsgimNQJwL
+         Sp66eXkcqOoQ51Jpk4qjUUEJqSa7Syt6JDTXazHVULSSLryobjUoSfBgcwCyXjc+T4
+         1Hlwnjk9kKr8kP6hAIgP03HHeSdCjntoVWzy/KfT8zF99J/Tmmjd1VEZ4Y1/0b4/kh
+         JbrAyYmeLhBTg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Luo Meng <luomeng12@huawei.com>, Jeff Layton <jlayton@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-fsdevel@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 006/217] locks: Fix UBSAN undefined behaviour in flock64_to_posix_lock
-Date:   Tue, 22 Dec 2020 21:12:55 -0500
-Message-Id: <20201223021626.2790791-6-sashal@kernel.org>
+Cc:     Brent Lu <brent.lu@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 5.10 013/217] ASoC: intel: sof_rt5682: Add quirk for Dooly
+Date:   Tue, 22 Dec 2020 21:13:02 -0500
+Message-Id: <20201223021626.2790791-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223021626.2790791-1-sashal@kernel.org>
 References: <20201223021626.2790791-1-sashal@kernel.org>
@@ -41,53 +43,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luo Meng <luomeng12@huawei.com>
+From: Brent Lu <brent.lu@intel.com>
 
-[ Upstream commit 16238415eb9886328a89fe7a3cb0b88c7335fe16 ]
+[ Upstream commit bdd088ce5bfd32b95ab1bd90b49405e7c1f1fff5 ]
 
-When the sum of fl->fl_start and l->l_len overflows,
-UBSAN shows the following warning:
+This DMI product family string of this board is "Google_Hatch" so the
+DMI quirk will take place. However, this board is using rt1015 speaker
+amp instead of max98357a specified in the quirk. Therefore, we need an
+new DMI quirk for this board.
 
-UBSAN: Undefined behaviour in fs/locks.c:482:29
-signed integer overflow: 2 + 9223372036854775806
-cannot be represented in type 'long long int'
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0xe4/0x14e lib/dump_stack.c:118
- ubsan_epilogue+0xe/0x81 lib/ubsan.c:161
- handle_overflow+0x193/0x1e2 lib/ubsan.c:192
- flock64_to_posix_lock fs/locks.c:482 [inline]
- flock_to_posix_lock+0x595/0x690 fs/locks.c:515
- fcntl_setlk+0xf3/0xa90 fs/locks.c:2262
- do_fcntl+0x456/0xf60 fs/fcntl.c:387
- __do_sys_fcntl fs/fcntl.c:483 [inline]
- __se_sys_fcntl fs/fcntl.c:468 [inline]
- __x64_sys_fcntl+0x12d/0x180 fs/fcntl.c:468
- do_syscall_64+0xc8/0x5a0 arch/x86/entry/common.c:293
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-Fix it by parenthesizing 'l->l_len - 1'.
-
-Signed-off-by: Luo Meng <luomeng12@huawei.com>
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
+Signed-off-by: Brent Lu <brent.lu@intel.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20201030170559.20370-3-brent.lu@intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/locks.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/boards/sof_rt5682.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/fs/locks.c b/fs/locks.c
-index 1f84a03601fec..bc08610bae2f7 100644
---- a/fs/locks.c
-+++ b/fs/locks.c
-@@ -542,7 +542,7 @@ static int flock64_to_posix_lock(struct file *filp, struct file_lock *fl,
- 	if (l->l_len > 0) {
- 		if (l->l_len - 1 > OFFSET_MAX - fl->fl_start)
- 			return -EOVERFLOW;
--		fl->fl_end = fl->fl_start + l->l_len - 1;
-+		fl->fl_end = fl->fl_start + (l->l_len - 1);
- 
- 	} else if (l->l_len < 0) {
- 		if (fl->fl_start + l->l_len < 0)
+diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+index ddbb9fe7cc06b..c6c33910bc354 100644
+--- a/sound/soc/intel/boards/sof_rt5682.c
++++ b/sound/soc/intel/boards/sof_rt5682.c
+@@ -99,6 +99,24 @@ static const struct dmi_system_id sof_rt5682_quirk_table[] = {
+ 					SOF_RT5682_MCLK_24MHZ |
+ 					SOF_RT5682_SSP_CODEC(1)),
+ 	},
++	{
++		/*
++		 * Dooly is hatch family but using rt1015 amp so it
++		 * requires a quirk before "Google_Hatch".
++		 */
++		.callback = sof_rt5682_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "HP"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Dooly"),
++		},
++		.driver_data = (void *)(SOF_RT5682_MCLK_EN |
++					SOF_RT5682_MCLK_24MHZ |
++					SOF_RT5682_SSP_CODEC(0) |
++					SOF_SPEAKER_AMP_PRESENT |
++					SOF_RT1015_SPEAKER_AMP_PRESENT |
++					SOF_RT1015_SPEAKER_AMP_100FS |
++					SOF_RT5682_SSP_AMP(1)),
++	},
+ 	{
+ 		.callback = sof_rt5682_quirk_cb,
+ 		.matches = {
 -- 
 2.27.0
 
