@@ -2,112 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B7012E19A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 09:09:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E91CD2E19A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 09:10:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727999AbgLWIIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 03:08:07 -0500
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:47715 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727622AbgLWIIH (ORCPT
+        id S1727808AbgLWIJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 03:09:49 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45203 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727468AbgLWIJs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 03:08:07 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id DAA5E5C00E5;
-        Wed, 23 Dec 2020 03:07:00 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Wed, 23 Dec 2020 03:07:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=9JJi8AtWAjqL/D6wWY41kdtAHDy
-        ODpb7iEOj0dFjiug=; b=At2lNwVI6iBE9+gWeehiWQ9nR7Kslps1U36PlLryzK9
-        JI2XETPPxLcDwIONQqUGUFoLCTxhjV5aDcCQxipqJI1wiPfNE7wEw/sfbWKrLTj/
-        scRbj2COi0UHvz4/izUH2Uva+ONnMtySajOLErxDRQ+6sy6Q+daI2YGHhamODzIn
-        KQ/cti60IlPSy+CNA3bzsZjRNbXjjNbvrL60v43m2cc2591jwtWAh7f7uJpKtKbs
-        2awvJJPCW8yEmYH3cL7FK18wvMGXQjsr5nKjTzs3hmEjeC5CfnlRd2CA+2mwmkt6
-        XUe/bOV4dimmsG/M5uSLhdDv1Do1ZKKaQeVxjGhcUxw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=9JJi8A
-        tWAjqL/D6wWY41kdtAHDyODpb7iEOj0dFjiug=; b=iqKzd8FNTe4oG7Ev3mQ8UX
-        uCl8zBedT1vrdNYi1AWPJ6WjXLLdqbIBwO0AoD/XRAMaKb/DLVJA0N24Z9B1aYxm
-        sAGX/UGFciit/xlM2ci2vKScbaj7w0kODv9a9r+Yg4k5lPQsSNc+Cdk/+zSCbsXQ
-        s6UxKPeay6PyLckExhS1pGPWoJBTMLe/TYqCjRWf4l9I905WtaJiO3eCGcyQLdCf
-        hzCMnFhY20M3Z+kGb9H3f0zy7a489etJR1owvZsKNKnN2glYDKbunYgFrgBUOgtx
-        4sEq2W+wtjOV+x5mF55D8pssvkycXpY6EQyoSgKdZezGbvnuto9cXXuS4dryQYLw
-        ==
-X-ME-Sender: <xms:ovriX3g20L_TnsAHsqeyWZ7RqMHuSnpnT0Wb-hDPCf4ETHOXvuKq5Q>
-    <xme:ovriX0AdLUsYQNRGlZ1rZrNAf0VssA_03c2SriozMZVOEmonpUrf0W6ldRy1rawtd
-    4DU6ryhwc_tBw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvddtiedgjeekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesthdtre
-    dttddtvdenucfhrhhomhepifhrvghgucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheq
-    necuggftrfgrthhtvghrnhepveeuheejgfffgfeivddukedvkedtleelleeghfeljeeiue
-    eggeevueduudekvdetnecukfhppeekfedrkeeirdejgedrieegnecuvehluhhsthgvrhfu
-    ihiivgepudenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrdgtoh
-    hm
-X-ME-Proxy: <xmx:ovriX3FM3fi0a3zd-cimvYdbtfWnmk-NVMnOKMQBG-uBYCGRq_l4PA>
-    <xmx:ovriX0R-9oPNqBUOW64vfdeIxprAQY0mD4nxmqtZB1Fa_J87FB3vrw>
-    <xmx:ovriX0yfWECXG36ytwgx4E0dp4U_e5_RXUwBIJxvzo-p1gTbKTUc7w>
-    <xmx:pPriX__JI020KZ_Zcq1LtMoHKbWyUlNumAXzqEeNYptjRUrboSw62g>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 8949D108005C;
-        Wed, 23 Dec 2020 03:06:58 -0500 (EST)
-Date:   Wed, 23 Dec 2020 09:06:56 +0100
-From:   Greg KH <greg@kroah.com>
-To:     chensong <chensong_2000@189.cn>
-Cc:     linux-kernel@vger.kernel.org, abbotti@mev.co.uk,
-        hsweeten@visionengravers.com, chensong@tj.kylinos.cn
-Subject: Re: [PATCH] staging: comedi: correct spelling mistakes of I/O port
- base address
-Message-ID: <X+L6oCXQJNr+Qf8X@kroah.com>
-References: <1608690383-30917-1-git-send-email-chensong_2000@189.cn>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1608690383-30917-1-git-send-email-chensong_2000@189.cn>
+        Wed, 23 Dec 2020 03:09:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608710901;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=X+E4mOCbGmFY6qa2D9l+paxorGnjOvKByACYD2gWYp4=;
+        b=SCbNnDW5DfOReoMzij+AmZlgZ2A6Lp2mFBpfcrEiZEcCDPYjGe1BuN5jfFOEiYGU8O11oS
+        8XQ9rknY+p3R+vlHpv/ed709E1q1NHhCTkQlJOqJCt6W+chiPf4rmQHW0bKRdVur2xPyU/
+        zJJPNuVJF1JTOyP7DpZdDtJgDpGne1w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-468-6olFiZpQM5m1XhotItqKMA-1; Wed, 23 Dec 2020 03:08:19 -0500
+X-MC-Unique: 6olFiZpQM5m1XhotItqKMA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3EC0D8049C0;
+        Wed, 23 Dec 2020 08:08:18 +0000 (UTC)
+Received: from MiWiFi-R3L-srv.redhat.com (ovpn-13-111.pek2.redhat.com [10.72.13.111])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 87E1C5D9CC;
+        Wed, 23 Dec 2020 08:08:12 +0000 (UTC)
+From:   Baoquan He <bhe@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
+        gopakumarr@vmware.com, rppt@kernel.org, david@redhat.com,
+        bhe@redhat.com
+Subject: [PATCH v3 0/1] mm: memmap defer init dosn't work as expected
+Date:   Wed, 23 Dec 2020 16:08:10 +0800
+Message-Id: <20201223080811.16211-1-bhe@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 10:26:23AM +0800, chensong wrote:
-> "base" was double input in comment line "I/O port base
-> address", remove one of them.
-> 
-> Signed-off-by: chensong <chensong_2000@189.cn>
-> ---
->  drivers/staging/comedi/drivers/dt2815.c | 2 +-
->  drivers/staging/comedi/drivers/dt2817.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/staging/comedi/drivers/dt2815.c b/drivers/staging/comedi/drivers/dt2815.c
-> index 5906f32..2be2406 100644
-> --- a/drivers/staging/comedi/drivers/dt2815.c
-> +++ b/drivers/staging/comedi/drivers/dt2815.c
-> @@ -17,7 +17,7 @@
->   * contrary, please update.
->   *
->   * Configuration options:
-> - * [0] - I/O port base base address
-> + * [0] - I/O port base address
->   * [1] - IRQ (unused)
->   * [2] - Voltage unipolar/bipolar configuration
->   *	0 == unipolar 5V  (0V -- +5V)
-> diff --git a/drivers/staging/comedi/drivers/dt2817.c b/drivers/staging/comedi/drivers/dt2817.c
-> index 7c1463e..a173394 100644
-> --- a/drivers/staging/comedi/drivers/dt2817.c
-> +++ b/drivers/staging/comedi/drivers/dt2817.c
-> @@ -21,7 +21,7 @@
->   * with 32 channels, configurable in groups of 8.
->   *
->   * Configuration options:
-> - * [0] - I/O port base base address
-> + * [0] - I/O port base address
+Post the regression fix in a standalone patch as Andrew suggested for
+-stable branch better back porting. This is rebased on the latest
+master branch of mainline kenrel, surely there's almost no change
+comparing with v2.
+https://lore.kernel.org/linux-mm/20201220082754.6900-1-bhe@redhat.com/
 
-I think the original is correct here.
+Tested on a system with 24G ram as below, adding 'memmap=128M!0x500000000'
+to split the one ram region into two regions in numa node1 to simulate
+the scenario of VMware.
 
-thanks,
+[  +0.000000] BIOS-provided physical RAM map:
+[  +0.000000] BIOS-e820: [mem 0x0000000000000000-0x000000000009bfff] usable
+[  +0.000000] BIOS-e820: [mem 0x000000000009c000-0x000000000009ffff] reserved
+[  +0.000000] BIOS-e820: [mem 0x00000000000e0000-0x00000000000fffff] reserved
+[  +0.000000] BIOS-e820: [mem 0x0000000000100000-0x000000006cdcefff] usable
+[  +0.000000] BIOS-e820: [mem 0x000000006cdcf000-0x000000006efcefff] reserved
+[  +0.000000] BIOS-e820: [mem 0x000000006efcf000-0x000000006fdfefff] ACPI NVS
+[  +0.000000] BIOS-e820: [mem 0x000000006fdff000-0x000000006fffefff] ACPI data
+[  +0.000000] BIOS-e820: [mem 0x000000006ffff000-0x000000006fffffff] usable
+[  +0.000000] BIOS-e820: [mem 0x0000000070000000-0x000000008fffffff] reserved
+[  +0.000000] BIOS-e820: [mem 0x00000000e0000000-0x00000000ffffffff] reserved
+[  +0.000000] BIOS-e820: [mem 0x0000000100000000-0x000000067f1fffff] usable
+[  +0.000000] BIOS-e820: [mem 0x000000067f200000-0x000000067fffffff] reserved
 
-greg k-h
+Test passed as below. As you can see, with patch applied, memmap init
+will cost much less time on numa node 1:
+
+Without the patch:
+[    0.065029] Early memory node ranges
+[    0.065030]   node   0: [mem 0x0000000000001000-0x000000000009bfff]
+[    0.065032]   node   0: [mem 0x0000000000100000-0x000000006cdcefff]
+[    0.065034]   node   0: [mem 0x000000006ffff000-0x000000006fffffff]
+[    0.065036]   node   0: [mem 0x0000000100000000-0x000000027fffffff]
+[    0.065038]   node   1: [mem 0x0000000280000000-0x00000004ffffffff]
+[    0.065040]   node   1: [mem 0x0000000508000000-0x000000067f1fffff]
+[    0.065185] Zeroed struct page in unavailable ranges: 16533 pages
+[    0.065187] Initmem setup node 0 [mem 0x0000000000001000-0x000000027fffffff]
+[    0.069616] Initmem setup node 1 [mem 0x0000000280000000-0x000000067f1fffff]
+[    0.096298] ACPI: PM-Timer IO Port: 0x408
+
+With the patch applied:
+[    0.065029] Early memory node ranges
+[    0.065030]   node   0: [mem 0x0000000000001000-0x000000000009bfff]
+[    0.065032]   node   0: [mem 0x0000000000100000-0x000000006cdcefff]
+[    0.065034]   node   0: [mem 0x000000006ffff000-0x000000006fffffff]
+[    0.065036]   node   0: [mem 0x0000000100000000-0x000000027fffffff]
+[    0.065038]   node   1: [mem 0x0000000280000000-0x00000004ffffffff]
+[    0.065041]   node   1: [mem 0x0000000508000000-0x000000067f1fffff]
+[    0.065187] Zeroed struct page in unavailable ranges: 16533 pages
+[    0.065189] Initmem setup node 0 [mem 0x0000000000001000-0x000000027fffffff]
+[    0.069572] Initmem setup node 1 [mem 0x0000000280000000-0x000000067f1fffff]
+[    0.070161] ACPI: PM-Timer IO Port: 0x408
+
+
+Baoquan He (1):
+  mm: memmap defer init dosn't work as expected
+
+ arch/ia64/mm/init.c | 4 ++--
+ include/linux/mm.h  | 5 +++--
+ mm/memory_hotplug.c | 2 +-
+ mm/page_alloc.c     | 8 +++++---
+ 4 files changed, 11 insertions(+), 8 deletions(-)
+
+-- 
+2.17.2
+
