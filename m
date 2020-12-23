@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10F592E129A
+	by mail.lfdr.de (Postfix) with ESMTP id 806252E129B
 	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:27:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729699AbgLWCWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:22:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49956 "EHLO mail.kernel.org"
+        id S1729653AbgLWCWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:22:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50890 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729614AbgLWCWS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:22:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E6002332A;
-        Wed, 23 Dec 2020 02:22:00 +0000 (UTC)
+        id S1729677AbgLWCW1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:22:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90AC0229CA;
+        Wed, 23 Dec 2020 02:22:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690121;
-        bh=1GB7BcDW3+Z6TwsT32Um4FgaMlGnJC75DeJMDOCwtb4=;
+        s=k20201202; t=1608690129;
+        bh=2pl4ejSP8/OhAcZMJCfdsl5czk+mOsk9D0P0/E5v1O0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IPPQ27kM8WT+HWJnNWsIV3kFGDRWp2Iy98dwKmKB1WhRFt4qUwmd3d2HWquVFl+Dn
-         w52FCNUMTdCRHuCVuGYtFtaq3kZG+Gcy210iQ+cDLZNOGpsd5/YuOBKpiP70fbSCYx
-         kMQOSjib+0oMI55I4FTiy/AHXQtD7Kraymbx8vKov08PxLa+csZt+G8Q4U9kTgwq6B
-         AjM/UE2jHTMay1rE0DUBXeVfyU/eLwgzcIRrdmLH/iX6Ckwjgcct5lCh1F+ZLFFbjf
-         nJ8VypBhzfQxVerEUkSrgkjMCf7mS2EGti3oIuczJNEzBsHwkEhVVsy8U4hszb37tF
-         ByLEsY1aTmCwA==
+        b=uVhAfGd3+emtlT2/Qeu+i7X9yBz3Ys6F42+LeXDAE/KxG1jGtuywUHsSZUs9PoT4A
+         4eDBOMhibHk9hejUii6ppLHgjtKmWIdyQdhWy3tfSFTPOA3m9tsNg2N17KdH8+8z4o
+         wvaYaZQMYsJUgJratijhOByNBc0pjtIrQpjRdR4XUWH03+v+YO8Qp+9nCrK7GwGzM9
+         RdDuVErbnkyhWRrHAe7m/jAEx9u/LzVVbXg11mVCMu6QORDJOE0ckxFboKuuC2dJEj
+         wDYB5L8CwZfKMN0BqRF00+Ji1JxDED3WDkKaclo7pZ+8V9FJ/tZant5ChO1AEOVb6c
+         P6r68tWuafSDQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Stefan Assmann <sassmann@kpanic.de>,
-        Aaron Brown <aaron.f.brown@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 47/87] i40e: report correct VF link speed when link state is set to enable
-Date:   Tue, 22 Dec 2020 21:20:23 -0500
-Message-Id: <20201223022103.2792705-47-sashal@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        syzbot <syzkaller@googlegroups.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 53/87] media: gp8psk: initialize stats at power control logic
+Date:   Tue, 22 Dec 2020 21:20:29 -0500
+Message-Id: <20201223022103.2792705-53-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223022103.2792705-1-sashal@kernel.org>
 References: <20201223022103.2792705-1-sashal@kernel.org>
@@ -44,68 +43,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Assmann <sassmann@kpanic.de>
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-[ Upstream commit 6ec12e1e9404acb27a7434220bbe5f75e7bb2859 ]
+[ Upstream commit d0ac1a26ed5943127cb0156148735f5f52a07075 ]
 
-When the virtual link state was set to "enable" ethtool would report
-link speed as 40000Mb/s regardless of the underlying device.
-Report the correct link speed.
+As reported on:
+	https://lore.kernel.org/linux-media/20190627222020.45909-1-willemdebruijn.kernel@gmail.com/
 
-Example from a XXV710 NIC.
-Before:
-$ ip link set ens3f0 vf 0 state auto
-$  ethtool enp8s2 | grep Speed
-        Speed: 25000Mb/s
-$ ip link set ens3f0 vf 0 state enable
-$ ethtool enp8s2 | grep Speed
-        Speed: 40000Mb/s
-After:
-$ ip link set ens3f0 vf 0 state auto
-$  ethtool enp8s2 | grep Speed
-        Speed: 25000Mb/s
-$ ip link set ens3f0 vf 0 state enable
-$ ethtool enp8s2 | grep Speed
-        Speed: 25000Mb/s
+if gp8psk_usb_in_op() returns an error, the status var is not
+initialized. Yet, this var is used later on, in order to
+identify:
+	- if the device was already started;
+	- if firmware has loaded;
+	- if the LNBf was powered on.
 
-Signed-off-by: Stefan Assmann <sassmann@kpanic.de>
-Tested-by: Aaron Brown <aaron.f.brown@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Using status = 0 seems to ensure that everything will be
+properly powered up.
+
+So, instead of the proposed solution, let's just set
+status = 0.
+
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Reported-by: Willem de Bruijn <willemb@google.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/media/usb/dvb-usb/gp8psk.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-index dd0c9604d3c92..bf2a1ae428610 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-@@ -58,7 +58,7 @@ static void i40e_vc_notify_vf_link_state(struct i40e_vf *vf)
- 	if (vf->link_forced) {
- 		pfe.event_data.link_event.link_status = vf->link_up;
- 		pfe.event_data.link_event.link_speed =
--			(vf->link_up ? VIRTCHNL_LINK_SPEED_40GB : 0);
-+			(vf->link_up ? i40e_virtchnl_link_speed(ls->link_speed) : 0);
- 	} else {
- 		pfe.event_data.link_event.link_status =
- 			ls->link_info & I40E_AQ_LINK_UP;
-@@ -4204,6 +4204,7 @@ int i40e_ndo_set_vf_link_state(struct net_device *netdev, int vf_id, int link)
+diff --git a/drivers/media/usb/dvb-usb/gp8psk.c b/drivers/media/usb/dvb-usb/gp8psk.c
+index 13e96b0aeb0fc..d97eab01cb8c7 100644
+--- a/drivers/media/usb/dvb-usb/gp8psk.c
++++ b/drivers/media/usb/dvb-usb/gp8psk.c
+@@ -185,7 +185,7 @@ static int gp8psk_load_bcm4500fw(struct dvb_usb_device *d)
+ 
+ static int gp8psk_power_ctrl(struct dvb_usb_device *d, int onoff)
  {
- 	struct i40e_netdev_priv *np = netdev_priv(netdev);
- 	struct i40e_pf *pf = np->vsi->back;
-+	struct i40e_link_status *ls = &pf->hw.phy.link_info;
- 	struct virtchnl_pf_event pfe;
- 	struct i40e_hw *hw = &pf->hw;
- 	struct i40e_vf *vf;
-@@ -4236,7 +4237,7 @@ int i40e_ndo_set_vf_link_state(struct net_device *netdev, int vf_id, int link)
- 		vf->link_forced = true;
- 		vf->link_up = true;
- 		pfe.event_data.link_event.link_status = true;
--		pfe.event_data.link_event.link_speed = VIRTCHNL_LINK_SPEED_40GB;
-+		pfe.event_data.link_event.link_speed = i40e_virtchnl_link_speed(ls->link_speed);
- 		break;
- 	case IFLA_VF_LINK_STATE_DISABLE:
- 		vf->link_forced = true;
+-	u8 status, buf;
++	u8 status = 0, buf;
+ 	int gp_product_id = le16_to_cpu(d->udev->descriptor.idProduct);
+ 
+ 	if (onoff) {
 -- 
 2.27.0
 
