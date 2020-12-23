@@ -2,91 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 417212E1FA9
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 18:00:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6BD2E1FB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 18:03:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727006AbgLWRAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 12:00:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58060 "EHLO
+        id S1727406AbgLWRCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 12:02:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726626AbgLWRAj (ORCPT
+        with ESMTP id S1726384AbgLWRCP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 12:00:39 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2699FC06179C
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 08:59:58 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id m5so77415pjv.5
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 08:59:58 -0800 (PST)
+        Wed, 23 Dec 2020 12:02:15 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30AD8C061794;
+        Wed, 23 Dec 2020 09:01:35 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id c12so10679912pfo.10;
+        Wed, 23 Dec 2020 09:01:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=G8haU6BgXULIrV8nV+mOGhVrtDsLgWYDMHodNPq2c+k=;
-        b=nxPF6DLi6PTF0R1avGovdGl1yW4NZ8C/usi9HXWThHlIk3eOQOakcdVAxyVpWPeTb4
-         hRUF9h797fyDzMLZrR5R67Rn8/aPmRk8aNiI6SJP0fqqgn1PymMpQy2ILAHN2gMyjef4
-         Cgun7GK5wQGeJzB4iOZGUjuqJj2hWsNonS4uyEGEbcamplVyUZ9aXFwl3HGW2ypZwT9+
-         21Xn2uDfssm05OHOinVd9t+3nRpXfXre6mcx7gX1TUChiVl7YdsYcxlZZ05JbyfJLB4P
-         swIXgLROgVYIZFem4Z+BPeH/bni5xVKztZ9/KwgU5fuLQrojhgnyGvlDZ3s6sw4o6aZM
-         Hr0Q==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=7z156e/uKkv/pjjwPftIVvO966IjR1f5aiNFEZCH6Gw=;
+        b=HY/yRb15PFKPXR0Iat2RACxzNCOVAMTaTi9CrstMyv/ItxD4KWO1sMmz+C8l0KWTIk
+         rgEMxpRYvPXSBgWKMoZ4GdWafzxIN8J7Kgn7cqqCqDo7r/1lq9uNesBZRNRTp8Aqezne
+         CpW7q2YMmRLoeUPLzZBryTx1h0OlLdI/wPz084BUykVMIy78KFmzbGZePNmY8jws1C2n
+         mu+n7cVsYJgLqMtHATXCz94dhNoE+26pFabzfykwUDuNDYG/Qe6avhOirxQXMko02V1F
+         6bgxBokSKG8uf7XsDQPsZ9LI8xDiBv3uzm6liiZy7fLZHbMND/ubMp6MTp4SMfCX+WTy
+         CzbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=G8haU6BgXULIrV8nV+mOGhVrtDsLgWYDMHodNPq2c+k=;
-        b=AFuRI3PHXPCVI0hAPx2FTQB2MSeepIZzb0qYjq0ULKFLF+huAVCauM5d6Xo3mSKI4E
-         XeY3SkY7aEtiZcyZn+SNvPvUKn4Dv/kCKzkQvEC0i/lvV2jjvGEEPzHYSkSWIYEYwYFN
-         9xV/ddaWT6LBOtWQ1kynupwZ2GUGeOlgDT3DRIdeTQyQQ3Pv4mGoMaA6O3qyFJkPiBUQ
-         gw6rTNUaVKH+cQEBSCv90lOWny0M9lsy3CjCuyVQ/A9ijPeTu7XbrqaMKFwDYa4cqxtd
-         zDGsNxdAUKWYqfIUVBYZeJNJWqI1H4H3lvXOqoQ18LB2xMbmDxiGpdRoN6qieIYkuLOw
-         XvEw==
-X-Gm-Message-State: AOAM532Pn+Q05dbYY/JAO7ORnlBzOT4q6DqxSyuqNPBHbm4Xd/l/EqTB
-        dBJzH0Igj0vw7G9jr7LRXXgNkMprzGZpyg==
-X-Google-Smtp-Source: ABdhPJwrxbMbXNCeVLzSh02VxbXirb6C3y1Atdo4OBb9bMh8QwovcHwhyJG3rO4RvsGQ8ZU5NM09Sw==
-X-Received: by 2002:a17:902:34f:b029:dc:3032:e47d with SMTP id 73-20020a170902034fb02900dc3032e47dmr23626341pld.15.1608742798161;
-        Wed, 23 Dec 2020 08:59:58 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id h20sm24177929pgv.23.2020.12.23.08.59.56
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=7z156e/uKkv/pjjwPftIVvO966IjR1f5aiNFEZCH6Gw=;
+        b=nPZ2kTvj3/JaLpai8QQSdT3qYkqWqz1lUzZxa+lJtG5UDUXB25yfeclZIkB007lJzp
+         RBf4cM+cEOMpVf5z/vPqmszFpJDqW4Nt3fXNVUpJgZ1Nc4n8P2mDtKEvMVNNWHz9KnEV
+         +pZGqKdYwi5pemD93XspbkPd48Lb1zahzJNWulHu9fY03LRVFnhgWZct3G+NcwtWwbEf
+         Yiia5VoOQAWHi/DItR5/wOj+MF1YT0fHPtU0/Dr4QMdAq4knCQvbogNu2yc0yIQ0GWL0
+         77rHkpKBZ2zmaLZzAi2e+UPlBPIANi7YHKJEuakQ9JW1qMHlsljTh3/a8FntDCJkNYPy
+         w/Ew==
+X-Gm-Message-State: AOAM532JPV+O/36WBZWCkdF0fvrxfGVirU8MlTomseqUzrxTq5TAP3kG
+        NATn8vbEuH5a3uAiS2Jp1DEkGn/qTKA=
+X-Google-Smtp-Source: ABdhPJyHwj0dwxGvjw/XH0Fj5rL0D6+CoIBHGo7R58lSyueswryIpY3BQGgAMjri5Wj4kEb2SaleaA==
+X-Received: by 2002:a63:e5e:: with SMTP id 30mr956059pgo.181.1608742894791;
+        Wed, 23 Dec 2020 09:01:34 -0800 (PST)
+Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:46ec:f978:4298:de79])
+        by smtp.gmail.com with ESMTPSA id er23sm238645pjb.12.2020.12.23.09.01.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Dec 2020 08:59:57 -0800 (PST)
-Date:   Wed, 23 Dec 2020 08:59:51 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     David Laight <David.Laight@aculab.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "syzbot+e87846c48bf72bc85311@syzkaller.appspotmail.com" 
-        <syzbot+e87846c48bf72bc85311@syzkaller.appspotmail.com>
-Subject: Re: [PATCH] KVM: x86: fix shift out of bounds reported by UBSAN
-Message-ID: <X+N3h9b5ieAxl6n/@google.com>
-References: <20201222102132.1920018-1-pbonzini@redhat.com>
- <X+I3SFzLGhEZIzEa@google.com>
- <01b7c21e3a864c0cb89fd036ebe03ccf@AcuMS.aculab.com>
- <64932096-22a8-27dd-a8d6-1e40f3119db4@redhat.com>
+        Wed, 23 Dec 2020 09:01:33 -0800 (PST)
+From:   Xie He <xie.he.0141@gmail.com>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Martin Schiller <ms@dev.tdt.de>,
+        Jakub Kicinski <kuba@kernel.org>, linux-x25@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.4 075/130] net/lapb: fix t1 timer handling for LAPB_STATE_0
+Date:   Wed, 23 Dec 2020 09:01:24 -0800
+Message-Id: <20201223170124.5963-1-xie.he.0141@gmail.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20201223021813.2791612-75-sashal@kernel.org>
+References: <20201223021813.2791612-75-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <64932096-22a8-27dd-a8d6-1e40f3119db4@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020, Paolo Bonzini wrote:
-> On 22/12/20 19:31, David Laight wrote:
-> > > 	/*
-> > > 	 * Use 2ULL to incorporate the necessary +1 in the shift; adding +1 in
-> > > 	 * the shift count will overflow SHL's max shift of 63 if s=0 and e=63.
-> > > 	 */
-> > A comment of the desired output value would be more use.
-> > I think it is:
-> > 	return 'e-s' ones followed by 's' zeros without shifting by 64.
-> > 
-> 
-> What about a mix of the two:
-> 
-> 	/*
-> 	 * Return 'e-s' ones followed by 's' zeros.  Note that the
-> 	 * apparently obvious 1ULL << (e - s + 1) can shift by 64 if
-> 	 * s=0 and e=63, which is undefined behavior.
-> 	 */
+> From: Martin Schiller <ms@dev.tdt.de>
+>
+> [ Upstream commit 62480b992ba3fb1d7260b11293aed9d6557831c7 ]
+>
+> 1. DTE interface changes immediately to LAPB_STATE_1 and start sending
+>    SABM(E).
+>
+> 2. DCE interface sends N2-times DM and changes to LAPB_STATE_1
+>    afterwards if there is no response in the meantime.
 
-Works for me, thanks!
+I don't think this patch is suitable for stable branches. This patch is
+part of a patch series that changes the lapb module from "establishing the
+L2 connection only when needed by L3", to "establishing the L2 connection
+automatically whenever we are able to". This is a behavioral change. It
+should be seen as a new feature. It is not a bug fix.
+
