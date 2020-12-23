@@ -2,111 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E80CD2E1AF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 11:26:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDD952E1AF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 11:26:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728653AbgLWKZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 05:25:03 -0500
-Received: from mail-il1-f197.google.com ([209.85.166.197]:37131 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728635AbgLWKZB (ORCPT
+        id S1728665AbgLWKZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 05:25:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728630AbgLWKZt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 05:25:01 -0500
-Received: by mail-il1-f197.google.com with SMTP id g10so13889810ile.4
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 02:24:46 -0800 (PST)
+        Wed, 23 Dec 2020 05:25:49 -0500
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97567C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 02:25:09 -0800 (PST)
+Received: by mail-qv1-xf2a.google.com with SMTP id 4so7358616qvh.1
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 02:25:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=BIVaZ+amJIYk17hcvNRfEOZkF3f5ibxZdG/rIwdc0Yo=;
+        b=WsMRU8hvXu0F0wH/5c7IygGvzENzsZgzwPb2r+VZVCSZEAHmwY5uXY9Z/eEQ9bTPJx
+         OSk4SsKP/Ew9tnicsAZRgkUYpqTC9H+X7PoRLPZ8TlRyLHm65mBOlFhDNoSpCGRNpafM
+         r5Mhs0Kl9EJ0oUzup5HrfkG5gCIUViqgx9AX54tQJ2I/Ue2KxNBnD1hEWnPvyN8r6d+N
+         NYq0OEErJtN7Y9r55tE3x0FJVLALay9FvR7BGEaIWa40CX5iMfu0MItMiU4jmCeIgNrw
+         OSR0GkCLLbPWBe+XoJx1s3S+7sVlC5uWj2rKXR/ufhwyi/9m6G1/FgrHor7wCaV14nXA
+         +cqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=QQuYF4pQJOcWayt5K3dL/v3AiRGyB7xbhwRNrH6/2r4=;
-        b=SopcbwCeTDr5P80JXDQJDEwdNJElrIQyvLLVi5JZQ18EgDEjmug4AcTOhgMOX8tfyy
-         pz7rKOCbt8+f5MT8Qa4pzO45Vq5gjPJ65qm7hL210g3aANw7PZGnJ8QueGmhflEh7+mD
-         d+fltqzrIyYN3hQ8ObGoOnxPV2aJk+uk5cRdod+ma7mXtSHqNvglCpsZ1QTqOT7dAbqq
-         lrDCLWiIf9IBbnxJV+pFOD1s3U9sCedN5usCv8f6HpONDzs7qSBPK8LDzyXEuqvY4RyZ
-         lr1PuMLFBD5s33vB4ZxqbC83u06uRSP04uQoOZFc6NS7LoAK4ctvuvv4YJNP6yxssBwv
-         klsA==
-X-Gm-Message-State: AOAM5312cmRUKO2+lnIsYVZaFJqAh+1sZnHR/5wRWnr/2HfJNcb9KlLt
-        CbP70wux6mIyoNy9iAUUSm8w3+IavrMTxcB3OsFf2+0ypE54
-X-Google-Smtp-Source: ABdhPJxKk9sLiqNaDSr6Rda5ORnrcqLaAg7IgNKfpP4eYf7As0Nq4QGsumWMTBk8en+7cJdDq/v/8lltDXjm537peNKhJ61jdzOf
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=BIVaZ+amJIYk17hcvNRfEOZkF3f5ibxZdG/rIwdc0Yo=;
+        b=N6SSqFhUjp3WtWSwa4z/13e/2lIWfOAOJFFx/pcYbytBWwQZLp2n34WWgEWZtfSjHW
+         wBISNHJDfl8IXnHyQ+U6p3RqO0dcHwFvpW2m8QSifTfVWfVbL5FAkQpoMTZye+OpJMEr
+         nib2M2ZOuIs7Q6Ci5nFBe4pqZTZuL6snvE7//eC6UMUJP7bN5Ddd5QPrV6LPQxoyOBZ2
+         nKiskux7oF08hYQb8ToRzQ7XtxM9DOYoIDQyn3ZFre+AzQINoADPQtDkJDMe3LZHiZpv
+         TyxG7gNpvZCmYPuSWr5J3fGvqlbpTJwe3PRXjqIJL/lc7tgUhtMp17YqTQ1CsGFLadOV
+         Fkog==
+X-Gm-Message-State: AOAM531vBPLHyC+2FhdaIcvAc92JGbchuPosC7rRnvmuwrPQ+4gBqKq1
+        uq10MS8j3YnKnMxEz91RLyDsgVbfBfna3eAvyOcPhA==
+X-Google-Smtp-Source: ABdhPJz8iGvbe3ixllpeEM440DsLvYlfTDTovSoPTiiXtRLWNKZydxThnASnGIXQw1Oh+sspyB/KsD5R5ugzc1umZMw=
+X-Received: by 2002:a0c:fe90:: with SMTP id d16mr26552099qvs.13.1608719108602;
+ Wed, 23 Dec 2020 02:25:08 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a6b:b2c3:: with SMTP id b186mr20870103iof.126.1608719060607;
- Wed, 23 Dec 2020 02:24:20 -0800 (PST)
-Date:   Wed, 23 Dec 2020 02:24:20 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000026aa7905b71f183a@google.com>
-Subject: UBSAN: object-size-mismatch in tipc_sk_filter_rcv
-From:   syzbot <syzbot+bc0b77f2a9209716067f@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, jmaloy@redhat.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com,
-        tipc-discussion@lists.sourceforge.net, ying.xue@windriver.com
+References: <000000000000264c6305a9c74d9b@google.com> <0000000000008647f705b6e215de@google.com>
+ <CACT4Y+YnmECGRg7yOrkCQAw6OSm6TeEzOCBnJE7F32aoL0_2RQ@mail.gmail.com>
+In-Reply-To: <CACT4Y+YnmECGRg7yOrkCQAw6OSm6TeEzOCBnJE7F32aoL0_2RQ@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 23 Dec 2020 11:24:57 +0100
+Message-ID: <CACT4Y+b02CGQ7nfZV2+O7G+ihwiyHtN-xj6hsG1LgK-QVWtRFQ@mail.gmail.com>
+Subject: Re: INFO: rcu detected stall in tipc_release
+To:     syzbot <syzbot+3654c027d861c6df4b06@syzkaller.appspotmail.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Dec 21, 2020 at 10:21 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+>
+> On Sun, Dec 20, 2020 at 10:37 AM syzbot
+> <syzbot+3654c027d861c6df4b06@syzkaller.appspotmail.com> wrote:
+> >
+> > syzbot suspects this issue was fixed by commit:
+> >
+> > commit cc00bcaa589914096edef7fb87ca5cee4a166b5c
+> > Author: Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>
+> > Date:   Wed Nov 25 18:27:22 2020 +0000
+> >
+> >     netfilter: x_tables: Switch synchronization to RCU
+> >
+> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1445cb37500000
+> > start commit:   7cc2a8ea Merge tag 'block-5.8-2020-07-01' of git://git.ker..
+> > git tree:       upstream
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=7be693511b29b338
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=3654c027d861c6df4b06
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12948233100000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11344c05100000
+> >
+> > If the result looks correct, please mark the issue as fixed by replying with:
+> >
+> > #syz fix: netfilter: x_tables: Switch synchronization to RCU
+> >
+> > For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+>
+> It's not immediately obvious that this is indeed the fix for this, but
+> also not obvious that this is not the fix for this. Bisection log
+> looks plausible.
+> Was this bug in tipc fixed? Is it the fix?
+> If I don't hear better suggestions I will close this bug as fixed by
+> this commit later.
 
-syzbot found the following issue on:
-
-HEAD commit:    5e60366d Merge tag 'fallthrough-fixes-clang-5.11-rc1' of g..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11913e0f500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=267a60b188ded8ed
-dashboard link: https://syzkaller.appspot.com/bug?extid=bc0b77f2a9209716067f
-compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+bc0b77f2a9209716067f@syzkaller.appspotmail.com
-
-================================================================================
-UBSAN: object-size-mismatch in ./include/linux/skbuff.h:2021:28
-member access within address 000000002c1825a5 with insufficient space
-for an object of type 'struct sk_buff'
-CPU: 1 PID: 9846 Comm: syz-executor.1 Not tainted 5.10.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x137/0x1be lib/dump_stack.c:120
- ubsan_epilogue lib/ubsan.c:148 [inline]
- handle_object_size_mismatch lib/ubsan.c:297 [inline]
- ubsan_type_mismatch_common+0x1e2/0x390 lib/ubsan.c:310
- __ubsan_handle_type_mismatch_v1+0x41/0x50 lib/ubsan.c:339
- __skb_queue_before include/linux/skbuff.h:2021 [inline]
- __skb_queue_tail include/linux/skbuff.h:2054 [inline]
- tipc_sk_filter_rcv+0x2bf/0x2330 net/tipc/socket.c:2342
- tipc_sk_enqueue net/tipc/socket.c:2438 [inline]
- tipc_sk_rcv+0x3d9/0xf80 net/tipc/socket.c:2490
- tipc_node_xmit+0x285/0xb10 net/tipc/node.c:1689
- __tipc_sendmsg+0x1cbe/0x2f90 net/tipc/socket.c:1524
- tipc_sendmsg+0x51/0x70 net/tipc/socket.c:1409
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xc1/0xf0 net/socket.c:672
- ____sys_sendmsg+0x4b3/0x840 net/socket.c:2336
- ___sys_sendmsg net/socket.c:2390 [inline]
- __sys_sendmmsg+0x3de/0x860 net/socket.c:2480
- __do_sys_sendmmsg net/socket.c:2509 [inline]
- __se_sys_sendmmsg net/socket.c:2506 [inline]
- __x64_sys_sendmmsg+0x9c/0xb0 net/socket.c:2506
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45e149
-Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f20231a6c68 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
-RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 000000000045e149
-RDX: 0000000000000002 RSI: 00000000200000c0 RDI: 0000000000000003
-RBP: 000000000119bfc8 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000119bf8c
-R13: 00007ffd81950ccf R14: 00007f20231a79c0 R15: 000000000119bf8c
-================================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+#syz fix: netfilter: x_tables: Switch synchronization to RCU
