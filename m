@@ -2,35 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AFFB2E120E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:20:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 579B12E1213
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:20:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728115AbgLWCSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:18:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45448 "EHLO mail.kernel.org"
+        id S1728282AbgLWCSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:18:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727990AbgLWCSY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:18:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5112C2222D;
-        Wed, 23 Dec 2020 02:17:20 +0000 (UTC)
+        id S1728208AbgLWCSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:18:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9212A23384;
+        Wed, 23 Dec 2020 02:17:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608689841;
-        bh=ujoq2AeYSKSnolLItAFtjYIMJgf20e1hS9qUJL0oRQE=;
+        s=k20201202; t=1608689851;
+        bh=ozinDI24uCMnH6Lu+b2WB5734r8VopwjntVrHDyAv2g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X5ePFQ9IM75n1poMgGWoVTK7bk1LRWc2TRa/hlu8OP5+xOF9hyHaz6BQ8t2IXFXkR
-         kuRK6JhqVrIKr0Ng3qTB40QX9WHG5fxSUgR2RLxVcY+jEQx347MA+a9EyqWr1sdYK/
-         B5yTPJupNXHnOTxFPNvarBtbE/gwR/6Lsq1myMhfN1nFRR27juAyf8DjAQipn00UNV
-         2r/Bo6KWQGyVpC++6qvky2dQ7rSsFBuI/m8e5reTaSZqUyDllJy9MMMfzcZN4lkqgF
-         E+wsstU7WaMGcmcMFz79G3qqqdontgPxO/1Pi26cN8YejIaCy6PviOmySbOdHgWg6V
-         3s3Ln7Fj/SI6Q==
+        b=o8jKn0Q9aimqhZy83E4Br3bQH3/AGzzKEpi3LbPLT0u3CHU0eurpFhBchmRlKfQFj
+         WUEIt0K7S5wwWomGjf+TwElBEciFebJLOO0qg1BIwDgOwQ0o9lvnujwkLKGv/V9MSi
+         5H2+kQ9ZCq13WzN20oE2sSeKX2GXoaVtBiu+yqxgPW4DfiXGyb0kuPVPzQ3pdg0lMx
+         QrWfdnBTU8qlKIOsl1tpkRZAMMjcBzerIoZOKHDysJiUXmyYZ1KHYhS2xMVpcEMCyg
+         61KYDUxTSilUrqA+RTf5WLbg5sC9d3kUx9fFRnswMpAHle8cQy6dm6W8NJWM+xdQnb
+         GIBMieyAmsA0g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Qinglang Miao <miaoqinglang@huawei.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 041/217] mips: cm: add missing iounmap() on error in mips_cm_probe()
-Date:   Tue, 22 Dec 2020 21:13:30 -0500
-Message-Id: <20201223021626.2790791-41-sashal@kernel.org>
+Cc:     Marek Vasut <marex@denx.de>, Angus Ainslie <angus@akkea.ca>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Martin Kepplinger <martink@posteo.de>,
+        Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>,
+        Siva Rebbagondla <siva8118@gmail.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 050/217] rsi: Fix TX EAPOL packet handling against iwlwifi AP
+Date:   Tue, 22 Dec 2020 21:13:39 -0500
+Message-Id: <20201223021626.2790791-50-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223021626.2790791-1-sashal@kernel.org>
 References: <20201223021626.2790791-1-sashal@kernel.org>
@@ -42,32 +49,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qinglang Miao <miaoqinglang@huawei.com>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit 2673ecf9586551c5bcee499c1cc1949f6f7cc9a1 ]
+[ Upstream commit 65277100caa2f2c62b6f3c4648b90d6f0435f3bc ]
 
-Add the missing iounmap() of iounmap(mips_gcr_base) before
-return from mips_cm_probe() in the error handling case.
+In case RSI9116 SDIO WiFi operates in STA mode against Intel 9260 in AP mode,
+the association fails. The former is using wpa_supplicant during association,
+the later is set up using hostapd:
 
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+iwl$ cat hostapd.conf
+interface=wlp1s0
+ssid=test
+country_code=DE
+hw_mode=g
+channel=1
+wpa=2
+wpa_passphrase=test
+wpa_key_mgmt=WPA-PSK
+iwl$ hostapd -d hostapd.conf
+
+rsi$ wpa_supplicant -i wlan0 -c <(wpa_passphrase test test)
+
+The problem is that the TX EAPOL data descriptor RSI_DESC_REQUIRE_CFM_TO_HOST
+flag and extended descriptor EAPOL4_CONFIRM frame type are not set in case the
+AP is iwlwifi, because in that case the TX EAPOL packet is 2 bytes shorter.
+
+The downstream vendor driver has this change in place already [1], however
+there is no explanation for it, neither is there any commit history from which
+such explanation could be obtained.
+
+[1] https://github.com/SiliconLabs/RS911X-nLink-OSD/blob/master/rsi/rsi_91x_hal.c#L238
+
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Angus Ainslie <angus@akkea.ca>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Kalle Valo <kvalo@codeaurora.org>
+Cc: Lee Jones <lee.jones@linaro.org>
+Cc: Martin Kepplinger <martink@posteo.de>
+Cc: Sebastian Krzyszkowiak <sebastian.krzyszkowiak@puri.sm>
+Cc: Siva Rebbagondla <siva8118@gmail.com>
+Cc: linux-wireless@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20201015111616.429220-1-marex@denx.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/kernel/mips-cm.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/wireless/rsi/rsi_91x_hal.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/kernel/mips-cm.c b/arch/mips/kernel/mips-cm.c
-index f60af512c8773..90f1c3df1f0e4 100644
---- a/arch/mips/kernel/mips-cm.c
-+++ b/arch/mips/kernel/mips-cm.c
-@@ -266,6 +266,7 @@ int mips_cm_probe(void)
- 	if ((base_reg & CM_GCR_BASE_GCRBASE) != addr) {
- 		pr_err("GCRs appear to have been moved (expected them at 0x%08lx)!\n",
- 		       (unsigned long)addr);
-+		iounmap(mips_gcr_base);
- 		mips_gcr_base = NULL;
- 		return -ENODEV;
- 	}
+diff --git a/drivers/net/wireless/rsi/rsi_91x_hal.c b/drivers/net/wireless/rsi/rsi_91x_hal.c
+index 3f7e3cfb6f00d..ce9892152f4d4 100644
+--- a/drivers/net/wireless/rsi/rsi_91x_hal.c
++++ b/drivers/net/wireless/rsi/rsi_91x_hal.c
+@@ -248,7 +248,8 @@ int rsi_prepare_data_desc(struct rsi_common *common, struct sk_buff *skb)
+ 			rsi_set_len_qno(&data_desc->len_qno,
+ 					(skb->len - FRAME_DESC_SZ),
+ 					RSI_WIFI_MGMT_Q);
+-		if ((skb->len - header_size) == EAPOL4_PACKET_LEN) {
++		if (((skb->len - header_size) == EAPOL4_PACKET_LEN) ||
++		    ((skb->len - header_size) == EAPOL4_PACKET_LEN - 2)) {
+ 			data_desc->misc_flags |=
+ 				RSI_DESC_REQUIRE_CFM_TO_HOST;
+ 			xtend_desc->confirm_frame_type = EAPOL4_CONFIRM;
 -- 
 2.27.0
 
