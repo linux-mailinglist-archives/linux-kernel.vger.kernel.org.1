@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E3942E14BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:48:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1EF32E14B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:48:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730652AbgLWCmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:42:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49658 "EHLO mail.kernel.org"
+        id S1731127AbgLWCmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:42:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50890 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729932AbgLWCXL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:23:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B636423331;
-        Wed, 23 Dec 2020 02:22:49 +0000 (UTC)
+        id S1728850AbgLWCXS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:23:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5701122573;
+        Wed, 23 Dec 2020 02:22:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690170;
-        bh=WJ2YbcCzCbbMfZ8umvB9RNvslUnQNWgf7B6zOnaQml8=;
+        s=k20201202; t=1608690176;
+        bh=Nn9LclMCcw0UUENslgl/frSUmzlmcUtrLKpSJTmK2Ls=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=femxJxMjaDJ6W0/KJcd1UfjKMUs5VNxYtF9UPSc+mUXcCeGVZV4cKa9WakSQqhyh+
-         KAcpLk3X1336IAAPbMXNLyVDJ8Ax/0fIg+zlOX+EtcrrxqKAGfmGUcxAWjD6Pf4Z4X
-         aln6LRtE752N7FMp67SxUGZhCUUgJD3p2HBDdMFuV15EveyuNMuEWUUy34G6FeBMc+
-         q7iKmImQIltQoXmNG7EK0h45G77KCISL5xL1aiKE7IHoKmn1ekUA3BCGo9+1bc+gOW
-         m3U5hOW+t/qj1g3J2//kVrWOP4uuSaytmlw5OmNB1lA+5ahXiRiVqhD/JW1j7vHrEx
-         BvFNebyPsEE1g==
+        b=kdRKUsQYkFbr3yI1F8xU5Q/5SEgo3mjQgCmpVDe8w+9yJxdpzb8rR68Waful2DVu7
+         xV5yxQFRynMSg0ueQf/fVEgbNlD1vXQz4BBmezrB9IAHy7OQA/AKdgcC3SCxOTVLjt
+         eGVrvxr8HmZ9U20V8OpFyUzfsRZDxN4SacPcFM9Vut7U4XSy1UQrq6F74VA4R8HSQ8
+         c422cb+S0XWZKq7lZq11Af5w8PG/NkP0sHscE11iULhpDwBFVPkCJl+nh8LV6iL0oz
+         SmQDrvEEZ75c/uJSyXYjr5Bb0wJ2awfv39MuT5IdbOr7Zvhps+oQCbBlXFbeeac1Jd
+         cN5Sqshn06GeQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 86/87] cdrom: Reset sector_size back it is not 2048.
-Date:   Tue, 22 Dec 2020 21:21:02 -0500
-Message-Id: <20201223022103.2792705-86-sashal@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-security-module@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: [PATCH AUTOSEL 4.14 02/66] tomoyo: fix clang pointer arithmetic warning
+Date:   Tue, 22 Dec 2020 21:21:48 -0500
+Message-Id: <20201223022253.2793452-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201223022103.2792705-1-sashal@kernel.org>
-References: <20201223022103.2792705-1-sashal@kernel.org>
+In-Reply-To: <20201223022253.2793452-1-sashal@kernel.org>
+References: <20201223022253.2793452-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -41,54 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit b5f32555567cfe0a5d5dbe7c1e85ebe37b3f545a ]
+[ Upstream commit d9594e0409651a237903a13c9718df889f43d43b ]
 
-In v2.4.0-test2pre2 mmc_ioctl_cdrom_read_data() was extended by issuing
-a MODE_SELECT opcode to change the sector size and READ_10 to perform
-the actual read if the READ_CD opcode is not support.
-The sector size is never changed back to the previous value of 2048
-bytes which is however denoted by the comment for version 3.09 of the
-cdrom.c file.
+clang warns about additions on NULL pointers being undefined in C:
 
-Use cdrom_switch_blocksize() to change the sector size only if the
-requested size deviates from 2048. Change it back to 2048 after the read
-operation if a change was mode.
+security/tomoyo/securityfs_if.c:226:59: warning: arithmetic on a null pointer treated as a cast from integer to pointer is a GNU extension [-Wnull-pointer-arithmetic]
+        securityfs_create_file(name, mode, parent, ((u8 *) NULL) + key,
 
-Link: https://lkml.kernel.org/r/20201204164803.ovwurzs3257em2rp@linutronix.de
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Change the code to instead use a cast through uintptr_t to avoid
+the warning.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cdrom/cdrom.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ security/tomoyo/securityfs_if.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/cdrom/cdrom.c b/drivers/cdrom/cdrom.c
-index d3947388a3ef3..f379fb00f1773 100644
---- a/drivers/cdrom/cdrom.c
-+++ b/drivers/cdrom/cdrom.c
-@@ -2996,13 +2996,15 @@ static noinline int mmc_ioctl_cdrom_read_data(struct cdrom_device_info *cdi,
- 		 * SCSI-II devices are not required to support
- 		 * READ_CD, so let's try switching block size
- 		 */
--		/* FIXME: switch back again... */
--		ret = cdrom_switch_blocksize(cdi, blocksize);
--		if (ret)
--			goto out;
-+		if (blocksize != CD_FRAMESIZE) {
-+			ret = cdrom_switch_blocksize(cdi, blocksize);
-+			if (ret)
-+				goto out;
-+		}
- 		cgc->sshdr = NULL;
- 		ret = cdrom_read_cd(cdi, cgc, lba, blocksize, 1);
--		ret |= cdrom_switch_blocksize(cdi, blocksize);
-+		if (blocksize != CD_FRAMESIZE)
-+			ret |= cdrom_switch_blocksize(cdi, CD_FRAMESIZE);
- 	}
- 	if (!ret && copy_to_user(arg, cgc->buffer, blocksize))
- 		ret = -EFAULT;
+diff --git a/security/tomoyo/securityfs_if.c b/security/tomoyo/securityfs_if.c
+index 49393c2a3f8bc..9c7c8ec87de2a 100644
+--- a/security/tomoyo/securityfs_if.c
++++ b/security/tomoyo/securityfs_if.c
+@@ -131,8 +131,8 @@ static const struct file_operations tomoyo_self_operations = {
+  */
+ static int tomoyo_open(struct inode *inode, struct file *file)
+ {
+-	const int key = ((u8 *) file_inode(file)->i_private)
+-		- ((u8 *) NULL);
++	const u8 key = (uintptr_t) file_inode(file)->i_private;
++
+ 	return tomoyo_open_control(key, file);
+ }
+ 
+@@ -223,7 +223,7 @@ static const struct file_operations tomoyo_operations = {
+ static void __init tomoyo_create_entry(const char *name, const umode_t mode,
+ 				       struct dentry *parent, const u8 key)
+ {
+-	securityfs_create_file(name, mode, parent, ((u8 *) NULL) + key,
++	securityfs_create_file(name, mode, parent, (void *) (uintptr_t) key,
+ 			       &tomoyo_operations);
+ }
+ 
 -- 
 2.27.0
 
