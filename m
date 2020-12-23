@@ -2,80 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0B3A2E1983
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 08:52:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D65FB2E1985
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 08:52:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727958AbgLWHvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 02:51:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727063AbgLWHvl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 02:51:41 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25960C0613D3;
-        Tue, 22 Dec 2020 23:51:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=DsUx9mdZt707uyB4UvQMhQtnSAx/QVWXa/XPYhsbpHk=; b=JOxqt6e59p0nOH9ElSu4Ow4Hgl
-        TiduuNNekNGLdyKvSi9zc3opGxX4X7xqH0pdopvqdHxWxOqeylhmdX8KmirUxZm8TzOAtSoaJxvL4
-        QRveder0RjEfY0dsMfLcvOsHJqmobESmc/JUTBoVlzkNU3DF0etyLOAYkqCFUTO8e2ZAUKOMnPsG3
-        di09XN+NeLaE/OYI1toNu2olSscAPqyGn2oc1cdSa/CF7GcNa+y7xlzwDDQN4sXcFpMxitkQRolQU
-        RebBLDaEQDgqKvu9F590yvKx1G5dj3lqqXAIGoiOrhmAhDqC09yJnoWxgT1D58EHVrzvF9B+gBgnU
-        iopambxQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kryv1-0004HW-Ec; Wed, 23 Dec 2020 07:50:47 +0000
-Date:   Wed, 23 Dec 2020 07:50:47 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Florent Revest <revest@chromium.org>
-Cc:     Christoph Hellwig <hch@infradead.org>, Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
-Message-ID: <20201223075047.GA15781@infradead.org>
-References: <50047415-cafe-abab-a6ba-e85bb6a9b651@fb.com>
- <CACYkzJ7T4y7in1AsCvJ2izA3yiAke8vE9SRFRCyTPeqMnDHoyQ@mail.gmail.com>
- <e8b03cbc-c120-43d5-168c-cde5b6a97af8@fb.com>
- <CAEf4BzYz9Yf9abPBtP+swCuqvvhL0cbbbF1x-3stg9mp=a6+-A@mail.gmail.com>
- <194b5a6e6e30574a035a3e3baa98d7fde7f91f1c.camel@chromium.org>
- <CAADnVQK6GjmL19zQykYbh=THM9ktQUzfnwF_FfhUKimCxDnnkQ@mail.gmail.com>
- <CABRcYm+zjC-WH2gxtfEX5S6mZj-5_ByAzVd5zi3aRmQv-asYqg@mail.gmail.com>
- <221fb873-80fc-5407-965e-b075c964fa13@fb.com>
- <20201222141818.GA17056@infradead.org>
- <CABRcYmKBgQYHezKVaLCVwUvksFaVuU7RHW8VVjM6auOC_GOr+w@mail.gmail.com>
+        id S1727991AbgLWHvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 02:51:48 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:36578 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727063AbgLWHvr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 02:51:47 -0500
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1kryvI-0006eG-HD; Wed, 23 Dec 2020 18:51:05 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Wed, 23 Dec 2020 18:51:04 +1100
+Date:   Wed, 23 Dec 2020 18:51:04 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
+Subject: Re: [PATCH] crypto: keembay-ocs-aes - Add dependency on HAS_IOMEM
+Message-ID: <20201223075104.GB8269@gondor.apana.org.au>
+References: <20201217163510.372558-1-daniele.alessandrelli@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CABRcYmKBgQYHezKVaLCVwUvksFaVuU7RHW8VVjM6auOC_GOr+w@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20201217163510.372558-1-daniele.alessandrelli@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 09:17:41PM +0100, Florent Revest wrote:
-> On Tue, Dec 22, 2020 at 3:18 PM Christoph Hellwig <hch@infradead.org> wrote:
-> >
-> > FYI, there is a reason why kallsyms_lookup is not exported any more.
-> > I don't think adding that back through a backdoor is a good idea.
+On Thu, Dec 17, 2020 at 04:35:10PM +0000, Daniele Alessandrelli wrote:
+> From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
 > 
-> Did you maybe mean kallsyms_lookup_name (the one that looks an address
-> up based on a symbol name) ? It used to be exported but isn't anymore
-> indeed.
-> However, this is not what we're trying to do. As far as I can tell,
-> kallsyms_lookup (the one that looks a symbol name up based on an
-> address) has never been exported but its close cousins sprint_symbol
-> and sprint_symbol_no_offset (which only call kallsyms_lookup and
-> pretty print the result) are still exported, they are also used by
-> vsprintf. Is this an issue ?
+> Add dependency for CRYPTO_DEV_KEEMBAY_OCS_AES_SM4 on HAS_IOMEM to
+> prevent build failures.
+> 
+> Fixes: 88574332451380f4 ("crypto: keembay - Add support for Keem Bay OCS AES/SM4")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+> ---
+>  drivers/crypto/keembay/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
 
-Indeed, I thought of kallsyms_lookup_name.  Let me take another
-look at the patch, but kallsyms_lookup still seems like a very
-lowlevel function to export to arbitrary eBPF programs.
+Patch applied.  Thanks.
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
