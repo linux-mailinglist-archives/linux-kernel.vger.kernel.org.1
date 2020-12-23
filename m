@@ -2,116 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D1242E1F65
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 17:24:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A16F2E1F69
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 17:26:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726221AbgLWQYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 11:24:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57190 "EHLO mail.kernel.org"
+        id S1727149AbgLWQY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 11:24:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725807AbgLWQYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 11:24:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6ED1E2229C;
-        Wed, 23 Dec 2020 16:23:29 +0000 (UTC)
+        id S1725785AbgLWQY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 11:24:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B6244222BB;
+        Wed, 23 Dec 2020 16:24:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608740611;
-        bh=JGM+26aHL4PtP44Zg8xOYHbq6LRGGL7oFlrZL0Y3xx4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WiVzcUdXRW1Pd8E9I9Pip4Mr0xbK1ynGN7oZ+yJseqr+P3f6PM4AJtesIPRJfkaLZ
-         wj4TNCsvRVVJNyyyxHopbcughBpG72EX3K2tJdkcmOkAp+vTJlW61J9S8lcKvGAuK8
-         JiqqirlP4idJizlgQnkGXfJTumL3VpgU5wKM8zTGCdPkFJJuOl36AbL0uA5pfee6TB
-         Ymv05AGVfJ+CTbcD6/OGkXhB8CYNZWtE95Ge/p0clmZibJNaUX+Yb4eqgNTOdhOsvm
-         aTuPsG4uuHYQFkm/XDjrjCoIJdVLPyZXbq8Gzds/oPIgVkTyTKUWFanZ1CtbRJyqxx
-         HZ9us+z5DBO6A==
-Date:   Wed, 23 Dec 2020 16:23:26 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     Yu Zhao <yuzhao@google.com>, Peter Zijlstra <peterz@infradead.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        linux-mm <linux-mm@kvack.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable <stable@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-Message-ID: <20201223162325.GA22699@willie-the-truck>
-References: <20201221172711.GE6640@xz-x1>
- <76B4F49B-ED61-47EA-9BE4-7F17A26B610D@gmail.com>
- <X+D0hTZCrWS3P5Pi@google.com>
- <CAHk-=wg_UBuo7ro1fpEGkMyFKA1+PxrE85f9J_AhUfr-nJPpLQ@mail.gmail.com>
- <9E301C7C-882A-4E0F-8D6D-1170E792065A@gmail.com>
- <CAHk-=wg-Y+svNy3CDkJjj0X_CJkSbpERLg64-Vqwq5u7SC4z0g@mail.gmail.com>
- <X+ESkna2z3WjjniN@google.com>
- <D4916F41-DE4A-42C6-8702-944382631A02@gmail.com>
- <X+I7TcwMsiS1Bhy/@google.com>
- <E36448EB-2888-42FE-A9F2-2DCF0508C138@gmail.com>
+        s=k20201202; t=1608740656;
+        bh=BxgtCRLcshuJRlikNm+aCB62jEh25FJudr2hKT0iFBs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=imP8cyt0YqKYSOV+/42mq3DypEZsGPAZSSXLMPEdEPScm4/EY1XPkENi6UWAxfxTc
+         GoD6fxxwpxuU2i8WN5mhv/cR3zTjIbQe8g0leT1obTsd7ZlvqshpPw0vGhZvKpmnr4
+         fNldDZnuWAHR/KBqF3CaoV8bsVPM7y3cQh34cMyenHFQAsfWRBZIP9bJDUQzcge+FJ
+         dvMDuzEIfX66Eci4VQzcm5ssi0GvPIyvFmRT90b+iYJAAm0yl16YEepIGsVPrDa3Ko
+         kqsergld5QbAJnC+9MwBXjEBgEWfot9ZUG7J980DIsjugCkRtH+ZoImBiKcH7HGp0S
+         24vtru5idOIIA==
+Received: by pali.im (Postfix)
+        id 9C4CD7F0; Wed, 23 Dec 2020 17:24:14 +0100 (CET)
+From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+To:     Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Tomasz Maciej Nowak <tmn505@gmail.com>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peter Chen <peter.chen@nxp.com>
+Subject: [PATCH] usb: host: xhci: mvebu: make USB 3.0 PHY optional for Armada 3720
+Date:   Wed, 23 Dec 2020 17:24:03 +0100
+Message-Id: <20201223162403.10897-1-pali@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <E36448EB-2888-42FE-A9F2-2DCF0508C138@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 11:20:21AM -0800, Nadav Amit wrote:
-> > On Dec 22, 2020, at 10:30 AM, Yu Zhao <yuzhao@google.com> wrote:
-> > 
-> > On Tue, Dec 22, 2020 at 04:40:32AM -0800, Nadav Amit wrote:
-> >>> On Dec 21, 2020, at 1:24 PM, Yu Zhao <yuzhao@google.com> wrote:
-> >>> 
-> >>> On Mon, Dec 21, 2020 at 12:26:22PM -0800, Linus Torvalds wrote:
-> >>>> On Mon, Dec 21, 2020 at 12:23 PM Nadav Amit <nadav.amit@gmail.com> wrote:
-> >>>>> Using mmap_write_lock() was my initial fix and there was a strong pushback
-> >>>>> on this approach due to its potential impact on performance.
-> >>>> 
-> >>>> From whom?
-> >>>> 
-> >>>> Somebody who doesn't understand that correctness is more important
-> >>>> than performance? And that userfaultfd is not the most important part
-> >>>> of the system?
-> >>>> 
-> >>>> The fact is, userfaultfd is CLEARLY BUGGY.
-> >>>> 
-> >>>>         Linus
-> >>> 
-> >>> Fair enough.
-> >>> 
-> >>> Nadav, for your patch (you might want to update the commit message).
-> >>> 
-> >>> Reviewed-by: Yu Zhao <yuzhao@google.com>
-> >>> 
-> >>> While we are all here, there is also clear_soft_dirty() that could
-> >>> use a similar fix…
-> >> 
-> >> Just an update as for why I have still not sent v2: I fixed
-> >> clear_soft_dirty(), created a reproducer, and the reproducer kept failing.
-> >> 
-> >> So after some debugging, it appears that clear_refs_write() does not flush
-> >> the TLB. It indeed calls tlb_finish_mmu() but since 0758cd830494
-> >> ("asm-generic/tlb: avoid potential double flush”), tlb_finish_mmu() does not
-> >> flush the TLB since there is clear_refs_write() does not call to
-> >> __tlb_adjust_range() (unless there are nested TLBs are pending).
-> > 
-> > Sorry Nadav, I assumed you knew this existing problem fixed by:
-> > https://patchwork.kernel.org/project/linux-mm/cover/20201210121110.10094-1-will@kernel.org/
-> > 
-> 
-> Thanks, Yu! For some reason I assumed it was already upstreamed and did not
-> look back (yet if I was cc’d on v2…)
+Older ATF does not provide SMC call for USB 3.0 phy power on functionality
+and therefore initialization of xhci-hcd is failing when older version of
+ATF is used. In this case phy_power_on() function returns -EOPNOTSUPP.
 
-I'll repost in the new year, as it was a bit tight for the merge window.
-I've made a note to put you on cc.
+[    3.108467] mvebu-a3700-comphy d0018300.phy: unsupported SMC call, try updating your firmware
+[    3.117250] phy phy-d0018300.phy.0: phy poweron failed --> -95
+[    3.123465] xhci-hcd: probe of d0058000.usb failed with error -95
 
-> Yet, something still goes bad. Debugging.
+This patch calls phy_power_on() in xhci_mvebu_a3700_init_quirk() function
+and in case it returns -EOPNOTSUPP then XHCI_SKIP_PHY_INIT quirk is set to
+instruct xhci-plat to skip PHY initialization.
 
-Did you figure this out? I tried to read the whole thread, but it's a bit
-of a rollercoaster.
+This patch fixes above failure by ignoring 'not supported' error in
+aardvark driver. In this case it is expected that phy is already power on.
 
-Will
+It fixes initialization of xhci-hcd on Espressobin boards where is older
+Marvell's Arm Trusted Firmware without SMC call for USB 3.0 phy power.
+
+This is regression introduced in commit bd3d25b07342 ("arm64: dts: marvell:
+armada-37xx: link USB hosts with their PHYs") where USB 3.0 phy was defined
+and therefore xhci-hcd on Espressobin with older ATF started failing.
+
+Fixes: bd3d25b07342 ("arm64: dts: marvell: armada-37xx: link USB hosts with their PHYs")
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Cc: <stable@vger.kernel.org> # 5.1+: ea17a0f153af: phy: marvell: comphy: Convert internal SMCC firmware return codes to errno
+Cc: <stable@vger.kernel.org> # 5.1+: f768e718911e: usb: host: xhci-plat: add priv quirk for skip PHY initialization
+
+---
+
+When applying this patch, please include additional line
+
+Cc: <stable@vger.kernel.org> # 5.1+: <COMMIT_ID>: usb: host: xhci-plat: fix support for XHCI_SKIP_PHY_INIT quirk
+
+with correct COMMIT_ID of mentioned patch which is available in the thread:
+https://lore.kernel.org/lkml/20201221150903.26630-1-pali@kernel.org/T/#u
+
+As mentioned patch is required for change in this patch to work. Above
+mentioned patch is prerequisite for this patch and therefore needs to be
+reviewed and applied prior this patch.
+
+Note that same issue as in this USB 3.0 PHY patch was already resolved and
+applied also for SATA PHY and PCIe PHY on A3720 SOC in following commits:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=45aefe3d2251e4e229d7662052739f96ad1d08d9
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=b0c6ae0f8948a2be6bf4e8b4bbab9ca1343289b6
+
+And these commits were also backported to stable kernel versions (where
+were affected commits which broke drivers initialization).
+---
+ drivers/usb/host/xhci-mvebu.c | 35 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
+
+diff --git a/drivers/usb/host/xhci-mvebu.c b/drivers/usb/host/xhci-mvebu.c
+index 60651a50770f..ec4f6d6e44cf 100644
+--- a/drivers/usb/host/xhci-mvebu.c
++++ b/drivers/usb/host/xhci-mvebu.c
+@@ -8,6 +8,7 @@
+ #include <linux/mbus.h>
+ #include <linux/of.h>
+ #include <linux/platform_device.h>
++#include <linux/phy/phy.h>
+ 
+ #include <linux/usb.h>
+ #include <linux/usb/hcd.h>
+@@ -77,9 +78,43 @@ int xhci_mvebu_mbus_init_quirk(struct usb_hcd *hcd)
+ int xhci_mvebu_a3700_init_quirk(struct usb_hcd *hcd)
+ {
+ 	struct xhci_hcd	*xhci = hcd_to_xhci(hcd);
++	struct device *dev = hcd->self.controller;
++	struct phy *phy;
++	int ret;
+ 
+ 	/* Without reset on resume, the HC won't work at all */
+ 	xhci->quirks |= XHCI_RESET_ON_RESUME;
+ 
++	/* Old bindings miss the PHY handle */
++	phy = of_phy_get(dev->of_node, "usb3-phy");
++	if (IS_ERR(phy) && PTR_ERR(phy) == -EPROBE_DEFER)
++		return -EPROBE_DEFER;
++	else if (IS_ERR(phy))
++		goto phy_out;
++
++	ret = phy_init(phy);
++	if (ret)
++		goto phy_put;
++
++	ret = phy_set_mode(phy, PHY_MODE_USB_HOST_SS);
++	if (ret)
++		goto phy_exit;
++
++	ret = phy_power_on(phy);
++	if (ret == -EOPNOTSUPP) {
++		/* Skip initializatin of XHCI PHY when it is unsupported by firmware */
++		dev_warn(dev, "PHY unsupported by firmware\n");
++		xhci->quirks |= XHCI_SKIP_PHY_INIT;
++	}
++	if (ret)
++		goto phy_exit;
++
++	phy_power_off(phy);
++phy_exit:
++	phy_exit(phy);
++phy_put:
++	of_phy_put(phy);
++phy_out:
++
+ 	return 0;
+ }
+-- 
+2.20.1
+
