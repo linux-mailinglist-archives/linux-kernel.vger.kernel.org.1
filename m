@@ -2,185 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23DB92E204D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 19:12:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 406262E2050
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 19:16:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727533AbgLWSME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 13:12:04 -0500
-Received: from mail-oo1-f44.google.com ([209.85.161.44]:35901 "EHLO
-        mail-oo1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725957AbgLWSME (ORCPT
+        id S1727710AbgLWSPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 13:15:47 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:39732 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726923AbgLWSPr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 13:12:04 -0500
-Received: by mail-oo1-f44.google.com with SMTP id j8so3881413oon.3;
-        Wed, 23 Dec 2020 10:11:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=5ZfXZOdUpEKwmzrcYiPsjjQixKxbTqciJh9FiMnUGTw=;
-        b=kDmZknlUJpILWYFuKcB2hcpaL/oAA9hhj89/INZ/AQ1PpUdDIuBZmj4pIVknd3B0qC
-         ZqpTMLxna5K22PKnu8FaKGL7QIuCS/LjyEQtoxkJPPhP+V5bsxEoMmzL9UGygEMUpwEU
-         rIPfqCo5K1jPJ5La9CrjZtlZZsOoF5tSTYxMSk6kuXDdu02UAGg1mbRhfTqF5NPOtKQC
-         GpLt3dvpSvaMTGKu0JPnYdfKSly3b1Q/LT9upzbicEMVTWyXgCJAL0i5hlVZPDKGqRAK
-         B+xvDKLXx477ice+SeFv+Ownu5LGJ47/5UETlaSo6aC8pACczWvYvruhyIvINfJrCx6P
-         a1gQ==
-X-Gm-Message-State: AOAM532VE7yUYNpGfcNnC4PwOqWklBnthLwr3jhEL68iTkVWR0htu1/T
-        W7588hbAl3ZBEHL8cZV/4A==
-X-Google-Smtp-Source: ABdhPJznC55Mrah2vt1L6mUaWGw30sZ9lupEpdUgaLd3WaTrQpbEzqCYxC0CikZ56I7QsodgyjqChQ==
-X-Received: by 2002:a4a:e606:: with SMTP id f6mr11033474oot.4.1608747082420;
-        Wed, 23 Dec 2020 10:11:22 -0800 (PST)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id t2sm2696466otj.47.2020.12.23.10.11.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Dec 2020 10:11:21 -0800 (PST)
-Received: (nullmailer pid 797894 invoked by uid 1000);
-        Wed, 23 Dec 2020 18:11:20 -0000
-Date:   Wed, 23 Dec 2020 11:11:20 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Frank Rowand <frowand.list@gmail.com>
-Subject: [GIT PULL] Devicetree fixes for 5.11, take 1
-Message-ID: <20201223181120.GA797630@robh.at.kernel.org>
+        Wed, 23 Dec 2020 13:15:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1608747346; x=1640283346;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=aqMqNfUUrBSBGofkDY2MEj+70emrzEpu+BRSKs82Hro=;
+  b=MV/tQOCFmwMUPW93EXB/55DOBBkB8TOQyhdAAtgd/7XavewZ4Lh3Vx3L
+   5YhRhk1Bx9YfrxOtiGHRiR1GuraoFNkBu2AOEhYMBN1+ps9SVxcc/eNbO
+   laNJVbIDM7BDO1GEIxxisZ1XJAFAVWUROi/mY1doc7W/XSZae+9hcNfLh
+   yzvUxRJR1xl1gmtNBXLXz80ONtH9pTHwFie6iEwASQTXFm0vrwy92gQVB
+   6hitbkXVrONnBjw/481j5L7uevAq/8JjgRhd+Kb8FE6Ll6wO5fVqKCUDt
+   4tjALCc+PFU6znrpK5sLWmp3cmqGoQPA3dTyOUqQqdtGnsL7Sj5aHipAc
+   A==;
+IronPort-SDR: 7gtpuIo/8p7UWhPzt9mZ166K9XuYHg1MHrYESZN32nOfyPNHPutB6hU+DgpKrvPuO91z7VNgi9
+ idcdhYCBdBtcHSrQaUc1BA+dpPvyYXXKFsjBQsw0n22IWAvHJDRH6hTL0NQaCQgtNAQeJoxeFB
+ cjxWhkorWw+qp5dYZPPoB6sGGLDtufV42uZOzbFyawYJATJuSvUWHPQH4ZHzxakjFhchr1SENE
+ QtuVrB+IK6ZQvtes67PN/C+PjGy0XvbPI5XJASEkS+OyOFg64bJ7tiZMTBRTiRrOtkHFh8Q0jG
+ VSI=
+X-IronPort-AV: E=Sophos;i="5.78,442,1599548400"; 
+   d="scan'208";a="108760320"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Dec 2020 11:14:30 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 23 Dec 2020 11:14:30 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Wed, 23 Dec 2020 11:14:30 -0700
+Date:   Wed, 23 Dec 2020 19:14:29 +0100
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH net 0/2] MRP without hardware offload?
+Message-ID: <20201223181429.h4q3e37qs5g2sp46@soft-dev3.localdomain>
+References: <20201223144533.4145-1-rasmus.villemoes@prevas.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
+In-Reply-To: <20201223144533.4145-1-rasmus.villemoes@prevas.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+The 12/23/2020 15:45, Rasmus Villemoes wrote:
+> 
+> Hi Horatiu and net folks
 
-Please pull DT fixes for 5.11.
+Hi Rasmus,
 
-Rob
+> 
+> I'm having quite some trouble getting MRP working in a simple setup
+> involving three mv88e6250 switches in a ring, with one node set as
+> manager and the other two as clients.
+> 
+> I'm reasonably confident these two patches are necessary and correct
+> (though the second one affects quite a bit more than MRP, so comments
+> welcome), but they are not sufficient - for example, I'm wondering
+> about why there doesn't seem to be any code guarding against sending a
+> test packet back out the port it came in.
+> 
+> I have tried applying a few more patches, but since the end result
+> still doesn't seem to result in a working MRP setup, I'm a bit out of
+> ideas, and not proposing any of those yet.
+> 
+> Has anyone managed to set up an MRP ring with no hardware offload
+> support? I'm using commit 9030e898a2f232fdb4a3b2ec5e91fa483e31eeaf
+> from https://github.com/microchip-ung/mrp.git and kernel v5.10.2.
 
-The following changes since commit d64c6f96ba86bd8b97ed8d6762a8c8cc1770d214:
+I was expecting that you still need to do something in the switchdev
+callbacks. Because otherwise I expect that the HW will flood these
+frames. For a client I was expecting to add a MDB entry and have the
+ring ports in this entry. While for a manager you can have also an MDB
+where the host joined and could return -EOPNOTSUPP so then the SW will
+detect when it stops receiving these frames.
 
-  Merge tag 'net-5.11-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2020-12-17 13:45:24 -0800)
+Most of my tests where done when there was not HW offload at all(no
+switchdev) or when there was MRP hardware offload.
 
-are available in the Git repository at:
+> 
+> Rasmus Villemoes (2):
+>   net: mrp: fix definitions of MRP test packets
+>   net: switchdev: don't set port_obj_info->handled true when -EOPNOTSUPP
+> 
+>  include/uapi/linux/mrp_bridge.h |  4 ++--
+>  net/switchdev/switchdev.c       | 23 +++++++++++++----------
+>  2 files changed, 15 insertions(+), 12 deletions(-)
+> 
+> --
+> 2.23.0
+> 
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git tags/devicetree-fixes-for-5.11-1
-
-for you to fetch changes up to 2b8f061a4f505aad11fd36adb24c3138ad09b96b:
-
-  dt-bindings: Drop redundant maxItems/items (2020-12-22 18:58:24 -0700)
-
-----------------------------------------------------------------
-Devicetree fixes for v5.11, take 1:
-
-- Correct the JSON pointer syntax in binding schemas
-
-- Drop unnecessary *-supply schema constraints
-
-- Drop redundant maxItems/items on array schemas
-
-- Fix various yamllint warnings
-
-- Fix various missing 'additionalProperties' properties
-
-----------------------------------------------------------------
-Michael Tretter (1):
-      dt-bindings: xlnx,vcu-settings: fix dt_binding_check warnings
-
-Paul Cercueil (1):
-      dt-bindings/display: abt,y030xx067a: Fix binding
-
-Rob Herring (5):
-      dt-bindings: Fix JSON pointers
-      media: dt-bindings: coda: Add missing 'additionalProperties'
-      dt-bindings: Drop unnecessary *-supply schemas properties
-      dt-bindings: net: qcom,ipa: Drop unnecessary type ref on 'memory-region'
-      dt-bindings: Drop redundant maxItems/items
-
-Zhen Lei (6):
-      dt-bindings: serial: add the required property 'additionalProperties'
-      dt-bindings: soc: add the required property 'additionalProperties'
-      dt-bindings: devapc: add the required property 'additionalProperties'
-      dt-bindings: media: nokia,smia: eliminate yamllint warnings
-      dt-bindings: display: eliminate yamllint warnings
-      dt-bindings: clock: imx8qxp-lpcg: eliminate yamllint warnings
-
- .../devicetree/bindings/arm/idle-states.yaml       |  2 +-
- .../bindings/bus/allwinner,sun50i-a64-de2.yaml     |  2 +-
- .../devicetree/bindings/bus/baikal,bt1-axi.yaml    |  2 +-
- .../devicetree/bindings/clock/imx8qxp-lpcg.yaml    | 20 +++++------
- .../bindings/connector/usb-connector.yaml          | 10 +++---
- .../bindings/display/bridge/analogix,anx7625.yaml  |  4 +--
- .../bindings/display/bridge/anx6345.yaml           |  2 --
- .../bindings/display/bridge/intel,keembay-dsi.yaml |  4 +--
- .../bindings/display/bridge/ite,it6505.yaml        |  2 --
- .../bindings/display/bridge/lvds-codec.yaml        |  3 +-
- .../devicetree/bindings/display/bridge/ps8640.yaml |  2 --
- .../bindings/display/bridge/simple-bridge.yaml     |  1 -
- .../display/bridge/thine,thc63lvd1024.yaml         |  1 -
- .../bindings/display/bridge/toshiba,tc358775.yaml  |  2 --
- .../bindings/display/intel,keembay-msscam.yaml     |  4 +--
- .../bindings/display/panel/abt,y030xx067a.yaml     |  2 +-
- .../bindings/display/panel/novatek,nt36672a.yaml   |  2 +-
- .../bindings/display/xlnx/xlnx,zynqmp-dpsub.yaml   |  1 -
- .../devicetree/bindings/dma/dma-common.yaml        |  4 +--
- .../devicetree/bindings/dma/dma-router.yaml        |  2 +-
- .../devicetree/bindings/dma/ingenic,dma.yaml       |  2 +-
- .../devicetree/bindings/dma/renesas,rcar-dmac.yaml |  1 -
- .../bindings/dma/snps,dma-spear1340.yaml           | 10 +++---
- Documentation/devicetree/bindings/eeprom/at24.yaml |  4 +--
- Documentation/devicetree/bindings/eeprom/at25.yaml |  4 +--
- .../devicetree/bindings/hwmon/moortec,mr75203.yaml |  2 +-
- .../devicetree/bindings/hwmon/sensirion,shtc1.yaml |  4 +--
- .../devicetree/bindings/hwmon/ti,tmp513.yaml       |  2 +-
- .../devicetree/bindings/iio/adc/lltc,ltc2496.yaml  |  3 +-
- .../bindings/iio/humidity/ti,hdc2010.yaml          |  3 +-
- .../bindings/iio/light/upisemi,us5182.yaml         |  2 +-
- .../bindings/iio/proximity/semtech,sx9310.yaml     |  6 ++--
- .../bindings/input/fsl,mpr121-touchkey.yaml        |  3 +-
- .../devicetree/bindings/input/gpio-keys.yaml       | 12 +++----
- .../bindings/input/touchscreen/edt-ft5x06.yaml     |  3 +-
- .../bindings/interrupt-controller/mti,gic.yaml     |  4 +--
- .../interrupt-controller/ti,pruss-intc.yaml        |  2 +-
- .../bindings/interrupt-controller/ti,sci-inta.yaml |  2 +-
- .../devicetree/bindings/leds/backlight/common.yaml |  4 +--
- Documentation/devicetree/bindings/leds/common.yaml | 16 ++++-----
- .../devicetree/bindings/leds/leds-lp55xx.yaml      | 10 +++---
- .../devicetree/bindings/mailbox/arm,mhu.yaml       |  1 -
- Documentation/devicetree/bindings/media/coda.yaml  | 42 +++++++++++-----------
- .../bindings/media/i2c/maxim,max9286.yaml          |  1 -
- .../devicetree/bindings/media/i2c/mipi-ccs.yaml    | 14 ++++----
- .../devicetree/bindings/media/i2c/sony,imx214.yaml |  3 --
- .../devicetree/bindings/media/i2c/sony,imx274.yaml |  3 --
- .../devicetree/bindings/mfd/st,stmfx.yaml          |  3 +-
- .../bindings/net/allwinner,sun8i-a83t-emac.yaml    |  6 ++--
- .../bindings/net/amlogic,meson-dwmac.yaml          |  2 +-
- Documentation/devicetree/bindings/net/dsa/dsa.yaml |  6 ++--
- .../bindings/net/ethernet-controller.yaml          | 24 ++++++-------
- .../devicetree/bindings/net/ethernet-phy.yaml      | 20 +++++------
- .../bindings/net/fsl,qoriq-mc-dpmac.yaml           |  2 +-
- Documentation/devicetree/bindings/net/mdio.yaml    |  2 +-
- .../bindings/net/mediatek,star-emac.yaml           |  2 +-
- .../devicetree/bindings/net/qcom,ipa.yaml          |  3 +-
- .../devicetree/bindings/net/snps,dwmac.yaml        | 38 ++++++++++----------
- .../bindings/net/socionext,uniphier-ave4.yaml      |  2 +-
- .../devicetree/bindings/net/ti,cpsw-switch.yaml    |  2 +-
- .../devicetree/bindings/net/ti,dp83867.yaml        | 12 +++----
- .../devicetree/bindings/net/ti,dp83869.yaml        |  8 ++---
- .../bindings/net/ti,k3-am654-cpsw-nuss.yaml        |  4 +--
- .../bindings/net/wireless/qcom,ath11k.yaml         |  2 +-
- .../devicetree/bindings/phy/ti,omap-usb2.yaml      |  4 +--
- .../bindings/power/mediatek,power-controller.yaml  | 12 +++----
- .../bindings/power/supply/cw2015_battery.yaml      |  2 +-
- .../devicetree/bindings/powerpc/sleep.yaml         |  2 +-
- .../bindings/regulator/anatop-regulator.yaml       |  1 -
- Documentation/devicetree/bindings/serial/8250.yaml |  6 ++--
- .../devicetree/bindings/serial/litex,liteuart.yaml |  2 ++
- .../bindings/soc/litex/litex,soc-controller.yaml   |  2 ++
- .../devicetree/bindings/soc/mediatek/devapc.yaml   |  2 ++
- .../devicetree/bindings/soc/ti/k3-ringacc.yaml     |  2 +-
- .../bindings/soc/xilinx/xlnx,vcu-settings.yaml     | 15 ++++++--
- .../bindings/sound/allwinner,sun4i-a10-codec.yaml  |  2 +-
- .../bindings/sound/nvidia,tegra30-hda.yaml         |  2 --
- .../devicetree/bindings/sound/st,stm32-sai.yaml    |  4 +--
- .../devicetree/bindings/usb/renesas,usb-xhci.yaml  |  1 -
- .../devicetree/bindings/usb/renesas,usbhs.yaml     |  3 --
- 80 files changed, 207 insertions(+), 228 deletions(-)
+-- 
+/Horatiu
