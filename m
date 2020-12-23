@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEC132E1455
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:47:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E3092E1499
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:48:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730052AbgLWCXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:23:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52102 "EHLO mail.kernel.org"
+        id S1730972AbgLWClO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:41:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728174AbgLWCX0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:23:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B10723359;
-        Wed, 23 Dec 2020 02:23:06 +0000 (UTC)
+        id S1728912AbgLWCX2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:23:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E49422AAF;
+        Wed, 23 Dec 2020 02:23:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690186;
-        bh=goaIIuZKrLNP7nxSPkB+ROf/ExZZq/+Rhxm/cQUuscU=;
+        s=k20201202; t=1608690188;
+        bh=MAJyDIDzl0y0Ea6FEt5VUHOzIfZ9GOV1Yrm1iTEG/mE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IZ1CDAT7+9ApSQAfGcE5UfWkwm//gNuhPTeS70V5Og6bCV8oRjRHTnI9ATOFIX1vI
-         PcjvwW9Hv5ymCS8iZOZ9BGn5bwyC/ZgAhqViOU9DobcwKEnQMjs74sTtjUivuklAJc
-         A8XKtYg0lPCJeeRnsxxwXWniOeyJh3Zln8o+RJ8XnDOQCkxoi/Qh/sSWJBOJ8sEtRn
-         8d0VUEHU2Y1LKiGzGO3DBqYwRtxuBya0j2x18znqkDdy0tqVYZphMfU+Y/68iQlnjM
-         Ub/bhgjB26fqAhK4LPZHhb352Om8sb8Y26/d2s5wBF+5o2YsLW8tng+9GoLCCvlUaE
-         YQx5SDk0BZMDg==
+        b=etV1GHRk7nmGM/A6yHmSLZUydQXK33Sf0qDEfDHNNE2I/ziTHqWgv/8DZW58M5CJG
+         RhcFwdTtT7M6BMw2wg16li7vIeivRW//qfSognRFhJSjoBF4J7mQfH1UeOsqaQl12i
+         f+53B48KldMlc+zf6oQZaMbUm/sfGMRVj8oq9ENZXaNf+fRuYfyHBteQdz5VL2chnx
+         CY6xwDQhMlGXCUUx6s1KTRM6vIwmzeIz7P77JiKXOSevMp0eUmZL+dMkMLI8dtCh+a
+         LjP++hAu571frMWbgHXW4HKR/A5DGcwx6UEKTCNFb1jFjA9H6W8LjKbK0PZRwW8fDF
+         saunSKBVJ6WFg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.14 11/66] locktorture: Prevent hangs for invalid arguments
-Date:   Tue, 22 Dec 2020 21:21:57 -0500
-Message-Id: <20201223022253.2793452-11-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, rcu@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 12/66] rcutorture: Prevent hangs for invalid arguments
+Date:   Tue, 22 Dec 2020 21:21:58 -0500
+Message-Id: <20201223022253.2793452-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223022253.2793452-1-sashal@kernel.org>
 References: <20201223022253.2793452-1-sashal@kernel.org>
@@ -43,40 +43,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-[ Upstream commit 6b74fa0a776e3715d385b23d29db469179c825b0 ]
+[ Upstream commit 4994684ce10924a0302567c315c91b0a64eeef46 ]
 
-If an locktorture torture-test run is given a bad kvm.sh argument, the
+If an rcutorture torture-test run is given a bad kvm.sh argument, the
 test will complain to the console, which is good.  What is bad is that
 from the user's perspective, it will just hang for the time specified
 by the --duration argument.  This commit therefore forces an immediate
-kernel shutdown if a lock_torture_init()-time error occurs, thus avoiding
+kernel shutdown if a rcu_torture_init()-time error occurs, thus avoiding
 the appearance of a hang.  It also forces a console splat in this case
 to clearly indicate the presence of an error.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/locking/locktorture.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ kernel/rcu/rcutorture.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
-index 032868be32594..5b9fde4432cfe 100644
---- a/kernel/locking/locktorture.c
-+++ b/kernel/locking/locktorture.c
-@@ -40,6 +40,7 @@
- #include <linux/slab.h>
- #include <linux/percpu-rwsem.h>
- #include <linux/torture.h>
-+#include <linux/reboot.h>
- 
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Paul E. McKenney <paulmck@us.ibm.com>");
-@@ -1062,6 +1063,10 @@ static int __init lock_torture_init(void)
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index f0c599bf4058c..0904caa1b7344 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -1906,6 +1906,10 @@ rcu_torture_init(void)
  unwind:
  	torture_init_end();
- 	lock_torture_cleanup();
+ 	rcu_torture_cleanup();
 +	if (shutdown_secs) {
-+		WARN_ON(!IS_MODULE(CONFIG_LOCK_TORTURE_TEST));
++		WARN_ON(!IS_MODULE(CONFIG_RCU_TORTURE_TEST));
 +		kernel_power_off();
 +	}
  	return firsterr;
