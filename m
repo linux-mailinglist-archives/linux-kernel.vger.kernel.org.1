@@ -2,70 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 535262E1AAC
+	by mail.lfdr.de (Postfix) with ESMTP id E42252E1AAD
 	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 11:01:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728289AbgLWJ7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 04:59:33 -0500
-Received: from mail-wr1-f54.google.com ([209.85.221.54]:32923 "EHLO
-        mail-wr1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726022AbgLWJ7d (ORCPT
+        id S1728308AbgLWKA5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 23 Dec 2020 05:00:57 -0500
+Received: from lithops.sigma-star.at ([195.201.40.130]:34410 "EHLO
+        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726022AbgLWKA4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 04:59:33 -0500
-Received: by mail-wr1-f54.google.com with SMTP id t30so18053012wrb.0;
-        Wed, 23 Dec 2020 01:59:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QWP1RktMTYfsl0fKzYCCQin4ZcwvidMtCHL6zQrN284=;
-        b=YSmY+8LKaoW/AA+oKYdPFwbpCWli9Kn+yz8plsfETHRvWUitOFnIfJLNzYIEAp6eUB
-         7xvZHjOB2ns3UXGGUaPr7pSKPxw1OUub4HwqfSmyh4mps0cT8Wp4D47O/N/FbEfr5TKy
-         C9Dv9FHaM2I2iUgKBtVW5l00bR+IONh1eUqwmARr+LyKp7Gv+BEKbmdA09q51rYUNlV7
-         JeH2uocophnyOd5eyDuH1Hd8RaTByTLIs7OGOzS/9eQ/cBhyvn/arEPwKSVLQpEe/jw8
-         ZvkezAtY3uMBoCVBoOD+xrXjFY5pztW7si9/GCZ8n3fyp1ZZgkDNSmgH9E+1ZiB/ZwSX
-         WcGA==
-X-Gm-Message-State: AOAM531gLVVnHHJuAc4WP92shBZ98xHXEuZjpYfhhM4UB1uI5Paw6lkO
-        7LB8SZQFftvZ0YrKzkKom3Q=
-X-Google-Smtp-Source: ABdhPJwHW+EgtqX+b/mAV/tabaT1OoBl6ncVwl9nzsD8vQQrKSD/Ux6WqKiSQc6e54EmSQ9o5Lboew==
-X-Received: by 2002:a5d:4f90:: with SMTP id d16mr28172923wru.120.1608717531682;
-        Wed, 23 Dec 2020 01:58:51 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id w13sm34073722wrt.52.2020.12.23.01.58.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Dec 2020 01:58:50 -0800 (PST)
-Date:   Wed, 23 Dec 2020 10:58:49 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>
-Cc:     robh@kernel.org, shawnguo@kernel.org, festevam@gmail.com,
-        kernel@pengutronix.de, linux-imx@nxp.com, kernel@puri.sm,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/4] arm64: dts: imx8mq-librem5: Move usdhc clocks
- assignment to board DT
-Message-ID: <20201223095849.GB11611@kozik-lap>
-References: <20201222151347.7886-1-martin.kepplinger@puri.sm>
- <20201222151347.7886-4-martin.kepplinger@puri.sm>
+        Wed, 23 Dec 2020 05:00:56 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 00029625DE06;
+        Wed, 23 Dec 2020 11:00:13 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id PvEedl0pH8YN; Wed, 23 Dec 2020 11:00:13 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 85EB3625DE07;
+        Wed, 23 Dec 2020 11:00:13 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id X7jk5AndnOpC; Wed, 23 Dec 2020 11:00:13 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 591BE625DE06;
+        Wed, 23 Dec 2020 11:00:13 +0100 (CET)
+Date:   Wed, 23 Dec 2020 11:00:13 +0100 (CET)
+From:   Richard Weinberger <richard@nod.at>
+To:     Chengsong Ke <kechengsong@huawei.com>
+Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        wangfangpeng1@huawei.com, chengzhihao1 <chengzhihao1@huawei.com>
+Message-ID: <135307670.158287.1608717613022.JavaMail.zimbra@nod.at>
+In-Reply-To: <20201223062808.27512-1-kechengsong@huawei.com>
+References: <20201223062808.27512-1-kechengsong@huawei.com>
+Subject: Re: [PATCH] ubifs: Fix read out-of-bounds in
+ ubifs_jnl_write_inode()
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201222151347.7886-4-martin.kepplinger@puri.sm>
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
+Thread-Topic: ubifs: Fix read out-of-bounds in ubifs_jnl_write_inode()
+Thread-Index: z+tkpY/z0vMi1cpMRZMXcPO+z7DtJw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 04:13:46PM +0100, Martin Kepplinger wrote:
-> According to commit e045f044e84e ("arm64: dts: imx8mq: Move usdhc clocks
-> assignment to board DT") add the clocks assignment to imx8mq-librem5.dtsi
-> too.
+Chengsong Ke,
+
+----- Ursprüngliche Mail -----
+> The memory area allocated in ubifs_jnl_write_inode() is not aligned with 8
+> bytes:
+> ino_start = ino = kmalloc(write_len, GFP_NOFS);
 > 
-> Fixes: e045f044e84e ("arm64: dts: imx8mq: Move usdhc clocks assignment to board DT")
-> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+> When ino_start passed into write_head -> ubifs_wbuf_write_nolock:
+>    n = aligned_len >> c->max_write_shift;
+>    if (n) {
+>      n <<= c->max_write_shift;
+>      err = ubifs_leb_write(c, wbuf->lnum, buf + written, wbuf->offs, n);
+>      // Read oob occurs here, read n bytes from buf, and buf is passed from
+>      @ino_start which is
+>      // not 8 bytes aligned(write_len < n). Program read (n - write_len) more bytes.
+>    }
+> 
+> Reproducer:
+> 0. config KASAN && apply print.patch
+> 1. mount ubifs on /root/temp
+> 2. run test.sh
+> 3. cd /root/temp && ls // change atime for link_file
+> 4. wait 1~2 minutes
+> 
+> Cc: <stable@vger.kernel.org>
+> Fixes: 1e51764a3c2ac0 ("UBIFS: add new flash file system")
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=210865
+> 
+> Signed-off-by: Chengsong Ke <kechengsong@huawei.com>
 > ---
->  arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi | 4 ++++
->  1 file changed, 4 insertions(+)
+> fs/ubifs/io.c | 11 +++++++++--
+> 1 file changed, 9 insertions(+), 2 deletions(-)
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Good catch!
+Please address the problem in ubifs_jnl_write_inode().
+The length there needs to be properly aligned like all other journal
+functions do.
+I think you managed to trigger the issue because ui->data_len is not aligned.
 
-Best regards,
-Krzysztof
+Thanks,
+//richard
