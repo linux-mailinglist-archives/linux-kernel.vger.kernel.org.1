@@ -2,69 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69BEC2E10C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 01:23:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80EDF2E10C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 01:24:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726285AbgLWAVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 19:21:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46032 "EHLO
+        id S1726340AbgLWAYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 19:24:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726039AbgLWAVs (ORCPT
+        with ESMTP id S1725807AbgLWAYZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 19:21:48 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83E82C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 16:21:07 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id o17so36138947lfg.4
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 16:21:07 -0800 (PST)
+        Tue, 22 Dec 2020 19:24:25 -0500
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06375C0613D6
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 16:23:45 -0800 (PST)
+Received: by mail-il1-x12f.google.com with SMTP id q1so13567386ilt.6
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 16:23:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DLFc43+zWZaHz7DJE5w0IA8m/d3/STNRHdNjNBYY/r8=;
-        b=Kv96F1RjqhLKNH4Di/XoAkh4fGcFanJF/35mBeZg8s5yZd6emVuhDTmAbKdCOPjTHy
-         2Flkg4YAHNfaKVQVpWzaowFcfIsg0qWnCHYScg1wPkWTGMP48AsbRBDUDmFxjUz6rUTh
-         Xoab7E7PwRF0MbFD3jGQK+ux0O7RWJxy/Q1DA=
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zPVUyN0X2UaL/Rf0O3PrEWZ3gBNDq2ynrHr8/vpcWJw=;
+        b=I5zPqBlWm/SLmDdOaoYaeHfuhH0ps9HdFKks+nISg5vlCt9Tou8OEjurUZN9h7YKqD
+         XHTk1YJFEcHfyd3wXn7lrxj/vAcOLoKhcuFssd2zzXB8TTHdR56+2p/JzIYmUFLg+u4w
+         nTJokCzMmzI4xioWPxVkgwJrTsJCnR7civiuosDvLxdKRomoJItfF+XkBZsM6qpp7kmO
+         fKgphZK1yPNJqfrm4qgZfKjTG1+aqoB7xdxch5HO/4JWXbwToK4V2GxcYOyxOLONFw9/
+         Bs7jNsyy6e7B9caoKNZ9RqO0cJc3DBxGhk/3HOYBQEYU6ualqWblfc/XotI4GarIdtNW
+         Z+cA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DLFc43+zWZaHz7DJE5w0IA8m/d3/STNRHdNjNBYY/r8=;
-        b=QB1p5IMaP4oNvylLh3DN1K11OodNO6PLWQfkE2q466DuddHXoHiOlGpj9Zaqei88Sv
-         gte7Tqg/RsiT8VHiCQj/VA71OYVoqq3vP+25KI7NdZr/fxUK/EMcD82vf5oJF2Wy3mbO
-         OF96py4RT3Wu0VTPNXiDcp8tZu+KOC9NWDBtw0gDBnVRBgp+6TrE33Uw2BTluxPy90/i
-         iEyHqrfVpu+h+rMEnWEh1eDvI9pFDr1MHnwmtRw9OHou6YoG9G6QFw72OHhrF5jeiLAU
-         Nn8xJctCIQFi9ocXF/SwzfzLTD6lu1dd5AIH/wHEtaA1ErASO+4KHaM+7z6NoAn6tO2N
-         BoJw==
-X-Gm-Message-State: AOAM532xyrgF7PpvY+VgIVmtAyhuSqs6VnBH2aWIENFMDkYJoCQFLGSP
-        JnH/MBkAX9XuI5fbBVQPxIOS6I2Dc78HmQ==
-X-Google-Smtp-Source: ABdhPJytMSTqWgxkf4kWLXYHjMZ/hFVu6Obar87/hQMXdv8nDYZ72u40AZozJseC0Krw8XCaLXtBZg==
-X-Received: by 2002:ac2:4463:: with SMTP id y3mr9261320lfl.94.1608682865330;
-        Tue, 22 Dec 2020 16:21:05 -0800 (PST)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
-        by smtp.gmail.com with ESMTPSA id o138sm2528357lfa.171.2020.12.22.16.21.03
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Dec 2020 16:21:04 -0800 (PST)
-Received: by mail-lf1-f44.google.com with SMTP id m12so36107395lfo.7
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 16:21:03 -0800 (PST)
-X-Received: by 2002:a05:6512:338f:: with SMTP id h15mr9238858lfg.40.1608682863624;
- Tue, 22 Dec 2020 16:21:03 -0800 (PST)
-MIME-Version: 1.0
-References: <9E301C7C-882A-4E0F-8D6D-1170E792065A@gmail.com>
- <CAHk-=wg-Y+svNy3CDkJjj0X_CJkSbpERLg64-Vqwq5u7SC4z0g@mail.gmail.com>
- <X+ESkna2z3WjjniN@google.com> <1FCC8F93-FF29-44D3-A73A-DF943D056680@gmail.com>
- <20201221223041.GL6640@xz-x1> <CAHk-=wh-bG4thjXUekLtrCg8FRrdWjtT40ibXXLSm_hzQG8eOw@mail.gmail.com>
- <CALCETrV=8tY7h=aaudWBEn-MJnNkm2wz5qjH49SYqwkjYTpOaA@mail.gmail.com>
- <X+JJqK91plkBVisG@redhat.com> <X+JhwVX3s5mU9ZNx@google.com>
- <X+Js/dFbC5P7C3oO@redhat.com> <X+KDwu1PRQ93E2LK@google.com> <CAHk-=wiBWkgxLtwD7n01irD7hTQzuumtrqCkxxZx=6dbiGKUqQ@mail.gmail.com>
-In-Reply-To: <CAHk-=wiBWkgxLtwD7n01irD7hTQzuumtrqCkxxZx=6dbiGKUqQ@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 22 Dec 2020 16:20:47 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjNedWcjAfPW7pdPTM0-gSXABsv9AA+wCebXbh3tuRTRQ@mail.gmail.com>
-Message-ID: <CAHk-=wjNedWcjAfPW7pdPTM0-gSXABsv9AA+wCebXbh3tuRTRQ@mail.gmail.com>
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-To:     Yu Zhao <yuzhao@google.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zPVUyN0X2UaL/Rf0O3PrEWZ3gBNDq2ynrHr8/vpcWJw=;
+        b=JAJlhTukP7JDCwoI9JAC4hgWKrDKG4RJmLJT1T4CqbU7po8NJM0X/u1ysSjTZRj1Wi
+         6riK5TTJuT8nZbDvOxB7xjlwH2m2VAeXhdmbjc7xIm4YXZGxgE2sOjy8gm64MPCQ4Ckz
+         5AA6Iv7IbNiqoniP+cUKnUQDeYzNo6ABjnYYIExOQq1E79fUOS+bIihHuN+ClEtVTK/l
+         edFcKv8E1uX4qme9MFpIsfBSG1MnXm9S1oApnaulZep+utLl1tb45MJ7o850X3xgL4V+
+         gI3OJ/O21ak4tRaE0VZlrU4qujsc+HGUJQsPNDRBylfE6NLI/GTBXefqqhsinpYcml2e
+         o1ng==
+X-Gm-Message-State: AOAM530LuwZknPhOgyD8luxkEboKzzYBYWZ3z28SyGbC2MulS/Cn1r/a
+        02DWBai973iAKGf+vEcYIqpg0w==
+X-Google-Smtp-Source: ABdhPJwIW6Ug/4l5H12+ASCnorvrI2VqBgDLkKUaNWjzv9o3noKby3TerJHlKeOOkng7DJkb+zL4nQ==
+X-Received: by 2002:a92:d8d1:: with SMTP id l17mr22668025ilo.99.1608683024177;
+        Tue, 22 Dec 2020 16:23:44 -0800 (PST)
+Received: from google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
+        by smtp.gmail.com with ESMTPSA id c2sm16996894ila.71.2020.12.22.16.23.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Dec 2020 16:23:43 -0800 (PST)
+Date:   Tue, 22 Dec 2020 17:23:39 -0700
+From:   Yu Zhao <yuzhao@google.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     Andrea Arcangeli <aarcange@redhat.com>,
         Andy Lutomirski <luto@kernel.org>,
         Peter Xu <peterx@redhat.com>,
@@ -78,45 +64,57 @@ Cc:     Andrea Arcangeli <aarcange@redhat.com>,
         Minchan Kim <minchan@kernel.org>,
         Will Deacon <will@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+Message-ID: <X+KOC4sRtUs4Ljqq@google.com>
+References: <1FCC8F93-FF29-44D3-A73A-DF943D056680@gmail.com>
+ <20201221223041.GL6640@xz-x1>
+ <CAHk-=wh-bG4thjXUekLtrCg8FRrdWjtT40ibXXLSm_hzQG8eOw@mail.gmail.com>
+ <CALCETrV=8tY7h=aaudWBEn-MJnNkm2wz5qjH49SYqwkjYTpOaA@mail.gmail.com>
+ <X+JJqK91plkBVisG@redhat.com>
+ <X+JhwVX3s5mU9ZNx@google.com>
+ <X+Js/dFbC5P7C3oO@redhat.com>
+ <X+KDwu1PRQ93E2LK@google.com>
+ <CAHk-=wiBWkgxLtwD7n01irD7hTQzuumtrqCkxxZx=6dbiGKUqQ@mail.gmail.com>
+ <CAHk-=wjG7xx7Gsb=K0DteB1SPcKjus02zY2gFUoxMY5mm7tfsA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjG7xx7Gsb=K0DteB1SPcKjus02zY2gFUoxMY5mm7tfsA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 3:50 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> The rule is that the TLB flush has to be done before the page table
-> lock is released.
+On Tue, Dec 22, 2020 at 04:01:45PM -0800, Linus Torvalds wrote:
+> On Tue, Dec 22, 2020 at 3:50 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > See zap_pte_range() for an example of doing it right, even in the
+> > presence of complexities (ie that has an example of both flushing the
+> > TLB, and doing the actual "free the pages after flush", and it does
+> > the two cases separately).
+> 
+> The more I look at the mprotect code, the less I like it. We seem to
+> be much better about the TLB flushes in other places (looking at
+> mremap, for example). The mprotect code seems to be very laissez-faire
+> about the TLB flushing.
+> 
+> Does adding a TLB flush to before that
+> 
+>         pte_unmap_unlock(pte - 1, ptl);
+> 
+> fix things for you?
 
-I take that back. I guess it's ok as long as the mmap_sem is held for
-writing. Then the TLB flush can be delayed until just before releasing
-the mmap_sem. I think.
+It definitely does. But if I had to choose, I'd go with holding
+mmap_lock for write because 1) it's less likely to storm other CPUs by
+IPI and would only have performance impact on processes that use ufd,
+which I guess already have high tolerance for not-so-good performance,
+and 2) people are spearheading multiple efforts to reduce the mmap_lock
+contention, which hopefully would make ufd users suffer less soon.
 
-The stale TLB entries still mean that somebody else can write through
-them in another thread, but as long as anybody who actually unmaps the
-page (and frees it - think rmap etc) is being careful, mprotect()
-itself can probably afford to be a bit laissez-faire.
+> That's not the right fix - leaving a stale TLB entry around is fine if
+> the TLB entry is more strict wrt protections - but it might be worth
+> testing as a "does it at least close the problem" patch.
 
-So mprotect() itself should be ok, I think, because it takes things for writing.
-
-Even with the mmap_sem held for writing, truncate and friends can see
-the read-only page table entries (because they can look things up
-using the file i_mmap thing instead), but then they rely on the page
-table lock and they'll also be careful if they then change that PTE
-and will force their own TLB flushes.
-
-So I think a pending TLB flush outside the page table lock is fine -
-but once again only if you hold the mmap_sem for writing. Not for
-reading, because then the page tables need to be synchronized with the
-TLB so that other readers don't see the not-yet-synchronized state.
-
-It once again looks like it's just userfaultfd that would trigger this
-due to the read-lock on the mmap_sem. And mprotect() itself is fine.
-
-Am I missing something?
-
-But apparently Nadav sees problems even with that lock changed to a
-write lock. Navad?
-
-           Linus
+Well, things get trick if we do this. I'm not sure if I could vouch
+such a fix for stable as confident as I do holding mmap_lock for
+write.
