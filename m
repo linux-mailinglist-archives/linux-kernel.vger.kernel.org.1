@@ -2,41 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06C132E14E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:48:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37B4B2E14C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:48:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730597AbgLWCp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:45:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49956 "EHLO mail.kernel.org"
+        id S1730801AbgLWCnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:43:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729726AbgLWCWf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:22:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BC0C23355;
-        Wed, 23 Dec 2020 02:22:19 +0000 (UTC)
+        id S1729873AbgLWCXE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:23:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F14F22248;
+        Wed, 23 Dec 2020 02:22:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690140;
-        bh=wJAXHu7zSNDaN3aC8gmRAMD2V4kupXCh6Z8grumo4Wc=;
+        s=k20201202; t=1608690143;
+        bh=qF9l755odwp307/T/N4iq49b/ec7+MuRGg7fKtWJgkU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ro9KIr9RJGSmrgdRFDp1C6B3xbMUevOmB07QV5/l2CxdmhD6u5SFOwuXV8TROP0yD
-         Moth2SEfGXcjZWAllarSQqrhfDdMr4bFcvScy9kinbF43zMWPBJu8RCn+Pgv9div8e
-         f1+xH6PQL2ui+ovBTXxd0BiPij6XdkND4aB+UeF6d8p+tlh70RFKLFMqb3FQdTyI20
-         +/uw9E0fjmOToT4iu3aNPL5SmzzLgB7C0Aql5mIbmSYkADLXbpxeIjNhmL2dYB4nWU
-         ArZIPJmKRBbK87Crj2T1OymHURDZNdxbzOecrWwwZMUrsUDK2B5mKRRi/q3Fojz0zD
-         4HveqXFEVHyQg==
+        b=GG3fI/0uKfXHDg7UO1rqpzI3WHly6c8nyu0srm88rM2uu4/lBxP5v3dOonIWMRRYu
+         EwZwLtMN0j4LXXR2F6Npfi3uRvq3RPWkWSPK3SgRUiWqrxG68CDPwAjxog9aaJ7nNP
+         ZR0lQaxXHOU55mj41ukWT9GbtDA0lJ4e0WRmddIocmeOZyjDh5KvUsmYY0+zOF+sZV
+         l2Pr+x+3vpYtouj7KsCnwCAy5AXcZZnTh7JheUX49J6f06RtlXUnku+u3aA3iBuT47
+         CUmJtQvLygv4+OlJGseV+KazpZdpU+ZJKKFMMcLAoP7Ct5hFOF6n0JBhVNx4KKj/Xr
+         9BxTLNRoQ1WNA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yangtao Li <tiny.windzz@gmail.com>,
-        Yangtao Li <frank@allwinnertech.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 62/87] cpufreq: sti-cpufreq: fix mem leak in sti_cpufreq_set_opp_info()
-Date:   Tue, 22 Dec 2020 21:20:38 -0500
-Message-Id: <20201223022103.2792705-62-sashal@kernel.org>
+Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        =?UTF-8?q?Niklas=20S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 64/87] media: rcar-vin: Mask VNCSI_IFMD register
+Date:   Tue, 22 Dec 2020 21:20:40 -0500
+Message-Id: <20201223022103.2792705-64-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223022103.2792705-1-sashal@kernel.org>
 References: <20201223022103.2792705-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -44,45 +47,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yangtao Li <tiny.windzz@gmail.com>
+From: Jacopo Mondi <jacopo+renesas@jmondi.org>
 
-[ Upstream commit 3a5e6732a74c44d7c78a764b9a7701135565df8f ]
+[ Upstream commit fb25ca37317200fa97ea6b8952e07958f06da7a6 ]
 
-Use dev_pm_opp_put_prop_name() to avoid mem leak, which free opp_table.
+The VNCSI_IFMD register controls the data expansion mode and the
+channel routing between the CSI-2 receivers and VIN instances.
 
-Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
-Signed-off-by: Yangtao Li <frank@allwinnertech.com>
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+According to the chip manual revision 2.20 not all fields are available
+for all the SoCs:
+- V3M, V3H and E3 do not support the DES1 field has they do not feature
+  a CSI20 receiver.
+- D3 only supports parallel input, and the whole register shall always
+  be written as 0.
+
+Inspect the per-SoC channel routing table where the available CSI-2
+instances are reported and configure VNCSI_IFMD accordingly.
+
+This patch supports this BSP change commit:
+
+https://github.com/renesas-rcar/linux-bsp/commit/f54697394457
+("media: rcar-vin: Fix VnCSI_IFMD register access for r8a77990")
+
+[hverkuil: replace BSP commit ID with BSP URL]
+
+Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+Suggested-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpufreq/sti-cpufreq.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/media/platform/rcar-vin/rcar-dma.c | 25 +++++++++++++++++++---
+ 1 file changed, 22 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/cpufreq/sti-cpufreq.c b/drivers/cpufreq/sti-cpufreq.c
-index 6b5d241c30b70..01bf9e3a85772 100644
---- a/drivers/cpufreq/sti-cpufreq.c
-+++ b/drivers/cpufreq/sti-cpufreq.c
-@@ -226,7 +226,8 @@ static int sti_cpufreq_set_opp_info(void)
- 	opp_table = dev_pm_opp_set_supported_hw(dev, version, VERSION_ELEMENTS);
- 	if (IS_ERR(opp_table)) {
- 		dev_err(dev, "Failed to set supported hardware\n");
--		return PTR_ERR(opp_table);
-+		ret = PTR_ERR(opp_table);
-+		goto err_put_prop_name;
- 	}
+diff --git a/drivers/media/platform/rcar-vin/rcar-dma.c b/drivers/media/platform/rcar-vin/rcar-dma.c
+index 70a8cc433a03f..4fee9132472bb 100644
+--- a/drivers/media/platform/rcar-vin/rcar-dma.c
++++ b/drivers/media/platform/rcar-vin/rcar-dma.c
+@@ -1319,7 +1319,9 @@ int rvin_dma_register(struct rvin_dev *vin, int irq)
+  */
+ int rvin_set_channel_routing(struct rvin_dev *vin, u8 chsel)
+ {
+-	u32 ifmd, vnmc;
++	const struct rvin_group_route *route;
++	u32 ifmd = 0;
++	u32 vnmc;
+ 	int ret;
  
- 	dev_dbg(dev, "pcode: %d major: %d minor: %d substrate: %d\n",
-@@ -235,6 +236,10 @@ static int sti_cpufreq_set_opp_info(void)
- 		version[0], version[1], version[2]);
+ 	ret = pm_runtime_get_sync(vin->dev);
+@@ -1332,9 +1334,26 @@ int rvin_set_channel_routing(struct rvin_dev *vin, u8 chsel)
+ 	vnmc = rvin_read(vin, VNMC_REG);
+ 	rvin_write(vin, vnmc & ~VNMC_VUP, VNMC_REG);
  
- 	return 0;
+-	ifmd = VNCSI_IFMD_DES1 | VNCSI_IFMD_DES0 | VNCSI_IFMD_CSI_CHSEL(chsel);
++	/*
++	 * Set data expansion mode to "pad with 0s" by inspecting the routes
++	 * table to find out which bit fields are available in the IFMD
++	 * register. IFMD_DES1 controls data expansion mode for CSI20/21,
++	 * IFMD_DES0 controls data expansion mode for CSI40/41.
++	 */
++	for (route = vin->info->routes; route->mask; route++) {
++		if (route->csi == RVIN_CSI20 || route->csi == RVIN_CSI21)
++			ifmd |= VNCSI_IFMD_DES1;
++		else
++			ifmd |= VNCSI_IFMD_DES0;
+ 
+-	rvin_write(vin, ifmd, VNCSI_IFMD_REG);
++		if (ifmd == (VNCSI_IFMD_DES0 | VNCSI_IFMD_DES1))
++			break;
++	}
 +
-+err_put_prop_name:
-+	dev_pm_opp_put_prop_name(opp_table);
-+	return ret;
- }
++	if (ifmd) {
++		ifmd |= VNCSI_IFMD_CSI_CHSEL(chsel);
++		rvin_write(vin, ifmd, VNCSI_IFMD_REG);
++	}
  
- static int sti_cpufreq_fetch_syscon_registers(void)
+ 	vin_dbg(vin, "Set IFMD 0x%x\n", ifmd);
+ 
 -- 
 2.27.0
 
