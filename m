@@ -2,105 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4542D2E17B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 04:23:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B75E42E17BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 04:29:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727458AbgLWDW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 22:22:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45568 "EHLO
+        id S1727378AbgLWD14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 22:27:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727141AbgLWDW3 (ORCPT
+        with ESMTP id S1725852AbgLWD1z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 22:22:29 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B8D5C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 19:21:49 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id f17so9709342pge.6
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 19:21:49 -0800 (PST)
+        Tue, 22 Dec 2020 22:27:55 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C340C0613D3;
+        Tue, 22 Dec 2020 19:27:15 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id w5so9744980pgj.3;
+        Tue, 22 Dec 2020 19:27:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id;
-        bh=mFZyCDSKT7M9u+5W8OWtlSdmvWZ5CLcm6MzN9YnowAw=;
-        b=sX2qVid2gZ+viCOcfR/UPV2I4crcfPvtYoxHSKnQSaWvaSDr01BcZnfjCRHA2nOOdz
-         3woobCycs7GarDwzrHezCMPUU5kAMn+LOxHwtBY1bf/cj7S8AyPRXHB0euL3xGpVcu71
-         E/Qa72TfTgITAZSo0p/McQOg10FW8s7kW25lGKLhm+X7MZ4coGw3k6lmfEk+q0VjfuWX
-         Qq6gdXDBaqFwvdTdvvlyNTTT36CkmpTASSRBlVxnuE7Z+ZcD0RNJTGV1WyXj9Pq8xFQo
-         gSuycF8v537uf8pks3XVrBA9rxXWJ+LJbKdyGYREZfb9GFxV0XBwznFWNZ8xusuMG9ec
-         0M2Q==
+        bh=H8go/+X2Vcs98+iki2Z8ohftpJpMUDcNkNw9l89t5vU=;
+        b=IPSlb0CJNRuU2Z0oTyjF3f8ujTtTF2TnQQJv5kNitqjETttqxOuxfFZRmja9kR0Eu1
+         AcoKkHM9+On8cwyy9gk6cvFGM1mFgVmBiIcPsGIoZgZ9n77by/weeVCQpltp3KWBYNeS
+         jtADoDxkM+TgrqZ7Zx3vhvHHfie35QrA5n9rq3wMbQdaGSGa2rGqnSB3WU+dTmn2xjrK
+         g3H+ZGdLOo4HXXA7kirE2wlVf0JLBInAUOzXnrZlaDuU13MtlDD5lryhLRS4u9NsV4Fx
+         EpnrJMjfkjWaJl5EStz5hoaaKXQWwl6a71DUAjsYNHtotjka9wfehAsNTzk0fEFjgS+4
+         mYug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=mFZyCDSKT7M9u+5W8OWtlSdmvWZ5CLcm6MzN9YnowAw=;
-        b=p1HxTr6hZnWn1Q5FgF7PBfR2FLLY2LPAQdEbRfKHVNjU4vrs+mJWz3ZD6I7+3vEdHX
-         h0aQrqz1WWkSA763TqJil1YyR+ggm13uKrNLpqizsH3mmAQGC+xOaBpLcTVx5zqAzBcY
-         axA3PWOmPnXBTjso85BZGEX/2WRNrZ3NpDk7WfiMISlB30/vgiMFn7TJ7qMKPyGJ6A7d
-         hMjWLiDHOc71LACPguEbJJS9CVrJW41uXG/HJKAti2QK1I8pVIFkbeDuSKo0lXxqSKgl
-         KbDNKm/etknIj+N3geI/MROQPzQTAWLbqczetjx9AQMwI6H/oCWEDPmrdnd1CwOIhP0L
-         IH5g==
-X-Gm-Message-State: AOAM530KMw9lCegalYygCjXOtlcv7hY+Xxz5GueiTTeYeimgThweZDtf
-        jrBc5uft/zpru+CvQopL8oM=
-X-Google-Smtp-Source: ABdhPJwe/h8gcyrhwKAmUnbjbzSK2jH4feR1EtQhfX6YFV0uwKjIek1dU4Ik7eV6u+i7xrcEnsGqLw==
-X-Received: by 2002:a63:f158:: with SMTP id o24mr128658pgk.245.1608693708454;
-        Tue, 22 Dec 2020 19:21:48 -0800 (PST)
-Received: from jordon-HP-15-Notebook-PC.domain.name ([122.179.58.4])
-        by smtp.gmail.com with ESMTPSA id w90sm14164078pjw.10.2020.12.22.19.21.46
+        bh=H8go/+X2Vcs98+iki2Z8ohftpJpMUDcNkNw9l89t5vU=;
+        b=bAWdtHYmqgp9UWQ7SSdozVP3dZHxIboFDJ78tBWaUlRNEPSttkFol2a1rLevviPzLN
+         fr/e0LwRlMchlykV0Ae2ZXE4c6jWMuz4I1yYp0YqfsdAAIQd/nGcuekdeD5lGR5cBRYB
+         A9TrGhKy4G+ppwr87NrlJO/E+sbNR5eZSZQ+FuKMwUOLeYWV4UmG3QkMTmF/oop4cZAX
+         r03d4YlyPqtGrtdKW+lr/JnD7gVXMk4lhX6H0h5jFQTTjtOANeVsq89w7MYOFsGqgQCD
+         BnsV47b+rrcsvYY3s9GUxNkbkpzbbEK/9bX5OEzxwWgltGms8E07BMPDPLnQMcoi83fy
+         XKPA==
+X-Gm-Message-State: AOAM530HFtz4VhxbHwmSs0MNcSlbme1ROjknC+fo672pt9Dug9km3ryY
+        1pW73ZMX3GD4GNO0Wi8By28=
+X-Google-Smtp-Source: ABdhPJyYhZUATDbhC2Yt6IPIF6lHyrgNCyQ47E/gPAVgdoDwMC0xnj/TuVVJUJLeWKJZI5K8xDFA6g==
+X-Received: by 2002:a63:66c3:: with SMTP id a186mr22826436pgc.198.1608694035129;
+        Tue, 22 Dec 2020 19:27:15 -0800 (PST)
+Received: from localhost.localdomain ([122.10.161.207])
+        by smtp.gmail.com with ESMTPSA id b6sm20535189pfd.43.2020.12.22.19.27.12
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 22 Dec 2020 19:21:47 -0800 (PST)
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Souptick Joarder <jrdr.linux@gmail.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: [PATCH v2] mm: add prototype for __add_to_page_cache_locked()
-Date:   Wed, 23 Dec 2020 08:51:42 +0530
-Message-Id: <1608693702-4665-1-git-send-email-jrdr.linux@gmail.com>
+        Tue, 22 Dec 2020 19:27:14 -0800 (PST)
+From:   Yejune Deng <yejune.deng@gmail.com>
+To:     viro@zeniv.linux.org.uk, axboe@kernel.dk
+Cc:     linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yejune.deng@gmail.com
+Subject: [PATCH] io_uring: remove io_remove_personalities()
+Date:   Wed, 23 Dec 2020 11:27:05 +0800
+Message-Id: <1608694025-121050-1-git-send-email-yejune.deng@gmail.com>
 X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Otherwise it causes a gcc warning:
+The function io_remove_personalities() is very similar to
+io_unregister_personality(),but the latter has a more reasonable
+return value.
 
-../mm/filemap.c:830:14: warning: no previous prototype for
-`__add_to_page_cache_locked' [-Wmissing-prototypes]
-
-A previous attempt to make this function static led to compilation
-errors when CONFIG_DEBUG_INFO_BTF is enabled because
-__add_to_page_cache_locked() is referred to by BPF code.
-
-Adding a prototype will silence the warning.
-
-Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-Cc: Alex Shi <alex.shi@linux.alibaba.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Matthew Wilcox <willy@infradead.org>
+Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
 ---
-v2:
-	Updated change logs and code comments as per review.
-	s/offset/index.
+ fs/io_uring.c | 25 ++++++-------------------
+ 1 file changed, 6 insertions(+), 19 deletions(-)
 
- include/linux/mm.h | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 5299b90a..c1e9081 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -216,6 +216,13 @@ int overcommit_kbytes_handler(struct ctl_table *, int, void *, size_t *,
- 		loff_t *);
- int overcommit_policy_handler(struct ctl_table *, int, void *, size_t *,
- 		loff_t *);
-+/*
-+ * Any attempt to mark this function as static leads to build failure
-+ * when CONFIG_DEBUG_INFO_BTF is enabled because __add_to_page_cache_locked()
-+ * is referred to by BPF code. This must be visible for error injection.
-+ */
-+int __add_to_page_cache_locked(struct page *page, struct address_space *mapping,
-+		pgoff_t index, gfp_t gfp, void **shadowp);
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index b749578..000ea9a 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -8608,7 +8608,7 @@ static int io_uring_fasync(int fd, struct file *file, int on)
+ 	return fasync_helper(fd, file, on, &ctx->cq_fasync);
+ }
  
- #define nth_page(page,n) pfn_to_page(page_to_pfn((page)) + (n))
+-static int io_remove_personalities(int id, void *p, void *data)
++static int io_unregister_personality(int id, void *p, void *data)
+ {
+ 	struct io_ring_ctx *ctx = data;
+ 	struct io_identity *iod;
+@@ -8618,8 +8618,10 @@ static int io_remove_personalities(int id, void *p, void *data)
+ 		put_cred(iod->creds);
+ 		if (refcount_dec_and_test(&iod->count))
+ 			kfree(iod);
++		return 0;
+ 	}
+-	return 0;
++
++	return -EINVAL;
+ }
  
+ static void io_ring_exit_work(struct work_struct *work)
+@@ -8657,7 +8659,7 @@ static void io_ring_ctx_wait_and_kill(struct io_ring_ctx *ctx)
+ 
+ 	/* if we failed setting up the ctx, we might not have any rings */
+ 	io_iopoll_try_reap_events(ctx);
+-	idr_for_each(&ctx->personality_idr, io_remove_personalities, ctx);
++	idr_for_each(&ctx->personality_idr, io_unregister_personality, ctx);
+ 
+ 	/*
+ 	 * Do this upfront, so we won't have a grace period where the ring
+@@ -9679,21 +9681,6 @@ static int io_register_personality(struct io_ring_ctx *ctx)
+ 	return ret;
+ }
+ 
+-static int io_unregister_personality(struct io_ring_ctx *ctx, unsigned id)
+-{
+-	struct io_identity *iod;
+-
+-	iod = idr_remove(&ctx->personality_idr, id);
+-	if (iod) {
+-		put_cred(iod->creds);
+-		if (refcount_dec_and_test(&iod->count))
+-			kfree(iod);
+-		return 0;
+-	}
+-
+-	return -EINVAL;
+-}
+-
+ static int io_register_restrictions(struct io_ring_ctx *ctx, void __user *arg,
+ 				    unsigned int nr_args)
+ {
+@@ -9906,7 +9893,7 @@ static int __io_uring_register(struct io_ring_ctx *ctx, unsigned opcode,
+ 		ret = -EINVAL;
+ 		if (arg)
+ 			break;
+-		ret = io_unregister_personality(ctx, nr_args);
++		ret = io_unregister_personality(nr_args, NULL, ctx);
+ 		break;
+ 	case IORING_REGISTER_ENABLE_RINGS:
+ 		ret = -EINVAL;
 -- 
 1.9.1
 
