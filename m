@@ -2,311 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32D092E17D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 04:45:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFDA02E17D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 04:48:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727518AbgLWDpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 22:45:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55100 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726969AbgLWDpT (ORCPT
+        id S1728217AbgLWDq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 22:46:26 -0500
+Received: from smtprelay0009.hostedemail.com ([216.40.44.9]:34596 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727396AbgLWDq0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 22:45:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608695031;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qsuv3WIE0jGMcj/BxF2Qwigx9EzOriMzU8akSMUha9g=;
-        b=hcFe3KKT3Ded6VFYzxY0+ky2c4KsP3VAUWbPrhHrC46WAydGOotua1QVj2C46hOKcuuDc6
-        COiOPiPl30lHMMUNMndUUPPayP2oMYwwDyoF7ULk/Yieyg8obb/IbYrHKTWVYZV4ZTqpAE
-        PTjWj+4IMZ55dILfNT0bTsnc03XjoHw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-344-tV3rUBuOPR6WYIPQz3lJWA-1; Tue, 22 Dec 2020 22:43:47 -0500
-X-MC-Unique: tV3rUBuOPR6WYIPQz3lJWA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BEDC2800D53;
-        Wed, 23 Dec 2020 03:43:46 +0000 (UTC)
-Received: from [10.72.13.89] (ovpn-13-89.pek2.redhat.com [10.72.13.89])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 905315FC3A;
-        Wed, 23 Dec 2020 03:43:41 +0000 (UTC)
-Subject: Re: [PATCH] vdpa_sim: use iova module to allocate IOVA addresses
-To:     Stefano Garzarella <sgarzare@redhat.com>,
-        virtualization@lists.linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Laurent Vivier <lvivier@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-References: <20201222174551.133678-1-sgarzare@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <cb5a0fac-25c2-b684-5ab6-b3339c13fe32@redhat.com>
-Date:   Wed, 23 Dec 2020 11:43:40 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 22 Dec 2020 22:46:26 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 7165A181D3028;
+        Wed, 23 Dec 2020 03:45:45 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:800:960:967:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1431:1437:1515:1516:1518:1534:1540:1593:1594:1711:1714:1730:1747:1777:1792:2393:2525:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3350:3653:3865:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:8957:9025:10004:10400:10848:11026:11658:11914:12043:12297:12438:12555:12760:12986:13069:13311:13357:13439:14181:14394:14659:14721:14777:21080:21451:21627:30054,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: truck68_080733e27465
+X-Filterd-Recvd-Size: 1673
+Received: from XPS-9350.home (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf04.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 23 Dec 2020 03:45:44 +0000 (UTC)
+Message-ID: <19fe91084890e2c16fe56f960de6c570a93fa99b.camel@perches.com>
+Subject: [PATCH] checkpatch: Prefer strscpy to strlcpy
+From:   Joe Perches <joe@perches.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Yu Zhao <yuzhao@google.com>
+Date:   Tue, 22 Dec 2020 19:45:43 -0800
+In-Reply-To: <20201222155852.54d9393837ec884870ab4c3b@linux-foundation.org>
+References: <20201222155852.54d9393837ec884870ab4c3b@linux-foundation.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-In-Reply-To: <20201222174551.133678-1-sgarzare@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Prefer strscpy over the deprecated strlcpy function.
 
-On 2020/12/23 上午1:45, Stefano Garzarella wrote:
-> The identical mapping used until now created issues when mapping
-> different virtual pages with the same physical address.
-> To solve this issue, we can use the iova module, to handle the IOVA
-> allocation.
-> For semplicity we use an IOVA allocator with byte granularity.
+Requested-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ scripts/checkpatch.pl | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-
-Should be simplicity, so did one comment below.
-
-
->
-> We add two new functions, vdpasim_map_range() and vdpasim_unmap_range(),
-> to handle the IOVA allocation and the registration into the IOMMU/IOTLB.
-> These functions are used by dma_map_ops callbacks.
->
-> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
-
-
-Few nits, but:
-
-Acked-by: Jason Wang <jasowang@redhat.com>
-
-
-> ---
->   drivers/vdpa/vdpa_sim/vdpa_sim.h |   2 +
->   drivers/vdpa/vdpa_sim/vdpa_sim.c | 108 +++++++++++++++++++------------
->   drivers/vdpa/Kconfig             |   1 +
->   3 files changed, 69 insertions(+), 42 deletions(-)
->
-> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.h b/drivers/vdpa/vdpa_sim/vdpa_sim.h
-> index b02142293d5b..6efe205e583e 100644
-> --- a/drivers/vdpa/vdpa_sim/vdpa_sim.h
-> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.h
-> @@ -6,6 +6,7 @@
->   #ifndef _VDPA_SIM_H
->   #define _VDPA_SIM_H
->   
-> +#include <linux/iova.h>
->   #include <linux/vringh.h>
->   #include <linux/vdpa.h>
->   #include <linux/virtio_byteorder.h>
-> @@ -55,6 +56,7 @@ struct vdpasim {
->   	/* virtio config according to device type */
->   	void *config;
->   	struct vhost_iotlb *iommu;
-> +	struct iova_domain iova;
->   	void *buffer;
->   	u32 status;
->   	u32 generation;
-> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> index b3fcc67bfdf0..341b9daf2ea4 100644
-> --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> @@ -17,6 +17,7 @@
->   #include <linux/vringh.h>
->   #include <linux/vdpa.h>
->   #include <linux/vhost_iotlb.h>
-> +#include <linux/iova.h>
->   
->   #include "vdpa_sim.h"
->   
-> @@ -128,30 +129,57 @@ static int dir_to_perm(enum dma_data_direction dir)
->   	return perm;
->   }
->   
-> +static dma_addr_t vdpasim_map_range(struct vdpasim *vdpasim, phys_addr_t paddr,
-> +				    size_t size, unsigned int perm)
-> +{
-> +	struct iova *iova;
-> +	dma_addr_t dma_addr;
-> +	int ret;
-> +
-> +	/* We set the limit_pfn to the maximum (~0UL - 1) */
-> +	iova = alloc_iova(&vdpasim->iova, size, ~0UL - 1, true);
-
-
-Let's use ULONG_MAX?
-
-
-> +	if (!iova)
-> +		return DMA_MAPPING_ERROR;
-> +
-> +	dma_addr = iova_dma_addr(&vdpasim->iova, iova);
-> +
-> +	spin_lock(&vdpasim->iommu_lock);
-> +	ret = vhost_iotlb_add_range(vdpasim->iommu, (u64)dma_addr,
-> +				    (u64)dma_addr + size - 1, (u64)paddr, perm);
-> +	spin_unlock(&vdpasim->iommu_lock);
-> +
-> +	if (ret) {
-> +		__free_iova(&vdpasim->iova, iova);
-> +		return DMA_MAPPING_ERROR;
-> +	}
-> +
-> +	return dma_addr;
-> +}
-> +
-> +static void vdpasim_unmap_range(struct vdpasim *vdpasim, dma_addr_t dma_addr,
-> +				size_t size)
-> +{
-> +	spin_lock(&vdpasim->iommu_lock);
-> +	vhost_iotlb_del_range(vdpasim->iommu, (u64)dma_addr,
-> +			      (u64)dma_addr + size - 1);
-> +	spin_unlock(&vdpasim->iommu_lock);
-> +
-> +	free_iova(&vdpasim->iova, iova_pfn(&vdpasim->iova, dma_addr));
-> +}
-> +
->   static dma_addr_t vdpasim_map_page(struct device *dev, struct page *page,
->   				   unsigned long offset, size_t size,
->   				   enum dma_data_direction dir,
->   				   unsigned long attrs)
->   {
->   	struct vdpasim *vdpasim = dev_to_sim(dev);
-> -	struct vhost_iotlb *iommu = vdpasim->iommu;
-> -	u64 pa = (page_to_pfn(page) << PAGE_SHIFT) + offset;
-> -	int ret, perm = dir_to_perm(dir);
-> +	phys_addr_t paddr = page_to_phys(page) + offset;
-> +	int perm = dir_to_perm(dir);
->   
->   	if (perm < 0)
->   		return DMA_MAPPING_ERROR;
->   
-> -	/* For simplicity, use identical mapping to avoid e.g iova
-> -	 * allocator.
-> -	 */
-> -	spin_lock(&vdpasim->iommu_lock);
-> -	ret = vhost_iotlb_add_range(iommu, pa, pa + size - 1,
-> -				    pa, dir_to_perm(dir));
-> -	spin_unlock(&vdpasim->iommu_lock);
-> -	if (ret)
-> -		return DMA_MAPPING_ERROR;
-> -
-> -	return (dma_addr_t)(pa);
-> +	return vdpasim_map_range(vdpasim, paddr, size, perm);
->   }
->   
->   static void vdpasim_unmap_page(struct device *dev, dma_addr_t dma_addr,
-> @@ -159,12 +187,8 @@ static void vdpasim_unmap_page(struct device *dev, dma_addr_t dma_addr,
->   			       unsigned long attrs)
->   {
->   	struct vdpasim *vdpasim = dev_to_sim(dev);
-> -	struct vhost_iotlb *iommu = vdpasim->iommu;
->   
-> -	spin_lock(&vdpasim->iommu_lock);
-> -	vhost_iotlb_del_range(iommu, (u64)dma_addr,
-> -			      (u64)dma_addr + size - 1);
-> -	spin_unlock(&vdpasim->iommu_lock);
-> +	vdpasim_unmap_range(vdpasim, dma_addr, size);
->   }
->   
->   static void *vdpasim_alloc_coherent(struct device *dev, size_t size,
-> @@ -172,27 +196,22 @@ static void *vdpasim_alloc_coherent(struct device *dev, size_t size,
->   				    unsigned long attrs)
->   {
->   	struct vdpasim *vdpasim = dev_to_sim(dev);
-> -	struct vhost_iotlb *iommu = vdpasim->iommu;
-> -	void *addr = kmalloc(size, flag);
-> -	int ret;
-> +	phys_addr_t paddr;
-> +	void *addr;
->   
-> -	spin_lock(&vdpasim->iommu_lock);
-> +	addr = kmalloc(size, flag);
->   	if (!addr) {
->   		*dma_addr = DMA_MAPPING_ERROR;
-> -	} else {
-> -		u64 pa = virt_to_phys(addr);
-> -
-> -		ret = vhost_iotlb_add_range(iommu, (u64)pa,
-> -					    (u64)pa + size - 1,
-> -					    pa, VHOST_MAP_RW);
-> -		if (ret) {
-> -			*dma_addr = DMA_MAPPING_ERROR;
-> -			kfree(addr);
-> -			addr = NULL;
-> -		} else
-> -			*dma_addr = (dma_addr_t)pa;
-> +		return NULL;
-> +	}
-> +
-> +	paddr = virt_to_phys(addr);
-> +
-> +	*dma_addr = vdpasim_map_range(vdpasim, paddr, size, VHOST_MAP_RW);
-> +	if (*dma_addr == DMA_MAPPING_ERROR) {
-> +		kfree(addr);
-> +		return NULL;
->   	}
-> -	spin_unlock(&vdpasim->iommu_lock);
->   
->   	return addr;
->   }
-> @@ -202,14 +221,10 @@ static void vdpasim_free_coherent(struct device *dev, size_t size,
->   				  unsigned long attrs)
->   {
->   	struct vdpasim *vdpasim = dev_to_sim(dev);
-> -	struct vhost_iotlb *iommu = vdpasim->iommu;
->   
-> -	spin_lock(&vdpasim->iommu_lock);
-> -	vhost_iotlb_del_range(iommu, (u64)dma_addr,
-> -			      (u64)dma_addr + size - 1);
-> -	spin_unlock(&vdpasim->iommu_lock);
-> +	vdpasim_unmap_range(vdpasim, dma_addr, size);
->   
-> -	kfree(phys_to_virt((uintptr_t)dma_addr));
-> +	kfree(vaddr);
->   }
->   
->   static const struct dma_map_ops vdpasim_dma_ops = {
-> @@ -270,6 +285,13 @@ struct vdpasim *vdpasim_create(struct vdpasim_dev_attr *dev_attr)
->   	for (i = 0; i < dev_attr->nvqs; i++)
->   		vringh_set_iotlb(&vdpasim->vqs[i].vring, vdpasim->iommu);
->   
-> +	ret = iova_cache_get();
-> +	if (ret)
-> +		goto err_iommu;
-> +
-> +	/* For semplicity we use an IOVA allocator with byte granularity */
-
-
-Should be simplicity.
-
-Thanks
-
-
-> +	init_iova_domain(&vdpasim->iova, 1, 0);
-> +
->   	vdpasim->vdpa.dma_dev = dev;
->   
->   	return vdpasim;
-> @@ -540,6 +562,8 @@ static void vdpasim_free(struct vdpa_device *vdpa)
->   	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
->   
->   	cancel_work_sync(&vdpasim->work);
-> +	put_iova_domain(&vdpasim->iova);
-> +	iova_cache_put();
->   	kvfree(vdpasim->buffer);
->   	if (vdpasim->iommu)
->   		vhost_iotlb_free(vdpasim->iommu);
-> diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
-> index 92a6396f8a73..8965e3717231 100644
-> --- a/drivers/vdpa/Kconfig
-> +++ b/drivers/vdpa/Kconfig
-> @@ -13,6 +13,7 @@ config VDPA_SIM
->   	depends on RUNTIME_TESTING_MENU && HAS_DMA
->   	select DMA_OPS
->   	select VHOST_RING
-> +	select IOMMU_IOVA
->   	help
->   	  Enable this module to support vDPA device simulators. These devices
->   	  are used for testing, prototyping and development of vDPA.
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 00085308ed9d..27679cc0ec17 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -6646,6 +6646,12 @@ sub process {
+ #			}
+ #		}
+ 
++# strlcpy uses that should likely be strscpy
++		if ($line =~ /\bstrlcpy\s*\(/) {
++			WARN("STRLCPY",
++			     "Prefer strscpy over strlcpy - see: https://lore.kernel.org/r/CAHk-=wgfRnXz0W3D37d01q3JFkr_i_uTL=V6A6G1oUZcprmknw\@mail.gmail.com/\n" . $herecurr);
++		}
++
+ # typecasts on min/max could be min_t/max_t
+ 		if ($perl_version_ok &&
+ 		    defined $stat &&
 
