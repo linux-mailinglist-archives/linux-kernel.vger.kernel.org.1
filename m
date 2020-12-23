@@ -2,229 +2,362 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AC412E1C2B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 13:18:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46E4B2E1C2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 13:20:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728476AbgLWMQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 07:16:30 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:10067 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726530AbgLWMQa (ORCPT
+        id S1728534AbgLWMSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 07:18:24 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:22777 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728367AbgLWMSX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 07:16:30 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4D1BwV1K0dzM8W7;
-        Wed, 23 Dec 2020 20:14:50 +0800 (CST)
-Received: from DESKTOP-2DH7KI2.china.huawei.com (10.67.101.108) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 23 Dec 2020 20:15:36 +0800
-From:   Chengsong Ke <kechengsong@huawei.com>
-To:     <richard@nod.at>, <s.hauer@pengutronix.de>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <wangfangpeng1@huawei.com>, <chengzhihao1@huawei.com>
-Subject: [PATCH v2] ubifs: Fix read out-of-bounds in ubifs_jnl_write_inode()
-Date:   Wed, 23 Dec 2020 20:15:36 +0800
-Message-ID: <20201223121536.6244-1-kechengsong@huawei.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        Wed, 23 Dec 2020 07:18:23 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1608725878; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=1KTK9or5xKlLwp6/3i+0Z3wDLsS0tFkJkzTfKBY0x10=;
+ b=DHxQrQuXmfu8esWEXYFhFHkmHkD7DRBAe6YUb2dUQsecCOx1mnt+/hLK7YjlpWn/XuV6hwLX
+ R6gbJT9eqmgzvRbO/A0qHgHaqCcvYj5lI6HYPwNFEssIvdb6aNh1HMrvoptqIvCp+mECE7gN
+ 9HpV4topy74YaR0h0Fz6X104zxI=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5fe3355bda47198188f3c027 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 23 Dec 2020 12:17:31
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8C7A4C433CA; Wed, 23 Dec 2020 12:17:31 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 029D0C433C6;
+        Wed, 23 Dec 2020 12:17:26 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.101.108]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 23 Dec 2020 20:17:26 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Ziqi Chen <ziqichen@codeaurora.org>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, rnayak@codeaurora.org,
+        vinholikatti@gmail.com, jejb@linux.vnet.ibm.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
+        kwmad.kim@samsung.com, stanley.chu@mediatek.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Satya Tangirala <satyat@google.com>,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH RFC v4 1/1] scsi: ufs: Fix ufs power down/on specs
+ violation
+In-Reply-To: <1608644981-46267-1-git-send-email-ziqichen@codeaurora.org>
+References: <1608644981-46267-1-git-send-email-ziqichen@codeaurora.org>
+Message-ID: <2c355b51a35c7d7da6dd1ce995a4615a@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kechengsong <kechengsong@huawei.com>
+On 2020-12-22 21:49, Ziqi Chen wrote:
+> As per specs, e.g, JESD220E chapter 7.2, while powering
+> off/on the ufs device, RST_N signal and REF_CLK signal
+> should be between VSS(Ground) and VCCQ/VCCQ2.
+> 
+> To flexibly control device reset line, refactor the function
+> ufschd_vops_device_reset(sturct ufs_hba *hba) to ufshcd_
+> vops_device_reset(sturct ufs_hba *hba, bool asserted). The
+> new parameter "bool asserted" is used to separate device reset
+> line pulling down from pulling up.
+> 
+> Cc: Kiwoong Kim <kwmad.kim@samsung.com>
+> Cc: Stanley Chu <stanley.chu@mediatek.com>
+> Signed-off-by: Ziqi Chen <ziqichen@codeaurora.org>
+> ---
+>  drivers/scsi/ufs/ufs-mediatek.c | 32 ++++++++++++++++----------------
+>  drivers/scsi/ufs/ufs-qcom.c     | 24 +++++++++++++++---------
+>  drivers/scsi/ufs/ufshcd.c       | 36 
+> +++++++++++++++++++++++++-----------
+>  drivers/scsi/ufs/ufshcd.h       |  8 ++++----
+>  4 files changed, 60 insertions(+), 40 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufs-mediatek.c 
+> b/drivers/scsi/ufs/ufs-mediatek.c
+> index 80618af..072f4db 100644
+> --- a/drivers/scsi/ufs/ufs-mediatek.c
+> +++ b/drivers/scsi/ufs/ufs-mediatek.c
+> @@ -841,27 +841,27 @@ static int ufs_mtk_link_startup_notify(struct
+> ufs_hba *hba,
+>  	return ret;
+>  }
+> 
+> -static int ufs_mtk_device_reset(struct ufs_hba *hba)
+> +static int ufs_mtk_device_reset(struct ufs_hba *hba, bool asserted)
+>  {
+>  	struct arm_smccc_res res;
+> 
+> -	ufs_mtk_device_reset_ctrl(0, res);
+> +	if (asserted) {
+> +		ufs_mtk_device_reset_ctrl(0, res);
+> 
+> -	/*
+> -	 * The reset signal is active low. UFS devices shall detect
+> -	 * more than or equal to 1us of positive or negative RST_n
+> -	 * pulse width.
+> -	 *
+> -	 * To be on safe side, keep the reset low for at least 10us.
+> -	 */
+> -	usleep_range(10, 15);
+> -
+> -	ufs_mtk_device_reset_ctrl(1, res);
+> -
+> -	/* Some devices may need time to respond to rst_n */
+> -	usleep_range(10000, 15000);
+> +		/*
+> +		 * The reset signal is active low. UFS devices shall detect
+> +		 * more than or equal to 1us of positive or negative RST_n
+> +		 * pulse width.
+> +		 *
+> +		 * To be on safe side, keep the reset low for at least 10us.
+> +		 */
+> +		usleep_range(10, 15);
+> +	} else {
+> +		ufs_mtk_device_reset_ctrl(1, res);
+> 
+> -	dev_info(hba->dev, "device reset done\n");
+> +		/* Some devices may need time to respond to rst_n */
+> +		usleep_range(10000, 15000);
+> +	}
+> 
+>  	return 0;
+>  }
+> diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
+> index 2206b1e..fed10e5 100644
+> --- a/drivers/scsi/ufs/ufs-qcom.c
+> +++ b/drivers/scsi/ufs/ufs-qcom.c
+> @@ -1406,10 +1406,11 @@ static void ufs_qcom_dump_dbg_regs(struct 
+> ufs_hba *hba)
+>  /**
+>   * ufs_qcom_device_reset() - toggle the (optional) device reset line
+>   * @hba: per-adapter instance
+> + * @asserted: assert or deassert device reset line
+>   *
+>   * Toggles the (optional) reset line to reset the attached device.
+>   */
+> -static int ufs_qcom_device_reset(struct ufs_hba *hba)
+> +static int ufs_qcom_device_reset(struct ufs_hba *hba, bool asserted)
+>  {
+>  	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
+> 
+> @@ -1417,15 +1418,20 @@ static int ufs_qcom_device_reset(struct ufs_hba 
+> *hba)
+>  	if (!host->device_reset)
+>  		return -EOPNOTSUPP;
+> 
+> -	/*
+> -	 * The UFS device shall detect reset pulses of 1us, sleep for 10us to
+> -	 * be on the safe side.
+> -	 */
+> -	gpiod_set_value_cansleep(host->device_reset, 1);
+> -	usleep_range(10, 15);
+> +	if (asserted) {
+> +		gpiod_set_value_cansleep(host->device_reset, 1);
+> 
+> -	gpiod_set_value_cansleep(host->device_reset, 0);
+> -	usleep_range(10, 15);
+> +		/*
+> +		 * The UFS device shall detect reset pulses of 1us, sleep for 10us 
+> to
+> +		 * be on the safe side.
+> +		 */
+> +		usleep_range(10, 15);
+> +	} else {
+> +		gpiod_set_value_cansleep(host->device_reset, 0);
+> +
+> +		 /* Some devices may need time to respond to rst_n */
+> +		usleep_range(10, 15);
+> +	}
+> 
+>  	return 0;
+>  }
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index e221add..f2daac2 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -585,7 +585,13 @@ static void ufshcd_device_reset(struct ufs_hba 
+> *hba)
+>  {
+>  	int err;
+> 
+> -	err = ufshcd_vops_device_reset(hba);
+> +	err = ufshcd_vops_device_reset(hba, true);
+> +	if (err) {
+> +		dev_err(hba->dev, "asserting device reset failed: %d\n", err);
+> +		return;
+> +	}
+> +
+> +	err = ufshcd_vops_device_reset(hba, false);
+> 
+>  	if (!err) {
+>  		ufshcd_set_ufs_dev_active(hba);
+> @@ -593,7 +599,11 @@ static void ufshcd_device_reset(struct ufs_hba 
+> *hba)
+>  			hba->wb_enabled = false;
+>  			hba->wb_buf_flush_enabled = false;
+>  		}
+> +		dev_dbg(hba->dev, "device reset done\n");
+> +	} else {
+> +		dev_err(hba->dev, "deasserting device reset failed: %d\n", err);
+>  	}
+> +
+>  	if (err != -EOPNOTSUPP)
+>  		ufshcd_update_evt_hist(hba, UFS_EVT_DEV_RESET, err);
+>  }
+> @@ -8686,8 +8696,6 @@ static int ufshcd_suspend(struct ufs_hba *hba,
+> enum ufs_pm_op pm_op)
+>  	if (ret)
+>  		goto set_dev_active;
+> 
+> -	ufshcd_vreg_set_lpm(hba);
+> -
+>  disable_clks:
+>  	/*
+>  	 * Call vendor specific suspend callback. As these callbacks may 
+> access
+> @@ -8703,6 +8711,9 @@ static int ufshcd_suspend(struct ufs_hba *hba,
+> enum ufs_pm_op pm_op)
+>  	 */
+>  	ufshcd_disable_irq(hba);
+> 
+> +	if (ufshcd_is_link_off(hba))
+> +		ufshcd_vops_device_reset(hba, true);
+> +
+>  	ufshcd_setup_clocks(hba, false);
+> 
+>  	if (ufshcd_is_clkgating_allowed(hba)) {
+> @@ -8711,6 +8722,8 @@ static int ufshcd_suspend(struct ufs_hba *hba,
+> enum ufs_pm_op pm_op)
+>  					hba->clk_gating.state);
+>  	}
+> 
+> +	ufshcd_vreg_set_lpm(hba);
+> +
+>  	/* Put the host controller in low power mode if possible */
+>  	ufshcd_hba_vreg_set_lpm(hba);
+>  	goto out;
+> @@ -8778,18 +8791,19 @@ static int ufshcd_resume(struct ufs_hba *hba,
+> enum ufs_pm_op pm_op)
+>  	old_link_state = hba->uic_link_state;
+> 
+>  	ufshcd_hba_vreg_set_hpm(hba);
+> +
+> +	ret = ufshcd_vreg_set_hpm(hba);
+> +	if (ret)
+> +		goto out;
+> +
+>  	/* Make sure clocks are enabled before accessing controller */
+>  	ret = ufshcd_setup_clocks(hba, true);
+>  	if (ret)
+> -		goto out;
+> +		goto disable_vreg;
+> 
+>  	/* enable the host irq as host controller would be active soon */
+>  	ufshcd_enable_irq(hba);
+> 
+> -	ret = ufshcd_vreg_set_hpm(hba);
+> -	if (ret)
+> -		goto disable_irq_and_vops_clks;
+> -
+>  	/*
+>  	 * Call vendor specific resume callback. As these callbacks may 
+> access
+>  	 * vendor specific host controller register space call them when the
+> @@ -8797,7 +8811,7 @@ static int ufshcd_resume(struct ufs_hba *hba,
+> enum ufs_pm_op pm_op)
+>  	 */
+>  	ret = ufshcd_vops_resume(hba, pm_op);
+>  	if (ret)
+> -		goto disable_vreg;
+> +		goto disable_irq_and_vops_clks;
+> 
+>  	/* For DeepSleep, the only supported option is to have the link off 
+> */
+>  	WARN_ON(ufshcd_is_ufs_dev_deepsleep(hba) && 
+> !ufshcd_is_link_off(hba));
+> @@ -8864,8 +8878,6 @@ static int ufshcd_resume(struct ufs_hba *hba,
+> enum ufs_pm_op pm_op)
+>  	ufshcd_link_state_transition(hba, old_link_state, 0);
+>  vendor_suspend:
+>  	ufshcd_vops_suspend(hba, pm_op);
+> -disable_vreg:
+> -	ufshcd_vreg_set_lpm(hba);
+>  disable_irq_and_vops_clks:
+>  	ufshcd_disable_irq(hba);
+>  	if (hba->clk_scaling.is_allowed)
+> @@ -8876,6 +8888,8 @@ static int ufshcd_resume(struct ufs_hba *hba,
+> enum ufs_pm_op pm_op)
+>  		trace_ufshcd_clk_gating(dev_name(hba->dev),
+>  					hba->clk_gating.state);
+>  	}
+> +disable_vreg:
+> +	ufshcd_vreg_set_lpm(hba);
+>  out:
+>  	hba->pm_op_in_progress = 0;
+>  	if (ret)
+> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+> index 9bb5f0e..d5fbaba 100644
+> --- a/drivers/scsi/ufs/ufshcd.h
+> +++ b/drivers/scsi/ufs/ufshcd.h
+> @@ -319,7 +319,7 @@ struct ufs_pwr_mode_info {
+>   * @resume: called during host controller PM callback
+>   * @dbg_register_dump: used to dump controller debug information
+>   * @phy_initialization: used to initialize phys
+> - * @device_reset: called to issue a reset pulse on the UFS device
+> + * @device_reset: called to assert or deassert device reset line
+>   * @program_key: program or evict an inline encryption key
+>   * @event_notify: called to notify important events
+>   */
+> @@ -350,7 +350,7 @@ struct ufs_hba_variant_ops {
+>  	int     (*resume)(struct ufs_hba *, enum ufs_pm_op);
+>  	void	(*dbg_register_dump)(struct ufs_hba *hba);
+>  	int	(*phy_initialization)(struct ufs_hba *);
+> -	int	(*device_reset)(struct ufs_hba *hba);
+> +	int	(*device_reset)(struct ufs_hba *hba, bool asserted);
+>  	void	(*config_scaling_param)(struct ufs_hba *hba,
+>  					struct devfreq_dev_profile *profile,
+>  					void *data);
+> @@ -1216,10 +1216,10 @@ static inline void
+> ufshcd_vops_dbg_register_dump(struct ufs_hba *hba)
+>  		hba->vops->dbg_register_dump(hba);
+>  }
+> 
+> -static inline int ufshcd_vops_device_reset(struct ufs_hba *hba)
+> +static inline int ufshcd_vops_device_reset(struct ufs_hba *hba, bool 
+> asserted)
+>  {
+>  	if (hba->vops && hba->vops->device_reset)
+> -		return hba->vops->device_reset(hba);
+> +		return hba->vops->device_reset(hba, asserted);
+> 
+>  	return -EOPNOTSUPP;
+>  }
 
-ubifs_jnl_write_inode() probably cause read out-of-bounds in some situation.
-There is kasan stack:
-[  336.432159] BUG: KASAN: slab-out-of-bounds in ecc_sw_hamming_calculate+0x1dc/0x7d0
-[  336.433634] Read of size 4 at addr ffff888019612ff8 by task kworker/u8:4/135
-[  336.434605]
-[  336.434830] CPU: 1 PID: 135 Comm: kworker/u8:4 Not tainted 5.10.0-11826-gaf2a097952f3-dirty #338
-[  336.436050] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20190727_073836-buildvm-ppc64le-16.ppc.fedoraproject.org-3.fc31 04/01/2014
-[  336.437876] Workqueue: writeback wb_workfn (flush-ubifs_0_0)
-[  336.438670] Call Trace:
-[  336.439021]  ? dump_stack+0xdd/0x126
-[  336.439513]  ? print_address_description.constprop.0+0x2c/0x3c0
-[  336.440308]  ? _raw_write_lock_irqsave+0x140/0x140
-[  336.440921]  ? ecc_sw_hamming_calculate+0x1dc/0x7d0
-[  336.441546]  ? ecc_sw_hamming_calculate+0x1dc/0x7d0
-[  336.442186]  ? kasan_report.cold+0x5d/0xd8
-[  336.442711]  ? nand_reset_op+0x280/0x310
-[  336.443218]  ? ecc_sw_hamming_calculate+0x1dc/0x7d0
-[  336.443842]  ? __asan_load4+0x77/0x120
-[  336.444334]  ? ecc_sw_hamming_calculate+0x1dc/0x7d0
-[  336.444963]  ? nand_ecc_sw_hamming_calculate+0x6c/0x80
-[  336.445619]  ? rawnand_sw_hamming_calculate+0x12/0x20
-[  336.446263]  ? nand_write_page_swecc+0xa9/0x160
-[  336.446849]  ? nand_do_write_ops+0x390/0x830
-[  336.447406]  ? __writeback_single_inode+0x6cc/0x880
-[  336.448041]  ? nand_write_oob+0x78/0x100
-[  336.448568]  ? mtd_write_oob_std+0xe2/0x160
-[  336.449127]  ? mtd_write_oob+0xec/0x1b0
-[  336.449679]  ? mtd_write+0x92/0xf0
-[  336.450128]  ? mtd_write_oob+0x1b0/0x1b0
-[  336.450633]  ? ubi_self_check_all_ff+0x82/0x2e0 [ubi]
-[  336.451328]  ? __list_add_valid+0x2b/0x130
-[  336.451865]  ? ubi_io_write+0x2c2/0xa90 [ubi]
-[  336.452472]  ? _raw_read_lock_irq+0x90/0x90
-[  336.453078]  ? kmem_cache_alloc_trace+0x465/0x8b0
-[  336.453749]  ? do_sync_erase+0x350/0x350 [ubi]
-[  336.454430]  ? __kasan_check_write+0x20/0x30
-[  336.455050]  ? down_write+0xf2/0x190
-[  336.455569]  ? down_write_killable+0x1b0/0x1b0
-[  336.456221]  ? check_mapping+0x2c/0x590 [ubi]
-[  336.456890]  ? ubi_eba_write_leb+0x58a/0xfa0 [ubi]
-[  336.457618]  ? __kmalloc+0x490/0x910
-[  336.458142]  ? ubifs_jnl_write_inode.cold+0x6f/0x878 [ubifs]
-[  336.459033]  ? writeback_sb_inodes+0x3a9/0x9a0
-[  336.459672]  ? __writeback_inodes_wb+0xc8/0x170
-[  336.460330]  ? wb_writeback+0x637/0x700
-[  336.460882]  ? wb_workfn+0x8af/0xb80
-[  336.461398]  ? process_one_work+0x467/0x9f0
-[  336.462004]  ? worker_thread+0x34d/0x8e0
-[  336.462582]  ? kthread+0x204/0x280
-[  336.463047]  ? ret_from_fork+0x1f/0x30
-[  336.463570]  ? create_prof_cpu_mask+0x30/0x30
-[  336.464185]  ? ubi_eba_read_leb_sg+0x1f0/0x1f0 [ubi]
-[  336.464917]  ? hrtimer_active+0x9b/0x100
-[  336.465468]  ? ubi_leb_write+0x22c/0x2f0 [ubi]
-[  336.466130]  ? ubifs_leb_write+0xf2/0x1b0 [ubifs]
-[  336.466851]  ? ubifs_wbuf_write_nolock+0x412/0x1280 [ubifs]
-[  336.467686]  ? write_head+0xdf/0x1c0 [ubifs]
-[  336.468355]  ? ubifs_jnl_write_inode.cold+0x3ec/0x878 [ubifs]
-[  336.469183]  ? ret_from_fork+0x1e/0x30
-[  336.469707]  ? ubifs_jnl_write_data+0x660/0x660 [ubifs]
-[  336.470497]  ? unwind_next_frame+0x247/0xca0
-[  336.471095]  ? ret_from_fork+0x1f/0x30
-[  336.471574]  ? fprop_reflect_period_percpu.isra.0+0x1f/0x1b0
-[  336.472335]  ? generic_writepages+0x93/0x140
-[  336.472933]  ? __kasan_check_write+0x20/0x30
-[  336.473526]  ? mutex_lock+0xa6/0x110
-[  336.474031]  ? __mutex_lock_slowpath+0x30/0x30
-[  336.474662]  ? ubifs_write_inode+0x1c3/0x290 [ubifs]
-[  336.475446]  ? __writeback_single_inode+0x6cc/0x880
-[  336.476155]  ? wbc_attach_and_unlock_inode+0x2b6/0x400
-[  336.476891]  ? writeback_sb_inodes+0x3a9/0x9a0
-[  336.477528]  ? write_inode_now+0x1e0/0x1e0
-[  336.478119]  ? __writeback_inodes_wb+0xc8/0x170
-[  336.478770]  ? wb_writeback+0x637/0x700
-[  336.479326]  ? __writeback_inodes_wb+0x170/0x170
-[  336.479992]  ? current_work+0xa0/0xa0
-[  336.480524]  ? _find_next_bit.constprop.0+0x3e/0x140
-[  336.481241]  ? find_next_bit+0x18/0x30
-[  336.481780]  ? cpumask_next+0x2f/0x40
-[  336.482312]  ? wb_workfn+0x8af/0xb80
-[  336.482832]  ? update_cfs_group+0x1e/0x1b0
-[  336.483421]  ? inode_wait_for_writeback+0x60/0x60
-[  336.484106]  ? schedule+0xb7/0x240
-[  336.484595]  ? finish_task_switch+0x14e/0x9a0
-[  336.485225]  ? __kasan_check_write+0x20/0x30
-[  336.485841]  ? __schedule+0x6f4/0x1600
-[  336.486382]  ? __kasan_check_read+0x1d/0x30
-[  336.486981]  ? read_word_at_a_time+0x16/0x30
-[  336.487594]  ? process_one_work+0x467/0x9f0
-[  336.488198]  ? worker_thread+0x34d/0x8e0
-[  336.488762]  ? rescuer_thread+0x820/0x820
-[  336.489344]  ? kthread+0x204/0x280
-[  336.489839]  ? kthread_bind+0x50/0x50
-[  336.490367]  ? ret_from_fork+0x1f/0x30
-[  336.490913]
-[  336.491138] Allocated by task 135:
-[  336.491629]  kasan_save_stack+0x23/0x60
-[  336.492189]  __kasan_kmalloc.constprop.0+0x10b/0x120
-[  336.492898]  kasan_kmalloc+0xd/0x20
-[  336.493401]  __kmalloc+0x490/0x910
-[  336.493890]  ubifs_jnl_write_inode.cold+0x6f/0x878 [ubifs]
-[  336.494744]  ubifs_write_inode+0x1c3/0x290 [ubifs]
-[  336.495500]  __writeback_single_inode+0x6cc/0x880
-[  336.496179]  writeback_sb_inodes+0x3a9/0x9a0
-[  336.496791]  __writeback_inodes_wb+0xc8/0x170
-[  336.497417]  wb_writeback+0x637/0x700
-[  336.497949]  wb_workfn+0x8af/0xb80
-[  336.498440]  process_one_work+0x467/0x9f0
-[  336.499023]  worker_thread+0x34d/0x8e0
-[  336.499567]  kthread+0x204/0x280
-[  336.500050]  ret_from_fork+0x1f/0x30
-[  336.500570]
-[  336.500793] The buggy address belongs to the object at ffff888019612000
-[  336.500793]  which belongs to the cache kmalloc-4k of size 4096
-[  336.502550] The buggy address is located 4088 bytes inside of
-[  336.502550]  4096-byte region [ffff888019612000, ffff888019613000)
-[  336.504231] The buggy address belongs to the page:
-[  336.504917] page:000000003204ded8 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x19610
-[  336.506234] head:000000003204ded8 order:3 compound_mapcount:0 compound_pincount:0
-[  336.507293] flags: 0x1fffff80010200(slab|head)
-[  336.507934] raw: 001fffff80010200 ffffea0000667000 0000000200000002 ffff888010842140
-[  336.509038] raw: 0000000000000000 0000000080040004 00000001ffffffff ffff88801956e3c1
-[  336.510132] page dumped because: kasan: bad access detected
-[  336.510923] pages's memcg:ffff88801956e3c1
-[  336.511509]
-[  336.511730] Memory state around the buggy address:
-[  336.512421]  ffff888019612e80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[  336.513446]  ffff888019612f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[  336.514468] >ffff888019612f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 01
-[  336.515494]                                                                 ^
-[  336.516506]  ffff888019613000: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[  336.517535]  ffff888019613080: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[  336.518560] ==================================================================
-
-The memory area allocated in ubifs_jnl_write_inode() is not aligned with 8 bytes:
-ino_start = ino = kmalloc(write_len, GFP_NOFS);
-
-When ino_start passed into write_head -> ubifs_wbuf_write_nolock:
-    n = aligned_len >> c->max_write_shift;
-    if (n) {
-      n <<= c->max_write_shift;
-      err = ubifs_leb_write(c, wbuf->lnum, buf + written, wbuf->offs, n);
-      // Read oob occurs here, read n bytes from buf, and buf is passed from @ino_start which is
-      // not 8 bytes aligned(write_len < n). Program read (n - write_len) more bytes.
-    }
-
-Reproducer:
-0. config KASAN && apply print.patch
-1. mount ubifs on /root/temp
-2. run test.sh
-3. cd /root/temp && ls // change atime for link_file
-4. wait 1~2 minutes
-
-In order to solve the read oob problem in ubifs_wbuf_write_nolock, just align the write_len to
-8 bytes when alloc the memory. So that this patch will not affect the use of write_len in other
-functions, such as ubifs_jnl_write_inode->make_reservation and ubifs_jnl_write_inode->ubifs_node_calc_hash.
-
-Cc: <stable@vger.kernel.org>
-Fixes: 1e51764a3c2ac0 ("UBIFS: add new flash file system")
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=210865
-
-Signed-off-by: Chengsong Ke <kechengsong@huawei.com>
----
- fs/ubifs/journal.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-index 03410ae0813a..fc918a66d208 100644
---- a/fs/ubifs/journal.c
-+++ b/fs/ubifs/journal.c
-@@ -577,7 +577,7 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
- 	else
- 		len += host_ui->data_len;
- 
--	dent = kzalloc(len, GFP_NOFS);
-+	dent = kzalloc(ALIGN(len, 8), GFP_NOFS);
- 	if (!dent)
- 		return -ENOMEM;
- 
-@@ -866,7 +866,7 @@ int ubifs_jnl_write_inode(struct ubifs_info *c, const struct inode *inode)
- 	else
- 		write_len += ilen;
- 
--	ino_start = ino = kmalloc(write_len, GFP_NOFS);
-+	ino_start = ino = kzalloc(ALIGN(write_len, 8), GFP_NOFS);
- 	if (!ino)
- 		return -ENOMEM;
- 
--- 
-2.12.3
-
+Reviewed-by: Can Guo <cang@codeaurora.org>
