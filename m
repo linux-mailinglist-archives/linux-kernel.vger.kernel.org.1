@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC5B32E129E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:27:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 862A42E12A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:27:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729783AbgLWCWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:22:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49802 "EHLO mail.kernel.org"
+        id S1729933AbgLWCXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:23:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729762AbgLWCWk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:22:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A987F225AB;
-        Wed, 23 Dec 2020 02:22:24 +0000 (UTC)
+        id S1729900AbgLWCXH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:23:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8C5122A83;
+        Wed, 23 Dec 2020 02:22:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690145;
-        bh=ZqsyhDJr975uH78eq9vlqfIjc4P44FyApTZEkqL50qQ=;
+        s=k20201202; t=1608690146;
+        bh=qCPqxc3GCFxiq19gUvEoJmscfz6qfLlcGbd4U/IqWjc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WsJERloCOO1sEcnC3KH3uUL1DqJTLCoTslLq6iZ0XN/CTCPQrRUlII5NV6bybneJp
-         zSveHGUUqwr0Ufk02PxN1hmKKc/9nwsbzyGKdK5Cuh7pT/c4jiasNCpJgN67Pry57C
-         LrCSXn4WdRYRagKPr0S2Ka59WY8BfGqNIm/fek0/1N+hoi0eb4n8CoqJ9bM4+5ZouT
-         exjh33OMIJLIu4ttHkJwaGRChRLkHTjpq1UPuLD+rn05zu80ChEXTi5oBly1MhWrF8
-         Efjy5x4YBW70+9TmH0cVV37rcK7XtjFYPcE471kYXuDR9zMQVQ7NX7d7hUcQbg+qe2
-         +ZBCYX8CtdZgQ==
+        b=oAjzh8gRAZPFQz7DX0nAoT9g1v0FeMDh1ODeiPfjO/sVTlF34TP6INCvJ8JM3sfX8
+         8ZEX+lZZxyglPiJx1Ai8GLaMEZh9EybUzma9WC2BY6l81EfniOQ4zJ84IRhVzX3d9d
+         blnpiinJCVQmIH5vOweufkpbW8OLJGOjiiD039S895OB6sc/b0MA0f1uWRxzfNE+8u
+         mSQnZOQJir36tCu3eOvH5LzulYIxaEoJ7R7Ytzi2EN4MRjGll+MK1xHFNliH3NXJLv
+         SxqHH8SNVKR3828vrc7VmqwkXF+NuePSpZC0RwKnzecQ3++PWr9EU+QMKpvVvhFIUh
+         lzMsP/26hjvbg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zhang Xiaohui <ruc_zhangxiaohui@163.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 66/87] mwifiex: Fix possible buffer overflows in mwifiex_cmd_802_11_ad_hoc_start
-Date:   Tue, 22 Dec 2020 21:20:42 -0500
-Message-Id: <20201223022103.2792705-66-sashal@kernel.org>
+Cc:     Chris Chiu <chiu@endlessos.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 4.19 67/87] ASoC: Intel: bytcr_rt5640: Add quirk for ARCHOS Cesium 140
+Date:   Tue, 22 Dec 2020 21:20:43 -0500
+Message-Id: <20201223022103.2792705-67-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223022103.2792705-1-sashal@kernel.org>
 References: <20201223022103.2792705-1-sashal@kernel.org>
@@ -43,37 +43,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
+From: Chris Chiu <chiu@endlessos.org>
 
-[ Upstream commit 5c455c5ab332773464d02ba17015acdca198f03d ]
+[ Upstream commit 1bea2256aa96a2d7b1b576eb74e29d79edc9bea8 ]
 
-mwifiex_cmd_802_11_ad_hoc_start() calls memcpy() without checking
-the destination size may trigger a buffer overflower,
-which a local user could use to cause denial of service
-or the execution of arbitrary code.
-Fix it by putting the length check before calling memcpy().
+Tha ARCHOS Cesium 140 tablet has problem with the jack-sensing,
+thus the heaset functions are not working.
 
-Signed-off-by: Zhang Xiaohui <ruc_zhangxiaohui@163.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20201206084801.26479-1-ruc_zhangxiaohui@163.com
+Add quirk for this model to select the correct input map, jack-detect
+options and channel map to enable jack sensing and headset microphone.
+This device uses IN1 for its internal MIC and JD2 for jack-detect.
+
+Signed-off-by: Chris Chiu <chiu@endlessos.org>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20201208060414.27646-1-chiu@endlessos.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/marvell/mwifiex/join.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/intel/boards/bytcr_rt5640.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/drivers/net/wireless/marvell/mwifiex/join.c b/drivers/net/wireless/marvell/mwifiex/join.c
-index d87aeff70cefb..c2cb1e711c06e 100644
---- a/drivers/net/wireless/marvell/mwifiex/join.c
-+++ b/drivers/net/wireless/marvell/mwifiex/join.c
-@@ -877,6 +877,8 @@ mwifiex_cmd_802_11_ad_hoc_start(struct mwifiex_private *priv,
- 
- 	memset(adhoc_start->ssid, 0, IEEE80211_MAX_SSID_LEN);
- 
-+	if (req_ssid->ssid_len > IEEE80211_MAX_SSID_LEN)
-+		req_ssid->ssid_len = IEEE80211_MAX_SSID_LEN;
- 	memcpy(adhoc_start->ssid, req_ssid->ssid, req_ssid->ssid_len);
- 
- 	mwifiex_dbg(adapter, INFO, "info: ADHOC_S_CMD: SSID = %s\n",
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index ec630127ef2f3..f23ddb9f810ae 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -431,6 +431,18 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 					BYT_RT5640_SSP0_AIF1 |
+ 					BYT_RT5640_MCLK_EN),
+ 	},
++	{
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ARCHOS"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "ARCHOS 140 CESIUM"),
++		},
++		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
++					BYT_RT5640_JD_SRC_JD2_IN4N |
++					BYT_RT5640_OVCD_TH_2000UA |
++					BYT_RT5640_OVCD_SF_0P75 |
++					BYT_RT5640_SSP0_AIF1 |
++					BYT_RT5640_MCLK_EN),
++	},
+ 	{
+ 		.matches = {
+ 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
 -- 
 2.27.0
 
