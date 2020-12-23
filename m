@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 373BA2E1551
+	by mail.lfdr.de (Postfix) with ESMTP id A4C2F2E1552
 	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:58:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729128AbgLWCUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:20:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45394 "EHLO mail.kernel.org"
+        id S1727118AbgLWCU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:20:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728895AbgLWCUO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:20:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C1FA206EC;
-        Wed, 23 Dec 2020 02:19:57 +0000 (UTC)
+        id S1728732AbgLWCUR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:20:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B0017221E5;
+        Wed, 23 Dec 2020 02:20:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608689998;
-        bh=qvD3SMMH9TlnZI5UCoeyWYZQOxEJ1KO9nA3Cw6KRVG0=;
+        s=k20201202; t=1608690001;
+        bh=Ysnw/aVaifEltk/97tyr/Nk32XUmkBUZtnAY149BcVI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PF+Fw7YiEmlhhPZY26Ne2Gf1OfJr2IydW3fjtbZmjfXlGApbMo1SqRc6R1E64DBEd
-         MNCttHlt0PgkHxHVjtpbclFILu+iLiLfwNmSkkhf7xoqb82cpCGE1Qr2MntqsavG14
-         e74JDFTmno9pQG0Jodm/7c31UgygPCXv9m1yA34xKUGX8YT/QN1yYT5cz37OAW4ABN
-         M5you9eZU4S6TASr/SwEyxZzh+l1e2QbAUdOpOfhINvKhaYlQh2YTx0P5crzoibwcU
-         3g9sN59uECo+4Sz3vX2s0GODLHsbYeHoWx3Zl8BObIDw6+nFAYiYvN/CJgiJ2g5FnH
-         CtQPZBrXmx2DQ==
+        b=Qcy0XvENj4YAddpPUEaYxr26Iy+ZpboLpz76Fs8yBlQxyXo8IVy9Zg9YGlrLhlJVH
+         g/w7yi7SfCPVB4tK0oXuyH+craMFztiCTkUhRhL2i2FzKLwuoZvNt/Oe07BtXttFbG
+         1tjlyk/NLn0pJ6rhjyfKCX+Z3oaiKZt/nLr1oieS0Vf/hgMQSUIcEqEz8+01tZFf25
+         Q/g1z+nYgmbtFTyH3UaJigWiHPAD99CTn1EN6Xlb5izgp/XLob10EI1uZYCHVBUz8j
+         uTmy7ChziSgqnMlR5OS5FampyUXvcHOybjwK3kY6vDSS4BAagNz+rA8LOZXmJMCkvS
+         5j87eBW8MBc5A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Danielle Ratson <danieller@nvidia.com>,
-        Petr Machata <petrm@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Ivan Vecera <ivecera@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        bridge@lists.linux-foundation.org
-Subject: [PATCH AUTOSEL 5.4 081/130] bridge: switchdev: Notify about VLAN protocol changes
-Date:   Tue, 22 Dec 2020 21:17:24 -0500
-Message-Id: <20201223021813.2791612-81-sashal@kernel.org>
+Cc:     Jeremy Cline <jeremy@jcline.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Sasha Levin <sashal@kernel.org>, linux-iio@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 083/130] iio: accel: bmc150: Check for a second ACPI device for BOSC0200
+Date:   Tue, 22 Dec 2020 21:17:26 -0500
+Message-Id: <20201223021813.2791612-83-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223021813.2791612-1-sashal@kernel.org>
 References: <20201223021813.2791612-1-sashal@kernel.org>
@@ -47,96 +44,160 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Danielle Ratson <danieller@nvidia.com>
+From: Jeremy Cline <jeremy@jcline.org>
 
-[ Upstream commit 22ec19f3aee327806c37c9fa1188741574bc6445 ]
+[ Upstream commit 5bfb3a4bd8f6b5329464edb9b772738708509d4a ]
 
-Drivers that support bridge offload need to be notified about changes to
-the bridge's VLAN protocol so that they could react accordingly and
-potentially veto the change.
+Some BOSC0200 acpi_device-s describe two accelerometers in a single ACPI
+device. Normally we would handle this by letting the special
+drivers/platform/x86/i2c-multi-instantiate.c driver handle the BOSC0200
+ACPI id and let it instantiate 2 bmc150_accel type i2c_client-s for us.
 
-Add a new switchdev attribute to communicate the change to drivers.
+But doing so changes the modalias for the first accelerometer
+(which is already supported and used on many devices) from
+acpi:BOSC0200 to i2c:bmc150_accel. The modalias is not only used
+to load the driver, but is also used by hwdb matches in
+/lib/udev/hwdb.d/60-sensor.hwdb which provide a mountmatrix to
+userspace by setting the ACCEL_MOUNT_MATRIX udev property.
 
-Signed-off-by: Danielle Ratson <danieller@nvidia.com>
-Reviewed-by: Petr Machata <petrm@nvidia.com>
-Acked-by: Nikolay Aleksandrov <nikolay@nvidia.com>
-Signed-off-by: Ido Schimmel <idosch@nvidia.com>
-Reviewed-by: Ivan Vecera <ivecera@redhat.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Switching the handling of the BOSC0200 over to i2c-multi-instantiate.c
+will break the hwdb matches causing the ACCEL_MOUNT_MATRIX udev prop
+to no longer be set. So switching over to i2c-multi-instantiate.c is
+not an option.
+
+Changes by Hans de Goede:
+-Add explanation to the commit message why i2c-multi-instantiate.c
+ cannot be used
+-Also set the dev_name, fwnode and irq i2c_board_info struct members
+ for the 2nd client
+
+Signed-off-by: Jeremy Cline <jeremy@jcline.org>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Link: https://lore.kernel.org/r/20201130141954.339805-2-hdegoede@redhat.com
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=198671
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/switchdev.h |  2 ++
- net/bridge/br_vlan.c    | 16 ++++++++++++++--
- 2 files changed, 16 insertions(+), 2 deletions(-)
+ drivers/iio/accel/bmc150-accel-core.c | 21 ++++++++++++++
+ drivers/iio/accel/bmc150-accel-i2c.c  | 41 +++++++++++++++++++++++++--
+ drivers/iio/accel/bmc150-accel.h      |  2 ++
+ 3 files changed, 62 insertions(+), 2 deletions(-)
 
-diff --git a/include/net/switchdev.h b/include/net/switchdev.h
-index aee86a1894327..1d54d468934ac 100644
---- a/include/net/switchdev.h
-+++ b/include/net/switchdev.h
-@@ -38,6 +38,7 @@ enum switchdev_attr_id {
- 	SWITCHDEV_ATTR_ID_PORT_MROUTER,
- 	SWITCHDEV_ATTR_ID_BRIDGE_AGEING_TIME,
- 	SWITCHDEV_ATTR_ID_BRIDGE_VLAN_FILTERING,
-+	SWITCHDEV_ATTR_ID_BRIDGE_VLAN_PROTOCOL,
- 	SWITCHDEV_ATTR_ID_BRIDGE_MC_DISABLED,
- 	SWITCHDEV_ATTR_ID_BRIDGE_MROUTER,
+diff --git a/drivers/iio/accel/bmc150-accel-core.c b/drivers/iio/accel/bmc150-accel-core.c
+index bcdf25f32e220..f63743a62d2ed 100644
+--- a/drivers/iio/accel/bmc150-accel-core.c
++++ b/drivers/iio/accel/bmc150-accel-core.c
+@@ -204,6 +204,7 @@ struct bmc150_accel_data {
+ 	int ev_enable_state;
+ 	int64_t timestamp, old_timestamp; /* Only used in hw fifo mode. */
+ 	const struct bmc150_accel_chip_info *chip_info;
++	struct i2c_client *second_device;
+ 	struct iio_mount_matrix orientation;
  };
-@@ -54,6 +55,7 @@ struct switchdev_attr {
- 		bool mrouter;				/* PORT_MROUTER */
- 		clock_t ageing_time;			/* BRIDGE_AGEING_TIME */
- 		bool vlan_filtering;			/* BRIDGE_VLAN_FILTERING */
-+		u16 vlan_protocol;			/* BRIDGE_VLAN_PROTOCOL */
- 		bool mc_disabled;			/* MC_DISABLED */
- 	} u;
- };
-diff --git a/net/bridge/br_vlan.c b/net/bridge/br_vlan.c
-index 48413b5eb61fc..5536e1c9d5537 100644
---- a/net/bridge/br_vlan.c
-+++ b/net/bridge/br_vlan.c
-@@ -809,15 +809,25 @@ EXPORT_SYMBOL_GPL(br_vlan_get_proto);
  
- int __br_vlan_set_proto(struct net_bridge *br, __be16 proto)
+@@ -1663,6 +1664,26 @@ int bmc150_accel_core_probe(struct device *dev, struct regmap *regmap, int irq,
+ }
+ EXPORT_SYMBOL_GPL(bmc150_accel_core_probe);
+ 
++struct i2c_client *bmc150_get_second_device(struct i2c_client *client)
++{
++	struct bmc150_accel_data *data = i2c_get_clientdata(client);
++
++	if (!data)
++		return NULL;
++
++	return data->second_device;
++}
++EXPORT_SYMBOL_GPL(bmc150_get_second_device);
++
++void bmc150_set_second_device(struct i2c_client *client)
++{
++	struct bmc150_accel_data *data = i2c_get_clientdata(client);
++
++	if (data)
++		data->second_device = client;
++}
++EXPORT_SYMBOL_GPL(bmc150_set_second_device);
++
+ int bmc150_accel_core_remove(struct device *dev)
  {
-+	struct switchdev_attr attr = {
-+		.orig_dev = br->dev,
-+		.id = SWITCHDEV_ATTR_ID_BRIDGE_VLAN_PROTOCOL,
-+		.flags = SWITCHDEV_F_SKIP_EOPNOTSUPP,
-+		.u.vlan_protocol = ntohs(proto),
-+	};
- 	int err = 0;
- 	struct net_bridge_port *p;
- 	struct net_bridge_vlan *vlan;
- 	struct net_bridge_vlan_group *vg;
--	__be16 oldproto;
-+	__be16 oldproto = br->vlan_proto;
+ 	struct iio_dev *indio_dev = dev_get_drvdata(dev);
+diff --git a/drivers/iio/accel/bmc150-accel-i2c.c b/drivers/iio/accel/bmc150-accel-i2c.c
+index 06021c8685a70..8c45963fe3cdb 100644
+--- a/drivers/iio/accel/bmc150-accel-i2c.c
++++ b/drivers/iio/accel/bmc150-accel-i2c.c
+@@ -29,6 +29,8 @@ static int bmc150_accel_probe(struct i2c_client *client,
+ 		i2c_check_functionality(client->adapter, I2C_FUNC_I2C) ||
+ 		i2c_check_functionality(client->adapter,
+ 					I2C_FUNC_SMBUS_READ_I2C_BLOCK);
++	struct acpi_device __maybe_unused *adev;
++	int ret;
  
- 	if (br->vlan_proto == proto)
- 		return 0;
+ 	regmap = devm_regmap_init_i2c(client, &bmc150_regmap_conf);
+ 	if (IS_ERR(regmap)) {
+@@ -39,12 +41,47 @@ static int bmc150_accel_probe(struct i2c_client *client,
+ 	if (id)
+ 		name = id->name;
  
-+	err = switchdev_port_attr_set(br->dev, &attr);
-+	if (err && err != -EOPNOTSUPP)
-+		return err;
+-	return bmc150_accel_core_probe(&client->dev, regmap, client->irq, name,
+-				       block_supported);
++	ret = bmc150_accel_core_probe(&client->dev, regmap, client->irq, name, block_supported);
++	if (ret)
++		return ret;
 +
- 	/* Add VLANs for the new proto to the device filter. */
- 	list_for_each_entry(p, &br->port_list, list) {
- 		vg = nbp_vlan_group(p);
-@@ -828,7 +838,6 @@ int __br_vlan_set_proto(struct net_bridge *br, __be16 proto)
- 		}
- 	}
- 
--	oldproto = br->vlan_proto;
- 	br->vlan_proto = proto;
- 
- 	recalculate_group_addr(br);
-@@ -844,6 +853,9 @@ int __br_vlan_set_proto(struct net_bridge *br, __be16 proto)
- 	return 0;
- 
- err_filt:
-+	attr.u.vlan_protocol = ntohs(oldproto);
-+	switchdev_port_attr_set(br->dev, &attr);
++	/*
++	 * Some BOSC0200 acpi_devices describe 2 accelerometers in a single ACPI
++	 * device, try instantiating a second i2c_client for an I2cSerialBusV2
++	 * ACPI resource with index 1. The !id check avoids recursion when
++	 * bmc150_accel_probe() gets called for the second client.
++	 */
++#ifdef CONFIG_ACPI
++	adev = ACPI_COMPANION(&client->dev);
++	if (!id && adev && strcmp(acpi_device_hid(adev), "BOSC0200") == 0) {
++		struct i2c_board_info board_info = {
++			.type = "bmc150_accel",
++			/*
++			 * The 2nd accel sits in the base of 2-in-1s. Note this
++			 * name is static, as there should never be more then 1
++			 * BOSC0200 ACPI node with 2 accelerometers in it.
++			 */
++			.dev_name = "BOSC0200:base",
++			.fwnode = client->dev.fwnode,
++			.irq = -ENOENT,
++		};
++		struct i2c_client *second_dev;
 +
- 	list_for_each_entry_continue_reverse(vlan, &vg->vlan_list, vlist)
- 		vlan_vid_del(p->dev, proto, vlan->vid);
++		second_dev = i2c_acpi_new_device(&client->dev, 1, &board_info);
++		if (!IS_ERR(second_dev))
++			bmc150_set_second_device(second_dev);
++	}
++#endif
++
++	return 0;
+ }
+ 
+ static int bmc150_accel_remove(struct i2c_client *client)
+ {
++	struct i2c_client *second_dev = bmc150_get_second_device(client);
++
++	i2c_unregister_device(second_dev);
++
+ 	return bmc150_accel_core_remove(&client->dev);
+ }
+ 
+diff --git a/drivers/iio/accel/bmc150-accel.h b/drivers/iio/accel/bmc150-accel.h
+index ae6118ae11b1d..6e965a3ca3226 100644
+--- a/drivers/iio/accel/bmc150-accel.h
++++ b/drivers/iio/accel/bmc150-accel.h
+@@ -16,6 +16,8 @@ enum {
+ int bmc150_accel_core_probe(struct device *dev, struct regmap *regmap, int irq,
+ 			    const char *name, bool block_supported);
+ int bmc150_accel_core_remove(struct device *dev);
++struct i2c_client *bmc150_get_second_device(struct i2c_client *second_device);
++void bmc150_set_second_device(struct i2c_client *second_device);
+ extern const struct dev_pm_ops bmc150_accel_pm_ops;
+ extern const struct regmap_config bmc150_regmap_conf;
  
 -- 
 2.27.0
