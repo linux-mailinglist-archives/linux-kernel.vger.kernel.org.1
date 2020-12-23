@@ -2,28 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B09502E1D18
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 15:14:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 294922E1D19
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 15:14:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728992AbgLWOMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 09:12:40 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9678 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728578AbgLWOMj (ORCPT
+        id S1729013AbgLWOMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 09:12:45 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:10069 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728578AbgLWOMn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 09:12:39 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4D1FVW5McjzkvT3;
-        Wed, 23 Dec 2020 22:10:59 +0800 (CST)
+        Wed, 23 Dec 2020 09:12:43 -0500
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4D1FVf2r5jzM8Wj;
+        Wed, 23 Dec 2020 22:11:06 +0800 (CST)
 Received: from ubuntu.network (10.175.138.68) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 23 Dec 2020 22:11:47 +0800
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 23 Dec 2020 22:11:53 +0800
 From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+To:     <alexander.shishkin@linux.intel.com>, <mcoquelin.stm32@gmail.com>,
+        <alexandre.torgue@st.com>, <linux-kernel@vger.kernel.org>
 CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] mlx5: use DEFINE_MUTEX (and mutex_init() had been too late)
-Date:   Wed, 23 Dec 2020 22:12:23 +0800
-Message-ID: <20201223141223.313-1-zhengyongjun3@huawei.com>
+Subject: [PATCH -next] hwtracing: stm: use DEFINE_MUTEX (and mutex_init() had been too late)
+Date:   Wed, 23 Dec 2020 22:12:29 +0800
+Message-ID: <20201223141229.377-1-zhengyongjun3@huawei.com>
 X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -36,31 +37,30 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- drivers/infiniband/hw/mlx5/main.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/hwtracing/stm/core.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 246e3cbe0b2c..8a260773722f 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -79,7 +79,7 @@ static DEFINE_MUTEX(mlx5_ib_multiport_mutex);
-  * doesn't work on kernel modules memory
+diff --git a/drivers/hwtracing/stm/core.c b/drivers/hwtracing/stm/core.c
+index 2712e699ba08..84c4af6c6dd6 100644
+--- a/drivers/hwtracing/stm/core.c
++++ b/drivers/hwtracing/stm/core.c
+@@ -367,7 +367,7 @@ static int major_match(struct device *dev, const void *data)
+  * with the STM class framework.
   */
- static unsigned long xlt_emergency_page;
--static struct mutex xlt_emergency_page_mutex;
-+static DEFINE_MUTEX(xlt_emergency_page_mutex);
+ static struct list_head stm_pdrv_head;
+-static struct mutex stm_pdrv_mutex;
++static DEFINE_MUTEX(stm_pdrv_mutex);
  
- struct mlx5_ib_dev *mlx5_ib_get_ibdev_from_mpi(struct mlx5_ib_multiport_info *mpi)
- {
-@@ -4874,8 +4874,6 @@ static int __init mlx5_ib_init(void)
- 	if (!xlt_emergency_page)
- 		return -ENOMEM;
+ struct stm_pdrv_entry {
+ 	struct list_head			entry;
+@@ -1326,7 +1326,6 @@ static int __init stm_core_init(void)
  
--	mutex_init(&xlt_emergency_page_mutex);
--
- 	mlx5_ib_event_wq = alloc_ordered_workqueue("mlx5_ib_event_wq", 0);
- 	if (!mlx5_ib_event_wq) {
- 		free_page(xlt_emergency_page);
+ 	init_srcu_struct(&stm_source_srcu);
+ 	INIT_LIST_HEAD(&stm_pdrv_head);
+-	mutex_init(&stm_pdrv_mutex);
+ 
+ 	/*
+ 	 * So as to not confuse existing users with a requirement
 -- 
 2.22.0
 
