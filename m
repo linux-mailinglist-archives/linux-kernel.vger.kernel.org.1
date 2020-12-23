@@ -2,206 +2,534 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 691342E1A9F
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 10:50:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8D732E1AA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 10:54:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728208AbgLWJtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 04:49:47 -0500
-Received: from mout.gmx.net ([212.227.17.22]:60513 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726022AbgLWJtp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 04:49:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1608716891;
-        bh=65nC/HIa2Iw+m1jZNyib0HWtljb/LeXqdwbAk2EgPYI=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=bpnWEIf+jRO3wV+4x01rnV/5YyOqpG9k2jAGURrJRWiBdc9vc0f04g/aRIAYSdBk0
-         +kNf7L7jl53yyDXqpv2Dg1ag4cOyfodr5OGVH57QcV3/+cB5kgl/nAtWewsOGauJUg
-         WudPC6ozCpCBcXd9tYIAtaj/hAiTGq6aQh/4mtYA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.60] ([92.116.156.206]) by mail.gmx.com (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1M3UZG-1krSWG3RVi-000Zpk; Wed, 23
- Dec 2020 10:48:10 +0100
-Subject: Re: [PATCH] proc/wchan: Use printk format instead of
- lookup_symbol_name()
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-References: <20201217165413.GA1959@ls3530.fritz.box>
- <20201222181807.360cd9458d50b625608b8b44@linux-foundation.org>
-From:   Helge Deller <deller@gmx.de>
-Autocrypt: addr=deller@gmx.de; keydata=
- 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
- c2TFWAS8k6RLkk41ZUU8ENX8+qZx/Q==
-Message-ID: <b54649ea-1bec-25a9-2c22-35bdfabc89a9@gmx.de>
-Date:   Wed, 23 Dec 2020 10:48:10 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
-MIME-Version: 1.0
-In-Reply-To: <20201222181807.360cd9458d50b625608b8b44@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:gRmuymGPB2LiNQ4rNhvvXmoz1yazFT4wiKbtNc6Z8rEG6IT3DCU
- Hv7Q4ZEx1rSIJuvDO2hX7VM49rGf2C82Ja2Z4klmHQShQwHwZQ9BTPfGclXdgeiyGQ/B8Vo
- hTJhy9/qAVUUQcqzqoFgBv1ywY9F2IvMWGm7HOYYwBHYS2lRKJVOWn5OScwGBrTfQV9Uol+
- 5LXHQDblC9HEOZuY6866w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:sUNSr/yqII8=:OxBfkv1UwqxWrNFMeT/nhL
- lHTmDd9qfp0OCf4Eh8AGP9u9cM4nmpIIffe4wYvpyVJMAaAFAbvoWEMy52RqU3UNK7im6cM32
- XNbwIrLAyAhTK30TDidOwIZP0st2uKILaDTEzk4+f0R4I/3NMXhkPHFiDiUgwBjbKiJjBGKMM
- 2SyRC/KmUYfpCUZ2Mv5xqY1wyP9qGJueY4iLDuk+0R1xdkcULvpS5k2rzZ5dOvl3zbIbHdMhQ
- Ynju3L2DysEbIm2A85wV9WqmRXtfJO0SewhXVRw31BHZI1VAGDGsQk+HgFpJW2HrunKF3i2L2
- mSJ5pSxRUPvP1lF0rQeTJPhpCJyJYFdBQveVWdNoqAJ2C+IDv306WODPeJbBU5cqN19ZktlTC
- VuOOxzfRy6rvvoGgGKiJKNSnbWe3xfNKcDymEhvTrqrRf6koT6qpgjg/ByYSaj+o7y30MuzSV
- xrQRNGeAHOt5qTQOS3elicpewBZwbMsZX7IzM7SFQ0F5jQCfzc8QCL/B+PO2ogZRsBhISC7Qi
- Cv7MCLi460xJAJGvvR2YClDOD3IaKhHP4ePJBqWI3tRGILze5pErK7edBuqZfOR0rbZQBN+SK
- LOr2vDB9XTlpfigftB/1KBDiflhdkoe66YZ8MTmTjNvNdEcqG45iCmCe54AP2UbhvklyTvzS+
- 4npuiuBYYGPU1o4nLgI94USX0UJfsHx0VTzbdi9lR9K1OXxlAmF9E7mEuqHyGxPxuTVNO6/I3
- 0Bvrx+SQanLLbgXja+4BMEt0U0fI8yWfNVuuzxqse0KQx2AGCBbL9a7pH4cMiQtoKnOybDEjJ
- Fy2pQAoHALrHle6PyBl0osoYTiOkhT+k0kjyBOkdRGmu/MOfCZD8KoRpl2x6irvB5I5ixfhnZ
- HMGFrKwQMvsDVaJombgA==
+        id S1728286AbgLWJyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 04:54:24 -0500
+Received: from ptr.189.cn ([183.61.185.103]:11411 "EHLO 189.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726022AbgLWJyY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 04:54:24 -0500
+HMM_SOURCE_IP: 10.64.10.46:60142.1895318768
+HMM_ATTACHE_NUM: 0000
+HMM_SOURCE_TYPE: SMTP
+Received: from clientip-123.150.8.42 (unknown [10.64.10.46])
+        by 189.cn (HERMES) with SMTP id 1FB76101A04;
+        Wed, 23 Dec 2020 17:51:33 +0800 (CST)
+Received: from  ([10.64.8.33])
+        by gateway-151646-dep-54888d799-2jgfg with ESMTP id 6ecfe81fd67243e39f5d77b91d3179f8 for greg@kroah.com;
+        Wed Dec 23 17:51:35 2020
+X-Transaction-ID: 6ecfe81fd67243e39f5d77b91d3179f8
+X-filter-score: 
+X-Real-From: chensong_2000@189.cn
+X-Receive-IP: 10.64.8.33
+X-MEDUSA-Status: 0
+Sender: chensong_2000@189.cn
+From:   Song Chen <chensong_2000@189.cn>
+To:     greg@kroah.com, linux-kernel@vger.kernel.org
+Cc:     abbotti@mev.co.uk, hsweeten@visionengravers.com,
+        chensong@tj.kylinos.cn, Song Chen <chensong_2000@189.cn>
+Subject: [PATCH] staging: comedi: clean up debugging code in #if 0 or 1
+Date:   Wed, 23 Dec 2020 17:51:41 +0800
+Message-Id: <1608717101-32680-1-git-send-email-chensong_2000@189.cn>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/23/20 3:18 AM, Andrew Morton wrote:
-> On Thu, 17 Dec 2020 17:54:13 +0100 Helge Deller <deller@gmx.de> wrote:
->
->> To resolve the symbol fuction name for wchan, use the printk format
->> specifier %ps instead of manually looking up the symbol function name
->> via lookup_symbol_name().
->>
->> Signed-off-by: Helge Deller <deller@gmx.de>
->>
->
-> Please don't forget the "^---$" to separate the changelog from the
-> diff.
+There are a log of "#if 0" or "#if 1" in driver which cause
+warning when running checkpatch.pl, they are supposed to be
+cleaned up before release.
 
-Ok.
+Signed-off-by: Song Chen <chensong_2000@189.cn>
+---
+ drivers/staging/comedi/drivers/cb_pcidas64.c   | 95 --------------------------
+ drivers/staging/comedi/drivers/dt2801.c        | 29 --------
+ drivers/staging/comedi/drivers/ni_atmio16d.c   |  9 ---
+ drivers/staging/comedi/drivers/ni_mio_common.c | 37 +---------
+ drivers/staging/comedi/drivers/ni_mio_cs.c     | 10 ---
+ drivers/staging/comedi/drivers/ni_pcidio.c     |  5 --
+ drivers/staging/comedi/drivers/ni_pcimio.c     | 48 -------------
+ drivers/staging/comedi/drivers/s526.c          | 49 -------------
+ drivers/staging/comedi/drivers/s626.c          | 45 ------------
+ 9 files changed, 1 insertion(+), 326 deletions(-)
 
->
->>  #include <linux/module.h>
->> @@ -386,19 +385,17 @@ static int proc_pid_wchan(struct seq_file *m, str=
-uct pid_namespace *ns,
->>  			  struct pid *pid, struct task_struct *task)
->>  {
->>  	unsigned long wchan;
->> -	char symname[KSYM_NAME_LEN];
->>
->> -	if (!ptrace_may_access(task, PTRACE_MODE_READ_FSCREDS))
->> -		goto print0;
->> +	if (ptrace_may_access(task, PTRACE_MODE_READ_FSCREDS))
->> +		wchan =3D get_wchan(task);
->> +	else
->> +		wchan =3D 0;
->>
->> -	wchan =3D get_wchan(task);
->> -	if (wchan && !lookup_symbol_name(wchan, symname)) {
->> -		seq_puts(m, symname);
->> -		return 0;
->> -	}
->> +	if (wchan)
->> +		seq_printf(m, "%ps", (void *) wchan);
->> +	else
->> +		seq_putc(m, '0');
->>
->> -print0:
->> -	seq_putc(m, '0');
->>  	return 0;
->>  }
->
-> We can simplify this further?
->
-> static int proc_pid_wchan(struct seq_file *m, struct pid_namespace *ns,
-> 			  struct pid *pid, struct task_struct *task)
-> {
-> 	if (ptrace_may_access(task, PTRACE_MODE_READ_FSCREDS))
-> 		seq_printf(m, "%ps", (void *)get_wchan(task));
-> 	else
-> 		seq_putc(m, '0');
->
-> 	return 0;
-> }
->
->
-> --- a/fs/proc/base.c~proc-wchan-use-printk-format-instead-of-lookup_symb=
-ol_name-fix
-> +++ a/fs/proc/base.c
-> @@ -384,15 +384,8 @@ static const struct file_operations proc
->  static int proc_pid_wchan(struct seq_file *m, struct pid_namespace *ns,
->  			  struct pid *pid, struct task_struct *task)
->  {
-> -	unsigned long wchan;
-> -
->  	if (ptrace_may_access(task, PTRACE_MODE_READ_FSCREDS))
-> -		wchan =3D get_wchan(task);
-> -	else
-> -		wchan =3D 0;
-> -
-> -	if (wchan)
-> -		seq_printf(m, "%ps", (void *) wchan);
-> +		seq_printf(m, "%ps", (void *)get_wchan(task));
->  	else
->  		seq_putc(m, '0');
+diff --git a/drivers/staging/comedi/drivers/cb_pcidas64.c b/drivers/staging/comedi/drivers/cb_pcidas64.c
+index fa987bb..2d74ec9 100644
+--- a/drivers/staging/comedi/drivers/cb_pcidas64.c
++++ b/drivers/staging/comedi/drivers/cb_pcidas64.c
+@@ -998,101 +998,6 @@ static const struct pcidas64_board pcidas64_boards[] = {
+ 		.ai_fifo	= &ai_fifo_4020,
+ 		.has_8255	= 1,
+ 	},
+-#if 0
+-	/* The device id for these boards is unknown */
+-
+-	[BOARD_PCIDAS6402_16_JR] = {
+-		.name		= "pci-das6402/16/jr",
+-		.ai_se_chans	= 64,
+-		.ai_bits	= 16,
+-		.ai_speed	= 5000,
+-		.ao_nchan	= 0,
+-		.ao_scan_speed	= 10000,
+-		.layout		= LAYOUT_64XX,
+-		.ai_range_table	= &ai_ranges_64xx,
+-		.ai_range_code	= ai_range_code_64xx,
+-		.ai_fifo	= ai_fifo_64xx,
+-		.has_8255	= 1,
+-	},
+-	[BOARD_PCIDAS64_M1_16_JR] = {
+-		.name		= "pci-das64/m1/16/jr",
+-		.ai_se_chans	= 64,
+-		.ai_bits	= 16,
+-		.ai_speed	= 1000,
+-		.ao_nchan	= 0,
+-		.ao_scan_speed	= 10000,
+-		.layout		= LAYOUT_64XX,
+-		.ai_range_table	= &ai_ranges_64_mx,
+-		.ai_range_code	= ai_range_code_64_mx,
+-		.ai_fifo	= ai_fifo_64xx,
+-		.has_8255	= 1,
+-	},
+-	[BOARD_PCIDAS64_M2_16_JR] = {
+-		.name = "pci-das64/m2/16/jr",
+-		.ai_se_chans	= 64,
+-		.ai_bits	= 16,
+-		.ai_speed	= 500,
+-		.ao_nchan	= 0,
+-		.ao_scan_speed	= 10000,
+-		.layout		= LAYOUT_64XX,
+-		.ai_range_table	= &ai_ranges_64_mx,
+-		.ai_range_code	= ai_range_code_64_mx,
+-		.ai_fifo	= ai_fifo_64xx,
+-		.has_8255	= 1,
+-	},
+-	[BOARD_PCIDAS64_M3_16_JR] = {
+-		.name		= "pci-das64/m3/16/jr",
+-		.ai_se_chans	= 64,
+-		.ai_bits	= 16,
+-		.ai_speed	= 333,
+-		.ao_nchan	= 0,
+-		.ao_scan_speed	= 10000,
+-		.layout		= LAYOUT_64XX,
+-		.ai_range_table	= &ai_ranges_64_mx,
+-		.ai_range_code	= ai_range_code_64_mx,
+-		.ai_fifo	= ai_fifo_64xx,
+-		.has_8255	= 1,
+-	},
+-	[BOARD_PCIDAS64_M1_14] = {
+-		.name		= "pci-das64/m1/14",
+-		.ai_se_chans	= 64,
+-		.ai_bits	= 14,
+-		.ai_speed	= 1000,
+-		.ao_nchan	= 2,
+-		.ao_scan_speed	= 10000,
+-		.layout		= LAYOUT_64XX,
+-		.ai_range_table	= &ai_ranges_64_mx,
+-		.ai_range_code	= ai_range_code_64_mx,
+-		.ai_fifo	= ai_fifo_64xx,
+-		.has_8255	= 1,
+-	},
+-	[BOARD_PCIDAS64_M2_14] = {
+-		.name		= "pci-das64/m2/14",
+-		.ai_se_chans	= 64,
+-		.ai_bits	= 14,
+-		.ai_speed	= 500,
+-		.ao_nchan	= 2,
+-		.ao_scan_speed	= 10000,
+-		.layout		= LAYOUT_64XX,
+-		.ai_range_table	= &ai_ranges_64_mx,
+-		.ai_range_code	= ai_range_code_64_mx,
+-		.ai_fifo	= ai_fifo_64xx,
+-		.has_8255	= 1,
+-	},
+-	[BOARD_PCIDAS64_M3_14] = {
+-		.name		= "pci-das64/m3/14",
+-		.ai_se_chans	= 64,
+-		.ai_bits	= 14,
+-		.ai_speed	= 333,
+-		.ao_nchan	= 2,
+-		.ao_scan_speed	= 10000,
+-		.layout		= LAYOUT_64XX,
+-		.ai_range_table	= &ai_ranges_64_mx,
+-		.ai_range_code	= ai_range_code_64_mx,
+-		.ai_fifo	= ai_fifo_64xx,
+-		.has_8255	= 1,
+-	},
+-#endif
+ };
+ 
+ static inline unsigned short se_diff_bit_6xxx(struct comedi_device *dev,
+diff --git a/drivers/staging/comedi/drivers/dt2801.c b/drivers/staging/comedi/drivers/dt2801.c
+index 0d571d8..bb01416 100644
+--- a/drivers/staging/comedi/drivers/dt2801.c
++++ b/drivers/staging/comedi/drivers/dt2801.c
+@@ -87,17 +87,6 @@
+ #define DT2801_STATUS		1
+ #define DT2801_CMD		1
+ 
+-#if 0
+-/* ignore 'defined but not used' warning */
+-static const struct comedi_lrange range_dt2801_ai_pgh_bipolar = {
+-	4, {
+-		BIP_RANGE(10),
+-		BIP_RANGE(5),
+-		BIP_RANGE(2.5),
+-		BIP_RANGE(1.25)
+-	}
+-};
+-#endif
+ static const struct comedi_lrange range_dt2801_ai_pgl_bipolar = {
+ 	4, {
+ 		BIP_RANGE(10),
+@@ -107,17 +96,6 @@ static const struct comedi_lrange range_dt2801_ai_pgl_bipolar = {
+ 	}
+ };
+ 
+-#if 0
+-/* ignore 'defined but not used' warning */
+-static const struct comedi_lrange range_dt2801_ai_pgh_unipolar = {
+-	4, {
+-		UNI_RANGE(10),
+-		UNI_RANGE(5),
+-		UNI_RANGE(2.5),
+-		UNI_RANGE(1.25)
+-	}
+-};
+-#endif
+ static const struct comedi_lrange range_dt2801_ai_pgl_unipolar = {
+ 	4, {
+ 		UNI_RANGE(10),
+@@ -580,14 +558,7 @@ static int dt2801_attach(struct comedi_device *dev, struct comedi_devconfig *it)
+ 	/* ai subdevice */
+ 	s->type = COMEDI_SUBD_AI;
+ 	s->subdev_flags = SDF_READABLE | SDF_GROUND;
+-#if 1
+ 	s->n_chan = n_ai_chans;
+-#else
+-	if (it->options[2])
+-		s->n_chan = board->ad_chan;
+-	else
+-		s->n_chan = board->ad_chan / 2;
+-#endif
+ 	s->maxdata = (1 << board->adbits) - 1;
+ 	s->range_table = ai_range_lkup(board->adrangetype, it->options[3]);
+ 	s->insn_read = dt2801_ai_insn_read;
+diff --git a/drivers/staging/comedi/drivers/ni_atmio16d.c b/drivers/staging/comedi/drivers/ni_atmio16d.c
+index dffce1a..972e220 100644
+--- a/drivers/staging/comedi/drivers/ni_atmio16d.c
++++ b/drivers/staging/comedi/drivers/ni_atmio16d.c
+@@ -685,15 +685,6 @@ static int atmio16d_attach(struct comedi_device *dev,
+ 		s->type = COMEDI_SUBD_UNUSED;
+ 	}
+ 
+-/* don't yet know how to deal with counter/timers */
+-#if 0
+-	s = &dev->subdevices[4];
+-	/* do */
+-	s->type = COMEDI_SUBD_TIMER;
+-	s->n_chan = 0;
+-	s->maxdata = 0
+-#endif
+-
+ 	return 0;
+ }
+ 
+diff --git a/drivers/staging/comedi/drivers/ni_mio_common.c b/drivers/staging/comedi/drivers/ni_mio_common.c
+index 4f80a49..85ab35ed 100644
+--- a/drivers/staging/comedi/drivers/ni_mio_common.c
++++ b/drivers/staging/comedi/drivers/ni_mio_common.c
+@@ -795,18 +795,6 @@ static void ni_clear_ai_fifo(struct comedi_device *dev)
+ 		if (devpriv->is_625x) {
+ 			ni_writeb(dev, 0, NI_M_STATIC_AI_CTRL_REG(0));
+ 			ni_writeb(dev, 1, NI_M_STATIC_AI_CTRL_REG(0));
+-#if 0
+-			/*
+-			 * The NI example code does 3 convert pulses for 625x
+-			 * boards, But that appears to be wrong in practice.
+-			 */
+-			ni_stc_writew(dev, NISTC_AI_CMD1_CONVERT_PULSE,
+-				      NISTC_AI_CMD1_REG);
+-			ni_stc_writew(dev, NISTC_AI_CMD1_CONVERT_PULSE,
+-				      NISTC_AI_CMD1_REG);
+-			ni_stc_writew(dev, NISTC_AI_CMD1_CONVERT_PULSE,
+-				      NISTC_AI_CMD1_REG);
+-#endif
+ 		}
+ 	}
+ }
+@@ -2930,21 +2918,7 @@ static void ni_ao_cmd_personalize(struct comedi_device *dev,
+ 	  (board->ao_fifo_depth ?
+ 	    NISTC_AO_PERSONAL_FIFO_ENA : NISTC_AO_PERSONAL_DMA_PIO_CTRL)
+ 	  ;
+-#if 0
+-	/*
+-	 * FIXME:
+-	 * add something like ".has_individual_dacs = 0" to ni_board_struct
+-	 * since, as F Hess pointed out, not all in m series have singles.  not
+-	 * sure if e-series all have duals...
+-	 */
+ 
+-	/*
+-	 * F Hess: windows driver does not set NISTC_AO_PERSONAL_NUM_DAC bit for
+-	 * 6281, verified with bus analyzer.
+-	 */
+-	if (devpriv->is_m_series)
+-		bits |= NISTC_AO_PERSONAL_NUM_DAC;
+-#endif
+ 	ni_stc_writew(dev, bits, NISTC_AO_PERSONAL_REG);
+ 
+ 	ni_stc_writew(dev, NISTC_RESET_AO_CFG_END, NISTC_RESET_REG);
+@@ -4857,21 +4831,12 @@ static int init_cs5529(struct comedi_device *dev)
+ 	unsigned int config_bits = CS5529_CFG_PORT_FLAG |
+ 				   CS5529_CFG_WORD_RATE_2180;
+ 
+-#if 1
+ 	/* do self-calibration */
+ 	cs5529_config_write(dev, config_bits | CS5529_CFG_CALIB_BOTH_SELF,
+ 			    CS5529_CFG_REG);
+ 	/* need to force a conversion for calibration to run */
+ 	cs5529_do_conversion(dev, NULL);
+-#else
+-	/* force gain calibration to 1 */
+-	cs5529_config_write(dev, 0x400000, CS5529_GAIN_REG);
+-	cs5529_config_write(dev, config_bits | CS5529_CFG_CALIB_OFFSET_SELF,
+-			    CS5529_CFG_REG);
+-	if (cs5529_wait_for_idle(dev))
+-		dev_err(dev->class_dev,
+-			"timeout or signal in %s\n", __func__);
+-#endif
++
+ 	return 0;
+ }
+ 
+diff --git a/drivers/staging/comedi/drivers/ni_mio_cs.c b/drivers/staging/comedi/drivers/ni_mio_cs.c
+index 4f37b4e..7abd64b 100644
+--- a/drivers/staging/comedi/drivers/ni_mio_cs.c
++++ b/drivers/staging/comedi/drivers/ni_mio_cs.c
+@@ -100,16 +100,6 @@ static const struct ni_board_struct ni_boards[] = {
+ 		.ao_speed	= 1000000,
+ 		.caldac		= { ad8804_debug },
+ 	 },
+-#if 0
+-	{
+-		.name		= "DAQCard-6715",
+-		.device_id	= 0x0000,	/* unknown */
+-		.n_aochan	= 8,
+-		.ao_maxdata	= 0x0fff,
+-		.ao_671x	= 8192,
+-		.caldac		= { mb88341, mb88341 },
+-	},
+-#endif
+ };
+ 
+ #include "ni_mio_common.c"
+diff --git a/drivers/staging/comedi/drivers/ni_pcidio.c b/drivers/staging/comedi/drivers/ni_pcidio.c
+index 623f8d0..579d8eb 100644
+--- a/drivers/staging/comedi/drivers/ni_pcidio.c
++++ b/drivers/staging/comedi/drivers/ni_pcidio.c
+@@ -455,11 +455,6 @@ static irqreturn_t nidio_interrupt(int irq, void *d)
+ 
+ out:
+ 	comedi_handle_events(dev, s);
+-#if 0
+-	if (!tag)
+-		writeb(0x03, dev->mmio + MASTER_DMA_AND_INTERRUPT_CONTROL);
+-#endif
+-
+ 	spin_unlock(&dev->spinlock);
+ 	return IRQ_HANDLED;
+ }
+diff --git a/drivers/staging/comedi/drivers/ni_pcimio.c b/drivers/staging/comedi/drivers/ni_pcimio.c
+index 6c813a4..8b716ed 100644
+--- a/drivers/staging/comedi/drivers/ni_pcimio.c
++++ b/drivers/staging/comedi/drivers/ni_pcimio.c
+@@ -481,43 +481,6 @@ static const struct ni_board_struct ni_boards[] = {
+ 		.ao_speed	= 250,
+ 		.caldac		= { ad8804, ad8804 },
+ 	},
+-#if 0
+-	/* The 6115 boards probably need their own driver */
+-	[BOARD_PCI6115] = {	/* .device_id = 0x2ed0, */
+-		.name		= "pci-6115",
+-		.n_adchan	= 4,
+-		.ai_maxdata	= 0x0fff,
+-		.ai_fifo_depth	= 8192,
+-		.gainlkup	= ai_gain_611x,
+-		.ai_speed	= 100,
+-		.n_aochan	= 2,
+-		.ao_maxdata	= 0xffff,
+-		.ao_671x	= 1,
+-		.ao_fifo_depth	= 2048,
+-		.ao_speed	= 250,
+-		.reg_611x	= 1,
+-		/* XXX */
+-		.caldac		= { ad8804_debug, ad8804_debug, ad8804_debug },
+-	},
+-#endif
+-#if 0
+-	[BOARD_PXI6115] = {	/* .device_id = ????, */
+-		.name		= "pxi-6115",
+-		.n_adchan	= 4,
+-		.ai_maxdata	= 0x0fff,
+-		.ai_fifo_depth	= 8192,
+-		.gainlkup	= ai_gain_611x,
+-		.ai_speed	= 100,
+-		.n_aochan	= 2,
+-		.ao_maxdata	= 0xffff,
+-		.ao_671x	= 1,
+-		.ao_fifo_depth	= 2048,
+-		.ao_speed	= 250,
+-		.reg_611x	= 1,
+-		/* XXX */
+-		.caldac		= { ad8804_debug, ad8804_debug, ad8804_debug },
+-	},
+-#endif
+ 	[BOARD_PCI6711] = {
+ 		.name = "pci-6711",
+ 		.n_aochan	= 4,
+@@ -569,17 +532,6 @@ static const struct ni_board_struct ni_boards[] = {
+ 		.reg_type	= ni_reg_6711,
+ 		.caldac		= { ad8804_debug },
+ 	},
+-#if 0
+-	[BOARD_PXI6731] = {	/* .device_id = ????, */
+-		.name		= "pxi-6731",
+-		.n_aochan	= 4,
+-		.ao_maxdata	= 0xffff,
+-		.ao_fifo_depth	= 8192,
+-		.ao_range_table	= &range_bipolar10,
+-		.reg_type	= ni_reg_6711,
+-		.caldac		= { ad8804_debug },
+-	},
+-#endif
+ 	[BOARD_PCI6733] = {
+ 		.name		= "pci-6733",
+ 		.n_aochan	= 8,
+diff --git a/drivers/staging/comedi/drivers/s526.c b/drivers/staging/comedi/drivers/s526.c
+index 085cf5b..7f3c59e 100644
+--- a/drivers/staging/comedi/drivers/s526.c
++++ b/drivers/staging/comedi/drivers/s526.c
+@@ -229,7 +229,6 @@ static int s526_gpct_insn_config(struct comedi_device *dev,
+ 		 */
+ 		devpriv->gpct_config[chan] = data[0];
+ 
+-#if 1
+ 		/*  Set Counter Mode Register */
+ 		val = data[1] & 0xffff;
+ 		outw(val, dev->iobase + S526_GPCT_MODE_REG(chan));
+@@ -246,54 +245,6 @@ static int s526_gpct_insn_config(struct comedi_device *dev,
+ 			 *      dev->iobase + S526_GPCT_CTRL_REG(chan));
+ 			 */
+ 		}
+-#else
+-		val = S526_GPCT_MODE_CTDIR_CTRL_QUAD;
+-
+-		/*  data[1] contains GPCT_X1, GPCT_X2 or GPCT_X4 */
+-		if (data[1] == GPCT_X2)
+-			val |= S526_GPCT_MODE_CLK_SRC_QUADX2;
+-		else if (data[1] == GPCT_X4)
+-			val |= S526_GPCT_MODE_CLK_SRC_QUADX4;
+-		else
+-			val |= S526_GPCT_MODE_CLK_SRC_QUADX1;
+-
+-		/*  When to take into account the indexpulse: */
+-		/*
+-		 * if (data[2] == GPCT_IndexPhaseLowLow) {
+-		 * } else if (data[2] == GPCT_IndexPhaseLowHigh) {
+-		 * } else if (data[2] == GPCT_IndexPhaseHighLow) {
+-		 * } else if (data[2] == GPCT_IndexPhaseHighHigh) {
+-		 * }
+-		 */
+-		/*  Take into account the index pulse? */
+-		if (data[3] == GPCT_RESET_COUNTER_ON_INDEX) {
+-			/*  Auto load with INDEX^ */
+-			val |= S526_GPCT_MODE_AUTOLOAD_IXRISE;
+-		}
+-
+-		/*  Set Counter Mode Register */
+-		val = data[1] & 0xffff;
+-		outw(val, dev->iobase + S526_GPCT_MODE_REG(chan));
+-
+-		/*  Load the pre-load register */
+-		s526_gpct_write(dev, chan, data[2]);
+-
+-		/*  Write the Counter Control Register */
+-		if (data[3])
+-			outw(data[3] & 0xffff,
+-			     dev->iobase + S526_GPCT_CTRL_REG(chan));
+-
+-		/*  Reset the counter if it is software preload */
+-		if ((val & S526_GPCT_MODE_AUTOLOAD_MASK) ==
+-		    S526_GPCT_MODE_AUTOLOAD_NONE) {
+-			/*  Reset the counter */
+-			outw(S526_GPCT_CTRL_CT_RESET,
+-			     dev->iobase + S526_GPCT_CTRL_REG(chan));
+-			/*  Load the counter from PR0 */
+-			outw(S526_GPCT_CTRL_CT_LOAD,
+-			     dev->iobase + S526_GPCT_CTRL_REG(chan));
+-		}
+-#endif
+ 		break;
+ 
+ 	case INSN_CONFIG_GPCT_SINGLE_PULSE_GENERATOR:
+diff --git a/drivers/staging/comedi/drivers/s626.c b/drivers/staging/comedi/drivers/s626.c
+index e7aba93..5ff33c4 100644
+--- a/drivers/staging/comedi/drivers/s626.c
++++ b/drivers/staging/comedi/drivers/s626.c
+@@ -2255,51 +2255,6 @@ static int s626_initialize(struct comedi_device *dev)
+ 	/* Disable RPS timeouts */
+ 	writel(0, dev->mmio + S626_P_RPS1_TOUT);
+ 
+-#if 0
+-	/*
+-	 * SAA7146 BUG WORKAROUND
+-	 *
+-	 * Initialize SAA7146 ADC interface to a known state by
+-	 * invoking ADCs until FB BUFFER 1 register shows that it
+-	 * is correctly receiving ADC data. This is necessary
+-	 * because the SAA7146 ADC interface does not start up in
+-	 * a defined state after a PCI reset.
+-	 */
+-	{
+-		struct comedi_subdevice *s = dev->read_subdev;
+-		u8 poll_list;
+-		u16 adc_data;
+-		u16 start_val;
+-		u16 index;
+-		unsigned int data[16];
+-
+-		/* Create a simple polling list for analog input channel 0 */
+-		poll_list = S626_EOPL;
+-		s626_reset_adc(dev, &poll_list);
+-
+-		/* Get initial ADC value */
+-		s626_ai_rinsn(dev, s, NULL, data);
+-		start_val = data[0];
+-
+-		/*
+-		 * VERSION 2.01 CHANGE: TIMEOUT ADDED TO PREVENT HANGED
+-		 * EXECUTION.
+-		 *
+-		 * Invoke ADCs until the new ADC value differs from the initial
+-		 * value or a timeout occurs.  The timeout protects against the
+-		 * possibility that the driver is restarting and the ADC data is
+-		 * a fixed value resulting from the applied ADC analog input
+-		 * being unusually quiet or at the rail.
+-		 */
+-		for (index = 0; index < 500; index++) {
+-			s626_ai_rinsn(dev, s, NULL, data);
+-			adc_data = data[0];
+-			if (adc_data != start_val)
+-				break;
+-		}
+-	}
+-#endif	/* SAA7146 BUG WORKAROUND */
+-
+ 	/*
+ 	 * Initialize the DAC interface
+ 	 */
+-- 
+2.7.4
 
-get_wchan() does return NULL sometimes, in which case with
-your change now "0x0" instead of "0" gets printed.
-
-If that's acceptable, then your patch is Ok.
-
-Helge
