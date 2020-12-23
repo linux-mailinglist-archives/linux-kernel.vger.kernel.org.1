@@ -2,114 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A26932E226A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 23:25:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA4C32E226E
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 23:31:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726781AbgLWWYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 17:24:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51196 "EHLO
+        id S1726642AbgLWWai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 17:30:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725811AbgLWWYu (ORCPT
+        with ESMTP id S1725811AbgLWWah (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 17:24:50 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B3FFC061794;
-        Wed, 23 Dec 2020 14:24:09 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id y23so188201wmi.1;
-        Wed, 23 Dec 2020 14:24:09 -0800 (PST)
+        Wed, 23 Dec 2020 17:30:37 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7321C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 14:29:56 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id q137so552866iod.9
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 14:29:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sCveDTAqg2krVZsKdg4haeDPpG4bCY8xxdMqSu4hHV0=;
-        b=SPXs4ihQVtEbUsfzq1Hqda/oybQY2OvK1F30H3bW7uhyexY2dCo/M5s+KEqAlT8DTW
-         NnUQ9UXiunXMMi0M/eSQKDqEZEfiNBr1AbSwHWYkLlz8pczbU+5Tln/W4HkHt6nXHVOk
-         JvqZjlFk2wtYTvfmArSUIGFqo7SjZZlF1AgW91N23aj+UeKxUYhqAFbtrP8F9jyQZIek
-         6kmuBfpl9J1B8095HEd4jGDE13OPDjOv3FNwztMx/fZUtdr96EczLM8hw7yZE+s8g2/G
-         gwubldFpGI2S/aB9kwz8INnewVxAaiIygY7VJk9yOHY3aXU0sz1TtfKcheVq1dFtJaeP
-         UPNA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=61D1avpBNAQTrzPUC+V3vNlrIkz1Ho8e0u54ev6p94E=;
+        b=v83tm17hJbXD1YD85KCQF9w+wyVDxiP+lP8+ApqT44Fv6bBx7iFtr7ccCmK5kdUYlu
+         D7WN2A8OYjBztmOn9jtKbAxkcrgq0tNqr+noMi0sW22XxNftmBIsXzGsC75BGQRPvTCK
+         U91xjpkSQwk77RUF6kEW0aivXAz7T0mkqiRkCJ95cjnPw9pUp/gzQGGVS4aOa6IhFJYJ
+         g/J0dCArwhHApHEaH1eCDjxKlxcLtj8AjJlYpaDqNXaN8JydilT8fiySksFbOFgQNtZf
+         o7I5TeJu3G/RHrlSc0G0F4BCYPmTrV+hSKGU2bc1egvMk//xb23kfiqa8pc/l0vCf3Z8
+         rBCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sCveDTAqg2krVZsKdg4haeDPpG4bCY8xxdMqSu4hHV0=;
-        b=VijRwiKzVIdnv8U4pauT6KuJYwFpyLDQOZsLjbGH3btc6ecj8AO64wfrPUQsEst9bF
-         IwQ0sngdS1S8f7gSBmnOaup+bwSkO2weR8vX4U9IPaybXCMb4s4i6vmfDQFCMwjYCpRP
-         Y5mzVWWf2Qwss9zEmocp6XAJEWbG4zYQ2TgNLH4+JuIoIFAjK48vktaxtXaoAJjNtm53
-         yRvtFUHxAuFEQTez7F3c/hm+H092JtF3vhfwrhAU3g00/L1OgkdQ6g9dEd4zSG9pvIBb
-         /H4jhkTjklN9oFB+fa5eKel0Ww9v4t+I+vqfrcOvil2dzjsub8B322d+kZ4p9TWKqS02
-         7WpQ==
-X-Gm-Message-State: AOAM532akjqOdBtEkS5OVBFNGKIP64LodJRRRPV0AS9bgtw9pbLBAR13
-        RT/knrVtaK2y2ufAOC36ZbQ=
-X-Google-Smtp-Source: ABdhPJz0hRrU9c/emexZj08cKNt3M2dVcETfPsmlBzq1aTSLke8hhuX43Ushz9NCnDUdmU5bPhVtIw==
-X-Received: by 2002:a1c:bc02:: with SMTP id m2mr1548175wmf.59.1608762248064;
-        Wed, 23 Dec 2020 14:24:08 -0800 (PST)
-Received: from [192.168.1.158] ([2.31.224.116])
-        by smtp.gmail.com with ESMTPSA id c20sm1217971wmb.38.2020.12.23.14.24.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Dec 2020 14:24:07 -0800 (PST)
-Subject: Re: [PATCH v2 05/12] software_node: unregister software_nodes in
- reverse order
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org, yong.zhi@intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        linux@rasmusvillemoes.dk,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org, kieran.bingham+renesas@ideasonboard.com,
-        linus.walleij@linaro.org, heikki.krogerus@linux.intel.com,
-        kitakar@gmail.com, jorhand@linux.microsoft.com,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-References: <20201217234337.1983732-1-djrscally@gmail.com>
- <20201217234337.1983732-6-djrscally@gmail.com>
- <20201221092116.GG26370@paasikivi.fi.intel.com>
- <20201221112644.GJ4077@smile.fi.intel.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <9fbd8234-6cc3-ac3c-7273-854e965a4794@gmail.com>
-Date:   Wed, 23 Dec 2020 22:24:03 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=61D1avpBNAQTrzPUC+V3vNlrIkz1Ho8e0u54ev6p94E=;
+        b=llmoFKBweA5oceZvzy61U6/UzIygZu1o4JeCUvF9z3iKqv96cwEzJR1E9lsWRdFZvI
+         3cgyW5nmaUdCf+rBNimvgHqpX63j0YR9Io1pjR3LslstRCOX1nYNFEv8iUXAdv5mgetO
+         2fz3KVME2gBQmHZUclwaNfabPRIUL1MIDo+MmbJctoMzD8p0vyUKDw+XpHgeoYYRrDvD
+         SRWYwtpWZis7EzffSxxAJ4JQA4KSU4qYR3WjZ83V6lDlE4e6VLphglVnT42sm6+N14B3
+         n2K81QqoYUHUMjQgcUvws8DmhLOiiKpIAi6aoRC8yTafljAXIRtT9we3a0aCcO8PYcca
+         oxvw==
+X-Gm-Message-State: AOAM531FisTQxksdL+miQ5Yv1DHHMFu0vAypRy14Ig3Eli4N+kd3NJ+V
+        +2v/BsxH438dFhphgrGGZPx3JA==
+X-Google-Smtp-Source: ABdhPJxOgHitNDbwpl4RFoLQWRW+gwIhTHV1P5RAby/BaeyOl3GQispO1B3AccbMuwC1XhAY+dS3gg==
+X-Received: by 2002:a02:7a50:: with SMTP id z16mr24430480jad.87.1608762595879;
+        Wed, 23 Dec 2020 14:29:55 -0800 (PST)
+Received: from google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
+        by smtp.gmail.com with ESMTPSA id w3sm18872116ilk.17.2020.12.23.14.29.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Dec 2020 14:29:55 -0800 (PST)
+Date:   Wed, 23 Dec 2020 15:29:51 -0700
+From:   Yu Zhao <yuzhao@google.com>
+To:     Andrea Arcangeli <aarcange@redhat.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+Message-ID: <X+PE38s2Egq4nzKv@google.com>
+References: <20201221223041.GL6640@xz-x1>
+ <CAHk-=wh-bG4thjXUekLtrCg8FRrdWjtT40ibXXLSm_hzQG8eOw@mail.gmail.com>
+ <CALCETrV=8tY7h=aaudWBEn-MJnNkm2wz5qjH49SYqwkjYTpOaA@mail.gmail.com>
+ <X+JJqK91plkBVisG@redhat.com>
+ <X+JhwVX3s5mU9ZNx@google.com>
+ <X+Js/dFbC5P7C3oO@redhat.com>
+ <X+KDwu1PRQ93E2LK@google.com>
+ <X+Kxy3oBMSLz8Eaq@redhat.com>
+ <X+K7JMrTEC9SpVIB@google.com>
+ <X+O49HrcK1fBDk0Q@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20201221112644.GJ4077@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X+O49HrcK1fBDk0Q@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/12/2020 11:26, Andy Shevchenko wrote:
-> On Mon, Dec 21, 2020 at 11:21:16AM +0200, Sakari Ailus wrote:
->> On Thu, Dec 17, 2020 at 11:43:30PM +0000, Daniel Scally wrote:
->>> To maintain consistency with software_node_unregister_nodes(), reverse
->>> the order in which the software_node_unregister_node_group() function
->>> unregisters nodes.
+On Wed, Dec 23, 2020 at 04:39:00PM -0500, Andrea Arcangeli wrote:
+> On Tue, Dec 22, 2020 at 08:36:04PM -0700, Yu Zhao wrote:
+> > Thanks for the details.
 > 
-> ...
+> I hope we can find a way put the page_mapcount back where there's a
+> page_count right now.
 > 
->>>  void software_node_unregister_node_group(const struct software_node **node_group)
->>>  {
->>> -	unsigned int i;
->>> +	unsigned int i = 0;
->>>  
->>>  	if (!node_group)
->>>  		return;
->>>  
->>> -	for (i = 0; node_group[i]; i++)
->>> +	while (node_group[i]->name)
->>
->> Why is this change made? node_group is a NULL-terminated array, and the
->> above accesses the name pointer on each entry before checking the entry is
->> non-NULL. Or do I miss something here?
+> If you're so worried about having to maintain a all defined well
+> documented (or to be documented even better if you ACK it)
+> marker/catcher for userfaultfd_writeprotect, I can't see how you could
+> consider to maintain the page fault safe against any random code
+> leaving too permissive TLB entries out of sync of the more restrictive
+> pte permissions as it was happening with clear_refs_write, which
+> worked by luck until page_mapcount was changed to page_count.
 > 
-> I believe it's a copy'n'paste typo.
+> page_count is far from optimal, but it is a feature it finally allowed
+> us to notice that various code (clear_refs_write included apparently
+> even after the fix) leaves stale too permissive TLB entries when it
+> shouldn't.
+> 
+> The question is only which way you prefer to fix clear_refs_write and
+> I don't think we can deviate from those 3 methods that already exist
+> today. So clear_refs_write will have to pick one of those and
+> currently it's not falling in the same category with mprotect even
+> after the fix.
+> 
+> I think if clear_refs_write starts to take the mmap_write_lock and
+> really start to operate like mprotect, only then we can consider to
+> make userfaultfd_writeprotect also operate like mprotect.
+> 
+> Even then I'd hope we can at least be allowed to make it operate like
+> KSM write_protect_page for len <= HPAGE_PMD_SIZE, something that
+> clear_refs_write cannot do since it works in O(N) and tends to scan
+> everything at once, so there would be no point to optimize not to
+> defer the flush, for a process with a tiny amount of virtual memory
+> mapped.
+> 
+> vm86 also should be fixed to fall in the same category with mprotect,
+> since performance there is irrelevant.
 
-Careless copy and paste yeah, my bad. I was doing it for consistency but
-really should've just changed the ordering; I'll just drop that part.
+I was hesitant to suggest the following because it isn't that straight
+forward. But since you seem to be less concerned with the complexity,
+I'll just bring it on the table -- it would take care of both ufd and
+clear_refs_write, wouldn't it?
+
+diff --git a/mm/memory.c b/mm/memory.c
+index 5e9ca612d7d7..af38c5ee327e 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -4403,8 +4403,11 @@ static vm_fault_t handle_pte_fault(struct vm_fault *vmf)
+ 		goto unlock;
+ 	}
+ 	if (vmf->flags & FAULT_FLAG_WRITE) {
+-		if (!pte_write(entry))
++		if (!pte_write(entry)) {
++			if (mm_tlb_flush_pending(vmf->vma->vm_mm))
++				flush_tlb_page(vmf->vma, vmf->address);
+ 			return do_wp_page(vmf);
++		}
+ 		entry = pte_mkdirty(entry);
+ 	}
+ 	entry = pte_mkyoung(entry);
