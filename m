@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5BCE2E14B9
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:48:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 668822E14D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:48:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730185AbgLWCmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:42:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52560 "EHLO mail.kernel.org"
+        id S1730217AbgLWCor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:44:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51318 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729925AbgLWCXL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:23:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DD6B225AC;
-        Wed, 23 Dec 2020 02:22:29 +0000 (UTC)
+        id S1729762AbgLWCWr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:22:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF211221E5;
+        Wed, 23 Dec 2020 02:22:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690150;
-        bh=R6ZeVybNUX6QVZA/bcPPYYJ+ypcizOxxPnfogTVUV7o=;
+        s=k20201202; t=1608690152;
+        bh=hgehVMq8mURlrBR5kRfraFXCWYe/naiOqIOAOfTz+3w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XMpBg2ZSTYboKqMYj1p26DJok0+rPaV9KSSeq/RC0PIWKUrbdw30Tu4Tl6BocZMnm
-         uED5B+4bItaGqfgtbupGKSYu+u+OwS5jf8ABMb5NZoGEnCd5QbsuNzXGDM0Nn4vYjg
-         NAj1h1eQmWb8G/hB8IDrgWLGI+vB78m6ACzdaDnVnTk1uFjt/5vOXJ8ja/1n/h++Vf
-         P3NRGEMN8mshBsaaSbeC3CAKi49IfRgxtwuD54OEjivk/oCKKLbhsAWEbaMkwRBoSP
-         tfgKQ296RGgYR/29+tkVPLikUptLiT0WYKFBVt1JxiPv0IfnpXHJQBSjayOUdn5baV
-         B0EhGO4XWrHmA==
+        b=svv25BerBj/pxaENIuRvV5SBwEWWQ1AHdyxMM0Woeb3AQi+9JrzGKxZnp9NdHUlBd
+         Mb6miTG+kUCKFBVFTPPhwGC3JZRL1ORJsg50j8FDYVHTOpdCQSMMliWUDriB7znqfZ
+         ZWap4od1vnGDiWV+j8rOTHkIZ0l4Fb8GiEPTxtc2jfhXKStASkawM9NUTNPM7okyQs
+         Nis/fRYkZE1TbJ9tHwFq+UXM1P32ajX2PT42y0CkIWXrX09jumWK9KQAHd3dMYzH9S
+         1ivy/NxdNrZk6CXNqR02v5IYNTcrlYXF2ejCphnWqYy2flb0Yh/1RiG40B3+bKTuxt
+         LuWOcFOy9keWg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "Rafael . J . Wysocki" <rafael@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.19 70/87] driver core: Reorder devices on successful probe
-Date:   Tue, 22 Dec 2020 21:20:46 -0500
-Message-Id: <20201223022103.2792705-70-sashal@kernel.org>
+Cc:     Johannes Berg <johannes.berg@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 72/87] iwlwifi: pcie: validate RX descriptor length
+Date:   Tue, 22 Dec 2020 21:20:48 -0500
+Message-Id: <20201223022103.2792705-72-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223022103.2792705-1-sashal@kernel.org>
 References: <20201223022103.2792705-1-sashal@kernel.org>
@@ -44,71 +43,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thierry Reding <treding@nvidia.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 5b6164d3465fcc13b5679c860c452963443172a7 ]
+[ Upstream commit df72138de4bc4e85e427aabc60fc51be6cc57fc7 ]
 
-Device drivers usually depend on the fact that the devices that they
-control are suspended in the same order that they were probed in. In
-most cases this is already guaranteed via deferred probe.
+Validate the maximum RX descriptor length against the size
+of the buffers we gave the device - if it doesn't fit then
+the hardware messed up.
 
-However, there's one case where this can still break: if a device is
-instantiated before a dependency (for example if it appears before the
-dependency in device tree) but gets probed only after the dependency is
-probed. Instantiation order would cause the dependency to get probed
-later, in which case probe of the original device would be deferred and
-the suspend/resume queue would get reordered properly. However, if the
-dependency is provided by a built-in driver and the device depending on
-that driver is controlled by a loadable module, which may only get
-loaded after the root filesystem has become available, we can be faced
-with a situation where the probe order ends up being different from the
-suspend/resume order.
-
-One example where this happens is on Tegra186, where the ACONNECT is
-listed very early in device tree (sorted by unit-address) and depends on
-BPMP (listed very late because it has no unit-address) for power domains
-and clocks/resets. If the ACONNECT driver is built-in, there is no
-problem because it will be probed before BPMP, causing a probe deferral
-and that in turn reorders the suspend/resume queue. However, if built as
-a module, it will end up being probed after BPMP, and therefore not
-result in a probe deferral, and therefore the suspend/resume queue will
-stay in the instantiation order. This in turn causes problems because
-ACONNECT will be resumed before BPMP, which will result in a hang
-because the ACONNECT's power domain cannot be powered on as long as the
-BPMP is still suspended.
-
-Fix this by always reordering devices on successful probe. This ensures
-that the suspend/resume queue is always in probe order and hence meets
-the natural expectations of drivers vs. their dependencies.
-
-Reported-by: Jonathan Hunter <jonathanh@nvidia.com>
-Acked-by: Rafael. J. Wysocki <rafael@kernel.org>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
-Link: https://lore.kernel.org/r/20201203175756.1405564-1-thierry.reding@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Link: https://lore.kernel.org/r/iwlwifi.20201209231352.6378fb435cc0.Ib07485f3dc5999c74b03f21e7a808c50a05e353c@changeid
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/base/dd.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/net/wireless/intel/iwlwifi/pcie/rx.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-index 4ba9231a6be80..bbb2f72819184 100644
---- a/drivers/base/dd.c
-+++ b/drivers/base/dd.c
-@@ -334,6 +334,13 @@ static void driver_bound(struct device *dev)
+diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/rx.c b/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
+index 80a1a50f5da51..ebdb143b1b5a1 100644
+--- a/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
++++ b/drivers/net/wireless/intel/iwlwifi/pcie/rx.c
+@@ -1256,6 +1256,13 @@ static void iwl_pcie_rx_handle_rb(struct iwl_trans *trans,
  
- 	device_pm_check_callbacks(dev);
- 
-+	/*
-+	 * Reorder successfully probed devices to the end of the device list.
-+	 * This ensures that suspend/resume order matches probe order, which
-+	 * is usually what drivers rely on.
-+	 */
-+	device_pm_move_to_tail(dev);
+ 		len = iwl_rx_packet_len(pkt);
+ 		len += sizeof(u32); /* account for status word */
 +
- 	/*
- 	 * Make sure the device is no longer in one of the deferred lists and
- 	 * kick off retrying all pending devices
++		offset += ALIGN(len, FH_RSCSR_FRAME_ALIGN);
++
++		/* check that what the device tells us made sense */
++		if (offset > max_len)
++			break;
++
+ 		trace_iwlwifi_dev_rx(trans->dev, trans, pkt, len);
+ 		trace_iwlwifi_dev_rx_data(trans->dev, trans, pkt, len);
+ 
+@@ -1313,7 +1320,6 @@ static void iwl_pcie_rx_handle_rb(struct iwl_trans *trans,
+ 		page_stolen |= rxcb._page_stolen;
+ 		if (trans->cfg->device_family >= IWL_DEVICE_FAMILY_22560)
+ 			break;
+-		offset += ALIGN(len, FH_RSCSR_FRAME_ALIGN);
+ 	}
+ 
+ 	/* page was stolen from us -- free our reference */
 -- 
 2.27.0
 
