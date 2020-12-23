@@ -2,90 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08DD52E10BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 01:14:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F37A2E10C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 01:21:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726520AbgLWAOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 19:14:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725785AbgLWAOR (ORCPT
+        id S1726030AbgLWAVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 19:21:15 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:18558 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725782AbgLWAVP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 19:14:17 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF7A3C0613D3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 16:13:36 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id x18so8255300pln.6
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 16:13:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KUHswI489TcbSpPmfFtLRQLW+YiGqpECSxLF2vIRidE=;
-        b=H+m7bY4dqeOfNUUx9jPfC6D8GqShd3J8SXyMmr+OyLLyje9gVIC5tXj/ChhpKnf8r1
-         QmqHQM8wf36WqeeVYPhGvl4Y9igLzTPAk1iCA7w56+WP1JSbPQlsp8QxlLnu4Cb7N069
-         7gj1Mo5/83rff5ZWA++IuHUahn2WA6tozp1BemRABHPcLVkj2LyT5/WHH/2Hhpe776+z
-         lnUOm42nwH3c4cwwXLrvnY+PV1NIwx6+9q/zvAi+cKKIZqgl7LaAmijF1O/70+r76sIy
-         1FzkQch4uBDQ8LDfvRSPsL3WeSTPQe+oksAXJKslXslf954ULPy/KgDblL6tvK5uLXi8
-         jc3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KUHswI489TcbSpPmfFtLRQLW+YiGqpECSxLF2vIRidE=;
-        b=aC6e1xb1mq4QD6/2vqfPr1qNWRvbf+4+umz2QeeIoYogyqnBcVBmcT1Hbheg+uUpyt
-         9k7nShlq3sghcvjdbc4H4t+NPMN+Mcl/gU5+T7X3SWrZygQvwwnCfOiZlgoRVT2gxAHC
-         wY0CyQKF3SMfao8nK4m+qHK9lkCrMfs+pVJTH7cTrml0L5aa9zWP5W8l0/UGqHgLab2O
-         H3sJW9bf3/+dEs7CpkRPo1L6jnQd2R+Vj3YngDhUDa3s+nMoYvPjVtga3r+gRU9IpNZD
-         8ySPpOTXXKbfwt+GfKVxP18V/p8jo+pVr+3WxFXtGVB9cjy8P1gTMCTQUTrasZkORT5m
-         h8lw==
-X-Gm-Message-State: AOAM532QeQwuDn5SXwOFhjIQ0ri5jwbGP+2d9FU4URcU3r2muiWJspjn
-        TF6OMrTXN76mQeZGIrrSccQQuw==
-X-Google-Smtp-Source: ABdhPJyL+olbEgdu180tVOEDDVUXc0As3vDfRk74Ysp0prDCLKeMri47yIZL5+asdvjYcny6Q3X2cg==
-X-Received: by 2002:a17:90a:72c8:: with SMTP id l8mr24204831pjk.232.1608682416384;
-        Tue, 22 Dec 2020 16:13:36 -0800 (PST)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id k11sm22546135pgt.83.2020.12.22.16.13.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Dec 2020 16:13:35 -0800 (PST)
-Subject: Re: linux-next: build warning after merge of the block tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Pavel Begunkov <asml.silence@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20201223104726.36ec2aaf@canb.auug.org.au>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <02376793-146d-546d-3bac-32513d5fc88c@kernel.dk>
-Date:   Tue, 22 Dec 2020 17:13:34 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 22 Dec 2020 19:21:15 -0500
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BN03Fmk096601;
+        Tue, 22 Dec 2020 19:19:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
+ cc : subject : in-reply-to : date : message-id : mime-version :
+ content-type; s=pp1; bh=FA2R8FGvQ3oXchyFVhZ2m1CpE/JjhFLNqwf7Z3lLGd0=;
+ b=hZBp4GWpZYI2WLl/i6sooWsjPoIe5ZIq+DuynO1BlrlwZINRIzdrb8YrzUMySmtG2NEB
+ ClruhVb7xGswuRd4DdrArPygpCwTOBXtlaqGRd0PAHs7M3fsFcf3IjCoBhe5rAhLTNny
+ 6msSf6oDxBzmCMLe2hhOCnSDZr9Mhv5650uVwMzAEf0t6IXErx7D+88Ol8tEgSYElf65
+ vxCL6mpQfiI8iil3gO2xtJFpsCq49swqo83nuB0buCoNKXF7zyY3BTcJM9vvXShJXlj3
+ pjd7TpDkvPHAOnhZgpEXQT4iAwBpw8yxUHO0O/luUbxNzi/7YgTtUI0Zir41DjJHsHkF +Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35kty5gaed-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Dec 2020 19:19:55 -0500
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BN03P9S097316;
+        Tue, 22 Dec 2020 19:19:55 -0500
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35kty5gae7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Dec 2020 19:19:55 -0500
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BN0CM3I025995;
+        Wed, 23 Dec 2020 00:19:54 GMT
+Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
+        by ppma02wdc.us.ibm.com with ESMTP id 35km4gteqp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Dec 2020 00:19:53 +0000
+Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
+        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BN0JqQg24642004
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 23 Dec 2020 00:19:52 GMT
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 65727C6055;
+        Wed, 23 Dec 2020 00:19:52 +0000 (GMT)
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0AB3CC605A;
+        Wed, 23 Dec 2020 00:19:43 +0000 (GMT)
+Received: from manicouagan.localdomain (unknown [9.80.219.136])
+        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTPS;
+        Wed, 23 Dec 2020 00:19:43 +0000 (GMT)
+References: <20201219175713.18888-1-nramas@linux.microsoft.com>
+ <20201219175713.18888-3-nramas@linux.microsoft.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com, robh@kernel.org, takahiro.akashi@linaro.org,
+        gregkh@linuxfoundation.org, will@kernel.org,
+        catalin.marinas@arm.com, mpe@ellerman.id.au, james.morse@arm.com,
+        sashal@kernel.org, benh@kernel.crashing.org, paulus@samba.org,
+        frowand.list@gmail.com, vincenzo.frascino@arm.com,
+        mark.rutland@arm.com, dmitry.kasatkin@gmail.com, jmorris@namei.org,
+        serge@hallyn.com, pasha.tatashin@soleen.com, allison@lohutok.net,
+        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
+        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v13 2/6] powerpc: Move arch independent ima kexec
+ functions to drivers/of/kexec.c
+In-reply-to: <20201219175713.18888-3-nramas@linux.microsoft.com>
+Date:   Tue, 22 Dec 2020 21:19:41 -0300
+Message-ID: <87blell6g2.fsf@manicouagan.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <20201223104726.36ec2aaf@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-22_13:2020-12-21,2020-12-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ mlxlogscore=999 priorityscore=1501 lowpriorityscore=0 malwarescore=0
+ spamscore=0 bulkscore=0 clxscore=1015 mlxscore=0 adultscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012220175
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/22/20 4:47 PM, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the block tree, today's linux-next build (x86_64
-> allmodconfig) produced this warning:
-> 
-> fs/io_uring.c: In function 'io_uring_get_file':
-> fs/io_uring.c:9408:6: warning: unused variable 'ret' [-Wunused-variable]
->  9408 |  int ret;
->       |      ^~~
-> 
-> Introduced by commit
-> 
->   efc2519f427b ("io_uring: fix double io_uring free")
 
-I'll fix it up, doesn't show up in my build...
+Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
+
+> The functions defined in "arch/powerpc/kexec/ima.c" handle setting up
+> and freeing the resources required to carry over the IMA measurement
+> list from the current kernel to the next kernel across kexec system call.
+> These functions do not have architecture specific code, but are
+> currently limited to powerpc.
+>
+> Move setup_ima_buffer() call into of_kexec_setup_new_fdt() defined in
+> "drivers/of/kexec.c".
+>
+> Move the remaining architecture independent functions from
+> "arch/powerpc/kexec/ima.c" to "drivers/of/kexec.c".
+> Delete "arch/powerpc/kexec/ima.c" and "arch/powerpc/include/asm/ima.h".
+> Remove references to the deleted files in powerpc and in ima.
+>
+> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> ---
+>  arch/powerpc/include/asm/ima.h     |  27 ----
+>  arch/powerpc/kexec/Makefile        |   7 -
+>  arch/powerpc/kexec/file_load.c     |   7 -
+>  arch/powerpc/kexec/ima.c           | 202 -------------------------
+>  drivers/of/kexec.c                 | 235 +++++++++++++++++++++++++++++
+>  include/linux/of.h                 |   2 +
+>  security/integrity/ima/ima.h       |   4 -
+>  security/integrity/ima/ima_kexec.c |   1 +
+>  8 files changed, 238 insertions(+), 247 deletions(-)
+>  delete mode 100644 arch/powerpc/include/asm/ima.h
+>  delete mode 100644 arch/powerpc/kexec/ima.c
+
+This looks good, provided the changes from the discussion with Mimi are
+made. Also, minor nits below.
+
+> diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
+> index 6ebefec616e4..7c3947ad3773 100644
+> --- a/security/integrity/ima/ima.h
+> +++ b/security/integrity/ima/ima.h
+> @@ -24,10 +24,6 @@
+>  
+>  #include "../integrity.h"
+>  
+> -#ifdef CONFIG_HAVE_IMA_KEXEC
+> -#include <asm/ima.h>
+> -#endif
+> -
+>  enum ima_show_type { IMA_SHOW_BINARY, IMA_SHOW_BINARY_NO_FIELD_LEN,
+>  		     IMA_SHOW_BINARY_OLD_STRING_FMT, IMA_SHOW_ASCII };
+>  enum tpm_pcrs { TPM_PCR0 = 0, TPM_PCR8 = 8, TPM_PCR10 = 10 };
+
+This belongs in patch 1.
+
+> diff --git a/security/integrity/ima/ima_kexec.c b/security/integrity/ima/ima_kexec.c
+> index 38bcd7543e27..8a6712981dee 100644
+> --- a/security/integrity/ima/ima_kexec.c
+> +++ b/security/integrity/ima/ima_kexec.c
+> @@ -10,6 +10,7 @@
+>  #include <linux/seq_file.h>
+>  #include <linux/vmalloc.h>
+>  #include <linux/kexec.h>
+> +#include <linux/of.h>
+>  #include <linux/ima.h>
+>  #include "ima.h"
+
+This include isn't necessary.
 
 -- 
-Jens Axboe
-
+Thiago Jung Bauermann
+IBM Linux Technology Center
