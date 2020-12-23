@@ -2,228 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B41E72E1EE3
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 16:50:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E9A92E1EE4
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 16:50:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729490AbgLWPo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 10:44:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59454 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728907AbgLWPoW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 10:44:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 243D920578;
-        Wed, 23 Dec 2020 15:43:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608738221;
-        bh=PpA1XTbJbNmmQ45EXZExk5b7L7D93sDNKiMfwBmHlwM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BzU8Cdw3t4zoUlNdd5nr+7Oh7ZBy9dWWbmRD5fYpVH/DU0k1HWa5/PqFycq4noeUi
-         RLZ25Td8+iPXDg+jDA5ggKlRErPX9ZEU3SA32bDh8Ec3HQoYi4JfFYjZut+Js52T0T
-         xopQy3F/HND05F97O2GtMJRzDk6WScjimqEm71pN+NjY6/8YRCIGaydVlVXufwQdPS
-         qSAPYWT5uDThsNXCd5mzLf/m4grhrsgKtY4g8pHWxEmBScd28DHBctHP6e1JzQs/Gw
-         s0OOIAYI/T41eMjMrwbRzDPhvExprQVIZSrPQoWj6ndBhp33WY2t3lLnegqxQd8Wvh
-         R4t3e4MU4/1Tw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 1A505411E9; Wed, 23 Dec 2020 12:43:55 -0300 (-03)
-Date:   Wed, 23 Dec 2020 12:43:55 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     kan.liang@linux.intel.com
-Cc:     mingo@kernel.org, jolsa@redhat.com, linux-kernel@vger.kernel.org,
-        namhyung@kernel.org, eranian@google.com, ak@linux.intel.com,
-        mark.rutland@arm.com, will@kernel.org, mpe@ellerman.id.au
-Subject: Re: [PATCH V3 5/9] perf mem: Support data page size
-Message-ID: <20201223154355.GA477817@kernel.org>
-References: <20201216185805.9981-1-kan.liang@linux.intel.com>
- <20201216185805.9981-6-kan.liang@linux.intel.com>
- <20201219205639.GB363602@kernel.org>
+        id S1728297AbgLWPsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 10:48:11 -0500
+Received: from mail-pg1-f177.google.com ([209.85.215.177]:44631 "EHLO
+        mail-pg1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727624AbgLWPsK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 10:48:10 -0500
+Received: by mail-pg1-f177.google.com with SMTP id p18so10796546pgm.11;
+        Wed, 23 Dec 2020 07:47:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RZunFE8+rvr+mZUHOuv0pW6RAXodWmXjOHxU/DZJ3U0=;
+        b=LOj2KzECJPBhrQleYwFypovPnsoi0WzMwb2RIVqIA47gmakev6yrQqm9ntXTu8Eug0
+         XMl/0+xnOpoMpq+BbGMAP3kFVSQOxIwP9D9ucqVqZWZWevHphzCEV8ooiREO5RaExxjw
+         vKwXgtsjORHW5aGGCiVYx05Xy4QbhYblDmSvlndMoFbtUr/P67LGgxpagICTus+klJQq
+         A+r4idJgtEmZF96OrRjhmAH/sJazbvjQTyxIk4mF5qCjmkPaLisjoBW4+GWnCwYrovzX
+         qAXM6E9DVfdZkBQOU5CNikYeOKhXIRleivas1cSFxxl5Vxan1/xZEZi0INHgSKZKQUzK
+         z0sw==
+X-Gm-Message-State: AOAM533UQ9QFM3aoqtqVF1Cf08JM1li8ZNWhvhWGkNa1Ie18tNckEO5D
+        voSNLu1MIN8xDviP+vL5tUTw1JqUtnI=
+X-Google-Smtp-Source: ABdhPJx5uLmwBFB+TCV+z18xDJVgnT343zEUxyOTfcwzewpc8zjbMsFdO7EMgJzjdZqvn1TpGE+f4Q==
+X-Received: by 2002:aa7:9a07:0:b029:1a6:5f93:a19f with SMTP id w7-20020aa79a070000b02901a65f93a19fmr3280155pfj.21.1608738449461;
+        Wed, 23 Dec 2020 07:47:29 -0800 (PST)
+Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id h1sm9137036pgj.59.2020.12.23.07.47.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Dec 2020 07:47:28 -0800 (PST)
+Subject: Re: [RFC PATCH v2 2/2] blk-mq: Lockout tagset iter when freeing rqs
+To:     John Garry <john.garry@huawei.com>, axboe@kernel.dk,
+        ming.lei@redhat.com
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hch@lst.de, hare@suse.de, kashyap.desai@broadcom.com,
+        linuxarm@huawei.com
+References: <1608203273-170555-1-git-send-email-john.garry@huawei.com>
+ <1608203273-170555-3-git-send-email-john.garry@huawei.com>
+ <df44b73d-6c42-87ee-3c25-b95a44712e05@acm.org>
+ <4d2004bb-4444-7a63-7c72-1759e3037cfd@huawei.com>
+ <31de2806-bbc1-dcc3-b9eb-ce9257420432@acm.org>
+ <b2edab2b-8af7-816d-9da2-4720d19b96f8@huawei.com>
+ <e97a0603-f9e3-1b00-4a09-c569d4f73d7b@acm.org>
+ <f98fd31e-89d4-523f-df70-4bd5f39ccbd5@huawei.com>
+ <33e41110-b3b2-ac16-f131-de1679ce8238@acm.org>
+ <7bdd562d-b258-43a2-0de0-966091086cff@huawei.com>
+ <e56e8831-4a74-8411-6c04-3a65aff855f4@huawei.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <0ab85ab8-c5c7-01aa-6b39-da731b3db829@acm.org>
+Date:   Wed, 23 Dec 2020 07:47:26 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201219205639.GB363602@kernel.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <e56e8831-4a74-8411-6c04-3a65aff855f4@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, Dec 19, 2020 at 05:56:39PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Wed, Dec 16, 2020 at 10:58:01AM -0800, kan.liang@linux.intel.com escreveu:
-> > From: Kan Liang <kan.liang@linux.intel.com>
-> > 
-> > Add option --data-page-size in "perf mem" to record/report data page
-> > size.
-> > 
-> > Here are some examples.
-> > perf mem --phys-data --data-page-size report -D
+On 12/23/20 3:40 AM, John Garry wrote:
+> Sorry, I got the 2x iter functions mixed up.
 > 
-> So I stopped at this cset, it isn't applying to my tree, I'll test what
-> I have, which is up to the patch before this one and push to Linus, as
-> the window is closing.
-
-Can you please try rebasing from upstream? The first patches in this
-series got there, but this v3 one isn't applying from this patch
-onwards, can you please check?
-
-- Arnaldo
- 
-> - Arnaldo
->  
-> >  # PID, TID, IP, ADDR, PHYS ADDR, DATA PAGE SIZE, LOCAL WEIGHT, DSRC,
-> >  # SYMBOL
-> > 20134 20134 0xffffffffb5bd2fd0 0x016ffff9a274e96a308 0x000000044e96a308
-> > 4K  1168 0x5080144
-> > /lib/modules/4.18.0-rc7+/build/vmlinux:perf_ctx_unlock
-> > 20134 20134 0xffffffffb63f645c 0xffffffffb752b814 0xcfb52b814 2M 225
-> > 0x26a100142 /lib/modules/4.18.0-rc7+/build/vmlinux:_raw_spin_lock
-> > 20134 20134 0xffffffffb660300c 0xfffffe00016b8bb0 0x0 4K 0 0x5080144
-> > /lib/modules/4.18.0-rc7+/build/vmlinux:__x86_indirect_thunk_rax
-> > 
-> > perf mem --phys-data --data-page-size report --stdio
-> > 
-> >  # To display the perf.data header info, please use
-> >  # --header/--header-only options.
-> >  #
-> >  #
-> >  # Total Lost Samples: 0
-> >  #
-> >  # Samples: 5K of event 'cpu/mem-loads,ldlat=30/P'
-> >  # Total weight : 281234
-> >  # Sort order   :
-> >  # mem,sym,dso,symbol_daddr,dso_daddr,tlb,locked,phys_daddr,data_page_size
-> >  #
-> >  # Overhead       Samples  Memory access             Symbol
-> >  # Shared Object     Data Symbol                                  Data
-> >  # Object              TLB access              Locked  Data Physical
-> >  # Address   Data Page Size
-> >  # ........  ............  ........................
-> >  # ................................  ................
-> >  # ...........................................  .......................
-> >  # ......................  ......  ......................
-> >  # ......................
-> >  #
-> >     28.54%          1826  L1 or L1 hit              [k]
-> > __x86_indirect_thunk_rax      [kernel.vmlinux]  [k] 0xffffb0df31b0ff28
-> > [unknown]                L1 or L2 hit            No      [k]
-> > 0000000000000000    4K
-> >      6.02%           256  L1 or L1 hit              [.] touch_buffer
-> > dtlb              [.] 0x00007ffd50109da8                       [stack]
-> > L1 or L2 hit            No      [.] 0x000000042454ada8  4K
-> >      3.23%             5  L1 or L1 hit              [k] clear_huge_page
-> > [kernel.vmlinux]  [k] 0xffff9a2753b8ce60                       [unknown]
-> > L1 or L2 hit            No      [k] 0x0000000453b8ce60  2M
-> >      2.98%             4  L1 or L1 hit              [k] clear_page_erms
-> > [kernel.vmlinux]  [k] 0xffffb0df31b0fd00                       [unknown]
-> > L1 or L2 hit            No      [k] 0000000000000000    4K
-> > 
-> > Acked-by: Namhyung Kim <namhyung@kernel.org>
-> > Acked-by: Jiri Olsa <jolsa@redhat.com>
-> > Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-> > ---
-> >  tools/perf/Documentation/perf-mem.txt |  3 +++
-> >  tools/perf/builtin-mem.c              | 20 +++++++++++++++++++-
-> >  2 files changed, 22 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/tools/perf/Documentation/perf-mem.txt b/tools/perf/Documentation/perf-mem.txt
-> > index 199ea0f0a6c0..66177511c5c4 100644
-> > --- a/tools/perf/Documentation/perf-mem.txt
-> > +++ b/tools/perf/Documentation/perf-mem.txt
-> > @@ -63,6 +63,9 @@ OPTIONS
-> >  --phys-data::
-> >  	Record/Report sample physical addresses
-> >  
-> > +--data-page-size::
-> > +	Record/Report sample data address page size
-> > +
-> >  RECORD OPTIONS
-> >  --------------
-> >  -e::
-> > diff --git a/tools/perf/builtin-mem.c b/tools/perf/builtin-mem.c
-> > index 7d6ee2208709..f3aac85aa9d4 100644
-> > --- a/tools/perf/builtin-mem.c
-> > +++ b/tools/perf/builtin-mem.c
-> > @@ -30,6 +30,7 @@ struct perf_mem {
-> >  	bool			dump_raw;
-> >  	bool			force;
-> >  	bool			phys_addr;
-> > +	bool			data_page_size;
-> >  	int			operation;
-> >  	const char		*cpu_list;
-> >  	DECLARE_BITMAP(cpu_bitmap, MAX_NR_CPUS);
-> > @@ -124,6 +125,9 @@ static int __cmd_record(int argc, const char **argv, struct perf_mem *mem)
-> >  	if (mem->phys_addr)
-> >  		rec_argv[i++] = "--phys-data";
-> >  
-> > +	if (mem->data_page_size)
-> > +		rec_argv[i++] = "--data-page-size";
-> > +
-> >  	for (j = 0; j < PERF_MEM_EVENTS__MAX; j++) {
-> >  		e = perf_mem_events__ptr(j);
-> >  		if (!e->record)
-> > @@ -173,6 +177,7 @@ dump_raw_samples(struct perf_tool *tool,
-> >  	struct perf_mem *mem = container_of(tool, struct perf_mem, tool);
-> >  	struct addr_location al;
-> >  	const char *fmt, *field_sep;
-> > +	char str[PAGE_SIZE_NAME_LEN];
-> >  
-> >  	if (machine__resolve(machine, &al, sample) < 0) {
-> >  		fprintf(stderr, "problem processing %d event, skipping it.\n",
-> > @@ -209,6 +214,12 @@ dump_raw_samples(struct perf_tool *tool,
-> >  			symbol_conf.field_sep);
-> >  	}
-> >  
-> > +	if (mem->data_page_size) {
-> > +		printf("%s%s",
-> > +			get_page_size_name(sample->data_page_size, str),
-> > +			symbol_conf.field_sep);
-> > +	}
-> > +
-> >  	if (field_sep)
-> >  		fmt = "%"PRIu64"%s0x%"PRIx64"%s%s:%s\n";
-> >  	else
-> > @@ -273,6 +284,9 @@ static int report_raw_events(struct perf_mem *mem)
-> >  	if (mem->phys_addr)
-> >  		printf("PHYS ADDR, ");
-> >  
-> > +	if (mem->data_page_size)
-> > +		printf("DATA PAGE SIZE, ");
-> > +
-> >  	printf("LOCAL WEIGHT, DSRC, SYMBOL\n");
-> >  
-> >  	ret = perf_session__process_events(session);
-> > @@ -283,7 +297,7 @@ static int report_raw_events(struct perf_mem *mem)
-> >  }
-> >  static char *get_sort_order(struct perf_mem *mem)
-> >  {
-> > -	bool has_extra_options = mem->phys_addr ? true : false;
-> > +	bool has_extra_options = (mem->phys_addr | mem->data_page_size) ? true : false;
-> >  	char sort[128];
-> >  
-> >  	/*
-> > @@ -302,6 +316,9 @@ static char *get_sort_order(struct perf_mem *mem)
-> >  	if (mem->phys_addr)
-> >  		strcat(sort, ",phys_daddr");
-> >  
-> > +	if (mem->data_page_size)
-> > +		strcat(sort, ",data_page_size");
-> > +
-> >  	return strdup(sort);
-> >  }
-> >  
-> > @@ -447,6 +464,7 @@ int cmd_mem(int argc, const char **argv)
-> >  		   " between columns '.' is reserved."),
-> >  	OPT_BOOLEAN('f', "force", &mem.force, "don't complain, do it"),
-> >  	OPT_BOOLEAN('p', "phys-data", &mem.phys_addr, "Record/Report sample physical addresses"),
-> > +	OPT_BOOLEAN(0, "data-page-size", &mem.data_page_size, "Record/Report sample data address page size"),
-> >  	OPT_END()
-> >  	};
-> >  	const char *const mem_subcommands[] = { "record", "report", NULL };
-> > -- 
-> > 2.17.1
-> > 
+> So if we use mutex to solve blk_mq_queue_tag_busy_iter() problem, then we
+> still have this issue in blk_mq_tagset_busy_iter() which I report previously
+> [0]:
 > 
-> -- 
+> [  319.771745] BUG: KASAN: use-after-free in bt_tags_iter+0xe0/0x128
+> [  319.777832] Read of size 4 at addr ffff0010b6bd27cc by task more/1866
+> [  319.784262]
+> [  319.785753] CPU: 61 PID: 1866 Comm: more Tainted: G        W
+> 5.10.0-rc4-18118-gaa7b9c30d8ff #1070
+> [  319.795312] Hardware name: Huawei Taishan 2280 /D05, BIOS Hisilicon
+> D05 IT21 Nemo 2.0 RC0 04/18/2018
+> [  319.804437] Call trace:
+> [  319.806892]  dump_backtrace+0x0/0x2d0
+> [  319.810552]  show_stack+0x18/0x68
+> [  319.813865]  dump_stack+0x100/0x16c
+> [  319.817348]  print_address_description.constprop.12+0x6c/0x4e8
+> [  319.823176]  kasan_report+0x130/0x200
+> [  319.826831]  __asan_load4+0x9c/0xd8
+> [  319.830315]  bt_tags_iter+0xe0/0x128
+> [  319.833884]  __blk_mq_all_tag_iter+0x320/0x3a8
+> [  319.838320]  blk_mq_tagset_busy_iter+0x8c/0xd8
+> [  319.842760]  scsi_host_busy+0x88/0xb8
+> [  319.846418]  show_host_busy+0x1c/0x48
+> [  319.850079]  dev_attr_show+0x44/0x90
+> [  319.853655]  sysfs_kf_seq_show+0x128/0x1c8
+> [  319.857744]  kernfs_seq_show+0xa0/0xb8
+> [  319.861489]  seq_read_iter+0x1ec/0x6a0
+> [  319.865230]  seq_read+0x1d0/0x250
+> [  319.868539]  kernfs_fop_read+0x70/0x330
+> [  319.872369]  vfs_read+0xe4/0x250
+> [  319.875590]  ksys_read+0xc8/0x178
+> [  319.878898]  __arm64_sys_read+0x44/0x58
+> [  319.882730]  el0_svc_common.constprop.2+0xc4/0x1e8
+> [  319.887515]  do_el0_svc+0x90/0xa0
+> [  319.890824]  el0_sync_handler+0x128/0x178
+> [  319.894825]  el0_sync+0x158/0x180
+> [  319.898131]
+> [  319.899614] The buggy address belongs to the page:
+> [  319.904403] page:000000004e9e6864 refcount:0 mapcount:0
+> mapping:0000000000000000 index:0x0 pfn:0x10b6bd2
+> [  319.913876] flags: 0xbfffc0000000000()
+> [  319.917626] raw: 0bfffc0000000000 0000000000000000 fffffe0000000000
+> 0000000000000000
+> [  319.925363] raw: 0000000000000000 0000000000000000 00000000ffffffff
+> 0000000000000000
+> [  319.933096] page dumped because: kasan: bad access detected
+> [  319.938658]
+> [  319.940141] Memory state around the buggy address:
+> [  319.944925]  ffff0010b6bd2680: ff ff ff ff ff ff ff ff ff ff ff ff ff
+> ff ff ff
+> [  319.952139]  ffff0010b6bd2700: ff ff ff ff ff ff ff ff ff ff ff ff ff
+> ff ff ff
+> [  319.959354] >ffff0010b6bd2780: ff ff ff ff ff ff ff ff ff ff ff ff ff
+> ff ff ff
+> [  319.966566] ^
+> [  319.972131]  ffff0010b6bd2800: ff ff ff ff ff ff ff ff ff ff ff ff ff
+> ff ff ff
+> [  319.979344]  ffff0010b6bd2880: ff ff ff ff ff ff ff ff ff ff ff ff ff
+> ff ff ff
+> [  319.986557]
+> ==================================================================
+> [  319.993770] Disabling lock debugging due to kernel taint
 > 
-> - Arnaldo
+> So to trigger this, I start fio on a disk, and then have one script
+> which constantly enables and disables an IO scheduler for that disk, and
+> another script which constantly reads /sys/class/scsi_host/host0/host_busy .
+> 
+> And in this problem, the driver tag we iterate may point to a stale IO sched
+> request.
 
--- 
+Hi John,
 
-- Arnaldo
+I propose to change the order in which blk_mq_sched_free_requests(q) and
+blk_mq_debugfs_unregister(q) are called. Today blk_mq_sched_free_requests(q)
+is called by blk_cleanup_queue() before blk_put_queue() is called.
+blk_put_queue() calls blk_release_queue() if the last reference is dropped.
+blk_release_queue() calls blk_mq_debugfs_unregister(). I prefer removing the
+debugfs attributes earlier over modifying the tag iteration functions
+because I think removing the debugfs attributes earlier is less risky.
+Although this will make it harder to debug lockups that happen while
+removing a request queue, kernel developers who are analyzing such an issue
+can undo this change in their development kernel tree.
+
+Thanks,
+
+Bart.
