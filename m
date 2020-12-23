@@ -2,144 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 219732E1B0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 11:40:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 713242E1B13
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 11:43:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728430AbgLWKiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 05:38:51 -0500
-Received: from mail-oo1-f48.google.com ([209.85.161.48]:43468 "EHLO
-        mail-oo1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728301AbgLWKit (ORCPT
+        id S1728425AbgLWKmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 05:42:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728300AbgLWKmg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 05:38:49 -0500
-Received: by mail-oo1-f48.google.com with SMTP id y14so3596101oom.10;
-        Wed, 23 Dec 2020 02:38:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KihTF5JbxFD42cY1wA7aOsNP35ZO1n0Na3DWL4feoYk=;
-        b=YtfyJEtQ4Rx4GvXp2eCDN4oh3m7hdqGWJADE3nw4LO1Ll7HDCWRZUH9D6OTb0bvpOH
-         5YmSxqr4Ha9PCyYA5k772eYiOI2XkIZPURNfBieet9dpOU0vky3rzioiMoaxri/NpzBi
-         1Dub65HZkJ0GSLrIF0VIZU0gGZ2HNhD71pQuoAPxwT0CkdTSZrduwwA3lHXK/+ypLQom
-         TK97J9BwtFx8xSfswkSSE/y3eGFdBz/V1Vw19meTB2freUlcWrN/X0o2B4TBIR82lYBV
-         t64AvVZGsj64LzytClXqQLCJZ4jUj21jb0UtEM6gh3xLjyd6bYPp1kHo7bgQBrNMJaWx
-         m/ig==
-X-Gm-Message-State: AOAM531wM6DnKV6u3yODJnxzHR2nAmxnnTxrmc2HfQgTCgiBUjSjgDxe
-        BqilVeehe93fg1HlFcb6neaJDSuO+izDToDHEwDBh5K2
-X-Google-Smtp-Source: ABdhPJy9U98CPLOM9qWfCFZui6dO/PQYCRjI00tgXXUEHSfVAWiteZLCs+U7EpAO2soA/tWzSTNFmBBqnM2RmfJo+z4=
-X-Received: by 2002:a4a:c191:: with SMTP id w17mr18070553oop.1.1608719888011;
- Wed, 23 Dec 2020 02:38:08 -0800 (PST)
+        Wed, 23 Dec 2020 05:42:36 -0500
+Received: from a3.inai.de (a3.inai.de [IPv6:2a01:4f8:10b:45d8::f5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD9A2C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 02:41:55 -0800 (PST)
+Received: by a3.inai.de (Postfix, from userid 25121)
+        id 0147B588D24FF; Wed, 23 Dec 2020 11:41:51 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by a3.inai.de (Postfix) with ESMTP id F12DB60046354;
+        Wed, 23 Dec 2020 11:41:51 +0100 (CET)
+Date:   Wed, 23 Dec 2020 11:41:51 +0100 (CET)
+From:   Jan Engelhardt <jengelh@inai.de>
+To:     Guenter Roeck <linux@roeck-us.net>
+cc:     Gabriel C <nix.or.die@googlemail.com>, linux-hwmon@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Wei Huang <wei.huang2@amd.com>
+Subject: Re: k10temp: ZEN3 readings are broken
+In-Reply-To: <9d621d34-e5ce-301a-1b89-92c0791fe348@roeck-us.net>
+Message-ID: <4483r6o2-245o-147-s71r-s64ss3nqr8ps@vanv.qr>
+References: <CAEJqkgiiU7miC13iT6DufjFAsHkNZk6rBAw=KRRnHe47kTZDnw@mail.gmail.com> <9d621d34-e5ce-301a-1b89-92c0791fe348@roeck-us.net>
 MIME-Version: 1.0
-References: <20201222184510.19415-1-info@metux.net> <CAMuHMdVze3oaWmzvzn8ROjpP6h6Tsv2SFLiV7T1Cnej36X445g@mail.gmail.com>
- <2f1d53e9-0dbb-78ef-22d5-ab230438ddf0@metux.net>
-In-Reply-To: <2f1d53e9-0dbb-78ef-22d5-ab230438ddf0@metux.net>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 23 Dec 2020 11:37:56 +0100
-Message-ID: <CAMuHMdXoHVPwqC_v6DL2MTi2j_tgnCqy9eiuLHvmZ9cB5scbQA@mail.gmail.com>
-Subject: Re: [PATCH] arch: consolidate pm_power_off callback
-To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Salter <msalter@redhat.com>,
-        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Christian Brauner <christian@brauner.io>,
-        alpha <linux-alpha@vger.kernel.org>,
-        arcml <linux-snps-arc@lists.infradead.org>,
-        linux-c6x-dev@linux-c6x.org, linux-csky@vger.kernel.org,
-        "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Openrisc <openrisc@lists.librecores.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>,
-        Linux PM list <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Enrico,
 
-On Tue, Dec 22, 2020 at 9:15 PM Enrico Weigelt, metux IT consult
-<lkml@metux.net> wrote:
-> On 22.12.20 19:54, Geert Uytterhoeven wrote:
-> > On Tue, Dec 22, 2020 at 7:46 PM Enrico Weigelt, metux IT consult
-> > <info@metux.net> wrote:
-> >> Move the pm_power_off callback into one global place and also add an
-> >> function for conditionally calling it (when not NULL), in order to remove
-> >> code duplication in all individual archs.
-> >>
-> >> Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
-> >
-> > Thanks for your patch!
-> >
-> >> --- a/arch/alpha/kernel/process.c
-> >> +++ b/arch/alpha/kernel/process.c
-> >> @@ -43,12 +43,6 @@
-> >>  #include "proto.h"
-> >>  #include "pci_impl.h"
-> >>
-> >> -/*
-> >> - * Power off function, if any
-> >> - */
-> >> -void (*pm_power_off)(void) = machine_power_off;
-> >
-> > Assignments like these are lost in the conversion.
+On Tuesday 2020-12-22 04:58, Guenter Roeck wrote:
+>On 12/21/20 5:45 PM, Gabriel C wrote:
+>> Hello Guenter,
+>> 
+>> while trying to add ZEN3 support for zenpower out of tree modules, I find out
+>> the in-kernel k10temp driver is broken with ZEN3 ( and partially ZEN2 even ).
 >
-> Yes, but this doesn't seem to be ever called anyways. (in arch/alpha)
-> And, BTW, letting it point to machine_power_off() doesn't make much
-> sense, since it's the arch's machine_power_off() function, who're
-> calling pm_power_off().
->
-> Actually, we could remove pm_power_off completely from here, assuming
-> nobody would *build* any drivers that register themselves into
-> pm_power_off.
->
-> If you feel better with it, I could post a patch that just removes
-> pm_power_off from arch/alpha.
+>[...] since I do not have time to actively maintain
+>the driver, since each chip variant seems to use different addresses and scales,
+>and since the information about voltages and currents is unpublished by AMD,
+>I'll remove support for voltage/current readings from the upstream driver.
 
-This is not limited to alpha, there are similar initializations on
-m68k, openrisc,
-and s390.
-If none of these are called, they can be removed, but you should mention
-that in the patch description.
+I support that decision.
 
-Thanks!
+/proc/cpuinfo::AMD Ryzen 7 3700X 8-Core Processor, fam 23 model 113 step 0
 
-Gr{oetje,eeting}s,
+A synthetic load (perl -e '1 while 1') x 16 shows:
+Adapter: PCI adapter
+Vcore:        +1.28 V
+Vsoc:         +1.02 V
+Tctl:         +94.8°C
+Tdie:         +94.8°C
+Tccd1:        +94.8°C
+Icore:       +76.00 A
+Isoc:         +6.75 A
 
-                        Geert
+A BOINC workload on average:
+k10temp-pci-00c3
+Adapter: PCI adapter
+Vcore:        +1.17 V  
+Vsoc:         +1.02 V  
+Tctl:         +94.9°C  
+Tdie:         +94.9°C  
+Tccd1:        +95.0°C  
+Icore:       +88.00 A  
+Isoc:         +8.00 A  
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+The BOINC workload, when it momentarily spikes:
+Adapter: PCI adapter
+Vcore:        +1.32 V  
+Vsoc:         +1.02 V  
+Tctl:         +94.1°C  
+Tdie:         +94.1°C  
+Tccd1:        +96.0°C  
+Icore:       +105.00 A  
+Isoc:         +7.75 A  
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+For a processor sold as a 65 W part, observing reported sensors as 
+88 A x 1.17 V + 8 A x 1.02 V = 111.12 W just can't be. We are off by a 
+factor of about 2.
