@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 162A12E12E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:28:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 732722E1310
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:28:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729710AbgLWCZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:25:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54254 "EHLO mail.kernel.org"
+        id S1730066AbgLWC1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:27:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730624AbgLWCZw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:25:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E6AEF229C5;
-        Wed, 23 Dec 2020 02:25:34 +0000 (UTC)
+        id S1730870AbgLWC0W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:26:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2644F22285;
+        Wed, 23 Dec 2020 02:25:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690335;
-        bh=qOD3J0qah8tfhOMeHNnIkftANTBwEaXCTYbcvwhJPZc=;
+        s=k20201202; t=1608690341;
+        bh=fqqoJ6c25WDyUQ3LnEJinxarDF9+HA/F6SZz+5ToHXg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bou3VYruHW3szheA9nFLvWs8vmBVo4TebgrJErBE6Pw0/+1URcjXzE+nOsL7BOWji
-         MfTrqi3GPlECjwO8Wtjqdcb3czeI8s8+NY2RfUWLwrlQmeszf7z6KqTVIzdI7ADAU0
-         DlM2ABiel9EGKJxafpVPQZYePFnxzsmQpxq+Ymaaf6eGcBQnyz24pQoIJZ9iRVdtj/
-         2JMtudzsfuaUl/scMOCtkk89h4tdAKDlxAKUKo56TuhJH0AL0RTY8jLC9WVAIl1+th
-         j/Z28x1wKFcSrz1xyQNUSDEFUHfJwM/k/nHciipMhdNpAOxZJbRGoTKI3XAA5w1lVQ
-         K66Sh/1rbhWZA==
+        b=I/QIzde3ncYr0W2Z6DRrevFnquhey6M78yTfp1MZ8/oMb6B7FaPjtnL8x3H0nZhom
+         V7mjWrM7d4nN7AY6f7OH8/ohycr0rnmVhpV4BVkiS6IZP2Q5wna9gg/6YlQ/Z8dseD
+         zerMyms2pGK7eZv5hBqoU3tvYjlEjX7C1hDQbC/nS8GLNmdJ/65ZyOAYLJtVZ/2QnO
+         mGiLMLw2E5PbkShpiQAtBnDbm6UomvQ70PCn0CGe4QrRwPjx86NvToufuj3QSToLes
+         wzqabv3LUcTuBi7xr/RDMxXcsNEpdd9VaBB8fSRWiB0RSZexJ4SEL1om8xIb3DZmxT
+         JboNu2Dzr0QgA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Evgeny Novikov <novikov@ispras.ru>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-usb@vger.kernel.org,
-        linux-media@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 15/38] media: zr364xx: propagate errors from zr364xx_start_readpipe()
-Date:   Tue, 22 Dec 2020 21:24:53 -0500
-Message-Id: <20201223022516.2794471-15-sashal@kernel.org>
+Cc:     Takashi Iwai <tiwai@suse.de>,
+        Keith Milner <kamilner@superlative.org>,
+        Dylan Robinson <dylan_robinson@motu.com>,
+        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 4.4 20/38] ALSA: usb-audio: Don't call usb_set_interface() at trigger callback
+Date:   Tue, 22 Dec 2020 21:24:58 -0500
+Message-Id: <20201223022516.2794471-20-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223022516.2794471-1-sashal@kernel.org>
 References: <20201223022516.2794471-1-sashal@kernel.org>
@@ -44,90 +43,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evgeny Novikov <novikov@ispras.ru>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit af0321a5be3e5647441eb6b79355beaa592df97a ]
+[ Upstream commit 4974b7950929e4a28d4eaee48e4ad07f168ac132 ]
 
-zr364xx_start_readpipe() can fail but callers do not care about that.
-This can result in various negative consequences. The patch adds missed
-error handling.
+The PCM trigger callback is atomic, hence we must not call a function
+like usb_set_interface() there.  Calling it from there would lead to a
+kernel Oops.
 
-Found by Linux Driver Verification project (linuxtesting.org).
+Fix it by moving the usb_set_interface() call to set_sync_endpoint().
 
-Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Also, apply the snd_usb_set_interface_quirk() for consistency, too.
+
+Tested-by: Keith Milner <kamilner@superlative.org>
+Tested-by: Dylan Robinson <dylan_robinson@motu.com>
+Link: https://lore.kernel.org/r/20201123085347.19667-3-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/zr364xx/zr364xx.c | 31 ++++++++++++++++++++++-------
- 1 file changed, 24 insertions(+), 7 deletions(-)
+ sound/usb/pcm.c | 28 +++++++++++++---------------
+ 1 file changed, 13 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/media/usb/zr364xx/zr364xx.c b/drivers/media/usb/zr364xx/zr364xx.c
-index 2d56cccaa4747..505e08ddde2bb 100644
---- a/drivers/media/usb/zr364xx/zr364xx.c
-+++ b/drivers/media/usb/zr364xx/zr364xx.c
-@@ -1359,6 +1359,7 @@ static int zr364xx_board_init(struct zr364xx_camera *cam)
- {
- 	struct zr364xx_pipeinfo *pipe = cam->pipe;
- 	unsigned long i;
-+	int err;
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index 366813f1a5f80..59f3a9492d74b 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -242,21 +242,6 @@ static int start_endpoints(struct snd_usb_substream *subs)
+ 	    !test_and_set_bit(SUBSTREAM_FLAG_SYNC_EP_STARTED, &subs->flags)) {
+ 		struct snd_usb_endpoint *ep = subs->sync_endpoint;
  
- 	DBG("board init: %p\n", cam);
- 	memset(pipe, 0, sizeof(*pipe));
-@@ -1392,9 +1393,8 @@ static int zr364xx_board_init(struct zr364xx_camera *cam)
+-		if (subs->data_endpoint->iface != subs->sync_endpoint->iface ||
+-		    subs->data_endpoint->altsetting != subs->sync_endpoint->altsetting) {
+-			err = usb_set_interface(subs->dev,
+-						subs->sync_endpoint->iface,
+-						subs->sync_endpoint->altsetting);
+-			if (err < 0) {
+-				clear_bit(SUBSTREAM_FLAG_SYNC_EP_STARTED, &subs->flags);
+-				dev_err(&subs->dev->dev,
+-					   "%d:%d: cannot set interface (%d)\n",
+-					   subs->sync_endpoint->iface,
+-					   subs->sync_endpoint->altsetting, err);
+-				return -EIO;
+-			}
+-		}
+-
+ 		dev_dbg(&subs->dev->dev, "Starting sync EP @%p\n", ep);
  
- 	if (i == 0) {
- 		printk(KERN_INFO KBUILD_MODNAME ": out of memory. Aborting\n");
--		kfree(cam->pipe->transfer_buffer);
--		cam->pipe->transfer_buffer = NULL;
--		return -ENOMEM;
-+		err = -ENOMEM;
-+		goto err_free;
- 	} else
- 		cam->buffer.dwFrames = i;
+ 		ep->sync_slave = subs->data_endpoint;
+@@ -489,6 +474,19 @@ static int set_sync_endpoint(struct snd_usb_substream *subs,
  
-@@ -1409,9 +1409,17 @@ static int zr364xx_board_init(struct zr364xx_camera *cam)
- 	/*** end create system buffers ***/
+ 	subs->data_endpoint->sync_master = subs->sync_endpoint;
  
- 	/* start read pipe */
--	zr364xx_start_readpipe(cam);
-+	err = zr364xx_start_readpipe(cam);
-+	if (err)
-+		goto err_free;
++	if (subs->data_endpoint->iface != subs->sync_endpoint->iface ||
++	    subs->data_endpoint->altsetting != subs->sync_endpoint->altsetting) {
++		err = usb_set_interface(subs->dev,
++					subs->sync_endpoint->iface,
++					subs->sync_endpoint->altsetting);
++		if (err < 0)
++			return err;
++		dev_dbg(&dev->dev, "setting usb interface %d:%d\n",
++			subs->sync_endpoint->iface,
++			subs->sync_endpoint->altsetting);
++		snd_usb_set_interface_quirk(dev);
++	}
 +
- 	DBG(": board initialized\n");
  	return 0;
-+
-+err_free:
-+	kfree(cam->pipe->transfer_buffer);
-+	cam->pipe->transfer_buffer = NULL;
-+	return err;
  }
  
- static int zr364xx_probe(struct usb_interface *intf,
-@@ -1610,10 +1618,19 @@ static int zr364xx_resume(struct usb_interface *intf)
- 	if (!cam->was_streaming)
- 		return 0;
- 
--	zr364xx_start_readpipe(cam);
-+	res = zr364xx_start_readpipe(cam);
-+	if (res)
-+		return res;
-+
- 	res = zr364xx_prepare(cam);
--	if (!res)
--		zr364xx_start_acquire(cam);
-+	if (res)
-+		goto err_prepare;
-+
-+	zr364xx_start_acquire(cam);
-+	return 0;
-+
-+err_prepare:
-+	zr364xx_stop_readpipe(cam);
- 	return res;
- }
- #endif
 -- 
 2.27.0
 
