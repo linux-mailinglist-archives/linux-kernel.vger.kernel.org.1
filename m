@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 825A42E1210
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:20:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7C642E1208
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:20:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728185AbgLWCSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:18:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46336 "EHLO mail.kernel.org"
+        id S1727874AbgLWCSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:18:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728134AbgLWCSe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:18:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 65F302313F;
-        Wed, 23 Dec 2020 02:16:56 +0000 (UTC)
+        id S1727824AbgLWCSK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:18:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 608992313C;
+        Wed, 23 Dec 2020 02:17:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608689817;
-        bh=JfDRzZ27W9u7Q0FkxIoxcf9USYVWuUAAzG+ewwQMtq8=;
+        s=k20201202; t=1608689826;
+        bh=+wkRle9EHla4awRchFfBzMkC54Y8O1Bl7VLbVn+JToE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o6wFYovRRUxAgxMEcokiMZGIr+6UB4gE5wBfb0kz9DRYAjAh1SQD+I37Cvkv1RsHp
-         WNc4N7GMqhb+hjcMS2jDeuNjb/pY80zoZLyswsofIFVQsP9RQInNogkZVRWpGQaT2D
-         AVZh5HgKHokBIOYaJh3NtSqmlavqiS7ZMP+8ww3cRSU9btWnZS1HcFtLfOytTvQkE1
-         Dip9UrCFTtbctzbTuJJjLHtLInV/ynIQ+QixtmkyKBBHCp014+GX6NNE3lpp2QlY7e
-         F7PC2+r9Flpzrs/v/wzz6BBIdD7msPdMMNUeY/Xo+S59aB2xU2LvmdS3AmeP2ZJHHT
-         t1AqFkartPa8Q==
+        b=qD7BQFPdtlTd6ya1eDE6P1MqZFVJz0Vh6OvvdQfHmPWzUM2mdNFx3Tp4X6Q49ZVcg
+         e0YuQTYqNSyEdisq8IDrxoXt/mYR9IKfaL8MCaL2zSM04URavuGhbqCm56NqMIvCBC
+         lYI+peqFwuF4yFn2ScCiFHxGHWMfbrTeXuGbxOUm13CJTpOklY4k6IZ4kxzkctQMvy
+         vReGPsnZoZYDdxZ3VmK7mpAFvfGLicOcclrFZHumUKHyCdW4Iwdjxrcla6i7hrHHby
+         RHitoIlkHN1YknEvEgvSsK9HTC9ZmhEKPV7PKlASoovWhnryhUyegjtYkXhC9LN2QO
+         jhBREOCtYLdig==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Eryk Brol <eryk.brol@amd.com>,
-        Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>,
-        Qingqing Zhuo <qingqing.zhuo@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.10 023/217] drm/amd/display: Update connector on DSC property change
-Date:   Tue, 22 Dec 2020 21:13:12 -0500
-Message-Id: <20201223021626.2790791-23-sashal@kernel.org>
+Cc:     peter chang <dpf@google.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        Viswas G <Viswas.G@microchip.com>,
+        Ruksar Devadi <Ruksar.devadi@microchip.com>,
+        Radha Ramachandran <radha@google.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 030/217] scsi: pm80xx: Make mpi_build_cmd locking consistent
+Date:   Tue, 22 Dec 2020 21:13:19 -0500
+Message-Id: <20201223021626.2790791-30-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223021626.2790791-1-sashal@kernel.org>
 References: <20201223021626.2790791-1-sashal@kernel.org>
@@ -45,277 +46,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eryk Brol <eryk.brol@amd.com>
+From: peter chang <dpf@google.com>
 
-[ Upstream commit 886876ecf7f46917af8065bb574a669f19302f96 ]
+[ Upstream commit 7640e1eb8c5de33dafa6c68fd4389214ff9ec1f9 ]
 
-[Why]
-We want to trigger atomic check on connector when
-DSC debugfs properties are changed. The previous
-method was reverted because it accessed connector
-properties unsafely and would also heavily
-impact performance.
+Driver submits all internal requests (like abort_task, event acknowledgment
+etc.) through inbound queue 0. While submitting those, driver does not
+acquire any lock and this may lead to a race when there is an I/O request
+coming in on CPU0 and submitted through inbound queue 0.  To avoid this,
+lock acquisition has been moved to pm8001_mpi_build_cmd().  All command
+submission will go through this path.
 
-[How]
-Add a flag for forcing DSC update in CRTC state
-and add connector to the state if the flag is set.
-
-Signed-off-by: Eryk Brol <eryk.brol@amd.com>
-Reviewed-by: Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>
-Acked-by: Qingqing Zhuo <qingqing.zhuo@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Link: https://lore.kernel.org/r/20201102165528.26510-2-Viswas.G@microchip.com.com
+Acked-by: Jack Wang <jinpu.wang@cloud.ionos.com>
+Signed-off-by: peter chang <dpf@google.com>
+Signed-off-by: Viswas G <Viswas.G@microchip.com>
+Signed-off-by: Ruksar Devadi <Ruksar.devadi@microchip.com>
+Signed-off-by: Radha Ramachandran <radha@google.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |   6 +-
- .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h |   1 +
- .../amd/display/amdgpu_dm/amdgpu_dm_debugfs.c | 124 ++++++++++++++++++
- 3 files changed, 130 insertions(+), 1 deletion(-)
+ drivers/scsi/pm8001/pm8001_hwi.c | 21 +++++++++++++++------
+ drivers/scsi/pm8001/pm80xx_hwi.c |  8 --------
+ 2 files changed, 15 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index 553a241dedf5d..c532b6f2702f8 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -8656,6 +8656,7 @@ static int amdgpu_dm_atomic_check(struct drm_device *dev,
- 	enum dc_status status;
- 	int ret, i;
- 	bool lock_and_validation_needed = false;
-+	struct dm_crtc_state *dm_old_crtc_state;
- 
- 	amdgpu_check_debugfs_connector_property_change(adev, state);
- 
-@@ -8698,9 +8699,12 @@ static int amdgpu_dm_atomic_check(struct drm_device *dev,
+diff --git a/drivers/scsi/pm8001/pm8001_hwi.c b/drivers/scsi/pm8001/pm8001_hwi.c
+index 2b7b2954ec31a..597d7a096a972 100644
+--- a/drivers/scsi/pm8001/pm8001_hwi.c
++++ b/drivers/scsi/pm8001/pm8001_hwi.c
+@@ -1356,12 +1356,19 @@ int pm8001_mpi_build_cmd(struct pm8001_hba_info *pm8001_ha,
+ {
+ 	u32 Header = 0, hpriority = 0, bc = 1, category = 0x02;
+ 	void *pMessage;
+-
+-	if (pm8001_mpi_msg_free_get(circularQ, pm8001_ha->iomb_size,
+-		&pMessage) < 0) {
++	unsigned long flags;
++	int q_index = circularQ - pm8001_ha->inbnd_q_tbl;
++	int rv = -1;
++
++	WARN_ON(q_index >= PM8001_MAX_INB_NUM);
++	spin_lock_irqsave(&circularQ->iq_lock, flags);
++	rv = pm8001_mpi_msg_free_get(circularQ, pm8001_ha->iomb_size,
++			&pMessage);
++	if (rv < 0) {
+ 		PM8001_IO_DBG(pm8001_ha,
+-			pm8001_printk("No free mpi buffer\n"));
+-		return -ENOMEM;
++			      pm8001_printk("No free mpi buffer\n"));
++		rv = -ENOMEM;
++		goto done;
  	}
- #endif
- 	for_each_oldnew_crtc_in_state(state, crtc, old_crtc_state, new_crtc_state, i) {
-+		dm_old_crtc_state = to_dm_crtc_state(old_crtc_state);
-+
- 		if (!drm_atomic_crtc_needs_modeset(new_crtc_state) &&
- 		    !new_crtc_state->color_mgmt_changed &&
--		    old_crtc_state->vrr_enabled == new_crtc_state->vrr_enabled)
-+		    old_crtc_state->vrr_enabled == new_crtc_state->vrr_enabled &&
-+			dm_old_crtc_state->dsc_force_changed == false)
- 			continue;
  
- 		if (!new_crtc_state->enable)
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
-index a8a0e8cb1a118..56ec5d7677488 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
-@@ -440,6 +440,7 @@ struct dm_crtc_state {
- 	bool freesync_timing_changed;
- 	bool freesync_vrr_info_changed;
+ 	if (nb > (pm8001_ha->iomb_size - sizeof(struct mpi_msg_hdr)))
+@@ -1384,7 +1391,9 @@ int pm8001_mpi_build_cmd(struct pm8001_hba_info *pm8001_ha,
+ 		pm8001_printk("INB Q %x OPCODE:%x , UPDATED PI=%d CI=%d\n",
+ 			responseQueue, opCode, circularQ->producer_idx,
+ 			circularQ->consumer_index));
+-	return 0;
++done:
++	spin_unlock_irqrestore(&circularQ->iq_lock, flags);
++	return rv;
+ }
  
-+	bool dsc_force_changed;
- 	bool vrr_supported;
- 	struct mod_freesync_config freesync_config;
- 	struct dc_info_packet vrr_infopacket;
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
-index 8cd646eef096c..5c72ebd5998f8 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs.c
-@@ -1253,6 +1253,10 @@ static ssize_t dp_dsc_clock_en_write(struct file *f, const char __user *buf,
- 				     size_t size, loff_t *pos)
- {
- 	struct amdgpu_dm_connector *aconnector = file_inode(f)->i_private;
-+	struct drm_connector *connector = &aconnector->base;
-+	struct drm_device *dev = connector->dev;
-+	struct drm_crtc *crtc = NULL;
-+	struct dm_crtc_state *dm_crtc_state = NULL;
- 	struct pipe_ctx *pipe_ctx;
- 	int i;
- 	char *wr_buf = NULL;
-@@ -1295,6 +1299,25 @@ static ssize_t dp_dsc_clock_en_write(struct file *f, const char __user *buf,
- 	if (!pipe_ctx || !pipe_ctx->stream)
- 		goto done;
+ u32 pm8001_mpi_msg_free_set(struct pm8001_hba_info *pm8001_ha, void *pMsg,
+diff --git a/drivers/scsi/pm8001/pm80xx_hwi.c b/drivers/scsi/pm8001/pm80xx_hwi.c
+index 7593f248afb2c..5fe50e0effcd5 100644
+--- a/drivers/scsi/pm8001/pm80xx_hwi.c
++++ b/drivers/scsi/pm8001/pm80xx_hwi.c
+@@ -4281,7 +4281,6 @@ static int pm80xx_chip_smp_req(struct pm8001_hba_info *pm8001_ha,
+ 	char *preq_dma_addr = NULL;
+ 	__le64 tmp_addr;
+ 	u32 i, length;
+-	unsigned long flags;
  
-+	// Get CRTC state
-+	mutex_lock(&dev->mode_config.mutex);
-+	drm_modeset_lock(&dev->mode_config.connection_mutex, NULL);
-+
-+	if (connector->state == NULL)
-+		goto unlock;
-+
-+	crtc = connector->state->crtc;
-+	if (crtc == NULL)
-+		goto unlock;
-+
-+	drm_modeset_lock(&crtc->mutex, NULL);
-+	if (crtc->state == NULL)
-+		goto unlock;
-+
-+	dm_crtc_state = to_dm_crtc_state(crtc->state);
-+	if (dm_crtc_state->stream == NULL)
-+		goto unlock;
-+
- 	if (param[0] == 1)
- 		aconnector->dsc_settings.dsc_force_enable = DSC_CLK_FORCE_ENABLE;
- 	else if (param[0] == 2)
-@@ -1302,6 +1325,14 @@ static ssize_t dp_dsc_clock_en_write(struct file *f, const char __user *buf,
- 	else
- 		aconnector->dsc_settings.dsc_force_enable = DSC_CLK_FORCE_DEFAULT;
+ 	memset(&smp_cmd, 0, sizeof(smp_cmd));
+ 	/*
+@@ -4377,10 +4376,8 @@ static int pm80xx_chip_smp_req(struct pm8001_hba_info *pm8001_ha,
  
-+	dm_crtc_state->dsc_force_changed = true;
-+
-+unlock:
-+	if (crtc)
-+		drm_modeset_unlock(&crtc->mutex);
-+	drm_modeset_unlock(&dev->mode_config.connection_mutex);
-+	mutex_unlock(&dev->mode_config.mutex);
-+
- done:
- 	kfree(wr_buf);
- 	return size;
-@@ -1408,6 +1439,10 @@ static ssize_t dp_dsc_slice_width_write(struct file *f, const char __user *buf,
- {
- 	struct amdgpu_dm_connector *aconnector = file_inode(f)->i_private;
- 	struct pipe_ctx *pipe_ctx;
-+	struct drm_connector *connector = &aconnector->base;
-+	struct drm_device *dev = connector->dev;
-+	struct drm_crtc *crtc = NULL;
-+	struct dm_crtc_state *dm_crtc_state = NULL;
- 	int i;
- 	char *wr_buf = NULL;
- 	uint32_t wr_buf_size = 42;
-@@ -1449,6 +1484,25 @@ static ssize_t dp_dsc_slice_width_write(struct file *f, const char __user *buf,
- 	if (!pipe_ctx || !pipe_ctx->stream)
- 		goto done;
+ 	build_smp_cmd(pm8001_dev->device_id, smp_cmd.tag,
+ 				&smp_cmd, pm8001_ha->smp_exp_mode, length);
+-	spin_lock_irqsave(&circularQ->iq_lock, flags);
+ 	rc = pm8001_mpi_build_cmd(pm8001_ha, circularQ, opc, &smp_cmd,
+ 			sizeof(smp_cmd), 0);
+-	spin_unlock_irqrestore(&circularQ->iq_lock, flags);
+ 	if (rc)
+ 		goto err_out_2;
+ 	return 0;
+@@ -4444,7 +4441,6 @@ static int pm80xx_chip_ssp_io_req(struct pm8001_hba_info *pm8001_ha,
+ 	u64 phys_addr, start_addr, end_addr;
+ 	u32 end_addr_high, end_addr_low;
+ 	struct inbound_queue_table *circularQ;
+-	unsigned long flags;
+ 	u32 q_index, cpu_id;
+ 	u32 opc = OPC_INB_SSPINIIOSTART;
+ 	memset(&ssp_cmd, 0, sizeof(ssp_cmd));
+@@ -4582,10 +4578,8 @@ static int pm80xx_chip_ssp_io_req(struct pm8001_hba_info *pm8001_ha,
+ 			ssp_cmd.esgl = 0;
+ 		}
+ 	}
+-	spin_lock_irqsave(&circularQ->iq_lock, flags);
+ 	ret = pm8001_mpi_build_cmd(pm8001_ha, circularQ, opc,
+ 			&ssp_cmd, sizeof(ssp_cmd), q_index);
+-	spin_unlock_irqrestore(&circularQ->iq_lock, flags);
+ 	return ret;
+ }
  
-+	// Safely get CRTC state
-+	mutex_lock(&dev->mode_config.mutex);
-+	drm_modeset_lock(&dev->mode_config.connection_mutex, NULL);
-+
-+	if (connector->state == NULL)
-+		goto unlock;
-+
-+	crtc = connector->state->crtc;
-+	if (crtc == NULL)
-+		goto unlock;
-+
-+	drm_modeset_lock(&crtc->mutex, NULL);
-+	if (crtc->state == NULL)
-+		goto unlock;
-+
-+	dm_crtc_state = to_dm_crtc_state(crtc->state);
-+	if (dm_crtc_state->stream == NULL)
-+		goto unlock;
-+
- 	if (param[0] > 0)
- 		aconnector->dsc_settings.dsc_num_slices_h = DIV_ROUND_UP(
- 					pipe_ctx->stream->timing.h_addressable,
-@@ -1456,6 +1510,14 @@ static ssize_t dp_dsc_slice_width_write(struct file *f, const char __user *buf,
- 	else
- 		aconnector->dsc_settings.dsc_num_slices_h = 0;
+@@ -4819,10 +4813,8 @@ static int pm80xx_chip_sata_req(struct pm8001_hba_info *pm8001_ha,
+ 			}
+ 		}
+ 	}
+-	spin_lock_irqsave(&circularQ->iq_lock, flags);
+ 	ret = pm8001_mpi_build_cmd(pm8001_ha, circularQ, opc,
+ 			&sata_cmd, sizeof(sata_cmd), q_index);
+-	spin_unlock_irqrestore(&circularQ->iq_lock, flags);
+ 	return ret;
+ }
  
-+	dm_crtc_state->dsc_force_changed = true;
-+
-+unlock:
-+	if (crtc)
-+		drm_modeset_unlock(&crtc->mutex);
-+	drm_modeset_unlock(&dev->mode_config.connection_mutex);
-+	mutex_unlock(&dev->mode_config.mutex);
-+
- done:
- 	kfree(wr_buf);
- 	return size;
-@@ -1561,6 +1623,10 @@ static ssize_t dp_dsc_slice_height_write(struct file *f, const char __user *buf,
- 				     size_t size, loff_t *pos)
- {
- 	struct amdgpu_dm_connector *aconnector = file_inode(f)->i_private;
-+	struct drm_connector *connector = &aconnector->base;
-+	struct drm_device *dev = connector->dev;
-+	struct drm_crtc *crtc = NULL;
-+	struct dm_crtc_state *dm_crtc_state = NULL;
- 	struct pipe_ctx *pipe_ctx;
- 	int i;
- 	char *wr_buf = NULL;
-@@ -1603,6 +1669,25 @@ static ssize_t dp_dsc_slice_height_write(struct file *f, const char __user *buf,
- 	if (!pipe_ctx || !pipe_ctx->stream)
- 		goto done;
- 
-+	// Get CRTC state
-+	mutex_lock(&dev->mode_config.mutex);
-+	drm_modeset_lock(&dev->mode_config.connection_mutex, NULL);
-+
-+	if (connector->state == NULL)
-+		goto unlock;
-+
-+	crtc = connector->state->crtc;
-+	if (crtc == NULL)
-+		goto unlock;
-+
-+	drm_modeset_lock(&crtc->mutex, NULL);
-+	if (crtc->state == NULL)
-+		goto unlock;
-+
-+	dm_crtc_state = to_dm_crtc_state(crtc->state);
-+	if (dm_crtc_state->stream == NULL)
-+		goto unlock;
-+
- 	if (param[0] > 0)
- 		aconnector->dsc_settings.dsc_num_slices_v = DIV_ROUND_UP(
- 					pipe_ctx->stream->timing.v_addressable,
-@@ -1610,6 +1695,14 @@ static ssize_t dp_dsc_slice_height_write(struct file *f, const char __user *buf,
- 	else
- 		aconnector->dsc_settings.dsc_num_slices_v = 0;
- 
-+	dm_crtc_state->dsc_force_changed = true;
-+
-+unlock:
-+	if (crtc)
-+		drm_modeset_unlock(&crtc->mutex);
-+	drm_modeset_unlock(&dev->mode_config.connection_mutex);
-+	mutex_unlock(&dev->mode_config.mutex);
-+
- done:
- 	kfree(wr_buf);
- 	return size;
-@@ -1708,6 +1801,10 @@ static ssize_t dp_dsc_bits_per_pixel_write(struct file *f, const char __user *bu
- 				     size_t size, loff_t *pos)
- {
- 	struct amdgpu_dm_connector *aconnector = file_inode(f)->i_private;
-+	struct drm_connector *connector = &aconnector->base;
-+	struct drm_device *dev = connector->dev;
-+	struct drm_crtc *crtc = NULL;
-+	struct dm_crtc_state *dm_crtc_state = NULL;
- 	struct pipe_ctx *pipe_ctx;
- 	int i;
- 	char *wr_buf = NULL;
-@@ -1750,8 +1847,35 @@ static ssize_t dp_dsc_bits_per_pixel_write(struct file *f, const char __user *bu
- 	if (!pipe_ctx || !pipe_ctx->stream)
- 		goto done;
- 
-+	// Get CRTC state
-+	mutex_lock(&dev->mode_config.mutex);
-+	drm_modeset_lock(&dev->mode_config.connection_mutex, NULL);
-+
-+	if (connector->state == NULL)
-+		goto unlock;
-+
-+	crtc = connector->state->crtc;
-+	if (crtc == NULL)
-+		goto unlock;
-+
-+	drm_modeset_lock(&crtc->mutex, NULL);
-+	if (crtc->state == NULL)
-+		goto unlock;
-+
-+	dm_crtc_state = to_dm_crtc_state(crtc->state);
-+	if (dm_crtc_state->stream == NULL)
-+		goto unlock;
-+
- 	aconnector->dsc_settings.dsc_bits_per_pixel = param[0];
- 
-+	dm_crtc_state->dsc_force_changed = true;
-+
-+unlock:
-+	if (crtc)
-+		drm_modeset_unlock(&crtc->mutex);
-+	drm_modeset_unlock(&dev->mode_config.connection_mutex);
-+	mutex_unlock(&dev->mode_config.mutex);
-+
- done:
- 	kfree(wr_buf);
- 	return size;
 -- 
 2.27.0
 
