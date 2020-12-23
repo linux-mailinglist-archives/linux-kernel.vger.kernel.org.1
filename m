@@ -2,253 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9774E2E118B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:02:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D98D2E118F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:07:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726807AbgLWCCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:02:16 -0500
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:34331 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726313AbgLWCCK (ORCPT
+        id S1726948AbgLWCHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:07:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25545 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726068AbgLWCHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:02:10 -0500
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.west.internal (Postfix) with ESMTP id 34223614;
-        Tue, 22 Dec 2020 21:01:19 -0500 (EST)
-Received: from imap6 ([10.202.2.56])
-  by compute2.internal (MEProxy); Tue, 22 Dec 2020 21:01:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kdrag0n.dev; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm3; bh=AmAn74HloV/Wnje54cha8LvSBkLYxJQ
-        MDWJX3ZXuIm0=; b=hADG5CIHDT3sw9fbiWF/9q5ZrxwKYT13iCg4PFlxR0Mo0bf
-        ypubbYxNOO/zdpOztfCf0wXcZzY4I8gNWbNuB7xeaCHbbkpD32YvVlbMg/xAr/mA
-        fewvkKk9w1OnxrTJ/UjdxaPH64sGDxBuvWFZ2XG3aacTLLJjAC1gvlOjhKxOql/9
-        OF1xQs6tEJ24eLu9yYhTRpBubMFfzuQJRr3s4r5uOCu/dYW0rr8uIRRnmQkUVfXL
-        RA0CrpDuNqG0GRn0rhmhUX5UGbSIrKYtdPc+7bJIKf1ZvKUSf2iOQj9nOagkYFdO
-        yq3G0kai8y2LmDbCJY8TD9WgI7aV0ZfQA2m/qvQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=AmAn74
-        HloV/Wnje54cha8LvSBkLYxJQMDWJX3ZXuIm0=; b=Wj/PBUv9dBRMEr6RJijBG2
-        ckH5FOgifJmIPRcop6uZ9mRz5bMdD0CCFCsLuqFkIF/GA5eK6Z7LRXoKVng6WGCt
-        lLwFNeDy+nr0l5Fw4dAO73K9ketIGuuNGMqvFxj2S5xkumn1wq/AU77Qe46Gbfi6
-        3MOuEWG5WoypJ1Rr/Lr2zLoVWPn1MvAv/oELQ0qT9/V2OCdMrn0jNNTXarv+w4Hs
-        2mazCsxYGq5zKDkyG+a7/L7Ez0n+bzzbSKPI4lc6w+NMh7jWq0RtAZoa9ZlG9RLE
-        cNUmxHZ0b7mvzFJsfheojSmuVbk8ofgG/QdGXstain4lZdoWw0LSJv0vwEjoJ95w
-        ==
-X-ME-Sender: <xms:7qTiXzKPft9iFFY23uok5HT9QO5Hm03RP81Mqc5vne6DMUjZYu1hrg>
-    <xme:7qTiX3IAmIMBvQA8eCpyBmw7SzzTKZWhSWP--nIIH1jSAvezZaBo4nC08atflIEQN
-    _tAUappT4pCdKqNIds>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvddtiedgtdegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdffrghn
-    nhihucfnihhnfdcuoegurghnnhihsehkughrrghgtdhnrdguvghvqeenucggtffrrghtth
-    gvrhhnpeektdetjeffffeileektdfhgeevgfdttdfggedtueeihfejjeffheettdevtddt
-    vdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegurg
-    hnnhihsehkughrrghgtdhnrdguvghv
-X-ME-Proxy: <xmx:7qTiX7v0ltTgu1M2Dd1YLToL-tNWRboH2dGYh0B07uWqwl7otigJ5g>
-    <xmx:7qTiX8ahbS-C3fkuP8tgm8BrkTE9FIv8EBCu7ZgF8Rmtvk6EBeX_MA>
-    <xmx:7qTiX6aJ0cMyATsbGQLHAZ3kFB70cwz5yME8cSg8T4_REsFP9iAgCw>
-    <xmx:7qTiX6FBya8WvsqKzLG6nwJVYqFJ-bWNsokA-MEEpSzqrq5WanHXRw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 42D821400A1; Tue, 22 Dec 2020 21:01:23 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.3.1-61-gb52c239-fm-20201210.001-gb52c2396
-Mime-Version: 1.0
-Message-Id: <e7776f3c-a517-4cf3-9265-92dc0ac09c88@www.fastmail.com>
-In-Reply-To: <X+AbJvE7OGs3cRCw@ripper>
-References: <20201221002907.2870059-1-danny@kdrag0n.dev>
- <20201221002907.2870059-3-danny@kdrag0n.dev> <X+AbJvE7OGs3cRCw@ripper>
-Date:   Tue, 22 Dec 2020 18:00:54 -0800
-From:   "Danny Lin" <danny@kdrag0n.dev>
-To:     "Bjorn Andersson" <bjorn.andersson@linaro.org>
-Cc:     "Andy Gross" <agross@kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] arm64: dts: qcom: sm8150: Add PSCI idle states
-Content-Type: text/plain
+        Tue, 22 Dec 2020 21:07:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608689146;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BTDw6F8i8Hd7yrviwj2j64uCpdlUqMClrvxGh+hRTGs=;
+        b=hUetfDk26nwGBQzZ3P5PlVox7tNF43yFoztSytMs4FHuuYWOfkFb+rwHPx8etVXzGWdAq6
+        9aErymm3Vya18OFva9u7TbIgGQXUome3A+EFlDBMSv9OmIGzPXm0sjLux9Gv5rPWe4sRKY
+        pTDpdPDhuwbXnPyK2+JuQWB2kG15NCc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-461-aWAP2yPzOnStP2DTRd0SBw-1; Tue, 22 Dec 2020 21:05:42 -0500
+X-MC-Unique: aWAP2yPzOnStP2DTRd0SBw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 337AE107ACF6;
+        Wed, 23 Dec 2020 02:05:41 +0000 (UTC)
+Received: from localhost (ovpn-13-111.pek2.redhat.com [10.72.13.111])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3BFA06F988;
+        Wed, 23 Dec 2020 02:05:36 +0000 (UTC)
+Date:   Wed, 23 Dec 2020 10:05:34 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        gopakumarr@vmware.com, rppt@kernel.org, david@redhat.com
+Subject: Re: [PATCH v2 0/5] Fix the incorrect memmep defer init handling and
+ do some cleanup
+Message-ID: <20201223020534.GA2205@MiWiFi-R3L-srv>
+References: <20201220082754.6900-1-bhe@redhat.com>
+ <20201222174658.a2d08ca723a20587467792d9@linux-foundation.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201222174658.a2d08ca723a20587467792d9@linux-foundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 20, 2020 at 7:48 PM, Bjorn Andersson wrote:
-> On Sun 20 Dec 16:29 PST 2020, Danny Lin wrote:
+On 12/22/20 at 05:46pm, Andrew Morton wrote:
+> On Sun, 20 Dec 2020 16:27:49 +0800 Baoquan He <bhe@redhat.com> wrote:
 > 
-> > Like other Qualcomm SoCs, sm8150 exposes CPU and cluster idle states
-> > through PSCI. Define the idle states to save power when the CPU is not
-> > in active use.
+> > VMware reported the performance regression during memmap_init() invocation.
+> > And they bisected to commit 73a6e474cb376 ("mm: memmap_init: iterate over
+> > memblock regions rather that check each PFN") causing it.
 > > 
-> > These idle states, latency, and residency values match the downstream
-> > 4.14 kernel from Qualcomm as of LA.UM.8.1.r1-15600-sm8150.0.
+> > https://lore.kernel.org/linux-mm/DM6PR05MB52921FF90FA01CC337DD23A1A4080@DM6PR05MB5292.namprd05.prod.outlook.com/
 > > 
-> > It's worth noting that the CPU has an additional C3 power collapse idle
-> > state between WFI and rail power collapse (with PSCI mode 0x40000003),
-> > but it is not officially used in downstream kernels due to "thermal
-> > throttling issues."
+> > After investigation, it's caused by incorrect memmap init defer handling
+> > in memmap_init_zone() after commit 73a6e474cb376. The current
+> > memmap_init_zone() only handle one memory region of one zone, while
+> > memmap_init() iterates over all its memory regions and pass them one by
+> > one into memmap_init_zone() to handle.
 > > 
+> > So in this patchset, patch 1/5 fixes the bug observed by VMware. Patch
+> > 2~5/5 clean up codes.
+> > accordingly.
 > 
-> Thanks Danny for this series, very happy to see this kind of additions.
-> Just one small question about the cluster param below.
+> This series doesn't apply well to current mainline (plus, perhaps,
+> material which I sent to Linus today).
 > 
-> > Signed-off-by: Danny Lin <danny@kdrag0n.dev>
-> > ---
-> >  arch/arm64/boot/dts/qcom/sm8150.dtsi | 50 ++++++++++++++++++++++++++++
-> >  1 file changed, 50 insertions(+)
-> > 
-> > diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> > index 75ed38ee5d88..edc1fe6d7f1b 100644
-> > --- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> > @@ -50,6 +50,8 @@ CPU0: cpu@0 {
-> >  			compatible = "qcom,kryo485";
-> >  			reg = <0x0 0x0>;
-> >  			enable-method = "psci";
-> > +			cpu-idle-states = <&LITTLE_CPU_SLEEP_0
-> > +					   &CLUSTER_SLEEP_0>;
-> >  			next-level-cache = <&L2_0>;
-> >  			qcom,freq-domain = <&cpufreq_hw 0>;
-> >  			#cooling-cells = <2>;
-> > @@ -67,6 +69,8 @@ CPU1: cpu@100 {
-> >  			compatible = "qcom,kryo485";
-> >  			reg = <0x0 0x100>;
-> >  			enable-method = "psci";
-> > +			cpu-idle-states = <&LITTLE_CPU_SLEEP_0
-> > +					   &CLUSTER_SLEEP_0>;
-> >  			next-level-cache = <&L2_100>;
-> >  			qcom,freq-domain = <&cpufreq_hw 0>;
-> >  			#cooling-cells = <2>;
-> > @@ -82,6 +86,8 @@ CPU2: cpu@200 {
-> >  			compatible = "qcom,kryo485";
-> >  			reg = <0x0 0x200>;
-> >  			enable-method = "psci";
-> > +			cpu-idle-states = <&LITTLE_CPU_SLEEP_0
-> > +					   &CLUSTER_SLEEP_0>;
-> >  			next-level-cache = <&L2_200>;
-> >  			qcom,freq-domain = <&cpufreq_hw 0>;
-> >  			#cooling-cells = <2>;
-> > @@ -96,6 +102,8 @@ CPU3: cpu@300 {
-> >  			compatible = "qcom,kryo485";
-> >  			reg = <0x0 0x300>;
-> >  			enable-method = "psci";
-> > +			cpu-idle-states = <&LITTLE_CPU_SLEEP_0
-> > +					   &CLUSTER_SLEEP_0>;
-> >  			next-level-cache = <&L2_300>;
-> >  			qcom,freq-domain = <&cpufreq_hw 0>;
-> >  			#cooling-cells = <2>;
-> > @@ -110,6 +118,8 @@ CPU4: cpu@400 {
-> >  			compatible = "qcom,kryo485";
-> >  			reg = <0x0 0x400>;
-> >  			enable-method = "psci";
-> > +			cpu-idle-states = <&BIG_CPU_SLEEP_0
-> > +					   &CLUSTER_SLEEP_0>;
-> >  			next-level-cache = <&L2_400>;
-> >  			qcom,freq-domain = <&cpufreq_hw 1>;
-> >  			#cooling-cells = <2>;
-> > @@ -124,6 +134,8 @@ CPU5: cpu@500 {
-> >  			compatible = "qcom,kryo485";
-> >  			reg = <0x0 0x500>;
-> >  			enable-method = "psci";
-> > +			cpu-idle-states = <&BIG_CPU_SLEEP_0
-> > +					   &CLUSTER_SLEEP_0>;
-> >  			next-level-cache = <&L2_500>;
-> >  			qcom,freq-domain = <&cpufreq_hw 1>;
-> >  			#cooling-cells = <2>;
-> > @@ -138,6 +150,8 @@ CPU6: cpu@600 {
-> >  			compatible = "qcom,kryo485";
-> >  			reg = <0x0 0x600>;
-> >  			enable-method = "psci";
-> > +			cpu-idle-states = <&BIG_CPU_SLEEP_0
-> > +					   &CLUSTER_SLEEP_0>;
-> >  			next-level-cache = <&L2_600>;
-> >  			qcom,freq-domain = <&cpufreq_hw 1>;
-> >  			#cooling-cells = <2>;
-> > @@ -152,6 +166,8 @@ CPU7: cpu@700 {
-> >  			compatible = "qcom,kryo485";
-> >  			reg = <0x0 0x700>;
-> >  			enable-method = "psci";
-> > +			cpu-idle-states = <&BIG_CPU_SLEEP_0
-> > +					   &CLUSTER_SLEEP_0>;
-> >  			next-level-cache = <&L2_700>;
-> >  			qcom,freq-domain = <&cpufreq_hw 2>;
-> >  			#cooling-cells = <2>;
-> > @@ -196,6 +212,40 @@ core7 {
-> >  				};
-> >  			};
-> >  		};
-> > +
-> > +		idle-states {
-> > +			entry-method = "psci";
-> > +
-> > +			LITTLE_CPU_SLEEP_0: cpu-sleep-0-0 {
-> > +				compatible = "arm,idle-state";
-> > +				idle-state-name = "little-rail-power-collapse";
-> > +				arm,psci-suspend-param = <0x40000004>;
-> > +				entry-latency-us = <355>;
-> > +				exit-latency-us = <909>;
-> > +				min-residency-us = <3934>;
-> > +				local-timer-stop;
-> > +			};
-> > +
-> > +			BIG_CPU_SLEEP_0: cpu-sleep-1-0 {
-> > +				compatible = "arm,idle-state";
-> > +				idle-state-name = "big-rail-power-collapse";
-> > +				arm,psci-suspend-param = <0x40000004>;
-> > +				entry-latency-us = <241>;
-> > +				exit-latency-us = <1461>;
-> > +				min-residency-us = <4488>;
-> > +				local-timer-stop;
-> > +			};
-> > +
-> > +			CLUSTER_SLEEP_0: cluster-sleep-0 {
-> > +				compatible = "arm,idle-state";
-> > +				idle-state-name = "cluster-power-collapse";
-> > +				arm,psci-suspend-param = <0x400000F4>;
+> So please check all that against mainline in a day or so, refresh,
+> retest and resend.
 > 
-> How come this is 0xf4?
-> 
-> Isn't downstream saying that this should be either 0x1 << 4 or 0xc24 <<
-> 4, depending on how deep we want to go? Could we at least mention why
-> this is 0xf4?
+> Please separate the fix for the performance regression (1/5) into a
+> single standalone patch, ready for -stable backporting.  And then a
+> separate 4-patch series with the cleanups for a 5.11 merge.
 
-I'm not sure where 0x400000F4 originally came from. I noticed that
-sdm845 uses the same 0xc24 mode in downstream, but Qualcomm used
-0x400000F4 in mainline.
+Sure, doing now. 
 
-I did some testing on a downstream kernel and found that the real value
-it uses on sm8150 is 0x4100c244, but the idle state doesn't work at all
-if I use the same value on mainline. The logic appears to be the same in
-the downstream sdm845 kernel. Maybe it has to do with how downstream has
-"notify RPM" before attempting to enter the idle state?
+By the way, when sending patches to linux-mm ML, which branch should I
+rebase them on? I usually take your akpm/master as base, thought this
+will make your patch picking easier. Seems my understanding is not true,
+akpm/master is changed very soon, we should always base patch on linus's
+master branch, whether patch is sending to linux-mm or not, right?
 
-In downstream, the final PSCI value is calculated as the sum of:
+Thanks
+Baoquan
 
-1. (cluster-mode & cluster-mode-mask) << cluster-mode-shift = (0xc24 & 0xfff) << 4 = 0xc240
-2. (is-reset << 30) = 0x40000000
-3. (affinity level & 0x3) << 24 = 0x1000000
-4. (cpu-mode) = 0x4
-
-so 0xc240 + 0x40000000 + 0x1000000 + 0x4 = 0x4100c244.
-
-It's also possible that the problem comes from the cluster idle state
-needing all CPUs in the cluster to be asleep (as far as I know), since
-it doesn't look like mainline handles that.
-
-> 
-> Regards,
-> Bjorn
-> 
-> > +				entry-latency-us = <3263>;
-> > +				exit-latency-us = <6562>;
-> > +				min-residency-us = <9987>;
-> > +				local-timer-stop;
-> > +			};
-> > +		};
-> >  	};
-> >  
-> >  	firmware {
-> > -- 
-> > 2.29.2
-> > 
->
