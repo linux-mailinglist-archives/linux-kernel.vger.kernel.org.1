@@ -2,104 +2,409 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE2292E21EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 22:13:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0BD72E21F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 22:13:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729193AbgLWVLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 16:11:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39838 "EHLO
+        id S1729218AbgLWVLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 16:11:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729138AbgLWVLC (ORCPT
+        with ESMTP id S1728447AbgLWVLh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 16:11:02 -0500
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61C19C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 13:10:07 -0800 (PST)
-Received: by mail-il1-x133.google.com with SMTP id x15so360465ilq.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 13:10:07 -0800 (PST)
+        Wed, 23 Dec 2020 16:11:37 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2343BC061257
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 13:10:41 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id b73so424483edf.13
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 13:10:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=0ZMUDMR4pTmJNoSoaiKNNtdLIWf0D/EJ1+mQ+sQxsp0=;
-        b=AIfRmzyF8QVV2XoZBrgPqiMkwP+d/waxNG88EufLseXO59pig6prjSxM5Rpwf6Ebh9
-         pTFTtkNe4goWFtYC0BwTtYNnWNHoRg6BxQFLWEbgCm1BueHIDjQCC3SFzx9UhHp2qIch
-         V9nUbIXvc1KTR31ET1RM17G2CxMqXvVkH0ccw=
+        bh=Uawmuf30g8hFwJC27vRaIVBzmTPClIdro7xuWf9Sm78=;
+        b=nf6MtDLj0yXfwMPHKj4F6uS38hp9/FgE7WjMbs9W5hfOPEvyrZd/Vo+KPXWajBblp6
+         51SJeGJME12NKkBhQE2UIzKlXEd9sZMHvtAKyex8rxbP9mu47/exsMyDjlz1rZt3qnCj
+         UfjN0ESqMMUzQ9WeMYXu+JqsoditdMCJ8spKYK1/ytp36yaSADUHD5FmSFBS/A3Uk4S8
+         5aPPJBBw9rYqz+XZrU67AfX8FIGwZsV9xM8wdpWiaHPiixgoP3i7BvwNeFcnhHwzM0gM
+         MDdX6kok64X3ScN405uKj3qKCde34YYylnRtoJdTD5u8Ulq/j1AfXzDx14gN5Aq98wFG
+         o/Ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0ZMUDMR4pTmJNoSoaiKNNtdLIWf0D/EJ1+mQ+sQxsp0=;
-        b=FeX4W9Yhuq1akFMh3b+0+ZcDOxbCKs8CmQLeDA2QmOFZwLG5X96zcAtEYL4of8Nhjg
-         Xa1hi1L5VaWBJe+r+iO4Qz5ekpdrkK7UAGiNlZgd2N0nmIYDv+mtvcopGPwfbeNwUD3L
-         vSmXbkzaZn2MX/PwyID4TMEp8mWmEsA+CStgkSUXfQX9ZevY+YgYuQMftUDMw1IByd44
-         TQVsFT9VXN+802GnsxC/a6ElG7aDT69BqJgYrJgEOr/9ODKEnS+zfXRTGgNNMX23Z6/f
-         hFqgNGixVd/exvbFZ+iOwLvAgbKwV1clGGxmYfpj3WfkwXR45gb+h+veilgfGvL56OTj
-         5gVw==
-X-Gm-Message-State: AOAM5313L32lB5vSFEf1fGUVmLWExOAI9FRBmW6yutlwAsLKyi+wBzzo
-        GyR6aWPZGEjbZgHu7T4NKihSZ9mqH+TFiGNXrC/hyA==
-X-Google-Smtp-Source: ABdhPJzNMVq9HFYERLK48OHfmHGpl1yXYcBtCKLKrJO6mwP08aLtzgcpsEJd5GjYz8k/7Jf8usy1WJOz+pl5KzRZLA4=
-X-Received: by 2002:a05:6e02:5c2:: with SMTP id l2mr26473575ils.231.1608757806552;
- Wed, 23 Dec 2020 13:10:06 -0800 (PST)
+        bh=Uawmuf30g8hFwJC27vRaIVBzmTPClIdro7xuWf9Sm78=;
+        b=ka+U3HuRc548heAvX47yPzLKvnxIBsLM2GvqwI1B3kdiR20IWqOBMPqvoJzp8DTPK+
+         EHoctYsTQ3BruQ88M+AuBcPiNACuXT9ejlHrSIX7ZzpXl5pD8vxc5DcXAr/vyzVHVi9m
+         B0hiC8kXavnDak9wsZaZa2kwnpSnhZOfQTE0XJYlpvoSDLng3lbH7pSDjR0j+MB5Haxo
+         pVj3gaF22gju684rGLzneVdAPnpawy/6cq3NehW4kfvWHALii7QhZ6wFxDi+LdPidcUH
+         6o/rDpjYGFSR7uiY7f9FS26ZrbHullPTQtI+2F8grRc/HIzPZLdNWzwF/gScFCMbAqOP
+         QyxA==
+X-Gm-Message-State: AOAM530gulOg59wcpGtKStjHMLmtQopRRywDXS2rzp78pR7hUg5dripl
+        p4xSLtTXSU7cmuJy/gm/ZqxzmmSAoMCWInL9qfqI
+X-Google-Smtp-Source: ABdhPJwDgd5vJjHNoYvW6djLXniqbUaSdL2T70zxwf8HHr0zlEHG3Y5JtpuVE8PoB63cYTHQgTDHwgNYF4vQ9gmJcio=
+X-Received: by 2002:aa7:c0d6:: with SMTP id j22mr26211419edp.31.1608757839451;
+ Wed, 23 Dec 2020 13:10:39 -0800 (PST)
 MIME-Version: 1.0
-References: <16ffadab-42ba-f9c7-8203-87fda3dc9b44@maciej.szmigiero.name> <74c7129b-a437-ebc4-1466-7fb9f034e006@maciej.szmigiero.name>
-In-Reply-To: <74c7129b-a437-ebc4-1466-7fb9f034e006@maciej.szmigiero.name>
-From:   Ignat Korchagin <ignat@cloudflare.com>
-Date:   Wed, 23 Dec 2020 21:09:55 +0000
-Message-ID: <CALrw=nHiSPxVxxuA1fekwDOqBZX0BGe8_3DTN7TNkrVD2q8rxg@mail.gmail.com>
-Subject: Re: dm-crypt with no_read_workqueue and no_write_workqueue + btrfs
- scrub = BUG()
-To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc:     Alasdair G Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        device-mapper development <dm-devel@redhat.com>,
-        dm-crypt@saout.de, linux-kernel <linux-kernel@vger.kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Nobuto Murata <nobuto.murata@canonical.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-crypto <linux-crypto@vger.kernel.org>
+References: <20201212180251.9943-1-tusharsu@linux.microsoft.com> <20201212180251.9943-9-tusharsu@linux.microsoft.com>
+In-Reply-To: <20201212180251.9943-9-tusharsu@linux.microsoft.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 23 Dec 2020 16:10:28 -0500
+Message-ID: <CAHC9VhSao7DGtskbDMax8hN+PhQr8homFXUGjm+c7NtEUCtKhg@mail.gmail.com>
+Subject: Re: [PATCH v9 8/8] selinux: include a consumer of the new IMA
+ critical data hook
+To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com, tyhicks@linux.microsoft.com,
+        sashal@kernel.org, James Morris <jmorris@namei.org>,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 3:37 PM Maciej S. Szmigiero
-<mail@maciej.szmigiero.name> wrote:
+On Sat, Dec 12, 2020 at 1:03 PM Tushar Sugandhi
+<tusharsu@linux.microsoft.com> wrote:
+> From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
 >
-> On 14.12.2020 19:11, Maciej S. Szmigiero wrote:
-> > Hi,
-> >
-> > I hit a reproducible BUG() when scrubbing a btrfs fs on top of
-> > a dm-crypt device with no_read_workqueue and no_write_workqueue
-> > flags enabled.
+> SELinux stores the active policy in memory, so the changes to this data
+> at runtime would have an impact on the security guarantees provided
+> by SELinux. Measuring in-memory SELinux policy through IMA subsystem
+> provides a secure way for the attestation service to remotely validate
+> the policy contents at runtime.
 >
-> Still happens on the current torvalds/master.
+> Measure the hash of the loaded policy by calling the IMA hook
+> ima_measure_critical_data(). Since the size of the loaded policy can
+> be large (several MB), measure the hash of the policy instead of
+> the entire policy to avoid bloating the IMA log entry.
 >
-> Due to this bug it is not possible to use btrfs on top of
-> a dm-crypt device with no_read_workqueue and no_write_workqueue
-> flags enabled.
+> Add "selinux" to the list of supported data sources maintained by IMA
+> to enable measuring SELinux data.
 >
-> @Ignat:
-> Can you have a look at this as the person who added these flags?
+> To enable SELinux data measurement, the following steps are required:
+>
+> 1, Add "ima_policy=critical_data" to the kernel command line arguments
+>    to enable measuring SELinux data at boot time.
+> For example,
+>   BOOT_IMAGE=/boot/vmlinuz-5.10.0-rc1+ root=UUID=fd643309-a5d2-4ed3-b10d-3c579a5fab2f ro nomodeset security=selinux ima_policy=critical_data
+>
+> 2, Add the following rule to /etc/ima/ima-policy
+>    measure func=CRITICAL_DATA data_source=selinux
+>
+> Sample measurement of the hash of SELinux policy:
+>
+> To verify the measured data with the current SELinux policy run
+> the following commands and verify the output hash values match.
+>
+>   sha256sum /sys/fs/selinux/policy | cut -d' ' -f 1
+>
+>   grep "selinux-policy-hash" /sys/kernel/security/integrity/ima/ascii_runtime_measurements | tail -1 | cut -d' ' -f 6
+>
+> Note that the actual verification of SELinux policy would require loading
+> the expected policy into an identical kernel on a pristine/known-safe
+> system and run the sha256sum /sys/kernel/selinux/policy there to get
+> the expected hash.
+>
+> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
+> Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+> ---
+>  Documentation/ABI/testing/ima_policy |  3 +-
+>  security/selinux/Makefile            |  2 +
+>  security/selinux/include/security.h  | 11 +++-
+>  security/selinux/measure.c           | 79 ++++++++++++++++++++++++++++
+>  security/selinux/ss/services.c       | 71 +++++++++++++++++++++----
+>  5 files changed, 155 insertions(+), 11 deletions(-)
+>  create mode 100644 security/selinux/measure.c
 
-I've been looking into this for the last couple of days because of
-other reports [1].
-Just finished testing a possible solution. Will submit soon.
+...
 
-> It looks like to me that the skcipher API might not be safe to
-> call from a softirq context, after all.
+> diff --git a/security/selinux/Makefile b/security/selinux/Makefile
+> index 4d8e0e8adf0b..83d512116341 100644
+> --- a/security/selinux/Makefile
+> +++ b/security/selinux/Makefile
+> @@ -16,6 +16,8 @@ selinux-$(CONFIG_NETLABEL) += netlabel.o
+>
+>  selinux-$(CONFIG_SECURITY_INFINIBAND) += ibpkey.o
+>
+> +selinux-$(CONFIG_IMA) += measure.o
 
-It is less about skcipher API and more about how dm-crypt uses it as
-well as some assumptions that it is always running in context which
-can sleep.
+Naming things is hard, I get that, but I would prefer if we just
+called this file "ima.c" or something similar.  The name "measure.c"
+implies a level of abstraction or general use which simply doesn't
+exist here.  Let's help make it a bit more obvious what should belong
+in this file.
 
-> Maciej
+> diff --git a/security/selinux/include/security.h b/security/selinux/include/security.h
+> index 3cc8bab31ea8..18ee65c98446 100644
+> --- a/security/selinux/include/security.h
+> +++ b/security/selinux/include/security.h
+> @@ -229,7 +229,8 @@ void selinux_policy_cancel(struct selinux_state *state,
+>                         struct selinux_policy *policy);
+>  int security_read_policy(struct selinux_state *state,
+>                          void **data, size_t *len);
+> -
+> +int security_read_policy_kernel(struct selinux_state *state,
+> +                               void **data, size_t *len);
+>  int security_policycap_supported(struct selinux_state *state,
+>                                  unsigned int req_cap);
+>
+> @@ -446,4 +447,12 @@ extern void ebitmap_cache_init(void);
+>  extern void hashtab_cache_init(void);
+>  extern int security_sidtab_hash_stats(struct selinux_state *state, char *page);
+>
+> +#ifdef CONFIG_IMA
+> +extern void selinux_measure_state(struct selinux_state *selinux_state);
+> +#else
+> +static inline void selinux_measure_state(struct selinux_state *selinux_state)
+> +{
+> +}
+> +#endif
 
-Ignat
+If you are going to put the SELinux/IMA function(s) into a separate
+source file, please put the function declarations into a separate
+header file too.  For example, look at
+security/selinux/include/{netif,netnode,netport,etc.}.h.
 
-[1]: https://github.com/cloudflare/linux/issues/1
+> diff --git a/security/selinux/measure.c b/security/selinux/measure.c
+> new file mode 100644
+> index 000000000000..b7e24358e11d
+> --- /dev/null
+> +++ b/security/selinux/measure.c
+> @@ -0,0 +1,79 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Measure SELinux state using IMA subsystem.
+> + */
+> +#include <linux/vmalloc.h>
+> +#include <linux/ktime.h>
+> +#include <linux/ima.h>
+> +#include "security.h"
+> +
+> +/*
+> + * This function creates a unique name by appending the timestamp to
+> + * the given string. This string is passed as "event_name" to the IMA
+> + * hook to measure the given SELinux data.
+> + *
+> + * The data provided by SELinux to the IMA subsystem for measuring may have
+> + * already been measured (for instance the same state existed earlier).
+> + * But for SELinux the current data represents a state change and hence
+> + * needs to be measured again. To enable this, pass a unique "event_name"
+> + * to the IMA hook so that IMA subsystem will always measure the given data.
+> + *
+> + * For example,
+> + * At time T0 SELinux data to be measured is "foo". IMA measures it.
+> + * At time T1 the data is changed to "bar". IMA measures it.
+> + * At time T2 the data is changed to "foo" again. IMA will not measure it
+> + * (since it was already measured) unless the event_name, for instance,
+> + * is different in this call.
+> + */
+> +static char *selinux_event_name(const char *name_prefix)
+> +{
+> +       struct timespec64 cur_time;
+> +
+> +       ktime_get_real_ts64(&cur_time);
+> +       return kasprintf(GFP_KERNEL, "%s-%lld:%09ld", name_prefix,
+> +                        cur_time.tv_sec, cur_time.tv_nsec);
+> +}
+
+Why is this a separate function?  It's three lines long and only
+called from selinux_measure_state().  Do you ever see the SELinux/IMA
+code in this file expanding to the point where this function is nice
+from a reuse standpoint?
+
+Also, I assume you are not concerned about someone circumventing the
+IMA measurements by manipulating the time?  In most systems I would
+expect the time to be a protected entity, but with many systems
+getting their time from remote systems I thought it was worth
+mentioning.
+
+> +/*
+> + * selinux_measure_state - Measure hash of the SELinux policy
+> + *
+> + * @state: selinux state struct
+> + *
+> + * NOTE: This function must be called with policy_mutex held.
+> + */
+> +void selinux_measure_state(struct selinux_state *state)
+
+Similar to the name of this source file, let's make it clear this is
+for IMA.  How about calling this selinux_ima_measure_state() or
+similar?
+
+> +{
+> +       void *policy = NULL;
+> +       char *policy_event_name = NULL;
+> +       size_t policy_len;
+> +       int rc = 0;
+> +       bool initialized = selinux_initialized(state);
+
+Why bother with the initialized variable?  Unless I'm missing
+something it is only used once in the code below.
+
+> +       /*
+> +        * Measure SELinux policy only after initialization is completed.
+> +        */
+> +       if (!initialized)
+> +               goto out;
+> +
+> +       policy_event_name = selinux_event_name("selinux-policy-hash");
+> +       if (!policy_event_name) {
+> +               pr_err("SELinux: %s: event name for policy not allocated.\n",
+> +                      __func__);
+> +               rc = -ENOMEM;
+
+This function doesn't return an error code, why bother with setting
+the rc variable here?
+
+> +               goto out;
+> +       }
+> +
+> +       rc = security_read_policy_kernel(state, &policy, &policy_len);
+> +       if (rc) {
+> +               pr_err("SELinux: %s: failed to read policy %d.\n", __func__, rc);
+> +               goto out;
+> +       }
+> +
+> +       ima_measure_critical_data("selinux", policy_event_name,
+> +                                 policy, policy_len, true);
+> +
+> +       vfree(policy);
+> +
+> +out:
+> +       kfree(policy_event_name);
+> +}
+> diff --git a/security/selinux/ss/services.c b/security/selinux/ss/services.c
+> index 9704c8a32303..dfa2e00894ae 100644
+> --- a/security/selinux/ss/services.c
+> +++ b/security/selinux/ss/services.c
+> @@ -2180,6 +2180,7 @@ static void selinux_notify_policy_change(struct selinux_state *state,
+>         selinux_status_update_policyload(state, seqno);
+>         selinux_netlbl_cache_invalidate();
+>         selinux_xfrm_notify_policyload();
+> +       selinux_measure_state(state);
+>  }
+>
+>  void selinux_policy_commit(struct selinux_state *state,
+> @@ -3875,8 +3876,33 @@ int security_netlbl_sid_to_secattr(struct selinux_state *state,
+>  }
+>  #endif /* CONFIG_NETLABEL */
+>
+> +/**
+> + * security_read_selinux_policy - read the policy.
+> + * @policy: SELinux policy
+> + * @data: binary policy data
+> + * @len: length of data in bytes
+> + *
+> + */
+> +static int security_read_selinux_policy(struct selinux_policy *policy,
+> +                                       void *data, size_t *len)
+
+Let's just call this "security_read_policy()".
+
+> +{
+> +       int rc;
+> +       struct policy_file fp;
+> +
+> +       fp.data = data;
+> +       fp.len = *len;
+> +
+> +       rc = policydb_write(&policy->policydb, &fp);
+> +       if (rc)
+> +               return rc;
+> +
+> +       *len = (unsigned long)fp.data - (unsigned long)data;
+> +       return 0;
+> +}
+> +
+>  /**
+>   * security_read_policy - read the policy.
+> + * @state: selinux_state
+>   * @data: binary policy data
+>   * @len: length of data in bytes
+>   *
+> @@ -3885,8 +3911,6 @@ int security_read_policy(struct selinux_state *state,
+>                          void **data, size_t *len)
+>  {
+>         struct selinux_policy *policy;
+> -       int rc;
+> -       struct policy_file fp;
+>
+>         policy = rcu_dereference_protected(
+>                         state->policy, lockdep_is_held(&state->policy_mutex));
+> @@ -3898,14 +3922,43 @@ int security_read_policy(struct selinux_state *state,
+>         if (!*data)> --
+> 2.17.1
+>
+
+>                 return -ENOMEM;
+>
+> -       fp.data = *data;
+> -       fp.len = *len;
+> +       return security_read_selinux_policy(policy, *data, len);
+> +}
+>
+> -       rc = policydb_write(&policy->policydb, &fp);
+> -       if (rc)
+> -               return rc;
+> +/**
+> + * security_read_policy_kernel - read the policy.
+> + * @state: selinux_state
+> + * @data: binary policy data
+> + * @len: length of data in bytes
+> + *
+> + * Allocates kernel memory for reading SELinux policy.
+> + * This function is for internal use only and should not
+> + * be used for returning data to user space.
+> + *
+> + * This function must be called with policy_mutex held.
+> + */
+> +int security_read_policy_kernel(struct selinux_state *state,
+> +                               void **data, size_t *len)
+
+Let's call this "security_read_state_kernel()".
+
+> +{
+> +       struct selinux_policy *policy;
+> +       int rc = 0;
+
+See below, the rc variable is not needed.
+
+> -       *len = (unsigned long)fp.data - (unsigned long)*data;
+> -       return 0;
+> +       policy = rcu_dereference_protected(
+> +                       state->policy, lockdep_is_held(&state->policy_mutex));
+> +       if (!policy) {
+> +               rc = -EINVAL;
+> +               goto out;
+
+Jumping to the out label is a little silly since it is just a return;
+do a "return -EINVAL;" here instead.
+
+> +       }
+> +
+> +       *len = policy->policydb.len;
+> +       *data = vmalloc(*len);
+> +       if (!*data) {
+> +               rc = -ENOMEM;
+> +               goto out;
+
+Same as above, "return -ENOMEM;" please.
+
+> +       }
+>
+> +       rc = security_read_selinux_policy(policy, *data, len);
+
+You should be able to do "return security_read_selinux_policy(...);" here.
+
+> +
+> +out:
+> +       return rc;
+>  }
+
+-- 
+paul moore
+www.paul-moore.com
