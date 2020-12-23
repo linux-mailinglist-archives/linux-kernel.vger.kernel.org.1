@@ -2,138 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71CC52E1BAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 12:13:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5DDE2E1BB2
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 12:13:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728584AbgLWLJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 06:09:28 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:44580 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728315AbgLWLJ1 (ORCPT
+        id S1728489AbgLWLME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 06:12:04 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2281 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728324AbgLWLME (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 06:09:27 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1608721741; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=sS6gB7NQorNHJ1fvmwVd8pHeIbjE7GGfwVzQmbtlg/E=; b=Az24l6dUO/YrpBS4DjVhR+HinCUaWYH5q7iLLVYeSTrQXJ4OhbupzQiXWVoI7H+wW6yfqL9X
- HucTVuAPrObcJ0kxFL/p/lCe1m6WtlTe3womMIxwFk04BSSeEeiHHrtyEt3qf3bJqjl/K/wP
- /ptKgn77J4cpekc55/8kaReFNr8=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n10.prod.us-west-2.postgun.com with SMTP id
- 5fe325331d5c1fa42751c66b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 23 Dec 2020 11:08:35
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 47494C433C6; Wed, 23 Dec 2020 11:08:35 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from x230.qca.qualcomm.com (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0BDF2C433ED;
-        Wed, 23 Dec 2020 11:08:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0BDF2C433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Abhishek Kumar <kuabhs@chromium.org>
-Cc:     Youghandhar Chintala <youghand@codeaurora.org>,
-        netdev <netdev@vger.kernel.org>,
-        Brian Norris <briannorris@chromium.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        ath10k <ath10k@lists.infradead.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Rakesh Pillai <pillair@codeaurora.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 3/3] ath10k: Set wiphy flag to trigger sta disconnect on hardware restart
-References: <20201215172435.5388-1-youghand@codeaurora.org>
-        <CACTWRwsM_RJnssBpxDpRSbex4_1T9QDv3+ZT7eLnYsgOgtGFQw@mail.gmail.com>
-Date:   Wed, 23 Dec 2020 13:08:29 +0200
-In-Reply-To: <CACTWRwsM_RJnssBpxDpRSbex4_1T9QDv3+ZT7eLnYsgOgtGFQw@mail.gmail.com>
-        (Abhishek Kumar's message of "Tue, 22 Dec 2020 14:36:58 -0800")
-Message-ID: <878s9o6aqa.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        Wed, 23 Dec 2020 06:12:04 -0500
+Received: from fraeml701-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4D19Rf6LJdz67QNY;
+        Wed, 23 Dec 2020 19:08:14 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml701-chm.china.huawei.com (10.206.15.50) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Wed, 23 Dec 2020 12:11:21 +0100
+Received: from [10.47.6.156] (10.47.6.156) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Wed, 23 Dec
+ 2020 11:11:20 +0000
+Subject: Re: [RFC PATCH v2 2/2] blk-mq: Lockout tagset iter when freeing rqs
+To:     Bart Van Assche <bvanassche@acm.org>, <axboe@kernel.dk>,
+        <ming.lei@redhat.com>
+CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <hch@lst.de>, <hare@suse.de>, <ppvk@codeaurora.org>,
+        <kashyap.desai@broadcom.com>, <linuxarm@huawei.com>
+References: <1608203273-170555-1-git-send-email-john.garry@huawei.com>
+ <1608203273-170555-3-git-send-email-john.garry@huawei.com>
+ <df44b73d-6c42-87ee-3c25-b95a44712e05@acm.org>
+ <4d2004bb-4444-7a63-7c72-1759e3037cfd@huawei.com>
+ <31de2806-bbc1-dcc3-b9eb-ce9257420432@acm.org>
+ <b2edab2b-8af7-816d-9da2-4720d19b96f8@huawei.com>
+ <e97a0603-f9e3-1b00-4a09-c569d4f73d7b@acm.org>
+ <f98fd31e-89d4-523f-df70-4bd5f39ccbd5@huawei.com>
+ <33e41110-b3b2-ac16-f131-de1679ce8238@acm.org>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <7bdd562d-b258-43a2-0de0-966091086cff@huawei.com>
+Date:   Wed, 23 Dec 2020 11:10:33 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <33e41110-b3b2-ac16-f131-de1679ce8238@acm.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.47.6.156]
+X-ClientProxiedBy: lhreml750-chm.china.huawei.com (10.201.108.200) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Abhishek Kumar <kuabhs@chromium.org> writes:
+On 22/12/2020 16:16, Bart Van Assche wrote:
+> On 12/22/20 3:15 AM, John Garry wrote:
+>> So then we could have something like this:
+>>
+>> ---8<---
+>>
+>>   -435,9 +444,13 @@ void blk_mq_queue_tag_busy_iter(struct 
+>> request_queue *q, busy_iter_fn *fn,
+>>      if (!blk_mq_hw_queue_mapped(hctx))
+>>              continue;
+>>
+>> +    while (!atomic_inc_not_zero(&tags->iter_usage_counter));
+>> +
+>>      if (tags->nr_reserved_tags)
+>>          bt_for_each(hctx, tags->breserved_tags, fn, priv, true);
+>>      bt_for_each(hctx, tags->bitmap_tags, fn, priv, false);
+>>
+>> +    atomic_dec(&tags->iter_usage_counter);
+>> }
+>>
+>> blk_queue_exit(q);
+>>
+>> --->8---
+>>
+>> And similar for blk_mq_tagset_busy_iter(). How about it?
+> 
 
-> On Tue, Dec 15, 2020 at 9:24 AM Youghandhar Chintala
-> <youghand@codeaurora.org> wrote:
->>
->> From: Rakesh Pillai <pillair@codeaurora.org>
->>
->> Currently after the hardware restart triggered from the driver,
->> the station interface connection remains intact, since a disconnect
->> trigger is not sent to userspace. This can lead to a problem in
->> hardwares where the wifi mac sequence is added by the firmware.
->>
->> After the firmware restart, during subsytem recovery, the firmware
->> restarts its wifi mac sequence number. Hence AP to which our device
->> is connected will receive frames with a  wifi mac sequence number jump
->> to the past, thereby resulting in the AP dropping all these frames,
->> until the frame arrives with a wifi mac sequence number which AP was
->> expecting.
->>
->> To avoid such frame drops, its better to trigger a station disconnect
->> upon the  hardware restart. Indicate this support via a WIPHY flag
->> to mac80211, if the hardware params flag mentions the support to
->> add wifi mac sequence numbers for TX frames in the firmware.
->>
->> All the other hardwares, except WCN3990, are not affected by this
->> change, since the hardware params flag is not set for any hardware
->> except for WCN3990
->>
->> Tested-on: WCN3990 hw1.0 SNOC WLAN.HL.3.1-01040-QCAHLSWMTPLZ-1
->> Tested-on: QCA6174 hw3.2 PCI WLAN.RM.4.4.1-00110-QCARMSWP-1
->> Tested-on: QCA6174 hw3.2 SDIO WLAN.RMH.4.4.1-00048
->>
->> Signed-off-by: Rakesh Pillai <pillair@codeaurora.org>
->> Signed-off-by: Youghandhar Chintala <youghand@codeaurora.org>
->> ---
->>  drivers/net/wireless/ath/ath10k/core.c | 15 +++++++++++++++
->>  drivers/net/wireless/ath/ath10k/hw.h   |  3 +++
->>  drivers/net/wireless/ath/ath10k/mac.c  |  3 +++
->>  3 files changed, 21 insertions(+)
->>
->> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
->> index 796107b..4155f94 100644
->> --- a/drivers/net/wireless/ath/ath10k/core.c
->> +++ b/drivers/net/wireless/ath/ath10k/core.c
->> @@ -90,6 +90,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
->>                 .hw_filter_reset_required = true,
->>                 .fw_diag_ce_download = false,
->>                 .tx_stats_over_pktlog = true,
->> +               .tx_mac_seq_by_fw = false,
->
-> Probably orthogonal to this patch, there is a static array maintained
-> for different hardware configs and the structure members like
-> "tx_mac_seq_by_fw" are initialized. This does not seem to be scalable
-> and probably these parameters can be auto populated based on FW
-> capabilities and so we don't have to maintain the static array.
-> Thoughts?
+Hi Bart,
 
-I'm not sure what you mean. But if you are saying that we should move
-ath10k_hw_params_list entirely to firmware then that is a huge task as
-we would need to make changes in every firmware branch, and there are so
-many different branches that I have lost count. And due to backwards
-compatibility we still need to have ath10k_hw_params_list in ath10k for
-few years.
+> Are there any blk_mq_tagset_busy_iter() calls that happen from a context 
+> where the tag set can disappear while that function is in progress?
+> 
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+So isn't the blk_mq_tag_set always a member of the host driver data for 
+those cases, and, since blk_mq_tagset_busy_iter() is for iter'ing block 
+driver tags and called from block driver or hctx_busy_show(), it would 
+exist for the lifetime of the host device.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+> Some blk_mq_tagset_busy_iter() calls happen from a context where it is 
+> not allowed to sleep but also where it is guaranteed that the tag set 
+> won't disappear, e.g. the call from inside sdk_mq_queue_rq().
+
+You're talking about skd_mq_queue_rq() -> skd_in_flight() -> 
+blk_mq_tagset_busy_iter(), right?
+
+So I would expect any .queue_rq calls to complete before the associated 
+request queue and tagset may be unregistered.
+
+> 
+> How about using a mutex inside blk_mq_queue_tag_busy_iter() instead? As 
+> far as I can see all blk_mq_queue_tag_busy_iter() happen from a context 
+> where it is allowed to sleep.
+
+Well then it seems sensible to add might_sleep() also.
+
+And we still have the blk_mq_queue_tag_busy_iter() problem. As Ming 
+mentioned yesterday, we know contexts where from where it is called 
+which may not sleep.
+
+Thanks,
+John
