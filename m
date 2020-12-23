@@ -2,83 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F0012E1B6F
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 12:08:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04A892E1BAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 12:13:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728643AbgLWLH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 06:07:58 -0500
-Received: from mailoutvs35.siol.net ([185.57.226.226]:43256 "EHLO
-        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728611AbgLWLH4 (ORCPT
+        id S1728420AbgLWLJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 06:09:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728315AbgLWLJO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 06:07:56 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTP id 2599A5223E4;
-        Wed, 23 Dec 2020 12:07:14 +0100 (CET)
-X-Virus-Scanned: amavisd-new at psrvmta11.zcs-production.pri
-Received: from mail.siol.net ([127.0.0.1])
-        by localhost (psrvmta11.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id gHen5p7CaN0H; Wed, 23 Dec 2020 12:07:13 +0100 (CET)
-Received: from mail.siol.net (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTPS id CE31452248C;
-        Wed, 23 Dec 2020 12:07:13 +0100 (CET)
-Received: from localhost.localdomain (89-212-178-211.dynamic.t-2.net [89.212.178.211])
-        (Authenticated sender: 031275009)
-        by mail.siol.net (Postfix) with ESMTPSA id 7D6145224CF;
-        Wed, 23 Dec 2020 12:07:11 +0100 (CET)
-From:   Jernej Skrabec <jernej.skrabec@siol.net>
-To:     mripard@kernel.org, paul.kocialkowski@bootlin.com
-Cc:     mchehab@kernel.org, wens@csie.org, jernej.skrabec@siol.net,
-        hans.verkuil@cisco.com, nicolas.dufresne@collabora.com,
-        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        Wed, 23 Dec 2020 06:09:14 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCAADC061793
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 03:08:33 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id n25so4903943pgb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 03:08:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gRczQcEVREVIHP/xCIGe+pHjWpZBhd9/8Bmyk1xi1h0=;
+        b=Tdm+aRo5fz3I6o6oofiQYP4Dg5J+sA3cDlWHv8d/4XsG4r8Eylj/i+aIK+XiBTRHb/
+         XIY8Y3JA71pVKMxR8MSTEUeKDtuyefm1g9aCi74H4BU1zKeNNbE4lh2RqvES7a/p42Y4
+         EOp0tEPBR3XlgULoCOO+Df6derhRdWd/w/kRc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gRczQcEVREVIHP/xCIGe+pHjWpZBhd9/8Bmyk1xi1h0=;
+        b=Ju/Qjdlz9HF+57d8MoJLRZnF4jQuDMlT3Mtb81WFNG6jsNEuePimNNNffyFHUdsw41
+         +pojiVn99YBiWoR9j95+OAEo7HuWE1mxXcjMQpARXPMy/eDYcB8anRMiOIyMcOVdMJlP
+         NyUSRLbcQCPJCV0CitnXxkuqFBametW2n3lKHPjI8eZW+hN8PnVR+c4h0KWWGUMQEqJn
+         MGaEx1ZlCEe1TqsuFg2/1V8yxo8UBfGMYVLooS8hwlJHgc6RIPIcA6S3rah7jtIMIiZy
+         ohPMTFRpe9PTec3wFvfg7fXxItkGPK53svbe9Ebf6TIuJ9V8iRxgWCS6LELlQ8zL12jv
+         3omg==
+X-Gm-Message-State: AOAM530LavjJyweQKvTcBVpW6qLQEnEYpGxCjdsunQY7+SyAXlyofAN9
+        b1FWQKo3mPH+PCsLhGxYnFYeAA==
+X-Google-Smtp-Source: ABdhPJxI0lVlTeQudtwo04v0ZQt+J5cepsKS4VBuncWNGWBA6WddhHvJkit9Q34ifSZGrmUAvmjknQ==
+X-Received: by 2002:a63:4746:: with SMTP id w6mr563080pgk.377.1608721713343;
+        Wed, 23 Dec 2020 03:08:33 -0800 (PST)
+Received: from localhost.localdomain ([2405:201:c00a:a884:eca4:40c1:8784:571c])
+        by smtp.gmail.com with ESMTPSA id d4sm23031093pfo.127.2020.12.23.03.08.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Dec 2020 03:08:32 -0800 (PST)
+From:   Jagan Teki <jagan@amarulasolutions.com>
+To:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, linux-sunxi@googlegroups.com,
-        Andre Heider <a.heider@gmail.com>
-Subject: [PATCH 2/2] media: cedrus: Fix H264 decoding
-Date:   Wed, 23 Dec 2020 12:06:59 +0100
-Message-Id: <20201223110659.2631255-3-jernej.skrabec@siol.net>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201223110659.2631255-1-jernej.skrabec@siol.net>
-References: <20201223110659.2631255-1-jernej.skrabec@siol.net>
+        linux-amarula@amarulasolutions.com,
+        Jagan Teki <jagan@amarulasolutions.com>
+Subject: [PATCH] ARM: dts: stm32: Add STM32MP1 I2C6 SDA/SCL pinmux
+Date:   Wed, 23 Dec 2020 16:37:57 +0530
+Message-Id: <20201223110757.126937-1-jagan@amarulasolutions.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During H264 API overhaul subtle bug was introduced Cedrus driver.
-Progressive references have both, top and bottom reference flags set.
-Cedrus reference list expects only bottom reference flag and only when
-interlaced frames are decoded. However, due to a bug in Cedrus check,
-exclusivity is not tested and that flag is set also for progressive
-references. That causes "jumpy" background with many videos.
+Add SDA/SCL pinmux lines for I2C6 on STM32MP1.
 
-Fix that by checking that only bottom reference flag is set in control
-and nothing else.
+This support adds both in default and sleep states.
 
-Tested-by: Andre Heider <a.heider@gmail.com>
-Fixes: cfc8c3ed533e ("media: cedrus: h264: Properly configure reference f=
-ield")
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
 ---
- drivers/staging/media/sunxi/cedrus/cedrus_h264.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/stm32mp15-pinctrl.dtsi | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h264.c b/drivers/s=
-taging/media/sunxi/cedrus/cedrus_h264.c
-index 781c84a9b1b7..de7442d4834d 100644
---- a/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
-+++ b/drivers/staging/media/sunxi/cedrus/cedrus_h264.c
-@@ -203,7 +203,7 @@ static void _cedrus_write_ref_list(struct cedrus_ctx =
-*ctx,
- 		position =3D cedrus_buf->codec.h264.position;
-=20
- 		sram_array[i] |=3D position << 1;
--		if (ref_list[i].fields & V4L2_H264_BOTTOM_FIELD_REF)
-+		if (ref_list[i].fields =3D=3D V4L2_H264_BOTTOM_FIELD_REF)
- 			sram_array[i] |=3D BIT(0);
- 	}
-=20
---=20
-2.29.2
+diff --git a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
+index 20a59e8f7a33..2036c1d0d798 100644
+--- a/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
++++ b/arch/arm/boot/dts/stm32mp15-pinctrl.dtsi
+@@ -2018,6 +2018,23 @@ pins {
+ 		};
+ 	};
+ 
++	i2c6_pins_a: i2c6-0 {
++		pins {
++			pinmux = <STM32_PINMUX('Z', 6, AF2)>, /* I2C6_SCL */
++				 <STM32_PINMUX('Z', 7, AF2)>; /* I2C6_SDA */
++			bias-disable;
++			drive-open-drain;
++			slew-rate = <0>;
++		};
++	};
++
++	i2c6_sleep_pins_a: i2c6-sleep-0 {
++		pins {
++			pinmux = <STM32_PINMUX('Z', 6, ANALOG)>, /* I2C6_SCL */
++				 <STM32_PINMUX('Z', 7, ANALOG)>; /* I2C6_SDA */
++		};
++	};
++
+ 	spi1_pins_a: spi1-0 {
+ 		pins1 {
+ 			pinmux = <STM32_PINMUX('Z', 0, AF5)>, /* SPI1_SCK */
+-- 
+2.25.1
 
