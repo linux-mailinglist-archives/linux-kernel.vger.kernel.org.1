@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAA2E2E12B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:27:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 259F72E12B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:27:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728948AbgLWCXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:23:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51348 "EHLO mail.kernel.org"
+        id S1730028AbgLWCXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:23:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729970AbgLWCXW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:23:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FFD12222D;
-        Wed, 23 Dec 2020 02:23:00 +0000 (UTC)
+        id S1728152AbgLWCXX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:23:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D4B632333B;
+        Wed, 23 Dec 2020 02:23:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690181;
-        bh=fCdlmXLgDPyrQ6dRErNiTpZF3JOEKAXLORvAfBzKnfY=;
+        s=k20201202; t=1608690182;
+        bh=kwr7vOqLTHit+B0tLX6e2t6x/SRPTCIFmBpxO580gAc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S6xcJY+0DcMiqrMzgl6bh5SYJzi7ht0KAacRTMZprOQVIvKXuHAk1hBZuQVZXjVOA
-         R6VecXvIIpQizJCFGJe82lRrMI/Ml2V+mN+5pxXRpdwXtxRQWDvmCraC6TmLgweD5y
-         gINbkasK4vfsXRHAnaVYegC7AnSp19q48i9d1I8BuaNhAl/9jecat6ybVLUlzrfOTY
-         OXGURxv3XFpFEO7KBPKnP2JMguB5xXrDBxG1ntuUDGcgmcSAvuID9ZeeKd8i5qLrto
-         7BqYXwgQYKq15q77oalEoCtw5pLR2H5SIrL8l0r8ySMt4hovKyeNdGGWiFqKO5NXtB
-         HQaY2Fc6z+abg==
+        b=crCliLiKg8k/+408wHv5HFjB99HlyEEAvHQB7Dq6TJV2dLleHzpVO4+bxKF1KqYHu
+         I76rkBhe4YUzfI6r+29rQxCajddQPrHEVMQ1ojHSso69x0qA1j1nbQuQ3lcoYlTugu
+         ZCItLHqvNMp6/geDKyAOr7gEfsyN4loZWm0CnK1cJhbqjeJSTbdgB//ySHc3vBM0TF
+         ksvPN4QOuq59i35UBhf/3hhFKSzGwmWJdyaNhu+A/kfbQaFMeqH0D3ibYWeldyG6HD
+         H0VdIrjVM3tUGkM0kgpgit6OpMGTIaaCNGnMdMjw2hSZ/GXZVHlAlf4PWUjm7kuAzI
+         R/+ZAN1gU2WGQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     yuuzheng <yuuzheng@google.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        Viswas G <Viswas.G@microchip.com>,
-        Ruksar Devadi <Ruksar.devadi@microchip.com>,
-        Radha Ramachandran <radha@google.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 06/66] scsi: pm80xx: Fix pm8001_mpi_get_nvmd_resp() race condition
-Date:   Tue, 22 Dec 2020 21:21:52 -0500
-Message-Id: <20201223022253.2793452-6-sashal@kernel.org>
+Cc:     Qinglang Miao <miaoqinglang@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>, devel@driverdev.osuosl.org
+Subject: [PATCH AUTOSEL 4.14 07/66] staging: ks7010: fix missing destroy_workqueue() on error in ks7010_sdio_probe
+Date:   Tue, 22 Dec 2020 21:21:53 -0500
+Message-Id: <20201223022253.2793452-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223022253.2793452-1-sashal@kernel.org>
 References: <20201223022253.2793452-1-sashal@kernel.org>
@@ -46,54 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: yuuzheng <yuuzheng@google.com>
+From: Qinglang Miao <miaoqinglang@huawei.com>
 
-[ Upstream commit 1f889b58716a5f5e3e4fe0e6742c1a4472f29ac1 ]
+[ Upstream commit d1e7550ad081fa5e9260f636dd51e1c496e0fd5f ]
 
-A use-after-free or null-pointer error occurs when the 251-byte response
-data is copied from IOMB buffer to response message buffer in function
-pm8001_mpi_get_nvmd_resp().
+Add the missing destroy_workqueue() before return from
+ks7010_sdio_probe in the error handling case.
 
-After sending the command get_nvmd_data(), the caller begins to sleep by
-calling wait_for_complete() and waits for the wake-up from calling
-complete() in pm8001_mpi_get_nvmd_resp(). Due to unexpected events (e.g.,
-interrupt), if response buffer gets freed before memcpy(), a use-after-free
-error will occur. To fix this, the complete() should be called after
-memcpy().
-
-Link: https://lore.kernel.org/r/20201102165528.26510-5-Viswas.G@microchip.com.com
-Acked-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-Signed-off-by: yuuzheng <yuuzheng@google.com>
-Signed-off-by: Viswas G <Viswas.G@microchip.com>
-Signed-off-by: Ruksar Devadi <Ruksar.devadi@microchip.com>
-Signed-off-by: Radha Ramachandran <radha@google.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+Link: https://lore.kernel.org/r/20201028091552.136445-1-miaoqinglang@huawei.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/pm8001/pm8001_hwi.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/staging/ks7010/ks7010_sdio.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/pm8001/pm8001_hwi.c b/drivers/scsi/pm8001/pm8001_hwi.c
-index f374abfb7f1f8..44a4630fdb2f8 100644
---- a/drivers/scsi/pm8001/pm8001_hwi.c
-+++ b/drivers/scsi/pm8001/pm8001_hwi.c
-@@ -3196,10 +3196,15 @@ pm8001_mpi_get_nvmd_resp(struct pm8001_hba_info *pm8001_ha, void *piomb)
- 		pm8001_ha->memoryMap.region[NVMD].virt_ptr,
- 		fw_control_context->len);
- 	kfree(ccb->fw_control_context);
-+	/* To avoid race condition, complete should be
-+	 * called after the message is copied to
-+	 * fw_control_context->usrAddr
-+	 */
-+	complete(pm8001_ha->nvmd_completion);
-+	PM8001_MSG_DBG(pm8001_ha, pm8001_printk("Set nvm data complete!\n"));
- 	ccb->task = NULL;
- 	ccb->ccb_tag = 0xFFFFFFFF;
- 	pm8001_tag_free(pm8001_ha, tag);
--	complete(pm8001_ha->nvmd_completion);
- }
+diff --git a/drivers/staging/ks7010/ks7010_sdio.c b/drivers/staging/ks7010/ks7010_sdio.c
+index 8cfdff198334b..46d26423d3935 100644
+--- a/drivers/staging/ks7010/ks7010_sdio.c
++++ b/drivers/staging/ks7010/ks7010_sdio.c
+@@ -952,10 +952,12 @@ static int ks7010_sdio_probe(struct sdio_func *func,
  
- int pm8001_mpi_local_phy_ctl(struct pm8001_hba_info *pm8001_ha, void *piomb)
+ 	ret = register_netdev(priv->net_dev);
+ 	if (ret)
+-		goto err_free_netdev;
++		goto err_destroy_wq;
+ 
+ 	return 0;
+ 
++ err_destroy_wq:
++	destroy_workqueue(priv->wq);
+  err_free_netdev:
+ 	free_netdev(priv->net_dev);
+ 	card->priv = NULL;
 -- 
 2.27.0
 
