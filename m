@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5D0C2E1633
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:59:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 449822E1629
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:59:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728938AbgLWCUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:20:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45448 "EHLO mail.kernel.org"
+        id S1728984AbgLWCU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:20:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46280 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728759AbgLWCTs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:19:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81061233F8;
-        Wed, 23 Dec 2020 02:19:22 +0000 (UTC)
+        id S1728774AbgLWCTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:19:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EEB6D2312E;
+        Wed, 23 Dec 2020 02:19:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608689963;
-        bh=dIfa+AoqY/hATkxwXQSMO3x2NsDLSL31oNsuX1MjOd8=;
+        s=k20201202; t=1608689965;
+        bh=EKJcK/wUfnWd6IN0z7Hud2iRWPZFoGnTfP+9M2qTpso=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bVe/hEU6cs/LjFv3tGKdsaBLFHF/SWPs6HW8EyF8kUmS6KjAaEyHs4OsZcqO6KWEw
-         7s4nILfd7aTgQxFO5H8+SJacGbnRB8G/wnFAWhS8oGgrYud9z0/rRvviUtHyWhqtdJ
-         u3V1BxtGjZQU6Q689LA0UNzZggxUu9A6O4C0IWjcYHSCkc9yqGDBhCvKAwmp9B7Unt
-         sx2Py1xvRBR9PaRNIlzX/c0wDEjky98jYO7vqwcWWLEIFwQhnB3HUKzCe/Olj6u0dP
-         vZlG2Sg9GJ4H/FjAQqOihqdFOTcSqNPM9DWSUdtYP517wkjl9iSYqX8F217nJh+d9z
-         U7vrpa2VCVNxQ==
+        b=qRtAq6LWjGYeUr6HpjB/IoH6dfxLajC3KNAToIwaW33g+A7MHTM7ZAYQ6B36RZZ11
+         6KV8iFkbGyy0F010ajswriQ+o2PhDC2mJvB3yOUmXhtXiSOXMgKo4FnEza5B4EIYhY
+         IwyPass8+lhOzIPQIvcLp6cohSB7BY3vpTpcSpvD6tsgMEf0HL7sfGpwYpIA5p54hO
+         DF4kRZNb5GdcXCQbqvM7RX+0bD/EjB0TmWyKVC8k2af+u7z0XdUwkqvqsUZlyKzh6q
+         +V1l+ne70io2KYm5qyU1kxsZ3gZX01wnPtGiKKXS2E3qJHCnzy4zLCqGNDYgSnD2vE
+         WdIZD8HYikYmw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-bluetooth@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 054/130] Bluetooth: hci_h5: Add OBDA0623 ACPI HID
-Date:   Tue, 22 Dec 2020 21:16:57 -0500
-Message-Id: <20201223021813.2791612-54-sashal@kernel.org>
+Cc:     Takashi Iwai <tiwai@suse.de>,
+        Keith Milner <kamilner@superlative.org>,
+        Dylan Robinson <dylan_robinson@motu.com>,
+        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 5.4 056/130] ALSA: usb-audio: Don't call usb_set_interface() at trigger callback
+Date:   Tue, 22 Dec 2020 21:16:59 -0500
+Message-Id: <20201223021813.2791612-56-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223021813.2791612-1-sashal@kernel.org>
 References: <20201223021813.2791612-1-sashal@kernel.org>
@@ -43,33 +43,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit e524f252c42fc4f2bc4a2c3f99fe8659af5576a8 ]
+[ Upstream commit 4974b7950929e4a28d4eaee48e4ad07f168ac132 ]
 
-Add OBDA0623 ACPI HID to the acpi_device_id table. This HID is used
-for the RTL8723BS Bluetooth part on the Acer Switch 10E SW3-016.
+The PCM trigger callback is atomic, hence we must not call a function
+like usb_set_interface() there.  Calling it from there would lead to a
+kernel Oops.
 
-BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1665610
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Fix it by moving the usb_set_interface() call to set_sync_endpoint().
+
+Also, apply the snd_usb_set_interface_quirk() for consistency, too.
+
+Tested-by: Keith Milner <kamilner@superlative.org>
+Tested-by: Dylan Robinson <dylan_robinson@motu.com>
+Link: https://lore.kernel.org/r/20201123085347.19667-3-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bluetooth/hci_h5.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/usb/pcm.c | 28 +++++++++++++---------------
+ 1 file changed, 13 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
-index 5df0651b6cd55..ddee3d498a210 100644
---- a/drivers/bluetooth/hci_h5.c
-+++ b/drivers/bluetooth/hci_h5.c
-@@ -989,6 +989,7 @@ static struct h5_vnd rtl_vnd = {
- #ifdef CONFIG_ACPI
- static const struct acpi_device_id h5_acpi_match[] = {
- #ifdef CONFIG_BT_HCIUART_RTL
-+	{ "OBDA0623", (kernel_ulong_t)&rtl_vnd },
- 	{ "OBDA8723", (kernel_ulong_t)&rtl_vnd },
- #endif
- 	{ },
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index 49ad4e7bb70b5..87389ab69b5ee 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -232,21 +232,6 @@ static int start_endpoints(struct snd_usb_substream *subs)
+ 	    !test_and_set_bit(SUBSTREAM_FLAG_SYNC_EP_STARTED, &subs->flags)) {
+ 		struct snd_usb_endpoint *ep = subs->sync_endpoint;
+ 
+-		if (subs->data_endpoint->iface != subs->sync_endpoint->iface ||
+-		    subs->data_endpoint->altsetting != subs->sync_endpoint->altsetting) {
+-			err = usb_set_interface(subs->dev,
+-						subs->sync_endpoint->iface,
+-						subs->sync_endpoint->altsetting);
+-			if (err < 0) {
+-				clear_bit(SUBSTREAM_FLAG_SYNC_EP_STARTED, &subs->flags);
+-				dev_err(&subs->dev->dev,
+-					   "%d:%d: cannot set interface (%d)\n",
+-					   subs->sync_endpoint->iface,
+-					   subs->sync_endpoint->altsetting, err);
+-				return -EIO;
+-			}
+-		}
+-
+ 		dev_dbg(&subs->dev->dev, "Starting sync EP @%p\n", ep);
+ 
+ 		ep->sync_slave = subs->data_endpoint;
+@@ -512,6 +497,19 @@ static int set_sync_endpoint(struct snd_usb_substream *subs,
+ 
+ 	subs->data_endpoint->sync_master = subs->sync_endpoint;
+ 
++	if (subs->data_endpoint->iface != subs->sync_endpoint->iface ||
++	    subs->data_endpoint->altsetting != subs->sync_endpoint->altsetting) {
++		err = usb_set_interface(subs->dev,
++					subs->sync_endpoint->iface,
++					subs->sync_endpoint->altsetting);
++		if (err < 0)
++			return err;
++		dev_dbg(&dev->dev, "setting usb interface %d:%d\n",
++			subs->sync_endpoint->iface,
++			subs->sync_endpoint->altsetting);
++		snd_usb_set_interface_quirk(dev);
++	}
++
+ 	return 0;
+ }
+ 
 -- 
 2.27.0
 
