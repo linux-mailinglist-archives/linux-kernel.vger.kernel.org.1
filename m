@@ -2,202 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 704B72E1C3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 13:26:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C5402E1C43
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 13:31:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728474AbgLWM0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 07:26:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26757 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726658AbgLWM0W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 07:26:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608726295;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=0UNmcgKiAU5Ao1EWHMSNYvqkNdmnpc0OSfrJWGti+po=;
-        b=IMvFAIplD+9/ww8I4Sn0BBcHPG2FfLwLi9JKfObkZgNTje8HBy7yqraxJ9LUa2sMqPItEW
-        Bf1S6XeWVnxko7TV6SpT266o187QpknzVkBCZET99SJKl+sZb3VVw9GJI4a+lTXf5H+6Zf
-        IMsYbt+SAMaErZuALjzLCjT0KqvPFV0=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-167-XNIbdZ8iNQalGjufg8oXkw-1; Wed, 23 Dec 2020 07:24:53 -0500
-X-MC-Unique: XNIbdZ8iNQalGjufg8oXkw-1
-Received: by mail-wm1-f72.google.com with SMTP id z12so2980514wmf.9
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 04:24:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=0UNmcgKiAU5Ao1EWHMSNYvqkNdmnpc0OSfrJWGti+po=;
-        b=Fm7USl/3XSi/cuECFLJjOg+5/oDJB9mOlH6y6tC0CiLYebyaqAztWnoKXLOy8HYlN0
-         b8v9DNvzAHfSxuhjE6EDTf4TDzV2zmIUodXriLmvdC8fMChdvbhVB8SYuSntT6r2AjNb
-         jG0HqEz0Zl+OUL8/nqr52PKnQnKUV5XqZNlbzZegSgbyhRo0aiAK2iZTdf+4VrxH+tSf
-         NilNBy0H6B8pHmcizsQGuwyt1Cm8zn9OmG8phZCmR6kxSRZB+gbeaRX4eXdMoVIx75zK
-         yLWb8AHEpoQcb3K9w6IGQum/tGw0Jh2nNASh7ONyeToviBUZeEJAM0rcUgnoxqg4O9G6
-         prcg==
-X-Gm-Message-State: AOAM532B9BZ7SiypIzk5IIGeGeIyyEvxNm+NKMDLGh+5sqXzj2AJxOaL
-        XqwSU02gT6yafr083OpWVFTYz7K8CF+NuB9x0EroWp7gWczjFCccAo7rLHvg2n8VIXGh6DxSFsn
-        6q1zWHt0qgB2gx8Pecf9hrp9Y
-X-Received: by 2002:a5d:5181:: with SMTP id k1mr28572216wrv.226.1608726292513;
-        Wed, 23 Dec 2020 04:24:52 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwnplIWRt16fzmwKMP8PwnlFgcdIWksMaeKxiGfFwfPmRzkFhUmLY7vWPm5sRt5yZ7jOcB35A==
-X-Received: by 2002:a5d:5181:: with SMTP id k1mr28572175wrv.226.1608726292284;
-        Wed, 23 Dec 2020 04:24:52 -0800 (PST)
-Received: from redhat.com (bzq-79-178-32-166.red.bezeqint.net. [79.178.32.166])
-        by smtp.gmail.com with ESMTPSA id z3sm36346271wrn.59.2020.12.23.04.24.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Dec 2020 04:24:51 -0800 (PST)
-Date:   Wed, 23 Dec 2020 07:24:48 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, christophe.jaillet@wanadoo.fr,
-        dan.carpenter@oracle.com, david@redhat.com, elic@nvidia.com,
-        file@sect.tu-berlin.de, hulkci@huawei.com, info@metux.net,
-        jasowang@redhat.com, mgurtovoy@nvidia.com, mhocko@kernel.org,
-        mst@redhat.com, osalvador@suse.de, pankaj.gupta.linux@gmail.com,
-        parav@nvidia.com, peng.fan@nxp.com,
-        richard.weiyang@linux.alibaba.com, robert.buhren@sect.tu-berlin.de,
-        sgarzare@redhat.com, tiantao6@hisilicon.com,
-        zhangchangzhong@huawei.com
-Subject: [GIT PULL] virtio,vdpa: features, cleanups, fixes
-Message-ID: <20201223072448-mutt-send-email-mst@kernel.org>
+        id S1728417AbgLWMa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 07:30:29 -0500
+Received: from verein.lst.de ([213.95.11.211]:34298 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726266AbgLWMa2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 07:30:28 -0500
+Received: by verein.lst.de (Postfix, from userid 107)
+        id 5E81F68B02; Wed, 23 Dec 2020 13:29:46 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.3.1 (2010-03-16) on verein.lst.de
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.2 required=5.0 tests=ALL_TRUSTED,BAYES_50
+        autolearn=disabled version=3.3.1
+Received: from blackhole.lan (p5b33f4d5.dip0.t-ipconnect.de [91.51.244.213])
+        by verein.lst.de (Postfix) with ESMTPSA id 7358267357;
+        Wed, 23 Dec 2020 13:28:52 +0100 (CET)
+Date:   Wed, 23 Dec 2020 13:28:51 +0100
+From:   Torsten Duwe <duwe@lst.de>
+To:     Marcelo Henrique Cerri <marcelo.cerri@canonical.com>
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Stephan =?UTF-8?B?TcO8bGxlcg==?= <smueller@chronox.de>,
+        Willy Tarreau <w@1wt.eu>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Nicolai Stange <nstange@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        zhangjs <zachary@baishancloud.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Peter Matthias <matthias.peter@bsi.bund.de>,
+        Neil Horman <nhorman@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        And y Lavr <andy.lavr@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Petr Tesarik <ptesarik@suse.cz>, simo@redhat.com
+Subject: Re: drivers/char/random.c needs a (new) maintainer
+Message-ID: <20201223132851.55d19271@blackhole.lan>
+In-Reply-To: <20201218132519.kj3nz7swsx7vvlr5@valinor.lan>
+References: <20201130151231.GA24862@lst.de>
+        <CAHmME9p4vFGWh7+CKF4f3dw5r+ru5PVG0-vP77JowX8sPhin1g@mail.gmail.com>
+        <20201130165339.GE5364@mit.edu>
+        <CAHmME9pksS8ec17RAwCNJimt4B0xZgd3qYHUPnaT4Bj4CF7n0A@mail.gmail.com>
+        <20201218132519.kj3nz7swsx7vvlr5@valinor.lan>
+Organization: LST e.V.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mutt-Fcc: =sent
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 2c85ebc57b3e1817b6ce1a6b703928e113a90442:
+On Fri, 18 Dec 2020 10:25:19 -0300
+Marcelo Henrique Cerri <marcelo.cerri@canonical.com> wrote:
 
-  Linux 5.10 (2020-12-13 14:41:30 -0800)
+> Hi, Ted and Jason.
+> 
+> Any updates on that?
+> 
+> I don't believe Torsten's concerns are simply about *applying* patches
+> but more about these long periods of radio silence. That kills
 
-are available in the Git repository at:
+Exactly. I could live with replies in the style of "old" Linus like:
+"Your code is crap, because it does X and Y". Then I knew how to
+proceed. But this extended silence slows things down a lot.
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
+> collaboration and disengage people. More than simply reviewing patches
+> I would expect a maintainer to give directions and drive the
+> community. Asking Jason to review Nicolai's patches was a step towards
+> that, but I believe we still could benefit from better communication.
 
-for you to fetch changes up to 418eddef050d5f6393c303a94e3173847ab85466:
+Even regarding this I'm not so sure it was a good idea. Jason seems to
+narrow the proposed changes down to "FIPS certification", when it
+actually is a lot more. I think his motivation suffers because of his
+personal dislike.
 
-  vdpa: Use simpler version of ida allocation (2020-12-18 16:14:31 -0500)
+> Besides Nicolai's RFC, are you also planning to take another look at
+> Stephan's patches?
 
-----------------------------------------------------------------
-virtio,vdpa: features, cleanups, fixes
+Yes, please advise! For important, major changes the maintainer should
+ping the contributors, not vice versa. Not even to mention the bunch of
+minor changes pending, some even acked by independent developers.
 
-vdpa sim refactoring
-virtio mem  Big Block Mode support
-misc cleanus, fixes
-
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-
-----------------------------------------------------------------
-Christophe JAILLET (1):
-      vdpa: ifcvf: Use dma_set_mask_and_coherent to simplify code
-
-Dan Carpenter (3):
-      virtio_ring: Cut and paste bugs in vring_create_virtqueue_packed()
-      virtio_net: Fix error code in probe()
-      virtio_ring: Fix two use after free bugs
-
-David Hildenbrand (29):
-      virtio-mem: determine nid only once using memory_add_physaddr_to_nid()
-      virtio-mem: more precise calculation in virtio_mem_mb_state_prepare_next_mb()
-      virtio-mem: simplify MAX_ORDER - 1 / pageblock_order handling
-      virtio-mem: drop rc2 in virtio_mem_mb_plug_and_add()
-      virtio-mem: use "unsigned long" for nr_pages when fake onlining/offlining
-      virtio-mem: factor out calculation of the bit number within the subblock bitmap
-      virtio-mem: print debug messages from virtio_mem_send_*_request()
-      virtio-mem: factor out fake-offlining into virtio_mem_fake_offline()
-      virtio-mem: factor out handling of fake-offline pages in memory notifier
-      virtio-mem: retry fake-offlining via alloc_contig_range() on ZONE_MOVABLE
-      virtio-mem: generalize check for added memory
-      virtio-mem: generalize virtio_mem_owned_mb()
-      virtio-mem: generalize virtio_mem_overlaps_range()
-      virtio-mem: drop last_mb_id
-      virtio-mem: don't always trigger the workqueue when offlining memory
-      virtio-mem: generalize handling when memory is getting onlined deferred
-      virito-mem: document Sub Block Mode (SBM)
-      virtio-mem: memory block states are specific to Sub Block Mode (SBM)
-      virito-mem: subblock states are specific to Sub Block Mode (SBM)
-      virtio-mem: nb_sb_per_mb and subblock_size are specific to Sub Block Mode (SBM)
-      virtio-mem: memory block ids are specific to Sub Block Mode (SBM)
-      virito-mem: existing (un)plug functions are specific to Sub Block Mode (SBM)
-      virtio-mem: memory notifier callbacks are specific to Sub Block Mode (SBM)
-      virtio-mem: factor out adding/removing memory from Linux
-      virtio-mem: Big Block Mode (BBM) memory hotplug
-      virtio-mem: allow to force Big Block Mode (BBM) and set the big block size
-      mm/memory_hotplug: extend offline_and_remove_memory() to handle more than one memory block
-      virtio-mem: Big Block Mode (BBM) - basic memory hotunplug
-      virtio-mem: Big Block Mode (BBM) - safe memory hotunplug
-
-Eli Cohen (1):
-      vdpa/mlx5: Use write memory barrier after updating CQ index
-
-Enrico Weigelt, metux IT consult (2):
-      uapi: virtio_ids.h: consistent indentions
-      uapi: virtio_ids: add missing device type IDs from OASIS spec
-
-Max Gurtovoy (2):
-      vdpa_sim: remove hard-coded virtq count
-      vdpa: split vdpasim to core and net modules
-
-Parav Pandit (2):
-      vdpa: Add missing comment for virtqueue count
-      vdpa: Use simpler version of ida allocation
-
-Peng Fan (3):
-      tools/virtio: include asm/bug.h
-      tools/virtio: add krealloc_array
-      tools/virtio: add barrier for aarch64
-
-Stefano Garzarella (16):
-      vdpa: remove unnecessary 'default n' in Kconfig entries
-      vdpa_sim: remove unnecessary headers inclusion
-      vdpa_sim: make IOTLB entries limit configurable
-      vdpa_sim: rename vdpasim_config_ops variables
-      vdpa_sim: add struct vdpasim_dev_attr for device attributes
-      vdpa_sim: add device id field in vdpasim_dev_attr
-      vdpa_sim: add supported_features field in vdpasim_dev_attr
-      vdpa_sim: add work_fn in vdpasim_dev_attr
-      vdpa_sim: store parsed MAC address in a buffer
-      vdpa_sim: make 'config' generic and usable for any device type
-      vdpa_sim: add get_config callback in vdpasim_dev_attr
-      vdpa_sim: add set_config callback in vdpasim_dev_attr
-      vdpa_sim: set vringh notify callback
-      vdpa_sim: use kvmalloc to allocate vdpasim->buffer
-      vdpa_sim: make vdpasim->buffer size configurable
-      vdpa_sim: split vdpasim_virtqueue's iov field in out_iov and in_iov
-
-Tian Tao (1):
-      vhost_vdpa: switch to vmemdup_user()
-
-Zhang Changzhong (1):
-      vhost scsi: fix error return code in vhost_scsi_set_endpoint()
-
- drivers/net/virtio_net.c             |    1 +
- drivers/vdpa/Kconfig                 |   18 +-
- drivers/vdpa/ifcvf/ifcvf_main.c      |   11 +-
- drivers/vdpa/mlx5/net/mlx5_vnet.c    |    5 +
- drivers/vdpa/vdpa.c                  |    2 +-
- drivers/vdpa/vdpa_sim/Makefile       |    1 +
- drivers/vdpa/vdpa_sim/vdpa_sim.c     |  298 ++----
- drivers/vdpa/vdpa_sim/vdpa_sim.h     |  105 ++
- drivers/vdpa/vdpa_sim/vdpa_sim_net.c |  177 ++++
- drivers/vhost/scsi.c                 |    3 +-
- drivers/vhost/vdpa.c                 |   10 +-
- drivers/virtio/virtio_mem.c          | 1835 ++++++++++++++++++++++++----------
- drivers/virtio/virtio_ring.c         |    8 +-
- include/linux/vdpa.h                 |    1 +
- include/uapi/linux/virtio_ids.h      |   44 +-
- mm/memory_hotplug.c                  |  109 +-
- tools/virtio/asm/barrier.h           |   10 +
- tools/virtio/linux/bug.h             |    2 +
- tools/virtio/linux/kernel.h          |   13 +-
- 19 files changed, 1843 insertions(+), 810 deletions(-)
- create mode 100644 drivers/vdpa/vdpa_sim/vdpa_sim.h
- create mode 100644 drivers/vdpa/vdpa_sim/vdpa_sim_net.c
-
+	Torsten
