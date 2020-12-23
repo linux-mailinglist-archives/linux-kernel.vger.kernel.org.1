@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D25892E12B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:27:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C51BB2E12BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:28:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730073AbgLWCXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:23:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52148 "EHLO mail.kernel.org"
+        id S1730122AbgLWCYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:24:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728944AbgLWCX3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:23:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BE7C122202;
-        Wed, 23 Dec 2020 02:23:09 +0000 (UTC)
+        id S1730033AbgLWCXh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:23:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7294422A99;
+        Wed, 23 Dec 2020 02:23:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690190;
-        bh=VvXvEW1RDgg5wGctb1IXHpEUGrkdqawmRiT3EwkA874=;
+        s=k20201202; t=1608690199;
+        bh=emF2QKwDnHejaOpSs86sRk+/kZdCHjtSJ6FcUUjQrvw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E9kIPilm9nFo6Iwk9A9WsDsxkMWmmU4D5qKWPsRK6lFxKLFTvgq+44WYZo3f/Jmux
-         jXJJmYu6fYyZom+FzDNP6+x3d66bk0CmEtUdpee+cn434MRd+nicYJhqZUrsdwyAyW
-         OWUvt/AGGRxQ5XQnmqJFVyNRb4W6PLUK7IufqQ45iGpIqPo5pJMf0rmV5Vhx+hSEx4
-         OsVTtJe+Fv7LNdJGzsD6IlEEOKI/PIbCvvZyZdG3LUyr8azpQqjnFW5zurBSmDmpFY
-         cr9c4ObJivAhAPKvqPtrDOiSTnwdhMjPSDtEz05RHji2T5NifsdDwm6Qvo6bAfdYtE
-         A+wHuTYMnoawA==
+        b=mClP8FiCav8rBehJWBDdleawUB61TCyq7Z2QucaOe0L1tkWMZjUNEtPGJ8uucmloN
+         LmcwBcIf8ddEIuj91b6t/kJ0VmcpGnP9P7XYYHB5BN+xSITU80qxP0TrqFMtyRvFoa
+         kyN5FjwomSL2ap4RUu6AoSo9iwpICsNplSSGXHlvvA0VmNVw2HEljTnQVLjEERJaGY
+         LW1+IQNvcqBb4mHxzQBWYNRRtdtyX5XDbsrNLhisHiDTl5pCsjosudLltcEdHikguB
+         nBc5JWlfvs76juNw3ihei1eWXJ7ViOoPMoK6tn1KaIGDSVssWFBDAgSjiu5q7IAmcA
+         rH//35sJO/cnQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Sasha Levin <sashal@kernel.org>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 4.14 14/66] drm/ast: Fixed 1920x1080 sync. polarity issue
-Date:   Tue, 22 Dec 2020 21:22:00 -0500
-Message-Id: <20201223022253.2793452-14-sashal@kernel.org>
+Cc:     Evgeny Novikov <novikov@ispras.ru>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-usb@vger.kernel.org,
+        linux-media@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 21/66] media: zr364xx: propagate errors from zr364xx_start_readpipe()
+Date:   Tue, 22 Dec 2020 21:22:07 -0500
+Message-Id: <20201223022253.2793452-21-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223022253.2793452-1-sashal@kernel.org>
 References: <20201223022253.2793452-1-sashal@kernel.org>
@@ -43,38 +44,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
+From: Evgeny Novikov <novikov@ispras.ru>
 
-[ Upstream commit 2d26123dd9075df82f217364f585a3a6aab5412d ]
+[ Upstream commit af0321a5be3e5647441eb6b79355beaa592df97a ]
 
-[Bug] Change the vertical synchroous polary of 1920x1080 @60Hz
-      from  Negtive to Positive
+zr364xx_start_readpipe() can fail but callers do not care about that.
+This can result in various negative consequences. The patch adds missed
+error handling.
 
-Signed-off-by: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
-Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-Link: https://patchwork.freedesktop.org/patch/msgid/20201105094729.106059-1-kuohsiang_chou@aspeedtech.com
+Found by Linux Driver Verification project (linuxtesting.org).
+
+Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/ast/ast_tables.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/media/usb/zr364xx/zr364xx.c | 31 ++++++++++++++++++++++-------
+ 1 file changed, 24 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/gpu/drm/ast/ast_tables.h b/drivers/gpu/drm/ast/ast_tables.h
-index d665dd5af5dd8..dbe1cc620f6e6 100644
---- a/drivers/gpu/drm/ast/ast_tables.h
-+++ b/drivers/gpu/drm/ast/ast_tables.h
-@@ -293,10 +293,10 @@ static const struct ast_vbios_enhtable res_1600x900[] = {
+diff --git a/drivers/media/usb/zr364xx/zr364xx.c b/drivers/media/usb/zr364xx/zr364xx.c
+index d30f129a9db75..fe87e2159dae1 100644
+--- a/drivers/media/usb/zr364xx/zr364xx.c
++++ b/drivers/media/usb/zr364xx/zr364xx.c
+@@ -1352,6 +1352,7 @@ static int zr364xx_board_init(struct zr364xx_camera *cam)
+ {
+ 	struct zr364xx_pipeinfo *pipe = cam->pipe;
+ 	unsigned long i;
++	int err;
  
- static const struct ast_vbios_enhtable res_1920x1080[] = {
- 	{2200, 1920, 88, 44, 1125, 1080, 4, 5, VCLK148_5,	/* 60Hz */
--	 (SyncNP | Charx8Dot | LineCompareOff | WideScreenMode | NewModeInfo |
-+	 (SyncPP | Charx8Dot | LineCompareOff | WideScreenMode | NewModeInfo |
- 	  AST2500PreCatchCRT), 60, 1, 0x38 },
- 	{2200, 1920, 88, 44, 1125, 1080, 4, 5, VCLK148_5,	/* 60Hz */
--	 (SyncNP | Charx8Dot | LineCompareOff | WideScreenMode | NewModeInfo |
-+	 (SyncPP | Charx8Dot | LineCompareOff | WideScreenMode | NewModeInfo |
- 	  AST2500PreCatchCRT), 0xFF, 1, 0x38 },
- };
+ 	DBG("board init: %p\n", cam);
+ 	memset(pipe, 0, sizeof(*pipe));
+@@ -1384,9 +1385,8 @@ static int zr364xx_board_init(struct zr364xx_camera *cam)
  
+ 	if (i == 0) {
+ 		printk(KERN_INFO KBUILD_MODNAME ": out of memory. Aborting\n");
+-		kfree(cam->pipe->transfer_buffer);
+-		cam->pipe->transfer_buffer = NULL;
+-		return -ENOMEM;
++		err = -ENOMEM;
++		goto err_free;
+ 	} else
+ 		cam->buffer.dwFrames = i;
+ 
+@@ -1401,9 +1401,17 @@ static int zr364xx_board_init(struct zr364xx_camera *cam)
+ 	/*** end create system buffers ***/
+ 
+ 	/* start read pipe */
+-	zr364xx_start_readpipe(cam);
++	err = zr364xx_start_readpipe(cam);
++	if (err)
++		goto err_free;
++
+ 	DBG(": board initialized\n");
+ 	return 0;
++
++err_free:
++	kfree(cam->pipe->transfer_buffer);
++	cam->pipe->transfer_buffer = NULL;
++	return err;
+ }
+ 
+ static int zr364xx_probe(struct usb_interface *intf,
+@@ -1602,10 +1610,19 @@ static int zr364xx_resume(struct usb_interface *intf)
+ 	if (!cam->was_streaming)
+ 		return 0;
+ 
+-	zr364xx_start_readpipe(cam);
++	res = zr364xx_start_readpipe(cam);
++	if (res)
++		return res;
++
+ 	res = zr364xx_prepare(cam);
+-	if (!res)
+-		zr364xx_start_acquire(cam);
++	if (res)
++		goto err_prepare;
++
++	zr364xx_start_acquire(cam);
++	return 0;
++
++err_prepare:
++	zr364xx_stop_readpipe(cam);
+ 	return res;
+ }
+ #endif
 -- 
 2.27.0
 
