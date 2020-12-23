@@ -2,77 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1887F2E21F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 22:13:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 471FE2E21FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 22:21:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729237AbgLWVMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 16:12:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49394 "EHLO mail.kernel.org"
+        id S1729014AbgLWVUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 16:20:42 -0500
+Received: from vps-vb.mhejs.net ([37.28.154.113]:40312 "EHLO vps-vb.mhejs.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726279AbgLWVMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 16:12:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10743223E4;
-        Wed, 23 Dec 2020 21:11:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608757910;
-        bh=qA5zu6kLWTjMvdfo1scNBtwChRieVHSK00bO38S7dHw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=UtpPGvViLwTfXb2WRIrZFzDgpGAAlvFQhp0ToOfInk0z7vRTpCO3nL4rrB8KmOcU+
-         6lcVlCRZEITojcJe7OzxK7irYRpmHOnbvD0z7mGka73/xggWbzo42QKUUlZe+D6Nf5
-         B6TjMW8zwOQbiqxD4UDabaRkQa9egq/+np5ufB6/2KOUV5mOepOoCoSgPHxRMNy+Pn
-         Ux+uNAtZRz3v0MpMwvEYbtqD5HSbuD2UZTZG3/70Vn6c+KRL8w1Zoew/FWVNvCm/nt
-         5nLdh7Zpqo1ka2bUcXKKcgo6REo000djrSVwyh8KdjznNpQVSt/+YB9Yc/QSoX+GIe
-         iJwLTd4K3FIUA==
-Date:   Wed, 23 Dec 2020 13:11:49 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Dinghao Liu <dinghao.liu@zju.edu.cn>, kjlu@umn.edu,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: ethernet: Fix memleak in ethoc_probe
-Message-ID: <20201223131149.15fff8d2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201223210044.GA3253993@lunn.ch>
-References: <20201223110615.31389-1-dinghao.liu@zju.edu.cn>
-        <20201223153304.GD3198262@lunn.ch>
-        <20201223123218.1cf7d9cb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20201223210044.GA3253993@lunn.ch>
+        id S1726279AbgLWVUl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 16:20:41 -0500
+Received: from MUA
+        by vps-vb.mhejs.net with esmtps (TLS1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.93.0.4)
+        (envelope-from <mail@maciej.szmigiero.name>)
+        id 1ksBXv-0005iQ-Eq; Wed, 23 Dec 2020 22:19:47 +0100
+To:     Ignat Korchagin <ignat@cloudflare.com>
+Cc:     Alasdair G Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        device-mapper development <dm-devel@redhat.com>,
+        dm-crypt@saout.de, linux-kernel <linux-kernel@vger.kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Nobuto Murata <nobuto.murata@canonical.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-crypto <linux-crypto@vger.kernel.org>
+References: <16ffadab-42ba-f9c7-8203-87fda3dc9b44@maciej.szmigiero.name>
+ <74c7129b-a437-ebc4-1466-7fb9f034e006@maciej.szmigiero.name>
+ <CALrw=nHiSPxVxxuA1fekwDOqBZX0BGe8_3DTN7TNkrVD2q8rxg@mail.gmail.com>
+From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: dm-crypt with no_read_workqueue and no_write_workqueue + btrfs
+ scrub = BUG()
+Message-ID: <fc27dc51-65a7-f2fa-6b29-01a1d5eaec6c@maciej.szmigiero.name>
+Date:   Wed, 23 Dec 2020 22:19:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CALrw=nHiSPxVxxuA1fekwDOqBZX0BGe8_3DTN7TNkrVD2q8rxg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Dec 2020 22:00:44 +0100 Andrew Lunn wrote:
-> On Wed, Dec 23, 2020 at 12:32:18PM -0800, Jakub Kicinski wrote:
-> > On Wed, 23 Dec 2020 16:33:04 +0100 Andrew Lunn wrote:  
-> > > On Wed, Dec 23, 2020 at 07:06:12PM +0800, Dinghao Liu wrote:  
-> > > > When mdiobus_register() fails, priv->mdio allocated
-> > > > by mdiobus_alloc() has not been freed, which leads
-> > > > to memleak.
-> > > > 
-> > > > Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>    
-> > > 
-> > > Fixes: bfa49cfc5262 ("net/ethoc: fix null dereference on error exit path")
-> > > 
-> > > Reviewed-by: Andrew Lunn <andrew@lunn.ch>  
-> > 
-> > Ooof, I applied without looking at your email and I added:
-> > 
-> > Fixes: e7f4dc3536a4 ("mdio: Move allocation of interrupts into core")  
-> 
-> [Goes and looks deeper]
-> 
-> Yes, commit e7f4dc3536a4 looks like it introduced the original
-> problem. bfa49cfc5262 just moved to code around a bit.
-> 
-> Does patchwork not automagically add Fixes: lines from full up emails?
-> That seems like a reasonable automation.
+On 23.12.2020 22:09, Ignat Korchagin wrote:
+(..)
+> I've been looking into this for the last couple of days because of
+> other reports [1].
+> Just finished testing a possible solution. Will submit soon.
 
-Looks like it's been a TODO for 3 years now:
+Thanks for looking into it.
 
-https://github.com/getpatchwork/patchwork/issues/151
+By the way, on a bare metal I am actually hitting a different problem
+(scheduling while atomic) when scrubbing a btrfs filesystem, just as one
+of your users from that GitHub report had [1].
 
-:(
+I've pasted that backtrace in my original Dec 14 message.
+
+Thanks,
+Maciej
+
+[1]: https://github.com/cloudflare/linux/issues/1#issuecomment-736734243
