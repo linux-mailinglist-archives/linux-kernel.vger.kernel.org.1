@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71C502E1287
+	by mail.lfdr.de (Postfix) with ESMTP id EDDA72E1288
 	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:27:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729409AbgLWCVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:21:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49830 "EHLO mail.kernel.org"
+        id S1727859AbgLWCVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:21:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727757AbgLWCVW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:21:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EC3EF2256F;
-        Wed, 23 Dec 2020 02:21:05 +0000 (UTC)
+        id S1729355AbgLWCV3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:21:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D26DD22D57;
+        Wed, 23 Dec 2020 02:21:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690066;
-        bh=SlXT8szZKSZsLWWHMYmsFWGBamP8ytWKV+iCTXyRrX8=;
+        s=k20201202; t=1608690074;
+        bh=bekyIg2oekmTb8hNKIpUzzjpxe4fkYk0GmcXFxkJu5s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rKpzl2HErxIsxoml3y+TJwD46yo+P4j4NnxCeLAQipNk0QlCj2Qpj3rSP7FGHHwLG
-         LDmmbq8X9rmCgMCyJKT7zRy5U4sAmRAf7mx4Jrs6C1aA59QU1OiqzUHV8KPOWyuOJl
-         daXhoa/IGs3tPo2wiSngEe9W5yDt/BFIbq+EQBXe2jYTD79kNThTqsvqEVHhdB3Atw
-         qBmUsMHyXppRv6dIIa6Lx+iVTmyuF4fYUHEVnQcjv8xu1h6A4xLCS77wE3yiasVXv3
-         YFI69qnb5MVPm7w/GSXgJLGgMWU7umtdPWgFaITxBAezFwPhlxH2ieeP3phSrxNUBs
-         YuC79y3DPdkQA==
+        b=Co0pw8tGBA9JPOJSOc9uIE7bWB59R3YaQ+arBalBhdmO1p1tkAbRy6MV7x3yZreJ1
+         DQtUBGvkKzFJ0/+8jSUMhWvq5Ylvxxlo1jbk1loM5xHzt303Fcmw/A0frbcA9FTF6H
+         y+jvFiZFBl2j26NA+ck/UQ7i1q5A7yCeAuGkvvqTGvZb/54Ifpq1IPonDOxDo1VOkq
+         4MHbSEO+wYUIQQSeVDYfJQrG/K40AWAYYfQeTcZz33TSyN1HMxbJlNnJrDmVKOR0cd
+         IfY3ZQIMbC97PdgBWzbLMIJJa/qrvJhILUx5QCSVnn3/xNZsof29dQKo5CWZL340Ql
+         afwTbWY0RhvTg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-security-module@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH AUTOSEL 4.19 02/87] tomoyo: fix clang pointer arithmetic warning
-Date:   Tue, 22 Dec 2020 21:19:38 -0500
-Message-Id: <20201223022103.2792705-2-sashal@kernel.org>
+Cc:     Qinglang Miao <miaoqinglang@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>, devel@driverdev.osuosl.org
+Subject: [PATCH AUTOSEL 4.19 08/87] staging: ks7010: fix missing destroy_workqueue() on error in ks7010_sdio_probe
+Date:   Tue, 22 Dec 2020 21:19:44 -0500
+Message-Id: <20201223022103.2792705-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223022103.2792705-1-sashal@kernel.org>
 References: <20201223022103.2792705-1-sashal@kernel.org>
@@ -44,49 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Qinglang Miao <miaoqinglang@huawei.com>
 
-[ Upstream commit d9594e0409651a237903a13c9718df889f43d43b ]
+[ Upstream commit d1e7550ad081fa5e9260f636dd51e1c496e0fd5f ]
 
-clang warns about additions on NULL pointers being undefined in C:
+Add the missing destroy_workqueue() before return from
+ks7010_sdio_probe in the error handling case.
 
-security/tomoyo/securityfs_if.c:226:59: warning: arithmetic on a null pointer treated as a cast from integer to pointer is a GNU extension [-Wnull-pointer-arithmetic]
-        securityfs_create_file(name, mode, parent, ((u8 *) NULL) + key,
-
-Change the code to instead use a cast through uintptr_t to avoid
-the warning.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+Link: https://lore.kernel.org/r/20201028091552.136445-1-miaoqinglang@huawei.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/tomoyo/securityfs_if.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/staging/ks7010/ks7010_sdio.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/security/tomoyo/securityfs_if.c b/security/tomoyo/securityfs_if.c
-index 1d3d7e7a1f055..6f1161f4e613d 100644
---- a/security/tomoyo/securityfs_if.c
-+++ b/security/tomoyo/securityfs_if.c
-@@ -131,8 +131,8 @@ static const struct file_operations tomoyo_self_operations = {
-  */
- static int tomoyo_open(struct inode *inode, struct file *file)
- {
--	const int key = ((u8 *) file_inode(file)->i_private)
--		- ((u8 *) NULL);
-+	const u8 key = (uintptr_t) file_inode(file)->i_private;
-+
- 	return tomoyo_open_control(key, file);
- }
+diff --git a/drivers/staging/ks7010/ks7010_sdio.c b/drivers/staging/ks7010/ks7010_sdio.c
+index 74551eb717fc7..b3445a19db6f1 100644
+--- a/drivers/staging/ks7010/ks7010_sdio.c
++++ b/drivers/staging/ks7010/ks7010_sdio.c
+@@ -1028,10 +1028,12 @@ static int ks7010_sdio_probe(struct sdio_func *func,
  
-@@ -223,7 +223,7 @@ static const struct file_operations tomoyo_operations = {
- static void __init tomoyo_create_entry(const char *name, const umode_t mode,
- 				       struct dentry *parent, const u8 key)
- {
--	securityfs_create_file(name, mode, parent, ((u8 *) NULL) + key,
-+	securityfs_create_file(name, mode, parent, (void *) (uintptr_t) key,
- 			       &tomoyo_operations);
- }
+ 	ret = register_netdev(priv->net_dev);
+ 	if (ret)
+-		goto err_free_netdev;
++		goto err_destroy_wq;
  
+ 	return 0;
+ 
++ err_destroy_wq:
++	destroy_workqueue(priv->wq);
+  err_free_netdev:
+ 	free_netdev(netdev);
+  err_release_irq:
 -- 
 2.27.0
 
