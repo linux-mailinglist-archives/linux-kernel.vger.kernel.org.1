@@ -2,35 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D4CF2E12AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:27:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAA2E2E12B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:27:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729955AbgLWCXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:23:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52234 "EHLO mail.kernel.org"
+        id S1728948AbgLWCXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:23:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51348 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729940AbgLWCXQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:23:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3800E22482;
-        Wed, 23 Dec 2020 02:22:54 +0000 (UTC)
+        id S1729970AbgLWCXW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:23:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FFD12222D;
+        Wed, 23 Dec 2020 02:23:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690174;
-        bh=Iv5f45ChYLpTMHlwxxtdoZWBmiNeU1y8uPPFLZlXcBk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=r3UCaSe8FLRjSH1XNvBMFxFsj+7NhA2XznzrAzznwlo6gLuqlNAw7q0+26P2jC49X
-         usRkXOYH9NKGM0X1MwosU0Xyybh2c4uFSqSysU8QGURJL8yDT4kpVd0V8NM+rKmW2K
-         Zumk5jkflgACZCEbREsA24NBa5ZuIU2rr00FuWqjC4BYa3U+mxb2X/DtKe0gYBYw6w
-         ITOKz8KNKcy+RuGUN6zxfH6ZdYIfXDJqYm2FP6/sKWmkD+IiU7ao1k+Vi+7D5idA4j
-         ED4lyt+/I0x+4NoMLjj8iXzQ9UV7El+3NUUmgTJHfTDg56VFYxRb4ONlacABaopmye
-         wE/PyrIssuBaQ==
+        s=k20201202; t=1608690181;
+        bh=fCdlmXLgDPyrQ6dRErNiTpZF3JOEKAXLORvAfBzKnfY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=S6xcJY+0DcMiqrMzgl6bh5SYJzi7ht0KAacRTMZprOQVIvKXuHAk1hBZuQVZXjVOA
+         R6VecXvIIpQizJCFGJe82lRrMI/Ml2V+mN+5pxXRpdwXtxRQWDvmCraC6TmLgweD5y
+         gINbkasK4vfsXRHAnaVYegC7AnSp19q48i9d1I8BuaNhAl/9jecat6ybVLUlzrfOTY
+         OXGURxv3XFpFEO7KBPKnP2JMguB5xXrDBxG1ntuUDGcgmcSAvuID9ZeeKd8i5qLrto
+         7BqYXwgQYKq15q77oalEoCtw5pLR2H5SIrL8l0r8ySMt4hovKyeNdGGWiFqKO5NXtB
+         HQaY2Fc6z+abg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Luo Meng <luomeng12@huawei.com>, Jeff Layton <jlayton@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-fsdevel@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 01/66] locks: Fix UBSAN undefined behaviour in flock64_to_posix_lock
-Date:   Tue, 22 Dec 2020 21:21:47 -0500
-Message-Id: <20201223022253.2793452-1-sashal@kernel.org>
+Cc:     yuuzheng <yuuzheng@google.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        Viswas G <Viswas.G@microchip.com>,
+        Ruksar Devadi <Ruksar.devadi@microchip.com>,
+        Radha Ramachandran <radha@google.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, linux-scsi@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 06/66] scsi: pm80xx: Fix pm8001_mpi_get_nvmd_resp() race condition
+Date:   Tue, 22 Dec 2020 21:21:52 -0500
+Message-Id: <20201223022253.2793452-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20201223022253.2793452-1-sashal@kernel.org>
+References: <20201223022253.2793452-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -39,53 +46,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luo Meng <luomeng12@huawei.com>
+From: yuuzheng <yuuzheng@google.com>
 
-[ Upstream commit 16238415eb9886328a89fe7a3cb0b88c7335fe16 ]
+[ Upstream commit 1f889b58716a5f5e3e4fe0e6742c1a4472f29ac1 ]
 
-When the sum of fl->fl_start and l->l_len overflows,
-UBSAN shows the following warning:
+A use-after-free or null-pointer error occurs when the 251-byte response
+data is copied from IOMB buffer to response message buffer in function
+pm8001_mpi_get_nvmd_resp().
 
-UBSAN: Undefined behaviour in fs/locks.c:482:29
-signed integer overflow: 2 + 9223372036854775806
-cannot be represented in type 'long long int'
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0xe4/0x14e lib/dump_stack.c:118
- ubsan_epilogue+0xe/0x81 lib/ubsan.c:161
- handle_overflow+0x193/0x1e2 lib/ubsan.c:192
- flock64_to_posix_lock fs/locks.c:482 [inline]
- flock_to_posix_lock+0x595/0x690 fs/locks.c:515
- fcntl_setlk+0xf3/0xa90 fs/locks.c:2262
- do_fcntl+0x456/0xf60 fs/fcntl.c:387
- __do_sys_fcntl fs/fcntl.c:483 [inline]
- __se_sys_fcntl fs/fcntl.c:468 [inline]
- __x64_sys_fcntl+0x12d/0x180 fs/fcntl.c:468
- do_syscall_64+0xc8/0x5a0 arch/x86/entry/common.c:293
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
+After sending the command get_nvmd_data(), the caller begins to sleep by
+calling wait_for_complete() and waits for the wake-up from calling
+complete() in pm8001_mpi_get_nvmd_resp(). Due to unexpected events (e.g.,
+interrupt), if response buffer gets freed before memcpy(), a use-after-free
+error will occur. To fix this, the complete() should be called after
+memcpy().
 
-Fix it by parenthesizing 'l->l_len - 1'.
-
-Signed-off-by: Luo Meng <luomeng12@huawei.com>
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
+Link: https://lore.kernel.org/r/20201102165528.26510-5-Viswas.G@microchip.com.com
+Acked-by: Jack Wang <jinpu.wang@cloud.ionos.com>
+Signed-off-by: yuuzheng <yuuzheng@google.com>
+Signed-off-by: Viswas G <Viswas.G@microchip.com>
+Signed-off-by: Ruksar Devadi <Ruksar.devadi@microchip.com>
+Signed-off-by: Radha Ramachandran <radha@google.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/locks.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/pm8001/pm8001_hwi.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/fs/locks.c b/fs/locks.c
-index 1a40e277eb5e1..11bb382a23c2e 100644
---- a/fs/locks.c
-+++ b/fs/locks.c
-@@ -488,7 +488,7 @@ static int flock64_to_posix_lock(struct file *filp, struct file_lock *fl,
- 	if (l->l_len > 0) {
- 		if (l->l_len - 1 > OFFSET_MAX - fl->fl_start)
- 			return -EOVERFLOW;
--		fl->fl_end = fl->fl_start + l->l_len - 1;
-+		fl->fl_end = fl->fl_start + (l->l_len - 1);
+diff --git a/drivers/scsi/pm8001/pm8001_hwi.c b/drivers/scsi/pm8001/pm8001_hwi.c
+index f374abfb7f1f8..44a4630fdb2f8 100644
+--- a/drivers/scsi/pm8001/pm8001_hwi.c
++++ b/drivers/scsi/pm8001/pm8001_hwi.c
+@@ -3196,10 +3196,15 @@ pm8001_mpi_get_nvmd_resp(struct pm8001_hba_info *pm8001_ha, void *piomb)
+ 		pm8001_ha->memoryMap.region[NVMD].virt_ptr,
+ 		fw_control_context->len);
+ 	kfree(ccb->fw_control_context);
++	/* To avoid race condition, complete should be
++	 * called after the message is copied to
++	 * fw_control_context->usrAddr
++	 */
++	complete(pm8001_ha->nvmd_completion);
++	PM8001_MSG_DBG(pm8001_ha, pm8001_printk("Set nvm data complete!\n"));
+ 	ccb->task = NULL;
+ 	ccb->ccb_tag = 0xFFFFFFFF;
+ 	pm8001_tag_free(pm8001_ha, tag);
+-	complete(pm8001_ha->nvmd_completion);
+ }
  
- 	} else if (l->l_len < 0) {
- 		if (fl->fl_start + l->l_len < 0)
+ int pm8001_mpi_local_phy_ctl(struct pm8001_hba_info *pm8001_ha, void *piomb)
 -- 
 2.27.0
 
