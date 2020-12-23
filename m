@@ -2,30 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B9202E1D1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 15:14:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6382D2E1D1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 15:14:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729045AbgLWOND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 09:13:03 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:10070 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728578AbgLWONB (ORCPT
+        id S1729059AbgLWONR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 09:13:17 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:9915 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728578AbgLWONO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 09:13:01 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4D1FVy70v4zM8PQ;
-        Wed, 23 Dec 2020 22:11:22 +0800 (CST)
+        Wed, 23 Dec 2020 09:13:14 -0500
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4D1FWN4ywDz7K9P;
+        Wed, 23 Dec 2020 22:11:44 +0800 (CST)
 Received: from ubuntu.network (10.175.138.68) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 23 Dec 2020 22:12:08 +0800
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 23 Dec 2020 22:12:17 +0800
 From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <vkoul@kernel.org>, <dmaengine@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <dan.j.williams@intel.com>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] dma: idxd: use DEFINE_MUTEX (and mutex_init() had been too late)
-Date:   Wed, 23 Dec 2020 22:12:44 +0800
-Message-ID: <20201223141244.493-1-zhengyongjun3@huawei.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH -next] ext4: use DEFINE_MUTEX (and mutex_init() had been too late)
+Date:   Wed, 23 Dec 2020 22:12:54 +0800
+Message-ID: <20201223141254.559-1-zhengyongjun3@huawei.com>
 X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -38,30 +37,30 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- drivers/dma/idxd/init.c | 3 +--
+ fs/ext4/super.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/dma/idxd/init.c b/drivers/dma/idxd/init.c
-index 0a4432b063b5..2297c93dd527 100644
---- a/drivers/dma/idxd/init.c
-+++ b/drivers/dma/idxd/init.c
-@@ -27,7 +27,7 @@ MODULE_AUTHOR("Intel Corporation");
- #define DRV_NAME "idxd"
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 94472044f4c1..8776f06a639d 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -59,7 +59,7 @@
+ #include <trace/events/ext4.h>
  
- static struct idr idxd_idrs[IDXD_TYPE_MAX];
--static struct mutex idxd_idr_lock;
-+static DEFINE_MUTEX(idxd_idr_lock);
+ static struct ext4_lazy_init *ext4_li_info;
+-static struct mutex ext4_li_mtx;
++static DEFINE_MUTEX(ext4_li_mtx);
+ static struct ratelimit_state ext4_mount_msg_ratelimit;
  
- static struct pci_device_id idxd_pci_tbl[] = {
- 	/* DSA ver 1.0 platforms */
-@@ -481,7 +481,6 @@ static int __init idxd_init_module(void)
- 	pr_info("%s: Intel(R) Accelerator Devices Driver %s\n",
- 		DRV_NAME, IDXD_DRIVER_VERSION);
+ static int ext4_load_journal(struct super_block *, struct ext4_super_block *,
+@@ -6640,7 +6640,6 @@ static int __init ext4_init_fs(void)
  
--	mutex_init(&idxd_idr_lock);
- 	for (i = 0; i < IDXD_TYPE_MAX; i++)
- 		idr_init(&idxd_idrs[i]);
+ 	ratelimit_state_init(&ext4_mount_msg_ratelimit, 30 * HZ, 64);
+ 	ext4_li_info = NULL;
+-	mutex_init(&ext4_li_mtx);
  
+ 	/* Build-time check for flags consistency */
+ 	ext4_check_flag_values();
 -- 
 2.22.0
 
