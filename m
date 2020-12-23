@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 213312E124C
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:21:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08E0F2E124E
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:21:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727053AbgLWCVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:21:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45508 "EHLO mail.kernel.org"
+        id S1729262AbgLWCVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:21:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729059AbgLWCUm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:20:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E41752256F;
-        Wed, 23 Dec 2020 02:20:25 +0000 (UTC)
+        id S1729085AbgLWCUq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:20:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9962D225AB;
+        Wed, 23 Dec 2020 02:20:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690026;
-        bh=7HC+ObMbUp1xd/+6H5gDUxI+7+qfuTziLd2e8cpkwQs=;
+        s=k20201202; t=1608690031;
+        bh=6OcuqB/AKMJ42QJzTYn3irBcM5mpOV53Vwxshp4TmQE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jyAdkcbGcaRz0soS79QckBf091q5/aa3StFN6zG8G9ocC+f4124NN4pOLTLOtFj/J
-         qTsQRYvpWmWM/yjOwCdiQ7h23YHCUgN0ObCdApvDAkTM7FD2bEZlidggTLCFNzEuzS
-         6wSwmlztyeshk1uqu7fByW1rKxre4L4zmmmCPc1EyibT6p5Ji2qJnVtR7iNdyMc/jx
-         CWKMcgVn1GX0M2E+eft03ssS+Pfn6UvIddinr/3IoLf2DU4iyjsiN/hzlreHvjdlAp
-         DLC0z0ujD5U1YanCcqd2JjGB8HIV499u93hTRCUxwvd5OCA6MPMKtatLResQyGskMa
-         JKIyeILClcbug==
+        b=LbrxNX/EDZjnlSgryBFun1ZqcMhyq89+YEAWHKCjMmQqmXD8omfSr2m6m7kbdDNBp
+         lQNbIsgLnqODptsZlAs5EUVphkGjA0bkorf5UoFEShYUSA2h4mDa45oFf6vs0zYbmZ
+         GmTJHz8blbz0cKWGUDdvTh+QAx+1ZpKfalmnhPhnRkI06Du6f4AYrZZOK9qgJXOtTo
+         M0fklT4GUODcHLh/NuAZw3fh6vD6AwDjSy6cVowstMkyGnA6GoTVnk/7E+qXWbPW6D
+         xdLHbUPgCD+JeVJUQ5RH2JUlZO/81oHyfBsNFCdsqq7safp/gldeK3LO8xP1o81l6R
+         sJJ6yIC2/o5Kg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Filipe Manana <fdmanana@suse.com>, David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 103/130] btrfs: fix race leading to unnecessary transaction commit when logging inode
-Date:   Tue, 22 Dec 2020 21:17:46 -0500
-Message-Id: <20201223021813.2791612-103-sashal@kernel.org>
+Cc:     Johannes Berg <johannes.berg@intel.com>,
+        Haggai Abramovsky <haggai.abramovsky@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 107/130] iwlwifi: validate MPDU length against notification length
+Date:   Tue, 22 Dec 2020 21:17:50 -0500
+Message-Id: <20201223021813.2791612-107-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223021813.2791612-1-sashal@kernel.org>
 References: <20201223021813.2791612-1-sashal@kernel.org>
@@ -41,126 +44,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 639bd575b7c7fa326abadd2ef3e374a5a24eb40b ]
+[ Upstream commit efc0ec5afb6e1488b3bdc4bbf85533d79d7e5f9f ]
 
-When logging an inode we may often have to fallback to a full transaction
-commit, either because a new block group was allocated, there is some case
-we can not deal with without a transaction commit or some error like an
-ENOMEM happened. However after we fallback to a transaction commit, we
-have a time window where we can make the next attempt to log any inode
-commit the next transaction unnecessarily, adding additional overhead and
-increasing latency.
+The MPDU contained in a notification shouldn't be larger than the
+notification size itself is, validate this.
 
-A sequence of steps that leads to this issue is the following:
-
-1) The current open transaction has a generation of 1000;
-
-2) A new block group is allocated, and as a consequence we must make sure
-   any attempts to commit a log fallback to a transaction commit, so
-   btrfs_set_log_full_commit() is called from btrfs_make_block_group().
-   This sets fs_info->last_trans_log_full_commit to 1000;
-
-3) Task A is holding a handle on transaction 1000 and tries to log inode X.
-   Once it gets to start_log_trans(), it calls btrfs_need_log_full_commit()
-   which returns true, since fs_info->last_trans_log_full_commit has a
-   value of 1000. So we end up returning EAGAIN and propagating it up to
-   btrfs_sync_file(), where we commit transaction 1000;
-
-4) The transaction commit task (task A) sets the transaction state to
-   unblocked (TRANS_STATE_UNBLOCKED);
-
-5) Some other task, task B, starts a new transaction with a generation of
-   1001;
-
-6) Some stuff is done with transaction 1001, some btree blocks COWed, etc;
-
-7) Transaction 1000 has not fully committed yet, we are still writing all
-   the extent buffers it created;
-
-8) Some new task, task C, starts an fsync of inode Y, gets a handle for
-   transaction 1001, and it gets to btrfs_log_inode_parent() which does
-   the following check:
-
-     if (fs_info->last_trans_log_full_commit > last_committed) {
-         ret = 1;
-         goto end_no_trans;
-     }
-
-   At that point last_trans_log_full_commit has a value of 1000 and
-   last_committed (value of fs_info->last_trans_committed) has a value of
-   999, since transaction 1000 has not yet committed - it is either still
-   writing out dirty extent buffers, its super blocks or unpinning
-   extents.
-
-   As a consequence we return 1, which gets propagated up to
-   btrfs_sync_file(), which will then call btrfs_commit_transaction()
-   for transaction 1001.
-
-   As a consequence we have an unnecessary second transaction commit, we
-   previously committed transaction 1000 and now commit transaction 1001
-   as well, resulting in more overhead and increased latency.
-
-So fix this double transaction commit issue simply by removing that check,
-because all we need to do is wait for the previous transaction to finish
-its commit, which we already do later when starting the log transaction at
-start_log_trans(), because there we acquire the tree_log_mutex lock, which
-is held by a transaction commit and only released after the transaction
-commits its super blocks.
-
-Another issue that check has is that it reads last_trans_log_full_commit
-without using READ_ONCE(), which is incorrect since that member of
-struct btrfs_fs_info is always updated with WRITE_ONCE() through the
-helper btrfs_set_log_full_commit().
-
-This double transaction commit issue can actually be triggered quite often
-in long runs of dbench, since besides the creation of new block groups
-that force inode logging to fallback to a transaction commit, there are
-cases where dbench asks to fsync a directory which had files in it that
-were previously renamed or subdirectories that were removed, resulting in
-the inode logging to fallback to a full transaction commit.
-
-This patch belongs to a patch set that is comprised of the following
-patches:
-
-  btrfs: fix race causing unnecessary inode logging during link and rename
-  btrfs: fix race that results in logging old extents during a fast fsync
-  btrfs: fix race that causes unnecessary logging of ancestor inodes
-  btrfs: fix race that makes inode logging fallback to transaction commit
-  btrfs: fix race leading to unnecessary transaction commit when logging inode
-  btrfs: do not block inode logging for so long during transaction commit
-
-Performance results are mentioned in the change log of the last patch.
-
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Reported-by: Haggai Abramovsky <haggai.abramovsky@intel.com>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Link: https://lore.kernel.org/r/iwlwifi.20201209231352.7c721ad37014.Id5746874ecfa208b60baa62691b2d9dc5dd4d89c@changeid
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/tree-log.c | 10 ----------
- 1 file changed, 10 deletions(-)
+ drivers/net/wireless/intel/iwlwifi/dvm/rx.c   | 10 ++++++++--
+ drivers/net/wireless/intel/iwlwifi/mvm/rx.c   |  8 +++++++-
+ drivers/net/wireless/intel/iwlwifi/mvm/rxmq.c |  6 ++++++
+ 3 files changed, 21 insertions(+), 3 deletions(-)
 
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 54095753f84f0..d0f4629bdfaf8 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -6000,16 +6000,6 @@ static int btrfs_log_inode_parent(struct btrfs_trans_handle *trans,
- 		goto end_no_trans;
- 	}
+diff --git a/drivers/net/wireless/intel/iwlwifi/dvm/rx.c b/drivers/net/wireless/intel/iwlwifi/dvm/rx.c
+index 673d60784bfad..b930816ca5ca9 100644
+--- a/drivers/net/wireless/intel/iwlwifi/dvm/rx.c
++++ b/drivers/net/wireless/intel/iwlwifi/dvm/rx.c
+@@ -3,7 +3,7 @@
+  *
+  * Copyright(c) 2003 - 2014 Intel Corporation. All rights reserved.
+  * Copyright(c) 2015 Intel Deutschland GmbH
+- * Copyright(c) 2018 Intel Corporation
++ * Copyright(c) 2018, 2020 Intel Corporation
+  *
+  * Portions of this file are derived from the ipw3945 project, as well
+  * as portionhelp of the ieee80211 subsystem header files.
+@@ -786,7 +786,7 @@ static void iwlagn_rx_reply_rx(struct iwl_priv *priv,
+ 	struct iwl_rx_phy_res *phy_res;
+ 	__le32 rx_pkt_status;
+ 	struct iwl_rx_mpdu_res_start *amsdu;
+-	u32 len;
++	u32 len, pkt_len = iwl_rx_packet_len(pkt);
+ 	u32 ampdu_status;
+ 	u32 rate_n_flags;
  
--	/*
--	 * The prev transaction commit doesn't complete, we need do
--	 * full commit by ourselves.
--	 */
--	if (fs_info->last_trans_log_full_commit >
--	    fs_info->last_trans_committed) {
--		ret = 1;
--		goto end_no_trans;
--	}
--
- 	if (btrfs_root_refs(&root->root_item) == 0) {
- 		ret = 1;
- 		goto end_no_trans;
+@@ -798,6 +798,12 @@ static void iwlagn_rx_reply_rx(struct iwl_priv *priv,
+ 	amsdu = (struct iwl_rx_mpdu_res_start *)pkt->data;
+ 	header = (struct ieee80211_hdr *)(pkt->data + sizeof(*amsdu));
+ 	len = le16_to_cpu(amsdu->byte_count);
++
++	if (unlikely(len + sizeof(*amsdu) + sizeof(__le32) > pkt_len)) {
++		IWL_DEBUG_DROP(priv, "FW lied about packet len\n");
++		return;
++	}
++
+ 	rx_pkt_status = *(__le32 *)(pkt->data + sizeof(*amsdu) + len);
+ 	ampdu_status = iwlagn_translate_rx_status(priv,
+ 						  le32_to_cpu(rx_pkt_status));
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/rx.c b/drivers/net/wireless/intel/iwlwifi/mvm/rx.c
+index 77b8def26edb2..47d38df78439b 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/rx.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/rx.c
+@@ -349,7 +349,7 @@ void iwl_mvm_rx_rx_mpdu(struct iwl_mvm *mvm, struct napi_struct *napi,
+ 	struct iwl_rx_mpdu_res_start *rx_res;
+ 	struct ieee80211_sta *sta = NULL;
+ 	struct sk_buff *skb;
+-	u32 len;
++	u32 len, pkt_len = iwl_rx_packet_payload_len(pkt);
+ 	u32 rate_n_flags;
+ 	u32 rx_pkt_status;
+ 	u8 crypt_len = 0;
+@@ -358,6 +358,12 @@ void iwl_mvm_rx_rx_mpdu(struct iwl_mvm *mvm, struct napi_struct *napi,
+ 	rx_res = (struct iwl_rx_mpdu_res_start *)pkt->data;
+ 	hdr = (struct ieee80211_hdr *)(pkt->data + sizeof(*rx_res));
+ 	len = le16_to_cpu(rx_res->byte_count);
++
++	if (unlikely(len + sizeof(*rx_res) + sizeof(__le32) > pkt_len)) {
++		IWL_DEBUG_DROP(mvm, "FW lied about packet len\n");
++		return;
++	}
++
+ 	rx_pkt_status = get_unaligned_le32((__le32 *)
+ 		(pkt->data + sizeof(*rx_res) + len));
+ 
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/rxmq.c b/drivers/net/wireless/intel/iwlwifi/mvm/rxmq.c
+index a6e2a30eb3109..d0bfcee59a3a7 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/rxmq.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/rxmq.c
+@@ -1553,6 +1553,7 @@ void iwl_mvm_rx_mpdu_mq(struct iwl_mvm *mvm, struct napi_struct *napi,
+ 	struct iwl_rx_mpdu_desc *desc = (void *)pkt->data;
+ 	struct ieee80211_hdr *hdr;
+ 	u32 len = le16_to_cpu(desc->mpdu_len);
++	u32 pkt_len = iwl_rx_packet_payload_len(pkt);
+ 	u32 rate_n_flags, gp2_on_air_rise;
+ 	u16 phy_info = le16_to_cpu(desc->phy_info);
+ 	struct ieee80211_sta *sta = NULL;
+@@ -1599,6 +1600,11 @@ void iwl_mvm_rx_mpdu_mq(struct iwl_mvm *mvm, struct napi_struct *napi,
+ 			le32_get_bits(phy_data.d1,
+ 				      IWL_RX_PHY_DATA1_INFO_TYPE_MASK);
+ 
++	if (len + desc_size > pkt_len) {
++		IWL_DEBUG_DROP(mvm, "FW lied about packet len\n");
++		return;
++	}
++
+ 	hdr = (void *)(pkt->data + desc_size);
+ 	/* Dont use dev_alloc_skb(), we'll have enough headroom once
+ 	 * ieee80211_hdr pulled.
 -- 
 2.27.0
 
