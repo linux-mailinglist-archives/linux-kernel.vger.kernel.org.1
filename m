@@ -2,113 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FED72E1EFE
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 16:55:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C7282E1EF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 16:54:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728346AbgLWPyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 10:54:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42397 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727196AbgLWPyG (ORCPT
+        id S1728490AbgLWPxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 10:53:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727790AbgLWPxh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 10:54:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608738760;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CctFZb6bundK1QcZGvHF97KgBugzbNEBYOfUqLkXE1s=;
-        b=guqhXXpHiaqvVxI9qKUGKWGjALkSt+NVJfwBh91yOxZXS8r/3zai3kFgYX8DhX/yACQG1W
-        0pRL4AWttA4rk8kTSiqbzoDlgRz4j2mLj9ChfNdiz8vW5O79ysyY7vEZ3PNcuBc86VbE/i
-        cKI8d+p2RcR4jPrp4dnxBq96MOvDYQc=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-29-7HQJ9AKcMU-XHKnrKNTXUg-1; Wed, 23 Dec 2020 10:52:38 -0500
-X-MC-Unique: 7HQJ9AKcMU-XHKnrKNTXUg-1
-Received: by mail-qv1-f72.google.com with SMTP id m8so12744994qvk.1
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 07:52:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CctFZb6bundK1QcZGvHF97KgBugzbNEBYOfUqLkXE1s=;
-        b=oAS7TmUBlMq3Hn6lJRXNsoi019xrOXStIRd8+z8U1QDh5KKAm7TYtc8ZHfgrKKgV+F
-         M2YPD2FpThvKKNscza8Pi0nlD3fiPGV4JE9zmeXVvtXO1y7QVLoXMb+AvRTf/8Y64yOJ
-         uLJ2NBGNkDFKFa4XkWra81Fjqn/PmLcr5Hrh/8sQJjXLHn66fN3IAvUVVILrwmXxl2fS
-         K4A3pKhtEtbhphHKGE+KUdvJFStNh6UFvR5IhnyaPLnsegem49EN5aTqtFs5NIE6MpUS
-         a+E7JPnq2gIfnyRdj4wl4X8wzxzB4GPwqnZjpYjOtgxbEJuuJYSqrZwycXBFcQruJ7l4
-         l9kg==
-X-Gm-Message-State: AOAM531ZXhKNBcVfMLA2vfGk1uKCF8Y1AbnrANt30OY51IIA6H5A+w8h
-        Y+4jKUy7YBk0WmHmBxNyOvPMccuyX0dpOspx1tFGhSdwfONje44/X8SvZfCMAQqmckfDfZ5cGGf
-        w385QJ4UdLoxB4nmlwGu51drk
-X-Received: by 2002:ac8:46c8:: with SMTP id h8mr26253719qto.17.1608738758048;
-        Wed, 23 Dec 2020 07:52:38 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzJU7/Y9icFKNa6TDN6+mbeV2MBtZBm3V2OIaPguxARYP0RegIgd55bLE2LXRcKkm70WUUQEw==
-X-Received: by 2002:ac8:46c8:: with SMTP id h8mr26253703qto.17.1608738757806;
-        Wed, 23 Dec 2020 07:52:37 -0800 (PST)
-Received: from xz-x1 ([142.126.83.202])
-        by smtp.gmail.com with ESMTPSA id c14sm14501321qtg.85.2020.12.23.07.52.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Dec 2020 07:52:36 -0800 (PST)
-Date:   Wed, 23 Dec 2020 10:52:35 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        linux-mm <linux-mm@kvack.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable <stable@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-Message-ID: <20201223155235.GC6404@xz-x1>
-References: <1FCC8F93-FF29-44D3-A73A-DF943D056680@gmail.com>
- <20201221223041.GL6640@xz-x1>
- <CAHk-=wh-bG4thjXUekLtrCg8FRrdWjtT40ibXXLSm_hzQG8eOw@mail.gmail.com>
- <CALCETrV=8tY7h=aaudWBEn-MJnNkm2wz5qjH49SYqwkjYTpOaA@mail.gmail.com>
- <X+JJqK91plkBVisG@redhat.com>
- <X+JhwVX3s5mU9ZNx@google.com>
- <X+Js/dFbC5P7C3oO@redhat.com>
- <X+KDwu1PRQ93E2LK@google.com>
- <X+Kxy3oBMSLz8Eaq@redhat.com>
- <X+K7JMrTEC9SpVIB@google.com>
+        Wed, 23 Dec 2020 10:53:37 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F32CC061794
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 07:52:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ZzbHBDfwrLQXFpf8glXNdNep4b6to1I3c9fdVvbb1Rs=; b=LlAfVZ832CeCQX4WS/8e9Xf542
+        fq6syhLmhblRiPAq27ncYBnNMRz0gxp4abk3jaGqVkgM4tFkZ+h0MYyPbDT2xIZyukR0yGNKU+IJz
+        iqUL3SFNRNALIzi1a3baXE7OfCEGizF9XiczWvjVWg9z91W0hndB5/9l/drrAJZ8dF3Oe6eNsevO1
+        bKxQaiy93pQ9Cg1QqSbkZhFpiWU95Dol283GyrEhxyFkw8bzmjL1+GeQqrE0KJKtoKayKXSQK21uR
+        C4jbqUgqtAlX3ud0TFj6sAn7I6ZwWI48rlMJC1CxzJtv+6RMjPVqFFdHJcwnO8rrOThH+SN7Xk824
+        fz9Hftbg==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1ks6Ra-0001f9-KX; Wed, 23 Dec 2020 15:52:54 +0000
+Date:   Wed, 23 Dec 2020 15:52:54 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Souptick Joarder <jrdr.linux@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Alex Shi <alex.shi@linux.alibaba.com>
+Subject: Re: [PATCH] mm: add prototype for __add_to_page_cache_locked()
+Message-ID: <20201223155254.GA6138@infradead.org>
+References: <1608646792-29073-1-git-send-email-jrdr.linux@gmail.com>
+ <20201222204000.GN874@casper.infradead.org>
+ <20201222155345.e7086ad37967c9b7feae29e4@linux-foundation.org>
+ <20201223083126.GA27049@infradead.org>
+ <20201223121136.GP874@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <X+K7JMrTEC9SpVIB@google.com>
+In-Reply-To: <20201223121136.GP874@casper.infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 08:36:04PM -0700, Yu Zhao wrote:
-> In your patch, do we need to take wrprotect_rwsem in
-> handle_userfault() as well? Otherwise, it seems userspace would have
-> to synchronize between its wrprotect ioctl and fault handler? i.e.,
-> the fault hander needs to be aware that the content of write-
-> protected pages can actually change before the iotcl returns.
+On Wed, Dec 23, 2020 at 12:11:36PM +0000, Matthew Wilcox wrote:
+> On Wed, Dec 23, 2020 at 08:31:26AM +0000, Christoph Hellwig wrote:
+> > Can we please make the eBPF code stop referencing this function instead
+> > of papering over this crap?  It has no business poking into page cache
+> > internals.
+> 
+> The reference from the BPF code is simply "you can inject errors here".
+> And I think we want to be able to inject errors to test the error paths,
+> no?
 
-The handle_userfault() thread should be sleeping until another uffd_wp_resolve
-fixes the page fault for it.  However when the uffd_wp_resolve ioctl comes,
-then rwsem (either the group rwsem lock as Andrea proposed, or the mmap_sem, or
-any new rwsem lock we'd like to introduce, maybe per-uffd rather than per-mm)
-should have guaranteed the previous wr-protect ioctls are finished and tlb must
-have been flushed until this thread continues.
-
-And I don't know why it matters even if the data changed - IMHO what uffd-wp
-wants to do is simply to make sure after wr-protect ioctl returns to userspace,
-no change on the page should ever happen anymore.  So "whether data changed"
-seems matter more on the ioctl thread rather than the handle_userfault()
-thread.  IOW, I think data changes before tlb flush but after pte wr-protect is
-always fine - but that's not fine anymore if the syscall returns.
-
-Thanks,
-
--- 
-Peter Xu
-
+Something that expects a symbol to be global is just pretty broken.
+I think it need to change so that whatever instrumentation is done can
+coexist with a static function.
