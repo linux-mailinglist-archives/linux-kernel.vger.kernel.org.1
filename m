@@ -2,130 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB0862E1BD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 12:28:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 353532E1BEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 12:28:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728552AbgLWL0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 06:26:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35066 "EHLO
+        id S1728566AbgLWL2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 06:28:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728382AbgLWL0Q (ORCPT
+        with ESMTP id S1728421AbgLWL2j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 06:26:16 -0500
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5FB9C0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 03:25:35 -0800 (PST)
-Received: by mail-qk1-x72e.google.com with SMTP id f26so12960185qka.0
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 03:25:35 -0800 (PST)
+        Wed, 23 Dec 2020 06:28:39 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CBE9C0613D3;
+        Wed, 23 Dec 2020 03:27:58 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id y19so39175969lfa.13;
+        Wed, 23 Dec 2020 03:27:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=googlemail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Mih3zdmMFaoRMuxqceFLQMdjm46eO32W/WpvGGFu29A=;
-        b=Zju0KZKIMoE5gTdV4iSMFl27LmL9bQ/nJv7OmQVVioq/LiiYkYXxqe3sdhMMZOi4O9
-         pP4NJ77XHbLvD3mwmJR9OgrfXV2wGUMdVEfm83FX45Kt+MKvwNQHgwWF8G0UycS9a41c
-         nIut6/TlrtbYj3Gqd/78K6oOIGLh05cbkHZDAh0rgDawzcKXxF0/L/ieM7gXPA8NsedM
-         Oh8CkljKfvI9M4AACY8hTbalqeNATI2ycuNlcRqsaKGkXdk287uhcasf7FERumCTByfz
-         CKPkAMCpWH6qwssegTGS6BF2QYNVtpH1AmfjbMDRIMsxHi5E/MiVM+rMLQuqOdY+vbls
-         +bQg==
+         :cc:content-transfer-encoding;
+        bh=Mq7oGyUGa59E1kgWxLfMA1Jci1ObdTHArjOhZkOa91w=;
+        b=cgwOvH1fNHe4eE0bHZQlCVZB/LJlra1wXoDb3tu2t5HFMc/IHOuLNI5MGy6veUtq6D
+         l7GLpFZ8ANgItpF/g7Pfh2zlUsDuTgMuBoaR5EDo4zebl6j8MVxyQ5C1AE5dNdm1/DJv
+         m5BA3qeOR+6+U1PjVMe5cX+OIwMXCJSddBCHLybeHGmuUVhzhkvvFZWslBudY+nKGHt7
+         ge3MZmEPQqJbqbBYUybFMN+ZDbCkIFv1R8bTFJ8bnK3xrezvPQhl/MwgK7RXo1l3tCsJ
+         usuN3YH563xngmQnHpilwrHcOZQwr6NhjiXZ1eq4Kjk6uNUibpawwfbYmbE5C2nH/DpY
+         OKBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Mih3zdmMFaoRMuxqceFLQMdjm46eO32W/WpvGGFu29A=;
-        b=maHlYyRo9X618clAdys5uL0qcKvXtlLK0iDv1aJOTWfZguCNL86poEIhnCsbHyqdBi
-         VlvnbylQRjLMJp73Nd8bZeyjAL5+DRgpsheN4yHPIjyOf8yME2V4uqIt/HKkXj0xRA40
-         AEJlxmMPSY63pvvTznRKT5hvBzKBDmxo3FBEqerB0WjI8oMK2ZXqTpXH+r+24RHILho3
-         KTKbs+ALiN3uk40WKsgkjawXwFRZLkBnrYRz69SlJ9l8gIiZoVhpm85ZRXfwyKNSF3zj
-         MXME3VinCMUbK6Kxq0mOr9YGmbQTprJ/cFtjt/tQah59lop+4qPMi+FAbpatwzvJluja
-         QoTg==
-X-Gm-Message-State: AOAM533BWL9LwzBlf/9fAZjv53csAFyJZOw1HDaEqlS7HiONSv1KQjSW
-        grfcFY3XKNlyKM82unuf9ogHTFnASZuS+Dco6opxeg==
-X-Google-Smtp-Source: ABdhPJyC6wxz1ef07cHlZ4ks61+5QGostwMFhtssMRDvHrjmIhcCBqZVeibY17JBLGIn6XWBHO5OiOBdoFjIWwBo2LE=
-X-Received: by 2002:a37:4285:: with SMTP id p127mr9869581qka.501.1608722734822;
- Wed, 23 Dec 2020 03:25:34 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Mq7oGyUGa59E1kgWxLfMA1Jci1ObdTHArjOhZkOa91w=;
+        b=UipJi2/0+NJAhkkpd3tZARVUhgFePw0mXK86l9545lTSLaWunWdf81vPqvTLpy7upf
+         Swd634TYwfxjIXcxiDgxcB9VntTiCCODe2Xok+7QAI629oaV2k0inY/bC+pzn8+QixDr
+         sOslsVBU2GLQQurUxjwNSYBfReMTCgB/9EnM588tGoRLxLWg2GLn/OUeGGezxeiHD9L1
+         pFQFCAJX1WWyFcnS7KZ5AUdzWWbKF0JhOdog8Eldp1lAHeHLrw2tTb4jpVqIOfKUlsH0
+         qW+OstQ2tJ4EdPlEaTgBWcLW3mpIviXIcZKRBu5DbhQGOjSH5+vPfu6um6rh5w8KHKCE
+         /iRQ==
+X-Gm-Message-State: AOAM532bxPwYcUsqoJLWraDJWdZgbUN0anZqtp3ftJHY6sMfos04Tne2
+        3nY+SIOvtGrDyjyt270HFUNGUPJXHTQ02vU8WQ==
+X-Google-Smtp-Source: ABdhPJzFmVEWyECPcvq3nmrFAqBmpc8vLWoM++LtINdW2awkRwtsUMmHAHH16P7cOE7u7hkWk0PnM+afXZ//vgOEBJc=
+X-Received: by 2002:a05:6512:491:: with SMTP id v17mr10245162lfq.148.1608722877158;
+ Wed, 23 Dec 2020 03:27:57 -0800 (PST)
 MIME-Version: 1.0
-References: <000000000000fcbe0705b70e9bd9@google.com> <CAHk-=wgfRnXz0W3D37d01q3JFkr_i_uTL=V6A6G1oUZcprmknw@mail.gmail.com>
- <20201222220719.GB9639@breakpoint.cc>
-In-Reply-To: <20201222220719.GB9639@breakpoint.cc>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 23 Dec 2020 12:25:23 +0100
-Message-ID: <CACT4Y+Z65uJgMETo-rpu0HbvbSOBRqO0+606UsvdGN=AxNQD+Q@mail.gmail.com>
-Subject: Re: kernel BUG at lib/string.c:LINE! (6)
-To:     Florian Westphal <fw@strlen.de>,
-        syzkaller <syzkaller@googlegroups.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        syzbot <syzbot+e86f7c428c8c50db65b4@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        coreteam@netfilter.org, David Miller <davem@davemloft.net>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        NetFilter <netfilter-devel@vger.kernel.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Tejun Heo <tj@kernel.org>
+References: <CAEJqkgiiU7miC13iT6DufjFAsHkNZk6rBAw=KRRnHe47kTZDnw@mail.gmail.com>
+ <9d621d34-e5ce-301a-1b89-92c0791fe348@roeck-us.net> <4483r6o2-245o-147-s71r-s64ss3nqr8ps@vanv.qr>
+In-Reply-To: <4483r6o2-245o-147-s71r-s64ss3nqr8ps@vanv.qr>
+From:   Gabriel C <nix.or.die@googlemail.com>
+Date:   Wed, 23 Dec 2020 12:27:31 +0100
+Message-ID: <CAEJqkgg9nbSmfByP2dZFR8RjCiTHfWpXN7sFjOkuhKoRgHLKUw@mail.gmail.com>
+Subject: Re: k10temp: ZEN3 readings are broken
+To:     Jan Engelhardt <jengelh@inai.de>
+Cc:     Guenter Roeck <linux@roeck-us.net>, linux-hwmon@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Wei Huang <wei.huang2@amd.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 11:07 PM Florian Westphal <fw@strlen.de> wrote:
+Am Mi., 23. Dez. 2020 um 11:41 Uhr schrieb Jan Engelhardt <jengelh@inai.de>=
+:
 >
-> Linus Torvalds <torvalds@linux-foundation.org> wrote:
-> > On Tue, Dec 22, 2020 at 6:44 AM syzbot
-> > <syzbot+e86f7c428c8c50db65b4@syzkaller.appspotmail.com> wrote:
-> > >
-> > > The issue was bisected to:
-> > >
-> > > commit 2f78788b55ba ("ilog2: improve ilog2 for constant arguments")
-> >
-> > That looks unlikely, although possibly some constant folding
-> > improvement might make the fortify code notice something with it.
-> >
-> > > detected buffer overflow in strlen
-> > > ------------[ cut here ]------------
-> > > kernel BUG at lib/string.c:1149!
-> > > Call Trace:
-> > >  strlen include/linux/string.h:325 [inline]
-> > >  strlcpy include/linux/string.h:348 [inline]
-> > >  xt_rateest_tg_checkentry+0x2a5/0x6b0 net/netfilter/xt_RATEEST.c:143
-> >
-> > Honestly, this just looks like the traditional bug in "strlcpy()".
 >
-> Yes, thats exactly what this is, no idea why the bisection points
-> at ilog2 changes.
-
-The end result is usually clear from the bisection log:
-
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1584f137500000
-
-In this case it looks like the most common cause of diverted bisection
--- interference from other kernel bugs, this __queue_work issue that
-happened on ilog2 commit:
-
-[03f4935135b9efeb780b970ba023c201f81cf4e6] checkpatch: fix unescaped left brace
-testing commit 03f4935135b9efeb780b970ba023c201f81cf4e6 with gcc (GCC) 8.1.0
-all runs: crashed: kernel BUG at lib/string.c:LINE!
-# git bisect bad 03f4935135b9efeb780b970ba023c201f81cf4e6
-
-Bisecting: 21 revisions left to test after this (roughly 5 steps)
-[2f78788b55baa3410b1ec91a576286abe1ad4d6a] ilog2: improve ilog2 for
-constant arguments
-testing commit 2f78788b55baa3410b1ec91a576286abe1ad4d6a with gcc (GCC) 8.1.0
-run #0: crashed: WARNING in __queue_work
-# git bisect bad 2f78788b55baa3410b1ec91a576286abe1ad4d6a
-
-
-
-
-> > That BSD function is complete garbage, exactly because it doesn't
-> > limit the source length. People tend to _think_ it does ("what's that
-> > size_t argument for?") but strlcpy() only limits the *destination*
-> > size, and the source is always read fully.
+> On Tuesday 2020-12-22 04:58, Guenter Roeck wrote:
+> >On 12/21/20 5:45 PM, Gabriel C wrote:
+> >> Hello Guenter,
+> >>
+> >> while trying to add ZEN3 support for zenpower out of tree modules, I f=
+ind out
+> >> the in-kernel k10temp driver is broken with ZEN3 ( and partially ZEN2 =
+even ).
+> >
+> >[...] since I do not have time to actively maintain
+> >the driver, since each chip variant seems to use different addresses and=
+ scales,
+> >and since the information about voltages and currents is unpublished by =
+AMD,
+> >I'll remove support for voltage/current readings from the upstream drive=
+r.
 >
-> Right, I'll send a patch shortly.
+> I support that decision.
+>
+> /proc/cpuinfo::AMD Ryzen 7 3700X 8-Core Processor, fam 23 model 113 step =
+0
+>
+> A synthetic load (perl -e '1 while 1') x 16 shows:
+> Adapter: PCI adapter
+> Vcore:        +1.28 V
+> Vsoc:         +1.02 V
+> Tctl:         +94.8=C2=B0C
+> Tdie:         +94.8=C2=B0C
+> Tccd1:        +94.8=C2=B0C
+> Icore:       +76.00 A
+> Isoc:         +6.75 A
+>
+> A BOINC workload on average:
+> k10temp-pci-00c3
+> Adapter: PCI adapter
+> Vcore:        +1.17 V
+> Vsoc:         +1.02 V
+> Tctl:         +94.9=C2=B0C
+> Tdie:         +94.9=C2=B0C
+> Tccd1:        +95.0=C2=B0C
+> Icore:       +88.00 A
+> Isoc:         +8.00 A
+>
+> The BOINC workload, when it momentarily spikes:
+> Adapter: PCI adapter
+> Vcore:        +1.32 V
+> Vsoc:         +1.02 V
+> Tctl:         +94.1=C2=B0C
+> Tdie:         +94.1=C2=B0C
+> Tccd1:        +96.0=C2=B0C
+> Icore:       +105.00 A
+> Isoc:         +7.75 A
+>
+> For a processor sold as a 65 W part, observing reported sensors as
+> 88 A x 1.17 V + 8 A x 1.02 V =3D 111.12 W just can't be. We are off by a
+> factor of about 2.
+
+Just before I forget, even with 100% correct code you could still be off by
+a factor of 2 with a broken BIOS or a vendor who is trying to bypass AMD
+spec limits.
+
+See as an example this topic:
+https://cutt.ly/7h1bT48
+
+Best Regards,
+
+Gabriel C
