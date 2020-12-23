@@ -2,125 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D68422E1A96
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 10:40:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C7A2E1A93
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 10:40:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728269AbgLWJjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 04:39:36 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:10997 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727014AbgLWJja (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728171AbgLWJja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 23 Dec 2020 04:39:30 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:40884 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727158AbgLWJj3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 04:39:29 -0500
 Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4D17SP6pvjz9v1yT;
-        Wed, 23 Dec 2020 10:38:45 +0100 (CET)
+        by localhost (Postfix) with ESMTP id 4D17SQ6PxSz9v1yV;
+        Wed, 23 Dec 2020 10:38:46 +0100 (CET)
 X-Virus-Scanned: Debian amavisd-new at c-s.fr
 Received: from pegase1.c-s.fr ([192.168.12.234])
         by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id aaWSSNKmWPJn; Wed, 23 Dec 2020 10:38:45 +0100 (CET)
+        with ESMTP id H0J8Dj7hS6k7; Wed, 23 Dec 2020 10:38:46 +0100 (CET)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4D17SP5sG6z9v1yS;
-        Wed, 23 Dec 2020 10:38:45 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id E9E758B81D;
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4D17SQ5HZ2z9v1yS;
         Wed, 23 Dec 2020 10:38:46 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id D6DE58B81D;
+        Wed, 23 Dec 2020 10:38:47 +0100 (CET)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id vBDlujpSTbIq; Wed, 23 Dec 2020 10:38:46 +0100 (CET)
+        with ESMTP id 9za7q6GQnWfD; Wed, 23 Dec 2020 10:38:47 +0100 (CET)
 Received: from localhost.localdomain (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 96E7A8B75F;
-        Wed, 23 Dec 2020 10:38:46 +0100 (CET)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8280F8B75F;
+        Wed, 23 Dec 2020 10:38:47 +0100 (CET)
 Received: by localhost.localdomain (Postfix, from userid 0)
-        id 526F96696F; Wed, 23 Dec 2020 09:38:46 +0000 (UTC)
-Message-Id: <e4471bf81089252470efb3eed735d71a5b32adbd.1608716197.git.christophe.leroy@csgroup.eu>
+        id 5EE6B6696F; Wed, 23 Dec 2020 09:38:47 +0000 (UTC)
+Message-Id: <3d10a274516e9be8c4b0dc679a2840cdc1588872.1608716197.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <e4471bf81089252470efb3eed735d71a5b32adbd.1608716197.git.christophe.leroy@csgroup.eu>
+References: <e4471bf81089252470efb3eed735d71a5b32adbd.1608716197.git.christophe.leroy@csgroup.eu>
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] tty: serial: cpm_uart: Add udbg support for enabling xmon
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org
+Subject: [PATCH] powerpc/xmon: Select CONSOLE_POLL for the 8xx
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
 Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Wed, 23 Dec 2020 09:38:46 +0000 (UTC)
+Date:   Wed, 23 Dec 2020 09:38:47 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to use xmon with powerpc 8xx, the serial driver
-must provide udbg_putc() and udpb_getc().
-
-Provide them via cpm_put_poll_char() and cpm_get_poll_char().
-
-This requires CONFIG_CONSOLE_POLL.
+Powerpc 8xx requires CONSOLE_POLL to get udbg_putc() and
+udbg_getc() in CPM uart driver.
 
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- drivers/tty/serial/cpm_uart/cpm_uart_core.c | 40 ++++++++++++++++++++-
- 1 file changed, 39 insertions(+), 1 deletion(-)
+ arch/powerpc/Kconfig.debug | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/tty/serial/cpm_uart/cpm_uart_core.c b/drivers/tty/serial/cpm_uart/cpm_uart_core.c
-index ba14ec5b9bc4..2920b9b602b3 100644
---- a/drivers/tty/serial/cpm_uart/cpm_uart_core.c
-+++ b/drivers/tty/serial/cpm_uart/cpm_uart_core.c
-@@ -1145,6 +1145,32 @@ static void cpm_put_poll_char(struct uart_port *port,
- 	ch[0] = (char)c;
- 	cpm_uart_early_write(pinfo, ch, 1, false);
- }
-+
-+static struct uart_port *udbg_port;
-+
-+static void udbg_cpm_putc(char c)
-+{
-+	if (c == '\n')
-+		cpm_put_poll_char(udbg_port, '\r');
-+	cpm_put_poll_char(udbg_port, c);
-+}
-+
-+static int udbg_cpm_getc_poll(void)
-+{
-+	int c = cpm_get_poll_char(udbg_port);
-+
-+	return c == NO_POLL_CHAR ? -1 : c;
-+}
-+
-+static int udbg_cpm_getc(void)
-+{
-+	int c;
-+
-+	while ((c = udbg_cpm_getc_poll()) == -1)
-+		cpu_relax();
-+	return c;
-+}
-+
- #endif /* CONFIG_CONSOLE_POLL */
- 
- static const struct uart_ops cpm_uart_pops = {
-@@ -1251,7 +1277,10 @@ static int cpm_uart_init_port(struct device_node *np,
- 		pinfo->gpios[i] = NULL;
- 
- #ifdef CONFIG_PPC_EARLY_DEBUG_CPM
--	udbg_putc = NULL;
-+#ifdef CONFIG_CONSOLE_POLL
-+	if (!udbg_port)
-+#endif
-+		udbg_putc = NULL;
- #endif
- 
- 	return cpm_uart_request_port(&pinfo->port);
-@@ -1370,6 +1399,15 @@ static int __init cpm_uart_console_setup(struct console *co, char *options)
- 	uart_set_options(port, co, baud, parity, bits, flow);
- 	cpm_line_cr_cmd(pinfo, CPM_CR_RESTART_TX);
- 
-+#ifdef CONFIG_CONSOLE_POLL
-+	if (!udbg_port) {
-+		udbg_port = &pinfo->port;
-+		udbg_putc = udbg_cpm_putc;
-+		udbg_getc = udbg_cpm_getc;
-+		udbg_getc_poll = udbg_cpm_getc_poll;
-+	}
-+#endif
-+
- 	return 0;
- }
- 
+diff --git a/arch/powerpc/Kconfig.debug b/arch/powerpc/Kconfig.debug
+index b88900f4832f..ae084357994e 100644
+--- a/arch/powerpc/Kconfig.debug
++++ b/arch/powerpc/Kconfig.debug
+@@ -88,6 +88,7 @@ config PPC_IRQ_SOFT_MASK_DEBUG
+ config XMON
+ 	bool "Include xmon kernel debugger"
+ 	depends on DEBUG_KERNEL
++	select CONSOLE_POLL if SERIAL_CPM_CONSOLE
+ 	help
+ 	  Include in-kernel hooks for the xmon kernel monitor/debugger.
+ 	  Unless you are intending to debug the kernel, say N here.
 -- 
 2.25.0
 
