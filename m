@@ -2,133 +2,557 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD2522E1DCC
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 16:14:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23B662E1DD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 16:17:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727798AbgLWPNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 10:13:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53022 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726142AbgLWPNM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 10:13:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B437207A4;
-        Wed, 23 Dec 2020 15:12:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608736351;
-        bh=pz2Re5xo44DPDdBhDK63TN4XpXRsjcKbP7FVCoytPJI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=uORjBEwJHVLI0gWdeiYYQFsYUWqn0HJGxFq1f7qojY0ywmWa8ka73dTs3+NbWksqY
-         pmhGZN0Xg3KM2ZhNyMpA1GabCfSP3pmhAhWawsAbuGref6stg9qAKZoupbAFlLIz4+
-         mQvm+l8yH1lvJ+KYYs0BBrsQ//LI7U8DC+KssqjQkrD/C9iHGlmrkn/gHkqvwuTPIo
-         It+BR+w/o9gqtf2xbw1oxb3uyAjNeVAxv5g4N65Kd1GVC/s1zOMuo7CJSsLELYBOxo
-         NSJuRhYU3ZJWWa9qHTtlO7vet3yBZkTHbIXxvfIB6wFD68g/iCZSmlvQQwISLgiZJU
-         kcHXG7/WYxSjA==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 23531352264C; Wed, 23 Dec 2020 07:12:31 -0800 (PST)
-Date:   Wed, 23 Dec 2020 07:12:31 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Neeraj Upadhyay <neeraju@codeaurora.org>
-Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, peterz@infradead.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu: Fix dynticks_nmi_nesting underflow check in
- rcu_is_cpu_rrupt_from_idle
-Message-ID: <20201223151231.GC2657@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <1608712777-1769-1-git-send-email-neeraju@codeaurora.org>
+        id S1727030AbgLWPPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 10:15:48 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:51606 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726207AbgLWPPs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 10:15:48 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1608736523; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=SDlIibi7+8gDgWtsKot5qJpuZhnMzbyPpIrVHWi2a5s=;
+ b=Cu5/UEZEWKQ9tMOqjSd0VAYpouVXsfGW7fFQDxFFx7Sm0loTUClWvt7SfCmVmQXBgQ7GMaKt
+ VBXVwQP7DcXYRrEuEjSZxMw+YmqTOPB3nuLrJnKoVsIgTWXSCBPb50YKuuvE2CIGUbSyat23
+ LSlXINb3OGzyutSobjX37IL1MM0=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
+ 5fe35edfe61d77c971effd8a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 23 Dec 2020 15:14:39
+ GMT
+Sender: isaacm=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A2BA1C43464; Wed, 23 Dec 2020 15:14:38 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: isaacm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1FB90C433CA;
+        Wed, 23 Dec 2020 15:14:36 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1608712777-1769-1-git-send-email-neeraju@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Wed, 23 Dec 2020 07:14:36 -0800
+From:   isaacm@codeaurora.org
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     kernel-team@android.com, will@kernel.org, pdaly@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, iommu@lists.linux-foundation.org,
+        freedreno@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, pratikp@codeaurora.org
+Subject: Re: [PATCH v2 1/7] iommu/io-pgtable: Introduce dynamic io-pgtable fmt
+ registration
+In-Reply-To: <64657a85-e2d5-e13f-d6b5-9d68c4142b80@arm.com>
+References: <1608597876-32367-1-git-send-email-isaacm@codeaurora.org>
+ <1608597876-32367-2-git-send-email-isaacm@codeaurora.org>
+ <4f388512-c3df-e9fc-ebd4-624ab36a6858@arm.com>
+ <8b48b371811a170053e2ca810ab63abf@codeaurora.org>
+ <64657a85-e2d5-e13f-d6b5-9d68c4142b80@arm.com>
+Message-ID: <69cfff0e339985a8c344533573471bf4@codeaurora.org>
+X-Sender: isaacm@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 02:09:37PM +0530, Neeraj Upadhyay wrote:
-> For the smp_call_function() optimization, where callbacks can run from
-> idle context, in commit 806f04e9fd2c ("rcu: Allow for smp_call_function()
-> running callbacks from idle"), an additional check is added in
-> rcu_is_cpu_rrupt_from_idle(), for dynticks_nmi_nesting value being 0,
-> for these smp_call_function() callbacks running from idle loop.
-> However, this commit missed updating a preexisting underflow check
-> of dynticks_nmi_nesting, which checks for a non zero positive value.
-> Fix this warning and while at it, read the counter only once.
+On 2020-12-23 05:44, Robin Murphy wrote:
+> On 2020-12-22 19:54, isaacm@codeaurora.org wrote:
+>> On 2020-12-22 11:27, Robin Murphy wrote:
+>>> On 2020-12-22 00:44, Isaac J. Manjarres wrote:
+>>>> The io-pgtable code constructs an array of init functions for each
+>>>> page table format at compile time. This is not ideal, as this
+>>>> increases the footprint of the io-pgtable code, as well as prevents
+>>>> io-pgtable formats from being built as kernel modules.
+>>>> 
+>>>> In preparation for modularizing the io-pgtable formats, switch to a
+>>>> dynamic registration scheme, where each io-pgtable format can 
+>>>> register
+>>>> their init functions with the io-pgtable code at boot or module
+>>>> insertion time.
+>>>> 
+>>>> Signed-off-by: Isaac J. Manjarres <isaacm@codeaurora.org>
+>>>> ---
+>>>>   drivers/iommu/io-pgtable-arm-v7s.c | 34 +++++++++++++-
+>>>>   drivers/iommu/io-pgtable-arm.c     | 90 
+>>>> ++++++++++++++++++++++++++----------
+>>>>   drivers/iommu/io-pgtable.c         | 94 
+>>>> ++++++++++++++++++++++++++++++++------
+>>>>   include/linux/io-pgtable.h         | 51 +++++++++++++--------
+>>>>   4 files changed, 209 insertions(+), 60 deletions(-)
+>>>> 
+>>>> diff --git a/drivers/iommu/io-pgtable-arm-v7s.c 
+>>>> b/drivers/iommu/io-pgtable-arm-v7s.c
+>>>> index 1d92ac9..89aad2f 100644
+>>>> --- a/drivers/iommu/io-pgtable-arm-v7s.c
+>>>> +++ b/drivers/iommu/io-pgtable-arm-v7s.c
+>>>> @@ -28,6 +28,7 @@
+>>>>   #include <linux/iommu.h>
+>>>>   #include <linux/kernel.h>
+>>>>   #include <linux/kmemleak.h>
+>>>> +#include <linux/module.h>
+>>>>   #include <linux/sizes.h>
+>>>>   #include <linux/slab.h>
+>>>>   #include <linux/spinlock.h>
+>>>> @@ -835,7 +836,8 @@ static struct io_pgtable 
+>>>> *arm_v7s_alloc_pgtable(struct io_pgtable_cfg *cfg,
+>>>>       return NULL;
+>>>>   }
+>>>>   -struct io_pgtable_init_fns io_pgtable_arm_v7s_init_fns = {
+>>>> +static struct io_pgtable_init_fns io_pgtable_arm_v7s_init_fns = {
+>>>> +    .fmt    = ARM_V7S,
+>>>>       .alloc    = arm_v7s_alloc_pgtable,
+>>>>       .free    = arm_v7s_free_pgtable,
+>>>>   };
+>>>> @@ -982,5 +984,33 @@ static int __init arm_v7s_do_selftests(void)
+>>>>       pr_info("self test ok\n");
+>>>>       return 0;
+>>>>   }
+>>>> -subsys_initcall(arm_v7s_do_selftests);
+>>>> +#else
+>>>> +static int arm_v7s_do_selftests(void)
+>>>> +{
+>>>> +    return 0;
+>>>> +}
+>>>>   #endif
+>>>> +
+>>>> +static int __init arm_v7s_init(void)
+>>>> +{
+>>>> +    int ret;
+>>>> +
+>>>> +    ret = io_pgtable_ops_register(&io_pgtable_arm_v7s_init_fns);
+>>>> +    if (ret < 0) {
+>>>> +        pr_err("Failed to register ARM V7S format\n");
+>>> 
+>>> Super-nit: I think "v7s" should probably be lowercase there. Also
+>>> general consistency WRT to showing the error code and whether or not
+>>> to abbreviate "format" would be nice.
+>>> 
+>> Ok, I can fix this accordingly.
+>> 
+>>>> +        return ret;
+>>>> +    }
+>>>> +
+>>>> +    ret = arm_v7s_do_selftests();
+>>>> +    if (ret < 0)
+>>>> +        io_pgtable_ops_unregister(&io_pgtable_arm_v7s_init_fns);
+>>>> +
+>>>> +    return ret;
+>>>> +}
+>>>> +core_initcall(arm_v7s_init);
+>>>> +
+>>>> +static void __exit arm_v7s_exit(void)
+>>>> +{
+>>>> +    io_pgtable_ops_unregister(&io_pgtable_arm_v7s_init_fns);
+>>>> +}
+>>>> +module_exit(arm_v7s_exit);
+>>>> diff --git a/drivers/iommu/io-pgtable-arm.c 
+>>>> b/drivers/iommu/io-pgtable-arm.c
+>>>> index 87def58..ff0ea2f 100644
+>>>> --- a/drivers/iommu/io-pgtable-arm.c
+>>>> +++ b/drivers/iommu/io-pgtable-arm.c
+>>>> @@ -13,6 +13,7 @@
+>>>>   #include <linux/bitops.h>
+>>>>   #include <linux/io-pgtable.h>
+>>>>   #include <linux/kernel.h>
+>>>> +#include <linux/module.h>
+>>>>   #include <linux/sizes.h>
+>>>>   #include <linux/slab.h>
+>>>>   #include <linux/types.h>
+>>>> @@ -1043,29 +1044,32 @@ arm_mali_lpae_alloc_pgtable(struct 
+>>>> io_pgtable_cfg *cfg, void *cookie)
+>>>>       return NULL;
+>>>>   }
+>>>>   -struct io_pgtable_init_fns io_pgtable_arm_64_lpae_s1_init_fns = {
+>>>> -    .alloc    = arm_64_lpae_alloc_pgtable_s1,
+>>>> -    .free    = arm_lpae_free_pgtable,
+>>>> -};
+>>>> -
+>>>> -struct io_pgtable_init_fns io_pgtable_arm_64_lpae_s2_init_fns = {
+>>>> -    .alloc    = arm_64_lpae_alloc_pgtable_s2,
+>>>> -    .free    = arm_lpae_free_pgtable,
+>>>> -};
+>>>> -
+>>>> -struct io_pgtable_init_fns io_pgtable_arm_32_lpae_s1_init_fns = {
+>>>> -    .alloc    = arm_32_lpae_alloc_pgtable_s1,
+>>>> -    .free    = arm_lpae_free_pgtable,
+>>>> -};
+>>>> -
+>>>> -struct io_pgtable_init_fns io_pgtable_arm_32_lpae_s2_init_fns = {
+>>>> -    .alloc    = arm_32_lpae_alloc_pgtable_s2,
+>>>> -    .free    = arm_lpae_free_pgtable,
+>>>> -};
+>>>> -
+>>>> -struct io_pgtable_init_fns io_pgtable_arm_mali_lpae_init_fns = {
+>>>> -    .alloc    = arm_mali_lpae_alloc_pgtable,
+>>>> -    .free    = arm_lpae_free_pgtable,
+>>>> +static struct io_pgtable_init_fns io_pgtable_arm_lpae_init_fns[] = 
+>>>> {
+>>>> +    {
+>>>> +        .fmt    = ARM_32_LPAE_S1,
+>>>> +        .alloc    = arm_32_lpae_alloc_pgtable_s1,
+>>>> +        .free    = arm_lpae_free_pgtable,
+>>>> +    },
+>>>> +    {
+>>>> +        .fmt    = ARM_32_LPAE_S2,
+>>>> +        .alloc    = arm_32_lpae_alloc_pgtable_s2,
+>>>> +        .free    = arm_lpae_free_pgtable,
+>>>> +    },
+>>>> +    {
+>>>> +        .fmt    = ARM_64_LPAE_S1,
+>>>> +        .alloc    = arm_64_lpae_alloc_pgtable_s1,
+>>>> +        .free    = arm_lpae_free_pgtable,
+>>>> +    },
+>>>> +    {
+>>>> +        .fmt    = ARM_64_LPAE_S2,
+>>>> +        .alloc    = arm_64_lpae_alloc_pgtable_s2,
+>>>> +        .free    = arm_lpae_free_pgtable,
+>>>> +    },
+>>>> +    {
+>>>> +        .fmt    = ARM_MALI_LPAE,
+>>>> +        .alloc    = arm_mali_lpae_alloc_pgtable,
+>>>> +        .free    = arm_lpae_free_pgtable,
+>>>> +    },
+>>>>   };
+>>>>     #ifdef CONFIG_IOMMU_IO_PGTABLE_LPAE_SELFTEST
+>>>> @@ -1250,5 +1254,43 @@ static int __init arm_lpae_do_selftests(void)
+>>>>       pr_info("selftest: completed with %d PASS %d FAIL\n", pass, 
+>>>> fail);
+>>>>       return fail ? -EFAULT : 0;
+>>>>   }
+>>>> -subsys_initcall(arm_lpae_do_selftests);
+>>>> +#else
+>>>> +static int __init arm_lpae_do_selftests(void)
+>>>> +{
+>>>> +    return 0;
+>>>> +}
+>>>>   #endif
+>>>> +
+>>>> +static int __init arm_lpae_init(void)
+>>>> +{
+>>>> +    int ret, i;
+>>>> +
+>>>> +    for (i = 0; i < ARRAY_SIZE(io_pgtable_arm_lpae_init_fns); i++) 
+>>>> {
+>>>> +        ret = 
+>>>> io_pgtable_ops_register(&io_pgtable_arm_lpae_init_fns[i]);
+>>>> +        if (ret < 0) {
+>>>> +            pr_err("Failed to register ARM LPAE fmt: %d\n");
+>>>> +            goto err_io_pgtable_register;
+>>>> +        }
+>>>> +    }
+>>>> +
+>>>> +    ret = arm_lpae_do_selftests();
+>>>> +    if (ret < 0)
+>>>> +        goto err_io_pgtable_register;
+>>>> +
+>>>> +    return 0;
+>>>> +
+>>>> +err_io_pgtable_register:
+>>>> +    for (i = i - 1; i >= 0; i--)
+>>> 
+>>> Personally I find "while (i--)" a bit clearer for this kind of
+>>> unwinding, but maybe post-decrement isn't to everyone's taste.
+>>> 
+>> I'm not particularly attached to the current approach, so a while loop
+>> is okay with me :).
+>> 
+>>>> +        
+>>>> io_pgtable_ops_unregister(&io_pgtable_arm_lpae_init_fns[i]);
+>>>> +    return ret;
+>>>> +}
+>>>> +core_initcall(arm_lpae_init);
+>>>> +
+>>>> +static void __exit arm_lpae_exit(void)
+>>>> +{
+>>>> +    int i;
+>>>> +
+>>>> +    for (i = 0; i < ARRAY_SIZE(io_pgtable_arm_lpae_init_fns); i++)
+>>>> +        
+>>>> io_pgtable_ops_unregister(&io_pgtable_arm_lpae_init_fns[i]);
+>>>> +}
+>>>> +module_exit(arm_lpae_exit);
+>>>> diff --git a/drivers/iommu/io-pgtable.c b/drivers/iommu/io-pgtable.c
+>>>> index 94394c8..2c6eb2e 100644
+>>>> --- a/drivers/iommu/io-pgtable.c
+>>>> +++ b/drivers/iommu/io-pgtable.c
+>>>> @@ -10,33 +10,45 @@
+>>>>   #include <linux/bug.h>
+>>>>   #include <linux/io-pgtable.h>
+>>>>   #include <linux/kernel.h>
+>>>> +#include <linux/rwlock.h>
+>>>> +#include <linux/slab.h>
+>>>>   #include <linux/types.h>
+>>>>   -static const struct io_pgtable_init_fns *
+>>>> -io_pgtable_init_table[IO_PGTABLE_NUM_FMTS] = {
+>>>> -#ifdef CONFIG_IOMMU_IO_PGTABLE_LPAE
+>>>> -    [ARM_32_LPAE_S1] = &io_pgtable_arm_32_lpae_s1_init_fns,
+>>>> -    [ARM_32_LPAE_S2] = &io_pgtable_arm_32_lpae_s2_init_fns,
+>>>> -    [ARM_64_LPAE_S1] = &io_pgtable_arm_64_lpae_s1_init_fns,
+>>>> -    [ARM_64_LPAE_S2] = &io_pgtable_arm_64_lpae_s2_init_fns,
+>>>> -    [ARM_MALI_LPAE] = &io_pgtable_arm_mali_lpae_init_fns,
+>>>> -#endif
+>>>> -#ifdef CONFIG_IOMMU_IO_PGTABLE_ARMV7S
+>>>> -    [ARM_V7S] = &io_pgtable_arm_v7s_init_fns,
+>>>> -#endif
+>>>> +struct io_pgtable_init_fns_node {
+>>>> +    struct io_pgtable_init_fns *fns;
+>>>> +    struct list_head list;
+>>>>   };
+>>>>   +static LIST_HEAD(io_pgtable_init_fns_list);
+>>>> +static DEFINE_RWLOCK(io_pgtable_init_fns_list_lock);
+>>>> +
+>>>> +static struct io_pgtable_init_fns *io_pgtable_get_init_fns(enum 
+>>>> io_pgtable_fmt fmt)
+>>>> +{
+>>>> +    struct io_pgtable_init_fns_node *iter;
+>>>> +    struct io_pgtable_init_fns *fns = NULL;
+>>>> +
+>>>> +    read_lock(&io_pgtable_init_fns_list_lock);
+>>>> +    list_for_each_entry(iter, &io_pgtable_init_fns_list, list)
+>>>> +        if (iter->fns->fmt == fmt) {
+>>>> +            fns = iter->fns;
+>>>> +            break;
+>>>> +        }
+>>>> +    read_unlock(&io_pgtable_init_fns_list_lock);
+>>>> +
+>>>> +    return fns;
+>>>> +}
+>>> 
+>>> I think it would be a lot easier to stick with a simple array indexed
+>>> by enum - that way you can just set/clear/test entries without 
+>>> needing
+>>> to worry about locking. Basically just remove the const and the
+>>> initialisers from the existing one ;)
+>>> 
+>>> (and if you think you're concerned about memory, consider that just
+>>> the list head plus lock is already half the size of the table)
+>>> 
+>>> Other than that, I think this all looks pretty promising - I'd 
+>>> suggest
+>>> sending a non-RFC after rc1 so that it gets everyone's proper
+>>> attention.
+>>> 
+>>> Thanks,
+>>> Robin.
+>>> 
+>> 
+>> Thanks for all of the feedback! With respect to the comment about 
+>> keeping the current array,
+>> don't we need some sort of lock to protect access to the data 
+>> structure (e.g. concurrent access
+>> if adding two ops for the same format)? Or do you mean that we should 
+>> use atomic operations to
+>> handle this cleanly?
 > 
-> Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-> ---
+> I don't think any races are realistically possible - built-in
+> initcalls should run sequentially, while module init should be
+> serialised by the module loader lock, so registrations should never be
+> able to race against each other. And if there could be a race between
+> registering a format and somebody trying to use it, then something's
+> fundamentally wrong anyway - sure we could use READ_ONCE/WRITE_ONCE
+> for accessing the table, but that would be basically be admitting that
+> we've failed at the primary purpose of making sure formats are loaded
+> *before* the users that depend on them.
 > 
-> Hi,
+> With a directly-indexed table there's no contention between looking up
+> one format and registering another unrelated format, unlike with a
+> list.
 > 
-> I was not able to get this warning, with scftorture.
+> Robin.
 > 
->   RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nmi_nesting) <= 0,
->     "RCU dynticks_nmi_nesting counter underflow/zero!");
-> 
-> Not sure if idle loop smp_call_function() optimization is already present
-> in mainline?
 
-Now that you mention it, I don't see it.  But x86 has a number of idle
-functions, and I might be missing it.  The "idle" kernel boot parameter
-allows some ability to select them, and of course more profound (and maybe
-more dangerous) changes can be made by changing select_idle_routine().
+Got it. I'll stick with the array as suggested. Thanks again for the 
+feedback.
+I'll be sending the version with your suggestions when 5.11-rc1 comes 
+out as
+a non-RFC.
 
-> Another thing, which I am not sure of is, maybe lockdep gets disabled
-> in the idle loop contexts, where rcu_is_cpu_rrupt_from_idle() is called?
-> Was this the original intention, to keep the lockdep based
-> RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nmi_nesting) <= 0
-> check separate from idle task context nesting value
-> WARN_ON_ONCE(!nesting && !is_idle_task(current)) check?
-
-An easy way to test lockdep is to create a pair of locks, acquire them
-in one order then release them both, and finally acquire them in the
-other order and then release them both.  If lockdep is configured and
-enabled, it will complain.
-
-The only reason I used RCU_LOCKDEP_WARN() was that people were complaining
-to me about idle-entry overhead back at that time.  So without lockdep,
-there is zero overhead.  Maybe people have become more tolerant of idle
-delays, or perhaps they are not so worried about an extra check of a
-cache-hot quantity.
-
-And another thing to try is to make the RCU_LOCKDEP_WARN() be WARN_ONCE()
-or similar.  Can't hurt for testing purposes!
-
-Of course, once Peter Zijlstra comes back from vacation, we should ask him.
-
-And thank you for trying this out!
-
-I am tempted to pull this in as is, given the current logical
-inconsistency in the checks.  Thoughts?
-
-							Thanx, Paul
-
-> Thanks
-> Neeraj
-> 
->  kernel/rcu/tree.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index bc8b489..c3037cf 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -457,11 +457,10 @@ static int rcu_is_cpu_rrupt_from_idle(void)
->  	/* Check for counter underflows */
->  	RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nesting) < 0,
->  			 "RCU dynticks_nesting counter underflow!");
-> -	RCU_LOCKDEP_WARN(__this_cpu_read(rcu_data.dynticks_nmi_nesting) <= 0,
-> -			 "RCU dynticks_nmi_nesting counter underflow/zero!");
-> +	nesting = __this_cpu_read(rcu_data.dynticks_nmi_nesting);
-> +	RCU_LOCKDEP_WARN(nesting < 0, "RCU dynticks_nmi_nesting counter underflow!");
->  
->  	/* Are we at first interrupt nesting level? */
-> -	nesting = __this_cpu_read(rcu_data.dynticks_nmi_nesting);
->  	if (nesting > 1)
->  		return false;
->  
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+--Isaac
+>> 
+>> Thanks,
+>> Isaac
+>>>> +
+>>>>   struct io_pgtable_ops *alloc_io_pgtable_ops(enum io_pgtable_fmt 
+>>>> fmt,
+>>>>                           struct io_pgtable_cfg *cfg,
+>>>>                           void *cookie)
+>>>>   {
+>>>>       struct io_pgtable *iop;
+>>>> -    const struct io_pgtable_init_fns *fns;
+>>>> +    struct io_pgtable_init_fns *fns;
+>>>>         if (fmt >= IO_PGTABLE_NUM_FMTS)
+>>>>           return NULL;
+>>>>   -    fns = io_pgtable_init_table[fmt];
+>>>> +    fns = io_pgtable_get_init_fns(fmt);
+>>>>       if (!fns)
+>>>>           return NULL;
+>>>>   @@ -59,12 +71,64 @@ EXPORT_SYMBOL_GPL(alloc_io_pgtable_ops);
+>>>>   void free_io_pgtable_ops(struct io_pgtable_ops *ops)
+>>>>   {
+>>>>       struct io_pgtable *iop;
+>>>> +    struct io_pgtable_init_fns *fns;
+>>>>         if (!ops)
+>>>>           return;
+>>>>         iop = io_pgtable_ops_to_pgtable(ops);
+>>>>       io_pgtable_tlb_flush_all(iop);
+>>>> -    io_pgtable_init_table[iop->fmt]->free(iop);
+>>>> +    fns = io_pgtable_get_init_fns(iop->fmt);
+>>>> +    if (fns)
+>>>> +        fns->free(iop);
+>>>>   }
+>>>>   EXPORT_SYMBOL_GPL(free_io_pgtable_ops);
+>>>> +
+>>>> +int io_pgtable_ops_register(struct io_pgtable_init_fns *init_fns)
+>>>> +{
+>>>> +    struct io_pgtable_init_fns_node *iter, *fns_node;
+>>>> +    int ret = 0;
+>>>> +
+>>>> +    if (!init_fns || init_fns->fmt >= IO_PGTABLE_NUM_FMTS ||
+>>>> +        !init_fns->alloc || !init_fns->free)
+>>>> +        return -EINVAL;
+>>>> +
+>>>> +    fns_node = kzalloc(sizeof(*fns_node), GFP_KERNEL);
+>>>> +    if (!fns_node)
+>>>> +        return -ENOMEM;
+>>>> +
+>>>> +    write_lock(&io_pgtable_init_fns_list_lock);
+>>>> +    list_for_each_entry(iter, &io_pgtable_init_fns_list, list)
+>>>> +        if (iter->fns->fmt == init_fns->fmt) {
+>>>> +            ret = -EEXIST;
+>>>> +            kfree(fns_node);
+>>>> +            break;
+>>>> +        }
+>>>> +
+>>>> +    if (!ret) {
+>>>> +        fns_node->fns = init_fns;
+>>>> +        INIT_LIST_HEAD(&fns_node->list);
+>>>> +        list_add_tail(&fns_node->list, &io_pgtable_init_fns_list);
+>>>> +    }
+>>>> +    write_unlock(&io_pgtable_init_fns_list_lock);
+>>>> +    return ret;
+>>>> +}
+>>>> +EXPORT_SYMBOL_GPL(io_pgtable_ops_register);
+>>>> +
+>>>> +void io_pgtable_ops_unregister(struct io_pgtable_init_fns 
+>>>> *init_fns)
+>>>> +{
+>>>> +    struct io_pgtable_init_fns_node *iter, *tmp;
+>>>> +
+>>>> +    if (!init_fns)
+>>>> +        return;
+>>>> +
+>>>> +    write_lock(&io_pgtable_init_fns_list_lock);
+>>>> +    list_for_each_entry_safe(iter, tmp, &io_pgtable_init_fns_list, 
+>>>> list)
+>>>> +        if (iter->fns == init_fns) {
+>>>> +            list_del(&iter->list);
+>>>> +            kfree(iter);
+>>>> +            break;
+>>>> +        }
+>>>> +    write_unlock(&io_pgtable_init_fns_list_lock);
+>>>> +}
+>>>> +EXPORT_SYMBOL_GPL(io_pgtable_ops_unregister);
+>>>> diff --git a/include/linux/io-pgtable.h b/include/linux/io-pgtable.h
+>>>> index ea727eb..45b367ce 100644
+>>>> --- a/include/linux/io-pgtable.h
+>>>> +++ b/include/linux/io-pgtable.h
+>>>> @@ -163,6 +163,38 @@ struct io_pgtable_ops {
+>>>>   };
+>>>>     /**
+>>>> + * struct io_pgtable_init_fns - Alloc/free a set of page tables for 
+>>>> a
+>>>> + *                              particular format.
+>>>> + *
+>>>> + * @fmt:   The page table format.
+>>>> + * @alloc: Allocate a set of page tables described by cfg.
+>>>> + * @free:  Free the page tables associated with iop.
+>>>> + */
+>>>> +struct io_pgtable_init_fns {
+>>>> +    enum io_pgtable_fmt fmt;
+>>>> +    struct io_pgtable *(*alloc)(struct io_pgtable_cfg *cfg, void 
+>>>> *cookie);
+>>>> +    void (*free)(struct io_pgtable *iop);
+>>>> +};
+>>>> +
+>>>> +/**
+>>>> + * io_pgtable_ops_register() - Register the page table routines for 
+>>>> a page table
+>>>> + *                             format.
+>>>> + *
+>>>> + * @init_fns: The functions for allocating and freeing the page 
+>>>> tables of
+>>>> + *            a particular format.
+>>>> + */
+>>>> +int io_pgtable_ops_register(struct io_pgtable_init_fns *init_fns);
+>>>> +
+>>>> +/**
+>>>> + * io_pgtable_ops_unregister() - Unregister the page table routines 
+>>>> for a page
+>>>> + *                               table format.
+>>>> + *
+>>>> + * @init_fns: The functions for allocating and freeing the page 
+>>>> tables of
+>>>> + *            a particular format.
+>>>> + */
+>>>> +void io_pgtable_ops_unregister(struct io_pgtable_init_fns 
+>>>> *init_fns);
+>>>> +
+>>>> +/**
+>>>>    * alloc_io_pgtable_ops() - Allocate a page table allocator for 
+>>>> use by an IOMMU.
+>>>>    *
+>>>>    * @fmt:    The page table format.
+>>>> @@ -233,23 +265,4 @@ io_pgtable_tlb_add_page(struct io_pgtable *iop,
+>>>>           iop->cfg.tlb->tlb_add_page(gather, iova, granule, 
+>>>> iop->cookie);
+>>>>   }
+>>>>   -/**
+>>>> - * struct io_pgtable_init_fns - Alloc/free a set of page tables for 
+>>>> a
+>>>> - *                              particular format.
+>>>> - *
+>>>> - * @alloc: Allocate a set of page tables described by cfg.
+>>>> - * @free:  Free the page tables associated with iop.
+>>>> - */
+>>>> -struct io_pgtable_init_fns {
+>>>> -    struct io_pgtable *(*alloc)(struct io_pgtable_cfg *cfg, void 
+>>>> *cookie);
+>>>> -    void (*free)(struct io_pgtable *iop);
+>>>> -};
+>>>> -
+>>>> -extern struct io_pgtable_init_fns 
+>>>> io_pgtable_arm_32_lpae_s1_init_fns;
+>>>> -extern struct io_pgtable_init_fns 
+>>>> io_pgtable_arm_32_lpae_s2_init_fns;
+>>>> -extern struct io_pgtable_init_fns 
+>>>> io_pgtable_arm_64_lpae_s1_init_fns;
+>>>> -extern struct io_pgtable_init_fns 
+>>>> io_pgtable_arm_64_lpae_s2_init_fns;
+>>>> -extern struct io_pgtable_init_fns io_pgtable_arm_v7s_init_fns;
+>>>> -extern struct io_pgtable_init_fns 
+>>>> io_pgtable_arm_mali_lpae_init_fns;
+>>>> -
+>>>>   #endif /* __IO_PGTABLE_H */
+>>>> 
+>>> 
+>>> _______________________________________________
+>>> linux-arm-kernel mailing list
+>>> linux-arm-kernel@lists.infradead.org
+>>> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>> _______________________________________________
+>> iommu mailing list
+>> iommu@lists.linux-foundation.org
+>> https://lists.linuxfoundation.org/mailman/listinfo/iommu
