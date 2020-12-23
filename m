@@ -2,52 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC3CD2E1460
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:47:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79BDA2E14E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:48:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730779AbgLWCiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:38:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38304 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730115AbgLWCin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:38:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 58CE72245C;
-        Wed, 23 Dec 2020 02:38:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608691082;
-        bh=aDwJGnKtC5b+/IhpLBbDVnB03LBgSAU4U6/zGDqihoY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=c2+RnXuYXJy0qyj0d6ajKFyiB4IyWrrYH5wGApxtEFESZ1YNFveJslWiUN2/S7KeG
-         bB/fjo3eG4MD7u1t4xQslNTfBQiXM63XAF15S+qe2ZQ4y169r5VNX5KXA+Jeol3NYN
-         QmViRpKk7HSDR3u1gZaRj5QcBXa2nr2oofD8kFGxqEBgrhLQ88I9U6AS7lzjTxzzS5
-         lmAw7I5YOTJojBruphP5xlgqJh6nj4wuP+NiSL+1lhBBe73mbtsEFaHS52y2GIIUdr
-         WaHNM6pec7h2h9BQ4+kJObVC9U6y8Jiufue6lX7+/lO8Wsbz7jQK3NKOW/gX+ezd/W
-         8PXIO6d1qGZ8A==
-Date:   Tue, 22 Dec 2020 18:38:01 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, netdev@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 4.4 03/38] staging: wimax: depends on NET
-Message-ID: <20201222183801.327b964f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201223022516.2794471-3-sashal@kernel.org>
-References: <20201223022516.2794471-1-sashal@kernel.org>
-        <20201223022516.2794471-3-sashal@kernel.org>
+        id S1730696AbgLWCpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:45:30 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:34304 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728409AbgLWCpU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:45:20 -0500
+X-UUID: 2011929af47d491f966393e5298ed79e-20201223
+X-UUID: 2011929af47d491f966393e5298ed79e-20201223
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        (envelope-from <hsin-hsiung.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 291148945; Wed, 23 Dec 2020 10:44:35 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 23 Dec 2020 10:44:35 +0800
+Received: from mtksdaap41.mediatek.inc (172.21.77.4) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 23 Dec 2020 10:44:34 +0800
+From:   Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+To:     Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Mark Brown <broonie@kernel.org>
+CC:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Subject: [PATCH v5 0/4] Add SPMI support for Mediatek MT6873/8192 SoC IC
+Date:   Wed, 23 Dec 2020 10:44:25 +0800
+Message-ID: <1608691469-20919-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+X-Mailer: git-send-email 2.6.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Dec 2020 21:24:41 -0500 Sasha Levin wrote:
-> From: Randy Dunlap <rdunlap@infradead.org>
-> 
-> [ Upstream commit 9364a2cf567187c0a075942c22d1f434c758de5d ]
-> 
-> Fix build errors when CONFIG_NET is not enabled. E.g. (trimmed):
+This series adds support for new SoC MT6873/8192 to the spmi driver.
+This series is based on Weiyi's patches[1].
 
-This one can be dropped, before wimax moved to staging the dependency
-was met thru the directory structure.
+[1] https://patchwork.kernel.org/project/linux-mediatek/patch/1608642587-15634-7-git-send-email-weiyi.lu@mediatek.com/
+
+changes since v4:
+- modify the constraint 'maxItems: 1' to 'minItems: 0'.
+- fix the error of the binding document.
+- refine the mtk spmi driver for the bettery quality.
+- add spmi node into MT8192 dtsi.
+
+Hsin-Hsiung Wang (4):
+  dt-bindings: spmi: modify the constraint 'maxItems' to 'minItems'
+  dt-bindings: spmi: document binding for the Mediatek SPMI controller
+  spmi: mediatek: Add support for MT6873/8192
+  arm64: dts: mt8192: add spmi node
+
+ .../bindings/spmi/mtk,spmi-mtk-pmif.yaml      |  74 +++
+ .../devicetree/bindings/spmi/spmi.yaml        |   2 +-
+ arch/arm64/boot/dts/mediatek/mt8192.dtsi      |  15 +
+ drivers/spmi/Kconfig                          |   9 +
+ drivers/spmi/Makefile                         |   1 +
+ drivers/spmi/spmi-mtk-pmif.c                  | 504 ++++++++++++++++++
+ 6 files changed, 604 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/spmi/mtk,spmi-mtk-pmif.yaml
+ create mode 100644 drivers/spmi/spmi-mtk-pmif.c
+
+-- 
+2.18.0
+
