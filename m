@@ -2,195 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 615EB2E19A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 09:10:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD9692E19AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 09:10:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728009AbgLWIJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 03:09:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29424 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727396AbgLWIJx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 03:09:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608710906;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=CUoz9Fn29C9Df8Vs54vj+uy2bgsUx7jnSu2PNikGcqs=;
-        b=YzoMbBPiOZ1lHWYXewKZ20e4WlKRF6IyZlomus0XqO6DeWqaPKefNU7mh8mOreUge+jY0e
-        yBUdPT/mu8eIFPoM2DM/HzbbSFg8/ScGTyr/mJJV24dSOE72X13rEKbxy7qgdd7ttwjzmE
-        e/Lq7i9yvD7CGabEs+Uqf1fytqCI2X8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-314-0j6yjygKPGqeRXh5IyKVRQ-1; Wed, 23 Dec 2020 03:08:22 -0500
-X-MC-Unique: 0j6yjygKPGqeRXh5IyKVRQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3E9FA8049C0;
-        Wed, 23 Dec 2020 08:08:21 +0000 (UTC)
-Received: from MiWiFi-R3L-srv.redhat.com (ovpn-13-111.pek2.redhat.com [10.72.13.111])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BE4A35D9D3;
-        Wed, 23 Dec 2020 08:08:18 +0000 (UTC)
-From:   Baoquan He <bhe@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
-        gopakumarr@vmware.com, rppt@kernel.org, david@redhat.com,
-        bhe@redhat.com
-Subject: [PATCH v3 1/1] mm: memmap defer init dosn't work as expected
-Date:   Wed, 23 Dec 2020 16:08:11 +0800
-Message-Id: <20201223080811.16211-2-bhe@redhat.com>
-In-Reply-To: <20201223080811.16211-1-bhe@redhat.com>
-References: <20201223080811.16211-1-bhe@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        id S1728088AbgLWIJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 03:09:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45494 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727396AbgLWIJz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 03:09:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C34D9207D0;
+        Wed, 23 Dec 2020 08:09:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1608710953;
+        bh=J6kqcsEQ81XygXB0ywB1eT/zGzb+piaMy92Q6gb+uHI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eAh3GZlUGSZgvf7GPACtF31xHjjf3snVP8mRBuA2SkcEP7jH0QBg7K9kHYfsdcwua
+         gxXrB+7OxQKakmE3oS0dIBaB6ebNnhJOu6cO3mraHT60VPUXpTmdicnpydwtf5l2tL
+         END9bkupuxwDPEHSXNaG8Xgkd2vnjLV3OzcQyZTM=
+Date:   Wed, 23 Dec 2020 09:09:10 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     =?iso-8859-1?B?Suly9G1l?= Pouiller <jerome.pouiller@silabs.com>
+Cc:     Kalle Valo <kvalo@codeaurora.org>, devel@driverdev.osuosl.org,
+        devicetree@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
+        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-mmc@vger.kernel.org,
+        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v3 09/24] wfx: add hwio.c/hwio.h
+Message-ID: <X+L7JmeL086SGFum@kroah.com>
+References: <20201104155207.128076-1-Jerome.Pouiller@silabs.com>
+ <87lfdp98rw.fsf@codeaurora.org>
+ <X+IQRct0Zsm87H4+@kroah.com>
+ <5567602.MhkbZ0Pkbq@pc-42>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5567602.MhkbZ0Pkbq@pc-42>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VMware observed a performance regression during memmap init on their platform,
-and bisected to commit 73a6e474cb376 ("mm: memmap_init: iterate over memblock
-regions rather that check each PFN") causing it.
+On Wed, Dec 23, 2020 at 09:01:33AM +0100, Jérôme Pouiller wrote:
+> On Tuesday 22 December 2020 16:27:01 CET Greg Kroah-Hartman wrote:
+> > On Tue, Dec 22, 2020 at 05:10:11PM +0200, Kalle Valo wrote:
+> > > Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
+> > >
+> > > > +/*
+> > > > + * Internal helpers.
+> > > > + *
+> > > > + * About CONFIG_VMAP_STACK:
+> > > > + * When CONFIG_VMAP_STACK is enabled, it is not possible to run DMA on stack
+> > > > + * allocated data. Functions below that work with registers (aka functions
+> > > > + * ending with "32") automatically reallocate buffers with kmalloc. However,
+> > > > + * functions that work with arbitrary length buffers let's caller to handle
+> > > > + * memory location. In doubt, enable CONFIG_DEBUG_SG to detect badly located
+> > > > + * buffer.
+> > > > + */
+> > >
+> > > This sounds very hacky to me, I have understood that you should never
+> > > use stack with DMA.
+> > 
+> > You should never do that because some platforms do not support it, so no
+> > driver should ever try to do that as they do not know what platform they
+> > are running on.
+> 
+> Just to be curious, why these platforms don't support DMA in a stack
+> allocated area?
 
-Before the commit:
+Hardware is odd :(
 
-  [0.033176] Normal zone: 1445888 pages used for memmap
-  [0.033176] Normal zone: 89391104 pages, LIFO batch:63
-  [0.035851] ACPI: PM-Timer IO Port: 0x448
+> If the memory is contiguous (= not vmalloced), correctly
+> aligned and in the first 4GB of physical memory, it should be sufficient,
+> shouldn't?
 
-With commit
+Nope, sorry, this just does not work at all on many platforms.
 
-  [0.026874] Normal zone: 1445888 pages used for memmap
-  [0.026875] Normal zone: 89391104 pages, LIFO batch:63
-  [2.028450] ACPI: PM-Timer IO Port: 0x448
+thanks,
 
-The root cause is the current memmap defer init doesn't work as expected.
-Before, memmap_init_zone() was used to do memmap init of one whole zone, to
-initialize all low zones of one numa node, but defer memmap init of the
-last zone in that numa node. However, since commit 73a6e474cb376, function
-memmap_init() is adapted to iterater over memblock regions inside one zone,
-then call memmap_init_zone() to do memmap init for each region.
-
-E.g, on VMware's system, the memory layout is as below, there are two memory
-regions in node 2. The current code will mistakenly initialize the whole 1st
-region [mem 0xab00000000-0xfcffffffff], then do memmap defer to iniatialize
-only one memmory section on the 2nd region [mem 0x10000000000-0x1033fffffff].
-In fact, we only expect to see that there's only one memory section's memmap
-initialized. That's why more time is costed at the time.
-
-[    0.008842] ACPI: SRAT: Node 0 PXM 0 [mem 0x00000000-0x0009ffff]
-[    0.008842] ACPI: SRAT: Node 0 PXM 0 [mem 0x00100000-0xbfffffff]
-[    0.008843] ACPI: SRAT: Node 0 PXM 0 [mem 0x100000000-0x55ffffffff]
-[    0.008844] ACPI: SRAT: Node 1 PXM 1 [mem 0x5600000000-0xaaffffffff]
-[    0.008844] ACPI: SRAT: Node 2 PXM 2 [mem 0xab00000000-0xfcffffffff]
-[    0.008845] ACPI: SRAT: Node 2 PXM 2 [mem 0x10000000000-0x1033fffffff]
-
-Now, let's add a parameter 'zone_end_pfn' to memmap_init_zone() to pass
-down the real zone end pfn so that defer_init() can use it to judge whether
-defer need be taken in zone wide.
-
-Fixes: commit 73a6e474cb376 ("mm: memmap_init: iterate over memblock regions rather that check each PFN")
-Reported-by: Rahul Gopakumar <gopakumarr@vmware.com>
-Signed-off-by: Baoquan He <bhe@redhat.com>
-Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
-Cc: stable@vger.kernel.org
----
- arch/ia64/mm/init.c | 4 ++--
- include/linux/mm.h  | 5 +++--
- mm/memory_hotplug.c | 2 +-
- mm/page_alloc.c     | 8 +++++---
- 4 files changed, 11 insertions(+), 8 deletions(-)
-
-diff --git a/arch/ia64/mm/init.c b/arch/ia64/mm/init.c
-index 9b5acf8fb092..e76386a3479e 100644
---- a/arch/ia64/mm/init.c
-+++ b/arch/ia64/mm/init.c
-@@ -536,7 +536,7 @@ virtual_memmap_init(u64 start, u64 end, void *arg)
- 
- 	if (map_start < map_end)
- 		memmap_init_zone((unsigned long)(map_end - map_start),
--				 args->nid, args->zone, page_to_pfn(map_start),
-+				 args->nid, args->zone, page_to_pfn(map_start), page_to_pfn(map_end),
- 				 MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
- 	return 0;
- }
-@@ -546,7 +546,7 @@ memmap_init (unsigned long size, int nid, unsigned long zone,
- 	     unsigned long start_pfn)
- {
- 	if (!vmem_map) {
--		memmap_init_zone(size, nid, zone, start_pfn,
-+		memmap_init_zone(size, nid, zone, start_pfn, start_pfn + size,
- 				 MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
- 	} else {
- 		struct page *start;
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 5299b90a6c40..af0d3a8d77f7 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2432,8 +2432,9 @@ extern int __meminit early_pfn_to_nid(unsigned long pfn);
- #endif
- 
- extern void set_dma_reserve(unsigned long new_dma_reserve);
--extern void memmap_init_zone(unsigned long, int, unsigned long, unsigned long,
--		enum meminit_context, struct vmem_altmap *, int migratetype);
-+extern void memmap_init_zone(unsigned long, int, unsigned long,
-+		unsigned long, unsigned long, enum meminit_context,
-+		struct vmem_altmap *, int migratetype);
- extern void setup_per_zone_wmarks(void);
- extern int __meminit init_per_zone_wmark_min(void);
- extern void mem_init(void);
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index c01604224299..789fceb4f2d5 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -713,7 +713,7 @@ void __ref move_pfn_range_to_zone(struct zone *zone, unsigned long start_pfn,
- 	 * expects the zone spans the pfn range. All the pages in the range
- 	 * are reserved so nobody should be touching them so we should be safe
- 	 */
--	memmap_init_zone(nr_pages, nid, zone_idx(zone), start_pfn,
-+	memmap_init_zone(nr_pages, nid, zone_idx(zone), start_pfn, 0,
- 			 MEMINIT_HOTPLUG, altmap, migratetype);
- 
- 	set_zone_contiguous(zone);
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 7a2c89b21115..bdbec4c98173 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -423,6 +423,8 @@ defer_init(int nid, unsigned long pfn, unsigned long end_pfn)
- 	if (end_pfn < pgdat_end_pfn(NODE_DATA(nid)))
- 		return false;
- 
-+	if (NODE_DATA(nid)->first_deferred_pfn != ULONG_MAX)
-+		return true;
- 	/*
- 	 * We start only with one section of pages, more pages are added as
- 	 * needed until the rest of deferred pages are initialized.
-@@ -6116,7 +6118,7 @@ overlap_memmap_init(unsigned long zone, unsigned long *pfn)
-  * zone stats (e.g., nr_isolate_pageblock) are touched.
-  */
- void __meminit memmap_init_zone(unsigned long size, int nid, unsigned long zone,
--		unsigned long start_pfn,
-+		unsigned long start_pfn, unsigned long zone_end_pfn,
- 		enum meminit_context context,
- 		struct vmem_altmap *altmap, int migratetype)
- {
-@@ -6152,7 +6154,7 @@ void __meminit memmap_init_zone(unsigned long size, int nid, unsigned long zone,
- 		if (context == MEMINIT_EARLY) {
- 			if (overlap_memmap_init(zone, &pfn))
- 				continue;
--			if (defer_init(nid, pfn, end_pfn))
-+			if (defer_init(nid, pfn, zone_end_pfn))
- 				break;
- 		}
- 
-@@ -6266,7 +6268,7 @@ void __meminit __weak memmap_init(unsigned long size, int nid,
- 
- 		if (end_pfn > start_pfn) {
- 			size = end_pfn - start_pfn;
--			memmap_init_zone(size, nid, zone, start_pfn,
-+			memmap_init_zone(size, nid, zone, start_pfn, range_end_pfn,
- 					 MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
- 		}
- 	}
--- 
-2.17.2
-
+greg k-h
