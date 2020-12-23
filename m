@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90CE72E128E
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:27:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D147F2E1293
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:27:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729515AbgLWCVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:21:55 -0500
+        id S1729592AbgLWCWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:22:15 -0500
 Received: from mail.kernel.org ([198.145.29.99]:49802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726903AbgLWCVw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:21:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8128C2332A;
-        Wed, 23 Dec 2020 02:21:36 +0000 (UTC)
+        id S1729561AbgLWCWI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:22:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 42FD922A99;
+        Wed, 23 Dec 2020 02:21:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690097;
-        bh=G2eiU8KbGiKzLpzj/6o0rq92g4n5T42u8zY5E4Ykp58=;
+        s=k20201202; t=1608690110;
+        bh=mCL/6JX8PjkAtZ/N2abdTYj3YjbBv9fu3lg3hFY6z3U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s0tCNt79fxiLYONY62R4ypdPIHupXG8P8JnQYpOLPjoASd9TQvHBJd+kXNFiCz3Jv
-         WhsZW+ilHUKjvS9/rTtKw3lqQWkMhqN+Z4+bEEW02/rEbGZBvb1RhDOX4AbO30hgU9
-         pwFqo8ZERYuFpnlyfCexzZJIeqHcOy8gXUfIeOsndKc1OO7cHP3G7yyhqRgXEnEdld
-         MfZe28JjnJv552XX0YIeo/E67YvXUxFVWlog++N1k8vbxMv4vlwxT3Uab9rsCchVlT
-         ph9RKdadoElA36s9BrsnnLBZVc2HZEL6Fw8iuGgqsj8q99w9axo+Y0rY1AE+6gNJQe
-         sacev+WpGrcLg==
+        b=V/NN+3AHEvYErDjKGlM/CBQLfJ7XECL2AWuLD5SMWH73GsFBGR4TKpaB3hqeHQ68U
+         5ZKTOvu2Ikzsn0dUull0z2wZEQqMj0/n/t7vjNyDq+5N4vh3w59sQEhCoB5ZcscolT
+         T7H8cs9mfxikCzKMSpXC3oppaDRIcd0E8NfV3TrlPBe9wggXWlZIidhXhOGSsHU4x7
+         LVp1V0+sG3WiZy9LX4B0cGVyiHkldVzIJe5dRoJRLRSZbtZokc3DtNX8MkUE6WYu6K
+         gVN0h3xs0AHxhhBGO5tWdvsl8B4yb8eK+VfW8dUIPNph94KkTXIwgHRgrbeqqT+l0Y
+         zgm45jFgFoSYg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 27/87] media: cec-core: first mark device unregistered, then wake up fhs
-Date:   Tue, 22 Dec 2020 21:20:03 -0500
-Message-Id: <20201223022103.2792705-27-sashal@kernel.org>
+Cc:     David Howells <dhowells@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, linux-afs@lists.infradead.org,
+        keyrings@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 38/87] rxrpc: Don't leak the service-side session key to userspace
+Date:   Tue, 22 Dec 2020 21:20:14 -0500
+Message-Id: <20201223022103.2792705-38-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223022103.2792705-1-sashal@kernel.org>
 References: <20201223022103.2792705-1-sashal@kernel.org>
@@ -42,43 +42,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+From: David Howells <dhowells@redhat.com>
 
-[ Upstream commit e91c255733d9bbb4978a372f44fb5ed689ccdbd1 ]
+[ Upstream commit d2ae4e918218f543214fbd906db68a6c580efbbb ]
 
-If a CEC device node is unregistered, then it should be marked as
-unregistered before waking up any filehandles that are waiting for
-an event.
+Don't let someone reading a service-side rxrpc-type key get access to the
+session key that was exchanged with the client.  The server application
+will, at some point, need to be able to read the information in the ticket,
+but this probably shouldn't include the key material.
 
-This ensures that there is no race condition where an application can
-call CEC_DQEVENT and have the ioctl return 0 instead of ENODEV.
-
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: David Howells <dhowells@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/cec/cec-core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/keys/rxrpc-type.h | 1 +
+ net/rxrpc/key.c           | 8 ++++++--
+ 2 files changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/cec/cec-core.c b/drivers/media/cec/cec-core.c
-index b278ab90b3871..1cd2f9d4a6045 100644
---- a/drivers/media/cec/cec-core.c
-+++ b/drivers/media/cec/cec-core.c
-@@ -160,12 +160,12 @@ static void cec_devnode_unregister(struct cec_adapter *adap)
- 		mutex_unlock(&devnode->lock);
- 		return;
- 	}
-+	devnode->registered = false;
-+	devnode->unregistered = true;
+diff --git a/include/keys/rxrpc-type.h b/include/keys/rxrpc-type.h
+index 8cf829dbf20ec..1cb996dac3238 100644
+--- a/include/keys/rxrpc-type.h
++++ b/include/keys/rxrpc-type.h
+@@ -88,6 +88,7 @@ struct rxk5_key {
+  */
+ struct rxrpc_key_token {
+ 	u16	security_index;		/* RxRPC header security index */
++	bool	no_leak_key;		/* Don't copy the key to userspace */
+ 	struct rxrpc_key_token *next;	/* the next token in the list */
+ 	union {
+ 		struct rxkad_key *kad;
+diff --git a/net/rxrpc/key.c b/net/rxrpc/key.c
+index 2fe2add62a8ed..dd8a12847b712 100644
+--- a/net/rxrpc/key.c
++++ b/net/rxrpc/key.c
+@@ -1077,7 +1077,8 @@ static long rxrpc_read(const struct key *key,
+ 		case RXRPC_SECURITY_RXKAD:
+ 			toksize += 8 * 4;	/* viceid, kvno, key*2, begin,
+ 						 * end, primary, tktlen */
+-			toksize += RND(token->kad->ticket_len);
++			if (!token->no_leak_key)
++				toksize += RND(token->kad->ticket_len);
+ 			break;
  
- 	list_for_each_entry(fh, &devnode->fhs, list)
- 		wake_up_interruptible(&fh->wait);
+ 		case RXRPC_SECURITY_RXK5:
+@@ -1181,7 +1182,10 @@ static long rxrpc_read(const struct key *key,
+ 			ENCODE(token->kad->start);
+ 			ENCODE(token->kad->expiry);
+ 			ENCODE(token->kad->primary_flag);
+-			ENCODE_DATA(token->kad->ticket_len, token->kad->ticket);
++			if (token->no_leak_key)
++				ENCODE(0);
++			else
++				ENCODE_DATA(token->kad->ticket_len, token->kad->ticket);
+ 			break;
  
--	devnode->registered = false;
--	devnode->unregistered = true;
- 	mutex_unlock(&devnode->lock);
- 
- 	mutex_lock(&adap->lock);
+ 		case RXRPC_SECURITY_RXK5:
 -- 
 2.27.0
 
