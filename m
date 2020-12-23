@@ -2,84 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 395F32E13AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:37:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C93E2E1360
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:37:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729713AbgLWCdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:33:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54254 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730425AbgLWCZP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:25:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B6DF229C5;
-        Wed, 23 Dec 2020 02:24:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690299;
-        bh=V9hK6tZTtM/ji+HJVscJbz4WI8B3CTyVYiz1PbLvnXs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ai1I5FmyMwx/34XoDqbh8/B7kjykZ6stIWAIe+V3s+WYfduNPH+ih60OzfNepPfyH
-         HphN8ATPwIkTxa9g8l+yZtVZzADKQ3KM50IoolkXJTtiKgNF7DXpfsUUrTCfpA1sL0
-         goFFYrfRgUDBrtZn1qoG0iCM0nTE6nyoR4jTz4evcCaBFjM4DTIreKLZh98oCA5D5W
-         csDV28B0BDh0BpSQdNV/VvGH2EZwEEwrNUxgvBrslU88+9zVegVl0tDS8E41ilIQlY
-         MZm8ZHoUuvcVTXyeUwpYDrron12de3fo+9JGifpnb1MBW9NpB2oDSyb0HThxcxf+bh
-         2epKPsv9hvfeQ==
-Date:   Tue, 22 Dec 2020 18:24:58 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Samuel Mendoza-Jonas <sam@mendozajonas.com>
-Cc:     Joel Stanley <joel@jms.id.au>,
-        John Wang <wangzhiqiang.bj@bytedance.com>,
-        xuxiaohan@bytedance.com,
-        =?UTF-8?B?6YOB?= =?UTF-8?B?6Zu3?= <yulei.sh@bytedance.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Gavin Shan <gwshan@linux.vnet.ibm.com>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] net/ncsi: Use real net-device for response handler
-Message-ID: <20201222182458.4651c564@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <4a9cab3660503483fd683c89c84787a7a1b492b1.camel@mendozajonas.com>
-References: <20201220123957.1694-1-wangzhiqiang.bj@bytedance.com>
-        <CACPK8XexOmUOdGmHCYVXVgA0z5m99XCAbixcgODSoUSRNCY+zA@mail.gmail.com>
-        <4a9cab3660503483fd683c89c84787a7a1b492b1.camel@mendozajonas.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+        id S1730370AbgLWC3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:29:07 -0500
+Received: from ptr.189.cn ([183.61.185.103]:11408 "EHLO 189.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730584AbgLWC3D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:29:03 -0500
+X-Greylist: delayed 340 seconds by postgrey-1.27 at vger.kernel.org; Tue, 22 Dec 2020 21:29:02 EST
+HMM_SOURCE_IP: 172.27.8.53:27451.1493386966
+HMM_ATTACHE_NUM: 0000
+HMM_SOURCE_TYPE: SMTP
+Received: from clientip-123.150.8.42 (unknown [172.27.8.53])
+        by 189.cn (HERMES) with SMTP id 122DE101C27;
+        Wed, 23 Dec 2020 10:26:15 +0800 (CST)
+Received: from  ([123.150.8.42])
+        by SZ-WEBMAIL05 with ESMTP id 42c2a5894e1849c3b508e583650a8a20 for greg@kroah.com;
+        Wed Dec 23 10:26:16 2020
+X-Transaction-ID: 42c2a5894e1849c3b508e583650a8a20
+X-filter-score: 
+X-Real-From: chensong_2000@189.cn
+X-Receive-IP: 123.150.8.42
+X-MEDUSA-Status: 0
+Sender: chensong_2000@189.cn
+From:   chensong <chensong_2000@189.cn>
+To:     greg@kroah.com, linux-kernel@vger.kernel.org
+Cc:     abbotti@mev.co.uk, hsweeten@visionengravers.com,
+        chensong@tj.kylinos.cn, chensong <chensong_2000@189.cn>
+Subject: [PATCH] staging: comedi: correct spelling mistakes of I/O port base address
+Date:   Wed, 23 Dec 2020 10:26:23 +0800
+Message-Id: <1608690383-30917-1-git-send-email-chensong_2000@189.cn>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Dec 2020 10:38:21 -0800 Samuel Mendoza-Jonas wrote:
-> On Tue, 2020-12-22 at 06:13 +0000, Joel Stanley wrote:
-> > On Sun, 20 Dec 2020 at 12:40, John Wang wrote:
-> > > When aggregating ncsi interfaces and dedicated interfaces to bond
-> > > interfaces, the ncsi response handler will use the wrong net device
-> > > to
-> > > find ncsi_dev, so that the ncsi interface will not work properly.
-> > > Here, we use the net device registered to packet_type to fix it.
-> > >=20
-> > > Fixes: 138635cc27c9 ("net/ncsi: NCSI response packet handler")
-> > > Signed-off-by: John Wang <wangzhiqiang.bj@bytedance.com> =20
+"base" was double input in comment line "I/O port base
+address", remove one of them.
 
-This sounds like exactly the case for which orig_dev was introduced.
-I think you should use the orig_dev argument, rather than pt->dev.
+Signed-off-by: chensong <chensong_2000@189.cn>
+---
+ drivers/staging/comedi/drivers/dt2815.c | 2 +-
+ drivers/staging/comedi/drivers/dt2817.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Can you test if that works?
+diff --git a/drivers/staging/comedi/drivers/dt2815.c b/drivers/staging/comedi/drivers/dt2815.c
+index 5906f32..2be2406 100644
+--- a/drivers/staging/comedi/drivers/dt2815.c
++++ b/drivers/staging/comedi/drivers/dt2815.c
+@@ -17,7 +17,7 @@
+  * contrary, please update.
+  *
+  * Configuration options:
+- * [0] - I/O port base base address
++ * [0] - I/O port base address
+  * [1] - IRQ (unused)
+  * [2] - Voltage unipolar/bipolar configuration
+  *	0 == unipolar 5V  (0V -- +5V)
+diff --git a/drivers/staging/comedi/drivers/dt2817.c b/drivers/staging/comedi/drivers/dt2817.c
+index 7c1463e..a173394 100644
+--- a/drivers/staging/comedi/drivers/dt2817.c
++++ b/drivers/staging/comedi/drivers/dt2817.c
+@@ -21,7 +21,7 @@
+  * with 32 channels, configurable in groups of 8.
+  *
+  * Configuration options:
+- * [0] - I/O port base base address
++ * [0] - I/O port base address
+  */
+ 
+ #include <linux/module.h>
+-- 
+2.7.4
 
-> > Can you show me how to reproduce this?
-> >=20
-> > I don't know the ncsi or net code well enough to know if this is the
-> > correct fix. If you are confident it is correct then I have no
-> > objections. =20
->=20
-> This looks like it is probably right; pt->dev will be the original
-> device from ncsi_register_dev(), if a response comes in to
-> ncsi_rcv_rsp() associated with a different device then the driver will
-> fail to find the correct ncsi_dev_priv. An example of the broken case
-> would be good to see though.
-
-=46rom the description sounds like the case is whenever the ncsi
-interface is in a bond, the netdev from the second argument is=20
-the bond not the interface from which the frame came. It should=20
-be possible to repro even with only one interface on the system,
-create a bond or a team and add the ncsi interface to it.
-
-Does that make sense? I'm likely missing the subtleties here.
