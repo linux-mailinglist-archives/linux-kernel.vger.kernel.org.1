@@ -2,184 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB55D2E18B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 07:00:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A4CC2E18A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 06:58:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727415AbgLWF6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 00:58:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41272 "EHLO
+        id S1727241AbgLWF6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 00:58:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726558AbgLWF6j (ORCPT
+        with ESMTP id S1726069AbgLWF57 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 00:58:39 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF638C0617A6
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 21:57:43 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id c22so9910295pgg.13
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 21:57:43 -0800 (PST)
+        Wed, 23 Dec 2020 00:57:59 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36EF5C0613D3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 21:57:19 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id s15so4173604plr.9
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Dec 2020 21:57:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endlessos.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=CiAgmQ36u6t1yLjWQZDdT7pzao39fW0trdj2Djils5w=;
-        b=Aj9AiNmpI3ngrDbHOyqi+PQNIbGBhjx3ScIHMIS/espemOofGoMO18eMcFt87Dnb3d
-         Z/niVLsxw7lIwymZEm32hNNRKtK5LvrGhtEra13GrNzq7+vVEijz0jLVKugWW4ESPrad
-         hZqFUFtcwumKeyMs4tAJB6VFCVUlDRQ9rFou1Z2Gmj36wkVfs0cF5QWtN84Xp8fnho+X
-         SdFeH3ieNMql/EAAzMwJaEHnR0Dte1ghYJH/WMytRHI9bCQjcz6Vv+x9cu5Y/WBOVFqe
-         aCdfsExgxXmPHPT2h8TPyR1YqzbM9RkrrcQopiRJKtScfvFPZliBi7t3r7MjpZ/6zm2j
-         M76Q==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=lJW5Pmu0e9Bh/oQqoiiF+Gb9g3MgQRYVOM3hqkPUzNs=;
+        b=W5YJc6EiiWk23cUCGsgoEZThjaHKBFlEG4O2cgRcXu+x5+1ODHw6d3bAyttpAh4Npy
+         yhDhQA4+L+oz4wy8QflysfNhX4OfzqA0qNs/SHpKza5WXKgrPbKjAZqXsxt3M6+5uj5+
+         VPzhmEJIKzlbozEEPWm1XL8KIXiyyOKO2HmVu9XxWuzA1/dlfxbwhMlk6o4r2lNa/tYB
+         koUJs3PACOOeP10gRbtLplfNUPU/AAwjZHrgwyo0byxhHtSGWR9eYNFuLyVygLLz+QCX
+         6yGQiSn1spMfKd1SRklgKWo8kYn0YWbHteDUGgx/252nlqC2vuCSM8Grhs1IDDtLRYP5
+         ah0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=CiAgmQ36u6t1yLjWQZDdT7pzao39fW0trdj2Djils5w=;
-        b=PwTaevnVxF5eOSHDYIEaRhz2I6xXJMeUhE6YBPb4MREUBXIj4EvPP7jabBginujGMp
-         IdVsF9XbWNABUWUkFWTwh9r6rrKyMX9EtPQYhGc4Gz8aje+DxBtMqQhOMQG3yhqvSd/k
-         VxeLpbc2Na1ixt/3JTrXNbUtBJl6iESFciysR+V1cUc0PcsqcFHFo0qW6T1lNkN+CvY3
-         q92Xkxc7UyClbyX5piYMrcPhGuc8SB9yOVlwGGoX0VUnDwueBdpiZc5Ub3JyLPFDRsCQ
-         6uw8wadt/sSfWALgIhSlMrF1dNHDwxnsBQut+qDGncooXjJfr5ulJL/csZStmKFBQrID
-         xJOA==
-X-Gm-Message-State: AOAM532QQ1cjJeB3OFloUL0W1Og+1C+Tc/OuusYCT+BrtddE+LH3Rmp1
-        SEqRWvnGXYt7t7W9I44D9dH0tw==
-X-Google-Smtp-Source: ABdhPJy/Mna24FjtVPdXq1LCAcAPodL3GkBJzm6psYz8+aLYqqfRLVyJy2BH/2KXr4OlWPjvjBPIJw==
-X-Received: by 2002:a63:2045:: with SMTP id r5mr23301752pgm.6.1608703063365;
-        Tue, 22 Dec 2020 21:57:43 -0800 (PST)
-Received: from starnight.localdomain (123-204-46-122.static.seed.net.tw. [123.204.46.122])
-        by smtp.googlemail.com with ESMTPSA id h12sm22403656pgs.7.2020.12.22.21.57.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Dec 2020 21:57:42 -0800 (PST)
-From:   Jian-Hong Pan <jhp@endlessos.org>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Chris Chiu <chiu@endlessos.org>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux@endlessos.org, Jian-Hong Pan <jhp@endlessos.org>
-Subject: [PATCH v2] HID: Add Wireless Radio Control feature for Chicony devices
-Date:   Wed, 23 Dec 2020 13:55:41 +0800
-Message-Id: <20201223055540.204685-1-jhp@endlessos.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <CAB4CAwfFQrMDYuzjL2nuUnHgXO031ty-mA7GGxW+-nHFkZTGTg@mail.gmail.com>
-References: <CAB4CAwfFQrMDYuzjL2nuUnHgXO031ty-mA7GGxW+-nHFkZTGTg@mail.gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=lJW5Pmu0e9Bh/oQqoiiF+Gb9g3MgQRYVOM3hqkPUzNs=;
+        b=PRG1iaQuNZlC6nXer1v74kEkvWuv9jx35Cb4V0Dlde25IxFRR58vHQFHCHvlTEAjtI
+         LNlXCe4cqUdud6c5VlHG0aSo+5ZXuwiNI2M8cQYiy3o2x44ZZxBaObGF1wrPt6bTS3d3
+         u9iKAIo8L6z3Ue4gY450M9LjXPoD+VK07k6ieW8oEGvpeGlA3L3cxuYjkPS6hc1kwi5g
+         sIKPM3iBN92HrX355F8s9QMSspX8Rk6toGD5YdbLPnw60rBeyYJdOTNAzwRBKZzni5Mh
+         F2ZL5nKwvke/Pw6eqWGY/uVmuYm+7rAs8gItM2fX85FThU21xv9CvbKVpoRnHdCFtDH/
+         6bQw==
+X-Gm-Message-State: AOAM532ufct16bOJnkGA3AFEKD/aLOqQwnAyvJZ1+Bn1WwAKJOK8wAhE
+        fLiOeOfzgecqt0R9gzUqusumFQ==
+X-Google-Smtp-Source: ABdhPJwsLgoGssujAxswnWOsu8NXhLnCPjFpMxnGOCgLNcgnd+pdiKB2jV1BoCNGdPUko3cGZpeLtQ==
+X-Received: by 2002:a17:90a:cb84:: with SMTP id a4mr25789987pju.50.1608703038680;
+        Tue, 22 Dec 2020 21:57:18 -0800 (PST)
+Received: from localhost ([122.172.20.109])
+        by smtp.gmail.com with ESMTPSA id w7sm22839140pgr.48.2020.12.22.21.57.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 22 Dec 2020 21:57:17 -0800 (PST)
+Date:   Wed, 23 Dec 2020 11:27:15 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Subject: Re: [PATCH v2 28/48] soc/tegra: Introduce core power domain driver
+Message-ID: <20201223055715.2n5eba7fohrwpgr5@vireshk-i7>
+References: <20201217180638.22748-1-digetx@gmail.com>
+ <20201217180638.22748-29-digetx@gmail.com>
+ <20201222064029.duuzcsj53rt7xzvt@vireshk-i7>
+ <c130f78d-3d97-9b26-be77-951fee0d8680@gmail.com>
+ <3a5c00e5-2cdd-35ce-2714-d4ffbf9d516a@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <3a5c00e5-2cdd-35ce-2714-d4ffbf9d516a@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some Chicony's keyboards support airplane mode hotkey (Fn+F2) with
-"Wireless Radio Control" feature. For example, the wireless keyboard
-[04f2:1236] shipped with ASUS all-in-one desktop.
+On 22-12-20, 22:39, Dmitry Osipenko wrote:
+> 22.12.2020 22:21, Dmitry Osipenko пишет:
+> >>> +	if (IS_ERR(opp)) {
+> >>> +		dev_err(&genpd->dev, "failed to find OPP for level %u: %pe\n",
+> >>> +			level, opp);
+> >>> +		return PTR_ERR(opp);
+> >>> +	}
+> >>> +
+> >>> +	err = dev_pm_opp_set_voltage(&genpd->dev, opp);
+> >> IIUC, you implemented this callback because you want to use the voltage triplet
+> >> present in the OPP table ?
+> >>
+> >> And so you are setting the regulator ("power") later in this patch ?
+> > yes
+> > 
+> >> I am not in favor of implementing this routine, as it just adds a wrapper above
+> >> the regulator API. What you should be doing rather is get the regulator by
+> >> yourself here (instead of depending on the OPP core). And then you can do
+> >> dev_pm_opp_get_voltage() here and set the voltage yourself. You may want to
+> >> implement a version supporting triplet here though for the same.
+> >>
+> >> And you won't require the sync version of the API as well then.
+> >>
+> > That's what I initially did for this driver. I don't mind to revert back
+> > to the initial variant in v3, it appeared to me that it will be nicer
+> > and cleaner to have OPP API managing everything here.
+> 
+> I forgot one important detail (why the initial variant wasn't good)..
+> OPP entries that have unsupportable voltages should be filtered out and
+> OPP core performs the filtering only if regulator is assigned to the OPP
+> table.
+> 
+> If regulator is assigned to the OPP table, then we need to use OPP API
+> for driving the regulator, hence that's why I added
+> dev_pm_opp_sync_regulators() and dev_pm_opp_set_voltage().
+> 
+> Perhaps it should be possible to add dev_pm_opp_get_regulator() that
 
-After consulting Chicony for this hotkey, learned the device will send
-with 0x11 as the report ID and 0x1 as the value when the key is pressed
-down.
+What's wrong with getting the regulator in the driver as well ? Apart from the
+OPP core ?
 
-This patch maps the event as KEY_RFKILL.
+> will return the OPP table regulator in order to allow driver to use the
+> regulator directly. But I'm not sure whether this is a much better
+> option than the opp_sync_regulators() and opp_set_voltage() APIs.
 
-Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
----
-v2: Remove the duplicated key pressed check.
+set_voltage() is still fine as there is some data that the OPP core has, but
+sync_regulator() has nothing to do with OPP core.
 
- drivers/hid/hid-chicony.c | 55 +++++++++++++++++++++++++++++++++++++++
- drivers/hid/hid-ids.h     |  1 +
- 2 files changed, 56 insertions(+)
+And this may lead to more wrapper helpers in the OPP core, which I am afraid of.
+And so even if it is not the best, I would like the OPP core to provide the data
+and not get into this. Ofcourse there is an exception to this, opp_set_rate.
 
-diff --git a/drivers/hid/hid-chicony.c b/drivers/hid/hid-chicony.c
-index 3f0ed6a95223..ca556d39da2a 100644
---- a/drivers/hid/hid-chicony.c
-+++ b/drivers/hid/hid-chicony.c
-@@ -21,6 +21,39 @@
- 
- #include "hid-ids.h"
- 
-+#define CH_WIRELESS_CTL_REPORT_ID	0x11
-+
-+static int ch_report_wireless(struct hid_report *report, u8 *data, int size)
-+{
-+	struct hid_device *hdev = report->device;
-+	struct input_dev *input;
-+
-+	if (report->id != CH_WIRELESS_CTL_REPORT_ID || report->maxfield != 1)
-+		return 0;
-+
-+	input = report->field[0]->hidinput->input;
-+	if (!input) {
-+		hid_warn(hdev, "can't find wireless radio control's input");
-+		return 0;
-+	}
-+
-+	input_report_key(input, KEY_RFKILL, 1);
-+	input_sync(input);
-+	input_report_key(input, KEY_RFKILL, 0);
-+	input_sync(input);
-+
-+	return 1;
-+}
-+
-+static int ch_raw_event(struct hid_device *hdev,
-+		struct hid_report *report, u8 *data, int size)
-+{
-+	if (report->application == HID_GD_WIRELESS_RADIO_CTLS)
-+		return ch_report_wireless(report, data, size);
-+
-+	return 0;
-+}
-+
- #define ch_map_key_clear(c)	hid_map_usage_clear(hi, usage, bit, max, \
- 					EV_KEY, (c))
- static int ch_input_mapping(struct hid_device *hdev, struct hid_input *hi,
-@@ -77,10 +110,30 @@ static __u8 *ch_switch12_report_fixup(struct hid_device *hdev, __u8 *rdesc,
- 	return rdesc;
- }
- 
-+static int ch_probe(struct hid_device *hdev, const struct hid_device_id *id)
-+{
-+	int ret;
-+
-+	hdev->quirks |= HID_QUIRK_INPUT_PER_APP;
-+	ret = hid_parse(hdev);
-+	if (ret) {
-+		hid_err(hdev, "Chicony hid parse failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = hid_hw_start(hdev, HID_CONNECT_DEFAULT);
-+	if (ret) {
-+		hid_err(hdev, "Chicony hw start failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
- 
- static const struct hid_device_id ch_devices[] = {
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_CHICONY, USB_DEVICE_ID_CHICONY_TACTICAL_PAD) },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_CHICONY, USB_DEVICE_ID_CHICONY_WIRELESS2) },
-+	{ HID_USB_DEVICE(USB_VENDOR_ID_CHICONY, USB_DEVICE_ID_CHICONY_WIRELESS3) },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_CHICONY, USB_DEVICE_ID_CHICONY_ACER_SWITCH12) },
- 	{ }
- };
-@@ -91,6 +144,8 @@ static struct hid_driver ch_driver = {
- 	.id_table = ch_devices,
- 	.report_fixup = ch_switch12_report_fixup,
- 	.input_mapping = ch_input_mapping,
-+	.probe = ch_probe,
-+	.raw_event = ch_raw_event,
- };
- module_hid_driver(ch_driver);
- 
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index 4c5f23640f9c..06d90301a3dc 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -270,6 +270,7 @@
- #define USB_DEVICE_ID_CHICONY_PIXART_USB_OPTICAL_MOUSE	0x1053
- #define USB_DEVICE_ID_CHICONY_PIXART_USB_OPTICAL_MOUSE2	0x0939
- #define USB_DEVICE_ID_CHICONY_WIRELESS2	0x1123
-+#define USB_DEVICE_ID_CHICONY_WIRELESS3	0x1236
- #define USB_DEVICE_ID_ASUS_AK1D		0x1125
- #define USB_DEVICE_ID_CHICONY_TOSHIBA_WT10A	0x1408
- #define USB_DEVICE_ID_CHICONY_ACER_SWITCH12	0x1421
 -- 
-2.29.2
-
+viresh
