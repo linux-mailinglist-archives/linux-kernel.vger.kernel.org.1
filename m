@@ -2,79 +2,337 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F3842E1C8F
+	by mail.lfdr.de (Postfix) with ESMTP id ED1F02E1C90
 	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 14:32:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728604AbgLWN3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 08:29:33 -0500
-Received: from foss.arm.com ([217.140.110.172]:50120 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727422AbgLWN3d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 08:29:33 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 97FAE30E;
-        Wed, 23 Dec 2020 05:28:47 -0800 (PST)
-Received: from e107158-lin (unknown [10.1.194.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 626B33F66E;
-        Wed, 23 Dec 2020 05:28:46 -0800 (PST)
-Date:   Wed, 23 Dec 2020 13:28:43 +0000
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     YANG LI <abaci-bugfix@linux.alibaba.com>
-Cc:     tglx@linutronix.de, peterz@infradead.org, mpe@ellerman.id.au,
-        bristot@redhat.com, ethp@qq.co, npiggin@gmail.com, arnd@arndb.de,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kernel/cpu: fix: use scnprintf or sprintf.
-Message-ID: <20201223132843.5xqiwm6che3nbndd@e107158-lin>
-References: <1608628299-124339-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+        id S1728656AbgLWNaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 08:30:22 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:30717 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727160AbgLWNaV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 08:30:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1608730220; x=1640266220;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Uj4DgBXjn7cjAX1n2PgHvT65+CnWhWza9EYwXvd/c7k=;
+  b=D7w9csvib0fYx3vtrLkmBBTMtWPj9TXiXA9pSROc+WCaSpxEmDjBPd5M
+   +9gB6LmaCBJc1RSXTsIrAGe337ersECmUb/wElryI8wRQR5csmchOF9el
+   svJo+byxpNSIJoJlDPFXmak30DWte3qxnG1uVZ/Fe2do1Ax2+b/5LxRcs
+   PyUg1+rjH1Af60QDlQx3rbMlb4kddBgX6a19aUhQHHZdRq3SfMR/I9EnR
+   OXPGmNRxddaP//m6A3Ii/EFECjtzlZY8eCRA2LShpCQNJdE7WBddNRj71
+   KhWo5Rx8Uxwcfub/GimhQH30b93FeanoiJ+qeStKI1BOJZjUCWAVvWedz
+   A==;
+IronPort-SDR: lt15U4MpYgc1VaNWIBcb2K5rqwzgpE5prDrNuzOdGrvuzYo//5Nsl7ctbFenkOW+WYshGVGnTG
+ mPBefYVHaJiM5FeHD+6Omx3lHrQ11heQZblNB13htAu2zXy0nvjxakGL4R87NDYqAlSVvPojF2
+ 6hz8Kvv9rbOTcKJy2j5x5K/zm4+EF8uU8kG2wYzayAiO3vM0DOPckkZI9uCqkpmReBUkAF1P9D
+ Uf7s6i0UU1SUQpBOJpRFoN4ajflwUtKmKyfPatS8ArFv7GwJP0fbWzpn65zSSZc5XSGiPGDs42
+ RbM=
+X-IronPort-AV: E=Sophos;i="5.78,441,1599548400"; 
+   d="scan'208";a="38411225"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Dec 2020 06:29:04 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 23 Dec 2020 06:29:04 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Wed, 23 Dec 2020 06:29:04 -0700
+Date:   Wed, 23 Dec 2020 14:29:03 +0100
+From:   Steen Hegelund <steen.hegelund@microchip.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Mark Einon <mark.einon@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [RFC PATCH v2 3/8] net: sparx5: add hostmode with phylink support
+Message-ID: <20201223132903.gkle4552uahgqk55@mchp-dev-shegelun>
+References: <20201217075134.919699-1-steen.hegelund@microchip.com>
+ <20201217075134.919699-4-steen.hegelund@microchip.com>
+ <20201219195133.GD3026679@lunn.ch>
+ <fabe6df8e8d1fab86860164ced4142afae3bd70d.camel@microchip.com>
+ <20201222144141.GK3107610@lunn.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Disposition: inline
-In-Reply-To: <1608628299-124339-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+In-Reply-To: <20201222144141.GK3107610@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yang
+Hi Andrew,
 
-'or sprintf' in the subject line doesn't make much sense for what's done in
-this patch. Perhaps you meant "Use scnprintf instead of snprintf"?
+On 22.12.2020 15:41, Andrew Lunn wrote:
+>EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+>
+>On Tue, Dec 22, 2020 at 10:46:12AM +0100, Steen Hegelund wrote:
+>> Hi Andrew,
+>>
+>> On Sat, 2020-12-19 at 20:51 +0100, Andrew Lunn wrote:
+>> > EXTERNAL EMAIL: Do not click links or open attachments unless you
+>> > know the content is safe
+>> >
+>> > > +     /* Create a phylink for PHY management.  Also handles SFPs */
+>> > > +     spx5_port->phylink_config.dev = &spx5_port->ndev->dev;
+>> > > +     spx5_port->phylink_co
+>> > > nfig.type = PHYLINK_NETDEV;
+>> > > +     spx5_port->phylink_config.pcs_poll = true;
+>> > > +
+>> > > +     /* phylink needs a valid interface mode to parse dt node */
+>> > > +     if (phy_mode == PHY_INTERFACE_MODE_NA)
+>> > > +             phy_mode = PHY_INTERFACE_MODE_10GBASER;
+>> >
+>> > Maybe just enforce a valid value in DT?
+>>
+>> Maybe I need to clarify that you must choose between an Ethernet cuPHY
+>> or an SFP, so it is optional.
+>
+>But you also need to watch out for somebody putting a copper modules
+>in an SFP port. phylink will then set the mode to SGMII for a 1G
+>copper module, etc.
+>
+The cuPHY SFPs are handled by phylink out-of-the-box if the
+kernel has added support for the particular cuPHY driver, and that is
+done just by specifying the SFP phandle.
+So here we just need to know if the user has attached a cuPHY directly
+or an SFP.
 
-On 12/22/20 17:11, YANG LI wrote:
-> The snprintf() function returns the number of characters which would
-> have been printed if there were enough space, but the scnprintf()
-> returns the number of characters which were actually printed. If the
-> buffer is not large enough, then using snprintf() would result in a
-> read overflow and an information leak.
-> 
-> Signed-off-by: YANG LI <abaci-bugfix@linux.alibaba.com>
-> Reported-by: Abaci <abaci@linux.alibaba.com>
+The phylink_of_phy_connect function provides a way to add a cuPHY
+direcly to the PHYLINK instance, but I have not found a way that you can
+specify a specific cuPHY embedded in an SFP, so here PHYLINK determines
+what is the appropriate PHY (driver) to use.
 
-Two different yet very similar email addresses, it seems both are you? The
-Reported-by is unnecessary.
+Could this be done in a simpler way?
 
-> ---
->  kernel/cpu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/cpu.c b/kernel/cpu.c
-> index 4e11e91..c123741 100644
-> --- a/kernel/cpu.c
-> +++ b/kernel/cpu.c
-> @@ -2345,7 +2345,7 @@ static ssize_t show_cpuhp_states(struct device *dev,
->  {
->  	const char *state = smt_states[cpu_smt_control];
->  
-> -	return snprintf(buf, PAGE_SIZE - 2, "%s\n", state);
-> +	return scnprintf(buf, PAGE_SIZE - 2, "%s\n", state);
+>> > > +/* Configuration */
+>> > > +static inline bool sparx5_use_cu_phy(struct sparx5_port *port)
+>> > > +{
+>> > > +     return port->conf.phy_mode != PHY_INTERFACE_MODE_NA;
+>> > > +}
+>> >
+>> > That is a rather odd definition of copper.
+>>
+>> Should I rather use a bool property to select between the two options
+>> (cuPHY or SFP)?
+>
+>I guess what you are trying to indicate is between a hard wired Copper
+>PHY and an SFP cage? You have some sort of MII switch which allows the
+>MAC to be connected to either the QSGMII PHY, or an SFP cage? But
+>since the SFP cage could be populated with a copper PHY, and PHYLINK
+>will then instantiate a phylib copper PHY driver for it, looking at
+>phy_mode is not reliable. You need a property which selects the port,
+>not the technology.
 
-show_cpuhp_states() doesn't have snprintf() in Linus' master. Which tree is
-this based on?
+Yes the intention was to be able to distinguish between the hardwired 
+cuPHY case and the SFP case.
 
-I can see two snprintf() in cpu.c, show_smt_active/control().
+I am OK with adding a property to distinguish between the two cases, but
+if the SFP handle is present, PHYLINK has been able to handle an
+embedded cuPHY (if the driver is available) and use that in the tests
+that I have done so far. So my thinking was that if a phy handle is
+present, then the user wants a directly attached cuPHY, not an SFP.
 
-Mind resend to fix them both?
+>
+>> > > +static int sparx5_port_open(struct net_device *ndev)
+>> > > +{
+>> > > +     struct sparx5_port *port = netdev_priv(ndev);
+>> > > +     int err = 0;
+>> > > +
+>> > > +     err = phylink_of_phy_connect(port->phylink, port->of_node,
+>> > > 0);
+>> > > +     if (err) {
+>> > > +             netdev_err(ndev, "Could not attach to PHY\n");
+>> > > +             return err;
+>> > > +     }
+>> > > +
+>> > > +     phylink_start(port->phylink);
+>> > > +
+>> > > +     if (!ndev->phydev) {
+>> >
+>> > Humm. When is ndev->phydev set? I don't think phylink ever sets it.
+>>
+>> Indirectly: phylink_of_phy_connect uses phy_attach_direct and that sets
+>> the phydev.
+>
+>Ah, O.K. But watch out for a copper SFP module!
 
-Thanks
+Hmm, my expectation is that we have this covered by now.
 
---
-Qais Yousef
+>
+>> > > +static void sparx5_xtr_grp(struct sparx5 *sparx5, u8 grp, bool
+>> > > byte_swap)
+>> > > +{
+>> > > +     int i, byte_cnt = 0;
+>> > > +     bool eof_flag = false, pruned_flag = false, abort_flag =
+>> > > false;
+>> > > +     u32 ifh[IFH_LEN];
+>> > > +     struct sk_buff *skb;
+>> > > +     struct frame_info fi;
+>> > > +     struct sparx5_port *port;
+>> > > +     struct net_device *netdev;
+>> > > +     u32 *rxbuf;
+>> > > +
+>> > > +     /* Get IFH */
+>> > > +     for (i = 0; i < IFH_LEN; i++)
+>> > > +             ifh[i] = spx5_rd(sparx5, QS_XTR_RD(grp));
+>> > > +
+>> > > +     /* Decode IFH (whats needed) */
+>> > > +     sparx5_ifh_parse(ifh, &fi);
+>> > > +
+>> > > +     /* Map to port netdev */
+>> > > +     port = fi.src_port < SPX5_PORTS ?
+>> > > +             sparx5->ports[fi.src_port] : NULL;
+>> > > +     if (!port || !port->ndev) {
+>> > > +             dev_err(sparx5->dev, "Data on inactive port %d\n",
+>> > > fi.src_port);
+>> > > +             sparx5_xtr_flush(sparx5, grp);
+>> > > +             return;
+>> > > +     }
+>> > > +
+>> > > +     /* Have netdev, get skb */
+>> > > +     netdev = port->ndev;
+>> > > +     skb = netdev_alloc_skb(netdev, netdev->mtu + ETH_HLEN);
+>> > > +     if (!skb) {
+>> > > +             sparx5_xtr_flush(sparx5, grp);
+>> > > +             dev_err(sparx5->dev, "No skb allocated\n");
+>> > > +             return;
+>> > > +     }
+>> > > +     rxbuf = (u32 *)skb->data;
+>> > > +
+>> > > +     /* Now, pull frame data */
+>> > > +     while (!eof_flag) {
+>> > > +             u32 val = spx5_rd(sparx5, QS_XTR_RD(grp));
+>> > > +             u32 cmp = val;
+>> > > +
+>> > > +             if (byte_swap)
+>> > > +                     cmp = ntohl((__force __be32)val);
+>> > > +
+>> > > +             switch (cmp) {
+>> > > +             case XTR_NOT_READY:
+>> > > +                     break;
+>> > > +             case XTR_ABORT:
+>> > > +                     /* No accompanying data */
+>> > > +                     abort_flag = true;
+>> > > +                     eof_flag = true;
+>> > > +                     break;
+>> > > +             case XTR_EOF_0:
+>> > > +             case XTR_EOF_1:
+>> > > +             case XTR_EOF_2:
+>> > > +             case XTR_EOF_3:
+>> > > +                     /* This assumes STATUS_WORD_POS == 1, Status
+>> > > +                      * just after last data
+>> > > +                      */
+>> > > +                     byte_cnt -= (4 - XTR_VALID_BYTES(val));
+>> > > +                     eof_flag = true;
+>> > > +                     break;
+>> > > +             case XTR_PRUNED:
+>> > > +                     /* But get the last 4 bytes as well */
+>> > > +                     eof_flag = true;
+>> > > +                     pruned_flag = true;
+>> > > +                     fallthrough;
+>> > > +             case XTR_ESCAPE:
+>> > > +                     *rxbuf = spx5_rd(sparx5, QS_XTR_RD(grp));
+>> > > +                     byte_cnt += 4;
+>> > > +                     rxbuf++;
+>> > > +                     break;
+>> > > +             default:
+>> > > +                     *rxbuf = val;
+>> > > +                     byte_cnt += 4;
+>> > > +                     rxbuf++;
+>> > > +             }
+>> > > +     }
+>> > > +
+>> > > +     if (abort_flag || pruned_flag || !eof_flag) {
+>> > > +             netdev_err(netdev, "Discarded frame: abort:%d
+>> > > pruned:%d eof:%d\n",
+>> > > +                        abort_flag, pruned_flag, eof_flag);
+>> > > +             kfree_skb(skb);
+>> > > +             return;
+>> > > +     }
+>> > > +
+>> > > +     if (!netif_oper_up(netdev)) {
+>> > > +             netdev_err(netdev, "Discarded frame: Interface not
+>> > > up\n");
+>> > > +             kfree_skb(skb);
+>> > > +             return;
+>> > > +     }
+>> >
+>> > Why is it sending frames when it is not up?
+>>
+>> This is intended for received frames. A situation where the lower
+>> layers have been enabled correctly but not the port.
+>
+>But why should that happen? It suggests you have the order wrong. The
+>lower level should only be enabled once the port is opened.
+
+Yes, on second thought I think this was added to capture an error
+situation with a particular cuPHY that we were testing.
+It should be removed now.
+>
+>> > No DMA? What sort of performance do you get? Enough for the odd BPDU,
+>> > IGMP frame etc, but i guess you don't want any real bulk data to be
+>> > sent this way?
+>>
+>> Yes the register based injection/extration is not going to be fast, but
+>> the FDMA and its driver is being sent later as separate series to keep
+>> the size of this review down.
+>
+>FDMA?
+
+Ah, I should qualify this a bit more: A "Frame DMA" to transfer rx/tx
+frames via CPU ports instead of the register based injection/extraction
+that is in the driver at the moment.
+>
+>I need a bit more background here, just to make use this should be a
+>pure switchdev driver and not a DSA driver.
+>
+It is not a DSA driver (if I have understood the principle correctly).
+>>
+>> >
+>> > > +irqreturn_t sparx5_xtr_handler(int irq, void *_sparx5)
+>> > > +{
+>> > > +     struct sparx5 *sparx5 = _sparx5;
+>> > > +
+>> > > +     /* Check data in queue */
+>> > > +     while (spx5_rd(sparx5, QS_XTR_DATA_PRESENT) & BIT(XTR_QUEUE))
+>> > > +             sparx5_xtr_grp(sparx5, XTR_QUEUE, false);
+>> > > +
+>> > > +     return IRQ_HANDLED;
+>> > > +}
+>> >
+>> > Is there any sort of limit how many times this will loop? If somebody
+>> > is blasting 10Gbps at the CPU, will it ever get out of this loop?
+>>
+>> Hmmm, not at the moment but this is because the FDMA driver is intended
+>> to be used in these scenarios.
+>
+>So throwing out an idea, which might be terrible. How about limiting
+>it to 64 loops, the same as the NAPI poll? That might allow the
+>machine to get some work done before the next interrupt? Does the
+>hardware do interrupt coalescing? But is this is going to be quickly
+>thrown away and replaced with FDMA, don't spend too much time on it.
+
+I agree with you.  I will put a cap on the number of loops.
+
+>
+>         Andrew
+
+BR
+Steen
+
+---------------------------------------
+Steen Hegelund
+steen.hegelund@microchip.com
