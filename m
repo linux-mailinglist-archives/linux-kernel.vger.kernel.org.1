@@ -2,44 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C01182E1D5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 15:19:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C4432E1D6B
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 15:24:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727612AbgLWOSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 09:18:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58312 "EHLO mail.kernel.org"
+        id S1727828AbgLWOXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 09:23:22 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41198 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726633AbgLWOSV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 09:18:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 906FD2313C;
-        Wed, 23 Dec 2020 14:17:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1608733061;
-        bh=N8Nl46NsbFNfkNbprzDnUVcJfYGIxsfYPHohz8tFl3I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tBOlK79aSlzu+1hs0ytpk+0zy7EYeoLZm4IyVamL2+/uEkLPKO6PGVtCPSc4aIjGE
-         HCaQeoEb3bRM9shM1xOEWfwAzyUHrbL23DwcWFMYJzUQPL3ZhCLBfczyNYOXpFC+0i
-         6oy3q15vtP/HDR+STSvZ79cSoozgJmPWn97Zqt5w=
-Date:   Wed, 23 Dec 2020 15:18:52 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] usb: host: use DEFINE_MUTEX (and mutex_init() had
+        id S1726766AbgLWOXV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 09:23:21 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C32C1ACF1;
+        Wed, 23 Dec 2020 14:22:39 +0000 (UTC)
+Subject: Re: [PATCH -next] md: bcache: use DEFINE_MUTEX (and mutex_init() had
  been too late)
-Message-ID: <X+NRzByvPKV+Io5D@kroah.com>
-References: <20201223141109.32290-1-zhengyongjun3@huawei.com>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>,
+        kent.overstreet@gmail.com, linux-bcache@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201223141215.32727-1-zhengyongjun3@huawei.com>
+From:   Coly Li <colyli@suse.de>
+Message-ID: <f2b123a2-ba10-cff0-0c55-2c6558f150ec@suse.de>
+Date:   Wed, 23 Dec 2020 22:22:33 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201223141109.32290-1-zhengyongjun3@huawei.com>
+In-Reply-To: <20201223141215.32727-1-zhengyongjun3@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 10:11:09PM +0800, Zheng Yongjun wrote:
+On 12/23/20 10:12 PM, Zheng Yongjun wrote:
 > Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-> ---
->  drivers/usb/host/u132-hcd.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
 
-Again, dropped, due to lack of changelog text :(
+NACK. The commit log is necessary to explain why it is too late, IMHO I
+don't find the implicit reason from the patch.
+
+Coly Li
+
+> ---
+>  drivers/md/bcache/super.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+> index 46a00134a36a..963d62a15f37 100644
+> --- a/drivers/md/bcache/super.c
+> +++ b/drivers/md/bcache/super.c
+> @@ -40,7 +40,7 @@ static const char invalid_uuid[] = {
+>  };
+>  
+>  static struct kobject *bcache_kobj;
+> -struct mutex bch_register_lock;
+> +DEFINE_MUTEX(bch_register_lock);
+>  bool bcache_is_reboot;
+>  LIST_HEAD(bch_cache_sets);
+>  static LIST_HEAD(uncached_devices);
+> @@ -2832,7 +2832,6 @@ static int __init bcache_init(void)
+>  
+>  	check_module_parameters();
+>  
+> -	mutex_init(&bch_register_lock);
+>  	init_waitqueue_head(&unregister_wait);
+>  	register_reboot_notifier(&reboot);
+>  
+> 
+
