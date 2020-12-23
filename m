@@ -2,159 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63C512E1A34
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 09:57:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B93C2E1A36
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 09:57:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728174AbgLWI4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 03:56:53 -0500
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:46975 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727050AbgLWI4w (ORCPT
+        id S1728258AbgLWI4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 03:56:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727050AbgLWI4y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 03:56:52 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R271e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0UJWi-3e_1608713766;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0UJWi-3e_1608713766)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 23 Dec 2020 16:56:07 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     magnus.karlsson@intel.com
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        netdev@vger.kernel.org (open list:XDP SOCKETS (AF_XDP)),
-        bpf@vger.kernel.org (open list:XDP SOCKETS (AF_XDP)),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH bpf-next] xsk: build skb by page
-Date:   Wed, 23 Dec 2020 16:56:06 +0800
-Message-Id: <9830fcef7159a47bae361fc213c589449f6a77d3.1608713585.git.xuanzhuo@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Wed, 23 Dec 2020 03:56:54 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF2DCC0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 00:56:14 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id t22so10009258pfl.3
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 00:56:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6K+sLQbds6lT1EQKsvW+QH4EoaymFe0n2zEViQ0TTtE=;
+        b=cVvERGAR9ZDjsCLfMz6MESVacPIuLG8icEg0rKSPWxT7+6NFoAASq2s3H/KmoVuUl4
+         9f59HEeGpHfRj9NFe22Y+kqk8O+bpnzFwnzCkvgfvLgrlr6USEUjIHm3Tc8UerarnDSX
+         fp5cTKX4HJLd7AWU7MtYsQS7UU4xel2Z1eh3g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6K+sLQbds6lT1EQKsvW+QH4EoaymFe0n2zEViQ0TTtE=;
+        b=F5ndXTbbuu7oDPlYBkRXeIxN6YKFFCokiquXk2JEWfDLFm/FznTkTElY54MKLtoVHJ
+         5bU0EKosa5brtCG2wqbcR/rFLlLG34XtX10Cq4Iv1+P+0arG7+rySzpLHVsDX3QjGGmH
+         m71c576APEVLBeDJnFbeeJq/REmDmqJq+wD1ob5+cXtA5JnZkmHpoUbHVn1/XVxvb8du
+         tPEOTwC4iT7UKsCAUT24U6K2jQ3MLJ8npp7O9Qcbeel8drWmdG7HR9ICkrgyZGaawm9t
+         PtoA58bMgO1pf7BH4gjxihBZPSiMBgYIDJ1kYk7Og2fpdR4MTwCeZd21xHMwocj3A1q5
+         NIqA==
+X-Gm-Message-State: AOAM530ukyojTzAz4rofBfVigTMar/l+Vq5LPbiGmtS74aQK+clNIT0R
+        2Bh7Mb9/AkXNsdFMrIv6chn1cQ==
+X-Google-Smtp-Source: ABdhPJzQmPns0kBAA60ayRdmhDvciIE9lgEoYhfBVgerB6EDy1NMQs0Tx7MT1YRWXh23VK7AIUSXHQ==
+X-Received: by 2002:a63:4c5d:: with SMTP id m29mr24117617pgl.368.1608713774304;
+        Wed, 23 Dec 2020 00:56:14 -0800 (PST)
+Received: from chromium.org ([2401:fa00:8f:2:a28c:fdff:fef0:43bf])
+        by smtp.gmail.com with ESMTPSA id c10sm23942098pfj.54.2020.12.23.00.56.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Dec 2020 00:56:13 -0800 (PST)
+Date:   Wed, 23 Dec 2020 17:56:08 +0900
+From:   Tomasz Figa <tfiga@chromium.org>
+To:     Yong Wu <yong.wu@mediatek.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>, youlin.pei@mediatek.com,
+        anan.sun@mediatek.com, Nicolas Boichat <drinkcat@chromium.org>,
+        srv_heupstream@mediatek.com, chao.hao@mediatek.com,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Tomasz Figa <tfiga@google.com>,
+        iommu@lists.linux-foundation.org,
+        linux-mediatek@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Greg Kroah-Hartman <gregkh@google.com>,
+        kernel-team@android.com, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 6/7] iommu/mediatek: Gather iova in iommu_unmap to
+ achieve tlb sync once
+Message-ID: <X+MGKBYKdmPNz7VL@chromium.org>
+References: <20201216103607.23050-1-yong.wu@mediatek.com>
+ <20201216103607.23050-7-yong.wu@mediatek.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201216103607.23050-7-yong.wu@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is used to construct skb based on page to save memory copy
-overhead.
+On Wed, Dec 16, 2020 at 06:36:06PM +0800, Yong Wu wrote:
+> In current iommu_unmap, this code is:
+> 
+> 	iommu_iotlb_gather_init(&iotlb_gather);
+> 	ret = __iommu_unmap(domain, iova, size, &iotlb_gather);
+> 	iommu_iotlb_sync(domain, &iotlb_gather);
+> 
+> We could gather the whole iova range in __iommu_unmap, and then do tlb
+> synchronization in the iommu_iotlb_sync.
+> 
+> This patch implement this, Gather the range in mtk_iommu_unmap.
+> then iommu_iotlb_sync call tlb synchronization for the gathered iova range.
+> we don't call iommu_iotlb_gather_add_page since our tlb synchronization
+> could be regardless of granule size.
+> 
+> In this way, gather->start is impossible ULONG_MAX, remove the checking.
+> 
+> This patch aims to do tlb synchronization *once* in the iommu_unmap.
+> 
+> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> ---
+>  drivers/iommu/mtk_iommu.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
+> index db7d43adb06b..89cec51405cd 100644
+> --- a/drivers/iommu/mtk_iommu.c
+> +++ b/drivers/iommu/mtk_iommu.c
+> @@ -506,7 +506,12 @@ static size_t mtk_iommu_unmap(struct iommu_domain *domain,
+>  			      struct iommu_iotlb_gather *gather)
+>  {
+>  	struct mtk_iommu_domain *dom = to_mtk_domain(domain);
+> +	unsigned long long end = iova + size;
+>  
+> +	if (gather->start > iova)
+> +		gather->start = iova;
+> +	if (gather->end < end)
+> +		gather->end = end;
 
-Taking into account the problem of addr unaligned, and the
-possibility of frame size greater than page in the future.
+I don't know how common the case is, but what happens if
+gather->start...gather->end is a disjoint range from iova...end? E.g.
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- net/xdp/xsk.c | 68 ++++++++++++++++++++++++++++++++++++++++++++---------------
- 1 file changed, 51 insertions(+), 17 deletions(-)
+ | gather      | ..XXX... | iova |
+ |             |          |      |
+ gather->start |          iova   |
+               gather->end       end
 
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index ac4a317..7cab40f 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -430,6 +430,55 @@ static void xsk_destruct_skb(struct sk_buff *skb)
- 	sock_wfree(skb);
- }
- 
-+static struct sk_buff *xsk_build_skb_bypage(struct xdp_sock *xs, struct xdp_desc *desc)
-+{
-+	char *buffer;
-+	u64 addr;
-+	u32 len, offset, copy, copied;
-+	int err, i;
-+	struct page *page;
-+	struct sk_buff *skb;
-+
-+	skb = sock_alloc_send_skb(&xs->sk, 0, 1, &err);
-+	if (unlikely(!skb))
-+		return NULL;
-+
-+	addr = desc->addr;
-+	len = desc->len;
-+
-+	buffer = xsk_buff_raw_get_data(xs->pool, addr);
-+	offset = offset_in_page(buffer);
-+	addr = buffer - (char *)xs->pool->addrs;
-+
-+	for (copied = 0, i = 0; copied < len; ++i) {
-+		page = xs->pool->umem->pgs[addr >> PAGE_SHIFT];
-+
-+		get_page(page);
-+
-+		copy = min((u32)(PAGE_SIZE - offset), len - copied);
-+
-+		skb_fill_page_desc(skb, i, page, offset, copy);
-+
-+		copied += copy;
-+		addr += copy;
-+		offset = 0;
-+	}
-+
-+	skb->len += len;
-+	skb->data_len += len;
-+	skb->truesize += len;
-+
-+	refcount_add(len, &xs->sk.sk_wmem_alloc);
-+
-+	skb->dev = xs->dev;
-+	skb->priority = xs->sk.sk_priority;
-+	skb->mark = xs->sk.sk_mark;
-+	skb_shinfo(skb)->destructor_arg = (void *)(long)addr;
-+	skb->destructor = xsk_destruct_skb;
-+
-+	return skb;
-+}
-+
- static int xsk_generic_xmit(struct sock *sk)
- {
- 	struct xdp_sock *xs = xdp_sk(sk);
-@@ -445,40 +494,25 @@ static int xsk_generic_xmit(struct sock *sk)
- 		goto out;
- 
- 	while (xskq_cons_peek_desc(xs->tx, &desc, xs->pool)) {
--		char *buffer;
--		u64 addr;
--		u32 len;
--
- 		if (max_batch-- == 0) {
- 			err = -EAGAIN;
- 			goto out;
- 		}
- 
--		len = desc.len;
--		skb = sock_alloc_send_skb(sk, len, 1, &err);
-+		skb = xsk_build_skb_bypage(xs, &desc);
- 		if (unlikely(!skb))
- 			goto out;
- 
--		skb_put(skb, len);
--		addr = desc.addr;
--		buffer = xsk_buff_raw_get_data(xs->pool, addr);
--		err = skb_store_bits(skb, 0, buffer, len);
- 		/* This is the backpressure mechanism for the Tx path.
- 		 * Reserve space in the completion queue and only proceed
- 		 * if there is space in it. This avoids having to implement
- 		 * any buffering in the Tx path.
- 		 */
--		if (unlikely(err) || xskq_prod_reserve(xs->pool->cq)) {
-+		if (xskq_prod_reserve(xs->pool->cq)) {
- 			kfree_skb(skb);
- 			goto out;
- 		}
- 
--		skb->dev = xs->dev;
--		skb->priority = sk->sk_priority;
--		skb->mark = sk->sk_mark;
--		skb_shinfo(skb)->destructor_arg = (void *)(long)desc.addr;
--		skb->destructor = xsk_destruct_skb;
--
- 		err = __dev_direct_xmit(skb, xs->queue_id);
- 		if  (err == NETDEV_TX_BUSY) {
- 			/* Tell user-space to retry the send */
--- 
-1.8.3.1
+We would also end up invalidating the TLB for the XXX area, which could
+affect the performance.
 
+Also, why is the existing code in __arm_v7s_unmap() not enough? It seems
+to call io_pgtable_tlb_add_page() already, so it should be batching the
+flushes.
+
+>  	return dom->iop->unmap(dom->iop, iova, size, gather);
+>  }
+>  
+> @@ -523,9 +528,6 @@ static void mtk_iommu_iotlb_sync(struct iommu_domain *domain,
+>  	struct mtk_iommu_domain *dom = to_mtk_domain(domain);
+>  	size_t length = gather->end - gather->start;
+>  
+> -	if (gather->start == ULONG_MAX)
+> -		return;
+> -
+>  	mtk_iommu_tlb_flush_range_sync(gather->start, length, gather->pgsize,
+>  				       dom->data);
+>  }
+> -- 
+> 2.18.0
+> 
+> _______________________________________________
+> iommu mailing list
+> iommu@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/iommu
