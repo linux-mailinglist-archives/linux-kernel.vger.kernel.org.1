@@ -2,90 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 108302E1DFA
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 16:35:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C82C2E1E35
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 16:40:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728134AbgLWPd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 10:33:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43898 "EHLO mail.kernel.org"
+        id S1728311AbgLWPeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 10:34:02 -0500
+Received: from mail.zx2c4.com ([192.95.5.64]:33279 "EHLO mail.zx2c4.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726558AbgLWPdZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 10:33:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A637F23343;
-        Wed, 23 Dec 2020 15:32:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1608737565;
-        bh=IEtk3MrL4cfF0oLmIg4TjHu6d/ubqCEYorrr+CJEuLU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lu/ykf32vfPcqMlvOM7ZDNsO7OAC8M1D9b7demgjmNQLZEjYtjzXUG3B/Psss1ufm
-         sRqf6INF+7wCkKEek+MV6+ukLvjc+HLHC0Dhfg+i8vUWa5LyKMytkvqYDfN9XZw5d3
-         JRg2+gSb/UzXxMo8Gjbxs8Cni/VbZmPN1+bdH+Es=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.10 02/40] x86/split-lock: Avoid returning with interrupts enabled
-Date:   Wed, 23 Dec 2020 16:33:03 +0100
-Message-Id: <20201223150515.682569814@linuxfoundation.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201223150515.553836647@linuxfoundation.org>
-References: <20201223150515.553836647@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1728266AbgLWPeA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 10:34:00 -0500
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTP id 7255665a;
+        Wed, 23 Dec 2020 15:24:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=zx2c4.com; h=mime-version
+        :references:in-reply-to:from:date:message-id:subject:to:cc
+        :content-type; s=mail; bh=cPxPg5L3FiTf53bj1fIQGjA/waI=; b=O4gSMF
+        ECWRin2VHyK2Oc+z3RVR4wb2ad63B2hP2pJL0L3Mdac1hudTIFJ4M8qjPMLTzgSq
+        tKQ0fYGXlpF3LXSK2R/Hq0p42BTWa44HhXmsG8KvhgYzcr0CwbBDbaansucqPRDO
+        ynoODZiR7NoafRyOUA2h+LChZO421Y4HQyfHZk9h3YG0WMvmsfg02oQ79KBufdHR
+        CbdjlRoeFLpPrWRp16Vxq7E/LBRluakRAKpOoo+YrumgHwAOwJUbngSeZX75UrHS
+        mDbSQYX0uUywwTpMhsslQ5bPyC0hXsVCzjzeTmI857jVu5shH0TdI8QoZJpKXObW
+        1oudc83ggS3cG3gA==
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 31d7647c (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Wed, 23 Dec 2020 15:24:43 +0000 (UTC)
+Received: by mail-yb1-f169.google.com with SMTP id a16so14900332ybh.5;
+        Wed, 23 Dec 2020 07:33:15 -0800 (PST)
+X-Gm-Message-State: AOAM532mCfj8EYQrf0Ac73tgJxxmsdmWjk7HXfclrZbf7D/gBTFGp6DR
+        4ZkZOdoU9e07b3bd9YiDaq2iTqjvwYIo8AwuscY=
+X-Google-Smtp-Source: ABdhPJwTxW5gLWApSRxGBYFLPC5JovUF0Jg/9Qegw81NaR32opuLgSSi9L8TBzbwu1No9mtDAhoJkX2lCn60kS2Blv0=
+X-Received: by 2002:a25:4744:: with SMTP id u65mr38977305yba.239.1608737594497;
+ Wed, 23 Dec 2020 07:33:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20201130151231.GA24862@lst.de> <CAHmME9p4vFGWh7+CKF4f3dw5r+ru5PVG0-vP77JowX8sPhin1g@mail.gmail.com>
+ <20201130165339.GE5364@mit.edu> <CAHmME9pksS8ec17RAwCNJimt4B0xZgd3qYHUPnaT4Bj4CF7n0A@mail.gmail.com>
+ <20201218132519.kj3nz7swsx7vvlr5@valinor.lan> <20201223132851.55d19271@blackhole.lan>
+ <20201223151014.57caf98b@ezekiel.suse.cz> <CAHmME9ooV1HRGO4bLsNKqv1EjDsUYsM6TcMbmEL=4CejTB+1ZQ@mail.gmail.com>
+ <e61c46f2ded9d8676c77beb40c78200df0ada928.camel@chronox.de>
+In-Reply-To: <e61c46f2ded9d8676c77beb40c78200df0ada928.camel@chronox.de>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Wed, 23 Dec 2020 16:33:03 +0100
+X-Gmail-Original-Message-ID: <CAHmME9p266FpLENSH+HvZ_G_uEM8O_L-MDDTMRBxFms7zqM5tQ@mail.gmail.com>
+Message-ID: <CAHmME9p266FpLENSH+HvZ_G_uEM8O_L-MDDTMRBxFms7zqM5tQ@mail.gmail.com>
+Subject: Re: drivers/char/random.c needs a (new) maintainer
+To:     Stephan Mueller <smueller@chronox.de>
+Cc:     Petr Tesarik <ptesarik@suse.cz>, Torsten Duwe <duwe@lst.de>,
+        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Willy Tarreau <w@1wt.eu>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Nicolai Stange <nstange@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Alexander E. Patrakov" <patrakov@gmail.com>,
+        "Ahmed S. Darwish" <darwish.07@gmail.com>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Vito Caputo <vcaputo@pengaru.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
+        William Jon McCann <mccann@jhu.edu>,
+        zhangjs <zachary@baishancloud.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Peter Matthias <matthias.peter@bsi.bund.de>,
+        Neil Horman <nhorman@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        And y Lavr <andy.lavr@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, simo@redhat.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andi Kleen <ak@linux.intel.com>
+On Wed, Dec 23, 2020 at 4:26 PM Stephan Mueller <smueller@chronox.de> wrote:
+>
+> Am Mittwoch, dem 23.12.2020 um 15:32 +0100 schrieb Jason A. Donenfeld:
+> >
+> > I would, however, be interested in a keccak-based construction. But
+> > just using the keccak permutation does not automatically make it
+> > "SHA-3", so we're back at the same issue again. FIPS is simply not
+> > interesting for our requirements.
+>
+> Using non-assessed cryptography? Sounds dangerous to me even though it may be
+> based on some well-known construction.
 
-commit e14fd4ba8fb47fcf5f244366ec01ae94490cd86a upstream.
+"assessed" is not necessarily the same as FIPS. Don't conflate the
+two. I don't appreciate that kind of dishonest argumentation.
 
-When a split lock is detected always make sure to disable interrupts
-before returning from the trap handler.
+And new constructions that I'm interested in would be formally
+verified (like the other crypto work I've done) with review and buy-in
+from the cryptographic community, both engineering and academic. I
+have no interest in submitting "non-assessed" things developed in a
+vacuum, and I'm displeased with your attempting to make that
+characterization.
 
-The kernel exit code assumes that all exits run with interrupts
-disabled, otherwise the SWAPGS sequence can race against interrupts and
-cause recursing page faults and later panics.
+Similarly, any other new design proposed I would expect a similar
+amount of rigor. The current RNG is admittedly a bit of a mess, but at
+least it's a design that's evolved. Something that's "revolutionary",
+rather than evolutionary, needs considerably more argumentation.
 
-The problem will only happen on CPUs with split lock disable
-functionality, so Icelake Server, Tiger Lake, Snow Ridge, Jacobsville.
-
-Fixes: ca4c6a9858c2 ("x86/traps: Make interrupt enable/disable symmetric in C code")
-Fixes: bce9b042ec73 ("x86/traps: Disable interrupts in exc_aligment_check()") # v5.8+
-Signed-off-by: Andi Kleen <ak@linux.intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Fenghua Yu <fenghua.yu@intel.com>
-Cc: Tony Luck <tony.luck@intel.com>
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- arch/x86/kernel/traps.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -299,11 +299,12 @@ DEFINE_IDTENTRY_ERRORCODE(exc_alignment_
- 	local_irq_enable();
- 
- 	if (handle_user_split_lock(regs, error_code))
--		return;
-+		goto out;
- 
- 	do_trap(X86_TRAP_AC, SIGBUS, "alignment check", regs,
- 		error_code, BUS_ADRALN, NULL);
- 
-+out:
- 	local_irq_disable();
- }
- 
-
-
+So, please, don't strawman this into the "non-assessed" rhetoric.
