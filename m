@@ -2,106 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71EF82E2128
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 21:09:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 510B32E212F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 21:15:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728858AbgLWUJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 15:09:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728189AbgLWUJa (ORCPT
+        id S1728802AbgLWUPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 15:15:04 -0500
+Received: from smtprelay0221.hostedemail.com ([216.40.44.221]:48888 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727671AbgLWUPD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 15:09:30 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B133C061794;
-        Wed, 23 Dec 2020 12:08:50 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id c133so414976wme.4;
-        Wed, 23 Dec 2020 12:08:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=vcjD/mgYco37bqn/aZEyfuF3IgLhY02B5goKU5qZcxo=;
-        b=rUDf234NiSP758+M2W5vQ+0Ku77iK8kg1QCuRfFzDRzkDQx5+4Bs7fSoYMZw5KZP+x
-         tF+Ts+Z2y4cWebyggBuWo4yxD0uhyrMuJ7dtamkDqv7jccabeEf6kJPm8jKBhNkOMgJH
-         p1fBvcf9o67YzWX2HZ4sPZQDeZA7sjQffBXoLL5/qyo9X+3dCD4fYkMCXGfACGY/nDPb
-         BlrgbmInSz8aeyhjwjbNFOEUzJjS73Tr7weUw/NCWJqlg+frAh3lkxYysn0i+Kon4bRJ
-         9p33I4+k1bC55UHGF4Yqgz3kWVaep48rGOWioEZO9CxnvaGwf3Qip96jXVdp5wxpflZt
-         pVrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-transfer-encoding:content-language;
-        bh=vcjD/mgYco37bqn/aZEyfuF3IgLhY02B5goKU5qZcxo=;
-        b=lrDwfubO7CEdh2da7W9FK506KgjRbdkdds3SnT3/pYsX6U91yv0WLiexAETXa9XW2t
-         fGcBpFZhf0WfZ99LeP4kWa5aQI+8c6UNyfIQQeeRmUGQRvM7SugKHnrZuBi5Zl5ePG44
-         OcrwbLAsWkEryQptCkwaEHh1msqh44lR4nHDwiUsoMogDeFNcMhefgo8xeOiQHoPTts0
-         8Q90FU01pCL5TemtaC0mJdGsdzN3IAI8kGtRmS7XO3JexapgfGlRzJy2wIp93aAONOao
-         kZXYmbHwvWXE9Nnx2zCpDyVwXhiGufjLwfUb1fLQXT1ejoa29lEATA//U5fKGzWIoROQ
-         /Hhg==
-X-Gm-Message-State: AOAM533p4iGQGxgHaumkCe0eji38oh1YHCnWdfURV8rX2T4lsAbLTW4p
-        NoW0ATrXr+wbdGXGT5LrbZg=
-X-Google-Smtp-Source: ABdhPJxjSVqlOdnskT38CNxvzl3/d6kZiQDNtr09R3jbK1dJVqne3d+TZItMdVDRy5CyAuSSQyFX7w==
-X-Received: by 2002:a1c:64c4:: with SMTP id y187mr1214986wmb.165.1608754129000;
-        Wed, 23 Dec 2020 12:08:49 -0800 (PST)
-Received: from [192.168.1.113] (250.red-81-35-222.dynamicip.rima-tde.net. [81.35.222.250])
-        by smtp.gmail.com with ESMTPSA id b7sm34100997wrv.47.2020.12.23.12.08.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Dec 2020 12:08:48 -0800 (PST)
-To:     robh+dt@kernel.org
-Cc:     mripard@kernel.org, wens@csie.org, jernej.skrabec@siol.net,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, pikaslabs@gmail.com
-From:   Sergio Sota <pikaslabs@gmail.com>
-Subject: [PATCH] ARM: dts sunxi: add A10s/A13 mali gpu support
-Message-ID: <eeba726d-40fd-48cf-9587-8f801f3d6cf7@gmail.com>
-Date:   Wed, 23 Dec 2020 21:08:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 23 Dec 2020 15:15:03 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id B0E7F180A7FF4;
+        Wed, 23 Dec 2020 20:14:22 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1434:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:1801:2194:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:4250:4321:4605:5007:6119:6235:6609:7557:7576:7902:7903:10004:10400:10848:11026:11232:11657:11658:11914:12043:12048:12294:12296:12297:12438:12555:12740:12895:13439:13894:14181:14659:14721:21080:21433:21451:21627:21990:30003:30054:30070:30080:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: table59_3c14bbe2746b
+X-Filterd-Recvd-Size: 3703
+Received: from XPS-9350.home (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf01.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 23 Dec 2020 20:14:21 +0000 (UTC)
+Message-ID: <46b3bba25d09e89471048ae119a2c3b460b6b7be.camel@perches.com>
+Subject: Re: [PATCH] amd-xgbe: remove h from printk format specifier
+From:   Joe Perches <joe@perches.com>
+To:     trix@redhat.com, thomas.lendacky@amd.com, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 23 Dec 2020 12:14:20 -0800
+In-Reply-To: <20201223194345.125205-1-trix@redhat.com>
+References: <20201223194345.125205-1-trix@redhat.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- From c45753026b4868e32132348f8f2bf59e6ce5c820 Mon Sep 17 00:00:00 2001
-From: Sergio Sota <pikaslabs@gmail.com>
-Date: Wed, 23 Dec 2020 21:00:35 +0100
-Subject: [PATCH] ARM: dts sunxi: add A10s/A13 mali gpu support
+On Wed, 2020-12-23 at 11:43 -0800, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> This change fixes the checkpatch warning described in this commit
+> commit cbacb5ab0aa0 ("docs: printk-formats: Stop encouraging use of unnecessary %h[xudi] and %hh[xudi]")
+> 
+> Standard integer promotion is already done and %hx and %hhx is useless
+> so do not encourage the use of %hh[xudi] or %h[xudi].
 
-The A10s/A13 mali gpu was not defined in device tree
-The A10 has a compatible mali gpu driver (same device)
+Why only xgbe-ethtool?
 
-Signed-off-by: Sergio Sota <pikaslabs@gmail.com>
----
-  arch/arm/boot/dts/sun5i.dtsi | 12 ++++++++++++
-  1 file changed, 12 insertions(+)
+Perhaps your script only converts direct uses of functions
+marked with __printf and not any uses of the same functions
+via macros.
 
-diff --git a/arch/arm/boot/dts/sun5i.dtsi b/arch/arm/boot/dts/sun5i.dtsi
-index 4ef14a8695ef..b4d46ecdf7ad 100644
---- a/arch/arm/boot/dts/sun5i.dtsi
-+++ b/arch/arm/boot/dts/sun5i.dtsi
-@@ -726,6 +726,18 @@ i2c2: i2c@1c2b400 {
-              #size-cells = <0>;
-          };
+$ git grep -P '%[\w\d\.]*h\w' drivers/net/ethernet/amd/xgbe/
+drivers/net/ethernet/amd/xgbe/xgbe-dcb.c:                         "TC%u: tx_bw=%hhu, rx_bw=%hhu, tsa=%hhu\n", i,
+drivers/net/ethernet/amd/xgbe/xgbe-dcb.c:               netif_dbg(pdata, drv, netdev, "PRIO%u: TC=%hhu\n", i,
+drivers/net/ethernet/amd/xgbe/xgbe-dcb.c:                                 "unsupported TSA algorithm (%hhu)\n",
+drivers/net/ethernet/amd/xgbe/xgbe-dcb.c:                 "cap=%hhu, en=%#hhx, mbc=%hhu, delay=%hhu\n",
+drivers/net/ethernet/amd/xgbe/xgbe-dev.c:       netif_dbg(pdata, drv, pdata->netdev, "VXLAN tunnel id set to %hx\n",
+drivers/net/ethernet/amd/xgbe/xgbe-ethtool.c:           netdev_err(netdev, "invalid phy address %hhu\n",
+drivers/net/ethernet/amd/xgbe/xgbe-ethtool.c:           netdev_err(netdev, "unsupported autoneg %hhu\n",
+drivers/net/ethernet/amd/xgbe/xgbe-ethtool.c:                   netdev_err(netdev, "unsupported duplex %hhu\n",
 
-+        mali: gpu@1c40000 {
-+            compatible = "allwinner,sun4i-a10-mali", "arm,mali-400";
-+            reg = <0x01c40000 0x10000>;
-+            interrupts = <69>, <70>, <71>, <72>,  <73>;
-+            interrupt-names = "gp", "gpmmu", "pp0", "ppmmu0", "pmu";
-+            clocks = <&ccu CLK_AHB_GPU>, <&ccu CLK_GPU>;
-+            clock-names = "bus", "core";
-+            resets = <&ccu RST_GPU>;
-+            assigned-clocks = <&ccu CLK_GPU>;
-+            assigned-clock-rates = <320000000>;
-+        };
-+
-          timer@1c60000 {
-              compatible = "allwinner,sun5i-a13-hstimer";
-              reg = <0x01c60000 0x1000>;
--- 
-2.25.1
+> 
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> ---
+> �drivers/net/ethernet/amd/xgbe/xgbe-ethtool.c | 6 +++---
+> �1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-ethtool.c b/drivers/net/ethernet/amd/xgbe/xgbe-ethtool.c
+> index 61f39a0e04f9..3c18f26bf2a5 100644
+> --- a/drivers/net/ethernet/amd/xgbe/xgbe-ethtool.c
+> +++ b/drivers/net/ethernet/amd/xgbe/xgbe-ethtool.c
+> @@ -339,14 +339,14 @@ static int xgbe_set_link_ksettings(struct net_device *netdev,
+> �	speed = cmd->base.speed;
+> �
+> 
+> �	if (cmd->base.phy_address != pdata->phy.address) {
+> -		netdev_err(netdev, "invalid phy address %hhu\n",
+> +		netdev_err(netdev, "invalid phy address %u\n",
+> �			   cmd->base.phy_address);
+> �		return -EINVAL;
+> �	}
+> �
+> 
+> �	if ((cmd->base.autoneg != AUTONEG_ENABLE) &&
+> �	    (cmd->base.autoneg != AUTONEG_DISABLE)) {
+> -		netdev_err(netdev, "unsupported autoneg %hhu\n",
+> +		netdev_err(netdev, "unsupported autoneg %u\n",
+> �			   cmd->base.autoneg);
+> �		return -EINVAL;
+> �	}
+> @@ -358,7 +358,7 @@ static int xgbe_set_link_ksettings(struct net_device *netdev,
+> �		}
+> �
+> 
+> �		if (cmd->base.duplex != DUPLEX_FULL) {
+> -			netdev_err(netdev, "unsupported duplex %hhu\n",
+> +			netdev_err(netdev, "unsupported duplex %u\n",
+> �				   cmd->base.duplex);
+> �			return -EINVAL;
+> �		}
+
 
