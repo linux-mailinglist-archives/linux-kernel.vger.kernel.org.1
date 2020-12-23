@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB452E161F
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:59:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D59682E161D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:59:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731328AbgLWC6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:58:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45492 "EHLO mail.kernel.org"
+        id S1731323AbgLWC54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:57:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728819AbgLWCUg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:20:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F0A522D57;
-        Wed, 23 Dec 2020 02:20:20 +0000 (UTC)
+        id S1729040AbgLWCUi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:20:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 87D7022273;
+        Wed, 23 Dec 2020 02:20:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690020;
-        bh=o1KPzr2V9JnH7zpsW4mxOYZv3sejAdmSEGOS8GeiZyM=;
+        s=k20201202; t=1608690023;
+        bh=SGdl1bYJJOC8B55sbmgtI5mC/kAXIsBDiYgc2YSAk50=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p6SDPYEnv6RUtZTWVu0wtfNJuYw1QUPXZisO6UKzSMkaLwLGPWah8JZxK4ZDJ2t7+
-         n0sSRTeEAG8iyB41haODdgBlKmA2jWSkrEKi+x9akbBe1uWuSMhIPLU9PTOIXr3IF1
-         9LwgkGW2WHex+izKH+GwpLrTdPQnDY88av/SbWCo9VBgST9nUaC8xIxcQD5te4V7YE
-         VGvUaf9ZM8t4WbWb2XexAKF2wkr9TIvGQV7bWz5+W2JNkdCDc3J3pwnq/KhCdvdiy7
-         PxisE+H/MApHv81Gtf5Uw0NYdgwnpDnmZRPBBT4/Qun7sfhHqsDh64uMirpEblpEH7
-         QBHLeIUjX11Ng==
+        b=qOgs8sDk7MurtV3olF21SrDQrXGWkQNTcLivFB1zdufC2Flc+T7eFnh3mZuk//Ow2
+         Q23TmjyJLSNOQpWhBkajScppO4DavHXX385zQp2VzVuzWIlprnHDbWUlnnynTXjy/J
+         2D4YeM583PpzH4+VH05oQfiBB7RzrUIfnN6LJigGQeZiGP5S9iY4TREjHeeMwWrlRK
+         5ioLX9B+y4cZ7PhEWIzEyqoKwOUFy1OOD7Y+v6s3WRrObtR1ezyJ36t/IHQl5l7BfZ
+         RJo5OMAj6/YPJksU6kmhJkYt5bD6H+EFAz+gEz6+fINH+rjXjtptjuCw3rj0IhPw6l
+         f80LQaAm2YmMw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Chris Chiu <chiu@endlessos.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.4 098/130] ASoC: Intel: bytcr_rt5640: Add quirk for ARCHOS Cesium 140
-Date:   Tue, 22 Dec 2020 21:17:41 -0500
-Message-Id: <20201223021813.2791612-98-sashal@kernel.org>
+Cc:     Filipe Manana <fdmanana@suse.com>, David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 100/130] btrfs: fix race that results in logging old extents during a fast fsync
+Date:   Tue, 22 Dec 2020 21:17:43 -0500
+Message-Id: <20201223021813.2791612-100-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223021813.2791612-1-sashal@kernel.org>
 References: <20201223021813.2791612-1-sashal@kernel.org>
@@ -43,49 +41,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Chiu <chiu@endlessos.org>
+From: Filipe Manana <fdmanana@suse.com>
 
-[ Upstream commit 1bea2256aa96a2d7b1b576eb74e29d79edc9bea8 ]
+[ Upstream commit 5f96bfb7633c55b578c6b32f32624061f25010db ]
 
-Tha ARCHOS Cesium 140 tablet has problem with the jack-sensing,
-thus the heaset functions are not working.
+When logging the extents of an inode during a fast fsync, we have a time
+window where we can log extents that are from the previous transaction and
+already persisted. This only makes us waste time unnecessarily.
 
-Add quirk for this model to select the correct input map, jack-detect
-options and channel map to enable jack sensing and headset microphone.
-This device uses IN1 for its internal MIC and JD2 for jack-detect.
+The following sequence of steps shows how this can happen:
 
-Signed-off-by: Chris Chiu <chiu@endlessos.org>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20201208060414.27646-1-chiu@endlessos.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
+1) We are at transaction 1000;
+
+2) An ordered extent E from inode I completes, that is it has gone through
+   btrfs_finish_ordered_io(), and it set the extent maps' generation to
+   1000 when we unpin the extent, which is the generation of the current
+   transaction;
+
+3) The commit for transaction 1000 starts by task A;
+
+4) The task committing transaction 1000 sets the transaction state to
+   unblocked, writes the dirty extent buffers and the super blocks, then
+   unlocks tree_log_mutex;
+
+5) Some change is made to inode I, resulting in creation of a new
+   transaction with a generation of 1001;
+
+6) The transaction 1000 commit starts unpinning extents. At this point
+   fs_info->last_trans_committed still has a value of 999;
+
+7) Task B starts an fsync on inode I, and when it gets to
+   btrfs_log_changed_extents() sees the extent map for extent E in the
+   list of modified extents. It sees the extent map has a generation of
+   1000 and fs_info->last_trans_committed has a value of 999, so it
+   proceeds to logging the respective file extent item and all the
+   checksums covering its range.
+
+   So we end up wasting time since the extent was already persisted and
+   is reachable through the trees pointed to by the super block committed
+   by transaction 1000.
+
+So just fix this by comparing the extent maps generation against the
+generation of the transaction handle - if it is smaller then the id in the
+handle, we know the extent was already persisted and we do not need to log
+it.
+
+This patch belongs to a patch set that is comprised of the following
+patches:
+
+  btrfs: fix race causing unnecessary inode logging during link and rename
+  btrfs: fix race that results in logging old extents during a fast fsync
+  btrfs: fix race that causes unnecessary logging of ancestor inodes
+  btrfs: fix race that makes inode logging fallback to transaction commit
+  btrfs: fix race leading to unnecessary transaction commit when logging inode
+  btrfs: do not block inode logging for so long during transaction commit
+
+Performance results are mentioned in the change log of the last patch.
+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ fs/btrfs/tree-log.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 6012367f6fe48..6b6749550fc4f 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -422,6 +422,18 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 					BYT_RT5640_SSP0_AIF1 |
- 					BYT_RT5640_MCLK_EN),
- 	},
-+	{
-+		.matches = {
-+			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ARCHOS"),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "ARCHOS 140 CESIUM"),
-+		},
-+		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
-+					BYT_RT5640_JD_SRC_JD2_IN4N |
-+					BYT_RT5640_OVCD_TH_2000UA |
-+					BYT_RT5640_OVCD_SF_0P75 |
-+					BYT_RT5640_SSP0_AIF1 |
-+					BYT_RT5640_MCLK_EN),
-+	},
- 	{
- 		.matches = {
- 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index de53e51669976..12182db88222b 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -4372,14 +4372,12 @@ static int btrfs_log_changed_extents(struct btrfs_trans_handle *trans,
+ 	struct extent_map *em, *n;
+ 	struct list_head extents;
+ 	struct extent_map_tree *tree = &inode->extent_tree;
+-	u64 test_gen;
+ 	int ret = 0;
+ 	int num = 0;
+ 
+ 	INIT_LIST_HEAD(&extents);
+ 
+ 	write_lock(&tree->lock);
+-	test_gen = root->fs_info->last_trans_committed;
+ 
+ 	list_for_each_entry_safe(em, n, &tree->modified_extents, list) {
+ 		/*
+@@ -4412,7 +4410,7 @@ static int btrfs_log_changed_extents(struct btrfs_trans_handle *trans,
+ 			goto process;
+ 		}
+ 
+-		if (em->generation <= test_gen)
++		if (em->generation < trans->transid)
+ 			continue;
+ 
+ 		/* We log prealloc extents beyond eof later. */
 -- 
 2.27.0
 
