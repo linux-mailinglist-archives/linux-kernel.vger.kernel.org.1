@@ -2,78 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C102A2E1A0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 09:36:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 285BE2E1A0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 09:36:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728165AbgLWIfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 03:35:48 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:48084 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727971AbgLWIfs (ORCPT
+        id S1728296AbgLWIgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 03:36:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727744AbgLWIf7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 03:35:48 -0500
-X-UUID: 226d8d30821a41e9b47dd1288adfea8c-20201223
-X-UUID: 226d8d30821a41e9b47dd1288adfea8c-20201223
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <yongqiang.niu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 422234535; Wed, 23 Dec 2020 16:35:04 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 23 Dec 2020 16:35:01 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 23 Dec 2020 16:35:01 +0800
-From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
-To:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Mark Rutland <mark.rutland@arm.com>,
-        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
+        Wed, 23 Dec 2020 03:35:59 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C67B9C0613D6;
+        Wed, 23 Dec 2020 00:35:18 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id cw27so15479351edb.5;
+        Wed, 23 Dec 2020 00:35:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Eduj66RiVco+AT7g2a8p+pCQPzg2FWtlxEHzfdMi00s=;
+        b=coPa26v03zKgNgMIpiXDgDAK86vnk2bCSzrIPk0VFBbiiJMDzyM1vB1vPnXVKNiao7
+         rWGdceLVaZI1n581fdliq/J9m3IFMegzOh8pJ1qJMeT20oNPD8LrK0Bv5YgpVgN5uFmL
+         tUXa4P4bkMWsn0asdt17IMNHhLRUz9kjrkwbFqdTj6JGkamIzNcgep43s8GaziH5/Avl
+         rKsKHQgNt0k0dlR6pgsysNNLq5SkKf886D/XZoeBx/xp/boxJYKKQGaRow2a5+2e21yq
+         S/x7aBW6U51fSsyo3w4O32R/aISR/4fysdF0Cdz3uUjHXPgVAPLWTTsMHkGPDYoMURkE
+         zqvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Eduj66RiVco+AT7g2a8p+pCQPzg2FWtlxEHzfdMi00s=;
+        b=Pn6ERDfPS2kuEnc+pQRC1AmI8uZDAkurcEI4oizXFlElX2L8AcXFuyyckbgLnhi49v
+         3TPPOxnZ/ZRPlgpPaZ7wpVAl/K81J58gZGRo1Zg40H/Pmi0ZhxWDTvqkj+wEDeFrVs5I
+         Erzw9FzmIAFefnmZunR3JTGqaVHVN9jBTV6EogpN0AxJ3nDyrhU7F2sLyrv88AvMiJHl
+         tCPWv3bK1ceX5pNqApabnXGm6okhlqFU+rktk/wmbSc9Z4DH7jrKX0DQIJVYI2wIP6PP
+         YaY6Hd66IJuuxIRL7b0Xj7oXCsKxw1nYYpeCCeEecmHO1m/jLMKPZ0o6Ygmhx2yQSJZ8
+         crew==
+X-Gm-Message-State: AOAM531wttnMrijCwQilLtWJ5mCUVVYg16NwR8fbZKOh2GmbcJ3qr5jQ
+        fGv5+xa9qMsjyxOy8EZ2RjU=
+X-Google-Smtp-Source: ABdhPJxgaqcz1/WGEx69Zgz5v3P94ZQkqyNKYnW4yoWdAxdZPuP9oYZy3mZfQkQD8FpuutRaDS1FaA==
+X-Received: by 2002:a50:f61b:: with SMTP id c27mr23642613edn.61.1608712517605;
+        Wed, 23 Dec 2020 00:35:17 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
+        by smtp.googlemail.com with ESMTPSA id ga11sm11349518ejb.34.2020.12.23.00.35.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 23 Dec 2020 00:35:17 -0800 (PST)
+Message-ID: <8804b780b55f8dc0739e10a246d02cafcb00ab03.camel@gmail.com>
+Subject: Re: [PATCH v1] scsi: ufs-mediatek: Enable
+ UFSHCI_QUIRK_SKIP_MANUAL_WB_FLUSH_CTRL
+From:   Bean Huo <huobean@gmail.com>
+To:     Avri Altman <Avri.Altman@wdc.com>, Can Guo <cang@codeaurora.org>,
+        Stanley Chu <stanley.chu@mediatek.com>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "linux-mediatek@lists.infradead.org" 
         <linux-mediatek@lists.infradead.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>
-Subject: [PATCH v2] soc: mediatek: cmdq: add address shift in jump
-Date:   Wed, 23 Dec 2020 16:34:59 +0800
-Message-ID: <1608712499-24956-2-git-send-email-yongqiang.niu@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1608712499-24956-1-git-send-email-yongqiang.niu@mediatek.com>
-References: <1608712499-24956-1-git-send-email-yongqiang.niu@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuohong.wang@mediatek.com" <kuohong.wang@mediatek.com>,
+        "peter.wang@mediatek.com" <peter.wang@mediatek.com>,
+        "chun-hung.wu@mediatek.com" <chun-hung.wu@mediatek.com>,
+        "andy.teng@mediatek.com" <andy.teng@mediatek.com>,
+        "chaotian.jing@mediatek.com" <chaotian.jing@mediatek.com>,
+        "cc.chou@mediatek.com" <cc.chou@mediatek.com>,
+        "jiajie.hao@mediatek.com" <jiajie.hao@mediatek.com>,
+        "alice.chao@mediatek.com" <alice.chao@mediatek.com>
+Date:   Wed, 23 Dec 2020 09:35:15 +0100
+In-Reply-To: <DM6PR04MB657598535F633F59A1DB1F22FCDE0@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20201222072928.32328-1-stanley.chu@mediatek.com>
+         <c862866ec97516a7ffb891e5de3d132d@codeaurora.org>
+         <1608697172.14045.5.camel@mtkswgap22>
+         <c83d34ca8b0338526f6440f1c4ee43dd@codeaurora.org>
+         <DM6PR04MB657598535F633F59A1DB1F22FCDE0@DM6PR04MB6575.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add address shift when compose jump instruction
-to compatible with 35bit format.
+On Wed, 2020-12-23 at 07:47 +0000, Avri Altman wrote:
+> > > could change the way it does: Keep manual flush disabled by
+> > > default and
+> > > remove this quirk.
+> 
+> Ack on that.
+> I never understood why it was needed in the first place.
+> Maybe just remove it, and allow to perform explicit flush from sysfs.
+> 
+> Thanks,
+> Avr
 
-Fixes: 0858fde496f8 ("mailbox: cmdq: variablize address shift in platform")
+Avri
+I agree with you.
+I don't understand why setting that at the begginnning, also assign
+this feature the contrller to make desicion.
 
-Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-Reviewed-by: Nicolas Boichat <drinkcat@chromium.org>
----
- drivers/mailbox/mtk-cmdq-mailbox.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Bean
 
-diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmdq-mailbox.c
-index 5665b6e..75378e3 100644
---- a/drivers/mailbox/mtk-cmdq-mailbox.c
-+++ b/drivers/mailbox/mtk-cmdq-mailbox.c
-@@ -168,7 +168,8 @@ static void cmdq_task_insert_into_thread(struct cmdq_task *task)
- 	dma_sync_single_for_cpu(dev, prev_task->pa_base,
- 				prev_task->pkt->cmd_buf_size, DMA_TO_DEVICE);
- 	prev_task_base[CMDQ_NUM_CMD(prev_task->pkt) - 1] =
--		(u64)CMDQ_JUMP_BY_PA << 32 | task->pa_base;
-+		(u64)CMDQ_JUMP_BY_PA << 32 |
-+		(task->pa_base >> task->cmdq->shift_pa);
- 	dma_sync_single_for_device(dev, prev_task->pa_base,
- 				   prev_task->pkt->cmd_buf_size, DMA_TO_DEVICE);
- 
--- 
-1.8.1.1.dirty
 
