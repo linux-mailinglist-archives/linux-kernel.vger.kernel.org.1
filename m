@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD7532E1640
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:59:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B62732E154E
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:58:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729118AbgLWC7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:59:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46328 "EHLO mail.kernel.org"
+        id S1727197AbgLWCUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:20:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728876AbgLWCUI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:20:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 41B4122D73;
-        Wed, 23 Dec 2020 02:19:52 +0000 (UTC)
+        id S1728884AbgLWCUM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:20:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0111C23340;
+        Wed, 23 Dec 2020 02:19:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608689993;
-        bh=dbXis86xDPTQu+i1OtGK9IHLf/s7gH+4ybqoclpUXCI=;
+        s=k20201202; t=1608689997;
+        bh=ZpYSRalqTmbJnRBT6HPNBUeDdjuZ9gQ3rSZueqPSgGU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sAiltPmwOvjn2PScHFcpzxf45AxxFGAEeaNEhTfnRwhMC1rVfFZTN404ZA2scd5Ta
-         CTOWmcmr+K2R8qKIqxYslYn02ajge2txPiuJo5ry+AoSJNmshK70ZU70bF5wFcsdZx
-         Am5lvdEhB/LsJzGF3U9tccSLOtfvOWQk4yJwFOZLg/6uqwgQCGjN1/S1XDR24xMrrd
-         h3x+hjdal+OnaVnJqflbazCZSDkGpU0WlpU8GEhDwbsSRvzhAdQhsOx/LdI8tUf4VH
-         Gm5sRC2sEOEJd3lLc9DXbRiZrBZ1POvFRg0XSeLXOGj6npxnMKfHbHrAVdO074FW5d
-         9nXH+fClwqApw==
+        b=RobiIqJ1MyN3v4j843Nq6GNmnGsxxaHWR0qo6/IdHY6FAKitlKQqG8VMJIEqWL9+V
+         UC3wvdtquHorH8ZHXfykKsstIxL8Qs2RPhNw1NRrFwh/GKa/NniJb3rPLAoz5p/o1N
+         QwMTFSEXEV3ePAXwkV9YXXf35h8ZQL6ZswpzzfjZ9ii/tA1EKTrLAfnTxHUIhg9tni
+         YIdjjFlgvmtklc6xP8TD7qoYflgm36eclt850OjFMKAzd4kSld2q+OIhYWlRyWzwWo
+         R5nun78ADJEtBLWAezieiiKaNj7umucOsg//RfI1nMxnBhMgLXUZ+dMCrgjTJ9AoEa
+         nL7b3NvSK3jHw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Borislav Petkov <bp@alien8.de>, Borislav Petkov <bp@suse.de>,
-        Sasha Levin <sashal@kernel.org>, linux-pci@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH AUTOSEL 5.4 077/130] x86/pci: Fix the function type for check_reserved_t
-Date:   Tue, 22 Dec 2020 21:17:20 -0500
-Message-Id: <20201223021813.2791612-77-sashal@kernel.org>
+Cc:     Sung Lee <sung.lee@amd.com>, Tony Cheng <Tony.Cheng@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.4 080/130] drm/amd/display: Update dram_clock_change_latency for DCN2.1
+Date:   Tue, 22 Dec 2020 21:17:23 -0500
+Message-Id: <20201223021813.2791612-80-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223021813.2791612-1-sashal@kernel.org>
 References: <20201223021813.2791612-1-sashal@kernel.org>
@@ -44,55 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sami Tolvanen <samitolvanen@google.com>
+From: Sung Lee <sung.lee@amd.com>
 
-[ Upstream commit 83321c335dccba262a57378361d63da96b8166d6 ]
+[ Upstream commit 901c1ec05ef277ce9d43cb806a225b28b3efe89a ]
 
-e820__mapped_all() is passed as a callback to is_mmconf_reserved(),
-which expects a function of type:
+[WHY]
+dram clock change latencies get updated using ddr4 latency table, but
+does that update does not happen before validation. This value
+should not be the default and should be number received from
+df for better mode support.
+This may cause a PState hang on high refresh panels with short vblanks
+such as on 1080p 360hz or 300hz panels.
 
-  typedef bool (*check_reserved_t)(u64 start, u64 end, unsigned type);
+[HOW]
+Update latency from 23.84 to 11.72.
 
-However, e820__mapped_all() accepts enum e820_type as the last argument
-and this type mismatch trips indirect call checking with Clang's
-Control-Flow Integrity (CFI).
-
-As is_mmconf_reserved() only passes enum e820_type values for the
-type argument, change the typedef and the unused type argument in
-is_acpi_reserved() to enum e820_type to fix the type mismatch.
-
-Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
-Suggested-by: Borislav Petkov <bp@alien8.de>
-Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20201130193900.456726-1-samitolvanen@google.com
+Signed-off-by: Sung Lee <sung.lee@amd.com>
+Reviewed-by: Tony Cheng <Tony.Cheng@amd.com>
+Acked-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/pci/mmconfig-shared.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/pci/mmconfig-shared.c b/arch/x86/pci/mmconfig-shared.c
-index 6fa42e9c4e6fa..234998f196d4d 100644
---- a/arch/x86/pci/mmconfig-shared.c
-+++ b/arch/x86/pci/mmconfig-shared.c
-@@ -425,7 +425,7 @@ static acpi_status find_mboard_resource(acpi_handle handle, u32 lvl,
- 	return AE_OK;
- }
- 
--static bool is_acpi_reserved(u64 start, u64 end, unsigned not_used)
-+static bool is_acpi_reserved(u64 start, u64 end, enum e820_type not_used)
- {
- 	struct resource mcfg_res;
- 
-@@ -442,7 +442,7 @@ static bool is_acpi_reserved(u64 start, u64 end, unsigned not_used)
- 	return mcfg_res.flags;
- }
- 
--typedef bool (*check_reserved_t)(u64 start, u64 end, unsigned type);
-+typedef bool (*check_reserved_t)(u64 start, u64 end, enum e820_type type);
- 
- static bool __ref is_mmconf_reserved(check_reserved_t is_reserved,
- 				     struct pci_mmcfg_region *cfg,
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c b/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
+index bb7add5ea2273..a6d5beada6634 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
+@@ -257,7 +257,7 @@ struct _vcs_dpi_soc_bounding_box_st dcn2_1_soc = {
+ 	.num_banks = 8,
+ 	.num_chans = 4,
+ 	.vmm_page_size_bytes = 4096,
+-	.dram_clock_change_latency_us = 23.84,
++	.dram_clock_change_latency_us = 11.72,
+ 	.return_bus_width_bytes = 64,
+ 	.dispclk_dppclk_vco_speed_mhz = 3600,
+ 	.xfc_bus_transport_time_us = 4,
 -- 
 2.27.0
 
