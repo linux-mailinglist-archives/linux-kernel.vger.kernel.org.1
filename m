@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A812E169B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 04:10:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7742A2E168D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 04:10:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731486AbgLWDAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 22:00:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45452 "EHLO mail.kernel.org"
+        id S1731421AbgLWC7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:59:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728806AbgLWCT6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:19:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B0AE225AC;
-        Wed, 23 Dec 2020 02:19:41 +0000 (UTC)
+        id S1728852AbgLWCUE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:20:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E9B0E2256F;
+        Wed, 23 Dec 2020 02:19:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608689982;
-        bh=JsrJp+sXLZRFq7+ZJieOjmcoDmiR56o5OrlZNP4tPMQ=;
+        s=k20201202; t=1608689986;
+        bh=yJRRFSfrUWMNVGR1aJmIOLD3je5SKkACdB7S9UENrAY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TaVy3NqGILMEQQ2HDJj6jpAHo1zpE2ci8fyXKxC8SsOuwNEfdTBHAiYmgUh1QVvIY
-         abVEmGl6ta5vnewc8iD7SFqxchN3yEwENxPpBP0+/UJroH1m//EFbak8hvWESi/ajd
-         ZRKtml9uxzqvjDZW+1xNBpJnnOrvPKhCClBeHmTNF8fB2BeSzj3NkRFPqasots+XnI
-         Zreti+iY+JaHE9crz628FWOZXel5EphomRQ44A7opotP6SYzbXx3iHQs774k1tqWy3
-         0mwvVrKRtjD+IkONaRzcNWsaR2DWxRpsE82Gp5oNW93ZphWpRlFTRxlEIc0MJOe3h8
-         oSzV2uJ3i6Zzw==
+        b=VKhmnEyDOztZt/Rg7KiZFnGCfsrQbG6iVVa5f1bPJVHHCQa0vdRww6RP/gj8y/dg1
+         SHlsTYOFg7z+AHXoYuK6qiAw241Fp5dVzhboctoB2iHI6N8GVNm6A+sBR9i3ZKKjOK
+         EwkNfsmrYxpxMlX0gJ3sKDbxLEEh20BAF7dPA+mgUinWvebTphDrYuOLnjAZqaUQUz
+         9f5u83+nPBc+//qmoCFmLj8GQ05JrLngrCOeQQaDhy2YWY3ebg6XAhRbLk6TLTz0lS
+         Y1zybisAG4LTUlKdDGQULisaWnrQGHG2S8ZOAfcS/34ro23TqTVyuYSr74hy90BKC4
+         kmOcW4DnNfsyw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
-        Saruhan Karademir <skarade@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        Wei Liu <wei.liu@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        linux-hyperv@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 069/130] hv_netvsc: Validate number of allocated sub-channels
-Date:   Tue, 22 Dec 2020 21:17:12 -0500
-Message-Id: <20201223021813.2791612-69-sashal@kernel.org>
+Cc:     Marc Zyngier <maz@kernel.org>, Thierry Reding <treding@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 072/130] arm64: tegra: Fix GIC400 missing GICH/GICV register regions
+Date:   Tue, 22 Dec 2020 21:17:15 -0500
+Message-Id: <20201223021813.2791612-72-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201223021813.2791612-1-sashal@kernel.org>
 References: <20201223021813.2791612-1-sashal@kernel.org>
@@ -46,44 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
+From: Marc Zyngier <maz@kernel.org>
 
-[ Upstream commit 206ad34d52a2f1205c84d08c12fc116aad0eb407 ]
+[ Upstream commit 776a3c04da9fa144241476f4a0d263899d6cad26 ]
 
-Lack of validation could lead to out-of-bound reads and information
-leaks (cf. usage of nvdev->chan_table[]).  Check that the number of
-allocated sub-channels fits into the expected range.
+GIC400 has full support for virtualization, and yet the tegra186
+DT doesn't expose the GICH/GICV regions (despite exposing the
+maintenance interrupt that only makes sense for virtualization).
 
-Suggested-by: Saruhan Karademir <skarade@microsoft.com>
-Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
-Acked-by: Jakub Kicinski <kuba@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org
-Link: https://lore.kernel.org/r/20201118153310.112404-1-parri.andrea@gmail.com
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
+Add the missing regions, based on the hunch that the HW doesn't
+use the CPU build-in interfaces, but instead the external ones
+provided by the GIC. KVM's virtual GIC now works with this change.
+
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/hyperv/rndis_filter.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/arm64/boot/dts/nvidia/tegra186.dtsi | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/hyperv/rndis_filter.c b/drivers/net/hyperv/rndis_filter.c
-index b9e44bb22289c..90d81dc6a1221 100644
---- a/drivers/net/hyperv/rndis_filter.c
-+++ b/drivers/net/hyperv/rndis_filter.c
-@@ -1159,6 +1159,11 @@ int rndis_set_subchannel(struct net_device *ndev,
- 		return -EIO;
- 	}
- 
-+	/* Check that number of allocated sub channel is within the expected range */
-+	if (init_packet->msg.v5_msg.subchn_comp.num_subchannels > nvdev->num_chn - 1) {
-+		netdev_err(ndev, "invalid number of allocated sub channel\n");
-+		return -EINVAL;
-+	}
- 	nvdev->num_chn = 1 +
- 		init_packet->msg.v5_msg.subchn_comp.num_subchannels;
- 
+diff --git a/arch/arm64/boot/dts/nvidia/tegra186.dtsi b/arch/arm64/boot/dts/nvidia/tegra186.dtsi
+index 9abf0cb1dd67f..f72c97fe4afc8 100644
+--- a/arch/arm64/boot/dts/nvidia/tegra186.dtsi
++++ b/arch/arm64/boot/dts/nvidia/tegra186.dtsi
+@@ -569,7 +569,9 @@ gic: interrupt-controller@3881000 {
+ 		#interrupt-cells = <3>;
+ 		interrupt-controller;
+ 		reg = <0x0 0x03881000 0x0 0x1000>,
+-		      <0x0 0x03882000 0x0 0x2000>;
++		      <0x0 0x03882000 0x0 0x2000>,
++		      <0x0 0x03884000 0x0 0x2000>,
++		      <0x0 0x03886000 0x0 0x2000>;
+ 		interrupts = <GIC_PPI 9
+ 			(GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;
+ 		interrupt-parent = <&gic>;
 -- 
 2.27.0
 
