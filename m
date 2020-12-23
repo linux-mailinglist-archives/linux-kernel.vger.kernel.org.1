@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 308772E12C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:28:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9ACF2E12CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 03:28:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728629AbgLWCYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Dec 2020 21:24:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54022 "EHLO mail.kernel.org"
+        id S1729473AbgLWCYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Dec 2020 21:24:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730206AbgLWCYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:24:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F4502256F;
-        Wed, 23 Dec 2020 02:24:07 +0000 (UTC)
+        id S1730261AbgLWCYf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Dec 2020 21:24:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D10523159;
+        Wed, 23 Dec 2020 02:24:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608690248;
-        bh=Xb9UiOoz9QZNo0gkwj9ETOXmWzNA3u4mUMOABkWgRG8=;
+        s=k20201202; t=1608690260;
+        bh=hpmLo2gwFJoOcqxhGr7HjqPMo/CMAsYlWleo0VkfY30=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Zny1IW/j0UDYv0fjzXJFCZvpzP5uSW18OtfNDT9MM6KFtOKFn1mxiY9izkhEn9jLW
-         XXgom+RdFIIOyPMk5rdqQX468lxxkSxURkxfMIMa46WOgDsnoKvuHZY4Oszt5I7ziy
-         m3hSQlxgvw4isqZKyymY8Wb1hXpdejtL44Msb7QecptxU21yqiNRzvDjnFQofQ2N5d
-         RQP6zkPwbi4eapnS937mQuDy8k/BKFYtwrA51VVYLr1McRBvZM+Es8eEzy4mlLtbbN
-         yqkEFbgFN8kWuUy9TQ6QYut201rwmlnTNUnoJOsItOiRa8oAR/TW/dOBZM1ZZ46tt2
-         3e1NZRYBc8/rQ==
+        b=UPFIM2BcHnoOuz44mbfyx2j7ihreNEBHvgrzjoDRCcRZZ5SxQx5xPx0XdektNtvNf
+         b6hb78y4WoyZ5dvzBDoItP+GHweg+jsHBxjsFOJKeCMK7jBKtgVxcyzy2ODjZ2rRiV
+         Ey9Ck1HoUSKeAc0KRPIMEJNFBpOcwPyHvI80DUZmhuwx96x8MSN72mRDlO/sTyR0IP
+         hc8zWXGcoHBvxvPg2bdfe9aDLObuCOQ9kSi4UvYDIQvR/S18Z1TrInJKcpxqiSpAlJ
+         Mm9lxQ1egN2/z1MfUaw7yofvfc9wSkbcWnaGQ56P5r2NrPnPGld1dcJeQpdWSHce1H
+         rY7bsovGIJMzg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ilan Peer <ilan.peer@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Johannes Berg <johannes.berg@intel.com>,
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
         Sasha Levin <sashal@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 60/66] cfg80211: Save the regulatory domain when setting custom regulatory
-Date:   Tue, 22 Dec 2020 21:22:46 -0500
-Message-Id: <20201223022253.2793452-60-sashal@kernel.org>
+        linux-security-module@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: [PATCH AUTOSEL 4.9 02/48] tomoyo: fix clang pointer arithmetic warning
+Date:   Tue, 22 Dec 2020 21:23:30 -0500
+Message-Id: <20201223022417.2794032-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201223022253.2793452-1-sashal@kernel.org>
-References: <20201223022253.2793452-1-sashal@kernel.org>
+In-Reply-To: <20201223022417.2794032-1-sashal@kernel.org>
+References: <20201223022417.2794032-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -44,47 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ilan Peer <ilan.peer@intel.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit beee246951571cc5452176f3dbfe9aa5a10ba2b9 ]
+[ Upstream commit d9594e0409651a237903a13c9718df889f43d43b ]
 
-When custom regulatory was set, only the channels setting was updated, but
-the regulatory domain was not saved. Fix it by saving it.
+clang warns about additions on NULL pointers being undefined in C:
 
-Signed-off-by: Ilan Peer <ilan.peer@intel.com>
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Link: https://lore.kernel.org/r/iwlwifi.20201129172929.290fa5c5568a.Ic5732aa64de6ee97ae3578bd5779fc723ba489d1@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+security/tomoyo/securityfs_if.c:226:59: warning: arithmetic on a null pointer treated as a cast from integer to pointer is a GNU extension [-Wnull-pointer-arithmetic]
+        securityfs_create_file(name, mode, parent, ((u8 *) NULL) + key,
+
+Change the code to instead use a cast through uintptr_t to avoid
+the warning.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/wireless/reg.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ security/tomoyo/securityfs_if.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/net/wireless/reg.c b/net/wireless/reg.c
-index db8cc505caf76..ed4c6ad53c683 100644
---- a/net/wireless/reg.c
-+++ b/net/wireless/reg.c
-@@ -1796,6 +1796,7 @@ static void handle_band_custom(struct wiphy *wiphy,
- void wiphy_apply_custom_regulatory(struct wiphy *wiphy,
- 				   const struct ieee80211_regdomain *regd)
+diff --git a/security/tomoyo/securityfs_if.c b/security/tomoyo/securityfs_if.c
+index 06ab41b1ff286..7590dee59f02f 100644
+--- a/security/tomoyo/securityfs_if.c
++++ b/security/tomoyo/securityfs_if.c
+@@ -130,8 +130,8 @@ static const struct file_operations tomoyo_self_operations = {
+  */
+ static int tomoyo_open(struct inode *inode, struct file *file)
  {
-+	const struct ieee80211_regdomain *new_regd, *tmp;
- 	enum nl80211_band band;
- 	unsigned int bands_set = 0;
- 
-@@ -1815,6 +1816,13 @@ void wiphy_apply_custom_regulatory(struct wiphy *wiphy,
- 	 * on your device's supported bands.
- 	 */
- 	WARN_ON(!bands_set);
-+	new_regd = reg_copy_regd(regd);
-+	if (IS_ERR(new_regd))
-+		return;
+-	const int key = ((u8 *) file_inode(file)->i_private)
+-		- ((u8 *) NULL);
++	const u8 key = (uintptr_t) file_inode(file)->i_private;
 +
-+	tmp = get_wiphy_regdom(wiphy);
-+	rcu_assign_pointer(wiphy->regd, new_regd);
-+	rcu_free_regdom(tmp);
+ 	return tomoyo_open_control(key, file);
  }
- EXPORT_SYMBOL(wiphy_apply_custom_regulatory);
+ 
+@@ -222,7 +222,7 @@ static const struct file_operations tomoyo_operations = {
+ static void __init tomoyo_create_entry(const char *name, const umode_t mode,
+ 				       struct dentry *parent, const u8 key)
+ {
+-	securityfs_create_file(name, mode, parent, ((u8 *) NULL) + key,
++	securityfs_create_file(name, mode, parent, (void *) (uintptr_t) key,
+ 			       &tomoyo_operations);
+ }
  
 -- 
 2.27.0
