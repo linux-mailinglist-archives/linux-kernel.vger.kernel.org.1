@@ -2,92 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E42252E1AAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 11:01:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABCD32E1AAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Dec 2020 11:05:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728308AbgLWKA5 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 23 Dec 2020 05:00:57 -0500
-Received: from lithops.sigma-star.at ([195.201.40.130]:34410 "EHLO
-        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726022AbgLWKA4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 05:00:56 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 00029625DE06;
-        Wed, 23 Dec 2020 11:00:13 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id PvEedl0pH8YN; Wed, 23 Dec 2020 11:00:13 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 85EB3625DE07;
-        Wed, 23 Dec 2020 11:00:13 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id X7jk5AndnOpC; Wed, 23 Dec 2020 11:00:13 +0100 (CET)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 591BE625DE06;
-        Wed, 23 Dec 2020 11:00:13 +0100 (CET)
-Date:   Wed, 23 Dec 2020 11:00:13 +0100 (CET)
-From:   Richard Weinberger <richard@nod.at>
-To:     Chengsong Ke <kechengsong@huawei.com>
-Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        wangfangpeng1@huawei.com, chengzhihao1 <chengzhihao1@huawei.com>
-Message-ID: <135307670.158287.1608717613022.JavaMail.zimbra@nod.at>
-In-Reply-To: <20201223062808.27512-1-kechengsong@huawei.com>
-References: <20201223062808.27512-1-kechengsong@huawei.com>
-Subject: Re: [PATCH] ubifs: Fix read out-of-bounds in
- ubifs_jnl_write_inode()
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
-Thread-Topic: ubifs: Fix read out-of-bounds in ubifs_jnl_write_inode()
-Thread-Index: z+tkpY/z0vMi1cpMRZMXcPO+z7DtJw==
+        id S1728279AbgLWKE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 05:04:27 -0500
+Received: from foss.arm.com ([217.140.110.172]:47916 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726022AbgLWKE0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 05:04:26 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 81F2B101E;
+        Wed, 23 Dec 2020 02:03:40 -0800 (PST)
+Received: from p8cg001049571a15.blr.arm.com (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id BD62C3F718;
+        Wed, 23 Dec 2020 02:03:37 -0800 (PST)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
+Cc:     linux-kernel@vger.kernel.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Linu Cherian <lcherian@marvell.com>
+Subject: [PATCH 00/11] arm64: coresight: Enable ETE and TRBE
+Date:   Wed, 23 Dec 2020 15:33:32 +0530
+Message-Id: <1608717823-18387-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Chengsong Ke,
+This series enables future IP trace features Embedded Trace Extension (ETE)
+and Trace Buffer Extension (TRBE). This series depends on the ETM system
+register instruction support series [0] which is available here [1]. This
+series which applies on [1] is avaialble here [2] for quick access.
 
------ Ursprüngliche Mail -----
-> The memory area allocated in ubifs_jnl_write_inode() is not aligned with 8
-> bytes:
-> ino_start = ino = kmalloc(write_len, GFP_NOFS);
-> 
-> When ino_start passed into write_head -> ubifs_wbuf_write_nolock:
->    n = aligned_len >> c->max_write_shift;
->    if (n) {
->      n <<= c->max_write_shift;
->      err = ubifs_leb_write(c, wbuf->lnum, buf + written, wbuf->offs, n);
->      // Read oob occurs here, read n bytes from buf, and buf is passed from
->      @ino_start which is
->      // not 8 bytes aligned(write_len < n). Program read (n - write_len) more bytes.
->    }
-> 
-> Reproducer:
-> 0. config KASAN && apply print.patch
-> 1. mount ubifs on /root/temp
-> 2. run test.sh
-> 3. cd /root/temp && ls // change atime for link_file
-> 4. wait 1~2 minutes
-> 
-> Cc: <stable@vger.kernel.org>
-> Fixes: 1e51764a3c2ac0 ("UBIFS: add new flash file system")
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=210865
-> 
-> Signed-off-by: Chengsong Ke <kechengsong@huawei.com>
-> ---
-> fs/ubifs/io.c | 11 +++++++++--
-> 1 file changed, 9 insertions(+), 2 deletions(-)
+ETE is the PE (CPU) trace unit for CPUs, implementing future architecture
+extensions. ETE overlaps with the ETMv4 architecture, with additions to
+support the newer architecture features and some restrictions on the
+supported features w.r.t ETMv4. The ETE support is added by extending the
+ETMv4 driver to recognise the ETE and handle the features as exposed by the
+TRCIDRx registers. ETE only supports system instructions access from the
+host CPU. The ETE could be integrated with a TRBE (see below), or with the
+legacy CoreSight trace bus (e.g, ETRs). Thus the ETE follows same firmware
+description as the ETMs and requires a node per instance. 
 
-Good catch!
-Please address the problem in ubifs_jnl_write_inode().
-The length there needs to be properly aligned like all other journal
-functions do.
-I think you managed to trigger the issue because ui->data_len is not aligned.
+Trace Buffer Extensions (TRBE) implements a per CPU trace buffer, which is
+accessible via the system registers and can be combined with the ETE to
+provide a 1x1 configuration of source & sink. TRBE is being represented
+here as a CoreSight sink. Primary reason is that the ETE source could work
+with other traditional CoreSight sink devices. As TRBE captures the trace
+data which is produced by ETE, it cannot work alone.
 
-Thanks,
-//richard
+TRBE representation here have some distinct deviations from a traditional
+CoreSight sink device. Coresight path between ETE and TRBE are not built
+during boot looking at respective DT or ACPI entries.
+
+Unlike traditional sinks, TRBE can generate interrupts to signal including
+many other things, buffer got filled. The interrupt is a PPI and should be
+communicated from the platform. DT or ACPI entry representing TRBE should
+have the PPI number for a given platform. During perf session, the TRBE IRQ
+handler should capture trace for perf auxiliary buffer before restarting it
+back. System registers being used here to configure ETE and TRBE could be
+referred in the link below.
+
+https://developer.arm.com/docs/ddi0601/g/aarch64-system-registers.
+
+Things todo:
+
+- Improve TRBE IRQ handling for all possible corner cases
+- Implement sysfs based trace sessions
+
+[0] https://lore.kernel.org/linux-arm-kernel/20201214173731.302520-1-suzuki.poulose@arm.com/
+[1] https://gitlab.arm.com/linux-arm/linux-skp/-/tree/coresight/etm/sysreg-v5
+[2] https://gitlab.arm.com/linux-arm/linux-anshuman/-/tree/coresight/ete_trbe_v1
+
+Changes in V1:
+
+- There are not much ETE changes from Suzuki apart from splitting of the ETE DTS patch
+- TRBE changes have been captured in the respective patches
+
+Changes in RFC:
+
+https://lore.kernel.org/linux-arm-kernel/1605012309-24812-1-git-send-email-anshuman.khandual@arm.com/
+
+Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc: Mike Leach <mike.leach@linaro.org>
+Cc: Linu Cherian <lcherian@marvell.com>
+Cc: coresight@lists.linaro.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+
+Anshuman Khandual (5):
+  arm64: Add TRBE definitions
+  coresight: core: Add support for dedicated percpu sinks
+  coresight: etm-perf: Truncate the perf record if handle has no space
+  coresight: sink: Add TRBE driver
+  dts: bindings: Document device tree binding for Arm TRBE
+
+Suzuki K Poulose (6):
+  coresight: etm-perf: Allow an event to use different sinks
+  coresight: Do not scan for graph if none is present
+  coresight: etm4x: Add support for PE OS lock
+  coresight: ete: Add support for ETE sysreg access
+  coresight: ete: Add support for ETE tracing
+  dts: bindings: Document device tree bindings for ETE
+
+ Documentation/devicetree/bindings/arm/ete.txt      |  41 +
+ Documentation/devicetree/bindings/arm/trbe.txt     |  20 +
+ Documentation/trace/coresight/coresight-trbe.rst   |  39 +
+ arch/arm64/include/asm/sysreg.h                    |  51 ++
+ drivers/hwtracing/coresight/Kconfig                |  11 +
+ drivers/hwtracing/coresight/Makefile               |   1 +
+ drivers/hwtracing/coresight/coresight-core.c       |  14 +
+ drivers/hwtracing/coresight/coresight-etm-perf.c   |  51 +-
+ drivers/hwtracing/coresight/coresight-etm4x-core.c | 138 ++-
+ drivers/hwtracing/coresight/coresight-etm4x.h      |  64 +-
+ drivers/hwtracing/coresight/coresight-platform.c   |   6 +
+ drivers/hwtracing/coresight/coresight-trbe.c       | 925 +++++++++++++++++++++
+ drivers/hwtracing/coresight/coresight-trbe.h       | 248 ++++++
+ include/linux/coresight.h                          |  12 +
+ 14 files changed, 1580 insertions(+), 41 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/arm/ete.txt
+ create mode 100644 Documentation/devicetree/bindings/arm/trbe.txt
+ create mode 100644 Documentation/trace/coresight/coresight-trbe.rst
+ create mode 100644 drivers/hwtracing/coresight/coresight-trbe.c
+ create mode 100644 drivers/hwtracing/coresight/coresight-trbe.h
+
+-- 
+2.7.4
+
