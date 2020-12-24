@@ -2,104 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BC6E2E2546
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 08:44:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE8B72E254A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 08:51:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726338AbgLXHny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 02:43:54 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:10359 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725811AbgLXHnx (ORCPT
+        id S1726730AbgLXHuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 02:50:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725613AbgLXHuH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 02:43:53 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4D1hqg1pBwz7Hn0;
-        Thu, 24 Dec 2020 15:42:23 +0800 (CST)
-Received: from use12-sp2.huawei.com (10.67.189.174) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 24 Dec 2020 15:42:59 +0800
-From:   Xiaoming Ni <nixiaoming@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <mcgrof@kernel.org>,
-        <keescook@chromium.org>, <yzaikin@google.com>,
-        <adobriyan@gmail.com>, <vbabka@suse.cz>,
-        <linux-fsdevel@vger.kernel.org>, <mhocko@suse.com>,
-        <mhiramat@kernel.org>
-CC:     <nixiaoming@huawei.com>, <wangle6@huawei.com>
-Subject: [PATCH] proc_sysclt: fix oops caused by incorrect command parameters.
-Date:   Thu, 24 Dec 2020 15:42:56 +0800
-Message-ID: <20201224074256.117413-1-nixiaoming@huawei.com>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.189.174]
-X-CFilter-Loop: Reflected
+        Thu, 24 Dec 2020 02:50:07 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74CC9C061794;
+        Wed, 23 Dec 2020 23:49:27 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id b8so955332plx.0;
+        Wed, 23 Dec 2020 23:49:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=SlolyWi3tYq1xjC+al0ttrUuofdE52UVAA6blmH9sEM=;
+        b=eTO6Wl+eK8gwXywAW6K3qck/icFb64N4GiVqAC6ycJ0TvwhrHEGsqxJTc28XXz8UQh
+         sQ+4XClMQ4xTmp8MeCoIn9nfIP5NrZUk5xXcgaiGlPy2ojq8RkJn2ZmSQ/c4hcWWa/tM
+         +fOX5ycpLqJ+zQbLWj13ir6d8v4PisJ3h/qyr2wwjo9qQ5CtOD9sapYerjRgzJjRE5mR
+         AmB3fWQSqFtF4+4hXnKWYIYccmbTWy8hrpbYLR7R/7Z4NoxlGFy2SCF2GFSnP5A65pWF
+         581q1BaK0rteZyOJeidlnIPsc3+TxR0VDYq290OuokHMBqIEL5/cXWkF6MOd3Vt8VC+4
+         08Gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=SlolyWi3tYq1xjC+al0ttrUuofdE52UVAA6blmH9sEM=;
+        b=XQlQSJAUC5DjcGsmJHGXLnw1/rxH6mYRr0b7YUkHrS76XhYgIac5ShjoxJch9ht2yz
+         cJ4tk/qxlWoJHZw0gMny6dGEz2YslXqtI9yUfK42oI4+n9KRhwKGlOHmgwpmRXeCeg6t
+         1c/frDNGf6Ttqqz5feEx1DJ5L58Op16Sle6XkIQ+frhT46KwY25Q95dvmHmEWnqypD6y
+         xXAJp1oSpVmcIiB0PvVvWTZ7P8+4sMaif4+YSO5grnT/ag+E6O8iGZ9ZO2YBNsIAsY13
+         8m7QEVYUU3fsw08gBBbo1NrLhtH6nRPIVIxICDmPhEfXUB5lFKM7oY5TQUTkexKLsBcB
+         BFmQ==
+X-Gm-Message-State: AOAM531oxUCeNHXGZUTwoUCzpmNN6QyM8HTHFrwDXyINE8qWNhAX6aPx
+        h6OpKAfR0zVP5zjIMDbt0FI=
+X-Google-Smtp-Source: ABdhPJyi/7Wn4+jU196A5/CLHyiFSodaESpmG4ccXdU5u3v9F0vaAteF6Thcaq8a0pY4cd4y/bGevw==
+X-Received: by 2002:a17:90a:a382:: with SMTP id x2mr3320685pjp.178.1608796166985;
+        Wed, 23 Dec 2020 23:49:26 -0800 (PST)
+Received: from localhost.localdomain ([2402:7500:492:86cf:7e4a:b265:b394:eefd])
+        by smtp.gmail.com with ESMTPSA id y9sm1743507pjt.37.2020.12.23.23.49.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 23 Dec 2020 23:49:26 -0800 (PST)
+From:   Gene Chen <gene.chen.richtek@gmail.com>
+To:     sre@kernel.org, matthias.bgg@gmail.com, robh+dt@kernel.org
+Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+Subject: [PATCH v3 0/2] power: supply: mt6360_charger: add MT6360 charger support
+Date:   Thu, 24 Dec 2020 15:48:02 +0800
+Message-Id: <1608796084-29418-1-git-send-email-gene.chen.richtek@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The process_sysctl_arg() does not check whether val is empty before
- invoking strlen(val). If the command line parameter () is incorrectly
- configured and val is empty, oops is triggered.
+This patch series add MT6360 Charger support contains driver and binding
+document
 
-For example, "hung_task_panic=1" is incorrectly written as "hung_task_panic".
+Gene Chen (2)
+ dt-bindings: power: Add bindings document for Charger support on MT6360 PMIC
+ power: supply: mt6360_charger: add MT6360 charger support
 
-log:
-	Kernel command line: .... hung_task_panic
-	....
-	[000000000000000n] user address but active_mm is swapper
-	Internal error: Oops: 96000005 [#1] SMP
-	Modules linked in:
-	CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.1 #1
-	Hardware name: linux,dummy-virt (DT)
-	pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
-	pc : __pi_strlen+0x10/0x98
-	lr : process_sysctl_arg+0x1e4/0x2ac
-	sp : ffffffc01104bd40
-	x29: ffffffc01104bd40 x28: 0000000000000000
-	x27: ffffff80c0a4691e x26: ffffffc0102a7c8c
-	x25: 0000000000000000 x24: ffffffc01104be80
-	x23: ffffff80c22f0b00 x22: ffffff80c02e28c0
-	x21: ffffffc0109f9000 x20: 0000000000000000
-	x19: ffffffc0107c08de x18: 0000000000000003
-	x17: ffffffc01105d000 x16: 0000000000000054
-	x15: ffffffffffffffff x14: 3030253078413830
-	x13: 000000000000ffff x12: 0000000000000000
-	x11: 0101010101010101 x10: 0000000000000005
-	x9 : 0000000000000003 x8 : ffffff80c0980c08
-	x7 : 0000000000000000 x6 : 0000000000000002
-	x5 : ffffff80c0235000 x4 : ffffff810f7c7ee0
-	x3 : 000000000000043a x2 : 00bdcc4ebacf1a54
-	x1 : 0000000000000000 x0 : 0000000000000000
-	Call trace:
-	 __pi_strlen+0x10/0x98
-	 parse_args+0x278/0x344
-	 do_sysctl_args+0x8c/0xfc
-	 kernel_init+0x5c/0xf4
-	 ret_from_fork+0x10/0x30
-	Code: b200c3eb 927cec01 f2400c07 54000301 (a8c10c22)
+ Documentation/devicetree/bindings/power/supply/mt6360_charger.yaml |   48 
+ drivers/power/supply/Kconfig                                       |   10 
+ drivers/power/supply/Makefile                                      |    1 
+ drivers/power/supply/mt6360_charger.c                              | 1022 ++++++++++
+ 4 files changed, 1081 insertions(+)
 
-Fixes: 3db978d480e2843 ("kernel/sysctl: support setting sysctl parameters
- from kernel command line")
-Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
----
- fs/proc/proc_sysctl.c | 3 +++
- 1 file changed, 3 insertions(+)
+changelogs between v1 & v2
+ - Add binding property with unit and custom name prefix
+ - Remove extcon device, redundant brackets and interrupts
+ - Fix power supply prop "charger type"
 
-diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
-index 317899222d7f..4516411a2b44 100644
---- a/fs/proc/proc_sysctl.c
-+++ b/fs/proc/proc_sysctl.c
-@@ -1757,6 +1757,9 @@ static int process_sysctl_arg(char *param, char *val,
- 	loff_t pos = 0;
- 	ssize_t wret;
- 
-+	if (!val)
-+		return 0;
-+
- 	if (strncmp(param, "sysctl", sizeof("sysctl") - 1) == 0) {
- 		param += sizeof("sysctl") - 1;
- 
--- 
-2.27.0
+changelogs between v2 & v3
+ - Add register selector to value mapping
 
