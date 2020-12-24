@@ -2,107 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C41622E27B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 15:30:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DF6C2E27B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 15:32:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728880AbgLXO3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 09:29:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56510 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727883AbgLXO3a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 09:29:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A2CD224B0;
-        Thu, 24 Dec 2020 14:28:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608820129;
-        bh=avuCDzNbHj2dpF1wMtlr+eCWDnDVKL9dKK9/kgnxfs4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ENCPJqaoTtx/w/gjRxswEHbm+8HVvkn/o6ithsijzpCIyPfZxK6j1NMT5Bqr0GEGI
-         nJVwGA+Av6dt/xpjmGqyZ0IerOW/S1adE0iqYlvt0jFYaEoV/sc4DI1VKJR/6/4Uu+
-         lNaBlogIq22j485Mm06pp3JZi3HVh0MxQ3EkbAUlgpSVgK7mBmF0L/hsLNbRCJnGRJ
-         +J437zPckoQBf8YfDHgLzoGb+sQdGWxdfEDRl4E9vbSvHVONERHw+PCh/jPLTvwvNJ
-         c4QetSUTVX0uPyqGtPdArOXyrscuH+NmJzl8L4QcKU299UfhUOUzMDaZU0rZGoTxYm
-         XdnBTAc/QCFJQ==
-Received: by mail-ej1-f53.google.com with SMTP id ga15so3548438ejb.4;
-        Thu, 24 Dec 2020 06:28:49 -0800 (PST)
-X-Gm-Message-State: AOAM533OZaL7yBReB98C49ZxlvvI9wJXl+oWVkzHA4+nhtBbn36ERmuZ
-        uubFOhz0z4/YU4lcUAn+5B3TU7pCsOek0lNtsA==
-X-Google-Smtp-Source: ABdhPJz4FZaQVqFZ83WxFt3Fe2+BmFRA28vGU8ERYHuq8sPphR3iLihx8v6LeP10GlrFZUcP3U+83p989lbPDy9D1OQ=
-X-Received: by 2002:a17:907:9627:: with SMTP id gb39mr28660682ejc.267.1608820128218;
- Thu, 24 Dec 2020 06:28:48 -0800 (PST)
-MIME-Version: 1.0
-References: <1608770889-9403-1-git-send-email-yongqiang.niu@mediatek.com> <1608770889-9403-4-git-send-email-yongqiang.niu@mediatek.com>
-In-Reply-To: <1608770889-9403-4-git-send-email-yongqiang.niu@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Thu, 24 Dec 2020 22:28:35 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_9e9qadeO9k7zQnvSLZAAJFxjWwYSBz-XXEUUh16jsptA@mail.gmail.com>
-Message-ID: <CAAOTY_9e9qadeO9k7zQnvSLZAAJFxjWwYSBz-XXEUUh16jsptA@mail.gmail.com>
-Subject: Re: [PATCH v2, 3/3] mailbox: cmdq: add mt8192 support
-To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
-Cc:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        DTML <devicetree@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1728367AbgLXOaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 09:30:46 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:64900 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727114AbgLXOap (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Dec 2020 09:30:45 -0500
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BOEQU9j109809;
+        Thu, 24 Dec 2020 09:29:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=57l2+4mboaPLXXgwyXBHOgNva8RJC7Xd2zbbKlZ+6PY=;
+ b=WIa/ZGnXyvWyVOZY+zP2Uvyer/S4Q9dTV3vFwlI2Tfc0YMXUG8Y+mYdOFvD5fwCOobNQ
+ IrG/imv5rmha/zYUI2qIdhqDQUFh4RhIzE1a1+rk/94Ck7DRyepqdbez+MDrz6KevlgW
+ bPLGBZfZdU+kPag0G3nFoTAw1/2t6yKuxLP9AmBXj8qWNPmi+aIGoeVdtH2EUuCkMq1i
+ 4qo+1N9NM7o6DuQLg8C+KKwhU/kwHsdfw4fjNVJizcLpcMXF203jw9CtV0ESrJUmz7I3
+ Ss7AF0tMZOme2xtDTYfDh8PgTHaKawzolEM6TDzqdH37ZF4hpvEF/lhRI8hmTg1OGDMA Qg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 35mvqy82d6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Dec 2020 09:29:59 -0500
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BOEQVL1109853;
+        Thu, 24 Dec 2020 09:29:59 -0500
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 35mvqy82cm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Dec 2020 09:29:58 -0500
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BOERHuf019926;
+        Thu, 24 Dec 2020 14:29:57 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06fra.de.ibm.com with ESMTP id 35kefjh33d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Dec 2020 14:29:56 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BOETrVo25756090
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 24 Dec 2020 14:29:53 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8EBA3A4040;
+        Thu, 24 Dec 2020 14:29:54 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1E241A4059;
+        Thu, 24 Dec 2020 14:29:51 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.1.132])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 24 Dec 2020 14:29:50 +0000 (GMT)
+Message-ID: <56db41c08d625b8143454a2e0aaaef3ea2927442.camel@linux.ibm.com>
+Subject: Re: [PATCH v9 5/8] IMA: limit critical data measurement based on a
+ label
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        stephen.smalley.work@gmail.com, casey@schaufler-ca.com,
+        agk@redhat.com, snitzer@redhat.com, gmazyland@gmail.com,
+        paul@paul-moore.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+Date:   Thu, 24 Dec 2020 09:29:50 -0500
+In-Reply-To: <20201212180251.9943-6-tusharsu@linux.microsoft.com>
+References: <20201212180251.9943-1-tusharsu@linux.microsoft.com>
+         <20201212180251.9943-6-tusharsu@linux.microsoft.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-24_08:2020-12-24,2020-12-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ adultscore=0 spamscore=0 clxscore=1015 priorityscore=1501 phishscore=0
+ malwarescore=0 mlxscore=0 mlxlogscore=999 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012240085
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Yongqiang:
+Hi Tushar,
 
-Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2020=E5=B9=B412=E6=9C=
-=8824=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=888:55=E5=AF=AB=E9=81=93=
-=EF=BC=9A
->
-> add mt8192 support
->
-> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-> ---
->  drivers/mailbox/mtk-cmdq-mailbox.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmd=
-q-mailbox.c
-> index 75378e3..7f243e1 100644
-> --- a/drivers/mailbox/mtk-cmdq-mailbox.c
-> +++ b/drivers/mailbox/mtk-cmdq-mailbox.c
-> @@ -607,6 +607,7 @@ static int cmdq_probe(struct platform_device *pdev)
->         {.compatible =3D "mediatek,mt8173-gce", .data =3D (void *)&gce_pl=
-at_v2},
->         {.compatible =3D "mediatek,mt8183-gce", .data =3D (void *)&gce_pl=
-at_v3},
->         {.compatible =3D "mediatek,mt6779-gce", .data =3D (void *)&gce_pl=
-at_v4},
-> +       {.compatible =3D "mediatek,mt8192-gce", .data =3D (void *)&gce_pl=
-at_v4},
+On Sat, 2020-12-12 at 10:02 -0800, Tushar Sugandhi wrote:
+> System administrators should be able to limit which kernel subsystems
+> they want to measure the critical data for. To enable that, an IMA policy
+> condition to choose specific kernel subsystems is needed. This policy
+> condition would constrain the measurement of the critical data based on
+> a label for the given subsystems.
 
-In the view of hardware function, is mt8192-gce identical to
-mt6779-gce? If these two are identical, you need not to modify driver,
-and the compatible should be
+Restricting which kernel integrity critical data is measured is not
+only of interest to system administrators.   Why single them out?
 
-compatible =3D "mediatek,mt8192-gce", "mediatek,mt6779-gce";
+Limiting which critical data is measured is based on a label, making it
+flexible.  In your use case scenario, you're grouping the label based
+on kernel subsystem, but is that really necessary?  In the broader
+picture, there could be cross subsystem critical data being measured
+based on a single label.
 
-If they are not identical, what's the different?
+Please think about the broader picture and re-write the patch
+descirption more generically.
 
-Regards,
-Chun-Kuang.
+> 
+> Add a new IMA policy condition - "data_source:=" to the IMA func
 
->         {}
->  };
->
-> --
-> 1.8.1.1.dirty
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+What is with "add"?  You're "adding support for" or "defining" a new
+policy condition.  Remove the single hyphen, as explained in 3/8.
+
+Please replace "data_source" with something more generic (e.g. label).
+
+thanks,
+
+Mimi
+
+> CRITICAL_DATA to allow measurement of various kernel subsystems. This
+> policy condition would enable the system administrators to restrict the
+> measurement to the labels listed in "data_source:=".
+> 
+> Limit the measurement to the labels that are specified in the IMA
+> policy - CRITICAL_DATA+"data_source:=". If "data_sources:=" is not
+> provided with the func CRITICAL_DATA, the data from all the
+> supported kernel subsystems is measured.
+> 
+> Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
+
