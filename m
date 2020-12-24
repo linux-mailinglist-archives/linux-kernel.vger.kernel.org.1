@@ -2,83 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6296F2E298F
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 04:34:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ED6C2E2992
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 05:12:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729155AbgLYDcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 22:32:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729117AbgLYDcf (ORCPT
+        id S1729157AbgLYEIl convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 24 Dec 2020 23:08:41 -0500
+Received: from mail.reytelhn.com ([200.52.154.183]:53108 "EHLO
+        mail.reytelhn.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727114AbgLYEIl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 22:32:35 -0500
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F292BC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 19:31:54 -0800 (PST)
-Received: by mail-oi1-x22d.google.com with SMTP id 9so4015602oiq.3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 19:31:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endlessos.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=SynC+MR8CgDKalU0PqVPlvAW41eDQ0IYZhE8MVMG+6A=;
-        b=C4ucTqhZbNSxGG4pXfkjOF1OKGgUaE4jm4v04RR8flrl2XwT8OHxErk1wmj9cduea5
-         bc0nfBLapzJMUtfvUVw5wz4a9IKCMp/SXjNgcng7WRFobjNRTNhyHJjgP2Ab25oG1Ipy
-         TEPvYn+GXpTq60P8AirVVtNemSw8zkn4hEJUGXj+rpby0JJCRUlU0QIBhWsAli9C0jz8
-         sIWbyi+tFXcEUmUPFEdRjCXRi/lzOXWundJG3Xn1flKOHoAqESUzPgX1lHLjFZjOrdZr
-         s4cPrdeE3eEQTS21dQBYKuGonL+05g3QffdwT5Snbkeh2PDxsKCtB5XukPC3gOG0MwYs
-         raiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=SynC+MR8CgDKalU0PqVPlvAW41eDQ0IYZhE8MVMG+6A=;
-        b=CS9ThVDiDpEO0G/uhFOLHAZCD1xYP7S3hQMJlYuEU9uC+SV4KLrDAPJODZt8u7Xv8m
-         11yckhcVl+kbBK7aU6QlFItj9yO6JFhzRFME5C/7tcowO488meOmy2NS4OLib4sbl/ph
-         /v5OQ2+xfiZbhdQxdbrwU2NDtar5bOFn2tW/dZEGJXd3DfqF0rndr/ZesfnV+ffJ31p6
-         hKEd8hy9vDjSOm5Qkr+CsPXuLbHkT1bXUEeyW+Ws33R5VYUyqqRc1exybNKdsCOllzT1
-         AAQ54EmzQTDnF1ytzuHE3DrCOYZfStH38o9Av00R5ZjOmDHTmGtZmoPHXRVFa8KgOUFV
-         HNCw==
-X-Gm-Message-State: AOAM531X514wFRDfulWyDec10n2kVug5vsO2wJR+KPEdk7wQydSCvTUZ
-        fmyE3ZnsYAdCeyJOhWy33NXSwI3wGXIQDVmh5KWckQ==
-X-Google-Smtp-Source: ABdhPJzJcj7xm1z3ruy0Gd9JulgRjo/2UJivCDGUYznyLmi1uktx0/HJCGLbLzK9SB6N0Za9j9PbNV/O/pgvhgSe5W4=
-X-Received: by 2002:aca:909:: with SMTP id 9mr4413296oij.69.1608867114054;
- Thu, 24 Dec 2020 19:31:54 -0800 (PST)
+        Thu, 24 Dec 2020 23:08:41 -0500
+X-Greylist: delayed 7540 seconds by postgrey-1.27 at vger.kernel.org; Thu, 24 Dec 2020 23:08:40 EST
+Received: from [192.168.43.150] (unknown [129.205.113.184])
+        by mail.reytelhn.com (Postfix) with ESMTP id 3CCCC8C15C8;
+        Thu, 29 Nov 2007 15:41:55 -0600 (CST)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-References: <20201222073855.98490-1-jhp@endlessos.org> <20201224190602.GB22388@amd>
-In-Reply-To: <20201224190602.GB22388@amd>
-From:   Jian-Hong Pan <jhp@endlessos.org>
-Date:   Fri, 25 Dec 2020 11:31:06 +0800
-Message-ID: <CAPpJ_efqBY0_f2AVbMETXkXSWWCQz2ZD6Yx8ciyO4GBEiHyeYQ@mail.gmail.com>
-Subject: Re: [PATCH] HID: Add Wireless Radio Control feature for Chicony devices
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input <linux-input@vger.kernel.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        linux@endlessos.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: INVESTMENT BTC FARM
+To:     Recipients <comercial.blumenau@seguralta.com.br>
+From:   "Ulster Customer<" <comercial.blumenau@seguralta.com.br>
+Date:   Fri, 25 Dec 2020 00:35:37 +0100
+Reply-To: ulstercu52@gmail.com
+Message-Id: <20071129214157.3CCCC8C15C8@mail.reytelhn.com>
+X-WatchGuard-Spam-Score: 1, unclassified
+X-WatchGuard-Mail-Client-IP: 0.0.0.0
+X-WatchGuard-Mail-From: comercial.blumenau@seguralta.com.br
+X-WatchGuard-Mail-Recipients: linux-kernel@vger.kernel.org;linux-media@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pavel Machek <pavel@ucw.cz> =E6=96=BC 2020=E5=B9=B412=E6=9C=8825=E6=97=A5 =
-=E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=883:06=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> On Tue 2020-12-22 15:38:56, Jian-Hong Pan wrote:
-> > Some Chicony's keyboards support airplane mode hotkey (Fn+F2) with
-> > "Wireless Radio Control" feature. For example, the wireless keyboard
-> > [04f2:1236] shipped with ASUS all-in-one desktop.
-> >
-> > After consulting Chicony for this hotkey, learned the device will send
-> > with 0x11 as the report ID and 0x1 as the value when the key is pressed
-> > down.
->
-> Fun, how can airplane mode work on _wireless_ keyboard? :-).
+GOOD NEWS TO YOU ALL !!!
 
-Hmm! It is a funny point for this USB wireless keyboard!
-But I guess this kind of combination (with the "desktop") will not be
-used on an airplane :)
+WE ARE HERE TO INTRODUCE BINARY TRADING TO YOU, A PLATFORM WHERE YOU INVEST A LITTLE AMOUNT OF MONEY AND EARN A FORTUNE (7 TIMES RETURN) IN LESS THAN 48 HOURS TO ALL YOU TRADERS THAT PRIORITIZE LOSING, WE CAN MAKE A FORTUNE AND HELP YOU GROW YOUR INVESTMENT. WITH OUR PREMIUM SIGNALS UP TO 95% WINNING ACCURACY PROFIT RETURN IS GUARANTEED. SETUP INVESTMENT TODAY LET OUR TEAM OF PROFESSIONALS TRADE FOR YOU TO EARN 700% PROFIT RETURN WITHIN 2 DAYS.
 
-Jian-Hong Pan
+
+Invest $ 500 earn $ 3,000 IN 48 HOURS
+Invest $ 1000 earn $ 6,000 IN 48 HOURS
+Invest $ 2000 earn $ 12,000 IN 48 HOURS
+Invest $ 3000 earn $ 18,000 IN 48 HOURS
+Invest $ 4000 earn $ 24,000 IN 48 HOURS
+Invest $ 5000 earn $ 30,000 IN 48 HOURS
+
+
+for more information email us now and with our team of professionals trade for you
+
+EMAIL: ulstercu52@gmail.com
+WHATSAPP  :  +1 647 477 6855
+
+
+Invest with a professional trader like me and let me help you to grow up your capital just in 2 days and get your 7 times return of your invested funds your money is safe with me okay and you are 100% guaranteed invest today and start making profits for yourself.
+
+Thank you.
+Jonas Kim
