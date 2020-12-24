@@ -2,71 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D4F42E26AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 13:10:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB8892E26A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 13:02:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727880AbgLXMKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 07:10:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36134 "EHLO
+        id S1727815AbgLXMC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 07:02:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726611AbgLXMKh (ORCPT
+        with ESMTP id S1726591AbgLXMC1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 07:10:37 -0500
-X-Greylist: delayed 509 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 24 Dec 2020 04:09:56 PST
-Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1390C061794;
-        Thu, 24 Dec 2020 04:09:56 -0800 (PST)
-Received: from localhost.localdomain (abac131.neoplus.adsl.tpnet.pl [83.6.166.131])
-        by m-r2.th.seeweb.it (Postfix) with ESMTPA id 606B03F356;
-        Thu, 24 Dec 2020 13:00:42 +0100 (CET)
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-To:     phone-devel@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: qcom: msm8996: Add missing device_type under pcie[01]
-Date:   Thu, 24 Dec 2020 13:00:25 +0100
-Message-Id: <20201224120025.6282-1-konrad.dybcio@somainline.org>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 24 Dec 2020 07:02:27 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B8EEC061794;
+        Thu, 24 Dec 2020 04:01:47 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id cw27so1957686edb.5;
+        Thu, 24 Dec 2020 04:01:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=yzsn8Vxs757yl7BHdUzFyubVzeoZHsr9IiDUX1zD8zc=;
+        b=FpJp+IlhsmMdNnsUqF8aI4pdK4FqwjQh3HB1yyOQIt5Oo0ZFqETQgxAIFM75ALPYTC
+         FvCI6KxRazcUKJc4c7WkI8DPN6DB+hJJdNJCddYF72hMQSFIuqNK9O62j7zRLj80BCLH
+         ozLQeLNCX9wiChonQ+oaCk5T8vEUXITckpEqLJ951854ggOsigYdJXWWbrV6C9pJ1Emn
+         g8WMns50PjTT0KBOneP7R7ulTEJccOt3fC93pewVXTJbouAgu/g/A/fUDnjLFXhbpYJo
+         2f5QQJa1ZuZLmzOFiMSNNIRfnsj39mZ7NuL1eui6Z2dfv/0vNVm96mrM8eF9z0hzBimw
+         YSkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=yzsn8Vxs757yl7BHdUzFyubVzeoZHsr9IiDUX1zD8zc=;
+        b=Uoi9j0qzgoCgWv0rpuydv21PPTBsw48CSEIhHZ+4MWe4xoFWzCLkf4weZ2dbIZ8ReP
+         G8juTr637ZqpJGRSVTUWpZzgZz+kZYrfmwV9+BLbIz71PBydT883vWeKlRyPP8AE1SUy
+         fB2ZeCHK1MR8wKD6QSBSeNlA66uUaSFP8GsMqB7DDIGActYzN9ANG4j2hRVIG0kAwQ/8
+         OQrWTvZfcVs6qXOgf5MIEZH0Ly210xshDOtBfv5O1xWi8mXeFssPtRTYc3glRSyOUf4Z
+         6ifGsEB1pYfXBYGODCb1/pp7qnC56wINpbJHEFxrcolr2do7T/T1/7VEoxpzeKzbC4rZ
+         uCaQ==
+X-Gm-Message-State: AOAM533TncwtbVBTfeYOVLqkRc1y0oJVdVQVAu+2VD3AZOd3ugi9C4ot
+        oDzZLbG66/c9/6WKbAaqKII=
+X-Google-Smtp-Source: ABdhPJxLczptfWF++SxwxaJX138UWcvlI/ti2uNMxZ4xxghDoEqg027sexvcopSPGShyw+hEBUxv+w==
+X-Received: by 2002:aa7:c2d8:: with SMTP id m24mr28190070edp.300.1608811306048;
+        Thu, 24 Dec 2020 04:01:46 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
+        by smtp.googlemail.com with ESMTPSA id i13sm22800403edu.22.2020.12.24.04.01.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 24 Dec 2020 04:01:45 -0800 (PST)
+Message-ID: <5eb12622222bd9ba5e705801a204f3160ba3966b.camel@gmail.com>
+Subject: Re: [PATCH v1] scsi: ufs-mediatek: Enable
+ UFSHCI_QUIRK_SKIP_MANUAL_WB_FLUSH_CTRL
+From:   Bean Huo <huobean@gmail.com>
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Can Guo <cang@codeaurora.org>
+Cc:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuohong.wang@mediatek.com" <kuohong.wang@mediatek.com>,
+        "peter.wang@mediatek.com" <peter.wang@mediatek.com>,
+        "chun-hung.wu@mediatek.com" <chun-hung.wu@mediatek.com>,
+        "andy.teng@mediatek.com" <andy.teng@mediatek.com>,
+        "chaotian.jing@mediatek.com" <chaotian.jing@mediatek.com>,
+        "cc.chou@mediatek.com" <cc.chou@mediatek.com>,
+        "jiajie.hao@mediatek.com" <jiajie.hao@mediatek.com>,
+        "alice.chao@mediatek.com" <alice.chao@mediatek.com>
+Date:   Thu, 24 Dec 2020 13:01:43 +0100
+In-Reply-To: <DM6PR04MB6575D0DD2C04692AEF771494FCDD0@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20201222072928.32328-1-stanley.chu@mediatek.com>
+         <c862866ec97516a7ffb891e5de3d132d@codeaurora.org>
+         <1608697172.14045.5.camel@mtkswgap22>
+         <c83d34ca8b0338526f6440f1c4ee43dd@codeaurora.org>
+         <ff8efda608e6f95737a675ee03fa3ca2@codeaurora.org>
+         <1608796334.14045.21.camel@mtkswgap22>
+         <DM6PR04MB6575D0DD2C04692AEF771494FCDD0@DM6PR04MB6575.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
----
- arch/arm64/boot/dts/qcom/msm8996.dtsi | 4 ++++
- 1 file changed, 4 insertions(+)
+On Thu, 2020-12-24 at 11:03 +0000, Avri Altman wrote:
+> > > Do you see any substantial benefit of having
+> > > fWriteBoosterBufferFlushEn
+> > > disabled?
+> > 
+> > 1. The definition of fWriteBoosterBufferFlushEn is that host allows
+> > device to do flush in anytime after fWriteBoosterBufferFlushEn is
+> > set as
+> > on. This is not what we want.
+> > 
+> > Just Like BKOP, We do not want flush happening beyond host's
+> > expected
+> > timing that device performance may be "randomly" dropped.
+> 
+> Explicit flush takes place only when the device is idle:
+> if fWriteBoosterBufferFlushEn is set, the device is idle, and before
+> h8 received.
+> If a request arrives, the flush operation should be halted.
+> So no performance degradation is expected. 
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-index fd6ae5464dea..e7eb2c9f37af 100644
---- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-@@ -750,6 +750,8 @@ pcie0: pcie@600000 {
- 				ranges = <0x01000000 0x0 0x0c200000 0x0c200000 0x0 0x100000>,
- 					<0x02000000 0x0 0x0c300000 0x0c300000 0x0 0xd00000>;
- 
-+				device_type = "pci";
-+
- 				interrupts = <GIC_SPI 405 IRQ_TYPE_LEVEL_HIGH>;
- 				interrupt-names = "msi";
- 				#interrupt-cells = <1>;
-@@ -802,6 +804,8 @@ pcie1: pcie@608000 {
- 				ranges = <0x01000000 0x0 0x0d200000 0x0d200000 0x0 0x100000>,
- 					<0x02000000 0x0 0x0d300000 0x0d300000 0x0 0xd00000>;
- 
-+				device_type = "pci";
-+
- 				interrupts = <GIC_SPI 413 IRQ_TYPE_LEVEL_HIGH>;
- 				interrupt-names = "msi";
- 				#interrupt-cells = <1>;
--- 
-2.29.2
+Hi Stanley
+
+Avri's comment is correct, fWriteBoosterBufferFlushEn==1, device will
+flush only when it is in idle, once there is new incoming request, the
+flush will be suspended. You should be very careful when you want to
+skip this stetting of this flag.
+
+Bean
 
