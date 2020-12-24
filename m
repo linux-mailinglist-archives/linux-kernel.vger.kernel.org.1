@@ -2,55 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D6A82E28F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 23:05:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0FFE2E28F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 23:05:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729447AbgLXWDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 17:03:50 -0500
-Received: from mail.heg.gob.ec ([186.47.84.20]:48412 "EHLO mail.heg.gob.ec"
+        id S1729198AbgLXWAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 17:00:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729063AbgLXWDu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 17:03:50 -0500
-X-Greylist: delayed 12610 seconds by postgrey-1.27 at vger.kernel.org; Thu, 24 Dec 2020 17:03:49 EST
-Received: from localhost (localhost [127.0.0.1])
-        by mail.heg.gob.ec (Postfix) with ESMTP id 84F4F12CF2C5;
-        Thu, 24 Dec 2020 12:25:54 -0500 (-05)
-Received: from mail.heg.gob.ec ([127.0.0.1])
-        by localhost (mail.heg.gob.ec [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id wRwYBq-Z5iOO; Thu, 24 Dec 2020 12:25:54 -0500 (-05)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.heg.gob.ec (Postfix) with ESMTP id 0912512CF1A7;
-        Thu, 24 Dec 2020 12:25:52 -0500 (-05)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.heg.gob.ec 0912512CF1A7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=heg.gob.ec;
-        s=EDABE35A-17BA-11EB-91C0-AF159E800BC9; t=1608830752;
-        bh=wXkMvZ+1k3vYTg2yc9PpBHMT3+HE9x+vEUWkgb0MO5Y=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=du08huDB3WTfToXbb0VR0U53QcvFTZ94wMwm7LISGOwDYxOCmtF4KBc39iNuzc03r
-         Ll4NqI5JuPJPCcEyWeDRU6d/Cy01v0lcuMCBHllCiwkpFKu6FNt8q0GI282WG4FdjW
-         Ho4WduvtJxZ51nrHDEbM24XQhjjaag/w77liP6p91/Eumkib0bG4WufDeKqjOk3ZTR
-         kBreZvLhCavdKiUXYPjK8ge0DuiNxH55Npwl/nzGch5pNfvzc0pitgMGF5+3/3Xz+4
-         T6ej3FdADQbK40AyU2JNTYNuJFv01T9ZOjf16JBIvu1bflwoGvjZkGSGjM+wygBn1M
-         m2NedCiGLD6mg==
-X-Virus-Scanned: amavisd-new at heg.gob.ec
-Received: from mail.heg.gob.ec ([127.0.0.1])
-        by localhost (mail.heg.gob.ec [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id COMYFXffbI7V; Thu, 24 Dec 2020 12:25:51 -0500 (-05)
-Received: from [172.20.10.3] (unknown [129.205.124.181])
-        by mail.heg.gob.ec (Postfix) with ESMTPSA id B255912D2F9B;
-        Thu, 24 Dec 2020 12:25:27 -0500 (-05)
-Content-Type: text/plain; charset="iso-8859-1"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Spende
-To:     "Mr. Landolt" <jomaira.bermudez@heg.gob.ec>
-From:   "Mr. Landolt" <jomaira.bermudez@heg.gob.ec>
-Date:   Thu, 24 Dec 2020 09:24:27 -0800
-Reply-To: financeoffice017@gmail.com
-Message-Id: <20201224172527.B255912D2F9B@mail.heg.gob.ec>
+        id S1728782AbgLXWAk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Dec 2020 17:00:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id BF1DB22D57;
+        Thu, 24 Dec 2020 21:59:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608847178;
+        bh=ir1fWJzx4MuESEkR6YzscwrlaK6XV2Re6s6cTHIvnV8=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=HsKMeELfD9RFkl08kkQXQ0Ojy8uPf37p4r6HmRFWbKOdYzNobbnExscBdrNC/bYCY
+         JSmzj86zYV462uYGxbp3dMd9IyHrf8lJjsti6Sd5LxpBO9sBAT85AVwrtm7FJbcnM1
+         1/a+GVdyvC20PFnelwY9i5t6Y4bC/yHtSlsZ/4MXzz5T+2X46AVh6X6WqgyfLcJDlv
+         34Sd4SC4cGaaod6gGReAWLGf18Ax6kbJ2ph2QY4FwbAYQxGRisKpc780gT2jyc3uwb
+         pybZ4v/0VBXGM3RYRmbUoeVyaDa0Rdb/X2cAc5b9d+xkrxf3t6N3dymvw+36tpLkkb
+         FohE435qZertA==
+Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id BA98860159;
+        Thu, 24 Dec 2020 21:59:38 +0000 (UTC)
+Subject: Re: [GIT pull] efi/core for v5.11-rc1
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <160797733182.10793.8402797805442982544.tglx@nanos>
+References: <160797732939.10793.9152151866806316627.tglx@nanos> <160797733182.10793.8402797805442982544.tglx@nanos>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <160797733182.10793.8402797805442982544.tglx@nanos>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git efi-core-2020-12-14
+X-PR-Tracked-Commit-Id: 54649911f31b6e7c2a79a1426ca98259139e4c35
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: e0a6aa30504cb8179d07609fb6386705e8f00663
+Message-Id: <160884717875.31605.13022894634840344781.pr-tracker-bot@kernel.org>
+Date:   Thu, 24 Dec 2020 21:59:38 +0000
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-850.000,00 Euro wurden Ihnen gespendet
+The pull request you sent on Mon, 14 Dec 2020 20:22:11 -0000:
+
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git efi-core-2020-12-14
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/e0a6aa30504cb8179d07609fb6386705e8f00663
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
