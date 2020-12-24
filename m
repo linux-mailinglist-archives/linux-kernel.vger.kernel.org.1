@@ -2,68 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2686A2E27E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 16:21:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 981092E27EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 16:27:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728355AbgLXPUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 10:20:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37258 "EHLO
+        id S1728571AbgLXP1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 10:27:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727039AbgLXPUm (ORCPT
+        with ESMTP id S1727039AbgLXP1a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 10:20:42 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5B54C061573
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 07:20:02 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id y8so1407923plp.8
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 07:20:02 -0800 (PST)
+        Thu, 24 Dec 2020 10:27:30 -0500
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E3BC061573;
+        Thu, 24 Dec 2020 07:26:49 -0800 (PST)
+Received: by mail-ot1-x32e.google.com with SMTP id w3so2015064otp.13;
+        Thu, 24 Dec 2020 07:26:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ca4T5x2YBVwc3xGoJaMp1mpR1SgmL54F1JA2Sm/PSms=;
-        b=UleZZf0Op+eYF5TErvSm7TLIikCFSdd1U+0OKwqHFteUOaOWRrU8KFt/A/5I+LCXex
-         W32a3S96Zjt3NgC+f+7PhkdnaLGira988oA7Tybb7km20bd3qtFKGyb5Jdb73/Togh/F
-         uInXoXfB7B5IfzairuKFTW3xhuZCz2BOvlI5tgcRBrfTcDiQBTHeyIzTAkXHSyD69uWL
-         IK7q86HlpazS/qjfWbxcUnK3wzpRsOAFc/xAsOQgyWXUzfoq+gY0Dn8JOgKzwyZ40Qsd
-         iPZ8+Y+1h+6AyzmjiWZlN57+GpAndcSpvw/OM/D4cUbIruMgrGwVFJLwUJSrNQtuZbJj
-         vWDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=ca4T5x2YBVwc3xGoJaMp1mpR1SgmL54F1JA2Sm/PSms=;
-        b=Byi6dsraOVZEg8hGMUsIwBS0olVnOasMf4rO34x9ywEF4mRcMOwhLwhJmgRW+7/kc5
-         ZaB2usqg4s82aOi8EfidaQ7+zDjEHNkmLwe0t78w1T3edpX0XbJm3h09mqRuV0RxBb2H
-         ArXLXwGce5f+Sk1qodRJd+AgkQ4VLntYXiiJYNhoeYqbsLBODuBLJB7Lp1koffqvb3rm
-         airBmU7AKMl+gaYBIFHgJ6d7FkoP2F9J2kwx+9dsT54eI+1c0mweHgZyIFI/WkkDgLkO
-         5ajwd7Hz79i2fpz8SFD+xBWyff+p5C/Oi68DaIy3HZ7meQ+x+t2BLsfWESnKKVjEq0wL
-         YbOQ==
-X-Gm-Message-State: AOAM533XMXboMeZGqywjlEEDs9Zd6NEQlErC/PhrSh8SJicr1wdFgaG2
-        W3Ip+YLBDw54coG2iZF/SV9mrXHl6C1UTg==
-X-Google-Smtp-Source: ABdhPJzYus71jdfVs9Y87XtUOcQyYwfKsxleTZcccosnwQi+iCxJFWbHQ/6pnAJarom+3UlSBGsGig==
-X-Received: by 2002:a17:90a:708b:: with SMTP id g11mr4715049pjk.23.1608823201803;
-        Thu, 24 Dec 2020 07:20:01 -0800 (PST)
-Received: from ?IPv6:2402:3a80:40d:9f6c:f9de:b7a7:21af:4983? ([2402:3a80:40d:9f6c:f9de:b7a7:21af:4983])
-        by smtp.gmail.com with ESMTPSA id q15sm15448974pgk.11.2020.12.24.07.19.58
+        bh=1j+5NTcWIs5TQlpoNRN6frFX8wKYc9OKto1vZjv/ZhI=;
+        b=lu3MHF41QFepbOZvXnEK+iFZkeMT4rbp5SN8xTHintJRzxWdHd6nmRs1sr/swMCvMN
+         iHpjOYumlIKhfAina+ekXWWbmy2Czp+ito/A4dOH+dLpCy2w8ZtWROyt3YydZZ4fSqnT
+         o7Ohs5WZjoxJBD6MMlUa21yjc/8k2cxBPO/LL/bFlWGQIZDFw5LXFHae7PpriQX206oc
+         pVTckHtW41C3ed6u8VEMk5Cy2ZtjmOpIYhl2TosBT7aX1CpGcVbNIpxCpK6Y7ujdtOF2
+         pH1BF71MYJ/XP/YsqM6QFIoL3gcI4pyaBqJv82Rq6EQ8XbzG3CyUkjtddC0P+T/Vy/0R
+         ZEjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=1j+5NTcWIs5TQlpoNRN6frFX8wKYc9OKto1vZjv/ZhI=;
+        b=iPRkNCYiw7UF/0rB1bOOf7FYFLOm8Sa0B5w24XEIoNQHb67Hv+MnO9UVx+fleOiT9h
+         MV5SKzaK5r/fVOzSLpZ4wd5C2/kC7Y7pHwNSz39A3mpqsSv9hY4drobpHBjvLTH1eDiJ
+         VN6ObvRUjs3utpOSuzNY5s3uqLKSZk2zCZxLa2wVS22QT8JcT+LbasZi2Jyvv8SEFVK3
+         Y/3Ct5V4hTsEVmESBcLHssKX4rQpXfevvwnp5D+JVidcKTCZNSjpHL9HfhI4HhErZRuO
+         WWBYjadQFyhedzDdpUhOWRzhzsqyEr4aoJruID8ucnvKTDJu8l+80PCzCLxbmL4HOHyM
+         Uyow==
+X-Gm-Message-State: AOAM533c/PgP3kh17VoVKopq14I/OhrBMwzHZ51+go5fa/p0YU7aPUsK
+        8b3Y/AqD9blJXvhyHjctPtFP4n7VeXI=
+X-Google-Smtp-Source: ABdhPJz4VIQKrNU3Y5UkhQ/r94vR+WRabBUR8AYbFjyxf5C001gjrW+ugrd1rvIaMcIXv5ekIahiIw==
+X-Received: by 2002:a9d:620d:: with SMTP id g13mr22759888otj.56.1608823608936;
+        Thu, 24 Dec 2020 07:26:48 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id w4sm6812110otj.3.2020.12.24.07.26.46
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Dec 2020 07:20:01 -0800 (PST)
-Subject: Re: [PATCH v2] checkpatch: fix false positive for
- COMMIT_LOG_LONG_LINE with URLs
-To:     joe@perches.com
-Cc:     lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
+        Thu, 24 Dec 2020 07:26:47 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH 5.10 00/40] 5.10.3-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
-References: <1ce4502a-d75a-7e27-5844-f195607c4c99@gmail.com>
- <20201218121133.18614-1-yashsri421@gmail.com>
-From:   Aditya <yashsri421@gmail.com>
-Message-ID: <84492ae9-7452-d296-49ab-4d37eed3b968@gmail.com>
-Date:   Thu, 24 Dec 2020 20:49:55 +0530
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+References: <20201223150515.553836647@linuxfoundation.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <823a5a22-59d6-4564-4f77-81ccf648a579@roeck-us.net>
+Date:   Thu, 24 Dec 2020 07:26:45 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201218121133.18614-1-yashsri421@gmail.com>
+In-Reply-To: <20201223150515.553836647@linuxfoundation.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -71,60 +115,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/12/20 5:41 pm, Aditya Srivastava wrote:
-> Currently checkpatch warns for long line in commit messages even for
-> URL lines.
+On 12/23/20 7:33 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.3 release.
+> There are 40 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> An evaluation over v4.13..v5.8 showed that out of 11729 warnings for
-> this class, around 299 are due to line starting with URL.
-> 
-> E.g., running checkpatch on commit 3cde818cd02b ("ASoC: topology:
-> Consolidate how dtexts and dvalues are freed") reports this warning:
-> 
-> WARNING: Possible unwrapped commit description (prefer a maximum 75 chars per line)
-> https://mailman.alsa-project.org/pipermail/alsa-devel/2019-January/144761.html
-> 
-> Avoid giving users warning for character limit for such cases, instead
-> suggest them to prefix the URLs with "Link:"
-> 
-> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
-> ---
-> changes in v2:
-> - Fix coding style ('} else {')
-> - Make the URL check follow RFC 3986 style
-> - Give warning only if the URL is first non-whitespace of the line
-> - Set $commit_log_long_line only for else case
-> - Fix the warning count with exact figures and according to first non-space char as URL
-> 
->  scripts/checkpatch.pl | 11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
-> 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index abd5a3d2e913..bf77bd0b22cf 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -3032,9 +3032,14 @@ sub process {
->  		      $line =~ /^\s*(?:Fixes:|Link:|$signature_tags)/i ||
->  					# A Fixes: or Link: line or signature tag line
->  		      $commit_log_possible_stack_dump)) {
-> -			WARN("COMMIT_LOG_LONG_LINE",
-> -			     "Possible unwrapped commit description (prefer a maximum 75 chars per line)\n" . $herecurr);
-> -			$commit_log_long_line = 1;
-> +			if ($line =~ /^\s*\b[a-z][\w\.\+\-]*:\/\/\S+/i) {
-> +				WARN("COMMIT_LOG_LONG_LINE",
-> +				     "Consider prefixing the URL with 'Link:'\n" . $herecurr);
-> +			} else {
-> +				WARN("COMMIT_LOG_LONG_LINE",
-> +				     "Possible unwrapped commit description (prefer a maximum 75 chars per line)\n" . $herecurr);
-> +				$commit_log_long_line = 1;
-> +			}
->  		}
->  
->  # Reset possible stack dump if a blank line is found
+> Responses should be made by Fri, 25 Dec 2020 15:05:02 +0000.
+> Anything received after that time might be too late.
 > 
 
-Hi Joe
-You probably missed this patch. Please review :)
+Build results:
+	total: 154 pass: 154 fail: 0
+Qemu test results:
+	total: 427 pass: 427 fail: 0
 
-Thanks
-Aditya
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+
+Guenter
