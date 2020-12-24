@@ -2,136 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C5112E25E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 11:15:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EC162E25E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 11:19:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727876AbgLXKOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 05:14:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726347AbgLXKOp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 05:14:45 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E3EC06179C
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 02:14:04 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id w5so1326441pgj.3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 02:14:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Q9UsCaq19AZa2ox78ufqQlJ4vDMf1SOgSIwUYk8kOCo=;
-        b=nnVR1FwZPyr5Jv+aOxCHm7Aof9HxrtQNlgOKRlGUDHz5pKtlE2J/rjkv65PbbCLhqL
-         3Wkx2Fcy1sgW6YJ4aYIg5JrGItOiS33slLlqlRp7lXNQSBSLJ3fePjTopNThsta+If9b
-         smdSizxQ8z9rguoYkjUS2h/P0pLjVgpUtn8cfDvBF73YOeH7wsRA05C8Gy8nrFjy8X7p
-         c4p7jGZtAINV/bPPAhXrD9YmQeI/ABvOE1YzeA2NfUN8HjwLVaUPrzUsD6bXNCyB5nbZ
-         uQuCImdT5j1AL99flbVaJAIBs7DXGyp12cGhWueFRsX0oM710qfgLK4Hm7hykyyzlyRi
-         RJ2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Q9UsCaq19AZa2ox78ufqQlJ4vDMf1SOgSIwUYk8kOCo=;
-        b=tS+aR4oyRsUdVAAIgnLxYqBEymn6/6XFelebh+IVvE2pnds8s69v7bDnseySJJiwYV
-         /nicy5xKFV2u2lOjm49XOypxSPgzAQWpsjWDxMisxIBnQgHKvV9iyfd7f+jX9YfL/xGH
-         6omjzfXhBz7bFtoUpqIkEq1WqwkSO5kwr+jeAmuLZbntFdI1sHbM8CIZpZTjuf0dtkjM
-         bDOQiTZj3xjHIZd/f5UJHxATLigj92nGuaCviFeF1+JWSldrOp9R3qfSojXIKhTlR1z4
-         O8U7joTd4I/ww8zQ0DyqBZslJVbtGHo7m3E2OjxtgdktMOJ8VZbubdp0kCVCOhaPO9TE
-         HYKQ==
-X-Gm-Message-State: AOAM533TsBCLHwHJoWamJNDcI4KnKX0errdFVMsNO584agHsfuoMPmU8
-        dL+yzFCgsVoStd0DjwFrxOc50g==
-X-Google-Smtp-Source: ABdhPJyexoKUu+zPfra+YE0JFY+DWyUSw9Y07WCOTW0eNxMYWN4AnFqYZKe5JyK9foCHkAbPt9mYBw==
-X-Received: by 2002:a63:e02:: with SMTP id d2mr27908916pgl.34.1608804844027;
-        Thu, 24 Dec 2020 02:14:04 -0800 (PST)
-Received: from google.com (139.60.82.34.bc.googleusercontent.com. [34.82.60.139])
-        by smtp.gmail.com with ESMTPSA id g202sm25224414pfb.196.2020.12.24.02.14.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Dec 2020 02:14:03 -0800 (PST)
-Date:   Thu, 24 Dec 2020 10:13:59 +0000
-From:   Satya Tangirala <satyat@google.com>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH 0/3] add support for metadata encryption to F2FS
-Message-ID: <X+Rp579fp5sMDvSP@google.com>
-References: <20201005073606.1949772-1-satyat@google.com>
- <471e0eb7-b035-03da-3ee3-35d5880a6748@huawei.com>
- <X9t8y3rElyAPCLoD@google.com>
- <9a8d3ae2-a09f-f199-5cb1-48b1317b3d37@huawei.com>
- <X9yYVuuLt3/hL17J@google.com>
- <c08aadef-47a7-f6fc-c2fa-11393ca938e8@huawei.com>
+        id S1727965AbgLXKRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 05:17:40 -0500
+Received: from mail.zju.edu.cn ([61.164.42.155]:50774 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726342AbgLXKRk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Dec 2020 05:17:40 -0500
+Received: by ajax-webmail-mail-app4 (Coremail) ; Thu, 24 Dec 2020 18:16:22
+ +0800 (GMT+08:00)
+X-Originating-IP: [210.32.144.176]
+Date:   Thu, 24 Dec 2020 18:16:22 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   dinghao.liu@zju.edu.cn
+To:     "Jakub Kicinski" <kuba@kernel.org>
+Cc:     kjlu@umn.edu, "Christian Benvenuti" <benve@cisco.com>,
+        "Govindarajulu Varadarajan" <_govind@gmx.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH] enic: Remove redundant free in enic_set_ringparam
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20200917(3e19599d)
+ Copyright (c) 2002-2020 www.mailtech.cn zju.edu.cn
+In-Reply-To: <20201223123747.6f506068@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20201223123833.14733-1-dinghao.liu@zju.edu.cn>
+ <20201223123747.6f506068@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c08aadef-47a7-f6fc-c2fa-11393ca938e8@huawei.com>
+Message-ID: <53493c26.15.176943fe01d.Coremail.dinghao.liu@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: cS_KCgBH3jl2auRfCgMAAA--.1W
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgsEBlZdtRrfowABsS
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 07:47:45PM +0800, Chao Yu wrote:
-> On 2020/12/18 19:53, Satya Tangirala wrote:
-> > On Fri, Dec 18, 2020 at 05:02:23PM +0800, Chao Yu wrote:
-> > > But, what's the plan about supporting software encryption for metadata? Current
-> > > f2fs write flow will handle all operations which may encounter failure before
-> > > allocating block address for node, if we do allocation first, and then use pba
-> > > as IV to encrypt node block, it will be a little complicated to revert allocation
-> > > if we fail to encrypt node block.
-> > > 
-> > Software encryption for metadata is supported through the blk-crypto
-> 
-> blk-crypto will encrypt all data in filesystem, if FBE is enabled, data may
-> be encrypted twice?
-blk-crypto will only encrypt bios as directed to do so by the encryption
-context set on the bio. That encryption context is constructed by the
-submitter of the bio - in our case, the submitter is the filesystem.
-So the filesystem decides which bio gets encrypted with
-which key/algorithm/etc (and in the current implementation, each bio
-only supports a single bi_crypt_context, so *only one* layer of
-encryption is possible with blk-crypto anyway). So no, data won't be
-encrypted twice, because F2FS/fscrypt ensure that it does not (and the
-filesystem knows exactly which blocks need metadata encryption, and
-which blocks need FBE).
-> 
-> And why not supporting hardware encryption for metadata in blk-crypto? then
-> both f2fs and ext4 can use inline-encryption based blk-crypto?
->
-I may be misunderstanding what you're asking, but I think you're asking
-why not make blk-crypto do metadata encryption (without explicit
-involvement from filesystems)? Or more generally, why not do metadata
-encryption below the filesystem layer?
-
-As mentioned above, the filesystem is what knows which blocks need to be
-metadata encrypted and which blocks need to be FBE encrypted (or even
-just read without any encryption at all) - the block layer doesn't have
-this information, and so can't effectively decide which blocks to use
-the metadata encryption key on. Fwiw, Android does take a somewhat
-similar approach to what you're suggesting here (I explain more in
-detail in the cover letter for v2 of this patch series at
-https://lore.kernel.org/linux-fscrypt/20201217150435.1505269-1-satyat@google.com/
-). In Android, we have a new DM target (called dm-default-key) that adds
-an encryption context to any bio that doesn't already have an encryption
-context - so the assumption in general is that if the filesystem wants to
-use an FBE key, it would have already set the encryption context on the
-bio, so if a bio reaches dm-default-key without an encryption context,
-it must mean that it needs metadata encryption. However, that assumption
-doesn't always hold because F2FS sometimes needs to read the ciphertext
-of FBE files without having the file's FBE key available - in those
-situations, F2FS will send a bio without any encryption context, but
-will also tell dm-default-key to *not* add the metadata encryption
-context. That's a layering violation, which is why I'm not using that
-approach here.
-
-Does that answer your question? Or am I misunderstanding what you're
-asking?
-> Thanks,
-> 
-> > framework - so encryption will happen in the block layer, not the
-> > filesystem layer. So there's nothing extra/special we need to do if
-> > there's an encryption failure - an encryption failure is no different
-> > from a read/write failure in a lower layer from f2fs' perspective.
-> > .
-> > 
+PiBPbiBXZWQsIDIzIERlYyAyMDIwIDIwOjM4OjMzICswODAwIERpbmdoYW8gTGl1IHdyb3RlOgo+
+ID4gVGhlIGVycm9yIGhhbmRsaW5nIHBhdGhzIGluIGVuaWNfYWxsb2Nfdm5pY19yZXNvdXJjZXMo
+KQo+ID4gaGF2ZSBjYWxsZWQgZW5pY19mcmVlX3ZuaWNfcmVzb3VyY2VzKCkgYmVmb3JlIHJldHVy
+bmluZy4KPiA+IFNvIHdlIG1heSBub3QgbmVlZCB0byBjYWxsIGl0IGFnYWluIG9uIGZhaWx1cmUg
+YXQgY2FsbGVyCj4gPiBzaWRlLgo+ID4gCj4gPiBTaWduZWQtb2ZmLWJ5OiBEaW5naGFvIExpdSA8
+ZGluZ2hhby5saXVAemp1LmVkdS5jbj4KPiAKPiBCdXQgaXQncyBoYXJtbGVzcywgcmlnaHQ/IFNv
+IHRoZSBwYXRjaCBpcyBqdXN0IGEgY2xlYW51cCBub3QgYSBmaXg/Cj4gCgpJIHRoaW5rIGl0J3Mg
+aGFybWxlc3MuIFNpbmNlIHRoZXJlIGlzIGEgY2hlY2sgZXZlcnkgdGltZSBiZWZvcmUgZnJlZWlu
+ZywKY2FsbGluZyBlbmljX2ZyZWVfdm5pY19yZXNvdXJjZXMoKSB0d2ljZSBoYXMgbm8gc2VjdXJp
+dHkgaXNzdWUuCgo+IEluIHRoYXQgY2FzZSwgY291bGQgeW91IHBsZWFzZSByZXBvc3QgaW4gdHdv
+IHdlZWtzPyBXZSdyZSBjdXJyZW50bHkgCj4gaW4gdGhlIG1lcmdlIHdpbmRvdyBwZXJpb2QsIHdl
+J3JlIG9ubHkgYWNjZXB0aW5nIGZpeGVzIHRvIHRoZQo+IG5ldHdvcmtpbmcgdHJlZXMuCj4gCj4g
+VGhhbmtzIQoK
