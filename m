@@ -2,77 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D70472E238F
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 03:00:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A8592E238B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 02:58:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728601AbgLXB76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 20:59:58 -0500
-Received: from regular1.263xmail.com ([211.150.70.204]:39326 "EHLO
-        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728292AbgLXB76 (ORCPT
+        id S1728569AbgLXB5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 20:57:22 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:41023 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726288AbgLXB5W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 20:59:58 -0500
-Received: from localhost (unknown [192.168.167.16])
-        by regular1.263xmail.com (Postfix) with ESMTP id 8DD065CF;
-        Thu, 24 Dec 2020 09:54:05 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-SKE-CHECKED: 1
-X-ABS-CHECKED: 1
-Received: from localhost.localdomain (unknown [14.18.236.70])
-        by smtp.263.net (postfix) whith ESMTP id P20583T140370625181440S1608774839433536_;
-        Thu, 24 Dec 2020 09:54:05 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <4b455d5aa5a14b4a7285797047c52806>
-X-RL-SENDER: yili@winhong.com
-X-SENDER: yili@winhong.com
-X-LOGIN-NAME: yili@winhong.com
-X-FST-TO: colyli@suse.de
-X-SENDER-IP: 14.18.236.70
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Yi Li <yili@winhong.com>
-To:     colyli@suse.de
-Cc:     yilikernel@gmail.com, kent.overstreet@gmail.com,
-        linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yi Li <yili@winhong.com>
-Subject: [PATCH] bcache: set pdev_set_uuid before scond loop iteration
-Date:   Thu, 24 Dec 2020 09:53:55 +0800
-Message-Id: <20201224015355.358211-1-yili@winhong.com>
-X-Mailer: git-send-email 2.25.3
+        Wed, 23 Dec 2020 20:57:22 -0500
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0BO1tjeZ014478
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Dec 2020 20:55:46 -0500
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id E7142420280; Wed, 23 Dec 2020 20:55:44 -0500 (EST)
+Date:   Wed, 23 Dec 2020 20:55:44 -0500
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] ext4: use DEFINE_MUTEX (and mutex_init() had been
+ too late)
+Message-ID: <X+P1IKbjELeomyeo@mit.edu>
+References: <20201223141254.559-1-zhengyongjun3@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201223141254.559-1-zhengyongjun3@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no need to reassign pdev_set_uuid in the second loop iteration,
-so move it to the place before second loop.
+On Wed, Dec 23, 2020 at 10:12:54PM +0800, Zheng Yongjun wrote:
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 
-Signed-off-by: Yi Li <yili@winhong.com>
----
- drivers/md/bcache/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Why is mutex_init() too late?  We only take the mutex after we
+mounting an ext4 file system, and that can't happen until ext4_init_fs
+is called.
 
-diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-index a4752ac410dc..6aa23a6fb394 100644
---- a/drivers/md/bcache/super.c
-+++ b/drivers/md/bcache/super.c
-@@ -2644,8 +2644,8 @@ static ssize_t bch_pending_bdevs_cleanup(struct kobject *k,
- 	}
- 
- 	list_for_each_entry_safe(pdev, tpdev, &pending_devs, list) {
-+		char *pdev_set_uuid = pdev->dc->sb.set_uuid;
- 		list_for_each_entry_safe(c, tc, &bch_cache_sets, list) {
--			char *pdev_set_uuid = pdev->dc->sb.set_uuid;
- 			char *set_uuid = c->set_uuid;
- 
- 			if (!memcmp(pdev_set_uuid, set_uuid, 16)) {
--- 
-2.25.3
+					- Ted
 
-
-
+>  fs/ext4/super.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 94472044f4c1..8776f06a639d 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -59,7 +59,7 @@
+>  #include <trace/events/ext4.h>
+>  
+>  static struct ext4_lazy_init *ext4_li_info;
+> -static struct mutex ext4_li_mtx;
+> +static DEFINE_MUTEX(ext4_li_mtx);
+>  static struct ratelimit_state ext4_mount_msg_ratelimit;
+>  
+>  static int ext4_load_journal(struct super_block *, struct ext4_super_block *,
+> @@ -6640,7 +6640,6 @@ static int __init ext4_init_fs(void)
+>  
+>  	ratelimit_state_init(&ext4_mount_msg_ratelimit, 30 * HZ, 64);
+>  	ext4_li_info = NULL;
+> -	mutex_init(&ext4_li_mtx);
+>  
+>  	/* Build-time check for flags consistency */
+>  	ext4_check_flag_values();
+> -- 
+> 2.22.0
+> 
