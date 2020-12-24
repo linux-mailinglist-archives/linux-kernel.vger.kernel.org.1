@@ -2,153 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FBFB2E23D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 03:58:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7F922E23DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 04:00:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728897AbgLXC5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 21:57:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36538 "EHLO
+        id S1728716AbgLXDAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 22:00:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728357AbgLXC5s (ORCPT
+        with ESMTP id S1728357AbgLXDAV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 21:57:48 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CF03C061794;
-        Wed, 23 Dec 2020 18:57:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=dIwQE4jQabyjhn/YM3aRqfkeyXVYvLKSfSErZjaHO9Q=; b=eK6XaMoLi8imlzynTKzs8Brnip
-        WMUL/CIkIj8vLY7ecKwEyV8amR56BkGGkCQS3ZwnwfNhSv2X0leRp8kqwP4ZDEkUSiQqvhFoGeyWl
-        XyVus6TmzK77WIlS5rk2xBYXA2BWvoNJJiF9ols3bF+4YynJ/snMu4bLf3yzAUTfWZwObxOK4Ou2R
-        Poi1zZj8ZmCiC7XvyyF+3K8QOarfugQ6mBtG41fzWm6Uauu/l+bVamU/8Hep6TqGOL44sN7pIaxwN
-        wOdFxaaLmWs2plTw+DvrilDbiPNSrPwtM2DnWvivqv3qrjPaHqG/k9rAKVDekWB0DqYSL/dsNzczJ
-        ILMQKWUA==;
-Received: from [2601:1c0:6280:3f0::64ea]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ksGoH-0004tD-Gd; Thu, 24 Dec 2020 02:57:02 +0000
-Subject: Re: mmotm 2020-12-23-16-15 uploaded (mm/vmstat.c)
-To:     akpm@linux-foundation.org, broonie@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
-        mm-commits@vger.kernel.org, sfr@canb.auug.org.au,
-        Muchun Song <songmuchun@bytedance.com>
-References: <20201224001635.5H0RjpkF_%akpm@linux-foundation.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <a7b46040-2980-c2f4-45ea-1fa38f36d351@infradead.org>
-Date:   Wed, 23 Dec 2020 18:56:53 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <20201224001635.5H0RjpkF_%akpm@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        Wed, 23 Dec 2020 22:00:21 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CFF8C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 18:59:35 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id b5so451951pjl.0
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 18:59:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3274995OIrIodYLZAPXVphdO1nymbyMxfaEx20SaZ6w=;
+        b=gifmByTYbZN/rFI3tzj68H9m91uBP0jKQ2MF3LyG9P6gD/Uf3yh63hkjv4NpX5XWV8
+         BnFSn2bCpwG+4x1StJeKR+KqX90+2KF8/lpHRYIwcilVPTdRRoe2IZrRdZg5+k6VOgKJ
+         2ZPuJyz0Pzro7uRE/DkqVcYz8mqlzvcB15laSgiMVLpT7PMoyAlzEqCJeEMJmeR9JF0D
+         FXPVsiAgKUHOWYEPUs5Wdq4PoW+jaP8x7m8DV4v1Goxa8kfhEC4xTFjq0O9ADx9Lh5AS
+         fRxH3SWdiZ9IWK6qJzepU4QPl+arxCsJCvYTIjX1j9Su6hVmgvZTLcyBoGXCMitnIBXi
+         ATGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=3274995OIrIodYLZAPXVphdO1nymbyMxfaEx20SaZ6w=;
+        b=VHrdxAN2uqRQX+896diyjROCfA1CdZXHr472+QgP0UxV6hTCeDT6EURK/cw71xzLaq
+         eqoUgzLRRgepbp4BcqbOg7HxIcXARmSoD26cijTvo6hMhKH2d4G+kRqZFb7gFem/CreM
+         jARkQwlrz4TK2qUtgmlhKczEjaIeYJML7b7xx9FrMjaUNQGRWrs5BEHGHAgrmxyUZBoz
+         hS3MrV+fDroNUBfwqagYUtNLnc4PkVHga25GZWbbyyAgvgLDC7WjiVbvLSYCeMhozAzZ
+         3cbwpmzMwoCGSVikVTF9dQ/+YISLwJD4/rR6UqXeEQu/PpW925hB0S1YWCwPb19opkvB
+         7blg==
+X-Gm-Message-State: AOAM533YaGQPwva7kcK3t4XYyj0YStn99vAeZ864o5wJi9Db9bBZBE3L
+        B9lgw+4KqvYvvfRDeV8ErLH5Rg==
+X-Google-Smtp-Source: ABdhPJxwB4tNgytYCMMsgD4gR55Q+C/CjqGPeEkValNyYJrOZvu+lWvom1FTWhdXPxOoRUiAYJDLYA==
+X-Received: by 2002:a17:90b:4396:: with SMTP id in22mr2335613pjb.63.1608778775082;
+        Wed, 23 Dec 2020 18:59:35 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id t22sm24996732pgm.18.2020.12.23.18.59.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Dec 2020 18:59:34 -0800 (PST)
+Date:   Wed, 23 Dec 2020 18:59:34 -0800 (PST)
+X-Google-Original-Date: Wed, 23 Dec 2020 18:59:32 PST (-0800)
+Subject:     Re: [PATCH] clocksource: clint: Avoid remove __iomem in get_cycles_hi()
+In-Reply-To: <20201223082330.GA24581@infradead.org>
+CC:     linux-riscv@lists.infradead.org, daniel.lezcano@linaro.org,
+        lkp@intel.com, linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        kernel-team@android.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Message-ID: <mhng-b2cf0325-66e1-4e3c-bfbb-b393963fbb3f@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/23/20 4:16 PM, akpm@linux-foundation.org wrote:
-> The mm-of-the-moment snapshot 2020-12-23-16-15 has been uploaded to
-> 
->    https://www.ozlabs.org/~akpm/mmotm/
-> 
-> mmotm-readme.txt says
-> 
-> README for mm-of-the-moment:
-> 
-> https://www.ozlabs.org/~akpm/mmotm/
-> 
-> This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
-> more than once a week.
-> 
-> You will need quilt to apply these patches to the latest Linus release (5.x
-> or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
-> https://ozlabs.org/~akpm/mmotm/series
-> 
-> The file broken-out.tar.gz contains two datestamp files: .DATE and
-> .DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
-> followed by the base kernel version against which this patch series is to
-> be applied.
+On Wed, 23 Dec 2020 00:23:30 PST (-0800), Christoph Hellwig wrote:
+> On Mon, Dec 21, 2020 at 09:32:30PM -0800, Palmer Dabbelt wrote:
+>> From: Palmer Dabbelt <palmerdabbelt@google.com>
+>>
+>> This cast loses the __iomem qualifier from clint_timer_val, which
+>> triggers an sparse warning.
+>
+> I'm not a native speaker, but the subject line sounds strange to me.
+> Shouldn't this be:
+>
+> 	"don't cast away the __iommu annotation"
+>
+> or something similar?
 
-on i386 or UML on i386 or x86_64:
-(and probably on x86_64, but my builds haven't got there yet)
+The title is also nonsense, I was probably trying to do two things at once when
+I wrote this.  I'll send another one.
 
-when CONFIG_TRANSPARENT_HUGEPAGE is not set/enabled:
+> Also this adds an overly long line.  Otherwise it looks fine.
 
-../mm/vmstat.c: In function ‘zoneinfo_show_print’:
-./../include/linux/compiler_types.h:320:38: error: call to ‘__compiletime_assert_269’ declared with attribute error: BUILD_BUG failed
-  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-                                      ^
-./../include/linux/compiler_types.h:301:4: note: in definition of macro ‘__compiletime_assert’
-    prefix ## suffix();    \
-    ^~~~~~
-./../include/linux/compiler_types.h:320:2: note: in expansion of macro ‘_compiletime_assert’
-  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-  ^~~~~~~~~~~~~~~~~~~
-../include/linux/build_bug.h:39:37: note: in expansion of macro ‘compiletime_assert’
- #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-                                     ^~~~~~~~~~~~~~~~~~
-../include/linux/build_bug.h:59:21: note: in expansion of macro ‘BUILD_BUG_ON_MSG’
- #define BUILD_BUG() BUILD_BUG_ON_MSG(1, "BUILD_BUG failed")
-                     ^~~~~~~~~~~~~~~~
-../include/linux/huge_mm.h:325:28: note: in expansion of macro ‘BUILD_BUG’
- #define HPAGE_PMD_SHIFT ({ BUILD_BUG(); 0; })
-                            ^~~~~~~~~
-../include/linux/huge_mm.h:106:26: note: in expansion of macro ‘HPAGE_PMD_SHIFT’
- #define HPAGE_PMD_ORDER (HPAGE_PMD_SHIFT-PAGE_SHIFT)
-                          ^~~~~~~~~~~~~~~
-../include/linux/huge_mm.h:107:26: note: in expansion of macro ‘HPAGE_PMD_ORDER’
- #define HPAGE_PMD_NR (1<<HPAGE_PMD_ORDER)
-                          ^~~~~~~~~~~~~~~
-../mm/vmstat.c:1630:14: note: in expansion of macro ‘HPAGE_PMD_NR’
-     pages /= HPAGE_PMD_NR;
-              ^~~~~~~~~~~~
-../mm/vmstat.c: In function ‘vmstat_start’:
-./../include/linux/compiler_types.h:320:38: error: call to ‘__compiletime_assert_271’ declared with attribute error: BUILD_BUG failed
-  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-                                      ^
-./../include/linux/compiler_types.h:301:4: note: in definition of macro ‘__compiletime_assert’
-    prefix ## suffix();    \
-    ^~~~~~
-./../include/linux/compiler_types.h:320:2: note: in expansion of macro ‘_compiletime_assert’
-  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-  ^~~~~~~~~~~~~~~~~~~
-../include/linux/build_bug.h:39:37: note: in expansion of macro ‘compiletime_assert’
- #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-                                     ^~~~~~~~~~~~~~~~~~
-../include/linux/build_bug.h:59:21: note: in expansion of macro ‘BUILD_BUG_ON_MSG’
- #define BUILD_BUG() BUILD_BUG_ON_MSG(1, "BUILD_BUG failed")
-                     ^~~~~~~~~~~~~~~~
-../include/linux/huge_mm.h:325:28: note: in expansion of macro ‘BUILD_BUG’
- #define HPAGE_PMD_SHIFT ({ BUILD_BUG(); 0; })
-                            ^~~~~~~~~
-../include/linux/huge_mm.h:106:26: note: in expansion of macro ‘HPAGE_PMD_SHIFT’
- #define HPAGE_PMD_ORDER (HPAGE_PMD_SHIFT-PAGE_SHIFT)
-                          ^~~~~~~~~~~~~~~
-../include/linux/huge_mm.h:107:26: note: in expansion of macro ‘HPAGE_PMD_ORDER’
- #define HPAGE_PMD_NR (1<<HPAGE_PMD_ORDER)
-                          ^~~~~~~~~~~~~~~
-../mm/vmstat.c:1755:12: note: in expansion of macro ‘HPAGE_PMD_NR’
-    v[i] /= HPAGE_PMD_NR;
-            ^~~~~~~~~~~~
-
-due to <linux/huge_mm.h>:
-
-#else /* CONFIG_TRANSPARENT_HUGEPAGE */
-#define HPAGE_PMD_SHIFT ({ BUILD_BUG(); 0; })
-#define HPAGE_PMD_MASK ({ BUILD_BUG(); 0; })
-#define HPAGE_PMD_SIZE ({ BUILD_BUG(); 0; })
-
-#define HPAGE_PUD_SHIFT ({ BUILD_BUG(); 0; })
-#define HPAGE_PUD_MASK ({ BUILD_BUG(); 0; })
-#define HPAGE_PUD_SIZE ({ BUILD_BUG(); 0; })
-
-
-
->> mm-memcontrol-convert-nr_anon_thps-account-to-pages.patch
-
--- 
-~Randy
-
+Aren't we OK with lines longer than 80 characters now?  Or was that some other
+project?  checkpatch doesn't complain, which I guess is why I didn't notice, so
+hopefully that means I'm not crazy (though I guess the commit message and title
+don't provide the best argument there... ;)).
