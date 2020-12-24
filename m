@@ -2,168 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 624AA2E2430
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 05:38:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFED12E2432
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 05:43:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726161AbgLXEiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 23:38:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725536AbgLXEiS (ORCPT
+        id S1726979AbgLXEjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 23:39:16 -0500
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:59249 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725536AbgLXEjP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 23:38:18 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E147AC061794;
-        Wed, 23 Dec 2020 20:37:37 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id y8so735179plp.8;
-        Wed, 23 Dec 2020 20:37:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=UHW8D/vLiku736lshJK5k759PLM13qxM1Fi6BXa63YY=;
-        b=Nq+JY8nHgUqHfOT6yEF6/xKweUQlO9WUlrTDx9SK0nrwgVi9Tj5cOo/IgtgsB5EZcj
-         NPBXBOdu1WHZq+3FwviapmJHpM7oZqDQGvCFDL1ve+Fj31ykI4L1446cda/hwELyYNCQ
-         wIcVI+rgNEUXD6A7AI6sRkOTzOLfs1y+Q6xnEQOiP0E/2mlf7+BGYgr9td7WVz+R5mLq
-         MN++ezk0QZ6W9o4qL7+NRvckJnOpi6+LT63XshA9a0tBH0pmRjWtFWrUswGN6fUcZ4Dp
-         sFI91iUssAWJjIULiBr3SHFvNdP8c2Ix3dt+UlBxnAtWKCRl2eiliCwbh18VYWzhfmGp
-         CMvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=UHW8D/vLiku736lshJK5k759PLM13qxM1Fi6BXa63YY=;
-        b=ESg+BITEF/WkrLmP0HBhWMZuwDO0y42y+psm2U9iek/yo9xaPfCDPB4JrQnRMyBs4Q
-         H3ByomMaOjjvkEr/ZYhh6PatGz1tEnAETWm/IxECzYC3eWD/9CeTr/qgqDLiQyg8uL7v
-         IblS8yXG052D8Bt3EbTE/wX7Po6yhOmc/r+5xO4GLDLUdQoninjm/Drp+2TE1ltQGWrS
-         OvlFlUq86uRBvdWkHLwMqDHfjfwfZHKNrGp3yhZaLgc6SPqZdist01P9ACcFXQaKW4/U
-         ErDDgSOglw/H4BgXnOVrlhJ1a8d0FXAPyBsSpUqdIBcFW8i7QY1pbHPVb+KYwLqBFRjJ
-         dsSw==
-X-Gm-Message-State: AOAM533yhgkikFjkkxPpnnHfZ5KN/8EzsQfdmokeLG1UF344v9i0m8dx
-        TZZEQ/y5xHfpERDrwYIKuCU=
-X-Google-Smtp-Source: ABdhPJzBX9lMKB1TKXCnFnQ69ZdbGJ3J4yr372TJ9wiR76j0X09Mu+pA+Lh6lXr97dVxVEEpmcCJjg==
-X-Received: by 2002:a17:90a:c592:: with SMTP id l18mr2717382pjt.228.1608784657017;
-        Wed, 23 Dec 2020 20:37:37 -0800 (PST)
-Received: from ?IPv6:2601:647:4700:9b2:50a2:5929:401b:705e? ([2601:647:4700:9b2:50a2:5929:401b:705e])
-        by smtp.gmail.com with ESMTPSA id y5sm18875764pgs.90.2020.12.23.20.37.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 23 Dec 2020 20:37:35 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-From:   Nadav Amit <nadav.amit@gmail.com>
-In-Reply-To: <X+QMKC7jPEeThjB1@google.com>
-Date:   Wed, 23 Dec 2020 20:37:33 -0800
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>, linux-mm <linux-mm@kvack.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable <stable@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <AF841145-ECD7-4675-8FE6-D1E3D471427E@gmail.com>
-References: <X+PE38s2Egq4nzKv@google.com>
- <C332B03D-30B1-4C9C-99C2-E76988BFC4A1@amacapital.net>
- <X+P2OnR+ipY8d2qL@redhat.com>
- <3A6A1049-24C6-4B2D-8C59-21B549F742B4@gmail.com>
- <X+QMKC7jPEeThjB1@google.com>
-To:     Yu Zhao <yuzhao@google.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
+        Wed, 23 Dec 2020 23:39:15 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 510325C00D5;
+        Wed, 23 Dec 2020 23:38:09 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Wed, 23 Dec 2020 23:38:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=ZuAOZsuNyuhekGAfAuVc4cPYDPj
+        wuvIUZMlI+9EGZFw=; b=P0tHQ73n6Zk/97bKki+yq/zgjYW2E5/0zcclADwMdwW
+        hHvXicBzFMFnbiYXVTRynKWcQBIcoyeZ8R+d8XCYlJyuCuEfHVPm3pX70KHVaxKw
+        ko+VaehO28E6WXZxQ601VKjvWXvi8nXl2GMfloi9bMtG6JMkxhXPgSLSV4LA1+jW
+        heqVQ6vkDmPBWiPD5rK2/ECEgzAk9tE0PejYD7g4wZC6tIM0OU2dLLukFY3NVwn+
+        Jj79SFJSduL6jBmYcTn6Ni3m9NLZA2r1xjnVRBGzQG0z8U0WHqWcd7xCk/v8IPpL
+        2QeHo7B6XXpWENlyUnyQN1V6NuWGabUZ8qIT2vYy2HA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=ZuAOZs
+        uNyuhekGAfAuVc4cPYDPjwuvIUZMlI+9EGZFw=; b=YyvLRtpIJyopSIVz4gqp7p
+        t4AZgfleFqUiwzNFyPtIwee9tlvRdp9iiPt3acpSLBn+JFnWZyN07q3XBI7ZoDp8
+        H9zbYOdwB+7g0kQ3f/uETALWnr2VOG2QxurzFwLHCtwEvBV/OQKd/M0c5G1f9vWF
+        msEUmhz0CcClZRO8eOlTcqsceQPpQbNoK1ohnH7MVlolN4JSNvj7P5OlQEP5JOEC
+        U0f44hNj4XKjLh4wEPt11FctECj++Vch/syQDthoLnnQR87f8TzOo/KeIg1NX+1E
+        lyVTlaKsiMPGlbJh0Xdgw2g/NgIT+V1u1MPpMc0Iq4bKxcpiH/AaE1Pi3mzKyikA
+        ==
+X-ME-Sender: <xms:MBvkX7g4h8X4d05Fuk4RuPJI0Ld7wclAueQtbbBho5CEGe9p4YyzhQ>
+    <xme:MBvkX4CSHrlJiher9HaRRnMIFs1R0EbPvNv9A0JLaPFj57CIhNj4mFguYaGRjuBsA
+    sXsp4a7lkJH_BkoYw8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvddtkedgjeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvhigthhho
+    ucetnhguvghrshgvnhcuoehthigthhhosehthigthhhordhpihiiiigrqeenucggtffrrg
+    htthgvrhhnpeeifffffeekkeeifffhteekleejhfetledvvdeileefheffveduveevleef
+    lefgtdenucffohhmrghinhepvghnthhrhidrshgsnecukfhppeduledvrddvgedurddvhe
+    ehrdduhedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhho
+    mhepthihtghhohesthihtghhohdrphhiiiiirg
+X-ME-Proxy: <xmx:MBvkX7G4A08d8f2fBeohYY-mii_krUFX01seA_TIEOzpOwZSWx1dVQ>
+    <xmx:MBvkX4QVlALfD6qcwO4gzME0yOE7lf1lhtYwHGRl-yssqhyP1DwYlg>
+    <xmx:MBvkX4yFVa6JUSlW7ead94cGv1VPJWY--ZJ9u-JDhBwa279pB7S3yA>
+    <xmx:MRvkXyuZgBxHa9Ht_fbJeBWtshIOzOw1PtEQBcYa9A938ZvFa234nw>
+Received: from cisco (unknown [192.241.255.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id DA5FA1080059;
+        Wed, 23 Dec 2020 23:38:07 -0500 (EST)
+Date:   Wed, 23 Dec 2020 21:38:06 -0700
+From:   Tycho Andersen <tycho@tycho.pizza>
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     Christoph Hellwig <hch@infradead.org>, schwab@suse.de,
+        david.abdurachmanov@sifive.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>
+Subject: Re: [PATCH] riscv: return -ENOSYS for syscall -1
+Message-ID: <20201224043806.GE710211@cisco>
+References: <20201223082404.GB24581@infradead.org>
+ <mhng-c15e4fab-6487-4875-a392-85669982b8b1@palmerdabbelt-glaptop>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <mhng-c15e4fab-6487-4875-a392-85669982b8b1@palmerdabbelt-glaptop>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Dec 23, 2020, at 7:34 PM, Yu Zhao <yuzhao@google.com> wrote:
->=20
-> On Wed, Dec 23, 2020 at 07:09:10PM -0800, Nadav Amit wrote:
->>> On Dec 23, 2020, at 6:00 PM, Andrea Arcangeli <aarcange@redhat.com> =
-wrote:
->>>=20
->>> On Wed, Dec 23, 2020 at 05:21:43PM -0800, Andy Lutomirski wrote:
->>>> I don=E2=80=99t love this as a long term fix. AFAICT we can have =
-mm_tlb_flush_pending set for quite a while =E2=80=94 mprotect seems like =
-it can wait in IO while splitting a huge page, for example. That gives =
-us a window in which every write fault turns into a TLB flush.
->>>=20
->>> mprotect can't run concurrently with a page fault in the first =
-place.
->>>=20
->>> One other near zero cost improvement easy to add if this would be =
-"if
->>> (vma->vm_flags & (VM_SOFTDIRTY|VM_UFFD_WP))" and it could be made
->>> conditional to the two config options too.
->>>=20
->>> Still I don't mind doing it in some other way, uffd-wp has much =
-easier
->>> time doing it in another way in fact.
->>>=20
->>> Whatever performs better is fine, but queuing up pending invalidate
->>> ranges don't look very attractive since it'd be a fixed cost that =
-we'd
->>> always have to pay even when there's no fault (and there can't be =
-any
->>> fault at least for mprotect).
->>=20
->> I think there are other cases in which Andy=E2=80=99s concern is =
-relevant
->> (MADV_PAGEOUT).
->=20
-> That patch only demonstrate a rough idea and I should have been
-> elaborate: if we ever decide to go that direction, we only need to
-> worry about "jumping through hoops", because the final patch (set)
-> I have in mind would not only have the build time optimization Andrea
-> suggested but also include runtime optimizations like skipping
-> do_swap_page() path and (!PageAnon() || page_mapcount > 1). Rest
-> assured, the performance impact on do_wp_page() from occasionally an
-> additional TLB flush on top of a page copy is negligible.
+On Wed, Dec 23, 2020 at 06:54:43PM -0800, Palmer Dabbelt wrote:
+> On Wed, 23 Dec 2020 00:24:04 PST (-0800), Christoph Hellwig wrote:
+> > On Tue, Dec 22, 2020 at 09:22:19AM -0700, Tycho Andersen wrote:
+> > > On Mon, Dec 21, 2020 at 11:52:00PM +0100, Andreas Schwab wrote:
+> > > > Properly return -ENOSYS for syscall -1 instead of leaving the return value
+> > > > uninitialized.  This fixes the strace teststuite.
+> > > >
+> > > > Fixes: 5340627e3fe0 ("riscv: add support for SECCOMP and SECCOMP_FILTER")
+> > > > Signed-off-by: Andreas Schwab <schwab@suse.de>
+> > > > ---
+> > > >  arch/riscv/kernel/entry.S | 9 +--------
+> > > >  1 file changed, 1 insertion(+), 8 deletions(-)
+> > > >
+> > > > diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
+> > > > index 524d918f3601..d07763001eb0 100644
+> > > > --- a/arch/riscv/kernel/entry.S
+> > > > +++ b/arch/riscv/kernel/entry.S
+> > > > @@ -186,14 +186,7 @@ check_syscall_nr:
+> > > >  	 * Syscall number held in a7.
+> > > >  	 * If syscall number is above allowed value, redirect to ni_syscall.
+> > > >  	 */
+> > > > -	bge a7, t0, 1f
+> > > > -	/*
+> > > > -	 * Check if syscall is rejected by tracer, i.e., a7 == -1.
+> > > > -	 * If yes, we pretend it was executed.
+> > > > -	 */
+> > > > -	li t1, -1
+> > > > -	beq a7, t1, ret_from_syscall_rejected
+> > > > -	blt a7, t1, 1f
+> > > > +	bgeu a7, t0, 1f
+> > > 
+> > > IIUC, this is all dead code anyway for the path where seccomp actually
+> > > rejects the syscall, since it should do the rejection directly in
+> > > handle_syscall_trace_enter(), which is called above this hunk. So it
+> > > seems good to me.
+> > 
+> > That change really needs to be documented in the commit log, or even
+> > better split into a separate patch (still documented of course!).
+> 
+> Unless I'm missing something, this is already how it works already?
 
-I agree with you to a certain extent, since there is anyhow another TLB
-flush in this path when the PTE is set after copying.
+Yes, agreed. My musing was mostly just that this is dead code that
+probably should have been in removed in af33d2433b03 ("riscv: fix
+seccomp reject syscall code path"), but was overlooked. Maybe this
+could use a Fixes: tag for that too.
 
-Yet, I think that having a combined and efficient central mechanism for
-pending TLB flushes is important even for robustness: to prevent the
-development of new independent deferred flushing schemes. I specifically =
-do
-not like tlb_flush_batched which every time that I look at gets me =
-confused.
-For example the following code completely confuses me:
-
-  void flush_tlb_batched_pending(struct mm_struct *mm)
-  {      =20
-        if (data_race(mm->tlb_flush_batched)) {
-                flush_tlb_mm(mm);
-
-                /*=20
-                 * Do not allow the compiler to re-order the clearing of
-                 * tlb_flush_batched before the tlb is flushed.
-                 */
-                barrier();
-                mm->tlb_flush_batched =3D false;
-        }
-  }
-
-=E2=80=A6 and then I ask myself (no answer):
-
-1. What prevents concurrent flush_tlb_batched_pending() which is called =
-by
-madvise_free_pte_range(), for instance from madvise_free_pte_range(), =
-from
-clearing new deferred flush indication that was just set by
-set_tlb_ubc_flush_pending()? Can it cause a missed TLB flush later?
-
-2. Why the write to tlb_flush_batched is not done with WRITE_ONCE()?
-
-3. Should we have smp_wmb() instead of barrier()? (probably the =
-barrier() is
-not needed at all since flush_tlb_mm() serializes if a flush is needed).
-
-4. Why do we need 2 deferred TLB flushing mechanisms?
-
+Tycho
