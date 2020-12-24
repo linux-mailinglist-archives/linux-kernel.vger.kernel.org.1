@@ -2,75 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C060C2E264E
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 12:25:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E09F2E2655
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 12:27:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728608AbgLXLYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 06:24:46 -0500
-Received: from mail2.protonmail.ch ([185.70.40.22]:20897 "EHLO
-        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727976AbgLXLYp (ORCPT
+        id S1728075AbgLXL1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 06:27:18 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:27632 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726591AbgLXL1R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 06:24:45 -0500
-Date:   Thu, 24 Dec 2020 11:23:55 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1608809042;
-        bh=kdKn3PDdVjsSt9ViNOxevs6pAGOGkPzYhEj05jA5cRQ=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=tHgeJlQsZEEjLZ8hH8r4e222g6XKJiZGUb5vJG8vzSP0kTBLLUZljyW67LMdyies9
-         LtxE0qtqzyn9axbB+AhlWtd6UR9d8kCRyUSKCuYtDkq/GQtUClH+z3v4I4hyC0Zv/Q
-         fRaLG8pEM1pFcyLHRjj/CGh/JjaTmKPuoREhHP3k=
-To:     Lee Jones <lee.jones@linaro.org>
-From:   Timon Baetz <timon.baetz@protonmail.com>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Reply-To: Timon Baetz <timon.baetz@protonmail.com>
-Subject: Re: [PATCH v4 3/7] mfd: max8997: Add of_compatible to extcon and charger mfd_cell
-Message-ID: <20201224122338.7183cf2e.timon.baetz@protonmail.com>
-In-Reply-To: <20201223153207.GA300650@dell>
-References: <20201223134221.804943-1-timon.baetz@protonmail.com> <20201223134221.804943-3-timon.baetz@protonmail.com> <20201223153207.GA300650@dell>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+        Thu, 24 Dec 2020 06:27:17 -0500
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 24 Dec 2020 03:26:23 -0800
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 24 Dec 2020 03:26:21 -0800
+X-QCInternal: smtphost
+Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 24 Dec 2020 16:56:03 +0530
+Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
+        id E3A502146B; Thu, 24 Dec 2020 16:56:01 +0530 (IST)
+From:   Dikshita Agarwal <dikshita@codeaurora.org>
+To:     linux-media@vger.kernel.org, hverkuil-cisco@xs4all.nl,
+        nicolas@ndufresne.ca, stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org, Dikshita Agarwal <dikshita@codeaurora.org>
+Subject: [PATCH v4 0/3] Add new controls for QP and layer bitrate
+Date:   Thu, 24 Dec 2020 16:55:32 +0530
+Message-Id: <1608809135-26061-1-git-send-email-dikshita@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Dec 2020 15:32:07 +0000, Lee Jones wrote:
-> On Wed, 23 Dec 2020, Timon Baetz wrote:
->=20
-> > Add of_compatible ("maxim,max8997-muic") to the mfd_cell to have a
-> > of_node set in the extcon driver.
-> >
-> > Add of_compatible ("maxim,max8997-battery") to the mfd_cell to configur=
-e
-> > the charger driver.
-> >
-> > Signed-off-by: Timon Baetz <timon.baetz@protonmail.com>
-> > ---
-> >  drivers/mfd/max8997.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-) =20
->=20
-> Why have you resent this?  It's already applied.
->=20
+This series adds frame specific min/max qp controls for hevc and layer
+wise bitrate control for h264.
 
-I made a change to an other patch in this series and wasn't sure if I
-had to resubmit everything.=20
+Chnages since v2:
+ - Rebased the changes on latest media tree
+ - Added driver side implementation for new controls.
 
-Thanks and sorry for the spam.
-Timon
+Dikshita Agarwal (3):
+  media: v4l2-ctrl: Add frame-specific min/max qp controls for hevc
+  media: v4l2-ctrl: Add layer wise bitrate controls for h264
+  venus: venc: Add support for frame-specific min/max qp controls
+
+ .../userspace-api/media/v4l/ext-ctrls-codec.rst    |  72 ++++++++++++-
+ drivers/media/platform/qcom/venus/core.h           |  18 ++++
+ drivers/media/platform/qcom/venus/venc.c           |  21 +++-
+ drivers/media/platform/qcom/venus/venc_ctrls.c     | 114 +++++++++++++++++++--
+ drivers/media/v4l2-core/v4l2-ctrls.c               |  15 +++
+ include/uapi/linux/v4l2-controls.h                 |  16 +++
+ 6 files changed, 243 insertions(+), 13 deletions(-)
+
+-- 
+2.7.4
 
