@@ -2,107 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D432D2E276A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 14:49:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB7AA2E276E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 14:49:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727865AbgLXNsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 08:48:32 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:47039 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726591AbgLXNsb (ORCPT
+        id S1728453AbgLXNtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 08:49:31 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:14350 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726839AbgLXNtb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 08:48:31 -0500
-X-UUID: d0af2a14a773430ca210f75ad283dcd6-20201224
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=Z5h5EwYy/XrQnTmDEIGcQxTHLr/QiYtC7dM7hPx7/cQ=;
-        b=bACbrIL5btHj0ikmpw8hM6JT3CkZRns+pV5M7rlP0ZVXGieDjmTzia4SjovNA4dE/iMIdNAyCNXQE1erSMncdBJYanBImHeyRfFsfKL5uMLwNO+UiTNHVr1+CIxHAM+9WyN2iNKoGT4Afrr+5sHt6L5e7IhEEa9fPlUYGk4LwTw=;
-X-UUID: d0af2a14a773430ca210f75ad283dcd6-20201224
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 343433101; Thu, 24 Dec 2020 21:47:46 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 24 Dec 2020 21:47:35 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 24 Dec 2020 21:47:35 +0800
-Message-ID: <1608817657.14045.30.camel@mtkswgap22>
-Subject: Re: [PATCH v1] scsi: ufs-mediatek: Enable
- UFSHCI_QUIRK_SKIP_MANUAL_WB_FLUSH_CTRL
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Bean Huo <huobean@gmail.com>
-CC:     Avri Altman <Avri.Altman@wdc.com>, Can Guo <cang@codeaurora.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kuohong.wang@mediatek.com" <kuohong.wang@mediatek.com>,
-        "peter.wang@mediatek.com" <peter.wang@mediatek.com>,
-        "chun-hung.wu@mediatek.com" <chun-hung.wu@mediatek.com>,
-        "andy.teng@mediatek.com" <andy.teng@mediatek.com>,
-        "chaotian.jing@mediatek.com" <chaotian.jing@mediatek.com>,
-        "cc.chou@mediatek.com" <cc.chou@mediatek.com>,
-        "jiajie.hao@mediatek.com" <jiajie.hao@mediatek.com>,
-        "alice.chao@mediatek.com" <alice.chao@mediatek.com>
-Date:   Thu, 24 Dec 2020 21:47:37 +0800
-In-Reply-To: <5eb12622222bd9ba5e705801a204f3160ba3966b.camel@gmail.com>
-References: <20201222072928.32328-1-stanley.chu@mediatek.com>
-         <c862866ec97516a7ffb891e5de3d132d@codeaurora.org>
-         <1608697172.14045.5.camel@mtkswgap22>
-         <c83d34ca8b0338526f6440f1c4ee43dd@codeaurora.org>
-         <ff8efda608e6f95737a675ee03fa3ca2@codeaurora.org>
-         <1608796334.14045.21.camel@mtkswgap22>
-         <DM6PR04MB6575D0DD2C04692AEF771494FCDD0@DM6PR04MB6575.namprd04.prod.outlook.com>
-         <5eb12622222bd9ba5e705801a204f3160ba3966b.camel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
-MIME-Version: 1.0
-X-TM-SNTS-SMTP: E5D6A4B292CE8157DB5E053A6579C29FC5F9632B357D9219E59E6662DB493D8A2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        Thu, 24 Dec 2020 08:49:31 -0500
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BODX4n1145025;
+        Thu, 24 Dec 2020 08:48:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=4dZpESW1yo/bxUZ9LBeac2NDPktcY5K2DHtnA19QmM8=;
+ b=s6Ou5sAhRyTMC1h2M9Dhu5NnXKVrCAQm0sXW7duUXTOkPeov5C1XcZlyi70hrubuyeq5
+ EAh8VeVusAAGYnBJfP4Tyj0Yb+lowjeAzC4EIH53Aa4CCLdq5j01ofS/pXby4kOp9evG
+ /D55/qxVprAdrmowcMm/bU6ffwiZVj/sliZGDstkdyVEpqvigD7qovbrtcBu5yQdWwU/
+ Sr6Ptb4YuUVeXkmZNINMWGuX4AJlmsT3Zt9dGKdWmV99ic4/dVRq/upsGuwBwMjpfJhC
+ IExb1+aaYaqu1fefIbyhKj2LYyDXToeCfl2VLK/Z7vnoBJVAfTuAfpAGkUfEwIID5g+e BQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35mu1a9gr1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Dec 2020 08:48:45 -0500
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BODkAUt010614;
+        Thu, 24 Dec 2020 08:48:45 -0500
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35mu1a9gq0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Dec 2020 08:48:44 -0500
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BODhWx3003445;
+        Thu, 24 Dec 2020 13:48:42 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma03ams.nl.ibm.com with ESMTP id 35k906tajv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Dec 2020 13:48:42 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BODmdWf12583212
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 24 Dec 2020 13:48:39 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 45332A4065;
+        Thu, 24 Dec 2020 13:48:40 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A7BD6A4066;
+        Thu, 24 Dec 2020 13:48:36 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.1.132])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 24 Dec 2020 13:48:36 +0000 (GMT)
+Message-ID: <2e0baa1902b6f360e542f92906d077d44e53e59e.camel@linux.ibm.com>
+Subject: Re: [PATCH v9 4/8] IMA: add policy rule to measure critical data
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        stephen.smalley.work@gmail.com, casey@schaufler-ca.com,
+        agk@redhat.com, snitzer@redhat.com, gmazyland@gmail.com,
+        paul@paul-moore.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+Date:   Thu, 24 Dec 2020 08:48:35 -0500
+In-Reply-To: <20201212180251.9943-5-tusharsu@linux.microsoft.com>
+References: <20201212180251.9943-1-tusharsu@linux.microsoft.com>
+         <20201212180251.9943-5-tusharsu@linux.microsoft.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-24_08:2020-12-24,2020-12-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ mlxlogscore=999 malwarescore=0 spamscore=0 phishscore=0 clxscore=1015
+ suspectscore=0 adultscore=0 impostorscore=0 lowpriorityscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012240085
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQXZyaSwgQmVhbiwNCg0KT24gVGh1LCAyMDIwLTEyLTI0IGF0IDEzOjAxICswMTAwLCBCZWFu
-IEh1byB3cm90ZToNCj4gT24gVGh1LCAyMDIwLTEyLTI0IGF0IDExOjAzICswMDAwLCBBdnJpIEFs
-dG1hbiB3cm90ZToNCj4gPiA+ID4gRG8geW91IHNlZSBhbnkgc3Vic3RhbnRpYWwgYmVuZWZpdCBv
-ZiBoYXZpbmcNCj4gPiA+ID4gZldyaXRlQm9vc3RlckJ1ZmZlckZsdXNoRW4NCj4gPiA+ID4gZGlz
-YWJsZWQ/DQo+ID4gPiANCj4gPiA+IDEuIFRoZSBkZWZpbml0aW9uIG9mIGZXcml0ZUJvb3N0ZXJC
-dWZmZXJGbHVzaEVuIGlzIHRoYXQgaG9zdCBhbGxvd3MNCj4gPiA+IGRldmljZSB0byBkbyBmbHVz
-aCBpbiBhbnl0aW1lIGFmdGVyIGZXcml0ZUJvb3N0ZXJCdWZmZXJGbHVzaEVuIGlzDQo+ID4gPiBz
-ZXQgYXMNCj4gPiA+IG9uLiBUaGlzIGlzIG5vdCB3aGF0IHdlIHdhbnQuDQo+ID4gPiANCj4gPiA+
-IEp1c3QgTGlrZSBCS09QLCBXZSBkbyBub3Qgd2FudCBmbHVzaCBoYXBwZW5pbmcgYmV5b25kIGhv
-c3Qncw0KPiA+ID4gZXhwZWN0ZWQNCj4gPiA+IHRpbWluZyB0aGF0IGRldmljZSBwZXJmb3JtYW5j
-ZSBtYXkgYmUgInJhbmRvbWx5IiBkcm9wcGVkLg0KPiA+IA0KPiA+IEV4cGxpY2l0IGZsdXNoIHRh
-a2VzIHBsYWNlIG9ubHkgd2hlbiB0aGUgZGV2aWNlIGlzIGlkbGU6DQo+ID4gaWYgZldyaXRlQm9v
-c3RlckJ1ZmZlckZsdXNoRW4gaXMgc2V0LCB0aGUgZGV2aWNlIGlzIGlkbGUsIGFuZCBiZWZvcmUN
-Cj4gPiBoOCByZWNlaXZlZC4NCj4gPiBJZiBhIHJlcXVlc3QgYXJyaXZlcywgdGhlIGZsdXNoIG9w
-ZXJhdGlvbiBzaG91bGQgYmUgaGFsdGVkLg0KPiA+IFNvIG5vIHBlcmZvcm1hbmNlIGRlZ3JhZGF0
-aW9uIGlzIGV4cGVjdGVkLiANCj4gDQo+IEhpIFN0YW5sZXkNCj4gDQo+IEF2cmkncyBjb21tZW50
-IGlzIGNvcnJlY3QsIGZXcml0ZUJvb3N0ZXJCdWZmZXJGbHVzaEVuPT0xLCBkZXZpY2Ugd2lsbA0K
-PiBmbHVzaCBvbmx5IHdoZW4gaXQgaXMgaW4gaWRsZSwgb25jZSB0aGVyZSBpcyBuZXcgaW5jb21p
-bmcgcmVxdWVzdCwgdGhlDQo+IGZsdXNoIHdpbGwgYmUgc3VzcGVuZGVkLiBZb3Ugc2hvdWxkIGJl
-IHZlcnkgY2FyZWZ1bCB3aGVuIHlvdSB3YW50IHRvDQo+IHNraXAgdGhpcyBzdGV0dGluZyBvZiB0
-aGlzIGZsYWcuDQoNClZlcnkgYXBwcmVjaWF0ZSB5b3VyIHRoZSBjbGFyaWZpY2F0aW9uLg0KDQpI
-b3dldmVyIHNpbWlsYXIgdG8gIkJhY2tncm91bmQgT3BlcmF0aW9ucyBUZXJtaW5hdGlvbiBMYXRl
-bmN5Iiwgd2hpbGUNCnRoZSBuZXh0IHJlcXVlc3QgY29tZXMsIGRldmljZSBtYXkgbmVlZCBzb21l
-IHRpbWUgdG8gc3VzcGVuZCBvbi1nb2luZw0KZmx1c2ggb3BlcmF0aW9ucy4gVGhpcyBkZWxheSBt
-YXkgInJhbmRvbWx5IiBkZWdyYWRlIHRoZSBwZXJmb3JtYW5jZQ0KcmlnaHQ/DQoNClNpbmNlIHRo
-ZSBjb25maWd1cmF0aW9uLCBpLmUuLCBlbmFibGUNCmZXcml0ZUJvb3N0ZXJCdWZmZXJGbHVzaER1
-cmluZ0hpYmVybmF0ZSBvbmx5IHdpdGgNCmZXcml0ZUJvb3N0ZXJCdWZmZXJGbHVzaEVuIGRpc2Fi
-bGVkLCBoYXMgYmVlbiBhcHBsaWVkIGluIG1hbnkgb2Ygb3VyDQptYXNzLXByb2R1Y2VkIHByb2R1
-Y3RzIHRoZXNlIHllYXMsIHdlIHdvdWxkIGxpa2UgdG8ga2VlcCBpdCB1bmxlc3MgdGhlDQpuZXcg
-c2V0dGluZyBoYXMgb2J2aW91cyBiZW5lZml0cy4NCg0KVGhhbmtzLA0KU3RhbmxleSBDaHUNCg0K
-PiANCj4gQmVhbg0KPiANCg0K
+Hi Tushar,
+
+Please update the Subject line as, "Add policy rule support for
+measuring critical data".
+
+On Sat, 2020-12-12 at 10:02 -0800, Tushar Sugandhi wrote:
+> A new IMA policy rule is needed for the IMA hook
+> ima_measure_critical_data() and the corresponding func CRITICAL_DATA for
+> measuring the input buffer. The policy rule should ensure the buffer
+> would get measured only when the policy rule allows the action. The
+> policy rule should also support the necessary constraints (flags etc.)
+> for integrity critical buffer data measurements.
+> 
+> Add a policy rule to define the constraints for restricting integrity
+> critical data measurements.
+> 
+> Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
+
+This patch does not restrict measuring critical data, but adds policy
+rule support for measuring critical data.  please update the patch
+description accordingly.
+
+Other than that,
+
+Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
 
