@@ -2,244 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 863AB2E2505
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 08:05:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85FF42E2528
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 08:12:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728147AbgLXHE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 02:04:59 -0500
-Received: from relmlor1.renesas.com ([210.160.252.171]:17304 "EHLO
-        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728012AbgLXHE6 (ORCPT
+        id S1726060AbgLXHM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 02:12:27 -0500
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:6223 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725536AbgLXHM0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 02:04:58 -0500
-X-IronPort-AV: E=Sophos;i="5.78,444,1599490800"; 
-   d="scan'208";a="67025554"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie5.idc.renesas.com with ESMTP; 24 Dec 2020 16:04:22 +0900
-Received: from localhost.localdomain (unknown [10.166.252.89])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 7CFCC401227C;
-        Thu, 24 Dec 2020 16:04:22 +0900 (JST)
-From:   Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-To:     marek.vasut+renesas@gmail.com, lee.jones@linaro.org,
-        matti.vaittinen@fi.rohmeurope.com, lgirdwood@gmail.com,
-        broonie@kernel.org, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com
-Cc:     khiem.nguyen.xt@renesas.com, linux-power@fi.rohmeurope.com,
-        linux-gpio@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Subject: [PATCH v7 12/12] mfd: bd9571mwv: Add support for BD9574MWF
-Date:   Thu, 24 Dec 2020 16:04:17 +0900
-Message-Id: <1608793457-11997-13-git-send-email-yoshihiro.shimoda.uh@renesas.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1608793457-11997-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
-References: <1608793457-11997-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+        Thu, 24 Dec 2020 02:12:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1608793947; x=1640329947;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   mime-version;
+  bh=qB1g1eHuyQvggi8B8SoTOL62S33u6oe9Xwh0/sUKi0U=;
+  b=L19tZZUqPYWtH9jhn+WTUO1+M5/Bk26ZmpoKRW0P6Zbt8JQ4Z1GTvXZA
+   WBPog1+1I4R4nLuLU9EYIFTIFpemK/8cI5b6aBQRgADi4r98if5SZVDZg
+   terQtSNq2nDF8NXzaTn8OcUPmURWgEYL3Yx7tLG0AND6cr0ZW7qUZI+AB
+   A=;
+X-IronPort-AV: E=Sophos;i="5.78,444,1599523200"; 
+   d="scan'208";a="98777246"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2c-76e0922c.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 24 Dec 2020 07:11:46 +0000
+Received: from EX13D31EUA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2c-76e0922c.us-west-2.amazon.com (Postfix) with ESMTPS id E8608A831F;
+        Thu, 24 Dec 2020 07:11:42 +0000 (UTC)
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.162.252) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 24 Dec 2020 07:11:25 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     Shakeel Butt <shakeelb@google.com>
+CC:     SeongJae Park <sjpark@amazon.com>, <Jonathan.Cameron@huawei.com>,
+        "Andrea Arcangeli" <aarcange@redhat.com>, <acme@kernel.org>,
+        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
+        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Qian Cai <cai@lca.pw>,
+        Colin Ian King <colin.king@canonical.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "David Hildenbrand" <david@redhat.com>, <dwmw@amazon.com>,
+        Marco Elver <elver@google.com>, "Du, Fan" <fan.du@intel.com>,
+        <foersleo@amazon.de>, "Greg Thelen" <gthelen@google.com>,
+        Ian Rogers <irogers@google.com>, <jolsa@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mel Gorman <mgorman@suse.de>, Minchan Kim <minchan@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, <namhyung@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Rik van Riel <riel@surriel.com>,
+        David Rientjes <rientjes@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mike Rapoport <rppt@kernel.org>, <sblbir@amazon.com>,
+        Shuah Khan <shuah@kernel.org>, <sj38.park@gmail.com>,
+        <snu@amazon.de>, Vlastimil Babka <vbabka@suse.cz>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Huang Ying <ying.huang@intel.com>, <zgf574564920@gmail.com>,
+        <linux-damon@amazon.com>, Linux MM <linux-mm@kvack.org>,
+        <linux-doc@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v23 05/15] mm/damon: Implement primitives for the virtual memory address spaces
+Date:   Thu, 24 Dec 2020 08:11:11 +0100
+Message-ID: <20201224071111.11551-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <CALvZod6ReV=vTWZu_k2p9p3ZWOLM1z4SZ-kwoTv_a73iYFZj0g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.43.162.252]
+X-ClientProxiedBy: EX13D22UWB002.ant.amazon.com (10.43.161.28) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Khiem Nguyen <khiem.nguyen.xt@renesas.com>
+On Wed, 23 Dec 2020 14:54:02 -0800 Shakeel Butt <shakeelb@google.com> wrote:
 
-The new PMIC BD9574MWF inherits features from BD9571MWV.
-Add the support of new PMIC to existing bd9571mwv driver.
+> On Wed, Dec 23, 2020 at 8:47 AM SeongJae Park <sjpark@amazon.com> wrote:
+> >
+> [snip]
+> > > [snip]
+> > > > +
+> > > > +static bool damon_va_young(struct mm_struct *mm, unsigned long addr,
+> > > > +                       unsigned long *page_sz)
+> > > > +{
+> > > > +       pte_t *pte = NULL;
+> > > > +       pmd_t *pmd = NULL;
+> > > > +       spinlock_t *ptl;
+> > > > +       bool young = false;
+> > > > +
+> > > > +       if (follow_pte_pmd(mm, addr, NULL, &pte, &pmd, &ptl))
+> > > > +               return false;
+> > > > +
+> > > > +       *page_sz = PAGE_SIZE;
+> > > > +       if (pte) {
+> > > > +               young = pte_young(*pte);
+> > > > +               if (!young)
+> > > > +                       young = !page_is_idle(pte_page(*pte));
+> > > > +               pte_unmap_unlock(pte, ptl);
+> > > > +               return young;
+> > > > +       }
+> > > > +
+> > > > +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> > > > +       young = pmd_young(*pmd);
+> > > > +       if (!young)
+> > > > +               young = !page_is_idle(pmd_page(*pmd));
+> > > > +       spin_unlock(ptl);
+> > > > +       *page_sz = ((1UL) << HPAGE_PMD_SHIFT);
+> > > > +#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+> > > > +
+> > > > +       return young;
+> > >
+> > > You need mmu_notifier_test_young() here. Hmm I remember mentioning
+> > > this in some previous version as well.
+> >
+> > Your question and my answer was as below:
+> >
+> >     > Don't you need mmu_notifier_clear_young() here?
+> >
+> >     I think we don't need it here because we only read the Accessed bit and PG_Idle
+> >     if Accessed bit was not set.
+> >
+> > I should notice that you mean 'test_young()' but didn't, sorry.  I will add it
+> > in the next version.
+> >
+> 
+> I should have said mmu_notifier_test_young() instead of
+> mmu_notifier_clear_young().
+> 
+> > >
+> > > BTW have you tested this on a VM?
+> >
+> > Yes.  Indeed, I'm testing this on a QEMU/KVM environment.  You can get more
+> > detail at: https://damonitor.github.io/doc/html/latest/vm/damon/eval.html#setup
+> >
+> 
+> Hmm without mmu_notifier_test_young() you should be missing the kvm
+> mmu access updates. Can you please recheck if your eval is correctly
+> seeing the memory accesses from the VM?
 
-Signed-off-by: Khiem Nguyen <khiem.nguyen.xt@renesas.com>
-Co-developed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Reviewed-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/mfd/bd9571mwv.c       | 76 ++++++++++++++++++++++++++++++++++++++++++-
- include/linux/mfd/bd9571mwv.h | 17 ++++++++--
- 2 files changed, 89 insertions(+), 4 deletions(-)
+Seems I didn't clearly answered, sorry.  My test setup installs the
+DAMON-enabled kernel in a guest VM and run it for workloads in the guest,
+rather than running DAMON in host to monitor accesses of VMs.  The MMU notifier
+is for latter case, AFAIU, so my test setup didn't see the problem.
 
-diff --git a/drivers/mfd/bd9571mwv.c b/drivers/mfd/bd9571mwv.c
-index 2c1fcbb..e15b1ac 100644
---- a/drivers/mfd/bd9571mwv.c
-+++ b/drivers/mfd/bd9571mwv.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /*
-- * ROHM BD9571MWV-M MFD driver
-+ * ROHM BD9571MWV-M and BD9574MVF-M core driver
-  *
-  * Copyright (C) 2017 Marek Vasut <marek.vasut+renesas@gmail.com>
-  * Copyright (C) 2020 Renesas Electronics Corporation
-@@ -11,6 +11,7 @@
- #include <linux/i2c.h>
- #include <linux/interrupt.h>
- #include <linux/mfd/core.h>
-+#include <linux/mfd/rohm-generic.h>
- #include <linux/module.h>
- 
- #include <linux/mfd/bd9571mwv.h>
-@@ -103,6 +104,72 @@ static struct regmap_irq_chip bd9571mwv_irq_chip = {
- 	.num_irqs	= ARRAY_SIZE(bd9571mwv_irqs),
- };
- 
-+static const struct mfd_cell bd9574mwf_cells[] = {
-+	{ .name = "bd9574mwf-regulator", },
-+	{ .name = "bd9574mwf-gpio", },
-+};
-+
-+static const struct regmap_range bd9574mwf_readable_yes_ranges[] = {
-+	regmap_reg_range(BD9571MWV_VENDOR_CODE, BD9571MWV_PRODUCT_REVISION),
-+	regmap_reg_range(BD9571MWV_BKUP_MODE_CNT, BD9571MWV_BKUP_MODE_CNT),
-+	regmap_reg_range(BD9571MWV_DVFS_VINIT, BD9571MWV_DVFS_SETVMAX),
-+	regmap_reg_range(BD9571MWV_DVFS_SETVID, BD9571MWV_DVFS_MONIVDAC),
-+	regmap_reg_range(BD9571MWV_GPIO_IN, BD9571MWV_GPIO_IN),
-+	regmap_reg_range(BD9571MWV_GPIO_INT, BD9571MWV_GPIO_INTMASK),
-+	regmap_reg_range(BD9571MWV_INT_INTREQ, BD9571MWV_INT_INTMASK),
-+};
-+
-+static const struct regmap_access_table bd9574mwf_readable_table = {
-+	.yes_ranges	= bd9574mwf_readable_yes_ranges,
-+	.n_yes_ranges	= ARRAY_SIZE(bd9574mwf_readable_yes_ranges),
-+};
-+
-+static const struct regmap_range bd9574mwf_writable_yes_ranges[] = {
-+	regmap_reg_range(BD9571MWV_BKUP_MODE_CNT, BD9571MWV_BKUP_MODE_CNT),
-+	regmap_reg_range(BD9571MWV_DVFS_SETVID, BD9571MWV_DVFS_SETVID),
-+	regmap_reg_range(BD9571MWV_GPIO_DIR, BD9571MWV_GPIO_OUT),
-+	regmap_reg_range(BD9571MWV_GPIO_INT_SET, BD9571MWV_GPIO_INTMASK),
-+	regmap_reg_range(BD9571MWV_INT_INTREQ, BD9571MWV_INT_INTMASK),
-+};
-+
-+static const struct regmap_access_table bd9574mwf_writable_table = {
-+	.yes_ranges	= bd9574mwf_writable_yes_ranges,
-+	.n_yes_ranges	= ARRAY_SIZE(bd9574mwf_writable_yes_ranges),
-+};
-+
-+static const struct regmap_range bd9574mwf_volatile_yes_ranges[] = {
-+	regmap_reg_range(BD9571MWV_DVFS_MONIVDAC, BD9571MWV_DVFS_MONIVDAC),
-+	regmap_reg_range(BD9571MWV_GPIO_IN, BD9571MWV_GPIO_IN),
-+	regmap_reg_range(BD9571MWV_GPIO_INT, BD9571MWV_GPIO_INT),
-+	regmap_reg_range(BD9571MWV_INT_INTREQ, BD9571MWV_INT_INTREQ),
-+};
-+
-+static const struct regmap_access_table bd9574mwf_volatile_table = {
-+	.yes_ranges	= bd9574mwf_volatile_yes_ranges,
-+	.n_yes_ranges	= ARRAY_SIZE(bd9574mwf_volatile_yes_ranges),
-+};
-+
-+static const struct regmap_config bd9574mwf_regmap_config = {
-+	.reg_bits	= 8,
-+	.val_bits	= 8,
-+	.cache_type	= REGCACHE_RBTREE,
-+	.rd_table	= &bd9574mwf_readable_table,
-+	.wr_table	= &bd9574mwf_writable_table,
-+	.volatile_table	= &bd9574mwf_volatile_table,
-+	.max_register	= 0xff,
-+};
-+
-+static struct regmap_irq_chip bd9574mwf_irq_chip = {
-+	.name		= "bd9574mwf",
-+	.status_base	= BD9571MWV_INT_INTREQ,
-+	.mask_base	= BD9571MWV_INT_INTMASK,
-+	.ack_base	= BD9571MWV_INT_INTREQ,
-+	.init_ack_masked = true,
-+	.num_regs	= 1,
-+	.irqs		= bd9571mwv_irqs,
-+	.num_irqs	= ARRAY_SIZE(bd9571mwv_irqs),
-+};
-+
- static int bd957x_identify(struct device *dev, struct regmap *regmap)
- {
- 	unsigned int value;
-@@ -162,6 +229,12 @@ static int bd9571mwv_probe(struct i2c_client *client,
- 		cells = bd9571mwv_cells;
- 		num_cells = ARRAY_SIZE(bd9571mwv_cells);
- 		break;
-+	case BD9571MWV_PRODUCT_CODE_BD9574MWF:
-+		regmap_config = &bd9574mwf_regmap_config;
-+		irq_chip = &bd9574mwf_irq_chip;
-+		cells = bd9574mwf_cells;
-+		num_cells = ARRAY_SIZE(bd9574mwf_cells);
-+		break;
- 	default:
- 		dev_err(dev, "Unsupported device 0x%x\n", ret);
- 		return -ENODEV;
-@@ -190,6 +263,7 @@ static int bd9571mwv_probe(struct i2c_client *client,
- 
- static const struct of_device_id bd9571mwv_of_match_table[] = {
- 	{ .compatible = "rohm,bd9571mwv", },
-+	{ .compatible = "rohm,bd9574mwf", },
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, bd9571mwv_of_match_table);
-diff --git a/include/linux/mfd/bd9571mwv.h b/include/linux/mfd/bd9571mwv.h
-index e1716ec..8efd99d 100644
---- a/include/linux/mfd/bd9571mwv.h
-+++ b/include/linux/mfd/bd9571mwv.h
-@@ -1,6 +1,6 @@
- /* SPDX-License-Identifier: GPL-2.0-only */
- /*
-- * ROHM BD9571MWV-M driver
-+ * ROHM BD9571MWV-M and BD9574MWF-M driver
-  *
-  * Copyright (C) 2017 Marek Vasut <marek.vasut+renesas@gmail.com>
-  * Copyright (C) 2020 Renesas Electronics Corporation
-@@ -14,11 +14,12 @@
- #include <linux/device.h>
- #include <linux/regmap.h>
- 
--/* List of registers for BD9571MWV */
-+/* List of registers for BD9571MWV and BD9574MWF */
- #define BD9571MWV_VENDOR_CODE			0x00
- #define BD9571MWV_VENDOR_CODE_VAL		0xdb
- #define BD9571MWV_PRODUCT_CODE			0x01
- #define BD9571MWV_PRODUCT_CODE_BD9571MWV	0x60
-+#define BD9571MWV_PRODUCT_CODE_BD9574MWF	0x74
- #define BD9571MWV_PRODUCT_REVISION		0x02
- 
- #define BD9571MWV_I2C_FUSA_MODE			0x10
-@@ -48,6 +49,7 @@
- #define BD9571MWV_VD33_VID			0x44
- 
- #define BD9571MWV_DVFS_VINIT			0x50
-+#define BD9574MWF_VD09_VINIT			0x51
- #define BD9571MWV_DVFS_SETVMAX			0x52
- #define BD9571MWV_DVFS_BOOSTVID			0x53
- #define BD9571MWV_DVFS_SETVID			0x54
-@@ -61,6 +63,7 @@
- #define BD9571MWV_GPIO_INT_SET			0x64
- #define BD9571MWV_GPIO_INT			0x65
- #define BD9571MWV_GPIO_INTMASK			0x66
-+#define BD9574MWF_GPIO_MUX			0x67
- 
- #define BD9571MWV_REG_KEEP(n)			(0x70 + (n))
- 
-@@ -70,6 +73,8 @@
- #define BD9571MWV_PROT_ERROR_STATUS2		0x83
- #define BD9571MWV_PROT_ERROR_STATUS3		0x84
- #define BD9571MWV_PROT_ERROR_STATUS4		0x85
-+#define BD9574MWF_PROT_ERROR_STATUS5		0x86
-+#define BD9574MWF_SYSTEM_ERROR_STATUS		0x87
- 
- #define BD9571MWV_INT_INTREQ			0x90
- #define BD9571MWV_INT_INTREQ_MD1_INT		BIT(0)
-@@ -82,6 +87,12 @@
- #define BD9571MWV_INT_INTREQ_BKUP_TRG_INT	BIT(7)
- #define BD9571MWV_INT_INTMASK			0x91
- 
-+#define BD9574MWF_SSCG_CNT			0xA0
-+#define BD9574MWF_POFFB_MRB			0xA1
-+#define BD9574MWF_SMRB_WR_PROT			0xA2
-+#define BD9574MWF_SMRB_ASSERT			0xA3
-+#define BD9574MWF_SMRB_STATUS			0xA4
-+
- #define BD9571MWV_ACCESS_KEY			0xff
- 
- /* Define the BD9571MWV IRQ numbers */
-@@ -91,7 +102,7 @@ enum bd9571mwv_irqs {
- 	BD9571MWV_IRQ_MD2_E2,
- 	BD9571MWV_IRQ_PROT_ERR,
- 	BD9571MWV_IRQ_GP,
--	BD9571MWV_IRQ_128H_OF,
-+	BD9571MWV_IRQ_128H_OF,	/* BKUP_HOLD on BD9574MWF */
- 	BD9571MWV_IRQ_WDT_OF,
- 	BD9571MWV_IRQ_BKUP_TRG,
- };
--- 
-2.7.4
+If I'm missing something, please let me know.
 
+
+Thanks,
+SeongJae Park
