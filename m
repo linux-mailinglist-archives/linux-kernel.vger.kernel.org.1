@@ -2,273 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2B8F2E26FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 13:56:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8100C2E2700
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 14:01:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728497AbgLXM4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 07:56:06 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:46316 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728355AbgLXM4F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 07:56:05 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 89B6CA1D;
-        Thu, 24 Dec 2020 13:55:22 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1608814522;
-        bh=vdQrgqNa1TiikvlUXAcbMyAF84ZPZrALP2GLp8KKG18=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hsNkO0Ehz7i1XDTGj0XDsADHRkgLU+aASLzYqYmQ/el3C8JR5UeK1QpF80Jhcp8Pk
-         ofM7145UVyy7I9eyYhBHIA2yj1FTKSj0g8LcynBD4e9RGWSzyYzrGhLxVhSoWD+DP5
-         ZVM77eK7f+Vqo5czQfTENomCT+/D+aIJdyBgQNcs=
-Date:   Thu, 24 Dec 2020 14:55:14 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Daniel Scally <djrscally@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        devel@acpica.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tian Shu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        kieran.bingham+renesas@ideasonboard.com,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        niklas.soderlund+renesas@ragnatech.se,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v3 07/14] software_node: Add support for fwnode_graph*()
- family of functions
-Message-ID: <X+SPsks5itN9OFqB@pendragon.ideasonboard.com>
-References: <20201224010907.263125-1-djrscally@gmail.com>
- <20201224010907.263125-8-djrscally@gmail.com>
- <CAHp75Vft7gg1AcKCEU+E74eB_ZMouHFd-8uZ7pcVj5CoJzZpvQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHp75Vft7gg1AcKCEU+E74eB_ZMouHFd-8uZ7pcVj5CoJzZpvQ@mail.gmail.com>
+        id S1728599AbgLXM5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 07:57:16 -0500
+Received: from mga18.intel.com ([134.134.136.126]:60042 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726746AbgLXM5P (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 24 Dec 2020 07:57:15 -0500
+IronPort-SDR: 5WHq+o4Hnq9F8lMzAPlYHFcOWB3fHvDyklILUvMxrrMGlU3AtMgxJIyRQn6qJjsoSoc6OoyzyR
+ wDyrfkW20ohQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9844"; a="163864659"
+X-IronPort-AV: E=Sophos;i="5.78,444,1599548400"; 
+   d="scan'208";a="163864659"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Dec 2020 04:55:19 -0800
+IronPort-SDR: Zxhl6SiccRdW/IBhA7XH44+KI23WZcfLcPeBKdUzHiROZVVtfqcPZaYjciQjg3L46cRqpQ4oVG
+ bufUWmVg7fUA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,444,1599548400"; 
+   d="scan'208";a="391138641"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
+  by fmsmga004.fm.intel.com with ESMTP; 24 Dec 2020 04:55:16 -0800
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com, ying.huang@intel.com,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH v2] perf stat: Fix wrong skipping for per-die aggregation
+Date:   Thu, 24 Dec 2020 20:54:04 +0800
+Message-Id: <20201224125404.16268-1-yao.jin@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+Uncore becomes die-scope on Xeon Cascade Lake-AP and perf has supported
+--per-die aggregation yet.
 
-On Thu, Dec 24, 2020 at 02:24:12PM +0200, Andy Shevchenko wrote:
-> On Thu, Dec 24, 2020 at 3:14 AM Daniel Scally wrote:
-> >
-> > From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> >
-> > This implements the remaining .graph_* callbacks in the
-> 
-> .graph_* ==> ->graph_*() ?
-> 
-> > fwnode operations structure for the software nodes. That makes
-> > the fwnode_graph*() functions available in the drivers also
-> 
-> graph*() -> graph_*() ?
-> 
-> > when software nodes are used.
-> >
-> > The implementation tries to mimic the "OF graph" as much as
-> > possible, but there is no support for the "reg" device
-> > property. The ports will need to have the index in their
-> > name which starts with "port@" (for example "port@0", "port@1",
-> 
-> > ...)
-> 
-> Looks not good, perhaps move to the previous line, or move port@1 example here?
-> 
-> > and endpoints will use the index of the software node
-> > that is given to them during creation. The port nodes can
-> > also be grouped under a specially named "ports" subnode,
-> > just like in DT, if necessary.
-> >
-> > The remote-endpoints are reference properties under the
-> > endpoint nodes that are named "remote-endpoint".
-> 
-> Few nitpicks here and there, after addressing them,
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> 
-> > Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> > Co-developed-by: Daniel Scally <djrscally@gmail.com>
-> > Signed-off-by: Daniel Scally <djrscally@gmail.com>
-> > ---
-> > Changes in v3
-> >         - Changed software_node_get_next_endpoint() to drop the variable
-> >         named "old"
-> >         - Used the macros defined in 06/14 instead of magic numbers
-> >         - Added some comments to explain behaviour a little where it's unclear
-> >
-> >  drivers/base/swnode.c | 112 +++++++++++++++++++++++++++++++++++++++++-
-> >  1 file changed, 111 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
-> > index 2d07eb04c6c8..ff690029060d 100644
-> > --- a/drivers/base/swnode.c
-> > +++ b/drivers/base/swnode.c
-> > @@ -540,6 +540,112 @@ software_node_get_reference_args(const struct fwnode_handle *fwnode,
-> >         return 0;
-> >  }
-> >
-> > +static struct fwnode_handle *
-> > +swnode_graph_find_next_port(const struct fwnode_handle *parent,
-> > +                           struct fwnode_handle *port)
-> > +{
-> > +       struct fwnode_handle *old = port;
-> > +
-> > +       while ((port = software_node_get_next_child(parent, old))) {
-> > +               /*
-> > +                * ports have naming style "port@n", so we search for children
-> > +                * that follow that convention (but without assuming anything
-> > +                * about the index number)
-> > +                */
-> 
-> > +               if (!strncmp(to_swnode(port)->node->name, "port@",
-> 
-> You may use here corresponding _FMT macro.
-> 
-> > +                            FWNODE_GRAPH_PORT_NAME_PREFIX_LEN))
-> > +                       return port;
-> > +               old = port;
-> > +       }
-> > +
-> > +       return NULL;
-> > +}
-> > +
-> > +static struct fwnode_handle *
-> > +software_node_graph_get_next_endpoint(const struct fwnode_handle *fwnode,
-> > +                                     struct fwnode_handle *endpoint)
-> > +{
-> > +       struct swnode *swnode = to_swnode(fwnode);
-> > +       struct fwnode_handle *parent;
-> > +       struct fwnode_handle *port;
-> > +
-> > +       if (!swnode)
-> > +               return NULL;
-> > +
-> > +       if (endpoint) {
-> > +               port = software_node_get_parent(endpoint);
-> > +               parent = software_node_get_parent(port);
-> > +       } else {
-> > +               parent = software_node_get_named_child_node(fwnode, "ports");
-> > +               if (!parent)
-> > +                       parent = software_node_get(&swnode->fwnode);
-> > +
-> > +               port = swnode_graph_find_next_port(parent, NULL);
-> > +       }
-> > +
-> > +       for (; port; port = swnode_graph_find_next_port(parent, port)) {
-> > +               endpoint = software_node_get_next_child(port, endpoint);
-> > +               if (endpoint) {
-> > +                       fwnode_handle_put(port);
-> > +                       break;
-> > +               }
-> > +       }
-> > +
-> > +       fwnode_handle_put(parent);
-> > +
-> > +       return endpoint;
-> > +}
-> > +
-> > +static struct fwnode_handle *
-> > +software_node_graph_get_remote_endpoint(const struct fwnode_handle *fwnode)
-> > +{
-> > +       struct swnode *swnode = to_swnode(fwnode);
-> > +       const struct software_node_ref_args *ref;
-> > +       const struct property_entry *prop;
-> > +
-> > +       if (!swnode)
-> > +               return NULL;
-> > +
-> > +       prop = property_entry_get(swnode->node->properties, "remote-endpoint");
-> > +       if (!prop || prop->type != DEV_PROP_REF || prop->is_inline)
-> > +               return NULL;
-> > +
-> > +       ref = prop->pointer;
-> > +
-> > +       return software_node_get(software_node_fwnode(ref[0].node));
-> > +}
-> > +
-> > +static struct fwnode_handle *
-> > +software_node_graph_get_port_parent(struct fwnode_handle *fwnode)
-> > +{
-> > +       struct swnode *swnode = to_swnode(fwnode);
-> > +
-> > +       swnode = swnode->parent;
-> > +       if (swnode && !strcmp(swnode->node->name, "ports"))
-> > +               swnode = swnode->parent;
-> > +
-> > +       return swnode ? software_node_get(&swnode->fwnode) : NULL;
-> > +}
-> > +
-> > +static int
-> > +software_node_graph_parse_endpoint(const struct fwnode_handle *fwnode,
-> > +                                  struct fwnode_endpoint *endpoint)
-> > +{
-> > +       struct swnode *swnode = to_swnode(fwnode);
-> > +       int ret;
-> > +
-> > +       /* Ports have naming style "port@n", we need to select the n */
-> 
-> > +       ret = kstrtou32(swnode->parent->node->name + FWNODE_GRAPH_PORT_NAME_PREFIX_LEN,
-> 
-> Maybe a temporary variable?
-> 
->   unsigned int prefix_len = FWNODE_GRAPH_PORT_NAME_PREFIX_LEN;
->   ...
->   ret = kstrtou32(swnode->parent->node->name + prefix_len,
+One issue is found in check_per_pkg() for uncore events running on
+AP system. On cascade Lake-AP, we have:
 
-Honestly I'm wondering if those macros don't hinder readability. I'd
-rather write
+S0-D0
+S0-D1
+S1-D0
+S1-D1
 
-	+ strlen("port@")
+But in check_per_pkg(), S0-D1 and S1-D1 are skipped because the
+mask bits for S0 and S1 have been set for S0-D0 and S1-D0. It doesn't
+check die_id. So the counting for S0-D1 and S1-D1 are set to zero.
+That's not correct.
 
-and let the compiler optimize this to a compile-time constant.
+root@lkp-csl-2ap4 ~# ./perf stat -a -I 1000 -e llc_misses.mem_read --per-die -- sleep 5
+     1.001460963 S0-D0           1            1317376 Bytes llc_misses.mem_read
+     1.001460963 S0-D1           1             998016 Bytes llc_misses.mem_read
+     1.001460963 S1-D0           1             970496 Bytes llc_misses.mem_read
+     1.001460963 S1-D1           1            1291264 Bytes llc_misses.mem_read
+     2.003488021 S0-D0           1            1082048 Bytes llc_misses.mem_read
+     2.003488021 S0-D1           1            1919040 Bytes llc_misses.mem_read
+     2.003488021 S1-D0           1             890752 Bytes llc_misses.mem_read
+     2.003488021 S1-D1           1            2380800 Bytes llc_misses.mem_read
+     3.005613270 S0-D0           1            1126080 Bytes llc_misses.mem_read
+     3.005613270 S0-D1           1            2898176 Bytes llc_misses.mem_read
+     3.005613270 S1-D0           1             870912 Bytes llc_misses.mem_read
+     3.005613270 S1-D1           1            3388608 Bytes llc_misses.mem_read
+     4.007627598 S0-D0           1            1124608 Bytes llc_misses.mem_read
+     4.007627598 S0-D1           1            3884416 Bytes llc_misses.mem_read
+     4.007627598 S1-D0           1             921088 Bytes llc_misses.mem_read
+     4.007627598 S1-D1           1            4451840 Bytes llc_misses.mem_read
+     5.001479927 S0-D0           1             963328 Bytes llc_misses.mem_read
+     5.001479927 S0-D1           1            4831936 Bytes llc_misses.mem_read
+     5.001479927 S1-D0           1             895104 Bytes llc_misses.mem_read
+     5.001479927 S1-D1           1            5496640 Bytes llc_misses.mem_read
 
-> > +                       10, &endpoint->port);
-> > +       if (ret)
-> > +               return ret;
-> > +
-> > +       endpoint->id = swnode->id;
-> > +       endpoint->local_fwnode = fwnode;
-> > +
-> > +       return 0;
-> > +}
-> > +
-> >  static const struct fwnode_operations software_node_ops = {
-> >         .get = software_node_get,
-> >         .put = software_node_put,
-> > @@ -551,7 +657,11 @@ static const struct fwnode_operations software_node_ops = {
-> >         .get_parent = software_node_get_parent,
-> >         .get_next_child_node = software_node_get_next_child,
-> >         .get_named_child_node = software_node_get_named_child_node,
-> > -       .get_reference_args = software_node_get_reference_args
-> > +       .get_reference_args = software_node_get_reference_args,
-> > +       .graph_get_next_endpoint = software_node_graph_get_next_endpoint,
-> > +       .graph_get_remote_endpoint = software_node_graph_get_remote_endpoint,
-> > +       .graph_get_port_parent = software_node_graph_get_port_parent,
-> > +       .graph_parse_endpoint = software_node_graph_parse_endpoint,
-> >  };
-> >
-> >  /* -------------------------------------------------------------------------- */
+From above output, we can see S0-D1 and S1-D1 don't report the interval
+values, they are continued to grow. That's because check_per_pkg() wrongly
+decides to use zero counts for S0-D1 and S1-D1.
 
+So in check_per_pkg(), we should use hashmap(socket,die) to decide if
+the cpu counts needs to skip. Only considering socket is not enough.
+
+Now with this patch,
+
+root@lkp-csl-2ap4 ~# ./perf stat -a -I 1000 -e llc_misses.mem_read --per-die -- sleep 5
+     1.001617187 S0-D0           1             952768 Bytes llc_misses.mem_read
+     1.001617187 S0-D1           1             849152 Bytes llc_misses.mem_read
+     1.001617187 S1-D0           1             854912 Bytes llc_misses.mem_read
+     1.001617187 S1-D1           1             948672 Bytes llc_misses.mem_read
+     2.004138021 S0-D0           1            1200256 Bytes llc_misses.mem_read
+     2.004138021 S0-D1           1             899840 Bytes llc_misses.mem_read
+     2.004138021 S1-D0           1             898752 Bytes llc_misses.mem_read
+     2.004138021 S1-D1           1            1039424 Bytes llc_misses.mem_read
+     3.006463971 S0-D0           1            1029056 Bytes llc_misses.mem_read
+     3.006463971 S0-D1           1             894336 Bytes llc_misses.mem_read
+     3.006463971 S1-D0           1             905088 Bytes llc_misses.mem_read
+     3.006463971 S1-D1           1            1042880 Bytes llc_misses.mem_read
+     4.008831441 S0-D0           1             920576 Bytes llc_misses.mem_read
+     4.008831441 S0-D1           1             877248 Bytes llc_misses.mem_read
+     4.008831441 S1-D0           1             883968 Bytes llc_misses.mem_read
+     4.008831441 S1-D1           1             967168 Bytes llc_misses.mem_read
+     5.001441349 S0-D0           1             864704 Bytes llc_misses.mem_read
+     5.001441349 S0-D1           1             827456 Bytes llc_misses.mem_read
+     5.001441349 S1-D0           1             829632 Bytes llc_misses.mem_read
+     5.001441349 S1-D1           1             925760 Bytes llc_misses.mem_read
+
+On no-die system, die_id is 0, actually it's hashmap(socket,0), original behavior
+is not changed.
+
+Reported-by: Huang Ying <ying.huang@intel.com>
+Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+---
+ tools/perf/util/evsel.c |  4 ++-
+ tools/perf/util/evsel.h |  3 +-
+ tools/perf/util/stat.c  | 61 +++++++++++++++++++++++++++++++++++++----
+ 3 files changed, 60 insertions(+), 8 deletions(-)
+
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index c26ea82220bd..9715ed9b03f6 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -45,6 +45,7 @@
+ #include "string2.h"
+ #include "memswap.h"
+ #include "util.h"
++#include "hashmap.h"
+ #include "../perf-sys.h"
+ #include "util/parse-branch-options.h"
+ #include <internal/xyarray.h>
+@@ -1377,7 +1378,8 @@ void evsel__exit(struct evsel *evsel)
+ 	zfree(&evsel->group_name);
+ 	zfree(&evsel->name);
+ 	zfree(&evsel->pmu_name);
+-	zfree(&evsel->per_pkg_mask);
++	hashmap__free(evsel->per_pkg_mask);
++	evsel->per_pkg_mask = NULL;
+ 	zfree(&evsel->metric_events);
+ 	perf_evsel__object.fini(evsel);
+ }
+diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
+index cd1d8dd43199..951628943fd0 100644
+--- a/tools/perf/util/evsel.h
++++ b/tools/perf/util/evsel.h
+@@ -17,6 +17,7 @@ struct cgroup;
+ struct perf_counts;
+ struct perf_stat_evsel;
+ union perf_event;
++struct hashmap;
+ 
+ typedef int (evsel__sb_cb_t)(union perf_event *event, void *data);
+ 
+@@ -110,7 +111,7 @@ struct evsel {
+ 	bool			merged_stat;
+ 	bool			reset_group;
+ 	bool			errored;
+-	unsigned long		*per_pkg_mask;
++	struct hashmap		*per_pkg_mask;
+ 	struct evsel		*leader;
+ 	struct list_head	config_terms;
+ 	int			err;
+diff --git a/tools/perf/util/stat.c b/tools/perf/util/stat.c
+index 1e125e39ff84..15db4bda1266 100644
+--- a/tools/perf/util/stat.c
++++ b/tools/perf/util/stat.c
+@@ -13,6 +13,7 @@
+ #include "evlist.h"
+ #include "evsel.h"
+ #include "thread_map.h"
++#include "hashmap.h"
+ #include <linux/zalloc.h>
+ 
+ void update_stats(struct stats *stats, u64 val)
+@@ -275,16 +276,39 @@ void evlist__save_aggr_prev_raw_counts(struct evlist *evlist)
+ 
+ static void zero_per_pkg(struct evsel *counter)
+ {
+-	if (counter->per_pkg_mask)
+-		memset(counter->per_pkg_mask, 0, cpu__max_cpu());
++	struct hashmap_entry *entry;
++	size_t bkt;
++
++	if (counter->per_pkg_mask) {
++		hashmap__for_each_entry(counter->per_pkg_mask, entry, bkt) {
++			bool *used = (bool *)entry->value;
++
++			*used = false;
++		}
++	}
++}
++
++static size_t id_hash(const void *key, void *ctx __maybe_unused)
++{
++	int socket = (int64_t)key >> 32;
++
++	return socket;
++}
++
++static bool id_equal(const void *key1, const void *key2,
++		     void *ctx __maybe_unused)
++{
++	return (int64_t)key1 == (int64_t)key2;
+ }
+ 
+ static int check_per_pkg(struct evsel *counter,
+ 			 struct perf_counts_values *vals, int cpu, bool *skip)
+ {
+-	unsigned long *mask = counter->per_pkg_mask;
++	struct hashmap *mask = counter->per_pkg_mask;
+ 	struct perf_cpu_map *cpus = evsel__cpus(counter);
+-	int s;
++	int s, d, ret;
++	uint64_t key;
++	bool *used;
+ 
+ 	*skip = false;
+ 
+@@ -295,7 +319,7 @@ static int check_per_pkg(struct evsel *counter,
+ 		return 0;
+ 
+ 	if (!mask) {
+-		mask = zalloc(cpu__max_cpu());
++		mask = hashmap__new(id_hash, id_equal, NULL);
+ 		if (!mask)
+ 			return -ENOMEM;
+ 
+@@ -317,7 +341,32 @@ static int check_per_pkg(struct evsel *counter,
+ 	if (s < 0)
+ 		return -1;
+ 
+-	*skip = test_and_set_bit(s, mask) == 1;
++	/*
++	 * On multi-die system, 0 < die_id < 256. On no-die system, die_id = 0.
++	 * We use hashmap(socket, die) to check the used socket+die pair.
++	 */
++	d = cpu_map__get_die(cpus, cpu, NULL);
++	if (d < 0)
++		return -1;
++
++	key = (uint64_t)s << 32 | (d & 0xff);
++	if (hashmap__find(mask, (void *)key, (void **)&used)) {
++		if (*used)
++			*skip = true;
++		*used = true;
++	} else {
++		used = zalloc(sizeof(*used));
++		if (!used)
++			return -1;
++
++		*used = true;
++		ret = hashmap__add(mask, (void *)key, used);
++		if (ret) {
++			free(used);
++			return -1;
++		}
++	}
++
+ 	return 0;
+ }
+ 
 -- 
-Regards,
+2.17.1
 
-Laurent Pinchart
