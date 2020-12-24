@@ -2,45 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D9A72E2417
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 04:35:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7C762E2416
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 04:35:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728899AbgLXDdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 22:33:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48166 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728779AbgLXDdj (ORCPT
+        id S1728963AbgLXDew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 22:34:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728710AbgLXDew (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 22:33:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608780732;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ImpOp2pBt8kaX5JJ3UIMDw0UYm4eN1THLKEsdyHiJvY=;
-        b=NcFH7znMoHUklzDSSt4mzEoTi3BJ3oDNxez2G1D1c4LPzoM+ozfcwaNB0VJaq+qpOk8FAE
-        f5p2lA4xw1yKex2gaUcghPydzYy/0JDZmaWX6U00sUjAbrxjR/Qq91w1iX9o2JTF5WVs/N
-        ZZ/pU4AeazEX7eEoiIVqXCVqXXRzeLY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-506-dpp3bLvUO_GEMxrAAloCNA-1; Wed, 23 Dec 2020 22:32:09 -0500
-X-MC-Unique: dpp3bLvUO_GEMxrAAloCNA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EB16A180DE0C;
-        Thu, 24 Dec 2020 03:32:06 +0000 (UTC)
-Received: from mail (ovpn-112-5.rdu2.redhat.com [10.10.112.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9E2845D9CC;
-        Thu, 24 Dec 2020 03:31:59 +0000 (UTC)
-Date:   Wed, 23 Dec 2020 22:31:59 -0500
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
+        Wed, 23 Dec 2020 22:34:52 -0500
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62B8CC06179C
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 19:34:06 -0800 (PST)
+Received: by mail-il1-x133.google.com with SMTP id q5so922445ilc.10
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 19:34:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=c5fNsg2UwF5UocytYwq0XQNimIsx8M/0x2kcxXnzw6s=;
+        b=PgNEDPhRRco6MUm+b35ScL9j7jTW2b7WyA5+rPGX4xjQrF6SUP/6+x/45YJPtKsHtG
+         +pw2Aig8V5nQJ2pMAor1ZD3H9qsk2OPqg+BJ6NRonx+8A5Ph3TLfa+3BEvoH+W65zwHs
+         52a2XnIgl0IVSgJZPRgMOO/G/7vAYwyW1rBkk2Lb4b/aJuqeHYZ05wrVsjliA/IcAfoC
+         mJ1cmIuuNuZ0I1Jx9dM1iGTfOwJU4ubp6ZkIf1Q48WGSVqulGu+na8E+JuA2Plv4CrFD
+         MTVZlotsa8kip62TOCTXmoqLGNdIL65SxXUH1gTe9J7QfqcxmGdBBVDoXUU8FIcr45Ns
+         sysA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=c5fNsg2UwF5UocytYwq0XQNimIsx8M/0x2kcxXnzw6s=;
+        b=rAPrwPjdxcJWP26LH1XUK85/Ec6WLj39mlSluidyNAwZ9fSmirGTFJRdRHq3+22VL2
+         kcctn7urUhLuHMlVYg42Fa8T85iiK02yIofNTw566ANNQktsZQGrb8aKw9hS39SFnrLN
+         GMmSIFWIEkEjp7yZLboLkxojqp9z8kAJ3GEGxpAjEJWU3MPrxvTQC3B9wGtZYql6xpSR
+         9D9Q07406qzQiHJxPqVFlanRjKnDLkEU9wxrGi5eeNur6QOhY6l7xUjMVB2hFI14TlON
+         eLmL+gZKMHzLM4v3rpAn/4XS0QOzJDeUbMSWncP0W0FTTHJcPpthPJCB2S/GJyHXF4QN
+         y+CA==
+X-Gm-Message-State: AOAM5334+Mnckoqpqu+qH8HMdlhhdMScrfYLXvr2NIElrbzACyXpAYtb
+        hWvTKoAd9HZsiiU6fUN86csTew==
+X-Google-Smtp-Source: ABdhPJwlSb2HJ2fXreVypNQMIQPBK3ZPIqIThkVchlUswu3+TbmFlW0XsYozNSC0nOOqS5dkRor2sg==
+X-Received: by 2002:a92:ca91:: with SMTP id t17mr27317300ilo.67.1608780845418;
+        Wed, 23 Dec 2020 19:34:05 -0800 (PST)
+Received: from google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
+        by smtp.gmail.com with ESMTPSA id e9sm18039843ils.14.2020.12.23.19.34.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Dec 2020 19:34:04 -0800 (PST)
+Date:   Wed, 23 Dec 2020 20:34:00 -0700
+From:   Yu Zhao <yuzhao@google.com>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Andy Lutomirski <luto@kernel.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        linux-mm <linux-mm@kvack.org>,
+        Peter Xu <peterx@redhat.com>, linux-mm <linux-mm@kvack.org>,
         lkml <linux-kernel@vger.kernel.org>,
         Pavel Emelyanov <xemul@openvz.org>,
         Mike Kravetz <mike.kravetz@oracle.com>,
@@ -50,110 +66,61 @@ Cc:     Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
         Will Deacon <will@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>
 Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-Message-ID: <X+QLr1WmGXMs33Ld@redhat.com>
+Message-ID: <X+QMKC7jPEeThjB1@google.com>
 References: <X+PE38s2Egq4nzKv@google.com>
  <C332B03D-30B1-4C9C-99C2-E76988BFC4A1@amacapital.net>
  <X+P2OnR+ipY8d2qL@redhat.com>
+ <3A6A1049-24C6-4B2D-8C59-21B549F742B4@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <X+P2OnR+ipY8d2qL@redhat.com>
-User-Agent: Mutt/2.0.3 (2020-12-04)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3A6A1049-24C6-4B2D-8C59-21B549F742B4@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 09:00:26PM -0500, Andrea Arcangeli wrote:
-> One other near zero cost improvement easy to add if this would be "if
-> (vma->vm_flags & (VM_SOFTDIRTY|VM_UFFD_WP))" and it could be made
+On Wed, Dec 23, 2020 at 07:09:10PM -0800, Nadav Amit wrote:
+> > On Dec 23, 2020, at 6:00 PM, Andrea Arcangeli <aarcange@redhat.com> wrote:
+> > 
+> > On Wed, Dec 23, 2020 at 05:21:43PM -0800, Andy Lutomirski wrote:
+> >> I don’t love this as a long term fix. AFAICT we can have mm_tlb_flush_pending set for quite a while — mprotect seems like it can wait in IO while splitting a huge page, for example. That gives us a window in which every write fault turns into a TLB flush.
+> > 
+> > mprotect can't run concurrently with a page fault in the first place.
+> > 
+> > One other near zero cost improvement easy to add if this would be "if
+> > (vma->vm_flags & (VM_SOFTDIRTY|VM_UFFD_WP))" and it could be made
+> > conditional to the two config options too.
+> > 
+> > Still I don't mind doing it in some other way, uffd-wp has much easier
+> > time doing it in another way in fact.
+> > 
+> > Whatever performs better is fine, but queuing up pending invalidate
+> > ranges don't look very attractive since it'd be a fixed cost that we'd
+> > always have to pay even when there's no fault (and there can't be any
+> > fault at least for mprotect).
+> 
+> I think there are other cases in which Andy’s concern is relevant
+> (MADV_PAGEOUT).
 
-The next worry then is if UFFDIO_WRITEPROTECT is very large then there
-would be a flood of wrprotect faults, and they'd end up all issuing a
-tlb flush during the UFFDIO_WRITEPROTECT itself which again is a
-performance concern for certain uffd-wp use cases.
+That patch only demonstrate a rough idea and I should have been
+elaborate: if we ever decide to go that direction, we only need to
+worry about "jumping through hoops", because the final patch (set)
+I have in mind would not only have the build time optimization Andrea
+suggested but also include runtime optimizations like skipping
+do_swap_page() path and (!PageAnon() || page_mapcount > 1). Rest
+assured, the performance impact on do_wp_page() from occasionally an
+additional TLB flush on top of a page copy is negligible.
 
-Those use cases would be for example redis and postcopy live
-snapshotting, to use it for async snapshots, unprivileged too in the
-case of redis if it temporarily uses bounce buffers for the syscall
-I/O for the duration of the snapshot. hypervisors tuned profiles need
-to manually lift the unprivileged_userfaultfd to 1 unless their jailer
-leaves one capability in the snapshot thread.
-
-Moving the check after userfaultfd_pte_wp would solve
-userfaultfd_writeprotect(mode_wp=true), but that still wouldn't avoid
-a flood of tlb flushes during userfaultfd_writeprotect(mode_wp=false)
-because change_protection doesn't restore the pte_write:
-
-			} else if (uffd_wp_resolve) {
-				/*
-				 * Leave the write bit to be handled
-				 * by PF interrupt handler, then
-				 * things like COW could be properly
-				 * handled.
-				 */
-				ptent = pte_clear_uffd_wp(ptent);
-			}
-
-When the snapshot is complete userfaultfd_writeprotect(mode_wp=false)
-would need to run again on the whole range which can be very big
-again.
-
-Orthogonally I think we should also look to restore the pte_write
-above orthogonally in uffd-wp, so it'll get yet an extra boost if
-compared to current redis snapshotting fork(), that cannot restore all
-pte_write after the snapshot child quit and forces a flood of spurious
-wrprotect faults (uffd-wp can solve that too).
-
-However, even if uffd-wp restored the pte_write, things would remain
-suboptimal for a terabyte process under clear_refs, since softdirty
-wrprotect faults that start happening while softdirty is still running
-on the mm, won't be caught in userfaultfd_pte_wp.
-
-Something like below, if cleaned up, abstracted properly and
-documented well in the two places involved, will have a better chance
-to perform optimally for softdirty too.
-
-And on a side note the CONFIG_MEM_SOFT_DIRTY compile time check is
-compulsory because VM_SOFTDIRTY is defined to zero if softdirty is not
-built in. (for VM_UFFD_WP the CONFIG_HAVE_ARCH_USERFAULTFD_WP can be
-removed and it won't make any measurable difference even when
-USERFAULTFD=n)
-
-RFC untested below, it's supposed to fix the softdirty testcase too,
-even without the incremental fix, since it already does tlb_gather_mmu
-before walk_page_range and tlb_finish_mmu after it and that appears
-enough to define the inc/dec_tlb_flush_pending.
-
-diff --git a/mm/memory.c b/mm/memory.c
-index 7d608765932b..66fd6d070c47 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -2844,11 +2844,26 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
- 		if (!new_page)
- 			goto oom;
- 	} else {
-+		bool in_uffd_wp, in_softdirty;
- 		new_page = alloc_page_vma(GFP_HIGHUSER_MOVABLE, vma,
- 				vmf->address);
- 		if (!new_page)
- 			goto oom;
- 
-+#ifdef CONFIG_HAVE_ARCH_USERFAULTFD_WP
-+		in_uffd_wp = !!(vma->vm_flags & VM_UFFD_WP);
-+#else
-+		in_uffd_wp = false;
-+#endif
-+#ifdef CONFIG_MEM_SOFT_DIRTY
-+		in_softdirty = !(vma->vm_flags & VM_SOFTDIRTY);
-+#else
-+		in_softdirty = false;
-+#endif
-+		if ((in_uffd_wp || in_softdirty) &&
-+		    mm_tlb_flush_pending(mm))
-+			flush_tlb_page(vma, vmf->address);
-+
- 		if (!cow_user_page(new_page, old_page, vmf)) {
- 			/*
- 			 * COW failed, if the fault was solved by other,
-
+> Perhaps holding some small bitmap based on part of the deferred flushed
+> pages (e.g., bits 12-17 of the address or some other kind of a single
+> hash-function bloom-filter) would be more performant to avoid (most)
+> unnecessary TLB flushes. It will be cleared before a TLB flush and set while
+> holding the PTL.
+> 
+> Checking if a flush is needed, under the PTL, would require a single memory
+> access (although potentially cache miss). It will however require one atomic
+> operation for each page-table whose PTEs’ flushes are deferred - in contrast
+> to the current scheme which requires two atomic operations for the *entire*
+> operation.
+> 
