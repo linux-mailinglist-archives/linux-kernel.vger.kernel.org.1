@@ -2,78 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51C462E2664
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 12:31:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 774DC2E2667
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 12:34:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728123AbgLXLbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 06:31:17 -0500
-Received: from forward105o.mail.yandex.net ([37.140.190.183]:57726 "EHLO
-        forward105o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726186AbgLXLbQ (ORCPT
+        id S1728126AbgLXLcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 06:32:25 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:16582 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726186AbgLXLcY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 06:31:16 -0500
-X-Greylist: delayed 493 seconds by postgrey-1.27 at vger.kernel.org; Thu, 24 Dec 2020 06:31:15 EST
-Received: from sas1-fe2d9cd6d0e9.qloud-c.yandex.net (sas1-fe2d9cd6d0e9.qloud-c.yandex.net [IPv6:2a02:6b8:c14:3920:0:640:fe2d:9cd6])
-        by forward105o.mail.yandex.net (Yandex) with ESMTP id 94A2D4202774;
-        Thu, 24 Dec 2020 14:22:17 +0300 (MSK)
-Received: from sas2-1cbd504aaa99.qloud-c.yandex.net (sas2-1cbd504aaa99.qloud-c.yandex.net [2a02:6b8:c14:7101:0:640:1cbd:504a])
-        by sas1-fe2d9cd6d0e9.qloud-c.yandex.net (mxback/Yandex) with ESMTP id ormH2w7xxY-MHDSPN8x;
-        Thu, 24 Dec 2020 14:22:17 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1608808937;
-        bh=5vk3A2dN5ebQ4b00f+Y2Y2deucbfh3V9Ia5kveh3BCU=;
-        h=In-Reply-To:References:Date:Subject:To:From:Message-Id:Cc;
-        b=L2s4m/GuH/0aSszcLOY+lmSIZZiU6UsduVskSiA/gG2SrGy3gKAMUBOXNnmWftqBf
-         oRYj3YIRxK7vlVlSXhcqyDuib95mtkx8YtJhgs7gQgLfmVZvsIg3ASwKgVKbeN/6y7
-         8lDCyxjrfoZIQCDcn35JyNGHfsL5loF9f7w4a2w0=
-Authentication-Results: sas1-fe2d9cd6d0e9.qloud-c.yandex.net; dkim=pass header.i=@maquefel.me
-Received: by sas2-1cbd504aaa99.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id wXm6oVjgK4-MHJecsqI;
-        Thu, 24 Dec 2020 14:22:17 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-From:   Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     Nikita Shubin <nikita.shubin@maquefel.me>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 3/3] gpio: ep93xx: specify gpio_irq_chip->first
-Date:   Thu, 24 Dec 2020 14:22:03 +0300
-Message-Id: <20201224112203.7174-4-nikita.shubin@maquefel.me>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201224112203.7174-1-nikita.shubin@maquefel.me>
-References: <20201224112203.7174-1-nikita.shubin@maquefel.me>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+        Thu, 24 Dec 2020 06:32:24 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1608809519; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=eX18DIRMoHpmB0MxA0f7v42xg6kMkU4vr9nekIYENcY=; b=f6+LThrpW0I+VUCFIoa927fNKsfFNhZmEyf1UzRV+OVPq0rJWb1RRlTvgV9zr6FncMUS6jCT
+ zO9/rPOUHha4iU9Gl66wJHATV/YS/Z7mz6xCG2aChxwzWdx9atOzUnwEZvQTxmzRTyRdG9EU
+ +r2xvr1DdZ321fErV2rZIOuH7Js=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5fe47c12da471981883f5fee (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 24 Dec 2020 11:31:30
+ GMT
+Sender: guixiong=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 30BD6C43462; Thu, 24 Dec 2020 11:31:30 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from guixiong-gv.qualcomm.com (unknown [180.166.53.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: guixiong)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 15D44C433C6;
+        Thu, 24 Dec 2020 11:31:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 15D44C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=guixiong@codeaurora.org
+From:   Guixiong Wei <guixiong@codeaurora.org>
+To:     a.zummo@towertech.it, alexandre.belloni@bootlin.com
+Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guixiong Wei <guixiong@codeaurora.org>
+Subject: [PATCH] rtc: pm8xxx: Read ALARM_EN and update to alarm enabled status
+Date:   Thu, 24 Dec 2020 19:28:57 +0800
+Message-Id: <1608809337-18852-1-git-send-email-guixiong@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Port F irq's should be statically mapped to EP93XX_GPIO_F_IRQ_BASE.
+ALARM_EN status is retained in PMIC register after device shutdown
+if poweron_alarm is enabled. Read it to make sure the driver has
+consistent value with the register status.
 
-So we need to specify girq->first otherwise:
-
-"If device tree is used, then first_irq will be 0 and
-irqs get mapped dynamically on the fly"
-
-And that's not the thing we want.
-
-Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+Signed-off-by: Guixiong Wei <guixiong@codeaurora.org>
 ---
- drivers/gpio/gpio-ep93xx.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/rtc/rtc-pm8xxx.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/gpio/gpio-ep93xx.c b/drivers/gpio/gpio-ep93xx.c
-index 90afe07213ce..a321a7441294 100644
---- a/drivers/gpio/gpio-ep93xx.c
-+++ b/drivers/gpio/gpio-ep93xx.c
-@@ -402,6 +402,7 @@ static int ep93xx_gpio_add_f_irq_chip(struct gpio_chip *gc,
- 	}
- 	girq->default_type = IRQ_TYPE_NONE;
- 	girq->handler = handle_level_irq;
-+	girq->first = EP93XX_GPIO_F_IRQ_BASE;
+diff --git a/drivers/rtc/rtc-pm8xxx.c b/drivers/rtc/rtc-pm8xxx.c
+index 0d9dd6f..70d1ff5 100644
+--- a/drivers/rtc/rtc-pm8xxx.c
++++ b/drivers/rtc/rtc-pm8xxx.c
+@@ -20,6 +20,7 @@
+ /* RTC_CTRL register bit fields */
+ #define PM8xxx_RTC_ENABLE		BIT(7)
+ #define PM8xxx_RTC_ALARM_CLEAR		BIT(0)
++#define PM8xxx_RTC_ALARM_ENABLE		BIT(7)
  
- 	return 0;
- }
+ #define NUM_8_BIT_RTC_REGS		0x4
+ 
+@@ -265,6 +266,7 @@ static int pm8xxx_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *alarm)
+ static int pm8xxx_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alarm)
+ {
+ 	int rc;
++	unsigned int ctrl_reg;
+ 	u8 value[NUM_8_BIT_RTC_REGS];
+ 	unsigned long secs;
+ 	struct pm8xxx_rtc *rtc_dd = dev_get_drvdata(dev);
+@@ -282,6 +284,13 @@ static int pm8xxx_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alarm)
+ 
+ 	rtc_time64_to_tm(secs, &alarm->time);
+ 
++	rc = regmap_read(rtc_dd->regmap, regs->alarm_ctrl, &ctrl_reg);
++	if (rc) {
++		dev_err(dev, "Read from RTC alarm control register failed\n");
++		return rc;
++	}
++	alarm->enabled = !!(ctrl_reg & PM8xxx_RTC_ALARM_ENABLE);
++
+ 	dev_dbg(dev, "Alarm set for - h:m:s=%ptRt, y-m-d=%ptRdr\n",
+ 		&alarm->time, &alarm->time);
+ 
 -- 
-2.26.2
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
