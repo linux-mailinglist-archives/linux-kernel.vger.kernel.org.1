@@ -2,115 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B21C2E2435
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 05:48:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC0542E2436
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 05:51:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726596AbgLXEr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 23:47:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56882 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725871AbgLXEr1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 23:47:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 185BA22AAA;
-        Thu, 24 Dec 2020 04:46:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608785206;
-        bh=YCM/X6E5BB915TYSMuedoa1msD++ClYAdx1/p+9UNM0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=NTL9dDL7QtGq9XzpF/N+WIYELWpYqI6XJjAsTKN2Mg+Q/WG85XeTNlEmwInurqgxJ
-         A8wrZeLXAepZ2ERttWNbEq4hB26VtSKNQL8k5B1bVOB5j4pGCaNJ6j5nMDTQD43q+W
-         DmgrJE7rA5yaTCMSd6mNOm+drAgO7eJLssOqoP2V7ufJRwNRvMSoaqVYEABnWuNh2/
-         QlFX5Xej2KMaXuzB0QOG4eoD24qTYUOycWkwDSEvlabPF/p7fzbiDuHQIyMOl5ruo3
-         p0srWosvHaPT9iwuUykqhVgUv6RQZjSrgJ0LVdXIhDoPNQRLR1vv5SrarPAGaM3kLm
-         /ta7QI1y5lgjQ==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id D93FF35225D6; Wed, 23 Dec 2020 20:46:45 -0800 (PST)
-Date:   Wed, 23 Dec 2020 20:46:45 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: update.c:undefined reference to `irq_work_queue'
-Message-ID: <20201224044645.GH2657@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <202012221118.j0EcAlVl-lkp@intel.com>
- <20201222050305.GA2657@paulmck-ThinkPad-P72>
- <02b0dfb2-b3bd-be13-515c-515b49a32fe8@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <02b0dfb2-b3bd-be13-515c-515b49a32fe8@infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1726719AbgLXEun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 23:50:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726024AbgLXEun (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 23:50:43 -0500
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3A71C06179C
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 20:50:02 -0800 (PST)
+Received: by mail-pg1-x54a.google.com with SMTP id n16so812148pgk.12
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 20:50:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=Ntto0REEo/mIE2Mt+Mq78tbyDspwuPQ1ayD5dtmBR7g=;
+        b=NJGvN7ALxQMN2zM8MqG58sWguw2zAaFtG8HsCOWqUYLHNtLwLj5Q4hIydcVeMKrHVz
+         0nOy8pQtErV3Ue5K0G04Me7qAyuwAWjbJsafmOYBjLU7bNzCM6gK0yvBzN+gZ5ilh4AP
+         EO0u5j1JWp/q7/tVwR/O6c+rz46houel/LQp+X714H7LYtW487EUKis1rQ0tBYKjoLX+
+         9DmQJX9uPCYbcd7aJPu+yzn/AjWHiUB5G0HDQBs8AbY7lyUvpuFUutDCy+QKC03HPefG
+         7dPV5cmdTunmeauKO82xSPH+qMBDTfOOGNWsuGH+eL/4gWi1vT15/7+mY7vpwbfPgk7+
+         mZKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=Ntto0REEo/mIE2Mt+Mq78tbyDspwuPQ1ayD5dtmBR7g=;
+        b=n3N4PnaMmSN5qdUKM9iJNCIoW+3kWZ5JXrM0HuB/WfrZiadVFldToH3B2bkMo1QQCz
+         NEbjpXr5ceHdfCKS404SnAP9wCx5l7islHHuiA+GuLA0zP3VJJRlB8eTF9zGKa9kESg8
+         0TH5HFsu4fO5BSflHg/ZpBjmnk6TXMmuI5TydYAoeBIJN4wLsZLGX8Z0nh++M/WV5hbP
+         xY3FHaR+MCCVmma3zYYtLaij/Gz2S1T0MyJHnWTBVY5NY+aDu3gZjs3F1Ewo/LcQnjd2
+         xl7abji8sPiskawD2obbRdjcZWHWeDIiiBEbT6tUCYMPrE3WSLuQjv0LMT9IkrsEtvpo
+         frPA==
+X-Gm-Message-State: AOAM532abGAx8MeFqvz192C7wKRuHmMZX0tG4Brks1XHjjAzCrnBj876
+        YXqPUrwt8R2GPKuRccXiv4UUT5AwAKs=
+X-Google-Smtp-Source: ABdhPJw/t/hmdzMjOOcuRIc99sMUz7ICBakutS45TUV+RJgvRnbrXaCpowX2o/ccjMy+RdCs6/hDp3471PY=
+Sender: "satyat via sendgmr" <satyat@satyaprateek.c.googlers.com>
+X-Received: from satyaprateek.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:1092])
+ (user=satyat job=sendgmr) by 2002:a17:90a:1706:: with SMTP id
+ z6mr648286pjd.0.1608785401864; Wed, 23 Dec 2020 20:50:01 -0800 (PST)
+Date:   Thu, 24 Dec 2020 04:49:54 +0000
+Message-Id: <20201224044954.1349459-1-satyat@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
+Subject: [PATCH] fs: Fix freeze_bdev()/thaw_bdev() accounting of bd_fsfreeze_sb
+From:   Satya Tangirala <satyat@google.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Satya Tangirala <satyat@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 12:06:07PM -0800, Randy Dunlap wrote:
-> On 12/21/20 9:03 PM, Paul E. McKenney wrote:
-> > On Tue, Dec 22, 2020 at 11:24:22AM +0800, kernel test robot wrote:
-> > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> > > head:   8653b778e454a7708847aeafe689bce07aeeb94e
-> > > commit: b38f57c1fe64276773b124dffb0a139cc32ab3cb rcu-tasks: Allow rcu_read_unlock_trace() under scheduler locks
-> > > date:   8 months ago
-> > > config: h8300-randconfig-s032-20201220 (attached as .config)
-> > > compiler: h8300-linux-gcc (GCC) 9.3.0
-> > > reproduce:
-> > >          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> > >          chmod +x ~/bin/make.cross
-> > >          # apt-get install sparse
-> > >          # sparse version: v0.6.3-184-g1b896707-dirty
-> > >          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=b38f57c1fe64276773b124dffb0a139cc32ab3cb
-> > >          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-> > >          git fetch --no-tags linus master
-> > >          git checkout b38f57c1fe64276773b124dffb0a139cc32ab3cb
-> > >          # save the attached .config to linux build tree
-> > >          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=h8300
-> > > 
-> > > If you fix the issue, kindly add following tag as appropriate
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > 
-> > > All errors (new ones prefixed by >>):
-> > > 
-> > >     h8300-linux-ld: section .init.text LMA [000000000043a160,0000000000452569] overlaps section .rodata LMA [00000000003ff420,000000000047df2f]
-> > >     h8300-linux-ld: section .data VMA [0000000000400000,000000000043a15f] overlaps section .rodata VMA [00000000003ff420,000000000047df2f]
-> > >     h8300-linux-ld: section __ksymtab VMA [000000000047df30,000000000048611f] overlaps section .bss VMA [000000000045ebd0,000000000056a053]
-> > >     h8300-linux-ld: kernel/rcu/update.o: in function `rcu_read_unlock_trace_special':
-> > > > > update.c:(.text+0x8f9): undefined reference to `irq_work_queue'
-> > 
-> > Does the patch below help?
-> > 
-> > 							Thanx, Paul
-> > 
-> > ------------------------------------------------------------------------
-> > 
-> > commit cb7220ed05190c9a92df95b52a21525a7e08a449
-> > Author: Paul E. McKenney <paulmck@kernel.org>
-> > Date:   Mon Dec 21 21:00:18 2020 -0800
-> > 
-> >      rcu: Make TASKS_TRACE_RCU select IRQ_WORK
-> >      Tasks Trace RCU uses irq_work_queue() to safely awaken its grace-period
-> >      kthread, so this commit therefore causes the TASKS_TRACE_RCU Kconfig
-> >      option select the IRQ_WORK Kconfig option.
-> >      Reported-by: kernel test robot <lkp@intel.com>
-> >      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > 
-> > diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-> > index aa8cc8c9..3128b7c 100644
-> > --- a/kernel/rcu/Kconfig
-> > +++ b/kernel/rcu/Kconfig
-> > @@ -95,6 +95,7 @@ config TASKS_RUDE_RCU
-> >   config TASKS_TRACE_RCU
-> >   	def_bool 0
-> > +	select IRQ_WORK
-> >   	help
-> >   	  This option enables a task-based RCU implementation that uses
-> >   	  explicit rcu_read_lock_trace() read-side markers, and allows
-> > 
-> 
-> WorksForMe. Thanks.
-> 
-> Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+freeze/thaw_bdev() currently use bdev->bd_fsfreeze_count to infer
+whether or not bdev->bd_fsfreeze_sb is valid (it's valid iff
+bd_fsfreeze_count is non-zero). thaw_bdev() doesn't nullify
+bd_fsfreeze_sb.
 
-Thank you, I will apply on my next rebase.
+But this means a freeze_bdev() call followed by a thaw_bdev() call can
+leave bd_fsfreeze_sb with a non-null value, while bd_fsfreeze_count is
+zero. If freeze_bdev() is called again, and this time
+get_active_super() returns NULL (e.g. because the FS is unmounted),
+we'll end up with bd_fsfreeze_count > 0, but bd_fsfreeze_sb is
+*untouched* - it stays the same (now garbage) value. A subsequent
+thaw_bdev() will decide that the bd_fsfreeze_sb value is legitimate
+(since bd_fsfreeze_count > 0), and attempt to use it.
 
-							Thanx, Paul
+Fix this by always setting bd_fsfreeze_sb to NULL when
+bd_fsfreeze_count is successfully decremented to 0 in thaw_sb().
+Alternatively, we could set bd_fsfreeze_sb to whatever
+get_active_super() returns in freeze_bdev() whenever bd_fsfreeze_count
+is successfully incremented to 1 from 0 (which can be achieved cleanly
+by moving the line currently setting bd_fsfreeze_sb to immediately
+after the "sync:" label, but it might be a little too subtle/easily
+overlooked in future).
+
+This fixes the currently panicking xfstests generic/085.
+
+Fixes: 040f04bd2e82 ("fs: simplify freeze_bdev/thaw_bdev")
+Signed-off-by: Satya Tangirala <satyat@google.com>
+---
+ fs/block_dev.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/fs/block_dev.c b/fs/block_dev.c
+index 9e56ee1f2652..12a811a9ae4b 100644
+--- a/fs/block_dev.c
++++ b/fs/block_dev.c
+@@ -606,6 +606,8 @@ int thaw_bdev(struct block_device *bdev)
+ 		error = thaw_super(sb);
+ 	if (error)
+ 		bdev->bd_fsfreeze_count++;
++	else
++		bdev->bd_fsfreeze_sb = NULL;
+ out:
+ 	mutex_unlock(&bdev->bd_fsfreeze_mutex);
+ 	return error;
+-- 
+2.29.2.729.g45daf8777d-goog
+
