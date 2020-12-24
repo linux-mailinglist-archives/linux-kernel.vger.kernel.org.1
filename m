@@ -2,50 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0E7B2E2565
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 09:16:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C07F12E256D
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 09:24:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727207AbgLXIOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 03:14:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54656 "EHLO mail.kernel.org"
+        id S1726583AbgLXIWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 03:22:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726958AbgLXIOV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 03:14:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5DCC229CA;
-        Thu, 24 Dec 2020 08:13:35 +0000 (UTC)
+        id S1725902AbgLXIWc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Dec 2020 03:22:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EF0E229CA;
+        Thu, 24 Dec 2020 08:21:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608797619;
-        bh=jG/HDfzJ8x1rN86dqlQ/8a0VNxCUVr9L4c/b5HGWkqE=;
+        s=k20201202; t=1608798111;
+        bh=4dRh5dQ6U2WKiejoumD6EOTE1qJAxxffrUTkrxN/FVU=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ap1xWWbDv1y8pk6WiDBAaVC1lMxL2o9T/GYgc6IfX+0ZyIDtA0eVcRePzYGu4jt06
-         i27db4k5pCKSxFEuZQTtI+GsgIgpI89kiTm20GcpW32s+SKXg+Yv4hbgjVYyp55PkB
-         hGl5jTcnu/VtZ4rumgpMV9HB5gt9Q+vw/W0mNNaxYqPwbtQc9dV0wVZRMQr2qhKWpX
-         7bu2dkimsNJ2faZYw+ngiooW8FETIGCdW4Qc8CVdW3RahNn+u3jep79Y9cGSMKxjoH
-         ayNZFUiY7NNwXSo3GyY2VRFYEUbiTKcN0T9i/8phSaaj/sRugmjZKFGgzbHOTGDJZ4
-         hJm0e+rRErShg==
-Date:   Thu, 24 Dec 2020 17:13:33 +0900
+        b=a7Lzd/7qVa08eOkQCyJ+B86j+/ysxpUd+ZWAoO31L6Dr6HqCjl6apNaC4KxTsoqXQ
+         VDAN0o3b2N3HkCAEteY69NmCpkTk3SsTsNybW7C2zYH+QLllThhRrNM/urbdIExY9e
+         AQBRc6kTBQBL0MSOK5sdNeIizDbmPkutyUyhyu0s21L38Mc28KR0yORMZNc+fXzegc
+         x63rM3EGX3EOChovXH5VxPIvaVVzdmpiqROd9iVlFALwgDlSmGXUk54Kgy4wYQCZln
+         A6NLKDCiws4kbpEjvSvmEo9PEJ8an+9+vNF0ba2Y89oSHgEXSpMT2WYFfH3QCLqmIV
+         0vtzNiiWqtzlA==
+Date:   Thu, 24 Dec 2020 17:21:47 +0900
 From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Alexandre Truong <alexandre.truong@arm.com>,
-        He Zhe <zhe.he@windriver.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Sumanth Korikkar <sumanthk@linux.ibm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 0/2] perf arm64: Support SDT
-Message-Id: <20201224171333.b3fe418e3c5a1e3a6f46e00a@kernel.org>
-In-Reply-To: <20201223063905.25784-1-leo.yan@linaro.org>
-References: <20201223063905.25784-1-leo.yan@linaro.org>
+To:     Tom Zanussi <zanussi@kernel.org>
+Cc:     rostedt@goodmis.org, axelrasmussen@google.com,
+        dan.carpenter@oracle.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/5] tracing: Rework synthetic event command parsing
+Message-Id: <20201224172147.2952b2d20c9a974922a33f6f@kernel.org>
+In-Reply-To: <48d21108d635e707ef135cac7fa0eaabc1cf5e9a.camel@kernel.org>
+References: <cover.1608586464.git.zanussi@kernel.org>
+        <cc39d3737ffa8b330c3d3754b062709dbc1c50f6.1608586464.git.zanussi@kernel.org>
+        <20201222214259.464311df07a343de821db568@kernel.org>
+        <48d21108d635e707ef135cac7fa0eaabc1cf5e9a.camel@kernel.org>
 X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -54,119 +43,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leo,
+On Wed, 23 Dec 2020 17:17:27 -0600
+Tom Zanussi <zanussi@kernel.org> wrote:
 
-On Wed, 23 Dec 2020 14:39:03 +0800
-Leo Yan <leo.yan@linaro.org> wrote:
+> Hi Masami,
+> 
+> On Tue, 2020-12-22 at 21:42 +0900, Masami Hiramatsu wrote:
+> > Hi Tom,
+> > 
+> > On Mon, 21 Dec 2020 15:44:28 -0600
+> > Tom Zanussi <zanussi@kernel.org> wrote:
+> > 
+> > 
+> > > @@ -656,7 +651,6 @@ static struct synth_field
+> > > *parse_synth_field(int argc, const char **argv,
+> > >  
+> > >  	size = synth_field_size(field->type);
+> > >  	if (size < 0) {
+> > > -		synth_err(SYNTH_ERR_INVALID_TYPE, errpos(field_type));
+> > 
+> > Why did you remove this error message?
+> 
+> It wasn't actually removed - it was just moved into the next patch, so
+> is still there.  I'll move it back here to avoid confusion.
+> 
+> > 
+> > [..]
+> > > @@ -1228,26 +1189,47 @@ static int __create_synth_event(int argc,
+> > > const char *name, const char **argv)
+> > >  		goto out;
+> > >  	}
+> > >  
+> > > -	for (i = 0; i < argc - 1; i++) {
+> > > -		if (strcmp(argv[i], ";") == 0)
+> > > -			continue;
+> > > +	tmp_fields = saved_fields = kstrdup(raw_fields, GFP_KERNEL);
+> > > +	if (!tmp_fields) {
+> > > +		ret = -ENOMEM;
+> > > +		goto out;
+> > > +	}
+> > > +
+> > > +	while ((field_str = strsep(&tmp_fields, ";")) != NULL) {
+> > >  		if (n_fields == SYNTH_FIELDS_MAX) {
+> > >  			synth_err(SYNTH_ERR_TOO_MANY_FIELDS, 0);
+> > >  			ret = -EINVAL;
+> > >  			goto err;
+> > >  		}
+> > >  
+> > > -		field = parse_synth_field(argc - i, &argv[i],
+> > > &consumed);
+> > > +		argv = argv_split(GFP_KERNEL, field_str, &argc);
+> > > +		if (!argv) {
+> > > +			ret = -ENOMEM;
+> > > +			goto err;
+> > > +		}
+> > > +
+> > > +		if (!argc)
+> > > +			continue;
+> > > +
+> > > +		field = parse_synth_field(argc, argv, &consumed);
+> > >  		if (IS_ERR(field)) {
+> > > +			argv_free(argv);
+> > >  			ret = PTR_ERR(field);
+> > >  			goto err;
+> > >  		}
+> > > +
+> > > +		argv_free(argv);
+> > > +
+> > > +		if (consumed < argc) {
+> > > +			ret = -EINVAL;
+> > > +			goto err;
+> > > +		}
+> > 
+> > You can check the consumed < argc in parse_synth_field(), unless
+> > you keep the backward compatibility - I think you can add an
+> > inner loop for it, something like
+> > 
+> > while ((field_str = strsep(&tmp_fields, ";")) != NULL) {
+> >     argv = argv_split(...);
+> >     consumed = 0;
+> >     while (argc > consumed) {
+> >         // increment consumed in parse_synth_field()
+> >         field = parse_synth_field(argc - consumed, argv + consumed,
+> > &consumed);
+> >         if (IS_ERR(field)) {...}
+> > 
+> >         fields[n_fields++] = field;
+> >         if (n_fields == SYNTH_FIELDS_MAX) {...}
+> >      }
+> > 
+> >     argv_free(argv);
+> > }
+> > 
+> > what would you think?
+> 
+> Hmm, not sure this helps - there's only supposed to be one field per
+> field_str and consumed returns either 2 or 3 depending on the field. 
 
-> This patch is to enable SDT on Arm64.
-> 
-> Since Arm64 SDT marker in ELF file is different from other archs,
-> especially for using stack pointer (sp) to retrieve data for local
-> variables, patch 01 is used to fixup the arguments for this special
-> case.  Patch 02 is to add argument support for Arm64 SDT.
+I meant that this can be reused to support older syntax like
+"myevent int foo unsigned long bar" without inserting semicolons. 
 
-Both patches look good to me.
+> consumed is only used to detect whether there were unused words and if
+> so flag an error, rather than loop around to try to get another field.
 
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org> for the seires.
+If you drop the backward compatibility from *this* patch, we can just
+check the "consumed < argc" in parse_synth_field() and remove "consumed"
+from this function.
 
-Thank you!
-
-> 
-> This patch set has been verified on Arm64/x86_64 platforms with a
-> testing program usdt_test [1].  The program run the SDT interfaces
-> one by one for DTRACE_PROBE, DTRACE_PROBE1, ..., DTRACE_PROBE12, so
-> it tries to verify probe with different count of arguments (the
-> arguments count is 0 to 12).
-> 
-> The testing flow and result are shown as below:
-> 
->   # perf buildid-cache --add /root/test/usdt_test
->   # perf probe sdt_usdt:test_probe
->   # perf probe sdt_usdt:test_probe_param1
->   # perf probe sdt_usdt:test_probe_param1x
->   # perf probe sdt_usdt:test_probe_param2
->   # perf probe sdt_usdt:test_probe_param2x
->   # perf probe sdt_usdt:test_probe_param3
->   # perf probe sdt_usdt:test_probe_param3x
->   # perf probe sdt_usdt:test_probe_param4
->   # perf probe sdt_usdt:test_probe_param4x
->   # perf probe sdt_usdt:test_probe_param5
->   # perf probe sdt_usdt:test_probe_param5x
->   # perf probe sdt_usdt:test_probe_param6
->   # perf probe sdt_usdt:test_probe_param6x
->   # perf probe sdt_usdt:test_probe_param7
->   # perf probe sdt_usdt:test_probe_param7x
->   # perf probe sdt_usdt:test_probe_param8
->   # perf probe sdt_usdt:test_probe_param8x
->   # perf probe sdt_usdt:test_probe_param9
->   # perf probe sdt_usdt:test_probe_param9x
->   # perf probe sdt_usdt:test_probe_param10
->   # perf probe sdt_usdt:test_probe_param10x
->   # perf probe sdt_usdt:test_probe_param11
->   # perf probe sdt_usdt:test_probe_param11x
->   # perf probe sdt_usdt:test_probe_param12
->   # perf probe sdt_usdt:test_probe_param12x
-> 
->   # perf record \
->         -e sdt_usdt:test_probe_param1 -e sdt_usdt:test_probe_param1x \
->         -e sdt_usdt:test_probe_param2 -e sdt_usdt:test_probe_param2x \
->         -e sdt_usdt:test_probe_param3 -e sdt_usdt:test_probe_param3x \
->         -e sdt_usdt:test_probe_param4 -e sdt_usdt:test_probe_param4x \
->         -e sdt_usdt:test_probe_param5 -e sdt_usdt:test_probe_param5x \
->         -e sdt_usdt:test_probe_param6 -e sdt_usdt:test_probe_param6x \
->         -e sdt_usdt:test_probe_param7 -e sdt_usdt:test_probe_param7x \
->         -e sdt_usdt:test_probe_param8 -e sdt_usdt:test_probe_param8x \
->         -e sdt_usdt:test_probe_param9 -e sdt_usdt:test_probe_param9x \
->         -e sdt_usdt:test_probe_param10 -e sdt_usdt:test_probe_param10x \
->         -e sdt_usdt:test_probe_param11 -e sdt_usdt:test_probe_param11x \
->         -e sdt_usdt:test_probe_param12 -e sdt_usdt:test_probe_param12x \
->         -e sdt_usdt:test_probe  -aR sleep 5
-> 
->    # ./usdt_test   => Execute in another terminal
-> 
->    # perf script
-> 
->        usdt_test  7999 [003] 80493.418276:          sdt_usdt:test_probe: (aaaab0d80714)
->        usdt_test  7999 [003] 80493.418352:   sdt_usdt:test_probe_param1: (aaaab0d80728) arg1=1
->        usdt_test  7999 [003] 80493.418379:   sdt_usdt:test_probe_param2: (aaaab0d80744) arg1=1 arg2=2
->        usdt_test  7999 [003] 80493.418405:   sdt_usdt:test_probe_param3: (aaaab0d80764) arg1=1 arg2=2 arg3=3
->        usdt_test  7999 [003] 80493.418432:   sdt_usdt:test_probe_param4: (aaaab0d80788) arg1=1 arg2=2 arg3=3 arg4=4
->        usdt_test  7999 [003] 80493.418459:   sdt_usdt:test_probe_param5: (aaaab0d807b0) arg1=1 arg2=2 arg3=3 arg4=4 arg5=5
->        usdt_test  7999 [003] 80493.418487:   sdt_usdt:test_probe_param6: (aaaab0d807dc) arg1=1 arg2=2 arg3=3 arg4=4 arg5=5 arg6=6
->        usdt_test  7999 [003] 80493.418516:   sdt_usdt:test_probe_param7: (aaaab0d8080c) arg1=1 arg2=2 arg3=3 arg4=4 arg5=5 arg6=6 arg7=7
->        usdt_test  7999 [003] 80493.418545:   sdt_usdt:test_probe_param8: (aaaab0d80840) arg1=1 arg2=2 arg3=3 arg4=4 arg5=5 arg6=6 arg7=7 arg8=8
->        usdt_test  7999 [003] 80493.418574:   sdt_usdt:test_probe_param9: (aaaab0d80874) arg1=1 arg2=2 arg3=3 arg4=4 arg5=5 arg6=6 arg7=7 arg8=8 arg9=9
->        usdt_test  7999 [003] 80493.418603:  sdt_usdt:test_probe_param10: (aaaab0d808a8) arg1=1 arg2=2 arg3=3 arg4=4 arg5=5 arg6=6 arg7=7 arg8=8 arg9=9 arg10=10
->        usdt_test  7999 [003] 80493.418632:  sdt_usdt:test_probe_param11: (aaaab0d808dc) arg1=1 arg2=2 arg3=3 arg4=4 arg5=5 arg6=6 arg7=7 arg8=8 arg9=9 arg10=10 arg11=11
->        usdt_test  7999 [003] 80493.418662:  sdt_usdt:test_probe_param12: (aaaab0d80910) arg1=1 arg2=2 arg3=3 arg4=4 arg5=5 arg6=6 arg7=7 arg8=8 arg9=9 arg10=10 arg11=11 arg12=12
->        usdt_test  7999 [003] 80493.418687:  sdt_usdt:test_probe_param1x: (aaaab0d8092c) arg1=1
->        usdt_test  7999 [003] 80493.418713:  sdt_usdt:test_probe_param2x: (aaaab0d80950) arg1=1 arg2=2
->        usdt_test  7999 [003] 80493.418739:  sdt_usdt:test_probe_param3x: (aaaab0d8097c) arg1=1 arg2=2 arg3=3
->        usdt_test  7999 [003] 80493.418766:  sdt_usdt:test_probe_param4x: (aaaab0d809b0) arg1=1 arg2=2 arg3=3 arg4=4
->        usdt_test  7999 [003] 80493.418792:  sdt_usdt:test_probe_param5x: (aaaab0d809ec) arg1=1 arg2=2 arg3=3 arg4=4 arg5=5
->        usdt_test  7999 [003] 80493.418820:  sdt_usdt:test_probe_param6x: (aaaab0d80a30) arg1=1 arg2=2 arg3=3 arg4=4 arg5=5 arg6=6
->        usdt_test  7999 [003] 80493.418847:  sdt_usdt:test_probe_param7x: (aaaab0d80a7c) arg1=1 arg2=2 arg3=3 arg4=4 arg5=5 arg6=6 arg7=7
->        usdt_test  7999 [003] 80493.418875:  sdt_usdt:test_probe_param8x: (aaaab0d80ad0) arg1=1 arg2=2 arg3=3 arg4=4 arg5=5 arg6=6 arg7=7 arg8=8
->        usdt_test  7999 [003] 80493.418904:  sdt_usdt:test_probe_param9x: (aaaab0d80b2c) arg1=1 arg2=2 arg3=3 arg4=4 arg5=5 arg6=6 arg7=7 arg8=8 arg9=9
->        usdt_test  7999 [003] 80493.418933: sdt_usdt:test_probe_param10x: (aaaab0d80b90) arg1=1 arg2=2 arg3=3 arg4=4 arg5=5 arg6=6 arg7=7 arg8=8 arg9=9 arg10=10
->        usdt_test  7999 [003] 80493.418962: sdt_usdt:test_probe_param11x: (aaaab0d80bfc) arg1=1 arg2=2 arg3=3 arg4=4 arg5=5 arg6=6 arg7=7 arg8=8 arg9=9 arg10=10 arg11=11
->        usdt_test  7999 [003] 80493.418991: sdt_usdt:test_probe_param12x: (aaaab0d80cb0) arg1=1 arg2=2 arg3=3 arg4=4 arg5=5 arg6=6 arg7=7 arg8=8 arg9=281474762776336 arg10=281474762776340 arg11=281474762776344 arg12=281474762776348
-> 
-> [1] https://people.linaro.org/~leo.yan/debug/perf/usdt_test.c
-> 
-> 
-> Leo Yan (2):
->   perf probe: Fixup Arm64 SDT arguments
->   perf arm64: Add argument support for SDT
-> 
->  tools/perf/arch/arm64/util/perf_regs.c | 94 ++++++++++++++++++++++++++
->  tools/perf/util/probe-file.c           | 32 ++++++++-
->  2 files changed, 124 insertions(+), 2 deletions(-)
-> 
-> -- 
-> 2.17.1
-> 
+Thank you,
 
 
 -- 
