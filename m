@@ -2,200 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 209972E231B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 01:58:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1DDE2E231E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 02:02:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728218AbgLXA5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 19:57:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727621AbgLXA5j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 19:57:39 -0500
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CDADC06179C
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 16:56:59 -0800 (PST)
-Received: by mail-oi1-x22e.google.com with SMTP id 15so951900oix.8
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 16:56:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jTWiCCpsDpikEglHQLMP42MD6s10JjUIBnzJLj2mBe0=;
-        b=b2Vjgs2PfI6zGh4AK2YyE0lWy5Ui7yQjI8tvdFNN0HMUmCp0OPIkHERN2e2B0UgbSe
-         n+n1RqQfnhZicFpd1K+mN7szWT0V/PdFvWHHMlL1EOpy+flvKZFYjMEN8qmkUCUWqh8R
-         Yycjfo5P3E2z1CpGqyUo3QIzmzFDGGrmFWlnBkjfzu0GpwgV9jPXiEAatAJTnVcwxNbv
-         we7b93+H5DqxPciZK+TcelbfcOde6LtrtzCFsuYz6qCHRg4OK6y+Ag/qaTwSqEkWYc+A
-         DyudtSv/OKKIbtxPTwmakV79QwAozdAZepkBVM29E6xsdEyGz44w1mjee4PNWzivF2q9
-         V64A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jTWiCCpsDpikEglHQLMP42MD6s10JjUIBnzJLj2mBe0=;
-        b=DHSayBFUGyX7QnJwc3pyBdxFd81qRKCASGAuE7uyRFW3m8KcqpcVeOXNGlcBXCa5PA
-         ilPcG0qQkSyVVnADU3+vu/csgOY8uwJKNpevf8SusOu5zEpHnOsHpge2SOHHhGISsq0A
-         zDOVl/iw6RYFVdMdQkIt4eJaUAGl6n/qRqXjD8hTKXmJXk6a2GrEZQUYOIWpRB4PBAmv
-         RCQyBoZ64hQzuoPTQq/HDAmMhlXFi8+E2W3rV4wf9125kBT2+pU2DENbWw336NVqToJ0
-         cCmRyqXzQhdvW+JQjeuQ50aFXwNzFXXQfgoYuehbnq/eTXS5Wekd3URIWQGp8yckNRXL
-         ae+g==
-X-Gm-Message-State: AOAM531gBE1yBBdvtIytXEr/Rvh8tIeb3oDluH3MJ3nuQlurXP//AwC8
-        kcewgvzEG/Sxrm+Le8SdwwsOLg==
-X-Google-Smtp-Source: ABdhPJx8J5u590gqk6tGv8VpDVxYCPlBuEAcEwpczKqxcglx6KQiYvMBRLStEiQpmmWOzCxYGoDbNg==
-X-Received: by 2002:aca:b943:: with SMTP id j64mr1551236oif.71.1608771417930;
-        Wed, 23 Dec 2020 16:56:57 -0800 (PST)
-Received: from [192.168.17.50] (CableLink-189-219-75-211.Hosts.InterCable.net. [189.219.75.211])
-        by smtp.gmail.com with ESMTPSA id t2sm3337122otj.47.2020.12.23.16.56.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Dec 2020 16:56:57 -0800 (PST)
-Subject: Re: [PATCH 5.10 00/40] 5.10.3-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, stable@vger.kernel.org,
-        pavel@denx.de, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, linux@roeck-us.net
-References: <20201223150515.553836647@linuxfoundation.org>
-From:   =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>
-Message-ID: <60e63371-98cb-8cf0-4d23-0e1185902fa4@linaro.org>
-Date:   Wed, 23 Dec 2020 18:56:56 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201223150515.553836647@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1728283AbgLXBBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 20:01:16 -0500
+Received: from ptr.189.cn ([183.61.185.101]:10943 "EHLO 189.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727621AbgLXBBQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 20:01:16 -0500
+HMM_SOURCE_IP: 172.27.8.53:57784.1743986218
+HMM_ATTACHE_NUM: 0000
+HMM_SOURCE_TYPE: SMTP
+Received: from clientip-123.150.8.42 (unknown [172.27.8.53])
+        by 189.cn (HERMES) with SMTP id 59009100785;
+        Thu, 24 Dec 2020 08:58:21 +0800 (CST)
+Received: from  ([123.150.8.42])
+        by SZ-WEBMAIL05 with ESMTP id ba150fcc42f049f7a251a5e26f0c1c00 for greg@kroah.com;
+        Thu Dec 24 08:58:22 2020
+X-Transaction-ID: ba150fcc42f049f7a251a5e26f0c1c00
+X-filter-score: 
+X-Real-From: chensong_2000@189.cn
+X-Receive-IP: 123.150.8.42
+X-MEDUSA-Status: 0
+Sender: chensong_2000@189.cn
+From:   Song Chen <chensong_2000@189.cn>
+To:     greg@kroah.com, linux-kernel@vger.kernel.org
+Cc:     abbotti@mev.co.uk, hsweeten@visionengravers.com,
+        Song Chen <chensong_2000@189.cn>
+Subject: [PATCH] staging: comedi: remove warnings of comedi_lrange
+Date:   Thu, 24 Dec 2020 08:58:18 +0800
+Message-Id: <1608771498-13335-1-git-send-email-chensong_2000@189.cn>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+Checkpatch.pl reports "warning: struct comedi_lrange should
+normally be const" in some places, which are supposed to
+be removed.
 
-On 12/23/20 9:33 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.3 release.
-> There are 40 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 25 Dec 2020 15:05:02 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.3-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Signed-off-by: Song Chen <chensong_2000@189.cn>
+---
+ drivers/staging/comedi/drivers/das16.c   | 4 ++--
+ drivers/staging/comedi/drivers/jr3_pci.c | 4 ++--
+ drivers/staging/comedi/drivers/ni_670x.c | 2 +-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
-Results from Linaro’s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 5.10.3-rc1
-git repo: ['https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git', 'https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc']
-git branch: linux-5.10.y
-git commit: a5ba578b52286e2a855f6b172c851d7afbf68e60
-git describe: v5.10.2-41-ga5ba578b5228
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10.2-41-ga5ba578b5228
-
-No regressions (compared to build v5.10.2)
-
-No fixes (compared to build v5.10.2)
-
-Ran 50032 total tests in the following environments and test suites.
-
-Environments
---------------
-- arc
-- arm
-- arm64
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- parisc
-- powerpc
-- qemu-arm-clang
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-i386-clang
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu-x86_64-kcsan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- riscv
-- s390
-- sh
-- sparc
-- x15
-- x86
-- x86-kasan
-
-Test Suites
------------
-* build
-* fwts
-* install-android-platform-tools-r2600
-* kselftest
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-none
-* kunit
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fs-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* perf
-* rcutorture
-* v4l2-compliance
-
-Happy holidays, greetings!
-
-Daniel Díaz
-daniel.diaz@linaro.org
-
+diff --git a/drivers/staging/comedi/drivers/das16.c b/drivers/staging/comedi/drivers/das16.c
+index 4ac2622..40bfd84 100644
+--- a/drivers/staging/comedi/drivers/das16.c
++++ b/drivers/staging/comedi/drivers/das16.c
+@@ -958,7 +958,7 @@ static const struct comedi_lrange *das16_ai_range(struct comedi_device *dev,
+ 
+ 	/* get any user-defined input range */
+ 	if (pg_type == das16_pg_none && (min || max)) {
+-		struct comedi_lrange *lrange;
++		const struct comedi_lrange *lrange;
+ 		struct comedi_krange *krange;
+ 
+ 		/* allocate single-range range table */
+@@ -992,7 +992,7 @@ static const struct comedi_lrange *das16_ao_range(struct comedi_device *dev,
+ 
+ 	/* get any user-defined output range */
+ 	if (min || max) {
+-		struct comedi_lrange *lrange;
++		const struct comedi_lrange *lrange;
+ 		struct comedi_krange *krange;
+ 
+ 		/* allocate single-range range table */
+diff --git a/drivers/staging/comedi/drivers/jr3_pci.c b/drivers/staging/comedi/drivers/jr3_pci.c
+index 7a02c4f..c35db0b 100644
+--- a/drivers/staging/comedi/drivers/jr3_pci.c
++++ b/drivers/staging/comedi/drivers/jr3_pci.c
+@@ -91,8 +91,8 @@ struct jr3_pci_dev_private {
+ };
+ 
+ union jr3_pci_single_range {
+-	struct comedi_lrange l;
+-	char _reserved[offsetof(struct comedi_lrange, range[1])];
++	const struct comedi_lrange l;
++	char _reserved[offsetof(const struct comedi_lrange, range[1])];
+ };
+ 
+ enum jr3_pci_poll_state {
+diff --git a/drivers/staging/comedi/drivers/ni_670x.c b/drivers/staging/comedi/drivers/ni_670x.c
+index c197e47..66485ec 100644
+--- a/drivers/staging/comedi/drivers/ni_670x.c
++++ b/drivers/staging/comedi/drivers/ni_670x.c
+@@ -200,7 +200,7 @@ static int ni_670x_auto_attach(struct comedi_device *dev,
+ 		const struct comedi_lrange **range_table_list;
+ 
+ 		range_table_list = kmalloc_array(32,
+-						 sizeof(struct comedi_lrange *),
++						 sizeof(const struct comedi_lrange *),
+ 						 GFP_KERNEL);
+ 		if (!range_table_list)
+ 			return -ENOMEM;
 -- 
-Linaro LKFT
-https://lkft.linaro.org
+2.7.4
+
