@@ -2,129 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75C242E24BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 07:17:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 606D52E24BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 07:17:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726400AbgLXGOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 01:14:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725613AbgLXGOv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 01:14:51 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FBFAC061794;
-        Wed, 23 Dec 2020 22:14:11 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id r5so1255217eda.12;
-        Wed, 23 Dec 2020 22:14:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/ZDPXNpnPcne0mL+tmv3yody46NyfX1YtoF37WL5mFA=;
-        b=r77mbbpnt9/awcxAIEn4WoaBfTKTE5MLaPluLt+PO946Mw4q2I1SpZGVXbsPqzhjbI
-         uUvt2oMn4owh7SKuS6GMQJKJ09ufYZR4mDfOwPNP1Qf3P7tTzN/l98AUBcJHP1oZR+pS
-         m0oQG/tUgFqo4MTlvdBuILE3wm8mnCeEvWbbJAqvEFPsB5+1l3lm4mnIrgt9OQYRLM9m
-         rHT16VT6ccOvpAKoNRwrtZAd4QvV8o7bHfBZ2I887AYxpOYzQ6xSSIvez8trl3mDUrsB
-         UujP0DKpH3HWpU0qYeX14jnlToQIOhNOhoqdItSAQYGiWnoD1zihNS1ydFi/Yxr+1ggf
-         jYXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/ZDPXNpnPcne0mL+tmv3yody46NyfX1YtoF37WL5mFA=;
-        b=cC2lxKla7yU+QnnqV7rP2E9/xte2OIXg9pdMXrltIDYkLayYWNpeIh/Azh45ZIw4W0
-         7sx17Jlq48f5tVQHVIKAPJy1LamEps9i0zN7cjkJ7BZP+u50Yv2x/kG4Yefd9IDWcHib
-         HBitSNeDt44WSfUie6bRChrHekPunwQgCCBa6ZI9psy1Xe6S/Qs9aVt0w16AxufADDsN
-         QTItsSslGTr8zKI/DCRCpXRgq26qmmLCeyunP8XcDP/X7NX27Fjp4dW7EHKqOnFZO2Ra
-         8kCf4KmcQ2a8CICbSKZffiklveQBNQ0wNm7UYw47mpD6DEaN7p7uPuJTmlczWvgg5dy6
-         bTsw==
-X-Gm-Message-State: AOAM5313xXNctmSkBMwI7mV3aopi6//oJW39eDZ3dYIOL0mZjFNYaKov
-        dI/Jkvo7KAiipBBh6w95H4QT1LoF5nSR5ckDiGw=
-X-Google-Smtp-Source: ABdhPJyI7VNa9K4yFxAFV4T2cfhIEWKmLqrUcmzSLIgNitILBdvHtDrZJCxjhH4ofkpofnKdrF3j0EgVHTo8WYe1H6Y=
-X-Received: by 2002:a05:6402:45:: with SMTP id f5mr27319654edu.273.1608790448550;
- Wed, 23 Dec 2020 22:14:08 -0800 (PST)
+        id S1726837AbgLXGPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 01:15:22 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48988 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726440AbgLXGPV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Dec 2020 01:15:21 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 076D2AE66;
+        Thu, 24 Dec 2020 06:14:40 +0000 (UTC)
+Subject: Re: [PATCH] bcache: set pdev_set_uuid before scond loop iteration
+To:     Yi Li <yili@winhong.com>
+Cc:     yilikernel@gmail.com, kent.overstreet@gmail.com,
+        linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201224015355.358211-1-yili@winhong.com>
+From:   Coly Li <colyli@suse.de>
+Message-ID: <a39ce88d-6955-6f3c-b064-d51cd8bd71e3@suse.de>
+Date:   Thu, 24 Dec 2020 14:14:33 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <xmqqtusc5djv.fsf@gitster.c.googlers.com>
-In-Reply-To: <xmqqtusc5djv.fsf@gitster.c.googlers.com>
-From:   Christian Couder <christian.couder@gmail.com>
-Date:   Thu, 24 Dec 2020 07:13:57 +0100
-Message-ID: <CAP8UFD3aHEpHZWxzwz=RQr7DNAmJhLeoiOzubRqk1=7gRyG4_g@mail.gmail.com>
-Subject: Re: [ANNOUNCE] Git v2.30.0-rc2
-To:     Junio C Hamano <gitster@pobox.com>
-Cc:     git <git@vger.kernel.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        git-packagers@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201224015355.358211-1-yili@winhong.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Most of the suggestions below are found by GMail.
+On 12/24/20 9:53 AM, Yi Li wrote:
+> There is no need to reassign pdev_set_uuid in the second loop iteration,
+> so move it to the place before second loop.
+> 
+> Signed-off-by: Yi Li <yili@winhong.com>
 
-On Thu, Dec 24, 2020 at 12:08 AM Junio C Hamano <gitster@pobox.com> wrote:
->
-> A release candidate Git v2.30.0-rc2 is now available for testing
-> at the usual places.  It is comprised of 19 non-merge commits since
+Added into my for-next directory. Thanks.
 
-Maybe: s/is comprised of/comprises/
+Coly Li
 
-> v2.30.0-rc1, contributed by 5 people, none of which are new faces.
+> ---
+>  drivers/md/bcache/super.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+> index a4752ac410dc..6aa23a6fb394 100644
+> --- a/drivers/md/bcache/super.c
+> +++ b/drivers/md/bcache/super.c
+> @@ -2644,8 +2644,8 @@ static ssize_t bch_pending_bdevs_cleanup(struct kobject *k,
+>  	}
+>  
+>  	list_for_each_entry_safe(pdev, tpdev, &pending_devs, list) {
+> +		char *pdev_set_uuid = pdev->dc->sb.set_uuid;
+>  		list_for_each_entry_safe(c, tc, &bch_cache_sets, list) {
+> -			char *pdev_set_uuid = pdev->dc->sb.set_uuid;
+>  			char *set_uuid = c->set_uuid;
+>  
+>  			if (!memcmp(pdev_set_uuid, set_uuid, 16)) {
+> 
 
-[..]
-
->  * Various subcommands of "git config" that takes value_regex
-
-s/takes/take/
-
->    learn the "--literal-value" option to take the value_regex option
-
-s/learn/learned/
-
->    as a literal string.
-
-[...]
-
-> * More preliminary tests have been added to document desired outcome
-
-s/outcome/outcomes/
-
->   of various "directory rename" situations.
-
-[...]
-
->  * The code to see if "git stash drop" can safely remove refs/stash
->    has been made more carerful.
-
-s/carerful/careful/
-
->    (merge 4f44c5659b rs/empty-reflog-check-fix later to maint).
-
-[...]
-
->  * Since jgit does not yet work with SHA-256 repositories, mark the
->    tests that uses it not to run unless we are testing with ShA-1
-
-s/uses/use/
-
->    repositories.
->    (merge ea699b4adc sg/t5310-jgit-wants-sha1 later to maint).
-
-[...]
-
->  * "git apply" adjusted the permission bits of working-tree files and
->    directories according core.sharedRepository setting by mistake and
-
-s/according/according to/
-
->    for a long time, which has been corrected.
->    (merge eb3c027e17 mt/do-not-use-scld-in-working-tree later to maint).
-
-[...]
-
->  * "git pack-redandant" when there is only one packfile used to crash,
-
-s/pack-redandant/pack-redundant/
-
->    which has been corrected.
->    (merge 0696232390 jx/pack-redundant-on-single-pack later to maint).
