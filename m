@@ -2,102 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CCE52E268A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 12:57:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF6F52E268D
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 12:58:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727605AbgLXL5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 06:57:22 -0500
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:29717 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726591AbgLXL5V (ORCPT
+        id S1727995AbgLXL56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 06:57:58 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:43436 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726591AbgLXL55 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 06:57:21 -0500
-X-IronPort-AV: E=Sophos;i="5.78,444,1599516000"; 
-   d="scan'208";a="484423914"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 24 Dec 2020 12:56:38 +0100
-Date:   Thu, 24 Dec 2020 12:56:38 +0100 (CET)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Sumera Priyadarsini <sylphrenadin@gmail.com>
-cc:     Gilles.Muller@lip6.fr, michal.lkml@markovi.net,
-        nicolas.palix@imag.fr, linux-kernel@vger.kernel.org,
-        cocci@systeme.lip6.fr
-Subject: Re: [Cocci] [PATCH v3] scripts: coccicheck: Correct usage of make
- coccicheck
-In-Reply-To: <20201124203212.tlvj7dvpmeql6spc@adolin>
-Message-ID: <alpine.DEB.2.22.394.2012241256261.3520@hadrien>
-References: <20201124203212.tlvj7dvpmeql6spc@adolin>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Thu, 24 Dec 2020 06:57:57 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BOBv7h2052020;
+        Thu, 24 Dec 2020 05:57:07 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1608811027;
+        bh=bDPoCuBi3kgmclo0TxNZWprdvDYs5f0BkCsZXnq5/6c=;
+        h=From:To:CC:Subject:Date;
+        b=J8XU076PjjxUnZ2iE0K86PD7L4TKSJGhYvLc/m7g35bS8MN8BFB+Qe2QkPNZ5bgrC
+         bFx8DB1Kjby3pOElKKCEDaSn4aAeqKr5fjARWx3wmaCs+O974jOh03xlop7P3sxLHR
+         icA1CNRqM5ZSQIW+chcQjGEfD1D8emHORRRnShT4=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BOBv6Ri020110
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 24 Dec 2020 05:57:06 -0600
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 24
+ Dec 2020 05:57:06 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 24 Dec 2020 05:57:06 -0600
+Received: from a0393678-ssd.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BOBv0Hq006549;
+        Thu, 24 Dec 2020 05:57:01 -0600
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Tom Joseph <tjoseph@cadence.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+CC:     <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH 0/4] AM64: Add PCIe bindings and driver support
+Date:   Thu, 24 Dec 2020 17:26:54 +0530
+Message-ID: <20201224115658.2795-1-kishon@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+AM64 uses the same PCIe controller as in J7200, however AM642 EVM
+doesn't have a clock generator (unlike J7200 base board). Here
+the clock from the SERDES has to be routed to the PCIE connector.
+This series provides an option for the pci-j721e.c driver to
+drive reference clock output to the connector.
 
+Kishon Vijay Abraham I (4):
+  dt-bindings: PCI: ti,j721e: Add binding to represent refclk to the
+    connector
+  dt-bindings: pci: ti,j721e: Add host mode dt-bindings for TI's AM64
+    SoC
+  dt-bindings: pci: ti,j721e: Add endpoint mode dt-bindings for TI's
+    AM64 SoC
+  PCI: j721e: Add support to provide refclk to PCIe connector
 
-On Wed, 25 Nov 2020, Sumera Priyadarsini wrote:
+ .../bindings/pci/ti,j721e-pci-ep.yaml         | 10 ++++---
+ .../bindings/pci/ti,j721e-pci-host.yaml       | 27 ++++++++++++++-----
+ drivers/pci/controller/cadence/pci-j721e.c    | 17 ++++++++++++
+ 3 files changed, 44 insertions(+), 10 deletions(-)
 
-> The command "make coccicheck C=1 CHECK=scripts/coccicheck" results in the
-> error:
->         ./scripts/coccicheck: line 65: -1: shift count out of range
->
-> This happens because every time the C variable is specified,
-> the shell arguments need to be "shifted" in order to take only
-> the last argument, which is the C file to test. These shell arguments
-> mostly comprise flags that have been set in the Makefile. However,
-> when coccicheck is specified in the make command as a rule, the
-> number of shell arguments is zero, thus passing the invalid value -1
-> to the shift command, resulting in an error.
->
-> Modify coccicheck to print correct usage of make coccicheck so as to
-> avoid the error.
+-- 
+2.17.1
 
-Applied, thanks.
-
-julia
-
->
-> Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
-> ---
-> Changes in v2:
-> - Move test to only display error message
->
-> Changes in v3:
-> - Update example with latest file
-> ---
->  scripts/coccicheck | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
->
-> diff --git a/scripts/coccicheck b/scripts/coccicheck
-> index 209bb0427b43..d1aaa1dc0a69 100755
-> --- a/scripts/coccicheck
-> +++ b/scripts/coccicheck
-> @@ -61,6 +61,18 @@ COCCIINCLUDE=${COCCIINCLUDE// -include/ --include}
->  if [ "$C" = "1" -o "$C" = "2" ]; then
->      ONLINE=1
->
-> +    if [[ $# -le 0 ]]; then
-> +	    echo ''
-> +	    echo 'Specifying both the variable "C" and rule "coccicheck" in the make
-> +command results in a shift count error.'
-> +	    echo ''
-> +	    echo 'Try specifying "scripts/coccicheck" as a value for the CHECK variable instead.'
-> +	    echo ''
-> +	    echo 'Example:	make C=2 CHECK=scripts/coccicheck drivers/net/ethernet/ethoc.o'
-> +	    echo ''
-> +	    exit 1
-> +    fi
-> +
->      # Take only the last argument, which is the C file to test
->      shift $(( $# - 1 ))
->      OPTIONS="$COCCIINCLUDE $1"
-> --
-> 2.25.1
->
-> _______________________________________________
-> Cocci mailing list
-> Cocci@systeme.lip6.fr
-> https://systeme.lip6.fr/mailman/listinfo/cocci
->
