@@ -2,71 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F0A22E2669
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 12:34:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 533802E266E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 12:38:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728247AbgLXLc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 06:32:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726746AbgLXLcY (ORCPT
+        id S1727813AbgLXLg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 06:36:27 -0500
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:64715 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726591AbgLXLg0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 06:32:24 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 514A9C06179C
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 03:31:44 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id f17so1415317pge.6
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 03:31:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zXY42oT/IW9W4tJIWg8idExqObCy32gAmaijR4rjF1k=;
-        b=tasYL7NDdsgjOvHsXfKiTg6RsX2VVEUiR660KdKbDAJ+anhfmdQGDkX9vzI9qE2Wfg
-         D6CeLXOpsNtajFrjEg2Kvpdfgsj7zQdVdmTG+jUtqGd1+Pp7+QThscCz2HLI9mMqJ3o2
-         dnMwIAO73+R0XDxY+xKffYS0w3tw3bIFYQrGL8FZHuQ/ec4dfPahw74XJT0/o6xJnbFI
-         W39UfHSs6lFt0bVZ9+nlZnKy5u4ydbzCc+9Exuht45c/sHxUwOjaF0RNGSku1CalxHou
-         nVCyE/e2FwtffzyOZCkBq3UznvsQhtbMLxlGeksuI4rpaLVzY6atQdcL0/e9UKOAIOoX
-         B8nQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zXY42oT/IW9W4tJIWg8idExqObCy32gAmaijR4rjF1k=;
-        b=igY3pxAhqnx6JgRFqyfrg12Umz1/nRqZLskevm2akuw/QZdCqVW9xBO2IjrceQNq6T
-         qb6Y2I2Vh073SbhUQElmer3+0HJBpg7e+R7vIwmLCi0woVrYqfKsUuVPxldywOfzeibA
-         +6K5uRhmUT4a8rIgW+TfCFcbL1XFS9/b+5qqg5CMKfIrxwpOL9eDNm0LDsAlnPumcYZr
-         Ss26a2q1Fd9louqCgbIVSlSsV/bqgkNt2O5oN3d3vz3d7KxPBJQxYPT8ZxrxpfvYWgeJ
-         W7HI6rsmrlA08TJAxK0mMllXJYHGy4dX/uC54LJHjRttq4YRdhrNrgC331/dD3kp00vw
-         eyPw==
-X-Gm-Message-State: AOAM532flxoN785RpF2M1zTa5zHihivKcEww2nl7aKvtAZAfqXXgmHF0
-        mWyrlvw14xIkgLv72coSgPKQKx5hqtsvgQ==
-X-Google-Smtp-Source: ABdhPJzGhpTmNmlaMaxMdc175O0Y77lm3F7udCcKdqjz0RRMYX0sonEKFyMyDx9SO3y79wBhWWcHgA==
-X-Received: by 2002:a65:494f:: with SMTP id q15mr28291332pgs.367.1608809503493;
-        Thu, 24 Dec 2020 03:31:43 -0800 (PST)
-Received: from google.com (139.60.82.34.bc.googleusercontent.com. [34.82.60.139])
-        by smtp.gmail.com with ESMTPSA id x125sm13594315pgb.35.2020.12.24.03.31.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Dec 2020 03:31:42 -0800 (PST)
-Date:   Thu, 24 Dec 2020 11:31:39 +0000
-From:   Satya Tangirala <satyat@google.com>
-To:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>, Chao Yu <chao@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH v2 2/3] fscrypt: Add metadata encryption support
-Message-ID: <X+R8G5/Htwau2b34@google.com>
-References: <20201217150435.1505269-1-satyat@google.com>
- <20201217150435.1505269-3-satyat@google.com>
+        Thu, 24 Dec 2020 06:36:26 -0500
+X-UUID: d2f4bc1ac7aa4538af11bd7268bde150-20201224
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=SB6oEobDBkSXNK3qQS8llstfz4w4FiszNJyh08p/o70=;
+        b=b4ubeLixjdrOVZuT5ZP0vIQ+pKXyOF/DCoIMil/U8zWo0KD9xDHoaI69tcmsot1NWH6xYsOP5U1e5y6VBnR8wluf0t9VZeIAuDYdiKggZjoJDwWczYan4YWx2jCs+HDYjGm3xPHRANmFZG39+MynBrQiLkLAoPHlandlRIH57tY=;
+X-UUID: d2f4bc1ac7aa4538af11bd7268bde150-20201224
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 458351113; Thu, 24 Dec 2020 19:35:14 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
+ (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 24 Dec
+ 2020 19:35:12 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 24 Dec 2020 19:35:12 +0800
+Message-ID: <1608809713.26323.262.camel@mhfsdcap03>
+Subject: Re: [PATCH v5 06/27] dt-bindings: mediatek: Add binding for mt8192
+ IOMMU
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Tomasz Figa <tfiga@chromium.org>
+CC:     Joerg Roedel <joro@8bytes.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>, <youlin.pei@mediatek.com>,
+        <devicetree@vger.kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        <srv_heupstream@mediatek.com>, <chao.hao@mediatek.com>,
+        <linux-kernel@vger.kernel.org>, Evan Green <evgreen@chromium.org>,
+        Tomasz Figa <tfiga@google.com>,
+        <iommu@lists.linux-foundation.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>, <anan.sun@mediatek.com>,
+        <linux-arm-kernel@lists.infradead.org>
+Date:   Thu, 24 Dec 2020 19:35:13 +0800
+In-Reply-To: <X+L9XpkoII7tw/tX@chromium.org>
+References: <20201209080102.26626-1-yong.wu@mediatek.com>
+         <20201209080102.26626-7-yong.wu@mediatek.com>
+         <X+L9XpkoII7tw/tX@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201217150435.1505269-3-satyat@google.com>
+X-TM-SNTS-SMTP: 43E145A43742A33FB0F432294A8D8B05C5B400A4B9E3095EC85B6369A76296B42000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I realized I didn't update fscrypt_mergeable_bio() to take metadata
-encryption into account, so bios will be more fragmented than required.
-I'll fix it in v3.
+T24gV2VkLCAyMDIwLTEyLTIzIGF0IDE3OjE4ICswOTAwLCBUb21hc3ogRmlnYSB3cm90ZToNCj4g
+T24gV2VkLCBEZWMgMDksIDIwMjAgYXQgMDQ6MDA6NDFQTSArMDgwMCwgWW9uZyBXdSB3cm90ZToN
+Cj4gPiBUaGlzIHBhdGNoIGFkZHMgZGVjcmlwdGlvbnMgZm9yIG10ODE5MiBJT01NVSBhbmQgU01J
+Lg0KPiA+IA0KPiA+IG10ODE5MiBhbHNvIGlzIE1USyBJT01NVSBnZW4yIHdoaWNoIHVzZXMgQVJN
+IFNob3J0LURlc2NyaXB0b3IgdHJhbnNsYXRpb24NCj4gPiB0YWJsZSBmb3JtYXQuIFRoZSBNNFUt
+U01JIEhXIGRpYWdyYW0gaXMgYXMgYmVsb3c6DQo+ID4gDQo+ID4gICAgICAgICAgICAgICAgICAg
+ICAgICAgICBFTUkNCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQo+ID4gICAgICAg
+ICAgICAgICAgICAgICAgICAgICBNNFUNCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICB8
+DQo+ID4gICAgICAgICAgICAgICAgICAgICAgIC0tLS0tLS0tLS0tLQ0KPiA+ICAgICAgICAgICAg
+ICAgICAgICAgICAgU01JIENvbW1vbg0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAtLS0tLS0t
+LS0tLS0NCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQo+ID4gICArLS0tLS0tLSst
+LS0tLS0rLS0tLS0tKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0rLS0tLS0tLSsNCj4gPiAgIHwgICAg
+ICAgfCAgICAgIHwgICAgICB8ICAgICAgIC4uLi4uLiAgICAgICAgIHwgICAgICAgfA0KPiA+ICAg
+fCAgICAgICB8ICAgICAgfCAgICAgIHwgICAgICAgICAgICAgICAgICAgICAgfCAgICAgICB8DQo+
+ID4gbGFyYjAgICBsYXJiMSAgbGFyYjIgIGxhcmI0ICAgICAuLi4uLi4gICAgICBsYXJiMTkgICBs
+YXJiMjANCj4gPiBkaXNwMCAgIGRpc3AxICAgbWRwICAgIHZkZWMgICAgICAgICAgICAgICAgICAg
+SVBFICAgICAgSVBFDQo+ID4gDQo+ID4gQWxsIHRoZSBjb25uZWN0aW9ucyBhcmUgSFcgZml4ZWQs
+IFNXIGNhbiBOT1QgYWRqdXN0IGl0Lg0KPiA+IA0KPiA+IG10ODE5MiBNNFUgc3VwcG9ydCAwfjE2
+R0IgaW92YSByYW5nZS4gd2UgcHJlYXNzaWduIGRpZmZlcmVudCBlbmdpbmVzDQo+ID4gaW50byBk
+aWZmZXJlbnQgaW92YSByYW5nZXM6DQo+ID4gDQo+ID4gZG9tYWluLWlkICBtb2R1bGUgICAgIGlv
+dmEtcmFuZ2UgICAgICAgICAgICAgICAgICBsYXJicw0KPiA+ICAgIDAgICAgICAgZGlzcCAgICAg
+ICAgMCB+IDRHICAgICAgICAgICAgICAgICAgICAgIGxhcmIwLzENCj4gPiAgICAxICAgICAgIHZj
+b2RlYyAgICAgIDRHIH4gOEcgICAgICAgICAgICAgICAgICAgICBsYXJiNC81LzcNCj4gPiAgICAy
+ICAgICAgIGNhbS9tZHAgICAgIDhHIH4gMTJHICAgICAgICAgICAgIGxhcmIyLzkvMTEvMTMvMTQv
+MTYvMTcvMTgvMTkvMjANCj4gDQo+IFdoeSBkbyB3ZSBwcmVhc3NpZ24gdGhlc2UgYWRkcmVzc2Vz
+IGluIERUPyBTaG91bGRuJ3QgaXQgYmUgYSB1c2VyJ3Mgb3INCj4gaW50ZWdyYXRvcidzIGRlY2lz
+aW9uIHRvIHNwbGl0IHRoZSAxNiBHQiBhZGRyZXNzIHJhbmdlIGludG8gc3ViLXJhbmdlcw0KPiBh
+bmQgZGVmaW5lIHdoaWNoIGxhcmJzIHRob3NlIHN1Yi1yYW5nZXMgYXJlIHNoYXJlZCB3aXRoPw0K
+DQpUaGUgcHJvYmxlbSBpcyB0aGF0IHdlIGNhbid0IHNwbGl0IHRoZSAxNkdCIHJhbmdlIHdpdGgg
+dGhlIGxhcmIgYXMgdW5pdC4NClRoZSBleGFtcGxlIGlzIHRoZSBiZWxvdyBjY3UwKGxhcmIxMyBw
+b3J0OS8xMCkgaXMgYSBpbmRlcGVuZGVudA0KcmFuZ2UoZG9tYWluKSwgdGhlIG90aGVycyBwb3J0
+cyBpbiBsYXJiMTMgaXMgaW4gYW5vdGhlciBkb21haW4uDQoNCmRpc3AvdmNvZGVjL2NhbS9tZHAg
+ZG9uJ3QgaGF2ZSBzcGVjaWFsIGlvdmEgcmVxdWlyZW1lbnQsIHRoZXkgY291bGQNCmFjY2VzcyBh
+bnkgcmFuZ2UuIHZjb2RlYyBhbHNvIGNhbiBsb2NhdGUgOEd+MTJHLiBpdCBkb24ndCBjYXJlIGFi
+b3V0DQp3aGVyZSBpdHMgaW92YSBsb2NhdGUuIGhlcmUgSSBwcmVhc3NpZ24gbGlrZSB0aGlzIGZv
+bGxvd2luZyB3aXRoIG91cg0KaW50ZXJuYWwgcHJvamVjdCBzZXR0aW5nLg0KDQpXaHkgc2V0IHRo
+aXMgaW4gRFQ/LCB0aGlzIGlzIG9ubHkgZm9yIHNpbXBsaWZ5aW5nIHRoZSBjb2RlLiBBc3N1bWUg
+d2UNCnB1dCBpdCBpbiB0aGUgcGxhdGZvcm0gZGF0YS4gV2UgaGF2ZSB1cCB0byAzMiBsYXJicywg
+ZWFjaCBsYXJiIGhhcyB1cCB0bw0KMzIgcG9ydHMsIGVhY2ggcG9ydCBtYXkgYmUgaW4gZGlmZmVy
+ZW50IGlvbW11IGRvbWFpbnMuIHdlIHNob3VsZCBoYXZlIGENCmJpZyBhcnJheSBmb3IgdGhpcy4u
+aG93ZXZlciB3ZSBvbmx5IHVzZSBhIG1hY3JvIHRvIGdldCB0aGUgZG9tYWluIGluIHRoZQ0KRFQg
+bWV0aG9kLg0KDQpXaGVuIHJlcGx5aW5nIHRoaXMgbWFpbCwgSSBoYXBwZW4gdG8gc2VlIHRoZXJl
+IGlzIGEgImRldi0+ZGV2X3JhbmdlX21hcCINCndoaWNoIGhhcyAiZG1hLXJhbmdlIiBpbmZvcm1h
+dGlvbiwgSSB0aGluayBJIGNvdWxkIHVzZSB0aGlzIHZhbHVlIHRvIGdldA0Kd2hpY2ggZG9tYWlu
+IHRoZSBkZXZpY2UgYmVsb25nIHRvLiB0aGVuIG5vIG5lZWQgcHV0IGRvbWlkIGluIERULiBJIHdp
+bGwNCnRlc3QgdGhpcy4NCg0KVGhhbmtzLg0KPiANCj4gQmVzdCByZWdhcmRzLA0KPiBUb21hc3oN
+Cj4gDQo+ID4gICAgMyAgICAgICBDQ1UwICAgIDB4NDAwMF8wMDAwIH4gMHg0M2ZmX2ZmZmYgICAg
+IGxhcmIxMzogcG9ydCA5LzEwDQo+ID4gICAgNCAgICAgICBDQ1UxICAgIDB4NDQwMF8wMDAwIH4g
+MHg0N2ZmX2ZmZmYgICAgIGxhcmIxNDogcG9ydCA0LzUNCj4gPiANCj4gPiBUaGUgaW92YSByYW5n
+ZSBmb3IgQ0NVMC8xKGNhbWVyYSBjb250cm9sIHVuaXQpIGlzIEhXIHJlcXVpcmVtZW50Lg0KPiA+
+IA0KPiA+IFNpZ25lZC1vZmYtYnk6IFlvbmcgV3UgPHlvbmcud3VAbWVkaWF0ZWsuY29tPg0KPiA+
+IFJldmlld2VkLWJ5OiBSb2IgSGVycmluZyA8cm9iaEBrZXJuZWwub3JnPg0KPiA+IC0tLQ0KPiA+
+ICAuLi4vYmluZGluZ3MvaW9tbXUvbWVkaWF0ZWssaW9tbXUueWFtbCAgICAgICAgfCAgMTggKy0N
+Cj4gPiAgaW5jbHVkZS9kdC1iaW5kaW5ncy9tZW1vcnkvbXQ4MTkyLWxhcmItcG9ydC5oIHwgMjQw
+ICsrKysrKysrKysrKysrKysrKw0KPiA+ICAyIGZpbGVzIGNoYW5nZWQsIDI1NyBpbnNlcnRpb25z
+KCspLCAxIGRlbGV0aW9uKC0pDQo+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBpbmNsdWRlL2R0LWJp
+bmRpbmdzL21lbW9yeS9tdDgxOTItbGFyYi1wb3J0LmgNCj4gPiANCltzbmlwXQ0K
+
