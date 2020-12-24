@@ -2,54 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93DE82E2946
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 00:55:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A81B92E2943
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 00:38:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729037AbgLXXvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 18:51:53 -0500
-Received: from mail.heg.gob.ec ([186.47.84.20]:60866 "EHLO mail.heg.gob.ec"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728930AbgLXXvx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 18:51:53 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.heg.gob.ec (Postfix) with ESMTP id E327412CADDE;
-        Thu, 24 Dec 2020 16:30:16 -0500 (-05)
-Received: from mail.heg.gob.ec ([127.0.0.1])
-        by localhost (mail.heg.gob.ec [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id Zzs_M7yE4h6q; Thu, 24 Dec 2020 16:30:16 -0500 (-05)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.heg.gob.ec (Postfix) with ESMTP id 0CBDD12D773E;
-        Thu, 24 Dec 2020 16:29:59 -0500 (-05)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.heg.gob.ec 0CBDD12D773E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=heg.gob.ec;
-        s=EDABE35A-17BA-11EB-91C0-AF159E800BC9; t=1608845400;
-        bh=wXkMvZ+1k3vYTg2yc9PpBHMT3+HE9x+vEUWkgb0MO5Y=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=RVZWdnfhLPZPmNtJjClcJ4qzEHzVPJfgQivd5NScz0WD6GhD5jisI56XP9JpSY55z
-         9Gb6r1iOFIuNDsZUwYqIY0Eao753+CbOOeieVJooKKc4JIr9Kyeuj5l0WZZ05zcHOF
-         3F72xyKmaTRN1SMj/6SdY0CY6cfHWUEAw4o0WrNpTlsWzq+v3Em8LyyiQ6/bDBgjfh
-         GSY2eKhLfKqLg9i65epFwlw+XiyvNSwRWluMbZlwv7kjLi1omgZ5mbCHaRm6Y9RUbz
-         1IaLxtTZ2op3LL1RyX05i7Ee8WywOLUGCDlZtynUvWPkT3aYWsG708isrmlvODlRpq
-         eya2AkE3jPn+A==
-X-Virus-Scanned: amavisd-new at heg.gob.ec
-Received: from mail.heg.gob.ec ([127.0.0.1])
-        by localhost (mail.heg.gob.ec [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id nbOQ_it89Y16; Thu, 24 Dec 2020 16:29:59 -0500 (-05)
-Received: from [172.20.10.3] (unknown [129.205.124.181])
-        by mail.heg.gob.ec (Postfix) with ESMTPSA id BC3D112D770F;
-        Thu, 24 Dec 2020 16:29:28 -0500 (-05)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1729057AbgLXXfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 18:35:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728989AbgLXXfy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Dec 2020 18:35:54 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 894E7C061573;
+        Thu, 24 Dec 2020 15:35:14 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1ksa8R-003vJg-Cu; Thu, 24 Dec 2020 23:35:07 +0000
+Date:   Thu, 24 Dec 2020 23:35:07 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: [git pull] vfs.git misc stuff
+Message-ID: <20201224233507.GZ3579531@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Spende
-To:     "Mr. Landolt" <jomaira.bermudez@heg.gob.ec>
-From:   "Mr. Landolt" <jomaira.bermudez@heg.gob.ec>
-Date:   Thu, 24 Dec 2020 13:28:58 -0800
-Reply-To: financeoffice017@gmail.com
-Message-Id: <20201224212928.BC3D112D770F@mail.heg.gob.ec>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-850.000,00 Euro wurden Ihnen gespendet
+	Assorted patches from previous cycle(s)...
+
+The following changes since commit b65054597872ce3aefbc6a666385eabdf9e288da:
+
+  Linux 5.10-rc6 (2020-11-29 15:50:50 -0800)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git work.misc
+
+for you to fetch changes up to 2e2cbaf920d14de9a96180ddefd6861bcc46f07d:
+
+  fix hostfs_open() use of ->f_path.dentry (2020-12-21 21:42:29 -0500)
+
+----------------------------------------------------------------
+Al Viro (2):
+      Make sure that make_create_in_sticky() never sees uninitialized value of dir_mode
+      fix hostfs_open() use of ->f_path.dentry
+
+Eric Biggers (1):
+      fs/namespace.c: WARN if mnt_count has become negative
+
+Hao Li (2):
+      fs: Handle I_DONTCACHE in iput_final() instead of generic_drop_inode()
+      fs: Kill DCACHE_DONTCACHE dentry even if DCACHE_REFERENCED is set
+
+ fs/dcache.c             | 9 ++++++++-
+ fs/hostfs/hostfs_kern.c | 2 +-
+ fs/inode.c              | 4 +++-
+ fs/namei.c              | 4 +++-
+ fs/namespace.c          | 9 ++++++---
+ fs/pnode.h              | 2 +-
+ include/linux/fs.h      | 3 +--
+ 7 files changed, 23 insertions(+), 10 deletions(-)
