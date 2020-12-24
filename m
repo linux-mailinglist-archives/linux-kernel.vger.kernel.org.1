@@ -2,138 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78D972E23C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 03:43:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F58A2E23C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 03:46:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728917AbgLXCne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 21:43:34 -0500
-Received: from relay1.mymailcheap.com ([144.217.248.102]:60795 "EHLO
-        relay1.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728783AbgLXCne (ORCPT
+        id S1728965AbgLXCpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 21:45:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728334AbgLXCpL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 21:43:34 -0500
-Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
-        by relay1.mymailcheap.com (Postfix) with ESMTPS id C98803F202;
-        Thu, 24 Dec 2020 02:42:01 +0000 (UTC)
-Received: from localhost (localhost [127.0.0.1])
-        by filter2.mymailcheap.com (Postfix) with ESMTP id 19CE32A510;
-        Thu, 24 Dec 2020 03:42:01 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1608777721;
-        bh=xSmYZX90IiqaVb/YrLKw7Zd6GtMUdDIgncu6PF73Ff0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QkjNr46K253DjV0kh5BYS8tQ6nE/VzV8RvGE2XhDxHKQplOgLTXLg4PyS39kd1oim
-         sT399Ozgey3YpqPd9GNKpxJFWJoxZgEp7I8EORWtMKtVa+0tj+ATXm4kBBGItbohKp
-         /x4MjSgj7QUdxnNaJk2ZCG0wR7L6SKELuMWXY3X0=
-X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
-Received: from filter2.mymailcheap.com ([127.0.0.1])
-        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 90_s9ByOmeDK; Thu, 24 Dec 2020 03:41:59 +0100 (CET)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter2.mymailcheap.com (Postfix) with ESMTPS;
-        Thu, 24 Dec 2020 03:41:59 +0100 (CET)
-Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id 9042C422D4;
-        Thu, 24 Dec 2020 02:41:59 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="HE8qwedi";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from ice-e5v2.lan (unknown [59.41.162.103])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id E25A5422D4;
-        Thu, 24 Dec 2020 02:41:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
-        t=1608777710; bh=xSmYZX90IiqaVb/YrLKw7Zd6GtMUdDIgncu6PF73Ff0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HE8qwedi7WNTgN/1QpvOmnK38SRblC2/U1Dmquez6NAypceBt6k0bqNCchecA/Gu1
-         R2fmQXptk+1gPsc9TnY/SrWE5LR13qxoH8rLxqtliAVLorfl0fnvZJZOcrw+kVMaUh
-         T8Yxg1pm3fw84PkNHbpMFxp0W31fKW76CFRCIl+w=
-From:   Icenowy Zheng <icenowy@aosc.io>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
-        Icenowy Zheng <icenowy@aosc.io>
-Subject: [PATCH v2 3/3] dt-bindings: arm: sunxi: document orig PineTab DT as sample
-Date:   Thu, 24 Dec 2020 10:41:38 +0800
-Message-Id: <20201224024138.19422-1-icenowy@aosc.io>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201224024001.19248-1-icenowy@aosc.io>
-References: <20201224024001.19248-1-icenowy@aosc.io>
+        Wed, 23 Dec 2020 21:45:11 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FEF4C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 18:44:31 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id hk16so425124pjb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 18:44:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Jj7WfKowDTY95GUHl5uINaRFHYXKJEL5zQtSBC0Z0fg=;
+        b=PFOoA5HWcjgLHoueyb30M9jB+OwHlsdpyon9+H7R8rJlU9xnRZrtahbjlN7Z6celqG
+         ls725GrKSSkcBCWzFLVZ4I5wvU83LKlGCVmuPLQXc/vQzPqvsZquJzPHdqypTNfmtW8I
+         lTjGY9styytdKavQAkRs6LC95X3cWV6eAMJkvfRzVRcGTx+li5vT+AkXUoKMb4oS3a0Z
+         peqQhs/oFkyFJpPRka1GfePlkzgfT5PsBzOVHwijmad4uWufXHs9Qeb7ZqhH19yELs3Z
+         dfr0GxpxE0CGwEsbxGmLF8RWsO+fHR9P9P530nQNyOGClUiHuXgRI2ioXkDx9DQeIVhm
+         +aYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Jj7WfKowDTY95GUHl5uINaRFHYXKJEL5zQtSBC0Z0fg=;
+        b=i1W5TUWDAs9KhE1DCUmyKbxGIbSUeCK+wKPaZIIdL2DI64JuZeNS0noSLT6lFgXqkM
+         9z1q3WwKDEzaxTDnsR4s+m/sn71f2PdAjjRtcS4dQvNanJdoaunlquNIQRHEQTnxNkZ1
+         x830EXSDrPNpY2wI2OAnz21YZI3mFVR1oBCxynE6LsLYty2pf1vYOfUc3MJgbruHve/5
+         ao9iSyKoEQs6X0EOLC3TWBw8VJw1dW/sNdOH8jyuAKVGeCSQGNTozslYBkUgEktuXTIZ
+         utO1W+go0vXGV7W9eN0qrS6hAXyRX25ZYXrXIUlvhAlFLM4mSgQQpwvWw5NlKnWXSQ2m
+         OX6w==
+X-Gm-Message-State: AOAM531/vca5aXhVIGvV1IURqY53Z0qISdLDiLyFEPQi9/+2KLg9eG6f
+        E1R1DOxS9CkFMvtzxNPqxmYblKV7vaJn/MPU8xcJ1Q==
+X-Google-Smtp-Source: ABdhPJwEPvR5VVknSKpSOtEVtKXJ+pYmXsvOtLreyqe7Du7/wgw7c5qRAHb2D8O8tDKNVEeAOx4jfMfNgTEhRZgAcYM=
+X-Received: by 2002:a17:90a:5405:: with SMTP id z5mr2401755pjh.13.1608777870665;
+ Wed, 23 Dec 2020 18:44:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [6.40 / 20.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
-         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.162.103:received];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         R_MISSING_CHARSET(2.50)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[dt];
-         MIME_GOOD(-0.10)[text/plain];
-         BROKEN_CONTENT_TYPE(1.50)[];
-         R_SPF_SOFTFAIL(0.00)[~all:c];
-         DMARC_NA(0.00)[aosc.io];
-         ML_SERVERS(-3.10)[213.133.102.83];
-         DKIM_TRACE(0.00)[aosc.io:+];
-         RCPT_COUNT_SEVEN(0.00)[9];
-         MID_CONTAINS_FROM(1.00)[];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
-         RCVD_COUNT_TWO(0.00)[2];
-         SUSPICIOUS_RECIPS(1.50)[];
-         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
-X-Rspamd-Queue-Id: 9042C422D4
-X-Rspamd-Server: mail20.mymailcheap.com
+References: <20201217034356.4708-1-songmuchun@bytedance.com>
+ <20201217034356.4708-8-songmuchun@bytedance.com> <CALvZod4wT1oHir1yo1TYxU+1oa+RaZvCkuRJcLN5f80zGKoFhw@mail.gmail.com>
+In-Reply-To: <CALvZod4wT1oHir1yo1TYxU+1oa+RaZvCkuRJcLN5f80zGKoFhw@mail.gmail.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 24 Dec 2020 10:43:53 +0800
+Message-ID: <CAMZfGtXE7jcGKugDKXb7k9Ly0vmoba22sp=QpNeCR-sNMv=wQg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v5 7/7] mm: memcontrol: make the slab
+ calculation consistent
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Hugh Dickins <hughd@google.com>, Roman Gushchin <guro@fb.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Feng Tang <feng.tang@intel.com>, Neil Brown <neilb@suse.de>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As the original PineTab DT (which uses sun50i-a64-pinetab name) is only
-for development samples, document this.
+On Thu, Dec 24, 2020 at 5:21 AM Shakeel Butt <shakeelb@google.com> wrote:
+>
+> On Wed, Dec 16, 2020 at 7:46 PM Muchun Song <songmuchun@bytedance.com> wrote:
+> >
+> > Although the ratio of the slab is one, we also should read the ratio
+> > from the related memory_stats instead of hard-coding. And the local
+> > variable of size is already the value of slab_unreclaimable. So we
+> > do not need to read again.
+> >
+> > To do this we need some code like below:
+> >
+> > if (unlikely(memory_stats[i].idx == NR_SLAB_UNRECLAIMABLE_B)) {
+> > -       size = memcg_page_state(memcg, NR_SLAB_RECLAIMABLE_B) +
+> > -              memcg_page_state(memcg, NR_SLAB_UNRECLAIMABLE_B);
+> > +       size += memcg_page_state(memcg, memory_stats[i - 1].idx) *
+> > +               memory_stats[i - 1].ratio;
 
-Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
----
- Documentation/devicetree/bindings/arm/sunxi.yaml     | 2 +-
- arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab.dts | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Hi Shakeel,
 
-diff --git a/Documentation/devicetree/bindings/arm/sunxi.yaml b/Documentation/devicetree/bindings/arm/sunxi.yaml
-index 8c62a1e2a498..7eec85be7ab9 100644
---- a/Documentation/devicetree/bindings/arm/sunxi.yaml
-+++ b/Documentation/devicetree/bindings/arm/sunxi.yaml
-@@ -695,7 +695,7 @@ properties:
-           - const: pine64,pinephone-1.2
-           - const: allwinner,sun50i-a64
- 
--      - description: Pine64 PineTab
-+      - description: Pine64 PineTab, Development Sample
-         items:
-           - const: pine64,pinetab
-           - const: allwinner,sun50i-a64
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab.dts
-index 0494bfaf2ffa..422a8507f674 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab.dts
-@@ -14,7 +14,7 @@
- #include <dt-bindings/pwm/pwm.h>
- 
- / {
--	model = "PineTab";
-+	model = "PineTab, Development Sample";
- 	compatible = "pine64,pinetab", "allwinner,sun50i-a64";
- 
- 	aliases {
+Here is the [i - 1].
+
+> >
+> > It requires a series of BUG_ONs or comments to ensure these two
+> > items are actually adjacent and in the right order. So it would
+> > probably be easier to implement this using a wrapper that has a
+> > big switch() for unit conversion.
+> >
+> > This would fix the ratio inconsistency and get rid of the order
+> > guarantee.
+> >
+>
+> The commit message is really confusing. It is explaining a situation
+> which it did not do. I don't see any benefit of mentioning BUG_ONs or
+> [i-1]s in the message. The patch makes sure that we use the right
+> ratio for slab. Can you rewrite the commit message and motivate in
+> just that regard?
+
+Yeah, I need rewrite the commit message to make it more clear.
+However, here is a discussion about this. See
+
+    https://lore.kernel.org/patchwork/patch/1348611/
+
+Thanks.
+
+>
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > ---
+> >  mm/memcontrol.c | 105 +++++++++++++++++++++++++++++++++++---------------------
+> >  1 file changed, 66 insertions(+), 39 deletions(-)
+> >
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index a40797a27f87..eec44918d373 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -1511,49 +1511,71 @@ static bool mem_cgroup_wait_acct_move(struct mem_cgroup *memcg)
+> >
+> >  struct memory_stat {
+> >         const char *name;
+> > -       unsigned int ratio;
+> >         unsigned int idx;
+> >  };
+> >
+> >  static const struct memory_stat memory_stats[] = {
+> > -       { "anon", PAGE_SIZE, NR_ANON_MAPPED },
+> > -       { "file", PAGE_SIZE, NR_FILE_PAGES },
+> > -       { "kernel_stack", 1024, NR_KERNEL_STACK_KB },
+> > -       { "pagetables", PAGE_SIZE, NR_PAGETABLE },
+> > -       { "percpu", 1, MEMCG_PERCPU_B },
+> > -       { "sock", PAGE_SIZE, MEMCG_SOCK },
+> > -       { "shmem", PAGE_SIZE, NR_SHMEM },
+> > -       { "file_mapped", PAGE_SIZE, NR_FILE_MAPPED },
+> > -       { "file_dirty", PAGE_SIZE, NR_FILE_DIRTY },
+> > -       { "file_writeback", PAGE_SIZE, NR_WRITEBACK },
+> > +       { "anon",                       NR_ANON_MAPPED                  },
+> > +       { "file",                       NR_FILE_PAGES                   },
+> > +       { "kernel_stack",               NR_KERNEL_STACK_KB              },
+> > +       { "pagetables",                 NR_PAGETABLE                    },
+> > +       { "percpu",                     MEMCG_PERCPU_B                  },
+> > +       { "sock",                       MEMCG_SOCK                      },
+> > +       { "shmem",                      NR_SHMEM                        },
+> > +       { "file_mapped",                NR_FILE_MAPPED                  },
+> > +       { "file_dirty",                 NR_FILE_DIRTY                   },
+> > +       { "file_writeback",             NR_WRITEBACK                    },
+> >  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> > -       { "anon_thp", PAGE_SIZE, NR_ANON_THPS },
+> > -       { "file_thp", PAGE_SIZE, NR_FILE_THPS },
+> > -       { "shmem_thp", PAGE_SIZE, NR_SHMEM_THPS },
+> > +       { "anon_thp",                   NR_ANON_THPS                    },
+> > +       { "file_thp",                   NR_FILE_THPS                    },
+> > +       { "shmem_thp",                  NR_SHMEM_THPS                   },
+> >  #endif
+> > -       { "inactive_anon", PAGE_SIZE, NR_INACTIVE_ANON },
+> > -       { "active_anon", PAGE_SIZE, NR_ACTIVE_ANON },
+> > -       { "inactive_file", PAGE_SIZE, NR_INACTIVE_FILE },
+> > -       { "active_file", PAGE_SIZE, NR_ACTIVE_FILE },
+> > -       { "unevictable", PAGE_SIZE, NR_UNEVICTABLE },
+> > -
+> > -       /*
+> > -        * Note: The slab_reclaimable and slab_unreclaimable must be
+> > -        * together and slab_reclaimable must be in front.
+> > -        */
+> > -       { "slab_reclaimable", 1, NR_SLAB_RECLAIMABLE_B },
+> > -       { "slab_unreclaimable", 1, NR_SLAB_UNRECLAIMABLE_B },
+> > +       { "inactive_anon",              NR_INACTIVE_ANON                },
+> > +       { "active_anon",                NR_ACTIVE_ANON                  },
+> > +       { "inactive_file",              NR_INACTIVE_FILE                },
+> > +       { "active_file",                NR_ACTIVE_FILE                  },
+> > +       { "unevictable",                NR_UNEVICTABLE                  },
+> > +       { "slab_reclaimable",           NR_SLAB_RECLAIMABLE_B           },
+> > +       { "slab_unreclaimable",         NR_SLAB_UNRECLAIMABLE_B         },
+> >
+> >         /* The memory events */
+> > -       { "workingset_refault_anon", 1, WORKINGSET_REFAULT_ANON },
+> > -       { "workingset_refault_file", 1, WORKINGSET_REFAULT_FILE },
+> > -       { "workingset_activate_anon", 1, WORKINGSET_ACTIVATE_ANON },
+> > -       { "workingset_activate_file", 1, WORKINGSET_ACTIVATE_FILE },
+> > -       { "workingset_restore_anon", 1, WORKINGSET_RESTORE_ANON },
+> > -       { "workingset_restore_file", 1, WORKINGSET_RESTORE_FILE },
+> > -       { "workingset_nodereclaim", 1, WORKINGSET_NODERECLAIM },
+> > +       { "workingset_refault_anon",    WORKINGSET_REFAULT_ANON         },
+> > +       { "workingset_refault_file",    WORKINGSET_REFAULT_FILE         },
+> > +       { "workingset_activate_anon",   WORKINGSET_ACTIVATE_ANON        },
+> > +       { "workingset_activate_file",   WORKINGSET_ACTIVATE_FILE        },
+> > +       { "workingset_restore_anon",    WORKINGSET_RESTORE_ANON         },
+> > +       { "workingset_restore_file",    WORKINGSET_RESTORE_FILE         },
+> > +       { "workingset_nodereclaim",     WORKINGSET_NODERECLAIM          },
+> >  };
+> >
+> > +/* Translate stat items to the correct unit for memory.stat output */
+> > +static int memcg_page_state_unit(int item)
+> > +{
+> > +       switch (item) {
+> > +       case MEMCG_PERCPU_B:
+> > +       case NR_SLAB_RECLAIMABLE_B:
+> > +       case NR_SLAB_UNRECLAIMABLE_B:
+> > +       case WORKINGSET_REFAULT_ANON:
+> > +       case WORKINGSET_REFAULT_FILE:
+> > +       case WORKINGSET_ACTIVATE_ANON:
+> > +       case WORKINGSET_ACTIVATE_FILE:
+> > +       case WORKINGSET_RESTORE_ANON:
+> > +       case WORKINGSET_RESTORE_FILE:
+> > +       case WORKINGSET_NODERECLAIM:
+> > +               return 1;
+> > +       case NR_KERNEL_STACK_KB:
+> > +               return SZ_1K;
+> > +       default:
+> > +               return PAGE_SIZE;
+> > +       }
+> > +}
+> > +
+> > +static inline unsigned long memcg_page_state_output(struct mem_cgroup *memcg,
+> > +                                                   int item)
+> > +{
+> > +       return memcg_page_state(memcg, item) * memcg_page_state_unit(item);
+> > +}
+> > +
+> >  static char *memory_stat_format(struct mem_cgroup *memcg)
+> >  {
+> >         struct seq_buf s;
+> > @@ -1577,13 +1599,12 @@ static char *memory_stat_format(struct mem_cgroup *memcg)
+> >         for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
+> >                 u64 size;
+> >
+> > -               size = memcg_page_state(memcg, memory_stats[i].idx);
+> > -               size *= memory_stats[i].ratio;
+> > +               size = memcg_page_state_output(memcg, memory_stats[i].idx);
+> >                 seq_buf_printf(&s, "%s %llu\n", memory_stats[i].name, size);
+> >
+> >                 if (unlikely(memory_stats[i].idx == NR_SLAB_UNRECLAIMABLE_B)) {
+> > -                       size = memcg_page_state(memcg, NR_SLAB_RECLAIMABLE_B) +
+> > -                              memcg_page_state(memcg, NR_SLAB_UNRECLAIMABLE_B);
+> > +                       size += memcg_page_state_output(memcg,
+> > +                                                       NR_SLAB_RECLAIMABLE_B);
+> >                         seq_buf_printf(&s, "slab %llu\n", size);
+> >                 }
+> >         }
+> > @@ -6377,6 +6398,12 @@ static int memory_stat_show(struct seq_file *m, void *v)
+> >  }
+> >
+> >  #ifdef CONFIG_NUMA
+> > +static inline unsigned long lruvec_page_state_output(struct lruvec *lruvec,
+> > +                                                    int item)
+> > +{
+> > +       return lruvec_page_state(lruvec, item) * memcg_page_state_unit(item);
+> > +}
+> > +
+>
+> No need to have lruvec_page_state_output() separately as there is just
+> one user. Just inline it.
+>
+> >  static int memory_numa_stat_show(struct seq_file *m, void *v)
+> >  {
+> >         int i;
+> > @@ -6394,8 +6421,8 @@ static int memory_numa_stat_show(struct seq_file *m, void *v)
+> >                         struct lruvec *lruvec;
+> >
+> >                         lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(nid));
+> > -                       size = lruvec_page_state(lruvec, memory_stats[i].idx);
+> > -                       size *= memory_stats[i].ratio;
+> > +                       size = lruvec_page_state_output(lruvec,
+> > +                                                       memory_stats[i].idx);
+> >                         seq_printf(m, " N%d=%llu", nid, size);
+> >                 }
+> >                 seq_putc(m, '\n');
+> > --
+> > 2.11.0
+> >
+
+
+
 -- 
-2.28.0
+Yours,
+Muchun
