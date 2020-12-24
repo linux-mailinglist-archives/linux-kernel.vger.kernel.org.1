@@ -2,260 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ECA52E28BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 20:46:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA6552E28C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 21:27:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728890AbgLXTpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 14:45:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49636 "EHLO
+        id S1728916AbgLXUWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 15:22:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728266AbgLXTpq (ORCPT
+        with ESMTP id S1728679AbgLXUWg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 14:45:46 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B394C061573;
-        Thu, 24 Dec 2020 11:45:02 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ksWXP-003sWr-0X; Thu, 24 Dec 2020 19:44:39 +0000
-Date:   Thu, 24 Dec 2020 19:44:38 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     "Maciej W. Rozycki" <macro@linux-mips.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linux-mips@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Denys Vlasenko <dvlasenk@redhat.com>
-Subject: [RFC][PATCH] NT_FILE/NT_SIGINFO breakage on mips compat coredumps
-Message-ID: <20201224194438.GY3579531@ZenIV.linux.org.uk>
-References: <20201203214529.GB3579531@ZenIV.linux.org.uk>
- <CAHk-=wiRNT+-ahz2KRUE7buYJMZ84bp=h_vGLrAaOKW3n_xyXQ@mail.gmail.com>
- <20201203230336.GC3579531@ZenIV.linux.org.uk>
- <alpine.LFD.2.21.2012071741280.2104409@eddie.linux-mips.org>
- <20201216030154.GL3579531@ZenIV.linux.org.uk>
- <alpine.LFD.2.21.2012160924010.2104409@eddie.linux-mips.org>
- <20201223070320.GW3579531@ZenIV.linux.org.uk>
- <20201223071213.GX3579531@ZenIV.linux.org.uk>
+        Thu, 24 Dec 2020 15:22:36 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75DFCC061573
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 12:21:56 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id j16so2961582edr.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 12:21:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=OSyMhhLOs+gJkV1hBlUrD8wxjF+XuKOQBS1qIF2OVBo=;
+        b=GXPu9iXNKroXhBQ3NuRBUyu7qwxpJj81nQEXg6lFqE6JtI9vqTmWWqPkzUvISXEHpS
+         rnEP5EeblPBviGkjtRHNCCkG13ZHUKPHzkVq93cWpTuWXWopRXTQDvOK9pA26MNpeuXa
+         crtsjTt+QHR+qkS9WUBfdkJ87O06hQpwNNPYjimDPJduZA+m6xHVKw7txDROvCt2IkGW
+         u2PgQfUnO1Cc/6YFyoTEce0z18kr7TuYXwthdzE/CDIswLOUpMiRDMn4p78YJqu9j32O
+         p5frJeCjMv7+Qz5a5TjGCL7Ur3Z7+L6fq/nNXS5GRHEX6wh3OPGEG55SouTEzPhqv91m
+         lGDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=OSyMhhLOs+gJkV1hBlUrD8wxjF+XuKOQBS1qIF2OVBo=;
+        b=LVoVfKt12dVIQzIbhXvNmcHfMNVd7cBTTTr7WXDgHbiVcJwR1xVifnKP3Ldh81iWKo
+         Z2KyNHnBQpchO65J7FBTsTF/xorUiIdHwjqXX9nvmVaiuMdlYGCWHIZkLMwLyOZETJ5j
+         mJ9o3A7tI5fdhM49U5sCgSH/VpxLr8olGp1aVfpFySj2I3Tuqj8TXZRc2aOUtjNo5HyF
+         W+gqafj7LKMiWaghRHP1PB2womWqqitfuTt7gJWUjGGIy45Y0mv3gcd4bOVwTJZKB7jk
+         ELhi/lGJKEaFPjn06lW+74ykSXenQ8nubHqI0HRtkBWKrH3+I7S7iz0sDWiEjRDLuc3r
+         O9tA==
+X-Gm-Message-State: AOAM5337JrlQ7wqjlBGMnEDyQkcd2FmlG+xzNsUgbx293j7feua6Iqu8
+        AHPdnG+Ex7DfaCwMPQBbhoTduGty3mIPLYuD
+X-Google-Smtp-Source: ABdhPJx+uTKMo065QA17ljoCp5G/bHHEIvKZRQvh62B1ObvYgNEWw5suRU9fRncpMLe+WStRSvqviw==
+X-Received: by 2002:a05:6402:5114:: with SMTP id m20mr19785736edd.35.1608841315120;
+        Thu, 24 Dec 2020 12:21:55 -0800 (PST)
+Received: from netronome.com ([2001:982:7ed1:403:9eeb:e8ff:fe0d:5b6a])
+        by smtp.gmail.com with ESMTPSA id q25sm32419922eds.85.2020.12.24.12.21.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Dec 2020 12:21:54 -0800 (PST)
+Date:   Thu, 24 Dec 2020 21:21:53 +0100
+From:   Simon Horman <simon.horman@netronome.com>
+To:     trix@redhat.com
+Cc:     kuba@kernel.org, davem@davemloft.net, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, gustavoars@kernel.org,
+        louis.peens@netronome.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, oss-drivers@netronome.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] nfp: remove h from printk format specifier
+Message-ID: <20201224202152.GA3380@netronome.com>
+References: <20201223202053.131157-1-trix@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201223071213.GX3579531@ZenIV.linux.org.uk>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <20201223202053.131157-1-trix@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 07:12:13AM +0000, Al Viro wrote:
-> On Wed, Dec 23, 2020 at 07:03:20AM +0000, Al Viro wrote:
+On Wed, Dec 23, 2020 at 12:20:53PM -0800, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
 > 
-> 	Argh....  Wrong commit blamed - the parent of the correct one.
-> It's actually 2aa362c49c31 ("coredump: extend core dump note section to
-> contain file names of mapped files").  My apologies - fat-fingered
-> cut'n'paste...
+> This change fixes the checkpatch warning described in this commit
+> commit cbacb5ab0aa0 ("docs: printk-formats: Stop encouraging use of unnecessary %h[xudi] and %hh[xudi]")
 > 
-> 	siginfo commit does suffer the same problem, but it becomes an issue
-> only for 32bit processes under mips64 big-endian kernel (there it yields
-> e.g. zero .__sigfault.si_addr in $_siginfo when using gdb with a coredump
-> of 32bit process, whatever the actual faulting address had been).  And
-> b-e mips64 is rather uncommon, so that's less of an issue.
+> Standard integer promotion is already done and %hx and %hhx is useless
+> so do not encourage the use of %hh[xudi] or %h[xudi].
+> 
+> Signed-off-by: Tom Rix <trix@redhat.com>
 
-	FWIW, here's debian/mips image (stretch) booted with
-qemu-system-mips64 -M malta -cpu 5KEc:
-root@mips:~# uname -a
-Linux mips 4.9.0-13-5kc-malta #1 Debian 4.9.228-1 (2020-07-05) mips64 GNU/Linux
-root@mips:~# cat a.c
-main()
-{
-        *(char *)0x0123 = 0;
-}
-root@mips:~# gcc a.c 
-a.c:1:1: warning: return type defaults to ‘int’ [-Wimplicit-int]
- main()
- ^~~~
-root@mips:~# ulimit -c unlimited
-root@mips:~# ./a.out 
-[  519.744983] do_page_fault(): sending SIGSEGV to a.out for invalid write access to 0000000000000123
-[  519.746735] epc = 00000000558477c0 in a.out[55847000+1000]
-[  519.747758] ra  = 000000007792f4a8 in libc-2.24.so[77916000+16a000]
-Segmentation fault (core dumped)
-root@mips:~# gdb a.out core 
-GNU gdb (Debian 7.12-6) 7.12.0.20161007-git
-Copyright (C) 2016 Free Software Foundation, Inc.
-License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
-This is free software: you are free to change and redistribute it.
-There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
-and "show warranty" for details.
-This GDB was configured as "mips-linux-gnu".
-Type "show configuration" for configuration details.
-For bug reporting instructions, please see:
-<http://www.gnu.org/software/gdb/bugs/>.
-Find the GDB manual and other documentation resources online at:
-<http://www.gnu.org/software/gdb/documentation/>.
-For help, type "help".
-Type "apropos word" to search for commands related to "word"...
-Reading symbols from a.out...(no debugging symbols found)...done.
-[New LWP 1202]
-Core was generated by `./a.out'.
-Program terminated with signal SIGSEGV, Segmentation fault.
-#0  0x55dde7c0 in main ()
-(gdb) print $_siginfo
-$1 = {si_signo = 11, si_errno = 1, si_code = 0, _sifields = {_pad = {0, 0, 
-      291, 0 <repeats 26 times>}, _kill = {si_pid = 0, si_uid = 0}, _timer = {
-      si_tid = 0, si_overrun = 0, si_sigval = {sival_int = 291, 
-        sival_ptr = 0x123}}, _rt = {si_pid = 0, si_uid = 0, si_sigval = {
-        sival_int = 291, sival_ptr = 0x123}}, _sigchld = {si_pid = 0, 
-      si_uid = 0, si_status = 291, si_utime = 0, si_stime = 0}, _sigfault = {
-      si_addr = 0x0}, _sigpoll = {si_band = 0, si_fd = 0}}}
-(gdb) quit
+Hi Tom,
 
+This patch looks appropriate for net-next, which is currently closed.
 
-Note the wrong value in _sigfault.si_addr - it should've been 0x123, not 0.
+The changes look fine, but I'm curious to know if its intentionally that
+the following was left alone in ethernet/netronome/nfp/nfp_net_ethtool.c:nfp_net_get_nspinfo()
 
-root@mips:~# readelf -n core
+	snprintf(version, ETHTOOL_FWVERS_LEN, "%hu.%hu"
 
-Displaying notes found at file offset 0x00000234 with length 0x000005f4:
-  Owner                 Data size       Description
-  CORE                 0x00000100       NT_PRSTATUS (prstatus structure)
-  CORE                 0x00000080       NT_PRPSINFO (prpsinfo structure)
-  CORE                 0x00000080       NT_SIGINFO (siginfo_t data)
-  CORE                 0x00000090       NT_AUXV (auxiliary vector)
-  CORE                 0x000001e1       NT_FILE (mapped files)
-    Page size: 9
-         Start         End Page Offset
-  CORE                 0x00000108       NT_FPREGSET (floating point registers)
+If the above was not intentional then perhaps you could respin with that
+updated and resubmit when net-next re-opens. Feel free to add:
 
-For comparison, exact same image booted with qemu-system-mips -M malta:
-
-root@mips:~# uname -a
-Linux mips 4.9.0-13-4kc-malta #1 Debian 4.9.228-1 (2020-07-05) mips GNU/Linux
-root@mips:~# ulimit -c unlimited
-root@mips:~# ./a.out
-[   83.380870] do_page_fault(): sending SIGSEGV to a.out for invalid write access to 00000123
-[   83.390678] epc = 55e0e7c0 in a.out[55e0e000+1000]
-[   83.391525] ra  = 76f644a8 in libc-2.24.so[76f4b000+16a000]
-Segmentation fault (core dumped)
-root@mips:~# gdb a.out core
-GNU gdb (Debian 7.12-6) 7.12.0.20161007-git
-Copyright (C) 2016 Free Software Foundation, Inc.
-License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
-This is free software: you are free to change and redistribute it.
-There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
-and "show warranty" for details.
-This GDB was configured as "mips-linux-gnu".
-Type "show configuration" for configuration details.
-For bug reporting instructions, please see:
-<http://www.gnu.org/software/gdb/bugs/>.
-Find the GDB manual and other documentation resources online at:
-<http://www.gnu.org/software/gdb/documentation/>.
-For help, type "help".
-Type "apropos word" to search for commands related to "word"...
-Reading symbols from a.out...(no debugging symbols found)...done.
-[New LWP 1184]
-Core was generated by `./a.out'.
-Program terminated with signal SIGSEGV, Segmentation fault.
-#0  0x55e0e7c0 in main ()
-(gdb) print $_siginfo
-$1 = {si_signo = 11, si_errno = 1, si_code = 0, _sifields = {_pad = {291, 
-      0 <repeats 28 times>}, _kill = {si_pid = 291, si_uid = 0}, _timer = {
-      si_tid = 291, si_overrun = 0, si_sigval = {sival_int = 0, 
-        sival_ptr = 0x0}}, _rt = {si_pid = 291, si_uid = 0, si_sigval = {
-        sival_int = 0, sival_ptr = 0x0}}, _sigchld = {si_pid = 291, 
-      si_uid = 0, si_status = 0, si_utime = 0, si_stime = 0}, _sigfault = {
-      si_addr = 0x123}, _sigpoll = {si_band = 291, si_fd = 0}}}
-(gdb) quit
-root@mips:~# readelf -n core
-
-Displaying notes found at file offset 0x00000234 with length 0x00000580:
-  Owner                 Data size       Description
-  CORE                 0x00000100       NT_PRSTATUS (prstatus structure)
-  CORE                 0x00000080       NT_PRPSINFO (prpsinfo structure)
-  CORE                 0x00000080       NT_SIGINFO (siginfo_t data)
-  CORE                 0x00000090       NT_AUXV (auxiliary vector)
-  CORE                 0x0000016d       NT_FILE (mapped files)
-    Page size: 4096
-         Start         End Page Offset
-    0x55e0e000  0x55e0f000  0x00000000
-        /root/a.out
-    0x55e1e000  0x55e1f000  0x00000000
-        /root/a.out
-    0x76f4b000  0x770b5000  0x00000000
-        /lib/mips-linux-gnu/libc-2.24.so
-    0x770b5000  0x770c5000  0x0000016a
-        /lib/mips-linux-gnu/libc-2.24.so
-    0x770c5000  0x770c8000  0x0000016a
-        /lib/mips-linux-gnu/libc-2.24.so
-    0x770c8000  0x770cb000  0x0000016d
-        /lib/mips-linux-gnu/libc-2.24.so
-    0x770cd000  0x770f0000  0x00000000
-        /lib/mips-linux-gnu/ld-2.24.so
-    0x770ff000  0x77100000  0x00000022
-        /lib/mips-linux-gnu/ld-2.24.so
-    0x77100000  0x77101000  0x00000023
-        /lib/mips-linux-gnu/ld-2.24.so
-  CORE                 0x00000108       NT_FPREGSET (floating point registers)
-
-So that's not so theoretical - big-endian mips64 userland is unsupported,
-but booting the big-endian mips32 userland on mips64 hardware is clearly
-meant to work - they even ship a 64bit kernel built for that.
-
-IOW, both O32 and N32 coredumps in 64bit mips kernels have broken
-NT_FILE and NT_SIGINFO.  And while NT_SIGINFO breakage is really
-visible only on b-e, NT_FILE one is common to b-e and l-e.  One of
-the effects of the latter is that current gdb fails to work with
-threaded coredumps of 32bit processes produced on boxen with 64bit
-kernels.  Coredumps generated by gcore(1) are fine...
-
-I think the following ought to be applied.  Comments?
-
-[mips] fix malformed NT_FILE and NT_SIGINFO in 32bit coredumps
-
-	Patches that introduced NT_FILE and NT_SIGINFO notes back in 2012
-had taken care of native (fs/binfmt_elf.c) and compat (fs/compat_binfmt_elf.c)
-coredumps; unfortunately, compat on mips (which does not go through the
-usual compat_binfmt_elf.c) had not been noticed.
-
-	As the result, both N32 and O32 coredumps on 64bit mips kernels
-have those sections malformed enough to confuse the living hell out of
-all gdb and readelf versions (up to and including the tip of binutils-gdb.git).
-
-	Longer term solution is to make both O32 and N32 compat use the
-regular compat_binfmt_elf.c, but that's too much for backports.  The minimal
-solution is to do in arch/mips/kernel/binfmt_elf[on]32.c the same thing
-those patches have done in fs/compat_binfmt_elf.c
-
-Cc: stable@kernel.org # v3.7+
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
----
-diff --git a/arch/mips/kernel/binfmt_elfn32.c b/arch/mips/kernel/binfmt_elfn32.c
-index 6ee3f7218c67..c4441416e96b 100644
---- a/arch/mips/kernel/binfmt_elfn32.c
-+++ b/arch/mips/kernel/binfmt_elfn32.c
-@@ -103,4 +103,11 @@ jiffies_to_old_timeval32(unsigned long jiffies, struct old_timeval32 *value)
- #undef ns_to_kernel_old_timeval
- #define ns_to_kernel_old_timeval ns_to_old_timeval32
- 
-+/*
-+ * Some data types as stored in coredump.
-+ */
-+#define user_long_t             compat_long_t
-+#define user_siginfo_t          compat_siginfo_t
-+#define copy_siginfo_to_external        copy_siginfo_to_external32
-+
- #include "../../../fs/binfmt_elf.c"
-diff --git a/arch/mips/kernel/binfmt_elfo32.c b/arch/mips/kernel/binfmt_elfo32.c
-index 6dd103d3cebb..7b2a23f48c1a 100644
---- a/arch/mips/kernel/binfmt_elfo32.c
-+++ b/arch/mips/kernel/binfmt_elfo32.c
-@@ -106,4 +106,11 @@ jiffies_to_old_timeval32(unsigned long jiffies, struct old_timeval32 *value)
- #undef ns_to_kernel_old_timeval
- #define ns_to_kernel_old_timeval ns_to_old_timeval32
- 
-+/*
-+ * Some data types as stored in coredump.
-+ */
-+#define user_long_t             compat_long_t
-+#define user_siginfo_t          compat_siginfo_t
-+#define copy_siginfo_to_external        copy_siginfo_to_external32
-+
- #include "../../../fs/binfmt_elf.c"
+Reviewed-by: Simon Horman <simon.horman@netronome.com>
