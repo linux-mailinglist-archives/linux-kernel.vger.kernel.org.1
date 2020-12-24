@@ -2,144 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3742B2E279B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 15:22:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C723F2E27A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 15:27:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728033AbgLXOWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 09:22:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56466 "EHLO
+        id S1728711AbgLXO0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 09:26:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726609AbgLXOV7 (ORCPT
+        with ESMTP id S1728571AbgLXO0e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 09:21:59 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7ABDC061794;
-        Thu, 24 Dec 2020 06:21:18 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id t30so2336244wrb.0;
-        Thu, 24 Dec 2020 06:21:18 -0800 (PST)
+        Thu, 24 Dec 2020 09:26:34 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4475CC06179C;
+        Thu, 24 Dec 2020 06:25:54 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id i5so1659713pgo.1;
+        Thu, 24 Dec 2020 06:25:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=290qlAj9/wIw73WZ0l4W99gBHafzKX3LexaIq9Kbj8U=;
-        b=H9IK62WB6jMmUFDg7RSJNvniwFUqmjdFIKzyYfj+RwCDdYSPuSroL6eBRLv8eVZ1Cy
-         laPMMShRTovyn+4hKMvHimz2EOcmiiM8wUEtoquUtc5qN9wwK7vhuFCtmolrJ84xCRnj
-         Y56bXcM9MIdixqjr3UM8SM9DUt/Oibf+OmHSNY7bziTGwpEzqLTcisda3iqDWOMhlmqo
-         nbQv7zyg+939bA6LNeL/WFyM3cFz8dIUaFsG/0x2v0tJXYR7kzkgaARUvEt5ga2+j6kn
-         l+sjTN0wNnlsweBiL976XpqYLrRLfbxxLfwgXOUL+6yFVqplC36ydG4mBpxafmOwou6n
-         vqog==
+        h=from:to:cc:subject:date:message-id;
+        bh=M1ZWqv1znGqr6p1lRTewGyanamdITR8p87XaqsvWjsM=;
+        b=Wh/DAn1Lg1lqObkMZFfvyZF388WBeIbZXFBq13tAd1VEgkw+M4LJXfjs0b95ahtOMX
+         c32Vv0rwkYWwbPaug66GZYzdpluAsMTAp4v5g/aTMPwCtrRomVxyktE06en1BFEHHKYh
+         Au6IaYUjex7Joi/d3HkP4UKEy/J9x/1D5VyWUysSNubgG1RbcgY5lefa7gbqytCWjqPF
+         9pctvA8uVHEL0dPMJ2hblTTx/Yi+4k3uRAn/3LDBUKM7+UWwRK89o1DwVs3HXm7kOUGB
+         q0L2gdlFO9T6xRv7xeGmpstUqGsIw2VMyAFFG6SQe4XT8I+gWMupEhdTi71QJZw62WLc
+         nkYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=290qlAj9/wIw73WZ0l4W99gBHafzKX3LexaIq9Kbj8U=;
-        b=JCK67CWqLksLE/S5Q000u8pogUxR2nWT1UTRvUksdYLUi6SBhOr/tUE7HzLNs6QRN/
-         a4PSCJ9D+LpqdQ0Vh90Xo+crEA/Uivqtmo8zkA8bPBfpICittyXJJNN+5duWs7H2/wOl
-         aAfrV5FbKvHrQ28OZjjQ27rKScmDNbV2Dkxg0gZ2jOoGOWjghN4eLBSNmTiRZq3F8wTR
-         4I4Rlg+HdcDMyCkSFY8ld5/v6QfIFVgrOHutJMpbkyJJ0I3w+F2PWALlMC4kcsnIW+J7
-         Z2rXDXAs69glEiY4jpml+fv2N30pa52nXDKF+Wcw8GRbOHly/PsCjYvKi04na05UATds
-         +j5A==
-X-Gm-Message-State: AOAM530py1N1e2kSgxl0xCCeo+JR3H/sndm6sxa4c+gkOcZpU7Qdszmj
-        0XN3bK1x7/+1zrqyMw5fGNY=
-X-Google-Smtp-Source: ABdhPJxwdOtDBlVfQIHVLEKHHof6seG/XVVw9+uHRHUBsSzYk42WKjnntQucO6c8Fh6rR3yG8w7FCQ==
-X-Received: by 2002:adf:fd05:: with SMTP id e5mr34705157wrr.225.1608819677538;
-        Thu, 24 Dec 2020 06:21:17 -0800 (PST)
-Received: from [192.168.1.211] ([2.31.224.116])
-        by smtp.gmail.com with ESMTPSA id l20sm44277150wrh.82.2020.12.24.06.21.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Dec 2020 06:21:17 -0800 (PST)
-Subject: Re: [PATCH v3 07/14] software_node: Add support for fwnode_graph*()
- family of functions
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        devel@acpica.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tian Shu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        kieran.bingham+renesas@ideasonboard.com,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        niklas.soderlund+renesas@ragnatech.se,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-References: <20201224010907.263125-1-djrscally@gmail.com>
- <20201224010907.263125-8-djrscally@gmail.com>
- <CAHp75Vft7gg1AcKCEU+E74eB_ZMouHFd-8uZ7pcVj5CoJzZpvQ@mail.gmail.com>
- <X+SPsks5itN9OFqB@pendragon.ideasonboard.com>
- <CAHp75Ve6YHm-tdqFPvOhfJiT=uRK_dpKY3mnhQd6Mg3KkSuKqA@mail.gmail.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <d47e0ccf-9def-e9c9-fdfb-390ad5d2ee5e@gmail.com>
-Date:   Thu, 24 Dec 2020 14:21:15 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <CAHp75Ve6YHm-tdqFPvOhfJiT=uRK_dpKY3mnhQd6Mg3KkSuKqA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=M1ZWqv1znGqr6p1lRTewGyanamdITR8p87XaqsvWjsM=;
+        b=k7DudgeDgQ+lzbUP8qQsRJ4Vpd3Ql/eMF5BSMUK3QMUO/mrhr1smojXZ0rHhzjo7CG
+         eMkjIbMAFl/C+T99HiJP4cp7/mnqiUruGPEFef2vEvV4f7UiJeCv0dTJS7YTWdbDOMsR
+         VXU2MvYMqimRFQmoZo1FLtr6JzYAVrfAXpd7EMzFtIk4bVzvWnjA+8+WPPr9kJ+jkQes
+         4Wyk07KW7y/omEwXAm2uUsXZ4xUsnWjJ2FiRJ8PVwV9J/mtaUk/+HlQ+EWLhc8+l5llr
+         WvZeTttXsdAWlSs9kWRIruWc0o4uW5GiJpcQXRTWW53JX1xcUp1zfahknYotM7YhaS/U
+         k4IA==
+X-Gm-Message-State: AOAM530XGtucnP2NKjYC5OvicVanKdykac9PFc2b5GiScZB12E/YnJWH
+        M465CdY1nP+QNqQpK22OA0c=
+X-Google-Smtp-Source: ABdhPJxahunFhGBPVq1miW5Ne/emwEly58wXygON2lajXZ4StPqI8VIN/zU1tYPEPO5hDWAoiF5xVg==
+X-Received: by 2002:a63:1220:: with SMTP id h32mr28741916pgl.309.1608819953741;
+        Thu, 24 Dec 2020 06:25:53 -0800 (PST)
+Received: from DESKTOP-8REGVGF.localdomain ([124.13.157.5])
+        by smtp.gmail.com with ESMTPSA id r185sm26936351pfc.53.2020.12.24.06.25.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Dec 2020 06:25:53 -0800 (PST)
+From:   Sieng Piaw Liew <liew.s.piaw@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     bcm-kernel-feedback-list@broadcom.com,
+        Sieng Piaw Liew <liew.s.piaw@gmail.com>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v2 0/6] bcm63xx_enet: major makeover of driver
+Date:   Thu, 24 Dec 2020 22:24:15 +0800
+Message-Id: <20201224142421.32350-1-liew.s.piaw@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy, Laurent
+This patch series aim to improve the bcm63xx_enet driver by integrating the
+latest networking features, i.e. batched rx processing, BQL, build_skb, etc.
 
-> On Thu, Dec 24, 2020 at 2:55 PM Laurent Pinchart
-> <laurent.pinchart@ideasonboard.com> wrote:
->> On Thu, Dec 24, 2020 at 02:24:12PM +0200, Andy Shevchenko wrote:
->>> On Thu, Dec 24, 2020 at 3:14 AM Daniel Scally wrote:
-> 
-> ...
-> 
->>>> +               if (!strncmp(to_swnode(port)->node->name, "port@",
->>>
->>> You may use here corresponding _FMT macro.
->>>
->>>> +                            FWNODE_GRAPH_PORT_NAME_PREFIX_LEN))
->>>> +                       return port;
-> 
-> ...
-> 
->>>> +       /* Ports have naming style "port@n", we need to select the n */
->>>
->>>> +       ret = kstrtou32(swnode->parent->node->name + FWNODE_GRAPH_PORT_NAME_PREFIX_LEN,
->>>
->>> Maybe a temporary variable?
->>>
->>>   unsigned int prefix_len = FWNODE_GRAPH_PORT_NAME_PREFIX_LEN;
->>>   ...
->>>   ret = kstrtou32(swnode->parent->node->name + prefix_len,
->>
->> Honestly I'm wondering if those macros don't hinder readability. I'd
->> rather write
->>
->>         + strlen("port@")
-> 
-> Works for me, since the compiler optimizes this away to be a plain constant.
+The newer enetsw SoCs are found to be able to do unaligned rx DMA by adding
+NET_IP_ALIGN padding which, combined with these patches, improved packet
+processing performance by ~50% on BCM6328.
 
-Well, how about instead of the LEN macro, we have:
+Older non-enetsw SoCs still benefit mainly from rx batching. Performance
+improvement of ~30% is observed on BCM6333.
 
-#define FWNODE_GRAPH_PORT_NAME_PREFIX	"port@"
-#define FWNODE_GRAPH_PORT_NAME_FMT FWNODE_GRAPH_PORT_NAME_PREFIX "%u"
+The BCM63xx SoCs are designed for routers. As such, having BQL is beneficial
+as well as trivial to add.
 
-And then it's still maintainable in one place but (I think) slightly
-less clunky, since we can do strlen(FWNODE_GRAPH_PORT_NAME_PREFIX)
+v2:
+* Add xmit_more support and rx loop improvisation patches.
+* Moved BQL netdev_reset_queue() to bcm_enet_stop()/bcm_enetsw_stop()
+  functions as suggested by Florian Fainelli.
+* Improved commit messages.
 
-Or we can do strlen("port@"), I'm good either way :)
+Sieng Piaw Liew (6):
+  bcm63xx_enet: batch process rx path
+  bcm63xx_enet: add BQL support
+  bcm63xx_enet: add xmit_more support
+  bcm63xx_enet: alloc rx skb with NET_IP_ALIGN
+  bcm63xx_enet: convert to build_skb
+  bcm63xx_enet: improve rx loop
+
+ drivers/net/ethernet/broadcom/bcm63xx_enet.c | 184 ++++++++++---------
+ drivers/net/ethernet/broadcom/bcm63xx_enet.h |  14 +-
+ 2 files changed, 103 insertions(+), 95 deletions(-)
+
+-- 
+2.17.1
+
