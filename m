@@ -2,97 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FCC22E24D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 07:41:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 194692E24DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 07:42:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726650AbgLXGlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 01:41:31 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:46189 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725613AbgLXGla (ORCPT
+        id S1727183AbgLXGmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 01:42:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725613AbgLXGmI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 01:41:30 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1608792064; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=CYxxh1le0AOhytdlur4fCuIDp8E9AeG0ihlFCtja0d0=; b=owsX/lZ/0sQtrw6QK6KHZiRI7ke90f3O70RjRUlymlP6Yj+jHpk8Qy8jCZtVw2XH0r6J317b
- G1wCcZjEzsAgzjHLrfGO1ZK3JtKk9YtoPiJnDafGmk2nzW6VYSM5igR6lJ8vy8WoJpBqJJV8
- Nq7hy+Ufz2h7iBZtRclZQ+Vk5/o=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5fe437d7cfd94dd328f5697e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 24 Dec 2020 06:40:23
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BF02AC43465; Thu, 24 Dec 2020 06:40:23 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 74261C433CA;
-        Thu, 24 Dec 2020 06:40:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 74261C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: [PATCH] iommu/io-pgtable-arm: Allow non-coherent masters to use system cache
-Date:   Thu, 24 Dec 2020 12:10:07 +0530
-Message-Id: <20201224064007.2339-1-saiprakash.ranjan@codeaurora.org>
-X-Mailer: git-send-email 2.29.0
+        Thu, 24 Dec 2020 01:42:08 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69174C061794;
+        Wed, 23 Dec 2020 22:41:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=hgZ+lZNP3B/K9Oj/s5udXyrBDVF5xZJ71bYP1nixZdo=; b=hzjxM2aGVedqOqTPaeLJKWYuY4
+        xkqiFVFpQKWkgqEySPTCLiSvWvcEJrgRLsJBOnrS0QZdfm4dsSOXZeO0PNLab6ggKCBq1lw6nS3kW
+        Y3WaTFZ3ODCAIHwpPam/g5eYytVyG9hqXEC7GPEvByE+eg/g0kafrqgdDkSIVH2HW9VYEuJ8mRIkc
+        w8qFJdvjTIWFM9bOal30Yib0rTy3vrCUR/hyI4lFqoeN/ROgowBMVqDPpJTNzgpcOcabaesZubCUI
+        HkInEHpdkOK6FMxwC/PdZmtaPCsBloa68FjEumpKaKfc+q+vT15CVF5bXkEMkQSnUvd4YD+3SEbZo
+        nG0RhV+w==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1ksKJL-0000uK-Pw; Thu, 24 Dec 2020 06:41:19 +0000
+Date:   Thu, 24 Dec 2020 06:41:19 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     dgilbert@interlog.com,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Ming Lei <ming.lei@redhat.com>, linux-block@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v1 0/6] no-copy bvec
+Message-ID: <20201224064119.GA3048@infradead.org>
+References: <20201215014114.GA1777020@T590>
+ <103235c1-e7d0-0b55-65d0-013d1a09304e@gmail.com>
+ <20201215120357.GA1798021@T590>
+ <e755fec3-4181-1414-0603-02e1a1f4e9eb@gmail.com>
+ <20201222141112.GE13079@infradead.org>
+ <933030f0-e428-18fd-4668-68db4f14b976@gmail.com>
+ <20201223155145.GA5902@infradead.org>
+ <f06ece44a86eb9c8ef07bbd9f6f53342366b7751.camel@HansenPartnership.com>
+ <8abc56c2-4db8-5ee3-ab2d-8960d0eeeb0d@interlog.com>
+ <f5cb6ac2-1c59-33be-de8f-e86c8528fbec@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f5cb6ac2-1c59-33be-de8f-e86c8528fbec@gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit ecd7274fb4cd ("iommu: Remove unused IOMMU_SYS_CACHE_ONLY flag")
-removed unused IOMMU_SYS_CACHE_ONLY prot flag and along with it went
-the memory type setting required for the non-coherent masters to use
-system cache. Now that system cache support for GPU is added, we will
-need to mark the memory as normal sys-cached for GPU to use system cache.
-Without this, the system cache lines are not allocated for GPU. We use
-the IO_PGTABLE_QUIRK_ARM_OUTER_WBWA quirk instead of a page protection
-flag as the flag cannot be exposed via DMA api because of no in-tree
-users.
+On Wed, Dec 23, 2020 at 08:32:45PM +0000, Pavel Begunkov wrote:
+> On 23/12/2020 20:23, Douglas Gilbert wrote:
+> > On 2020-12-23 11:04 a.m., James Bottomley wrote:
+> >> On Wed, 2020-12-23 at 15:51 +0000, Christoph Hellwig wrote:
+> >>> On Wed, Dec 23, 2020 at 12:52:59PM +0000, Pavel Begunkov wrote:
+> >>>> Can scatterlist have 0-len entries? Those are directly translated
+> >>>> into bvecs, e.g. in nvme/target/io-cmd-file.c and
+> >>>> target/target_core_file.c. I've audited most of others by this
+> >>>> moment, they're fine.
+> >>>
+> >>> For block layer SGLs we should never see them, and for nvme neither.
+> >>> I think the same is true for the SCSI target code, but please double
+> >>> check.
+> >>
+> >> Right, no-one ever wants to see a 0-len scatter list entry.?? The reason
+> >> is that every driver uses the sgl to program the device DMA engine in
+> >> the way NVME does.?? a 0 length sgl would be a dangerous corner case:
+> >> some DMA engines would ignore it and others would go haywire, so if we
+> >> ever let a 0 length list down into the driver, they'd have to
+> >> understand the corner case behaviour of their DMA engine and filter it
+> >> accordingly, which is why we disallow them in the upper levels, since
+> >> they're effective nops anyway.
+> > 
+> > When using scatter gather lists at the far end (i.e. on the storage device)
+> > the T10 examples (WRITE SCATTERED and POPULATE TOKEN in SBC-4) explicitly
+> > allow the "number of logical blocks" in their sgl_s to be zero and state
+> > that it is _not_ to be considered an error.
+> 
+> It's fine for my case unless it leaks them out of device driver to the
+> net/block layer/etc. Is it?
 
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
----
- drivers/iommu/io-pgtable-arm.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
-index 7c9ea9d7874a..3fb7de8304a2 100644
---- a/drivers/iommu/io-pgtable-arm.c
-+++ b/drivers/iommu/io-pgtable-arm.c
-@@ -415,6 +415,9 @@ static arm_lpae_iopte arm_lpae_prot_to_pte(struct arm_lpae_io_pgtable *data,
- 		else if (prot & IOMMU_CACHE)
- 			pte |= (ARM_LPAE_MAIR_ATTR_IDX_CACHE
- 				<< ARM_LPAE_PTE_ATTRINDX_SHIFT);
-+		else if (data->iop.cfg.quirks & IO_PGTABLE_QUIRK_ARM_OUTER_WBWA)
-+			pte |= (ARM_LPAE_MAIR_ATTR_IDX_INC_OCACHE
-+				<< ARM_LPAE_PTE_ATTRINDX_SHIFT);
- 	}
- 
- 	if (prot & IOMMU_CACHE)
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
-
+None of the SCSI Command mentions above are supported by Linux,
+nevermind mapped to struct scatterlist.
