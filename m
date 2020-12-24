@@ -2,58 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7F922E24D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 07:41:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FCC22E24D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 07:41:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726292AbgLXGk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 01:40:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725613AbgLXGk1 (ORCPT
+        id S1726650AbgLXGlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 01:41:31 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:46189 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725613AbgLXGla (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 01:40:27 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D3B4C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 22:39:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=B/IQ3X2M01QsNOxiIDL+MVpeOjEZ7iQ32/mv634iU5s=; b=PBG31iHytKn/dtcZ01sTlXO/pL
-        I1VBxfHk7Rk3gYwhUliPsOPl9xW5/+vzHCWcm8zQ277kToCSlhhdSjQSpJ/INnfTR19JpwQLuVck+
-        tza4V74f1QxXhoGxc3c6fjxRP1ybMyi/HAHNofjyHibnkdivrKwRN1XSXiAffUFGiQeKh0rKQ2Mqj
-        CrdCyUwLV3vMtZWwt0hl3L3CeomdbfwqMXCHibYATBMEhbtIoDnA1EyzL1AMNKdWnihx3aT2IaP5f
-        6G1BCiLMD1qe6zaDJCqFwZFfVSwhIjPKiWPc53MBVm+mZesJjcwRXyHQSiSYyY9FrjXYqE91XFZwV
-        vDAGvjAA==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ksKHi-0000mS-5t; Thu, 24 Dec 2020 06:39:38 +0000
-Date:   Thu, 24 Dec 2020 06:39:38 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        linux-riscv@lists.infradead.org, daniel.lezcano@linaro.org,
-        lkp@intel.com, linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        kernel-team@android.com
-Subject: Re: [PATCH] clocksource: clint: Avoid remove __iomem in
- get_cycles_hi()
-Message-ID: <20201224063938.GA2758@infradead.org>
-References: <20201223082330.GA24581@infradead.org>
- <mhng-b2cf0325-66e1-4e3c-bfbb-b393963fbb3f@palmerdabbelt-glaptop>
+        Thu, 24 Dec 2020 01:41:30 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1608792064; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=CYxxh1le0AOhytdlur4fCuIDp8E9AeG0ihlFCtja0d0=; b=owsX/lZ/0sQtrw6QK6KHZiRI7ke90f3O70RjRUlymlP6Yj+jHpk8Qy8jCZtVw2XH0r6J317b
+ G1wCcZjEzsAgzjHLrfGO1ZK3JtKk9YtoPiJnDafGmk2nzW6VYSM5igR6lJ8vy8WoJpBqJJV8
+ Nq7hy+Ufz2h7iBZtRclZQ+Vk5/o=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5fe437d7cfd94dd328f5697e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 24 Dec 2020 06:40:23
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BF02AC43465; Thu, 24 Dec 2020 06:40:23 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 74261C433CA;
+        Thu, 24 Dec 2020 06:40:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 74261C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: [PATCH] iommu/io-pgtable-arm: Allow non-coherent masters to use system cache
+Date:   Thu, 24 Dec 2020 12:10:07 +0530
+Message-Id: <20201224064007.2339-1-saiprakash.ranjan@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <mhng-b2cf0325-66e1-4e3c-bfbb-b393963fbb3f@palmerdabbelt-glaptop>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 06:59:34PM -0800, Palmer Dabbelt wrote:
-> Aren't we OK with lines longer than 80 characters now?  Or was that some other
-> project?  checkpatch doesn't complain, which I guess is why I didn't notice, so
-> hopefully that means I'm not crazy (though I guess the commit message and title
-> don't provide the best argument there... ;)).
+commit ecd7274fb4cd ("iommu: Remove unused IOMMU_SYS_CACHE_ONLY flag")
+removed unused IOMMU_SYS_CACHE_ONLY prot flag and along with it went
+the memory type setting required for the non-coherent masters to use
+system cache. Now that system cache support for GPU is added, we will
+need to mark the memory as normal sys-cached for GPU to use system cache.
+Without this, the system cache lines are not allocated for GPU. We use
+the IO_PGTABLE_QUIRK_ARM_OUTER_WBWA quirk instead of a page protection
+flag as the flag cannot be exposed via DMA api because of no in-tree
+users.
 
-They are allowed as an exception, not the norm.  Take a look at the
-coding style document.  And checkpath has for a while not been doing the
-right thing unfortunately.
+Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+---
+ drivers/iommu/io-pgtable-arm.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
+index 7c9ea9d7874a..3fb7de8304a2 100644
+--- a/drivers/iommu/io-pgtable-arm.c
++++ b/drivers/iommu/io-pgtable-arm.c
+@@ -415,6 +415,9 @@ static arm_lpae_iopte arm_lpae_prot_to_pte(struct arm_lpae_io_pgtable *data,
+ 		else if (prot & IOMMU_CACHE)
+ 			pte |= (ARM_LPAE_MAIR_ATTR_IDX_CACHE
+ 				<< ARM_LPAE_PTE_ATTRINDX_SHIFT);
++		else if (data->iop.cfg.quirks & IO_PGTABLE_QUIRK_ARM_OUTER_WBWA)
++			pte |= (ARM_LPAE_MAIR_ATTR_IDX_INC_OCACHE
++				<< ARM_LPAE_PTE_ATTRINDX_SHIFT);
+ 	}
+ 
+ 	if (prot & IOMMU_CACHE)
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
+
