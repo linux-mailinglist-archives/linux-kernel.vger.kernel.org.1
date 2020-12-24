@@ -2,121 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F75E2E259E
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 10:19:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A8432E25A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 10:22:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727268AbgLXJTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 04:19:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33152 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726258AbgLXJTb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 04:19:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A85112225E;
-        Thu, 24 Dec 2020 09:18:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608801530;
-        bh=GrZBQnU+qs+9KKvyhKv76m1eyHbFM5iOSlMTcbWXJOg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=kAil0DY9Y5UR2hbGOAzuVrsZ85YxbruYDSjFTS2Q8meg4HytCM+razeOZv6Z/Ps7y
-         9Vtlm13EkiAIDWTr6sX8daOG9a6sevttfAt0Gzi9KymKL7NeW5DXHGtFNalInm5iB6
-         ONpxaQyu8RcszuRJ7dEuJPOm7roKtHmk+Mj0squPGF5K1b37LbcR8sHZaFadnmNtmk
-         N5jd01k73qZfZkaRm45FQjNRht4NqsZv6xeL8DApVrmOpthH5sVyTk5kOnIhIkkoiH
-         MkAds58gSi2hlp9CSqYm2VdKFUdMGXOXk0ArVtvqiSRczI7cYlsNO/LQ+XjZrti0tv
-         MlhEDRJyNQB3g==
-Received: by mail-ej1-f45.google.com with SMTP id g20so2642371ejb.1;
-        Thu, 24 Dec 2020 01:18:49 -0800 (PST)
-X-Gm-Message-State: AOAM531T5b4LVOCgsVAY2I9RHCyzcj0pyiPFooahYmepe5BpHCqHpoG3
-        oVX0FxdUbylQkwEJEXuD4+g0PGgVaoJTls/fDuA=
-X-Google-Smtp-Source: ABdhPJwAQg0S1MOOurh2CiV95fqh0bRtne1MLee1I3LcHv9JUaRf2XvE22Hb8eMqRu8k7od2nyrVM5xGqeeG4XPfAhk=
-X-Received: by 2002:a17:906:158c:: with SMTP id k12mr9315554ejd.119.1608801528194;
- Thu, 24 Dec 2020 01:18:48 -0800 (PST)
+        id S1727410AbgLXJW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 04:22:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726266AbgLXJW1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Dec 2020 04:22:27 -0500
+Received: from leonov.paulk.fr (vpn-0-22.aquilenet.fr [IPv6:2a0c:e300:4:22::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEE5DC061794;
+        Thu, 24 Dec 2020 01:21:46 -0800 (PST)
+Received: from gagarine.paulk.fr (gagarine [192.168.1.127])
+        by leonov.paulk.fr (Postfix) with ESMTPS id 8AF30C013D;
+        Thu, 24 Dec 2020 10:21:43 +0100 (CET)
+Received: by gagarine.paulk.fr (Postfix, from userid 114)
+        id F0320C1D1F; Thu, 24 Dec 2020 10:21:42 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on gagarine.paulk.fr
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,SHORTCIRCUIT
+        autolearn=disabled version=3.4.2
+Received: from collins (unknown [192.168.1.1])
+        by gagarine.paulk.fr (Postfix) with ESMTPSA id 1DD67C19AD;
+        Thu, 24 Dec 2020 10:21:35 +0100 (CET)
+Date:   Thu, 24 Dec 2020 10:21:33 +0100
+From:   Paul Kocialkowski <contact@paulk.fr>
+To:     Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@siol.net>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>
+Subject: Re: [PATCH] ARM: dts: sun8i-v3s: Add CSI0 MCLK pin definition
+Message-ID: <X+RdnbRbpAa7M+Zs@collins>
+References: <20201218195033.2301127-1-contact@paulk.fr>
+ <3035881.9zrMQt1rZd@jernej-laptop>
 MIME-Version: 1.0
-References: <20201223110343.126638-1-jagan@amarulasolutions.com>
- <20201223110343.126638-5-jagan@amarulasolutions.com> <20201223115933.GC21091@kozik-lap>
- <CAMty3ZA0zrHS_wVKm8gdqU1q5ONokoT7aG_MBcWtXTJK59Bozg@mail.gmail.com>
-In-Reply-To: <CAMty3ZA0zrHS_wVKm8gdqU1q5ONokoT7aG_MBcWtXTJK59Bozg@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Thu, 24 Dec 2020 10:18:36 +0100
-X-Gmail-Original-Message-ID: <CAJKOXPfNP+6uv6PXmyTCimRd1hrQUbosnY--55yUQh4G4jfZWw@mail.gmail.com>
-Message-ID: <CAJKOXPfNP+6uv6PXmyTCimRd1hrQUbosnY--55yUQh4G4jfZWw@mail.gmail.com>
-Subject: Re: [PATCH v3 4/6] arm64: dts: imx8mm: Add Engicam i.Core MX8M Mini
- C.TOUCH 2.0
-To:     Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Li Yang <leoyang.li@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-amarula <linux-amarula@amarulasolutions.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Matteo Lisi <matteo.lisi@engicam.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="QDtH0RqLR267EXo0"
+Content-Disposition: inline
+In-Reply-To: <3035881.9zrMQt1rZd@jernej-laptop>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Dec 2020 at 13:07, Jagan Teki <jagan@amarulasolutions.com> wrote:
->
-> On Wed, Dec 23, 2020 at 5:29 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> >
-> > On Wed, Dec 23, 2020 at 04:33:41PM +0530, Jagan Teki wrote:
-> > > Engicam C.TOUCH 2.0 is an EDIMM compliant general purpose Carrier
-> > > board.
-> > >
-> > > Genaral features:
-> > > - Ethernet 10/100
-> > > - Wifi/BT
-> > > - USB Type A/OTG
-> > > - Audio Out
-> > > - CAN
-> > > - LVDS panel connector
-> > >
-> > > i.Core MX8M Mini is an EDIMM SoM based on NXP i.MX8M Mini from Engicam.
-> > >
-> > > i.Core MX8M Mini needs to mount on top of this Carrier board for
-> > > creating complete i.Core MX8M Mini C.TOUCH 2.0 board.
-> > >
-> > > Add support for it.
-> > >
-> > > Signed-off-by: Matteo Lisi <matteo.lisi@engicam.com>
-> > > Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-> > > ---
-> > > Changes for v3:
-> > > - don't maintain common nodes and include it, if no feature diff
-> > > Changes for v2:
-> > > - enabled fec1 node
-> > > - updated commit message
-> > > - dropped engicam from filename since it aligned with imx6 engicam
-> > >   dts files naming conventions.
-> > > - add i2c nodes
-> > > - fixed v1 comments
-> > >
-> > >  arch/arm64/boot/dts/freescale/Makefile        |  1 +
-> > >  .../dts/freescale/imx8mm-engicam-ctouch2.dtsi | 82 +++++++++++++++++++
-> > >  .../freescale/imx8mm-icore-mx8mm-ctouch2.dts  | 21 +++++
-> > >  3 files changed, 104 insertions(+)
-> > >  create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-engicam-ctouch2.dtsi
-> >
-> > You split some common part to ctouch2.dtsi so it can be reused in
-> > multiple places. I saw so far only one usage, where are the others?
->
-> To be clear, ctouch2.dtsi not mean for common it is C.TOUCH2 carrier
-> board dtsi. The other carrier is C.TOUCH2 10.1" Open Frame(display),
-> since DSI is not yet mainlined, I didn't add this yet.
 
-If I understand correctly: it is a DTSI which is included only by one
-DTS... and DTS does not have any other nodes. This as well is not the
-design which makes any sense. We do not create empty DTS files which
-only include one more DTSI. The contents of
-imx8mm-engicam-ctouch2.dtsi should be directly in
-imx8mm-icore-mx8mm-ctouch2.dts. That's the same problem as with v1 -
-you overcomplicate simple stuff. It really looks like you ignored the
-comments from v1 in multiple places.
+--QDtH0RqLR267EXo0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The same applies to imx8mm-engicam-edimm2.2.dtsi.
+Hi,
 
-Best regards,
-Krzysztof
+Le Tue 22 Dec 20, 09:17, Jernej =C5=A0krabec a =C3=A9crit :
+> Dne petek, 18. december 2020 ob 20:50:33 CET je Paul Kocialkowski napisal=
+(a):
+> > This adds a device-tree definition for the CSI0 MCLK pin,
+> > which can be used for feeding MIPI CSI-2 sensors.
+> >=20
+> > Signed-off-by: Paul Kocialkowski <contact@paulk.fr>
+>=20
+> Is this used anywhere? Current policy is to add pin definitions only if a=
+ny=20
+> user exists.
+
+Ah right, sorry. I'll resend this when adding a board that uses it!
+
+Cheers,
+
+Paul
+
+> Best regards,
+> Jernej
+>=20
+> > ---
+> >  arch/arm/boot/dts/sun8i-v3s.dtsi | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> >=20
+> > diff --git a/arch/arm/boot/dts/sun8i-v3s.dtsi
+> > b/arch/arm/boot/dts/sun8i-v3s.dtsi index a9f5795d4e57..bff822b9fa01 100=
+644
+> > --- a/arch/arm/boot/dts/sun8i-v3s.dtsi
+> > +++ b/arch/arm/boot/dts/sun8i-v3s.dtsi
+> > @@ -337,6 +337,12 @@ pio: pinctrl@1c20800 {
+> >  			interrupt-controller;
+> >  			#interrupt-cells =3D <3>;
+> >=20
+> > +			/omit-if-no-ref/
+> > +			csi0_mclk_pin: csi0-mclk-pin {
+> > +				pins =3D "PE20";
+> > +				function =3D "csi_mipi";
+> > +			};
+> > +
+> >  			/omit-if-no-ref/
+> >  			csi1_8bit_pins: csi1-8bit-pins {
+> >  				pins =3D "PE0", "PE2", "PE3",=20
+> "PE8", "PE9",
+>=20
+>=20
+>=20
+>=20
+
+--=20
+Developer of free digital technology and hardware support.
+
+Website: https://www.paulk.fr/
+Coding blog: https://code.paulk.fr/
+Git repositories: https://git.paulk.fr/ https://git.code.paulk.fr/
+
+--QDtH0RqLR267EXo0
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEAbcMXZQMtj1fphLChP3B6o/ulQwFAl/kXZ0ACgkQhP3B6o/u
+lQzSlw/+PFYGsL8tqDt9bxPswZ/jGXebbWN3JG16pZFi07R8HmxR8f3TaB33Xcij
+hIOSBRvJxs/1b3enlTpvlnsOYawTu/4HYgH9eEES2jBOcdCXhUO7l+AuLfeSdxYC
+1a4i5NvSmQAIkRbJVAfuvU0VJKsrILll3ugGdIDLXn0MpHIOlC7rmfRgoozPPDeV
+DjbwFXKsPZMA7fiM6TsmV/dJcYyZ/KxZ0HSKGiGQWG/VonL1nSEshspTobxBR80Y
+bslUEVpzrWwnFbw81o3nGCqc8YsVA7Xrmz7IoF3gOYlfT5e27+DxbtqUCfZCJGLj
+1HVKn4BLJ5xQ5mordHco7WNNKwf/3QgtqNDb+08PEt6HDmyyCd05F+mRMOESw1AD
+Qc2XfTGoDuaXe0NeJF9zRMd2nnW6f70gXpCDyZETEq0Dx+fpQtw24PzRZjDT0pUy
+BgWMUN+Zc81gt6sbu6R0RWhVESX+4c7CMQ/Fq7Px7IeNCD8uo51Fl27JqUa+Sfa7
+ABvfBYZ+TPTI40LKQGJ3cvu+OMyuoDpcGN63AfXMpI/amVhXhSI6KvaceCLqoNUq
+x+IydiUGXMiuKBDtotB74owfVkLmr9TXRWhQ7IsugsoYWEmBltNi7av7BrlKvvXR
+mkdChOq1qSoagnGy8cox7mju6RHzjRyUzHCERAQxNHLbDIZ1AGs=
+=XqWO
+-----END PGP SIGNATURE-----
+
+--QDtH0RqLR267EXo0--
