@@ -2,84 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA8E2E28A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 19:54:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC1612E28A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 19:57:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728891AbgLXSxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 13:53:53 -0500
-Received: from vps-vb.mhejs.net ([37.28.154.113]:52356 "EHLO vps-vb.mhejs.net"
+        id S1728878AbgLXS5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 13:57:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728578AbgLXSxw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 13:53:52 -0500
-Received: from MUA
-        by vps-vb.mhejs.net with esmtps (TLS1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.93.0.4)
-        (envelope-from <mail@maciej.szmigiero.name>)
-        id 1ksVjV-0003Ga-OE; Thu, 24 Dec 2020 19:53:05 +0100
-Subject: Re: dm-crypt with no_read_workqueue and no_write_workqueue + btrfs
- scrub = BUG()
-To:     Ignat Korchagin <ignat@cloudflare.com>
-Cc:     Alasdair G Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        device-mapper development <dm-devel@redhat.com>,
-        dm-crypt@saout.de, linux-kernel <linux-kernel@vger.kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Nobuto Murata <nobuto.murata@canonical.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-crypto <linux-crypto@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-References: <16ffadab-42ba-f9c7-8203-87fda3dc9b44@maciej.szmigiero.name>
- <74c7129b-a437-ebc4-1466-7fb9f034e006@maciej.szmigiero.name>
- <20201223205642.GA19817@gondor.apana.org.au>
- <CALrw=nFRLxpG+Qzy=wki1m6HnQUqPK9CQFGEEnB1tjSF0ex4UQ@mail.gmail.com>
-From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Message-ID: <f3b3c90e-90e6-9228-f2e5-172997eebf85@maciej.szmigiero.name>
-Date:   Thu, 24 Dec 2020 19:52:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1728700AbgLXS5F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Dec 2020 13:57:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C1AC2251F;
+        Thu, 24 Dec 2020 18:56:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608836184;
+        bh=3fEOoVN3v85ZLXYTJvG9vsq1Z12D8NDaw4YVnTSDgdM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=QA+olRfAJ2JfSJ6jt8dZ0pRjt+ErWK77VXYonAcCoB5E/Y/5FYpQqcmLSFLBddGXz
+         l8fb8djrPwC9osaoS+1pKUvygsvE4LOdg19Ga3rvlLTDzPMtglEnn0iDwkI6V8vwQX
+         uaK/A0WWEPcmPh9qbO03XKz7xYtB4LsFkXUA4sSovo0ph3U0mTjHHG1K/JWbHuEYd1
+         oxEzpA5/hJej3UzCJVHGD7hutND3EOTa9/kYBTbF1gl9WNJfamdKD7ykIor+Vu63XN
+         JqC8tQ/kIufYPG23AERxjlBbjMr4ebxK+c9/lWZrp7qzyquHJfpqh2KqRXKf19aAXL
+         ouIj7+Z8pzy7Q==
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        James Clark <james.clark@arm.com>,
+        John Garry <john.garry@huawei.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [GIT PULL] perf tools changes for v5.11, 2nd batch
+Date:   Thu, 24 Dec 2020 15:56:33 -0300
+Message-Id: <20201224185633.514066-1-acme@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <CALrw=nFRLxpG+Qzy=wki1m6HnQUqPK9CQFGEEnB1tjSF0ex4UQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24.12.2020 19:46, Ignat Korchagin wrote:
-> On Wed, Dec 23, 2020 at 8:57 PM Herbert Xu <herbert@gondor.apana.org.au> wrote:
->>
->> On Wed, Dec 23, 2020 at 04:37:34PM +0100, Maciej S. Szmigiero wrote:
->>>
->>> It looks like to me that the skcipher API might not be safe to
->>> call from a softirq context, after all.
->>
->> skcipher is safe to use in a softirq.  The problem is only in
->> dm-crypt where it tries to allocate memory with GFP_NOIO.
-> 
-> Hm.. After eliminating the GFP_NOIO (as well as some other sleeping
-> paths) from dm-crypt softirq code I still hit an occasional crash in
-> my extreme setup (QEMU with 1 CPU and cryptd_max_cpu_qlen set to 1)
-> (decoded with stacktrace_decode.sh):
-(..)
-> This happens when running dm-crypt with no_read_workqueues on top of
-> an emulated NVME in QEMU (NVME driver "completes" IO in IRQ context).
-> Somehow sending decryption requests to cryptd in some fashion in
-> softirq context corrupts the crypto queue it seems.
+Hi Linus,
 
-You can try compiling your test kernel with KASAN, as it often
-immediately points out where the memory starts to get corrupted
-(if that's the bug).
+	Please consider pulling,
 
-Enabling other "checking" kernel debug options might help debugging
-the root case of this, too.
+Best regards,
 
-> Regards,
-> Ignat
+- Arnaldo
 
-Thanks,
-Maciej
+The following changes since commit 58cf05f597b03a8212d9ecf2c79ee046d3ee8ad9:
+
+  Merge tag 'sound-fix-5.11-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound (2020-12-23 15:11:08 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-2020-12-24
+
+for you to fetch changes up to 5149303fdfe5c67ddb51c911e23262f781cd75eb:
+
+  perf probe: Fix memory leak when synthesizing SDT probes (2020-12-24 10:52:10 -0300)
+
+----------------------------------------------------------------
+perf tools changes for v5.11, 2nd batch:
+
+- Refactor 'perf stat' per CPU/socket/die/thread aggregation fixing use
+  cases in ARM machines.
+
+- Fix memory leak when synthesizing SDT probes in 'perf probe'.
+
+- Update kernel header copies related to KVM, epol_pwait, msr-index and
+  powerpc and s390 syscall tables.
+
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+
+Test results in the signed tag at:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/tag/?h=perf-tools-2020-12-24
+
+----------------------------------------------------------------
+
+Arnaldo Carvalho de Melo (8):
+      tools headers UAPI: Update epoll_pwait2 affected files
+      tools headers cpufeatures: Sync with the kernel sources
+      tools arch x86: Sync the msr-index.h copy with the kernel sources
+      tools headers UAPI: Sync kvm.h headers with the kernel sources
+      tools headers UAPI: Sync KVM's vmx.h header with the kernel sources
+      tools kvm headers: Update KVM headers from the kernel sources
+      tools headers UAPI: Synch KVM's svm.h header with the kernel
+      perf probe: Fix memory leak when synthesizing SDT probes
+
+James Clark (12):
+      perf tests: Improve topology test to check all aggregation types
+      perf cpumap: Use existing allocator to avoid using malloc
+      perf cpumap: Add new struct for cpu aggregation
+      perf stat: Replace aggregation ID with a struct
+      perf cpumap: Add new map type for aggregation
+      perf cpumap: Drop in cpu_aggr_map struct
+      perf stat aggregation: Start using cpu_aggr_id in map
+      perf stat aggregation: Add separate node member
+      perf stat aggregation: Add separate socket member
+      perf stat aggregation: Add separate die member
+      perf stat aggregation: Add separate core member
+      perf stat aggregation: Add separate thread member
+
+Tiezhu Yang (4):
+      perf powerpc: Move syscall.tbl check to check-headers.sh
+      perf s390: Move syscall.tbl check into check-headers.sh
+      perf tools: Update powerpc's syscall.tbl copy from the kernel sources
+      perf tools: Update s390's syscall.tbl copy from the kernel sources
+
+ tools/arch/arm64/include/uapi/asm/kvm.h            |   3 -
+ tools/arch/x86/include/asm/cpufeatures.h           |   2 +
+ tools/arch/x86/include/asm/msr-index.h             |   1 +
+ tools/arch/x86/include/uapi/asm/kvm.h              |   1 +
+ tools/arch/x86/include/uapi/asm/svm.h              |  28 ++
+ tools/arch/x86/include/uapi/asm/vmx.h              |   2 +
+ tools/include/uapi/asm-generic/unistd.h            |   4 +-
+ tools/include/uapi/linux/kvm.h                     |  56 ++-
+ tools/perf/arch/powerpc/Makefile                   |   7 -
+ tools/perf/arch/powerpc/entry/syscalls/syscall.tbl |  26 +-
+ tools/perf/arch/s390/Makefile                      |   4 -
+ tools/perf/arch/s390/entry/syscalls/syscall.tbl    | 396 ++++++++++++---------
+ tools/perf/arch/x86/entry/syscalls/syscall_64.tbl  |   1 +
+ tools/perf/builtin-stat.c                          | 128 +++----
+ tools/perf/check-headers.sh                        |   2 +
+ tools/perf/tests/topology.c                        |  64 +++-
+ tools/perf/trace/beauty/tracepoints/x86_msr.sh     |   2 +-
+ tools/perf/util/cpumap.c                           | 171 ++++++---
+ tools/perf/util/cpumap.h                           |  55 +--
+ tools/perf/util/probe-file.c                       |  13 +-
+ tools/perf/util/stat-display.c                     | 102 +++---
+ tools/perf/util/stat.c                             |   2 +-
+ tools/perf/util/stat.h                             |   9 +-
+ 23 files changed, 688 insertions(+), 391 deletions(-)
