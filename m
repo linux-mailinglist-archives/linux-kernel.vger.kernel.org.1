@@ -2,205 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 683C92E22EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 01:17:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF1AC2E22F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 01:21:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727923AbgLXARS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 19:17:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43604 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727029AbgLXARR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 19:17:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA1BF22512;
-        Thu, 24 Dec 2020 00:16:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1608768996;
-        bh=ujnXSHFiFWsswvxUdkNUkr2aQZ4ufrFv9vhP1L0BSrc=;
-        h=Date:From:To:Subject:From;
-        b=SzOciRoHTu7kEPttMi0GrZ6KYTU4JVO5XCFaju2LZHfo+Okn3IL2hEQ7iZAGDz4F3
-         UcjxVA8F1EmbWbECOEdmg+KI9GbirLBiA0R80ATWCb3g/gQjlAxQpyKI0ZHR+2CEiO
-         DSKcLSkKTLxCYWXLC3mcui/ODl5E7cAsklYXp+s4=
-Date:   Wed, 23 Dec 2020 16:16:35 -0800
-From:   akpm@linux-foundation.org
-To:     broonie@kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-next@vger.kernel.org, mhocko@suse.cz,
-        mm-commits@vger.kernel.org, sfr@canb.auug.org.au
-Subject:  mmotm 2020-12-23-16-15 uploaded
-Message-ID: <20201224001635.5H0RjpkF_%akpm@linux-foundation.org>
-User-Agent: s-nail v14.8.16
+        id S1728234AbgLXAVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 19:21:00 -0500
+Received: from mail-il1-f199.google.com ([209.85.166.199]:37679 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727464AbgLXAVA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 19:21:00 -0500
+Received: by mail-il1-f199.google.com with SMTP id g10so611596ile.4
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 16:20:44 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=2RC5DLvezgKsgVsXyDXIsInJoOl9BE3a8XEZljvMLKA=;
+        b=mA1q+IWk2zoA/tztooNcD0h4FpCf9fLn1UGKQ50A4MteDAYACnHFwrXRk1srJzW+ky
+         aewdI85rSz7L2faNJof+IhfLKAP5rTy8ytlwhkuH0g5d/QDPY0u+6AoCNvi9aiF5QmQk
+         E0A8ZcRSCh6hMzTmwv06GqKi8/050zh43BAxm7yhh/yeVJG4/dT3AeAS41MyAcqhGo5P
+         PHvLVwKTwSplT5jxJuE0fPCIspUEv2vX6+knybu/euGnZ8HVHgKa0g7kR7olW+mBuGcC
+         z/w8v79hPEyLU8avR43+v2DRntXt0G6+rj+MMfZ5TjXLNPDueaQtxK6xQUJlFUhr4+mu
+         k7wA==
+X-Gm-Message-State: AOAM530wryJIY+R0MSqhGmP1cHIQmC/F7d2E59tyX+yQnybMV3MtFxiz
+        l/a1+9W69JV2KNgvkw1lja3A3iPCw58hKWkV8SjZR8eKodUg
+X-Google-Smtp-Source: ABdhPJwjrPKiGzumv7cD1DTmDHR6RVzgAPDnEzkpNmIgVIAIg+Zy0wmYL/AZ/GY4TKdbaxUlrbW8VSvMF+IoPrisjbSI6zIPaUvq
+MIME-Version: 1.0
+X-Received: by 2002:a02:cc54:: with SMTP id i20mr25224327jaq.136.1608769219217;
+ Wed, 23 Dec 2020 16:20:19 -0800 (PST)
+Date:   Wed, 23 Dec 2020 16:20:19 -0800
+In-Reply-To: <0000000000005fe14605b6ea4958@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d64c7a05b72ac56e@google.com>
+Subject: Re: WARNING in isotp_tx_timer_handler
+From:   syzbot <syzbot+78bab6958a614b0c80b9@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, hdanton@sina.com, kuba@kernel.org,
+        linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mkl@pengutronix.de, netdev@vger.kernel.org, socketcan@hartkopp.net,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mm-of-the-moment snapshot 2020-12-23-16-15 has been uploaded to
+syzbot has found a reproducer for the following issue on:
 
-   https://www.ozlabs.org/~akpm/mmotm/
+HEAD commit:    614cb589 Merge tag 'acpi-5.11-rc1-2' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=151d558f500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3e7e34a83d606100
+dashboard link: https://syzkaller.appspot.com/bug?extid=78bab6958a614b0c80b9
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1196822b500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12c75f97500000
 
-mmotm-readme.txt says
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+78bab6958a614b0c80b9@syzkaller.appspotmail.com
 
-README for mm-of-the-moment:
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 0 at net/can/isotp.c:835 isotp_tx_timer_handler+0x65f/0xba0 net/can/isotp.c:835
+Modules linked in:
+CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.10.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:isotp_tx_timer_handler+0x65f/0xba0 net/can/isotp.c:835
+Code: c1 e8 03 83 e1 07 0f b6 04 28 38 c8 7f 08 84 c0 0f 85 b8 04 00 00 41 88 54 24 05 e9 07 fb ff ff 40 84 ed 75 21 e8 c1 64 7e f9 <0f> 0b 45 31 e4 e8 b7 64 7e f9 44 89 e0 48 83 c4 48 5b 5d 41 5c 41
+RSP: 0018:ffffc90000007dc8 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: ffff88802a288518 RCX: 0000000000000100
+RDX: ffffffff8b49bc00 RSI: ffffffff87f4e3ff RDI: 0000000000000003
+RBP: 0000000000000000 R08: ffffffff8a7baf80 R09: ffffffff87f4ddfe
+R10: 0000000000000003 R11: 0000000000000000 R12: 0000000000000000
+R13: ffff8880b9c26c80 R14: ffff8880b9c26a00 R15: ffff88802a288000
+FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffd91884b10 CR3: 000000001b5d4000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <IRQ>
+ __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
+ __hrtimer_run_queues+0x609/0xea0 kernel/time/hrtimer.c:1583
+ hrtimer_run_softirq+0x17b/0x360 kernel/time/hrtimer.c:1600
+ __do_softirq+0x2bc/0xa77 kernel/softirq.c:343
+ asm_call_irq_on_stack+0xf/0x20
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+ do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:226 [inline]
+ __irq_exit_rcu+0x17f/0x200 kernel/softirq.c:420
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:432
+ sysvec_apic_timer_interrupt+0x4d/0x100 arch/x86/kernel/apic/apic.c:1096
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:628
+RIP: 0010:native_save_fl arch/x86/include/asm/irqflags.h:29 [inline]
+RIP: 0010:arch_local_save_flags arch/x86/include/asm/irqflags.h:79 [inline]
+RIP: 0010:arch_irqs_disabled arch/x86/include/asm/irqflags.h:169 [inline]
+RIP: 0010:acpi_safe_halt drivers/acpi/processor_idle.c:111 [inline]
+RIP: 0010:acpi_idle_do_entry+0x1c9/0x250 drivers/acpi/processor_idle.c:516
+Code: ed 26 57 f8 84 db 75 ac e8 64 20 57 f8 e8 3f f6 5c f8 e9 0c 00 00 00 e8 55 20 57 f8 0f 00 2d ae 57 ae 00 e8 49 20 57 f8 fb f4 <9c> 5b 81 e3 00 02 00 00 fa 31 ff 48 89 de e8 24 28 57 f8 48 85 db
+RSP: 0018:ffffffff8b407d60 EFLAGS: 00000293
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffffffff8b49bc00 RSI: ffffffff891c2877 RDI: 0000000000000000
+RBP: ffff888141653064 R08: 0000000000000001 R09: 0000000000000001
+R10: ffffffff81791ed8 R11: 0000000000000000 R12: 0000000000000001
+R13: ffff888141653000 R14: ffff888141653064 R15: ffff888017f65004
+ acpi_idle_enter+0x361/0x500 drivers/acpi/processor_idle.c:647
+ cpuidle_enter_state+0x1b1/0xc80 drivers/cpuidle/cpuidle.c:237
+ cpuidle_enter+0x4a/0xa0 drivers/cpuidle/cpuidle.c:351
+ call_cpuidle kernel/sched/idle.c:158 [inline]
+ cpuidle_idle_call kernel/sched/idle.c:239 [inline]
+ do_idle+0x3eb/0x590 kernel/sched/idle.c:299
+ cpu_startup_entry+0x14/0x20 kernel/sched/idle.c:396
+ start_kernel+0x496/0x4b7 init/main.c:1061
+ secondary_startup_64_no_verify+0xb0/0xbb
 
-https://www.ozlabs.org/~akpm/mmotm/
-
-This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
-more than once a week.
-
-You will need quilt to apply these patches to the latest Linus release (5.x
-or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
-https://ozlabs.org/~akpm/mmotm/series
-
-The file broken-out.tar.gz contains two datestamp files: .DATE and
-.DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
-followed by the base kernel version against which this patch series is to
-be applied.
-
-This tree is partially included in linux-next.  To see which patches are
-included in linux-next, consult the `series' file.  Only the patches
-within the #NEXT_PATCHES_START/#NEXT_PATCHES_END markers are included in
-linux-next.
-
-
-A full copy of the full kernel tree with the linux-next and mmotm patches
-already applied is available through git within an hour of the mmotm
-release.  Individual mmotm releases are tagged.  The master branch always
-points to the latest release, so it's constantly rebasing.
-
-	https://github.com/hnaz/linux-mm
-
-The directory https://www.ozlabs.org/~akpm/mmots/ (mm-of-the-second)
-contains daily snapshots of the -mm tree.  It is updated more frequently
-than mmotm, and is untested.
-
-A git copy of this tree is also available at
-
-	https://github.com/hnaz/linux-mm
-
-
-
-This mmotm tree contains the following patches against 5.10:
-(patches marked "*" will be included in linux-next)
-
-  origin.patch
-* mm-slub-call-account_slab_page-after-slab-page-initialization.patch
-* mm-memcg-slab-pre-allocate-obj_cgroups-for-slab-caches-with-slab_account.patch
-* lib-zlib-fix-inflating-zlib-streams-on-s390.patch
-* selftests-vm-fix-building-protection-keys-test.patch
-* mm-hugetlb-fix-deadlock-in-hugetlb_cow-error-path.patch
-* revert-kbuild-avoid-static_assert-for-genksyms.patch
-* zlib-move-export_symbol-and-module_license-out-of-dfltcc_symsc.patch
-* kdev_t-always-inline-major-minor-helper-functions.patch
-* mm-memmap-defer-init-dosnt-work-as-expected.patch
-* checkpatch-prefer-strscpy-to-strlcpy.patch
-* mm-add-prototype-for-__add_to_page_cache_locked.patch
-* mm-mremap-fix-extent-calculation.patch
-* mm-generalise-cow-smc-tlb-flushing-race-comment.patch
-* proc-kpageflags-prevent-an-integer-overflow-in-stable_page_flags.patch
-* proc-kpageflags-do-not-use-uninitialized-struct-pages.patch
-* ocfs2-clear-links-count-in-ocfs2_mknod-if-an-error-occurs.patch
-* ocfs2-fix-ocfs2-corrupt-when-iputting-an-inode.patch
-* ramfs-support-o_tmpfile.patch
-* kernel-watchdog-flush-all-printk-nmi-buffers-when-hardlockup-detected.patch
-  mm.patch
-* mm-tracing-record-slab-name-for-kmem_cache_free.patch
-* mm-msync-exit-early-when-the-flags-is-an-ms_async-and-start-vm_start.patch
-* mm-swap-dont-setpageworkingset-unconditionally-during-swapin.patch
-* mm-memcontrol-fix-nr_anon_thps-accounting-in-charge-moving.patch
-* mm-memcontrol-convert-nr_anon_thps-account-to-pages.patch
-* mm-memcontrol-convert-nr_file_thps-account-to-pages.patch
-* mm-memcontrol-convert-nr_shmem_thps-account-to-pages.patch
-* mm-memcontrol-convert-nr_shmem_pmdmapped-account-to-pages.patch
-* mm-memcontrol-convert-nr_file_pmdmapped-account-to-pages.patch
-* mm-memcontrol-make-the-slab-calculation-consistent.patch
-* mm-memcontrol-optimize-per-lruvec-stats-counter-memory-usage.patch
-* mm-memcontrol-optimize-per-lruvec-stats-counter-memory-usage-checkpatch-fixes.patch
-* mm-memcg-revise-the-using-condition-of-lock_page_lruvec-function-series.patch
-* mm-memcg-remove-rcu-locking-for-lock_page_lruvec-function-series.patch
-* mm-mmap-remove-unnecessary-local-variable.patch
-* mm-mmap-replace-if-cond-bug-with-bug_on.patch
-* mm-mmap-fix-the-adjusted-length-error.patch
-* mm-page_reporting-use-list_entry_is_head-in-page_reporting_cycle.patch
-* mm-huge_memoryc-update-tlb-entry-if-pmd-is-changed.patch
-* mips-do-not-call-flush_tlb_all-when-setting-pmd-entry.patch
-* mm-vmscan-__isolate_lru_page_prepare-clean-up.patch
-* mm-compaction-remove-rcu_read_lock-during-page-compaction.patch
-* mm-memblock-enforce-overlap-of-memorymemblock-and-memoryreserved.patch
-* mm-fix-initialization-of-struct-page-for-holes-in-memory-layout.patch
-* mm-fix-initialization-of-struct-page-for-holes-in-memory-layout-checkpatch-fixes.patch
-* mm-hugetlb-change-hugetlb_reserve_pages-to-type-bool.patch
-* hugetlbfs-remove-special-hugetlbfs_set_page_dirty.patch
-* mm-make-pagecache-tagged-lookups-return-only-head-pages.patch
-* mm-shmem-use-pagevec_lookup-in-shmem_unlock_mapping.patch
-* mm-swap-optimise-get_shadow_from_swap_cache.patch
-* mm-add-fgp_entry.patch
-* mm-filemap-rename-find_get_entry-to-mapping_get_entry.patch
-* mm-filemap-add-helper-for-finding-pages.patch
-* mm-filemap-add-helper-for-finding-pages-fix.patch
-* mm-filemap-add-mapping_seek_hole_data.patch
-* mm-filemap-add-mapping_seek_hole_data-fix.patch
-* iomap-use-mapping_seek_hole_data.patch
-* mm-add-and-use-find_lock_entries.patch
-* mm-add-and-use-find_lock_entries-fix.patch
-* mm-add-an-end-parameter-to-find_get_entries.patch
-* mm-add-an-end-parameter-to-pagevec_lookup_entries.patch
-* mm-remove-nr_entries-parameter-from-pagevec_lookup_entries.patch
-* mm-pass-pvec-directly-to-find_get_entries.patch
-* mm-remove-pagevec_lookup_entries.patch
-* mmthpshmem-limit-shmem-thp-alloc-gfp_mask.patch
-* mmthpshm-limit-gfp-mask-to-no-more-than-specified.patch
-* mmthpshmem-make-khugepaged-obey-tmpfs-mount-flags.patch
-* mm-cma-allocate-cma-areas-bottom-up.patch
-* mm-cma-allocate-cma-areas-bottom-up-fix.patch
-* mm-cma-allocate-cma-areas-bottom-up-fix-2.patch
-* memblock-do-not-start-bottom-up-allocations-with-kernel_end.patch
-* mm-vmstat-fix-proc-sys-vm-stat_refresh-generating-false-warnings.patch
-* mm-vmstat-fix-proc-sys-vm-stat_refresh-generating-false-warnings-fix.patch
-* mm-vmstat-fix-proc-sys-vm-stat_refresh-generating-false-warnings-fix-2.patch
-* mm-zswap-clean-up-confusing-comment.patch
-* mm-remove-arch_remap-and-mm-arch-hooksh.patch
-* mm-add-kernel-electric-fence-infrastructure.patch
-* mm-add-kernel-electric-fence-infrastructure-fix.patch
-* mm-add-kernel-electric-fence-infrastructure-fix-2.patch
-* x86-kfence-enable-kfence-for-x86.patch
-* arm64-kfence-enable-kfence-for-arm64.patch
-* kfence-use-pt_regs-to-generate-stack-trace-on-faults.patch
-* mm-kfence-insert-kfence-hooks-for-slab.patch
-* mm-kfence-insert-kfence-hooks-for-slub.patch
-* kfence-kasan-make-kfence-compatible-with-kasan.patch
-* kfence-kasan-make-kfence-compatible-with-kasan-fix.patch
-* kfence-documentation-add-kfence-documentation.patch
-* kfence-add-test-suite.patch
-* kfence-add-test-suite-fix.patch
-* maintainers-add-entry-for-kfence.patch
-* info-task-hung-in-generic_file_write_iter.patch
-* info-task-hung-in-generic_file_write-fix.patch
-* kernel-hung_taskc-monitor-killed-tasks.patch
-* proc-wchan-use-printk-format-instead-of-lookup_symbol_name.patch
-* sysctlc-fix-underflow-value-setting-risk-in-vm_table.patch
-* proc-sysctl-make-protected_-world-readable.patch
-* lib-linear_ranges-fix-repeated-words-one-typo.patch
-* lib-optimize-cpumask_local_spread.patch
-* aio-simplify-read_events.patch
-  linux-next.patch
-  linux-next-git-rejects.patch
-* mm-add-definition-of-pmd_page_order.patch
-* mmap-make-mlock_future_check-global.patch
-* set_memory-allow-set_direct_map__noflush-for-multiple-pages.patch
-* set_memory-allow-set_direct_map__noflush-for-multiple-pages-fix.patch
-* set_memory-allow-querying-whether-set_direct_map_-is-actually-enabled.patch
-* set_memory-allow-querying-whether-set_direct_map_-is-actually-enabled-fix.patch
-* mm-introduce-memfd_secret-system-call-to-create-secret-memory-areas.patch
-* mm-introduce-memfd_secret-system-call-to-create-secret-memory-areas-fix.patch
-* secretmem-use-pmd-size-pages-to-amortize-direct-map-fragmentation.patch
-* secretmem-add-memcg-accounting.patch
-* pm-hibernate-disable-when-there-are-active-secretmem-users.patch
-* arch-mm-wire-up-memfd_secret-system-call-were-relevant.patch
-* arch-mm-wire-up-memfd_secret-system-call-were-relevant-fix.patch
-* arch-mm-wire-up-memfd_secret-system-call-were-relevant-fix-fix.patch
-* secretmem-test-add-basic-selftest-for-memfd_secret2.patch
-* secretmem-test-add-basic-selftest-for-memfd_secret2-fix.patch
-  make-sure-nobodys-leaking-resources.patch
-  releasing-resources-with-children.patch
-  mutex-subsystem-synchro-test-module.patch
-  kernel-forkc-export-kernel_thread-to-modules.patch
-  workaround-for-a-pci-restoring-bug.patch
