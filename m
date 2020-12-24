@@ -2,139 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC1612E28A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 19:57:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E4862E28AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 20:03:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728878AbgLXS5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 13:57:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38282 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728700AbgLXS5F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 13:57:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C1AC2251F;
-        Thu, 24 Dec 2020 18:56:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608836184;
-        bh=3fEOoVN3v85ZLXYTJvG9vsq1Z12D8NDaw4YVnTSDgdM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=QA+olRfAJ2JfSJ6jt8dZ0pRjt+ErWK77VXYonAcCoB5E/Y/5FYpQqcmLSFLBddGXz
-         l8fb8djrPwC9osaoS+1pKUvygsvE4LOdg19Ga3rvlLTDzPMtglEnn0iDwkI6V8vwQX
-         uaK/A0WWEPcmPh9qbO03XKz7xYtB4LsFkXUA4sSovo0ph3U0mTjHHG1K/JWbHuEYd1
-         oxEzpA5/hJej3UzCJVHGD7hutND3EOTa9/kYBTbF1gl9WNJfamdKD7ykIor+Vu63XN
-         JqC8tQ/kIufYPG23AERxjlBbjMr4ebxK+c9/lWZrp7qzyquHJfpqh2KqRXKf19aAXL
-         ouIj7+Z8pzy7Q==
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        James Clark <james.clark@arm.com>,
-        John Garry <john.garry@huawei.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [GIT PULL] perf tools changes for v5.11, 2nd batch
-Date:   Thu, 24 Dec 2020 15:56:33 -0300
-Message-Id: <20201224185633.514066-1-acme@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S1728840AbgLXTCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 14:02:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728681AbgLXTCp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Dec 2020 14:02:45 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58C32C061573
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 11:02:05 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id b9so4333887ejy.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 11:02:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=DY0LSNRuJC1VTeyAItmzj6dM2VdxUyAti0XxIdcaZ5E=;
+        b=2Hpe/9xrT4zb3yTL9CqVhR3qbkcAZlcrex/9QmVwHiYnU5FGpHDjYQnhqRsWGwR3wK
+         yE/9ocCEgIRo4zeJU5frghG2LiiqWZVf1OLu0ZhT97ZogfqwAspbxcFCFIGHBxyAuIbk
+         0uNyrtgCFRG1aXjLxvFdEl24Shoo4nWdJhCqhFhXMTuprTiWjBhODbwN+3oqVcI+ihyF
+         cHvFWTRtPmbq7zS0udGbvQq1qSlP+A39wDwavDMYBDgvdKwS+vRxr+wVAH3/L1AJjh7T
+         tBrxi88QLFgkC1gT1ebLzHq159LlR1hFYxw/jfwyHHBpH/TTxn9cQTpBI1e7rdjksXkc
+         3dvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=DY0LSNRuJC1VTeyAItmzj6dM2VdxUyAti0XxIdcaZ5E=;
+        b=oKpp80NqyEueve0MNDI1kp/63kXVAPFxYei65dmJcrEM3hwMzkknNNnilgWnTVjioa
+         6/UukCvOVa6ZYpTWGKU1pyRJJDgWsoPh27UxFQffUwOcnJvL2SEjmMaFCRe2IgGKO1/p
+         yYYJfx4PXs5mAThxWLBpEugIvq5qiVmJ39F7dzaTZHOQitIeBMcmyIkkIT5ZbmJgOQRE
+         t4paFkq3IS+dGK/aKBf0+Non0/jlne1H454R/SctrJD08cMJahHOpD9k6VV2cZS8YEgt
+         8OQFICFKOzKHzMUrUU7lUigxlt+Q5Gb7r3SMgaHDeAACDQjh3qREuo4OJg+WdnVNjM4y
+         x09w==
+X-Gm-Message-State: AOAM530vnrCip8WyucWM7nW2lyVGMJ9xr4Ub4G76pddwH6RvwopvPfKV
+        sQ5oBj5Hcdoi8q48A/WdNQmbP9Ebve+qkYx8O6YS+g==
+X-Google-Smtp-Source: ABdhPJy/1Krz5HO9oGVYRjEamxCdyjL7FIkyx0/iZh9QIuQOwePG7Q6ROPFrOC+psbIFJvxzYJJgnYMQUctla/j4jgc=
+X-Received: by 2002:a17:906:a3c7:: with SMTP id ca7mr29855808ejb.523.1608836523729;
+ Thu, 24 Dec 2020 11:02:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 24 Dec 2020 11:01:53 -0800
+Message-ID: <CAPcyv4iufHK1g-KvhOsh5pwNL=DwK5ydVR7NWePaco5v5XL24A@mail.gmail.com>
+Subject: [GIT PULL] libnvdimm for v5.11
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi Linus,
 
-	Please consider pulling,
+Twas the day before Christmas and the only thing stirring in libnvdimm
+/ device-dax land is a pile of miscellaneous fixups and cleanups. If
+this is too late for -rc1 I'll pull out the fixes and resubmit after
+the holidays. The bulk of it has appeared in -next save the last two
+patches to device-dax that are passed my build and unit tests.
 
-Best regards,
+Please pull from:
 
-- Arnaldo
+  git://git.kernel.org/pub/scm/linux/kernel/git/nvdimm/nvdimm
+tags/libnvdimm-for-5.11
 
-The following changes since commit 58cf05f597b03a8212d9ecf2c79ee046d3ee8ad9:
+---
 
-  Merge tag 'sound-fix-5.11-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound (2020-12-23 15:11:08 -0800)
+The following changes since commit 09162bc32c880a791c6c0668ce0745cf7958f576:
+
+  Linux 5.10-rc4 (2020-11-15 16:44:31 -0800)
 
 are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-2020-12-24
+  git://git.kernel.org/pub/scm/linux/kernel/git/nvdimm/nvdimm
+tags/libnvdimm-for-5.11
 
-for you to fetch changes up to 5149303fdfe5c67ddb51c911e23262f781cd75eb:
+for you to fetch changes up to 127c3d2e7e8a79628160e56e54d2be099bdd47c6:
 
-  perf probe: Fix memory leak when synthesizing SDT probes (2020-12-24 10:52:10 -0300)
-
-----------------------------------------------------------------
-perf tools changes for v5.11, 2nd batch:
-
-- Refactor 'perf stat' per CPU/socket/die/thread aggregation fixing use
-  cases in ARM machines.
-
-- Fix memory leak when synthesizing SDT probes in 'perf probe'.
-
-- Update kernel header copies related to KVM, epol_pwait, msr-index and
-  powerpc and s390 syscall tables.
-
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-
-Test results in the signed tag at:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/tag/?h=perf-tools-2020-12-24
+  Merge branch 'for-5.11/dax' into for-5.11/libnvdimm (2020-12-24
+10:14:04 -0800)
 
 ----------------------------------------------------------------
+libnvdimm for 5.11
 
-Arnaldo Carvalho de Melo (8):
-      tools headers UAPI: Update epoll_pwait2 affected files
-      tools headers cpufeatures: Sync with the kernel sources
-      tools arch x86: Sync the msr-index.h copy with the kernel sources
-      tools headers UAPI: Sync kvm.h headers with the kernel sources
-      tools headers UAPI: Sync KVM's vmx.h header with the kernel sources
-      tools kvm headers: Update KVM headers from the kernel sources
-      tools headers UAPI: Synch KVM's svm.h header with the kernel
-      perf probe: Fix memory leak when synthesizing SDT probes
+- Fix a long standing block-window-namespace issue surfaced by the ndctl
+  change to attempt to preserve the kernel device name over a
+  'reconfigure'
 
-James Clark (12):
-      perf tests: Improve topology test to check all aggregation types
-      perf cpumap: Use existing allocator to avoid using malloc
-      perf cpumap: Add new struct for cpu aggregation
-      perf stat: Replace aggregation ID with a struct
-      perf cpumap: Add new map type for aggregation
-      perf cpumap: Drop in cpu_aggr_map struct
-      perf stat aggregation: Start using cpu_aggr_id in map
-      perf stat aggregation: Add separate node member
-      perf stat aggregation: Add separate socket member
-      perf stat aggregation: Add separate die member
-      perf stat aggregation: Add separate core member
-      perf stat aggregation: Add separate thread member
+- Fix a few error path memory leaks in nfit and device-dax
 
-Tiezhu Yang (4):
-      perf powerpc: Move syscall.tbl check to check-headers.sh
-      perf s390: Move syscall.tbl check into check-headers.sh
-      perf tools: Update powerpc's syscall.tbl copy from the kernel sources
-      perf tools: Update s390's syscall.tbl copy from the kernel sources
+- Silence a smatch warning in the ioctl path
 
- tools/arch/arm64/include/uapi/asm/kvm.h            |   3 -
- tools/arch/x86/include/asm/cpufeatures.h           |   2 +
- tools/arch/x86/include/asm/msr-index.h             |   1 +
- tools/arch/x86/include/uapi/asm/kvm.h              |   1 +
- tools/arch/x86/include/uapi/asm/svm.h              |  28 ++
- tools/arch/x86/include/uapi/asm/vmx.h              |   2 +
- tools/include/uapi/asm-generic/unistd.h            |   4 +-
- tools/include/uapi/linux/kvm.h                     |  56 ++-
- tools/perf/arch/powerpc/Makefile                   |   7 -
- tools/perf/arch/powerpc/entry/syscalls/syscall.tbl |  26 +-
- tools/perf/arch/s390/Makefile                      |   4 -
- tools/perf/arch/s390/entry/syscalls/syscall.tbl    | 396 ++++++++++++---------
- tools/perf/arch/x86/entry/syscalls/syscall_64.tbl  |   1 +
- tools/perf/builtin-stat.c                          | 128 +++----
- tools/perf/check-headers.sh                        |   2 +
- tools/perf/tests/topology.c                        |  64 +++-
- tools/perf/trace/beauty/tracepoints/x86_msr.sh     |   2 +-
- tools/perf/util/cpumap.c                           | 171 ++++++---
- tools/perf/util/cpumap.h                           |  55 +--
- tools/perf/util/probe-file.c                       |  13 +-
- tools/perf/util/stat-display.c                     | 102 +++---
- tools/perf/util/stat.c                             |   2 +-
- tools/perf/util/stat.h                             |   9 +-
- 23 files changed, 688 insertions(+), 391 deletions(-)
+- Miscellaneous cleanups
+
+----------------------------------------------------------------
+Dan Williams (4):
+      libnvdimm/namespace: Fix reaping of invalidated
+block-window-namespace labels
+      ACPI: NFIT: Fix input validation of bus-family
+      device-dax: Fix range release
+      Merge branch 'for-5.11/dax' into for-5.11/libnvdimm
+
+Enrico Weigelt (1):
+      libnvdimm: Cleanup include of badblocks.h
+
+Wang Hai (1):
+      device-dax/core: Fix memory leak when rmmod dax.ko
+
+Zhang Qilong (1):
+      libnvdimm/label: Return -ENXIO for no slot in __blk_label_update
+
+Zhen Lei (3):
+      ACPI/nfit: avoid accessing uninitialized memory in acpi_nfit_ctl()
+      device-dax: delete a redundancy check in dev_dax_validate_align()
+      device-dax: Avoid an unnecessary check in alloc_dev_dax_range()
+
+Zheng Yongjun (1):
+      device-dax/pmem: Convert comma to semicolon
+
+ drivers/acpi/nfit/core.c | 15 ++++++----
+ drivers/dax/bus.c        | 71 ++++++++++++++++++------------------------------
+ drivers/dax/pmem/core.c  |  2 +-
+ drivers/dax/super.c      |  1 +
+ drivers/nvdimm/btt.h     |  3 +-
+ drivers/nvdimm/claim.c   |  1 +
+ drivers/nvdimm/core.c    |  1 -
+ drivers/nvdimm/label.c   | 13 ++++++++-
+ 8 files changed, 54 insertions(+), 53 deletions(-)
