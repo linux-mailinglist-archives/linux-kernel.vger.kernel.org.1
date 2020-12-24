@@ -2,60 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06CBB2E2860
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 18:28:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39E262E2864
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 18:31:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728655AbgLXR17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 12:27:59 -0500
-Received: from smtprelay0232.hostedemail.com ([216.40.44.232]:37530 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726839AbgLXR16 (ORCPT
+        id S1728795AbgLXRbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 12:31:01 -0500
+Received: from bedivere.hansenpartnership.com ([96.44.175.130]:37900 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726839AbgLXRbA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 12:27:58 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id CE9E818026208;
-        Thu, 24 Dec 2020 17:27:17 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2693:2828:3138:3139:3140:3141:3142:3350:3622:3865:3868:3871:3873:4321:5007:7652:10004:10400:10848:11026:11232:11658:11914:12043:12296:12297:12740:12895:13069:13311:13357:13439:13894:14659:14721:21080:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:19,LUA_SUMMARY:none
-X-HE-Tag: war02_5e115fe27473
-X-Filterd-Recvd-Size: 1406
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf07.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 24 Dec 2020 17:27:16 +0000 (UTC)
-Message-ID: <c4ad08aeb9ed8e3f8bfaedc3e9e0df245d4a93a3.camel@perches.com>
-Subject: Re: [PATCH] staging: ralink-gdma: Fixed blank line coding style
- issue
-From:   Joe Perches <joe@perches.com>
-To:     Ayoub Soussi <ayoubfme@gmail.com>, gregkh@linuxfoundation.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Date:   Thu, 24 Dec 2020 09:27:15 -0800
-In-Reply-To: <20201223202230.31325-1-ayoubfme@gmail.com>
-References: <20201223202230.31325-1-ayoubfme@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Thu, 24 Dec 2020 12:31:00 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 97C271280937;
+        Thu, 24 Dec 2020 09:30:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1608831019;
+        bh=ZrDKMysEKyRnhYwGjS71SXXWaighP0ldoE8CWdohIrg=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=r8mNX+IrqMNTTr696CzKuwaS+Sq91rTomLLBTI6H2DQdIAq2hg33Y7UH5jb+Go3cI
+         tb6nDGo60ZPDH/51WQjOHUSL6ZxKTbUHp+YB5IXye5R/Z2sAeuMEGaBDZTuMX5elLc
+         TByeaVv9dfWCLAVPKYUK4GoJKGCinejD2LtKCi08=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id h3bvsEulAG7l; Thu, 24 Dec 2020 09:30:19 -0800 (PST)
+Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::c447])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 8B4791280936;
+        Thu, 24 Dec 2020 09:30:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1608831019;
+        bh=ZrDKMysEKyRnhYwGjS71SXXWaighP0ldoE8CWdohIrg=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=r8mNX+IrqMNTTr696CzKuwaS+Sq91rTomLLBTI6H2DQdIAq2hg33Y7UH5jb+Go3cI
+         tb6nDGo60ZPDH/51WQjOHUSL6ZxKTbUHp+YB5IXye5R/Z2sAeuMEGaBDZTuMX5elLc
+         TByeaVv9dfWCLAVPKYUK4GoJKGCinejD2LtKCi08=
+Message-ID: <bdd002f433928dd545d336a982516afa4e095d49.camel@HansenPartnership.com>
+Subject: Re: [PATCH v1 0/6] no-copy bvec
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     dgilbert@interlog.com, Christoph Hellwig <hch@infradead.org>,
+        Pavel Begunkov <asml.silence@gmail.com>
+Cc:     Ming Lei <ming.lei@redhat.com>, linux-block@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-doc@vger.kernel.org
+Date:   Thu, 24 Dec 2020 09:30:17 -0800
+In-Reply-To: <8abc56c2-4db8-5ee3-ab2d-8960d0eeeb0d@interlog.com>
+References: <cover.1607976425.git.asml.silence@gmail.com>
+         <20201215014114.GA1777020@T590>
+         <103235c1-e7d0-0b55-65d0-013d1a09304e@gmail.com>
+         <20201215120357.GA1798021@T590>
+         <e755fec3-4181-1414-0603-02e1a1f4e9eb@gmail.com>
+         <20201222141112.GE13079@infradead.org>
+         <933030f0-e428-18fd-4668-68db4f14b976@gmail.com>
+         <20201223155145.GA5902@infradead.org>
+         <f06ece44a86eb9c8ef07bbd9f6f53342366b7751.camel@HansenPartnership.com>
+         <8abc56c2-4db8-5ee3-ab2d-8960d0eeeb0d@interlog.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-12-23 at 21:22 +0100, Ayoub Soussi wrote:
-> Fixed coding style issue.
-[]
-> diff --git a/drivers/staging/ralink-gdma/ralink-gdma.c b/drivers/staging/ralink-gdma/ralink-gdma.c
-[]
-> @@ -122,6 +122,7 @@ struct gdma_dma_dev {
->  	struct gdma_data *data;
->  	void __iomem *base;
->  	struct tasklet_struct task;
-> +
->  	volatile unsigned long chan_issued;
->  	atomic_t cnt;
+On Wed, 2020-12-23 at 15:23 -0500, Douglas Gilbert wrote:
+> On 2020-12-23 11:04 a.m., James Bottomley wrote:
+> > On Wed, 2020-12-23 at 15:51 +0000, Christoph Hellwig wrote:
+> > > On Wed, Dec 23, 2020 at 12:52:59PM +0000, Pavel Begunkov wrote:
+> > > > Can scatterlist have 0-len entries? Those are directly
+> > > > translated into bvecs, e.g. in nvme/target/io-cmd-file.c and
+> > > > target/target_core_file.c. I've audited most of others by this
+> > > > moment, they're fine.
+> > > 
+> > > For block layer SGLs we should never see them, and for nvme
+> > > neither. I think the same is true for the SCSI target code, but
+> > > please double check.
+> > 
+> > Right, no-one ever wants to see a 0-len scatter list entry.  The
+> > reason is that every driver uses the sgl to program the device DMA
+> > engine in the way NVME does.  a 0 length sgl would be a dangerous
+> > corner case: some DMA engines would ignore it and others would go
+> > haywire, so if we ever let a 0 length list down into the driver,
+> > they'd have to understand the corner case behaviour of their DMA
+> > engine and filter it accordingly, which is why we disallow them in
+> > the upper levels, since they're effective nops anyway.
+> 
+> When using scatter gather lists at the far end (i.e. on the storage
+> device) the T10 examples (WRITE SCATTERED and POPULATE TOKEN in SBC-
+> 4) explicitly allow the "number of logical blocks" in their sgl_s to
+> be zero and state that it is _not_ to be considered an error.
 
-This is presumably a checkpatch false positive.
-checkpatch is not now nor never will be a perfect tool.
+But that's pretty irrelevant.  The scatterlists that block has been
+constructing to drive DMA engines pre-date SCSI's addition of SGLs by
+decades (all SCSI commands before the object commands use a linear
+buffer which is implemented in the HBA engine as a scatterlist but not
+described by the SCSI standard as one).
 
-Please consider what you are doing and what the desired coding style is
-before submitting patches.
+So the answer to the question should the block layer emit zero length
+sgl elements is "no" because they can confuse some DMA engines.
+
+If there's a more theoretical question of whether the target driver in
+adding commands it doesn't yet support should inject zero length SGL
+elements into block because SCSI allows it, the answer is still "no"
+because we don't want block to have SGLs that may confuse other DMA
+engines.  There's lots of daft corner cases in the SCSI standard we
+don't implement and a nop for SGL elements seems to be one of the more
+hare brained because it adds no useful feature and merely causes
+compatibility issues.
+
+James
+ 
 
