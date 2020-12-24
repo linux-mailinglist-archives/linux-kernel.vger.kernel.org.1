@@ -2,94 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D39342E2882
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 19:13:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7C0B2E2892
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 19:30:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728762AbgLXSNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 13:13:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35548 "EHLO
+        id S1728754AbgLXS2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 13:28:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727184AbgLXSNf (ORCPT
+        with ESMTP id S1727778AbgLXS2s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 13:13:35 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 964FCC061575
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 10:12:54 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id lt17so4184608ejb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 10:12:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=i/bZV6f3Jgwpe0hsSvhOuCb/+QOJ83g18wcZboghI0Y=;
-        b=pWkJ0CXUF8MOopXQSCftP9Fm67ZjipXsPCwZm8GMMkKqJtoWlxDJUJYdF2lnKGWXHb
-         YFQdfLFSmHWXVtxbT3IFdFBl2TFMqW88RjwH0eSrF3Xdwctqr5jHx6uMxpPWBpPY8u2l
-         qgCwhmGtXfzNY4oCS1wBMulXx+5hOxrBxSmGuQk+650dKKYwy9Zfy3aQwq0YumaW1xvE
-         mV+BVqGJE49DEVPOctznZcE8Wu+rgKXqMAxML1BSyTXRlceltOFco1UuEIYIfQgtyNtM
-         6Nudfd1V9upHxx2jcFQPYzw9cWnw2KiTds+22HcXkxhhUJTfDD0XoirOwUq2Ks7Zqd0P
-         FCTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i/bZV6f3Jgwpe0hsSvhOuCb/+QOJ83g18wcZboghI0Y=;
-        b=OqNuQ4ej2L2dfF/xqI35PFzk4ov1qrXFecw96K3d8B0N1dmHakvuFYV3uD5FUzfchF
-         qOQ4F/YdvQFTtauw8A8P05h+4qWcrYyibEWP5a/dsT+puzndyduYyiMa4HrgaYMVSvUP
-         RUefOTtI5b43KBSUjrIeIx8q4vwdltCLzHyi3gKHDc3IgO2Res2kiv0XQmBAWgr5qBNg
-         s3ognhZmeHdfolSuhWFVja967XMb8QSzt4GG7U6Tu6YBT/mfRTsxi7i3sGNRKbb66pe9
-         bFooj4eLTeslZj4Y2aGdiFZAl6uEqxE1OSIDIPMO5ikQstA1zS9rHmIsze+mWTLPyk5g
-         /vew==
-X-Gm-Message-State: AOAM530e8/8ceTH3m1EaAF1gK41IhS7jIKePEDLZPX5+xpieG7VBRmBy
-        J2bYs05I4lMLk+7pWgQoaVdlN3xlAPG5SOZGbiX0aA==
-X-Google-Smtp-Source: ABdhPJxUVrAI6Hfaopd0MhhblCfzYhbFzcD2Qva6RHDD6HsvjDMOfogg30xNXJ/eArWSfgnSt92nXNVX0Apo7Zs1/5Q=
-X-Received: by 2002:a17:906:a3c7:: with SMTP id ca7mr29715074ejb.523.1608833573249;
- Thu, 24 Dec 2020 10:12:53 -0800 (PST)
+        Thu, 24 Dec 2020 13:28:48 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0257C061573;
+        Thu, 24 Dec 2020 10:28:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=VGafzW+gDLjGLMNoybNSBGNiUL4/Bi3JEFJxz+NnDOo=; b=EhJff5vA4Ww2XgctyYRLpm5zaW
+        fRb++J29JhQTcpWEtDdKhunxvfrubKlxzZI6mk3AeZEvGqrgkAZ8DnAxMnvlREgOTa9odqM6ubPUi
+        9VoylnGnIYzu+2X/G3J/CtrUMdrFMijVEKnIuYlm4v4kszYsGULZp1Nt3fBzThEONGsRLtKCj+CQs
+        Cs8EOGH/qKHER6lmIV04pGHhCSwHwvC3qezfOo6SqzswdE6qkFIfRoLDly20ykRbeL6Gi09JsixXi
+        8Nam8gVIdPJVmiDV2Xtfe5/BdGo2AENkRg2yBGtTnltj64CRb0vAf5ekbHFJ55JHDuBaJzCT7AllJ
+        1VEiqVXQ==;
+Received: from [2601:1c0:6280:3f0::64ea]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1ksVKp-0007Zk-7Z; Thu, 24 Dec 2020 18:27:35 +0000
+Subject: Re: [RFC V2 37/37] Add documentation for dmemfs
+To:     yulei.kernel@gmail.com, linux-mm@kvack.org,
+        akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        naoya.horiguchi@nec.com, viro@zeniv.linux.org.uk,
+        pbonzini@redhat.com
+Cc:     joao.m.martins@oracle.com, sean.j.christopherson@intel.com,
+        xiaoguangrong.eric@gmail.com, kernellwp@gmail.com,
+        lihaiwei.kernel@gmail.com, Yulei Zhang <yuleixzhang@tencent.com>
+References: <cover.1607332046.git.yuleixzhang@tencent.com>
+ <6a3a71f75dad1fa440677fc1bcdc170f178be1d8.1607332046.git.yuleixzhang@tencent.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <a8920d25-e109-cfce-5137-1f4374c815e9@infradead.org>
+Date:   Thu, 24 Dec 2020 10:27:28 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <alpine.DEB.2.22.394.2012222207060.2723@hadrien>
-In-Reply-To: <alpine.DEB.2.22.394.2012222207060.2723@hadrien>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 24 Dec 2020 10:12:42 -0800
-Message-ID: <CAPcyv4hDqwQ3eatVBUYwAVSMc-p3yqRJkwesxYEZW2j=WEjqgg@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: NFIT: fix flexible_array.cocci warnings
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Denis Efremov <efremov@linux.com>, kbuild-all@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <6a3a71f75dad1fa440677fc1bcdc170f178be1d8.1607332046.git.yuleixzhang@tencent.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 1:10 PM Julia Lawall <julia.lawall@inria.fr> wrote:
->
-> From: kernel test robot <lkp@intel.com>
->
-> Zero-length and one-element arrays are deprecated, see
-> Documentation/process/deprecated.rst
-> Flexible-array members should be used instead.
->
-> Generated by: scripts/coccinelle/misc/flexible_array.cocci
->
-> Fixes: 7b36c1398fb6 ("coccinelle: misc: add flexible_array.cocci script")
-> CC: Denis Efremov <efremov@linux.com>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+Hi,
 
-Hmm, this triggers:
+On 12/7/20 3:31 AM, yulei.kernel@gmail.com wrote:
+> From: Yulei Zhang <yuleixzhang@tencent.com>
+> 
+> Introduce dmemfs.rst to document the basic usage of dmemfs.
+> 
+> Signed-off-by: Yulei Zhang <yuleixzhang@tencent.com>
+> ---
+>  Documentation/filesystems/dmemfs.rst | 58 ++++++++++++++++++++++++++++++++++++
+>  Documentation/filesystems/index.rst  |  1 +
+>  2 files changed, 59 insertions(+)
+>  create mode 100644 Documentation/filesystems/dmemfs.rst
+> 
+> diff --git a/Documentation/filesystems/dmemfs.rst b/Documentation/filesystems/dmemfs.rst
+> new file mode 100644
+> index 00000000..f13ed0c
+> --- /dev/null
+> +++ b/Documentation/filesystems/dmemfs.rst
+> @@ -0,0 +1,58 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +=====================================
+> +The Direct Memory Filesystem - DMEMFS
+> +=====================================
+> +
+> +
+> +.. Table of contents
+> +
+> +   - Overview
+> +   - Compilation
+> +   - Usage
+> +
+> +Overview
+> +========
+> +
+> +Dmemfs (Direct Memory filesystem) is device memory or reserved
+> +memory based filesystem. This kind of memory is special as it
+> +is not managed by kernel and it is without 'struct page'. Therefore
+> +it can save extra memory from the host system for various usage,
 
-drivers/acpi/nfit/core.c:2276:4: error: flexible array member in a
-struct with no named members
-drivers/acpi/nfit/core.c:2287:4: error: flexible array member in a
-struct with no named members
+                                                             usages,
+or                                                           uses,
 
-$ gcc --version
-gcc (GCC) 10.2.1 20201016 (Red Hat 10.2.1-6)
+> +especially for guest virtual machines.
+> +
+> +It uses a kernel boot parameter ``dmem=`` to reserve the system
+> +memory when the host system boots up, the details can be checked
 
-I'll need to circle back to this later.
+                               boots up. The detail
+
+> +in /Documentation/admin-guide/kernel-parameters.txt.
+> +
+> +Compilation
+> +===========
+> +
+> +The filesystem should be enabled by turning on the kernel configuration
+> +options::
+> +
+> +        CONFIG_DMEM_FS          - Direct Memory filesystem support
+> +        CONFIG_DMEM             - Allow reservation of memory for dmem
+
+Would anyone want DMEM_FS without DMEM?
+
+> +
+> +
+> +Additionally, the following can be turned on to aid debugging::
+> +
+> +        CONFIG_DMEM_DEBUG_FS    - Enable debug information for dmem
+> +
+> +Usage
+> +========
+> +
+> +Dmemfs supports mapping ``4K``, ``2M`` and ``1G`` size of pages to
+
+                                                     sizes
+
+> +the userspace, for example ::
+
+       userspace. For example::
+
+> +
+> +    # mount -t dmemfs none -o pagesize=4K /mnt/
+> +
+> +The it can create the backing storage with 4G size ::
+
+   Then
+
+> +
+> +    # truncate /mnt/dmemfs-uuid --size 4G
+> +
+> +To use as backing storage for virtual machine starts with qemu, just need
+
+                                                 started with qemu, just specify
+   the memory-backed-file
+
+> +to specify the memory-backed-file in the qemu command line like this ::
+> +
+> +    # -object memory-backend-file,id=ram-node0,mem-path=/mnt/dmemfs-uuid \
+
+                        backed
+
+
+> +        share=yes,size=4G,host-nodes=0,policy=preferred -numa node,nodeid=0,memdev=ram-node0
+> +
+
+
+-- 
+~Randy
+
