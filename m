@@ -2,229 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9595B2E2367
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 02:27:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EF1F2E236A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 02:32:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728473AbgLXB0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 20:26:41 -0500
-Received: from mga18.intel.com ([134.134.136.126]:40181 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726250AbgLXB0l (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 20:26:41 -0500
-IronPort-SDR: cYCPz5h7PcGBIMXHGKmUVVwEf3xBgcT16qliEdsrENgLhWRRhLxJIETpq1hW9B6+W5hFAWWYf3
- yMR5dZds5CFQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9844"; a="163816412"
-X-IronPort-AV: E=Sophos;i="5.78,443,1599548400"; 
-   d="scan'208";a="163816412"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Dec 2020 17:24:55 -0800
-IronPort-SDR: +Pyw6Ryoez+cnIuvFW4lyQfBD0E8oSndD9UvQ6XTmNFUG2mm0Dp6bKqZq2I1+O+IEhegk5O8In
- TB+tGXISE8uQ==
-X-IronPort-AV: E=Sophos;i="5.78,443,1599548400"; 
-   d="scan'208";a="374192333"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.27]) ([10.238.4.27])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Dec 2020 17:24:52 -0800
-Subject: Re: [PATCH] perf stat: Fix wrong skipping for per-die aggregation
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com,
-        James Clark <james.clark@arm.com>
-References: <20201216070146.11769-1-yao.jin@linux.intel.com>
- <20201223223545.GC236568@krava>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <1a963057-7db5-6604-af02-2246be19284d@linux.intel.com>
-Date:   Thu, 24 Dec 2020 09:24:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1728245AbgLXBcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 20:32:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726004AbgLXBcP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Dec 2020 20:32:15 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29080C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 17:31:35 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id s26so1565956lfc.8
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 17:31:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0ylr8xtf0vRN/65EDusgs3mZeJJKO/MAb2WdRIppjm8=;
+        b=ZV8b8FbD8TZ+50o8AlHdgL2kIgkNMvx3LcjGzyZAsPuEMA5CNGfZyMP42jf59G8GcA
+         tfP+6Egyecm0W5A3t3olaLiu22+SWaHeAz3DJi3oYyjuWwVOpOIOcoSxYbJHEgLDcuSS
+         z5V2vCaoE0IcDE0LkHffO+li2Qr4KVhUEU09Ixf8a5qy4UQBWUVv0sr1V5GYSzQx38iV
+         rp05h/UT506EY6YXwo2ppzxhkjMvFkeW/yEVhAgWa3PhzQaiX0lOt6YelYkyTj06NB2/
+         gbS8IFmMhBHLxOYXDgBo9VSfQoezSICh4YRiWEz5Qx0geh5rFAr/dfK/j8NUy6xf1l7g
+         mjow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0ylr8xtf0vRN/65EDusgs3mZeJJKO/MAb2WdRIppjm8=;
+        b=A78pUEPPXYfnCrjFHYoVImdC5o5ERfvWJQ/T/KUob7wP76HBHUbgR1LlE0qnUwm2Qj
+         qSctlW4lpd+PZ3plDowsIBMHFxqU8FIF89i5ZdPrcRs32OxtIVaMl0jyvhxOFSO70Vd4
+         4vWtdiPzdLFefzrIIOkhk0Z7clJQ6JzA9BJYxsLhGJPzKUN34O30vCdMw820+kbvRFL3
+         EZzPS0WgBiLd6QlFZXjpADC5Q3v2jB6RH5o37g7nTCp0vZt24eTSlw8bUSxOg7yJ8vEX
+         lQZ5gI2g3AcQnJxOEr7EB3ayytjSncMC8WWk9TTZg+B5SQ7G+QHPoQQlawDKrZ244uvy
+         M5cw==
+X-Gm-Message-State: AOAM533qilTjHDy0q1maMPT/oOZEFnAt6qEH+0zteFocNzwTKgH/WQaM
+        C+x9S2e6qO6yIfcqTzGKUehu0mRUZaqtacxUqbo=
+X-Google-Smtp-Source: ABdhPJyEG+SjICWUo3m2UZWlLl0MO437nGTfmoHzp8M/Z0PaDq7bPPDKbJxvN7AIsNn5Z4VtDFOo7tJri5HZhvYInsM=
+X-Received: by 2002:a19:814c:: with SMTP id c73mr11053100lfd.638.1608773493512;
+ Wed, 23 Dec 2020 17:31:33 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201223223545.GC236568@krava>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201222074656.GA30035@open-light-1.localdomain>
+ <63318bf1-21ea-7202-e060-b4b2517c684e@oracle.com> <CA+2MQi_QDnnsbMdOH5B4Hhak-CWA-Xs6PLhxoGq2f+Vv13sgyg@mail.gmail.com>
+ <e9d835e1-5d7f-d0ca-bf42-1cfa64416db6@oracle.com>
+In-Reply-To: <e9d835e1-5d7f-d0ca-bf42-1cfa64416db6@oracle.com>
+From:   Liang Li <liliang324@gmail.com>
+Date:   Thu, 24 Dec 2020 09:31:21 +0800
+Message-ID: <CA+2MQi_bxnzgS+S=GqL7UCYUKqAHZ7VC_ZTHCHcfrBHPsY+9Pg@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/3] mm: support hugetlb free page reporting
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Alexander Duyck <alexander.duyck@gmail.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Liang Li <liliangleo@didiglobal.com>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org, qemu-devel@nongnu.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> >>> +static int
+> >>> +hugepage_reporting_cycle(struct page_reporting_dev_info *prdev,
+> >>> +                      struct hstate *h, unsigned int nid,
+> >>> +                      struct scatterlist *sgl, unsigned int *offset)
+> >>> +{
+> >>> +     struct list_head *list = &h->hugepage_freelists[nid];
+> >>> +     unsigned int page_len = PAGE_SIZE << h->order;
+> >>> +     struct page *page, *next;
+> >>> +     long budget;
+> >>> +     int ret = 0, scan_cnt = 0;
+> >>> +
+> >>> +     /*
+> >>> +      * Perform early check, if free area is empty there is
+> >>> +      * nothing to process so we can skip this free_list.
+> >>> +      */
+> >>> +     if (list_empty(list))
+> >>> +             return ret;
+> >>
+> >> Do note that not all entries on the hugetlb free lists are free.  Reserved
+> >> entries are also on the free list.  The actual number of free entries is
+> >> 'h->free_huge_pages - h->resv_huge_pages'.
+> >> Is the intention to process reserved pages as well as free pages?
+> >
+> > Yes, Reserved pages was treated as 'free pages'
+>
+> If that is true, then this code breaks hugetlb.  hugetlb code assumes that
+> h->free_huge_pages is ALWAYS >= h->resv_huge_pages.  This code would break
+> that assumption.  If you really want to add support for hugetlb pages, then
+> you will need to take reserved pages into account.
 
+I didn't know that. thanks!
 
-On 12/24/2020 6:35 AM, Jiri Olsa wrote:
-> On Wed, Dec 16, 2020 at 03:01:46PM +0800, Jin Yao wrote:
->> Uncore becomes die-scope on Xeon Cascade Lake-AP and perf has supported
->> --per-die aggregation yet.
->>
->> One issue is found in check_per_pkg() for uncore events running on
->> AP system. On cascade Lake-AP, we have:
->>
->> S0-D0
->> S0-D1
->> S1-D0
->> S1-D1
->>
->> But in check_per_pkg(), S0-D1 and S1-D1 are skipped because the
->> mask bits for S0 and S1 have been set for S0-D0 and S1-D0. It doesn't
->> check die_id. So the counting for S0-D1 and S1-D1 are set to zero.
->> That's not correct.
->>
->> root@lkp-csl-2ap4 ~# ./perf stat -a -I 1000 -e llc_misses.mem_read --per-die -- sleep 5
->>       1.001460963 S0-D0           1            1317376 Bytes llc_misses.mem_read
->>       1.001460963 S0-D1           1             998016 Bytes llc_misses.mem_read
->>       1.001460963 S1-D0           1             970496 Bytes llc_misses.mem_read
->>       1.001460963 S1-D1           1            1291264 Bytes llc_misses.mem_read
->>       2.003488021 S0-D0           1            1082048 Bytes llc_misses.mem_read
->>       2.003488021 S0-D1           1            1919040 Bytes llc_misses.mem_read
->>       2.003488021 S1-D0           1             890752 Bytes llc_misses.mem_read
->>       2.003488021 S1-D1           1            2380800 Bytes llc_misses.mem_read
->>       3.005613270 S0-D0           1            1126080 Bytes llc_misses.mem_read
->>       3.005613270 S0-D1           1            2898176 Bytes llc_misses.mem_read
->>       3.005613270 S1-D0           1             870912 Bytes llc_misses.mem_read
->>       3.005613270 S1-D1           1            3388608 Bytes llc_misses.mem_read
->>       4.007627598 S0-D0           1            1124608 Bytes llc_misses.mem_read
->>       4.007627598 S0-D1           1            3884416 Bytes llc_misses.mem_read
->>       4.007627598 S1-D0           1             921088 Bytes llc_misses.mem_read
->>       4.007627598 S1-D1           1            4451840 Bytes llc_misses.mem_read
->>       5.001479927 S0-D0           1             963328 Bytes llc_misses.mem_read
->>       5.001479927 S0-D1           1            4831936 Bytes llc_misses.mem_read
->>       5.001479927 S1-D0           1             895104 Bytes llc_misses.mem_read
->>       5.001479927 S1-D1           1            5496640 Bytes llc_misses.mem_read
->>
->>  From above output, we can see S0-D1 and S1-D1 don't report the interval
->> values, they are continued to grow. That's because check_per_pkg() wrongly
->> decides to use zero counts for S0-D1 and S1-D1.
->>
->> So in check_per_pkg(), we should use a pair of die_id + socket_id to
->> decide if this cpu counts needs to skip. Only considering socket_id is
->> not enough.
->>
->> Now with this patch,
->>
->> root@lkp-csl-2ap4 ~# ./perf stat -a -I 1000 -e llc_misses.mem_read --per-die -- sleep 5
->>       1.001622560 S0-D0           1            1210176 Bytes llc_misses.mem_read
->>       1.001622560 S0-D1           1             950208 Bytes llc_misses.mem_read
->>       1.001622560 S1-D0           1             968704 Bytes llc_misses.mem_read
->>       1.001622560 S1-D1           1            1113280 Bytes llc_misses.mem_read
->>       2.004399430 S0-D0           1            1258560 Bytes llc_misses.mem_read
->>       2.004399430 S0-D1           1            1011008 Bytes llc_misses.mem_read
->>       2.004399430 S1-D0           1            1036544 Bytes llc_misses.mem_read
->>       2.004399430 S1-D1           1            1237376 Bytes llc_misses.mem_read
->>       3.006535657 S0-D0           1            1036608 Bytes llc_misses.mem_read
->>       3.006535657 S0-D1           1             906560 Bytes llc_misses.mem_read
->>       3.006535657 S1-D0           1             994112 Bytes llc_misses.mem_read
->>       3.006535657 S1-D1           1            1025472 Bytes llc_misses.mem_read
->>       4.008934402 S0-D0           1            1005120 Bytes llc_misses.mem_read
->>       4.008934402 S0-D1           1             882368 Bytes llc_misses.mem_read
->>       4.008934402 S1-D0           1             961408 Bytes llc_misses.mem_read
->>       4.008934402 S1-D1           1             988352 Bytes llc_misses.mem_read
->>       5.001605406 S0-D0           1            1930240 Bytes llc_misses.mem_read
->>       5.001605406 S0-D1           1            1134272 Bytes llc_misses.mem_read
->>       5.001605406 S1-D0           1            1531136 Bytes llc_misses.mem_read
->>       5.001605406 S1-D1           1            2230848 Bytes llc_misses.mem_read
->>
->> On no-die system, die_id is 0, this patch keeps original behavior unchanged.
->>
->> Reported-by: Huang Ying <ying.huang@intel.com>
->> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
->> ---
->>   tools/perf/util/cpumap.h |  2 ++
->>   tools/perf/util/stat.c   | 21 +++++++++++++++++----
->>   2 files changed, 19 insertions(+), 4 deletions(-)
->>
->> diff --git a/tools/perf/util/cpumap.h b/tools/perf/util/cpumap.h
->> index 3a442f021468..58604c047121 100644
->> --- a/tools/perf/util/cpumap.h
->> +++ b/tools/perf/util/cpumap.h
->> @@ -7,6 +7,8 @@
->>   #include <internal/cpumap.h>
->>   #include <perf/cpumap.h>
->>   
->> +#define CPU_MAP_MAX_DIE	256
->> +
->>   struct perf_record_cpu_map_data;
->>   
->>   struct perf_cpu_map *perf_cpu_map__empty_new(int nr);
->> diff --git a/tools/perf/util/stat.c b/tools/perf/util/stat.c
->> index 1e125e39ff84..b3fc6e261fe0 100644
->> --- a/tools/perf/util/stat.c
->> +++ b/tools/perf/util/stat.c
->> @@ -282,9 +282,9 @@ static void zero_per_pkg(struct evsel *counter)
->>   static int check_per_pkg(struct evsel *counter,
->>   			 struct perf_counts_values *vals, int cpu, bool *skip)
->>   {
->> -	unsigned long *mask = counter->per_pkg_mask;
->> +	unsigned long *mask = counter->per_pkg_mask, *l;
->>   	struct perf_cpu_map *cpus = evsel__cpus(counter);
->> -	int s;
->> +	int s, d;
->>   
->>   	*skip = false;
->>   
->> @@ -295,7 +295,7 @@ static int check_per_pkg(struct evsel *counter,
->>   		return 0;
->>   
->>   	if (!mask) {
->> -		mask = zalloc(cpu__max_cpu());
->> +		mask = zalloc(cpu__max_cpu() * CPU_MAP_MAX_DIE);
->>   		if (!mask)
->>   			return -ENOMEM;
->>   
->> @@ -317,7 +317,20 @@ static int check_per_pkg(struct evsel *counter,
->>   	if (s < 0)
->>   		return -1;
->>   
->> -	*skip = test_and_set_bit(s, mask) == 1;
->> +	d = cpu_map__get_die(cpus, cpu, NULL);
->> +	if (d < 0)
->> +		return -1;
->> +
->> +	/*
->> +	 * On multi-die system, die_id < 256. We use a pair
->> +	 * of socket + die to identify the used bit.
->> +	 * On no-die system, die_id is 0, l = &mask[0]. It doesn't
->> +	 * change original "test_and_set_bit(s, mask)" behavior.
->> +	 */
->> +	d &= 0xff;
->> +	l = &mask[d];
-> 
-> James is fixing the aggregation, because we could get large socket numbers:
->    https://lore.kernel.org/lkml/20201126141328.6509-1-james.clark@arm.com/
-> 
+> P.S. There might be some confusion about 'reservations' based on the
+> commit message.  My comments are directed at hugetlb reservations described
+> in Documentation/vm/hugetlbfs_reserv.rst.
+>
+> >>> +             /* Attempt to pull page from list and place in scatterlist */
+> >>> +             if (*offset) {
+> >>> +                     isolate_free_huge_page(page, h, nid);
+> >>
+> >> Once a hugetlb page is isolated, it can not be used and applications that
+> >> depend on hugetlb pages can start to fail.
+> >> I assume that is acceptable/expected behavior.  Correct?
+> >> On some systems, hugetlb pages are a precious resource and the sysadmin
+> >> carefully configures the number needed by applications.  Removing a hugetlb
+> >> page (even for a very short period of time) could cause serious application
+> >> failure.
+> >
+> > That' true, especially for 1G pages. Any suggestions?
+> > Let the hugepage allocator be aware of this situation and retry ?
+>
+> I would hate to add that complexity to the allocator.
+>
+> This question is likely based on my lack of understanding of virtio-balloon
+> usage and this reporting mechanism.  But, why do the hugetlb pages have to
+> be 'temporarily' allocated for reporting purposes?
 
-James is using "struct cpu_aggr_map" to replace "struct perf_cpu_map", but do we also need to 
-replace the "struct perf_cpu_map" in "struct perf_evsel"? Otherwise the evsel->cpus will be 
-inconsistent, right?
+The link here will give your more detail about how page reporting
+works, https://www.kernel.org/doc/html/latest//vm/free_page_reporting.html
+the virtio-balloon driver is based on this framework and will report the
+free pages information to QEMU&KVM, host can unmap the memory
+region corresponding to reported free pages and reclaim the memory
+for other use, it's useful for memory overcommit.
+Allocated the pages 'temporarily' before reporting is necessary, it make
+sure guests will not use the page when the host side unmap the region.
+or it will break the guest.
 
-struct perf_evsel {
-	...
-	struct perf_cpu_map	*cpus;
-	struct perf_cpu_map	*own_cpus;
-	...
-};
-
-> I think we should fix that in here as well
-
-Yes, we need to fix that in check_per_pkg() as well. As I said above, in check_per_pkg(),
-
-struct perf_cpu_map *cpus = evsel__cpus(counter);
-
-we should use "struct cpu_aggr_map" here.
-
-> maybe just use hashmap (socket,die) -> bool ?
-> 
-
-Yes, hashmap should be better, saving more memory.
+Now I realized we should solve this issue first, it seems adding a lock
+will help.
 
 Thanks
-Jin Yao
-
-> jirka
-> 
->> +
->> +	*skip = test_and_set_bit(s, l) == 1;
->>   	return 0;
->>   }
->>   
->> -- 
->> 2.17.1
->>
-> 
