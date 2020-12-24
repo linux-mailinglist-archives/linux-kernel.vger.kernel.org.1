@@ -2,81 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B50B2E25C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 10:50:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83C872E25C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 10:56:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727814AbgLXJuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 04:50:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726186AbgLXJui (ORCPT
+        id S1727422AbgLXJ4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 04:56:00 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:52381 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726186AbgLXJz7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 04:50:38 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87129C061794;
-        Thu, 24 Dec 2020 01:49:58 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id lj6so878265pjb.0;
-        Thu, 24 Dec 2020 01:49:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pR2ACc6d8aTjF9n2K3igB+WCeCgG4pxrdUZ6N6y3XI8=;
-        b=F0hRaYSIk4MzxylL/ODRdzxdbcBJG2XTEKKFPPjS/e6+wv80GeoxPfKfzYneDuCNCC
-         CHiQngXEUCEHaSxZQbe0EvGvKuJBzn4uUQZsOhoNlBfM+EQD+7hcS2TdqDQDPXg7aq24
-         IWm8zHFInPmY9dfoaethXfjxzbiY0N/7CjnmYXj+r/riZAy5ljkCgDOPqsUYVMlzWFt9
-         qIrGIel3ehiGDT3y8ufUGJCvnvZ5BfpnpjxelSVkfc5Xl1Q968ZWdYclR7PNXWzTMlUP
-         ApzZ1jaXDMRwxhwewd2oMVNALF06JfTuUJBrmCYUieUpyd1Pyu36pOE7PYZqJcYpQkcH
-         hSjQ==
+        Thu, 24 Dec 2020 04:55:59 -0500
+Received: by mail-il1-f197.google.com with SMTP id h4so1397314ilq.19
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 01:55:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pR2ACc6d8aTjF9n2K3igB+WCeCgG4pxrdUZ6N6y3XI8=;
-        b=i2ZHrqwuAs/SNiS49OO37d6SjCCBboxzCW3EwMNP2sOi4UrQlszvMs9CA1AyscqfPv
-         47HFDjuWHH8aSrAtaW7HhQzPobLpz8yx1MVBXzM2sJ+/Moqx6xOJoh6yWEa0OlXA54CC
-         T7L3h10gOH7c0mcg9B1BsW89C5hxzC/8i+dL4VSZlBljYh0cYcAYWQGZx3RgKilPCM40
-         FsxTrNN7SVKeml9ZEOf3DGKPiunthD11ciBFyXlwN3iS9a/pm0lXW42f4sD+HAm3Eq4t
-         +6N4iJrHis9DbkQGfb+LjlIy71hJxQkPBw6xe1LixSJ0lh53oiA5jNtkjnEJfOAMlg9H
-         VgeA==
-X-Gm-Message-State: AOAM532QQhFuwl0miYMqwi2b8eeLPJFGD0FQb2wP6O+sfo3AOtijsJsC
-        WkXarmHpmYfhu1RG9vdYEKXO41MxPHVbvgx9jLs=
-X-Google-Smtp-Source: ABdhPJx6rI4RiBLIO4l3nCt1PYNHCcwysmC0IXsyW95+37z9CtvbEcPAuccSa7faEIs2R4EY4ijJ9MtYuA7iy5RTf/8=
-X-Received: by 2002:a17:902:9a4a:b029:dc:435c:70ad with SMTP id
- x10-20020a1709029a4ab02900dc435c70admr13573744plv.77.1608803398081; Thu, 24
- Dec 2020 01:49:58 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=YrCEs5zHAzYd+hmTqY9ujgvkfHbVrkKlTwkFJ1ImLnE=;
+        b=sEV7w+e7gLXmMINVgZKAp3aerogEioQT87ihxTEAvsIU0QeFakEPMnk4CU6wUb1gzE
+         QoKm13/WXNd+bHPEsvHztBme9s4UoXDvyv+cnpt66PCuLKuUsLiJQTdzmTMTLu8Jc/u4
+         03OFcee/YN0qehneE3a+xEdcdvEVVdDyZ8lTqURBYXuDARnZMnZF1K8WOJWoruayc2Rd
+         RUGVqRpefLDDFOSsd9F6ePb89XLuJk1Sc3foCw87G2bBxMemwBKbHieLGQmY4vD7rJJB
+         +yc/lV+daYUqNdBKGcqQijwkPv4z19DSdQ2DtU24/8Gw3nrsiOoRLslLCrZQRJzC5CZb
+         0q0g==
+X-Gm-Message-State: AOAM530tsmSUI88kqr6+E6azaQ98bU3RI+Q+qNNAy4qwv+5pfm4Cs8RQ
+        wi31xg1rbnIvlPEYISkEf7jZIkc7HvN2npuUOZ+NEf+iGboZ
+X-Google-Smtp-Source: ABdhPJxN/exkvoSjQfWS6HLEdCvGIbXh0qdDCOc6BMWl9Zb1wbELwjIquGIXO8AHZDk3qknzlNgx+yxvVMV6Q9Sj6f74yuC+2FXR
 MIME-Version: 1.0
-References: <20201223021813.2791612-75-sashal@kernel.org> <20201223170124.5963-1-xie.he.0141@gmail.com>
-In-Reply-To: <20201223170124.5963-1-xie.he.0141@gmail.com>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Thu, 24 Dec 2020 01:49:47 -0800
-Message-ID: <CAJht_EOXf4Z3G-rq92hb_YvJEsHtDy15FE7WuthqDQsPY039QQ@mail.gmail.com>
-Subject: Re: [PATCH AUTOSEL 5.4 075/130] net/lapb: fix t1 timer handling for LAPB_STATE_0
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
-        Martin Schiller <ms@dev.tdt.de>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>
+X-Received: by 2002:a5d:9713:: with SMTP id h19mr24533909iol.14.1608803718802;
+ Thu, 24 Dec 2020 01:55:18 -0800 (PST)
+Date:   Thu, 24 Dec 2020 01:55:18 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002c2f5b05b732ce65@google.com>
+Subject: memory leak in ext4_multi_mount_protect
+From:   syzbot <syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 9:01 AM Xie He <xie.he.0141@gmail.com> wrote:
->
-> I don't think this patch is suitable for stable branches. This patch is
-> part of a patch series that changes the lapb module from "establishing the
-> L2 connection only when needed by L3", to "establishing the L2 connection
-> automatically whenever we are able to". This is a behavioral change. It
-> should be seen as a new feature. It is not a bug fix.
+Hello,
 
-Applying this patch without other patches in the same series will also
-introduce problems, because this patch relies on part of the changes
-in the subsequent patch in the same series to be correct.
+syzbot found the following issue on:
 
-Hi Martin,
+HEAD commit:    467f8165 Merge tag 'close-range-cloexec-unshare-v5.11' of ..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12b7fccb500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=37c889fb8b2761af
+dashboard link: https://syzkaller.appspot.com/bug?extid=d9e482e303930fa4f6ff
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1230f8a7500000
 
-It's better that we avoid using words like "fix" in non-bug-fix
-patches, and make every patch work on its own without subsequent
-patches. Otherwise we'll make people confused.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
+
+BUG: memory leak
+unreferenced object 0xffff88812560f120 (size 32):
+  comm "syz-executor.3", pid 11391, jiffies 4294966956 (age 10.520s)
+  hex dump (first 32 bytes):
+    28 2a e4 20 81 88 ff ff 00 f8 32 24 81 88 ff ff  (*. ......2$....
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<000000001fd6256c>] kmalloc include/linux/slab.h:552 [inline]
+    [<000000001fd6256c>] ext4_multi_mount_protect+0x4a6/0x5d0 fs/ext4/mmp.c:367
+    [<00000000ab3084f2>] ext4_fill_super+0x551e/0x5ac0 fs/ext4/super.c:4779
+    [<00000000b7304a28>] mount_bdev+0x223/0x260 fs/super.c:1366
+    [<00000000b580b323>] legacy_get_tree+0x2b/0x90 fs/fs_context.c:592
+    [<000000005310f7d7>] vfs_get_tree+0x28/0x100 fs/super.c:1496
+    [<000000006fc429ab>] do_new_mount fs/namespace.c:2875 [inline]
+    [<000000006fc429ab>] path_mount+0xc5e/0x1170 fs/namespace.c:3205
+    [<000000004f8c23d3>] do_mount fs/namespace.c:3218 [inline]
+    [<000000004f8c23d3>] __do_sys_mount fs/namespace.c:3426 [inline]
+    [<000000004f8c23d3>] __se_sys_mount fs/namespace.c:3403 [inline]
+    [<000000004f8c23d3>] __x64_sys_mount+0x18e/0x1d0 fs/namespace.c:3403
+    [<000000002cff8f95>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<00000000779cd3d5>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
