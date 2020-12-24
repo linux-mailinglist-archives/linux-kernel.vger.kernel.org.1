@@ -2,185 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22C252E2484
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 07:00:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D1022E2488
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 07:05:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726282AbgLXF7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 00:59:55 -0500
-Received: from mail-am6eur05on2085.outbound.protection.outlook.com ([40.107.22.85]:4576
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725536AbgLXF7z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 00:59:55 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DOZeg5A3TQNtgfutVSIEslU10gen3ehQlN6i6HPvfb1OuPxIf/JmRzwpIiyO392HG+7fyAZTIfwZIAHHyLr/ApjBDVdXhsWXdCVtQdffxRWDOYlnGHcU9RfxoKKsfvufs31Lbc1jHNRKfSeKz6cUOMVuib1P4F+C83X5Us0CQAJ9nIdSGcr0uiAV+qvitYccpTyl60Yzi2NR2TAcofojbCVL4HgpiSjXFJeCsZZLO0SKnttj4Vjh7Fil+Nfg/g+vAeISXBBsj1AMCQpreeB/NSaX8Raq1hV2coCiaobD2amX5G7DHruh/uzr5EEvRow9VcpgJlyJCJpmwhTFo6IGOw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=A7zY/OkGHBciTiYfx4QVVYEf3no2W8CrkvdROFK1Dzc=;
- b=CldPcbQ46nq/BZhU8TR9ak+GTIZ/X27nJW/jHnE1waHppem2vaUTRl/XGvX9+1q2r0TGgfnTBKtTICIAAcjoPjZIqHsT36HZjaJWWbGaXBc5TuEmaptVyaUDbxvnULaaVEkedK5XBvUEfToVvbo0Cz/qW+MenCfdp/bJqvkayGbXXiWy9RluC0fT9xld2crSENOn7aeKygZFKpg92obxv6+25rKGXBgZL12u0Fa2yY6zCS/JhunNB+Z9BNJOXBhtKUCx+2r7oDdw+vYfFiPeuCRbDAuHAewK7zjnDS7QT7kwfCZFVlVpdPPOxxDjNHadk1Wl8me/NwEdhL2TPWPHpQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=A7zY/OkGHBciTiYfx4QVVYEf3no2W8CrkvdROFK1Dzc=;
- b=hwmaTc0/xAhdo8nvbXtpF4JLNTdzHEPKPR/il7oSUpfntaNraVctV6nomnbZ9jHyEm5IJbZLzg94salA8QE9ohlLj3oU59OA5ZDW6WnGZ0MtIFE4AcPlaY87svNBk805F3Q12qN4Gy4iZuf0pjNe5B85YoeteWF2QXzLlIinTII=
-Received: from DBBPR04MB7979.eurprd04.prod.outlook.com (2603:10a6:10:1ec::9)
- by DB7PR04MB5241.eurprd04.prod.outlook.com (2603:10a6:10:1d::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.33; Thu, 24 Dec
- 2020 05:59:05 +0000
-Received: from DBBPR04MB7979.eurprd04.prod.outlook.com
- ([fe80::c8c:888f:3e0c:8d5c]) by DBBPR04MB7979.eurprd04.prod.outlook.com
- ([fe80::c8c:888f:3e0c:8d5c%5]) with mapi id 15.20.3676.033; Thu, 24 Dec 2020
- 05:59:05 +0000
-From:   Peter Chen <peter.chen@nxp.com>
-To:     =?iso-8859-1?Q?Pali_Roh=E1r?= <pali@kernel.org>
-CC:     Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jun Li <jun.li@nxp.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] usb: host: xhci-plat: fix support for
- XHCI_SKIP_PHY_INIT quirk
-Thread-Topic: [PATCH v2] usb: host: xhci-plat: fix support for
- XHCI_SKIP_PHY_INIT quirk
-Thread-Index: AQHW2UdVBN3eWtZvM0+3FjfukhY+naoFwRQA
-Date:   Thu, 24 Dec 2020 05:59:05 +0000
-Message-ID: <20201224055836.GB27629@b29397-desktop>
-References: <20201221150903.26630-1-pali@kernel.org>
- <20201223161847.10811-1-pali@kernel.org>
-In-Reply-To: <20201223161847.10811-1-pali@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mutt/1.9.4 (2018-02-28)
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.67]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 545cb671-b09f-448b-6bd1-08d8a7d10549
-x-ms-traffictypediagnostic: DB7PR04MB5241:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB7PR04MB524104E20FBC66D56838BD3A8BDD0@DB7PR04MB5241.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 0w7y3uBMVuz28SzkPwjOvJ24sRp8mjriDq1jbBUerxcx+8P7NvpVO/bNUedmg43TagcSWEZcc/kf5iCKQkNMq4HoSvuZeY3ZyO37kSS39fRQ/Ln78CFVlDFC5pb3FJozIPNjPPylHk6UG5DOk/wcZJmB1iHRhVlXwEr5OvXbO4l6wm4PNITQkIY8py4/0V4KlgSzAhy91jGzRsVM1qwxTQzHASTx+Y8ArdhP+uBLP7kB6rpHkkJ/Ew2Atrbb+I9vkJlUCAN3nvv7iSX/n4oRU/UpPme1BJ7jFCQdYfdc4zFgIOIwEwY+J2d4hG+MmHNeJV7x3uG2QT33EG1fE35EZjuRXyxLrnjIlLDzSQOUBMc7XxbJvv2u3vj9P2kI144utqGTO1M0igSN/nj+bm3DMg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBBPR04MB7979.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(136003)(376002)(396003)(366004)(346002)(39860400002)(316002)(1076003)(8676002)(44832011)(186003)(6512007)(9686003)(54906003)(83380400001)(4326008)(6916009)(33656002)(2906002)(26005)(71200400001)(86362001)(8936002)(66476007)(6486002)(33716001)(6506007)(5660300002)(66556008)(478600001)(53546011)(66946007)(91956017)(76116006)(64756008)(66446008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?iso-8859-1?Q?+FUFkxEw6rbnQ1WJRddrQl2g9Z3J+8s74Jol0+Okm6nY/vS+qbepp5CPMe?=
- =?iso-8859-1?Q?ihvscp3NawnV8lssblKQIfhAcrTuAGYAw0X2bJCSwTHx7AxRgBUmajqpp9?=
- =?iso-8859-1?Q?AOJtQTwgCLuckratCSeavUdHvbtisqPvCU5+7xEV+KVPss47ooaZEMNQlf?=
- =?iso-8859-1?Q?mUchenQrufI/0AduqXImzaqXZvMDjKQL6u/omaNzaqkWdYFOwgAF+n/SIN?=
- =?iso-8859-1?Q?FATB3lTfW4QRBR48eO1CF49gKqt2cJcTQYXoObCn9EntYGfCjOLn/0XLpP?=
- =?iso-8859-1?Q?0IP0vcKRgSEMeqsZ4cpxqIJ6NpElKidzPJPJD3KghgsMZc5J+7bCGiNS6X?=
- =?iso-8859-1?Q?voPhKsHpnzdLfL5npTj3/ddUb7fJGK4NUiereZdEyMFBnjPptKMjz8f4mh?=
- =?iso-8859-1?Q?ILa1T0BnAnCf4bM2Q/haWRXG551373hupeJ4sQ7HJb2vadQhognvNAbtmW?=
- =?iso-8859-1?Q?WeDhD4okFPe49raIqFrCR9G0JLWpjNThPQW+/XuMSw6Zd6iABgDbbwKt/q?=
- =?iso-8859-1?Q?xemKov0NqgsLCdYk4yWITamd6PL4lciECA9E5XOdeTlgpA6TJvJWPok4Tx?=
- =?iso-8859-1?Q?9MkKW1mJcz1V+vDIFGQIXc9Kxy97YMIDbPMo4/155dsqS3c+DoO13ZUoOL?=
- =?iso-8859-1?Q?JeGRYvOtHctP+Br+cuw9HIg9eTPDvFE0+zMeS0qV/l+4yaSW7DyDl5aRs1?=
- =?iso-8859-1?Q?Fa6mTGVp3OGG+p5NJGpUtg6EdFNMDqpmogum4jc20kqMhvrv+egrwYrmof?=
- =?iso-8859-1?Q?UbtJjkNs0UsFZzGQfwnm6XSAWwILxclo5EEY9IjNmde4AAYG7On7Ltce9z?=
- =?iso-8859-1?Q?Y1Gr3OXa9wCejHn+ZX2KkWB4l6+4ICU5ZZ1cCYYYrqY1WizowwJLHpECBL?=
- =?iso-8859-1?Q?j3RFObYBA/faVovgP4AJYslSjrHgE7F2Q+tEv8wrpmVmG1xoz1KgMZBsX6?=
- =?iso-8859-1?Q?gOQFZPsJ/ir84Z1+RLp3LpMHlatRHVZnAuL4fhgRZZFrOzATQL9CXENgfy?=
- =?iso-8859-1?Q?crXHkmV+ugbRnHxuKS2ettRs5h5kz1Kt6by1Ek?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-ID: <B163240469F87C40AF066F083983745A@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1726279AbgLXGD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 01:03:58 -0500
+Received: from mailout4.samsung.com ([203.254.224.34]:61932 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725446AbgLXGD5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Dec 2020 01:03:57 -0500
+Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20201224060314epoutp04caf2bf53a11d7fe47202d1e3b6f1e997~Tkcti3D0T2259522595epoutp040
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 06:03:14 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20201224060314epoutp04caf2bf53a11d7fe47202d1e3b6f1e997~Tkcti3D0T2259522595epoutp040
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1608789794;
+        bh=pugVbrIktDR451e/CFaYW+UN8OF55rTbO/3+HSOplXY=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=ruF0xuHdR5aUKn26MzLGSQSNiRhb0mU0lUZYBScDf76m+HvQ9lwbB3pB6o6S0Z8Fg
+         QZYeTpMsBYWtTJRxSBDf97F3jPuRHHFI4hQ9deUc9j1jT0Nwvo0B1MOWQIAFcgm+aR
+         hgIrnW047DVPKTVWx7Sll5hMoiOFFNMKs9WxIJoE=
+Received: from epsmges5p2new.samsung.com (unknown [182.195.42.74]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
+        20201224060312epcas5p30a9b993a98e2a90bb163cae9c8bb1fa2~TkcrawTn91936419364epcas5p3l;
+        Thu, 24 Dec 2020 06:03:12 +0000 (GMT)
+Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
+        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        23.6C.50652.02F24EF5; Thu, 24 Dec 2020 15:03:12 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
+        20201224055037epcas5p2218eec841b2336f25c9e1fd75fbb5373~TkRssfq462924929249epcas5p2c;
+        Thu, 24 Dec 2020 05:50:37 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201224055037epsmtrp2aaa50c945d85f84436006814bab4d863~TkRsrtreU0103201032epsmtrp2W;
+        Thu, 24 Dec 2020 05:50:37 +0000 (GMT)
+X-AuditID: b6c32a4a-6c9ff7000000c5dc-14-5fe42f202537
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        DE.AC.13470.D2C24EF5; Thu, 24 Dec 2020 14:50:37 +0900 (KST)
+Received: from shradhat02 (unknown [107.122.8.248]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20201224055033epsmtip1ad5ccb829235927285b570222c4427d4~TkRo-_zfx0255402554epsmtip1E;
+        Thu, 24 Dec 2020 05:50:33 +0000 (GMT)
+From:   "Shradha Todi" <shradha.t@samsung.com>
+To:     "'Bjorn Helgaas'" <helgaas@kernel.org>
+Cc:     <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <kishon@ti.com>, <lorenzo.pieralisi@arm.com>,
+        <bhelgaas@google.com>, <pankaj.dubey@samsung.com>,
+        "'Sriram Dash'" <sriram.dash@samsung.com>
+In-Reply-To: <20201223203403.GA320059@bjorn-Precision-5520>
+Subject: RE: [PATCH v2] PCI: endpoint: Fix NULL pointer dereference for
+ ->get_features()
+Date:   Thu, 24 Dec 2020 11:20:30 +0530
+Message-ID: <096301d6d9b8$b440be00$1cc23a00$@samsung.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DBBPR04MB7979.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 545cb671-b09f-448b-6bd1-08d8a7d10549
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Dec 2020 05:59:05.0610
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: k2JuedDDIktgpfyom0Ffbm9uHyPrzZNgedb+864jg/eCIBrpWiKs+rO8rPkzB6FXUhMgH7fMv4bX7qg5XRMVZg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB5241
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQHOFva8Guq/R8Jw43oBy2JTBKpOfAKJ6izDqgLzgjA=
+Content-Language: en-us
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrGKsWRmVeSWpSXmKPExsWy7bCmpq6C/pN4g3OfBSyWNGVYvDqzls3i
+        wtMeNovLu+awWZydd5zN4s3vF+wWi7Z+Ybe4sZ7dgcNjzbw1jB4LNpV6bFrVyebRt2UVo8fx
+        G9uZPD5vkgtgi+KySUnNySxLLdK3S+DKmPCym7nglHDF9ntCDYxLBboYOTkkBEwk9k7YzNbF
+        yMUhJLCbUeLnwv9MEM4nRokpK9sYIZxvjBLTL+xghWlZtf8OVMteRonmGR+YIZwXjBIzP/1n
+        BqliE9CReHLlD5gtIqAlcfzgfrBuZoHzjBK7r7KD2JwC1hL3p5xlArGFBaIkZi18CVbPIqAq
+        se/vBzCbV8BSouf7d3YIW1Di5MwnLBBz5CW2v53DDHGRgsTPp8tYIXZZSTw4tpUZokZc4uXR
+        I+wgx0kILOSQ2HTnNyNEg4vEtH1/oWxhiVfHt7BD2FISn9/tZYOw8yWmXngKtIwDyK6QWN5T
+        BxG2lzhwZQ5YmFlAU2L9Ln2IsKzE1FPrmCDW8kn0/n7CBBHnldgxD8ZWlvjydw8LhC0pMe/Y
+        ZdYJjEqzkHw2C8lns5B8MAth2wJGllWMkqkFxbnpqcWmBUZ5qeV6xYm5xaV56XrJ+bmbGMFJ
+        SctrB+PDBx/0DjEycTAeYpTgYFYS4b3E/zheiDclsbIqtSg/vqg0J7X4EKM0B4uSOO8Ogwfx
+        QgLpiSWp2ampBalFMFkmDk6pBqY9ebdXe0Xo3OWtMM++t20j+9q9rzece+t56QPr5dsvfn2r
+        PbtGJCv9S1pN4CV7F+aNT4xmZs6fGHxsW4rM58eWnSdl1nJMf1xzZWmB9bQ6j4OpG1fq/bR+
+        9jHBxl2ljpdZsKps3qJ/txrFT9oLJ35bU+db2NTHI98QpL336sfCJR9iv855K1Uo9etS1Znl
+        205/Xumwe8GZ3FvBvgb3ZL8aGL5gDm/NCg5TDZXm6Pqq+mHms4cbbiw3Cujse3TtUGrz82cr
+        y3Nc9+1S0t79uPLQpB2Jqy43/SiKLJvr0nl/UtJF5zbTtqlOnsKpmSY7X2SWSU4sS384d7n4
+        hhyFm5VZWv7dG6zqPKKEWQNtGh8rsRRnJBpqMRcVJwIAAuF1krkDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupkkeLIzCtJLcpLzFFi42LZdlhJTldX50m8wZWb6hZLmjIsXp1Zy2Zx
+        4WkPm8XlXXPYLM7OO85m8eb3C3aLRVu/sFvcWM/uwOGxZt4aRo8Fm0o9Nq3qZPPo27KK0eP4
+        je1MHp83yQWwRXHZpKTmZJalFunbJXBlTHjZzVxwSrhi+z2hBsalAl2MnBwSAiYSq/bfYeti
+        5OIQEtjNKHHkwkt2iISkxOeL65ggbGGJlf+es0MUPWOUOHCyEyzBJqAj8eTKH2YQW0RAS+L4
+        wf2sIEXMAtcZJdp+XIQa28MosXzeLrCxnALWEvennAXrFhaIkFhwezEbiM0ioCqx7+8HsEm8
+        ApYSPd+/s0PYghInZz5h6WLkAJqqJ9G2kREkzCwgL7H97RxmiOsUJH4+XcYKcYSVxINjW5kh
+        asQlXh49wj6BUXgWkkmzECbNQjJpFpKOBYwsqxglUwuKc9Nziw0LDPNSy/WKE3OLS/PS9ZLz
+        czcxgmNLS3MH4/ZVH/QOMTJxMB5ilOBgVhLhvcT/OF6INyWxsiq1KD++qDQntfgQozQHi5I4
+        74Wuk/FCAumJJanZqakFqUUwWSYOTqkGpowNflMWHLK6d+iKOZuwjkHqK/+pPD/aTYOvllV9
+        vDZNdf6u2F8/wh/X7mOd9FiiQFDP4XphTHXE1zC3JN3IXcL+N3ZIWUXeCH3x8PcTn8Mpi1+Z
+        CD0sWdLus/ZlYYyPanmYtFS+oKrI152ZVz+a/NTwk+Wzi9BVPlfmfHHXquDfF/d1hXPet2TM
+        TOMonf8zdveC+Sv0G6eXPbDz/nuyWMY4/mts2P+fvT1m7EEJVjkuxbxB/L9e39jKVKxcWmL+
+        MenGy6xtq9Lu6fNPurVOrDbSiHmfipjpwX/LKx0/5bHXr/7xWLRx0ZHzgkk7Zu87EaFvzxyR
+        yvB7CcfuCa32Owp0ItdOE26ZuXZjJEuUEktxRqKhFnNRcSIArB4E4RwDAAA=
+X-CMS-MailID: 20201224055037epcas5p2218eec841b2336f25c9e1fd75fbb5373
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20201223203408epcas5p3909fa2bbaa075ae7253f720c7fca7685
+References: <CGME20201223203408epcas5p3909fa2bbaa075ae7253f720c7fca7685@epcas5p3.samsung.com>
+        <20201223203403.GA320059@bjorn-Precision-5520>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20-12-23 17:18:47, Pali Roh=E1r wrote:
-> Currently init_quirk callbacks for xhci platform drivers are called
-> xhci_plat_setup() function which is called after chip reset completes.
-> It happens in the middle of the usb_add_hcd() function.
->=20
-> But XHCI_SKIP_PHY_INIT quirk is checked in the xhci_plat_probe() function
-> prior calling usb_add_hcd() function. Therefore this XHCI_SKIP_PHY_INIT
-> currently does nothing as prior xhci_plat_setup() it is not set.
->=20
-> Quirk XHCI_SKIP_PHY_INIT is only setting hcd->skip_phy_initialization val=
-ue
-> which really needs to be set prior calling usb_add_hcd() as this function
-> at its beginning skips PHY init if this member is set.
->=20
-> This patch fixes implementation of the XHCI_SKIP_PHY_INIT quirk by callin=
-g
-> init_quirk callbacks (via xhci_priv_init_quirk()) prior checking if
-> XHCI_SKIP_PHY_INIT is set. Also checking if either xhci->quirks or
-> priv->quirks contains this XHCI_SKIP_PHY_INIT quirk.
->=20
-> Signed-off-by: Pali Roh=E1r <pali@kernel.org>
->=20
-> ---
-> Changes in v2:
-> * Check also xhci->quirks as xhci_priv_init_quirk() callbacks are setting=
- xhci->quirks
-> * Tested with "usb: host: xhci: mvebu: make USB 3.0 PHY optional for Arma=
-da 3720" patch
-> * Removed Fixes: line
-> ---
->  drivers/usb/host/xhci-plat.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
->=20
-> diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
-> index 4d34f6005381..0eab7cb5a767 100644
-> --- a/drivers/usb/host/xhci-plat.c
-> +++ b/drivers/usb/host/xhci-plat.c
-> @@ -89,13 +89,6 @@ static void xhci_plat_quirks(struct device *dev, struc=
-t xhci_hcd *xhci)
->  /* called during probe() after chip reset completes */
->  static int xhci_plat_setup(struct usb_hcd *hcd)
->  {
-> -	int ret;
-> -
-> -
-> -	ret =3D xhci_priv_init_quirk(hcd);
-> -	if (ret)
-> -		return ret;
-> -
->  	return xhci_gen_setup(hcd, xhci_plat_quirks);
->  }
-> =20
-> @@ -330,7 +323,14 @@ static int xhci_plat_probe(struct platform_device *p=
-dev)
-> =20
->  	hcd->tpl_support =3D of_usb_host_tpl_support(sysdev->of_node);
->  	xhci->shared_hcd->tpl_support =3D hcd->tpl_support;
-> -	if (priv && (priv->quirks & XHCI_SKIP_PHY_INIT))
-> +
-> +	if (priv) {
-> +		ret =3D xhci_priv_init_quirk(hcd);
-> +		if (ret)
-> +			goto disable_usb_phy;
-> +	}
-> +
-> +	if ((xhci->quirks & XHCI_SKIP_PHY_INIT) || (priv && (priv->quirks & XHC=
-I_SKIP_PHY_INIT)))
->  		hcd->skip_phy_initialization =3D 1;
+> From: Bjorn Helgaas <helgaas@kernel.org>
+> Subject: Re: [PATCH v2] PCI: endpoint: Fix NULL pointer dereference for -
+> >get_features()
+> 
+> On Fri, Dec 18, 2020 at 09:15:16PM +0530, Shradha Todi wrote:
+> > get_features ops of pci_epc_ops may return NULL, causing NULL pointer
+> > dereference in pci_epf_test_bind function. Let us add a check for
+> > pci_epc_feature pointer in pci_epf_test_bind before we access it to
+> > avoid any such NULL pointer dereference and return -ENOTSUPP in case
+> > pci_epc_feature is not found.
+> 
+> Can you add a Fixes: tag to identify where this broke to help people
+decide
+> where to backport the fix?
+> 
 
-I am not sure if others agree with you move the position of
-xhci_priv_init_quirk, Let's see Mathias opinion.
+Thanks for the review. Sure we will add the Fixes tag and respin this patch.
 
---=20
+> > Reviewed-by: Pankaj Dubey <pankaj.dubey@samsung.com>
+> > Signed-off-by: Sriram Dash <sriram.dash@samsung.com>
+> > Signed-off-by: Shradha Todi <shradha.t@samsung.com>
+> > ---
+> > v2:
+> >  rebase on v1
+> >  v1:
+> > https://protect2.fireeye.com/v1/url?k=6193fa90-3e08c3dd-619271df-0cc47
+> > aa8f5ba-a79111ee2c1d1660&q=1&e=a9ee1ef7-2713-4099-8d06-
+> 738532d78b26&u=
+> > https%3A%2F%2Flore.kernel.org%2Fpatchwork%2Fpatch%2F1208269%2F
+> >
+> >  drivers/pci/endpoint/functions/pci-epf-test.c | 13 ++++++++-----
+> >  1 file changed, 8 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c
+> > b/drivers/pci/endpoint/functions/pci-epf-test.c
+> > index 66723d5..f1842e6 100644
+> > --- a/drivers/pci/endpoint/functions/pci-epf-test.c
+> > +++ b/drivers/pci/endpoint/functions/pci-epf-test.c
+> > @@ -835,13 +835,16 @@ static int pci_epf_test_bind(struct pci_epf *epf)
+> >  		return -EINVAL;
+> >
+> >  	epc_features = pci_epc_get_features(epc, epf->func_no);
+> > -	if (epc_features) {
+> > -		linkup_notifier = epc_features->linkup_notifier;
+> > -		core_init_notifier = epc_features->core_init_notifier;
+> > -		test_reg_bar = pci_epc_get_first_free_bar(epc_features);
+> > -		pci_epf_configure_bar(epf, epc_features);
+> > +	if (!epc_features) {
+> > +		dev_err(&epf->dev, "epc_features not implemented\n");
+> > +		return -EOPNOTSUPP;
+> >  	}
+> >
+> > +	linkup_notifier = epc_features->linkup_notifier;
+> > +	core_init_notifier = epc_features->core_init_notifier;
+> > +	test_reg_bar = pci_epc_get_first_free_bar(epc_features);
+> > +	pci_epf_configure_bar(epf, epc_features);
+> > +
+> >  	epf_test->test_reg_bar = test_reg_bar;
+> >  	epf_test->epc_features = epc_features;
+> >
+> > --
+> > 2.7.4
+> >
 
-Thanks,
-Peter Chen=
