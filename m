@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 116DA2E2673
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 12:44:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A1002E267B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 12:46:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727836AbgLXLnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 06:43:55 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:39648 "EHLO
+        id S1728645AbgLXLox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 06:44:53 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:39656 "EHLO
         fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726746AbgLXLny (ORCPT
+        with ESMTP id S1726609AbgLXLox (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 06:43:54 -0500
+        Thu, 24 Dec 2020 06:44:53 -0500
 Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BOBh6JV083337;
-        Thu, 24 Dec 2020 05:43:06 -0600
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BOBhAXf083357;
+        Thu, 24 Dec 2020 05:43:10 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1608810186;
-        bh=f96w/AK0En0CB4GlFK8ED4M9PCka2KDLTpPTjt7oRdc=;
+        s=ti-com-17Q1; t=1608810190;
+        bh=94E65ixmOJZFX7TRdsWv8gU0jihL6XoZszoQCsm3YLE=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=NCYIV/lmm+04t7fqxHrjomUeZkGEF7jD5HWAH1rM8ilpuP12r/V0NlJeqowrXCJkk
-         LUpm2aETapAd6TTlJrxKLC3zs70ToQxFg9LNC0mb2LhFhpvIZ8HR1RIxAkRtDvo9fv
-         N5PYz23kx6x2OLCn8stvkTH2A2XZJSZ2dx6gNvBg=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BOBh6QU089684
+        b=veF4Uir3GKY963R+jqrnfnZypAmNRBusxwCaZtWqrqamZbyaKXmqaooxY0QFopB7e
+         LmsgZQzwDdKDoVpT84l83ATHj0+6tXNWKgC2dJVM0XDlOS25f32za9sOT6pMj6/omr
+         PMH/rqJ9LrEJm80obCRUGyB9VHMgkzkUMu/4bg9I=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BOBhAen089791
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 24 Dec 2020 05:43:06 -0600
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+        Thu, 24 Dec 2020 05:43:10 -0600
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 24
- Dec 2020 05:43:05 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ Dec 2020 05:43:10 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 24 Dec 2020 05:43:05 -0600
+ Frontend Transport; Thu, 24 Dec 2020 05:43:10 -0600
 Received: from a0393678-ssd.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BOBgtwU026267;
-        Thu, 24 Dec 2020 05:43:01 -0600
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BOBgtwV026267;
+        Thu, 24 Dec 2020 05:43:06 -0600
 From:   Kishon Vijay Abraham I <kishon@ti.com>
 To:     Kishon Vijay Abraham I <kishon@ti.com>,
         Vinod Koul <vkoul@kernel.org>,
@@ -45,9 +45,9 @@ To:     Kishon Vijay Abraham I <kishon@ti.com>,
         Peter Rosin <peda@axentia.se>
 CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH 1/7] dt-bindings: phy: ti,phy-j721e-wiz: Add bindings for AM64 SERDES Wrapper
-Date:   Thu, 24 Dec 2020 17:12:44 +0530
-Message-ID: <20201224114250.1083-2-kishon@ti.com>
+Subject: [PATCH 2/7] dt-bindings: phy: ti,phy-j721e-wiz: Add binding for phy_en_refclk
+Date:   Thu, 24 Dec 2020 17:12:45 +0530
+Message-ID: <20201224114250.1083-3-kishon@ti.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201224114250.1083-1-kishon@ti.com>
 References: <20201224114250.1083-1-kishon@ti.com>
@@ -58,34 +58,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add bindings for AM64 SERDES Wrapper.
+Add DT binding for phy_en_refclk used to route the refclk out of the
+SERDES.
 
 Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
 ---
- .../devicetree/bindings/phy/ti,phy-j721e-wiz.yaml      | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ .../devicetree/bindings/phy/ti,phy-j721e-wiz.yaml   | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/phy/ti,phy-j721e-wiz.yaml b/Documentation/devicetree/bindings/phy/ti,phy-j721e-wiz.yaml
-index c33e9bc79521..4a1f9c27b5f0 100644
+index 4a1f9c27b5f0..14823588bc94 100644
 --- a/Documentation/devicetree/bindings/phy/ti,phy-j721e-wiz.yaml
 +++ b/Documentation/devicetree/bindings/phy/ti,phy-j721e-wiz.yaml
-@@ -12,9 +12,13 @@ maintainers:
+@@ -149,6 +149,19 @@ patternProperties:
+       - assigned-clocks
+       - assigned-clock-parents
  
- properties:
-   compatible:
--    enum:
--      - ti,j721e-wiz-16g
--      - ti,j721e-wiz-10g
-+    oneOf:
-+      - const: ti,j721e-wiz-16g
-+      - const: ti,j721e-wiz-10g
-+      - const: ti,am64-wiz-10g
-+      - items:
-+          - const: ti,am64-wiz-10g
-+          - const: ti,j721e-wiz-10g
- 
-   power-domains:
-     maxItems: 1
++  "^phy-en-refclk$":
++    type: object
++    description: |
++      In order to drive the refclk out from the SERDES (Cadence Torrent),
++      PHY_EN_REFCLK should be set in SERDES_RST of WIZ. Model phy-en-refclk
++      as a clock so that it can be enabled directly or as a parent clock.
++    properties:
++      "#clock-cells":
++        const: 0
++
++    required:
++      - "#clock-cells"
++
+   "^serdes@[0-9a-f]+$":
+     type: object
+     description: |
 -- 
 2.17.1
 
