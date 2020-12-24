@@ -2,125 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7C762E2416
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 04:35:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB38E2E241A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 04:47:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728963AbgLXDew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 22:34:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42250 "EHLO
+        id S1728793AbgLXDpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 22:45:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728710AbgLXDew (ORCPT
+        with ESMTP id S1728334AbgLXDpx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 22:34:52 -0500
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62B8CC06179C
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 19:34:06 -0800 (PST)
-Received: by mail-il1-x133.google.com with SMTP id q5so922445ilc.10
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 19:34:06 -0800 (PST)
+        Wed, 23 Dec 2020 22:45:53 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99217C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 19:45:13 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id f14so458279pju.4
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 19:45:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=c5fNsg2UwF5UocytYwq0XQNimIsx8M/0x2kcxXnzw6s=;
-        b=PgNEDPhRRco6MUm+b35ScL9j7jTW2b7WyA5+rPGX4xjQrF6SUP/6+x/45YJPtKsHtG
-         +pw2Aig8V5nQJ2pMAor1ZD3H9qsk2OPqg+BJ6NRonx+8A5Ph3TLfa+3BEvoH+W65zwHs
-         52a2XnIgl0IVSgJZPRgMOO/G/7vAYwyW1rBkk2Lb4b/aJuqeHYZ05wrVsjliA/IcAfoC
-         mJ1cmIuuNuZ0I1Jx9dM1iGTfOwJU4ubp6ZkIf1Q48WGSVqulGu+na8E+JuA2Plv4CrFD
-         MTVZlotsa8kip62TOCTXmoqLGNdIL65SxXUH1gTe9J7QfqcxmGdBBVDoXUU8FIcr45Ns
-         sysA==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZcSp+cRdP2bcqWVQZJCDIiTdhj/sfG8FWouaFgmCU4k=;
+        b=oF8LweNTM0O1s0jpipHfe0Skl2HB5E2BuMofWlS8SNgvnYFeOQqCMoabngGlgi9vP0
+         QIXvD9HulcL+AG9TpZTBjrDDGf0Bxw9ZbwxgpK7IaTrWBmEMazXhnFkhwbpIG7hEYMPX
+         42AXp7O7KfFL4ea41pn6PXA1ilhSzOP0IHJ0M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=c5fNsg2UwF5UocytYwq0XQNimIsx8M/0x2kcxXnzw6s=;
-        b=rAPrwPjdxcJWP26LH1XUK85/Ec6WLj39mlSluidyNAwZ9fSmirGTFJRdRHq3+22VL2
-         kcctn7urUhLuHMlVYg42Fa8T85iiK02yIofNTw566ANNQktsZQGrb8aKw9hS39SFnrLN
-         GMmSIFWIEkEjp7yZLboLkxojqp9z8kAJ3GEGxpAjEJWU3MPrxvTQC3B9wGtZYql6xpSR
-         9D9Q07406qzQiHJxPqVFlanRjKnDLkEU9wxrGi5eeNur6QOhY6l7xUjMVB2hFI14TlON
-         eLmL+gZKMHzLM4v3rpAn/4XS0QOzJDeUbMSWncP0W0FTTHJcPpthPJCB2S/GJyHXF4QN
-         y+CA==
-X-Gm-Message-State: AOAM5334+Mnckoqpqu+qH8HMdlhhdMScrfYLXvr2NIElrbzACyXpAYtb
-        hWvTKoAd9HZsiiU6fUN86csTew==
-X-Google-Smtp-Source: ABdhPJwlSb2HJ2fXreVypNQMIQPBK3ZPIqIThkVchlUswu3+TbmFlW0XsYozNSC0nOOqS5dkRor2sg==
-X-Received: by 2002:a92:ca91:: with SMTP id t17mr27317300ilo.67.1608780845418;
-        Wed, 23 Dec 2020 19:34:05 -0800 (PST)
-Received: from google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
-        by smtp.gmail.com with ESMTPSA id e9sm18039843ils.14.2020.12.23.19.34.04
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZcSp+cRdP2bcqWVQZJCDIiTdhj/sfG8FWouaFgmCU4k=;
+        b=HK2UPyrNRpVqm7sDsjTjdg8XBi8eH7WoWPG8VPOFe6yrdIU0N9w87wcnGRh5ky09M6
+         82uLSZCE3MnehptxgdZyNYZz9QLVEp9mJwnVhmkR7kwkdAHyBKCq7iO6wo6cnj/aHX1y
+         YqlEDhJPn8FaCElXu2GPslGE9IqW2hn9gfThj/PcbHXIy1ALTxELV+NVQKtjoBKOIUWV
+         xIE9vUCliLKevSAtAlEhdqdCCGIIkG3/YHfcFOzumGIVONDD5fW5J68g8vR9bu3tS7l3
+         AGP6h2J1VW9jqBjZb6HxjtGQM94+E/dEpemArYLBlFRUgLfsagCbJHxvBLsKicuwPcz0
+         dDrg==
+X-Gm-Message-State: AOAM532OZhDn8qInJ3wk65SznXXEIEC3OjRD3q9oqhv9c3qyLrqGDoww
+        OROmwS9wIPZscEoU/Y4PfPFdaQ==
+X-Google-Smtp-Source: ABdhPJzZmyMvqGZq9wHizORK2I38iQiCXGrUALo4r7txgdGVZT4btTypZYtuIYMmUDpPExmMijfXjg==
+X-Received: by 2002:a17:90b:4acc:: with SMTP id mh12mr2606669pjb.54.1608781512942;
+        Wed, 23 Dec 2020 19:45:12 -0800 (PST)
+Received: from drinkcat2.tpe.corp.google.com ([2401:fa00:1:b:7220:84ff:fe09:41dc])
+        by smtp.gmail.com with ESMTPSA id f24sm942332pjj.5.2020.12.23.19.45.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Dec 2020 19:34:04 -0800 (PST)
-Date:   Wed, 23 Dec 2020 20:34:00 -0700
-From:   Yu Zhao <yuzhao@google.com>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>, linux-mm <linux-mm@kvack.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable <stable@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-Message-ID: <X+QMKC7jPEeThjB1@google.com>
-References: <X+PE38s2Egq4nzKv@google.com>
- <C332B03D-30B1-4C9C-99C2-E76988BFC4A1@amacapital.net>
- <X+P2OnR+ipY8d2qL@redhat.com>
- <3A6A1049-24C6-4B2D-8C59-21B549F742B4@gmail.com>
+        Wed, 23 Dec 2020 19:45:12 -0800 (PST)
+From:   Nicolas Boichat <drinkcat@chromium.org>
+To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     Dmitry Torokhov <dtor@chromium.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jiri Kosina <jikos@kernel.org>, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] HID: google: Get HID report on probe to confirm tablet switch state
+Date:   Thu, 24 Dec 2020 11:45:07 +0800
+Message-Id: <20201224114502.1.I41b9795e4b5bda7209eb9099aebdc6a29677391e@changeid>
+X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <3A6A1049-24C6-4B2D-8C59-21B549F742B4@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 07:09:10PM -0800, Nadav Amit wrote:
-> > On Dec 23, 2020, at 6:00 PM, Andrea Arcangeli <aarcange@redhat.com> wrote:
-> > 
-> > On Wed, Dec 23, 2020 at 05:21:43PM -0800, Andy Lutomirski wrote:
-> >> I don’t love this as a long term fix. AFAICT we can have mm_tlb_flush_pending set for quite a while — mprotect seems like it can wait in IO while splitting a huge page, for example. That gives us a window in which every write fault turns into a TLB flush.
-> > 
-> > mprotect can't run concurrently with a page fault in the first place.
-> > 
-> > One other near zero cost improvement easy to add if this would be "if
-> > (vma->vm_flags & (VM_SOFTDIRTY|VM_UFFD_WP))" and it could be made
-> > conditional to the two config options too.
-> > 
-> > Still I don't mind doing it in some other way, uffd-wp has much easier
-> > time doing it in another way in fact.
-> > 
-> > Whatever performs better is fine, but queuing up pending invalidate
-> > ranges don't look very attractive since it'd be a fixed cost that we'd
-> > always have to pay even when there's no fault (and there can't be any
-> > fault at least for mprotect).
-> 
-> I think there are other cases in which Andy’s concern is relevant
-> (MADV_PAGEOUT).
+This forces reading the base folded status anytime the device is
+probed.
 
-That patch only demonstrate a rough idea and I should have been
-elaborate: if we ever decide to go that direction, we only need to
-worry about "jumping through hoops", because the final patch (set)
-I have in mind would not only have the build time optimization Andrea
-suggested but also include runtime optimizations like skipping
-do_swap_page() path and (!PageAnon() || page_mapcount > 1). Rest
-assured, the performance impact on do_wp_page() from occasionally an
-additional TLB flush on top of a page copy is negligible.
+Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+---
+Instead of all this manual parsing, it'd be easier to just call:
+hid_hw_request(hdev, report, HID_REQ_GET_REPORT);
+However, that fails silently as hdev->driver_input_lock is held
+during probe (or even some callbacks like input_configured.
 
-> Perhaps holding some small bitmap based on part of the deferred flushed
-> pages (e.g., bits 12-17 of the address or some other kind of a single
-> hash-function bloom-filter) would be more performant to avoid (most)
-> unnecessary TLB flushes. It will be cleared before a TLB flush and set while
-> holding the PTL.
-> 
-> Checking if a flush is needed, under the PTL, would require a single memory
-> access (although potentially cache miss). It will however require one atomic
-> operation for each page-table whose PTEs’ flushes are deferred - in contrast
-> to the current scheme which requires two atomic operations for the *entire*
-> operation.
-> 
+ drivers/hid/hid-google-hammer.c | 85 +++++++++++++++++++++++++--------
+ 1 file changed, 66 insertions(+), 19 deletions(-)
+
+diff --git a/drivers/hid/hid-google-hammer.c b/drivers/hid/hid-google-hammer.c
+index 85a054f1ce38..d9319622da44 100644
+--- a/drivers/hid/hid-google-hammer.c
++++ b/drivers/hid/hid-google-hammer.c
+@@ -392,30 +392,34 @@ static int hammer_input_mapping(struct hid_device *hdev, struct hid_input *hi,
+ 	return 0;
+ }
+ 
+-static int hammer_event(struct hid_device *hid, struct hid_field *field,
+-			struct hid_usage *usage, __s32 value)
++static void hammer_folded_event(struct hid_device *hdev, bool folded)
+ {
+ 	unsigned long flags;
+ 
+-	if (usage->hid == HID_USAGE_KBD_FOLDED) {
+-		spin_lock_irqsave(&cbas_ec_lock, flags);
++	spin_lock_irqsave(&cbas_ec_lock, flags);
+ 
+-		/*
+-		 * If we are getting events from Whiskers that means that it
+-		 * is attached to the lid.
+-		 */
+-		cbas_ec.base_present = true;
+-		cbas_ec.base_folded = value;
+-		hid_dbg(hid, "%s: base: %d, folded: %d\n", __func__,
+-			cbas_ec.base_present, cbas_ec.base_folded);
+-
+-		if (cbas_ec.input) {
+-			input_report_switch(cbas_ec.input,
+-					    SW_TABLET_MODE, value);
+-			input_sync(cbas_ec.input);
+-		}
++	/*
++	 * If we are getting events from Whiskers that means that it
++	 * is attached to the lid.
++	 */
++	cbas_ec.base_present = true;
++	cbas_ec.base_folded = folded;
++	hid_dbg(hdev, "%s: base: %d, folded: %d\n", __func__,
++		cbas_ec.base_present, cbas_ec.base_folded);
+ 
+-		spin_unlock_irqrestore(&cbas_ec_lock, flags);
++	if (cbas_ec.input) {
++		input_report_switch(cbas_ec.input, SW_TABLET_MODE, folded);
++		input_sync(cbas_ec.input);
++	}
++
++	spin_unlock_irqrestore(&cbas_ec_lock, flags);
++}
++
++static int hammer_event(struct hid_device *hid, struct hid_field *field,
++			struct hid_usage *usage, __s32 value)
++{
++	if (usage->hid == HID_USAGE_KBD_FOLDED) {
++		hammer_folded_event(hid, value);
+ 		return 1; /* We handled this event */
+ 	}
+ 
+@@ -457,6 +461,47 @@ static bool hammer_has_backlight_control(struct hid_device *hdev)
+ 				HID_GD_KEYBOARD, HID_AD_BRIGHTNESS);
+ }
+ 
++static void hammer_get_folded_state(struct hid_device *hdev)
++{
++	struct hid_report *report;
++	char *buf;
++	int len, rlen;
++	int a;
++
++	report = hdev->report_enum[HID_INPUT_REPORT].report_id_hash[0x0];
++
++	if (!report || report->maxfield < 1)
++		return;
++
++	len = hid_report_len(report) + 1;
++
++	buf = kmalloc(len, GFP_KERNEL);
++	if (!buf)
++		return;
++
++	rlen = hid_hw_raw_request(hdev, report->id, buf, len, report->type, HID_REQ_GET_REPORT);
++
++	if (rlen != len) {
++		hid_warn(hdev, "Unable to read base folded state: %d (expected %d)\n", rlen, len);
++		goto out;
++	}
++
++	for (a = 0; a < report->maxfield; a++) {
++		struct hid_field *field = report->field[a];
++
++		if (field->usage->hid == HID_USAGE_KBD_FOLDED) {
++			u32 value = hid_field_extract(hdev, buf+1,
++					field->report_offset, field->report_size);
++
++			hammer_folded_event(hdev, value);
++			break;
++		}
++	}
++
++out:
++	kfree(buf);
++}
++
+ static int hammer_probe(struct hid_device *hdev,
+ 			const struct hid_device_id *id)
+ {
+@@ -481,6 +526,8 @@ static int hammer_probe(struct hid_device *hdev,
+ 		error = hid_hw_open(hdev);
+ 		if (error)
+ 			return error;
++
++		hammer_get_folded_state(hdev);
+ 	}
+ 
+ 	if (hammer_has_backlight_control(hdev)) {
+-- 
+2.29.2.729.g45daf8777d-goog
+
