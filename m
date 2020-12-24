@@ -2,200 +2,319 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EDF92E26DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 13:33:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A4292E26E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 13:33:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728320AbgLXMbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 07:31:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40502 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727184AbgLXMbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 07:31:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 045D9224B0;
-        Thu, 24 Dec 2020 12:30:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608813025;
-        bh=UTX4NY2//XHZ3bT1CqU1okJ/pCfOmDDpYpMiTqQ1Av0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=crfmOFxsz4UDJPk9OiZuZwMAE4D1gMiBdyhETVbZTNdiUryr5ExbfLBBy6/oTUdzf
-         AqLH0AnwDIG5HWqP9N1NBvxfbylPV83fUtc6uhMtDexY/o0OSXjB92qyzoGs8wLzr3
-         DyNk99xrUIlOGQg5f/9eFKSfpAS5yuobDuZgJ7Y/mvmBe0FZFPtU9UCcOaqNyDMYru
-         6FpIktWV1TO3Jh+lkfmVxtsS3scawv/7gLdL/GgaVxaj0FpWrJ3P/2OcEm64TEprDW
-         BQh2DhFO+PQX1muRfvcSfkUZZjJ2wdYUY/7Dn/9QBX1RIeEa63QDlaQLPljoA/vnuq
-         SQialONXxBLgA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id AD2F7411E9; Thu, 24 Dec 2020 09:30:38 -0300 (-03)
-Date:   Thu, 24 Dec 2020 09:30:38 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     James Clark <james.clark@arm.com>,
-        linux-perf-users@vger.kernel.org,
-        John Garry <john.garry@huawei.com>,
-        linux-kernel@vger.kernel.org, namhyung@kernel.org,
-        "linux-arm-kernel@lists.infradead.org" 
+        id S1728649AbgLXMdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 07:33:00 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:35563 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728033AbgLXMc5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Dec 2020 07:32:57 -0500
+X-UUID: d85dc5df3c4a40e5bbe7db0a4d7e4642-20201224
+X-UUID: d85dc5df3c4a40e5bbe7db0a4d7e4642-20201224
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
+        (envelope-from <nick.fan@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1071865283; Thu, 24 Dec 2020 20:32:12 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 24 Dec 2020 20:32:09 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 24 Dec 2020 20:32:08 +0800
+From:   Nick Fan <Nick.Fan@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        <srv_heupstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
         <linux-arm-kernel@lists.infradead.org>,
-        Linuxarm <linuxarm@huawei.com>
-Subject: Re: [PATCH v6 00/12] perf tools: fix perf stat with large socket IDs
-Message-ID: <20201224123038.GC477817@kernel.org>
-References: <20201126141328.6509-1-james.clark@arm.com>
- <20201203153923.GA3613481@krava>
- <30c4426d-b314-98ff-e6d5-6d5152f316e8@huawei.com>
- <20201223221747.GB236568@krava>
+        <devicetree@vger.kernel.org>, <nick.fan@mediatek.com>,
+        Nick Fan <Nick.Fan@mediatek.com>
+Subject: [PATCH 1/2] dt-bindings: Convert Arm Mali Valhall GPU to DT schema
+Date:   Thu, 24 Dec 2020 20:31:18 +0800
+Message-ID: <20201224123119.26504-1-Nick.Fan@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201223221747.GB236568@krava>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Dec 23, 2020 at 11:17:47PM +0100, Jiri Olsa escreveu:
-> On Fri, Dec 04, 2020 at 11:48:36AM +0000, John Garry wrote:
-> > On 03/12/2020 15:39, Jiri Olsa wrote:
-> > 
-> > +
-> > 
-> > > On Thu, Nov 26, 2020 at 04:13:16PM +0200, James Clark wrote:
-> > > > Changes since v5:
-> > > >    * Fix test for cpu_map__get_die() by shifting id before testing.
-> > > >    * Fix test for cpu_map__get_socket() by not using cpu_map__id_to_socket()
-> > > >      which is only valid in CPU aggregation mode.
-> > > > 
-> > > > James Clark (12):
-> > > >    perf tools: Improve topology test
-> > > >    perf tools: Use allocator for perf_cpu_map
-> > > >    perf tools: Add new struct for cpu aggregation
-> > > >    perf tools: Replace aggregation ID with a struct
-> > > >    perf tools: add new map type for aggregation
-> > > >    perf tools: drop in cpu_aggr_map struct
-> > > >    perf tools: Start using cpu_aggr_id in map
-> > > >    perf tools: Add separate node member
-> > > >    perf tools: Add separate socket member
-> > > >    perf tools: Add separate die member
-> > > >    perf tools: Add separate core member
-> > > >    perf tools: Add separate thread member
-> > > 
-> > > Acked-by: Jiri Olsa <jolsa@redhat.com>
-> > > 
-> > 
-> > Tested-by: John Garry <john.garry@huawei.com>
-> 
-> hi,
-> I was wondering where this went, and noticed that
-> Arnaldo was not CC-ed on the cover letter ;-)
+Convert the Arm Valhall GPU binding to DT schema format.
 
-Looking at it right now, used the Message-ID and b4 got everything,
-there are some fuzzies that I'm checking:
+Define a compatible string for the Mali Valhall GPU
+for Mediatek's SoC platform.
 
-[acme@five perf]$ git am --show-current-patch=diff | patch -p1
-patching file tools/perf/builtin-stat.c
-Hunk #1 succeeded at 1186 (offset -2 lines).
-Hunk #2 succeeded at 1347 (offset -2 lines).
-Hunk #3 succeeded at 1373 (offset -2 lines).
-Hunk #4 succeeded at 1399 (offset -2 lines).
-Hunk #5 succeeded at 1448 (offset -2 lines).
-patching file tools/perf/tests/topology.c
-patching file tools/perf/util/cpumap.c
-patching file tools/perf/util/cpumap.h
-patching file tools/perf/util/stat-display.c
-Hunk #8 succeeded at 326 with fuzz 2 (offset -3 lines).
-Hunk #9 succeeded at 334 (offset -3 lines).
-Hunk #10 succeeded at 397 (offset -3 lines).
-Hunk #11 succeeded at 500 (offset -3 lines).
-Hunk #12 succeeded at 589 (offset -3 lines).
-Hunk #13 succeeded at 598 (offset -3 lines).
-Hunk #14 succeeded at 634 (offset -3 lines).
-Hunk #15 succeeded at 656 (offset -3 lines).
-Hunk #16 succeeded at 739 (offset -3 lines).
-Hunk #17 succeeded at 763 (offset -3 lines).
-Hunk #18 succeeded at 781 (offset -3 lines).
-Hunk #19 succeeded at 827 (offset -3 lines).
-Hunk #20 succeeded at 855 (offset -3 lines).
-Hunk #21 succeeded at 870 (offset -3 lines).
-Hunk #22 succeeded at 888 (offset -3 lines).
-Hunk #23 succeeded at 897 (offset -3 lines).
-Hunk #24 succeeded at 908 (offset -3 lines).
-Hunk #25 succeeded at 1159 (offset -3 lines).
-patching file tools/perf/util/stat.c
-patching file tools/perf/util/stat.h
-[acme@five perf]$
-
-[acme@five perf]$ git am --show-current-patch=diff | head -20
+Signed-off-by: Nick Fan <Nick.Fan@mediatek.com>
 ---
- tools/perf/builtin-stat.c      |  76 +++++++++++++----------
- tools/perf/tests/topology.c    |  17 +++---
- tools/perf/util/cpumap.c       |  82 ++++++++++++++-----------
- tools/perf/util/cpumap.h       |  10 +--
- tools/perf/util/stat-display.c | 108 +++++++++++++++++++--------------
- tools/perf/util/stat.c         |   2 +-
- tools/perf/util/stat.h         |   5 +-
- 7 files changed, 173 insertions(+), 127 deletions(-)
+ .../bindings/gpu/arm,mali-valhall.yaml        | 252 ++++++++++++++++++
+ 1 file changed, 252 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/gpu/arm,mali-valhall.yaml
 
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index f15b2f8aa14d..f10c67a26472 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -1188,65 +1188,67 @@ static struct option stat_options[] = {
- 	OPT_END()
- };
-
--static int perf_stat__get_socket(struct perf_stat_config *config __maybe_unused,
-+static struct aggr_cpu_id perf_stat__get_socket(struct perf_stat_config *config __maybe_unused,
-[acme@five perf]$
- 
-> jirka
-> 
-> > 
-> > I still think that vendors (like us) need to fix/improve their firmware
-> > tables so that we don't get silly big numbers for socket/package IDs, like
-> > S5418-D0, below:
-> > 
-> > $./perf stat -a --per-die
-> > 
-> >  Performance counter stats for 'system wide':
-> > 
-> > S36-D0   48   72,216.31 msec cpu-clock      #   47.933 CPUs utilized
-> > S36-D0   48        174     context-switches #   0.002 K/sec
-> > S36-D0   48         48     cpu-migrations   #   0.001 K/sec
-> > S36-D0   48         0     page-faults    #   0.000 K/sec
-> > S36-D0   48   7,991,698     cycles    #   0.000 GHz
-> > S36-D0   48   4,750,040     instructions   #   0.59  insn per cycle
-> > S36-D0    1   <not supported>     branches
-> > S36-D0   48      32,928     branch-misses    #   0.00% of all branches
-> > S5418-D0   48   72,189.54 msec cpu-clock     #   47.915 CPUs utilized
-> > S5418-D0   48        176     context-switches  #   0.002 K/sec
-> > S5418-D0   48         48     cpu-migrations   #   0.001 K/sec
-> > S5418-D0   48         0     page-faults     #   0.000 K/sec
-> > S5418-D0   48   5,677,218     cycles    #    0.000 GHz
-> > S5418-D0   48   3,872,285     instructions   #  0.68  insn per cycle
-> > S5418-D0    1   <not supported>     branches
-> > S5418-D0   48      29,208     branch-misses   #  0.00% of all branches
-> > 
-> >       1.506615297 seconds time elapsed
-> > 
-> > but at least it works now. Thanks.
-> > 
-> > > 
-> > > > 
-> > > >   tools/perf/builtin-stat.c      | 128 ++++++++++++------------
-> > > >   tools/perf/tests/topology.c    |  64 ++++++++++--
-> > > >   tools/perf/util/cpumap.c       | 171 ++++++++++++++++++++++-----------
-> > > >   tools/perf/util/cpumap.h       |  55 ++++++-----
-> > > >   tools/perf/util/stat-display.c | 102 ++++++++++++--------
-> > > >   tools/perf/util/stat.c         |   2 +-
-> > > >   tools/perf/util/stat.h         |   9 +-
-> > > >   7 files changed, 337 insertions(+), 194 deletions(-)
-> > > > 
-> > > > -- 
-> > > > 2.28.0
-> > > > 
-> > > 
-> > > .
-> > > 
-> > 
-> 
-
+diff --git a/Documentation/devicetree/bindings/gpu/arm,mali-valhall.yaml b/Documentation/devicetree/bindings/gpu/arm,mali-valhall.yaml
+new file mode 100644
+index 000000000000..3dba202bec95
+--- /dev/null
++++ b/Documentation/devicetree/bindings/gpu/arm,mali-valhall.yaml
+@@ -0,0 +1,252 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++# Copyright (c) 2020 MediaTek Inc.
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/gpu/arm,mali-vallhall.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: ARM Mali Valhall GPU
++
++maintainers:
++  - Rob Herring <robh@kernel.org>
++
++properties:
++  $nodename:
++    pattern: '^gpu@[a-f0-9]+$'
++
++  compatible:
++    items:
++      - enum:
++          - mediatek,mt8192-mali
++      - const: arm,mali-valhall # Mali Valhall GPU model/revision is fully discoverable
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    items:
++      - description: GPU interrupt
++      - description: MMU interrupt
++      - description: Job interrupt
++
++  interrupt-names:
++    items:
++      - const: gpu
++      - const: mmu
++      - const: job
++
++  clocks:
++    minItems: 1
++
++  power-domains:
++    minItems: 1
++    maxItems: 5
++
++  mali-supply: true
++  sram-supply: true
++
++  operating-points-v2: true
++
++  "#cooling-cells":
++    const: 2
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - interrupt-names
++  - clocks
++
++additionalProperties: false
++
++allOf:
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: mediatek,mt8192-mali
++    then:
++      properties:
++        sram-supply: true
++        power-domains:
++          description:
++            List of phandle and PM domain specifier as documented in
++            Documentation/devicetree/bindings/power/power_domain.txt
++          minItems: 5
++          maxItems: 5
++        power-domain-names:
++          items:
++            - const: core0
++            - const: core1
++            - const: core2
++            - const: core3
++            - const: core4
++
++      required:
++        - sram-supply
++        - power-domains
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++
++    gpu@13000000 {
++           compatible = "mediatek,mt8192-mali", "arm,mali-valhall";
++           reg = <0x13000000 0x4000>;
++           interrupts =
++                   <GIC_SPI 363 IRQ_TYPE_LEVEL_HIGH 0>,
++                   <GIC_SPI 364 IRQ_TYPE_LEVEL_HIGH 0>,
++                   <GIC_SPI 365 IRQ_TYPE_LEVEL_HIGH 0>;
++           interrupt-names =
++                   "gpu",
++                   "mmu",
++                   "job";
++
++           clocks = <&mfgcfg 0>;
++
++           power-domains =
++                   <&scpsys 4>,
++                   <&scpsys 5>,
++                   <&scpsys 6>,
++                   <&scpsys 7>,
++                   <&scpsys 8>;
++
++           operating-points-v2 = <&gpu_opp_table>;
++           mali-supply = <&mt6315_7_vbuck1>;
++           sram-supply = <&mt6359_vsram_others_ldo_reg>;
++    };
++
++    gpu_opp_table: opp_table0 {
++      compatible = "operating-points-v2";
++      opp-shared;
++
++      opp-358000000 {
++              opp-hz = /bits/ 64 <358000000>;
++              opp-hz-real = /bits/ 64 <358000000>,
++                            /bits/ 64 <358000000>;
++              opp-microvolt = <606250>,
++                              <750000>;
++      };
++
++      opp-399000000 {
++              opp-hz = /bits/ 64 <399000000>;
++              opp-hz-real = /bits/ 64 <399000000>,
++                            /bits/ 64 <399000000>;
++              opp-microvolt = <618750>,
++                              <750000>;
++      };
++
++      opp-440000000 {
++              opp-hz = /bits/ 64 <440000000>;
++              opp-hz-real = /bits/ 64 <440000000>,
++                            /bits/ 64 <440000000>;
++              opp-microvolt = <631250>,
++                              <750000>;
++      };
++
++      opp-482000000 {
++              opp-hz = /bits/ 64 <482000000>;
++              opp-hz-real = /bits/ 64 <482000000>,
++                            /bits/ 64 <482000000>;
++              opp-microvolt = <643750>,
++                              <750000>;
++      };
++
++      opp-523000000 {
++              opp-hz = /bits/ 64 <523000000>;
++              opp-hz-real = /bits/ 64 <523000000>,
++                            /bits/ 64 <523000000>;
++              opp-microvolt = <656250>,
++                              <750000>;
++      };
++
++      opp-564000000 {
++              opp-hz = /bits/ 64 <564000000>;
++              opp-hz-real = /bits/ 64 <564000000>,
++                            /bits/ 64 <564000000>;
++              opp-microvolt = <668750>,
++                              <750000>;
++      };
++
++      opp-605000000 {
++              opp-hz = /bits/ 64 <605000000>;
++              opp-hz-real = /bits/ 64 <605000000>,
++                            /bits/ 64 <605000000>;
++              opp-microvolt = <681250>,
++                              <750000>;
++      };
++
++      opp-647000000 {
++              opp-hz = /bits/ 64 <647000000>;
++              opp-hz-real = /bits/ 64 <647000000>,
++                            /bits/ 64 <647000000>;
++              opp-microvolt = <693750>,
++                              <750000>;
++      };
++
++      opp-688000000 {
++              opp-hz = /bits/ 64 <688000000>;
++              opp-hz-real = /bits/ 64 <688000000>,
++                            /bits/ 64 <688000000>;
++              opp-microvolt = <706250>,
++                              <750000>;
++      };
++
++      opp-724000000 {
++              opp-hz = /bits/ 64 <724000000>;
++              opp-hz-real = /bits/ 64 <724000000>,
++                            /bits/ 64 <724000000>;
++              opp-microvolt = <725000>,
++                              <750000>;
++      };
++
++      opp-760000000 {
++              opp-hz = /bits/ 64 <760000000>;
++              opp-hz-real = /bits/ 64 <760000000>,
++                            /bits/ 64 <760000000>;
++              opp-microvolt = <743750>,
++                              <750000>;
++      };
++
++      opp-795000000 {
++              opp-hz = /bits/ 64 <795000000>;
++              opp-hz-real = /bits/ 64 <795000000>,
++                            /bits/ 64 <795000000>;
++              opp-microvolt = <762500>,
++                              <762500>;
++      };
++
++      opp-831000000 {
++              opp-hz = /bits/ 64 <831000000>;
++              opp-hz-real = /bits/ 64 <831000000>,
++                            /bits/ 64 <831000000>;
++              opp-microvolt = <781250>,
++                              <781250>;
++      };
++
++      opp-855000000 {
++              opp-hz = /bits/ 64 <855000000>;
++              opp-hz-real = /bits/ 64 <855000000>,
++                            /bits/ 64 <855000000>;
++              opp-microvolt = <793750>,
++                              <793750>;
++      };
++
++      opp-902000000 {
++              opp-hz = /bits/ 64 <902000000>;
++              opp-hz-real = /bits/ 64 <902000000>,
++                            /bits/ 64 <902000000>;
++              opp-microvolt = <818750>,
++                              <818750>;
++      };
++
++      opp-950000000 {
++              opp-hz = /bits/ 64 <950000000>;
++              opp-hz-real = /bits/ 64 <950000000>,
++                            /bits/ 64 <950000000>;
++              opp-microvolt = <843750>,
++                              <843750>;
++      };
++    };
++...
 -- 
+2.18.0
 
-- Arnaldo
