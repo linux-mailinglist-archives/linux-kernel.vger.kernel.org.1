@@ -2,193 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB38E2E241A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 04:47:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7B672E2420
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 05:03:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728793AbgLXDpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 22:45:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728334AbgLXDpx (ORCPT
+        id S1727057AbgLXECp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 23:02:45 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49395 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725846AbgLXECo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 22:45:53 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99217C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 19:45:13 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id f14so458279pju.4
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 19:45:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZcSp+cRdP2bcqWVQZJCDIiTdhj/sfG8FWouaFgmCU4k=;
-        b=oF8LweNTM0O1s0jpipHfe0Skl2HB5E2BuMofWlS8SNgvnYFeOQqCMoabngGlgi9vP0
-         QIXvD9HulcL+AG9TpZTBjrDDGf0Bxw9ZbwxgpK7IaTrWBmEMazXhnFkhwbpIG7hEYMPX
-         42AXp7O7KfFL4ea41pn6PXA1ilhSzOP0IHJ0M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZcSp+cRdP2bcqWVQZJCDIiTdhj/sfG8FWouaFgmCU4k=;
-        b=HK2UPyrNRpVqm7sDsjTjdg8XBi8eH7WoWPG8VPOFe6yrdIU0N9w87wcnGRh5ky09M6
-         82uLSZCE3MnehptxgdZyNYZz9QLVEp9mJwnVhmkR7kwkdAHyBKCq7iO6wo6cnj/aHX1y
-         YqlEDhJPn8FaCElXu2GPslGE9IqW2hn9gfThj/PcbHXIy1ALTxELV+NVQKtjoBKOIUWV
-         xIE9vUCliLKevSAtAlEhdqdCCGIIkG3/YHfcFOzumGIVONDD5fW5J68g8vR9bu3tS7l3
-         AGP6h2J1VW9jqBjZb6HxjtGQM94+E/dEpemArYLBlFRUgLfsagCbJHxvBLsKicuwPcz0
-         dDrg==
-X-Gm-Message-State: AOAM532OZhDn8qInJ3wk65SznXXEIEC3OjRD3q9oqhv9c3qyLrqGDoww
-        OROmwS9wIPZscEoU/Y4PfPFdaQ==
-X-Google-Smtp-Source: ABdhPJzZmyMvqGZq9wHizORK2I38iQiCXGrUALo4r7txgdGVZT4btTypZYtuIYMmUDpPExmMijfXjg==
-X-Received: by 2002:a17:90b:4acc:: with SMTP id mh12mr2606669pjb.54.1608781512942;
-        Wed, 23 Dec 2020 19:45:12 -0800 (PST)
-Received: from drinkcat2.tpe.corp.google.com ([2401:fa00:1:b:7220:84ff:fe09:41dc])
-        by smtp.gmail.com with ESMTPSA id f24sm942332pjj.5.2020.12.23.19.45.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Dec 2020 19:45:12 -0800 (PST)
-From:   Nicolas Boichat <drinkcat@chromium.org>
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Dmitry Torokhov <dtor@chromium.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jiri Kosina <jikos@kernel.org>, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] HID: google: Get HID report on probe to confirm tablet switch state
-Date:   Thu, 24 Dec 2020 11:45:07 +0800
-Message-Id: <20201224114502.1.I41b9795e4b5bda7209eb9099aebdc6a29677391e@changeid>
-X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
+        Wed, 23 Dec 2020 23:02:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608782477;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HaM5vqeoz7uyCdtjEZGPvgmfZfkHGEzfapMlshdVV/I=;
+        b=FfPUsKuGuc24WODhykC+7G9ARn1z00ZegTcR7zRH1X7BhleL8iFJLjOp8NUlZlJ6QbYi5L
+        mv+ETBBUwlfH5vMK6+QKLat3EcBYK87U6p9juOYjKxVRGsZvyUezM3DhSFwb5u1xEqnKd8
+        m0mNM13RWzGw1+0KFYbRZgCZHQWziSc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-368-UCmXtoJCMlmYJsHL39CugA-1; Wed, 23 Dec 2020 23:01:15 -0500
+X-MC-Unique: UCmXtoJCMlmYJsHL39CugA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BB646801AAF;
+        Thu, 24 Dec 2020 04:01:13 +0000 (UTC)
+Received: from mail (ovpn-112-5.rdu2.redhat.com [10.10.112.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 232995F9B8;
+        Thu, 24 Dec 2020 04:01:10 +0000 (UTC)
+Date:   Wed, 23 Dec 2020 23:01:09 -0500
+From:   Andrea Arcangeli <aarcange@redhat.com>
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     Nadav Amit <nadav.amit@gmail.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Andy Lutomirski <luto@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>, linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+Message-ID: <X+QShVIUbYKAsc35@redhat.com>
+References: <X+PE38s2Egq4nzKv@google.com>
+ <C332B03D-30B1-4C9C-99C2-E76988BFC4A1@amacapital.net>
+ <X+P2OnR+ipY8d2qL@redhat.com>
+ <3A6A1049-24C6-4B2D-8C59-21B549F742B4@gmail.com>
+ <X+QMKC7jPEeThjB1@google.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <X+QMKC7jPEeThjB1@google.com>
+User-Agent: Mutt/2.0.3 (2020-12-04)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This forces reading the base folded status anytime the device is
-probed.
+> On Wed, Dec 23, 2020 at 07:09:10PM -0800, Nadav Amit wrote:
+> > I think there are other cases in which Andy’s concern is relevant
+> > (MADV_PAGEOUT).
 
-Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
----
-Instead of all this manual parsing, it'd be easier to just call:
-hid_hw_request(hdev, report, HID_REQ_GET_REPORT);
-However, that fails silently as hdev->driver_input_lock is held
-during probe (or even some callbacks like input_configured.
+I didn't try to figure how it would help MADV_PAGEOUT. MADV_PAGEOUT
+sounds cool feature, but maybe it'd need a way to flush the
+invalidates out and a take a static key to enable the buildup of those
+ranges?
 
- drivers/hid/hid-google-hammer.c | 85 +++++++++++++++++++++++++--------
- 1 file changed, 66 insertions(+), 19 deletions(-)
+I wouldn't like to slow down the fast paths even for MADV_PAGEOUT, and
+the same applies to uffd-wp and softdirty in fact.
 
-diff --git a/drivers/hid/hid-google-hammer.c b/drivers/hid/hid-google-hammer.c
-index 85a054f1ce38..d9319622da44 100644
---- a/drivers/hid/hid-google-hammer.c
-+++ b/drivers/hid/hid-google-hammer.c
-@@ -392,30 +392,34 @@ static int hammer_input_mapping(struct hid_device *hdev, struct hid_input *hi,
- 	return 0;
- }
- 
--static int hammer_event(struct hid_device *hid, struct hid_field *field,
--			struct hid_usage *usage, __s32 value)
-+static void hammer_folded_event(struct hid_device *hdev, bool folded)
- {
- 	unsigned long flags;
- 
--	if (usage->hid == HID_USAGE_KBD_FOLDED) {
--		spin_lock_irqsave(&cbas_ec_lock, flags);
-+	spin_lock_irqsave(&cbas_ec_lock, flags);
- 
--		/*
--		 * If we are getting events from Whiskers that means that it
--		 * is attached to the lid.
--		 */
--		cbas_ec.base_present = true;
--		cbas_ec.base_folded = value;
--		hid_dbg(hid, "%s: base: %d, folded: %d\n", __func__,
--			cbas_ec.base_present, cbas_ec.base_folded);
--
--		if (cbas_ec.input) {
--			input_report_switch(cbas_ec.input,
--					    SW_TABLET_MODE, value);
--			input_sync(cbas_ec.input);
--		}
-+	/*
-+	 * If we are getting events from Whiskers that means that it
-+	 * is attached to the lid.
-+	 */
-+	cbas_ec.base_present = true;
-+	cbas_ec.base_folded = folded;
-+	hid_dbg(hdev, "%s: base: %d, folded: %d\n", __func__,
-+		cbas_ec.base_present, cbas_ec.base_folded);
- 
--		spin_unlock_irqrestore(&cbas_ec_lock, flags);
-+	if (cbas_ec.input) {
-+		input_report_switch(cbas_ec.input, SW_TABLET_MODE, folded);
-+		input_sync(cbas_ec.input);
-+	}
-+
-+	spin_unlock_irqrestore(&cbas_ec_lock, flags);
-+}
-+
-+static int hammer_event(struct hid_device *hid, struct hid_field *field,
-+			struct hid_usage *usage, __s32 value)
-+{
-+	if (usage->hid == HID_USAGE_KBD_FOLDED) {
-+		hammer_folded_event(hid, value);
- 		return 1; /* We handled this event */
- 	}
- 
-@@ -457,6 +461,47 @@ static bool hammer_has_backlight_control(struct hid_device *hdev)
- 				HID_GD_KEYBOARD, HID_AD_BRIGHTNESS);
- }
- 
-+static void hammer_get_folded_state(struct hid_device *hdev)
-+{
-+	struct hid_report *report;
-+	char *buf;
-+	int len, rlen;
-+	int a;
-+
-+	report = hdev->report_enum[HID_INPUT_REPORT].report_id_hash[0x0];
-+
-+	if (!report || report->maxfield < 1)
-+		return;
-+
-+	len = hid_report_len(report) + 1;
-+
-+	buf = kmalloc(len, GFP_KERNEL);
-+	if (!buf)
-+		return;
-+
-+	rlen = hid_hw_raw_request(hdev, report->id, buf, len, report->type, HID_REQ_GET_REPORT);
-+
-+	if (rlen != len) {
-+		hid_warn(hdev, "Unable to read base folded state: %d (expected %d)\n", rlen, len);
-+		goto out;
-+	}
-+
-+	for (a = 0; a < report->maxfield; a++) {
-+		struct hid_field *field = report->field[a];
-+
-+		if (field->usage->hid == HID_USAGE_KBD_FOLDED) {
-+			u32 value = hid_field_extract(hdev, buf+1,
-+					field->report_offset, field->report_size);
-+
-+			hammer_folded_event(hdev, value);
-+			break;
-+		}
-+	}
-+
-+out:
-+	kfree(buf);
-+}
-+
- static int hammer_probe(struct hid_device *hdev,
- 			const struct hid_device_id *id)
- {
-@@ -481,6 +526,8 @@ static int hammer_probe(struct hid_device *hdev,
- 		error = hid_hw_open(hdev);
- 		if (error)
- 			return error;
-+
-+		hammer_get_folded_state(hdev);
- 	}
- 
- 	if (hammer_has_backlight_control(hdev)) {
--- 
-2.29.2.729.g45daf8777d-goog
+On Wed, Dec 23, 2020 at 08:34:00PM -0700, Yu Zhao wrote:
+> That patch only demonstrate a rough idea and I should have been
+> elaborate: if we ever decide to go that direction, we only need to
+> worry about "jumping through hoops", because the final patch (set)
+> I have in mind would not only have the build time optimization Andrea
+> suggested but also include runtime optimizations like skipping
+> do_swap_page() path and (!PageAnon() || page_mapcount > 1). Rest
+> assured, the performance impact on do_wp_page() from occasionally an
+> additional TLB flush on top of a page copy is negligible.
+
+Agreed, I just posted something in that direction. Feel free to
+refactor it, it's just a tentative implementation to show something
+that may deliver all the performance we need in all cases involved
+without slowing down the fast paths of non-uffd and non-softdirty
+(well 1 branch).
+
+> On Wed, Dec 23, 2020 at 07:09:10PM -0800, Nadav Amit wrote:
+> > Perhaps holding some small bitmap based on part of the deferred flushed
+> > pages (e.g., bits 12-17 of the address or some other kind of a single
+> > hash-function bloom-filter) would be more performant to avoid (most)
+
+The concern here aren't only the page faults having to run the bloom
+filter, but how to manage the RAM storage pointed by the bloomfilter
+or whatever index into the storage, which would slowdown mprotect.
+
+Granted that mprotect is slow to begin with, but the idea we can't make
+it any slower to make MADV_PAGEOUT or uffd-wp or clear_refs run
+faster since it's too important and too frequent in comparison.
+
+Just to restrict the potential false positive IPI caused by page_count
+inevitable inaccuracies to uffd-wp and softdirty runtimes, a simple
+check on vm_flags should be enough.
+
+Thanks,
+Andrea
 
