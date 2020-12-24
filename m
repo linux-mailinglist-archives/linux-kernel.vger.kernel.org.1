@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85BEF2E2559
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 09:00:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 138442E255B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 09:02:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726463AbgLXH7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 02:59:33 -0500
-Received: from mga11.intel.com ([192.55.52.93]:50961 "EHLO mga11.intel.com"
+        id S1727024AbgLXIA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 03:00:27 -0500
+Received: from mga09.intel.com ([134.134.136.24]:39745 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725613AbgLXH7d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 02:59:33 -0500
-IronPort-SDR: nobqTewoD105/yu9EtJwDa69D6Be+5E1uAPJlBNxa8mlT9nQN4X7y9THoMpele/wyYYPwCg9Ow
- uZQqwNGPX8gw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9844"; a="172611212"
+        id S1725613AbgLXIA1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Dec 2020 03:00:27 -0500
+IronPort-SDR: AH1ZPfEHKAWAsPGDfIn20lGzRwTwEOCHkE1iQgrkqxdH8n6IYFM9vRY//cJnoPYYRSynxcpuGh
+ SfwWeJ0qzmrA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9844"; a="176271860"
 X-IronPort-AV: E=Sophos;i="5.78,444,1599548400"; 
-   d="scan'208";a="172611212"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Dec 2020 23:58:43 -0800
-IronPort-SDR: ADAFf99tfICV5nWq9fcbrayHAxY7+1X8LWP4AltqUXRfakkQEQLQ/LT3qnVNNoccoIOjqIpJ8z
- eu51VTP/i2EQ==
+   d="scan'208";a="176271860"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Dec 2020 23:59:41 -0800
+IronPort-SDR: 3BdlrMucCn6F2y98AiTWvT6GlaJZKCRO4OFMWCC9oZFWMx4AQ9sDnU6lVG1ioJmdgG7xtRlEhi
+ Fm1cS8Mi1JFA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.78,444,1599548400"; 
-   d="scan'208";a="398567707"
+   d="scan'208";a="339526085"
 Received: from lkp-server02.sh.intel.com (HELO 4242b19f17ef) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 23 Dec 2020 23:58:37 -0800
+  by fmsmga007.fm.intel.com with ESMTP; 23 Dec 2020 23:59:39 -0800
 Received: from kbuild by 4242b19f17ef with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1ksLW8-0000px-PP; Thu, 24 Dec 2020 07:58:36 +0000
-Date:   Thu, 24 Dec 2020 15:58:33 +0800
+        id 1ksLX9-0000q3-7F; Thu, 24 Dec 2020 07:59:39 +0000
+Date:   Thu, 24 Dec 2020 15:58:40 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "Paul E. McKenney" <paulmck@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:rcu/test] BUILD REGRESSION
- 88054dca0f5708bee190e093dce64dc3cb025793
-Message-ID: <5fe44a29.6EDShpLPY8f5LVI8%lkp@intel.com>
+Subject: [rcu:dev.2020.12.21a] BUILD SUCCESS
+ ceb57fe529baff777d89a46bff3580926b3186ef
+Message-ID: <5fe44a30.E9gJ//LYqIFIDkD5%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,19 +43,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/test
-branch HEAD: 88054dca0f5708bee190e093dce64dc3cb025793  ACPI: processor: Fix missing need_resched() check after rcu_idle_enter()
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.12.21a
+branch HEAD: ceb57fe529baff777d89a46bff3580926b3186ef  torture: Break affinity of kthreads last running on outgoing CPU
 
-Error/Warning ids grouped by kconfigs:
+elapsed time: 724m
 
-gcc_recent_errors
-`-- nds32-randconfig-r014-20201221
-    `-- kernel-rcu-tree_plugin.h:error:struct-task_struct-has-no-member-named-on_cpu
-
-elapsed time: 721m
-
-configs tested: 133
+configs tested: 138
 configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
 gcc tested configs:
 arm                                 defconfig
@@ -63,34 +60,41 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
-nds32                             allnoconfig
 m68k                        m5407c3_defconfig
 openrisc                            defconfig
 sh                           se7343_defconfig
 mips                      maltasmvp_defconfig
-arm                    vt8500_v6_v7_defconfig
-mips                     cu1830-neo_defconfig
-powerpc                     sbc8548_defconfig
-c6x                        evmc6474_defconfig
-powerpc                    ge_imp3a_defconfig
-arm                           corgi_defconfig
-powerpc                 xes_mpc85xx_defconfig
-powerpc                      ppc40x_defconfig
+nds32                             allnoconfig
 parisc                              defconfig
 c6x                                 defconfig
 sh                             shx3_defconfig
 mips                      loongson3_defconfig
 powerpc                 mpc8315_rdb_defconfig
+mips                        workpad_defconfig
+arm                         bcm2835_defconfig
+sh                               alldefconfig
+powerpc                 mpc8560_ads_defconfig
+arm                        neponset_defconfig
 arc                        vdk_hs38_defconfig
 arm                          pcm027_defconfig
 arm                         mv78xx0_defconfig
+riscv                               defconfig
 arm                        trizeps4_defconfig
+arm                          prima2_defconfig
+sparc                            alldefconfig
+mips                       bmips_be_defconfig
+powerpc                mpc7448_hpc2_defconfig
+microblaze                      mmu_defconfig
+sh                  sh7785lcr_32bit_defconfig
 sh                          landisk_defconfig
 m68k                            q40_defconfig
 sh                             sh03_defconfig
 m68k                         amcore_defconfig
 arc                        nsim_700_defconfig
 m68k                            mac_defconfig
+sh                                  defconfig
+m68k                       bvme6000_defconfig
+openrisc                    or1ksim_defconfig
 mips                malta_kvm_guest_defconfig
 s390                          debug_defconfig
 mips                           mtx1_defconfig
@@ -106,13 +110,13 @@ sh                              ul2_defconfig
 powerpc                     skiroot_defconfig
 powerpc                        icon_defconfig
 powerpc                 mpc837x_rdb_defconfig
+mips                             allmodconfig
 arm                              zx_defconfig
 powerpc                     taishan_defconfig
 powerpc                     mpc83xx_defconfig
 h8300                            alldefconfig
 powerpc                 mpc834x_mds_defconfig
 arm                       omap2plus_defconfig
-powerpc                 mpc8560_ads_defconfig
 ia64                        generic_defconfig
 sparc                       sparc32_defconfig
 arm                       spear13xx_defconfig
@@ -149,7 +153,6 @@ sparc                               defconfig
 i386                               tinyconfig
 i386                                defconfig
 mips                             allyesconfig
-mips                             allmodconfig
 powerpc                          allyesconfig
 powerpc                          allmodconfig
 powerpc                           allnoconfig
@@ -175,7 +178,6 @@ riscv                    nommu_k210_defconfig
 riscv                            allyesconfig
 riscv                    nommu_virt_defconfig
 riscv                             allnoconfig
-riscv                               defconfig
 riscv                          rv32_defconfig
 riscv                            allmodconfig
 x86_64                                   rhel
