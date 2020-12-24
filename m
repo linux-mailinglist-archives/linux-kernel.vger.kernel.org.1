@@ -2,74 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A8592E238B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 02:58:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC6E32E2391
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 03:03:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728569AbgLXB5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 20:57:22 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:41023 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726288AbgLXB5W (ORCPT
+        id S1728676AbgLXCCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 21:02:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29809 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728367AbgLXCCC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 20:57:22 -0500
-Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 0BO1tjeZ014478
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Dec 2020 20:55:46 -0500
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id E7142420280; Wed, 23 Dec 2020 20:55:44 -0500 (EST)
-Date:   Wed, 23 Dec 2020 20:55:44 -0500
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] ext4: use DEFINE_MUTEX (and mutex_init() had been
- too late)
-Message-ID: <X+P1IKbjELeomyeo@mit.edu>
-References: <20201223141254.559-1-zhengyongjun3@huawei.com>
+        Wed, 23 Dec 2020 21:02:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608775236;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3Ni6tCCgQBk1q+zYM38+EyQ5WFEQoiTCDHuKMjM6vbA=;
+        b=LGn3DsZDm/+ZFSSl64FSrGhKNyK8Z95drEFUMXxT1V5sqWOpUv6s0xw49+IzWsBD921Tdp
+        Y4fNl3guBu3z43gm5wlL8EHmVQpCguzKthXBxxlWLXTax1GZFaaaL38IoWnp4SbAwzEkeM
+        /kyvhihqHQ0hA5PogtpDGVfXMPJuvcM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-390-_9yR_rClP8iSzRGjZEvRsQ-1; Wed, 23 Dec 2020 21:00:32 -0500
+X-MC-Unique: _9yR_rClP8iSzRGjZEvRsQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D5B39E763;
+        Thu, 24 Dec 2020 02:00:30 +0000 (UTC)
+Received: from mail (ovpn-112-5.rdu2.redhat.com [10.10.112.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 46E8010023AF;
+        Thu, 24 Dec 2020 02:00:27 +0000 (UTC)
+Date:   Wed, 23 Dec 2020 21:00:26 -0500
+From:   Andrea Arcangeli <aarcange@redhat.com>
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+Message-ID: <X+P2OnR+ipY8d2qL@redhat.com>
+References: <X+PE38s2Egq4nzKv@google.com>
+ <C332B03D-30B1-4C9C-99C2-E76988BFC4A1@amacapital.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201223141254.559-1-zhengyongjun3@huawei.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <C332B03D-30B1-4C9C-99C2-E76988BFC4A1@amacapital.net>
+User-Agent: Mutt/2.0.3 (2020-12-04)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 10:12:54PM +0800, Zheng Yongjun wrote:
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+On Wed, Dec 23, 2020 at 05:21:43PM -0800, Andy Lutomirski wrote:
+> I don’t love this as a long term fix. AFAICT we can have mm_tlb_flush_pending set for quite a while — mprotect seems like it can wait in IO while splitting a huge page, for example. That gives us a window in which every write fault turns into a TLB flush.
 
-Why is mutex_init() too late?  We only take the mutex after we
-mounting an ext4 file system, and that can't happen until ext4_init_fs
-is called.
+mprotect can't run concurrently with a page fault in the first place.
 
-					- Ted
+One other near zero cost improvement easy to add if this would be "if
+(vma->vm_flags & (VM_SOFTDIRTY|VM_UFFD_WP))" and it could be made
+conditional to the two config options too.
 
->  fs/ext4/super.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 94472044f4c1..8776f06a639d 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -59,7 +59,7 @@
->  #include <trace/events/ext4.h>
->  
->  static struct ext4_lazy_init *ext4_li_info;
-> -static struct mutex ext4_li_mtx;
-> +static DEFINE_MUTEX(ext4_li_mtx);
->  static struct ratelimit_state ext4_mount_msg_ratelimit;
->  
->  static int ext4_load_journal(struct super_block *, struct ext4_super_block *,
-> @@ -6640,7 +6640,6 @@ static int __init ext4_init_fs(void)
->  
->  	ratelimit_state_init(&ext4_mount_msg_ratelimit, 30 * HZ, 64);
->  	ext4_li_info = NULL;
-> -	mutex_init(&ext4_li_mtx);
->  
->  	/* Build-time check for flags consistency */
->  	ext4_check_flag_values();
-> -- 
-> 2.22.0
-> 
+Still I don't mind doing it in some other way, uffd-wp has much easier
+time doing it in another way in fact.
+
+Whatever performs better is fine, but queuing up pending invalidate
+ranges don't look very attractive since it'd be a fixed cost that we'd
+always have to pay even when there's no fault (and there can't be any
+fault at least for mprotect).
+
+Thanks,
+Andrea
+
