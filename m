@@ -2,118 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF1AC2E22F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 01:21:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 033092E22F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 01:24:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728234AbgLXAVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 19:21:00 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:37679 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727464AbgLXAVA (ORCPT
+        id S1728277AbgLXAXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 19:23:23 -0500
+Received: from pb-smtp1.pobox.com ([64.147.108.70]:50868 "EHLO
+        pb-smtp1.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727134AbgLXAXV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 19:21:00 -0500
-Received: by mail-il1-f199.google.com with SMTP id g10so611596ile.4
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 16:20:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=2RC5DLvezgKsgVsXyDXIsInJoOl9BE3a8XEZljvMLKA=;
-        b=mA1q+IWk2zoA/tztooNcD0h4FpCf9fLn1UGKQ50A4MteDAYACnHFwrXRk1srJzW+ky
-         aewdI85rSz7L2faNJof+IhfLKAP5rTy8ytlwhkuH0g5d/QDPY0u+6AoCNvi9aiF5QmQk
-         E0A8ZcRSCh6hMzTmwv06GqKi8/050zh43BAxm7yhh/yeVJG4/dT3AeAS41MyAcqhGo5P
-         PHvLVwKTwSplT5jxJuE0fPCIspUEv2vX6+knybu/euGnZ8HVHgKa0g7kR7olW+mBuGcC
-         z/w8v79hPEyLU8avR43+v2DRntXt0G6+rj+MMfZ5TjXLNPDueaQtxK6xQUJlFUhr4+mu
-         k7wA==
-X-Gm-Message-State: AOAM530wryJIY+R0MSqhGmP1cHIQmC/F7d2E59tyX+yQnybMV3MtFxiz
-        l/a1+9W69JV2KNgvkw1lja3A3iPCw58hKWkV8SjZR8eKodUg
-X-Google-Smtp-Source: ABdhPJwjrPKiGzumv7cD1DTmDHR6RVzgAPDnEzkpNmIgVIAIg+Zy0wmYL/AZ/GY4TKdbaxUlrbW8VSvMF+IoPrisjbSI6zIPaUvq
+        Wed, 23 Dec 2020 19:23:21 -0500
+Received: from pb-smtp1.pobox.com (unknown [127.0.0.1])
+        by pb-smtp1.pobox.com (Postfix) with ESMTP id A05CDABA28;
+        Wed, 23 Dec 2020 19:22:39 -0500 (EST)
+        (envelope-from tmz@pobox.com)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
+        :cc:subject:message-id:references:mime-version:content-type
+        :in-reply-to; s=sasl; bh=6i+GsGvjaIwTG0oc1yqVf0q2iDE=; b=lw+NOgx
+        NW0OD5igfxJVglZIMqvvnYuosaTP1+PEyzgewu1tSvVpvcaMVGuv6hBUfhaTtX96
+        gm2r6MogJJ5Qm/9Brx6wt/5uraB9tPNN33L2RwSs6NjiSmAW+uicynsDnUBalp5m
+        O0ivb1eYGYjwD+Jh6xNqNDw9VoZr9bBJJBRY=
+DomainKey-Signature: a=rsa-sha1; c=nofws; d=pobox.com; h=date:from:to:cc
+        :subject:message-id:references:mime-version:content-type
+        :in-reply-to; q=dns; s=sasl; b=psaosgfypJ0Lgh5Zs4sLyRwEeVS4WKPkz
+        a4+Zg0/1kUFPYct0s+Jzy9ujQ0i6p0GtB4XhKPK+HvI08DMb5FC39wwqqFuZsxme
+        +48vlRYCin65V7SXP7bGoARNPVLFc2b+JmjN4dTlVAXbu8vrh1tqID8Z061hsS3F
+        VNonpQVJM0=
+Received: from pb-smtp1.nyi.icgroup.com (unknown [127.0.0.1])
+        by pb-smtp1.pobox.com (Postfix) with ESMTP id 979BCABA27;
+        Wed, 23 Dec 2020 19:22:39 -0500 (EST)
+        (envelope-from tmz@pobox.com)
+Received: from pobox.com (unknown [173.67.178.181])
+        (using TLSv1.2 with cipher AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by pb-smtp1.pobox.com (Postfix) with ESMTPSA id 2517FABA26;
+        Wed, 23 Dec 2020 19:22:39 -0500 (EST)
+        (envelope-from tmz@pobox.com)
+Date:   Wed, 23 Dec 2020 19:22:37 -0500
+From:   Todd Zullinger <tmz@pobox.com>
+To:     Junio C Hamano <gitster@pobox.com>
+Cc:     git@vger.kernel.org, Linux Kernel <linux-kernel@vger.kernel.org>,
+        git-packagers@googlegroups.com
+Subject: Re: [ANNOUNCE] Git v2.30.0-rc2
+Message-ID: <20201224002237.GY748@pobox.com>
+References: <xmqqtusc5djv.fsf@gitster.c.googlers.com>
 MIME-Version: 1.0
-X-Received: by 2002:a02:cc54:: with SMTP id i20mr25224327jaq.136.1608769219217;
- Wed, 23 Dec 2020 16:20:19 -0800 (PST)
-Date:   Wed, 23 Dec 2020 16:20:19 -0800
-In-Reply-To: <0000000000005fe14605b6ea4958@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d64c7a05b72ac56e@google.com>
-Subject: Re: WARNING in isotp_tx_timer_handler
-From:   syzbot <syzbot+78bab6958a614b0c80b9@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, hdanton@sina.com, kuba@kernel.org,
-        linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mkl@pengutronix.de, netdev@vger.kernel.org, socketcan@hartkopp.net,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <xmqqtusc5djv.fsf@gitster.c.googlers.com>
+X-Pobox-Relay-ID: 214F6D76-457E-11EB-B136-D152C8D8090B-09356542!pb-smtp1.pobox.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+Hi Junio,
 
-HEAD commit:    614cb589 Merge tag 'acpi-5.11-rc1-2' of git://git.kernel.o..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=151d558f500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3e7e34a83d606100
-dashboard link: https://syzkaller.appspot.com/bug?extid=78bab6958a614b0c80b9
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1196822b500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12c75f97500000
+Junio C Hamano wrote:
+> Git 2.30 Release Notes (draft)
+> ==============================
+...
+> Performance, Internal Implementation, Development Support etc.
+...
+>  * Adjust tests so that they won't scream when the default initial
+>    branch name is changed to 'main'.
+...
+>  * Test scripts are being prepared to transition of the default branch
+>    name to 'main'.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+78bab6958a614b0c80b9@syzkaller.appspotmail.com
+These redundant entries were added in 7f7ebe054a (Third
+batch, 2020-11-02) and e4d83eee92 (Fourth batch,
+2020-11-09), respectively.
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 0 at net/can/isotp.c:835 isotp_tx_timer_handler+0x65f/0xba0 net/can/isotp.c:835
-Modules linked in:
-CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.10.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:isotp_tx_timer_handler+0x65f/0xba0 net/can/isotp.c:835
-Code: c1 e8 03 83 e1 07 0f b6 04 28 38 c8 7f 08 84 c0 0f 85 b8 04 00 00 41 88 54 24 05 e9 07 fb ff ff 40 84 ed 75 21 e8 c1 64 7e f9 <0f> 0b 45 31 e4 e8 b7 64 7e f9 44 89 e0 48 83 c4 48 5b 5d 41 5c 41
-RSP: 0018:ffffc90000007dc8 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: ffff88802a288518 RCX: 0000000000000100
-RDX: ffffffff8b49bc00 RSI: ffffffff87f4e3ff RDI: 0000000000000003
-RBP: 0000000000000000 R08: ffffffff8a7baf80 R09: ffffffff87f4ddfe
-R10: 0000000000000003 R11: 0000000000000000 R12: 0000000000000000
-R13: ffff8880b9c26c80 R14: ffff8880b9c26a00 R15: ffff88802a288000
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffd91884b10 CR3: 000000001b5d4000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <IRQ>
- __run_hrtimer kernel/time/hrtimer.c:1519 [inline]
- __hrtimer_run_queues+0x609/0xea0 kernel/time/hrtimer.c:1583
- hrtimer_run_softirq+0x17b/0x360 kernel/time/hrtimer.c:1600
- __do_softirq+0x2bc/0xa77 kernel/softirq.c:343
- asm_call_irq_on_stack+0xf/0x20
- </IRQ>
- __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
- run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
- do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
- invoke_softirq kernel/softirq.c:226 [inline]
- __irq_exit_rcu+0x17f/0x200 kernel/softirq.c:420
- irq_exit_rcu+0x5/0x20 kernel/softirq.c:432
- sysvec_apic_timer_interrupt+0x4d/0x100 arch/x86/kernel/apic/apic.c:1096
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:628
-RIP: 0010:native_save_fl arch/x86/include/asm/irqflags.h:29 [inline]
-RIP: 0010:arch_local_save_flags arch/x86/include/asm/irqflags.h:79 [inline]
-RIP: 0010:arch_irqs_disabled arch/x86/include/asm/irqflags.h:169 [inline]
-RIP: 0010:acpi_safe_halt drivers/acpi/processor_idle.c:111 [inline]
-RIP: 0010:acpi_idle_do_entry+0x1c9/0x250 drivers/acpi/processor_idle.c:516
-Code: ed 26 57 f8 84 db 75 ac e8 64 20 57 f8 e8 3f f6 5c f8 e9 0c 00 00 00 e8 55 20 57 f8 0f 00 2d ae 57 ae 00 e8 49 20 57 f8 fb f4 <9c> 5b 81 e3 00 02 00 00 fa 31 ff 48 89 de e8 24 28 57 f8 48 85 db
-RSP: 0018:ffffffff8b407d60 EFLAGS: 00000293
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffffffff8b49bc00 RSI: ffffffff891c2877 RDI: 0000000000000000
-RBP: ffff888141653064 R08: 0000000000000001 R09: 0000000000000001
-R10: ffffffff81791ed8 R11: 0000000000000000 R12: 0000000000000001
-R13: ffff888141653000 R14: ffff888141653064 R15: ffff888017f65004
- acpi_idle_enter+0x361/0x500 drivers/acpi/processor_idle.c:647
- cpuidle_enter_state+0x1b1/0xc80 drivers/cpuidle/cpuidle.c:237
- cpuidle_enter+0x4a/0xa0 drivers/cpuidle/cpuidle.c:351
- call_cpuidle kernel/sched/idle.c:158 [inline]
- cpuidle_idle_call kernel/sched/idle.c:239 [inline]
- do_idle+0x3eb/0x590 kernel/sched/idle.c:299
- cpu_startup_entry+0x14/0x20 kernel/sched/idle.c:396
- start_kernel+0x496/0x4b7 init/main.c:1061
- secondary_startup_64_no_verify+0xb0/0xbb
+Assuming they aren't intentional (as a hat-tip to the amount
+of the effort involved in the fixes, perhaps? :) )... here's
+a patch to drop the first one in favor of the second, with a
+minor grammatical adjustment to make it read better.
 
+Of course, if it's less effort to make the change yourself
+than apply this trivial patch, don't hesitate to do so.
+
+-- >8 --
+Subject: [PATCH] RelNotes/2.30.0: drop redundant mention of branch name test
+ fixes
+
+While here, improve the grammar of the remaining entry.
+
+Signed-off-by: Todd Zullinger <tmz@pobox.com>
+---
+ Documentation/RelNotes/2.30.0.txt | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/Documentation/RelNotes/2.30.0.txt b/Documentation/RelNotes/2.30.0.txt
+index a9c930ef93..bfe6520074 100644
+--- a/Documentation/RelNotes/2.30.0.txt
++++ b/Documentation/RelNotes/2.30.0.txt
+@@ -119,9 +119,6 @@ Performance, Internal Implementation, Development Support etc.
+    take a substring of test title, in addition to numbers, to name the
+    test pieces to run.
+ 
+- * Adjust tests so that they won't scream when the default initial
+-   branch name is changed to 'main'.
+-
+  * Rewriting "git bisect" in C continues.
+ 
+  * More preliminary tests have been added to document desired outcome
+@@ -136,7 +133,7 @@ Performance, Internal Implementation, Development Support etc.
+  * The code to detect premature EOF in the sideband demultiplexer has
+    been cleaned up.
+ 
+- * Test scripts are being prepared to transition of the default branch
++ * Test scripts are being prepared to transition the default branch
+    name to 'main'.
+ 
+  * "git fetch --depth=<n>" over the stateless RPC / smart HTTP
+
+-- 
+Todd
