@@ -2,99 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 194692E24DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 07:42:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C5AE2E24E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 07:44:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727183AbgLXGmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 01:42:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42510 "EHLO
+        id S1727338AbgLXGoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 01:44:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725613AbgLXGmI (ORCPT
+        with ESMTP id S1726064AbgLXGoX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 01:42:08 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69174C061794;
-        Wed, 23 Dec 2020 22:41:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=hgZ+lZNP3B/K9Oj/s5udXyrBDVF5xZJ71bYP1nixZdo=; b=hzjxM2aGVedqOqTPaeLJKWYuY4
-        xkqiFVFpQKWkgqEySPTCLiSvWvcEJrgRLsJBOnrS0QZdfm4dsSOXZeO0PNLab6ggKCBq1lw6nS3kW
-        Y3WaTFZ3ODCAIHwpPam/g5eYytVyG9hqXEC7GPEvByE+eg/g0kafrqgdDkSIVH2HW9VYEuJ8mRIkc
-        w8qFJdvjTIWFM9bOal30Yib0rTy3vrCUR/hyI4lFqoeN/ROgowBMVqDPpJTNzgpcOcabaesZubCUI
-        HkInEHpdkOK6FMxwC/PdZmtaPCsBloa68FjEumpKaKfc+q+vT15CVF5bXkEMkQSnUvd4YD+3SEbZo
-        nG0RhV+w==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ksKJL-0000uK-Pw; Thu, 24 Dec 2020 06:41:19 +0000
-Date:   Thu, 24 Dec 2020 06:41:19 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     dgilbert@interlog.com,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Ming Lei <ming.lei@redhat.com>, linux-block@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v1 0/6] no-copy bvec
-Message-ID: <20201224064119.GA3048@infradead.org>
-References: <20201215014114.GA1777020@T590>
- <103235c1-e7d0-0b55-65d0-013d1a09304e@gmail.com>
- <20201215120357.GA1798021@T590>
- <e755fec3-4181-1414-0603-02e1a1f4e9eb@gmail.com>
- <20201222141112.GE13079@infradead.org>
- <933030f0-e428-18fd-4668-68db4f14b976@gmail.com>
- <20201223155145.GA5902@infradead.org>
- <f06ece44a86eb9c8ef07bbd9f6f53342366b7751.camel@HansenPartnership.com>
- <8abc56c2-4db8-5ee3-ab2d-8960d0eeeb0d@interlog.com>
- <f5cb6ac2-1c59-33be-de8f-e86c8528fbec@gmail.com>
+        Thu, 24 Dec 2020 01:44:23 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D1C2C0617A6
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 22:43:43 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id x12so855827plr.10
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 22:43:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=EggZlPNaFVNouUQNpMn4xGppTh9DzckHE4NrKj3sjKU=;
+        b=Oh3/knrLmICSN2Z3rwKTSyV0rZAdC95C5D83OrFtERU6Bx2ojcAX/s8nBJJNKbvkSv
+         BfQYGy1zC8m1ZuYadonmShwKsEssyRaQOZBAyphCdJD8hE380Ft5/TXEmY6MO3GlJasq
+         RrkhWNQEmgh/GsGttqWcNfZ71NVDkNEYwWsjuqkP8VdwJTCX2vdDpxVwsnQ5HNEweh0M
+         An3fXfg9/d0G0+FuPk0ByAahetYKeSmx82mAoRUPnE+BrNipzngY1IzLAgLZrzjOCrN5
+         irhxwHDc5mBc6s5RnM5iXO8Nlvm9QXzBmJqpuOPmEAQFWdjKY9j2t4sfjZzWKZOQDh3R
+         twCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=EggZlPNaFVNouUQNpMn4xGppTh9DzckHE4NrKj3sjKU=;
+        b=T/Z9SubWEI08uVAqcF5euE+lYXBAl1GBTlsU/soUmPv+R2keWhwgwdPx92Gw3HMJ/A
+         KgUlbRv1jRcxgwoXtFN8c4H/c2Jtindo0mYNRfkex/Sbg0hV4oxOSgqCXv7GrLeMf83J
+         QCBc3y2VjRAPvxbRwCEG6pkXjSHZd0F8E+HEiikBEzxdOwYZSX4xWCr+2y5NmoLBEpne
+         fF9iTLQjBKUDFVArjZZr3guRMRYmO2v8YwwaUH2rep/TBNfQwohPuwhD470aoML1D6IL
+         lOT6syrBEgKd5WgJw7JPbjAQVNVK6S2egk7aM3hq0K6W7MLSUdIIEpMc1oe5K6PTI8Xh
+         zg5Q==
+X-Gm-Message-State: AOAM533cs4iWXZVmrYo2J3ingAmy8XnffbeHorD9FhIPNGPiWBFfjqJA
+        1Fg7rseIl4QfnUMPunYu8qV7Ng==
+X-Google-Smtp-Source: ABdhPJzvXFDg0AOs/T4jYpQbUFp8mqlvGxAfA/7keO1x94rQjdeak+7MJF5KZ9Mxu1T0gEblsk2C9g==
+X-Received: by 2002:a17:90b:60b:: with SMTP id gb11mr3193035pjb.122.1608792222393;
+        Wed, 23 Dec 2020 22:43:42 -0800 (PST)
+Received: from localhost ([122.172.20.109])
+        by smtp.gmail.com with ESMTPSA id c14sm24658375pfd.37.2020.12.23.22.43.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 23 Dec 2020 22:43:41 -0800 (PST)
+Date:   Thu, 24 Dec 2020 12:13:39 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Subject: Re: [PATCH v2 11/48] opp: Add dev_pm_opp_find_level_ceil()
+Message-ID: <20201224064339.zngidobhstnlu2a3@vireshk-i7>
+References: <20201217180638.22748-1-digetx@gmail.com>
+ <20201217180638.22748-12-digetx@gmail.com>
+ <20201222064253.x7vsurh7q5k7qzb5@vireshk-i7>
+ <fd7b9f42-d0a7-45eb-2a17-d46779011c58@gmail.com>
+ <20201223041931.klnppy4fu3sdgtsz@vireshk-i7>
+ <f00e0c74-8d9a-d3d3-81bb-3ac25a74175d@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <f5cb6ac2-1c59-33be-de8f-e86c8528fbec@gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f00e0c74-8d9a-d3d3-81bb-3ac25a74175d@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 08:32:45PM +0000, Pavel Begunkov wrote:
-> On 23/12/2020 20:23, Douglas Gilbert wrote:
-> > On 2020-12-23 11:04 a.m., James Bottomley wrote:
-> >> On Wed, 2020-12-23 at 15:51 +0000, Christoph Hellwig wrote:
-> >>> On Wed, Dec 23, 2020 at 12:52:59PM +0000, Pavel Begunkov wrote:
-> >>>> Can scatterlist have 0-len entries? Those are directly translated
-> >>>> into bvecs, e.g. in nvme/target/io-cmd-file.c and
-> >>>> target/target_core_file.c. I've audited most of others by this
-> >>>> moment, they're fine.
+On 23-12-20, 23:37, Dmitry Osipenko wrote:
+> 23.12.2020 07:19, Viresh Kumar пишет:
+> > On 22-12-20, 22:15, Dmitry Osipenko wrote:
+> >> 22.12.2020 09:42, Viresh Kumar пишет:
+> >>> On 17-12-20, 21:06, Dmitry Osipenko wrote:
+> >>>> Add a ceil version of the dev_pm_opp_find_level(). It's handy to have if
+> >>>> levels don't start from 0 in OPP table and zero usually means a minimal
+> >>>> level.
+> >>>>
+> >>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 > >>>
-> >>> For block layer SGLs we should never see them, and for nvme neither.
-> >>> I think the same is true for the SCSI target code, but please double
-> >>> check.
+> >>> Why doesn't the exact version work for you here ?
+> >>>
 > >>
-> >> Right, no-one ever wants to see a 0-len scatter list entry.?? The reason
-> >> is that every driver uses the sgl to program the device DMA engine in
-> >> the way NVME does.?? a 0 length sgl would be a dangerous corner case:
-> >> some DMA engines would ignore it and others would go haywire, so if we
-> >> ever let a 0 length list down into the driver, they'd have to
-> >> understand the corner case behaviour of their DMA engine and filter it
-> >> accordingly, which is why we disallow them in the upper levels, since
-> >> they're effective nops anyway.
+> >> The exact version won't find OPP for level=0 if levels don't start with
+> >> 0, where 0 means that minimal level is desired.
 > > 
-> > When using scatter gather lists at the far end (i.e. on the storage device)
-> > the T10 examples (WRITE SCATTERED and POPULATE TOKEN in SBC-4) explicitly
-> > allow the "number of logical blocks" in their sgl_s to be zero and state
-> > that it is _not_ to be considered an error.
+> > Right, but why do you need to send 0 for your platform ?
+> > 
 > 
-> It's fine for my case unless it leaks them out of device driver to the
-> net/block layer/etc. Is it?
+> To put power domain into the lowest performance state when device is idling.
 
-None of the SCSI Command mentions above are supported by Linux,
-nevermind mapped to struct scatterlist.
+I see. So you really want to set it to the lowest state or just take the vote
+out ? Which may end up powering off the domain in the worst case ?
+
+-- 
+viresh
