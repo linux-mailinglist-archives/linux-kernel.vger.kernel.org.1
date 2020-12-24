@@ -2,95 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA6552E28C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 21:27:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F3CD2E28CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 21:37:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728916AbgLXUWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 15:22:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55230 "EHLO
+        id S1728861AbgLXUgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 15:36:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728679AbgLXUWg (ORCPT
+        with ESMTP id S1727812AbgLXUgr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 15:22:36 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75DFCC061573
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 12:21:56 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id j16so2961582edr.0
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 12:21:56 -0800 (PST)
+        Thu, 24 Dec 2020 15:36:47 -0500
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06638C061573
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 12:36:06 -0800 (PST)
+Received: by mail-ot1-x330.google.com with SMTP id o11so2637944ote.4
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 12:36:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=OSyMhhLOs+gJkV1hBlUrD8wxjF+XuKOQBS1qIF2OVBo=;
-        b=GXPu9iXNKroXhBQ3NuRBUyu7qwxpJj81nQEXg6lFqE6JtI9vqTmWWqPkzUvISXEHpS
-         rnEP5EeblPBviGkjtRHNCCkG13ZHUKPHzkVq93cWpTuWXWopRXTQDvOK9pA26MNpeuXa
-         crtsjTt+QHR+qkS9WUBfdkJ87O06hQpwNNPYjimDPJduZA+m6xHVKw7txDROvCt2IkGW
-         u2PgQfUnO1Cc/6YFyoTEce0z18kr7TuYXwthdzE/CDIswLOUpMiRDMn4p78YJqu9j32O
-         p5frJeCjMv7+Qz5a5TjGCL7Ur3Z7+L6fq/nNXS5GRHEX6wh3OPGEG55SouTEzPhqv91m
-         lGDA==
+         :content-disposition:in-reply-to;
+        bh=QvZGdBjZYtotbDQftzil2CCyIVVf+A50G1X5HgounlU=;
+        b=WL66wZNuYd/E0oTSq7Lntbyk/DvhHiTHeK3mVwserRtxQphqsw3dr5XuPmy869J3/J
+         qH/6MkG+jf1va7rbLMMjHtpDQcqTC0rUzL7lRGIV4uf2oxZFDEHJxyM9KvKqE22tUT04
+         V8gFjCf3rG6EKOokEsh8CQDtAdMvXgk1gIcC4bk0vKJYLPFfTzP/eTuSJrz/4ToreZqO
+         fMDKqr5BmkjggkZq/3PTh7Ps+JJgZFUHa1NF42b4I2j7QhWIWvDiwFsBSkKOo8ueZ9nL
+         KexHAfgut/w3KJGN39qcw2CO/WNYrqTd18Ev8IOD53UB8WeG9ERo4VC9/h0AxJUWSKGe
+         lOWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=OSyMhhLOs+gJkV1hBlUrD8wxjF+XuKOQBS1qIF2OVBo=;
-        b=LVoVfKt12dVIQzIbhXvNmcHfMNVd7cBTTTr7WXDgHbiVcJwR1xVifnKP3Ldh81iWKo
-         Z2KyNHnBQpchO65J7FBTsTF/xorUiIdHwjqXX9nvmVaiuMdlYGCWHIZkLMwLyOZETJ5j
-         mJ9o3A7tI5fdhM49U5sCgSH/VpxLr8olGp1aVfpFySj2I3Tuqj8TXZRc2aOUtjNo5HyF
-         W+gqafj7LKMiWaghRHP1PB2womWqqitfuTt7gJWUjGGIy45Y0mv3gcd4bOVwTJZKB7jk
-         ELhi/lGJKEaFPjn06lW+74ykSXenQ8nubHqI0HRtkBWKrH3+I7S7iz0sDWiEjRDLuc3r
-         O9tA==
-X-Gm-Message-State: AOAM5337JrlQ7wqjlBGMnEDyQkcd2FmlG+xzNsUgbx293j7feua6Iqu8
-        AHPdnG+Ex7DfaCwMPQBbhoTduGty3mIPLYuD
-X-Google-Smtp-Source: ABdhPJx+uTKMo065QA17ljoCp5G/bHHEIvKZRQvh62B1ObvYgNEWw5suRU9fRncpMLe+WStRSvqviw==
-X-Received: by 2002:a05:6402:5114:: with SMTP id m20mr19785736edd.35.1608841315120;
-        Thu, 24 Dec 2020 12:21:55 -0800 (PST)
-Received: from netronome.com ([2001:982:7ed1:403:9eeb:e8ff:fe0d:5b6a])
-        by smtp.gmail.com with ESMTPSA id q25sm32419922eds.85.2020.12.24.12.21.54
+         :mime-version:content-disposition:in-reply-to;
+        bh=QvZGdBjZYtotbDQftzil2CCyIVVf+A50G1X5HgounlU=;
+        b=j051jRuSrtqCnthWO9gVBL9ZakKwzqpqHfmEDd+7gJgV+6/j4xgGbhE3titOB2roeJ
+         vX8UrWspPutWbOPTtCaGucunf05+PcmaxJWPQS9RK0f75IqsnoJZBUqTfDA2RCwVouo8
+         sQM7Hj3s5FOlTk2pyybyW9XMhxyQynh6+Yp+SlN4jWIOTkHQHoEE3mRpXlkscpYlski1
+         dsZNiYwlZiwKpiHBQcO/TVzDT96ULEC+ZI/i1tOdfdaVLc67afstwMIjvxSVVa6XBU7L
+         8OdfqpDAqiYgnPvsJSwWx4oSdYS0p5MtgMy7jju2560C4Ma2KTdStkrQU9DLmt7XMA8T
+         fl2A==
+X-Gm-Message-State: AOAM532gxwzIz/ewtiS2hIn25Yd5fzS9LCv0DbiNrgqJHi8khn8E8jWG
+        7zQikmw6H3lMm14Ims+lSE4euA==
+X-Google-Smtp-Source: ABdhPJy5x5Ls7C7ERu2fcsPyiDFy6neu9jlWMWYJ9fi2gU5xjFUhYsIML5LoAKj/dOFsMwsc2EFkSw==
+X-Received: by 2002:a9d:4c07:: with SMTP id l7mr23296576otf.318.1608842166109;
+        Thu, 24 Dec 2020 12:36:06 -0800 (PST)
+Received: from x1 ([2600:1702:da0:ff40:462a:45dd:442a:fb42])
+        by smtp.gmail.com with ESMTPSA id j126sm3412611oif.8.2020.12.24.12.36.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Dec 2020 12:21:54 -0800 (PST)
-Date:   Thu, 24 Dec 2020 21:21:53 +0100
-From:   Simon Horman <simon.horman@netronome.com>
-To:     trix@redhat.com
-Cc:     kuba@kernel.org, davem@davemloft.net, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, gustavoars@kernel.org,
-        louis.peens@netronome.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, oss-drivers@netronome.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] nfp: remove h from printk format specifier
-Message-ID: <20201224202152.GA3380@netronome.com>
-References: <20201223202053.131157-1-trix@redhat.com>
+        Thu, 24 Dec 2020 12:36:05 -0800 (PST)
+Date:   Thu, 24 Dec 2020 14:36:03 -0600
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Pantelis Antoniou <pantelis.antoniou@linaro.org>,
+        Pantelis Antoniou <pantelis.antoniou@gmail.com>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Tony Lindgren <tony@atomide.com>
+Subject: Re: [RFC PATCH v2] pinctrl: add helper to expose pinctrl state in
+ debugfs
+Message-ID: <20201224203603.GA59600@x1>
+References: <20201218045134.4158709-1-drew@beagleboard.org>
+ <CAHp75Vfwb+f3k2+mAj+jB=XsKFX-hCxx61A_PCmwz6y-YKHMcg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201223202053.131157-1-trix@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAHp75Vfwb+f3k2+mAj+jB=XsKFX-hCxx61A_PCmwz6y-YKHMcg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 12:20:53PM -0800, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
+On Fri, Dec 18, 2020 at 06:01:25PM +0200, Andy Shevchenko wrote:
+> On Fri, Dec 18, 2020 at 6:52 AM Drew Fustini <drew@beagleboard.org> wrote:
+> >
+> > BeagleBoard.org [0] currently uses an out-of-tree driver called
+> > bone-pinmux-helper [1] developed by Pantelis Antoniou [2] back in 2013.
+> > The driver assists users of our BeagleBone and PocketBeagle boards in
+> > rapid prototyping by allowing them to change at run-time between defined
+> > set of pinctrl states [3] for each pin on the expansion connectors [4].
+> > This is achieved by exposing a 'state' file in sysfs for each pin which
+> > is used by our 'config-pin' utility [5].
+> >
+> > Our goal is to eliminate all out-of-tree drivers for BeagleBoard.org
+> > boards and thus I have been working to replace bone-pinmux-helper with a
+> > new driver that could be acceptable upstream. My understanding is that
+> > debugfs, unlike sysfs, could be the appropriate mechanism to expose such
+> > functionality.
 > 
-> This change fixes the checkpatch warning described in this commit
-> commit cbacb5ab0aa0 ("docs: printk-formats: Stop encouraging use of unnecessary %h[xudi] and %hh[xudi]")
+> No objections here.
 > 
-> Standard integer promotion is already done and %hx and %hhx is useless
-> so do not encourage the use of %hh[xudi] or %h[xudi].
+> > I used the compatible string "pinctrl,state-helper" but would appreciate
+> > advice on how to best name this. Should I create a new vendor prefix?
 > 
-> Signed-off-by: Tom Rix <trix@redhat.com>
+> Here is the first concern. Why does this require to be a driver with a
+> compatible string?
 
-Hi Tom,
+I have not been able to figure out how to have different active pinctrl
+states for each header pins (for example P2 header pin 3) unless they
+are represented as DT nodes with their own compatible for this helper
+driver such as:
 
-This patch looks appropriate for net-next, which is currently closed.
+&ocp {
+	P2_03_pinmux {
+		compatible = "pinctrl,state-helper";
+		pinctrl-names = "default", "gpio", "gpio_pu", "gpio_pd", "gpio_input", "pwm";
+		pinctrl-0 = <&P2_03_default_pin>;
+		pinctrl-1 = <&P2_03_gpio_pin>;
+		pinctrl-2 = <&P2_03_gpio_pu_pin>;
+		pinctrl-3 = <&P2_03_gpio_pd_pin>;
+		pinctrl-4 = <&P2_03_gpio_input_pin>;
+		pinctrl-5 = <&P2_03_pwm_pin>;
+	};
+}
 
-The changes look fine, but I'm curious to know if its intentionally that
-the following was left alone in ethernet/netronome/nfp/nfp_net_ethtool.c:nfp_net_get_nspinfo()
+I can assign pinctrl states in the pin controller DT node which has
+compatible pinctrl-single (line 301 arch/arm/boot/dts/am33xx-l4.dtsi):
 
-	snprintf(version, ETHTOOL_FWVERS_LEN, "%hu.%hu"
+&am33xx_pinmux {
 
-If the above was not intentional then perhaps you could respin with that
-updated and resubmit when net-next re-opens. Feel free to add:
+        pinctrl-names = "default", "gpio", "pwm";
+        pinctrl-0 =   < &P2_03_default_pin &P1_34_default_pin &P2_19_default_pin &P2_24_default_pin
+                        &P2_33_default_pin &P2_22_default_pin &P2_18_default_pin &P2_10_default_pin
+                        &P2_06_default_pin &P2_04_default_pin &P2_02_default_pin &P2_08_default_pin
+                        &P2_17_default_pin >;
+        pinctrl-1 =   < &P2_03_gpio_pin &P1_34_gpio_pin &P2_19_gpio_pin &P2_24_gpio_pin
+                        &P2_33_gpio_pin &P2_22_gpio_pin &P2_18_gpio_pin &P2_10_gpio_pin
+                        &P2_06_gpio_pin &P2_04_gpio_pin &P2_02_gpio_pin &P2_08_gpio_pin
+                        &P2_17_gpio_pin >;
+        pinctrl-2 =   < &P2_03_pwm &P1_34_pwm &P2_19_pwm &P2_24_pwm
+                        &P2_33_pwm &P2_22_pwm &P2_18_pwm &P2_10_pwm
+                        &P2_06_pwm &P2_04_pwm &P2_02_pwm &P2_08_pwm
+                        &P2_17_pwm >;
 
-Reviewed-by: Simon Horman <simon.horman@netronome.com>
+}
+
+However, there is no way to later select "gpio" for P2.03 and select
+"pwm" for P1.34 at the same time.  Thus, I can not figure out a way to
+select independent states per pin unless I make a node for each pin that
+binds to a helper driver.
+
+It feels like there may be a simpler soluation but I can't see to figure
+it out.  Suggestions welcome!
+
+> 
+> > The P9_14_pinmux entry would cause pinctrl-state-helper to be probed.
+> > The driver would create the corresponding pinctrl state file in debugfs
+> > for the pin.  Here is an example of how the state can be read and
+> > written from userspace:
+> >
+> > root@beaglebone:~# cat /sys/kernel/debug/pinctrl/pinctrl_state/ocp:P9_14_pinmux/state
+> > default
+> > root@beaglebone:~# echo pwm > /sys/kernel/debug/pinctrl/pinctrl_state/ocp:P9_14_pinmux/state
+> > root@beaglebone:~# cat /sys/kernel/debug/pinctrl/pinctrl_state/ocp:P9_14_pinmux/state
+> > pwm
+> >
+> > I would very much appreciate feedback on both this general concept, and
+> > also specific areas in which the code should be changed to be acceptable
+> > upstream.
+> 
+> Two more concerns:
+>  - why is it OF only?
+
+I am open to figuring out a more general solution but I am really only
+familiar with Device Tree.  Is there a way to represent the possible
+pinctrl states in ACPI?
+
+>  - why has it been separated from pin control per device debug folder?
+
+From the v1 thread, I see what you mean that there could be a combined
+state file for each pinctrl device where one would echo '<pin>
+<state-name>' such as 'P2_03 pwm'.  I will attempt to implement that.
+
+> 
+> 
+> > [0] http://beagleboard.org/latest-images
+> > [1] https://github.com/beagleboard/linux/blob/5.4/drivers/misc/cape/beaglebone/bone-pinmux-helper.c
+> > [2] https://github.com/RobertCNelson/linux-dev/blob/master/patches/drivers/ti/gpio/0001-BeagleBone-pinmux-helper.patch
+> > [3] https://github.com/beagleboard/BeagleBoard-DeviceTrees/blob/v5.4.x-ti-overlays/src/arm/am335x-bone-common-univ.dtsi#L2084
+> > [4] https://github.com/beagleboard/beaglebone-black/wiki/System-Reference-Manual#section-7-1
+> > [5] https://github.com/beagleboard/bb.org-overlays/blob/master/tools/beaglebone-universal-io/config-pin
+> 
+> --
+> With Best Regards,
+> Andy Shevchenko
+
+Thanks for reviewing,
+Drew
