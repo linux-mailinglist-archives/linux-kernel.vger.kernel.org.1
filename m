@@ -2,116 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B13472E278A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 15:01:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 951BD2E278B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 15:01:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728177AbgLXOBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 09:01:23 -0500
-Received: from mail-wr1-f51.google.com ([209.85.221.51]:40715 "EHLO
-        mail-wr1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726609AbgLXOBX (ORCPT
+        id S1728692AbgLXOB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 09:01:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726609AbgLXOB1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 09:01:23 -0500
-Received: by mail-wr1-f51.google.com with SMTP id 91so2249157wrj.7;
-        Thu, 24 Dec 2020 06:01:06 -0800 (PST)
+        Thu, 24 Dec 2020 09:01:27 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4BD4C061794;
+        Thu, 24 Dec 2020 06:00:46 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id 91so2249378wrj.7;
+        Thu, 24 Dec 2020 06:00:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hTZYu0KyYNj6GV2bBjh3qdlRgAwRDrZxZXOKPRcg84c=;
+        b=jiGvw60pmyZpHGhIJzNBYgP2ZTYSe+VnyxjnYIr+4u8iTKTN21QV+44OhsfqCw7VW8
+         lZ5OeT4hf6sDduKPRa1gWUbK4PAEAh0D6dhG03iEYbtisuv6/t1Lw8r1a8BGjVSnI5mF
+         rAsvVuThEHRhgM90vJtP11SEB5GDJ25CAr1EyT5BziG9phgkcgoBlwOgiPMUenv1Nvf4
+         E/Wyd6iIhE/xdYVXIl5sX1wwNLm9Ad46AEZTasiZMQaBjyzP9EETbZnYCGWaYX8qp2gt
+         lcsYTH9XP0gdcjEECO87XqqYjk8GM6Y9yxvDBW99BllbIDxhCljRDblhe+b/sZShu69V
+         jGwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JXPJKdw80z+OB5yk21y07mm+iviqQpsWpPbSM4Th92c=;
-        b=a3bk5Ge0c2s7QYmcVI8Fb81Uz5JLoN1CMXkJBV/ayV8BYxIYTrhhCCmoEIOrPpWfLT
-         VWXCDWFuYTJTXVwJvGbsNk9dr45Lo1rLZD+nkMZVl65U5+y8fAGyWYjxPxuGku7nGoM4
-         7zJb60Hl3oDxAmMvjDhjiq0gwiKGdM0qiY9oFXBGZp8M+Liyw84VKL9m8Yq4Jftqfgxg
-         /nwPC91r0ZrVcJVD7gBf6Dpc4S43kzF8EimP9v2KXwDYpw4VRqFUhl2IUqOeYpnCntg0
-         1BwI0k+wqdft5aSVgJUjARD1EX53O14iuPB+YhVlPuyHWGgShI7w85n5aGs6OGT4/BDB
-         G0ug==
-X-Gm-Message-State: AOAM5322Ixeq35UekeLYyY3aCc6cjY43fqWnmPLXiUaeK2B+3MBtghuN
-        NQyQWQ+zp9zBdToaFxydPJg=
-X-Google-Smtp-Source: ABdhPJznCRPR6sm397ISThve5dgEO81eDZPCPfAysBrZ8OHDU8wWmjjYYLQ5mpdB4e0gR8EizOqiLw==
-X-Received: by 2002:a5d:4e89:: with SMTP id e9mr34110095wru.201.1608818440801;
-        Thu, 24 Dec 2020 06:00:40 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id h9sm38246689wre.24.2020.12.24.06.00.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Dec 2020 06:00:39 -0800 (PST)
-Date:   Thu, 24 Dec 2020 15:00:38 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Timon Baetz <timon.baetz@protonmail.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH v4 4/7] power: supply: max8997_charger: Set CHARGER
- current limit
-Message-ID: <20201224140038.GA48009@kozik-lap>
-References: <20201223134221.804943-1-timon.baetz@protonmail.com>
- <20201223134221.804943-4-timon.baetz@protonmail.com>
- <20201224095559.GB10937@kozik-lap>
- <20201224141246.7ad0ffc4.timon.baetz@protonmail.com>
- <20201224133706.GA22856@kozik-lap>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hTZYu0KyYNj6GV2bBjh3qdlRgAwRDrZxZXOKPRcg84c=;
+        b=pVfGHuAc6JGqNlz8a8SYLQPLk/DXI8P32u1ApZDoQkw9Aln9IQ5s7bcQl4C3ojUTcL
+         omnsQKWLu9any/8daZ0NgofAsgOlsvt1cHLiB6e+ST17cDbTw97Fmp0HQ/s9B8DQE6zD
+         aSvtutiLdIh/9zyhzERVrT1RhEBlMWM/IbkccDVkJx6vBKMpdzJfexooa93ywDJQvAo7
+         U+aV5RJDDus8NTrILKEEbL7lmQNjB5/rLK6qmtS50+nl4kaYIQS3Sk2y2pBA2FzbnUt2
+         P+BBJnDNXMPvnadrLvwfsTbdeujIelbYBDgzENzZ+Yoo5S/wz+bbskyLpT2Irs6Mol40
+         CGeg==
+X-Gm-Message-State: AOAM530MEYSUj5VxtwFG4aKFyoo8+s+z54OtLsItfuUIgsOeiZZAJzpH
+        XI4tMzG1dbxQYD9kKo76wWE=
+X-Google-Smtp-Source: ABdhPJx+Z0EJqXx/2AjrwRP+xuKb0XQTgwvxvJSravZrEZ5dPl56k33iW2pd5DGEMbQAm/r9ZBJ2ng==
+X-Received: by 2002:a5d:56c3:: with SMTP id m3mr34636969wrw.419.1608818445462;
+        Thu, 24 Dec 2020 06:00:45 -0800 (PST)
+Received: from [192.168.1.211] ([2.31.224.116])
+        by smtp.gmail.com with ESMTPSA id h13sm38544866wrm.28.2020.12.24.06.00.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Dec 2020 06:00:44 -0800 (PST)
+Subject: Re: [PATCH v3 05/14] software_node: unregister software_nodes in
+ reverse order
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        devel@acpica.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tian Shu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        kieran.bingham+renesas@ideasonboard.com,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        niklas.soderlund+renesas@ragnatech.se,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+References: <20201224010907.263125-1-djrscally@gmail.com>
+ <20201224010907.263125-6-djrscally@gmail.com>
+ <CAHp75VdF5NdjrSxcOafh7KNNDteYEUDk9otA0HKX-iks7G0D4g@mail.gmail.com>
+From:   Daniel Scally <djrscally@gmail.com>
+Message-ID: <de478ef0-0b4d-df1d-2651-9cc35bf2f45b@gmail.com>
+Date:   Thu, 24 Dec 2020 14:00:42 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <CAHp75VdF5NdjrSxcOafh7KNNDteYEUDk9otA0HKX-iks7G0D4g@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201224133706.GA22856@kozik-lap>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 24, 2020 at 02:37:06PM +0100, Krzysztof Kozlowski wrote:
-> On Thu, Dec 24, 2020 at 01:13:02PM +0000, Timon Baetz wrote:
-> > On Thu, 24 Dec 2020 10:55:59 +0100, Krzysztof Kozlowski wrote:
-> > > > @@ -170,6 +237,28 @@ static int max8997_battery_probe(struct platform_device *pdev)
-> > > >  		return PTR_ERR(charger->battery);
-> > > >  	}
-> > > >
-> > > > +	charger->reg = devm_regulator_get(&pdev->dev, "charger");  
-> > > 
-> > > Since you do not use get_optional, you will always get a dummy
-> > > regulator. In case of error, you should either print it or entirely fail
-> > > the probe. Silently continuing makes it difficult to spot errors.
-> > > 
-> > > Since the driver could operate in case of extcon/regulator error, just
-> > > dev_err() so failure will be spotted with dmesg.
-> > 
-> > I will switch to devm_regulator_get_optional() and print an error on 
-> > failure, thanks.
-> > 
-> > > It will complain on older DTBs because you are introducing incompatible
-> > > change, but that's expected. Just correct all other in-tree DTS.
-> > 
-> > The other 2 in-tree DTS don't have CHARGER regulators. Not sure
-> > how to correct those. Should I add muic and charger nodes without a
-> > charger-supply? It will still complain in that case.
+On 24/12/2020 12:13, Andy Shevchenko wrote:
+> On Thu, Dec 24, 2020 at 3:12 AM Daniel Scally <djrscally@gmail.com> wrote:
+>>
+>> To maintain consistency with software_node_unregister_nodes(), reverse
+>> the order in which the software_node_unregister_node_group() function
+>> unregisters nodes.
 > 
-> +Cc Marek,
+> ...
 > 
-> This is why leaving the code as is - devm_regulator_get(), not optional
-> - makes sense. Core would provide dummy regulator, so you only have to
-> provide MUIC node.
+>> - * Unregister multiple software nodes at once.
+>> + * Unregister multiple software nodes at once. The array will be unwound in
+>> + * reverse order (i.e. last entry first) and thus if any member of the array
+>> + * has its .parent member set then they should appear later in the array such
+>> + * that they are unregistered first.
 > 
-> If you change the code to devm_regulator_get_optional(), you need to add
-> everything: the charger regulator, the charger node and MUIC node.
-> 
-> For Trats, the configuration should be similar as i9100, although I
-> don't know the exact values of chargign voltage.
-> 
-> For Origen, there is no battery, so the power supply should not bind.
-> Maybe this could be achieved with "status disabled" for charger node? It
-> depends whether MFD will respect such field... If it disables the
-> charger, you're done.
+> I'm, as being not a native speaker, a bit confused by this comment.
+> The idea is that children are unregistered first. Can you try to make
+> it more clear maybe?
 
-I just looked at the MFD code and tested it - it nicely skips disabled
-devices. Therefore, for Origen I propose to add disabled nodes for
-charger and MUIC because these pins are not connected. No need to add
-regulators in such case.
+Sure, how about:
 
-Best regards,
-Krzysztof
+The array will be unwound in reverse order (i.e. last entry first). If
+any member of the array is a child of another member then the child must
+appear later in the array than their parent, so that they are
+unregistered first.
+
+?
