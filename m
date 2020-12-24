@@ -2,222 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 045172E25CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 10:59:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A4362E25D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 11:04:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727832AbgLXJ4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 04:56:45 -0500
-Received: from mail-wm1-f48.google.com ([209.85.128.48]:52227 "EHLO
-        mail-wm1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726186AbgLXJ4p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 04:56:45 -0500
-Received: by mail-wm1-f48.google.com with SMTP id a6so1141066wmc.2;
-        Thu, 24 Dec 2020 01:56:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=IQ47tmkeP0DrGeHawifdFzRAR5VdAIvwAYy3NMH+MDY=;
-        b=YhZGMjZiarLh6DubI1QVVGJx2xTjmVIwUVKiJ58WI9GOEzHz24hMLsPdB/eIfc3SgK
-         /TmQ/4CeXSrulcAjpqJpWIW70XCQpgRX859OGGoMq/0Cxqef24282huhw79e5fA6SuKV
-         AMwdphRBOezMbWonPKkhtB1RVDyD4qoJTqCTbdlFdAM2GATELqAWfFS64nRaEoUNu3aj
-         VIpgVzPCuiuVqW0eJf3LIW7bEunmhYJmH5E0RnLp7x5zrxGus4m7ov4191ZqKo415SL3
-         k/3x8Vyv51FzTrmKKkWbtIiaqA6jh/pCFxzSNOUWaaWqKYv2+AiBEIoAZUsHY4g5b3No
-         x8Gg==
-X-Gm-Message-State: AOAM531qp6NX2tRCS96MZrRE45kIY3cSOkZ+Kfhlfoe1WaJlQQhE2sxh
-        0BOPHIMPn/D+Jkxkmhbtbfw=
-X-Google-Smtp-Source: ABdhPJxmf6qw/SurLPa7171mcvsx/MR/mZ+Arr9m4C0y3Ps2Ov2COD95YRQIZEk7GrnB2r+2GuGxWg==
-X-Received: by 2002:a1c:a5d8:: with SMTP id o207mr3727438wme.30.1608803761556;
-        Thu, 24 Dec 2020 01:56:01 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id x18sm44965801wrg.55.2020.12.24.01.56.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Dec 2020 01:56:00 -0800 (PST)
-Date:   Thu, 24 Dec 2020 10:55:59 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Timon Baetz <timon.baetz@protonmail.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH v4 4/7] power: supply: max8997_charger: Set CHARGER
- current limit
-Message-ID: <20201224095559.GB10937@kozik-lap>
-References: <20201223134221.804943-1-timon.baetz@protonmail.com>
- <20201223134221.804943-4-timon.baetz@protonmail.com>
+        id S1727802AbgLXKDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 05:03:38 -0500
+Received: from smtp.h3c.com ([60.191.123.50]:49630 "EHLO h3cspam02-ex.h3c.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726347AbgLXKDh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Dec 2020 05:03:37 -0500
+Received: from DAG2EX05-BASE.srv.huawei-3com.com ([10.8.0.68])
+        by h3cspam02-ex.h3c.com with ESMTP id 0BOA20w0009345;
+        Thu, 24 Dec 2020 18:02:00 +0800 (GMT-8)
+        (envelope-from xi.fengfei@h3c.com)
+Received: from localhost.localdomain (10.99.212.201) by
+ DAG2EX05-BASE.srv.huawei-3com.com (10.8.0.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 24 Dec 2020 18:02:03 +0800
+From:   Fengfei Xi <xi.fengfei@h3c.com>
+To:     <darrick.wong@oracle.com>
+CC:     <linux-xfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <tian.xianting@h3c.com>, Fengfei Xi <xi.fengfei@h3c.com>
+Subject: [PATCH] xfs: fix system crash caused by null bp->b_pages
+Date:   Thu, 24 Dec 2020 17:51:42 +0800
+Message-ID: <20201224095142.7201-1-xi.fengfei@h3c.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201223134221.804943-4-timon.baetz@protonmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.99.212.201]
+X-ClientProxiedBy: BJSMTP01-EX.srv.huawei-3com.com (10.63.20.132) To
+ DAG2EX05-BASE.srv.huawei-3com.com (10.8.0.68)
+X-DNSRBL: 
+X-MAIL: h3cspam02-ex.h3c.com 0BOA20w0009345
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 01:43:05PM +0000, Timon Baetz wrote:
-> Register for extcon notification and set charging current depending on
-> the detected cable type. Current values are taken from vendor kernel,
-> where most charger types end up setting 650mA [0].
-> 
-> Also enable and disable the CHARGER regulator based on extcon events.
-> 
-> [0] https://github.com/krzk/linux-vendor-backup/blob/samsung/galaxy-s2-epic-4g-touch-sph-d710-exynos4210-dump/drivers/misc/max8997-muic.c#L1675-L1678
-> 
-> Signed-off-by: Timon Baetz <timon.baetz@protonmail.com>
-> ---
->  drivers/power/supply/max8997_charger.c | 89 ++++++++++++++++++++++++++
->  1 file changed, 89 insertions(+)
-> 
-> diff --git a/drivers/power/supply/max8997_charger.c b/drivers/power/supply/max8997_charger.c
-> index 1947af25879a..e8532e2af451 100644
-> --- a/drivers/power/supply/max8997_charger.c
-> +++ b/drivers/power/supply/max8997_charger.c
-> @@ -6,12 +6,14 @@
->  //  MyungJoo Ham <myungjoo.ham@samsung.com>
->  
->  #include <linux/err.h>
-> +#include <linux/extcon.h>
->  #include <linux/module.h>
->  #include <linux/slab.h>
->  #include <linux/platform_device.h>
->  #include <linux/power_supply.h>
->  #include <linux/mfd/max8997.h>
->  #include <linux/mfd/max8997-private.h>
-> +#include <linux/regulator/consumer.h>
->  
->  /* MAX8997_REG_STATUS4 */
->  #define DCINOK_SHIFT		1
-> @@ -31,6 +33,10 @@ struct charger_data {
->  	struct device *dev;
->  	struct max8997_dev *iodev;
->  	struct power_supply *battery;
-> +	struct regulator *reg;
-> +	struct extcon_dev *edev;
-> +	struct notifier_block extcon_nb;
-> +	struct work_struct extcon_work;
->  };
->  
->  static enum power_supply_property max8997_battery_props[] = {
-> @@ -88,6 +94,67 @@ static int max8997_battery_get_property(struct power_supply *psy,
->  	return 0;
->  }
->  
-> +static void max8997_battery_extcon_evt_stop_work(void *data)
-> +{
-> +	struct charger_data *charger = data;
-> +
-> +	cancel_work_sync(&charger->extcon_work);
-> +}
-> +
-> +static void max8997_battery_extcon_evt_worker(struct work_struct *work)
-> +{
-> +	struct charger_data *charger =
-> +	    container_of(work, struct charger_data, extcon_work);
-> +	struct extcon_dev *edev = charger->edev;
-> +	int current_limit;
-> +
-> +	if (extcon_get_state(edev, EXTCON_CHG_USB_SDP) > 0) {
-> +		dev_dbg(charger->dev, "USB SDP charger is connected\n");
-> +		current_limit = 450000;
-> +	} else if (extcon_get_state(edev, EXTCON_CHG_USB_DCP) > 0) {
-> +		dev_dbg(charger->dev, "USB DCP charger is connected\n");
-> +		current_limit = 650000;
-> +	} else if (extcon_get_state(edev, EXTCON_CHG_USB_FAST) > 0) {
-> +		dev_dbg(charger->dev, "USB FAST charger is connected\n");
-> +		current_limit = 650000;
-> +	} else if (extcon_get_state(edev, EXTCON_CHG_USB_SLOW) > 0) {
-> +		dev_dbg(charger->dev, "USB SLOW charger is connected\n");
-> +		current_limit = 650000;
-> +	} else if (extcon_get_state(edev, EXTCON_CHG_USB_CDP) > 0) {
-> +		dev_dbg(charger->dev, "USB CDP charger is connected\n");
-> +		current_limit = 650000;
-> +	} else {
-> +		dev_dbg(charger->dev, "USB charger is diconnected\n");
-> +		current_limit = -1;
-> +	}
-> +
-> +	if (current_limit > 0) {
-> +		int ret = regulator_set_current_limit(charger->reg, current_limit, current_limit);
-> +
-> +		if (ret) {
-> +			dev_err(charger->dev, "failed to set current limit: %d\n", ret);
-> +			return;
-> +		}
-> +		ret = regulator_enable(charger->reg);
-> +		if (ret)
-> +			dev_err(charger->dev, "failed to enable regulator: %d\n", ret);
-> +	} else {
-> +		int ret  = regulator_disable(charger->reg);
-> +
-> +		if (ret)
-> +			dev_err(charger->dev, "failed to disable regulator: %d\n", ret);
-> +	}
-> +}
-> +
-> +static int max8997_battery_extcon_evt(struct notifier_block *nb,
-> +				unsigned long event, void *param)
-> +{
-> +	struct charger_data *charger =
-> +		container_of(nb, struct charger_data, extcon_nb);
-> +	schedule_work(&charger->extcon_work);
-> +	return NOTIFY_OK;
-> +}
-> +
->  static const struct power_supply_desc max8997_battery_desc = {
->  	.name		= "max8997_pmic",
->  	.type		= POWER_SUPPLY_TYPE_BATTERY,
-> @@ -170,6 +237,28 @@ static int max8997_battery_probe(struct platform_device *pdev)
->  		return PTR_ERR(charger->battery);
->  	}
->  
-> +	charger->reg = devm_regulator_get(&pdev->dev, "charger");
+We have encountered the following problems several times:
+    1、A raid slot or hardware problem causes block device loss.
+    2、Continue to issue IO requests to the problematic block device.
+    3、The system possibly crash after a few hours.
 
-Since you do not use get_optional, you will always get a dummy
-regulator. In case of error, you should either print it or entirely fail
-the probe. Silently continuing makes it difficult to spot errors.
+dmesg log as below:
+[15205901.268313] blk_partition_remap: fail for partition 1
+[15205901.319309] blk_partition_remap: fail for partition 1
+[15205901.319341] blk_partition_remap: fail for partition 1
+[15205901.319873] sysctl (3998546): drop_caches: 3
+[15205901.371379] BUG: unable to handle kernel NULL pointer dereference at
+[15205901.372602] IP: xfs_buf_offset+0x32/0x60 [xfs]
+[15205901.373605] PGD 0 P4D 0
+[15205901.374690] Oops: 0000 [#1] SMP
+[15205901.375629] Modules linked in:
+[15205901.382445] CPU: 6 PID: 18545 Comm: xfsaild/sdh1 Kdump: loaded Tainted: G
+[15205901.384728] Hardware name:
+[15205901.385830] task: ffff885216939e80 task.stack: ffffb28ba9b38000
+[15205901.386974] RIP: 0010:xfs_buf_offset+0x32/0x60 [xfs]
+[15205901.388044] RSP: 0018:ffffb28ba9b3bc68 EFLAGS: 00010246
+[15205901.389021] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 000000000000000b
+[15205901.390016] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff88627bebf000
+[15205901.391075] RBP: ffffb28ba9b3bc98 R08: ffff88627bebf000 R09: 00000001802a000d
+[15205901.392031] R10: ffff88521f3a0240 R11: ffff88627bebf000 R12: ffff88521041e000
+[15205901.392950] R13: 0000000000000020 R14: ffff88627bebf000 R15: 0000000000000000
+[15205901.393858] FS:  0000000000000000(0000) GS:ffff88521f380000(0000) knlGS:0000000000000000
+[15205901.394774] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[15205901.395756] CR2: 0000000000000000 CR3: 000000099bc09001 CR4: 00000000007606e0
+[15205901.396904] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[15205901.397869] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[15205901.398836] PKRU: 55555554
+[15205901.400111] Call Trace:
+[15205901.401058]  ? xfs_inode_buf_verify+0x8e/0xf0 [xfs]
+[15205901.402069]  ? xfs_buf_delwri_submit_buffers+0x16d/0x2b0 [xfs]
+[15205901.403060]  xfs_inode_buf_write_verify+0x10/0x20 [xfs]
+[15205901.404017]  _xfs_buf_ioapply+0x88/0x410 [xfs]
+[15205901.404990]  ? xfs_buf_delwri_submit_buffers+0x16d/0x2b0 [xfs]
+[15205901.405929]  xfs_buf_submit+0x63/0x200 [xfs]
+[15205901.406801]  xfs_buf_delwri_submit_buffers+0x16d/0x2b0 [xfs]
+[15205901.407675]  ? xfs_buf_delwri_submit_nowait+0x10/0x20 [xfs]
+[15205901.408540]  ? xfs_inode_item_push+0xb7/0x190 [xfs]
+[15205901.409395]  xfs_buf_delwri_submit_nowait+0x10/0x20 [xfs]
+[15205901.410249]  xfsaild+0x29a/0x780 [xfs]
+[15205901.411121]  kthread+0x109/0x140
+[15205901.411981]  ? xfs_trans_ail_cursor_first+0x90/0x90 [xfs]
+[15205901.412785]  ? kthread_park+0x60/0x60
+[15205901.413578]  ret_from_fork+0x2a/0x40
 
-Since the driver could operate in case of extcon/regulator error, just
-dev_err() so failure will be spotted with dmesg.
+The "obvious" cause is that the bp->b_pages was NULL in function
+xfs_buf_offset. Analyzing vmcore, we found that b_pages=NULL but
+b_page_count=16, so b_pages is set to NULL for some reason.
 
-It will complain on older DTBs because you are introducing incompatible
-change, but that's expected. Just correct all other in-tree DTS.
+crash> struct xfs_buf ffff88627bebf000 | less
+    ...
+  b_pages = 0x0,
+  b_page_array = {0x0, 0x0},
+  b_maps = 0xffff88627bebf118,
+  __b_map = {
+    bm_bn = 512,
+    bm_len = 128
+  },
+  b_map_count = 1,
+  b_io_length = 128,
+  b_pin_count = {
+    counter = 0
+  },
+  b_io_remaining = {
+    counter = 1
+  },
+  b_page_count = 16,
+  b_offset = 0,
+  b_error = 0,
+    ...
 
-Best regards,
-Krzysztof
+To avoid system crash, we can add the check of 'bp->b_pages' to
+xfs_inode_buf_verify(). If b_pages == NULL, we mark the buffer
+as -EFSCORRUPTED and the IO will not dispatched.
 
+Signed-off-by: Fengfei Xi <xi.fengfei@h3c.com>
+Reviewed-by: Xianting Tian <tian.xianting@h3c.com>
+---
+ fs/xfs/libxfs/xfs_inode_buf.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-> +	charger->edev = extcon_get_edev_by_phandle(&pdev->dev, 0);
-> +	if (PTR_ERR(charger->reg) == -EPROBE_DEFER ||
-> +	    PTR_ERR(charger->edev) == -EPROBE_DEFER)
-> +		return -EPROBE_DEFER;
-> +
-> +	if (!IS_ERR(charger->reg) && !IS_ERR(charger->edev)) {
-> +		INIT_WORK(&charger->extcon_work, max8997_battery_extcon_evt_worker);
-> +		ret = devm_add_action(&pdev->dev, max8997_battery_extcon_evt_stop_work, charger);
-> +		if (ret) {
-> +			dev_err(&pdev->dev, "failed to add extcon evt stop action: %d\n", ret);
-> +			return ret;
-> +		}
-> +		charger->extcon_nb.notifier_call = max8997_battery_extcon_evt;
-> +		ret = devm_extcon_register_notifier_all(&pdev->dev, charger->edev,
-> +							&charger->extcon_nb);
-> +		if (ret) {
-> +			dev_err(&pdev->dev, "failed to register extcon notifier\n");
-> +			return ret;
-> +		};
-> +	}
-> +
->  	return 0;
->  }
->  
-> -- 
-> 2.25.1
-> 
-> 
+diff --git a/fs/xfs/libxfs/xfs_inode_buf.c b/fs/xfs/libxfs/xfs_inode_buf.c
+index c667c63f2..5a485c51f 100644
+--- a/fs/xfs/libxfs/xfs_inode_buf.c
++++ b/fs/xfs/libxfs/xfs_inode_buf.c
+@@ -45,6 +45,17 @@ xfs_inode_buf_verify(
+ 	int		i;
+ 	int		ni;
+ 
++	/*
++	 * Don't crash and mark buffer EFSCORRUPTED when b_pages is NULL
++	 */
++	if (!bp->b_pages) {
++		xfs_buf_ioerror(bp, -EFSCORRUPTED);
++		xfs_alert(mp,
++			"xfs_buf(%p) b_pages corruption detected at %pS\n",
++			bp, __return_address);
++		return;
++	}
++
+ 	/*
+ 	 * Validate the magic number and version of every inode in the buffer
+ 	 */
+-- 
+2.17.1
+
