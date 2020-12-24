@@ -2,98 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2D102E258E
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 09:52:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC1CA2E2591
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 09:56:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727621AbgLXIwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 03:52:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34176 "EHLO
+        id S1727187AbgLXIzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 03:55:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726591AbgLXIwb (ORCPT
+        with ESMTP id S1726342AbgLXIzL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 03:52:31 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4896CC0617A6
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 00:51:51 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id r7so1543637wrc.5
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 00:51:51 -0800 (PST)
+        Thu, 24 Dec 2020 03:55:11 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5A85C061794
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 00:54:31 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id i7so1201976pgc.8
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 00:54:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=qP2XO0ngR1ghr+fNEQtPmScgoXBcnPP/lIItDhCDK2M=;
-        b=Iryp6kYWS3NXejOjSaJPJiIIH/0NoO/EHvJzVCFh0J8O+x0zDFnTSiuQnH/zFl7aP/
-         xYQyvKNouvqduGnBh1KNTvINHBT5gH8fo/ieCBq1tAORoDt+64+ZQJS3sXRQ7L3YaW+E
-         m0JA3O8kFRi4Q7gbDiakahTEejtUdVxrl3LTetORs8b4pQHaEQ740DUG3V8stdAFtw5f
-         JXTOHKYTA0AupqarG3Ju47KQrtW3gC5H5KaKvXPVU+Bzdr0/ZfzXtmv5NCuAQcNeSgWf
-         aRNYOxDnOFvu1x9nbZRFeOKSZIN0XWUJO3orCcHTnU+i6ywFuKki+XgVGfddShssVsLg
-         gRPQ==
+        d=gmail.com; s=20161025;
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=jtdNY2VNTaifNGfA8i/OocVgmbv/j5wlSKB4fx9rrOM=;
+        b=fKB/48z1yPhzRupLluTznUgCXkB5yDE+/f+UvQOpul0kmVgQaR5sNCj6Tjjju5+rYU
+         at35S9Gka9w84YU2qEO3o0uwZgBawp0uT6gaoXEy1EIhY7AVrHqglai1JYqjzY5B3oBW
+         hHkMG+vAa+5du/yo+229OK+cgzHgp+ydTzz3TfPjHWCfhWn8Tug95pNPLF8zdobI2vq5
+         ZwWx2d50HkoFxgXJqJZrrghsIBUeFqncYsuhpWpIazLkbSsSc18VTXtagpf4pxJJgaNP
+         iifJ5yexwfZwNEtj8M8d0kYlHQFOG0MgytnHsXH+/OPM0pkn+8lN63cJYpusn41Z1fzu
+         cMHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=qP2XO0ngR1ghr+fNEQtPmScgoXBcnPP/lIItDhCDK2M=;
-        b=b03DQWa+yasL8xAIgBY/v4Zq46+qp8qK/NlOjh/mIfxg5ykwhuhvsp1rVCSWWUTWYm
-         57KCBZkjxb4QoPyoC04579PsIfLw6ghf4FbHd5UdtslV/kJhrUcjkMp6opkdw6IdYwZw
-         KqfsWwGMBYqBLFx2nkoKLY0rOItR1WlRcXSgDFnsEl4YfJvvcWcm+xAGX3WP+u6O2lgo
-         3yb9afCz/M3QIULIiKgeZt6C0cfcExJ4b3NG+tnYVa2PmahRjXYjTN1CG4WI2vk3cdwD
-         HAyQif7FqxOAgAzn3EVGEZIFtdSZIsJAbZtTxkVEGDLSiiyEfJPkxiqZfgjYTLrfbbxB
-         sHcA==
-X-Gm-Message-State: AOAM532ykyqTt1FVTRCcPTimQScGVRce5UdQqKAPTX6LaMyVecD8MmGw
-        9DMkFkqye+m1vjW0f0G78Buw0w==
-X-Google-Smtp-Source: ABdhPJwMWyYathVI8voQEL5w+ZGTezLUadtdsVtsEAYFpKlLaXykiPJDAwHZ0o6p8CQ/DkLr/RTVPg==
-X-Received: by 2002:a5d:4491:: with SMTP id j17mr32512895wrq.78.1608799909968;
-        Thu, 24 Dec 2020 00:51:49 -0800 (PST)
-Received: from dell ([91.110.221.181])
-        by smtp.gmail.com with ESMTPSA id w13sm37720655wrt.52.2020.12.24.00.51.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Dec 2020 00:51:49 -0800 (PST)
-Date:   Thu, 24 Dec 2020 08:51:47 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Cc:     marek.vasut+renesas@gmail.com, matti.vaittinen@fi.rohmeurope.com,
-        lgirdwood@gmail.com, broonie@kernel.org, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, khiem.nguyen.xt@renesas.com,
-        linux-power@fi.rohmeurope.com, linux-gpio@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 11/12] mfd: bd9571mwv: Make the driver more generic
-Message-ID: <20201224085147.GH681741@dell>
-References: <1608793457-11997-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
- <1608793457-11997-12-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=jtdNY2VNTaifNGfA8i/OocVgmbv/j5wlSKB4fx9rrOM=;
+        b=nkIg9QsErjDQaj+8QWHQz0m4l8m2iCGBcKiPrtng+1Uim/cGGSuAAkUEn22L4xAtb8
+         0HN3pw2KXWjAGGZfCz0CFh2wlunEPwEWksqrlsNXTa0NEmAhAv0VkolqyTjmNZmxBC2m
+         UjwWQ2WsMBsrYu7vRs7S6jT5gJAxFLeH/EOQILk4yU4/2EZCF5/1P7uq0bvVxJF7qB8W
+         mmTRWRxJQhbbIAhYI7bgtJGz4rqs5fyt8EUFrSfOvAipCIfzV6qf4ia4BzXXC721+592
+         ViQx+syWgXx/chOwr7An6GdLM0mEph6xCkZjcX+lZGpxKTwbiXgc/lroKxN/yWipBwMo
+         YE4w==
+X-Gm-Message-State: AOAM533l+JTqCr1if5HQLN2eguYWH5Hls/HLaZD+f2keCVv9f5louaHm
+        W4wevSuXm/SmrKZZ6c64zFqcwSHuoZuKtfZV
+X-Google-Smtp-Source: ABdhPJwYg+NJY8USaLGRxba2CeUWevYKYMFVZ2yfeE/1TO2ws7jpZKfj5waR9ixjRaQoQCWg0we8xA==
+X-Received: by 2002:a63:1322:: with SMTP id i34mr27986669pgl.282.1608800071053;
+        Thu, 24 Dec 2020 00:54:31 -0800 (PST)
+Received: from HQ-MacBookPro.local ([103.88.46.201])
+        by smtp.gmail.com with ESMTPSA id w9sm25213503pfj.128.2020.12.24.00.54.29
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Dec 2020 00:54:30 -0800 (PST)
+To:     linux-kernel@vger.kernel.org
+From:   Bruce <rookie.bruce@gmail.com>
+Subject: How do I account for the Linux kernel development team
+Message-ID: <6f9e5b6a-9936-3619-d288-c88195158468@gmail.com>
+Date:   Thu, 24 Dec 2020 16:54:24 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1608793457-11997-12-git-send-email-yoshihiro.shimoda.uh@renesas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Dec 2020, Yoshihiro Shimoda wrote:
+How do I account for the Linux kernel development team��
 
-> From: Khiem Nguyen <khiem.nguyen.xt@renesas.com>
-> 
-> Since the driver supports BD9571MWV PMIC only, this patch makes
-> the functions and data structure become more generic so that
-> it can support other PMIC variants as well. Also remove printing
-> part name which Lee Jones suggested.
-> 
-> Signed-off-by: Khiem Nguyen <khiem.nguyen.xt@renesas.com>
-> Co-developed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-> Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-> Reviewed-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> ---
->  drivers/mfd/bd9571mwv.c       | 77 +++++++++++++++++++++++--------------------
->  include/linux/mfd/bd9571mwv.h | 18 ++--------
->  2 files changed, 43 insertions(+), 52 deletions(-)
-
-For my own reference (apply this as-is to your sign-off block):
-
-  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
