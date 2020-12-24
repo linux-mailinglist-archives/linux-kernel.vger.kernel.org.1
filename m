@@ -2,179 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A152E2790
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 15:04:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0636E2E2792
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 15:13:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728736AbgLXOEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 09:04:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33158 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727184AbgLXOEM (ORCPT
+        id S1728017AbgLXONS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 09:13:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726609AbgLXONR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 09:04:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608818565;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KBihBeE7FaK4G7GPAOp0NUP3AloiGzKbKb/E0jog36A=;
-        b=Yu+Ot/IfsbgC+Hh316xoYOmt8lPM5G02aO+q8QmCW6sDXXDexFhR+F9gM4WXwTzBA6mYhL
-        OyapVHC3mMxX/n73nxnz7YHYB+P4rSULWqRqDWCmh+3ZCRenoQWEFdQMSxpKImxq0vJDkg
-        Pim35bEUQvOsT8iDqqMo1sMtaoHLJVw=
-Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
- [209.85.161.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-67-d5OyiY-iO266OXIpQDJNKw-1; Thu, 24 Dec 2020 09:02:43 -0500
-X-MC-Unique: d5OyiY-iO266OXIpQDJNKw-1
-Received: by mail-oo1-f72.google.com with SMTP id t7so1026655oog.7
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 06:02:43 -0800 (PST)
+        Thu, 24 Dec 2020 09:13:17 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B1FCC061794;
+        Thu, 24 Dec 2020 06:12:37 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id b5so1239158pjl.0;
+        Thu, 24 Dec 2020 06:12:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SyPbtlk9TvZ8wXRc8WjmzSpmQJoyLh7+BtUnWFRUKOY=;
+        b=Vv2Jg/rS+lyAVr9MqO3QquOplXTJE9iaeVSbUISyBQrx29Nk1tkF6q5D3r+WDG8vjg
+         9FxmYx405/I97A8UVartQUnPETdQwiTCKYvIh24PLTWfcaFLGssnDt6tumHRLal0hskY
+         myzItrP2leShibgY5N7Ebte7LM+rOf8YmclPEVSqgcyLurAqn2aINtFSbrrWqphjKSya
+         WYStg7PkOmpP1clUIgvTPjXeQ0Yt61Ib82ihwMiA8PcGqHnsZbIczK1Edwni6qzKjG0W
+         Say17Xh1AysuN/55mVAHC4XMuq0Z4EYGT6hxGbiBZuxzc6PuJLJ2tufoPs4HlCgyU/2e
+         Avgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=KBihBeE7FaK4G7GPAOp0NUP3AloiGzKbKb/E0jog36A=;
-        b=Yv0qp8EgMU+S3y0Di4BDBa375w3E4gMfkZtPPkVYRlv8yiHE0mTR7Zz+mLJPe2k9ey
-         PQ/PZxXIKr9VZbI5UF3MMZDYXzh9PJWofLJ0a846lp1qi3ldo8jHCc/Foc/WbxJnLu7R
-         k60MllG1ZVQcKlI3/B3j+zdZVfPzvUByMPi79Xyy6y33ICCrRLmpEEG1U0rtQ+mLG9C0
-         oGxyCMn5N/TNhmSdfySUDGB0RT0y+aht2/CkLaWNFmrPgZwtmISwnX1GKrEgaG/9Rgpk
-         OYrmHR573yHAjR8SCnUHnKPJaonu3NtivI4aoGTVZMqRkTCQzWdDikHshKjPitPNMfJn
-         py5A==
-X-Gm-Message-State: AOAM532GBeRGmAllPDLWYyzK85mhrbNNFqBoCRC/PjqA8uXzy+hvm3JA
-        2oAFnQBqdICmJlLR1tyPi7J53AunMGE9mG83xchxJUBi25QZOp+fHNfFtB2YBlwviEZ47NROg7N
-        ZndDBVLrmkMKuaA90zzsSFOAA
-X-Received: by 2002:a9d:5c8b:: with SMTP id a11mr22357624oti.126.1608818562305;
-        Thu, 24 Dec 2020 06:02:42 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy5TuK4g70Wa7LQ5fkxYOJAqadcOmmttNzmJip+R7fCyD06vTogTSKVmSmRkNY9QCefp2bAug==
-X-Received: by 2002:a9d:5c8b:: with SMTP id a11mr22357606oti.126.1608818562059;
-        Thu, 24 Dec 2020 06:02:42 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id g12sm6838873oos.8.2020.12.24.06.02.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Dec 2020 06:02:41 -0800 (PST)
-Subject: Re: [PATCH 1/2] clk: axi-clkgen: add support for ZynqMP (UltraScale)
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        lars@metafoo.de, linux-fpga@vger.kernel.org, mdf@kernel.org,
-        dragos.bogdan@analog.com, Mathias Tausen <mta@gomspace.com>
-References: <20201221144224.50814-1-alexandru.ardelean@analog.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <58111fcc-d4c7-4b26-e038-2882b636e17f@redhat.com>
-Date:   Thu, 24 Dec 2020 06:02:39 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SyPbtlk9TvZ8wXRc8WjmzSpmQJoyLh7+BtUnWFRUKOY=;
+        b=KO5LwyaFjpUOqhuk0DkZ3GRh6gnuh8rycIvQHwWOHyDTkB9EYdVch1YzKiPNDRQNIF
+         pM47jd0IO1VPii/XC0D2mZNStSJjot9YV/1HabjhpWXSRzcDM3KCDa/SYv3VHAP6fTTA
+         GUCASbl255gB7LYz/eAquAE2bedI4s+i6HCP2D5bhnfveHzoHkYYIvLfHAmg70YX1wuL
+         fjc5C3NBsqWqJeEyCXWS6h4MC3sM5YNAp0edmV/B9aK4/Ye//ib9+eSBankF+4HcQst0
+         3imlLCphttReoo1/HeyL6znlFph3Sao/f1U2sdB6Afrsow96saH+x3EE9BcE0Zk8EOSe
+         rJGw==
+X-Gm-Message-State: AOAM533xAHw38HI9MrjZXk6GF98f+g3b/orNqGyN8Fn+j2idTg/+gxDg
+        M9vdS48Ug1/ZvsPLZ5u2zx/W/Ss6EE2dPhOx0Vc=
+X-Google-Smtp-Source: ABdhPJx4kU2kgiBhzVnrEN4w5jn8fz4Uh0jF+A7nHQah1fR613EyonYvxy52LCufMdVu+K4/MKNj9N0tSoQEuzzOI1Q=
+X-Received: by 2002:a17:90a:c592:: with SMTP id l18mr4636764pjt.228.1608819157024;
+ Thu, 24 Dec 2020 06:12:37 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201221144224.50814-1-alexandru.ardelean@analog.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20201224010907.263125-1-djrscally@gmail.com> <20201224010907.263125-6-djrscally@gmail.com>
+ <CAHp75VdF5NdjrSxcOafh7KNNDteYEUDk9otA0HKX-iks7G0D4g@mail.gmail.com> <de478ef0-0b4d-df1d-2651-9cc35bf2f45b@gmail.com>
+In-Reply-To: <de478ef0-0b4d-df1d-2651-9cc35bf2f45b@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 24 Dec 2020 16:12:20 +0200
+Message-ID: <CAHp75VdWuowLenNPQRNc+QXeyuvwKqh_bjw=1WvmFrzoygXFRw@mail.gmail.com>
+Subject: Re: [PATCH v3 05/14] software_node: unregister software_nodes in
+ reverse order
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        devel@acpica.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tian Shu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        kieran.bingham+renesas@ideasonboard.com,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        niklas.soderlund+renesas@ragnatech.se,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Dec 24, 2020 at 4:00 PM Daniel Scally <djrscally@gmail.com> wrote:
+> On 24/12/2020 12:13, Andy Shevchenko wrote:
+> > On Thu, Dec 24, 2020 at 3:12 AM Daniel Scally <djrscally@gmail.com> wrote:
 
-On 12/21/20 6:42 AM, Alexandru Ardelean wrote:
-> From: Dragos Bogdan <dragos.bogdan@analog.com>
+...
+
+> >> + * Unregister multiple software nodes at once. The array will be unwound in
+> >> + * reverse order (i.e. last entry first) and thus if any member of the array
+> >> + * has its .parent member set then they should appear later in the array such
+> >> + * that they are unregistered first.
+> >
+> > I'm, as being not a native speaker, a bit confused by this comment.
+> > The idea is that children are unregistered first. Can you try to make
+> > it more clear maybe?
 >
-> This IP core also works and is supported on the Xilinx ZynqMP (UltraScale)
-> FPGA boards.
-> This patch enables the driver to be available on these platforms as well.
+> Sure, how about:
 >
-> Since axi-clkgen is now supported on ZYNQMP, we need to make sure the
-> max/min frequencies of the PFD and VCO are respected.
->
-> This change adds two new compatible strings to select limits for Zynq or
-> ZynqMP from the device data (in the OF table). The old compatible string
-> (i.e. adi,axi-clkgen-2.00.a) is the same as adi,zynq-axi-clkgen-2.00.a,
-> since the original version of this driver was designed on top of that
-> platform.
->
-> Signed-off-by: Dragos Bogdan <dragos.bogdan@analog.com>
-> Signed-off-by: Mathias Tausen <mta@gomspace.com>
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> ---
->
-> This is a re-spin of an older series.
-> It needed to wait a txt -> yaml dt conversion:
-> https://patchwork.kernel.org/project/linux-clk/patch/20201013143421.84188-1-alexandru.ardelean@analog.com/
->
-> It's 2 patches squashed into one:
-> https://patchwork.kernel.org/project/linux-clk/patch/20200929144417.89816-12-alexandru.ardelean@analog.com/
-> https://patchwork.kernel.org/project/linux-clk/patch/20200929144417.89816-14-alexandru.ardelean@analog.com/
->
-> The series from where all this started is:
-> https://lore.kernel.org/linux-clk/20200929144417.89816-1-alexandru.ardelean@analog.com/
->
-> Well, v4 was the point where I decided to split this into smaller
-> series, and also do the conversion of the binding to yaml.
->
->  drivers/clk/Kconfig          |  2 +-
->  drivers/clk/clk-axi-clkgen.c | 15 +++++++++++++++
->  2 files changed, 16 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
-> index 85856cff506c..252333e585e7 100644
-> --- a/drivers/clk/Kconfig
-> +++ b/drivers/clk/Kconfig
-> @@ -247,7 +247,7 @@ config CLK_TWL6040
->  
->  config COMMON_CLK_AXI_CLKGEN
->  	tristate "AXI clkgen driver"
-> -	depends on ARCH_ZYNQ || MICROBLAZE || COMPILE_TEST
-> +	depends on ARCH_ZYNQ || ARCH_ZYNQMP || MICROBLAZE || COMPILE_TEST
->  	help
->  	  Support for the Analog Devices axi-clkgen pcore clock generator for Xilinx
->  	  FPGAs. It is commonly used in Analog Devices' reference designs.
-> diff --git a/drivers/clk/clk-axi-clkgen.c b/drivers/clk/clk-axi-clkgen.c
-> index ad86e031ba3e..a413c13334ff 100644
-> --- a/drivers/clk/clk-axi-clkgen.c
-> +++ b/drivers/clk/clk-axi-clkgen.c
-> @@ -108,6 +108,13 @@ static uint32_t axi_clkgen_lookup_lock(unsigned int m)
->  	return 0x1f1f00fa;
->  }
->  
+> The array will be unwound in reverse order (i.e. last entry first). If
+> any member of the array is a child of another member then the child must
 
-Could something like
+children ?
 
-#ifdef ARCH_ZYNQMP
+> appear later in the array than their parent, so that they are
+> unregistered first.
 
-> +static const struct axi_clkgen_limits axi_clkgen_zynqmp_default_limits = {
-> +	.fpfd_min = 10000,
-> +	.fpfd_max = 450000,
-> +	.fvco_min = 800000,
-> +	.fvco_max = 1600000,
-> +};
+I think with the above change it will be better, yes.
 
-#endif
-
-be added here and similar places to limit unused code ?
-
-> +
->  static const struct axi_clkgen_limits axi_clkgen_zynq_default_limits = {
->  	.fpfd_min = 10000,
->  	.fpfd_max = 300000,
-> @@ -560,6 +567,14 @@ static int axi_clkgen_remove(struct platform_device *pdev)
->  }
->  
->  static const struct of_device_id axi_clkgen_ids[] = {
-> +	{
-> +		.compatible = "adi,zynqmp-axi-clkgen-2.00.a",
-> +		.data = &axi_clkgen_zynqmp_default_limits,
-> +	},
-> +	{
-> +		.compatible = "adi,zynq-axi-clkgen-2.00.a",
-> +		.data = &axi_clkgen_zynq_default_limits,
-> +	},
-
-This looks like zynqmp AND zynq are being added.
-
-Is this a mistake ?
-
-Tom
-
->  	{
->  		.compatible = "adi,axi-clkgen-2.00.a",
->  		.data = &axi_clkgen_zynq_default_limits,
-
+-- 
+With Best Regards,
+Andy Shevchenko
