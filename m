@@ -2,124 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E5492E28B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 20:20:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A61A2E28BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 20:36:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728939AbgLXTUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 14:20:36 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:54624 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728777AbgLXTUf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 14:20:35 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 9192B1C0B9B; Thu, 24 Dec 2020 20:19:53 +0100 (CET)
-Date:   Thu, 24 Dec 2020 20:19:53 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Petr Tesarik <ptesarik@suse.cz>
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>, Torsten Duwe <duwe@lst.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>,
-        Willy Tarreau <w@1wt.eu>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Nicolai Stange <nstange@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Peter Matthias <matthias.peter@bsi.bund.de>,
-        Neil Horman <nhorman@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        And y Lavr <andy.lavr@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>, simo@redhat.com
-Subject: Re: drivers/char/random.c needs a (new) maintainer
-Message-ID: <20201224191953.GD22388@amd>
-References: <20201130151231.GA24862@lst.de>
- <CAHmME9p4vFGWh7+CKF4f3dw5r+ru5PVG0-vP77JowX8sPhin1g@mail.gmail.com>
- <20201130165339.GE5364@mit.edu>
- <CAHmME9pksS8ec17RAwCNJimt4B0xZgd3qYHUPnaT4Bj4CF7n0A@mail.gmail.com>
- <20201218132519.kj3nz7swsx7vvlr5@valinor.lan>
- <20201223132851.55d19271@blackhole.lan>
- <20201223151014.57caf98b@ezekiel.suse.cz>
- <CAHmME9ooV1HRGO4bLsNKqv1EjDsUYsM6TcMbmEL=4CejTB+1ZQ@mail.gmail.com>
- <20201223170057.7c8fd710@ezekiel.suse.cz>
+        id S1728864AbgLXTgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 14:36:15 -0500
+Received: from sandeen.net ([63.231.237.45]:49084 "EHLO sandeen.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728679AbgLXTgO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Dec 2020 14:36:14 -0500
+Received: from liberator.sandeen.net (liberator.sandeen.net [10.0.0.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by sandeen.net (Postfix) with ESMTPSA id C3F1815D6C;
+        Thu, 24 Dec 2020 13:34:27 -0600 (CST)
+To:     Fengfei Xi <xi.fengfei@h3c.com>, darrick.wong@oracle.com
+Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tian.xianting@h3c.com
+References: <20201224095142.7201-1-xi.fengfei@h3c.com>
+From:   Eric Sandeen <sandeen@sandeen.net>
+Subject: Re: [PATCH] xfs: fix system crash caused by null bp->b_pages
+Message-ID: <63d75865-84c6-0f76-81a2-058f4cad1d84@sandeen.net>
+Date:   Thu, 24 Dec 2020 13:35:32 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="KdquIMZPjGJQvRdI"
-Content-Disposition: inline
-In-Reply-To: <20201223170057.7c8fd710@ezekiel.suse.cz>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20201224095142.7201-1-xi.fengfei@h3c.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 12/24/20 3:51 AM, Fengfei Xi wrote:
+> We have encountered the following problems several times:
+>     1、A raid slot or hardware problem causes block device loss.
+>     2、Continue to issue IO requests to the problematic block device.
+>     3、The system possibly crash after a few hours.
 
---KdquIMZPjGJQvRdI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+What kernel is this on?
 
-Hi!
+> dmesg log as below:
+> [15205901.268313] blk_partition_remap: fail for partition 1
 
-> > On Wed, Dec 23, 2020 at 3:17 PM Petr Tesarik <ptesarik@suse.cz> wrote:
-> > > Upfront, let me admit that SUSE has a vested interest in a FIPS-certi=
-fiable Linux kernel. =20
-> >=20
-> > Sorry, but just because you have a "vested interest", or a financial
-> > interest, or because you want it does not suddenly make it a good
-> > idea. The idea is to have good crypto, not to merely check some boxes
->=20
-> I never suggested that this should serve as a supportive argument. I was =
-just trying to be honest about our motivations.
->=20
-> I'm a bit sad that this discussion has quickly gone back to the choice of=
- algorithms and how they can be implemented. The real issue is that the RNG=
- subsystem has not developed as fast as it could. This had not been much of=
- an issue as long as nobody was really interested in making any substantial=
- changes to that code, but it is more apparent now. Torsten believes it can=
- be partly because of a maintainer who is too busy with other tasks, and he=
- suggested we try to improve the situation by giving the RNG-related tasks =
-to someone else.
->
+I think this message has been gone since kernel v4.16...
 
-(Please wrap at 80 columns).
+If you're testing this on an old kernel, can you reproduce it on a
+current kernel?
 
-To play devil's advocate, does RNG subsystem need to evolve? Its task
-is to get random numbers. Does it fail at the task?
+> [15205901.319309] blk_partition_remap: fail for partition 1
+> [15205901.319341] blk_partition_remap: fail for partition 1
+> [15205901.319873] sysctl (3998546): drop_caches: 3
 
-Problem is, random subsystem is hard to verify, and big rewrite is
-likely to cause security problems...=20
+What performed the drop_caches immediately before the BUG?  Does
+the BUG happen without drop_caches?
 
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
+> [15205901.371379] BUG: unable to handle kernel NULL pointer dereference at
 
---KdquIMZPjGJQvRdI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+was something lost here?  "dereference at" ... what?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+> [15205901.372602] IP: xfs_buf_offset+0x32/0x60 [xfs]
+> [15205901.373605] PGD 0 P4D 0
+> [15205901.374690] Oops: 0000 [#1] SMP
+> [15205901.375629] Modules linked in:
+> [15205901.382445] CPU: 6 PID: 18545 Comm: xfsaild/sdh1 Kdump: loaded Tainted: G
+> [15205901.384728] Hardware name:
+> [15205901.385830] task: ffff885216939e80 task.stack: ffffb28ba9b38000
+> [15205901.386974] RIP: 0010:xfs_buf_offset+0x32/0x60 [xfs]
+> [15205901.388044] RSP: 0018:ffffb28ba9b3bc68 EFLAGS: 00010246
+> [15205901.389021] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 000000000000000b
+> [15205901.390016] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff88627bebf000
+> [15205901.391075] RBP: ffffb28ba9b3bc98 R08: ffff88627bebf000 R09: 00000001802a000d
+> [15205901.392031] R10: ffff88521f3a0240 R11: ffff88627bebf000 R12: ffff88521041e000
+> [15205901.392950] R13: 0000000000000020 R14: ffff88627bebf000 R15: 0000000000000000
+> [15205901.393858] FS:  0000000000000000(0000) GS:ffff88521f380000(0000) knlGS:0000000000000000
+> [15205901.394774] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [15205901.395756] CR2: 0000000000000000 CR3: 000000099bc09001 CR4: 00000000007606e0
+> [15205901.396904] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [15205901.397869] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [15205901.398836] PKRU: 55555554
+> [15205901.400111] Call Trace:
+> [15205901.401058]  ? xfs_inode_buf_verify+0x8e/0xf0 [xfs]
+> [15205901.402069]  ? xfs_buf_delwri_submit_buffers+0x16d/0x2b0 [xfs]
+> [15205901.403060]  xfs_inode_buf_write_verify+0x10/0x20 [xfs]
+> [15205901.404017]  _xfs_buf_ioapply+0x88/0x410 [xfs]
+> [15205901.404990]  ? xfs_buf_delwri_submit_buffers+0x16d/0x2b0 [xfs]
+> [15205901.405929]  xfs_buf_submit+0x63/0x200 [xfs]
+> [15205901.406801]  xfs_buf_delwri_submit_buffers+0x16d/0x2b0 [xfs]
+> [15205901.407675]  ? xfs_buf_delwri_submit_nowait+0x10/0x20 [xfs]
+> [15205901.408540]  ? xfs_inode_item_push+0xb7/0x190 [xfs]
+> [15205901.409395]  xfs_buf_delwri_submit_nowait+0x10/0x20 [xfs]
+> [15205901.410249]  xfsaild+0x29a/0x780 [xfs]
+> [15205901.411121]  kthread+0x109/0x140
+> [15205901.411981]  ? xfs_trans_ail_cursor_first+0x90/0x90 [xfs]
+> [15205901.412785]  ? kthread_park+0x60/0x60
+> [15205901.413578]  ret_from_fork+0x2a/0x40
+> 
+> The "obvious" cause is that the bp->b_pages was NULL in function
+> xfs_buf_offset. Analyzing vmcore, we found that b_pages=NULL but
+> b_page_count=16, so b_pages is set to NULL for some reason.
 
-iEYEARECAAYFAl/k6dgACgkQMOfwapXb+vKu7wCeLUlepOplD8RS0tg/IjNLo/ap
-jMwAoLh7hnX+vaJNu/JeKDc4R2QoO4K7
-=Lwnx
------END PGP SIGNATURE-----
+this can happen, for example _xfs_buf_get_pages sets the count, but may
+fail the allocation, and leave the count set while the pointer is NULL.
+> 
+> crash> struct xfs_buf ffff88627bebf000 | less
+>     ...
+>   b_pages = 0x0,
+>   b_page_array = {0x0, 0x0},
+>   b_maps = 0xffff88627bebf118,
+>   __b_map = {
+>     bm_bn = 512,
+>     bm_len = 128
+>   },
+>   b_map_count = 1,
+>   b_io_length = 128,
+>   b_pin_count = {
+>     counter = 0
+>   },
+>   b_io_remaining = {
+>     counter = 1
+>   },
+>   b_page_count = 16,
+>   b_offset = 0,
+>   b_error = 0,
+>     ...
+> 
+> To avoid system crash, we can add the check of 'bp->b_pages' to
+> xfs_inode_buf_verify(). If b_pages == NULL, we mark the buffer
+> as -EFSCORRUPTED and the IO will not dispatched.
+> 
+> Signed-off-by: Fengfei Xi <xi.fengfei@h3c.com>
+> Reviewed-by: Xianting Tian <tian.xianting@h3c.com>
+> ---
+>  fs/xfs/libxfs/xfs_inode_buf.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/fs/xfs/libxfs/xfs_inode_buf.c b/fs/xfs/libxfs/xfs_inode_buf.c
+> index c667c63f2..5a485c51f 100644
+> --- a/fs/xfs/libxfs/xfs_inode_buf.c
+> +++ b/fs/xfs/libxfs/xfs_inode_buf.c
+> @@ -45,6 +45,17 @@ xfs_inode_buf_verify(
+>  	int		i;
+>  	int		ni;
+>  
+> +	/*
+> +	 * Don't crash and mark buffer EFSCORRUPTED when b_pages is NULL
+> +	 */
+> +	if (!bp->b_pages) {
+> +		xfs_buf_ioerror(bp, -EFSCORRUPTED);
+> +		xfs_alert(mp,
+> +			"xfs_buf(%p) b_pages corruption detected at %pS\n",
+> +			bp, __return_address);
+> +		return;
+> +	}
 
---KdquIMZPjGJQvRdI--
+This seems fairly ad hoc.
+
+I think we need a better idea of how we got here; why should inode buffers
+be uniquely impacted (or defensively protected?)  Can you reproduce this
+using virtual devices so the test can be scripted?
+
+-Eric
