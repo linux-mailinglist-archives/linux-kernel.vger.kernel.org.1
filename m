@@ -2,122 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA2E32E2446
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 06:19:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 581092E2472
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 06:29:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725967AbgLXFSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 00:18:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58084 "EHLO
+        id S1726024AbgLXF25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 00:28:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725446AbgLXFSz (ORCPT
+        with ESMTP id S1725355AbgLXF25 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 00:18:55 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34883C061794;
-        Wed, 23 Dec 2020 21:18:15 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id j13so593888pjz.3;
-        Wed, 23 Dec 2020 21:18:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=LA2q2PwXp/daJxufMhCIRE8CL74yxjBvwbFCk0LzEik=;
-        b=S27vCWUkNpeATmyIFjHiO2b6j/+sG4TMwFeBMjcE80wcYzHObbBZgKSD1wz5PCyGDw
-         Wq2chyAEB2LUQnPJ//ywxSkp2Zs2+K+iMV+bITtcIN7VWGvoZqI/H9vhwz8mftkAwV+p
-         MgqCmclPKFTpiwAmulbFLyuQoQKBWXjfGcIEg8jribkP701dcl22GvorZVI8CCg8ZR6d
-         EZAxrbyzqHDNiOr2qUKcm3vixuXYwSdMyeD0J3xADLfyHz6e+SzTi+47TpsW6gffkhe8
-         pltYbe/+d1KMfvxRbwExfXTL+lwFXSVAeT3+ed9G+NBsR2GZXGJDl5m8COV/9bsHBM37
-         SzrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=LA2q2PwXp/daJxufMhCIRE8CL74yxjBvwbFCk0LzEik=;
-        b=hK9Z6kJQ4S1WxqkLFfv8dglHxrE7mwxcIApZyrjaSxFRBllgO+87xi01hC/Czigz3M
-         6yf3n2wHWZGLZAn4arZ5+M6+zDXfNhETLuV4KDOo+9iraAo2mavHFp5P9+o3LXk8lvx9
-         4zzpN7cbMbw+BUdD1waR3/SJ3j8GLaXw8dh4zt4taK5H/rhyRnliCKqjNkP91RK8gzuo
-         lqXR+OTML10ArjiOTIiRugqJLZSKOkQK6rvugmpccDmuiuqDo/AXlyuRcO0o3TU4/5zP
-         iGlirhZdqEhxuNJYnnBekkFsIUXSfnAOqbFh+vzN5WSNxO5grkEqL5gVLDjJOiJtzZbM
-         /ZBw==
-X-Gm-Message-State: AOAM530WQH0REjrT4rvLuBT4JXicDq74p/0IOVJrfiNljzcI/vrEXQuS
-        fUbQJiiNql+ro/LGyvvd+TY=
-X-Google-Smtp-Source: ABdhPJx0VPOZ8gOLOrRuzvAcM5UsMBs0uA932mNpmABuZLTTP4XEpc68Z0U/b5FQeqTIFskS0rMKFQ==
-X-Received: by 2002:a17:90a:708b:: with SMTP id g11mr2750334pjk.23.1608787094272;
-        Wed, 23 Dec 2020 21:18:14 -0800 (PST)
-Received: from ?IPv6:2601:647:4700:9b2:50a2:5929:401b:705e? ([2601:647:4700:9b2:50a2:5929:401b:705e])
-        by smtp.gmail.com with ESMTPSA id 14sm1215361pjm.21.2020.12.23.21.18.11
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 23 Dec 2020 21:18:12 -0800 (PST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-From:   Nadav Amit <nadav.amit@gmail.com>
-In-Reply-To: <X+QShVIUbYKAsc35@redhat.com>
-Date:   Wed, 23 Dec 2020 21:18:09 -0800
-Cc:     Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@amacapital.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>, linux-mm <linux-mm@kvack.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable <stable@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Transfer-Encoding: 7bit
-Message-Id: <06DF7858-1447-4531-9B5C-E20C44F0AF54@gmail.com>
-References: <X+PE38s2Egq4nzKv@google.com>
- <C332B03D-30B1-4C9C-99C2-E76988BFC4A1@amacapital.net>
- <X+P2OnR+ipY8d2qL@redhat.com>
- <3A6A1049-24C6-4B2D-8C59-21B549F742B4@gmail.com>
- <X+QMKC7jPEeThjB1@google.com> <X+QShVIUbYKAsc35@redhat.com>
-To:     Andrea Arcangeli <aarcange@redhat.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
+        Thu, 24 Dec 2020 00:28:57 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BA03C061794;
+        Wed, 23 Dec 2020 21:28:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=8Qc1ISgNacQk+//eBUSG28G+Kj9xBNwyPmPzmkXKVGY=; b=rEiavNyo9r7H5tmlMFNIfthLLG
+        AGf7SbpbTXSMjVi1Wo3mj1Q9vmiB+l2fyNlODBOZiew6Hc1quZWHVRQq3rqyVgGGwRyJIpKCAaVdu
+        v/XFve/Gw6D8e+suKuIDA2PHP8XC42CSeZiYG9uyCN/Jmef9572ahBzgzcEaQOrGxtysjSJ8GQKFV
+        Xzr5uDjVBSulBTqo17domLr9b++PA2q4rZXejBhzHaQ1hKLv4AOiTKBC5f3L9FCwBupAb2/rbQuPE
+        FBJuwrpBK1ktpgyLd7KujlXQ8BjcFMDJE6HR9Y+axbU8EXqq+Vk5g/wkcg0cr9k0ifCa7zelnkGRT
+        svG6ZcfA==;
+Received: from [2601:1c0:6280:3f0::64ea] (helo=smtpauth.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1ksJAc-0005PN-Sr; Thu, 24 Dec 2020 05:28:15 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH] fs: delete repeated words in comments
+Date:   Wed, 23 Dec 2020 21:28:10 -0800
+Message-Id: <20201224052810.25315-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Dec 23, 2020, at 8:01 PM, Andrea Arcangeli <aarcange@redhat.com> wrote:
-> 
->> On Wed, Dec 23, 2020 at 07:09:10PM -0800, Nadav Amit wrote:
->>> Perhaps holding some small bitmap based on part of the deferred flushed
->>> pages (e.g., bits 12-17 of the address or some other kind of a single
->>> hash-function bloom-filter) would be more performant to avoid (most)
-> 
-> The concern here aren't only the page faults having to run the bloom
-> filter, but how to manage the RAM storage pointed by the bloomfilter
-> or whatever index into the storage, which would slowdown mprotect.
-> 
-> Granted that mprotect is slow to begin with, but the idea we can't make
-> it any slower to make MADV_PAGEOUT or uffd-wp or clear_refs run
-> faster since it's too important and too frequent in comparison.
-> 
-> Just to restrict the potential false positive IPI caused by page_count
-> inevitable inaccuracies to uffd-wp and softdirty runtimes, a simple
-> check on vm_flags should be enough.
+Delete duplicate words in fs/*.c.
+The doubled words that are being dropped are:
+  that, be, the, in, and, for
 
-Andrea,
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: linux-fsdevel@vger.kernel.org
+---
+ fs/block_dev.c |    2 +-
+ fs/dcache.c    |    4 ++--
+ fs/direct-io.c |    4 ++--
+ fs/exec.c      |    4 ++--
+ fs/fhandle.c   |    2 +-
+ fs/pipe.c      |    2 +-
+ 6 files changed, 9 insertions(+), 9 deletions(-)
 
-I am not trying to be argumentative, and I did not think through about an
-alternative solution. It sounds to me that your proposed solution is correct
-and would probably be eventually (slightly) more efficient than anything
-that I can propose.
-
-Yet, I do want to explain my position. Reasoning on TLB flushes is hard, as
-this long thread shows. The question is whether it has to be so hard. In
-theory, we can only think about architectural considerations - whether a PTE
-permissions are promoted/demoted and whether the PTE was changed/cleared.
-
-Obviously, it is more complex than that. Yet, once you add into the equation
-various parameters such as the VMA flags or whether a page is locked (which
-Mel told me was once a consideration), things become much more complicated.
-If all the logic of TLB flushes had been concentrated in a single point and
-maintenance of this code did not require thought about users and use-cases,
-I think things would have been much simpler, at least for me.
-
-Regards,
-Nadav
-
+--- linux-next-20201223.orig/fs/block_dev.c
++++ linux-next-20201223/fs/block_dev.c
+@@ -1260,7 +1260,7 @@ rescan:
+ 	return ret;
+ }
+ /*
+- * Only exported for for loop and dasd for historic reasons.  Don't use in new
++ * Only exported for loop and dasd for historic reasons.  Don't use in new
+  * code!
+  */
+ EXPORT_SYMBOL_GPL(bdev_disk_changed);
+--- linux-next-20201223.orig/fs/dcache.c
++++ linux-next-20201223/fs/dcache.c
+@@ -2150,8 +2150,8 @@ EXPORT_SYMBOL(d_obtain_root);
+  * same inode, only the actual correct case is stored in the dcache for
+  * case-insensitive filesystems.
+  *
+- * For a case-insensitive lookup match and if the the case-exact dentry
+- * already exists in in the dcache, use it and return it.
++ * For a case-insensitive lookup match and if the case-exact dentry
++ * already exists in the dcache, use it and return it.
+  *
+  * If no entry exists with the exact case name, allocate new dentry with
+  * the exact case, and return the spliced entry.
+--- linux-next-20201223.orig/fs/direct-io.c
++++ linux-next-20201223/fs/direct-io.c
+@@ -460,7 +460,7 @@ static inline void dio_cleanup(struct di
+  * Wait for the next BIO to complete.  Remove it and return it.  NULL is
+  * returned once all BIOs have been completed.  This must only be called once
+  * all bios have been issued so that dio->refcount can only decrease.  This
+- * requires that that the caller hold a reference on the dio.
++ * requires that the caller hold a reference on the dio.
+  */
+ static struct bio *dio_await_one(struct dio *dio)
+ {
+@@ -1277,7 +1277,7 @@ do_blockdev_direct_IO(struct kiocb *iocb
+ 	if (retval == -ENOTBLK) {
+ 		/*
+ 		 * The remaining part of the request will be
+-		 * be handled by buffered I/O when we return
++		 * handled by buffered I/O when we return
+ 		 */
+ 		retval = 0;
+ 	}
+--- linux-next-20201223.orig/fs/exec.c
++++ linux-next-20201223/fs/exec.c
+@@ -1454,7 +1454,7 @@ EXPORT_SYMBOL(finalize_exec);
+ /*
+  * Prepare credentials and lock ->cred_guard_mutex.
+  * setup_new_exec() commits the new creds and drops the lock.
+- * Or, if exec fails before, free_bprm() should release ->cred and
++ * Or, if exec fails before, free_bprm() should release ->cred
+  * and unlock.
+  */
+ static int prepare_bprm_creds(struct linux_binprm *bprm)
+@@ -1837,7 +1837,7 @@ static int bprm_execve(struct linux_binp
+ 
+ out:
+ 	/*
+-	 * If past the point of no return ensure the the code never
++	 * If past the point of no return ensure the code never
+ 	 * returns to the userspace process.  Use an existing fatal
+ 	 * signal if present otherwise terminate the process with
+ 	 * SIGSEGV.
+--- linux-next-20201223.orig/fs/fhandle.c
++++ linux-next-20201223/fs/fhandle.c
+@@ -173,7 +173,7 @@ static int handle_to_path(int mountdirfd
+ 
+ 	/*
+ 	 * With handle we don't look at the execute bit on the
+-	 * the directory. Ideally we would like CAP_DAC_SEARCH.
++	 * directory. Ideally we would like CAP_DAC_SEARCH.
+ 	 * But we don't have that
+ 	 */
+ 	if (!capable(CAP_DAC_READ_SEARCH)) {
+--- linux-next-20201223.orig/fs/pipe.c
++++ linux-next-20201223/fs/pipe.c
+@@ -171,7 +171,7 @@ EXPORT_SYMBOL(generic_pipe_buf_try_steal
+  *
+  * Description:
+  *	This function grabs an extra reference to @buf. It's used in
+- *	in the tee() system call, when we duplicate the buffers in one
++ *	the tee() system call, when we duplicate the buffers in one
+  *	pipe into another.
+  */
+ bool generic_pipe_buf_get(struct pipe_inode_info *pipe, struct pipe_buffer *buf)
