@@ -2,67 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A8372E2828
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 18:02:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7AB82E2829
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 18:02:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728610AbgLXRCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 12:02:30 -0500
-Received: from mail-oi1-f173.google.com ([209.85.167.173]:39722 "EHLO
-        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726839AbgLXRCa (ORCPT
+        id S1728742AbgLXRCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 12:02:35 -0500
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:36905 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726839AbgLXRCf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 12:02:30 -0500
-Received: by mail-oi1-f173.google.com with SMTP id w124so2857767oia.6;
-        Thu, 24 Dec 2020 09:02:14 -0800 (PST)
+        Thu, 24 Dec 2020 12:02:35 -0500
+Received: by mail-ot1-f41.google.com with SMTP id o11so2255063ote.4;
+        Thu, 24 Dec 2020 09:02:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=legzg8I2MAkLelYcw+H6Zk5lbIAyOngzrLsiKEK6Lrw=;
-        b=Go5T175Amc8JvDnlmfTHi14mG2hke+CMr7J1D/UTaCRmpZ6yzPyjAiOtPfeGBSHntu
-         CRjS9c+g9uWnqAhKgOrE3woYR31bBMkjUPGkxIe0bkK7RCf14etRsTszlwOeqW3r215K
-         cAuTr/6hRcgKBC5uK1hnZCXslxr5QNWVgsVWFEV1tPUYAmUNf9mQgdAcGVRLdPVRsO/a
-         ZbTcLp23ylBw+vTN7R2aKdognvbtWrHEeDcxx/MDGBQptC6WVJ9uz7pJkYNT2yDK7Z+y
-         xZFyiC625vX9bCG5G0VQ7Oa9bTf0bzlLsgR7357cGnOhZqk5G/VLF5AJ86wEjdWB9FXJ
-         ghYg==
-X-Gm-Message-State: AOAM533g0HpaLtl56tdEQ5MeXBGykI3yfcA10mXZ47A8iXXwQWRjWGg/
-        j82upxTsbIeJYhRIiYVaGg==
-X-Google-Smtp-Source: ABdhPJz7ArG+puFJXp7jzObW8XbluImuBQTdVYc5NpAO99mYo01wCZwRnNvPbt+g5MmWu0359C5/Sw==
-X-Received: by 2002:aca:b657:: with SMTP id g84mr3496457oif.86.1608829309269;
-        Thu, 24 Dec 2020 09:01:49 -0800 (PST)
+        bh=yQ+jkFqkeNW0g6dJlToG9rqzV65Dab1jDC5D6aio4ug=;
+        b=cONns5qXYt5QAxqMy8Miy/CbKpaJMagUxNQeoLhfVDOJxyTR2p7qUUFUKntX5/dNml
+         C05qjvM6k7stUMMM8G+sOETMEAfmAXN7bv7VqM6sQMfp6j3wT2yVd9YIAy6CYMaj11/a
+         HS0DgyGR+22jPgOQuMTHzX328y49Tt8gQf6NGd0kne9GKdGHYNsUimO5aAqgNcrXdVVk
+         jNDsknRy5uRZXft8clJcI3IVdtaYTp2bYplXanSmxZpYEo03+fXvFkZInw4DSQBVmbX7
+         HPRaRtOw+Lnzawm94hcsj4Xe+A0va5hFOPmqDh1UYMT158toxqP+0D9tut0PZWA5Jj3+
+         +2NA==
+X-Gm-Message-State: AOAM532rZl0kOZFWNArs/gbowZr/FiNwnB2mwlcdWTxVWTfrQyc0AbVT
+        /wRQGtGbG2r26mx4H5f1EQ==
+X-Google-Smtp-Source: ABdhPJxjl8zgjJFFzzINq/VqWXTjo+1x0o/d2ybTE3Qvx2dNR11lKFEb1xRLDizL01CKwjn5zJzOpA==
+X-Received: by 2002:a9d:f66:: with SMTP id 93mr22677948ott.289.1608829314107;
+        Thu, 24 Dec 2020 09:01:54 -0800 (PST)
 Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id c12sm3939360ots.7.2020.12.24.09.01.46
+        by smtp.gmail.com with ESMTPSA id g12sm6917426oos.8.2020.12.24.09.01.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Dec 2020 09:01:48 -0800 (PST)
-Received: (nullmailer pid 2966450 invoked by uid 1000);
+        Thu, 24 Dec 2020 09:01:53 -0800 (PST)
+Received: (nullmailer pid 2966453 invoked by uid 1000);
         Thu, 24 Dec 2020 17:01:45 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+To:     Henry Chen <henryc.chen@mediatek.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Mark Brown <broonie@kernel.org>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Fan Chen <fan.chen@mediatek.com>,
+        Arvin Wang <arvin.wang@mediatek.com>, linux-pm@vger.kernel.org,
+        James Liao <jamesjj.liao@mediatek.com>,
+        linux-mediatek@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        David Airlie <airlied@linux.ie>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org, Rob Herring <robh+dt@kernel.org>
-In-Reply-To: <20201223212947.160565-2-paul.kocialkowski@bootlin.com>
-References: <20201223212947.160565-1-paul.kocialkowski@bootlin.com> <20201223212947.160565-2-paul.kocialkowski@bootlin.com>
-Subject: Re: [PATCH v8 1/4] dt-bindings: display: Document the Xylon LogiCVC display controller
+        Mark Rutland <mark.rutland@arm.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Ryan Case <ryandcase@chromium.org>
+In-Reply-To: <1608790134-27425-2-git-send-email-henryc.chen@mediatek.com>
+References: <1608790134-27425-1-git-send-email-henryc.chen@mediatek.com> <1608790134-27425-2-git-send-email-henryc.chen@mediatek.com>
+Subject: Re: [PATCH V6 01/13] dt-bindings: soc: Add dvfsrc driver bindings
 Date:   Thu, 24 Dec 2020 10:01:45 -0700
-Message-Id: <1608829305.375557.2966449.nullmailer@robh.at.kernel.org>
+Message-Id: <1608829305.386312.2966452.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Dec 2020 22:29:44 +0100, Paul Kocialkowski wrote:
-> The Xylon LogiCVC is a display controller implemented as programmable
-> logic in Xilinx FPGAs.
+On Thu, 24 Dec 2020 14:08:42 +0800, Henry Chen wrote:
+> Document the binding for enabling dvfsrc on MediaTek SoC.
 > 
-> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> Acked-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Henry Chen <henryc.chen@mediatek.com>
 > ---
->  .../display/xylon,logicvc-display.yaml        | 313 ++++++++++++++++++
->  1 file changed, 313 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/xylon,logicvc-display.yaml
+>  .../devicetree/bindings/soc/mediatek/dvfsrc.yaml   | 68 ++++++++++++++++++++++
+>  1 file changed, 68 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soc/mediatek/dvfsrc.yaml
 > 
 
 My bot found errors running 'make dt_binding_check' on your patch:
@@ -70,10 +76,14 @@ My bot found errors running 'make dt_binding_check' on your patch:
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/xylon,logicvc-display.example.dt.yaml: logicvc@43c00000: 'display@0' does not match any of the regexes: '^gpio@[0-9a-f]+$', 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mfd/xylon,logicvc.yaml
+Documentation/devicetree/bindings/soc/mediatek/dvfsrc.example.dts:19:18: fatal error: dt-bindings/soc/mtk,dvfsrc.h: No such file or directory
+   19 |         #include <dt-bindings/soc/mtk,dvfsrc.h>
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/soc/mediatek/dvfsrc.example.dt.yaml] Error 1
+make: *** [Makefile:1370: dt_binding_check] Error 2
 
-See https://patchwork.ozlabs.org/patch/1420307
+See https://patchwork.ozlabs.org/patch/1420382
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
