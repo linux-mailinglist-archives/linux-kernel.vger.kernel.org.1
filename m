@@ -2,102 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 774DC2E2667
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 12:34:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F0A22E2669
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 12:34:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728126AbgLXLcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 06:32:25 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:16582 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726186AbgLXLcY (ORCPT
+        id S1728247AbgLXLc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 06:32:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726746AbgLXLcY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 24 Dec 2020 06:32:24 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1608809519; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=eX18DIRMoHpmB0MxA0f7v42xg6kMkU4vr9nekIYENcY=; b=f6+LThrpW0I+VUCFIoa927fNKsfFNhZmEyf1UzRV+OVPq0rJWb1RRlTvgV9zr6FncMUS6jCT
- zO9/rPOUHha4iU9Gl66wJHATV/YS/Z7mz6xCG2aChxwzWdx9atOzUnwEZvQTxmzRTyRdG9EU
- +r2xvr1DdZ321fErV2rZIOuH7Js=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5fe47c12da471981883f5fee (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 24 Dec 2020 11:31:30
- GMT
-Sender: guixiong=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 30BD6C43462; Thu, 24 Dec 2020 11:31:30 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from guixiong-gv.qualcomm.com (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: guixiong)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 15D44C433C6;
-        Thu, 24 Dec 2020 11:31:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 15D44C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=guixiong@codeaurora.org
-From:   Guixiong Wei <guixiong@codeaurora.org>
-To:     a.zummo@towertech.it, alexandre.belloni@bootlin.com
-Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Guixiong Wei <guixiong@codeaurora.org>
-Subject: [PATCH] rtc: pm8xxx: Read ALARM_EN and update to alarm enabled status
-Date:   Thu, 24 Dec 2020 19:28:57 +0800
-Message-Id: <1608809337-18852-1-git-send-email-guixiong@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 514A9C06179C
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 03:31:44 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id f17so1415317pge.6
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 03:31:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zXY42oT/IW9W4tJIWg8idExqObCy32gAmaijR4rjF1k=;
+        b=tasYL7NDdsgjOvHsXfKiTg6RsX2VVEUiR660KdKbDAJ+anhfmdQGDkX9vzI9qE2Wfg
+         D6CeLXOpsNtajFrjEg2Kvpdfgsj7zQdVdmTG+jUtqGd1+Pp7+QThscCz2HLI9mMqJ3o2
+         dnMwIAO73+R0XDxY+xKffYS0w3tw3bIFYQrGL8FZHuQ/ec4dfPahw74XJT0/o6xJnbFI
+         W39UfHSs6lFt0bVZ9+nlZnKy5u4ydbzCc+9Exuht45c/sHxUwOjaF0RNGSku1CalxHou
+         nVCyE/e2FwtffzyOZCkBq3UznvsQhtbMLxlGeksuI4rpaLVzY6atQdcL0/e9UKOAIOoX
+         B8nQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zXY42oT/IW9W4tJIWg8idExqObCy32gAmaijR4rjF1k=;
+        b=igY3pxAhqnx6JgRFqyfrg12Umz1/nRqZLskevm2akuw/QZdCqVW9xBO2IjrceQNq6T
+         qb6Y2I2Vh073SbhUQElmer3+0HJBpg7e+R7vIwmLCi0woVrYqfKsUuVPxldywOfzeibA
+         +6K5uRhmUT4a8rIgW+TfCFcbL1XFS9/b+5qqg5CMKfIrxwpOL9eDNm0LDsAlnPumcYZr
+         Ss26a2q1Fd9louqCgbIVSlSsV/bqgkNt2O5oN3d3vz3d7KxPBJQxYPT8ZxrxpfvYWgeJ
+         W7HI6rsmrlA08TJAxK0mMllXJYHGy4dX/uC54LJHjRttq4YRdhrNrgC331/dD3kp00vw
+         eyPw==
+X-Gm-Message-State: AOAM532flxoN785RpF2M1zTa5zHihivKcEww2nl7aKvtAZAfqXXgmHF0
+        mWyrlvw14xIkgLv72coSgPKQKx5hqtsvgQ==
+X-Google-Smtp-Source: ABdhPJzGhpTmNmlaMaxMdc175O0Y77lm3F7udCcKdqjz0RRMYX0sonEKFyMyDx9SO3y79wBhWWcHgA==
+X-Received: by 2002:a65:494f:: with SMTP id q15mr28291332pgs.367.1608809503493;
+        Thu, 24 Dec 2020 03:31:43 -0800 (PST)
+Received: from google.com (139.60.82.34.bc.googleusercontent.com. [34.82.60.139])
+        by smtp.gmail.com with ESMTPSA id x125sm13594315pgb.35.2020.12.24.03.31.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Dec 2020 03:31:42 -0800 (PST)
+Date:   Thu, 24 Dec 2020 11:31:39 +0000
+From:   Satya Tangirala <satyat@google.com>
+To:     "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>, Chao Yu <chao@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH v2 2/3] fscrypt: Add metadata encryption support
+Message-ID: <X+R8G5/Htwau2b34@google.com>
+References: <20201217150435.1505269-1-satyat@google.com>
+ <20201217150435.1505269-3-satyat@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201217150435.1505269-3-satyat@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ALARM_EN status is retained in PMIC register after device shutdown
-if poweron_alarm is enabled. Read it to make sure the driver has
-consistent value with the register status.
-
-Signed-off-by: Guixiong Wei <guixiong@codeaurora.org>
----
- drivers/rtc/rtc-pm8xxx.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/drivers/rtc/rtc-pm8xxx.c b/drivers/rtc/rtc-pm8xxx.c
-index 0d9dd6f..70d1ff5 100644
---- a/drivers/rtc/rtc-pm8xxx.c
-+++ b/drivers/rtc/rtc-pm8xxx.c
-@@ -20,6 +20,7 @@
- /* RTC_CTRL register bit fields */
- #define PM8xxx_RTC_ENABLE		BIT(7)
- #define PM8xxx_RTC_ALARM_CLEAR		BIT(0)
-+#define PM8xxx_RTC_ALARM_ENABLE		BIT(7)
- 
- #define NUM_8_BIT_RTC_REGS		0x4
- 
-@@ -265,6 +266,7 @@ static int pm8xxx_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *alarm)
- static int pm8xxx_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alarm)
- {
- 	int rc;
-+	unsigned int ctrl_reg;
- 	u8 value[NUM_8_BIT_RTC_REGS];
- 	unsigned long secs;
- 	struct pm8xxx_rtc *rtc_dd = dev_get_drvdata(dev);
-@@ -282,6 +284,13 @@ static int pm8xxx_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alarm)
- 
- 	rtc_time64_to_tm(secs, &alarm->time);
- 
-+	rc = regmap_read(rtc_dd->regmap, regs->alarm_ctrl, &ctrl_reg);
-+	if (rc) {
-+		dev_err(dev, "Read from RTC alarm control register failed\n");
-+		return rc;
-+	}
-+	alarm->enabled = !!(ctrl_reg & PM8xxx_RTC_ALARM_ENABLE);
-+
- 	dev_dbg(dev, "Alarm set for - h:m:s=%ptRt, y-m-d=%ptRdr\n",
- 		&alarm->time, &alarm->time);
- 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+I realized I didn't update fscrypt_mergeable_bio() to take metadata
+encryption into account, so bios will be more fragmented than required.
+I'll fix it in v3.
