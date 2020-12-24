@@ -2,106 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A202D2E25B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 10:44:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4971D2E25B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 10:47:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727270AbgLXJoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 04:44:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726413AbgLXJoY (ORCPT
+        id S1727879AbgLXJqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 04:46:34 -0500
+Received: from mail-wr1-f52.google.com ([209.85.221.52]:38337 "EHLO
+        mail-wr1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727144AbgLXJqd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 04:44:24 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE235C06179C
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 01:43:43 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id n25so1297050pgb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 01:43:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rajagiritech-edu-in.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=PqsIw5G8hr5Ym14mfhHS3mfmrGehuuwns2Nlz6+ZZao=;
-        b=Xl6C31EyHbh4nUjtcdYf2EpK+z+MvtJWGa1j5Z9x6qEIdZTyzdINfNVrbEwcSwJAbP
-         eRIX1PCOI00rvKf7HVU3+Huf347upAkSvZbpxBkm4l0FzXImZBS9BpQhtGE53cPKimeM
-         b8fDXqS8LFkBJZDijkgNzw4mqP2zZ66lmR5PWsUDmrKpazbcTP8zRnDoLxe91qI6YZXn
-         z9YMF75q4jgABI8La/R10KGM9fT7KxN7oGen2RY13zqUr59/SwnCkr3N1sChaLk3KlCj
-         XQrKDG65g82QtK6mHG3Zp4MBK8RTxvCmjAcF6YztLecScLwPXouatg1ZMANtva3S+nn5
-         YkuA==
+        Thu, 24 Dec 2020 04:46:33 -0500
+Received: by mail-wr1-f52.google.com with SMTP id r7so1675112wrc.5;
+        Thu, 24 Dec 2020 01:46:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=PqsIw5G8hr5Ym14mfhHS3mfmrGehuuwns2Nlz6+ZZao=;
-        b=ObE7vV45Xyn9hhAAIef9al69C4/1eCQtJSd4e5TyjRyawFeKBSYVtS7TLh9gE+6aJL
-         3VmAC/iXsbIV2GheH8pf12tyrkXLbsjiZz6dPScQ0UUlprDi1NeD//DpXSOaIEREOhtG
-         3oF/l0rz3CBLnMDa+WOCHi5APdBIinyKrZeg8wifZ4XpCbAp3n2oEJH/2Y4a1td10jlg
-         UBuXiHuxLnVyi4lLmtJQ6TE9D9hrxEtgYAoKFGVN56aoyj4Dzm1czHEtpZx8OJTp1Wl7
-         p1rLa7rQGW2vtr3V1/SjjSEUiQS7rno9q1PTj3dwfcf/rDWFrvcVLXxi0wDpdvX/KzvL
-         gGNA==
-X-Gm-Message-State: AOAM533en4MDpap/8KA8z2xdzyed00QUMD5LXbSa1ETtnKxX6wHdfdH8
-        K+IFZbnbRlguQmJ8ignL1Er/mw==
-X-Google-Smtp-Source: ABdhPJwwQo9p0np5J0hX42QfncgOzn5RZJoa3aO9N40PIt5EfsTCqomPX6OlUUAP3JOPLg3oaxGcZg==
-X-Received: by 2002:a63:220b:: with SMTP id i11mr28288817pgi.2.1608803023436;
-        Thu, 24 Dec 2020 01:43:43 -0800 (PST)
-Received: from [192.168.0.4] ([171.49.219.196])
-        by smtp.gmail.com with ESMTPSA id 17sm25264017pfj.91.2020.12.24.01.43.40
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EVammL4k3ju4OHyFY6U6viuGAjOA87chovVJY25qjSU=;
+        b=VwDjSeNE5astSoHjJJHXbFVNraGY5WnHdmRSx6xXSqES0HDVwBIA+4PPEdQMkKJiQA
+         ABfp2v2MNm9ZcBqNZtbaj13jh48Y2bGX0S9OlvxsYHXJxV2A1sXpdHOoZ9yllBdezNek
+         GWv9IQOHd0TBMLN9XAqkkaJCKP7NWRodlHVZdGLESLY76qiYdDZg1E3RP6v5LIyFB8KR
+         qYulCf2bPfpcwjtuJlw5R32i77hTRzG70iu5ebz66nGjaueOeUC+VXdEWQOJKuBcwz+Q
+         cVk9USTb77IAF/Ap2EHk+2gmeUJDR/prRet6XQeZz+TlXjJwyo09XHk93YkjZI4xYP0N
+         3IKw==
+X-Gm-Message-State: AOAM531H3UOj5k4wa1Jh0ysl2vx+mHV5M8cuI3N2ZfiWZ/CKhTq/iZC9
+        kkXQNXi7wkY0VEAAY3vDYl4=
+X-Google-Smtp-Source: ABdhPJwyCv9CKcCd7knbFEp+L09KWlRSWHijomb35gc9QLD2TEPA5Xi5/Qa7TRSBT9IAgzEhAUc2nw==
+X-Received: by 2002:a5d:4e92:: with SMTP id e18mr34550116wru.66.1608803151517;
+        Thu, 24 Dec 2020 01:45:51 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id l8sm2705979wmf.35.2020.12.24.01.45.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Dec 2020 01:43:42 -0800 (PST)
-Message-ID: <1b12b1311e5f0ff7e96d444bf258facc6b0c6ae4.camel@rajagiritech.edu.in>
-Subject: Re: [PATCH 5.10 00/40] 5.10.3-rc1 review
-From:   Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Date:   Thu, 24 Dec 2020 15:13:38 +0530
-In-Reply-To: <20201223150515.553836647@linuxfoundation.org>
-References: <20201223150515.553836647@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1-2 
+        Thu, 24 Dec 2020 01:45:50 -0800 (PST)
+Date:   Thu, 24 Dec 2020 10:45:48 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Timon Baetz <timon.baetz@protonmail.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH v4 2/7] regulator: dt-bindings: Document max8997-pmic
+ nodes
+Message-ID: <20201224094548.GA10937@kozik-lap>
+References: <20201223134221.804943-1-timon.baetz@protonmail.com>
+ <20201223134221.804943-2-timon.baetz@protonmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201223134221.804943-2-timon.baetz@protonmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-12-23 at 16:33 +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.3 release.
-> There are 40 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied,
-> please
-> let me know.
+On Wed, Dec 23, 2020 at 01:42:43PM +0000, Timon Baetz wrote:
+> Add maxim,max8997-battery and maxim,max8997-muic optional nodes.
 > 
-> Responses should be made by Fri, 25 Dec 2020 15:05:02 +0000.
-> Anything received after that time might be too late.
+> Signed-off-by: Timon Baetz <timon.baetz@protonmail.com>
+
+I already acked this, why did you skip my tag?
+
+Best regards,
+Krzysztof
+
+
+> ---
+>  .../bindings/regulator/max8997-regulator.txt         | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
 > 
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.3-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-
-> stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
+> diff --git a/Documentation/devicetree/bindings/regulator/max8997-regulator.txt b/Documentation/devicetree/bindings/regulator/max8997-regulator.txt
+> index 6fe825b8ac1b..faaf2bbf0272 100644
+> --- a/Documentation/devicetree/bindings/regulator/max8997-regulator.txt
+> +++ b/Documentation/devicetree/bindings/regulator/max8997-regulator.txt
+> @@ -53,6 +53,18 @@ Additional properties required if either of the optional properties are used:
+>  - max8997,pmic-buck125-dvs-gpios: GPIO specifiers for three host gpio's used
+>    for dvs. The format of the gpio specifier depends in the gpio controller.
+>  
+> +Optional nodes:
+> +- charger: Node for configuring the charger driver.
+> +  Required properties:
+> +  - compatible: "maxim,max8997-battery"
+> +  Optional properties:
+> +  - extcon: extcon specifier for charging events
+> +  - charger-supply: regulator node for charging current
+> +
+> +- muic: Node used only by extcon consumers.
+> +  Required properties:
+> +  - compatible: "maxim,max8997-muic"
+> +
+>  Regulators: The regulators of max8997 that have to be instantiated should be
+>  included in a sub-node named 'regulators'. Regulator nodes included in this
+>  sub-node should be of the format as listed below.
+> -- 
+> 2.25.1
 > 
-> thanks,
 > 
-> greg k-h
-
-hello ,
-Compiled and booted 5.10.3-rc1+.
-
-dmesg -l err gives...
---------------x-------------x------------------->
-   43.190922] Bluetooth: hci0: don't support firmware rome 0x31010100
---------------x---------------x----------------->
-
-My Bluetooth is Off.
-
-
-Tested-by: Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
--- 
-software engineer
-rajagiri school of engineering and technology - autonomous
-
-
