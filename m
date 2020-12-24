@@ -2,66 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC1CA2E2591
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 09:56:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 251B22E2592
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 09:56:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727187AbgLXIzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 03:55:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726342AbgLXIzL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 03:55:11 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5A85C061794
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 00:54:31 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id i7so1201976pgc.8
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 00:54:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=jtdNY2VNTaifNGfA8i/OocVgmbv/j5wlSKB4fx9rrOM=;
-        b=fKB/48z1yPhzRupLluTznUgCXkB5yDE+/f+UvQOpul0kmVgQaR5sNCj6Tjjju5+rYU
-         at35S9Gka9w84YU2qEO3o0uwZgBawp0uT6gaoXEy1EIhY7AVrHqglai1JYqjzY5B3oBW
-         hHkMG+vAa+5du/yo+229OK+cgzHgp+ydTzz3TfPjHWCfhWn8Tug95pNPLF8zdobI2vq5
-         ZwWx2d50HkoFxgXJqJZrrghsIBUeFqncYsuhpWpIazLkbSsSc18VTXtagpf4pxJJgaNP
-         iifJ5yexwfZwNEtj8M8d0kYlHQFOG0MgytnHsXH+/OPM0pkn+8lN63cJYpusn41Z1fzu
-         cMHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
-         :mime-version:content-transfer-encoding;
-        bh=jtdNY2VNTaifNGfA8i/OocVgmbv/j5wlSKB4fx9rrOM=;
-        b=nkIg9QsErjDQaj+8QWHQz0m4l8m2iCGBcKiPrtng+1Uim/cGGSuAAkUEn22L4xAtb8
-         0HN3pw2KXWjAGGZfCz0CFh2wlunEPwEWksqrlsNXTa0NEmAhAv0VkolqyTjmNZmxBC2m
-         UjwWQ2WsMBsrYu7vRs7S6jT5gJAxFLeH/EOQILk4yU4/2EZCF5/1P7uq0bvVxJF7qB8W
-         mmTRWRxJQhbbIAhYI7bgtJGz4rqs5fyt8EUFrSfOvAipCIfzV6qf4ia4BzXXC721+592
-         ViQx+syWgXx/chOwr7An6GdLM0mEph6xCkZjcX+lZGpxKTwbiXgc/lroKxN/yWipBwMo
-         YE4w==
-X-Gm-Message-State: AOAM533l+JTqCr1if5HQLN2eguYWH5Hls/HLaZD+f2keCVv9f5louaHm
-        W4wevSuXm/SmrKZZ6c64zFqcwSHuoZuKtfZV
-X-Google-Smtp-Source: ABdhPJwYg+NJY8USaLGRxba2CeUWevYKYMFVZ2yfeE/1TO2ws7jpZKfj5waR9ixjRaQoQCWg0we8xA==
-X-Received: by 2002:a63:1322:: with SMTP id i34mr27986669pgl.282.1608800071053;
-        Thu, 24 Dec 2020 00:54:31 -0800 (PST)
-Received: from HQ-MacBookPro.local ([103.88.46.201])
-        by smtp.gmail.com with ESMTPSA id w9sm25213503pfj.128.2020.12.24.00.54.29
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Dec 2020 00:54:30 -0800 (PST)
-To:     linux-kernel@vger.kernel.org
-From:   Bruce <rookie.bruce@gmail.com>
-Subject: How do I account for the Linux kernel development team
-Message-ID: <6f9e5b6a-9936-3619-d288-c88195158468@gmail.com>
-Date:   Thu, 24 Dec 2020 16:54:24 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.0
+        id S1727360AbgLXI4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 03:56:18 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:59232 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725933AbgLXI4S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Dec 2020 03:56:18 -0500
+Received: from zn.tnic (p200300ec2f0e530094f4200f7ad20a46.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:5300:94f4:200f:7ad2:a46])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3938A1EC0453;
+        Thu, 24 Dec 2020 09:55:37 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1608800137;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=+Tza7xSUzo+dq1Adw8Luii3U8dAhT2UD7gbFs83zlx8=;
+        b=PNfRnUo9QPbtTCEDGq4lNQzBxwiJwPtykXcvr1XaLlEEEHMrOP9j5P0I1JFwm/po4EKmiL
+        EWKhYdHF4HKThcNe0qdilcMAVXdpjkF+Skohbx6YBJjbAK48Gd+4A+icoYzX4vnWIFfbze
+        89ifoeE023yREAN+Ok7mdFXc/QaClyQ=
+Date:   Thu, 24 Dec 2020 09:55:33 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        kernel test robot <lkp@intel.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        kbuild-all@lists.01.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
+Subject: Re: [tip:efi/core 3/7] /tmp/slab-258052.s:9870: Error: unrecognized
+ opcode `zext.b a2,a2'
+Message-ID: <20201224085533.GA5108@zn.tnic>
+References: <202012180909.WhlTpWrS-lkp@intel.com>
+ <20201223183606.GB29011@zn.tnic>
+ <CAKwvOdkA+7AYGhPk_=FA6OPxeb9Wy7FA0_5-0KCJGr-wtn_nxw@mail.gmail.com>
+ <20201223210405.GB28724@zn.tnic>
+ <CAMj1kXG58+DdfA9RDE9gnELf8ZT0dTX+g8D+3W0pVM8RUSF_OQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXG58+DdfA9RDE9gnELf8ZT0dTX+g8D+3W0pVM8RUSF_OQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-How do I account for the Linux kernel development team£¿
+Hi Ard,
 
+On Wed, Dec 23, 2020 at 11:43:45PM +0100, Ard Biesheuvel wrote:
+> I hope this report is not holding up the PR for efi/core?
+
+I was just looking at that yesterday...
+
+But nah, lemme send it.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
