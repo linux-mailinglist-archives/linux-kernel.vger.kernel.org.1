@@ -2,127 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 951BD2E278B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 15:01:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A152E2790
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 15:04:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728692AbgLXOB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 09:01:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726609AbgLXOB1 (ORCPT
+        id S1728736AbgLXOEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 09:04:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33158 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727184AbgLXOEM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 09:01:27 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4BD4C061794;
-        Thu, 24 Dec 2020 06:00:46 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id 91so2249378wrj.7;
-        Thu, 24 Dec 2020 06:00:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hTZYu0KyYNj6GV2bBjh3qdlRgAwRDrZxZXOKPRcg84c=;
-        b=jiGvw60pmyZpHGhIJzNBYgP2ZTYSe+VnyxjnYIr+4u8iTKTN21QV+44OhsfqCw7VW8
-         lZ5OeT4hf6sDduKPRa1gWUbK4PAEAh0D6dhG03iEYbtisuv6/t1Lw8r1a8BGjVSnI5mF
-         rAsvVuThEHRhgM90vJtP11SEB5GDJ25CAr1EyT5BziG9phgkcgoBlwOgiPMUenv1Nvf4
-         E/Wyd6iIhE/xdYVXIl5sX1wwNLm9Ad46AEZTasiZMQaBjyzP9EETbZnYCGWaYX8qp2gt
-         lcsYTH9XP0gdcjEECO87XqqYjk8GM6Y9yxvDBW99BllbIDxhCljRDblhe+b/sZShu69V
-         jGwQ==
+        Thu, 24 Dec 2020 09:04:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608818565;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KBihBeE7FaK4G7GPAOp0NUP3AloiGzKbKb/E0jog36A=;
+        b=Yu+Ot/IfsbgC+Hh316xoYOmt8lPM5G02aO+q8QmCW6sDXXDexFhR+F9gM4WXwTzBA6mYhL
+        OyapVHC3mMxX/n73nxnz7YHYB+P4rSULWqRqDWCmh+3ZCRenoQWEFdQMSxpKImxq0vJDkg
+        Pim35bEUQvOsT8iDqqMo1sMtaoHLJVw=
+Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
+ [209.85.161.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-67-d5OyiY-iO266OXIpQDJNKw-1; Thu, 24 Dec 2020 09:02:43 -0500
+X-MC-Unique: d5OyiY-iO266OXIpQDJNKw-1
+Received: by mail-oo1-f72.google.com with SMTP id t7so1026655oog.7
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 06:02:43 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hTZYu0KyYNj6GV2bBjh3qdlRgAwRDrZxZXOKPRcg84c=;
-        b=pVfGHuAc6JGqNlz8a8SYLQPLk/DXI8P32u1ApZDoQkw9Aln9IQ5s7bcQl4C3ojUTcL
-         omnsQKWLu9any/8daZ0NgofAsgOlsvt1cHLiB6e+ST17cDbTw97Fmp0HQ/s9B8DQE6zD
-         aSvtutiLdIh/9zyhzERVrT1RhEBlMWM/IbkccDVkJx6vBKMpdzJfexooa93ywDJQvAo7
-         U+aV5RJDDus8NTrILKEEbL7lmQNjB5/rLK6qmtS50+nl4kaYIQS3Sk2y2pBA2FzbnUt2
-         P+BBJnDNXMPvnadrLvwfsTbdeujIelbYBDgzENzZ+Yoo5S/wz+bbskyLpT2Irs6Mol40
-         CGeg==
-X-Gm-Message-State: AOAM530MEYSUj5VxtwFG4aKFyoo8+s+z54OtLsItfuUIgsOeiZZAJzpH
-        XI4tMzG1dbxQYD9kKo76wWE=
-X-Google-Smtp-Source: ABdhPJx+Z0EJqXx/2AjrwRP+xuKb0XQTgwvxvJSravZrEZ5dPl56k33iW2pd5DGEMbQAm/r9ZBJ2ng==
-X-Received: by 2002:a5d:56c3:: with SMTP id m3mr34636969wrw.419.1608818445462;
-        Thu, 24 Dec 2020 06:00:45 -0800 (PST)
-Received: from [192.168.1.211] ([2.31.224.116])
-        by smtp.gmail.com with ESMTPSA id h13sm38544866wrm.28.2020.12.24.06.00.43
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=KBihBeE7FaK4G7GPAOp0NUP3AloiGzKbKb/E0jog36A=;
+        b=Yv0qp8EgMU+S3y0Di4BDBa375w3E4gMfkZtPPkVYRlv8yiHE0mTR7Zz+mLJPe2k9ey
+         PQ/PZxXIKr9VZbI5UF3MMZDYXzh9PJWofLJ0a846lp1qi3ldo8jHCc/Foc/WbxJnLu7R
+         k60MllG1ZVQcKlI3/B3j+zdZVfPzvUByMPi79Xyy6y33ICCrRLmpEEG1U0rtQ+mLG9C0
+         oGxyCMn5N/TNhmSdfySUDGB0RT0y+aht2/CkLaWNFmrPgZwtmISwnX1GKrEgaG/9Rgpk
+         OYrmHR573yHAjR8SCnUHnKPJaonu3NtivI4aoGTVZMqRkTCQzWdDikHshKjPitPNMfJn
+         py5A==
+X-Gm-Message-State: AOAM532GBeRGmAllPDLWYyzK85mhrbNNFqBoCRC/PjqA8uXzy+hvm3JA
+        2oAFnQBqdICmJlLR1tyPi7J53AunMGE9mG83xchxJUBi25QZOp+fHNfFtB2YBlwviEZ47NROg7N
+        ZndDBVLrmkMKuaA90zzsSFOAA
+X-Received: by 2002:a9d:5c8b:: with SMTP id a11mr22357624oti.126.1608818562305;
+        Thu, 24 Dec 2020 06:02:42 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy5TuK4g70Wa7LQ5fkxYOJAqadcOmmttNzmJip+R7fCyD06vTogTSKVmSmRkNY9QCefp2bAug==
+X-Received: by 2002:a9d:5c8b:: with SMTP id a11mr22357606oti.126.1608818562059;
+        Thu, 24 Dec 2020 06:02:42 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id g12sm6838873oos.8.2020.12.24.06.02.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Dec 2020 06:00:44 -0800 (PST)
-Subject: Re: [PATCH v3 05/14] software_node: unregister software_nodes in
- reverse order
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        devel@acpica.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tian Shu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        kieran.bingham+renesas@ideasonboard.com,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        niklas.soderlund+renesas@ragnatech.se,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-References: <20201224010907.263125-1-djrscally@gmail.com>
- <20201224010907.263125-6-djrscally@gmail.com>
- <CAHp75VdF5NdjrSxcOafh7KNNDteYEUDk9otA0HKX-iks7G0D4g@mail.gmail.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <de478ef0-0b4d-df1d-2651-9cc35bf2f45b@gmail.com>
-Date:   Thu, 24 Dec 2020 14:00:42 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 24 Dec 2020 06:02:41 -0800 (PST)
+Subject: Re: [PATCH 1/2] clk: axi-clkgen: add support for ZynqMP (UltraScale)
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        lars@metafoo.de, linux-fpga@vger.kernel.org, mdf@kernel.org,
+        dragos.bogdan@analog.com, Mathias Tausen <mta@gomspace.com>
+References: <20201221144224.50814-1-alexandru.ardelean@analog.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <58111fcc-d4c7-4b26-e038-2882b636e17f@redhat.com>
+Date:   Thu, 24 Dec 2020 06:02:39 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VdF5NdjrSxcOafh7KNNDteYEUDk9otA0HKX-iks7G0D4g@mail.gmail.com>
+In-Reply-To: <20201221144224.50814-1-alexandru.ardelean@analog.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/12/2020 12:13, Andy Shevchenko wrote:
-> On Thu, Dec 24, 2020 at 3:12 AM Daniel Scally <djrscally@gmail.com> wrote:
->>
->> To maintain consistency with software_node_unregister_nodes(), reverse
->> the order in which the software_node_unregister_node_group() function
->> unregisters nodes.
-> 
-> ...
-> 
->> - * Unregister multiple software nodes at once.
->> + * Unregister multiple software nodes at once. The array will be unwound in
->> + * reverse order (i.e. last entry first) and thus if any member of the array
->> + * has its .parent member set then they should appear later in the array such
->> + * that they are unregistered first.
-> 
-> I'm, as being not a native speaker, a bit confused by this comment.
-> The idea is that children are unregistered first. Can you try to make
-> it more clear maybe?
 
-Sure, how about:
+On 12/21/20 6:42 AM, Alexandru Ardelean wrote:
+> From: Dragos Bogdan <dragos.bogdan@analog.com>
+>
+> This IP core also works and is supported on the Xilinx ZynqMP (UltraScale)
+> FPGA boards.
+> This patch enables the driver to be available on these platforms as well.
+>
+> Since axi-clkgen is now supported on ZYNQMP, we need to make sure the
+> max/min frequencies of the PFD and VCO are respected.
+>
+> This change adds two new compatible strings to select limits for Zynq or
+> ZynqMP from the device data (in the OF table). The old compatible string
+> (i.e. adi,axi-clkgen-2.00.a) is the same as adi,zynq-axi-clkgen-2.00.a,
+> since the original version of this driver was designed on top of that
+> platform.
+>
+> Signed-off-by: Dragos Bogdan <dragos.bogdan@analog.com>
+> Signed-off-by: Mathias Tausen <mta@gomspace.com>
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> ---
+>
+> This is a re-spin of an older series.
+> It needed to wait a txt -> yaml dt conversion:
+> https://patchwork.kernel.org/project/linux-clk/patch/20201013143421.84188-1-alexandru.ardelean@analog.com/
+>
+> It's 2 patches squashed into one:
+> https://patchwork.kernel.org/project/linux-clk/patch/20200929144417.89816-12-alexandru.ardelean@analog.com/
+> https://patchwork.kernel.org/project/linux-clk/patch/20200929144417.89816-14-alexandru.ardelean@analog.com/
+>
+> The series from where all this started is:
+> https://lore.kernel.org/linux-clk/20200929144417.89816-1-alexandru.ardelean@analog.com/
+>
+> Well, v4 was the point where I decided to split this into smaller
+> series, and also do the conversion of the binding to yaml.
+>
+>  drivers/clk/Kconfig          |  2 +-
+>  drivers/clk/clk-axi-clkgen.c | 15 +++++++++++++++
+>  2 files changed, 16 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
+> index 85856cff506c..252333e585e7 100644
+> --- a/drivers/clk/Kconfig
+> +++ b/drivers/clk/Kconfig
+> @@ -247,7 +247,7 @@ config CLK_TWL6040
+>  
+>  config COMMON_CLK_AXI_CLKGEN
+>  	tristate "AXI clkgen driver"
+> -	depends on ARCH_ZYNQ || MICROBLAZE || COMPILE_TEST
+> +	depends on ARCH_ZYNQ || ARCH_ZYNQMP || MICROBLAZE || COMPILE_TEST
+>  	help
+>  	  Support for the Analog Devices axi-clkgen pcore clock generator for Xilinx
+>  	  FPGAs. It is commonly used in Analog Devices' reference designs.
+> diff --git a/drivers/clk/clk-axi-clkgen.c b/drivers/clk/clk-axi-clkgen.c
+> index ad86e031ba3e..a413c13334ff 100644
+> --- a/drivers/clk/clk-axi-clkgen.c
+> +++ b/drivers/clk/clk-axi-clkgen.c
+> @@ -108,6 +108,13 @@ static uint32_t axi_clkgen_lookup_lock(unsigned int m)
+>  	return 0x1f1f00fa;
+>  }
+>  
 
-The array will be unwound in reverse order (i.e. last entry first). If
-any member of the array is a child of another member then the child must
-appear later in the array than their parent, so that they are
-unregistered first.
+Could something like
 
-?
+#ifdef ARCH_ZYNQMP
+
+> +static const struct axi_clkgen_limits axi_clkgen_zynqmp_default_limits = {
+> +	.fpfd_min = 10000,
+> +	.fpfd_max = 450000,
+> +	.fvco_min = 800000,
+> +	.fvco_max = 1600000,
+> +};
+
+#endif
+
+be added here and similar places to limit unused code ?
+
+> +
+>  static const struct axi_clkgen_limits axi_clkgen_zynq_default_limits = {
+>  	.fpfd_min = 10000,
+>  	.fpfd_max = 300000,
+> @@ -560,6 +567,14 @@ static int axi_clkgen_remove(struct platform_device *pdev)
+>  }
+>  
+>  static const struct of_device_id axi_clkgen_ids[] = {
+> +	{
+> +		.compatible = "adi,zynqmp-axi-clkgen-2.00.a",
+> +		.data = &axi_clkgen_zynqmp_default_limits,
+> +	},
+> +	{
+> +		.compatible = "adi,zynq-axi-clkgen-2.00.a",
+> +		.data = &axi_clkgen_zynq_default_limits,
+> +	},
+
+This looks like zynqmp AND zynq are being added.
+
+Is this a mistake ?
+
+Tom
+
+>  	{
+>  		.compatible = "adi,axi-clkgen-2.00.a",
+>  		.data = &axi_clkgen_zynq_default_limits,
+
