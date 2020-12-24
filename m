@@ -2,235 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D66B32E2726
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 14:14:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 994262E272B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 14:19:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728818AbgLXNNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 08:13:50 -0500
-Received: from mail1.protonmail.ch ([185.70.40.18]:12529 "EHLO
-        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728017AbgLXNNt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 08:13:49 -0500
-Date:   Thu, 24 Dec 2020 13:13:02 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1608815585;
-        bh=CNeV10U3kCwJJgZL2fsUMux+A8mhrt9SMQKIEFXyZBQ=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=DSqJYAjzawfGh46umurrsISbhLkHutuKvweH4SI/RVZY8Bv6NLgJR3De/+YVj3omU
-         7aWNr4bdNyh8Mb86RtB5vhD+YoJi5647tPI/gNTPHp04OUIR8R9rgXYrmBdU//Tx++
-         nlR5YGa2Yd8rAIps1SqKmQBS3fOf/bbdPYaNNCA8=
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-From:   Timon Baetz <timon.baetz@protonmail.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-Reply-To: Timon Baetz <timon.baetz@protonmail.com>
-Subject: Re: [PATCH v4 4/7] power: supply: max8997_charger: Set CHARGER current limit
-Message-ID: <20201224141246.7ad0ffc4.timon.baetz@protonmail.com>
-In-Reply-To: <20201224095559.GB10937@kozik-lap>
-References: <20201223134221.804943-1-timon.baetz@protonmail.com> <20201223134221.804943-4-timon.baetz@protonmail.com> <20201224095559.GB10937@kozik-lap>
+        id S1728852AbgLXNQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 08:16:32 -0500
+Received: from mga01.intel.com ([192.55.52.88]:55865 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727372AbgLXNQb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Dec 2020 08:16:31 -0500
+IronPort-SDR: jqC/wN9ZCUp0kqqvsUkFt+s1dUy4tJAmJE629dlluQ/PFH/O8e9dIGTNMGzjEtI104IpNy2Tly
+ rTq9SPwQ+suQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9844"; a="194611362"
+X-IronPort-AV: E=Sophos;i="5.78,444,1599548400"; 
+   d="scan'208";a="194611362"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Dec 2020 05:15:48 -0800
+IronPort-SDR: W9o7cxVKsC4lWAr7kKQoF1k6n5GjbXHqYZA2BaiXyKMOVKrlcoCcH7ZWdoROqS7XhPozYodpUI
+ C42ECQYM353Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,444,1599548400"; 
+   d="scan'208";a="398678471"
+Received: from lkp-server02.sh.intel.com (HELO 4242b19f17ef) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 24 Dec 2020 05:15:47 -0800
+Received: from kbuild by 4242b19f17ef with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1ksQT4-0000zm-K1; Thu, 24 Dec 2020 13:15:46 +0000
+Date:   Thu, 24 Dec 2020 21:14:50 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:dev.2020.12.23a] BUILD SUCCESS
+ 7cc07f4867eb9618d4f7c35ddfbd746131b52f51
+Message-ID: <5fe4944a.wjbPCP8/MphqYKR+%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Dec 2020 10:55:59 +0100, Krzysztof Kozlowski wrote:
-> On Wed, Dec 23, 2020 at 01:43:05PM +0000, Timon Baetz wrote:
-> > Register for extcon notification and set charging current depending on
-> > the detected cable type. Current values are taken from vendor kernel,
-> > where most charger types end up setting 650mA [0].
-> >
-> > Also enable and disable the CHARGER regulator based on extcon events.
-> >
-> > [0] https://github.com/krzk/linux-vendor-backup/blob/samsung/galaxy-s2-=
-epic-4g-touch-sph-d710-exynos4210-dump/drivers/misc/max8997-muic.c#L1675-L1=
-678
-> >
-> > Signed-off-by: Timon Baetz <timon.baetz@protonmail.com>
-> > ---
-> >  drivers/power/supply/max8997_charger.c | 89 ++++++++++++++++++++++++++
-> >  1 file changed, 89 insertions(+)
-> >
-> > diff --git a/drivers/power/supply/max8997_charger.c b/drivers/power/sup=
-ply/max8997_charger.c
-> > index 1947af25879a..e8532e2af451 100644
-> > --- a/drivers/power/supply/max8997_charger.c
-> > +++ b/drivers/power/supply/max8997_charger.c
-> > @@ -6,12 +6,14 @@
-> >  //  MyungJoo Ham <myungjoo.ham@samsung.com>
-> >
-> >  #include <linux/err.h>
-> > +#include <linux/extcon.h>
-> >  #include <linux/module.h>
-> >  #include <linux/slab.h>
-> >  #include <linux/platform_device.h>
-> >  #include <linux/power_supply.h>
-> >  #include <linux/mfd/max8997.h>
-> >  #include <linux/mfd/max8997-private.h>
-> > +#include <linux/regulator/consumer.h>
-> >
-> >  /* MAX8997_REG_STATUS4 */
-> >  #define DCINOK_SHIFT=09=091
-> > @@ -31,6 +33,10 @@ struct charger_data {
-> >  =09struct device *dev;
-> >  =09struct max8997_dev *iodev;
-> >  =09struct power_supply *battery;
-> > +=09struct regulator *reg;
-> > +=09struct extcon_dev *edev;
-> > +=09struct notifier_block extcon_nb;
-> > +=09struct work_struct extcon_work;
-> >  };
-> >
-> >  static enum power_supply_property max8997_battery_props[] =3D {
-> > @@ -88,6 +94,67 @@ static int max8997_battery_get_property(struct power=
-_supply *psy,
-> >  =09return 0;
-> >  }
-> >
-> > +static void max8997_battery_extcon_evt_stop_work(void *data)
-> > +{
-> > +=09struct charger_data *charger =3D data;
-> > +
-> > +=09cancel_work_sync(&charger->extcon_work);
-> > +}
-> > +
-> > +static void max8997_battery_extcon_evt_worker(struct work_struct *work=
-)
-> > +{
-> > +=09struct charger_data *charger =3D
-> > +=09    container_of(work, struct charger_data, extcon_work);
-> > +=09struct extcon_dev *edev =3D charger->edev;
-> > +=09int current_limit;
-> > +
-> > +=09if (extcon_get_state(edev, EXTCON_CHG_USB_SDP) > 0) {
-> > +=09=09dev_dbg(charger->dev, "USB SDP charger is connected\n");
-> > +=09=09current_limit =3D 450000;
-> > +=09} else if (extcon_get_state(edev, EXTCON_CHG_USB_DCP) > 0) {
-> > +=09=09dev_dbg(charger->dev, "USB DCP charger is connected\n");
-> > +=09=09current_limit =3D 650000;
-> > +=09} else if (extcon_get_state(edev, EXTCON_CHG_USB_FAST) > 0) {
-> > +=09=09dev_dbg(charger->dev, "USB FAST charger is connected\n");
-> > +=09=09current_limit =3D 650000;
-> > +=09} else if (extcon_get_state(edev, EXTCON_CHG_USB_SLOW) > 0) {
-> > +=09=09dev_dbg(charger->dev, "USB SLOW charger is connected\n");
-> > +=09=09current_limit =3D 650000;
-> > +=09} else if (extcon_get_state(edev, EXTCON_CHG_USB_CDP) > 0) {
-> > +=09=09dev_dbg(charger->dev, "USB CDP charger is connected\n");
-> > +=09=09current_limit =3D 650000;
-> > +=09} else {
-> > +=09=09dev_dbg(charger->dev, "USB charger is diconnected\n");
-> > +=09=09current_limit =3D -1;
-> > +=09}
-> > +
-> > +=09if (current_limit > 0) {
-> > +=09=09int ret =3D regulator_set_current_limit(charger->reg, current_li=
-mit, current_limit);
-> > +
-> > +=09=09if (ret) {
-> > +=09=09=09dev_err(charger->dev, "failed to set current limit: %d\n", re=
-t);
-> > +=09=09=09return;
-> > +=09=09}
-> > +=09=09ret =3D regulator_enable(charger->reg);
-> > +=09=09if (ret)
-> > +=09=09=09dev_err(charger->dev, "failed to enable regulator: %d\n", ret=
-);
-> > +=09} else {
-> > +=09=09int ret  =3D regulator_disable(charger->reg);
-> > +
-> > +=09=09if (ret)
-> > +=09=09=09dev_err(charger->dev, "failed to disable regulator: %d\n", re=
-t);
-> > +=09}
-> > +}
-> > +
-> > +static int max8997_battery_extcon_evt(struct notifier_block *nb,
-> > +=09=09=09=09unsigned long event, void *param)
-> > +{
-> > +=09struct charger_data *charger =3D
-> > +=09=09container_of(nb, struct charger_data, extcon_nb);
-> > +=09schedule_work(&charger->extcon_work);
-> > +=09return NOTIFY_OK;
-> > +}
-> > +
-> >  static const struct power_supply_desc max8997_battery_desc =3D {
-> >  =09.name=09=09=3D "max8997_pmic",
-> >  =09.type=09=09=3D POWER_SUPPLY_TYPE_BATTERY,
-> > @@ -170,6 +237,28 @@ static int max8997_battery_probe(struct platform_d=
-evice *pdev)
-> >  =09=09return PTR_ERR(charger->battery);
-> >  =09}
-> >
-> > +=09charger->reg =3D devm_regulator_get(&pdev->dev, "charger"); =20
->=20
-> Since you do not use get_optional, you will always get a dummy
-> regulator. In case of error, you should either print it or entirely fail
-> the probe. Silently continuing makes it difficult to spot errors.
->=20
-> Since the driver could operate in case of extcon/regulator error, just
-> dev_err() so failure will be spotted with dmesg.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.12.23a
+branch HEAD: 7cc07f4867eb9618d4f7c35ddfbd746131b52f51  x86/mce: Make mce_timed_out() identify holdout CPUs
 
-I will switch to devm_regulator_get_optional() and print an error on=20
-failure, thanks.
+elapsed time: 721m
 
-> It will complain on older DTBs because you are introducing incompatible
-> change, but that's expected. Just correct all other in-tree DTS.
+configs tested: 124
+configs skipped: 2
 
-The other 2 in-tree DTS don't have CHARGER regulators. Not sure
-how to correct those. Should I add muic and charger nodes without a
-charger-supply? It will still complain in that case.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Thanks for guiding me through this,
-Timon
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                  colibri_pxa300_defconfig
+arm                         hackkit_defconfig
+sh                               alldefconfig
+arm                        keystone_defconfig
+arc                     nsimosci_hs_defconfig
+arm                      jornada720_defconfig
+powerpc                    ge_imp3a_defconfig
+arm                           corgi_defconfig
+powerpc                 xes_mpc85xx_defconfig
+powerpc                      ppc40x_defconfig
+c6x                        evmc6474_defconfig
+c6x                                 defconfig
+sh                             shx3_defconfig
+mips                      loongson3_defconfig
+powerpc                 mpc8315_rdb_defconfig
+arc                        vdk_hs38_defconfig
+arm                          pcm027_defconfig
+arm                         mv78xx0_defconfig
+riscv                               defconfig
+arm                        trizeps4_defconfig
+arm                          prima2_defconfig
+sparc                            alldefconfig
+mips                       bmips_be_defconfig
+powerpc                mpc7448_hpc2_defconfig
+microblaze                      mmu_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                          landisk_defconfig
+m68k                            q40_defconfig
+sh                             sh03_defconfig
+m68k                         amcore_defconfig
+arc                        nsim_700_defconfig
+m68k                            mac_defconfig
+arm                        clps711x_defconfig
+sh                         ap325rxa_defconfig
+xtensa                       common_defconfig
+arm                       multi_v4t_defconfig
+xtensa                           alldefconfig
+mips                        nlm_xlp_defconfig
+sh                           se7705_defconfig
+arm                          pxa3xx_defconfig
+m68k                        mvme16x_defconfig
+sh                        sh7763rdp_defconfig
+sh                             espt_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a001-20201223
+x86_64               randconfig-a006-20201223
+x86_64               randconfig-a002-20201223
+x86_64               randconfig-a004-20201223
+x86_64               randconfig-a003-20201223
+x86_64               randconfig-a005-20201223
+i386                 randconfig-a005-20201224
+i386                 randconfig-a002-20201224
+i386                 randconfig-a006-20201224
+i386                 randconfig-a004-20201224
+i386                 randconfig-a003-20201224
+i386                 randconfig-a001-20201224
+i386                 randconfig-a002-20201223
+i386                 randconfig-a005-20201223
+i386                 randconfig-a006-20201223
+i386                 randconfig-a004-20201223
+i386                 randconfig-a003-20201223
+i386                 randconfig-a001-20201223
+i386                 randconfig-a011-20201223
+i386                 randconfig-a016-20201223
+i386                 randconfig-a014-20201223
+i386                 randconfig-a012-20201223
+i386                 randconfig-a015-20201223
+i386                 randconfig-a013-20201223
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-> > +=09charger->edev =3D extcon_get_edev_by_phandle(&pdev->dev, 0);
-> > +=09if (PTR_ERR(charger->reg) =3D=3D -EPROBE_DEFER ||
-> > +=09    PTR_ERR(charger->edev) =3D=3D -EPROBE_DEFER)
-> > +=09=09return -EPROBE_DEFER;
-> > +
-> > +=09if (!IS_ERR(charger->reg) && !IS_ERR(charger->edev)) {
-> > +=09=09INIT_WORK(&charger->extcon_work, max8997_battery_extcon_evt_work=
-er);
-> > +=09=09ret =3D devm_add_action(&pdev->dev, max8997_battery_extcon_evt_s=
-top_work, charger);
-> > +=09=09if (ret) {
-> > +=09=09=09dev_err(&pdev->dev, "failed to add extcon evt stop action: %d=
-\n", ret);
-> > +=09=09=09return ret;
-> > +=09=09}
-> > +=09=09charger->extcon_nb.notifier_call =3D max8997_battery_extcon_evt;
-> > +=09=09ret =3D devm_extcon_register_notifier_all(&pdev->dev, charger->e=
-dev,
-> > +=09=09=09=09=09=09=09&charger->extcon_nb);
-> > +=09=09if (ret) {
-> > +=09=09=09dev_err(&pdev->dev, "failed to register extcon notifier\n");
-> > +=09=09=09return ret;
-> > +=09=09};
-> > +=09}
-> > +
-> >  =09return 0;
-> >  }
-> >
-> > --
-> > 2.25.1
-> >
-> > =20
+clang tested configs:
+x86_64               randconfig-a015-20201223
+x86_64               randconfig-a014-20201223
+x86_64               randconfig-a016-20201223
+x86_64               randconfig-a012-20201223
+x86_64               randconfig-a013-20201223
+x86_64               randconfig-a011-20201223
 
-
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
