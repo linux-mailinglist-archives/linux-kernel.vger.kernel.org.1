@@ -2,187 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95AF22E253C
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 08:33:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6907F2E253E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 08:35:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726602AbgLXHdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 02:33:12 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:61990 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725747AbgLXHdM (ORCPT
+        id S1727064AbgLXHfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 02:35:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50612 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726611AbgLXHfK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 02:33:12 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BO7QeX5021134;
-        Wed, 23 Dec 2020 23:32:06 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=qyAtjEJh0oGiL51M+hEsi+h4PaIYCIN/7tFxMM0uvpw=;
- b=Q2T8B08IoDWKvQU5aOCczYzZm50p5dHZvfb3FvpU5GABW3OUQ9SOtkRFdXOC374ecDrN
- nG+z/GgO6XxSypWAaK7iz92o36m9Ca9w8X3lxSa5qegdIOX3On7+z9U18CsFyubQO+6H
- xc/2EG5U+y27hml72OQFee9zplPwEEQdPUA= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 35mfabs9j6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 23 Dec 2020 23:32:06 -0800
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 23 Dec 2020 23:32:05 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nK/8dj5Q7c1tIHM5c5tzRwDexmh+JNCrXX9BEVPX1FL6KGz8omFZOldcc/+KGhuuOUVhPXhNVPcVBsRoGhTpwDbu/yU+xTUuJDOcaWucIMw9d5U2PpDPEL5xaQfawdo1cIGdXAiwfNQhs4A7xLh8OvRmGpbOdotZkjxMFbJWTZfQ5aKL7G7lgUk/kc4wwuoriiS2VPjs+GSqUXHA51b1QST7Rs6HtoX5jcIHYvd3VEUhSTr9DrXhIfYNyvA2QwCzMKLKSb0dUsxqDhcpBnJ18TcGTT7X5w0NkwXnQLz8gSr6UXXnTIptBRwj8m5p1xCi/GiLusbl6YD+XKAiLngPPg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qyAtjEJh0oGiL51M+hEsi+h4PaIYCIN/7tFxMM0uvpw=;
- b=QShbKrTCpHSWwhhkOKauv1OSj+EUbZ5yDByrTBrpFs2A2w/A7AtRIJB4Po7AYVeoAcUMOWIL8Htc373b0SXJAfnY9XEGgu9LJ7lqm10T0HKBF6ZrWtYihZyqsBmJ1z/MPGY4sMIH/bSJT9nmPyynKu5WS1aKU+6O5wnjJFPSwOAILd5iGIqG3j00UNWc75kKds4+15oxHwkn5nYpyRVdYmZry7WwyFGj9TV1w/NLXA85+s9vGpbv8Nn3vXAguvsKqQtQyClQ1DGv0Mk2m9IzR7rgyj5+imlMB3KW1G30IBuwSkVv5EXiinMnIqW+zDjV643Ym0pE95kFg67GIWNNTA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qyAtjEJh0oGiL51M+hEsi+h4PaIYCIN/7tFxMM0uvpw=;
- b=IZzn5F0pURRhgp4TmKhxua6seRcfZP4HMxD+qM5YCrKBfSN5z4ThOaGqxFlqn3mKynOcT3Ng3XglM7Tybj36+/163R3RGHpEs27aPitwRIbkfh4ug2Y14eyjifbP+fPjZWDMH5zwld/gmyKA+WZdLWTcKu9B5OX8MrV6Y7GbnnQ=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB2246.namprd15.prod.outlook.com (2603:10b6:a02:8d::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.30; Thu, 24 Dec
- 2020 07:32:03 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3676.034; Thu, 24 Dec 2020
- 07:32:02 +0000
-Subject: Re: [PATCH] bpf: fix: address of local auto-variable assigned to a
- function parameter.
-To:     YANG LI <abaci-bugfix@linux.alibaba.com>, <ast@kernel.org>
-CC:     <daniel@iogearbox.net>, <davem@davemloft.net>, <kuba@kernel.org>,
-        <hawk@kernel.org>, <john.fastabend@gmail.com>, <andrii@kernel.org>,
-        <kafai@fb.com>, <songliubraving@fb.com>, <kpsingh@kernel.org>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1608793298-123684-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <bd622b3f-7912-e61d-8101-379ebbdf094f@fb.com>
-Date:   Wed, 23 Dec 2020 23:31:58 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.0
-In-Reply-To: <1608793298-123684-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2620:10d:c090:400::5:20ab]
-X-ClientProxiedBy: CO2PR04CA0139.namprd04.prod.outlook.com (2603:10b6:104::17)
- To BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+        Thu, 24 Dec 2020 02:35:10 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AE63C0617A6
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 23:34:30 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id c5so1368699wrp.6
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 23:34:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=irTCI/vF0NkdBwIJVYrdKY08hhMbdCGPb63kIfO2o2A=;
+        b=R6zumxj5qvPbaQ4pMr1SUXVtsq99ZJmEEj4kGrQD/PJTM/EI2nIJySlp+8DHxbGSya
+         dSpv6/MBDLhv81xFenGB6ic+QB3FjIj4tUE2lU7mYqU8Md1NBpF3BHgIYeE+jodyoWuX
+         9cpCSF1GzKG3k/0wOLa00LPV/08zivvnLjhHEmx2/me+VVXK6fl9Tv6bh0MtiI8/ZEOd
+         KfWVgbw93zXAs3vCR6jSpwYaHCVbGmEONWCY0ngPDPZBbKQoCx+3oKVXuY0p+Px6e2sU
+         5DoOBYdfZISQMaaxxIm151sRu/O1XJInWx4OIVra3M6smOXrifJLA8oJjYme9O+FDTZ1
+         4lNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=irTCI/vF0NkdBwIJVYrdKY08hhMbdCGPb63kIfO2o2A=;
+        b=NEkvc5KrSJMdnlilRPJun+3BkDbgV0CZI92zRsxHiOyc/fZZJ3RK4COrT/a61S6mW9
+         Np/divnHdE29C/ZlNIbrerpCPo289cHhq/+xqYWLOzojZN3ayCnATPIv+XtawdZBIaUe
+         c0HjHHDXA+/DtdeHDJPd7UkAv+ivK46dAwRn4tb3iDPuofMB1JKbmdgratc+qjB98crX
+         z/2mJYRGU09X1gHVvWfCi2QbzjkCCkCDpkIXy5IF3d7196jt2enLzAsgIXgjxeUgG5hr
+         iQUgMjr0HSC8jplT04l9kfxacL9CrCa8/dfP2GNZt/xMH7+zSSolwV163Gh2neVGlkKF
+         KX9g==
+X-Gm-Message-State: AOAM53037Gb18M4y7qD2JjHGniEHdH1HHN8uuqDLWz9EYZj/SIGpmwFN
+        h4zEjJRcVsMaEc5lGnyX8klFcQ==
+X-Google-Smtp-Source: ABdhPJxO2aw2I+NqFLE1L/awTbwxiuesQi5naGzmXtMKXPnXTMsy2GU+91KE+f9Cs5zfvVpLSe1IZg==
+X-Received: by 2002:adf:b1ca:: with SMTP id r10mr33037021wra.252.1608795269049;
+        Wed, 23 Dec 2020 23:34:29 -0800 (PST)
+Received: from dell ([91.110.221.181])
+        by smtp.gmail.com with ESMTPSA id w18sm39857432wrn.2.2020.12.23.23.34.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Dec 2020 23:34:28 -0800 (PST)
+Date:   Thu, 24 Dec 2020 07:34:26 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Cc:     "marek.vasut+renesas@gmail.com" <marek.vasut+renesas@gmail.com>,
+        "matti.vaittinen@fi.rohmeurope.com" 
+        <matti.vaittinen@fi.rohmeurope.com>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
+        Khiem Nguyen <khiem.nguyen.xt@renesas.com>,
+        "linux-power@fi.rohmeurope.com" <linux-power@fi.rohmeurope.com>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 11/12] mfd: bd9571mwv: Make the driver more generic
+Message-ID: <20201224073426.GD681741@dell>
+References: <1608718963-21818-1-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+ <1608718963-21818-12-git-send-email-yoshihiro.shimoda.uh@renesas.com>
+ <20201223153928.GA681741@dell>
+ <OSAPR01MB368360D8A4E3AD1E6F928271D8DD0@OSAPR01MB3683.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21c1::135f] (2620:10d:c090:400::5:20ab) by CO2PR04CA0139.namprd04.prod.outlook.com (2603:10b6:104::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.27 via Frontend Transport; Thu, 24 Dec 2020 07:32:01 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 67040cb3-7c71-445c-077f-08d8a7de01ea
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2246:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB224679D02BE2606D18AA315CD3DD0@BYAPR15MB2246.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: O/u2nNteFuuAaRF1ZpdWFMjamFgd+WNgf+aw21Bcq4UeftGCb0Hlon7tG74WqaUYmaiJU/inVCICkoH4xuqOC9vM0/vMst1nbrVBOs5hD1V41pLVDUGtlvovsVcjS3gVpsXrx5iS5213R6g1UjewTLG0ag6Y84fnzVhWVFD0P1YFUcoFN2cyiT0GeBZ5spm+C8A3o/+W+AnUdYC8SFgobjgXYqa5FpJvjVLz8l6/0mFfPFCWPW985CpprUfLbpKKn3FN5/XK4hPOZ2UNqyerggJb1RiY1qITSbdBVzDzzpu+oh6MQhLPtQaEqM/tWMSrEe1m86u02oodHwkfckEsWGT7nkBxfy3cKkSNU6i6/if7FDmO+jhFf7eF+4O3R/6TUTPm6KuFGCieU2BIl/eoPlGq7Pc3temHsjaYbYlCwVs821He95AMM5mGDpp8nK3zSlJB6sBn4dxHyPzIghS2sVUZi+is7J1Jx2LQcdngwGg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39860400002)(366004)(136003)(376002)(346002)(2616005)(8936002)(4326008)(36756003)(31686004)(6486002)(7416002)(83380400001)(6666004)(66556008)(186003)(86362001)(316002)(52116002)(8676002)(66946007)(5660300002)(478600001)(53546011)(31696002)(2906002)(16526019)(66476007)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?TFBmcFQrZ2lHbC9ybjlMR3FNcjNWbjVMZ0hpMjBmK0VqS3NuZFdmeHo2WmNi?=
- =?utf-8?B?NGlDM1JpcVZVbmsya2oxZlBSbVlXd2hGYWN0aGlld3ZVcVZodEdVMHVlYytX?=
- =?utf-8?B?L0ZzcDF6ZWlIOFBUWlFYK2w2NW9nbk9oKzdPQzdEWjRYQ0hlU2lWZ016QzZs?=
- =?utf-8?B?NklUU0wvcVE5cGh2RC8yd1FWb0FoQ09vT0thM0VKWmlPNHhtR3NCSm9NWWtl?=
- =?utf-8?B?ZThydjQ2RUMrM0lSZW1PM3FUM0pxaXZsVTYwbTRNYklwLzZ6S3VMZGVNeUdU?=
- =?utf-8?B?WkVDNFNpK1FINlN3YUVVeC9WV0hpQmhoS0x3NUlKeWdGYXJZVVNkOElLZmtv?=
- =?utf-8?B?RjU1ZnZMZGxhOW9yYUxyZ0hVcUg1U3FZNVkvUzNRaENHQk9HbitMRGxFRjFM?=
- =?utf-8?B?M0djcmErdTVJM0RvZUV3VmdVbHlxc2IrUHBHZzlwblVCWlZ5bFk4QWl1Q3lG?=
- =?utf-8?B?VDRYdThMRy9xWDJkN0dZajg4eVRQbTZ6TmxqK01hZHl2RTN1eFpHcGY0V1JG?=
- =?utf-8?B?dFNXNFRwQi9pTzVsLzZWUXBVS0c5L1NSaWhOL09TL3BjMzRKNDlaZ2Qzb3Fp?=
- =?utf-8?B?T09vekJBdEJWNytSMXBFUjQrOFg1TlRpN0VoYzBpVkpHZ1U2MUhPTHpLSEMr?=
- =?utf-8?B?b1ZZTkJ2MXo5S3gwMXhKN05SUExaUGJYbnY5czk4a3llaDh1VWc1VXN0NElO?=
- =?utf-8?B?STdUbVhtTTdocDlUeGVFYXRmd2x3SW51YTVoUlpweDl2eHd3eUk0UG41UDdh?=
- =?utf-8?B?T1dtVHRreVlBb2E4bFVCVHhjckdEbkFSeDVGbVdRVEpRc1llZk1vMm1wWkk3?=
- =?utf-8?B?NlBlK3FNbGxXeEdpLzBFUFl3blpqVXZTVUtRbW1Ea2FHc1RZTnB1RWVQVkR1?=
- =?utf-8?B?YnQyRFN2YXVXTEtENitjOXo2aWRibkVpNXpOK1hSRUxZdDV5UUdZZXlkZi9C?=
- =?utf-8?B?ZW5LVlJrYTR0N3crR0pCbzlBQzloeXNGSWtUKzBYcDlQcEcrSmJlMlVsL2R2?=
- =?utf-8?B?ckUxYjRsekpQS29zcVNlZ0NHVVQ4eTl0OE56czA1bk5PcTZZZEg4M1ZzSzR3?=
- =?utf-8?B?UjlXQXErd1orS3Fra3FtSUVGMGlTZm9kY0huUkdpaVcwWWxDbWRYcURvcEV6?=
- =?utf-8?B?Zjc2bU1yVnpraW16L1NVY0JTVStyeVRpdkZJWWY2M3NPUWt2WmdoVXdJREZT?=
- =?utf-8?B?Y2FkOGVFbStJQmxweDI5QTJRdjVKNk53bmtEblNVVDBwRlllUExYbVQ1cDlh?=
- =?utf-8?B?bGNyOW9INnZsKzlNd0t1WWlUUXVqaEtFQ3FlWlYwZzFhTlE0RUJSOXJRRFdq?=
- =?utf-8?B?RlNWcmRobThlc251Ry9vRHFpK3NSalV0NlBuamRXK0piUGR3OTZ1Wkc4bFo2?=
- =?utf-8?B?R2JLVmtMaHhPRkE9PQ==?=
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Dec 2020 07:32:02.8808
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-Network-Message-Id: 67040cb3-7c71-445c-077f-08d8a7de01ea
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xFSsyfkrwKvw65EeCqZ8PcJQkoyWTTB0o7w2mBMaVkKI4JiR4TwZs/NH1avbCqfA
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2246
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-24_05:2020-12-24,2020-12-24 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- clxscore=1011 mlxscore=0 bulkscore=0 impostorscore=0 suspectscore=0
- phishscore=0 priorityscore=1501 spamscore=0 mlxlogscore=999 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012240045
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <OSAPR01MB368360D8A4E3AD1E6F928271D8DD0@OSAPR01MB3683.jpnprd01.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 24 Dec 2020, Yoshihiro Shimoda wrote:
 
-
-On 12/23/20 11:01 PM, YANG LI wrote:
-> Assigning local variable txq to the outputting parameter xdp->txq is not
-> safe, txq will be released after the end of the function call.
-> Then the result of using xdp is unpredictable.
+> Hi Lee,
 > 
-> Fix this error by defining the struct xdp_txq_info in function
-> dev_map_run_prog() as a static type.
+> > From: Lee Jones, Sent: Thursday, December 24, 2020 12:39 AM
+> > On Wed, 23 Dec 2020, Yoshihiro Shimoda wrote:
+> > > From: Khiem Nguyen <khiem.nguyen.xt@renesas.com>
+> > >
+> > > Since the driver supports BD9571MWV PMIC only, this patch makes
+> > > the functions and data structure become more generic so that
+> > > it can support other PMIC variants as well. Also remove printing
+> > > part name which Lee Jones suggested.
+> > >
+> > > Signed-off-by: Khiem Nguyen <khiem.nguyen.xt@renesas.com>
+> > > Co-developed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+> > > Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+> > > Reviewed-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> > > ---
+> > >  drivers/mfd/bd9571mwv.c       | 89 +++++++++++++++++++++++++------------------
+> > >  include/linux/mfd/bd9571mwv.h | 18 +--------
+> > >  2 files changed, 54 insertions(+), 53 deletions(-)
+> > 
+> > Couple of small points.
+> > 
+> > Remainder looks good.
 > 
-> Signed-off-by: YANG LI <abaci-bugfix@linux.alibaba.com>
-> Reported-by: Abaci <abaci@linux.alibaba.com>
-> ---
->   kernel/bpf/devmap.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> Thank you for your review!
 > 
-> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-> index f6e9c68..af6f004 100644
-> --- a/kernel/bpf/devmap.c
-> +++ b/kernel/bpf/devmap.c
-> @@ -454,7 +454,7 @@ static struct xdp_buff *dev_map_run_prog(struct net_device *dev,
->   					 struct xdp_buff *xdp,
->   					 struct bpf_prog *xdp_prog)
->   {
-> -	struct xdp_txq_info txq = { .dev = dev };
-> +	static struct xdp_txq_info txq = { .dev = dev };
->   	u32 act;
->   
->   	xdp_set_data_meta_invalid(xdp);
+> > > diff --git a/drivers/mfd/bd9571mwv.c b/drivers/mfd/bd9571mwv.c
+> > > index 49e968e..c905ab4 100644
+> > > --- a/drivers/mfd/bd9571mwv.c
+> > > +++ b/drivers/mfd/bd9571mwv.c
+> > > @@ -3,6 +3,7 @@
+> > >   * ROHM BD9571MWV-M MFD driver
+> > >   *
+> > >   * Copyright (C) 2017 Marek Vasut <marek.vasut+renesas@gmail.com>
+> > > + * Copyright (C) 2020 Renesas Electronics Corporation
+> > >   *
+> > >   * Based on the TPS65086 driver
+> > >   */
+> > > @@ -14,6 +15,14 @@
+> > >
+> > >  #include <linux/mfd/bd9571mwv.h>
+> > >
+> > > +/* Driver data to distinguish bd957x variants */
+> > > +struct bd957x_ddata {
+> > > +	const struct regmap_config *regmap_config;
+> > > +	const struct regmap_irq_chip *irq_chip;
+> > 
+> > > +	const struct mfd_cell *cells;
+> > > +	int num_cells;
+> > 
+> > Are you using these post-probe?
+> > 
+> > If not, they're not ddata.
+> 
+> I'm not using all these members post-probe.
+> So, I'll remove ddata.
+> 
+> <snip>
+> > >  static int bd9571mwv_probe(struct i2c_client *client,
+> > > -			  const struct i2c_device_id *ids)
+> > > +			   const struct i2c_device_id *ids)
+> > >  {
+> > > -	struct bd9571mwv *bd;
+> > > -	int ret;
+> > > -
+> > > -	bd = devm_kzalloc(&client->dev, sizeof(*bd), GFP_KERNEL);
+> > > -	if (!bd)
+> > > -		return -ENOMEM;
+> > > -
+> > > -	i2c_set_clientdata(client, bd);
+> > > -	bd->dev = &client->dev;
+> > > -	bd->irq = client->irq;
+> > > +	const struct bd957x_ddata *ddata;
+> > > +	struct device *dev = &client->dev;
+> > > +	struct regmap *regmap;
+> > > +	struct regmap_irq_chip_data *irq_data;
+> > > +	int ret, irq = client->irq;
+> > > +
+> > > +	/* Read the PMIC product code */
+> > > +	ret = i2c_smbus_read_byte_data(client, BD9571MWV_PRODUCT_CODE);
+> > > +	if (ret < 0) {
+> > > +		dev_err(dev, "Failed to read product code\n");
+> > > +		return ret;
+> > > +	}
+> > 
+> > Nit: '\n' here.
+> 
+> I got it. I'll add a blank line here.
+> 
+> > > +	switch (ret) {
+> > > +	case BD9571MWV_PRODUCT_CODE_BD9571MWV:
+> > > +		ddata = &bd9571mwv_ddata;
+> > 
+> > Simply declare 'const struct mfd_cell *cells' locally in probe and
+> > assign it here instead.
+> 
+> I got it. I'll also add "const struct regmap_config *regmap_config;"
+> and "const struct regmap_irq_chip *irq_chip;" locally in probe.
 
-exposing txq outside the routine with 'static' definition is not
-a good practice. maybe just reset xdp->txq = NULl right before
-function return?
+If you only use them there, then yes, that's correct.
 
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index f6e9c68afdd4..50f5c20a33a3 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -475,6 +475,7 @@ static struct xdp_buff *dev_map_run_prog(struct 
-net_device *dev,
-         }
-
-         xdp_return_buff(xdp);
-+       xdp->txq = NULL;
-         return NULL;
-  }
-
--bash-4.4$
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
