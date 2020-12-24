@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA3D2E263C
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 12:20:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D85772E2631
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 12:20:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728867AbgLXLTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 06:19:17 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:37852 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728230AbgLXLTP (ORCPT
+        id S1728707AbgLXLS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 06:18:27 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:35732 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727144AbgLXLSZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 06:19:15 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BOBHXLC041986;
-        Thu, 24 Dec 2020 05:17:33 -0600
+        Thu, 24 Dec 2020 06:18:25 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BOBHbob076276;
+        Thu, 24 Dec 2020 05:17:37 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1608808653;
-        bh=tCte5VmsqyuWZlnMxjL6FOlYoAUA5RMWxhxB99I34cQ=;
+        s=ti-com-17Q1; t=1608808657;
+        bh=TA56idjSLu14l1mLeNOv3BuYpulaKUC46doLv8n2T5I=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=GNrI2r42yVsxdEgLc+qmClzxo4K2RPtu+yO75wX7uEtReeFsHkBafgVey+kt85u05
-         LA7VgQP6kvHPm2EVkef5ey/MUTq29I25wBNO221hUqOKMeN9Z9IMSopl1S3Ej1srdj
-         fT5uKHbEFe2q4X8LT272Ruu6Rlykh2OTOTPR9XP4=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BOBHXkT058795
+        b=t2PpE3bQhvJn/i8xiij4TYjy8c5u6bPRFje0AmzFHa0mcMAjM0EJ8YKJWHINkzWGq
+         oS6KphtURwQW92h4cbePiat6RmlJjE7+KRp9g5I7ax/Ij/6pPkuijd8NMWTfLfamTw
+         Ts3qQ6z/UOuM/adx9bg0iSipHcn+LtqBiaZy5LLI=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BOBHbDE094263
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 24 Dec 2020 05:17:33 -0600
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+        Thu, 24 Dec 2020 05:17:37 -0600
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 24
- Dec 2020 05:17:32 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ Dec 2020 05:17:37 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 24 Dec 2020 05:17:32 -0600
+ Frontend Transport; Thu, 24 Dec 2020 05:17:37 -0600
 Received: from a0393678-ssd.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BOBGWGH116630;
-        Thu, 24 Dec 2020 05:17:29 -0600
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BOBGWGI116630;
+        Thu, 24 Dec 2020 05:17:33 -0600
 From:   Kishon Vijay Abraham I <kishon@ti.com>
 To:     Kishon Vijay Abraham I <kishon@ti.com>,
         Vinod Koul <vkoul@kernel.org>,
@@ -44,9 +44,9 @@ To:     Kishon Vijay Abraham I <kishon@ti.com>,
         Philipp Zabel <p.zabel@pengutronix.de>
 CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v3 11/15] phy: cadence: sierra: Enable pll_cmnlc and pll_cmnlc1 clocks
-Date:   Thu, 24 Dec 2020 16:46:23 +0530
-Message-ID: <20201224111627.32590-12-kishon@ti.com>
+Subject: [PATCH v3 12/15] arm64: dts: ti: k3-j721e-main: Add DT nodes for clocks within Sierra SERDES
+Date:   Thu, 24 Dec 2020 16:46:24 +0530
+Message-ID: <20201224111627.32590-13-kishon@ti.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201224111627.32590-1-kishon@ti.com>
 References: <20201224111627.32590-1-kishon@ti.com>
@@ -57,114 +57,173 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Get pll_cmnlc and pll_cmnlc1 optional clocks and enable them.
-This will enable REFRCV/1 in case the pll_cmnlc/1 takes input
-from REFRCV/1 respectively.
+Add DT nodes for clocks within Sierra SERDES.
 
 Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
 ---
- drivers/phy/cadence/phy-cadence-sierra.c | 57 +++++++++++++++++++++++-
- 1 file changed, 55 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/ti/k3-j721e-main.dtsi | 128 ++++++++++++++++++++--
+ 1 file changed, 120 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/phy/cadence/phy-cadence-sierra.c b/drivers/phy/cadence/phy-cadence-sierra.c
-index 2a509be80c80..ad0ea74515d6 100644
---- a/drivers/phy/cadence/phy-cadence-sierra.c
-+++ b/drivers/phy/cadence/phy-cadence-sierra.c
-@@ -267,6 +267,8 @@ struct cdns_sierra_phy {
- 	struct clk *clk;
- 	struct clk *cmn_refclk_dig_div;
- 	struct clk *cmn_refclk1_dig_div;
-+	struct clk *pll_cmnlc;
-+	struct clk *pll_cmnlc1;
- 	int nsubnodes;
- 	u32 num_lanes;
- 	bool autoconf;
-@@ -874,9 +876,59 @@ static int cdns_sierra_phy_get_clocks(struct cdns_sierra_phy *sp,
- 	}
- 	sp->cmn_refclk1_dig_div = clk;
+diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+index 2d526ea44a85..9d1edce31829 100644
+--- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+@@ -400,8 +400,36 @@
+ 			#size-cells = <0>;
+ 			resets = <&serdes_wiz0 0>;
+ 			reset-names = "sierra_reset";
+-			clocks = <&wiz0_cmn_refclk_dig_div>, <&wiz0_cmn_refclk1_dig_div>;
+-			clock-names = "cmn_refclk_dig_div", "cmn_refclk1_dig_div";
++			clocks = <&wiz0_cmn_refclk_dig_div>, <&wiz0_cmn_refclk1_dig_div>, <&serdes0_pll_cmnlc>, <&serdes0_pll_cmnlc1>;
++			clock-names = "cmn_refclk_dig_div", "cmn_refclk1_dig_div", "pll_cmnlc", "pll_cmnlc1";
++
++			serdes0_refrcv: refrcv {
++				clocks = <&wiz0_pll0_refclk>;
++				clock-names = "pll_refclk";
++				#clock-cells = <0>;
++			};
++
++			serdes0_refrcv1: refrcv1 {
++				clocks = <&wiz0_pll1_refclk>;
++				clock-names = "pll_refclk";
++				#clock-cells = <0>;
++			};
++
++			serdes0_pll_cmnlc: pll_cmnlc {
++				clocks = <&wiz0_pll0_refclk>, <&serdes0_refrcv1>;
++				clock-names = "pll_refclk", "refrcv";
++				#clock-cells = <0>;
++				assigned-clocks = <&serdes0_pll_cmnlc>;
++				assigned-clock-parents = <&wiz0_pll0_refclk>;
++			};
++
++			serdes0_pll_cmnlc1: pll_cmnlc1 {
++				clocks = <&wiz0_pll1_refclk>, <&serdes0_refrcv>;
++				clock-names = "pll_refclk", "refrcv";
++				#clock-cells = <0>;
++				assigned-clocks = <&serdes0_pll_cmnlc1>;
++				assigned-clock-parents = <&wiz0_pll1_refclk>;
++			};
+ 		};
+ 	};
  
-+	clk = devm_clk_get_optional(dev, "pll_cmnlc");
-+	if (IS_ERR(clk)) {
-+		dev_err(dev, "pll_cmnlc clock not found\n");
-+		ret = PTR_ERR(clk);
-+		return ret;
-+	}
-+	sp->pll_cmnlc = clk;
+@@ -457,8 +485,36 @@
+ 			#size-cells = <0>;
+ 			resets = <&serdes_wiz1 0>;
+ 			reset-names = "sierra_reset";
+-			clocks = <&wiz1_cmn_refclk_dig_div>, <&wiz1_cmn_refclk1_dig_div>;
+-			clock-names = "cmn_refclk_dig_div", "cmn_refclk1_dig_div";
++			clocks = <&wiz1_cmn_refclk_dig_div>, <&wiz1_cmn_refclk1_dig_div>, <&serdes1_pll_cmnlc>, <&serdes1_pll_cmnlc1>;
++			clock-names = "cmn_refclk_dig_div", "cmn_refclk1_dig_div", "pll_cmnlc", "pll_cmnlc1";
 +
-+	clk = devm_clk_get_optional(dev, "pll_cmnlc1");
-+	if (IS_ERR(clk)) {
-+		dev_err(dev, "pll_cmnlc1 clock not found\n");
-+		ret = PTR_ERR(clk);
-+		return ret;
-+	}
-+	sp->pll_cmnlc1 = clk;
++			serdes1_refrcv: refrcv {
++				clocks = <&wiz1_pll0_refclk>;
++				clock-names = "pll_refclk";
++				#clock-cells = <0>;
++			};
 +
- 	return 0;
- }
++			serdes1_refrcv1: refrcv1 {
++				clocks = <&wiz1_pll1_refclk>;
++				clock-names = "pll_refclk";
++				#clock-cells = <0>;
++			};
++
++			serdes1_pll_cmnlc: pll_cmnlc {
++				clocks = <&wiz1_pll0_refclk>, <&serdes1_refrcv1>;
++				clock-names = "pll_refclk", "refrcv";
++				#clock-cells = <0>;
++				assigned-clocks = <&serdes1_pll_cmnlc>;
++				assigned-clock-parents = <&wiz1_pll0_refclk>;
++			};
++
++			serdes1_pll_cmnlc1: pll_cmnlc1 {
++				clocks = <&wiz1_pll1_refclk>, <&serdes1_refrcv>;
++				clock-names = "pll_refclk", "refrcv";
++				#clock-cells = <0>;
++				assigned-clocks = <&serdes1_pll_cmnlc1>;
++				assigned-clock-parents = <&wiz1_pll1_refclk>;
++			};
+ 		};
+ 	};
  
-+static int cdns_sierra_phy_enable_clocks(struct cdns_sierra_phy *sp)
-+{
-+	int ret;
+@@ -514,8 +570,36 @@
+ 			#size-cells = <0>;
+ 			resets = <&serdes_wiz2 0>;
+ 			reset-names = "sierra_reset";
+-			clocks = <&wiz2_cmn_refclk_dig_div>, <&wiz2_cmn_refclk1_dig_div>;
+-			clock-names = "cmn_refclk_dig_div", "cmn_refclk1_dig_div";
++			clocks = <&wiz2_cmn_refclk_dig_div>, <&wiz2_cmn_refclk1_dig_div>, <&serdes2_pll_cmnlc>, <&serdes2_pll_cmnlc1>;
++			clock-names = "cmn_refclk_dig_div", "cmn_refclk1_dig_div", "pll_cmnlc", "pll_cmnlc1";
 +
-+	ret = clk_prepare_enable(sp->clk);
-+	if (ret)
-+		return ret;
++			serdes2_refrcv: refrcv {
++				clocks = <&wiz2_pll0_refclk>;
++				clock-names = "pll_refclk";
++				#clock-cells = <0>;
++			};
 +
-+	ret = clk_prepare_enable(sp->pll_cmnlc);
-+	if (ret)
-+		goto err_pll_cmnlc;
++			serdes2_refrcv1: refrcv1 {
++				clocks = <&wiz2_pll1_refclk>;
++				clock-names = "pll_refclk";
++				#clock-cells = <0>;
++			};
 +
-+	ret = clk_prepare_enable(sp->pll_cmnlc1);
-+	if (ret)
-+		goto err_pll_cmnlc1;
++			serdes2_pll_cmnlc: pll_cmnlc {
++				clocks = <&wiz2_pll0_refclk>, <&serdes2_refrcv1>;
++				clock-names = "pll_refclk", "refrcv";
++				#clock-cells = <0>;
++				assigned-clocks = <&serdes2_pll_cmnlc>;
++				assigned-clock-parents = <&wiz2_pll0_refclk>;
++			};
 +
-+	return 0;
-+
-+err_pll_cmnlc:
-+	clk_disable_unprepare(sp->clk);
-+
-+err_pll_cmnlc1:
-+	clk_disable_unprepare(sp->pll_cmnlc);
-+
-+	return 0;
-+}
-+
-+static void cdns_sierra_phy_disable_clocks(struct cdns_sierra_phy *sp)
-+{
-+	clk_disable_unprepare(sp->pll_cmnlc1);
-+	clk_disable_unprepare(sp->pll_cmnlc);
-+	clk_disable_unprepare(sp->clk);
-+}
-+
- static int cdns_sierra_phy_get_resets(struct cdns_sierra_phy *sp,
- 				      struct device *dev)
- {
-@@ -961,7 +1013,7 @@ static int cdns_sierra_phy_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto unregister_pll_mux;
++			serdes2_pll_cmnlc1: pll_cmnlc1 {
++				clocks = <&wiz2_pll1_refclk>, <&serdes2_refrcv>;
++				clock-names = "pll_refclk", "refrcv";
++				#clock-cells = <0>;
++				assigned-clocks = <&serdes2_pll_cmnlc1>;
++				assigned-clock-parents = <&wiz2_pll1_refclk>;
++			};
+ 		};
+ 	};
  
--	ret = clk_prepare_enable(sp->clk);
-+	ret = cdns_sierra_phy_enable_clocks(sp);
- 	if (ret)
- 		goto unregister_pll_mux;
+@@ -571,8 +655,36 @@
+ 			#size-cells = <0>;
+ 			resets = <&serdes_wiz3 0>;
+ 			reset-names = "sierra_reset";
+-			clocks = <&wiz3_cmn_refclk_dig_div>, <&wiz3_cmn_refclk1_dig_div>;
+-			clock-names = "cmn_refclk_dig_div", "cmn_refclk1_dig_div";
++			clocks = <&wiz3_cmn_refclk_dig_div>, <&wiz3_cmn_refclk1_dig_div>, <&serdes3_pll_cmnlc>, <&serdes3_pll_cmnlc1>;
++			clock-names = "cmn_refclk_dig_div", "cmn_refclk1_dig_div", "pll_cmnlc", "pll_cmnlc1";
++
++			serdes3_refrcv: refrcv {
++				clocks = <&wiz3_pll0_refclk>;
++				clock-names = "pll_refclk";
++				#clock-cells = <0>;
++			};
++
++			serdes3_refrcv1: refrcv1 {
++				clocks = <&wiz3_pll1_refclk>;
++				clock-names = "pll_refclk";
++				#clock-cells = <0>;
++			};
++
++			serdes3_pll_cmnlc: pll_cmnlc {
++				clocks = <&wiz3_pll0_refclk>, <&serdes3_refrcv1>;
++				clock-names = "pll_refclk", "refrcv";
++				#clock-cells = <0>;
++				assigned-clocks = <&serdes3_pll_cmnlc>;
++				assigned-clock-parents = <&wiz3_pll0_refclk>;
++			};
++
++			serdes3_pll_cmnlc1: pll_cmnlc1 {
++				clocks = <&wiz3_pll1_refclk>, <&serdes3_refrcv>;
++				clock-names = "pll_refclk", "refrcv";
++				#clock-cells = <0>;
++				assigned-clocks = <&serdes3_pll_cmnlc1>;
++				assigned-clock-parents = <&wiz3_pll1_refclk>;
++			};
+ 		};
+ 	};
  
-@@ -1038,7 +1090,7 @@ static int cdns_sierra_phy_probe(struct platform_device *pdev)
- 		reset_control_put(sp->phys[i].lnk_rst);
- 	of_node_put(child);
- clk_disable:
--	clk_disable_unprepare(sp->clk);
-+	cdns_sierra_phy_disable_clocks(sp);
- 	reset_control_assert(sp->apb_rst);
- unregister_pll_mux:
- 	cdns_sierra_pll_mux_unregister(sp, dn);
-@@ -1059,6 +1111,7 @@ static int cdns_sierra_phy_remove(struct platform_device *pdev)
- 	reset_control_assert(phy->apb_rst);
- 	pm_runtime_disable(&pdev->dev);
- 
-+	cdns_sierra_phy_disable_clocks(phy);
- 	/*
- 	 * The device level resets will be put automatically.
- 	 * Need to put the subnode resets here though.
 -- 
 2.17.1
 
