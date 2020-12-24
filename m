@@ -2,90 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 530BF2E2661
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 12:30:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51C462E2664
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 12:31:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728402AbgLXL2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 06:28:30 -0500
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:59402 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726591AbgLXL23 (ORCPT
+        id S1728123AbgLXLbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 06:31:17 -0500
+Received: from forward105o.mail.yandex.net ([37.140.190.183]:57726 "EHLO
+        forward105o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726186AbgLXLbQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 06:28:29 -0500
-X-UUID: ebeceb543e594724afb82df797d9e1e0-20201224
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=DiOcFw9Kf9pbbQaIqyaauDc19jifokyiHRLy79w4/TI=;
-        b=jwcGv8V43FrvfSVlCDjy+v1PddpLpwqrdatyeFgTUsxMHZ7DOEIRDg2rNsyMywODMyJqp2ornAd8rbcdfkf1vZFL67YGqgwLiZiOuEdFuMXUIG8PFhCPJEhu1ZWbk55eAxZurHzXOvaE5Cn5k3dm+9z3iaBYw8glN8H0Q1qe2Jo=;
-X-UUID: ebeceb543e594724afb82df797d9e1e0-20201224
-Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <yong.wu@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 626282406; Thu, 24 Dec 2020 19:27:38 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS32N1.mediatek.inc
- (172.27.4.71) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 24 Dec
- 2020 19:27:36 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 24 Dec 2020 19:27:36 +0800
-Message-ID: <1608809257.26323.259.camel@mhfsdcap03>
-Subject: Re: [PATCH v3 1/7] iommu: Move iotlb_sync_map out from __iommu_map
-From:   Yong Wu <yong.wu@mediatek.com>
-To:     Christoph Hellwig <hch@infradead.org>
-CC:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        "Robin Murphy" <robin.murphy@arm.com>, <youlin.pei@mediatek.com>,
-        <anan.sun@mediatek.com>, Nicolas Boichat <drinkcat@chromium.org>,
-        <srv_heupstream@mediatek.com>, <chao.hao@mediatek.com>,
-        <linux-kernel@vger.kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "Tomasz Figa" <tfiga@google.com>,
-        <iommu@lists.linux-foundation.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Greg Kroah-Hartman <gregkh@google.com>,
-        <kernel-team@android.com>, <linux-arm-kernel@lists.infradead.org>
-Date:   Thu, 24 Dec 2020 19:27:37 +0800
-In-Reply-To: <20201223085153.GA30643@infradead.org>
-References: <20201216103607.23050-1-yong.wu@mediatek.com>
-         <20201216103607.23050-2-yong.wu@mediatek.com>
-         <20201223085153.GA30643@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Thu, 24 Dec 2020 06:31:16 -0500
+X-Greylist: delayed 493 seconds by postgrey-1.27 at vger.kernel.org; Thu, 24 Dec 2020 06:31:15 EST
+Received: from sas1-fe2d9cd6d0e9.qloud-c.yandex.net (sas1-fe2d9cd6d0e9.qloud-c.yandex.net [IPv6:2a02:6b8:c14:3920:0:640:fe2d:9cd6])
+        by forward105o.mail.yandex.net (Yandex) with ESMTP id 94A2D4202774;
+        Thu, 24 Dec 2020 14:22:17 +0300 (MSK)
+Received: from sas2-1cbd504aaa99.qloud-c.yandex.net (sas2-1cbd504aaa99.qloud-c.yandex.net [2a02:6b8:c14:7101:0:640:1cbd:504a])
+        by sas1-fe2d9cd6d0e9.qloud-c.yandex.net (mxback/Yandex) with ESMTP id ormH2w7xxY-MHDSPN8x;
+        Thu, 24 Dec 2020 14:22:17 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1608808937;
+        bh=5vk3A2dN5ebQ4b00f+Y2Y2deucbfh3V9Ia5kveh3BCU=;
+        h=In-Reply-To:References:Date:Subject:To:From:Message-Id:Cc;
+        b=L2s4m/GuH/0aSszcLOY+lmSIZZiU6UsduVskSiA/gG2SrGy3gKAMUBOXNnmWftqBf
+         oRYj3YIRxK7vlVlSXhcqyDuib95mtkx8YtJhgs7gQgLfmVZvsIg3ASwKgVKbeN/6y7
+         8lDCyxjrfoZIQCDcn35JyNGHfsL5loF9f7w4a2w0=
+Authentication-Results: sas1-fe2d9cd6d0e9.qloud-c.yandex.net; dkim=pass header.i=@maquefel.me
+Received: by sas2-1cbd504aaa99.qloud-c.yandex.net (smtp/Yandex) with ESMTPSA id wXm6oVjgK4-MHJecsqI;
+        Thu, 24 Dec 2020 14:22:17 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+From:   Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Nikita Shubin <nikita.shubin@maquefel.me>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH 3/3] gpio: ep93xx: specify gpio_irq_chip->first
+Date:   Thu, 24 Dec 2020 14:22:03 +0300
+Message-Id: <20201224112203.7174-4-nikita.shubin@maquefel.me>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20201224112203.7174-1-nikita.shubin@maquefel.me>
+References: <20201224112203.7174-1-nikita.shubin@maquefel.me>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: FBCE9ED43BF43E3D7C20C416E2E03E98E6E841E4758068BCA32988C6FE2A5E212000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIwLTEyLTIzIGF0IDA4OjUxICswMDAwLCBDaHJpc3RvcGggSGVsbHdpZyB3cm90
-ZToNCj4gT24gV2VkLCBEZWMgMTYsIDIwMjAgYXQgMDY6MzY6MDFQTSArMDgwMCwgWW9uZyBXdSB3
-cm90ZToNCj4gPiBJbiB0aGUgZW5kIG9mIF9faW9tbXVfbWFwLCBJdCBhbHdheSBjYWxsIGlvdGxi
-X3N5bmNfbWFwLg0KPiA+IFRoaXMgcGF0Y2ggbW92ZXMgaW90bGJfc3luY19tYXAgb3V0IGZyb20g
-X19pb21tdV9tYXAgc2luY2UgaXQgaXMNCj4gPiB1bm5lY2Vzc2FyeSB0byBjYWxsIHRoaXMgZm9y
-IGVhY2ggc2cgc2VnbWVudCBlc3BlY2lhbGx5IGlvdGxiX3N5bmNfbWFwDQo+ID4gaXMgZmx1c2gg
-dGxiIGFsbCBjdXJyZW50bHkuDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogWW9uZyBXdSA8eW9u
-Zy53dUBtZWRpYXRlay5jb20+DQo+ID4gUmV2aWV3ZWQtYnk6IFJvYmluIE11cnBoeSA8cm9iaW4u
-bXVycGh5QGFybS5jb20+DQo+IA0KPiBXaGF0IGFib3V0IGFkZGluZyBhIGxpdHRsZSBoZWxwZXIg
-dGhhdCBkb2VzIHRoZSBOVUxMIGNoZWNrIGFuZCBtZXRob2QNCj4gY2FsbCBpbnN0ZWFkIG9mIGR1
-cGxpY2F0aW5nIGl0IGFsbCBvdmVyPw0KDQpUaGFua3MgZm9yIHRoZSByZXZpZXcuIE9mIGNvdXJz
-ZSBPSy4NCg0KVGhlbiB0aGUgY29kZSBsaWtlIGJlbG93LiANCihJZiB0aGUgaGVscGVyIG5hbWUg
-Il9pb21tdV9tYXAiIGlzIG5vdCBnb29kLCBwbGVhc2UgdGVsbCBtZS4pDQoNCitzdGF0aWMgaW50
-IF9pb21tdV9tYXAoc3RydWN0IGlvbW11X2RvbWFpbiAqZG9tYWluLCB1bnNpZ25lZCBsb25nIGlv
-dmEsDQorCQkgICAgICAgcGh5c19hZGRyX3QgcGFkZHIsIHNpemVfdCBzaXplLCBpbnQgcHJvdCwg
-Z2ZwX3QgZ2ZwKQ0KK3sNCisJY29uc3Qgc3RydWN0IGlvbW11X29wcyAqb3BzID0gZG9tYWluLT5v
-cHM7DQorCWludCByZXQ7DQorDQorCXJldCA9IF9faW9tbXVfbWFwKGRvbWFpbiwgaW92YSwgcGFk
-ZHIsIHNpemUsIHByb3QsIGdmcCk7DQorCWlmIChyZXQgPT0gMCAmJiBvcHMtPmlvdGxiX3N5bmNf
-bWFwKQ0KKwkJb3BzLT5pb3RsYl9zeW5jX21hcChkb21haW4pOw0KKwlyZXR1cm4gcmV0Ow0KK30N
-CisNCiBpbnQgaW9tbXVfbWFwKHN0cnVjdCBpb21tdV9kb21haW4gKmRvbWFpbiwgdW5zaWduZWQg
-bG9uZyBpb3ZhLA0KIAkgICAgICBwaHlzX2FkZHJfdCBwYWRkciwgc2l6ZV90IHNpemUsIGludCBw
-cm90KQ0KIHsNCiAJbWlnaHRfc2xlZXAoKTsNCi0JcmV0dXJuIF9faW9tbXVfbWFwKGRvbWFpbiwg
-aW92YSwgcGFkZHIsIHNpemUsIHByb3QsIEdGUF9LRVJORUwpOw0KKwlyZXR1cm4gX2lvbW11X21h
-cChkb21haW4sIGlvdmEsIHBhZGRyLCBzaXplLCBwcm90LCBHRlBfS0VSTkVMKTsNCiB9DQogRVhQ
-T1JUX1NZTUJPTF9HUEwoaW9tbXVfbWFwKTsNCiANCiBpbnQgaW9tbXVfbWFwX2F0b21pYyhzdHJ1
-Y3QgaW9tbXVfZG9tYWluICpkb21haW4sIHVuc2lnbmVkIGxvbmcgaW92YSwNCiAJICAgICAgcGh5
-c19hZGRyX3QgcGFkZHIsIHNpemVfdCBzaXplLCBpbnQgcHJvdCkNCiB7DQotCXJldHVybiBfX2lv
-bW11X21hcChkb21haW4sIGlvdmEsIHBhZGRyLCBzaXplLCBwcm90LCBHRlBfQVRPTUlDKTsNCisJ
-cmV0dXJuIF9pb21tdV9tYXAoZG9tYWluLCBpb3ZhLCBwYWRkciwgc2l6ZSwgcHJvdCwgR0ZQX0FU
-T01JQyk7DQogfQ0KIEVYUE9SVF9TWU1CT0xfR1BMKGlvbW11X21hcF9hdG9taWMpOw0KDQo=
+Port F irq's should be statically mapped to EP93XX_GPIO_F_IRQ_BASE.
+
+So we need to specify girq->first otherwise:
+
+"If device tree is used, then first_irq will be 0 and
+irqs get mapped dynamically on the fly"
+
+And that's not the thing we want.
+
+Signed-off-by: Nikita Shubin <nikita.shubin@maquefel.me>
+---
+ drivers/gpio/gpio-ep93xx.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/gpio/gpio-ep93xx.c b/drivers/gpio/gpio-ep93xx.c
+index 90afe07213ce..a321a7441294 100644
+--- a/drivers/gpio/gpio-ep93xx.c
++++ b/drivers/gpio/gpio-ep93xx.c
+@@ -402,6 +402,7 @@ static int ep93xx_gpio_add_f_irq_chip(struct gpio_chip *gc,
+ 	}
+ 	girq->default_type = IRQ_TYPE_NONE;
+ 	girq->handler = handle_level_irq;
++	girq->first = EP93XX_GPIO_F_IRQ_BASE;
+ 
+ 	return 0;
+ }
+-- 
+2.26.2
 
