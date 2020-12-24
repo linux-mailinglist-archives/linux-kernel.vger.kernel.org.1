@@ -2,68 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 251B22E2592
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 09:56:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 776712E2597
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 10:05:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727360AbgLXI4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 03:56:18 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:59232 "EHLO mail.skyhub.de"
+        id S1726958AbgLXJEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 04:04:49 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33382 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725933AbgLXI4S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 03:56:18 -0500
-Received: from zn.tnic (p200300ec2f0e530094f4200f7ad20a46.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:5300:94f4:200f:7ad2:a46])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3938A1EC0453;
-        Thu, 24 Dec 2020 09:55:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1608800137;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=+Tza7xSUzo+dq1Adw8Luii3U8dAhT2UD7gbFs83zlx8=;
-        b=PNfRnUo9QPbtTCEDGq4lNQzBxwiJwPtykXcvr1XaLlEEEHMrOP9j5P0I1JFwm/po4EKmiL
-        EWKhYdHF4HKThcNe0qdilcMAVXdpjkF+Skohbx6YBJjbAK48Gd+4A+icoYzX4vnWIFfbze
-        89ifoeE023yREAN+Ok7mdFXc/QaClyQ=
-Date:   Thu, 24 Dec 2020 09:55:33 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        kernel test robot <lkp@intel.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        kbuild-all@lists.01.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
-Subject: Re: [tip:efi/core 3/7] /tmp/slab-258052.s:9870: Error: unrecognized
- opcode `zext.b a2,a2'
-Message-ID: <20201224085533.GA5108@zn.tnic>
-References: <202012180909.WhlTpWrS-lkp@intel.com>
- <20201223183606.GB29011@zn.tnic>
- <CAKwvOdkA+7AYGhPk_=FA6OPxeb9Wy7FA0_5-0KCJGr-wtn_nxw@mail.gmail.com>
- <20201223210405.GB28724@zn.tnic>
- <CAMj1kXG58+DdfA9RDE9gnELf8ZT0dTX+g8D+3W0pVM8RUSF_OQ@mail.gmail.com>
+        id S1726159AbgLXJEq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Dec 2020 04:04:46 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 20357ACC4;
+        Thu, 24 Dec 2020 09:04:04 +0000 (UTC)
+Date:   Thu, 24 Dec 2020 10:04:06 +0100
+From:   Borislav Petkov <bp@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-efi <linux-efi@vger.kernel.org>, x86-ml <x86@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] efi/core for v5.11
+Message-ID: <20201224090406.GA6169@zn.tnic>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAMj1kXG58+DdfA9RDE9gnELf8ZT0dTX+g8D+3W0pVM8RUSF_OQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ard,
+Hi Linus,
 
-On Wed, Dec 23, 2020 at 11:43:45PM +0100, Ard Biesheuvel wrote:
-> I hope this report is not holding up the PR for efi/core?
+please pull the EFI updates for v5.11. They got delayed due to a last
+minute ia64 build issue which got fixed in the meantime:
 
-I was just looking at that yesterday...
+https://lkml.kernel.org/r/87o8iwdtbj.fsf@nanos.tec.linutronix.de
 
-But nah, lemme send it.
+and now the lot is all clear.
 
 Thx.
+
+---
+
+The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
+
+  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/efi_updates_for_v5.11
+
+for you to fetch changes up to 3dcb8b53cbd2cc5618863b19ef00f8ea82f27e83:
+
+  Merge tag 'efi-next-for-v5.11-3' of git://git.kernel.org/pub/scm/linux/kernel/git/efi/efi into efi/core (2020-12-15 12:14:38 +0100)
+
+----------------------------------------------------------------
+EFI updates collected by Ard Biesheuvel:
+
+ - Don't move BSS section around pointlessly in the x86 decompressor
+ - Refactor helper for discovering the EFI secure boot mode
+ - Wire up EFI secure boot to IMA for arm64
+ - Some fixes for the capsule loader
+ - Expose the RT_PROP table via the EFI test module
+ - Relax DT and kernel placement restrictions on ARM
+
++ followup fixes:
+
+ - fix the build breakage on IA64 caused by recent capsule loader changes
+ - suppress a type mismatch build warning in the expansion of
+       EFI_PHYS_ALIGN on ARM
+
+----------------------------------------------------------------
+Ard Biesheuvel (7):
+      efi: x86/xen: switch to efi_get_secureboot_mode helper
+      efi: capsule: use atomic kmap for transient sglist mappings
+      efi: capsule: clean scatter-gather entries from the D-cache
+      efi: arm: reduce minimum alignment of uncompressed kernel
+      efi: stub: get rid of efi_get_max_fdt_addr()
+      efi: ia64: disable the capsule loader
+      efi: arm: force use of unsigned type for EFI_PHYS_ALIGN
+
+Arvind Sankar (1):
+      efi/x86: Only copy the compressed kernel image in efi_relocate_kernel()
+
+Chester Lin (3):
+      efi: generalize efi_get_secureboot
+      ima: generalize x86/EFI arch glue for other EFI architectures
+      arm64/ima: add ima_arch support
+
+Geert Uytterhoeven (1):
+      efi/libstub: EFI_GENERIC_STUB_INITRD_CMDLINE_LOADER should not default to yes
+
+Heinrich Schuchardt (2):
+      efi/libstub/x86: simplify efi_is_native()
+      efi/efi_test: read RuntimeServicesSupported
+
+Thomas Gleixner (1):
+      Merge tag 'efi-next-for-v5.11-3' of git://git.kernel.org/.../efi/efi into efi/core
+
+ arch/arm/include/asm/efi.h                         | 24 ++++++------
+ arch/arm64/Kconfig                                 |  1 +
+ arch/arm64/include/asm/efi.h                       | 11 +++---
+ arch/riscv/include/asm/efi.h                       |  6 ---
+ arch/x86/boot/compressed/Makefile                  |  2 +-
+ arch/x86/include/asm/efi.h                         |  5 ++-
+ arch/x86/kernel/Makefile                           |  2 -
+ arch/x86/xen/efi.c                                 | 37 +++++-------------
+ drivers/firmware/efi/Kconfig                       |  4 +-
+ drivers/firmware/efi/Makefile                      |  5 ++-
+ drivers/firmware/efi/capsule.c                     | 16 +++++++-
+ drivers/firmware/efi/libstub/efi-stub.c            |  1 -
+ drivers/firmware/efi/libstub/efistub.h             |  3 +-
+ drivers/firmware/efi/libstub/fdt.c                 |  3 +-
+ drivers/firmware/efi/libstub/secureboot.c          | 44 ++++++++-------------
+ drivers/firmware/efi/libstub/x86-stub.c            |  5 ++-
+ drivers/firmware/efi/test/efi_test.c               | 16 ++++++++
+ drivers/firmware/efi/test/efi_test.h               |  3 ++
+ include/linux/efi.h                                | 33 ++++++++++++----
+ security/integrity/ima/Makefile                    |  4 ++
+ .../ima_arch.c => security/integrity/ima/ima_efi.c | 45 ++++++----------------
+ 21 files changed, 133 insertions(+), 137 deletions(-)
+ rename arch/x86/kernel/ima_arch.c => security/integrity/ima/ima_efi.c (60%)
 
 -- 
 Regards/Gruss,
     Boris.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
