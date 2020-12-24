@@ -2,104 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C858C2E28B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 20:15:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9E1A2E28B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 20:18:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728860AbgLXTOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 14:14:49 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:53336 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728607AbgLXTOt (ORCPT
+        id S1728927AbgLXTRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 14:17:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31721 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728814AbgLXTRx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 14:14:49 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id C471D1C0BBC; Thu, 24 Dec 2020 20:14:04 +0100 (CET)
-Date:   Thu, 24 Dec 2020 20:14:04 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Torsten Duwe <duwe@lst.de>
-Cc:     Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>,
-        Willy Tarreau <w@1wt.eu>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Nicolai Stange <nstange@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
+        Thu, 24 Dec 2020 14:17:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608837387;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PasbZTjuQhYnZNax5DZipjOOp29fDts/YAjesb40hbc=;
+        b=BeLXnkXV5FpSbzvgxe4IpR5e7LXunDUpuBlVPp17e9IjMiYlRsttiO+wORSdO9OrbQGyTK
+        CuDVQADGPTab1m/YgNBuEgfi4wdsn3/BPxdZUOIOoCiMhIAbFeRSmlTCgyzMctgKGf/8Nn
+        Qt34/7DOLp2A51pIqTrr+jD8K3uYBMg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-101-ZGdFvvwtOxywAdkNvbWt5A-1; Thu, 24 Dec 2020 14:16:22 -0500
+X-MC-Unique: ZGdFvvwtOxywAdkNvbWt5A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 741F459;
+        Thu, 24 Dec 2020 19:16:20 +0000 (UTC)
+Received: from mail (ovpn-112-5.rdu2.redhat.com [10.10.112.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1990E189CE;
+        Thu, 24 Dec 2020 19:16:17 +0000 (UTC)
+Date:   Thu, 24 Dec 2020 14:16:16 -0500
+From:   Andrea Arcangeli <aarcange@redhat.com>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@amacapital.net>,
         Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Peter Matthias <matthias.peter@bsi.bund.de>,
-        Neil Horman <nhorman@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        And y Lavr <andy.lavr@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Petr Tesarik <ptesarik@suse.cz>, simo@redhat.com
-Subject: Re: drivers/char/random.c needs a (new) maintainer
-Message-ID: <20201224191404.GC22388@amd>
-References: <20201130151231.GA24862@lst.de>
- <CAHmME9p4vFGWh7+CKF4f3dw5r+ru5PVG0-vP77JowX8sPhin1g@mail.gmail.com>
- <20201130165339.GE5364@mit.edu>
- <CAHmME9pksS8ec17RAwCNJimt4B0xZgd3qYHUPnaT4Bj4CF7n0A@mail.gmail.com>
- <20201218132519.kj3nz7swsx7vvlr5@valinor.lan>
- <20201223132851.55d19271@blackhole.lan>
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>, linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+Message-ID: <X+TpAAuGm7KSLr8G@redhat.com>
+References: <X+PE38s2Egq4nzKv@google.com>
+ <C332B03D-30B1-4C9C-99C2-E76988BFC4A1@amacapital.net>
+ <X+P2OnR+ipY8d2qL@redhat.com>
+ <3A6A1049-24C6-4B2D-8C59-21B549F742B4@gmail.com>
+ <X+QMKC7jPEeThjB1@google.com>
+ <X+QShVIUbYKAsc35@redhat.com>
+ <06DF7858-1447-4531-9B5C-E20C44F0AF54@gmail.com>
+ <X+TiyehLLKEUO7Bs@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="L6iaP+gRLNZHKoI4"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201223132851.55d19271@blackhole.lan>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <X+TiyehLLKEUO7Bs@redhat.com>
+User-Agent: Mutt/2.0.3 (2020-12-04)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Dec 24, 2020 at 01:49:45PM -0500, Andrea Arcangeli wrote:
+> Without the above, can't the CPU decrement the tlb_flush_pending while
+> the IPI to ack didn't arrive yet in csd_lock_wait?
 
---L6iaP+gRLNZHKoI4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Ehm: csd_lock_wait has smp_acquire__after_ctrl_dep() so the write side
+looks ok after all sorry.
 
-Hi!
-
-> > Any updates on that?
-> >=20
-> > I don't believe Torsten's concerns are simply about *applying* patches
-> > but more about these long periods of radio silence. That kills
->=20
-> Exactly. I could live with replies in the style of "old" Linus like:
-> "Your code is crap, because it does X and Y". Then I knew how to
-> proceed. But this extended silence slows things down a lot.
-
-Well... you know. We now have code of conflict, so maintainers are not
-supposed to tell submitters that their code is ****. So... you get
-silence.
-								Pavel
--- p
-http://www.livejournal.com/~pavelmachek
-
---L6iaP+gRLNZHKoI4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl/k6HwACgkQMOfwapXb+vKjKwCeLahvFkONH2dzKd2+FUqQrxp2
-2n0AoJECF5MFsKgHxjma1T0j/jv8v9+2
-=AiSD
------END PGP SIGNATURE-----
-
---L6iaP+gRLNZHKoI4--
