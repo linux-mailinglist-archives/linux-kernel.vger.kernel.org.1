@@ -2,153 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EDBA2E23FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 04:16:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7443A2E2403
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 04:20:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728898AbgLXDPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 22:15:09 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:19160 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728280AbgLXDPJ (ORCPT
+        id S1728827AbgLXDUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 22:20:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728631AbgLXDUF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 22:15:09 -0500
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BO31wFi090316;
-        Wed, 23 Dec 2020 22:14:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=J+i6gcZmOD8HUoz+lDJFoOvh/g8DQKNaaWL0fWsv2dk=;
- b=QiX9dZispPraRPQVUc+b0oB2TUQIi7r6UN4WYdXH6UMSS2EdgjwrItKMI+Ksu6e2KOws
- EE+pTTAhAE/CkvOHIfXrqGYq2cMa9AhMEQl+3eh+5vyliR+0kRlOUXn/uG4/hQ4zkJ6Y
- I27VZ9+wdeGTU2b6qED+9N5vncFMJ3+7cBZ/b6foFDvcQH6ic4PGIPrfQLcvVcdARcBf
- DeGQ3lHfghq4wBgTh0UDhrlSxjkXkC0rtIg4o9nijyxHG1GmkFPJhjbgBzCA/FgkkMhK
- 4CFhSYU836MCNndqpF6BGbyQAuqIbNDcNDWDGExSTdqbptm7g4WlQ+0H/Xdo0sU0ffAI Zg== 
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35mhta1a7m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 23 Dec 2020 22:14:19 -0500
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BO3DHGW012721;
-        Thu, 24 Dec 2020 03:14:16 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma02fra.de.ibm.com with ESMTP id 35hdgut98h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 24 Dec 2020 03:14:16 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BO3EEO023527682
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 24 Dec 2020 03:14:14 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E4ABDA404D;
-        Thu, 24 Dec 2020 03:14:13 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7A716A4040;
-        Thu, 24 Dec 2020 03:14:12 +0000 (GMT)
-Received: from ram-ibm-com.ibm.com (unknown [9.80.236.76])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Thu, 24 Dec 2020 03:14:12 +0000 (GMT)
-Date:   Wed, 23 Dec 2020 19:14:09 -0800
-From:   Ram Pai <linuxram@us.ibm.com>
-To:     Thiago Jung Bauermann <bauerman@linux.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
-Subject: Re: [PATCH] powerpc/mm: Limit allocation of SWIOTLB on server
- machines
-Message-ID: <20201224031409.GB4102@ram-ibm-com.ibm.com>
-Reply-To: Ram Pai <linuxram@us.ibm.com>
-References: <20201218062103.76102-1-bauerman@linux.ibm.com>
- <20201223205838.GA4102@ram-ibm-com.ibm.com>
- <87o8ikukye.fsf@manicouagan.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87o8ikukye.fsf@manicouagan.localdomain>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-23_14:2020-12-23,2020-12-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
- priorityscore=1501 clxscore=1015 mlxscore=0 adultscore=0 impostorscore=0
- lowpriorityscore=0 mlxlogscore=999 spamscore=0 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012240014
+        Wed, 23 Dec 2020 22:20:05 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 320F9C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 19:19:25 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id h75so1728444ybg.18
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Dec 2020 19:19:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=mk3IEUt06sDvVA1clSFII49sZH3UPqks6XPQtfaaM2A=;
+        b=nTV78gIaL2c1ZyNCGPBOg2SWKiC13WVID59PHts0exX7WQ4CGqfP1Xi6lqwipMSskr
+         jCdyMtscbgUlWGxR4FhLXEpnYWwNdQYN8hNoq3Ftvz/6eglQ6JEXXLvtRliPENpXl9kx
+         bT7qEq8PqKD32mA90xOxPFa6mGYH8lsVYCNyCbMToB3lIqMXGIHqs/4RmGcJ9Flv/V7R
+         WbKFbwoL33J4U6NQ5ucZN6dWLpGyi9NTydTFVKihZmn5UIAIG0EncuLP3bUwrdudjNBO
+         RR1RL5lttfqXS38dCxSjRXocZFm2JJqlJMGmPWUXtc8jGdENRrMa6ePAvNBNDrEWhyVS
+         Ak2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=mk3IEUt06sDvVA1clSFII49sZH3UPqks6XPQtfaaM2A=;
+        b=AXa2HXoxpvgYUR36VMCpFjDgErEi5fMyG1WqLhVcgjfLjbjAaGUNUnyR73/C1hnUH9
+         tOu40O7aLMB7SWe4D6a/duBi7TCI/mpYGpI42+UQWwfdlygwbwYvN2hBO7+5M+2i6LIj
+         4WhkvwgZJ2DHMKA8qYSDKC3UK8nJKuQIFlCJdjd2uPU5KOHTFgcZ08R4GrOoRvvPA5/m
+         UlQACbqW7yVovODfgyJu5ZVQ8po3kxd8XthhAhcCGpwBh6v6jOx1nzNiZou7dRjiw/TQ
+         D06QbwEWPzU4JR7nNQTcA1sLT0v1Phsm80zZukM3UWsJy5EkItHsyIaEZlIwwGAo9sSN
+         V6Zw==
+X-Gm-Message-State: AOAM530SHCPINPHKeGURDgVubQe7+ifNrwcZM5jHhsVZToL1jnxPzBWr
+        XqRFZvtBf5Nu7z+opSDHt/oSi3X0iUAE/A==
+X-Google-Smtp-Source: ABdhPJzc+fUOQroVCECGgIesPH+6wCNbIxWTJTywv08eXHy5rY4tG3xwARmFmew944NYTh8NPP76WLRUm3TiLA==
+Sender: "jbhayana via sendgmr" <jbhayana@jbhayana.c.googlers.com>
+X-Received: from jbhayana.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:42b2])
+ (user=jbhayana job=sendgmr) by 2002:a25:9c07:: with SMTP id
+ c7mr41070666ybo.21.1608779964260; Wed, 23 Dec 2020 19:19:24 -0800 (PST)
+Date:   Thu, 24 Dec 2020 03:19:20 +0000
+Message-Id: <20201224031921.1547519-1-jbhayana@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
+Subject: [RFC PATCH v2 0/1] Adding support for IIO SCMI based sensors
+From:   Jyoti Bhayana <jbhayana@google.com>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Jyoti Bhayana <jbhayana@google.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        cristian.marussi@arm.com, sudeep.holla@arm.com,
+        egranata@google.com, mikhail.golubev@opensynergy.com,
+        Igor.Skalkin@opensynergy.com, Peter.hilber@opensynergy.com,
+        ankitarora@google.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 09:06:01PM -0300, Thiago Jung Bauermann wrote:
-> 
-> Hi Ram,
-> 
-> Thanks for reviewing this patch.
-> 
-> Ram Pai <linuxram@us.ibm.com> writes:
-> 
-> > On Fri, Dec 18, 2020 at 03:21:03AM -0300, Thiago Jung Bauermann wrote:
-> >> On server-class POWER machines, we don't need the SWIOTLB unless we're a
-> >> secure VM. Nevertheless, if CONFIG_SWIOTLB is enabled we unconditionally
-> >> allocate it.
-> >> 
-> >> In most cases this is harmless, but on a few machine configurations (e.g.,
-> >> POWER9 powernv systems with 4 GB area reserved for crashdump kernel) it can
-> >> happen that memblock can't find a 64 MB chunk of memory for the SWIOTLB and
-> >> fails with a scary-looking WARN_ONCE:
-> >> 
-> >>  ------------[ cut here ]------------
-> >>  memblock: bottom-up allocation failed, memory hotremove may be affected
-> >>  WARNING: CPU: 0 PID: 0 at mm/memblock.c:332 memblock_find_in_range_node+0x328/0x340
-> >>  Modules linked in:
-> >>  CPU: 0 PID: 0 Comm: swapper Not tainted 5.10.0-rc2-orig+ #6
-> >>  NIP:  c000000000442f38 LR: c000000000442f34 CTR: c0000000001e0080
-> >>  REGS: c000000001def900 TRAP: 0700   Not tainted  (5.10.0-rc2-orig+)
-> >>  MSR:  9000000002021033 <SF,HV,VEC,ME,IR,DR,RI,LE>  CR: 28022222  XER: 20040000
-> >>  CFAR: c00000000014b7b4 IRQMASK: 1
-> >>  GPR00: c000000000442f34 c000000001defba0 c000000001deff00 0000000000000047
-> >>  GPR04: 00000000ffff7fff c000000001def828 c000000001def820 0000000000000000
-> >>  GPR08: 0000001ffc3e0000 c000000001b75478 c000000001b75478 0000000000000001
-> >>  GPR12: 0000000000002000 c000000002030000 0000000000000000 0000000000000000
-> >>  GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000002030000
-> >>  GPR20: 0000000000000000 0000000000010000 0000000000010000 c000000001defc10
-> >>  GPR24: c000000001defc08 c000000001c91868 c000000001defc18 c000000001c91890
-> >>  GPR28: 0000000000000000 ffffffffffffffff 0000000004000000 00000000ffffffff
-> >>  NIP [c000000000442f38] memblock_find_in_range_node+0x328/0x340
-> >>  LR [c000000000442f34] memblock_find_in_range_node+0x324/0x340
-> >>  Call Trace:
-> >>  [c000000001defba0] [c000000000442f34] memblock_find_in_range_node+0x324/0x340 (unreliable)
-> >>  [c000000001defc90] [c0000000015ac088] memblock_alloc_range_nid+0xec/0x1b0
-> >>  [c000000001defd40] [c0000000015ac1f8] memblock_alloc_internal+0xac/0x110
-> >>  [c000000001defda0] [c0000000015ac4d0] memblock_alloc_try_nid+0x94/0xcc
-> >>  [c000000001defe30] [c00000000159c3c8] swiotlb_init+0x78/0x104
-> >>  [c000000001defea0] [c00000000158378c] mem_init+0x4c/0x98
-> >>  [c000000001defec0] [c00000000157457c] start_kernel+0x714/0xac8
-> >>  [c000000001deff90] [c00000000000d244] start_here_common+0x1c/0x58
-> >>  Instruction dump:
-> >>  2c230000 4182ffd4 ea610088 ea810090 4bfffe84 39200001 3d42fff4 3c62ff60
-> >>  3863c560 992a8bfc 4bd0881d 60000000 <0fe00000> ea610088 4bfffd94 60000000
-> >>  random: get_random_bytes called from __warn+0x128/0x184 with crng_init=0
-> >>  ---[ end trace 0000000000000000 ]---
-> >>  software IO TLB: Cannot allocate buffer
-> >> 
-> >> Unless this is a secure VM the message can actually be ignored, because the
-> >> SWIOTLB isn't needed. Therefore, let's avoid the SWIOTLB in those cases.
-> >
-> > The above warn_on is conveying a genuine warning. Should it be silenced?
-> 
-> Not sure I understand your point. This patch doesn't silence the
-> warning, it avoids the problem it is warning about.
+Hi,
 
-Sorry, I should have explained it better. My point is...  
+This series adds support for ARM SCMI Protocol based IIO Device.
+This driver provides support for Accelerometer and Gyroscope sensor
+using new SCMI Sensor Protocol defined by the upcoming SCMIv3.0 ARM
+specification, which is available at 
 
-	If CONFIG_SWIOTLB is enabled, it means that the kernel is
-	promising the bounce buffering capability. I know, currently we
-	do not have any kernel subsystems that use bounce buffers on
-	non-secure-pseries-kernel or powernv-kernel.  But that does not
-	mean, there wont be any. In case there is such a third-party
-	module needing bounce buffering, it wont be able to operate,
-	because of the proposed change in your patch.
+https://developer.arm.com/documentation/den0056/c/
 
-	Is that a good thing or a bad thing, I do not know. I will let
-	the experts opine.
+The series is currently based on top of:
 
-RP
+commit f83eb664cdb4 ("Merge tag 'scmi-voltage-5.11' of git://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux into for-next/scmi")
+
+in Sudeep for-next/scmi branch:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/\
+linux.git/log/?h=for-next/scmi
+
+This version of the patch series has been tested using 
+version 5.4.21 branch of Android common kernel.
+
+Any feedback welcome,
+
+Thanks,
+
+Jyoti Bhayana
+
+v1 --> v2
+- Incorporated the feedback comments from v1 review of the patch
+- Regarding the new ABI for sensor_power,sensor_max_range,
+and sensor_resolution, these are some of the sensor attributes
+which Android passes to the apps. If there is any other way of getting
+those values, please let us know
+
+Jyoti Bhayana (1):
+  iio/scmi: Adding support for IIO SCMI Based Sensors
+
+ MAINTAINERS                                |   6 +
+ drivers/iio/common/Kconfig                 |   1 +
+ drivers/iio/common/Makefile                |   1 +
+ drivers/iio/common/scmi_sensors/Kconfig    |  18 +
+ drivers/iio/common/scmi_sensors/Makefile   |   5 +
+ drivers/iio/common/scmi_sensors/scmi_iio.c | 693 +++++++++++++++++++++
+ 6 files changed, 724 insertions(+)
+ create mode 100644 drivers/iio/common/scmi_sensors/Kconfig
+ create mode 100644 drivers/iio/common/scmi_sensors/Makefile
+ create mode 100644 drivers/iio/common/scmi_sensors/scmi_iio.c
+
+-- 
+2.29.2.729.g45daf8777d-goog
+
