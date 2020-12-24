@@ -2,111 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BE752E23E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 04:05:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 446B22E23E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 04:10:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728835AbgLXDFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 22:05:35 -0500
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:38748 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728631AbgLXDFe (ORCPT
+        id S1728668AbgLXDJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 22:09:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728357AbgLXDJy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 22:05:34 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UJb.Tkt_1608779089;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UJb.Tkt_1608779089)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 24 Dec 2020 11:04:49 +0800
-Subject: Re: [PATCH v2] docs/zh_CN: Improve Cinese transolation quality.
-To:     Ran Wang <gxndwr@outlook.com>, Jonathan Corbet <corbet@lwn.net>
-Cc:     Harry Wei <harryxiyou@gmail.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <AT5PR8401MB096492D31BB7E602E1F45DC9CCCD0@AT5PR8401MB0964.NAMPRD84.PROD.OUTLOOK.COM>
- <20201208080037.40543cdb@lwn.net>
- <AT5PR8401MB096480DF491AAD270CDEDD9CCCC20@AT5PR8401MB0964.NAMPRD84.PROD.OUTLOOK.COM>
- <0529bd5e-8305-e5a3-9c85-ec0d1370caf9@linux.alibaba.com>
- <AT5PR8401MB0964C0D4E2C993755C9DB223CCC00@AT5PR8401MB0964.NAMPRD84.PROD.OUTLOOK.COM>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <8618ce39-c7b8-8ae4-399f-03b0279afb5b@linux.alibaba.com>
-Date:   Thu, 24 Dec 2020 11:04:48 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.0; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <AT5PR8401MB0964C0D4E2C993755C9DB223CCC00@AT5PR8401MB0964.NAMPRD84.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+        Wed, 23 Dec 2020 22:09:54 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F187C061794;
+        Wed, 23 Dec 2020 19:09:14 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id z21so778518pgj.4;
+        Wed, 23 Dec 2020 19:09:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=9YZIn5r9a16cJmb80iAADW/k9YKcZBQhhaz7cSUNZQQ=;
+        b=GXqTETn+JJ3Z+Wt/ra82ifel909kps/sWbceWAZcCu2eRwX2sou8hGWtU1nDtWUeAq
+         bKo1GkOt0ps7mIKK/Xrfz4cWHR4Y2u3lZ+Lo13L3qS00yzdUvTmvIhnl60A4hG5YUQTp
+         hEDyKPZvgoC9sm5ChGywNwtrmAwyn8eX+qKqvaHhRzZHaxJpqKVhs8vhQ2wVN7FakaRF
+         yFm5BtvLWfkmiHpOToMEqdISmNfxH8Xt2kvFXo0q0CL+a35Kdi+MPBuVn8giFgSc+aB4
+         jF89vtd8BU90Oqfv3u4eW9BxpPqvpDhRmWukoESHT0JAyfWBNYHC57y0qugYf4Hbc4ZZ
+         pb1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=9YZIn5r9a16cJmb80iAADW/k9YKcZBQhhaz7cSUNZQQ=;
+        b=F/NwIqmJJf/w/3bwOR9SqrmjmU5SMVmWSUfoSdypeO3sVxalBlCEsq3p1L19agEo9F
+         tj/caldpoV9IqianLIfs45Pe5hkW2Fw6DZz87qV/Y41svvE2W8kMR7LCN2HpD/5SYr2F
+         US+rpO7a+dfyI3CFCjOf3Toxgzu8xVJ77ONuLrZksHqrDbdHMyo2ZFpCF6neFGuxASA+
+         c9J5Uc7i9BhD9A7LNB7jiwAwiRoCWFJnLd0sbf6173oN8uAR77VOSAF62lUlu1iJZnzH
+         wOY88lk/B5VQYT5fhTzkTq6gPsUHfj3t4DwYxGl97jvAkPpweCE4xgLhd4iCCnNqtv6a
+         SGHQ==
+X-Gm-Message-State: AOAM532WUFCumAL2OEeWweKYJshvVF9AzROGvSsFyqPt9CA8FQ7is+4F
+        y6lnhHoDOdlxIO9QzW4iXG0=
+X-Google-Smtp-Source: ABdhPJw4q3WD3Ssxx5LcXqadho/lRYLUCDdlNnQp6VM4GiGI0ojvprpCP9WUbWiIGD9fnT2qvxf7Aw==
+X-Received: by 2002:a63:794:: with SMTP id 142mr26785898pgh.187.1608779353843;
+        Wed, 23 Dec 2020 19:09:13 -0800 (PST)
+Received: from ?IPv6:2601:647:4700:9b2:50a2:5929:401b:705e? ([2601:647:4700:9b2:50a2:5929:401b:705e])
+        by smtp.gmail.com with ESMTPSA id cu4sm889005pjb.18.2020.12.23.19.09.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 23 Dec 2020 19:09:12 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+From:   Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <X+P2OnR+ipY8d2qL@redhat.com>
+Date:   Wed, 23 Dec 2020 19:09:10 -0800
+Cc:     Andy Lutomirski <luto@amacapital.net>, Yu Zhao <yuzhao@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>, linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <3A6A1049-24C6-4B2D-8C59-21B549F742B4@gmail.com>
+References: <X+PE38s2Egq4nzKv@google.com>
+ <C332B03D-30B1-4C9C-99C2-E76988BFC4A1@amacapital.net>
+ <X+P2OnR+ipY8d2qL@redhat.com>
+To:     Andrea Arcangeli <aarcange@redhat.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> On Dec 23, 2020, at 6:00 PM, Andrea Arcangeli <aarcange@redhat.com> =
+wrote:
+>=20
+> On Wed, Dec 23, 2020 at 05:21:43PM -0800, Andy Lutomirski wrote:
+>> I don=E2=80=99t love this as a long term fix. AFAICT we can have =
+mm_tlb_flush_pending set for quite a while =E2=80=94 mprotect seems like =
+it can wait in IO while splitting a huge page, for example. That gives =
+us a window in which every write fault turns into a TLB flush.
+>=20
+> mprotect can't run concurrently with a page fault in the first place.
+>=20
+> One other near zero cost improvement easy to add if this would be "if
+> (vma->vm_flags & (VM_SOFTDIRTY|VM_UFFD_WP))" and it could be made
+> conditional to the two config options too.
+>=20
+> Still I don't mind doing it in some other way, uffd-wp has much easier
+> time doing it in another way in fact.
+>=20
+> Whatever performs better is fine, but queuing up pending invalidate
+> ranges don't look very attractive since it'd be a fixed cost that we'd
+> always have to pay even when there's no fault (and there can't be any
+> fault at least for mprotect).
 
+I think there are other cases in which Andy=E2=80=99s concern is =
+relevant
+(MADV_PAGEOUT).
 
-在 2020/12/21 下午8:34, Ran Wang 写道:
-> Hi Alex,
-> 
-> 
-> On Monday, December 21, 2020 3:52 PM, Alex Shi wrote:
-> 
->> 在 2020/12/19 上午11:42, Ran Wang 写道:
->>> Hi Jonathan,
->>>      
->>> On Tuesday, December 8, 2020 11:00 PM Jonathan Corbet wrote:
->>>  
->>>> On Tue,  8 Dec 2020 21:16:04 +0800
->>>> Ran Wang <gxndwr@outlook.com> wrote:
->>>>
->>>>> Signed-off-by: Ran Wang <gxndwr@outlook.com>
->>>>> ---
->>>>> Change in v2:
->>>>>    - For 'cn_development_coding' part, change back to >'是关于编码过程的'
->>>>>
->>>>>   .../translations/zh_CN/process/1.Intro.rst    | 61 >++++++++++---------
->>>>>   1 file changed, 32 insertions(+), 29 deletions(-)
->>>>
->>>> Thank you for working to improve the documentation!  >Please, though,
->>>> include a changelog with your patch; what does "improve >translation
->>>> quality" mean here?
->>>>
->>>> Thanks,
->>>>
->>>> jon
->>>
->>> Sorry I missed your mail.
->>>
->>> Actually I feel difficult to list the change log to describe this (after not I am not a language teacher :) ).
->>>
->>> I would say the original translation looks like a little bit more by machine: English word to Chinese word directly without considering particular scenarios (such as software development related terms we used in Chinese, a little bit different to normal usage maybe). So I tried to re-tell the story in a way more kind of 'human' to make everything clearer for Chinese reader.
->>
->> Hi Ran,
->>
->> I don't think you describe correctly for your new translation. And you are not 're-tell story'
->> for a standard community co-work process, which we don't need. Also the original translation is
->> not by machine, it's by myself.
-> 
-> Sorry, I didn't mean to offend. You are right.
+Perhaps holding some small bitmap based on part of the deferred flushed
+pages (e.g., bits 12-17 of the address or some other kind of a single
+hash-function bloom-filter) would be more performant to avoid (most)
+unnecessary TLB flushes. It will be cleared before a TLB flush and set =
+while
+holding the PTL.
 
-That's all right. I guess, few my translation is easy to be misunderstood, and I own some explantion:
-like 2 places:
+Checking if a flush is needed, under the PTL, would require a single =
+memory
+access (although potentially cache miss). It will however require one =
+atomic
+operation for each page-table whose PTEs=E2=80=99 flushes are deferred - =
+in contrast
+to the current scheme which requires two atomic operations for the =
+*entire*
+operation.
 
-1, 'There are a great many "reasons" why kernel code should be merged into the ...'
-Here if 'reasons' translated as 'benefits/advantage', that would fits better in Chinese
-converstion custom. (I don't strong oppose this). but usually we keep 'reasons' original meaning.
-
-2, 'managing patches with git and reviewing patches "posted" by others.' 
-Here the 'posted', I did think a lot on '发布' or '提交', It costed me sometime, But finally I used '发布'
-not ‘提交’， since the latter is easy to be confused with git 'commit' in Chinese, while patches we hold
-here were posted by email, not 'git'.
-
-
-> 
->> What you did right is polishing the Chinese words, make it more fluency and fit better for Chinese
->> custom, although it costs a bit verboseness and a bit precision.> 
-> The word 'polishing' is the perfect word to describe this, thank you.
-
-We are not professional translators or interpreters (although my wife is one). :)
-But there is a standards of the Chinese translation, fidelity, fluency, elegence, let's hang on fidelity,
-and try best on fluency or elegence. :)
-
-
-Thanks
-Alex
