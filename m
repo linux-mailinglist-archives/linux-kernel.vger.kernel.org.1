@@ -2,115 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 881B42E2356
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 02:13:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1DD32E2358
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 02:16:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729189AbgLXBMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Dec 2020 20:12:39 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:9478 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728141AbgLXBMi (ORCPT
+        id S1728512AbgLXBPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Dec 2020 20:15:15 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:9921 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728141AbgLXBPP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Dec 2020 20:12:38 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4D1X8R4f5CzhwlC;
-        Thu, 24 Dec 2020 09:11:19 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.214) with Microsoft SMTP Server (TLS) id 14.3.498.0; Thu, 24 Dec
- 2020 09:11:53 +0800
-Subject: Re: [PATCH 5.10 24/40] f2fs: fix to seek incorrect data offset in
- inline data file
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
-        kitestramuort <kitestramuort@autistici.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-References: <20201223150515.553836647@linuxfoundation.org>
- <20201223150516.715040953@linuxfoundation.org>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <962b2db7-383f-b4da-5221-2004235d19c1@huawei.com>
-Date:   Thu, 24 Dec 2020 09:11:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Wed, 23 Dec 2020 20:15:15 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4D1XCH4kqdz7KN4;
+        Thu, 24 Dec 2020 09:13:47 +0800 (CST)
+Received: from [10.174.176.185] (10.174.176.185) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 24 Dec 2020 09:14:21 +0800
+Subject: Re: [PATCH v2] ubifs: Fix read out-of-bounds in
+ ubifs_jnl_write_inode()
+To:     Richard Weinberger <richard@nod.at>,
+        Chengsong Ke <kechengsong@huawei.com>
+CC:     Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        wangfangpeng1 <wangfangpeng1@huawei.com>
+References: <20201223121536.6244-1-kechengsong@huawei.com>
+ <244303467.160590.1608764840819.JavaMail.zimbra@nod.at>
+From:   Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <a45eb291-c3e5-23c6-239d-88347cf688e4@huawei.com>
+Date:   Thu, 24 Dec 2020 09:14:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20201223150516.715040953@linuxfoundation.org>
+In-Reply-To: <244303467.160590.1608764840819.JavaMail.zimbra@nod.at>
 Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.185]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+在 2020/12/24 7:07, Richard Weinberger 写道:
 
-Thanks a lot for helping to resend and merge the patch. :)
-
-Thanks,
-
-On 2020/12/23 23:33, Greg Kroah-Hartman wrote:
-> From: Chao Yu <yuchao0@huawei.com>
+>> Reproducer:
+>> 0. config KASAN && apply print.patch
+>> 1. mount ubifs on /root/temp
+>> 2. run test.sh
 > 
-> commit 7a6e59d719ef0ec9b3d765cba3ba98ee585cbde3 upstream.
+> What does test.sh do?
+Go to Link: https://bugzilla.kernel.org/show_bug.cgi?id=210865.
+test.sh creates a very long path file test_file, and then create a 
+symbol link link_file for test_file, so ubifs inode for link_file will 
+be assigned a big value for ui->data_len.
+When we change atime for link_file, ubifs_jnl_write_inode will be 
+executed by wb_writeback. By this way, write_len could be not aligned 
+with 8 bytes.
 > 
-> As kitestramuort reported:
+>> 3. cd /root/temp && ls // change atime for link_file
+>> 4. wait 1~2 minutes
+>>
+>> In order to solve the read oob problem in ubifs_wbuf_write_nolock, just align
+>> the write_len to
+>> 8 bytes when alloc the memory. So that this patch will not affect the use of
+>> write_len in other
+>> functions, such as ubifs_jnl_write_inode->make_reservation and
+>> ubifs_jnl_write_inode->ubifs_node_calc_hash.
 > 
-> F2FS-fs (nvme0n1p4): access invalid blkaddr:1598541474
-> [   25.725898] ------------[ cut here ]------------
-> [   25.725903] WARNING: CPU: 6 PID: 2018 at f2fs_is_valid_blkaddr+0x23a/0x250
-> [   25.725923] Call Trace:
-> [   25.725927]  ? f2fs_llseek+0x204/0x620
-> [   25.725929]  ? ovl_copy_up_data+0x14f/0x200
-> [   25.725931]  ? ovl_copy_up_inode+0x174/0x1e0
-> [   25.725933]  ? ovl_copy_up_one+0xa22/0xdf0
-> [   25.725936]  ? ovl_copy_up_flags+0xa6/0xf0
-> [   25.725938]  ? ovl_aio_cleanup_handler+0xd0/0xd0
-> [   25.725939]  ? ovl_maybe_copy_up+0x86/0xa0
-> [   25.725941]  ? ovl_open+0x22/0x80
-> [   25.725943]  ? do_dentry_open+0x136/0x350
-> [   25.725945]  ? path_openat+0xb7e/0xf40
-> [   25.725947]  ? __check_sticky+0x40/0x40
-> [   25.725948]  ? do_filp_open+0x70/0x100
-> [   25.725950]  ? __check_sticky+0x40/0x40
-> [   25.725951]  ? __check_sticky+0x40/0x40
-> [   25.725953]  ? __x64_sys_openat+0x1db/0x2c0
-> [   25.725955]  ? do_syscall_64+0x2d/0x40
-> [   25.725957]  ? entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> I gave this a second thought and I'm not so sure anymore what exactly is going on.
+> The problem is real, I fully agree with you but I need to dig deeper into
+> the journal and wbuf code to double check that we really fix the right thing
+> and not just paper other something.
 > 
-> llseek() reports invalid block address access, the root cause is if
-> file has inline data, f2fs_seek_block() will access inline data regard
-> as block address index in inode block, which should be wrong, fix it.
-> 
-> Reported-by: kitestramuort <kitestramuort@autistici.org>
-> Signed-off-by: Chao Yu <yuchao0@huawei.com>
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 
-> ---
->   fs/f2fs/file.c |   11 ++++++++---
->   1 file changed, 8 insertions(+), 3 deletions(-)
-> 
-> --- a/fs/f2fs/file.c
-> +++ b/fs/f2fs/file.c
-> @@ -412,9 +412,14 @@ static loff_t f2fs_seek_block(struct fil
->   		goto fail;
->   
->   	/* handle inline data case */
-> -	if (f2fs_has_inline_data(inode) && whence == SEEK_HOLE) {
-> -		data_ofs = isize;
-> -		goto found;
-> +	if (f2fs_has_inline_data(inode)) {
-> +		if (whence == SEEK_HOLE) {
-> +			data_ofs = isize;
-> +			goto found;
-> +		} else if (whence == SEEK_DATA) {
-> +			data_ofs = offset;
-> +			goto found;
-> +		}
->   	}
->   
->   	pgofs = (pgoff_t)(offset >> PAGE_SHIFT);
-> 
-> 
+> Thanks,
+> //richard
 > .
 > 
+
