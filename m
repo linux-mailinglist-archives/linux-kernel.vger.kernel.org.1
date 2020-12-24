@@ -2,273 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED6C02E265C
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 12:30:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 535D22E265F
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 12:30:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728465AbgLXL1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 06:27:43 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:43131 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728033AbgLXL1n (ORCPT
+        id S1728630AbgLXL1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 06:27:46 -0500
+Received: from mailgw02.mediatek.com ([1.203.163.81]:60331 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728292AbgLXL1p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 06:27:43 -0500
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 24 Dec 2020 03:26:25 -0800
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 24 Dec 2020 03:26:23 -0800
-X-QCInternal: smtphost
-Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 24 Dec 2020 16:56:20 +0530
-Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
-        id ACB142146B; Thu, 24 Dec 2020 16:56:19 +0530 (IST)
-From:   Dikshita Agarwal <dikshita@codeaurora.org>
-To:     linux-media@vger.kernel.org, hverkuil-cisco@xs4all.nl,
-        nicolas@ndufresne.ca, stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, Dikshita Agarwal <dikshita@codeaurora.org>
-Subject: [PATCH v4 3/3] venus: venc: Add support for frame-specific min/max qp controls
-Date:   Thu, 24 Dec 2020 16:55:35 +0530
-Message-Id: <1608809135-26061-4-git-send-email-dikshita@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1608809135-26061-1-git-send-email-dikshita@codeaurora.org>
-References: <1608809135-26061-1-git-send-email-dikshita@codeaurora.org>
+        Thu, 24 Dec 2020 06:27:45 -0500
+X-UUID: 6534fe546ee846e8b3136e2f8c9ec414-20201224
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=x+vmTzBVFEHCrm2Yqn8M1lXv0V4BMO6yO0ekQRSMMRw=;
+        b=RTqhyRuN/AFFDnpBD4IK49T4eCUUo4z6DJ7US2CGcEuMLnTla9A6u/wZMobH6b8ZRGWc6ru/JTMNTxt9qe/acwIBjVfeOIGHV7lGTNMR2tKT/FAmw/wgtFp7Y6v+8wi8hO964L+Bs5unBWauQY3cYk84s28v/vrCjKtLMRoNgME=;
+X-UUID: 6534fe546ee846e8b3136e2f8c9ec414-20201224
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 172344441; Thu, 24 Dec 2020 19:26:54 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS32N1.mediatek.inc
+ (172.27.4.71) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 24 Dec
+ 2020 19:26:51 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 24 Dec 2020 19:26:51 +0800
+Message-ID: <1608809212.26323.258.camel@mhfsdcap03>
+Subject: Re: [PATCH v5 04/27] dt-bindings: memory: mediatek: Add domain
+ definition
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Tomasz Figa <tfiga@chromium.org>
+CC:     Joerg Roedel <joro@8bytes.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>, <youlin.pei@mediatek.com>,
+        <devicetree@vger.kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        <srv_heupstream@mediatek.com>, <chao.hao@mediatek.com>,
+        <linux-kernel@vger.kernel.org>, Evan Green <evgreen@chromium.org>,
+        Tomasz Figa <tfiga@google.com>,
+        <iommu@lists.linux-foundation.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>, <anan.sun@mediatek.com>,
+        <linux-arm-kernel@lists.infradead.org>
+Date:   Thu, 24 Dec 2020 19:26:52 +0800
+In-Reply-To: <X+L8qpO+T7+U2s5r@chromium.org>
+References: <20201209080102.26626-1-yong.wu@mediatek.com>
+         <20201209080102.26626-5-yong.wu@mediatek.com>
+         <X+L8qpO+T7+U2s5r@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: 8C474D3B2374B83E77D4A8D2415ADFF8FAC79803632363B2F7FCFDD373A9DCFD2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for frame type specific min and max qp controls
-for encoder.
-This is a preparation patch to support v6.
-
-Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
----
- drivers/media/platform/qcom/venus/core.h       |  18 ++++
- drivers/media/platform/qcom/venus/venc.c       |  21 +++--
- drivers/media/platform/qcom/venus/venc_ctrls.c | 114 +++++++++++++++++++++++--
- 3 files changed, 142 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
-index f03ed42..54c42a3 100644
---- a/drivers/media/platform/qcom/venus/core.h
-+++ b/drivers/media/platform/qcom/venus/core.h
-@@ -230,10 +230,28 @@ struct venc_controls {
- 	u32 h264_b_qp;
- 	u32 h264_min_qp;
- 	u32 h264_max_qp;
-+	u32 h264_i_min_qp;
-+	u32 h264_i_max_qp;
-+	u32 h264_p_min_qp;
-+	u32 h264_p_max_qp;
-+	u32 h264_b_min_qp;
-+	u32 h264_b_max_qp;
- 	u32 h264_loop_filter_mode;
- 	s32 h264_loop_filter_alpha;
- 	s32 h264_loop_filter_beta;
- 
-+	u32 hevc_i_qp;
-+	u32 hevc_p_qp;
-+	u32 hevc_b_qp;
-+	u32 hevc_min_qp;
-+	u32 hevc_max_qp;
-+	u32 hevc_i_min_qp;
-+	u32 hevc_i_max_qp;
-+	u32 hevc_p_min_qp;
-+	u32 hevc_p_max_qp;
-+	u32 hevc_b_min_qp;
-+	u32 hevc_b_max_qp;
-+
- 	u32 vp8_min_qp;
- 	u32 vp8_max_qp;
- 
-diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
-index 1c61602..3961e03 100644
---- a/drivers/media/platform/qcom/venus/venc.c
-+++ b/drivers/media/platform/qcom/venus/venc.c
-@@ -669,17 +669,28 @@ static int venc_set_properties(struct venus_inst *inst)
- 		return ret;
- 
- 	ptype = HFI_PROPERTY_PARAM_VENC_SESSION_QP;
--	quant.qp_i = ctr->h264_i_qp;
--	quant.qp_p = ctr->h264_p_qp;
--	quant.qp_b = ctr->h264_b_qp;
-+	if (inst->fmt_cap->pixfmt == V4L2_PIX_FMT_HEVC) {
-+		quant.qp_i = ctr->hevc_i_qp;
-+		quant.qp_p = ctr->hevc_p_qp;
-+		quant.qp_b = ctr->hevc_b_qp;
-+	} else {
-+		quant.qp_i = ctr->h264_i_qp;
-+		quant.qp_p = ctr->h264_p_qp;
-+		quant.qp_b = ctr->h264_b_qp;
-+	}
- 	quant.layer_id = 0;
- 	ret = hfi_session_set_property(inst, ptype, &quant);
- 	if (ret)
- 		return ret;
- 
- 	ptype = HFI_PROPERTY_PARAM_VENC_SESSION_QP_RANGE;
--	quant_range.min_qp = ctr->h264_min_qp;
--	quant_range.max_qp = ctr->h264_max_qp;
-+	if (inst->fmt_cap->pixfmt == V4L2_PIX_FMT_HEVC) {
-+		quant_range.min_qp = ctr->hevc_min_qp;
-+		quant_range.max_qp = ctr->hevc_max_qp;
-+	} else {
-+		quant_range.min_qp = ctr->h264_min_qp;
-+		quant_range.max_qp = ctr->h264_max_qp;
-+	}
- 	quant_range.layer_id = 0;
- 	ret = hfi_session_set_property(inst, ptype, &quant_range);
- 	if (ret)
-diff --git a/drivers/media/platform/qcom/venus/venc_ctrls.c b/drivers/media/platform/qcom/venus/venc_ctrls.c
-index cf860e6..496ad4d 100644
---- a/drivers/media/platform/qcom/venus/venc_ctrls.c
-+++ b/drivers/media/platform/qcom/venus/venc_ctrls.c
-@@ -135,9 +135,60 @@ static int venc_op_s_ctrl(struct v4l2_ctrl *ctrl)
- 	case V4L2_CID_MPEG_VIDEO_H264_MIN_QP:
- 		ctr->h264_min_qp = ctrl->val;
- 		break;
-+	case V4L2_CID_MPEG_VIDEO_H264_I_FRAME_MIN_QP:
-+		ctr->h264_i_min_qp = ctrl->val;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_H264_P_FRAME_MIN_QP:
-+		ctr->h264_p_min_qp = ctrl->val;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_H264_B_FRAME_MIN_QP:
-+		ctr->h264_b_min_qp = ctrl->val;
-+		break;
- 	case V4L2_CID_MPEG_VIDEO_H264_MAX_QP:
- 		ctr->h264_max_qp = ctrl->val;
- 		break;
-+	case V4L2_CID_MPEG_VIDEO_H264_I_FRAME_MAX_QP:
-+		ctr->h264_i_max_qp = ctrl->val;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_H264_P_FRAME_MAX_QP:
-+		ctr->h264_p_max_qp = ctrl->val;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_H264_B_FRAME_MAX_QP:
-+		ctr->h264_b_max_qp = ctrl->val;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_HEVC_I_FRAME_QP:
-+		ctr->hevc_i_qp = ctrl->val;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_HEVC_P_FRAME_QP:
-+		ctr->hevc_p_qp = ctrl->val;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_HEVC_B_FRAME_QP:
-+		ctr->hevc_b_qp = ctrl->val;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_HEVC_MIN_QP:
-+		ctr->hevc_min_qp = ctrl->val;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_HEVC_I_FRAME_MIN_QP:
-+		ctr->hevc_i_min_qp = ctrl->val;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_HEVC_P_FRAME_MIN_QP:
-+		ctr->hevc_p_min_qp = ctrl->val;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_HEVC_B_FRAME_MIN_QP:
-+		ctr->hevc_b_min_qp = ctrl->val;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_HEVC_MAX_QP:
-+		ctr->hevc_max_qp = ctrl->val;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_HEVC_I_FRAME_MAX_QP:
-+		ctr->hevc_i_max_qp = ctrl->val;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_HEVC_P_FRAME_MAX_QP:
-+		ctr->hevc_p_max_qp = ctrl->val;
-+		break;
-+	case V4L2_CID_MPEG_VIDEO_HEVC_B_FRAME_MAX_QP:
-+		ctr->hevc_b_max_qp = ctrl->val;
-+		break;
- 	case V4L2_CID_MPEG_VIDEO_MULTI_SLICE_MODE:
- 		ctr->multi_slice_mode = ctrl->val;
- 		break;
-@@ -223,7 +274,7 @@ int venc_ctrl_init(struct venus_inst *inst)
- {
- 	int ret;
- 
--	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 33);
-+	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 50);
- 	if (ret)
- 		return ret;
- 
-@@ -311,19 +362,70 @@ int venc_ctrl_init(struct venus_inst *inst)
- 		BITRATE_STEP, BITRATE_DEFAULT_PEAK);
- 
- 	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
--		V4L2_CID_MPEG_VIDEO_H264_I_FRAME_QP, 1, 51, 1, 26);
-+			  V4L2_CID_MPEG_VIDEO_H264_I_FRAME_QP, 1, 51, 1, 26);
-+
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_H264_P_FRAME_QP, 1, 51, 1, 28);
-+
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_H264_B_FRAME_QP, 1, 51, 1, 30);
-+
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_H264_MIN_QP, 1, 51, 1, 1);
-+
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_H264_I_FRAME_MIN_QP, 1, 51, 1, 1);
-+
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_H264_P_FRAME_MIN_QP, 1, 51, 1, 1);
-+
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_H264_B_FRAME_MIN_QP, 1, 51, 1, 1);
-+
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_H264_MAX_QP, 1, 51, 1, 51);
-+
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_H264_I_FRAME_MAX_QP, 1, 51, 1, 51);
-+
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_H264_P_FRAME_MAX_QP, 1, 51, 1, 51);
-+
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_H264_B_FRAME_MAX_QP, 1, 51, 1, 51);
-+
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_HEVC_I_FRAME_QP, 1, 63, 1, 26);
-+
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_HEVC_P_FRAME_QP, 1, 63, 1, 28);
-+
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_HEVC_B_FRAME_QP, 1, 63, 1, 30);
-+
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_HEVC_MIN_QP, 1, 63, 1, 1);
-+
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_HEVC_I_FRAME_MIN_QP, 1, 63, 1, 1);
-+
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_HEVC_P_FRAME_MIN_QP, 1, 63, 1, 1);
-+
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_HEVC_B_FRAME_MIN_QP, 1, 63, 1, 1);
- 
- 	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
--		V4L2_CID_MPEG_VIDEO_H264_P_FRAME_QP, 1, 51, 1, 28);
-+			  V4L2_CID_MPEG_VIDEO_HEVC_MAX_QP, 1, 63, 1, 63);
- 
- 	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
--		V4L2_CID_MPEG_VIDEO_H264_B_FRAME_QP, 1, 51, 1, 30);
-+			  V4L2_CID_MPEG_VIDEO_HEVC_I_FRAME_MAX_QP, 1, 63, 1, 63);
- 
- 	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
--		V4L2_CID_MPEG_VIDEO_H264_MIN_QP, 1, 51, 1, 1);
-+			  V4L2_CID_MPEG_VIDEO_HEVC_P_FRAME_MAX_QP, 1, 63, 1, 63);
- 
- 	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
--		V4L2_CID_MPEG_VIDEO_H264_MAX_QP, 1, 51, 1, 51);
-+			  V4L2_CID_MPEG_VIDEO_HEVC_B_FRAME_MAX_QP, 1, 63, 1, 63);
- 
- 	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
- 		V4L2_CID_MPEG_VIDEO_MULTI_SLICE_MAX_BYTES, SLICE_BYTE_SIZE_MIN,
--- 
-2.7.4
+T24gV2VkLCAyMDIwLTEyLTIzIGF0IDE3OjE1ICswOTAwLCBUb21hc3ogRmlnYSB3cm90ZToNCj4g
+SGkgWW9uZywNCj4gDQo+IE9uIFdlZCwgRGVjIDA5LCAyMDIwIGF0IDA0OjAwOjM5UE0gKzA4MDAs
+IFlvbmcgV3Ugd3JvdGU6DQo+ID4gSW4gdGhlIGxhdGVzdCBTb0MsIHRoZXJlIGFyZSBzZXZlcmFs
+IEhXIElQIHJlcXVpcmUgYSBzZXBlY2lhbCBpb3ZhDQo+ID4gcmFuZ2UsIG1haW5seSBDQ1UgYW5k
+IFZQVSBoYXMgdGhpcyByZXF1aXJlbWVudC4gVGFrZSBDQ1UgYXMgYSBleGFtcGxlLA0KPiA+IEND
+VSByZXF1aXJlIGl0cyBpb3ZhIGxvY2F0ZSBpbiB0aGUgcmFuZ2UoMHg0MDAwXzAwMDAgfiAweDQz
+ZmZfZmZmZikuDQo+IA0KPiBJcyB0aGlzIHJlYWxseSBhIGRvbWFpbj8gRG9lcyB0aGUgYWRkcmVz
+cyByYW5nZSBjb21lIGZyb20gdGhlIGRlc2lnbiBvZg0KPiB0aGUgSU9NTVU/DQoNCkl0IGlzIG5v
+dCBhIHJlYWxseSBhIGRvbWFpbi4gVGhlIGFkZHJlc3MgcmFuZ2UgY29tZXMgZnJvbSBDQ1UgSFcN
+CnJlcXVpcmVtZW50LiBUaGF0IEhXIGNhbiBvbmx5IGFjY2VzcyB0aGlzIGlvdmEgcmFuZ2UuIHRo
+dXMgSSBjcmVhdGUgYQ0Kc3BlY2lhbCBpb21tdSBkb21haW4gZm9yIGl0Lg0KDQo+IA0KPiBCZXN0
+IHJlZ2FyZHMsDQo+IFRvbWFzeg0KPiANCj4gPiANCj4gPiBJbiB0aGlzIHBhdGNoIHdlIGFkZCBh
+IGRvbWFpbiBkZWZpbml0aW9uIGZvciB0aGUgc3BlY2lhbCBwb3J0LiBJbiB0aGUNCj4gPiBleGFt
+cGxlIG9mIENDVSwgSWYgd2UgcHJlYXNzaWduIENDVSBwb3J0IGluIGRvbWFpbjEsIHRoZW4gaW9t
+bXUgZHJpdmVyDQo+ID4gd2lsbCBwcmVwYXJlIGEgaW5kZXBlbmRlbnQgaW9tbXUgZG9tYWluIG9m
+IHRoZSBzcGVjaWFsIGlvdmEgcmFuZ2UgZm9yIGl0LA0KPiA+IHRoZW4gdGhlIGlvdmEgZ290IGZy
+b20gZG1hX2FsbG9jX2F0dHJzKGNjdS1kZXYpIHdpbGwgbG9jYXRlIGluIGl0cyBzcGVjaWFsDQo+
+ID4gcmFuZ2UuDQo+ID4gDQo+ID4gVGhpcyBpcyBhIHByZXBhcmluZyBwYXRjaCBmb3IgbXVsdGkt
+ZG9tYWluIHN1cHBvcnQuDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogWW9uZyBXdSA8eW9uZy53
+dUBtZWRpYXRlay5jb20+DQo+ID4gQWNrZWQtYnk6IEtyenlzenRvZiBLb3psb3dza2kgPGtyemtA
+a2VybmVsLm9yZz4NCj4gPiBBY2tlZC1ieTogUm9iIEhlcnJpbmcgPHJvYmhAa2VybmVsLm9yZz4N
+Cj4gPiAtLS0NCj4gPiAgaW5jbHVkZS9kdC1iaW5kaW5ncy9tZW1vcnkvbXRrLXNtaS1sYXJiLXBv
+cnQuaCB8IDkgKysrKysrKystDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKyks
+IDEgZGVsZXRpb24oLSkNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9kdC1iaW5kaW5n
+cy9tZW1vcnkvbXRrLXNtaS1sYXJiLXBvcnQuaCBiL2luY2x1ZGUvZHQtYmluZGluZ3MvbWVtb3J5
+L210ay1zbWktbGFyYi1wb3J0LmgNCj4gPiBpbmRleCA3ZDY0MTAzMjA5YWYuLjJkNGM5NzNjMTc0
+ZiAxMDA2NDQNCj4gPiAtLS0gYS9pbmNsdWRlL2R0LWJpbmRpbmdzL21lbW9yeS9tdGstc21pLWxh
+cmItcG9ydC5oDQo+ID4gKysrIGIvaW5jbHVkZS9kdC1iaW5kaW5ncy9tZW1vcnkvbXRrLXNtaS1s
+YXJiLXBvcnQuaA0KPiA+IEBAIC03LDkgKzcsMTYgQEANCj4gPiAgI2RlZmluZSBfX0RUX0JJTkRJ
+TkdTX01FTU9SWV9NVEtfTUVNT1JZX1BPUlRfSF8NCj4gPiAgDQo+ID4gICNkZWZpbmUgTVRLX0xB
+UkJfTlJfTUFYCQkJMzINCj4gPiArI2RlZmluZSBNVEtfTTRVX0RPTV9OUl9NQVgJCTgNCj4gPiAr
+DQo+ID4gKyNkZWZpbmUgTVRLX000VV9ET01fSUQoZG9taWQsIGxhcmIsIHBvcnQpCVwNCj4gPiAr
+CSgoKGRvbWlkKSAmIDB4NykgPDwgMTYgfCAoKChsYXJiKSAmIDB4MWYpIDw8IDUpIHwgKChwb3J0
+KSAmIDB4MWYpKQ0KPiA+ICsNCj4gPiArLyogVGhlIGRlZmF1bHQgZG9tIGlkIGlzIDAuICovDQo+
+ID4gKyNkZWZpbmUgTVRLX000VV9JRChsYXJiLCBwb3J0KQkJTVRLX000VV9ET01fSUQoMCwgbGFy
+YiwgcG9ydCkNCj4gPiAgDQo+ID4gLSNkZWZpbmUgTVRLX000VV9JRChsYXJiLCBwb3J0KQkJKCgo
+bGFyYikgPDwgNSkgfCAocG9ydCkpDQo+ID4gICNkZWZpbmUgTVRLX000VV9UT19MQVJCKGlkKQkJ
+KCgoaWQpID4+IDUpICYgMHgxZikNCj4gPiAgI2RlZmluZSBNVEtfTTRVX1RPX1BPUlQoaWQpCQko
+KGlkKSAmIDB4MWYpDQo+ID4gKyNkZWZpbmUgTVRLX000VV9UT19ET00oaWQpCQkoKChpZCkgPj4g
+MTYpICYgMHg3KQ0KPiA+ICANCj4gPiAgI2VuZGlmDQo+ID4gLS0gDQo+ID4gMi4xOC4wDQo+ID4g
+DQo+ID4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCj4g
+PiBpb21tdSBtYWlsaW5nIGxpc3QNCj4gPiBpb21tdUBsaXN0cy5saW51eC1mb3VuZGF0aW9uLm9y
+Zw0KPiA+IGh0dHBzOi8vbGlzdHMubGludXhmb3VuZGF0aW9uLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2lvbW11DQoNCg==
 
