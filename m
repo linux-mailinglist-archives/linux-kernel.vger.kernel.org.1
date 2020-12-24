@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C7542E2677
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 12:46:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5991A2E267F
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 12:46:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728409AbgLXLoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 06:44:24 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:39704 "EHLO
+        id S1728729AbgLXLpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 06:45:23 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:39706 "EHLO
         fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726609AbgLXLoX (ORCPT
+        with ESMTP id S1726591AbgLXLpV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 06:44:23 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BOBhUps083394;
-        Thu, 24 Dec 2020 05:43:30 -0600
+        Thu, 24 Dec 2020 06:45:21 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BOBhaID083417;
+        Thu, 24 Dec 2020 05:43:36 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1608810210;
-        bh=R5Xa44jBVuv2Xt7dKXCPPYky4afTZPCkQ/UEaLszPCE=;
+        s=ti-com-17Q1; t=1608810216;
+        bh=C6VmPER5GCq2++TCYUbhbv+YgfcUFKsHywohrusjcBI=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=lDZtUI0ekK5fU4lirGgmSO0Y7kMlkvBbp3bXcE5Qs2OtDgWF4eZ0FBjYCWZMF4hio
-         sTHrKhi8fbjeiBHPx56Y7C3Wcu6JAxMy2M8U8OSX50tttpQOIeY62SVXfh9H+9vfZD
-         lux2Af+8tU/t9SuzM4y7V6XnAWIZFyqoJOPy444U=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BOBhUMC097972
+        b=yq4RPbttx/GXBAy/ntR7PhVcH7J37Ri+4WUIeUXtKxCyBJHGasoQjrS7mRireyN3z
+         xOHtoYOLrv7rhU3JZfjjZOsyDuI1bPBOcS96+GhSHLiZeH7Q29Q7IBCRsy97zDh/mz
+         TYlyj192H8X6hWGSS1Z1wuXD0H5TfEYeNb2Goqss=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BOBhaS8090278
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 24 Dec 2020 05:43:30 -0600
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+        Thu, 24 Dec 2020 05:43:36 -0600
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 24
- Dec 2020 05:43:30 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ Dec 2020 05:43:35 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 24 Dec 2020 05:43:30 -0600
+ Frontend Transport; Thu, 24 Dec 2020 05:43:35 -0600
 Received: from a0393678-ssd.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BOBgtwZ026267;
-        Thu, 24 Dec 2020 05:43:26 -0600
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BOBgtwa026267;
+        Thu, 24 Dec 2020 05:43:31 -0600
 From:   Kishon Vijay Abraham I <kishon@ti.com>
 To:     Kishon Vijay Abraham I <kishon@ti.com>,
         Vinod Koul <vkoul@kernel.org>,
@@ -45,9 +45,9 @@ To:     Kishon Vijay Abraham I <kishon@ti.com>,
         Peter Rosin <peda@axentia.se>
 CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH 6/7] phy: ti: j721e-wiz: Enable reference clock output in cmn_refclk_<p/m>
-Date:   Thu, 24 Dec 2020 17:12:49 +0530
-Message-ID: <20201224114250.1083-7-kishon@ti.com>
+Subject: [PATCH 7/7] phy: cadence-torrent: Add support to drive refclk out
+Date:   Thu, 24 Dec 2020 17:12:50 +0530
+Message-ID: <20201224114250.1083-8-kishon@ti.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201224114250.1083-1-kishon@ti.com>
 References: <20201224114250.1083-1-kishon@ti.com>
@@ -60,116 +60,158 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 cmn_refclk_<p/m> lines in Torrent SERDES is used for connecting external
 reference clock. cmn_refclk_<p/m> can also be configured to output the
-reference clock. In order to drive the refclk out from the SERDES
-(Cadence Torrent), PHY_EN_REFCLK should be set in SERDES_RST of WIZ.
-Model PHY_EN_REFCLK as a clock, so that platforms like AM642 EVM can
-enable it.
+reference clock. Model this derived reference clock as a "clock" so that
+platforms like AM642 EVM can enable it.
+This is used by PCIe to use the same refclk both in local SERDES
+and remote device. Add support here to drive refclk out.
 
 Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
 ---
- drivers/phy/ti/phy-j721e-wiz.c | 115 +++++++++++++++++++++++++++++++++
- 1 file changed, 115 insertions(+)
+ drivers/phy/cadence/phy-cadence-torrent.c | 158 ++++++++++++++++++++++
+ 1 file changed, 158 insertions(+)
 
-diff --git a/drivers/phy/ti/phy-j721e-wiz.c b/drivers/phy/ti/phy-j721e-wiz.c
-index 08acfab1ebe6..d60a9a01a8b2 100644
---- a/drivers/phy/ti/phy-j721e-wiz.c
-+++ b/drivers/phy/ti/phy-j721e-wiz.c
-@@ -54,6 +54,7 @@ enum wiz_refclk_div_sel {
+diff --git a/drivers/phy/cadence/phy-cadence-torrent.c b/drivers/phy/cadence/phy-cadence-torrent.c
+index f310e15d94cb..ad01fb61cfa4 100644
+--- a/drivers/phy/cadence/phy-cadence-torrent.c
++++ b/drivers/phy/cadence/phy-cadence-torrent.c
+@@ -8,6 +8,7 @@
  
- static const struct reg_field por_en = REG_FIELD(WIZ_SERDES_CTRL, 31, 31);
- static const struct reg_field phy_reset_n = REG_FIELD(WIZ_SERDES_RST, 31, 31);
-+static const struct reg_field phy_en_refclk = REG_FIELD(WIZ_SERDES_RST, 30, 30);
- static const struct reg_field pll1_refclk_mux_sel =
- 					REG_FIELD(WIZ_SERDES_RST, 29, 29);
- static const struct reg_field pll0_refclk_mux_sel =
-@@ -141,6 +142,15 @@ struct wiz_clk_div_sel {
- 	const char		*node_name;
+ #include <dt-bindings/phy/phy.h>
+ #include <linux/clk.h>
++#include <linux/clk-provider.h>
+ #include <linux/delay.h>
+ #include <linux/err.h>
+ #include <linux/io.h>
+@@ -76,6 +77,8 @@
+  * register offsets from SD0801 PHY register block base (i.e MHDP
+  * register base + 0x500000)
+  */
++#define CMN_CDIAG_REFCLK_OVRD		0x004CU
++#define CMN_CDIAG_REFCLK_DRV0_CTRL	0x0050U
+ #define CMN_SSM_BANDGAP_TMR		0x0021U
+ #define CMN_SSM_BIAS_TMR		0x0022U
+ #define CMN_PLLSM0_PLLPRE_TMR		0x002AU
+@@ -206,6 +209,8 @@
+ #define RX_DIAG_ACYA			0x01FFU
+ 
+ /* PHY PCS common registers */
++#define PHY_PIPE_CMN_CTRL1		0x0000U
++#define PHY_ISO_CMN_CTRL		0x0008U
+ #define PHY_PLL_CFG			0x000EU
+ #define PHY_PIPE_USB3_GEN2_PRE_CFG0	0x0020U
+ #define PHY_PIPE_USB3_GEN2_POST_CFG0	0x0022U
+@@ -231,6 +236,36 @@ static const struct reg_field phy_pma_pll_raw_ctrl =
+ static const struct reg_field phy_reset_ctrl =
+ 				REG_FIELD(PHY_RESET, 8, 8);
+ 
++#define REFCLK_OUT_NUM_CONFIGURATIONS_PCS_CONFIG	2
++
++enum cdns_torrent_refclk_out_pcs {
++	PHY_ISO_CMN_CTRL_8,
++	PHY_PIPE_CMN_CTRL1_0,
++};
++
++#define REFCLK_OUT_NUM_CONFIGURATIONS_CMN_CONFIG	5
++
++enum cdns_torrent_refclk_out_cmn {
++	CMN_CDIAG_REFCLK_OVRD_4,
++	CMN_CDIAG_REFCLK_DRV0_CTRL_1,
++	CMN_CDIAG_REFCLK_DRV0_CTRL_4,
++	CMN_CDIAG_REFCLK_DRV0_CTRL_5,
++	CMN_CDIAG_REFCLK_DRV0_CTRL_6,
++};
++
++static const struct reg_field refclk_out_pcs_cfg[] = {
++	[PHY_ISO_CMN_CTRL_8]	= REG_FIELD(PHY_ISO_CMN_CTRL, 8, 8),
++	[PHY_PIPE_CMN_CTRL1_0]	= REG_FIELD(PHY_PIPE_CMN_CTRL1, 0, 0),
++};
++
++static const struct reg_field refclk_out_cmn_cfg[] = {
++	[CMN_CDIAG_REFCLK_OVRD_4]	= REG_FIELD(CMN_CDIAG_REFCLK_OVRD, 4, 4),
++	[CMN_CDIAG_REFCLK_DRV0_CTRL_1]	= REG_FIELD(CMN_CDIAG_REFCLK_DRV0_CTRL, 1, 1),
++	[CMN_CDIAG_REFCLK_DRV0_CTRL_4]	= REG_FIELD(CMN_CDIAG_REFCLK_DRV0_CTRL, 4, 4),
++	[CMN_CDIAG_REFCLK_DRV0_CTRL_5]  = REG_FIELD(CMN_CDIAG_REFCLK_DRV0_CTRL, 5, 5),
++	[CMN_CDIAG_REFCLK_DRV0_CTRL_6]	= REG_FIELD(CMN_CDIAG_REFCLK_DRV0_CTRL, 6, 6),
++};
++
+ enum cdns_torrent_phy_type {
+ 	TYPE_NONE,
+ 	TYPE_DP,
+@@ -288,6 +323,16 @@ enum phy_powerstate {
+ 	POWERSTATE_A3 = 3,
  };
  
-+struct wiz_phy_en_refclk {
++struct cdns_torrent_derived_refclk {
 +	struct clk_hw		hw;
-+	struct regmap_field	*phy_en_refclk;
++	struct regmap_field	*pcs_fields[REFCLK_OUT_NUM_CONFIGURATIONS_PCS_CONFIG];
++	struct regmap_field	*cmn_fields[REFCLK_OUT_NUM_CONFIGURATIONS_CMN_CONFIG];
 +	struct clk_init_data	clk_data;
 +};
 +
-+#define to_wiz_phy_en_refclk(_hw)	\
-+			container_of(_hw, struct wiz_phy_en_refclk, hw)
++#define to_cdns_torrent_derived_refclk(_hw)	\
++			container_of(_hw, struct cdns_torrent_derived_refclk, hw)
 +
- static struct wiz_clk_mux_sel clk_mux_sel_16g[] = {
- 	{
- 		/*
-@@ -214,6 +224,7 @@ struct wiz {
- 	unsigned int		clk_div_sel_num;
- 	struct regmap_field	*por_en;
- 	struct regmap_field	*phy_reset_n;
-+	struct regmap_field	*phy_en_refclk;
- 	struct regmap_field	*p_enable[WIZ_MAX_LANES];
- 	struct regmap_field	*p_align[WIZ_MAX_LANES];
- 	struct regmap_field	*p_raw_auto_start[WIZ_MAX_LANES];
-@@ -450,9 +461,96 @@ static int wiz_regfield_init(struct wiz *wiz)
- 		return PTR_ERR(wiz->typec_ln10_swap);
- 	}
- 
-+	wiz->phy_en_refclk = devm_regmap_field_alloc(dev, regmap,
-+						     phy_en_refclk);
-+	if (IS_ERR(wiz->phy_en_refclk)) {
-+		dev_err(dev, "PHY_EN_REFCLK reg field init failed\n");
-+		return PTR_ERR(wiz->phy_en_refclk);
-+	}
-+
- 	return 0;
+ static int cdns_torrent_phy_init(struct phy *phy);
+ static int cdns_torrent_dp_init(struct phy *phy);
+ static int cdns_torrent_dp_run(struct cdns_torrent_phy *cdns_phy,
+@@ -1604,6 +1649,110 @@ static int cdns_torrent_dp_run(struct cdns_torrent_phy *cdns_phy, u32 num_lanes)
+ 	return ret;
  }
  
-+static int wiz_phy_en_refclk_enable(struct clk_hw *hw)
++static int cdns_torrent_derived_refclk_enable(struct clk_hw *hw)
 +{
-+	struct wiz_phy_en_refclk *wiz_phy_en_refclk = to_wiz_phy_en_refclk(hw);
-+	struct regmap_field *phy_en_refclk = wiz_phy_en_refclk->phy_en_refclk;
++	struct cdns_torrent_derived_refclk *derived_refclk = to_cdns_torrent_derived_refclk(hw);
 +
-+	regmap_field_write(phy_en_refclk, 1);
++	regmap_field_write(derived_refclk->cmn_fields[CMN_CDIAG_REFCLK_DRV0_CTRL_6], 0);
++	regmap_field_write(derived_refclk->cmn_fields[CMN_CDIAG_REFCLK_DRV0_CTRL_4], 1);
++	regmap_field_write(derived_refclk->cmn_fields[CMN_CDIAG_REFCLK_DRV0_CTRL_5], 1);
++	regmap_field_write(derived_refclk->cmn_fields[CMN_CDIAG_REFCLK_DRV0_CTRL_1], 0);
++	regmap_field_write(derived_refclk->cmn_fields[CMN_CDIAG_REFCLK_OVRD_4], 1);
++	regmap_field_write(derived_refclk->pcs_fields[PHY_PIPE_CMN_CTRL1_0], 1);
++	regmap_field_write(derived_refclk->pcs_fields[PHY_ISO_CMN_CTRL_8], 1);
 +
 +	return 0;
 +}
 +
-+static void wiz_phy_en_refclk_disable(struct clk_hw *hw)
++static void cdns_torrent_derived_refclk_disable(struct clk_hw *hw)
 +{
-+	struct wiz_phy_en_refclk *wiz_phy_en_refclk = to_wiz_phy_en_refclk(hw);
-+	struct regmap_field *phy_en_refclk = wiz_phy_en_refclk->phy_en_refclk;
++	struct cdns_torrent_derived_refclk *derived_refclk = to_cdns_torrent_derived_refclk(hw);
 +
-+	regmap_field_write(phy_en_refclk, 0);
++	regmap_field_write(derived_refclk->pcs_fields[PHY_ISO_CMN_CTRL_8], 0);
 +}
 +
-+static int wiz_phy_en_refclk_is_enabled(struct clk_hw *hw)
++static int cdns_torrent_derived_refclk_is_enabled(struct clk_hw *hw)
 +{
-+	struct wiz_phy_en_refclk *wiz_phy_en_refclk = to_wiz_phy_en_refclk(hw);
-+	struct regmap_field *phy_en_refclk = wiz_phy_en_refclk->phy_en_refclk;
++	struct cdns_torrent_derived_refclk *derived_refclk = to_cdns_torrent_derived_refclk(hw);
 +	int val;
 +
-+	regmap_field_read(phy_en_refclk, &val);
++	regmap_field_read(derived_refclk->pcs_fields[PHY_ISO_CMN_CTRL_8], &val);
 +
 +	return !!val;
 +}
 +
-+static const struct clk_ops wiz_phy_en_refclk_ops = {
-+	.enable = wiz_phy_en_refclk_enable,
-+	.disable = wiz_phy_en_refclk_disable,
-+	.is_enabled = wiz_phy_en_refclk_is_enabled,
++static const struct clk_ops cdns_torrent_derived_refclk_ops = {
++	.enable = cdns_torrent_derived_refclk_enable,
++	.disable = cdns_torrent_derived_refclk_disable,
++	.is_enabled = cdns_torrent_derived_refclk_is_enabled,
 +};
 +
-+static int wiz_phy_en_refclk_register(struct wiz *wiz, struct device_node *node,
-+				      struct regmap_field *phy_en_refclk)
++static int cdns_torrent_derived_refclk_register(struct cdns_torrent_phy *cdns_phy,
++						struct device_node *node)
 +{
-+	struct wiz_phy_en_refclk *wiz_phy_en_refclk;
-+	struct device *dev = wiz->dev;
++	struct cdns_torrent_derived_refclk *derived_refclk;
++	struct device *dev = cdns_phy->dev;
++	struct regmap_field *field;
 +	struct clk_init_data *init;
 +	unsigned int num_parents;
 +	const char *parent_name;
++	struct regmap *regmap;
 +	char clk_name[100];
 +	struct clk *clk;
-+	int ret;
++	int ret, i;
 +
-+	wiz_phy_en_refclk = devm_kzalloc(dev, sizeof(*wiz_phy_en_refclk),
-+					 GFP_KERNEL);
-+	if (!wiz_phy_en_refclk)
++	derived_refclk = devm_kzalloc(dev, sizeof(*derived_refclk), GFP_KERNEL);
++	if (!derived_refclk)
 +		return -ENOMEM;
 +
 +	num_parents = of_clk_get_parent_count(node);
@@ -178,62 +220,67 @@ index 08acfab1ebe6..d60a9a01a8b2 100644
 +	snprintf(clk_name, sizeof(clk_name), "%s_%s", dev_name(dev),
 +		 node->name);
 +
-+	init = &wiz_phy_en_refclk->clk_data;
++	init = &derived_refclk->clk_data;
 +
-+	init->ops = &wiz_phy_en_refclk_ops;
++	init->ops = &cdns_torrent_derived_refclk_ops;
 +	init->flags = 0;
 +	init->parent_names = parent_name ? &parent_name : NULL;
 +	init->num_parents = num_parents ? 1 : 0;
 +	init->name = clk_name;
 +
-+	wiz_phy_en_refclk->phy_en_refclk = phy_en_refclk;
-+	wiz_phy_en_refclk->hw.init = init;
++	regmap = cdns_phy->regmap_phy_pcs_common_cdb;
++	for (i = 0; i < REFCLK_OUT_NUM_CONFIGURATIONS_PCS_CONFIG; i++) {
++		field = devm_regmap_field_alloc(dev, regmap, refclk_out_pcs_cfg[i]);
++		if (IS_ERR(field)) {
++			dev_err(dev, "PCS reg field init failed\n");
++			return PTR_ERR(field);
++		}
++		derived_refclk->pcs_fields[i] = field;
++	}
 +
-+	clk = devm_clk_register(dev, &wiz_phy_en_refclk->hw);
++	regmap = cdns_phy->regmap_common_cdb;
++	for (i = 0; i < REFCLK_OUT_NUM_CONFIGURATIONS_CMN_CONFIG; i++) {
++		field = devm_regmap_field_alloc(dev, regmap, refclk_out_cmn_cfg[i]);
++		if (IS_ERR(field)) {
++			dev_err(dev, "CMN reg field init failed\n");
++			return PTR_ERR(field);
++		}
++		derived_refclk->cmn_fields[i] = field;
++	}
++
++	derived_refclk->hw.init = init;
++
++	clk = devm_clk_register(dev, &derived_refclk->hw);
 +	if (IS_ERR(clk))
 +		return PTR_ERR(clk);
 +
 +	ret = of_clk_add_provider(node, of_clk_src_simple_get, clk);
 +	if (ret)
-+		dev_err(dev, "Fail to add clock provider: %s\n", clk_name);
++		dev_err(dev, "Failed to add refrcv clock provider: %s\n",
++			clk_name);
 +
 +	return ret;
 +}
 +
- static u8 wiz_clk_mux_get_parent(struct clk_hw *hw)
+ static int cdns_torrent_phy_on(struct phy *phy)
  {
- 	struct wiz_clk_mux *mux = to_wiz_clk_mux(hw);
-@@ -713,6 +811,20 @@ static int wiz_clock_init(struct wiz *wiz, struct device_node *node)
- 		of_node_put(clk_node);
- 	}
+ 	struct cdns_torrent_inst *inst = phy_get_drvdata(phy);
+@@ -2150,6 +2299,15 @@ static int cdns_torrent_phy_probe(struct platform_device *pdev)
+ 	/* Enable APB */
+ 	reset_control_deassert(cdns_phy->apb_rst);
  
-+	clk_node = of_get_child_by_name(node, "phy-en-refclk");
-+	if (clk_node) {
-+		ret = wiz_phy_en_refclk_register(wiz, clk_node,
-+						 wiz->phy_en_refclk);
++	child = of_get_child_by_name(dev->of_node, "refclk-driver");
++	if (child) {
++		ret = cdns_torrent_derived_refclk_register(cdns_phy, child);
 +		if (ret) {
-+			dev_err(dev, "Failed to register %s clock\n",
-+				node_name);
-+			of_node_put(clk_node);
-+			goto err;
++			dev_err(dev, "failed to register derived refclk\n");
++			return ret;
 +		}
-+
-+		of_node_put(clk_node);
 +	}
 +
- 	return 0;
- err:
- 	wiz_clock_cleanup(wiz, node);
-@@ -828,6 +940,9 @@ static int wiz_get_lane_phy_types(struct device *dev, struct wiz *wiz)
- 		      of_node_name_eq(subnode, "link")))
- 			continue;
+ 	for_each_available_child_of_node(dev->of_node, child) {
+ 		struct phy *gphy;
  
-+		if (!(of_node_name_eq(subnode, "link")))
-+			continue;
-+
- 		ret = of_property_read_u32(subnode, "reg", &reg);
- 		if (ret) {
- 			dev_err(dev,
 -- 
 2.17.1
 
