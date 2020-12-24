@@ -2,68 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 389432E26DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 13:31:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EDF92E26DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 13:33:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728550AbgLXM3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 07:29:37 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9646 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727081AbgLXM3g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 07:29:36 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4D1q9P58Jrz15gbj;
-        Thu, 24 Dec 2020 20:28:09 +0800 (CST)
-Received: from ubuntu.network (10.175.138.68) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 24 Dec 2020 20:28:46 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <cluster-devel@redhat.com>, <linux-kernel@vger.kernel.org>
-CC:     <ccaulfie@redhat.com>, <teigland@redhat.com>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH v2 -next] dlm: debug_fs: use DEFINE_MUTEX() for mutex lock
-Date:   Thu, 24 Dec 2020 20:29:21 +0800
-Message-ID: <20201224122921.29343-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        id S1728320AbgLXMbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 07:31:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40502 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727184AbgLXMbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Dec 2020 07:31:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 045D9224B0;
+        Thu, 24 Dec 2020 12:30:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608813025;
+        bh=UTX4NY2//XHZ3bT1CqU1okJ/pCfOmDDpYpMiTqQ1Av0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=crfmOFxsz4UDJPk9OiZuZwMAE4D1gMiBdyhETVbZTNdiUryr5ExbfLBBy6/oTUdzf
+         AqLH0AnwDIG5HWqP9N1NBvxfbylPV83fUtc6uhMtDexY/o0OSXjB92qyzoGs8wLzr3
+         DyNk99xrUIlOGQg5f/9eFKSfpAS5yuobDuZgJ7Y/mvmBe0FZFPtU9UCcOaqNyDMYru
+         6FpIktWV1TO3Jh+lkfmVxtsS3scawv/7gLdL/GgaVxaj0FpWrJ3P/2OcEm64TEprDW
+         BQh2DhFO+PQX1muRfvcSfkUZZjJ2wdYUY/7Dn/9QBX1RIeEa63QDlaQLPljoA/vnuq
+         SQialONXxBLgA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id AD2F7411E9; Thu, 24 Dec 2020 09:30:38 -0300 (-03)
+Date:   Thu, 24 Dec 2020 09:30:38 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     James Clark <james.clark@arm.com>,
+        linux-perf-users@vger.kernel.org,
+        John Garry <john.garry@huawei.com>,
+        linux-kernel@vger.kernel.org, namhyung@kernel.org,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: Re: [PATCH v6 00/12] perf tools: fix perf stat with large socket IDs
+Message-ID: <20201224123038.GC477817@kernel.org>
+References: <20201126141328.6509-1-james.clark@arm.com>
+ <20201203153923.GA3613481@krava>
+ <30c4426d-b314-98ff-e6d5-6d5152f316e8@huawei.com>
+ <20201223221747.GB236568@krava>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.138.68]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201223221747.GB236568@krava>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mutex lock can be initialized automatically with DEFINE_MUTEX()
-rather than explicitly calling mutex_init()
+Em Wed, Dec 23, 2020 at 11:17:47PM +0100, Jiri Olsa escreveu:
+> On Fri, Dec 04, 2020 at 11:48:36AM +0000, John Garry wrote:
+> > On 03/12/2020 15:39, Jiri Olsa wrote:
+> > 
+> > +
+> > 
+> > > On Thu, Nov 26, 2020 at 04:13:16PM +0200, James Clark wrote:
+> > > > Changes since v5:
+> > > >    * Fix test for cpu_map__get_die() by shifting id before testing.
+> > > >    * Fix test for cpu_map__get_socket() by not using cpu_map__id_to_socket()
+> > > >      which is only valid in CPU aggregation mode.
+> > > > 
+> > > > James Clark (12):
+> > > >    perf tools: Improve topology test
+> > > >    perf tools: Use allocator for perf_cpu_map
+> > > >    perf tools: Add new struct for cpu aggregation
+> > > >    perf tools: Replace aggregation ID with a struct
+> > > >    perf tools: add new map type for aggregation
+> > > >    perf tools: drop in cpu_aggr_map struct
+> > > >    perf tools: Start using cpu_aggr_id in map
+> > > >    perf tools: Add separate node member
+> > > >    perf tools: Add separate socket member
+> > > >    perf tools: Add separate die member
+> > > >    perf tools: Add separate core member
+> > > >    perf tools: Add separate thread member
+> > > 
+> > > Acked-by: Jiri Olsa <jolsa@redhat.com>
+> > > 
+> > 
+> > Tested-by: John Garry <john.garry@huawei.com>
+> 
+> hi,
+> I was wondering where this went, and noticed that
+> Arnaldo was not CC-ed on the cover letter ;-)
 
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+Looking at it right now, used the Message-ID and b4 got everything,
+there are some fuzzies that I'm checking:
+
+[acme@five perf]$ git am --show-current-patch=diff | patch -p1
+patching file tools/perf/builtin-stat.c
+Hunk #1 succeeded at 1186 (offset -2 lines).
+Hunk #2 succeeded at 1347 (offset -2 lines).
+Hunk #3 succeeded at 1373 (offset -2 lines).
+Hunk #4 succeeded at 1399 (offset -2 lines).
+Hunk #5 succeeded at 1448 (offset -2 lines).
+patching file tools/perf/tests/topology.c
+patching file tools/perf/util/cpumap.c
+patching file tools/perf/util/cpumap.h
+patching file tools/perf/util/stat-display.c
+Hunk #8 succeeded at 326 with fuzz 2 (offset -3 lines).
+Hunk #9 succeeded at 334 (offset -3 lines).
+Hunk #10 succeeded at 397 (offset -3 lines).
+Hunk #11 succeeded at 500 (offset -3 lines).
+Hunk #12 succeeded at 589 (offset -3 lines).
+Hunk #13 succeeded at 598 (offset -3 lines).
+Hunk #14 succeeded at 634 (offset -3 lines).
+Hunk #15 succeeded at 656 (offset -3 lines).
+Hunk #16 succeeded at 739 (offset -3 lines).
+Hunk #17 succeeded at 763 (offset -3 lines).
+Hunk #18 succeeded at 781 (offset -3 lines).
+Hunk #19 succeeded at 827 (offset -3 lines).
+Hunk #20 succeeded at 855 (offset -3 lines).
+Hunk #21 succeeded at 870 (offset -3 lines).
+Hunk #22 succeeded at 888 (offset -3 lines).
+Hunk #23 succeeded at 897 (offset -3 lines).
+Hunk #24 succeeded at 908 (offset -3 lines).
+Hunk #25 succeeded at 1159 (offset -3 lines).
+patching file tools/perf/util/stat.c
+patching file tools/perf/util/stat.h
+[acme@five perf]$
+
+[acme@five perf]$ git am --show-current-patch=diff | head -20
 ---
- fs/dlm/debug_fs.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ tools/perf/builtin-stat.c      |  76 +++++++++++++----------
+ tools/perf/tests/topology.c    |  17 +++---
+ tools/perf/util/cpumap.c       |  82 ++++++++++++++-----------
+ tools/perf/util/cpumap.h       |  10 +--
+ tools/perf/util/stat-display.c | 108 +++++++++++++++++++--------------
+ tools/perf/util/stat.c         |   2 +-
+ tools/perf/util/stat.h         |   5 +-
+ 7 files changed, 173 insertions(+), 127 deletions(-)
 
-diff --git a/fs/dlm/debug_fs.c b/fs/dlm/debug_fs.c
-index d6bbccb0ed15..7a6fa8ac6f50 100644
---- a/fs/dlm/debug_fs.c
-+++ b/fs/dlm/debug_fs.c
-@@ -20,7 +20,7 @@
+diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+index f15b2f8aa14d..f10c67a26472 100644
+--- a/tools/perf/builtin-stat.c
++++ b/tools/perf/builtin-stat.c
+@@ -1188,65 +1188,67 @@ static struct option stat_options[] = {
+ 	OPT_END()
+ };
+
+-static int perf_stat__get_socket(struct perf_stat_config *config __maybe_unused,
++static struct aggr_cpu_id perf_stat__get_socket(struct perf_stat_config *config __maybe_unused,
+[acme@five perf]$
  
- #define DLM_DEBUG_BUF_LEN 4096
- static char debug_buf[DLM_DEBUG_BUF_LEN];
--static struct mutex debug_buf_lock;
-+static DEFINE_MUTEX(debug_buf_lock);
- 
- static struct dentry *dlm_root;
- 
-@@ -794,7 +794,6 @@ void dlm_create_debug_file(struct dlm_ls *ls)
- 
- void __init dlm_register_debugfs(void)
- {
--	mutex_init(&debug_buf_lock);
- 	dlm_root = debugfs_create_dir("dlm", NULL);
- }
- 
+> jirka
+> 
+> > 
+> > I still think that vendors (like us) need to fix/improve their firmware
+> > tables so that we don't get silly big numbers for socket/package IDs, like
+> > S5418-D0, below:
+> > 
+> > $./perf stat -a --per-die
+> > 
+> >  Performance counter stats for 'system wide':
+> > 
+> > S36-D0   48   72,216.31 msec cpu-clock      #   47.933 CPUs utilized
+> > S36-D0   48        174     context-switches #   0.002 K/sec
+> > S36-D0   48         48     cpu-migrations   #   0.001 K/sec
+> > S36-D0   48         0     page-faults    #   0.000 K/sec
+> > S36-D0   48   7,991,698     cycles    #   0.000 GHz
+> > S36-D0   48   4,750,040     instructions   #   0.59  insn per cycle
+> > S36-D0    1   <not supported>     branches
+> > S36-D0   48      32,928     branch-misses    #   0.00% of all branches
+> > S5418-D0   48   72,189.54 msec cpu-clock     #   47.915 CPUs utilized
+> > S5418-D0   48        176     context-switches  #   0.002 K/sec
+> > S5418-D0   48         48     cpu-migrations   #   0.001 K/sec
+> > S5418-D0   48         0     page-faults     #   0.000 K/sec
+> > S5418-D0   48   5,677,218     cycles    #    0.000 GHz
+> > S5418-D0   48   3,872,285     instructions   #  0.68  insn per cycle
+> > S5418-D0    1   <not supported>     branches
+> > S5418-D0   48      29,208     branch-misses   #  0.00% of all branches
+> > 
+> >       1.506615297 seconds time elapsed
+> > 
+> > but at least it works now. Thanks.
+> > 
+> > > 
+> > > > 
+> > > >   tools/perf/builtin-stat.c      | 128 ++++++++++++------------
+> > > >   tools/perf/tests/topology.c    |  64 ++++++++++--
+> > > >   tools/perf/util/cpumap.c       | 171 ++++++++++++++++++++++-----------
+> > > >   tools/perf/util/cpumap.h       |  55 ++++++-----
+> > > >   tools/perf/util/stat-display.c | 102 ++++++++++++--------
+> > > >   tools/perf/util/stat.c         |   2 +-
+> > > >   tools/perf/util/stat.h         |   9 +-
+> > > >   7 files changed, 337 insertions(+), 194 deletions(-)
+> > > > 
+> > > > -- 
+> > > > 2.28.0
+> > > > 
+> > > 
+> > > .
+> > > 
+> > 
+> 
+
 -- 
-2.22.0
 
+- Arnaldo
