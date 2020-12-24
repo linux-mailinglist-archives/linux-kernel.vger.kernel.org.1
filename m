@@ -2,74 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C332E27CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 15:48:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B28C92E27D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 16:00:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728470AbgLXOrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 09:47:47 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50646 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726609AbgLXOrr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 09:47:47 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1C817ACC4;
-        Thu, 24 Dec 2020 14:47:06 +0000 (UTC)
-Subject: Re: [PATCH v2 -next] md: bcache: use DEFINE_MUTEX() for mutex lock
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>,
-        kent.overstreet@gmail.com, linux-bcache@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201224132431.31180-1-zhengyongjun3@huawei.com>
-From:   Coly Li <colyli@suse.de>
-Message-ID: <2cef0ad9-b179-ece0-8787-368b21a427f1@suse.de>
-Date:   Thu, 24 Dec 2020 22:47:00 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.0
+        id S1728278AbgLXO7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 09:59:46 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:35460 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726609AbgLXO7p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Dec 2020 09:59:45 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 141511C0B96; Thu, 24 Dec 2020 15:59:02 +0100 (CET)
+Date:   Thu, 24 Dec 2020 15:59:01 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Johan Hovold <johan@kernel.org>, phone-devel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh@kernel.org>,
+        Alan Cox <gnomes@lxorguk.ukuu.org.uk>,
+        Lee Jones <lee.jones@linaro.org>, Jiri Slaby <jslaby@suse.cz>,
+        Merlijn Wajer <merlijn@wizzup.org>,
+        Peter Hurley <peter@hurleysoftware.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org
+Subject: Re: [PATCHv6 0/4] n_gsm serdev support and protocol driver for
+ droid4 modem
+Message-ID: <20201224145901.GA13643@duo.ucw.cz>
+References: <20200421232752.3070-1-tony@atomide.com>
+ <20200423114326.GQ18608@localhost>
+ <20200423153756.GE37466@atomide.com>
+ <20200528082420.GA10358@localhost>
+ <20201220224816.GA28213@duo.ucw.cz>
+ <20201224080239.GF26857@atomide.com>
 MIME-Version: 1.0
-In-Reply-To: <20201224132431.31180-1-zhengyongjun3@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="tKW2IUtsqtDRztdT"
+Content-Disposition: inline
+In-Reply-To: <20201224080239.GF26857@atomide.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/24/20 9:24 PM, Zheng Yongjun wrote:
-> mutex lock can be initialized automatically with DEFINE_MUTEX()
-> rather than explicitly calling mutex_init().
-> 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 
-NACK. For this case, it is unnecessary to initialize a global variable
-so early in declaration, this change makes bcache.ko bigger and I don't
-see any benefit.
+--tKW2IUtsqtDRztdT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Coly Li
+Hi!
 
-> ---
->  drivers/md/bcache/super.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-> index 46a00134a36a..963d62a15f37 100644
-> --- a/drivers/md/bcache/super.c
-> +++ b/drivers/md/bcache/super.c
-> @@ -40,7 +40,7 @@ static const char invalid_uuid[] = {
->  };
->  
->  static struct kobject *bcache_kobj;
-> -struct mutex bch_register_lock;
-> +DEFINE_MUTEX(bch_register_lock);
->  bool bcache_is_reboot;
->  LIST_HEAD(bch_cache_sets);
->  static LIST_HEAD(uncached_devices);
-> @@ -2832,7 +2832,6 @@ static int __init bcache_init(void)
->  
->  	check_module_parameters();
->  
-> -	mutex_init(&bch_register_lock);
->  	init_waitqueue_head(&unregister_wait);
->  	register_reboot_notifier(&reboot);
->  
-> 
+> > My notes say:
+> >=20
+> > /dev/motmdm1 -- basic support, calls, on/off                           =
+        =20
+> > /dev/motmdm3 -- send sms interface                                     =
+        =20
+> > /dev/motmdm9 -- receive sms interface                                  =
+        =20
+> >
+> > (and gsmtty numbering is same)
+>=20
+> Yes I have not had a chance to look at these for several months now,
+> but have the latest set in droid4-pending-v5.10 branch in my github
+> tree.
+>=20
+> The gnss device is at /dev/gsmtty6, see the current droid4-agps tool
+> to upload the almanac also on github. That's has turned out to be a
+> pretty good gsm serdev test too :)
 
+Thanks a lot for the info! Is it this one?
+https://github.com/tmlind/droid4-agps . GPS worked for me even w/o
+AGPS support, but I broke even that, so I need to fix that first.
+
+> > For now I converted gnss driver to use serdev interface, and n_gsm to
+> > provide it... Not yet finished but I believe I'm walking in the right
+> > direction.
+>=20
+> Great, sounds good to me if you got things working with just serdev
+> calls :) I'll try to take a look at this stuff again after I have
+> the other pending droid4 issues out of the way like v5.12 charger
+> and keyboard stuff.
+
+Just ask for latest code :-). I still believe I'm going right
+direction, but now I understand why you did it the way you did. Sound
+code needs to listen on gsmtty1, with the data still being provided
+for userspace.
+
+Best regards,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--tKW2IUtsqtDRztdT
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX+SstQAKCRAw5/Bqldv6
+8q2XAKC32dUkwQADDsKasbqBoLCsPuZZWACeMPhDNUkIk389F+IIFLew3RD5ScE=
+=CsTh
+-----END PGP SIGNATURE-----
+
+--tKW2IUtsqtDRztdT--
