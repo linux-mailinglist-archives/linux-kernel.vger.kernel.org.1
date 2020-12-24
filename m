@@ -2,83 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 551A52E24A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 07:11:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75C242E24BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 07:17:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727918AbgLXGKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 01:10:19 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:59098 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727671AbgLXGKT (ORCPT
+        id S1726400AbgLXGOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 01:14:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725613AbgLXGOv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 01:10:19 -0500
-X-UUID: 177c187a9c3945149d2e58d0adcac2d8-20201224
-X-UUID: 177c187a9c3945149d2e58d0adcac2d8-20201224
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
-        (envelope-from <henryc.chen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 2122171735; Thu, 24 Dec 2020 14:08:59 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 24 Dec 2020 14:08:57 +0800
-Received: from mtksdaap41.mediatek.inc (172.21.77.4) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 24 Dec 2020 14:08:59 +0800
-From:   Henry Chen <henryc.chen@mediatek.com>
-To:     Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Ryan Case <ryandcase@chromium.org>,
-        Mark Brown <broonie@kernel.org>
-CC:     Mark Rutland <mark.rutland@arm.com>,
-        Nicolas Boichat <drinkcat@google.com>,
-        Fan Chen <fan.chen@mediatek.com>,
-        James Liao <jamesjj.liao@mediatek.com>,
-        Arvin Wang <arvin.wang@mediatek.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        Henry Chen <henryc.chen@mediatek.com>
-Subject: [PATCH V6 12/13] arm64: dts: mt8183: add dvfsrc regulator nodes
-Date:   Thu, 24 Dec 2020 14:08:53 +0800
-Message-ID: <1608790134-27425-13-git-send-email-henryc.chen@mediatek.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1608790134-27425-1-git-send-email-henryc.chen@mediatek.com>
-References: <1608790134-27425-1-git-send-email-henryc.chen@mediatek.com>
+        Thu, 24 Dec 2020 01:14:51 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FBFAC061794;
+        Wed, 23 Dec 2020 22:14:11 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id r5so1255217eda.12;
+        Wed, 23 Dec 2020 22:14:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/ZDPXNpnPcne0mL+tmv3yody46NyfX1YtoF37WL5mFA=;
+        b=r77mbbpnt9/awcxAIEn4WoaBfTKTE5MLaPluLt+PO946Mw4q2I1SpZGVXbsPqzhjbI
+         uUvt2oMn4owh7SKuS6GMQJKJ09ufYZR4mDfOwPNP1Qf3P7tTzN/l98AUBcJHP1oZR+pS
+         m0oQG/tUgFqo4MTlvdBuILE3wm8mnCeEvWbbJAqvEFPsB5+1l3lm4mnIrgt9OQYRLM9m
+         rHT16VT6ccOvpAKoNRwrtZAd4QvV8o7bHfBZ2I887AYxpOYzQ6xSSIvez8trl3mDUrsB
+         UujP0DKpH3HWpU0qYeX14jnlToQIOhNOhoqdItSAQYGiWnoD1zihNS1ydFi/Yxr+1ggf
+         jYXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/ZDPXNpnPcne0mL+tmv3yody46NyfX1YtoF37WL5mFA=;
+        b=cC2lxKla7yU+QnnqV7rP2E9/xte2OIXg9pdMXrltIDYkLayYWNpeIh/Azh45ZIw4W0
+         7sx17Jlq48f5tVQHVIKAPJy1LamEps9i0zN7cjkJ7BZP+u50Yv2x/kG4Yefd9IDWcHib
+         HBitSNeDt44WSfUie6bRChrHekPunwQgCCBa6ZI9psy1Xe6S/Qs9aVt0w16AxufADDsN
+         QTItsSslGTr8zKI/DCRCpXRgq26qmmLCeyunP8XcDP/X7NX27Fjp4dW7EHKqOnFZO2Ra
+         8kCf4KmcQ2a8CICbSKZffiklveQBNQ0wNm7UYw47mpD6DEaN7p7uPuJTmlczWvgg5dy6
+         bTsw==
+X-Gm-Message-State: AOAM5313xXNctmSkBMwI7mV3aopi6//oJW39eDZ3dYIOL0mZjFNYaKov
+        dI/Jkvo7KAiipBBh6w95H4QT1LoF5nSR5ckDiGw=
+X-Google-Smtp-Source: ABdhPJyI7VNa9K4yFxAFV4T2cfhIEWKmLqrUcmzSLIgNitILBdvHtDrZJCxjhH4ofkpofnKdrF3j0EgVHTo8WYe1H6Y=
+X-Received: by 2002:a05:6402:45:: with SMTP id f5mr27319654edu.273.1608790448550;
+ Wed, 23 Dec 2020 22:14:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 78C5ACEF9E8980C80342D843EE1B767581F872CD0AA3022B3A74886B0FDF1CA12000:8
-X-MTK:  N
+References: <xmqqtusc5djv.fsf@gitster.c.googlers.com>
+In-Reply-To: <xmqqtusc5djv.fsf@gitster.c.googlers.com>
+From:   Christian Couder <christian.couder@gmail.com>
+Date:   Thu, 24 Dec 2020 07:13:57 +0100
+Message-ID: <CAP8UFD3aHEpHZWxzwz=RQr7DNAmJhLeoiOzubRqk1=7gRyG4_g@mail.gmail.com>
+Subject: Re: [ANNOUNCE] Git v2.30.0-rc2
+To:     Junio C Hamano <gitster@pobox.com>
+Cc:     git <git@vger.kernel.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        git-packagers@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add dvfsrc regulator nodes which is for MT8183-based platforms
+Most of the suggestions below are found by GMail.
 
-Signed-off-by: Henry Chen <henryc.chen@mediatek.com>
----
- arch/arm64/boot/dts/mediatek/mt8183.dtsi | 6 ++++++
- 1 file changed, 6 insertions(+)
+On Thu, Dec 24, 2020 at 12:08 AM Junio C Hamano <gitster@pobox.com> wrote:
+>
+> A release candidate Git v2.30.0-rc2 is now available for testing
+> at the usual places.  It is comprised of 19 non-merge commits since
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-index 22b3a68..182b851 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-@@ -333,6 +333,12 @@
- 			compatible = "mediatek,mt8183-dvfsrc";
- 			reg = <0 0x10012000 0 0x1000>;
- 			#interconnect-cells = <1>;
-+			dvfsrc_vcore: dvfsrc-vcore {
-+				regulator-name = "dvfsrc-vcore";
-+				regulator-min-microvolt = <725000>;
-+				regulator-max-microvolt = <800000>;
-+				regulator-always-on;
-+			};
- 		};
- 
- 		pwrap: pwrap@1000d000 {
--- 
-1.9.1
+Maybe: s/is comprised of/comprises/
 
+> v2.30.0-rc1, contributed by 5 people, none of which are new faces.
+
+[..]
+
+>  * Various subcommands of "git config" that takes value_regex
+
+s/takes/take/
+
+>    learn the "--literal-value" option to take the value_regex option
+
+s/learn/learned/
+
+>    as a literal string.
+
+[...]
+
+> * More preliminary tests have been added to document desired outcome
+
+s/outcome/outcomes/
+
+>   of various "directory rename" situations.
+
+[...]
+
+>  * The code to see if "git stash drop" can safely remove refs/stash
+>    has been made more carerful.
+
+s/carerful/careful/
+
+>    (merge 4f44c5659b rs/empty-reflog-check-fix later to maint).
+
+[...]
+
+>  * Since jgit does not yet work with SHA-256 repositories, mark the
+>    tests that uses it not to run unless we are testing with ShA-1
+
+s/uses/use/
+
+>    repositories.
+>    (merge ea699b4adc sg/t5310-jgit-wants-sha1 later to maint).
+
+[...]
+
+>  * "git apply" adjusted the permission bits of working-tree files and
+>    directories according core.sharedRepository setting by mistake and
+
+s/according/according to/
+
+>    for a long time, which has been corrected.
+>    (merge eb3c027e17 mt/do-not-use-scld-in-working-tree later to maint).
+
+[...]
+
+>  * "git pack-redandant" when there is only one packfile used to crash,
+
+s/pack-redandant/pack-redundant/
+
+>    which has been corrected.
+>    (merge 0696232390 jx/pack-redundant-on-single-pack later to maint).
