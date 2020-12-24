@@ -2,286 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E78CD2E26E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 13:33:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32EAF2E26E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 13:33:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728577AbgLXMc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 07:32:57 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:35551 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727968AbgLXMc4 (ORCPT
+        id S1728702AbgLXMdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 07:33:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728033AbgLXMdS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 07:32:56 -0500
-X-UUID: 357aabe0c4154f4e8be5145c2a42bd27-20201224
-X-UUID: 357aabe0c4154f4e8be5145c2a42bd27-20201224
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <nick.fan@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 437808674; Thu, 24 Dec 2020 20:32:12 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 24 Dec 2020 20:32:09 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 24 Dec 2020 20:32:08 +0800
-From:   Nick Fan <Nick.Fan@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        <srv_heupstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <nick.fan@mediatek.com>,
-        Nick Fan <Nick.Fan@mediatek.com>
-Subject: [PATCH 2/2] arm64: dts: mt8192: Add node for the Mali GPU
-Date:   Thu, 24 Dec 2020 20:31:19 +0800
-Message-ID: <20201224123119.26504-2-Nick.Fan@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20201224123119.26504-1-Nick.Fan@mediatek.com>
-References: <20201224123119.26504-1-Nick.Fan@mediatek.com>
+        Thu, 24 Dec 2020 07:33:18 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87FFDC06179C;
+        Thu, 24 Dec 2020 04:32:38 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id l23so1122768pjg.1;
+        Thu, 24 Dec 2020 04:32:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+J/0VOs8YWsyYToq/9Zvb+xHjb6tDaj6rDWhx//Wfpo=;
+        b=l0rzDsHOq1wmUBmp52YLRQvtQ4Qp7o0p2Y2NbinY59TeXwK8AQewMCoI2Nsh0/2Uce
+         sLwOMzOu1z1+5tQjZfwEEUbMoA7i8v1r4e4nBprge1DeRrBpUHIwO2v9AgY8lmLfAxQ0
+         GoIr4upsln73uiXwBTzKtc/r2reaCi36S9U+dQbX0gLtLoK6zeCt+s8b3oRJ6HiBYmQJ
+         TcHIrGgPrWhChpH9AciSxVrngWU7fRUnJe8wjwRov8kOx2ZeKP9KWqFVWTI59E0bsD1S
+         xbf9OjUMivjrsPu1cvk/sxF0T9c3I5D2SFqhYRqWnoGOkh0nfG0i2gfn0OHZ7QgOKQMq
+         DBgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+J/0VOs8YWsyYToq/9Zvb+xHjb6tDaj6rDWhx//Wfpo=;
+        b=m/12YxYPxxh8HIyTbeGDE0NxJHvu2BioZrHOy4XiTnaUnAm5NQCyUPRqeJ7NNsQfSQ
+         mJ7xwIlbjpnRuVNqs3EfSHwmUI6nlQAbDVsdmqlsKxhZJU1iICtMaWOAE8hmJRHroFeI
+         4N4MvKwk0XjBVrmYHQsRbQUg8ilSg89e88jFPNzKMV/uNA2ec3Oo2pgJp1zYiL3jSP6s
+         kTOxiWnnVZw51mTStA4G8Pi4BFvvTQUh4YTnxSqcsIl+I3hYgHF2P86TV9boS19gyhK1
+         EQvc5KjVvcRXh7IS02j4TEI9bWoqrJiO8EYAxP99MuuC9sEH2PBLmwJAz1Wld5gnASuX
+         ziUQ==
+X-Gm-Message-State: AOAM531lxPZRg9UGTE1OxwPO49vgbmE2tQj4z7fMflGJ5AVuQniiNZ+l
+        sK7AjUg0ZH0kNM9RdPyT1yxwV4SbXRlO1F/VYMsC7ctvuNs=
+X-Google-Smtp-Source: ABdhPJyNndhTJZhlBZ82GcH9swNKAsjjQWJTLb2NlauCAUMkFWa1mKNvf8bPsb3uv/kOpRxR4L+XF0VT7Bx6OMLZkpQ=
+X-Received: by 2002:a17:90a:c592:: with SMTP id l18mr4272542pjt.228.1608813158085;
+ Thu, 24 Dec 2020 04:32:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+References: <20201224010907.263125-1-djrscally@gmail.com> <20201224010907.263125-14-djrscally@gmail.com>
+In-Reply-To: <20201224010907.263125-14-djrscally@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 24 Dec 2020 14:32:21 +0200
+Message-ID: <CAHp75VdSyNv3M9T0_nQKsZfO-nxd5A3Z6o0mrRKrpHm282wsjQ@mail.gmail.com>
+Subject: Re: [PATCH v3 13/14] include: media: v4l2-fwnode: Include v4l2_fwnode_bus_type
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        devel@acpica.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tian Shu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        kieran.bingham+renesas@ideasonboard.com,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        niklas.soderlund+renesas@ragnatech.se,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a basic GPU node for mt8192.
+On Thu, Dec 24, 2020 at 3:13 AM Daniel Scally <djrscally@gmail.com> wrote:
+>
+> V4L2 fwnode bus types are enumerated in v4l2-fwnode.c, meaning they aren't
+> available to the rest of the kernel. Move the enum to the corresponding
+> header so that I can use the label to refer to those values.
 
-Signed-off-by: Nick Fan <Nick.Fan@mediatek.com>
----
-This patch depends on Mediatek power and regulator support.
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+One nitpick below, though.
 
-Listed as following.
+> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Daniel Scally <djrscally@gmail.com>
+> ---
+> Changes in v3
+>         - Patch introduced
+>
+>  drivers/media/v4l2-core/v4l2-fwnode.c | 11 -----------
+>  include/media/v4l2-fwnode.h           | 22 ++++++++++++++++++++++
+>  2 files changed, 22 insertions(+), 11 deletions(-)
+>
+> diff --git a/drivers/media/v4l2-core/v4l2-fwnode.c b/drivers/media/v4l2-core/v4l2-fwnode.c
+> index 5353e37eb950..c1c2b3060532 100644
+> --- a/drivers/media/v4l2-core/v4l2-fwnode.c
+> +++ b/drivers/media/v4l2-core/v4l2-fwnode.c
+> @@ -28,17 +28,6 @@
+>  #include <media/v4l2-fwnode.h>
+>  #include <media/v4l2-subdev.h>
+>
+> -enum v4l2_fwnode_bus_type {
+> -       V4L2_FWNODE_BUS_TYPE_GUESS = 0,
+> -       V4L2_FWNODE_BUS_TYPE_CSI2_CPHY,
+> -       V4L2_FWNODE_BUS_TYPE_CSI1,
+> -       V4L2_FWNODE_BUS_TYPE_CCP2,
+> -       V4L2_FWNODE_BUS_TYPE_CSI2_DPHY,
+> -       V4L2_FWNODE_BUS_TYPE_PARALLEL,
+> -       V4L2_FWNODE_BUS_TYPE_BT656,
+> -       NR_OF_V4L2_FWNODE_BUS_TYPE,
+> -};
+> -
+>  static const struct v4l2_fwnode_bus_conv {
+>         enum v4l2_fwnode_bus_type fwnode_bus_type;
+>         enum v4l2_mbus_type mbus_type;
+> diff --git a/include/media/v4l2-fwnode.h b/include/media/v4l2-fwnode.h
+> index 4365430eea6f..d306a28bda96 100644
+> --- a/include/media/v4l2-fwnode.h
+> +++ b/include/media/v4l2-fwnode.h
+> @@ -213,6 +213,28 @@ struct v4l2_fwnode_connector {
+>         } connector;
+>  };
+>
+> +/**
+> + * enum v4l2_fwnode_bus_type - Video bus types defined by firmware properties
+> + * @V4L2_FWNODE_BUS_TYPE_GUESS: Default value if no bus-type fwnode property
+> + * @V4L2_FWNODE_BUS_TYPE_CSI2_CPHY: MIPI CSI-2 bus, C-PHY physical layer
+> + * @V4L2_FWNODE_BUS_TYPE_CSI1: MIPI CSI-1 bus
+> + * @V4L2_FWNODE_BUS_TYPE_CCP2: SMIA Compact Camera Port 2 bus
+> + * @V4L2_FWNODE_BUS_TYPE_CSI2_DPHY: MIPI CSI-2 bus, D-PHY physical layer
+> + * @V4L2_FWNODE_BUS_TYPE_PARALLEL: Camera Parallel Interface bus
+> + * @V4L2_FWNODE_BUS_TYPE_BT656: BT656 video format bus-type
+> + * @NR_OF_V4L2_FWNODE_BUS_TYPE: Number of bus-types
+> + */
+> +enum v4l2_fwnode_bus_type {
+> +       V4L2_FWNODE_BUS_TYPE_GUESS = 0,
+> +       V4L2_FWNODE_BUS_TYPE_CSI2_CPHY,
+> +       V4L2_FWNODE_BUS_TYPE_CSI1,
+> +       V4L2_FWNODE_BUS_TYPE_CCP2,
+> +       V4L2_FWNODE_BUS_TYPE_CSI2_DPHY,
+> +       V4L2_FWNODE_BUS_TYPE_PARALLEL,
+> +       V4L2_FWNODE_BUS_TYPE_BT656,
 
-[1]https://lore.kernel.org/patchwork/patch/1336293/
-[2]https://patchwork.kernel.org/project/linux-mediatek/list/?series=374013
-[3]https://lore.kernel.org/patchwork/patch/1356037/
-[4]https://patchwork.kernel.org/project/linux-mediatek/list/?series=405777
-[5]https://lore.kernel.org/patchwork/patch/1356175/
-[6]https://patchwork.kernel.org/project/linux-mediatek/patch/1605700894-32699-6-git-send-email-hsin-hsiung.wang@mediatek.com/
-[7]https://patchwork.kernel.org/project/linux-mediatek/patch/1608104827-7937-10-git-send-email-hsin-hsiung.wang@mediatek.com/
----
+> +       NR_OF_V4L2_FWNODE_BUS_TYPE,
 
----
- arch/arm64/boot/dts/mediatek/mt8192-evb.dts |   7 +
- arch/arm64/boot/dts/mediatek/mt8192.dtsi    | 176 ++++++++++++++++++++
- 2 files changed, 183 insertions(+)
+I see that comma is in the original line, but I think it's a good time
+to remove it from this line. Since it's a terminator line we might
+prevent potential issues during review (by a different diff look) and
+at compile time (if anything comes after it).
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8192-evb.dts b/arch/arm64/boot/dts/mediatek/mt8192-evb.dts
-index 6c1e2b3e8a60..48c0e240dd92 100644
---- a/arch/arm64/boot/dts/mediatek/mt8192-evb.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt8192-evb.dts
-@@ -5,6 +5,7 @@
-  */
- /dts-v1/;
- #include "mt8192.dtsi"
-+#include "mt6359.dtsi"
- 
- / {
- 	model = "MediaTek MT8192 evaluation board";
-@@ -70,6 +71,12 @@
- 	};
- };
- 
-+&gpu {
-+	supply-names = "mali","sram";
-+	mali-supply = <&mt6315_7_vbuck1>;
-+	sram-supply = <&mt6359_vsram_others_ldo_reg>;
-+};
-+
- &uart0 {
- 	status = "okay";
- };
-diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-index d6a4ad242a33..de166ea750af 100644
---- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-@@ -822,6 +822,182 @@
- 			#clock-cells = <1>;
- 		};
- 
-+		gpu: mali@13000000 {
-+			compatible = "mediatek,mt8192-mali", "arm,mali-valhall";
-+			reg = <0 0x13000000 0 0x4000>;
-+			interrupts =
-+				<GIC_SPI 363 IRQ_TYPE_LEVEL_HIGH 0>,
-+				<GIC_SPI 364 IRQ_TYPE_LEVEL_HIGH 0>,
-+				<GIC_SPI 365 IRQ_TYPE_LEVEL_HIGH 0>,
-+				<GIC_SPI 366 IRQ_TYPE_LEVEL_HIGH 0>,
-+				<GIC_SPI 367 IRQ_TYPE_LEVEL_HIGH 0>;
-+			interrupt-names =
-+				"GPU",
-+				"MMU",
-+				"JOB",
-+				"EVENT",
-+				"PWR";
-+
-+			clocks =
-+				<&apmixedsys CLK_APMIXED_MFGPLL>,
-+				<&topckgen CLK_TOP_MFG_PLL_SEL>,
-+				<&topckgen CLK_TOP_MFG_REF_SEL>,
-+				<&mfgcfg CLK_MFG_BG3D>;
-+			clock-names =
-+				"clk_main_parent",
-+				"clk_mux",
-+				"clk_sub_parent",
-+				"subsys_mfg_cg";
-+
-+			power-domains =
-+				<&scpsys MT8192_POWER_DOMAIN_MFG2>,
-+				<&scpsys MT8192_POWER_DOMAIN_MFG3>,
-+				<&scpsys MT8192_POWER_DOMAIN_MFG4>,
-+				<&scpsys MT8192_POWER_DOMAIN_MFG5>,
-+				<&scpsys MT8192_POWER_DOMAIN_MFG6>;
-+			power-domain-names = "core0",
-+					     "core1",
-+					     "core2",
-+					     "core3",
-+					     "core4";
-+
-+			operating-points-v2 = <&gpu_opp_table>;
-+			#cooling-cells = <2>;
-+		};
-+
-+		gpu_opp_table: opp_table0 {
-+			compatible = "operating-points-v2";
-+			opp-shared;
-+
-+			opp-358000000 {
-+				opp-hz = /bits/ 64 <358000000>;
-+				opp-hz-real = /bits/ 64 <358000000>,
-+					      /bits/ 64 <358000000>;
-+				opp-microvolt = <606250>,
-+						<750000>;
-+			};
-+
-+			opp-399000000 {
-+				opp-hz = /bits/ 64 <399000000>;
-+				opp-hz-real = /bits/ 64 <399000000>,
-+					      /bits/ 64 <399000000>;
-+				opp-microvolt = <618750>,
-+						<750000>;
-+			};
-+
-+			opp-440000000 {
-+				opp-hz = /bits/ 64 <440000000>;
-+				opp-hz-real = /bits/ 64 <440000000>,
-+					      /bits/ 64 <440000000>;
-+				opp-microvolt = <631250>,
-+						<750000>;
-+			};
-+
-+			opp-482000000 {
-+				opp-hz = /bits/ 64 <482000000>;
-+				opp-hz-real = /bits/ 64 <482000000>,
-+					      /bits/ 64 <482000000>;
-+				opp-microvolt = <643750>,
-+						<750000>;
-+			};
-+
-+			opp-523000000 {
-+				opp-hz = /bits/ 64 <523000000>;
-+				opp-hz-real = /bits/ 64 <523000000>,
-+					      /bits/ 64 <523000000>;
-+				opp-microvolt = <656250>,
-+						<750000>;
-+			};
-+
-+			opp-564000000 {
-+				opp-hz = /bits/ 64 <564000000>;
-+				opp-hz-real = /bits/ 64 <564000000>,
-+					      /bits/ 64 <564000000>;
-+				opp-microvolt = <668750>,
-+						<750000>;
-+			};
-+
-+			opp-605000000 {
-+				opp-hz = /bits/ 64 <605000000>;
-+				opp-hz-real = /bits/ 64 <605000000>,
-+					      /bits/ 64 <605000000>;
-+				opp-microvolt = <681250>,
-+						<750000>;
-+			};
-+
-+			opp-647000000 {
-+				opp-hz = /bits/ 64 <647000000>;
-+				opp-hz-real = /bits/ 64 <647000000>,
-+					      /bits/ 64 <647000000>;
-+				opp-microvolt = <693750>,
-+						<750000>;
-+			};
-+
-+			opp-688000000 {
-+				opp-hz = /bits/ 64 <688000000>;
-+				opp-hz-real = /bits/ 64 <688000000>,
-+					      /bits/ 64 <688000000>;
-+				opp-microvolt = <706250>,
-+						<750000>;
-+			};
-+
-+			opp-724000000 {
-+				opp-hz = /bits/ 64 <724000000>;
-+				opp-hz-real = /bits/ 64 <724000000>,
-+					      /bits/ 64 <724000000>;
-+				opp-microvolt = <725000>,
-+						<750000>;
-+			};
-+
-+			opp-760000000 {
-+				opp-hz = /bits/ 64 <760000000>;
-+				opp-hz-real = /bits/ 64 <760000000>,
-+					      /bits/ 64 <760000000>;
-+				opp-microvolt = <743750>,
-+						<750000>;
-+			};
-+
-+			opp-795000000 {
-+				opp-hz = /bits/ 64 <795000000>;
-+				opp-hz-real = /bits/ 64 <795000000>,
-+					      /bits/ 64 <795000000>;
-+				opp-microvolt = <762500>,
-+						<762500>;
-+			};
-+
-+			opp-831000000 {
-+				opp-hz = /bits/ 64 <831000000>;
-+				opp-hz-real = /bits/ 64 <831000000>,
-+					      /bits/ 64 <831000000>;
-+				opp-microvolt = <781250>,
-+						<781250>;
-+			};
-+
-+			opp-855000000 {
-+				opp-hz = /bits/ 64 <855000000>;
-+				opp-hz-real = /bits/ 64 <855000000>,
-+					      /bits/ 64 <855000000>;
-+				opp-microvolt = <793750>,
-+						<793750>;
-+			};
-+
-+			opp-902000000 {
-+				opp-hz = /bits/ 64 <902000000>;
-+				opp-hz-real = /bits/ 64 <902000000>,
-+					      /bits/ 64 <902000000>;
-+				opp-microvolt = <818750>,
-+						<818750>;
-+			};
-+
-+			opp-950000000 {
-+				opp-hz = /bits/ 64 <950000000>;
-+				opp-hz-real = /bits/ 64 <950000000>,
-+					      /bits/ 64 <950000000>;
-+				opp-microvolt = <843750>,
-+						<843750>;
-+			};
-+		};
-+
- 		mfgcfg: syscon@13fbf000 {
- 			compatible = "mediatek,mt8192-mfgcfg", "syscon";
- 			reg = <0 0x13fbf000 0 0x1000>;
+> +};
+> +
+>  /**
+>   * v4l2_fwnode_endpoint_parse() - parse all fwnode node properties
+>   * @fwnode: pointer to the endpoint's fwnode handle
+> --
+> 2.25.1
+>
+
+
 -- 
-2.18.0
-
+With Best Regards,
+Andy Shevchenko
