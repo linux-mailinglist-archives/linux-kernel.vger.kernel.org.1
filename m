@@ -2,95 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8B0D2E280E
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 17:26:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEF072E2811
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 17:26:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728617AbgLXQZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 11:25:56 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:38056 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727081AbgLXQZ4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 11:25:56 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0BOGOFew041071;
-        Thu, 24 Dec 2020 10:24:15 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1608827055;
-        bh=WMEUYGFV0NV6CnOTlVaGE190P40OrfNJJimbiz0eDZ0=;
-        h=From:To:CC:Subject:Date;
-        b=wJxrAGXZnl6XX+i4NYFZeYOHAu7jXcMC7fe2Fhglp7EcFDqPBbs9f6HDkFONXk0jH
-         Qr30JSFw+Jl0KDrzJ9Cf/Op/h90SANNrSn6q5HGedA+g7ssW8+uCXN54rSd4GTB/m+
-         XT0VlVG1F31ySoN/EhR9/cmxl9y9EGUzA66m27rA=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0BOGOFZc106349
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 24 Dec 2020 10:24:15 -0600
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 24
- Dec 2020 10:24:14 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 24 Dec 2020 10:24:14 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0BOGOE1m107382;
-        Thu, 24 Dec 2020 10:24:14 -0600
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-To:     "David S. Miller" <davem@davemloft.net>, <netdev@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: [PATCH net] net: ethernet: ti: cpts: fix ethtool output when no ptp_clock registered
-Date:   Thu, 24 Dec 2020 18:24:05 +0200
-Message-ID: <20201224162405.28032-1-grygorii.strashko@ti.com>
-X-Mailer: git-send-email 2.17.1
+        id S1728728AbgLXQ0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 11:26:17 -0500
+Received: from mga05.intel.com ([192.55.52.43]:19019 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727081AbgLXQ0R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Dec 2020 11:26:17 -0500
+IronPort-SDR: AqhAzPm+MFJ/pRHAzCAeuTcn6Vnvemu/X5fyixNWG6kMfQPKeF7ZEzrIwOGYsWIOw/AWxJOxCv
+ oRndu/mlow3w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9845"; a="260897467"
+X-IronPort-AV: E=Sophos;i="5.78,444,1599548400"; 
+   d="scan'208";a="260897467"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Dec 2020 08:25:35 -0800
+IronPort-SDR: NX07vGkLBhulOSQKGUdAvtJ3m0Y1g03ow4ChOY95OnjUoIppghtXIGNr9jNbLqJCLAouyFun03
+ Uk869OBjpz2w==
+X-IronPort-AV: E=Sophos;i="5.78,444,1599548400"; 
+   d="scan'208";a="345607656"
+Received: from ccazan-mobl.amr.corp.intel.com (HELO localhost) ([10.209.102.30])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Dec 2020 08:25:34 -0800
+Date:   Thu, 24 Dec 2020 09:25:29 -0700
+From:   Dave Jiang <dave.jiang@intel.com>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     <vkoul@kernel.org>, <dmaengine@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <dan.j.williams@intel.com>
+Subject: Re: [PATCH v2 -next] dma: idxd: use DEFINE_MUTEX() for mutex lock
+Message-ID: <20201224092529.00006a63@intel.com>
+In-Reply-To: <20201224132254.30961-1-zhengyongjun3@huawei.com>
+References: <20201224132254.30961-1-zhengyongjun3@huawei.com>
+Organization: Intel Corp
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The CPTS driver registers PTP PHC clock when first netif is going up and
-unregister it when all netif are down. Now ethtool will show:
- - PTP PHC clock index 0 after boot until first netif is up;
- - the last assigned PTP PHC clock index even if PTP PHC clock is not
-registered any more after all netifs are down.
+On Thu, 24 Dec 2020 21:22:54 +0800
+Zheng Yongjun <zhengyongjun3@huawei.com> wrote:
 
-This patch ensures that -1 is returned by ethtool when PTP PHC clock is not
-registered any more.
+> mutex lock can be initialized automatically with DEFINE_MUTEX()
+> rather than explicitly calling mutex_init().
+> 
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+Acked-by: Dave Jiang <dave.jiang@intel.com>
 
-Fixes: 8a2c9a5ab4b9 ("net: ethernet: ti: cpts: rework initialization/deinitialization")
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
----
- drivers/net/ethernet/ti/cpts.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/net/ethernet/ti/cpts.c b/drivers/net/ethernet/ti/cpts.c
-index d1fc7955d422..43222a34cba0 100644
---- a/drivers/net/ethernet/ti/cpts.c
-+++ b/drivers/net/ethernet/ti/cpts.c
-@@ -599,6 +599,7 @@ void cpts_unregister(struct cpts *cpts)
- 
- 	ptp_clock_unregister(cpts->clock);
- 	cpts->clock = NULL;
-+	cpts->phc_index = -1;
- 
- 	cpts_write32(cpts, 0, int_enable);
- 	cpts_write32(cpts, 0, control);
-@@ -784,6 +785,7 @@ struct cpts *cpts_create(struct device *dev, void __iomem *regs,
- 	cpts->cc.read = cpts_systim_read;
- 	cpts->cc.mask = CLOCKSOURCE_MASK(32);
- 	cpts->info = cpts_info;
-+	cpts->phc_index = -1;
- 
- 	if (n_ext_ts)
- 		cpts->info.n_ext_ts = n_ext_ts;
--- 
-2.17.1
+> ---
+>  drivers/dma/idxd/init.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/dma/idxd/init.c b/drivers/dma/idxd/init.c
+> index 0a4432b063b5..2297c93dd527 100644
+> --- a/drivers/dma/idxd/init.c
+> +++ b/drivers/dma/idxd/init.c
+> @@ -27,7 +27,7 @@ MODULE_AUTHOR("Intel Corporation");
+>  #define DRV_NAME "idxd"
+>  
+>  static struct idr idxd_idrs[IDXD_TYPE_MAX];
+> -static struct mutex idxd_idr_lock;
+> +static DEFINE_MUTEX(idxd_idr_lock);
+>  
+>  static struct pci_device_id idxd_pci_tbl[] = {
+>  	/* DSA ver 1.0 platforms */
+> @@ -481,7 +481,6 @@ static int __init idxd_init_module(void)
+>  	pr_info("%s: Intel(R) Accelerator Devices Driver %s\n",
+>  		DRV_NAME, IDXD_DRIVER_VERSION);
+>  
+> -	mutex_init(&idxd_idr_lock);
+>  	for (i = 0; i < IDXD_TYPE_MAX; i++)
+>  		idr_init(&idxd_idrs[i]);
+>  
 
