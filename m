@@ -2,123 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA9492E2857
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 18:22:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06CBB2E2860
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 18:28:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728911AbgLXRVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 12:21:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728757AbgLXRVJ (ORCPT
+        id S1728655AbgLXR17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 12:27:59 -0500
+Received: from smtprelay0232.hostedemail.com ([216.40.44.232]:37530 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726839AbgLXR16 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 12:21:09 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23782C0613ED;
-        Thu, 24 Dec 2020 09:20:29 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id 6so4037164ejz.5;
-        Thu, 24 Dec 2020 09:20:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=PYycvZZtwv/h41HPPKiYNBu4NL6LfmBrKKP66ExytA8=;
-        b=p8gLsi1W5BS0fLO7h/XP01TZk9IHMhDz2+a0nVYDI1BQULoIXmMGQSy/rVwHmPpsZx
-         jhQa88c7R+ERK2CvwEcNElAqiMz1f1Ms9afTjAh89irUo1YY2FCfL8AeKURciX5DZ6gF
-         nvz132IAObMGwRTbDbiS2qpms8VfaF4AIE2kyxnaDrpwvwT7L2v/Plr2N3AxhdOddKzq
-         eQa/pMeHAadtZroYliX/JK1bOQu9BIOuYpyvR7L6RWwcdjpG63WomFCe+tNc08Hzldq/
-         FaefQZo/wv7SatN5goG7t9X57M3ai15+PRXuQ14bkgp9FhBpFdQhkeU5rsb6rj6gimWA
-         J3bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=PYycvZZtwv/h41HPPKiYNBu4NL6LfmBrKKP66ExytA8=;
-        b=EUqy3DT194KrAV5opTECU7HnzHsej3o5yOnz+/a86zqd5+ld98ZfM1PEBM6QC3y5Dj
-         CF7HRUDHDxZOacV1cQDZVsZcd0AIBlnQ0JY4cqIJwaMc3AjjAXih1ApV8MlTE7d9CG2T
-         +BEganrp86MUNHU0lFHu22UBpEc6PJ7vEqYwLeCss3rk1r0RqCFsGxW4TQ151j3P6q4u
-         n/1Usrcd+Ksp9HZAtGtu5LFhig2fIzE6v+n1rYNGMbvKM3xm2zqocii9KFZrpWuO8ay9
-         ZLVrdyi/GbW5/VGiH3hCemHB+smfF/jhsQcNxva2mZcFIkakBiuQUjtrU+GZjgcO9eqv
-         QClg==
-X-Gm-Message-State: AOAM532rO39d25FQDeoNTTroMJyAywm6jmbcADAn/Toua0l3mbXfKAsf
-        E/YAqNVvy7R8Rmx8r1s52aa5fFjqpmjrKg==
-X-Google-Smtp-Source: ABdhPJwDLNmkh3yZW5f7r/O2OrAwj05q/Ovu3ZsJimwP+OxRmgm+mvBPEqQRIn+R+o0JxLRTi4PKOQ==
-X-Received: by 2002:a17:906:3711:: with SMTP id d17mr28536567ejc.121.1608830427928;
-        Thu, 24 Dec 2020 09:20:27 -0800 (PST)
-Received: from localhost.localdomain (ip5f5bfce9.dynamic.kabel-deutschland.de. [95.91.252.233])
-        by smtp.gmail.com with ESMTPSA id m5sm12874446eja.11.2020.12.24.09.20.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Dec 2020 09:20:27 -0800 (PST)
-From:   Bean Huo <huobean@gmail.com>
-To:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
-        cang@codeaurora.org
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rjw@rjwysocki.net
-Subject: [PATCH v2 3/3] scsi: ufs: Let resume callback return -EBUSY after ufshcd_shutdown
-Date:   Thu, 24 Dec 2020 18:20:10 +0100
-Message-Id: <20201224172010.10701-4-huobean@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201224172010.10701-1-huobean@gmail.com>
-References: <20201224172010.10701-1-huobean@gmail.com>
+        Thu, 24 Dec 2020 12:27:58 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id CE9E818026208;
+        Thu, 24 Dec 2020 17:27:17 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2693:2828:3138:3139:3140:3141:3142:3350:3622:3865:3868:3871:3873:4321:5007:7652:10004:10400:10848:11026:11232:11658:11914:12043:12296:12297:12740:12895:13069:13311:13357:13439:13894:14659:14721:21080:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:19,LUA_SUMMARY:none
+X-HE-Tag: war02_5e115fe27473
+X-Filterd-Recvd-Size: 1406
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf07.hostedemail.com (Postfix) with ESMTPA;
+        Thu, 24 Dec 2020 17:27:16 +0000 (UTC)
+Message-ID: <c4ad08aeb9ed8e3f8bfaedc3e9e0df245d4a93a3.camel@perches.com>
+Subject: Re: [PATCH] staging: ralink-gdma: Fixed blank line coding style
+ issue
+From:   Joe Perches <joe@perches.com>
+To:     Ayoub Soussi <ayoubfme@gmail.com>, gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Date:   Thu, 24 Dec 2020 09:27:15 -0800
+In-Reply-To: <20201223202230.31325-1-ayoubfme@gmail.com>
+References: <20201223202230.31325-1-ayoubfme@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bean Huo <beanhuo@micron.com>
+On Wed, 2020-12-23 at 21:22 +0100, Ayoub Soussi wrote:
+> Fixed coding style issue.
+[]
+> diff --git a/drivers/staging/ralink-gdma/ralink-gdma.c b/drivers/staging/ralink-gdma/ralink-gdma.c
+[]
+> @@ -122,6 +122,7 @@ struct gdma_dma_dev {
+>  	struct gdma_data *data;
+>  	void __iomem *base;
+>  	struct tasklet_struct task;
+> +
+>  	volatile unsigned long chan_issued;
+>  	atomic_t cnt;
 
-After ufshcd_shutdown(), both UFS device and UFS LINk are powered off,
-return '0' will mislead the upper PM layer since the device has not been
-successfully resumed yet. This will let pm_runtime_get_sync() caller
-mistakenly believe the device/LINK has been resumed, which leads to
-request processing timeout that was en-queued later.
+This is presumably a checkpatch false positive.
+checkpatch is not now nor never will be a perfect tool.
 
-To fix this, let ufshcd_system/runtimie_resume() return -EBUSY in case of
-hba->is_powered == false.
-
-Signed-off-by: Bean Huo <beanhuo@micron.com>
----
- drivers/scsi/ufs/ufshcd.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index e221add25a7e..e1bcac51c01f 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -8950,14 +8950,16 @@ int ufshcd_system_resume(struct ufs_hba *hba)
- 		return -EINVAL;
- 	}
- 
--	if (!hba->is_powered || pm_runtime_suspended(hba->dev))
-+	if (!hba->is_powered || pm_runtime_suspended(hba->dev)) {
- 		/*
- 		 * Let the runtime resume take care of resuming
- 		 * if runtime suspended.
- 		 */
-+		ret = -EBUSY;
- 		goto out;
--	else
-+	} else {
- 		ret = ufshcd_resume(hba, UFS_SYSTEM_PM);
-+	}
- out:
- 	trace_ufshcd_system_resume(dev_name(hba->dev), ret,
- 		ktime_to_us(ktime_sub(ktime_get(), start)),
-@@ -9026,10 +9028,12 @@ int ufshcd_runtime_resume(struct ufs_hba *hba)
- 	if (!hba)
- 		return -EINVAL;
- 
--	if (!hba->is_powered)
-+	if (!hba->is_powered) {
-+		ret = -EBUSY;
- 		goto out;
--	else
-+	} else {
- 		ret = ufshcd_resume(hba, UFS_RUNTIME_PM);
-+	}
- out:
- 	trace_ufshcd_runtime_resume(dev_name(hba->dev), ret,
- 		ktime_to_us(ktime_sub(ktime_get(), start)),
--- 
-2.17.1
+Please consider what you are doing and what the desired coding style is
+before submitting patches.
 
