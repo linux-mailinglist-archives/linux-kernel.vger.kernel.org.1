@@ -2,165 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A61A2E28BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 20:36:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ECA52E28BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 20:46:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728864AbgLXTgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 14:36:15 -0500
-Received: from sandeen.net ([63.231.237.45]:49084 "EHLO sandeen.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728679AbgLXTgO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 14:36:14 -0500
-Received: from liberator.sandeen.net (liberator.sandeen.net [10.0.0.146])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by sandeen.net (Postfix) with ESMTPSA id C3F1815D6C;
-        Thu, 24 Dec 2020 13:34:27 -0600 (CST)
-To:     Fengfei Xi <xi.fengfei@h3c.com>, darrick.wong@oracle.com
-Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tian.xianting@h3c.com
-References: <20201224095142.7201-1-xi.fengfei@h3c.com>
-From:   Eric Sandeen <sandeen@sandeen.net>
-Subject: Re: [PATCH] xfs: fix system crash caused by null bp->b_pages
-Message-ID: <63d75865-84c6-0f76-81a2-058f4cad1d84@sandeen.net>
-Date:   Thu, 24 Dec 2020 13:35:32 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.0
+        id S1728890AbgLXTpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 14:45:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728266AbgLXTpq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Dec 2020 14:45:46 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B394C061573;
+        Thu, 24 Dec 2020 11:45:02 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1ksWXP-003sWr-0X; Thu, 24 Dec 2020 19:44:39 +0000
+Date:   Thu, 24 Dec 2020 19:44:38 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     "Maciej W. Rozycki" <macro@linux-mips.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linux-mips@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Denys Vlasenko <dvlasenk@redhat.com>
+Subject: [RFC][PATCH] NT_FILE/NT_SIGINFO breakage on mips compat coredumps
+Message-ID: <20201224194438.GY3579531@ZenIV.linux.org.uk>
+References: <20201203214529.GB3579531@ZenIV.linux.org.uk>
+ <CAHk-=wiRNT+-ahz2KRUE7buYJMZ84bp=h_vGLrAaOKW3n_xyXQ@mail.gmail.com>
+ <20201203230336.GC3579531@ZenIV.linux.org.uk>
+ <alpine.LFD.2.21.2012071741280.2104409@eddie.linux-mips.org>
+ <20201216030154.GL3579531@ZenIV.linux.org.uk>
+ <alpine.LFD.2.21.2012160924010.2104409@eddie.linux-mips.org>
+ <20201223070320.GW3579531@ZenIV.linux.org.uk>
+ <20201223071213.GX3579531@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <20201224095142.7201-1-xi.fengfei@h3c.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201223071213.GX3579531@ZenIV.linux.org.uk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/24/20 3:51 AM, Fengfei Xi wrote:
-> We have encountered the following problems several times:
->     1、A raid slot or hardware problem causes block device loss.
->     2、Continue to issue IO requests to the problematic block device.
->     3、The system possibly crash after a few hours.
-
-What kernel is this on?
-
-> dmesg log as below:
-> [15205901.268313] blk_partition_remap: fail for partition 1
-
-I think this message has been gone since kernel v4.16...
-
-If you're testing this on an old kernel, can you reproduce it on a
-current kernel?
-
-> [15205901.319309] blk_partition_remap: fail for partition 1
-> [15205901.319341] blk_partition_remap: fail for partition 1
-> [15205901.319873] sysctl (3998546): drop_caches: 3
-
-What performed the drop_caches immediately before the BUG?  Does
-the BUG happen without drop_caches?
-
-> [15205901.371379] BUG: unable to handle kernel NULL pointer dereference at
-
-was something lost here?  "dereference at" ... what?
-
-> [15205901.372602] IP: xfs_buf_offset+0x32/0x60 [xfs]
-> [15205901.373605] PGD 0 P4D 0
-> [15205901.374690] Oops: 0000 [#1] SMP
-> [15205901.375629] Modules linked in:
-> [15205901.382445] CPU: 6 PID: 18545 Comm: xfsaild/sdh1 Kdump: loaded Tainted: G
-> [15205901.384728] Hardware name:
-> [15205901.385830] task: ffff885216939e80 task.stack: ffffb28ba9b38000
-> [15205901.386974] RIP: 0010:xfs_buf_offset+0x32/0x60 [xfs]
-> [15205901.388044] RSP: 0018:ffffb28ba9b3bc68 EFLAGS: 00010246
-> [15205901.389021] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 000000000000000b
-> [15205901.390016] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff88627bebf000
-> [15205901.391075] RBP: ffffb28ba9b3bc98 R08: ffff88627bebf000 R09: 00000001802a000d
-> [15205901.392031] R10: ffff88521f3a0240 R11: ffff88627bebf000 R12: ffff88521041e000
-> [15205901.392950] R13: 0000000000000020 R14: ffff88627bebf000 R15: 0000000000000000
-> [15205901.393858] FS:  0000000000000000(0000) GS:ffff88521f380000(0000) knlGS:0000000000000000
-> [15205901.394774] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [15205901.395756] CR2: 0000000000000000 CR3: 000000099bc09001 CR4: 00000000007606e0
-> [15205901.396904] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [15205901.397869] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [15205901.398836] PKRU: 55555554
-> [15205901.400111] Call Trace:
-> [15205901.401058]  ? xfs_inode_buf_verify+0x8e/0xf0 [xfs]
-> [15205901.402069]  ? xfs_buf_delwri_submit_buffers+0x16d/0x2b0 [xfs]
-> [15205901.403060]  xfs_inode_buf_write_verify+0x10/0x20 [xfs]
-> [15205901.404017]  _xfs_buf_ioapply+0x88/0x410 [xfs]
-> [15205901.404990]  ? xfs_buf_delwri_submit_buffers+0x16d/0x2b0 [xfs]
-> [15205901.405929]  xfs_buf_submit+0x63/0x200 [xfs]
-> [15205901.406801]  xfs_buf_delwri_submit_buffers+0x16d/0x2b0 [xfs]
-> [15205901.407675]  ? xfs_buf_delwri_submit_nowait+0x10/0x20 [xfs]
-> [15205901.408540]  ? xfs_inode_item_push+0xb7/0x190 [xfs]
-> [15205901.409395]  xfs_buf_delwri_submit_nowait+0x10/0x20 [xfs]
-> [15205901.410249]  xfsaild+0x29a/0x780 [xfs]
-> [15205901.411121]  kthread+0x109/0x140
-> [15205901.411981]  ? xfs_trans_ail_cursor_first+0x90/0x90 [xfs]
-> [15205901.412785]  ? kthread_park+0x60/0x60
-> [15205901.413578]  ret_from_fork+0x2a/0x40
+On Wed, Dec 23, 2020 at 07:12:13AM +0000, Al Viro wrote:
+> On Wed, Dec 23, 2020 at 07:03:20AM +0000, Al Viro wrote:
 > 
-> The "obvious" cause is that the bp->b_pages was NULL in function
-> xfs_buf_offset. Analyzing vmcore, we found that b_pages=NULL but
-> b_page_count=16, so b_pages is set to NULL for some reason.
-
-this can happen, for example _xfs_buf_get_pages sets the count, but may
-fail the allocation, and leave the count set while the pointer is NULL.
+> 	Argh....  Wrong commit blamed - the parent of the correct one.
+> It's actually 2aa362c49c31 ("coredump: extend core dump note section to
+> contain file names of mapped files").  My apologies - fat-fingered
+> cut'n'paste...
 > 
-> crash> struct xfs_buf ffff88627bebf000 | less
->     ...
->   b_pages = 0x0,
->   b_page_array = {0x0, 0x0},
->   b_maps = 0xffff88627bebf118,
->   __b_map = {
->     bm_bn = 512,
->     bm_len = 128
->   },
->   b_map_count = 1,
->   b_io_length = 128,
->   b_pin_count = {
->     counter = 0
->   },
->   b_io_remaining = {
->     counter = 1
->   },
->   b_page_count = 16,
->   b_offset = 0,
->   b_error = 0,
->     ...
-> 
-> To avoid system crash, we can add the check of 'bp->b_pages' to
-> xfs_inode_buf_verify(). If b_pages == NULL, we mark the buffer
-> as -EFSCORRUPTED and the IO will not dispatched.
-> 
-> Signed-off-by: Fengfei Xi <xi.fengfei@h3c.com>
-> Reviewed-by: Xianting Tian <tian.xianting@h3c.com>
-> ---
->  fs/xfs/libxfs/xfs_inode_buf.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/fs/xfs/libxfs/xfs_inode_buf.c b/fs/xfs/libxfs/xfs_inode_buf.c
-> index c667c63f2..5a485c51f 100644
-> --- a/fs/xfs/libxfs/xfs_inode_buf.c
-> +++ b/fs/xfs/libxfs/xfs_inode_buf.c
-> @@ -45,6 +45,17 @@ xfs_inode_buf_verify(
->  	int		i;
->  	int		ni;
->  
-> +	/*
-> +	 * Don't crash and mark buffer EFSCORRUPTED when b_pages is NULL
-> +	 */
-> +	if (!bp->b_pages) {
-> +		xfs_buf_ioerror(bp, -EFSCORRUPTED);
-> +		xfs_alert(mp,
-> +			"xfs_buf(%p) b_pages corruption detected at %pS\n",
-> +			bp, __return_address);
-> +		return;
-> +	}
+> 	siginfo commit does suffer the same problem, but it becomes an issue
+> only for 32bit processes under mips64 big-endian kernel (there it yields
+> e.g. zero .__sigfault.si_addr in $_siginfo when using gdb with a coredump
+> of 32bit process, whatever the actual faulting address had been).  And
+> b-e mips64 is rather uncommon, so that's less of an issue.
 
-This seems fairly ad hoc.
+	FWIW, here's debian/mips image (stretch) booted with
+qemu-system-mips64 -M malta -cpu 5KEc:
+root@mips:~# uname -a
+Linux mips 4.9.0-13-5kc-malta #1 Debian 4.9.228-1 (2020-07-05) mips64 GNU/Linux
+root@mips:~# cat a.c
+main()
+{
+        *(char *)0x0123 = 0;
+}
+root@mips:~# gcc a.c 
+a.c:1:1: warning: return type defaults to ‘int’ [-Wimplicit-int]
+ main()
+ ^~~~
+root@mips:~# ulimit -c unlimited
+root@mips:~# ./a.out 
+[  519.744983] do_page_fault(): sending SIGSEGV to a.out for invalid write access to 0000000000000123
+[  519.746735] epc = 00000000558477c0 in a.out[55847000+1000]
+[  519.747758] ra  = 000000007792f4a8 in libc-2.24.so[77916000+16a000]
+Segmentation fault (core dumped)
+root@mips:~# gdb a.out core 
+GNU gdb (Debian 7.12-6) 7.12.0.20161007-git
+Copyright (C) 2016 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "mips-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+<http://www.gnu.org/software/gdb/documentation/>.
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from a.out...(no debugging symbols found)...done.
+[New LWP 1202]
+Core was generated by `./a.out'.
+Program terminated with signal SIGSEGV, Segmentation fault.
+#0  0x55dde7c0 in main ()
+(gdb) print $_siginfo
+$1 = {si_signo = 11, si_errno = 1, si_code = 0, _sifields = {_pad = {0, 0, 
+      291, 0 <repeats 26 times>}, _kill = {si_pid = 0, si_uid = 0}, _timer = {
+      si_tid = 0, si_overrun = 0, si_sigval = {sival_int = 291, 
+        sival_ptr = 0x123}}, _rt = {si_pid = 0, si_uid = 0, si_sigval = {
+        sival_int = 291, sival_ptr = 0x123}}, _sigchld = {si_pid = 0, 
+      si_uid = 0, si_status = 291, si_utime = 0, si_stime = 0}, _sigfault = {
+      si_addr = 0x0}, _sigpoll = {si_band = 0, si_fd = 0}}}
+(gdb) quit
 
-I think we need a better idea of how we got here; why should inode buffers
-be uniquely impacted (or defensively protected?)  Can you reproduce this
-using virtual devices so the test can be scripted?
 
--Eric
+Note the wrong value in _sigfault.si_addr - it should've been 0x123, not 0.
+
+root@mips:~# readelf -n core
+
+Displaying notes found at file offset 0x00000234 with length 0x000005f4:
+  Owner                 Data size       Description
+  CORE                 0x00000100       NT_PRSTATUS (prstatus structure)
+  CORE                 0x00000080       NT_PRPSINFO (prpsinfo structure)
+  CORE                 0x00000080       NT_SIGINFO (siginfo_t data)
+  CORE                 0x00000090       NT_AUXV (auxiliary vector)
+  CORE                 0x000001e1       NT_FILE (mapped files)
+    Page size: 9
+         Start         End Page Offset
+  CORE                 0x00000108       NT_FPREGSET (floating point registers)
+
+For comparison, exact same image booted with qemu-system-mips -M malta:
+
+root@mips:~# uname -a
+Linux mips 4.9.0-13-4kc-malta #1 Debian 4.9.228-1 (2020-07-05) mips GNU/Linux
+root@mips:~# ulimit -c unlimited
+root@mips:~# ./a.out
+[   83.380870] do_page_fault(): sending SIGSEGV to a.out for invalid write access to 00000123
+[   83.390678] epc = 55e0e7c0 in a.out[55e0e000+1000]
+[   83.391525] ra  = 76f644a8 in libc-2.24.so[76f4b000+16a000]
+Segmentation fault (core dumped)
+root@mips:~# gdb a.out core
+GNU gdb (Debian 7.12-6) 7.12.0.20161007-git
+Copyright (C) 2016 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "mips-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+<http://www.gnu.org/software/gdb/documentation/>.
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from a.out...(no debugging symbols found)...done.
+[New LWP 1184]
+Core was generated by `./a.out'.
+Program terminated with signal SIGSEGV, Segmentation fault.
+#0  0x55e0e7c0 in main ()
+(gdb) print $_siginfo
+$1 = {si_signo = 11, si_errno = 1, si_code = 0, _sifields = {_pad = {291, 
+      0 <repeats 28 times>}, _kill = {si_pid = 291, si_uid = 0}, _timer = {
+      si_tid = 291, si_overrun = 0, si_sigval = {sival_int = 0, 
+        sival_ptr = 0x0}}, _rt = {si_pid = 291, si_uid = 0, si_sigval = {
+        sival_int = 0, sival_ptr = 0x0}}, _sigchld = {si_pid = 291, 
+      si_uid = 0, si_status = 0, si_utime = 0, si_stime = 0}, _sigfault = {
+      si_addr = 0x123}, _sigpoll = {si_band = 291, si_fd = 0}}}
+(gdb) quit
+root@mips:~# readelf -n core
+
+Displaying notes found at file offset 0x00000234 with length 0x00000580:
+  Owner                 Data size       Description
+  CORE                 0x00000100       NT_PRSTATUS (prstatus structure)
+  CORE                 0x00000080       NT_PRPSINFO (prpsinfo structure)
+  CORE                 0x00000080       NT_SIGINFO (siginfo_t data)
+  CORE                 0x00000090       NT_AUXV (auxiliary vector)
+  CORE                 0x0000016d       NT_FILE (mapped files)
+    Page size: 4096
+         Start         End Page Offset
+    0x55e0e000  0x55e0f000  0x00000000
+        /root/a.out
+    0x55e1e000  0x55e1f000  0x00000000
+        /root/a.out
+    0x76f4b000  0x770b5000  0x00000000
+        /lib/mips-linux-gnu/libc-2.24.so
+    0x770b5000  0x770c5000  0x0000016a
+        /lib/mips-linux-gnu/libc-2.24.so
+    0x770c5000  0x770c8000  0x0000016a
+        /lib/mips-linux-gnu/libc-2.24.so
+    0x770c8000  0x770cb000  0x0000016d
+        /lib/mips-linux-gnu/libc-2.24.so
+    0x770cd000  0x770f0000  0x00000000
+        /lib/mips-linux-gnu/ld-2.24.so
+    0x770ff000  0x77100000  0x00000022
+        /lib/mips-linux-gnu/ld-2.24.so
+    0x77100000  0x77101000  0x00000023
+        /lib/mips-linux-gnu/ld-2.24.so
+  CORE                 0x00000108       NT_FPREGSET (floating point registers)
+
+So that's not so theoretical - big-endian mips64 userland is unsupported,
+but booting the big-endian mips32 userland on mips64 hardware is clearly
+meant to work - they even ship a 64bit kernel built for that.
+
+IOW, both O32 and N32 coredumps in 64bit mips kernels have broken
+NT_FILE and NT_SIGINFO.  And while NT_SIGINFO breakage is really
+visible only on b-e, NT_FILE one is common to b-e and l-e.  One of
+the effects of the latter is that current gdb fails to work with
+threaded coredumps of 32bit processes produced on boxen with 64bit
+kernels.  Coredumps generated by gcore(1) are fine...
+
+I think the following ought to be applied.  Comments?
+
+[mips] fix malformed NT_FILE and NT_SIGINFO in 32bit coredumps
+
+	Patches that introduced NT_FILE and NT_SIGINFO notes back in 2012
+had taken care of native (fs/binfmt_elf.c) and compat (fs/compat_binfmt_elf.c)
+coredumps; unfortunately, compat on mips (which does not go through the
+usual compat_binfmt_elf.c) had not been noticed.
+
+	As the result, both N32 and O32 coredumps on 64bit mips kernels
+have those sections malformed enough to confuse the living hell out of
+all gdb and readelf versions (up to and including the tip of binutils-gdb.git).
+
+	Longer term solution is to make both O32 and N32 compat use the
+regular compat_binfmt_elf.c, but that's too much for backports.  The minimal
+solution is to do in arch/mips/kernel/binfmt_elf[on]32.c the same thing
+those patches have done in fs/compat_binfmt_elf.c
+
+Cc: stable@kernel.org # v3.7+
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+---
+diff --git a/arch/mips/kernel/binfmt_elfn32.c b/arch/mips/kernel/binfmt_elfn32.c
+index 6ee3f7218c67..c4441416e96b 100644
+--- a/arch/mips/kernel/binfmt_elfn32.c
++++ b/arch/mips/kernel/binfmt_elfn32.c
+@@ -103,4 +103,11 @@ jiffies_to_old_timeval32(unsigned long jiffies, struct old_timeval32 *value)
+ #undef ns_to_kernel_old_timeval
+ #define ns_to_kernel_old_timeval ns_to_old_timeval32
+ 
++/*
++ * Some data types as stored in coredump.
++ */
++#define user_long_t             compat_long_t
++#define user_siginfo_t          compat_siginfo_t
++#define copy_siginfo_to_external        copy_siginfo_to_external32
++
+ #include "../../../fs/binfmt_elf.c"
+diff --git a/arch/mips/kernel/binfmt_elfo32.c b/arch/mips/kernel/binfmt_elfo32.c
+index 6dd103d3cebb..7b2a23f48c1a 100644
+--- a/arch/mips/kernel/binfmt_elfo32.c
++++ b/arch/mips/kernel/binfmt_elfo32.c
+@@ -106,4 +106,11 @@ jiffies_to_old_timeval32(unsigned long jiffies, struct old_timeval32 *value)
+ #undef ns_to_kernel_old_timeval
+ #define ns_to_kernel_old_timeval ns_to_old_timeval32
+ 
++/*
++ * Some data types as stored in coredump.
++ */
++#define user_long_t             compat_long_t
++#define user_siginfo_t          compat_siginfo_t
++#define copy_siginfo_to_external        copy_siginfo_to_external32
++
+ #include "../../../fs/binfmt_elf.c"
