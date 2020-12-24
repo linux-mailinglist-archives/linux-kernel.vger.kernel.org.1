@@ -2,131 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15B832E279C
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 15:27:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E20692E27A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 15:27:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728176AbgLXOZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 09:25:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56938 "EHLO
+        id S1728528AbgLXO0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 09:26:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727144AbgLXOZD (ORCPT
+        with ESMTP id S1726611AbgLXO0U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 09:25:03 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3A00C0617A6;
-        Thu, 24 Dec 2020 06:24:22 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id y23so1756858wmi.1;
-        Thu, 24 Dec 2020 06:24:22 -0800 (PST)
+        Thu, 24 Dec 2020 09:26:20 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE8F8C061794;
+        Thu, 24 Dec 2020 06:26:05 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id e2so1338060plt.12;
+        Thu, 24 Dec 2020 06:26:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=M+N06EmcJFVLj4CN44KRnLg8MB/99NEOfhbL1AkgPbo=;
-        b=mdsMzpeGWDSWXjAkbEs6+T3MmkZvHv2GGN3947O4nVnpNrCxD69QpTVwbicNf6/qif
-         G7ncpLa4Lv1ixIMDxGgvlDwcbXo60ZlEB7sTj52pkdq5BF8cCHmKTfvhih26z4yv7iL5
-         GqPyjm1SOTEXfefif6TaRUxcMU7N2SlT1XYeZ09BPU6iChnAV5eD1x5ckspI9bhhy6PN
-         oMLqZFp3MZ2R6DyAC0gHa6jupqL+5+xiL33/AVVNc1GD+90hniALIg8+I/lqfn9NYVqy
-         WNoh5Hmym/iBeXUe9RDOw3/MYy6eb+8K2I0li60yydia1IjC+kf+IKSbVX2cwlmJQP1s
-         azmw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=k0cWkaPR7sxvjSMJSz2pqKDGwauEeHa3F+oQo0gd5HI=;
+        b=ky8KHdOA9V1EmSxBUaZWvi58lfudWqIzG98R94RMPtKRNx3YkouE1oSoXtWJb4vuR6
+         usXqkGQStMGpxnqMFlu0YObYmOEOw+9fXreGcOojgCa/wyENEFuI70/lV1dlzCrTjC2t
+         nswT1K2C7bf6UYM0cNNGGajKDqVXRsfRym+7zCNJzw0yqSvNlYDrSsGhnBMn0iaY8p4r
+         6VlhvhGP87L12WxIBiEFxh/Dvl82q9FE/iuuNwoQbIiU7yZZFXoEup8NRExJDn2YwigE
+         GjeEP4cEjuxufyilGDcCELOtdyoJpje1KOFYMJJNYwEUudnEqxB97JfKTj+uykibo70x
+         i19g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=M+N06EmcJFVLj4CN44KRnLg8MB/99NEOfhbL1AkgPbo=;
-        b=GuElCHoPMvwOsjDadmjSoA27dfzGXt/3HNaCBNHIMlRTsyS4fxeDYAEQtXA2y+WkpK
-         48DO2dal7hLx93hktaYUkkuDfEFzoFeaAfhmzkkhXmNWv8f/MiappJeL2+BEwHRE3UMV
-         6ADebZvdEmrVsveOmSooiiZ5s8J+n+QNaRz3aEXuQTei9SRzacDarcCOne3IlBO2aLRZ
-         5Tn0fKfau8lzyw29NlvlavHQguZc4Cz6gQ1AdCgQA+32aThBwnjxI3w+D07EsSHPzG7h
-         I0atE35Vsv0QArPaHBazkvZ/xDcXASUTHgQWZUHUIbMGGcleeFNh/lTbh/0TZOdVub8N
-         70oQ==
-X-Gm-Message-State: AOAM533hHUQ8R8oCYGofgO214r0oMtYVXF2LeaLH0ihTO2c5kCBXAAu3
-        Zug2K3bwI59xJ21v+IREc2A=
-X-Google-Smtp-Source: ABdhPJyyPU4z/SYA/lIq8JzuBtX0l1hBD+x/9V9HufAJW1hUEnYBubQAF3jSek3Rg2I3dccWrin6sQ==
-X-Received: by 2002:a7b:c8c5:: with SMTP id f5mr4604917wml.106.1608819861647;
-        Thu, 24 Dec 2020 06:24:21 -0800 (PST)
-Received: from [192.168.1.211] ([2.31.224.116])
-        by smtp.gmail.com with ESMTPSA id o17sm40499882wrg.32.2020.12.24.06.24.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Dec 2020 06:24:20 -0800 (PST)
-Subject: Re: [PATCH v3 07/14] software_node: Add support for fwnode_graph*()
- family of functions
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org, yong.zhi@intel.com,
-        sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
-        tian.shu.qiu@intel.com, mchehab@kernel.org, robert.moore@intel.com,
-        erik.kaneda@intel.com, pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, andriy.shevchenko@linux.intel.com,
-        linux@rasmusvillemoes.dk,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org, kieran.bingham+renesas@ideasonboard.com,
-        hverkuil-cisco@xs4all.nl, m.felsch@pengutronix.de,
-        niklas.soderlund+renesas@ragnatech.se, slongerbeam@gmail.com,
-        heikki.krogerus@linux.intel.com, linus.walleij@linaro.org
-References: <20201224010907.263125-1-djrscally@gmail.com>
- <20201224010907.263125-8-djrscally@gmail.com>
- <X+SPUTDn+lPdV4ny@pendragon.ideasonboard.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <fcb0d5b6-db28-ff0a-b998-c46ebad8e759@gmail.com>
-Date:   Thu, 24 Dec 2020 14:24:19 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <X+SPUTDn+lPdV4ny@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=k0cWkaPR7sxvjSMJSz2pqKDGwauEeHa3F+oQo0gd5HI=;
+        b=TZ+Rs9Vs7GyhVO1hZ9o5R6CPNWOEIVhlcw/UZRvFaAM0sBdGaDOeZjLowZJQv9eDRl
+         /hq4uH9Ngt9y9LMPbVfiQ8Kt23xyf/JrppTRMbhcZcERjL5abvTGuzL4r1VPx/c5b4DB
+         1tj9x+gGxZhfsOVRNcfZQ72EJRwNp7zIf6MDhrboaes/ab/XzjAw2k/NtmxW6G4NIQuv
+         sgWrQFEkyHcoor3e8uS3VF0kWgjRilzlNylj4W7UyPDqHRa834A9u7okGwbWZYQ/Iz8j
+         YLdQXFmmVWGf4s2ryTUFtDYT1APwEmjwN2aC31fk6UUCtF5gelmCmP34LOkIORcLGRpx
+         MwTQ==
+X-Gm-Message-State: AOAM532m3ia3l6N59oFppeLq/7DCwtBugTmcv1duLJPIONmzExKG5WGZ
+        PcXbheJgoWTJBySyIPHSRaY=
+X-Google-Smtp-Source: ABdhPJyS8a+H04/RwMNnC+h8OGTnvSOfr6CIYQdcDuqF6PW5bJnaXkxEouIG8Qm7ByD9qN8G8bgBVw==
+X-Received: by 2002:a17:90a:9707:: with SMTP id x7mr4706099pjo.72.1608819965332;
+        Thu, 24 Dec 2020 06:26:05 -0800 (PST)
+Received: from DESKTOP-8REGVGF.localdomain ([124.13.157.5])
+        by smtp.gmail.com with ESMTPSA id r185sm26936351pfc.53.2020.12.24.06.26.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Dec 2020 06:26:04 -0800 (PST)
+From:   Sieng Piaw Liew <liew.s.piaw@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     bcm-kernel-feedback-list@broadcom.com,
+        Sieng Piaw Liew <liew.s.piaw@gmail.com>,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v2 4/6] bcm63xx_enet: alloc rx skb with NET_IP_ALIGN
+Date:   Thu, 24 Dec 2020 22:24:19 +0800
+Message-Id: <20201224142421.32350-5-liew.s.piaw@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201224142421.32350-1-liew.s.piaw@gmail.com>
+References: <20201224142421.32350-1-liew.s.piaw@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/12/2020 12:53, Laurent Pinchart wrote:
->> +	while ((port = software_node_get_next_child(parent, old))) {
->> +		/*
->> +		 * ports have naming style "port@n", so we search for children
->> +		 * that follow that convention (but without assuming anything
->> +		 * about the index number)
->> +		 */
->> +		if (!strncmp(to_swnode(port)->node->name, "port@",
->> +			     FWNODE_GRAPH_PORT_NAME_PREFIX_LEN))
-> 
-> I would either add a macro to replace the prefix ("port@"), or drop
-> FWNODE_GRAPH_PORT_NAME_PREFIX_LEN. I think this is the worst of both
-> worlds, the string and its length are defined in two different places
-> :-)
-> 
-> I would personally drop the macro, but I don't mind either way as long
-> as the string and its length are defined in the same place.
+Use netdev_alloc_skb_ip_align on newer SoCs with integrated switch
+(enetsw) when refilling RX. Increases packet processing performance
+by 30% (with netif_receive_skb_list).
 
-OK, pending outcome of the discussion in the other thread I'll do both
-things the same way - whatever the decision there is.
+Non-enetsw SoCs cannot function with the extra pad so continue to use
+the regular netdev_alloc_skb.
 
+Tested on BCM6328 320 MHz and iperf3 -M 512 to measure packet/sec
+performance.
 
->> +static int
->> +software_node_graph_parse_endpoint(const struct fwnode_handle *fwnode,
->> +				   struct fwnode_endpoint *endpoint)
->> +{
->> +	struct swnode *swnode = to_swnode(fwnode);
->> +	int ret;
->> +
->> +	/* Ports have naming style "port@n", we need to select the n */
->> +	ret = kstrtou32(swnode->parent->node->name + FWNODE_GRAPH_PORT_NAME_PREFIX_LEN,
->> +			10, &endpoint->port);
-> 
-> Same here.
-> 
-> I wonder if we should add a check to ensure parent->node->name is long
-> enough (and possibly even start with the right prefix), as otherwise the
-> pointer passed to kstrtou32() may be past the end of the string. Maybe
-> this is overkill, if we can rely on the fact that software nodes have
-> correct names.
+Before:
+[ ID] Interval Transfer Bandwidth Retr
+[ 4] 0.00-30.00 sec 120 MBytes 33.7 Mbits/sec 277 sender
+[ 4] 0.00-30.00 sec 120 MBytes 33.5 Mbits/sec receiver
 
-Not necessarily actually; ports yes but endpoints no, so I think the
-danger is there. I'll add the check.
+After (+netif_receive_skb_list):
+[ 4] 0.00-30.00 sec 155 MBytes 43.3 Mbits/sec 354 sender
+[ 4] 0.00-30.00 sec 154 MBytes 43.1 Mbits/sec receiver
 
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Sieng Piaw Liew <liew.s.piaw@gmail.com>
+---
+ drivers/net/ethernet/broadcom/bcm63xx_enet.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Thanks!
+diff --git a/drivers/net/ethernet/broadcom/bcm63xx_enet.c b/drivers/net/ethernet/broadcom/bcm63xx_enet.c
+index 452968f168ed..51976ed87d2d 100644
+--- a/drivers/net/ethernet/broadcom/bcm63xx_enet.c
++++ b/drivers/net/ethernet/broadcom/bcm63xx_enet.c
+@@ -237,7 +237,10 @@ static int bcm_enet_refill_rx(struct net_device *dev)
+ 		desc = &priv->rx_desc_cpu[desc_idx];
+ 
+ 		if (!priv->rx_skb[desc_idx]) {
+-			skb = netdev_alloc_skb(dev, priv->rx_skb_size);
++			if (priv->enet_is_sw)
++				skb = netdev_alloc_skb_ip_align(dev, priv->rx_skb_size);
++			else
++				skb = netdev_alloc_skb(dev, priv->rx_skb_size);
+ 			if (!skb)
+ 				break;
+ 			priv->rx_skb[desc_idx] = skb;
+-- 
+2.17.1
 
