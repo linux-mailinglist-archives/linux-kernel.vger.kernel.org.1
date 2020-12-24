@@ -2,91 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDC0E2E264A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 12:25:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C060C2E264E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 12:25:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728508AbgLXLYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 06:24:20 -0500
-Received: from mail-wr1-f54.google.com ([209.85.221.54]:40022 "EHLO
-        mail-wr1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727976AbgLXLYT (ORCPT
+        id S1728608AbgLXLYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 06:24:46 -0500
+Received: from mail2.protonmail.ch ([185.70.40.22]:20897 "EHLO
+        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727976AbgLXLYp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 06:24:19 -0500
-Received: by mail-wr1-f54.google.com with SMTP id 91so1892830wrj.7;
-        Thu, 24 Dec 2020 03:24:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=D7nAycYA5Tou2eaZsXGtv/ZPTzAOMFWwsPdPF4SoL60=;
-        b=S+1E7jiuF/zwEAXRxcchZ/hKUeVhF2oZxj1yfBsa7fL3yrnJ/rcOKfNcpluNXnzX9R
-         KxlN76sC/ROp8l4hjKUJOYJL2T2aeEMPLw2LgbrgYXOodYH+3lkeOHARQr3bIwniwt3l
-         7pumgqBvchpY4iRtOnhK8hZnSvC651J8YYacufIE5ghcFU9N+fw18LZx0HxRnOjcquqs
-         nOZuJKbeWNPKQHTVwIneIxkcFLM8+G1HNRlqXTsmchnhVr69nycaezkZtamrtYwQ7ued
-         1nMUszFLHJ5bmi46iMvvf0/dBIgVTcYZOOSS5ZorkXXXPT6z+AHfZglacJbMlhH5QQYV
-         OctA==
-X-Gm-Message-State: AOAM533j9Hkra+10semGdSzfrL5/OjJ0O2U1lmggA99uq4M5jFEc0Fsk
-        i+KdUerWNS+LpdjTsPzzBfY=
-X-Google-Smtp-Source: ABdhPJzq5eeLAD3GyV6H/yROJinYLxHNa5TAGM5O6TpO8vRwsS+qizRc2pbedcQNh5m5nEShGnHrNw==
-X-Received: by 2002:adf:c642:: with SMTP id u2mr22963700wrg.243.1608809017410;
-        Thu, 24 Dec 2020 03:23:37 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id e15sm39473199wrx.86.2020.12.24.03.23.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Dec 2020 03:23:36 -0800 (PST)
-Date:   Thu, 24 Dec 2020 12:23:35 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Tim Harvey <tharvey@gateworks.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/2] dt-bindings: arm: fsl: Add binding for Gateworks
- boards with IMX8MM
-Message-ID: <20201224112335.GA15628@kozik-lap>
-References: <1608762196-29871-1-git-send-email-tharvey@gateworks.com>
+        Thu, 24 Dec 2020 06:24:45 -0500
+Date:   Thu, 24 Dec 2020 11:23:55 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1608809042;
+        bh=kdKn3PDdVjsSt9ViNOxevs6pAGOGkPzYhEj05jA5cRQ=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=tHgeJlQsZEEjLZ8hH8r4e222g6XKJiZGUb5vJG8vzSP0kTBLLUZljyW67LMdyies9
+         LtxE0qtqzyn9axbB+AhlWtd6UR9d8kCRyUSKCuYtDkq/GQtUClH+z3v4I4hyC0Zv/Q
+         fRaLG8pEM1pFcyLHRjj/CGh/JjaTmKPuoREhHP3k=
+To:     Lee Jones <lee.jones@linaro.org>
+From:   Timon Baetz <timon.baetz@protonmail.com>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Reply-To: Timon Baetz <timon.baetz@protonmail.com>
+Subject: Re: [PATCH v4 3/7] mfd: max8997: Add of_compatible to extcon and charger mfd_cell
+Message-ID: <20201224122338.7183cf2e.timon.baetz@protonmail.com>
+In-Reply-To: <20201223153207.GA300650@dell>
+References: <20201223134221.804943-1-timon.baetz@protonmail.com> <20201223134221.804943-3-timon.baetz@protonmail.com> <20201223153207.GA300650@dell>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1608762196-29871-1-git-send-email-tharvey@gateworks.com>
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 02:23:15PM -0800, Tim Harvey wrote:
-> Add bindings for the Gateworks Venice Development kit boards with
-> IMX8MM System on Module.
-> 
-> Signed-off-by: Tim Harvey <tharvey@gateworks.com>
-> ---
->  Documentation/devicetree/bindings/arm/fsl.yaml | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-> index 1ca9dfa..705c6e8 100644
-> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
-> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-> @@ -405,6 +405,9 @@ properties:
->                - beacon,imx8mm-beacon-kit  # i.MX8MM Beacon Development Kit
->                - fsl,imx8mm-ddr4-evk       # i.MX8MM DDR4 EVK Board
->                - fsl,imx8mm-evk            # i.MX8MM EVK Board
-> +              - gw,imx8mm-gw71xx-0x       # i.MX8MM Gateworks Development Kit
-> +              - gw,imx8mm-gw72xx-0x       # i.MX8MM Gateworks Development Kit
-> +              - gw,imx8mm-gw73xx-0x       # i.MX8MM Gateworks Development Kit
+On Wed, 23 Dec 2020 15:32:07 +0000, Lee Jones wrote:
+> On Wed, 23 Dec 2020, Timon Baetz wrote:
+>=20
+> > Add of_compatible ("maxim,max8997-muic") to the mfd_cell to have a
+> > of_node set in the extcon driver.
+> >
+> > Add of_compatible ("maxim,max8997-battery") to the mfd_cell to configur=
+e
+> > the charger driver.
+> >
+> > Signed-off-by: Timon Baetz <timon.baetz@protonmail.com>
+> > ---
+> >  drivers/mfd/max8997.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-) =20
+>=20
+> Why have you resent this?  It's already applied.
+>=20
 
-I think you should skip the wildcards in compatible and choose one
-specific compatible. What if at some point you would like to add gw,imx8mm-gw7113-0x?
+I made a change to an other patch in this series and wasn't sure if I
+had to resubmit everything.=20
 
-Best regards,
-Krzysztof
+Thanks and sorry for the spam.
+Timon
 
-
->                - variscite,var-som-mx8mm   # i.MX8MM Variscite VAR-SOM-MX8MM module
->            - const: fsl,imx8mm
->  
-> -- 
-> 2.7.4
-> 
