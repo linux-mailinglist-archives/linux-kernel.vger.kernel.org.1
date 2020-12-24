@@ -2,285 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89DC42E26D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 13:25:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12E472E26D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 13:27:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728292AbgLXMZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 07:25:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726591AbgLXMZJ (ORCPT
+        id S1728398AbgLXM1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 07:27:05 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:60167 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726746AbgLXM1E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 07:25:09 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4231FC061794;
-        Thu, 24 Dec 2020 04:24:29 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id lb18so1038976pjb.5;
-        Thu, 24 Dec 2020 04:24:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7ioVoN+TtUwUxRFG1jMfrbYZ/LUETYJIEopRnDFJTwU=;
-        b=GGxybWc9TGDh5iNw2yoesDsF9L3oYSFLZpZVSMM/Z0IEEjzfTVSBLg+9zweFaqgYgi
-         q3h+syVE+LX+ASe/povghGdFNzeNTL38tePh2wxy6N0TgtBF74RB2bz+Fo4Xx71bZSUQ
-         neF4OwbXvoqsYJUgELrFlvenYJ0EW0+mOP3MHwX8Co5M5bkhS6sA8dTxnkqHSZ7JUhsI
-         tR3z88AGxl0Um+RXioAHIPUOZFN/FJAdC9udZZP+6YgFMZypUvEnZStPPiWsdkcfWt8t
-         hZK46R3F5jNiwp77ey0IZm26Q4N793bB1DyVIzVfskUxu8JRjVXndQ7xyFcwFRxo3PqV
-         oR7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7ioVoN+TtUwUxRFG1jMfrbYZ/LUETYJIEopRnDFJTwU=;
-        b=nq70kzvkR4p5OBAZWfEXlGFxdDYyydxshShbrG5kAsSf9saiJ1o/vw9xmc67zLD16q
-         r7n1kzCPufQcQ2lkOwuaKUztFy3VVqIHMtOFjjGmO/Cf/P6/FFngnaSkCGB+90f2AsAq
-         v3hJW2RahQ+bAGfan9PH7HrPmL3MWkOHSJvYyfYkz7hiyzDSGiuah++6XvMmIfpWvk1G
-         Qvd4I1LsHmFUHuLDZKVUl6q+UUmX+GyVANITXp/Rx7C6kPGFzmaVkYsYhwEIyaoNGH/3
-         LpdlV9/zqpzXmptGha7EvgNE19KSScrd8Tq1CY43ATL8TKfUcaNxmbGaJeJoOaT3w4Jz
-         f+EA==
-X-Gm-Message-State: AOAM531elhYai1diktp6CYE1Ie0f7SAp2uuAW/xzH2eKGK5HDXd1gN/8
-        ujvONo7k5uqHXH46306BU2L191DNCbK/DyCkunE=
-X-Google-Smtp-Source: ABdhPJwYo8Ew2cKK7fzwUbVqNe3b02Vu4fjijplekSl9eUb5S6AHsFuXwTuDdxQYFq+jq1paQ6PPyzg9EvLPeFE7tFs=
-X-Received: by 2002:a17:90a:c592:: with SMTP id l18mr4246668pjt.228.1608812668603;
- Thu, 24 Dec 2020 04:24:28 -0800 (PST)
+        Thu, 24 Dec 2020 07:27:04 -0500
+X-UUID: cd4c9f1888c4451b88cd7fff41c16f91-20201224
+X-UUID: cd4c9f1888c4451b88cd7fff41c16f91-20201224
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        (envelope-from <qii.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1540264706; Thu, 24 Dec 2020 20:26:16 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 24 Dec 2020 20:26:13 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 24 Dec 2020 20:26:13 +0800
+From:   <qii.wang@mediatek.com>
+To:     <wsa@the-dreams.de>
+CC:     <matthias.bgg@gmail.com>, <linux-i2c@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>,
+        <qii.wang@mediatek.com>
+Subject: i2c: mediatek: Fix apdma and i2c hand-shake timeout
+Date:   Thu, 24 Dec 2020 20:26:07 +0800
+Message-ID: <1608812767-3254-1-git-send-email-qii.wang@mediatek.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-References: <20201224010907.263125-1-djrscally@gmail.com> <20201224010907.263125-8-djrscally@gmail.com>
-In-Reply-To: <20201224010907.263125-8-djrscally@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 24 Dec 2020 14:24:12 +0200
-Message-ID: <CAHp75Vft7gg1AcKCEU+E74eB_ZMouHFd-8uZ7pcVj5CoJzZpvQ@mail.gmail.com>
-Subject: Re: [PATCH v3 07/14] software_node: Add support for fwnode_graph*()
- family of functions
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        devel@acpica.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tian Shu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        kieran.bingham+renesas@ideasonboard.com,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        niklas.soderlund+renesas@ragnatech.se,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 24, 2020 at 3:14 AM Daniel Scally <djrscally@gmail.com> wrote:
->
-> From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
->
-> This implements the remaining .graph_* callbacks in the
+From: Qii Wang <qii.wang@mediatek.com>
 
-.graph_* ==> ->graph_*() ?
+With the apdma remove hand-shake signal, it requirs special
+operation timing to reset i2c manually, otherwise the interrupt
+will not be triggered, i2c transmission will be timeout.
 
-> fwnode operations structure for the software nodes. That makes
-> the fwnode_graph*() functions available in the drivers also
+Signed-off-by: Qii Wang <qii.wang@mediatek.com>
+---
+ drivers/i2c/busses/i2c-mt65xx.c | 27 ++++++++++++++++++++++-----
+ 1 file changed, 22 insertions(+), 5 deletions(-)
 
-graph*() -> graph_*() ?
+base Message ID: 1605701861-30800-1-git-send-email-qii.wang@mediatek.com
 
-> when software nodes are used.
->
-> The implementation tries to mimic the "OF graph" as much as
-> possible, but there is no support for the "reg" device
-> property. The ports will need to have the index in their
-> name which starts with "port@" (for example "port@0", "port@1",
-
-> ...)
-
-Looks not good, perhaps move to the previous line, or move port@1 example here?
-
-> and endpoints will use the index of the software node
-> that is given to them during creation. The port nodes can
-> also be grouped under a specially named "ports" subnode,
-> just like in DT, if necessary.
->
-> The remote-endpoints are reference properties under the
-> endpoint nodes that are named "remote-endpoint".
-
-Few nitpicks here and there, after addressing them,
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-
-> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> Co-developed-by: Daniel Scally <djrscally@gmail.com>
-> Signed-off-by: Daniel Scally <djrscally@gmail.com>
-> ---
-> Changes in v3
->         - Changed software_node_get_next_endpoint() to drop the variable
->         named "old"
->         - Used the macros defined in 06/14 instead of magic numbers
->         - Added some comments to explain behaviour a little where it's unclear
->
->  drivers/base/swnode.c | 112 +++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 111 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
-> index 2d07eb04c6c8..ff690029060d 100644
-> --- a/drivers/base/swnode.c
-> +++ b/drivers/base/swnode.c
-> @@ -540,6 +540,112 @@ software_node_get_reference_args(const struct fwnode_handle *fwnode,
->         return 0;
->  }
->
-> +static struct fwnode_handle *
-> +swnode_graph_find_next_port(const struct fwnode_handle *parent,
-> +                           struct fwnode_handle *port)
-> +{
-> +       struct fwnode_handle *old = port;
-> +
-> +       while ((port = software_node_get_next_child(parent, old))) {
-> +               /*
-> +                * ports have naming style "port@n", so we search for children
-> +                * that follow that convention (but without assuming anything
-> +                * about the index number)
-> +                */
-
-> +               if (!strncmp(to_swnode(port)->node->name, "port@",
-
-You may use here corresponding _FMT macro.
-
-> +                            FWNODE_GRAPH_PORT_NAME_PREFIX_LEN))
-> +                       return port;
-> +               old = port;
-> +       }
-> +
-> +       return NULL;
-> +}
-> +
-> +static struct fwnode_handle *
-> +software_node_graph_get_next_endpoint(const struct fwnode_handle *fwnode,
-> +                                     struct fwnode_handle *endpoint)
-> +{
-> +       struct swnode *swnode = to_swnode(fwnode);
-> +       struct fwnode_handle *parent;
-> +       struct fwnode_handle *port;
-> +
-> +       if (!swnode)
-> +               return NULL;
-> +
-> +       if (endpoint) {
-> +               port = software_node_get_parent(endpoint);
-> +               parent = software_node_get_parent(port);
-> +       } else {
-> +               parent = software_node_get_named_child_node(fwnode, "ports");
-> +               if (!parent)
-> +                       parent = software_node_get(&swnode->fwnode);
-> +
-> +               port = swnode_graph_find_next_port(parent, NULL);
-> +       }
-> +
-> +       for (; port; port = swnode_graph_find_next_port(parent, port)) {
-> +               endpoint = software_node_get_next_child(port, endpoint);
-> +               if (endpoint) {
-> +                       fwnode_handle_put(port);
-> +                       break;
-> +               }
-> +       }
-> +
-> +       fwnode_handle_put(parent);
-> +
-> +       return endpoint;
-> +}
-> +
-> +static struct fwnode_handle *
-> +software_node_graph_get_remote_endpoint(const struct fwnode_handle *fwnode)
-> +{
-> +       struct swnode *swnode = to_swnode(fwnode);
-> +       const struct software_node_ref_args *ref;
-> +       const struct property_entry *prop;
-> +
-> +       if (!swnode)
-> +               return NULL;
-> +
-> +       prop = property_entry_get(swnode->node->properties, "remote-endpoint");
-> +       if (!prop || prop->type != DEV_PROP_REF || prop->is_inline)
-> +               return NULL;
-> +
-> +       ref = prop->pointer;
-> +
-> +       return software_node_get(software_node_fwnode(ref[0].node));
-> +}
-> +
-> +static struct fwnode_handle *
-> +software_node_graph_get_port_parent(struct fwnode_handle *fwnode)
-> +{
-> +       struct swnode *swnode = to_swnode(fwnode);
-> +
-> +       swnode = swnode->parent;
-> +       if (swnode && !strcmp(swnode->node->name, "ports"))
-> +               swnode = swnode->parent;
-> +
-> +       return swnode ? software_node_get(&swnode->fwnode) : NULL;
-> +}
-> +
-> +static int
-> +software_node_graph_parse_endpoint(const struct fwnode_handle *fwnode,
-> +                                  struct fwnode_endpoint *endpoint)
-> +{
-> +       struct swnode *swnode = to_swnode(fwnode);
-> +       int ret;
-> +
-> +       /* Ports have naming style "port@n", we need to select the n */
-
-> +       ret = kstrtou32(swnode->parent->node->name + FWNODE_GRAPH_PORT_NAME_PREFIX_LEN,
-
-Maybe a temporary variable?
-
-  unsigned int prefix_len = FWNODE_GRAPH_PORT_NAME_PREFIX_LEN;
-  ...
-  ret = kstrtou32(swnode->parent->node->name + prefix_len,
-
-
-> +                       10, &endpoint->port);
-> +       if (ret)
-> +               return ret;
-> +
-> +       endpoint->id = swnode->id;
-> +       endpoint->local_fwnode = fwnode;
-> +
-> +       return 0;
-> +}
-> +
->  static const struct fwnode_operations software_node_ops = {
->         .get = software_node_get,
->         .put = software_node_put,
-> @@ -551,7 +657,11 @@ static const struct fwnode_operations software_node_ops = {
->         .get_parent = software_node_get_parent,
->         .get_next_child_node = software_node_get_next_child,
->         .get_named_child_node = software_node_get_named_child_node,
-> -       .get_reference_args = software_node_get_reference_args
-> +       .get_reference_args = software_node_get_reference_args,
-> +       .graph_get_next_endpoint = software_node_graph_get_next_endpoint,
-> +       .graph_get_remote_endpoint = software_node_graph_get_remote_endpoint,
-> +       .graph_get_port_parent = software_node_graph_get_port_parent,
-> +       .graph_parse_endpoint = software_node_graph_parse_endpoint,
->  };
->
->  /* -------------------------------------------------------------------------- */
-> --
-> 2.25.1
->
-
-
+diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
+index 6f61595..2ffd2f3 100644
+--- a/drivers/i2c/busses/i2c-mt65xx.c
++++ b/drivers/i2c/busses/i2c-mt65xx.c
+@@ -38,6 +38,7 @@
+ #define I2C_IO_CONFIG_OPEN_DRAIN	0x0003
+ #define I2C_IO_CONFIG_PUSH_PULL		0x0000
+ #define I2C_SOFT_RST			0x0001
++#define I2C_HANDSHAKE_RST		0x0020
+ #define I2C_FIFO_ADDR_CLR		0x0001
+ #define I2C_DELAY_LEN			0x0002
+ #define I2C_TIME_CLR_VALUE		0x0000
+@@ -45,6 +46,7 @@
+ #define I2C_WRRD_TRANAC_VALUE		0x0002
+ #define I2C_RD_TRANAC_VALUE		0x0001
+ #define I2C_SCL_MIS_COMP_VALUE		0x0000
++#define I2C_CHN_CLR_FLAG		0x0000
+ 
+ #define I2C_DMA_CON_TX			0x0000
+ #define I2C_DMA_CON_RX			0x0001
+@@ -54,7 +56,9 @@
+ #define I2C_DMA_START_EN		0x0001
+ #define I2C_DMA_INT_FLAG_NONE		0x0000
+ #define I2C_DMA_CLR_FLAG		0x0000
++#define I2C_DMA_WARM_RST		0x0001
+ #define I2C_DMA_HARD_RST		0x0002
++#define I2C_DMA_HANDSHAKE_RST		0x0004
+ 
+ #define MAX_SAMPLE_CNT_DIV		8
+ #define MAX_STEP_CNT_DIV		64
+@@ -475,11 +479,24 @@ static void mtk_i2c_init_hw(struct mtk_i2c *i2c)
+ {
+ 	u16 control_reg;
+ 
+-	writel(I2C_DMA_HARD_RST, i2c->pdmabase + OFFSET_RST);
+-	udelay(50);
+-	writel(I2C_DMA_CLR_FLAG, i2c->pdmabase + OFFSET_RST);
+-
+-	mtk_i2c_writew(i2c, I2C_SOFT_RST, OFFSET_SOFTRESET);
++	if (i2c->dev_comp->dma_sync) {
++		writel(I2C_DMA_WARM_RST, i2c->pdmabase + OFFSET_RST);
++		udelay(10);
++		writel(I2C_DMA_CLR_FLAG, i2c->pdmabase + OFFSET_RST);
++		udelay(10);
++		writel(I2C_DMA_HANDSHAKE_RST | I2C_DMA_HARD_RST,
++		       i2c->pdmabase + OFFSET_RST);
++		mtk_i2c_writew(i2c, I2C_HANDSHAKE_RST | I2C_SOFT_RST,
++			       OFFSET_SOFTRESET);
++		udelay(10);
++		writel(I2C_DMA_CLR_FLAG, i2c->pdmabase + OFFSET_RST);
++		mtk_i2c_writew(i2c, I2C_CHN_CLR_FLAG, OFFSET_SOFTRESET);
++	} else {
++		writel(I2C_DMA_HARD_RST, i2c->pdmabase + OFFSET_RST);
++		udelay(50);
++		writel(I2C_DMA_CLR_FLAG, i2c->pdmabase + OFFSET_RST);
++		mtk_i2c_writew(i2c, I2C_SOFT_RST, OFFSET_SOFTRESET);
++	}
+ 
+ 	/* Set ioconfig */
+ 	if (i2c->use_push_pull)
 -- 
-With Best Regards,
-Andy Shevchenko
+1.9.1
+
