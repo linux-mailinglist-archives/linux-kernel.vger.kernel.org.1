@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D41162E2605
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 12:09:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 728D52E2606
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Dec 2020 12:09:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727902AbgLXLGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 06:06:51 -0500
-Received: from mx0a-00154904.pphosted.com ([148.163.133.20]:52394 "EHLO
-        mx0a-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726591AbgLXLGu (ORCPT
+        id S1728023AbgLXLG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 06:06:57 -0500
+Received: from mx0b-00154904.pphosted.com ([148.163.137.20]:28616 "EHLO
+        mx0b-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726591AbgLXLG5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 06:06:50 -0500
-Received: from pps.filterd (m0170393.ppops.net [127.0.0.1])
-        by mx0a-00154904.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BOB3VDd016546
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 06:06:10 -0500
+        Thu, 24 Dec 2020 06:06:57 -0500
+Received: from pps.filterd (m0170398.ppops.net [127.0.0.1])
+        by mx0b-00154904.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BOB2sjB001677
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 06:06:15 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
- subject : date : message-id; s=smtpout1;
+ subject : date : message-id : in-reply-to : references; s=smtpout1;
  bh=v0/HAblaSot77F3n7el3TvOALx5ZhAeoYJj1o93ojNQ=;
- b=a5kOZjmRUlAGx48DhrYQV7D24Xh3S7gHHnNXLtteNTgztnMukyv2OJ7V1FsJnranL8g/
- e4hWQQ7Fl/ePVMNcvqoguucWuG01qiRpL9sUIUMWjdnB67wzU0e6vwaIXU8kuwK06Leb
- 3H5eXsi2VtIb22i/BvxF3xx8fG9XAsFHLMqRFT0GNwDHgbrNu6bnO5vafHY0Erk4XrPF
- q5Z28gjgdY0YJbzd1yje9PuMlVp+2ULTm3CdaMJ9wGRDsvOJx80OxUtdQ4cSLT1d9Mja
- nL8P62sxkrAPYgqYKTk8Kb559W341/nEDC1fVTcF0JSaR4q6KepY41QwWnMYstiyybpG mw== 
-Received: from mx0a-00154901.pphosted.com (mx0a-00154901.pphosted.com [67.231.149.39])
-        by mx0a-00154904.pphosted.com with ESMTP id 35k0e127uj-1
+ b=sHwPO6IYFydJPSf/6v85biv/4VXOHoYRidEctNAAI5RQxPAunySYWYy0qXBOiccSdnzu
+ LcMZAWpXJPPSFdl2sgfgrpvAlmojKOoffoeQtCrZvwiJRWa2xOOhTcLrkqpoWCw5tBTW
+ NY5LeAIbNNXk8I7V9RBvQtEYrbKm85eqgAWhwFwvD1ict5eksYgqibTJZXKwloMFC+Jo
+ EvojYntsi6g3ILShusEjOL8uyPKvN7y/yqnvmh+m4hQk4GSdVYLrXJ9z59u9MWcLrEDS
+ tEO0dw4N2DmCub/Wgsqy2KXn/NwzunR9FKrs41Bz7Mua+NGWB6bg8FhJyN+6H/B+g2Yo Nw== 
+Received: from mx0a-00154901.pphosted.com (mx0b-00154901.pphosted.com [67.231.157.37])
+        by mx0b-00154904.pphosted.com with ESMTP id 35k0egj986-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 06:06:09 -0500
-Received: from pps.filterd (m0142699.ppops.net [127.0.0.1])
-        by mx0a-00154901.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BOB0K0d150005
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 06:06:09 -0500
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 06:06:15 -0500
+Received: from pps.filterd (m0089484.ppops.net [127.0.0.1])
+        by mx0b-00154901.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BOB1ZvR023433
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 06:06:15 -0500
 Received: from esaploutdur05.us.dell.com ([128.221.233.10])
-        by mx0a-00154901.pphosted.com with ESMTP id 35m8uejfm6-1
+        by mx0b-00154901.pphosted.com with ESMTP id 35mnkvtf6j-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 06:06:09 -0500
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 06:06:15 -0500
 X-PREM-Routing: D-Outbound
 X-LoopCount0: from 10.55.160.55
 Received: from unknown (HELO arwen6.xiolab.lab.emc.com) ([10.55.160.55])
-  by esaploutdur05.us.dell.com with ESMTP; 24 Dec 2020 05:06:07 -0600
+  by esaploutdur05.us.dell.com with ESMTP; 24 Dec 2020 05:06:13 -0600
 From:   leonid.ravich@dell.com
 To:     james.smart@broadcom.com
 Cc:     lravich@gmail.com, Leonid Ravich <Leonid.Ravich@dell.com>,
@@ -46,18 +46,20 @@ Cc:     lravich@gmail.com, Leonid Ravich <Leonid.Ravich@dell.com>,
         Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
         linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
 Subject: [PATCH] nvmet-fc: associations list replaced with hlist rcu,
-Date:   Thu, 24 Dec 2020 13:05:40 +0200
-Message-Id: <20201224110542.22219-1-leonid.ravich@dell.com>
+Date:   Thu, 24 Dec 2020 13:05:41 +0200
+Message-Id: <20201224110542.22219-2-leonid.ravich@dell.com>
 X-Mailer: git-send-email 2.16.2
+In-Reply-To: <20201224110542.22219-1-leonid.ravich@dell.com>
+References: <20201224110542.22219-1-leonid.ravich@dell.com>
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
  definitions=2020-12-24_06:2020-12-24,2020-12-24 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
- malwarescore=0 suspectscore=0 priorityscore=1501 mlxlogscore=905
- adultscore=0 lowpriorityscore=0 phishscore=0 spamscore=0 clxscore=1011
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
+ mlxlogscore=929 spamscore=0 bulkscore=0 adultscore=0 impostorscore=0
+ malwarescore=0 suspectscore=0 mlxscore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2009150000 definitions=main-2012240069
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 malwarescore=0
- adultscore=0 suspectscore=0 bulkscore=0 mlxlogscore=979 spamscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 adultscore=0
+ suspectscore=0 phishscore=0 mlxlogscore=999 bulkscore=0 spamscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
  definitions=main-2012240069
 Precedence: bulk
