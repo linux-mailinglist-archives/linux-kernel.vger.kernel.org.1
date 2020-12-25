@@ -2,104 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F7E52E2B7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 13:30:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E40C2E2B80
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 13:35:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726200AbgLYM3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Dec 2020 07:29:46 -0500
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:38669 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725804AbgLYM3q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Dec 2020 07:29:46 -0500
-X-Originating-IP: 91.165.34.75
-Received: from aptenodytes (91-165-34-75.subs.proxad.net [91.165.34.75])
-        (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id E0F5D60002;
-        Fri, 25 Dec 2020 12:29:02 +0000 (UTC)
-Date:   Fri, 25 Dec 2020 13:29:01 +0100
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        David Airlie <airlied@linux.ie>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org, Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v8 1/4] dt-bindings: display: Document the Xylon LogiCVC
- display controller
-Message-ID: <X+XbDe5/U4rk/FxS@aptenodytes>
-References: <20201223212947.160565-1-paul.kocialkowski@bootlin.com>
- <20201223212947.160565-2-paul.kocialkowski@bootlin.com>
- <1608829305.375557.2966449.nullmailer@robh.at.kernel.org>
+        id S1726061AbgLYMeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Dec 2020 07:34:23 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:43758 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725804AbgLYMeX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Dec 2020 07:34:23 -0500
+Received: from zn.tnic (p200300ec2f0e8e00cc073e8cb60495d6.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:8e00:cc07:3e8c:b604:95d6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 17B771EC0281;
+        Fri, 25 Dec 2020 13:33:41 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1608899621;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=kt3O8fCSxoh8e8LkX86l4Sz4giqKMVue7oZdRRyeuQs=;
+        b=dc69mcyAoLcK4amagAMlrTWuxO6WacLyxrxaB70rc1vmlZb87l/uWUWUN2f7Ge/8rUU3xl
+        NDPjGiqztIOyYocAFCE659QeAcJJcqam3inupkRVLIEK2YTtMhq3RQR7i1QvHRrliIQTDM
+        MpVTRs6y4auVwWbZgE6CexxWXDcWYN0=
+Date:   Fri, 25 Dec 2020 13:33:34 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 11/19] x86/sev-es: Convert to insn_decode()
+Message-ID: <20201225123334.GA5874@zn.tnic>
+References: <20201223174233.28638-12-bp@alien8.de>
+ <202012251838.G6eufP3Q-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="coPQJsKTER+El0UT"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1608829305.375557.2966449.nullmailer@robh.at.kernel.org>
+In-Reply-To: <202012251838.G6eufP3Q-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Dec 25, 2020 at 06:50:33PM +0800, kernel test robot wrote:
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All warnings (new ones prefixed by >>):
+> 
+> >> arch/x86/kernel/sev-es.c:258:7: warning: variable 'ret' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
+>                    if (!insn_decode_regs(&ctxt->insn, ctxt->regs, buffer, res))
+>                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
---coPQJsKTER+El0UT
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yeah, good catch, thanks for reporting.
 
-Hi,
+Frankly, the readability and "extensiblity" of that function can be
+improved by splitting the two cases (diff ontop):
 
-On Thu 24 Dec 20, 10:01, Rob Herring wrote:
-> On Wed, 23 Dec 2020 22:29:44 +0100, Paul Kocialkowski wrote:
-> > The Xylon LogiCVC is a display controller implemented as programmable
-> > logic in Xilinx FPGAs.
-> >=20
-> > Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> > Acked-by: Rob Herring <robh@kernel.org>
-> > ---
-> >  .../display/xylon,logicvc-display.yaml        | 313 ++++++++++++++++++
-> >  1 file changed, 313 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/display/xylon,log=
-icvc-display.yaml
-> >=20
->=20
-> My bot found errors running 'make dt_binding_check' on your patch:
->=20
-> yamllint warnings/errors:
->=20
-> dtschema/dtc warnings/errors:
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/disp=
-lay/xylon,logicvc-display.example.dt.yaml: logicvc@43c00000: 'display@0' do=
-es not match any of the regexes: '^gpio@[0-9a-f]+$', 'pinctrl-[0-9]+'
-> 	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree=
-/bindings/mfd/xylon,logicvc.yaml
->=20
-> See https://patchwork.ozlabs.org/patch/1420307
+---
+diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
+index 564cc9fc693d..ea47037f1624 100644
+--- a/arch/x86/kernel/sev-es.c
++++ b/arch/x86/kernel/sev-es.c
+@@ -241,40 +241,53 @@ static int vc_fetch_insn_kernel(struct es_em_ctxt *ctxt,
+ 	return copy_from_kernel_nofault(buffer, (unsigned char *)ctxt->regs->ip, MAX_INSN_SIZE);
+ }
+ 
+-static enum es_result vc_decode_insn(struct es_em_ctxt *ctxt)
++static enum es_result __vc_decode_user_insn(struct es_em_ctxt *ctxt)
+ {
+ 	char buffer[MAX_INSN_SIZE];
+-	int res, ret;
+-
+-	if (user_mode(ctxt->regs)) {
+-		res = insn_fetch_from_user(ctxt->regs, buffer);
+-		if (!res) {
+-			ctxt->fi.vector     = X86_TRAP_PF;
+-			ctxt->fi.error_code = X86_PF_INSTR | X86_PF_USER;
+-			ctxt->fi.cr2        = ctxt->regs->ip;
+-			return ES_EXCEPTION;
+-		}
++	int res;
+ 
+-		if (!insn_decode_regs(&ctxt->insn, ctxt->regs, buffer, res))
+-			return ES_DECODE_FAILED;
+-	} else {
+-		res = vc_fetch_insn_kernel(ctxt, buffer);
+-		if (res) {
+-			ctxt->fi.vector     = X86_TRAP_PF;
+-			ctxt->fi.error_code = X86_PF_INSTR;
+-			ctxt->fi.cr2        = ctxt->regs->ip;
+-			return ES_EXCEPTION;
+-		}
++	res = insn_fetch_from_user(ctxt->regs, buffer);
++	if (!res) {
++		ctxt->fi.vector     = X86_TRAP_PF;
++		ctxt->fi.error_code = X86_PF_INSTR | X86_PF_USER;
++		ctxt->fi.cr2        = ctxt->regs->ip;
++		return ES_EXCEPTION;
++	}
++
++	if (!insn_decode_regs(&ctxt->insn, ctxt->regs, buffer, res))
++		return ES_DECODE_FAILED;
++	else
++		return ES_OK;
++}
++
++static enum es_result __vc_decode_kern_insn(struct es_em_ctxt *ctxt)
++{
++	char buffer[MAX_INSN_SIZE];
++	int res;
+ 
+-		ret = insn_decode(&ctxt->insn, buffer, MAX_INSN_SIZE - res, INSN_MODE_64);
++	res = vc_fetch_insn_kernel(ctxt, buffer);
++	if (res) {
++		ctxt->fi.vector     = X86_TRAP_PF;
++		ctxt->fi.error_code = X86_PF_INSTR;
++		ctxt->fi.cr2        = ctxt->regs->ip;
++		return ES_EXCEPTION;
+ 	}
+ 
+-	if (ret < 0)
++	res = insn_decode(&ctxt->insn, buffer, MAX_INSN_SIZE - res, INSN_MODE_64);
++	if (res < 0)
+ 		return ES_DECODE_FAILED;
+ 	else
+ 		return ES_OK;
+ }
+ 
++static enum es_result vc_decode_insn(struct es_em_ctxt *ctxt)
++{
++	if (user_mode(ctxt->regs))
++		return __vc_decode_user_insn(ctxt);
++	else
++		return __vc_decode_kern_insn(ctxt);
++}
++
+ static enum es_result vc_write_mem(struct es_em_ctxt *ctxt,
+ 				   char *dst, char *buf, size_t size)
+ {
 
-Just so you know, this specific issue is fixed in patch 2/4.
+-- 
+Regards/Gruss,
+    Boris.
 
-Cheers,
-
-Paul
-
---=20
-Paul Kocialkowski, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
-
---coPQJsKTER+El0UT
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl/l2w0ACgkQ3cLmz3+f
-v9FHVwf/aZ0gtCsvdn07c78G0BjhQepFkKpgOl+V3xroH0VbIy8Eg+7HBpTBE5fN
-0Hso6uGwLF/FCsYXVAge+Bi/LWCCSBAgwyRaag1mVlDN5FXXvitTJeJ5KKOmFKa+
-klOOlO6gfdpLsO2ATbacGkTTKaJqPfSLJoAflRZpndnhB/WCOmQY0gYiW35wT0IC
-ePzP3Bew2vzBSJ2HbpauF6/hXvieTiLVvF/MwdrJyW9XzO0y1Rta9DUJjMbgsEH5
-scRicL6o5HscTnG99RuyHDfsv11w4v0gIspjvjiMuVHwfJx9gs1pdTkxp/QnQwDz
-Ig87NMhqQbdl9cFAizCXYRl7xDkLhg==
-=Ecid
------END PGP SIGNATURE-----
-
---coPQJsKTER+El0UT--
+https://people.kernel.org/tglx/notes-about-netiquette
