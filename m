@@ -2,183 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 341F32E2B91
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 14:48:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32B7D2E2B94
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 14:55:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726424AbgLYNpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Dec 2020 08:45:54 -0500
-Received: from mail-il1-f197.google.com ([209.85.166.197]:34220 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725982AbgLYNpx (ORCPT
+        id S1726573AbgLYNyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Dec 2020 08:54:09 -0500
+Received: from relayfre-01.paragon-software.com ([176.12.100.13]:47206 "EHLO
+        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726152AbgLYNyI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Dec 2020 08:45:53 -0500
-Received: by mail-il1-f197.google.com with SMTP id c72so3731318ila.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Dec 2020 05:45:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=MiLat2U8UEzOxwhkBLLYRXZSjkbCjoTbUJUVgvs4p/U=;
-        b=mP+WcbvyGuNVJ0LhB1Jy6F2++xeTU4dOjUdzFChbufyXBfSRUYZ5NwkEqIXuY/aYLU
-         IyyhGwbeKCpN8VS2Pwa5P1TlSKDvkSn9iOvWgMtsob3FjVO+9z6xQ4RTdnNnt2YDO52Y
-         o5st6BNOpjlCGiX9JhM63L970U2W5vOZwtlw51dDo1Pd4w9OtV0Ye8ZNFH+SV2glwrtz
-         WY6LVTcgDLdQo4d9zjHdnnBg9Y9A2q4xpqoubhbYYng6moDhOHRKNuZ60gZtsHNMDZNG
-         8MM604nrBFxmfzy9MNWBSQMyig8F8KNCt0Huye9RP4uUti9eisb4OBmKuLipsZoqwugJ
-         jjNQ==
-X-Gm-Message-State: AOAM533f3RSl5gsH9umzriJHNbxI9xegScAv2WFiAzvCQYgdqivOrejI
-        c+wI05NXhG1FgQ1UNF//ymZUGlLDhKasM5tsxWDyBNUAQJcP
-X-Google-Smtp-Source: ABdhPJz1FbKHY94IuX+pEbL1DG1NajS0jAZdTM2jf2z2SZfUDNUXjIm70aqEQuhfJbqmfJK83yVv5J96mG3HgtzZL7kJayEWosmM
+        Fri, 25 Dec 2020 08:54:08 -0500
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 549431D39;
+        Fri, 25 Dec 2020 16:53:25 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1608904405;
+        bh=HyBjUVa16LhSsRtSrs4cXtCZuhVAFBv1MGKJTI7apxk=;
+        h=From:To:CC:Subject:Date;
+        b=gjWKT7vCkEoIwduSNrtt4FEnbVR8JKG5Xa+7yM4heMfJWF/SJw3b6tIdkfFIntqa8
+         CWO/LCoxeBE6zwO71Fg2/TSzUg7mqh6NdiS9UrMU2RGgBW0p8JYhft3I95iP9IqMLp
+         MtONkCHWdGf981PI4rtCOn96eifS7s6J25+WVWkc=
+Received: from fsd-lkpg.ufsd.paragon-software.com (172.30.114.105) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Fri, 25 Dec 2020 16:53:24 +0300
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     <linux-fsdevel@vger.kernel.org>
+CC:     <viro@zeniv.linux.org.uk>, <linux-kernel@vger.kernel.org>,
+        <pali@kernel.org>, <dsterba@suse.cz>, <aaptel@suse.com>,
+        <willy@infradead.org>, <rdunlap@infradead.org>, <joe@perches.com>,
+        <mark@harmstone.com>, <nborisov@suse.com>,
+        <linux-ntfs-dev@lists.sourceforge.net>, <anton@tuxera.com>,
+        <dan.carpenter@oracle.com>, <hch@lst.de>, <ebiggers@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Subject: [PATCH v16 00/10] NTFS read-write driver GPL implementation by Paragon Software
+Date:   Fri, 25 Dec 2020 16:51:09 +0300
+Message-ID: <20201225135119.3666763-1-almaz.alexandrovich@paragon-software.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-X-Received: by 2002:a02:856d:: with SMTP id g100mr29932134jai.10.1608903912007;
- Fri, 25 Dec 2020 05:45:12 -0800 (PST)
-Date:   Fri, 25 Dec 2020 05:45:12 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000272c1005b74a223b@google.com>
-Subject: BUG: sleeping function called from invalid context in
- do_user_addr_fault (2)
-From:   syzbot <syzbot+6ce719ff413f52e0a0f2@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, andriin@fb.com, ast@kernel.org,
-        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        dsahern@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
-        kafai@fb.com, kpsingh@chromium.org, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, toke@redhat.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.30.114.105]
+X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+This patch adds NTFS Read-Write driver to fs/ntfs3.
 
-syzbot found the following issue on:
+Having decades of expertise in commercial file systems development and huge
+test coverage, we at Paragon Software GmbH want to make our contribution to
+the Open Source Community by providing implementation of NTFS Read-Write
+driver for the Linux Kernel.
 
-HEAD commit:    d467d80d bpf: Remove unused including <linux/version.h>
-git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=159392cb500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2764fc28a92339f9
-dashboard link: https://syzkaller.appspot.com/bug?extid=6ce719ff413f52e0a0f2
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17234333500000
+This is fully functional NTFS Read-Write driver. Current version works with
+NTFS(including v3.1) and normal/compressed/sparse files and supports journal replaying.
 
-The issue was bisected to:
+We plan to support this version after the codebase once merged, and add new
+features and fix bugs. For example, full journaling support over JBD will be
+added in later updates.
 
-commit 64b59025c15b244c0954cf52b24fbabfcf5ed8f6
-Author: David Ahern <dsahern@kernel.org>
-Date:   Fri May 29 22:07:14 2020 +0000
+v2:
+ - patch splitted to chunks (file-wise)
+ - build issues fixed
+ - sparse and checkpatch.pl errors fixed
+ - NULL pointer dereference on mkfs.ntfs-formatted volume mount fixed
+ - cosmetics + code cleanup
 
-    xdp: Add xdp_txq_info to xdp_buff
+v3:
+ - added acl, noatime, no_acs_rules, prealloc mount options
+ - added fiemap support
+ - fixed encodings support
+ - removed typedefs
+ - adapted Kernel-way logging mechanisms
+ - fixed typos and corner-case issues
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=129bcb37500000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=119bcb37500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=169bcb37500000
+v4:
+ - atomic_open() refactored
+ - code style updated
+ - bugfixes
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6ce719ff413f52e0a0f2@syzkaller.appspotmail.com
-Fixes: 64b59025c15b ("xdp: Add xdp_txq_info to xdp_buff")
+v5:
+- nls/nls_alt mount options added
+- Unicode conversion fixes
+- Improved very fragmented files operations
+- logging cosmetics
 
-BUG: sleeping function called from invalid context at arch/x86/mm/fault.c:1351
-in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid: 8781, name: syz-executor.0
-2 locks held by syz-executor.0/8781:
- #0: ffffffff8b33a020 (rcu_read_lock){....}-{1:2}, at: bpf_test_run+0x116/0xcc0 net/bpf/test_run.c:28
- #1: ffff888013428158 (&mm->mmap_lock#2){++++}-{3:3}, at: mmap_read_trylock include/linux/mmap_lock.h:136 [inline]
- #1: ffff888013428158 (&mm->mmap_lock#2){++++}-{3:3}, at: do_user_addr_fault+0x25f/0xc50 arch/x86/mm/fault.c:1334
-Preemption disabled at:
-[<ffffffff814b8a6e>] migrate_disable+0x5e/0x160 kernel/sched/core.c:1753
-CPU: 0 PID: 8781 Comm: syz-executor.0 Not tainted 5.10.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- ___might_sleep.cold+0x1f1/0x237 kernel/sched/core.c:7911
- do_user_addr_fault+0x29c/0xc50 arch/x86/mm/fault.c:1351
- handle_page_fault arch/x86/mm/fault.c:1450 [inline]
- exc_page_fault+0x9e/0x180 arch/x86/mm/fault.c:1506
- asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:580
-RIP: 0010:bpf_prog_e48ebe87b99394c4+0x11/0xa48
-Code: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc 0f 1f 44 00 00 66 90 55 48 89 e5 31 c0 48 8b 47 28 <48> 8b 40 00 8b 80 00 01 00 00 c9 c3 cc cc cc cc cc cc cc cc cc cc
-RSP: 0018:ffffc9000165fb30 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: dffffc0000000000 RCX: ffffffff87314b68
-RDX: ffff88802bfeb580 RSI: ffffc90000e8e038 RDI: ffffc9000165fcb0
-RBP: ffffc9000165fb30 R08: 0000000000000001 R09: 0000000000000001
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: dffffc0000000000 R14: 0000000000000001 R15: ffffc90000e8e000
- bpf_prog_run_xdp include/linux/filter.h:743 [inline]
- bpf_test_run+0x21c/0xcc0 net/bpf/test_run.c:48
- bpf_prog_test_run_xdp+0x2ca/0x510 net/bpf/test_run.c:648
- bpf_prog_test_run kernel/bpf/syscall.c:3120 [inline]
- __do_sys_bpf+0x2174/0x5130 kernel/bpf/syscall.c:4412
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45e149
-Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f7d79602c68 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045e149
-RDX: 0000000000000028 RSI: 00000000200000c0 RDI: 000000000000000a
-RBP: 000000000119bfc0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000119bf8c
-R13: 00007ffdea4f396f R14: 00007f7d796039c0 R15: 000000000119bf8c
-BUG: kernel NULL pointer dereference, address: 0000000000000000
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD 1eb8b067 P4D 1eb8b067 PUD 1cd90067 PMD 0 
-Oops: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 8781 Comm: syz-executor.0 Tainted: G        W         5.10.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:bpf_prog_e48ebe87b99394c4+0x11/0xa48
-Code: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc 0f 1f 44 00 00 66 90 55 48 89 e5 31 c0 48 8b 47 28 <48> 8b 40 00 8b 80 00 01 00 00 c9 c3 cc cc cc cc cc cc cc cc cc cc
-RSP: 0018:ffffc9000165fb30 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: dffffc0000000000 RCX: ffffffff87314b68
-RDX: ffff88802bfeb580 RSI: ffffc90000e8e038 RDI: ffffc9000165fcb0
-RBP: ffffc9000165fb30 R08: 0000000000000001 R09: 0000000000000001
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: dffffc0000000000 R14: 0000000000000001 R15: ffffc90000e8e000
-FS:  00007f7d79603700(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fb3f42c0018 CR3: 0000000014825000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- bpf_prog_run_xdp include/linux/filter.h:743 [inline]
- bpf_test_run+0x21c/0xcc0 net/bpf/test_run.c:48
- bpf_prog_test_run_xdp+0x2ca/0x510 net/bpf/test_run.c:648
- bpf_prog_test_run kernel/bpf/syscall.c:3120 [inline]
- __do_sys_bpf+0x2174/0x5130 kernel/bpf/syscall.c:4412
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45e149
-Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f7d79602c68 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045e149
-RDX: 0000000000000028 RSI: 00000000200000c0 RDI: 000000000000000a
-RBP: 000000000119bfc0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000119bf8c
-R13: 00007ffdea4f396f R14: 00007f7d796039c0 R15: 000000000119bf8c
-Modules linked in:
-CR2: 0000000000000000
----[ end trace f373adf0128c937b ]---
-RIP: 0010:bpf_prog_e48ebe87b99394c4+0x11/0xa48
-Code: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc 0f 1f 44 00 00 66 90 55 48 89 e5 31 c0 48 8b 47 28 <48> 8b 40 00 8b 80 00 01 00 00 c9 c3 cc cc cc cc cc cc cc cc cc cc
-RSP: 0018:ffffc9000165fb30 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: dffffc0000000000 RCX: ffffffff87314b68
-RDX: ffff88802bfeb580 RSI: ffffc90000e8e038 RDI: ffffc9000165fcb0
-RBP: ffffc9000165fb30 R08: 0000000000000001 R09: 0000000000000001
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: dffffc0000000000 R14: 0000000000000001 R15: ffffc90000e8e000
-FS:  00007f7d79603700(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fb3f42c0018 CR3: 0000000014825000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+v6:
+- Security Descriptors processing changed
+  added system.ntfs_security xattr to set
+  SD
+- atomic_open() optimized
+- cosmetics
 
+v7:
+- Security Descriptors validity checks added (by Mark Harmstone)
+- atomic_open() fixed for the compressed file creation with directio
+  case
+- remount support
+- temporarily removed readahead usage
+- cosmetics
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+v8:
+- Compressed files operations fixed
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+v9:
+- Further cosmetics applied as suggested
+by Joe Perches
+
+v10:
+- operations with compressed/sparse files on very fragmented volumes improved
+- reduced memory consumption for above cases
+
+v11:
+- further compressed files optimizations: reads/writes are now skipping bufferization
+- journal wipe to the initial state optimized (bufferization is also skipped)
+- optimized run storage (re-packing cluster metainformation)
+- fixes based on Matthew Wilcox feedback to the v10
+- compressed/sparse/normal could be set for empty files with 'system.ntfs_attrib' xattr
+
+v12:
+- nls_alt mount option removed after discussion with Pali Rohar
+- fixed ni_repack()
+- fixed resident files transition to non-resident when size increasing
+
+v13:
+- nested_lock fix (lockdep)
+- out-of-bounds read fix (KASAN warning)
+- resident->nonresident transition fixed for compressed files
+- load_nls() missed fix applied
+- some sparse utility warnings fixes
+
+v14:
+- support for additional compression types (we've adapted WIMLIB's
+  implementation, authored by Eric Biggers, into ntfs3)
+
+v15:
+- kernel test robot warnings fixed
+- lzx/xpress compression license headers updated
+
+v16:
+- lzx/xpress compression types are adapted to the initial ntfs-3g plugin code
+- mutexes introduced for the each compression type instead of a global spinlock
+- FALLOC_FL_PUNCH_HOLE and FALLOC_FL_COLLAPSE_RANGE implemented
+- decompression for system
+
+Konstantin Komarov (10):
+  fs/ntfs3: Add headers and misc files
+  fs/ntfs3: Add initialization of super block
+  fs/ntfs3: Add bitmap
+  fs/ntfs3: Add file operations and implementation
+  fs/ntfs3: Add attrib operations
+  fs/ntfs3: Add compression
+  fs/ntfs3: Add NTFS journal
+  fs/ntfs3: Add Kconfig, Makefile and doc
+  fs/ntfs3: Add NTFS3 in fs/Kconfig and fs/Makefile
+  fs/ntfs3: Add MAINTAINERS
+
+ Documentation/filesystems/ntfs3.rst |  107 +
+ MAINTAINERS                         |    7 +
+ fs/Kconfig                          |    1 +
+ fs/Makefile                         |    1 +
+ fs/ntfs3/Kconfig                    |   41 +
+ fs/ntfs3/Makefile                   |   31 +
+ fs/ntfs3/attrib.c                   | 2080 +++++++++++
+ fs/ntfs3/attrlist.c                 |  463 +++
+ fs/ntfs3/bitfunc.c                  |  135 +
+ fs/ntfs3/bitmap.c                   | 1504 ++++++++
+ fs/ntfs3/debug.h                    |   61 +
+ fs/ntfs3/dir.c                      |  575 +++
+ fs/ntfs3/file.c                     | 1140 ++++++
+ fs/ntfs3/frecord.c                  | 3088 ++++++++++++++++
+ fs/ntfs3/fslog.c                    | 5220 +++++++++++++++++++++++++++
+ fs/ntfs3/fsntfs.c                   | 2527 +++++++++++++
+ fs/ntfs3/index.c                    | 2665 ++++++++++++++
+ fs/ntfs3/inode.c                    | 2061 +++++++++++
+ fs/ntfs3/lib/decompress_common.c    |  332 ++
+ fs/ntfs3/lib/decompress_common.h    |  352 ++
+ fs/ntfs3/lib/lib.h                  |   26 +
+ fs/ntfs3/lib/lzx_decompress.c       |  683 ++++
+ fs/ntfs3/lib/xpress_decompress.c    |  155 +
+ fs/ntfs3/lznt.c                     |  452 +++
+ fs/ntfs3/namei.c                    |  590 +++
+ fs/ntfs3/ntfs.h                     | 1237 +++++++
+ fs/ntfs3/ntfs_fs.h                  | 1050 ++++++
+ fs/ntfs3/record.c                   |  614 ++++
+ fs/ntfs3/run.c                      | 1254 +++++++
+ fs/ntfs3/super.c                    | 1477 ++++++++
+ fs/ntfs3/upcase.c                   |   77 +
+ fs/ntfs3/xattr.c                    | 1072 ++++++
+ 32 files changed, 31078 insertions(+)
+ create mode 100644 Documentation/filesystems/ntfs3.rst
+ create mode 100644 fs/ntfs3/Kconfig
+ create mode 100644 fs/ntfs3/Makefile
+ create mode 100644 fs/ntfs3/attrib.c
+ create mode 100644 fs/ntfs3/attrlist.c
+ create mode 100644 fs/ntfs3/bitfunc.c
+ create mode 100644 fs/ntfs3/bitmap.c
+ create mode 100644 fs/ntfs3/debug.h
+ create mode 100644 fs/ntfs3/dir.c
+ create mode 100644 fs/ntfs3/file.c
+ create mode 100644 fs/ntfs3/frecord.c
+ create mode 100644 fs/ntfs3/fslog.c
+ create mode 100644 fs/ntfs3/fsntfs.c
+ create mode 100644 fs/ntfs3/index.c
+ create mode 100644 fs/ntfs3/inode.c
+ create mode 100644 fs/ntfs3/lib/decompress_common.c
+ create mode 100644 fs/ntfs3/lib/decompress_common.h
+ create mode 100644 fs/ntfs3/lib/lib.h
+ create mode 100644 fs/ntfs3/lib/lzx_decompress.c
+ create mode 100644 fs/ntfs3/lib/xpress_decompress.c
+ create mode 100644 fs/ntfs3/lznt.c
+ create mode 100644 fs/ntfs3/namei.c
+ create mode 100644 fs/ntfs3/ntfs.h
+ create mode 100644 fs/ntfs3/ntfs_fs.h
+ create mode 100644 fs/ntfs3/record.c
+ create mode 100644 fs/ntfs3/run.c
+ create mode 100644 fs/ntfs3/super.c
+ create mode 100644 fs/ntfs3/upcase.c
+ create mode 100644 fs/ntfs3/xattr.c
+
+-- 
+2.25.4
+
