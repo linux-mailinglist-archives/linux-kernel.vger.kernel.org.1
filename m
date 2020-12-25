@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62BD12E2A9B
+	by mail.lfdr.de (Postfix) with ESMTP id D73FD2E2A9C
 	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 10:31:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729000AbgLYJaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Dec 2020 04:30:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34110 "EHLO
+        id S1729109AbgLYJaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Dec 2020 04:30:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727043AbgLYJaC (ORCPT
+        with ESMTP id S1727043AbgLYJaE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Dec 2020 04:30:02 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E854EC061573
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Dec 2020 01:29:36 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id c79so2370607pfc.2
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Dec 2020 01:29:36 -0800 (PST)
+        Fri, 25 Dec 2020 04:30:04 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAEBEC061575
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Dec 2020 01:29:38 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id m6so2356309pfm.6
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Dec 2020 01:29:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RVMAYD4gVjDuu2L1m2emovg27Ao1LXtta+hv61YwtE4=;
-        b=Xqcmvrzjf0v3Om3qY3vkNlJvkYs8uthcOLi/yiwi1S3kLGQ6pAV4LqeFEEy1IZA9CG
-         mNewlnd9/uRZH0kIhcLOFsvUntL+EKsG7b1WlC2vtU09eHH1Lwe6b1V3111ZKCeU+itm
-         7eZwXpAK9UaajQkU9DtHTOZBLsYSAUClXnEg6o9EJ3V2bryDgZYpU2Kiw3Rl3WRqGLDG
-         RL8qHu52h5JYiOKr7j5RACyyLEC7nEi8LjE18p8ZaDp5qjNCo7AtYu/RPP1aVRqdQ0Y+
-         4AqEpCmprMFT4QaRS4zbzXbYd0rkzWRYENoJ8d4fyY//dtujo00UT/LajJ+pe44TMEVx
-         nYsg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=LpW2sWQQiHoxQtJSvZTgROQggONQuj6JLwoHM4c5b9s=;
+        b=qIMav+mzgIAW7g0LrirZYpLxCgws1BwK2bIZJQQ7rqrcM7WaJuHOHEgzK5VBJwPqfU
+         cbozQEFWvwn4bbxCWFOscvSia2WFVcHJ8As++dsiMWLv3TOUXIho26mfusnp8hvjuSzC
+         rwqh7aY1mOHs1zy4EkJtA/9KLx5MQFKjtIbW8B1qGeSI2xrM7tEuk67RhC878DPeKTW1
+         swIo81e//qTnYwIQbT7bFiqTp1yNnVJ2ZDwjUjHSmPYgbTrVvnAw41lJ9vFQzE1/Lmit
+         bFKZdZR+F7Up72ndlgf1kfjkKTYZYXnogJ7JOzKiltesjTZFxtT+WNXW6Tcv7jXMphhz
+         JKDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RVMAYD4gVjDuu2L1m2emovg27Ao1LXtta+hv61YwtE4=;
-        b=PxBmWiiSQABUh9WlX7Lulwgf4d4WO+SbkJvWotedx6GfEF3YA8fiVApcVmHTANQFWr
-         bwSu5SQEIWI+sS1+QgrSgmTSMSQ8bRznljbuM7dCqVTlwk4hkgp4iHML9UF0BApw1OT4
-         F6QwrPQ4eWH4d9T+fN4NyU6sLkXLdIhvwPhLKBhjtQpxqM1Zq3U/UW6WOE94iRSuthqc
-         uSrmkNlAXaRkEuQ8GIBdxqGohy8zX71grLfTc85xk9BC/kLYuz4p3dd8ng5ZsZHdk3Eh
-         XRpc/oPnTUdc+WcDobitWaH64YhApz8grPTVDJ95gQICuk5+2BrI7HwKheR4uvVMj+QU
-         dBdA==
-X-Gm-Message-State: AOAM530iIeHKHIXANbnlz4Z6vQZyRvhrocaPVEMHpu1PT1tzwdaWWzyc
-        sxCOD12Q2iDWSLmSvzWvUMI=
-X-Google-Smtp-Source: ABdhPJx9/ExfuFhgPf0/W7sU90LeypmQV2CkuLRYiCOv0K2mDGnExIf8WCm0G/rjjtYOy9sK5dD5UQ==
-X-Received: by 2002:a62:e818:0:b029:19e:31e6:e639 with SMTP id c24-20020a62e8180000b029019e31e6e639mr30578284pfi.81.1608888576176;
-        Fri, 25 Dec 2020 01:29:36 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=LpW2sWQQiHoxQtJSvZTgROQggONQuj6JLwoHM4c5b9s=;
+        b=U7YRTqDit5mHpURpOFY10Z060nWefEiMlGiDjmlqBObXMbOcHblvn/l4Zpl2vwFYVP
+         AAt4ZLtTFCJ+yFUrA6sqeVbbYwh3QC74TpWgB/eXVD6PQruj64YkeivXpg0f5kUb+OKT
+         WJWBlQ4aHTnAMmXvWt53kfOLU3y0cXnEqBFMKZe/C+cs304AzdpA8w4ZKyO3XW4892xj
+         K6xd3J7UP7tZJjBowz90N57McQl8SGX74LvIhEkjfa6aRq7GxEb8ZJVDlmf0YYMzfpwI
+         YNkYOZDdMsPGtXz3gkxNigqgNVMKZJtwxb8Vs25gVyoGL8pb6gF9zsepKUXsFwm0zyoT
+         SV9A==
+X-Gm-Message-State: AOAM530pzlmYHhJPp2Genn6UpL9roRbRLulKpjcbo5cuznsEwWVvZapQ
+        Fqets0gOTWpVklHGQFsx/W0=
+X-Google-Smtp-Source: ABdhPJzo19NhjDgpPlOPmmbFArkEFCZaD9tv7zY5etpFZLNE69F/+Mw5J7PU6MgQJcB6e4++YPZuQQ==
+X-Received: by 2002:a62:5547:0:b029:1a4:cb2a:2833 with SMTP id j68-20020a6255470000b02901a4cb2a2833mr30296026pfb.35.1608888578285;
+        Fri, 25 Dec 2020 01:29:38 -0800 (PST)
 Received: from sc2-haas01-esx0118.eng.vmware.com ([66.170.99.1])
-        by smtp.gmail.com with ESMTPSA id s13sm28966659pfd.99.2020.12.25.01.29.34
+        by smtp.gmail.com with ESMTPSA id s13sm28966659pfd.99.2020.12.25.01.29.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Dec 2020 01:29:35 -0800 (PST)
+        Fri, 25 Dec 2020 01:29:37 -0800 (PST)
 From:   Nadav Amit <nadav.amit@gmail.com>
 X-Google-Original-From: Nadav Amit
 To:     linux-mm@kvack.org
@@ -61,10 +61,12 @@ Cc:     linux-kernel@vger.kernel.org, Nadav Amit <namit@vmware.com>,
         Minchan Kim <minchan@kernel.org>,
         Will Deacon <will@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>
-Subject: [RFC PATCH v2 0/2] mm: fix races due to deferred TLB flushes
-Date:   Fri, 25 Dec 2020 01:25:27 -0800
-Message-Id: <20201225092529.3228466-1-namit@vmware.com>
+Subject: [RFC PATCH v2 1/2] mm/userfaultfd: fix memory corruption due to writeprotect
+Date:   Fri, 25 Dec 2020 01:25:28 -0800
+Message-Id: <20201225092529.3228466-2-namit@vmware.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201225092529.3228466-1-namit@vmware.com>
+References: <20201225092529.3228466-1-namit@vmware.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -74,34 +76,93 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Nadav Amit <namit@vmware.com>
 
-This patch-set went from v1 to RFCv2, as there is still an ongoing
-discussion regarding the way of solving the recently found races due to
-deferred TLB flushes. These patches are only sent for reference for now,
-and can be applied later if no better solution is taken.
+Userfaultfd self-test fails occasionally, indicating a memory
+corruption.
 
-In a nutshell, write-protecting PTEs with deferred TLB flushes was mostly
-performed while holding mmap_lock for write. This prevented concurrent
-page-fault handler invocations from mistakenly assuming that a page is
-write-protected when in fact, due to the deferred TLB flush, other CPU
-could still write to the page. Such a write can cause a memory
-corruption if it takes place after the page was copied (in
-cow_user_page()), and before the PTE was flushed (by wp_page_copy()).
+Analyzing this problem indicates that there is a real bug since
+mmap_lock is only taken for read in mwriteprotect_range() and defers
+flushes, and since there is insufficient consideration of concurrent
+deferred TLB flushes in wp_page_copy(). Although the PTE is flushed from
+the TLBs in wp_page_copy(), this flush takes place after the copy has
+already been performed, and therefore changes of the page are possible
+between the time of the copy and the time in which the PTE is flushed.
 
-However, the userfaultfd and soft-dirty mechanisms did not take
-mmap_lock for write, but only for read, which made such races possible.
-Since commit 09854ba94c6a ("mm: do_wp_page() simplification") these
-races became more likely to take place as non-COW'd pages are more
-likely to be COW'd instead of being reused. Both of the races that
-these patches are intended to resolve were produced on v5.10.
+To make matters worse, memory-unprotection using userfaultfd also poses
+a problem. Although memory unprotection is logically a promotion of PTE
+permissions, and therefore should not require a TLB flush, the current
+userrfaultfd code might actually cause a demotion of the architectural
+PTE permission: when userfaultfd_writeprotect() unprotects memory
+region, it unintentionally *clears* the RW-bit if it was already set.
+Note that this unprotecting a PTE that is not write-protected is a valid
+use-case: the userfaultfd monitor might ask to unprotect a region that
+holds both write-protected and write-unprotected PTEs.
 
-To avoid the performance overhead some alternative solutions that do not
-require to acquire mmap_lock for write were proposed, specifically for
-userfaultfd. So far no better solution that can be backported was
-proposed for the soft-dirty case.
+The scenario that happens in selftests/vm/userfaultfd is as follows:
 
-v1->RFCv2:
-- Better (i.e., correct) description of the userfaultfd buggy case [Yu]
-- Patch for the soft-dirty case
+cpu0				cpu1			cpu2
+----				----			----
+							[ Writable PTE
+							  cached in TLB ]
+userfaultfd_writeprotect()
+[ write-*unprotect* ]
+mwriteprotect_range()
+mmap_read_lock()
+change_protection()
+
+change_protection_range()
+...
+change_pte_range()
+[ *clear* “write”-bit ]
+[ defer TLB flushes ]
+				[ page-fault ]
+				...
+				wp_page_copy()
+				 cow_user_page()
+				  [ copy page ]
+							[ write to old
+							  page ]
+				...
+				 set_pte_at_notify()
+
+A similar scenario can happen:
+
+cpu0		cpu1		cpu2		cpu3
+----		----		----		----
+						[ Writable PTE
+				  		  cached in TLB ]
+userfaultfd_writeprotect()
+[ write-protect ]
+[ deferred TLB flush ]
+		userfaultfd_writeprotect()
+		[ write-unprotect ]
+		[ deferred TLB flush]
+				[ page-fault ]
+				wp_page_copy()
+				 cow_user_page()
+				 [ copy page ]
+				 ...		[ write to page ]
+				set_pte_at_notify()
+
+As Yu Zhao pointed, these races became more apparent since commit
+09854ba94c6a ("mm: do_wp_page() simplification") which made
+wp_page_copy() more likely to take place, specifically if
+page_count(page) > 1.
+
+Note that one might consider additional potentially dangerous scenarios,
+which are not directly related to the deferred TLB flushes.  A memory
+corruption might in theory occur if after the page is copied by
+cow_user_page() and before the PTE is set, the PTE is write-unprotected
+(by a concurrent page-fault handler) and then protected again (by
+subsequent calls to userfaultfd_writeprotect() to protect and unprotect
+the page). In practice, it seems that such scenarios cannot happen.
+
+To resolve the aforementioned races, acquire mmap_lock for write when
+write-protecting userfaultfd region using ioctl's. Keep acquiring
+mmap_lock for read when unprotecting memory, but do not change the
+write-bit set when performing userfaultfd write-unprotection.
+
+This solution can introduce performance regression to userfaultfd
+write-protection.
 
 Cc: Andrea Arcangeli <aarcange@redhat.com>
 Cc: Yu Zhao <yuzhao@google.com>
@@ -113,16 +174,59 @@ Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
 Cc: Minchan Kim <minchan@kernel.org>
 Cc: Will Deacon <will@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
+Fixes: 292924b26024 ("userfaultfd: wp: apply _PAGE_UFFD_WP bit")
+Signed-off-by: Nadav Amit <namit@vmware.com>
+---
+ mm/mprotect.c    |  3 ++-
+ mm/userfaultfd.c | 15 +++++++++++++--
+ 2 files changed, 15 insertions(+), 3 deletions(-)
 
-Nadav Amit (2):
-  mm/userfaultfd: fix memory corruption due to writeprotect
-  fs/task_mmu: acquire mmap_lock for write on soft-dirty cleanup
-
- fs/proc/task_mmu.c | 27 +++++++++++++--------------
- mm/mprotect.c      |  3 ++-
- mm/userfaultfd.c   | 15 +++++++++++++--
- 3 files changed, 28 insertions(+), 17 deletions(-)
-
+diff --git a/mm/mprotect.c b/mm/mprotect.c
+index ab709023e9aa..c08c4055b051 100644
+--- a/mm/mprotect.c
++++ b/mm/mprotect.c
+@@ -75,7 +75,8 @@ static unsigned long change_pte_range(struct vm_area_struct *vma, pmd_t *pmd,
+ 		oldpte = *pte;
+ 		if (pte_present(oldpte)) {
+ 			pte_t ptent;
+-			bool preserve_write = prot_numa && pte_write(oldpte);
++			bool preserve_write = (prot_numa || uffd_wp_resolve) &&
++					      pte_write(oldpte);
+ 
+ 			/*
+ 			 * Avoid trapping faults against the zero or KSM
+diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
+index 9a3d451402d7..7423808640ef 100644
+--- a/mm/userfaultfd.c
++++ b/mm/userfaultfd.c
+@@ -652,7 +652,15 @@ int mwriteprotect_range(struct mm_struct *dst_mm, unsigned long start,
+ 	/* Does the address range wrap, or is the span zero-sized? */
+ 	BUG_ON(start + len <= start);
+ 
+-	mmap_read_lock(dst_mm);
++	/*
++	 * Although we do not change the VMA, we have to ensure deferred TLB
++	 * flushes are performed before page-faults can be handled. Otherwise
++	 * we can get inconsistent TLB state.
++	 */
++	if (enable_wp)
++		mmap_write_lock(dst_mm);
++	else
++		mmap_read_lock(dst_mm);
+ 
+ 	/*
+ 	 * If memory mappings are changing because of non-cooperative
+@@ -686,6 +694,9 @@ int mwriteprotect_range(struct mm_struct *dst_mm, unsigned long start,
+ 
+ 	err = 0;
+ out_unlock:
+-	mmap_read_unlock(dst_mm);
++	if (enable_wp)
++		mmap_write_unlock(dst_mm);
++	else
++		mmap_read_unlock(dst_mm);
+ 	return err;
+ }
 -- 
 2.25.1
 
