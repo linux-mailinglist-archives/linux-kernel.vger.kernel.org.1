@@ -2,100 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D98842E2A82
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 09:54:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B1042E2A83
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 09:56:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729041AbgLYIyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Dec 2020 03:54:02 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:9993 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725863AbgLYIyB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Dec 2020 03:54:01 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4D2LLC2slSzhxJW;
-        Fri, 25 Dec 2020 16:52:35 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 25 Dec 2020 16:53:12 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH] f2fs: fix to keep isolation of atomic write
-Date:   Fri, 25 Dec 2020 16:53:04 +0800
-Message-ID: <20201225085304.114448-1-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+        id S1729100AbgLYIzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Dec 2020 03:55:07 -0500
+Received: from smtp23.cstnet.cn ([159.226.251.23]:34524 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725863AbgLYIzF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Dec 2020 03:55:05 -0500
+Received: from localhost.localdomain (unknown [124.16.141.241])
+        by APP-03 (Coremail) with SMTP id rQCowABnb8OQqOVfvmWoAA--.14888S2;
+        Fri, 25 Dec 2020 16:53:36 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     njavali@marvell.com, GR-QLogic-Storage-Upstream@marvell.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: qla2xxx: Remove redundant NULL check
+Date:   Fri, 25 Dec 2020 08:53:33 +0000
+Message-Id: <20201225085333.65091-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: rQCowABnb8OQqOVfvmWoAA--.14888S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7XrWfGr43Xr4UXF13WFWkCrg_yoWkWFXEvr
+        WjqryIqr1UWwn7WF18GFy5Aan7uFy2gF1vvr4YvFyrAr4UXwnrCrnxXF4Ygw1Yq3y7Kan8
+        Aw48X3yvyw1jkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbc8YjsxI4VWkCwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVW8Jr0_Cr
+        1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_GFyl42xK
+        82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
+        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48J
+        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMI
+        IF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
+        6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU4knYUUUUU
+X-Originating-IP: [124.16.141.241]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCQkBA102Z0oJYwAAsu
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ThreadA					ThreadB
-- f2fs_ioc_start_atomic_write
-- write
-- f2fs_ioc_commit_atomic_write
- - f2fs_commit_inmem_pages
- - f2fs_drop_inmem_pages
- - f2fs_drop_inmem_pages
-  - __revoke_inmem_pages
-					- f2fs_vm_page_mkwrite
-					 - set_page_dirty
-					  - tag ATOMIC_WRITTEN_PAGE and add page
-					    to inmem_pages list
-  - clear_inode_flag(FI_ATOMIC_FILE)
-					- f2fs_vm_page_mkwrite
-					  - set_page_dirty
-					   - f2fs_update_dirty_page
-					    - f2fs_trace_pid
-					     - tag inmem page private to pid
-					- truncate
-					 - f2fs_invalidate_page
-					 - set page->mapping to NULL
-					  then it will cause panic once we
-					  access page->mapping
+Fix warnings reported by coccicheck:
+./drivers/scsi/qla2xxx/qla_os.c:4636:2-7: WARNING: NULL check before some freeing functions is not needed.
+./drivers/scsi/qla2xxx/qla_os.c:4651:3-8: WARNING: NULL check before some freeing functions is not needed.
 
-The root cause is we missed to keep isolation of atomic write in the case
-of commit_atomic_write vs mkwrite, let commit_atomic_write helds i_mmap_sem
-lock to avoid this issue.
-
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
 ---
- fs/f2fs/file.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/scsi/qla2xxx/qla_os.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 22a0101538c0..1ff5fc10e1fa 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -2094,10 +2094,12 @@ static int f2fs_ioc_commit_atomic_write(struct file *filp)
- 		goto err_out;
- 	}
+diff --git a/drivers/scsi/qla2xxx/qla_os.c b/drivers/scsi/qla2xxx/qla_os.c
+index f80abe28f35a..bc7bff3539b4 100644
+--- a/drivers/scsi/qla2xxx/qla_os.c
++++ b/drivers/scsi/qla2xxx/qla_os.c
+@@ -4632,8 +4632,7 @@ qla2x00_free_fw_dump(struct qla_hw_data *ha)
+ 		dma_free_coherent(&ha->pdev->dev,
+ 		    EFT_SIZE, ha->eft, ha->eft_dma);
  
-+	down_write(&F2FS_I(inode)->i_mmap_sem);
-+
- 	if (f2fs_is_atomic_file(inode)) {
- 		ret = f2fs_commit_inmem_pages(inode);
- 		if (ret)
--			goto err_out;
-+			goto up_write;
+-	if (ha->fw_dump)
+-		vfree(ha->fw_dump);
++	vfree(ha->fw_dump);
  
- 		ret = f2fs_do_sync_file(filp, 0, LLONG_MAX, 0, true);
- 		if (!ret)
-@@ -2105,6 +2107,8 @@ static int f2fs_ioc_commit_atomic_write(struct file *filp)
- 	} else {
- 		ret = f2fs_do_sync_file(filp, 0, LLONG_MAX, 1, false);
+ 	ha->fce = NULL;
+ 	ha->fce_dma = 0;
+@@ -4647,8 +4646,7 @@ qla2x00_free_fw_dump(struct qla_hw_data *ha)
+ 	ha->fw_dump_len = 0;
+ 
+ 	for (j = 0; j < 2; j++, fwdt++) {
+-		if (fwdt->template)
+-			vfree(fwdt->template);
++		vfree(fwdt->template);
+ 		fwdt->template = NULL;
+ 		fwdt->length = 0;
  	}
-+up_write:
-+	up_write(&F2FS_I(inode)->i_mmap_sem);
- err_out:
- 	if (is_inode_flag_set(inode, FI_ATOMIC_REVOKE_REQUEST)) {
- 		clear_inode_flag(inode, FI_ATOMIC_REVOKE_REQUEST);
 -- 
-2.29.2
+2.17.1
 
