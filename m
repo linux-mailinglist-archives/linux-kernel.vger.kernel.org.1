@@ -2,240 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33C092E2970
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 02:46:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1182E297F
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 03:39:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729124AbgLYBps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 20:45:48 -0500
-Received: from mailgw02.mediatek.com ([1.203.163.81]:45497 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726760AbgLYBpr (ORCPT
+        id S1729110AbgLYC1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 21:27:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726760AbgLYC1t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 20:45:47 -0500
-X-UUID: 3fe67eda2ee749fe854ec1157564efde-20201225
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=fo9py5p3287KXCitGsy4o408IdeWlYcetEobuoJkHQs=;
-        b=MLWcYQrU451LyU2EG3ZiFX6pgFKX3H+LATYO4gAvl2K/wsL/jGuu7n0xFnKo9dg9n++9tVmMLxL4eMDZOSf2HIzx6w2PIjs8lxUc3+GgdcvjkLHUwK1zOXx7ygxYG8ghGN5TG8V9Mmk/k9vOlqNcHc6+LMXBTapAyiQEbTG/700=;
-X-UUID: 3fe67eda2ee749fe854ec1157564efde-20201225
-Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 53191275; Fri, 25 Dec 2020 09:44:45 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
- (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 25 Dec
- 2020 09:44:44 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 25 Dec 2020 09:44:43 +0800
-Message-ID: <1608860684.7499.18.camel@mhfsdcap03>
-Subject: Re: [PATCH v4 10/11] dt-bindings: usb: convert mediatek,mtu3.txt to
- YAML schema
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Min Guo <min.guo@mediatek.com>,
-        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-usb@vger.kernel.org>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Date:   Fri, 25 Dec 2020 09:44:44 +0800
-In-Reply-To: <20201221192628.GA401288@robh.at.kernel.org>
-References: <20201216093012.24406-1-chunfeng.yun@mediatek.com>
-         <20201216093012.24406-10-chunfeng.yun@mediatek.com>
-         <20201221192628.GA401288@robh.at.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Thu, 24 Dec 2020 21:27:49 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C1CC061573
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 18:27:08 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id e2so1954747plt.12
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 18:27:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ynNSSqVlh0E3n8/fKuki1zodJJQ4Lb7cgannL+ULGhk=;
+        b=HL5YfDnLtIxawpuPb3V0m678jfhGmt6Kr5/GFnUq0C61uOtIHLcaXjtTdsMdc/ablZ
+         wE24od1Zj0YcHUULKRCj/7ve9qLFpUIdmRNfB1wiUctq87ru6wx3zgvuu4EnXKoirovl
+         1PbXyb11L7hLkcEnhzjB/2LFEjZtI4ZsorPryIs+rz/rUVXSzYLp6ZKW2jpMc8DDvhvE
+         CUfVXLR5B0MJPbYl5RjTduFoOpSTHI8oPz/86zce/vfQEd1yEFz2SCZ+ehw3IS3zZNzL
+         3g8KtiJyYatQJxBHaPe3YjLDo/LZ2WU7gsX3gTqFqkpDCRtpN2pROpdctuVB1bryR9Ce
+         CWyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ynNSSqVlh0E3n8/fKuki1zodJJQ4Lb7cgannL+ULGhk=;
+        b=iArhsNvHMw3JSUpIVmImBJ3Xrrx+VNoAQUOy1afDkOz7Qg8BNBW6f50aKj9a+IsW7d
+         tr8Pas7hiRAkytlARXa4mcxEsDyHWHkcZ2kPIl3zQ1GkmlBHyJUD9C6c506SZpZkO8t3
+         HH41wUUUAkVJo1tZ8ITqtRhb9vvWOcBuqm9HJiF0AwXepi6/ZecpSmcPaDfDqwL/kGC+
+         kgO4aZ4H7//klWZG+7U6WLyMY1D6Kox03WjKv+AV50vls8shFRfCSm5tvLfSuD2Ha+TT
+         c5M5Z3YUjWcWCX/SADTxph97ogWEcuDZDeLN8tQzin3OjaAdlrMW9WLvDkg3iv6cdnyX
+         ExAg==
+X-Gm-Message-State: AOAM531yS48bI+l/GdZjGIc8cvxNqH/0SOn9jxwVcZvGiOCP8lZ9QwQM
+        nwmyo9MfWyRBR4rhNHSpSDwfog==
+X-Google-Smtp-Source: ABdhPJyKDZMs13WVJx4IFtg4TITt8BbGv21vs65cpaz96LUxAl7lnog0CMvO62i6lahOndHpzprGjg==
+X-Received: by 2002:a17:902:b206:b029:dc:1f41:962d with SMTP id t6-20020a170902b206b02900dc1f41962dmr32664137plr.28.1608863227613;
+        Thu, 24 Dec 2020 18:27:07 -0800 (PST)
+Received: from leoy-ThinkPad-X240s ([38.94.108.168])
+        by smtp.gmail.com with ESMTPSA id w6sm11749378pfq.208.2020.12.24.18.27.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 24 Dec 2020 18:27:06 -0800 (PST)
+Date:   Fri, 25 Dec 2020 10:27:00 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Will Deacon <will@kernel.org>, John Garry <john.garry@huawei.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Alexandre Truong <alexandre.truong@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        He Zhe <zhe.he@windriver.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Sumanth Korikkar <sumanthk@linux.ibm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/2] perf probe: Fixup Arm64 SDT arguments
+Message-ID: <20201225022700.GA22238@leoy-ThinkPad-X240s>
+References: <20201223063905.25784-1-leo.yan@linaro.org>
+ <20201223063905.25784-2-leo.yan@linaro.org>
+ <20201224135139.GF477817@kernel.org>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: EAC887BC963DFC882CB1352C6191668B309F2598A52C5182DC62B08538DAE4672000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201224135139.GF477817@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIwLTEyLTIxIGF0IDEyOjI2IC0wNzAwLCBSb2IgSGVycmluZyB3cm90ZToNCj4g
-T24gV2VkLCBEZWMgMTYsIDIwMjAgYXQgMDU6MzA6MTFQTSArMDgwMCwgQ2h1bmZlbmcgWXVuIHdy
-b3RlOg0KPiA+IENvbnZlcnQgbWVkaWF0ZWssbXR1My50eHQgdG8gWUFNTCBzY2hlbWEgbWVkaWF0
-ZWssbXR1My55YW1sDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogQ2h1bmZlbmcgWXVuIDxjaHVu
-ZmVuZy55dW5AbWVkaWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+IHY0Og0KPiA+ICAgMS4gcmVmZXIg
-dG8gdXNiLWRyZC55YW1sIGluc3N0ZWFkIG9mIHVzYi9nZW5lcmljLnR4dA0KPiA+ICAgdGhlIGZv
-bGxvd2luZyBvbmVzIHN1Z2dlc3RlZCBieSBSb2I6DQo+ID4gICAyLiBhZGQgdGhlIG51bWJlciBv
-ZiBwaHlzIHN1cHBvcnRlZA0KPiA+ICAgMy4gZml4IGluZGVudGF0aW9uIG9mIHdha2V1cA0KPiA+
-ICAgNC4gYWRkIGV4YW1wbGVzIGZvciBwb3J0IGFuZCBjb25uZWN0b3INCj4gPiANCj4gPiB2MzoN
-Cj4gPiAgIDEuIGZpeCB5YW1sbGludCB3YXJuaW5nDQo+ID4gICAyLiByZW1vdmUgcGluY3RybCog
-cHJvcGVydGllcw0KPiA+ICAgMy4gcmVtb3ZlIHVubmVjZXNzYXJ5ICd8Jw0KPiA+ICAgNC4gZHJv
-cCB1bnVzZWQgbGFiZWxzIGluIGV4YW1wbGUNCj4gPiANCj4gPiB2MjogbmV3IHBhdGNoDQo+ID4g
-LS0tDQo+ID4gIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL3VzYi9tZWRpYXRlayxtdHUzLnR4dCB8
-IDEwOCAtLS0tLS0tDQo+ID4gIC4uLi9iaW5kaW5ncy91c2IvbWVkaWF0ZWssbXR1My55YW1sICAg
-ICAgICAgICB8IDI3OCArKysrKysrKysrKysrKysrKysNCj4gPiAgMiBmaWxlcyBjaGFuZ2VkLCAy
-NzggaW5zZXJ0aW9ucygrKSwgMTA4IGRlbGV0aW9ucygtKQ0KPiA+ICBkZWxldGUgbW9kZSAxMDA2
-NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3VzYi9tZWRpYXRlayxtdHUzLnR4
-dA0KPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
-bmdzL3VzYi9tZWRpYXRlayxtdHUzLnlhbWwNCj4gPiANClsuLi5dDQo+ID4gKw0KPiA+ICsgIHBv
-d2VyLWRvbWFpbnM6DQo+ID4gKyAgICBkZXNjcmlwdGlvbjogQSBwaGFuZGxlIHRvIFVTQiBwb3dl
-ciBkb21haW4gbm9kZSB0byBjb250cm9sIFVTQidzIE1UQ01PUw0KPiA+ICsgICAgbWF4SXRlbXM6
-IDENCj4gPiArDQo+ID4gKyAgY2xvY2tzOg0KPiA+ICsgICAgbWluSXRlbXM6IDENCj4gPiArICAg
-IG1heEl0ZW1zOiA0DQo+IA0KPiBEb24ndCBuZWVkIG1heEl0ZW1zIGhlcmUuDQpPaywgd2lsbCBy
-ZW1vdmUgaXQsIGFuZCBhcHBseSBvdGhlcnMNCj4gDQo+ID4gKyAgICBpdGVtczoNCj4gPiArICAg
-ICAgLSBkZXNjcmlwdGlvbjogQ29udHJvbGxlciBjbG9jayB1c2VkIGJ5IG5vcm1hbCBtb2RlDQo+
-ID4gKyAgICAgIC0gZGVzY3JpcHRpb246IFJlZmVyZW5jZSBjbG9jayB1c2VkIGJ5IGxvdyBwb3dl
-ciBtb2RlIGV0Yw0KPiA+ICsgICAgICAtIGRlc2NyaXB0aW9uOiBNY3UgYnVzIGNsb2NrIGZvciBy
-ZWdpc3RlciBhY2Nlc3MNCj4gPiArICAgICAgLSBkZXNjcmlwdGlvbjogRE1BIGJ1cyBjbG9jayBm
-b3IgZGF0YSB0cmFuc2Zlcg0KPiA+ICsNCj4gPiArICBjbG9jay1uYW1lczoNCj4gPiArICAgIG1p
-bkl0ZW1zOiAxDQo+ID4gKyAgICBtYXhJdGVtczogNA0KPiA+ICsgICAgaXRlbXM6DQo+ID4gKyAg
-ICAgIC0gY29uc3Q6IHN5c19jayAgIyByZXF1aXJlZCwgdGhlIGZvbGxvd2luZyBvbmVzIGFyZSBv
-cHRpb25hbA0KPiA+ICsgICAgICAtIGNvbnN0OiByZWZfY2sNCj4gPiArICAgICAgLSBjb25zdDog
-bWN1X2NrDQo+ID4gKyAgICAgIC0gY29uc3Q6IGRtYV9jaw0KPiA+ICsNCj4gPiArICBwaHlzOg0K
-PiA+ICsgICAgZGVzY3JpcHRpb246IExpc3Qgb2YgYWxsIHRoZSBVU0IgUEhZcyB1c2VkDQo+ID4g
-KyAgICBtaW5JdGVtczogMA0KPiA+ICsgICAgbWF4SXRlbXM6IDkNCj4gDQo+IE5lZWQgdG8gZGVm
-aW5lIHdoYXQgZWFjaCBvbmUgaXMuDQpPaywgd2lsbCBkbyBpdA0KPiANCj4gPiArDQo+ID4gKyAg
-dnVzYjMzLXN1cHBseToNCj4gPiArICAgIGRlc2NyaXB0aW9uOiBSZWd1bGF0b3Igb2YgVVNCIEFW
-REQzLjN2DQo+ID4gKw0KPiA+ICsgIHZidXMtc3VwcGx5Og0KPiA+ICsgICAgZGVwcmVjYXRlZDog
-dHJ1ZQ0KPiA+ICsgICAgZGVzY3JpcHRpb246IHwNCj4gPiArICAgICAgUmVndWxhdG9yIG9mIFVT
-QiBWQlVTNXYsIG5lZWRlZCB3aGVuIHN1cHBvcnRzIGR1YWwtcm9sZSBtb2RlLg0KPiA+ICsgICAg
-ICBQYXJ0aWN1bGFybHksIGlmIHVzZSBhbiBvdXRwdXQgR1BJTyB0byBjb250cm9sIGEgVkJVUyBy
-ZWd1bGF0b3IsIHNob3VsZA0KPiA+ICsgICAgICBtb2RlbCBpdCBhcyBhIHJlZ3VsYXRvci4gU2Vl
-IGJpbmRpbmdzL3JlZ3VsYXRvci9maXhlZC1yZWd1bGF0b3IueWFtbA0KPiA+ICsgICAgICBJdCdz
-IGNvbnNpZGVyZWQgdmFsaWQgZm9yIGNvbXBhdGliaWxpdHkgcmVhc29ucywgbm90IGFsbG93ZWQg
-Zm9yDQo+ID4gKyAgICAgIG5ldyBiaW5kaW5ncywgYW5kIHB1dCBpbnRvIGEgdXNiLWNvbm5lY3Rv
-ciBub2RlLg0KPiA+ICsNCj4gPiArICBkcl9tb2RlOg0KPiA+ICsgICAgZW51bTogW2hvc3QsIHBl
-cmlwaGVyYWwsIG90Z10NCj4gPiArICAgIGRlZmF1bHQ6IG90Zw0KPiA+ICsNCj4gPiArICBtYXhp
-bXVtLXNwZWVkOg0KPiA+ICsgICAgZW51bTogW3N1cGVyLXNwZWVkLXBsdXMsIHN1cGVyLXNwZWVk
-LCBoaWdoLXNwZWVkLCBmdWxsLXNwZWVkXQ0KPiA+ICsNCj4gPiArICAiI2FkZHJlc3MtY2VsbHMi
-Og0KPiA+ICsgICAgZW51bTogWzEsIDJdDQo+ID4gKw0KPiA+ICsgICIjc2l6ZS1jZWxscyI6DQo+
-ID4gKyAgICBlbnVtOiBbMSwgMl0NCj4gPiArDQo+ID4gKyAgcmFuZ2VzOiB0cnVlDQo+ID4gKw0K
-PiA+ICsgIGV4dGNvbjoNCj4gPiArICAgIGRlcHJlY2F0ZWQ6IHRydWUNCj4gPiArICAgIGRlc2Ny
-aXB0aW9uOiB8DQo+ID4gKyAgICAgIFBoYW5kbGUgdG8gdGhlIGV4dGNvbiBkZXZpY2UgZGV0ZWN0
-aW5nIHRoZSBJRERJRy9WQlVTIHN0YXRlLCBuZWVkZQ0KPiA+ICsgICAgICB3aGVuIHN1cHBvcnRz
-IGR1YWwtcm9sZSBtb2RlLg0KPiA+ICsgICAgICBJdCdzIGNvbnNpZGVyZWQgdmFsaWQgZm9yIGNv
-bXBhdGliaWxpdHkgcmVhc29ucywgbm90IGFsbG93ZWQgZm9yDQo+ID4gKyAgICAgIG5ldyBiaW5k
-aW5ncywgYW5kIHVzZSAidXNiLXJvbGUtc3dpdGNoIiBwcm9wZXJ0eSBpbnN0ZWFkLg0KPiA+ICsN
-Cj4gPiArICB1c2Itcm9sZS1zd2l0Y2g6DQo+ID4gKyAgICAkcmVmOiAvc2NoZW1hcy90eXBlcy55
-YW1sIy9kZWZpbml0aW9ucy9mbGFnDQo+ID4gKyAgICBkZXNjcmlwdGlvbjogU3VwcG9ydCByb2xl
-IHN3aXRjaC4NCj4gPiArICAgIHR5cGU6IGJvb2xlYW4NCj4gPiArDQo+ID4gKyAgY29ubmVjdG9y
-Og0KPiA+ICsgICAgJHJlZjogL2Nvbm5lY3Rvci91c2ItY29ubmVjdG9yLnlhbWwjDQo+ID4gKyAg
-ICBkZXNjcmlwdGlvbjoNCj4gPiArICAgICAgQ29ubmVjdG9yIGZvciBkdWFsIHJvbGUgc3dpdGNo
-LCBlc3BlY2lhbGx5IGZvciAiZ3Bpby11c2ItYi1jb25uZWN0b3IiDQo+ID4gKyAgICB0eXBlOiBv
-YmplY3QNCj4gPiArDQo+ID4gKyAgcG9ydDoNCj4gPiArICAgIGRlc2NyaXB0aW9uOg0KPiA+ICsg
-ICAgICBBbnkgY29ubmVjdG9yIHRvIHRoZSBkYXRhIGJ1cyBvZiB0aGlzIGNvbnRyb2xsZXIgc2hv
-dWxkIGJlIG1vZGVsbGVkDQo+ID4gKyAgICAgIHVzaW5nIHRoZSBPRiBncmFwaCBiaW5kaW5ncyBz
-cGVjaWZpZWQsIGlmIHRoZSAidXNiLXJvbGUtc3dpdGNoIg0KPiA+ICsgICAgICBwcm9wZXJ0eSBp
-cyB1c2VkLiBTZWUgZ3JhcGgudHh0DQo+ID4gKyAgICB0eXBlOiBvYmplY3QNCj4gPiArDQo+ID4g
-KyAgZW5hYmxlLW1hbnVhbC1kcmQ6DQo+ID4gKyAgICAkcmVmOiAvc2NoZW1hcy90eXBlcy55YW1s
-Iy9kZWZpbml0aW9ucy9mbGFnDQo+ID4gKyAgICBkZXNjcmlwdGlvbjoNCj4gPiArICAgICAgc3Vw
-cG9ydHMgbWFudWFsIGR1YWwtcm9sZSBzd2l0Y2ggdmlhIGRlYnVnZnM7IHVzdWFsbHkgdXNlZCB3
-aGVuDQo+ID4gKyAgICAgIHJlY2VwdGFjbGUgaXMgVFlQRS1BIGFuZCBhbHNvIHdhbnRzIHRvIHN1
-cHBvcnQgZHVhbC1yb2xlIG1vZGUuDQo+ID4gKyAgICB0eXBlOiBib29sZWFuDQo+ID4gKw0KPiA+
-ICsgIHdha2V1cC1zb3VyY2U6DQo+ID4gKyAgICBkZXNjcmlwdGlvbjogZW5hYmxlIFVTQiByZW1v
-dGUgd2FrZXVwLCBzZWUgcG93ZXIvd2FrZXVwLXNvdXJjZS50eHQNCj4gPiArICAgIHR5cGU6IGJv
-b2xlYW4NCj4gPiArDQo+ID4gKyAgbWVkaWF0ZWssc3lzY29uLXdha2V1cDoNCj4gPiArICAgICRy
-ZWY6IC9zY2hlbWFzL3R5cGVzLnlhbWwjL2RlZmluaXRpb25zL3BoYW5kbGUtYXJyYXkNCj4gPiAr
-ICAgIG1heEl0ZW1zOiAxDQo+ID4gKyAgICBkZXNjcmlwdGlvbjoNCj4gPiArICAgICAgQSBwaGFu
-ZGxlIHRvIHN5c2NvbiB1c2VkIHRvIGFjY2VzcyB0aGUgcmVnaXN0ZXIgb2YgdGhlIFVTQiB3YWtl
-dXAgZ2x1ZQ0KPiA+ICsgICAgICBsYXllciBiZXR3ZWVuIHhIQ0kgYW5kIFNQTSwgdGhlIGZpZWxk
-IHNob3VsZCBhbHdheXMgYmUgMyBjZWxscyBsb25nLg0KPiA+ICsgICAgaXRlbXM6DQo+ID4gKyAg
-ICAgIGl0ZW1zOg0KPiA+ICsgICAgICAgIC0gZGVzY3JpcHRpb246DQo+ID4gKyAgICAgICAgICAg
-IFRoZSBmaXJzdCBjZWxsIHJlcHJlc2VudHMgYSBwaGFuZGxlIHRvIHN5c2Nvbg0KPiA+ICsgICAg
-ICAgIC0gZGVzY3JpcHRpb246DQo+ID4gKyAgICAgICAgICAgIFRoZSBzZWNvbmQgY2VsbCByZXBy
-ZXNlbnRzIHRoZSByZWdpc3RlciBiYXNlIGFkZHJlc3Mgb2YgdGhlIGdsdWUNCj4gPiArICAgICAg
-ICAgICAgbGF5ZXIgaW4gc3lzY29uDQo+ID4gKyAgICAgICAgLSBkZXNjcmlwdGlvbjoNCj4gPiAr
-ICAgICAgICAgICAgVGhlIHRoaXJkIGNlbGwgcmVwcmVzZW50cyB0aGUgaGFyZHdhcmUgdmVyc2lv
-biBvZiB0aGUgZ2x1ZSBsYXllciwNCj4gPiArICAgICAgICAgICAgMSBpcyB1c2VkIGJ5IG10ODE3
-MyBldGMsIDIgaXMgdXNlZCBieSBtdDI3MTIgZXRjDQo+ID4gKyAgICAgICAgICBlbnVtOiBbMSwg
-Ml0NCj4gPiArDQo+ID4gKyAgbWVkaWF0ZWssdTNwLWRpcy1tc2s6DQo+ID4gKyAgICAkcmVmOiAv
-c2NoZW1hcy90eXBlcy55YW1sIy9kZWZpbml0aW9ucy91aW50MzINCj4gPiArICAgIGRlc2NyaXB0
-aW9uOiBUaGUgbWFzayB0byBkaXNhYmxlIHUzcG9ydHMsIGJpdDAgZm9yIHUzcG9ydDAsDQo+ID4g
-KyAgICAgIGJpdDEgZm9yIHUzcG9ydDEsIC4uLiBldGMNCj4gPiArDQo+ID4gKyMgUmVxdWlyZWQg
-Y2hpbGQgbm9kZSB3aGVuIHN1cHBvcnQgZHVhbC1yb2xlDQo+ID4gK3BhdHRlcm5Qcm9wZXJ0aWVz
-Og0KPiA+ICsgICJedXNiQFswLTlhLWZdKyQiOg0KPiA+ICsgICAgdHlwZTogb2JqZWN0DQo+ID4g
-KyAgICAkcmVmOiAvdXNiL21lZGlhdGVrLG10ay14aGNpLnlhbWwjDQo+ID4gKyAgICBkZXNjcmlw
-dGlvbjoNCj4gPiArICAgICAgVGhlIHhoY2kgc2hvdWxkIGJlIGFkZGVkIGFzIHN1Ym5vZGUgdG8g
-bXR1MyBhcyBzaG93biBpbiB0aGUgZm9sbG93aW5nDQo+ID4gKyAgICAgIGV4YW1wbGUgaWYgdGhl
-IGhvc3QgbW9kZSBpcyBlbmFibGVkLg0KPiA+ICsNCj4gPiArZGVwZW5kZW5jaWVzOg0KPiA+ICsg
-IGNvbm5lY3RvcjogWyAndXNiLXJvbGUtc3dpdGNoJyBdDQo+ID4gKyAgcG9ydDogWyAndXNiLXJv
-bGUtc3dpdGNoJyBdDQo+ID4gKyAgd2FrZXVwLXNvdXJjZTogWyAnbWVkaWF0ZWssc3lzY29uLXdh
-a2V1cCcgXQ0KPiA+ICsNCj4gPiArcmVxdWlyZWQ6DQo+ID4gKyAgLSBjb21wYXRpYmxlDQo+ID4g
-KyAgLSByZWcNCj4gPiArICAtIHJlZy1uYW1lcw0KPiA+ICsgIC0gaW50ZXJydXB0cw0KPiA+ICsg
-IC0gY2xvY2tzDQo+ID4gKyAgLSBjbG9jay1uYW1lcw0KPiA+ICsNCj4gPiArYWRkaXRpb25hbFBy
-b3BlcnRpZXM6IGZhbHNlDQo+ID4gKw0KPiA+ICtleGFtcGxlczoNCj4gPiArICAjIER1YWwgcm9s
-ZSBzd2l0Y2ggYnkgZXh0Y29uDQo+ID4gKyAgLSB8DQo+ID4gKyAgICAjaW5jbHVkZSA8ZHQtYmlu
-ZGluZ3MvY2xvY2svbXQ4MTczLWNsay5oPg0KPiA+ICsgICAgI2luY2x1ZGUgPGR0LWJpbmRpbmdz
-L2ludGVycnVwdC1jb250cm9sbGVyL2FybS1naWMuaD4NCj4gPiArICAgICNpbmNsdWRlIDxkdC1i
-aW5kaW5ncy9pbnRlcnJ1cHQtY29udHJvbGxlci9pcnEuaD4NCj4gPiArICAgICNpbmNsdWRlIDxk
-dC1iaW5kaW5ncy9waHkvcGh5Lmg+DQo+ID4gKyAgICAjaW5jbHVkZSA8ZHQtYmluZGluZ3MvcG93
-ZXIvbXQ4MTczLXBvd2VyLmg+DQo+ID4gKw0KPiA+ICsgICAgdXNiQDExMjcxMDAwIHsNCj4gPiAr
-ICAgICAgICBjb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE3My1tdHUzIiwgIm1lZGlhdGVrLG10
-dTMiOw0KPiA+ICsgICAgICAgIHJlZyA9IDwweDExMjcxMDAwIDB4MzAwMD4sIDwweDExMjgwNzAw
-IDB4MDEwMD47DQo+ID4gKyAgICAgICAgcmVnLW5hbWVzID0gIm1hYyIsICJpcHBjIjsNCj4gPiAr
-ICAgICAgICBpbnRlcnJ1cHRzID0gPEdJQ19TUEkgNjQgSVJRX1RZUEVfTEVWRUxfTE9XPjsNCj4g
-PiArICAgICAgICBwaHlzID0gPCZwaHlfcG9ydDAgUEhZX1RZUEVfVVNCMz4sIDwmcGh5X3BvcnQx
-IFBIWV9UWVBFX1VTQjI+Ow0KPiA+ICsgICAgICAgIHBvd2VyLWRvbWFpbnMgPSA8JnNjcHN5cyBN
-VDgxNzNfUE9XRVJfRE9NQUlOX1VTQj47DQo+ID4gKyAgICAgICAgY2xvY2tzID0gPCZ0b3Bja2dl
-biBDTEtfVE9QX1VTQjMwX1NFTD47DQo+ID4gKyAgICAgICAgY2xvY2stbmFtZXMgPSAic3lzX2Nr
-IjsNCj4gPiArICAgICAgICB2dXNiMzMtc3VwcGx5ID0gPCZtdDYzOTdfdnVzYl9yZWc+Ow0KPiA+
-ICsgICAgICAgIHZidXMtc3VwcGx5ID0gPCZ1c2JfcDBfdmJ1cz47DQo+ID4gKyAgICAgICAgZXh0
-Y29uID0gPCZleHRjb25fdXNiPjsNCj4gPiArICAgICAgICBkcl9tb2RlID0gIm90ZyI7DQo+ID4g
-KyAgICAgICAgd2FrZXVwLXNvdXJjZTsNCj4gPiArICAgICAgICBtZWRpYXRlayxzeXNjb24td2Fr
-ZXVwID0gPCZwZXJpY2ZnIDB4NDAwIDE+Ow0KPiA+ICsgICAgICAgICNhZGRyZXNzLWNlbGxzID0g
-PDE+Ow0KPiA+ICsgICAgICAgICNzaXplLWNlbGxzID0gPDE+Ow0KPiA+ICsgICAgICAgIHJhbmdl
-czsNCj4gPiArDQo+ID4gKyAgICAgICAgeGhjaTogdXNiQDExMjcwMDAwIHsNCj4gPiArICAgICAg
-ICAgICAgY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxNzMteGhjaSIsICJtZWRpYXRlayxtdGst
-eGhjaSI7DQo+ID4gKyAgICAgICAgICAgIHJlZyA9IDwweDExMjcwMDAwIDB4MTAwMD47DQo+ID4g
-KyAgICAgICAgICAgIHJlZy1uYW1lcyA9ICJtYWMiOw0KPiA+ICsgICAgICAgICAgICBpbnRlcnJ1
-cHRzID0gPEdJQ19TUEkgMTE1IElSUV9UWVBFX0xFVkVMX0xPVz47DQo+ID4gKyAgICAgICAgICAg
-IHBvd2VyLWRvbWFpbnMgPSA8JnNjcHN5cyBNVDgxNzNfUE9XRVJfRE9NQUlOX1VTQj47DQo+ID4g
-KyAgICAgICAgICAgIGNsb2NrcyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9VU0IzMF9TRUw+LCA8JmNs
-azI2bT47DQo+ID4gKyAgICAgICAgICAgIGNsb2NrLW5hbWVzID0gInN5c19jayIsICJyZWZfY2si
-Ow0KPiA+ICsgICAgICAgICAgICB2dXNiMzMtc3VwcGx5ID0gPCZtdDYzOTdfdnVzYl9yZWc+Ow0K
-PiA+ICsgICAgICAgIH07DQo+ID4gKyAgICB9Ow0KPiA+ICsNCj4gPiArICAjIEVuYWJsZS9kaXNh
-YmxlIGRldmljZSBieSBhbiBpbnB1dCBncGlvIGZvciBWQlVTIHBpbg0KPiA+ICsgIC0gfA0KPiA+
-ICsgICAgI2luY2x1ZGUgPGR0LWJpbmRpbmdzL2dwaW8vZ3Bpby5oPg0KPiA+ICsgICAgI2luY2x1
-ZGUgPGR0LWJpbmRpbmdzL3Bvd2VyL210MjcxMi1wb3dlci5oPg0KPiA+ICsNCj4gPiArICAgIHVz
-YkAxMTJjMTAwMCB7DQo+ID4gKyAgICAgICAgY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDI3MTIt
-bXR1MyIsICJtZWRpYXRlayxtdHUzIjsNCj4gPiArICAgICAgICByZWcgPSA8MHgxMTJjMTAwMCAw
-eDMwMDA+LCA8MHgxMTJkMDcwMCAweDAxMDA+Ow0KPiA+ICsgICAgICAgIHJlZy1uYW1lcyA9ICJt
-YWMiLCAiaXBwYyI7DQo+ID4gKyAgICAgICAgaW50ZXJydXB0cyA9IDxHSUNfU1BJIDI0OCBJUlFf
-VFlQRV9MRVZFTF9MT1c+Ow0KPiA+ICsgICAgICAgIHBoeXMgPSA8JnUycG9ydDIgUEhZX1RZUEVf
-VVNCMj47DQo+ID4gKyAgICAgICAgcG93ZXItZG9tYWlucyA9IDwmc2Nwc3lzIE1UMjcxMl9QT1dF
-Ul9ET01BSU5fVVNCMj47DQo+ID4gKyAgICAgICAgY2xvY2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9Q
-X1VTQjMwX1NFTD47DQo+ID4gKyAgICAgICAgY2xvY2stbmFtZXMgPSAic3lzX2NrIjsNCj4gPiAr
-ICAgICAgICBkcl9tb2RlID0gInBlcmlwaGVyYWwiOw0KPiA+ICsgICAgICAgIHVzYi1yb2xlLXN3
-aXRjaDsNCj4gPiArDQo+ID4gKyAgICAgICAgY29ubmVjdG9yIHsNCj4gPiArICAgICAgICAgICAg
-Y29tcGF0aWJsZSA9ICJncGlvLXVzYi1iLWNvbm5lY3RvciIsICJ1c2ItYi1jb25uZWN0b3IiOw0K
-PiA+ICsgICAgICAgICAgICB0eXBlID0gIm1pY3JvIjsNCj4gPiArICAgICAgICAgICAgdmJ1cy1n
-cGlvcyA9IDwmcGlvIDEzIEdQSU9fQUNUSVZFX0hJR0g+Ow0KPiA+ICsgICAgICAgIH07DQo+ID4g
-KyAgICB9Ow0KPiA+ICsNCj4gPiArICAjIER1YWwgcm9sZSBzd2l0Y2ggd2l0aCB0eXBlLWMNCj4g
-PiArICAtIHwNCj4gPiArICAgIHVzYkAxMTIwMTAwMCB7DQo+ID4gKyAgICAgICAgY29tcGF0aWJs
-ZSA9Im1lZGlhdGVrLG10ODE4My1tdHUzIiwgIm1lZGlhdGVrLG10dTMiOw0KPiA+ICsgICAgICAg
-IHJlZyA9IDwweDExMjAxMDAwIDB4MmUwMD4sIDwweDExMjAzZTAwIDB4MDEwMD47DQo+ID4gKyAg
-ICAgICAgcmVnLW5hbWVzID0gIm1hYyIsICJpcHBjIjsNCj4gPiArICAgICAgICBpbnRlcnJ1cHRz
-ID0gPEdJQ19TUEkgNzIgSVJRX1RZUEVfTEVWRUxfTE9XPjsNCj4gPiArICAgICAgICBwaHlzID0g
-PCZ1MnBvcnQwIFBIWV9UWVBFX1VTQjI+Ow0KPiA+ICsgICAgICAgIGNsb2NrcyA9IDwmY2xrMjZt
-PjsNCj4gPiArICAgICAgICBjbG9jay1uYW1lcyA9ICJzeXNfY2siOw0KPiA+ICsgICAgICAgIG1l
-ZGlhdGVrLHN5c2Nvbi13YWtldXAgPSA8JnBlcmljZmcgMHg0MDAgMT47DQo+ID4gKyAgICAgICAg
-d2FrZXVwLXNvdXJjZTsNCj4gPiArICAgICAgICBkcl9tb2RlID0gIm90ZyI7DQo+ID4gKyAgICAg
-ICAgdXNiLXJvbGUtc3dpdGNoOw0KPiA+ICsgICAgICAgICNhZGRyZXNzLWNlbGxzID0gPDE+Ow0K
-PiA+ICsgICAgICAgICNzaXplLWNlbGxzID0gPDE+Ow0KPiA+ICsgICAgICAgIHJhbmdlczsNCj4g
-PiArDQo+ID4gKyAgICAgICAgaG9zdDogdXNiQDExMjAwMDAwIHsNCj4gPiArICAgICAgICAgICAg
-Y29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxODMteGhjaSIsICJtZWRpYXRlayxtdGsteGhjaSI7
-DQo+ID4gKyAgICAgICAgICAgIHJlZyA9IDwweDExMjAwMDAwIDB4MTAwMD47DQo+ID4gKyAgICAg
-ICAgICAgIHJlZy1uYW1lcyA9ICJtYWMiOw0KPiA+ICsgICAgICAgICAgICBpbnRlcnJ1cHRzID0g
-PEdJQ19TUEkgNzMgSVJRX1RZUEVfTEVWRUxfTE9XPjsNCj4gPiArICAgICAgICAgICAgY2xvY2tz
-ID0gPCZjbGsyNm0+Ow0KPiA+ICsgICAgICAgICAgICBjbG9jay1uYW1lcyA9ICJzeXNfY2siOw0K
-PiA+ICsgICAgICAgIH07DQo+ID4gKw0KPiA+ICsgICAgICAgIHBvcnQgew0KPiA+ICsgICAgICAg
-ICAgICB1c2Jfcm9sZV9zdzogZW5kcG9pbnQgew0KPiA+ICsgICAgICAgICAgICAgICAgcmVtb3Rl
-LWVuZHBvaW50ID0gPCZoc19lcD47DQo+ID4gKyAgICAgICAgICAgIH07DQo+ID4gKyAgICAgICAg
-fTsNCj4gPiArICAgIH07DQo+ID4gKw0KPiA+ICsuLi4NCj4gPiAtLSANCj4gPiAyLjE4LjANCj4g
-PiANCg0K
+On Thu, Dec 24, 2020 at 10:51:39AM -0300, Arnaldo Carvalho de Melo wrote:
 
+> Em Wed, Dec 23, 2020 at 02:39:04PM +0800, Leo Yan escreveu:
+> > Arm64 ELF section '.note.stapsdt' uses string format "-4@[sp, NUM]" if
+> > the probe is to access data in stack, e.g. below is an example for
+> > dumping Arm64 ELF file and shows the argument format:
+> > 
+> >   Arguments: -4@[sp, 12] -4@[sp, 8] -4@[sp, 4]
+> > 
+> > Comparing against other archs' argument format, Arm64's argument
+> > introduces an extra space character in the middle of square brackets,
+> > due to argv_split() uses space as splitter, the argument is wrongly
+> > divided into two items.
+> > 
+> > To support Arm64 SDT, this patch fixes up for this case, if any item
+> > contains sub string "[sp", concatenates the two continuous items.  And
+> > adds the detailed explaination in comment.
+> > 
+> > Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> > ---
+> >  tools/perf/util/probe-file.c | 32 ++++++++++++++++++++++++++++++--
+> >  1 file changed, 30 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/tools/perf/util/probe-file.c b/tools/perf/util/probe-file.c
+> > index 064b63a6a3f3..60878c859e60 100644
+> > --- a/tools/perf/util/probe-file.c
+> > +++ b/tools/perf/util/probe-file.c
+> > @@ -794,6 +794,8 @@ static char *synthesize_sdt_probe_command(struct sdt_note *note,
+> >  	char *ret = NULL, **args;
+> >  	int i, args_count, err;
+> >  	unsigned long long ref_ctr_offset;
+> > +	char *arg;
+> > +	int arg_idx = 0;
+> >  
+> >  	if (strbuf_init(&buf, 32) < 0)
+> >  		return NULL;
+> > @@ -815,8 +817,34 @@ static char *synthesize_sdt_probe_command(struct sdt_note *note,
+> >  	if (note->args) {
+> >  		args = argv_split(note->args, &args_count);
+> >  
+> > -		for (i = 0; i < args_count; ++i) {
+> > -			if (synthesize_sdt_probe_arg(&buf, i, args[i]) < 0)
+> > +		for (i = 0; i < args_count; ) {
+> > +			/*
+> > +			 * FIXUP: Arm64 ELF section '.note.stapsdt' uses string
+> > +			 * format "-4@[sp, NUM]" if a probe is to access data in
+> > +			 * the stack, e.g. below is an example for the SDT
+> > +			 * Arguments:
+> > +			 *
+> > +			 *   Arguments: -4@[sp, 12] -4@[sp, 8] -4@[sp, 4]
+> > +			 *
+> > +			 * Since the string introduces an extra space character
+> > +			 * in the middle of square brackets, the argument is
+> > +			 * divided into two items.  Fixup for this case, if an
+> > +			 * item contains sub string "[sp,", need to concatenate
+> > +			 * the two items.
+> > +			 */
+> > +			if (strstr(args[i], "[sp,") && (i+1) < args_count) {
+> > +				arg = strcat(args[i], args[i+1]);
+> > +				i += 2;
+> > +			} else {
+> > +				arg = strdup(args[i]);
+> > +				i += 1;
+> > +			}
+> > +
+> > +			err = synthesize_sdt_probe_arg(&buf, arg_idx, arg);
+> > +			free(arg);
+> 
+> So you free here unconditionally because either you used something you
+> got from argv_split() that strdup'ed all the entries in the array it
+> returns, or that you strdup'ed in the else branch.
+
+
+> But then you may not free all the things argv_split() returned, right?
+
+Yes.
+
+> Also, that strcat(args[i], args[i+1]), are you sure that is safe? strcat
+> expects dest to have enough space for the concatenation, I don't see
+> argv_split[] adding extra bytes, just a strdup().
+
+Correct, will change to use asprintf().
+
+> So probably you need asprintf() where you use strcat() and then, at the
+> end of the loop, you need to free what argv_split() returned, using
+> argv_free(), no?
+> 
+> Also please check strdup() (and then asprintf) managed to allocate, else
+> synthesize_sdt_probe_arg() will receive its 'desc' argument as NULL, do
+> _another_ strdup on it and boom.
+
+Will add checking for the pointer from strdup()/asprintf().
+
+> Or am I missing something? :)
+> 
+> I just looked ant synthesize_sdt_probe_command() is leaking the args it
+> gets from argv_split()
+> 
+> So this patch is needed, ack?
+
+Below change is good for me.  In the next respin, I will add this new
+patch with your author name and send out.
+
+Thanks a lot for the review, Masami & Arnaldo!
+
+> diff --git a/tools/perf/util/probe-file.c b/tools/perf/util/probe-file.c
+> index 064b63a6a3f311cd..bbecb449ea944395 100644
+> --- a/tools/perf/util/probe-file.c
+> +++ b/tools/perf/util/probe-file.c
+> @@ -791,7 +791,7 @@ static char *synthesize_sdt_probe_command(struct sdt_note *note,
+>  					const char *sdtgrp)
+>  {
+>  	struct strbuf buf;
+> -	char *ret = NULL, **args;
+> +	char *ret = NULL;
+>  	int i, args_count, err;
+>  	unsigned long long ref_ctr_offset;
+>  
+> @@ -813,12 +813,19 @@ static char *synthesize_sdt_probe_command(struct sdt_note *note,
+>  		goto out;
+>  
+>  	if (note->args) {
+> -		args = argv_split(note->args, &args_count);
+> +		char **args = argv_split(note->args, &args_count);
+> +
+> +		if (args == NULL)
+> +			goto error;
+>  
+>  		for (i = 0; i < args_count; ++i) {
+> -			if (synthesize_sdt_probe_arg(&buf, i, args[i]) < 0)
+> +			if (synthesize_sdt_probe_arg(&buf, i, args[i]) < 0) {
+> +				argv_free(args);
+>  				goto error;
+> +			}
+>  		}
+> +
+> +		argv_free(args);
+>  	}
+>  
+>  out:
