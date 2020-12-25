@@ -2,138 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1C1E2E2B13
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 11:05:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E5A72E2B17
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 11:05:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729245AbgLYKCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Dec 2020 05:02:45 -0500
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:44747 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727442AbgLYKCk (ORCPT
+        id S1729301AbgLYKEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Dec 2020 05:04:01 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:38099 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729266AbgLYKEB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Dec 2020 05:02:40 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UJjFIVO_1608890514;
-Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UJjFIVO_1608890514)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 25 Dec 2020 18:01:56 +0800
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-To:     willy@infradead.org
-Cc:     tim.c.chen@linux.intel.com,
-        Konstantin Khlebnikov <koct9i@gmail.com>,
-        Hugh Dickins <hughd@google.com>, Yu Zhao <yuzhao@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 3/4] mm/swap.c: extend the usage to pagevec_lru_add
-Date:   Fri, 25 Dec 2020 17:59:49 +0800
-Message-Id: <1608890390-64305-4-git-send-email-alex.shi@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1608890390-64305-1-git-send-email-alex.shi@linux.alibaba.com>
-References: <20201126155553.GT4327@casper.infradead.org>
- <1608890390-64305-1-git-send-email-alex.shi@linux.alibaba.com>
+        Fri, 25 Dec 2020 05:04:01 -0500
+X-UUID: 7f06629c63c24f86b21ce1e43f10fb45-20201225
+X-UUID: 7f06629c63c24f86b21ce1e43f10fb45-20201225
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        (envelope-from <jianjun.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 4389294; Fri, 25 Dec 2020 18:03:12 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 25 Dec 2020 18:03:09 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 25 Dec 2020 18:03:07 +0800
+From:   Jianjun Wang <jianjun.wang@mediatek.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Ryder Lee <ryder.lee@mediatek.com>
+CC:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Sj Huang <sj.huang@mediatek.com>,
+        Jianjun Wang <jianjun.wang@mediatek.com>,
+        <youlin.pei@mediatek.com>, <chuanjia.liu@mediatek.com>,
+        <qizhong.cheng@mediatek.com>, <sin_jieyang@mediatek.com>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        <drinkcat@chromium.org>
+Subject: [v6,0/4] PCI: mediatek: Add new generation controller support
+Date:   Fri, 25 Dec 2020 18:03:04 +0800
+Message-ID: <20201225100308.27052-1-jianjun.wang@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only different for __pagevec_lru_add and other page moving between
-lru lists is page to add lru list has no need to do TestClearPageLRU and
-set the lru bit back. So we could combound them with a clear lru bit
-switch in sort function parameter.
+These series patches add pcie-mediatek-gen3.c and dt-bindings file to
+support new generation PCIe controller.
 
-Than all lru list operation functions could be united.
+Changes in v6:
+1. Export pci_pio_to_address() to support compiling as kernel module;
+2. Replace usleep_range(100 * 1000, 120 * 1000) with msleep(100);
+3. Replace dev_notice with dev_err;
+4. Fix MSI get hwirq flow;
+5. Fix warning for possible recursive locking in mtk_pcie_set_affinity.
 
-Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Cc: Konstantin Khlebnikov <koct9i@gmail.com>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Yu Zhao <yuzhao@google.com>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
----
- mm/swap.c | 31 ++++++++++++-------------------
- 1 file changed, 12 insertions(+), 19 deletions(-)
+Changes in v5:
+1. Remove unused macros
+2. Modify the config read/write callbacks, set the config byte field
+   in TLP header and use pci_generic_config_read32/write32
+   to access the config space
+3. Fix the settings of translation window, both MEM and IO regions
+   works properly
+4. Fix typos
 
-diff --git a/mm/swap.c b/mm/swap.c
-index bb5300b7e321..9a2269e5099b 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -12,6 +12,7 @@
-  * Started 18.12.91
-  * Swap aging added 23.2.95, Stephen Tweedie.
-  * Buffermem limits added 12.3.98, Rik van Riel.
-+ * Pre-sort pagevec added 12.1.20, Alex Shi.
-  */
- 
- #include <linux/mm.h>
-@@ -227,8 +228,8 @@ static void shell_sort(struct pagevec *pvec, unsigned long *lvaddr)
- }
- 
- /* Get lru bit cleared page and their lruvec address, release the others */
--void sort_isopv(struct pagevec *pvec, struct pagevec *isopv,
--		unsigned long *lvaddr)
-+static void sort_isopv(struct pagevec *pvec, struct pagevec *isopv,
-+		unsigned long *lvaddr, bool clearlru)
- {
- 	int i, j;
- 	struct pagevec busypv;
-@@ -242,7 +243,7 @@ void sort_isopv(struct pagevec *pvec, struct pagevec *isopv,
- 		pvec->pages[i] = NULL;
- 
- 		/* block memcg migration during page moving between lru */
--		if (!TestClearPageLRU(page)) {
-+		if (clearlru && !TestClearPageLRU(page)) {
- 			pagevec_add(&busypv, page);
- 			continue;
- 		}
-@@ -266,9 +267,13 @@ static void pagevec_lru_move_fn(struct pagevec *pvec,
- 	unsigned long flags = 0;
- 	unsigned long lvaddr[PAGEVEC_SIZE];
- 	struct pagevec sortedpv;
-+	bool clearlru;
-+
-+	/* don't clear lru bit for new page adding to lru */
-+	clearlru = pvec != this_cpu_ptr(&lru_pvecs.lru_add);
- 
- 	pagevec_init(&sortedpv);
--	sort_isopv(pvec, &sortedpv, lvaddr);
-+	sort_isopv(pvec, &sortedpv, lvaddr, clearlru);
- 
- 	n = pagevec_count(&sortedpv);
- 	if (!n)
-@@ -287,7 +292,8 @@ static void pagevec_lru_move_fn(struct pagevec *pvec,
- 
- 		(*move_fn)(sortedpv.pages[i], lruvec);
- 
--		SetPageLRU(sortedpv.pages[i]);
-+		if (clearlru)
-+			SetPageLRU(sortedpv.pages[i]);
- 	}
- 	spin_unlock_irqrestore(&lruvec->lru_lock, flags);
- 	release_pages(sortedpv.pages, sortedpv.nr);
-@@ -1111,20 +1117,7 @@ static void __pagevec_lru_add_fn(struct page *page, struct lruvec *lruvec)
-  */
- void __pagevec_lru_add(struct pagevec *pvec)
- {
--	int i;
--	struct lruvec *lruvec = NULL;
--	unsigned long flags = 0;
--
--	for (i = 0; i < pagevec_count(pvec); i++) {
--		struct page *page = pvec->pages[i];
--
--		lruvec = relock_page_lruvec_irqsave(page, lruvec, &flags);
--		__pagevec_lru_add_fn(page, lruvec);
--	}
--	if (lruvec)
--		unlock_page_lruvec_irqrestore(lruvec, flags);
--	release_pages(pvec->pages, pvec->nr);
--	pagevec_reinit(pvec);
-+	pagevec_lru_move_fn(pvec, __pagevec_lru_add_fn);
- }
- 
- /**
+Changes in v4:
+1. Fix PCIe power up/down flow
+2. Use "mac" and "phy" for reset names
+3. Add clock names
+4. Fix the variables type
+
+Changes in v3:
+1. Remove standard property in binding document
+2. Return error number when get_optional* API throws an error
+3. Use the bulk clk APIs
+
+Changes in v2:
+1. Fix the typo of dt-bindings patch
+2. Remove the unnecessary properties in binding document
+3. dispos the irq mappings of msi top domain when irq teardown
+
+Jianjun Wang (4):
+  dt-bindings: PCI: mediatek: Add YAML schema
+  PCI: Export pci_pio_to_address() for module use
+  PCI: mediatek-gen3: Add MediaTek Gen3 driver for MT8192
+  MAINTAINERS: Add Jianjun Wang as MediaTek PCI co-maintainer
+
+ .../bindings/pci/mediatek-pcie-gen3.yaml      |  135 ++
+ MAINTAINERS                                   |    1 +
+ drivers/pci/controller/Kconfig                |   13 +
+ drivers/pci/controller/Makefile               |    1 +
+ drivers/pci/controller/pcie-mediatek-gen3.c   | 1084 +++++++++++++++++
+ drivers/pci/pci.c                             |    1 +
+ 6 files changed, 1235 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml
+ create mode 100644 drivers/pci/controller/pcie-mediatek-gen3.c
+
 -- 
-2.29.GIT
+2.25.1
 
