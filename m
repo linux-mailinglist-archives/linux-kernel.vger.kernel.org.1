@@ -2,124 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D1BB2E2C81
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 23:56:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AF192E2C89
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 00:02:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728350AbgLYWgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Dec 2020 17:36:48 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45700 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726737AbgLYWgs (ORCPT
+        id S1728106AbgLYXBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Dec 2020 18:01:38 -0500
+Received: from smtprelay0240.hostedemail.com ([216.40.44.240]:49070 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725953AbgLYXBi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Dec 2020 17:36:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608935721;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xmLuwFglEXzlvsfgmPEIOiXlu1HJHtLhbVA56knSTc8=;
-        b=aroKMdKQHbkVnmJTsyhotEZgbneGaed7TF8iO1rKBFTiFibifLb7ixe2q6KHxnCsozvQXF
-        U1ccJ29tvg7bOEMU/GuHh0ZkmVuhnQ81GqT3cxq7LySp7n3TO3+mW5nitXwRc6VbrGpaci
-        unoerG555iGpWVd4p0hQiojsB/O4/8I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-364-AL75_iGDNyeiKNZhfHKmSw-1; Fri, 25 Dec 2020 17:35:16 -0500
-X-MC-Unique: AL75_iGDNyeiKNZhfHKmSw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 324EA800D53;
-        Fri, 25 Dec 2020 22:35:14 +0000 (UTC)
-Received: from krava (unknown [10.40.192.19])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 2A2A3E140;
-        Fri, 25 Dec 2020 22:35:07 +0000 (UTC)
-Date:   Fri, 25 Dec 2020 23:35:07 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 03/15] perf: Add build id data in mmap2 event
-Message-ID: <20201225223507.GA364667@krava>
-References: <20201214105457.543111-1-jolsa@kernel.org>
- <20201214105457.543111-4-jolsa@kernel.org>
- <20201215155226.GK258566@kernel.org>
- <30ef464f-fc0b-bf5b-33e0-e207b754199d@iogearbox.net>
+        Fri, 25 Dec 2020 18:01:38 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id D7F36100E7B43;
+        Fri, 25 Dec 2020 23:00:56 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2689:2828:2915:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:5007:6742:7652:7902:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13076:13161:13229:13311:13357:13439:13548:14096:14097:14659:14721:14819:21080:21627:21740:30012:30054:30069:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: juice07_1a0bb6b2747d
+X-Filterd-Recvd-Size: 2936
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf13.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 25 Dec 2020 23:00:54 +0000 (UTC)
+Message-ID: <8401b60d35698e68bcf84e977b1b735c131d0b1e.camel@perches.com>
+Subject: Re: [PATCH] nfp: remove h from printk format specifier
+From:   Joe Perches <joe@perches.com>
+To:     Tom Rix <trix@redhat.com>,
+        Simon Horman <simon.horman@netronome.com>
+Cc:     kuba@kernel.org, davem@davemloft.net, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, gustavoars@kernel.org,
+        louis.peens@netronome.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, oss-drivers@netronome.com,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 25 Dec 2020 15:00:52 -0800
+In-Reply-To: <65755252-96c3-a808-3e01-e377dd395ee7@redhat.com>
+References: <20201223202053.131157-1-trix@redhat.com>
+         <20201224202152.GA3380@netronome.com>
+         <bac92bab-243b-ca48-647c-dad5688fa060@redhat.com>
+         <18c81854639aa21e76c8b26cc3e7999b0428cc4e.camel@perches.com>
+         <7b5517e6-41a9-cc7f-f42f-8ef449f3898e@redhat.com>
+         <327d6cad23720c8fe984aa75a046ff69499568c8.camel@perches.com>
+         <65755252-96c3-a808-3e01-e377dd395ee7@redhat.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <30ef464f-fc0b-bf5b-33e0-e207b754199d@iogearbox.net>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 11:01:51PM +0100, Daniel Borkmann wrote:
-> Hey Arnaldo,
-> 
-> On 12/15/20 4:52 PM, Arnaldo Carvalho de Melo wrote:
-> > Em Mon, Dec 14, 2020 at 11:54:45AM +0100, Jiri Olsa escreveu:
-> > > Adding support to carry build id data in mmap2 event.
-> > > 
-> > > The build id data replaces maj/min/ino/ino_generation
-> > > fields, which are also used to identify map's binary,
-> > > so it's ok to replace them with build id data:
-> > > 
-> > >    union {
-> > >            struct {
-> > >                    u32       maj;
-> > >                    u32       min;
-> > >                    u64       ino;
-> > >                    u64       ino_generation;
-> > >            };
-> > >            struct {
-> > >                    u8        build_id_size;
-> > >                    u8        __reserved_1;
-> > >                    u16       __reserved_2;
-> > >                    u8        build_id[20];
-> > >            };
-> > >    };
+On Fri, 2020-12-25 at 14:13 -0800, Tom Rix wrote:
+> On 12/25/20 9:06 AM, Joe Perches wrote:
+> > On Fri, 2020-12-25 at 06:56 -0800, Tom Rix wrote:
+> > > On 12/24/20 2:39 PM, Joe Perches wrote:
+> > []
+> > > > Kernel code doesn't use a signed char or short with %hx or %hu very often
+> > > > but in case you didn't already know, any signed char/short emitted with
+> > > > anything like %hx or %hu needs to be left alone as sign extension occurs so:
+> > > Yes, this would also effect checkpatch.
+> > Of course but checkpatch is stupid and doesn't know types
+> > so it just assumes that the type argument is not signed.
 > > 
-> > Alexei/Daniel, this one depends on BPFs build id routines to be exported
-> > for use by the perf kernel subsys, PeterZ already acked this, so can you
-> > guys consider getting the first three patches in this series via the bpf
-> > tree?
+> > In general, that's a reasonable but imperfect assumption.
 > > 
-> > The BPF bits were acked by Song.
+> > coccinelle could probably do this properly as it's a much
+> > better parser.  clang-tidy should be able to as well.
+> > 
+> Ok.
 > 
-> All the net-next and therefore also bpf-next bits for 5.11 were just merged
-> by Linus into his tree. If you need the first 3 from [0] to land for this merge
-> window, it's probably easiest if you take them in and send them via perf tree
-> directly in case you didn't send out a pull-req yet.. (alternatively I'll ping
-> David/Jakub if they plan to make a 2nd net-next pull-req end of this week).
+> But types not matching the format string is a larger problem.
 > 
-> Thanks,
-> Daniel
-> 
->  [0] https://lore.kernel.org/lkml/20201214105457.543111-1-jolsa@kernel.org/
-> 
+> Has there been an effort to clean these up ?
 
-hi,
-I don't see them (first 3 from [0]) in any tree so far ;-) please let
-me know if there's anything I can do from my side to get this merged
+Not really no.  __printf already does a reasonable job for that.
 
-thanks,
-jirka
+The biggest issue for format type mismatches is the %p<foo> extensions.
 
+__printf can only verify that the argument is a pointer, not
+necessarily the 'right' type of pointed to object.
 
-[0] https://lore.kernel.org/lkml/20201214105457.543111-1-jolsa@kernel.org/
+There are overflow possibilities like '"%*ph", len, pointer'
+where pointer may not have len bytes available and, for instance,
+mismatched uses of %pI4 and %pI6 where %pI4 expects a pointer to
+4 bytes and %pI6 expects a pointer to 16 bytes.
+
+Anyway it's not that easy a problem to analyze.
 
