@@ -2,79 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A41C2E29AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 06:15:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3144A2E29DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 06:30:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726122AbgLYFOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Dec 2020 00:14:55 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:50926 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725648AbgLYFOy (ORCPT
+        id S1725823AbgLYF2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Dec 2020 00:28:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725554AbgLYF2p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Dec 2020 00:14:54 -0500
-X-UUID: 586174e26871477880197deee357d3f7-20201225
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=KgeZmFxf9ZEZvqNx6WjQdn790TCyZKDbfVixiX7OE0Q=;
-        b=r48Sr84TREdx1GVg9DtFCzW2dS5AIEd6OsYrjToU+ncMYWegwIdPCshccYvsGSW4EtCVjKNYicB3w4V1wojpQ0jRfADWMCkNBybYCkP+3mT9citywl+p2ljYXz2puaXdYJKwAD4jQP8ArI9DbzrPWJipSauNlf63EAIvPtPQtR8=;
-X-UUID: 586174e26871477880197deee357d3f7-20201225
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
-        (envelope-from <henryc.chen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1206600739; Fri, 25 Dec 2020 13:14:07 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 25 Dec 2020 13:14:04 +0800
-Received: from [172.21.77.4] (172.21.77.4) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 25 Dec 2020 13:14:04 +0800
-Message-ID: <1608873245.24775.2.camel@mtksdaap41>
-Subject: Re: [PATCH V6 03/13] soc: mediatek: add driver for dvfsrc support
-From:   Henry Chen <henryc.chen@mediatek.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-CC:     Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Stephen Boyd" <swboyd@chromium.org>,
-        Ryan Case <ryandcase@chromium.org>,
-        Mark Brown <broonie@kernel.org>,
+        Fri, 25 Dec 2020 00:28:45 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95B9CC061573
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 21:28:05 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id s21so2129771pfu.13
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 21:28:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=OXt7vHDOprZwsYDOZ3gdmuS5KXkGBSPvwkcE4hpi9oI=;
+        b=w+h8vk7o69RyY5/ruUBWB/+K/rdoC3jVuVD2QxzrcOPsv5Z72Gl/tNv7msxsPwdbgA
+         ETxOxaZNL26DjR9onNdkncoDNaGZtf7XeyOWvwQTxnZEaJhVtJL/ZUQRam61iVJ19oYq
+         wjy+1dGxAr2HJEG9fp09eI28Nib/poEJnY7SCgnYv04a2uTQx5Ww4wg8Dz+dvEkgbI5U
+         NJhwisIZlzDgo4ZOJkR3ducC/gsY1T6ZP0hLmYOGVxSxJMsiuT/mtSNNirkYJzcq1ycs
+         33xbCMr9XfwO+iE1WhY0Wfpth/7WM6II9fOjAmni1o9S71nvW79y7jDfsJTekQ7N4UZQ
+         FkXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=OXt7vHDOprZwsYDOZ3gdmuS5KXkGBSPvwkcE4hpi9oI=;
+        b=DXC3JneGUPWrZ4ncFjLIaCTFXgsVCJqjikXb5a3cz8VevEujCIc8i+BA/MeCY+xNR7
+         cRbOtclZ5VOhx+vA2Tysa/vwa9jsSJu+QpnfrXM/Q3IG8vo+nCwiJofg69FKSyBzuTj+
+         TFu4bijXc8q8Xew4vie2lPpUm30Kz8iJSIRAjz5yBpgr7x8zGPoNSzHQOQD9CwkqToEW
+         hk6oV5/U0dPhHVq02mFtjsoyXhuvheFoOjIa9uW/h4Tsq6FECU4osORqnEmPEeLlsb4W
+         5dCnn6qXxC8R44TuHRgmlNmci/8EfPl6dMchnFM04yLvMwOhF1fdq4SNWZFmLleX7sPd
+         rfmQ==
+X-Gm-Message-State: AOAM533EWBCXIyX/xIsfLjBkXFjns+ynnSWriRvJml1X6YnAiq3hUtHn
+        oRyPK+/K8XLgqb4ZltgVkEBfaQ==
+X-Google-Smtp-Source: ABdhPJwhWfbB5E05OuHKLsUgJ20zZPuw5Ncs32FaevwqX75oEl/Xzcg8ElKubPaY8sfXO+St6Q2Beg==
+X-Received: by 2002:a62:1896:0:b029:197:491c:be38 with SMTP id 144-20020a6218960000b0290197491cbe38mr30346836pfy.15.1608874083438;
+        Thu, 24 Dec 2020 21:28:03 -0800 (PST)
+Received: from localhost ([45.137.216.7])
+        by smtp.gmail.com with ESMTPSA id h16sm30305603pgd.62.2020.12.24.21.28.02
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 24 Dec 2020 21:28:02 -0800 (PST)
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
         Mark Rutland <mark.rutland@arm.com>,
-        Nicolas Boichat <drinkcat@google.com>,
-        DTML <devicetree@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "Fan Chen" <fan.chen@mediatek.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Arvin Wang <arvin.wang@mediatek.com>,
-        James Liao <jamesjj.liao@mediatek.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Date:   Fri, 25 Dec 2020 13:14:05 +0800
-In-Reply-To: <CAAOTY__whne=DuaSv4rOv8f1qTebjqDOVjD5YGYw6eBkkWKmUw@mail.gmail.com>
-References: <1608790134-27425-1-git-send-email-henryc.chen@mediatek.com>
-         <1608790134-27425-4-git-send-email-henryc.chen@mediatek.com>
-         <CAAOTY__whne=DuaSv4rOv8f1qTebjqDOVjD5YGYw6eBkkWKmUw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
-MIME-Version: 1.0
-X-TM-SNTS-SMTP: F345F721F12B5EE58BF45EC2F3987B08119EA1B5D0B332A9788DD00BA98585C62000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexandre Truong <alexandre.truong@arm.com>,
+        Ian Rogers <irogers@google.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        He Zhe <zhe.he@windriver.com>,
+        Sumanth Korikkar <sumanthk@linux.ibm.com>,
+        Alexis Berlemont <alexis.berlemont@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Leo Yan <leo.yan@linaro.org>
+Subject: [PATCH v2 0/3] perf arm64: Support SDT
+Date:   Fri, 25 Dec 2020 13:27:48 +0800
+Message-Id: <20201225052751.24513-1-leo.yan@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIwLTEyLTI0IGF0IDIyOjMzICswODAwLCBDaHVuLUt1YW5nIEh1IHdyb3RlOg0K
-SGkgQ0ssDQo+IEhpLCBIZW5yeToNCj4gDQo+IEhlbnJ5IENoZW4gPGhlbnJ5Yy5jaGVuQG1lZGlh
-dGVrLmNvbT4g5pa8IDIwMjDlubQxMuaciDI05pelIOmAseWbmyDkuIvljYgyOjA55a+r6YGT77ya
-DQo+ID4NCj4gPiBBZGQgZHZmc3JjIGRyaXZlciBmb3IgTVQ2ODczL01UODE4My9NVDgxOTINCj4g
-DQo+IFNlcGFyYXRlIHRoaXMgcGF0Y2ggZm9yIGVhY2ggU29DLg0KT0ssIHRoYW5rcy4NCkhlbnJ5
-DQo+IA0KPiBSZWdhcmRzLA0KPiBDaHVuLUt1YW5nLg0KPiANCj4gPg0KPiA+IFNpZ25lZC1vZmYt
-Ynk6IEhlbnJ5IENoZW4gPGhlbnJ5Yy5jaGVuQG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4gPiAg
-ZHJpdmVycy9zb2MvbWVkaWF0ZWsvS2NvbmZpZyAgICAgICAgICAgIHwgIDEyICsNCj4gPiAgZHJp
-dmVycy9zb2MvbWVkaWF0ZWsvTWFrZWZpbGUgICAgICAgICAgIHwgICAxICsNCj4gPiAgZHJpdmVy
-cy9zb2MvbWVkaWF0ZWsvbXRrLWR2ZnNyYy5jICAgICAgIHwgNTM4ICsrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrDQo+ID4gIGluY2x1ZGUvbGludXgvc29jL21lZGlhdGVrL210a19kdmZz
-cmMuaCB8ICAzNSArKysNCj4gPiAgNCBmaWxlcyBjaGFuZ2VkLCA1ODYgaW5zZXJ0aW9ucygrKQ0K
-PiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXRrLWR2ZnNyYy5j
-DQo+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBpbmNsdWRlL2xpbnV4L3NvYy9tZWRpYXRlay9tdGtf
-ZHZmc3JjLmgNCj4gPg0KDQo=
+This patch is to enable SDT on Arm64.
+
+Since Arm64 SDT marker in ELF file is different from other archs,
+especially for using stack pointer (sp) to retrieve data for local
+variables, patch 01 is used to fixup the arguments for this special
+case.  Patch 02 is to add argument support for Arm64 SDT.
+
+This patch set has been verified on Arm64/x86_64 platforms with a
+testing program usdt_test.  The testing approach is described in the
+patch set v1 [1].
+
+Changes from v1:
+* Added Arnaldo's patch for fixing memory leak (Arnaldo);
+* Refined patch "perf probe: Fixup Arm64 SDT arguments" to use
+  asprintf() and check pointer is valid or not (Arnaldo);
+* Minor changes in patch "perf arm64: Add argument support for SDT"
+  for the regular expression;
+* Added Masami's Ack tag for patch 03.
+
+[1] https://lore.kernel.org/patchwork/cover/1356212/
+
+
+Arnaldo Carvalho de Melo (1):
+  perf probe: Fix memory leak in synthesize_sdt_probe_command()
+
+Leo Yan (2):
+  perf probe: Fixup Arm64 SDT arguments
+  perf arm64: Add argument support for SDT
+
+ tools/perf/arch/arm64/util/perf_regs.c | 94 ++++++++++++++++++++++++++
+ tools/perf/util/probe-file.c           | 49 ++++++++++++--
+ 2 files changed, 139 insertions(+), 4 deletions(-)
+
+-- 
+2.17.1
 
