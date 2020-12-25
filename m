@@ -2,124 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 336FE2E2C35
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 21:07:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F85E2E2C38
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 21:23:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727213AbgLYUGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Dec 2020 15:06:04 -0500
-Received: from mail-il1-f197.google.com ([209.85.166.197]:41519 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726184AbgLYUGE (ORCPT
+        id S1727161AbgLYUUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Dec 2020 15:20:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726345AbgLYUUl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Dec 2020 15:06:04 -0500
-Received: by mail-il1-f197.google.com with SMTP id f19so4241432ilk.8
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Dec 2020 12:05:48 -0800 (PST)
+        Fri, 25 Dec 2020 15:20:41 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28C1AC061757
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Dec 2020 12:20:01 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id i18so4584430ioa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Dec 2020 12:20:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=S0zr3fTuUqiNGvEc+A9Rfuoi49EyUiS13ifcKBRykhY=;
+        b=S3ClbGJA9pITO3xio1x0UGDXDYUckWojsj0v+GVZtfThk1s7fkk/k8fy7TJvvNlDIo
+         RKN3F/qpKPvMGGNP20ihAI3P7lbs4kPwhsO0lw5Exg0ziZs9nO5T5t0mJ1XithMTknI4
+         GgBLHHJPMR3FnCxvs0zZJKIcXgG1mtNiSUCeud0hMAMry0hfsUCwKwGW97jct72HMn1C
+         wsJxCV9VFOZUmy8XOGmQpe1HUgDxCpTcydcZ5ItAEoPoApwC5o7WkeGbfsCVcgyRunqy
+         vhI3VNUdo0HcZiPOmJF+rbTMPeZy4nS/La9zpruHKqMloLLNuW6oBr3r8AniDMBSvIm3
+         4nvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=jM+C3OOZ4ksBidecxlR1gd6x+PHtQDUO4e67dcNJLj4=;
-        b=qIkCNINjbmvEkhT1HepfhhfPgf28OAUGv+43ShNsW/JVTjcCUvxKaWiC8Ky2zbaTWX
-         VnAM6IQOOkNHGJ5EGTzAQelYbThkLC8qdqMBLHsOIxsz5T4CknEqQnGMPdHw81GvMzW3
-         4GBKkCkjTngN+DMMr6A793orzgVCfBvduLDN44OmwY78KP+2CpSMOSHLmbrQdT21It7p
-         QQXaxxEmSG7jMepRCAGqsZDF3s8j9ShJ8G7A/KTlP5N8nd1a6f9lE79QokXuRp+2YaZo
-         JarGDdep0EZuyU58yAgTWCJCOvWY6JmbvxDeY5WYRBTRGTu6UGKv7d5rPvoZ+A+A0Qoj
-         3fKQ==
-X-Gm-Message-State: AOAM533dBumeIoo6a523b3tMMykK279+ZgX8Ebbc0Ea9UmKR1Gas4zNZ
-        Sc2vq4tqCrOj8yxBzGRWL65nSUHj0UbMWyb+uJSwrbzFtxat
-X-Google-Smtp-Source: ABdhPJz5PicBs+l8RuC0Ux/HqsJa0Li8hBog6zkU9Hy3iPbwU1twzoW0XX/6SFGUGZ1Lf50F+u/y4VKIDU8zMydg96YIPQwitATo
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=S0zr3fTuUqiNGvEc+A9Rfuoi49EyUiS13ifcKBRykhY=;
+        b=kRvkiCJZCD+s2F5Bz3n828MobMpTWTauP2ieDHm3zZHAyCqpmWh+c7xj6l7gCuFNM6
+         YHC7thqY6MP0f27MuFgx5D0zTpJORSTYafxtq3oQjjdnNpVhyGfZl60THcMmfAPTNkGq
+         c70N4LdIP5o5hbhqNapqeHmZkaoAD6v27lyAzjKiLL/zbawcksZy50SogYYuEt7JeN80
+         rJEn1sb8HFhk0/7hU/pSERPnrxn+FSE+o56evafSwOrPF2H5Zbk3joGQeZIJuieZoRnc
+         nholEZhtUWHmmIw7eBE15kTjg2I/sQ2GC8kk785MIJNu6quMAqNnyrt7p4dCO4P9qt7D
+         J4Iw==
+X-Gm-Message-State: AOAM531h/iJVmbBSuszrgN2Dz0bvpmTihNGUnW/2t64Hqu4lDsujI8f7
+        4QYmiKWOfOEy9yTdFn4G+wwOzRJ1jqiixw==
+X-Google-Smtp-Source: ABdhPJwRAPTGs5f/3oZBqMZL9wACOECWJ/0j1T2DpKTbkLTdMqA728YywwjAibwFsUG6tpzid3P0FQ==
+X-Received: by 2002:a05:6638:5b2:: with SMTP id b18mr30680204jar.69.1608927599421;
+        Fri, 25 Dec 2020 12:19:59 -0800 (PST)
+Received: from frodo.mearth (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
+        by smtp.googlemail.com with ESMTPSA id e1sm28380401iod.17.2020.12.25.12.19.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Dec 2020 12:19:58 -0800 (PST)
+From:   Jim Cromie <jim.cromie@gmail.com>
+To:     jbaron@akamai.com, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     Jim Cromie <jim.cromie@gmail.com>
+Subject: [RFC PATCH v2 00/19] dynamic debug diet plan
+Date:   Fri, 25 Dec 2020 13:19:25 -0700
+Message-Id: <20201225201944.3701590-1-jim.cromie@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:bc1:: with SMTP id g1mr30497549jad.27.1608926722967;
- Fri, 25 Dec 2020 12:05:22 -0800 (PST)
-Date:   Fri, 25 Dec 2020 12:05:22 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cad14c05b74f714c@google.com>
-Subject: UBSAN: shift-out-of-bounds in dummy_hub_control
-From:   syzbot <syzbot+5925509f78293baa7331@syzkaller.appspotmail.com>
-To:     andreyknvl@gmail.com, andreyknvl@google.com, balbi@kernel.org,
-        gregkh@linuxfoundation.org, gustavoars@kernel.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        stern@rowland.harvard.edu, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Well, we're mostly overeating, but we can all look forward to a diet
+in January.  And more exersize.
 
-syzbot found the following issue on:
+dyndbg's compiled-in data-table currently uses 56 bytes per prdebug;
+this includes 3 pointers to hierarchical "decorator" data, which is
+primarily for adding "module:function:line:" prefixes to prdebug
+messages, and for enabling and modifying those prdebugs selectively.
 
-HEAD commit:    e37b12e4 Merge tag 'for-linus-5.11-ofs1' of git://git.kern..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17429937500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=98408202fed1f636
-dashboard link: https://syzkaller.appspot.com/bug?extid=5925509f78293baa7331
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1781fc5b500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=157cd123500000
-
-The issue was bisected to:
-
-commit 8442b02bf3c6770e0d7e7ea17be36c30e95987b6
-Author: Andrey Konovalov <andreyknvl@google.com>
-Date:   Mon Oct 21 14:20:58 2019 +0000
-
-    USB: dummy-hcd: increase max number of devices to 32
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1631d0db500000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1531d0db500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1131d0db500000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5925509f78293baa7331@syzkaller.appspotmail.com
-Fixes: 8442b02bf3c6 ("USB: dummy-hcd: increase max number of devices to 32")
-
-================================================================================
-UBSAN: shift-out-of-bounds in drivers/usb/gadget/udc/dummy_hcd.c:2293:33
-shift exponent 257 is too large for 32-bit type 'int'
-CPU: 0 PID: 8526 Comm: syz-executor949 Not tainted 5.10.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
- __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
- dummy_hub_control.cold+0x1a/0xbc drivers/usb/gadget/udc/dummy_hcd.c:2293
- rh_call_control drivers/usb/core/hcd.c:683 [inline]
- rh_urb_enqueue drivers/usb/core/hcd.c:841 [inline]
- usb_hcd_submit_urb+0xcaa/0x22d0 drivers/usb/core/hcd.c:1544
- usb_submit_urb+0x6e4/0x1560 drivers/usb/core/urb.c:585
- usb_start_wait_urb+0x101/0x4c0 drivers/usb/core/message.c:58
- usb_internal_control_msg drivers/usb/core/message.c:102 [inline]
- usb_control_msg+0x31c/0x4a0 drivers/usb/core/message.c:153
- do_proc_control+0x4cb/0x9c0 drivers/usb/core/devio.c:1165
- proc_control drivers/usb/core/devio.c:1191 [inline]
- usbdev_do_ioctl drivers/usb/core/devio.c:2535 [inline]
- usbdev_ioctl+0x12c1/0x3b20 drivers/usb/core/devio.c:2708
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x443f29
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 fb d7 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffc10df4328 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00000000004002e0 RCX: 0000000000443f29
-RDX: 0000000020000000 RSI: 00000000c0185500 RDI: 0000000000000003
-RBP: 00000000006ce018 R08: 0000000000000000 R09: 00000000004002e0
-R10: 000000000000000f R11: 0000000000000246 R12: 0000000000401bb0
-R13: 0000000000401c40 R14: 0000000000000000 R15: 0000000000000000
-================================================================================
+This patchset decouples "decorator" data, and makes it optional, and
+disposable.  By separating that data, it opens up possiblities to
+compress it, swap it out, map it selectively, etc.
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+In more detail, patchset does:
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+1- split struct _ddebug in 2, move "decorator" fields to _ddebug_callsites.
+
+while this adds a pointer per site to memory footprint, it allows:
+
+a- dropping decorations and storage, for some use cases.
+   this could include DRM:
+   - want to save calls to drm_debug_enabled()
+   - use distinct categories, can map to format-prefixes, ex: "drm:kms:"
+   - don't need "module:function:line" dynamic prefixes.
+   - dont mind loss of info/context in /proc/dynamic_debug/control
+
+b- ddebug_callsites[] contents are hierarchical, compressible.
+c- ddebug_callsites[] in separate section is compressible as a block.
+d- for just enabled prdebugs, could allocate callsites and fill from zblock.
+
+2- make ddebug_callsites optional internally.
+   This lets us drop them outright, for any reason, perhaps memory pressure.
+
+3- allow dropping callsites by those users.
+   echo module drm +D > /proc/dynamic_debug/control
+   this doesnt currently recover __dyndbg_callsites storage
+
+4- drop _ddebug.site, convert to _ddebug[N].property<x> lookup.
+   RFC is mostly here.
+
+rev1: https://lore.kernel.org/lkml/20201125194855.2267337-1-jim.cromie@gmail.com/
+
+rev2 differs by dropping zram attempt, making callsite data optional, etc.
+
+
+Jim Cromie (19): against v5.10
+
+  dyndbg: fix use before null check
+1 dyndbg: split struct _ddebug, move display fields to new
+    _ddebug_callsite
+    
+2 dyndbg: refactor part of ddebug_change to ddebug_match_site
+  dyndbg: accept null site in ddebug_match_site
+  dyndbg: hoist ->site out of ddebug_match_site
+  dyndbg: accept null site in ddebug_change
+  dyndbg: accept null site in dynamic_emit_prefix
+  dyndbg: accept null site in ddebug_proc_show
+  
+  dyndbg: optimize ddebug_emit_prefix
+  dyndbg: avoid calling dyndbg_emit_prefix when it has no work
+  
+3 dyndbg: refactor ddebug_alter_site out of ddebug_change
+  dyndbg: allow deleting site info via control interface
+  
+4 dyndbg: verify __dyndbg & __dyndbg_callsite invariant
+  dyndbg+module: expose dyndbg_callsites to modules
+  dyndbg: add ddebug_site_get/put api with pass-thru impl
+  dyndbg: ddebug_site_get/put api commentary
+  dyndbg: rearrange struct ddebug_callsites
+  dyndbg: add module_index to struct _ddebug
+  dyndbg: try DEFINE_DYNAMIC_DEBUG_TABLE
+
+ drivers/gpu/drm/i915/i915_drv.c   |   3 +
+ include/asm-generic/vmlinux.lds.h |   4 +
+ include/linux/dynamic_debug.h     |  97 ++++++++---
+ kernel/module-internal.h          |   1 +
+ kernel/module.c                   |   9 +-
+ lib/dynamic_debug.c               | 271 +++++++++++++++++++++---------
+ 6 files changed, 283 insertions(+), 102 deletions(-)
+
+-- 
+2.29.2
+
