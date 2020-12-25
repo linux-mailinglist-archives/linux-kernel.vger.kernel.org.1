@@ -2,99 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92AD42E2984
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 03:42:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6296F2E298F
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 04:34:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729163AbgLYCk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 21:40:28 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:51370 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726760AbgLYCk2 (ORCPT
+        id S1729155AbgLYDcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 22:32:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729117AbgLYDcf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 21:40:28 -0500
-X-UUID: 62c898a3c4354700b99f3fdc31bef351-20201225
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:Reply-To:From:Subject:Message-ID; bh=w7Kq6z7M/4vEr5amD6OGAHxikHzwv5FfbNXNsef5hpU=;
-        b=FqQe2vlZb3JVfEoFq9j6FVbRwa/Qgy2WSM4NXr3SerLi446Olsqbvnxfft1o3ioVCyBzMrpQa+QofeBDOFyDB2sNt5+L3Mq3BBu49NWhHg4xbypBeNYsege9qW/WBStthSF7BX52NlnGKzvLgw64DaakGZHg+/rbJFlJXx4laSo=;
-X-UUID: 62c898a3c4354700b99f3fdc31bef351-20201225
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <yongqiang.niu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1580110998; Fri, 25 Dec 2020 10:39:43 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by mtkmbs05n2.mediatek.inc
- (172.21.101.140) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 25 Dec
- 2020 10:39:42 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 25 Dec 2020 10:39:40 +0800
-Message-ID: <1608863980.18252.15.camel@mhfsdcap03>
-Subject: Re: [PATCH v2, 3/3] mailbox: cmdq: add mt8192 support
-From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
-Reply-To: Yongqiang Niu <yongqiang.niu@mediatek.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-CC:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        DTML <devicetree@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "Daniel Vetter" <daniel@ffwll.ch>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Date:   Fri, 25 Dec 2020 10:39:40 +0800
-In-Reply-To: <CAAOTY_9e9qadeO9k7zQnvSLZAAJFxjWwYSBz-XXEUUh16jsptA@mail.gmail.com>
-References: <1608770889-9403-1-git-send-email-yongqiang.niu@mediatek.com>
-         <1608770889-9403-4-git-send-email-yongqiang.niu@mediatek.com>
-         <CAAOTY_9e9qadeO9k7zQnvSLZAAJFxjWwYSBz-XXEUUh16jsptA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Thu, 24 Dec 2020 22:32:35 -0500
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F292BC061575
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 19:31:54 -0800 (PST)
+Received: by mail-oi1-x22d.google.com with SMTP id 9so4015602oiq.3
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 19:31:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=endlessos.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=SynC+MR8CgDKalU0PqVPlvAW41eDQ0IYZhE8MVMG+6A=;
+        b=C4ucTqhZbNSxGG4pXfkjOF1OKGgUaE4jm4v04RR8flrl2XwT8OHxErk1wmj9cduea5
+         bc0nfBLapzJMUtfvUVw5wz4a9IKCMp/SXjNgcng7WRFobjNRTNhyHJjgP2Ab25oG1Ipy
+         TEPvYn+GXpTq60P8AirVVtNemSw8zkn4hEJUGXj+rpby0JJCRUlU0QIBhWsAli9C0jz8
+         sIWbyi+tFXcEUmUPFEdRjCXRi/lzOXWundJG3Xn1flKOHoAqESUzPgX1lHLjFZjOrdZr
+         s4cPrdeE3eEQTS21dQBYKuGonL+05g3QffdwT5Snbkeh2PDxsKCtB5XukPC3gOG0MwYs
+         raiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=SynC+MR8CgDKalU0PqVPlvAW41eDQ0IYZhE8MVMG+6A=;
+        b=CS9ThVDiDpEO0G/uhFOLHAZCD1xYP7S3hQMJlYuEU9uC+SV4KLrDAPJODZt8u7Xv8m
+         11yckhcVl+kbBK7aU6QlFItj9yO6JFhzRFME5C/7tcowO488meOmy2NS4OLib4sbl/ph
+         /v5OQ2+xfiZbhdQxdbrwU2NDtar5bOFn2tW/dZEGJXd3DfqF0rndr/ZesfnV+ffJ31p6
+         hKEd8hy9vDjSOm5Qkr+CsPXuLbHkT1bXUEeyW+Ws33R5VYUyqqRc1exybNKdsCOllzT1
+         AAQ54EmzQTDnF1ytzuHE3DrCOYZfStH38o9Av00R5ZjOmDHTmGtZmoPHXRVFa8KgOUFV
+         HNCw==
+X-Gm-Message-State: AOAM531X514wFRDfulWyDec10n2kVug5vsO2wJR+KPEdk7wQydSCvTUZ
+        fmyE3ZnsYAdCeyJOhWy33NXSwI3wGXIQDVmh5KWckQ==
+X-Google-Smtp-Source: ABdhPJzJcj7xm1z3ruy0Gd9JulgRjo/2UJivCDGUYznyLmi1uktx0/HJCGLbLzK9SB6N0Za9j9PbNV/O/pgvhgSe5W4=
+X-Received: by 2002:aca:909:: with SMTP id 9mr4413296oij.69.1608867114054;
+ Thu, 24 Dec 2020 19:31:54 -0800 (PST)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20201222073855.98490-1-jhp@endlessos.org> <20201224190602.GB22388@amd>
+In-Reply-To: <20201224190602.GB22388@amd>
+From:   Jian-Hong Pan <jhp@endlessos.org>
+Date:   Fri, 25 Dec 2020 11:31:06 +0800
+Message-ID: <CAPpJ_efqBY0_f2AVbMETXkXSWWCQz2ZD6Yx8ciyO4GBEiHyeYQ@mail.gmail.com>
+Subject: Re: [PATCH] HID: Add Wireless Radio Control feature for Chicony devices
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input <linux-input@vger.kernel.org>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        linux@endlessos.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIwLTEyLTI0IGF0IDIyOjI4ICswODAwLCBDaHVuLUt1YW5nIEh1IHdyb3RlOg0K
-PiBIaSwgWW9uZ3FpYW5nOg0KPiANCj4gWW9uZ3FpYW5nIE5pdSA8eW9uZ3FpYW5nLm5pdUBtZWRp
-YXRlay5jb20+IOaWvCAyMDIw5bm0MTLmnIgyNOaXpSDpgLHlm5sg5LiK5Y2IODo1NeWvq+mBk++8
-mg0KPiA+DQo+ID4gYWRkIG10ODE5MiBzdXBwb3J0DQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBZ
-b25ncWlhbmcgTml1IDx5b25ncWlhbmcubml1QG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4gPiAg
-ZHJpdmVycy9tYWlsYm94L210ay1jbWRxLW1haWxib3guYyB8IDEgKw0KPiA+ICAxIGZpbGUgY2hh
-bmdlZCwgMSBpbnNlcnRpb24oKykNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL21haWxi
-b3gvbXRrLWNtZHEtbWFpbGJveC5jIGIvZHJpdmVycy9tYWlsYm94L210ay1jbWRxLW1haWxib3gu
-Yw0KPiA+IGluZGV4IDc1Mzc4ZTMuLjdmMjQzZTEgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9t
-YWlsYm94L210ay1jbWRxLW1haWxib3guYw0KPiA+ICsrKyBiL2RyaXZlcnMvbWFpbGJveC9tdGst
-Y21kcS1tYWlsYm94LmMNCj4gPiBAQCAtNjA3LDYgKzYwNyw3IEBAIHN0YXRpYyBpbnQgY21kcV9w
-cm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KPiA+ICAgICAgICAgey5jb21wYXRp
-YmxlID0gIm1lZGlhdGVrLG10ODE3My1nY2UiLCAuZGF0YSA9ICh2b2lkICopJmdjZV9wbGF0X3Yy
-fSwNCj4gPiAgICAgICAgIHsuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxODMtZ2NlIiwgLmRh
-dGEgPSAodm9pZCAqKSZnY2VfcGxhdF92M30sDQo+ID4gICAgICAgICB7LmNvbXBhdGlibGUgPSAi
-bWVkaWF0ZWssbXQ2Nzc5LWdjZSIsIC5kYXRhID0gKHZvaWQgKikmZ2NlX3BsYXRfdjR9LA0KPiA+
-ICsgICAgICAgey5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE5Mi1nY2UiLCAuZGF0YSA9ICh2
-b2lkICopJmdjZV9wbGF0X3Y0fSwNCj4gDQo+IEluIHRoZSB2aWV3IG9mIGhhcmR3YXJlIGZ1bmN0
-aW9uLCBpcyBtdDgxOTItZ2NlIGlkZW50aWNhbCB0bw0KPiBtdDY3NzktZ2NlPyBJZiB0aGVzZSB0
-d28gYXJlIGlkZW50aWNhbCwgeW91IG5lZWQgbm90IHRvIG1vZGlmeSBkcml2ZXIsDQo+IGFuZCB0
-aGUgY29tcGF0aWJsZSBzaG91bGQgYmUNCj4gDQo+IGNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4
-MTkyLWdjZSIsICJtZWRpYXRlayxtdDY3NzktZ2NlIjsNCj4gDQo+IElmIHRoZXkgYXJlIG5vdCBp
-ZGVudGljYWwsIHdoYXQncyB0aGUgZGlmZmVyZW50Pw0KPiANCj4gUmVnYXJkcywNCj4gQ2h1bi1L
-dWFuZy4NCg0KaXJxIGlkIGlzIGRpZmZlcmVudCANCm10ODE5MiBkdHMNCmh0dHBzOi8vcGF0Y2h3
-b3JrLmtlcm5lbC5vcmcvcHJvamVjdC9saW51eC1tZWRpYXRlay9wYXRjaC8xNjA4NzcwODg5LTk0
-MDMtMy1naXQtc2VuZC1lbWFpbC15b25ncWlhbmcubml1QG1lZGlhdGVrLmNvbS8NCg0KbXQ2Nzc5
-IGR0cw0KaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wcm9qZWN0L2xpbnV4LW1lZGlhdGVr
-L3BhdGNoLzE1NzQzMjc1NTItMTE4MDYtNi1naXQtc2VuZC1lbWFpbC1kZW5uaXMteWMuaHNpZWhA
-bWVkaWF0ZWsuY29tLw0KDQphbmQgZ2NlIGV2ZW50IGlkIGFsc28gZGlmZmVyZW50DQpodHRwczov
-L3BhdGNod29yay5rZXJuZWwub3JnL3Byb2plY3QvbGludXgtbWVkaWF0ZWsvcGF0Y2gvMTYwODc3
-MDg4OS05NDAzLTItZ2l0LXNlbmQtZW1haWwteW9uZ3FpYW5nLm5pdUBtZWRpYXRlay5jb20vDQoN
-Cmh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcHJvamVjdC9saW51eC1tZWRpYXRlay9wYXRj
-aC8xNTc0MzI3NTUyLTExODA2LTItZ2l0LXNlbmQtZW1haWwtZGVubmlzLXljLmhzaWVoQG1lZGlh
-dGVrLmNvbS8NCg0KDQo+IA0KPiA+ICAgICAgICAge30NCj4gPiAgfTsNCj4gPg0KPiA+IC0tDQo+
-ID4gMS44LjEuMS5kaXJ0eQ0KPiA+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fDQo+ID4gTGludXgtbWVkaWF0ZWsgbWFpbGluZyBsaXN0DQo+ID4gTGludXgt
-bWVkaWF0ZWtAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPiA+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbWVkaWF0ZWsNCg0K
+Pavel Machek <pavel@ucw.cz> =E6=96=BC 2020=E5=B9=B412=E6=9C=8825=E6=97=A5 =
+=E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=883:06=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> On Tue 2020-12-22 15:38:56, Jian-Hong Pan wrote:
+> > Some Chicony's keyboards support airplane mode hotkey (Fn+F2) with
+> > "Wireless Radio Control" feature. For example, the wireless keyboard
+> > [04f2:1236] shipped with ASUS all-in-one desktop.
+> >
+> > After consulting Chicony for this hotkey, learned the device will send
+> > with 0x11 as the report ID and 0x1 as the value when the key is pressed
+> > down.
+>
+> Fun, how can airplane mode work on _wireless_ keyboard? :-).
 
+Hmm! It is a funny point for this USB wireless keyboard!
+But I guess this kind of combination (with the "desktop") will not be
+used on an airplane :)
+
+Jian-Hong Pan
