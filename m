@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 808B02E29E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 06:30:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 023432E29E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 06:30:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726980AbgLYF2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Dec 2020 00:28:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53884 "EHLO
+        id S1728235AbgLYF2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Dec 2020 00:28:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725853AbgLYF2v (ORCPT
+        with ESMTP id S1725554AbgLYF2y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Dec 2020 00:28:51 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D12A3C0613C1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 21:28:10 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id m5so2135932pjv.5
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 21:28:10 -0800 (PST)
+        Fri, 25 Dec 2020 00:28:54 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D698C0613ED
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 21:28:14 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id n7so2679772pgg.2
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 21:28:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=HfQeMTR9dHIFoLebfafxegiW3US03+p5EYWEz17ILko=;
-        b=HvswmbMDL5uxqB0KAbPcLNnn+5vuDGciqdkPp8cLLiFowOTsnt2IpO66ZQq3/eFtND
-         9RAVODop0575vtynRDfV8yk0g2eoRiSMLPj7ACMw9U86P6k45SkXO955Wb9FyxMwrGjm
-         Qn6Z5WJWYHuzASpFJfIae3mF3TpQAbrYn1Uls/Dqd8LZh1JF4MRI0PuGZXpx+sLnhBN/
-         n6vF2LUWpKWeTQAyXzAdaRYFymypMBc62kUu2uC6P1O+w4L56GkLs5452qAg6Ieji8dO
-         nZYNdetwUmuFNUpdE6q8tWL9ShTWWI+6Ossq+vMHxbSJgjXV/nW3GoElhbUKFamCpF4N
-         dfZQ==
+        bh=QxEw73aH8htDNc2tPH/epFrL2eOdsg6Hp+cPBazlzqE=;
+        b=BhA2tHDLnHDPPgpjtgASdT3Z6FwgjaCYNFHye6ROWmX8IpKNd+66sfLwRoMSGUAR6Z
+         D/mpTUIIsu4aC6DaBVTsWkP8/Vb7nBiKTcdz286Qs4w11XfFTQh+h8hgJBjyOgWW7pfs
+         n6c8pFULCW0aBQWnUAK1KOFfBDlELmjr7bDovUpF2QmNk5LhJ82JC6KUC6ss7le7qzw0
+         FMZwZMotPWVvRE6p+8FNoXSpYe6EpqQBWmFupZI4ypo1tMf1I3R6CuoxgnYGxjb+cTbM
+         wWgxqFc4XhKpFcREb2KyWUGvBhTz1ue+L0/aUFIV/zSBQkMCbKn4A4rXDaGwrtY4IJVf
+         k32Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=HfQeMTR9dHIFoLebfafxegiW3US03+p5EYWEz17ILko=;
-        b=Txl3dToxDFTVaz1j26SYTj83kij4lA+xICYKCuZk+vpggvKikwLgCDSQhNdv91l4Lp
-         FET4NQp9OqPq317v7DrlMenyvg7Mb2ipzUCSJCWyB9rBx6rR6KceqWLEkqtu5KCv51EP
-         26j/US5MOtF/GlWsR4H3Iu8vSYwrWxKAMp93PkjtGlBo2GcAJUmIZ9Tsb7a/DzbvgGB4
-         LRjmfUkR5UaXFO4meCUcU9bBCMjlC/RJnXj50t49yJJpjaOHKfGkuL5UfXCTgpUG84FL
-         L7WOK6oh0m7YNYbYLPZVVY5Tk58OQhUnOQ0YU7fr1jWQKR3s4CCCycxr+BiUGZROxj8h
-         ybNQ==
-X-Gm-Message-State: AOAM533F992CeYopKs0U+hJp86YB146A+KZj92TzXgGSWBVSyHEp08vI
-        8EXOfxWAIuojFPbPgGp6hMtHug==
-X-Google-Smtp-Source: ABdhPJxa4v8+ZEPmtpingASgL6mL9hIJ/HsSt0yN+89oa3vDVZanYG1LKPFxrCXADzFZ98phXDi9mA==
-X-Received: by 2002:a17:90b:8d8:: with SMTP id ds24mr7246522pjb.134.1608874090429;
-        Thu, 24 Dec 2020 21:28:10 -0800 (PST)
+        bh=QxEw73aH8htDNc2tPH/epFrL2eOdsg6Hp+cPBazlzqE=;
+        b=Khl26A9HD0m61i1YAbmDFTu4oWXmA+OFeyfFKpl2eqGTDByYpvCFszSIypik7BvzLz
+         EI1ICrZFu2Ade9z2V2ar50J/5q7gl4VPxAXWHfJqvkkyIb+wR41776drB1n447asmAZF
+         P+Z4Hsm0cQiacACMxlzj1E5hX2gnByZWuMDKHJcRfKCIuBz3VuqcxnFkYZ7LU6EKTmaI
+         MCMRimi83kTIG/OsojLixtZ21Dxk8oqHU/MqUTMCD2UTCZbxh8tysZqnSfa0NXZdKRLW
+         NpEgx/XQnWfibrC53+oBVP0DOsEbHOBOzZL6EydURcuw4eqHjGNXAcWl/DlhPdeax4kb
+         mGXQ==
+X-Gm-Message-State: AOAM532f5OgrNoNCw+yc6IwYz4IAZbnYm4T3mDCXYCYEm2aMrmK8A7up
+        lN/eaHbbHuTRz6IKl6MIZwSdNQ==
+X-Google-Smtp-Source: ABdhPJzFrfFhDXrOAD8lhm8vjoUNQDaoWG/S0zkZlpElQjhLJdBlklM7vJDWIGGuCqZfZ0bc+fvz/w==
+X-Received: by 2002:a63:da4e:: with SMTP id l14mr13737064pgj.248.1608874093876;
+        Thu, 24 Dec 2020 21:28:13 -0800 (PST)
 Received: from localhost ([45.137.216.7])
-        by smtp.gmail.com with ESMTPSA id f15sm4156167pju.49.2020.12.24.21.28.09
+        by smtp.gmail.com with ESMTPSA id l11sm29184800pgt.79.2020.12.24.21.28.12
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 24 Dec 2020 21:28:09 -0800 (PST)
+        Thu, 24 Dec 2020 21:28:13 -0800 (PST)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         John Garry <john.garry@huawei.com>,
@@ -67,9 +67,9 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Alexis Berlemont <alexis.berlemont@gmail.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v2 2/3] perf probe: Fixup Arm64 SDT arguments
-Date:   Fri, 25 Dec 2020 13:27:50 +0800
-Message-Id: <20201225052751.24513-3-leo.yan@linaro.org>
+Subject: [PATCH v2 3/3] perf arm64: Add argument support for SDT
+Date:   Fri, 25 Dec 2020 13:27:51 +0800
+Message-Id: <20201225052751.24513-4-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201225052751.24513-1-leo.yan@linaro.org>
 References: <20201225052751.24513-1-leo.yan@linaro.org>
@@ -77,85 +77,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arm64 ELF section '.note.stapsdt' uses string format "-4@[sp, NUM]" if
-the probe is to access data in stack, e.g. below is an example for
-dumping Arm64 ELF file and shows the argument format:
+Now the two OP formats are used for SDT marker argument in Arm64 ELF,
+one format is general register xNUM (e.g. x1, x2, etc), another is for
+using stack pointer to access local variables (e.g. [sp], [sp, 8]).
 
-  Arguments: -4@[sp, 12] -4@[sp, 8] -4@[sp, 4]
-
-Comparing against other archs' argument format, Arm64's argument
-introduces an extra space character in the middle of square brackets,
-due to argv_split() uses space as splitter, the argument is wrongly
-divided into two items.
-
-To support Arm64 SDT, this patch fixes up for this case, if any item
-contains sub string "[sp", concatenates the two continuous items.  And
-adds the detailed explaination in comment.
+This patch adds support SDT marker argument for Arm64, it parses OP and
+converts to uprobe compatible format.
 
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- tools/perf/util/probe-file.c | 38 ++++++++++++++++++++++++++++++++++--
- 1 file changed, 36 insertions(+), 2 deletions(-)
+ tools/perf/arch/arm64/util/perf_regs.c | 94 ++++++++++++++++++++++++++
+ 1 file changed, 94 insertions(+)
 
-diff --git a/tools/perf/util/probe-file.c b/tools/perf/util/probe-file.c
-index bbecb449ea94..52273542e6ef 100644
---- a/tools/perf/util/probe-file.c
-+++ b/tools/perf/util/probe-file.c
-@@ -794,6 +794,8 @@ static char *synthesize_sdt_probe_command(struct sdt_note *note,
- 	char *ret = NULL;
- 	int i, args_count, err;
- 	unsigned long long ref_ctr_offset;
-+	char *arg;
-+	int arg_idx = 0;
- 
- 	if (strbuf_init(&buf, 32) < 0)
- 		return NULL;
-@@ -818,11 +820,43 @@ static char *synthesize_sdt_probe_command(struct sdt_note *note,
- 		if (args == NULL)
- 			goto error;
- 
--		for (i = 0; i < args_count; ++i) {
--			if (synthesize_sdt_probe_arg(&buf, i, args[i]) < 0) {
-+		for (i = 0; i < args_count; ) {
-+			/*
-+			 * FIXUP: Arm64 ELF section '.note.stapsdt' uses string
-+			 * format "-4@[sp, NUM]" if a probe is to access data in
-+			 * the stack, e.g. below is an example for the SDT
-+			 * Arguments:
-+			 *
-+			 *   Arguments: -4@[sp, 12] -4@[sp, 8] -4@[sp, 4]
-+			 *
-+			 * Since the string introduces an extra space character
-+			 * in the middle of square brackets, the argument is
-+			 * divided into two items.  Fixup for this case, if an
-+			 * item contains sub string "[sp,", need to concatenate
-+			 * the two items.
-+			 */
-+			if (strstr(args[i], "[sp,") && (i+1) < args_count) {
-+				err = asprintf(&arg, "%s %s", args[i], args[i+1]);
-+				i += 2;
-+			} else {
-+				err = asprintf(&arg, "%s", args[i]);
-+				i += 1;
-+			}
+diff --git a/tools/perf/arch/arm64/util/perf_regs.c b/tools/perf/arch/arm64/util/perf_regs.c
+index 54efa12fdbea..2518cde18b34 100644
+--- a/tools/perf/arch/arm64/util/perf_regs.c
++++ b/tools/perf/arch/arm64/util/perf_regs.c
+@@ -1,4 +1,12 @@
+ // SPDX-License-Identifier: GPL-2.0
++#include <errno.h>
++#include <regex.h>
++#include <string.h>
++#include <linux/kernel.h>
++#include <linux/zalloc.h>
 +
-+			/* Failed to allocate memory */
-+			if (err < 0) {
- 				argv_free(args);
- 				goto error;
- 			}
-+
-+			if (synthesize_sdt_probe_arg(&buf, arg_idx, arg) < 0) {
-+				free(arg);
-+				argv_free(args);
-+				goto error;
-+			}
-+
-+			free(arg);
-+			arg_idx++;
- 		}
++#include "../../../util/debug.h"
++#include "../../../util/event.h"
+ #include "../../../util/perf_regs.h"
  
- 		argv_free(args);
+ const struct sample_reg sample_reg_masks[] = {
+@@ -37,3 +45,89 @@ const struct sample_reg sample_reg_masks[] = {
+ 	SMPL_REG(pc, PERF_REG_ARM64_PC),
+ 	SMPL_REG_END
+ };
++
++/* %xNUM */
++#define SDT_OP_REGEX1  "^(x[1-2]?[0-9]|3[0-1])$"
++
++/* [sp], [sp, NUM] */
++#define SDT_OP_REGEX2  "^\\[sp(, )?([0-9]+)?\\]$"
++
++static regex_t sdt_op_regex1, sdt_op_regex2;
++
++static int sdt_init_op_regex(void)
++{
++	static int initialized;
++	int ret = 0;
++
++	if (initialized)
++		return 0;
++
++	ret = regcomp(&sdt_op_regex1, SDT_OP_REGEX1, REG_EXTENDED);
++	if (ret)
++		goto error;
++
++	ret = regcomp(&sdt_op_regex2, SDT_OP_REGEX2, REG_EXTENDED);
++	if (ret)
++		goto free_regex1;
++
++	initialized = 1;
++	return 0;
++
++free_regex1:
++	regfree(&sdt_op_regex1);
++error:
++	pr_debug4("Regex compilation error.\n");
++	return ret;
++}
++
++/*
++ * SDT marker arguments on Arm64 uses %xREG or [sp, NUM], currently
++ * support these two formats.
++ */
++int arch_sdt_arg_parse_op(char *old_op, char **new_op)
++{
++	int ret, new_len;
++	regmatch_t rm[5];
++
++	ret = sdt_init_op_regex();
++	if (ret < 0)
++		return ret;
++
++	if (!regexec(&sdt_op_regex1, old_op, 3, rm, 0)) {
++		/* Extract xNUM */
++		new_len = 2;	/* % NULL */
++		new_len += (int)(rm[1].rm_eo - rm[1].rm_so);
++
++		*new_op = zalloc(new_len);
++		if (!*new_op)
++			return -ENOMEM;
++
++		scnprintf(*new_op, new_len, "%%%.*s",
++			(int)(rm[1].rm_eo - rm[1].rm_so), old_op + rm[1].rm_so);
++	} else if (!regexec(&sdt_op_regex2, old_op, 5, rm, 0)) {
++		/* [sp], [sp, NUM] or [sp,NUM] */
++		new_len = 7;	/* + ( % s p ) NULL */
++
++		/* If the arugment is [sp], need to fill offset '0' */
++		if (rm[2].rm_so == -1)
++			new_len += 1;
++		else
++			new_len += (int)(rm[2].rm_eo - rm[2].rm_so);
++
++		*new_op = zalloc(new_len);
++		if (!*new_op)
++			return -ENOMEM;
++
++		if (rm[2].rm_so == -1)
++			scnprintf(*new_op, new_len, "+0(%%sp)");
++		else
++			scnprintf(*new_op, new_len, "+%.*s(%%sp)",
++				  (int)(rm[2].rm_eo - rm[2].rm_so),
++				  old_op + rm[2].rm_so);
++	} else {
++		pr_debug4("Skipping unsupported SDT argument: %s\n", old_op);
++		return SDT_ARG_SKIP;
++	}
++
++	return SDT_ARG_VALID;
++}
 -- 
 2.17.1
 
