@@ -2,126 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 376BC2E2A6F
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 09:39:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E00E62E2A71
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 09:42:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728777AbgLYIgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Dec 2020 03:36:41 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:36539 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725774AbgLYIgj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Dec 2020 03:36:39 -0500
-X-UUID: 35e7706932574e8eb813f59c06fee49e-20201225
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=MIME-Version:Content-Transfer-Encoding:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=c9JlnzUfi//evuzovP/hRxuHg/iJMxnwAlJYAOL08F4=;
-        b=LMUaueQ1ZOFi7bp/nThegxp0pQQfHAQCnkZwilyk4XTEIWXF1uUqNhEfYcfkHMry9ek4a1zKxx41MHuHidJCXhRLHd9ndSWmWIex0k2c2iksWTXqXqoi1qcJWS2xuBwCudVOAj1vSyNZBJ9RvzVwzkwMQG2EYzJRsB7fraA/zRw=;
-X-UUID: 35e7706932574e8eb813f59c06fee49e-20201225
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
-        (envelope-from <mark-yw.chen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 2146465485; Fri, 25 Dec 2020 16:35:52 +0800
-Received: from mtkmbs08n1.mediatek.inc (172.21.101.55) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 25 Dec 2020 16:35:49 +0800
-Received: from mtkmbs08n1.mediatek.inc ([fe80::158c:e14b:5c60:8675]) by
- mtkmbs08n1.mediatek.inc ([fe80::158c:e14b:5c60:8675%12]) with mapi id
- 15.00.1497.000; Fri, 25 Dec 2020 16:35:49 +0800
-From:   =?utf-8?B?TWFyay1ZVyBDaGVuICjpmbPmj5rmlocp?= 
-        <Mark-YW.Chen@mediatek.com>
-To:     Marcel Holtmann <marcel@holtmann.org>
-CC:     Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sean Wang <Sean.Wang@mediatek.com>,
-        =?utf-8?B?UGV0ZXIgVHNhbyAo5pu554+G5b2wKQ==?= 
-        <Peter.Tsao@mediatek.com>
-Subject: RE: [PATCH 1/1] [Add support Mediatek mt7921U]
-Thread-Topic: [PATCH 1/1] [Add support Mediatek mt7921U]
-Thread-Index: AQHW2HPmDNuA3BvmpkmoYgXnFcNJUKoDHheAgALsLsA=
-Date:   Fri, 25 Dec 2020 08:35:49 +0000
-Message-ID: <292c69c1038242d5b0d03fb7b4675555@mtkmbs08n1.mediatek.inc>
-References: <20201222150527.22904-1-Mark-YW.Chen@mediatek.com>
- <06C876AD-8232-418E-B3CB-96B88579BAF7@holtmann.org>
-In-Reply-To: <06C876AD-8232-418E-B3CB-96B88579BAF7@holtmann.org>
-Accept-Language: zh-TW, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [172.21.101.239]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+        id S1728783AbgLYIlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Dec 2020 03:41:13 -0500
+Received: from smtp23.cstnet.cn ([159.226.251.23]:51856 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726023AbgLYIlM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Dec 2020 03:41:12 -0500
+Received: from localhost.localdomain (unknown [124.16.141.241])
+        by APP-03 (Coremail) with SMTP id rQCowADXTPj9pOVfX+OnAA--.33235S2;
+        Fri, 25 Dec 2020 16:38:21 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     mchehab@kernel.org, sakari.ailus@linux.intel.com,
+        gregkh@linuxfoundation.org, linux-media@vger.kernel.org,
+        devel@driverdev.osuosl.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] media: atomisp: Remove redundant NULL check
+Date:   Fri, 25 Dec 2020 08:38:18 +0000
+Message-Id: <20201225083818.64588-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: rQCowADXTPj9pOVfX+OnAA--.33235S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZF13uw1xuFW7KrW7Ww1kuFg_yoW8JFW3pa
+        y8Z3W7G3yUXF1jyrsrXws7ZFW5AayftF1UKa4q93WfCw13t3WfZF1akF15JF1rtw45W3y5
+        Z3WrXrW3Ww1qyFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkIb7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVW8Jr0_Cr
+        1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_GFyl42xK
+        82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
+        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48J
+        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
+        IF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
+        x4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8ZZ23UUUUU==
+X-Originating-IP: [124.16.141.241]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiBgcBA10Te3q+NAAAsG
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgTWFyY2VsLA0KDQpUaGFua3MgZm9yIHlvdXIgc3VnZ2VzdGlvbnMsIEkgd2lsbCByZW1vdmUg
-dGhlIGR1cGxpY2F0ZSBkZWZpbml0aW9ucyBhbmQgZnVuY3Rpb25zLg0KDQpGaXJzdGx5LCB3ZSB3
-aWxsIGFkZCB0aGUgc3VwcG9ydCBvZiBlbmFibGluZyBNVDc5MjFVIGluIGJ0dXNiLmMNClNlY29u
-ZGFyeSwgd2Ugd2lsbCBkaXNjdXNzIHRoZSBkcml2ZXIgYXJjaGl0ZWN0dXJlIHdpdGggeW91Lg0K
-RmluYWxseSwgd2UgdXBkYXRlIHRoZSBjb21tb24gcGFydCBhbmQgaGlmIHBhcnQgZm9yIE1UNzky
-MS4NCg0KSSBoYXZlIGEgY291cGxlIHF1ZXN0aW9ucyBmb3IgZHJpdmVyIGFyY2hpdGVjdHVyZS4N
-CjEuIEdsb2JhbCBkZXYuDQoyLiBVbmlmeSBjb21tb24gcGFydC4NCjMuIEhJRiBwYXJ0ICh1c2Iv
-c2Rpby9wY2llL3VhcnQpDQoNCj4gSGkgTWFyaywNCj4gDQo+ID4gVGhpcyBwYXRjaCBhZGRzIHRo
-ZSBzdXBwb3J0IG9mIGVuYWJsaW5nIE1UNzkyMVUsIGl0J3MgVVNCLWJhc2VkDQo+ID4gQmx1ZXRv
-b3RoIGZ1bmN0aW9uLg0KPiA+DQo+ID4gVGhlcmUgYXJlIHNvbWUgY29tcG9uZW50IGluIHRoZSBN
-ZWRpYXRlayBkcml2ZXIuDQo+ID4gMS4gQnRtdGtfbWFpbjogaXQncyBjb21tb24gY29kZSBmb3Ig
-TWVkaWF0ZWsgZGV2aWNlcywNCj4gPiAgIHN1Y2ggYXMgZmlybXdhcmUgZG93bmxvYWQsIGNoaXAg
-aW5pdGlhbGl6YXRpb24sDQo+ID4gICBzdGF0ZSBtYWNoaW5lIGhhbmRsaW5nIGFuZCBldGMuDQo+
-ID4gMi4gQnRtdGt1c2I6IGl0J3MgZm9yIHVzYiBpbnRlcmZhY2UsDQo+ID4gICBzdWNoIGFzIHVz
-YiBlbmRwb2ludCBlbnVtZXJhdGlvbiwgdXJiIGhhbmRsaW5nIGFuZCBldGMuDQo+ID4NCj4gPiBG
-aXJzdGx5LCB3ZSB1cGRhdGUgdGhlIGNvbW1vbiBwYXJ0IGFuZCB1c2IgcGFydCBmb3IgTVQ3OTIx
-VS4NCj4gPiBTZWNvbmRseSwgd2Ugd2lsbCBhZGQgdGhlIHN1cHBvcnQgTVQ3OTIxUywgaXQncyBT
-RElPLWJhc2VkIGRldmljZS4NCj4gPiBGaW5hbGx5LCB3ZSB3aWxsIGFkZCB0aGUgcHJvY2VkdXJl
-IHRvIHN1cHBvcnQgdWFydC9wY2llIGludGVyZmFjZXMuDQo+IA0KPiBjcmVhdGUgYSBidG10ay5b
-Y2hdIG1vZHVsZSBsaWtlIHRoZSBvdGhlciB2ZW5kb3JzIGRpZCBpZiBpdCBtYWtlcyBzZW5zZS4N
-Cj4gT3RoZXJ3aXNlIGp1c3Qgc2tpcCB0aGF0IHBhcnQgZm9yIG5vdyBhbmQgZ2V0IGJ0bXRrdXNi
-LmMgZHJpdmVyIHdvcmtpbmcuIFlvdQ0KPiBjYW4gbGF0ZXIgdW5pZnkgYmV0d2VlbiBhbGwgMyB0
-cmFuc3BvcnRzLg0KPiANCj4gSSB3b3VsZCBkbyB0aGUgbGF0dGVyIHNpbmNlIGl0IHdvdWxkIGZp
-cnN0IG1ha2Ugc2Vuc2UgdG8gcmVhbGx5IHNlZSB3aGVyZSB0aGUNCj4gY29tbW9uIHBhcnRzIGFy
-ZS4gQW5kIEkgaGF2ZSB0byBiZSBmcmFuaywgdGhpcyBkcml2ZXIgbmVlZHMgbWFzc2l2ZSBjbGVh
-bnVwLiBJDQo+IGFtIG5vdCBnb2luZyB0byBhY2NlcHQgdGhpcyB0b25zIG9mIGNvcHktYW5kLXBh
-c3RlIGxlZnQgYW5kIHJpZ2h0Lg0KPiANCj4gUGxlYXNlIHByb3ZpZGUgdGhlIGNvbnRlbnQgb2Yg
-L3N5cy9rZXJuZWwvZGVidWcvdXNiL2RldmljZXMgaW4gdGhlIGNvbW1pdA0KPiBtZXNzYWdlLg0K
-PiANCj4gPiArLyogVG8gc3VwcG9ydCBkeW5hbWljIG1vdW50IG9mIGludGVyZmFjZSBjYW4gYmUg
-cHJvYmVkICovDQo+ID4gK3N0YXRpYyBpbnQgYnRtdGtfaW50Zl9udW0gPSBCVF9NQ1VfTUlOSU1V
-TV9JTlRFUkZBQ0VfTlVNOw0KPiA+ICsvKiBUbyBhbGxvdyBnX2JkZXYgYmVpbmcgc2l6ZWQgZnJv
-bSBidG10a19pbnRmX251bSBzZXR0aW5nICovDQo+ID4gK3N0YXRpYyBzdHJ1Y3QgYnRtdGtfZGV2
-ICoqZ19iZGV2Ow0KPiANCj4gTk8uIFBlcmlvZC4gTm8gZ2xvYmFsIGRldiBpbnN0YW5jZXMuDQoN
-CltHbG9iYWwgZGV2Ll0NClRoZSBnbG9iYWwgZGV2IGlzIGZvciBvdXIgc3RhdGUgbWFjaGluZSB0
-aGF0IGRlc2lnbiBmb3IgZXJyb3IgcmVjb3ZlcnksIHN1Y2ggYXMgY2hpcCByZXNldCwgbWVtb3J5
-IGR1bXAgYW5kIGV0Yy4NCldlIG11c3QgdG8gbWFrZSBzdXJlIHN0YXRlIG1hY2hpbmUgdHJhbnNp
-dGlvbiB0aGF0IGlzIHRoZSBzYW1lIGZsb3cgZm9yIGVhY2ggaW50ZXJmYWNlcyAodXNiL3NkaW8v
-cGNpZS91YXJ0KS4NCltNZWRpYXRlayBkcml2ZXJdDQotPiBDcmVhdGUgYSBkZXYgYmVmb3JlIGlu
-dGVyZmFjZSBwcm9iZS4NCltMaW51eCBrZXJuZWwgQmx1ZXRvb3RoIGRyaXZlcl0NCi0+IENyZWF0
-ZSBhIGRldiBpbiBpbnRlcmZhY2UgcHJvYmUgKGJ0dXNiX3Byb2JlKS4NCg0KTWF5IHdlIGNyZWF0
-ZSBhIGdsb2JhbCBkZXYgYmVmb3JlIGludGVyZmFjZSBwcm9iZT8NCg0KPiA+ICsNCj4gPiArLyoq
-DQo+ID4gKyAqIEtlcm5lbCBNb2R1bGUgaW5pdC9leGl0IEZ1bmN0aW9ucw0KPiA+ICsgKi8NCj4g
-PiArc3RhdGljIGludCBfX2luaXQgbWFpbl9kcml2ZXJfaW5pdCh2b2lkKQ0KPiA+ICt7DQo+ID4g
-KwlpbnQgcmV0ID0gMDsNCj4gPiArCWludCBpOw0KPiA+ICsNCj4gPiArCS8qIE1lZGlhdGVrIERy
-aXZlciBWZXJzaW9uICovDQo+ID4gKwlCVE1US19JTkZPKCIlczogTVRLIEJUIERyaXZlciBWZXJz
-aW9uIDogJXMiLCBfX2Z1bmNfXywgVkVSU0lPTik7DQo+ID4gKw0KPiA+ICsJcmV0ID0gbWFpbl9p
-bml0KCk7DQo+ID4gKwlpZiAocmV0IDwgMCkNCj4gPiArCQlyZXR1cm4gcmV0Ow0KPiA+ICsNCj4g
-PiArCWZvciAoaSA9IDA7IGkgPCBidG10a19pbnRmX251bTsgaSsrKQ0KPiA+ICsJCWJ0bXRrX3Nl
-dF9jaGlwX3N0YXRlKGdfYmRldltpXSwgQlRNVEtfU1RBVEVfRElTQ09OTkVDVCk7DQo+ID4gKw0K
-PiA+ICsJcmV0ID0gYnRtdGtfY2lmX3JlZ2lzdGVyKCk7DQo+ID4gKwlpZiAocmV0IDwgMCkgew0K
-PiA+ICsJCUJUTVRLX0VSUigiKioqIFVTQiByZWdpc3RyYXRpb24gZmFpbGVkKCVkKSEgKioqIiwg
-cmV0KTsNCj4gPiArCQltYWluX2V4aXQoKTsNCj4gPiArCQlyZXR1cm4gcmV0Ow0KPiA+ICsJfQ0K
-PiA+ICsNCj4gPiArCUJUTVRLX0lORk8oIiVzOiBEb25lIiwgX19mdW5jX18pOw0KPiA+ICsJcmV0
-dXJuIHJldDsNCj4gPiArfQ0KPiANCj4gTk8uIFBlcmlvZC4gVXNlIG1vZHVsZV91c2JfZHJpdmVy
-KCkgYW5kIGlmIHlvdSBuZWVkIGFueXRoaW5nIG1vcmUsIHlvdSBhcmUNCj4gZG9pbmcgc29tZXRo
-aW5nIHdyb25nLg0KDQpXZSB3b3VsZCBsaWtlIHRvIHVuaWZ5IHN0YXRlIG1hY2hpbmUsIGRldiBh
-bGxvY2F0ZSwgaGlmX2hvb2sgYW5kIGhpZl9yZWdpc3Rlci4NCltVbmlmeSBDb21tb24gUGFydF06
-IGJ0bXRrX21haW4NClN0YXRlIG1hY2hpbmU6IE1lZGlhdGVrIGNoaXAgZXJyb3IgcmVjb3ZlcnkN
-CkRldiBhbGxvY2F0ZTogQmx1ZXRvb3RoIGRldi4NCk1lZGlhdGVrIGNoaXAtcmVsYXRlZCBiZWhh
-dmlvcjogRmlybXdhcmUgZG93bmxvYWQuDQpIQ0kgZGV2aWNlLXJlbGF0ZWQ6IGhjaSByZWdpc3Rl
-ciwgb3BlbiwgY2xvc2UgYW5kIHNlbmRfZnJhbWUuDQoNCltISUYgUGFydF0gOiBidG10a3VzYi9i
-dG10a3NkaW8vYnRtdGt1YXJ0DQpoaWZfaG9vayAoY2lmIGludGVyZmFjZSk6IHJlYWQvd3JpdGUg
-cmVnaXN0ZXIsIG9wZW4vY2xvc2UsIGNoaXAgcmVzZXQgYW5kIGV0Yy4NCmhpZl9yZWdpc3RlciAo
-Y2lmIHJlZ2lzdGVyKTogaGlmIHJlZ2lzdHJhdGlvbi1yZWxhdGVkLCBzdWNoIGFzIHVzYl9yZWdp
-c3Rlci9zZGlvX3JlZ2lzdGVyX2RyaXZlci4NCg0KTWF5IHdlIHVzZSB0aGUgZHJpdmVyIGFyY2hp
-dGVjdHVyZT8NCg0KV2l0aCBiZXN0IHJlZ2FyZHMsDQpNYXJrDQo=
+Fix warnings reported by coccicheck:
+./drivers/staging/media/atomisp/pci/runtime/isp_param/src/isp_param.c:159:4-10: WARNING: NULL check before some freeing functions is not needed.
+
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ .../media/atomisp/pci/runtime/isp_param/src/isp_param.c        | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/staging/media/atomisp/pci/runtime/isp_param/src/isp_param.c b/drivers/staging/media/atomisp/pci/runtime/isp_param/src/isp_param.c
+index e861777385a0..823ec54b6281 100644
+--- a/drivers/staging/media/atomisp/pci/runtime/isp_param/src/isp_param.c
++++ b/drivers/staging/media/atomisp/pci/runtime/isp_param/src/isp_param.c
+@@ -155,8 +155,7 @@ ia_css_isp_param_destroy_isp_parameters(
+ 
+ 	for (mem = 0; mem < IA_CSS_NUM_MEMORIES; mem++) {
+ 		for (pclass = 0; pclass < IA_CSS_NUM_PARAM_CLASSES; pclass++) {
+-			if (mem_params->params[pclass][mem].address)
+-				kvfree(mem_params->params[pclass][mem].address);
++			kvfree(mem_params->params[pclass][mem].address);
+ 			if (css_params->params[pclass][mem].address)
+ 				hmm_free(css_params->params[pclass][mem].address);
+ 			mem_params->params[pclass][mem].address = NULL;
+-- 
+2.17.1
+
