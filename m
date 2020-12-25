@@ -2,177 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9887B2E2BFD
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 18:14:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C52122E2C05
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 18:32:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726307AbgLYROT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Dec 2020 12:14:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725856AbgLYROR (ORCPT
+        id S1726548AbgLYRas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Dec 2020 12:30:48 -0500
+Received: from mxout02.lancloud.ru ([45.84.86.82]:60496 "EHLO
+        mxout02.lancloud.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725953AbgLYRar (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Dec 2020 12:14:17 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5781AC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Dec 2020 09:13:37 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id p14so4314892qke.6
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Dec 2020 09:13:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yb44vvj/Zt3godrxWa7vX5hawN17u9s8plpiY+KJS0A=;
-        b=DJcrn67Paye1EcF7VDun4oghtkaNOPfjGNKYhPaWfnBA6R3TLEJIN+0xIkXTf+yh5x
-         BjMeO4XekNAobjlvl49UTM5qUXYbn25Q1kl1vqiNj8W0eEt2bKdXgBDp5wAlmBUa5guw
-         hL7Q+WmyGEzJJf+X7w30SJLYm9ayGBaGJNd/BHkeRAANuHVNlebz4vRUvNB0DF2JzmVo
-         WduTbc2zRxR9Xj7EXw8TboXg23sYWSAoZrulYFjmnW4x1WAWwSSaszWMTUsCiWiFScwD
-         PP6A/Pb3bYZv2XyN6xqb7GGuppl40XLDudk3rcsuMgAKsFAo0RVb5GgUooR7X/xoWFZc
-         C0pQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yb44vvj/Zt3godrxWa7vX5hawN17u9s8plpiY+KJS0A=;
-        b=j0IUz61DPe3QLgvIdicd47AFcCsxc84qA9jQ3yJN9NzDXv6CVyWJNjof2AtdJdmmeq
-         g06XBVPoxHpuntXD58JSo+bTc5YENyRs+1DHbclmP1/PHHQBHZ8JpbfaGGyv/SoaSJhV
-         dB2/XMcVqKqxl55g+2oy8nA3XqSUBNNoColpWMqpbyx/7rJwo5G8hk74tufyP/ek8BLk
-         xnwajSM/8xDhiGxQOEYnieheYinAr3wclhqY1etPkydld9IPXC8A+v+BGFJ8pdfJKXpR
-         n9gqzljKtbdgytXUk0lrlQmSuZnXVxGxA9CWhkOzBS5eyIGsnvTjplUQqwewEU8c88pK
-         zsTA==
-X-Gm-Message-State: AOAM5304dx592WdvZ3rS8kg6afAWpYHaF0ptR6ZaEHowSvz7Tgl9zMu4
-        VDIt/NEIKaivoUPUj+BS20OUjfSMqKDcLa1IZ5nE0Q==
-X-Google-Smtp-Source: ABdhPJzLqjGFYAqNZtcCXAdq75/zwwEiCm5N4YkQ5Jca/nJmafK88H2WCnvfN1hdnMQVZ0AqCFfxDVj80tUnfzX8Uws=
-X-Received: by 2002:a37:9a97:: with SMTP id c145mr34971583qke.350.1608916415097;
- Fri, 25 Dec 2020 09:13:35 -0800 (PST)
+        Fri, 25 Dec 2020 12:30:47 -0500
+X-Greylist: delayed 606 seconds by postgrey-1.27 at vger.kernel.org; Fri, 25 Dec 2020 12:30:45 EST
+Received: from LanCloud
+DKIM-Filter: OpenDKIM Filter v2.11.0 mxout02.lancloud.ru 4D86221EA371
+Received: from LanCloud
+Received: from LanCloud
+To:     <linux-kernel@vger.kernel.org>
+From:   Igor Zhbanov <i.zhbanov@omprussia.ru>
+Subject: Wrong __setup() callbacks return values and /init's environment
+ pollution
+Message-ID: <64644a2f-4a20-bab3-1e15-3b2cdd0defe3@omprussia.ru>
+Date:   Fri, 25 Dec 2020 20:20:04 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-References: <CACT4Y+bpkSYTL_UwNoKVd0PDFF_xrNN6=y_S_v8W3YRaAcMm2g@mail.gmail.com>
- <878s9lbz64.fsf@igel.home>
-In-Reply-To: <878s9lbz64.fsf@igel.home>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 25 Dec 2020 18:13:23 +0100
-Message-ID: <CACT4Y+bDqMiC+ou5ghb=XB3Oyjw3p-GTDvNw4NkkQqQthw1yuQ@mail.gmail.com>
-Subject: Re: riscv+KASAN does not boot
-To:     Andreas Schwab <schwab@linux-m68k.org>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>, nylon7@andestech.com,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        Tobias Klauser <tklauser@distanz.ch>,
-        syzkaller <syzkaller@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.11.198]
+X-ClientProxiedBy: LFEXT02.lancloud.ru (fd00:f066::142) To LFEX15.lancloud.ru
+ (fd00:f066::45)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 25, 2020 at 5:58 PM Andreas Schwab <schwab@linux-m68k.org> wrote:
->
-> On Dez 25 2020, Dmitry Vyukov wrote:
->
-> > qemu-system-riscv64 \
-> > -machine virt -bios default -smp 1 -m 2G \
-> > -device virtio-blk-device,drive=hd0 \
-> > -drive file=buildroot-riscv64.ext4,if=none,format=raw,id=hd0 \
-> > -kernel arch/riscv/boot/Image \
-> > -nographic \
-> > -device virtio-rng-device,rng=rng0 -object
-> > rng-random,filename=/dev/urandom,id=rng0 \
-> > -netdev user,id=net0,host=10.0.2.10,hostfwd=tcp::10022-:22 -device
-> > virtio-net-device,netdev=net0 \
-> > -append "root=/dev/vda earlyprintk=serial console=ttyS0 oops=panic
-> > panic_on_warn=1 panic=86400"
->
-> Do you get more output with earlycon=sbi?
+It seems that nobody knows how to write __setup() callback functions for
+parsing the command line parameters. And there are no documentation or
+comments about best practices.
 
-Hi Andreas,
+Despite being declared obsolete __setup() is used about 435 times in the
+kernel and 51 of them (~11.2%) are erroneous in the sense of returning
+incorrect value (0) resulting in the /init process environment pollution.
 
-For defconfig+kvm_guest.config+ scripts/config -e KASAN -e
-KASAN_INLINE it actually gave me more output:
+Initially it was mentioned that the callback function should return 1 when
+the parameter value is parsed and consumed successfully, or return 0 to
+keep the unparsed option as init's environment variable.
 
+But there are no comments or documentation about it, so developers often
+always returning 0 (as it is typically expected in other kernel functions)
+or returning -EINVAL on parse error. All these cases resulting in init's
+environment pollution (which is limited only to 32 variables in the config).
 
-OpenSBI v0.7
-   ____                    _____ ____ _____
-  / __ \                  / ____|  _ \_   _|
- | |  | |_ __   ___ _ __ | (___ | |_) || |
- | |  | | '_ \ / _ \ '_ \ \___ \|  _ < | |
- | |__| | |_) |  __/ | | |____) | |_) || |_
-  \____/| .__/ \___|_| |_|_____/|____/_____|
-        | |
-        |_|
+Even the original usage when 0 is returned on the parse error is questionable
+now. There are no (or not so many) parameter names clashes between different
+kernel subsystems, as well as there not so many parameters to be passed to
+init/systemd that could be interpreted as the kernel parameters. So if a
+kernel module sure that this is its own parameter, may be it would be better
+to always return 1 and consume it, even it is malformed.
 
-Platform Name          : QEMU Virt Machine
-Platform HART Features : RV64ACDFIMSU
-Current Hart           : 0
-Firmware Base          : 0x80000000
-Firmware Size          : 132 KB
-Runtime SBI Version    : 0.2
+Also there are no recommendations on whether to print a warning when
+incorrect parameter is passed. Some of the functions print a warning on
+incorrect values; some are silently proceeding with the default values.
+Some are even calling panic() on incorrect parameters (e.g.
+setup_time_travel() -> time_travel_connect_external()). So there is no
+consistency on what behavior for handling incorrect parameters values are
+recommended.
 
-MIDELEG : 0x0000000000000222
-MEDELEG : 0x000000000000b109
-PMP0    : 0x0000000080000000-0x000000008003ffff (A)
-PMP1    : 0x0000000000000000-0xffffffffffffffff (A,R,W,X)
-[    0.000000] Linux version 5.10.0-01370-g71c5f03154ac
-(dvyukov@dvyukov-desk.muc.corp.google.com) (riscv64-linux-gnu-gcc
-(Debian 10.2.0-9) 10.2.0, GNU ld (GNU Binutils for Debian) 2.35.1) #17
-SMP Fri Dec 25 18:10:12 CET 2020
-[    0.000000] OF: fdt: Ignoring memory range 0x80000000 - 0x80200000
-[    0.000000] earlycon: sbi0 at I/O port 0x0 (options '')
-[    0.000000] printk: bootconsole [sbi0] enabled
-[    0.000000] efi: UEFI not found.
-[    0.000000] Zone ranges:
-[    0.000000]   DMA32    [mem 0x0000000080200000-0x00000000ffffffff]
-[    0.000000]   Normal   empty
-[    0.000000] Movable zone start for each node
-[    0.000000] Early memory node ranges
-[    0.000000]   node   0: [mem 0x0000000080200000-0x00000000ffffffff]
-[    0.000000] Initmem setup node 0 [mem 0x0000000080200000-0x00000000ffffffff]
-[    0.000000] SBI specification v0.2 detected
-[    0.000000] SBI implementation ID=0x1 Version=0x7
-[    0.000000] SBI v0.2 TIME extension detected
-[    0.000000] SBI v0.2 IPI extension detected
-[    0.000000] SBI v0.2 RFENCE extension detected
-[    0.000000] software IO TLB: mapped [mem
-0x00000000fa3f9000-0x00000000fe3f9000] (64MB)
-[    0.000000] Unable to handle kernel paging request at virtual
-address dfffffc810040000
-[    0.000000] Oops [#1]
-[    0.000000] Modules linked in:
-[    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted
-5.10.0-01370-g71c5f03154ac #17
-[    0.000000] epc: ffffffe00042e3e4 ra : ffffffe000c0462c sp : ffffffe001603ea0
-[    0.000000]  gp : ffffffe0016e3c60 tp : ffffffe00160cd40 t0 :
-dfffffc810040000
-[    0.000000]  t1 : ffffffe000e0a838 t2 : 0000000000000000 s0 :
-ffffffe001603f50
-[    0.000000]  s1 : ffffffe0016e50a8 a0 : dfffffc810040000 a1 :
-0000000000000000
-[    0.000000]  a2 : 000000000ffc0000 a3 : dfffffc820000000 a4 :
-0000000000000000
-[    0.000000]  a5 : 000000003e8c6001 a6 : ffffffe000e0a820 a7 :
-0000000000000900
-[    0.000000]  s2 : dfffffc820000000 s3 : dfffffc800000000 s4 :
-0000000000000001
-[    0.000000]  s5 : ffffffe0016e5108 s6 : fffffffffffff000 s7 :
-dfffffc810040000
-[    0.000000]  s8 : 0000000000000080 s9 : ffffffffffffffff s10:
-ffffffe07a119000
-[    0.000000]  s11: 000000000000ffc0 t3 : ffffffe0016eb908 t4 :
-0000000000000001
-[    0.000000]  t5 : ffffffc4001c150a t6 : ffffffe001603be8
-[    0.000000] status: 0000000000000100 badaddr: dfffffc810040000
-cause: 000000000000000f
-[    0.000000] random: get_random_bytes called from
-oops_exit+0x30/0x58 with crng_init=0
-[    0.000000] ---[ end trace 0000000000000000 ]---
-[    0.000000] Kernel panic - not syncing: Fatal exception
-[    0.000000] ---[ end Kernel panic - not syncing: Fatal exception ]---
+I've tried to categorize all of the __setup() usages. And here is the zoo:
 
+Functions always returning 1 (right):
+   (About 324)
 
-But I first tried with a the kernel image I had in the dir, I think it
-was this config (no KASAN):
-https://gist.githubusercontent.com/dvyukov/b2b62beccf80493781ab03b41430e616/raw/62e673cff08a8a41656d2871b8a37f74b00f509f/gistfile1.txt
+Functions returning 0 on error, 1 on success (mostly right):
+   arch/arm/mach-pxa/viper.c:__setup("tpm=", viper_tpm_setup);
+   arch/arm/mach-omap1/i2c.c:__setup("i2c_bus=", omap_i2c_bus_setup);
+   arch/powerpc/platforms/pseries/lpar.c:__setup("cmo_free_hint=", cmo_free_hint);
+   arch/powerpc/sysdev/fsl_85xx_l2ctlr.c:__setup("cache-sram-size=", get_size_from_cmdline);
+   arch/powerpc/sysdev/fsl_85xx_l2ctlr.c:__setup("cache-sram-offset=", get_offset_from_cmdline);
+   arch/powerpc/kernel/iommu.c:__setup("fail_iommu=", setup_fail_iommu);
+   arch/powerpc/kernel/rtasd.c:__setup("surveillance=", surveillance_setup);
+   arch/powerpc/kernel/rtasd.c:__setup("rtasmsgs=", rtasmsgs_setup);
+   arch/x86/kernel/cpu/mce/core.c:__setup("mce", mcheck_enable);
+   arch/x86/kernel/cpu/common.c:__setup("nofsgsbase", x86_nofsgsbase_setup);
+   arch/microblaze/kernel/traps.c:__setup("kstack=", kstack_setup);
+   arch/c6x/kernel/soc.c:__setup("emac_addr=", get_mac_addr_from_cmdline);
+   arch/sparc/kernel/apc.c:__setup("apc=", apc_setup);
+   arch/um/drivers/stdio_console.c:__setup("con", console_chan_setup);
+   net/ipv4/tcp_metrics.c:__setup("tcpmhash_entries=", set_tcpmhash_entries);
+   net/ipv4/tcp.c:__setup("thash_entries=", set_thash_entries);
+   net/ipv4/udp.c:__setup("uhash_entries=", set_uhash_entries);
+   net/ipv4/ipconfig.c:__setup("carrier_timeout=", set_carrier_timeout);
+   net/ethernet/eth.c:__setup("ether=", netdev_boot_setup);
+   net/core/dev.c:__setup("netdev=", netdev_boot_setup);
+   drivers/acpi/osl.c:__setup("acpi_enforce_resources=", acpi_enforce_resources_setup);
+   drivers/scsi/BusLogic.c:__setup("BusLogic=", blogic_setup);
+   drivers/scsi/mac_scsi.c:__setup("mac5380=", mac_scsi_setup);
+   drivers/scsi/atari_scsi.c:__setup("atascsi=", atari_scsi_setup);
+   drivers/net/arcnet/com90io.c:__setup("com90io=", com90io_setup);
+   drivers/net/appletalk/ltpc.c:__setup("ltpc=", ltpc_setup);
+   drivers/net/hamradio/baycom_par.c:__setup("baycom_par=", baycom_par_setup);
+   drivers/net/hamradio/baycom_ser_hdx.c:__setup("baycom_ser_hdx=", baycom_ser_hdx_setup);
+   drivers/net/hamradio/baycom_epp.c:__setup("baycom_epp=", baycom_epp_setup);
+   drivers/net/hamradio/baycom_ser_fdx.c:__setup("baycom_ser_fdx=", baycom_ser_fdx_setup);
+   drivers/video/console/mdacon.c:__setup("mdacon=", mdacon_setup);
+   drivers/md/md-autodetect.c:__setup("md=", md_setup);
+   drivers/block/amiflop.c:__setup("floppy=", amiga_floppy_setup);
+   drivers/block/floppy.c:__setup("floppy=", floppy_setup);
+   drivers/block/ataflop.c:__setup("floppy=", atari_floppy_setup);
+   drivers/char/lp.c:__setup("lp=", lp_setup);
+   mm/failslab.c:__setup("failslab=", setup_failslab);
+   mm/huge_memory.c:__setup("transparent_hugepage=", setup_transparent_hugepage);
+   mm/hugetlb.c:__setup("hugepages=", hugepages_setup);
+   mm/hugetlb.c:__setup("hugepagesz=", hugepagesz_setup);
+   mm/hugetlb.c:__setup("default_hugepagesz=", default_hugepagesz_setup);
+   mm/page_alloc.c:__setup("hashdist=", set_hashdist);
+   mm/mempolicy.c:__setup("numa_balancing=", setup_numabalancing);
+   fs/namespace.c:__setup("mhash_entries=", set_mhash_entries);
+   fs/namespace.c:__setup("mphash_entries=", set_mphash_entries);
+   fs/dcache.c:__setup("dhash_entries=", set_dhash_entries);
+   fs/inode.c:__setup("ihash_entries=", set_ihash_entries);
+   init/do_mounts.c:__setup("ro", readonly);
+   init/do_mounts.c:__setup("rw", readwrite);
+   init/do_mounts.c:__setup("rootwait", rootwait_setup);
+   init/initramfs.c:__setup("retain_initrd", retain_initrd_param);
+   lib/dynamic_debug.c:__setup("ddebug_query=", ddebug_setup_query);
+   kernel/sched/core.c:__setup("schedstats=", setup_schedstats);
+   kernel/sched/isolation.c:__setup("nohz_full=", housekeeping_nohz_full_setup);
+   kernel/sched/isolation.c:__setup("isolcpus=", housekeeping_isolcpus_setup);
+   kernel/gcov/fs.c:__setup("gcov_persist=", gcov_persist_setup);
+   kernel/trace/ftrace.c:__setup("ftrace_graph_max_depth=", set_graph_max_depth_function);
+   kernel/trace/trace.c:__setup("ftrace_dump_on_oops", set_ftrace_dump_on_oops);
+   kernel/trace/trace.c:__setup("trace_buf_size=", set_buf_size);
+   kernel/trace/trace.c:__setup("tracing_thresh=", set_tracing_thresh);
+   sound/oss/dmasound/dmasound_core.c:__setup("dmasound=", dmasound_setup);
 
-and earlycon=sbi did not change anything (no output after OpenSBI).
-So potentially there are 2 different problems.
+Functions always returning 0 (wrong):
+   arch/arm/mach-s3c/mach-jive.c:__setup("mtdset=", jive_mtdset);
+   arch/powerpc/platforms/4xx/cpm.c:__setup("powersave=off", cpm_powersave_off);
+   arch/powerpc/sysdev/xive/common.c:__setup("xive=off", xive_off);
+   arch/powerpc/kernel/idle.c:__setup("powersave=off", powersave_off);
+   arch/x86/entry/vdso/vma.c:__setup("vdso=", vdso_setup);
+   arch/x86/platform/goldfish/goldfish.c:__setup("goldfish", goldfish_setup);
+   arch/x86/mm/pat/memtype.c:__setup("debugpat", pat_debug_setup);
+   arch/x86/kernel/apic/apic.c:__setup("apicpmtimer", setup_apicpmtimer);
+   arch/x86/kernel/cpu/intel.c:__setup("ring3mwait=disable", ring3mwait_disable);
+   arch/x86/kernel/sys_x86_64.c:__setup("align_va_addr", control_va_addr_alignment);
+   arch/sh/kernel/nmi_debug.c:__setup("nmi_debug", nmi_debug_setup);
+   arch/sparc/kernel/nmi.c:__setup("nmi_watchdog=", setup_nmi_watchdog);
+   drivers/acpi/apei/erst.c:__setup("erst_disable", setup_erst_disable);
+   drivers/acpi/apei/bert.c:__setup("bert_disable", setup_bert_disable);
+   drivers/acpi/apei/hest.c:__setup("hest_disable", setup_hest_disable);
+   drivers/base/dd.c:__setup("driver_async_probe=", save_async_options);
+   drivers/net/wan/sbni.c:__setup( "sbni=", sbni_setup );
+   drivers/firmware/efi/apple-properties.c:__setup("dump_apple_properties", dump_properties_enable);
+   security/integrity/evm/evm_main.c:__setup("evm=", evm_set_fixmode);
+   security/tomoyo/load_policy.c:__setup("TOMOYO_loader=", tomoyo_loader_setup);
+   security/tomoyo/load_policy.c:__setup("TOMOYO_trigger=", tomoyo_trigger_setup);
+   mm/memcontrol.c:__setup("cgroup.memory=", cgroup_memory);
+   mm/mmap.c:__setup("stack_guard_gap=", cmdline_parse_stack_guard_gap);
+   init/main.c:__setup("initcall_blacklist=", initcall_blacklist);
+   kernel/power/suspend_test.c:__setup("test_suspend", setup_test_suspend);
+   kernel/trace/trace_kprobe.c:__setup("kprobe_event=", set_kprobe_boot_events);
+   kernel/trace/trace.c:__setup("trace_options=", set_trace_boot_options);
+   kernel/trace/trace.c:__setup("trace_clock=", set_trace_boot_clock);
+
+Functions returning 1 on error, 0 on success (wrong):
+   drivers/scsi/aha152x.c:__setup("aha152x=", aha152x_setup);
+   kernel/printk/printk.c:__setup("printk.devkmsg=", control_devkmsg);
+
+Functions returning -errrno (-EINVAL mostly) on error, 0 on success (wrong):
+   arch/x86/platform/intel-mid/intel-mid.c:__setup("x86_intel_mid_timer=", setup_x86_intel_mid_timer);
+   arch/sparc/vdso/vma.c:__setup("vdso=", vdso_setup);
+   arch/mips/rb532/devices.c:__setup("kmac=", setup_kmac);
+   drivers/net/ethernet/samsung/sxgbe/sxgbe_main.c:__setup("sxgbeeth=", sxgbe_cmdline_opt);
+   drivers/net/ethernet/stmicro/stmmac/stmmac_main.c:__setup("stmmaceth=", stmmac_cmdline_opt);
+   drivers/tty/serial/kgdboc.c:__setup("kgdboc=", kgdboc_option_setup);
+   drivers/tty/hvc/hvc_iucv.c:__setup("hvc_iucv=", hvc_iucv_config);
+   drivers/misc/kgdbts.c:__setup("kgdbts=", kgdbts_option_setup);
+   drivers/iommu/intel/iommu.c:__setup("intel_iommu=", intel_iommu_setup);
+   drivers/firmware/efi/efi.c:__setup("efivar_ssdt=", efivar_ssdt_setup);
+   mm/usercopy.c:__setup("hardened_usercopy=", parse_hardened_usercopy);
+   init/main.c:__setup("rodata=", set_debug_rodata);
+   kernel/dma/debug.c:__setup("dma_debug=", dma_debug_cmdline);
+   kernel/dma/debug.c:__setup("dma_debug_entries=", dma_debug_entries_cmdline);
+
+Functions returning -EINVAL on error, 1 on success (wrong):
+   arch/um/kernel/time.c:__setup("time-travel", setup_time_travel);
+   arch/um/kernel/time.c:__setup("time-travel-start", setup_time_travel_start);
+   drivers/clocksource/acpi_pm.c:__setup("pmtmr=", parse_pmtmr);
+   drivers/acpi/sysfs.c:__setup("acpi_mask_gpe=", acpi_gpe_set_masked_gpes);
+   kernel/power/hibernate.c:__setup("resumedelay=", resumedelay_setup);
+
+Functions that don't have the return statement at all (wrong):
+   arch/arm/mm/mmu.c:early_param("cachepolicy", early_cachepolicy);
+   arch/arm/mm/mmu.c:__setup("noalign", noalign_setup);
+
+So it would be better to document at least how a __setup() callback handler
+should behave regarding the return value, whether to print a warning on parse
+error. And the functions not returning 0 on error and 1 on success must be
+fixed.
+
+Also to avoid init's processes pollution may be it is even better to simply
+always returning 1 even on parse errors, because parameters names collisions
+are very infrequent.
