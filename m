@@ -2,108 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D8912E2A60
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 09:00:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9CD62E2A7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 09:48:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728808AbgLYH7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Dec 2020 02:59:18 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9650 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727200AbgLYH7R (ORCPT
+        id S1728904AbgLYIrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Dec 2020 03:47:14 -0500
+Received: from mail-m964.mail.126.com ([123.126.96.4]:39678 "EHLO
+        mail-m964.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725863AbgLYIrN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Dec 2020 02:59:17 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4D2K6y53PWz15hnb;
-        Fri, 25 Dec 2020 15:57:46 +0800 (CST)
-Received: from [10.174.177.80] (10.174.177.80) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 25 Dec 2020 15:58:22 +0800
-Subject: Re: [PATCH v9 11/12] mm/vmalloc: Hugepage vmalloc mappings
-To:     Nicholas Piggin <npiggin@gmail.com>, <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, Zefan Li <lizefan@huawei.com>,
-        "Jonathan Cameron" <Jonathan.Cameron@Huawei.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>
-References: <20201205065725.1286370-1-npiggin@gmail.com>
- <20201205065725.1286370-12-npiggin@gmail.com>
-From:   Ding Tianhong <dingtianhong@huawei.com>
-Message-ID: <7db7564c-0600-33d9-68d9-61fa6fc1bc0d@huawei.com>
-Date:   Fri, 25 Dec 2020 15:58:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
-MIME-Version: 1.0
-In-Reply-To: <20201205065725.1286370-12-npiggin@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.80]
-X-CFilter-Loop: Reflected
+        Fri, 25 Dec 2020 03:47:13 -0500
+X-Greylist: delayed 3655 seconds by postgrey-1.27 at vger.kernel.org; Fri, 25 Dec 2020 03:47:12 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=t5dqagdO7HyDT7ULkT
+        GzWQJ+Y8umPf+mMs4qo4mfeWw=; b=AxRA1QMZNNswizz3Sr4gC0cD6Q1kpsWruU
+        ulDLVH7g8bclikueH3FRx/b3kN5/fEhucPzjyoZUkgYc9lvvkHIVq01bIaPRnyK6
+        SvMHRHDZoJOYuRSQR65FQKG8Og/EY2CQSSMngKqo4SXrCU8PSHHXYMeCPP4IP6QW
+        OLU+Azo5A=
+Received: from localhost.localdomain (unknown [36.112.86.14])
+        by smtp9 (Coremail) with SMTP id NeRpCgB3L3o1n+VfBUQrQA--.7179S2;
+        Fri, 25 Dec 2020 16:13:42 +0800 (CST)
+From:   Defang Bo <bodefang@126.com>
+To:     airlied@linux.ie, daniel@ffwll.ch
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Defang Bo <bodefang@126.com>
+Subject: [PATCH 1/2] drivers/gpu/drm/ast: Fix infinite loop if read fails
+Date:   Fri, 25 Dec 2020 16:13:33 +0800
+Message-Id: <1608884014-2327765-1-git-send-email-bodefang@126.com>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: NeRpCgB3L3o1n+VfBUQrQA--.7179S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7uFyDJFW3tryDCr15KF4DJwb_yoW8GF4UpF
+        47JFyYvrWrtFn0yFW7CF4kWFyrGa97Ja4Fgr97Awn3uF15K3W0vas0kayrKFy7JrZxAFyS
+        qr97tryUX3W8uw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRMKZZUUUUU=
+X-Originating-IP: [36.112.86.14]
+X-CM-SenderInfo: pergvwxdqjqiyswou0bp/1tbikhcG11pECE7YtQAAsh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+[Why] Similar to commit <298360af3> ast_init_dram_reg() configures a window in order to access BMC memory.
+A BMC register can be configured to disallow this, and if so, causes
+an infinite loop in the ast driver which renders the system unusable.
 
-> +again:
-> +	size = PAGE_ALIGN(size);
-> +	area = __get_vm_area_node(size, align, VM_ALLOC | VM_UNINITIALIZED |
->  				vm_flags, start, end, node, gfp_mask, caller);
->  	if (!area)
->  		goto fail;
->  
-> -	addr = __vmalloc_area_node(area, gfp_mask, prot, node);
-> +	addr = __vmalloc_area_node(area, gfp_mask, prot, shift, node);
->  	if (!addr)
-> -		return NULL;
-> +		goto fail;
->  
->  	/*
->  	 * In this function, newly allocated vm_struct has VM_UNINITIALIZED
-> @@ -2788,8 +2878,19 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
->  	return addr;
->  
->  fail:
-> -	warn_alloc(gfp_mask, NULL,
-> +	if (shift > PAGE_SHIFT) {
-> +		free_vm_area(area);
-> +		shift = PAGE_SHIFT;
-> +		align = real_align;
-> +		size = real_size;
-> +		goto again;
-> +	}
-> +
-Hi, Nicholas:
+[How]
+Fix this by erroring out if an error is detected.
 
-I met a problem like this:
+Signed-off-by: Defang Bo <bodefang@126.com>
+---
+ drivers/gpu/drm/ast/ast_post.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-[   67.103584] ------------[ cut here ]------------
-[   67.103884] kernel BUG at vmalloc.c:2892!
-[   67.104387] Internal error: Oops - BUG: 0 [#1] SMP
-[   67.104942] Process insmod (pid: 1161, stack limit = 0x(____ptrval____))
-[   67.105356] CPU: 2 PID: 1161 Comm: insmod Tainted: G           O      4.19.95+ #9
-[   67.105702] Hardware name: linux,dummy-virt (DT)
-[   67.106006] pstate: a0000005 (NzCv daif -PAN -UAO)
-[   67.106285] pc : free_vm_area+0x78/0x80
-[   67.106549] lr : free_vm_area+0x58/0x80
-
-it looks like when __vmalloc_area_node failed, the area is already released, and the free_vm_area
-will release the vm area again, so trigger the problem.
-
-3405         ret = remove_vm_area(area->addr);
-3406         BUG_ON(ret != area);
-3407         kfree(area);
-
-
-Ding
-> +	if (!area) {
-> +		/* Warn for area allocation, page allocations already warn */
-> +		warn_alloc(gfp_mask, NULL,
->  			  "vmalloc: allocation failure: %lu bytes", real_size);
-> +	}
->  	return NULL;
->  }
->  
-> 
+diff --git a/drivers/gpu/drm/ast/ast_post.c b/drivers/gpu/drm/ast/ast_post.c
+index 8902c2f..ef19c70 100644
+--- a/drivers/gpu/drm/ast/ast_post.c
++++ b/drivers/gpu/drm/ast/ast_post.c
+@@ -287,7 +287,9 @@ static void ast_init_dram_reg(struct drm_device *dev)
+ 			ast_write32(ast, 0x10100, 0xa8);
+ 
+ 			do {
+-				;
++				if (pci_channel_offline(dev->pdev))
++					return -EIO;
++					
+ 			} while (ast_read32(ast, 0x10100) != 0xa8);
+ 		} else {/* AST2100/1100 */
+ 			if (ast->chip == AST2100 || ast->chip == 2200)
+@@ -299,12 +301,14 @@ static void ast_init_dram_reg(struct drm_device *dev)
+ 			ast_write32(ast, 0xf000, 0x1);
+ 			ast_write32(ast, 0x12000, 0x1688A8A8);
+ 			do {
+-				;
++				if (pci_channel_offline(dev->pdev))
++                                        return -EIO;
+ 			} while (ast_read32(ast, 0x12000) != 0x01);
+ 
+ 			ast_write32(ast, 0x10000, 0xfc600309);
+ 			do {
+-				;
++				if (pci_channel_offline(dev->pdev))
++                                        return -EIO;
+ 			} while (ast_read32(ast, 0x10000) != 0x01);
+ 		}
+ 
+-- 
+2.7.4
 
