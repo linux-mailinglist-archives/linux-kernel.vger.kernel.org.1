@@ -2,106 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B0742E2955
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 01:54:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D67532E295B
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 02:14:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729078AbgLYAum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 19:50:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728914AbgLYAul (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 19:50:41 -0500
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58A17C061573;
-        Thu, 24 Dec 2020 16:50:01 -0800 (PST)
-Received: by mail-oi1-x22b.google.com with SMTP id s2so3772185oij.2;
-        Thu, 24 Dec 2020 16:50:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tUcbf0/5kFSHpbnINiAwr5z5XqMGqzPagwcsvJX6bBc=;
-        b=iTWax7kVaE7/2quYQ7BEN6fzFSflmL5oFNU+MQshM6Wfq9qhHPU4PlSOpxAtoUBYb7
-         F7MBG/ph94JDgD1d7d68x+C+Oo+HwZ6+eSjS2kFk/gUvlutOAlN/Dr/rJvM7H8PBaqiq
-         rtj+gVGFvF1dK5vGsyuB/Sn4y3YkrcT8NSUItE9eZeU/PcYsjAq/Yh8Q1g72cTaAbz9I
-         qqXrFiXPD2TvnJ5cb1fCVfnqsEigsKVJb3u7J2utyKvIlMa8mquQlN2EBHwuq6BoRU2C
-         AfmjjVCRXG+JiiuYkL6MsmE41MyuG668nNOArg/6BToMgTiD1few+dxnfdm2Mazwc2eI
-         Wv7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tUcbf0/5kFSHpbnINiAwr5z5XqMGqzPagwcsvJX6bBc=;
-        b=n/IQSOhAGXSzu6STNCRJyWIXfmPTn1RTq0BCoQpfAiSrkaLF8gZnq3kBWZncWSx+o7
-         z2U6LerU6+0pWS4dNkuvGERMJRGd4hTVtSEY9WHR5WKvhFGBTaTvcBvBQpkW1zQc5i0k
-         sSBn/v180Ctq4/7Zj2u/T4lHMuC/mbh2ijkigXXF9TgMxX2w29StLicCaoWB+Fl5DSVl
-         FmAt/1F7UiDFaG+H7OjYLr2SY9LxlLfNGh/Sy4TixF6Y5No7mhlzL+X7A/lQwNVErq2R
-         ga+2NQ8fZO5z+yllndWAPFnVeIAuXLk1ima/z2wYmZUSSLI4d3jU+d8NhGm8NOC510AR
-         imTQ==
-X-Gm-Message-State: AOAM533u53nIelnup1IBtdIbYwY3XIwFK1Fu0nYLMn39rnptcFyBz9NQ
-        kdXQZ7cnNW+nDawrQuG8jL18aug8kYs=
-X-Google-Smtp-Source: ABdhPJz15axGDXO5d4uqd3jsnWAx+j8ol/W3HiRnu4P+wf1BgjFpvdxMyp2sjJC9O40mRvNBC1HQnw==
-X-Received: by 2002:aca:cc01:: with SMTP id c1mr4321575oig.18.1608857399639;
-        Thu, 24 Dec 2020 16:49:59 -0800 (PST)
-Received: from Davids-MacBook-Pro.local ([2601:284:8203:54f0:413b:36ec:90b2:7739])
-        by smtp.googlemail.com with ESMTPSA id s66sm5996272ooa.37.2020.12.24.16.49.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Dec 2020 16:49:59 -0800 (PST)
-Subject: Re: [PATCH] bpf: fix: address of local auto-variable assigned to a
- function parameter.
-To:     YANG LI <abaci-bugfix@linux.alibaba.com>, ast@kernel.org
-Cc:     daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org,
-        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1608793298-123684-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <00a09a61-be9b-4b5a-bd46-6f7604a4358d@gmail.com>
-Date:   Thu, 24 Dec 2020 17:49:57 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.1
-MIME-Version: 1.0
-In-Reply-To: <1608793298-123684-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1729082AbgLYBHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 20:07:16 -0500
+Received: from mga01.intel.com ([192.55.52.88]:47463 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728989AbgLYBHQ (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 24 Dec 2020 20:07:16 -0500
+IronPort-SDR: u3URPghGFdCy0edclwyKh4KKguS4flf8uIBPkOtGa30nDO3TntRU20DjQjIfYip0x1tQ17K2RR
+ MFNvvPcXTE3A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9845"; a="194655689"
+X-IronPort-AV: E=Sophos;i="5.78,446,1599548400"; 
+   d="scan'208";a="194655689"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Dec 2020 17:05:30 -0800
+IronPort-SDR: ws8GehjdOx/YfakpTnTMIPh69v0jFK85PqAfPxXeQwEel5OCaI9BcemBdWRddCsKH77HEAr3tz
+ 0h3PrJKqx1wg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,446,1599548400"; 
+   d="scan'208";a="566417187"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
+  by fmsmga005.fm.intel.com with ESMTP; 24 Dec 2020 17:05:27 -0800
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com, ying.huang@intel.com,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH v3] perf stat: Fix wrong skipping for per-die aggregation
+Date:   Fri, 25 Dec 2020 09:04:09 +0800
+Message-Id: <20201225010409.29441-1-yao.jin@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/24/20 12:01 AM, YANG LI wrote:
-> Assigning local variable txq to the outputting parameter xdp->txq is not
-> safe, txq will be released after the end of the function call. 
-> Then the result of using xdp is unpredictable.
+Uncore becomes die-scope on Xeon Cascade Lake-AP and perf has supported
+--per-die aggregation yet.
 
-txq can only be accessed in this devmap context. Was it actually hit
-during runtime or is this report based on code analysis?
+One issue is found in check_per_pkg() for uncore events running on
+AP system. On cascade Lake-AP, we have:
 
+S0-D0
+S0-D1
+S1-D0
+S1-D1
 
-> 
-> Fix this error by defining the struct xdp_txq_info in function
-> dev_map_run_prog() as a static type.
-> 
-> Signed-off-by: YANG LI <abaci-bugfix@linux.alibaba.com>
-> Reported-by: Abaci <abaci@linux.alibaba.com>
-> ---
->  kernel/bpf/devmap.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-> index f6e9c68..af6f004 100644
-> --- a/kernel/bpf/devmap.c
-> +++ b/kernel/bpf/devmap.c
-> @@ -454,7 +454,7 @@ static struct xdp_buff *dev_map_run_prog(struct net_device *dev,
->  					 struct xdp_buff *xdp,
->  					 struct bpf_prog *xdp_prog)
->  {
-> -	struct xdp_txq_info txq = { .dev = dev };
-> +	static struct xdp_txq_info txq = { .dev = dev };
->  	u32 act;
->  
->  	xdp_set_data_meta_invalid(xdp);
-> 
+But in check_per_pkg(), S0-D1 and S1-D1 are skipped because the
+mask bits for S0 and S1 have been set for S0-D0 and S1-D0. It doesn't
+check die_id. So the counting for S0-D1 and S1-D1 are set to zero.
+That's not correct.
+
+root@lkp-csl-2ap4 ~# ./perf stat -a -I 1000 -e llc_misses.mem_read --per-die -- sleep 5
+     1.001460963 S0-D0           1            1317376 Bytes llc_misses.mem_read
+     1.001460963 S0-D1           1             998016 Bytes llc_misses.mem_read
+     1.001460963 S1-D0           1             970496 Bytes llc_misses.mem_read
+     1.001460963 S1-D1           1            1291264 Bytes llc_misses.mem_read
+     2.003488021 S0-D0           1            1082048 Bytes llc_misses.mem_read
+     2.003488021 S0-D1           1            1919040 Bytes llc_misses.mem_read
+     2.003488021 S1-D0           1             890752 Bytes llc_misses.mem_read
+     2.003488021 S1-D1           1            2380800 Bytes llc_misses.mem_read
+     3.005613270 S0-D0           1            1126080 Bytes llc_misses.mem_read
+     3.005613270 S0-D1           1            2898176 Bytes llc_misses.mem_read
+     3.005613270 S1-D0           1             870912 Bytes llc_misses.mem_read
+     3.005613270 S1-D1           1            3388608 Bytes llc_misses.mem_read
+     4.007627598 S0-D0           1            1124608 Bytes llc_misses.mem_read
+     4.007627598 S0-D1           1            3884416 Bytes llc_misses.mem_read
+     4.007627598 S1-D0           1             921088 Bytes llc_misses.mem_read
+     4.007627598 S1-D1           1            4451840 Bytes llc_misses.mem_read
+     5.001479927 S0-D0           1             963328 Bytes llc_misses.mem_read
+     5.001479927 S0-D1           1            4831936 Bytes llc_misses.mem_read
+     5.001479927 S1-D0           1             895104 Bytes llc_misses.mem_read
+     5.001479927 S1-D1           1            5496640 Bytes llc_misses.mem_read
+
+From above output, we can see S0-D1 and S1-D1 don't report the interval
+values, they are continued to grow. That's because check_per_pkg() wrongly
+decides to use zero counts for S0-D1 and S1-D1.
+
+So in check_per_pkg(), we should use hashmap(socket,die) to decide if
+the cpu counts needs to skip. Only considering socket is not enough.
+
+Now with this patch,
+
+root@lkp-csl-2ap4 ~# ./perf stat -a -I 1000 -e llc_misses.mem_read --per-die -- sleep 5
+     1.001617187 S0-D0           1             952768 Bytes llc_misses.mem_read
+     1.001617187 S0-D1           1             849152 Bytes llc_misses.mem_read
+     1.001617187 S1-D0           1             854912 Bytes llc_misses.mem_read
+     1.001617187 S1-D1           1             948672 Bytes llc_misses.mem_read
+     2.004138021 S0-D0           1            1200256 Bytes llc_misses.mem_read
+     2.004138021 S0-D1           1             899840 Bytes llc_misses.mem_read
+     2.004138021 S1-D0           1             898752 Bytes llc_misses.mem_read
+     2.004138021 S1-D1           1            1039424 Bytes llc_misses.mem_read
+     3.006463971 S0-D0           1            1029056 Bytes llc_misses.mem_read
+     3.006463971 S0-D1           1             894336 Bytes llc_misses.mem_read
+     3.006463971 S1-D0           1             905088 Bytes llc_misses.mem_read
+     3.006463971 S1-D1           1            1042880 Bytes llc_misses.mem_read
+     4.008831441 S0-D0           1             920576 Bytes llc_misses.mem_read
+     4.008831441 S0-D1           1             877248 Bytes llc_misses.mem_read
+     4.008831441 S1-D0           1             883968 Bytes llc_misses.mem_read
+     4.008831441 S1-D1           1             967168 Bytes llc_misses.mem_read
+     5.001441349 S0-D0           1             864704 Bytes llc_misses.mem_read
+     5.001441349 S0-D1           1             827456 Bytes llc_misses.mem_read
+     5.001441349 S1-D0           1             829632 Bytes llc_misses.mem_read
+     5.001441349 S1-D1           1             925760 Bytes llc_misses.mem_read
+
+On no-die system, die_id is 0, actually it's hashmap(socket,0), original behavior
+is not changed.
+
+Reported-by: Huang Ying <ying.huang@intel.com>
+Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+---
+v3:
+ Since for some cpumap functions, the return type is changed from 'int' to
+ 'struct aggr_cpu_id', the patch needs to be updated as well.
+
+ before:
+   d = cpu_map__get_die()
+
+ after:
+   d = cpu_map__get_die().die
+
+ v3 is compiled ok with tmp.perf/core.
+
+v2:
+ Use hashmap to check the used socket+die pair.
+
+ tools/perf/util/evsel.c |  4 ++-
+ tools/perf/util/evsel.h |  3 +-
+ tools/perf/util/stat.c  | 61 +++++++++++++++++++++++++++++++++++++----
+ 3 files changed, 60 insertions(+), 8 deletions(-)
+
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index c26ea82220bd..9715ed9b03f6 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -45,6 +45,7 @@
+ #include "string2.h"
+ #include "memswap.h"
+ #include "util.h"
++#include "hashmap.h"
+ #include "../perf-sys.h"
+ #include "util/parse-branch-options.h"
+ #include <internal/xyarray.h>
+@@ -1377,7 +1378,8 @@ void evsel__exit(struct evsel *evsel)
+ 	zfree(&evsel->group_name);
+ 	zfree(&evsel->name);
+ 	zfree(&evsel->pmu_name);
+-	zfree(&evsel->per_pkg_mask);
++	hashmap__free(evsel->per_pkg_mask);
++	evsel->per_pkg_mask = NULL;
+ 	zfree(&evsel->metric_events);
+ 	perf_evsel__object.fini(evsel);
+ }
+diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
+index cd1d8dd43199..951628943fd0 100644
+--- a/tools/perf/util/evsel.h
++++ b/tools/perf/util/evsel.h
+@@ -17,6 +17,7 @@ struct cgroup;
+ struct perf_counts;
+ struct perf_stat_evsel;
+ union perf_event;
++struct hashmap;
+ 
+ typedef int (evsel__sb_cb_t)(union perf_event *event, void *data);
+ 
+@@ -110,7 +111,7 @@ struct evsel {
+ 	bool			merged_stat;
+ 	bool			reset_group;
+ 	bool			errored;
+-	unsigned long		*per_pkg_mask;
++	struct hashmap		*per_pkg_mask;
+ 	struct evsel		*leader;
+ 	struct list_head	config_terms;
+ 	int			err;
+diff --git a/tools/perf/util/stat.c b/tools/perf/util/stat.c
+index 8ce1479c98f0..5f70353fe491 100644
+--- a/tools/perf/util/stat.c
++++ b/tools/perf/util/stat.c
+@@ -13,6 +13,7 @@
+ #include "evlist.h"
+ #include "evsel.h"
+ #include "thread_map.h"
++#include "hashmap.h"
+ #include <linux/zalloc.h>
+ 
+ void update_stats(struct stats *stats, u64 val)
+@@ -275,16 +276,39 @@ void evlist__save_aggr_prev_raw_counts(struct evlist *evlist)
+ 
+ static void zero_per_pkg(struct evsel *counter)
+ {
+-	if (counter->per_pkg_mask)
+-		memset(counter->per_pkg_mask, 0, cpu__max_cpu());
++	struct hashmap_entry *entry;
++	size_t bkt;
++
++	if (counter->per_pkg_mask) {
++		hashmap__for_each_entry(counter->per_pkg_mask, entry, bkt) {
++			bool *used = (bool *)entry->value;
++
++			*used = false;
++		}
++	}
++}
++
++static size_t id_hash(const void *key, void *ctx __maybe_unused)
++{
++	int socket = (int64_t)key >> 32;
++
++	return socket;
++}
++
++static bool id_equal(const void *key1, const void *key2,
++		     void *ctx __maybe_unused)
++{
++	return (int64_t)key1 == (int64_t)key2;
+ }
+ 
+ static int check_per_pkg(struct evsel *counter,
+ 			 struct perf_counts_values *vals, int cpu, bool *skip)
+ {
+-	unsigned long *mask = counter->per_pkg_mask;
++	struct hashmap *mask = counter->per_pkg_mask;
+ 	struct perf_cpu_map *cpus = evsel__cpus(counter);
+-	int s;
++	int s, d, ret;
++	uint64_t key;
++	bool *used;
+ 
+ 	*skip = false;
+ 
+@@ -295,7 +319,7 @@ static int check_per_pkg(struct evsel *counter,
+ 		return 0;
+ 
+ 	if (!mask) {
+-		mask = zalloc(cpu__max_cpu());
++		mask = hashmap__new(id_hash, id_equal, NULL);
+ 		if (!mask)
+ 			return -ENOMEM;
+ 
+@@ -317,7 +341,32 @@ static int check_per_pkg(struct evsel *counter,
+ 	if (s < 0)
+ 		return -1;
+ 
+-	*skip = test_and_set_bit(s, mask) == 1;
++	/*
++	 * On multi-die system, 0 < die_id < 256. On no-die system, die_id = 0.
++	 * We use hashmap(socket, die) to check the used socket+die pair.
++	 */
++	d = cpu_map__get_die(cpus, cpu, NULL).die;
++	if (d < 0)
++		return -1;
++
++	key = (uint64_t)s << 32 | (d & 0xff);
++	if (hashmap__find(mask, (void *)key, (void **)&used)) {
++		if (*used)
++			*skip = true;
++		*used = true;
++	} else {
++		used = zalloc(sizeof(*used));
++		if (!used)
++			return -1;
++
++		*used = true;
++		ret = hashmap__add(mask, (void *)key, used);
++		if (ret) {
++			free(used);
++			return -1;
++		}
++	}
++
+ 	return 0;
+ }
+ 
+-- 
+2.17.1
+
