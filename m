@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB662E2A81
+	by mail.lfdr.de (Postfix) with ESMTP id D98842E2A82
 	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 09:54:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728941AbgLYIxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Dec 2020 03:53:46 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9687 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725863AbgLYIxp (ORCPT
+        id S1729041AbgLYIyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Dec 2020 03:54:02 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9993 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725863AbgLYIyB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Dec 2020 03:53:45 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4D2LKP6wDJzkwCq;
-        Fri, 25 Dec 2020 16:51:53 +0800 (CST)
+        Fri, 25 Dec 2020 03:54:01 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4D2LLC2slSzhxJW;
+        Fri, 25 Dec 2020 16:52:35 +0800 (CST)
 Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 25 Dec 2020 16:52:40 +0800
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 25 Dec 2020 16:53:12 +0800
 From:   Chao Yu <yuchao0@huawei.com>
 To:     <jaegeuk@kernel.org>
 CC:     <linux-f2fs-devel@lists.sourceforge.net>,
         <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
         Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH] f2fs: enhance to update i_mode and acl atomically in f2fs_setattr()
-Date:   Fri, 25 Dec 2020 16:52:27 +0800
-Message-ID: <20201225085227.114230-1-yuchao0@huawei.com>
+Subject: [PATCH] f2fs: fix to keep isolation of atomic write
+Date:   Fri, 25 Dec 2020 16:53:04 +0800
+Message-ID: <20201225085304.114448-1-yuchao0@huawei.com>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -36,123 +36,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previously, in f2fs_setattr(), we don't update S_ISUID|S_ISGID|S_ISVTX
-bits with S_IRWXUGO bits and acl entries atomically, so in error path,
-chmod() may partially success, this patch enhances to make chmod() flow
-being atomical.
+ThreadA					ThreadB
+- f2fs_ioc_start_atomic_write
+- write
+- f2fs_ioc_commit_atomic_write
+ - f2fs_commit_inmem_pages
+ - f2fs_drop_inmem_pages
+ - f2fs_drop_inmem_pages
+  - __revoke_inmem_pages
+					- f2fs_vm_page_mkwrite
+					 - set_page_dirty
+					  - tag ATOMIC_WRITTEN_PAGE and add page
+					    to inmem_pages list
+  - clear_inode_flag(FI_ATOMIC_FILE)
+					- f2fs_vm_page_mkwrite
+					  - set_page_dirty
+					   - f2fs_update_dirty_page
+					    - f2fs_trace_pid
+					     - tag inmem page private to pid
+					- truncate
+					 - f2fs_invalidate_page
+					 - set page->mapping to NULL
+					  then it will cause panic once we
+					  access page->mapping
+
+The root cause is we missed to keep isolation of atomic write in the case
+of commit_atomic_write vs mkwrite, let commit_atomic_write helds i_mmap_sem
+lock to avoid this issue.
 
 Signed-off-by: Chao Yu <yuchao0@huawei.com>
 ---
- fs/f2fs/acl.c   | 23 ++++++++++++++++++++++-
- fs/f2fs/file.c  |  7 ++++---
- fs/f2fs/xattr.c | 15 +++++++++------
- 3 files changed, 35 insertions(+), 10 deletions(-)
+ fs/f2fs/file.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/fs/f2fs/acl.c b/fs/f2fs/acl.c
-index 1e5e9b1136ee..732ec10e7890 100644
---- a/fs/f2fs/acl.c
-+++ b/fs/f2fs/acl.c
-@@ -200,6 +200,27 @@ struct posix_acl *f2fs_get_acl(struct inode *inode, int type)
- 	return __f2fs_get_acl(inode, type, NULL);
- }
- 
-+static int f2fs_acl_update_mode(struct inode *inode, umode_t *mode_p,
-+			  struct posix_acl **acl)
-+{
-+	umode_t mode = inode->i_mode;
-+	int error;
-+
-+	if (is_inode_flag_set(inode, FI_ACL_MODE))
-+		mode = F2FS_I(inode)->i_acl_mode;
-+
-+	error = posix_acl_equiv_mode(*acl, &mode);
-+	if (error < 0)
-+		return error;
-+	if (error == 0)
-+		*acl = NULL;
-+	if (!in_group_p(inode->i_gid) &&
-+	    !capable_wrt_inode_uidgid(inode, CAP_FSETID))
-+		mode &= ~S_ISGID;
-+	*mode_p = mode;
-+	return 0;
-+}
-+
- static int __f2fs_set_acl(struct inode *inode, int type,
- 			struct posix_acl *acl, struct page *ipage)
- {
-@@ -213,7 +234,7 @@ static int __f2fs_set_acl(struct inode *inode, int type,
- 	case ACL_TYPE_ACCESS:
- 		name_index = F2FS_XATTR_INDEX_POSIX_ACL_ACCESS;
- 		if (acl && !ipage) {
--			error = posix_acl_update_mode(inode, &mode, &acl);
-+			error = f2fs_acl_update_mode(inode, &mode, &acl);
- 			if (error)
- 				return error;
- 			set_acl_inode(inode, mode);
 diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 596778f662fd..22a0101538c0 100644
+index 22a0101538c0..1ff5fc10e1fa 100644
 --- a/fs/f2fs/file.c
 +++ b/fs/f2fs/file.c
-@@ -851,7 +851,6 @@ static void __setattr_copy(struct inode *inode, const struct iattr *attr)
- 		if (!in_group_p(inode->i_gid) &&
- 			!capable_wrt_inode_uidgid(inode, CAP_FSETID))
- 			mode &= ~S_ISGID;
--		inode->i_mode = (inode->i_mode & S_IRWXUGO) | (mode & ~S_IRWXUGO);
- 		set_acl_inode(inode, mode);
+@@ -2094,10 +2094,12 @@ static int f2fs_ioc_commit_atomic_write(struct file *filp)
+ 		goto err_out;
  	}
- }
-@@ -951,8 +950,10 @@ int f2fs_setattr(struct dentry *dentry, struct iattr *attr)
  
- 	if (attr->ia_valid & ATTR_MODE) {
- 		err = posix_acl_chmod(inode, f2fs_get_inode_mode(inode));
--		if (err || is_inode_flag_set(inode, FI_ACL_MODE)) {
--			inode->i_mode = F2FS_I(inode)->i_acl_mode;
++	down_write(&F2FS_I(inode)->i_mmap_sem);
 +
-+		if (is_inode_flag_set(inode, FI_ACL_MODE)) {
-+			if (!err)
-+				inode->i_mode = F2FS_I(inode)->i_acl_mode;
- 			clear_inode_flag(inode, FI_ACL_MODE);
- 		}
+ 	if (f2fs_is_atomic_file(inode)) {
+ 		ret = f2fs_commit_inmem_pages(inode);
+ 		if (ret)
+-			goto err_out;
++			goto up_write;
+ 
+ 		ret = f2fs_do_sync_file(filp, 0, LLONG_MAX, 0, true);
+ 		if (!ret)
+@@ -2105,6 +2107,8 @@ static int f2fs_ioc_commit_atomic_write(struct file *filp)
+ 	} else {
+ 		ret = f2fs_do_sync_file(filp, 0, LLONG_MAX, 1, false);
  	}
-diff --git a/fs/f2fs/xattr.c b/fs/f2fs/xattr.c
-index 65afcc3cc68a..2086bef6c154 100644
---- a/fs/f2fs/xattr.c
-+++ b/fs/f2fs/xattr.c
-@@ -673,7 +673,7 @@ static int __f2fs_setxattr(struct inode *inode, int index,
- 		}
- 
- 		if (value && f2fs_xattr_value_same(here, value, size))
--			goto exit;
-+			goto same;
- 	} else if ((flags & XATTR_REPLACE)) {
- 		error = -ENODATA;
- 		goto exit;
-@@ -738,17 +738,20 @@ static int __f2fs_setxattr(struct inode *inode, int index,
- 	if (error)
- 		goto exit;
- 
--	if (is_inode_flag_set(inode, FI_ACL_MODE)) {
--		inode->i_mode = F2FS_I(inode)->i_acl_mode;
--		inode->i_ctime = current_time(inode);
--		clear_inode_flag(inode, FI_ACL_MODE);
--	}
- 	if (index == F2FS_XATTR_INDEX_ENCRYPTION &&
- 			!strcmp(name, F2FS_XATTR_NAME_ENCRYPTION_CONTEXT))
- 		f2fs_set_encrypted_inode(inode);
- 	f2fs_mark_inode_dirty_sync(inode, true);
- 	if (!error && S_ISDIR(inode->i_mode))
- 		set_sbi_flag(F2FS_I_SB(inode), SBI_NEED_CP);
-+
-+same:
-+	if (is_inode_flag_set(inode, FI_ACL_MODE)) {
-+		inode->i_mode = F2FS_I(inode)->i_acl_mode;
-+		inode->i_ctime = current_time(inode);
-+		clear_inode_flag(inode, FI_ACL_MODE);
-+	}
-+
- exit:
- 	kfree(base_addr);
- 	return error;
++up_write:
++	up_write(&F2FS_I(inode)->i_mmap_sem);
+ err_out:
+ 	if (is_inode_flag_set(inode, FI_ATOMIC_REVOKE_REQUEST)) {
+ 		clear_inode_flag(inode, FI_ATOMIC_REVOKE_REQUEST);
 -- 
 2.29.2
 
