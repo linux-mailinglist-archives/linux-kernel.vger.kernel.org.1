@@ -2,68 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 511012E2C1E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 20:12:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 929322E2C23
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 20:16:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727200AbgLYTKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Dec 2020 14:10:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53230 "EHLO mail.kernel.org"
+        id S1727971AbgLYTPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Dec 2020 14:15:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725935AbgLYTKh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Dec 2020 14:10:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 089A522252;
-        Fri, 25 Dec 2020 19:09:57 +0000 (UTC)
+        id S1725935AbgLYTPR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Dec 2020 14:15:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C56E22203;
+        Fri, 25 Dec 2020 19:14:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608923397;
-        bh=GMqy8CznyQeOv7tF9A4+fNZ4IHG0XfmDnaVVsrgaLFs=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=lp2V2IbjKQhvdfUn/CjICV4vXo15aUaQTExdsEpOFY2cseyy/sr+w24fFg+F9+ZpN
-         962jCKe81LyeoWCfCmY4XvkiMZVD3MYBMcb/BRcVnhjpK5gw78ekNTtZeX/Fb2rh2f
-         RIsOMVHqcIvZK6hTjJSecxYUP8ZnwmZmjtaoTkWCAJ+zRieUsy+nb66w0ukFVtjB+v
-         rsq6EyXAmQY1rc8z9jGSw5x9M/GIjt3X5XAJGLejvcYTk3o4z6qYtmDpSgG8Ho9Hpw
-         okQVTaV2BGupTwc+pYYGWCbal1W7mwbBrXlU/tBISA1ZsvU+BkNKmy11cZXvClgTCz
-         vo32yQDUXaN6w==
-Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 006FB600CE;
-        Fri, 25 Dec 2020 19:09:57 +0000 (UTC)
-Subject: Re: [GIT PULL] perf tools changes for v5.11, 2nd batch
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201224185633.514066-1-acme@kernel.org>
-References: <20201224185633.514066-1-acme@kernel.org>
-X-PR-Tracked-List-Id: <linux-perf-users.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201224185633.514066-1-acme@kernel.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-2020-12-24
-X-PR-Tracked-Commit-Id: 5149303fdfe5c67ddb51c911e23262f781cd75eb
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 5814bc2d4cc241c1a603fac2b5bf1bd4daa108fc
-Message-Id: <160892339699.18440.3590581285873558593.pr-tracker-bot@kernel.org>
-Date:   Fri, 25 Dec 2020 19:09:56 +0000
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        James Clark <james.clark@arm.com>,
-        John Garry <john.garry@huawei.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
+        s=k20201202; t=1608923677;
+        bh=QDqTtLgpDD7RDx1IC6Hh4p9gjvbSZQEsiOQofhn+YaI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FOMEgVuFI5hxwo+ioQIQrtmIMUkjxLj6Jgk/M9PEYgO1MAEUF95Mc2qUe+/RAkFPw
+         wy6zcIA3bZ1oiqsq2mWVBaAsNBd2Z+h2CLiJhWJBI70uTkg+fJy4Cd5lYI2bDh1wxB
+         4WhkwCQKYODn5tqCn/U9LPkMDPtJuqEz8LBS2pVflb0Rv9UneTKdQmmaR9KmsJwXpZ
+         HdrtFlxqrOUWTv/Fv9Y25GNupIUV92T499GrOddCYiSp0/gar5dmZgjszz1fZNT7wF
+         ywOquqBx38kkvTFmtDdM1GwU/P3ZrAEmWMzPChGv3SqmedUQ9YHvQEq1+rb8KGmHSj
+         +Tvwydin+f26Q==
+Date:   Fri, 25 Dec 2020 11:14:35 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        Megha Dey <megha.dey@intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: Re: [PATCH 0/2] crypto: x86/aes-ni-xts - recover and improve
+ performance
+Message-ID: <X+Y6G0pHja1C61s9@sol.localdomain>
+References: <20201222160629.22268-1-ardb@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201222160629.22268-1-ardb@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 24 Dec 2020 15:56:33 -0300:
+On Tue, Dec 22, 2020 at 05:06:27PM +0100, Ard Biesheuvel wrote:
+> The AES-NI implementation of XTS was impacted significantly by the retpoline
+> changes, which is due to the fact that both its asm helper and the chaining
+> mode glue library use indirect calls for processing small quantitities of
+> data
+> 
+> So let's fix this, by:
+> - creating a minimal, backportable fix that recovers most of the performance,
+>   by reducing the number of indirect calls substantially;
+> - for future releases, rewrite the XTS implementation completely, and replace
+>   the glue helper with a core asm routine that is more flexible, making the C
+>   code wrapper much more straight-forward.
+> 
+> This results in a substantial performance improvement: around ~2x for 1k and
+> 4k blocks, and more than 3x for ~1k blocks that require ciphertext stealing
+> (benchmarked using tcrypt using 1420 byte blocks - full results below)
+> 
+> It also allows us to enable the same driver for i386.
+> 
+> Cc: Megha Dey <megha.dey@intel.com>
+> Cc: Eric Biggers <ebiggers@kernel.org>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> 
+> Ard Biesheuvel (2):
+>   crypto: x86/aes-ni-xts - use direct calls to and 4-way stride
+>   crypto: x86/aes-ni-xts - rewrite and drop indirections via glue helper
+> 
+>  arch/x86/crypto/aesni-intel_asm.S  | 353 ++++++++++++++++----
+>  arch/x86/crypto/aesni-intel_glue.c | 230 +++++++------
+>  2 files changed, 412 insertions(+), 171 deletions(-)
+> 
+> -- 
+> 2.17.1
+> 
+> Benchmarked using tcrypt on a Intel(R) Core(TM) i7-8650U CPU @ 1.90GHz.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-2020-12-24
+Thanks for doing this!  I didn't realize that there was such a big performance
+regression here.  Getting rid of these indirect calls looks like the right
+approach; this all seems to have been written for a world where indirect calls
+are much faster...
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/5814bc2d4cc241c1a603fac2b5bf1bd4daa108fc
+I did some quick benchmarks on Zen ("AMD Ryzen Threadripper 1950X 16-Core
+Processor") with CONFIG_RETPOLINE=y and confirmed the speedup on 4096-byte
+blocks is around 2x there too.  (It's over 2x for AES-128-XTS and AES-192-XTS,
+and a bit under 2x for AES-256-XTS.  And most of the speedup comes from the
+first patch.)  Also, the extra self-tests are passing.
 
-Thank you!
+So feel free to add:
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+	Tested-by: Eric Biggers <ebiggers@google.com> # x86_64
+
+Note that this patch series didn't apply cleanly, as it seems to depend on some
+other patches you've sent out recently.  So I actually tested your
+"for-kernelci" branch instead of applying these directly.
+
+- Eric
