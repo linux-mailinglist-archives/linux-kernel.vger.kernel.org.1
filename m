@@ -2,82 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1FF32E2BEE
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 18:03:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D04E2E2BF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 18:09:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726179AbgLYRAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Dec 2020 12:00:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725910AbgLYRAj (ORCPT
+        id S1726546AbgLYRHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Dec 2020 12:07:37 -0500
+Received: from smtprelay0121.hostedemail.com ([216.40.44.121]:53988 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725953AbgLYRHh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Dec 2020 12:00:39 -0500
-Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09956C061573
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Dec 2020 08:59:43 -0800 (PST)
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4D2Y6s5NZdz1rtMh;
-        Fri, 25 Dec 2020 17:58:29 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4D2Y6r6lB6z1qr3y;
-        Fri, 25 Dec 2020 17:58:28 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id tmq1xZlJy0Sy; Fri, 25 Dec 2020 17:58:27 +0100 (CET)
-X-Auth-Info: +mM6lJfV9Zm65W4CzQ9iQdJ3u18++WndNbaqbvDXm5JhNdQgE7AiMtr1JiOt+AHe
-Received: from igel.home (ppp-46-244-182-139.dynamic.mnet-online.de [46.244.182.139])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Fri, 25 Dec 2020 17:58:27 +0100 (CET)
-Received: by igel.home (Postfix, from userid 1000)
-        id 2BBAB2C3600; Fri, 25 Dec 2020 17:58:27 +0100 (CET)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>, nylon7@andestech.com,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        Tobias Klauser <tklauser@distanz.ch>,
-        syzkaller <syzkaller@googlegroups.com>
-Subject: Re: riscv+KASAN does not boot
-References: <CACT4Y+bpkSYTL_UwNoKVd0PDFF_xrNN6=y_S_v8W3YRaAcMm2g@mail.gmail.com>
-X-Yow:  I have no actual hairline...
-Date:   Fri, 25 Dec 2020 17:58:27 +0100
-In-Reply-To: <CACT4Y+bpkSYTL_UwNoKVd0PDFF_xrNN6=y_S_v8W3YRaAcMm2g@mail.gmail.com>
-        (Dmitry Vyukov's message of "Fri, 25 Dec 2020 15:55:48 +0100")
-Message-ID: <878s9lbz64.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1.90 (gnu/linux)
+        Fri, 25 Dec 2020 12:07:37 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id E8A0118029140;
+        Fri, 25 Dec 2020 17:06:55 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:5007:6742:7652:7902:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13076:13311:13357:13439:14659:14721:21080:21627:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: band89_34144c92747b
+X-Filterd-Recvd-Size: 1987
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf01.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 25 Dec 2020 17:06:53 +0000 (UTC)
+Message-ID: <327d6cad23720c8fe984aa75a046ff69499568c8.camel@perches.com>
+Subject: Re: [PATCH] nfp: remove h from printk format specifier
+From:   Joe Perches <joe@perches.com>
+To:     Tom Rix <trix@redhat.com>,
+        Simon Horman <simon.horman@netronome.com>
+Cc:     kuba@kernel.org, davem@davemloft.net, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, gustavoars@kernel.org,
+        louis.peens@netronome.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, oss-drivers@netronome.com,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 25 Dec 2020 09:06:51 -0800
+In-Reply-To: <7b5517e6-41a9-cc7f-f42f-8ef449f3898e@redhat.com>
+References: <20201223202053.131157-1-trix@redhat.com>
+         <20201224202152.GA3380@netronome.com>
+         <bac92bab-243b-ca48-647c-dad5688fa060@redhat.com>
+         <18c81854639aa21e76c8b26cc3e7999b0428cc4e.camel@perches.com>
+         <7b5517e6-41a9-cc7f-f42f-8ef449f3898e@redhat.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Dez 25 2020, Dmitry Vyukov wrote:
+On Fri, 2020-12-25 at 06:56 -0800, Tom Rix wrote:
+> On 12/24/20 2:39 PM, Joe Perches wrote:
+[]
+> > Kernel code doesn't use a signed char or short with %hx or %hu very often
+> > but in case you didn't already know, any signed char/short emitted with
+> > anything like %hx or %hu needs to be left alone as sign extension occurs so:
+> 
+> Yes, this would also effect checkpatch.
 
-> qemu-system-riscv64 \
-> -machine virt -bios default -smp 1 -m 2G \
-> -device virtio-blk-device,drive=hd0 \
-> -drive file=buildroot-riscv64.ext4,if=none,format=raw,id=hd0 \
-> -kernel arch/riscv/boot/Image \
-> -nographic \
-> -device virtio-rng-device,rng=rng0 -object
-> rng-random,filename=/dev/urandom,id=rng0 \
-> -netdev user,id=net0,host=10.0.2.10,hostfwd=tcp::10022-:22 -device
-> virtio-net-device,netdev=net0 \
-> -append "root=/dev/vda earlyprintk=serial console=ttyS0 oops=panic
-> panic_on_warn=1 panic=86400"
+Of course but checkpatch is stupid and doesn't know types
+so it just assumes that the type argument is not signed.
 
-Do you get more output with earlycon=sbi?
+In general, that's a reasonable but imperfect assumption.
 
-Andreas.
+coccinelle could probably do this properly as it's a much
+better parser.  clang-tidy should be able to as well.
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+
