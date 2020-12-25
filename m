@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11AE32E2C49
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 21:23:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1E522E2C46
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 21:23:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729485AbgLYUV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Dec 2020 15:21:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48952 "EHLO
+        id S1729436AbgLYUVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Dec 2020 15:21:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729366AbgLYUVj (ORCPT
+        with ESMTP id S1729361AbgLYUVm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Dec 2020 15:21:39 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CC3EC06179C
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Dec 2020 12:20:26 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id m23so4591457ioy.2
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Dec 2020 12:20:26 -0800 (PST)
+        Fri, 25 Dec 2020 15:21:42 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81EDAC06179E
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Dec 2020 12:20:27 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id i18so4585008ioa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Dec 2020 12:20:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=aoRtjGGmDkoPVRZQqU2F8ks+JZ5/f7iUPdclmyg7810=;
-        b=Pm/wRh9Nzgjv2yyaCJeWJEfoRYyA+Rit0C75+VKw68jPFmel6odSR8txI73Yc3VmYc
-         JLv6mctAg3sNw/p+bqowIds86ClphIaYfqMBIsvNDCgfEv9BGTxB8L/I2qZPvZnqp0Pa
-         g/xtfPjRDlHNPX+c3OM+qo4nodi4vaFdAzKcWIZG3UIyZobVNT6vfFPepiGwKGOcL9SD
-         cWv3jocYS8kZf/yShoNfpjUzNKaEtyD2Sz6LXxhsKk0UdPhipqjihCYgeyNk47GiIkME
-         FXC4JVq1RoKBMweC4UPyMfHtncJ8tpJMvcCY6l24hrWpn0+xbRYH60/bTLXx9G56UHqT
-         cODA==
+        bh=bz88LgYTNDla8UtDCkcXntb0SNk5qMglUOtDnk35ofk=;
+        b=mOWRzKde/TkcGbx0RKiqKQ6LUw+v5oAf2jGLkOnccYxcJv2cyLHY2jxo6qz1hhC4F3
+         WtrQDE4VR3trkFSBxzPZ2VH3BdKCbD0u/LiKmPvPwcfjcgc6wXNxZwr1AqThTAxmv2BC
+         OLrYtvxy6W1elSGSsaWsP5QW9v776E0kWjZvL+sj4T+ZlzDec/Gj7GY5HaoagfdaltOY
+         p0QrtbBii6LjFhiCTsuY3ldxj0wh8mMZJas8Zk558QhlBbCRtjOTEphZcVjB61BsQmX9
+         em8OJixuW5LtW267If8f6K4k2rLPulyXhiyZUjRAYyP9YDsaLYOfOaqrySGUu/x9d/rJ
+         uiYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=aoRtjGGmDkoPVRZQqU2F8ks+JZ5/f7iUPdclmyg7810=;
-        b=bnriTmiCdmKBNA84aHHqJShMZvj7KH92Wr2AsJdoQ2MNz0u2HTaKk2Q3MD63VcZ3Yv
-         RvUSHWh56JwNRFjY7cE2chKKWDMRa0CJK3v9mfEzOEnO01DsuGc830iyOs9rx7wZ3yo3
-         tXmB5UcpH7bFzlE9N7XevnB8fVIGbUTALMW6jvuC172nggD1aiFMx5UZnrrpGQm5TWBW
-         sEUHnHSJNCGPM9Wl4xOtvThdMSHYoPYjT4c+EJZlchTbWic9HF0MSUCMJsoWYNSBDxzN
-         MRbXl3w75DbeIF7Jq0oC/Mf2I1zZS+Q9FjVPSvkUJPlrhBnIbNCbTdC0sMqj/KDkAUSU
-         OamA==
-X-Gm-Message-State: AOAM531UK4oImfWAkWAt0UkExLyV/fqAxdRWr9cwNZAakNp7YbDbYGVU
-        55uqq6i5H++jmv0fFDubQiE65DgkM21GBA==
-X-Google-Smtp-Source: ABdhPJzbWDKBSToS98Kl13BFbHHdyxZuTwXxrG/K9hzViQcdF8FH4lEx9QERZ0wWVXoASqP0PQCuzw==
-X-Received: by 2002:a02:ce8a:: with SMTP id y10mr29633367jaq.102.1608927625991;
-        Fri, 25 Dec 2020 12:20:25 -0800 (PST)
+        bh=bz88LgYTNDla8UtDCkcXntb0SNk5qMglUOtDnk35ofk=;
+        b=XMYNS6dyU4kuMD9zs5tOKBmsiQ+n95RoeDp1zJTkT6Qla0lReJY16+nly8fnXHS2PO
+         SARSV+8uGZeOskwm3N89Qqr08iTQ5Hm7Y/Yw/w73j9oyn/nvJ3VUvZHtqMAbb8ouNIpM
+         UPwYTBH9LPgGonJRivqSCTIIOO9lvGra9dtataMt0NED/Q7lk9/g4rAHdDQrx7yUKKmB
+         l3WfI1Q4DkBRpPoQrUkgTszkwn2alCiWxnUSuuw4n4ZIR/Xb20vksuGsb+OI2g6K1aOQ
+         KeSuDAQ+YSunQd8hezPfuindlTirkGOc27W3Y6ZFWSGZFt27bmzi5t9JA0dJX4y4JX3w
+         +JpQ==
+X-Gm-Message-State: AOAM532Ud2MX2bhwhatjDPK6gijqQ0TNaxCoOIKyOgYLm8rj3kKaqvEy
+        XgNRZmXgjLhNF9QODfLTPhc=
+X-Google-Smtp-Source: ABdhPJzql7VgBYjjnYC0FtY6g6ktuL8vgVaqjxNjt2jKwBMCGKz/Sg5TTuvu1Sp2+7vpUaGg/3JC0w==
+X-Received: by 2002:a02:ac03:: with SMTP id a3mr30729097jao.71.1608927626895;
+        Fri, 25 Dec 2020 12:20:26 -0800 (PST)
 Received: from frodo.mearth (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
-        by smtp.googlemail.com with ESMTPSA id e1sm28380401iod.17.2020.12.25.12.20.25
+        by smtp.googlemail.com with ESMTPSA id e1sm28380401iod.17.2020.12.25.12.20.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Dec 2020 12:20:25 -0800 (PST)
+        Fri, 25 Dec 2020 12:20:26 -0800 (PST)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     jbaron@akamai.com, gregkh@linuxfoundation.org,
         linux-kernel@vger.kernel.org
 Cc:     Jim Cromie <jim.cromie@gmail.com>
-Subject: [RFC PATCH v2 12/19] dyndbg: allow deleting site info via control interface
-Date:   Fri, 25 Dec 2020 13:19:37 -0700
-Message-Id: <20201225201944.3701590-13-jim.cromie@gmail.com>
+Subject: [RFC PATCH v2 13/19] dyndbg: verify __dyndbg & __dyndbg_callsite invariant
+Date:   Fri, 25 Dec 2020 13:19:38 -0700
+Message-Id: <20201225201944.3701590-14-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201225201944.3701590-1-jim.cromie@gmail.com>
 References: <20201225201944.3701590-1-jim.cromie@gmail.com>
@@ -64,115 +64,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow users & subsystems to selectively delete callsite info for
-individual pr-debug callsites, or groups of them.
+Prove that linker + DECLARE_DYNAMIC_DEBUG_METADATA reliably place the
+2 related struct _ddebug* initializations into parallel/ordered slots
+in the __dyndbg_* sections.
 
-Its purpose is for subsystems such as DRM which:
+This is a step towards dropping the pointer between the 2 structs;
+maybe the 2 vectors stay ordered, and we can deduce and use N.  Of
+course this test won't survive, since it needs the pointer we seek to
+drop, but its a start.
 
-- use distinct categories for logging, and can map them over to a
-  format prefix, like: "drm:core:", "drm:kms:", etc.
+0- iterate over __dyndbg_callsite in parallel with __dyndbg
+   rename var: s/iter_start/iter_mod_start/ for clarity, consistency.
 
-- are happy with group control of all the callsites in a class/cateory.
-  individual control is still possible using queries including line numbers
+I disregarded a checkpatch warning about externs in c-files, staying
+consistent with long-standing code seemed better.
 
-- don't need dynamic "module:function:line:" prefixes in log messages
+1- prove that iter->site == site_iter.
+   DECLARE_DYNAMIC_DEBUG_METADATA + linker insure this now
+   Maybe we can drop pointer, still get order.
 
-- don't care about loss of context in /proc/dynamic_debug/control
+WRT the debug-printing, its noisy, but only with verbose=3.
+It warrants trimming later.
 
-before:
+The offset grows smoothly, because it is N * sizeof(structs), which
+differ.  It looks reliable.  Amend later to do math, converge on
+truth.  If numbers are stable after stripping pointer, we have N.
 
-init/initramfs.c:485 [initramfs]unpack_to_rootfs =_ "Detected %s compressed data\012"
-init/main.c:1337 [main]run_init_process =pm "    %s\012"
-init/main.c:1335 [main]run_init_process =pm "  with environment:\012"
-init/main.c:1334 [main]run_init_process =pm "    %s\012"
-init/main.c:1332 [main]run_init_process =pm "  with arguments:\012"
-init/main.c:1121 [main]initcall_blacklisted =pm "initcall %s blacklisted\012"
-init/main.c:1082 [main]initcall_blacklist =pm "blacklisting initcall %s\012"
+   	       	       rec   	      ptr      	       mod-ptr N (void*)p
+[    1.929072] dyndbg: 2828: ffffffff82b32f28 ffffffff82b32f10 1 24 40
+[    1.929326] dyndbg: 2829: ffffffff82b32f40 ffffffff82b32f10 2 48 80
+[    1.930209] dyndbg:   2 debug prints in module i386
 
-then:
-  bash-5.0# echo file init/main.c +D > /proc/dynamic_debug/control
-
-after:
-
-init/initramfs.c:485 [initramfs]unpack_to_rootfs =_ "Detected %s compressed data\012"
-[main]:1337 =pmD "    %s\012"
-[main]:1335 =pmD "  with environment:\012"
-[main]:1334 =pmD "    %s\012"
-[main]:1332 =pmD "  with arguments:\012"
-[main]:1121 =pmD "initcall %s blacklisted\012"
-[main]:1082 =pmD "blacklisting initcall %s\012"
-
-Notes:
-
-If Drm adopted dyndbg, i915 + drm* would add ~1600 prdebugs, amdgpu +
-drm* would add ~3200 callsites, so the additional memory costs are
-substantial.  In trade, drm and drivers would avoid lots of calls to
-drm_debug_enabled().  This patch should reduce the costs.
-
-Using this interface, drm could drop site info for all categories /
-prefixes controlled by bits in drm.debug, while preserving site info
-and individual selectivity for any uncategorized prdebugs.
-
-Lastly, because lineno field was not moved into _ddebug_callsite, it
-can be used to modify a single[*] callsite even if drm has dropped all
-the callsite data:
-
-  echo module $mod format ^$prefix line $line +p >control
-
-Dropping a _callsite a one-way, information losing operation, so minor
-misuse is possible.  Worst case is maybe (depending upon previous
-settings) some loss of logging context/decorations.
-
-  echo +D > /proc/dynamic_debug/control
-
-[*] amdgpu has some macros invoking clusters of pr_debugs; each use of
-them creates a cluster of pr-debugs with the same line number.
+We have N (col 4), and N * structsize (col 5).  I feel like it still
+needs more staring at.
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- include/linux/dynamic_debug.h | 1 +
- lib/dynamic_debug.c           | 9 +++++++++
- 2 files changed, 10 insertions(+)
+ lib/dynamic_debug.c | 28 +++++++++++++++++++++-------
+ 1 file changed, 21 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/dynamic_debug.h b/include/linux/dynamic_debug.h
-index ea07a91a43bc..49fa1390d1f8 100644
---- a/include/linux/dynamic_debug.h
-+++ b/include/linux/dynamic_debug.h
-@@ -40,6 +40,7 @@ struct _ddebug {
- #define _DPRINTK_FLAGS_INCL_FUNCNAME	(1<<2)
- #define _DPRINTK_FLAGS_INCL_LINENO	(1<<3)
- #define _DPRINTK_FLAGS_INCL_TID		(1<<4)
-+#define _DPRINTK_FLAGS_DELETE_SITE	(1<<7) /* drop site info to save ram */
- 
- #define _DPRINTK_FLAGS_INCL_ANYSITE		\
- 	(_DPRINTK_FLAGS_INCL_MODNAME		\
 diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index 6203a6ad1706..2d10fc1e16cd 100644
+index 2d10fc1e16cd..c1a113460637 100644
 --- a/lib/dynamic_debug.c
 +++ b/lib/dynamic_debug.c
-@@ -90,6 +90,7 @@ static struct { unsigned flag:8; char opt_char; } opt_array[] = {
- 	{ _DPRINTK_FLAGS_INCL_LINENO, 'l' },
- 	{ _DPRINTK_FLAGS_INCL_TID, 't' },
- 	{ _DPRINTK_FLAGS_NONE, '_' },
-+	{ _DPRINTK_FLAGS_DELETE_SITE, 'D' },
- };
+@@ -41,6 +41,8 @@
  
- struct flagsbuf { char buf[ARRAY_SIZE(opt_array)+1]; };
-@@ -198,6 +199,14 @@ static inline void ddebug_alter_site(struct _ddebug *dp,
- 	} else if (modifiers->flags & _DPRINTK_FLAGS_PRINT)
- 		static_branch_enable(&dp->key.dd_key_true);
- #endif
-+	/* delete site info for this callsite */
-+	if (modifiers->flags & _DPRINTK_FLAGS_DELETE_SITE) {
-+		if (dp->site) {
-+			vpr_info("dropping site info %s.%s.%d\n", dp->site->filename,
-+				dp->site->function, dp->lineno);
-+			dp->site = NULL;
-+		}
-+	}
- }
+ extern struct _ddebug __start___dyndbg[];
+ extern struct _ddebug __stop___dyndbg[];
++extern struct _ddebug_callsite __start___dyndbg_callsites[];
++extern struct _ddebug_callsite __stop___dyndbg_callsites[];
  
- /*
+ struct ddebug_table {
+ 	struct list_head link;
+@@ -119,6 +121,7 @@ do {								\
+ 
+ #define vpr_info(fmt, ...)	vnpr_info(1, fmt, ##__VA_ARGS__)
+ #define v2pr_info(fmt, ...)	vnpr_info(2, fmt, ##__VA_ARGS__)
++#define v3pr_info(fmt, ...)	vnpr_info(2, fmt, ##__VA_ARGS__)
+ 
+ static void vpr_info_dq(const struct ddebug_query *query, const char *msg)
+ {
+@@ -1147,7 +1150,8 @@ static int __init dynamic_debug_init_control(void)
+ 
+ static int __init dynamic_debug_init(void)
+ {
+-	struct _ddebug *iter, *iter_start;
++	struct _ddebug *iter, *iter_mod_start;
++	struct _ddebug_callsite *site, *site_mod_start;
+ 	const char *modname = NULL;
+ 	char *cmdline;
+ 	int ret = 0;
+@@ -1162,23 +1166,33 @@ static int __init dynamic_debug_init(void)
+ 		ddebug_init_success = 1;
+ 		return 0;
+ 	}
+-	iter = __start___dyndbg;
++
++	iter = iter_mod_start = __start___dyndbg;
++	site = site_mod_start = __start___dyndbg_callsites;
+ 	modname = iter->site->modname;
+-	iter_start = iter;
+-	for (; iter < __stop___dyndbg; iter++) {
++
++	for (; iter < __stop___dyndbg; iter++, site++) {
++
++		BUG_ON(site != iter->site);
++		v3pr_info("%u: %px %ld %ld %ld\n", entries, site,
++			  site - site_mod_start,
++			  ((void *)site - (void *)site_mod_start),
++			  ((void *)iter - (void *)iter_mod_start));
+ 		entries++;
++
+ 		if (strcmp(modname, iter->site->modname)) {
+ 			modct++;
+-			ret = ddebug_add_module(iter_start, n, modname);
++			ret = ddebug_add_module(iter_mod_start, n, modname);
+ 			if (ret)
+ 				goto out_err;
+ 			n = 0;
+ 			modname = iter->site->modname;
+-			iter_start = iter;
++			iter_mod_start = iter;
++			site_mod_start = site;
+ 		}
+ 		n++;
+ 	}
+-	ret = ddebug_add_module(iter_start, n, modname);
++	ret = ddebug_add_module(iter_mod_start, n, modname);
+ 	if (ret)
+ 		goto out_err;
+ 
 -- 
 2.29.2
 
