@@ -2,167 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 640A02E295C
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 02:14:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF6E2E2966
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 02:22:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729091AbgLYBMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 20:12:15 -0500
-Received: from mga14.intel.com ([192.55.52.115]:43304 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729020AbgLYBMO (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 20:12:14 -0500
-IronPort-SDR: mbJArsxW6ajJUpU1ly+P4n4XULDZXMKWnuvFc9KKqGqNwdU0RTj4q8ZAGV2zl3ViuBQqbDi2gF
- AV8LQgQi09cQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9845"; a="175413061"
-X-IronPort-AV: E=Sophos;i="5.78,446,1599548400"; 
-   d="scan'208";a="175413061"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Dec 2020 17:10:27 -0800
-IronPort-SDR: +OHHilq/IrPO+iJzvYm5xAjWvjMoWs3Gr46iZLUmp8CnjYUno7Bfd9IbtUJrOyPlPnXftgZ9//
- FJJTLhkD0UhQ==
-X-IronPort-AV: E=Sophos;i="5.78,446,1599548400"; 
-   d="scan'208";a="458693055"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.27]) ([10.238.4.27])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Dec 2020 17:10:25 -0800
-Subject: Re: [PATCH v2] perf script: Fix overrun issue for
- dynamically-allocated pmu type number
-To:     Adrian Hunter <adrian.hunter@intel.com>, acme@kernel.org,
-        jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com
-Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-References: <20201209005828.21302-1-yao.jin@linux.intel.com>
- <3fcdc860-d858-0166-de23-34fc6fe5c1cd@intel.com>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <18fde68f-0d24-5bcb-38e1-11dcf6f70bc1@linux.intel.com>
-Date:   Fri, 25 Dec 2020 09:10:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1729094AbgLYBVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Dec 2020 20:21:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729020AbgLYBVi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Dec 2020 20:21:38 -0500
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F381C061573;
+        Thu, 24 Dec 2020 17:20:58 -0800 (PST)
+Received: by mail-qk1-x72d.google.com with SMTP id n142so3284306qkn.2;
+        Thu, 24 Dec 2020 17:20:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eR/51XLp7HQCd5RWnkeAFXvnTVVeE+YelrG/OsehfgY=;
+        b=hAn5MJD5rRItKlT/7Zl24e2BKZi0Ls8BZo0yfG0VHqNGbxZIImG5bj/Hw62Gu+mG/u
+         QO7Mr9HJasfbcRh505O+zP9Cp22ZCzWUHrxmqVE9qhvWlELEdxNImMJDFxUDvwziQxI6
+         NMUBe1UMHiSbY24xZSLCEC0gjY+JPmEyJJkyAQdan47NLcDaq2OjTXlOcu56PrZEf/Qj
+         K3VfpTdZSMv/g56hpCEy1zR7HYWykU6U6oBzC6tznzZ8ClVF/vQitTc9y6DEuUMNcsQ3
+         ql+bigyXHfDYne4ATahAJRh8V7qWXqutn0+s3hatv64QVfUd+i0A0z5k/VgcvxeTHRD+
+         YW5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eR/51XLp7HQCd5RWnkeAFXvnTVVeE+YelrG/OsehfgY=;
+        b=sFSBicz8fxZ/rKW4Aec1+eMiDc/7B15kRObnjYyYIbRUbPvKsrq3Tc6zEkDlPZ62X4
+         us720YvtPQcggOybTj4mIWhDxa9ExeqW99Xp1htcpTge/2UMfKMu8hlf5FTRt9Za0RsV
+         V5oqE5HpFy1YbMeXsexyaMQTHXB3hfuN1uO8SCPeDzQnieoAYHqqtVVIiEGRfrtGOwHP
+         QLXkVJdz0NkHiik8rK/4tVi//fsM8z6CtUwb/Hdcr9t2fmTkEEI7+XoUTpKLkHY2pDKG
+         G9Z1Md3Yw1RbkGNXNjEYD2+HYeJ7JAIN2COQQKtVCAH4CVEyXs1q/JECAOVOJtMfYHq/
+         tHOw==
+X-Gm-Message-State: AOAM531sV/P6jr9k84mzNUhpRzCM2yO0guwxrN3FCF/d5cAwr7Za6uZD
+        opEPEQRDuRwV5WqtNbTeZTg=
+X-Google-Smtp-Source: ABdhPJyrNjeysbrlaGCYU+QBL1gUJ/O/dP/8CtbqfoqjVSeWYb5ZgSJ1J5pFIsmM63ClMqGEBprPBg==
+X-Received: by 2002:a37:5a47:: with SMTP id o68mr21575955qkb.423.1608859257152;
+        Thu, 24 Dec 2020 17:20:57 -0800 (PST)
+Received: from rockpro64.hsd1.md.comcast.net ([2601:153:900:7730::20])
+        by smtp.gmail.com with ESMTPSA id x47sm17583505qtb.86.2020.12.24.17.20.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Dec 2020 17:20:56 -0800 (PST)
+From:   Peter Geis <pgwipeout@gmail.com>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Sameer Pujar <spujar@nvidia.com>,
+        Mohan Kumar <mkumard@nvidia.com>
+Cc:     linux-clk@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        Peter Geis <pgwipeout@gmail.com>
+Subject: [PATCH 0/2] fix tegra-hda on tegra30 devices
+Date:   Fri, 25 Dec 2020 01:20:24 +0000
+Message-Id: <20201225012025.507803-1-pgwipeout@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <3fcdc860-d858-0166-de23-34fc6fe5c1cd@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo, Jiri,
+The following patches fix tegra-hda on legacy tegra devices.
+Two issues were discovered preventing tegra-hda from functioning:
+The hda clocks on tegra30 were assigned to clk_m and running at too low of a rate to function.
+The tegra-hda encounters an input/output error when opening a stream.
 
-On 12/11/2020 2:10 PM, Adrian Hunter wrote:
-> On 9/12/20 2:58 am, Jin Yao wrote:
->> When unpacking the event which is from dynamic pmu, the array
->> output[OUTPUT_TYPE_MAX] may be overrun. For example, type number of
->> SKL uncore_imc is 10, but OUTPUT_TYPE_MAX is 7 now (OUTPUT_TYPE_MAX =
->> PERF_TYPE_MAX + 1).
->>
->> /* In builtin-script.c */
->> process_event()
->> {
->>          unsigned int type = output_type(attr->type);
->>
->>          if (output[type].fields == 0)
->>                  return;
->> }
->>
->> output[10] is overrun.
->>
->> Create a type OUTPUT_TYPE_OTHER for dynamic pmu events, then
->> output_type(attr->type) will return OUTPUT_TYPE_OTHER here.
->>
->> Note that if PERF_TYPE_MAX ever changed, then there would be a conflict
->> between old perf.data files that had a dynamicaliy allocated PMU number
->> that would then be the same as a fixed PERF_TYPE.
->>
->> Example:
->>
->> perf record --switch-events -C 0 -e "{cpu-clock,uncore_imc/data_reads/,uncore_imc/data_writes/}:SD" -a -- sleep 1
->> perf script
->>
->> Before:
->>           swapper     0 [000] 1479253.987551:     277766               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>           swapper     0 [000] 1479253.987797:     246709               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>           swapper     0 [000] 1479253.988127:     329883               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>           swapper     0 [000] 1479253.988273:     146393               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>           swapper     0 [000] 1479253.988523:     249977               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>           swapper     0 [000] 1479253.988877:     354090               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>           swapper     0 [000] 1479253.989023:     145940               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>           swapper     0 [000] 1479253.989383:     359856               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>           swapper     0 [000] 1479253.989523:     140082               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>
->> After:
->>           swapper     0 [000] 1397040.402011:     272384               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>           swapper     0 [000] 1397040.402011:       5396  uncore_imc/data_reads/:
->>           swapper     0 [000] 1397040.402011:        967 uncore_imc/data_writes/:
->>           swapper     0 [000] 1397040.402259:     249153               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>           swapper     0 [000] 1397040.402259:       7231  uncore_imc/data_reads/:
->>           swapper     0 [000] 1397040.402259:       1297 uncore_imc/data_writes/:
->>           swapper     0 [000] 1397040.402508:     249108               cpu-clock:  ffffffff9d4ddb6f cpuidle_enter_state+0xdf ([kernel.kallsyms])
->>           swapper     0 [000] 1397040.402508:       5333  uncore_imc/data_reads/:
->>           swapper     0 [000] 1397040.402508:       1008 uncore_imc/data_writes/:
->>
->> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
-> 
-> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-> 
+Since the only mainline device that used tegra-hda previously was the t124, it is unknown exactly when this was broken.
+Fortunately a recent patch was submitted that fixed the issue only on t194 devices.
+We can apply it universally to the tegra-hda device to resolve the issues across the board.
+Note that downstream devices used the spdif device instead of hda for hdmi audio.
+The spdif device lacks a driver on mainline.
 
-Can this patch be accepted? :)
+Peter Geis (2):
+  clk: tegra30: Add hda clock default rates to clock driver
+  ALSA: hda/tegra: fix tegra-hda on tegra30 soc
 
-Thanks
-Jin Yao
+ drivers/clk/tegra/clk-tegra30.c | 2 ++
+ sound/pci/hda/hda_tegra.c       | 3 +--
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
->> ---
->> v2:
->>    Remove Fixes tag because this issue has always been here, not caused by
->>    1405720d4f26 ("perf script: Add 'synth' event type for synthesized events").
->>    No functional change in v2.
->>   
->>   tools/perf/builtin-script.c | 18 +++++++++++++++++-
->>   1 file changed, 17 insertions(+), 1 deletion(-)
->>
->> diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
->> index 1c322c129185..5d8a64836228 100644
->> --- a/tools/perf/builtin-script.c
->> +++ b/tools/perf/builtin-script.c
->> @@ -183,6 +183,7 @@ struct output_option {
->>   
->>   enum {
->>   	OUTPUT_TYPE_SYNTH = PERF_TYPE_MAX,
->> +	OUTPUT_TYPE_OTHER,
->>   	OUTPUT_TYPE_MAX
->>   };
->>   
->> @@ -279,6 +280,18 @@ static struct {
->>   
->>   		.invalid_fields = PERF_OUTPUT_TRACE | PERF_OUTPUT_BPF_OUTPUT,
->>   	},
->> +
->> +	[OUTPUT_TYPE_OTHER] = {
->> +		.user_set = false,
->> +
->> +		.fields = PERF_OUTPUT_COMM | PERF_OUTPUT_TID |
->> +			      PERF_OUTPUT_CPU | PERF_OUTPUT_TIME |
->> +			      PERF_OUTPUT_EVNAME | PERF_OUTPUT_IP |
->> +			      PERF_OUTPUT_SYM | PERF_OUTPUT_SYMOFFSET |
->> +			      PERF_OUTPUT_DSO | PERF_OUTPUT_PERIOD,
->> +
->> +		.invalid_fields = PERF_OUTPUT_TRACE | PERF_OUTPUT_BPF_OUTPUT,
->> +	},
->>   };
->>   
->>   struct evsel_script {
->> @@ -339,8 +352,11 @@ static inline int output_type(unsigned int type)
->>   	case PERF_TYPE_SYNTH:
->>   		return OUTPUT_TYPE_SYNTH;
->>   	default:
->> -		return type;
->> +		if (type < PERF_TYPE_MAX)
->> +			return type;
->>   	}
->> +
->> +	return OUTPUT_TYPE_OTHER;
->>   }
->>   
->>   static inline unsigned int attr_type(unsigned int type)
->>
-> 
+-- 
+2.25.1
+
