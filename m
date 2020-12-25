@@ -2,140 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C882D2E2997
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 05:25:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 483942E29AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 06:15:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729174AbgLYEXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Dec 2020 23:23:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727114AbgLYEXk (ORCPT
+        id S1725834AbgLYFNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Dec 2020 00:13:55 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:50167 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725648AbgLYFNz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Dec 2020 23:23:40 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70FCCC061573
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 20:23:00 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id d2so2091087pfq.5
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Dec 2020 20:23:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Wuq99Rn0ispZN+zR4SkouvqEn1JYbNiEALa03vYbOXg=;
-        b=XFdNZ/nR+SBZmLvXnEpSUyjt2hYifQp/dyc9k2w9p5S4l019f3K0klS3P7f4QtYqir
-         v5/hBqRXAwCE5ht6oM/0drLpFYekpxEC6UrUuyL2TQVVRJlMCdfaDIft2uUVTGoRE/Kc
-         YMTTIgaR3PqJqAxCRGByx9HfB8ZxCxoCLqTL+lpbf6mCycQA4KmXydefCzzke/75K2Ao
-         pBtFhA7nw4kZjjrk/4pepvralGIwi0bvQdeObFiWwZjC1qYuj/BEyuXYoMxbcQb7fmaI
-         0Msl/qVa9HIqrboL3kEuoIDXo9vL1zaE5zVHl+aZkr0mJvkFXEhK8A0AObBEt2ot2lvQ
-         lv5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Wuq99Rn0ispZN+zR4SkouvqEn1JYbNiEALa03vYbOXg=;
-        b=BobjpffDjjMmnQamlpiuFxRZH0TN677auIDRhMIJ+ucDxXpY4eZ58AWK3U++y4YZrz
-         03OgyN5K0tHEOX0gux3Sxw3r7EAEvEcn0Nq73M9CtRfU9HLTewLxYkZG5AKBlj9QxLtC
-         V+2Oiqn7pEH/DJK+VEkOqMA3F+zqC9tc8tcPA36cE0Wt1Vthyoa1NOiod+p+WNN/kqRh
-         0mAX6ryvt30Zz0fA5rXtiawDlM4PL/Q2SZtbH+DXQRNBia7jJMlT45OL7kfI+7mI+ybi
-         r6eQMwJhOvqyyJIHsVtTMFRBMLbUia2+RxAjW5MMWbBVItLOSdbu9Tjaz0srvLPhugAo
-         7q8g==
-X-Gm-Message-State: AOAM530Rs+eW5YRCg/G+xTYfUtd65A4oQGKLkK2dOJtKb1E1UnWgxP0u
-        o0IkofjAwUVlwtd7RJouLrzKsf+9k4yLIts1dDc=
-X-Google-Smtp-Source: ABdhPJwzt8K3z6071ycept5ueCASNha0Ci1A8I9hIWbhhvdiwDGxVlF1CsVZPyDvFYMh4xA4R+crUg==
-X-Received: by 2002:a63:c64:: with SMTP id 36mr31363736pgm.255.1608870178172;
-        Thu, 24 Dec 2020 20:22:58 -0800 (PST)
-Received: from C02CV1DAMD6P.bytedance.net ([139.177.225.226])
-        by smtp.gmail.com with ESMTPSA id h12sm14229762pgk.70.2020.12.24.20.22.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 24 Dec 2020 20:22:57 -0800 (PST)
-From:   Chengming Zhou <zhouchengming@bytedance.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     hannes@cmpxchg.org, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, zhouchengming@bytedance.com
-Subject: [PATCH] psi: Add PSI_CPU_FULL state
-Date:   Fri, 25 Dec 2020 12:22:48 +0800
-Message-Id: <20201225042248.51737-1-zhouchengming@bytedance.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+        Fri, 25 Dec 2020 00:13:55 -0500
+X-UUID: 6fb3980a203c41188ec138df5bec5aa1-20201225
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=NymtaQsb4oZZm5gLdklbpuzTSWgSwEAEXv7tkNvz7xM=;
+        b=TqQ+SgiXml4sw71/XWcR4uXdxL3vM6+p8U6UCql75bng6YthtVu1pLcqyeQRb/JluRDET/c1pqu2V8InEft5FcGtRW7dH3RLq7hLyL1TyQbwIxhohIbS/19f1Cp+SHirVRom5EljTjjy1Z5e3sCejryonEAuuWYYRMnk7yt3OLg=;
+X-UUID: 6fb3980a203c41188ec138df5bec5aa1-20201225
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
+        (envelope-from <henryc.chen@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1074196090; Fri, 25 Dec 2020 13:13:01 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 25 Dec 2020 13:12:57 +0800
+Received: from [172.21.77.4] (172.21.77.4) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 25 Dec 2020 13:12:58 +0800
+Message-ID: <1608873179.24775.1.camel@mtksdaap41>
+Subject: Re: [PATCH V6 01/13] dt-bindings: soc: Add dvfsrc driver bindings
+From:   Henry Chen <henryc.chen@mediatek.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        Mark Brown <broonie@kernel.org>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Fan Chen <fan.chen@mediatek.com>,
+        Arvin Wang <arvin.wang@mediatek.com>,
+        <linux-pm@vger.kernel.org>, James Liao <jamesjj.liao@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Georgi Djakov" <georgi.djakov@linaro.org>,
+        Ryan Case <ryandcase@chromium.org>
+Date:   Fri, 25 Dec 2020 13:12:59 +0800
+In-Reply-To: <1608829305.386312.2966452.nullmailer@robh.at.kernel.org>
+References: <1608790134-27425-1-git-send-email-henryc.chen@mediatek.com>
+         <1608790134-27425-2-git-send-email-henryc.chen@mediatek.com>
+         <1608829305.386312.2966452.nullmailer@robh.at.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-TM-SNTS-SMTP: 2C62C8F5D17C2CB4C8FC8497F9967A51166F542B6D7A0761DDE0458A8C93F1922000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhouchengming <zhouchengming@bytedance.com>
-
-When I run a simple "perf bench sched pipe" test in a cgroup on my
-machine, the output of "watch -d -n 1 cpu.pressure" of this cgroup
-will report some avg10 10%-20%.
-It's strange because there is not any other process in the cgroup.
-Then I found that cpu contention/wait percentage came from outside
-of the cgroup and the cpu idle latency, not wait for threads in
-the cgroup.
-So I think adding PSI_CPU_FULL state will be useful for container
-workloads to distinguish between outside cgroup resource contention
-and inside cgroup resource contention.
-What's more, the PSI_CPU_FULL state includes the latency of the cpu
-idle itself, so we can see the system sum latency introduced by cpu
-idle state.
-
-Signed-off-by: zhouchengming <zhouchengming@bytedance.com>
----
- include/linux/psi_types.h | 3 ++-
- kernel/sched/psi.c        | 9 +++++++--
- 2 files changed, 9 insertions(+), 3 deletions(-)
-
-diff --git a/include/linux/psi_types.h b/include/linux/psi_types.h
-index b95f3211566a..0a23300d49af 100644
---- a/include/linux/psi_types.h
-+++ b/include/linux/psi_types.h
-@@ -50,9 +50,10 @@ enum psi_states {
- 	PSI_MEM_SOME,
- 	PSI_MEM_FULL,
- 	PSI_CPU_SOME,
-+	PSI_CPU_FULL,
- 	/* Only per-CPU, to weigh the CPU in the global average: */
- 	PSI_NONIDLE,
--	NR_PSI_STATES = 6,
-+	NR_PSI_STATES = 7,
- };
- 
- enum psi_aggregators {
-diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-index 967732c0766c..234047e368a5 100644
---- a/kernel/sched/psi.c
-+++ b/kernel/sched/psi.c
-@@ -224,7 +224,9 @@ static bool test_state(unsigned int *tasks, enum psi_states state)
- 	case PSI_MEM_FULL:
- 		return tasks[NR_MEMSTALL] && !tasks[NR_RUNNING];
- 	case PSI_CPU_SOME:
--		return tasks[NR_RUNNING] > tasks[NR_ONCPU];
-+		return tasks[NR_RUNNING] > tasks[NR_ONCPU] && tasks[NR_ONCPU];
-+	case PSI_CPU_FULL:
-+		return tasks[NR_RUNNING] && !tasks[NR_ONCPU];
- 	case PSI_NONIDLE:
- 		return tasks[NR_IOWAIT] || tasks[NR_MEMSTALL] ||
- 			tasks[NR_RUNNING];
-@@ -681,6 +683,9 @@ static void record_times(struct psi_group_cpu *groupc, int cpu,
- 	if (groupc->state_mask & (1 << PSI_CPU_SOME))
- 		groupc->times[PSI_CPU_SOME] += delta;
- 
-+	if (groupc->state_mask & (1 << PSI_CPU_FULL))
-+		groupc->times[PSI_CPU_FULL] += delta;
-+
- 	if (groupc->state_mask & (1 << PSI_NONIDLE))
- 		groupc->times[PSI_NONIDLE] += delta;
- }
-@@ -1018,7 +1023,7 @@ int psi_show(struct seq_file *m, struct psi_group *group, enum psi_res res)
- 		group->avg_next_update = update_averages(group, now);
- 	mutex_unlock(&group->avgs_lock);
- 
--	for (full = 0; full < 2 - (res == PSI_CPU); full++) {
-+	for (full = 0; full < 2; full++) {
- 		unsigned long avg[3];
- 		u64 total;
- 		int w;
--- 
-2.11.0
+T24gVGh1LCAyMDIwLTEyLTI0IGF0IDEwOjAxIC0wNzAwLCBSb2IgSGVycmluZyB3cm90ZToNCj4g
+T24gVGh1LCAyNCBEZWMgMjAyMCAxNDowODo0MiArMDgwMCwgSGVucnkgQ2hlbiB3cm90ZToNCj4g
+PiBEb2N1bWVudCB0aGUgYmluZGluZyBmb3IgZW5hYmxpbmcgZHZmc3JjIG9uIE1lZGlhVGVrIFNv
+Qy4NCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBIZW5yeSBDaGVuIDxoZW5yeWMuY2hlbkBtZWRp
+YXRlay5jb20+DQo+ID4gLS0tDQo+ID4gIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvYy9tZWRp
+YXRlay9kdmZzcmMueWFtbCAgIHwgNjggKysrKysrKysrKysrKysrKysrKysrKw0KPiA+ICAxIGZp
+bGUgY2hhbmdlZCwgNjggaW5zZXJ0aW9ucygrKQ0KPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQgRG9j
+dW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvYy9tZWRpYXRlay9kdmZzcmMueWFtbA0K
+PiA+IA0KPiANCj4gTXkgYm90IGZvdW5kIGVycm9ycyBydW5uaW5nICdtYWtlIGR0X2JpbmRpbmdf
+Y2hlY2snIG9uIHlvdXIgcGF0Y2g6DQo+IA0KPiB5YW1sbGludCB3YXJuaW5ncy9lcnJvcnM6DQo+
+IA0KPiBkdHNjaGVtYS9kdGMgd2FybmluZ3MvZXJyb3JzOg0KPiBEb2N1bWVudGF0aW9uL2Rldmlj
+ZXRyZWUvYmluZGluZ3Mvc29jL21lZGlhdGVrL2R2ZnNyYy5leGFtcGxlLmR0czoxOToxODogZmF0
+YWwgZXJyb3I6IGR0LWJpbmRpbmdzL3NvYy9tdGssZHZmc3JjLmg6IE5vIHN1Y2ggZmlsZSBvciBk
+aXJlY3RvcnkNCj4gICAgMTkgfCAgICAgICAgICNpbmNsdWRlIDxkdC1iaW5kaW5ncy9zb2MvbXRr
+LGR2ZnNyYy5oPg0KPiAgICAgICB8ICAgICAgICAgICAgICAgICAgXn5+fn5+fn5+fn5+fn5+fn5+
+fn5+fn5+fn5+fn5+DQo+IGNvbXBpbGF0aW9uIHRlcm1pbmF0ZWQuDQo+IG1ha2VbMV06ICoqKiBb
+c2NyaXB0cy9NYWtlZmlsZS5saWI6MzQyOiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGlu
+Z3Mvc29jL21lZGlhdGVrL2R2ZnNyYy5leGFtcGxlLmR0LnlhbWxdIEVycm9yIDENCj4gbWFrZTog
+KioqIFtNYWtlZmlsZToxMzcwOiBkdF9iaW5kaW5nX2NoZWNrXSBFcnJvciAyDQo+IA0KPiBTZWUg
+aHR0cHM6Ly9wYXRjaHdvcmsub3psYWJzLm9yZy9wYXRjaC8xNDIwMzgyDQo+IA0KPiBUaGlzIGNo
+ZWNrIGNhbiBmYWlsIGlmIHRoZXJlIGFyZSBhbnkgZGVwZW5kZW5jaWVzLiBUaGUgYmFzZSBmb3Ig
+YSBwYXRjaA0KPiBzZXJpZXMgaXMgZ2VuZXJhbGx5IHRoZSBtb3N0IHJlY2VudCByYzEuDQo+IA0K
+PiBJZiB5b3UgYWxyZWFkeSByYW4gJ21ha2UgZHRfYmluZGluZ19jaGVjaycgYW5kIGRpZG4ndCBz
+ZWUgdGhlIGFib3ZlDQo+IGVycm9yKHMpLCB0aGVuIG1ha2Ugc3VyZSAneWFtbGxpbnQnIGlzIGlu
+c3RhbGxlZCBhbmQgZHQtc2NoZW1hIGlzIHVwIHRvDQo+IGRhdGU6DQo+IA0KPiBwaXAzIGluc3Rh
+bGwgZHRzY2hlbWEgLS11cGdyYWRlDQo+IA0KPiBQbGVhc2UgY2hlY2sgYW5kIHJlLXN1Ym1pdC4N
+Cj4gDQpIaSBSb2IsDQoNClNvcnJ5IGZvciB0aGUgY2hlY2sgZXJyb3IsIEkgd2lsbCByZS1jaGVj
+ayBhbmQgc3VibWl0IGFnYWluLg0KDQpUaGFua3MsDQpIZW5yeQ0K
 
