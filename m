@@ -2,162 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D22122E2C07
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 18:32:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C72A82E2C0A
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 18:44:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727043AbgLYRat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Dec 2020 12:30:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725953AbgLYRas (ORCPT
+        id S1726427AbgLYRm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Dec 2020 12:42:56 -0500
+Received: from smtprelay0120.hostedemail.com ([216.40.44.120]:34404 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725953AbgLYRm4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Dec 2020 12:30:48 -0500
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 975A7C061757;
-        Fri, 25 Dec 2020 09:30:08 -0800 (PST)
-Received: by mail-qk1-x729.google.com with SMTP id w79so4335507qkb.5;
-        Fri, 25 Dec 2020 09:30:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6tNoeU4rdX0Rp7YesclVSlEoPPasvtmAb8rPCs2D1UA=;
-        b=IIbk73+3Kn9m25AbiWeCyLcszXZliqbmEyDL1AOj0RVNhCQYa3sLxEQIqXZBW3Ypic
-         DQ4wzgFr5B4rLcyjNdl29h0/7/ozhfpbDAocjKdrhtE2hO6WAEXbSpgu+JcR17vgO+sa
-         rQhPpLky45RnexFX4O4NU7kW+Yu2yJBXHMJcLcGRrcFkuwEcTYEHk2G13VPL9sSen70j
-         hSb/9en/J29uqP5MdAdokGjqlxKm4Dhuhv3vLtTcgjZkJhyIDqdlvQ02S5HhEn9hMPGO
-         zktoLKSE4Re4ZHtqIBCUPKVtxs9/k+iyh7tTUzAe1vd+nBFPIspR9ejhvtS0sF/nfH/X
-         gVbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6tNoeU4rdX0Rp7YesclVSlEoPPasvtmAb8rPCs2D1UA=;
-        b=KLGT+B5iL0Hr6J0kKoz0sdEaPI+J1dMnH1FjSpVgcY5yIaWFv14KgrUdoeSFj+oqkY
-         al2ELnvyIP6dlma6rdneAHrVdzfC8RIJlP+35Ow7vDDanJb0ZtHq35vZOy9dS5xAhRwa
-         a5lBfBhWF0ttr1ZLOoXvyb/dgEhn0S3EsuRy629P1Sk2GyDxNUtGDvQlMX3nKfhSPrZm
-         teZtXEGM7T/UDuWVmH42xQVwEygAl3QMpAkqxoLxGY7dhmVw6wDutZeA65RjFccvKxqy
-         v+VzKUUZRyjP5oqu5cyyjVXMha0cja+mQ64wP/xlFA63LK1T1u25hJVNbQqfT3wfXZv9
-         W3Uw==
-X-Gm-Message-State: AOAM531bJw93frHGG7jFX8d24XzMnKYas3TfLtxQ5pnh19XTazjCORSK
-        ZdeWvgEnJNY4Z/gmXnhWGcTfLNXTaj60vA==
-X-Google-Smtp-Source: ABdhPJw0R+1fIgZCorc4miRt0cUFZr5DYuK5D7K1Bsb8++9DlhiEtxJFg2kyayH/6OeJ0qRyV9381w==
-X-Received: by 2002:a37:a796:: with SMTP id q144mr35953703qke.38.1608917407683;
-        Fri, 25 Dec 2020 09:30:07 -0800 (PST)
-Received: from shinobu (072-189-064-225.res.spectrum.com. [72.189.64.225])
-        by smtp.gmail.com with ESMTPSA id p34sm15771442qtd.62.2020.12.25.09.30.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Dec 2020 09:30:06 -0800 (PST)
-Date:   Fri, 25 Dec 2020 12:30:04 -0500
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     David Lechner <david@lechnology.com>
-Cc:     jic23@kernel.org, kernel@pengutronix.de,
-        linux-stm32@st-md-mailman.stormreply.com, a.fatoum@pengutronix.de,
-        kamel.bouhara@bootlin.com, gwendal@chromium.org,
-        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        syednwaris@gmail.com, patrick.havelange@essensium.com,
-        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH v6 3/5] counter: Add character device interface
-Message-ID: <X+YhnDqLZ7Ad9b2O@shinobu>
-References: <cover.1606075915.git.vilhelm.gray@gmail.com>
- <b52a62196399d33221f78a1689276ac193c10229.1606075915.git.vilhelm.gray@gmail.com>
- <b5d49a3a-99ab-e5c0-3f0b-601eed9b54f5@lechnology.com>
+        Fri, 25 Dec 2020 12:42:56 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id C2F9A180A7FD6;
+        Fri, 25 Dec 2020 17:42:14 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,coupons@perches.com,,RULES_HIT:41:355:379:599:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:1801:2194:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3653:3865:3866:3867:3868:3871:3872:3873:3874:4250:4321:4605:5007:7652:9108:10004:10400:10848:11026:11232:11233:11658:11914:12297:12663:12740:12760:12895:13069:13095:13161:13229:13311:13357:13439:14659:21080:21433:21627:21939:30003:30034:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: place81_01065612747b
+X-Filterd-Recvd-Size: 2117
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf07.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 25 Dec 2020 17:42:13 +0000 (UTC)
+Message-ID: <9ece49fa7b0025d1d639859082f0408bbe5f4f49.camel@perches.com>
+Subject: Re: [PATCH 2/2] checkpatch: kconfig: add missing types to regex
+From:   Joe Perches <coupons@perches.com>
+To:     Nicolai Fischer <nicolai.fischer@fau.de>,
+        linux-kernel@vger.kernel.org
+Cc:     apw@canonical.com, johannes.czekay@fau.de,
+        linux-kernel@i4.cs.fau.de, akpm@linux-foundation.org
+Date:   Fri, 25 Dec 2020 09:42:12 -0800
+In-Reply-To: <4899798f-46b9-32ee-4d1e-ab2b5833da08@fau.de>
+References: <a9797282-84c3-2c8f-73a0-d751a8201541@fau.de>
+         <1f3b50a6f343dd252c043b2e5b7d47bca8514ee7.camel@perches.com>
+         <5d7cef4f-071d-0504-74df-bd944a11dd70@fau.de>
+         <fa637be6bb02336a3df6e3c3fdc800b9b17d079f.camel@perches.com>
+         <4899798f-46b9-32ee-4d1e-ab2b5833da08@fau.de>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Bi9bW/svyG+8ZjzL"
-Content-Disposition: inline
-In-Reply-To: <b5d49a3a-99ab-e5c0-3f0b-601eed9b54f5@lechnology.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 2020-12-25 at 18:27 +0100, Nicolai Fischer wrote:
+> On 12/21/20 6:17 PM, Joe Perches wrote:
+[]
+> > The message you used:
+> > +                               WARN("CONFIG_DESCRIPTION",
+> > +                                       "help text is not indented 2 spaces more than the help keyword\n" . $herecurr);
+> > 
+> > is IMO a bit oddly phrased and could/should test only
+> > the first line after the help keyword and show the help
+> > line using $hereprev.
+> > 
+> > The problem with $herecurr is, that it always contains the first line of the Kconfig option.
+> The loop which actually determines if the warning is to be displayed, leaves $herecurr and likewise $hereprev unaffected.
+> 
+> So printing $hereprev would unfortunately not be any more helpful than $herecurr.
 
---Bi9bW/svyG+8ZjzL
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Because $herecurr and $hereprev also contain the line number, among other things, I am not sure what would be the best way
+> to address this.
 
-Hi David,
+There is a mechanism to create an output message block: get_stat_real
+that could be used.
 
-I agree with your suggested changes -- just a couple select comments
-following below.
 
-On Sun, Dec 13, 2020 at 05:58:26PM -0600, David Lechner wrote:
-> > +static int counter_add_watch(struct counter_device *const counter,
-> > +			     const unsigned long arg)
-> > +{
-
-[...]
-
-> > +
-> > +dummy_component:
-> > +	comp_node.component =3D watch.component;
->=20
->=20
-> In my experiments, I added a events_validate driver callback here to
-> validate each event as it is added. This way the user can know exactly
-> which event caused the problem rather than waiting for the event_config
-> callback.
-
-Yes, this is a good idea and I have use for this in the 104-quad-8
-driver as well. I'm going to name this "watch_validate" however, because
-I need to validate the requested channel as well as the requested event
-here (both part of the struct counter_watch).
-
-> > diff --git a/include/linux/counter.h b/include/linux/counter.h
-> > index 3f3f8ba6c1b4..98cd7c035968 100644
-> > --- a/include/linux/counter.h
->=20
->=20
-> >=20
-> > +/**
-> > + * struct counter_event_node - Counter Event node
-> > + * @l:		list of current watching Counter events
-> > + * @event:	event that triggers
-> > + * @channel:	event channel
-> > + * @comp_list:	list of components to watch when event triggers
-> > + */
-> > +struct counter_event_node {
-> > +	struct list_head l;
-> > +	u8 event;
-> > +	u8 channel;
-> > +	struct list_head comp_list;
-> > +};
-> > +
->=20
->=20
-> Unless this is needed outside of the drivers/counter/ directory, I
-> would suggest putting it in drivers/counter/counter-chrdev.h instead
-> of include/linux/counter.h.
-
-The "events_list" member of the struct counter_device is a list of
-struct counter_event_node. The events_configure() callback should parse
-through this list to determine the current events configuration request.
-As such, driver authors will need this structure available via
-include/linux/counter.h so they can parse "events_list".
-
-William Breathitt Gray
-
---Bi9bW/svyG+8ZjzL
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAl/mIZwACgkQhvpINdm7
-VJIZxxAAhAKczPADq8u05OkOAmgVD7IeT9cUBIB/XnT0VVSVX46G473g78mZwlsx
-qnfK1l4uDvwjAY+YFFKanUztxg/j60BzJOt9BK4NqWR4ic7J0FPj9i4YgN9J+9oo
-JmFSjqT8Abo7rEdB426yT9Fof9cBU/oPdOpNSufDNidrxXnTIOKnjA9odG/vgOzl
-mlXTQHs2glKeLrHIvJOnK7mwy3l11Ew2xhRvBEsMfbzXIYoOkVC8Ax146tHpqBVl
-hN/vCEU49+JCbZrSOk9EmtjRZ7DiF8AoV7GFUjqGWxkECKx1ov2WeR62DFhUJMvI
-qC/boNu0BZW2N8HgIvgsgKP0r/v0E+RuRFzcahpS/0YhsNh8fgEVfeIWS2ZaVXWT
-7e4FZIOw4Vuk0E2DXw0rWRzvNCCstRsqY9fQ7ee1/WruCHRvZEeiifJADx7E7LBv
-XwQynYXOgFe1hxXFejwSTgTCMl5y25CaT8JVU8GLYgHYnPKkIVSsOJ5dUgTbRCOu
-RBbMgZbcBuB1tUy45SP6Rx8in4joA+AGAt6oj4kxrd+/+O2+uvUoNILqoYHAMyV6
-EBP78O/sAHNObYnwVJNaM1Bc1VYIF7+pMjotOTtHmkZhs5Ac8qxXih4r+mIZgItu
-yGeJ9cG82fkziDp+TtNuYXsfLQQhxtdicKmAqzZeg5VSyGQWkQY=
-=vH3L
------END PGP SIGNATURE-----
-
---Bi9bW/svyG+8ZjzL--
