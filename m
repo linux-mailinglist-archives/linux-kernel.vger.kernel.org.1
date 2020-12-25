@@ -2,146 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F85E2E2C38
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 21:23:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07E2D2E2C3A
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Dec 2020 21:23:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727161AbgLYUUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Dec 2020 15:20:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48780 "EHLO
+        id S1727782AbgLYUUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Dec 2020 15:20:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726345AbgLYUUl (ORCPT
+        with ESMTP id S1726345AbgLYUUw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Dec 2020 15:20:41 -0500
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28C1AC061757
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Dec 2020 12:20:01 -0800 (PST)
-Received: by mail-io1-xd32.google.com with SMTP id i18so4584430ioa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Dec 2020 12:20:01 -0800 (PST)
+        Fri, 25 Dec 2020 15:20:52 -0500
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2FB6C0613C1;
+        Fri, 25 Dec 2020 12:20:11 -0800 (PST)
+Received: by mail-il1-x12a.google.com with SMTP id k8so4611337ilr.4;
+        Fri, 25 Dec 2020 12:20:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=S0zr3fTuUqiNGvEc+A9Rfuoi49EyUiS13ifcKBRykhY=;
-        b=S3ClbGJA9pITO3xio1x0UGDXDYUckWojsj0v+GVZtfThk1s7fkk/k8fy7TJvvNlDIo
-         RKN3F/qpKPvMGGNP20ihAI3P7lbs4kPwhsO0lw5Exg0ziZs9nO5T5t0mJ1XithMTknI4
-         GgBLHHJPMR3FnCxvs0zZJKIcXgG1mtNiSUCeud0hMAMry0hfsUCwKwGW97jct72HMn1C
-         wsJxCV9VFOZUmy8XOGmQpe1HUgDxCpTcydcZ5ItAEoPoApwC5o7WkeGbfsCVcgyRunqy
-         vhI3VNUdo0HcZiPOmJF+rbTMPeZy4nS/La9zpruHKqMloLLNuW6oBr3r8AniDMBSvIm3
-         4nvw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=InI8kMxZ0SE9l75DuOndEZGfmarmC3cXjv+qNAPdxJc=;
+        b=r6NQf9sanR+K4FmtKtZxi0+2djREFNuDx7xAFlKcuIGdrzDT01FfkTiv8KttlxgpP8
+         Jf0wONnTXXrXHgdkSJ8Cs3BqfcpriC/TLqWtDzxhOeZ2EvW2ZliGq3UPWw824DNy4B3a
+         tyPy5/Kecfx7sC1EtM+J8d0Bze7PsSUUYV4REqjCpJmZQPNmKoHsNhHHqvzUr715ejEe
+         Lq0c7BikZ20WX7pZcWCW7fYYtRjAQ00RTq9J+xc/UiLRAkH+VOBAuWhGf8hdsjnmhO+H
+         hLo5sINXfqQST/qfavuOmDeYnux9FDGKjr9QX4z/V8b2fbHrkgJZTbNELwtiOO+N5xFF
+         fzYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=S0zr3fTuUqiNGvEc+A9Rfuoi49EyUiS13ifcKBRykhY=;
-        b=kRvkiCJZCD+s2F5Bz3n828MobMpTWTauP2ieDHm3zZHAyCqpmWh+c7xj6l7gCuFNM6
-         YHC7thqY6MP0f27MuFgx5D0zTpJORSTYafxtq3oQjjdnNpVhyGfZl60THcMmfAPTNkGq
-         c70N4LdIP5o5hbhqNapqeHmZkaoAD6v27lyAzjKiLL/zbawcksZy50SogYYuEt7JeN80
-         rJEn1sb8HFhk0/7hU/pSERPnrxn+FSE+o56evafSwOrPF2H5Zbk3joGQeZIJuieZoRnc
-         nholEZhtUWHmmIw7eBE15kTjg2I/sQ2GC8kk785MIJNu6quMAqNnyrt7p4dCO4P9qt7D
-         J4Iw==
-X-Gm-Message-State: AOAM531h/iJVmbBSuszrgN2Dz0bvpmTihNGUnW/2t64Hqu4lDsujI8f7
-        4QYmiKWOfOEy9yTdFn4G+wwOzRJ1jqiixw==
-X-Google-Smtp-Source: ABdhPJwRAPTGs5f/3oZBqMZL9wACOECWJ/0j1T2DpKTbkLTdMqA728YywwjAibwFsUG6tpzid3P0FQ==
-X-Received: by 2002:a05:6638:5b2:: with SMTP id b18mr30680204jar.69.1608927599421;
-        Fri, 25 Dec 2020 12:19:59 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=InI8kMxZ0SE9l75DuOndEZGfmarmC3cXjv+qNAPdxJc=;
+        b=oOrjXmFXhUJvZdi5mb2VrAGAdeYIZ67/tdI2AgGykQ68DcLRfObA0ylgv3v2bQdiUo
+         8915fqEOmqpAuv+RWOUHeO510+q+ioE8co+QOls6ESS1mUU/6Os3kvwf1glAQFS0GRQ4
+         cU62YeaJlIpwHiFzwt7Gs0COK11b/ty4YTLnvYFHbxN5Asw33Z6pPRlzGFkI/djYxv7F
+         cAwVFzAFa5ClM+ztak0yDO21yMVje4MSyMAjXRFQBtvS4BrV1deX30rQZ9da1RSf5+wl
+         v28y/Yj8jFUzg07trr48kKRmK6lhhF5MdEow4EYBATKqepaeyxmNNt5IVXVezykRfg02
+         Nf4Q==
+X-Gm-Message-State: AOAM530Gz6gGbpRzNa6dvDFXQwFvb6f2qFQmCEYYzzkA7+mOPjOPCLtb
+        aiNzGdAeQ4XAC+wHn8KbZA0=
+X-Google-Smtp-Source: ABdhPJzcroUJQmkQGcY7BxNYigl/rjO7YLJpONAnadfT8KS5+HQr9+NSD1zpJH+0E7zdC0dE6lc0Eg==
+X-Received: by 2002:a92:c847:: with SMTP id b7mr35308541ilq.210.1608927611296;
+        Fri, 25 Dec 2020 12:20:11 -0800 (PST)
 Received: from frodo.mearth (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
-        by smtp.googlemail.com with ESMTPSA id e1sm28380401iod.17.2020.12.25.12.19.58
+        by smtp.googlemail.com with ESMTPSA id e1sm28380401iod.17.2020.12.25.12.20.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Dec 2020 12:19:58 -0800 (PST)
+        Fri, 25 Dec 2020 12:20:10 -0800 (PST)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     jbaron@akamai.com, gregkh@linuxfoundation.org,
         linux-kernel@vger.kernel.org
-Cc:     Jim Cromie <jim.cromie@gmail.com>
-Subject: [RFC PATCH v2 00/19] dynamic debug diet plan
-Date:   Fri, 25 Dec 2020 13:19:25 -0700
-Message-Id: <20201225201944.3701590-1-jim.cromie@gmail.com>
+Cc:     Jim Cromie <jim.cromie@gmail.com>, stable@vger.kernel.org
+Subject: [RFC PATCH v2 01/19] dyndbg: fix use before null check
+Date:   Fri, 25 Dec 2020 13:19:26 -0700
+Message-Id: <20201225201944.3701590-2-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201225201944.3701590-1-jim.cromie@gmail.com>
+References: <20201225201944.3701590-1-jim.cromie@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Well, we're mostly overeating, but we can all look forward to a diet
-in January.  And more exersize.
+In commit a2d375eda771 ("dyndbg: refine export, rename to
+dynamic_debug_exec_queries()"), a string is copied before checking it
+isn't NULL.  Fix this, report a usage/interface error, and return the
+proper error code.
 
-dyndbg's compiled-in data-table currently uses 56 bytes per prdebug;
-this includes 3 pointers to hierarchical "decorator" data, which is
-primarily for adding "module:function:line:" prefixes to prdebug
-messages, and for enabling and modifying those prdebugs selectively.
+Fixes: a2d375eda771 ("dyndbg: refine export, rename to dynamic_debug_exec_queries()")
+Cc: stable@vger.kernel.org
+--
+-v2 drop comment tweak, improve commit message
 
-This patchset decouples "decorator" data, and makes it optional, and
-disposable.  By separating that data, it opens up possiblities to
-compress it, swap it out, map it selectively, etc.
+Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+---
+ lib/dynamic_debug.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-
-In more detail, patchset does:
-
-1- split struct _ddebug in 2, move "decorator" fields to _ddebug_callsites.
-
-while this adds a pointer per site to memory footprint, it allows:
-
-a- dropping decorations and storage, for some use cases.
-   this could include DRM:
-   - want to save calls to drm_debug_enabled()
-   - use distinct categories, can map to format-prefixes, ex: "drm:kms:"
-   - don't need "module:function:line" dynamic prefixes.
-   - dont mind loss of info/context in /proc/dynamic_debug/control
-
-b- ddebug_callsites[] contents are hierarchical, compressible.
-c- ddebug_callsites[] in separate section is compressible as a block.
-d- for just enabled prdebugs, could allocate callsites and fill from zblock.
-
-2- make ddebug_callsites optional internally.
-   This lets us drop them outright, for any reason, perhaps memory pressure.
-
-3- allow dropping callsites by those users.
-   echo module drm +D > /proc/dynamic_debug/control
-   this doesnt currently recover __dyndbg_callsites storage
-
-4- drop _ddebug.site, convert to _ddebug[N].property<x> lookup.
-   RFC is mostly here.
-
-rev1: https://lore.kernel.org/lkml/20201125194855.2267337-1-jim.cromie@gmail.com/
-
-rev2 differs by dropping zram attempt, making callsite data optional, etc.
-
-
-Jim Cromie (19): against v5.10
-
-  dyndbg: fix use before null check
-1 dyndbg: split struct _ddebug, move display fields to new
-    _ddebug_callsite
-    
-2 dyndbg: refactor part of ddebug_change to ddebug_match_site
-  dyndbg: accept null site in ddebug_match_site
-  dyndbg: hoist ->site out of ddebug_match_site
-  dyndbg: accept null site in ddebug_change
-  dyndbg: accept null site in dynamic_emit_prefix
-  dyndbg: accept null site in ddebug_proc_show
-  
-  dyndbg: optimize ddebug_emit_prefix
-  dyndbg: avoid calling dyndbg_emit_prefix when it has no work
-  
-3 dyndbg: refactor ddebug_alter_site out of ddebug_change
-  dyndbg: allow deleting site info via control interface
-  
-4 dyndbg: verify __dyndbg & __dyndbg_callsite invariant
-  dyndbg+module: expose dyndbg_callsites to modules
-  dyndbg: add ddebug_site_get/put api with pass-thru impl
-  dyndbg: ddebug_site_get/put api commentary
-  dyndbg: rearrange struct ddebug_callsites
-  dyndbg: add module_index to struct _ddebug
-  dyndbg: try DEFINE_DYNAMIC_DEBUG_TABLE
-
- drivers/gpu/drm/i915/i915_drv.c   |   3 +
- include/asm-generic/vmlinux.lds.h |   4 +
- include/linux/dynamic_debug.h     |  97 ++++++++---
- kernel/module-internal.h          |   1 +
- kernel/module.c                   |   9 +-
- lib/dynamic_debug.c               | 271 +++++++++++++++++++++---------
- 6 files changed, 283 insertions(+), 102 deletions(-)
-
+diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
+index bd7b3aaa93c3..c70d6347afa2 100644
+--- a/lib/dynamic_debug.c
++++ b/lib/dynamic_debug.c
+@@ -561,9 +561,14 @@ static int ddebug_exec_queries(char *query, const char *modname)
+ int dynamic_debug_exec_queries(const char *query, const char *modname)
+ {
+ 	int rc;
+-	char *qry = kstrndup(query, PAGE_SIZE, GFP_KERNEL);
++	char *qry; /* writable copy of query */
+ 
+-	if (!query)
++	if (!query) {
++		pr_err("non-null query/command string expected\n");
++		return -EINVAL;
++	}
++	qry = kstrndup(query, PAGE_SIZE, GFP_KERNEL);
++	if (!qry)
+ 		return -ENOMEM;
+ 
+ 	rc = ddebug_exec_queries(qry, modname);
 -- 
 2.29.2
 
