@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFDC02E2CDC
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 02:53:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 579CA2E2CDD
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 02:53:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729333AbgLZBwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Dec 2020 20:52:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42864 "EHLO
+        id S1729361AbgLZBwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Dec 2020 20:52:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726164AbgLZBwK (ORCPT
+        with ESMTP id S1726164AbgLZBwS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Dec 2020 20:52:10 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FDF5C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Dec 2020 17:51:30 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id lb18so2941853pjb.5
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Dec 2020 17:51:30 -0800 (PST)
+        Fri, 25 Dec 2020 20:52:18 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E354DC0613C1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Dec 2020 17:51:37 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id t8so3160620pfg.8
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Dec 2020 17:51:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=15jkmCKfS1m1xn/sVulof+I5g/Kt2DoKoW3K5fEsg+k=;
-        b=NBjF8BHM+XJaHT/icVvQv4624yNhoUYFSZXU80vzuWpYJeIU+B32d1AsyV5/PCM24I
-         W9ykA6Ah5qiURQTRSVCfmrxeNl16DJxxXsEoVoQgmD8mYFcGFwj5bztSe7yRRJ771Nfi
-         4eU1QJgIRoHIHI7AP6nWcYDn9ljqRL+4vMqT+fHjqRbXQG7JxHAnAB8eEz6a2MKrupez
-         Qe+KmrW2rZ8POJhXMj/O/K7TxxGcbSGS+KPAzeL2OiijjvoIO8scBBja3Gef/wLuBbna
-         a40eSZ9rHwQw4UZe1mmz3dvi2rSAJ5eEEG30aShm9j71BRgsHA5Bt8AR5DPEuv/kna5G
-         5d/w==
+        bh=rmioAxNSR6MAY+J4fyGJ9OkjHtlBhIZAxyWFqSA2PTg=;
+        b=a9fdtmJm9f3y1e4rkyLB6faMuZKB2ebBCjIGnVqjZBhwxo08r9rCzsflVdyudM2paC
+         ohigfDgaJhNEW8bEMWSMLMV6RKZS5/14+6dWpaVWfbgOtSWtF8FYIfPOY/EoSdLN7LVH
+         VwxZ32EJeEC15ekK6ybFW9Bc8gvWSUB/gP85fPSwhEoXLXapOi/8BRN31xdsrVXrSzUI
+         utbWGDODU9jaG1r6dcP2LnEUxUA6TM6r/LacBx8Z2NPrQ7Cays4PBcU4e3b3UQiADFsV
+         aqGCsP4MQmXI+CmeQXfSABTYHEwbjjU/bu4Nfm1dXlUUb5llGuqpsMAeXj5RJBs7OQeO
+         iwDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=15jkmCKfS1m1xn/sVulof+I5g/Kt2DoKoW3K5fEsg+k=;
-        b=p/oPjZZ0tIUgfDUWlZEqXltBd/HqZB9ehTjLpiqTLow7UpQWp6kNUF+wlrJ60TO3G5
-         dX3Eka0ZTEfGT5ozPRJS2ar/pWv84ufnatryzQWswM0sWCUu7w3m6ICNsCy49xwvb7WY
-         P4DTX9y3smFOumMxKz+jvgT8rAeIWkCuc9OnTQnD9Ecc2HZsw8sqUcwWId95eZ2pfr3u
-         cMPWzRWu1HoiI7ZkjwOM0rtS/dSa32obbLgHDDPaAHbXvMj896af1w8/YY0v2jHOO3Ir
-         NYJMgfisKIfaLoQXCRHtsDix9PiibF4aAVpczV7psze5DzpaWWazKmRnQeS63RnPf8Df
-         m2OA==
-X-Gm-Message-State: AOAM532zGmgy5aIOYZfGGvOGa7YJxEta9ah9qyJCLACZxsjrTTNYnGoK
-        ptXqYuOGJ8PiNyrsUpOVzak4V9VgV8M=
-X-Google-Smtp-Source: ABdhPJz5+uwNbzkjT+5l0FziwyObTFU5KcSDi6vHslrf4HhGLv+ctH7/4zuWun7rUswXauqDx+BUgQ==
-X-Received: by 2002:a17:902:7c04:b029:db:e44d:9366 with SMTP id x4-20020a1709027c04b02900dbe44d9366mr35219811pll.51.1608947489551;
-        Fri, 25 Dec 2020 17:51:29 -0800 (PST)
+        bh=rmioAxNSR6MAY+J4fyGJ9OkjHtlBhIZAxyWFqSA2PTg=;
+        b=eZblD7uAiRKr/t2FdyGAAzsnZ75+chdl8saRcPonKdFd+uWo4UjUMt5xixqI/6dElf
+         x7lw6LD7pDkcIaor6yLLiXpnBU+ikqSfMUTV5LLME9Y3EoTpf3aHEPjj8vSQJzMR6E2b
+         +72G1CfBHDR82/kdIdVtqpVuPzfyqcXIifLDPmgvfoK9dyaB7rfKOnhvlErrthhpPPOL
+         L5U9WFU03XOS7FhVY1gwY28vpVhiDogfENmheE+z6p3FstcIZa9OOae3xck0fcNriQaX
+         XeuwWcXQQnjh7OFvExpw5ikKmzsVNWReEnnmgEjlpnCLd/JOkPCgjIHa8acJn4Nh9F5R
+         f9uQ==
+X-Gm-Message-State: AOAM533QTDOEcvXlfJ1Jz7ILzU/JRnDV+7O+5496X9aLW3EZZtNtMIHt
+        bp64RxscMp0yfntxMrDKjPcf1gfEvlE=
+X-Google-Smtp-Source: ABdhPJxoetehjnG0HHX1bUnfzEc2bPOTEN3/vDXN+FaQD2lo3rYrdg9TEcgH9saPYmDIPXH9u1yJcg==
+X-Received: by 2002:a63:5720:: with SMTP id l32mr22883358pgb.64.1608947497404;
+        Fri, 25 Dec 2020 17:51:37 -0800 (PST)
 Received: from localhost ([47.251.3.230])
-        by smtp.gmail.com with ESMTPSA id o11sm6313909pjs.36.2020.12.25.17.51.28
+        by smtp.gmail.com with ESMTPSA id y16sm21792055pgg.20.2020.12.25.17.51.36
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 25 Dec 2020 17:51:29 -0800 (PST)
+        Fri, 25 Dec 2020 17:51:36 -0800 (PST)
 From:   Lai Jiangshan <jiangshanlai@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Valentin Schneider <valentin.schneider@arm.com>,
@@ -58,9 +58,9 @@ Cc:     Valentin Schneider <valentin.schneider@arm.com>,
         Lai Jiangshan <laijs@linux.alibaba.com>,
         Tejun Heo <tj@kernel.org>,
         Lai Jiangshan <jiangshanlai@gmail.com>
-Subject: [PATCH -tip V3 7/8] workqueue: reorganize workqueue_offline_cpu() unbind_workers()
-Date:   Sat, 26 Dec 2020 10:51:15 +0800
-Message-Id: <20201226025117.2770-8-jiangshanlai@gmail.com>
+Subject: [PATCH -tip V3 8/8] workqueue: Fix affinity of kworkers when attaching into pool
+Date:   Sat, 26 Dec 2020 10:51:16 +0800
+Message-Id: <20201226025117.2770-9-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20201226025117.2770-1-jiangshanlai@gmail.com>
 References: <20201226025117.2770-1-jiangshanlai@gmail.com>
@@ -72,137 +72,104 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-Just move around the code, no functionality changed.
-Only wq_pool_attach_mutex protected region becomes a little larger.
+When worker_attach_to_pool() is called, we should not put the workers
+to pool->attrs->cpumask when there is not CPU online in it.
 
-It prepares for later patch protecting wq_online_cpumask
-in wq_pool_attach_mutex.
+We have to use wq_online_cpumask in worker_attach_to_pool() to check
+if pool->attrs->cpumask is valid rather than cpu_online_mask or
+cpu_active_mask due to gaps between stages in cpu hot[un]plug.
 
+So for that late-spawned per-CPU kworker case: the outgoing CPU should have
+already been cleared from wq_online_cpumask, so it gets its affinity reset
+to the possible mask and the subsequent wakeup will ensure it's put on an
+active CPU.
+
+To use wq_online_cpumask in worker_attach_to_pool(), we need to protect
+wq_online_cpumask in wq_pool_attach_mutex and we modify workqueue_online_cpu()
+and workqueue_offline_cpu() to enlarge wq_pool_attach_mutex protected
+region. We also put updating wq_online_cpumask and [re|un]bind_workers()
+in the same wq_pool_attach_mutex protected region to make the update
+for percpu workqueue atomically.
+
+Cc: Qian Cai <cai@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Vincent Donnefort <vincent.donnefort@arm.com>
+Link: https://lore.kernel.org/lkml/20201210163830.21514-3-valentin.schneider@arm.com/
+Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
 Acked-by: Tejun Heo <tj@kernel.org>
 Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- kernel/workqueue.c | 90 +++++++++++++++++++++++-----------------------
- 1 file changed, 45 insertions(+), 45 deletions(-)
+ kernel/workqueue.c | 32 +++++++++++++++-----------------
+ 1 file changed, 15 insertions(+), 17 deletions(-)
 
 diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 94545e6feda5..dd32398edf55 100644
+index dd32398edf55..25d50050257c 100644
 --- a/kernel/workqueue.c
 +++ b/kernel/workqueue.c
-@@ -4896,61 +4896,57 @@ void wq_worker_comm(char *buf, size_t size, struct task_struct *task)
-  * cpu comes back online.
-  */
+@@ -310,7 +310,7 @@ static bool workqueue_freezing;		/* PL: have wqs started freezing? */
+ /* PL: allowable cpus for unbound wqs and work items */
+ static cpumask_var_t wq_unbound_cpumask;
  
--static void unbind_workers(int cpu)
-+static void unbind_workers(struct worker_pool *pool)
+-/* PL: online cpus (cpu_online_mask with the going-down cpu cleared) */
++/* PL&A: online cpus (cpu_online_mask with the going-down cpu cleared) */
+ static cpumask_var_t wq_online_cpumask;
+ 
+ /* CPU where unbound work was last round robin scheduled from this CPU */
+@@ -1848,11 +1848,11 @@ static void worker_attach_to_pool(struct worker *worker,
  {
--	struct worker_pool *pool;
- 	struct worker *worker;
+ 	mutex_lock(&wq_pool_attach_mutex);
+ 
+-	/*
+-	 * set_cpus_allowed_ptr() will fail if the cpumask doesn't have any
+-	 * online CPUs.  It'll be re-applied when any of the CPUs come up.
+-	 */
+-	set_cpus_allowed_ptr(worker->task, pool->attrs->cpumask);
++	/* Is there any cpu in pool->attrs->cpumask online? */
++	if (cpumask_intersects(pool->attrs->cpumask, wq_online_cpumask))
++		WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, pool->attrs->cpumask) < 0);
++	else
++		WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, cpu_possible_mask) < 0);
+ 
+ 	/*
+ 	 * The wq_pool_attach_mutex ensures %POOL_DISASSOCIATED remains
+@@ -5082,13 +5082,12 @@ int workqueue_online_cpu(unsigned int cpu)
+ 	int pi;
+ 
+ 	mutex_lock(&wq_pool_mutex);
+-	cpumask_set_cpu(cpu, wq_online_cpumask);
  
 -	for_each_cpu_worker_pool(pool, cpu) {
 -		mutex_lock(&wq_pool_attach_mutex);
--		raw_spin_lock_irq(&pool->lock);
-+	lockdep_assert_held(&wq_pool_attach_mutex);
- 
--		/*
--		 * We've blocked all attach/detach operations. Make all workers
--		 * unbound and set DISASSOCIATED.  Before this, all workers
--		 * except for the ones which are still executing works from
--		 * before the last CPU down must be on the cpu.  After
--		 * this, they may become diasporas.
--		 */
--		for_each_pool_worker(worker, pool)
--			worker->flags |= WORKER_UNBOUND;
-+	raw_spin_lock_irq(&pool->lock);
- 
--		pool->flags |= POOL_DISASSOCIATED;
-+	/*
-+	 * We've blocked all attach/detach operations. Make all workers
-+	 * unbound and set DISASSOCIATED.  Before this, all workers
-+	 * except for the ones which are still executing works from
-+	 * before the last CPU down must be on the cpu.  After
-+	 * this, they may become diasporas.
-+	 */
-+	for_each_pool_worker(worker, pool)
-+		worker->flags |= WORKER_UNBOUND;
- 
--		raw_spin_unlock_irq(&pool->lock);
-+	pool->flags |= POOL_DISASSOCIATED;
- 
--		for_each_pool_worker(worker, pool)
--			WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, cpu_possible_mask) < 0);
-+	raw_spin_unlock_irq(&pool->lock);
- 
++	mutex_lock(&wq_pool_attach_mutex);
++	cpumask_set_cpu(cpu, wq_online_cpumask);
++	for_each_cpu_worker_pool(pool, cpu)
+ 		rebind_workers(pool);
 -		mutex_unlock(&wq_pool_attach_mutex);
-+	for_each_pool_worker(worker, pool)
-+		WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, cpu_possible_mask) < 0);
- 
--		/*
--		 * Call schedule() so that we cross rq->lock and thus can
--		 * guarantee sched callbacks see the %WORKER_UNBOUND flag.
--		 * This is necessary as scheduler callbacks may be invoked
--		 * from other cpus.
--		 */
--		schedule();
-+	/*
-+	 * Call schedule() so that we cross rq->lock and thus can
-+	 * guarantee sched callbacks see the %WORKER_UNBOUND flag.
-+	 * This is necessary as scheduler callbacks may be invoked
-+	 * from other cpus.
-+	 */
-+	schedule();
- 
--		/*
--		 * Sched callbacks are disabled now.  Zap nr_running.
--		 * After this, nr_running stays zero and need_more_worker()
--		 * and keep_working() are always true as long as the
--		 * worklist is not empty.  This pool now behaves as an
--		 * unbound (in terms of concurrency management) pool which
--		 * are served by workers tied to the pool.
--		 */
--		atomic_set(&pool->nr_running, 0);
-+	/*
-+	 * Sched callbacks are disabled now.  Zap nr_running.
-+	 * After this, nr_running stays zero and need_more_worker()
-+	 * and keep_working() are always true as long as the
-+	 * worklist is not empty.  This pool now behaves as an
-+	 * unbound (in terms of concurrency management) pool which
-+	 * are served by workers tied to the pool.
-+	 */
-+	atomic_set(&pool->nr_running, 0);
- 
--		/*
--		 * With concurrency management just turned off, a busy
--		 * worker blocking could lead to lengthy stalls.  Kick off
--		 * unbound chain execution of currently pending work items.
--		 */
--		raw_spin_lock_irq(&pool->lock);
--		wake_up_worker(pool);
--		raw_spin_unlock_irq(&pool->lock);
 -	}
-+	/*
-+	 * With concurrency management just turned off, a busy
-+	 * worker blocking could lead to lengthy stalls.  Kick off
-+	 * unbound chain execution of currently pending work items.
-+	 */
-+	raw_spin_lock_irq(&pool->lock);
-+	wake_up_worker(pool);
-+	raw_spin_unlock_irq(&pool->lock);
- }
++	mutex_unlock(&wq_pool_attach_mutex);
  
- /**
-@@ -5122,7 +5118,11 @@ int workqueue_offline_cpu(unsigned int cpu)
+ 	/* update CPU affinity of workers of unbound pools */
+ 	for_each_pool(pool, pi) {
+@@ -5118,14 +5117,13 @@ int workqueue_offline_cpu(unsigned int cpu)
  	if (WARN_ON(cpu != smp_processor_id()))
  		return -1;
  
--	unbind_workers(cpu);
-+	for_each_cpu_worker_pool(pool, cpu) {
-+		mutex_lock(&wq_pool_attach_mutex);
-+		unbind_workers(pool);
-+		mutex_unlock(&wq_pool_attach_mutex);
-+	}
- 
+-	for_each_cpu_worker_pool(pool, cpu) {
+-		mutex_lock(&wq_pool_attach_mutex);
+-		unbind_workers(pool);
+-		mutex_unlock(&wq_pool_attach_mutex);
+-	}
+-
  	mutex_lock(&wq_pool_mutex);
++
++	mutex_lock(&wq_pool_attach_mutex);
  	cpumask_clear_cpu(cpu, wq_online_cpumask);
++	for_each_cpu_worker_pool(pool, cpu)
++		unbind_workers(pool);
++	mutex_unlock(&wq_pool_attach_mutex);
+ 
+ 	/* update CPU affinity of workers of unbound pools */
+ 	for_each_pool(pool, pi) {
 -- 
 2.19.1.6.gb485710b
 
