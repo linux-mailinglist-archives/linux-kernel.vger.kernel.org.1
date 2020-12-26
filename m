@@ -2,139 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 473282E2EA4
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 17:31:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C68822E2EA7
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 17:37:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726243AbgLZQ3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Dec 2020 11:29:40 -0500
-Received: from mail-vi1eur05on2104.outbound.protection.outlook.com ([40.107.21.104]:12423
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725995AbgLZQ3k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Dec 2020 11:29:40 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DKWqbVwDEzEyq9kwb+jqXWtwlQ+hrezTUM35bSiz8qJUdW3KiLIm4ClkTAfNZKBQdTyYnq81ew4rSY+XtQ87fEPmiimS4bqpk7DU5u4R9bh3hDXk45k/v+HdUwirm+TTtCbnmPtd3/37yXghokE1d5MoYHS0JT73wwfwwY5xwjMq3cITMmOwBbcwJeCOeCIucDvbPTu0Hw9vz67OozkMWLL/bRBXi0pG0JSRyztVN36loOJi4+c4diNjFvaMelvb+BmuwmvLMj2S2lfMGPjGIzjT0igCrYPeq1TtV5n4KHBOIagpo6SACAUhUGPMo9R9L8C8Zj1ynoEl/LGy0fJSbg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=N7aDFdy3a0ptxxDM9/efFmxo1bnwv9w463b7E8YDPHA=;
- b=SQqllPOiMghvdn8EXvBwYdzg09l50rkCIt3IInnM+GeL66QQQC8CFcFRpACJQjwoC0/fOWHfjopqIxahJGwTZ+MLX7hHp9UX9W/2xG7gdTCLh+ilIX9uHWFDW2+e6wmQ3JHuD5gAb4brMmSHxkTF+LaB/ES5TOOIK8wF6fYNxRAB6txaHFKuRAWnB9DcjrEWSyjFT1CvJpbD/avfFgBYjzELBMO6i1CIqcb4cNWf+K8QX7X6DXfLYYAJYtAm++EEBRMggqbAHZV6eyPRDUknpgFY+RSdzHJMqTEkZ4QOhc2AqNZIyGlyc8legqViLYPWEFlcTJhUSHuYm0uINUK6sw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=toradex.com; dmarc=pass action=none header.from=toradex.com;
- dkim=pass header.d=toradex.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=toradex.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=N7aDFdy3a0ptxxDM9/efFmxo1bnwv9w463b7E8YDPHA=;
- b=c4wsiCjTa6dcLARi7cWZVt4C23v8uZCrgqzZghkZ/2tWdjxJRZVeG900qqTzfpwkJhWAESX7dzcAQ493t/tOZwJFwnlylA8BvIZax9ngSzBmotWmhSX5FIe7EvOGAZE7u/76lL3nBYCEsIwYVAOq278pS2uc6BRfBbEhc+DpwjA=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=toradex.com;
-Received: from AM0PR05MB6002.eurprd05.prod.outlook.com (2603:10a6:208:129::19)
- by AM0PR05MB6001.eurprd05.prod.outlook.com (2603:10a6:208:124::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.27; Sat, 26 Dec
- 2020 16:28:50 +0000
-Received: from AM0PR05MB6002.eurprd05.prod.outlook.com
- ([fe80::802f:1250:dd1c:9357]) by AM0PR05MB6002.eurprd05.prod.outlook.com
- ([fe80::802f:1250:dd1c:9357%3]) with mapi id 15.20.3700.031; Sat, 26 Dec 2020
- 16:28:50 +0000
-From:   Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
-To:     linux-next@vger.kernel.org
-Cc:     Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        Igor Opaniuk <igor.opaniuk@toradex.com>,
-        Philippe Schenker <philippe.schenker@toradex.com>,
-        Oleksandr Suvorov <oleksandr.suvorov@toradex.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: [PATCH v2] mfd: stmpe: Support disabling sub-functions
-Date:   Sat, 26 Dec 2020 18:28:18 +0200
-Message-Id: <20201226162818.73782-1-oleksandr.suvorov@toradex.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <bf750784-eb4a-675a-2ec4-bc52283dcc9a@pengutronix.de>
-References: <bf750784-eb4a-675a-2ec4-bc52283dcc9a@pengutronix.de>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [82.193.109.226]
-X-ClientProxiedBy: AM4PR0101CA0082.eurprd01.prod.exchangelabs.com
- (2603:10a6:200:41::50) To AM0PR05MB6002.eurprd05.prod.outlook.com
- (2603:10a6:208:129::19)
+        id S1726276AbgLZQdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Dec 2020 11:33:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726010AbgLZQdu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Dec 2020 11:33:50 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26A22C0613C1
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 08:33:10 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id c133so5670263wme.4
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 08:33:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=konsulko.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gtpkeBVz5MREbJ4Hh4ldSey/zkGfhttgVGvyAUtLQ9o=;
+        b=nsK5M8nz/VjeGsXTO6OlT+E3dnqJjuzsIRdYtR6PlPUDqdCDN3yCv6jqWygj6PLHjE
+         ZSALb7CkX5KZG8SOH52v2VLIZguJ50ITS96gTh77X0LJ7l+SWt/QbV8E63X2YnRgQSZE
+         6G5jvxVyoCUfMVlps4Y2zq3IDzS+1csIxUclM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gtpkeBVz5MREbJ4Hh4ldSey/zkGfhttgVGvyAUtLQ9o=;
+        b=cfW4o526ihwfD60r+nln0HKWFv7G58sIXv0c+r2KDZgaDMuicW+nRe1OO7uduy0+Mk
+         Xbk+CQovmSOBmN/JGnqMdTAgNq3SIu//1Ky2cLO64IuI/TzDG9nSEbSRNzG/trmo9WSB
+         6zVcEonRC8Zd1cOlEe5nrU9tqgaXyNH8mX/SRpGycpnTSNjAM48WaCPdxxD1U1rLy2qD
+         MyWgXBfE/MUjFBYGeo2STHIZusMhL6FzQd/ApCwtEcnlr4Ov5fWg1+YzBd6JUHnPJawv
+         9N7h3lnGoLQ8PA6yPplU//wzuzEWohzCuVLdPgTzBvwmjQugV+wqmNztLpU6mBSETOZJ
+         igYA==
+X-Gm-Message-State: AOAM533EZVRueBLZGBXhbS40WGpeHvgfZ2W/B7JjWCKnPNdZbHniuExs
+        15hP6UXkKnr/YYU/0QROqSYYhg==
+X-Google-Smtp-Source: ABdhPJwj20fCyOf4J8xCHJKDZdEjK/pMUpvZ5ueQPVxSkNMqC94ou5zgiSv6fCXwp7uWbqaG0FsL1A==
+X-Received: by 2002:a1c:4b10:: with SMTP id y16mr13184416wma.73.1609000387485;
+        Sat, 26 Dec 2020 08:33:07 -0800 (PST)
+Received: from lootbox.konsulko.bg (lan.nucleusys.com. [92.247.61.126])
+        by smtp.gmail.com with ESMTPSA id r20sm52270387wrg.66.2020.12.26.08.33.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Dec 2020 08:33:06 -0800 (PST)
+From:   Vitaly Wool <vitaly.wool@konsulko.com>
+To:     linux-riscv@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, Bin Meng <bin.meng@windriver.com>,
+        Anup Patel <anup@brainfault.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        damien.lemoal@wdc.com, devicetree@vger.kernel.org,
+        Vitaly Wool <vitaly.wool@konsulko.com>
+Subject: [PATCH] riscv: add BUILTIN_DTB support for MMU-enabled targets
+Date:   Sat, 26 Dec 2020 18:30:38 +0200
+Message-Id: <20201226163037.43691-1-vitaly.wool@konsulko.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from cryobook.toradex.int (82.193.109.226) by AM4PR0101CA0082.eurprd01.prod.exchangelabs.com (2603:10a6:200:41::50) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.27 via Frontend Transport; Sat, 26 Dec 2020 16:28:49 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6baebf9d-77bf-4be3-fcac-08d8a9bb5419
-X-MS-TrafficTypeDiagnostic: AM0PR05MB6001:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM0PR05MB60010215719029B67EF2A373F9DB0@AM0PR05MB6001.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: WUwraUWr8ost+bPuyiEnUBIXJmpuJm+fQiF7nE3Emi4BRXc0lrR+3i7cnKYO2/LaZJ2K93T6/AGYiV6ZHFPG7wjNHhaV+baRrDVUk1nWgMGTXtveJmPZrcNOajo3gkUW/Vj1sqdLBuGuXthwiiI3zchXZUfqVD/spV1GCfHVAs+vxkVXIypymhntSSs7PdSYb/HiIHOa68w483IoXhMrya6gW27fN1lS7tMBUiqWeqMAjP6s0VTzAA8wVuEBx8SsyAn/MSxfzke/Mdx54K4DeTZErfYQyuSXK1jCBdd+l3WaMhM9F0licJN3Zwfv1X9x2fiJNLlEyOZ0m565RohDfCS5AGo5+a9n1KqUibjoTQcv2nEfwVzomhcwx/UnLUz4DfcPZeFwoIFilhWPe0LixA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR05MB6002.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39840400004)(376002)(136003)(396003)(366004)(346002)(2616005)(956004)(44832011)(478600001)(36756003)(1076003)(52116002)(6666004)(6916009)(8936002)(4744005)(66476007)(66556008)(66946007)(26005)(55236004)(2906002)(54906003)(5660300002)(86362001)(6512007)(6506007)(83380400001)(4326008)(186003)(16526019)(316002)(8676002)(6486002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?xkAke/vY4++xQpzvoES7Z3QwYnTYdYpBdIfxIIPpfdg+LYgflNUaAJUagAYV?=
- =?us-ascii?Q?1DFNMmhfdDasoPjXA9mJ700j+cCe3j9ZKbyln81Q1UOVC8GYrSSZafpHGmqe?=
- =?us-ascii?Q?uGYeMhlTRJiXo7Q570Bcdhmsi4uflZdSl6ifdQeOSDqtnyb/Km3LyDkCzbCb?=
- =?us-ascii?Q?+IelrNI9kXRepJ4hoUPB+a3b9z0ujmOFNb/g6bQoC4OHLf4srr8Kfi6LgwP3?=
- =?us-ascii?Q?sNOiOdLkxlQH0LDB/bjue/DPkbd7OQKtHaWnuqu6uKSVSU9K83KlPFx3cMTa?=
- =?us-ascii?Q?ceDntMci8ftsGCr0IAdNBSQ3J7P6COccyua/Qjy2NrAks2jRNWQyJGH99lw/?=
- =?us-ascii?Q?GssjSmWB5vdpvIK/s3Zs1q7h2wZzoIT5I9sJTwjGjReofyphV03cXHxb+KpJ?=
- =?us-ascii?Q?BdqXbNRao6qadO6YbjThAIuormZvU6+JPQ21atfWjcWBNyMSeD57/+hUsM+T?=
- =?us-ascii?Q?vu3BQjgpavDEz2omYMJROgER0r+hY2H8fHx0aIyRdd+b7KNMtmixmiCq3cO/?=
- =?us-ascii?Q?+kt+x9Bs/wi6kZilNn7z+5iytgQLevGHITcdlsvUQxaqLxtgOvqRzPUZMBf4?=
- =?us-ascii?Q?Ef3EiHImn5KqLsI3sLkxZcQd7sLDvGN1YqrfilLDqvm3GANdK50HoTL0jx2e?=
- =?us-ascii?Q?FlKkpFAe6BFVidBHIuxVtlnjcbWXn8OCDDpIRXM7iTsZ7nv0mnLnOM/JAmKV?=
- =?us-ascii?Q?By45PWlXrgJ+41b6Oqn9ZMQ6rOUOGd3Retni2e/+6EkKZWfvV4hxP9u/VxZm?=
- =?us-ascii?Q?W21MN7hXwN4wpPci+1ZwOmW0WHXO5SbVDPh/Ch7k3DlumL3EWcNrqmh97wct?=
- =?us-ascii?Q?FNOxVMhg6UJgynZ1vl27TfeCvRJq6BM3Pwc47Wsq6CQaJND45oTOMtrsN2KW?=
- =?us-ascii?Q?IcU0GGKrchpSPKZbTMlo1/F7WDN1ewRAiSmsk82g4mSobzXNDScvhHGaRanH?=
- =?us-ascii?Q?V56bc8g6JtSJjwQA0ix/ht6ihf4jkICTD/jC2a4OsjI31FCNwVg8LvJ8V4z6?=
- =?us-ascii?Q?g1nF?=
-X-OriginatorOrg: toradex.com
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR05MB6002.eurprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Dec 2020 16:28:50.6613
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: d9995866-0d9b-4251-8315-093f062abab4
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6baebf9d-77bf-4be3-fcac-08d8a9bb5419
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SRd1b5n9aNazkBN2McVhcBC143bGk5N6ANli/qomvGisp53MGMsooONBin37LwQ5CISnY4OnY7gbcqoYrbZH27L+KDmK4r25ue5JTxCpgIw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB6001
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support of sub-functions disabling. It allows one to define
-an stmpe sub-function device in devicetree, but keep it disabled.
+Sometimes, especially in a production system we may not want to
+use a "smart bootloader" like u-boot to load kernel, ramdisk and
+device tree from a filesystem on eMMC, but rather load the kernel
+from a NAND partition and just run it as soon as we can, and in
+this case it is convenient to have device tree compiled into the
+kernel binary. Since this case is not limited to MMU-less systems,
+let's support it for these which have MMU enabled too.
 
-Signed-off-by: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
+Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.com>
 ---
+ arch/riscv/Kconfig   |  1 -
+ arch/riscv/mm/init.c | 12 ++++++++++--
+ 2 files changed, 10 insertions(+), 3 deletions(-)
 
-Changes in v2:
-Use for_each_available_child_of_node() instead of checking
-of_device_is_available() for each node.
-Thanks for Ahmad Fatoum a.fatoum@pengutronix.de for and idea
-
- drivers/mfd/stmpe.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mfd/stmpe.c b/drivers/mfd/stmpe.c
-index 90f3292230c9..3e4f32673db3 100644
---- a/drivers/mfd/stmpe.c
-+++ b/drivers/mfd/stmpe.c
-@@ -1357,7 +1357,7 @@ static void stmpe_of_probe(struct stmpe_platform_data *pdata,
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 2b41f6d8e458..9464b4e3a71a 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -419,7 +419,6 @@ endmenu
  
- 	pdata->autosleep = (pdata->autosleep_timeout) ? true : false;
+ config BUILTIN_DTB
+ 	def_bool n
+-	depends on RISCV_M_MODE
+ 	depends on OF
  
--	for_each_child_of_node(np, child) {
-+	for_each_available_child_of_node(np, child) {
- 		if (of_node_name_eq(child, "stmpe_gpio")) {
- 			pdata->blocks |= STMPE_BLOCK_GPIO;
- 		} else if (of_node_name_eq(child, "stmpe_keypad")) {
+ menu "Power management options"
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index 87c305c566ac..5d1c7a3ec01c 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -194,12 +194,20 @@ void __init setup_bootmem(void)
+ 	setup_initrd();
+ #endif /* CONFIG_BLK_DEV_INITRD */
+ 
++	/*
++	 * If DTB is built in, no need to reserve its memblock.
++	 * OTOH, initial_boot_params has to be set to properly copy DTB
++	 * before unflattening later on.
++	 */
++	if (IS_ENABLED(CONFIG_BUILTIN_DTB))
++		initial_boot_params = __va(dtb_early_pa);
++	else
++		memblock_reserve(dtb_early_pa, fdt_totalsize(dtb_early_va));
++
+ 	/*
+ 	 * Avoid using early_init_fdt_reserve_self() since __pa() does
+ 	 * not work for DTB pointers that are fixmap addresses
+ 	 */
+-	memblock_reserve(dtb_early_pa, fdt_totalsize(dtb_early_va));
+-
+ 	early_init_fdt_scan_reserved_mem();
+ 	dma_contiguous_reserve(dma32_phys_limit);
+ 	memblock_allow_resize();
 -- 
 2.29.2
 
