@@ -2,116 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA6FB2E2E8D
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 16:57:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57DEB2E2E8E
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 16:57:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726209AbgLZPut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Dec 2020 10:50:49 -0500
-Received: from smtprelay0227.hostedemail.com ([216.40.44.227]:52166 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725995AbgLZPus (ORCPT
+        id S1726278AbgLZPvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Dec 2020 10:51:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725995AbgLZPvL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Dec 2020 10:50:48 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 486F4180A7FF1;
-        Sat, 26 Dec 2020 15:50:07 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 93,11,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:968:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2693:2828:3138:3139:3140:3141:3142:3354:3622:3653:3865:3866:3867:3868:3870:3871:3872:3873:3874:4250:4321:4605:5007:7652:7875:7904:10010:10400:10848:11026:11232:11658:11914:12297:12679:12740:12895:13095:13161:13229:13439:13894:14096:14097:14181:14659:14721:21080:21433:21627:21740:21741:21939:21966:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:1:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: self21_070e6ca27483
-X-Filterd-Recvd-Size: 2984
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf15.hostedemail.com (Postfix) with ESMTPA;
-        Sat, 26 Dec 2020 15:50:06 +0000 (UTC)
-Message-ID: <c746437027a6aae481a8719be929970b33a67d2d.camel@perches.com>
-Subject: Re: [PATCH v2 3/4] checkpatch: kconfig: enforce help text
- indentation
-From:   Joe Perches <joe@perches.com>
-To:     Nicolai Fischer <nicolai.fischer@fau.de>,
-        linux-kernel@vger.kernel.org
-Cc:     apw@canonical.com, johannes.czekay@fau.de,
-        linux-kernel@i4.cs.fau.de, akpm@linux-foundation.org
-Date:   Sat, 26 Dec 2020 07:50:04 -0800
-In-Reply-To: <20201226140511.662368-4-nicolai.fischer@fau.de>
-References: <b1c83a13-204f-25ff-d08b-d08559e25a3b@fau.de>
-         <20201226140511.662368-1-nicolai.fischer@fau.de>
-         <20201226140511.662368-4-nicolai.fischer@fau.de>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Sat, 26 Dec 2020 10:51:11 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CCBAC061757
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 07:50:30 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1ktBpk-0008BG-43; Sat, 26 Dec 2020 16:50:20 +0100
+Subject: Re: [Linux-stm32] [PATCH] mfd: stmpe: Support disabling sub-functions
+To:     Oleksandr Suvorov <oleksandr.suvorov@toradex.com>,
+        linux-next@vger.kernel.org
+Cc:     Igor Opaniuk <igor.opaniuk@toradex.com>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        linux-kernel@vger.kernel.org,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+References: <20201226094722.16580-1-oleksandr.suvorov@toradex.com>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <bf750784-eb4a-675a-2ec4-bc52283dcc9a@pengutronix.de>
+Date:   Sat, 26 Dec 2020 16:50:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201226094722.16580-1-oleksandr.suvorov@toradex.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-12-26 at 15:05 +0100, Nicolai Fischer wrote:
-> Adds a new warning in case the indentation level of the
-> first line of a Kconfig help message is not two spaces
-> higher than the keyword itself.
-> Blank lines between the message and the help keyword
-> are ignored.
-[]
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[]
-> @@ -3332,6 +3336,13 @@ sub process {
->  				$f =~ s/^\s+//;
->  				next if ($f =~ /^$/);
->  
+Hello Oleksander,
+
+On 26.12.20 10:47, Oleksandr Suvorov wrote:
+> Add support of sub-functions disabling. It allows one to define
+> an stmpe sub-function device in devicetree, but keep it disabled.
 > 
-> +				if (defined $help_indent) {
-> +					if ($lines[$ln - 1] !~ /^\+$help_indent\ {2}\S*/) {
-> +						$help_stat_real = get_stat_real($ln - 1, $ln);
-> +					}
-> +					undef $help_indent;
-> +				}
+> Signed-off-by: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
+> ---
+> 
+>  drivers/mfd/stmpe.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/mfd/stmpe.c b/drivers/mfd/stmpe.c
+> index 90f3292230c9..2182607b75f6 100644
+> --- a/drivers/mfd/stmpe.c
+> +++ b/drivers/mfd/stmpe.c
+> @@ -1358,6 +1358,9 @@ static void stmpe_of_probe(struct stmpe_platform_data *pdata,
+>  	pdata->autosleep = (pdata->autosleep_timeout) ? true : false;
+>  
+>  		(np, child) {
+> +		/* skip disabled sub-function */
+> +		if (!of_device_is_available(child))
+> +			continue;
 
-This doesn't work if the indent is more than 2 spaces.
+Better use for_each_available_child_of_node().
 
-$ cat Kconfigtest
-menuconfig FOO
-	bool "Enable foo" if EXPERT
-	default y
-	help
-	   Line 1.
-	   Line 2.
-	   Line 3.
-	   Line 4.
+>  		if (of_node_name_eq(child, "stmpe_gpio")) {
+>  			pdata->blocks |= STMPE_BLOCK_GPIO;
+>  		} else if (of_node_name_eq(child, "stmpe_keypad")) {
+> 
 
-$ ./scripts/checkpatch.pl -f Kconfigtest
-total: 0 errors, 0 warnings, 10 lines checked
-
-Kconfigtest has no obvious style problems and is ready for submission.
-
-Also, it may be useful to test that the indent after a block
-uses a single tab more than the block start.
-
-Look at the first block of block/Kconfig:
-
-The indentation of bool and help uses 7 spaces but the indentation
-of the help text uses a tab then 1 space.
-
-It'd be useful to emit a warning for that.
-
-menuconfig BLOCK
-       bool "Enable the block layer" if EXPERT
-       default y
-       select SBITMAP
-       select SRCU
-       help
-	 Provide block layer support for the kernel.
-
-	 Disable this option to remove the block layer support from the
-	 kernel. This may be useful for embedded devices.
-
-	 If this option is disabled:
-
-	   - block device files will become unusable
-	   - some filesystems (such as ext3) will become unavailable.
-
-	 Also, SCSI character devices and USB storage will be disabled since
-	 they make use of various block layer definitions and facilities.
-
-	 Say Y here unless you know you really don't want to mount disks and
-	 suchlike.
-
-
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
