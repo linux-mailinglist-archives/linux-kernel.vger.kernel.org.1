@@ -2,141 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EED092E2E6C
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 16:04:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B35B2E2E6D
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 16:04:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726185AbgLZOxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Dec 2020 09:53:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58860 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726024AbgLZOxV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Dec 2020 09:53:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D5F9D20782;
-        Sat, 26 Dec 2020 14:52:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608994359;
-        bh=9yNBtl6K3ffIejrCoVF5NOQmDZPSTH1ajbbiVIkVY1U=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=TUmXrxcnVL2eJ+r9ZoB/e24qEmpNFZ9WGlH6v10PObzLGLoCXILIaGzLlXjAlTii3
-         m1z1e89qTtIrR6/byqNWopHceUXGAgdVOwURpYRS05+oJ4RCzjUsxECjGq28jjSBg9
-         w+BhPePDb8vQoZWNlK5Kjsn7OIyLdhLRCAnluklctznemdiBL5pjJbAegP3X9qDtvB
-         2BjkTYi74vb5Cbj51JIG2dfBwl3sKbox8E9JFV0faOoPAZ/RoVQ8pWhlPIRSt5MTt1
-         2OPdKmY6ueJpzSwLMmX5P0b+VytLjuoUZLnGHCr2BV8q+lFtqmDYRSIv+uU7LyzUkK
-         JeJJ/JOY1D0rg==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 994BD35225AB; Sat, 26 Dec 2020 06:52:39 -0800 (PST)
-Date:   Sat, 26 Dec 2020 06:52:39 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Qian Cai <cai@redhat.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH -tip V2 00/10] workqueue: break affinity initiatively
-Message-ID: <20201226145239.GJ2657@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201218170919.2950-1-jiangshanlai@gmail.com>
- <20201226103421.6616-1-hdanton@sina.com>
+        id S1726198AbgLZPDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Dec 2020 10:03:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726024AbgLZPDt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Dec 2020 10:03:49 -0500
+Received: from yawp.biot.com (yawp.biot.com [IPv6:2a01:4f8:10a:8e::fce2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 147B3C061757
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 07:03:09 -0800 (PST)
+Received: from debian-spamd by yawp.biot.com with sa-checked (Exim 4.93)
+        (envelope-from <bert@biot.com>)
+        id 1ktB63-009v93-75
+        for linux-kernel@vger.kernel.org; Sat, 26 Dec 2020 16:03:07 +0100
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on yawp
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.4
+Received: from [2a02:578:460c:1:ae1f:6bff:fed1:9ca8]
+        by yawp.biot.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <bert@biot.com>)
+        id 1ktB5J-009v8T-U4; Sat, 26 Dec 2020 16:02:22 +0100
+Subject: Re: [PATCH v2] Add support for Realtek RTL838x/RTL839x switch SoCs
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        Stafford Horne <shorne@gmail.com>,
+        Pawel Czarnecki <pczarnecki@internships.antmicro.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>,
+        Shawn Guo <shawnguo@kernel.org>, Joel Stanley <joel@jms.id.au>,
+        Leonard Crestez <leonard.crestez@nxp.com>,
+        Peng Fan <peng.fan@nxp.com>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20201223150648.1633113-1-bert@biot.com>
+ <87o8ikqywn.wl-maz@kernel.org>
+From:   Bert Vermeulen <bert@biot.com>
+Message-ID: <b8c989de-aae3-fa5e-90aa-ebce668c80f2@biot.com>
+Date:   Sat, 26 Dec 2020 16:02:21 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201226103421.6616-1-hdanton@sina.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <87o8ikqywn.wl-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 26, 2020 at 06:34:21PM +0800, Hillf Danton wrote:
-> On Wed, 23 Dec 2020 11:49:51 -0800 "Paul E. McKenney" wrote:
-> >On Sat, Dec 19, 2020 at 01:09:09AM +0800, Lai Jiangshan wrote:
-> >> From: Lai Jiangshan <laijs@linux.alibaba.com>
-> >> 
-> >> 06249738a41a ("workqueue: Manually break affinity on hotplug")
-> >> said that scheduler will not force break affinity for us.
-> >> 
-> >> But workqueue highly depends on the old behavior. Many parts of the codes
-> >> relies on it, 06249738a41a ("workqueue: Manually break affinity on hotplug")
-> >> is not enough to change it, and the commit has flaws in itself too.
-> >> 
-> >> It doesn't handle for worker detachment.
-> >> It doesn't handle for worker attachement, mainly worker creation
-> >>   which is handled by Valentin Schneider's patch [1].
-> >> It doesn't handle for unbound workers which might be possible
-> >> per-cpu-kthread.
-> >> 
-> >> We need to thoroughly update the way workqueue handles affinity
-> >> in cpu hot[un]plug, what is this patchset intends to do and
-> >> replace the Valentin Schneider's patch [1].  The equivalent patch
-> >> is patch 10.
-> >> 
-> >> Patch 1 fixes a flaw reported by Hillf Danton <hdanton@sina.com>.
-> >> I have to include this fix because later patches depends on it.
-> >> 
-> >> The patchset is based on tip/master rather than workqueue tree,
-> >> because the patchset is a complement for 06249738a41a ("workqueue:
-> >> Manually break affinity on hotplug") which is only in tip/master by now.
-> >> 
-> >> And TJ acked to route the series through tip.
-> >> 
-> >> Changed from V1:
-> >> 	Add TJ's acked-by for the whole patchset
-> >> 
-> >> 	Add more words to the comments and the changelog, mainly derived
-> >> 	from discussion with Peter.
-> >> 
-> >> 	Update the comments as TJ suggested.
-> >> 	
-> >> 	Update a line of code as Valentin suggested.
-> >> 
-> >> 	Add Valentin's ack for patch 10 because "Seems alright to me." and
-> >> 	add Valentin's comments to the changelog which is integral.
-> >> 
-> >> [1]: https://lore.kernel.org/r/ff62e3ee994efb3620177bf7b19fab16f4866845.camel@redhat.com
-> >> [V1 patcheset]: https://lore.kernel.org/lkml/20201214155457.3430-1-jiangshanlai@gmail.com/
-> >> 
-> >> Cc: Hillf Danton <hdanton@sina.com>
-> >> Cc: Valentin Schneider <valentin.schneider@arm.com>
-> >> Cc: Qian Cai <cai@redhat.com>
-> >> Cc: Peter Zijlstra <peterz@infradead.org>
-> >> Cc: Vincent Donnefort <vincent.donnefort@arm.com>
-> >> Cc: Tejun Heo <tj@kernel.org>
-> >
-> >And rcutorture hits this, so thank you for the fix!
+On 12/23/20 5:18 PM, Marc Zyngier wrote:
+
+Marc,
+
+Thanks for reviewing. We will rework as needed, however:
+
+> On Wed, 23 Dec 2020 15:06:24 +0000,
+> Bert Vermeulen <bert@biot.com> wrote:
+[...]
+
+>> +/* Interrupt numbers/bits */
+>> +#define RTL8380_IRQ_UART0		31
+>> +#define RTL8380_IRQ_UART1		30
+>> +#define RTL8380_IRQ_TC0			29
+>> +#define RTL8380_IRQ_TC1			28
+>> +#define RTL8380_IRQ_OCPTO		27
+>> +#define RTL8380_IRQ_HLXTO		26
+>> +#define RTL8380_IRQ_SLXTO		25
+>> +#define RTL8380_IRQ_NIC			24
+>> +#define RTL8380_IRQ_GPIO_ABCD		23
+>> +#define RTL8380_IRQ_GPIO_EFGH		22
+>> +#define RTL8380_IRQ_RTC			21
+>> +#define RTL8380_IRQ_SWCORE		20
+>> +#define RTL8380_IRQ_WDT_IP1		19
+>> +#define RTL8380_IRQ_WDT_IP2		18
 > 
-> Can you please specify a bit what you encountered in rcutorture
-> before this patchset? You know we cant have a correct estimation
-> of the fix diameter without your help.
+> Why do we need any of this? The mapping should be explicit in the DT.
+> 
+>> +
+>> +/* Global Interrupt Mask Register */
+>> +#define RTL8380_ICTL_GIMR	0x00
+>> +/* Global Interrupt Status Register */
+>> +#define RTL8380_ICTL_GISR	0x04
+>> +
+>> +/* Cascaded interrupts */
+>> +#define RTL8380_CPU_IRQ_SHARED0		(MIPS_CPU_IRQ_BASE + 2)
+>> +#define RTL8380_CPU_IRQ_UART		(MIPS_CPU_IRQ_BASE + 3)
+>> +#define RTL8380_CPU_IRQ_SWITCH		(MIPS_CPU_IRQ_BASE + 4)
+>> +#define RTL8380_CPU_IRQ_SHARED1		(MIPS_CPU_IRQ_BASE + 5)
+>> +#define RTL8380_CPU_IRQ_EXTERNAL	(MIPS_CPU_IRQ_BASE + 6)
+>> +#define RTL8380_CPU_IRQ_COUNTER		(MIPS_CPU_IRQ_BASE + 7)
+>> +
+>> +
+>> +/* Interrupt routing register */
+>> +#define RTL8380_IRR0		0x08
+>> +#define RTL8380_IRR1		0x0c
+>> +#define RTL8380_IRR2		0x10
+>> +#define RTL8380_IRR3		0x14
+>> +
+>> +/* Cascade map */
+>> +#define RTL8380_IRQ_CASCADE_UART0	2
+>> +#define RTL8380_IRQ_CASCADE_UART1	1
+>> +#define RTL8380_IRQ_CASCADE_TC0		5
+>> +#define RTL8380_IRQ_CASCADE_TC1		1
+>> +#define RTL8380_IRQ_CASCADE_OCPTO	1
+>> +#define RTL8380_IRQ_CASCADE_HLXTO	1
+>> +#define RTL8380_IRQ_CASCADE_SLXTO	1
+>> +#define RTL8380_IRQ_CASCADE_NIC		4
+>> +#define RTL8380_IRQ_CASCADE_GPIO_ABCD	4
+>> +#define RTL8380_IRQ_CASCADE_GPIO_EFGH	4
+>> +#define RTL8380_IRQ_CASCADE_RTC		4
+>> +#define RTL8380_IRQ_CASCADE_SWCORE	3
+>> +#define RTL8380_IRQ_CASCADE_WDT_IP1	4
+>> +#define RTL8380_IRQ_CASCADE_WDT_IP2	5
+>> +
+>> +/* Pack cascade map into interrupt routing registers */
+>> +#define RTL8380_IRR0_SETTING (\
+>> +	(RTL8380_IRQ_CASCADE_UART0	<< 28) | \
+>> +	(RTL8380_IRQ_CASCADE_UART1	<< 24) | \
+>> +	(RTL8380_IRQ_CASCADE_TC0	<< 20) | \
+>> +	(RTL8380_IRQ_CASCADE_TC1	<< 16) | \
+>> +	(RTL8380_IRQ_CASCADE_OCPTO	<< 12) | \
+>> +	(RTL8380_IRQ_CASCADE_HLXTO	<< 8)  | \
+>> +	(RTL8380_IRQ_CASCADE_SLXTO	<< 4)  | \
+>> +	(RTL8380_IRQ_CASCADE_NIC	<< 0))
+>> +#define RTL8380_IRR1_SETTING (\
+>> +	(RTL8380_IRQ_CASCADE_GPIO_ABCD	<< 28) | \
+>> +	(RTL8380_IRQ_CASCADE_GPIO_EFGH	<< 24) | \
+>> +	(RTL8380_IRQ_CASCADE_RTC	<< 20) | \
+>> +	(RTL8380_IRQ_CASCADE_SWCORE	<< 16))
+>> +#define RTL8380_IRR2_SETTING	0
+>> +#define RTL8380_IRR3_SETTING	0
 
-It triggers the following in sched_cpu_dying() in kernel/sched/core.c,
-exactly the same as for Lai Jiangshan:
+[...]
 
-	BUG_ON(rq->nr_running != 1 || rq_has_pinned_tasks(rq))
+>> +	/* Set up interrupt routing */
+>> +	writel(RTL8380_IRR0_SETTING, REG(RTL8380_IRR0));
+>> +	writel(RTL8380_IRR1_SETTING, REG(RTL8380_IRR1));
+>> +	writel(RTL8380_IRR2_SETTING, REG(RTL8380_IRR2));
+>> +	writel(RTL8380_IRR3_SETTING, REG(RTL8380_IRR3));
+> 
+> What is this doing?
 
-Which is in fact the "this" in my earlier "rcutorture hits this".  ;-)
+It's fairly evident considering the comments -- routing of secondary IRQs 
+onto the CPU IRQs. But as to packing this into DTS I'm not sure.
 
-							Thanx, Paul
+DTS syntax being what it is, this would inevitably get more complex and 
+harder to understand. Do you have an example where this is done in a better way?
 
-> >Tested-by: Paul E. McKenney <paulmck@kernel.org>
-> >
-> >> Lai Jiangshan (10):
-> >>   workqueue: restore unbound_workers' cpumask correctly
-> >>   workqueue: use cpu_possible_mask instead of cpu_active_mask to break
-> >>     affinity
-> >>   workqueue: Manually break affinity on pool detachment
-> >>   workqueue: don't set the worker's cpumask when kthread_bind_mask()
-> >>   workqueue: introduce wq_online_cpumask
-> >>   workqueue: use wq_online_cpumask in restore_unbound_workers_cpumask()
-> >>   workqueue: Manually break affinity on hotplug for unbound pool
-> >>   workqueue: reorganize workqueue_online_cpu()
-> >>   workqueue: reorganize workqueue_offline_cpu() unbind_workers()
-> >>   workqueue: Fix affinity of kworkers when attaching into pool
-> >> 
-> >>  kernel/workqueue.c | 214 ++++++++++++++++++++++++++++-----------------
-> >>  1 file changed, 132 insertions(+), 82 deletions(-)
-> >> 
-> >> -- 
-> >> 2.19.1.6.gb485710b
+thanks,
+
+
+-- 
+Bert Vermeulen
+bert@biot.com
