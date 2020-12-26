@@ -2,84 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF87E2E2E1E
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 13:18:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AF602E2E21
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 13:20:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726137AbgLZMQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Dec 2020 07:16:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53324 "EHLO
+        id S1726168AbgLZMUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Dec 2020 07:20:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725997AbgLZMQf (ORCPT
+        with ESMTP id S1726021AbgLZMUP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Dec 2020 07:16:35 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F31EEC061757
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 04:15:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=QsnqwKrC8FAcmq1cPPiwc8IugCbcu9GsR0MUxmjHSGc=; b=GdsHm/xW8/6Or4SUsT5v5JOxj
-        y7i8GCvXKGSuURt+XikaaV1zLN6oO4DvubALaS+xnIKWi2LuyhDOxXLqlyMYaTrLPxEznYRE5/ooL
-        vq7xoTAJZQ7wKj2VMvjH+IZcACEtLvuA2rdEqQNSvC2jl4ZAfx/eC0dHhfU42B+Km3S6N1dr1QExp
-        brh+rTrjA1girapFm+olYCAGamIYoVmWDSTkilFheGxBFLymjF5MtsH6HMnk/WQdWvvyvP1mlvUzO
-        PucnDRtpwP+WpWQvBdOM0ZFxw2kPvfywCDh5AEOlql89M2VSSe2mrjAgxoiEAE4aOBBJZaF0lT65W
-        D/66iXr3A==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44538)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kt8U8-0003R4-71; Sat, 26 Dec 2020 12:15:48 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kt8U7-0006pi-Mc; Sat, 26 Dec 2020 12:15:47 +0000
-Date:   Sat, 26 Dec 2020 12:15:47 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] ARM: LPAE: use phys_addr_t instead of unsigned long
- in outercache hooks
-Message-ID: <20201226121547.GC1551@shell.armlinux.org.uk>
-References: <20201225114458.1334-1-thunder.leizhen@huawei.com>
- <a0ca2ec8-40cf-4b5e-a6fe-f68d9650a82f@huawei.com>
+        Sat, 26 Dec 2020 07:20:15 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DE34C061757;
+        Sat, 26 Dec 2020 04:19:34 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id d17so8602919ejy.9;
+        Sat, 26 Dec 2020 04:19:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Bm5T9vuPoWIU6xCRU+PgPla6hEE0eBziHw6J7ZqdXys=;
+        b=bqq1We105hP+TtOg3qX8jecGZUr9MXbSQ2RvjDz0u77TDGY1DWtFO0BY7DtyJmpIvL
+         9X0Ot0AnsXAqG9djHwSY2TOepTf7YTpue4aq3ykqTz+js9XKep9MG34+eDPagjCvutw7
+         Thv4/PeacvvNUZ+VspXqdRfZUfZtZkXfth+Roe+g/g41B+G5XOwTAJsVw6agoj+3Guvs
+         s0y90ow09kbb8Dn/SC87QRUh02Jx50vNvp9j18P4eCNy/CcgHbiqMZIBoFU2/jBylhz5
+         aN0jMZ+VLHhLALXoB/hdeAIq2N67joqKigulW2ebO3IvpUvAmruyvxgpndweIzh5jvbH
+         3/ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Bm5T9vuPoWIU6xCRU+PgPla6hEE0eBziHw6J7ZqdXys=;
+        b=EOM4Ds/ozkHKpmFAMYbyyt2gixalzs1Fsmy/ZzuSmj4V2CxDIhCv5FUoihbDl9y3yr
+         4Inj4iphqaLMTLA4Qr/i3ZAJCuk1v4/fVKzB/SPF58SeMjyqzFIxyTSjEZJXazqKcZGk
+         b8aovQxPxCpe5r9DK0zLujdTquIXt84LQjMfoQjN5QNpSo3wq5euPp2AKjZGuLycfMcB
+         iw/otjLy3zEmsY5EQIq7Og1Mu7yw1STw+YVac4cIY8ZcmQDb0aKqrZntkFD/WrL9H3z8
+         UNqZIAbjYFd5UdsQ+CGrE90UHE10fBWVXjhpUkIWrGqCmunEvwf5/w625M+ohPHPWnf1
+         SY6g==
+X-Gm-Message-State: AOAM5314lFK7+ewhr7Z1XrvVDwPrpEYSC21UX0ljBphzNme0P+5dFH5f
+        +3fCWH/2L3VGyWXC/sNxBSpdGnZZ62Q=
+X-Google-Smtp-Source: ABdhPJwaTJ/wSSQc8uzjHVrEb0CVZyzc5uCwBEghsv+4BwXwE5ZQ9YRadAodvW6Ne6zlWO6VWINCsA==
+X-Received: by 2002:a17:907:2d0f:: with SMTP id gs15mr34046687ejc.455.1608985173213;
+        Sat, 26 Dec 2020 04:19:33 -0800 (PST)
+Received: from localhost.localdomain (p200300f137218200428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:3721:8200:428d:5cff:feb9:9db8])
+        by smtp.googlemail.com with ESMTPSA id j9sm33842662eds.66.2020.12.26.04.19.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Dec 2020 04:19:32 -0800 (PST)
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To:     linux-amlogic@lists.infradead.org, jbrunet@baylibre.com
+Cc:     mturquette@baylibre.com, sboyd@kernel.org,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH 0/3] clk: meson: three small clk-pll fixes
+Date:   Sat, 26 Dec 2020 13:15:53 +0100
+Message-Id: <20201226121556.975418-1-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a0ca2ec8-40cf-4b5e-a6fe-f68d9650a82f@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 26, 2020 at 10:18:08AM +0800, Leizhen (ThunderTown) wrote:
-> On 2020/12/25 19:44, Zhen Lei wrote:
-> > The outercache of some Hisilicon SOCs support physical addresses wider
-> > than 32-bits. The unsigned long datatype is not sufficient for mapping
-> > physical addresses >= 4GB. The commit ad6b9c9d78b9 ("ARM: 6671/1: LPAE:
-> > use phys_addr_t instead of unsigned long in outercache functions") has
-> > already modified the outercache functions. But the parameters of the
-> > outercache hooks are not changed. This patch use phys_addr_t instead of
-> > unsigned long in outercache hooks: inv_range, clean_range, flush_range.
-> > 
-> > To ensure the outercache that does not support LPAE works properly, do
-> > cast phys_addr_t to unsigned long by adding a middle-tier function.
-> 
-> This patch will impact the outercache drivers that have not been merged into
-> the kernel. They should also update the datatype of the outercache hooks.
+Hi Jerome,
 
-This isn't much of a concern to mainline. If it's that big a problem
-for you, then please consider merging your code into mainline so that
-everyone can benefit from it.
+while working on some changes for the 32-bit SoCs I hit a corner-case
+in the HDMI PLL: there's some rate doubling going. The PLL only locks
+in a specific rate range but the M/N table is not aware of that. This
+means for now (I am planning to fix that) that we can end up in a 
+ituation where the PLL doesn't lock and meson_clk_pll_set_rate() is
+supposed to still behave in this case. So here's three small patches
+for that.
+
+For me it's fine to queue these patches for -next. I am not aware of
+any breakage upstream, only some of my pending patches prefer to have
+these fixes.
+
+Slightly unrelated: if you know anything about that clock doubling then
+please let me know!
+
+
+Best regards,
+Martin
+
+
+Martin Blumenstingl (3):
+  clk: meson: clk-pll: fix initializing the old rate (fallback) for a
+    PLL
+  clk: meson: clk-pll: make "ret" a signed integer
+  clk: meson: clk-pll: propagate the error from meson_clk_pll_set_rate()
+
+ drivers/clk/meson/clk-pll.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.29.2
+
