@@ -2,128 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A46A2E2DB6
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 09:51:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 441B22E2DB8
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 09:56:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726131AbgLZImM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Dec 2020 03:42:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725809AbgLZImL (ORCPT
+        id S1726140AbgLZI4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Dec 2020 03:56:43 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:36469 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725967AbgLZI4m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Dec 2020 03:42:11 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DACEC061757
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 00:41:31 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id hk16so3773253pjb.4
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 00:41:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=wbBgrh9YXj1oYs+3ziSMhnsZvXPX6Ut40pbshlURT4s=;
-        b=biHmQLNElgj2ahMLmOI8z1TvQpgTG39Rh4qemhUiPBIGWio0PwPaUTw/RpbN18Vrx/
-         wl5LEdEsK1UD5oBSK0MorWcPwPeJdPgb35fw/4ThpSyADlj9X9wjklUCAVIY6pm/jR6u
-         WmhDOJfumsSJq5P6DaiRfWA0GeKZK+o69tdoLrwfraqs3HHRZ3bvGo5hypQoADrmvqLz
-         h1VrD+efemcjoeEBmrf/3baR/2NvRa3/FeSy+DQ50/aS+J91WnDWYBaeeIfWLMRxv+k3
-         NpzRTh9H8Wo0TmBcUm6JUAGU3WOCXqpVw08VMlXj/z3fOLs8YNOmopWtmoJiLWP/Y1Qx
-         iPgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=wbBgrh9YXj1oYs+3ziSMhnsZvXPX6Ut40pbshlURT4s=;
-        b=F1ki3+LjxeDPDasZGqhyJlHQ0YMsxuDlAO40Xc1t4EY+owsYgHGOAAVo2A/mDWOBM4
-         +rBScKtz3UF7r/4+dER4nSuhb0xG5UevghE2axYvlxSb1N8cBbOMJn748NMoIZNF+fOh
-         8FCxTcmGlgNpMmA6NL1HtB4JiDBDwTULOOvl+3I4ksZSXwXP0/KbrD4Wds0ng3E5cT0H
-         vOlrMPgXbjYRlc6z/ps2Ddo2nMfy+uiVSQXLlkH5akT5egKFBuBOyUUf3BEL9jP795Nz
-         zTPy+FqcJF7qm8cdk0YcdzrgO6qwyTAbPOwtSY6KZB4g9Do0OFZ4jy+Gbp3lg9gddftI
-         O4Xw==
-X-Gm-Message-State: AOAM532NtPG9KEWEaOA5FYmVQm/V6AhA6r9P11xWl8MZ3t+5BPf+oXwt
-        VNYexF7sPg/pfeQrpvPWgnA=
-X-Google-Smtp-Source: ABdhPJxxkpjkCppLUURS1fHe+xzBEmV+A51b1CbAFL13GuCh0ZJEZd4mVHSowzUHgo/VHnBhn7bzbQ==
-X-Received: by 2002:a17:90a:dc18:: with SMTP id i24mr12057078pjv.118.1608972090883;
-        Sat, 26 Dec 2020 00:41:30 -0800 (PST)
-Received: from macbook.local (ae142046.dynamic.ppp.asahi-net.or.jp. [14.3.142.46])
-        by smtp.gmail.com with ESMTPSA id z20sm7058263pjq.16.2020.12.26.00.41.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 26 Dec 2020 00:41:30 -0800 (PST)
-Subject: [PATCH v2] arch/x86: Propagate $(CLANG_FLAGS) to $(REALMODE_FLAGS)
-To:     Nathan Chancellor <natechancellor@gmail.com>, hpa@zytor.com
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        John Millikin <john@john-millikin.com>
-References: <cceb074c-861c-d716-5e19-834a8492f245@gmail.com>
- <37DE7046-5096-4C0C-A96D-FD168A849DFD@zytor.com>
- <20201226075347.GA1977841@ubuntu-m3-large-x86>
-From:   John Millikin <jmillikin@gmail.com>
-Message-ID: <3b793c42-8983-4502-1f9e-729cc0ebec47@gmail.com>
-Date:   Sat, 26 Dec 2020 17:41:25 +0900
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.0
+        Sat, 26 Dec 2020 03:56:42 -0500
+X-UUID: 284624398b55469e8b1114820e51e12d-20201226
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=O8MvIzbgoKP0EJFUCZCWVgh+fi1X2o9IdCQSOOz75XU=;
+        b=mfoIGD3BMNLAhuX0tVP+8pCUbuybGmEgiboapJzSh9WU6cxfhGqDudx5hgyZVH9D7n/4geVwKVRPqqDTTE3l1KD9ZmLEP0zttT19xbmL4IczcWepvK5HNMKCHdpPvFeaPLsz6E679QOTtX9kj4yImRB7zsvOYgV3F6T3djeCAg0=;
+X-UUID: 284624398b55469e8b1114820e51e12d-20201226
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
+        (envelope-from <crystal.guo@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1409887270; Sat, 26 Dec 2020 16:55:49 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by mtkmbs07n2.mediatek.inc
+ (172.21.101.141) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sat, 26 Dec
+ 2020 16:55:43 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sat, 26 Dec 2020 16:55:42 +0800
+Message-ID: <1608972946.14806.75.camel@mhfsdcap03>
+Subject: Re: [v6,2/4] dt-binding: mediatek: mt8192: update mtk-wdt document
+From:   Crystal Guo <crystal.guo@mediatek.com>
+To:     Nicolas Boichat <drinkcat@chromium.org>,
+        "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
+        "linux@roeck-us.net" <linux@roeck-us.net>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
+CC:     "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
+        "linux@roeck-us.net" <linux@roeck-us.net>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        Seiya Wang =?UTF-8?Q?=28=E7=8E=8B=E8=BF=BA=E5=90=9B=29?= 
+        <seiya.wang@mediatek.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Date:   Sat, 26 Dec 2020 16:55:46 +0800
+In-Reply-To: <CANMq1KDB5W9ON0+ormDjFy=9oJUnAq4A41zNTUMHcWsAJ449Zg@mail.gmail.com>
+References: <20201014131936.20584-1-crystal.guo@mediatek.com>
+         <20201014131936.20584-3-crystal.guo@mediatek.com>
+         <1605529631.14806.57.camel@mhfsdcap03>
+         <CANMq1KDB5W9ON0+ormDjFy=9oJUnAq4A41zNTUMHcWsAJ449Zg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-In-Reply-To: <20201226075347.GA1977841@ubuntu-m3-large-x86>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When cross-compiling with Clang, the `$(CLANG_FLAGS)' variable
-contains additional flags needed to build C and assembly sources
-for the target platform. Normally this variable is automatically
-included in `$(KBUILD_CFLAGS)' by via the top-level Makefile.
-
-The x86 real-mode makefile builds `$(REALMODE_CFLAGS)' from a
-plain assignment and therefore drops the Clang flags. This causes
-Clang to not recognize x86-specific assembler directives:
-
-  arch/x86/realmode/rm/header.S:36:1: error: unknown directive
-  .type real_mode_header STT_OBJECT ; .size real_mode_header, .-real_mode_header
-  ^
-
-Explicit propagation of `$(CLANG_FLAGS)' to `$(REALMODE_CFLAGS)',
-which is inherited by real-mode make rules, fixes cross-compilation
-with Clang for x86 targets.
-
-Relevant flags:
-
-* `--target' sets the target architecture when cross-compiling. This
-  flag must be set for both compilation and assembly (`KBUILD_AFLAGS')
-  to support architecture-specific assembler directives.
-
-* `-no-integrated-as' tells clang to assemble with GNU Assembler
-  instead of its built-in LLVM assembler. This flag is set by default
-  unless `LLVM_IAS=1' is set, because the LLVM assembler can't yet
-  parse certain GNU extensions.
-
-Signed-off-by: John Millikin <john@john-millikin.com>
----
-Changes in v2:
-  - Reworded the commit message to highlight that this is for
-    cross-compilation.
-  - Removed the `ifdef CONFIG_CC_IS_CLANG' guard.
-
- arch/x86/Makefile | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-index 7116da3980be..412b849063ec 100644
---- a/arch/x86/Makefile
-+++ b/arch/x86/Makefile
-@@ -33,6 +33,7 @@ REALMODE_CFLAGS += -ffreestanding
- REALMODE_CFLAGS += -fno-stack-protector
- REALMODE_CFLAGS += $(call __cc-option, $(CC), $(REALMODE_CFLAGS), -Wno-address-of-packed-member)
- REALMODE_CFLAGS += $(call __cc-option, $(CC), $(REALMODE_CFLAGS), $(cc_stack_align4))
-+REALMODE_CFLAGS += $(CLANG_FLAGS)
- export REALMODE_CFLAGS
- 
- # BITS is used as extension for files which are available in a 32 bit
--- 
-2.29.2
-
+T24gTW9uLCAyMDIwLTEyLTIxIGF0IDA4OjU5ICswODAwLCBOaWNvbGFzIEJvaWNoYXQgd3JvdGU6
+DQo+IE9uIE1vbiwgTm92IDE2LCAyMDIwIGF0IDg6MjcgUE0gQ3J5c3RhbCBHdW8gPGNyeXN0YWwu
+Z3VvQG1lZGlhdGVrLmNvbT4gd3JvdGU6DQo+ID4NCj4gPiBIaSBNYWludGFpbmVycywNCj4gPg0K
+PiA+IEdlbnRsZSBwaW4gZm9yIHRoaXMgcGF0Y2guDQo+ID4NCj4gPiBUaGFua3MNCj4gPg0KPiA+
+IE9uIFdlZCwgMjAyMC0xMC0xNCBhdCAyMToxOSArMDgwMCwgQ3J5c3RhbCBHdW8gd3JvdGU6DQo+
+ID4gPiB1cGRhdGUgbXRrLXdkdCBkb2N1bWVudCBmb3IgTVQ4MTkyIHBsYXRmb3JtDQo+IA0KPiBS
+b2I6IEkgYXNzdW1lIHlvdXIgaW5wdXQgaXMgcmVxdWlyZWQgaGVyZT8gQW55IGNoYW5jZSB3ZSBj
+b3VsZCBoYXZlDQo+IHlvdXIgYWNrL3JldmlldyBvbiB0aGlzIHRyaXZpYWwgcGF0Y2g/IEl0IHNl
+ZW1zIGxpa2UgdGhlIHNlcmllcyBpcw0KPiBibG9ja2VkIHBlbmRpbmcgb24gYSByZXZpZXcgb2Yg
+dGhpcyBwYXRjaCAtLSBhbmQgSSBkb24ndCB0aGluayBpdCBoYXMNCj4gYmVlbiByZXZpZXdlZCBi
+ZWZvcmUuDQo+IA0KPiBUaGFua3MsDQo+IA0KPiANCg0KSGkgTWFpbnRhaW5lcnMsDQoNCkp1c3Qg
+YSBnZW50bGUgcGluZywgY2FuIHlvdSBoZWxwIHRvIHJldmlldyBvciBnaXZlIHNvbWUgc3VnZ2Vz
+dGlvbnMNCmFib3V0IHRoaXMgcGF0Y2ggc2V0Pw0KDQpNYW55IHRoYW5rcy4NCg0KPiA+ID4NCj4g
+PiA+IFNpZ25lZC1vZmYtYnk6IENyeXN0YWwgR3VvIDxjcnlzdGFsLmd1b0BtZWRpYXRlay5jb20+
+DQo+ID4gPiAtLS0NCj4gPiA+ICBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvd2F0
+Y2hkb2cvbXRrLXdkdC50eHQgfCAxICsNCj4gPiA+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRp
+b24oKykNCj4gPiA+DQo+ID4gPiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVl
+L2JpbmRpbmdzL3dhdGNoZG9nL210ay13ZHQudHh0IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVl
+L2JpbmRpbmdzL3dhdGNoZG9nL210ay13ZHQudHh0DQo+ID4gPiBpbmRleCA0NWVlZGMyYzMxNDEu
+LmUzNmJhNjBkZTgyOSAxMDA2NDQNCj4gPiA+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJl
+ZS9iaW5kaW5ncy93YXRjaGRvZy9tdGstd2R0LnR4dA0KPiA+ID4gKysrIGIvRG9jdW1lbnRhdGlv
+bi9kZXZpY2V0cmVlL2JpbmRpbmdzL3dhdGNoZG9nL210ay13ZHQudHh0DQo+ID4gPiBAQCAtMTIs
+NiArMTIsNyBAQCBSZXF1aXJlZCBwcm9wZXJ0aWVzOg0KPiA+ID4gICAgICAgIm1lZGlhdGVrLG10
+NzYyOS13ZHQiLCAibWVkaWF0ZWssbXQ2NTg5LXdkdCI6IGZvciBNVDc2MjkNCj4gPiA+ICAgICAg
+ICJtZWRpYXRlayxtdDgxODMtd2R0IjogZm9yIE1UODE4Mw0KPiA+ID4gICAgICAgIm1lZGlhdGVr
+LG10ODUxNi13ZHQiLCAibWVkaWF0ZWssbXQ2NTg5LXdkdCI6IGZvciBNVDg1MTYNCj4gPiA+ICsg
+ICAgICJtZWRpYXRlayxtdDgxOTItd2R0IjogZm9yIE1UODE5Mg0KPiA+ID4NCj4gPiA+ICAtIHJl
+ZyA6IFNwZWNpZmllcyBiYXNlIHBoeXNpY2FsIGFkZHJlc3MgYW5kIHNpemUgb2YgdGhlIHJlZ2lz
+dGVycy4NCj4gPiA+DQo+ID4NCj4gPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXw0KPiA+IExpbnV4LW1lZGlhdGVrIG1haWxpbmcgbGlzdA0KPiA+IExpbnV4
+LW1lZGlhdGVrQGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW1lZGlhdGVrDQoNCg==
 
