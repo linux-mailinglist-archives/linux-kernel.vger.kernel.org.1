@@ -2,189 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BD4D2E2F61
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 00:25:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DAFB2E2F64
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 00:27:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726268AbgLZXYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Dec 2020 18:24:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726019AbgLZXYP (ORCPT
+        id S1726131AbgLZXZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Dec 2020 18:25:56 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:35815 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725955AbgLZXZz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Dec 2020 18:24:15 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CDF9C061757;
-        Sat, 26 Dec 2020 15:23:34 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id c133so6095744wme.4;
-        Sat, 26 Dec 2020 15:23:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hEbYb9aZ3x/VuVBuQLFVg0Cu21TzOUqlHQ/5dY4MV0c=;
-        b=KeNVRTDUD1QcPSlwKwjysBF/JvAKTGMTjJJ9PZtmjI6Hqlf4jqW1I9NNdh0Y+ZTYUb
-         GdIKyopt1Z+HvZ92GxR9i2vslKUADIfBsNgZ4IN68qAnqANvZkMAOKFTcLA5J2i2P+TP
-         yH6qpZnr5dS54+909l1S8kwX3cUHFdtd+3pQHVOwOnXih3BCd02MAPUnSngrW1vPaGi5
-         mHxJA4dMJrtuvf2TbCXVykzJN1QtfNogaM68ht0mkelV8gpuO4O0DsxSWit9mTwgAr11
-         j7DNI4G2FOxYgf/Gxz9gbB+q2Ex/HAPIMneGurgL/409iU01NtOE2/dA0T7yl9K6EleU
-         ybCA==
+        Sat, 26 Dec 2020 18:25:55 -0500
+Received: by mail-il1-f198.google.com with SMTP id p6so6480565ilb.2
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 15:25:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hEbYb9aZ3x/VuVBuQLFVg0Cu21TzOUqlHQ/5dY4MV0c=;
-        b=BQTnDWHdz42M7fg45Dm8vxRujGbnNKAxM/29eoV5hoM4pQ87oSR+sQFCwAbGiing0z
-         UhouOvQg/Kyj+QFgb9kbyMqAxk0H6cvQ+9oR8qqyAldDuLMAvrZyY1v0bmrN4FlI5cx3
-         Hf72Fx1lhQPRWrOi6CHhpcYRC7gwiIdtpP3YlEat8tzmuutiFJs1qj/faiNLgDrHVwua
-         J1Uvt0J9O9tYhNPRi9w3FXyMDwAz/lnW541I6ruvcdoKvyozLTLx4oUvGbr8ejOT5xCx
-         UCPlZWTazK9XDhuTx3IPme5cKFiqLgZwGaNUUaE3IJ1ag3fbnyGqVIaNfMJUVv7Q2MGE
-         wTLg==
-X-Gm-Message-State: AOAM530AO3GVtNMO3ficW/M3a8wAHFTJcTusXkzVuqLbnFvfCkDVD0KI
-        hPXr/ZCs2PfZCJTQ/2P8Ugc=
-X-Google-Smtp-Source: ABdhPJxTHtqRZfR64FVtTkW4JbCuBPRwpLfFlB0aRJk0TyaA/KQdLvhDHhL3klc3vYN4vVvcPKPnUw==
-X-Received: by 2002:a1c:4904:: with SMTP id w4mr13810932wma.140.1609025013169;
-        Sat, 26 Dec 2020 15:23:33 -0800 (PST)
-Received: from [192.168.1.211] ([2.31.224.116])
-        by smtp.gmail.com with ESMTPSA id n3sm47539441wrw.61.2020.12.26.15.23.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 26 Dec 2020 15:23:32 -0800 (PST)
-Subject: Re: [PATCH v3 14/14] ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        devel@acpica.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tian Shu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        kieran.bingham+renesas@ideasonboard.com,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        niklas.soderlund+renesas@ragnatech.se,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-References: <20201224010907.263125-1-djrscally@gmail.com>
- <20201224010907.263125-15-djrscally@gmail.com>
- <CAHp75VeXN6PnV7Mzz6UMpD+m-yjPi6XK0kx1=+-M5mci=Vb=YQ@mail.gmail.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <9cf2dfdb-09cf-668b-2e71-a52b177cfd8c@gmail.com>
-Date:   Sat, 26 Dec 2020 23:23:31 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=LrThqGyzo8a3PO2YCcfqnTJ8Bb0QQNPRdMXQq4MJFWI=;
+        b=YIgK3Tija9uj4xPNLyW+JucPy+y9ql4fnySVpzQ+G7aGc1TdDSvoiF/dRjiNAVCbZI
+         7zFt9RbK/QOeg2IgOmHoTq1UVRCHqrZ2Lm35e7BtHdJT/Pi1cgQy/saH8Gwu/pd7NrT4
+         fKwfIVsSLv53t7hSZFr91XGZlCO3lCTBKNPyz/ryHDZq+gWszmhdhuiMiygI331tD1sA
+         PvWeNpLKc6pYGq7niqgKnyM4aV7gej/p/Bze59dDpBcZfC7zjag8cx2IxyfnCQDGk9Ks
+         AMmF/P1JwLaAt6rfRwcp59OYRBqjLA1wvC7tUnQxqCxJSgMIMNFUYS0KmIVKrwvqZ4dL
+         IK1Q==
+X-Gm-Message-State: AOAM53258gpfmyCvGe8bWcbDVxPV8IbOJMFr4flvw2FkVP3I2xtqEQyz
+        iHiu3te9jOO3kR7yLf+HFol8Rfr/HxCuXzKGa0qekpury+8r
+X-Google-Smtp-Source: ABdhPJyfHunifRnlwEvrbHQ/szo7gADF0UT73pnWKcuVDpE+hgLpNrglWwPjdcoGo9szIePWMFY55GqOKzKdRI38f7ntfTBg7INr
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VeXN6PnV7Mzz6UMpD+m-yjPi6XK0kx1=+-M5mci=Vb=YQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6602:2c48:: with SMTP id x8mr32477673iov.24.1609025114130;
+ Sat, 26 Dec 2020 15:25:14 -0800 (PST)
+Date:   Sat, 26 Dec 2020 15:25:14 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005ccf1b05b7665adc@google.com>
+Subject: BUG: unable to handle kernel NULL pointer dereference in call_rcu
+From:   syzbot <syzbot+9d3ede723bdc58553f13@syzkaller.appspotmail.com>
+To:     adobriyan@gmail.com, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org, longman@redhat.com,
+        sfr@canb.auug.org.au, syzkaller-bugs@googlegroups.com,
+        vvs@virtuozzo.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy
+Hello,
 
-On 24/12/2020 12:54, Andy Shevchenko wrote:
-> On Thu, Dec 24, 2020 at 3:12 AM Daniel Scally <djrscally@gmail.com> wrote:
->>
->> Currently on platforms designed for Windows, connections between CIO2 and
->> sensors are not properly defined in DSDT. This patch extends the ipu3-cio2
->> driver to compensate by building software_node connections, parsing the
->> connection properties from the sensor's SSDB buffer.
-> 
-> Few nitpicks below, after addressing them
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+syzbot found the following issue on:
 
-Thanks, and for all the time you've put into this series
+HEAD commit:    614cb589 Merge tag 'acpi-5.11-rc1-2' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10a82a50d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bf519e1e96191576
+dashboard link: https://syzkaller.appspot.com/bug?extid=9d3ede723bdc58553f13
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11830e93500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13d92057500000
 
->> +/*
->> + * Extend this array with ACPI Hardware ID's of devices known to be working
-> 
-> ID's -> IDs ?
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9d3ede723bdc58553f13@syzkaller.appspotmail.com
 
-Yes, turns out I'm pretty bad at apostrophes.
+BUG: kernel NULL pointer dereference, address: 0000000000000008
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 2d993067 P4D 2d993067 PUD 19a3c067 PMD 0 
+Oops: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 3852 Comm: kworker/1:2 Not tainted 5.10.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events free_ipc
+RIP: 0010:kasan_record_aux_stack+0x77/0xb0 mm/kasan/generic.c:341
+Code: 48 f7 fe 8b 47 24 49 89 f0 48 29 d3 8d 70 ff 41 0f af f0 48 01 ce 48 39 f3 48 0f 46 f3 e8 81 e9 ff ff bf 00 08 00 00 48 89 c3 <8b> 40 08 89 43 0c e8 1e e6 ff ff 89 43 08 5b c3 48 8b 50 08 48 c7
+RSP: 0018:ffffc90002e6fae8 EFLAGS: 00010046
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff888039800000
+RDX: 0000000000000078 RSI: ffff888039800000 RDI: 0000000000000800
+RBP: ffffffff837ef3a0 R08: 0000000000400000 R09: 000000000000002e
+R10: ffffffff8132b7ea R11: 000000000000003f R12: 0000000000035b40
+R13: ffff888039800088 R14: ffffc90002e6fc08 R15: 0000000000000200
+FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000008 CR3: 0000000011841000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __call_rcu kernel/rcu/tree.c:2965 [inline]
+ call_rcu+0xbb/0x710 kernel/rcu/tree.c:3038
+ ipc_rcu_putref+0x83/0xb0 ipc/util.c:505
+ freeary+0x139c/0x1b30 ipc/sem.c:1188
+ free_ipcs+0x98/0x1e0 ipc/namespace.c:112
+ sem_exit_ns+0x1b/0x40 ipc/sem.c:260
+ free_ipc_ns ipc/namespace.c:124 [inline]
+ free_ipc+0xf8/0x200 ipc/namespace.c:141
+ process_one_work+0x98d/0x1630 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+Modules linked in:
+CR2: 0000000000000008
+---[ end trace 28dc093e61d44dc2 ]---
+RIP: 0010:kasan_record_aux_stack+0x77/0xb0 mm/kasan/generic.c:341
+Code: 48 f7 fe 8b 47 24 49 89 f0 48 29 d3 8d 70 ff 41 0f af f0 48 01 ce 48 39 f3 48 0f 46 f3 e8 81 e9 ff ff bf 00 08 00 00 48 89 c3 <8b> 40 08 89 43 0c e8 1e e6 ff ff 89 43 08 5b c3 48 8b 50 08 48 c7
+RSP: 0018:ffffc90002e6fae8 EFLAGS: 00010046
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff888039800000
+RDX: 0000000000000078 RSI: ffff888039800000 RDI: 0000000000000800
+RBP: ffffffff837ef3a0 R08: 0000000000400000 R09: 000000000000002e
+R10: ffffffff8132b7ea R11: 000000000000003f R12: 0000000000035b40
+R13: ffff888039800088 R14: ffffc90002e6fc08 R15: 0000000000000200
+FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000008 CR3: 0000000011841000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
->> +static void cio2_bridge_create_fwnode_properties(struct cio2_sensor *sensor,
->> +                                                const struct cio2_sensor_config *cfg)
->> +{
->> +       unsigned int i;
->> +
->> +       sensor->prop_names = prop_names;
->> +
->> +       for (i = 0; i < 4; i++)
-> 
-> 4 here and below, can we have a local define for them, like
-> 
->   #define CIO2_MAX_LANES  4
 
-Done and for the other place it's mentioned below.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
->> +static int cio2_bridge_connect_sensors(struct cio2_bridge *bridge,
->> +                                      struct pci_dev *cio2)
->> +{
->> +       struct fwnode_handle *fwnode;
->> +       struct cio2_sensor *sensor;
->> +       struct acpi_device *adev;
->> +       unsigned int i;
->> +       int ret = 0;
-> 
-> You may drop this assignment and...
-> 
-...
-> 
->> +       return ret;
-> 
-> ...use here
-> 
->   return 0;
-> 
-> directly.
-
-Done
-
->> +enum cio2_sensor_swnodes {
->> +       SWNODE_SENSOR_HID,
->> +       SWNODE_SENSOR_PORT,
->> +       SWNODE_SENSOR_ENDPOINT,
->> +       SWNODE_CIO2_PORT,
->> +       SWNODE_CIO2_ENDPOINT,
-> 
->> +       SWNODE_COUNT,
-> 
-> No comma?
-
-Done
-
->> @@ -1715,6 +1732,23 @@ static int cio2_pci_probe(struct pci_dev *pci_dev,
->>                 return -ENOMEM;
->>         cio2->pci_dev = pci_dev;
->>
->> +       /*
->> +        * On some platforms no connections to sensors are defined in firmware,
->> +        * if the device has no endpoints then we can try to build those as
->> +        * software_nodes parsed from SSDB.
->> +        */
->> +       if (!cio2_check_fwnode_graph(fwnode)) {
->> +               if (fwnode && !IS_ERR_OR_NULL(fwnode->secondary)) {
-> 
->> +                       dev_err(&pci_dev->dev,
->> +                               "fwnode graph has no endpoints connected\n");
-> 
-> One line?
-
-Done
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
