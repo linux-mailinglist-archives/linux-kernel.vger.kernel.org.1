@@ -2,152 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFEB02E2F0F
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 21:20:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B2FB2E2F17
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 21:44:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726045AbgLZUSH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 26 Dec 2020 15:18:07 -0500
-Received: from coyote.holtmann.net ([212.227.132.17]:50120 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725927AbgLZUSH (ORCPT
+        id S1726046AbgLZUma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Dec 2020 15:42:30 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:27772 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725964AbgLZUm3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Dec 2020 15:18:07 -0500
-Received: from marcel-macbook.holtmann.net (p4ff9f924.dip0.t-ipconnect.de [79.249.249.36])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 955D2CED2F;
-        Sat, 26 Dec 2020 21:24:43 +0100 (CET)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.40.0.2.32\))
-Subject: Re: [PATCH 1/1] [Add support Mediatek mt7921U]
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <292c69c1038242d5b0d03fb7b4675555@mtkmbs08n1.mediatek.inc>
-Date:   Sat, 26 Dec 2020 21:17:24 +0100
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sean Wang <Sean.Wang@mediatek.com>,
-        =?utf-8?B?IlBldGVyIFRzYW8gKOabueePhuW9sCki?= 
-        <Peter.Tsao@mediatek.com>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <5925338F-C8E3-4FDE-9477-256EC2363C49@holtmann.org>
-References: <20201222150527.22904-1-Mark-YW.Chen@mediatek.com>
- <06C876AD-8232-418E-B3CB-96B88579BAF7@holtmann.org>
- <292c69c1038242d5b0d03fb7b4675555@mtkmbs08n1.mediatek.inc>
-To:     =?utf-8?B?Ik1hcmstWVcgQ2hlbiAo6Zmz5o+a5paHKSI=?= 
-        <Mark-YW.Chen@mediatek.com>
-X-Mailer: Apple Mail (2.3654.40.0.2.32)
+        Sat, 26 Dec 2020 15:42:29 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-23-I-8rGLxaNH6OrhhBUzf87g-1; Sat, 26 Dec 2020 20:40:50 +0000
+X-MC-Unique: I-8rGLxaNH6OrhhBUzf87g-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Sat, 26 Dec 2020 20:40:48 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Sat, 26 Dec 2020 20:40:48 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Tom Rix' <trix@redhat.com>, Joe Perches <joe@perches.com>,
+        Simon Horman <simon.horman@netronome.com>
+CC:     "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "kafai@fb.com" <kafai@fb.com>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "yhs@fb.com" <yhs@fb.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "gustavoars@kernel.org" <gustavoars@kernel.org>,
+        "louis.peens@netronome.com" <louis.peens@netronome.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "oss-drivers@netronome.com" <oss-drivers@netronome.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] nfp: remove h from printk format specifier
+Thread-Topic: [PATCH] nfp: remove h from printk format specifier
+Thread-Index: AQHW2s6Qh9Jx9VdXck+UoJgZsYMiQaoJ1s2w
+Date:   Sat, 26 Dec 2020 20:40:48 +0000
+Message-ID: <bf541f5de2624693ae96887afbfd04bc@AcuMS.aculab.com>
+References: <20201223202053.131157-1-trix@redhat.com>
+ <20201224202152.GA3380@netronome.com>
+ <bac92bab-243b-ca48-647c-dad5688fa060@redhat.com>
+ <18c81854639aa21e76c8b26cc3e7999b0428cc4e.camel@perches.com>
+ <7b5517e6-41a9-cc7f-f42f-8ef449f3898e@redhat.com>
+In-Reply-To: <7b5517e6-41a9-cc7f-f42f-8ef449f3898e@redhat.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
-
-> Thanks for your suggestions, I will remove the duplicate definitions and functions.
-> 
-> Firstly, we will add the support of enabling MT7921U in btusb.c
-> Secondary, we will discuss the driver architecture with you.
-> Finally, we update the common part and hif part for MT7921.
-> 
-> I have a couple questions for driver architecture.
-> 1. Global dev.
-> 2. Unify common part.
-> 3. HIF part (usb/sdio/pcie/uart)
->> 
->>> This patch adds the support of enabling MT7921U, it's USB-based
->>> Bluetooth function.
->>> 
->>> There are some component in the Mediatek driver.
->>> 1. Btmtk_main: it's common code for Mediatek devices,
->>>  such as firmware download, chip initialization,
->>>  state machine handling and etc.
->>> 2. Btmtkusb: it's for usb interface,
->>>  such as usb endpoint enumeration, urb handling and etc.
->>> 
->>> Firstly, we update the common part and usb part for MT7921U.
->>> Secondly, we will add the support MT7921S, it's SDIO-based device.
->>> Finally, we will add the procedure to support uart/pcie interfaces.
->> 
->> create a btmtk.[ch] module like the other vendors did if it makes sense.
->> Otherwise just skip that part for now and get btmtkusb.c driver working. You
->> can later unify between all 3 transports.
->> 
->> I would do the latter since it would first make sense to really see where the
->> common parts are. And I have to be frank, this driver needs massive cleanup. I
->> am not going to accept this tons of copy-and-paste left and right.
->> 
->> Please provide the content of /sys/kernel/debug/usb/devices in the commit
->> message.
->> 
->>> +/* To support dynamic mount of interface can be probed */
->>> +static int btmtk_intf_num = BT_MCU_MINIMUM_INTERFACE_NUM;
->>> +/* To allow g_bdev being sized from btmtk_intf_num setting */
->>> +static struct btmtk_dev **g_bdev;
->> 
->> NO. Period. No global dev instances.
-> 
-> [Global dev.]
-> The global dev is for our state machine that design for error recovery, such as chip reset, memory dump and etc.
-> We must to make sure state machine transition that is the same flow for each interfaces (usb/sdio/pcie/uart).
-> [Mediatek driver]
-> -> Create a dev before interface probe.
-> [Linux kernel Bluetooth driver]
-> -> Create a dev in interface probe (btusb_probe).
-> 
-> May we create a global dev before interface probe?
-
-No. Please design things properly. Non of the drivers have global devices.
-
->>> +
->>> +/**
->>> + * Kernel Module init/exit Functions
->>> + */
->>> +static int __init main_driver_init(void)
->>> +{
->>> +	int ret = 0;
->>> +	int i;
->>> +
->>> +	/* Mediatek Driver Version */
->>> +	BTMTK_INFO("%s: MTK BT Driver Version : %s", __func__, VERSION);
->>> +
->>> +	ret = main_init();
->>> +	if (ret < 0)
->>> +		return ret;
->>> +
->>> +	for (i = 0; i < btmtk_intf_num; i++)
->>> +		btmtk_set_chip_state(g_bdev[i], BTMTK_STATE_DISCONNECT);
->>> +
->>> +	ret = btmtk_cif_register();
->>> +	if (ret < 0) {
->>> +		BTMTK_ERR("*** USB registration failed(%d)! ***", ret);
->>> +		main_exit();
->>> +		return ret;
->>> +	}
->>> +
->>> +	BTMTK_INFO("%s: Done", __func__);
->>> +	return ret;
->>> +}
->> 
->> NO. Period. Use module_usb_driver() and if you need anything more, you are
->> doing something wrong.
-> 
-> We would like to unify state machine, dev allocate, hif_hook and hif_register.
-> [Unify Common Part]: btmtk_main
-> State machine: Mediatek chip error recovery
-> Dev allocate: Bluetooth dev.
-> Mediatek chip-related behavior: Firmware download.
-> HCI device-related: hci register, open, close and send_frame.
-> 
-> [HIF Part] : btmtkusb/btmtksdio/btmtkuart
-> hif_hook (cif interface): read/write register, open/close, chip reset and etc.
-> hif_register (cif register): hif registration-related, such as usb_register/sdio_register_driver.
-> 
-> May we use the driver architecture?
-
-You can do that, but then first start with the existing btmtksdio and btmtkuart drivers to show me how you want to design it. You still have to design it cleanly.
-
-Regards
-
-Marcel
+RnJvbTogVG9tIFJpeA0KPiBTZW50OiAyNSBEZWNlbWJlciAyMDIwIDE0OjU3DQouLi4NCj4gPiBL
+ZXJuZWwgY29kZSBkb2Vzbid0IHVzZSBhIHNpZ25lZCBjaGFyIG9yIHNob3J0IHdpdGggJWh4IG9y
+ICVodSB2ZXJ5IG9mdGVuDQo+ID4gYnV0IGluIGNhc2UgeW91IGRpZG4ndCBhbHJlYWR5IGtub3cs
+IGFueSBzaWduZWQgY2hhci9zaG9ydCBlbWl0dGVkIHdpdGgNCj4gPiBhbnl0aGluZyBsaWtlICVo
+eCBvciAlaHUgbmVlZHMgdG8gYmUgbGVmdCBhbG9uZSBhcyBzaWduIGV4dGVuc2lvbiBvY2N1cnMg
+c286DQo+IA0KPiBZZXMsIHRoaXMgd291bGQgYWxzbyBlZmZlY3QgY2hlY2twYXRjaC4NCg0KRG9l
+cyB0aGUga2VybmVsIHByaW50ZiBkbyB0aGUgbWFza2luZyBmb3IgJWh4IGFuZCAlaGh4Pw0KQSBx
+dWljayBjaGVjayBJIGRpZCBzaG93ZWQgdGhhdCAoYXQgbGVhc3Qgc29tZSB2ZXJzaW9ucyBvZikg
+Z2xpYmMgZG9lcy4NCkJ1dCB0aGUgcHJpbnRmIGJ1aWx0aW4gaW4gYmFzaCBkb2Vzbid0Lg0KDQpJ
+ZiB0aGUgbWFza2luZyBpcyB0aGVyZSB0aGVuICVoW2RpdXhdIGFuZCAlaGhbZGl1eF0gYXJlIHZh
+bGlkDQpldmVuIHRob3VnaCB0aGUgdmFyYXJncyBzdXBwbGllZCBwYXJhbWV0ZXIgaXMgYWx3YXlz
+IGV4dGVuZGVkIHRvDQphdCBsZWFzdCB0aGUgc2l6ZSBvZiBpbnQuDQoNClRoaXMgaXMgZXZlbiB0
+cnVlIGlmIHRoZSBwYXJhbWV0ZXIgbWlnaHQgYmUgbGFyZ2UuDQpGb3IgaW5zdGFuY2UgZG9pbmc6
+DQoJLi4uLCAiJWhoMDJ4OiVoaDAyeDolaGgwMng6JWhoMDJ4IiwgeCA+PiAyNCwgeCA+PiAxNiwg
+eCA+PiA4LCB4KTsNCndpbGwgZ2VuZXJhdGUgc2xpZ2h0bHkgc21hbGxlciBjb2RlIHRoYW4gbWFz
+a2luZyB0aGUgcGFzc2VkIHZhbHVlcy4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVz
+cyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEg
+MVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
