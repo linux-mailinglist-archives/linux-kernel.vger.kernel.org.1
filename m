@@ -2,124 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2D8B2E2F4C
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 23:39:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 945CE2E2F4E
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 23:41:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726138AbgLZWhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Dec 2020 17:37:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35150 "EHLO
+        id S1726178AbgLZWlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Dec 2020 17:41:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725986AbgLZWhv (ORCPT
+        with ESMTP id S1726035AbgLZWlB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Dec 2020 17:37:51 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66A41C061757
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 14:37:11 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id l23so4422926pjg.1
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 14:37:11 -0800 (PST)
+        Sat, 26 Dec 2020 17:41:01 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0ABCC061757
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 14:40:20 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id s26so16163599lfc.8
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 14:40:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=asPoBdEKmKqtRAP4kOudpK9yPqTcR06ZjdhL7PqW1D8=;
-        b=ZZvT9cHQJb+YcqAEPWWT+1Gbl1tVY1hoaJ+8DuK8Okv8XZILJ1aaNrtubdAk9kjfHT
-         A2qp/flE6asHY6QgPXZAEWyl1PSDZbNDqYGSU4HxD0XcnlRdIIfxJ6/nLNZ/REvbysi3
-         t1kfFM6tZpeMVIoTHH7nSnaGLuUdOzSwlXhClYGOW9E5BHYkT+YIW/uO4P9lOBBMKhto
-         NZgy85s5xbVRsh0cn7InTL/YKslR4rP6eq334vClc3t4h1Rby3pDaUwYwYpXpcjzq+It
-         fCq3uVl+kRUf3pxG+0bzzwka/PVTW0ecfcq1JG+TDMoY9Iuc2D77VuzqRBe0sH2xgqdp
-         Q0qg==
+        bh=5xV1Uwr5QvPwGAEEhmKQuNt1ecyJlCF/DYUO0nnGbJA=;
+        b=SSDOvkJaPZLQbLl1/R2yfC0vD8pNo/R7kwvwiR0BP96LI5plYaxX1qyeGTF5DDBAle
+         Mo8kLCOdwcA3MLI3xds9N6DR0mR8YcPh8435LV12lTkVb7z8s/jFxu8aCFrWAzzJUUAx
+         g/GK5Fi4t9MRDLYmUWaK9rgbfXgMXKSeAXeUa+bfRcHPK8APDNC8EGbShpG7KAI36SdC
+         atxEb/OH8TBUcAyQcr1NCjzL/tS0AG1dM0/L+sQKDNLwl6XDx36uavQQdFqhRjWxZVXd
+         E2OjzaZCA2OX8/82QsmFQLLMRPEVEBZN1TaKU3eQST1GmGun+pNtH/lyfbsbsWIW0YOH
+         Nrnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=asPoBdEKmKqtRAP4kOudpK9yPqTcR06ZjdhL7PqW1D8=;
-        b=YRxe9/lW9ZbqKMNKC1gLenALg4AecQL3JZRhpnQPvFxWf1eh5AmzSN1f/haiPx9UpY
-         eGz6TbMufHqc5Xw6oAQ9k1TKUu4qDmAoQ1DCTJbAICxMVRMdr5x0O8uvox2YS+P1p6YZ
-         kd2aG9YE1p+p9gT8evV1EFBeY3OIMHtRyfhKGSZ5S0/ZahvmR6pnnjU2/UOjSok/bjky
-         6+prp8xkDmrvlV6hcPp9kbZLzW3ZwMefaVrvEdRsx64PzYN2W75t6lxQPCtbHMIW3eNa
-         qRkApvOXZt7+JY8zS/1UHToeScmcgSHpgsgmbsoXvlPc3QUY5F0HGkYf4NmO4ew+6O65
-         TZVw==
-X-Gm-Message-State: AOAM532xpynxUq9EKsoqIwcy/t+QgcPIne0XqRQjlxqaw3tSKOw5LUqd
-        ZG1WrkIxI6roQYtKr7dSVQo=
-X-Google-Smtp-Source: ABdhPJxFniMNfZPIspqr983Eahf6DVjzTLSe6dUuXa/biJhtaVh43d+dmt/SPb4493dIoNDGqyFOiA==
-X-Received: by 2002:a17:902:6b84:b029:dc:3419:b558 with SMTP id p4-20020a1709026b84b02900dc3419b558mr33883468plk.19.1609022230758;
-        Sat, 26 Dec 2020 14:37:10 -0800 (PST)
-Received: from localhost (g39.222-224-245.ppp.wakwak.ne.jp. [222.224.245.39])
-        by smtp.gmail.com with ESMTPSA id d4sm31428371pfo.127.2020.12.26.14.37.09
+        bh=5xV1Uwr5QvPwGAEEhmKQuNt1ecyJlCF/DYUO0nnGbJA=;
+        b=TtsjOIaNCkneArMLYvx0jMH49rYeTvA5Pv3vEfKXh7H89/ARWpXYR4inzVMnxK/Uj6
+         4deByjkrNz9kRY2tzcAyu8GZL9XJ57Wrf92K+qIG+TNTcqZC+PcKvDeN8gQIMrM9b+vT
+         MPJVLXJSj3INKojhnoctqwoDyc3rjcvnsf0jGQHBY2cfGEGNVlA9jskBCTFcibwKqje1
+         MhR3K3/NOqBn2uoVCn+kFHghRu/E2LcbUCa6gsWlp7pXZoJVSP4+JpqacXk910JNn9V7
+         KETE0nRGde1ppUvQPWdYPo3SRITkBRJgfKT2V798CJbU+CgoDOwrkoDMXt/88tphJ93S
+         Ux8w==
+X-Gm-Message-State: AOAM532arp+x2BoJLu2UMZpYoK9E+eB0noTaVWqrSyre3mWNP15EmCFs
+        FlqBhrBNmTE9hCg28N8UPa2QqQ==
+X-Google-Smtp-Source: ABdhPJy9c7fz+61qQ39Hm9FQ6OMVPp5gAk3EtmrlxqSIgqfg7pTj+frNOUo4gc5k5Hr9EwE043FbPA==
+X-Received: by 2002:a05:651c:1063:: with SMTP id y3mr17737679ljm.431.1609022417964;
+        Sat, 26 Dec 2020 14:40:17 -0800 (PST)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id y26sm5596811ljh.63.2020.12.26.14.40.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Dec 2020 14:37:09 -0800 (PST)
-Date:   Sun, 27 Dec 2020 07:37:07 +0900
-From:   Stafford Horne <shorne@gmail.com>
-To:     Gabriel Somlo <gsomlo@gmail.com>
-Cc:     mholenko@antmicro.com, kgugala@antmicro.com,
-        linux-kernel@vger.kernel.org, pczarnecki@internships.antmicro.com,
-        f.kermarrec@gmail.com, gregkh@linuxfoundation.org
-Subject: Re: [PATCH v4 0/3] drivers/soc/litex: support 32-bit subregisters,
- 64-bit CPUs
-Message-ID: <20201226223707.GO3168563@lianli.shorne-pla.net>
-References: <20201226001649.2061703-1-gsomlo@gmail.com>
+        Sat, 26 Dec 2020 14:40:17 -0800 (PST)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 9EEEC1026FB; Sun, 27 Dec 2020 01:40:16 +0300 (+03)
+Date:   Sun, 27 Dec 2020 01:40:16 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        Android Kernel Team <kernel-team@android.com>
+Subject: Re: [PATCH 1/2] mm: Allow architectures to request 'old' entries
+ when prefaulting
+Message-ID: <20201226224016.dxjmordcfj75xgte@box>
+References: <CAHk-=wgO2LsoKhX7MjSECo+Xrj1-Me7tzRfNcsdEZBRwJW1cQg@mail.gmail.com>
+ <20201219124103.w6isern3ywc7xbur@box>
+ <CAHk-=wifcVaxaTn_RbZ=idfYFazTPwm8t5cB1rY6xEBjbcfO5g@mail.gmail.com>
+ <20201222100047.p5zdb4ghagncq2oe@box>
+ <alpine.LSU.2.11.2012231905300.5723@eggly.anvils>
+ <20201225113157.e7hmluffh56fszfc@box>
+ <CAHk-=wiT50aEErZgZOrbFQ=GhFuM3MnBmHoSBSScN9rmXMnOKQ@mail.gmail.com>
+ <20201226204335.dikqkrkezqet6oqf@box>
+ <alpine.LSU.2.11.2012261246450.1629@eggly.anvils>
+ <CAHk-=wjesveWEQZ4tqRssSSQvuxx46LqYfME+uxKfghxAe6U_w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201226001649.2061703-1-gsomlo@gmail.com>
+In-Reply-To: <CAHk-=wjesveWEQZ4tqRssSSQvuxx46LqYfME+uxKfghxAe6U_w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 25, 2020 at 07:16:46PM -0500, Gabriel Somlo wrote:
-> This series expands on commit 22447a99c97e ("drivers/soc/litex: add LiteX
-> SoC Controller driver"), adding support for handling both 8- and 32-bit
-> LiteX CSR (MMIO) subregisters, on both 32- and 64-bit CPUs.
+On Sat, Dec 26, 2020 at 01:16:09PM -0800, Linus Torvalds wrote:
+> On Sat, Dec 26, 2020 at 1:04 PM Hugh Dickins <hughd@google.com> wrote:
+> >
+> >
+> > Hold on. I guess this one will suffer from the same bug as the previous.
+> > I was about to report back, after satisfactory overnight testing of that
+> > version - provided that one big little bug is fixed:
+> >
+> > --- a/mm/filemap.c
+> > +++ b/mm/filemap.c
+> > @@ -2919,7 +2919,7 @@ static bool filemap_map_pmd(struct vm_fa
+> >
+> >         if (pmd_none(*vmf->pmd) &&
+> >             PageTransHuge(page) &&
+> > -           do_set_pmd(vmf, page)) {
+> > +           do_set_pmd(vmf, page) == 0) {
+> >                 unlock_page(page);
+> >                 return true;
+> >         }
 > 
-> Notes v4:
-> 	- improved "eloquence" of some 3/3 commit blurb paragraphs
-> 	- fixed instance of "disgusting" comment style :)
-> 	- litex_[get|set]_reg() now using size_t for 'reg_size' argument
-> 	- slightly tighter shift calculation in litex_set_reg()
+> I missed that entirely, because when just reading the patch it looks
+> fine and I didn't look at what do_set_pmd() function returns outside
+> the patch.
 > 
-> Notes v3:
-> 	- split into smaller, more self-explanatory patches
-> 	- more detailed commit blurb for "main payload" (3/3) patch
-> 	- eliminate compiler warning on 32-bit architectures
+> And maybe it would be better to write it as
 > 
-> Notes v2:
-> 	- fix typo (s/u32/u64/) in litex_read64().
+>         if (pmd_none(*vmf->pmd) && PageTransHuge(page)) {
+>                 vm_fault_t ret = do_set_pmd(vmf, page);
+>                 if (!ret) {
+>                         ...
 > 
-> Notes v1:
-> 	- LITEX_SUBREG_SIZE now provided by Kconfig.
-> 	- it's not LITEX_REG_SIZE, but rather LITEX_SUBREG_ALIGN!
-> 	- move litex_[get|set]_reg() to include/linux/litex.h and mark
-> 	  them as "static inline";
-> 	- redo litex_[read|write][8|16|32|64]() using litex_[get|set]_reg()
-> 	  (compiler should produce code as efficient as hardcoded shifts,
-> 	   but also automatically matching LITEX_SUBREG_SIZE).
+> instead to make it a bit more explicit about how that return value is
+> a vm_fault_t there...
 > 
-> Gabriel Somlo (3):
->   drivers/soc/litex: move generic accessors to litex.h
->   drivers/soc/litex: separate MMIO from subregister offset calculation
->   drivers/soc/litex: support 32-bit subregisters, 64-bit CPUs
+> And see my other email about how I suspect there is still a leak in
+> that patch for the previous test-case.
 
-Thanks, this look good to me right now.  I will wait for other reviewers to
-chime in over the next week or two after the holidays.
+Ughh...
 
-Some minor things:
-  - It's customary to add "Changes since xx" on each patch after "---",
-    See: https://kernelnewbies.org/PatchTipsAndTricks
-  - Did you run your patches through "./scripts/checkpatch.pl"?
-  - Did you use "./scripts/get_maintainer.pl" to create the cc list?  I usually
-    run:  git send-email --to linux-kernel --cc-cmd ./scripts/get_maintainer.pl ...
-    From your cc list it seems you did, but maybe did it manually. (I setup
-    .get_maintainer.conf with --no-rolestats for this to work)
-  - In general check out:
-    https://www.kernel.org/doc/html/latest/process/submit-checklist.html
+Here's the fixup I have so far. It doesn't blow up immediately, but please
+take a closer look. Who knows what stupid mistake I did this time. :/
 
--Stafford
-
->  drivers/soc/litex/Kconfig          |  12 +++
->  drivers/soc/litex/litex_soc_ctrl.c |  76 +--------------
->  include/linux/litex.h              | 151 +++++++++++++++++++----------
->  3 files changed, 115 insertions(+), 124 deletions(-)
-> 
-> -- 
-> 2.26.2
-> 
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 3a92aaa59b9b..c4b374678e7d 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -2837,16 +2837,21 @@ static bool filemap_map_pmd(struct vm_fault *vmf, struct page *page)
+ 	struct mm_struct *mm = vmf->vma->vm_mm;
+ 
+ 	/* Huge page is mapped? No need to proceed. */
+-	if (pmd_trans_huge(*vmf->pmd))
+-		return true;
+-
+-	if (pmd_none(*vmf->pmd) &&
+-	    PageTransHuge(page) &&
+-	    do_set_pmd(vmf, page)) {
++	if (pmd_trans_huge(*vmf->pmd)) {
+ 		unlock_page(page);
++		put_page(page);
+ 		return true;
+ 	}
+ 
++	if (pmd_none(*vmf->pmd) && PageTransHuge(page)) {
++	    vm_fault_t ret = do_set_pmd(vmf, page);
++	    if (!ret) {
++		    /* The page is mapped successfully, reference consumed. */
++		    unlock_page(page);
++		    return true;
++	    }
++	}
++
+ 	if (pmd_none(*vmf->pmd)) {
+ 		vmf->ptl = pmd_lock(mm, vmf->pmd);
+ 		if (likely(pmd_none(*vmf->pmd))) {
+@@ -2867,7 +2872,7 @@ static bool filemap_map_pmd(struct vm_fault *vmf, struct page *page)
+ 	return false;
+ }
+ 
+-static struct page *next_stable_page(struct page *page, struct vm_fault *vmf,
++static struct page *next_uptodate_page(struct page *page, struct vm_fault *vmf,
+ 				     struct xa_state *xas, pgoff_t end_pgoff)
+ {
+ 	struct address_space *mapping = vmf->vma->vm_file->f_mapping;
+@@ -2914,15 +2919,16 @@ static inline struct page *first_map_page(struct vm_fault *vmf,
+ 					  struct xa_state *xas,
+ 					  pgoff_t end_pgoff)
+ {
+-	return next_stable_page(xas_find(xas, end_pgoff), vmf, xas, end_pgoff);
++	return next_uptodate_page(xas_find(xas, end_pgoff),
++				  vmf, xas, end_pgoff);
+ }
+ 
+ static inline struct page *next_map_page(struct vm_fault *vmf,
+ 					  struct xa_state *xas,
+ 					  pgoff_t end_pgoff)
+ {
+-	return next_stable_page(xas_next_entry(xas, end_pgoff),
+-				vmf, xas, end_pgoff);
++	return next_uptodate_page(xas_next_entry(xas, end_pgoff),
++				  vmf, xas, end_pgoff);
+ }
+ 
+ void filemap_map_pages(struct vm_fault *vmf,
+-- 
+ Kirill A. Shutemov
