@@ -2,140 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 838752E2D71
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 07:42:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 867C82E2D75
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 07:44:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728949AbgLZGlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Dec 2020 01:41:47 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:55890 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725801AbgLZGlr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Dec 2020 01:41:47 -0500
-Received: from [10.130.0.71] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Axecn42uZfK4gFAA--.12155S3;
-        Sat, 26 Dec 2020 14:40:57 +0800 (CST)
-Subject: Re: [PATCH v4 2/4] spi: ls7a: Add YAML schemas
-To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        ThomasBogendoerfer <tsbogend@alpha.franken.de>
-References: <1608892552-15457-1-git-send-email-zhangqing@loongson.cn>
- <1608892552-15457-2-git-send-email-zhangqing@loongson.cn>
- <99ab96cc-6169-19c2-04ef-d023d4427f55@gmail.com>
-Cc:     linux-spi@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-From:   zhangqing <zhangqing@loongson.cn>
-Message-ID: <70ab4b0c-1dab-d62f-f829-11b1c57257c1@loongson.cn>
-Date:   Sat, 26 Dec 2020 14:40:56 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S1729087AbgLZGmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Dec 2020 01:42:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725801AbgLZGmb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Dec 2020 01:42:31 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D1ADC061757;
+        Fri, 25 Dec 2020 22:41:51 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id q22so3468208pfk.12;
+        Fri, 25 Dec 2020 22:41:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=+Zz2ASXn2o1AAzNUsSqx+OfWOMVjrvSh/KaatXZVe1E=;
+        b=Zccd4ckmnwoGwoJssq58yRMJlLCGNmgWKNNLNjPKTx3E17zvDtnuw7ilNjlBxNdrb1
+         qerj6rEtAE36abDCvqNWbiBN4PGhCbF9gYAHvwLWAarZWV2yWtrkAbfwy6bvczTs+cU1
+         oxZLn9yYTPfTetbf6NTfTm25aLlq0nw4MYlAWhMQ9vBVaHn3XCM2jzREW+f+ue9C1kE1
+         Itsjgn3yOWpBFoQ3SMaTelD8wQUxjd8i5Qup82bvW20ZGgkiEbjvMjoSiZ1JzLccNYyY
+         oRa9db2gXY4ED0ytu8bH+R97APnOhhrv05pSSk01QrZr6GJMB4PtmZRjCXTnl7Lw2c8U
+         xMTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=+Zz2ASXn2o1AAzNUsSqx+OfWOMVjrvSh/KaatXZVe1E=;
+        b=bkO3mPmV25MDLX2ch027WUxlULgn/FyWNYoQfzAAx7mItuWxW0AaUodZRWD9raf7h5
+         am1/T1j/zsDOGEYFF1yh0a5cdwkqSzXvOjOdMuQnEGYwHahvZ3c5UkMU4QPUtXx/FhpY
+         nhocYOcg1VuqPqBud4DbtzrK5iSoA8V9CxjriWxhCEn4ZdpBefCVssIX3dS8ZZxpe8VT
+         PHKOjx+i1VqqtwPsVV7Unn7EhH0VloDqFVDJHojle2vZxd6LJQ4FExwXS3Pchob5xD/b
+         4S1xlR8BZhJY2BJpW0dBX9s/KXdPYsXkKv1S/ibi70YICe4eZ3C1gVV+2oyG9fU2WoHJ
+         7yYQ==
+X-Gm-Message-State: AOAM530JZ2Rxi6PJvANwKIgNdmyL3bSWnDSSdzaxSD7zw/ykHqHEs7XH
+        cXsWwBQwpJmqpDjIWd/i+Bk=
+X-Google-Smtp-Source: ABdhPJxplND6wyf4phagc3MU2/poQTo714TNFqVHAG10cwXZBfUhioXwtZNEbctnfmqiAKSxLgpNMg==
+X-Received: by 2002:a62:c312:0:b029:1a9:19c7:a8e with SMTP id v18-20020a62c3120000b02901a919c70a8emr33462581pfg.74.1608964909710;
+        Fri, 25 Dec 2020 22:41:49 -0800 (PST)
+Received: from syed.domain.name ([103.201.127.53])
+        by smtp.gmail.com with ESMTPSA id x7sm12250703pga.0.2020.12.25.22.41.42
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 25 Dec 2020 22:41:49 -0800 (PST)
+Date:   Sat, 26 Dec 2020 12:11:33 +0530
+From:   Syed Nayyar Waris <syednwaris@gmail.com>
+To:     linus.walleij@linaro.org
+Cc:     andriy.shevchenko@linux.intel.com, vilhelm.gray@gmail.com,
+        michal.simek@xilinx.com, arnd@arndb.de, rrichter@marvell.com,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        yamada.masahiro@socionext.com, akpm@linux-foundation.org,
+        rui.zhang@intel.com, daniel.lezcano@linaro.org,
+        amit.kucheria@verdurent.com, linux-arch@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org
+Subject: [PATCH 0/5] Introduce the for_each_set_clump macro
+Message-ID: <cover.1608963094.git.syednwaris@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <99ab96cc-6169-19c2-04ef-d023d4427f55@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Axecn42uZfK4gFAA--.12155S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Aw15AF48GFWrKw1UtrWDArb_yoW8ZF4UpF
-        13Ca4avF4IqF1xCw4SqFykCw1YqryFk3Z8JFW7tr1UCF90k3Z0q343Kw1Uu34fJF18AFyx
-        ZFy8Wr43KF10yaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9lb7Iv0xC_Cr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xK
-        xwCYjI0SjxkI62AI1cAE67vIY487MxkIecxEwVAFwVW8AwCF04k20xvY0x0EwIxGrwCFx2
-        IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v2
-        6r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67
-        AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IY
-        s7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r
-        4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUcmiiDUUUU
-X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi，Sergei
+Hello Linus,
 
-Thank you for your reply and suggestion .
+Since this patchset primarily affects GPIO drivers, would you like
+to pick it up through your GPIO tree?
 
-I will use extra indentation levels and send v5 in the soon.
+(Note: Patchset resent with the new macro and relevant
+functions shifted to a new header clump_bits.h [Linus Torvalds])
 
-Thanks,
+Michal,
+What do you think of [PATCH 5/5]? Is the conditional check needed? And
+also does returning -EINVAL look good?
 
--Qing
+This patchset introduces a new generic version of for_each_set_clump.
+The previous version of for_each_set_clump8 used a fixed size 8-bit
+clump, but the new generic version can work with clump of any size but
+less than or equal to BITS_PER_LONG. The patchset utilizes the new macro
+in several GPIO drivers.
+
+The earlier 8-bit for_each_set_clump8 facilitated a
+for-loop syntax that iterates over a memory region entire groups of set
+bits at a time.
+
+For example, suppose you would like to iterate over a 32-bit integer 8
+bits at a time, skipping over 8-bit groups with no set bit, where
+XXXXXXXX represents the current 8-bit group:
+
+    Example:        10111110 00000000 11111111 00110011
+    First loop:     10111110 00000000 11111111 XXXXXXXX
+    Second loop:    10111110 00000000 XXXXXXXX 00110011
+    Third loop:     XXXXXXXX 00000000 11111111 00110011
+
+Each iteration of the loop returns the next 8-bit group that has at
+least one set bit.
+
+But with the new for_each_set_clump the clump size can be different from 8 bits.
+Moreover, the clump can be split at word boundary in situations where word
+size is not multiple of clump size. Following are examples showing the working
+of new macro for clump sizes of 24 bits and 6 bits.
+
+Example 1:
+clump size: 24 bits, Number of clumps (or ports): 10
+bitmap stores the bit information from where successive clumps are retrieved.
+
+     /* bitmap memory region */
+        0x00aa0000ff000000;  /* Most significant bits */
+        0xaaaaaa0000ff0000;
+        0x000000aa000000aa;
+        0xbbbbabcdeffedcba;  /* Least significant bits */
+
+Different iterations of for_each_set_clump:-
+'offset' is the bit position and 'clump' is the 24 bit clump from the
+above bitmap.
+Iteration first:        offset: 0 clump: 0xfedcba
+Iteration second:       offset: 24 clump: 0xabcdef
+Iteration third:        offset: 48 clump: 0xaabbbb
+Iteration fourth:       offset: 96 clump: 0xaa
+Iteration fifth:        offset: 144 clump: 0xff
+Iteration sixth:        offset: 168 clump: 0xaaaaaa
+Iteration seventh:      offset: 216 clump: 0xff
+Loop breaks because in the end the remaining bits (0x00aa) size was less
+than clump size of 24 bits.
+
+In above example it can be seen that in iteration third, the 24 bit clump
+that was retrieved was split between bitmap[0] and bitmap[1]. This example
+also shows that 24 bit zeroes if present in between, were skipped (preserving
+the previous for_each_set_macro8 behaviour).
+
+Example 2:
+clump size = 6 bits, Number of clumps (or ports) = 3.
+
+     /* bitmap memory region */
+        0x00aa0000ff000000;  /* Most significant bits */
+        0xaaaaaa0000ff0000;
+        0x0f00000000000000;
+        0x0000000000000ac0;  /* Least significant bits */
+
+Different iterations of for_each_set_clump:
+'offset' is the bit position and 'clump' is the 6 bit clump from the
+above bitmap.
+Iteration first:        offset: 6 clump: 0x2b
+Loop breaks because 6 * 3 = 18 bits traversed in bitmap.
+Here 6 * 3 is clump size * no. of clumps.
+
+GCC gives warning in bitmap_set_value(): https://godbolt.org/z/rjx34r
+Add explicit check to see if the value being written into the bitmap
+does not fall outside the bitmap.
+The situation that it is falling outside would never be possible in the
+code because the boundaries are required to be correct before the
+function is called. The responsibility is on the caller for ensuring the
+boundaries are correct.
+The code change is simply to silence the GCC warning messages
+because GCC is not aware that the boundaries have already been checked.
+As such, we're better off using __builtin_unreachable() here because we
+can avoid the latency of the conditional check entirely.
+
+Syed Nayyar Waris (5):
+  clump_bits: Introduce the for_each_set_clump macro
+  lib/test_bitmap.c: Add for_each_set_clump test cases
+  gpio: thunderx: Utilize for_each_set_clump macro
+  gpio: xilinx: Utilize generic bitmap_get_value and _set_value
+  gpio: xilinx: Add extra check if sum of widths exceed 64
+
+ drivers/gpio/clump_bits.h    | 101 ++++++++++++++++++++++++
+ drivers/gpio/gpio-thunderx.c |  12 ++-
+ drivers/gpio/gpio-xilinx.c   |  72 ++++++++++--------
+ lib/test_bitmap.c            | 144 +++++++++++++++++++++++++++++++++++
+ 4 files changed, 292 insertions(+), 37 deletions(-)
+ create mode 100644 drivers/gpio/clump_bits.h
 
 
-On 12/25/2020 08:19 PM, Sergei Shtylyov wrote:
-> On 12/25/20 1:35 PM, Qing Zhang wrote:
->
->> Switch the DT binding to a YAML schema to enable the DT validation.
->>
->> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
->> ---
->>
->> v4: fix warnings/errors about running 'make dt_binding_check'
->>
->> ---
->>   .../devicetree/bindings/spi/loongson,spi-ls7a.yaml | 46 ++++++++++++++++++++++
->>   1 file changed, 46 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/spi/loongson,spi-ls7a.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/spi/loongson,spi-ls7a.yaml b/Documentation/devicetree/bindings/spi/loongson,spi-ls7a.yaml
->> new file mode 100644
->> index 0000000..8cc9bc5
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/spi/loongson,spi-ls7a.yaml
->> @@ -0,0 +1,46 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/spi/loongson,spi-ls7a.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Loongson LS7A PCH SPI Controller
->> +
->> +maintainers:
->> +  - Qing Zhang <zhangqing@loongson.cn>
->> +
->> +description: |
->> +  This controller can be found in Loongson-3 systems with LS7A PCH.
->> +
->> +properties:
->> +  compatible:
->> +    const: loongson,ls7a-spi
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - num-chipselects
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +  - |
->> +    pci {
->> +        #address-cells = <3>;
->> +        #size-cells = <2>;
->> +
->> +        spi@16,0 {
->> +        compatible = "pci0014,7a0b.0",
->> +                        "pci0014,7a0b",
->> +                        "pciclass088000",
->> +                        "pciclass0800";
->> +
->> +        reg = <0xb000 0x0 0x0 0x0 0x0>;
->> +        num-chipselects = <0>;
->      The above lines after { need extra indentation level.
->
->> +        };
->> +    };
->> +
->> +...
-> MBR, Sergei
+base-commit: bbe2ba04c5a92a49db8a42c850a5a2f6481e47eb
+-- 
+2.29.0
 
