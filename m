@@ -2,103 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E20C2E2CB8
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 01:19:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0721C2E2CB9
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 01:19:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729338AbgLZARh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Dec 2020 19:17:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56552 "EHLO
+        id S1729364AbgLZARj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Dec 2020 19:17:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726579AbgLZARh (ORCPT
+        with ESMTP id S1726579AbgLZARi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Dec 2020 19:17:37 -0500
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF345C061757
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Dec 2020 16:16:56 -0800 (PST)
-Received: by mail-qt1-x830.google.com with SMTP id c14so3666190qtn.0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Dec 2020 16:16:56 -0800 (PST)
+        Fri, 25 Dec 2020 19:17:38 -0500
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07422C0613C1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Dec 2020 16:16:58 -0800 (PST)
+Received: by mail-qv1-xf32.google.com with SMTP id s6so2644532qvn.6
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Dec 2020 16:16:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZJAyRovyA5lMfjBA/9YKQC9QKzP/98ccBVdn1aaW2lg=;
-        b=JxBbGeIjKhbEvFPy6U7ed7+GnnU3H7STzaocIRJpDw209PuSa6/PEazCNBtN7liF6M
-         gtdGz3jOLU7Zp/CziTqF4OL90nVUb4HSOYNxV8ApvwQ+QUJ52bx5b0NiqsEHoi/1X5WF
-         MtIuqbePjlL8qRa8TCgSCfp7dQDB/xX1k+gef6+mnICIWSl8F8523LAgYFYohy2HnlQr
-         NNN7m+zA1kaf8biy1An86Aj9K55LjPydAhUFsJX0gSYZAI5XgubNfkoIU2sfKf8Ill/L
-         8VfsdLej8XwL7HqXIbdF3A30p6oVUf+DrBdDwzTrU0dlfvQsuTRjsT3sFHwVX2z/gXZP
-         hfvg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=iwDK6kUy3iJw1z1eayVlQOWhTY0qaRdJTbWtRK4aEOA=;
+        b=ZiHtG+1N+Z9d2ptQGSARF405nvcpmukBYj3tzM5jrVLpZUkBc+Pw7CdVRprxDT0hkY
+         HvX1WViE7Rn50JwWkW1tqO3Uxx0s0+X4wOwY0HYLOxz2kaynfp47dfDjrRAE0k9uPiP3
+         D7obw9ZKugw5juqLp2pOda090e8XWSYecJ+ROoFBRX3pgWSm+FAPu3FufHflXuhkhQ/q
+         oKpegcH+ggHg6PZbFxAr7tHnxjP2aScbEMquBktSmmCEx8bL5q1oJqzh6Zm4f9XSI5Zv
+         ZNBoklmJo2+hyIMfhMl+38cI+mahFCioZDrapjGLwPciW09nvmiHRbJ8c/hx6DaVR/WS
+         J3Mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZJAyRovyA5lMfjBA/9YKQC9QKzP/98ccBVdn1aaW2lg=;
-        b=XP32EIwaR32GQ72nAnL0x6A2S6IskwE7ctn18GJQwq1jRp919oTvODZ4Q0Qf1BlM63
-         ipToZtGRee208IvVKcoT0PNAyJWYhk+6h397BdcVzljYrjk/PbNs2LFHq+IgQT5ZF3kq
-         KFMKAWBt5RP6U18q2XhUrY6lz0A7CV1aHsvamfBJLMi+3DvjVhgk+6+4fBIcS2Qx+CWu
-         gf77bm8vm8OrmceHOyJAjfEcfE+GgZd1bLXGp9gJ5JhgIrY8pV47U5jSG8fmrWVN3DZu
-         Pksbw17l2xk+XHEfFQOgAayd1Kl/dyr5R+0lisSMd9rauGYRgYmKY0MaycgJWOyNRXvh
-         t0zg==
-X-Gm-Message-State: AOAM531Q5PIqNsp3c5PdPlVj88e3WW1v/R8rWOwBiiBz0E0wvAqzXhpU
-        +Yvo9iVnR39Iufii9QdZQmXF1ViIGG9KRQ==
-X-Google-Smtp-Source: ABdhPJwGph8gVR8PrkOyd+9CLMxliMsYmZvfEtVFPlMaRPyC/vs6GrbFaiAZcggaOvt0Gr2/SadRtQ==
-X-Received: by 2002:ac8:488e:: with SMTP id i14mr34567722qtq.372.1608941815946;
-        Fri, 25 Dec 2020 16:16:55 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=iwDK6kUy3iJw1z1eayVlQOWhTY0qaRdJTbWtRK4aEOA=;
+        b=ZVQa5Y1uhvXXQbo6FVzOltEZMtNEfCp6buTyv2EYkYv7kP0/MswDi9zDS+VJ0S1/ky
+         jvgDoYbmm2BCP6gzCuyJGFtDFb/d5sioXr7fc2ScDS+YZYOUGIeTQUjCNZNHkFVD9Qs0
+         v0EiDBNZHCBEtReKSUmC3x0IKb4NXNrYhd5rj9Qr5xUnOV6reQ3Okvda9GRl25wV2POo
+         xrRHQ7wXuAZ6jkzTevIZj1ApSOXT4fHQt1Yw+yXI568ZeiyJ7YwT6xmqTYdH+lQXI8EL
+         hRU6+82C5j+KZ/2T1ahdLtxqpblYQAUA/bzvRrXZyK9gxg9E/jslEAXR90Li8LvGstUi
+         cjXg==
+X-Gm-Message-State: AOAM533LFs/kp7u2JC2w8BrgEjBOGcGitM8+Mj5CF3r9gFmeCxb/z60E
+        ///Rrsd/fPz7Pw43g4707xs=
+X-Google-Smtp-Source: ABdhPJw/5V2R69VwEwBqZQx+JfFHxtkYGnMGemj6EiylY5OR01xzlv441bbRBm+U/BpT6tobioFzvA==
+X-Received: by 2002:ad4:4888:: with SMTP id bv8mr28481039qvb.0.1608941817026;
+        Fri, 25 Dec 2020 16:16:57 -0800 (PST)
 Received: from glsvmlin.ini.cmu.edu (GLSVMLIN.INI.CMU.EDU. [128.2.16.9])
-        by smtp.gmail.com with ESMTPSA id h1sm18645425qtr.1.2020.12.25.16.16.54
+        by smtp.gmail.com with ESMTPSA id h1sm18645425qtr.1.2020.12.25.16.16.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Dec 2020 16:16:55 -0800 (PST)
+        Fri, 25 Dec 2020 16:16:56 -0800 (PST)
 From:   Gabriel Somlo <gsomlo@gmail.com>
 To:     shorne@gmail.com, mholenko@antmicro.com, kgugala@antmicro.com
 Cc:     linux-kernel@vger.kernel.org, pczarnecki@internships.antmicro.com,
         f.kermarrec@gmail.com, gregkh@linuxfoundation.org, gsomlo@gmail.com
-Subject: [PATCH v4 0/3] drivers/soc/litex: support 32-bit subregisters, 64-bit CPUs
-Date:   Fri, 25 Dec 2020 19:16:46 -0500
-Message-Id: <20201226001649.2061703-1-gsomlo@gmail.com>
+Subject: [PATCH v4 1/3] drivers/soc/litex: move generic accessors to litex.h
+Date:   Fri, 25 Dec 2020 19:16:47 -0500
+Message-Id: <20201226001649.2061703-2-gsomlo@gmail.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20201226001649.2061703-1-gsomlo@gmail.com>
+References: <20201226001649.2061703-1-gsomlo@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series expands on commit 22447a99c97e ("drivers/soc/litex: add LiteX
-SoC Controller driver"), adding support for handling both 8- and 32-bit
-LiteX CSR (MMIO) subregisters, on both 32- and 64-bit CPUs.
+Move generic LiteX CSR (MMIO) register accessors to litex.h and
+declare them as "static inline", in preparation for supporting
+32-bit CSR subregisters and 64-bit CPUs.
 
-Notes v4:
-	- improved "eloquence" of some 3/3 commit blurb paragraphs
-	- fixed instance of "disgusting" comment style :)
-	- litex_[get|set]_reg() now using size_t for 'reg_size' argument
-	- slightly tighter shift calculation in litex_set_reg()
+NOTE: this is a non-functional change.
 
-Notes v3:
-	- split into smaller, more self-explanatory patches
-	- more detailed commit blurb for "main payload" (3/3) patch
-	- eliminate compiler warning on 32-bit architectures
+Signed-off-by: Gabriel Somlo <gsomlo@gmail.com>
+---
+ drivers/soc/litex/litex_soc_ctrl.c | 73 -----------------------------
+ include/linux/litex.h              | 74 ++++++++++++++++++++++++++++--
+ 2 files changed, 69 insertions(+), 78 deletions(-)
 
-Notes v2:
-	- fix typo (s/u32/u64/) in litex_read64().
-
-Notes v1:
-	- LITEX_SUBREG_SIZE now provided by Kconfig.
-	- it's not LITEX_REG_SIZE, but rather LITEX_SUBREG_ALIGN!
-	- move litex_[get|set]_reg() to include/linux/litex.h and mark
-	  them as "static inline";
-	- redo litex_[read|write][8|16|32|64]() using litex_[get|set]_reg()
-	  (compiler should produce code as efficient as hardcoded shifts,
-	   but also automatically matching LITEX_SUBREG_SIZE).
-
-Gabriel Somlo (3):
-  drivers/soc/litex: move generic accessors to litex.h
-  drivers/soc/litex: separate MMIO from subregister offset calculation
-  drivers/soc/litex: support 32-bit subregisters, 64-bit CPUs
-
- drivers/soc/litex/Kconfig          |  12 +++
- drivers/soc/litex/litex_soc_ctrl.c |  76 +--------------
- include/linux/litex.h              | 151 +++++++++++++++++++----------
- 3 files changed, 115 insertions(+), 124 deletions(-)
-
+diff --git a/drivers/soc/litex/litex_soc_ctrl.c b/drivers/soc/litex/litex_soc_ctrl.c
+index 1217cafdfd4d..65977526d68e 100644
+--- a/drivers/soc/litex/litex_soc_ctrl.c
++++ b/drivers/soc/litex/litex_soc_ctrl.c
+@@ -16,79 +16,6 @@
+ #include <linux/errno.h>
+ #include <linux/io.h>
+ 
+-/*
+- * LiteX SoC Generator, depending on the configuration, can split a single
+- * logical CSR (Control&Status Register) into a series of consecutive physical
+- * registers.
+- *
+- * For example, in the configuration with 8-bit CSR Bus, 32-bit aligned (the
+- * default one for 32-bit CPUs) a 32-bit logical CSR will be generated as four
+- * 32-bit physical registers, each one containing one byte of meaningful data.
+- *
+- * For details see: https://github.com/enjoy-digital/litex/wiki/CSR-Bus
+- *
+- * The purpose of `litex_set_reg`/`litex_get_reg` is to implement the logic
+- * of writing to/reading from the LiteX CSR in a single place that can be
+- * then reused by all LiteX drivers.
+- */
+-
+-/**
+- * litex_set_reg() - Writes the value to the LiteX CSR (Control&Status Register)
+- * @reg: Address of the CSR
+- * @reg_size: The width of the CSR expressed in the number of bytes
+- * @val: Value to be written to the CSR
+- *
+- * In the currently supported LiteX configuration (8-bit CSR Bus, 32-bit aligned),
+- * a 32-bit LiteX CSR is generated as 4 consecutive 32-bit physical registers,
+- * each one containing one byte of meaningful data.
+- *
+- * This function splits a single possibly multi-byte write into a series of
+- * single-byte writes with a proper offset.
+- */
+-void litex_set_reg(void __iomem *reg, unsigned long reg_size,
+-		    unsigned long val)
+-{
+-	unsigned long shifted_data, shift, i;
+-
+-	for (i = 0; i < reg_size; ++i) {
+-		shift = ((reg_size - i - 1) * LITEX_SUBREG_SIZE_BIT);
+-		shifted_data = val >> shift;
+-
+-		WRITE_LITEX_SUBREGISTER(shifted_data, reg, i);
+-	}
+-}
+-EXPORT_SYMBOL_GPL(litex_set_reg);
+-
+-/**
+- * litex_get_reg() - Reads the value of the LiteX CSR (Control&Status Register)
+- * @reg: Address of the CSR
+- * @reg_size: The width of the CSR expressed in the number of bytes
+- *
+- * Return: Value read from the CSR
+- *
+- * In the currently supported LiteX configuration (8-bit CSR Bus, 32-bit aligned),
+- * a 32-bit LiteX CSR is generated as 4 consecutive 32-bit physical registers,
+- * each one containing one byte of meaningful data.
+- *
+- * This function generates a series of single-byte reads with a proper offset
+- * and joins their results into a single multi-byte value.
+- */
+-unsigned long litex_get_reg(void __iomem *reg, unsigned long reg_size)
+-{
+-	unsigned long shifted_data, shift, i;
+-	unsigned long result = 0;
+-
+-	for (i = 0; i < reg_size; ++i) {
+-		shifted_data = READ_LITEX_SUBREGISTER(reg, i);
+-
+-		shift = ((reg_size - i - 1) * LITEX_SUBREG_SIZE_BIT);
+-		result |= (shifted_data << shift);
+-	}
+-
+-	return result;
+-}
+-EXPORT_SYMBOL_GPL(litex_get_reg);
+-
+ #define SCRATCH_REG_OFF         0x04
+ #define SCRATCH_REG_VALUE       0x12345678
+ #define SCRATCH_TEST_VALUE      0xdeadbeef
+diff --git a/include/linux/litex.h b/include/linux/litex.h
+index 40f5be503593..67c1a18a7425 100644
+--- a/include/linux/litex.h
++++ b/include/linux/litex.h
+@@ -3,9 +3,6 @@
+  * Common LiteX header providing
+  * helper functions for accessing CSRs.
+  *
+- * Implementation of the functions is provided by
+- * the LiteX SoC Controller driver.
+- *
+  * Copyright (C) 2019-2020 Antmicro <www.antmicro.com>
+  */
+ 
+@@ -33,9 +30,76 @@
+ #define READ_LITEX_SUBREGISTER(base_offset, subreg_id) \
+ 	le32_to_cpu((__le32 __force)readl(base_offset + (LITEX_REG_SIZE * subreg_id)))
+ 
+-void litex_set_reg(void __iomem *reg, unsigned long reg_sz, unsigned long val);
++/*
++ * LiteX SoC Generator, depending on the configuration, can split a single
++ * logical CSR (Control&Status Register) into a series of consecutive physical
++ * registers.
++ *
++ * For example, in the configuration with 8-bit CSR Bus, 32-bit aligned (the
++ * default one for 32-bit CPUs) a 32-bit logical CSR will be generated as four
++ * 32-bit physical registers, each one containing one byte of meaningful data.
++ *
++ * For details see: https://github.com/enjoy-digital/litex/wiki/CSR-Bus
++ *
++ * The purpose of `litex_set_reg`/`litex_get_reg` is to implement the logic
++ * of writing to/reading from the LiteX CSR in a single place that can be
++ * then reused by all LiteX drivers.
++ */
++
++/**
++ * litex_set_reg() - Writes the value to the LiteX CSR (Control&Status Register)
++ * @reg: Address of the CSR
++ * @reg_size: The width of the CSR expressed in the number of bytes
++ * @val: Value to be written to the CSR
++ *
++ * In the currently supported LiteX configuration (8-bit CSR Bus, 32-bit aligned),
++ * a 32-bit LiteX CSR is generated as 4 consecutive 32-bit physical registers,
++ * each one containing one byte of meaningful data.
++ *
++ * This function splits a single possibly multi-byte write into a series of
++ * single-byte writes with a proper offset.
++ */
++static inline void litex_set_reg(void __iomem *reg, ulong reg_size, ulong val)
++{
++	ulong shifted_data, shift, i;
++
++	for (i = 0; i < reg_size; ++i) {
++		shift = ((reg_size - i - 1) * LITEX_SUBREG_SIZE_BIT);
++		shifted_data = val >> shift;
++
++		WRITE_LITEX_SUBREGISTER(shifted_data, reg, i);
++	}
++}
++
++/**
++ * litex_get_reg() - Reads the value of the LiteX CSR (Control&Status Register)
++ * @reg: Address of the CSR
++ * @reg_size: The width of the CSR expressed in the number of bytes
++ *
++ * Return: Value read from the CSR
++ *
++ * In the currently supported LiteX configuration (8-bit CSR Bus, 32-bit aligned),
++ * a 32-bit LiteX CSR is generated as 4 consecutive 32-bit physical registers,
++ * each one containing one byte of meaningful data.
++ *
++ * This function generates a series of single-byte reads with a proper offset
++ * and joins their results into a single multi-byte value.
++ */
++static inline ulong litex_get_reg(void __iomem *reg, ulong reg_size)
++{
++	ulong shifted_data, shift, i;
++	ulong result = 0;
++
++	for (i = 0; i < reg_size; ++i) {
++		shifted_data = READ_LITEX_SUBREGISTER(reg, i);
++
++		shift = ((reg_size - i - 1) * LITEX_SUBREG_SIZE_BIT);
++		result |= (shifted_data << shift);
++	}
++
++	return result;
++}
+ 
+-unsigned long litex_get_reg(void __iomem *reg, unsigned long reg_sz);
+ 
+ static inline void litex_write8(void __iomem *reg, u8 val)
+ {
 -- 
 2.26.2
 
