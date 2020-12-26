@@ -2,214 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C1442E2DEC
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 11:26:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 558982E2DFC
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 11:36:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726107AbgLZK0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Dec 2020 05:26:24 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:10366 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725987AbgLZK0W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Dec 2020 05:26:22 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4D30LC75kYz7LDT;
-        Sat, 26 Dec 2020 18:24:51 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS411-HUB.china.huawei.com
- (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Sat, 26 Dec 2020
- 18:25:29 +0800
-From:   Yu Kuai <yukuai3@huawei.com>
-To:     <axboe@kernel.dk>
-CC:     <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <yukuai3@huawei.com>, <yi.zhang@huawei.com>,
-        <zhangxiaoxu5@huawei.com>
-Subject: [PATCH 3/3] blk-mq: decrease pending_queues when it expires
-Date:   Sat, 26 Dec 2020 18:28:08 +0800
-Message-ID: <20201226102808.2534966-4-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20201226102808.2534966-1-yukuai3@huawei.com>
-References: <20201226102808.2534966-1-yukuai3@huawei.com>
+        id S1726016AbgLZKfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Dec 2020 05:35:42 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38202 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725823AbgLZKfl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Dec 2020 05:35:41 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5EC79AD0F;
+        Sat, 26 Dec 2020 10:35:00 +0000 (UTC)
+Message-ID: <653d43ed326e6a3974660c0ca2ad8a847a4ff986.camel@suse.de>
+Subject: Re: [PATCH 2/2] arm64: mm: fix kdump broken with ZONE_DMA
+ reintroduced
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Chen Zhou <chenzhou10@huawei.com>, catalin.marinas@arm.com,
+        will@kernel.org
+Cc:     ardb@kernel.org, akpm@linux-foundation.org, rppt@kernel.org,
+        song.bao.hua@hisilicon.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, huawei.libin@huawei.com,
+        xiexiuqi@huawei.com
+Date:   Sat, 26 Dec 2020 11:34:58 +0100
+In-Reply-To: <20201226033557.116251-3-chenzhou10@huawei.com>
+References: <20201226033557.116251-1-chenzhou10@huawei.com>
+         <20201226033557.116251-3-chenzhou10@huawei.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-ttraNiikuS3d3EHqG2nf"
+User-Agent: Evolution 3.38.2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If pending_queues is increased once, it will only be decreased when
-nr_active is zero, and that will lead to the under-utilization of
-host tags because pending_queues is non-zero and the available
-tags for the queue will be max(host tags / active_queues, 4)
-instead of the needed tags of the queue.
 
-Fix it by adding an expiration time for the increasement of pending_queues,
-and decrease it when it expires, so pending_queues will be decreased
-to zero if there is no tag allocation failure, and the available tags
-for the queue will be the whole host tags.
+--=-ttraNiikuS3d3EHqG2nf
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- block/blk-mq-tag.c     | 29 ++++++++++++++++++++++++++---
- block/blk-mq-tag.h     |  6 +++---
- block/blk-mq.c         |  5 +++--
- block/blk-mq.h         |  2 +-
- include/linux/blk-mq.h |  6 +++++-
- 5 files changed, 38 insertions(+), 10 deletions(-)
+Hi Chen, thanks for looking at this.
 
-diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
-index 6dcd6dd9123a..e3ffe0fde052 100644
---- a/block/blk-mq-tag.c
-+++ b/block/blk-mq-tag.c
-@@ -46,12 +46,16 @@ void __blk_mq_dtag_busy(struct blk_mq_hw_ctx *hctx)
- 		struct blk_mq_tag_set *set = q->tag_set;
- 
- 		if (!test_bit(QUEUE_FLAG_HCTX_WAIT, &q->queue_flags) &&
--		    !test_and_set_bit(QUEUE_FLAG_HCTX_WAIT, &q->queue_flags))
-+		    !test_and_set_bit(QUEUE_FLAG_HCTX_WAIT, &q->queue_flags)) {
-+			hctx->dtag_wait_time = jiffies;
- 			atomic_inc(&set->pending_queues_shared_sbitmap);
-+		}
- 	} else {
- 		if (!test_bit(BLK_MQ_S_DTAG_WAIT, &hctx->state) &&
--		    !test_and_set_bit(BLK_MQ_S_DTAG_WAIT, &hctx->state))
-+		    !test_and_set_bit(BLK_MQ_S_DTAG_WAIT, &hctx->state)) {
-+			hctx->dtag_wait_time = jiffies;
- 			atomic_inc(&hctx->tags->pending_queues);
-+		}
- 	}
- }
- 
-@@ -89,12 +93,28 @@ void __blk_mq_tag_idle(struct blk_mq_hw_ctx *hctx)
- 	blk_mq_tag_wakeup_all(tags, false);
- }
- 
--void __blk_mq_dtag_idle(struct blk_mq_hw_ctx *hctx)
-+#define BLK_MQ_DTAG_WAIT_EXPIRE (5 * HZ)
-+
-+void __blk_mq_dtag_idle(struct blk_mq_hw_ctx *hctx, bool force)
- {
- 	struct blk_mq_tags *tags = hctx->tags;
- 	struct request_queue *q = hctx->queue;
- 	struct blk_mq_tag_set *set = q->tag_set;
- 
-+	if (!force) {
-+		if (blk_mq_is_sbitmap_shared(hctx->flags)) {
-+			if (!(test_bit(QUEUE_FLAG_HCTX_WAIT, &q->queue_flags) &&
-+			      time_after(jiffies, hctx->dtag_wait_time +
-+					BLK_MQ_DTAG_WAIT_EXPIRE)))
-+				return;
-+		} else {
-+			if (!(test_bit(BLK_MQ_S_DTAG_WAIT, &hctx->state) &&
-+			      time_after(jiffies, hctx->dtag_wait_time +
-+					BLK_MQ_DTAG_WAIT_EXPIRE)))
-+				return;
-+		}
-+	}
-+
- 	if (blk_mq_is_sbitmap_shared(hctx->flags) &&
- 	    test_and_clear_bit(QUEUE_FLAG_HCTX_WAIT, &q->queue_flags))
- 		atomic_dec(&set->pending_queues_shared_sbitmap);
-@@ -202,6 +222,9 @@ unsigned int blk_mq_get_tag(struct blk_mq_alloc_data *data)
- 	sbitmap_finish_wait(bt, ws, &wait);
- 
- found_tag:
-+	if (!data->q->elevator)
-+		blk_mq_dtag_idle(data->hctx, false);
-+
- 	/*
- 	 * Give up this allocation if the hctx is inactive.  The caller will
- 	 * retry on an active hctx.
-diff --git a/block/blk-mq-tag.h b/block/blk-mq-tag.h
-index 52d08a92f683..888692498ef2 100644
---- a/block/blk-mq-tag.h
-+++ b/block/blk-mq-tag.h
-@@ -68,7 +68,7 @@ enum {
- extern bool __blk_mq_tag_busy(struct blk_mq_hw_ctx *);
- extern void __blk_mq_tag_idle(struct blk_mq_hw_ctx *);
- extern void __blk_mq_dtag_busy(struct blk_mq_hw_ctx *);
--extern void __blk_mq_dtag_idle(struct blk_mq_hw_ctx *);
-+extern void __blk_mq_dtag_idle(struct blk_mq_hw_ctx *, bool);
- 
- static inline bool blk_mq_tag_busy(struct blk_mq_hw_ctx *hctx)
- {
-@@ -94,12 +94,12 @@ static inline void blk_mq_dtag_busy(struct blk_mq_hw_ctx *hctx)
- 	__blk_mq_dtag_busy(hctx);
- }
- 
--static inline void blk_mq_dtag_idle(struct blk_mq_hw_ctx *hctx)
-+static inline void blk_mq_dtag_idle(struct blk_mq_hw_ctx *hctx, bool force)
- {
- 	if (!(hctx->flags & BLK_MQ_F_TAG_QUEUE_SHARED))
- 		return;
- 
--	__blk_mq_dtag_idle(hctx);
-+	__blk_mq_dtag_idle(hctx, force);
- }
- 
- static inline bool blk_mq_tag_is_reserved(struct blk_mq_tags *tags,
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 2b8fa49bccb4..9ac976107154 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -1015,7 +1015,7 @@ static void blk_mq_timeout_work(struct work_struct *work)
- 			/* the hctx may be unmapped, so check it here */
- 			if (blk_mq_hw_queue_mapped(hctx)) {
- 				blk_mq_tag_idle(hctx);
--				blk_mq_dtag_idle(hctx);
-+				blk_mq_dtag_idle(hctx, true);
- 			}
- 		}
- 	}
-@@ -2568,7 +2568,7 @@ static void blk_mq_exit_hctx(struct request_queue *q,
- {
- 	if (blk_mq_hw_queue_mapped(hctx)) {
- 		blk_mq_tag_idle(hctx);
--		blk_mq_dtag_idle(hctx);
-+		blk_mq_dtag_idle(hctx, true);
- 	}
- 
- 	if (set->ops->exit_request)
-@@ -2667,6 +2667,7 @@ blk_mq_alloc_hctx(struct request_queue *q, struct blk_mq_tag_set *set,
- 	INIT_LIST_HEAD(&hctx->dispatch);
- 	hctx->queue = q;
- 	hctx->flags = set->flags & ~BLK_MQ_F_TAG_QUEUE_SHARED;
-+	hctx->dtag_wait_time = jiffies;
- 
- 	INIT_LIST_HEAD(&hctx->hctx_list);
- 
-diff --git a/block/blk-mq.h b/block/blk-mq.h
-index 228c5c442be4..93ede498f5e6 100644
---- a/block/blk-mq.h
-+++ b/block/blk-mq.h
-@@ -214,7 +214,7 @@ static inline void __blk_mq_dec_active_requests(struct blk_mq_hw_ctx *hctx)
- 		atomic_dec(&hctx->queue->nr_active_requests_shared_sbitmap);
- 	else if (!atomic_dec_return(&hctx->nr_active)) {
- 		blk_mq_tag_idle(hctx);
--		blk_mq_dtag_idle(hctx);
-+		blk_mq_dtag_idle(hctx, true);
- 	}
- }
- 
-diff --git a/include/linux/blk-mq.h b/include/linux/blk-mq.h
-index 2a473865ee7f..82591c2f76cc 100644
---- a/include/linux/blk-mq.h
-+++ b/include/linux/blk-mq.h
-@@ -158,7 +158,11 @@ struct blk_mq_hw_ctx {
- 	unsigned long		poll_invoked;
- 	/** @poll_success: Count how many polled requests were completed. */
- 	unsigned long		poll_success;
--
-+	/**
-+	 * record when hardware queue is pending, specifically when
-+	 * BLK_MQ_S_DTAG_WAIT is set in state.
-+	 */
-+	unsigned long dtag_wait_time;
- #ifdef CONFIG_BLK_DEBUG_FS
- 	/**
- 	 * @debugfs_dir: debugfs directory for this hardware queue. Named
--- 
-2.25.4
+On Sat, 2020-12-26 at 11:35 +0800, Chen Zhou wrote:
+> If the memory reserved for crash dump kernel falled in ZONE_DMA32,
+> the devices in crash dump kernel need to use ZONE_DMA will alloc fail.
+>=20
+> Fix this by reserving low memory in ZONE_DMA if CONFIG_ZONE_DMA is
+> enabled, otherwise, reserving in ZONE_DMA32.
+>=20
+> Fixes: bff3b04460a8 ("arm64: mm: reserve CMA and crashkernel in ZONE_DMA3=
+2")
+
+I'm not so sure this counts as a fix, if someone backports it it'll probabl=
+y
+break things as it depends on the series that dynamically sizes DMA zones.
+
+> Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
+> ---
+
+Why not doing the same with CMA? You'll probably have to move the
+dma_contiguous_reserve() call into bootmem_init() so as to make sure that
+arm64_dma_phys_limit is populated.
+
+Regards,
+Nicolas
+
+> =C2=A0arch/arm64/mm/init.c | 3 ++-
+> =C2=A01 file changed, 2 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+> index 7b9809e39927..5074e945f1a6 100644
+> --- a/arch/arm64/mm/init.c
+> +++ b/arch/arm64/mm/init.c
+> @@ -85,7 +85,8 @@ static void __init reserve_crashkernel(void)
+> =C2=A0
+>=20
+> =C2=A0	if (crash_base =3D=3D 0) {
+> =C2=A0		/* Current arm64 boot protocol requires 2MB alignment */
+> -		crash_base =3D memblock_find_in_range(0, arm64_dma32_phys_limit,
+> +		crash_base =3D memblock_find_in_range(0,
+> +				arm64_dma_phys_limit ? : arm64_dma32_phys_limit,
+> =C2=A0				crash_size, SZ_2M);
+> =C2=A0		if (crash_base =3D=3D 0) {
+> =C2=A0			pr_warn("cannot allocate crashkernel (size:0x%llx)\n",
+
+
+
+--=-ttraNiikuS3d3EHqG2nf
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl/nEdIACgkQlfZmHno8
+x/58fAgAo/JlSNiKD9iXK2qb3QBSd4FhVpD5uFEaRPFGZJ2gROTApl9USk8jOMSS
+cr6z6lVl9fw+MD6xN2ceEPAFIMzlrurME4WUgZMcFoN0gLRAcW9iAlQUCQh+offk
+22zl7NwD8fUYmtpWZIa3J72Ycol9q7aUotz62jcurryjO7tw1a6x3yUV2oyVJ2fq
+gH+k7ozVZowGWWyW3vWU66kq7pFUuKxA/2ruehWI1cfFYardeVGpDYQTCZgerxSH
+O73DfB9WdPMSz/iJFau8Nvj5/Jn/bmNlN7hLhcKgzf7kH+PKkLKtTAGQRMpHW33m
+oVYuRWBQN8vbtkK4q8d/+n1HI3CZwg==
+=0ERD
+-----END PGP SIGNATURE-----
+
+--=-ttraNiikuS3d3EHqG2nf--
 
