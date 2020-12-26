@@ -2,117 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 491F52E2EE2
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 18:59:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D67EA2E2EE9
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 19:04:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726318AbgLZR6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Dec 2020 12:58:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48908 "EHLO
+        id S1726340AbgLZSDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Dec 2020 13:03:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726194AbgLZR6N (ORCPT
+        with ESMTP id S1726194AbgLZSDk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Dec 2020 12:58:13 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C73CC061757
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 09:57:33 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id s26so15308698lfc.8
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 09:57:33 -0800 (PST)
+        Sat, 26 Dec 2020 13:03:40 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CC7FC061757;
+        Sat, 26 Dec 2020 10:03:00 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id b5so4230644pjl.0;
+        Sat, 26 Dec 2020 10:03:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vB3TbcX+phhLHqNLVTnsPQIuYLV410SZ/S3x77H/Azk=;
-        b=JiLZpPHDeFio2xKaqd4AF6b+AaACUv2JAlVW2TC/2qFFp6T2XByLfEVcoTR8ni+2ir
-         VahaBF7tUkyt0AUQJGX/7pPCiMG9x70Kxcco01Hh4iOJRmaJRmVWUdq7UwxeDmLQofJc
-         n0wyg+xmy7/jzNvOpKECnfI8lHqRJ9kujirOU=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=4Y9ogSPZ5hMKc7DdJiGJQd2mRtdieX3VWNe0j8nL7fs=;
+        b=oFzNCb19GRT8pD+LMUtLpzqB7x0DS2l3VE5mW0qt2uThPZgjTqulgHPnz85BlJkLSx
+         bs4sdbwrPDLWPSOnXUDofSnCWETl7KE2mu4/HlYuKgVftBKLo4LPZFHXGP12FbFJo1jK
+         n5LIsRKAALfaG8B+KuBrC1W/beB9FwWZwjNuNSdGGUDmSp+Lype/0IRV2ZpBh0rqIfmM
+         uyuR6xd0lHnx9RES/VR8t/Y0oYR9QBJfzqrV1Bbu9BPlkmNTNCG/Em5jEOOD04oWMrRN
+         jroJNH+Vq/FFFDv63UUMegnuKbTT2PgIoMvowhp4mcqYov+yKV4oQRqg0wYcZThXf1qW
+         nE6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vB3TbcX+phhLHqNLVTnsPQIuYLV410SZ/S3x77H/Azk=;
-        b=Ku0vXFHDAQwldzO+Tm9HvpgJG4mQr/y+Swx9wSNqwfK6QLVCXm7AZHHaQiN4jthGS0
-         jpfFEPNHSEIudy3c/lr+u+I/kDCszV52ues4kXRPYrcR++XlQWvP5mKcnrIohESno4RF
-         7vxK6BQELgdkG8FThzZSq/0TiHxclOC969BxLHgljj8MBQk2OPAodGZpJGAelyB7gMJd
-         ao/2DM5K0o2LAGdYz6pHbEL4S4DUJFsZO3qA1bmfbPn7BTA9pBhdgUHgzo0I7XPCoSgP
-         kWi1HpRj+EaRDywkDbkdaAYwg9ycX3Dr1cAXxdJn6I96Crf4nhS2QvGOFwDsa0GjTC3q
-         zj6Q==
-X-Gm-Message-State: AOAM533KR002kG3cK7hfPS7oxMJaz532cncK5fLt3GXkgrY3fTST8R+N
-        9vBQfuNoSqHDDorhx42iAlBTNSTAqF0fZQ==
-X-Google-Smtp-Source: ABdhPJwULiMTVz5e4FYoxC5J31NH+aB6cmGjO5WFAIIt23cLAQ1IGUdenoxN9Z5LemlcGZIyJ/2bMw==
-X-Received: by 2002:a2e:98d1:: with SMTP id s17mr13850890ljj.308.1609005451392;
-        Sat, 26 Dec 2020 09:57:31 -0800 (PST)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
-        by smtp.gmail.com with ESMTPSA id v6sm4731316lfa.200.2020.12.26.09.57.29
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 26 Dec 2020 09:57:29 -0800 (PST)
-Received: by mail-lf1-f44.google.com with SMTP id x20so15265339lfe.12
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 09:57:29 -0800 (PST)
-X-Received: by 2002:a05:6512:789:: with SMTP id x9mr15301778lfr.487.1609005449200;
- Sat, 26 Dec 2020 09:57:29 -0800 (PST)
-MIME-Version: 1.0
-References: <20201216170703.o5lpsnjfmoj7f3ml@box> <CAHk-=wiVRMADHC0qjTFAVx2Pp0DN-fT-VPC10boDdX0O4=h01w@mail.gmail.com>
- <20201217105409.2gacwgg7rco2ft3m@box> <CAHk-=wiyPTnQ9E1dT9LJtNxeVmLaykursk_MSecUqFjSb3gwAw@mail.gmail.com>
- <20201218110400.yve45r3zsv7qgfa3@box> <CAHk-=wgO2LsoKhX7MjSECo+Xrj1-Me7tzRfNcsdEZBRwJW1cQg@mail.gmail.com>
- <20201219124103.w6isern3ywc7xbur@box> <CAHk-=wifcVaxaTn_RbZ=idfYFazTPwm8t5cB1rY6xEBjbcfO5g@mail.gmail.com>
- <20201222100047.p5zdb4ghagncq2oe@box> <alpine.LSU.2.11.2012231905300.5723@eggly.anvils>
- <20201225113157.e7hmluffh56fszfc@box>
-In-Reply-To: <20201225113157.e7hmluffh56fszfc@box>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 26 Dec 2020 09:57:13 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiT50aEErZgZOrbFQ=GhFuM3MnBmHoSBSScN9rmXMnOKQ@mail.gmail.com>
-Message-ID: <CAHk-=wiT50aEErZgZOrbFQ=GhFuM3MnBmHoSBSScN9rmXMnOKQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mm: Allow architectures to request 'old' entries when prefaulting
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     Hugh Dickins <hughd@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=4Y9ogSPZ5hMKc7DdJiGJQd2mRtdieX3VWNe0j8nL7fs=;
+        b=e4TaFy+SkGJ8pEWT/xXiADkOFQxI4ilWa60sAKmzyNOS0vOEGFQv5t01eBnbcLHW+w
+         YBSByJHyQ+jYm+44+l1wiNYZPq2s4bUEIQTc6/emoWvzRPT/3vSdc5k3JJM6O9Hd4X0M
+         MpXnRNF/eZ4wT4+jjZgtlnCyeejEOh7bZHVpRcEin+2dNN/mfvjcxx7U9m3hqNLJbQ6r
+         3WjWSJwd4aKKgQ+0J/yVZ6LLdfwnQJ19ozScwOxpa67kwvBnyszrncWv/Xptwfkdbdnw
+         R8foOKdyl7QY5FBnwISXW+fQNkC3CqgpPO7uYwoKv7EsgvKUosbnerApXopU+jpOiK0U
+         IXBA==
+X-Gm-Message-State: AOAM531FQ938ibJo0mo2aFiSj9ZEOTsRvTqW/MonaYHkNs5Q/o+AbxcF
+        lV7cS0bztwImYx0+HAtdwSnogY/jFEt0Xw==
+X-Google-Smtp-Source: ABdhPJz1uhDLovrvbxwVJp0TqNK5JCQe3WYP09y4W3OhTDX1X//+4z1RlU16CKm+TeuGFRktfNgoIw==
+X-Received: by 2002:a17:90a:b395:: with SMTP id e21mr13617612pjr.197.1609005779506;
+        Sat, 26 Dec 2020 10:02:59 -0800 (PST)
+Received: from localhost.localdomain ([211.108.35.36])
+        by smtp.gmail.com with ESMTPSA id e24sm8467038pjt.16.2020.12.26.10.02.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Dec 2020 10:02:58 -0800 (PST)
+From:   Minwoo Im <minwoo.im.dev@gmail.com>
+To:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-nvme@lists.infradead.org
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>,
+        Minwoo Im <minwoo.im.dev@gmail.com>
+Subject: [RFC] block: reject I/O in BLKRRPART if block size changed
+Date:   Sun, 27 Dec 2020 03:02:32 +0900
+Message-Id: <20201226180232.12276-1-minwoo.im.dev@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 25, 2020 at 3:31 AM Kirill A. Shutemov <kirill@shutemov.name> wrote:
->
-> The new helper next_page() returns a stablized page, so filemap_map_pmd()
-> can clearly decide if we should set up a page table or a huge page.
+Background:
+  Let's say we have 2 LBA format for 4096B and 512B LBA size for a
+NVMe namespace.  Assume that current LBA format is 4096B and in case
+we convert namespace to 512B and 4096B back again:
 
-I really like that next_page() abstraction, my only comment is that I
-think it should be renamed as "next_stable_page()" or something, and
-then this part:
+  nvme format /dev/nvme0n1 --lbaf=1 --force  # to 512B LBA
+  nvme format /dev/nvme0n1 --lbaf=0 --force  # to 4096B LBA
 
-+       if (!page)
-+               page = xas_find(xas, end_pgoff);
-+       else
-+               page = xas_next_entry(xas, end_pgoff);
+  Then we can see the following errors during the BLKRRPART ioctl from
+the nvme-cli format subcommand:
 
-should be in the caller.
+  [   10.771740] blk_update_request: operation not supported error, dev nvme0n1, sector 0 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+  [   10.780262] Buffer I/O error on dev nvme0n1, logical block 0, async page read
+  ...
 
-Then just have two helper functions like 'first_map_page()' and
-'next_map_page()' which just do
+  Also, we can see the Read commands followed by the Format command due
+to BLKRRPART ioctl with Number of LBAs to 65535(0xffff) which is
+under-flowed because the request for the Read commands are coming with
+512B and this is because it's playing around with i_blkbits from the
+block_device inode which needs to be avoided as [1].
 
-        next_stable_page(xas_find(xas, end_pgoff))
+  kworker/0:1H-56      [000] ....   913.456922: nvme_setup_cmd: nvme0: disk=nvme0n1, qid=1, cmdid=216, nsid=1, flags=0x0, meta=0x0, cmd=(nvme_cmd_read slba=0, len=65535, ctrl=0x0, dsmgmt=0, reftag=0)
+  ksoftirqd/0-9       [000] .Ns.   916.566351: nvme_complete_rq: nvme0: disk=nvme0n1, qid=1, cmdid=216, res=0x0, retries=0, flags=0x0, status=0x4002
+  ...
 
-and
+  Before we have commit 5ff9f19231a0 ("block: simplify
+set_init_blocksize"), block size used to be bumped up to the
+4K(PAGE_SIZE) in this example and we have not seen these errors.  But
+with this patch, we have to make sure that bdev->bd_inode->i_blkbits to
+make sure that BLKRRPART ioctl pass proper request length based on the
+changed logical block size.
 
-        next_stable_page(xas_next_entry(xas, end_pgoff))
+Description:
+  As the previous discussion [1], this patch introduced a gendisk flag
+to indicate that block size has been changed in the runtime.  This flag
+is set when logical block size is changed in the runtime with sector
+capacity itself.  It will be cleared when the file descriptor for the
+block devie is opened again which means __blkdev_get() updates the block
+size via set_init_blocksize().
+  This patch rejects I/O from the path of add_partitions() and
+application should open the file descriptor again to update the block
+size of the block device inode.
 
-respectively.
+[1] https://lore.kernel.org/linux-nvme/20201223183143.GB13354@localhost.localdomain/T/#t
 
-Because not only does that get rid of the "if (page)" test, I think it
-would make things a bit clearer. When I read the patch first, the
-initial "next_page()" call confused me.
+Signed-off-by: Minwoo Im <minwoo.im.dev@gmail.com>
+---
+ block/genhd.c           |  3 +++
+ block/partitions/core.c | 11 +++++++++++
+ fs/block_dev.c          |  6 ++++++
+ include/linux/genhd.h   |  1 +
+ 4 files changed, 21 insertions(+)
 
-But maybe I'm just grasping at straws. Even in this format, I think
-it's a nice cleanup and makes for more understandable code.
+diff --git a/block/genhd.c b/block/genhd.c
+index b84b8671e627..1f64907fac3d 100644
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -79,6 +79,9 @@ bool set_capacity_and_notify(struct gendisk *disk, sector_t size)
+ 	 */
+ 	if (!capacity || !size)
+ 		return false;
++
++	disk->flags |= GENHD_FL_BLOCK_SIZE_CHANGED;
++
+ 	kobject_uevent_env(&disk_to_dev(disk)->kobj, KOBJ_CHANGE, envp);
+ 	return true;
+ }
+diff --git a/block/partitions/core.c b/block/partitions/core.c
+index deca253583bd..7dfcda96be9e 100644
+--- a/block/partitions/core.c
++++ b/block/partitions/core.c
+@@ -617,6 +617,17 @@ int blk_add_partitions(struct gendisk *disk, struct block_device *bdev)
+ 	if (!disk_part_scan_enabled(disk))
+ 		return 0;
+ 
++	/*
++	 * Reject to check partition information if block size has been changed
++	 * in the runtime.  If block size of a block device has been changed,
++	 * the file descriptor should be opened agian to update the blkbits.
++	 */
++	if (disk->flags & GENHD_FL_BLOCK_SIZE_CHANGED) {
++		pr_warn("%s: rejecting checking partition. fd should be opened again.\n",
++				disk->disk_name);
++		return -EBADFD;
++	}
++
+ 	state = check_partition(disk, bdev);
+ 	if (!state)
+ 		return 0;
+diff --git a/fs/block_dev.c b/fs/block_dev.c
+index 9e56ee1f2652..813361ad77c1 100644
+--- a/fs/block_dev.c
++++ b/fs/block_dev.c
+@@ -132,6 +132,12 @@ EXPORT_SYMBOL(truncate_bdev_range);
+ static void set_init_blocksize(struct block_device *bdev)
+ {
+ 	bdev->bd_inode->i_blkbits = blksize_bits(bdev_logical_block_size(bdev));
++
++	/*
++	 * Allow I/O commands for this block device.  We can say that this
++	 * block device has been set to a proper block size.
++	 */
++	bdev->bd_disk->flags &= ~GENHD_FL_BLOCK_SIZE_CHANGED;
+ }
+ 
+ int set_blocksize(struct block_device *bdev, int size)
+diff --git a/include/linux/genhd.h b/include/linux/genhd.h
+index 809aaa32d53c..0e0e24917003 100644
+--- a/include/linux/genhd.h
++++ b/include/linux/genhd.h
+@@ -103,6 +103,7 @@ struct partition_meta_info {
+ #define GENHD_FL_BLOCK_EVENTS_ON_EXCL_WRITE	0x0100
+ #define GENHD_FL_NO_PART_SCAN			0x0200
+ #define GENHD_FL_HIDDEN				0x0400
++#define GENHD_FL_BLOCK_SIZE_CHANGED		0x0800
+ 
+ enum {
+ 	DISK_EVENT_MEDIA_CHANGE			= 1 << 0, /* media changed */
+-- 
+2.17.1
 
-          Linus
