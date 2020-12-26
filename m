@@ -2,90 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AF192E2C89
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 00:02:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09FDA2E2CAB
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 01:17:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728106AbgLYXBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Dec 2020 18:01:38 -0500
-Received: from smtprelay0240.hostedemail.com ([216.40.44.240]:49070 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725953AbgLYXBi (ORCPT
+        id S1726423AbgLZAQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Dec 2020 19:16:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725973AbgLZAQ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Dec 2020 18:01:38 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id D7F36100E7B43;
-        Fri, 25 Dec 2020 23:00:56 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2689:2828:2915:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:5007:6742:7652:7902:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13076:13161:13229:13311:13357:13439:13548:14096:14097:14659:14721:14819:21080:21627:21740:30012:30054:30069:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: juice07_1a0bb6b2747d
-X-Filterd-Recvd-Size: 2936
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf13.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 25 Dec 2020 23:00:54 +0000 (UTC)
-Message-ID: <8401b60d35698e68bcf84e977b1b735c131d0b1e.camel@perches.com>
-Subject: Re: [PATCH] nfp: remove h from printk format specifier
-From:   Joe Perches <joe@perches.com>
-To:     Tom Rix <trix@redhat.com>,
-        Simon Horman <simon.horman@netronome.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, gustavoars@kernel.org,
-        louis.peens@netronome.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, oss-drivers@netronome.com,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 25 Dec 2020 15:00:52 -0800
-In-Reply-To: <65755252-96c3-a808-3e01-e377dd395ee7@redhat.com>
-References: <20201223202053.131157-1-trix@redhat.com>
-         <20201224202152.GA3380@netronome.com>
-         <bac92bab-243b-ca48-647c-dad5688fa060@redhat.com>
-         <18c81854639aa21e76c8b26cc3e7999b0428cc4e.camel@perches.com>
-         <7b5517e6-41a9-cc7f-f42f-8ef449f3898e@redhat.com>
-         <327d6cad23720c8fe984aa75a046ff69499568c8.camel@perches.com>
-         <65755252-96c3-a808-3e01-e377dd395ee7@redhat.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Fri, 25 Dec 2020 19:16:26 -0500
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83F9CC061757;
+        Fri, 25 Dec 2020 16:15:45 -0800 (PST)
+Received: by mail-qt1-x833.google.com with SMTP id h19so3606982qtq.13;
+        Fri, 25 Dec 2020 16:15:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DVdvTATmDwmYxloj8TKrwN2TG5yZBfCLk/8JXYC6itA=;
+        b=kvXDNmNW7SUXGtbW7J5cQlCOUNP/LGcd5R13he3ecyHyWNrJ+1R2licXt5Jt1G+hJU
+         zaQ+/rf4B+6HbtIIN5GfWs3+UVO1mNXX0fAusIx0FhkPcZUkzM4Y3BhIZ0Yxh0CCQru0
+         SpI3EYt3Tfni/gFhAu5TnBrwAdtG22+8BNLfjNAMnwQYviOTR47OgeBBJ8sWNmVMt6mb
+         MUB5zz2owDp7Uo8h45+Co6aTFlQF/DTuv5hkt1Vh2QGcPz6JrD7IXMpS+4XK9vBTk5YW
+         AYKClxJNimyLmqsovzMDDLu73zYQ7H18cyCN60NmqK1oiMa7JPbZytwBWXxMVkceQsPm
+         tQSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DVdvTATmDwmYxloj8TKrwN2TG5yZBfCLk/8JXYC6itA=;
+        b=qnxb2KCbR+rftuEFf9861HXpdgZZjyaF8X6KNkbAQ9iOPn4ErqCibLnXlSqmUbbgKV
+         FG2NH7u0YftfAh3NN98cQi/Dder+FTOS7egEkgEj6mE5/bYJrqpYB8QWCLpklF1qintO
+         Y1iJhI+BFzQW1gXrqw5seGjFOFqtllKR3fV9v4p/8aw/HlfbZDVbyc230fT+uT+NTPCK
+         meyKG03NAzes/cQ9eWbklxvZwi/d4od0FDK3URscdRhzaMWoEKNh4+45pe2SbbYl4uDG
+         GkMKMnHJThNH0dOmX4ELPiQlF0CO4aFdgv18SuKFt4N9h3eD3CQES65htccYWZcyx5+s
+         TbUQ==
+X-Gm-Message-State: AOAM531F9aSqcTLKT7RmSJRUk0mWB6Wq38ryLhE/DONC2R/lkXfHRRZ6
+        hwdrw0+UFJRsR/5O8EhK6xA=
+X-Google-Smtp-Source: ABdhPJw1rPdFlbbhKKxus59aWuh+wxbn5TechZTGZasdUXRn6/Z7LRnigRTWJTtoxjwQ/trTlAq2rg==
+X-Received: by 2002:a05:622a:a:: with SMTP id x10mr35164641qtw.29.1608941742965;
+        Fri, 25 Dec 2020 16:15:42 -0800 (PST)
+Received: from localhost.localdomain (072-189-064-225.res.spectrum.com. [72.189.64.225])
+        by smtp.gmail.com with ESMTPSA id b14sm18349966qtx.36.2020.12.25.16.15.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Dec 2020 16:15:42 -0800 (PST)
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     jic23@kernel.org
+Cc:     kernel@pengutronix.de, linux-stm32@st-md-mailman.stormreply.com,
+        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
+        gwendal@chromium.org, alexandre.belloni@bootlin.com,
+        david@lechnology.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        syednwaris@gmail.com, patrick.havelange@essensium.com,
+        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com,
+        William Breathitt Gray <vilhelm.gray@gmail.com>
+Subject: [PATCH v7 0/5] Introduce the Counter character device interface
+Date:   Fri, 25 Dec 2020 19:15:33 -0500
+Message-Id: <cover.1608935587.git.vilhelm.gray@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-12-25 at 14:13 -0800, Tom Rix wrote:
-> On 12/25/20 9:06 AM, Joe Perches wrote:
-> > On Fri, 2020-12-25 at 06:56 -0800, Tom Rix wrote:
-> > > On 12/24/20 2:39 PM, Joe Perches wrote:
-> > []
-> > > > Kernel code doesn't use a signed char or short with %hx or %hu very often
-> > > > but in case you didn't already know, any signed char/short emitted with
-> > > > anything like %hx or %hu needs to be left alone as sign extension occurs so:
-> > > Yes, this would also effect checkpatch.
-> > Of course but checkpatch is stupid and doesn't know types
-> > so it just assumes that the type argument is not signed.
-> > 
-> > In general, that's a reasonable but imperfect assumption.
-> > 
-> > coccinelle could probably do this properly as it's a much
-> > better parser.  clang-tidy should be able to as well.
-> > 
-> Ok.
-> 
-> But types not matching the format string is a larger problem.
-> 
-> Has there been an effort to clean these up ?
+Changes in v7:
+ - Implemented u32 enums; enum types can now be used directly for
+   callbacks and values
+ - Fixed refcount underflow bug
+ - Refactored all err check to check for err < 0; this should help
+   prevent future oversights on valid positive return valids
+ - Use mutex instead of raw_spin_lock in counter_chrdev_read();
+   kifo_to_user() can now safely sleep
+ - Renamed COUNTER_COMPONENT_DUMMY to COUNTER_COMPONENT_NONE to make
+   purpose more obvious
+ - Introduced a watch_validate() callback
+ - Consolidated the functionality to clear the watches to the
+   counter_clear_watches() function
+ - Reimplemented counter_push_event() as a void function; on error,
+   errno is returned via struct counter_event so that it can be handled
+   by userspace (because interrupt handlers can't do much for this)
+ - Renamed the events_config() callback to events_configure();
+   "events_config" could be confused as a read callback when this is
+   actually intended to configure the device for the requested events
+ - Reimplemented 104-QUAD-8 driver to use events_configure() and
+   watch_validate() callbacks; irq_trigger_enable sysfs attribute
+   removed because events_configure() now serves this purpose
 
-Not really no.  __printf already does a reasonable job for that.
+The changes for this revision were much simpler compared to the previous
+revisions. I don't have any further questions for this patchset, so it's
+really just a search for possible bugs or regressions now. Please test
+and verify this patchset on your systems, and ACK appropriately.
 
-The biggest issue for format type mismatches is the %p<foo> extensions.
+To summarize the main points: there are no changes to the existing
+Counter sysfs userspace interface; a Counter character device interface
+is introduced that allows Counter events and associated data to be
+read() by userspace; the events_configure() and watch_validate() driver
+callbacks are introduced to support Counter events; and IRQ support is
+added to the 104-QUAD-8 driver, serving as an example of how to support
+the new Counter events functionality.
 
-__printf can only verify that the argument is a pointer, not
-necessarily the 'right' type of pointed to object.
+William Breathitt Gray (5):
+  counter: Internalize sysfs interface code
+  docs: counter: Update to reflect sysfs internalization
+  counter: Add character device interface
+  docs: counter: Document character device interface
+  counter: 104-quad-8: Add IRQ support for the ACCES 104-QUAD-8
 
-There are overflow possibilities like '"%*ph", len, pointer'
-where pointer may not have len bytes available and, for instance,
-mismatched uses of %pI4 and %pI6 where %pI4 expects a pointer to
-4 bytes and %pI6 expects a pointer to 16 bytes.
+ Documentation/ABI/testing/sysfs-bus-counter   |   18 +-
+ .../ABI/testing/sysfs-bus-counter-104-quad-8  |   25 +
+ Documentation/driver-api/generic-counter.rst  |  416 ++++-
+ .../userspace-api/ioctl/ioctl-number.rst      |    1 +
+ MAINTAINERS                                   |    2 +-
+ drivers/counter/104-quad-8.c                  |  799 +++++----
+ drivers/counter/Kconfig                       |    6 +-
+ drivers/counter/Makefile                      |    1 +
+ drivers/counter/counter-chrdev.c              |  490 ++++++
+ drivers/counter/counter-chrdev.h              |   16 +
+ drivers/counter/counter-core.c                |  182 ++
+ drivers/counter/counter-sysfs.c               |  868 ++++++++++
+ drivers/counter/counter-sysfs.h               |   13 +
+ drivers/counter/counter.c                     | 1496 -----------------
+ drivers/counter/ftm-quaddec.c                 |   61 +-
+ drivers/counter/microchip-tcb-capture.c       |  103 +-
+ drivers/counter/stm32-lptimer-cnt.c           |  181 +-
+ drivers/counter/stm32-timer-cnt.c             |  149 +-
+ drivers/counter/ti-eqep.c                     |  224 +--
+ include/linux/counter.h                       |  716 ++++----
+ include/linux/counter_enum.h                  |   45 -
+ include/uapi/linux/counter.h                  |  123 ++
+ 22 files changed, 3259 insertions(+), 2676 deletions(-)
+ create mode 100644 drivers/counter/counter-chrdev.c
+ create mode 100644 drivers/counter/counter-chrdev.h
+ create mode 100644 drivers/counter/counter-core.c
+ create mode 100644 drivers/counter/counter-sysfs.c
+ create mode 100644 drivers/counter/counter-sysfs.h
+ delete mode 100644 drivers/counter/counter.c
+ delete mode 100644 include/linux/counter_enum.h
+ create mode 100644 include/uapi/linux/counter.h
 
-Anyway it's not that easy a problem to analyze.
+-- 
+2.29.2
 
