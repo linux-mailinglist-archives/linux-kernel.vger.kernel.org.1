@@ -2,244 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A307F2E2EE0
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 18:54:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 491F52E2EE2
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 18:59:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726392AbgLZRxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Dec 2020 12:53:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48146 "EHLO
+        id S1726318AbgLZR6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Dec 2020 12:58:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726318AbgLZRxe (ORCPT
+        with ESMTP id S1726194AbgLZR6N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Dec 2020 12:53:34 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C745C0617A2;
-        Sat, 26 Dec 2020 09:52:17 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id be12so3671211plb.4;
-        Sat, 26 Dec 2020 09:52:17 -0800 (PST)
+        Sat, 26 Dec 2020 12:58:13 -0500
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C73CC061757
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 09:57:33 -0800 (PST)
+Received: by mail-lf1-x12e.google.com with SMTP id s26so15308698lfc.8
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 09:57:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=OG4g1yM5ywKB6bxe2+5JdEWT+4qZ70kc1se9lNzGopE=;
-        b=OWI9TM3WL33MQcqQu8ac5U+Ob8SrHawLXDUz0qLoFAL2mlVYRaOmiy8Whj1QWVVF1i
-         jrKllEghXCTUbcDIbpPOTBY+8BWO1wdmbvL4aVwp93WxxoCABzUakEHkkN9zzp/hSGQO
-         FMGD+KuZUDITmPkM6b2rJL9SnjjYUepZEd+GkXlgzo7K6waT4YVrII8G8HmPMyIfCJFf
-         fi9EJjNHFOCkoPQ4oaQ2dXMStCOhksfrdqp2yCA3P/QZ+QHBWVjTU1ej5+BPRu/gEdgi
-         yXUAaOtLCWZHI5+C6Zai+aDj504AwEFKrjer4sGO6W5aI2Ci4Eug1RhSmxJZrtmcVm47
-         4evw==
+        bh=vB3TbcX+phhLHqNLVTnsPQIuYLV410SZ/S3x77H/Azk=;
+        b=JiLZpPHDeFio2xKaqd4AF6b+AaACUv2JAlVW2TC/2qFFp6T2XByLfEVcoTR8ni+2ir
+         VahaBF7tUkyt0AUQJGX/7pPCiMG9x70Kxcco01Hh4iOJRmaJRmVWUdq7UwxeDmLQofJc
+         n0wyg+xmy7/jzNvOpKECnfI8lHqRJ9kujirOU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=OG4g1yM5ywKB6bxe2+5JdEWT+4qZ70kc1se9lNzGopE=;
-        b=TscPIIbgn7wpc9xSg3vekcvRdBF+kJSRDjrOQAV3yQuL/Q4xFCJQvBGkDZ5seednKq
-         DHWF9BoakpIzKRXKVO1DHwkdpZw9oys8A1568uJL8LCE5pwhkIoVpzWSSN279Y+Hg+vO
-         I7ya2SJHiDfp8ma6zruU+dxgd3KLPHvQ+fU2wFJdJicLZ1rRFC0e+sIZXoZgnfjkFkrt
-         qm4mKQSu1CJ2kdBs5rUicGFq8cTMYzEXXkPWyMvs4ZrXFUTeVHKRCnQK3TDq+zpVG5i+
-         c6UwOrRRfRYCE9Rn8ZYMeSPJexlnu/yTCDnd/ZmKO53e3UFckVxZkz9MWMeKKZ/2Vya0
-         3sxA==
-X-Gm-Message-State: AOAM533n5ir3KBI5znDjKC5PQp+TF7IQ1bVC/JNXeqq+rgm5eBhsXQml
-        RjKc2f8cpL8rZhElo8d994ik1XD2SddmJHCQxbA=
-X-Google-Smtp-Source: ABdhPJwfqKKI2EWejUpP/LhpPPPAYbjruZeZPYzm+AYd0wAw5dt2Gb9bV85ppbLQC2UCvB1RGX6H5aXA09YpispALbE=
-X-Received: by 2002:a17:902:e98c:b029:da:cb88:f11d with SMTP id
- f12-20020a170902e98cb02900dacb88f11dmr16925069plb.17.1609005136604; Sat, 26
- Dec 2020 09:52:16 -0800 (PST)
+        bh=vB3TbcX+phhLHqNLVTnsPQIuYLV410SZ/S3x77H/Azk=;
+        b=Ku0vXFHDAQwldzO+Tm9HvpgJG4mQr/y+Swx9wSNqwfK6QLVCXm7AZHHaQiN4jthGS0
+         jpfFEPNHSEIudy3c/lr+u+I/kDCszV52ues4kXRPYrcR++XlQWvP5mKcnrIohESno4RF
+         7vxK6BQELgdkG8FThzZSq/0TiHxclOC969BxLHgljj8MBQk2OPAodGZpJGAelyB7gMJd
+         ao/2DM5K0o2LAGdYz6pHbEL4S4DUJFsZO3qA1bmfbPn7BTA9pBhdgUHgzo0I7XPCoSgP
+         kWi1HpRj+EaRDywkDbkdaAYwg9ycX3Dr1cAXxdJn6I96Crf4nhS2QvGOFwDsa0GjTC3q
+         zj6Q==
+X-Gm-Message-State: AOAM533KR002kG3cK7hfPS7oxMJaz532cncK5fLt3GXkgrY3fTST8R+N
+        9vBQfuNoSqHDDorhx42iAlBTNSTAqF0fZQ==
+X-Google-Smtp-Source: ABdhPJwULiMTVz5e4FYoxC5J31NH+aB6cmGjO5WFAIIt23cLAQ1IGUdenoxN9Z5LemlcGZIyJ/2bMw==
+X-Received: by 2002:a2e:98d1:: with SMTP id s17mr13850890ljj.308.1609005451392;
+        Sat, 26 Dec 2020 09:57:31 -0800 (PST)
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
+        by smtp.gmail.com with ESMTPSA id v6sm4731316lfa.200.2020.12.26.09.57.29
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 26 Dec 2020 09:57:29 -0800 (PST)
+Received: by mail-lf1-f44.google.com with SMTP id x20so15265339lfe.12
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 09:57:29 -0800 (PST)
+X-Received: by 2002:a05:6512:789:: with SMTP id x9mr15301778lfr.487.1609005449200;
+ Sat, 26 Dec 2020 09:57:29 -0800 (PST)
 MIME-Version: 1.0
-References: <20201224112203.7174-1-nikita.shubin@maquefel.me> <20201224112203.7174-2-nikita.shubin@maquefel.me>
-In-Reply-To: <20201224112203.7174-2-nikita.shubin@maquefel.me>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sat, 26 Dec 2020 19:52:00 +0200
-Message-ID: <CAHp75VctYjASuKeEqOQDH1k5XKSYVGMFsf+_cOCx72JtiMnBSw@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/3] gpio: ep93xx: convert to multi irqchips
-To:     Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201216170703.o5lpsnjfmoj7f3ml@box> <CAHk-=wiVRMADHC0qjTFAVx2Pp0DN-fT-VPC10boDdX0O4=h01w@mail.gmail.com>
+ <20201217105409.2gacwgg7rco2ft3m@box> <CAHk-=wiyPTnQ9E1dT9LJtNxeVmLaykursk_MSecUqFjSb3gwAw@mail.gmail.com>
+ <20201218110400.yve45r3zsv7qgfa3@box> <CAHk-=wgO2LsoKhX7MjSECo+Xrj1-Me7tzRfNcsdEZBRwJW1cQg@mail.gmail.com>
+ <20201219124103.w6isern3ywc7xbur@box> <CAHk-=wifcVaxaTn_RbZ=idfYFazTPwm8t5cB1rY6xEBjbcfO5g@mail.gmail.com>
+ <20201222100047.p5zdb4ghagncq2oe@box> <alpine.LSU.2.11.2012231905300.5723@eggly.anvils>
+ <20201225113157.e7hmluffh56fszfc@box>
+In-Reply-To: <20201225113157.e7hmluffh56fszfc@box>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 26 Dec 2020 09:57:13 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiT50aEErZgZOrbFQ=GhFuM3MnBmHoSBSScN9rmXMnOKQ@mail.gmail.com>
+Message-ID: <CAHk-=wiT50aEErZgZOrbFQ=GhFuM3MnBmHoSBSScN9rmXMnOKQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm: Allow architectures to request 'old' entries when prefaulting
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        Android Kernel Team <kernel-team@android.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 24, 2020 at 1:23 PM Nikita Shubin <nikita.shubin@maquefel.me> wrote:
+On Fri, Dec 25, 2020 at 3:31 AM Kirill A. Shutemov <kirill@shutemov.name> wrote:
 >
-> Since gpiolib requires having separate irqchips for each gpiochip, we
-> need to add some we definetly need a separate one for F port, and we
+> The new helper next_page() returns a stablized page, so filemap_map_pmd()
+> can clearly decide if we should set up a page table or a huge page.
 
-definitely
+I really like that next_page() abstraction, my only comment is that I
+think it should be renamed as "next_stable_page()" or something, and
+then this part:
 
-> could combine gpiochip A and B into one - but this will break namespace
-> and logick.
->
-> So despite 3 irqchips is a bit beefy we need a separate irqchip for each
++       if (!page)
++               page = xas_find(xas, end_pgoff);
++       else
++               page = xas_next_entry(xas, end_pgoff);
 
-is a -> being a
+should be in the caller.
 
-> interrupt capable port.
->
-> - added separate irqchip for each iterrupt capable gpiochip
+Then just have two helper functions like 'first_map_page()' and
+'next_map_page()' which just do
 
-interrupt
+        next_stable_page(xas_find(xas, end_pgoff))
 
-> - dropped ep93xx_gpio_port (it wasn't working correct for port F anyway)
-> - moved irq registers into separate struct ep93xx_irq_chip, togather
+and
 
-irq -> IRQ (everywhere)
+        next_stable_page(xas_next_entry(xas, end_pgoff))
 
-together
+respectively.
 
->   with regs current state
-> - reworked irq handle for ab gpiochips (through bit not tottaly sure this
->   is a correct thing to do)
+Because not only does that get rid of the "if (page)" test, I think it
+would make things a bit clearer. When I read the patch first, the
+initial "next_page()" call confused me.
 
-ab -> AB ?
+But maybe I'm just grasping at straws. Even in this format, I think
+it's a nice cleanup and makes for more understandable code.
 
-In the parentheses something like "I'm not totally sure that this is a
-correct thing to do, though".
-
-> - dropped has_irq and has_hierarchical_irq and added a simple index
->   which we rely on when adding irq's to gpiochip's
-
-IRQs to GPIO chips
-
-(It would be nice if you can spell check and proofread  commit
-messages and comments in the code.
-
-...
-
-> +struct ep93xx_irq_chip {
-> +       void __iomem    *int_type1;
-> +       void __iomem    *int_type2;
-> +       void __iomem    *eoi;
-> +       void __iomem    *en;
-> +       void __iomem    *debounce;
-> +       void __iomem    *status;
-
-This is a bit... overcomplicated.
-Can we rather use regmap API?
-
-> +       u8              gpio_int_unmasked;
-> +       u8              gpio_int_enabled;
-> +       u8              gpio_int_type1;
-> +       u8              gpio_int_type2;
-> +       u8              gpio_int_debounce;
-> +       struct  irq_chip chip;
-> +};
-
-...
-
->  /* Port ordering is: A B F */
-> +static const char *irq_chip_names[3]           = {"gpio-irq-a",
-> +                                               "gpio-irq-b",
-> +                                               "gpio-irq-f"};
-
-Can you use better pattern, ie.
-static const char * const foo[] = {
-  ...
-};
-
-(there are two things: splitting per lines and additional const)?
-
-...
-
-> +       ab_parent_irq = platform_get_irq(pdev, 0);
-
-Error check, please?
-Also, if it's an optional resource, use platform_get_irq_optional().
-
-> +       err = devm_request_irq(dev, ab_parent_irq,
-> +                       ep93xx_ab_irq_handler,
-> +                       IRQF_SHARED, eic->chip.name, gc);
-
-> +
-
-Redundant blank line.
-
-> +       if (err) {
-> +               dev_err(dev, "error requesting IRQ : %d\n", ab_parent_irq);
-> +               return err;
-> +       }
-
-...
-
-> +       girq->num_parents = 1;
-> +       girq->parents = devm_kcalloc(dev, 1,
-> +                               sizeof(*girq->parents),
-> +                               GFP_KERNEL);
-
-Can be squeezed to less amount of LOCs. Also consider to use
-girq->num_parents as a parameter to devm_kcalloc().
-
-> +       if (!girq->parents)
-> +               return -ENOMEM;
-
-...
-
-> +       girq->handler = handle_level_irq;
-
-Don't we want to mark them as bad by using handle_bad_irq() as default handler?
-
-...
-
-> +       /*
-> +        * FIXME: convert this to use hierarchical IRQ support!
-> +        * this requires fixing the root irqchip to be hierarchial.
-
-hierarchical
-
-> +        */
-
-...
-
-> +       girq->num_parents = 8;
-> +       girq->parents = devm_kcalloc(dev, 8,
-> +                                    sizeof(*girq->parents),
-> +                                    GFP_KERNEL);
-
-As per above.
-
-> +
-
-Redundant blank line.
-
-> +       if (!girq->parents)
-> +               return -ENOMEM;
-
-...
-
-> +       /* Pick resources 1..8 for these IRQs */
-> +       for (i = 1; i <= 8; i++)
-> +               girq->parents[i - 1] = platform_get_irq(pdev, i);
-
-I would rather like to see i + 1 as a parameter which is much easier
-to read and understand.
-
-> +       for (i = 0; i < 8; i++) {
-
-Also in both cases replace 8 by ARRAY_SIZE() or predefined constant.
-
-> +               gpio_irq = EP93XX_GPIO_F_IRQ_BASE + i;
-> +               irq_set_chip_data(gpio_irq, gc);
-> +               irq_set_chip_and_handler(gpio_irq,
-> +                                       girq->chip,
-> +                                       handle_level_irq);
-> +               irq_clear_status_flags(gpio_irq, IRQ_NOREQUEST);
-> +       }
-
-Okay, I see that this is in the original code. Consider them as
-suggestions for additional changes.
-
-And briefly looking into the rest of the code the recommendation is to
-split this and perhaps other patches to smaller logical pieces.
-
-Also, try to organize your series in groups each of them respectively
-represents the following
-1) fixes (can be backported, usually contain Fixes tag to the culprit commit);
-2) preparatory refactoring patches / cleanups;
-3) new features.
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+          Linus
