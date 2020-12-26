@@ -2,174 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 579CA2E2CDD
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 02:53:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF5702E2CFA
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 04:32:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729361AbgLZBwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Dec 2020 20:52:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726164AbgLZBwS (ORCPT
+        id S1729178AbgLZDcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Dec 2020 22:32:22 -0500
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:59431 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725973AbgLZDcV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Dec 2020 20:52:18 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E354DC0613C1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Dec 2020 17:51:37 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id t8so3160620pfg.8
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Dec 2020 17:51:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=rmioAxNSR6MAY+J4fyGJ9OkjHtlBhIZAxyWFqSA2PTg=;
-        b=a9fdtmJm9f3y1e4rkyLB6faMuZKB2ebBCjIGnVqjZBhwxo08r9rCzsflVdyudM2paC
-         ohigfDgaJhNEW8bEMWSMLMV6RKZS5/14+6dWpaVWfbgOtSWtF8FYIfPOY/EoSdLN7LVH
-         VwxZ32EJeEC15ekK6ybFW9Bc8gvWSUB/gP85fPSwhEoXLXapOi/8BRN31xdsrVXrSzUI
-         utbWGDODU9jaG1r6dcP2LnEUxUA6TM6r/LacBx8Z2NPrQ7Cays4PBcU4e3b3UQiADFsV
-         aqGCsP4MQmXI+CmeQXfSABTYHEwbjjU/bu4Nfm1dXlUUb5llGuqpsMAeXj5RJBs7OQeO
-         iwDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=rmioAxNSR6MAY+J4fyGJ9OkjHtlBhIZAxyWFqSA2PTg=;
-        b=eZblD7uAiRKr/t2FdyGAAzsnZ75+chdl8saRcPonKdFd+uWo4UjUMt5xixqI/6dElf
-         x7lw6LD7pDkcIaor6yLLiXpnBU+ikqSfMUTV5LLME9Y3EoTpf3aHEPjj8vSQJzMR6E2b
-         +72G1CfBHDR82/kdIdVtqpVuPzfyqcXIifLDPmgvfoK9dyaB7rfKOnhvlErrthhpPPOL
-         L5U9WFU03XOS7FhVY1gwY28vpVhiDogfENmheE+z6p3FstcIZa9OOae3xck0fcNriQaX
-         XeuwWcXQQnjh7OFvExpw5ikKmzsVNWReEnnmgEjlpnCLd/JOkPCgjIHa8acJn4Nh9F5R
-         f9uQ==
-X-Gm-Message-State: AOAM533QTDOEcvXlfJ1Jz7ILzU/JRnDV+7O+5496X9aLW3EZZtNtMIHt
-        bp64RxscMp0yfntxMrDKjPcf1gfEvlE=
-X-Google-Smtp-Source: ABdhPJxoetehjnG0HHX1bUnfzEc2bPOTEN3/vDXN+FaQD2lo3rYrdg9TEcgH9saPYmDIPXH9u1yJcg==
-X-Received: by 2002:a63:5720:: with SMTP id l32mr22883358pgb.64.1608947497404;
-        Fri, 25 Dec 2020 17:51:37 -0800 (PST)
-Received: from localhost ([47.251.3.230])
-        by smtp.gmail.com with ESMTPSA id y16sm21792055pgg.20.2020.12.25.17.51.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 25 Dec 2020 17:51:36 -0800 (PST)
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Qian Cai <cai@redhat.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>
-Subject: [PATCH -tip V3 8/8] workqueue: Fix affinity of kworkers when attaching into pool
-Date:   Sat, 26 Dec 2020 10:51:16 +0800
-Message-Id: <20201226025117.2770-9-jiangshanlai@gmail.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
-In-Reply-To: <20201226025117.2770-1-jiangshanlai@gmail.com>
-References: <20201226025117.2770-1-jiangshanlai@gmail.com>
+        Fri, 25 Dec 2020 22:32:21 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 665FE58017B;
+        Fri, 25 Dec 2020 22:31:15 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Fri, 25 Dec 2020 22:31:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=J
+        0tyBu8KMFU52tUWQWjP9NYwvOSvIW8aK76o5DiD89Q=; b=ImNv5weR0WJBbx5nr
+        d+6Bdy7aQFaJCFwXYcKxCsE+LpQr7bbtS8YIvHXDi99Y0hbFR94p74ouDYPnpUCG
+        qGJHI7d3UKt7M1gze0JCF88eaJIcvxXQySvXiMyJkEaOl5cGpIr7KTsH45jMZ1bf
+        CHwk6zrvYNZMlF2LYwOluD52goG8y38vSI8ok9NAgl12FrwJZgZkChbHL6KwRC/A
+        zqmI/2mVwd1FxAOdTj6Li4SIaNqK5odB0VdGB7K7cxgZXzdzY3U6Pf1+r2qSTemY
+        x13bF215yteGTlu9BkQyECoMuVeuvoBMu/MLBrGOD3n6nQO2mmD3RnrIBKIA4ZtG
+        V3p4A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=J0tyBu8KMFU52tUWQWjP9NYwvOSvIW8aK76o5DiD8
+        9Q=; b=C3GJIDQGslnorSWDWa5i2gwcgNBzEp0Jgk40FJAeij4Aip4yQAamN00ZQ
+        Gc0Un6iqltlh6fjpMi0gImeNV8kBU19FdJzZsf91/HPVzaH1P+6dLkEy/1izp2XA
+        S6RDoxPE6siCLfnegDTZDfAIqfKF7IsEVyKlc4D09sXJs7GVO/17NtphnSnyjahW
+        nmRppLhg0PfGn5YvvbWUQTE/8eoVO94lGLqmmEUvWLG4t3lSyvNAsF36Kf9IJdCI
+        dtuyW1XrugWv6B/dL1ZwL6H9F5WdBuzB8YJvGwfaUCtds1WZr8FcSofnbu6LPWVb
+        7UPiDWiS3PL0vXLDkwaAMcSpU/scQ==
+X-ME-Sender: <xms:ga7mX6KtjqNIfbsceyfNO4EGWPu8ii5LOlzGw006rbkZIe6Nn_jVXw>
+    <xme:ga7mXyKWDakWma44OKf9qflzV6i1In9jzCP2LgQhY5KGsUszMgQaeDFTQoDsueFG_
+    KGyiGmaCKtKD3x2mEo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdduvddgheejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepuffvfhfhkffffgggjggtgfesthekredttdeftfenucfhrhhomheplfhirgig
+    uhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqeenuc
+    ggtffrrghtthgvrhhnpeejfeekffejjeekgefgvdetgeeuieevjeffheffhfffgfegvdev
+    gedtgedvtdffheenucffohhmrghinhepuggvvhhitggvthhrvggvrdhorhhgnecukfhppe
+    eghedrfeefrdehtddrvdehgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhep
+    mhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhm
+X-ME-Proxy: <xmx:ga7mX6vQYwriT4Ho-jQNmnE_p-dQ6OWHGYNeXwNU5QUg546d7pjSWw>
+    <xmx:ga7mX_bmgAYxza6wq0NEWeOCcZiET0NzNG9ygvHIHKNv06u5KWRpuw>
+    <xmx:ga7mXxYfbw_oXe3vqcbBtn1-D2F6WYysYPufEsusUo6UUeqZi2rM9w>
+    <xmx:g67mX0yGu0kJFOwq0T4uphbNUrqQfaYEVYaNrCxDprPkaxlkRsioJ7BMHls>
+Received: from [0.0.0.0] (li1000-254.members.linode.com [45.33.50.254])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 876B124005C;
+        Fri, 25 Dec 2020 22:31:10 -0500 (EST)
+Subject: Re: [PATCH v4 2/4] spi: ls7a: Add YAML schemas
+To:     Qing Zhang <zhangqing@loongson.cn>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        ThomasBogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-spi@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1608892552-15457-1-git-send-email-zhangqing@loongson.cn>
+ <1608892552-15457-2-git-send-email-zhangqing@loongson.cn>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Message-ID: <7d26a91a-f463-9ae4-8420-28a1b591053b@flygoat.com>
+Date:   Sat, 26 Dec 2020 11:31:07 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
+In-Reply-To: <1608892552-15457-2-git-send-email-zhangqing@loongson.cn>
+Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lai Jiangshan <laijs@linux.alibaba.com>
+ÔÚ 2020/12/25 ÏÂÎç6:35, Qing Zhang Ð´µÀ:
+> Switch the DT binding to a YAML schema to enable the DT validation.
+>
+> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+> ---
+>
+> v4: fix warnings/errors about running 'make dt_binding_check'
+>
+> ---
+>   .../devicetree/bindings/spi/loongson,spi-ls7a.yaml | 46 ++++++++++++++++++++++
+>   1 file changed, 46 insertions(+)
+>   create mode 100644 Documentation/devicetree/bindings/spi/loongson,spi-ls7a.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/spi/loongson,spi-ls7a.yaml b/Documentation/devicetree/bindings/spi/loongson,spi-ls7a.yaml
+> new file mode 100644
+> index 0000000..8cc9bc5
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/spi/loongson,spi-ls7a.yaml
+> @@ -0,0 +1,46 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/spi/loongson,spi-ls7a.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Loongson LS7A PCH SPI Controller
+> +
+> +maintainers:
+> +  - Qing Zhang <zhangqing@loongson.cn>
+> +
+> +description: |
+> +  This controller can be found in Loongson-3 systems with LS7A PCH.
+> +
+> +properties:
+> +  compatible:
+> +    const: loongson,ls7a-spi
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - num-chipselects
 
-When worker_attach_to_pool() is called, we should not put the workers
-to pool->attrs->cpumask when there is not CPU online in it.
+num-chipselects never parsed in code?
 
-We have to use wq_online_cpumask in worker_attach_to_pool() to check
-if pool->attrs->cpumask is valid rather than cpu_online_mask or
-cpu_active_mask due to gaps between stages in cpu hot[un]plug.
+Thanks.
 
-So for that late-spawned per-CPU kworker case: the outgoing CPU should have
-already been cleared from wq_online_cpumask, so it gets its affinity reset
-to the possible mask and the subsequent wakeup will ensure it's put on an
-active CPU.
+- Jiaxun
 
-To use wq_online_cpumask in worker_attach_to_pool(), we need to protect
-wq_online_cpumask in wq_pool_attach_mutex and we modify workqueue_online_cpu()
-and workqueue_offline_cpu() to enlarge wq_pool_attach_mutex protected
-region. We also put updating wq_online_cpumask and [re|un]bind_workers()
-in the same wq_pool_attach_mutex protected region to make the update
-for percpu workqueue atomically.
 
-Cc: Qian Cai <cai@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Vincent Donnefort <vincent.donnefort@arm.com>
-Link: https://lore.kernel.org/lkml/20201210163830.21514-3-valentin.schneider@arm.com/
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-Acked-by: Tejun Heo <tj@kernel.org>
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
----
- kernel/workqueue.c | 32 +++++++++++++++-----------------
- 1 file changed, 15 insertions(+), 17 deletions(-)
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index dd32398edf55..25d50050257c 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -310,7 +310,7 @@ static bool workqueue_freezing;		/* PL: have wqs started freezing? */
- /* PL: allowable cpus for unbound wqs and work items */
- static cpumask_var_t wq_unbound_cpumask;
- 
--/* PL: online cpus (cpu_online_mask with the going-down cpu cleared) */
-+/* PL&A: online cpus (cpu_online_mask with the going-down cpu cleared) */
- static cpumask_var_t wq_online_cpumask;
- 
- /* CPU where unbound work was last round robin scheduled from this CPU */
-@@ -1848,11 +1848,11 @@ static void worker_attach_to_pool(struct worker *worker,
- {
- 	mutex_lock(&wq_pool_attach_mutex);
- 
--	/*
--	 * set_cpus_allowed_ptr() will fail if the cpumask doesn't have any
--	 * online CPUs.  It'll be re-applied when any of the CPUs come up.
--	 */
--	set_cpus_allowed_ptr(worker->task, pool->attrs->cpumask);
-+	/* Is there any cpu in pool->attrs->cpumask online? */
-+	if (cpumask_intersects(pool->attrs->cpumask, wq_online_cpumask))
-+		WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, pool->attrs->cpumask) < 0);
-+	else
-+		WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, cpu_possible_mask) < 0);
- 
- 	/*
- 	 * The wq_pool_attach_mutex ensures %POOL_DISASSOCIATED remains
-@@ -5082,13 +5082,12 @@ int workqueue_online_cpu(unsigned int cpu)
- 	int pi;
- 
- 	mutex_lock(&wq_pool_mutex);
--	cpumask_set_cpu(cpu, wq_online_cpumask);
- 
--	for_each_cpu_worker_pool(pool, cpu) {
--		mutex_lock(&wq_pool_attach_mutex);
-+	mutex_lock(&wq_pool_attach_mutex);
-+	cpumask_set_cpu(cpu, wq_online_cpumask);
-+	for_each_cpu_worker_pool(pool, cpu)
- 		rebind_workers(pool);
--		mutex_unlock(&wq_pool_attach_mutex);
--	}
-+	mutex_unlock(&wq_pool_attach_mutex);
- 
- 	/* update CPU affinity of workers of unbound pools */
- 	for_each_pool(pool, pi) {
-@@ -5118,14 +5117,13 @@ int workqueue_offline_cpu(unsigned int cpu)
- 	if (WARN_ON(cpu != smp_processor_id()))
- 		return -1;
- 
--	for_each_cpu_worker_pool(pool, cpu) {
--		mutex_lock(&wq_pool_attach_mutex);
--		unbind_workers(pool);
--		mutex_unlock(&wq_pool_attach_mutex);
--	}
--
- 	mutex_lock(&wq_pool_mutex);
-+
-+	mutex_lock(&wq_pool_attach_mutex);
- 	cpumask_clear_cpu(cpu, wq_online_cpumask);
-+	for_each_cpu_worker_pool(pool, cpu)
-+		unbind_workers(pool);
-+	mutex_unlock(&wq_pool_attach_mutex);
- 
- 	/* update CPU affinity of workers of unbound pools */
- 	for_each_pool(pool, pi) {
--- 
-2.19.1.6.gb485710b
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    pci {
+> +        #address-cells = <3>;
+> +        #size-cells = <2>;
+> +
+> +        spi@16,0 {
+> +        compatible = "pci0014,7a0b.0",
+> +                        "pci0014,7a0b",
+> +                        "pciclass088000",
+> +                        "pciclass0800";
+> +
+> +        reg = <0xb000 0x0 0x0 0x0 0x0>;
+> +        num-chipselects = <0>;
+> +        };
+> +    };
+> +
+> +...
 
