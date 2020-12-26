@@ -2,132 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3547E2E2DDA
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 10:48:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3A202E2DE6
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 11:11:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726002AbgLZJs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Dec 2020 04:48:28 -0500
-Received: from mail-am6eur05on2137.outbound.protection.outlook.com ([40.107.22.137]:59398
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725947AbgLZJs1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Dec 2020 04:48:27 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XGamM9V5ckN8ZWXLhm8HXXptacX+FPA0hmr2y9T2u7BSBw8vlxHdTwiEzf9YRX4KfdrCgGd24+GJSbCEfODTPfliU3sw2wc7XR4P4SMDs30KHQ9qOyaUzxTbDFDT95iW7aNPUd0Z9NEzlYgKkyXuuB2Eo0Da353k7GH5a/1SqI/LbY9rwdWiTcq57JC7p/7DisehRbcSxJz1rc7XzBJ6og9Cjka8NjJHu+pCm6I88Ilf6Var+VcuOja3rmXTQUJInu3a4cjBocxoAz1A4eB1ngaveJU8zSB+vMmKr/oPU+aqkSPOWCI1/uW/4msqaxpcSM6XOHgMoSvfAzb5MK2zgw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8inmsJ0xO+UkSc8CH07cCTTuOc+0OLeh4B6h6gNkUhM=;
- b=AFcAW3W/1rG5zB7VZyOg047Jpg5n6fexG+n/rJIXcSwlGWjE1OCMnxNFcvQyuLAjzAXzEl3x0jcTVt1jNORYUmTjqgP5zmr0XYlqVMXKUsKkAGqdmLvTCbu8VQXisySoh0H6Fy5wR1kWazN1YlSnxVkW+EWuH5pFPPCEMIH1qG3ipfNITfTMwtiWXak5ZxM2nUUldQ+PWlcJnvYkiALtUSICDwCKTuIIw/i3GRDsoO/N1niubxKLoTUbSQdYMxFKjW9g0H+BFghERqXYruT0zXw80w36G0wbHj8Z1VLIzgs81ciy5+SFX01XobuNtCLYyCvcj+iWcDZ2F57z54ayGw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=toradex.com; dmarc=pass action=none header.from=toradex.com;
- dkim=pass header.d=toradex.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=toradex.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8inmsJ0xO+UkSc8CH07cCTTuOc+0OLeh4B6h6gNkUhM=;
- b=tj8TlkCB6OdOkSaHBlwjI6Y3wntH29hTV27kS8lrGRDonf2ZWu1wor2VAbMc2vvNRmV4p4BUOTJpC6C4pNkzy+yxp1sZ2u8AbL2a9L7aYHKrDP7lezFWZiqSnVrtHnU8rytizxiKRCndmvm8bfsnHTFJj9QIUIfrHWZHBBP8Kp8=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=toradex.com;
-Received: from AM0PR05MB6002.eurprd05.prod.outlook.com (2603:10a6:208:129::19)
- by AM0PR05MB6001.eurprd05.prod.outlook.com (2603:10a6:208:124::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.27; Sat, 26 Dec
- 2020 09:47:39 +0000
-Received: from AM0PR05MB6002.eurprd05.prod.outlook.com
- ([fe80::802f:1250:dd1c:9357]) by AM0PR05MB6002.eurprd05.prod.outlook.com
- ([fe80::802f:1250:dd1c:9357%3]) with mapi id 15.20.3700.031; Sat, 26 Dec 2020
- 09:47:39 +0000
-From:   Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
-To:     linux-next@vger.kernel.org
-Cc:     Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        Igor Opaniuk <igor.opaniuk@toradex.com>,
-        Philippe Schenker <philippe.schenker@toradex.com>,
-        Oleksandr Suvorov <oleksandr.suvorov@toradex.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: [PATCH] mfd: stmpe: Support disabling sub-functions
-Date:   Sat, 26 Dec 2020 11:47:22 +0200
-Message-Id: <20201226094722.16580-1-oleksandr.suvorov@toradex.com>
+        id S1726019AbgLZKIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Dec 2020 05:08:04 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:9995 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725968AbgLZKID (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Dec 2020 05:08:03 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4D2zx63FVCzhxYC;
+        Sat, 26 Dec 2020 18:06:34 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 26 Dec 2020 18:07:11 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>, <stable@kernel.org>
+Subject: [PATCH] f2fs: enforce the immutable flag on open files
+Date:   Sat, 26 Dec 2020 18:07:01 +0800
+Message-ID: <20201226100701.30179-1-yuchao0@huawei.com>
 X-Mailer: git-send-email 2.29.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [82.193.109.226]
-X-ClientProxiedBy: AM3PR04CA0128.eurprd04.prod.outlook.com (2603:10a6:207::12)
- To AM0PR05MB6002.eurprd05.prod.outlook.com (2603:10a6:208:129::19)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from cryobook.toradex.int (82.193.109.226) by AM3PR04CA0128.eurprd04.prod.outlook.com (2603:10a6:207::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3700.27 via Frontend Transport; Sat, 26 Dec 2020 09:47:38 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2d3f1cb5-b4e6-413d-23b6-08d8a983489a
-X-MS-TrafficTypeDiagnostic: AM0PR05MB6001:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM0PR05MB6001784339258CED2C16177CF9DB0@AM0PR05MB6001.eurprd05.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2043;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 877WMVI+UpSc8GoCYZf6qi1d1/wVZWvhV3x+yXQztes+Uur0dsWx+ndTUMoRqSM77uGxtWORGhXuwvIhoGStsIQzSacs4LBCB3JuUcfIdTcggkcCYflJVCsYEZHNRTT82jO1QOBcUM0hPeL3bhot5YFvLaUyevD+Wh56/AbZq9VdZGp+Vm0zt/YhqPPjqJf2Skm1OQBPKC1gbCY667/kvfEg8V/bNaW9mjWqwgiOmR1npf6MEmnpoP3zW8/TOtuvR768E/I1B1BukE0UHF+WJhxj1WjGvTQobey6gzmfpNdgln32TWE91wGs1UtA/O5XB6t16SEdoCxTvttTWr/e2wVfZZ+4NXmG2yRJmsXuhCKsGHxiFpFD6KnQPHWlQoAQDEVqBDwayPtGPO18kovZ+Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR05MB6002.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(366004)(39840400004)(376002)(55236004)(54906003)(2906002)(86362001)(66476007)(66556008)(66946007)(316002)(26005)(83380400001)(4326008)(8676002)(6486002)(16526019)(186003)(6506007)(6512007)(6666004)(1076003)(6916009)(52116002)(956004)(2616005)(44832011)(478600001)(36756003)(5660300002)(4744005)(8936002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?owtx3OeMpJQqN9fGSl8hUSjp2FBwo7IN9nRRGvQW+vy4AU0DoA5TPzfIBjxt?=
- =?us-ascii?Q?ZapHanRRQdWUS9f3Jj0czd6tAYaG2z5a28Jjq+f3SfRa7D/TbeHPdomn2/SF?=
- =?us-ascii?Q?UXr2Rzl4KTLziXw6vK07/Euus94zGFWyw52wO0FRBKETwpiVTcELnkrVnKOa?=
- =?us-ascii?Q?ziM06y3bVqLOiRQS5hYfHorK+q0TPGGVUh+wruImlNXC5QpiEG4tcJKqh/kS?=
- =?us-ascii?Q?vXRrp/QzTpEDWV5Zeg0MCROvZu1vIoiuUHhnwAO/MpHd8AduSubQdnaeg9Tx?=
- =?us-ascii?Q?3JInYIym9k0nzbJfKAl4Om3Qxn4MIsVl33xAwGCo+wC6bR2oP1Qh/+pXjjn7?=
- =?us-ascii?Q?v76GCUmkfQAm2gx9s3Gh/7/NgCBPpbXQk7ipGHoZoI0ZN/lI4Uzxo9GS5EVR?=
- =?us-ascii?Q?SlPawSI8NTvjlT99bIJ7wJFU5LxcDS5HCu2FNKf3O6SFyM9GhfKBUT5QVS02?=
- =?us-ascii?Q?p0S/kDAeJ0sI50BlZlGfLNYoA5ZweOjEoKKQlW0kbf0eJkQvc0+aJqulXm0n?=
- =?us-ascii?Q?pKtcO6b/d9MrUntyosET7GK3F75EdSLB+QFh5heyUnH/V1KxRHIgqy3hBToo?=
- =?us-ascii?Q?J2bj93J295AZf8Xs8JwbQkX6He1lpUVs/1Ec3U5f55f1Af/yu++9VhJhZHmq?=
- =?us-ascii?Q?dlAJ7P37qiNxOnXCmghw8hlFkuNESmqIXeWFzP2YGbTd3QgFLarip/KprFEF?=
- =?us-ascii?Q?p2B+FHflSP4G/z9zFE4GZH6yNjPWL63EperQVzKB1qFQ/EcpswnnfvQgYcVm?=
- =?us-ascii?Q?xUW3BD2DwBAzZcS7SSvzDyI1oBTltkyJlNylz4S1YU4otIA1PyJwQMqJG4W7?=
- =?us-ascii?Q?A9LdN9PJQLo2KAZzkLLz6ccbkAk2VYPmXNKvxZTs4bYqacv6b7GYrgePtlXl?=
- =?us-ascii?Q?ohFAqY59/hbmqumxLr4JFfxuPGo8KBlazAvbY//oeAX+h+Bzp9n+OhgVIxSu?=
- =?us-ascii?Q?hbWhphID4U4TlK5e3cpBwo6PKHf1e+eV360wAFSq7gfFY1hd225oMeuWrvbh?=
- =?us-ascii?Q?DsIf?=
-X-OriginatorOrg: toradex.com
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR05MB6002.eurprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Dec 2020 09:47:39.5996
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: d9995866-0d9b-4251-8315-093f062abab4
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2d3f1cb5-b4e6-413d-23b6-08d8a983489a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1IQlIgguQpVbuaMVwwbYIYB6VdLj1hewng0eSsEgSfwo2N7/E8Z6LYVtte65Poeez0wwNsp6Fou4x//mW1IbkkMfMVX2PvNVqUVv0DLR9hc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB6001
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.120.216.130]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support of sub-functions disabling. It allows one to define
-an stmpe sub-function device in devicetree, but keep it disabled.
+This patch ports commit 02b016ca7f99 ("ext4: enforce the immutable
+flag on open files") to f2fs.
 
-Signed-off-by: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
+According to the chattr man page, "a file with the 'i' attribute
+cannot be modified..."  Historically, this was only enforced when the
+file was opened, per the rest of the description, "... and the file
+can not be opened in write mode".
+
+There is general agreement that we should standardize all file systems
+to prevent modifications even for files that were opened at the time
+the immutable flag is set.  Eventually, a change to enforce this at
+the VFS layer should be landing in mainline.
+
+Cc: stable@kernel.org
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
 ---
+ fs/f2fs/file.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
- drivers/mfd/stmpe.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/mfd/stmpe.c b/drivers/mfd/stmpe.c
-index 90f3292230c9..2182607b75f6 100644
---- a/drivers/mfd/stmpe.c
-+++ b/drivers/mfd/stmpe.c
-@@ -1358,6 +1358,9 @@ static void stmpe_of_probe(struct stmpe_platform_data *pdata,
- 	pdata->autosleep = (pdata->autosleep_timeout) ? true : false;
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index 1ff5fc10e1fa..71dd20f7ecb3 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -60,6 +60,9 @@ static vm_fault_t f2fs_vm_page_mkwrite(struct vm_fault *vmf)
+ 	bool need_alloc = true;
+ 	int err = 0;
  
- 	for_each_child_of_node(np, child) {
-+		/* skip disabled sub-function */
-+		if (!of_device_is_available(child))
-+			continue;
- 		if (of_node_name_eq(child, "stmpe_gpio")) {
- 			pdata->blocks |= STMPE_BLOCK_GPIO;
- 		} else if (of_node_name_eq(child, "stmpe_keypad")) {
++	if (unlikely(IS_IMMUTABLE(inode)))
++		return VM_FAULT_SIGBUS;
++
+ 	if (unlikely(f2fs_cp_error(sbi))) {
+ 		err = -EIO;
+ 		goto err;
+@@ -866,6 +869,14 @@ int f2fs_setattr(struct dentry *dentry, struct iattr *attr)
+ 	if (unlikely(f2fs_cp_error(F2FS_I_SB(inode))))
+ 		return -EIO;
+ 
++	if (unlikely(IS_IMMUTABLE(inode)))
++		return -EPERM;
++
++	if (unlikely(IS_APPEND(inode) &&
++			(attr->ia_valid & (ATTR_MODE | ATTR_UID |
++				  ATTR_GID | ATTR_TIMES_SET))))
++		return -EPERM;
++
+ 	if ((attr->ia_valid & ATTR_SIZE) &&
+ 		!f2fs_is_compress_backend_ready(inode))
+ 		return -EOPNOTSUPP;
+@@ -4360,6 +4371,11 @@ static ssize_t f2fs_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ 		inode_lock(inode);
+ 	}
+ 
++	if (unlikely(IS_IMMUTABLE(inode))) {
++		ret = -EPERM;
++		goto unlock;
++	}
++
+ 	ret = generic_write_checks(iocb, from);
+ 	if (ret > 0) {
+ 		bool preallocated = false;
+@@ -4424,6 +4440,7 @@ static ssize_t f2fs_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ 		if (ret > 0)
+ 			f2fs_update_iostat(F2FS_I_SB(inode), APP_WRITE_IO, ret);
+ 	}
++unlock:
+ 	inode_unlock(inode);
+ out:
+ 	trace_f2fs_file_write_iter(inode, iocb->ki_pos,
 -- 
 2.29.2
 
