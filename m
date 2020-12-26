@@ -2,82 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB6402E2D97
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 08:30:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C81C2E2D99
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 08:30:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728124AbgLZH2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Dec 2020 02:28:37 -0500
-Received: from spam.zju.edu.cn ([61.164.42.155]:59038 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726278AbgLZH2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Dec 2020 02:28:37 -0500
-Received: from localhost.localdomain (unknown [10.192.85.18])
-        by mail-app4 (Coremail) with SMTP id cS_KCgB3XzvW5eZfircQAA--.64341S4;
-        Sat, 26 Dec 2020 15:27:21 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Oded Gabbay <ogabbay@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tomer Tayar <ttayar@habana.ai>,
-        Omer Shpigelman <oshpigelman@habana.ai>,
-        Ofir Bitton <obitton@habana.ai>,
-        Moti Haimovski <mhaimovski@habana.ai>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] habanalabs: Fix memleak in hl_device_reset
-Date:   Sat, 26 Dec 2020 15:27:14 +0800
-Message-Id: <20201226072717.32001-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cS_KCgB3XzvW5eZfircQAA--.64341S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrtrykuFyktw4rJFyDtFW8Zwb_yoWftwb_Jr
-        4UZr17Wr48G3ZY9rnIkr1fZryjka9Ygry8CF47ta9aqr9Iva1IqrZ5ZF1fua13uFn09343
-        AF1jgrnakr15JjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbVxFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
-        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
-        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
-        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
-        c2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r
-        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
-        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
-        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY
-        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
-        73UjIFyTuYvjfUoOJ5UUUUU
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgYEBlZdtRrnPgALsw
+        id S1728563AbgLZHaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Dec 2020 02:30:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725994AbgLZHaQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Dec 2020 02:30:16 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C20BC061757
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Dec 2020 23:29:36 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id f14so3359714pju.4
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Dec 2020 23:29:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=PzHOmqPammOF2MuNhpTyx66yMY3XUA9xo83g3YEoVpE=;
+        b=iPhcLSaMPxQrkQJRsxB6n6dUFL3oxUYvgd19FWdQ0GSm/Ma6uD4D/TFfEJYW+h0TVQ
+         bjGnPLLbaARz00OJPNIAOpVBs5X2COoy1c2g816Om0K8kVgqZShs7l5KGXw7JvmtdNS6
+         EquNq0EhOeglRQS58PpDWM+92yR4hHkZIkVTygXDQKjgr/sBL1EbAHbP7s6bJmKPK2Jn
+         hbwIrEyKDuoy9EF2KwyqXAWWG/O8ljZHeozyH6W/jD76NLSK3E6u4ojqsiDreZMHP+3w
+         gXKD742XSwpaPhCHAIk+02vQZUt7LUTXzKnjNOHFqaDcvQJ1b5Wjhh8J62vxwzI/2Hoa
+         xh9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-transfer-encoding:content-language;
+        bh=PzHOmqPammOF2MuNhpTyx66yMY3XUA9xo83g3YEoVpE=;
+        b=h6nMC1K49HEqvj1zNUdjAZfxwW9TDZTZIGVWgoxPNecVWIa0o1rS6lG37m1ip6fUAy
+         deSJOMLCq1ync/qB5Xv+UpNeunizSzJ66xz3hZXOrcL3pgtEZq9sj03nST4/LbpgFpan
+         IcCVZdJmuI7BKvOAbuHrroZrN5r5X2zn86XJ0UFhq5QDqyopZR4eBX2pqEPzBAxgdach
+         Xyx9OsQZnKO65bNbEMwAo8dRvUHHr4LuWchPawEn1/G+h3yP6gjkWo9IdC4Qxf2yV1CB
+         v1BvTkI48KHA73em2HtCS//aeeD9scI4J01xBjQLxvITGWleQEXMtGYyYXrFRJ1O3GC4
+         iPEA==
+X-Gm-Message-State: AOAM530fmcP5t7B6XBSPcqNf/F3RMBo6e8rAJHOXSF9eJKqWetySp0ME
+        dCgK60DvRgMfH/AldOXaehY=
+X-Google-Smtp-Source: ABdhPJxaUq8YBA2k33sC2H0xcx2iLBpgRrSahHdtZq9LTUqoNfFqCDsxoCzMAJ67vWvtt7ceZo0KYQ==
+X-Received: by 2002:a17:90a:e507:: with SMTP id t7mr11740247pjy.26.1608967775790;
+        Fri, 25 Dec 2020 23:29:35 -0800 (PST)
+Received: from macbook.local (ae142046.dynamic.ppp.asahi-net.or.jp. [14.3.142.46])
+        by smtp.gmail.com with ESMTPSA id 84sm30959306pfy.9.2020.12.25.23.29.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Dec 2020 23:29:35 -0800 (PST)
+To:     x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     clang-built-linux@googlegroups.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        John Millikin <john@john-millikin.com>
+From:   John Millikin <jmillikin@gmail.com>
+Subject: [PATCH] arch/x86: Propagate $(CLANG_FLAGS) to $(REALMODE_FLAGS)
+Message-ID: <cceb074c-861c-d716-5e19-834a8492f245@gmail.com>
+Date:   Sat, 26 Dec 2020 16:29:30 +0900
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When kzalloc() fails, we should execute hl_mmu_fini()
-to release the MMU module. It's the same when
-hl_ctx_init() fails.
+When compiling with Clang, the `$(CLANG_FLAGS)' variable contains
+additional flags needed to cross-compile C and Assembly sources:
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+* `-no-integrated-as' tells clang to assemble with GNU Assembler
+  instead of its built-in LLVM assembler. This flag is set by default
+  unless `LLVM_IAS=1' is set, because the LLVM assembler can't yet
+  parse certain GNU extensions.
+
+* `--target' sets the target architecture when cross-compiling. This
+  flag must be set for both compilation and assembly (`KBUILD_AFLAGS')
+  to support architecture-specific assembler directives.
+
+Signed-off-by: John Millikin <john@john-millikin.com>
 ---
- drivers/misc/habanalabs/common/device.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/Makefile | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/misc/habanalabs/common/device.c b/drivers/misc/habanalabs/common/device.c
-index 5871162a8442..e5028890ead1 100644
---- a/drivers/misc/habanalabs/common/device.c
-+++ b/drivers/misc/habanalabs/common/device.c
-@@ -1092,6 +1092,7 @@ int hl_device_reset(struct hl_device *hdev, bool hard_reset,
- 						GFP_KERNEL);
- 		if (!hdev->kernel_ctx) {
- 			rc = -ENOMEM;
-+			hl_mmu_fini(hdev);
- 			goto out_err;
- 		}
- 
-@@ -1103,6 +1104,7 @@ int hl_device_reset(struct hl_device *hdev, bool hard_reset,
- 				"failed to init kernel ctx in hard reset\n");
- 			kfree(hdev->kernel_ctx);
- 			hdev->kernel_ctx = NULL;
-+			hl_mmu_fini(hdev);
- 			goto out_err;
- 		}
- 	}
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index 7116da3980be..725c65532482 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -33,6 +33,11 @@ REALMODE_CFLAGS += -ffreestanding
+ REALMODE_CFLAGS += -fno-stack-protector
+ REALMODE_CFLAGS += $(call __cc-option, $(CC), $(REALMODE_CFLAGS), -Wno-address-of-packed-member)
+ REALMODE_CFLAGS += $(call __cc-option, $(CC), $(REALMODE_CFLAGS), $(cc_stack_align4))
++
++ifdef CONFIG_CC_IS_CLANG
++REALMODE_CFLAGS += $(CLANG_FLAGS)
++endif
++
+ export REALMODE_CFLAGS
+ 
+ # BITS is used as extension for files which are available in a 32 bit
 -- 
-2.17.1
+2.29.2
+
 
