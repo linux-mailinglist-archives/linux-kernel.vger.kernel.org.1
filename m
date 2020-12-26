@@ -2,112 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 442832E2E2B
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 13:24:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF87E2E2E1E
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 13:18:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726187AbgLZMXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Dec 2020 07:23:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54374 "EHLO
+        id S1726137AbgLZMQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Dec 2020 07:16:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726117AbgLZMXU (ORCPT
+        with ESMTP id S1725997AbgLZMQf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Dec 2020 07:23:20 -0500
-X-Greylist: delayed 522 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 26 Dec 2020 04:22:40 PST
-Received: from cc-smtpout3.netcologne.de (cc-smtpout3.netcologne.de [IPv6:2001:4dd0:100:1062:25:2:0:3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C0C2C061757
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 04:22:39 -0800 (PST)
-Received: from cc-smtpin2.netcologne.de (cc-smtpin2.netcologne.de [89.1.8.202])
-        by cc-smtpout3.netcologne.de (Postfix) with ESMTP id EA1BF1281E;
-        Sat, 26 Dec 2020 13:13:52 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by cc-smtpin2.netcologne.de (Postfix) with ESMTP id C492F11E02;
-        Sat, 26 Dec 2020 13:13:52 +0100 (CET)
-Received: from [84.44.222.40] (helo=cc-smtpin2.netcologne.de)
-        by localhost with ESMTP (eXpurgate 4.11.6)
-        (envelope-from <kurt@garloff.de>)
-        id 5fe72900-024d-7f0000012729-7f00000196cc-1
-        for <multiple-recipients>; Sat, 26 Dec 2020 13:13:52 +0100
-Received: from nas2.garloff.de (xdsl-84-44-222-40.nc.de [84.44.222.40])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by cc-smtpin2.netcologne.de (Postfix) with ESMTPSA;
-        Sat, 26 Dec 2020 13:13:50 +0100 (CET)
-Received: from [192.168.155.202] (ap4.garloff.de [192.168.155.15])
-        by nas2.garloff.de (Postfix) with ESMTPSA id B2048B3B131B;
-        Sat, 26 Dec 2020 13:13:49 +0100 (CET)
-To:     Len Brown <len.brown@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-From:   Kurt Garloff <kurt@garloff.de>
-Subject: turbostat: Fix Pkg Power on Zen
-Message-ID: <1f1fb01e-0616-34ea-ede6-dc7dd679c3d4@garloff.de>
-Date:   Sat, 26 Dec 2020 13:13:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.3
+        Sat, 26 Dec 2020 07:16:35 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F31EEC061757
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 04:15:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=QsnqwKrC8FAcmq1cPPiwc8IugCbcu9GsR0MUxmjHSGc=; b=GdsHm/xW8/6Or4SUsT5v5JOxj
+        y7i8GCvXKGSuURt+XikaaV1zLN6oO4DvubALaS+xnIKWi2LuyhDOxXLqlyMYaTrLPxEznYRE5/ooL
+        vq7xoTAJZQ7wKj2VMvjH+IZcACEtLvuA2rdEqQNSvC2jl4ZAfx/eC0dHhfU42B+Km3S6N1dr1QExp
+        brh+rTrjA1girapFm+olYCAGamIYoVmWDSTkilFheGxBFLymjF5MtsH6HMnk/WQdWvvyvP1mlvUzO
+        PucnDRtpwP+WpWQvBdOM0ZFxw2kPvfywCDh5AEOlql89M2VSSe2mrjAgxoiEAE4aOBBJZaF0lT65W
+        D/66iXr3A==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44538)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kt8U8-0003R4-71; Sat, 26 Dec 2020 12:15:48 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kt8U7-0006pi-Mc; Sat, 26 Dec 2020 12:15:47 +0000
+Date:   Sat, 26 Dec 2020 12:15:47 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] ARM: LPAE: use phys_addr_t instead of unsigned long
+ in outercache hooks
+Message-ID: <20201226121547.GC1551@shell.armlinux.org.uk>
+References: <20201225114458.1334-1-thunder.leizhen@huawei.com>
+ <a0ca2ec8-40cf-4b5e-a6fe-f68d9650a82f@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------7B794C5CA64C1455EB0E089D"
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a0ca2ec8-40cf-4b5e-a6fe-f68d9650a82f@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------7B794C5CA64C1455EB0E089D
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+On Sat, Dec 26, 2020 at 10:18:08AM +0800, Leizhen (ThunderTown) wrote:
+> On 2020/12/25 19:44, Zhen Lei wrote:
+> > The outercache of some Hisilicon SOCs support physical addresses wider
+> > than 32-bits. The unsigned long datatype is not sufficient for mapping
+> > physical addresses >= 4GB. The commit ad6b9c9d78b9 ("ARM: 6671/1: LPAE:
+> > use phys_addr_t instead of unsigned long in outercache functions") has
+> > already modified the outercache functions. But the parameters of the
+> > outercache hooks are not changed. This patch use phys_addr_t instead of
+> > unsigned long in outercache hooks: inv_range, clean_range, flush_range.
+> > 
+> > To ensure the outercache that does not support LPAE works properly, do
+> > cast phys_addr_t to unsigned long by adding a middle-tier function.
+> 
+> This patch will impact the outercache drivers that have not been merged into
+> the kernel. They should also update the datatype of the outercache hooks.
 
-Hi Len,
+This isn't much of a concern to mainline. If it's that big a problem
+for you, then please consider merging your code into mainline so that
+everyone can benefit from it.
 
-find attached fix to avoid exiting with -13 on Zen. Patch is against turb=
-ostat as included in Linux-5.10.2.
-Please merge.
-
-PS: This is probably material for -stable, as it used to work before on Z=
-en (Zen2 aka Ryzen 3000 in my case).
-
---=20
-Kurt Garloff <kurt@garloff.de>
-Cologne, Germany
-
-
---------------7B794C5CA64C1455EB0E089D
-Content-Type: text/x-patch; charset=UTF-8;
- name="turbostat-zen-pkgpower-510.diff"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="turbostat-zen-pkgpower-510.diff"
-
-commit b82f8e4cfcfd5d503226ed99b30a68aca25b7e18
-Author: Kurt Garloff <kurt@garloff.de>
-Date:   Sat Dec 26 13:00:15 2020 +0100
-
-    turbostat: Fix Pkg Power tracking on Zen
-   =20
-    AMD Zen processors use a different MSR (MSR_PKG_ENERGY_STAT) than int=
-el
-    (MSR_PKG_ENERGY_STATUS) to track package power; however we want to re=
-cord
-    it at the same offset in our package_data.
-    offset_to_idx() however only recognized the intel MSR, erroring
-    out with -13 on Zen.
-   =20
-    With this fix, it will support the Zen MSR.
-    Tested successfully on Ryzen 3000.
-   =20
-    Signed-off-by: Kurt Garloff <kurt@garloff.de>
-
-diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turb=
-ostat/turbostat.c
-index f3a1746f7f45..eb845421f492 100644
---- a/tools/power/x86/turbostat/turbostat.c
-+++ b/tools/power/x86/turbostat/turbostat.c
-@@ -325,6 +325,7 @@ int offset_to_idx(int offset)
- 	int idx;
-=20
- 	switch (offset) {
-+	case MSR_PKG_ENERGY_STAT:
- 	case MSR_PKG_ENERGY_STATUS:
- 		idx =3D IDX_PKG_ENERGY;
- 		break;
-
---------------7B794C5CA64C1455EB0E089D--
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
