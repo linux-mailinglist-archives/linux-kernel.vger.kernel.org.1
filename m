@@ -2,111 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71EA32E2D5B
+	by mail.lfdr.de (Postfix) with ESMTP id E16402E2D5C
 	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 07:16:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726509AbgLZFli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Dec 2020 00:41:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46245 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725801AbgLZFli (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Dec 2020 00:41:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608961211;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=RciS3qF6mXrSlTKUjAjECWK+kmGx/IgeCIP1cax7Fik=;
-        b=VMnE70DlQBqJP46kMFbyElZNNh4janogbqGCC+Qg1X8oY1KYr0XBAJaG3xxuCyUTrlwmp9
-        uB/DaBpz78IvEXjiPO26yrLyjHjgMhwS2Wpl2XI4/DJoN5659+7UaQqyB7i0yJKXJwWWt8
-        XXCSbnjRcEuLWZfcP/IjGZqnu0H7W4E=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-328-7ReRvWHMN2CMLSVQJMO8xA-1; Sat, 26 Dec 2020 00:40:07 -0500
-X-MC-Unique: 7ReRvWHMN2CMLSVQJMO8xA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 015001800D42;
-        Sat, 26 Dec 2020 05:40:06 +0000 (UTC)
-Received: from localhost.localdomain.com (ovpn-12-181.pek2.redhat.com [10.72.12.181])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 016E25D9D3;
-        Sat, 26 Dec 2020 05:40:02 +0000 (UTC)
-From:   Lianbo Jiang <lijiang@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     joro@8bytes.org, will@kernel.org, iommu@lists.linux-foundation.org
-Subject: [PATCH] iommu: check for the deferred attach when attaching a device
-Date:   Sat, 26 Dec 2020 13:39:59 +0800
-Message-Id: <20201226053959.4222-1-lijiang@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+        id S1726657AbgLZGL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Dec 2020 01:11:26 -0500
+Received: from spam.zju.edu.cn ([61.164.42.155]:55028 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725801AbgLZGLY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Dec 2020 01:11:24 -0500
+Received: from localhost.localdomain (unknown [10.192.85.18])
+        by mail-app3 (Coremail) with SMTP id cC_KCgD3_w_N0+ZfxQQQAA--.59477S4;
+        Sat, 26 Dec 2020 14:10:24 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: scsi_debug: Fix memleak in scsi_debug_init
+Date:   Sat, 26 Dec 2020 14:10:19 +0800
+Message-Id: <20201226061019.19034-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cC_KCgD3_w_N0+ZfxQQQAA--.59477S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7Gr4rur4fXFWxtw15urW3ZFb_yoWDXrXEgw
+        4rtryxGrn0qw4Iv39xW348J3sF9F4rGFs5uF1SqryxZa17X3yDKFW8Zr1Duw45uw429r17
+        Kws8Zrn29w17AjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb2AFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E
+        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
+        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxF
+        aVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
+        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxG
+        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8Jw
+        CI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
+        6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgYEBlZdtRrnPgAHs8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, because domain attach allows to be deferred from iommu
-driver to device driver, and when iommu initializes, the devices
-on the bus will be scanned and the default groups will be allocated.
+When sdeb_zbc_model does not match BLK_ZONED_NONE,
+BLK_ZONED_HA or BLK_ZONED_HM, we should free sdebug_q_arr
+to prevent memleak. Also there is no need to execute
+sdebug_erase_store() on failure of sdeb_zbc_model_str().
 
-Due to the above changes, some devices could be added to the same
-group as below:
-
-[    3.859417] pci 0000:01:00.0: Adding to iommu group 16
-[    3.864572] pci 0000:01:00.1: Adding to iommu group 16
-[    3.869738] pci 0000:02:00.0: Adding to iommu group 17
-[    3.874892] pci 0000:02:00.1: Adding to iommu group 17
-
-But when attaching these devices, it doesn't allow that a group has
-more than one device, otherwise it will return an error. This conflicts
-with the deferred attaching. Unfortunately, it has two devices in the
-same group for my side, for example:
-
-[    9.627014] iommu_group_device_count(): device name[0]:0000:01:00.0
-[    9.633545] iommu_group_device_count(): device name[1]:0000:01:00.1
-...
-[   10.255609] iommu_group_device_count(): device name[0]:0000:02:00.0
-[   10.262144] iommu_group_device_count(): device name[1]:0000:02:00.1
-
-Finally, which caused the failure of tg3 driver when tg3 driver calls
-the dma_alloc_coherent() to allocate coherent memory in the tg3_test_dma().
-
-[    9.660310] tg3 0000:01:00.0: DMA engine test failed, aborting
-[    9.754085] tg3: probe of 0000:01:00.0 failed with error -12
-[    9.997512] tg3 0000:01:00.1: DMA engine test failed, aborting
-[   10.043053] tg3: probe of 0000:01:00.1 failed with error -12
-[   10.288905] tg3 0000:02:00.0: DMA engine test failed, aborting
-[   10.334070] tg3: probe of 0000:02:00.0 failed with error -12
-[   10.578303] tg3 0000:02:00.1: DMA engine test failed, aborting
-[   10.622629] tg3: probe of 0000:02:00.1 failed with error -12
-
-In addition, the similar situations also occur in other drivers such
-as the bnxt_en driver. That can be reproduced easily in kdump kernel
-when SME is active.
-
-Add a check for the deferred attach in the iommu_attach_device() and
-allow to attach the deferred device regardless of how many devices
-are in a group.
-
-Signed-off-by: Lianbo Jiang <lijiang@redhat.com>
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 ---
- drivers/iommu/iommu.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/scsi/scsi_debug.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index ffeebda8d6de..dccab7b133fb 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -1967,8 +1967,11 @@ int iommu_attach_device(struct iommu_domain *domain, struct device *dev)
- 	 */
- 	mutex_lock(&group->mutex);
- 	ret = -EINVAL;
--	if (iommu_group_device_count(group) != 1)
-+	if (!iommu_is_attach_deferred(domain, dev) &&
-+	    iommu_group_device_count(group) != 1) {
-+		dev_err_ratelimited(dev, "Group has more than one device\n");
- 		goto out_unlock;
-+	}
- 
- 	ret = __iommu_attach_group(domain, group);
- 
+diff --git a/drivers/scsi/scsi_debug.c b/drivers/scsi/scsi_debug.c
+index 24c0f7ec0351..88e785da03ba 100644
+--- a/drivers/scsi/scsi_debug.c
++++ b/drivers/scsi/scsi_debug.c
+@@ -6740,7 +6740,7 @@ static int __init scsi_debug_init(void)
+ 		k = sdeb_zbc_model_str(sdeb_zbc_model_s);
+ 		if (k < 0) {
+ 			ret = k;
+-			goto free_vm;
++			goto free_q_arr;
+ 		}
+ 		sdeb_zbc_model = k;
+ 		switch (sdeb_zbc_model) {
+@@ -6753,7 +6753,7 @@ static int __init scsi_debug_init(void)
+ 			break;
+ 		default:
+ 			pr_err("Invalid ZBC model\n");
+-			return -EINVAL;
++			goto free_q_arr;
+ 		}
+ 	}
+ 	if (sdeb_zbc_model != BLK_ZONED_NONE) {
 -- 
 2.17.1
 
