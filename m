@@ -2,102 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4582A2E2E23
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 13:20:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02CA42E2E32
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 13:42:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726230AbgLZMUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Dec 2020 07:20:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53892 "EHLO
+        id S1726117AbgLZMjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Dec 2020 07:39:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726021AbgLZMUR (ORCPT
+        with ESMTP id S1725997AbgLZMjD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Dec 2020 07:20:17 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13E26C0613ED;
-        Sat, 26 Dec 2020 04:19:37 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id x16so8618949ejj.7;
-        Sat, 26 Dec 2020 04:19:37 -0800 (PST)
+        Sat, 26 Dec 2020 07:39:03 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52267C061757
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 04:38:23 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id i5so4579157pgo.1
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 04:38:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jgtk+KcYyeTyKMF2wBck7uk+kOOkd8Plk6T6cyUk1SU=;
-        b=h0MV1bgX+w+hpPaEDwSDbkou5jwKH2cZNkqWGQYlliiu2AMHrlF2ho8iDlO9vofXAO
-         aGz2mnJENLqSqhGBCtvqTiuratZ/R9LSU1zSAcRJZvTteBi/lvdxd3AoXz7jmng7fm/R
-         VG7MpdnH17d3SFXK5/oeB8PjLdiZJKL5hHgYuxk1A5RxxEv2K47il3iB5+Ue+f+X/tey
-         agltcayNClMcjHi0IDZTW5xkR9eSesUqcBCMtu2j5XA7QiH2PMH3Qwm1kfHfAZSUd/rw
-         FS0kJajLFOJkpJ3yHuakUICrDiukBLweKzekiB1IOLcnGu1kOvqrtgsnusIQrf3cbhoG
-         j7xQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=NJH0qz4LjdVtDbPnQEDtbVeqdmqsx1F13+npYKUc6H0=;
+        b=tRc7pWyim0QZFtnJGhh2MyTaa6L/IZyyE6TzWu2d7C6o/j/IoV0pMkPiMEEL+jeGJk
+         ChTey7Dyos10NNg4wjCUfkNT2l5at4YcJOK+toF8XaWUm5rVpchqW8N/FlV4lDeb6dgr
+         MvD9KgX9pXrYcrVf0YYQZHtE6DIlWfp+H96r2gWiVQBEfYmeb7Bz64RnCDPWTQXHkAU8
+         KADKyqI/1KJugvOdrnz7M9+1Ox8SZRDJroawimLii2yZDQqJBEsx4YNWc2e0oGgRVYSY
+         uqJ31JK5swLA9rVGecsewBLBO7EP73BeqYUFJNXml8Hh4t2+UwfZ4ftTXVdWFEQScbiA
+         qmQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jgtk+KcYyeTyKMF2wBck7uk+kOOkd8Plk6T6cyUk1SU=;
-        b=LBABvYJJJlQabWLSpffNuYux/bYcxYsn+fP/Sptn2Ijt5vvpmmGC0k57YeuUuql9JZ
-         9Y9tvdcgNleccxPT5iQTYtkfUC/LNsV7PzBjrjoe3qxq1f0o3p+qkVAXrL5oxEki4AWC
-         Dp0qpF2xpGWGWagtFiDqVoekUHtD5X/ohJJHFPHo0xNbhtHHF+P8xwOth2ZkUb1PUW35
-         +/PUf59+wod3NGY9wOGEDICYwVOyMBwx1JNO7U6RHNxOphmglYBuJxFiJUV4ypVspwYa
-         d4wy3O+ojeQTHK8od/CTO41QCoBAxkXbnqv7hgXjKOUyd1HsupzfLLId7WjU9Bz2032L
-         0+pA==
-X-Gm-Message-State: AOAM531Q/sisKZ3GgAvSWkGgWv7JUKmo9DuQMbwENTB6nD3Brfcmavt1
-        BFwm/6zAktF4TuTnZBZHGx0=
-X-Google-Smtp-Source: ABdhPJzHaWUeLtjGXKYoDfO7HC3w7pkh1RekDFMx1JlDPGbafzIaTA84by+pmeSOGaq0otfnF7PKrg==
-X-Received: by 2002:a17:906:971a:: with SMTP id k26mr35375666ejx.515.1608985175831;
-        Sat, 26 Dec 2020 04:19:35 -0800 (PST)
-Received: from localhost.localdomain (p200300f137218200428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:3721:8200:428d:5cff:feb9:9db8])
-        by smtp.googlemail.com with ESMTPSA id j9sm33842662eds.66.2020.12.26.04.19.34
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=NJH0qz4LjdVtDbPnQEDtbVeqdmqsx1F13+npYKUc6H0=;
+        b=ddyyTMfYh8D4OOUAb/h/w6BczgGbFAWLFNRg81/MtFzXJ9g2XK6h8c51sP+P01a++Q
+         bLFGC1HCEVc2Qp+8f8WE+SccaqAo24U9UOMtsOKLGAbVzRfw87haLzTKi2ex0q7hmpc+
+         FLQ5Tc9Qx4kP0K+iG3nDy/MXi8O1fLDcyqLM4Gw97wlJDIAEJ8LcxKkShTVJ3LXFG2Z5
+         lspnIOoOk+QjsvjyPpcVh6pVZxEa4n9nn/Jbmcc3T+fVYg3trxkzBLCNNX0xh1djLXmG
+         YIxuOWWVbvFN7Fku2yle7yaYs/ZgwmVrWFHfWCXDdLaaxLpwOV5ZM8Qr/mMOhLqH8+VX
+         e7IA==
+X-Gm-Message-State: AOAM530j3IsZdMcdoE2IC3FU47DpQpfxB+CIBrzD3G9ApV4V6QUp3ojs
+        O5dX5ovdxOSKT4oBo3+KRDnLIFmrQPs=
+X-Google-Smtp-Source: ABdhPJyInvkf7qjg3A1M4UWGUFTdYTtrVxJtzZqPnoIbepxXOmxUmZhyVzDNZBfARITQEJTiwd4RUA==
+X-Received: by 2002:a63:44d:: with SMTP id 74mr36005647pge.170.1608986302599;
+        Sat, 26 Dec 2020 04:38:22 -0800 (PST)
+Received: from ubuntu ([211.226.85.205])
+        by smtp.gmail.com with ESMTPSA id y16sm23524966pgg.20.2020.12.26.04.38.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Dec 2020 04:19:35 -0800 (PST)
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To:     linux-amlogic@lists.infradead.org, jbrunet@baylibre.com
-Cc:     mturquette@baylibre.com, sboyd@kernel.org,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH 3/3] clk: meson: clk-pll: propagate the error from meson_clk_pll_set_rate()
-Date:   Sat, 26 Dec 2020 13:15:56 +0100
-Message-Id: <20201226121556.975418-4-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201226121556.975418-1-martin.blumenstingl@googlemail.com>
-References: <20201226121556.975418-1-martin.blumenstingl@googlemail.com>
+        Sat, 26 Dec 2020 04:38:21 -0800 (PST)
+Date:   Sat, 26 Dec 2020 21:38:18 +0900
+From:   Levi Yun <ppbuk5246@gmail.com>
+To:     tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] irq: export irq_check_status_bit
+Message-ID: <20201226123818.GA693525@ubuntu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Popagate the error code from meson_clk_pll_set_rate() when the PLL does
-not lock with the new settings.
+Because of missing export symbol for irq_chekc_status_bit,
+Building arm_spe_pmu.ko is failure on modpost step.
 
-Fixes: 722825dcd54b2e ("clk: meson: migrate plls clocks to clk_regmap")
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+below is error message what i saw:
+ERROR:modpost: "irq_check_status_bit" [drivers/perf/arm_spe_pmu.ko] undefined!
+make[4]: *** [scripts/Makefile.modpost:111: Module.symvers] Error 1
+make[4]: *** Deleting file 'Module.symvers'
+make[3]: *** [Makefile:1396: modules] Error 2
+make[2]: *** [debian/rules:7: build-arch] Error 2
+dpkg-buildpackage: error: debian/rules binary subprocess returned exit status 2
+make[1]: *** [scripts/Makefile.package:83: bindeb-pkg] Error 2
+
+Signed-off-by: Levi Yun <ppbuk5246@gmail.com>
 ---
- drivers/clk/meson/clk-pll.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ kernel/irq/manage.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/clk/meson/clk-pll.c b/drivers/clk/meson/clk-pll.c
-index 5b932976483f..49f27fe53213 100644
---- a/drivers/clk/meson/clk-pll.c
-+++ b/drivers/clk/meson/clk-pll.c
-@@ -394,7 +394,8 @@ static int meson_clk_pll_set_rate(struct clk_hw *hw, unsigned long rate,
- 	if (!enabled)
- 		return 0;
- 
--	if (meson_clk_pll_enable(hw)) {
-+	ret = meson_clk_pll_enable(hw);
-+	if (ret) {
- 		pr_warn("%s: pll did not lock, trying to restore old rate %lu\n",
- 			__func__, old_rate);
- 		/*
-@@ -406,7 +407,7 @@ static int meson_clk_pll_set_rate(struct clk_hw *hw, unsigned long rate,
- 		meson_clk_pll_set_rate(hw, old_rate, parent_rate);
- 	}
- 
--	return 0;
-+	return ret;
+diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
+index ab8567f32501..dec3f73e8db9 100644
+--- a/kernel/irq/manage.c
++++ b/kernel/irq/manage.c
+@@ -2859,3 +2859,4 @@ bool irq_check_status_bit(unsigned int irq, unsigned int bitmask)
+ 	rcu_read_unlock();
+ 	return res;
  }
- 
- /*
++EXPORT_SYMBOL_GPL(irq_check_status_bit);
 -- 
-2.29.2
-
+2.27.0
