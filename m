@@ -2,101 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C51E2E2D89
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 07:46:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF5FD2E2D8E
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 08:09:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728814AbgLZGqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Dec 2020 01:46:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725998AbgLZGqR (ORCPT
+        id S1727956AbgLZHEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Dec 2020 02:04:15 -0500
+Received: from smtprelay0215.hostedemail.com ([216.40.44.215]:36956 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726345AbgLZHEP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Dec 2020 01:46:17 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAB80C0613C1;
-        Fri, 25 Dec 2020 22:45:36 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id s21so3466632pfu.13;
-        Fri, 25 Dec 2020 22:45:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=vnMHu5Qy0Jg58UtwP7Ds62Ap6snjXtPHHHu3PtC/XEo=;
-        b=dlG38EeVZacFRmy6FQi7N0YYOYZ+6eAIjVXaWVZVoDb/X30UBODrFuDWaVxw513N8K
-         xUDYQ9fPv2JiKVd2HvG0xPmmk6KiJkc/JLQbw/A4lV3uMc2DGf3BBqUxQm/GTD21rp0f
-         jB3aM8+L0oUzFSmMGmw+x+dc4KwRPkv6ut5pScK989Usi2C65croYz/sMmZrlLINUaS/
-         KjVTKVqhmd7HfIw098Fjn1Txo6kNLA8AQ83MALlX7V9ug7pk279QAuQnBUJ4NqK5laDQ
-         77RwdH5b906TtQcQ7PyDn12ZgVu3GjU85rdDRDyjwOElwUX7IccZKgSnV6S61fB0+SGm
-         lJ1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vnMHu5Qy0Jg58UtwP7Ds62Ap6snjXtPHHHu3PtC/XEo=;
-        b=QnRNIlA270Kaj/4nVOR3KBtkxYIL0iSqYTaq3ZAYfjm66tFmuihtc9GnkXUiLads0/
-         D9Sl7RH+cu0GDl516+KZFwFd0WMMO6N/KIyrigrJCkou0ABVAtuna9AF7OiceRleDuVM
-         sZ3NI2N3NTo1cH1IxvMGaf5VFPPZa5puYPrxPHpV1v38DT3M0dV7Mrd7TniN6Lf/GEbF
-         I5rY1HD6kFHfo85eumjWWfAGjwpSLeN7OxzuGLecj+Rv+UIXTubOBMfCnAJjh8YnMi8K
-         OEy6W3JgJOxM9nHR3QRbErNFnzbFgJNiEeamzlDBv51C2vovFYOlnEAU++5JZe4fJTMk
-         2p9g==
-X-Gm-Message-State: AOAM533p8qXUgQLWoBc6EqQrVJyoqEs40PNziYk24uSiZ5be0rZc62oT
-        1J84BYw46xswGtS9pVKyk3E=
-X-Google-Smtp-Source: ABdhPJws3YsPWlyumseJrN1/+szleyhO7fW1OuHDB/pTEgqDVu+reDMNMWH3EsSevnPoXVaiAEw6uw==
-X-Received: by 2002:a63:cf56:: with SMTP id b22mr35606537pgj.16.1608965136522;
-        Fri, 25 Dec 2020 22:45:36 -0800 (PST)
-Received: from syed.domain.name ([103.201.127.53])
-        by smtp.gmail.com with ESMTPSA id cq15sm6935227pjb.27.2020.12.25.22.45.29
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 25 Dec 2020 22:45:36 -0800 (PST)
-Date:   Sat, 26 Dec 2020 12:15:20 +0530
-From:   Syed Nayyar Waris <syednwaris@gmail.com>
-To:     linus.walleij@linaro.org
-Cc:     andriy.shevchenko@linux.intel.com, vilhelm.gray@gmail.com,
-        michal.simek@xilinx.com, arnd@arndb.de, rrichter@marvell.com,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        yamada.masahiro@socionext.com, akpm@linux-foundation.org,
-        rui.zhang@intel.com, daniel.lezcano@linaro.org,
-        amit.kucheria@verdurent.com, linux-arch@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org
-Subject: [PATCH 5/5] gpio: xilinx: Add extra check if sum of widths exceed 64
-Message-ID: <fd642c0843d59a0091931fcf9baa19a9dbb6e2e7.1608963095.git.syednwaris@gmail.com>
-References: <cover.1608963094.git.syednwaris@gmail.com>
+        Sat, 26 Dec 2020 02:04:15 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 131BC837F27E;
+        Sat, 26 Dec 2020 07:03:30 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:968:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3870:3872:4321:5007:7514:7652:10004:10400:10848:11026:11232:11658:11783:11914:12043:12266:12296:12297:12438:12555:12740:12895:12986:13069:13311:13357:13439:13894:14181:14659:14721:21080:21365:21451:21627:21990:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: cake09_2c178b227480
+X-Filterd-Recvd-Size: 2210
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf10.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 26 Dec 2020 07:03:28 +0000 (UTC)
+Message-ID: <204aeca57b8649b311745c8f9c56f48dfcf36a85.camel@perches.com>
+Subject: Re: [PATCH] mfd: ab8500-debugfs: Remove extraneous curly brace
+From:   Joe Perches <joe@perches.com>
+To:     Nathan Chancellor <natechancellor@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 25 Dec 2020 23:03:27 -0800
+In-Reply-To: <20201226013549.1973451-1-natechancellor@gmail.com>
+References: <20201226013549.1973451-1-natechancellor@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1608963094.git.syednwaris@gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add extra check to see if sum of widths does not exceed 64. If it
-exceeds then return -EINVAL alongwith appropriate error message.
+On Fri, 2020-12-25 at 18:35 -0700, Nathan Chancellor wrote:
+> Clang errors:
+> 
+> ../drivers/mfd/ab8500-debugfs.c:1526:2: error: non-void function does
+> not return a value [-Werror,-Wreturn-type]
+>         }
+>         ^
+> ../drivers/mfd/ab8500-debugfs.c:1528:2: error: expected identifier or '('
+> return 0;
+>         ^
+> ../drivers/mfd/ab8500-debugfs.c:1529:1: error: extraneous closing brace ('}')
+> }
+> ^
+> 3 errors generated.
+> 
+> The cleanup in ab8500_interrupts_show left a curly brace around, remove
+> it to fix the error.
+> 
+> Fixes: 886c8121659d ("mfd: ab8500-debugfs: Remove the racy fiddling with irq_desc")
+> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> ---
+>  drivers/mfd/ab8500-debugfs.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/mfd/ab8500-debugfs.c b/drivers/mfd/ab8500-debugfs.c
+[]
+> @@ -1521,7 +1521,6 @@ static int ab8500_interrupts_show(struct seq_file *s, void *p)
+>  			   line + irq_first,
+>  			   num_interrupts[line],
+>  			   num_wake_interrupts[line]);
+> -		}
+>  		seq_putc(s, '\n');
 
-Cc: Michal Simek <michal.simek@xilinx.com>
-Signed-off-by: Syed Nayyar Waris <syednwaris@gmail.com>
----
- drivers/gpio/gpio-xilinx.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+It looks as if this seq_putc should be removed as well
+as the seq_printf above already ends in a newline.
 
-diff --git a/drivers/gpio/gpio-xilinx.c b/drivers/gpio/gpio-xilinx.c
-index d565fbf128b7..c9d740ac711b 100644
---- a/drivers/gpio/gpio-xilinx.c
-+++ b/drivers/gpio/gpio-xilinx.c
-@@ -319,6 +319,12 @@ static int xgpio_probe(struct platform_device *pdev)
- 
- 	chip->gc.base = -1;
- 	chip->gc.ngpio = chip->gpio_width[0] + chip->gpio_width[1];
-+
-+	if (chip->gc.ngpio > 64) {
-+		dev_err(&pdev->dev, "invalid configuration: number of GPIO is greater than 64");
-+			return -EINVAL;
-+	}
-+
- 	chip->gc.parent = &pdev->dev;
- 	chip->gc.direction_input = xgpio_dir_in;
- 	chip->gc.direction_output = xgpio_dir_out;
--- 
-2.29.0
+>  	}
+>  
+> 
+> 
+> base-commit: 61d791365b72a89062fbbea69aa61479476da946
+
 
