@@ -2,66 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9577A2E2EC7
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 18:47:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84FE52E2ECA
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 18:48:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726336AbgLZRpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Dec 2020 12:45:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726175AbgLZRpY (ORCPT
+        id S1726371AbgLZRsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Dec 2020 12:48:04 -0500
+Received: from smtprelay0238.hostedemail.com ([216.40.44.238]:38366 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726240AbgLZRsD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Dec 2020 12:45:24 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06763C061757;
-        Sat, 26 Dec 2020 09:44:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=oUVxQrt/hbpLn9cx4/4aB2X7esBxzlJWZp8c968lah0=; b=L22EyjwWmD9sAeo8/SM4GkqqWc
-        weFIvW3AYPuGx9AQahHvdkAB8gqn1MCLa4KrJi7DEVuKu5YA3LOHQV4eLT7r1ap/IO9n9cBF3l5aH
-        6FzUwhgQzItMVWnXXOcJUKNjjlA1rNAQKu6l6UcO2t96PGjrV/fwp9yLM7sX1hJPziSlprCziMuEM
-        d7AeajuxSdFMxW/9UPKBiFezvjecZ0iC/DKWghFhwGpjDfBvpsg+JvYGJ3y8J7lfiib0AbC08nR4V
-        P5u/4s5D4jxZ3GshyOC4xXkJilkc/M2/RPuN1v50RkDuszKoEYZjlOsDBszyCE9Y8X1oCU9Ma1A/F
-        nbztD9Bw==;
-Received: from [2601:1c0:6280:3f0::64ea] (helo=smtpauth.infradead.org)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ktDcM-0008TY-Qg; Sat, 26 Dec 2020 17:44:39 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: [PATCH] Documentation: admin: early_param()s are also listed in kernel-parameters
-Date:   Sat, 26 Dec 2020 09:44:33 -0800
-Message-Id: <20201226174433.7885-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Sat, 26 Dec 2020 12:48:03 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 6A6C018225DF9;
+        Sat, 26 Dec 2020 17:47:22 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:968:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1561:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2691:2828:3138:3139:3140:3141:3142:3622:3865:3868:4321:5007:6742:7652:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14659:14721:21080:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: bulb63_150dd3d27484
+X-Filterd-Recvd-Size: 1466
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf17.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 26 Dec 2020 17:47:20 +0000 (UTC)
+Message-ID: <0d06aad61cdb5be1d9c8c17bcf938d726d028e3f.camel@perches.com>
+Subject: Re: [PATCH] ethernet: Remove invalid trailers after %pI4
+From:   Joe Perches <joe@perches.com>
+To:     netdev@vger.kernel.org
+Cc:     Tom Rix <trix@redhat.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
+        Ariel Elior <aelior@marvell.com>,
+        GR-everest-linux-l2@marvell.com, linux-kernel@vger.kernel.org,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>
+Date:   Sat, 26 Dec 2020 09:47:19 -0800
+In-Reply-To: <d1ea50ed47e2e9ca65a67ffc2ca0eee08e662132.camel@perches.com>
+References: <d1ea50ed47e2e9ca65a67ffc2ca0eee08e662132.camel@perches.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add info that "early_param()" kernel boot parameters are also listed
-in kernel-parameters.txt.
+On Sat, 2020-12-26 at 09:10 -0800, Joe Perches wrote:
+> Alphanumeric characters after vsprintf pointer extension %pI4 are
+> not valid and are not emitted.
+> 
+> Remove the invalid characters from the %pI4 uses.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: linux-doc@vger.kernel.org
----
- Documentation/admin-guide/kernel-parameters.rst |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+self-nak.  I believe I misunderstood the format specifier.
 
---- linux-next-20201223.orig/Documentation/admin-guide/kernel-parameters.rst
-+++ linux-next-20201223/Documentation/admin-guide/kernel-parameters.rst
-@@ -3,8 +3,8 @@
- The kernel's command-line parameters
- ====================================
- 
--The following is a consolidated list of the kernel parameters as
--implemented by the __setup(), core_param() and module_param() macros
-+The following is a consolidated list of the kernel parameters as implemented
-+by the __setup(), early_param(), core_param() and module_param() macros
- and sorted into English Dictionary order (defined as ignoring all
- punctuation and sorting digits before letters in a case insensitive
- manner), and with descriptions where known.
+
