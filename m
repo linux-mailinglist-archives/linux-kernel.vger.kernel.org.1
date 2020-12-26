@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BBD32E2E58
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 15:10:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 897302E2E5C
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 15:13:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726329AbgLZOK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Dec 2020 09:10:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42438 "EHLO
+        id S1726336AbgLZOMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Dec 2020 09:12:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726185AbgLZOK0 (ORCPT
+        with ESMTP id S1726210AbgLZOMI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Dec 2020 09:10:26 -0500
-Received: from relay07.th.seeweb.it (relay07.th.seeweb.it [IPv6:2001:4b7a:2000:18::168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCD9CC0613C1;
-        Sat, 26 Dec 2020 06:09:45 -0800 (PST)
+        Sat, 26 Dec 2020 09:12:08 -0500
+Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37731C0613C1
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 06:11:13 -0800 (PST)
 Received: from localhost.localdomain (abac131.neoplus.adsl.tpnet.pl [83.6.166.131])
-        by m-r2.th.seeweb.it (Postfix) with ESMTPA id 64A293F0AC;
-        Sat, 26 Dec 2020 15:09:39 +0100 (CET)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPA id 2F0A83F1D1;
+        Sat, 26 Dec 2020 15:11:11 +0100 (CET)
 From:   Konrad Dybcio <konrad.dybcio@somainline.org>
 To:     phone-devel@vger.kernel.org
 Cc:     ~postmarketos/upstreaming@lists.sr.ht,
         Konrad Dybcio <konrad.dybcio@somainline.org>,
         Andy Gross <agross@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Mike Turquette <mturquette@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] clk: qcom: mmcc-msm8974: Fix mmss_s0_axi clock
-Date:   Sat, 26 Dec 2020 15:09:34 +0100
-Message-Id: <20201226140934.89856-1-konrad.dybcio@somainline.org>
+Subject: [PATCH RFC] remoteproc: qcom: wcnss: Adjust voltage requirements for Pronto v2
+Date:   Sat, 26 Dec 2020 15:11:00 +0100
+Message-Id: <20201226141100.90147-1-konrad.dybcio@somainline.org>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -39,35 +37,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On boards without cont_splash the clock wouldn't get enabled.
-Reparent it and strongly depend on the parent to make sure
-it's accessible. Access to MMSS depends on mmss_s0_axi being
-up and alive.
+This is required for MSM8974 devices that cannot afford to push
+the regulators further.
 
-Fixes: d8b212014e69 ("clk: qcom: Add support for MSM8974's multimedia clock controller (MMCC)")
 Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
 ---
- drivers/clk/qcom/mmcc-msm8974.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/remoteproc/qcom_wcnss.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/clk/qcom/mmcc-msm8974.c b/drivers/clk/qcom/mmcc-msm8974.c
-index 015426262d08..6220b62ece1e 100644
---- a/drivers/clk/qcom/mmcc-msm8974.c
-+++ b/drivers/clk/qcom/mmcc-msm8974.c
-@@ -2101,11 +2101,11 @@ static struct clk_branch mmss_s0_axi_clk = {
- 		.hw.init = &(struct clk_init_data){
- 			.name = "mmss_s0_axi_clk",
- 			.parent_names = (const char *[]){
--				"mmss_axi_clk_src",
-+				"mmss_mmssnoc_axi_clk",
- 			},
- 			.num_parents = 1,
- 			.ops = &clk_branch2_ops,
--			.flags = CLK_IGNORE_UNUSED,
-+			.flags = CLK_IGNORE_UNUSED | CLK_SET_RATE_PARENT | CLK_OPS_PARENT_ENABLE,
- 		},
+diff --git a/drivers/remoteproc/qcom_wcnss.c b/drivers/remoteproc/qcom_wcnss.c
+index e2573f79a137..71480be545e4 100644
+--- a/drivers/remoteproc/qcom_wcnss.c
++++ b/drivers/remoteproc/qcom_wcnss.c
+@@ -124,7 +124,7 @@ static const struct wcnss_data pronto_v2_data = {
+ 	.spare_offset = 0x1088,
+ 
+ 	.vregs = (struct wcnss_vreg_info[]) {
+-		{ "vddmx", 1287500, 1287500, 0 },
++		{ "vddmx", 950000, 1150000, 0 },
+ 		{ "vddcx", .super_turbo = true },
+ 		{ "vddpx", 1800000, 1800000, 0 },
  	},
- };
 -- 
 2.29.2
 
