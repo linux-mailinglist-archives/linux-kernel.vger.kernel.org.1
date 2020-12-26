@@ -2,134 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B550C2E2E81
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 16:27:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA6FB2E2E8D
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 16:57:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726274AbgLZP1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Dec 2020 10:27:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726196AbgLZP1b (ORCPT
+        id S1726209AbgLZPut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Dec 2020 10:50:49 -0500
+Received: from smtprelay0227.hostedemail.com ([216.40.44.227]:52166 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725995AbgLZPus (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Dec 2020 10:27:31 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE6EC0613C1;
-        Sat, 26 Dec 2020 07:26:50 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id c133so5585099wme.4;
-        Sat, 26 Dec 2020 07:26:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=xIRdlgq1jjLTt5aUq57YZH004Efua6+AzHdbtC1vjHY=;
-        b=P9kztiEr24T4l16RyEqA/W1xXXJ5wEhKXg8GPBu6E1B6wmYxYSXgZdczmd5SS7Hj6T
-         zCwSaXeQ0z4fpETN6Ed0ee5CpglRVp6C2oUxSEFTOTCEcwUSafxiayDQ9gLNVBSUV3Hc
-         Oae93nkcXWv7VldWP8g+uT3Ci6Vf0MLtUYATh3684wA0AXABD6ssiNC+rfwT7hcEEWjm
-         A4XYXyZuti0vZ3H8ucWge5x7U8lAOaA4Ww8tbHnQLsB+r72cIIZ01v/GPm65HnirgfcG
-         ZzDChtbPfXOrcqlV/pTEc2CqvMNWL1Hfel/yg2ECJ2sN7VvY3PhRy8SoNKdZzMHvLWOv
-         PSFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xIRdlgq1jjLTt5aUq57YZH004Efua6+AzHdbtC1vjHY=;
-        b=eX12yiGHQ9Kkj07CmclQXiWPKWHZuSuZL9oe4qhE9bpqFqlH7m86r8OjTFwEkcupiS
-         1ierRaVxTMidgbLMF3GE9kb3m5TLd+dKgD1siWAMEaQcy0qMRtIjvWybg634JSrdN/ar
-         ONKTsXnDk074Wm01qIqKT0dBjaHwY46rgHgFNZsMl/810WkJ4i9s6M0pgLpxwIelStnl
-         RkP9hhVmIHFRE0shYRCT+tdAiaotVO3xRQmyWC/BlOCuP4I++4SRQVOlLrpljAT/AvBM
-         jc5Ft0Oy8uNOI3Psk/P08Gur84q9zRqAJ9ZFihwAYz4zKy8g+Rat20knMmOZrrBkcS8I
-         UetA==
-X-Gm-Message-State: AOAM531F7wNJHoQzB/G//nC71NJO619nYmI+twedDRX3SECzaYnAGRdK
-        gZ09KDYd1lgKGZMBUSCuwniG1kzXSwo=
-X-Google-Smtp-Source: ABdhPJz2smZ3Xe7YlFw9TmxjjLc/qldwG3Hnw+O5Ca7Q9lfBebaCrg9aTOICYJMC2SB5q/wEoThCmg==
-X-Received: by 2002:a1c:287:: with SMTP id 129mr12961595wmc.133.1608996409251;
-        Sat, 26 Dec 2020 07:26:49 -0800 (PST)
-Received: from ?IPv6:2003:ea:8f06:5500:7d77:5a5b:aeb8:2b9f? (p200300ea8f0655007d775a5baeb82b9f.dip0.t-ipconnect.de. [2003:ea:8f06:5500:7d77:5a5b:aeb8:2b9f])
-        by smtp.googlemail.com with ESMTPSA id v20sm12423907wml.34.2020.12.26.07.26.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 26 Dec 2020 07:26:48 -0800 (PST)
-Subject: Re: Time to re-enable Runtime PM per default for PCI devcies?
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Kai Heng Feng <kai.heng.feng@canonical.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <79940973-b631-90f9-dbc4-9579c6000816@gmail.com>
- <20201117163817.GA1397220@bjorn-Precision-5520>
- <CAJZ5v0ipMJ1gCB7okpROG_yAUi5Q8LknqeH+Jpdrjbb4D_vfuQ@mail.gmail.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <b7bf02fd-c1aa-f430-524e-98922041ed81@gmail.com>
-Date:   Sat, 26 Dec 2020 16:26:39 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Sat, 26 Dec 2020 10:50:48 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 486F4180A7FF1;
+        Sat, 26 Dec 2020 15:50:07 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 93,11,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:968:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2693:2828:3138:3139:3140:3141:3142:3354:3622:3653:3865:3866:3867:3868:3870:3871:3872:3873:3874:4250:4321:4605:5007:7652:7875:7904:10010:10400:10848:11026:11232:11658:11914:12297:12679:12740:12895:13095:13161:13229:13439:13894:14096:14097:14181:14659:14721:21080:21433:21627:21740:21741:21939:21966:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:1:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: self21_070e6ca27483
+X-Filterd-Recvd-Size: 2984
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf15.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 26 Dec 2020 15:50:06 +0000 (UTC)
+Message-ID: <c746437027a6aae481a8719be929970b33a67d2d.camel@perches.com>
+Subject: Re: [PATCH v2 3/4] checkpatch: kconfig: enforce help text
+ indentation
+From:   Joe Perches <joe@perches.com>
+To:     Nicolai Fischer <nicolai.fischer@fau.de>,
+        linux-kernel@vger.kernel.org
+Cc:     apw@canonical.com, johannes.czekay@fau.de,
+        linux-kernel@i4.cs.fau.de, akpm@linux-foundation.org
+Date:   Sat, 26 Dec 2020 07:50:04 -0800
+In-Reply-To: <20201226140511.662368-4-nicolai.fischer@fau.de>
+References: <b1c83a13-204f-25ff-d08b-d08559e25a3b@fau.de>
+         <20201226140511.662368-1-nicolai.fischer@fau.de>
+         <20201226140511.662368-4-nicolai.fischer@fau.de>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0ipMJ1gCB7okpROG_yAUi5Q8LknqeH+Jpdrjbb4D_vfuQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.11.2020 17:57, Rafael J. Wysocki wrote:
-> On Tue, Nov 17, 2020 at 5:38 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
->>
->> [+to Rafael, author of the commit you mentioned,
->> +cc Mika, Kai Heng, Lukas, linux-pm, linux-kernel]
->>
->> On Tue, Nov 17, 2020 at 04:56:09PM +0100, Heiner Kallweit wrote:
->>> More than 10 yrs ago Runtime PM was disabled per default by bb910a7040
->>> ("PCI/PM Runtime: Make runtime PM of PCI devices inactive by default").
->>>
->>> Reason given: "avoid breakage on systems where ACPI-based wake-up is
->>> known to fail for some devices"
->>> Unfortunately the commit message doesn't mention any affected  devices
->>> or systems.
+On Sat, 2020-12-26 at 15:05 +0100, Nicolai Fischer wrote:
+> Adds a new warning in case the indentation level of the
+> first line of a Kconfig help message is not two spaces
+> higher than the keyword itself.
+> Blank lines between the message and the help keyword
+> are ignored.
+[]
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> @@ -3332,6 +3336,13 @@ sub process {
+>  				$f =~ s/^\s+//;
+>  				next if ($f =~ /^$/);
+>  
 > 
-> Even if it did that, it wouldn't have been a full list almost for sure.
-> 
-> We had received multiple problem reports related to that, most likely
-> because the ACPI PM in BIOSes at that time was tailored for
-> system-wide PM transitions only.
-> 
+> +				if (defined $help_indent) {
+> +					if ($lines[$ln - 1] !~ /^\+$help_indent\ {2}\S*/) {
+> +						$help_stat_real = get_stat_real($ln - 1, $ln);
+> +					}
+> +					undef $help_indent;
+> +				}
 
-To follow up on this discussion:
-We could call pm_runtime_forbid() conditionally, e.g. with the following
-condition. This would enable runtime pm per default for all non-ACPI
-systems, and it uses the BIOS date as an indicator for a hopefully
-not that broken ACPI implementation. However I could understand the
-argument that this looks a little hacky ..
+This doesn't work if the indent is more than 2 spaces.
 
-if (IS_ENABLED(CONFIG_ACPI) && dmi_get_bios_year() <= 2016)
+$ cat Kconfigtest
+menuconfig FOO
+	bool "Enable foo" if EXPERT
+	default y
+	help
+	   Line 1.
+	   Line 2.
+	   Line 3.
+	   Line 4.
 
+$ ./scripts/checkpatch.pl -f Kconfigtest
+total: 0 errors, 0 warnings, 10 lines checked
 
+Kconfigtest has no obvious style problems and is ready for submission.
 
->>> With Runtime PM disabled e.g. the PHY on network devices may remain
->>> powered up even with no cable plugged in, affecting battery lifetime
->>> on mobile devices. Currently we have to rely on the respective distro
->>> or user to enable Runtime PM via sysfs (echo auto > power/control).
->>> Some devices work around this restriction by calling pm_runtime_allow
->>> in their probe routine, even though that's not recommended by
->>> https://www.kernel.org/doc/Documentation/power/pci.txt
->>>
->>> Disabling Runtime PM per default seems to be a big hammer, a quirk
->>> for affected devices / systems may had been better. And we still
->>> have the option to disable Runtime PM for selected devices via sysfs.
->>>
->>> So, to cut a long story short: Wouldn't it be time to remove this
->>> restriction?
->>
->> I don't know the history of this, but maybe Rafael or the others can
->> shed some light on it.
-> 
-> The systems that had those problems 10 years ago would still have
-> them, but I expect there to be more systems where runtime PM can be
-> enabled by default for PCI devices without issues.
-> 
+Also, it may be useful to test that the indent after a block
+uses a single tab more than the block start.
+
+Look at the first block of block/Kconfig:
+
+The indentation of bool and help uses 7 spaces but the indentation
+of the help text uses a tab then 1 space.
+
+It'd be useful to emit a warning for that.
+
+menuconfig BLOCK
+       bool "Enable the block layer" if EXPERT
+       default y
+       select SBITMAP
+       select SRCU
+       help
+	 Provide block layer support for the kernel.
+
+	 Disable this option to remove the block layer support from the
+	 kernel. This may be useful for embedded devices.
+
+	 If this option is disabled:
+
+	   - block device files will become unusable
+	   - some filesystems (such as ext3) will become unavailable.
+
+	 Also, SCSI character devices and USB storage will be disabled since
+	 they make use of various block layer definitions and facilities.
+
+	 Say Y here unless you know you really don't want to mount disks and
+	 suchlike.
+
 
