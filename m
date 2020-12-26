@@ -2,58 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C3382E2F20
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 22:06:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60C8A2E2F21
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 22:11:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726030AbgLZVEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Dec 2020 16:04:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49168 "EHLO
+        id S1726045AbgLZVIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Dec 2020 16:08:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725849AbgLZVEr (ORCPT
+        with ESMTP id S1725849AbgLZVIO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Dec 2020 16:04:47 -0500
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6653BC061757
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 13:04:07 -0800 (PST)
-Received: by mail-oi1-x22a.google.com with SMTP id f132so7733460oib.12
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 13:04:07 -0800 (PST)
+        Sat, 26 Dec 2020 16:08:14 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0321DC061757
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 13:07:33 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id h22so16000422lfu.2
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 13:07:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=Ug2cC4COVPLC8mUYk/AU6N3XeMv07OZAJCLKe97wdjM=;
-        b=Avq6Xe+8Li3coUSLxoaL0P41sPCfY0qsbLYDU/E+jNxRN0wRmjmQb+27bds/F8cNJn
-         4gLjDmqbdC3jGuDAFanZlmbz3MoqdumM/dwLw8SRD1ngOrNtArDeSKVPkQoXK9FvhpQh
-         Vlb1MvYWxq6Log5f9ewU/mwTWCWiyL1Dmpw9CGbv83WECKFdCZL5U5wMk1hlXbuiuX+e
-         OQG68rW7XqQuYjDTSxPFW9E5LJMQ04VCzigc6rS8hO8nq7Bz5dzOw2OF++xdy3BArH4Y
-         1eQjW0XL5KSaIUUEjcgyDPU2rs48dZA89dIyuF9XWu+xGxaN00ZGO+tGwx1fQbVmufiY
-         aLug==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TLzZOIgPa8iJ9Qz8oeEG2djATaWpwCUP0i8Tl1Hc7Zg=;
+        b=N6fEfq+jWauozbcMHPf/B0M4w8Cb6kqr3VPP7Q+3/4QNRt+Netvh3QJmjtws1fK7sj
+         SLs93EdyJRwwErvnET7KD+AF9lnNMk7UFHq2G7xO97r/ulDnrwYmuUUpcMLSiJJNLzHx
+         Fexyl7FzYf0NKSWDJXi29vPxcqWkkF8u2MRX4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=Ug2cC4COVPLC8mUYk/AU6N3XeMv07OZAJCLKe97wdjM=;
-        b=U/zLZal9OcirY8K+i69ARmuzIewxR7tCa4xbzoA9VQzJg6wuLUfdc00Vl1L5tulvRy
-         OzfnZ0nnNE6gdbaz+zSG/8c16j4WeLaMlJAbrpE1Dh3UxTxM+nK2F6j2hlVQfImx8UHm
-         LheYqnz8oCRic3fzQJ9x0NO7CjVbpIBK+HQi2Qm9x/EWv4KQJPHBpE+vF7fHpFijEhy8
-         u28U3Go4Vv2d4BEMA7AtaZIOPSn2udz8NfEbjjLTIHvHziMPnH9IwIGkeRz7MxaSWQoi
-         dduovcEXAtbqHCuIUpy8c9Jp22ENtZPR9G/NdgFUU/yihu9P4IibVJB8ChqpXieF2vP8
-         ovLA==
-X-Gm-Message-State: AOAM5338W/Q450W1QW5ZuzqIENXq1Wm9Kg6xhmf+eSQePRhH+MtCukXN
-        F2B+0i76JdkYM24/pVoy3j2auQ==
-X-Google-Smtp-Source: ABdhPJzWaV98BaCLOJggQeAevV7nlr+09PfWrr1zgmfPuaYmXZdbcc/YpfIPPieQfFhIyOWMZBmTug==
-X-Received: by 2002:aca:fc03:: with SMTP id a3mr8356823oii.145.1609016646405;
-        Sat, 26 Dec 2020 13:04:06 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id y65sm7683123oie.39.2020.12.26.13.04.04
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Sat, 26 Dec 2020 13:04:05 -0800 (PST)
-Date:   Sat, 26 Dec 2020 13:03:53 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TLzZOIgPa8iJ9Qz8oeEG2djATaWpwCUP0i8Tl1Hc7Zg=;
+        b=LWDiZ57wgFQ/1vViV5EziFUeU5ZqF0oVGWTtLVKt/u16Wx2ljKyhJW+E5huOs4dWYj
+         wGoepA1nt+xDyyesdNSg49RFClaI6NiQAFSXNWl+z8lefL0OEwQJUjM+QXlu3+UJTW3p
+         yjElhACn/zaI74322kh1ONsr6CLHhTYqvftvIgZd2DR7B4h6dhDoJL+PNxUvhKhcslEf
+         yHLExX8bbVpQXAngZWzaHGtsW2cuIeXFSh667bQQdsMe3zt6zIX4sbP+EFa3IFqJ3IRP
+         R0xA5wVj0f4Pf9CWGqELUonYh13mb6kDWl3IqRGIYgUaND/EH6ytRiERE6DPabyRyCX2
+         d+WA==
+X-Gm-Message-State: AOAM531eQ3QQcdgn1zJbYrFNd/NWnXjrwkgBoUIMNpPZBH0TtRECMf5x
+        WmxsjnAwKhFp7kpwflkXae4QU6HWol1Sgg==
+X-Google-Smtp-Source: ABdhPJzTGGu17cFe8YG62BrApp39ghJzVEyJ8rKhRqAV1agh0hOpKNdXE57nLNS0T+OW6Hw3XNMxzw==
+X-Received: by 2002:a19:86c1:: with SMTP id i184mr15508170lfd.563.1609016851846;
+        Sat, 26 Dec 2020 13:07:31 -0800 (PST)
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
+        by smtp.gmail.com with ESMTPSA id o138sm4362604lfa.171.2020.12.26.13.07.30
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 26 Dec 2020 13:07:31 -0800 (PST)
+Received: by mail-lf1-f46.google.com with SMTP id m12so15926158lfo.7
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 13:07:30 -0800 (PST)
+X-Received: by 2002:a19:7d85:: with SMTP id y127mr17054973lfc.253.1609016850481;
+ Sat, 26 Dec 2020 13:07:30 -0800 (PST)
+MIME-Version: 1.0
+References: <20201217105409.2gacwgg7rco2ft3m@box> <CAHk-=wiyPTnQ9E1dT9LJtNxeVmLaykursk_MSecUqFjSb3gwAw@mail.gmail.com>
+ <20201218110400.yve45r3zsv7qgfa3@box> <CAHk-=wgO2LsoKhX7MjSECo+Xrj1-Me7tzRfNcsdEZBRwJW1cQg@mail.gmail.com>
+ <20201219124103.w6isern3ywc7xbur@box> <CAHk-=wifcVaxaTn_RbZ=idfYFazTPwm8t5cB1rY6xEBjbcfO5g@mail.gmail.com>
+ <20201222100047.p5zdb4ghagncq2oe@box> <alpine.LSU.2.11.2012231905300.5723@eggly.anvils>
+ <20201225113157.e7hmluffh56fszfc@box> <CAHk-=wiT50aEErZgZOrbFQ=GhFuM3MnBmHoSBSScN9rmXMnOKQ@mail.gmail.com>
+ <20201226204335.dikqkrkezqet6oqf@box>
+In-Reply-To: <20201226204335.dikqkrkezqet6oqf@box>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 26 Dec 2020 13:07:14 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgbUdvTShO5woNpM8w9rd655XwxKwHoz_r_HWReyx1oAw@mail.gmail.com>
+Message-ID: <CAHk-=wgbUdvTShO5woNpM8w9rd655XwxKwHoz_r_HWReyx1oAw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm: Allow architectures to request 'old' entries when prefaulting
 To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
+Cc:     Hugh Dickins <hughd@google.com>,
         Matthew Wilcox <willy@infradead.org>,
         "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
         Will Deacon <will@kernel.org>,
@@ -65,72 +76,47 @@ cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Vinayak Menon <vinmenon@codeaurora.org>,
         Android Kernel Team <kernel-team@android.com>
-Subject: Re: [PATCH 1/2] mm: Allow architectures to request 'old' entries
- when prefaulting
-In-Reply-To: <20201226204335.dikqkrkezqet6oqf@box>
-Message-ID: <alpine.LSU.2.11.2012261246450.1629@eggly.anvils>
-References: <20201217105409.2gacwgg7rco2ft3m@box> <CAHk-=wiyPTnQ9E1dT9LJtNxeVmLaykursk_MSecUqFjSb3gwAw@mail.gmail.com> <20201218110400.yve45r3zsv7qgfa3@box> <CAHk-=wgO2LsoKhX7MjSECo+Xrj1-Me7tzRfNcsdEZBRwJW1cQg@mail.gmail.com> <20201219124103.w6isern3ywc7xbur@box>
- <CAHk-=wifcVaxaTn_RbZ=idfYFazTPwm8t5cB1rY6xEBjbcfO5g@mail.gmail.com> <20201222100047.p5zdb4ghagncq2oe@box> <alpine.LSU.2.11.2012231905300.5723@eggly.anvils> <20201225113157.e7hmluffh56fszfc@box> <CAHk-=wiT50aEErZgZOrbFQ=GhFuM3MnBmHoSBSScN9rmXMnOKQ@mail.gmail.com>
- <20201226204335.dikqkrkezqet6oqf@box>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 26 Dec 2020, Kirill A. Shutemov wrote:
-> On Sat, Dec 26, 2020 at 09:57:13AM -0800, Linus Torvalds wrote:
-> > Because not only does that get rid of the "if (page)" test, I think it
-> > would make things a bit clearer. When I read the patch first, the
-> > initial "next_page()" call confused me.
-> 
-> Agreed. Here we go:
-> 
-> From d12dea4abe94dbc24b7945329b191ad7d29e213a Mon Sep 17 00:00:00 2001
-> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-> Date: Sat, 19 Dec 2020 15:19:23 +0300
-> Subject: [PATCH] mm: Cleanup faultaround and finish_fault() codepaths
-> 
-> alloc_set_pte() has two users with different requirements: in the
-> faultaround code, it called from an atomic context and PTE page table
-> has to be preallocated. finish_fault() can sleep and allocate page table
-> as needed.
-> 
-> PTL locking rules are also strange, hard to follow and overkill for
-> finish_fault().
-> 
-> Let's untangle the mess. alloc_set_pte() has gone now. All locking is
-> explicit.
-> 
-> The price is some code duplication to handle huge pages in faultaround
-> path, but it should be fine, having overall improvement in readability.
-> 
-> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+I was going to just apply this patch, because I like it so much, but
+then I decided to take one last look, and:
 
-Hold on. I guess this one will suffer from the same bug as the previous.
-I was about to report back, after satisfactory overnight testing of that
-version - provided that one big little bug is fixed:
+On Sat, Dec 26, 2020 at 12:43 PM Kirill A. Shutemov
+<kirill@shutemov.name> wrote:
+>
+> +static bool filemap_map_pmd(struct vm_fault *vmf, struct page *page)
+> +{
+> +       struct mm_struct *mm = vmf->vma->vm_mm;
+> +
+> +       /* Huge page is mapped? No need to proceed. */
+> +       if (pmd_trans_huge(*vmf->pmd))
+> +               return true;
 
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -2919,7 +2919,7 @@ static bool filemap_map_pmd(struct vm_fa
- 
- 	if (pmd_none(*vmf->pmd) &&
- 	    PageTransHuge(page) &&
--	    do_set_pmd(vmf, page)) {
-+	    do_set_pmd(vmf, page) == 0) {
- 		unlock_page(page);
- 		return true;
- 	}
+doesn't this cause us to leak a locked page?
 
-(Yes, you can write that as !do_set_pmd(vmf, page), and maybe I'm odd,
-but even though it's very common, I have a personal aversion to using
-"!' on a positive-sounding function that returns 0 for success.)
+I get the feeling that every single "return true" case here should
+always unlock the page and - with the exception of a successful
+do_set_pmd() - do a "put_page()".
 
-I'll give the new patch a try now, but with that fix added in. Without it,
-I got "Bad page" on compound_mapcount on file THP pages - but I run with
-a BUG() inside of bad_page() so I cannot miss them: I did not look to see
-what the eventual crash or page leak would look like without that.
+Which kind of argues that we should just do it in the caller (and get
+an extra ref in the do_set_pmd() case, so that the caller can always
+do
 
-Hugh
+        if (filemap_map_pmd(..)) {
+                unlock_page(page);
+                put_page(page);
+                rcu_read_unlock();
+                return;
+        }
+
+andf then there are no odd cases inside that filemap_map_pmd() function. Hmm?
+
+Other than that, I really find it all much more legible.
+
+Of course, if I'm wrong about the above, that just proves that I'm
+missing something and it wasn't so legible after all..
+
+              Linus
