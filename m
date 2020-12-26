@@ -2,83 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30F752E2F31
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 22:40:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17C522E2F35
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 22:40:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726101AbgLZViX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Dec 2020 16:38:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54278 "EHLO
+        id S1726162AbgLZVi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Dec 2020 16:38:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725849AbgLZViW (ORCPT
+        with ESMTP id S1725849AbgLZViX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Dec 2020 16:38:22 -0500
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC28C061757
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 13:37:42 -0800 (PST)
-Received: by mail-il1-x12d.google.com with SMTP id n9so6456988ili.0
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 13:37:42 -0800 (PST)
+        Sat, 26 Dec 2020 16:38:23 -0500
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15201C0613CF
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 13:37:43 -0800 (PST)
+Received: by mail-il1-x12a.google.com with SMTP id w12so6396896ilm.12
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 13:37:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jwrBklnpFrL91S6j28ouuHbOiPE4otk/2BurGfWgjtg=;
-        b=o0OdlNJf9xnd/Eajm4lzE2BKLNJC9CiHQUyTOC7DjGLC+MQIcHsum2lsX+IC7VfjMc
-         s0wKqnuN7cvTl63rMXnQ/wPQ2d6hcRHPJIFd6TX42UTwoOrpS+qBeEmpFyC1lAG2U/0u
-         UQnIQxu627aioPvOxhvfUJjtP3wXCzUcUlcjpHamSFv0AEwppehHuUx3SGxL6my69vRe
-         AoQL3KVOPhPLh0WWaDi47XLjeGd6GzL6NI5JXaMCZsO36q6cQSTkhDvOXQaV7ybHhRY4
-         hY2CgseBf8kkrMK4dcXy9hxNPhiyMXPHVmczQRHEiJ+DCZl6mUbSQ8NpoIVNaINQ1mgm
-         9ToQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=RKCfsVGa3InM/ueidbaTHb3IhiqFNjw9eRGba4OKyqE=;
+        b=jnaYYcyV6rMMpn6Z7pMxzaSc62h0MO67PatEmPkDJLCA4occu9Weo7eJOOkZNFPmdY
+         XUzcpTyNgaEm9qLxw8tHHTrHMNYI7Qriw4+480dBTRnvwrJF7P2TDcjZDd2yuy/mL87G
+         +RfKwMGziXKSyTMDOHJ8nV8XDMwW6ucW9UUsuFCtpPll9Q4v+hsccZUVMNxtEGMKLx8Y
+         A4hRJBQ5hJaqBaG8XwYQOsFmmgdfSgZ3rfGzbOelMUWdvQTeXwyan4He9GaEbMaWmIKT
+         XM+iJMF9r0n0FYhQjiVYPDwhe8GG8qR2O8NBJSkgRF7K3eJ8y6Ithtk+npwLt8G5CLba
+         RmmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jwrBklnpFrL91S6j28ouuHbOiPE4otk/2BurGfWgjtg=;
-        b=dlSTS49iNRxLFBmZkx2/xslBiuJB2kIuQ9XO6OpJJ4fhQqPkh693HxM8+7I0erteFI
-         qERaekYwqB1JAFWMV/FzBOQ0ixNTtzdBeKYXB7QT5TFT7CJUGhYhGG2IRaGzOh/Yeaji
-         9DTxpqOPaOE6bP6xHWZ66QOZJGi84udsH/AV9od1epP5u4Wbd0+CHoCmg/B6459xJrY9
-         HvNZzlMrr6LgtZytKkM8qbGmKKzCUsQ+OKJ8yWtw8ec5sr3EYB5z6nDkY4U6L61QJICL
-         dAeHxTOqnLqVV8NXQxIPY0mtzZGbibAfJy6uhp76BusI8sqDJkPGYyEymcXNBuvzE1/A
-         //eA==
-X-Gm-Message-State: AOAM5331/a7k2wHoPIoT8sOUO4Ny7xlcaZSsz89OirtOlybfJ6cb1BiQ
-        AU3V4GB32jwLL7kAveCSmTj6PA==
-X-Google-Smtp-Source: ABdhPJzZ+l2Sckv3oIUGmpFbKZcO9FJlXU2aOjd7ktzXiAAsC4QBNEDHffNrYLpTtWm3xg4szzrtpQ==
-X-Received: by 2002:a92:dc03:: with SMTP id t3mr39190018iln.215.1609018661440;
-        Sat, 26 Dec 2020 13:37:41 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=RKCfsVGa3InM/ueidbaTHb3IhiqFNjw9eRGba4OKyqE=;
+        b=jG2Tlrn5N4F0RbtJoME/zEqFflrQjC3iaoRHmfvQas+ZF1s+PvvQiDMBSC5PQ9QrJt
+         LxRpdfpI7YBca3+vVunTMh4gINPmI6s70A+HYUD29OCUnlTwLXgiXHVHHuQofhHtZmj6
+         zfghhw1AY11DkCgD/IFsW5WqLIldo/K0V6rqhRAo4ypbyIivvwpFEObQI1cXpAThaI0/
+         bOLX6LHIyPdrajLGafSzMV9DdBLjfbwGeJ8mstNZczQcXxBVfAvX+RQDFWhGzHG4w+Mi
+         a37j3/f565ZRbQMnbiNLJMJaTPBBx9Jck/un6JVO8tFgYM/AFNgf4OyESSeuITtAZED8
+         pX4Q==
+X-Gm-Message-State: AOAM53195ER0UwptWR04DzYY6Hf9+izFbj+Y28SrkCZ/XoTCj5cQI2Qo
+        f60BiLjpRtNRkJ3vQDCm7VwbHg==
+X-Google-Smtp-Source: ABdhPJyHdT5P1KFc+TL5fuJKr9QwoYNjJRND3Figj9Xz1FEnLfu3AAvID4RVB7m237rCXP1a+txESQ==
+X-Received: by 2002:a05:6e02:e44:: with SMTP id l4mr38824035ilk.208.1609018662467;
+        Sat, 26 Dec 2020 13:37:42 -0800 (PST)
 Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id u8sm30582763iom.22.2020.12.26.13.37.40
+        by smtp.gmail.com with ESMTPSA id u8sm30582763iom.22.2020.12.26.13.37.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Dec 2020 13:37:40 -0800 (PST)
+        Sat, 26 Dec 2020 13:37:41 -0800 (PST)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     evgreen@chromium.org, cpratapa@codeaurora.org,
         bjorn.andersson@linaro.org, subashab@codeaurora.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net 0/2] net: ipa: fix some new build warnings
-Date:   Sat, 26 Dec 2020 15:37:35 -0600
-Message-Id: <20201226213737.338928-1-elder@linaro.org>
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH net 1/2] net: ipa: don't return a value from gsi_channel_command()
+Date:   Sat, 26 Dec 2020 15:37:36 -0600
+Message-Id: <20201226213737.338928-2-elder@linaro.org>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20201226213737.338928-1-elder@linaro.org>
+References: <20201226213737.338928-1-elder@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I got a super friendly message from the Intel kernel test robot that
-pointed out that two patches I posted last week caused new build
-warnings.  I already had these problems fixed in my own tree but
-the fix was not included in what I sent out last week.
+Callers of gsi_channel_command() no longer care whether the command
+times out, and don't use what gsi_channel_command() returns.  Redefine
+that function to have void return type.
 
-I regret the error.
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: 6ffddf3b3d182 ("net: ipa: use state to determine channel command success")
+Signed-off-by: Alex Elder <elder@linaro.org>
+---
+ drivers/net/ipa/gsi.c | 21 +++++++--------------
+ 1 file changed, 7 insertions(+), 14 deletions(-)
 
-					-Alex
-
-Alex Elder (2):
-  net: ipa: don't return a value from gsi_channel_command()
-  net: ipa: don't return a value from evt_ring_command()
-
- drivers/net/ipa/gsi.c | 38 +++++++++++++-------------------------
- 1 file changed, 13 insertions(+), 25 deletions(-)
-
+diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
+index 579cc3e516775..e51a770578990 100644
+--- a/drivers/net/ipa/gsi.c
++++ b/drivers/net/ipa/gsi.c
+@@ -454,7 +454,7 @@ static enum gsi_channel_state gsi_channel_state(struct gsi_channel *channel)
+ }
+ 
+ /* Issue a channel command and wait for it to complete */
+-static int
++static void
+ gsi_channel_command(struct gsi_channel *channel, enum gsi_ch_cmd_opcode opcode)
+ {
+ 	struct completion *completion = &channel->completion;
+@@ -489,12 +489,10 @@ gsi_channel_command(struct gsi_channel *channel, enum gsi_ch_cmd_opcode opcode)
+ 	iowrite32(0, gsi->virt + GSI_CNTXT_SRC_CH_IRQ_MSK_OFFSET);
+ 
+ 	if (success)
+-		return 0;
++		return;
+ 
+ 	dev_err(dev, "GSI command %u for channel %u timed out, state %u\n",
+ 		opcode, channel_id, gsi_channel_state(channel));
+-
+-	return -ETIMEDOUT;
+ }
+ 
+ /* Allocate GSI channel in NOT_ALLOCATED state */
+@@ -503,7 +501,6 @@ static int gsi_channel_alloc_command(struct gsi *gsi, u32 channel_id)
+ 	struct gsi_channel *channel = &gsi->channel[channel_id];
+ 	struct device *dev = gsi->dev;
+ 	enum gsi_channel_state state;
+-	int ret;
+ 
+ 	/* Get initial channel state */
+ 	state = gsi_channel_state(channel);
+@@ -513,7 +510,7 @@ static int gsi_channel_alloc_command(struct gsi *gsi, u32 channel_id)
+ 		return -EINVAL;
+ 	}
+ 
+-	ret = gsi_channel_command(channel, GSI_CH_ALLOCATE);
++	gsi_channel_command(channel, GSI_CH_ALLOCATE);
+ 
+ 	/* If successful the channel state will have changed */
+ 	state = gsi_channel_state(channel);
+@@ -531,7 +528,6 @@ static int gsi_channel_start_command(struct gsi_channel *channel)
+ {
+ 	struct device *dev = channel->gsi->dev;
+ 	enum gsi_channel_state state;
+-	int ret;
+ 
+ 	state = gsi_channel_state(channel);
+ 	if (state != GSI_CHANNEL_STATE_ALLOCATED &&
+@@ -541,7 +537,7 @@ static int gsi_channel_start_command(struct gsi_channel *channel)
+ 		return -EINVAL;
+ 	}
+ 
+-	ret = gsi_channel_command(channel, GSI_CH_START);
++	gsi_channel_command(channel, GSI_CH_START);
+ 
+ 	/* If successful the channel state will have changed */
+ 	state = gsi_channel_state(channel);
+@@ -559,7 +555,6 @@ static int gsi_channel_stop_command(struct gsi_channel *channel)
+ {
+ 	struct device *dev = channel->gsi->dev;
+ 	enum gsi_channel_state state;
+-	int ret;
+ 
+ 	state = gsi_channel_state(channel);
+ 
+@@ -576,7 +571,7 @@ static int gsi_channel_stop_command(struct gsi_channel *channel)
+ 		return -EINVAL;
+ 	}
+ 
+-	ret = gsi_channel_command(channel, GSI_CH_STOP);
++	gsi_channel_command(channel, GSI_CH_STOP);
+ 
+ 	/* If successful the channel state will have changed */
+ 	state = gsi_channel_state(channel);
+@@ -598,7 +593,6 @@ static void gsi_channel_reset_command(struct gsi_channel *channel)
+ {
+ 	struct device *dev = channel->gsi->dev;
+ 	enum gsi_channel_state state;
+-	int ret;
+ 
+ 	msleep(1);	/* A short delay is required before a RESET command */
+ 
+@@ -612,7 +606,7 @@ static void gsi_channel_reset_command(struct gsi_channel *channel)
+ 		return;
+ 	}
+ 
+-	ret = gsi_channel_command(channel, GSI_CH_RESET);
++	gsi_channel_command(channel, GSI_CH_RESET);
+ 
+ 	/* If successful the channel state will have changed */
+ 	state = gsi_channel_state(channel);
+@@ -627,7 +621,6 @@ static void gsi_channel_de_alloc_command(struct gsi *gsi, u32 channel_id)
+ 	struct gsi_channel *channel = &gsi->channel[channel_id];
+ 	struct device *dev = gsi->dev;
+ 	enum gsi_channel_state state;
+-	int ret;
+ 
+ 	state = gsi_channel_state(channel);
+ 	if (state != GSI_CHANNEL_STATE_ALLOCATED) {
+@@ -636,7 +629,7 @@ static void gsi_channel_de_alloc_command(struct gsi *gsi, u32 channel_id)
+ 		return;
+ 	}
+ 
+-	ret = gsi_channel_command(channel, GSI_CH_DE_ALLOC);
++	gsi_channel_command(channel, GSI_CH_DE_ALLOC);
+ 
+ 	/* If successful the channel state will have changed */
+ 	state = gsi_channel_state(channel);
 -- 
 2.27.0
 
