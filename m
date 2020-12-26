@@ -2,70 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 813252E2CF6
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 04:32:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8A8B2E2D07
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Dec 2020 05:13:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728986AbgLZDaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Dec 2020 22:30:20 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:9932 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725998AbgLZDaT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Dec 2020 22:30:19 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4D2q6N177gzhxWb;
-        Sat, 26 Dec 2020 11:29:00 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 26 Dec 2020 11:29:27 +0800
-From:   Chen Zhou <chenzhou10@huawei.com>
-To:     <catalin.marinas@arm.com>, <will@kernel.org>
-CC:     <ardb@kernel.org>, <akpm@linux-foundation.org>, <rppt@kernel.org>,
-        <nsaenzjulienne@suse.de>, <song.bao.hua@hisilicon.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <chenzhou10@huawei.com>,
-        <huawei.libin@huawei.com>, <xiexiuqi@huawei.com>
-Subject: [PATCH 2/2] arm64: mm: fix kdump broken with ZONE_DMA reintroduced
-Date:   Sat, 26 Dec 2020 11:35:57 +0800
-Message-ID: <20201226033557.116251-3-chenzhou10@huawei.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201226033557.116251-1-chenzhou10@huawei.com>
-References: <20201226033557.116251-1-chenzhou10@huawei.com>
+        id S1727374AbgLZELq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Dec 2020 23:11:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59374 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725998AbgLZELq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Dec 2020 23:11:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EF9C20731;
+        Sat, 26 Dec 2020 04:11:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608955865;
+        bh=UjAEsej29uKjCMP2ttbvgpHXBp6G5qKH/cHn9U38o6s=;
+        h=Date:From:To:Cc:Subject:From;
+        b=YqVosQ45SwGYIRDnDO0RmClCZy/UnyJfGR/zdqoOElHJYBTECInTl1f464hAmGJnt
+         UMbUbIva0NzTQTkza3c+SBnfZC236+3hGK6Gox3Oc1gI9QJg0auyQS7YSzELBhJgC2
+         K6OBUggQjnA9Mt3PfGIpvFwe0TgR7lVmVFBD55vIG801AcBhDZXKzmXFO6lmd7pVyw
+         TBgRyduxiCxdqwIKUZiflNi0j4/AcDEIojydGzukk/dB8rV4OOSvf+SkE+6iukBYZm
+         hTwbaGQm8VYNoqS8TZgG7NMk5xOyoA2zDww3l6db/FhmtQH4ZOfvwPahHUrr//KqkO
+         CoqH70tYcltnw==
+Date:   Fri, 25 Dec 2020 22:11:03 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Mian Yousaf Kaukab <ykaukab@suse.de>
+Subject: [GIT PULL] PCI fixes for v5.11
+Message-ID: <20201226041103.GA469463@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the memory reserved for crash dump kernel falled in ZONE_DMA32,
-the devices in crash dump kernel need to use ZONE_DMA will alloc fail.
+The following changes since commit 255b2d524884e4ec60333131aa0ca0ef19826dc2:
 
-Fix this by reserving low memory in ZONE_DMA if CONFIG_ZONE_DMA is
-enabled, otherwise, reserving in ZONE_DMA32.
+  Merge branch 'remotes/lorenzo/pci/misc' (2020-12-15 15:11:14 -0600)
 
-Fixes: bff3b04460a8 ("arm64: mm: reserve CMA and crashkernel in ZONE_DMA32")
-Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
----
- arch/arm64/mm/init.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+are available in the Git repository at:
 
-diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-index 7b9809e39927..5074e945f1a6 100644
---- a/arch/arm64/mm/init.c
-+++ b/arch/arm64/mm/init.c
-@@ -85,7 +85,8 @@ static void __init reserve_crashkernel(void)
- 
- 	if (crash_base == 0) {
- 		/* Current arm64 boot protocol requires 2MB alignment */
--		crash_base = memblock_find_in_range(0, arm64_dma32_phys_limit,
-+		crash_base = memblock_find_in_range(0,
-+				arm64_dma_phys_limit ? : arm64_dma32_phys_limit,
- 				crash_size, SZ_2M);
- 		if (crash_base == 0) {
- 			pr_warn("cannot allocate crashkernel (size:0x%llx)\n",
--- 
-2.20.1
+  git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git tags/pci-v5.11-fixes-1
 
+for you to fetch changes up to 99e629f14b471d852d28ecf554093c4730ed0927:
+
+  PCI: dwc: Fix inverted condition of DMA mask setup warning (2020-12-25 21:58:42 -0600)
+
+----------------------------------------------------------------
+PCI fixes:
+
+  - Fix a tegra enumeration regression (Rob Herring)
+
+  - Fix a designware-host check that warned on *success*, not failure
+    (Alexander Lobakin)
+
+----------------------------------------------------------------
+Alexander Lobakin (1):
+      PCI: dwc: Fix inverted condition of DMA mask setup warning
+
+Rob Herring (1):
+      PCI: tegra: Fix host link initialization
+
+ drivers/pci/controller/dwc/pcie-designware-host.c |  8 +---
+ drivers/pci/controller/dwc/pcie-tegra194.c        | 55 ++++++++++++-----------
+ 2 files changed, 31 insertions(+), 32 deletions(-)
