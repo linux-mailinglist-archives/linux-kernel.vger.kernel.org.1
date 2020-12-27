@@ -2,167 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2D4A2E3217
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 18:22:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 469092E3213
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 18:21:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbgL0RWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 12:22:11 -0500
-Received: from mo4-p00-ob.smtp.rzone.de ([85.215.255.20]:23216 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726087AbgL0RWK (ORCPT
+        id S1726194AbgL0RTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 12:19:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726087AbgL0RTd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 12:22:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1609089496;
-        s=strato-dkim-0002; d=dawncrow.de;
-        h=Message-Id:Date:Subject:Cc:To:From:From:Subject:Sender;
-        bh=AYP9y6KOydXsdhMgYt+y5hc/J9s2ujIb0ELIsjHwReo=;
-        b=B1N4mQyoCQbOtoM4HqloJUM5h5+BJxXJeAKC1SAYeUqU+c5ZdJti9siJ+9jUbuL0lo
-        bxb8lbK1YebPJKSrbdWv4Ae1Hu+tFEsXHmooBLKP9kv5GMpXeScAt3m5DrZHGUl375QB
-        nkylqoPaqLIpfHuxLBCnPQybZengRNCHE0uxXTAhaH1FQGd1fshqt50J7m851OZseUJe
-        LJ8m0nQalCYh6BvxsDf4XPfyLWFiRes6ZfPABoMZifPrQM9fmcgElLf8j6bundhbudth
-        cYu1edndPwMzwD6Chdlt/b8m3qEsSC23QTC1YPxea0KkeBPDFBK/BzLnpu2qlTmaW2ge
-        giKQ==
-X-RZG-AUTH: ":ImkWY2CseuihIZy6ZWWciR6unPhpN+aXzZGGjY6ptdusOaLnXzn3ovD/FrJVNw=="
-X-RZG-CLASS-ID: mo00
-Received: from tesla.fritz.box
-        by smtp.strato.de (RZmta 47.10.7 DYNA|AUTH)
-        with ESMTPSA id L0b32cwBRHEA68j
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Sun, 27 Dec 2020 18:14:10 +0100 (CET)
-From:   =?UTF-8?q?Andr=C3=A9=20Hentschel?= <nerv@dawncrow.de>
-To:     robh+dt@kernel.org, bcousson@baylibre.com, tony@atomide.com,
-        linux-omap@vger.kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: dts: omap3-echo: Add speaker sound card support
-Date:   Sun, 27 Dec 2020 18:13:53 +0100
-Message-Id: <20201227171353.2002674-1-nerv@dawncrow.de>
-X-Mailer: git-send-email 2.25.1
+        Sun, 27 Dec 2020 12:19:33 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEA85C061794
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 09:18:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=/+c9pOaV0/kDhj+PvJMnlw5NkCnX1ZZEc2bZWQnlqLg=; b=OEUJacxzMj+ZTnclz7hsPrxnD2
+        AwcxGMIHe8wyonENWv7KM9dInTYz4eIMlol5xWGQXXepLOngjIMHwSMTV7gkF1zWOSSHvTF7yBJCj
+        HHzxY2u340Gs3MTuYCTN/um2za96SU5Vb5iaqXRQOM0PUsnDIVZA0I6nZm83crQBxko74VbqXU1KY
+        hEKyF4l9xpfl7JFzhNCnatCR2FSfX1o2gwVRTq0CNxNLCfbKOAxg3JDfzj1iEh+MUAzcV2FCAKM3/
+        2QhpcO/VS87Vl92SdwxFtAo7n2UaON1sRtypIomu4aav40t/pmz1O29Fk8NhfGZgak+PFI0RUI5J5
+        Qc2xFsaQ==;
+Received: from [2601:1c0:6280:3f0::64ea] (helo=smtpauth.infradead.org)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1ktZgs-0000yj-Ep; Sun, 27 Dec 2020 17:18:46 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Zaslonko Mikhail <zaslonko@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>
+Subject: [PATCH -mmotm] lib/zlib: dfltcc: remove dfltcc_syms.o from Makefile
+Date:   Sun, 27 Dec 2020 09:18:37 -0800
+Message-Id: <20201227171837.15492-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds audio playback to the first generation Amazon Echo
+Oops, missed removing this deleted file from the Makefile.
 
-Signed-off-by: André Hentschel <nerv@dawncrow.de>
+make[3]: *** No rule to make target 'lib/zlib_dfltcc/dfltcc_syms.o', needed by 'lib/zlib_dfltcc/built-in.a'.
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Zaslonko Mikhail <zaslonko@linux.ibm.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Christian Borntraeger <borntraeger@de.ibm.com>
 ---
+Andrew, please fold into
+zlib-move-export_symbol-and-module_license-out-of-dfltcc_symsc.patch.
 
-It took me by far too long to get this working as the codec sets one important bit based on the
-combination of provided supplies. That was just too hidden for me.
-The first generation Amazon Echo was codenamed Misto, so I used that for the sound card name.
+ lib/zlib_dfltcc/Makefile |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- arch/arm/boot/dts/omap3-echo.dts | 67 ++++++++++++++++++++++++++++++++
- 1 file changed, 67 insertions(+)
-
-diff --git a/arch/arm/boot/dts/omap3-echo.dts b/arch/arm/boot/dts/omap3-echo.dts
-index 93ffeddada1e..b9fd113979f2 100644
---- a/arch/arm/boot/dts/omap3-echo.dts
-+++ b/arch/arm/boot/dts/omap3-echo.dts
-@@ -86,6 +86,38 @@ &gpio3 12 GPIO_ACTIVE_HIGH /* GPIO_76 */
- 		linux,axis = <REL_X>;
- 		rotary-encoder,relative-axis;
- 	};
-+
-+	speaker_amp: speaker-amplifier {
-+		compatible = "simple-audio-amplifier";
-+		enable-gpios = <&gpio5 1 GPIO_ACTIVE_HIGH>;	/* gpio_129 */
-+		sound-name-prefix = "Speaker Amp";
-+		VCC-supply = <&vcc1v8>;
-+	};
-+
-+	sound {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,name = "Misto Speaker";
-+		simple-audio-card,widgets =
-+			"Speaker", "Speaker";
-+		simple-audio-card,routing =
-+			"Speaker Amp INL", "HPL",
-+			"Speaker Amp INR", "HPR",
-+			"Speaker", "Speaker Amp OUTL",
-+			"Speaker", "Speaker Amp OUTR";
-+		simple-audio-card,format = "i2s";
-+		simple-audio-card,bitclock-master = <&sound_master>;
-+		simple-audio-card,frame-master = <&sound_master>;
-+		simple-audio-card,aux-devs = <&speaker_amp>;
-+
-+		simple-audio-card,cpu {
-+			sound-dai = <&mcbsp2>;
-+		};
-+
-+		sound_master: simple-audio-card,codec {
-+			sound-dai = <&codec0>;
-+			system-clock-frequency = <19200000>;
-+		};
-+	};
- };
+--- linux-next-20201218.orig/lib/zlib_dfltcc/Makefile
++++ linux-next-20201218/lib/zlib_dfltcc/Makefile
+@@ -8,4 +8,4 @@
  
- &i2c1 {
-@@ -96,6 +128,13 @@ tps: tps@2d {
- 	};
- };
+ obj-$(CONFIG_ZLIB_DFLTCC) += zlib_dfltcc.o
  
-+&mcbsp2 {
-+	status = "okay";
-+	#sound-dai-cells = <0>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mcbsp2_pins>;
-+};
-+
- &i2c2 {
- 	clock-frequency = <400000>;
- 
-@@ -277,6 +316,22 @@ chan8 {
- 	};
- };
- 
-+&i2c3 {
-+	clock-frequency = <400000>;
-+
-+	codec0: codec@18 {
-+		#sound-dai-cells = <0>;
-+		compatible = "ti,tlv320aic32x4";
-+		reg = <0x18>;
-+		clocks = <&sys_clkout1>;
-+		clock-names = "mclk";
-+		ldoin-supply = <&vcc1v8>;
-+		iov-supply = <&vcc1v8>;
-+		reset-gpios = <&gpio3 10 GPIO_ACTIVE_LOW>;	/* gpio_74 */
-+	};
-+};
-+
-+
- #include "tps65910.dtsi"
- 
- &omap3_pmx_core {
-@@ -290,6 +345,9 @@ button_pins: pinmux_button_pins {
- 		pinctrl-single,pins = <
- 			OMAP3_CORE1_IOPAD(0x20dc, PIN_INPUT | MUX_MODE4)	/* dss_data0.gpio_70 */
- 			OMAP3_CORE1_IOPAD(0x20e0, PIN_INPUT | MUX_MODE4)	/* dss_data2.gpio_72 */
-+			OMAP3_CORE1_IOPAD(0x20e4, PIN_OUTPUT | MUX_MODE4)	/* dss_data4.gpio_74 */
-+			OMAP3_CORE1_IOPAD(0x20fa, PIN_OUTPUT_PULLDOWN | MUX_MODE4)	/* dss_data15.gpio_85 */
-+			OMAP3_CORE1_IOPAD(0x2a1a, PIN_OUTPUT | MUX_MODE0)	/* sys_clkout1.sys_clkout1 */
- 		>;
- 	};
- 
-@@ -318,6 +376,15 @@ OMAP3_CORE1_IOPAD(0x2168, PIN_INPUT_PULLUP | MUX_MODE0)		/* sdmmc2_dat6.sdmmc2_d
- 			OMAP3_CORE1_IOPAD(0x216a, PIN_INPUT_PULLUP | MUX_MODE0)		/* sdmmc2_dat7.sdmmc2_dat7 */
- 		>;
- 	};
-+
-+	mcbsp2_pins: pinmux_mcbsp2_pins {
-+		pinctrl-single,pins = <
-+			OMAP3_CORE1_IOPAD(0x213c, PIN_INPUT | MUX_MODE0)	/* mcbsp2_fsx.mcbsp2_fsx */
-+			OMAP3_CORE1_IOPAD(0x213e, PIN_INPUT | MUX_MODE0)	/* mcbsp2_clkx.mcbsp2_clkx */
-+			OMAP3_CORE1_IOPAD(0x2140, PIN_INPUT | MUX_MODE0)	/* mcbsp2_dr.mcbsp2.dr */
-+			OMAP3_CORE1_IOPAD(0x2142, PIN_OUTPUT | MUX_MODE0)	/* mcbsp2_dx.mcbsp2_dx */
-+		>;
-+	};
- };
- 
- &omap3_pmx_core2 {
--- 
-2.25.1
-
+-zlib_dfltcc-objs := dfltcc.o dfltcc_deflate.o dfltcc_inflate.o dfltcc_syms.o
++zlib_dfltcc-objs := dfltcc.o dfltcc_deflate.o dfltcc_inflate.o
