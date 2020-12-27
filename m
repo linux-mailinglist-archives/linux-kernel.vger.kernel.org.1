@@ -2,170 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CD6C2E31E9
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 17:51:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E8A42E31EF
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 17:55:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726174AbgL0Qt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 11:49:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36262 "EHLO mail.kernel.org"
+        id S1726172AbgL0Qz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 11:55:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726032AbgL0Qt6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 11:49:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 809D220857;
-        Sun, 27 Dec 2020 16:49:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609087757;
-        bh=9C7dX+mOhfBbsVXvL9LdEzhr5gJN34Hz9kXNIhM2jWM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=jtZpuAJV8n4gfq4bJ1agEn5jiEx44XSpm+IqaxJ54QKLxruvLnUwNYZ/J4+hY3g2z
-         P5HYOwWzYRVXALEisjORfizLzVSG6QwCQDp/QX5Wu7drdAPOGzzB0cNRkmqtmKpUsH
-         WglJNbVlOfMjizOnaZPmyM9wsSoQW65Y+EpJE3aMjJWJ3VRFn3qUwBUtj14ry8XXfl
-         sx7XwzcWytbLGPswLSkNDX1H0A2X3uMIUM8OicE1ilxLIPkVWsEOY++I7Es6lC+kGU
-         vGZ+f1SJsUfK7knv0mBqIhm6YB8RivZ6N1Z6zIRnh/A+GUNvyW+Hth66xpUHrqO9eB
-         +kWzamkLvYHOQ==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 44A8E35226B3; Sun, 27 Dec 2020 08:49:17 -0800 (PST)
-Date:   Sun, 27 Dec 2020 08:49:17 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     rcu@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        David Howells <dhowells@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH tip/core/rcu 3/4] rcutorture: Make grace-period kthread
- report match RCU flavor being tested
-Message-ID: <20201227164917.GA2139@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201105233900.GA20676@paulmck-ThinkPad-P72>
- <20201105233933.20748-3-paulmck@kernel.org>
- <CAMuHMdXjUxfp0h=TiwNoZJUHrSD4sDwYEbuqNR4rcWSRFCjUtw@mail.gmail.com>
- <20201215182419.GD2657@paulmck-ThinkPad-P72>
- <CAMuHMdWdBVOZobfXD9i==yxB1QEEMAJa7BoTNem9FQmYFq_=dA@mail.gmail.com>
- <20201216164829.GI2657@paulmck-ThinkPad-P72>
+        id S1726032AbgL0Qz3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Dec 2020 11:55:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EA9622512;
+        Sun, 27 Dec 2020 16:54:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1609088088;
+        bh=DBPbQXCZ/7Qw5VXBdV3/F053S+d3UwPj2quilP6sf6c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MUUvBuAV6Hzlk8raDUOCeaOJxuQzcTp5CQ3EBGe64uxHHBH0tieZsOJAXO/QrV92N
+         qZkWYRVkxf0XdQ1uFmTDM7Z+uxI2o5UKkL0HyeQ14j7oejEwysbm3PSF6OjHeEiBJk
+         iv3pMEDTsPWFYej7idNusLA3MUjoW7wj0mM/1eRM=
+Date:   Sun, 27 Dec 2020 17:56:12 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jussi Kivilinna <jussi.kivilinna@iki.fi>
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org, lwn@lwn.net,
+        jslaby@suse.cz
+Subject: Re: LXC broken with 5.10-stable?, ok with 5.9-stable (Re: Linux
+ 5.10.3)
+Message-ID: <X+i8rPxFIkUziZYN@kroah.com>
+References: <16089960203931@kroah.com>
+ <5ab86253-7703-e892-52b7-e6a8af579822@iki.fi>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201216164829.GI2657@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <5ab86253-7703-e892-52b7-e6a8af579822@iki.fi>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 08:48:29AM -0800, Paul E. McKenney wrote:
-> On Wed, Dec 16, 2020 at 10:31:16AM +0100, Geert Uytterhoeven wrote:
-> > Hi Paul,
-> > 
-> > On Tue, Dec 15, 2020 at 7:24 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> > > On Tue, Dec 15, 2020 at 09:40:26AM +0100, Geert Uytterhoeven wrote:
-> > > > On Fri, Nov 6, 2020 at 12:40 AM <paulmck@kernel.org> wrote:
-> > > > > From: "Paul E. McKenney" <paulmck@kernel.org>
-> > > > >
-> > > > > At the end of the test and after rcu_torture_writer() stalls, rcutorture
-> > > > > invokes show_rcu_gp_kthreads() in order to dump out information on the
-> > > > > RCU grace-period kthread.  This makes a lot of sense when testing vanilla
-> > > > > RCU, but not so much for the other flavors.  This commit therefore allows
-> > > > > per-flavor kthread-dump functions to be specified.
-> > > > >
-> > > > > [ paulmck: Apply feedback from kernel test robot <lkp@intel.com>. ]
-> > > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > >
-> > > > Thanks for your patch, which is now commit 27c0f1448389baf7
-> > > > ("rcutorture: Make grace-period kthread report match RCU flavor being
-> > > > tested").
-> > > >
-> > > > > --- a/kernel/rcu/rcu.h
-> > > > > +++ b/kernel/rcu/rcu.h
-> > > > > @@ -533,4 +533,20 @@ static inline bool rcu_is_nocb_cpu(int cpu) { return false; }
-> > > > >  static inline void rcu_bind_current_to_nocb(void) { }
-> > > > >  #endif
-> > > > >
-> > > > > +#if !defined(CONFIG_TINY_RCU) && defined(CONFIG_TASKS_RCU)
-> > > > > +void show_rcu_tasks_classic_gp_kthread(void);
-> > > > > +#else
-> > > > > +static inline void show_rcu_tasks_classic_gp_kthread(void) {}
-> > > > > +#endif
-> > > > > +#if !defined(CONFIG_TINY_RCU) && defined(CONFIG_TASKS_RUDE_RCU)
-> > > > > +void show_rcu_tasks_rude_gp_kthread(void);
-> > > > > +#else
-> > > > > +static inline void show_rcu_tasks_rude_gp_kthread(void) {}
-> > > > > +#endif
-> > > >
-> > > > The #ifdef expression does not match the one for the implementation
-> > > > below.
-> > >
-> > > That does sound like something I would do...
-> > >
-> > > The definition of show_rcu_tasks_rude_gp_kthread() must be provided
-> > > elsewhere if !TINY_RCU && TASKS_RUDE_RCU, correct?
-> > >
-> > > > > --- a/kernel/rcu/rcutorture.c
-> > > > > +++ b/kernel/rcu/rcutorture.c
-> > > >
-> > > > > @@ -762,6 +765,7 @@ static struct rcu_torture_ops tasks_rude_ops = {
-> > > > >         .exp_sync       = synchronize_rcu_tasks_rude,
-> > > > >         .call           = call_rcu_tasks_rude,
-> > > > >         .cb_barrier     = rcu_barrier_tasks_rude,
-> > > > > +       .gp_kthread_dbg = show_rcu_tasks_rude_gp_kthread,
-> > > >
-> > > > Perhaps you just want to have a NULL pointer for the dummy case, instead
-> > > > of instantiating a dummy static inline function and taking its address?
-> > >
-> > > You mean something like this in kernel/rcu/rcu.h?
-> > >
-> > > #if !defined(CONFIG_TINY_RCU) && defined(CONFIG_TASKS_RUDE_RCU)
-> > > void show_rcu_tasks_rude_gp_kthread(void);
-> > > #else
-> > > #define show_rcu_tasks_rude_gp_kthread NULL
-> > > #endif
-> > >
-> > > This does looks better to me, and at first glance would work.
-> > 
-> > Exactly. This is similar to how unimplemented PM callbacks are handled
-> > (git grep "#define\s*pm_.*NULL").
+On Sun, Dec 27, 2020 at 06:32:41PM +0200, Jussi Kivilinna wrote:
+> Hello,
 > 
-> OK, as shown in the (untested) patch below?
+> Now that 5.9 series is EOL, I tried to move to 5.10.3. I ran in to regression where LXC containers do not start with newer kernel. I found that issue had been reported (bisected + with reduced test case) in bugzilla at: https://bugzilla.kernel.org/show_bug.cgi?id=209971
+> 
+> Has this been fixed in 5.11-rc? Is there any patch that I could backport and test with 5.10?
 
-I finally got around to running the full suite after completing a couple
-of long-running bisections, and yes, you got me on this one!  ;-)
+Have you tried Linus's tree to see if this works yet?  If not, it should
+be a simple fix.  See 7cfc630e63b4 ("proc "single files": switch to
+->read_iter") as an example of what is needed here.
 
-Both locktorture and scftorture build with CONFIG_TINY_RCU,
-CONFIG_TASKS_RCU, CONFIG_TASKS_RUDE_RCU, and CONFIG_TASKS_TRACE_RCU
-all disabled.  So when the compiler attempts to build this:
+I think we will see a lot of these "/proc files need to be fixed up"
+issues over time as this is something that we hit in the 5.10-rc
+sequence and fixed a bunch of them already...
 
-	void show_rcu_tasks_gp_kthreads(void)
-	{
-		show_rcu_tasks_classic_gp_kthread();
-		show_rcu_tasks_rude_gp_kthread();
-		show_rcu_tasks_trace_gp_kthread();
-	}
+thanks,
 
-It sees this:
-
-	void show_rcu_tasks_gp_kthreads(void)
-	{
-		NULL();
-		NULL();
-		NULL();
-	}
-
-Needless to say, it doesn't like this much, and refuses to suffer
-in silence.
-
-I am reverting the commit that defined these three functions to NULL.
-This means that rcutorture runs still instantiate static inline
-definitions of these three functions, but that does work and only takes
-effect for those who are actually running rcutorture.
-
-							Thanx, Paul
+greg k-h
