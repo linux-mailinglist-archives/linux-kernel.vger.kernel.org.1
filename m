@@ -2,414 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17E752E3145
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 14:13:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EC6D2E3150
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 14:30:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726268AbgL0NNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 08:13:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726075AbgL0NNT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 08:13:19 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E09FC061796;
-        Sun, 27 Dec 2020 05:12:39 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id v19so5750500pgj.12;
-        Sun, 27 Dec 2020 05:12:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Xw698ctg4Ze5W/87ncdseRGuPD3JOZ7supZFvs8H2cs=;
-        b=aYes0di6R9cfdicrdrnlyqNKjnK3j5UBd8sqnUDAuUhXHQUBDcCRkXtlLLGZ2jLSSU
-         Nxuoig4YBixSEM4sXg0g6vcKuv13/rB+Bt9Qe38YUOneCa9h/8xait/0KiPqMQ179Q0K
-         TtgcEI4qRWQbxZUylLXXD2QBEOwpyyo2N9IH2dRC0kHMj+ylEafrPQ9Uvi62+MXPp1hM
-         7Cc/IDOWPT2Ca7TtOm2GNcwN2GgJmJdNjNW1cc87y3Pyd4XNPdVLL+hGLAyTonhbgpBX
-         GNdPSwOVdi9hjYCgenOSeoTB5OIlUzCnD485ud8gNP70AXSzi6Nt2OjOrpo8LY0QnY1c
-         I7gQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=Xw698ctg4Ze5W/87ncdseRGuPD3JOZ7supZFvs8H2cs=;
-        b=WgDoDa9FNKIMIHytzf1V7HUYcydlzeqd0rojZID6/nfJgnA7LV5/li6NF47olpkIbJ
-         Xgti9CPF77HmcqWwACr6Ol/mB/UPZxrhx/VMhhR67to7pQJpDvlfCjqKjOp9gRWGvBJ9
-         26DxPWWiomvNYyd5Z3/UlPsK1fO4/aINsjLsWh2GD2DdV3uuVq94olpf0tOGkXs9pQ6V
-         sifrjm3ax3+CwL1VtQ/IPd8fDKOv1Wo1XcQCIwCPGfhNF3q+Pg/eTrYQbStXZscC9VOd
-         Y6lNa2jzv01shQoiGBwp7ERNqt75Kwv/HYHIY490FoxBiW0JdbwgtsgNEFsOvbTCwZAX
-         0ngg==
-X-Gm-Message-State: AOAM531/I6s3m0byD0pvxInkhcnhUZUCIHxGuRSmuWwVf+rHr+slLV8c
-        IMiJPIL4VBjcyW/q1L0VTk8=
-X-Google-Smtp-Source: ABdhPJzLtjgx9rKXpftJQ3M/AjVwh3tS1Wft+TcpWG+nBi1kpACgdGxw5oQ6D2Jyk2AqBILEbaqIDA==
-X-Received: by 2002:a62:83cf:0:b029:1a8:3b72:ebb7 with SMTP id h198-20020a6283cf0000b02901a83b72ebb7mr37230156pfe.25.1609074759171;
-        Sun, 27 Dec 2020 05:12:39 -0800 (PST)
-Received: from sh05419pcu.spreadtrum.com ([117.18.48.82])
-        by smtp.gmail.com with ESMTPSA id j15sm33510269pfn.180.2020.12.27.05.12.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 27 Dec 2020 05:12:38 -0800 (PST)
-From:   Hongtao Wu <wuht06@gmail.com>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Hongtao Wu <billows.wu@unisoc.com>
-Subject: [PATCH v4 2/2] PCI: sprd: Add support for Unisoc SoCs' PCIe controller
-Date:   Sun, 27 Dec 2020 21:12:14 +0800
-Message-Id: <1609074734-9336-3-git-send-email-wuht06@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1609074734-9336-1-git-send-email-wuht06@gmail.com>
-References: <1609074734-9336-1-git-send-email-wuht06@gmail.com>
+        id S1726176AbgL0N14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 08:27:56 -0500
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:60453 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726055AbgL0N14 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Dec 2020 08:27:56 -0500
+Received: from [192.168.1.11] (dynamic-077-013-243-215.77.13.pool.telefonica.de [77.13.243.215])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id D2B0120225BD3;
+        Sun, 27 Dec 2020 14:27:12 +0100 (CET)
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Subject: 120 s delay during boot with smaller initrd
+Message-ID: <96184c8e-6ea3-caa7-ba2b-b5644b70b2a9@molgen.mpg.de>
+Date:   Sun, 27 Dec 2020 14:27:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hongtao Wu <billows.wu@unisoc.com>
+Dear Linux folks,
 
-This series adds PCIe controller driver for Unisoc SoCs.
-This controller is based on DesignWare PCIe IP.
 
-Signed-off-by: Hongtao Wu <billows.wu@unisoc.com>
----
- drivers/pci/controller/dwc/Kconfig     |  12 ++
- drivers/pci/controller/dwc/Makefile    |   1 +
- drivers/pci/controller/dwc/pcie-sprd.c | 293 +++++++++++++++++++++++++++++++++
- 3 files changed, 306 insertions(+)
- create mode 100644 drivers/pci/controller/dwc/pcie-sprd.c
+Using an initrd created by tiny-initramfs [1], the boot stalls for two 
+minutes *after* the initrd has run and systemd has already started. An 
+F2FS root partition is used.
 
-diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
-index 22c5529..61f0b79 100644
---- a/drivers/pci/controller/dwc/Kconfig
-+++ b/drivers/pci/controller/dwc/Kconfig
-@@ -318,4 +318,16 @@ config PCIE_AL
- 	  required only for DT-based platforms. ACPI platforms with the
- 	  Annapurna Labs PCIe controller don't need to enable this.
+```
+[    0.000000] microcode: microcode updated early to revision 0xa0b, 
+date = 2010-09-28
+[    0.000000] Linux version 5.9.0-5-amd64 
+(debian-kernel@lists.debian.org) (gcc-10 (Debian 10.2.1-1) 10.2.1 
+20201207, GNU ld (GNU Binutils for Debian) 2.35.1) #1 SMP Debian 
+5.9.15-1 (2020-12-17)
+[    0.000000] Command line: BOOT_IMAGE=/boot/vmlinuz-5.9.0-5-amd64 
+root=/dev/sda2 ro quiet noisapnp cryptomgr.notests random.trust_cpu=on 
+tsc=unstable debug log_buf_len=2M initcall_debug
+[…]
+[    0.650168] Trying to unpack rootfs image as initramfs...
+[    0.661343] Freeing initrd memory: 1024K
+[…]
+[    6.033044] systemd[1]: systemd 247.2-3 running in system mode. (+PAM 
++AUDIT +SELINUX +IMA +APPARMOR +SMACK +SYSVINIT +UTMP +LIBCRYPTSETUP 
++GCRYPT +GNUTLS +ACL +XZ +LZ4 +ZSTD +SECCOMP +BLKID +ELFUTILS +KMOD 
++IDN2 -IDN +PCRE2 default-hierarchy=unified)
+[…]
+[    9.372134] fuse: init (API version 7.31)
+[    9.396990] calling  pkcs8_key_init+0x0/0x1000 [pkcs8_key_parser] @ 114
+[    9.413956] Asymmetric key parser 'pkcs8' registered
+[    9.421378] initcall pkcs8_key_init+0x0/0x1000 [pkcs8_key_parser] 
+returned 0 after 15912 usecs
+[    9.433989] initcall fuse_init+0x0/0x142 [fuse] returned 0 after 
+28206 usecs
+[    9.443229] calling  drm_core_init+0x0/0x1000 [drm] @ 110
+[    9.480740] initcall drm_core_init+0x0/0x1000 [drm] returned 0 after 
+28888 usecs
+[   12.057456] random: crng init done
+[   12.060811] random: 7 urandom warning(s) missed due to ratelimiting
+[  135.871988] perf: interrupt took too long (2509 > 2500), lowering 
+kernel.perf_event_max_sample_rate to 79500
+[  140.286157] audit: type=1400 audit(1609064788.012:2): 
+apparmor="STATUS" operation="profile_load" profile="unconfined" 
+name="nvidia_modprobe" pid=142 comm="apparmor_parser"
+[  140.315152] audit: type=1400 audit(1609064788.012:3): 
+apparmor="STATUS" operation="profile_load" profile="unconfined" 
+name="nvidia_modprobe//kmod" pid=142 comm="apparmor_parser"
+[  140.348623] audit: type=1400 audit(1609064788.072:4): 
+apparmor="STATUS" operation="profile_load" profile="unconfined" 
+name="/usr/bin/man" pid=155 comm="apparmor_parser"
+[  140.382744] audit: type=1400 audit(1609064788.072:5): 
+apparmor="STATUS" operation="profile_load" profile="unconfined" 
+name="man_filter" pid=155 comm="apparmor_parser"
+[  140.408791] audit: type=1400 audit(1609064788.072:6): 
+apparmor="STATUS" operation="profile_load" profile="unconfined" 
+name="man_groff" pid=155 comm="apparmor_parser"
+[  140.439860] audit: type=1400 audit(1609064788.072:7): 
+apparmor="STATUS" operation="profile_load" profile="unconfined" 
+name="/usr/lib/cups/backend/cups-pdf" pid=141 comm="apparmor_parser" 
 
-+config PCIE_SPRD
-+	tristate "Unisoc PCIe controller - Host Mode"
-+	depends on ARCH_SPRD || COMPILE_TEST
-+	depends on PCI_MSI_IRQ_DOMAIN
-+	select PCIE_DW_HOST
-+	help
-+	  Unisoc PCIe controller uses the DesignWare core. It can be configured
-+	  as an Endpoint (EP) or a Root complex (RC). In order to enable host
-+	  mode (the controller works as RC), PCIE_SPRD must be selected.
-+	  Say Y or M here if you want to PCIe RC controller support on Unisoc
-+	  SoCs.
-+
- endmenu
-diff --git a/drivers/pci/controller/dwc/Makefile b/drivers/pci/controller/dwc/Makefile
-index a751553..eb546e9 100644
---- a/drivers/pci/controller/dwc/Makefile
-+++ b/drivers/pci/controller/dwc/Makefile
-@@ -20,6 +20,7 @@ obj-$(CONFIG_PCI_MESON) += pci-meson.o
- obj-$(CONFIG_PCIE_TEGRA194) += pcie-tegra194.o
- obj-$(CONFIG_PCIE_UNIPHIER) += pcie-uniphier.o
- obj-$(CONFIG_PCIE_UNIPHIER_EP) += pcie-uniphier-ep.o
-+obj-$(CONFIG_PCIE_SPRD) += pcie-sprd.o
+[  140.481521] calling  acpi_cpufreq_init+0x0/0x1000 [acpi_cpufreq] @ 154
+[…]
+```
 
- # The following drivers are for devices that use the generic ACPI
- # pci_root.c driver but don't support standard ECAM config access.
-diff --git a/drivers/pci/controller/dwc/pcie-sprd.c b/drivers/pci/controller/dwc/pcie-sprd.c
-new file mode 100644
-index 0000000..27d7231
---- /dev/null
-+++ b/drivers/pci/controller/dwc/pcie-sprd.c
-@@ -0,0 +1,293 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * PCIe host controller driver for Unisoc SoCs
-+ *
-+ * Copyright (C) 2020-2021 Unisoc, Inc.
-+ *
-+ * Author: Hongtao Wu <Billows.Wu@unisoc.com>
-+ */
-+
-+#include <linux/delay.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/interrupt.h>
-+#include <linux/mfd/syscon.h>
-+#include <linux/module.h>
-+#include <linux/of_device.h>
-+#include <linux/of_irq.h>
-+#include <linux/platform_device.h>
-+#include <linux/property.h>
-+#include <linux/regmap.h>
-+
-+#include "pcie-designware.h"
-+
-+/* aon apb syscon */
-+#define IPA_ACCESS_CFG		0xcd8
-+#define  AON_ACCESS_PCIE_EN	BIT(1)
-+
-+/* pmu apb syscon */
-+#define SNPS_PCIE3_SLP_CTRL	0xac
-+#define  PERST_N_ASSERT		BIT(1)
-+#define  PERST_N_AUTO_EN	BIT(0)
-+#define PD_PCIE_CFG_0		0x3e8
-+#define  PCIE_FORCE_SHUTDOWN	BIT(25)
-+
-+#define PCIE_SS_REG_BASE		0xE00
-+#define APB_CLKFREQ_TIMEOUT		0x4
-+#define  BUSERR_EN			BIT(12)
-+#define  APB_TIMER_DIS			BIT(10)
-+#define  APB_TIMER_LIMIT		GENMASK(31, 16)
-+
-+#define PE0_GEN_CTRL_3			0x58
-+#define  LTSSM_EN			BIT(0)
-+
-+struct sprd_pcie_soc_data {
-+	u32 syscon_offset;
-+};
-+
-+static const struct sprd_pcie_soc_data ums9520_syscon_data = {
-+	.syscon_offset = 0x1000,	/* The offset of set/clear register */
-+};
-+
-+struct sprd_pcie {
-+	u32 syscon_offset;
-+	struct device	*dev;
-+	struct dw_pcie	*pci;
-+	struct regmap	*aon_map;
-+	struct regmap	*pmu_map;
-+	const struct sprd_pcie_soc_data *socdata;
-+};
-+
-+enum sprd_pcie_syscon_type {
-+	normal_syscon,		/* it's not a set/clear register */
-+	set_syscon,		/* set a set/clear register */
-+	clr_syscon,		/* clear a set/clear register */
-+};
-+
-+static void sprd_pcie_buserr_enable(struct dw_pcie *pci)
-+{
-+	u32 val;
-+
-+	val = dw_pcie_readl_dbi(pci, PCIE_SS_REG_BASE + APB_CLKFREQ_TIMEOUT);
-+	val &= ~APB_TIMER_DIS;
-+	val |= BUSERR_EN;
-+	val |= APB_TIMER_LIMIT & (0x1f4 << 16);
-+	dw_pcie_writel_dbi(pci, PCIE_SS_REG_BASE + APB_CLKFREQ_TIMEOUT, val);
-+}
-+
-+static void sprd_pcie_ltssm_enable(struct dw_pcie *pci, bool enable)
-+{
-+	u32 val;
-+
-+	val = dw_pcie_readl_dbi(pci, PCIE_SS_REG_BASE + PE0_GEN_CTRL_3);
-+	if (enable)
-+		dw_pcie_writel_dbi(pci, PCIE_SS_REG_BASE + PE0_GEN_CTRL_3,
-+				   val | LTSSM_EN);
-+	else
-+		dw_pcie_writel_dbi(pci, PCIE_SS_REG_BASE + PE0_GEN_CTRL_3,
-+				   val & ~LTSSM_EN);
-+}
-+
-+static int sprd_pcie_syscon_set(struct sprd_pcie *ctrl, struct regmap *map,
-+				u32 reg, u32 mask, u32 val,
-+				enum sprd_pcie_syscon_type type)
-+{
-+	int ret = 0;
-+	u32 read_val;
-+	u32 offset = ctrl->syscon_offset;
-+	struct device *dev = ctrl->pci->dev;
-+
-+	/*
-+	 * Each set/clear register has three registers:
-+	 * reg:			base register
-+	 * reg + offset:	set register
-+	 * reg + offset * 2:	clear register
-+	 */
-+	switch (type) {
-+	case normal_syscon:
-+		ret = regmap_read(map, reg, &read_val);
-+		if (ret) {
-+			dev_err(dev, "failed to read register 0x%x\n", reg);
-+			return ret;
-+		}
-+		read_val &= ~mask;
-+		read_val |= (val & mask);
-+		ret = regmap_write(map, reg, read_val);
-+		break;
-+	case set_syscon:
-+		reg = reg + offset;
-+		ret = regmap_write(map, reg, val);
-+		break;
-+	case clr_syscon:
-+		reg = reg + offset * 2;
-+		ret = regmap_write(map, reg, val);
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	if (ret)
-+		dev_err(dev, "failed to write register 0x%x\n", reg);
-+
-+	return ret;
-+}
-+
-+static int sprd_pcie_perst_assert(struct sprd_pcie *ctrl)
-+{
-+	return sprd_pcie_syscon_set(ctrl, ctrl->pmu_map, SNPS_PCIE3_SLP_CTRL,
-+				    PERST_N_ASSERT, PERST_N_ASSERT, set_syscon);
-+}
-+
-+static int sprd_pcie_perst_deassert(struct sprd_pcie *ctrl)
-+{
-+	int ret;
-+
-+	ret = sprd_pcie_syscon_set(ctrl, ctrl->pmu_map, SNPS_PCIE3_SLP_CTRL,
-+				   PERST_N_ASSERT, 0, clr_syscon);
-+	usleep_range(2000, 3000);
-+
-+	return ret;
-+}
-+
-+static int sprd_pcie_power_on(struct platform_device *pdev)
-+{
-+	int ret;
-+	struct sprd_pcie *ctrl = platform_get_drvdata(pdev);
-+	struct dw_pcie *pci = ctrl->pci;
-+
-+	ret = sprd_pcie_syscon_set(ctrl, ctrl->aon_map, PD_PCIE_CFG_0,
-+				   PCIE_FORCE_SHUTDOWN, 0, clr_syscon);
-+	if (ret)
-+		return ret;
-+
-+	ret = sprd_pcie_syscon_set(ctrl, ctrl->aon_map, IPA_ACCESS_CFG,
-+				   AON_ACCESS_PCIE_EN, AON_ACCESS_PCIE_EN,
-+				   set_syscon);
-+	if (ret)
-+		return ret;
-+
-+	ret = sprd_pcie_perst_deassert(ctrl);
-+	if (ret)
-+		return ret;
-+
-+	sprd_pcie_buserr_enable(pci);
-+	sprd_pcie_ltssm_enable(pci, true);
-+
-+	return ret;
-+}
-+
-+static int sprd_pcie_power_off(struct platform_device *pdev)
-+{
-+	struct sprd_pcie *ctrl = platform_get_drvdata(pdev);
-+	struct dw_pcie *pci = ctrl->pci;
-+
-+	sprd_pcie_ltssm_enable(pci, false);
-+
-+	sprd_pcie_perst_assert(ctrl);
-+	sprd_pcie_syscon_set(ctrl, ctrl->aon_map, PD_PCIE_CFG_0,
-+			     PCIE_FORCE_SHUTDOWN, PCIE_FORCE_SHUTDOWN,
-+			     set_syscon);
-+	sprd_pcie_syscon_set(ctrl, ctrl->aon_map, IPA_ACCESS_CFG,
-+			     AON_ACCESS_PCIE_EN, 0, clr_syscon);
-+
-+	return 0;
-+}
-+
-+static int sprd_add_pcie_port(struct platform_device *pdev)
-+{
-+	struct sprd_pcie *ctrl = platform_get_drvdata(pdev);
-+	struct dw_pcie *pci = ctrl->pci;
-+	struct pcie_port *pp = &pci->pp;
-+
-+	return dw_pcie_host_init(pp);
-+}
-+
-+static int sprd_pcie_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct sprd_pcie *ctrl;
-+	struct dw_pcie *pci;
-+	int ret;
-+
-+	ctrl = devm_kzalloc(dev, sizeof(*ctrl), GFP_KERNEL);
-+	if (!ctrl)
-+		return -ENOMEM;
-+
-+	ctrl->socdata =
-+		(struct sprd_pcie_soc_data *)of_device_get_match_data(dev);
-+	if (!ctrl->socdata) {
-+		dev_warn(dev,
-+			 "using the default set/clear register offset address");
-+		ctrl->syscon_offset = 0x1000;
-+	}
-+	ctrl->syscon_offset = ctrl->socdata->syscon_offset;
-+
-+	ctrl->aon_map = syscon_regmap_lookup_by_phandle(dev->of_node,
-+							"sprd, regmap-aon");
-+	if (IS_ERR(ctrl->aon_map)) {
-+		dev_err(dev, "failed to get syscon regmap aon\n");
-+		ret = PTR_ERR(ctrl->aon_map);
-+		goto err;
-+	}
-+
-+	ctrl->pmu_map = syscon_regmap_lookup_by_phandle(dev->of_node,
-+							"sprd, regmap-pmu");
-+	if (IS_ERR(ctrl->pmu_map)) {
-+		dev_err(dev, "failed to get syscon regmap pmu\n");
-+		ret = PTR_ERR(ctrl->pmu_map);
-+		goto err;
-+	}
-+
-+	pci = ctrl->pci;
-+	pci->dev = dev;
-+
-+	platform_set_drvdata(pdev, ctrl);
-+
-+	ret = sprd_pcie_power_on(pdev);
-+	if (ret < 0) {
-+		dev_err(dev, "failed to power on, return %d\n",
-+			ret);
-+		goto err_power_off;
-+	}
-+
-+	ret = sprd_add_pcie_port(pdev);
-+	if (ret) {
-+		dev_warn(dev, "failed to initialize RC controller\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+
-+err_power_off:
-+	sprd_pcie_power_off(pdev);
-+err:
-+	return ret;
-+}
-+
-+static int sprd_pcie_remove(struct platform_device *pdev)
-+{
-+	sprd_pcie_power_off(pdev);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id sprd_pcie_of_match[] = {
-+	{
-+		.compatible = "sprd,ums9520-pcie",
-+		.data  = &ums9520_syscon_data,
-+	},
-+	{},
-+};
-+
-+static struct platform_driver sprd_pcie_driver = {
-+	.probe = sprd_pcie_probe,
-+	.remove = __exit_p(sprd_pcie_remove),
-+	.driver = {
-+		.name = "sprd-pcie",
-+		.of_match_table = sprd_pcie_of_match,
-+	},
-+};
-+
-+module_platform_driver(sprd_pcie_driver);
-+
-+MODULE_DESCRIPTION("Unisoc PCIe host controller driver");
-+MODULE_LICENSE("GPL v2");
---
-2.7.4
+The userspace log during that time could be:
 
+```
+Dez 27 11:24:17 sitopanaki systemd[1]: Finished Coldplug All udev Devices.
+Dez 27 11:24:17 sitopanaki systemd[1]: systemd-udev-trigger.service: 
+Control group is empty.
+Dez 27 11:24:17 sitopanaki systemd[1]: sysinit.target: starting held 
+back, waiting for: systemd-hwdb-update.service
+Dez 27 11:26:02 sitopanaki systemd[1]: systemd-journald.service: Got 
+notification message from PID 113 (WATCHDOG=1)
+Dez 27 11:26:27 sitopanaki systemd-fsck[119]: Info: Fix the reported 
+corruption.
+Dez 27 11:26:27 sitopanaki systemd-fsck[119]: Info: Mounted device!
+Dez 27 11:26:27 sitopanaki systemd-fsck[119]: Info: Check FS only due to RO
+```
+
+As it does not happen with the initrd created by initramfs-tools, but 
+the initrd was successfully run, I am quite confused. Could it be F2FS 
+related? Please find the full logs of both starts attached to bug 
+#210917 [2].
+
+
+Kind regards,
+
+Paul
+
+
+[1]: https://github.com/chris-se/tiny-initramfs/
+[2]: https://bugzilla.kernel.org/show_bug.cgi?id=210917
