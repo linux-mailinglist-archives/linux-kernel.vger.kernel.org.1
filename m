@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C19232E322C
+	by mail.lfdr.de (Postfix) with ESMTP id 4B5722E322B
 	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 18:30:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726455AbgL0R2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 12:28:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42134 "EHLO mail.kernel.org"
+        id S1726412AbgL0R16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 12:27:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726188AbgL0R1q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 12:27:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 52C4B22512;
+        id S1726203AbgL0R1r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Dec 2020 12:27:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 9FFA922581;
         Sun, 27 Dec 2020 17:27:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1609090026;
-        bh=tm5Sjcbk+n3gqqgRSZrv3GC0HOUQoZI9BkXteeNdeKs=;
+        bh=yUOzKR1+ETI28Fwqi8cicFWSw3QA4T1yLWmEGV06c+A=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=CQZgRab4e48iPcr4LewVGFWZ70lYBcD0VBOY5tTnsVk9jkKpOU9/2PL9NSFN8lqK4
-         VOvm0TEnBChmf/29j+nbBYyqz/biGE+K2GUIy+ZCYg2B9kYp2mwLe6xsr7+syOyRRt
-         efAtnlhk4OcU71Q7pZV9BChNJfzjHUGVdGjfEmUwV+z+EMHdLSrTExsFREYl6lMAdB
-         tSsFqi/fSMAK4cAokH0withGXplxxGByLlsoXllAGQ+3Fr2UZnXPhC+Fpb6rkSpdGF
-         ziaSfequPnNHKLaz5UqORskHQHRU/e8MNy0gyU4+Axk5k435YDKjnieZL6qtmwdXbq
-         UFAWqHNRMxrEQ==
+        b=WnGUPDcugOgcobVrEmZATTDWPMKoEHnwmKoVwS2vzzXNblwt70MpfM7Dgg/0zjjj4
+         /IWATNysWShq+/jPfMLGFgz7LDJUe4qy1TyvNwSrfUuhRLDcDhcCo34gGt/LSrHJmJ
+         A1iNcqh3FbFYRmvphSToB9nlK+h7KMFeCEdZA731MT/yOOiRsoL4gAP/zqdoNLBAxu
+         IZcpA1V9KjmYrCuxIQGVSWwYSRnuE70eKM3sdLg/nFM7EDzc2eqKEG9G5S18Y7z0ZM
+         iLLm720f+9P5o7dlt/qhc9BuRZcNs5LE7yt+bwOejHdOVUf7ZfNXlUba9+/SrbrwZs
+         tn6NZs6fEfPTw==
 Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 4D778604E4;
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 9AB87604E4;
         Sun, 27 Dec 2020 17:27:06 +0000 (UTC)
-Subject: Re: [GIT PULL] locking fixes
+Subject: Re: [GIT PULL] Crypto Fixes for 5.11
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201227095044.GA1841019@gmail.com>
-References: <20201227095044.GA1841019@gmail.com>
+In-Reply-To: <20201227113221.GA28744@gondor.apana.org.au>
+References: <20200803044024.GA6429@gondor.apana.org.au>
+ <20200830223304.GA16882@gondor.apana.org.au>
+ <20201026011159.GA2428@gondor.apana.org.au> <20201227113221.GA28744@gondor.apana.org.au>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201227095044.GA1841019@gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking-urgent-2020-12-27
-X-PR-Tracked-Commit-Id: 91ea62d58bd661827c328a2c6c02a87fa4aae88b
+X-PR-Tracked-Message-Id: <20201227113221.GA28744@gondor.apana.org.au>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
+X-PR-Tracked-Commit-Id: c0e583ab2016de8dedfb73934d4c4e8ff5bd896c
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 6be5f58215f1dcbd697a695ad5db9986c28c50c3
-Message-Id: <160909002631.19416.10691858900678724228.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 33c148a4ae7dc3cd440f6c0d746ac7f0ff320682
+Message-Id: <160909002662.19416.10600482594063014941.pr-tracker-bot@kernel.org>
 Date:   Sun, 27 Dec 2020 17:27:06 +0000
-To:     Ingo Molnar <mingo@kernel.org>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 27 Dec 2020 10:50:44 +0100:
+The pull request you sent on Sun, 27 Dec 2020 22:32:21 +1100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking-urgent-2020-12-27
+> git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/6be5f58215f1dcbd697a695ad5db9986c28c50c3
+https://git.kernel.org/torvalds/c/33c148a4ae7dc3cd440f6c0d746ac7f0ff320682
 
 Thank you!
 
