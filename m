@@ -2,91 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E4222E3306
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 22:40:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A6C02E330B
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 22:59:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726502AbgL0ViD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 16:38:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726214AbgL0ViC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 16:38:02 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3746AC061794
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 13:37:22 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id h205so20099849lfd.5
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 13:37:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+i5gcSrm6q/8nFooRN/AQ71bCz7/QCSgRKeWd4XhemA=;
-        b=bQeRFwvT8c9tCXwanLGGjLqZ0d/EnrhH9dwzmzhyS34cOmBIWXgHKX4tqUKrBQgu5c
-         ON5sts08nEqoAqnNrpLwkbDxcEpThc17qIM+33kJ5EQkhPOCoHN1S285W46SOjmdGQy8
-         ttb9NPM1eMw9RUfQrmxOLwb/9DKioxl3BGxCgZ1S1z0eS3IJVPNgm6GpIrOnWltn8pD2
-         OsIX0whzoNDsDNKIpcCnPBn7XFfGBbYtVNtM4LsjPjhIyEvb3baH+o8hKoSSPLkzA9Z9
-         Z+xvfQqckTejGcNvN0QyGgdxvn4Qe2ww+zP/I9Oga6Z7loS4s02jlBO/7Jin3t2Qckc6
-         AYDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+i5gcSrm6q/8nFooRN/AQ71bCz7/QCSgRKeWd4XhemA=;
-        b=g5nM7U+zlFRLEfitIBV5Jn9avOwcIZ596zCOA+s65DIqxh25zYlnzn3tHtv4V5BPby
-         wFSfzFwemtqdG7yFICyS4sGLj3PMgKPYLRzfqmINPU69OwmTTkHnOasGDW2IIPBHiVAI
-         g80PUvediZ3wTEaEB3lAoIV+msmEYnAvHanJpTqaf1c/26AnxwG8E8nOInPKflq7IlBA
-         TuZ0osK8YMZ/vdlu7HbTmYwIdN0WWTaqEegRFvMRjW4cazEaEiRZwWUyeloDHK5MemTZ
-         gsQP/IA1Xu3BN3iK4LlcnnnNrOJ+tpcj68UKjc4i26wPF0Sh0QRr2nnk9o9M+2RnWuKw
-         wSsQ==
-X-Gm-Message-State: AOAM5337BmoBZkGd9Bn5SecmNX1kx9lnDN3CuRmIm+Sqe386jn8gEx9N
-        rNqa2tJ7df9Oi6YV4+ZbtayVdL2eoDq6id+P1NZL7w==
-X-Google-Smtp-Source: ABdhPJz1l0q/Rz6oEDylYqSr4C7rGmi78uW0PNdYU5Ir6hn1cuQIRPrSVr5XZuuUdp1TxdfW+enmU9jJaGU7CnHUxy0=
-X-Received: by 2002:a2e:b047:: with SMTP id d7mr19639077ljl.467.1609105040797;
- Sun, 27 Dec 2020 13:37:20 -0800 (PST)
+        id S1726269AbgL0V6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 16:58:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41318 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726172AbgL0V6F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Dec 2020 16:58:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC7CC22AAB;
+        Sun, 27 Dec 2020 21:57:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609106245;
+        bh=4MFzvoyxvWRh9e/3p4uTIb7qp4diLUFpLw6324rdMdI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=FrRdiI4VtCP2Jh+pvScqUsl0+NLr/hDFsYNIMcdHqiKmtAKU0ErVUy/KAmaHidnu5
+         dHgdZPyhmGZ/dntmnfYbrSnW4NO77NIV1ZSSdj9PasXEoenFrLfnU9G+Iy3L++rwNA
+         tvKuPRsPi3oWt15Rxq0jCA+yucOtWeBnSHGUTtDTrf27ZaGWmJxxxgKSGP4sPtOwbc
+         ZtuuVpPVAQfU8lkpx/UFH7YfTHG0fZ/6bRYgtKp2oC3aiiYXzPKUZ0bP7PngqJoiK6
+         GZmL8F1XJP5Z+wThMmQep72m9+fVeZIeck8Hl20+R4fzlymThaagM9oCnIYmqP+5Ie
+         nXcymR/0WNW1Q==
+Received: by mail-lf1-f47.google.com with SMTP id h205so20154848lfd.5;
+        Sun, 27 Dec 2020 13:57:24 -0800 (PST)
+X-Gm-Message-State: AOAM5310DrFXDFYKy6Aaf+OtfO1y5Kqfm7W/o/187eSMRPv4ge0Trl3k
+        6stDNqtpqY6b6I69hVCK6LZqsvigmhfwS0s3hpM=
+X-Google-Smtp-Source: ABdhPJzukkONqv2e5bnGIEXtJcKYZ332DEHUE7bGwmBOEZDK+ob7v7nMB60W3loyn6lRBtDdmzT+2joI5asFOrYXATI=
+X-Received: by 2002:a2e:8910:: with SMTP id d16mr20131771lji.357.1609106243184;
+ Sun, 27 Dec 2020 13:57:23 -0800 (PST)
 MIME-Version: 1.0
-References: <20201227161040.1645545-1-warthog618@gmail.com>
-In-Reply-To: <20201227161040.1645545-1-warthog618@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sun, 27 Dec 2020 22:37:09 +0100
-Message-ID: <CACRpkdYk9U_=AOyy7NSKL9+Aoe0+qCdZVN9EXWLn7NUcUajipQ@mail.gmail.com>
-Subject: Re: [PATCH] gpiolib: cdev: fix frame size warning in gpio_ioctl()
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        kernel test robot <lkp@intel.com>
+References: <dbd2761e-cd7d-d60a-f769-ecc8c6335814@canonical.com>
+ <EA47EF7A-06D8-4B37-BED7-F04753D70DF5@fb.com> <a85943ed-60d4-05ad-9f6d-d76324fa5538@redhat.com>
+In-Reply-To: <a85943ed-60d4-05ad-9f6d-d76324fa5538@redhat.com>
+From:   Song Liu <song@kernel.org>
+Date:   Sun, 27 Dec 2020 13:57:12 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW5Fs9Zz+-2ZEZQe3g5jen4SiHNf7sRtYCN0w4TBGZ1Vsw@mail.gmail.com>
+Message-ID: <CAPhsuW5Fs9Zz+-2ZEZQe3g5jen4SiHNf7sRtYCN0w4TBGZ1Vsw@mail.gmail.com>
+Subject: Re: PROBLEM: Recent raid10 block discard patchset causes filesystem
+ corruption on fstrim
+To:     Xiao Ni <xni@redhat.com>
+Cc:     Song Liu <songliubraving@fb.com>,
+        Matthew Ruffell <matthew.ruffell@canonical.com>,
+        linux-raid <linux-raid@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>, Coly Li <colyli@suse.de>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        "khalid.elmously@canonical.com" <khalid.elmously@canonical.com>,
+        Jay Vosburgh <jay.vosburgh@canonical.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 27, 2020 at 5:11 PM Kent Gibson <warthog618@gmail.com> wrote:
+Hi Xiao,
 
-> The kernel test robot reports the following warning in [1]:
+On Thu, Dec 24, 2020 at 2:18 AM Xiao Ni <xni@redhat.com> wrote:
 >
->  drivers/gpio/gpiolib-cdev.c: In function 'gpio_ioctl':
->  >>drivers/gpio/gpiolib-cdev.c:1437:1: warning: the frame size of 1040 bytes is larger than 1024 bytes [-Wframe-larger-than=]
 >
-> Refactor gpio_ioctl() to handle each ioctl in its own helper function
-> and so reduce the variables stored on the stack to those explicitly
-> required to service the ioctl at hand.
 >
-> The lineinfo_get_v1() helper handles both the GPIO_GET_LINEINFO_IOCTL
-> and GPIO_GET_LINEINFO_WATCH_IOCTL, as per the corresponding v2
-> implementation - lineinfo_get().
+[...]
 >
-> [1] https://lore.kernel.org/lkml/202012270910.VW3qc1ER-lkp@intel.com/
+> [  789.709501] discard bio start : 70968, size : 191176
+> [  789.709507] first stripe index 69, start disk index 0, start disk
+> offset 70968
+> [  789.709509] last stripe index 256, end disk index 0, end disk offset
+> 262144
+> [  789.709511] disk 0, dev start : 70968, dev end : 262144
+> [  789.709515] disk 1, dev start : 70656, dev end : 262144
 >
-> Fixes: aad955842d1c ("gpiolib: cdev: support GPIO_V2_GET_LINEINFO_IOCTL and GPIO_V2_GET_LINEINFO_WATCH_IOCTL")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Kent Gibson <warthog618@gmail.com>
+> For example, in this test case, it has 2 near copies. The
+> start_disk_offset for the first disk is 70968.
+> It should use the same offset address for second disk. But it uses the
+> start address of this chunk.
+> It discard more region. The patch in the attachment can fix this
+> problem. It split the region that
+> doesn't align with chunk size.
+>
+> There is another problem. The stripe size should be calculated
+> differently for near layout and far layout.
+>
+> @Song, do you want me to use a separate patch for this fix, or fix this
+> in the original patch?
 
-That's an interesting regression.
-Anyway the kernel look better after than before the patch, so
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Please fold in the changes in the original patches and resend the whole
+set.
 
-Bartosz will pick patches for Torvalds this kernel cycle.
+Thanks,
+Song
 
-Yours,
-Linus Walleij
+>
+> Merry Christmas
+> Xiao
+>
