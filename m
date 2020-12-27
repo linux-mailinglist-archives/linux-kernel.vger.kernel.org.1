@@ -2,142 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6BC42E3197
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 15:44:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1069C2E319B
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 15:50:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726277AbgL0OoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 09:44:05 -0500
-Received: from out0.migadu.com ([94.23.1.103]:2966 "EHLO out0.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726209AbgL0OoA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 09:44:00 -0500
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kl.wtf; s=default;
-        t=1609080193;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=LlgK43BtTlQ6++cCaXNMqGTvJaDHPrjIe9skQ875zsU=;
-        b=aZDq9BZCFD7bl/5IBCqHSaWdcz0o/oKE/iW/wE7KvAwYEZ1RULC3uDsR3RkGpFtthTnTyN
-        EfGrnhL6/cSKXY0J0iGwGsSEpo6jD+uuelqYx1a5JHd9poTzu5e6B++qVXhoQ3pUgly9+h
-        F+rMEbCuUZsa8f0epZNI+MXp/Acdjww=
-From:   Kenny Levinsen <kl@kl.wtf>
-To:     linux-input@vger.kernel.org
-Cc:     dmitry.torokhov@gmail.com, linux-kernel@vger.kernel.org,
-        Kenny Levinsen <kl@kl.wtf>
-Subject: [PATCH] Input: evdev - use call_rcu when detaching client
-Message-Id: <20201227144302.9419-1-kl@kl.wtf>
+        id S1726209AbgL0Otz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 09:49:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726117AbgL0Oty (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Dec 2020 09:49:54 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B32EBC061795
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 06:49:13 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id h16so7637577edt.7
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 06:49:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=vf7xqAIlct0FZ9y55UdSrXZqbpkp0KKP1quWzU9GkMI=;
+        b=Cij25xoyIQKybPsCKaWfm4QNIzQyVE/UBdmzX7tgepJCuIl6he1UZdjeW3dZ2orR9+
+         js3z/wpBFU9xvS4apM2OXldlSZznMD0u78Tcoa5+0VrPhGi6q6rq/71GAIBBt4HIuTwK
+         U3QDDyx/6WkYFmlg+T5ThGrJgbYdekPBBZt9R83iT+gOldxH7fhenRcEAAi8MYN2jtek
+         +aBCLVgmC2ySGqFyoyCJgOEbsPSTSmNwwllHcnntqPNG/v8h3H7mFEzavdLLbkcJ1fro
+         yiC2lOyTYKmwLhz5sAIqLXpUDTJ4QGYr8PAJ6UXyxaXHEIBac4z4AdL9FJAH8+68G+jt
+         LeZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=vf7xqAIlct0FZ9y55UdSrXZqbpkp0KKP1quWzU9GkMI=;
+        b=QXZR4HYDjmSinjwjJkx4keqI29yoL5UdyAu+Xq+OQvuoNiqZHRGyL+hs1WRbm/jnkI
+         ryZClED7Exs+H8kgl/7sOWXYAflhXmQxP0+iwIGMZLtM2PvU6j5zMk98HvqMfV0ZvYHF
+         us/7VlaLHuoTPLELWrBf6tCYqNFDRF7pfp+kgBtnogkmCpaK9B9IEkUMHjGr+ukLwKEe
+         ykBz9QNJdwkzs+Ds9DpfVXW2s4UDWJzBNTSwi1D0wg7xBTLuViaaFP15waVg8UPwr+km
+         VdcQjZZ7vfzJtOvbMBGsFyiEyzQq9H99pJPyrYmaNo5bhoZ3V1HOcqkk9HCNZNr+EqoU
+         9TwA==
+X-Gm-Message-State: AOAM5312TfBEpqO2tOU42nXA8y6Fgw002MzcWlgQhfb6qCnAzbsBDhtY
+        ftyhTwBMarVyruTbdsNgyq0gF3YSRVk9AGQ3QlI=
+X-Google-Smtp-Source: ABdhPJxqIDNg3cJqSafKbntptXplAZP+T6zh3F+faG4JebVPK06L+r9wa9D1k2Ywm6EOxaV0gSSKrQ==
+X-Received: by 2002:a50:8b66:: with SMTP id l93mr37969540edl.384.1609080551135;
+        Sun, 27 Dec 2020 06:49:11 -0800 (PST)
+Received: from localhost ([192.36.80.8])
+        by smtp.gmail.com with ESMTPSA id ch30sm35707247edb.8.2020.12.27.06.49.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Dec 2020 06:49:10 -0800 (PST)
+Date:   Sun, 27 Dec 2020 15:49:07 +0100
+From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Magnus Damm <damm@opensource.se>,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] clocksource/drivers/sh_cmt: Make sure channel clock
+ supply is enabled
+Message-ID: <X+ie4/6dt+ZJ8qH2@wyvern>
+References: <20201210194648.2901899-1-geert+renesas@glider.be>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: kl@kl.wtf
-Date:   Sun, 27 Dec 2020 14:43:13 GMT
+In-Reply-To: <20201210194648.2901899-1-geert+renesas@glider.be>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Significant time was spent on synchronize_rcu in evdev_detach_client
-when applications closed evdev devices. Switching VT away from a
-graphical environment commonly leads to mass input device closures,
-which could lead to noticable delays on systems with many input devices.
+Hi Geert,
 
-Replace synchronize_rcu with call_rcu, deferring reclaim of the evdev
-client struct till after the RCU grace period instead of blocking the
-calling application.
+Thanks for your patch.
 
-While this does not solve all slow evdev fd closures, it takes care of a
-good portion of them, including this simple test:
+On 2020-12-10 20:46:48 +0100, Geert Uytterhoeven wrote:
+> The Renesas Compare Match Timer 0 and 1 (CMT0/1) variants have a
+> register to control the clock supply to the individual channels.
+> Currently the driver does not touch this register, and relies on the
+> documented initial value, which has the clock supply enabled for all
+> channels present.
+> 
+> However, when Linux starts on the APE6-EVM development board, only the
+> clock supply to the first CMT1 channel is enabled.  Hence the first
+> channel (used as a clockevent) works, while the second channel (used as
+> a clocksource) does not.  Note that the default system clocksource is
+> the Cortex-A15 architectured timer, and the user needs to manually
+> switch to the CMT1 clocksource to trigger the broken behavior.
+> 
+> Fix this by removing the fragile dependency on implicit reset and/or
+> boot loader state, and by enabling the clock supply explicitly for all
+> channels used instead.  This requires postponing the clk_disable() call,
+> else the timer's registers cannot be accessed in sh_cmt_setup_channel().
+> 
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-	#include <fcntl.h>
-	#include <unistd.h>
+Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
 
-	int main(int argc, char *argv[])
-	{
-		int idx, fd;
-		const char *path = "/dev/input/event0";
-		for (idx = 0; idx < 1000; idx++) {
-			if ((fd = open(path, O_RDWR)) == -1) {
-				return -1;
-			}
-			close(fd);
-		}
-		return 0;
-	}
+> ---
+> Tested on R-Mobile APE6, R-Car M2-W, and R-Car H3 ES2.0.
+> ---
+>  drivers/clocksource/sh_cmt.c | 16 +++++++++++++---
+>  1 file changed, 13 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/clocksource/sh_cmt.c b/drivers/clocksource/sh_cmt.c
+> index e258230d432c0002..c98f8851fd680454 100644
+> --- a/drivers/clocksource/sh_cmt.c
+> +++ b/drivers/clocksource/sh_cmt.c
+> @@ -235,6 +235,8 @@ static const struct sh_cmt_info sh_cmt_info[] = {
+>  #define CMCNT 1 /* channel register */
+>  #define CMCOR 2 /* channel register */
+>  
+> +#define CMCLKE	0x1000	/* CLK Enable Register (R-Car Gen2) */
+> +
+>  static inline u32 sh_cmt_read_cmstr(struct sh_cmt_channel *ch)
+>  {
+>  	if (ch->iostart)
+> @@ -853,6 +855,7 @@ static int sh_cmt_setup_channel(struct sh_cmt_channel *ch, unsigned int index,
+>  				unsigned int hwidx, bool clockevent,
+>  				bool clocksource, struct sh_cmt_device *cmt)
+>  {
+> +	u32 value;
+>  	int ret;
+>  
+>  	/* Skip unused channels. */
+> @@ -882,6 +885,11 @@ static int sh_cmt_setup_channel(struct sh_cmt_channel *ch, unsigned int index,
+>  		ch->iostart = cmt->mapbase + ch->hwidx * 0x100;
+>  		ch->ioctrl = ch->iostart + 0x10;
+>  		ch->timer_bit = 0;
+> +
+> +		/* Enable the clock supply to the channel */
+> +		value = ioread32(cmt->mapbase + CMCLKE);
+> +		value |= BIT(hwidx);
+> +		iowrite32(value, cmt->mapbase + CMCLKE);
+>  		break;
+>  	}
+>  
+> @@ -1014,12 +1022,10 @@ static int sh_cmt_setup(struct sh_cmt_device *cmt, struct platform_device *pdev)
+>  	else
+>  		cmt->rate = clk_get_rate(cmt->clk) / 8;
+>  
+> -	clk_disable(cmt->clk);
+> -
+>  	/* Map the memory resource(s). */
+>  	ret = sh_cmt_map_memory(cmt);
+>  	if (ret < 0)
+> -		goto err_clk_unprepare;
+> +		goto err_clk_disable;
+>  
+>  	/* Allocate and setup the channels. */
+>  	cmt->num_channels = hweight8(cmt->hw_channels);
+> @@ -1047,6 +1053,8 @@ static int sh_cmt_setup(struct sh_cmt_device *cmt, struct platform_device *pdev)
+>  		mask &= ~(1 << hwidx);
+>  	}
+>  
+> +	clk_disable(cmt->clk);
+> +
+>  	platform_set_drvdata(pdev, cmt);
+>  
+>  	return 0;
+> @@ -1054,6 +1062,8 @@ static int sh_cmt_setup(struct sh_cmt_device *cmt, struct platform_device *pdev)
+>  err_unmap:
+>  	kfree(cmt->channels);
+>  	iounmap(cmt->mapbase);
+> +err_clk_disable:
+> +	clk_disable(cmt->clk);
+>  err_clk_unprepare:
+>  	clk_unprepare(cmt->clk);
+>  err_clk_put:
+> -- 
+> 2.25.1
+> 
 
-Time to completion of above test when run locally:
-
-	Before: 0m27.111s
-	After:  0m0.018s
-
-Signed-off-by: Kenny Levinsen <kl@kl.wtf>
----
- drivers/input/evdev.c | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/input/evdev.c b/drivers/input/evdev.c
-index 95f90699d2b1..2b10fe29d2c8 100644
---- a/drivers/input/evdev.c
-+++ b/drivers/input/evdev.c
-@@ -46,6 +46,7 @@ struct evdev_client {
- 	struct fasync_struct *fasync;
- 	struct evdev *evdev;
- 	struct list_head node;
-+	struct rcu_head rcu;
- 	enum input_clock_type clk_type;
- 	bool revoked;
- 	unsigned long *evmasks[EV_CNT];
-@@ -377,13 +378,22 @@ static void evdev_attach_client(struct evdev *evdev,
- 	spin_unlock(&evdev->client_lock);
- }
- 
-+static void evdev_reclaim_client(struct rcu_head *rp)
-+{
-+	struct evdev_client *client = container_of(rp, struct evdev_client, rcu);
-+	unsigned int i;
-+	for (i = 0; i < EV_CNT; ++i)
-+		bitmap_free(client->evmasks[i]);
-+	kvfree(client);
-+}
-+
- static void evdev_detach_client(struct evdev *evdev,
- 				struct evdev_client *client)
- {
- 	spin_lock(&evdev->client_lock);
- 	list_del_rcu(&client->node);
- 	spin_unlock(&evdev->client_lock);
--	synchronize_rcu();
-+	call_rcu(&client->rcu, evdev_reclaim_client);
- }
- 
- static int evdev_open_device(struct evdev *evdev)
-@@ -436,7 +446,6 @@ static int evdev_release(struct inode *inode, struct file *file)
- {
- 	struct evdev_client *client = file->private_data;
- 	struct evdev *evdev = client->evdev;
--	unsigned int i;
- 
- 	mutex_lock(&evdev->mutex);
- 
-@@ -448,11 +457,6 @@ static int evdev_release(struct inode *inode, struct file *file)
- 
- 	evdev_detach_client(evdev, client);
- 
--	for (i = 0; i < EV_CNT; ++i)
--		bitmap_free(client->evmasks[i]);
--
--	kvfree(client);
--
- 	evdev_close_device(evdev);
- 
- 	return 0;
-@@ -495,7 +499,6 @@ static int evdev_open(struct inode *inode, struct file *file)
- 
-  err_free_client:
- 	evdev_detach_client(evdev, client);
--	kvfree(client);
- 	return error;
- }
- 
 -- 
-2.29.2
-
+Regards,
+Niklas Söderlund
