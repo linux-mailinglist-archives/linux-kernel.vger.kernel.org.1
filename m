@@ -2,75 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 972742E32BE
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 22:13:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F2C62E32C4
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 22:15:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726336AbgL0VKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 16:10:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726199AbgL0VKk (ORCPT
+        id S1726323AbgL0VOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 16:14:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59783 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726204AbgL0VOJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 16:10:40 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BE3BC061794
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 13:09:59 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id s26so20004213lfc.8
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 13:09:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SbUyUXqfcMapMitYeWLZoP4Wnr0S0nWOf4B0TWLyMPE=;
-        b=ZjGcqlAH4E7BeO9qvl79px7QpzkJohOsIPnqYez7Yp7AZU2m646cWPMVTExlh5H6AG
-         L0nGMbWcXZUXdM5vbJq3EqH5/tQBi/LtcamoNMGbZd/gpdngB7xayo+oAuCt15M6dMsO
-         AiisxqKfzIZcGS/9WsULhR4hdotdxuwmI1whuCj9DKJQQUHTn4Jg2l4tVlUEbyTzoLgF
-         1LPUD6APPGs6qndEMH7gPrUPoDy3mK/SVEQtyMXdb+LnGlgjo5jPw4Ui476wUCjrHfwq
-         6M23+dH6Uy70SJi/HuDyxfbL6dAAnY3B0Y6GizLfD5ygDwXrXxjrrvq8Nr1XIiB0ou0C
-         /zVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SbUyUXqfcMapMitYeWLZoP4Wnr0S0nWOf4B0TWLyMPE=;
-        b=e2rqY3MPS0V6IGYiBUzI92cOg5+aSDEacyxekkHhXsl4IfDH03wwvjLyWeFXXAFrlI
-         ynCwt+W6gTLryfyx3l4jFy9sy/ZO31dhzijos+0gm9+EnOHn0BprfVtpo9S/QBdHkgCn
-         vhDzqMUFRw023lQm9cwi2Fbpi+d8gMf9A9zett6wo5J8RAHaf7vBQdTzA2f/m+6lNyfD
-         iqqaYp0B8d+sKL1I1rtTLWr2mEyzQGd6D0ot53kBWCfXKrWMv3bEF6NGinYdQU84/75U
-         bXFr05AHtNclmUqa1CVKS8PZKSJLygGINqkc0R6f62LQgfzYhqwPXOJkaOyPWcJWaCVt
-         V+vg==
-X-Gm-Message-State: AOAM533dYbtimIb9vCxmcftBvRNpEc+Jhe+Ep2MFWzyrMPyG6077dPtV
-        NOAW2lcfZV6aUy3RhRC3vbAnppKTCzwx5vj3/WngDA==
-X-Google-Smtp-Source: ABdhPJxyoD//S0MkIPQC23aHRggofmFph5lKG63J1ZwjkgVR2ldxLsJ+izCRMExCii3ppLi11lOz1v/sdZQT57CTD6A=
-X-Received: by 2002:a05:651c:1312:: with SMTP id u18mr20447406lja.200.1609103398036;
- Sun, 27 Dec 2020 13:09:58 -0800 (PST)
+        Sun, 27 Dec 2020 16:14:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609103562;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=x6mS5fwdK6liDxgjybZtFeenAXjcPuU8dH8q/9rJU64=;
+        b=cQHzDDZkuY8pwfSMOpVdTWsvHMp7RAkxZ8eyeIAP+mhfaEHuqkTFLeC0jb89gJrUJDImeV
+        EyCi3h7QmfW98BeHmxU4r31cMok+ix0fUo4rlyANQ/VCqk/34oZTP74CP/HGD3D7vSAghd
+        5qXl7I8AYInpstifra3+F4u0yLpRef0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-514-jwqao8p3NgSZNlMDDv8DlQ-1; Sun, 27 Dec 2020 16:12:38 -0500
+X-MC-Unique: jwqao8p3NgSZNlMDDv8DlQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6A1151005504;
+        Sun, 27 Dec 2020 21:12:36 +0000 (UTC)
+Received: from x1.localdomain.com (ovpn-112-25.ams2.redhat.com [10.36.112.25])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 55B54629C0;
+        Sun, 27 Dec 2020 21:12:33 +0000 (UTC)
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     Lee Jones <lee.jones@linaro.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>, patches@opensource.cirrus.com,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: [PATCH 00/14] MFD/extcon/ASoC: Add support for Intel Bay Trail boards with WM5102 codec
+Date:   Sun, 27 Dec 2020 22:12:18 +0100
+Message-Id: <20201227211232.117801-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-References: <1608539124-4914-1-git-send-email-luojiaxing@huawei.com>
-In-Reply-To: <1608539124-4914-1-git-send-email-luojiaxing@huawei.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sun, 27 Dec 2020 22:09:46 +0100
-Message-ID: <CACRpkdasX+rxkG8jWVSxGDepKOr5XMhGf6k=9LEh2hN_UcxEXg@mail.gmail.com>
-Subject: Re: [PATCH v1] gpio: hisi: delete some unused variables in hisi_gpio_probe()
-To:     Luo Jiaxing <luojiaxing@huawei.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 21, 2020 at 9:25 AM Luo Jiaxing <luojiaxing@huawei.com> wrote:
+Hi All,
 
-> kernel test rebot report that dat, set and clr in hisi_gpio_probe() is
-> unused variables. So delete it.
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
+This patch series adds support for Intel Bay Trail based device which use
+a WM5102 codec for audio output/input. This was developed and tested on a
+Lenovo Yoga Tablet 1051L.
 
-I fixed this in the tree before sending the pull request to Torvalds so this
-problem is already solved.
+This series consists of 3 parts:
+1. Arizona MFD drv patches for ACPI bindings, better jack-detect support
+   and misc. fixes
+2. extcon-arizona driver fixes and improved jack reporting (this depends
+   on the MFD changes)
+3. ASoC patches in the form of a quirk for BYTCR detecting, a new
+   machine driver for BYT + WM5102 and jack-detect support for the new
+   machine driver (which again depends on the MFD changes).
 
-Yours,
-Linus Walleij
+Given that 2. and 3. depend on the MFD changes I believe that it is best
+if all patches in this series are merged through the MFD tree (once
+reviewed and acked) and then Lee can provide a immutable branch for
+the ASoC and extcon maintainers to merge into their trees.
+
+I have a patch with matching UCM profile changes available here:
+https://github.com/jwrdegoede/alsa-ucm-conf/commit/316109e7814926ba984322c1d9190575fab9021c
+
+This series + the UCM profile has been tested with both the SST and
+SOF ASoC drivers for BYT devices.
+
+Regards,
+
+Hans
+
+BugLink: https://github.com/thesofproject/linux/issues/2485
+
