@@ -2,101 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 149E52E3205
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 17:59:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2D4A2E3217
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 18:22:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726417AbgL0Q7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 11:59:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726045AbgL0Q7N (ORCPT
+        id S1726309AbgL0RWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 12:22:11 -0500
+Received: from mo4-p00-ob.smtp.rzone.de ([85.215.255.20]:23216 "EHLO
+        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726087AbgL0RWK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 11:59:13 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2879AC061794
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 08:58:33 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id b26so19179957lff.9
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 08:58:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=ZkMPV9Td1S5uycOwIvh1VSBjqIoKt6ivrgzO9euGk6k=;
-        b=h3UjHTQbZFTWREq+YdFLvQBlQCi9hnxTEZ/35Nh0HoABAJr5WfFqpVpjYGNaB1xmiV
-         QSSwbOcRT9t5twuVfXp/+546HHtWj4ntWY8DIRAbGjsm6WyESRiQB8qRKg1zE/zQmJhR
-         vmkb6o2KYncK60Tipdq1sej93wypwjkm5qYRGZ3G+doS/RWC/KhBNIeVETy8eNVWxH5F
-         cwkOJeJkWFQADKjV/ZLeCANmoWJGRTUcqoRfcXIVI8oqOIuqjkP9zsTLvHY0+7J+wO+5
-         AbZ6hNZZn4/D6ZIDjAHlITMUQAS11Z5CtC6iiAdKx1J4ysyEcRy1DseppeZ3nPk/NWrt
-         7DcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=ZkMPV9Td1S5uycOwIvh1VSBjqIoKt6ivrgzO9euGk6k=;
-        b=sN5qYZBv7v2JBMOQOifj2/NLpMgQ5zy/oPZiKRrPdP3UTRJE68kfZLJlAKNRLjN30h
-         J1ojzg2t+Fy4KbOt1xIFsxXwlu2BcJsMUbFvvQP4x4KSVKx3Tf3Jz6M7y1kY471TNX0V
-         sgW7V93LzxsOhV6CEbwYevFYJIXJzR+MvXRmDFFWGFtQQf3Cg9xaSdgUk+oy8TeqmibI
-         qrfbHgQIFQYyfQfxjgrEYX3OXh9tEO4x1O9xPoCVKJhYB9FNEeRRBxxDdK5m4cOjgQeZ
-         I2HguR/HjmfLYJaTrllslDMVJXdONlJDdDXFGo4PsiDwR5JqJ+FyspR/UHfFM1oBenTc
-         jBvA==
-X-Gm-Message-State: AOAM531kkeNXOrRol6ZUBEoSBVuULBpD6Khin846sHb79GXeN/lHCIfi
-        TSBJDUXml99kWJtf4U8GUAx1PQqAGoX+UV7V4pTPUefvhBpSgA==
-X-Google-Smtp-Source: ABdhPJwa3TKMysxlJ5jAuwHJUdFJSYmcqOJkHmdRh2j7s+MTi2xaduXesCaOpK2yv7ARglvAc7DFLrxdqRWIuw0Nj+c=
-X-Received: by 2002:ac2:4ec4:: with SMTP id p4mr19484820lfr.130.1609088311615;
- Sun, 27 Dec 2020 08:58:31 -0800 (PST)
+        Sun, 27 Dec 2020 12:22:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1609089496;
+        s=strato-dkim-0002; d=dawncrow.de;
+        h=Message-Id:Date:Subject:Cc:To:From:From:Subject:Sender;
+        bh=AYP9y6KOydXsdhMgYt+y5hc/J9s2ujIb0ELIsjHwReo=;
+        b=B1N4mQyoCQbOtoM4HqloJUM5h5+BJxXJeAKC1SAYeUqU+c5ZdJti9siJ+9jUbuL0lo
+        bxb8lbK1YebPJKSrbdWv4Ae1Hu+tFEsXHmooBLKP9kv5GMpXeScAt3m5DrZHGUl375QB
+        nkylqoPaqLIpfHuxLBCnPQybZengRNCHE0uxXTAhaH1FQGd1fshqt50J7m851OZseUJe
+        LJ8m0nQalCYh6BvxsDf4XPfyLWFiRes6ZfPABoMZifPrQM9fmcgElLf8j6bundhbudth
+        cYu1edndPwMzwD6Chdlt/b8m3qEsSC23QTC1YPxea0KkeBPDFBK/BzLnpu2qlTmaW2ge
+        giKQ==
+X-RZG-AUTH: ":ImkWY2CseuihIZy6ZWWciR6unPhpN+aXzZGGjY6ptdusOaLnXzn3ovD/FrJVNw=="
+X-RZG-CLASS-ID: mo00
+Received: from tesla.fritz.box
+        by smtp.strato.de (RZmta 47.10.7 DYNA|AUTH)
+        with ESMTPSA id L0b32cwBRHEA68j
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Sun, 27 Dec 2020 18:14:10 +0100 (CET)
+From:   =?UTF-8?q?Andr=C3=A9=20Hentschel?= <nerv@dawncrow.de>
+To:     robh+dt@kernel.org, bcousson@baylibre.com, tony@atomide.com,
+        linux-omap@vger.kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: dts: omap3-echo: Add speaker sound card support
+Date:   Sun, 27 Dec 2020 18:13:53 +0100
+Message-Id: <20201227171353.2002674-1-nerv@dawncrow.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <CABXGCsPsXSTh+WO2XESOU+Q1ocrWmS1c1YJFarzmA=woK_ke5Q@mail.gmail.com>
-In-Reply-To: <CABXGCsPsXSTh+WO2XESOU+Q1ocrWmS1c1YJFarzmA=woK_ke5Q@mail.gmail.com>
-From:   Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Date:   Sun, 27 Dec 2020 21:58:20 +0500
-Message-ID: <CABXGCsPBBDX3ozAgtT174nesiM+Gx4UkQi+PD27jB3i9OQ=G0g@mail.gmail.com>
-Subject: Re: [bug] Radeon 3900XT not switch to graphic mode on kernel 5.10
-To:     amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 27 Dec 2020 at 21:39, Mikhail Gavrilov
-<mikhail.v.gavrilov@gmail.com> wrote:
-> I suppose the root of cause my problem here:
->
-> [    3.961326] amdgpu 0000:0b:00.0: Direct firmware load for
-> amdgpu/sienna_cichlid_sos.bin failed with error -2
-> [    3.961359] amdgpu 0000:0b:00.0: amdgpu: failed to init sos firmware
-> [    3.961433] [drm:psp_sw_init [amdgpu]] *ERROR* Failed to load psp firmware!
-> [    3.961529] [drm:amdgpu_device_init.cold [amdgpu]] *ERROR* sw_init
-> of IP block <psp> failed -2
-> [    3.961549] amdgpu 0000:0b:00.0: amdgpu: amdgpu_device_ip_init failed
-> [    3.961569] amdgpu 0000:0b:00.0: amdgpu: Fatal error during GPU init
-> [    3.961911] amdgpu: probe of 0000:0b:00.0 failed with error -2
->
+This adds audio playback to the first generation Amazon Echo
 
-# dnf provides */sienna_cichlid_sos.bin
-Last metadata expiration check: 3:01:27 ago on Sun 27 Dec 2020 06:53:25 PM +05.
-linux-firmware-20201218-116.fc34.noarch : Firmware files used by the
-Linux kernel
-Repo        : @System
-Matched from:
-Filename    : /usr/lib/firmware/amdgpu/sienna_cichlid_sos.bin
+Signed-off-by: André Hentschel <nerv@dawncrow.de>
+---
 
-linux-firmware-20201218-116.fc34.noarch : Firmware files used by the
-Linux kernel
-Repo        : rawhide
-Matched from:
-Filename    : /usr/lib/firmware/amdgpu/sienna_cichlid_sos.bin
+It took me by far too long to get this working as the codec sets one important bit based on the
+combination of provided supplies. That was just too hidden for me.
+The first generation Amazon Echo was codenamed Misto, so I used that for the sound card name.
 
-# dnf install linux-firmware-20201218-116.fc34.noarch
-Last metadata expiration check: 3:02:11 ago on Sun 27 Dec 2020 06:53:25 PM +05.
-Package linux-firmware-20201218-116.fc34.noarch is already installed.
-Dependencies resolved.
-Nothing to do.
-Complete!
+ arch/arm/boot/dts/omap3-echo.dts | 67 ++++++++++++++++++++++++++++++++
+ 1 file changed, 67 insertions(+)
 
-Looks like firmware is present. So I didn't understand why the kernel
-cannot read firmware.
+diff --git a/arch/arm/boot/dts/omap3-echo.dts b/arch/arm/boot/dts/omap3-echo.dts
+index 93ffeddada1e..b9fd113979f2 100644
+--- a/arch/arm/boot/dts/omap3-echo.dts
++++ b/arch/arm/boot/dts/omap3-echo.dts
+@@ -86,6 +86,38 @@ &gpio3 12 GPIO_ACTIVE_HIGH /* GPIO_76 */
+ 		linux,axis = <REL_X>;
+ 		rotary-encoder,relative-axis;
+ 	};
++
++	speaker_amp: speaker-amplifier {
++		compatible = "simple-audio-amplifier";
++		enable-gpios = <&gpio5 1 GPIO_ACTIVE_HIGH>;	/* gpio_129 */
++		sound-name-prefix = "Speaker Amp";
++		VCC-supply = <&vcc1v8>;
++	};
++
++	sound {
++		compatible = "simple-audio-card";
++		simple-audio-card,name = "Misto Speaker";
++		simple-audio-card,widgets =
++			"Speaker", "Speaker";
++		simple-audio-card,routing =
++			"Speaker Amp INL", "HPL",
++			"Speaker Amp INR", "HPR",
++			"Speaker", "Speaker Amp OUTL",
++			"Speaker", "Speaker Amp OUTR";
++		simple-audio-card,format = "i2s";
++		simple-audio-card,bitclock-master = <&sound_master>;
++		simple-audio-card,frame-master = <&sound_master>;
++		simple-audio-card,aux-devs = <&speaker_amp>;
++
++		simple-audio-card,cpu {
++			sound-dai = <&mcbsp2>;
++		};
++
++		sound_master: simple-audio-card,codec {
++			sound-dai = <&codec0>;
++			system-clock-frequency = <19200000>;
++		};
++	};
+ };
+ 
+ &i2c1 {
+@@ -96,6 +128,13 @@ tps: tps@2d {
+ 	};
+ };
+ 
++&mcbsp2 {
++	status = "okay";
++	#sound-dai-cells = <0>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&mcbsp2_pins>;
++};
++
+ &i2c2 {
+ 	clock-frequency = <400000>;
+ 
+@@ -277,6 +316,22 @@ chan8 {
+ 	};
+ };
+ 
++&i2c3 {
++	clock-frequency = <400000>;
++
++	codec0: codec@18 {
++		#sound-dai-cells = <0>;
++		compatible = "ti,tlv320aic32x4";
++		reg = <0x18>;
++		clocks = <&sys_clkout1>;
++		clock-names = "mclk";
++		ldoin-supply = <&vcc1v8>;
++		iov-supply = <&vcc1v8>;
++		reset-gpios = <&gpio3 10 GPIO_ACTIVE_LOW>;	/* gpio_74 */
++	};
++};
++
++
+ #include "tps65910.dtsi"
+ 
+ &omap3_pmx_core {
+@@ -290,6 +345,9 @@ button_pins: pinmux_button_pins {
+ 		pinctrl-single,pins = <
+ 			OMAP3_CORE1_IOPAD(0x20dc, PIN_INPUT | MUX_MODE4)	/* dss_data0.gpio_70 */
+ 			OMAP3_CORE1_IOPAD(0x20e0, PIN_INPUT | MUX_MODE4)	/* dss_data2.gpio_72 */
++			OMAP3_CORE1_IOPAD(0x20e4, PIN_OUTPUT | MUX_MODE4)	/* dss_data4.gpio_74 */
++			OMAP3_CORE1_IOPAD(0x20fa, PIN_OUTPUT_PULLDOWN | MUX_MODE4)	/* dss_data15.gpio_85 */
++			OMAP3_CORE1_IOPAD(0x2a1a, PIN_OUTPUT | MUX_MODE0)	/* sys_clkout1.sys_clkout1 */
+ 		>;
+ 	};
+ 
+@@ -318,6 +376,15 @@ OMAP3_CORE1_IOPAD(0x2168, PIN_INPUT_PULLUP | MUX_MODE0)		/* sdmmc2_dat6.sdmmc2_d
+ 			OMAP3_CORE1_IOPAD(0x216a, PIN_INPUT_PULLUP | MUX_MODE0)		/* sdmmc2_dat7.sdmmc2_dat7 */
+ 		>;
+ 	};
++
++	mcbsp2_pins: pinmux_mcbsp2_pins {
++		pinctrl-single,pins = <
++			OMAP3_CORE1_IOPAD(0x213c, PIN_INPUT | MUX_MODE0)	/* mcbsp2_fsx.mcbsp2_fsx */
++			OMAP3_CORE1_IOPAD(0x213e, PIN_INPUT | MUX_MODE0)	/* mcbsp2_clkx.mcbsp2_clkx */
++			OMAP3_CORE1_IOPAD(0x2140, PIN_INPUT | MUX_MODE0)	/* mcbsp2_dr.mcbsp2.dr */
++			OMAP3_CORE1_IOPAD(0x2142, PIN_OUTPUT | MUX_MODE0)	/* mcbsp2_dx.mcbsp2_dx */
++		>;
++	};
+ };
+ 
+ &omap3_pmx_core2 {
+-- 
+2.25.1
 
---
-Best Regards,
-Mike Gavrilov.
