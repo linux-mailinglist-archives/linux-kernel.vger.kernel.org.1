@@ -2,97 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FE852E2F82
+	by mail.lfdr.de (Postfix) with ESMTP id AFD722E2F83
 	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 01:49:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726158AbgL0Aq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Dec 2020 19:46:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725834AbgL0Aq4 (ORCPT
+        id S1726189AbgL0ArY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Dec 2020 19:47:24 -0500
+Received: from mail-1.ca.inter.net ([208.85.220.69]:60078 "EHLO
+        mail-1.ca.inter.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725834AbgL0ArY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Dec 2020 19:46:56 -0500
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E38FCC0613C1
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 16:46:15 -0800 (PST)
-Received: by mail-ot1-x334.google.com with SMTP id r9so6341447otk.11
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 16:46:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=SCcDAq1vx1rq+khgfj2C8Z6X6qgNeLzbSQZknX3MThk=;
-        b=sy/rykXo/FRQEq0/TxDVzPDMGqgFybPLTzbWbJNL/gqnd98GstGFv+ALhsFgRy+eNZ
-         dw2LSeN91oKxnmfWVCuGmpBfLvYrospIBbmwcI1CgFU6dMwKuhEABRhgubsOFJiu+Fvq
-         eN1iXuUyXoOrg7JJZ3ualv6xYvwj7vl5CjaiCbqrUrvAvF8Gw6WLMFyBiw818OiFbex4
-         W91QV1M0kUfTcDf6vKhZJSAi6zwrQ5cpP0vd8GTq4HUvbB6E6AtCNv3kBN6aarnGlbXY
-         /04w53yPA3slMfsLvTHRXctX6R0/6A2NqzCzqE5XZLNDm33Tt0VU6Tf023dUbCbwi2fh
-         6YGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=SCcDAq1vx1rq+khgfj2C8Z6X6qgNeLzbSQZknX3MThk=;
-        b=g50dmRCvMmZB0M6+Kpbu0lePzC52KtChgKaZX9TkBpPT4K+BKEgQnvytUNXEOxA6D/
-         fcIzlVDVl4VLYnOH7kJooSp1mg9R/t4RFml0KUHuzL0QgxreoHYohFGaDdHScMa0khKv
-         NNMQb7lV7FrEAhAwMsVZe6LljknyO5517VRKsyH+7EiEGSnViHXKDXZsXhG0fyqJuOvz
-         vlur2Ip1jIgAz9//o/7bWqUR6PAivpskIpa6Jz6/rHdnOZCfAjopGJ86qPvXt/D7dIc1
-         FciQOCY3MBVndXTOIMhoIn6SIcRRnMUuD7qJgZxKt6UndIzpzKccHluA3owBpnZfUR9s
-         OVtg==
-X-Gm-Message-State: AOAM5332HgxB3MZiUU/NHkyVNUfLNPle+SdzkxQLmdX776d8X4akEmcW
-        qxmiD5bVOpFqvekopIbG8uXUjGTKstgygg==
-X-Google-Smtp-Source: ABdhPJzwlNaCKWypZRgSBM2YuwBl7PIaMGbdjfU62eHRJZtGMdj6masRtaLILV4j6n4gjYdm1kEQlQ==
-X-Received: by 2002:a05:6830:114e:: with SMTP id x14mr28821611otq.253.1609029974392;
-        Sat, 26 Dec 2020 16:46:14 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id t26sm8322868otm.17.2020.12.26.16.46.12
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Sat, 26 Dec 2020 16:46:13 -0800 (PST)
-Date:   Sat, 26 Dec 2020 16:45:55 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Android Kernel Team <kernel-team@android.com>
-Subject: Re: [PATCH 1/2] mm: Allow architectures to request 'old' entries
- when prefaulting
-In-Reply-To: <20201226224016.dxjmordcfj75xgte@box>
-Message-ID: <alpine.LSU.2.11.2012261623140.1022@eggly.anvils>
-References: <CAHk-=wgO2LsoKhX7MjSECo+Xrj1-Me7tzRfNcsdEZBRwJW1cQg@mail.gmail.com> <20201219124103.w6isern3ywc7xbur@box> <CAHk-=wifcVaxaTn_RbZ=idfYFazTPwm8t5cB1rY6xEBjbcfO5g@mail.gmail.com> <20201222100047.p5zdb4ghagncq2oe@box> <alpine.LSU.2.11.2012231905300.5723@eggly.anvils>
- <20201225113157.e7hmluffh56fszfc@box> <CAHk-=wiT50aEErZgZOrbFQ=GhFuM3MnBmHoSBSScN9rmXMnOKQ@mail.gmail.com> <20201226204335.dikqkrkezqet6oqf@box> <alpine.LSU.2.11.2012261246450.1629@eggly.anvils> <CAHk-=wjesveWEQZ4tqRssSSQvuxx46LqYfME+uxKfghxAe6U_w@mail.gmail.com>
- <20201226224016.dxjmordcfj75xgte@box>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        Sat, 26 Dec 2020 19:47:24 -0500
+Received: from localhost (offload-3.ca.inter.net [208.85.220.70])
+        by mail-1.ca.inter.net (Postfix) with ESMTP id 0CE4F2EA07B;
+        Sat, 26 Dec 2020 19:46:43 -0500 (EST)
+Received: from mail-1.ca.inter.net ([208.85.220.69])
+        by localhost (offload-3.ca.inter.net [208.85.220.70]) (amavisd-new, port 10024)
+        with ESMTP id l43aPXFgTGuZ; Sat, 26 Dec 2020 19:34:37 -0500 (EST)
+Received: from [192.168.48.23] (host-104-157-204-209.dyn.295.ca [104.157.204.209])
+        (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dgilbert@interlog.com)
+        by mail-1.ca.inter.net (Postfix) with ESMTPSA id A7FB52EA02F;
+        Sat, 26 Dec 2020 19:46:39 -0500 (EST)
+Reply-To: dgilbert@interlog.com
+Subject: Re: [PATCH] [v2] scsi: scsi_debug: Fix memleak in scsi_debug_init
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>, kjlu@umn.edu
+Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201226061503.20050-1-dinghao.liu@zju.edu.cn>
+From:   Douglas Gilbert <dgilbert@interlog.com>
+Message-ID: <fc129fb4-a255-68cd-92e1-3206ac2b085f@interlog.com>
+Date:   Sat, 26 Dec 2020 19:46:39 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <20201226061503.20050-1-dinghao.liu@zju.edu.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 27 Dec 2020, Kirill A. Shutemov wrote:
+On 2020-12-26 1:15 a.m., Dinghao Liu wrote:
+> When sdeb_zbc_model does not match BLK_ZONED_NONE,
+> BLK_ZONED_HA or BLK_ZONED_HM, we should free sdebug_q_arr
+> to prevent memleak. Also there is no need to execute
+> sdebug_erase_store() on failure of sdeb_zbc_model_str().
 > 
-> Here's the fixup I have so far. It doesn't blow up immediately, but please
-> take a closer look. Who knows what stupid mistake I did this time. :/
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-It's been running fine on x86_64 for a couple of hours (but of course
-my testing is deficient, in not detecting the case Linus spotted).
+Acked-by: Douglas Gilbert <dgilbert@interlog.com>
 
-But I just thought I'd try it on i386 (hadn't tried previous versions)
-and this has a new disappointment: crashes when booting, in the "check
-if the page fault is solved" in do_fault_around().  I imagine a highmem
-issue with kmap of the pte address, but I'm reporting now before looking
-into it further (but verified that current linux.git i386 boots up fine).
+Thanks.
 
-Maybe easily fixed: but does suggest this needs exposure in linux-next.
+> ---
+> 
+> Changelog:
+> 
+> v2: - Add missed assignment statement for ret.
+> ---
+>   drivers/scsi/scsi_debug.c | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/scsi/scsi_debug.c b/drivers/scsi/scsi_debug.c
+> index 24c0f7ec0351..4a08c450b756 100644
+> --- a/drivers/scsi/scsi_debug.c
+> +++ b/drivers/scsi/scsi_debug.c
+> @@ -6740,7 +6740,7 @@ static int __init scsi_debug_init(void)
+>   		k = sdeb_zbc_model_str(sdeb_zbc_model_s);
+>   		if (k < 0) {
+>   			ret = k;
+> -			goto free_vm;
+> +			goto free_q_arr;
+>   		}
+>   		sdeb_zbc_model = k;
+>   		switch (sdeb_zbc_model) {
+> @@ -6753,7 +6753,8 @@ static int __init scsi_debug_init(void)
+>   			break;
+>   		default:
+>   			pr_err("Invalid ZBC model\n");
+> -			return -EINVAL;
+> +			ret = -EINVAL;
+> +			goto free_q_arr;
+>   		}
+>   	}
+>   	if (sdeb_zbc_model != BLK_ZONED_NONE) {
+> 
 
-Hugh
