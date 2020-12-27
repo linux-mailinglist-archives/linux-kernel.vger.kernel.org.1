@@ -2,101 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FC182E32A9
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 21:05:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63E752E32AA
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 21:13:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726420AbgL0UEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 15:04:09 -0500
-Received: from mailoutvs17.siol.net ([185.57.226.208]:53065 "EHLO
-        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726247AbgL0UEJ (ORCPT
+        id S1726123AbgL0UNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 15:13:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726067AbgL0UNA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 15:04:09 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTP id C9636520B40;
-        Sun, 27 Dec 2020 21:03:25 +0100 (CET)
-X-Virus-Scanned: amavisd-new at psrvmta09.zcs-production.pri
-Received: from mail.siol.net ([127.0.0.1])
-        by localhost (psrvmta09.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id DmIu3-HX0VqP; Sun, 27 Dec 2020 21:03:25 +0100 (CET)
-Received: from mail.siol.net (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTPS id 804825212B4;
-        Sun, 27 Dec 2020 21:03:25 +0100 (CET)
-Received: from jernej-laptop.localnet (89-212-178-211.dynamic.t-2.net [89.212.178.211])
-        (Authenticated sender: jernej.skrabec@siol.net)
-        by mail.siol.net (Postfix) with ESMTPA id 00382520B40;
-        Sun, 27 Dec 2020 21:03:23 +0100 (CET)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
-To:     linux@armlinux.org.uk, mripard@kernel.org, wens@csie.org,
-        Corentin Labbe <clabbe@baylibre.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com, Corentin Labbe <clabbe@baylibre.com>
-Subject: Re: [PATCH RESEND] ARM: configs: sunxi: enable brcm wireless
-Date:   Sun, 27 Dec 2020 21:03:23 +0100
-Message-ID: <25142918.GuFC1uy7vR@jernej-laptop>
-In-Reply-To: <20201227200000.28526-1-clabbe@baylibre.com>
-References: <20201227200000.28526-1-clabbe@baylibre.com>
+        Sun, 27 Dec 2020 15:13:00 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 082ECC061794
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 12:12:20 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id b26so19833237lff.9
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 12:12:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ASNmgMMwfzw0LbrYHtLnhPGdwLHLSLekD8OCrKhQBS0=;
+        b=BYaAyo5dGZ2AVajdkz7XJpp87lRLqPcUThVTo4lD3YD5OauF4LnkAOIra7E7n4G/9q
+         T7MpcJLXkjoX64GXVD0UrN+L8ckt2LCePtd9QynxUmxbZD2vNYa7t/+eaEJ20pBj0C1o
+         uNCXBsFV0vquG0IBR/Xq4jM9V+W+kodBhXqLQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ASNmgMMwfzw0LbrYHtLnhPGdwLHLSLekD8OCrKhQBS0=;
+        b=c2tP5XgmYhLlqrfTlY4vckiMcnqe8p45TojHq1KKXh17HZQrkylf3zncPaBZU1RfXp
+         Log7hN3L5NqBupmP90GhvvCmH6cwdTcemiFe60McJh/xRhhkWhVzKNsAk6Um1WyxMwyD
+         KTPqyVgDvGGdNxC6yGujHKcZ3Oc11Fl2qCMUDwZQCmNzNLLb7n0OCGHceh4Q1a+Yc0hk
+         JrP6IQuosZFfVXxW8pjzDmh+wY5Q/x5XQOIXkOfy5NxdUVWkUaSXjLKsCrWmMohI2Gif
+         Z7Gf+pVGvHjdjyi3Tg1dqvFd3O29ZbDNmKwZEsTyV7WdwLrzoZSd/nrH/uEg5NLyksCB
+         jEkA==
+X-Gm-Message-State: AOAM530TiA2IIzlEIQyvpEpzJqNjgD7oj1UHXTLwfGnqixQ1ytWaxNrv
+        ziDRxXDiYfOVAxM+eCp7gy4c48h1MhDqEA==
+X-Google-Smtp-Source: ABdhPJw1DaSckgCETW48lefFj/pU7c0ssjiirA38VrC5K//QtPwrHK3liKw1Iea/WdwxDQBTZ/C0GA==
+X-Received: by 2002:a05:651c:120f:: with SMTP id i15mr21642188lja.339.1609099938036;
+        Sun, 27 Dec 2020 12:12:18 -0800 (PST)
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
+        by smtp.gmail.com with ESMTPSA id u25sm6169585lji.99.2020.12.27.12.12.16
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 27 Dec 2020 12:12:16 -0800 (PST)
+Received: by mail-lf1-f44.google.com with SMTP id s26so19834892lfc.8
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 12:12:16 -0800 (PST)
+X-Received: by 2002:a2e:9b13:: with SMTP id u19mr19433416lji.48.1609099936085;
+ Sun, 27 Dec 2020 12:12:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <16089960203931@kroah.com> <5ab86253-7703-e892-52b7-e6a8af579822@iki.fi>
+ <CAHk-=wgtU5+7jPuPtDEpwhTuUUkA3CBN=V92Jg0Ag0=3LhfKqA@mail.gmail.com>
+ <b45f1065-2da9-08c0-26f2-e5b69e780bc6@iki.fi> <CAHk-=wgy6NQrTMwiEWpHUPvW-nfgX7XrBrsxQ6TkRy6NasSFQg@mail.gmail.com>
+In-Reply-To: <CAHk-=wgy6NQrTMwiEWpHUPvW-nfgX7XrBrsxQ6TkRy6NasSFQg@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 27 Dec 2020 12:12:00 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whF=+EzrxP=3zNMH-1L2Nfs7fNoSufqDwOdRQo5qyMwfw@mail.gmail.com>
+Message-ID: <CAHk-=whF=+EzrxP=3zNMH-1L2Nfs7fNoSufqDwOdRQo5qyMwfw@mail.gmail.com>
+Subject: Re: LXC broken with 5.10-stable?, ok with 5.9-stable (Re: Linux 5.10.3)
+To:     Jussi Kivilinna <jussi.kivilinna@iki.fi>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        stable <stable@vger.kernel.org>, lwn@lwn.net,
+        Jiri Slaby <jslaby@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+On Sun, Dec 27, 2020 at 11:05 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Sun, Dec 27, 2020 at 10:39 AM Jussi Kivilinna <jussi.kivilinna@iki.fi> wrote:
+> >
+> > 5.10.3 with patch compiles fine, but does not solve the issue.
+>
+> Duh. adding the read_iter only fixes kernel_read(). For splice, it also needs a
+>
+>         .splice_read = generic_file_splice_read,
+>
+> in the file operations, something like this...
 
-Dne nedelja, 27. december 2020 ob 21:00:00 CET je Corentin Labbe napisal(a):
-> Lot of sunxi boards have BRCM wireless device, so let's enable necessary
-> options for it in our defconfig.
+Ok, I verified that patch with the test-case in the bugzilla, and it
+seems trivially fine.
 
-Idea is good but modules (=m) instead of build in (=y) would be better. As you 
-said, not all boards have such wifi and there is no need to make kernel binary 
-bigger.
+So it's committed as 14e3e989f6a5 ("proc mountinfo: make splice
+available again") now.
 
-Best regards,
-Jernej
-
-> 
-> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
-> ---
->  arch/arm/configs/sunxi_defconfig | 23 ++++++++++++++++++++++-
->  1 file changed, 22 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/configs/sunxi_defconfig
-> b/arch/arm/configs/sunxi_defconfig index a60c134c5e04..4891aefdef7d 100644
-> --- a/arch/arm/configs/sunxi_defconfig
-> +++ b/arch/arm/configs/sunxi_defconfig
-> @@ -52,7 +52,28 @@ CONFIG_STMMAC_ETH=y
->  # CONFIG_NET_VENDOR_WIZNET is not set
->  CONFIG_MICREL_PHY=y
->  CONFIG_REALTEK_PHY=y
-> -# CONFIG_WLAN is not set
-> +CONFIG_WLAN=y
-> +# CONFIG_WLAN_VENDOR_ADMTEK is not set
-> +# CONFIG_WLAN_VENDOR_ATH is not set
-> +# CONFIG_WLAN_VENDOR_ATMEL is not set
-> +CONFIG_WLAN_VENDOR_BROADCOM=y
-> +# CONFIG_WLAN_VENDOR_CISCO is not set
-> +# CONFIG_WLAN_VENDOR_INTEL is not set
-> +# CONFIG_WLAN_VENDOR_INTERSIL is not set
-> +# CONFIG_WLAN_VENDOR_MARVELL is not set
-> +# CONFIG_WLAN_VENDOR_MEDIATEK is not set
-> +# CONFIG_WLAN_VENDOR_MICROCHIP is not set
-> +# CONFIG_WLAN_VENDOR_RALINK is not set
-> +# CONFIG_WLAN_VENDOR_REALTEK is not set
-> +# CONFIG_WLAN_VENDOR_RSI is not set
-> +# CONFIG_WLAN_VENDOR_ST is not set
-> +# CONFIG_WLAN_VENDOR_TI is not set
-> +# CONFIG_WLAN_VENDOR_ZYDAS is not set
-> +# CONFIG_WLAN_VENDOR_QUANTENNA is not set
-> +CONFIG_CFG80211=y
-> +CONFIG_CFG80211_WEXT=y
-> +CONFIG_MAC80211=y
-> +CONFIG_BRCMFMAC=y
->  CONFIG_INPUT_EVDEV=y
->  CONFIG_KEYBOARD_SUN4I_LRADC=y
->  # CONFIG_INPUT_MOUSE is not set
-
-
-
-
+             Linus
