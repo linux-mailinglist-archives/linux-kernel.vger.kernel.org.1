@@ -2,64 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FEBC2E31A7
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 16:14:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B98B2E3194
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 15:41:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726278AbgL0PLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 10:11:46 -0500
-Received: from mail-m965.mail.126.com ([123.126.96.5]:44576 "EHLO
-        mail-m965.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726117AbgL0PLp (ORCPT
+        id S1726227AbgL0Olk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 09:41:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726103AbgL0Oli (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 10:11:45 -0500
-X-Greylist: delayed 2016 seconds by postgrey-1.27 at vger.kernel.org; Sun, 27 Dec 2020 10:11:43 EST
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=arGaXfT9hHcCAzWG5e
-        5RPiv2ifF/YyMiSpUcRiFWkhA=; b=cBq4bAg8gey0S0eJo1WsgVykCED+dnYNnb
-        Kpr3YT0JmpRyRppWX60t4QYAajIEg8CEsSsTwM1THTdyeGhJ0tMfIyuFvMBE8iuA
-        RFSeBpxSc+mdfCAbbZZp89FBDDqfxTRHDbHFGHp6xSzL82k0Lb6wTsykO1LvR7ia
-        +J3HjPTSE=
-Received: from localhost.localdomain (unknown [36.112.86.14])
-        by smtp10 (Coremail) with SMTP id NuRpCgBHWKvQm+hf44Isig--.54645S2;
-        Sun, 27 Dec 2020 22:36:01 +0800 (CST)
-From:   Defang Bo <bodefang@126.com>
-To:     gerg@linux-m68k.org, geert@linux-m68k.org
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Defang Bo <bodefang@126.com>
-Subject: [PATCH 2/2] m68k: let clk_enable() return immediately if clk is NULL
-Date:   Sun, 27 Dec 2020 22:35:53 +0800
-Message-Id: <1609079753-4038536-1-git-send-email-bodefang@126.com>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: NuRpCgBHWKvQm+hf44Isig--.54645S2
-X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvj4RRUDXUUUUU
-X-Originating-IP: [36.112.86.14]
-X-CM-SenderInfo: pergvwxdqjqiyswou0bp/1tbiCxEI11x5cpoSBQAAsf
+        Sun, 27 Dec 2020 09:41:38 -0500
+Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [IPv6:2001:67c:2050::465:103])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88D6AC061795;
+        Sun, 27 Dec 2020 06:40:57 -0800 (PST)
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [80.241.60.240])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4D3jzB5twzzQlF7;
+        Sun, 27 Dec 2020 15:40:54 +0100 (CET)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dylanvanassche.be;
+        s=MBO0001; t=1609080052;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Su9EmqxTFyjd3dtZ0DJqAJWM+HidJ1cY0TUrGFRJtpo=;
+        b=sLFqocuaAMFLk60h50QhcG5fIPWm/zaW4FFBBEEy2n5nsKx2D8sBpFtDRn8Pk73sTXrwQi
+        yNGnf0Y0DXpqQCu3kvfv/4gc8h4Wa5vagjI59XH9nic1Ui+uBYht5xqtI3gPeyjaqhY12m
+        0rLHRVu/Ij2q49e7L8HYS73wQpm9NQGLz/5juABu1NXtHzpGbck/AXzuXKNuQXCndTBqAJ
+        aPdc9KNmvCmS85v9fvf1ooKQ87Q0LTRbBcSbCUGx7mCLwa9WDKLBdkbSocFgEh/qo4b5mx
+        2H7/rSJpFxvkiz5uy1HxnQO3OJHCb7pcqlG051InCXVoT/o2yCpW+3TzO/L53Q==
+Received: from smtp1.mailbox.org ([80.241.60.240])
+        by gerste.heinlein-support.de (gerste.heinlein-support.de [91.198.250.173]) (amavisd-new, port 10030)
+        with ESMTP id ir1MYudsjB1I; Sun, 27 Dec 2020 15:40:51 +0100 (CET)
+From:   me@dylanvanassche.be
+To:     pavel@ucw.cz, dmurphy@ti.com, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Dylan Van Assche <me@dylanvanassche.be>
+Subject: [PATCH] leds: gpio: Set max brightness to 1
+Date:   Sun, 27 Dec 2020 15:40:15 +0100
+Message-Id: <20201227144014.6590-1-me@dylanvanassche.be>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -6.19 / 15.00 / 15.00
+X-Rspamd-Queue-Id: 87D281850
+X-Rspamd-UID: cf6e61
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There should be a check for clk to prevent NULL pointer dereference.
+From: Dylan Van Assche <me@dylanvanassche.be>
 
-Signed-off-by: Defang Bo <bodefang@126.com>
+GPIO LEDs only know 2 states: ON or OFF and do not have PWM capabilities.
+However, the max brightness is reported as 255.
+
+This patch sets the max brightness value of a GPIO controlled LED to 1.
+
+Tested on my PinePhone 1.2.
+
+Signed-off-by: Dylan Van Assche <me@dylanvanassche.be>
 ---
- arch/m68k/coldfire/clk.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/leds/leds-gpio.c | 3 ++-
+ include/linux/leds.h     | 1 +
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/m68k/coldfire/clk.c b/arch/m68k/coldfire/clk.c
-index 7bc666e..cf1ed97 100644
---- a/arch/m68k/coldfire/clk.c
-+++ b/arch/m68k/coldfire/clk.c
-@@ -90,6 +90,9 @@ EXPORT_SYMBOL(clk_get);
- int clk_enable(struct clk *clk)
- {
- 	unsigned long flags;
-+	if (!clk)
-+		return;
-+
- 	spin_lock_irqsave(&clk_lock, flags);
- 	if ((clk->enabled++ == 0) && clk->clk_ops)
- 		clk->clk_ops->enable(clk);
+diff --git a/drivers/leds/leds-gpio.c b/drivers/leds/leds-gpio.c
+index 93f5b1b60fde..0d66f19d71ba 100644
+--- a/drivers/leds/leds-gpio.c
++++ b/drivers/leds/leds-gpio.c
+@@ -96,7 +96,8 @@ static int create_gpio_led(const struct gpio_led *template,
+ 	} else {
+ 		state = (template->default_state == LEDS_GPIO_DEFSTATE_ON);
+ 	}
+-	led_dat->cdev.brightness = state ? LED_FULL : LED_OFF;
++	led_dat->cdev.brightness = state ? LED_ON : LED_OFF;
++	led_dat->cdev.max_brightness = LED_ON;
+ 	if (!template->retain_state_suspended)
+ 		led_dat->cdev.flags |= LED_CORE_SUSPENDRESUME;
+ 	if (template->panic_indicator)
+diff --git a/include/linux/leds.h b/include/linux/leds.h
+index 6a8d6409c993..43f0cac2a87b 100644
+--- a/include/linux/leds.h
++++ b/include/linux/leds.h
+@@ -514,6 +514,7 @@ struct gpio_led {
+ 	const char *name;
+ 	const char *default_trigger;
+ 	unsigned 	gpio;
++	unsigned	max_brightness;
+ 	unsigned	active_low : 1;
+ 	unsigned	retain_state_suspended : 1;
+ 	unsigned	panic_indicator : 1;
 -- 
-2.7.4
+2.26.2
 
