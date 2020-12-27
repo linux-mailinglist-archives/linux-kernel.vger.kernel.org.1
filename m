@@ -2,74 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 469092E3213
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 18:21:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 110C62E3219
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 18:22:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726194AbgL0RTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 12:19:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36534 "EHLO
+        id S1726280AbgL0RVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 12:21:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726087AbgL0RTd (ORCPT
+        with ESMTP id S1726087AbgL0RVs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 12:19:33 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEA85C061794
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 09:18:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=/+c9pOaV0/kDhj+PvJMnlw5NkCnX1ZZEc2bZWQnlqLg=; b=OEUJacxzMj+ZTnclz7hsPrxnD2
-        AwcxGMIHe8wyonENWv7KM9dInTYz4eIMlol5xWGQXXepLOngjIMHwSMTV7gkF1zWOSSHvTF7yBJCj
-        HHzxY2u340Gs3MTuYCTN/um2za96SU5Vb5iaqXRQOM0PUsnDIVZA0I6nZm83crQBxko74VbqXU1KY
-        hEKyF4l9xpfl7JFzhNCnatCR2FSfX1o2gwVRTq0CNxNLCfbKOAxg3JDfzj1iEh+MUAzcV2FCAKM3/
-        2QhpcO/VS87Vl92SdwxFtAo7n2UaON1sRtypIomu4aav40t/pmz1O29Fk8NhfGZgak+PFI0RUI5J5
-        Qc2xFsaQ==;
-Received: from [2601:1c0:6280:3f0::64ea] (helo=smtpauth.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ktZgs-0000yj-Ep; Sun, 27 Dec 2020 17:18:46 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Zaslonko Mikhail <zaslonko@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>
-Subject: [PATCH -mmotm] lib/zlib: dfltcc: remove dfltcc_syms.o from Makefile
-Date:   Sun, 27 Dec 2020 09:18:37 -0800
-Message-Id: <20201227171837.15492-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Sun, 27 Dec 2020 12:21:48 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43650C061795
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 09:21:08 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id l11so19359637lfg.0
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 09:21:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/pF2u3ZN5FurHISQaJ1JtNR9iaJ6KKzYmu9mpHtJpUI=;
+        b=IVNN3iPccXLlG4jjYCeA2+vbs0ybfl7PDmvZMtdZjxbZZ69iKRVB0/bFH5MSvtpMpd
+         KaGJ3DBM/jjWONeqZFVe2uXaVLl9vTbcSNpLkNItyoOfrKb4jzZeMv5G22D5RgSfDzTJ
+         i55PFNV3p81XlgP6KuQXGK1Q1Ap25od0VdgU0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/pF2u3ZN5FurHISQaJ1JtNR9iaJ6KKzYmu9mpHtJpUI=;
+        b=l3Wrm0LUlGfflcMJfpgyPiKRW7Tm9InO7/J3l8kG/6/GLDjrdm/McWcC3s4cSigNa4
+         Q/gKqwp28T9PX03Va2KBsq3FoJ/lZhEHjUE2SBWUOZaeqYgQVP/bYnnzG3hCOTLDg12v
+         gRjJD26yAlWvXW9hiFSDZio7l3z5onP1LOc71fNr9xFpAo/JfC5V02T6Hostc4hhs5vZ
+         Ty3gXFUh83QqdnXzwN3+UBiucU5MfRKK4pQ1DboSt3b2t6NlJvS9bqMzzGVpYfbQXiXc
+         8qzuiiQeNrTjcjchDzifg1skkNYf/XtQsEvjA54mE08j5qFuPwWdtmkh7ujhPuNyAGlO
+         SvqA==
+X-Gm-Message-State: AOAM530bvLfaJ4O57DLP+R79piTOoHDGzwVFHE85YzWR8CVIZdKwQvO2
+        30f96rMxXpdoG1l26Uf0+zXS41lKJzG0aQ==
+X-Google-Smtp-Source: ABdhPJzMsWsl7jj+S9uMnkTEWSGuigqkd9eorsq3k6qJWtcL3O4ta6GgJ8+nTd1kIFqBsAieB/0Cjw==
+X-Received: by 2002:a2e:6a04:: with SMTP id f4mr21292203ljc.255.1609089666437;
+        Sun, 27 Dec 2020 09:21:06 -0800 (PST)
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
+        by smtp.gmail.com with ESMTPSA id m21sm5967644ljb.108.2020.12.27.09.21.04
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 27 Dec 2020 09:21:04 -0800 (PST)
+Received: by mail-lf1-f52.google.com with SMTP id y19so19161957lfa.13
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 09:21:04 -0800 (PST)
+X-Received: by 2002:a2e:8995:: with SMTP id c21mr19345113lji.251.1609089664219;
+ Sun, 27 Dec 2020 09:21:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <16089960203931@kroah.com> <5ab86253-7703-e892-52b7-e6a8af579822@iki.fi>
+In-Reply-To: <5ab86253-7703-e892-52b7-e6a8af579822@iki.fi>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 27 Dec 2020 09:20:47 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgtU5+7jPuPtDEpwhTuUUkA3CBN=V92Jg0Ag0=3LhfKqA@mail.gmail.com>
+Message-ID: <CAHk-=wgtU5+7jPuPtDEpwhTuUUkA3CBN=V92Jg0Ag0=3LhfKqA@mail.gmail.com>
+Subject: Re: LXC broken with 5.10-stable?, ok with 5.9-stable (Re: Linux 5.10.3)
+To:     Jussi Kivilinna <jussi.kivilinna@iki.fi>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        stable <stable@vger.kernel.org>, lwn@lwn.net,
+        Jiri Slaby <jslaby@suse.cz>
+Content-Type: multipart/mixed; boundary="000000000000d924a305b7756174"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Oops, missed removing this deleted file from the Makefile.
+--000000000000d924a305b7756174
+Content-Type: text/plain; charset="UTF-8"
 
-make[3]: *** No rule to make target 'lib/zlib_dfltcc/dfltcc_syms.o', needed by 'lib/zlib_dfltcc/built-in.a'.
+On Sun, Dec 27, 2020 at 8:32 AM Jussi Kivilinna <jussi.kivilinna@iki.fi> wrote:
+>
+> Has this been fixed in 5.11-rc? Is there any patch that I could backport and test with 5.10?
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Zaslonko Mikhail <zaslonko@linux.ibm.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: Christian Borntraeger <borntraeger@de.ibm.com>
----
-Andrew, please fold into
-zlib-move-export_symbol-and-module_license-out-of-dfltcc_symsc.patch.
+Here's a patch to test. Entirely untested by me. I'm surprised at how
+people use sendfile() on random files. Oh well..
 
- lib/zlib_dfltcc/Makefile |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+          Linus
 
---- linux-next-20201218.orig/lib/zlib_dfltcc/Makefile
-+++ linux-next-20201218/lib/zlib_dfltcc/Makefile
-@@ -8,4 +8,4 @@
- 
- obj-$(CONFIG_ZLIB_DFLTCC) += zlib_dfltcc.o
- 
--zlib_dfltcc-objs := dfltcc.o dfltcc_deflate.o dfltcc_inflate.o dfltcc_syms.o
-+zlib_dfltcc-objs := dfltcc.o dfltcc_deflate.o dfltcc_inflate.o
+--000000000000d924a305b7756174
+Content-Type: application/octet-stream; name=patch
+Content-Disposition: attachment; filename=patch
+Content-Transfer-Encoding: base64
+Content-ID: <f_kj7efh0f0>
+X-Attachment-Id: f_kj7efh0f0
+
+IGZzL3Byb2NfbmFtZXNwYWNlLmMgfCA2ICsrKy0tLQogMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0
+aW9ucygrKSwgMyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9mcy9wcm9jX25hbWVzcGFjZS5j
+IGIvZnMvcHJvY19uYW1lc3BhY2UuYwppbmRleCBlNTlkNGJiM2E4OWUuLjAwMWU4YmQxMmU2NSAx
+MDA2NDQKLS0tIGEvZnMvcHJvY19uYW1lc3BhY2UuYworKysgYi9mcy9wcm9jX25hbWVzcGFjZS5j
+CkBAIC0zMjAsNyArMzIwLDcgQEAgc3RhdGljIGludCBtb3VudHN0YXRzX29wZW4oc3RydWN0IGlu
+b2RlICppbm9kZSwgc3RydWN0IGZpbGUgKmZpbGUpCiAKIGNvbnN0IHN0cnVjdCBmaWxlX29wZXJh
+dGlvbnMgcHJvY19tb3VudHNfb3BlcmF0aW9ucyA9IHsKIAkub3BlbgkJPSBtb3VudHNfb3BlbiwK
+LQkucmVhZAkJPSBzZXFfcmVhZCwKKwkucmVhZF9pdGVyCT0gc2VxX3JlYWRfaXRlciwKIAkubGxz
+ZWVrCQk9IHNlcV9sc2VlaywKIAkucmVsZWFzZQk9IG1vdW50c19yZWxlYXNlLAogCS5wb2xsCQk9
+IG1vdW50c19wb2xsLApAQCAtMzI4LDcgKzMyOCw3IEBAIGNvbnN0IHN0cnVjdCBmaWxlX29wZXJh
+dGlvbnMgcHJvY19tb3VudHNfb3BlcmF0aW9ucyA9IHsKIAogY29uc3Qgc3RydWN0IGZpbGVfb3Bl
+cmF0aW9ucyBwcm9jX21vdW50aW5mb19vcGVyYXRpb25zID0gewogCS5vcGVuCQk9IG1vdW50aW5m
+b19vcGVuLAotCS5yZWFkCQk9IHNlcV9yZWFkLAorCS5yZWFkX2l0ZXIJPSBzZXFfcmVhZF9pdGVy
+LAogCS5sbHNlZWsJCT0gc2VxX2xzZWVrLAogCS5yZWxlYXNlCT0gbW91bnRzX3JlbGVhc2UsCiAJ
+LnBvbGwJCT0gbW91bnRzX3BvbGwsCkBAIC0zMzYsNyArMzM2LDcgQEAgY29uc3Qgc3RydWN0IGZp
+bGVfb3BlcmF0aW9ucyBwcm9jX21vdW50aW5mb19vcGVyYXRpb25zID0gewogCiBjb25zdCBzdHJ1
+Y3QgZmlsZV9vcGVyYXRpb25zIHByb2NfbW91bnRzdGF0c19vcGVyYXRpb25zID0gewogCS5vcGVu
+CQk9IG1vdW50c3RhdHNfb3BlbiwKLQkucmVhZAkJPSBzZXFfcmVhZCwKKwkucmVhZF9pdGVyCT0g
+c2VxX3JlYWRfaXRlciwKIAkubGxzZWVrCQk9IHNlcV9sc2VlaywKIAkucmVsZWFzZQk9IG1vdW50
+c19yZWxlYXNlLAogfTsK
+--000000000000d924a305b7756174--
