@@ -2,94 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A6C02E330B
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 22:59:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35BBC2E3310
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 23:04:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726269AbgL0V6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 16:58:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41318 "EHLO mail.kernel.org"
+        id S1726293AbgL0WEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 17:04:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726172AbgL0V6F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 16:58:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC7CC22AAB;
-        Sun, 27 Dec 2020 21:57:24 +0000 (UTC)
+        id S1726208AbgL0WEE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Dec 2020 17:04:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 313262242A;
+        Sun, 27 Dec 2020 22:03:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609106245;
-        bh=4MFzvoyxvWRh9e/3p4uTIb7qp4diLUFpLw6324rdMdI=;
+        s=k20201202; t=1609106603;
+        bh=gQ23fPbegXnDwD7TFyM8SYshRz6kzvTEijfM7w8+3s0=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=FrRdiI4VtCP2Jh+pvScqUsl0+NLr/hDFsYNIMcdHqiKmtAKU0ErVUy/KAmaHidnu5
-         dHgdZPyhmGZ/dntmnfYbrSnW4NO77NIV1ZSSdj9PasXEoenFrLfnU9G+Iy3L++rwNA
-         tvKuPRsPi3oWt15Rxq0jCA+yucOtWeBnSHGUTtDTrf27ZaGWmJxxxgKSGP4sPtOwbc
-         ZtuuVpPVAQfU8lkpx/UFH7YfTHG0fZ/6bRYgtKp2oC3aiiYXzPKUZ0bP7PngqJoiK6
-         GZmL8F1XJP5Z+wThMmQep72m9+fVeZIeck8Hl20+R4fzlymThaagM9oCnIYmqP+5Ie
-         nXcymR/0WNW1Q==
-Received: by mail-lf1-f47.google.com with SMTP id h205so20154848lfd.5;
-        Sun, 27 Dec 2020 13:57:24 -0800 (PST)
-X-Gm-Message-State: AOAM5310DrFXDFYKy6Aaf+OtfO1y5Kqfm7W/o/187eSMRPv4ge0Trl3k
-        6stDNqtpqY6b6I69hVCK6LZqsvigmhfwS0s3hpM=
-X-Google-Smtp-Source: ABdhPJzukkONqv2e5bnGIEXtJcKYZ332DEHUE7bGwmBOEZDK+ob7v7nMB60W3loyn6lRBtDdmzT+2joI5asFOrYXATI=
-X-Received: by 2002:a2e:8910:: with SMTP id d16mr20131771lji.357.1609106243184;
- Sun, 27 Dec 2020 13:57:23 -0800 (PST)
+        b=eP3I77v/R0SuCfmOw5xMVPxQnv7vqNSHyEb7kTOVyaOZ56khQIC881SVGrCvmRuK/
+         OnGKFQmEba8jgBZfYtBJesyyezVYlmLJBBG5TbALHXgihg0mgp9u2ugEiaJYvE8LHh
+         21A0ExJ0hASZRD8stNtGn1jR15j6gRyE4V6d5calcnUKi9ph1/hg7PXnZokDkU9Sid
+         a2SxFj7ukZSCw1ttAyk6DXtPfKYYCohivw5nxHOOPg6tf6O4JZDuV2H0FJzVPDYGzC
+         stWxbH8KXccygJLVdQnwgqfZbDZgv6R7PK/PHxxP+2vN1AVylU6Xip5xt/VWhKO/F5
+         FZHmn9dBUPs+w==
+Received: by mail-ot1-f51.google.com with SMTP id n42so7770925ota.12;
+        Sun, 27 Dec 2020 14:03:23 -0800 (PST)
+X-Gm-Message-State: AOAM532R4llhtRLxOWgVET0xMYZu5SJnsiCH5LkX7MO+h6bZ9At8DG4N
+        9h+slvgjWzmcDqIWZFRRt2N3G8Q0t0WbcD7pzdE=
+X-Google-Smtp-Source: ABdhPJyy+i6e8QV64+vlH7BXLIF7x52lnf5sVIHwLc1ReRHJuAXnbd8gDZmUHonkqTZ2Cj12WLLoqyQ2phtmg8WnFeI=
+X-Received: by 2002:a9d:7a4b:: with SMTP id z11mr31374431otm.305.1609106602554;
+ Sun, 27 Dec 2020 14:03:22 -0800 (PST)
 MIME-Version: 1.0
-References: <dbd2761e-cd7d-d60a-f769-ecc8c6335814@canonical.com>
- <EA47EF7A-06D8-4B37-BED7-F04753D70DF5@fb.com> <a85943ed-60d4-05ad-9f6d-d76324fa5538@redhat.com>
-In-Reply-To: <a85943ed-60d4-05ad-9f6d-d76324fa5538@redhat.com>
-From:   Song Liu <song@kernel.org>
-Date:   Sun, 27 Dec 2020 13:57:12 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW5Fs9Zz+-2ZEZQe3g5jen4SiHNf7sRtYCN0w4TBGZ1Vsw@mail.gmail.com>
-Message-ID: <CAPhsuW5Fs9Zz+-2ZEZQe3g5jen4SiHNf7sRtYCN0w4TBGZ1Vsw@mail.gmail.com>
-Subject: Re: PROBLEM: Recent raid10 block discard patchset causes filesystem
- corruption on fstrim
-To:     Xiao Ni <xni@redhat.com>
-Cc:     Song Liu <songliubraving@fb.com>,
-        Matthew Ruffell <matthew.ruffell@canonical.com>,
-        linux-raid <linux-raid@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>, Coly Li <colyli@suse.de>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        "khalid.elmously@canonical.com" <khalid.elmously@canonical.com>,
-        Jay Vosburgh <jay.vosburgh@canonical.com>
+References: <cover.1608963094.git.syednwaris@gmail.com> <bc7bf5556fce464179550c67fbec121626d08e85.1608963095.git.syednwaris@gmail.com>
+In-Reply-To: <bc7bf5556fce464179550c67fbec121626d08e85.1608963095.git.syednwaris@gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Sun, 27 Dec 2020 23:03:06 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a35N1TvRQsGt+G52XSx0N4FQe_76pU4sf4EiH3Gq=s66A@mail.gmail.com>
+Message-ID: <CAK8P3a35N1TvRQsGt+G52XSx0N4FQe_76pU4sf4EiH3Gq=s66A@mail.gmail.com>
+Subject: Re: [PATCH 1/5] clump_bits: Introduce the for_each_set_clump macro
+To:     Syed Nayyar Waris <syednwaris@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Robert Richter <rrichter@marvell.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux PM list <linux-pm@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Xiao,
+On Sat, Dec 26, 2020 at 7:42 AM Syed Nayyar Waris <syednwaris@gmail.com> wrote:
+>
+> This macro iterates for each group of bits (clump) with set bits,
+> within a bitmap memory region. For each iteration, "start" is set to
+> the bit offset of the found clump, while the respective clump value is
+> stored to the location pointed by "clump". Additionally, the
+> bitmap_get_value() and bitmap_set_value() functions are introduced to
+> respectively get and set a value of n-bits in a bitmap memory region.
+> The n-bits can have any size from 1 to BITS_PER_LONG. size less
+> than 1 or more than BITS_PER_LONG causes undefined behaviour.
+> Moreover, during setting value of n-bit in bitmap, if a situation arise
+> that the width of next n-bit is exceeding the word boundary, then it
+> will divide itself such that some portion of it is stored in that word,
+> while the remaining portion is stored in the next higher word. Similar
+> situation occurs while retrieving the value from bitmap.
+>
+> GCC gives warning in bitmap_set_value(): https://godbolt.org/z/rjx34r
+> Add explicit check to see if the value being written into the bitmap
+> does not fall outside the bitmap.
+> The situation that it is falling outside would never be possible in the
+> code because the boundaries are required to be correct before the
+> function is called. The responsibility is on the caller for ensuring the
+> boundaries are correct.
+> The code change is simply to silence the GCC warning messages
+> because GCC is not aware that the boundaries have already been checked.
+> As such, we're better off using __builtin_unreachable() here because we
+> can avoid the latency of the conditional check entirely.
 
-On Thu, Dec 24, 2020 at 2:18 AM Xiao Ni <xni@redhat.com> wrote:
->
->
->
-[...]
->
-> [  789.709501] discard bio start : 70968, size : 191176
-> [  789.709507] first stripe index 69, start disk index 0, start disk
-> offset 70968
-> [  789.709509] last stripe index 256, end disk index 0, end disk offset
-> 262144
-> [  789.709511] disk 0, dev start : 70968, dev end : 262144
-> [  789.709515] disk 1, dev start : 70656, dev end : 262144
->
-> For example, in this test case, it has 2 near copies. The
-> start_disk_offset for the first disk is 70968.
-> It should use the same offset address for second disk. But it uses the
-> start address of this chunk.
-> It discard more region. The patch in the attachment can fix this
-> problem. It split the region that
-> doesn't align with chunk size.
->
-> There is another problem. The stripe size should be calculated
-> differently for near layout and far layout.
->
-> @Song, do you want me to use a separate patch for this fix, or fix this
-> in the original patch?
+Didn't the __builtin_unreachable() end up leading to an objtool
+warning about incorrect stack frames for the code path that leads
+into the undefined behavior? I thought I saw a message from the 0day
+build bot about that and didn't expect to see it again after that.
 
-Please fold in the changes in the original patches and resend the whole
-set.
+Can you actually measure any performance difference compared
+to BUG_ON() that avoids the undefined behavior? Practically
+all CPUs from the past 20 years have branch predictors that should
+completely hide measurable overhead from this.
 
-Thanks,
-Song
-
->
-> Merry Christmas
-> Xiao
->
+      Arnd
