@@ -2,58 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BFC82E333B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 00:50:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C97202E333C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 00:56:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726348AbgL0Xti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 18:49:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39586 "EHLO
+        id S1726340AbgL0Xzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 18:55:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726226AbgL0Xth (ORCPT
+        with ESMTP id S1726226AbgL0Xzn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 18:49:37 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9629FC061794
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 15:48:56 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id o19so20546060lfo.1
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 15:48:56 -0800 (PST)
+        Sun, 27 Dec 2020 18:55:43 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76F79C061794
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 15:55:02 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id s26so20472391lfc.8
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 15:55:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=shutemov-name.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=nB8xv5aDzi9QZC7x042/wPrqEAmds7UP1embI0f0XQA=;
-        b=X5n8CrD9yFerM/J/Rj8Czj3TIr87QTQfXtsmcT+3Dh/5sqnqwVYRo4HbCNT1GcLCY1
-         xfF+3UVO3LTLceeF/dNZ9BezjS1uLC8Z+ShsVJUbDBjx73nmWu5ovKSHm3aWzmc8RW5E
-         IHm9l+vwENZTphwrBKhDITvtjTosUm0ChecqTKYR2qXgRuj1dNB1envKe26gV2PnB/h2
-         M5pLDyoZ2a41t1IiUACpvVtbLMcyuNyCTKlduwnlCyL6rnKWO3wc/Oa2mKVx/4A/urw4
-         xiglgob6j648RvFw7vLCDJKpZ03lbvFVoNeIyVIlrejy4bmZYEVpjKRVm6ElFLOBa13h
-         93gQ==
+        bh=xmJNI249gAw1eNUFrWj2VxwAMyqsP7VUbzENqHLIkiE=;
+        b=eGrz+3G3ldRHpwYfQWS1aIBCX7zp0kn6kgXPCgf50roRjpcIsG4QBLH588+FKyj1XZ
+         6/UCFHHk0ZiM+UCZuBSfqUrc7M0ef/GldoI+PytyYDhcXg8tmHj15ghREV00nXAflS4I
+         ENpM+YEjdvnXIZeV2wXD7eAdlkuiJQH9pDZG5q369NTjB55N+9HeJmiGB5gGSFtQ4ZvX
+         GxNwrOZvPl8jF/RXfDuuOvYvf7cbP5aJ6ZBr6Ju695bQV7SgXXkCqB+NOPhvjhz/Pni2
+         5XNQ8Av65MzvDtMm0kvJwk6LqR8jLGSsPl9tKab+kmSvJMpeFE+OxxbkWhIXGXGg9RwS
+         zdEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=nB8xv5aDzi9QZC7x042/wPrqEAmds7UP1embI0f0XQA=;
-        b=hQcf/IuFhM+9ry5Z9Ty0qQMJbgpYZGuG0T9QSJL7nixHtO6GqdaRxMBHJRR/FXsCLF
-         WJ48fYMMuGlGEtbh6IQoH7sgG1YvImVowNUSzbR3W7owL/uAsXEa69MIrZTwNW4gyscN
-         tZPwZeod6U9G9Io1V+khSCSqYbIh+qflWVuUfB/CsWp+ajBYF+8ZdVtyk+MJkzjSPT/A
-         UqEdBcSSQktIrKu9nn0eghmCSLJAhXsoNyDAbrv58q09bTZ6Q+2qDcrDdEkDma9l4ver
-         0ekHxTAVy9XHDsiGuH0KiOZbKd1B0bVzaMretpILXnRzdgXkDievc7kWnoHmRfFHWr9o
-         6NWA==
-X-Gm-Message-State: AOAM5303ghUxubVnIuTcQIBeQQh4z1bPLHdS+t/cOTPeGaAPUXQYNDP/
-        XPZdFzvilKxPYYGn37WVHGP8eQ==
-X-Google-Smtp-Source: ABdhPJyJSQU8P/N4ocQJe9uGdt6EOmq5xdNWiy7ysUBmkVU8RK5KAU5aeTNN3akrAtKsHRClAed5Pw==
-X-Received: by 2002:a19:88c3:: with SMTP id k186mr17214116lfd.276.1609112934824;
-        Sun, 27 Dec 2020 15:48:54 -0800 (PST)
+        bh=xmJNI249gAw1eNUFrWj2VxwAMyqsP7VUbzENqHLIkiE=;
+        b=TGL5fkt1icXCW4nyqoKwLu+vr07e5/y1Wz6QhJzdJXQvCwCOEmhQpk0lDsiLODaZeW
+         ZAqxBmC7oyE9Yn27ZqcFckqOHXH6nef/TloMZohUSjWHuMxvAWqfwA8CZ6hEsHcii502
+         12gBQeGLqDJlXg2sRfdgFqsRPk0ElYdWEXVuuycQNYXg9j0ciDZ+0gNQu3UZaEyVyiO/
+         OcV1yIBRAQ5CIfFM6lkzcekRm1oe+NF94R7HcJjnv101nYsRHgVYbKyAQTmYX0KoU+/6
+         xkyUfxPxilEEtw45eUbALx4qALH18LwBuibbBgQgzCglHVcvKGQKigRSslWF7I7Qck39
+         vU0Q==
+X-Gm-Message-State: AOAM530mLqi1xtyzXlfVeYN1OrtwFYo9ACa0qDNewfZeN05T8bqZYHVg
+        THIJS5gVd8HIfb+Ee4aUYqYczA==
+X-Google-Smtp-Source: ABdhPJxzVAWk+JyIAR1+Z2ujWOHCKfHWqw4n3I4zu0nU3Ufl6Q51u+KV6NVYyEBmSAqD0TgWVUCWJw==
+X-Received: by 2002:a2e:8685:: with SMTP id l5mr21458558lji.261.1609113300832;
+        Sun, 27 Dec 2020 15:55:00 -0800 (PST)
 Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id c142sm5158091lfg.309.2020.12.27.15.48.53
+        by smtp.gmail.com with ESMTPSA id f26sm6222491ljg.137.2020.12.27.15.55.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Dec 2020 15:48:54 -0800 (PST)
+        Sun, 27 Dec 2020 15:55:00 -0800 (PST)
 Received: by box.localdomain (Postfix, from userid 1000)
-        id BD66B102712; Mon, 28 Dec 2020 02:48:53 +0300 (+03)
-Date:   Mon, 28 Dec 2020 02:48:53 +0300
+        id 2447B102712; Mon, 28 Dec 2020 02:55:00 +0300 (+03)
+Date:   Mon, 28 Dec 2020 02:55:00 +0300
 From:   "Kirill A. Shutemov" <kirill@shutemov.name>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Damian Tometzki <linux@tometzki.de>,
         Matthew Wilcox <willy@infradead.org>,
         "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
         Will Deacon <will@kernel.org>,
@@ -62,56 +64,46 @@ Cc:     Hugh Dickins <hughd@google.com>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
         Vinayak Menon <vinmenon@codeaurora.org>,
         Android Kernel Team <kernel-team@android.com>
 Subject: Re: [PATCH 1/2] mm: Allow architectures to request 'old' entries
  when prefaulting
-Message-ID: <20201227234853.5mjyxcybucts3kbq@box>
-References: <alpine.LSU.2.11.2012231905300.5723@eggly.anvils>
- <20201225113157.e7hmluffh56fszfc@box>
- <CAHk-=wiT50aEErZgZOrbFQ=GhFuM3MnBmHoSBSScN9rmXMnOKQ@mail.gmail.com>
- <20201226204335.dikqkrkezqet6oqf@box>
- <alpine.LSU.2.11.2012261246450.1629@eggly.anvils>
+Message-ID: <20201227235500.mkiixkgnukywd7sf@box>
+References: <alpine.LSU.2.11.2012261246450.1629@eggly.anvils>
  <CAHk-=wjesveWEQZ4tqRssSSQvuxx46LqYfME+uxKfghxAe6U_w@mail.gmail.com>
  <20201226224016.dxjmordcfj75xgte@box>
  <alpine.LSU.2.11.2012261623140.1022@eggly.anvils>
  <alpine.LSU.2.11.2012261816520.1071@eggly.anvils>
  <CAHk-=wjHvipz5DqWUFP5zuPK-kWM4QD-eokf75V8NGNATnn+BQ@mail.gmail.com>
+ <X+jvZchuTptrxkCH@fedora.tometzki.de>
+ <alpine.LSU.2.11.2012271418460.1091@eggly.anvils>
+ <CAHk-=whykpz1RfBZ8Cqk=80_d6BWsppGYBJXoWuWB9n+uUKxVA@mail.gmail.com>
+ <CAHk-=wjvHxQDet0=DTkqmYni_fgDsG=2_-idECFxnd+ECKdg_g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wjHvipz5DqWUFP5zuPK-kWM4QD-eokf75V8NGNATnn+BQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wjvHxQDet0=DTkqmYni_fgDsG=2_-idECFxnd+ECKdg_g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 27, 2020 at 11:38:22AM -0800, Linus Torvalds wrote:
-> On Sat, Dec 26, 2020 at 6:38 PM Hugh Dickins <hughd@google.com> wrote:
-> >
-> > This patch (like its antecedents) moves the pte_unmap_unlock() from
-> > after do_fault_around()'s "check if the page fault is solved" into
-> > filemap_map_pages() itself (which apparently does not NULLify vmf->pte
-> > after unmapping it, which is poor, but good for revealing this issue).
-> > That looks cleaner, but of course there was a very good reason for its
-> > original positioning.
+On Sun, Dec 27, 2020 at 03:40:36PM -0800, Linus Torvalds wrote:
+> I think Kirill was intending to move the "if (ret)" up into the path
+> that sets it, IOW something like
 > 
-> Good catch.
+> +       if (!(vma->vm_flags & VM_SHARED)) {
+> +               ret = check_stable_address_space(vma->vm_mm);
+> +               if (ret)
+> +                       return ret;
+> +       }
 > 
-> > Maybe you want to change the ->map_pages prototype, to pass down the
-> > requested address too, so that it can report whether the requested
-> > address was resolved or not.  Or it could be left to __do_fault(),
-> > or even to a repeated fault; but those would be less efficient.
+> instead. But that patch as-is is broken.
 > 
-> Let's keep the old really odd "let's unlock in the caller" for now,
-> and minimize the changes.
+> Kirill?
 
-I did what Hugh proposed and it got clear to my eyes. It gets somewhat
-large, but take a look.
+Right. Once again, patch is below.
 
-The patch below incorporates all fixups from the thread.
-
-From 3496fc6bde3f6ed0c98d811dda02465bf86fdb90 Mon Sep 17 00:00:00 2001
+From d50eff470de025f602711ef546aa87d0da1727f5 Mon Sep 17 00:00:00 2001
 From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 Date: Sat, 19 Dec 2020 15:19:23 +0300
 Subject: [PATCH] mm: Cleanup faultaround and finish_fault() codepaths
@@ -135,9 +127,9 @@ Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
  fs/xfs/xfs_file.c       |   7 +-
  include/linux/mm.h      |  12 +--
  include/linux/pgtable.h |  11 +++
- mm/filemap.c            | 172 +++++++++++++++++++++++++++---------
- mm/memory.c             | 191 +++++++++++-----------------------------
- 5 files changed, 206 insertions(+), 187 deletions(-)
+ mm/filemap.c            | 172 ++++++++++++++++++++++++++---------
+ mm/memory.c             | 192 +++++++++++-----------------------------
+ 5 files changed, 207 insertions(+), 187 deletions(-)
 
 diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
 index 5b0f93f73837..040fa64291ed 100644
@@ -449,7 +441,7 @@ index 0b2067b3c328..c5da09f3f363 100644
  EXPORT_SYMBOL(filemap_map_pages);
  
 diff --git a/mm/memory.c b/mm/memory.c
-index c48f8df6e502..247abfcd60d8 100644
+index c48f8df6e502..e51638b92e7c 100644
 --- a/mm/memory.c
 +++ b/mm/memory.c
 @@ -3490,7 +3490,7 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
@@ -624,7 +616,7 @@ index c48f8df6e502..247abfcd60d8 100644
  		page = vmf->cow_page;
  	else
  		page = vmf->page;
-@@ -3863,13 +3762,35 @@ vm_fault_t finish_fault(struct vm_fault *vmf)
+@@ -3863,13 +3762,36 @@ vm_fault_t finish_fault(struct vm_fault *vmf)
  	 * check even for read faults because we might have lost our CoWed
  	 * page
  	 */
@@ -635,10 +627,11 @@ index c48f8df6e502..247abfcd60d8 100644
 -	if (vmf->pte)
 -		pte_unmap_unlock(vmf->pte, vmf->ptl);
 -	return ret;
-+	if (!(vma->vm_flags & VM_SHARED))
++	if (!(vma->vm_flags & VM_SHARED)) {
 +		ret = check_stable_address_space(vma->vm_mm);
-+	if (ret)
-+		return ret;
++		if (ret)
++			return ret;
++	}
 +
 +	if (pmd_none(*vmf->pmd)) {
 +		if (PageTransCompound(page)) {
@@ -667,7 +660,7 @@ index c48f8df6e502..247abfcd60d8 100644
  }
  
  static unsigned long fault_around_bytes __read_mostly =
-@@ -3938,7 +3859,6 @@ static vm_fault_t do_fault_around(struct vm_fault *vmf)
+@@ -3938,7 +3860,6 @@ static vm_fault_t do_fault_around(struct vm_fault *vmf)
  	pgoff_t start_pgoff = vmf->pgoff;
  	pgoff_t end_pgoff;
  	int off;
@@ -675,7 +668,7 @@ index c48f8df6e502..247abfcd60d8 100644
  
  	nr_pages = READ_ONCE(fault_around_bytes) >> PAGE_SHIFT;
  	mask = ~(nr_pages * PAGE_SIZE - 1) & PAGE_MASK;
-@@ -3960,31 +3880,11 @@ static vm_fault_t do_fault_around(struct vm_fault *vmf)
+@@ -3960,31 +3881,11 @@ static vm_fault_t do_fault_around(struct vm_fault *vmf)
  	if (pmd_none(*vmf->pmd)) {
  		vmf->prealloc_pte = pte_alloc_one(vmf->vma->vm_mm);
  		if (!vmf->prealloc_pte)
@@ -709,7 +702,7 @@ index c48f8df6e502..247abfcd60d8 100644
  }
  
  static vm_fault_t do_read_fault(struct vm_fault *vmf)
-@@ -4340,7 +4240,18 @@ static vm_fault_t handle_pte_fault(struct vm_fault *vmf)
+@@ -4340,7 +4241,18 @@ static vm_fault_t handle_pte_fault(struct vm_fault *vmf)
  		 */
  		vmf->pte = NULL;
  	} else {
@@ -729,5 +722,8 @@ index c48f8df6e502..247abfcd60d8 100644
  		if (pmd_devmap_trans_unstable(vmf->pmd))
  			return 0;
  		/*
+-- 
+2.26.2
+
 -- 
  Kirill A. Shutemov
