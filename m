@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 221B52E32C3
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 22:15:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1299B2E32C5
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 22:15:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726363AbgL0VOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 16:14:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40307 "EHLO
+        id S1726423AbgL0VOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 16:14:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39611 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726227AbgL0VOJ (ORCPT
+        by vger.kernel.org with ESMTP id S1726371AbgL0VOL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 16:14:09 -0500
+        Sun, 27 Dec 2020 16:14:11 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609103563;
+        s=mimecast20190719; t=1609103565;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=h6DblsvkQcBaI8Wi2z8PNad4xomPrNWUmS5lSu1NYpw=;
-        b=C0JESMdsAIZO1Am6qeL3eCkx/LWdOUeIwVYEqnMXqnwpL1Ro6KwgVcY7y5y5WJehImDq8p
-        a/HAgiSkQYqqh+GT9QKHuLiAyaXvemnxDk8kWC33+h0hI/gHCUnbrFmkCrlZfPR9rXo9m0
-        v5lXG3jMnU8rKqNlH1VkJjvsx5EYlkQ=
+        bh=Vm7Y8WgzRnmtdtSY9WnjMOrzj5tbdz7TQz37CAGCkhc=;
+        b=YQo1yVkB8y4JR4Xk2kSXu+GF2UI+SZyn6Dt4gBDVawC2moloSz4n3N8sFhANjXbO5+m8jw
+        eIAdW4ggajWz0VbfbD2HCTWIyr1sOEnsscPAJprVh3RRdMKYMVO41TsMQ50qcxsxFtX80A
+        /p/1cUTYMVDYNqIQLxcSMd37xVmdM0s=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-325-mPobGU11NJ-A6I5uw4mowA-1; Sun, 27 Dec 2020 16:12:40 -0500
-X-MC-Unique: mPobGU11NJ-A6I5uw4mowA-1
+ us-mta-385-gETInfbCN6GPEb1do1u5WQ-1; Sun, 27 Dec 2020 16:12:43 -0500
+X-MC-Unique: gETInfbCN6GPEb1do1u5WQ-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E9B03E75A;
-        Sun, 27 Dec 2020 21:12:38 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6B190107ACE4;
+        Sun, 27 Dec 2020 21:12:41 +0000 (UTC)
 Received: from x1.localdomain.com (ovpn-112-25.ams2.redhat.com [10.36.112.25])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B069C62A24;
-        Sun, 27 Dec 2020 21:12:36 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3E7A41ACB9;
+        Sun, 27 Dec 2020 21:12:39 +0000 (UTC)
 From:   Hans de Goede <hdegoede@redhat.com>
 To:     Lee Jones <lee.jones@linaro.org>,
         MyungJoo Ham <myungjoo.ham@samsung.com>,
@@ -45,9 +45,9 @@ To:     Lee Jones <lee.jones@linaro.org>,
         Mark Brown <broonie@kernel.org>
 Cc:     Hans de Goede <hdegoede@redhat.com>, patches@opensource.cirrus.com,
         linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: [PATCH 01/14] mfd: arizona: Add jack pointer to struct arizona
-Date:   Sun, 27 Dec 2020 22:12:19 +0100
-Message-Id: <20201227211232.117801-2-hdegoede@redhat.com>
+Subject: [PATCH 02/14] mfd: arizona: Add MODULE_SOFTDEP("pre: arizona_ldo1")
+Date:   Sun, 27 Dec 2020 22:12:20 +0100
+Message-Id: <20201227211232.117801-3-hdegoede@redhat.com>
 In-Reply-To: <20201227211232.117801-1-hdegoede@redhat.com>
 References: <20201227211232.117801-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -57,50 +57,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Linux Arizona driver uses the MFD framework to create several
-sub-devices for the Arizona codec and then uses a driver per function.
+The (shared) probing code of the arizona-i2c and arizona-spi modules
+takes the following steps during init:
 
-The jack-detect support for the Arizona codec is handled by the
-extcon-arizona driver. This driver exports info about the jack state
-to userspace through the standard extcon sysfs class interface.
+1. Call mfd_add_devices() for a set of early child-devices, this
+includes the arizona_ldo1 device which provides one of the
+core-regulators.
 
-But standard Linux userspace does not monitor/use the extcon sysfs
-interface for jack-detection.
+2. Bulk enable the core-regulators.
 
-Add a jack pointer to the shared arizona data struct, this allows
-the ASoC machine driver to create a snd_soc_jack and then pass this
-to the extcon-arizona driver to report jack-detect state, so that
-jack-detection works with standard Linux userspace.
+3. Read the device id.
 
-The extcon-arizona code already depends on (waits for with -EPROBE_DEFER)
-the snd_card being registered by the machine driver, so this does not
-cause any ordering issues.
+4. Call mfd_add_devices() for the other child-devices.
+
+This sequence depends on 1. leading to not only the child-device
+being created, but also the driver for the child-device binding
+to it and registering its regulator.
+
+This requires the arizona_ldo1 driver to be loaded before the
+shared probing code runs. Add a doftdep for this to both modules to
+ensure that this requirement is met.
+
+Note this mirrors the existing MODULE_SOFTDEP("pre: wm8994_regulator")
+in the wm8994 code, which has a similar init sequence.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- include/linux/mfd/arizona/core.h | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/mfd/arizona-i2c.c | 1 +
+ drivers/mfd/arizona-spi.c | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/include/linux/mfd/arizona/core.h b/include/linux/mfd/arizona/core.h
-index 6d6f96b2b29f..5eb269bdbfcb 100644
---- a/include/linux/mfd/arizona/core.h
-+++ b/include/linux/mfd/arizona/core.h
-@@ -115,6 +115,7 @@ enum arizona_type {
- #define ARIZONA_NUM_IRQ                   75
+diff --git a/drivers/mfd/arizona-i2c.c b/drivers/mfd/arizona-i2c.c
+index 4b58e3ad6eb6..2a4a3a164d0a 100644
+--- a/drivers/mfd/arizona-i2c.c
++++ b/drivers/mfd/arizona-i2c.c
+@@ -115,6 +115,7 @@ static struct i2c_driver arizona_i2c_driver = {
  
- struct snd_soc_dapm_context;
-+struct snd_soc_jack;
+ module_i2c_driver(arizona_i2c_driver);
  
- struct arizona {
- 	struct regmap *regmap;
-@@ -148,6 +149,7 @@ struct arizona {
- 	bool ctrlif_error;
++MODULE_SOFTDEP("pre: arizona_ldo1");
+ MODULE_DESCRIPTION("Arizona I2C bus interface");
+ MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
+ MODULE_LICENSE("GPL");
+diff --git a/drivers/mfd/arizona-spi.c b/drivers/mfd/arizona-spi.c
+index 2633e147b76c..704f214d2614 100644
+--- a/drivers/mfd/arizona-spi.c
++++ b/drivers/mfd/arizona-spi.c
+@@ -110,6 +110,7 @@ static struct spi_driver arizona_spi_driver = {
  
- 	struct snd_soc_dapm_context *dapm;
-+	struct snd_soc_jack *jack;
+ module_spi_driver(arizona_spi_driver);
  
- 	int tdm_width[ARIZONA_MAX_AIF];
- 	int tdm_slots[ARIZONA_MAX_AIF];
++MODULE_SOFTDEP("pre: arizona_ldo1");
+ MODULE_DESCRIPTION("Arizona SPI bus interface");
+ MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
+ MODULE_LICENSE("GPL");
 -- 
 2.28.0
 
