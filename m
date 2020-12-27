@@ -2,110 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 110C62E3219
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 18:22:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DB352E321E
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 18:24:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726280AbgL0RVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 12:21:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726087AbgL0RVs (ORCPT
+        id S1726365AbgL0RXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 12:23:47 -0500
+Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:49618 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726336AbgL0RXq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 12:21:48 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43650C061795
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 09:21:08 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id l11so19359637lfg.0
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 09:21:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/pF2u3ZN5FurHISQaJ1JtNR9iaJ6KKzYmu9mpHtJpUI=;
-        b=IVNN3iPccXLlG4jjYCeA2+vbs0ybfl7PDmvZMtdZjxbZZ69iKRVB0/bFH5MSvtpMpd
-         KaGJ3DBM/jjWONeqZFVe2uXaVLl9vTbcSNpLkNItyoOfrKb4jzZeMv5G22D5RgSfDzTJ
-         i55PFNV3p81XlgP6KuQXGK1Q1Ap25od0VdgU0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/pF2u3ZN5FurHISQaJ1JtNR9iaJ6KKzYmu9mpHtJpUI=;
-        b=l3Wrm0LUlGfflcMJfpgyPiKRW7Tm9InO7/J3l8kG/6/GLDjrdm/McWcC3s4cSigNa4
-         Q/gKqwp28T9PX03Va2KBsq3FoJ/lZhEHjUE2SBWUOZaeqYgQVP/bYnnzG3hCOTLDg12v
-         gRjJD26yAlWvXW9hiFSDZio7l3z5onP1LOc71fNr9xFpAo/JfC5V02T6Hostc4hhs5vZ
-         Ty3gXFUh83QqdnXzwN3+UBiucU5MfRKK4pQ1DboSt3b2t6NlJvS9bqMzzGVpYfbQXiXc
-         8qzuiiQeNrTjcjchDzifg1skkNYf/XtQsEvjA54mE08j5qFuPwWdtmkh7ujhPuNyAGlO
-         SvqA==
-X-Gm-Message-State: AOAM530bvLfaJ4O57DLP+R79piTOoHDGzwVFHE85YzWR8CVIZdKwQvO2
-        30f96rMxXpdoG1l26Uf0+zXS41lKJzG0aQ==
-X-Google-Smtp-Source: ABdhPJzMsWsl7jj+S9uMnkTEWSGuigqkd9eorsq3k6qJWtcL3O4ta6GgJ8+nTd1kIFqBsAieB/0Cjw==
-X-Received: by 2002:a2e:6a04:: with SMTP id f4mr21292203ljc.255.1609089666437;
-        Sun, 27 Dec 2020 09:21:06 -0800 (PST)
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
-        by smtp.gmail.com with ESMTPSA id m21sm5967644ljb.108.2020.12.27.09.21.04
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 27 Dec 2020 09:21:04 -0800 (PST)
-Received: by mail-lf1-f52.google.com with SMTP id y19so19161957lfa.13
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 09:21:04 -0800 (PST)
-X-Received: by 2002:a2e:8995:: with SMTP id c21mr19345113lji.251.1609089664219;
- Sun, 27 Dec 2020 09:21:04 -0800 (PST)
+        Sun, 27 Dec 2020 12:23:46 -0500
+Received: from [192.168.42.210] ([93.22.148.120])
+        by mwinf5d09 with ME
+        id 9VMz2400G2c5cNt03VN0zk; Sun, 27 Dec 2020 18:22:02 +0100
+X-ME-Helo: [192.168.42.210]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 27 Dec 2020 18:22:02 +0100
+X-ME-IP: 93.22.148.120
+Subject: Re: [PATCH] cpufreq: brcmstb-avs-cpufreq: Fix some resource leaks in
+ the error handling path of the probe function
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     mmayer@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
+        rjw@rjwysocki.net, f.fainelli@gmail.com, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+References: <20201219101751.181783-1-christophe.jaillet@wanadoo.fr>
+ <20201222043505.rq3cmajc3mxv3p2z@vireshk-i7>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <a7e1f78c-b4c9-4ef5-7ca4-94a65fefd299@wanadoo.fr>
+Date:   Sun, 27 Dec 2020 18:22:00 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <16089960203931@kroah.com> <5ab86253-7703-e892-52b7-e6a8af579822@iki.fi>
-In-Reply-To: <5ab86253-7703-e892-52b7-e6a8af579822@iki.fi>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 27 Dec 2020 09:20:47 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgtU5+7jPuPtDEpwhTuUUkA3CBN=V92Jg0Ag0=3LhfKqA@mail.gmail.com>
-Message-ID: <CAHk-=wgtU5+7jPuPtDEpwhTuUUkA3CBN=V92Jg0Ag0=3LhfKqA@mail.gmail.com>
-Subject: Re: LXC broken with 5.10-stable?, ok with 5.9-stable (Re: Linux 5.10.3)
-To:     Jussi Kivilinna <jussi.kivilinna@iki.fi>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        stable <stable@vger.kernel.org>, lwn@lwn.net,
-        Jiri Slaby <jslaby@suse.cz>
-Content-Type: multipart/mixed; boundary="000000000000d924a305b7756174"
+In-Reply-To: <20201222043505.rq3cmajc3mxv3p2z@vireshk-i7>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000d924a305b7756174
-Content-Type: text/plain; charset="UTF-8"
+Le 22/12/2020 à 05:35, Viresh Kumar a écrit :
+> On 19-12-20, 11:17, Christophe JAILLET wrote:
+>> If 'cpufreq_register_driver()' fails, we must release the resources
+>> allocated in 'brcm_avs_prepare_init()' as already done in the remove
+>> function.
+>>
+>> To do that, introduce a new function 'brcm_avs_prepare_uninit()' in order
+>> to avoid code duplication. This also makes the code more readable (IMHO).
+>>
+>> Fixes: de322e085995 ("cpufreq: brcmstb-avs-cpufreq: AVS CPUfreq driver for Broadcom STB SoCs")
+>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>> ---
+>> I'm not sure that the existing error handling in the remove function is
+>> correct and/or needed.
+>> ---
+>>   drivers/cpufreq/brcmstb-avs-cpufreq.c | 25 ++++++++++++++++++++-----
+>>   1 file changed, 20 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/cpufreq/brcmstb-avs-cpufreq.c b/drivers/cpufreq/brcmstb-avs-cpufreq.c
+>> index 3e31e5d28b79..750ca7cfccb0 100644
+>> --- a/drivers/cpufreq/brcmstb-avs-cpufreq.c
+>> +++ b/drivers/cpufreq/brcmstb-avs-cpufreq.c
+>> @@ -597,6 +597,16 @@ static int brcm_avs_prepare_init(struct platform_device *pdev)
+>>   	return ret;
+>>   }
+>>   
+>> +static void brcm_avs_prepare_uninit(struct platform_device *pdev)
+>> +{
+>> +	struct private_data *priv;
+>> +
+>> +	priv = platform_get_drvdata(pdev);
+>> +
+>> +	iounmap(priv->avs_intr_base);
+>> +	iounmap(priv->base);
+>> +}
+>> +
+>>   static int brcm_avs_cpufreq_init(struct cpufreq_policy *policy)
+>>   {
+>>   	struct cpufreq_frequency_table *freq_table;
+>> @@ -732,21 +742,26 @@ static int brcm_avs_cpufreq_probe(struct platform_device *pdev)
+>>   
+>>   	brcm_avs_driver.driver_data = pdev;
+>>   
+>> -	return cpufreq_register_driver(&brcm_avs_driver);
+>> +	ret = cpufreq_register_driver(&brcm_avs_driver);
+>> +	if (ret)
+>> +		goto err_uninit;
+>> +
+>> +	return 0;
+>> +
+>> +err_uninit:
+>> +	brcm_avs_prepare_uninit(pdev);
+>> +	return ret;
+> 
+> Maybe rewrite as:
+> 
+> 	ret = cpufreq_register_driver(&brcm_avs_driver);
+> 	if (ret)
+>                  brcm_avs_prepare_uninit(pdev);
+> 	return ret;
+> 
 
-On Sun, Dec 27, 2020 at 8:32 AM Jussi Kivilinna <jussi.kivilinna@iki.fi> wrote:
->
-> Has this been fixed in 5.11-rc? Is there any patch that I could backport and test with 5.10?
+Personlaly, I prefer what I have proposed. Having a clear and dedicated 
+error handling path is more future proff, IMHO.
 
-Here's a patch to test. Entirely untested by me. I'm surprised at how
-people use sendfile() on random files. Oh well..
+>>   }
+>>   
+>>   static int brcm_avs_cpufreq_remove(struct platform_device *pdev)
+>>   {
+>> -	struct private_data *priv;
+>>   	int ret;
+>>   
+>>   	ret = cpufreq_unregister_driver(&brcm_avs_driver);
+>>   	if (ret)
+>>   		return ret;
+> 
+> Instead of returning here, it can be just WARN_ON(ret); and then go on and free
+> the resources and this needs to be done in a separate patch.
 
-          Linus
+Ok, I agree (see my comment below the --- in my patch).
+I'll send a patch for it when the first patch will be applied, unless 
+you prefer if I resend as a serie.
 
---000000000000d924a305b7756174
-Content-Type: application/octet-stream; name=patch
-Content-Disposition: attachment; filename=patch
-Content-Transfer-Encoding: base64
-Content-ID: <f_kj7efh0f0>
-X-Attachment-Id: f_kj7efh0f0
+CJ
 
-IGZzL3Byb2NfbmFtZXNwYWNlLmMgfCA2ICsrKy0tLQogMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0
-aW9ucygrKSwgMyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9mcy9wcm9jX25hbWVzcGFjZS5j
-IGIvZnMvcHJvY19uYW1lc3BhY2UuYwppbmRleCBlNTlkNGJiM2E4OWUuLjAwMWU4YmQxMmU2NSAx
-MDA2NDQKLS0tIGEvZnMvcHJvY19uYW1lc3BhY2UuYworKysgYi9mcy9wcm9jX25hbWVzcGFjZS5j
-CkBAIC0zMjAsNyArMzIwLDcgQEAgc3RhdGljIGludCBtb3VudHN0YXRzX29wZW4oc3RydWN0IGlu
-b2RlICppbm9kZSwgc3RydWN0IGZpbGUgKmZpbGUpCiAKIGNvbnN0IHN0cnVjdCBmaWxlX29wZXJh
-dGlvbnMgcHJvY19tb3VudHNfb3BlcmF0aW9ucyA9IHsKIAkub3BlbgkJPSBtb3VudHNfb3BlbiwK
-LQkucmVhZAkJPSBzZXFfcmVhZCwKKwkucmVhZF9pdGVyCT0gc2VxX3JlYWRfaXRlciwKIAkubGxz
-ZWVrCQk9IHNlcV9sc2VlaywKIAkucmVsZWFzZQk9IG1vdW50c19yZWxlYXNlLAogCS5wb2xsCQk9
-IG1vdW50c19wb2xsLApAQCAtMzI4LDcgKzMyOCw3IEBAIGNvbnN0IHN0cnVjdCBmaWxlX29wZXJh
-dGlvbnMgcHJvY19tb3VudHNfb3BlcmF0aW9ucyA9IHsKIAogY29uc3Qgc3RydWN0IGZpbGVfb3Bl
-cmF0aW9ucyBwcm9jX21vdW50aW5mb19vcGVyYXRpb25zID0gewogCS5vcGVuCQk9IG1vdW50aW5m
-b19vcGVuLAotCS5yZWFkCQk9IHNlcV9yZWFkLAorCS5yZWFkX2l0ZXIJPSBzZXFfcmVhZF9pdGVy
-LAogCS5sbHNlZWsJCT0gc2VxX2xzZWVrLAogCS5yZWxlYXNlCT0gbW91bnRzX3JlbGVhc2UsCiAJ
-LnBvbGwJCT0gbW91bnRzX3BvbGwsCkBAIC0zMzYsNyArMzM2LDcgQEAgY29uc3Qgc3RydWN0IGZp
-bGVfb3BlcmF0aW9ucyBwcm9jX21vdW50aW5mb19vcGVyYXRpb25zID0gewogCiBjb25zdCBzdHJ1
-Y3QgZmlsZV9vcGVyYXRpb25zIHByb2NfbW91bnRzdGF0c19vcGVyYXRpb25zID0gewogCS5vcGVu
-CQk9IG1vdW50c3RhdHNfb3BlbiwKLQkucmVhZAkJPSBzZXFfcmVhZCwKKwkucmVhZF9pdGVyCT0g
-c2VxX3JlYWRfaXRlciwKIAkubGxzZWVrCQk9IHNlcV9sc2VlaywKIAkucmVsZWFzZQk9IG1vdW50
-c19yZWxlYXNlLAogfTsK
---000000000000d924a305b7756174--
+> 
+>>   
+>> -	priv = platform_get_drvdata(pdev);
+>> -	iounmap(priv->base);
+>> -	iounmap(priv->avs_intr_base);
+>> +	brcm_avs_prepare_uninit(pdev);
+>>   
+>>   	return 0;
+>>   }
+> 
+
