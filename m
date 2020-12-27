@@ -2,104 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A02B22E3232
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 18:35:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2B972E3235
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 18:39:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726232AbgL0RfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 12:35:08 -0500
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:58661 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726065AbgL0RfH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 12:35:07 -0500
-Received: from [192.168.0.8] (ip5f5aef2f.dynamic.kabel-deutschland.de [95.90.239.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: buczek)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id E8C4520225BD3;
-        Sun, 27 Dec 2020 18:34:24 +0100 (CET)
-Subject: Re: v5.10.1 xfs deadlock
-From:   Donald Buczek <buczek@molgen.mpg.de>
-To:     Brian Foster <bfoster@redhat.com>
-Cc:     linux-xfs@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        it+linux-xfs@molgen.mpg.de
-References: <b8da4aed-ee44-5d9f-88dc-3d32f0298564@molgen.mpg.de>
- <20201217194317.GD2507317@bfoster>
- <39b92850-f2ff-e4b6-0b2e-477ab3ec3c87@molgen.mpg.de>
- <20201218153533.GA2563439@bfoster>
- <8e9a2939-220d-b12f-a24e-0fb48fa95215@molgen.mpg.de>
-Message-ID: <066cb9e2-f583-b2c7-f42c-861568d38e2f@molgen.mpg.de>
-Date:   Sun, 27 Dec 2020 18:34:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726268AbgL0RjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 12:39:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726065AbgL0RjX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Dec 2020 12:39:23 -0500
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9783AC061794
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 09:38:42 -0800 (PST)
+Received: by mail-lf1-x12e.google.com with SMTP id 23so19290745lfg.10
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 09:38:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CuN4T+GUGL/ZU+phVVPp/K4I5WBfD11Fdwa/PYomUhw=;
+        b=AH2S4rTN09NY9qd0yqbjJD10iogIKesemAi68uBKDgP9wvFzwoR+StkvPY2Nn6QD96
+         B948PsjO1vxVxiAMVSCpvg8JXGQQ3in3UvleX4agXFsCkEycTYJI1+7MTCotcNK2Neqg
+         0SDE5aaoTjaxqgE5eXms4MtdrM08MNNkEYHAw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CuN4T+GUGL/ZU+phVVPp/K4I5WBfD11Fdwa/PYomUhw=;
+        b=VwRQOicD+jc34U04orCY+Y6wCNNbPZitzZwXkLYcDGk7lGeATkBFkw7niLL42NjJMr
+         3hx8KsdMiyKjMr4GFhPIrbNu0ayHisduZ3qb3nGQGtIZskkaiQK0DPfK7prvJ8cExjr1
+         3JGSII+ZnnUHSjNe/Ieodther9/Qlnxu3UcWIP8OMms+SdHGqOd9w7/zRvVy8b4p0Cv1
+         cMM7iBSgZfph4OrZGv9aR3dG8GBSHmDNPBUwM2DIa+1IsPegScMQ3Gw9ck7jUJpx55tM
+         zc/9FHFLBFtbxjWs4tfZa9c2ParANi5Njq57QUxnYaLYPOuT2ZKVkrdOVfksFOnpRiCi
+         Z5SA==
+X-Gm-Message-State: AOAM5300m7/OVJi0o4941+/1I19vDK6S/xxlmV40BOA2RO4hJT+fIatO
+        3wqQzHuQgNSd5kU8WlAhGvaAapdoZtl/og==
+X-Google-Smtp-Source: ABdhPJzf5XqcQFwk+Xea6MuJyzALAy3jgtsBwOoWbhOTWH5CxK8e2vXqXY5nCzr0VeP9ok4ZCzomNQ==
+X-Received: by 2002:ac2:4d4a:: with SMTP id 10mr16720682lfp.556.1609090720677;
+        Sun, 27 Dec 2020 09:38:40 -0800 (PST)
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
+        by smtp.gmail.com with ESMTPSA id h126sm5064932lfd.44.2020.12.27.09.38.39
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 27 Dec 2020 09:38:40 -0800 (PST)
+Received: by mail-lf1-f47.google.com with SMTP id y19so19222778lfa.13
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 09:38:39 -0800 (PST)
+X-Received: by 2002:a2e:b4af:: with SMTP id q15mr19471517ljm.507.1609090719546;
+ Sun, 27 Dec 2020 09:38:39 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <8e9a2939-220d-b12f-a24e-0fb48fa95215@molgen.mpg.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201227141638.GA11393@athena.kudzu.us>
+In-Reply-To: <20201227141638.GA11393@athena.kudzu.us>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 27 Dec 2020 09:38:23 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjxQzF3eWank1r7F6+EqSRsO+kvibPqDbzxjHv3wzZt0A@mail.gmail.com>
+Message-ID: <CAHk-=wjxQzF3eWank1r7F6+EqSRsO+kvibPqDbzxjHv3wzZt0A@mail.gmail.com>
+Subject: Re: [GIT PULL] NTB bug fixes for v5.11
+To:     Jon Mason <jdmason@kudzu.us>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ntb@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.12.20 19:35, Donald Buczek wrote:
-> On 18.12.20 16:35, Brian Foster wrote:
->> On Thu, Dec 17, 2020 at 10:30:37PM +0100, Donald Buczek wrote:
->>> On 17.12.20 20:43, Brian Foster wrote:
->>>> On Thu, Dec 17, 2020 at 06:44:51PM +0100, Donald Buczek wrote:
->>>>> Dear xfs developer,
->>>>>
->>>>> I was doing some testing on a Linux 5.10.1 system with two 100 TB xfs filesystems on md raid6 raids.
->>>>>
->>>>> The stress test was essentially `cp -a`ing a Linux source repository with two threads in parallel on each filesystem.
->>>>>
->>>>> After about on hour, the processes to one filesystem (md1) blocked, 30 minutes later the process to the other filesystem (md0) did.
->>>>>
->>>>>       root      7322  2167  0 Dec16 pts/1    00:00:06 cp -a /jbod/M8068/scratch/linux /jbod/M8068/scratch/1/linux.018.TMP
->>>>>       root      7329  2169  0 Dec16 pts/1    00:00:05 cp -a /jbod/M8068/scratch/linux /jbod/M8068/scratch/2/linux.019.TMP
->>>>>       root     13856  2170  0 Dec16 pts/1    00:00:08 cp -a /jbod/M8067/scratch/linux /jbod/M8067/scratch/2/linux.028.TMP
->>>>>       root     13899  2168  0 Dec16 pts/1    00:00:05 cp -a /jbod/M8067/scratch/linux /jbod/M8067/scratch/1/linux.027.TMP
->>>>>
->>
->> Do you have any indication of whether these workloads actually hung or
->> just became incredibly slow?
-> 
-> There is zero progress. iostat doesn't show any I/O on any of the block devices (md or member)
-> 
->>>>> Some info from the system (all stack traces, slabinfo) is available here: https://owww.molgen.mpg.de/~buczek/2020-12-16.info.txt
->>>>>
->>>>> It stands out, that there are many (549 for md0, but only 10 for md1)  "xfs-conv" threads all with stacks like this
->>>>>
->>>>>       [<0>] xfs_log_commit_cil+0x6cc/0x7c0
->>>>>       [<0>] __xfs_trans_commit+0xab/0x320
->>>>>       [<0>] xfs_iomap_write_unwritten+0xcb/0x2e0
->>>>>       [<0>] xfs_end_ioend+0xc6/0x110
->>>>>       [<0>] xfs_end_io+0xad/0xe0
->>>>>       [<0>] process_one_work+0x1dd/0x3e0
->>>>>       [<0>] worker_thread+0x2d/0x3b0
->>>>>       [<0>] kthread+0x118/0x130
->>>>>       [<0>] ret_from_fork+0x22/0x30
->>>>>
->>>>> xfs_log_commit_cil+0x6cc is
->>>>>
->>>>>     xfs_log_commit_cil()
->>>>>       xlog_cil_push_background(log)
->>>>>         xlog_wait(&cil->xc_push_wait, &cil->xc_push_lock);
->>>>>
->>
->> This looks like the transaction commit throttling code. That was
->> introduced earlier this year in v5.7 via commit 0e7ab7efe7745 ("xfs:
->> Throttle commits on delayed background CIL push"). The purpose of that
->> change was to prevent the CIL from growing too large. FWIW, I don't
->> recall that being a functional problem so it should be possible to
->> simply remove that blocking point and see if that avoids the problem or
->> if we simply stall out somewhere else, if you wanted to give that a
->> test.
-> 
-> Will do. Before trying with this commit reverted, I will repeat the test without any change to see if the problem is reproducible at all.
+On Sun, Dec 27, 2020 at 6:16 AM Jon Mason <jdmason@kudzu.us> wrote:
+>
+> Wang Qing (1):
+>       ntb: idt: fix error check in ntb_hw_idt.c
 
-I'm now able to reliably reproduce the deadlock with a little less complex setup (e.g. with only one filesystem involved). One key to that was to run the test against a freshly created filesystem (mkfs).
+So this patch seems to be at least partially triggered by a smatch
+warning that is a bit questionable.
 
-And, yes, you are right: When I revert ef565ab8cc2e ("xfs: Throttle commits on delayed background CIL push") and 7ee6dfa2a245 ("xfs: fix use-after-free on CIL context on shutdown") the deadlock seems to be gone.
+This part:
 
-Best
-   Donald
+     if (IS_ERR_OR_NULL(dbgfs_topdir)) {
+         dev_info(&ndev->ntb.pdev->dev, "Top DebugFS directory absent");
+-        return PTR_ERR(dbgfs_topdir);
++        return PTR_ERR_OR_ZERO(dbgfs_topdir);
+     }
+
+works, but is very non-optimal and unnecessary.
+
+The thing is, "PTR_ERR()" works just fine on a IS_ERR_OR_NULL pointer.
+It doesn't work on a _regular_ non-NULL and non-ERR pointer, and will
+return random garbage for those. But if you've tested for
+IS_ERR_OR_NULL(), then a regular PTR_ERR() is already fine.
+
+And PTR_ERR_OR_ZERO() potentially generates an extraneous pointless
+tests against zero (to check for the ERR case).
+
+A compiler may be able to notice that the PTR_ERR_OR_ZERO() is
+unnecessary and remove it (because of the IS_ERR_OR_NULL() checks),
+but in general we should assume compilers are "not stupid" rather than
+"really smart".
+
+So while this patch isn't _wrong_, and I've already pulled it, the
+fact that apparently some smatch test triggers these pointless and
+potentially expensive patches is not a good idea.
+
+I'm not sure what the smatch tests should be (NULL turns to 0, which
+may be confusing), but I'm cc'ing Dan in case he has ideas.
+
+              Linus
