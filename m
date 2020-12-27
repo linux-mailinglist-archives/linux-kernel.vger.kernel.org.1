@@ -2,110 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 424682E313C
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 14:08:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D536C2E31C7
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 17:14:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726452AbgL0NFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 08:05:42 -0500
-Received: from www.zeus03.de ([194.117.254.33]:38042 "EHLO mail.zeus03.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726189AbgL0NFl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 08:05:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=k1; bh=XEGX+JKQU4h8/h
-        1poP8+hWxz2kBiDmO6WqO1OgrQurU=; b=b7P1s1KydDTS3s4YFrLSUCUi66D0l+
-        RMZpavNAFRU/WZ5fbfAclzZwNqI+LShpdHUVOx+qxbbdplJu68Xjbzr34E4RFeWF
-        jU20L3c/0UYVed4a75jvmDwBkUECdPahVc8J6qpyGbTQY1ifzfwhBonVUptyGzQw
-        ytvsYF+4h5oHk=
-Received: (qmail 1501233 invoked from network); 27 Dec 2020 14:04:21 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 27 Dec 2020 14:04:21 +0100
-X-UD-Smtp-Session: l3s3148p1@cbK/y3G3asEgAwDPXwIpAOUwDQytQs2L
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     linux-renesas-soc@vger.kernel.org
-Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] arm64: dts: r8a779a0: WIP disable reset-gpios for AVB
-Date:   Sun, 27 Dec 2020 14:04:06 +0100
-Message-Id: <20201227130407.10991-6-wsa+renesas@sang-engineering.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201227130407.10991-1-wsa+renesas@sang-engineering.com>
-References: <20201227130407.10991-1-wsa+renesas@sang-engineering.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726309AbgL0QNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 11:13:54 -0500
+Received: from mail-m963.mail.126.com ([123.126.96.3]:33242 "EHLO
+        mail-m963.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726137AbgL0QNx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Dec 2020 11:13:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=z3Vnq31DxKVyPM1hK6
+        Zk4ooSbMhCB5IcK28zkGpz+eg=; b=cF5XRXkXfYCX8adgqACgW9jUa9FeRFHX1n
+        7m2WMVmh8Fd4JGjnneVKdJgX0JOoEpSfbPSCrkfa/kPQdFBgS/NWgJWI6bgmXwq8
+        sDvB6x/3LWWgsUhhUKwkUZyuUiOKvVZJgSYZUgjIFOFmLeE6Rnjq0VdroJhe4Aac
+        9eR2gDnPs=
+Received: from localhost.localdomain (unknown [36.112.86.14])
+        by smtp8 (Coremail) with SMTP id NORpCgDnE1SBhuhfwJ5wBA--.10417S2;
+        Sun, 27 Dec 2020 21:05:07 +0800 (CST)
+From:   Defang Bo <bodefang@126.com>
+To:     perex@perex.cz, tiwai@suse.com
+Cc:     tom.ty89@gmail.com, kai.heng.feng@canonical.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Defang Bo <bodefang@126.com>
+Subject: [PATCH] ALSA:usb-audio:check urb before kill it
+Date:   Sun, 27 Dec 2020 21:04:59 +0800
+Message-Id: <1609074299-3990670-1-git-send-email-bodefang@126.com>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: NORpCgDnE1SBhuhfwJ5wBA--.10417S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrtr4DJF4rWryxArWUurWfKrg_yoW3tFc_Wr
+        s3Xw18GryUG347Cr1UGw42vw1rtw4xZ3WxZwsrt3yrXFyvkFy5tw40qryDG3Z2kr4kXFZr
+        Ar1kuFy3Zry2gjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUUgo7tUUUUU==
+X-Originating-IP: [36.112.86.14]
+X-CM-SenderInfo: pergvwxdqjqiyswou0bp/1tbiFg0I11pECs+7hQAAsh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Retrieving a GPIO currently fails, so probing the whole driver fails
-then. Remove them for now to get a working AVB device for testing.
+Similar to commit<124751d5e>, there should be a check for urb before kill it.
 
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Signed-off-by: Defang Bo <bodefang@126.com>
 ---
- arch/arm64/boot/dts/renesas/r8a779a0-falcon.dts | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/usb/mixer.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/renesas/r8a779a0-falcon.dts b/arch/arm64/boot/dts/renesas/r8a779a0-falcon.dts
-index f5f27dece6ee..48801f2bdbe5 100644
---- a/arch/arm64/boot/dts/renesas/r8a779a0-falcon.dts
-+++ b/arch/arm64/boot/dts/renesas/r8a779a0-falcon.dts
-@@ -34,7 +34,7 @@ phy0: ethernet-phy@0 {
- 		reg = <0>;
- 		interrupt-parent = <&gpio4>;
- 		interrupts = <16 IRQ_TYPE_LEVEL_LOW>;
--		reset-gpios = <&gpio4 15 GPIO_ACTIVE_LOW>;
-+		//reset-gpios = <&gpio4 15 GPIO_ACTIVE_LOW>;
- 	};
- };
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 81e987e..0223ef3 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -3589,8 +3589,10 @@ void snd_usb_mixer_disconnect(struct usb_mixer_interface *mixer)
+ /* stop any bus activity of a mixer */
+ static void snd_usb_mixer_inactivate(struct usb_mixer_interface *mixer)
+ {
+-	usb_kill_urb(mixer->urb);
+-	usb_kill_urb(mixer->rc_urb);
++	if (mixer->urb)
++		usb_kill_urb(mixer->urb);
++	if (mixer->rc_urb)
++		usb_kill_urb(mixer->rc_urb);
+ }
  
-@@ -49,7 +49,7 @@ phy1: ethernet-phy@1 {
- 		reg = <0>;
- 		interrupt-parent = <&gpio5>;
- 		interrupts = <16 IRQ_TYPE_LEVEL_LOW>;
--		reset-gpios = <&gpio5 15 GPIO_ACTIVE_LOW>;
-+		//reset-gpios = <&gpio5 15 GPIO_ACTIVE_LOW>;
- 	};
- };
- 
-@@ -64,7 +64,7 @@ phy2: ethernet-phy@2 {
- 		reg = <0>;
- 		interrupt-parent = <&gpio6>;
- 		interrupts = <16 IRQ_TYPE_LEVEL_LOW>;
--		reset-gpios = <&gpio6 15 GPIO_ACTIVE_LOW>;
-+		//reset-gpios = <&gpio6 15 GPIO_ACTIVE_LOW>;
- 	};
- };
- 
-@@ -79,7 +79,7 @@ phy3: ethernet-phy@3{
- 		reg = <0>;
- 		interrupt-parent = <&gpio7>;
- 		interrupts = <16 IRQ_TYPE_LEVEL_LOW>;
--		reset-gpios = <&gpio7 15 GPIO_ACTIVE_LOW>;
-+		//reset-gpios = <&gpio7 15 GPIO_ACTIVE_LOW>;
- 	};
- };
- 
-@@ -94,7 +94,7 @@ phy4: ethernet-phy@4 {
- 		reg = <0>;
- 		interrupt-parent = <&gpio8>;
- 		interrupts = <16 IRQ_TYPE_LEVEL_LOW>;
--		reset-gpios = <&gpio8 15 GPIO_ACTIVE_LOW>;
-+		//reset-gpios = <&gpio8 15 GPIO_ACTIVE_LOW>;
- 	};
- };
- 
-@@ -109,7 +109,7 @@ phy5: ethernet-phy@5 {
- 		reg = <0>;
- 		interrupt-parent = <&gpio9>;
- 		interrupts = <16 IRQ_TYPE_LEVEL_LOW>;
--		reset-gpios = <&gpio9 15 GPIO_ACTIVE_LOW>;
-+		//reset-gpios = <&gpio9 15 GPIO_ACTIVE_LOW>;
- 	};
- };
- 
+ static int snd_usb_mixer_activate(struct usb_mixer_interface *mixer)
 -- 
-2.29.2
+2.7.4
 
