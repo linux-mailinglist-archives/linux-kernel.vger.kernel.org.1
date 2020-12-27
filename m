@@ -2,153 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0E202E3265
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 19:17:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC22A2E326A
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 19:29:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726360AbgL0SR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 13:17:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726329AbgL0SR2 (ORCPT
+        id S1726199AbgL0S2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 13:28:55 -0500
+Received: from mail-ua1-f53.google.com ([209.85.222.53]:38890 "EHLO
+        mail-ua1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725975AbgL0S2y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 13:17:28 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E311C061796
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 10:16:47 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id a12so19487763lfl.6
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 10:16:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bnArJigGBdabFnIq+hfnR+zQf4osesgW3QYyMon5IsY=;
-        b=v2G03nV+9gGBzxb5Ei6xCyhk+ThA79SlBStyTRawZsx+G7RliHUy1xcyejpJptiZBU
-         yGDD7PKM2T9YXLbQW7nrtC5GOpsfUZ4d1pzWzGW8oKU421LZZ6drxDOdj/jdkVCfc/JM
-         OzFy/key+ZtK/8CJ0MTeV4nuzBMcYxPB69traZy8+yV5mntyLFs+iiln39ZhOtLCzkhK
-         RBhRCdIODMRuedFES95/c1byzajReyejDRWbmdEfw1V66l+gwg/k2DOrr36yv01RHECl
-         08PqLzrZekSImPDElEQ/2xvnUcr/CymVw48DApfx7C+urzHwkO4GRvYg5oT7mAkhjnOs
-         h5zg==
+        Sun, 27 Dec 2020 13:28:54 -0500
+Received: by mail-ua1-f53.google.com with SMTP id j59so2732653uad.5;
+        Sun, 27 Dec 2020 10:28:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=bnArJigGBdabFnIq+hfnR+zQf4osesgW3QYyMon5IsY=;
-        b=FYi+QNkzcWVVUPll3vaNnAepoLGQAcdt8U2svHsRhxZs1sauz/C1NvoMuQCfQMkNCC
-         4pXne7PdZMBnOQo9xdmWm/DqHp8xTDH8AzDR46ouALBP/z2rlSnpzUTnb88HnYp6ddkv
-         u+2AxjkbMIZFP+G5LxsqllAHp77RS/5DEK9EL6UYP3Qdg89BQzVoxi/q7n3xXGPyQ4r9
-         2brn//WSD1bU7pK/kiwMqwtTSkaOhFkL8DdMrCBg1bxsB5cLFFps5JylzZ2DW7Hr8a31
-         //U+To6ygbEYpw+TLjaU1jT86aaUz6fqj5LM1ocErbsoLxDOoI1W2QnimwHNoW3ZugcW
-         xwyA==
-X-Gm-Message-State: AOAM533xb8DtDNHi2eYdQMrm64oXJ2dZwPQNWtVW7077Pggigjxfvaau
-        jZC8pKUqN0hbRuwWg2u0x32eKGScew7ywkoo1mEdXA==
-X-Google-Smtp-Source: ABdhPJwDYKZBXIYknNHaca3czY4qQ//XT+pNDroUzz129cq14PS/yME1kP4onu8WFtcbZBmG6ghGS3ZCRHe06MF2OAk=
-X-Received: by 2002:ac2:47e7:: with SMTP id b7mr16818656lfp.117.1609093005766;
- Sun, 27 Dec 2020 10:16:45 -0800 (PST)
+        bh=CHXagY3A/DK4pEpN7boYvTeZV4qY/yf7WrSua4i2PV8=;
+        b=qzkBdntEP/1gH7TEIYZg6UdGx88ClwehGinPsHa7ulQjE72CPtlvxPiMp/3lgjcYHu
+         1tDO6EeZp9pOKVOMDxHn5xMeBlxUcgqxC3tU5+Yv5TaM9xKyzXy51nwpcY8MvTyjFXnl
+         6ZhFYSJLct33BAwkoOjfJhGmUyb9kN2cBb5leM/pnxDJWYipzhy6D3fg67ZecHFaKLK8
+         dLk/XEnucEO0qJ5qWSLZ7uDIGUcZJF8bho9wyyA0xBmDI4iKbWObK6lh1GeaiDyWNuzN
+         syvzgR1OIrYNMC+Xh/cDRcRuzYFmXwVpKXmsY9SHUmZaM6FP0959VyU92IM/MhpURyfN
+         M3fg==
+X-Gm-Message-State: AOAM531OuuiRoSJKmdilSGm4AQqFqPSEnyNCnz+Z18Q+bk6/kHmh7B68
+        9K3JUSDKkqrBZVUm59I6ZAq05jxPJETZsZL7Dcc=
+X-Google-Smtp-Source: ABdhPJz1BQy9K3ilducip6gKHDgDVrGXFEjWVw2n3lxHJwDA/WOsfUGMlfTMwsAOI7/ZySlBlBJisayfcDG/BcJU0UI=
+X-Received: by 2002:ab0:3806:: with SMTP id x6mr26004284uav.58.1609093693309;
+ Sun, 27 Dec 2020 10:28:13 -0800 (PST)
 MIME-Version: 1.0
-References: <20201227181310.3235210-1-shakeelb@google.com> <20201227181310.3235210-2-shakeelb@google.com>
-In-Reply-To: <20201227181310.3235210-2-shakeelb@google.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Sun, 27 Dec 2020 10:16:34 -0800
-Message-ID: <CALvZod5bH6gP=_Qo5d2wx=mpRxXDKGcoxwO3oXGPqe=HXx8ifA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mm: fix numa stats for thp migration
-To:     Muchun Song <songmuchun@bytedance.com>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org
+References: <20200908002935.GD20064@merlins.org> <20200529180315.GA18804@merlins.org>
+ <20201226111209.GA2498@merlins.org>
+In-Reply-To: <20201226111209.GA2498@merlins.org>
+From:   Ilia Mirkin <imirkin@alum.mit.edu>
+Date:   Sun, 27 Dec 2020 13:28:02 -0500
+Message-ID: <CAKb7UvhuWdPBgqV+Nf+KJ_Eb9SOJrbTxfBwiA-7HtdurVd+LiA@mail.gmail.com>
+Subject: Re: [Nouveau] 5.9.11 still hanging 2mn at each boot and looping on
+ nvidia-gpu 0000:01:00.3: PME# enabled (Quadro RTX 4000 Mobile)
+To:     Marc MERLIN <marc_nouveau@merlins.org>
+Cc:     nouveau <nouveau@lists.freedesktop.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 27, 2020 at 10:14 AM Shakeel Butt <shakeelb@google.com> wrote:
+On Sun, Dec 27, 2020 at 12:03 PM Marc MERLIN <marc_nouveau@merlins.org> wrote:
 >
-> Currently the kernel is not correctly updating the numa stats for
-> NR_FILE_PAGES and NR_SHMEM on THP migration. Fix that. For NR_FILE_DIRTY
-> and NR_ZONE_WRITE_PENDING, although at the moment there is no need to
-> handle THP migration as kernel still does not have write support for
-> file THP but to be more future proof, this patch adds the THP support
-> for those stats as well.
+> This started with 5.5 and hasn't gotten better since then, despite some reports
+> I tried to send.
 >
-> Fixes: e71769ae52609 ("mm: enable thp migration for shmem thp")
-> Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> Cc: <stable@vger.kernel.org>
-> ---
->  mm/migrate.c | 23 ++++++++++++-----------
->  1 file changed, 12 insertions(+), 11 deletions(-)
+> As per my previous message:
+> I have a Thinkpad P70 with hybrid graphics.
+> 01:00.0 VGA compatible controller: NVIDIA Corporation GM107GLM [Quadro M600M] (rev a2)
+> that one works fine, I can use i915 for the main screen, and nouveau to
+> display on the external ports (external ports are only wired to nvidia
+> chip, so it's impossible to use them without turning the nvidia chip
+> on).
 >
-> diff --git a/mm/migrate.c b/mm/migrate.c
-> index 613794f6a433..ade163c6ecdf 100644
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -402,6 +402,7 @@ int migrate_page_move_mapping(struct address_space *mapping,
->         struct zone *oldzone, *newzone;
->         int dirty;
->         int expected_count = expected_page_refs(mapping, page) + extra_count;
-> +       int nr = thp_nr_pages(page);
->
->         if (!mapping) {
->                 /* Anonymous page without mapping */
-> @@ -437,7 +438,7 @@ int migrate_page_move_mapping(struct address_space *mapping,
->          */
->         newpage->index = page->index;
->         newpage->mapping = page->mapping;
-> -       page_ref_add(newpage, thp_nr_pages(page)); /* add cache reference */
-> +       page_ref_add(newpage, nr); /* add cache reference */
->         if (PageSwapBacked(page)) {
->                 __SetPageSwapBacked(newpage);
->                 if (PageSwapCache(page)) {
-> @@ -459,7 +460,7 @@ int migrate_page_move_mapping(struct address_space *mapping,
->         if (PageTransHuge(page)) {
->                 int i;
->
-> -               for (i = 1; i < HPAGE_PMD_NR; i++) {
-> +               for (i = 1; i < nr; i++) {
->                         xas_next(&xas);
->                         xas_store(&xas, newpage);
->                 }
-> @@ -470,7 +471,7 @@ int migrate_page_move_mapping(struct address_space *mapping,
->          * to one less reference.
->          * We know this isn't the last reference.
->          */
-> -       page_ref_unfreeze(page, expected_count - thp_nr_pages(page));
-> +       page_ref_unfreeze(page, expected_count - nr);
->
->         xas_unlock(&xas);
->         /* Leave irq disabled to prevent preemption while updating stats */
-> @@ -493,17 +494,17 @@ int migrate_page_move_mapping(struct address_space *mapping,
->                 old_lruvec = mem_cgroup_lruvec(memcg, oldzone->zone_pgdat);
->                 new_lruvec = mem_cgroup_lruvec(memcg, newzone->zone_pgdat);
->
-> -               __dec_lruvec_state(old_lruvec, NR_FILE_PAGES);
-> -               __inc_lruvec_state(new_lruvec, NR_FILE_PAGES);
-> +               __mod_lruvec_state(old_lruvec, NR_FILE_PAGES, -nr);
-> +               __mod_lruvec_state(new_lruvec, NR_FILE_PAGES, nr);
->                 if (PageSwapBacked(page) && !PageSwapCache(page)) {
-> -                       __dec_lruvec_state(old_lruvec, NR_SHMEM);
-> -                       __inc_lruvec_state(new_lruvec, NR_SHMEM);
-> +                       __mod_lruvec_state(old_lruvec, NR_SHMEM, -nr);
-> +                       __mod_lruvec_state(new_lruvec, NR_SHMEM, nr);
->                 }
->                 if (dirty && mapping_can_writeback(mapping)) {
-> -                       __dec_lruvec_state(old_lruvec, NR_FILE_DIRTY);
-> -                       __dec_zone_state(oldzone, NR_ZONE_WRITE_PENDING);
-> -                       __inc_lruvec_state(new_lruvec, NR_FILE_DIRTY);
-> -                       __inc_zone_state(newzone, NR_ZONE_WRITE_PENDING);
-> +                       __mod_lruvec_state(old_lruvec, NR_FILE_DIRTY, -nr);
-> +                       __mod_zone_page_tate(oldzone, NR_ZONE_WRITE_PENDING, -nr);
+> I now got a newer P73 also with the same hybrid graphics (setup as such
+> in the bios). It runs fine with i915, and I don't need to use external
+> display with nouveau for now (it almost works, but I only see the mouse
+> cursor on the external screen, no window or anything else can get
+> displayed, very weird).
+> 01:00.0 VGA compatible controller: NVIDIA Corporation TU104GLM [Quadro RTX 4000 Mobile / Max-Q] (rev a1)
 
-This should be __mod_zone_page_state(). I fixed locally but sent the
-older patch by mistake.
+Display offload usually requires acceleration -- the copies are done
+using the DMA engine. Please make sure that you have firmware
+available (and a new enough mesa). The errors suggest that you don't
+have firmware available at the time that nouveau loads. Depending on
+your setup, that might mean the firmware has to be built into the
+kernel, or available in initramfs. (Or just regular filesystem if you
+don't use a complicated boot sequence. But many people go with distro
+defaults, which do have this complexity.)
 
-> +                       __mod_lruvec_state(new_lruvec, NR_FILE_DIRTY, nr);
-> +                       __mod_zone_page_state(newzone, NR_ZONE_WRITE_PENDING, nr);
->                 }
->         }
->         local_irq_enable();
-> --
-> 2.29.2.729.g45daf8777d-goog
 >
+>
+> after boot, when it gets the right trigger (not sure which ones), it
+> loops on this evern 2 seconds, mostly forever.
+
+The gpu suspends with runtime pm. And then gets woken up for some
+reason (could be something quite silly, like lspci, or could be
+something explicitly checking connectors, etc). Repeat.
+
+Cheers,
+
+  -ilia
