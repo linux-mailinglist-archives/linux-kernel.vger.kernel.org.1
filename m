@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1299B2E32C5
+	by mail.lfdr.de (Postfix) with ESMTP id 7FAD32E32C6
 	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 22:15:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726423AbgL0VOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 16:14:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39611 "EHLO
+        id S1726475AbgL0VOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 16:14:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46418 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726371AbgL0VOL (ORCPT
+        by vger.kernel.org with ESMTP id S1726371AbgL0VOQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 16:14:11 -0500
+        Sun, 27 Dec 2020 16:14:16 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609103565;
+        s=mimecast20190719; t=1609103570;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Vm7Y8WgzRnmtdtSY9WnjMOrzj5tbdz7TQz37CAGCkhc=;
-        b=YQo1yVkB8y4JR4Xk2kSXu+GF2UI+SZyn6Dt4gBDVawC2moloSz4n3N8sFhANjXbO5+m8jw
-        eIAdW4ggajWz0VbfbD2HCTWIyr1sOEnsscPAJprVh3RRdMKYMVO41TsMQ50qcxsxFtX80A
-        /p/1cUTYMVDYNqIQLxcSMd37xVmdM0s=
+        bh=BM+xYE8rJ+h1dxqeRkp4MTZMKZI7EtWFPPwKnNWYE74=;
+        b=MQJA6/RgHzi/yJ1jC7HXDaJrgyJX+13XIoEgIcvK+kJb+DFcpIEe8GsT+V8QWCDyXdRGOD
+        RZKLk9saOU5ApdM/lrhKq3NupN5ahMwfCkEheln6nhrWFtiLhozjBmtobAFqQ5rEUZYj4j
+        dbAodo6HvdjtnV5BBrkJrbzSP8BlDu0=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-385-gETInfbCN6GPEb1do1u5WQ-1; Sun, 27 Dec 2020 16:12:43 -0500
-X-MC-Unique: gETInfbCN6GPEb1do1u5WQ-1
+ us-mta-85-bBUBCoYqNoCHYWc08rrbIA-1; Sun, 27 Dec 2020 16:12:46 -0500
+X-MC-Unique: bBUBCoYqNoCHYWc08rrbIA-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6B190107ACE4;
-        Sun, 27 Dec 2020 21:12:41 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 237F7E75A;
+        Sun, 27 Dec 2020 21:12:44 +0000 (UTC)
 Received: from x1.localdomain.com (ovpn-112-25.ams2.redhat.com [10.36.112.25])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3E7A41ACB9;
-        Sun, 27 Dec 2020 21:12:39 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B20BF62A23;
+        Sun, 27 Dec 2020 21:12:41 +0000 (UTC)
 From:   Hans de Goede <hdegoede@redhat.com>
 To:     Lee Jones <lee.jones@linaro.org>,
         MyungJoo Ham <myungjoo.ham@samsung.com>,
@@ -44,10 +44,11 @@ To:     Lee Jones <lee.jones@linaro.org>,
         Jie Yang <yang.jie@linux.intel.com>,
         Mark Brown <broonie@kernel.org>
 Cc:     Hans de Goede <hdegoede@redhat.com>, patches@opensource.cirrus.com,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: [PATCH 02/14] mfd: arizona: Add MODULE_SOFTDEP("pre: arizona_ldo1")
-Date:   Sun, 27 Dec 2020 22:12:20 +0100
-Message-Id: <20201227211232.117801-3-hdegoede@redhat.com>
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        Christian Hartmann <cornogle@googlemail.com>
+Subject: [PATCH 03/14] mfd: arizona: Add support for ACPI enumeration of WM5102 connected over SPI
+Date:   Sun, 27 Dec 2020 22:12:21 +0100
+Message-Id: <20201227211232.117801-4-hdegoede@redhat.com>
 In-Reply-To: <20201227211232.117801-1-hdegoede@redhat.com>
 References: <20201227211232.117801-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -57,60 +58,189 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The (shared) probing code of the arizona-i2c and arizona-spi modules
-takes the following steps during init:
+The Intel Bay Trail (x86/ACPI) based Lenovo Yoga Tablet 2 series use
+a WM5102 codec connected over SPI.
 
-1. Call mfd_add_devices() for a set of early child-devices, this
-includes the arizona_ldo1 device which provides one of the
-core-regulators.
+Add support for ACPI enumeration to arizona-spi so that arizona-spi can
+bind to the codec on these tablets.
 
-2. Bulk enable the core-regulators.
+This is loosely based on an earlier attempt (for Android-x86) at this by
+Christian Hartmann, combined with insights in things like the speaker GPIO
+from the android-x86 android port for the Lenovo Yoga Tablet 2 1051F/L [1].
 
-3. Read the device id.
+[1] https://github.com/Kitsune2222/Android_Yoga_Tablet_2-1051F_Kernel
 
-4. Call mfd_add_devices() for the other child-devices.
-
-This sequence depends on 1. leading to not only the child-device
-being created, but also the driver for the child-device binding
-to it and registering its regulator.
-
-This requires the arizona_ldo1 driver to be loaded before the
-shared probing code runs. Add a doftdep for this to both modules to
-ensure that this requirement is met.
-
-Note this mirrors the existing MODULE_SOFTDEP("pre: wm8994_regulator")
-in the wm8994 code, which has a similar init sequence.
-
+Cc: Christian Hartmann <cornogle@googlemail.com>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- drivers/mfd/arizona-i2c.c | 1 +
- drivers/mfd/arizona-spi.c | 1 +
- 2 files changed, 2 insertions(+)
+ drivers/mfd/arizona-spi.c | 120 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 120 insertions(+)
 
-diff --git a/drivers/mfd/arizona-i2c.c b/drivers/mfd/arizona-i2c.c
-index 4b58e3ad6eb6..2a4a3a164d0a 100644
---- a/drivers/mfd/arizona-i2c.c
-+++ b/drivers/mfd/arizona-i2c.c
-@@ -115,6 +115,7 @@ static struct i2c_driver arizona_i2c_driver = {
- 
- module_i2c_driver(arizona_i2c_driver);
- 
-+MODULE_SOFTDEP("pre: arizona_ldo1");
- MODULE_DESCRIPTION("Arizona I2C bus interface");
- MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
- MODULE_LICENSE("GPL");
 diff --git a/drivers/mfd/arizona-spi.c b/drivers/mfd/arizona-spi.c
-index 2633e147b76c..704f214d2614 100644
+index 704f214d2614..bcdbd72fefb5 100644
 --- a/drivers/mfd/arizona-spi.c
 +++ b/drivers/mfd/arizona-spi.c
-@@ -110,6 +110,7 @@ static struct spi_driver arizona_spi_driver = {
+@@ -7,7 +7,10 @@
+  * Author: Mark Brown <broonie@opensource.wolfsonmicro.com>
+  */
  
- module_spi_driver(arizona_spi_driver);
++#include <linux/acpi.h>
+ #include <linux/err.h>
++#include <linux/gpio/consumer.h>
++#include <linux/gpio/machine.h>
+ #include <linux/module.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/regmap.h>
+@@ -15,11 +18,119 @@
+ #include <linux/slab.h>
+ #include <linux/spi/spi.h>
+ #include <linux/of.h>
++#include <uapi/linux/input-event-codes.h>
  
-+MODULE_SOFTDEP("pre: arizona_ldo1");
- MODULE_DESCRIPTION("Arizona SPI bus interface");
- MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
- MODULE_LICENSE("GPL");
+ #include <linux/mfd/arizona/core.h>
+ 
+ #include "arizona.h"
+ 
++#ifdef CONFIG_ACPI
++const struct acpi_gpio_params reset_gpios = { 1, 0, false };
++const struct acpi_gpio_params ldoena_gpios = { 2, 0, false };
++
++static const struct acpi_gpio_mapping arizona_acpi_gpios[] = {
++	{ "reset-gpios", &reset_gpios, 1, },
++	{ "wlf,ldoena-gpios", &ldoena_gpios, 1 },
++	{ }
++};
++
++/*
++ * The ACPI resources for the device only describe external GPIO-s. They do
++ * not provide mappings for the GPIO-s coming from the Arizona codec itself.
++ */
++static const struct gpiod_lookup arizona_soc_gpios[] = {
++	{ "arizona", 2, "wlf,spkvdd-ena", 0, GPIO_ACTIVE_HIGH },
++	{ "arizona", 4, "wlf,micd-pol", 0, GPIO_ACTIVE_LOW },
++};
++
++/*
++ * The AOSP 3.5 mm Headset: Accessory Specification gives the following values:
++ * Function A Play/Pause:           0 ohm
++ * Function D Voice assistant:    135 ohm
++ * Function B Volume Up           240 ohm
++ * Function C Volume Down         470 ohm
++ * Minimum Mic DC resistance     1000 ohm
++ * Minimum Ear speaker impedance   16 ohm
++ * Note the first max value below must be less then the min. speaker impedance,
++ * to allow CTIA/OMTP detection to work. The other max values are the closest
++ * value from extcon-arizona.c:arizona_micd_levels halfway 2 button resistances.
++ */
++static const struct arizona_micd_range arizona_micd_aosp_ranges[] = {
++	{ .max =  11, .key = KEY_PLAYPAUSE },
++	{ .max = 186, .key = KEY_VOICECOMMAND },
++	{ .max = 348, .key = KEY_VOLUMEUP },
++	{ .max = 752, .key = KEY_VOLUMEDOWN },
++};
++
++static void arizona_spi_acpi_remove_lookup(void *lookup)
++{
++	gpiod_remove_lookup_table(lookup);
++}
++
++static int arizona_spi_acpi_probe(struct arizona *arizona)
++{
++	struct gpiod_lookup_table *lookup;
++	int i, ret;
++
++	/* Add mappings for the 2 ACPI declared GPIOs used for reset and ldo-ena */
++	devm_acpi_dev_add_driver_gpios(arizona->dev, arizona_acpi_gpios);
++
++	/* Add lookups for the SoCs own GPIOs used for micdet-polarity and spkVDD-enable */
++	lookup = devm_kzalloc(arizona->dev,
++			      struct_size(lookup, table, ARRAY_SIZE(arizona_soc_gpios) + 1),
++			      GFP_KERNEL);
++	if (!lookup)
++		return -ENOMEM;
++
++	lookup->dev_id = dev_name(arizona->dev);
++	for (i = 0; i < ARRAY_SIZE(arizona_soc_gpios); i++)
++		lookup->table[i] = arizona_soc_gpios[i];
++
++	gpiod_add_lookup_table(lookup);
++	ret = devm_add_action_or_reset(arizona->dev, arizona_spi_acpi_remove_lookup, lookup);
++	if (ret)
++		return ret;
++
++	/* Enable 32KHz clock from SoC to codec for jack-detect */
++	acpi_evaluate_object(ACPI_HANDLE(arizona->dev), "CLKE", NULL, NULL);
++
++	/*
++	 * Some DSDTs wrongly declare the IRQ trigger-type as IRQF_TRIGGER_FALLING
++	 * The IRQ line will stay low when a new IRQ event happens between reading
++	 * the IRQ status flags and acknowledging them. When the IRQ line stays
++	 * low like this the IRQ will never trigger again when its type is set
++	 * to IRQF_TRIGGER_FALLING. Correct the IRQ trigger-type to fix this.
++	 */
++	arizona->pdata.irq_flags = IRQF_TRIGGER_LOW;
++
++	/* Wait 200 ms after jack insertion */
++	arizona->pdata.micd_detect_debounce = 200;
++
++	/* Use standard AOSP values for headset-button mappings */
++	arizona->pdata.micd_ranges = arizona_micd_aosp_ranges;
++	arizona->pdata.num_micd_ranges = ARRAY_SIZE(arizona_micd_aosp_ranges);
++
++	return 0;
++}
++
++static const struct acpi_device_id arizona_acpi_match[] = {
++	{
++		.id = "WM510204",
++		.driver_data = WM5102,
++	},
++	{
++		.id = "WM510205",
++		.driver_data = WM5102,
++	},
++	{ },
++};
++MODULE_DEVICE_TABLE(acpi, arizona_acpi_match);
++#else
++static void arizona_spi_acpi_probe(struct arizona *arizona)
++{
++}
++#endif
++
+ static int arizona_spi_probe(struct spi_device *spi)
+ {
+ 	const struct spi_device_id *id = spi_get_device_id(spi);
+@@ -30,6 +141,8 @@ static int arizona_spi_probe(struct spi_device *spi)
+ 
+ 	if (spi->dev.of_node)
+ 		type = arizona_of_get_type(&spi->dev);
++	else if (ACPI_COMPANION(&spi->dev))
++		type = (unsigned long)acpi_device_get_match_data(&spi->dev);
+ 	else
+ 		type = id->driver_data;
+ 
+@@ -75,6 +188,12 @@ static int arizona_spi_probe(struct spi_device *spi)
+ 	arizona->dev = &spi->dev;
+ 	arizona->irq = spi->irq;
+ 
++	if (ACPI_COMPANION(&spi->dev)) {
++		ret = arizona_spi_acpi_probe(arizona);
++		if (ret)
++			return ret;
++	}
++
+ 	return arizona_dev_init(arizona);
+ }
+ 
+@@ -102,6 +221,7 @@ static struct spi_driver arizona_spi_driver = {
+ 		.name	= "arizona",
+ 		.pm	= &arizona_pm_ops,
+ 		.of_match_table	= of_match_ptr(arizona_of_match),
++		.acpi_match_table = ACPI_PTR(arizona_acpi_match),
+ 	},
+ 	.probe		= arizona_spi_probe,
+ 	.remove		= arizona_spi_remove,
 -- 
 2.28.0
 
