@@ -2,139 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DB352E321E
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 18:24:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFDA72E321D
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 18:24:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726365AbgL0RXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 12:23:47 -0500
-Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:49618 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726336AbgL0RXq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 12:23:46 -0500
-Received: from [192.168.42.210] ([93.22.148.120])
-        by mwinf5d09 with ME
-        id 9VMz2400G2c5cNt03VN0zk; Sun, 27 Dec 2020 18:22:02 +0100
-X-ME-Helo: [192.168.42.210]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 27 Dec 2020 18:22:02 +0100
-X-ME-IP: 93.22.148.120
-Subject: Re: [PATCH] cpufreq: brcmstb-avs-cpufreq: Fix some resource leaks in
- the error handling path of the probe function
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     mmayer@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
-        rjw@rjwysocki.net, f.fainelli@gmail.com, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-References: <20201219101751.181783-1-christophe.jaillet@wanadoo.fr>
- <20201222043505.rq3cmajc3mxv3p2z@vireshk-i7>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <a7e1f78c-b4c9-4ef5-7ca4-94a65fefd299@wanadoo.fr>
-Date:   Sun, 27 Dec 2020 18:22:00 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1726330AbgL0RXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 12:23:38 -0500
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:37115 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726131AbgL0RXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Dec 2020 12:23:38 -0500
+Received: from [192.168.0.8] (ip5f5aef2f.dynamic.kabel-deutschland.de [95.90.239.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: buczek)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 2434420225BD3;
+        Sun, 27 Dec 2020 18:22:54 +0100 (CET)
+Subject: Re: v5.10.1 xfs deadlock
+From:   Donald Buczek <buczek@molgen.mpg.de>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     linux-xfs@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        it+linux-xfs@molgen.mpg.de
+References: <b8da4aed-ee44-5d9f-88dc-3d32f0298564@molgen.mpg.de>
+ <20201218214915.GA53382@dread.disaster.area>
+ <c89ecac6-f5bb-52b8-4fcd-9098983cdf2e@molgen.mpg.de>
+Message-ID: <38614fd9-dc3f-15f9-e922-0b3d80b3b6c4@molgen.mpg.de>
+Date:   Sun, 27 Dec 2020 18:22:53 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201222043505.rq3cmajc3mxv3p2z@vireshk-i7>
+In-Reply-To: <c89ecac6-f5bb-52b8-4fcd-9098983cdf2e@molgen.mpg.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 22/12/2020 à 05:35, Viresh Kumar a écrit :
-> On 19-12-20, 11:17, Christophe JAILLET wrote:
->> If 'cpufreq_register_driver()' fails, we must release the resources
->> allocated in 'brcm_avs_prepare_init()' as already done in the remove
->> function.
+On 21.12.20 13:22, Donald Buczek wrote:
+> On 18.12.20 22:49, Dave Chinner wrote:
+>> On Thu, Dec 17, 2020 at 06:44:51PM +0100, Donald Buczek wrote:
+>>> Dear xfs developer,
+>>>
+>>> I was doing some testing on a Linux 5.10.1 system with two 100 TB xfs filesystems on md raid6 raids.
+>>>
+>>> The stress test was essentially `cp -a`ing a Linux source repository with two threads in parallel on each filesystem.
+>>>
+>>> After about on hour, the processes to one filesystem (md1) blocked, 30 minutes later the process to the other filesystem (md0) did.
+>>>
+>>>      root      7322  2167  0 Dec16 pts/1    00:00:06 cp -a /jbod/M8068/scratch/linux /jbod/M8068/scratch/1/linux.018.TMP
+>>>      root      7329  2169  0 Dec16 pts/1    00:00:05 cp -a /jbod/M8068/scratch/linux /jbod/M8068/scratch/2/linux.019.TMP
+>>>      root     13856  2170  0 Dec16 pts/1    00:00:08 cp -a /jbod/M8067/scratch/linux /jbod/M8067/scratch/2/linux.028.TMP
+>>>      root     13899  2168  0 Dec16 pts/1    00:00:05 cp -a /jbod/M8067/scratch/linux /jbod/M8067/scratch/1/linux.027.TMP
+>>>
+>>> Some info from the system (all stack traces, slabinfo) is available here: https://owww.molgen.mpg.de/~buczek/2020-12-16.info.txt
+>>>
+>>> It stands out, that there are many (549 for md0, but only 10 for md1)  "xfs-conv" threads all with stacks like this
+>>>
+>>>      [<0>] xfs_log_commit_cil+0x6cc/0x7c0
+>>>      [<0>] __xfs_trans_commit+0xab/0x320
+>>>      [<0>] xfs_iomap_write_unwritten+0xcb/0x2e0
+>>>      [<0>] xfs_end_ioend+0xc6/0x110
+>>>      [<0>] xfs_end_io+0xad/0xe0
+>>>      [<0>] process_one_work+0x1dd/0x3e0
+>>>      [<0>] worker_thread+0x2d/0x3b0
+>>>      [<0>] kthread+0x118/0x130
+>>>      [<0>] ret_from_fork+0x22/0x30
+>>>
+>>> xfs_log_commit_cil+0x6cc is
+>>>
+>>>    xfs_log_commit_cil()
+>>>      xlog_cil_push_background(log)
+>>>        xlog_wait(&cil->xc_push_wait, &cil->xc_push_lock);
+>>>
+>>> Some other threads, including the four "cp" commands are also blocking at xfs_log_commit_cil+0x6cc
+>>>
+>>> There are also single "flush" process for each md device with this stack signature:
+>>>
+>>>      [<0>] xfs_map_blocks+0xbf/0x400
+>>>      [<0>] iomap_do_writepage+0x15e/0x880
+>>>      [<0>] write_cache_pages+0x175/0x3f0
+>>>      [<0>] iomap_writepages+0x1c/0x40
+>>>      [<0>] xfs_vm_writepages+0x59/0x80
+>>>      [<0>] do_writepages+0x4b/0xe0
+>>>      [<0>] __writeback_single_inode+0x42/0x300
+>>>      [<0>] writeback_sb_inodes+0x198/0x3f0
+>>>      [<0>] __writeback_inodes_wb+0x5e/0xc0
+>>>      [<0>] wb_writeback+0x246/0x2d0
+>>>      [<0>] wb_workfn+0x26e/0x490
+>>>      [<0>] process_one_work+0x1dd/0x3e0
+>>>      [<0>] worker_thread+0x2d/0x3b0
+>>>      [<0>] kthread+0x118/0x130
+>>>      [<0>] ret_from_fork+0x22/0x30
+>>>
+>>> xfs_map_blocks+0xbf is the
+>>>
+>>>      xfs_ilock(ip, XFS_ILOCK_SHARED);
+>>>
+>>> in xfs_map_blocks().
 >>
->> To do that, introduce a new function 'brcm_avs_prepare_uninit()' in order
->> to avoid code duplication. This also makes the code more readable (IMHO).
+>> Can you post the entire dmesg output after running
+>> 'echo w > /proc/sysrq-trigger' to dump all the block threads to
+>> dmesg?
 >>
->> Fixes: de322e085995 ("cpufreq: brcmstb-avs-cpufreq: AVS CPUfreq driver for Broadcom STB SoCs")
->> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->> ---
->> I'm not sure that the existing error handling in the remove function is
->> correct and/or needed.
->> ---
->>   drivers/cpufreq/brcmstb-avs-cpufreq.c | 25 ++++++++++++++++++++-----
->>   1 file changed, 20 insertions(+), 5 deletions(-)
+>>> I have an out of tree driver for the HBA ( smartpqi 2.1.6-005
+>>> pulled from linux-scsi) , but it is unlikely that this blocking is
+>>> related to that, because the md block devices itself are
+>>> responsive (`xxd /dev/md0` )
 >>
->> diff --git a/drivers/cpufreq/brcmstb-avs-cpufreq.c b/drivers/cpufreq/brcmstb-avs-cpufreq.c
->> index 3e31e5d28b79..750ca7cfccb0 100644
->> --- a/drivers/cpufreq/brcmstb-avs-cpufreq.c
->> +++ b/drivers/cpufreq/brcmstb-avs-cpufreq.c
->> @@ -597,6 +597,16 @@ static int brcm_avs_prepare_init(struct platform_device *pdev)
->>   	return ret;
->>   }
->>   
->> +static void brcm_avs_prepare_uninit(struct platform_device *pdev)
->> +{
->> +	struct private_data *priv;
->> +
->> +	priv = platform_get_drvdata(pdev);
->> +
->> +	iounmap(priv->avs_intr_base);
->> +	iounmap(priv->base);
->> +}
->> +
->>   static int brcm_avs_cpufreq_init(struct cpufreq_policy *policy)
->>   {
->>   	struct cpufreq_frequency_table *freq_table;
->> @@ -732,21 +742,26 @@ static int brcm_avs_cpufreq_probe(struct platform_device *pdev)
->>   
->>   	brcm_avs_driver.driver_data = pdev;
->>   
->> -	return cpufreq_register_driver(&brcm_avs_driver);
->> +	ret = cpufreq_register_driver(&brcm_avs_driver);
->> +	if (ret)
->> +		goto err_uninit;
->> +
->> +	return 0;
->> +
->> +err_uninit:
->> +	brcm_avs_prepare_uninit(pdev);
->> +	return ret;
+>> My bet is that the OOT driver/hardware had dropped a log IO on the
+>> floor - XFS is waiting for the CIL push to complete, and I'm betting
+>> that is stuck waiting for iclog IO completion while writing the CIL
+>> to the journal. The sysrq output will tell us if this is the case,
+>> so that's the first place to look.
 > 
-> Maybe rewrite as:
+> I think you are right here, and I'm sorry for blaming the wrong layer.
+
+I was to fast to accept that. The display of the non-zero "inflight" counters of the underlying block devices couldn't be reproduced. They usually are "0 0" when the filesystem is deadlocked.
+
+To make sure, I've also added my on "bio requested" and "bio completed" atomic counters to the two submit_bio calls and to xlog_bio_end_io in xfs_log.c and when the system is deadlocked, the requests and completions do match:
+
+     sudo gdb linux/vmlinux /proc/kcore  -ex 'print xxx_bio_requested' -ex 'print xxx_bio_completed'
+     [...]
+     $1 = {counter = 34723}
+     $2 = {counter = 34723}
+
+So at least log writes are not lost.
+
+Best
+   Donald
+
+> I've got the system into another (though little different) zero-progress situation. This time it happened on md0 only while md1 was still working.
 > 
-> 	ret = cpufreq_register_driver(&brcm_avs_driver);
-> 	if (ret)
->                  brcm_avs_prepare_uninit(pdev);
-> 	return ret;
+> I think, this should be prove, that the failure is on the block layer of the member disks:
 > 
-
-Personlaly, I prefer what I have proposed. Having a clear and dedicated 
-error handling path is more future proff, IMHO.
-
->>   }
->>   
->>   static int brcm_avs_cpufreq_remove(struct platform_device *pdev)
->>   {
->> -	struct private_data *priv;
->>   	int ret;
->>   
->>   	ret = cpufreq_unregister_driver(&brcm_avs_driver);
->>   	if (ret)
->>   		return ret;
+>      root:deadbird:/scratch/local/# for f in /sys/devices/virtual/block/md?/md/rd*/block/inflight;do echo $f: $(cat $f);done
+>      /sys/devices/virtual/block/md0/md/rd0/block/inflight: 1 0
+>      /sys/devices/virtual/block/md0/md/rd1/block/inflight: 1 0
+>      /sys/devices/virtual/block/md0/md/rd10/block/inflight: 1 0
+>      /sys/devices/virtual/block/md0/md/rd11/block/inflight: 1 0
+>      /sys/devices/virtual/block/md0/md/rd12/block/inflight: 1 0
+>      /sys/devices/virtual/block/md0/md/rd13/block/inflight: 1 0
+>      /sys/devices/virtual/block/md0/md/rd14/block/inflight: 1 0
+>      /sys/devices/virtual/block/md0/md/rd15/block/inflight: 1 0
+>      /sys/devices/virtual/block/md0/md/rd2/block/inflight: 1 0
+>      /sys/devices/virtual/block/md0/md/rd3/block/inflight: 1 0
+>      /sys/devices/virtual/block/md0/md/rd4/block/inflight: 1 0
+>      /sys/devices/virtual/block/md0/md/rd5/block/inflight: 1 0
+>      /sys/devices/virtual/block/md0/md/rd6/block/inflight: 1 0
+>      /sys/devices/virtual/block/md0/md/rd7/block/inflight: 1 0
+>      /sys/devices/virtual/block/md0/md/rd8/block/inflight: 1 0
+>      /sys/devices/virtual/block/md0/md/rd9/block/inflight: 1 0
+>      /sys/devices/virtual/block/md1/md/rd0/block/inflight: 0 0
+>      /sys/devices/virtual/block/md1/md/rd1/block/inflight: 0 0
+>      /sys/devices/virtual/block/md1/md/rd10/block/inflight: 0 0
+>      /sys/devices/virtual/block/md1/md/rd11/block/inflight: 0 0
+>      /sys/devices/virtual/block/md1/md/rd12/block/inflight: 0 0
+>      /sys/devices/virtual/block/md1/md/rd13/block/inflight: 0 0
+>      /sys/devices/virtual/block/md1/md/rd14/block/inflight: 0 0
+>      /sys/devices/virtual/block/md1/md/rd15/block/inflight: 0 0
+>      /sys/devices/virtual/block/md1/md/rd2/block/inflight: 0 0
+>      /sys/devices/virtual/block/md1/md/rd3/block/inflight: 0 0
+>      /sys/devices/virtual/block/md1/md/rd4/block/inflight: 0 0
+>      /sys/devices/virtual/block/md1/md/rd5/block/inflight: 0 0
+>      /sys/devices/virtual/block/md1/md/rd6/block/inflight: 0 0
+>      /sys/devices/virtual/block/md1/md/rd7/block/inflight: 0 0
+>      /sys/devices/virtual/block/md1/md/rd8/block/inflight: 0 0
+>      /sys/devices/virtual/block/md1/md/rd9/block/inflight: 0 0
 > 
-> Instead of returning here, it can be just WARN_ON(ret); and then go on and free
-> the resources and this needs to be done in a separate patch.
-
-Ok, I agree (see my comment below the --- in my patch).
-I'll send a patch for it when the first patch will be applied, unless 
-you prefer if I resend as a serie.
-
-CJ
-
+> Best
 > 
->>   
->> -	priv = platform_get_drvdata(pdev);
->> -	iounmap(priv->base);
->> -	iounmap(priv->avs_intr_base);
->> +	brcm_avs_prepare_uninit(pdev);
->>   
->>   	return 0;
->>   }
+>    Donald
 > 
+>>
+>> Cheers,
+>>
+>> Dave.
+>>
 
+-- 
+Donald Buczek
+buczek@molgen.mpg.de
+Tel: +49 30 8413 1433
