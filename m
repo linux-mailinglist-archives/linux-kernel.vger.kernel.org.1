@@ -2,98 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B98B2E3194
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 15:41:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6BC42E3197
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 15:44:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726227AbgL0Olk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 09:41:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726103AbgL0Oli (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 09:41:38 -0500
-Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [IPv6:2001:67c:2050::465:103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88D6AC061795;
-        Sun, 27 Dec 2020 06:40:57 -0800 (PST)
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [80.241.60.240])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4D3jzB5twzzQlF7;
-        Sun, 27 Dec 2020 15:40:54 +0100 (CET)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dylanvanassche.be;
-        s=MBO0001; t=1609080052;
+        id S1726277AbgL0OoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 09:44:05 -0500
+Received: from out0.migadu.com ([94.23.1.103]:2966 "EHLO out0.migadu.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726209AbgL0OoA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Dec 2020 09:44:00 -0500
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kl.wtf; s=default;
+        t=1609080193;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding;
-        bh=Su9EmqxTFyjd3dtZ0DJqAJWM+HidJ1cY0TUrGFRJtpo=;
-        b=sLFqocuaAMFLk60h50QhcG5fIPWm/zaW4FFBBEEy2n5nsKx2D8sBpFtDRn8Pk73sTXrwQi
-        yNGnf0Y0DXpqQCu3kvfv/4gc8h4Wa5vagjI59XH9nic1Ui+uBYht5xqtI3gPeyjaqhY12m
-        0rLHRVu/Ij2q49e7L8HYS73wQpm9NQGLz/5juABu1NXtHzpGbck/AXzuXKNuQXCndTBqAJ
-        aPdc9KNmvCmS85v9fvf1ooKQ87Q0LTRbBcSbCUGx7mCLwa9WDKLBdkbSocFgEh/qo4b5mx
-        2H7/rSJpFxvkiz5uy1HxnQO3OJHCb7pcqlG051InCXVoT/o2yCpW+3TzO/L53Q==
-Received: from smtp1.mailbox.org ([80.241.60.240])
-        by gerste.heinlein-support.de (gerste.heinlein-support.de [91.198.250.173]) (amavisd-new, port 10030)
-        with ESMTP id ir1MYudsjB1I; Sun, 27 Dec 2020 15:40:51 +0100 (CET)
-From:   me@dylanvanassche.be
-To:     pavel@ucw.cz, dmurphy@ti.com, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Dylan Van Assche <me@dylanvanassche.be>
-Subject: [PATCH] leds: gpio: Set max brightness to 1
-Date:   Sun, 27 Dec 2020 15:40:15 +0100
-Message-Id: <20201227144014.6590-1-me@dylanvanassche.be>
+        bh=LlgK43BtTlQ6++cCaXNMqGTvJaDHPrjIe9skQ875zsU=;
+        b=aZDq9BZCFD7bl/5IBCqHSaWdcz0o/oKE/iW/wE7KvAwYEZ1RULC3uDsR3RkGpFtthTnTyN
+        EfGrnhL6/cSKXY0J0iGwGsSEpo6jD+uuelqYx1a5JHd9poTzu5e6B++qVXhoQ3pUgly9+h
+        F+rMEbCuUZsa8f0epZNI+MXp/Acdjww=
+From:   Kenny Levinsen <kl@kl.wtf>
+To:     linux-input@vger.kernel.org
+Cc:     dmitry.torokhov@gmail.com, linux-kernel@vger.kernel.org,
+        Kenny Levinsen <kl@kl.wtf>
+Subject: [PATCH] Input: evdev - use call_rcu when detaching client
+Message-Id: <20201227144302.9419-1-kl@kl.wtf>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -6.19 / 15.00 / 15.00
-X-Rspamd-Queue-Id: 87D281850
-X-Rspamd-UID: cf6e61
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: kl@kl.wtf
+Date:   Sun, 27 Dec 2020 14:43:13 GMT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dylan Van Assche <me@dylanvanassche.be>
+Significant time was spent on synchronize_rcu in evdev_detach_client
+when applications closed evdev devices. Switching VT away from a
+graphical environment commonly leads to mass input device closures,
+which could lead to noticable delays on systems with many input devices.
 
-GPIO LEDs only know 2 states: ON or OFF and do not have PWM capabilities.
-However, the max brightness is reported as 255.
+Replace synchronize_rcu with call_rcu, deferring reclaim of the evdev
+client struct till after the RCU grace period instead of blocking the
+calling application.
 
-This patch sets the max brightness value of a GPIO controlled LED to 1.
+While this does not solve all slow evdev fd closures, it takes care of a
+good portion of them, including this simple test:
 
-Tested on my PinePhone 1.2.
+	#include <fcntl.h>
+	#include <unistd.h>
 
-Signed-off-by: Dylan Van Assche <me@dylanvanassche.be>
+	int main(int argc, char *argv[])
+	{
+		int idx, fd;
+		const char *path = "/dev/input/event0";
+		for (idx = 0; idx < 1000; idx++) {
+			if ((fd = open(path, O_RDWR)) == -1) {
+				return -1;
+			}
+			close(fd);
+		}
+		return 0;
+	}
+
+Time to completion of above test when run locally:
+
+	Before: 0m27.111s
+	After:  0m0.018s
+
+Signed-off-by: Kenny Levinsen <kl@kl.wtf>
 ---
- drivers/leds/leds-gpio.c | 3 ++-
- include/linux/leds.h     | 1 +
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ drivers/input/evdev.c | 19 +++++++++++--------
+ 1 file changed, 11 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/leds/leds-gpio.c b/drivers/leds/leds-gpio.c
-index 93f5b1b60fde..0d66f19d71ba 100644
---- a/drivers/leds/leds-gpio.c
-+++ b/drivers/leds/leds-gpio.c
-@@ -96,7 +96,8 @@ static int create_gpio_led(const struct gpio_led *template,
- 	} else {
- 		state = (template->default_state == LEDS_GPIO_DEFSTATE_ON);
- 	}
--	led_dat->cdev.brightness = state ? LED_FULL : LED_OFF;
-+	led_dat->cdev.brightness = state ? LED_ON : LED_OFF;
-+	led_dat->cdev.max_brightness = LED_ON;
- 	if (!template->retain_state_suspended)
- 		led_dat->cdev.flags |= LED_CORE_SUSPENDRESUME;
- 	if (template->panic_indicator)
-diff --git a/include/linux/leds.h b/include/linux/leds.h
-index 6a8d6409c993..43f0cac2a87b 100644
---- a/include/linux/leds.h
-+++ b/include/linux/leds.h
-@@ -514,6 +514,7 @@ struct gpio_led {
- 	const char *name;
- 	const char *default_trigger;
- 	unsigned 	gpio;
-+	unsigned	max_brightness;
- 	unsigned	active_low : 1;
- 	unsigned	retain_state_suspended : 1;
- 	unsigned	panic_indicator : 1;
+diff --git a/drivers/input/evdev.c b/drivers/input/evdev.c
+index 95f90699d2b1..2b10fe29d2c8 100644
+--- a/drivers/input/evdev.c
++++ b/drivers/input/evdev.c
+@@ -46,6 +46,7 @@ struct evdev_client {
+ 	struct fasync_struct *fasync;
+ 	struct evdev *evdev;
+ 	struct list_head node;
++	struct rcu_head rcu;
+ 	enum input_clock_type clk_type;
+ 	bool revoked;
+ 	unsigned long *evmasks[EV_CNT];
+@@ -377,13 +378,22 @@ static void evdev_attach_client(struct evdev *evdev,
+ 	spin_unlock(&evdev->client_lock);
+ }
+ 
++static void evdev_reclaim_client(struct rcu_head *rp)
++{
++	struct evdev_client *client = container_of(rp, struct evdev_client, rcu);
++	unsigned int i;
++	for (i = 0; i < EV_CNT; ++i)
++		bitmap_free(client->evmasks[i]);
++	kvfree(client);
++}
++
+ static void evdev_detach_client(struct evdev *evdev,
+ 				struct evdev_client *client)
+ {
+ 	spin_lock(&evdev->client_lock);
+ 	list_del_rcu(&client->node);
+ 	spin_unlock(&evdev->client_lock);
+-	synchronize_rcu();
++	call_rcu(&client->rcu, evdev_reclaim_client);
+ }
+ 
+ static int evdev_open_device(struct evdev *evdev)
+@@ -436,7 +446,6 @@ static int evdev_release(struct inode *inode, struct file *file)
+ {
+ 	struct evdev_client *client = file->private_data;
+ 	struct evdev *evdev = client->evdev;
+-	unsigned int i;
+ 
+ 	mutex_lock(&evdev->mutex);
+ 
+@@ -448,11 +457,6 @@ static int evdev_release(struct inode *inode, struct file *file)
+ 
+ 	evdev_detach_client(evdev, client);
+ 
+-	for (i = 0; i < EV_CNT; ++i)
+-		bitmap_free(client->evmasks[i]);
+-
+-	kvfree(client);
+-
+ 	evdev_close_device(evdev);
+ 
+ 	return 0;
+@@ -495,7 +499,6 @@ static int evdev_open(struct inode *inode, struct file *file)
+ 
+  err_free_client:
+ 	evdev_detach_client(evdev, client);
+-	kvfree(client);
+ 	return error;
+ }
+ 
 -- 
-2.26.2
+2.29.2
 
