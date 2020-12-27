@@ -2,71 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A0B02E3114
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 13:24:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1739C2E3105
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 13:01:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726197AbgL0MXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 07:23:04 -0500
-Received: from m15111.mail.126.com ([220.181.15.111]:59500 "EHLO
-        m15111.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726039AbgL0MXD (ORCPT
+        id S1726199AbgL0MAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 07:00:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29555 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726089AbgL0MAm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 07:23:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=EeQ64OxSk6Lgpq0NYh
-        2skNXNACqermCASGbXx4NCP20=; b=X7ybtLWimHZ3JuDheqddp0wiFF8Z0SSmAR
-        iUZ+JJ8R0rW7n/kYvDwyqKndnw+6BdUQEXA8St6EQfxegk9GHbwEYw3NQDQj+lo+
-        fPp32biGou67XoCOzYxSymhQm5iLw8KS+7byKE12kMhjHZYgRZ32r6ZVbtN6ASQP
-        Mpl9sfCSg=
-Received: from localhost.localdomain (unknown [36.112.86.14])
-        by smtp1 (Coremail) with SMTP id C8mowADX3DwsdOhf1VsQNA--.25891S2;
-        Sun, 27 Dec 2020 19:46:53 +0800 (CST)
-From:   Defang Bo <bodefang@126.com>
-To:     airlied@linux.ie, daniel@ffwll.ch, sumit.semwal@linaro.org
-Cc:     alexander.deucher@amd.com, christian.koenig@amd.com,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org, Defang Bo <bodefang@126.com>
-Subject: [PATCH] drm/amd:avoid null pointer dereference when dev is not bound
-Date:   Sun, 27 Dec 2020 19:46:44 +0800
-Message-Id: <1609069604-3949767-1-git-send-email-bodefang@126.com>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: C8mowADX3DwsdOhf1VsQNA--.25891S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7Jw4rAryUuF1xKr1rtr1xAFb_yoWfurc_ur
-        W5ZFykXr43AF1vqr1ayr4fZasrtFnY9FWkWrn3ta9ayry3Z3yUZrWqqF10g3WxWa1xCF1D
-        Z3Wqgr4Sy3ZF9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU1kR63UUUUU==
-X-Originating-IP: [36.112.86.14]
-X-CM-SenderInfo: pergvwxdqjqiyswou0bp/1tbiYw0I11x5bWrfHwAAsT
+        Sun, 27 Dec 2020 07:00:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609070355;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=B77ZH4RVvlN4DS2W5XduNFHLg2L16n9zgwjAwYXRZm4=;
+        b=OUeXIOmn2hkD+lxr3Y/1Xu4t0K08etIn6aT3gK2HvFDokoBT0jMsjtKNayHkyTPFHZoqfi
+        HBK1rGvxZ33j1NAk49+CPc5BeJeyN5sK8FqSZNy92zREq/vY3wP+icWlzX0xy7TUfkgLxg
+        Ue08QfBsRn8+FpaRo6DdmCv71FpeCnY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-498-4BplTBqwMaC9gom0zlk6Mg-1; Sun, 27 Dec 2020 06:59:13 -0500
+X-MC-Unique: 4BplTBqwMaC9gom0zlk6Mg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DD1EC180A08A;
+        Sun, 27 Dec 2020 11:59:11 +0000 (UTC)
+Received: from T590 (ovpn-12-134.pek2.redhat.com [10.72.12.134])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 123865D719;
+        Sun, 27 Dec 2020 11:59:03 +0000 (UTC)
+Date:   Sun, 27 Dec 2020 19:58:59 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Yu Kuai <yukuai3@huawei.com>
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        zhangxiaoxu5@huawei.com
+Subject: Re: [PATCH 1/3] blk-mq: allow hardware queue to get more tag while
+ sharing a tag set
+Message-ID: <20201227115859.GA3282759@T590>
+References: <20201226102808.2534966-1-yukuai3@huawei.com>
+ <20201226102808.2534966-2-yukuai3@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201226102808.2534966-2-yukuai3@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Why]
-Similar to commit<0fa375e6>. If amdgpu_switcheroo_can_switch access
-the drm_device when dev is not bound, a null pointer dereference can happen.
+Hi Yu Kuai,
 
-[How]
-Add sanity checks to prevent it.
+On Sat, Dec 26, 2020 at 06:28:06PM +0800, Yu Kuai wrote:
+> When sharing a tag set, if most disks are issuing small amount of IO, and
+> only a few is issuing a large amount of IO. Current approach is to limit
+> the max amount of tags a disk can get equally to the average of total
+> tags. Thus the few heavy load disk can't get enough tags while many tags
+> are still free in the tag set.
 
-Signed-off-by: Defang Bo <bodefang@126.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 3 +++
- 1 file changed, 3 insertions(+)
+Yeah, current approach just allocates same share for each active queue
+which is evaluated in each timeout period.
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-index 37da353..f70e528 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-@@ -1439,6 +1439,9 @@ static void amdgpu_switcheroo_set_state(struct pci_dev *pdev,
- static bool amdgpu_switcheroo_can_switch(struct pci_dev *pdev)
- {
- 	struct drm_device *dev = pci_get_drvdata(pdev);
-+
-+	if (!dev)
-+		return false;
- 
- 	/*
- 	* FIXME: open_count is protected by drm_global_mutex but that would lead to
--- 
-2.7.4
+That said you are trying to improve the following case:
+- heavy IO on one or several disks, and the average share for these
+  disks become bottleneck of IO performance
+- small amount IO on other disks attached to the same host, and all IOs are
+submitted to disk in <30 second period.
+
+Just wondering if you may share the workload you are trying to optimize,
+or it is just one improvement in theory? And what is the disk(hdd, ssd
+or nvme) and host? And how many disks in your setting? And how deep the tagset
+depth is?
+
+
+Thanks, 
+Ming
 
