@@ -2,157 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B5BE2E32A0
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 20:59:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 853FC2E32A4
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 21:01:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726278AbgL0T7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 14:59:11 -0500
-Received: from mga03.intel.com ([134.134.136.65]:29811 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726067AbgL0T7K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 14:59:10 -0500
-IronPort-SDR: j/qcG7M8ba1c0o4lfKqqnpmUhKcl5GXi5/lXuqidKfc3QU1So2cXVUWxakc7QfCPsB5KkyFUpe
- phWFt6BrF4og==
-X-IronPort-AV: E=McAfee;i="6000,8403,9847"; a="176419231"
-X-IronPort-AV: E=Sophos;i="5.78,453,1599548400"; 
-   d="scan'208";a="176419231"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2020 11:58:29 -0800
-IronPort-SDR: YFwe7Ktwz3d0xOdbkNOojcKt4ID0HgnJywGHR2EUselv1+xaeXfkV0g6SFRuThPTDaAec+T0b2
- ZB2VWjhlKcWQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,453,1599548400"; 
-   d="scan'208";a="399742979"
-Received: from lkp-server02.sh.intel.com (HELO 4242b19f17ef) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 27 Dec 2020 11:58:28 -0800
-Received: from kbuild by 4242b19f17ef with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1ktcBP-0002Xy-Jv; Sun, 27 Dec 2020 19:58:27 +0000
-Date:   Mon, 28 Dec 2020 03:57:31 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- e044796b02dbea4edd8a94055a5fe045cf3b4882
-Message-ID: <5fe8e72b.xgzkgEAR0IzPPqyK%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+        id S1726344AbgL0UAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 15:00:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726067AbgL0UAw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Dec 2020 15:00:52 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF757C061794
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 12:00:11 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id w5so8782119wrm.11
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 12:00:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=k1BpqDrLIxjJCwX+FDaIrNploNKz7RU64Z1q2+uIcRs=;
+        b=gKy/F/eR8+MQv8/ZNVa2cPLx0waXLCVf2qd426mCfCMJL2yVCI4AFNNmv4zFJM3HbD
+         /gHcpSGjYNd9V9NqGIv2rV3MwNjtLRm8jPBIMENWWe713B9WXtrq1IQyi/pHUZRLkrNi
+         W1+pgt08sODHaUXIrYk5rJ0ZrngVl/iHCp8q69UhPB/+AYqJal/Q1y/Ka3yGduPv0anD
+         Dlbf5DiuxALIGg8CVqw5Dc+quRLq75Dp4WbUVfkQ53hGXgbY29NlgUfEGJzwTtUjEdcC
+         P2oDxRAVxZA6GK0ZNmB0gK+j4OL9INaEAkdYeLDag8hd/yygIcrQkd7XdIQAg2Amym/K
+         cJRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=k1BpqDrLIxjJCwX+FDaIrNploNKz7RU64Z1q2+uIcRs=;
+        b=dXqdmJMrWwVn0z4ndlaRmtbAqcPfs0BM2CElITThRjqozOuLxABpmQTxn+4QN19LhG
+         Z0A/P54tBVJWf2fXYaVrXrltJimo5v+KUq2axtDJ1K5vfQ20vlb1Lx2q2BfYsUmxPjkX
+         x3HBASBm0bCOI8LVKPbUDNra5z/jMWU2UhZiyVtSFOd93sUGs5ImEMJK8ThBQ+hwcpZM
+         ZuAmE5DgadSQMvJ3f8ptftEgTBv+N1lhDpE/9qi+aLON/mPtkF0t8yN/55p6Q+RDEU4S
+         Tj2GvyOVdfSHhC5G1PntDsZzJfNCsuv3StsxYdfblfJojL25zcso+pp0iYmomxnGCwzj
+         t+AQ==
+X-Gm-Message-State: AOAM530TCgc0kv2DceDuPFEYiB2uoVTZ3c4qI28hbhHOCYXI3RbOW7jT
+        ZqazKhN2sCJ3qYQpfPzWG8ANw+FVt5guow==
+X-Google-Smtp-Source: ABdhPJxRuFAjZMihIl0VdyMjBOwgjyCqvj1tlS863MyYDzucazsO5DqIYglI3G0ZSbRC7BR3Fs8DVA==
+X-Received: by 2002:a5d:68ce:: with SMTP id p14mr47642644wrw.386.1609099210310;
+        Sun, 27 Dec 2020 12:00:10 -0800 (PST)
+Received: from localhost.localdomain ([163.172.76.58])
+        by smtp.googlemail.com with ESMTPSA id x66sm16337484wmg.26.2020.12.27.12.00.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Dec 2020 12:00:09 -0800 (PST)
+From:   Corentin Labbe <clabbe@baylibre.com>
+To:     jernej.skrabec@siol.net, linux@armlinux.org.uk, mripard@kernel.org,
+        wens@csie.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com, Corentin Labbe <clabbe@baylibre.com>
+Subject: [PATCH RESEND] ARM: configs: sunxi: enable brcm wireless
+Date:   Sun, 27 Dec 2020 20:00:00 +0000
+Message-Id: <20201227200000.28526-1-clabbe@baylibre.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  master
-branch HEAD: e044796b02dbea4edd8a94055a5fe045cf3b4882  Merge branch 'locking/urgent'
+Lot of sunxi boards have BRCM wireless device, so let's enable necessary
+options for it in our defconfig.
 
-elapsed time: 724m
-
-configs tested: 95
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                 xes_mpc85xx_defconfig
-nios2                         10m50_defconfig
-um                            kunit_defconfig
-sh                           se7705_defconfig
-sh                ecovec24-romimage_defconfig
-sh                             espt_defconfig
-arm                         lpc32xx_defconfig
-arm                          exynos_defconfig
-xtensa                           alldefconfig
-powerpc                     akebono_defconfig
-mips                         tb0219_defconfig
-arm                       cns3420vb_defconfig
-arm                           omap1_defconfig
-powerpc                     sequoia_defconfig
-mips                        vocore2_defconfig
-powerpc                     mpc5200_defconfig
-powerpc                      tqm8xx_defconfig
-arm                       imx_v4_v5_defconfig
-sparc64                          alldefconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a001-20201227
-x86_64               randconfig-a006-20201227
-x86_64               randconfig-a004-20201227
-x86_64               randconfig-a002-20201227
-x86_64               randconfig-a003-20201227
-x86_64               randconfig-a005-20201227
-i386                 randconfig-a002-20201227
-i386                 randconfig-a005-20201227
-i386                 randconfig-a006-20201227
-i386                 randconfig-a004-20201227
-i386                 randconfig-a003-20201227
-i386                 randconfig-a001-20201227
-i386                 randconfig-a011-20201227
-i386                 randconfig-a016-20201227
-i386                 randconfig-a012-20201227
-i386                 randconfig-a014-20201227
-i386                 randconfig-a015-20201227
-i386                 randconfig-a013-20201227
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a015-20201227
-x86_64               randconfig-a014-20201227
-x86_64               randconfig-a016-20201227
-x86_64               randconfig-a012-20201227
-x86_64               randconfig-a013-20201227
-x86_64               randconfig-a011-20201227
-
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ arch/arm/configs/sunxi_defconfig | 23 ++++++++++++++++++++++-
+ 1 file changed, 22 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/configs/sunxi_defconfig b/arch/arm/configs/sunxi_defconfig
+index a60c134c5e04..4891aefdef7d 100644
+--- a/arch/arm/configs/sunxi_defconfig
++++ b/arch/arm/configs/sunxi_defconfig
+@@ -52,7 +52,28 @@ CONFIG_STMMAC_ETH=y
+ # CONFIG_NET_VENDOR_WIZNET is not set
+ CONFIG_MICREL_PHY=y
+ CONFIG_REALTEK_PHY=y
+-# CONFIG_WLAN is not set
++CONFIG_WLAN=y
++# CONFIG_WLAN_VENDOR_ADMTEK is not set
++# CONFIG_WLAN_VENDOR_ATH is not set
++# CONFIG_WLAN_VENDOR_ATMEL is not set
++CONFIG_WLAN_VENDOR_BROADCOM=y
++# CONFIG_WLAN_VENDOR_CISCO is not set
++# CONFIG_WLAN_VENDOR_INTEL is not set
++# CONFIG_WLAN_VENDOR_INTERSIL is not set
++# CONFIG_WLAN_VENDOR_MARVELL is not set
++# CONFIG_WLAN_VENDOR_MEDIATEK is not set
++# CONFIG_WLAN_VENDOR_MICROCHIP is not set
++# CONFIG_WLAN_VENDOR_RALINK is not set
++# CONFIG_WLAN_VENDOR_REALTEK is not set
++# CONFIG_WLAN_VENDOR_RSI is not set
++# CONFIG_WLAN_VENDOR_ST is not set
++# CONFIG_WLAN_VENDOR_TI is not set
++# CONFIG_WLAN_VENDOR_ZYDAS is not set
++# CONFIG_WLAN_VENDOR_QUANTENNA is not set
++CONFIG_CFG80211=y
++CONFIG_CFG80211_WEXT=y
++CONFIG_MAC80211=y
++CONFIG_BRCMFMAC=y
+ CONFIG_INPUT_EVDEV=y
+ CONFIG_KEYBOARD_SUN4I_LRADC=y
+ # CONFIG_INPUT_MOUSE is not set
+-- 
+2.26.2
+
