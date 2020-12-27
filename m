@@ -2,64 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D69552E32F7
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 22:29:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 048492E32FF
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 22:31:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726400AbgL0V23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 16:28:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37246 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726105AbgL0V22 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 16:28:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BEBF8207AE;
-        Sun, 27 Dec 2020 21:27:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609104468;
-        bh=dlUOHzdT6jqxNMlS7tKqm2HOUmsvt41fj/QA+qUzYuY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LmC2caxmKrmbf7bEAgezvmwRBWBxQ0zThEPdwxvwtMI9dZ6Ri2AeWQrxIypSzHa4U
-         MuvrouwwqnAi+Bz4M08GCuZp1ESgAYv5x5k38Dr25b2vwhVA2uSmbQi+jxW7uFfLjM
-         cAR64DMSdHM7T91XYSvTrgc7hiPjKBPYOFdy55iiN2iugdPwONLW9+tLOGm9hYpVM+
-         1kFXEEnPiaZK+1zMwiw460a/7go+/uHu2FZ52+cdFdRxbfSj4oGZre/BVnNtVogWkN
-         zk12bzwTSn2UHGfqr5sF38U+er57hCVHQaJYSX1DQZV1loLFycMID4Mo5OG/is3fsG
-         yS3yQCE0VHAvA==
-Date:   Sun, 27 Dec 2020 16:27:46 -0500
-From:   Sasha Levin <sashal@kernel.org>
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
-        Martin Schiller <ms@dev.tdt.de>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>
-Subject: Re: [PATCH AUTOSEL 5.4 075/130] net/lapb: fix t1 timer handling for
- LAPB_STATE_0
-Message-ID: <20201227212746.GF2790422@sasha-vm>
-References: <20201223021813.2791612-75-sashal@kernel.org>
- <20201223170124.5963-1-xie.he.0141@gmail.com>
- <CAJht_EOXf4Z3G-rq92hb_YvJEsHtDy15FE7WuthqDQsPY039QQ@mail.gmail.com>
+        id S1726462AbgL0Vac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 16:30:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726244AbgL0Vab (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Dec 2020 16:30:31 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F21BC061795
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 13:29:50 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id y19so19954716lfa.13
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 13:29:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aTYaA/nk5rfxrjXMV9Zf6ReLTziBhlVMG7XuAP4a5t8=;
+        b=J5P/Mg6E+/zhNhboLMKs7TkvDI8fqb3RuPdLB32RXXdwcNDIxDI4ZMJOSn9kRMH9lW
+         ATXSxQ/SO/FjGNfp0QsladSzDjqr3DQNInBQVPqZS425ZN3oUKTQ9q81JC9myq8QwDjC
+         VtGxnyk1K3UWqL/6404Pwzfo63D2GgFwveeSVLJDGM0JOLFsevJ+RxyCR7d3PG4+1jW1
+         sEIRYVN7tF1MrzwdqMAIDjxjjIer4iGJRe2e64tX9thJGwq/ON7x3wZworJjitibqlhF
+         8zamHCdpNihGp/GuPEnBR18p4qV7DhcDJ0Zz1a0W5av7mMR1X4itMiaHF2iHkdADS1jM
+         vHQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aTYaA/nk5rfxrjXMV9Zf6ReLTziBhlVMG7XuAP4a5t8=;
+        b=t0PfcMQSRDYclCoF2fiSJXauD1gDJo45IFDwdIPApCBBiJi3mG5EHBgKqEAi5v0nXT
+         NFgZFV2xvL8+AGhoD/0cEmMddSxKK1t0zM1mR6pam8DNzkjfnOtUT6BDFhKGmTmRISSk
+         Pe7I/uCjgJo/QX7oR9ZHXPKiBDbVG8VNwAS4ufTNcLGcwFGdJRNdIwVxUrMgE4yB9xax
+         jtUg9TYMyIe0OjfXfrbgkuEHVnxLMwETNJswzvo7iIS9sXMG/I+gKmVZpdsneRHsxhm0
+         Q3ouXLCzWX4IMWkMQ/frSux/BBFbRjFe0H+A4d1VL1GKdjwArdMem372fVuQydSNTF/e
+         vACg==
+X-Gm-Message-State: AOAM533Qt3vRq9a+beACUoYx7Pk5reiIWmjjMKYQ0vxAlY3m0luozjD7
+        +qqpKiOFIp9ywQlpJi7Kgu2rZlE3+wu7sapeNvuXjw==
+X-Google-Smtp-Source: ABdhPJzfNx7tIi9SglDZF+Sx/celS+gTLPOTG/bEsMRx3N0BRYld6DtNve2/EtSdisYCC1sdSk4eVBjU0GqHRFyReNM=
+X-Received: by 2002:a2e:b047:: with SMTP id d7mr19629137ljl.467.1609104589062;
+ Sun, 27 Dec 2020 13:29:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CAJht_EOXf4Z3G-rq92hb_YvJEsHtDy15FE7WuthqDQsPY039QQ@mail.gmail.com>
+References: <cover.1608963094.git.syednwaris@gmail.com> <5041c8cfc423f046ca9cf4f8f0a8bd03552ab6ea.1608963095.git.syednwaris@gmail.com>
+In-Reply-To: <5041c8cfc423f046ca9cf4f8f0a8bd03552ab6ea.1608963095.git.syednwaris@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sun, 27 Dec 2020 22:29:38 +0100
+Message-ID: <CACRpkdYmoEjTzWv7wdrHhc8VFxFB+=QQwKA6YY+prydjgUB2aw@mail.gmail.com>
+Subject: Re: [PATCH 4/5] gpio: xilinx: Utilize generic bitmap_get_value and _set_value
+To:     Syed Nayyar Waris <syednwaris@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Robert Richter <rrichter@marvell.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "(Exiting) Amit Kucheria" <amit.kucheria@verdurent.com>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux PM list <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 24, 2020 at 01:49:47AM -0800, Xie He wrote:
->On Wed, Dec 23, 2020 at 9:01 AM Xie He <xie.he.0141@gmail.com> wrote:
->>
->> I don't think this patch is suitable for stable branches. This patch is
->> part of a patch series that changes the lapb module from "establishing the
->> L2 connection only when needed by L3", to "establishing the L2 connection
->> automatically whenever we are able to". This is a behavioral change. It
->> should be seen as a new feature. It is not a bug fix.
+On Sat, Dec 26, 2020 at 7:44 AM Syed Nayyar Waris <syednwaris@gmail.com> wrote:
+
+> This patch reimplements the xgpio_set_multiple() function in
+> drivers/gpio/gpio-xilinx.c to use the new generic functions:
+> bitmap_get_value() and bitmap_set_value(). The code is now simpler
+> to read and understand. Moreover, instead of looping for each bit
+> in xgpio_set_multiple() function, now we can check each channel at
+> a time and save cycles.
 >
->Applying this patch without other patches in the same series will also
->introduce problems, because this patch relies on part of the changes
->in the subsequent patch in the same series to be correct.
+> Cc: William Breathitt Gray <vilhelm.gray@gmail.com>
+> Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> Cc: Michal Simek <michal.simek@xilinx.com>
+> Signed-off-by: Syed Nayyar Waris <syednwaris@gmail.com>
 
-I'll drop it, thanks!
+(...)
 
--- 
-Thanks,
-Sasha
+> +#include <../drivers/gpio/clump_bits.h>
+
+What is this?
+
+Isn't a simple
+
+#include "clump_bits.h"
+
+enough?
+
+We need an ACK from the Xilinx people that they think this
+actually improves the readability and maintainability of their
+driver.
+
+Yours,
+Linus Walleij
