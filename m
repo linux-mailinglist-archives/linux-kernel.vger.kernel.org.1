@@ -2,185 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFDA72E321D
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 18:24:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6776B2E3229
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 18:30:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726330AbgL0RXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 12:23:38 -0500
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:37115 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726131AbgL0RXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 12:23:38 -0500
-Received: from [192.168.0.8] (ip5f5aef2f.dynamic.kabel-deutschland.de [95.90.239.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: buczek)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 2434420225BD3;
-        Sun, 27 Dec 2020 18:22:54 +0100 (CET)
-Subject: Re: v5.10.1 xfs deadlock
-From:   Donald Buczek <buczek@molgen.mpg.de>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     linux-xfs@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        it+linux-xfs@molgen.mpg.de
-References: <b8da4aed-ee44-5d9f-88dc-3d32f0298564@molgen.mpg.de>
- <20201218214915.GA53382@dread.disaster.area>
- <c89ecac6-f5bb-52b8-4fcd-9098983cdf2e@molgen.mpg.de>
-Message-ID: <38614fd9-dc3f-15f9-e922-0b3d80b3b6c4@molgen.mpg.de>
-Date:   Sun, 27 Dec 2020 18:22:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <c89ecac6-f5bb-52b8-4fcd-9098983cdf2e@molgen.mpg.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1726296AbgL0R1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 12:27:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42076 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726131AbgL0R1q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Dec 2020 12:27:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 9E2D822507;
+        Sun, 27 Dec 2020 17:27:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609090025;
+        bh=ilAn7Rfll0y1NfyGkRYpfnmzaX3Npvc11AfYS8OTXKI=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=ODaLI94rm/CK2Gr5Z3HfNSnMmZVN8ZbSN38Ew13H62QG2ogiYtB0fKgKr0W0NtGJK
+         s9QtfOjCpS2sfBWuBZYt4Gtd9w8R1IEDV+MFSwtexg0MrD/GBX3EnPtFt5gL4X+i6Y
+         43YT6qX59wpOGzMLlDn/6/V2oX8GdQS0wDOAOnKg+inGJtO4ilEdgWfWw7ceHYbiU2
+         XvtSVzwMhBA4NqE8Tt0oYYGPcfqqf8vKHaNwBlD+KhBzWYMzJs8q6ShD2wTBafzPT9
+         HWh24PjhOZrv8127GSpw4/tJesMCuGJHP+srzfmMUr9Z4XSfg9qQ6NuTt5OL4Xy2ws
+         0dMeyPBvqc2kg==
+Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 8B29C604E4;
+        Sun, 27 Dec 2020 17:27:05 +0000 (UTC)
+Subject: Re: [GIT PULL] scheduler fix
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20201227091601.GA1564184@gmail.com>
+References: <20201227091601.GA1564184@gmail.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20201227091601.GA1564184@gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched-urgent-2020-12-27
+X-PR-Tracked-Commit-Id: ae7927023243dcc7389b2d59b16c09cbbeaecc36
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 3b80dee70eaa5f9a120db058c30cc8e63c443571
+Message-Id: <160909002549.19416.3409188698923075918.pr-tracker-bot@kernel.org>
+Date:   Sun, 27 Dec 2020 17:27:05 +0000
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.12.20 13:22, Donald Buczek wrote:
-> On 18.12.20 22:49, Dave Chinner wrote:
->> On Thu, Dec 17, 2020 at 06:44:51PM +0100, Donald Buczek wrote:
->>> Dear xfs developer,
->>>
->>> I was doing some testing on a Linux 5.10.1 system with two 100 TB xfs filesystems on md raid6 raids.
->>>
->>> The stress test was essentially `cp -a`ing a Linux source repository with two threads in parallel on each filesystem.
->>>
->>> After about on hour, the processes to one filesystem (md1) blocked, 30 minutes later the process to the other filesystem (md0) did.
->>>
->>>      root      7322  2167  0 Dec16 pts/1    00:00:06 cp -a /jbod/M8068/scratch/linux /jbod/M8068/scratch/1/linux.018.TMP
->>>      root      7329  2169  0 Dec16 pts/1    00:00:05 cp -a /jbod/M8068/scratch/linux /jbod/M8068/scratch/2/linux.019.TMP
->>>      root     13856  2170  0 Dec16 pts/1    00:00:08 cp -a /jbod/M8067/scratch/linux /jbod/M8067/scratch/2/linux.028.TMP
->>>      root     13899  2168  0 Dec16 pts/1    00:00:05 cp -a /jbod/M8067/scratch/linux /jbod/M8067/scratch/1/linux.027.TMP
->>>
->>> Some info from the system (all stack traces, slabinfo) is available here: https://owww.molgen.mpg.de/~buczek/2020-12-16.info.txt
->>>
->>> It stands out, that there are many (549 for md0, but only 10 for md1)  "xfs-conv" threads all with stacks like this
->>>
->>>      [<0>] xfs_log_commit_cil+0x6cc/0x7c0
->>>      [<0>] __xfs_trans_commit+0xab/0x320
->>>      [<0>] xfs_iomap_write_unwritten+0xcb/0x2e0
->>>      [<0>] xfs_end_ioend+0xc6/0x110
->>>      [<0>] xfs_end_io+0xad/0xe0
->>>      [<0>] process_one_work+0x1dd/0x3e0
->>>      [<0>] worker_thread+0x2d/0x3b0
->>>      [<0>] kthread+0x118/0x130
->>>      [<0>] ret_from_fork+0x22/0x30
->>>
->>> xfs_log_commit_cil+0x6cc is
->>>
->>>    xfs_log_commit_cil()
->>>      xlog_cil_push_background(log)
->>>        xlog_wait(&cil->xc_push_wait, &cil->xc_push_lock);
->>>
->>> Some other threads, including the four "cp" commands are also blocking at xfs_log_commit_cil+0x6cc
->>>
->>> There are also single "flush" process for each md device with this stack signature:
->>>
->>>      [<0>] xfs_map_blocks+0xbf/0x400
->>>      [<0>] iomap_do_writepage+0x15e/0x880
->>>      [<0>] write_cache_pages+0x175/0x3f0
->>>      [<0>] iomap_writepages+0x1c/0x40
->>>      [<0>] xfs_vm_writepages+0x59/0x80
->>>      [<0>] do_writepages+0x4b/0xe0
->>>      [<0>] __writeback_single_inode+0x42/0x300
->>>      [<0>] writeback_sb_inodes+0x198/0x3f0
->>>      [<0>] __writeback_inodes_wb+0x5e/0xc0
->>>      [<0>] wb_writeback+0x246/0x2d0
->>>      [<0>] wb_workfn+0x26e/0x490
->>>      [<0>] process_one_work+0x1dd/0x3e0
->>>      [<0>] worker_thread+0x2d/0x3b0
->>>      [<0>] kthread+0x118/0x130
->>>      [<0>] ret_from_fork+0x22/0x30
->>>
->>> xfs_map_blocks+0xbf is the
->>>
->>>      xfs_ilock(ip, XFS_ILOCK_SHARED);
->>>
->>> in xfs_map_blocks().
->>
->> Can you post the entire dmesg output after running
->> 'echo w > /proc/sysrq-trigger' to dump all the block threads to
->> dmesg?
->>
->>> I have an out of tree driver for the HBA ( smartpqi 2.1.6-005
->>> pulled from linux-scsi) , but it is unlikely that this blocking is
->>> related to that, because the md block devices itself are
->>> responsive (`xxd /dev/md0` )
->>
->> My bet is that the OOT driver/hardware had dropped a log IO on the
->> floor - XFS is waiting for the CIL push to complete, and I'm betting
->> that is stuck waiting for iclog IO completion while writing the CIL
->> to the journal. The sysrq output will tell us if this is the case,
->> so that's the first place to look.
-> 
-> I think you are right here, and I'm sorry for blaming the wrong layer.
+The pull request you sent on Sun, 27 Dec 2020 10:16:01 +0100:
 
-I was to fast to accept that. The display of the non-zero "inflight" counters of the underlying block devices couldn't be reproduced. They usually are "0 0" when the filesystem is deadlocked.
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched-urgent-2020-12-27
 
-To make sure, I've also added my on "bio requested" and "bio completed" atomic counters to the two submit_bio calls and to xlog_bio_end_io in xfs_log.c and when the system is deadlocked, the requests and completions do match:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/3b80dee70eaa5f9a120db058c30cc8e63c443571
 
-     sudo gdb linux/vmlinux /proc/kcore  -ex 'print xxx_bio_requested' -ex 'print xxx_bio_completed'
-     [...]
-     $1 = {counter = 34723}
-     $2 = {counter = 34723}
-
-So at least log writes are not lost.
-
-Best
-   Donald
-
-> I've got the system into another (though little different) zero-progress situation. This time it happened on md0 only while md1 was still working.
-> 
-> I think, this should be prove, that the failure is on the block layer of the member disks:
-> 
->      root:deadbird:/scratch/local/# for f in /sys/devices/virtual/block/md?/md/rd*/block/inflight;do echo $f: $(cat $f);done
->      /sys/devices/virtual/block/md0/md/rd0/block/inflight: 1 0
->      /sys/devices/virtual/block/md0/md/rd1/block/inflight: 1 0
->      /sys/devices/virtual/block/md0/md/rd10/block/inflight: 1 0
->      /sys/devices/virtual/block/md0/md/rd11/block/inflight: 1 0
->      /sys/devices/virtual/block/md0/md/rd12/block/inflight: 1 0
->      /sys/devices/virtual/block/md0/md/rd13/block/inflight: 1 0
->      /sys/devices/virtual/block/md0/md/rd14/block/inflight: 1 0
->      /sys/devices/virtual/block/md0/md/rd15/block/inflight: 1 0
->      /sys/devices/virtual/block/md0/md/rd2/block/inflight: 1 0
->      /sys/devices/virtual/block/md0/md/rd3/block/inflight: 1 0
->      /sys/devices/virtual/block/md0/md/rd4/block/inflight: 1 0
->      /sys/devices/virtual/block/md0/md/rd5/block/inflight: 1 0
->      /sys/devices/virtual/block/md0/md/rd6/block/inflight: 1 0
->      /sys/devices/virtual/block/md0/md/rd7/block/inflight: 1 0
->      /sys/devices/virtual/block/md0/md/rd8/block/inflight: 1 0
->      /sys/devices/virtual/block/md0/md/rd9/block/inflight: 1 0
->      /sys/devices/virtual/block/md1/md/rd0/block/inflight: 0 0
->      /sys/devices/virtual/block/md1/md/rd1/block/inflight: 0 0
->      /sys/devices/virtual/block/md1/md/rd10/block/inflight: 0 0
->      /sys/devices/virtual/block/md1/md/rd11/block/inflight: 0 0
->      /sys/devices/virtual/block/md1/md/rd12/block/inflight: 0 0
->      /sys/devices/virtual/block/md1/md/rd13/block/inflight: 0 0
->      /sys/devices/virtual/block/md1/md/rd14/block/inflight: 0 0
->      /sys/devices/virtual/block/md1/md/rd15/block/inflight: 0 0
->      /sys/devices/virtual/block/md1/md/rd2/block/inflight: 0 0
->      /sys/devices/virtual/block/md1/md/rd3/block/inflight: 0 0
->      /sys/devices/virtual/block/md1/md/rd4/block/inflight: 0 0
->      /sys/devices/virtual/block/md1/md/rd5/block/inflight: 0 0
->      /sys/devices/virtual/block/md1/md/rd6/block/inflight: 0 0
->      /sys/devices/virtual/block/md1/md/rd7/block/inflight: 0 0
->      /sys/devices/virtual/block/md1/md/rd8/block/inflight: 0 0
->      /sys/devices/virtual/block/md1/md/rd9/block/inflight: 0 0
-> 
-> Best
-> 
->    Donald
-> 
->>
->> Cheers,
->>
->> Dave.
->>
+Thank you!
 
 -- 
-Donald Buczek
-buczek@molgen.mpg.de
-Tel: +49 30 8413 1433
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
