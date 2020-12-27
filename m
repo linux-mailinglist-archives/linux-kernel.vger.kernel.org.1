@@ -2,122 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C0FB2E3204
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 17:59:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 149E52E3205
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 17:59:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726388AbgL0Q5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 11:57:30 -0500
-Received: from mail-oi1-f169.google.com ([209.85.167.169]:40105 "EHLO
-        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726032AbgL0Q52 (ORCPT
+        id S1726417AbgL0Q7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 11:59:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726045AbgL0Q7N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 11:57:28 -0500
-Received: by mail-oi1-f169.google.com with SMTP id p5so9356810oif.7;
-        Sun, 27 Dec 2020 08:57:11 -0800 (PST)
+        Sun, 27 Dec 2020 11:59:13 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2879AC061794
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 08:58:33 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id b26so19179957lff.9
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 08:58:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=ZkMPV9Td1S5uycOwIvh1VSBjqIoKt6ivrgzO9euGk6k=;
+        b=h3UjHTQbZFTWREq+YdFLvQBlQCi9hnxTEZ/35Nh0HoABAJr5WfFqpVpjYGNaB1xmiV
+         QSSwbOcRT9t5twuVfXp/+546HHtWj4ntWY8DIRAbGjsm6WyESRiQB8qRKg1zE/zQmJhR
+         vmkb6o2KYncK60Tipdq1sej93wypwjkm5qYRGZ3G+doS/RWC/KhBNIeVETy8eNVWxH5F
+         cwkOJeJkWFQADKjV/ZLeCANmoWJGRTUcqoRfcXIVI8oqOIuqjkP9zsTLvHY0+7J+wO+5
+         AbZ6hNZZn4/D6ZIDjAHlITMUQAS11Z5CtC6iiAdKx1J4ysyEcRy1DseppeZ3nPk/NWrt
+         7DcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=P+vRRbEsBGMtfHb2YPyzhH2TM3JXQOiejaDyhz0MAuo=;
-        b=lT/YvWzZ/pjr8r2CCUO+IZ727p4plnJ+6Xz9s5BrLI4ag0kq5dT7Gaag4kE/0oEStg
-         enEBbAZAsBAFc6YgEAm4BPlvOjTfX8imVaJeJ+s0SK8MegAymBYHooMmjukT2iNZ0/Q7
-         p6pWmIa18FiGx143XpmlCdmDQnwzEzCB1YTqiuw0/06OoyYvIX+wkxkJhPnLaQM9MnD/
-         PNJSRLhn68m/rTbg1+D/BK5sUQ2Y6rmj1YfcH42bB5QyR2jLweKonzZ1ejJjr1QRM8Oi
-         mikHzWRVP9WD962DIRD1uMsZtxheICPWhOUkfF3OE7pd4CUAnTNq5xHrvvbWNQnEjioE
-         mMlA==
-X-Gm-Message-State: AOAM53246QEfUzqjVkMbaJZhy4BfgdG56wahgQGJa5zCwbcSvmgZwFMl
-        8WvjHD/lfZgtPAqCeVR+og==
-X-Google-Smtp-Source: ABdhPJzW1c26xvUVDm7CZCgmj5L6+PANwuEYyBV3fdt9AjzjORt3FpfN1FrDDtonsBc5KFVQKV9NgA==
-X-Received: by 2002:aca:4b16:: with SMTP id y22mr9912227oia.148.1609088206248;
-        Sun, 27 Dec 2020 08:56:46 -0800 (PST)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id u3sm8682359otk.31.2020.12.27.08.56.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Dec 2020 08:56:45 -0800 (PST)
-Received: (nullmailer pid 1338174 invoked by uid 1000);
-        Sun, 27 Dec 2020 16:56:21 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Xin Ji <xji@analogixsemi.com>
-Cc:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>, devicetree@vger.kernel.org,
-        Nicolas Boichat <drinkcat@google.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sheng Pan <span@analogixsemi.com>,
-        linux-kernel@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        =?utf-8?q?Ricardo_Ca=C3=B1uelo?= <ricardo.canuelo@collabora.com>
-In-Reply-To: <c29b7d9fda9ce8619d1c718b077250998a8600b8.1608883950.git.xji@analogixsemi.com>
-References: <cover.1608883950.git.xji@analogixsemi.com> <c29b7d9fda9ce8619d1c718b077250998a8600b8.1608883950.git.xji@analogixsemi.com>
-Subject: Re: [PATCH v1 1/2] dt-bindings: drm/bridge: anx7625: add DPI flag and swing setting
-Date:   Sun, 27 Dec 2020 09:56:21 -0700
-Message-Id: <1609088181.493422.1338173.nullmailer@robh.at.kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=ZkMPV9Td1S5uycOwIvh1VSBjqIoKt6ivrgzO9euGk6k=;
+        b=sN5qYZBv7v2JBMOQOifj2/NLpMgQ5zy/oPZiKRrPdP3UTRJE68kfZLJlAKNRLjN30h
+         J1ojzg2t+Fy4KbOt1xIFsxXwlu2BcJsMUbFvvQP4x4KSVKx3Tf3Jz6M7y1kY471TNX0V
+         sgW7V93LzxsOhV6CEbwYevFYJIXJzR+MvXRmDFFWGFtQQf3Cg9xaSdgUk+oy8TeqmibI
+         qrfbHgQIFQYyfQfxjgrEYX3OXh9tEO4x1O9xPoCVKJhYB9FNEeRRBxxDdK5m4cOjgQeZ
+         I2HguR/HjmfLYJaTrllslDMVJXdONlJDdDXFGo4PsiDwR5JqJ+FyspR/UHfFM1oBenTc
+         jBvA==
+X-Gm-Message-State: AOAM531kkeNXOrRol6ZUBEoSBVuULBpD6Khin846sHb79GXeN/lHCIfi
+        TSBJDUXml99kWJtf4U8GUAx1PQqAGoX+UV7V4pTPUefvhBpSgA==
+X-Google-Smtp-Source: ABdhPJwa3TKMysxlJ5jAuwHJUdFJSYmcqOJkHmdRh2j7s+MTi2xaduXesCaOpK2yv7ARglvAc7DFLrxdqRWIuw0Nj+c=
+X-Received: by 2002:ac2:4ec4:: with SMTP id p4mr19484820lfr.130.1609088311615;
+ Sun, 27 Dec 2020 08:58:31 -0800 (PST)
+MIME-Version: 1.0
+References: <CABXGCsPsXSTh+WO2XESOU+Q1ocrWmS1c1YJFarzmA=woK_ke5Q@mail.gmail.com>
+In-Reply-To: <CABXGCsPsXSTh+WO2XESOU+Q1ocrWmS1c1YJFarzmA=woK_ke5Q@mail.gmail.com>
+From:   Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Date:   Sun, 27 Dec 2020 21:58:20 +0500
+Message-ID: <CABXGCsPBBDX3ozAgtT174nesiM+Gx4UkQi+PD27jB3i9OQ=G0g@mail.gmail.com>
+Subject: Re: [bug] Radeon 3900XT not switch to graphic mode on kernel 5.10
+To:     amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Dec 2020 19:01:09 +0800, Xin Ji wrote:
-> Add DPI flag for distinguish MIPI input signal type, DSI or DPI. Add
-> swing setting for adjusting DP tx PHY swing
-> 
-> Signed-off-by: Xin Ji <xji@analogixsemi.com>
-> ---
->  .../bindings/display/bridge/analogix,anx7625.yaml     | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
-> 
+On Sun, 27 Dec 2020 at 21:39, Mikhail Gavrilov
+<mikhail.v.gavrilov@gmail.com> wrote:
+> I suppose the root of cause my problem here:
+>
+> [    3.961326] amdgpu 0000:0b:00.0: Direct firmware load for
+> amdgpu/sienna_cichlid_sos.bin failed with error -2
+> [    3.961359] amdgpu 0000:0b:00.0: amdgpu: failed to init sos firmware
+> [    3.961433] [drm:psp_sw_init [amdgpu]] *ERROR* Failed to load psp firmware!
+> [    3.961529] [drm:amdgpu_device_init.cold [amdgpu]] *ERROR* sw_init
+> of IP block <psp> failed -2
+> [    3.961549] amdgpu 0000:0b:00.0: amdgpu: amdgpu_device_ip_init failed
+> [    3.961569] amdgpu 0000:0b:00.0: amdgpu: Fatal error during GPU init
+> [    3.961911] amdgpu: probe of 0000:0b:00.0 failed with error -2
+>
 
-My bot found errors running 'make dt_binding_check' on your patch:
+# dnf provides */sienna_cichlid_sos.bin
+Last metadata expiration check: 3:01:27 ago on Sun 27 Dec 2020 06:53:25 PM +05.
+linux-firmware-20201218-116.fc34.noarch : Firmware files used by the
+Linux kernel
+Repo        : @System
+Matched from:
+Filename    : /usr/lib/firmware/amdgpu/sienna_cichlid_sos.bin
 
-yamllint warnings/errors:
+linux-firmware-20201218-116.fc34.noarch : Firmware files used by the
+Linux kernel
+Repo        : rawhide
+Matched from:
+Filename    : /usr/lib/firmware/amdgpu/sienna_cichlid_sos.bin
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.example.dt.yaml: encoder@58: anx,swing-setting: 'anyOf' conditional failed, one must be fixed:
-	[[0, 20], [1, 84], [2, 100], [3, 116], [4, 41], [5, 123], [6, 119], [7, 91], [8, 127], [12, 32], [13, 96], [16, 96], [18, 64], [19, 96], [20, 20], [21, 84], [22, 100], [23, 116], [24, 41], [25, 123], [26, 119], [27, 91], [28, 127], [32, 32], [33, 96], [36, 96], [38, 64], [39, 96]] is too long
-	[0, 20] is too long
-	[1, 84] is too long
-	[2, 100] is too long
-	[3, 116] is too long
-	[4, 41] is too long
-	[5, 123] is too long
-	[6, 119] is too long
-	[7, 91] is too long
-	[8, 127] is too long
-	[12, 32] is too long
-	[13, 96] is too long
-	[16, 96] is too long
-	[18, 64] is too long
-	[19, 96] is too long
-	[20, 20] is too long
-	[21, 84] is too long
-	[22, 100] is too long
-	[23, 116] is too long
-	[24, 41] is too long
-	[25, 123] is too long
-	[26, 119] is too long
-	[27, 91] is too long
-	[28, 127] is too long
-	[32, 32] is too long
-	[33, 96] is too long
-	[36, 96] is too long
-	[38, 64] is too long
-	[39, 96] is too long
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.example.dt.yaml: encoder@58: 'anx,mipi-dpi-in', 'anx,swing-setting' do not match any of the regexes: '^#.*', '^(at25|bm|devbus|dmacap|dsa|exynos|fsi[ab]|gpio-fan|gpio-key|gpio|gpmc|hdmi|i2c-gpio),.*', '^(keypad|m25p|max8952|max8997|max8998|mpmc),.*', '^(pinctrl-single|#pinctrl-single|PowerPC),.*', '^(pl022|pxa-mmc|rcar_sound|rotary-encoder|s5m8767|sdhci),.*', '^(simple-audio-card|st-plgpio|st-spics|ts),.*', '^70mai,.*', '^GEFanuc,.*', '^ORCL,.*', '^SUNW,.*', '^[a-zA-Z0-9#_][a-zA-Z0-9+\\-._@]{0,63}$', '^[a-zA-Z0-9+\\-._]*@[0-9a-zA-Z,]*$', '^abb,.*', '^abilis,.*', '^abracon,.*', '^abt,.*', '^acer,.*', '^acme,.*', '^actions,.*', '^active-semi,.*', '^ad,.*', '^adafruit,.*', '^adapteva,.*', '^adaptrum,.*', '^adh,.*', '^adi,.*', '^advantech,.*', '^aeroflexgaisler,.*', '^al,.*', '^allegro,.*', '^allo,.*', '^allwinner,.*', '^alphascale,.*', '^alps,.*', '^alt,.*', '^altr,.*', '^amarula,.*', '^amazon,.*', '^amcc,.*', '^amd,.*', '^amediatech,.*', '^amlogic,.*', '^ampere,.*', '^ampire,.*', '^ams,.*', '^amstaos,.*', '^analogix,.*', '^andestech,.*', '^anvo,.*', '^apm,.*', '^aptina,.*', '^arasan,.*', '^archermind,.*', '^arctic,.*', '^arcx,.*', '^aries,.*', '^arm,.*', '^armadeus,.*', '^arrow,.*', '^artesyn,.*', '^asahi-kasei,.*', '^asc,.*', '^aspeed,.*', '^asus,.*', '^atlas,.*', '^atmel,.*', '^auo,.*', '^auvidea,.*', '^avago,.*', '^avia,.*', '^avic,.*', '^avnet,.*', '^awinic,.*', '^axentia,.*', '^axis,.*', '^azoteq,.*', '^azw,.*', '^baikal,.*', '^bananapi,.*', '^beacon,.*', '^beagle,.*', '^bhf,.*', '^bitmain,.*', '^boe,.*', '^bosch,.*', '^boundary,.*', '^brcm,.*', '^broadmobi,.*', '^bticino,.*', '^buffalo,.*', '^bur,.*', '^calaosystems,.*', '^calxeda,.*', '^caninos,.*', '^capella,.*', '^cascoda,.*', '^catalyst,.*', '^cavium,.*', '^cdns,.*', '^cdtech,.*', '^cellwise,.*', '^ceva,.*', '^checkpoint,.*', '^chefree,.*', '^chipidea,.*', '^chipone,.*', '^chipspark,.*', '^chrontel,.*', '^chrp,.*', '^chunghwa,.*', '^chuwi,.*', '^ciaa,.*', '^cirrus,.*', '^cloudengines,.*', '^cnm,.*', '^cnxt,.*', '^colorfly,.*', '^compulab,.*', '^coreriver,.*', '^corpro,.*', '^cortina,.*', '^cosmic,.*', '^crane,.*', '^creative,.*', '^crystalfontz,.*', '^csky,.*', '^csq,.*', '^cubietech,.*', '^cypress,.*', '^cznic,.*', '^dallas,.*', '^dataimage,.*', '^davicom,.*', '^dell,.*', '^delta,.*', '^denx,.*', '^devantech,.*', '^dfi,.*', '^dh,.*', '^difrnce,.*', '^digi,.*', '^digilent,.*', '^dioo,.*', '^dlc,.*', '^dlg,.*', '^dlink,.*', '^dmo,.*', '^domintech,.*', '^dongwoon,.*', '^dptechnics,.*', '^dragino,.*', '^dserve,.*', '^dynaimage,.*', '^ea,.*', '^ebs-systart,.*', '^ebv,.*', '^eckelmann,.*', '^edt,.*', '^eeti,.*', '^einfochips,.*', '^elan,.*', '^element14,.*', '^elgin,.*', '^elida,.*', '^elimo,.*', '^embest,.*', '^emlid,.*', '^emmicro,.*', '^empire-electronix,.*', '^emtrion,.*', '^endless,.*', '^ene,.*', '^energymicro,.*', '^engicam,.*', '^epcos,.*', '^epfl,.*', '^epson,.*', '^esp,.*', '^est,.*', '^ettus,.*', '^eukrea,.*', '^everest,.*', '^everspin,.*', '^evervision,.*', '^exar,.*', '^excito,.*', '^ezchip,.*', '^facebook,.*', '^fairphone,.*', '^faraday,.*', '^fastrax,.*', '^fcs,.*', '^feixin,.*', '^feiyang,.*', '^fii,.*', '^firefly,.*', '^focaltech,.*', '^frida,.*', '^friendlyarm,.*', '^fsl,.*', '^fujitsu,.*', '^gardena,.*', '^gateworks,.*', '^gcw,.*', '^ge,.*', '^geekbuying,.*', '^gef,.*', '^gemei,.*', '^geniatech,.*', '^giantec,.*', '^giantplus,.*', '^globalscale,.*', '^globaltop,.*', '^gmt,.*', '^goodix,.*', '^google,.*', '^grinn,.*', '^grmn,.*', '^gumstix,.*', '^gw,.*', '^hannstar,.*', '^haoyu,.*', '^hardkernel,.*', '^hideep,.*', '^himax,.*', '^hirschmann,.*', '^hisilicon,.*', '^hit,.*', '^hitex,.*', '^holt,.*', '^holtek,.*', '^honestar,.*', '^honeywell,.*', '^hoperun,.*', '^hp,.*', '^hsg,.*', '^hugsun,.*', '^hwacom,.*', '^hydis,.*', '^hyundai,.*', '^i2se,.*', '^ibm,.*', '^icplus,.*', '^idt,.*', '^ifi,.*', '^ilitek,.*', '^img,.*', '^imi,.*', '^incircuit,.*', '^inet-tek,.*', '^infineon,.*', '^inforce,.*', '^ingenic,.*', '^innolux,.*', '^inside-secure,.*', '^inspur,.*', '^intel,.*', '^intercontrol,.*', '^invensense,.*', '^inversepath,.*', '^iom,.*', '^isee,.*', '^isil,.*', '^issi,.*', '^ite,.*', '^itead,.*', '^ivo,.*', '^iwave,.*', '^jdi,.*', '^jedec,.*', '^jesurun,.*', '^jianda,.*', '^kam,.*', '^karo,.*', '^keithkoep,.*', '^keymile,.*', '^khadas,.*', '^kiebackpeter,.*', '^kinetic,.*', '^kingdisplay,.*', '^kingnovel,.*', '^kionix,.*', '^kobo,.*', '^kobol,.*', '^koe,.*', '^kontron,.*', '^kosagi,.*', '^kyo,.*', '^lacie,.*', '^laird,.*', '^lamobo,.*', '^lantiq,.*', '^lattice,.*', '^leadtek,.*', '^leez,.*', '^lego,.*', '^lemaker,.*', '^lenovo,.*', '^lg,.*', '^lgphilips,.*', '^libretech,.*', '^licheepi,.*', '^linaro,.*', '^linksprite,.*', '^linksys,.*', '^linutronix,.*', '^linux,.*', '^linx,.*', '^litex,.*', '^lltc,.*', '^logicpd,.*', '^logictechno,.*', '^longcheer,.*', '^lontium,.*', '^loongson,.*', '^lsi,.*', '^lwn,.*', '^lxa,.*', '^macnica,.*', '^mantix,.*', '^mapleboard,.*', '^marvell,.*', '^maxbotix,.*', '^maxim,.*', '^mbvl,.*', '^mcube,.*', '^meas,.*', '^mecer,.*', '^mediatek,.*', '^megachips,.*', '^mele,.*', '^melexis,.*', '^melfas,.*', '^mellanox,.*', '^memsic,.*', '^menlo,.*', '^mentor,.*', '^meraki,.*', '^merrii,.*', '^micrel,.*', '^microchip,.*', '^microcrystal,.*', '^micron,.*', '^microsoft,.*', '^microsys,.*', '^mikroe,.*', '^mikrotik,.*', '^miniand,.*', '^minix,.*', '^miramems,.*', '^mitsubishi,.*', '^modtronix,.*', '^mosaixtech,.*', '^motorola,.*', '^moxa,.*', '^mpl,.*', '^mps,.*', '^mqmaker,.*', '^mrvl,.*', '^mscc,.*', '^msi,.*', '^mstar,.*', '^mti,.*', '^multi-inno,.*', '^mundoreader,.*', '^murata,.*', '^mxicy,.*', '^myir,.*', '^national,.*', '^nec,.*', '^neonode,.*', '^netgear,.*', '^netlogic,.*', '^netron-dy,.*', '^netxeon,.*', '^neweast,.*', '^newhaven,.*', '^nexbox,.*', '^nextthing,.*', '^ni,.*', '^nintendo,.*', '^nlt,.*', '^nokia,.*', '^nordic,.*', '^novtech,.*', '^nutsboard,.*', '^nuvoton,.*', '^nvd,.*', '^nvidia,.*', '^nxp,.*', '^oceanic,.*', '^oct,.*', '^okaya,.*', '^oki,.*', '^olimex,.*', '^olpc,.*', '^onion,.*', '^onnn,.*', '^ontat,.*', '^opalkelly,.*', '^opencores,.*', '^openrisc,.*', '^option,.*', '^oranth,.*', '^orisetech,.*', '^ortustech,.*', '^osddisplays,.*', '^ouya,.*', '^overkiz,.*', '^ovti,.*', '^oxsemi,.*', '^ozzmaker,.*', '^panasonic,.*', '^parade,.*', '^parallax,.*', '^pda,.*', '^pericom,.*', '^pervasive,.*', '^phicomm,.*', '^phytec,.*', '^picochip,.*', '^pine64,.*', '^pineriver,.*', '^pixcir,.*', '^plantower,.*', '^plathome,.*', '^plda,.*', '^plx,.*', '^pni,.*', '^pocketbook,.*', '^polaroid,.*', '^portwell,.*', '^poslab,.*', '^pov,.*', '^powertip,.*', '^powervr,.*', '^primux,.*', '^probox2,.*', '^prt,.*', '^pulsedlight,.*', '^purism,.*', '^qca,.*', '^qcom,.*', '^qemu,.*', '^qi,.*', '^qiaodian,.*', '^qihua,.*', '^qnap,.*', '^radxa,.*', '^raidsonic,.*', '^ralink,.*', '^ramtron,.*', '^raspberrypi,.*', '^raydium,.*', '^rda,.*', '^realtek,.*', '^renesas,.*', '^rervision,.*', '^revotics,.*', '^rex,.*', '^richtek,.*', '^ricoh,.*', '^rikomagic,.*', '^riot,.*', '^riscv,.*', '^rockchip,.*', '^rocktech,.*', '^rohm,.*', '^ronbo,.*', '^roofull,.*', '^roseapplepi,.*', '^samsung,.*', '^samtec,.*', '^sancloud,.*', '^sandisk,.*', '^satoz,.*', '^sbs,.*', '^schindler,.*', '^seagate,.*', '^seeed,.*', '^seirobotics,.*', '^semtech,.*', '^sensirion,.*', '^sensortek,.*', '^sff,.*', '^sgd,.*', '^sgmicro,.*', '^sgx,.*', '^sharp,.*', '^shimafuji,.*', '^shiratech,.*', '^si-en,.*', '^si-linux,.*', '^sifive,.*', '^sigma,.*', '^sii,.*', '^sil,.*', '^silabs,.*', '^silead,.*', '^silergy,.*', '^silex-insight,.*', '^siliconmitus,.*', '^simtek,.*', '^sinlinx,.*', '^sinovoip,.*', '^sipeed,.*', '^sirf,.*', '^sis,.*', '^sitronix,.*', '^skyworks,.*', '^smartlabs,.*', '^smsc,.*', '^snps,.*', '^sochip,.*', '^socionext,.*', '^solidrun,.*', '^solomon,.*', '^sony,.*', '^spansion,.*', '^sprd,.*', '^sst,.*', '^sstar,.*', '^st,.*', '^st-ericsson,.*', '^starry,.*', '^startek,.*', '^ste,.*', '^stericsson,.*', '^summit,.*', '^sunchip,.*', '^swir,.*', '^syna,.*', '^synology,.*', '^tbs,.*', '^tbs-biometrics,.*', '^tcg,.*', '^tcl,.*', '^tdo,.*', '^technexion,.*', '^technologic,.*', '^techstar,.*', '^tempo,.*', '^terasic,.*', '^tfc,.*', '^thine,.*', '^thingyjp,.*', '^ti,.*', '^tianma,.*', '^tlm,.*', '^tmt,.*', '^topeet,.*', '^toppoly,.*', '^topwise,.*', '^toradex,.*', '^toshiba,.*', '^toumaz,.*', '^tpk,.*', '^tplink,.*', '^tpo,.*', '^tq,.*', '^tronfy,.*', '^tronsmart,.*', '^truly,.*', '^tsd,.*', '^tyan,.*', '^u-blox,.*', '^u-boot,.*', '^ubnt,.*', '^ucrobotics,.*', '^udoo,.*', '^ugoos,.*', '^uniwest,.*', '^upisemi,.*', '^urt,.*', '^usi,.*', '^utoo,.*', '^v3,.*', '^vaisala,.*', '^vamrs,.*', '^variscite,.*', '^vdl,.*', '^via,.*', '^videostrong,.*', '^virtio,.*', '^virtual,.*', '^vishay,.*', '^visionox,.*', '^vitesse,.*', '^vivante,.*', '^vocore,.*', '^voipac,.*', '^vot,.*', '^vxt,.*', '^wand,.*', '^waveshare,.*', '^wd,.*', '^we,.*', '^wetek,.*', '^wexler,.*', '^whwave,.*', '^wi2wi,.*', '^winbond,.*', '^winstar,.*', '^wits,.*', '^wlf,.*', '^wm,.*', '^wobo,.*', '^x-powers,.*', '^xes,.*', '^xiaomi,.*', '^xillybus,.*', '^xingbangda,.*', '^xinpeng,.*', '^xiphera,.*', '^xlnx,.*', '^xnano,.*', '^xunlong,.*', '^xylon,.*', '^yes-optoelectronics,.*', '^ylm,.*', '^yna,.*', '^yones-toptech,.*', '^ysoft,.*', '^zarlink,.*', '^zealz,.*', '^zeitec,.*', '^zidoo,.*', '^zii,.*', '^zinitix,.*', '^zkmagic,.*', '^zte,.*', '^zyxel,.*'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/vendor-prefixes.yaml
+# dnf install linux-firmware-20201218-116.fc34.noarch
+Last metadata expiration check: 3:02:11 ago on Sun 27 Dec 2020 06:53:25 PM +05.
+Package linux-firmware-20201218-116.fc34.noarch is already installed.
+Dependencies resolved.
+Nothing to do.
+Complete!
 
-See https://patchwork.ozlabs.org/patch/1420616
+Looks like firmware is present. So I didn't understand why the kernel
+cannot read firmware.
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+--
+Best Regards,
+Mike Gavrilov.
