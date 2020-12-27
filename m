@@ -2,92 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2545A2E2FAA
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 03:28:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C61B22E2FAE
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 03:41:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726161AbgL0C1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Dec 2020 21:27:43 -0500
-Received: from casper.infradead.org ([90.155.50.34]:33656 "EHLO
-        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726024AbgL0C1n (ORCPT
+        id S1726182AbgL0Cja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Dec 2020 21:39:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726024AbgL0Cj3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Dec 2020 21:27:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=8csmivsIXXVc5gk0iV/u0rkzDQSjKsASkLJbrXGW+SE=; b=BL5vtK6dtHrHzzZbpDIJu5WAps
-        7I/YYTaPPpwIrn+i6WqtYGTOxRtiLHqsRONL7a0iUSJy1JR4eXrbC3oAPnYNqIWCvy+ENXjHALykr
-        z+nXm+DQvva3L+ro0IF578FcttzMyAflEBpww+2zNMAw4AKVAqeDrVfUfIW7O20FdnPoKRtTRjEhu
-        QU3bxCGV3gVUHKVwLCGBcSs8VYkRHCU0pnv3S3E7r1Ai511R24Tdw5YR1/6vDopY9ql/N0qmkkWQA
-        X7BqZXf/R4R84PEPA4gwu6tiE7rvJE18Bqg/JfC96NSa5cPOj05xuVyiVPy2uCQIzfRmDPL3hV3xX
-        0GLCA8Rw==;
-Received: from c-73-157-219-8.hsd1.or.comcast.net ([73.157.219.8] helo=[10.0.0.253])
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ktLkw-0006nS-SA; Sun, 27 Dec 2020 02:26:11 +0000
-Subject: Re: linux-next: Tree for Dec 23 (ia64: mmzone & sparsemem)
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
+        Sat, 26 Dec 2020 21:39:29 -0500
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69031C0613CF
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 18:38:49 -0800 (PST)
+Received: by mail-oi1-x22e.google.com with SMTP id w124so8202836oia.6
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Dec 2020 18:38:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=jJLUg7udy/yoAaERlEvGNl0/n0O26KZQJfCUJLjM7zQ=;
+        b=BRjGmLltzGMf2jWUN5xsCpSzdi6EpXYfatCEb929/2Xn5UPcu0gYjMe9ANxf9yOOfZ
+         f/E9eBEBz6cpEpqtluCWLN1YOkR2Q81XGe0yV8vbNb4zrDxrbHo0VAE931AYb4pJubkw
+         fwzNgmeJSvZuT2sCf1r8cdNPO2CyvMDKmsRIIefJaLp7/RNnWWYDzMLp571RlgmTo1vt
+         h9irjn1Qk4Ss91gwxMT83gHdng7I732kI+xn6AQeWmlOk8Ay2EqPorNp3tFZBTxQba4k
+         wh3iEtYASw8j3aFswTp2iCod/m42p0x8RoWEaaOEiXfvp/PFmiM1skpftTnf24x2X/rr
+         WiqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=jJLUg7udy/yoAaERlEvGNl0/n0O26KZQJfCUJLjM7zQ=;
+        b=baJqVzzpgTS/Y6i1jGivpm+2yIWxCXUe5xi4XEV+c/EDegxt5lhIj/uhaetXgr6xRZ
+         fU7LZvw1qdrDy6/FnDVeOTpTrPe6eTFho+5pH+Gww8SyLLpnq85dE8Oq8koEnrb915gt
+         8hk/lGQjpPsJRqsJWOeKCZ+AKnjMX0xgCvtEsEMFcXbODhuQq8RZREWxpIPU3USAPK8J
+         OrlUAlHfxgG8Q0ZAlp4NJ3ZsvPHH81JCMBJp4VOX7B9QK99Kndrhpw0fZFK3DNAmdpGB
+         NJLiAKx923fAzJ8dQZnF59I14nr+m/l9Y1AS7rdkJIoPo0nAyEnVmcLDQXEE9dRw99a/
+         +t8A==
+X-Gm-Message-State: AOAM5312uu0tHCilbvcb2hgUjomerI3o47uhX4ZkogtpZ6Cg33115RZz
+        xQTL3G7qQ931vAjVAS6twq2JYw==
+X-Google-Smtp-Source: ABdhPJx/Higt52PWNdsUcJjfQfMcKu/nHvTvHqVvMxioihu5iaRquA7/5/T5FqAWjEueNtQTRED/0w==
+X-Received: by 2002:aca:1917:: with SMTP id l23mr8728631oii.64.1609036728582;
+        Sat, 26 Dec 2020 18:38:48 -0800 (PST)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id 8sm9109394otq.18.2020.12.26.18.38.45
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Sat, 26 Dec 2020 18:38:47 -0800 (PST)
+Date:   Sat, 26 Dec 2020 18:38:32 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>
-References: <20201223154542.544915be@canb.auug.org.au>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <4cea81fb-f8df-ec09-5591-1c8ca4f770d8@infradead.org>
-Date:   Sat, 26 Dec 2020 18:25:56 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        Android Kernel Team <kernel-team@android.com>
+Subject: Re: [PATCH 1/2] mm: Allow architectures to request 'old' entries
+ when prefaulting
+In-Reply-To: <alpine.LSU.2.11.2012261623140.1022@eggly.anvils>
+Message-ID: <alpine.LSU.2.11.2012261816520.1071@eggly.anvils>
+References: <CAHk-=wgO2LsoKhX7MjSECo+Xrj1-Me7tzRfNcsdEZBRwJW1cQg@mail.gmail.com> <20201219124103.w6isern3ywc7xbur@box> <CAHk-=wifcVaxaTn_RbZ=idfYFazTPwm8t5cB1rY6xEBjbcfO5g@mail.gmail.com> <20201222100047.p5zdb4ghagncq2oe@box> <alpine.LSU.2.11.2012231905300.5723@eggly.anvils>
+ <20201225113157.e7hmluffh56fszfc@box> <CAHk-=wiT50aEErZgZOrbFQ=GhFuM3MnBmHoSBSScN9rmXMnOKQ@mail.gmail.com> <20201226204335.dikqkrkezqet6oqf@box> <alpine.LSU.2.11.2012261246450.1629@eggly.anvils> <CAHk-=wjesveWEQZ4tqRssSSQvuxx46LqYfME+uxKfghxAe6U_w@mail.gmail.com>
+ <20201226224016.dxjmordcfj75xgte@box> <alpine.LSU.2.11.2012261623140.1022@eggly.anvils>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-In-Reply-To: <20201223154542.544915be@canb.auug.org.au>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/22/20 8:45 PM, Stephen Rothwell wrote:
-> Hi all,
+On Sat, 26 Dec 2020, Hugh Dickins wrote:
+> On Sun, 27 Dec 2020, Kirill A. Shutemov wrote:
+> > 
+> > Here's the fixup I have so far. It doesn't blow up immediately, but please
+> > take a closer look. Who knows what stupid mistake I did this time. :/
 > 
-> News: there will be no linux-next releases between Dec 24 and Jan
-> 3 inclusive.
+> It's been running fine on x86_64 for a couple of hours (but of course
+> my testing is deficient, in not detecting the case Linus spotted).
 > 
-> Please do not add any v5.12 destined code to your linux-next included
-> branches until after v5.11-rc1 has been released.
+> But I just thought I'd try it on i386 (hadn't tried previous versions)
+> and this has a new disappointment: crashes when booting, in the "check
+> if the page fault is solved" in do_fault_around().  I imagine a highmem
+> issue with kmap of the pte address, but I'm reporting now before looking
+> into it further (but verified that current linux.git i386 boots up fine).
+
+This patch (like its antecedents) moves the pte_unmap_unlock() from
+after do_fault_around()'s "check if the page fault is solved" into
+filemap_map_pages() itself (which apparently does not NULLify vmf->pte
+after unmapping it, which is poor, but good for revealing this issue).
+That looks cleaner, but of course there was a very good reason for its
+original positioning.
+
+Maybe you want to change the ->map_pages prototype, to pass down the
+requested address too, so that it can report whether the requested
+address was resolved or not.  Or it could be left to __do_fault(),
+or even to a repeated fault; but those would be less efficient.
+
 > 
-> Changes since 20201222:
+> Maybe easily fixed: but does suggest this needs exposure in linux-next.
 > 
-
-on ia64 defconfig:
-
-several of these:
-
-In file included from ../include/linux/numa.h:25,
-                 from ../include/linux/nodemask.h:96,
-                 from ../include/linux/mount.h:15,
-                 from ../fs/nsfs.c:2:
-../arch/ia64/include/asm/sparsemem.h:14:40: warning: "PAGE_SHIFT" is not defined, evaluates to 0 [-Wundef]
-   14 | #if ((CONFIG_FORCE_MAX_ZONEORDER - 1 + PAGE_SHIFT) > SECTION_SIZE_BITS)
-
-
-and several of these:
-
-In file included from ../include/linux/gfp.h:6,
-                 from ../include/linux/xarray.h:14,
-                 from ../include/linux/radix-tree.h:19,
-                 from ../include/linux/idr.h:15,
-                 from ../include/linux/kernfs.h:13,
-                 from ../include/linux/sysfs.h:16,
-                 from ../include/linux/kobject.h:20,
-                 from ../include/linux/energy_model.h:7,
-                 from ../include/linux/device.h:16,
-                 from ../include/linux/async.h:14,
-                 from ../kernel/async.c:47:
-../include/linux/mmzone.h:1156:2: error: #error Allocator MAX_ORDER exceeds SECTION_SIZE
- 1156 | #error Allocator MAX_ORDER exceeds SECTION_SIZE
-
-
--- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Hugh
