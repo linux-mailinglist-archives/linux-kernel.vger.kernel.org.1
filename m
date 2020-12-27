@@ -2,82 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51AEA2E305C
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 08:14:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F312E3067
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 08:33:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726107AbgL0HOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 02:14:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60730 "EHLO mail.kernel.org"
+        id S1726105AbgL0Hdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 02:33:37 -0500
+Received: from m12-12.163.com ([220.181.12.12]:42110 "EHLO m12-12.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725963AbgL0HOb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 02:14:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EFDE207F7;
-        Sun, 27 Dec 2020 07:13:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609053230;
-        bh=wYfU/khwimF4RK5SPumvGDlK/392P/6YdLUMLsIFrl0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CzPS3bm6Kh3vsKNSIDx1JuSwDVj63fscgWXK/egR8GJI62/H6frpMlt1CQKPj7yiX
-         B9q2TY4XlVdG4YO3mmOywqyQhfBjNvOlu0fBLIsSfUkgx9ucaUCNBLeHt6A84j+F3E
-         SfsT6ujTZa6q2PASHsfaYvs7PnVV7OKJgtX0jbJvFTonTL3EgpItuWNx4WRv2y0v7w
-         y/1qiL2npnIOCwgPIVZRdHp2NRAnE6VCtK8IeDg5u1+xxToEKkoWwH88pRr8DYx1vb
-         KT+K8z+V1X5zshgZdoe3ZqbOJwaqlgfmUOhkSl7ihCr4LuL4Hmwk7933wczmp+tcAO
-         snV1GgNNHRxkA==
-Date:   Sun, 27 Dec 2020 09:13:46 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     kjlu@umn.edu, Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Ursula Braun <ubraun@linux.ibm.com>,
-        =?iso-8859-1?Q?H=E5kon?= Bugge <haakon.bugge@oracle.com>,
-        Divya Indi <divya.indi@oracle.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] IB/sa: Fix memleak in ib_nl_make_request
-Message-ID: <20201227071346.GB4457@unreal>
-References: <20201220081317.18728-1-dinghao.liu@zju.edu.cn>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201220081317.18728-1-dinghao.liu@zju.edu.cn>
+        id S1725976AbgL0Hdh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Dec 2020 02:33:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=U1E2nHjvAHl9sTWvIk
+        fd0iDL775g9uAG+881yFD/zfs=; b=a8wr6Mhv7i3QbzFf++IrZ8J4MjUM4ETlhh
+        qH0OnHhF+IGAutkbM1bD4zITPmKow6wQgwiKCyOqxrOZ7I7YNUn/aNLhcZGum7YX
+        aPB2DuaZLK4yXPhc6l5QvyDbfYPDUt24LiHuEq7ZO/9SuhcCMPkMZgEpAbmIXZMr
+        6hFV3CYJI=
+Received: from localhost.localdomain.localdomain (unknown [171.221.128.54])
+        by smtp8 (Coremail) with SMTP id DMCowACXS9mjNOhf1Ux_JA--.60335S2;
+        Sun, 27 Dec 2020 15:15:47 +0800 (CST)
+From:   winndows@163.com
+To:     corbet@lwn.net
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Liao Pingfang <winndows@163.com>
+Subject: [PATCH] docs/mm: concepts.rst: Correct the threshold to low watermark
+Date:   Sun, 27 Dec 2020 15:15:19 +0800
+Message-Id: <1609053319-3112-1-git-send-email-winndows@163.com>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID: DMCowACXS9mjNOhf1Ux_JA--.60335S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrKw1fXr4ruw43tr43ZFWxtFb_yoWkurbEka
+        4UXFs29a1xA348G3yfJ3ZYvFW29r4Ig34fCwn3Ar47J3yUuan8AF1kuF1Yy34fJr429r43
+        Wr98Jr97Kr1a9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8rMaUUUUUU==
+X-Originating-IP: [171.221.128.54]
+X-CM-SenderInfo: hzlq0vxrzvqiywtou0bp/1tbiMAgImVWBwhgVhQAAs3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 20, 2020 at 04:13:14PM +0800, Dinghao Liu wrote:
-> When rdma_nl_multicast() fails, skb should be freed
-> just like when ibnl_put_msg() fails.
+From: Liao Pingfang <winndows@163.com>
 
-It is not so simple as you wrote in the description.
+It should be "low watermark" where we wake up kswapd daemon.
 
-There are no other places in the linux kernel that free
-SKBs after netlink_multicast() failure.
+Signed-off-by: Liao Pingfang <winndows@163.com>
+---
+ Documentation/admin-guide/mm/concepts.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks
+diff --git a/Documentation/admin-guide/mm/concepts.rst b/Documentation/admin-guide/mm/concepts.rst
+index fa0974f..b966fcf 100644
+--- a/Documentation/admin-guide/mm/concepts.rst
++++ b/Documentation/admin-guide/mm/concepts.rst
+@@ -184,7 +184,7 @@ pages either asynchronously or synchronously, depending on the state
+ of the system. When the system is not loaded, most of the memory is free
+ and allocation requests will be satisfied immediately from the free
+ pages supply. As the load increases, the amount of the free pages goes
+-down and when it reaches a certain threshold (high watermark), an
++down and when it reaches a certain threshold (low watermark), an
+ allocation request will awaken the ``kswapd`` daemon. It will
+ asynchronously scan memory pages and either just free them if the data
+ they contain is available elsewhere, or evict to the backing storage
+-- 
+1.8.3.1
 
->
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-> ---
->  drivers/infiniband/core/sa_query.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
-> index 89a831fa1885..8bd23b5cc913 100644
-> --- a/drivers/infiniband/core/sa_query.c
-> +++ b/drivers/infiniband/core/sa_query.c
-> @@ -873,8 +873,10 @@ static int ib_nl_make_request(struct ib_sa_query *query, gfp_t gfp_mask)
->  	spin_lock_irqsave(&ib_nl_request_lock, flags);
->  	ret = rdma_nl_multicast(&init_net, skb, RDMA_NL_GROUP_LS, gfp_flag);
->
-> -	if (ret)
-> +	if (ret) {
-> +		nlmsg_free(skb);
->  		goto out;
-> +	}
->
->  	/* Put the request on the list.*/
->  	delay = msecs_to_jiffies(sa_local_svc_timeout_ms);
-> --
-> 2.17.1
->
+
