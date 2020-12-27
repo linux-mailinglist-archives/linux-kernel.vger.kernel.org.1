@@ -2,134 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B33EE2E3214
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 18:21:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85C042E317F
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Dec 2020 15:18:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726244AbgL0RTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 12:19:54 -0500
-Received: from mail-m963.mail.126.com ([123.126.96.3]:34172 "EHLO
-        mail-m963.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726087AbgL0RTx (ORCPT
+        id S1726194AbgL0ORV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 09:17:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726104AbgL0ORU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 12:19:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=V0motPXrHIE470fx0+
-        pT3LORve4Gw0vkJkk+XZZKFjs=; b=c6XELI8MoVdhagQkThGG6BMqDK+1IKa3rH
-        2djFF3jgO9WAKaZIBFjyk2Z/xezNyu9CurfBVLIZoWzbq4+J5VfpP3WF/LrBgPtT
-        +C4PcA9fDVttkiS2+BH0hQj8Fgxue9sZsMqqHAhqJ+XEMPUOWWq97hBULFkRdDvv
-        Ex+lvKfUs=
-Received: from localhost.localdomain (unknown [36.112.86.14])
-        by smtp8 (Coremail) with SMTP id NORpCgB3xaQdluhfSPVxBA--.32014S2;
-        Sun, 27 Dec 2020 22:11:43 +0800 (CST)
-From:   Defang Bo <bodefang@126.com>
-To:     davem@davemloft.net, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
-        kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Defang Bo <bodefang@126.com>
-Subject: [PATCH] ipv6: Prevent overrun when parsing v6 header options
-Date:   Sun, 27 Dec 2020 22:11:35 +0800
-Message-Id: <1609078295-4025719-1-git-send-email-bodefang@126.com>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: NORpCgB3xaQdluhfSPVxBA--.32014S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxZrWkJr4fAFy3Ar1rZFyrWFg_yoW5WrykpF
-        1DK3WktrsrK3y0gr4xCrs5uryrKa4kGFWUAa4Ik3yFkryDtr1FqFykCryjgFWftFy8uw1f
-        JryrtrWrWryIvrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UVuWJUUUUU=
-X-Originating-IP: [36.112.86.14]
-X-CM-SenderInfo: pergvwxdqjqiyswou0bp/1tbiCx8I11x5cpn-rgAAsU
+        Sun, 27 Dec 2020 09:17:20 -0500
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07FB5C061794
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 06:16:40 -0800 (PST)
+Received: by mail-qk1-x731.google.com with SMTP id 19so7024176qkm.8
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 06:16:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kudzu-us.20150623.gappssmtp.com; s=20150623;
+        h=from:date:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=0AMXmohgDXh67JQTuG0L3iD6jFpb52IIJ0q0yCMfrzM=;
+        b=xchUb5W33cVPXF6LiijPHUZj5P1x/gepTtXRQ14tdQkonshBBFe4ljo+8cw0KoOEkS
+         z+CP8qswf+WkAyGTjT6kxsTLL/W2qG/aDqo7Rfgdq7Wzzj20IfiO4PnHSC6MaRXl7LJa
+         HxuFrDEXZ6YMbRksYvOB9UWTDPpqBbtC02PbeXAn9pmiyAFnfnAsBMV24zTFeYlmU/Ue
+         xlKisqQf9SFlMdsIobqV/vVAXnVZBwy6KZuf9SxWO0+zySFZIcWCKPz3RkeEqnYoMxJ9
+         JOu7o5Y8pITi3b/tn+USstbUcVjps8Wwo3i7S9OQPY+lfbOjYzElwoOWTtkbT6DfqJry
+         c8Xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=0AMXmohgDXh67JQTuG0L3iD6jFpb52IIJ0q0yCMfrzM=;
+        b=HA3hz4tG5YkIGcmG2/WPVxnFCKTFVgvZWrLccvbc6IOuv3HLHIF7CDwRi1sEaqHQ8B
+         +CujmwjwsiTexYbhG51Wmhmrs+CaDPam4tctFNWISySXcWL84RmgdpJPKMRQMsmTj6r7
+         OnjzPe4eCHsCvZNgmFRaSOlBa6+FddFsmtIj9199BGxLM12Ivnp77pS5iI8xcxwlQJnY
+         F1j94HIWZpbYyyRZaTNlQfhugqil3VgSP4bAq0q3lDz0OtRdAq/SIsTyraooCcPAyDtW
+         a6RF+tzC4weQgWXI4UI2IA6JRQIyCDJIyb34dFMRLMm20gE7Yzs48auYADOAEl/Gr7bI
+         N9kg==
+X-Gm-Message-State: AOAM530bVMdZu4eqNGpjwAnH2Y1wwT3qU2X0W4eAEI3cG47Un7mkK3/r
+        OLW4rXd+Aqb7zC1+zYwS9karm8ESM6FGNg==
+X-Google-Smtp-Source: ABdhPJwhAMDbcuIV5a8Q3m3EI+05Agd/ft9XZBb4hn8SuQNCEkOk5lExdBWolw1U9C+kw/jmb5jIUQ==
+X-Received: by 2002:a37:a495:: with SMTP id n143mr41220702qke.362.1609078599101;
+        Sun, 27 Dec 2020 06:16:39 -0800 (PST)
+Received: from localhost ([2605:a601:a606:1b00:b541:53e0:ad17:6f6])
+        by smtp.gmail.com with ESMTPSA id a194sm21323259qkc.70.2020.12.27.06.16.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Dec 2020 06:16:38 -0800 (PST)
+From:   Jon Mason <jdmason@kudzu.us>
+X-Google-Original-From: Jon Mason <jdm@athena.kudzu.us>
+Date:   Sun, 27 Dec 2020 09:16:38 -0500
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, linux-ntb@googlegroups.com
+Subject: [GIT PULL] NTB bug fixes for v5.11
+Message-ID: <20201227141638.GA11393@athena.kudzu.us>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Similar to commit<2423496af35>, the fragmentation code tries to parse the header options in order
-to figure out where to insert the fragment option.  Since nexthdr points
-to an invalid option, the calculation of the size of the network header
-can made to be much larger than the linear section of the skb and data
-is read outside of it.
+Hello Linus,
+Here are a few NTB bug fixes for v5.11.  Please consider pulling them.
 
-Signed-off-by: Defang Bo <bodefang@126.com>
----
- net/ipv6/mip6.c | 24 +++++++++++++++---------
- 1 file changed, 15 insertions(+), 9 deletions(-)
+Thanks,
+Jon
 
-diff --git a/net/ipv6/mip6.c b/net/ipv6/mip6.c
-index 878fcec..adf984c 100644
---- a/net/ipv6/mip6.c
-+++ b/net/ipv6/mip6.c
-@@ -251,8 +251,7 @@ static int mip6_destopt_offset(struct xfrm_state *x, struct sk_buff *skb,
- 			       u8 **nexthdr)
- {
- 	u16 offset = sizeof(struct ipv6hdr);
--	struct ipv6_opt_hdr *exthdr =
--				   (struct ipv6_opt_hdr *)(ipv6_hdr(skb) + 1);
-+
- 	const unsigned char *nh = skb_network_header(skb);
- 	unsigned int packet_len = skb_tail_pointer(skb) -
- 		skb_network_header(skb);
-@@ -261,6 +260,7 @@ static int mip6_destopt_offset(struct xfrm_state *x, struct sk_buff *skb,
- 	*nexthdr = &ipv6_hdr(skb)->nexthdr;
- 
- 	while (offset + 1 <= packet_len) {
-+		struct ipv6_opt_hdr *exthdr;
- 
- 		switch (**nexthdr) {
- 		case NEXTHDR_HOP:
-@@ -287,12 +287,15 @@ static int mip6_destopt_offset(struct xfrm_state *x, struct sk_buff *skb,
- 			return offset;
- 		}
- 
-+		if (offset + sizeof(struct ipv6_opt_hdr) > packet_len)
-+			return -EINVAL;
-+
-+		exthdr = (struct ipv6_opt_hdr *)(nh + offset);
- 		offset += ipv6_optlen(exthdr);
- 		*nexthdr = &exthdr->nexthdr;
--		exthdr = (struct ipv6_opt_hdr *)(nh + offset);
- 	}
- 
--	return offset;
-+	return -EINVAL;
- }
- 
- static int mip6_destopt_init_state(struct xfrm_state *x)
-@@ -387,8 +390,7 @@ static int mip6_rthdr_offset(struct xfrm_state *x, struct sk_buff *skb,
- 			     u8 **nexthdr)
- {
- 	u16 offset = sizeof(struct ipv6hdr);
--	struct ipv6_opt_hdr *exthdr =
--				   (struct ipv6_opt_hdr *)(ipv6_hdr(skb) + 1);
-+
- 	const unsigned char *nh = skb_network_header(skb);
- 	unsigned int packet_len = skb_tail_pointer(skb) -
- 		skb_network_header(skb);
-@@ -396,7 +398,8 @@ static int mip6_rthdr_offset(struct xfrm_state *x, struct sk_buff *skb,
- 
- 	*nexthdr = &ipv6_hdr(skb)->nexthdr;
- 
--	while (offset + 1 <= packet_len) {
-+	while (offset <= packet_len) {
-+		struct ipv6_opt_hdr *exthdr;
- 
- 		switch (**nexthdr) {
- 		case NEXTHDR_HOP:
-@@ -422,12 +425,15 @@ static int mip6_rthdr_offset(struct xfrm_state *x, struct sk_buff *skb,
- 			return offset;
- 		}
- 
-+		if (offset + sizeof(struct ipv6_opt_hdr) > packet_len)
-+			return -EINVAL;
-+
-+		exthdr = (struct ipv6_opt_hdr *)(nh + offset);
- 		offset += ipv6_optlen(exthdr);
- 		*nexthdr = &exthdr->nexthdr;
--		exthdr = (struct ipv6_opt_hdr *)(nh + offset);
- 	}
- 
--	return offset;
-+	return -EINVAL;
- }
- 
- static int mip6_rthdr_init_state(struct xfrm_state *x)
--- 
-2.7.4
+The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
 
+  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
+
+are available in the Git repository at:
+
+  git://github.com/jonmason/ntb tags/ntb-5.11
+
+for you to fetch changes up to 75b6f6487cedd0e4c8e07d68b68b8f85cd352bfe:
+
+  ntb: intel: add Intel NTB LTR vendor support for gen4 NTB (2020-12-06 18:18:03 -0500)
+
+----------------------------------------------------------------
+Big fix for IDT NTB and Intel NTB LTR management support
+
+----------------------------------------------------------------
+Dave Jiang (1):
+      ntb: intel: add Intel NTB LTR vendor support for gen4 NTB
+
+Wang Qing (1):
+      ntb: idt: fix error check in ntb_hw_idt.c
+
+ drivers/ntb/hw/idt/ntb_hw_idt.c    |  4 ++--
+ drivers/ntb/hw/intel/ntb_hw_gen1.h |  1 +
+ drivers/ntb/hw/intel/ntb_hw_gen4.c | 27 ++++++++++++++++++++++++++-
+ drivers/ntb/hw/intel/ntb_hw_gen4.h | 15 +++++++++++++++
+ 4 files changed, 44 insertions(+), 3 deletions(-)
