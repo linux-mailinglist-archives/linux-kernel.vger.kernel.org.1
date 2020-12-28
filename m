@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD0D22E63EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:45:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E96CF2E3B03
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:44:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404684AbgL1Not (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:44:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44964 "EHLO mail.kernel.org"
+        id S2404634AbgL1Nok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:44:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404463AbgL1NoS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:44:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AC0A2072C;
-        Mon, 28 Dec 2020 13:43:37 +0000 (UTC)
+        id S2404520AbgL1Nn4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:43:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 400A920731;
+        Mon, 28 Dec 2020 13:43:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163018;
-        bh=YMPTSssMi1YmhhP66jNW89dJEyt9dUSiPtp+sq5D8GU=;
+        s=korg; t=1609163020;
+        bh=Y+7Quh89yVDOEumGeLx+mY0gjPIoQl1EpU/RbycpTak=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=brsmcsu4QfEvW1V76JnC7havhKRs9lgFkIUHHIKG7jNhGjzCRO0jK+XnLVmNXZXFv
-         fZhAMsi6QA4jWGxgiI0Eb9nNi3bN56IO1Ako2Pq4+QxiqR3xzZKDshWTUlkBDalOvt
-         aaDqN2TcwKHGXaM2Kd0lp1cORJOakv06zrDFZpYw=
+        b=xP12/vNozdB+twzQ4Pu/XYoI3yvyMajKmZH83IUTzHfV1tFOKXhXRKbgHTGHSQGvA
+         3yng1+BPUSSYhoyD47Ld5iFWRnL/WB1w0Zr6vzB60tKhYc2NbAwEvWZFZOyncUq5fF
+         nkKRaxXBCvhLeZmW4x0EBzRyCh63r7qSvALA4W8k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         =?UTF-8?q?Pawe=C5=82=20Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
         Krzysztof Kozlowski <krzk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 110/453] arm64: dts: exynos: Include common syscon restart/poweroff for Exynos7
-Date:   Mon, 28 Dec 2020 13:45:46 +0100
-Message-Id: <20201228124942.506487667@linuxfoundation.org>
+Subject: [PATCH 5.4 111/453] arm64: dts: exynos: Correct psci compatible used on Exynos7
+Date:   Mon, 28 Dec 2020 13:45:47 +0100
+Message-Id: <20201228124942.554961615@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
 References: <20201228124937.240114599@linuxfoundation.org>
@@ -43,47 +43,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Paweł Chmiel <pawel.mikolaj.chmiel@gmail.com>
 
-[ Upstream commit 73bc7510ea0dafb4ff1ae6808759627a8ec51f5a ]
+[ Upstream commit e1e47fbca668507a81bb388fcae044b89d112ecc ]
 
-Exynos7 uses the same syscon reboot and poweroff nodes as other Exynos
-SoCs, so instead of duplicating code we can just include common dtsi
-file, which already contains definitions of them. After this change,
-poweroff node will be also available, previously this dts file did
-contain only reboot node.
+It's not possible to reboot or poweroff Exynos7420 using PSCI. Instead
+we need to use syscon reboot/poweroff drivers, like it's done for other
+Exynos SoCs. This was confirmed by checking vendor source and testing it
+on Samsung Galaxy S6 device based on this SoC.
+
+To be able to use custom restart/poweroff handlers instead of PSCI
+functions, we need to correct psci compatible. This also requires us to
+provide function ids for CPU_ON and CPU_OFF.
 
 Fixes: fb026cb65247 ("arm64: dts: Add reboot node for exynos7")
 Fixes: b9024cbc937d ("arm64: dts: Add initial device tree support for exynos7")
 Signed-off-by: Paweł Chmiel <pawel.mikolaj.chmiel@gmail.com>
-Link: https://lore.kernel.org/r/20201107133926.37187-1-pawel.mikolaj.chmiel@gmail.com
+Link: https://lore.kernel.org/r/20201107133926.37187-2-pawel.mikolaj.chmiel@gmail.com
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/exynos/exynos7.dtsi | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+ arch/arm64/boot/dts/exynos/exynos7.dtsi | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/arch/arm64/boot/dts/exynos/exynos7.dtsi b/arch/arm64/boot/dts/exynos/exynos7.dtsi
-index 0821489a874de..c5be82d48c986 100644
+index c5be82d48c986..25549d9552ae2 100644
 --- a/arch/arm64/boot/dts/exynos/exynos7.dtsi
 +++ b/arch/arm64/boot/dts/exynos/exynos7.dtsi
-@@ -494,13 +494,6 @@
- 		pmu_system_controller: system-controller@105c0000 {
- 			compatible = "samsung,exynos7-pmu", "syscon";
- 			reg = <0x105c0000 0x5000>;
--
--			reboot: syscon-reboot {
--				compatible = "syscon-reboot";
--				regmap = <&pmu_system_controller>;
--				offset = <0x0400>;
--				mask = <0x1>;
--			};
- 		};
+@@ -90,8 +90,10 @@
+ 	};
  
- 		rtc: rtc@10590000 {
-@@ -650,3 +643,4 @@
- };
+ 	psci {
+-		compatible = "arm,psci-0.2";
++		compatible = "arm,psci";
+ 		method = "smc";
++		cpu_off = <0x84000002>;
++		cpu_on = <0xC4000003>;
+ 	};
  
- #include "exynos7-pinctrl.dtsi"
-+#include "arm/exynos-syscon-restart.dtsi"
+ 	soc: soc {
 -- 
 2.27.0
 
