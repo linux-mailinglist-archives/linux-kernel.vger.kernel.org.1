@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D6A02E64FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:57:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 244762E42CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:28:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389171AbgL1Ne3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:34:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34650 "EHLO mail.kernel.org"
+        id S2392691AbgL1P2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:28:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731558AbgL1NeH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:34:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE3E3207C9;
-        Mon, 28 Dec 2020 13:33:25 +0000 (UTC)
+        id S2406578AbgL1N5M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:57:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5624A22583;
+        Mon, 28 Dec 2020 13:56:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162406;
-        bh=ZVH6mPmmfFa3nYou8QGvUJ84cqwMDtba7EMR8XuKack=;
+        s=korg; t=1609163792;
+        bh=CGZwW6908MYazpCPLhvhIm19s1laqC0Ifv3E3mYSP8E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bBtieJpWMrd3rRaWH8eUWxRHea7cTOU0F1xU+MLL2vg6VGOi+1qz6xzuMEdnHDvr2
-         ozce/nrS8smiKcpXHkUM4l0a3gsX2ZZPedxYAXanwfiEsmCzMjk6pYQKvNUDnzh+lX
-         vi99/SBO+8yKgJEn9fGWBi03d2H56iZU4YAUE3Qw=
+        b=YUsefUhnWm0UQFxlQ/t9adtgo1v2BY7yOEaZGdVdbuveh3YIJ5WkF+oXwNq8pR9Lg
+         iD5gvkDeyMM7WI5pd3UnYw2XqW/j4vwNSn6DXtPHIiaaNbx/k0lY4l0QNwNOPZKX5q
+         txgShJllAijwHe0dPsfcITdpzxXvlWZSaTcCvW8U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.19 295/346] USB: serial: keyspan_pda: fix tx-unthrottle use-after-free
+        stable@vger.kernel.org, Dan Sneddon <dan.sneddon@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Cristian Birsan <cristian.birsan@microchip.com>
+Subject: [PATCH 5.4 378/453] ARM: dts: at91: sama5d2: fix CAN message ram offset and size
 Date:   Mon, 28 Dec 2020 13:50:14 +0100
-Message-Id: <20201228124934.042282957@linuxfoundation.org>
+Message-Id: <20201228124955.390792551@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,41 +41,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-commit 49fbb8e37a961396a5b6c82937c70df91de45e9d upstream.
+commit 85b8350ae99d1300eb6dc072459246c2649a8e50 upstream.
 
-The driver's transmit-unthrottle work was never flushed on disconnect,
-something which could lead to the driver port data being freed while the
-unthrottle work is still scheduled.
+CAN0 and CAN1 instances share the same message ram configured
+at 0x210000 on sama5d2 Linux systems.
+According to current configuration of CAN0, we need 0x1c00 bytes
+so that the CAN1 don't overlap its message ram:
+64 x RX FIFO0 elements => 64 x 72 bytes
+32 x TXE (TX Event FIFO) elements => 32 x 8 bytes
+32 x TXB (TX Buffer) elements => 32 x 72 bytes
+So a total of 7168 bytes (0x1C00).
 
-Fix this by cancelling the unthrottle work when shutting down the port.
+Fix offset to match this needed size.
+Make the CAN0 message ram ioremap match exactly this size so that is
+easily understandable.  Adapt CAN1 size accordingly.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Cc: stable@vger.kernel.org
-Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Fixes: bc6d5d7666b7 ("ARM: dts: at91: sama5d2: add m_can nodes")
+Reported-by: Dan Sneddon <dan.sneddon@microchip.com>
+Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Tested-by: Cristian Birsan <cristian.birsan@microchip.com>
+Cc: stable@vger.kernel.org # v4.13+
+Link: https://lore.kernel.org/r/20201203091949.9015-1-nicolas.ferre@microchip.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/serial/keyspan_pda.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ arch/arm/boot/dts/sama5d2.dtsi |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/usb/serial/keyspan_pda.c
-+++ b/drivers/usb/serial/keyspan_pda.c
-@@ -647,8 +647,12 @@ error:
- }
- static void keyspan_pda_close(struct usb_serial_port *port)
- {
-+	struct keyspan_pda_private *priv = usb_get_serial_port_data(port);
-+
- 	usb_kill_urb(port->write_urb);
- 	usb_kill_urb(port->interrupt_in_urb);
-+
-+	cancel_work_sync(&priv->unthrottle_work);
- }
+--- a/arch/arm/boot/dts/sama5d2.dtsi
++++ b/arch/arm/boot/dts/sama5d2.dtsi
+@@ -717,7 +717,7 @@
  
+ 			can0: can@f8054000 {
+ 				compatible = "bosch,m_can";
+-				reg = <0xf8054000 0x4000>, <0x210000 0x4000>;
++				reg = <0xf8054000 0x4000>, <0x210000 0x1c00>;
+ 				reg-names = "m_can", "message_ram";
+ 				interrupts = <56 IRQ_TYPE_LEVEL_HIGH 7>,
+ 					     <64 IRQ_TYPE_LEVEL_HIGH 7>;
+@@ -939,7 +939,7 @@
+ 
+ 			can1: can@fc050000 {
+ 				compatible = "bosch,m_can";
+-				reg = <0xfc050000 0x4000>, <0x210000 0x4000>;
++				reg = <0xfc050000 0x4000>, <0x210000 0x3800>;
+ 				reg-names = "m_can", "message_ram";
+ 				interrupts = <57 IRQ_TYPE_LEVEL_HIGH 7>,
+ 					     <65 IRQ_TYPE_LEVEL_HIGH 7>;
+@@ -949,7 +949,7 @@
+ 				assigned-clocks = <&pmc PMC_TYPE_GCK 57>;
+ 				assigned-clock-parents = <&pmc PMC_TYPE_CORE PMC_UTMI>;
+ 				assigned-clock-rates = <40000000>;
+-				bosch,mram-cfg = <0x1100 0 0 64 0 0 32 32>;
++				bosch,mram-cfg = <0x1c00 0 0 64 0 0 32 32>;
+ 				status = "disabled";
+ 			};
  
 
 
