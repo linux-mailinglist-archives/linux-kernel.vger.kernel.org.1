@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B07502E6803
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:32:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 229E52E690F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:47:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634066AbgL1Qbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:31:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60522 "EHLO mail.kernel.org"
+        id S1728850AbgL1M45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:56:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730505AbgL1NEp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:04:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 03627208BA;
-        Mon, 28 Dec 2020 13:04:26 +0000 (UTC)
+        id S1728165AbgL1M4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:56:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F18F22AAA;
+        Mon, 28 Dec 2020 12:56:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160667;
-        bh=Cakn1k4gp8qILJ5ZZgBcoxK/5lK0+FEZshWfpoZs27A=;
+        s=korg; t=1609160191;
+        bh=JevaJKgB0OQZVfFrtoZeKjvd2DOI6bStpsdjPtf2Kkk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MXZeqAZPsNK6AHnEagOt9zpgN35jPAKHUrnMgpuDmRL6OEdCr753mSQQfzUxQzMFm
-         dSgn/t5q2jLPXtUJjeRP/urcbrcriSWNvlnvfZNllKSx/XhMuaZko7hQ7qh/Gw6UZA
-         8dSh3a4D+SeDIxLEWQDVF+mV2kabQ3FdOe2d2lB4=
+        b=aorKFlC3gdGDU+8lDPIuVE20lBOCaoRzf3fXl/+PxnY4pbWFafcjHF/YIzRDItUb3
+         RUoyIlCy+Um23HevUJ+7o0T/09eZT36TEDCe+uwP/eBFDu4B68Z3pfrk2SvRcJfM8i
+         /4eepnWpJggCxcbt8I0OQdZWeRKS8ZLrLhFWpAhg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Simon Beginn <linux@simonmicro.de>,
-        Bastien Nocera <hadess@hadess.net>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 130/175] Input: goodix - add upside-down quirk for Teclast X98 Pro tablet
-Date:   Mon, 28 Dec 2020 13:49:43 +0100
-Message-Id: <20201228124859.545020749@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH 4.4 100/132] Input: cyapa_gen6 - fix out-of-bounds stack access
+Date:   Mon, 28 Dec 2020 13:49:44 +0100
+Message-Id: <20201228124851.248026763@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,47 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Simon Beginn <linux@simonmicro.de>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit cffdd6d90482316e18d686060a4397902ea04bd2 ]
+commit f051ae4f6c732c231046945b36234e977f8467c6 upstream.
 
-The touchscreen on the Teclast x98 Pro is also mounted upside-down in
-relation to the display orientation.
+gcc -Warray-bounds warns about a serious bug in
+cyapa_pip_retrieve_data_structure:
 
-Signed-off-by: Simon Beginn <linux@simonmicro.de>
-Signed-off-by: Bastien Nocera <hadess@hadess.net>
-Link: https://lore.kernel.org/r/20201117004253.27A5A27EFD@localhost
+drivers/input/mouse/cyapa_gen6.c: In function 'cyapa_pip_retrieve_data_structure.constprop':
+include/linux/unaligned/access_ok.h:40:17: warning: array subscript -1 is outside array bounds of 'struct retrieve_data_struct_cmd[1]' [-Warray-bounds]
+   40 |  *((__le16 *)p) = cpu_to_le16(val);
+drivers/input/mouse/cyapa_gen6.c:569:13: note: while referencing 'cmd'
+  569 |  } __packed cmd;
+      |             ^~~
+
+Apparently the '-2' was added to the pointer instead of the value,
+writing garbage into the stack next to this variable.
+
+Fixes: c2c06c41f700 ("Input: cyapa - add gen6 device module support")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/r/20201026161332.3708389-1-arnd@kernel.org
+Cc: stable@vger.kernel.org
 Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/input/touchscreen/goodix.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/input/mouse/cyapa_gen6.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/input/touchscreen/goodix.c b/drivers/input/touchscreen/goodix.c
-index 6a02e7301297d..ba0ab9963f3cd 100644
---- a/drivers/input/touchscreen/goodix.c
-+++ b/drivers/input/touchscreen/goodix.c
-@@ -98,6 +98,18 @@ static const struct dmi_system_id rotated_screen[] = {
- 			DMI_MATCH(DMI_BIOS_DATE, "12/19/2014"),
- 		},
- 	},
-+	{
-+		.ident = "Teclast X98 Pro",
-+		.matches = {
-+			/*
-+			 * Only match BIOS date, because the manufacturers
-+			 * BIOS does not report the board name at all
-+			 * (sometimes)...
-+			 */
-+			DMI_MATCH(DMI_BOARD_VENDOR, "TECLAST"),
-+			DMI_MATCH(DMI_BIOS_DATE, "10/28/2015"),
-+		},
-+	},
- 	{
- 		.ident = "WinBook TW100",
- 		.matches = {
--- 
-2.27.0
-
+--- a/drivers/input/mouse/cyapa_gen6.c
++++ b/drivers/input/mouse/cyapa_gen6.c
+@@ -573,7 +573,7 @@ static int cyapa_pip_retrieve_data_struc
+ 
+ 	memset(&cmd, 0, sizeof(cmd));
+ 	put_unaligned_le16(PIP_OUTPUT_REPORT_ADDR, &cmd.head.addr);
+-	put_unaligned_le16(sizeof(cmd), &cmd.head.length - 2);
++	put_unaligned_le16(sizeof(cmd) - 2, &cmd.head.length);
+ 	cmd.head.report_id = PIP_APP_CMD_REPORT_ID;
+ 	cmd.head.cmd_code = PIP_RETRIEVE_DATA_STRUCTURE;
+ 	put_unaligned_le16(read_offset, &cmd.read_offset);
 
 
