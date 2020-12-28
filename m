@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A30DB2E3BC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:55:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 567882E3E51
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:27:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404978AbgL1Ny0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:54:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55626 "EHLO mail.kernel.org"
+        id S2503904AbgL1O0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:26:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407358AbgL1Nxr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:53:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F9E720795;
-        Mon, 28 Dec 2020 13:53:05 +0000 (UTC)
+        id S2503869AbgL1O0n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:26:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AAC6207B2;
+        Mon, 28 Dec 2020 14:26:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163586;
-        bh=YrJ4i2KC5zr1BIkxlB6HTidPdPmGeddL+Ux+poxKMOc=;
+        s=korg; t=1609165562;
+        bh=DieRUxCgiy8BL/gIK1JwZmNJdIR2pQqOk5P2wFx3Of4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nh+LWYzMyDIeUNZwazStmICAqPOxop04nGE2tzIh/qWytIv2geXDQf+8DMcd69GMk
-         NVX+nSu2zXhGMK6Z4QZJm6ZprtHj0mIUWZpFDYeJy0u1M716Bfh6or56DNkPWen3P3
-         ksJkipwU4+kDdVeHGiZxEv+ov6K361Y+UHAbIOOw=
+        b=0XB+wvPlPAcKb08HPFJElzI9Af0k1OLjQ6vm9xLmV+Z/ADGv6XoUj3s4dDZVqpxhA
+         hfEJyrC9nCKq8QehI6KjfSgJMxtlc5awo84UmfTb66SWZCMyeyV2xqDvu8ECWq2MWa
+         vcziY4y0z0HuuongCxZaQnDIvPxKkfzoMkzf6ARo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 307/453] clk: s2mps11: Fix a resource leak in error handling paths in the probe function
+        stable@vger.kernel.org, Chris Chiu <chiu@endlessos.org>,
+        Jian-Hong Pan <jhp@endlessos.org>, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.10 545/717] ALSA: hda/realtek: Remove dummy lineout on Acer TravelMate P648/P658
 Date:   Mon, 28 Dec 2020 13:49:03 +0100
-Message-Id: <20201228124951.984776194@linuxfoundation.org>
+Message-Id: <20201228125047.051904184@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,40 +39,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Chris Chiu <chiu@endlessos.org>
 
-[ Upstream commit d2d94fc567624f96187e8b52083795620f93e69f ]
+commit 34cdf405aa5de827b8bef79a6c82c39120b3729b upstream.
 
-Some resource should be released in the error handling path of the probe
-function, as already done in the remove function.
+Acer TravelMate laptops P648/P658 series with codec ALC282 only have
+one physical jack for headset but there's a confusing lineout pin on
+NID 0x1b reported. Audio applications hence misunderstand that there
+are a speaker and a lineout, and take the lineout as the default audio
+output.
 
-The remove function was fixed in commit bf416bd45738 ("clk: s2mps11: Add
-missing of_node_put and of_clk_del_provider")
+Add a new quirk to remove the useless lineout and enable the pin 0x18
+for jack sensing and headset microphone.
 
-Fixes: 7cc560dea415 ("clk: s2mps11: Add support for s2mps11")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/20201212122818.86195-1-christophe.jaillet@wanadoo.fr
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Chris Chiu <chiu@endlessos.org>
+Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201216125200.27053-1-chiu@endlessos.org
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/clk/clk-s2mps11.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/pci/hda/patch_realtek.c |   27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-diff --git a/drivers/clk/clk-s2mps11.c b/drivers/clk/clk-s2mps11.c
-index 2ce370c804aae..f19994ce7ca15 100644
---- a/drivers/clk/clk-s2mps11.c
-+++ b/drivers/clk/clk-s2mps11.c
-@@ -195,6 +195,7 @@ static int s2mps11_clk_probe(struct platform_device *pdev)
- 	return ret;
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6369,6 +6369,7 @@ enum {
+ 	ALC287_FIXUP_HP_GPIO_LED,
+ 	ALC256_FIXUP_HP_HEADSET_MIC,
+ 	ALC236_FIXUP_DELL_AIO_HEADSET_MIC,
++	ALC282_FIXUP_ACER_DISABLE_LINEOUT,
+ };
  
- err_reg:
-+	of_node_put(s2mps11_clks[0].clk_np);
- 	while (--i >= 0)
- 		clkdev_drop(s2mps11_clks[i].lookup);
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -7792,6 +7793,16 @@ static const struct hda_fixup alc269_fix
+ 		.chained = true,
+ 		.chain_id = ALC255_FIXUP_DELL1_MIC_NO_PRESENCE
+ 	},
++	[ALC282_FIXUP_ACER_DISABLE_LINEOUT] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x1b, 0x411111f0 },
++			{ 0x18, 0x01a1913c }, /* use as headset mic, without its own jack detect */
++			{ },
++		},
++		.chained = true,
++		.chain_id = ALC269_FIXUP_HEADSET_MODE
++	},
+ };
  
--- 
-2.27.0
-
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -8569,6 +8580,22 @@ static const struct snd_hda_pin_quirk al
+ 		{0x12, 0x90a60140},
+ 		{0x19, 0x04a11030},
+ 		{0x21, 0x04211020}),
++	SND_HDA_PIN_QUIRK(0x10ec0282, 0x1025, "Acer", ALC282_FIXUP_ACER_DISABLE_LINEOUT,
++		ALC282_STANDARD_PINS,
++		{0x12, 0x90a609c0},
++		{0x18, 0x03a11830},
++		{0x19, 0x04a19831},
++		{0x1a, 0x0481303f},
++		{0x1b, 0x04211020},
++		{0x21, 0x0321101f}),
++	SND_HDA_PIN_QUIRK(0x10ec0282, 0x1025, "Acer", ALC282_FIXUP_ACER_DISABLE_LINEOUT,
++		ALC282_STANDARD_PINS,
++		{0x12, 0x90a60940},
++		{0x18, 0x03a11830},
++		{0x19, 0x04a19831},
++		{0x1a, 0x0481303f},
++		{0x1b, 0x04211020},
++		{0x21, 0x0321101f}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0283, 0x1028, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 		ALC282_STANDARD_PINS,
+ 		{0x12, 0x90a60130},
 
 
