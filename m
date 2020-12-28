@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 293372E4364
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:38:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 837D92E4356
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:36:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392527AbgL1Peq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:34:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55884 "EHLO mail.kernel.org"
+        id S2632738AbgL1PgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:36:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407410AbgL1NyM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:54:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 30D342064B;
-        Mon, 28 Dec 2020 13:53:55 +0000 (UTC)
+        id S2407414AbgL1NyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:54:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A4C320715;
+        Mon, 28 Dec 2020 13:53:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163636;
-        bh=/8ee/wHfIlJuwhmBcBGroCS0Ii8mapdb0sG6eD+PMmM=;
+        s=korg; t=1609163639;
+        bh=rqAGrUS9PFp+3i35Hl1bBKWLlvGa35s9Zufv48SJd00=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s9gDJrQRh5jmyak68hUoK59EaSoc7zFho9NfHgligFKMKOwa2cNCbQpYEqMpDHtQS
-         32RufMnMNpEu+5Wu6tAGnLejVWaGaP5OC0Tb0+TNs1Uyc3lnzIOraZfwPI1V9mAhlh
-         MfP61/02+ht+CcCjV6CshMFmraWt6ahAkzea/G5Q=
+        b=C0zcqPpFqcrE06whXELQ/zewn1UmWCjw8w0yM04XxF+G9hwDnnDWKiBdJKVQExMx5
+         EzdV393dU+OtL+qoXz0V1rSWreRof3mnJoqnvjmsvCE1KJl4LXWeq7Zi/PbzjSRtb4
+         FrAhXSoPZT+AMFVyi1/Oyoq3FhXRQlau8Fhawkco=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rostislav Lisovy <lisovy@gmail.com>,
-        Ian Abbott <abbotti@mev.co.uk>
-Subject: [PATCH 5.4 355/453] staging: comedi: mf6x4: Fix AI end-of-conversion detection
-Date:   Mon, 28 Dec 2020 13:49:51 +0100
-Message-Id: <20201228124954.289208627@linuxfoundation.org>
+        stable@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: [PATCH 5.4 356/453] perf/x86/intel: Add event constraint for CYCLE_ACTIVITY.STALLS_MEM_ANY
+Date:   Mon, 28 Dec 2020 13:49:52 +0100
+Message-Id: <20201228124954.339798392@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
 References: <20201228124937.240114599@linuxfoundation.org>
@@ -39,50 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ian Abbott <abbotti@mev.co.uk>
+From: Kan Liang <kan.liang@linux.intel.com>
 
-commit 56c90457ebfe9422496aac6ef3d3f0f0ea8b2ec2 upstream.
+commit 306e3e91edf1c6739a55312edd110d298ff498dd upstream.
 
-I have had reports from two different people that attempts to read the
-analog input channels of the MF624 board fail with an `ETIMEDOUT` error.
+The event CYCLE_ACTIVITY.STALLS_MEM_ANY (0x14a3) should be available on
+all 8 GP counters on ICL, but it's only scheduled on the first four
+counters due to the current ICL constraint table.
 
-After triggering the conversion, the code calls `comedi_timeout()` with
-`mf6x4_ai_eoc()` as the callback function to check if the conversion is
-complete.  The callback returns 0 if complete or `-EBUSY` if not yet
-complete.  `comedi_timeout()` returns `-ETIMEDOUT` if it has not
-completed within a timeout period which is propagated as an error to the
-user application.
+Add a line for the CYCLE_ACTIVITY.STALLS_MEM_ANY event in the ICL
+constraint table.
+Correct the comments for the CYCLE_ACTIVITY.CYCLES_MEM_ANY event.
 
-The existing code considers the conversion to be complete when the EOLC
-bit is high.  However, according to the user manuals for the MF624 and
-MF634 boards, this test is incorrect because EOLC is an active low
-signal that goes high when the conversion is triggered, and goes low
-when the conversion is complete.  Fix the problem by inverting the test
-of the EOLC bit state.
-
-Fixes: 04b565021a83 ("comedi: Humusoft MF634 and MF624 DAQ cards driver")
-Cc: <stable@vger.kernel.org> # v4.4+
-Cc: Rostislav Lisovy <lisovy@gmail.com>
-Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
-Link: https://lore.kernel.org/r/20201207145806.4046-1-abbotti@mev.co.uk
+Fixes: 6017608936c1 ("perf/x86/intel: Add Icelake support")
+Reported-by: Andi Kleen <ak@linux.intel.com>
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/20201019164529.32154-1-kan.liang@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/staging/comedi/drivers/mf6x4.c |    3 ++-
+ arch/x86/events/intel/core.c |    3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/staging/comedi/drivers/mf6x4.c
-+++ b/drivers/staging/comedi/drivers/mf6x4.c
-@@ -112,8 +112,9 @@ static int mf6x4_ai_eoc(struct comedi_de
- 	struct mf6x4_private *devpriv = dev->private;
- 	unsigned int status;
- 
-+	/* EOLC goes low at end of conversion. */
- 	status = ioread32(devpriv->gpioc_reg);
--	if (status & MF6X4_GPIOC_EOLC)
-+	if ((status & MF6X4_GPIOC_EOLC) == 0)
- 		return 0;
- 	return -EBUSY;
- }
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -253,7 +253,8 @@ static struct event_constraint intel_icl
+ 	INTEL_EVENT_CONSTRAINT_RANGE(0x48, 0x54, 0xf),
+ 	INTEL_EVENT_CONSTRAINT_RANGE(0x60, 0x8b, 0xf),
+ 	INTEL_UEVENT_CONSTRAINT(0x04a3, 0xff),  /* CYCLE_ACTIVITY.STALLS_TOTAL */
+-	INTEL_UEVENT_CONSTRAINT(0x10a3, 0xff),  /* CYCLE_ACTIVITY.STALLS_MEM_ANY */
++	INTEL_UEVENT_CONSTRAINT(0x10a3, 0xff),  /* CYCLE_ACTIVITY.CYCLES_MEM_ANY */
++	INTEL_UEVENT_CONSTRAINT(0x14a3, 0xff),  /* CYCLE_ACTIVITY.STALLS_MEM_ANY */
+ 	INTEL_EVENT_CONSTRAINT(0xa3, 0xf),      /* CYCLE_ACTIVITY.* */
+ 	INTEL_EVENT_CONSTRAINT_RANGE(0xa8, 0xb0, 0xf),
+ 	INTEL_EVENT_CONSTRAINT_RANGE(0xb7, 0xbd, 0xf),
 
 
