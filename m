@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AA0C2E39DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:30:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B70ED2E3BA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:53:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390057AbgL1N3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:29:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57428 "EHLO mail.kernel.org"
+        id S2407156AbgL1Nwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:52:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390004AbgL1N2y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:28:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F50D2063A;
-        Mon, 28 Dec 2020 13:28:37 +0000 (UTC)
+        id S2407018AbgL1NwV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:52:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90D72206D4;
+        Mon, 28 Dec 2020 13:51:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162118;
-        bh=Hp8alQtj4CrxbLuUDe1MmVwKcsql+4byhR+E1rCjG/4=;
+        s=korg; t=1609163500;
+        bh=C4Vspwt1iBhs04ZgSjdE9/sf0p9HMj2D5pe5BswkYc4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PURzhaCGzeRQ/QQm1fdS7H2kJuk2Jvc/SNbeudab15Nknj6ZHbf7nysTPIx6/kfoe
-         LgPOB6oTvagiOfbO+ruJR3/zUDxI6Fao+xIgZjVXf01lBYccmikAqzplTWqVXoRMyZ
-         V16ue5bx7mWhNZs+E9MRCxjbXOBjsN6zVvatPe9g=
+        b=yvei4mgu4JsIGAL3ngKisZPGM87j9+Ghm0WYZ74gICT41xCI7ZwUSirSHjvad5cd6
+         TjO70NLZpqc1CoDjb+gTv7X58JGkwcnO3XGvpCMf396DjYqXYVtaUcdqeV2nMCdsu6
+         6K09FSQVW7Mz2utyS3t2Jm64BmUlRqQ9oDZzZo5E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Lingling Xu <ling_ling.xu@unisoc.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 194/346] media: saa7146: fix array overflow in vidioc_s_audio()
+Subject: [PATCH 5.4 277/453] watchdog: sprd: remove watchdog disable from resume fail path
 Date:   Mon, 28 Dec 2020 13:48:33 +0100
-Message-Id: <20201228124929.172709261@linuxfoundation.org>
+Message-Id: <20201228124950.545260335@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,54 +42,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Lingling Xu <ling_ling.xu@unisoc.com>
 
-[ Upstream commit 8e4d86e241cf035d6d3467cd346e7ce490681937 ]
+[ Upstream commit f61a59acb462840bebcc192f754fe71b6a16ff99 ]
 
-The "a->index" value comes from the user via the ioctl.  The problem is
-that the shift can wrap resulting in setting "mxb->cur_audinput" to an
-invalid value, which later results in an array overflow.
+sprd_wdt_start() would return fail if the loading operation is not completed
+in a certain time, disabling watchdog for that case would probably cause
+the kernel crash when kick watchdog later, that's too bad, so remove the
+watchdog disable operation for the fail case to make sure other parts in
+the kernel can run normally.
 
-Fixes: 6680427791c9 ("[media] mxb: fix audio handling")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+[ chunyan: Massaged changelog ]
+
+Fixes: 477603467009 ("watchdog: Add Spreadtrum watchdog driver")
+Signed-off-by: Lingling Xu <ling_ling.xu@unisoc.com>
+Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/20201029023933.24548-2-zhang.lyra@gmail.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/pci/saa7146/mxb.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ drivers/watchdog/sprd_wdt.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/media/pci/saa7146/mxb.c b/drivers/media/pci/saa7146/mxb.c
-index 6b5582b7c5955..6e25654da2567 100644
---- a/drivers/media/pci/saa7146/mxb.c
-+++ b/drivers/media/pci/saa7146/mxb.c
-@@ -653,16 +653,17 @@ static int vidioc_s_audio(struct file *file, void *fh, const struct v4l2_audio *
- 	struct mxb *mxb = (struct mxb *)dev->ext_priv;
+diff --git a/drivers/watchdog/sprd_wdt.c b/drivers/watchdog/sprd_wdt.c
+index 65cb55f3916fc..f3c90b4afead1 100644
+--- a/drivers/watchdog/sprd_wdt.c
++++ b/drivers/watchdog/sprd_wdt.c
+@@ -345,15 +345,10 @@ static int __maybe_unused sprd_wdt_pm_resume(struct device *dev)
+ 	if (ret)
+ 		return ret;
  
- 	DEB_D("VIDIOC_S_AUDIO %d\n", a->index);
--	if (mxb_inputs[mxb->cur_input].audioset & (1 << a->index)) {
--		if (mxb->cur_audinput != a->index) {
--			mxb->cur_audinput = a->index;
--			tea6420_route(mxb, a->index);
--			if (mxb->cur_audinput == 0)
--				mxb_update_audmode(mxb);
+-	if (watchdog_active(&wdt->wdd)) {
++	if (watchdog_active(&wdt->wdd))
+ 		ret = sprd_wdt_start(&wdt->wdd);
+-		if (ret) {
+-			sprd_wdt_disable(wdt);
+-			return ret;
 -		}
--		return 0;
-+	if (a->index >= 32 ||
-+	    !(mxb_inputs[mxb->cur_input].audioset & (1 << a->index)))
-+		return -EINVAL;
-+
-+	if (mxb->cur_audinput != a->index) {
-+		mxb->cur_audinput = a->index;
-+		tea6420_route(mxb, a->index);
-+		if (mxb->cur_audinput == 0)
-+			mxb_update_audmode(mxb);
- 	}
--	return -EINVAL;
-+	return 0;
+-	}
+ 
+-	return 0;
++	return ret;
  }
  
- #ifdef CONFIG_VIDEO_ADV_DEBUG
+ static const struct dev_pm_ops sprd_wdt_pm_ops = {
 -- 
 2.27.0
 
