@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 052272E3FD4
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:46:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2C3B2E37E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:04:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392342AbgL1Oo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:44:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32798 "EHLO mail.kernel.org"
+        id S1730088AbgL1NC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:02:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503146AbgL1OYw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:24:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 55F0320715;
-        Mon, 28 Dec 2020 14:24:11 +0000 (UTC)
+        id S1730053AbgL1NCX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:02:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F6DB208BA;
+        Mon, 28 Dec 2020 13:02:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165451;
-        bh=GKJLJ8uHxLBb24RT1d7AlBVDke3QDveQAz71l4+BKNk=;
+        s=korg; t=1609160527;
+        bh=WwLHNuxmuCCpzXrmYhshiXOZurU6b2gUwUbayUAHwPM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0VoVDm7R+UrcPRJdZD3JEm5XPjMiaGGkut89Ehp3RlCDTLqaKMa+ODtsHlC2ks/HQ
-         esu3O9MJ3y94LeHlurZV/24m5XJk3GZ5nc3zlbpa257/UufTjunUNiWDUABAbGBKjD
-         L36SCbVf++WupIoRGVt18FSJdLVlbxQmEud5jTQo=
+        b=U6kLdm4bRWjhQkql3B9tCTP3v1QGG+P1Q5/5l5W7h1GwStiCqC3KjZxAzcB5iqkwg
+         fONSbSWxniJNIjnMBvwL6z8h0mpSkRkEuEX543pso9zlnJqBbXzmVfhYszmZJngTNO
+         nqKZJx1QB9dz3Z+Yi2+1RFNDnWBQIHefbMc4/xFY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@kernel.org,
-        Connor McAdams <conmanx360@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 536/717] ALSA: hda/ca0132 - Fix AE-5 rear headphone pincfg.
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 081/175] cw1200: fix missing destroy_workqueue() on error in cw1200_init_common
 Date:   Mon, 28 Dec 2020 13:48:54 +0100
-Message-Id: <20201228125046.652741465@linuxfoundation.org>
+Message-Id: <20201228124857.162506921@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Connor McAdams <conmanx360@gmail.com>
+From: Qinglang Miao <miaoqinglang@huawei.com>
 
-commit c697ba85a94b8f65bf90dec5ef9af5c39c3e73b2 upstream.
+[ Upstream commit 7ec8a926188eb8e7a3cbaca43ec44f2d7146d71b ]
 
-The Windows driver sets the pincfg for the AE-5's rear-headphone to
-report as a microphone. This causes issues with Pulseaudio mistakenly
-believing there is no headphone plugged in. In Linux, we should instead
-set it to be a headphone.
+Add the missing destroy_workqueue() before return from
+cw1200_init_common in the error handling case.
 
-Fixes: a6b0961b39896 ("ALSA: hda/ca0132 - fix AE-5 pincfg")
-Cc: <stable@kernel.org>
-Signed-off-by: Connor McAdams <conmanx360@gmail.com>
-Link: https://lore.kernel.org/r/20201208195223.424753-1-conmanx360@gmail.com
-Link: https://lore.kernel.org/r/20201210173550.2968-1-conmanx360@gmail.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: a910e4a94f69 ("cw1200: add driver for the ST-E CW1100 & CW1200 WLAN chipsets")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20201119070842.1011-1-miaoqinglang@huawei.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_ca0132.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/st/cw1200/main.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/sound/pci/hda/patch_ca0132.c
-+++ b/sound/pci/hda/patch_ca0132.c
-@@ -1223,7 +1223,7 @@ static const struct hda_pintbl ae5_pincf
- 	{ 0x0e, 0x01c510f0 }, /* SPDIF In */
- 	{ 0x0f, 0x01017114 }, /* Port A -- Rear L/R. */
- 	{ 0x10, 0x01017012 }, /* Port D -- Center/LFE or FP Hp */
--	{ 0x11, 0x01a170ff }, /* Port B -- LineMicIn2 / Rear Headphone */
-+	{ 0x11, 0x012170ff }, /* Port B -- LineMicIn2 / Rear Headphone */
- 	{ 0x12, 0x01a170f0 }, /* Port C -- LineIn1 */
- 	{ 0x13, 0x908700f0 }, /* What U Hear In*/
- 	{ 0x18, 0x50d000f0 }, /* N/A */
+diff --git a/drivers/net/wireless/st/cw1200/main.c b/drivers/net/wireless/st/cw1200/main.c
+index 84624c812a15f..f4338bce78f4a 100644
+--- a/drivers/net/wireless/st/cw1200/main.c
++++ b/drivers/net/wireless/st/cw1200/main.c
+@@ -385,6 +385,7 @@ static struct ieee80211_hw *cw1200_init_common(const u8 *macaddr,
+ 				    CW1200_LINK_ID_MAX,
+ 				    cw1200_skb_dtor,
+ 				    priv)) {
++		destroy_workqueue(priv->workqueue);
+ 		ieee80211_free_hw(hw);
+ 		return NULL;
+ 	}
+@@ -396,6 +397,7 @@ static struct ieee80211_hw *cw1200_init_common(const u8 *macaddr,
+ 			for (; i > 0; i--)
+ 				cw1200_queue_deinit(&priv->tx_queue[i - 1]);
+ 			cw1200_queue_stats_deinit(&priv->tx_queue_stats);
++			destroy_workqueue(priv->workqueue);
+ 			ieee80211_free_hw(hw);
+ 			return NULL;
+ 		}
+-- 
+2.27.0
+
 
 
