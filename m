@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9922E672C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:22:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9087A2E6934
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:47:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439472AbgL1QVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:21:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40112 "EHLO mail.kernel.org"
+        id S1727720AbgL1MzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:55:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51624 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732071AbgL1NMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:12:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24E2920728;
-        Mon, 28 Dec 2020 13:12:13 +0000 (UTC)
+        id S1728454AbgL1MzG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:55:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6165321D94;
+        Mon, 28 Dec 2020 12:54:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161134;
-        bh=5RT23JNo5hhrOwckH/ZEWPm9n9Dx3fhmfGpX0+QGB4c=;
+        s=korg; t=1609160066;
+        bh=qR99icXdOK7HuB957VYZGa+83XTQNyl3hqtIOgs/ch4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PItQq4TeUmANOEXZuo9m93mOIGD2St9wf0lTW5bXCpgzMW9OsGGTNMKbSqXj4YQwd
-         xYbpCu3VgL7HAz0+v0A7qU+hX5BXgFHxbal7GuYeQoovfS6h7VZVyshIWhfBBb6z94
-         nkLbBPK0sk3y7rQbjBmCcw0QTSpC8qi2k16oS54A=
+        b=fXjLne7wqTxKGuFCChKa0D5iJxeRU3q6mQgarrP7xQx/9jnSiHSr8mMVDnIXDCW6V
+         EnZfqBysogO2Cx28gs6ydyuBagbfh2y2ygWUuPonXuCPNkzs1Ks71DyKreiao8jK9x
+         uVGn4f+SLb//mrYDStx3NHRFhNZveR8jkGQkG6UE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 105/242] Input: omap4-keypad - fix runtime PM error handling
-Date:   Mon, 28 Dec 2020 13:48:30 +0100
-Message-Id: <20201228124909.864244057@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+8881b478dad0a7971f79@syzkaller.appspotmail.com,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.4 027/132] USB: serial: option: add interface-number sanity check to flag handling
+Date:   Mon, 28 Dec 2020 13:48:31 +0100
+Message-Id: <20201228124847.721214773@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,202 +40,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Johan Hovold <johan@kernel.org>
 
-[ Upstream commit 59bbf83835f591b95c3bdd09d900f3584fa227af ]
+commit a251963f76fa0226d0fdf0c4f989496f18d9ae7f upstream.
 
-In omap4_keypad_probe, the patch fix several bugs.
+Add an interface-number sanity check before testing the device flags to
+avoid relying on undefined behaviour when left shifting in case a device
+uses an interface number greater than or equal to BITS_PER_LONG (i.e. 64
+or 32).
 
-  1) pm_runtime_get_sync will increment pm usage counter even it
-     failed. Forgetting to pm_runtime_put_noidle will result in
-     reference leak.
+Reported-by: syzbot+8881b478dad0a7971f79@syzkaller.appspotmail.com
+Fixes: c3a65808f04a ("USB: serial: option: reimplement interface masking")
+Cc: stable@vger.kernel.org
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-  2) In err_unmap, forget to disable runtime of device,
-     pm_runtime_enable will increase power disable depth. Thus a
-     pairing decrement is needed on the error handling path to keep
-     it balanced.
-
-  3) In err_pm_disable, it will call pm_runtime_put_sync twice not
-     one time.
-
-To fix this we factor out code reading revision and disabling touchpad, and
-drop PM reference once we are done talking to the device.
-
-Fixes: f77621cc640a7 ("Input: omap-keypad - dynamically handle register offsets")
-Fixes: 5ad567ffbaf20 ("Input: omap4-keypad - wire up runtime PM handling")
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201120133918.2559681-1-zhangqilong3@huawei.com
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/keyboard/omap4-keypad.c | 89 ++++++++++++++++-----------
- 1 file changed, 53 insertions(+), 36 deletions(-)
+ drivers/usb/serial/option.c |   23 +++++++++++++++++++++--
+ 1 file changed, 21 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/input/keyboard/omap4-keypad.c b/drivers/input/keyboard/omap4-keypad.c
-index 5480f1a5658ee..a42a75a53a113 100644
---- a/drivers/input/keyboard/omap4-keypad.c
-+++ b/drivers/input/keyboard/omap4-keypad.c
-@@ -199,12 +199,8 @@ static int omap4_keypad_open(struct input_dev *input)
- 	return 0;
- }
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -563,6 +563,9 @@ static void option_instat_callback(struc
  
--static void omap4_keypad_close(struct input_dev *input)
-+static void omap4_keypad_stop(struct omap4_keypad *keypad_data)
- {
--	struct omap4_keypad *keypad_data = input_get_drvdata(input);
--
--	disable_irq(keypad_data->irq);
--
- 	/* Disable interrupts and wake-up events */
- 	kbd_write_irqreg(keypad_data, OMAP4_KBD_IRQENABLE,
- 			 OMAP4_VAL_IRQDISABLE);
-@@ -213,7 +209,15 @@ static void omap4_keypad_close(struct input_dev *input)
- 	/* clear pending interrupts */
- 	kbd_write_irqreg(keypad_data, OMAP4_KBD_IRQSTATUS,
- 			 kbd_read_irqreg(keypad_data, OMAP4_KBD_IRQSTATUS));
+ /* Device flags */
+ 
++/* Highest interface number which can be used with NCTRL() and RSVD() */
++#define FLAG_IFNUM_MAX	7
++
+ /* Interface does not support modem-control requests */
+ #define NCTRL(ifnum)	((BIT(ifnum) & 0xff) << 8)
+ 
+@@ -2086,6 +2089,14 @@ static struct usb_serial_driver * const
+ 
+ module_usb_serial_driver(serial_drivers, option_ids);
+ 
++static bool iface_is_reserved(unsigned long device_flags, u8 ifnum)
++{
++	if (ifnum > FLAG_IFNUM_MAX)
++		return false;
++
++	return device_flags & RSVD(ifnum);
 +}
 +
-+static void omap4_keypad_close(struct input_dev *input)
-+{
-+	struct omap4_keypad *keypad_data;
- 
-+	keypad_data = input_get_drvdata(input);
-+	disable_irq(keypad_data->irq);
-+	omap4_keypad_stop(keypad_data);
- 	enable_irq(keypad_data->irq);
- 
- 	pm_runtime_put_sync(input->dev.parent);
-@@ -236,13 +240,37 @@ static int omap4_keypad_parse_dt(struct device *dev,
- 	return 0;
- }
- 
-+static int omap4_keypad_check_revision(struct device *dev,
-+				       struct omap4_keypad *keypad_data)
-+{
-+	unsigned int rev;
-+
-+	rev = __raw_readl(keypad_data->base + OMAP4_KBD_REVISION);
-+	rev &= 0x03 << 30;
-+	rev >>= 30;
-+	switch (rev) {
-+	case KBD_REVISION_OMAP4:
-+		keypad_data->reg_offset = 0x00;
-+		keypad_data->irqreg_offset = 0x00;
-+		break;
-+	case KBD_REVISION_OMAP5:
-+		keypad_data->reg_offset = 0x10;
-+		keypad_data->irqreg_offset = 0x0c;
-+		break;
-+	default:
-+		dev_err(dev, "Keypad reports unsupported revision %d", rev);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- static int omap4_keypad_probe(struct platform_device *pdev)
+ static int option_probe(struct usb_serial *serial,
+ 			const struct usb_device_id *id)
  {
- 	struct omap4_keypad *keypad_data;
- 	struct input_dev *input_dev;
- 	struct resource *res;
- 	unsigned int max_keys;
--	int rev;
- 	int irq;
- 	int error;
- 
-@@ -282,41 +310,33 @@ static int omap4_keypad_probe(struct platform_device *pdev)
- 		goto err_release_mem;
- 	}
- 
-+	pm_runtime_enable(&pdev->dev);
- 
- 	/*
- 	 * Enable clocks for the keypad module so that we can read
- 	 * revision register.
+@@ -2103,7 +2114,7 @@ static int option_probe(struct usb_seria
+ 	 * the same class/subclass/protocol as the serial interfaces.  Look at
+ 	 * the Windows driver .INF files for reserved interface numbers.
  	 */
--	pm_runtime_enable(&pdev->dev);
- 	error = pm_runtime_get_sync(&pdev->dev);
- 	if (error) {
- 		dev_err(&pdev->dev, "pm_runtime_get_sync() failed\n");
--		goto err_unmap;
--	}
--	rev = __raw_readl(keypad_data->base + OMAP4_KBD_REVISION);
--	rev &= 0x03 << 30;
--	rev >>= 30;
--	switch (rev) {
--	case KBD_REVISION_OMAP4:
--		keypad_data->reg_offset = 0x00;
--		keypad_data->irqreg_offset = 0x00;
--		break;
--	case KBD_REVISION_OMAP5:
--		keypad_data->reg_offset = 0x10;
--		keypad_data->irqreg_offset = 0x0c;
--		break;
--	default:
--		dev_err(&pdev->dev,
--			"Keypad reports unsupported revision %d", rev);
--		error = -EINVAL;
--		goto err_pm_put_sync;
-+		pm_runtime_put_noidle(&pdev->dev);
-+	} else {
-+		error = omap4_keypad_check_revision(&pdev->dev,
-+						    keypad_data);
-+		if (!error) {
-+			/* Ensure device does not raise interrupts */
-+			omap4_keypad_stop(keypad_data);
-+		}
-+		pm_runtime_put_sync(&pdev->dev);
- 	}
-+	if (error)
-+		goto err_pm_disable;
- 
- 	/* input device allocation */
- 	keypad_data->input = input_dev = input_allocate_device();
- 	if (!input_dev) {
- 		error = -ENOMEM;
--		goto err_pm_put_sync;
-+		goto err_pm_disable;
- 	}
- 
- 	input_dev->name = pdev->name;
-@@ -361,28 +381,25 @@ static int omap4_keypad_probe(struct platform_device *pdev)
- 		goto err_free_keymap;
- 	}
- 
--	device_init_wakeup(&pdev->dev, true);
--	pm_runtime_put_sync(&pdev->dev);
--
- 	error = input_register_device(keypad_data->input);
- 	if (error < 0) {
- 		dev_err(&pdev->dev, "failed to register input device\n");
--		goto err_pm_disable;
-+		goto err_free_irq;
- 	}
- 
-+	device_init_wakeup(&pdev->dev, true);
- 	platform_set_drvdata(pdev, keypad_data);
-+
+-	if (device_flags & RSVD(iface_desc->bInterfaceNumber))
++	if (iface_is_reserved(device_flags, iface_desc->bInterfaceNumber))
+ 		return -ENODEV;
+ 	/*
+ 	 * Don't bind network interface on Samsung GT-B3730, it is handled by
+@@ -2120,6 +2131,14 @@ static int option_probe(struct usb_seria
  	return 0;
+ }
  
--err_pm_disable:
--	pm_runtime_disable(&pdev->dev);
-+err_free_irq:
- 	free_irq(keypad_data->irq, keypad_data);
- err_free_keymap:
- 	kfree(keypad_data->keymap);
- err_free_input:
- 	input_free_device(input_dev);
--err_pm_put_sync:
--	pm_runtime_put_sync(&pdev->dev);
--err_unmap:
-+err_pm_disable:
-+	pm_runtime_disable(&pdev->dev);
- 	iounmap(keypad_data->base);
- err_release_mem:
- 	release_mem_region(res->start, resource_size(res));
--- 
-2.27.0
-
++static bool iface_no_modem_control(unsigned long device_flags, u8 ifnum)
++{
++	if (ifnum > FLAG_IFNUM_MAX)
++		return false;
++
++	return device_flags & NCTRL(ifnum);
++}
++
+ static int option_attach(struct usb_serial *serial)
+ {
+ 	struct usb_interface_descriptor *iface_desc;
+@@ -2135,7 +2154,7 @@ static int option_attach(struct usb_seri
+ 
+ 	iface_desc = &serial->interface->cur_altsetting->desc;
+ 
+-	if (!(device_flags & NCTRL(iface_desc->bInterfaceNumber)))
++	if (!iface_no_modem_control(device_flags, iface_desc->bInterfaceNumber))
+ 		data->use_send_setup = 1;
+ 
+ 	if (device_flags & ZLP)
 
 
