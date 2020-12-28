@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DD3D2E6819
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:33:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D4A12E6812
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:33:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441981AbgL1Qct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:32:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60156 "EHLO mail.kernel.org"
+        id S2441957AbgL1Qck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:32:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60224 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730338AbgL1NEC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:04:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B782208B6;
-        Mon, 28 Dec 2020 13:03:21 +0000 (UTC)
+        id S1730365AbgL1NEI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:04:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 332C2208D5;
+        Mon, 28 Dec 2020 13:03:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160602;
-        bh=Jt5ah7W6jt8vYVVXZz8JhEpNRQ0h7d7odSb+gh5XBgc=;
+        s=korg; t=1609160607;
+        bh=Nz0ImhC7KydCH0QTf1+HHM2n1ZeQ326HKF2Q51HEXgg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iBMfd215wwgqQb4Cgql6pSzRixZ+/94jbaGNmZ7ehU74iFRivppIwPVmD9d1I8617
-         M8kikKtYT4uY9tFpyagETWyeTGnF5XYr9TluYQiDajWe/OeZ+SZtUKlHaZAH666M3N
-         NA87wMmyq6gAUT8OMWrxQOwsqjIFyUzYBjiQ+ujI=
+        b=GDfeahZ7KxmBeLsDWW2iUt+CN1fAMKr7JpBYS0xERnZuJcVUGRMNGY63Tejo1AS/v
+         vwMZ2Ji5THYUepl7EhTRMc5J7HkEbhCsDYqbAGS6oqDnjowREGWPuuty/onMP1CPlT
+         k1oFSNjhUG+1VVEz8t5/bSwA+COuac8sfVA73+kE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        Yang Yingliang <yangyingliang@huawei.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 106/175] usb: ehci-omap: Fix PM disable depth umbalance in ehci_hcd_omap_probe
-Date:   Mon, 28 Dec 2020 13:49:19 +0100
-Message-Id: <20201228124858.388195843@linuxfoundation.org>
+Subject: [PATCH 4.9 108/175] speakup: fix uninitialized flush_lock
+Date:   Mon, 28 Dec 2020 13:49:21 +0100
+Message-Id: <20201228124858.484669106@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
 References: <20201228124853.216621466@linuxfoundation.org>
@@ -40,37 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit d6ff32478d7e95d6ca199b5c852710d6964d5811 ]
+[ Upstream commit d1b928ee1cfa965a3327bbaa59bfa005d97fa0fe ]
 
-The pm_runtime_enable will decrement the power disable depth. Imbalance
-depth will resulted in enabling runtime PM of device fails later.  Thus
-a pairing decrement must be needed on the error handling path to keep it
-balanced.
+The flush_lock is uninitialized, use DEFINE_SPINLOCK
+to define and initialize flush_lock.
 
-Fixes: 6c984b066d84b ("ARM: OMAP: USBHOST: Replace usbhs core driver APIs by Runtime pm APIs")
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201123145719.1455849-1-zhangqilong3@huawei.com
+Fixes: c6e3fd22cd53 ("Staging: add speakup to the staging directory")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Reviewed-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Link: https://lore.kernel.org/r/20201117012229.3395186-1-yangyingliang@huawei.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/ehci-omap.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/staging/speakup/speakup_dectlk.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/host/ehci-omap.c b/drivers/usb/host/ehci-omap.c
-index 94ea9fff13e6d..9227a9ddac609 100644
---- a/drivers/usb/host/ehci-omap.c
-+++ b/drivers/usb/host/ehci-omap.c
-@@ -237,6 +237,7 @@ static int ehci_hcd_omap_probe(struct platform_device *pdev)
+diff --git a/drivers/staging/speakup/speakup_dectlk.c b/drivers/staging/speakup/speakup_dectlk.c
+index 764656759fbf4..1079b11fff4bc 100644
+--- a/drivers/staging/speakup/speakup_dectlk.c
++++ b/drivers/staging/speakup/speakup_dectlk.c
+@@ -47,7 +47,7 @@ static unsigned char get_index(void);
+ static int in_escape;
+ static int is_flushing;
  
- err_pm_runtime:
- 	pm_runtime_put_sync(dev);
-+	pm_runtime_disable(dev);
+-static spinlock_t flush_lock;
++static DEFINE_SPINLOCK(flush_lock);
+ static DECLARE_WAIT_QUEUE_HEAD(flush);
  
- err_phy:
- 	for (i = 0; i < omap->nports; i++) {
+ static struct var_t vars[] = {
 -- 
 2.27.0
 
