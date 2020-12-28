@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF4712E3740
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:54:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F682E39F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:30:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728047AbgL1MxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:53:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49862 "EHLO mail.kernel.org"
+        id S2390408AbgL1Nab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:30:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59436 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728013AbgL1Mw6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:52:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 989CB22A84;
-        Mon, 28 Dec 2020 12:52:00 +0000 (UTC)
+        id S2390392AbgL1Na3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:30:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D244B22C7E;
+        Mon, 28 Dec 2020 13:29:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609159921;
-        bh=MaF1T6jqWdINqnGa6B+VEZSYtLvkMn9uFHu3KkglKbs=;
+        s=korg; t=1609162188;
+        bh=2Yzs0RJG/rrec0gELQ7GRzXpQJwfWuq9NsNKxqTfAds=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uRopOMKxfLmGdz4WCivWERC07fRdLlFQXTlqFF8tULID0SNsnPdjqwA5QsbPOeC8V
-         HMfyho2MTQuV4HBPBpCoufvKeD51IXnAouJoVuSJt2GIPAtWUP2nOYoGIbm0RI/M5W
-         iE5N2uDgXMB39p7mYZgTTGgLwgVIAvqKNgzYzogo=
+        b=ZamEyA54xYaCZdGAy7WvKWCNCg7g+JE7B6/Cg7iQYHUX3D+6GIujrbizHRP+h5KzQ
+         /04phcWDZR9ShWZTAWwbWsXXSnKs3nLiNFUN3qkezYw//kRh+jGJxVepF7z8qjh7UG
+         2ExCsIHDVY9pTgxRN9jIhqH+yF4r/N8pJX+BxtVQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brant Merryman <brant.merryman@silabs.com>,
-        Phu Luu <phu.luu@silabs.com>, Johan Hovold <johan@kernel.org>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.4 021/132] USB: serial: cp210x: enable usb generic throttle/unthrottle
-Date:   Mon, 28 Dec 2020 13:48:25 +0100
-Message-Id: <20201228124847.436946473@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 187/346] ath10k: Fix an error handling path
+Date:   Mon, 28 Dec 2020 13:48:26 +0100
+Message-Id: <20201228124928.830205275@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brant Merryman <brant.merryman@silabs.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit 4387b3dbb079d482d3c2b43a703ceed4dd27ed28 upstream
+[ Upstream commit ed3573bc3943c27d2d8e405a242f87ed14572ca1 ]
 
-Assign the .throttle and .unthrottle functions to be generic function
-in the driver structure to prevent data loss that can otherwise occur
-if the host does not enable USB throttling.
+If 'ath10k_usb_create()' fails, we should release some resources and report
+an error instead of silently continuing.
 
-Signed-off-by: Brant Merryman <brant.merryman@silabs.com>
-Co-developed-by: Phu Luu <phu.luu@silabs.com>
-Signed-off-by: Phu Luu <phu.luu@silabs.com>
-Link: https://lore.kernel.org/r/57401AF3-9961-461F-95E1-F8AFC2105F5E@silabs.com
-[ johan: fix up tags ]
-Fixes: 39a66b8d22a3 ("[PATCH] USB: CP2101 Add support for flow control")
-Cc: stable <stable@vger.kernel.org>     # 2.6.12
-Signed-off-by: Johan Hovold <johan@kernel.org>
-[sudip: adjust context]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 4db66499df91 ("ath10k: add initial USB support")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20201122170342.1346011-1-christophe.jaillet@wanadoo.fr
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/serial/cp210x.c |    2 ++
+ drivers/net/wireless/ath/ath10k/usb.c | 2 ++
  1 file changed, 2 insertions(+)
 
---- a/drivers/usb/serial/cp210x.c
-+++ b/drivers/usb/serial/cp210x.c
-@@ -252,6 +252,8 @@ static struct usb_serial_driver cp210x_d
- 	.close			= cp210x_close,
- 	.break_ctl		= cp210x_break_ctl,
- 	.set_termios		= cp210x_set_termios,
-+	.throttle		= usb_serial_generic_throttle,
-+	.unthrottle		= usb_serial_generic_unthrottle,
- 	.tiocmget		= cp210x_tiocmget,
- 	.tiocmset		= cp210x_tiocmset,
- 	.attach			= cp210x_startup,
+diff --git a/drivers/net/wireless/ath/ath10k/usb.c b/drivers/net/wireless/ath/ath10k/usb.c
+index c64a03f164c0f..f4e6d84bfb91c 100644
+--- a/drivers/net/wireless/ath/ath10k/usb.c
++++ b/drivers/net/wireless/ath/ath10k/usb.c
+@@ -1019,6 +1019,8 @@ static int ath10k_usb_probe(struct usb_interface *interface,
+ 
+ 	ar_usb = ath10k_usb_priv(ar);
+ 	ret = ath10k_usb_create(ar, interface);
++	if (ret)
++		goto err;
+ 	ar_usb->ar = ar;
+ 
+ 	ar->dev_id = product_id;
+-- 
+2.27.0
+
 
 
