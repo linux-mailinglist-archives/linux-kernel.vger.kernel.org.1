@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB552E3EC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:33:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4BE32E4298
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:25:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504624AbgL1OcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:32:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38964 "EHLO mail.kernel.org"
+        id S2407834AbgL1N6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:58:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2504154AbgL1ObH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:31:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B561207B2;
-        Mon, 28 Dec 2020 14:30:51 +0000 (UTC)
+        id S2407791AbgL1N6g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:58:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 951AF206E5;
+        Mon, 28 Dec 2020 13:57:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165852;
-        bh=t1gGUelAwP2A+EmHeUClX4L/LHo/xQfFUa6r+6dbcDo=;
+        s=korg; t=1609163876;
+        bh=4/UIqvR/aOD/azOYDLGSWkRRB7cyUOx2lvDnvdFIVjM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b+l/tsQQHi4zCDsgum4yUppA7cQ0gprs4v5qXFzAuwE91LiJAEGYaIoBJlvoDaqZd
-         aPLf42mr+P7oZV+sdycmoujYBYwPU4t/IKO5Y4VUTteKUKnalcpOxNdIhbeFVws12I
-         HvU4M4Xgba3dexlJrlo7/8wI3lZeMTzKcnXzDnbI=
+        b=tpiVy+yHxyX2zWH3HUr57/ItAKDlvF7iUBkCk6OD1+IsjW7p5nil92DD81kpuZYjO
+         ClKi9Fr49+hINm/9XSTuIGgNLCiODGm4AB/mQftqbkD1hFKxQzooMZUf5XraCtcoLi
+         JqsH3Oc2GTXF+6VaHuH1h5tkoFJFV8Luh3vLwNKc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.10 646/717] spi: davinci: Fix use-after-free on unbind
-Date:   Mon, 28 Dec 2020 13:50:44 +0100
-Message-Id: <20201228125051.889692540@linuxfoundation.org>
+        Bert Vermeulen <bert@biot.com>, Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.4 409/453] spi: rb4xx: Dont leak SPI master in probe error path
+Date:   Mon, 28 Dec 2020 13:50:45 +0100
+Message-Id: <20201228124956.898047047@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,41 +41,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lukas Wunner <lukas@wunner.de>
 
-commit 373afef350a93519b4b8d636b0895da8650b714b upstream.
+commit a4729c3506c3eb1a6ca5c0289f4e7cafa4115065 upstream.
 
-davinci_spi_remove() accesses the driver's private data after it's been
-freed with spi_master_put().
+If the calls to devm_clk_get(), devm_spi_register_master() or
+clk_prepare_enable() fail on probe of the Mikrotik RB4xx SPI driver,
+the spi_master struct is erroneously not freed.
 
-Fix by moving the spi_master_put() to the end of the function.
+Fix by switching over to the new devm_spi_alloc_master() helper.
 
-Fixes: fe5fd2540947 ("spi: davinci: Use dma_request_chan() for requesting DMA channel")
+Fixes: 05aec357871f ("spi: Add SPI driver for Mikrotik RB4xx series boards")
 Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: <stable@vger.kernel.org> # v4.7+
-Link: https://lore.kernel.org/r/412f7eb1cf8990e0a3a2153f4c577298deab623e.1607286887.git.lukas@wunner.de
+Cc: <stable@vger.kernel.org> # v4.2+: 5e844cc37a5c: spi: Introduce device-managed SPI controller allocation
+Cc: <stable@vger.kernel.org> # v4.2+
+Cc: Bert Vermeulen <bert@biot.com>
+Link: https://lore.kernel.org/r/369bf26d71927f60943b1d9d8f51810f00b0237d.1607286887.git.lukas@wunner.de
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/spi/spi-davinci.c |    2 +-
+ drivers/spi/spi-rb4xx.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/spi/spi-davinci.c
-+++ b/drivers/spi/spi-davinci.c
-@@ -1040,13 +1040,13 @@ static int davinci_spi_remove(struct pla
- 	spi_bitbang_stop(&dspi->bitbang);
+--- a/drivers/spi/spi-rb4xx.c
++++ b/drivers/spi/spi-rb4xx.c
+@@ -142,7 +142,7 @@ static int rb4xx_spi_probe(struct platfo
+ 	if (IS_ERR(spi_base))
+ 		return PTR_ERR(spi_base);
  
- 	clk_disable_unprepare(dspi->clk);
--	spi_master_put(master);
- 
- 	if (dspi->dma_rx) {
- 		dma_release_channel(dspi->dma_rx);
- 		dma_release_channel(dspi->dma_tx);
- 	}
- 
-+	spi_master_put(master);
- 	return 0;
- }
+-	master = spi_alloc_master(&pdev->dev, sizeof(*rbspi));
++	master = devm_spi_alloc_master(&pdev->dev, sizeof(*rbspi));
+ 	if (!master)
+ 		return -ENOMEM;
  
 
 
