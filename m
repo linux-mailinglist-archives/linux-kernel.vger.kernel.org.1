@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D81982E3E75
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:29:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC3F2E379F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:59:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502398AbgL1O2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:28:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36226 "EHLO mail.kernel.org"
+        id S1729146AbgL1M6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:58:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502358AbgL1O2T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:28:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 64270206D4;
-        Mon, 28 Dec 2020 14:27:38 +0000 (UTC)
+        id S1729116AbgL1M6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:58:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 557BD208BA;
+        Mon, 28 Dec 2020 12:57:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165659;
-        bh=aZwdFjxzpDrDs30YAcOvGiCDupbp5UYPJBHDopEQny0=;
+        s=korg; t=1609160255;
+        bh=vB7QqCi5gwbyjbnoJx4bsAs4Q5iXfaQCVz+ZvX+hwJA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m8azPOAhJNWVqmTCDQ4xiaMcptf8CUAiS1BvISxnmpuG3M9YYOeCEYq7t0Jk05oB/
-         LIKIcJ5MzrRZDyihz+bRYO7DGNTbEI8CnV+syZrppHohgYLMQsDVVOOFZlCoSAt8lW
-         +RyCJ6/Y6TSAU73HrQW/qDz9KbhTLdxYvdXRuVJc=
+        b=ORGabjzh12DkosJcr4WEaptnLCgPFlgBaVZ2LDjFLZbrFzLqSzqX8HA4vhSf77FdE
+         asnb1niVHgOjNbY7JxOO2guEg3lMTdmtukwlFxVcEGQIH5NjxgfcFkhXSDkFB7S8pq
+         2eaf1EdtdPaJZ3zqRMIMcwI4R9tTQNJ9CO/P1eDU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH 5.10 578/717] dyndbg: fix use before null check
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 092/132] qlcnic: Fix error code in probe
 Date:   Mon, 28 Dec 2020 13:49:36 +0100
-Message-Id: <20201228125048.602826394@linuxfoundation.org>
+Message-Id: <20201228124850.876672233@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,43 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jim Cromie <jim.cromie@gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit 3577afb0052fca65e67efdfc8e0859bb7bac87a6 upstream.
+[ Upstream commit 0d52848632a357948028eab67ff9b7cc0c12a0fb ]
 
-In commit a2d375eda771 ("dyndbg: refine export, rename to
-dynamic_debug_exec_queries()"), a string is copied before checking it
-isn't NULL.  Fix this, report a usage/interface error, and return the
-proper error code.
+Return -EINVAL if we can't find the correct device.  Currently it
+returns success.
 
-Fixes: a2d375eda771 ("dyndbg: refine export, rename to dynamic_debug_exec_queries()")
-Cc: stable@vger.kernel.org
-Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
-Link: https://lore.kernel.org/r/20201209183625.2432329-1-jim.cromie@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 13159183ec7a ("qlcnic: 83xx base driver")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/X9nHbMqEyI/xPfGd@mwanda
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/dynamic_debug.c |    9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/lib/dynamic_debug.c
-+++ b/lib/dynamic_debug.c
-@@ -561,9 +561,14 @@ static int ddebug_exec_queries(char *que
- int dynamic_debug_exec_queries(const char *query, const char *modname)
- {
- 	int rc;
--	char *qry = kstrndup(query, PAGE_SIZE, GFP_KERNEL);
-+	char *qry; /* writable copy of query */
+diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
+index 1205f6f9c9417..a4b10776f8346 100644
+--- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
++++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
+@@ -2506,6 +2506,7 @@ qlcnic_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		qlcnic_sriov_vf_register_map(ahw);
+ 		break;
+ 	default:
++		err = -EINVAL;
+ 		goto err_out_free_hw_res;
+ 	}
  
--	if (!query)
-+	if (!query) {
-+		pr_err("non-null query/command string expected\n");
-+		return -EINVAL;
-+	}
-+	qry = kstrndup(query, PAGE_SIZE, GFP_KERNEL);
-+	if (!qry)
- 		return -ENOMEM;
- 
- 	rc = ddebug_exec_queries(qry, modname);
+-- 
+2.27.0
+
 
 
