@@ -2,38 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B6552E3796
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:59:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88E532E3F75
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:42:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729030AbgL1M5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:57:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53728 "EHLO mail.kernel.org"
+        id S2502765AbgL1O2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:28:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729002AbgL1M5j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:57:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A552B229C6;
-        Mon, 28 Dec 2020 12:57:23 +0000 (UTC)
+        id S2390168AbgL1O1e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:27:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E6E6206D4;
+        Mon, 28 Dec 2020 14:26:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160244;
-        bh=qCPZnGg71nA+DH7EWZ4M3f0d3yuNrU/7XVXfB7ri/M0=;
+        s=korg; t=1609165614;
+        bh=Fl1EJs50/0HCmOETgQqrnzrJTcAe/1qYPdacqQYGTpI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E0yDvi9b908dT0Njykr8PmSL2POmZHvk00kJ7yHqKLM4dDcK9VI7Xj5iPJOUiOlSw
-         4hIyfT+Osgk/wUU/y42fhZmlmg+V8K+wuVi0FuoAhH3MyK77RAiA4xqMI0vLqJbnAI
-         L8d1VViBljKkSJvNMMWCXsmy7XEHzrUae7MpNWF8=
+        b=xTp3+sqZXRM2CpHB6vSab6gJi/QeraymnssLu0pZ6GOaKgDwzoVz3L326KwDnNljN
+         AOAyOunKTe01GywLwj3yHHL/wMrfaDIN5bGJ/ZIbB/q80Bwd8yKWZcMaMBgCtpZsVS
+         1AQzWGnocZRccReGuc6lGgtG+u8W0lq4RUEKTqug=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 090/132] clk: ti: Fix memleak in ti_fapll_synth_setup
+        stable@vger.kernel.org, Borislav Petkov <bp@suse.de>
+Subject: [PATCH 5.10 576/717] EDAC/amd64: Fix PCI component registration
 Date:   Mon, 28 Dec 2020 13:49:34 +0100
-Message-Id: <20201228124850.777225725@linuxfoundation.org>
+Message-Id: <20201228125048.519291900@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,60 +38,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Borislav Petkov <bp@suse.de>
 
-[ Upstream commit 8c6239f6e95f583bb763d0228e02d4dd0fb3d492 ]
+commit 706657b1febf446a9ba37dc51b89f46604f57ee9 upstream.
 
-If clk_register fails, we should goto free branch
-before function returns to prevent memleak.
+In order to setup its PCI component, the driver needs any node private
+instance in order to get a reference to the PCI device and hand that
+into edac_pci_create_generic_ctl(). For convenience, it uses the 0th
+memory controller descriptor under the assumption that if any, the 0th
+will be always present.
 
-Fixes: 163152cbbe321 ("clk: ti: Add support for FAPLL on dm816x")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201113131623.2098222-1-zhangqilong3@huawei.com
-Acked-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+However, this assumption goes wrong when the 0th node doesn't have
+memory and the driver doesn't initialize an instance for it:
+
+  EDAC amd64: F17h detected (node 0).
+  ...
+  EDAC amd64: Node 0: No DIMMs detected.
+
+But looking up node instances is not really needed - all one needs is
+the pointer to the proper device which gets discovered during instance
+init.
+
+So stash that pointer into a variable and use it when setting up the
+EDAC PCI component.
+
+Clear that variable when the driver needs to unwind due to some
+instances failing init to avoid any registration imbalance.
+
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20201122150815.13808-1-bp@alien8.de
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/clk/ti/fapll.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ drivers/edac/amd64_edac.c |   26 ++++++++++++++------------
+ 1 file changed, 14 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/clk/ti/fapll.c b/drivers/clk/ti/fapll.c
-index 66a0d0ed8b550..02ff499e36536 100644
---- a/drivers/clk/ti/fapll.c
-+++ b/drivers/clk/ti/fapll.c
-@@ -497,6 +497,7 @@ static struct clk * __init ti_fapll_synth_setup(struct fapll_data *fd,
- {
- 	struct clk_init_data *init;
- 	struct fapll_synth *synth;
-+	struct clk *clk = ERR_PTR(-ENOMEM);
+--- a/drivers/edac/amd64_edac.c
++++ b/drivers/edac/amd64_edac.c
+@@ -18,6 +18,9 @@ static struct amd64_family_type *fam_typ
+ /* Per-node stuff */
+ static struct ecc_settings **ecc_stngs;
  
- 	init = kzalloc(sizeof(*init), GFP_KERNEL);
- 	if (!init)
-@@ -519,13 +520,19 @@ static struct clk * __init ti_fapll_synth_setup(struct fapll_data *fd,
- 	synth->hw.init = init;
- 	synth->clk_pll = pll_clk;
- 
--	return clk_register(NULL, &synth->hw);
-+	clk = clk_register(NULL, &synth->hw);
-+	if (IS_ERR(clk)) {
-+		pr_err("failed to register clock\n");
-+		goto free;
-+	}
++/* Device for the PCI component */
++static struct device *pci_ctl_dev;
 +
-+	return clk;
+ /*
+  * Valid scrub rates for the K8 hardware memory scrubber. We map the scrubbing
+  * bandwidth to a valid bit pattern. The 'set' operation finds the 'matching-
+@@ -2683,6 +2686,9 @@ reserve_mc_sibling_devs(struct amd64_pvt
+ 			return -ENODEV;
+ 		}
  
- free:
- 	kfree(synth);
- 	kfree(init);
++		if (!pci_ctl_dev)
++			pci_ctl_dev = &pvt->F0->dev;
++
+ 		edac_dbg(1, "F0: %s\n", pci_name(pvt->F0));
+ 		edac_dbg(1, "F3: %s\n", pci_name(pvt->F3));
+ 		edac_dbg(1, "F6: %s\n", pci_name(pvt->F6));
+@@ -2707,6 +2713,9 @@ reserve_mc_sibling_devs(struct amd64_pvt
+ 		return -ENODEV;
+ 	}
  
--	return ERR_PTR(-ENOMEM);
-+	return clk;
++	if (!pci_ctl_dev)
++		pci_ctl_dev = &pvt->F2->dev;
++
+ 	edac_dbg(1, "F1: %s\n", pci_name(pvt->F1));
+ 	edac_dbg(1, "F2: %s\n", pci_name(pvt->F2));
+ 	edac_dbg(1, "F3: %s\n", pci_name(pvt->F3));
+@@ -3623,21 +3632,10 @@ static void remove_one_instance(unsigned
+ 
+ static void setup_pci_device(void)
+ {
+-	struct mem_ctl_info *mci;
+-	struct amd64_pvt *pvt;
+-
+ 	if (pci_ctl)
+ 		return;
+ 
+-	mci = edac_mc_find(0);
+-	if (!mci)
+-		return;
+-
+-	pvt = mci->pvt_info;
+-	if (pvt->umc)
+-		pci_ctl = edac_pci_create_generic_ctl(&pvt->F0->dev, EDAC_MOD_STR);
+-	else
+-		pci_ctl = edac_pci_create_generic_ctl(&pvt->F2->dev, EDAC_MOD_STR);
++	pci_ctl = edac_pci_create_generic_ctl(pci_ctl_dev, EDAC_MOD_STR);
+ 	if (!pci_ctl) {
+ 		pr_warn("%s(): Unable to create PCI control\n", __func__);
+ 		pr_warn("%s(): PCI error report via EDAC not set\n", __func__);
+@@ -3716,6 +3714,8 @@ static int __init amd64_edac_init(void)
+ 	return 0;
+ 
+ err_pci:
++	pci_ctl_dev = NULL;
++
+ 	msrs_free(msrs);
+ 	msrs = NULL;
+ 
+@@ -3745,6 +3745,8 @@ static void __exit amd64_edac_exit(void)
+ 	kfree(ecc_stngs);
+ 	ecc_stngs = NULL;
+ 
++	pci_ctl_dev = NULL;
++
+ 	msrs_free(msrs);
+ 	msrs = NULL;
  }
- 
- static void __init ti_fapll_setup(struct device_node *node)
--- 
-2.27.0
-
 
 
