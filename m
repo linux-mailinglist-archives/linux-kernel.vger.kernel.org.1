@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33A782E37E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:04:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A81542E3A36
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:34:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730072AbgL1NC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:02:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58244 "EHLO mail.kernel.org"
+        id S2387937AbgL1Ndf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:33:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730056AbgL1NCU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:02:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 29935208B6;
-        Mon, 28 Dec 2020 13:02:03 +0000 (UTC)
+        id S2390312AbgL1NaX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:30:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 24F2E2063A;
+        Mon, 28 Dec 2020 13:29:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160524;
-        bh=qhDfQ2L5gkXut6BkNW3v3ZYyBtI5jQZJYTNpSA/GefY=;
+        s=korg; t=1609162182;
+        bh=eEBUkreNbxeJtlMy7/o495At/IUofxpXENnKGBKLzZE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lm1f36ACYe1An6wTYiPkxHhrJdHdravCfeZJENgjx+xZ0U2L9TwSPVA5pV+R9kv4S
-         lXX8IIcuCOmTze26gb21M5JWNSyvzPd08M4/zwEDqT5IzzdK8YeSPjaESZLwykt4cW
-         ViY5onWg4XXgSGi+SUAZzdutW/7K/Bhu+71cjmzk=
+        b=tEmaZeHsXLimRIV/A5oBmCwKb35reqYcgTFuvVZ2w0hlSblHJd0w+tdz86tEjrH9b
+         X2yaCEEYq3DDNOAvu0+fWTqHKg8S97jQZdytN9PeJGsL0uFgq6BO1e4kAfK0hyWJiP
+         HVjvjHm68hYxeWXvKaFREQ0LeJVBVfRA3DVt3X7g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Nathan Lynch <nathanl@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 080/175] orinoco: Move context allocation after processing the skb
+Subject: [PATCH 4.19 214/346] powerpc/pseries/hibernation: drop pseries_suspend_begin() from suspend ops
 Date:   Mon, 28 Dec 2020 13:48:53 +0100
-Message-Id: <20201228124857.110446927@linuxfoundation.org>
+Message-Id: <20201228124930.124643958@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,58 +40,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+From: Nathan Lynch <nathanl@linux.ibm.com>
 
-[ Upstream commit a31eb615646a63370aa1da1053c45439c7653d83 ]
+[ Upstream commit 52719fce3f4c7a8ac9eaa191e8d75a697f9fbcbc ]
 
-ezusb_xmit() allocates a context which is leaked if
-orinoco_process_xmit_skb() returns an error.
+There are three ways pseries_suspend_begin() can be reached:
 
-Move ezusb_alloc_ctx() after the invocation of
-orinoco_process_xmit_skb() because the context is not needed so early.
-ezusb_access_ltv() will cleanup the context in case of an error.
+1. When "mem" is written to /sys/power/state:
 
-Fixes: bac6fafd4d6a0 ("orinoco: refactor xmit path")
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20201113212252.2243570-2-bigeasy@linutronix.de
+kobj_attr_store()
+-> state_store()
+  -> pm_suspend()
+    -> suspend_devices_and_enter()
+      -> pseries_suspend_begin()
+
+This never works because there is no way to supply a valid stream id
+using this interface, and H_VASI_STATE is called with a stream id of
+zero. So this call path is useless at best.
+
+2. When a stream id is written to /sys/devices/system/power/hibernate.
+pseries_suspend_begin() is polled directly from store_hibernate()
+until the stream is in the "Suspending" state (i.e. the platform is
+ready for the OS to suspend execution):
+
+dev_attr_store()
+-> store_hibernate()
+  -> pseries_suspend_begin()
+
+3. When a stream id is written to /sys/devices/system/power/hibernate
+(continued). After #2, pseries_suspend_begin() is called once again
+from the pm core:
+
+dev_attr_store()
+-> store_hibernate()
+  -> pm_suspend()
+    -> suspend_devices_and_enter()
+      -> pseries_suspend_begin()
+
+This is redundant because the VASI suspend state is already known to
+be Suspending.
+
+The begin() callback of platform_suspend_ops is optional, so we can
+simply remove that assignment with no loss of function.
+
+Fixes: 32d8ad4e621d ("powerpc/pseries: Partition hibernation support")
+Signed-off-by: Nathan Lynch <nathanl@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20201207215200.1785968-18-nathanl@linux.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/wireless/intersil/orinoco/orinoco_usb.c    | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ arch/powerpc/platforms/pseries/suspend.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/net/wireless/intersil/orinoco/orinoco_usb.c b/drivers/net/wireless/intersil/orinoco/orinoco_usb.c
-index 4e91c74fcfad9..de928938c7a1c 100644
---- a/drivers/net/wireless/intersil/orinoco/orinoco_usb.c
-+++ b/drivers/net/wireless/intersil/orinoco/orinoco_usb.c
-@@ -1224,13 +1224,6 @@ static netdev_tx_t ezusb_xmit(struct sk_buff *skb, struct net_device *dev)
- 	if (skb->len < ETH_HLEN)
- 		goto drop;
+diff --git a/arch/powerpc/platforms/pseries/suspend.c b/arch/powerpc/platforms/pseries/suspend.c
+index 52a021e1f86bf..fd2c090681aa6 100644
+--- a/arch/powerpc/platforms/pseries/suspend.c
++++ b/arch/powerpc/platforms/pseries/suspend.c
+@@ -223,7 +223,6 @@ static struct bus_type suspend_subsys = {
  
--	ctx = ezusb_alloc_ctx(upriv, EZUSB_RID_TX, 0);
--	if (!ctx)
--		goto busy;
--
--	memset(ctx->buf, 0, BULK_BUF_SIZE);
--	buf = ctx->buf->data;
--
- 	tx_control = 0;
- 
- 	err = orinoco_process_xmit_skb(skb, dev, priv, &tx_control,
-@@ -1238,6 +1231,13 @@ static netdev_tx_t ezusb_xmit(struct sk_buff *skb, struct net_device *dev)
- 	if (err)
- 		goto drop;
- 
-+	ctx = ezusb_alloc_ctx(upriv, EZUSB_RID_TX, 0);
-+	if (!ctx)
-+		goto drop;
-+
-+	memset(ctx->buf, 0, BULK_BUF_SIZE);
-+	buf = ctx->buf->data;
-+
- 	{
- 		__le16 *tx_cntl = (__le16 *)buf;
- 		*tx_cntl = cpu_to_le16(tx_control);
+ static const struct platform_suspend_ops pseries_suspend_ops = {
+ 	.valid		= suspend_valid_only_mem,
+-	.begin		= pseries_suspend_begin,
+ 	.prepare_late	= pseries_prepare_late,
+ 	.enter		= pseries_suspend_enter,
+ };
 -- 
 2.27.0
 
