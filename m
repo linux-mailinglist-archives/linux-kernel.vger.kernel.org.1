@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EA1C2E3B8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:51:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA24F2E3E1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:24:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406929AbgL1Nvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:51:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53226 "EHLO mail.kernel.org"
+        id S2503034AbgL1OYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:24:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406890AbgL1Nv3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:51:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BC9E20715;
-        Mon, 28 Dec 2020 13:50:47 +0000 (UTC)
+        id S2502985AbgL1OYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:24:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CCA95206D4;
+        Mon, 28 Dec 2020 14:23:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163447;
-        bh=akz7nByIKvgDJzQgKTh2hbYlCWq3gOtcjvTq+o5Az4o=;
+        s=korg; t=1609165429;
+        bh=eVpHb/0Ha3yjUHnrzVdsEZklN0TL3XpxRz27BA1gRzc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QB4yW1hjiwS8et1yUIgAbK/ICY7hBwB0yaUgFVTjIfVTKxc3y+uiixgIXADW7RRS+
-         aIbaF7WElBhFRh/VY8CvJt0SGr5z7y1/OT9FK9gm8ik6UQvaLM4zMnqndP6SWb277o
-         GdjmcQsPIuM1T8AcA2Zz4GuKpIzqS1y+Po2S5BxU=
+        b=YK/z1N46gtHbF3MIN0rIbb4ipHLNV1i0QMMV7Sea34dRpGKfvFBtTtUV+gmrrrxch
+         e9H2S+4pF4ECMvkIs+Ikf0PtkGHK9XGRzUM2t7EukhK8yVwQZHJPmyQgcGeNhjJ8Fh
+         KHDdjIL+mT+uM2iVZ5pqU6snxtRXSTeFIUNSedbc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 289/453] mm: dont wake kswapd prematurely when watermark boosting is disabled
-Date:   Mon, 28 Dec 2020 13:48:45 +0100
-Message-Id: <20201228124951.113816771@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 5.10 528/717] media: ipu3-cio2: Make the field on subdev format V4L2_FIELD_NONE
+Date:   Mon, 28 Dec 2020 13:48:46 +0100
+Message-Id: <20201228125046.264417667@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,94 +43,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Weiner <hannes@cmpxchg.org>
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
 
-[ Upstream commit 597c892038e08098b17ccfe65afd9677e6979800 ]
+commit 219a8b9c04e54872f9a4d566633fb42f08bcbe2a upstream.
 
-On 2-node NUMA hosts we see bursts of kswapd reclaim and subsequent
-pressure spikes and stalls from cache refaults while there is plenty of
-free memory in the system.
+The ipu3-cio2 doesn't make use of the field and this is reflected in V4L2
+buffers as well as the try format. Do this in active format, too.
 
-Usually, kswapd is woken up when all eligible nodes in an allocation are
-full.  But the code related to watermark boosting can wake kswapd on one
-full node while the other one is mostly empty.  This may be justified to
-fight fragmentation, but is currently unconditionally done whether
-watermark boosting is occurring or not.
+Fixes: c2a6a07afe4a ("media: intel-ipu3: cio2: add new MIPI-CSI2 driver")
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Reviewed-by: Bingbu Cao <bingbu.cao@intel.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: stable@vger.kernel.org # v4.16 and up
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-In our case, many of our workloads' throughput scales with available
-memory, and pure utilization is a more tangible concern than trends
-around longer-term fragmentation.  As a result we generally disable
-watermark boosting.
-
-Wake kswapd only woken when watermark boosting is requested.
-
-Link: https://lkml.kernel.org/r/20201020175833.397286-1-hannes@cmpxchg.org
-Fixes: 1c30844d2dfe ("mm: reclaim small amounts of memory when an external fragmentation event occurs")
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-Acked-by: Mel Gorman <mgorman@suse.de>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/page_alloc.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ drivers/media/pci/intel/ipu3/ipu3-cio2.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 1c869c6b825f3..4357f5475a504 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -2346,12 +2346,12 @@ static bool can_steal_fallback(unsigned int order, int start_mt)
- 	return false;
- }
+--- a/drivers/media/pci/intel/ipu3/ipu3-cio2.c
++++ b/drivers/media/pci/intel/ipu3/ipu3-cio2.c
+@@ -1286,6 +1286,7 @@ static int cio2_subdev_set_fmt(struct v4
+ 	fmt->format.width = min_t(u32, fmt->format.width, CIO2_IMAGE_MAX_WIDTH);
+ 	fmt->format.height = min_t(u32, fmt->format.height,
+ 				   CIO2_IMAGE_MAX_LENGTH);
++	fmt->format.field = V4L2_FIELD_NONE;
  
--static inline void boost_watermark(struct zone *zone)
-+static inline bool boost_watermark(struct zone *zone)
- {
- 	unsigned long max_boost;
- 
- 	if (!watermark_boost_factor)
--		return;
-+		return false;
- 	/*
- 	 * Don't bother in zones that are unlikely to produce results.
- 	 * On small machines, including kdump capture kernels running
-@@ -2359,7 +2359,7 @@ static inline void boost_watermark(struct zone *zone)
- 	 * memory situation immediately.
- 	 */
- 	if ((pageblock_nr_pages * 4) > zone_managed_pages(zone))
--		return;
-+		return false;
- 
- 	max_boost = mult_frac(zone->_watermark[WMARK_HIGH],
- 			watermark_boost_factor, 10000);
-@@ -2373,12 +2373,14 @@ static inline void boost_watermark(struct zone *zone)
- 	 * boosted watermark resulting in a hang.
- 	 */
- 	if (!max_boost)
--		return;
-+		return false;
- 
- 	max_boost = max(pageblock_nr_pages, max_boost);
- 
- 	zone->watermark_boost = min(zone->watermark_boost + pageblock_nr_pages,
- 		max_boost);
-+
-+	return true;
- }
- 
- /*
-@@ -2417,8 +2419,7 @@ static void steal_suitable_fallback(struct zone *zone, struct page *page,
- 	 * likelihood of future fallbacks. Wake kswapd now as the node
- 	 * may be balanced overall and kswapd will not wake naturally.
- 	 */
--	boost_watermark(zone);
--	if (alloc_flags & ALLOC_KSWAPD)
-+	if (boost_watermark(zone) && (alloc_flags & ALLOC_KSWAPD))
- 		set_bit(ZONE_BOOSTED_WATERMARK, &zone->flags);
- 
- 	/* We are not allowed to try stealing from the whole block */
--- 
-2.27.0
-
+ 	mutex_lock(&q->subdev_lock);
+ 	*mbus = fmt->format;
 
 
