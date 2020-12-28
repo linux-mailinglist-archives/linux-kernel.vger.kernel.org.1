@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 399812E42E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:34:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C7F52E3E26
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:25:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406888AbgL1Nv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:51:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52814 "EHLO mail.kernel.org"
+        id S2392066AbgL1OYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:24:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406787AbgL1NvP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:51:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C1F8205CB;
-        Mon, 28 Dec 2020 13:50:58 +0000 (UTC)
+        id S2503114AbgL1OYi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:24:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FFA0229C5;
+        Mon, 28 Dec 2020 14:23:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163459;
-        bh=LPSr3OeM8MJl3yOVD3DmK3SgQLLLiSkciydMM+9pd8w=;
+        s=korg; t=1609165438;
+        bh=3EEhOlEurmIC09uDV5qvb5mP6poKmMSiplCtiTjKOdY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xsJ4DCF3/0Y5RSBWGOLP1cGQDDG3GrOpcesH9JVGnOaRxj2P2tDH4/NA4mExz4Gb0
-         H2k4VnAZ5jQo5YxYNtvd4DM/5TZmqOm5md607lDSO4ML+hIU7unSW/ykl/Ok1+J+5D
-         5OlqEqbVYVr94/BHiNr9BBBqMKJt93Azl5/i2UXQ=
+        b=ga+xZGWjuAOPxtxGaTaPXm46X15wI+iNGIgmAwi5WMqb/Mc9atyviwCLQT1adsykm
+         +m7q6kSvv5JtodJtfPnSnvLbzJIXtOlpJ+0hCQwE0wFzadQm2MohKzePSCBv2bvYNh
+         12q9s4w6igIstYjnh/f13KXIPkjXyQfjkW1cnhHM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 293/453] net: allwinner: Fix some resources leak in the error handling path of the probe and in the remove function
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: [PATCH 5.10 531/717] ACPI: NFIT: Fix input validation of bus-family
 Date:   Mon, 28 Dec 2020 13:48:49 +0100
-Message-Id: <20201228124951.303092806@linuxfoundation.org>
+Message-Id: <20201228125046.408298346@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,64 +39,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Dan Williams <dan.j.williams@intel.com>
 
-[ Upstream commit 322e53d1e2529ae9d501f5e0f20604a79b873aef ]
+commit 9a7e3d7f056831a6193d6d737fb7a26dfdceb04b upstream.
 
-'irq_of_parse_and_map()' should be balanced by a corresponding
-'irq_dispose_mapping()' call. Otherwise, there is some resources leaks.
+Dan reports that smatch thinks userspace can craft an out-of-bound bus
+family number. However, nd_cmd_clear_to_send() blocks all non-zero
+values of bus-family since only the kernel can initiate these commands.
+However, in the speculation path, family is a user controlled array
+index value so mask it for speculation safety. Also, since the
+nd_cmd_clear_to_send() safety is non-obvious and possibly may change in
+the future include input validation as if userspace could get past the
+nd_cmd_clear_to_send() gatekeeper.
 
-Add such a call in the error handling path of the probe function and in the
-remove function.
+Link: http://lore.kernel.org/r/20201111113000.GA1237157@mwanda
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Fixes: 6450ddbd5d8e ("ACPI: NFIT: Define runtime firmware activation commands")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Fixes: 492205050d77 ("net: Add EMAC ethernet driver found on Allwinner A10 SoC's")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/20201214202117.146293-1-christophe.jaillet@wanadoo.fr
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/allwinner/sun4i-emac.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/acpi/nfit/core.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/allwinner/sun4i-emac.c b/drivers/net/ethernet/allwinner/sun4i-emac.c
-index ff318472a3eef..95155a1f9f9dc 100644
---- a/drivers/net/ethernet/allwinner/sun4i-emac.c
-+++ b/drivers/net/ethernet/allwinner/sun4i-emac.c
-@@ -845,13 +845,13 @@ static int emac_probe(struct platform_device *pdev)
- 	db->clk = devm_clk_get(&pdev->dev, NULL);
- 	if (IS_ERR(db->clk)) {
- 		ret = PTR_ERR(db->clk);
--		goto out_iounmap;
-+		goto out_dispose_mapping;
- 	}
- 
- 	ret = clk_prepare_enable(db->clk);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Error couldn't enable clock (%d)\n", ret);
--		goto out_iounmap;
-+		goto out_dispose_mapping;
- 	}
- 
- 	ret = sunxi_sram_claim(&pdev->dev);
-@@ -910,6 +910,8 @@ out_release_sram:
- 	sunxi_sram_release(&pdev->dev);
- out_clk_disable_unprepare:
- 	clk_disable_unprepare(db->clk);
-+out_dispose_mapping:
-+	irq_dispose_mapping(ndev->irq);
- out_iounmap:
- 	iounmap(db->membase);
- out:
-@@ -928,6 +930,7 @@ static int emac_remove(struct platform_device *pdev)
- 	unregister_netdev(ndev);
- 	sunxi_sram_release(&pdev->dev);
- 	clk_disable_unprepare(db->clk);
-+	irq_dispose_mapping(ndev->irq);
- 	iounmap(db->membase);
- 	free_netdev(ndev);
- 
--- 
-2.27.0
-
+--- a/drivers/acpi/nfit/core.c
++++ b/drivers/acpi/nfit/core.c
+@@ -5,6 +5,7 @@
+ #include <linux/list_sort.h>
+ #include <linux/libnvdimm.h>
+ #include <linux/module.h>
++#include <linux/nospec.h>
+ #include <linux/mutex.h>
+ #include <linux/ndctl.h>
+ #include <linux/sysfs.h>
+@@ -478,8 +479,11 @@ int acpi_nfit_ctl(struct nvdimm_bus_desc
+ 		cmd_mask = nd_desc->cmd_mask;
+ 		if (cmd == ND_CMD_CALL && call_pkg->nd_family) {
+ 			family = call_pkg->nd_family;
+-			if (!test_bit(family, &nd_desc->bus_family_mask))
++			if (family > NVDIMM_BUS_FAMILY_MAX ||
++			    !test_bit(family, &nd_desc->bus_family_mask))
+ 				return -EINVAL;
++			family = array_index_nospec(family,
++						    NVDIMM_BUS_FAMILY_MAX + 1);
+ 			dsm_mask = acpi_desc->family_dsm_mask[family];
+ 			guid = to_nfit_bus_uuid(family);
+ 		} else {
 
 
