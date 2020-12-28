@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C0342E38B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:14:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1B822E3FDA
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:46:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732246AbgL1NNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:13:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41386 "EHLO mail.kernel.org"
+        id S2506436AbgL1OpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:45:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731134AbgL1NNV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:13:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E340208BA;
-        Mon, 28 Dec 2020 13:12:39 +0000 (UTC)
+        id S2503097AbgL1OYf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:24:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1D0A229C4;
+        Mon, 28 Dec 2020 14:23:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161160;
-        bh=2Yzs0RJG/rrec0gELQ7GRzXpQJwfWuq9NsNKxqTfAds=;
+        s=korg; t=1609165435;
+        bh=eWZH/hfaH+tT5EoVN3VpfUE3eDmS2frWJRm+T3vsgnE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kjwu1bG+3b1a76+btRUXA82Erz/wvvAvNGBDCBktZaUI8TZB2c4Jrixkr4rJsFcIv
-         L6gnirLuGkpBVSiQnbBdZL6QTEFXsqRBvMWkzyxa3Qi5R059px5YRjQJKjx6w9UfX9
-         81OYL4ujR8t0Eu0BmZ4iSxOxNKjd2ClgAhOLDVpk=
+        b=EvVo4oarC+XtmQxHYFz9BNpsLTlZuKLwcHGtb35mN5CzSoSmjCXVGQF8Cm3pGgm4Z
+         W1XAuOPAjiPIir1RVLMCDeQ9B8EQXU3FwIAo3JfYOZc575xmLKVtUitPsX5Y/Or+dx
+         19prJCXxxKKFdbdwr163tLHKIVHzANLtSDUoTPkw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 122/242] ath10k: Fix an error handling path
-Date:   Mon, 28 Dec 2020 13:48:47 +0100
-Message-Id: <20201228124910.699456307@linuxfoundation.org>
+        stable@vger.kernel.org, stable@kernel.org,
+        Connor McAdams <conmanx360@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.10 530/717] ALSA: hda/ca0132 - Change Input Source enum strings.
+Date:   Mon, 28 Dec 2020 13:48:48 +0100
+Message-Id: <20201228125046.357711192@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Connor McAdams <conmanx360@gmail.com>
 
-[ Upstream commit ed3573bc3943c27d2d8e405a242f87ed14572ca1 ]
+commit 7079f785b50055a32b72eddcb7d9ba5688db24d0 upstream.
 
-If 'ath10k_usb_create()' fails, we should release some resources and report
-an error instead of silently continuing.
+Change the Input Source enumerated control's strings to make it play
+nice with pulseaudio.
 
-Fixes: 4db66499df91 ("ath10k: add initial USB support")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20201122170342.1346011-1-christophe.jaillet@wanadoo.fr
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 7cb9d94c05de9 ("ALSA: hda/ca0132: add alt_select_in/out for R3Di + SBZ")
+Cc: <stable@kernel.org>
+Signed-off-by: Connor McAdams <conmanx360@gmail.com>
+Link: https://lore.kernel.org/r/20201208195223.424753-2-conmanx360@gmail.com
+Link: https://lore.kernel.org/r/20201210173550.2968-2-conmanx360@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/wireless/ath/ath10k/usb.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/pci/hda/patch_ca0132.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/usb.c b/drivers/net/wireless/ath/ath10k/usb.c
-index c64a03f164c0f..f4e6d84bfb91c 100644
---- a/drivers/net/wireless/ath/ath10k/usb.c
-+++ b/drivers/net/wireless/ath/ath10k/usb.c
-@@ -1019,6 +1019,8 @@ static int ath10k_usb_probe(struct usb_interface *interface,
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -95,7 +95,7 @@ enum {
+ };
  
- 	ar_usb = ath10k_usb_priv(ar);
- 	ret = ath10k_usb_create(ar, interface);
-+	if (ret)
-+		goto err;
- 	ar_usb->ar = ar;
- 
- 	ar->dev_id = product_id;
--- 
-2.27.0
-
+ /* Strings for Input Source Enum Control */
+-static const char *const in_src_str[3] = {"Rear Mic", "Line", "Front Mic" };
++static const char *const in_src_str[3] = { "Microphone", "Line In", "Front Microphone" };
+ #define IN_SRC_NUM_OF_INPUTS 3
+ enum {
+ 	REAR_MIC,
 
 
