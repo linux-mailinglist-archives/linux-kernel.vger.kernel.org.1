@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E0F12E3A45
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:35:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC3F2E3BE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:57:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389178AbgL1Nec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:34:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34712 "EHLO mail.kernel.org"
+        id S2405367AbgL1Nzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:55:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391117AbgL1NeN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:34:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9773D207B2;
-        Mon, 28 Dec 2020 13:33:32 +0000 (UTC)
+        id S2405342AbgL1Nzt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:55:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC3F22064B;
+        Mon, 28 Dec 2020 13:55:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162413;
-        bh=9PjyVCDq5sXiKNoxQl59cjH3GA/vvPTm35SIgBKYCww=;
+        s=korg; t=1609163708;
+        bh=Pp1oZr9QjFByhRyQ6o4RCW4FNfSeuKdiEuEVv85WAAg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ncZ4wAsiKDkA714CfOZADOFmzSW/r480unmex2fDBBOGCRZzsqNg3afntSAjg7FKy
-         45uaQFil022MkPk7npkjhMR6idoAjgBURKpYGXnz9c9NKN5N/DXh4/9ZcWrwelLuO7
-         Ja6toScM7c3gE16KL6Zn0c7isaA8XvASaD2mJkso=
+        b=oSNQOzSTF7+R/sFHN3PMnl0YiMfzuVxnZDvBa2qvgbEV7O3WnDQX3Ci997ofOIGHE
+         DUa77cOWrXj3j80iXY8/kqMw6ZzwxDeBqTdKBrwbHXwhbkEcqCKzxzAEqQjhbsSIdS
+         mbll5Y5Y2nwbLAVZWkg/Ywi6sVPOTbCZ8hLzr/GQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chunguang Xu <brookxu@tencent.com>,
-        Theodore Tso <tytso@mit.edu>, stable@kernel.org
-Subject: [PATCH 4.19 297/346] ext4: fix a memory leak of ext4_free_data
-Date:   Mon, 28 Dec 2020 13:50:16 +0100
-Message-Id: <20201228124934.138138222@linuxfoundation.org>
+        stable@vger.kernel.org, Tyrel Datwyler <tyreld@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.4 381/453] powerpc/rtas: Fix typo of ibm,open-errinjct in RTAS filter
+Date:   Mon, 28 Dec 2020 13:50:17 +0100
+Message-Id: <20201228124955.540204716@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,40 +39,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunguang Xu <brookxu@tencent.com>
+From: Tyrel Datwyler <tyreld@linux.ibm.com>
 
-commit cca415537244f6102cbb09b5b90db6ae2c953bdd upstream.
+commit f10881a46f8914428110d110140a455c66bdf27b upstream.
 
-When freeing metadata, we will create an ext4_free_data and
-insert it into the pending free list.  After the current
-transaction is committed, the object will be freed.
+Commit bd59380c5ba4 ("powerpc/rtas: Restrict RTAS requests from userspace")
+introduced the following error when invoking the errinjct userspace
+tool:
 
-ext4_mb_free_metadata() will check whether the area to be freed
-overlaps with the pending free list. If true, return directly. At this
-time, ext4_free_data is leaked.  Fortunately, the probability of this
-problem is small, since it only occurs if the file system is corrupted
-such that a block is claimed by more one inode and those inodes are
-deleted within a single jbd2 transaction.
+  [root@ltcalpine2-lp5 librtas]# errinjct open
+  [327884.071171] sys_rtas: RTAS call blocked - exploit attempt?
+  [327884.071186] sys_rtas: token=0x26, nargs=0 (called by errinjct)
+  errinjct: Could not open RTAS error injection facility
+  errinjct: librtas: open: Unexpected I/O error
 
-Signed-off-by: Chunguang Xu <brookxu@tencent.com>
-Link: https://lore.kernel.org/r/1604764698-4269-8-git-send-email-brookxu@tencent.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Cc: stable@kernel.org
+The entry for ibm,open-errinjct in rtas_filter array has a typo where
+the "j" is omitted in the rtas call name. After fixing this typo the
+errinjct tool functions again as expected.
+
+  [root@ltcalpine2-lp5 linux]# errinjct open
+  RTAS error injection facility open, token = 1
+
+Fixes: bd59380c5ba4 ("powerpc/rtas: Restrict RTAS requests from userspace")
+Cc: stable@vger.kernel.org
+Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20201208195434.8289-1-tyreld@linux.ibm.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/ext4/mballoc.c |    1 +
- 1 file changed, 1 insertion(+)
+ arch/powerpc/kernel/rtas.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -4690,6 +4690,7 @@ ext4_mb_free_metadata(handle_t *handle,
- 				ext4_group_first_block_no(sb, group) +
- 				EXT4_C2B(sbi, cluster),
- 				"Block already on to-be-freed list");
-+			kmem_cache_free(ext4_free_data_cachep, new_entry);
- 			return 0;
- 		}
- 	}
+--- a/arch/powerpc/kernel/rtas.c
++++ b/arch/powerpc/kernel/rtas.c
+@@ -978,7 +978,7 @@ static struct rtas_filter rtas_filters[]
+ 	{ "ibm,display-message", -1, 0, -1, -1, -1 },
+ 	{ "ibm,errinjct", -1, 2, -1, -1, -1, 1024 },
+ 	{ "ibm,close-errinjct", -1, -1, -1, -1, -1 },
+-	{ "ibm,open-errinct", -1, -1, -1, -1, -1 },
++	{ "ibm,open-errinjct", -1, -1, -1, -1, -1 },
+ 	{ "ibm,get-config-addr-info2", -1, -1, -1, -1, -1 },
+ 	{ "ibm,get-dynamic-sensor-state", -1, 1, -1, -1, -1 },
+ 	{ "ibm,get-indices", -1, 2, 3, -1, -1 },
 
 
