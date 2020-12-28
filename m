@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE9E62E6630
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:11:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D1D02E6678
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:14:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388316AbgL1NWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:22:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50950 "EHLO mail.kernel.org"
+        id S2394219AbgL1QM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:12:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388272AbgL1NWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:22:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A44E206ED;
-        Mon, 28 Dec 2020 13:21:50 +0000 (UTC)
+        id S2388310AbgL1NWk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:22:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BA9420719;
+        Mon, 28 Dec 2020 13:21:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161711;
-        bh=FVFgeD6GAnJJ54zu38wHBE18rKu95IbcNPBfUQYdYrY=;
+        s=korg; t=1609161720;
+        bh=ylzqM8KhXK8zCtXRPgixepl+5KPoh8+oPaVmLWVdj4c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aC5pCGG/hOI3zgd30htAh6mBDShM581cY6mzrnfsMwoIv7aAnO3Cg3g+V9IzjMzC6
-         Rk7o/Gec8XMyA1wtd9BahpLTM+E8rj8yVGh/vLl8MwJyn51EYCV2B8yoJcOJB3lZp7
-         R8NNLaxronGx3kDZMFqkVu4DZp4TIfseejm2G8bM=
+        b=ebRNEeXJCyEL1jRl1K52+RfiSarPGwAHoaxrU8EoZcXgpDPqwcefCKYcUSPoTT9pq
+         3EAE4bGcuy+6oUUX6o6jWbMV0ctNpZbYXisav+wPQd7fsHK6MEjrf7MHoFmD7CFPJL
+         FpkxLgBk7y+UIbZVzqHryEBd2pyS0b+uZDUS1dSk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Prarit Bhargava <prarit@redhat.com>,
-        Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 4.19 025/346] x86/apic/vector: Fix ordering in vector assignment
-Date:   Mon, 28 Dec 2020 13:45:44 +0100
-Message-Id: <20201228124920.990187689@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        syzbot <syzkaller@googlegroups.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.19 028/346] mac80211: mesh: fix mesh_pathtbl_init() error path
+Date:   Mon, 28 Dec 2020 13:45:47 +0100
+Message-Id: <20201228124921.139854066@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
 References: <20201228124919.745526410@linuxfoundation.org>
@@ -40,90 +41,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Eric Dumazet <edumazet@google.com>
 
-commit 190113b4c6531c8e09b31d5235f9b5175cbb0f72 upstream.
+[ Upstream commit 905b2032fa424f253d9126271439cc1db2b01130 ]
 
-Prarit reported that depending on the affinity setting the
+If tbl_mpp can not be allocated, we call mesh_table_free(tbl_path)
+while tbl_path rhashtable has not yet been initialized, which causes
+panics.
 
- ' irq $N: Affinity broken due to vector space exhaustion.'
+Simply factorize the rhashtable_init() call into mesh_table_alloc()
 
-message is showing up in dmesg, but the vector space on the CPUs in the
-affinity mask is definitely not exhausted.
+WARNING: CPU: 1 PID: 8474 at kernel/workqueue.c:3040 __flush_work kernel/workqueue.c:3040 [inline]
+WARNING: CPU: 1 PID: 8474 at kernel/workqueue.c:3040 __cancel_work_timer+0x514/0x540 kernel/workqueue.c:3136
+Modules linked in:
+CPU: 1 PID: 8474 Comm: syz-executor663 Not tainted 5.10.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__flush_work kernel/workqueue.c:3040 [inline]
+RIP: 0010:__cancel_work_timer+0x514/0x540 kernel/workqueue.c:3136
+Code: 5d c3 e8 bf ae 29 00 0f 0b e9 f0 fd ff ff e8 b3 ae 29 00 0f 0b 43 80 3c 3e 00 0f 85 31 ff ff ff e9 34 ff ff ff e8 9c ae 29 00 <0f> 0b e9 dc fe ff ff 89 e9 80 e1 07 80 c1 03 38 c1 0f 8c 7d fd ff
+RSP: 0018:ffffc9000165f5a0 EFLAGS: 00010293
+RAX: ffffffff814b7064 RBX: 0000000000000001 RCX: ffff888021c80000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffff888024039ca0 R08: dffffc0000000000 R09: fffffbfff1dd3e64
+R10: fffffbfff1dd3e64 R11: 0000000000000000 R12: 1ffff920002cbebd
+R13: ffff888024039c88 R14: 1ffff11004807391 R15: dffffc0000000000
+FS:  0000000001347880(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000140 CR3: 000000002cc0a000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ rhashtable_free_and_destroy+0x25/0x9c0 lib/rhashtable.c:1137
+ mesh_table_free net/mac80211/mesh_pathtbl.c:69 [inline]
+ mesh_pathtbl_init+0x287/0x2e0 net/mac80211/mesh_pathtbl.c:785
+ ieee80211_mesh_init_sdata+0x2ee/0x530 net/mac80211/mesh.c:1591
+ ieee80211_setup_sdata+0x733/0xc40 net/mac80211/iface.c:1569
+ ieee80211_if_add+0xd5c/0x1cd0 net/mac80211/iface.c:1987
+ ieee80211_add_iface+0x59/0x130 net/mac80211/cfg.c:125
+ rdev_add_virtual_intf net/wireless/rdev-ops.h:45 [inline]
+ nl80211_new_interface+0x563/0xb40 net/wireless/nl80211.c:3855
+ genl_family_rcv_msg_doit net/netlink/genetlink.c:739 [inline]
+ genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+ genl_rcv_msg+0xe4e/0x1280 net/netlink/genetlink.c:800
+ netlink_rcv_skb+0x190/0x3a0 net/netlink/af_netlink.c:2494
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x780/0x930 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x9a8/0xd40 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg net/socket.c:671 [inline]
+ ____sys_sendmsg+0x519/0x800 net/socket.c:2353
+ ___sys_sendmsg net/socket.c:2407 [inline]
+ __sys_sendmsg+0x2b1/0x360 net/socket.c:2440
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Shung-Hsi provided traces and analysis which pinpoints the problem:
-
-The ordering of trying to assign an interrupt vector in
-assign_irq_vector_any_locked() is simply wrong if the interrupt data has a
-valid node assigned. It does:
-
- 1) Try the intersection of affinity mask and node mask
- 2) Try the node mask
- 3) Try the full affinity mask
- 4) Try the full online mask
-
-Obviously #2 and #3 are in the wrong order as the requested affinity
-mask has to take precedence.
-
-In the observed cases #1 failed because the affinity mask did not contain
-CPUs from node 0. That made it allocate a vector from node 0, thereby
-breaking affinity and emitting the misleading message.
-
-Revert the order of #2 and #3 so the full affinity mask without the node
-intersection is tried before actually affinity is broken.
-
-If no node is assigned then only the full affinity mask and if that fails
-the full online mask is tried.
-
-Fixes: d6ffc6ac83b1 ("x86/vector: Respect affinity mask in irq descriptor")
-Reported-by: Prarit Bhargava <prarit@redhat.com>
-Reported-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/87ft4djtyp.fsf@nanos.tec.linutronix.de
+Fixes: 60854fd94573 ("mac80211: mesh: convert path table to rhashtable")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Reviewed-by: Johannes Berg <johannes@sipsolutions.net>
+Link: https://lore.kernel.org/r/20201204162428.2583119-1-eric.dumazet@gmail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- arch/x86/kernel/apic/vector.c |   24 ++++++++++++++----------
- 1 file changed, 14 insertions(+), 10 deletions(-)
+ net/mac80211/mesh_pathtbl.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
---- a/arch/x86/kernel/apic/vector.c
-+++ b/arch/x86/kernel/apic/vector.c
-@@ -274,20 +274,24 @@ static int assign_irq_vector_any_locked(
- 	const struct cpumask *affmsk = irq_data_get_affinity_mask(irqd);
- 	int node = irq_data_get_node(irqd);
+--- a/net/mac80211/mesh_pathtbl.c
++++ b/net/mac80211/mesh_pathtbl.c
+@@ -63,6 +63,7 @@ static struct mesh_table *mesh_table_all
+ 	atomic_set(&newtbl->entries,  0);
+ 	spin_lock_init(&newtbl->gates_lock);
+ 	spin_lock_init(&newtbl->walk_lock);
++	rhashtable_init(&newtbl->rhead, &mesh_rht_params);
  
--	if (node == NUMA_NO_NODE)
--		goto all;
--	/* Try the intersection of @affmsk and node mask */
--	cpumask_and(vector_searchmask, cpumask_of_node(node), affmsk);
--	if (!assign_vector_locked(irqd, vector_searchmask))
--		return 0;
--	/* Try the node mask */
--	if (!assign_vector_locked(irqd, cpumask_of_node(node)))
--		return 0;
--all:
-+	if (node != NUMA_NO_NODE) {
-+		/* Try the intersection of @affmsk and node mask */
-+		cpumask_and(vector_searchmask, cpumask_of_node(node), affmsk);
-+		if (!assign_vector_locked(irqd, vector_searchmask))
-+			return 0;
-+	}
-+
- 	/* Try the full affinity mask */
- 	cpumask_and(vector_searchmask, affmsk, cpu_online_mask);
- 	if (!assign_vector_locked(irqd, vector_searchmask))
- 		return 0;
-+
-+	if (node != NUMA_NO_NODE) {
-+		/* Try the node mask */
-+		if (!assign_vector_locked(irqd, cpumask_of_node(node)))
-+			return 0;
-+	}
-+
- 	/* Try the full online mask */
- 	return assign_vector_locked(irqd, cpu_online_mask);
+ 	return newtbl;
  }
+@@ -786,9 +787,6 @@ int mesh_pathtbl_init(struct ieee80211_s
+ 		goto free_path;
+ 	}
+ 
+-	rhashtable_init(&tbl_path->rhead, &mesh_rht_params);
+-	rhashtable_init(&tbl_mpp->rhead, &mesh_rht_params);
+-
+ 	sdata->u.mesh.mesh_paths = tbl_path;
+ 	sdata->u.mesh.mpp_paths = tbl_mpp;
+ 
 
 
