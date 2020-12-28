@@ -2,187 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B0F82E69ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 19:06:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34B8D2E69F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 19:11:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728640AbgL1SFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 13:05:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728073AbgL1SFH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 13:05:07 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 326FEC0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 10:04:27 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id b2so10504461edm.3
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 10:04:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1XusoXZzXCem561CtyIdzy62jFmYgYhqvsSbO2ZR46c=;
-        b=DSVHc07QIUtK0soe718/PW/vZrg/PwxdrGhBs/wdvz/6NZ5gelqZ4YnCbT352WJC91
-         dh5awmqXzc0qxiZ24nUdgL0rUgk8LcHGFH4YsnmFRABICxIhpHib1j1md3bk8M2WX+7G
-         cJgZESQWMXQESYa91RJzUhAxego4Q8a/mqJvQdMQy1tv/+pr4hdGZXtfHNted17QO6qV
-         EKNdTEwowdGP5ptmy3jCYCCyGGxx+K9GoOdZ5jIC3tC1Ek/H8wIv7ryHuemAtUfsQSYP
-         DucXlyVr0d8JhcPmnQHqv231RHMAgr6XkW72K23FCLd296Ym7zAhF7bkFrRSPqYiondR
-         Uhsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1XusoXZzXCem561CtyIdzy62jFmYgYhqvsSbO2ZR46c=;
-        b=n6YZC50Ze75eOA2C6huok9UA2S+M5bvEAYQaKgZiFPKih/gj/ntj55ITo1oKvgeUcy
-         uB0+o4/ju7BZIH1MGjj14JBEo6Xnz/7MCh665yqSfAjZkDx4ziovzp5plzyru5yR5hdO
-         BSuY6F5VJl0DmjkdZF5YZFGb8bBGi8ymY94t1Wt46ayNX6WyryP+qpln1VevkQjg/oo8
-         edLv/iSadAKOHLlgKKfPd/SLsorZ73XIg4Er8bCqhTYlkHEJ9wfSmrjEvwXlAU69UNrO
-         ykeMasx/2atuvvJSqm9vHCQa6oOxOOoFtMUo9gFt0czAE/k7Qv6i/Q5kORkRfJgXbBis
-         CfLw==
-X-Gm-Message-State: AOAM531kwUFCEe9rqvj0801zneUnvYeaJ6cqpBzcaJ3qKf3OJtAFrLhU
-        /iDNu/wdAkkI4Ra9WGqQ131/LW7qqYIHOcR1NJTeVw==
-X-Google-Smtp-Source: ABdhPJyEbHA18+GopoW3MrvxLDasfYjKRSDmjFduYaqBmPBoPByVJC0UFsKLtmKZ0K20lohnh4X0Ekjt12pIRB8mL3o=
-X-Received: by 2002:a50:fd18:: with SMTP id i24mr43835414eds.146.1609178665726;
- Mon, 28 Dec 2020 10:04:25 -0800 (PST)
+        id S1728656AbgL1SK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 13:10:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33670 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728094AbgL1SK5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 13:10:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1078D22B2A
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 18:10:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609179016;
+        bh=UU5ZJ7wo09eeQJfHCA8zAN6QsAu7KkQNIOEasIFeWmg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=NtSbNU38MzOGGEZybmJrqVrXIkZ7riOP6KLyDWXdcKOzPn2oBkVpWfP68WXcUvTXw
+         QPCvxMa9V7U58EGvYn028q8tNODv/ggjHZYdRKTszI+dI2VtLCOS/w4qSKGYw3UIh0
+         bYN14vc0bpBVomQt5g8Pobew4A1eaZjEyh7ugB5j3AJXzki4F6GHeV/cJ6tzgGs3Xi
+         jccf0pLuMoDyHVDChw9mxOzf/70bEUpgqc8fLJvWl/A0AJV94HAAkLYtXrSnTSxJ9R
+         Voqz0zee4pqZj7x4dfz/8/WNsBT6+tgi33/b34do1ws/GbSSgdpVtXhVSGrPvVgBLL
+         xHvCEkW1rbJ7A==
+Received: by mail-wr1-f41.google.com with SMTP id r7so12078797wrc.5
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 10:10:15 -0800 (PST)
+X-Gm-Message-State: AOAM530+lmY4t+YZe2C0/NJDBdin+JWNV9v38468Yr0uE9qHBiP8POp2
+        Xz+3rN/LkyvZIfBE/efK06e+HXP7Ejfvl0EkcZILJg==
+X-Google-Smtp-Source: ABdhPJxHP2b6pFiKrTNQ13geWSURUQyXlKEfQlURiSpdu2+ttGMTvrMYL94o5eJg5g/pfdfXcAWB78Wu9XbAQX8kJ/o=
+X-Received: by 2002:a5d:62c7:: with SMTP id o7mr336085wrv.257.1609179014608;
+ Mon, 28 Dec 2020 10:10:14 -0800 (PST)
 MIME-Version: 1.0
-References: <20201013013416.390574-1-dima@arista.com> <20201013013416.390574-4-dima@arista.com>
-In-Reply-To: <20201013013416.390574-4-dima@arista.com>
-From:   Brian Geffon <bgeffon@google.com>
-Date:   Mon, 28 Dec 2020 10:03:49 -0800
-Message-ID: <CADyq12ww2SB=x16pdH4LBZJJxMakOWgkR0qX-maUe-RzYZ491Q@mail.gmail.com>
-Subject: Re: [PATCH 3/6] mremap: Don't allow MREMAP_DONTUNMAP on
- special_mappings and aio
-To:     Dmitry Safonov <dima@arista.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
+References: <bf59ecb5487171a852bcc8cdd553ec797aedc485.1609093476.git.luto@kernel.org>
+ <1836294649.3345.1609100294833.JavaMail.zimbra@efficios.com>
+ <CALCETrVdcn2r2Jvd1=-bM=FQ8KbX4aH-v4ytdojL7r7Nb6k8YQ@mail.gmail.com>
+ <20201228102537.GG1551@shell.armlinux.org.uk> <CALCETrWQx0qwthBc5pJBxs2PWAQo-roAz-6g=7HOs+dsiokVsg@mail.gmail.com>
+ <20201228172301.GH1551@shell.armlinux.org.uk>
+In-Reply-To: <20201228172301.GH1551@shell.armlinux.org.uk>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Mon, 28 Dec 2020 10:10:02 -0800
+X-Gmail-Original-Message-ID: <CALCETrWn+LMgnTmrGFf7g_XJAe3MbuWWNhMT6VrujAY0sf-wmw@mail.gmail.com>
+Message-ID: <CALCETrWn+LMgnTmrGFf7g_XJAe3MbuWWNhMT6VrujAY0sf-wmw@mail.gmail.com>
+Subject: Re: [RFC please help] membarrier: Rewrite sync_core_before_usermode()
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        x86 <x86@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Will Deacon <will@kernel.org>, linux-aio@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-mm <linux-mm@kvack.org>
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        stable <stable@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I don't think this situation can ever happen MREMAP_DONTUNMAP is
-already restricted to anonymous mappings (defined as not having
-vm_ops) and vma_to_resize checks that the mapping is anonymous before
-move_vma is called.
+On Mon, Dec 28, 2020 at 9:23 AM Russell King - ARM Linux admin
+<linux@armlinux.org.uk> wrote:
+>
+> On Mon, Dec 28, 2020 at 09:14:23AM -0800, Andy Lutomirski wrote:
+> > On Mon, Dec 28, 2020 at 2:25 AM Russell King - ARM Linux admin
+> > <linux@armlinux.org.uk> wrote:
+> > >
+> > > On Sun, Dec 27, 2020 at 01:36:13PM -0800, Andy Lutomirski wrote:
+> > > > On Sun, Dec 27, 2020 at 12:18 PM Mathieu Desnoyers
+> > > > <mathieu.desnoyers@efficios.com> wrote:
+> > > > >
+> > > > > ----- On Dec 27, 2020, at 1:28 PM, Andy Lutomirski luto@kernel.org wrote:
+> > > > >
+> > > >
+> > > > > >
+> > > > > > I admit that I'm rather surprised that the code worked at all on arm64,
+> > > > > > and I'm suspicious that it has never been very well tested.  My apologies
+> > > > > > for not reviewing this more carefully in the first place.
+> > > > >
+> > > > > Please refer to Documentation/features/sched/membarrier-sync-core/arch-support.txt
+> > > > >
+> > > > > It clearly states that only arm, arm64, powerpc and x86 support the membarrier
+> > > > > sync core feature as of now:
+> > > >
+> > > > Sigh, I missed arm (32).  Russell or ARM folks, what's the right
+> > > > incantation to make the CPU notice instruction changes initiated by
+> > > > other cores on 32-bit ARM?
+> > >
+> > > You need to call flush_icache_range(), since the changes need to be
+> > > flushed from the data cache to the point of unification (of the Harvard
+> > > I and D), and the instruction cache needs to be invalidated so it can
+> > > then see those updated instructions. This will also take care of the
+> > > necessary barriers that the CPU requires for you.
+> >
+> > With what parameters?   From looking at the header, this is for the
+> > case in which the kernel writes some memory and then intends to
+> > execute it.  That's not what membarrier() does at all.  membarrier()
+> > works like this:
+>
+> You didn't specify that you weren't looking at kernel memory.
+>
+> If you're talking about userspace, then the interface you require
+> is flush_icache_user_range(), which does the same as
+> flush_icache_range() but takes userspace addresses. Note that this
+> requires that the memory is currently mapped at those userspace
+> addresses.
+>
+> If that doesn't fit your needs, there isn't an interface to do what
+> you require, and it basically means creating something brand new
+> on every architecture.
+>
+> What you are asking for is not "just a matter of a few instructions".
+> I have stated the required steps to achieve what you require above;
+> that is the minimum when you have non-snooping harvard caches, which
+> the majority of 32-bit ARMs have.
+>
+> > User thread 1:
+> >
+> > write to RWX memory *or* write to an RW alias of an X region.
+> > membarrier(...);
+> > somehow tell thread 2 that we're ready (with a store release, perhaps,
+> > or even just a relaxed store.)
+> >
+> > User thread 2:
+> >
+> > wait for the indication from thread 1.
+> > barrier();
+> > jump to the code.
+> >
+> > membarrier() is, for better or for worse, not given a range of addresses.
+>
+> Then, I'm sorry, it can't work on 32-bit ARM.
 
+Is there a way to flush the *entire* user icache?  If so, and if it
+has reasonable performance, then it could probably be used here.
+Otherwise I'll just send a revert for this whole mechanism on 32-bit
+ARM.
 
-
-On Mon, Oct 12, 2020 at 6:34 PM Dmitry Safonov <dima@arista.com> wrote:
->
-> As kernel expect to see only one of such mappings, any further
-> operations on the VMA-copy may be unexpected by the kernel.
-> Maybe it's being on the safe side, but there doesn't seem to be any
-> expected use-case for this, so restrict it now.
->
-> Fixes: commit e346b3813067 ("mm/mremap: add MREMAP_DONTUNMAP to mremap()")
-> Signed-off-by: Dmitry Safonov <dima@arista.com>
-> ---
->  arch/x86/kernel/cpu/resctrl/pseudo_lock.c | 2 +-
->  fs/aio.c                                  | 5 ++++-
->  include/linux/mm.h                        | 2 +-
->  mm/mmap.c                                 | 6 +++++-
->  mm/mremap.c                               | 2 +-
->  5 files changed, 12 insertions(+), 5 deletions(-)
->
-> diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-> index 0daf2f1cf7a8..e916646adc69 100644
-> --- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-> +++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
-> @@ -1458,7 +1458,7 @@ static int pseudo_lock_dev_release(struct inode *inode, struct file *filp)
->         return 0;
->  }
->
-> -static int pseudo_lock_dev_mremap(struct vm_area_struct *area)
-> +static int pseudo_lock_dev_mremap(struct vm_area_struct *area, unsigned long flags)
->  {
->         /* Not supported */
->         return -EINVAL;
-> diff --git a/fs/aio.c b/fs/aio.c
-> index d5ec30385566..3be3c0f77548 100644
-> --- a/fs/aio.c
-> +++ b/fs/aio.c
-> @@ -324,13 +324,16 @@ static void aio_free_ring(struct kioctx *ctx)
->         }
->  }
->
-> -static int aio_ring_mremap(struct vm_area_struct *vma)
-> +static int aio_ring_mremap(struct vm_area_struct *vma, unsigned long flags)
->  {
->         struct file *file = vma->vm_file;
->         struct mm_struct *mm = vma->vm_mm;
->         struct kioctx_table *table;
->         int i, res = -EINVAL;
->
-> +       if (flags & MREMAP_DONTUNMAP)
-> +               return -EINVAL;
-> +
->         spin_lock(&mm->ioctx_lock);
->         rcu_read_lock();
->         table = rcu_dereference(mm->ioctx_table);
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 16b799a0522c..fd51a4a1f722 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -550,7 +550,7 @@ struct vm_operations_struct {
->         void (*open)(struct vm_area_struct * area);
->         void (*close)(struct vm_area_struct * area);
->         int (*split)(struct vm_area_struct * area, unsigned long addr);
-> -       int (*mremap)(struct vm_area_struct * area);
-> +       int (*mremap)(struct vm_area_struct *area, unsigned long flags);
->         vm_fault_t (*fault)(struct vm_fault *vmf);
->         vm_fault_t (*huge_fault)(struct vm_fault *vmf,
->                         enum page_entry_size pe_size);
-> diff --git a/mm/mmap.c b/mm/mmap.c
-> index bdd19f5b994e..50f853b0ec39 100644
-> --- a/mm/mmap.c
-> +++ b/mm/mmap.c
-> @@ -3372,10 +3372,14 @@ static const char *special_mapping_name(struct vm_area_struct *vma)
->         return ((struct vm_special_mapping *)vma->vm_private_data)->name;
->  }
->
-> -static int special_mapping_mremap(struct vm_area_struct *new_vma)
-> +static int special_mapping_mremap(struct vm_area_struct *new_vma,
-> +                                 unsigned long flags)
->  {
->         struct vm_special_mapping *sm = new_vma->vm_private_data;
->
-> +       if (flags & MREMAP_DONTUNMAP)
-> +               return -EINVAL;
-> +
->         if (WARN_ON_ONCE(current->mm != new_vma->vm_mm))
->                 return -EFAULT;
->
-> diff --git a/mm/mremap.c b/mm/mremap.c
-> index c248f9a52125..898e9818ba6d 100644
-> --- a/mm/mremap.c
-> +++ b/mm/mremap.c
-> @@ -384,7 +384,7 @@ static unsigned long move_vma(struct vm_area_struct *vma,
->         if (moved_len < old_len) {
->                 err = -ENOMEM;
->         } else if (vma->vm_ops && vma->vm_ops->mremap) {
-> -               err = vma->vm_ops->mremap(new_vma);
-> +               err = vma->vm_ops->mremap(new_vma, flags);
->         }
->
->         if (unlikely(err)) {
-> --
-> 2.28.0
->
+--Andy
