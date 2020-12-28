@@ -2,208 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 996F22E6B6A
+	by mail.lfdr.de (Postfix) with ESMTP id 09CEA2E6B69
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:06:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731096AbgL1W4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1731113AbgL1W4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 28 Dec 2020 17:56:00 -0500
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:41407 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729423AbgL1UbG (ORCPT
+Received: from mail.efficios.com ([167.114.26.124]:52552 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729425AbgL1UdT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 15:31:06 -0500
-X-Originating-IP: 86.202.109.140
-Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id B82C6E0005;
-        Mon, 28 Dec 2020 20:30:23 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        dmaengine@vger.kernel.org
-Subject: [PATCH] dmaengine: at_hdmac: remove platform data header
-Date:   Mon, 28 Dec 2020 21:30:21 +0100
-Message-Id: <20201228203022.2674133-1-alexandre.belloni@bootlin.com>
-X-Mailer: git-send-email 2.29.2
+        Mon, 28 Dec 2020 15:33:19 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 24A90275DE1;
+        Mon, 28 Dec 2020 15:32:37 -0500 (EST)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id jW0t28t_x-DE; Mon, 28 Dec 2020 15:32:36 -0500 (EST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 7BEC1275EB9;
+        Mon, 28 Dec 2020 15:32:36 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 7BEC1275EB9
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1609187556;
+        bh=AKY5Enr3DlUeN+b9dnxNzb7PN699ojwjquviv9CqJRI=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=T0zhQM6Ke4mxofKZimPJWDRHtnizyFX8oRLDkBCW9wtYMMP9yFiyskEM0di0EVLkb
+         6zCF0bjsxhXwFJNvepOSQV98Mn2EpzYtz/mJrhvZHFWRTOttKVohBEvc32jQf7nz/j
+         WVktAsDGPgUoAx0KIYFsIqNVDcX/7s9G/dHxlkVUU+fjmS2YiZA9M6r4wADXZmJV7/
+         IdS8TPQwbZlfRUYN2peKZTMFH2boyO8tktYbazqKngGOHjl0Bz+RA+TG+mSLE7CCFD
+         BYrGS9RLzho7ssoPJS75F7/79nZP6itxFY9e7caVEQApNi1mbhkG7MtLQgR3Up71vB
+         l05ZSkBjeEz9A==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id i8O4-r9lLZyl; Mon, 28 Dec 2020 15:32:36 -0500 (EST)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 5214F275F9F;
+        Mon, 28 Dec 2020 15:32:36 -0500 (EST)
+Date:   Mon, 28 Dec 2020 15:32:36 -0500 (EST)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Andy Lutomirski <luto@kernel.org>, paulmck <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     "Russell King, ARM Linux" <linux@armlinux.org.uk>,
+        Jann Horn <jannh@google.com>, Will Deacon <will@kernel.org>,
+        x86 <x86@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        stable <stable@vger.kernel.org>
+Message-ID: <1086654515.3607.1609187556216.JavaMail.zimbra@efficios.com>
+In-Reply-To: <CALCETrVpvrBufrJgXNY=ogtZQLo7zgxQmD7k9eVCFjcdcvarmA@mail.gmail.com>
+References: <bf59ecb5487171a852bcc8cdd553ec797aedc485.1609093476.git.luto@kernel.org> <1836294649.3345.1609100294833.JavaMail.zimbra@efficios.com> <CALCETrVdcn2r2Jvd1=-bM=FQ8KbX4aH-v4ytdojL7r7Nb6k8YQ@mail.gmail.com> <20201228102537.GG1551@shell.armlinux.org.uk> <CALCETrWQx0qwthBc5pJBxs2PWAQo-roAz-6g=7HOs+dsiokVsg@mail.gmail.com> <CAG48ez0YZ_iy6qZpdGUj38wqeg_NzLHHhU-mBCBf5hcopYGVPg@mail.gmail.com> <20201228190852.GI1551@shell.armlinux.org.uk> <CALCETrVpvrBufrJgXNY=ogtZQLo7zgxQmD7k9eVCFjcdcvarmA@mail.gmail.com>
+Subject: Re: [RFC please help] membarrier: Rewrite
+ sync_core_before_usermode()
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3991 (ZimbraWebClient - FF84 (Linux)/8.8.15_GA_3980)
+Thread-Topic: membarrier: Rewrite sync_core_before_usermode()
+Thread-Index: +s6nbevyhmTVOSvju28y1ZNMIc+UYg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-linux/platform_data/dma-atmel.h is only used by the at_hdmac driver. Move
-the CFG bits definitions back in at_hdmac_regs.h and the remaining
-definitions in the driver.
+----- On Dec 28, 2020, at 2:44 PM, Andy Lutomirski luto@kernel.org wrote:
 
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
----
- MAINTAINERS                             |  1 -
- drivers/dma/at_hdmac.c                  | 19 ++++++++
- drivers/dma/at_hdmac_regs.h             | 28 ++++++++++--
- include/linux/platform_data/dma-atmel.h | 61 -------------------------
- 4 files changed, 44 insertions(+), 65 deletions(-)
- delete mode 100644 include/linux/platform_data/dma-atmel.h
+> On Mon, Dec 28, 2020 at 11:09 AM Russell King - ARM Linux admin
+> <linux@armlinux.org.uk> wrote:
+>>
+>> On Mon, Dec 28, 2020 at 07:29:34PM +0100, Jann Horn wrote:
+>> > After chatting with rmk about this (but without claiming that any of
+>> > this is his opinion), based on the manpage, I think membarrier()
+>> > currently doesn't really claim to be synchronizing caches? It just
+>> > serializes cores. So arguably if userspace wants to use membarrier()
+>> > to synchronize code changes, userspace should first do the code
+>> > change, then flush icache as appropriate for the architecture, and
+>> > then do the membarrier() to ensure that the old code is unused?
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 546aa66428c9..0d62310a31f8 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11604,7 +11604,6 @@ F:	drivers/dma/at_hdmac.c
- F:	drivers/dma/at_hdmac_regs.h
- F:	drivers/dma/at_xdmac.c
- F:	include/dt-bindings/dma/at91.h
--F:	include/linux/platform_data/dma-atmel.h
- 
- MICROCHIP AT91 SERIAL DRIVER
- M:	Richard Genoud <richard.genoud@gmail.com>
-diff --git a/drivers/dma/at_hdmac.c b/drivers/dma/at_hdmac.c
-index 7eaee5b705b1..30ae36124b1d 100644
---- a/drivers/dma/at_hdmac.c
-+++ b/drivers/dma/at_hdmac.c
-@@ -54,6 +54,25 @@ module_param(init_nr_desc_per_channel, uint, 0644);
- MODULE_PARM_DESC(init_nr_desc_per_channel,
- 		 "initial descriptors per channel (default: 64)");
- 
-+/**
-+ * struct at_dma_platform_data - Controller configuration parameters
-+ * @nr_channels: Number of channels supported by hardware (max 8)
-+ * @cap_mask: dma_capability flags supported by the platform
-+ */
-+struct at_dma_platform_data {
-+	unsigned int	nr_channels;
-+	dma_cap_mask_t  cap_mask;
-+};
-+
-+/**
-+ * struct at_dma_slave - Controller-specific information about a slave
-+ * @dma_dev: required DMA master device
-+ * @cfg: Platform-specific initializer for the CFG register
-+ */
-+struct at_dma_slave {
-+	struct device		*dma_dev;
-+	u32			cfg;
-+};
- 
- /* prototypes */
- static dma_cookie_t atc_tx_submit(struct dma_async_tx_descriptor *tx);
-diff --git a/drivers/dma/at_hdmac_regs.h b/drivers/dma/at_hdmac_regs.h
-index 80fc2fe8c77e..4d1ebc040031 100644
---- a/drivers/dma/at_hdmac_regs.h
-+++ b/drivers/dma/at_hdmac_regs.h
-@@ -7,8 +7,6 @@
- #ifndef AT_HDMAC_REGS_H
- #define	AT_HDMAC_REGS_H
- 
--#include <linux/platform_data/dma-atmel.h>
--
- #define	AT_DMA_MAX_NR_CHANNELS	8
- 
- 
-@@ -148,7 +146,31 @@
- #define	ATC_AUTO		(0x1 << 31)	/* Auto multiple buffer tx enable */
- 
- /* Bitfields in CFG */
--/* are in at_hdmac.h */
-+#define ATC_PER_MSB(h)	((0x30U & (h)) >> 4)	/* Extract most significant bits of a handshaking identifier */
-+
-+#define	ATC_SRC_PER(h)		(0xFU & (h))	/* Channel src rq associated with periph handshaking ifc h */
-+#define	ATC_DST_PER(h)		((0xFU & (h)) <<  4)	/* Channel dst rq associated with periph handshaking ifc h */
-+#define	ATC_SRC_REP		(0x1 <<  8)	/* Source Replay Mod */
-+#define	ATC_SRC_H2SEL		(0x1 <<  9)	/* Source Handshaking Mod */
-+#define		ATC_SRC_H2SEL_SW	(0x0 <<  9)
-+#define		ATC_SRC_H2SEL_HW	(0x1 <<  9)
-+#define	ATC_SRC_PER_MSB(h)	(ATC_PER_MSB(h) << 10)	/* Channel src rq (most significant bits) */
-+#define	ATC_DST_REP		(0x1 << 12)	/* Destination Replay Mod */
-+#define	ATC_DST_H2SEL		(0x1 << 13)	/* Destination Handshaking Mod */
-+#define		ATC_DST_H2SEL_SW	(0x0 << 13)
-+#define		ATC_DST_H2SEL_HW	(0x1 << 13)
-+#define	ATC_DST_PER_MSB(h)	(ATC_PER_MSB(h) << 14)	/* Channel dst rq (most significant bits) */
-+#define	ATC_SOD			(0x1 << 16)	/* Stop On Done */
-+#define	ATC_LOCK_IF		(0x1 << 20)	/* Interface Lock */
-+#define	ATC_LOCK_B		(0x1 << 21)	/* AHB Bus Lock */
-+#define	ATC_LOCK_IF_L		(0x1 << 22)	/* Master Interface Arbiter Lock */
-+#define		ATC_LOCK_IF_L_CHUNK	(0x0 << 22)
-+#define		ATC_LOCK_IF_L_BUFFER	(0x1 << 22)
-+#define	ATC_AHB_PROT_MASK	(0x7 << 24)	/* AHB Protection */
-+#define	ATC_FIFOCFG_MASK	(0x3 << 28)	/* FIFO Request Configuration */
-+#define		ATC_FIFOCFG_LARGESTBURST	(0x0 << 28)
-+#define		ATC_FIFOCFG_HALFFIFO		(0x1 << 28)
-+#define		ATC_FIFOCFG_ENOUGHSPACE		(0x2 << 28)
- 
- /* Bitfields in SPIP */
- #define	ATC_SPIP_HOLE(x)	(0xFFFFU & (x))
-diff --git a/include/linux/platform_data/dma-atmel.h b/include/linux/platform_data/dma-atmel.h
-deleted file mode 100644
-index 069637e6004f..000000000000
---- a/include/linux/platform_data/dma-atmel.h
-+++ /dev/null
-@@ -1,61 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-or-later */
--/*
-- * Header file for the Atmel AHB DMA Controller driver
-- *
-- * Copyright (C) 2008 Atmel Corporation
-- */
--#ifndef AT_HDMAC_H
--#define AT_HDMAC_H
--
--#include <linux/dmaengine.h>
--
--/**
-- * struct at_dma_platform_data - Controller configuration parameters
-- * @nr_channels: Number of channels supported by hardware (max 8)
-- * @cap_mask: dma_capability flags supported by the platform
-- */
--struct at_dma_platform_data {
--	unsigned int	nr_channels;
--	dma_cap_mask_t  cap_mask;
--};
--
--/**
-- * struct at_dma_slave - Controller-specific information about a slave
-- * @dma_dev: required DMA master device
-- * @cfg: Platform-specific initializer for the CFG register
-- */
--struct at_dma_slave {
--	struct device		*dma_dev;
--	u32			cfg;
--};
--
--
--/* Platform-configurable bits in CFG */
--#define ATC_PER_MSB(h)	((0x30U & (h)) >> 4)	/* Extract most significant bits of a handshaking identifier */
--
--#define	ATC_SRC_PER(h)		(0xFU & (h))	/* Channel src rq associated with periph handshaking ifc h */
--#define	ATC_DST_PER(h)		((0xFU & (h)) <<  4)	/* Channel dst rq associated with periph handshaking ifc h */
--#define	ATC_SRC_REP		(0x1 <<  8)	/* Source Replay Mod */
--#define	ATC_SRC_H2SEL		(0x1 <<  9)	/* Source Handshaking Mod */
--#define		ATC_SRC_H2SEL_SW	(0x0 <<  9)
--#define		ATC_SRC_H2SEL_HW	(0x1 <<  9)
--#define	ATC_SRC_PER_MSB(h)	(ATC_PER_MSB(h) << 10)	/* Channel src rq (most significant bits) */
--#define	ATC_DST_REP		(0x1 << 12)	/* Destination Replay Mod */
--#define	ATC_DST_H2SEL		(0x1 << 13)	/* Destination Handshaking Mod */
--#define		ATC_DST_H2SEL_SW	(0x0 << 13)
--#define		ATC_DST_H2SEL_HW	(0x1 << 13)
--#define	ATC_DST_PER_MSB(h)	(ATC_PER_MSB(h) << 14)	/* Channel dst rq (most significant bits) */
--#define	ATC_SOD			(0x1 << 16)	/* Stop On Done */
--#define	ATC_LOCK_IF		(0x1 << 20)	/* Interface Lock */
--#define	ATC_LOCK_B		(0x1 << 21)	/* AHB Bus Lock */
--#define	ATC_LOCK_IF_L		(0x1 << 22)	/* Master Interface Arbiter Lock */
--#define		ATC_LOCK_IF_L_CHUNK	(0x0 << 22)
--#define		ATC_LOCK_IF_L_BUFFER	(0x1 << 22)
--#define	ATC_AHB_PROT_MASK	(0x7 << 24)	/* AHB Protection */
--#define	ATC_FIFOCFG_MASK	(0x3 << 28)	/* FIFO Request Configuration */
--#define		ATC_FIFOCFG_LARGESTBURST	(0x0 << 28)
--#define		ATC_FIFOCFG_HALFFIFO		(0x1 << 28)
--#define		ATC_FIFOCFG_ENOUGHSPACE		(0x2 << 28)
--
--
--#endif /* AT_HDMAC_H */
+^ exactly, yes.
+
+>> >
+>> > For 32-bit arm, rmk pointed out that that would be the cacheflush()
+>> > syscall. That might cause you to end up with two IPIs instead of one
+>> > in total, but we probably don't care _that_ much about extra IPIs on
+>> > 32-bit arm?
+
+This was the original thinking, yes. The cacheflush IPI will flush specific
+regions of code, and the membarrier IPI issues context synchronizing
+instructions.
+
+Architectures with coherent i/d caches don't need the cacheflush step.
+
+>> >
+>> > For arm64, I believe userspace can flush icache across the entire
+>> > system with some instructions from userspace - "DC CVAU" followed by
+>> > "DSB ISH", or something like that, I think? (See e.g.
+>> > compat_arm_syscall(), the arm64 compat code that implements the 32-bit
+>> > arm cacheflush() syscall.)
+>>
+>> Note that the ARM cacheflush syscall calls flush_icache_user_range()
+>> over the range of addresses that userspace has passed - it's intention
+>> since day one is to support cases where userspace wants to change
+>> executable code.
+>>
+>> It will issue the appropriate write-backs to the data cache (DCCMVAU),
+>> the invalidates to the instruction cache (ICIMVAU), invalidate the
+>> branch target buffer (BPIALLIS or BPIALL as appropriate), and issue
+>> the appropriate barriers (DSB ISHST, ISB).
+>>
+>> Note that neither flush_icache_user_range() nor flush_icache_range()
+>> result in IPIs; cache operations are broadcast across all CPUs (which
+>> is one of the minimums we require for SMP systems.)
+
+But the ISB AFAIU is not a broadcast. Based on
+https://developer.arm.com/documentation/ddi0406/c/Appendices/Barrier-Litmus-Tests/Cache-and-TLB-maintenance-operations-and-barriers/Instruction-cache-maintenance-operations
+
+"Ensuring the visibility of updates to instructions for a multiprocessor"
+
+the ISB needs to be issued on each processor in a multiprocessor system.
+This is where membarrier sync-core comes handy.
+
+>>
+>> Now, that all said, I think the question that has to be asked is...
+>>
+>>         What is the basic purpose of membarrier?
+
+For basic membarrier (not sync-core), the purpose is to provide memory
+barriers across a given set of threads.
+
+For sync-core membarrier, the purpose is to guarantee context synchronizing
+instructions on all threads belonging to the same mm.
+
+>>
+>> Is the purpose of it to provide memory barriers, or is it to provide
+>> memory coherence?
+
+The purpose has never been to provide any kind of memory coherence, as
+this would duplicate what is already achieved by other architecture-specific
+system calls.
+
+>>
+>> If it's the former and not the latter, then cache flushes are out of
+>> scope, and expecting memory written to be visible to the instruction
+>> stream is totally out of scope of the membarrier interface, whether
+>> or not the writes happen on the same or a different CPU to the one
+>> executing the rewritten code.
+>>
+>> The documentation in the kernel does not seem to describe what it's
+>> supposed to be doing - the only thing I could find is this:
+>> Documentation/features/sched/membarrier-sync-core/arch-support.txt
+>> which describes it as "arch supports core serializing membarrier"
+>> whatever that means.
+
+It's described in include/uapi/linux/membarrier.h.
+
+>>
+>> Seems to be the standard and usual case of utterly poor to non-existent
+>> documentation within the kernel tree, or even a pointer to where any
+>> useful documentation can be found.
+>>
+>> Reading the membarrier(2) man page, I find nothing in there that talks
+>> about any kind of cache coherency for self-modifying code - it only
+>> seems to be about _barriers_ and nothing more, and barriers alone do
+>> precisely nothing to save you from non-coherent Harvard caches.
+
+There is no mention of cache coherency because membarrier does not
+do anything wrt cache coherency. We should perhaps explicitly point
+it out though.
+
+>>
+>> So, either Andy has a misunderstanding, or the man page is wrong, or
+>> my rudimentary understanding of what membarrier is supposed to be
+>> doing is wrong...
+> 
+> Look at the latest man page:
+> 
+> https://man7.org/linux/man-pages/man2/membarrier.2.html
+> 
+> for MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE.  The result may not be
+> all that enlightening.
+
+As described in the membarrier(2) man page and in include/uapi/linux/membarrier.h,
+membarrier MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE guarantees core serializing
+instructions in addition to the memory ordering guaranteed by MEMBARRIER_CMD_PRIVATE_EXPEDITED.
+
+It does not guarantee anything wrt i/d cache coherency. I initially considered
+adding such guarantees when we introduced membarrier sync-core, but decided
+against it because it would basically replicate what architectures already
+expose to user-space, e.g. flush_icache_user_range on arm32.
+
+So between code modification and allowing other threads to jump to that code,
+it should be expected that architectures without coherent i/d cache will need
+to flush caches to ensure coherency *and* to issue membarrier to make sure
+core serializing instructions will be issued by every thread acting on the
+same mm either immediately by means of the IPI, or before they return to
+user-space if they do not happen to be currently running when the membarrier
+system call is invoked.
+
+Hoping this clarifies things. I suspect we will need to clarify documentation
+about what membarrier *does not* guarantee, given that you mistakenly expected
+membarrier to take care of cache flushing.
+
+Thanks,
+
+Mathieu
+
 -- 
-2.29.2
-
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
