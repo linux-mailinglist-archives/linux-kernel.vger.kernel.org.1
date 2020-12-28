@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 669EB2E4038
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:49:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98F282E386A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:11:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392429AbgL1Otq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:49:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57246 "EHLO mail.kernel.org"
+        id S1729577AbgL1NKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:10:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37532 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437978AbgL1OVi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:21:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DD62208B6;
-        Mon, 28 Dec 2020 14:20:57 +0000 (UTC)
+        id S1731268AbgL1NKB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:10:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2BBD2076D;
+        Mon, 28 Dec 2020 13:09:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165257;
-        bh=+uMgDeA9w8OnEA/mW5D3fzp7g8ppSCKBUrhmboa7jSE=;
+        s=korg; t=1609160985;
+        bh=32N3iBa7n5TJdAl+gIU8U6PfxFqNxfabR2e5sxFeG04=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VgRglz3URPCL0EZ/g0KnZHe/PcPSsCdtmTwYJCXuo6A/Q5z1nnJebJFxGXBdyUbDb
-         3M8Op2XEGmM6TkpPq+0UO0iLZSU7z+xgK87/1jqrIaBjExxsJxBKbaMJsFZ6mp4biF
-         nCLrEeRx1s1FltuvLqUyvcJyflkt5s7ASZ15Zxdk=
+        b=tWNvXQkb1CWulN4nuGmwAunYPIZnZPlTvKIWCzteUy6L2cU9la3Wbv8gLbX/9W4Ac
+         l+vTWPA1vtq1m9WDH/eQipAxy6SxWLs7yiXs69mjcQkDqGu1y7O7mOrGM/T7uZtWj0
+         vZL3sMXXQaLaByOKF4CJa6bC+TKjIwa8p3iGS9K8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 468/717] net: allwinner: Fix some resources leak in the error handling path of the probe and in the remove function
+        stable@vger.kernel.org, Antti Palosaari <crope@iki.fi>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        syzbot+c60ddb60b685777d9d59@syzkaller.appspotmail.com
+Subject: [PATCH 4.14 061/242] media: msi2500: assign SPI bus number dynamically
 Date:   Mon, 28 Dec 2020 13:47:46 +0100
-Message-Id: <20201228125043.392973964@linuxfoundation.org>
+Message-Id: <20201228124907.683677510@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,64 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Antti Palosaari <crope@iki.fi>
 
-[ Upstream commit 322e53d1e2529ae9d501f5e0f20604a79b873aef ]
+commit 9c60cc797cf72e95bb39f32316e9f0e5f85435f9 upstream.
 
-'irq_of_parse_and_map()' should be balanced by a corresponding
-'irq_dispose_mapping()' call. Otherwise, there is some resources leaks.
+SPI bus number must be assigned dynamically for each device, otherwise it
+will crash when multiple devices are plugged to system.
 
-Add such a call in the error handling path of the probe function and in the
-remove function.
+Reported-and-tested-by: syzbot+c60ddb60b685777d9d59@syzkaller.appspotmail.com
 
-Fixes: 492205050d77 ("net: Add EMAC ethernet driver found on Allwinner A10 SoC's")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/20201214202117.146293-1-christophe.jaillet@wanadoo.fr
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Antti Palosaari <crope@iki.fi>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/ethernet/allwinner/sun4i-emac.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/media/usb/msi2500/msi2500.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/allwinner/sun4i-emac.c b/drivers/net/ethernet/allwinner/sun4i-emac.c
-index 862ea44beea77..5ed80d9a6b9fe 100644
---- a/drivers/net/ethernet/allwinner/sun4i-emac.c
-+++ b/drivers/net/ethernet/allwinner/sun4i-emac.c
-@@ -828,13 +828,13 @@ static int emac_probe(struct platform_device *pdev)
- 	db->clk = devm_clk_get(&pdev->dev, NULL);
- 	if (IS_ERR(db->clk)) {
- 		ret = PTR_ERR(db->clk);
--		goto out_iounmap;
-+		goto out_dispose_mapping;
+--- a/drivers/media/usb/msi2500/msi2500.c
++++ b/drivers/media/usb/msi2500/msi2500.c
+@@ -1250,7 +1250,7 @@ static int msi2500_probe(struct usb_inte
  	}
  
- 	ret = clk_prepare_enable(db->clk);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Error couldn't enable clock (%d)\n", ret);
--		goto out_iounmap;
-+		goto out_dispose_mapping;
- 	}
- 
- 	ret = sunxi_sram_claim(&pdev->dev);
-@@ -893,6 +893,8 @@ out_release_sram:
- 	sunxi_sram_release(&pdev->dev);
- out_clk_disable_unprepare:
- 	clk_disable_unprepare(db->clk);
-+out_dispose_mapping:
-+	irq_dispose_mapping(ndev->irq);
- out_iounmap:
- 	iounmap(db->membase);
- out:
-@@ -911,6 +913,7 @@ static int emac_remove(struct platform_device *pdev)
- 	unregister_netdev(ndev);
- 	sunxi_sram_release(&pdev->dev);
- 	clk_disable_unprepare(db->clk);
-+	irq_dispose_mapping(ndev->irq);
- 	iounmap(db->membase);
- 	free_netdev(ndev);
- 
--- 
-2.27.0
-
+ 	dev->master = master;
+-	master->bus_num = 0;
++	master->bus_num = -1;
+ 	master->num_chipselect = 1;
+ 	master->transfer_one_message = msi2500_transfer_one_message;
+ 	spi_master_set_devdata(master, dev);
 
 
