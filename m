@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66C322E38BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:14:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25B2B2E39E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:30:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732446AbgL1NOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:14:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42256 "EHLO mail.kernel.org"
+        id S2390100AbgL1N3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:29:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732414AbgL1NOK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:14:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E1BB0207C9;
-        Mon, 28 Dec 2020 13:13:28 +0000 (UTC)
+        id S2390019AbgL1N27 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:28:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2FC022AAA;
+        Mon, 28 Dec 2020 13:28:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161209;
-        bh=BjVg7GPqvOLUZIVtyF8T536Iy9ABBchy94XzeG0ov5c=;
+        s=korg; t=1609162124;
+        bh=N7oWq1TSHJJXcpLjjSC+29H7BiQDeXX0UwpvMvsDtnI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gEU5HXgCjluc8TI/GfYQdtPoYA9z8m7Gf+7T05S82Ax0HHqujcZDq0+eq/s6cjrfO
-         bdDVVHBpCXIvIiKX0a0JgLk9Ozke4cq3jceqZ6Df6dTLANRWQRt4YoQ9Hya4P6Gvz+
-         93bUi2eqlSrF3534rBedCDOcvHOGYieZUlhqA0Xc=
+        b=LGwdwxbWjjFkxq+XdzIgS6TAmbR8CGNLqWQzi9kefcV4WQoAuJXYPzXqQqMXI8eXG
+         nRf7l3t+1CqUU/j8vnNFNy4g0GGDcShebzxPNsJn8r+p/eDh6oLR3U0v45wx/J7KQK
+         W2Xoli2M7IPv0IBHYqKxmAcRRlavWFgMdnYUdg4I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Cristian Birsan <cristian.birsan@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 109/242] ARM: dts: at91: sama5d3_xplained: add pincontrol for USB Host
-Date:   Mon, 28 Dec 2020 13:48:34 +0100
-Message-Id: <20201228124910.060083822@linuxfoundation.org>
+Subject: [PATCH 4.19 196/346] ARM: dts: at91: sama5d2: map securam as device
+Date:   Mon, 28 Dec 2020 13:48:35 +0100
+Message-Id: <20201228124929.269707945@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,48 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cristian Birsan <cristian.birsan@microchip.com>
+From: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-[ Upstream commit e1062fa7292f1e3744db0a487c4ac0109e09b03d ]
+[ Upstream commit 9b5dcc8d427e2bcb84c49eb03ffefe11e7537a55 ]
 
-The pincontrol node is needed for USB Host since Linux v5.7-rc1. Without
-it the driver probes but VBus is not powered because of wrong pincontrol
-configuration.
+Due to strobe signal not being propagated from CPU to securam
+the securam needs to be mapped as device or strongly ordered memory
+to work properly. Otherwise, updating to one offset may affect
+the adjacent locations in securam.
 
-Fixes: b7c2b61570798 ("ARM: at91: add Atmel's SAMA5D3 Xplained board")
-Signed-off-by: Cristian Birsan <cristian.birsan@microchip.com>
+Fixes: d4ce5f44d4409 ("ARM: dts: at91: sama5d2: Add securam node")
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Acked-by: Ludovic Desroches <ludovic.desroches@microchip.com>
-Link: https://lore.kernel.org/r/20201118120019.1257580-4-cristian.birsan@microchip.com
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Link: https://lore.kernel.org/r/1606903025-14197-3-git-send-email-claudiu.beznea@microchip.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/at91-sama5d3_xplained.dts | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/arm/boot/dts/sama5d2.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/at91-sama5d3_xplained.dts b/arch/arm/boot/dts/at91-sama5d3_xplained.dts
-index 3af088d2cba79..ce059f9eaa7d9 100644
---- a/arch/arm/boot/dts/at91-sama5d3_xplained.dts
-+++ b/arch/arm/boot/dts/at91-sama5d3_xplained.dts
-@@ -231,6 +231,11 @@
- 						atmel,pins =
- 							<AT91_PIOE 9 AT91_PERIPH_GPIO AT91_PINCTRL_DEGLITCH>;	/* PE9, conflicts with A9 */
- 					};
-+					pinctrl_usb_default: usb_default {
-+						atmel,pins =
-+							<AT91_PIOE 3 AT91_PERIPH_GPIO AT91_PINCTRL_NONE
-+							 AT91_PIOE 4 AT91_PERIPH_GPIO AT91_PINCTRL_NONE>;
-+					};
- 				};
+diff --git a/arch/arm/boot/dts/sama5d2.dtsi b/arch/arm/boot/dts/sama5d2.dtsi
+index b405992eb6016..d57be54f5df9c 100644
+--- a/arch/arm/boot/dts/sama5d2.dtsi
++++ b/arch/arm/boot/dts/sama5d2.dtsi
+@@ -1247,6 +1247,7 @@
+ 				clocks = <&securam_clk>;
+ 				#address-cells = <1>;
+ 				#size-cells = <1>;
++				no-memory-wc;
+ 				ranges = <0 0xf8044000 0x1420>;
  			};
- 		};
-@@ -248,6 +253,8 @@
- 					   &pioE 3 GPIO_ACTIVE_LOW
- 					   &pioE 4 GPIO_ACTIVE_LOW
- 					  >;
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&pinctrl_usb_default>;
- 			status = "okay";
- 		};
  
 -- 
 2.27.0
