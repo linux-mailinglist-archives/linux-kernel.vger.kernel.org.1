@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D88A2E3819
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:06:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 159F62E42F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:34:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730587AbgL1NFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:05:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32882 "EHLO mail.kernel.org"
+        id S2391524AbgL1Nwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:52:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54290 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730530AbgL1NE4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:04:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80EDC22573;
-        Mon, 28 Dec 2020 13:04:15 +0000 (UTC)
+        id S2407115AbgL1Nwa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:52:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62A002072C;
+        Mon, 28 Dec 2020 13:51:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160656;
-        bh=S5JGl4x/owV7kIzszVzzfyWvbrx0SEppAjrlvDBEBJ8=;
+        s=korg; t=1609163508;
+        bh=bmNgRTxWozi8gjgcCMuA96egiw+HgS/DBgxVB2JDmyg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pmci/nSet3BXcBK65lB93Bf86XPBHK/ZrZNIYK+DZM6rckIq7f4G5wxWFeX9X3LCX
-         G5A7O7IL+G2OHVI/gUj6eavNjlc6VzGssCCv9NB55WUPmJS8qsJMjO+x+PjqFH1u+I
-         7HITrAXP1VPbBdjSKLs/OaDqfONr1bPF18VrAVV8=
+        b=ij+pYcRZmYFgKdtocuj1PsrUzmOBkZGhHSfQuRG6wEV+MhkhVVAKLYYR1WHvQtFwr
+         ZBeTmzGqm7N1ZeR7lH+81+IJ6oFIv+nLdM49awPvgM0qdhVpyVWHfZzAX7ov9fa+ct
+         urBTgBwTTaYajevTmbsdd3fqT/qBq9ydoLztYT94=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Robert Buhren <robert.buhren@sect.tu-berlin.de>,
+        Felicitas Hetzelt <file@sect.tu-berlin.de>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 085/175] ARM: dts: at91: at91sam9rl: fix ADC triggers
-Date:   Mon, 28 Dec 2020 13:48:58 +0100
-Message-Id: <20201228124857.361674060@linuxfoundation.org>
+Subject: [PATCH 5.4 303/453] virtio_ring: Cut and paste bugs in vring_create_virtqueue_packed()
+Date:   Mon, 28 Dec 2020 13:48:59 +0100
+Message-Id: <20201228124951.788689418@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,60 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 851a95da583c26e2ddeb7281e9b61f0d76ea5aba ]
+[ Upstream commit ae93d8ea0fa701e84ab9df0db9fb60ec6c80d7b8 ]
 
-The triggers for the ADC were taken from at91sam9260 dtsi but are not
-correct.
+There is a copy and paste bug in the error handling of this code and
+it uses "ring_dma_addr" three times instead of "device_event_dma_addr"
+and "driver_event_dma_addr".
 
-Fixes: a4c1d6c75822 ("ARM: at91/dt: sam9rl: add lcd, adc, usb gadget and pwm support")
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Link: https://lore.kernel.org/r/20201128222818.1910764-10-alexandre.belloni@bootlin.com
+Fixes: 1ce9e6055fa0 (" virtio_ring: introduce packed ring support")
+Reported-by: Robert Buhren <robert.buhren@sect.tu-berlin.de>
+Reported-by: Felicitas Hetzelt <file@sect.tu-berlin.de>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/X8pGRJlEzyn+04u2@mwanda
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/at91sam9rl.dtsi | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+ drivers/virtio/virtio_ring.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/at91sam9rl.dtsi b/arch/arm/boot/dts/at91sam9rl.dtsi
-index 70adf940d98c0..620aa3f555f8a 100644
---- a/arch/arm/boot/dts/at91sam9rl.dtsi
-+++ b/arch/arm/boot/dts/at91sam9rl.dtsi
-@@ -266,23 +266,26 @@
- 				atmel,adc-use-res = "highres";
- 
- 				trigger0 {
--					trigger-name = "timer-counter-0";
-+					trigger-name = "external-rising";
- 					trigger-value = <0x1>;
-+					trigger-external;
- 				};
-+
- 				trigger1 {
--					trigger-name = "timer-counter-1";
--					trigger-value = <0x3>;
-+					trigger-name = "external-falling";
-+					trigger-value = <0x2>;
-+					trigger-external;
- 				};
- 
- 				trigger2 {
--					trigger-name = "timer-counter-2";
--					trigger-value = <0x5>;
-+					trigger-name = "external-any";
-+					trigger-value = <0x3>;
-+					trigger-external;
- 				};
- 
- 				trigger3 {
--					trigger-name = "external";
--					trigger-value = <0x13>;
--					trigger-external;
-+					trigger-name = "continuous";
-+					trigger-value = <0x6>;
- 				};
- 			};
- 
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index 4f7c73e6052f6..e3e8cab81abdf 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -1676,9 +1676,9 @@ err_desc_extra:
+ err_desc_state:
+ 	kfree(vq);
+ err_vq:
+-	vring_free_queue(vdev, event_size_in_bytes, device, ring_dma_addr);
++	vring_free_queue(vdev, event_size_in_bytes, device, device_event_dma_addr);
+ err_device:
+-	vring_free_queue(vdev, event_size_in_bytes, driver, ring_dma_addr);
++	vring_free_queue(vdev, event_size_in_bytes, driver, driver_event_dma_addr);
+ err_driver:
+ 	vring_free_queue(vdev, ring_size_in_bytes, ring, ring_dma_addr);
+ err_ring:
 -- 
 2.27.0
 
