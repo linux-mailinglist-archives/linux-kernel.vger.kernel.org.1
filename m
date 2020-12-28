@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC3B2E3733
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:52:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79B862E39D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:29:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727762AbgL1MwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:52:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49492 "EHLO mail.kernel.org"
+        id S2389968AbgL1N2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:28:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726420AbgL1MwR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:52:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 537AB2245C;
-        Mon, 28 Dec 2020 12:51:36 +0000 (UTC)
+        id S2389949AbgL1N2f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:28:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EC5902076D;
+        Mon, 28 Dec 2020 13:27:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609159896;
-        bh=3b41thYAONDglUo3QhFt3AC3Irrdt/NOex5xJYTSwi4=;
+        s=korg; t=1609162073;
+        bh=BiX6m5qkHd34IylteFKAGiblInlUoRrYwRmQxHqlfXA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vrlHg77g7jPcvGDowJM871+thtOHLMMW7fLrp+483TeoHTn0IF9tz/rr2qaIouKVD
-         /vGm8BaIjzAlXfTcqpuqVVHzZBu3XRNZy6wkceTzCudC3qPbDaspgRs54oJGzqErX6
-         cpiNdV+zNNDXFLFk8Bii09Riq7F4j+at3kXFydD0=
+        b=akQ+4D9+d9hC/6PWhDxiUTH02kSw+QPcH1tWnl70uV5wictK52T68+CSukMyj83CE
+         Zq8o+PfufTaWS5469huEfCLW0nRsL3MLK2+jUTfGmWFBrkAMrY/CjZvKjN79KJhuf8
+         F8rJMa+F7uvHlnW/y1hsX4mjFPMhwfjraOF99ghE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        Bui Quang Minh <minhquangbui99@gmail.com>
-Subject: [PATCH 4.4 013/132] USB: dummy-hcd: Fix uninitialized array use in init()
+        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 178/346] power: supply: bq24190_charger: fix reference leak
 Date:   Mon, 28 Dec 2020 13:48:17 +0100
-Message-Id: <20201228124847.039350869@linuxfoundation.org>
+Message-Id: <20201228124928.392985464@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,40 +40,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bui Quang Minh <minhquangbui99@gmail.com>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-commit e90cfa813da7a527785033a0b247594c2de93dd8 upstream.
+[ Upstream commit b2f6cb78eaa1cad57dd3fe11d0458cd4fae9a584 ]
 
-This error path
+pm_runtime_get_sync will increment pm usage counter even it
+failed. Forgetting to call pm_runtime_put_noidle will result
+in reference leak in callers(bq24190_sysfs_show,
+bq24190_charger_get_property, bq24190_charger_set_property,
+bq24190_battery_get_property, bq24190_battery_set_property),
+so we should fix it.
 
-	err_add_pdata:
-		for (i = 0; i < mod_data.num; i++)
-			kfree(dum[i]);
-
-can be triggered when not all dum's elements are initialized.
-
-Fix this by initializing all dum's elements to NULL.
-
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
-Link: https://lore.kernel.org/r/1607063090-3426-1-git-send-email-minhquangbui99@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: f385e6e2a1532 ("power: bq24190_charger: Use PM runtime autosuspend")
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/udc/dummy_hcd.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/power/supply/bq24190_charger.c | 20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
 
---- a/drivers/usb/gadget/udc/dummy_hcd.c
-+++ b/drivers/usb/gadget/udc/dummy_hcd.c
-@@ -2741,7 +2741,7 @@ static int __init init(void)
- {
- 	int	retval = -ENOMEM;
- 	int	i;
--	struct	dummy *dum[MAX_NUM_UDC];
-+	struct	dummy *dum[MAX_NUM_UDC] = {};
+diff --git a/drivers/power/supply/bq24190_charger.c b/drivers/power/supply/bq24190_charger.c
+index b58df04d03b33..863208928cf0b 100644
+--- a/drivers/power/supply/bq24190_charger.c
++++ b/drivers/power/supply/bq24190_charger.c
+@@ -446,8 +446,10 @@ static ssize_t bq24190_sysfs_show(struct device *dev,
+ 		return -EINVAL;
  
- 	if (usb_disabled())
- 		return -ENODEV;
+ 	ret = pm_runtime_get_sync(bdi->dev);
+-	if (ret < 0)
++	if (ret < 0) {
++		pm_runtime_put_noidle(bdi->dev);
+ 		return ret;
++	}
+ 
+ 	ret = bq24190_read_mask(bdi, info->reg, info->mask, info->shift, &v);
+ 	if (ret)
+@@ -1092,8 +1094,10 @@ static int bq24190_charger_get_property(struct power_supply *psy,
+ 	dev_dbg(bdi->dev, "prop: %d\n", psp);
+ 
+ 	ret = pm_runtime_get_sync(bdi->dev);
+-	if (ret < 0)
++	if (ret < 0) {
++		pm_runtime_put_noidle(bdi->dev);
+ 		return ret;
++	}
+ 
+ 	switch (psp) {
+ 	case POWER_SUPPLY_PROP_CHARGE_TYPE:
+@@ -1164,8 +1168,10 @@ static int bq24190_charger_set_property(struct power_supply *psy,
+ 	dev_dbg(bdi->dev, "prop: %d\n", psp);
+ 
+ 	ret = pm_runtime_get_sync(bdi->dev);
+-	if (ret < 0)
++	if (ret < 0) {
++		pm_runtime_put_noidle(bdi->dev);
+ 		return ret;
++	}
+ 
+ 	switch (psp) {
+ 	case POWER_SUPPLY_PROP_ONLINE:
+@@ -1425,8 +1431,10 @@ static int bq24190_battery_get_property(struct power_supply *psy,
+ 	dev_dbg(bdi->dev, "prop: %d\n", psp);
+ 
+ 	ret = pm_runtime_get_sync(bdi->dev);
+-	if (ret < 0)
++	if (ret < 0) {
++		pm_runtime_put_noidle(bdi->dev);
+ 		return ret;
++	}
+ 
+ 	switch (psp) {
+ 	case POWER_SUPPLY_PROP_STATUS:
+@@ -1471,8 +1479,10 @@ static int bq24190_battery_set_property(struct power_supply *psy,
+ 	dev_dbg(bdi->dev, "prop: %d\n", psp);
+ 
+ 	ret = pm_runtime_get_sync(bdi->dev);
+-	if (ret < 0)
++	if (ret < 0) {
++		pm_runtime_put_noidle(bdi->dev);
+ 		return ret;
++	}
+ 
+ 	switch (psp) {
+ 	case POWER_SUPPLY_PROP_ONLINE:
+-- 
+2.27.0
+
 
 
