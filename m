@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74B142E39AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:27:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFA2B2E3B49
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:49:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389520AbgL1N0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:26:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55106 "EHLO mail.kernel.org"
+        id S2405838AbgL1NsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:48:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389090AbgL1N0V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:26:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D2C6922AAA;
-        Mon, 28 Dec 2020 13:25:40 +0000 (UTC)
+        id S2405795AbgL1NsI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:48:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CD43205CB;
+        Mon, 28 Dec 2020 13:47:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161941;
-        bh=y7Mf1UPmifAMkf+SOqsQYtEqkkYTZRtWBfVzYkzGhLk=;
+        s=korg; t=1609163242;
+        bh=aVFpPXGvmw0OX3WEYtjlnggwAkKFDkbWOUwsy8Faa/A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RrbEW0lR6X3KsTTRHercUz5ggT/ad1hfTsEnyB9kbP/PPN/cUYY2Sr3JZDVNasBlG
-         7gf+4pKZPELImLaRDV+3/nticcq7hYLMUR86sSeAPUDH5LBDnzDUkw6WB2i2fnbmJP
-         l5AVLRivmXVknqF9QoSMGJaojGngpKuaEQ6SxIhQ=
+        b=s6M44b4WCY+dnMgzQ+DtWktRoDe5W4Gckc02/L1i6hhWQ3dkO+LYGclA0rq7KF2KU
+         vjnFVQ/jQoNyv67K4t5Sxb0HaN1Ts3kxUDzb27hNoJAEw4MXsWJHqfct4wwJnI6VR3
+         s4xedwjCq6cotyHZOAZgMyMQLhqB7l4mfhftJ3Tg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 135/346] RDMa/mthca: Work around -Wenum-conversion warning
-Date:   Mon, 28 Dec 2020 13:47:34 +0100
-Message-Id: <20201228124926.315947835@linuxfoundation.org>
+Subject: [PATCH 5.4 219/453] memstick: r592: Fix error return in r592_probe()
+Date:   Mon, 28 Dec 2020 13:47:35 +0100
+Message-Id: <20201228124947.755806561@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,59 +40,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Jing Xiangfeng <jingxiangfeng@huawei.com>
 
-[ Upstream commit fbb7dc5db6dee553b5a07c27e86364a5223e244c ]
+[ Upstream commit db29d3d1c2451e673e29c7257471e3ce9d50383a ]
 
-gcc points out a suspicious mixing of enum types in a function that
-converts from MTHCA_OPCODE_* values to IB_WC_* values:
+Fix to return a error code from the error handling case instead of 0.
 
-drivers/infiniband/hw/mthca/mthca_cq.c: In function 'mthca_poll_one':
-drivers/infiniband/hw/mthca/mthca_cq.c:607:21: warning: implicit conversion from 'enum <anonymous>' to 'enum ib_wc_opcode' [-Wenum-conversion]
-  607 |    entry->opcode    = MTHCA_OPCODE_INVALID;
-
-Nothing seems to ever check for MTHCA_OPCODE_INVALID again, no idea if
-this is meaningful, but it seems harmless as it deals with an invalid
-input.
-
-Remove MTHCA_OPCODE_INVALID and set the ib_wc_opcode to 0xFF, which is
-still bogus, but at least doesn't make compiler warnings.
-
-Fixes: 2a4443a69934 ("[PATCH] IB/mthca: fill in opcode field for send completions")
-Link: https://lore.kernel.org/r/20201026211311.3887003-1-arnd@kernel.org
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: 926341250102 ("memstick: add driver for Ricoh R5C592 card reader")
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+Link: https://lore.kernel.org/r/20201125014718.153563-1-jingxiangfeng@huawei.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/mthca/mthca_cq.c  | 2 +-
- drivers/infiniband/hw/mthca/mthca_dev.h | 1 -
- 2 files changed, 1 insertion(+), 2 deletions(-)
+ drivers/memstick/host/r592.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mthca/mthca_cq.c b/drivers/infiniband/hw/mthca/mthca_cq.c
-index a5694dec3f2ee..098653b8157ed 100644
---- a/drivers/infiniband/hw/mthca/mthca_cq.c
-+++ b/drivers/infiniband/hw/mthca/mthca_cq.c
-@@ -609,7 +609,7 @@ static inline int mthca_poll_one(struct mthca_dev *dev,
- 			entry->byte_len  = MTHCA_ATOMIC_BYTE_LEN;
- 			break;
- 		default:
--			entry->opcode    = MTHCA_OPCODE_INVALID;
-+			entry->opcode = 0xFF;
- 			break;
- 		}
- 	} else {
-diff --git a/drivers/infiniband/hw/mthca/mthca_dev.h b/drivers/infiniband/hw/mthca/mthca_dev.h
-index 220a3e4717a35..e23575861f287 100644
---- a/drivers/infiniband/hw/mthca/mthca_dev.h
-+++ b/drivers/infiniband/hw/mthca/mthca_dev.h
-@@ -105,7 +105,6 @@ enum {
- 	MTHCA_OPCODE_ATOMIC_CS      = 0x11,
- 	MTHCA_OPCODE_ATOMIC_FA      = 0x12,
- 	MTHCA_OPCODE_BIND_MW        = 0x18,
--	MTHCA_OPCODE_INVALID        = 0xff
- };
+diff --git a/drivers/memstick/host/r592.c b/drivers/memstick/host/r592.c
+index dd3a1f3dcc191..d2ef46337191c 100644
+--- a/drivers/memstick/host/r592.c
++++ b/drivers/memstick/host/r592.c
+@@ -759,8 +759,10 @@ static int r592_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 		goto error3;
  
- enum {
+ 	dev->mmio = pci_ioremap_bar(pdev, 0);
+-	if (!dev->mmio)
++	if (!dev->mmio) {
++		error = -ENOMEM;
+ 		goto error4;
++	}
+ 
+ 	dev->irq = pdev->irq;
+ 	spin_lock_init(&dev->irq_lock);
+@@ -786,12 +788,14 @@ static int r592_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 		&dev->dummy_dma_page_physical_address, GFP_KERNEL);
+ 	r592_stop_dma(dev , 0);
+ 
+-	if (request_irq(dev->irq, &r592_irq, IRQF_SHARED,
+-			  DRV_NAME, dev))
++	error = request_irq(dev->irq, &r592_irq, IRQF_SHARED,
++			  DRV_NAME, dev);
++	if (error)
+ 		goto error6;
+ 
+ 	r592_update_card_detect(dev);
+-	if (memstick_add_host(host))
++	error = memstick_add_host(host);
++	if (error)
+ 		goto error7;
+ 
+ 	message("driver successfully loaded");
 -- 
 2.27.0
 
