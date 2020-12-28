@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 496972E6904
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:44:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83F592E6558
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:01:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634603AbgL1QoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:44:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53856 "EHLO mail.kernel.org"
+        id S2387846AbgL1NdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:33:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33044 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728991AbgL1M5f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:57:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A738622582;
-        Mon, 28 Dec 2020 12:56:54 +0000 (UTC)
+        id S2391061AbgL1Nco (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:32:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC9C72063A;
+        Mon, 28 Dec 2020 13:32:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160215;
-        bh=gS9o2AoaNCjEFiJpg/F1l5nbXH7zCZVWd831SI7tX9c=;
+        s=korg; t=1609162349;
+        bh=A/k6bKIiOLiyP6gucccTM4Zi1xmb5RHRHTm4hovr+cs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=or3Uz24n07dtH9XxVYsw6JV+GkNEPhHkQ6KQNGFb724v07ocpCx92a5qJSE2Sy68b
-         Z5cdLrxzkmFHddpSpMTb4bS9gsMOk9DJa73G+EEVF7kIt9LScrxXHAMASsAIGx6Csy
-         nzDgLwD+cINMhvgCM+P/z4AYCotXncc4T9KIe+70=
+        b=JcG3EMh2rKt/DFzZ5kRELi7Bwnll/5yx7ww63FbX0kJkkPIGv/TRmRLKDHZI/ZYkC
+         IUwCB7S/JyEi8pgafzqHx5+NzY+7u8H2B1IRZhmdPQAcYLSQZrb0ITsDjtffhzwMml
+         yK6IsJUBrpQmR2Ol6aB6BgODvnrNDQIK5k7oCQ94=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 4.4 107/132] powerpc/perf: Exclude kernel samples while counting events in user space.
-Date:   Mon, 28 Dec 2020 13:49:51 +0100
-Message-Id: <20201228124851.584450371@linuxfoundation.org>
+        stable@vger.kernel.org, Chris Chiu <chiu@endlessos.org>,
+        Jian-Hong Pan <jhp@endlessos.org>, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.19 273/346] ALSA: hda/realtek - Enable headset mic of ASUS Q524UQK with ALC255
+Date:   Mon, 28 Dec 2020 13:49:52 +0100
+Message-Id: <20201228124932.970900529@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+From: Chris Chiu <chiu@endlessos.org>
 
-commit aa8e21c053d72b6639ea5a7f1d3a1d0209534c94 upstream.
+commit 7e413528474d5895e3e315c019fb0c43522eb6d9 upstream.
 
-Perf event attritube supports exclude_kernel flag to avoid
-sampling/profiling in supervisor state (kernel). Based on this event
-attr flag, Monitor Mode Control Register bit is set to freeze on
-supervisor state. But sometimes (due to hardware limitation), Sampled
-Instruction Address Register (SIAR) locks on to kernel address even
-when freeze on supervisor is set. Patch here adds a check to drop
-those samples.
+The ASUS laptop Q524UQK with ALC255 codec can't detect the headset
+microphone until ALC255_FIXUP_ASUS_MIC_NO_PRESENCE quirk applied.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/1606289215-1433-1-git-send-email-atrajeev@linux.vnet.ibm.com
+Signed-off-by: Chris Chiu <chiu@endlessos.org>
+Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201209045730.9972-1-chiu@endlessos.org
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/perf/core-book3s.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/powerpc/perf/core-book3s.c
-+++ b/arch/powerpc/perf/core-book3s.c
-@@ -2021,6 +2021,16 @@ static void record_and_restart(struct pe
- 	perf_event_update_userpage(event);
- 
- 	/*
-+	 * Due to hardware limitation, sometimes SIAR could sample a kernel
-+	 * address even when freeze on supervisor state (kernel) is set in
-+	 * MMCR2. Check attr.exclude_kernel and address to drop the sample in
-+	 * these cases.
-+	 */
-+	if (event->attr.exclude_kernel && record)
-+		if (is_kernel_addr(mfspr(SPRN_SIAR)))
-+			record = 0;
-+
-+	/*
- 	 * Finally record data if requested.
- 	 */
- 	if (record) {
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -7101,6 +7101,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x1043, 0x1b13, "Asus U41SV", ALC269_FIXUP_INV_DMIC),
+ 	SND_PCI_QUIRK(0x1043, 0x1bbd, "ASUS Z550MA", ALC255_FIXUP_ASUS_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1043, 0x1c23, "Asus X55U", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
++	SND_PCI_QUIRK(0x1043, 0x125e, "ASUS Q524UQK", ALC255_FIXUP_ASUS_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1043, 0x1ccd, "ASUS X555UB", ALC256_FIXUP_ASUS_MIC),
+ 	SND_PCI_QUIRK(0x1043, 0x3030, "ASUS ZN270IE", ALC256_FIXUP_ASUS_AIO_GPIO2),
+ 	SND_PCI_QUIRK(0x1043, 0x831a, "ASUS P901", ALC269_FIXUP_STEREO_DMIC),
 
 
