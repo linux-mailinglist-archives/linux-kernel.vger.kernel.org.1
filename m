@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EFFA2E68E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:44:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B9432E65E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:08:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634467AbgL1QnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:43:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55560 "EHLO mail.kernel.org"
+        id S2393338AbgL1QGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:06:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729299AbgL1M7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:59:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A85122B2A;
-        Mon, 28 Dec 2020 12:58:35 +0000 (UTC)
+        id S2389574AbgL1N05 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:26:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 60C4B208D5;
+        Mon, 28 Dec 2020 13:26:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160316;
-        bh=F+YAm5F8ehhJEr6UPnNkkXN2owInqTsH48L2UHh36XI=;
+        s=korg; t=1609161977;
+        bh=c4MEjh3aajCgt0ELuYGrCFGbA9KmeIe2hN9K9DXQABg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZyojWe2klI5Do37uPIulN7kqrTIaq5yyTtWzINLEmYqL0URYKmz5qhK5nGigeuhKH
-         G//fBCa9czpdny9QI/9AK4c6Mtgc1sK4J/jzmcjsC492nk/Ht28Zzlws/ehkIhfgtK
-         NnzQLz1G/tp16eTDixTHPdU91Z+H6As9bxgTHg8U=
+        b=pZbmPZpxfhOv9nqW/foJYg3A2qjqlF1AHK8XsjgOha0Z1R5lZThCrQQWD7BCnfqe1
+         16XNh2E84ND/ffekeI2uwQxOwn8MPK7iXnmlswZIJ3T0Z3+fK+wvaRKFr9JRC8rOnP
+         gpSHCkNMJ6YitMVpTzoYA/XgoJ4YjvdZtCDOvoL8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Lamprecht <t.lamprecht@proxmox.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 4.9 010/175] scsi: be2iscsi: Revert "Fix a theoretical leak in beiscsi_create_eqs()"
-Date:   Mon, 28 Dec 2020 13:47:43 +0100
-Message-Id: <20201228124853.751432261@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 146/346] drm/omap: dmm_tiler: fix return error code in omap_dmm_probe()
+Date:   Mon, 28 Dec 2020 13:47:45 +0100
+Message-Id: <20201228124926.846886925@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,61 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-commit eeaf06af6f87e1dba371fbe42674e6f963220b9c upstream.
+[ Upstream commit 723ae803218da993143387bf966042eccefac077 ]
 
-My patch caused kernel Oopses and delays in boot.  Revert it.
+Return -ENOMEM when allocating refill memory failed.
 
-The problem was that I moved the "mem->dma = paddr;" before the call to
-be_fill_queue().  But the first thing that the be_fill_queue() function
-does is memset the whole struct to zero which overwrites the assignment.
-
-Link: https://lore.kernel.org/r/X8jXkt6eThjyVP1v@mwanda
-Fixes: 38b2db564d9a ("scsi: be2iscsi: Fix a theoretical leak in beiscsi_create_eqs()")
-Cc: stable <stable@vger.kernel.org>
-Reported-by: Thomas Lamprecht <t.lamprecht@proxmox.com>
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 71e8831f6407 ("drm/omap: DMM/TILER support for OMAP4+ platform")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+Link: https://patchwork.freedesktop.org/patch/msgid/20201117061045.3452287-1-yangyingliang@huawei.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/be2iscsi/be_main.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/omapdrm/omap_dmm_tiler.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/scsi/be2iscsi/be_main.c
-+++ b/drivers/scsi/be2iscsi/be_main.c
-@@ -3052,7 +3052,6 @@ static int beiscsi_create_eqs(struct bei
- 		if (!eq_vaddress)
- 			goto create_eq_error;
+diff --git a/drivers/gpu/drm/omapdrm/omap_dmm_tiler.c b/drivers/gpu/drm/omapdrm/omap_dmm_tiler.c
+index e884183c018ac..cb5ce73f72694 100644
+--- a/drivers/gpu/drm/omapdrm/omap_dmm_tiler.c
++++ b/drivers/gpu/drm/omapdrm/omap_dmm_tiler.c
+@@ -763,6 +763,7 @@ static int omap_dmm_probe(struct platform_device *dev)
+ 					   &omap_dmm->refill_pa, GFP_KERNEL);
+ 	if (!omap_dmm->refill_va) {
+ 		dev_err(&dev->dev, "could not allocate refill memory\n");
++		ret = -ENOMEM;
+ 		goto fail;
+ 	}
  
--		mem->dma = paddr;
- 		mem->va = eq_vaddress;
- 		ret = be_fill_queue(eq, phba->params.num_eq_entries,
- 				    sizeof(struct be_eq_entry), eq_vaddress);
-@@ -3062,6 +3061,7 @@ static int beiscsi_create_eqs(struct bei
- 			goto create_eq_error;
- 		}
- 
-+		mem->dma = paddr;
- 		ret = beiscsi_cmd_eq_create(&phba->ctrl, eq,
- 					    phwi_context->cur_eqd);
- 		if (ret) {
-@@ -3116,7 +3116,6 @@ static int beiscsi_create_cqs(struct bei
- 		if (!cq_vaddress)
- 			goto create_cq_error;
- 
--		mem->dma = paddr;
- 		ret = be_fill_queue(cq, phba->params.num_cq_entries,
- 				    sizeof(struct sol_cqe), cq_vaddress);
- 		if (ret) {
-@@ -3126,6 +3125,7 @@ static int beiscsi_create_cqs(struct bei
- 			goto create_cq_error;
- 		}
- 
-+		mem->dma = paddr;
- 		ret = beiscsi_cmd_cq_create(&phba->ctrl, cq, eq, false,
- 					    false, 0);
- 		if (ret) {
+-- 
+2.27.0
+
 
 
