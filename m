@@ -2,55 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 894902E367F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 12:34:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98C182E369E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 12:37:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727256AbgL1LeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 06:34:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57870 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727035AbgL1LeI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 06:34:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CBD61229C4;
-        Mon, 28 Dec 2020 11:33:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609155208;
-        bh=saKOfYncCd9Ec75dBMzr7MpCe5M2fYvC02vnawyCTDI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Um/GuWVlwvn5yoXMQzCrBVsSwn10oXBH8CDNZs/Jt3zbFEO8VwsNlnkPUbVhpndT9
-         y7hL0mn5tPln8ULHbkQs12qbg0v6pz2JibwGT7ydVWmywhQmahdGG835i8H7lIKoZK
-         IoqXv3t9RFvKsxXadReFOJ5/wpEajfZMZ+PCguAM=
-Date:   Mon, 28 Dec 2020 12:29:11 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     SeongJae Park <sjpark@amazon.com>
-Cc:     stable@vger.kernel.org, SeongJae Park <sjpark@amazon.de>,
-        doebel@amazon.de, aams@amazon.de, mku@amazon.de, jgross@suse.com,
-        julien@xen.org, wipawel@amazon.de, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/5] Backport of patch series for stable 4.4 branch
-Message-ID: <X+nBh/5nsI8QrWCg@kroah.com>
-References: <20201217160402.26303-1-sjpark@amazon.com>
+        id S1727505AbgL1Lg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 06:36:28 -0500
+Received: from mail-40133.protonmail.ch ([185.70.40.133]:41289 "EHLO
+        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727239AbgL1Lg1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 06:36:27 -0500
+Date:   Mon, 28 Dec 2020 11:35:38 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1609155344;
+        bh=uD0o1RGxUdohZwqEit8GaCkXhH2zAclkKXfTpSwZqmA=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=GzusC5A3KgMW40aK26pO3RVGGzI1SpxMK6BD+3djiBXgZQ+kz+jSExJtd1R9o7kqM
+         EEF1bfEWPliTWuBpvfaWK4Wn+eyoxjSYvdhK90QxoVHd0LEqH3HkR41abI4JfjH8EL
+         yL6CjzTo6nSbRq6I3YzsDgt3w6XCZcDnlsbjX2DE=
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+From:   Timon Baetz <timon.baetz@protonmail.com>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Timon Baetz <timon.baetz@protonmail.com>
+Reply-To: Timon Baetz <timon.baetz@protonmail.com>
+Subject: [PATCH v5 1/8] extcon: max8997: Add CHGINS and CHGRM interrupt handling
+Message-ID: <20201228113507.1292506-1-timon.baetz@protonmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201217160402.26303-1-sjpark@amazon.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 05:03:57PM +0100, SeongJae Park wrote:
-> From: SeongJae Park <sjpark@amazon.de>
-> 
-> Changes from v2
-> (https://lore.kernel.org/stable/20201217130501.12702-1-sjpark@amazon.com/)
-> - Move 'nr_pending' increase from 5th patch to 4th patch
-> 
-> Changes from v1
-> (https://lore.kernel.org/stable/20201217081727.8253-1-sjpark@amazon.com/)
-> - Remove wrong 'Signed-off-by' lines for 'Author Redacted'
+This allows the MAX8997 charger to set the current limit depending on
+the detected extcon charger type.
 
-All now queued up, but you also need a series of this for the 4.9.y tree
-as well.
+Signed-off-by: Timon Baetz <timon.baetz@protonmail.com>
+---
+ drivers/extcon/extcon-max8997.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-thanks,
+diff --git a/drivers/extcon/extcon-max8997.c b/drivers/extcon/extcon-max899=
+7.c
+index 337b0eea4e62..e1408075ef7d 100644
+--- a/drivers/extcon/extcon-max8997.c
++++ b/drivers/extcon/extcon-max8997.c
+@@ -44,6 +44,8 @@ static struct max8997_muic_irq muic_irqs[] =3D {
+ =09{ MAX8997_MUICIRQ_ChgDetRun,=09"muic-CHGDETRUN" },
+ =09{ MAX8997_MUICIRQ_ChgTyp,=09"muic-CHGTYP" },
+ =09{ MAX8997_MUICIRQ_OVP,=09=09"muic-OVP" },
++=09{ MAX8997_PMICIRQ_CHGINS,=09"pmic-CHGINS" },
++=09{ MAX8997_PMICIRQ_CHGRM,=09"pmic-CHGRM" },
+ };
+=20
+ /* Define supported cable type */
+@@ -538,6 +540,8 @@ static void max8997_muic_irq_work(struct work_struct *w=
+ork)
+ =09case MAX8997_MUICIRQ_DCDTmr:
+ =09case MAX8997_MUICIRQ_ChgDetRun:
+ =09case MAX8997_MUICIRQ_ChgTyp:
++=09case MAX8997_PMICIRQ_CHGINS:
++=09case MAX8997_PMICIRQ_CHGRM:
+ =09=09/* Handle charger cable */
+ =09=09ret =3D max8997_muic_chg_handler(info);
+ =09=09break;
+--=20
+2.25.1
 
-greg k-h
+
