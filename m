@@ -2,157 +2,348 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C158C2E3624
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 12:01:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C02A2E362F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 12:10:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727193AbgL1LA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 06:00:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727019AbgL1LA3 (ORCPT
+        id S1727271AbgL1LJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 06:09:24 -0500
+Received: from labrats.qualcomm.com ([199.106.110.90]:4468 "EHLO
+        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727085AbgL1LJW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 06:00:29 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C9EC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 02:59:48 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id n7so7160203pgg.2
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 02:59:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=sFoKCUDz1JxP+F0ek43ef1dtvFISDc7wAusfSKesoRg=;
-        b=dx7t0PPLiodk+fTJDEO9DEGLFsx/oMbz5u1mP1YnQ1Ed7oKyeI/ZfcL3jcAXyjoh/i
-         rpnrHnVSxFAKfo9OaPH5fNAFXBzhywxHRR7mNjiilOH/w7ghudzkHZUbComsMb/EufnE
-         d91AhNlPnlZQ9LXqHexTGivTZzN6PLJNzCy25b9WMfShuqN22g6PDx0u/XHosnMAaA7n
-         kLh6eESeANN4JNwjwWPLMYSJXyFMx+s5MWQ8sh2smVkStb3ltMG/N10XVaPV9cy/XSLa
-         xCJ2zBu0HanlqVWWbdHbNlz5bQOj32Ne+XwpijxGRU0McS8V4nsYUfGUV7afYzKIyRL/
-         drEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=sFoKCUDz1JxP+F0ek43ef1dtvFISDc7wAusfSKesoRg=;
-        b=l4Z0icw4QylryE/nut3Ev6rX5bdI+TDB+dbith0ThnkG3krMmTkg0nPg12G0ATGG6J
-         1vBvRI0IhTXRlsrWkUWQwgUwkzJdK74NAH4r+/eCN/vekxgv2/wZl08BdOmWKsTXogAI
-         YyHS1rnOmIKm9nHUwBMzOQUk5cQijWxYBTpmLlGJT4bZKhubJWZH5shJHhwciOSNcaRO
-         sxHrqfa1bNdCOQRKFuV9f2xQ1UfVaXl9OjH/1O62B2f26q6OWkB5V9coz5qxEOgx4C+/
-         9eqhAUpyPyg6xXhziqIMA7kK29W+XeH5cZX85C7NObMVHSCpdTW6Aut1cxd3D8AB1RZ3
-         dvLw==
-X-Gm-Message-State: AOAM5327uad+zI98f5icW10tDKhwhMrS4O1bBYsBRBdXGzR88OPSyY0F
-        JsQlaHox1cBXKZDgKjsKUAT+
-X-Google-Smtp-Source: ABdhPJwZt+/6HjVdIyyLvNw+WAsY35y1gMpXrTR7S4Cd57vMdIyoirpprkPdNo4P1HrQHw/poNrSGA==
-X-Received: by 2002:a62:145:0:b029:19e:a395:bd3d with SMTP id 66-20020a6201450000b029019ea395bd3dmr39544120pfb.13.1609153187872;
-        Mon, 28 Dec 2020 02:59:47 -0800 (PST)
-Received: from thinkpad ([2409:4072:386:a7b4:f938:76e5:9a02:c8e8])
-        by smtp.gmail.com with ESMTPSA id x12sm37161397pgf.13.2020.12.28.02.59.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Dec 2020 02:59:47 -0800 (PST)
-Date:   Mon, 28 Dec 2020 16:29:41 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Cc:     Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 18/18] MAINTAINERS: Add linux-actions ML for Actions
- Semi Arch
-Message-ID: <20201228105941.GA24394@thinkpad>
-References: <cover.1605823502.git.cristian.ciocaltea@gmail.com>
- <5845b7a323c65adaa1566c3bee68b5ca1f1bb17e.1605823502.git.cristian.ciocaltea@gmail.com>
- <20201128074350.GE3077@thinkpad>
- <20201129194824.GC748744@BV030612LT>
- <fed29816-561a-7187-302f-09ab37beddca@suse.de>
- <20201205055414.GB2250@thinkpad>
- <20201228104307.GA836928@ubuntu2004>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201228104307.GA836928@ubuntu2004>
+        Mon, 28 Dec 2020 06:09:22 -0500
+IronPort-SDR: zNcOnE0+Fnn/IITjlOcHGT3HE+nFFcEskOQciAJziWDaKUsveSAMN7Vn1ZdS3rS7LSyeXXjMDR
+ 4RG2MTXd9nvvhEF0+H3jtnuBE39Gey+b3bP8YKN00b8puWGHx8FKBERiVr2qty2KbuBUfjWDBP
+ wA0FT6xtoJroQEuD8vm3lj5nOIqXKV9bSCh+Z6yuVUtDB/6AZCz3gPjj6jxy7W1LNdrHRgS9HB
+ amW0mlCOYKvLGVWDx2phrmU/jAu2GKoSkjKhcqP/7QvxItt0AKsdzrk173SnN6tbn4vu15LHJD
+ FF8=
+X-IronPort-AV: E=Sophos;i="5.78,455,1599548400"; 
+   d="scan'208";a="47624325"
+Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
+  by labrats.qualcomm.com with ESMTP; 28 Dec 2020 03:08:39 -0800
+X-QCInternal: smtphost
+Received: from wsp769891wss.qualcomm.com (HELO stor-presley.qualcomm.com) ([192.168.140.85])
+  by ironmsg04-sd.qualcomm.com with ESMTP; 28 Dec 2020 03:08:30 -0800
+Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
+        id 848182188E; Mon, 28 Dec 2020 03:08:29 -0800 (PST)
+From:   Can Guo <cang@codeaurora.org>
+To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
+        cang@codeaurora.org
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Satya Tangirala <satyat@google.com>,
+        linux-kernel@vger.kernel.org (open list),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support),
+        linux-mediatek@lists.infradead.org (moderated list:ARM/Mediatek SoC
+        support)
+Subject: [PATCH v7 1/3] scsi: ufs: Protect some contexts from unexpected clock scaling
+Date:   Mon, 28 Dec 2020 03:08:16 -0800
+Message-Id: <1609153700-25703-2-git-send-email-cang@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1609153700-25703-1-git-send-email-cang@codeaurora.org>
+References: <1609153700-25703-1-git-send-email-cang@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 12:43:07PM +0200, Cristian Ciocaltea wrote:
-> On Sat, Dec 05, 2020 at 11:24:14AM +0530, Manivannan Sadhasivam wrote:
-> > On Mon, Nov 30, 2020 at 01:54:45AM +0100, Andreas Färber wrote:
-> > > On 29.11.20 20:48, Cristian Ciocaltea wrote:
-> > > > On Sat, Nov 28, 2020 at 01:13:50PM +0530, Manivannan Sadhasivam wrote:
-> > > >> On Fri, Nov 20, 2020 at 01:56:12AM +0200, Cristian Ciocaltea wrote:
-> > > >>> Add the linux-actions mailing list for the Actions Semi architecture.
-> > > >>>
-> > > >>> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> > > >>
-> > > >> There was a patch from me for this change but I don't mind taking yours
-> > > >> as long as we keep the list updated :)
-> > > > 
-> > > > Sorry about that, I often forget to manually append this mailing list
-> > > > before submitting related patches and therefore I considered this is
-> > > > a good opportunity to have this issue fixed once and for all.. :)
-> > > > 
-> > > >> I have just one comment below, with that fixed:
-> > > >>
-> > > >> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > > >>
-> > > >>> ---
-> > > >>>  MAINTAINERS | 1 +
-> > > >>>  1 file changed, 1 insertion(+)
-> > > >>>
-> > > >>> diff --git a/MAINTAINERS b/MAINTAINERS
-> > > >>> index a85c1881cf07..8428aba52581 100644
-> > > >>> --- a/MAINTAINERS
-> > > >>> +++ b/MAINTAINERS
-> > > >>> @@ -1497,6 +1497,7 @@ ARM/ACTIONS SEMI ARCHITECTURE
-> > > >>>  M:	Andreas Färber <afaerber@suse.de>
-> > > >>>  M:	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > > >>>  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-> > > >>
-> > > >> No need to keep the generic list, please remove.
-> > > 
-> > > Why? They're not mutually exclusive.
-> > > 
-> > 
-> > Yes but why do we want to spam it? Currently we don't archive actions tree in
-> > lore but I can do that.
-> 
-> Hi Mani, Andreas,
-> 
-> I'm going to prepare a new revision of this patch series, but I'm not
-> really sure how should I handle this patch: keep the 'linux-arm-kernel'
-> list or drop it?
-> 
+In contexts like suspend, shutdown and error handling, we need to suspend
+devfreq to make sure these contexts won't be disturbed by clock scaling.
+However, suspending devfreq is not enough since users can still trigger a
+clock scaling by manipulating the sysfs node clkscale_enable and devfreq
+sysfs nodes like min/max_freq and governor. Add one more flag in struct
+clk_scaling such that these contexts can prevent clock scaling from being
+invoked through above sysfs nodes.
 
-Since Andreas seems to be in favour of keeping it, I don't object.
+Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
+Reviewed-by: Bean Huo <beanhuo@micron.com>
+Signed-off-by: Can Guo <cang@codeaurora.org>
+---
+ drivers/scsi/ufs/ufshcd.c | 81 +++++++++++++++++++++++++++++++----------------
+ drivers/scsi/ufs/ufshcd.h |  6 +++-
+ 2 files changed, 58 insertions(+), 29 deletions(-)
 
-Thanks,
-Mani
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 0c148fc..972e119 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -1147,12 +1147,22 @@ static int ufshcd_clock_scaling_prepare(struct ufs_hba *hba)
+ 	 */
+ 	ufshcd_scsi_block_requests(hba);
+ 	down_write(&hba->clk_scaling_lock);
+-	if (ufshcd_wait_for_doorbell_clr(hba, DOORBELL_CLR_TOUT_US)) {
++
++	if (!hba->clk_scaling.is_allowed)
++		ret = -EAGAIN;
++	else if (ufshcd_wait_for_doorbell_clr(hba, DOORBELL_CLR_TOUT_US))
+ 		ret = -EBUSY;
++
++	if (ret) {
+ 		up_write(&hba->clk_scaling_lock);
+ 		ufshcd_scsi_unblock_requests(hba);
++		goto out;
+ 	}
+ 
++	/* let's not get into low power until clock scaling is completed */
++	ufshcd_hold(hba, false);
++
++out:
+ 	return ret;
+ }
+ 
+@@ -1160,6 +1170,7 @@ static void ufshcd_clock_scaling_unprepare(struct ufs_hba *hba)
+ {
+ 	up_write(&hba->clk_scaling_lock);
+ 	ufshcd_scsi_unblock_requests(hba);
++	ufshcd_release(hba);
+ }
+ 
+ /**
+@@ -1175,12 +1186,9 @@ static int ufshcd_devfreq_scale(struct ufs_hba *hba, bool scale_up)
+ {
+ 	int ret = 0;
+ 
+-	/* let's not get into low power until clock scaling is completed */
+-	ufshcd_hold(hba, false);
+-
+ 	ret = ufshcd_clock_scaling_prepare(hba);
+ 	if (ret)
+-		goto out;
++		return ret;
+ 
+ 	/* scale down the gear before scaling down clocks */
+ 	if (!scale_up) {
+@@ -1212,8 +1220,6 @@ static int ufshcd_devfreq_scale(struct ufs_hba *hba, bool scale_up)
+ 
+ out_unprepare:
+ 	ufshcd_clock_scaling_unprepare(hba);
+-out:
+-	ufshcd_release(hba);
+ 	return ret;
+ }
+ 
+@@ -1487,7 +1493,7 @@ static ssize_t ufshcd_clkscale_enable_show(struct device *dev,
+ {
+ 	struct ufs_hba *hba = dev_get_drvdata(dev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%d\n", hba->clk_scaling.is_allowed);
++	return snprintf(buf, PAGE_SIZE, "%d\n", hba->clk_scaling.is_enabled);
+ }
+ 
+ static ssize_t ufshcd_clkscale_enable_store(struct device *dev,
+@@ -1496,12 +1502,20 @@ static ssize_t ufshcd_clkscale_enable_store(struct device *dev,
+ 	struct ufs_hba *hba = dev_get_drvdata(dev);
+ 	u32 value;
+ 	int err;
++	unsigned long flags;
++	bool update = true;
+ 
+ 	if (kstrtou32(buf, 0, &value))
+ 		return -EINVAL;
+ 
+ 	value = !!value;
+-	if (value == hba->clk_scaling.is_allowed)
++	spin_lock_irqsave(hba->host->host_lock, flags);
++	if (value == hba->clk_scaling.is_enabled)
++		update = false;
++	else
++		hba->clk_scaling.is_enabled = value;
++	spin_unlock_irqrestore(hba->host->host_lock, flags);
++	if (!update)
+ 		goto out;
+ 
+ 	pm_runtime_get_sync(hba->dev);
+@@ -1510,8 +1524,6 @@ static ssize_t ufshcd_clkscale_enable_store(struct device *dev,
+ 	cancel_work_sync(&hba->clk_scaling.suspend_work);
+ 	cancel_work_sync(&hba->clk_scaling.resume_work);
+ 
+-	hba->clk_scaling.is_allowed = value;
+-
+ 	if (value) {
+ 		ufshcd_resume_clkscaling(hba);
+ 	} else {
+@@ -1845,8 +1857,6 @@ static void ufshcd_init_clk_scaling(struct ufs_hba *hba)
+ 	snprintf(wq_name, sizeof(wq_name), "ufs_clkscaling_%d",
+ 		 hba->host->host_no);
+ 	hba->clk_scaling.workq = create_singlethread_workqueue(wq_name);
+-
+-	ufshcd_clkscaling_init_sysfs(hba);
+ }
+ 
+ static void ufshcd_exit_clk_scaling(struct ufs_hba *hba)
+@@ -1854,6 +1864,8 @@ static void ufshcd_exit_clk_scaling(struct ufs_hba *hba)
+ 	if (!ufshcd_is_clkscaling_supported(hba))
+ 		return;
+ 
++	if (hba->clk_scaling.enable_attr.attr.name)
++		device_remove_file(hba->dev, &hba->clk_scaling.enable_attr);
+ 	destroy_workqueue(hba->clk_scaling.workq);
+ 	ufshcd_devfreq_remove(hba);
+ }
+@@ -1918,7 +1930,7 @@ static void ufshcd_clk_scaling_start_busy(struct ufs_hba *hba)
+ 	if (!hba->clk_scaling.active_reqs++)
+ 		queue_resume_work = true;
+ 
+-	if (!hba->clk_scaling.is_allowed || hba->pm_op_in_progress)
++	if (!hba->clk_scaling.is_enabled || hba->pm_op_in_progress)
+ 		return;
+ 
+ 	if (queue_resume_work)
+@@ -4987,7 +4999,8 @@ static void __ufshcd_transfer_req_compl(struct ufs_hba *hba,
+ 				complete(hba->dev_cmd.complete);
+ 			}
+ 		}
+-		if (ufshcd_is_clkscaling_supported(hba))
++		if (ufshcd_is_clkscaling_supported(hba) &&
++		    hba->clk_scaling.active_reqs > 0)
+ 			hba->clk_scaling.active_reqs--;
+ 	}
+ 
+@@ -5650,18 +5663,25 @@ static void ufshcd_err_handling_prepare(struct ufs_hba *hba)
+ 		ufshcd_vops_resume(hba, UFS_RUNTIME_PM);
+ 	} else {
+ 		ufshcd_hold(hba, false);
+-		if (hba->clk_scaling.is_allowed) {
++		if (hba->clk_scaling.is_enabled) {
+ 			cancel_work_sync(&hba->clk_scaling.suspend_work);
+ 			cancel_work_sync(&hba->clk_scaling.resume_work);
+ 			ufshcd_suspend_clkscaling(hba);
+ 		}
+ 	}
++	down_write(&hba->clk_scaling_lock);
++	hba->clk_scaling.is_allowed = false;
++	up_write(&hba->clk_scaling_lock);
+ }
+ 
+ static void ufshcd_err_handling_unprepare(struct ufs_hba *hba)
+ {
+ 	ufshcd_release(hba);
+-	if (hba->clk_scaling.is_allowed)
++
++	down_write(&hba->clk_scaling_lock);
++	hba->clk_scaling.is_allowed = true;
++	up_write(&hba->clk_scaling_lock);
++	if (hba->clk_scaling.is_enabled)
+ 		ufshcd_resume_clkscaling(hba);
+ 	pm_runtime_put(hba->dev);
+ }
+@@ -7620,12 +7640,14 @@ static int ufshcd_add_lus(struct ufs_hba *hba)
+ 			sizeof(struct ufs_pa_layer_attr));
+ 		hba->clk_scaling.saved_pwr_info.is_valid = true;
+ 		if (!hba->devfreq) {
++			hba->clk_scaling.is_allowed = true;
+ 			ret = ufshcd_devfreq_init(hba);
+ 			if (ret)
+ 				goto out;
+-		}
+ 
+-		hba->clk_scaling.is_allowed = true;
++			hba->clk_scaling.is_enabled = true;
++			ufshcd_clkscaling_init_sysfs(hba);
++		}
+ 	}
+ 
+ 	ufs_bsg_probe(hba);
+@@ -8491,11 +8513,14 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	ufshcd_hold(hba, false);
+ 	hba->clk_gating.is_suspended = true;
+ 
+-	if (hba->clk_scaling.is_allowed) {
++	if (hba->clk_scaling.is_enabled) {
+ 		cancel_work_sync(&hba->clk_scaling.suspend_work);
+ 		cancel_work_sync(&hba->clk_scaling.resume_work);
+ 		ufshcd_suspend_clkscaling(hba);
+ 	}
++	down_write(&hba->clk_scaling_lock);
++	hba->clk_scaling.is_allowed = false;
++	up_write(&hba->clk_scaling_lock);
+ 
+ 	if (req_dev_pwr_mode == UFS_ACTIVE_PWR_MODE &&
+ 			req_link_state == UIC_LINK_ACTIVE_STATE) {
+@@ -8592,8 +8617,6 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	goto out;
+ 
+ set_link_active:
+-	if (hba->clk_scaling.is_allowed)
+-		ufshcd_resume_clkscaling(hba);
+ 	ufshcd_vreg_set_hpm(hba);
+ 	if (ufshcd_is_link_hibern8(hba) && !ufshcd_uic_hibern8_exit(hba))
+ 		ufshcd_set_link_active(hba);
+@@ -8603,7 +8626,10 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	if (!ufshcd_set_dev_pwr_mode(hba, UFS_ACTIVE_PWR_MODE))
+ 		ufshcd_disable_auto_bkops(hba);
+ enable_gating:
+-	if (hba->clk_scaling.is_allowed)
++	down_write(&hba->clk_scaling_lock);
++	hba->clk_scaling.is_allowed = true;
++	up_write(&hba->clk_scaling_lock);
++	if (hba->clk_scaling.is_enabled)
+ 		ufshcd_resume_clkscaling(hba);
+ 	hba->clk_gating.is_suspended = false;
+ 	hba->dev_info.b_rpm_dev_flush_capable = false;
+@@ -8701,7 +8727,10 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 
+ 	hba->clk_gating.is_suspended = false;
+ 
+-	if (hba->clk_scaling.is_allowed)
++	down_write(&hba->clk_scaling_lock);
++	hba->clk_scaling.is_allowed = true;
++	up_write(&hba->clk_scaling_lock);
++	if (hba->clk_scaling.is_enabled)
+ 		ufshcd_resume_clkscaling(hba);
+ 
+ 	/* Enable Auto-Hibernate if configured */
+@@ -8725,8 +8754,6 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	ufshcd_vreg_set_lpm(hba);
+ disable_irq_and_vops_clks:
+ 	ufshcd_disable_irq(hba);
+-	if (hba->clk_scaling.is_allowed)
+-		ufshcd_suspend_clkscaling(hba);
+ 	ufshcd_setup_clocks(hba, false);
+ 	if (ufshcd_is_clkgating_allowed(hba)) {
+ 		hba->clk_gating.state = CLKS_OFF;
+@@ -8944,8 +8971,6 @@ void ufshcd_remove(struct ufs_hba *hba)
+ 
+ 	ufshcd_exit_clk_scaling(hba);
+ 	ufshcd_exit_clk_gating(hba);
+-	if (ufshcd_is_clkscaling_supported(hba))
+-		device_remove_file(hba->dev, &hba->clk_scaling.enable_attr);
+ 	ufshcd_hba_exit(hba);
+ }
+ EXPORT_SYMBOL_GPL(ufshcd_remove);
+diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+index e0f00a4..5737679 100644
+--- a/drivers/scsi/ufs/ufshcd.h
++++ b/drivers/scsi/ufs/ufshcd.h
+@@ -382,7 +382,10 @@ struct ufs_saved_pwr_info {
+  * @workq: workqueue to schedule devfreq suspend/resume work
+  * @suspend_work: worker to suspend devfreq
+  * @resume_work: worker to resume devfreq
+- * @is_allowed: tracks if scaling is currently allowed or not
++ * @is_enabled: tracks if scaling is currently enabled or not, controlled by
++		clkscale_enable sysfs node
++ * @is_allowed: tracks if scaling is currently allowed or not, used to block
++		clock scaling which is not invoked from devfreq governor
+  * @is_busy_started: tracks if busy period has started or not
+  * @is_suspended: tracks if devfreq is suspended or not
+  */
+@@ -396,6 +399,7 @@ struct ufs_clk_scaling {
+ 	struct workqueue_struct *workq;
+ 	struct work_struct suspend_work;
+ 	struct work_struct resume_work;
++	bool is_enabled;
+ 	bool is_allowed;
+ 	bool is_busy_started;
+ 	bool is_suspended;
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
-> Thanks and regards,
-> Cristi
-> 
-> > Thanks,
-> > Mani
-> > 
-> > > Regards,
-> > > Andreas
-> > > 
-> > > > 
-> > > > Done, thanks!
-> > > > 
-> > > >> Thanks,
-> > > >> Mani
-> > > >>
-> > > >>> +L:	linux-actions@lists.infradead.org (moderated for non-subscribers)
-> > > >>>  S:	Maintained
-> > > >>>  F:	Documentation/devicetree/bindings/arm/actions.yaml
-> > > >>>  F:	Documentation/devicetree/bindings/clock/actions,owl-cmu.txt
-> > > >>> -- 
-> > > >>> 2.29.2
-> > > >>>
-> > > 
-> > > 
-> > > -- 
-> > > SUSE Software Solutions Germany GmbH
-> > > Maxfeldstr. 5, 90409 Nürnberg, Germany
-> > > GF: Felix Imendörffer
-> > > HRB 36809 (AG Nürnberg)
