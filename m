@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 472322E67E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:30:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66A4C2E681B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:33:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729698AbgL1NGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:06:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33828 "EHLO mail.kernel.org"
+        id S2633695AbgL1Qaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:30:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33926 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730863AbgL1NGQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:06:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D63B922A84;
-        Mon, 28 Dec 2020 13:05:59 +0000 (UTC)
+        id S1728574AbgL1NGY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:06:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 298D8206ED;
+        Mon, 28 Dec 2020 13:06:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160760;
-        bh=AGbZjThtdrTkvoPM+uTHatoHh9P2el0rwGqYVMnMn+4=;
+        s=korg; t=1609160768;
+        bh=HKVBM16avOEKdjz+NaHmxjroT+xlNi3GmgGkoe+Jq/U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OR8mKZQfr5v5z5YfGpLKPWUP5v9fQbxHjJxiQDWUQ/LU6T2sIFYOBrzoRKB1eM4OG
-         whXa/r5uwyMYa4BZU9SggwGZgwWxrhBoGTfxkcEkZq112oSG/ig3dcLcs6EL3nDB7J
-         0F2LaEmmTwlMhOU6OcFLqRbx5/QNz06cxvniS+Aw=
+        b=IM9jtQWpRnoS5Vo+eVgySK8AzUCOUHdEu6YGVM31bTP0DUBfWGu2MC4u32tnf8zwB
+         18HwGM4GBz0zNWrgslyPiJmL3szQugTM45wcYD+Ya/rQhaXr2F6OCmmEkV1H6hxl+t
+         Iqs+7jTLDVbHhTm1dQ6SuXX9hW+B6UZGQjNvP/eU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.9 162/175] spi: spi-sh: Fix use-after-free on unbind
-Date:   Mon, 28 Dec 2020 13:50:15 +0100
-Message-Id: <20201228124901.094894186@linuxfoundation.org>
+        Bert Vermeulen <bert@biot.com>, Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.9 165/175] spi: rb4xx: Dont leak SPI master in probe error path
+Date:   Mon, 28 Dec 2020 13:50:18 +0100
+Message-Id: <20201228124901.233708312@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
 References: <20201228124853.216621466@linuxfoundation.org>
@@ -41,76 +41,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lukas Wunner <lukas@wunner.de>
 
-commit e77df3eca12be4b17f13cf9f215cff248c57d98f upstream.
+commit a4729c3506c3eb1a6ca5c0289f4e7cafa4115065 upstream.
 
-spi_sh_remove() accesses the driver's private data after calling
-spi_unregister_master() even though that function releases the last
-reference on the spi_master and thereby frees the private data.
+If the calls to devm_clk_get(), devm_spi_register_master() or
+clk_prepare_enable() fail on probe of the Mikrotik RB4xx SPI driver,
+the spi_master struct is erroneously not freed.
 
-Fix by switching over to the new devm_spi_alloc_master() helper which
-keeps the private data accessible until the driver has unbound.
+Fix by switching over to the new devm_spi_alloc_master() helper.
 
-Fixes: 680c1305e259 ("spi/spi_sh: use spi_unregister_master instead of spi_master_put in remove path")
+Fixes: 05aec357871f ("spi: Add SPI driver for Mikrotik RB4xx series boards")
 Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Cc: <stable@vger.kernel.org> # v3.0+: 5e844cc37a5c: spi: Introduce device-managed SPI controller allocation
-Cc: <stable@vger.kernel.org> # v3.0+
-Cc: Axel Lin <axel.lin@ingics.com>
-Link: https://lore.kernel.org/r/6d97628b536baf01d5e3e39db61108f84d44c8b2.1607286887.git.lukas@wunner.de
+Cc: <stable@vger.kernel.org> # v4.2+: 5e844cc37a5c: spi: Introduce device-managed SPI controller allocation
+Cc: <stable@vger.kernel.org> # v4.2+
+Cc: Bert Vermeulen <bert@biot.com>
+Link: https://lore.kernel.org/r/369bf26d71927f60943b1d9d8f51810f00b0237d.1607286887.git.lukas@wunner.de
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/spi/spi-sh.c |   13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
+ drivers/spi/spi-rb4xx.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/spi/spi-sh.c
-+++ b/drivers/spi/spi-sh.c
-@@ -450,7 +450,7 @@ static int spi_sh_probe(struct platform_
- 		return -ENODEV;
- 	}
+--- a/drivers/spi/spi-rb4xx.c
++++ b/drivers/spi/spi-rb4xx.c
+@@ -148,7 +148,7 @@ static int rb4xx_spi_probe(struct platfo
+ 	if (IS_ERR(spi_base))
+ 		return PTR_ERR(spi_base);
  
--	master = spi_alloc_master(&pdev->dev, sizeof(struct spi_sh_data));
-+	master = devm_spi_alloc_master(&pdev->dev, sizeof(struct spi_sh_data));
- 	if (master == NULL) {
- 		dev_err(&pdev->dev, "spi_alloc_master error.\n");
+-	master = spi_alloc_master(&pdev->dev, sizeof(*rbspi));
++	master = devm_spi_alloc_master(&pdev->dev, sizeof(*rbspi));
+ 	if (!master)
  		return -ENOMEM;
-@@ -468,16 +468,14 @@ static int spi_sh_probe(struct platform_
- 		break;
- 	default:
- 		dev_err(&pdev->dev, "No support width\n");
--		ret = -ENODEV;
--		goto error1;
-+		return -ENODEV;
- 	}
- 	ss->irq = irq;
- 	ss->master = master;
- 	ss->addr = devm_ioremap(&pdev->dev, res->start, resource_size(res));
- 	if (ss->addr == NULL) {
- 		dev_err(&pdev->dev, "ioremap error.\n");
--		ret = -ENOMEM;
--		goto error1;
-+		return -ENOMEM;
- 	}
- 	INIT_LIST_HEAD(&ss->queue);
- 	spin_lock_init(&ss->lock);
-@@ -487,7 +485,7 @@ static int spi_sh_probe(struct platform_
- 	ret = request_irq(irq, spi_sh_irq, 0, "spi_sh", ss);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "request_irq error\n");
--		goto error1;
-+		return ret;
- 	}
- 
- 	master->num_chipselect = 2;
-@@ -506,9 +504,6 @@ static int spi_sh_probe(struct platform_
- 
-  error3:
- 	free_irq(irq, ss);
-- error1:
--	spi_master_put(master);
--
- 	return ret;
- }
  
 
 
