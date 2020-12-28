@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D85DA2E431D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:34:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81C492E3A43
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:34:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392859AbgL1Pai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:30:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56918 "EHLO mail.kernel.org"
+        id S2391133AbgL1NeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:34:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405169AbgL1NzM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:55:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E86082072C;
-        Mon, 28 Dec 2020 13:54:30 +0000 (UTC)
+        id S2390196AbgL1Nd5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:33:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B096205CB;
+        Mon, 28 Dec 2020 13:33:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163671;
-        bh=7cQDaEUqqy2Z+ZsG1YF2Up5+GInOJP/+GzQEoaKyGPM=;
+        s=korg; t=1609162396;
+        bh=hZO3f+sU8DLpmWcx9RIoRxYScZUiG1znp4VtXoefxS8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qgicSZ7fQpuyTtPYEnnlR3WBRj0kV3WMM0Ehsz2g8qRCCdXNPgaeHsW+CtdsOZoxW
-         UGSXyb9vwkiKjnOL8d0cc5GOaefIbNrH0tFd5v5TQP6Nlulp7pg9r/ozttP6q3MGfa
-         gBC3QNOHANijIPWIOfM4P9sCVAeRFKA1rkN8K+q0=
+        b=Ym3wKp1YEBhvY6bZ7MvLwTV1RpjjWHNjwWtWx51sBR2T/VqlUbBXJm/zoSo1QMo5G
+         Q0aClyolWUDHKCeUnoIToXQhQ6kpIlZ4y9q26PqpgGCuDLc0JAapsBpVgDG3x1S9/4
+         of0SnnVQIKhSb62pucV/3UXT2/EYWMiWccHUgqnE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.4 366/453] USB: serial: keyspan_pda: fix dropped unthrottle interrupts
-Date:   Mon, 28 Dec 2020 13:50:02 +0100
-Message-Id: <20201228124954.818486155@linuxfoundation.org>
+        stable@vger.kernel.org, Stefan Haberland <sth@linux.ibm.com>,
+        Jan Hoeppner <hoeppner@linux.ibm.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 4.19 284/346] s390/dasd: fix list corruption of lcu list
+Date:   Mon, 28 Dec 2020 13:50:03 +0100
+Message-Id: <20201228124933.508133620@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,45 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Stefan Haberland <sth@linux.ibm.com>
 
-commit 696c541c8c6cfa05d65aa24ae2b9e720fc01766e upstream.
+commit 53a7f655834c7c335bf683f248208d4fbe4b47bc upstream.
 
-Commit c528fcb116e6 ("USB: serial: keyspan_pda: fix receive sanity
-checks") broke write-unthrottle handling by dropping well-formed
-unthrottle-interrupt packets which are precisely two bytes long. This
-could lead to blocked writers not being woken up when buffer space again
-becomes available.
+In dasd_alias_disconnect_device_from_lcu the device is removed from any
+list on the LCU. Afterwards the LCU is removed from the lcu list if it
+does not contain devices any longer.
 
-Instead, stop unconditionally printing the third byte which is
-(presumably) only valid on modem-line changes.
+The lcu->lock protects the lcu from parallel updates. But to cancel all
+workers and wait for completion the lcu->lock has to be unlocked.
 
-Fixes: c528fcb116e6 ("USB: serial: keyspan_pda: fix receive sanity checks")
-Cc: stable <stable@vger.kernel.org>     # 4.11
-Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Johan Hovold <johan@kernel.org>
+If two devices are removed in parallel and both are removed from the LCU
+the first device that takes the lcu->lock again will delete the LCU because
+it is already empty but the second device also tries to free the LCU which
+leads to a list corruption of the lcu list.
+
+Fix by removing the device right before the lcu is checked without
+unlocking the lcu->lock in between.
+
+Fixes: 8e09f21574ea ("[S390] dasd: add hyper PAV support to DASD device driver, part 1")
+Cc: stable@vger.kernel.org
+Signed-off-by: Stefan Haberland <sth@linux.ibm.com>
+Reviewed-by: Jan Hoeppner <hoeppner@linux.ibm.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/serial/keyspan_pda.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/s390/block/dasd_alias.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/serial/keyspan_pda.c
-+++ b/drivers/usb/serial/keyspan_pda.c
-@@ -172,11 +172,11 @@ static void keyspan_pda_rx_interrupt(str
- 		break;
- 	case 1:
- 		/* status interrupt */
--		if (len < 3) {
-+		if (len < 2) {
- 			dev_warn(&port->dev, "short interrupt message received\n");
- 			break;
- 		}
--		dev_dbg(&port->dev, "rx int, d1=%d, d2=%d\n", data[1], data[2]);
-+		dev_dbg(&port->dev, "rx int, d1=%d\n", data[1]);
- 		switch (data[1]) {
- 		case 1: /* modemline change */
- 			break;
+--- a/drivers/s390/block/dasd_alias.c
++++ b/drivers/s390/block/dasd_alias.c
+@@ -256,7 +256,6 @@ void dasd_alias_disconnect_device_from_l
+ 		return;
+ 	device->discipline->get_uid(device, &uid);
+ 	spin_lock_irqsave(&lcu->lock, flags);
+-	list_del_init(&device->alias_list);
+ 	/* make sure that the workers don't use this device */
+ 	if (device == lcu->suc_data.device) {
+ 		spin_unlock_irqrestore(&lcu->lock, flags);
+@@ -283,6 +282,7 @@ void dasd_alias_disconnect_device_from_l
+ 
+ 	spin_lock_irqsave(&aliastree.lock, flags);
+ 	spin_lock(&lcu->lock);
++	list_del_init(&device->alias_list);
+ 	if (list_empty(&lcu->grouplist) &&
+ 	    list_empty(&lcu->active_devices) &&
+ 	    list_empty(&lcu->inactive_devices)) {
 
 
