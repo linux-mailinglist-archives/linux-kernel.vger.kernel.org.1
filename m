@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BFB42E39AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:27:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D562E3889
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:11:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389475AbgL1N01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:26:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54730 "EHLO mail.kernel.org"
+        id S1731828AbgL1NLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:11:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389099AbgL1N0B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:26:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 782BF207CF;
-        Mon, 28 Dec 2020 13:25:20 +0000 (UTC)
+        id S1731483AbgL1NLC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:11:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 42BCC2076D;
+        Mon, 28 Dec 2020 13:10:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161921;
-        bh=rXPopBDqyD3dT3dsIt2Hw+Dd4hszfUpNkyQjeCgt8TA=;
+        s=korg; t=1609161021;
+        bh=e3mAGGGpbxSs7Un8er1DvHsBcDpuXcSYNhx/KPdubXE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Iq9dlBFT9hYfyiFJyH6loHFX7nvYVoEND2Gbbp4viZo0Coj264NfxyrlA/BITR8Xz
-         hlqyxXN16J4KOUH1uvAIgIcU8qlbvConEIDYE6hKQ3flZ7o3VYOzYcuddSZThhlhGU
-         kY1DzJIYThUKoCn7dIqOSMa6DhYVbj52qeRoNHGQ=
+        b=e7Z5dVdHt80Ys33DGr2FI6IXTFO85hDfYvN25MVXfM3QURL7IETkoefH/xzfL+3cQ
+         HVDsHyZWbyrB+EjxdscHzaPMXFyv9YmKEzaKVCHlB7f9IRYBPh5Udf5oUSHv9ZVvDI
+         Ex4q7apjT/E1KhQ4bDcVjVouLzvNogAkUT/Tkxak=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Qinglang Miao <miaoqinglang@huawei.com>,
+        Thierry Reding <treding@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 128/346] spi: tegra114: fix reference leak in tegra spi ops
-Date:   Mon, 28 Dec 2020 13:47:27 +0100
-Message-Id: <20201228124925.974382235@linuxfoundation.org>
+Subject: [PATCH 4.14 043/242] drm/tegra: sor: Disable clocks on error in tegra_sor_init()
+Date:   Mon, 28 Dec 2020 13:47:28 +0100
+Message-Id: <20201228124906.797490959@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,44 +40,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Qinglang Miao <miaoqinglang@huawei.com>
 
-[ Upstream commit a042184c7fb99961ea083d4ec192614bec671969 ]
+[ Upstream commit bf3a3cdcad40e5928a22ea0fd200d17fd6d6308d ]
 
-pm_runtime_get_sync will increment pm usage counter even it
-failed. Forgetting to pm_runtime_put_noidle will result in
-reference leak in two callers(tegra_spi_setup and
-tegra_spi_resume), so we should fix it.
+Fix the missing clk_disable_unprepare() before return from
+tegra_sor_init() in the error handling case.
 
-Fixes: f333a331adfac ("spi/tegra114: add spi driver")
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201103141306.5607-1-zhangqilong3@huawei.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-tegra114.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/tegra/sor.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/spi/spi-tegra114.c b/drivers/spi/spi-tegra114.c
-index 09cfae3abce2d..c510b53e5e3f5 100644
---- a/drivers/spi/spi-tegra114.c
-+++ b/drivers/spi/spi-tegra114.c
-@@ -827,6 +827,7 @@ static int tegra_spi_setup(struct spi_device *spi)
- 
- 	ret = pm_runtime_get_sync(tspi->dev);
- 	if (ret < 0) {
-+		pm_runtime_put_noidle(tspi->dev);
- 		dev_err(tspi->dev, "pm runtime failed, e = %d\n", ret);
- 		return ret;
+diff --git a/drivers/gpu/drm/tegra/sor.c b/drivers/gpu/drm/tegra/sor.c
+index 7ab1d1dc7cd73..352ae52be3418 100644
+--- a/drivers/gpu/drm/tegra/sor.c
++++ b/drivers/gpu/drm/tegra/sor.c
+@@ -2378,17 +2378,23 @@ static int tegra_sor_init(struct host1x_client *client)
+ 		if (err < 0) {
+ 			dev_err(sor->dev, "failed to deassert SOR reset: %d\n",
+ 				err);
++			clk_disable_unprepare(sor->clk);
+ 			return err;
+ 		}
  	}
-@@ -1252,6 +1253,7 @@ static int tegra_spi_resume(struct device *dev)
  
- 	ret = pm_runtime_get_sync(dev);
- 	if (ret < 0) {
-+		pm_runtime_put_noidle(dev);
- 		dev_err(dev, "pm runtime failed, e = %d\n", ret);
- 		return ret;
- 	}
+ 	err = clk_prepare_enable(sor->clk_safe);
+-	if (err < 0)
++	if (err < 0) {
++		clk_disable_unprepare(sor->clk);
+ 		return err;
++	}
+ 
+ 	err = clk_prepare_enable(sor->clk_dp);
+-	if (err < 0)
++	if (err < 0) {
++		clk_disable_unprepare(sor->clk_safe);
++		clk_disable_unprepare(sor->clk);
+ 		return err;
++	}
+ 
+ 	return 0;
+ }
 -- 
 2.27.0
 
