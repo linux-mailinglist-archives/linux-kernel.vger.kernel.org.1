@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A05A32E3BAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:53:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A355F2E3E34
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:25:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407276AbgL1NxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:53:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52752 "EHLO mail.kernel.org"
+        id S2503228AbgL1OZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:25:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406434AbgL1Nux (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:50:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77D0E22BEF;
-        Mon, 28 Dec 2020 13:50:12 +0000 (UTC)
+        id S2503197AbgL1OZ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:25:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C833229C5;
+        Mon, 28 Dec 2020 14:24:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163413;
-        bh=TYGqGoHWcQkY9WzaNVv33lvZzYth66cp92ZyHGd365Q=;
+        s=korg; t=1609165485;
+        bh=AiQ5/sQNlZG7KPCDNVwAS1q8blgrB27JK5GC4mhyu84=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=laShKtCW2BIkHidSZUvsV0elFEd2+ECw6woi13SlJYbdsI/lAc/Xn23L9WpdCYPMx
-         R31KMEAATXwMNAu4zzyyuN+vbwLK5SPrp0nIl3cQ7BE2oT69lqXjbxw8/8uQnFcDm+
-         ihhDAAs5GnEikIOYGWH50FyTQPhSWaNtaQpB2gRo=
+        b=t7qaYDyDACVpBMqjpHSzrjNw2Mvf23mlaOogFz5A5tOcw9LhaILIMnNRsIJCHdS5Q
+         pW20UMK0j1zMELUdbpv7u1plZBflMrG2PKIpvTEwG7OtF08y1lw4gvKD3cJSMAAaxK
+         G4tr0A8RCiONX9RmV9P1L1S6SpsgEXTLO1hdAP+Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
+        stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 270/453] extcon: max77693: Fix modalias string
+Subject: [PATCH 5.10 508/717] Smack: Handle io_uring kernel thread privileges
 Date:   Mon, 28 Dec 2020 13:48:26 +0100
-Message-Id: <20201228124950.222604836@linuxfoundation.org>
+Message-Id: <20201228125045.299088799@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,32 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Szyprowski <m.szyprowski@samsung.com>
+From: Casey Schaufler <casey@schaufler-ca.com>
 
-[ Upstream commit e1efdb604f5c9903a5d92ef42244009d3c04880f ]
+[ Upstream commit 942cb357ae7d9249088e3687ee6a00ed2745a0c7 ]
 
-The platform device driver name is "max77693-muic", so advertise it
-properly in the modalias string. This fixes automated module loading when
-this driver is compiled as a module.
+Smack assumes that kernel threads are privileged for smackfs
+operations. This was necessary because the credential of the
+kernel thread was not related to a user operation. With io_uring
+the credential does reflect a user's rights and can be used.
 
-Fixes: db1b9037424b ("extcon: MAX77693: Add extcon-max77693 driver to support Maxim MAX77693 MUIC device")
-Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
+Suggested-by: Jens Axboe <axboe@kernel.dk>
+Acked-by: Jens Axboe <axboe@kernel.dk>
+Acked-by: Eric W. Biederman <ebiederm@xmission.com>
+Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/extcon/extcon-max77693.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ security/smack/smack_access.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/extcon/extcon-max77693.c b/drivers/extcon/extcon-max77693.c
-index 32fc5a66ffa98..26c7041f70698 100644
---- a/drivers/extcon/extcon-max77693.c
-+++ b/drivers/extcon/extcon-max77693.c
-@@ -1277,4 +1277,4 @@ module_platform_driver(max77693_muic_driver);
- MODULE_DESCRIPTION("Maxim MAX77693 Extcon driver");
- MODULE_AUTHOR("Chanwoo Choi <cw00.choi@samsung.com>");
- MODULE_LICENSE("GPL");
--MODULE_ALIAS("platform:extcon-max77693");
-+MODULE_ALIAS("platform:max77693-muic");
+diff --git a/security/smack/smack_access.c b/security/smack/smack_access.c
+index efe2406a39609..7eabb448acab4 100644
+--- a/security/smack/smack_access.c
++++ b/security/smack/smack_access.c
+@@ -688,9 +688,10 @@ bool smack_privileged_cred(int cap, const struct cred *cred)
+ bool smack_privileged(int cap)
+ {
+ 	/*
+-	 * All kernel tasks are privileged
++	 * Kernel threads may not have credentials we can use.
++	 * The io_uring kernel threads do have reliable credentials.
+ 	 */
+-	if (unlikely(current->flags & PF_KTHREAD))
++	if ((current->flags & (PF_KTHREAD | PF_IO_WORKER)) == PF_KTHREAD)
+ 		return true;
+ 
+ 	return smack_privileged_cred(cap, current_cred());
 -- 
 2.27.0
 
