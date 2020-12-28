@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C6732E6663
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:14:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5F1A2E666E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:14:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388091AbgL1NVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:21:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49224 "EHLO mail.kernel.org"
+        id S2394161AbgL1QM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:12:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50034 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387659AbgL1NU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:20:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C3CDA206ED;
-        Mon, 28 Dec 2020 13:20:39 +0000 (UTC)
+        id S1733261AbgL1NV1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:21:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 254FB207F7;
+        Mon, 28 Dec 2020 13:20:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161640;
-        bh=vl8Si2iHFW1qiSh0gt6YoAeGaFNEYL7Fhj2joEczyRY=;
+        s=korg; t=1609161646;
+        bh=yFlnbaOQfmigI1sL8UR9AsyN0nzzpqBdYr6TGcw4O2g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K1gXK3vKBtqqsJfk5C3CPcQDyAGNCltecbV+TGTdWvdzkicU6yuY4eEc6Z37n65lK
-         OEmFqbjvluTX4mxKMwWcrNZp4jp7mtnbB8YhNuhstKDjss8NSwr81XOJ3hBdJ29T7W
-         4y5k7cSIk/HmnNA8XBsiepBlf1tyPS9Uy30sgpBU=
+        b=U2lEPwXnn+j5dWA7f1IzKMzNWXXIFJl4flO+075KhVNgV0dwm5a5h/W1rSPDxi71L
+         NriXR9QiyWeO+heXPNKlaz3pe2vdtyZIGbmnDe1DOSaOr1hMh8zJVPX+pkEX0S3nnv
+         jcmV2BDAhHgUiIS1yDzODUwFPSS+iWabsvrxqLNI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Subject: [PATCH 4.19 038/346] ktest.pl: If size of log is too big to email, email error message
-Date:   Mon, 28 Dec 2020 13:45:57 +0100
-Message-Id: <20201228124921.626883918@linuxfoundation.org>
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        Bui Quang Minh <minhquangbui99@gmail.com>
+Subject: [PATCH 4.19 039/346] USB: dummy-hcd: Fix uninitialized array use in init()
+Date:   Mon, 28 Dec 2020 13:45:58 +0100
+Message-Id: <20201228124921.675327237@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
 References: <20201228124919.745526410@linuxfoundation.org>
@@ -39,43 +39,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+From: Bui Quang Minh <minhquangbui99@gmail.com>
 
-commit 8cd6bc0359deebd8500e6de95899a8a78d3ec4ba upstream.
+commit e90cfa813da7a527785033a0b247594c2de93dd8 upstream.
 
-If the size of the error log is too big to send via email, and the sending
-fails, it wont email any result. This can be confusing for the user who is
-waiting for an email on the completion of the tests.
+This error path
 
-If it fails to send email, then try again without the log file stating that
-it failed to send an email. Obviously this will not be of use if the sending
-of email failed for some other reasons, but it will at least give the user
-some information when it fails for the most common reason.
+	err_add_pdata:
+		for (i = 0; i < mod_data.num; i++)
+			kfree(dum[i]);
 
-Cc: stable@vger.kernel.org
-Fixes: c2d84ddb338c8 ("ktest.pl: Add MAIL_COMMAND option to define how to send email")
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+can be triggered when not all dum's elements are initialized.
+
+Fix this by initializing all dum's elements to NULL.
+
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
+Link: https://lore.kernel.org/r/1607063090-3426-1-git-send-email-minhquangbui99@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- tools/testing/ktest/ktest.pl |    7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/usb/gadget/udc/dummy_hcd.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/tools/testing/ktest/ktest.pl
-+++ b/tools/testing/ktest/ktest.pl
-@@ -4177,7 +4177,12 @@ sub do_send_mail {
-     $mail_command =~ s/\$SUBJECT/$subject/g;
-     $mail_command =~ s/\$MESSAGE/$message/g;
+--- a/drivers/usb/gadget/udc/dummy_hcd.c
++++ b/drivers/usb/gadget/udc/dummy_hcd.c
+@@ -2747,7 +2747,7 @@ static int __init init(void)
+ {
+ 	int	retval = -ENOMEM;
+ 	int	i;
+-	struct	dummy *dum[MAX_NUM_UDC];
++	struct	dummy *dum[MAX_NUM_UDC] = {};
  
--    run_command $mail_command;
-+    my $ret = run_command $mail_command;
-+    if (!$ret && defined($file)) {
-+	# try again without the file
-+	$message .= "\n\n*** FAILED TO SEND LOG ***\n\n";
-+	do_send_email($subject, $message);
-+    }
- }
- 
- sub send_email {
+ 	if (usb_disabled())
+ 		return -ENODEV;
 
 
