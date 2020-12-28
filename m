@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 807522E3FBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:44:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08EAC2E3A39
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:34:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503781AbgL1O0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:26:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33542 "EHLO mail.kernel.org"
+        id S2391103AbgL1Ndo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:33:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503665AbgL1O0J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:26:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 462EB206D4;
-        Mon, 28 Dec 2020 14:25:53 +0000 (UTC)
+        id S2387819AbgL1Nc4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:32:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF25422582;
+        Mon, 28 Dec 2020 13:32:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165553;
-        bh=C4Xx29pfeW0Sm72GZwO45w63PsyaxlpmUCXJGWfKUyo=;
+        s=korg; t=1609162336;
+        bh=cEH1ohLZUhbTG5A4vYlmMy+XmPUBtcJyo7fVo6bKm4Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GZupbiP3v8ZkOUrtcT4ghOFNzH10Uncx1FhILM1LgPkq5EuLLf/NRjPRVSVreLE7d
-         5gqx79V/r/q1yd9urNuHxsNOWirPXEsD/UD2JDqv3yr7MyZYnfEf++f7kS84AYXiSl
-         KnnxtoiyQz6myHUO9+qdMILBL04PWIwuJAbmgb1w=
+        b=FA9hefT7L7RFjuRxcVWM18ySNd01qGttCA9MgIPcaZa6mgB1bdxE90tlq3ORSPi/B
+         ZBBu0ihqatXOQdpO1SE1+YtVjwyI8eT8qlJnl4uD65SrZ8iRNmXi1UhEtGlrne8fp1
+         mflmYUE9HFmDpp/A2K/CvIQamf8gjrYanln9CXJ0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 5.10 571/717] crypto: ecdh - avoid unaligned accesses in ecdh_set_secret()
-Date:   Mon, 28 Dec 2020 13:49:29 +0100
-Message-Id: <20201228125048.273238998@linuxfoundation.org>
+        stable@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 251/346] kconfig: fix return value of do_error_if()
+Date:   Mon, 28 Dec 2020 13:49:30 +0100
+Message-Id: <20201228124931.915987057@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,47 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+From: Masahiro Yamada <masahiroy@kernel.org>
 
-commit 17858b140bf49961b71d4e73f1c3ea9bc8e7dda0 upstream.
+[ Upstream commit 135b4957eac43af2aedf8e2a277b9540f33c2558 ]
 
-ecdh_set_secret() casts a void* pointer to a const u64* in order to
-feed it into ecc_is_key_valid(). This is not generally permitted by
-the C standard, and leads to actual misalignment faults on ARMv6
-cores. In some cases, these are fixed up in software, but this still
-leads to performance hits that are entirely avoidable.
+$(error-if,...) is expanded to an empty string. Currently, it relies on
+eval_clause() returning xstrdup("") when all attempts for expansion fail,
+but the correct implementation is to make do_error_if() return xstrdup("").
 
-So let's copy the key into the ctx buffer first, which we will do
-anyway in the common case, and which guarantees correct alignment.
-
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 1d6272e6fe43 ("kconfig: add 'info', 'warning-if', and 'error-if' built-in functions")
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- crypto/ecdh.c |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ scripts/kconfig/preprocess.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/crypto/ecdh.c
-+++ b/crypto/ecdh.c
-@@ -53,12 +53,13 @@ static int ecdh_set_secret(struct crypto
- 		return ecc_gen_privkey(ctx->curve_id, ctx->ndigits,
- 				       ctx->private_key);
+diff --git a/scripts/kconfig/preprocess.c b/scripts/kconfig/preprocess.c
+index 5ca2df790d3cf..389814b02d06b 100644
+--- a/scripts/kconfig/preprocess.c
++++ b/scripts/kconfig/preprocess.c
+@@ -111,7 +111,7 @@ static char *do_error_if(int argc, char *argv[])
+ 	if (!strcmp(argv[0], "y"))
+ 		pperror("%s", argv[1]);
  
--	if (ecc_is_key_valid(ctx->curve_id, ctx->ndigits,
--			     (const u64 *)params.key, params.key_size) < 0)
--		return -EINVAL;
--
- 	memcpy(ctx->private_key, params.key, params.key_size);
- 
-+	if (ecc_is_key_valid(ctx->curve_id, ctx->ndigits,
-+			     ctx->private_key, params.key_size) < 0) {
-+		memzero_explicit(ctx->private_key, params.key_size);
-+		return -EINVAL;
-+	}
- 	return 0;
+-	return NULL;
++	return xstrdup("");
  }
  
+ static char *do_filename(int argc, char *argv[])
+-- 
+2.27.0
+
 
 
