@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1443A2E3AAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:41:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C0E2E4119
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:03:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403844AbgL1NkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:40:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40232 "EHLO mail.kernel.org"
+        id S2439354AbgL1PCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:02:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403819AbgL1NkE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:40:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E5E932064B;
-        Mon, 28 Dec 2020 13:39:22 +0000 (UTC)
+        id S2440046AbgL1ONH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:13:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19FD8206D8;
+        Mon, 28 Dec 2020 14:12:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162763;
-        bh=VSnBL4f5pgjlnXUot2WMuYZ+6vRGmw+BBFwmPtVlQFg=;
+        s=korg; t=1609164771;
+        bh=XkvJicsoILytQwnFfqfHxky5WwbR/R+66ZcGl8JN7eI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WfboJ4B6tJsg60hFFihJGIgh4BTMgGFq2ShWO8GvjgZaMEf5hqc/bL+wwLp/8tGEc
-         tg4hVAHGoPRTdXSB209Fz+LJRdivbwp3AGzA284pXdwjvWVeCKI6ZHS2A+yV2ECXWe
-         oVkHiGGIf4yS4AcvLFIniwAEioHQi8KSsMWd+e6o=
+        b=c8/WHD6GKx+zRtdORBR9Lm/6hNC5uljNofX78aYIku5bjl66+crMfhzznpGeAuHUr
+         9DERp53iGcETsmI7Y+mlYRROUme6J9qK7gfHtmhsvkVF0dpGor7axmqbkIzDFSQpwp
+         cN806Q6xTR//KSmZgITwraDKjiW5YvvbotWP8Ldw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        Will McVicker <willmcvicker@google.com>,
-        Peter Chen <peter.chen@nxp.com>
-Subject: [PATCH 5.4 054/453] USB: gadget: f_midi: setup SuperSpeed Plus descriptors
-Date:   Mon, 28 Dec 2020 13:44:50 +0100
-Message-Id: <20201228124939.855434142@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 293/717] ARM: dts: at91: sama5d2: map securam as device
+Date:   Mon, 28 Dec 2020 13:44:51 +0100
+Message-Id: <20201228125035.073178334@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Will McVicker <willmcvicker@google.com>
+From: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-commit 457a902ba1a73b7720666b21ca038cd19764db18 upstream.
+[ Upstream commit 9b5dcc8d427e2bcb84c49eb03ffefe11e7537a55 ]
 
-Needed for SuperSpeed Plus support for f_midi.  This allows the
-gadget to work properly without crashing at SuperSpeed rates.
+Due to strobe signal not being propagated from CPU to securam
+the securam needs to be mapped as device or strongly ordered memory
+to work properly. Otherwise, updating to one offset may affect
+the adjacent locations in securam.
 
-Cc: Felipe Balbi <balbi@kernel.org>
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Will McVicker <willmcvicker@google.com>
-Reviewed-by: Peter Chen <peter.chen@nxp.com>
-Link: https://lore.kernel.org/r/20201127140559.381351-4-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: d4ce5f44d4409 ("ARM: dts: at91: sama5d2: Add securam node")
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Link: https://lore.kernel.org/r/1606903025-14197-3-git-send-email-claudiu.beznea@microchip.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/function/f_midi.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/arm/boot/dts/sama5d2.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/usb/gadget/function/f_midi.c
-+++ b/drivers/usb/gadget/function/f_midi.c
-@@ -1048,6 +1048,12 @@ static int f_midi_bind(struct usb_config
- 		f->ss_descriptors = usb_copy_descriptors(midi_function);
- 		if (!f->ss_descriptors)
- 			goto fail_f_midi;
-+
-+		if (gadget_is_superspeed_plus(c->cdev->gadget)) {
-+			f->ssp_descriptors = usb_copy_descriptors(midi_function);
-+			if (!f->ssp_descriptors)
-+				goto fail_f_midi;
-+		}
- 	}
+diff --git a/arch/arm/boot/dts/sama5d2.dtsi b/arch/arm/boot/dts/sama5d2.dtsi
+index 2ddc85dff8ce9..6d399ac0385d4 100644
+--- a/arch/arm/boot/dts/sama5d2.dtsi
++++ b/arch/arm/boot/dts/sama5d2.dtsi
+@@ -656,6 +656,7 @@
+ 				clocks = <&pmc PMC_TYPE_PERIPHERAL 51>;
+ 				#address-cells = <1>;
+ 				#size-cells = <1>;
++				no-memory-wc;
+ 				ranges = <0 0xf8044000 0x1420>;
+ 			};
  
- 	kfree(midi_function);
+-- 
+2.27.0
+
 
 
