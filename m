@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A231F2E3A55
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:36:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E78CC2E3BF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:57:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389370AbgL1Nfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:35:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35692 "EHLO mail.kernel.org"
+        id S2406629AbgL1N4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:56:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389295AbgL1NfO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:35:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E3B69205CB;
-        Mon, 28 Dec 2020 13:34:32 +0000 (UTC)
+        id S2406545AbgL1N4i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:56:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B1C4205CB;
+        Mon, 28 Dec 2020 13:55:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162473;
-        bh=DmmkrcitPC7QTS2tPwHnuEaW7XBeQ9vxE83FylVSuew=;
+        s=korg; t=1609163757;
+        bh=5wHv4GcBZGlIOVSG1HNdblnQfI/OavW97mCPO8ECgAw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jBKJvHbG9kncm8cUfPKZ4meWGEeWNHF5G2UPXPkf1ofMX//YkAcWAYmyRKzBlfWMj
-         5CFn6QKN9XNvDoDDS+I/AyutBKVwDFyt7MFKGL6rL5lAWKHOSfQNFP1WQurlMX1+oY
-         7Ziu7YsfRytV65jlZqVRnrhm3iqYIzeIiO/h+uQc=
+        b=Xzfv9GwEE7u/KvPzRs7ht+pS0dG4oRB1veXuvPFmg2XEHmF6QEEiayN9DNkX+NxwR
+         DK9LMD/rpFDU2gKuo4vJ4H+38Rz2nnpqPgXN4kbU/Nnp0ipVKaTM/6di3NTRuVaGfD
+         wwspF323yCSiyIlk0qDGN2WAMh/Ge1KdL5T1Um2E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Dave Kleikamp <dave.kleikamp@oracle.com>,
         butt3rflyh4ck <butterflyhuangxx@gmail.com>
-Subject: [PATCH 4.19 313/346] jfs: Fix array index bounds check in dbAdjTree
+Subject: [PATCH 5.4 396/453] jfs: Fix array index bounds check in dbAdjTree
 Date:   Mon, 28 Dec 2020 13:50:32 +0100
-Message-Id: <20201228124934.928641332@linuxfoundation.org>
+Message-Id: <20201228124956.259330058@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -58,7 +58,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/fs/jfs/jfs_dmap.h
 +++ b/fs/jfs/jfs_dmap.h
-@@ -196,7 +196,7 @@ typedef union dmtree {
+@@ -183,7 +183,7 @@ typedef union dmtree {
  #define	dmt_leafidx	t1.leafidx
  #define	dmt_height	t1.height
  #define	dmt_budmin	t1.budmin
