@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EF222E6807
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:33:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B3E2E690C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:47:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441880AbgL1Qbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:31:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60790 "EHLO mail.kernel.org"
+        id S1728828AbgL1M4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:56:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53004 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730489AbgL1NEj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:04:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B44322582;
-        Mon, 28 Dec 2020 13:03:58 +0000 (UTC)
+        id S1728782AbgL1M4i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:56:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F2B2207C9;
+        Mon, 28 Dec 2020 12:55:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160639;
-        bh=dk4t7gfGTMw5YQaATINpxtv/8lOtwfdQJeyfNPjtTl4=;
+        s=korg; t=1609160157;
+        bh=bADb9kEPr/X09t+n8Aps79523G0Qi1c3T7jigNI6dD8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DuTukr2UQrqgDZn8lobX1S0U1J4vMTsN1VSj/XqIzfkvoIZpZZ6glTIQeL1LTDLs9
-         Cb3eqGyl8CTjM8zlZ4m02BCZmvuIkKtCnIC+6iovxH3xeIk6B/Z+2rP2NnUt6obuZq
-         Zr5COOFVFHGKgeQhIWV4WIuovFaSAPg6a9sxEp2g=
+        b=nosCowUDa7RJXFcwxUvQk1m2PpP0aSSOI5gPCY4KbMBSonx24RHhDW2Zz7N8Yd2vK
+         46OuzrFmKU8jkTbhUVQZTj5lOV4bla/wme+PkrjtYD8T1KNYkJRd6qkxRjYKzaT/q5
+         ZRDYn4HLjfBAzxx4JuUYOh4IKmpBkqBOpfGeVaeo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, NeilBrown <neilb@suse.de>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 089/175] NFS: switch nfsiod to be an UNBOUND workqueue.
-Date:   Mon, 28 Dec 2020 13:49:02 +0100
-Message-Id: <20201228124857.561327172@linuxfoundation.org>
+Subject: [PATCH 4.4 059/132] mips: cdmm: fix use-after-free in mips_cdmm_bus_discover
+Date:   Mon, 28 Dec 2020 13:49:03 +0100
+Message-Id: <20201228124849.300365438@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,50 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: NeilBrown <neilb@suse.de>
+From: Qinglang Miao <miaoqinglang@huawei.com>
 
-[ Upstream commit bf701b765eaa82dd164d65edc5747ec7288bb5c3 ]
+[ Upstream commit f0e82242b16826077a2775eacfe201d803bb7a22 ]
 
-nfsiod is currently a concurrency-managed workqueue (CMWQ).
-This means that workitems scheduled to nfsiod on a given CPU are queued
-behind all other work items queued on any CMWQ on the same CPU.  This
-can introduce unexpected latency.
+kfree(dev) has been called inside put_device so anther
+kfree would cause a use-after-free bug/
 
-Occaionally nfsiod can even cause excessive latency.  If the work item
-to complete a CLOSE request calls the final iput() on an inode, the
-address_space of that inode will be dismantled.  This takes time
-proportional to the number of in-memory pages, which on a large host
-working on large files (e.g..  5TB), can be a large number of pages
-resulting in a noticable number of seconds.
-
-We can avoid these latency problems by switching nfsiod to WQ_UNBOUND.
-This causes each concurrent work item to gets a dedicated thread which
-can be scheduled to an idle CPU.
-
-There is precedent for this as several other filesystems use WQ_UNBOUND
-workqueue for handling various async events.
-
-Signed-off-by: NeilBrown <neilb@suse.de>
-Fixes: ada609ee2ac2 ("workqueue: use WQ_MEM_RECLAIM instead of WQ_RESCUER")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Fixes: 8286ae03308c ("MIPS: Add CDMM bus support")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+Acked-by: Serge Semin <fancer.lancer@gmail.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/inode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/bus/mips_cdmm.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/fs/nfs/inode.c b/fs/nfs/inode.c
-index 851274b25d394..6c0035761d170 100644
---- a/fs/nfs/inode.c
-+++ b/fs/nfs/inode.c
-@@ -1995,7 +1995,7 @@ static int nfsiod_start(void)
- {
- 	struct workqueue_struct *wq;
- 	dprintk("RPC:       creating workqueue nfsiod\n");
--	wq = alloc_workqueue("nfsiod", WQ_MEM_RECLAIM, 0);
-+	wq = alloc_workqueue("nfsiod", WQ_MEM_RECLAIM | WQ_UNBOUND, 0);
- 	if (wq == NULL)
- 		return -ENOMEM;
- 	nfsiod_workqueue = wq;
+diff --git a/drivers/bus/mips_cdmm.c b/drivers/bus/mips_cdmm.c
+index 1c543effe062f..e6284fc1689b3 100644
+--- a/drivers/bus/mips_cdmm.c
++++ b/drivers/bus/mips_cdmm.c
+@@ -544,10 +544,8 @@ static void mips_cdmm_bus_discover(struct mips_cdmm_bus *bus)
+ 		dev_set_name(&dev->dev, "cdmm%u-%u", cpu, id);
+ 		++id;
+ 		ret = device_register(&dev->dev);
+-		if (ret) {
++		if (ret)
+ 			put_device(&dev->dev);
+-			kfree(dev);
+-		}
+ 	}
+ }
+ 
 -- 
 2.27.0
 
