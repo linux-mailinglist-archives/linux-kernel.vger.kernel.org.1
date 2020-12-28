@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A4A12E388F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:13:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C01A72E3FF8
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:48:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731897AbgL1NL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:11:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38780 "EHLO mail.kernel.org"
+        id S2502876AbgL1OXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:23:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58784 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731657AbgL1NLR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:11:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 22C8C20776;
-        Mon, 28 Dec 2020 13:11:00 +0000 (UTC)
+        id S2439198AbgL1OW7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:22:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 16CE2206E5;
+        Mon, 28 Dec 2020 14:22:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161061;
-        bh=KEl7a0v7/VsWcOnw1uYWHi/NQyARYMBIfAdhmwLWU78=;
+        s=korg; t=1609165338;
+        bh=Tx1vtWgUCMvdAmoYjMA8T8oel78Nl0iT5cbRkDrgrMk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cOtF0a/974/1t8hN3YxCRv0WJDtUeYTUts4ftM47UFBNPRuN/yC4+OCQkmrSNSA71
-         ZHZ3+Mm4QS7RNAu7T4eaI0QaHKZUetJZbLffmfW5guouhYFpUzqpo3ysq5GyA7nBI9
-         Mp/tJgbDnXMOk/2cG/F4vAmYyMODFo1bOGBV9904=
+        b=l/Lhr56IvNgmIzDCTH9aCQjzm9OaieAYspCjGIZ0rC3XamB82WrB7nh0xPC99Ngt0
+         m3CPvQ72RN55ymAyVHW5Cp9Ep95jzS+okFd68viofi8C1X0ukTGYpBalVeOo5elMtk
+         ZoazVrlTPcOum9NsANKsSMgewaOdgyA2LNp7lcY8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vincent Bernat <vincent@bernat.ch>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 088/242] net: evaluate net.ipv4.conf.all.proxy_arp_pvlan
+Subject: [PATCH 5.10 495/717] clk: at91: sama7g5: fix compilation error
 Date:   Mon, 28 Dec 2020 13:48:13 +0100
-Message-Id: <20201228124909.029415053@linuxfoundation.org>
+Message-Id: <20201228125044.680226617@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +42,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Bernat <vincent@bernat.ch>
+From: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-[ Upstream commit 1af5318c00a8acc33a90537af49b3f23f72a2c4b ]
+[ Upstream commit 91274497c79170aaadc491d4ffe4de35495a060d ]
 
-Introduced in 65324144b50b, the "proxy_arp_vlan" sysctl is a
-per-interface sysctl to tune proxy ARP support for private VLANs.
-While the "all" variant is exposed, it was a noop and never evaluated.
-We use the usual "or" logic for this kind of sysctls.
+pmc_data_allocate() has been changed. pmc_data_free() was removed.
+Adapt the code taking this into consideration. With this the programmable
+clocks were also saved in sama7g5_pmc so that they could be later
+referenced.
 
-Fixes: 65324144b50b ("net: RFC3069, private VLAN proxy arp support")
-Signed-off-by: Vincent Bernat <vincent@bernat.ch>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: cb783bbbcf54 ("clk: at91: sama7g5: add clock support for sama7g5")
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Tested-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Link: https://lore.kernel.org/r/1605800597-16720-2-git-send-email-claudiu.beznea@microchip.com
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/inetdevice.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/clk/at91/sama7g5.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/inetdevice.h b/include/linux/inetdevice.h
-index ff876bf66cf25..52e1230cfe1b4 100644
---- a/include/linux/inetdevice.h
-+++ b/include/linux/inetdevice.h
-@@ -102,7 +102,7 @@ static inline void ipv4_devconf_setall(struct in_device *in_dev)
+diff --git a/drivers/clk/at91/sama7g5.c b/drivers/clk/at91/sama7g5.c
+index 0db2ab3eca147..a092a940baa40 100644
+--- a/drivers/clk/at91/sama7g5.c
++++ b/drivers/clk/at91/sama7g5.c
+@@ -838,7 +838,7 @@ static void __init sama7g5_pmc_setup(struct device_node *np)
+ 	sama7g5_pmc = pmc_data_allocate(PMC_I2S1_MUX + 1,
+ 					nck(sama7g5_systemck),
+ 					nck(sama7g5_periphck),
+-					nck(sama7g5_gck));
++					nck(sama7g5_gck), 8);
+ 	if (!sama7g5_pmc)
+ 		return;
  
- #define IN_DEV_LOG_MARTIANS(in_dev)	IN_DEV_ORCONF((in_dev), LOG_MARTIANS)
- #define IN_DEV_PROXY_ARP(in_dev)	IN_DEV_ORCONF((in_dev), PROXY_ARP)
--#define IN_DEV_PROXY_ARP_PVLAN(in_dev)	IN_DEV_CONF_GET(in_dev, PROXY_ARP_PVLAN)
-+#define IN_DEV_PROXY_ARP_PVLAN(in_dev)	IN_DEV_ORCONF((in_dev), PROXY_ARP_PVLAN)
- #define IN_DEV_SHARED_MEDIA(in_dev)	IN_DEV_ORCONF((in_dev), SHARED_MEDIA)
- #define IN_DEV_TX_REDIRECTS(in_dev)	IN_DEV_ORCONF((in_dev), SEND_REDIRECTS)
- #define IN_DEV_SEC_REDIRECTS(in_dev)	IN_DEV_ORCONF((in_dev), \
+@@ -980,6 +980,8 @@ static void __init sama7g5_pmc_setup(struct device_node *np)
+ 						    sama7g5_prog_mux_table);
+ 		if (IS_ERR(hw))
+ 			goto err_free;
++
++		sama7g5_pmc->pchws[i] = hw;
+ 	}
+ 
+ 	for (i = 0; i < ARRAY_SIZE(sama7g5_systemck); i++) {
+@@ -1052,7 +1054,7 @@ err_free:
+ 		kfree(alloc_mem);
+ 	}
+ 
+-	pmc_data_free(sama7g5_pmc);
++	kfree(sama7g5_pmc);
+ }
+ 
+ /* Some clks are used for a clocksource */
 -- 
 2.27.0
 
