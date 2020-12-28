@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7D22E3A38
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:34:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DE532E3FE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:46:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387969AbgL1Ndm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:33:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59160 "EHLO mail.kernel.org"
+        id S2408022AbgL1Opu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:45:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390309AbgL1NaO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:30:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3490F22583;
-        Mon, 28 Dec 2020 13:29:33 +0000 (UTC)
+        id S2503057AbgL1OYV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:24:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 067C922D04;
+        Mon, 28 Dec 2020 14:24:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162173;
-        bh=qDp9szX+YSvaKOm6PkUMvX0UtQZ13+FwDBXWeP98A84=;
+        s=korg; t=1609165446;
+        bh=8VkzJDBeMi29PFDS0HI5w7Ul2rXmw/Asb617Y2dy6Sk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i8FcO70eYO+rfgFRX506NU8qb1OQGp054ih/tFQ1X92XNMU2A1hsWAtvcOHQy2T22
-         td6SBPBdczILpkiQFKBOgOKBHQNEJ6NNoAEeZVJPEaN7bUzF0JdTktB+t8dZr8joDE
-         n7qseUfKD4owEVOELMkPQllMPu3q6YvpmkAvYy30=
+        b=MOspK4wZb1kmqeZMfetx2i5reiIDOEH+ugsfJDPcQKXN9YdHoYLPnPi3v/yU9vZvq
+         5wlnmmPVXH5GnVEQL2coUnHU8IxiKSYc9K0eowH8Xm7NxIDpdgbD7OpRFzMJLl6s+f
+         ysDx5WdbXeDvqzxOOdVRufSXhMaJvgOmQQ/7Yvl4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Karan Tilak Kumar <kartilak@cisco.com>,
-        Zhang Changzhong <zhangchangzhong@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 212/346] scsi: fnic: Fix error return code in fnic_probe()
-Date:   Mon, 28 Dec 2020 13:48:51 +0100
-Message-Id: <20201228124930.035768869@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH 5.10 534/717] ACPI: PNP: compare the string length in the matching_id()
+Date:   Mon, 28 Dec 2020 13:48:52 +0100
+Message-Id: <20201228125046.556137216@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,38 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Changzhong <zhangchangzhong@huawei.com>
+From: Hui Wang <hui.wang@canonical.com>
 
-[ Upstream commit d4fc94fe65578738ded138e9fce043db6bfc3241 ]
+commit b08221c40febcbda9309dd70c61cf1b0ebb0e351 upstream.
 
-Return a negative error code from the error handling case instead of 0 as
-done elsewhere in this function.
+Recently we met a touchscreen problem on some Thinkpad machines, the
+touchscreen driver (i2c-hid) is not loaded and the touchscreen can't
+work.
 
-Link: https://lore.kernel.org/r/1607068060-31203-1-git-send-email-zhangchangzhong@huawei.com
-Fixes: 5df6d737dd4b ("[SCSI] fnic: Add new Cisco PCI-Express FCoE HBA")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Reviewed-by: Karan Tilak Kumar <kartilak@cisco.com>
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+An i2c ACPI device with the name WACF2200 is defined in the BIOS, with
+the current rule in matching_id(), this device will be regarded as
+a PNP device since there is WACFXXX in the acpi_pnp_device_ids[] and
+this PNP device is attached to the acpi device as the 1st
+physical_node, this will make the i2c bus match fail when i2c bus
+calls acpi_companion_match() to match the acpi_id_table in the i2c-hid
+driver.
+
+WACF2200 is an i2c device instead of a PNP device, after adding the
+string length comparing, the matching_id() will return false when
+matching WACF2200 and WACFXXX, and it is reasonable to compare the
+string length when matching two IDs.
+
+Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+Cc: All applicable <stable@vger.kernel.org>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/scsi/fnic/fnic_main.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/acpi/acpi_pnp.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/scsi/fnic/fnic_main.c b/drivers/scsi/fnic/fnic_main.c
-index e52599f441707..bc5dbe3bae5c5 100644
---- a/drivers/scsi/fnic/fnic_main.c
-+++ b/drivers/scsi/fnic/fnic_main.c
-@@ -746,6 +746,7 @@ static int fnic_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	for (i = 0; i < FNIC_IO_LOCKS; i++)
- 		spin_lock_init(&fnic->io_req_lock[i]);
+--- a/drivers/acpi/acpi_pnp.c
++++ b/drivers/acpi/acpi_pnp.c
+@@ -319,6 +319,9 @@ static bool matching_id(const char *idst
+ {
+ 	int i;
  
-+	err = -ENOMEM;
- 	fnic->io_req_pool = mempool_create_slab_pool(2, fnic_io_req_cache);
- 	if (!fnic->io_req_pool)
- 		goto err_out_free_resources;
--- 
-2.27.0
-
++	if (strlen(idstr) != strlen(list_id))
++		return false;
++
+ 	if (memcmp(idstr, list_id, 3))
+ 		return false;
+ 
 
 
