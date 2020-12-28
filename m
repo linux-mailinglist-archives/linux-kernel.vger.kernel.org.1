@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DC1A2E6766
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:25:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2467E2E68B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:40:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731247AbgL1NJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:09:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37674 "EHLO mail.kernel.org"
+        id S2633814AbgL1QkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:40:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731228AbgL1NJx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:09:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9157D20728;
-        Mon, 28 Dec 2020 13:09:12 +0000 (UTC)
+        id S1728568AbgL1M7s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:59:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F409C208D5;
+        Mon, 28 Dec 2020 12:59:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160953;
-        bh=VSnBL4f5pgjlnXUot2WMuYZ+6vRGmw+BBFwmPtVlQFg=;
+        s=korg; t=1609160347;
+        bh=g7Sk3kitM9XQWi6MRdIh2UffTECyyzRKym6NMdbl9n4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=08gPXtduDAmJGgM0whJ3fvxm0B0JDnTniX6g42Vs13P25iKE+ryFFN49kXKl0E39t
-         PXhCMOK6SOG71o58IbVLIQpIVddDRoVbIFycD/3ae25ZM9Q4VbMeOUDmPgt/thLdzz
-         5T7rhRLqe+9M0byp9dhGHU9Z7CvZh0HhIqIR+Bbk=
+        b=KSOw5P3FU/v2rDUtwNeTluMDdOG6Fak/1MqXbabmC2l73UCfGkmpQBATDIieVPFvX
+         GBn2YkFx0PyKbHurDA5ucCH9V/a6Sd6vrImD585wonTcDYbaYRSAKaCAxTd+LwMLDh
+         KCAwqBV/YRKrdGaX22NUSNGStSFMlFhUFxlSJ6vo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        Will McVicker <willmcvicker@google.com>,
-        Peter Chen <peter.chen@nxp.com>
-Subject: [PATCH 4.14 051/242] USB: gadget: f_midi: setup SuperSpeed Plus descriptors
+        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
+        Mordechay Goodstein <mordechay.goodstein@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 003/175] iwlwifi: pcie: limit memory read spin time
 Date:   Mon, 28 Dec 2020 13:47:36 +0100
-Message-Id: <20201228124907.195840477@linuxfoundation.org>
+Message-Id: <20201228124853.400932464@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +42,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Will McVicker <willmcvicker@google.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-commit 457a902ba1a73b7720666b21ca038cd19764db18 upstream.
+[ Upstream commit 04516706bb99889986ddfa3a769ed50d2dc7ac13 ]
 
-Needed for SuperSpeed Plus support for f_midi.  This allows the
-gadget to work properly without crashing at SuperSpeed rates.
+When we read device memory, we lock a spinlock, write the address we
+want to read from the device and then spin in a loop reading the data
+in 32-bit quantities from another register.
 
-Cc: Felipe Balbi <balbi@kernel.org>
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Will McVicker <willmcvicker@google.com>
-Reviewed-by: Peter Chen <peter.chen@nxp.com>
-Link: https://lore.kernel.org/r/20201127140559.381351-4-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+As the description makes clear, this is rather inefficient, incurring
+a PCIe bus transaction for every read. In a typical device today, we
+want to read 786k SMEM if it crashes, leading to 192k register reads.
+Occasionally, we've seen the whole loop take over 20 seconds and then
+triggering the soft lockup detector.
 
+Clearly, it is unreasonable to spin here for such extended periods of
+time.
+
+To fix this, break the loop down into an outer and an inner loop, and
+break out of the inner loop if more than half a second elapsed. To
+avoid too much overhead, check for that only every 128 reads, though
+there's no particular reason for that number. Then, unlock and relock
+to obtain NIC access again, reprogram the start address and continue.
+
+This will keep (interrupt) latencies on the CPU down to a reasonable
+time.
+
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Mordechay Goodstein <mordechay.goodstein@intel.com>
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/iwlwifi.20201022165103.45878a7e49aa.I3b9b9c5a10002915072312ce75b68ed5b3dc6e14@changeid
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/function/f_midi.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ .../net/wireless/intel/iwlwifi/pcie/trans.c   | 36 ++++++++++++++-----
+ 1 file changed, 27 insertions(+), 9 deletions(-)
 
---- a/drivers/usb/gadget/function/f_midi.c
-+++ b/drivers/usb/gadget/function/f_midi.c
-@@ -1048,6 +1048,12 @@ static int f_midi_bind(struct usb_config
- 		f->ss_descriptors = usb_copy_descriptors(midi_function);
- 		if (!f->ss_descriptors)
- 			goto fail_f_midi;
+diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/trans.c b/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
+index e7b873018dca6..e1287c3421165 100644
+--- a/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
++++ b/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
+@@ -1904,18 +1904,36 @@ static int iwl_trans_pcie_read_mem(struct iwl_trans *trans, u32 addr,
+ 				   void *buf, int dwords)
+ {
+ 	unsigned long flags;
+-	int offs, ret = 0;
++	int offs = 0;
+ 	u32 *vals = buf;
+ 
+-	if (iwl_trans_grab_nic_access(trans, &flags)) {
+-		iwl_write32(trans, HBUS_TARG_MEM_RADDR, addr);
+-		for (offs = 0; offs < dwords; offs++)
+-			vals[offs] = iwl_read32(trans, HBUS_TARG_MEM_RDAT);
+-		iwl_trans_release_nic_access(trans, &flags);
+-	} else {
+-		ret = -EBUSY;
++	while (offs < dwords) {
++		/* limit the time we spin here under lock to 1/2s */
++		ktime_t timeout = ktime_add_us(ktime_get(), 500 * USEC_PER_MSEC);
 +
-+		if (gadget_is_superspeed_plus(c->cdev->gadget)) {
-+			f->ssp_descriptors = usb_copy_descriptors(midi_function);
-+			if (!f->ssp_descriptors)
-+				goto fail_f_midi;
++		if (iwl_trans_grab_nic_access(trans, &flags)) {
++			iwl_write32(trans, HBUS_TARG_MEM_RADDR,
++				    addr + 4 * offs);
++
++			while (offs < dwords) {
++				vals[offs] = iwl_read32(trans,
++							HBUS_TARG_MEM_RDAT);
++				offs++;
++
++				/* calling ktime_get is expensive so
++				 * do it once in 128 reads
++				 */
++				if (offs % 128 == 0 && ktime_after(ktime_get(),
++								   timeout))
++					break;
++			}
++			iwl_trans_release_nic_access(trans, &flags);
++		} else {
++			return -EBUSY;
 +		}
  	}
+-	return ret;
++
++	return 0;
+ }
  
- 	kfree(midi_function);
+ static int iwl_trans_pcie_write_mem(struct iwl_trans *trans, u32 addr,
+-- 
+2.27.0
+
 
 
