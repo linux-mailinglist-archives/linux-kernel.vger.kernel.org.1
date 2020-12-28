@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D53BE2E3F6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:40:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C71E82E3BE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:57:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503556AbgL1O3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:29:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36958 "EHLO mail.kernel.org"
+        id S2405387AbgL1Nz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:55:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503453AbgL1O3O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:29:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EFC2820715;
-        Mon, 28 Dec 2020 14:28:32 +0000 (UTC)
+        id S2405370AbgL1Nzz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:55:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02DDB20715;
+        Mon, 28 Dec 2020 13:55:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165713;
-        bh=bLXY2QJ8ravuJUg6Jp4AGdYctMCvagFpq6R7cFlUvaY=;
+        s=korg; t=1609163739;
+        bh=y0oZAVE1vDTEKKHqWovCEf+eHw3ANfkoHxUvLOkcbZo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kZcDPTA5X//fnvpXKY+XBT0tpqJBrGetwA79jfiWUXfYeTIZNUOm2BGogUGkWqjSn
-         ysJMezO4Stzxk1fUSsZsoAA6mUd3DSfWljb7YbLYpzoZC0HxKBGa4qQDpoNj5ev69r
-         AgPXtT1Fr0kkJf94Zd4J4DeNKfw88zbxpoQWNiNI=
+        b=Jzb5TV4BOksD07KArUvbASKOkQ/5yN5YW0d4nb8XALhBCUjz5EnTyifAmetcfThEk
+         cXG0epgpP0IjjRBthWPun1cvgZ862yotj6NO0pvwLkkhIT+x4w8ZeUSkKTwHBLd0re
+         W5OhHD+PJk/Q1H02Grl4aXK0mQ6Tjf0TRNsAbm5g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, lizhe <lizhe67@huawei.com>,
-        Richard Weinberger <richard@nod.at>
-Subject: [PATCH 5.10 628/717] jffs2: Fix ignoring mounting options problem during remounting
-Date:   Mon, 28 Dec 2020 13:50:26 +0100
-Message-Id: <20201228125051.008707227@linuxfoundation.org>
+        stable@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
+        Luis Henriques <lhenriques@suse.de>,
+        Ilya Dryomov <idryomov@gmail.com>
+Subject: [PATCH 5.4 391/453] ceph: fix race in concurrent __ceph_remove_cap invocations
+Date:   Mon, 28 Dec 2020 13:50:27 +0100
+Message-Id: <20201228124956.025727870@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,65 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: lizhe <lizhe67@huawei.com>
+From: Luis Henriques <lhenriques@suse.de>
 
-commit 08cd274f9b8283a1da93e2ccab216a336da83525 upstream.
+commit e5cafce3ad0f8652d6849314d951459c2bff7233 upstream.
 
-The jffs2 mount options will be ignored when remounting jffs2.
-It can be easily reproduced with the steps listed below.
-1. mount -t jffs2 -o compr=none /dev/mtdblockx /mnt
-2. mount -o remount compr=zlib /mnt
+A NULL pointer dereference may occur in __ceph_remove_cap with some of the
+callbacks used in ceph_iterate_session_caps, namely trim_caps_cb and
+remove_session_caps_cb. Those callers hold the session->s_mutex, so they
+are prevented from concurrent execution, but ceph_evict_inode does not.
 
-Since ec10a24f10c8, the option parsing happens before fill_super and
-then pass fc, which contains the options parsing results, to function
-jffs2_reconfigure during remounting. But function jffs2_reconfigure do
-not update c->mount_opts.
+Since the callers of this function hold the i_ceph_lock, the fix is simply
+a matter of returning immediately if caps->ci is NULL.
 
-This patch add a function jffs2_update_mount_opts to fix this problem.
-
-By the way, I notice that tmpfs use the same way to update remounting
-options. If it is necessary to unify them?
-
-Cc: <stable@vger.kernel.org>
-Fixes: ec10a24f10c8 ("vfs: Convert jffs2 to use the new mount API")
-Signed-off-by: lizhe <lizhe67@huawei.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Cc: stable@vger.kernel.org
+URL: https://tracker.ceph.com/issues/43272
+Suggested-by: Jeff Layton <jlayton@kernel.org>
+Signed-off-by: Luis Henriques <lhenriques@suse.de>
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
+Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/jffs2/super.c |   17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ fs/ceph/caps.c |   11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
---- a/fs/jffs2/super.c
-+++ b/fs/jffs2/super.c
-@@ -215,11 +215,28 @@ static int jffs2_parse_param(struct fs_c
- 	return 0;
- }
- 
-+static inline void jffs2_update_mount_opts(struct fs_context *fc)
-+{
-+	struct jffs2_sb_info *new_c = fc->s_fs_info;
-+	struct jffs2_sb_info *c = JFFS2_SB_INFO(fc->root->d_sb);
-+
-+	mutex_lock(&c->alloc_sem);
-+	if (new_c->mount_opts.override_compr) {
-+		c->mount_opts.override_compr = new_c->mount_opts.override_compr;
-+		c->mount_opts.compr = new_c->mount_opts.compr;
-+	}
-+	if (new_c->mount_opts.rp_size)
-+		c->mount_opts.rp_size = new_c->mount_opts.rp_size;
-+	mutex_unlock(&c->alloc_sem);
-+}
-+
- static int jffs2_reconfigure(struct fs_context *fc)
+--- a/fs/ceph/caps.c
++++ b/fs/ceph/caps.c
+@@ -1052,12 +1052,19 @@ void __ceph_remove_cap(struct ceph_cap *
  {
- 	struct super_block *sb = fc->root->d_sb;
+ 	struct ceph_mds_session *session = cap->session;
+ 	struct ceph_inode_info *ci = cap->ci;
+-	struct ceph_mds_client *mdsc =
+-		ceph_sb_to_client(ci->vfs_inode.i_sb)->mdsc;
++	struct ceph_mds_client *mdsc;
+ 	int removed = 0;
  
- 	sync_filesystem(sb);
-+	jffs2_update_mount_opts(fc);
++	/* 'ci' being NULL means the remove have already occurred */
++	if (!ci) {
++		dout("%s: cap inode is NULL\n", __func__);
++		return;
++	}
 +
- 	return jffs2_do_remount_fs(sb, fc);
- }
+ 	dout("__ceph_remove_cap %p from %p\n", cap, &ci->vfs_inode);
  
++	mdsc = ceph_inode_to_client(&ci->vfs_inode)->mdsc;
++
+ 	/* remove from inode's cap rbtree, and clear auth cap */
+ 	rb_erase(&cap->ci_node, &ci->i_caps);
+ 	if (ci->i_auth_cap == cap)
 
 
