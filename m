@@ -2,73 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C6B2E6B31
+	by mail.lfdr.de (Postfix) with ESMTP id 572B42E6B30
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:00:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732265AbgL1W4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1732281AbgL1W4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 28 Dec 2020 17:56:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56428 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:56964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729658AbgL1Wkr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 17:40:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 9DE0E2226A;
-        Mon, 28 Dec 2020 22:40:06 +0000 (UTC)
+        id S1729686AbgL1Wvr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 17:51:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B030F2226A;
+        Mon, 28 Dec 2020 22:51:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609195206;
-        bh=LOpW0D/hKl7s2Hevz0EZd1EZMNL9HK6X8L+OXqXX97E=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Tkzc327BEsdAWc3xBf7vYR2zsfcgDmwT/IfNeDLtAWzrvIhLpWsoQ9FfvT7WVHiE9
-         mb/ZUBSbgpZPRKOkE34i0nqsDkYBBx0RpbvTJWQqX1J0bjnrHjek1Uq3Y6DGpaatLl
-         IyJSL2bSz5MB1s/Y0bIW3Ot7dH+t6JyPk2ZqpuJNC+2xjcK8x7g6Zn8HU6b5j7x97X
-         fvlnvlDc5n/4CMwJytmUJ1rGGerFr9WfniRJ9e0Yad5U5xacgkEw7MWOa/7EqBEjWu
-         K6j5V+XnI71IL/crW5Xm/iXSRhh1qIsY6YTsIAMnk0si/v0FxQp+mf5RnmxuAbRzYg
-         ghSjaaiHhNNZA==
-Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 8EFF960591;
-        Mon, 28 Dec 2020 22:40:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1609195866;
+        bh=iMRjbjaR2yMEmtGT58pNNt08sR3YmHcbZswHYOf0MX0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=fkRh+y6Qocu59DgvSmFG5miNVDQoQY6VVufiGGR3UZiR6Pi9Cf9EYSQAwdsuiUjVh
+         r4Q1Zh4Da7xYZfML7OOD5vMUIrR4bNCDPypnIzVnL2TwIb1n+2Xv2AS8AJqjsz6SoN
+         ZPM0T2laWypOhvX4buyvzLCaXgv5e6GtssG9ixOX3oaonXLFacwPJXYji4+AE6uPqd
+         9rTxa2u+UKSadIOxYdmWaxFj9GGp2afF3pCb8LN/5kt6s4rLdEh3n/cFx0i13fe+Z2
+         o/EoYlSwH1ybiOQIdiJNUmoColoRI9tQqLv8r6x+qv72lUnkWAra+z9MiSZ8hOHsxz
+         F67YbwnfvM5GA==
+Date:   Mon, 28 Dec 2020 14:51:05 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        =?UTF-8?B?QmrDtnJu?= =?UTF-8?B?IFTDtnBlbA==?= 
+        <bjorn.topel@intel.com>
+Subject: Re: [PATCH 5.10 462/717] ice, xsk: clear the status bits for the
+ next_to_use descriptor
+Message-ID: <20201228145105.4eb4a14f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201228222907.GG2790422@sasha-vm>
+References: <20201228125020.963311703@linuxfoundation.org>
+        <20201228125043.105740628@linuxfoundation.org>
+        <20201228105423.46e77460@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20201228222907.GG2790422@sasha-vm>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] net: mvpp2: fix pkt coalescing int-threshold
- configuration
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160919520658.5818.13471657001953997070.git-patchwork-notify@kernel.org>
-Date:   Mon, 28 Dec 2020 22:40:06 +0000
-References: <1608748521-11033-1-git-send-email-stefanc@marvell.com>
-In-Reply-To: <1608748521-11033-1-git-send-email-stefanc@marvell.com>
-To:     Stefan Chulski <stefanc@marvell.com>
-Cc:     netdev@vger.kernel.org, thomas.petazzoni@bootlin.com,
-        davem@davemloft.net, nadavh@marvell.com, ymarkman@marvell.com,
-        linux-kernel@vger.kernel.org, kuba@kernel.org,
-        linux@armlinux.org.uk, mw@semihalf.com, andrew@lunn.ch,
-        rmk+kernel@armlinux.org.uk, atenart@kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Mon, 28 Dec 2020 17:29:07 -0500 Sasha Levin wrote:
+> On Mon, Dec 28, 2020 at 10:54:23AM -0800, Jakub Kicinski wrote:
+> >On Mon, 28 Dec 2020 13:47:40 +0100 Greg Kroah-Hartman wrote: =20
+> >> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+> >>
+> >> [ Upstream commit 8d14768a7972b92c73259f0c9c45b969d85e3a60 ]
+> >>
+> >> On the Rx side, the next_to_use index points to the next item in the
+> >> HW ring to be refilled/allocated, and next_to_clean points to the next
+> >> item to potentially be processed.
+> >>
+> >> When the HW Rx ring is fully refilled, i.e. no packets has been
+> >> processed, the next_to_use will be next_to_clean - 1. When the ring is
+> >> fully processed next_to_clean will be equal to next_to_use. The latter
+> >> case is where a bug is triggered.
+> >>
+> >> If the next_to_use bits are not cleared, and the "fully processed"
+> >> state is entered, a stale descriptor can be processed.
+> >>
+> >> The skb-path correctly clear the status bit for the next_to_use
+> >> descriptor, but the AF_XDP zero-copy path did not do that.
+> >>
+> >> This change adds the status bits clearing of the next_to_use
+> >> descriptor.
+> >>
+> >> Fixes: 2d4238f55697 ("ice: Add support for AF_XDP")
+> >> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+> >> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> >> Signed-off-by: Sasha Levin <sashal@kernel.org> =20
+> >
+> >Oh wow, so much for Sasha waiting longer for code to get tested before
+> >auto-pulling things into stable :/ =20
+>=20
+> The timeline is usually for a commit to appear in a release, and it did.
+> Was it too early?
 
-This patch was applied to netdev/net.git (refs/heads/master):
+Hm, I'm not sure of exact semantics but I meant a final release,=20
+not an -rc.=20
 
-On Wed, 23 Dec 2020 20:35:21 +0200 you wrote:
-> From: Stefan Chulski <stefanc@marvell.com>
-> 
-> The packet coalescing interrupt threshold has separated registers
-> for different aggregated/cpu (sw-thread). The required value should
-> be loaded for every thread but not only for 1 current cpu.
-> 
-> Fixes: 213f428f5056 ("net: mvpp2: add support for TX interrupts and RX queue distribution modes")
-> Signed-off-by: Stefan Chulski <stefanc@marvell.com>
-> 
-> [...]
+Plus I thought the point of things being part of a release is that
+people actually get a chance to test that release. -rc1 was cut 24
+hours ago. I guess a "release" is used as a yardstick here, to=20
+measure time, not for practical reasons?
 
-Here is the summary with links:
-  - [net] net: mvpp2: fix pkt coalescing int-threshold configuration
-    https://git.kernel.org/netdev/net/c/4f374d2c43a9
+> >I have this change and other changes here queued, but haven't sent the
+> >submission yet. =20
+>=20
+> What do you mean with "queued"? Its in Linus's tree for about two weeks
+> now.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Networking maintainers have their own queue for patches that will go to
+stable:
 
+https://patchwork.kernel.org/bundle/netdev/stable/?state=3D*
 
+> >How long is the auto-backporting delay in terms of calendar days? =20
+>=20
+> The autosel stuff is about 2-3(-4) weeks at this point, stuff with a
+> fixes tag gets picked up in about 2 weeks.
+
+$ git show 8d14768a7972b92c73259f0c9c45b969d85e3a60 --format=3D'%cD' --no-p=
+atch
+Wed, 16 Dec 2020 10:51:07 -0800
+$ git show 8d14768a7972b92c73259f0c9c45b969d85e3a60 --format=3D'%aD' --no-p=
+atch
+Fri, 11 Dec 2020 15:57:11 +0100
+
+Two weeks from author date. That's a little short because.. I also
+delay things by up to two weeks :) so you'll grab patches which are
+sitting in networking stable queue.
+
+And all networking fixes should have a Fixes tag, so that's no
+discriminator to be honest.
