@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C4602E3A8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:39:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDC302E3D26
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:13:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391400AbgL1NiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:38:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38314 "EHLO mail.kernel.org"
+        id S2439787AbgL1OMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:12:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390894AbgL1Nh7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:37:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A2CA02063A;
-        Mon, 28 Dec 2020 13:37:17 +0000 (UTC)
+        id S2439773AbgL1OMD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:12:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ACC1B206D4;
+        Mon, 28 Dec 2020 14:11:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162638;
-        bh=p+kFY3erz0S1WF1posHwbcQCrPdETfVU0EHpaOFJHO0=;
+        s=korg; t=1609164682;
+        bh=2cxPfFdtevGz+SzS58rMmf9JDv7xCB4o33hk7gN+MBA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iauY/GL+ZPhdRMZb5/PTBi6iqTPLL7eAugeaj6VvoRYmR0q1xoEWTETO4TPjv3ct2
-         06MkPfZoYb9f8fmy4rAKB6eAA8pB34ynkDFHLJ6CAT8IKsrFs8Yxw2g5mpIuaP5WS2
-         MFHEFqDGUZS63Gz1GlQegxW55if3237A2/jhk7Ec=
+        b=a1A0t8IWM8XO+olPt+FpvtlOk723MKXI+z7TG8XMwmcmALLvD7nV2zJOrj54i/gXF
+         jGCs0M3QCDbnEiEUoVf1BzTvEkl8pYlKm3dSXKtw0RONa5FtJlc2aMJUhXf4KMPnAN
+         q6vUumWbOSh5CbUNdkzpbFGTr3rEoTZcWqyYkc5s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        stable@vger.kernel.org, Roman Bacik <roman.bacik@broadcom.com>,
+        Srinath Mannam <srinath.mannam@broadcom.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 004/453] pinctrl: merrifield: Set default bias in case no particular value given
-Date:   Mon, 28 Dec 2020 13:44:00 +0100
-Message-Id: <20201228124937.452678150@linuxfoundation.org>
+Subject: [PATCH 5.10 243/717] PCI: iproc: Invalidate correct PAXB inbound windows
+Date:   Mon, 28 Dec 2020 13:44:01 +0100
+Message-Id: <20201228125032.632176227@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,55 +41,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Roman Bacik <roman.bacik@broadcom.com>
 
-[ Upstream commit 0fa86fc2e28227f1e64f13867e73cf864c6d25ad ]
+[ Upstream commit 89bbcaac3dff21f3567956b3416f5ec8b45f5555 ]
 
-When GPIO library asks pin control to set the bias, it doesn't pass
-any value of it and argument is considered boolean (and this is true
-for ACPI GpioIo() / GpioInt() resources, by the way). Thus, individual
-drivers must behave well, when they got the resistance value of 1 Ohm,
-i.e. transforming it to sane default.
+Second stage bootloaders prior to Linux boot may use all inbound windows
+including IARR1/IMAP1. We need to ensure that all previous configuration
+of inbound windows are invalidated during the initialization stage of
+the Linux iProc PCIe driver so let's add a fix to define and invalidate
+IARR1/IMAP1 because it is currently missing, fixing the issue.
 
-In case of Intel Merrifield pin control hardware the 20 kOhm sounds plausible
-because it gives a good trade off between weakness and minimization of leakage
-current (will be only 50 uA with the above choice).
-
-Fixes: 4e80c8f50574 ("pinctrl: intel: Add Intel Merrifield pin controller support")
-Depends-on: 2956b5d94a76 ("pinctrl / gpio: Introduce .set_config() callback for GPIO chips")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Link: https://lore.kernel.org/r/20201001060054.6616-3-srinath.mannam@broadcom.com
+Fixes: 9415743e4c8a ("PCI: iproc: Invalidate PAXB address mapping")
+Signed-off-by: Roman Bacik <roman.bacik@broadcom.com>
+Signed-off-by: Srinath Mannam <srinath.mannam@broadcom.com>
+[lorenzo.pieralisi@arm.com: commit log]
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/intel/pinctrl-merrifield.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/pci/controller/pcie-iproc.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/pinctrl/intel/pinctrl-merrifield.c b/drivers/pinctrl/intel/pinctrl-merrifield.c
-index 04ca8ae95df83..9e91d83b01388 100644
---- a/drivers/pinctrl/intel/pinctrl-merrifield.c
-+++ b/drivers/pinctrl/intel/pinctrl-merrifield.c
-@@ -741,6 +741,10 @@ static int mrfld_config_set_pin(struct mrfld_pinctrl *mp, unsigned int pin,
- 		mask |= BUFCFG_Px_EN_MASK | BUFCFG_PUPD_VAL_MASK;
- 		bits |= BUFCFG_PU_EN;
- 
-+		/* Set default strength value in case none is given */
-+		if (arg == 1)
-+			arg = 20000;
+diff --git a/drivers/pci/controller/pcie-iproc.c b/drivers/pci/controller/pcie-iproc.c
+index d901b9d392b8c..cc5b7823edeb7 100644
+--- a/drivers/pci/controller/pcie-iproc.c
++++ b/drivers/pci/controller/pcie-iproc.c
+@@ -192,8 +192,15 @@ static const struct iproc_pcie_ib_map paxb_v2_ib_map[] = {
+ 		.imap_window_offset = 0x4,
+ 	},
+ 	{
+-		/* IARR1/IMAP1 (currently unused) */
+-		.type = IPROC_PCIE_IB_MAP_INVALID,
++		/* IARR1/IMAP1 */
++		.type = IPROC_PCIE_IB_MAP_MEM,
++		.size_unit = SZ_1M,
++		.region_sizes = { 8 },
++		.nr_sizes = 1,
++		.nr_windows = 8,
++		.imap_addr_offset = 0x4,
++		.imap_window_offset = 0x8,
 +
- 		switch (arg) {
- 		case 50000:
- 			bits |= BUFCFG_PUPD_VAL_50K << BUFCFG_PUPD_VAL_SHIFT;
-@@ -761,6 +765,10 @@ static int mrfld_config_set_pin(struct mrfld_pinctrl *mp, unsigned int pin,
- 		mask |= BUFCFG_Px_EN_MASK | BUFCFG_PUPD_VAL_MASK;
- 		bits |= BUFCFG_PD_EN;
- 
-+		/* Set default strength value in case none is given */
-+		if (arg == 1)
-+			arg = 20000;
-+
- 		switch (arg) {
- 		case 50000:
- 			bits |= BUFCFG_PUPD_VAL_50K << BUFCFG_PUPD_VAL_SHIFT;
+ 	},
+ 	{
+ 		/* IARR2/IMAP2 */
+@@ -351,6 +358,8 @@ static const u16 iproc_pcie_reg_paxb_v2[IPROC_PCIE_MAX_NUM_REG] = {
+ 	[IPROC_PCIE_OMAP3]		= 0xdf8,
+ 	[IPROC_PCIE_IARR0]		= 0xd00,
+ 	[IPROC_PCIE_IMAP0]		= 0xc00,
++	[IPROC_PCIE_IARR1]		= 0xd08,
++	[IPROC_PCIE_IMAP1]		= 0xd70,
+ 	[IPROC_PCIE_IARR2]		= 0xd10,
+ 	[IPROC_PCIE_IMAP2]		= 0xcc0,
+ 	[IPROC_PCIE_IARR3]		= 0xe00,
 -- 
 2.27.0
 
