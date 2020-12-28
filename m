@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 285B82E4078
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:53:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D0182E3974
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:25:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505394AbgL1Ow3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:52:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53838 "EHLO mail.kernel.org"
+        id S2388591AbgL1NXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:23:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2501983AbgL1OSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:18:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB25D208B6;
-        Mon, 28 Dec 2020 14:17:57 +0000 (UTC)
+        id S2388546AbgL1NXs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:23:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9360F205CB;
+        Mon, 28 Dec 2020 13:23:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165078;
-        bh=kx/tp4SqoPRPduAGYsbIFkZwQcXb64ozLaWoYI2fSwY=;
+        s=korg; t=1609161787;
+        bh=Ylht5glLL1d/jMpFgE0i23vRrQRePLcVfo9gWJQVU5s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kgQd24gMQjuxSJRAgHEGsSg3IyMp/qB7kdkJfD6jGY/KGCYToHiGZRLBczLtfxrD3
-         nSTSaxWcOTlBdk6Xi5OYIeGeYaJ0modXzHLWtButPgdxI52f7HmOSgMSqqdgglVs0f
-         ZTq1MAYY1SlxOeXZ8tQqkD8FZSVCU+wnAEEA6tI8=
+        b=QI+Lajfb519Dtzs3aovkkVhp+yWiGc7UQaVc7st2ONv/maIahcFKWjDazeUuOOuU5
+         OzZnzXW1xNAsO5MCoCPT0Q8osGn6VvJhWGGEwWxq0aXEZkMey15Ge7U2orrbqtXTES
+         f1W+9g/1hfnYdMRyv3FV5M+o0YMtK+JnMJITNLUs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 402/717] remoteproc: qcom: pas: fix error handling in adsp_pds_enable
+        stable@vger.kernel.org, Jack Pham <jackp@codeaurora.org>
+Subject: [PATCH 4.19 081/346] usb: gadget: f_fs: Re-use SS descriptors for SuperSpeedPlus
 Date:   Mon, 28 Dec 2020 13:46:40 +0100
-Message-Id: <20201228125040.251411008@linuxfoundation.org>
+Message-Id: <20201228124923.718032845@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,50 +38,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Jack Pham <jackp@codeaurora.org>
 
-[ Upstream commit c0a6e5ee1ecfe4c3a5799cfd30820748eff5dfab ]
+commit a353397b0d5dfa3c99b372505db3378fc919c6c6 upstream.
 
-If the pm_runtime_get_sync failed in adsp_pds_enable when
-loop (i), The unroll_pd_votes will start from (i - 1), and
-it will resulted in following problems:
+In many cases a function that supports SuperSpeed can very well
+operate in SuperSpeedPlus, if a gadget controller supports it,
+as the endpoint descriptors (and companion descriptors) are
+generally identical and can be re-used. This is true for two
+commonly used functions: Android's ADB and MTP. So we can simply
+assign the usb_function's ssp_descriptors array to point to its
+ss_descriptors, if available. Similarly, we need to allow an
+epfile's ioctl for FUNCTIONFS_ENDPOINT_DESC to correctly
+return the corresponding SuperSpeed endpoint descriptor in case
+the connected speed is SuperSpeedPlus as well.
 
-  1) pm_runtime_get_sync will increment pm usage counter even it
-     failed. Forgetting to pm_runtime_put_noidle will result in
-     reference leak.
+The only exception is if a function wants to implement an
+Isochronous endpoint capable of transferring more than 48KB per
+service interval when operating at greater than USB 3.1 Gen1
+speed, in which case it would require an additional SuperSpeedPlus
+Isochronous Endpoint Companion descriptor to be returned as part
+of the Configuration Descriptor. Support for that would need
+to be separately added to the userspace-facing FunctionFS API
+which may not be a trivial task--likely a new descriptor format
+(v3?) may need to be devised to allow for separate SS and SSP
+descriptors to be supplied.
 
-  2) Have not reset pds[i] performance state.
+Signed-off-by: Jack Pham <jackp@codeaurora.org>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201027230731.9073-1-jackp@codeaurora.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Then we fix it.
-
-Fixes: 17ee2fb4e8567 ("remoteproc: qcom: pas: Vote for active/proxy power domains")
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201102143554.144707-1-zhangqilong3@huawei.com
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/remoteproc/qcom_q6v5_pas.c | 5 ++++-
+ drivers/usb/gadget/function/f_fs.c |    5 ++++-
  1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/remoteproc/qcom_q6v5_pas.c b/drivers/remoteproc/qcom_q6v5_pas.c
-index 3837f23995e05..0678b417707ef 100644
---- a/drivers/remoteproc/qcom_q6v5_pas.c
-+++ b/drivers/remoteproc/qcom_q6v5_pas.c
-@@ -90,8 +90,11 @@ static int adsp_pds_enable(struct qcom_adsp *adsp, struct device **pds,
- 	for (i = 0; i < pd_count; i++) {
- 		dev_pm_genpd_set_performance_state(pds[i], INT_MAX);
- 		ret = pm_runtime_get_sync(pds[i]);
--		if (ret < 0)
-+		if (ret < 0) {
-+			pm_runtime_put_noidle(pds[i]);
-+			dev_pm_genpd_set_performance_state(pds[i], 0);
- 			goto unroll_pd_votes;
-+		}
+--- a/drivers/usb/gadget/function/f_fs.c
++++ b/drivers/usb/gadget/function/f_fs.c
+@@ -1247,6 +1247,7 @@ static long ffs_epfile_ioctl(struct file
+ 
+ 		switch (epfile->ffs->gadget->speed) {
+ 		case USB_SPEED_SUPER:
++		case USB_SPEED_SUPER_PLUS:
+ 			desc_idx = 2;
+ 			break;
+ 		case USB_SPEED_HIGH:
+@@ -3077,7 +3078,8 @@ static int _ffs_func_bind(struct usb_con
  	}
  
- 	return 0;
--- 
-2.27.0
-
+ 	if (likely(super)) {
+-		func->function.ss_descriptors = vla_ptr(vlabuf, d, ss_descs);
++		func->function.ss_descriptors = func->function.ssp_descriptors =
++			vla_ptr(vlabuf, d, ss_descs);
+ 		ss_len = ffs_do_descs(ffs->ss_descs_count,
+ 				vla_ptr(vlabuf, d, raw_descs) + fs_len + hs_len,
+ 				d_raw_descs__sz - fs_len - hs_len,
+@@ -3487,6 +3489,7 @@ static void ffs_func_unbind(struct usb_c
+ 	func->function.fs_descriptors = NULL;
+ 	func->function.hs_descriptors = NULL;
+ 	func->function.ss_descriptors = NULL;
++	func->function.ssp_descriptors = NULL;
+ 	func->interfaces_nums = NULL;
+ 
+ 	ffs_event_add(ffs, FUNCTIONFS_UNBIND);
 
 
