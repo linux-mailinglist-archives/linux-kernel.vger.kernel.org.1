@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F142E6349
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:41:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEDB92E3DE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:22:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406363AbgL1Pkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:40:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49580 "EHLO mail.kernel.org"
+        id S2437861AbgL1OUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:20:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405813AbgL1NsN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:48:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8769E2072C;
-        Mon, 28 Dec 2020 13:47:32 +0000 (UTC)
+        id S2437843AbgL1OUs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:20:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 08E17207B2;
+        Mon, 28 Dec 2020 14:20:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163253;
-        bh=1pfwzD+awDdbxxPN+pUx6YGW3q557JBUDuhL3doGH6Q=;
+        s=korg; t=1609165233;
+        bh=9z3QhStNbGViDW57q8obpyRWHXlccfZe9wh/heJ9Omg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GUQjO0U6aNMOkgaJAjZUBKPYN5/SE8W7OM5cNSReZ+2mPf4niJlwMuSlSQXkmjvOk
-         y1n5BOF7GAXxNogA9JTghBT73G441gqRQs18QQ7EzAURWECy+3SMP5Jkf23Qrb8yPE
-         V1g0tVXDu2AD7r2VEi07FqTM3k3JL3tJSJIOuXGo=
+        b=R5teCmd/zN3rRj1ybvoD633r3amgf+vtbVSSIS/vbcYVQWZsOsMteEy4FTYHnJp1u
+         QGMtzbNI6n9ndB1bIwyN3TnUbTAAs5ucWWwUR7GVPqPcNsfABb0t6IIrSmeoqKfzRm
+         M7OwHtMfbVXKE6I+hTMXhSPIBxDIzKNqdwDoG6ZQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 222/453] ASoC: jz4740-i2s: add missed checks for clk_get()
+Subject: [PATCH 5.10 460/717] s390/test_unwind: fix CALL_ON_STACK tests
 Date:   Mon, 28 Dec 2020 13:47:38 +0100
-Message-Id: <20201228124947.901186437@linuxfoundation.org>
+Message-Id: <20201228125043.007596265@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +39,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chuhong Yuan <hslester96@gmail.com>
+From: Heiko Carstens <hca@linux.ibm.com>
 
-[ Upstream commit 1c1fb2653a0c2e3f310c07eacd8fc3a10e08c97a ]
+[ Upstream commit f22b9c219a798e1bf11110a3d2733d883e6da059 ]
 
-jz4740_i2s_set_sysclk() does not check the return values of clk_get(),
-while the file dereferences the pointers in clk_put().
-Add the missed checks to fix it.
+The CALL_ON_STACK tests use the no_dat stack to switch to a different
+stack for unwinding tests. If an interrupt or machine check happens
+while using that stack, and previously being on the async stack, the
+interrupt / machine check entry code (SWITCH_ASYNC) will assume that
+the previous context did not use the async stack and happily use the
+async stack again.
 
-Fixes: 11bd3dd1b7c2 ("ASoC: Add JZ4740 ASoC support")
-Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
-Link: https://lore.kernel.org/r/20201203144227.418194-1-hslester96@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+This will lead to stack corruption of the previous context.
+
+To solve this disable both interrupts and machine checks before
+switching to the no_dat stack.
+
+Fixes: 7868249fbbc8 ("s390/test_unwind: add CALL_ON_STACK tests")
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/jz4740/jz4740-i2s.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/s390/lib/test_unwind.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
-index 0bbd86390be59..9bfd2aabbfe63 100644
---- a/sound/soc/jz4740/jz4740-i2s.c
-+++ b/sound/soc/jz4740/jz4740-i2s.c
-@@ -309,10 +309,14 @@ static int jz4740_i2s_set_sysclk(struct snd_soc_dai *dai, int clk_id,
- 	switch (clk_id) {
- 	case JZ4740_I2S_CLKSRC_EXT:
- 		parent = clk_get(NULL, "ext");
-+		if (IS_ERR(parent))
-+			return PTR_ERR(parent);
- 		clk_set_parent(i2s->clk_i2s, parent);
- 		break;
- 	case JZ4740_I2S_CLKSRC_PLL:
- 		parent = clk_get(NULL, "pll half");
-+		if (IS_ERR(parent))
-+			return PTR_ERR(parent);
- 		clk_set_parent(i2s->clk_i2s, parent);
- 		ret = clk_set_rate(i2s->clk_i2s, freq);
- 		break;
+diff --git a/arch/s390/lib/test_unwind.c b/arch/s390/lib/test_unwind.c
+index 7c988994931f0..6bad84c372dcb 100644
+--- a/arch/s390/lib/test_unwind.c
++++ b/arch/s390/lib/test_unwind.c
+@@ -205,12 +205,15 @@ static noinline int unwindme_func3(struct unwindme *u)
+ /* This function must appear in the backtrace. */
+ static noinline int unwindme_func2(struct unwindme *u)
+ {
++	unsigned long flags;
+ 	int rc;
+ 
+ 	if (u->flags & UWM_SWITCH_STACK) {
+-		preempt_disable();
++		local_irq_save(flags);
++		local_mcck_disable();
+ 		rc = CALL_ON_STACK(unwindme_func3, S390_lowcore.nodat_stack, 1, u);
+-		preempt_enable();
++		local_mcck_enable();
++		local_irq_restore(flags);
+ 		return rc;
+ 	} else {
+ 		return unwindme_func3(u);
 -- 
 2.27.0
 
