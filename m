@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 345B92E3AF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:44:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 452282E3949
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:22:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404551AbgL1NoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:44:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43880 "EHLO mail.kernel.org"
+        id S2388198AbgL1NV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:21:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50348 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404439AbgL1NnX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:43:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6366E20719;
-        Mon, 28 Dec 2020 13:42:42 +0000 (UTC)
+        id S2388184AbgL1NV5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:21:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FE4320719;
+        Mon, 28 Dec 2020 13:21:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162962;
-        bh=HnOhffahLUjkw78ZedWdR3NbMXwGxnTSBqkS1Nm+iwg=;
+        s=korg; t=1609161676;
+        bh=ry6M5yp688WGwiaHQBdcQbu45j94HpT7HrYXdeK19sU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RVu6snvoNjfTIg7cP3igRjhjlZoSTfi0nhuF6p1IqvAs5y1lJBXThR/E1o5OACx3Z
-         MZLM5fLzEH5YMn0hoP0b6OLFjvA2HZZvM5qZKkPGAh/0Fr4HHqxKCM8RlwAbG0GhIs
-         rwU2gDSpE9r4rOG/hynitGkS5Dteja3eni4R8KmM=
+        b=Y7A7NTr8M+gQIrGNcGKAsF8WeadnpHKPPzEZu8GEOFlvY9hydeAQaUb4e94AqELp1
+         Fmzi4MuknmLClOedU1ElT9+UHURIdoX6apoe+9wMlaog7i2JShxjyCYVjY76ThL3R4
+         +rdW9ktGmirBpiF+PnrLrtCDAgSxBfMA61pgTPLI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 104/453] spi: spi-mem: fix reference leak in spi_mem_access_start
-Date:   Mon, 28 Dec 2020 13:45:40 +0100
-Message-Id: <20201228124942.224114893@linuxfoundation.org>
+        stable@vger.kernel.org, Thomas Lamprecht <t.lamprecht@proxmox.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 4.19 022/346] scsi: be2iscsi: Revert "Fix a theoretical leak in beiscsi_create_eqs()"
+Date:   Mon, 28 Dec 2020 13:45:41 +0100
+Message-Id: <20201228124920.844258802@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +40,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit c02bb16b0e826bf0e19aa42c3ae60ea339f32cf5 ]
+commit eeaf06af6f87e1dba371fbe42674e6f963220b9c upstream.
 
-pm_runtime_get_sync will increment pm usage counter even it
-failed. Forgetting to pm_runtime_put_noidle will result in
-reference leak in spi_mem_access_start, so we should fix it.
+My patch caused kernel Oopses and delays in boot.  Revert it.
 
-Fixes: f86c24f479530 ("spi: spi-mem: Split spi_mem_exec_op() code")
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201103140910.3482-1-zhangqilong3@huawei.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The problem was that I moved the "mem->dma = paddr;" before the call to
+be_fill_queue().  But the first thing that the be_fill_queue() function
+does is memset the whole struct to zero which overwrites the assignment.
+
+Link: https://lore.kernel.org/r/X8jXkt6eThjyVP1v@mwanda
+Fixes: 38b2db564d9a ("scsi: be2iscsi: Fix a theoretical leak in beiscsi_create_eqs()")
+Cc: stable <stable@vger.kernel.org>
+Reported-by: Thomas Lamprecht <t.lamprecht@proxmox.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/spi/spi-mem.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/scsi/be2iscsi/be_main.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-index de0ba3e5449fa..33115bcfc787e 100644
---- a/drivers/spi/spi-mem.c
-+++ b/drivers/spi/spi-mem.c
-@@ -237,6 +237,7 @@ static int spi_mem_access_start(struct spi_mem *mem)
+--- a/drivers/scsi/be2iscsi/be_main.c
++++ b/drivers/scsi/be2iscsi/be_main.c
+@@ -3039,7 +3039,6 @@ static int beiscsi_create_eqs(struct bei
+ 			goto create_eq_error;
+ 		}
  
- 		ret = pm_runtime_get_sync(ctlr->dev.parent);
- 		if (ret < 0) {
-+			pm_runtime_put_noidle(ctlr->dev.parent);
- 			dev_err(&ctlr->dev, "Failed to power device: %d\n",
- 				ret);
- 			return ret;
--- 
-2.27.0
-
+-		mem->dma = paddr;
+ 		mem->va = eq_vaddress;
+ 		ret = be_fill_queue(eq, phba->params.num_eq_entries,
+ 				    sizeof(struct be_eq_entry), eq_vaddress);
+@@ -3049,6 +3048,7 @@ static int beiscsi_create_eqs(struct bei
+ 			goto create_eq_error;
+ 		}
+ 
++		mem->dma = paddr;
+ 		ret = beiscsi_cmd_eq_create(&phba->ctrl, eq,
+ 					    BEISCSI_EQ_DELAY_DEF);
+ 		if (ret) {
+@@ -3105,7 +3105,6 @@ static int beiscsi_create_cqs(struct bei
+ 			goto create_cq_error;
+ 		}
+ 
+-		mem->dma = paddr;
+ 		ret = be_fill_queue(cq, phba->params.num_cq_entries,
+ 				    sizeof(struct sol_cqe), cq_vaddress);
+ 		if (ret) {
+@@ -3115,6 +3114,7 @@ static int beiscsi_create_cqs(struct bei
+ 			goto create_cq_error;
+ 		}
+ 
++		mem->dma = paddr;
+ 		ret = beiscsi_cmd_cq_create(&phba->ctrl, cq, eq, false,
+ 					    false, 0);
+ 		if (ret) {
 
 
