@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BA492E6852
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:37:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73DCA2E6968
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:50:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728705AbgL1NBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:01:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57350 "EHLO mail.kernel.org"
+        id S1727782AbgL1Mws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:52:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729610AbgL1NBB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:01:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B19FF22B40;
-        Mon, 28 Dec 2020 13:00:20 +0000 (UTC)
+        id S1727764AbgL1Mwr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:52:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 00EFA2242A;
+        Mon, 28 Dec 2020 12:51:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160421;
-        bh=5bGTUm81ag/3S89yN7MpSFV2B8qeibKXJ+LYrlFFpEI=;
+        s=korg; t=1609159899;
+        bh=WaveH1Q9AVRFJF+yNl25odc0yleqi42jKABjuKowRTk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vyc3zPOzVh7QvCEZaqV1L5s+FKxNLPeyxlZ9xu05qxxK9SyIUBzE9OcVUKrlE3I/W
-         tehYHoWg9K5dWbpD4CZweAACe7XKB70giWYY6oGTvZseZPYQA7aMw55fJsLbtd2XMy
-         /NjlcpcsTChdhQexbhTqM2U7qA+Pcf86iwIQfURI=
+        b=C1JkNSvDObuWH754ItD1VYHLd1UQuZQ4/y3dyctods67Wb3yTLCdi5xhgMLyTwmfR
+         Gy+Fdky7Gbrf3p3VOzmrx5nsszPr73WmP2bwu8M978iMW2GC3+PzxmywKxAQrLZ3qj
+         iwKAYIX0z9zUJI7vKIibxIp8h3oQL6SBg9VDRrp0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Julian Sax <jsbc@gmx.de>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Jiri Kosina <jkosina@suse.cz>
-Subject: [PATCH 4.9 045/175] HID: i2c-hid: add Vero K147 to descriptor override
+        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>
+Subject: [PATCH 4.4 014/132] USB: add RESET_RESUME quirk for Snapscan 1212
 Date:   Mon, 28 Dec 2020 13:48:18 +0100
-Message-Id: <20201228124855.436560568@linuxfoundation.org>
+Message-Id: <20201228124847.090258183@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +38,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julian Sax <jsbc@gmx.de>
+From: Oliver Neukum <oneukum@suse.com>
 
-commit c870d50ce387d84b6438211a7044c60afbd5d60a upstream.
+commit 08a02f954b0def3ada8ed6d4b2c7bcb67e885e9c upstream.
 
-This device uses the SIPODEV SP1064 touchpad, which does not
-supply descriptors, so it has to be added to the override list.
+I got reports that some models of this old scanner need
+this when using runtime PM.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Julian Sax <jsbc@gmx.de>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Oliver Neukum <oneukum@suse.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201207130323.23857-1-oneukum@suse.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/hid/i2c-hid/i2c-hid-dmi-quirks.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/usb/core/quirks.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/hid/i2c-hid/i2c-hid-dmi-quirks.c
-+++ b/drivers/hid/i2c-hid/i2c-hid-dmi-quirks.c
-@@ -397,6 +397,14 @@ static const struct dmi_system_id i2c_hi
- 		},
- 		.driver_data = (void *)&sipodev_desc
- 	},
-+	{
-+		.ident = "Vero K147",
-+		.matches = {
-+			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "VERO"),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "K147"),
-+		},
-+		.driver_data = (void *)&sipodev_desc
-+	},
- 	{ }	/* Terminate list */
- };
+--- a/drivers/usb/core/quirks.c
++++ b/drivers/usb/core/quirks.c
+@@ -189,6 +189,9 @@ static const struct usb_device_id usb_qu
+ 	{ USB_DEVICE(0x06a3, 0x0006), .driver_info =
+ 			USB_QUIRK_CONFIG_INTF_STRINGS },
+ 
++	/* Agfa SNAPSCAN 1212U */
++	{ USB_DEVICE(0x06bd, 0x0001), .driver_info = USB_QUIRK_RESET_RESUME },
++
+ 	/* Guillemot Webcam Hercules Dualpix Exchange (2nd ID) */
+ 	{ USB_DEVICE(0x06f8, 0x0804), .driver_info = USB_QUIRK_RESET_RESUME },
  
 
 
