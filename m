@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58C9B2E3C17
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:59:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E31FE2E3A5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:36:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407654AbgL1N60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:58:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59770 "EHLO mail.kernel.org"
+        id S2390261AbgL1Nfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:35:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391579AbgL1N6R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:58:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E6272064B;
-        Mon, 28 Dec 2020 13:58:01 +0000 (UTC)
+        id S2389383AbgL1Nfg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:35:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 56A8A2063A;
+        Mon, 28 Dec 2020 13:35:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163882;
-        bh=ypPykkwJtP8ZsDxyT0CKLagTG6mLj2WNPGAqoi8gbjM=;
+        s=korg; t=1609162520;
+        bh=nyTssKT5IpUGBYDlCrcVpP9V8Cl8LAaY6iLAzA6phSc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LRCCTxIBloK0hdl/D1/B3MAazN0l3Ja0brR6OCTSyMaTI2eXSBnWezWqIWyTo4rTO
-         JdpdIbEtH7pCLztKHE/FatMUWw2sDKvIMEPE1MG9mtn25ddIWp2EKzi67ELxTkv7JD
-         /89JVfW86SulxMmmS3Cr8XZnWYKaCS8vCKbKaJ+o=
+        b=yzPYld4K5c+HBAXY4OTv113iAqRyc3ZLCBw/apt7+F+6hyc7+UOpi1xWGbABbwp5x
+         h4BO/1wxmWkmu2ovMxEPwXRvEx/od+JjHkrTBET2Kd/5ZC5m64pxul4AbB78csReUs
+         Jluxqj+A2Zmju+oRpkCctPvmuhPLX2HfiW8Cm0F8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Chuhong Yuan <hslester96@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.4 411/453] spi: st-ssc4: Fix unbalanced pm_runtime_disable() in probe error path
+        stable@vger.kernel.org,
+        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 4.19 328/346] iio: buffer: Fix demux update
 Date:   Mon, 28 Dec 2020 13:50:47 +0100
-Message-Id: <20201228124956.992067495@linuxfoundation.org>
+Message-Id: <20201228124935.639190644@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,45 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: Nuno Sá <nuno.sa@analog.com>
 
-commit 5ef76dac0f2c26aeae4ee79eb830280f16d5aceb upstream.
+commit 19ef7b70ca9487773c29b449adf0c70f540a0aab upstream.
 
-If the calls to devm_platform_ioremap_resource(), irq_of_parse_and_map()
-or devm_request_irq() fail on probe of the ST SSC4 SPI driver, the
-runtime PM disable depth is incremented even though it was not
-decremented before.  Fix it.
+When updating the buffer demux, we will skip a scan element from the
+device in the case `in_ind != out_ind` and we enter the while loop.
+in_ind should only be refreshed with `find_next_bit()` in the end of the
+loop.
 
-Fixes: cd050abeba2a ("spi: st-ssc4: add missed pm_runtime_disable")
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Cc: <stable@vger.kernel.org> # v5.5+
-Cc: Chuhong Yuan <hslester96@gmail.com>
-Link: https://lore.kernel.org/r/fbe8768c30dc829e2d77eabe7be062ca22f84024.1604874488.git.lukas@wunner.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Note, to cause problems we need a situation where we are skippig over
+an element (channel not enabled) that happens to not have the same size
+as the next element.   Whilst this is a possible situation we haven't
+actually identified any cases in mainline where it happens as most drivers
+have consistent channel storage sizes with the exception of the timestamp
+which is the last element and hence never skipped over.
+
+Fixes: 5ada4ea9be16 ("staging:iio: add demux optionally to path from device to buffer")
+Signed-off-by: Nuno Sá <nuno.sa@analog.com>
+Link: https://lore.kernel.org/r/20201112144323.28887-1-nuno.sa@analog.com
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/spi/spi-st-ssc4.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/iio/industrialio-buffer.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/spi/spi-st-ssc4.c
-+++ b/drivers/spi/spi-st-ssc4.c
-@@ -375,13 +375,14 @@ static int spi_st_probe(struct platform_
- 	ret = devm_spi_register_master(&pdev->dev, master);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Failed to register master\n");
--		goto clk_disable;
-+		goto rpm_disable;
- 	}
- 
- 	return 0;
- 
--clk_disable:
-+rpm_disable:
- 	pm_runtime_disable(&pdev->dev);
-+clk_disable:
- 	clk_disable_unprepare(spi_st->clk);
- put_master:
- 	spi_master_put(master);
+--- a/drivers/iio/industrialio-buffer.c
++++ b/drivers/iio/industrialio-buffer.c
+@@ -850,12 +850,12 @@ static int iio_buffer_update_demux(struc
+ 				       indio_dev->masklength,
+ 				       in_ind + 1);
+ 		while (in_ind != out_ind) {
+-			in_ind = find_next_bit(indio_dev->active_scan_mask,
+-					       indio_dev->masklength,
+-					       in_ind + 1);
+ 			length = iio_storage_bytes_for_si(indio_dev, in_ind);
+ 			/* Make sure we are aligned */
+ 			in_loc = roundup(in_loc, length) + length;
++			in_ind = find_next_bit(indio_dev->active_scan_mask,
++					       indio_dev->masklength,
++					       in_ind + 1);
+ 		}
+ 		length = iio_storage_bytes_for_si(indio_dev, in_ind);
+ 		out_loc = roundup(out_loc, length);
 
 
