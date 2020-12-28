@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3362E3B7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:51:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E84DF2E3E1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:24:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406370AbgL1Nug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:50:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52434 "EHLO mail.kernel.org"
+        id S2502920AbgL1OXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:23:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406314AbgL1Nub (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:50:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B1B1208B3;
-        Mon, 28 Dec 2020 13:49:50 +0000 (UTC)
+        id S2502766AbgL1OXH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:23:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E43022D03;
+        Mon, 28 Dec 2020 14:22:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163390;
-        bh=2BKQVLwBXQA3mHZ4MLRKHByj5CIapqzWwFWOLkVNcdA=;
+        s=korg; t=1609165371;
+        bh=pEuBK8ujUagU0dlJy7WscqftfQKL9i6gUUDLsClTPjo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SW0SbtOl0WAJNr48TdVfTNst8UPgTbPX0MzZXEQJEispVxbTHtLAAk6sXSWGXVv5P
-         2IW+CqnUBKnWRoOq1FU6rXFqg21Cu6pG5+0FVo+6p2wfRO3n9kRReghx3lL7/mIKS7
-         Dx8L30HfcHxvWakEL+m6OtnMSAc6R+hD94zKkiWw=
+        b=hzzbt/ER4m1RCeP0j+nxJz0VLCOgYXluLU0USOQyGa+33fskuy4NFUh5u/ONRI8j+
+         CegSio90tr27jVOzGvQZGmUa05CYikE7qKyKO5Ftejy8PQH+OFjRSpcFdhCQqfcEdL
+         U3yw0npbd5kSaw3Vs5L0TuoNxDWjhRL/FivBDvsM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 268/453] mtd: rawnand: meson: Fix a resource leak in init
+        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 506/717] io_uring: fix racy IOPOLL flush overflow
 Date:   Mon, 28 Dec 2020 13:48:24 +0100
-Message-Id: <20201228124950.124035517@linuxfoundation.org>
+Message-Id: <20201228125045.202569307@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +39,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Pavel Begunkov <asml.silence@gmail.com>
 
-[ Upstream commit ad8566d3555c4731e6b48823b92d3929b0394c14 ]
+[ Upstream commit 634578f800652035debba3098d8ab0d21af7c7a5 ]
 
-Call clk_disable_unprepare(nfc->phase_rx) if the clk_set_rate() function
-fails to avoid a resource leak.
+It's not safe to call io_cqring_overflow_flush() for IOPOLL mode without
+hodling uring_lock, because it does synchronisation differently. Make
+sure we have it.
 
-Fixes: 8fae856c5350 ("mtd: rawnand: meson: add support for Amlogic NAND flash controller")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/X8ikVCnUsfTpffFB@mwanda
+As for io_ring_exit_work(), we don't even need it there because
+io_ring_ctx_wait_and_kill() already set force flag making all overflowed
+requests to be dropped.
+
+Cc: <stable@vger.kernel.org> # 5.5+
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/nand/raw/meson_nand.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ fs/io_uring.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
-index 1b82b687e5a50..58eaa3845da4d 100644
---- a/drivers/mtd/nand/raw/meson_nand.c
-+++ b/drivers/mtd/nand/raw/meson_nand.c
-@@ -1041,9 +1041,12 @@ static int meson_nfc_clk_init(struct meson_nfc *nfc)
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 0621f581943cd..b9d3209a5f9de 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -8369,8 +8369,6 @@ static void io_ring_exit_work(struct work_struct *work)
+ 	 * as nobody else will be looking for them.
+ 	 */
+ 	do {
+-		if (ctx->rings)
+-			io_cqring_overflow_flush(ctx, true, NULL, NULL);
+ 		io_iopoll_try_reap_events(ctx);
+ 	} while (!wait_for_completion_timeout(&ctx->ref_comp, HZ/20));
+ 	io_ring_ctx_free(ctx);
+@@ -8380,6 +8378,8 @@ static void io_ring_ctx_wait_and_kill(struct io_ring_ctx *ctx)
+ {
+ 	mutex_lock(&ctx->uring_lock);
+ 	percpu_ref_kill(&ctx->refs);
++	if (ctx->rings)
++		io_cqring_overflow_flush(ctx, true, NULL, NULL);
+ 	mutex_unlock(&ctx->uring_lock);
  
- 	ret = clk_set_rate(nfc->device_clk, 24000000);
- 	if (ret)
--		goto err_phase_rx;
-+		goto err_disable_rx;
+ 	io_kill_timeouts(ctx, NULL);
+@@ -8389,8 +8389,6 @@ static void io_ring_ctx_wait_and_kill(struct io_ring_ctx *ctx)
+ 		io_wq_cancel_all(ctx->io_wq);
  
- 	return 0;
-+
-+err_disable_rx:
-+	clk_disable_unprepare(nfc->phase_rx);
- err_phase_rx:
- 	clk_disable_unprepare(nfc->phase_tx);
- err_phase_tx:
+ 	/* if we failed setting up the ctx, we might not have any rings */
+-	if (ctx->rings)
+-		io_cqring_overflow_flush(ctx, true, NULL, NULL);
+ 	io_iopoll_try_reap_events(ctx);
+ 	idr_for_each(&ctx->personality_idr, io_remove_personalities, ctx);
+ 
+@@ -8654,7 +8652,9 @@ static void io_uring_cancel_task_requests(struct io_ring_ctx *ctx,
+ 	}
+ 
+ 	io_cancel_defer_files(ctx, task, files);
++	io_ring_submit_lock(ctx, (ctx->flags & IORING_SETUP_IOPOLL));
+ 	io_cqring_overflow_flush(ctx, true, task, files);
++	io_ring_submit_unlock(ctx, (ctx->flags & IORING_SETUP_IOPOLL));
+ 
+ 	while (__io_uring_cancel_task_requests(ctx, task, files)) {
+ 		io_run_task_work();
+@@ -8956,8 +8956,10 @@ SYSCALL_DEFINE6(io_uring_enter, unsigned int, fd, u32, to_submit,
+ 	 */
+ 	ret = 0;
+ 	if (ctx->flags & IORING_SETUP_SQPOLL) {
++		io_ring_submit_lock(ctx, (ctx->flags & IORING_SETUP_IOPOLL));
+ 		if (!list_empty_careful(&ctx->cq_overflow_list))
+ 			io_cqring_overflow_flush(ctx, false, NULL, NULL);
++		io_ring_submit_unlock(ctx, (ctx->flags & IORING_SETUP_IOPOLL));
+ 		if (flags & IORING_ENTER_SQ_WAKEUP)
+ 			wake_up(&ctx->sq_data->wait);
+ 		if (flags & IORING_ENTER_SQ_WAIT)
 -- 
 2.27.0
 
