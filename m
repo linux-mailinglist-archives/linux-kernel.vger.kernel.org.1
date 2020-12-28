@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 283232E3B32
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:49:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2DE2E4066
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:52:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405562AbgL1NrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:47:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46906 "EHLO mail.kernel.org"
+        id S2505362AbgL1OwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:52:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405054AbgL1NqH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:46:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF198208B3;
-        Mon, 28 Dec 2020 13:45:51 +0000 (UTC)
+        id S2502029AbgL1OSy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:18:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C9F9B206D4;
+        Mon, 28 Dec 2020 14:18:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163152;
-        bh=9SWr3GY0CZmbvRCe5GvFrozejTm1sVJ+CVP5sXM0E9I=;
+        s=korg; t=1609165113;
+        bh=nGCLY8IT6dAMWqZXpIhlhyg/Rhh9fWVJzV5hz+KEYQE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eNjLK0ExfCYeFW22U8j3G5b4mxe+SpDbbEtzv+GDWePJlOhE8PhLI0lDLCoT45gni
-         Wmjh+76ObjYapj7gVFb0vulX1ncjWoWoqv2w2C3Qwph6iL2npAhOB5aiXfTSShZggN
-         f58bu4ihGvWKfH3Xz5Bi8LP1RPCYiTidXHa0QrtU=
+        b=fuInG9wyxq98g9H3fLXH9zG0Wj83ox3N0Et/IfCHxxE035hC2V33Fw2xYIU9aeNoR
+         KTpeICG35cM8R35uzymFDMOWE9O21/8cLiLGe1z26PmM1QnUcpDcBHTW4X/TspvOF4
+         gMRNa0w0dcir1PTfXtSG82DK30L+YLYKdn4fmU68=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>,
-        Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 171/453] media: siano: fix memory leak of debugfs members in smsdvb_hotplug
+Subject: [PATCH 5.10 409/717] mtd: rawnand: meson: Fix a resource leak in init
 Date:   Mon, 28 Dec 2020 13:46:47 +0100
-Message-Id: <20201228124945.424828023@linuxfoundation.org>
+Message-Id: <20201228125040.575969990@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,45 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit abf287eeff4c6da6aa804bbd429dfd9d0dfb6ea7 ]
+[ Upstream commit ad8566d3555c4731e6b48823b92d3929b0394c14 ]
 
-When dvb_create_media_graph fails, the debugfs kept inside client should
-be released. However, the current implementation does not release them.
+Call clk_disable_unprepare(nfc->phase_rx) if the clk_set_rate() function
+fails to avoid a resource leak.
 
-Fix this by adding a new goto label to call smsdvb_debugfs_release.
-
-Fixes: 0d3ab8410dcb ("[media] dvb core: must check dvb_create_media_graph()")
-Signed-off-by: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: 8fae856c5350 ("mtd: rawnand: meson: add support for Amlogic NAND flash controller")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/X8ikVCnUsfTpffFB@mwanda
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/common/siano/smsdvb-main.c | 5 ++++-
+ drivers/mtd/nand/raw/meson_nand.c | 5 ++++-
  1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/common/siano/smsdvb-main.c b/drivers/media/common/siano/smsdvb-main.c
-index 88f90dfd368b1..ae17407e477a4 100644
---- a/drivers/media/common/siano/smsdvb-main.c
-+++ b/drivers/media/common/siano/smsdvb-main.c
-@@ -1169,12 +1169,15 @@ static int smsdvb_hotplug(struct smscore_device_t *coredev,
- 	rc = dvb_create_media_graph(&client->adapter, true);
- 	if (rc < 0) {
- 		pr_err("dvb_create_media_graph failed %d\n", rc);
--		goto client_error;
-+		goto media_graph_error;
- 	}
+diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
+index 48e6dac96be6d..1fd7f7024c0b4 100644
+--- a/drivers/mtd/nand/raw/meson_nand.c
++++ b/drivers/mtd/nand/raw/meson_nand.c
+@@ -1044,9 +1044,12 @@ static int meson_nfc_clk_init(struct meson_nfc *nfc)
  
- 	pr_info("DVB interface registered.\n");
+ 	ret = clk_set_rate(nfc->device_clk, 24000000);
+ 	if (ret)
+-		goto err_phase_rx;
++		goto err_disable_rx;
+ 
  	return 0;
- 
-+media_graph_error:
-+	smsdvb_debugfs_release(client);
 +
- client_error:
- 	dvb_unregister_frontend(&client->frontend);
- 
++err_disable_rx:
++	clk_disable_unprepare(nfc->phase_rx);
+ err_phase_rx:
+ 	clk_disable_unprepare(nfc->phase_tx);
+ err_phase_tx:
 -- 
 2.27.0
 
