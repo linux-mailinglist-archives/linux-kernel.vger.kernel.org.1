@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A04A2E3B27
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:47:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AC562E403E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:51:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405316AbgL1Nqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:46:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46524 "EHLO mail.kernel.org"
+        id S2502121AbgL1OTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:19:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404941AbgL1Npv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:45:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 583C122AAA;
-        Mon, 28 Dec 2020 13:45:35 +0000 (UTC)
+        id S2441635AbgL1OT2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:19:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C5B82245C;
+        Mon, 28 Dec 2020 14:18:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163136;
-        bh=+OeI2MeOOdSPbMPqfOX5Tf6VczmeQmyz4whiJee9RU8=;
+        s=korg; t=1609165127;
+        bh=473GlbrqqYrf5qztBNlQMElMWOAaR3QPNrjWoDOeHdI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rMAf81yj7pdvBqDFXusC75roycJv3BU2zm8H/gH4dO373PT1QPXp+fOJmgXQth1R/
-         ai+WGAamzlEBN1jAoRqobZ+zc4owPk8xk65mnidYCUX5ybO7VMRCZLKWsNRWWyBADu
-         v0kGruLXZsp+aSCac4tGUDBI688H80hnZu5q5kLI=
+        b=CWxps1Q54eeGBg0x8NEBI0xVNcinvWedNyxhNm2Q+UEgCqDwf+gkx5JemeGDPH6qu
+         h2P9J6CjMG+WLP+2ecBC9D5MVdajItTRsteVlS1eaUlQfIpDkrYK1p98uVsJ2mRJ7G
+         5sYKGA+IbwPG8BEXUO54idIUTkIB5Q69BYv0QYSk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        stable@vger.kernel.org, Wenpeng Liang <liangwenpeng@huawei.com>,
+        Weihang Li <liweihang@huawei.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 183/453] power: supply: axp288_charger: Fix HP Pavilion x2 10 DMI matching
-Date:   Mon, 28 Dec 2020 13:46:59 +0100
-Message-Id: <20201228124946.013531767@linuxfoundation.org>
+Subject: [PATCH 5.10 422/717] RDMA/hns: Limit the length of data copied between kernel and userspace
+Date:   Mon, 28 Dec 2020 13:47:00 +0100
+Message-Id: <20201228125041.182667076@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,100 +41,146 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Wenpeng Liang <liangwenpeng@huawei.com>
 
-[ Upstream commit a0f1ccd96c7049377d892a4299b6d5e47ec9179d ]
+[ Upstream commit 1c0ca9cd1741687f529498ddb899805fc2c51caa ]
 
-Commit 9c80662a74cd ("power: supply: axp288_charger: Add special handling
-for HP Pavilion x2 10") added special handling for HP Pavilion x2 10
-models which use the weird combination of a Type-C connector and the
-non Type-C aware AXP288 PMIC.
+For ib_copy_from_user(), the length of udata may not be the same as that
+of cmd. For ib_copy_to_user(), the length of udata may not be the same as
+that of resp. So limit the length to prevent out-of-bounds read and write
+operations from ib_copy_from_user() and ib_copy_to_user().
 
-This special handling was activated by a DMI match a the product-name
-of "HP Pavilion x2 Detachable". Recently I've learned that there are
-also older "HP Pavilion x2 Detachable" models with an AXP288 PMIC +
-a micro-usb connector where we should not activate the special handling
-for the Type-C connectors.
-
-Extend the matching to also match on the DMI board-name and match on the
-2 boards (one Bay Trail based one Cherry Trail based) of which we are
-certain that they use the AXP288 + Type-C connector combination.
-
-Note the DSDT code from these older (AXP288 + micro-USB) models contains
-some AML code (which never runs under Linux) which reads the micro-USB
-connector id-pin and if it is pulled to ground, which would normally mean
-the port is in host mode!, then it sets the input-current-limit to 3A,
-it seems HP is using the micro-USB port as a charging only connector
-and identifies their own 3A capable charger though this hack which is a
-major violation of the USB specs. Note HP also hardcodes a 2A limit
-when the id-pin is not pulled to ground, which is also in violation
-of the specs.
-
-I've no intention to add support for HP's hack to support 3A charging
-on these older models. By making the DMI matches for the Type-C equipped
-models workaround more tighter, these older models will be treated just
-like any other AXP288 + micro-USB equipped device and the input-current
-limit will follow the BC 1.2 spec (using the defacto standard values
-there where the BC 1.2 spec defines a range).
-
-Fixes: 9c80662a74cd ("power: supply: axp288_charger: Add special handling for HP Pavilion x2 10")
-BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1896924
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Fixes: de77503a5940 ("RDMA/hns: RDMA/hns: Assign rq head pointer when enable rq record db")
+Fixes: 633fb4d9fdaa ("RDMA/hns: Use structs to describe the uABI instead of opencoding")
+Fixes: ae85bf92effc ("RDMA/hns: Optimize qp param setup flow")
+Fixes: 6fd610c5733d ("RDMA/hns: Support 0 hop addressing for SRQ buffer")
+Fixes: 9d9d4ff78884 ("RDMA/hns: Update the kernel header file of hns")
+Link: https://lore.kernel.org/r/1607650657-35992-2-git-send-email-liweihang@huawei.com
+Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
+Signed-off-by: Weihang Li <liweihang@huawei.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/axp288_charger.c | 28 ++++++++++++++++-----------
- 1 file changed, 17 insertions(+), 11 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_cq.c   |  5 +++--
+ drivers/infiniband/hw/hns/hns_roce_main.c |  3 ++-
+ drivers/infiniband/hw/hns/hns_roce_pd.c   | 11 ++++++-----
+ drivers/infiniband/hw/hns/hns_roce_qp.c   |  9 ++++++---
+ drivers/infiniband/hw/hns/hns_roce_srq.c  | 10 +++++-----
+ 5 files changed, 22 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/power/supply/axp288_charger.c b/drivers/power/supply/axp288_charger.c
-index cf4c67b2d2359..7d09e49f04d3b 100644
---- a/drivers/power/supply/axp288_charger.c
-+++ b/drivers/power/supply/axp288_charger.c
-@@ -548,14 +548,15 @@ out:
+diff --git a/drivers/infiniband/hw/hns/hns_roce_cq.c b/drivers/infiniband/hw/hns/hns_roce_cq.c
+index 809b22aa5056c..da346129f6e9e 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_cq.c
++++ b/drivers/infiniband/hw/hns/hns_roce_cq.c
+@@ -274,7 +274,7 @@ int hns_roce_create_cq(struct ib_cq *ib_cq, const struct ib_cq_init_attr *attr,
  
- /*
-  * The HP Pavilion x2 10 series comes in a number of variants:
-- * Bay Trail SoC    + AXP288 PMIC, DMI_BOARD_NAME: "815D"
-- * Cherry Trail SoC + AXP288 PMIC, DMI_BOARD_NAME: "813E"
-- * Cherry Trail SoC + TI PMIC,     DMI_BOARD_NAME: "827C" or "82F4"
-+ * Bay Trail SoC    + AXP288 PMIC, Micro-USB, DMI_BOARD_NAME: "8021"
-+ * Bay Trail SoC    + AXP288 PMIC, Type-C,    DMI_BOARD_NAME: "815D"
-+ * Cherry Trail SoC + AXP288 PMIC, Type-C,    DMI_BOARD_NAME: "813E"
-+ * Cherry Trail SoC + TI PMIC,     Type-C,    DMI_BOARD_NAME: "827C" or "82F4"
-  *
-- * The variants with the AXP288 PMIC are all kinds of special:
-+ * The variants with the AXP288 + Type-C connector are all kinds of special:
-  *
-- * 1. All variants use a Type-C connector which the AXP288 does not support, so
-- * when using a Type-C charger it is not recognized. Unlike most AXP288 devices,
-+ * 1. They use a Type-C connector which the AXP288 does not support, so when
-+ * using a Type-C charger it is not recognized. Unlike most AXP288 devices,
-  * this model actually has mostly working ACPI AC / Battery code, the ACPI code
-  * "solves" this by simply setting the input_current_limit to 3A.
-  * There are still some issues with the ACPI code, so we use this native driver,
-@@ -578,12 +579,17 @@ out:
-  */
- static const struct dmi_system_id axp288_hp_x2_dmi_ids[] = {
- 	{
--		/*
--		 * Bay Trail model has "Hewlett-Packard" as sys_vendor, Cherry
--		 * Trail model has "HP", so we only match on product_name.
--		 */
- 		.matches = {
--			DMI_MATCH(DMI_PRODUCT_NAME, "HP Pavilion x2 Detachable"),
-+			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Hewlett-Packard"),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "HP Pavilion x2 Detachable"),
-+			DMI_EXACT_MATCH(DMI_BOARD_NAME, "815D"),
-+		},
-+	},
-+	{
-+		.matches = {
-+			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "HP"),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "HP Pavilion x2 Detachable"),
-+			DMI_EXACT_MATCH(DMI_BOARD_NAME, "813E"),
- 		},
- 	},
- 	{} /* Terminating entry */
+ 	if (udata) {
+ 		ret = ib_copy_from_udata(&ucmd, udata,
+-					 min(sizeof(ucmd), udata->inlen));
++					 min(udata->inlen, sizeof(ucmd)));
+ 		if (ret) {
+ 			ibdev_err(ibdev, "Failed to copy CQ udata, err %d\n",
+ 				  ret);
+@@ -313,7 +313,8 @@ int hns_roce_create_cq(struct ib_cq *ib_cq, const struct ib_cq_init_attr *attr,
+ 
+ 	if (udata) {
+ 		resp.cqn = hr_cq->cqn;
+-		ret = ib_copy_to_udata(udata, &resp, sizeof(resp));
++		ret = ib_copy_to_udata(udata, &resp,
++				       min(udata->outlen, sizeof(resp)));
+ 		if (ret)
+ 			goto err_cqc;
+ 	}
+diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
+index afeffafc59f90..a6277d1c36ba9 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_main.c
++++ b/drivers/infiniband/hw/hns/hns_roce_main.c
+@@ -325,7 +325,8 @@ static int hns_roce_alloc_ucontext(struct ib_ucontext *uctx,
+ 
+ 	resp.cqe_size = hr_dev->caps.cqe_sz;
+ 
+-	ret = ib_copy_to_udata(udata, &resp, sizeof(resp));
++	ret = ib_copy_to_udata(udata, &resp,
++			       min(udata->outlen, sizeof(resp)));
+ 	if (ret)
+ 		goto error_fail_copy_to_udata;
+ 
+diff --git a/drivers/infiniband/hw/hns/hns_roce_pd.c b/drivers/infiniband/hw/hns/hns_roce_pd.c
+index 98f69496adb49..f78fa1d3d8075 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_pd.c
++++ b/drivers/infiniband/hw/hns/hns_roce_pd.c
+@@ -70,16 +70,17 @@ int hns_roce_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
+ 	}
+ 
+ 	if (udata) {
+-		struct hns_roce_ib_alloc_pd_resp uresp = {.pdn = pd->pdn};
++		struct hns_roce_ib_alloc_pd_resp resp = {.pdn = pd->pdn};
+ 
+-		if (ib_copy_to_udata(udata, &uresp, sizeof(uresp))) {
++		ret = ib_copy_to_udata(udata, &resp,
++				       min(udata->outlen, sizeof(resp)));
++		if (ret) {
+ 			hns_roce_pd_free(to_hr_dev(ib_dev), pd->pdn);
+-			ibdev_err(ib_dev, "failed to copy to udata\n");
+-			return -EFAULT;
++			ibdev_err(ib_dev, "failed to copy to udata, ret = %d\n", ret);
+ 		}
+ 	}
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ int hns_roce_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata)
+diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+index 71ea8fd9041b9..800141ab643a3 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_qp.c
++++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+@@ -865,9 +865,12 @@ static int set_qp_param(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
+ 	}
+ 
+ 	if (udata) {
+-		if (ib_copy_from_udata(ucmd, udata, sizeof(*ucmd))) {
+-			ibdev_err(ibdev, "Failed to copy QP ucmd\n");
+-			return -EFAULT;
++		ret = ib_copy_from_udata(ucmd, udata,
++					 min(udata->inlen, sizeof(*ucmd)));
++		if (ret) {
++			ibdev_err(ibdev,
++				  "failed to copy QP ucmd, ret = %d\n", ret);
++			return ret;
+ 		}
+ 
+ 		ret = set_user_sq_size(hr_dev, &init_attr->cap, hr_qp, ucmd);
+diff --git a/drivers/infiniband/hw/hns/hns_roce_srq.c b/drivers/infiniband/hw/hns/hns_roce_srq.c
+index 8caf74e44efd9..75d74f4bb52c9 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_srq.c
++++ b/drivers/infiniband/hw/hns/hns_roce_srq.c
+@@ -300,7 +300,8 @@ int hns_roce_create_srq(struct ib_srq *ib_srq,
+ 	srq->max_gs = init_attr->attr.max_sge;
+ 
+ 	if (udata) {
+-		ret = ib_copy_from_udata(&ucmd, udata, sizeof(ucmd));
++		ret = ib_copy_from_udata(&ucmd, udata,
++					 min(udata->inlen, sizeof(ucmd)));
+ 		if (ret) {
+ 			ibdev_err(ibdev, "Failed to copy SRQ udata, err %d\n",
+ 				  ret);
+@@ -343,11 +344,10 @@ int hns_roce_create_srq(struct ib_srq *ib_srq,
+ 	resp.srqn = srq->srqn;
+ 
+ 	if (udata) {
+-		if (ib_copy_to_udata(udata, &resp,
+-				     min(udata->outlen, sizeof(resp)))) {
+-			ret = -EFAULT;
++		ret = ib_copy_to_udata(udata, &resp,
++				       min(udata->outlen, sizeof(resp)));
++		if (ret)
+ 			goto err_srqc_alloc;
+-		}
+ 	}
+ 
+ 	return 0;
 -- 
 2.27.0
 
