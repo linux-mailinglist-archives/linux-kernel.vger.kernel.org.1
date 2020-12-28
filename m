@@ -2,154 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 108DB2E6C67
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:24:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4570D2E6C6C
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:24:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729881AbgL1Wzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 17:55:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53950 "EHLO
+        id S1729923AbgL1Wzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 17:55:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729305AbgL1Ti3 (ORCPT
+        with ESMTP id S1729308AbgL1TlX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 14:38:29 -0500
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38003C061793;
-        Mon, 28 Dec 2020 11:37:49 -0800 (PST)
-Received: by mail-io1-xd35.google.com with SMTP id m23so10331895ioy.2;
-        Mon, 28 Dec 2020 11:37:49 -0800 (PST)
+        Mon, 28 Dec 2020 14:41:23 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7128C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 11:40:41 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id h22so26246999lfu.2
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 11:40:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=dCBCEsht9qkuf5Ona8kNwyBV6hGMdb7gZ2iBC9FCRP4=;
-        b=Q9TFyFiU7kqB2e88OvbB+lyrxcqI/TwitqgP1IRr2q0KyCnDwRUvNMmbcq/LEBjqsW
-         /Y5dx1Q06XyUqXGZjLbFw2iHPeeK93uA0ylkM67TpDI/HIAWTNTqNG96uzh3CGn1me3X
-         8zzi6Q0LFo7dkNPzNvt6pYi5Qx/LnklEoUg2xKmSZZNriamx9QpU3wdtxg1j8Cxs4NW4
-         BCuMNLC0Rxwu1nF6lfYzNDzXViws/ObGDaJxXzSu5REzpnhHnHWqYHLqXRKBqfJOr5vp
-         b8n63vg6pkw+JKr7g8q6DfJSo56I61rHrZsimKFOIj3SK+4VwRE7gz57NoLAFiAFPl1z
-         XlAQ==
+        bh=KC0IvukBXrMezsZLkepZEAdyw/KWhE6PVpb9k71bqjU=;
+        b=B5N91RmLSyl9z2bK12UgU1zpbdLtQxsgPSz4HhqBb9TfajaOGwZrI8UJBfFq8CG5Jm
+         tx1oGbxKN/CRscqeYPn3lRrzLrhMTi2xOebdgNBSM727I2YAEZNpDNrrg4X44B6SpCeM
+         r4zaG0pelWFqnRT3uIdt5HGySYHoAWwJBezk0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=dCBCEsht9qkuf5Ona8kNwyBV6hGMdb7gZ2iBC9FCRP4=;
-        b=Zl5CjcWqttiletmGIAXFJRwHyUG4CSun7387arNXuxgL6mPb8Jq0kQ89ZZKm/tS4rl
-         KWMA8+4u3kPL7YMxj2TZh36R0f0YwXq2gGfMKA7he1hYKLUgGUy5dIAc98CR8L4nXiAd
-         nmXBP9ONp8yBpJa3BLINPMlzR4Z8ebgh66bMxlAsaEcjcHEHGjPk2m8EnYwDYKrRzsOM
-         9lFWF5pOpyru858eyRQBA7lw50eilnuDYORRK/04QbPIpPWQkOalxD9GGc9KWxvz4OPB
-         7D4YF+KczH+Ekcgar1ufNMDqHUd3wjk96njekm/HkEliep7mFVbxSUNDtG053tfI7qxh
-         Lr8A==
-X-Gm-Message-State: AOAM530dnL/SkEXkMrr4wPdvjr3awNy2vEE/mbX1iMMypKBNSKTi+HWb
-        NybL2QSIqEmRhIizDYXiLh88QYvW/u3Wy9httTc=
-X-Google-Smtp-Source: ABdhPJw7C7qxRijlGNpz54cxtrCtrh8jFk9tDMaZzuvDrGOoZYY3dhbizc2BsSDNyomhfLcDoRpzH8Ul4lCQrIfgFfo=
-X-Received: by 2002:a5e:de08:: with SMTP id e8mr37384460iok.203.1609184268515;
- Mon, 28 Dec 2020 11:37:48 -0800 (PST)
+        bh=KC0IvukBXrMezsZLkepZEAdyw/KWhE6PVpb9k71bqjU=;
+        b=uQpilGVndZCGrafw79qJ0//YfT5M7zH9jsWKm08CzC38h9RdYk3UpcgM0JkxzSTzR7
+         Mm3WKV8MRq3ye2gYsqQ5mxAagfiMWzSRiSIW3gae00MYkGJ5X6oitA/2c8oKhQtqaZNm
+         o2uyj6/r55igNqL0YzBDQcKmRd9V7TfrEjL4SGaL5Nd3x/LcTGl+0Bdxoua7PlOkpY/6
+         E1+sKQhZYvJry7WoLX5Yyrzns0uPnACn1N0zi74GrMvJARwPWir0F99XGUV/xb8SGUyN
+         5xtakKTq5qaG378jE0Zpr6Ke1Zd7SeUt7XOAIqgNxhXj6usdG8u5ovx/Fr1HLsy9EVH6
+         ascA==
+X-Gm-Message-State: AOAM531iIPwIR5b+Nqqtx191qMUBkm0z7coPaZywsTxQdhk0E2KlZ7sl
+        mQva9vQdRCxqNykV/cdpviJ3excAO5L4AA==
+X-Google-Smtp-Source: ABdhPJx2TykyGyuYa+NoMCepEEKifyZN3056HLBDwFrD7B7HdjI7YOYZ6r41vBtDX8iv0plNDsSmfQ==
+X-Received: by 2002:ac2:4a75:: with SMTP id q21mr18790240lfp.119.1609184439903;
+        Mon, 28 Dec 2020 11:40:39 -0800 (PST)
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
+        by smtp.gmail.com with ESMTPSA id c3sm6585448ljk.88.2020.12.28.11.40.39
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Dec 2020 11:40:39 -0800 (PST)
+Received: by mail-lf1-f42.google.com with SMTP id s26so26150436lfc.8
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 11:40:39 -0800 (PST)
+X-Received: by 2002:a2e:6f17:: with SMTP id k23mr23617958ljc.411.1609184438626;
+ Mon, 28 Dec 2020 11:40:38 -0800 (PST)
 MIME-Version: 1.0
-References: <20201223182026.GA9935@ircssh-2.c.rugged-nimbus-611.internal>
- <20201223185044.GQ874@casper.infradead.org> <20201223192940.GA11012@ircssh-2.c.rugged-nimbus-611.internal>
- <20201223200746.GR874@casper.infradead.org> <20201223202140.GB11012@ircssh-2.c.rugged-nimbus-611.internal>
- <20201223204428.GS874@casper.infradead.org> <CAOQ4uxjAeGv8x2hBBzHz5PjSDq0Q+RN-ikgqEvAA+XE_U-U5Nw@mail.gmail.com>
- <20201224121352.GT874@casper.infradead.org> <CAOQ4uxj5YS9LSPoBZ3uakb6NeBG7g-Zeu+8Vt57tizEH6xu0cw@mail.gmail.com>
- <1334bba9cefa81f80005f8416680afb29044379c.camel@kernel.org>
- <20201228155618.GA6211@casper.infradead.org> <5bc11eb2e02893e7976f89a888221c902c11a2b4.camel@kernel.org>
-In-Reply-To: <5bc11eb2e02893e7976f89a888221c902c11a2b4.camel@kernel.org>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Mon, 28 Dec 2020 21:37:37 +0200
-Message-ID: <CAOQ4uxhFz=Uervz6sMuz=RcFUWAxyLEhBrWnjQ+U0Jj_AaU59w@mail.gmail.com>
-Subject: Re: [PATCH 3/3] overlayfs: Report writeback errors on upper
-To:     Jeff Layton <jlayton@kernel.org>, Sargun Dhillon <sargun@sargun.me>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>, Jan Kara <jack@suse.cz>,
-        NeilBrown <neilb@suse.com>, Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>,
-        Chengguang Xu <cgxu519@mykernel.net>
+References: <CA+icZUUQRKuZzN0ZbaG6vprRWcKPKYVYTryiMFac7q_PRcBvgA@mail.gmail.com>
+ <CA+icZUWHiCu9=+80Z8OV+Q3r-TJ4Vm0t62P_Qgck5bRzjrtaWg@mail.gmail.com>
+In-Reply-To: <CA+icZUWHiCu9=+80Z8OV+Q3r-TJ4Vm0t62P_Qgck5bRzjrtaWg@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 28 Dec 2020 11:40:22 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wh3AsdUVZ8GKNCdUmY0_nGmoiOVTwy7rR5QM7K31QiSqw@mail.gmail.com>
+Message-ID: <CAHk-=wh3AsdUVZ8GKNCdUmY0_nGmoiOVTwy7rR5QM7K31QiSqw@mail.gmail.com>
+Subject: Re: Linux 5.11-rc1
+To:     Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 7:26 PM Jeff Layton <jlayton@kernel.org> wrote:
+On Mon, Dec 28, 2020 at 12:04 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
 >
-> On Mon, 2020-12-28 at 15:56 +0000, Matthew Wilcox wrote:
-> > On Mon, Dec 28, 2020 at 08:25:50AM -0500, Jeff Layton wrote:
-> > > To be clear, the main thing you'll lose with the method above is the
-> > > ability to see an unseen error on a newly opened fd, if there was an
-> > > overlayfs mount using the same upper sb before your open occurred.
-> > >
-> > > IOW, consider two overlayfs mounts using the same upper layer sb:
-> > >
-> > > ovlfs1                              ovlfs2
-> > > ----------------------------------------------------------------------
-> > > mount
-> > > open fd1
-> > > write to fd1
-> > > <writeback fails>
-> > >                             mount (upper errseq_t SEEN flag marked)
-> > > open fd2
-> > > syncfs(fd2)
-> > > syncfs(fd1)
-> > >
-> > >
-> > > On a "normal" (non-overlay) fs, you'd get an error back on both syncfs
-> > > calls. The first one has a sample from before the error occurred, and
-> > > the second one has a sample of 0, due to the fact that the error was
-> > > unseen at open time.
-> > >
-> > > On overlayfs, with the intervening mount of ovlfs2, syncfs(fd1) will
-> > > return an error and syncfs(fd2) will not. If we split the SEEN flag into
-> > > two, then we can ensure that they both still get an error in this
-> > > situation.
+> > $ dpkg -L kmod | grep bin | grep depmod
+> > /sbin/depmod
 > >
-> > But do we need to?  If the inode has been evicted we also lose the errno.
-> > The guarantee we provide is that a fd that was open before the error
-> > occurred will see the error.  An fd that's opened after the error occurred
-> > may or may not see the error.
+> > $ which depmod
+> > [ empty ]
 > >
->
-> In principle, you can lose errors this way (which was the justification
-> for making errseq_sample return 0 when there are unseen errors). E.g.,
-> if you close fd1 instead of doing a syncfs on it, that error will be
-> lost forever.
->
-> As to whether that's OK, it's hard to say. It is a deviation from how
-> this works in a non-containerized situation, and I'd argue that it's
-> less than ideal. You may or may not see the error on fd2, but it's
-> dependent on events that take place outside the container and that
-> aren't observable from within it. That effectively makes the results
-> non-deterministic, which is usually a bad thing in computing...
->
+> > $ echo $PATH
+> > /opt/proxychains-ng/bin:/home/dileks/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
 
-I understand that user experience inside containers will deviate from
-non containerized use cases. I can't say that I fully understand the
-situations that deviate.
+Ok, I think this is a broken setup that has a separate /sbin but does
+not have it in the PATH.
 
-Having said that, I never objected to the SEEN flag split.
-To me, the split looks architecturally correct. If not for anything else,
-then for not observing past errors inside the overlay mount.
-I think you still need to convince Matthew though.
+As you noticed, you can fix it with
 
-The question remains what, if anything, should be nominated for
-stable. I was trying to propose the minimal patch that fixes the
-most basic syncfs overlayfs issues. In that context, it seemed
-that the issues that SEEN flag split solves are not on the
-MUST HAVE list, but maybe I am wrong.
+   DEPMOD=/sbin/depmod
 
-Sargun,
+or you could just make /sbin part of your PATH.
 
-How about sending another version of your patch, with or without the
-SEEN flag split (up to you) but not only for both the volatile and non-
-volatile cases, following my proposal.
+It looks like on your distro, /sbin is restricted to just the
+super-user PATH, which is odd, but I guess there's at least _some_
+logic to it.
 
-At least we can continue debating on a concrete patch instead of
-an envisioned combination of pieces posted to the list.
+I guess we could have some compatibility thing in scripts/depmod.sh,
+something like
 
-If you can give some examples of use cases that the patch fixes
-with and without the SEEN flag split that could be useful for the
-discussion.
+  diff --git a/scripts/depmod.sh b/scripts/depmod.sh
+  index e083bcae343f..a93261207453 100755
+  --- a/scripts/depmod.sh
+  +++ b/scripts/depmod.sh
+  @@ -15,6 +15,8 @@ if ! test -r System.map ; then
+        exit 0
+   fi
 
-Thanks,
-Amir.
+  +# legacy behavior: "depmod" in /sbin
+  +PATH="$PATH:/sbin"
+   if [ -z $(command -v $DEPMOD) ]; then
+        echo "Warning: 'make modules_install' requires $DEPMOD. Please
+install it." >&2
+        echo "This is probably in the kmod package." >&2
+
+or similar. Does that work for you?
+
+                Linus
