@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10F912E6863
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:37:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E442E6576
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:03:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393661AbgL1Qfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:35:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58270 "EHLO mail.kernel.org"
+        id S2390256AbgL1NaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:30:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58438 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729945AbgL1NCD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:02:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AE9722B45;
-        Mon, 28 Dec 2020 13:01:21 +0000 (UTC)
+        id S2390139AbgL1N3j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:29:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC0DE2063A;
+        Mon, 28 Dec 2020 13:28:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160482;
-        bh=dSl2/P/8j2H5xUhBPuGDeNApT64Wt5n7LxaY+w4XpXs=;
+        s=korg; t=1609162139;
+        bh=e7PJ60N0tiJPWbx21m2LVM5TJk2QavQRE4Mm0hJiDA8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SRB4uY95cQr4ftZdpGc3qsacXOOSxM+BL+Boir1PLrleWElTv0AGY/NUYLSAXeIHW
-         LBBeAIUEqQM3VlD5mp317VbWdJ6tUqCTdObFME3eq57Huol2bmdLAHaHVbaFD7+L7k
-         LJoJNcq4JZVDxmkTrm3aLwuN187SrlPCGPGPB6hs=
+        b=nqLeJKFKlvu3t2zzfmGucrndQ4Kjq1OanGnPRIHNJsuRRANLT4/5/u1q8EGhanVlq
+         ug3+AO+1C4oR53GMVHQEv4Lg5Rfg2i2+ylYloFPFullfLN+44YP2u92vlzxRrcQ8+D
+         S+fJAYKtEwRS7/JPlOEXyEPBVMxkcNaz/Y91CE5I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 067/175] media: solo6x10: fix missing snd_card_free in error handling case
+Subject: [PATCH 4.19 201/346] ASoC: jz4740-i2s: add missed checks for clk_get()
 Date:   Mon, 28 Dec 2020 13:48:40 +0100
-Message-Id: <20201228124856.496187586@linuxfoundation.org>
+Message-Id: <20201228124929.511997569@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,36 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qinglang Miao <miaoqinglang@huawei.com>
+From: Chuhong Yuan <hslester96@gmail.com>
 
-[ Upstream commit dcdff74fa6bc00c32079d0bebd620764c26f2d89 ]
+[ Upstream commit 1c1fb2653a0c2e3f310c07eacd8fc3a10e08c97a ]
 
-Fix to goto snd_error in error handling case when fails
-to do snd_ctl_add, as done elsewhere in this function.
+jz4740_i2s_set_sysclk() does not check the return values of clk_get(),
+while the file dereferences the pointers in clk_put().
+Add the missed checks to fix it.
 
-Fixes: 28cae868cd24 ("[media] solo6x10: move out of staging into drivers/media/pci.")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: 11bd3dd1b7c2 ("ASoC: Add JZ4740 ASoC support")
+Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+Link: https://lore.kernel.org/r/20201203144227.418194-1-hslester96@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/pci/solo6x10/solo6x10-g723.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/jz4740/jz4740-i2s.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/media/pci/solo6x10/solo6x10-g723.c b/drivers/media/pci/solo6x10/solo6x10-g723.c
-index 6a35107aca255..0fe69e71331db 100644
---- a/drivers/media/pci/solo6x10/solo6x10-g723.c
-+++ b/drivers/media/pci/solo6x10/solo6x10-g723.c
-@@ -385,7 +385,7 @@ int solo_g723_init(struct solo_dev *solo_dev)
- 
- 	ret = snd_ctl_add(card, snd_ctl_new1(&kctl, solo_dev));
- 	if (ret < 0)
--		return ret;
-+		goto snd_error;
- 
- 	ret = solo_snd_pcm_init(solo_dev);
- 	if (ret < 0)
+diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
+index e099c0505b765..2c6b0ac97c684 100644
+--- a/sound/soc/jz4740/jz4740-i2s.c
++++ b/sound/soc/jz4740/jz4740-i2s.c
+@@ -318,10 +318,14 @@ static int jz4740_i2s_set_sysclk(struct snd_soc_dai *dai, int clk_id,
+ 	switch (clk_id) {
+ 	case JZ4740_I2S_CLKSRC_EXT:
+ 		parent = clk_get(NULL, "ext");
++		if (IS_ERR(parent))
++			return PTR_ERR(parent);
+ 		clk_set_parent(i2s->clk_i2s, parent);
+ 		break;
+ 	case JZ4740_I2S_CLKSRC_PLL:
+ 		parent = clk_get(NULL, "pll half");
++		if (IS_ERR(parent))
++			return PTR_ERR(parent);
+ 		clk_set_parent(i2s->clk_i2s, parent);
+ 		ret = clk_set_rate(i2s->clk_i2s, freq);
+ 		break;
 -- 
 2.27.0
 
