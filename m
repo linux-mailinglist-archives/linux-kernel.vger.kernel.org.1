@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FBFE2E3B96
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:53:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22FCA2E3E22
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:25:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407004AbgL1Nvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:51:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53574 "EHLO mail.kernel.org"
+        id S2503072AbgL1OYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:24:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406976AbgL1Nvp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:51:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90BDD2072C;
-        Mon, 28 Dec 2020 13:51:04 +0000 (UTC)
+        id S2503005AbgL1OYT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:24:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 584DC22B3B;
+        Mon, 28 Dec 2020 14:24:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163465;
-        bh=ZnULBoh5qmZPHWWE9q2VxdVQt5TjHmDwwe8aLxDIELM=;
+        s=korg; t=1609165443;
+        bh=ycu+JE1DE1QEQDhy6MtUTnnqk2x6wQmu47w4i+VT+l0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=njH5qYtdr/c+siwHn9LXpuALzstHUkAketjwse7aRsU1i++o16z029WbeXMwqv9ng
-         Jl2m8NBFEa/O1YNowflgI6JhBSctv7M2EqOap+nTcxKTk4fNWcIhLOvUFwU0z2qNhX
-         kkc3U7TF1CVkswdHgegGOPC8fLTuNBWKhzXM50Dk=
+        b=jl9STrmU2LpkWW4MQWIkLI5ZPiwP1IZ2YEeIMJ7XZdd+yDy2HeZAEcGduPnPfcNPw
+         C5wBJf00tn8p6mZe9J3+aaFyUYTgUmc9pOYBuoaBxHC/n+kuJI+xVqQphomk7U9D9e
+         VHqz2sDd4M9eD5CBeUdxKSw/7AWUnINCiTByZql8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 295/453] libnvdimm/label: Return -ENXIO for no slot in __blk_label_update
+        stable@vger.kernel.org, Daniel Scally <djrscally@gmail.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 5.10 533/717] Revert "ACPI / resources: Use AE_CTRL_TERMINATE to terminate resources walks"
 Date:   Mon, 28 Dec 2020 13:48:51 +0100
-Message-Id: <20201228124951.399694435@linuxfoundation.org>
+Message-Id: <20201228125046.506749180@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +39,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Daniel Scally <djrscally@gmail.com>
 
-[ Upstream commit 4c46764733c85b82c07e9559b39da4d00a7dd659 ]
+commit 12fc4dad94dfac25599f31257aac181c691ca96f upstream.
 
-Forget to set error code when nd_label_alloc_slot failed, and we
-add it to avoid overwritten error code.
+This reverts commit 8a66790b7850a6669129af078768a1d42076a0ef.
 
-Fixes: 0ba1c634892b ("libnvdimm: write blk label set")
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201205115056.2076523-1-zhangqilong3@huawei.com
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Switching this function to AE_CTRL_TERMINATE broke the documented
+behaviour of acpi_dev_get_resources() - AE_CTRL_TERMINATE does not, in
+fact, terminate the resource walk because acpi_walk_resource_buffer()
+ignores it (specifically converting it to AE_OK), referring to that
+value as "an OK termination by the user function". This means that
+acpi_dev_get_resources() does not abort processing when the preproc
+function returns a negative value.
+
+Signed-off-by: Daniel Scally <djrscally@gmail.com>
+Cc: 3.10+ <stable@vger.kernel.org> # 3.10+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/nvdimm/label.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/acpi/resource.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/nvdimm/label.c b/drivers/nvdimm/label.c
-index 47a4828b8b310..05c1f186a6be8 100644
---- a/drivers/nvdimm/label.c
-+++ b/drivers/nvdimm/label.c
-@@ -999,8 +999,10 @@ static int __blk_label_update(struct nd_region *nd_region,
- 		if (is_old_resource(res, old_res_list, old_num_resources))
- 			continue; /* carry-over */
- 		slot = nd_label_alloc_slot(ndd);
--		if (slot == UINT_MAX)
-+		if (slot == UINT_MAX) {
-+			rc = -ENXIO;
- 			goto abort;
-+		}
- 		dev_dbg(ndd->dev, "allocated: %d\n", slot);
- 
- 		nd_label = to_label(ndd, slot);
--- 
-2.27.0
-
+--- a/drivers/acpi/resource.c
++++ b/drivers/acpi/resource.c
+@@ -541,7 +541,7 @@ static acpi_status acpi_dev_process_reso
+ 		ret = c->preproc(ares, c->preproc_data);
+ 		if (ret < 0) {
+ 			c->error = ret;
+-			return AE_CTRL_TERMINATE;
++			return AE_ABORT_METHOD;
+ 		} else if (ret > 0) {
+ 			return AE_OK;
+ 		}
 
 
