@@ -2,34 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F04242E6628
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:10:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 230BA2E6624
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:10:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393573AbgL1QJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:09:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51886 "EHLO mail.kernel.org"
+        id S2393564AbgL1QJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:09:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388622AbgL1NYA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:24:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 38D8E20719;
-        Mon, 28 Dec 2020 13:23:44 +0000 (UTC)
+        id S2388732AbgL1NYb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:24:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A23EC205CB;
+        Mon, 28 Dec 2020 13:23:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161824;
-        bh=H6BzZeKckpudv6x4USlSM9Lax6zS4rZ563RWifU4GwQ=;
+        s=korg; t=1609161830;
+        bh=H33UDjfOYPvhO9+xi+pxBnDvqxBOs2w6c22Uii5l59g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=04OF0eU4u6cxzRw8zBXGDU05SwAYBcqZwyvnKqHCWj1FKfmh0NjaLrBgjC+bS67mx
-         6LEZQr6HlVgPGRU+y2FXwW1E6LxmBC8xWRPPwdsVWxUsVmSg/jJ36sA/YO6okOoi6n
-         GUP/zfW/3fYN/h4Mc14buY+1T/v4DznWULiUUvxI=
+        b=0eprnP3HngeJ2dizjqdpUxukEufywRYnlHR9dGc58Ot9QBdj0acZs58c1mCL+cERa
+         vq2G7fP58fAYY4qJrJR8cTmuVRfVJM27qKxg4FVCDGUqQSN6Ci/VCq6ca7tgKqp1zT
+         pwQPa46r8skPNfPStHJbsdyPunD3fI2t1qozCmpM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+1e46a0864c1a6e9bd3d8@syzkaller.appspotmail.com,
-        "Dae R. Jeong" <dae.r.jeong@kaist.ac.kr>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH 4.19 095/346] md: fix a warning caused by a race between concurrent md_ioctl()s
-Date:   Mon, 28 Dec 2020 13:46:54 +0100
-Message-Id: <20201228124924.389380874@linuxfoundation.org>
+        stable@vger.kernel.org, Thomas Backlund <tmb@mageia.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Suzuki Poulouse <suzuki.poulose@arm.com>,
+        Tor Jeremiassen <tor@ti.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Salvatore Bonaccorso <carnil@debian.org>
+Subject: [PATCH 4.19 097/346] perf cs-etm: Move definition of traceid_list global variable from header file
+Date:   Mon, 28 Dec 2020 13:46:56 +0100
+Message-Id: <20201228124924.471691181@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
 References: <20201228124919.745526410@linuxfoundation.org>
@@ -41,75 +51,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dae R. Jeong <dae.r.jeong@kaist.ac.kr>
+From: Leo Yan <leo.yan@linaro.org>
 
-commit c731b84b51bf7fe83448bea8f56a6d55006b0615 upstream.
+commit 168200b6d6ea0cb5765943ec5da5b8149701f36a upstream.
 
-Syzkaller reports a warning as belows.
-WARNING: CPU: 0 PID: 9647 at drivers/md/md.c:7169
-...
-Call Trace:
-...
-RIP: 0010:md_ioctl+0x4017/0x5980 drivers/md/md.c:7169
-RSP: 0018:ffff888096027950 EFLAGS: 00010293
-RAX: ffff88809322c380 RBX: 0000000000000932 RCX: ffffffff84e266f2
-RDX: 0000000000000000 RSI: ffffffff84e299f7 RDI: 0000000000000007
-RBP: ffff888096027bc0 R08: ffff88809322c380 R09: ffffed101341a482
-R10: ffff888096027940 R11: ffff88809a0d240f R12: 0000000000000932
-R13: ffff8880a2c14100 R14: ffff88809a0d2268 R15: ffff88809a0d2408
- __blkdev_driver_ioctl block/ioctl.c:304 [inline]
- blkdev_ioctl+0xece/0x1c10 block/ioctl.c:606
- block_ioctl+0xee/0x130 fs/block_dev.c:1930
- vfs_ioctl fs/ioctl.c:46 [inline]
- file_ioctl fs/ioctl.c:509 [inline]
- do_vfs_ioctl+0xd5f/0x1380 fs/ioctl.c:696
- ksys_ioctl+0xab/0xd0 fs/ioctl.c:713
- __do_sys_ioctl fs/ioctl.c:720 [inline]
- __se_sys_ioctl fs/ioctl.c:718 [inline]
- __x64_sys_ioctl+0x73/0xb0 fs/ioctl.c:718
- do_syscall_64+0xfd/0x680 arch/x86/entry/common.c:301
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
+The variable 'traceid_list' is defined in the header file cs-etm.h,
+if multiple C files include cs-etm.h the compiler might complaint for
+multiple definition of 'traceid_list'.
 
-This is caused by a race between two concurrenct md_ioctl()s closing
-the array.
-CPU1 (md_ioctl())                   CPU2 (md_ioctl())
-------                              ------
-set_bit(MD_CLOSING, &mddev->flags);
-did_set_md_closing = true;
-                                    WARN_ON_ONCE(test_bit(MD_CLOSING,
-                                            &mddev->flags));
-if(did_set_md_closing)
-    clear_bit(MD_CLOSING, &mddev->flags);
+To fix multiple definition error, move the definition of 'traceid_list'
+into cs-etm.c.
 
-Fix the warning by returning immediately if the MD_CLOSING bit is set
-in &mddev->flags which indicates that the array is being closed.
-
-Fixes: 065e519e71b2 ("md: MD_CLOSING needs to be cleared after called md_set_readonly or do_md_stop")
-Reported-by: syzbot+1e46a0864c1a6e9bd3d8@syzkaller.appspotmail.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Dae R. Jeong <dae.r.jeong@kaist.ac.kr>
-Signed-off-by: Song Liu <songliubraving@fb.com>
+Fixes: cd8bfd8c973e ("perf tools: Add processing of coresight metadata")
+Reported-by: Thomas Backlund <tmb@mageia.org>
+Signed-off-by: Leo Yan <leo.yan@linaro.org>
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Reviewed-by: Mike Leach <mike.leach@linaro.org>
+Tested-by: Mike Leach <mike.leach@linaro.org>
+Tested-by: Thomas Backlund <tmb@mageia.org>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Suzuki Poulouse <suzuki.poulose@arm.com>
+Cc: Tor Jeremiassen <tor@ti.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Link: http://lore.kernel.org/lkml/20200505133642.4756-1-leo.yan@linaro.org
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Salvatore Bonaccorso <carnil@debian.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/md/md.c |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ tools/perf/util/cs-etm.c |    3 +++
+ tools/perf/util/cs-etm.h |    3 ---
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -7214,8 +7214,11 @@ static int md_ioctl(struct block_device
- 			err = -EBUSY;
- 			goto out;
- 		}
--		WARN_ON_ONCE(test_bit(MD_CLOSING, &mddev->flags));
--		set_bit(MD_CLOSING, &mddev->flags);
-+		if (test_and_set_bit(MD_CLOSING, &mddev->flags)) {
-+			mutex_unlock(&mddev->open_mutex);
-+			err = -EBUSY;
-+			goto out;
-+		}
- 		did_set_md_closing = true;
- 		mutex_unlock(&mddev->open_mutex);
- 		sync_blockdev(bdev);
+--- a/tools/perf/util/cs-etm.c
++++ b/tools/perf/util/cs-etm.c
+@@ -87,6 +87,9 @@ struct cs_etm_queue {
+ 	struct cs_etm_packet *packet;
+ };
+ 
++/* RB tree for quick conversion between traceID and metadata pointers */
++static struct intlist *traceid_list;
++
+ static int cs_etm__update_queues(struct cs_etm_auxtrace *etm);
+ static int cs_etm__process_timeless_queues(struct cs_etm_auxtrace *etm,
+ 					   pid_t tid, u64 time_);
+--- a/tools/perf/util/cs-etm.h
++++ b/tools/perf/util/cs-etm.h
+@@ -53,9 +53,6 @@ enum {
+ 	CS_ETMV4_PRIV_MAX,
+ };
+ 
+-/* RB tree for quick conversion between traceID and metadata pointers */
+-struct intlist *traceid_list;
+-
+ #define KiB(x) ((x) * 1024)
+ #define MiB(x) ((x) * 1024 * 1024)
+ 
 
 
