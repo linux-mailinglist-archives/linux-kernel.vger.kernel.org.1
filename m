@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D4AD2E3AD7
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:43:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E05D42E6439
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:50:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404137AbgL1NmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:42:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41374 "EHLO mail.kernel.org"
+        id S2404162AbgL1NmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:42:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391795AbgL1NlW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:41:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F7AD2064B;
-        Mon, 28 Dec 2020 13:41:06 +0000 (UTC)
+        id S2404060AbgL1Nlu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:41:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 89C7C20719;
+        Mon, 28 Dec 2020 13:41:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162867;
-        bh=16ofqNDOtTdD+Nbw3rTnBhytlvP13deUuWsiMlij8zo=;
+        s=korg; t=1609162870;
+        bh=n7rfappW7oWifF3CAQFWAjlT9yzb30DGpKhwAeCeXHk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CFo4Tq2a2GxPpDkHJc8QrIO84qE6luuuGuUN3nWO/LGLmSgvAoKad/a3BZmpY0EUU
-         pP6rG+34weWU5n+r7vUHEBfbOL3IzitGtcP/zPS5VfaoV0g6VjUfwduAGD8BLka1Ew
-         7uGku38bG4cvHXIHKK2gybSJ0FGR/drdsylwla/E=
+        b=vxqkOqCUg5j5drYYtmUerzTO2sFV9EmRAF6Q9zjmqBsrNJXA3o/t82SQgpVoaX2tl
+         tPl6fMX7XjS7EU5yenESteqYjY1zBAVBvP6Tra779Qfyy2uAUbPDwIX0Unok81zm1x
+         BpoerqShNyOzUyZxIYJKt1BKg8jvFqT7y+kOyy2c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arvind Sankar <nivedita@alum.mit.edu>,
-        Borislav Petkov <bp@suse.de>, Joerg Roedel <jroedel@suse.de>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        stable@vger.kernel.org, Nicolas Pitre <nico@fluxnic.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 088/453] x86/mm/ident_map: Check for errors from ident_pud_init()
-Date:   Mon, 28 Dec 2020 13:45:24 +0100
-Message-Id: <20201228124941.467347144@linuxfoundation.org>
+Subject: [PATCH 5.4 089/453] ARM: p2v: fix handling of LPAE translation in BE mode
+Date:   Mon, 28 Dec 2020 13:45:25 +0100
+Message-Id: <20201228124941.514883045@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
 References: <20201228124937.240114599@linuxfoundation.org>
@@ -41,71 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arvind Sankar <nivedita@alum.mit.edu>
+From: Ard Biesheuvel <ardb@kernel.org>
 
-[ Upstream commit 1fcd009102ee02e217f2e7635ab65517d785da8e ]
+[ Upstream commit 4e79f0211b473f8e1eab8211a9fd50cc41a3a061 ]
 
-Commit
+When running in BE mode on LPAE hardware with a PA-to-VA translation
+that exceeds 4 GB, we patch bits 39:32 of the offset into the wrong
+byte of the opcode. So fix that, by rotating the offset in r0 to the
+right by 8 bits, which will put the 8-bit immediate in bits 31:24.
 
-  ea3b5e60ce80 ("x86/mm/ident_map: Add 5-level paging support")
+Note that this will also move bit #22 in its correct place when
+applying the rotation to the constant #0x400000.
 
-added ident_p4d_init() to support 5-level paging, but this function
-doesn't check and return errors from ident_pud_init().
-
-For example, the decompressor stub uses this code to create an identity
-mapping. If it runs out of pages while trying to allocate a PMD
-pagetable, the error will be currently ignored.
-
-Fix this to propagate errors.
-
- [ bp: Space out statements for better readability. ]
-
-Fixes: ea3b5e60ce80 ("x86/mm/ident_map: Add 5-level paging support")
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Joerg Roedel <jroedel@suse.de>
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Link: https://lkml.kernel.org/r/20201027230648.1885111-1-nivedita@alum.mit.edu
+Fixes: d9a790df8e984 ("ARM: 7883/1: fix mov to mvn conversion in case of 64 bit phys_addr_t and BE")
+Acked-by: Nicolas Pitre <nico@fluxnic.net>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/mm/ident_map.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ arch/arm/kernel/head.S | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/arch/x86/mm/ident_map.c b/arch/x86/mm/ident_map.c
-index fe7a12599d8eb..968d7005f4a72 100644
---- a/arch/x86/mm/ident_map.c
-+++ b/arch/x86/mm/ident_map.c
-@@ -62,6 +62,7 @@ static int ident_p4d_init(struct x86_mapping_info *info, p4d_t *p4d_page,
- 			  unsigned long addr, unsigned long end)
- {
- 	unsigned long next;
-+	int result;
- 
- 	for (; addr < end; addr = next) {
- 		p4d_t *p4d = p4d_page + p4d_index(addr);
-@@ -73,13 +74,20 @@ static int ident_p4d_init(struct x86_mapping_info *info, p4d_t *p4d_page,
- 
- 		if (p4d_present(*p4d)) {
- 			pud = pud_offset(p4d, 0);
--			ident_pud_init(info, pud, addr, next);
-+			result = ident_pud_init(info, pud, addr, next);
-+			if (result)
-+				return result;
-+
- 			continue;
- 		}
- 		pud = (pud_t *)info->alloc_pgt_page(info->context);
- 		if (!pud)
- 			return -ENOMEM;
--		ident_pud_init(info, pud, addr, next);
-+
-+		result = ident_pud_init(info, pud, addr, next);
-+		if (result)
-+			return result;
-+
- 		set_p4d(p4d, __p4d(__pa(pud) | info->kernpg_flag));
- 	}
- 
+diff --git a/arch/arm/kernel/head.S b/arch/arm/kernel/head.S
+index c49b39340ddbd..f1cdc1f369575 100644
+--- a/arch/arm/kernel/head.S
++++ b/arch/arm/kernel/head.S
+@@ -671,12 +671,8 @@ ARM_BE8(rev16	ip, ip)
+ 	ldrcc	r7, [r4], #4	@ use branch for delay slot
+ 	bcc	1b
+ 	bx	lr
+-#else
+-#ifdef CONFIG_CPU_ENDIAN_BE8
+-	moveq	r0, #0x00004000	@ set bit 22, mov to mvn instruction
+ #else
+ 	moveq	r0, #0x400000	@ set bit 22, mov to mvn instruction
+-#endif
+ 	b	2f
+ 1:	ldr	ip, [r7, r3]
+ #ifdef CONFIG_CPU_ENDIAN_BE8
+@@ -685,7 +681,7 @@ ARM_BE8(rev16	ip, ip)
+ 	tst	ip, #0x000f0000	@ check the rotation field
+ 	orrne	ip, ip, r6, lsl #24 @ mask in offset bits 31-24
+ 	biceq	ip, ip, #0x00004000 @ clear bit 22
+-	orreq	ip, ip, r0      @ mask in offset bits 7-0
++	orreq	ip, ip, r0, ror #8  @ mask in offset bits 7-0
+ #else
+ 	bic	ip, ip, #0x000000ff
+ 	tst	ip, #0xf00	@ check the rotation field
 -- 
 2.27.0
 
