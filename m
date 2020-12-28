@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63D932E39D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:29:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 267AD2E37D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:01:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389984AbgL1N2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:28:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57484 "EHLO mail.kernel.org"
+        id S1729557AbgL1NA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:00:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389965AbgL1N2l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:28:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F19B207FF;
-        Mon, 28 Dec 2020 13:27:59 +0000 (UTC)
+        id S1729513AbgL1NAm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:00:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A31E522582;
+        Mon, 28 Dec 2020 13:00:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162080;
-        bh=R2JNKXKJLp+/RplIksuI/Oz7ovJqYk/Hgm0atTwAcFM=;
+        s=korg; t=1609160427;
+        bh=32N3iBa7n5TJdAl+gIU8U6PfxFqNxfabR2e5sxFeG04=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hHmYmlqb7zOtITkVS+NDwJiPhSGhhKCnPxmqzs1Bfh0zaGneyw3afNzytQEOAWebF
-         v7tWm6H7UaaN9M94q/zCrlM34CkpdBHLXzFB8/xeE07fGSClY+nTn7bZtbOQXR6Jc8
-         e+VRuI/32563+5RIk39LYhmx/0HtNgOfleney9es=
+        b=o/ximupigvadfxW135KkSgjuXimTlM35G8VlG9JzwfK2zkJtVY5RaBCbUb0cgMM1W
+         5o/M38v0WiNXRN4KOD1ePl4e9M90JFCLb6w2H0hPK6BQwZCcqavYRcvxi1BTSiQ0Fj
+         gsbIlNQ9NR7hiLzIgmgtRwUJaSsAZ3P3eROOKtdY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 180/346] PCI: Bounds-check command-line resource alignment requests
-Date:   Mon, 28 Dec 2020 13:48:19 +0100
-Message-Id: <20201228124928.490779191@linuxfoundation.org>
+        stable@vger.kernel.org, Antti Palosaari <crope@iki.fi>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        syzbot+c60ddb60b685777d9d59@syzkaller.appspotmail.com
+Subject: [PATCH 4.9 047/175] media: msi2500: assign SPI bus number dynamically
+Date:   Mon, 28 Dec 2020 13:48:20 +0100
+Message-Id: <20201228124855.535574802@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,56 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bjorn Helgaas <bhelgaas@google.com>
+From: Antti Palosaari <crope@iki.fi>
 
-[ Upstream commit 6534aac198b58309ff2337981d3f893e0be1d19d ]
+commit 9c60cc797cf72e95bb39f32316e9f0e5f85435f9 upstream.
 
-32-bit BARs are limited to 2GB size (2^31).  By extension, I assume 64-bit
-BARs are limited to 2^63 bytes.  Limit the alignment requested by the
-"pci=resource_alignment=" command-line parameter to 2^63.
+SPI bus number must be assigned dynamically for each device, otherwise it
+will crash when multiple devices are plugged to system.
 
-Link: https://lore.kernel.org/r/20201007123045.GS4282@kadam
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-and-tested-by: syzbot+c60ddb60b685777d9d59@syzkaller.appspotmail.com
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Antti Palosaari <crope@iki.fi>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/pci/pci.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ drivers/media/usb/msi2500/msi2500.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index 57a87a001b4f4..5103d4b140ee3 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -5840,19 +5840,21 @@ static resource_size_t pci_specified_resource_alignment(struct pci_dev *dev,
- 	while (*p) {
- 		count = 0;
- 		if (sscanf(p, "%d%n", &align_order, &count) == 1 &&
--							p[count] == '@') {
-+		    p[count] == '@') {
- 			p += count + 1;
-+			if (align_order > 63) {
-+				pr_err("PCI: Invalid requested alignment (order %d)\n",
-+				       align_order);
-+				align_order = PAGE_SHIFT;
-+			}
- 		} else {
--			align_order = -1;
-+			align_order = PAGE_SHIFT;
- 		}
+--- a/drivers/media/usb/msi2500/msi2500.c
++++ b/drivers/media/usb/msi2500/msi2500.c
+@@ -1250,7 +1250,7 @@ static int msi2500_probe(struct usb_inte
+ 	}
  
- 		ret = pci_dev_str_match(dev, p, &p);
- 		if (ret == 1) {
- 			*resize = true;
--			if (align_order == -1)
--				align = PAGE_SIZE;
--			else
--				align = 1 << align_order;
-+			align = 1 << align_order;
- 			break;
- 		} else if (ret < 0) {
- 			pr_err("PCI: Can't parse resource_alignment parameter: %s\n",
--- 
-2.27.0
-
+ 	dev->master = master;
+-	master->bus_num = 0;
++	master->bus_num = -1;
+ 	master->num_chipselect = 1;
+ 	master->transfer_one_message = msi2500_transfer_one_message;
+ 	spi_master_set_devdata(master, dev);
 
 
