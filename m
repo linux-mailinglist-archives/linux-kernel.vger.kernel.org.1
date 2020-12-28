@@ -2,144 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63EBA2E6C42
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:18:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F23A22E6BF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:15:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730444AbgL1Wzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 17:55:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57804 "EHLO
+        id S1730516AbgL1Wzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 17:55:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729357AbgL1UDa (ORCPT
+        with ESMTP id S1729362AbgL1UEW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 15:03:30 -0500
-Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78A3AC0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 12:02:50 -0800 (PST)
-Received: by mail-oo1-xc31.google.com with SMTP id j21so2430808oou.11
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 12:02:50 -0800 (PST)
+        Mon, 28 Dec 2020 15:04:22 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C926C0613D6;
+        Mon, 28 Dec 2020 12:03:41 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id i24so10744912edj.8;
+        Mon, 28 Dec 2020 12:03:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Cxo7+Eb/s8AmmVwBRb/+vzM4fAG6GPBf/uTK6nrLuq8=;
-        b=dQ4r+++DXKxQy2wROU/IYHX4p0ppBhsfDJfoEcl2hdADUrlhr2yo3m+FZ87mFkU853
-         sHJBI464+Q9j/VylomoFo5VkeG/EYFvZBp2YFclKbJNV+rxaCABqfcc2KxydiTHTZAOU
-         JzLHjGQcLaT6yjGMVtnk78+5edOmPHPgdigm/QWhqWvv7PlBQZvW9PLecp/SJkNURzhs
-         WduAJUPG19/BB+ZXxkXt5KUQ4SsNIef4cHIoY+scFeqr7q7mhZwP3wzlDbOd979lWNe2
-         LYhi/Z9oQt6oEtNnUZkaVPddivnw0ixqM3FHNElrkVfNaGZmfqCasAcTDsu0hd1STwGs
-         rNhw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=l6wLs3O3NbOgM5Ikne900yyPCAu6Ee+BSm2CLHZBcHs=;
+        b=j0cC9TO1gDQxvqxWiUNWhnTF78mOXGz1VUQ1QK2ltNTP+r3WsgDcHAbjiDuEaUT/aW
+         BU0DPotHLrWwj+fUP8C8oGxaI24drzA97kJTPgcsRlFnoK7vBNsgEt+r4l8qaOFXcNtI
+         yP7hGvEnJb/CdBzcs/1QXTuNfQRZv4T0RMPWVRbhvpp8XdrrSpP4l0Z/WP6nLH7cx9yD
+         XnsWySG9f289D+LXaTGmaWZK+9SJvNfEL/nDWQVOss/+3cAKUysEgpLAdOJXVo5d7I0s
+         c8I/p6AtgpOPK+ELH4w8pbzu47Xx2FnJo9Gn37gWXeoFPSPV0YaA72or2DSb3EX6FWCy
+         zk/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=Cxo7+Eb/s8AmmVwBRb/+vzM4fAG6GPBf/uTK6nrLuq8=;
-        b=CtOlhWa38gVzz6QkupawjIx/J4u3k35x5aLexD6Vn9W8KwP3q0zHoaYCwIyKLybamZ
-         kAJViWQ+qv8YLDzv6WcYwA7l23zWK4FRS63/PkkaNKCe2/Wacyrx35flCA6t5f2D0+Ut
-         jYGHiWayg1cqTJ8McpzXkhfgdn/b8YdkbSqolCkSfPMqZgdpCmqE2B8YfwvRXp/YEJKC
-         3tCc8Ws/L0U4U/Njou3zlRee+QCf67HDMCfIAyjFqag155PbUxEbW36t0u7xqaXKatgT
-         H4zXZfIId7ypy8ogViloU0esAn1Z892eAWY1f48qfqaBM/CVheqrLcLCN4+QJov2ZEZs
-         Xjrw==
-X-Gm-Message-State: AOAM530wR/CrYaiA9yi/J48tDtts8zjcNlFOW/0OZYuviqf4Xi36lYIZ
-        r6rdg6UpLaTVjXQmLlewYfQ5tRIvpIk=
-X-Google-Smtp-Source: ABdhPJx0HtPLtpEOFSrxMVPfLugX4OQPxmXe5tKFRg59FFxttu9R1+ovnZlgXStAuvSd31mzsHafkQ==
-X-Received: by 2002:a4a:98a3:: with SMTP id a32mr31602138ooj.51.1609185769489;
-        Mon, 28 Dec 2020 12:02:49 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 31sm9411530otd.24.2020.12.28.12.02.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Dec 2020 12:02:48 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: Linux 5.11-rc1
-To:     Kalesh Singh <kaleshsingh@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <CAHk-=wg1+kf1AVzXA-RQX0zjM6t9J2Kay9xyuNqcFHWV-y5ZYw@mail.gmail.com>
- <20201228155149.GA197954@roeck-us.net>
- <CAHk-=whHbfec+vxjpCXhRdSwA7uw6m0hS9kGqqJv6Af0EMFVBw@mail.gmail.com>
- <CAC_TJvfpeRh322usynr2Ud3KVCd3HaNnviOmdhekXSnC-sq2sA@mail.gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <d90c77a4-df89-bc69-04e0-c8deaf365db3@roeck-us.net>
-Date:   Mon, 28 Dec 2020 12:02:46 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l6wLs3O3NbOgM5Ikne900yyPCAu6Ee+BSm2CLHZBcHs=;
+        b=ONTo/1WTINAd5o4U7LBEnKW80c//Lw7v1E62Y8T5dXBbSVdwGm/WOsgqcEIcP0J7Hc
+         z0PWw0/JwkRFu1k2moj4PocDr7Uw6ruPaeOrkyK9E8VH7c0DwgHvfyRJBWPFqAvON43M
+         4jwaRrh3NxXlYZNIjU2lPe3y8zbZGS3Al/ZNcquxKiXiVmWC8JE0CS0gWtVvDGfE20BF
+         Dxw08Be/zR1dumA7tom8qdR3zTrM3ima5ZqkICl5//w0wfp49SGydqZ1xrPMvkIFUXeN
+         y6yPKlEMkYZhkPmZtGbTxSwr+71BA3RumNEBD5A8ayal+RlU+hv4QuUIhho0GxQFAaKC
+         toDQ==
+X-Gm-Message-State: AOAM530xgco16M47JHswi1vfgZl1EfLS7j7ksslaVfIiaaCXGRH5lKVm
+        eTupK2Qz3aSPOGp9vLw6NRoZNKIX+4rjnH2ZKwE=
+X-Google-Smtp-Source: ABdhPJwlQf5wLF9FUY8a25sToNVh5qWgpnEg5KLjLvsGQ1lxQga3FI+dAsDiqTRhVt44lfrT95MqTjsmPwE91/1tbV8=
+X-Received: by 2002:a05:6402:1c8a:: with SMTP id cy10mr43621201edb.151.1609185820234;
+ Mon, 28 Dec 2020 12:03:40 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAC_TJvfpeRh322usynr2Ud3KVCd3HaNnviOmdhekXSnC-sq2sA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201214223722.232537-1-shy828301@gmail.com> <20201214223722.232537-4-shy828301@gmail.com>
+ <20201215171439.GC385334@cmpxchg.org> <CAHbLzkrzv48S3ks-x8M=2sHxRS_+c-hLXdt4ScaWD6mC4ZFe8w@mail.gmail.com>
+In-Reply-To: <CAHbLzkrzv48S3ks-x8M=2sHxRS_+c-hLXdt4ScaWD6mC4ZFe8w@mail.gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Mon, 28 Dec 2020 12:03:28 -0800
+Message-ID: <CAHbLzkrxKOdfn8quHDCNwPMTLAe4rB3vyhmuzaL2KA+F23fr8Q@mail.gmail.com>
+Subject: Re: [v2 PATCH 3/9] mm: vmscan: guarantee shrinker_slab_memcg() sees
+ valid shrinker_maps for online memcg
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/28/20 11:37 AM, Kalesh Singh wrote:
+I think Johannes's point makes sense to me. If the shrinker_maps is
+not initialized yet it means the memcg is too young to have a number
+of reclaimable slab caches. It sounds fine to just skip it.
 
-[ ... ]
+And, with consolidating shrinker_maps and shrinker_deferred into one
+struct, we could just check the pointer of the struct. So, it seems
+this patch is not necessary anymore. This patch will be dropped in v3.
 
->>> parisc: Failed to execute /sbin/init (error -12)
->>>
->>> Caused by: c49dd3401802 ("mm: speedup mremap on 1GB or larger regions")
->>
->> Looks like Kalesh is looking at it.
->>
->> I don't think that was supposed to matter at all on parisc, but
->> clearly something bad happened.
->>
->> parsic doesn't even enable HAVE_MOVE_PMD, much less the new
->> HAVE_MOVE_PUD. Strange.
-> 
-> Hi Linus,
-> 
-> I had sent the fix for this issue which was taken into the -mm tree by
-> Andrew. (https://ozlabs.org/~akpm/mmotm/broken-out/mm-mremap-fix-extent-calculation.patch)
-> 
-
-... and I even tested it. Sorry, I should have mentioned it. For some
-reason it completely left my mind.
-
-Guenter
+On Tue, Dec 15, 2020 at 12:31 PM Yang Shi <shy828301@gmail.com> wrote:
+>
+> On Tue, Dec 15, 2020 at 9:16 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> >
+> > On Mon, Dec 14, 2020 at 02:37:16PM -0800, Yang Shi wrote:
+> > > The shrink_slab_memcg() races with mem_cgroup_css_online(). A visibility of CSS_ONLINE flag
+> > > in shrink_slab_memcg()->mem_cgroup_online() does not guarantee that we will see
+> > > memcg->nodeinfo[nid]->shrinker_maps != NULL.  This may occur because of processor reordering
+> > > on !x86.
+> > >
+> > > This seems like the below case:
+> > >
+> > >            CPU A          CPU B
+> > > store shrinker_map      load CSS_ONLINE
+> > > store CSS_ONLINE        load shrinker_map
+> >
+> > But we have a separate check on shrinker_maps, so it doesn't matter
+> > that it isn't guaranteed, no?
+>
+> IIUC, yes. Checking shrinker_maps is the alternative way to detect the
+> reordering to prevent from seeing NULL shrinker_maps per Kirill.
+>
+> We could check shrinker_deferred too, then just walk away if it is NULL.
+>
+> >
+> > The only downside I can see is when CSS_ONLINE isn't visible yet and
+> > we bail even though we'd be ready to shrink. Although it's probably
+> > unlikely that there would be any objects allocated already...
+>
+> Yes, it seems so.
+>
+> >
+> > Can somebody remind me why we check mem_cgroup_online() at all?
+>
+> IIUC it should be mainly used to skip offlined memcgs since there is
+> nothing on offlined memcgs' LRU because all objects have been
+> reparented. But shrinker_map won't be freed until .css_free is called.
+> So the shrinkers might be called in vain.
+>
+> >
+> > If shrinker_map is set, we can shrink: .css_alloc is guaranteed to be
+> > complete, and by using RCU for the shrinker_map pointer, the map is
+> > also guaranteed to be initialized. There is nothing else happening
+> > during onlining that you may depend on.
+> >
+> > If shrinker_map isn't set, we cannot iterate the bitmap. It does not
+> > really matter whether CSS_ONLINE is reordered and visible already.
+>
+> As I mentioned above it should be used to skip offlined memcgs, but it
+> also opens the race condition due to memory reordering. As Kirill
+> explained in the earlier email, we could either check the pointer or
+> use memory barriers.
+>
+> If the memory barriers seems overkilling, I could definitely switch
+> back to NULL pointer check approach.
+>
+> >
+> > Agreed with Dave: if we need that synchronization around onlining, it
+> > needs to happen inside the cgroup core. But I wouldn't add that until
+> > somebody actually required it.
