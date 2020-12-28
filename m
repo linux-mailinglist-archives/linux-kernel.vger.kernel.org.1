@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 721BF2E380B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:06:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8D682E3E5C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:27:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730452AbgL1NEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:04:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60478 "EHLO mail.kernel.org"
+        id S2502199AbgL1O1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:27:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730410AbgL1NEU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:04:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B1F07206ED;
-        Mon, 28 Dec 2020 13:03:38 +0000 (UTC)
+        id S2503333AbgL1OZy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:25:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E819E207B2;
+        Mon, 28 Dec 2020 14:25:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160619;
-        bh=cB6GxS2x63pOn/MpzovqZPI8ZneqZuI20R/cGwPS+38=;
+        s=korg; t=1609165539;
+        bh=sHRTlPOkrSFBIDafdngq/slEC7jkGCdrz9KNv3Til88=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tEXNBDx0Yq6WgbgndPqIMnBZdtv36dO1cMFIaVqti4hydS9bEP6GJoqDTZFSYg/SE
-         qy9Lx1ZhHIX3Pv6FAkkwFbLwG8IdsCMjav8okgCQewMVPFw3/2gu+1hjC+8vYCWpO+
-         xqHWuVH7aAaGdr2+FOrnxu0WcA9cmWRkjhfdJQOw=
+        b=a1mosDMt2Nv9d8TMfalZP9DtLRPzJ36NpZaD+AnBOnb82qJ7Ju0zwVvW7wjuTlLB4
+         4LODEVdweLFZqU15wKWk3W3+VxkYzdFV+LkVGYRewFV7RMXHlR1W/Xha7ox2Lt5HA2
+         HgS0+qcrx+s6eUpvU0WWxU8SAepRsYp9lr828lXc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 112/175] clk: tegra: Fix duplicated SE clock entry
+        stable@vger.kernel.org, Kan Liang <kan.liang@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: [PATCH 5.10 567/717] perf/x86/intel: Fix rtm_abort_event encoding on Ice Lake
 Date:   Mon, 28 Dec 2020 13:49:25 +0100
-Message-Id: <20201228124858.683750287@linuxfoundation.org>
+Message-Id: <20201228125048.077008967@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,55 +39,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Osipenko <digetx@gmail.com>
+From: Kan Liang <kan.liang@linux.intel.com>
 
-[ Upstream commit 5bf5861d6ea6c3f4b38fc8fda2062b2dc44ac63d ]
+commit 46b72e1bf4fc571da0c29c6fb3e5b2a2107a4c26 upstream.
 
-The periph_clks[] array contains duplicated entry for Security Engine
-clock which was meant to be defined for T210, but it wasn't added
-properly. This patch corrects the T210 SE entry and fixes the following
-error message on T114/T124: "Tegra clk 127: register failed with -17".
+According to the event list from icelake_core_v1.09.json, the encoding
+of the RTM_RETIRED.ABORTED event on Ice Lake should be,
+    "EventCode": "0xc9",
+    "UMask": "0x04",
+    "EventName": "RTM_RETIRED.ABORTED",
 
-Fixes: dc37fec48314 ("clk: tegra: periph: Add new periph clks and muxes for Tegra210")
-Tested-by Nicolas Chauvet <kwizart@gmail.com>
-Reported-by Nicolas Chauvet <kwizart@gmail.com>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-Link: https://lore.kernel.org/r/20201025224212.7790-1-digetx@gmail.com
-Acked-by: Thierry Reding <treding@nvidia.com>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Correct the wrong encoding.
+
+Fixes: 6017608936c1 ("perf/x86/intel: Add Icelake support")
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/20201125213720.15692-1-kan.liang@linux.intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/clk/tegra/clk-id.h           | 1 +
- drivers/clk/tegra/clk-tegra-periph.c | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ arch/x86/events/intel/core.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/clk/tegra/clk-id.h b/drivers/clk/tegra/clk-id.h
-index 5738635c52741..9f8397c696e6c 100644
---- a/drivers/clk/tegra/clk-id.h
-+++ b/drivers/clk/tegra/clk-id.h
-@@ -233,6 +233,7 @@ enum clk_id {
- 	tegra_clk_sdmmc4_8,
- 	tegra_clk_sdmmc4_9,
- 	tegra_clk_se,
-+	tegra_clk_se_10,
- 	tegra_clk_soc_therm,
- 	tegra_clk_soc_therm_8,
- 	tegra_clk_sor0,
-diff --git a/drivers/clk/tegra/clk-tegra-periph.c b/drivers/clk/tegra/clk-tegra-periph.c
-index d9c1f229c644b..bf88f90e6c438 100644
---- a/drivers/clk/tegra/clk-tegra-periph.c
-+++ b/drivers/clk/tegra/clk-tegra-periph.c
-@@ -648,7 +648,7 @@ static struct tegra_periph_init_data periph_clks[] = {
- 	INT8("host1x", mux_pllm_pllc2_c_c3_pllp_plla, CLK_SOURCE_HOST1X, 28, 0, tegra_clk_host1x_8),
- 	INT8("host1x", mux_pllc4_out1_pllc_pllc4_out2_pllp_clkm_plla_pllc4_out0, CLK_SOURCE_HOST1X, 28, 0, tegra_clk_host1x_9),
- 	INT8("se", mux_pllp_pllc2_c_c3_pllm_clkm, CLK_SOURCE_SE, 127, TEGRA_PERIPH_ON_APB, tegra_clk_se),
--	INT8("se", mux_pllp_pllc2_c_c3_clkm, CLK_SOURCE_SE, 127, TEGRA_PERIPH_ON_APB, tegra_clk_se),
-+	INT8("se", mux_pllp_pllc2_c_c3_clkm, CLK_SOURCE_SE, 127, TEGRA_PERIPH_ON_APB, tegra_clk_se_10),
- 	INT8("2d", mux_pllm_pllc2_c_c3_pllp_plla, CLK_SOURCE_2D, 21, 0, tegra_clk_gr2d_8),
- 	INT8("3d", mux_pllm_pllc2_c_c3_pllp_plla, CLK_SOURCE_3D, 24, 0, tegra_clk_gr3d_8),
- 	INT8("vic03", mux_pllm_pllc_pllp_plla_pllc2_c3_clkm, CLK_SOURCE_VIC03, 178, 0, tegra_clk_vic03),
--- 
-2.27.0
-
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -5465,7 +5465,7 @@ __init int intel_pmu_init(void)
+ 		mem_attr = icl_events_attrs;
+ 		td_attr = icl_td_events_attrs;
+ 		tsx_attr = icl_tsx_events_attrs;
+-		x86_pmu.rtm_abort_event = X86_CONFIG(.event=0xca, .umask=0x02);
++		x86_pmu.rtm_abort_event = X86_CONFIG(.event=0xc9, .umask=0x04);
+ 		x86_pmu.lbr_pt_coexist = true;
+ 		intel_pmu_pebs_data_source_skl(pmem);
+ 		x86_pmu.update_topdown_event = icl_update_topdown_event;
 
 
