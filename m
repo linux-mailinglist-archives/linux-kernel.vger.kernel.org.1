@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0F682E39F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:30:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1C962E3800
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:04:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390408AbgL1Nab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:30:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59436 "EHLO mail.kernel.org"
+        id S1730297AbgL1NDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:03:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390392AbgL1Na3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:30:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D244B22C7E;
-        Mon, 28 Dec 2020 13:29:47 +0000 (UTC)
+        id S1730212AbgL1NDW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:03:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFF14208D5;
+        Mon, 28 Dec 2020 13:02:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162188;
-        bh=2Yzs0RJG/rrec0gELQ7GRzXpQJwfWuq9NsNKxqTfAds=;
+        s=korg; t=1609160561;
+        bh=SPLp9f0aNYouVDYwphkyzjOzpzihlP3PNM3XX/4RLcE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZamEyA54xYaCZdGAy7WvKWCNCg7g+JE7B6/Cg7iQYHUX3D+6GIujrbizHRP+h5KzQ
-         /04phcWDZR9ShWZTAWwbWsXXSnKs3nLiNFUN3qkezYw//kRh+jGJxVepF7z8qjh7UG
-         2ExCsIHDVY9pTgxRN9jIhqH+yF4r/N8pJX+BxtVQ=
+        b=Nk7DCqy/fq/ywQqnPGHb2HrUJ92fXjb2NF2Ja0vxwSutm7F72N0mTZt/NB/0yvPll
+         yzZnbuzGkELfs+vvQGsyuRV6OZmx+auJBFYobhvjsa7hMp9v9XRYgTjk/TnK1K+1T4
+         ioqsg+pg06zP/xjzYFPwUfRnCS/FJqb4Rx7UGHWU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 187/346] ath10k: Fix an error handling path
+Subject: [PATCH 4.9 053/175] crypto: talitos - Fix return type of current_desc_hdr()
 Date:   Mon, 28 Dec 2020 13:48:26 +0100
-Message-Id: <20201228124928.830205275@linuxfoundation.org>
+Message-Id: <20201228124855.822829518@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-[ Upstream commit ed3573bc3943c27d2d8e405a242f87ed14572ca1 ]
+[ Upstream commit 0237616173fd363a54bd272aa3bd376faa1d7caa ]
 
-If 'ath10k_usb_create()' fails, we should release some resources and report
-an error instead of silently continuing.
+current_desc_hdr() returns a u32 but in fact this is a __be32,
+leading to a lot of sparse warnings.
 
-Fixes: 4db66499df91 ("ath10k: add initial USB support")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20201122170342.1346011-1-christophe.jaillet@wanadoo.fr
+Change the return type to __be32 and ensure it is handled as
+sure by the caller.
+
+Fixes: 3e721aeb3df3 ("crypto: talitos - handle descriptor not found in error path")
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/usb.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/crypto/talitos.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/usb.c b/drivers/net/wireless/ath/ath10k/usb.c
-index c64a03f164c0f..f4e6d84bfb91c 100644
---- a/drivers/net/wireless/ath/ath10k/usb.c
-+++ b/drivers/net/wireless/ath/ath10k/usb.c
-@@ -1019,6 +1019,8 @@ static int ath10k_usb_probe(struct usb_interface *interface,
+diff --git a/drivers/crypto/talitos.c b/drivers/crypto/talitos.c
+index 059c2d4ad18fb..f4a6be76468d5 100644
+--- a/drivers/crypto/talitos.c
++++ b/drivers/crypto/talitos.c
+@@ -447,7 +447,7 @@ DEF_TALITOS2_DONE(ch1_3, TALITOS2_ISR_CH_1_3_DONE)
+ /*
+  * locate current (offending) descriptor
+  */
+-static u32 current_desc_hdr(struct device *dev, int ch)
++static __be32 current_desc_hdr(struct device *dev, int ch)
+ {
+ 	struct talitos_private *priv = dev_get_drvdata(dev);
+ 	int tail, iter;
+@@ -478,13 +478,13 @@ static u32 current_desc_hdr(struct device *dev, int ch)
+ /*
+  * user diagnostics; report root cause of error based on execution unit status
+  */
+-static void report_eu_error(struct device *dev, int ch, u32 desc_hdr)
++static void report_eu_error(struct device *dev, int ch, __be32 desc_hdr)
+ {
+ 	struct talitos_private *priv = dev_get_drvdata(dev);
+ 	int i;
  
- 	ar_usb = ath10k_usb_priv(ar);
- 	ret = ath10k_usb_create(ar, interface);
-+	if (ret)
-+		goto err;
- 	ar_usb->ar = ar;
+ 	if (!desc_hdr)
+-		desc_hdr = in_be32(priv->chan[ch].reg + TALITOS_DESCBUF);
++		desc_hdr = cpu_to_be32(in_be32(priv->chan[ch].reg + TALITOS_DESCBUF));
  
- 	ar->dev_id = product_id;
+ 	switch (desc_hdr & DESC_HDR_SEL0_MASK) {
+ 	case DESC_HDR_SEL0_AFEU:
 -- 
 2.27.0
 
