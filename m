@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE1142E3985
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:25:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E942E3B29
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:47:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388726AbgL1NY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:24:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52648 "EHLO mail.kernel.org"
+        id S2405430AbgL1Nqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:46:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388710AbgL1NYX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:24:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 32912208BA;
-        Mon, 28 Dec 2020 13:24:07 +0000 (UTC)
+        id S2404977AbgL1Np7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:45:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C1E32072C;
+        Mon, 28 Dec 2020 13:45:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161847;
-        bh=RoUZ9kKXFxKG8Fqtw0YjNDsguWd6fxBG9IAQ6XZfCkE=;
+        s=korg; t=1609163143;
+        bh=PrUUdDOGcD6+rQgX7UmuT3AmHsvFxxzry34XmjyQSmY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y/PvDIeKDKMErZZh+KrfYDJKMg3B6DMr6Q3di7Ieuyp4I8tjThDQ9Qla7VmpqeFg3
-         e6HbUoB9GH8fOFQHPc+2uD6n9rmGTrxro41sRSPS8GYbONdtEYIDtah6vburStR5JY
-         AlNEgneIXC9LOoEFwnNVB9nhAjIGxpIPznZFYOIE=
+        b=RosvhWAYwH8QioEqtPwb+kG1rvjzEgX4XGkyNftoK0ymBUj0KujMGEoq6WLiMArX6
+         pA8j5RT81duqRwAjcb2G0fAfXpxLPs7X82THI72ohddiArbc3LZPxusgipYwaVnor4
+         KXurh9a2H1Rl2Z/Yyox06ROhGl7uVMH6a4103/fQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kamal Heib <kamalheib1@gmail.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Michael Walle <michael@walle.cc>,
+        Shawn Guo <shawnguo@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 103/346] RDMA/bnxt_re: Set queue pair state when being queried
+Subject: [PATCH 5.4 186/453] arm64: dts: ls1028a: fix ENETC PTP clock input
 Date:   Mon, 28 Dec 2020 13:47:02 +0100
-Message-Id: <20201228124924.762685545@linuxfoundation.org>
+Message-Id: <20201228124946.160395821@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kamal Heib <kamalheib1@gmail.com>
+From: Michael Walle <michael@walle.cc>
 
-[ Upstream commit 53839b51a7671eeb3fb44d479d541cf3a0f2dd45 ]
+[ Upstream commit d0570a575aa83116bd0f6a99c4de548af773d950 ]
 
-The API for ib_query_qp requires the driver to set cur_qp_state on return,
-add the missing set.
+On the LS1028A the ENETC reference clock is connected to 4th HWA output,
+see Figure 7 "Clock subsystem block diagram".
 
-Fixes: 1ac5a4047975 ("RDMA/bnxt_re: Add bnxt_re RoCE driver")
-Link: https://lore.kernel.org/r/20201021114952.38876-1-kamalheib1@gmail.com
-Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
-Acked-by: Selvin Xavier <selvin.xavier@broadcom.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+The PHC may run with a wrong frequency. ptp_qoriq_auto_config() will read
+the clock speed of the clock given in the device tree. It is likely that,
+on the reference board this wasn't noticed because both clocks have the
+same frequency. But this must not be always the case. Fix it.
+
+Fixes: 49401003e260 ("arm64: dts: fsl: ls1028a: add ENETC 1588 timer node")
+Signed-off-by: Michael Walle <michael@walle.cc>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/bnxt_re/ib_verbs.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index 957da3ffe593c..f8c9caa8aad6d 100644
---- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-+++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -1838,6 +1838,7 @@ int bnxt_re_query_qp(struct ib_qp *ib_qp, struct ib_qp_attr *qp_attr,
- 		goto out;
- 	}
- 	qp_attr->qp_state = __to_ib_qp_state(qplib_qp->state);
-+	qp_attr->cur_qp_state = __to_ib_qp_state(qplib_qp->cur_qp_state);
- 	qp_attr->en_sqd_async_notify = qplib_qp->en_sqd_async_notify ? 1 : 0;
- 	qp_attr->qp_access_flags = __to_ib_access_flags(qplib_qp->access);
- 	qp_attr->pkey_index = qplib_qp->pkey_index;
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+index 9589b15693d6e..795d6ca4bbd1f 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+@@ -673,7 +673,7 @@
+ 			ethernet@0,4 {
+ 				compatible = "fsl,enetc-ptp";
+ 				reg = <0x000400 0 0 0 0>;
+-				clocks = <&clockgen 4 0>;
++				clocks = <&clockgen 2 3>;
+ 				little-endian;
+ 			};
+ 		};
 -- 
 2.27.0
 
