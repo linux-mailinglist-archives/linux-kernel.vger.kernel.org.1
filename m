@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF9AC2E380E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:06:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF5D52E3E4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:27:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730499AbgL1NEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:04:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60500 "EHLO mail.kernel.org"
+        id S2503854AbgL1O0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:26:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730422AbgL1NEW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:04:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 824322242A;
-        Mon, 28 Dec 2020 13:03:41 +0000 (UTC)
+        id S2503804AbgL1O00 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:26:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B709B221F0;
+        Mon, 28 Dec 2020 14:25:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160622;
-        bh=CftL8oSrtLZXqQtk+vzmIDpAvBAOuHgbd3ypBo7Y2ww=;
+        s=korg; t=1609165545;
+        bh=PeJ1Yj5psgqWtPPXCG4oxH/sNvVPUnY6H9cNlzKs/H0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h7Eh//zS30VrTtpgA7LXkZfibiX90DBJP2R79uGjDC1b9/FCubDfub+HBBhup8YuM
-         1C8g7qnkLojygUrPiYwBeErW8/6SV3VktR9S2hGhg1+bTpuS4ZqMekAA/fYnEQ/YDf
-         5Rv2Hm9x52/4Pie6O2ZNRwmoEnku3SvN86OHVIhc=
+        b=xVBIQsVG7B2M4PBoUUoRPT5Y3x3XB/+Ti5CPRcdqfx2ZRDS/v6hzXF4+scdp4fxNp
+         xzQh+pCpVm1BpZNXtcr+HQu3zuhy5vHFosQYcIBCuI/rzdYisnmgZU5MUm618zzPNb
+         UOJnjc4F/Wz5xtVghICkE/1p5oBnmqhspAQ76VBg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 113/175] extcon: max77693: Fix modalias string
-Date:   Mon, 28 Dec 2020 13:49:26 +0100
-Message-Id: <20201228124858.732520856@linuxfoundation.org>
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.10 569/717] powerpc/perf: Exclude kernel samples while counting events in user space.
+Date:   Mon, 28 Dec 2020 13:49:27 +0100
+Message-Id: <20201228125048.168549072@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,34 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Szyprowski <m.szyprowski@samsung.com>
+From: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
 
-[ Upstream commit e1efdb604f5c9903a5d92ef42244009d3c04880f ]
+commit aa8e21c053d72b6639ea5a7f1d3a1d0209534c94 upstream.
 
-The platform device driver name is "max77693-muic", so advertise it
-properly in the modalias string. This fixes automated module loading when
-this driver is compiled as a module.
+Perf event attritube supports exclude_kernel flag to avoid
+sampling/profiling in supervisor state (kernel). Based on this event
+attr flag, Monitor Mode Control Register bit is set to freeze on
+supervisor state. But sometimes (due to hardware limitation), Sampled
+Instruction Address Register (SIAR) locks on to kernel address even
+when freeze on supervisor is set. Patch here adds a check to drop
+those samples.
 
-Fixes: db1b9037424b ("extcon: MAX77693: Add extcon-max77693 driver to support Maxim MAX77693 MUIC device")
-Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/1606289215-1433-1-git-send-email-atrajeev@linux.vnet.ibm.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/extcon/extcon-max77693.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/perf/core-book3s.c |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/extcon/extcon-max77693.c b/drivers/extcon/extcon-max77693.c
-index 68dbcb814b2ff..4cf72487381e3 100644
---- a/drivers/extcon/extcon-max77693.c
-+++ b/drivers/extcon/extcon-max77693.c
-@@ -1272,4 +1272,4 @@ module_platform_driver(max77693_muic_driver);
- MODULE_DESCRIPTION("Maxim MAX77693 Extcon driver");
- MODULE_AUTHOR("Chanwoo Choi <cw00.choi@samsung.com>");
- MODULE_LICENSE("GPL");
--MODULE_ALIAS("platform:extcon-max77693");
-+MODULE_ALIAS("platform:max77693-muic");
--- 
-2.27.0
-
+--- a/arch/powerpc/perf/core-book3s.c
++++ b/arch/powerpc/perf/core-book3s.c
+@@ -2125,6 +2125,16 @@ static void record_and_restart(struct pe
+ 	perf_event_update_userpage(event);
+ 
+ 	/*
++	 * Due to hardware limitation, sometimes SIAR could sample a kernel
++	 * address even when freeze on supervisor state (kernel) is set in
++	 * MMCR2. Check attr.exclude_kernel and address to drop the sample in
++	 * these cases.
++	 */
++	if (event->attr.exclude_kernel && record)
++		if (is_kernel_addr(mfspr(SPRN_SIAR)))
++			record = 0;
++
++	/*
+ 	 * Finally record data if requested.
+ 	 */
+ 	if (record) {
 
 
