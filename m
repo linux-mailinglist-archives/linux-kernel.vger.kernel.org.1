@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 042882E3D89
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:17:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF6242E3D5C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:15:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441241AbgL1OQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:16:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51196 "EHLO mail.kernel.org"
+        id S2440490AbgL1OOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:14:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49528 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440885AbgL1OQH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:16:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EF8320791;
-        Mon, 28 Dec 2020 14:15:26 +0000 (UTC)
+        id S2440459AbgL1OOl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:14:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 28BC322583;
+        Mon, 28 Dec 2020 14:14:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609164927;
-        bh=WDcTPrTXz9qUtyo8bsOW9H+jSc4yZdmHOzryDsLKWVA=;
+        s=korg; t=1609164840;
+        bh=tphTNjRLSl3fsJBkdTOwUuY0O+F+ZYTjdTi7eEsGz7U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G4Mrxj7tr92Ah02QvnNP0MhxO7Ow8F8xAPyqN0m3xwkTtURTP/iYrWPGytyqv2oY9
-         KM+S1PU7GWZPEndIJaIXTd4QJuVnvwlM3AxIK/knOQoPKsRU3gF2pfr5xfaf/IRdsI
-         vzvfWhr03HFE0OzXl0m+UgZUg9ybE5/YWy28DzO8=
+        b=Mvr6oNHwUVOu0VYtSMgSAyoLMlAgsgPwdcPpffIJQmkxlf4xbN8f2pv5kOl10gmG8
+         seo8nOJU9yilbHcsEjnvJmIRXDcKnIylXcKr+nIoDZYAf55xmjdmsm9Trf2xelSMBl
+         5UkQhd+uldQ09jLihw1Wx440hcoeYq+P1fFhkELM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        stable@vger.kernel.org,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
+        Paul Cercueil <paul@crapouillou.net>,
         Krzysztof Kozlowski <krzk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 317/717] memory: ti-emif-sram: only build for ARMv7
-Date:   Mon, 28 Dec 2020 13:45:15 +0100
-Message-Id: <20201228125036.221339172@linuxfoundation.org>
+Subject: [PATCH 5.10 318/717] memory: jz4780_nemc: Fix potential NULL dereference in jz4780_nemc_probe()
+Date:   Mon, 28 Dec 2020 13:45:16 +0100
+Message-Id: <20201228125036.269677844@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
 References: <20201228125020.963311703@linuxfoundation.org>
@@ -40,39 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-[ Upstream commit d77d22d701b0471584abe1871570bb43deb6e3c4 ]
+[ Upstream commit 4bfa07300b9334b487ed4f3d4901c35ebb31b7ca ]
 
-The driver can be compile-tested on all ARM machines, but
-causes a failure when built for ARMv7-M:
+platform_get_resource() may fail and return NULL, so we should
+better check it's return value to avoid a NULL pointer dereference
+a bit later in the code.
 
-arm-linux-gnueabi-ld: error: drivers/memory/ti-emif-sram-pm.o: conflicting architecture profiles A/M
+This is detected by Coccinelle semantic patch.
 
-Limit the target machines to configurations that have ARMv7 enabled.
-
-Fixes: ea0c0ad6b6eb ("memory: Enable compile testing for most of the drivers")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Link: https://lore.kernel.org/r/20201203230832.1481767-1-arnd@kernel.org
+Fixes: 911a88829725 ("memory: jz4780-nemc: driver for the NEMC on JZ4780 SoCs")
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+Acked-by: Paul Cercueil <paul@crapouillou.net>
+Link: https://lore.kernel.org/r/1607070717-32880-1-git-send-email-zhangchangzhong@huawei.com
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/memory/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/memory/jz4780-nemc.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
-index 00e013b14703e..cc2c83e1accfb 100644
---- a/drivers/memory/Kconfig
-+++ b/drivers/memory/Kconfig
-@@ -128,7 +128,7 @@ config OMAP_GPMC_DEBUG
+diff --git a/drivers/memory/jz4780-nemc.c b/drivers/memory/jz4780-nemc.c
+index 3ec5cb0fce1ee..465ea92990d7e 100644
+--- a/drivers/memory/jz4780-nemc.c
++++ b/drivers/memory/jz4780-nemc.c
+@@ -291,6 +291,8 @@ static int jz4780_nemc_probe(struct platform_device *pdev)
+ 	nemc->dev = dev;
  
- config TI_EMIF_SRAM
- 	tristate "Texas Instruments EMIF SRAM driver"
--	depends on SOC_AM33XX || SOC_AM43XX || (ARM && COMPILE_TEST)
-+	depends on SOC_AM33XX || SOC_AM43XX || (ARM && CPU_V7 && COMPILE_TEST)
- 	depends on SRAM
- 	help
- 	  This driver is for the EMIF module available on Texas Instruments
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res)
++		return -EINVAL;
+ 
+ 	/*
+ 	 * The driver currently only uses the registers up to offset
 -- 
 2.27.0
 
