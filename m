@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2E442E68C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:42:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8597B2E67CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:30:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728306AbgL1M6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:58:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54934 "EHLO mail.kernel.org"
+        id S2441817AbgL1Q2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:28:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728162AbgL1M6h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:58:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B1F3B22573;
-        Mon, 28 Dec 2020 12:57:55 +0000 (UTC)
+        id S1730745AbgL1NHR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:07:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E3A562242A;
+        Mon, 28 Dec 2020 13:07:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160276;
-        bh=ZhPJvr4T5Hc51Jhsmbvw8vrcuIYjwobBSzb5/C5zD2Q=;
+        s=korg; t=1609160822;
+        bh=DmmkrcitPC7QTS2tPwHnuEaW7XBeQ9vxE83FylVSuew=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GD/AOkMRbe/eXitbUba25C02f0sPMshZyGHdmMHbauQcRxeCzj01Fnc1JWi1HSXYg
-         YThFKEEIz45yAGCmgMibGCU2JH7ZyNPQ0yBKSBH9j0oJVJObgTpszDdpPDOj8nbGby
-         NpuT8lJDLtaweaR11CHKHnGwPC4suaeRk1zdj6SA=
+        b=yNsgvUF7HB5Y0Z9ir69JfCzBgyMjdxfxJWDeShS8U1L3ZbKcIY6nZpqg3s5K+FVIa
+         jLGAmDUC9cNRQPmgZNg8/XLyNe3lGHydalB0fREkACw5NDCS08h2LU0ptY1yYRe4Bk
+         etL9Xt+JT8bPbzRpE+zr5otPrGyi5SwK6iCrjm7U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, SeongJae Park <sjpark@amazon.de>,
-        Michael Kurth <mku@amazon.de>,
-        Pawel Wieczorkiewicz <wipawel@amazon.de>,
-        Juergen Gross <jgross@suse.com>
-Subject: [PATCH 4.4 129/132] xen/xenbus/xen_bus_type: Support will_handle watch callback
+        stable@vger.kernel.org, Dave Kleikamp <dave.kleikamp@oracle.com>,
+        butt3rflyh4ck <butterflyhuangxx@gmail.com>
+Subject: [PATCH 4.9 160/175] jfs: Fix array index bounds check in dbAdjTree
 Date:   Mon, 28 Dec 2020 13:50:13 +0100
-Message-Id: <20201228124852.641102092@linuxfoundation.org>
+Message-Id: <20201228124900.995141218@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,51 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+From: Dave Kleikamp <dave.kleikamp@oracle.com>
 
-commit be987200fbaceaef340872841d4f7af2c5ee8dc3 upstream.
+commit c61b3e4839007668360ed8b87d7da96d2e59fc6c upstream.
 
-This commit adds support of the 'will_handle' watch callback for
-'xen_bus_type' users.
+Bounds checking tools can flag a bug in dbAdjTree() for an array index
+out of bounds in dmt_stree. Since dmt_stree can refer to the stree in
+both structures dmaptree and dmapctl, use the larger array to eliminate
+the false positive.
 
-This is part of XSA-349
-
-Cc: stable@vger.kernel.org
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
-Reported-by: Michael Kurth <mku@amazon.de>
-Reported-by: Pawel Wieczorkiewicz <wipawel@amazon.de>
-Reviewed-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
+Reported-by: butt3rflyh4ck <butterflyhuangxx@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-
 ---
- drivers/xen/xenbus/xenbus_probe.c |    3 ++-
- drivers/xen/xenbus/xenbus_probe.h |    2 ++
- 2 files changed, 4 insertions(+), 1 deletion(-)
+ fs/jfs/jfs_dmap.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/xen/xenbus/xenbus_probe.c
-+++ b/drivers/xen/xenbus/xenbus_probe.c
-@@ -137,7 +137,8 @@ static int watch_otherend(struct xenbus_
- 		container_of(dev->dev.bus, struct xen_bus_type, bus);
+--- a/fs/jfs/jfs_dmap.h
++++ b/fs/jfs/jfs_dmap.h
+@@ -196,7 +196,7 @@ typedef union dmtree {
+ #define	dmt_leafidx	t1.leafidx
+ #define	dmt_height	t1.height
+ #define	dmt_budmin	t1.budmin
+-#define	dmt_stree	t1.stree
++#define	dmt_stree	t2.stree
  
- 	return xenbus_watch_pathfmt(dev, &dev->otherend_watch,
--				    NULL, bus->otherend_changed,
-+				    bus->otherend_will_handle,
-+				    bus->otherend_changed,
- 				    "%s/%s", dev->otherend, "state");
- }
- 
---- a/drivers/xen/xenbus/xenbus_probe.h
-+++ b/drivers/xen/xenbus/xenbus_probe.h
-@@ -42,6 +42,8 @@ struct xen_bus_type {
- 	int (*get_bus_id)(char bus_id[XEN_BUS_ID_SIZE], const char *nodename);
- 	int (*probe)(struct xen_bus_type *bus, const char *type,
- 		     const char *dir);
-+	bool (*otherend_will_handle)(struct xenbus_watch *watch,
-+				     const char **vec, unsigned int len);
- 	void (*otherend_changed)(struct xenbus_watch *watch, const char **vec,
- 				 unsigned int len);
- 	struct bus_type bus;
+ /*
+  *	on-disk aggregate disk allocation map descriptor.
 
 
