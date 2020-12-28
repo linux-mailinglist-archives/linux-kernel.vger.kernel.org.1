@@ -2,262 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2171D2E69EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 19:03:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B0F82E69ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 19:06:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728739AbgL1SCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 13:02:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39304 "EHLO
+        id S1728640AbgL1SFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 13:05:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728714AbgL1SCu (ORCPT
+        with ESMTP id S1728073AbgL1SFH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 13:02:50 -0500
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D86AC061793
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 10:02:10 -0800 (PST)
-Received: by mail-ot1-x333.google.com with SMTP id b24so9840630otj.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 10:02:10 -0800 (PST)
+        Mon, 28 Dec 2020 13:05:07 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 326FEC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 10:04:27 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id b2so10504461edm.3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 10:04:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QTWKfuMHgWiNYcFSAcl7Raaa7mAx/M1grIN4t0cDBBE=;
-        b=y14+PwCSzsjS7t4j/+cV1GsS7c4cxO5nDG1dAD2GI/liRaDEFlh2eZqtP06fyTV2kA
-         /7O2j9WjLuBJtR1k99e1FvlQXDuPMJtRvkJbZouvsaiBIAMqA0Hl8x1M5pJdUuTLQnSq
-         agJlJBxFKm/GUAeBS8lnpZijEMyvCzB2ie7H4mjKgf3nfoylRuUm0Y7xxlHAPHHjx08J
-         u8M8gdzwluoG8nBA0HMTkSTwy5/XuLxec/Agwtda206vP4K8mfH3DggLfE6lo/5QZQJ7
-         FV9I367GacVbTOV/BVElhWAhLFtvkH0Gma0REF2Og/j/I1Q3ojQSz/OhouazbfXBy1Z2
-         cF6w==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1XusoXZzXCem561CtyIdzy62jFmYgYhqvsSbO2ZR46c=;
+        b=DSVHc07QIUtK0soe718/PW/vZrg/PwxdrGhBs/wdvz/6NZ5gelqZ4YnCbT352WJC91
+         dh5awmqXzc0qxiZ24nUdgL0rUgk8LcHGFH4YsnmFRABICxIhpHib1j1md3bk8M2WX+7G
+         cJgZESQWMXQESYa91RJzUhAxego4Q8a/mqJvQdMQy1tv/+pr4hdGZXtfHNted17QO6qV
+         EKNdTEwowdGP5ptmy3jCYCCyGGxx+K9GoOdZ5jIC3tC1Ek/H8wIv7ryHuemAtUfsQSYP
+         DucXlyVr0d8JhcPmnQHqv231RHMAgr6XkW72K23FCLd296Ym7zAhF7bkFrRSPqYiondR
+         Uhsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QTWKfuMHgWiNYcFSAcl7Raaa7mAx/M1grIN4t0cDBBE=;
-        b=VRAxfvT8LtwbRNbdOhvOzFI8nHI8McPxV+kdmKVkS54Qa8EVAS1+8VuQD6YagZ5ZAN
-         ARiGZR6yB1yCBirf2WbhbldT1I+hYZgEn4mGoxfOPOnNIK9tsBtlAVGkcfJGH8ii/nSA
-         RpB+3kOFITyl1wrTYR8owB2M8D3+7QXuytMvZNQHcr7y6KRKe4B8y7bbDphdjFIw/0Xj
-         U/c0Bs2PDIGBYh3rHVtLvsfpZpc2lLuL9SoUQpjLHX07ch2SSOS1TzHnLVQZ9MwbDBCT
-         ZOvCf5B7IdZexCKck1iMdJu1g3jEdE41N8sgtb0gjALa2i++Kp0nu5Kl3x5TQxbdQymp
-         sbUg==
-X-Gm-Message-State: AOAM53281Yr32mB4UruheENuVYAElmLP2IRWTHK32y3uAqyn/KwlZoBQ
-        HEiAsH2I37b1fauxsQS4zpbmYA==
-X-Google-Smtp-Source: ABdhPJzUeeIWJpSklgPsQFyVQdZuvVdBp3XowtQCQYo0tnlu7brIHbDm+Q8uwN0bUbIoCl4NHqbcPg==
-X-Received: by 2002:a05:6830:578:: with SMTP id f24mr31427492otc.7.1609178529282;
-        Mon, 28 Dec 2020 10:02:09 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id j10sm10023636otn.63.2020.12.28.10.02.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Dec 2020 10:02:08 -0800 (PST)
-Date:   Mon, 28 Dec 2020 12:02:06 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Danny Lin <danny@kdrag0n.dev>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] arm64: dts: qcom: sm8150: Add PSCI idle states
-Message-ID: <X+odnnZYFW3qpubJ@builder.lan>
-References: <20201221002907.2870059-1-danny@kdrag0n.dev>
- <20201221002907.2870059-3-danny@kdrag0n.dev>
- <X+AbJvE7OGs3cRCw@ripper>
- <e7776f3c-a517-4cf3-9265-92dc0ac09c88@www.fastmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1XusoXZzXCem561CtyIdzy62jFmYgYhqvsSbO2ZR46c=;
+        b=n6YZC50Ze75eOA2C6huok9UA2S+M5bvEAYQaKgZiFPKih/gj/ntj55ITo1oKvgeUcy
+         uB0+o4/ju7BZIH1MGjj14JBEo6Xnz/7MCh665yqSfAjZkDx4ziovzp5plzyru5yR5hdO
+         BSuY6F5VJl0DmjkdZF5YZFGb8bBGi8ymY94t1Wt46ayNX6WyryP+qpln1VevkQjg/oo8
+         edLv/iSadAKOHLlgKKfPd/SLsorZ73XIg4Er8bCqhTYlkHEJ9wfSmrjEvwXlAU69UNrO
+         ykeMasx/2atuvvJSqm9vHCQa6oOxOOoFtMUo9gFt0czAE/k7Qv6i/Q5kORkRfJgXbBis
+         CfLw==
+X-Gm-Message-State: AOAM531kwUFCEe9rqvj0801zneUnvYeaJ6cqpBzcaJ3qKf3OJtAFrLhU
+        /iDNu/wdAkkI4Ra9WGqQ131/LW7qqYIHOcR1NJTeVw==
+X-Google-Smtp-Source: ABdhPJyEbHA18+GopoW3MrvxLDasfYjKRSDmjFduYaqBmPBoPByVJC0UFsKLtmKZ0K20lohnh4X0Ekjt12pIRB8mL3o=
+X-Received: by 2002:a50:fd18:: with SMTP id i24mr43835414eds.146.1609178665726;
+ Mon, 28 Dec 2020 10:04:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e7776f3c-a517-4cf3-9265-92dc0ac09c88@www.fastmail.com>
+References: <20201013013416.390574-1-dima@arista.com> <20201013013416.390574-4-dima@arista.com>
+In-Reply-To: <20201013013416.390574-4-dima@arista.com>
+From:   Brian Geffon <bgeffon@google.com>
+Date:   Mon, 28 Dec 2020 10:03:49 -0800
+Message-ID: <CADyq12ww2SB=x16pdH4LBZJJxMakOWgkR0qX-maUe-RzYZ491Q@mail.gmail.com>
+Subject: Re: [PATCH 3/6] mremap: Don't allow MREMAP_DONTUNMAP on
+ special_mappings and aio
+To:     Dmitry Safonov <dima@arista.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Hugh Dickins <hughd@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Will Deacon <will@kernel.org>, linux-aio@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-mm <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 22 Dec 20:00 CST 2020, Danny Lin wrote:
+I don't think this situation can ever happen MREMAP_DONTUNMAP is
+already restricted to anonymous mappings (defined as not having
+vm_ops) and vma_to_resize checks that the mapping is anonymous before
+move_vma is called.
 
-> On Sun, Dec 20, 2020 at 7:48 PM, Bjorn Andersson wrote:
-> > On Sun 20 Dec 16:29 PST 2020, Danny Lin wrote:
-> > 
-> > > Like other Qualcomm SoCs, sm8150 exposes CPU and cluster idle states
-> > > through PSCI. Define the idle states to save power when the CPU is not
-> > > in active use.
-> > > 
-> > > These idle states, latency, and residency values match the downstream
-> > > 4.14 kernel from Qualcomm as of LA.UM.8.1.r1-15600-sm8150.0.
-> > > 
-> > > It's worth noting that the CPU has an additional C3 power collapse idle
-> > > state between WFI and rail power collapse (with PSCI mode 0x40000003),
-> > > but it is not officially used in downstream kernels due to "thermal
-> > > throttling issues."
-> > > 
-> > 
-> > Thanks Danny for this series, very happy to see this kind of additions.
-> > Just one small question about the cluster param below.
-> > 
-> > > Signed-off-by: Danny Lin <danny@kdrag0n.dev>
-> > > ---
-> > >  arch/arm64/boot/dts/qcom/sm8150.dtsi | 50 ++++++++++++++++++++++++++++
-> > >  1 file changed, 50 insertions(+)
-> > > 
-> > > diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> > > index 75ed38ee5d88..edc1fe6d7f1b 100644
-> > > --- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> > > +++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> > > @@ -50,6 +50,8 @@ CPU0: cpu@0 {
-> > >  			compatible = "qcom,kryo485";
-> > >  			reg = <0x0 0x0>;
-> > >  			enable-method = "psci";
-> > > +			cpu-idle-states = <&LITTLE_CPU_SLEEP_0
-> > > +					   &CLUSTER_SLEEP_0>;
-> > >  			next-level-cache = <&L2_0>;
-> > >  			qcom,freq-domain = <&cpufreq_hw 0>;
-> > >  			#cooling-cells = <2>;
-> > > @@ -67,6 +69,8 @@ CPU1: cpu@100 {
-> > >  			compatible = "qcom,kryo485";
-> > >  			reg = <0x0 0x100>;
-> > >  			enable-method = "psci";
-> > > +			cpu-idle-states = <&LITTLE_CPU_SLEEP_0
-> > > +					   &CLUSTER_SLEEP_0>;
-> > >  			next-level-cache = <&L2_100>;
-> > >  			qcom,freq-domain = <&cpufreq_hw 0>;
-> > >  			#cooling-cells = <2>;
-> > > @@ -82,6 +86,8 @@ CPU2: cpu@200 {
-> > >  			compatible = "qcom,kryo485";
-> > >  			reg = <0x0 0x200>;
-> > >  			enable-method = "psci";
-> > > +			cpu-idle-states = <&LITTLE_CPU_SLEEP_0
-> > > +					   &CLUSTER_SLEEP_0>;
-> > >  			next-level-cache = <&L2_200>;
-> > >  			qcom,freq-domain = <&cpufreq_hw 0>;
-> > >  			#cooling-cells = <2>;
-> > > @@ -96,6 +102,8 @@ CPU3: cpu@300 {
-> > >  			compatible = "qcom,kryo485";
-> > >  			reg = <0x0 0x300>;
-> > >  			enable-method = "psci";
-> > > +			cpu-idle-states = <&LITTLE_CPU_SLEEP_0
-> > > +					   &CLUSTER_SLEEP_0>;
-> > >  			next-level-cache = <&L2_300>;
-> > >  			qcom,freq-domain = <&cpufreq_hw 0>;
-> > >  			#cooling-cells = <2>;
-> > > @@ -110,6 +118,8 @@ CPU4: cpu@400 {
-> > >  			compatible = "qcom,kryo485";
-> > >  			reg = <0x0 0x400>;
-> > >  			enable-method = "psci";
-> > > +			cpu-idle-states = <&BIG_CPU_SLEEP_0
-> > > +					   &CLUSTER_SLEEP_0>;
-> > >  			next-level-cache = <&L2_400>;
-> > >  			qcom,freq-domain = <&cpufreq_hw 1>;
-> > >  			#cooling-cells = <2>;
-> > > @@ -124,6 +134,8 @@ CPU5: cpu@500 {
-> > >  			compatible = "qcom,kryo485";
-> > >  			reg = <0x0 0x500>;
-> > >  			enable-method = "psci";
-> > > +			cpu-idle-states = <&BIG_CPU_SLEEP_0
-> > > +					   &CLUSTER_SLEEP_0>;
-> > >  			next-level-cache = <&L2_500>;
-> > >  			qcom,freq-domain = <&cpufreq_hw 1>;
-> > >  			#cooling-cells = <2>;
-> > > @@ -138,6 +150,8 @@ CPU6: cpu@600 {
-> > >  			compatible = "qcom,kryo485";
-> > >  			reg = <0x0 0x600>;
-> > >  			enable-method = "psci";
-> > > +			cpu-idle-states = <&BIG_CPU_SLEEP_0
-> > > +					   &CLUSTER_SLEEP_0>;
-> > >  			next-level-cache = <&L2_600>;
-> > >  			qcom,freq-domain = <&cpufreq_hw 1>;
-> > >  			#cooling-cells = <2>;
-> > > @@ -152,6 +166,8 @@ CPU7: cpu@700 {
-> > >  			compatible = "qcom,kryo485";
-> > >  			reg = <0x0 0x700>;
-> > >  			enable-method = "psci";
-> > > +			cpu-idle-states = <&BIG_CPU_SLEEP_0
-> > > +					   &CLUSTER_SLEEP_0>;
-> > >  			next-level-cache = <&L2_700>;
-> > >  			qcom,freq-domain = <&cpufreq_hw 2>;
-> > >  			#cooling-cells = <2>;
-> > > @@ -196,6 +212,40 @@ core7 {
-> > >  				};
-> > >  			};
-> > >  		};
-> > > +
-> > > +		idle-states {
-> > > +			entry-method = "psci";
-> > > +
-> > > +			LITTLE_CPU_SLEEP_0: cpu-sleep-0-0 {
-> > > +				compatible = "arm,idle-state";
-> > > +				idle-state-name = "little-rail-power-collapse";
-> > > +				arm,psci-suspend-param = <0x40000004>;
-> > > +				entry-latency-us = <355>;
-> > > +				exit-latency-us = <909>;
-> > > +				min-residency-us = <3934>;
-> > > +				local-timer-stop;
-> > > +			};
-> > > +
-> > > +			BIG_CPU_SLEEP_0: cpu-sleep-1-0 {
-> > > +				compatible = "arm,idle-state";
-> > > +				idle-state-name = "big-rail-power-collapse";
-> > > +				arm,psci-suspend-param = <0x40000004>;
-> > > +				entry-latency-us = <241>;
-> > > +				exit-latency-us = <1461>;
-> > > +				min-residency-us = <4488>;
-> > > +				local-timer-stop;
-> > > +			};
-> > > +
-> > > +			CLUSTER_SLEEP_0: cluster-sleep-0 {
-> > > +				compatible = "arm,idle-state";
-> > > +				idle-state-name = "cluster-power-collapse";
-> > > +				arm,psci-suspend-param = <0x400000F4>;
-> > 
-> > How come this is 0xf4?
-> > 
-> > Isn't downstream saying that this should be either 0x1 << 4 or 0xc24 <<
-> > 4, depending on how deep we want to go? Could we at least mention why
-> > this is 0xf4?
-> 
-> I'm not sure where 0x400000F4 originally came from. I noticed that
-> sdm845 uses the same 0xc24 mode in downstream, but Qualcomm used
-> 0x400000F4 in mainline.
-> 
-> I did some testing on a downstream kernel and found that the real value
-> it uses on sm8150 is 0x4100c244, but the idle state doesn't work at all
-> if I use the same value on mainline. The logic appears to be the same in
-> the downstream sdm845 kernel. Maybe it has to do with how downstream has
-> "notify RPM" before attempting to enter the idle state?
-> 
-> In downstream, the final PSCI value is calculated as the sum of:
-> 
-> 1. (cluster-mode & cluster-mode-mask) << cluster-mode-shift = (0xc24 & 0xfff) << 4 = 0xc240
-> 2. (is-reset << 30) = 0x40000000
-> 3. (affinity level & 0x3) << 24 = 0x1000000
-> 4. (cpu-mode) = 0x4
-> 
-> so 0xc240 + 0x40000000 + 0x1000000 + 0x4 = 0x4100c244.
-> 
-> It's also possible that the problem comes from the cluster idle state
-> needing all CPUs in the cluster to be asleep (as far as I know), since
-> it doesn't look like mainline handles that.
-> 
 
-Thanks for the explanation. I believe we have the code in place to do
-OSI sleep using the "psci domain cpuidle" driver, but I'm not entirely
-sure about the details about it - perhaps it's just a matter of wiring
-it all up(?).
 
-Let's go with your current patches and then swing back to this once
-we've figured out the remaining details.
-
-Thanks,
-Bjorn
-
-> > 
-> > Regards,
-> > Bjorn
-> > 
-> > > +				entry-latency-us = <3263>;
-> > > +				exit-latency-us = <6562>;
-> > > +				min-residency-us = <9987>;
-> > > +				local-timer-stop;
-> > > +			};
-> > > +		};
-> > >  	};
-> > >  
-> > >  	firmware {
-> > > -- 
-> > > 2.29.2
-> > > 
-> >
+On Mon, Oct 12, 2020 at 6:34 PM Dmitry Safonov <dima@arista.com> wrote:
+>
+> As kernel expect to see only one of such mappings, any further
+> operations on the VMA-copy may be unexpected by the kernel.
+> Maybe it's being on the safe side, but there doesn't seem to be any
+> expected use-case for this, so restrict it now.
+>
+> Fixes: commit e346b3813067 ("mm/mremap: add MREMAP_DONTUNMAP to mremap()")
+> Signed-off-by: Dmitry Safonov <dima@arista.com>
+> ---
+>  arch/x86/kernel/cpu/resctrl/pseudo_lock.c | 2 +-
+>  fs/aio.c                                  | 5 ++++-
+>  include/linux/mm.h                        | 2 +-
+>  mm/mmap.c                                 | 6 +++++-
+>  mm/mremap.c                               | 2 +-
+>  5 files changed, 12 insertions(+), 5 deletions(-)
+>
+> diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+> index 0daf2f1cf7a8..e916646adc69 100644
+> --- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+> +++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+> @@ -1458,7 +1458,7 @@ static int pseudo_lock_dev_release(struct inode *inode, struct file *filp)
+>         return 0;
+>  }
+>
+> -static int pseudo_lock_dev_mremap(struct vm_area_struct *area)
+> +static int pseudo_lock_dev_mremap(struct vm_area_struct *area, unsigned long flags)
+>  {
+>         /* Not supported */
+>         return -EINVAL;
+> diff --git a/fs/aio.c b/fs/aio.c
+> index d5ec30385566..3be3c0f77548 100644
+> --- a/fs/aio.c
+> +++ b/fs/aio.c
+> @@ -324,13 +324,16 @@ static void aio_free_ring(struct kioctx *ctx)
+>         }
+>  }
+>
+> -static int aio_ring_mremap(struct vm_area_struct *vma)
+> +static int aio_ring_mremap(struct vm_area_struct *vma, unsigned long flags)
+>  {
+>         struct file *file = vma->vm_file;
+>         struct mm_struct *mm = vma->vm_mm;
+>         struct kioctx_table *table;
+>         int i, res = -EINVAL;
+>
+> +       if (flags & MREMAP_DONTUNMAP)
+> +               return -EINVAL;
+> +
+>         spin_lock(&mm->ioctx_lock);
+>         rcu_read_lock();
+>         table = rcu_dereference(mm->ioctx_table);
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 16b799a0522c..fd51a4a1f722 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -550,7 +550,7 @@ struct vm_operations_struct {
+>         void (*open)(struct vm_area_struct * area);
+>         void (*close)(struct vm_area_struct * area);
+>         int (*split)(struct vm_area_struct * area, unsigned long addr);
+> -       int (*mremap)(struct vm_area_struct * area);
+> +       int (*mremap)(struct vm_area_struct *area, unsigned long flags);
+>         vm_fault_t (*fault)(struct vm_fault *vmf);
+>         vm_fault_t (*huge_fault)(struct vm_fault *vmf,
+>                         enum page_entry_size pe_size);
+> diff --git a/mm/mmap.c b/mm/mmap.c
+> index bdd19f5b994e..50f853b0ec39 100644
+> --- a/mm/mmap.c
+> +++ b/mm/mmap.c
+> @@ -3372,10 +3372,14 @@ static const char *special_mapping_name(struct vm_area_struct *vma)
+>         return ((struct vm_special_mapping *)vma->vm_private_data)->name;
+>  }
+>
+> -static int special_mapping_mremap(struct vm_area_struct *new_vma)
+> +static int special_mapping_mremap(struct vm_area_struct *new_vma,
+> +                                 unsigned long flags)
+>  {
+>         struct vm_special_mapping *sm = new_vma->vm_private_data;
+>
+> +       if (flags & MREMAP_DONTUNMAP)
+> +               return -EINVAL;
+> +
+>         if (WARN_ON_ONCE(current->mm != new_vma->vm_mm))
+>                 return -EFAULT;
+>
+> diff --git a/mm/mremap.c b/mm/mremap.c
+> index c248f9a52125..898e9818ba6d 100644
+> --- a/mm/mremap.c
+> +++ b/mm/mremap.c
+> @@ -384,7 +384,7 @@ static unsigned long move_vma(struct vm_area_struct *vma,
+>         if (moved_len < old_len) {
+>                 err = -ENOMEM;
+>         } else if (vma->vm_ops && vma->vm_ops->mremap) {
+> -               err = vma->vm_ops->mremap(new_vma);
+> +               err = vma->vm_ops->mremap(new_vma, flags);
+>         }
+>
+>         if (unlikely(err)) {
+> --
+> 2.28.0
+>
