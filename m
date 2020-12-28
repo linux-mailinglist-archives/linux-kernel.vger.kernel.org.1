@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1997F2E66E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:18:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10AD22E68CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:42:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440976AbgL1QSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:18:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43822 "EHLO mail.kernel.org"
+        id S2634384AbgL1Qlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:41:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54870 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732703AbgL1NPa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:15:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E018207F7;
-        Mon, 28 Dec 2020 13:14:48 +0000 (UTC)
+        id S1729169AbgL1M6b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:58:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D2BC222582;
+        Mon, 28 Dec 2020 12:57:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161289;
-        bh=u7CIHf/dDFgrykRtPa391aRQl2kDb3EmGEJwUoVbDjw=;
+        s=korg; t=1609160270;
+        bh=h9w9nHCIMZgjbIHXobug3CduX4tI1LSmXUJys5xVxQs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tfPQbhYmDukgaJD50NMXLZdJOI/u6efbPu9eIFFQJayt4HmV1EEP9Fql7dJ27Pvsh
-         ExHyVSYSPuabEXt2hPil6wcciNFdw/dsKmOM7fxW16kKOox1ch2MVo/guWl9ntxCa6
-         LzMQtQVcgOz3Y1GSZO66HwX1osBKHMLQ4mhPtDhg=
+        b=ysCxeidMEarbGw1PeUbTP3v3ft6aLY0p58uQDVAnZY1AdMf8STzuynUD2wUgxhpDP
+         lVXswcK40tmhwM4wuvw9tx6LXzmBexXoxGJWAgiB1G1JA3XbfVlPD3yKf29cD3TqZt
+         jXUxfxRBZUSvLh2U5PhUOiXaDQLa1SWRauXRvmIw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -28,12 +28,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Florian Fainelli <f.fainelli@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 165/242] net: bcmgenet: Fix a resource leak in an error handling path in the probe functin
-Date:   Mon, 28 Dec 2020 13:49:30 +0100
-Message-Id: <20201228124912.823025242@linuxfoundation.org>
+Subject: [PATCH 4.4 087/132] net: bcmgenet: Fix a resource leak in an error handling path in the probe functin
+Date:   Mon, 28 Dec 2020 13:49:31 +0100
+Message-Id: <20201228124850.643554099@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -60,10 +60,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-index 8bfa2523e2533..5855ffec49528 100644
+index bae8df9517808..3a6cebff9f426 100644
 --- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
 +++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-@@ -3593,8 +3593,10 @@ static int bcmgenet_probe(struct platform_device *pdev)
+@@ -3518,8 +3518,10 @@ static int bcmgenet_probe(struct platform_device *pdev)
  	clk_disable_unprepare(priv->clk);
  
  	err = register_netdev(dev);
