@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D815F2E3D4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:14:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41B8C2E3AB5
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:41:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440321AbgL1OOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:14:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48914 "EHLO mail.kernel.org"
+        id S2403964AbgL1Nkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:40:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40774 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440248AbgL1ON5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:13:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E69A622CB2;
-        Mon, 28 Dec 2020 14:13:15 +0000 (UTC)
+        id S2403940AbgL1Nkg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:40:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F1DA92063A;
+        Mon, 28 Dec 2020 13:39:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609164796;
-        bh=isl4+ySKdxpAqkV8qastGXs+Tt8IJeVjB/0Mlkibikc=;
+        s=korg; t=1609162795;
+        bh=xU/1gEQBhMmzFwy+0MDHIawUXv4l2c99tIP6CZHlV/k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LrinNhfdJb1u733SOFzqoiWa6ot4m8b3R/SktPR0gHNorcE59FLkDKPMFFe9kjCcd
-         1BVnAv34J1syF7OwYIDE8zX+V1137s+VnjR09+NlKVxgM5mQq8t0uduV4nm76j/YSN
-         C2t10BOB3CygtKHiVYJn0T766z8GSkuGTn42MGrU=
+        b=pDWGCYmgFY5MD0RJlDN9BAAuxMWjW5XvZDyZOKMLpk53RecL7HmMteUme4SaLPeNz
+         8Cj7OdISHnjXNM/Sk2V2dzooJhi/BGym2U2dFsp/a0ge2qhdxnCrOepvVfSd52hSBf
+         SNdjKA8o4zFjexTZRHfXQ7h/gLspg+9CXiA1tczU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Alexander Sverdlin <alexander.sverdlin@nokia.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 301/717] MIPS: Dont round up kernel sections size for memblock_add()
-Date:   Mon, 28 Dec 2020 13:44:59 +0100
-Message-Id: <20201228125035.450181086@linuxfoundation.org>
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+Subject: [PATCH 5.4 064/453] coresight: etb10: Fix possible NULL ptr dereference in etb_enable_perf()
+Date:   Mon, 28 Dec 2020 13:45:00 +0100
+Message-Id: <20201228124940.327452148@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,44 +40,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+From: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
 
-[ Upstream commit d121f125af22a16f0f679293756d28a9691fa46d ]
+commit 22b2beaa7f166f550424cbb3b988aeaa7ef0425a upstream.
 
-Linux doesn't own the memory immediately after the kernel image. On Octeon
-bootloader places a shared structure right close after the kernel _end,
-refer to "struct cvmx_bootinfo *octeon_bootinfo" in cavium-octeon/setup.c.
+There was a report of NULL pointer dereference in ETF enable
+path for perf CS mode with PID monitoring. It is almost 100%
+reproducible when the process to monitor is something very
+active such as chrome and with ETF as the sink, not ETR.
 
-If check_kernel_sections_mem() rounds the PFNs up, first memblock_alloc()
-inside early_init_dt_alloc_memory_arch() <= device_tree_init() returns
-memory block overlapping with the above octeon_bootinfo structure, which
-is being overwritten afterwards.
+But code path shows that ETB has a similar path as ETF, so
+there could be possible NULL pointer dereference crash in
+ETB as well. Currently in a bid to find the pid, the owner
+is dereferenced via task_pid_nr() call in etb_enable_perf()
+and with owner being NULL, we can get a NULL pointer
+dereference, so have a similar fix as ETF where we cache PID
+in alloc_buffer() callback which is called as the part of
+etm_setup_aux().
 
-Fixes: a94e4f24ec83 ("MIPS: init: Drop boot_mem_map")
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 75d7dbd38824 ("coresight: etb10: Add support for CPU-wide trace scenarios")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Link: https://lore.kernel.org/r/20201127175256.1092685-11-mathieu.poirier@linaro.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/mips/kernel/setup.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/hwtracing/coresight/coresight-etb10.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index ca579deef9391..9d11f68a9e8bb 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -498,8 +498,8 @@ static void __init request_crashkernel(struct resource *res)
+--- a/drivers/hwtracing/coresight/coresight-etb10.c
++++ b/drivers/hwtracing/coresight/coresight-etb10.c
+@@ -176,6 +176,7 @@ static int etb_enable_perf(struct coresi
+ 	unsigned long flags;
+ 	struct etb_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
+ 	struct perf_output_handle *handle = data;
++	struct cs_buffers *buf = etm_perf_sink_config(handle);
  
- static void __init check_kernel_sections_mem(void)
- {
--	phys_addr_t start = PFN_PHYS(PFN_DOWN(__pa_symbol(&_text)));
--	phys_addr_t size = PFN_PHYS(PFN_UP(__pa_symbol(&_end))) - start;
-+	phys_addr_t start = __pa_symbol(&_text);
-+	phys_addr_t size = __pa_symbol(&_end) - start;
+ 	spin_lock_irqsave(&drvdata->spinlock, flags);
  
- 	if (!memblock_is_region_memory(start, size)) {
- 		pr_info("Kernel sections are not in the memory maps\n");
--- 
-2.27.0
-
+@@ -186,7 +187,7 @@ static int etb_enable_perf(struct coresi
+ 	}
+ 
+ 	/* Get a handle on the pid of the process to monitor */
+-	pid = task_pid_nr(handle->event->owner);
++	pid = buf->pid;
+ 
+ 	if (drvdata->pid != -1 && drvdata->pid != pid) {
+ 		ret = -EBUSY;
+@@ -383,6 +384,7 @@ static void *etb_alloc_buffer(struct cor
+ 	if (!buf)
+ 		return NULL;
+ 
++	buf->pid = task_pid_nr(event->owner);
+ 	buf->snapshot = overwrite;
+ 	buf->nr_pages = nr_pages;
+ 	buf->data_pages = pages;
 
 
