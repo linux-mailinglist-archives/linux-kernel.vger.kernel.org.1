@@ -2,36 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A4E42E65C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:07:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90EE62E65B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:04:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389618AbgL1N1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:27:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55448 "EHLO mail.kernel.org"
+        id S2389772AbgL1N1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:27:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389569AbgL1N04 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:26:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25C502072C;
-        Mon, 28 Dec 2020 13:26:39 +0000 (UTC)
+        id S2389615AbgL1N1Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:27:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06AC0207C9;
+        Mon, 28 Dec 2020 13:26:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162000;
-        bh=x2p/D07PbKbZDnlNXyl4gTBzc4bBU9Xll+vSn6QWDi8=;
+        s=korg; t=1609162003;
+        bh=4a1WLwjconSttorO5kZy0jvzVdSGwmE11WVe5S+HsDs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ep8qUBdNCi6O/TUU3bQ6ow4aNGEQsnvKXigprDpaZN6LATLqNAlmUQg+jOTxtDkpc
-         KIxxOSXxuMrMHTKv9XMmXFPrXY4SkrzI9v1Syz+HebtA2n0X8HMT8uP68FCdpKGfuo
-         HuPY1OyFfZ+HUEmskI9gOvrVxEYMNOX2Q/toCa+Q=
+        b=Ud5vPElgtPn4Ayr4/Hh+WfaYH99Laooa65rPaR4bvC5IevsWF3TdrjUR/oWkfQMLm
+         QAN5cHD7IfT1SMNAf1YyUkgips1HS2JsHGHK6RKtJQrvKJ1XYstHHay5fOtXp7Pj48
+         8aPfiDisZ945bm9B8bIScfMFV25jId8dMjbyqFB8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
+        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 124/346] Bluetooth: hci_h5: fix memory leak in h5_close
-Date:   Mon, 28 Dec 2020 13:47:23 +0100
-Message-Id: <20201228124925.791725380@linuxfoundation.org>
+Subject: [PATCH 4.19 125/346] spi: spi-ti-qspi: fix reference leak in ti_qspi_setup
+Date:   Mon, 28 Dec 2020 13:47:24 +0100
+Message-Id: <20201228124925.833754934@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
 References: <20201228124919.745526410@linuxfoundation.org>
@@ -43,40 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit 855af2d74c870d747bf53509f8b2d7b9dc9ee2c3 ]
+[ Upstream commit 45c0cba753641e5d7c3207f04241bd0e7a021698 ]
 
-When h5_close() is called, h5 is directly freed when !hu->serdev.
-However, h5->rx_skb is not freed, which causes a memory leak.
+pm_runtime_get_sync will increment pm usage counter even it
+failed. Forgetting to pm_runtime_put_noidle will result in
+reference leak in ti_qspi_setup, so we should fix it.
 
-Freeing h5->rx_skb and setting it to NULL, fixes this memory leak.
-
-Fixes: ce945552fde4 ("Bluetooth: hci_h5: Add support for serdev enumerated devices")
-Reported-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
-Tested-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
-Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Fixes: 505a14954e2d7 ("spi/qspi: Add qspi flash controller")
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Link: https://lore.kernel.org/r/20201103140947.3815-1-zhangqilong3@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bluetooth/hci_h5.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/spi/spi-ti-qspi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
-index 5a68cd4dd71cb..7ffeb37e8f202 100644
---- a/drivers/bluetooth/hci_h5.c
-+++ b/drivers/bluetooth/hci_h5.c
-@@ -257,6 +257,9 @@ static int h5_close(struct hci_uart *hu)
- 	skb_queue_purge(&h5->rel);
- 	skb_queue_purge(&h5->unrel);
+diff --git a/drivers/spi/spi-ti-qspi.c b/drivers/spi/spi-ti-qspi.c
+index 95c28abaa0272..73a08724034ba 100644
+--- a/drivers/spi/spi-ti-qspi.c
++++ b/drivers/spi/spi-ti-qspi.c
+@@ -183,6 +183,7 @@ static int ti_qspi_setup(struct spi_device *spi)
  
-+	kfree_skb(h5->rx_skb);
-+	h5->rx_skb = NULL;
-+
- 	if (h5->vnd && h5->vnd->close)
- 		h5->vnd->close(h5);
- 
+ 	ret = pm_runtime_get_sync(qspi->dev);
+ 	if (ret < 0) {
++		pm_runtime_put_noidle(qspi->dev);
+ 		dev_err(qspi->dev, "pm_runtime_get_sync() failed\n");
+ 		return ret;
+ 	}
 -- 
 2.27.0
 
