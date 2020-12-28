@@ -2,102 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE9DB2E6894
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:40:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 617932E684A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:35:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442221AbgL1QiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:38:03 -0500
-Received: from ssl.serverraum.org ([176.9.125.105]:45415 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729786AbgL1NB2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:01:28 -0500
-Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 7BD4123E5F;
-        Mon, 28 Dec 2020 14:00:45 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1609160445;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ayO2W2pek4dA7/J34Lw+5FZy5GZwyErlns+5yrT/rc4=;
-        b=oo45lJPV7IGWVfQDhsIyy21/BqeCeZ7T4cpr5pl3Pc9aLiRUz/6fzoUKcv8u1hbAOHyi5L
-        DOiiJ3kDjwu39QsXtG6U1SacZweyIPAFcMZs6vUcS7C6A/R9C14MEoAgGoaT1PD10QHPTV
-        7be98aJdHbfDPPSTpI8xeTYIqOfoPyk=
-From:   Michael Walle <michael@walle.cc>
-To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Claudiu Manoil <claudiu.manoil@nxp.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alex Marginean <alexandru.marginean@nxp.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Michael Walle <michael@walle.cc>, Andrew Lunn <andrew@lunn.ch>
-Subject: [PATCH RESEND net-next 4/4] enetc: reorder macros and functions
-Date:   Mon, 28 Dec 2020 14:00:34 +0100
-Message-Id: <20201228130034.21577-5-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201228130034.21577-1-michael@walle.cc>
-References: <20201228130034.21577-1-michael@walle.cc>
+        id S1730008AbgL1NCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:02:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58244 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729943AbgL1NCD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:02:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC1CE208B6;
+        Mon, 28 Dec 2020 13:01:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609160482;
+        bh=KJdayGjn6AwRQNSH5ewYryKljIf7pqsTeozhO3zMG/E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sZ7J1gxIg0i6/pI8XGJoMESUBv7ojHLQgPHk4ya6WJncz+eaDJO2HO+LYJCZVkJs4
+         J83wyAekRXcPKQr/dIc3WV959GvkFDi/DPQhKFxxmAH598PL8fQWgra2gdtGBl9nCv
+         emhgw/zjAmuh843RfGxgyDEVJiXGnlLz3iC1sfX6hGyBH70lY5UM/ZYsBKG+zLvAJe
+         D2Z1dOZm+bGtbhtlFTvAGHBW3dxGG8qeqSIkS8OJ1O6rnb96M+GvPb8tnjuB4zzHc3
+         v4TvNwLmdVevZWowfyuqVkUgpnCu5tjjOYcEoQbPvAR5iCJKKLhIJ6Gdr2GZed/PXS
+         0QQDoxGk7SP3w==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id D4723411E9; Mon, 28 Dec 2020 10:01:38 -0300 (-03)
+Date:   Mon, 28 Dec 2020 10:01:38 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH 06/15] perf tools: Add support to read build id from
+ compressed elf
+Message-ID: <20201228130138.GB521329@kernel.org>
+References: <20201214105457.543111-1-jolsa@kernel.org>
+ <20201214105457.543111-7-jolsa@kernel.org>
+ <20201215155503.GM258566@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201215155503.GM258566@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that there aren't any more macros with parameters, move the macros
-above any functions.
+Em Tue, Dec 15, 2020 at 12:55:03PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Mon, Dec 14, 2020 at 11:54:48AM +0100, Jiri Olsa escreveu:
+> > Adding support to decompress file before reading build id.
+> > 
+> > Adding filename__read_build_id and change its current
+> > versions to read_build_id.
+> > 
+> > Shutting down stderr output of perf list in the shell test:
+> >   82: Check open filename arg using perf trace + vfs_getname          : Ok
+> 
+> Tentatively cherry picking this one.
 
-Signed-off-by: Michael Walle <michael@walle.cc>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
----
- .../net/ethernet/freescale/enetc/enetc_mdio.c | 22 +++++++++----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+This one made into v5.11. Processing the tooling bits in the other
+patches now, into perf/core.
 
-diff --git a/drivers/net/ethernet/freescale/enetc/enetc_mdio.c b/drivers/net/ethernet/freescale/enetc/enetc_mdio.c
-index 591b16f01507..70e6d97b380f 100644
---- a/drivers/net/ethernet/freescale/enetc/enetc_mdio.c
-+++ b/drivers/net/ethernet/freescale/enetc/enetc_mdio.c
-@@ -14,17 +14,6 @@
- #define	ENETC_MDIO_DATA	0x8	/* MDIO data */
- #define	ENETC_MDIO_ADDR	0xc	/* MDIO address */
- 
--static inline u32 enetc_mdio_rd(struct enetc_mdio_priv *mdio_priv, int off)
--{
--	return enetc_port_rd_mdio(mdio_priv->hw, mdio_priv->mdio_base + off);
--}
--
--static inline void enetc_mdio_wr(struct enetc_mdio_priv *mdio_priv, int off,
--				 u32 val)
--{
--	enetc_port_wr_mdio(mdio_priv->hw, mdio_priv->mdio_base + off, val);
--}
--
- #define MDIO_CFG_CLKDIV(x)	((((x) >> 1) & 0xff) << 8)
- #define MDIO_CFG_BSY		BIT(0)
- #define MDIO_CFG_RD_ER		BIT(1)
-@@ -42,6 +31,17 @@ static inline void enetc_mdio_wr(struct enetc_mdio_priv *mdio_priv, int off,
- #define MDIO_CTL_PORT_ADDR(x)	(((x) & 0x1f) << 5)
- #define MDIO_CTL_READ		BIT(15)
- 
-+static inline u32 enetc_mdio_rd(struct enetc_mdio_priv *mdio_priv, int off)
-+{
-+	return enetc_port_rd_mdio(mdio_priv->hw, mdio_priv->mdio_base + off);
-+}
-+
-+static inline void enetc_mdio_wr(struct enetc_mdio_priv *mdio_priv, int off,
-+				 u32 val)
-+{
-+	enetc_port_wr_mdio(mdio_priv->hw, mdio_priv->mdio_base + off, val);
-+}
-+
- static bool enetc_mdio_is_busy(struct enetc_mdio_priv *mdio_priv)
- {
- 	return enetc_mdio_rd(mdio_priv, ENETC_MDIO_CFG) & MDIO_CFG_BSY;
+- Arnaldo
+>  
+> > because with decompression code in the place we the
+> > filename__read_build_id function is more verbose in case
+> > of error and the test did not account for that.
+> > 
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  .../tests/shell/trace+probe_vfs_getname.sh    |  2 +-
+> >  tools/perf/util/symbol-elf.c                  | 37 ++++++++++++++++++-
+> >  2 files changed, 36 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/tools/perf/tests/shell/trace+probe_vfs_getname.sh b/tools/perf/tests/shell/trace+probe_vfs_getname.sh
+> > index 11cc2af13f2b..3d31c1d560d6 100755
+> > --- a/tools/perf/tests/shell/trace+probe_vfs_getname.sh
+> > +++ b/tools/perf/tests/shell/trace+probe_vfs_getname.sh
+> > @@ -20,7 +20,7 @@ skip_if_no_perf_trace || exit 2
+> >  file=$(mktemp /tmp/temporary_file.XXXXX)
+> >  
+> >  trace_open_vfs_getname() {
+> > -	evts=$(echo $(perf list syscalls:sys_enter_open* 2>&1 | egrep 'open(at)? ' | sed -r 's/.*sys_enter_([a-z]+) +\[.*$/\1/') | sed 's/ /,/')
+> > +	evts=$(echo $(perf list syscalls:sys_enter_open* 2>/dev/null | egrep 'open(at)? ' | sed -r 's/.*sys_enter_([a-z]+) +\[.*$/\1/') | sed 's/ /,/')
+> >  	perf trace -e $evts touch $file 2>&1 | \
+> >  	egrep " +[0-9]+\.[0-9]+ +\( +[0-9]+\.[0-9]+ ms\): +touch\/[0-9]+ open(at)?\((dfd: +CWD, +)?filename: +${file}, +flags: CREAT\|NOCTTY\|NONBLOCK\|WRONLY, +mode: +IRUGO\|IWUGO\) += +[0-9]+$"
+> >  }
+> > diff --git a/tools/perf/util/symbol-elf.c b/tools/perf/util/symbol-elf.c
+> > index 44dd86a4f25f..f3577f7d72fe 100644
+> > --- a/tools/perf/util/symbol-elf.c
+> > +++ b/tools/perf/util/symbol-elf.c
+> > @@ -534,7 +534,7 @@ static int elf_read_build_id(Elf *elf, void *bf, size_t size)
+> >  
+> >  #ifdef HAVE_LIBBFD_BUILDID_SUPPORT
+> >  
+> > -int filename__read_build_id(const char *filename, struct build_id *bid)
+> > +static int read_build_id(const char *filename, struct build_id *bid)
+> >  {
+> >  	size_t size = sizeof(bid->data);
+> >  	int err = -1;
+> > @@ -563,7 +563,7 @@ int filename__read_build_id(const char *filename, struct build_id *bid)
+> >  
+> >  #else // HAVE_LIBBFD_BUILDID_SUPPORT
+> >  
+> > -int filename__read_build_id(const char *filename, struct build_id *bid)
+> > +static int read_build_id(const char *filename, struct build_id *bid)
+> >  {
+> >  	size_t size = sizeof(bid->data);
+> >  	int fd, err = -1;
+> > @@ -595,6 +595,39 @@ int filename__read_build_id(const char *filename, struct build_id *bid)
+> >  
+> >  #endif // HAVE_LIBBFD_BUILDID_SUPPORT
+> >  
+> > +int filename__read_build_id(const char *filename, struct build_id *bid)
+> > +{
+> > +	struct kmod_path m = { .name = NULL, };
+> > +	char path[PATH_MAX];
+> > +	int err;
+> > +
+> > +	if (!filename)
+> > +		return -EFAULT;
+> > +
+> > +	err = kmod_path__parse(&m, filename);
+> > +	if (err)
+> > +		return -1;
+> > +
+> > +	if (m.comp) {
+> > +		int error = 0, fd;
+> > +
+> > +		fd = filename__decompress(filename, path, sizeof(path), m.comp, &error);
+> > +		if (fd < 0) {
+> > +			pr_debug("Failed to decompress (error %d) %s\n",
+> > +				 error, filename);
+> > +			return -1;
+> > +		}
+> > +		close(fd);
+> > +		filename = path;
+> > +	}
+> > +
+> > +	err = read_build_id(filename, bid);
+> > +
+> > +	if (m.comp)
+> > +		unlink(filename);
+> > +	return err;
+> > +}
+> > +
+> >  int sysfs__read_build_id(const char *filename, struct build_id *bid)
+> >  {
+> >  	size_t size = sizeof(bid->data);
+> > -- 
+> > 2.26.2
+> > 
+> 
+> -- 
+> 
+> - Arnaldo
+
 -- 
-2.20.1
 
+- Arnaldo
