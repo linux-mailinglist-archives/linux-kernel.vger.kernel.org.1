@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2FE42E3B91
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:51:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D208D2E37DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:04:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406970AbgL1Nvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:51:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53474 "EHLO mail.kernel.org"
+        id S1730021AbgL1NCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:02:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406946AbgL1Nvg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:51:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D600920738;
-        Mon, 28 Dec 2020 13:50:55 +0000 (UTC)
+        id S1729948AbgL1NCE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:02:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4519F21D94;
+        Mon, 28 Dec 2020 13:01:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163456;
-        bh=lxHw0/V/hk/NEdIoSlpsmgJRoOCaDyuwA2Ch6V38//g=;
+        s=korg; t=1609160508;
+        bh=SoeKulYziUtVqnJt4EIC3T0Mt1ew3T3xrd/+Aboe+BE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k2KcE/ys4HvIfDEzLl6NtPHtrrOQYEkkpBbndbwzxGQ7x0i6aSUl+m0ZxGoJPAOfq
-         EGHl3MyesVuvPaHhVPTJjxTO8Pcep/8hOZLxxfp4TYzXtSd4UA7PYpDg9CrlFHkz/P
-         kkKulBjBKyABqzNSKNuIjotiXz69hHJo5NzFyjAA=
+        b=bi9FqTN5dk+UeNH+wyWX8wPI+asYo8lgbTvJH3W3kDPRdWdQhBUmPMHnM1AMmarCs
+         vkv2kBwvpPpYychyFSp2itY855RJ/V4//KZ2TumEO/8YCo1SkUAxmJaZJwdxSu9MrS
+         /RnHR5hJAaHy1eM6HwWOkD5RTxOmmM5yNNQV1gUA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhihao Cheng <chengzhihao1@huawei.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 292/453] net: bcmgenet: Fix a resource leak in an error handling path in the probe functin
+Subject: [PATCH 4.9 075/175] drivers: soc: ti: knav_qmss_queue: Fix error return code in knav_queue_probe
 Date:   Mon, 28 Dec 2020 13:48:48 +0100
-Message-Id: <20201228124951.255773317@linuxfoundation.org>
+Message-Id: <20201228124856.874221232@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,39 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
 
-[ Upstream commit 4375ada01963d1ebf733d60d1bb6e5db401e1ac6 ]
+[ Upstream commit 4cba398f37f868f515ff12868418dc28574853a1 ]
 
-If the 'register_netdev()' call fails, we must undo a previous
-'bcmgenet_mii_init()' call.
+Fix to return the error code from of_get_child_by_name() instaed of 0
+in knav_queue_probe().
 
-Fixes: 1c1008c793fa ("net: bcmgenet: add main driver file")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Link: https://lore.kernel.org/r/20201212182005.120437-1-christophe.jaillet@wanadoo.fr
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 41f93af900a20d1a0a ("soc: ti: add Keystone Navigator QMSS driver")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Signed-off-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/genet/bcmgenet.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/soc/ti/knav_qmss_queue.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-index 03f82786c0b98..b27da024aa9d9 100644
---- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-+++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-@@ -3584,8 +3584,10 @@ static int bcmgenet_probe(struct platform_device *pdev)
- 	clk_disable_unprepare(priv->clk);
- 
- 	err = register_netdev(dev);
--	if (err)
-+	if (err) {
-+		bcmgenet_mii_exit(dev);
+diff --git a/drivers/soc/ti/knav_qmss_queue.c b/drivers/soc/ti/knav_qmss_queue.c
+index fec97882ac880..5248649b0b41e 100644
+--- a/drivers/soc/ti/knav_qmss_queue.c
++++ b/drivers/soc/ti/knav_qmss_queue.c
+@@ -1785,9 +1785,10 @@ static int knav_queue_probe(struct platform_device *pdev)
+ 	if (ret)
  		goto err;
-+	}
  
- 	return err;
- 
+-	regions =  of_get_child_by_name(node, "descriptor-regions");
++	regions = of_get_child_by_name(node, "descriptor-regions");
+ 	if (!regions) {
+ 		dev_err(dev, "descriptor-regions not specified\n");
++		ret = -ENODEV;
+ 		goto err;
+ 	}
+ 	ret = knav_queue_setup_regions(kdev, regions);
 -- 
 2.27.0
 
