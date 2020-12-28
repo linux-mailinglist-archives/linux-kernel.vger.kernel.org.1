@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C49D2E3802
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:04:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED4742E3B9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:53:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730333AbgL1NEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:04:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59646 "EHLO mail.kernel.org"
+        id S2407116AbgL1Nwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:52:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730225AbgL1NDa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:03:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AFDF222582;
-        Mon, 28 Dec 2020 13:02:49 +0000 (UTC)
+        id S2407054AbgL1NwK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:52:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 09C2C20715;
+        Mon, 28 Dec 2020 13:51:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160570;
-        bh=wXBaScD4/w/XArzcbfOiAv5YV72PALyJRo9O6USkGNA=;
+        s=korg; t=1609163514;
+        bh=XsJC3tN5dccUO8rVgkf4Ol1XyEADFabm4He2sy7MyBA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FkpHp8ob+85qdot2jEYH311ky2T9PD8ROQBfdjJ6eHmbAdnGB9ROdkX22j/T5QZx/
-         7H2kyZPEHu3m041oVhRgYO0zMSrvoX6XMGhsz9AwMwU+VAOeGHiKpjyPPHImpPUUA9
-         jSfCqb0zCEnpqiq5WXncgZ4WeLFSm7RUWMl5GXZk=
+        b=hvzzV8Nul7sLgBETr4A3X2I1cBasjZgrTgM44SXabt7B7DI7484+40GFzT6TAQV5K
+         wb5p+agmoTy2Lt3Yu9YlaLr/L+FcEunB1bSijyQTfjw3mJArB9tnNZqB9f8e0fV1RT
+         4nUMenYDPuCvzhYap5Kt33+ZdNsygCs4tP+RXadA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        Mike Snitzer <snitzer@redhat.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Herv=C3=A9=20Guillemet?= <herve@guillemet.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Serge Hallyn <shallyn@cisco.com>,
+        "Andrew G. Morgan" <morgan@kernel.org>,
+        James Morris <jamorris@linux.microsoft.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 096/175] dm ioctl: fix error return code in target_message
+Subject: [PATCH 5.4 313/453] [SECURITY] fix namespaced fscaps when !CONFIG_SECURITY
 Date:   Mon, 28 Dec 2020 13:49:09 +0100
-Message-Id: <20201228124857.897615525@linuxfoundation.org>
+Message-Id: <20201228124952.275634823@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,34 +44,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qinglang Miao <miaoqinglang@huawei.com>
+From: Serge Hallyn <shallyn@cisco.com>
 
-[ Upstream commit 4d7659bfbe277a43399a4a2d90fca141e70f29e1 ]
+[ Upstream commit ed9b25d1970a4787ac6a39c2091e63b127ecbfc1 ]
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+Namespaced file capabilities were introduced in 8db6c34f1dbc .
+When userspace reads an xattr for a namespaced capability, a
+virtualized representation of it is returned if the caller is
+in a user namespace owned by the capability's owning rootid.
+The function which performs this virtualization was not hooked
+up if CONFIG_SECURITY=n.  Therefore in that case the original
+xattr was shown instead of the virtualized one.
 
-Fixes: 2ca4c92f58f9 ("dm ioctl: prevent empty message")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+To test this using libcap-bin (*1),
+
+$ v=$(mktemp)
+$ unshare -Ur setcap cap_sys_admin-eip $v
+$ unshare -Ur setcap -v cap_sys_admin-eip $v
+/tmp/tmp.lSiIFRvt8Y: OK
+
+"setcap -v" verifies the values instead of setting them, and
+will check whether the rootid value is set.  Therefore, with
+this bug un-fixed, and with CONFIG_SECURITY=n, setcap -v will
+fail:
+
+$ v=$(mktemp)
+$ unshare -Ur setcap cap_sys_admin=eip $v
+$ unshare -Ur setcap -v cap_sys_admin=eip $v
+nsowner[got=1000, want=0],/tmp/tmp.HHDiOOl9fY differs in []
+
+Fix this bug by calling cap_inode_getsecurity() in
+security_inode_getsecurity() instead of returning
+-EOPNOTSUPP, when CONFIG_SECURITY=n.
+
+*1 - note, if libcap is too old for getcap to have the '-n'
+option, then use verify-caps instead.
+
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=209689
+Cc: Hervé Guillemet <herve@guillemet.org>
+Acked-by: Casey Schaufler <casey@schaufler-ca.com>
+Signed-off-by: Serge Hallyn <shallyn@cisco.com>
+Signed-off-by: Andrew G. Morgan <morgan@kernel.org>
+Signed-off-by: James Morris <jamorris@linux.microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/dm-ioctl.c | 1 +
- 1 file changed, 1 insertion(+)
+ include/linux/security.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/md/dm-ioctl.c b/drivers/md/dm-ioctl.c
-index 6964b252952a4..836a2808c0c71 100644
---- a/drivers/md/dm-ioctl.c
-+++ b/drivers/md/dm-ioctl.c
-@@ -1549,6 +1549,7 @@ static int target_message(struct dm_ioctl *param, size_t param_size)
+diff --git a/include/linux/security.h b/include/linux/security.h
+index fd022768e91df..df90399a8af98 100644
+--- a/include/linux/security.h
++++ b/include/linux/security.h
+@@ -852,7 +852,7 @@ static inline int security_inode_killpriv(struct dentry *dentry)
  
- 	if (!argc) {
- 		DMWARN("Empty message received.");
-+		r = -EINVAL;
- 		goto out_argv;
- 	}
+ static inline int security_inode_getsecurity(struct inode *inode, const char *name, void **buffer, bool alloc)
+ {
+-	return -EOPNOTSUPP;
++	return cap_inode_getsecurity(inode, name, buffer, alloc);
+ }
  
+ static inline int security_inode_setsecurity(struct inode *inode, const char *name, const void *value, size_t size, int flags)
 -- 
 2.27.0
 
