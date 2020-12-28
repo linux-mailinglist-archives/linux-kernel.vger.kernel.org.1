@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 439942E3825
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:07:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92E092E3BD0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:55:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730680AbgL1NGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:06:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33720 "EHLO mail.kernel.org"
+        id S2405139AbgL1NzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:55:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729390AbgL1NFv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:05:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A8B122B3A;
-        Mon, 28 Dec 2020 13:05:09 +0000 (UTC)
+        id S2405092AbgL1Nyy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:54:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0460A20782;
+        Mon, 28 Dec 2020 13:54:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160710;
-        bh=vZLDLd/hTUPshAafKNY7RcLwYleHWBITfHEg2udMb1U=;
+        s=korg; t=1609163654;
+        bh=y4SfpPFbFE6NSq2aVXjGsVDHDs1ZYgWjYCZfWwhbDXk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EANO5BIPbO6pCFN+5jCgkK7GBeMpVx11bVcVyT5MUvr9Zog06jxT4YczcmYb8vQ10
-         1qis3uS9kBKQ/bCPI/LvZ5qykdgZRacaFzljWuaJwyoyKKC5px5yZpOD1+kqMaYWXk
-         wnhbWa6+zu8rSIV2RAhQKyKaJW9vQdDRSAGV0Xlw=
+        b=aK0H+Sky55FM67GAaDNVEMuZ4DT0J8vAJRj1pCIdJJYk8oJKgFOzIV2zln4Sntd7Q
+         YctAZH1KfYmDzzaYHL/2qqdBxWsKZVgMZWUSvKdrJZAdsNfh0yKFBh4dun8FgdnP3F
+         OEzEbImsyARKK4PzsxCIIxI0DZ2QKIHe9nNk5fO4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.9 144/175] USB: serial: mos7720: fix parallel-port state restore
+        stable@vger.kernel.org, Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
+        Tony Luck <tony.luck@intel.com>
+Subject: [PATCH 5.4 361/453] EDAC/i10nm: Use readl() to access MMIO registers
 Date:   Mon, 28 Dec 2020 13:49:57 +0100
-Message-Id: <20201228124900.226664728@linuxfoundation.org>
+Message-Id: <20201228124954.573493466@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,34 +39,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
 
-commit 975323ab8f116667676c30ca3502a6757bd89e8d upstream.
+commit 83ff51c4e3fecf6b8587ce4d46f6eac59f5d7c5a upstream.
 
-The parallel-port restore operations is called when a driver claims the
-port and is supposed to restore the provided state (e.g. saved when
-releasing the port).
+Instead of raw access, use readl() to access MMIO registers of
+memory controller to avoid possible compiler re-ordering.
 
-Fixes: b69578df7e98 ("USB: usbserial: mos7720: add support for parallel port on moschip 7715")
-Cc: stable <stable@vger.kernel.org>     # 2.6.35
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Fixes: d4dc89d069aa ("EDAC, i10nm: Add a driver for Intel 10nm server processors")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+Signed-off-by: Tony Luck <tony.luck@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/serial/mos7720.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/edac/i10nm_base.c |   11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
---- a/drivers/usb/serial/mos7720.c
-+++ b/drivers/usb/serial/mos7720.c
-@@ -640,6 +640,8 @@ static void parport_mos7715_restore_stat
- 		spin_unlock(&release_lock);
- 		return;
- 	}
-+	mos_parport->shadowDCR = s->u.pc.ctr;
-+	mos_parport->shadowECR = s->u.pc.ecr;
- 	write_parport_reg_nonblock(mos_parport, MOS7720_DCR,
- 				   mos_parport->shadowDCR);
- 	write_parport_reg_nonblock(mos_parport, MOS7720_ECR,
+--- a/drivers/edac/i10nm_base.c
++++ b/drivers/edac/i10nm_base.c
+@@ -6,6 +6,7 @@
+  */
+ 
+ #include <linux/kernel.h>
++#include <linux/io.h>
+ #include <asm/cpu_device_id.h>
+ #include <asm/intel-family.h>
+ #include <asm/mce.h>
+@@ -19,14 +20,16 @@
+ #define i10nm_printk(level, fmt, arg...)	\
+ 	edac_printk(level, "i10nm", fmt, ##arg)
+ 
+-#define I10NM_GET_SCK_BAR(d, reg)		\
++#define I10NM_GET_SCK_BAR(d, reg)	\
+ 	pci_read_config_dword((d)->uracu, 0xd0, &(reg))
+ #define I10NM_GET_IMC_BAR(d, i, reg)	\
+ 	pci_read_config_dword((d)->uracu, 0xd8 + (i) * 4, &(reg))
+ #define I10NM_GET_DIMMMTR(m, i, j)	\
+-	(*(u32 *)((m)->mbase + 0x2080c + (i) * 0x4000 + (j) * 4))
++	readl((m)->mbase + 0x2080c + (i) * 0x4000 + (j) * 4)
+ #define I10NM_GET_MCDDRTCFG(m, i, j)	\
+-	(*(u32 *)((m)->mbase + 0x20970 + (i) * 0x4000 + (j) * 4))
++	readl((m)->mbase + 0x20970 + (i) * 0x4000 + (j) * 4)
++#define I10NM_GET_MCMTR(m, i)		\
++	readl((m)->mbase + 0x20ef8 + (i) * 0x4000)
+ 
+ #define I10NM_GET_SCK_MMIO_BASE(reg)	(GET_BITFIELD(reg, 0, 28) << 23)
+ #define I10NM_GET_IMC_MMIO_OFFSET(reg)	(GET_BITFIELD(reg, 0, 10) << 12)
+@@ -134,7 +137,7 @@ static bool i10nm_check_ecc(struct skx_i
+ {
+ 	u32 mcmtr;
+ 
+-	mcmtr = *(u32 *)(imc->mbase + 0x20ef8 + chan * 0x4000);
++	mcmtr = I10NM_GET_MCMTR(imc, chan);
+ 	edac_dbg(1, "ch%d mcmtr reg %x\n", chan, mcmtr);
+ 
+ 	return !!GET_BITFIELD(mcmtr, 2, 2);
 
 
