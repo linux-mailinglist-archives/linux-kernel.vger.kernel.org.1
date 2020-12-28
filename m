@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 416A32E3A97
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:39:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 852812E3A91
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:39:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730845AbgL1NjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:39:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39214 "EHLO mail.kernel.org"
+        id S2391204AbgL1Nii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:38:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391276AbgL1Nix (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:38:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D31E208B3;
-        Mon, 28 Dec 2020 13:38:12 +0000 (UTC)
+        id S2391460AbgL1Nib (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:38:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 24CBD21D94;
+        Mon, 28 Dec 2020 13:38:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162692;
-        bh=pVY1LVJRDZatBImIxWJH4xfQ9jiA4rIapbh2xaIrQAo=;
+        s=korg; t=1609162695;
+        bh=ibitAx/TqGr5tKS3rwIEAbmfpBvzBzaEFxioBppa8bs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B7/ud29W4U8jogJ14vK7nXh0F8hBPegf+Xj4cRi+ZTftSrdQdk+VQguw+V2AOk/KJ
-         o/CbWRdzPghHIw+odQwRzP6VuUHW0UGT47loMsIosskc8VBBRQkltOT+dVXT2UZnY5
-         BfUUiQw17XvnQ3UNliU+0T4zBeDKLC7U84RiAbN4=
+        b=uU6i+5gOS7PUptXWX0Ui/3m0gdBOwXuUhXxy/NjZgCXpF1s6bLsepin2A3Kda1to/
+         yxUAZjmrcr+OJ/PNxMy08k7z6pDK+H9UOPdVKwZ1lVEbceNnsD+yYQrtrInvPPSQiR
+         ZSZxXTHtXTf+vioZoFkKUSR/5Jz676oeDxEIyTBQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 010/453] PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter
-Date:   Mon, 28 Dec 2020 13:44:06 +0100
-Message-Id: <20201228124937.740353201@linuxfoundation.org>
+Subject: [PATCH 5.4 011/453] gpio: zynq: fix reference leak in zynq_gpio functions
+Date:   Mon, 28 Dec 2020 13:44:07 +0100
+Message-Id: <20201228124937.788163322@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
 References: <20201228124937.240114599@linuxfoundation.org>
@@ -41,58 +41,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Qinglang Miao <miaoqinglang@huawei.com>
 
-[ Upstream commit dd8088d5a8969dc2b42f71d7bc01c25c61a78066 ]
+[ Upstream commit 7f57b295f990c0fa07f96d51ca1c82c52dbf79cc ]
 
-In many case, we need to check return value of pm_runtime_get_sync, but
-it brings a trouble to the usage counter processing. Many callers forget
-to decrease the usage counter when it failed, which could resulted in
-reference leak. It has been discussed a lot[0][1]. So we add a function
-to deal with the usage counter for better coding.
+pm_runtime_get_sync will increment pm usage counter even it
+failed. Forgetting to putting operation will result in a
+reference leak here.
 
-[0]https://lkml.org/lkml/2020/6/14/88
-[1]https://patchwork.ozlabs.org/project/linux-tegra/list/?series=178139
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Acked-by: Rafael J. Wysocki  <rafael.j.wysocki@intel.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+A new function pm_runtime_resume_and_get is introduced in
+[0] to keep usage counter balanced. So We fix the reference
+leak by replacing it with new funtion.
+
+[0] dd8088d5a896 ("PM: runtime: Add  pm_runtime_resume_and_get to deal with usage counter")
+
+Fixes: c2df3de0d07e ("gpio: zynq: properly support runtime PM for GPIO used as interrupts")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/pm_runtime.h | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+ drivers/gpio/gpio-zynq.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/pm_runtime.h b/include/linux/pm_runtime.h
-index fe61e3b9a9ca2..7145795b4b9da 100644
---- a/include/linux/pm_runtime.h
-+++ b/include/linux/pm_runtime.h
-@@ -224,6 +224,27 @@ static inline int pm_runtime_get_sync(struct device *dev)
- 	return __pm_runtime_resume(dev, RPM_GET_PUT);
- }
+diff --git a/drivers/gpio/gpio-zynq.c b/drivers/gpio/gpio-zynq.c
+index 7835aad6d1628..88b04d8a7fa7d 100644
+--- a/drivers/gpio/gpio-zynq.c
++++ b/drivers/gpio/gpio-zynq.c
+@@ -556,7 +556,7 @@ static int zynq_gpio_irq_reqres(struct irq_data *d)
+ 	struct gpio_chip *chip = irq_data_get_irq_chip_data(d);
+ 	int ret;
  
-+/**
-+ * pm_runtime_resume_and_get - Bump up usage counter of a device and resume it.
-+ * @dev: Target device.
-+ *
-+ * Resume @dev synchronously and if that is successful, increment its runtime
-+ * PM usage counter. Return 0 if the runtime PM usage counter of @dev has been
-+ * incremented or a negative error code otherwise.
-+ */
-+static inline int pm_runtime_resume_and_get(struct device *dev)
-+{
-+	int ret;
-+
-+	ret = __pm_runtime_resume(dev, RPM_GET_PUT);
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(dev);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
- static inline int pm_runtime_put(struct device *dev)
- {
- 	return __pm_runtime_idle(dev, RPM_GET_PUT | RPM_ASYNC);
+-	ret = pm_runtime_get_sync(chip->parent);
++	ret = pm_runtime_resume_and_get(chip->parent);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -884,7 +884,7 @@ static int zynq_gpio_probe(struct platform_device *pdev)
+ 
+ 	pm_runtime_set_active(&pdev->dev);
+ 	pm_runtime_enable(&pdev->dev);
+-	ret = pm_runtime_get_sync(&pdev->dev);
++	ret = pm_runtime_resume_and_get(&pdev->dev);
+ 	if (ret < 0)
+ 		goto err_pm_dis;
+ 
 -- 
 2.27.0
 
