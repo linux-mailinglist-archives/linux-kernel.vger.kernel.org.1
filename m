@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E88E62E38B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:14:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A43D2E3BA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:53:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732257AbgL1NNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:13:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41456 "EHLO mail.kernel.org"
+        id S2407142AbgL1Nwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:52:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732234AbgL1NN0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:13:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B3035207C9;
-        Mon, 28 Dec 2020 13:12:45 +0000 (UTC)
+        id S1732924AbgL1NwP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:52:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D914522B3A;
+        Mon, 28 Dec 2020 13:51:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161166;
-        bh=E1GYUYAbH9ykkfF4Oarmxgi3hbfAtM29mibHRjVhMaY=;
+        s=korg; t=1609163494;
+        bh=xtwErc92apbIPu+vmfTgSlDBGkFrb9YpNevCU4PVMYQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z8wI/xnHGX2q2fGTmq+N5sVy2AvFPdyPOqeRakrCINalrd0O5nnl7jP+yJB/8nsoI
-         ZWF2mDo1IzZCfg62YibVVH0J3RRYwdG0kJoNH+ffXQQUdJQW0OEDuwAILvahAfPxRF
-         5uGRvwpbvhDHZBEB0i0orfaF8hR6EYZaqy7Jxp3c=
+        b=IFICol/0cEjAiBWF8yWz119sDjTLy3aTVNCEJAzci91MGRv9epAuLCoAXO3w3Tg5g
+         VJy2Ibr+vsz42O38Q+POk6igaZdBx7Vktmm69krqD4Z3Q7HQTe9+qsfSbR4paVOmhC
+         SojmN3QDszIs8wcgvHQtI4ts86RMIr1Mcdu+PznQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kamal Heib <kamalheib1@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 106/242] RDMA/cxgb4: Validate the number of CQEs
+Subject: [PATCH 5.4 275/453] watchdog: armada_37xx: Add missing dependency on HAS_IOMEM
 Date:   Mon, 28 Dec 2020 13:48:31 +0100
-Message-Id: <20201228124909.913851885@linuxfoundation.org>
+Message-Id: <20201228124950.460145466@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +42,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kamal Heib <kamalheib1@gmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
 
-[ Upstream commit 6d8285e604e0221b67bd5db736921b7ddce37d00 ]
+[ Upstream commit 7f6f1dfb2dcbe5d2bfa213f2df5d74c147cd5954 ]
 
-Before create CQ, make sure that the requested number of CQEs is in the
-supported range.
+The following kbuild warning is seen on a system without HAS_IOMEM.
 
-Fixes: cfdda9d76436 ("RDMA/cxgb4: Add driver for Chelsio T4 RNIC")
-Link: https://lore.kernel.org/r/20201108132007.67537-1-kamalheib1@gmail.com
-Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+WARNING: unmet direct dependencies detected for MFD_SYSCON
+  Depends on [n]: HAS_IOMEM [=n]
+  Selected by [y]:
+  - ARMADA_37XX_WATCHDOG [=y] && WATCHDOG [=y] && (ARCH_MVEBU || COMPILE_TEST
+
+This results in a subsequent compile error.
+
+drivers/watchdog/armada_37xx_wdt.o: in function `armada_37xx_wdt_probe':
+armada_37xx_wdt.c:(.text+0xdc): undefined reference to `devm_ioremap'
+
+Add the missing dependency.
+
+Reported-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Fixes: 54e3d9b518c8 ("watchdog: Add support for Armada 37xx CPU watchdog")
+Link: https://lore.kernel.org/r/20201108162550.27660-1-linux@roeck-us.net
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/infiniband/hw/cxgb4/cq.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/watchdog/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/infiniband/hw/cxgb4/cq.c
-+++ b/drivers/infiniband/hw/cxgb4/cq.c
-@@ -906,6 +906,9 @@ struct ib_cq *c4iw_create_cq(struct ib_d
- 
- 	rhp = to_c4iw_dev(ibdev);
- 
-+	if (entries < 1 || entries > ibdev->attrs.max_cqe)
-+		return ERR_PTR(-EINVAL);
-+
- 	if (vector >= rhp->rdev.lldi.nciq)
- 		return ERR_PTR(-EINVAL);
- 
+diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+index e2745f6861960..fce2f5e3ac51d 100644
+--- a/drivers/watchdog/Kconfig
++++ b/drivers/watchdog/Kconfig
+@@ -374,6 +374,7 @@ config ARM_SBSA_WATCHDOG
+ config ARMADA_37XX_WATCHDOG
+ 	tristate "Armada 37xx watchdog"
+ 	depends on ARCH_MVEBU || COMPILE_TEST
++	depends on HAS_IOMEM
+ 	select MFD_SYSCON
+ 	select WATCHDOG_CORE
+ 	help
+-- 
+2.27.0
+
 
 
