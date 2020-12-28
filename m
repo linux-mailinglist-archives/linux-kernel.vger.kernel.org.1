@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C13E22E4030
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:49:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 511082E37B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:01:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502245AbgL1OVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:21:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56064 "EHLO mail.kernel.org"
+        id S1729094AbgL1M7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:59:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502427AbgL1OVQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:21:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1004B22B2C;
-        Mon, 28 Dec 2020 14:20:59 +0000 (UTC)
+        id S1728503AbgL1M72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:59:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E31B021D94;
+        Mon, 28 Dec 2020 12:58:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165260;
-        bh=b0jcMGLxfRGb7TrSxt2oYTfuWtuHkhr6KAf1Dqypw7Q=;
+        s=korg; t=1609160327;
+        bh=beB3KdnS/DaAJM7jm61C0Sa4BbpQZzROQDLJnTqrFsA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oCfrdj1r/sRWoqNd1dcNR1OcziFO4alxnNTwz8c3CIoyhpnV9maiXhCoCAPFxrOv9
-         9lY4WNxX/p9nWg+zR/cf3fhtS4PYEjAE/dO1Bhh8ad0PV3r7lnMPLxpu33CYjiHDre
-         U2LtrtTd4fQsXDrDhr+NMGMGJh8GAp7F+l0VStIs=
+        b=YMe9lSv4FGOSIOVFYULeEVhsJdMDB7tKLtD0Tk1SmMzlqS0XdPqZn9x6e4z75I7Nq
+         DuUy+FGEIhj/UpeBxy6hXbarqRs9kuPxyvbKsMqmTMcEaFmwM7FfTumpm/6t0L2Rug
+         1NAX8oxHMlJvkr/0gYIUgFJAgn8yM7iueqmPHqt0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Md Haris Iqbal <haris.iqbal@cloud.ionos.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 469/717] block/rnbd-clt: Get rid of warning regarding size argument in strlcpy
+        stable@vger.kernel.org, Fugang Duan <fugang.duan@nxp.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 014/175] net: stmmac: delete the eee_ctrl_timer after napi disabled
 Date:   Mon, 28 Dec 2020 13:47:47 +0100
-Message-Id: <20201228125043.440779235@linuxfoundation.org>
+Message-Id: <20201228124853.947920063@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,50 +40,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
+From: Fugang Duan <fugang.duan@nxp.com>
 
-[ Upstream commit e7508d48565060af5d89f10cb83c9359c8ae1310 ]
+[ Upstream commit 5f58591323bf3f342920179f24515935c4b5fd60 ]
 
-The kernel test robot triggerred the following warning,
+There have chance to re-enable the eee_ctrl_timer and fire the timer
+in napi callback after delete the timer in .stmmac_release(), which
+introduces to access eee registers in the timer function after clocks
+are disabled then causes system hang. Found this issue when do
+suspend/resume and reboot stress test.
 
->> drivers/block/rnbd/rnbd-clt.c:1397:42: warning: size argument in
-'strlcpy' call appears to be size of the source; expected the size of the
-destination [-Wstrlcpy-strlcat-size]
-	strlcpy(dev->pathname, pathname, strlen(pathname) + 1);
-					      ~~~~~~~^~~~~~~~~~~~~
+It is safe to delete the timer after napi disabled and disable lpi mode.
 
-To get rid of the above warning, use a kstrdup as Bart suggested.
-
-Fixes: 64e8a6ece1a5 ("block/rnbd-clt: Dynamically alloc buffer for pathname & blk_symlink_name")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
-Signed-off-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: d765955d2ae0b ("stmmac: add the Energy Efficient Ethernet support")
+Signed-off-by: Fugang Duan <fugang.duan@nxp.com>
+Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/block/rnbd/rnbd-clt.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c |   13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/block/rnbd/rnbd-clt.c b/drivers/block/rnbd/rnbd-clt.c
-index f180ebf1e11c9..7af1b60582fe5 100644
---- a/drivers/block/rnbd/rnbd-clt.c
-+++ b/drivers/block/rnbd/rnbd-clt.c
-@@ -1383,12 +1383,11 @@ static struct rnbd_clt_dev *init_dev(struct rnbd_clt_session *sess,
- 		goto out_queues;
- 	}
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -1901,9 +1901,6 @@ static int stmmac_release(struct net_dev
+ {
+ 	struct stmmac_priv *priv = netdev_priv(dev);
  
--	dev->pathname = kzalloc(strlen(pathname) + 1, GFP_KERNEL);
-+	dev->pathname = kstrdup(pathname, GFP_KERNEL);
- 	if (!dev->pathname) {
- 		ret = -ENOMEM;
- 		goto out_queues;
- 	}
--	strlcpy(dev->pathname, pathname, strlen(pathname) + 1);
+-	if (priv->eee_enabled)
+-		del_timer_sync(&priv->eee_ctrl_timer);
+-
+ 	/* Stop and disconnect the PHY */
+ 	if (priv->phydev) {
+ 		phy_stop(priv->phydev);
+@@ -1924,6 +1921,11 @@ static int stmmac_release(struct net_dev
+ 	if (priv->lpi_irq > 0)
+ 		free_irq(priv->lpi_irq, dev);
  
- 	dev->clt_device_id	= ret;
- 	dev->sess		= sess;
--- 
-2.27.0
-
++	if (priv->eee_enabled) {
++		priv->tx_path_in_lpi_mode = false;
++		del_timer_sync(&priv->eee_ctrl_timer);
++	}
++
+ 	/* Stop TX/RX DMA and clear the descriptors */
+ 	priv->hw->dma->stop_tx(priv->ioaddr);
+ 	priv->hw->dma->stop_rx(priv->ioaddr);
+@@ -3503,6 +3505,11 @@ int stmmac_suspend(struct device *dev)
+ 
+ 	napi_disable(&priv->napi);
+ 
++	if (priv->eee_enabled) {
++		priv->tx_path_in_lpi_mode = false;
++		del_timer_sync(&priv->eee_ctrl_timer);
++	}
++
+ 	/* Stop TX/RX DMA */
+ 	priv->hw->dma->stop_tx(priv->ioaddr);
+ 	priv->hw->dma->stop_rx(priv->ioaddr);
 
 
