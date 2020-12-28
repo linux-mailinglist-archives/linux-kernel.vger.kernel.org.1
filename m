@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F18C2E3856
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:09:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BE2F2E39C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:28:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731072AbgL1NJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:09:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36854 "EHLO mail.kernel.org"
+        id S2389788AbgL1N14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:27:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56314 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731024AbgL1NI7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:08:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B3CFD22AAD;
-        Mon, 28 Dec 2020 13:08:18 +0000 (UTC)
+        id S2389200AbgL1N1d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:27:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DB54207CF;
+        Mon, 28 Dec 2020 13:26:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160899;
-        bh=jnYB1dKbmuQoaPHGqWz+C6l6SG1fHTsBA7QcIb0aQt8=;
+        s=korg; t=1609162012;
+        bh=InYEAi5x9ssMkOFcR2sFRHZZKhTE2Ms5ZxN+puv4VaE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gyELq/93uA6ZfnLKNMmhEm2vZICjBtSfhQ4Y8q5SDLZLe/tAz88LlTYRqg5BQjnXG
-         i2oc3p50hWUUuQSvAT7/Pe+xPhb1waQbD/6SzG1ZP0rl0cMKjQUjdThX9P/FuS76IB
-         S8JaARPU5jeyK7XhxMqFJ8CJRRm8ZM1BPHMbQb+o=
+        b=sqvH4KDSVpx0Lq13b4bSxNnml/2XsgCnaw1l5D1osOeYforQ6DjrQPsjaewchSgBD
+         uhHZHLmlEuDxkrnYbX6zfqm8qLUl3+WbKbDWSusY5UY2Qp2HnPzDq/0Aqm0Mzq3m5Y
+         uuflAHWGxDELXXsq59NlrQ+I9kzvfVMdJFGPxfbM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+df7dc146ebdd6435eea3@syzkaller.appspotmail.com,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.14 032/242] ALSA: pcm: oss: Fix potential out-of-bounds shift
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 118/346] drm/msm/dsi_pll_10nm: restore VCO rate during restore_state
 Date:   Mon, 28 Dec 2020 13:47:17 +0100
-Message-Id: <20201228124906.242993022@linuxfoundation.org>
+Message-Id: <20201228124925.498438496@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-commit 175b8d89fe292796811fdee87fa39799a5b6b87a upstream.
+[ Upstream commit a4ccc37693a271330a46208afbeaed939d54fdbb ]
 
-syzbot spotted a potential out-of-bounds shift in the PCM OSS layer
-where it calculates the buffer size with the arbitrary shift value
-given via an ioctl.
+PHY disable/enable resets PLL registers to default values. Thus in
+addition to restoring several registers we also need to restore VCO rate
+settings.
 
-Add a range check for avoiding the undefined behavior.
-As the value can be treated by a signed integer, the max shift should
-be 30.
-
-Reported-by: syzbot+df7dc146ebdd6435eea3@syzkaller.appspotmail.com
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201209084552.17109-2-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Fixes: c6659785dfb3 ("drm/msm/dsi/pll: call vco set rate explicitly")
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/core/oss/pcm_oss.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
---- a/sound/core/oss/pcm_oss.c
-+++ b/sound/core/oss/pcm_oss.c
-@@ -1949,11 +1949,15 @@ static int snd_pcm_oss_set_subdivide(str
- static int snd_pcm_oss_set_fragment1(struct snd_pcm_substream *substream, unsigned int val)
- {
- 	struct snd_pcm_runtime *runtime;
-+	int fragshift;
+diff --git a/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c b/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c
+index 21a69b046625a..d15511b521cb7 100644
+--- a/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c
++++ b/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c
+@@ -554,6 +554,7 @@ static int dsi_pll_10nm_restore_state(struct msm_dsi_pll *pll)
+ 	struct pll_10nm_cached_state *cached = &pll_10nm->cached_state;
+ 	void __iomem *phy_base = pll_10nm->phy_cmn_mmio;
+ 	u32 val;
++	int ret;
  
- 	runtime = substream->runtime;
- 	if (runtime->oss.subdivision || runtime->oss.fragshift)
- 		return -EINVAL;
--	runtime->oss.fragshift = val & 0xffff;
-+	fragshift = val & 0xffff;
-+	if (fragshift >= 31)
-+		return -EINVAL;
-+	runtime->oss.fragshift = fragshift;
- 	runtime->oss.maxfrags = (val >> 16) & 0xffff;
- 	if (runtime->oss.fragshift < 4)		/* < 16 */
- 		runtime->oss.fragshift = 4;
+ 	val = pll_read(pll_10nm->mmio + REG_DSI_10nm_PHY_PLL_PLL_OUTDIV_RATE);
+ 	val &= ~0x3;
+@@ -568,6 +569,13 @@ static int dsi_pll_10nm_restore_state(struct msm_dsi_pll *pll)
+ 	val |= cached->pll_mux;
+ 	pll_write(phy_base + REG_DSI_10nm_PHY_CMN_CLK_CFG1, val);
+ 
++	ret = dsi_pll_10nm_vco_set_rate(&pll->clk_hw, pll_10nm->vco_current_rate, pll_10nm->vco_ref_clk_rate);
++	if (ret) {
++		DRM_DEV_ERROR(&pll_10nm->pdev->dev,
++			"restore vco rate failed. ret=%d\n", ret);
++		return ret;
++	}
++
+ 	DBG("DSI PLL%d", pll_10nm->id);
+ 
+ 	return 0;
+-- 
+2.27.0
+
 
 
