@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B9AF2E3AAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:41:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CA9B2E3D40
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:13:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403860AbgL1NkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:40:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40392 "EHLO mail.kernel.org"
+        id S2440124AbgL1ONQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:13:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47804 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403832AbgL1NkH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:40:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C45CE21D94;
-        Mon, 28 Dec 2020 13:39:25 +0000 (UTC)
+        id S2440042AbgL1ONG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:13:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B2B3206E5;
+        Mon, 28 Dec 2020 14:12:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162766;
-        bh=e+qvI8qBpQeJ1hvA2ymsdRViRRyKtvBUdtw+Jvk615Y=;
+        s=korg; t=1609164746;
+        bh=kMBpl3mriyFVPMZ7QTYRs14rMU1WvrC9xKG598VRvrA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GpYwk3XG0cuBxuRx/sp78jIVH7V5voUNbhoWAXMqpZCs/YFeHZ3OkWtgXQPNU1iiT
-         82tIy+362XygDat6+bRIBqh0DcB1lnU1F8Ijiy7v9C59hxpAz6o+2IMnw9qb7cTyo+
-         wDXw8MD0YgZeUDPT7T8mLnc5MN4LtzlbyqEMHBh8=
+        b=eV7BkMnvtP8d4SfP9IZ08qcw8CKnIJHh8l7TvWX3kcnhObEMCpKNZRw3YM7/MJ1Hm
+         Qk6HebTVTfRkpIrpnMT/7FPJQsOmXw0FWlmC9ibYHRSaNeu+AqNWNfJMI7woCLpVBq
+         X+qsSwlqI0YFjdKuWOX7ya84j995CzdnWAOtItFM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Deepak R Varma <mh12gx2825@gmail.com>,
-        Thierry Reding <treding@nvidia.com>,
+        stable@vger.kernel.org, Hyeongseok Kim <hyeongseok@gmail.com>,
+        Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 037/453] drm/tegra: replace idr_init() by idr_init_base()
-Date:   Mon, 28 Dec 2020 13:44:33 +0100
-Message-Id: <20201228124939.049596257@linuxfoundation.org>
+Subject: [PATCH 5.10 276/717] f2fs: fix double free of unicode map
+Date:   Mon, 28 Dec 2020 13:44:34 +0100
+Message-Id: <20201228125034.239891216@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Deepak R Varma <mh12gx2825@gmail.com>
+From: Hyeongseok Kim <hyeongseok@gmail.com>
 
-[ Upstream commit 41f71629b4c432f8dd47d70ace813be5f79d4d75 ]
+[ Upstream commit 89ff6005039a878afac87889fee748fa3f957c3a ]
 
-idr_init() uses base 0 which is an invalid identifier for this driver.
-The new function idr_init_base allows IDR to set the ID lookup from
-base 1. This avoids all lookups that otherwise starts from 0 since
-0 is always unused.
+In case of retrying fill_super with skip_recovery,
+s_encoding for casefold would not be loaded again even though it's
+already been freed because it's not NULL.
+Set NULL after free to prevent double freeing when unmount.
 
-
-Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
+Fixes: eca4873ee1b6 ("f2fs: Use generic casefolding support")
+Signed-off-by: Hyeongseok Kim <hyeongseok@gmail.com>
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/tegra/drm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/f2fs/super.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/tegra/drm.c b/drivers/gpu/drm/tegra/drm.c
-index bc7cc32140f81..6833dfad7241b 100644
---- a/drivers/gpu/drm/tegra/drm.c
-+++ b/drivers/gpu/drm/tegra/drm.c
-@@ -256,7 +256,7 @@ static int tegra_drm_open(struct drm_device *drm, struct drm_file *filp)
- 	if (!fpriv)
- 		return -ENOMEM;
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 00eff2f518079..fef22e476c526 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -3918,6 +3918,7 @@ free_bio_info:
  
--	idr_init(&fpriv->contexts);
-+	idr_init_base(&fpriv->contexts, 1);
- 	mutex_init(&fpriv->lock);
- 	filp->driver_priv = fpriv;
- 
+ #ifdef CONFIG_UNICODE
+ 	utf8_unload(sb->s_encoding);
++	sb->s_encoding = NULL;
+ #endif
+ free_options:
+ #ifdef CONFIG_QUOTA
 -- 
 2.27.0
 
