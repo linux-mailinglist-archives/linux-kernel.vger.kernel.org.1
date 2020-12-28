@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF6742E68AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:40:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C07692E65C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:07:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441354AbgL1Qjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:39:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56110 "EHLO mail.kernel.org"
+        id S2389581AbgL1N1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:27:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729366AbgL1M74 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:59:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC3DF22582;
-        Mon, 28 Dec 2020 12:59:15 +0000 (UTC)
+        id S2389546AbgL1N0p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:26:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B0605207CF;
+        Mon, 28 Dec 2020 13:26:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160356;
-        bh=mVeXhq4sJ2hihUK43w8WVwVZbrqDMGkLZY7ds9Ra2Ks=;
+        s=korg; t=1609161965;
+        bh=5olAxdpgOq6ba+7dnonReG2iBGVRv6QWoOUjVTHO1Sk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KbFkbGNNjSyarhvHPck62oxgIT2/i+IkgRckqLpvhSCQVV6Ddy5i6C47e9OBm6rvW
-         rUGYv19b4OLLYoTMJ1b1Y3g3zWiMWXDBTWcqm9atuZB8dBVeI6H9I4GwIxxdoyce8T
-         XdK0uSPSOiHKvIHe7g7kojKX5vKFStLq+S0Np74I=
+        b=KTYta8FwMXL1/d+lLn1l1VDYhV4WvOjVGm9enmaE8mzz9t/aq4eJwwS48A3XeBcfp
+         5LqKoXU3xhhCvoN+MEmkqTUuCbQIDD1TlRQ/FYjtp1LxRDHpTIFKu1NCk/DfbQDcqy
+         lNRImbtLLlwgnUpkebUJW2ajhLJa232oydHsU8dw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Timo Witte <timo.witte@gmail.com>,
-        "Lee, Chun-Yi" <jlee@suse.com>,
-        Hans de Goede <hdegoede@redhat.com>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 006/175] platform/x86: acer-wmi: add automatic keyboard background light toggle key as KEY_LIGHTS_TOGGLE
-Date:   Mon, 28 Dec 2020 13:47:39 +0100
-Message-Id: <20201228124853.555789949@linuxfoundation.org>
+Subject: [PATCH 4.19 142/346] ASoC: meson: fix COMPILE_TEST error
+Date:   Mon, 28 Dec 2020 13:47:41 +0100
+Message-Id: <20201228124926.648416441@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Timo Witte <timo.witte@gmail.com>
+From: Jerome Brunet <jbrunet@baylibre.com>
 
-[ Upstream commit 9e7a005ad56aa7d6ea5830c5ffcc60bf35de380b ]
+[ Upstream commit 299fe9937dbd1a4d9a1da6a2b6f222298534ca57 ]
 
-Got a dmesg message on my AMD Renoir based Acer laptop:
-"acer_wmi: Unknown key number - 0x84" when toggling keyboard
-background light
+When compiled with CONFIG_HAVE_CLK, the kernel need to get provider for the
+clock API. This is usually selected by the platform and the sound drivers
+should not really care about this. However COMPILE_TEST is special and the
+platform required may not have been selected, leading to this type of
+error:
 
-Signed-off-by: Timo Witte <timo.witte@gmail.com>
-Reviewed-by: "Lee, Chun-Yi" <jlee@suse.com>
-Link: https://lore.kernel.org/r/20200804001423.36778-1-timo.witte@gmail.com
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> aiu-encoder-spdif.c:(.text+0x3a0): undefined reference to `clk_set_parent'
+
+Since we need a sane provider of the API with COMPILE_TEST, depends on
+COMMON_CLK.
+
+Fixes: 6dc4fa179fb8 ("ASoC: meson: add axg fifo base driver")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Link: https://lore.kernel.org/r/20201116172423.546855-1-jbrunet@baylibre.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/acer-wmi.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/meson/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/platform/x86/acer-wmi.c b/drivers/platform/x86/acer-wmi.c
-index 1515c9480f89f..90015e2cce9bf 100644
---- a/drivers/platform/x86/acer-wmi.c
-+++ b/drivers/platform/x86/acer-wmi.c
-@@ -124,6 +124,7 @@ static const struct key_entry acer_wmi_keymap[] __initconst = {
- 	{KE_KEY, 0x64, {KEY_SWITCHVIDEOMODE} },	/* Display Switch */
- 	{KE_IGNORE, 0x81, {KEY_SLEEP} },
- 	{KE_KEY, 0x82, {KEY_TOUCHPAD_TOGGLE} },	/* Touch Pad Toggle */
-+	{KE_IGNORE, 0x84, {KEY_KBDILLUMTOGGLE} }, /* Automatic Keyboard background light toggle */
- 	{KE_KEY, KEY_TOUCHPAD_ON, {KEY_TOUCHPAD_ON} },
- 	{KE_KEY, KEY_TOUCHPAD_OFF, {KEY_TOUCHPAD_OFF} },
- 	{KE_IGNORE, 0x83, {KEY_TOUCHPAD_TOGGLE} },
+diff --git a/sound/soc/meson/Kconfig b/sound/soc/meson/Kconfig
+index 8af8bc358a90a..19fd4d583b869 100644
+--- a/sound/soc/meson/Kconfig
++++ b/sound/soc/meson/Kconfig
+@@ -1,5 +1,5 @@
+ menu "ASoC support for Amlogic platforms"
+-	depends on ARCH_MESON || COMPILE_TEST
++	depends on ARCH_MESON || (COMPILE_TEST && COMMON_CLK)
+ 
+ config SND_MESON_AXG_FIFO
+ 	tristate
 -- 
 2.27.0
 
