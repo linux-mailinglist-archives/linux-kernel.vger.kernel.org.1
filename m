@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D2792E3D90
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:18:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 572A42E3956
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:22:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441351AbgL1ORG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:17:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51948 "EHLO mail.kernel.org"
+        id S2388288AbgL1NWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:22:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50740 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441236AbgL1OQp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:16:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AFBCA207A9;
-        Mon, 28 Dec 2020 14:16:03 +0000 (UTC)
+        id S2388259AbgL1NW3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:22:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 901EB207F7;
+        Mon, 28 Dec 2020 13:21:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609164964;
-        bh=tabp5gX2tkCFcibSKiI8VWJhPIInDjw/Up4ucq/JRHU=;
+        s=korg; t=1609161708;
+        bh=WZ5ejJazqMwziMvrVQobP8XfW5cRgG4yrWee5XpHQ2A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jyTaS7HNZfKMaLICgqUrna7iqlkADQvraiouzOZmWUlG5GorY9KJmqM5yJ6j/5pw2
-         5c4Je3Hxekz346QOdgSZiNhsMw8FZ/6fyY0T4fhuU6y2UeNxjuW+hjBu2FuFN51myz
-         UJ7ZSckrwP9/W4zlL15htsXz6BrlvypEN+ZxUDws=
+        b=HKVGfy2Fnhq1wUOKxTxbz5oe4BW/I/ZCDawFqvaW7H87+ga/wak6qPWmQiGtk3MFS
+         BYcbM0Bq2bjBwiCRuKl6MIMwoEvjhA3DdX4VT2eR1tY8TIE2d2naejwfZIhg9/SeVv
+         kqdsZdDtgp18kWIyr2Qv2U+hGjmne3y7EqCM4UCc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 344/717] platform/x86: intel-vbtn: Fix SW_TABLET_MODE always reporting 1 on some HP x360 models
-Date:   Mon, 28 Dec 2020 13:45:42 +0100
-Message-Id: <20201228125037.508636844@linuxfoundation.org>
+        stable@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: [PATCH 4.19 024/346] x86/membarrier: Get rid of a dubious optimization
+Date:   Mon, 28 Dec 2020 13:45:43 +0100
+Message-Id: <20201228124920.943092613@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,74 +40,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Andy Lutomirski <luto@kernel.org>
 
-[ Upstream commit a4327979a19e8734ddefbd8bcbb73bd9905b69cd ]
+commit a493d1ca1a03b532871f1da27f8dbda2b28b04c4 upstream.
 
-Some HP x360 models have an ACPI VGBS method which sets bit 4 instead of
-bit 6 when NOT in tablet mode at boot. Inspecting all the DSDTs in my DSDT
-collection shows only one other model, the Medion E1239T ever setting bit 4
-and it always sets this together with bit 6.
+sync_core_before_usermode() had an incorrect optimization.  If the kernel
+returns from an interrupt, it can get to usermode without IRET. It just has
+to schedule to a different task in the same mm and do SYSRET.  Fortunately,
+there were no callers of sync_core_before_usermode() that could have had
+in_irq() or in_nmi() equal to true, because it's only ever called from the
+scheduler.
 
-So lets treat bit 4 as a second bit which when set indicates the device not
-being in tablet-mode, as we already do for bit 6.
+While at it, clarify a related comment.
 
-While at it also prefix all VGBS constant defines with "VGBS_".
+Fixes: 70216e18e519 ("membarrier: Provide core serializing command, *_SYNC_CORE")
+Signed-off-by: Andy Lutomirski <luto@kernel.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/5afc7632be1422f91eaf7611aaaa1b5b8580a086.1607058304.git.luto@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Note this wrokaround was first added to the kernel as
-commit d823346876a9 ("platform/x86: intel-vbtn: Fix SW_TABLET_MODE always
-reporting 1 on the HP Pavilion 11 x360").
-After commit 8169bd3e6e19 ("platform/x86: intel-vbtn: Switch to an
-allow-list for SW_TABLET_MODE reporting") got added to the kernel this
-was reverted, because with the new allow-list approach the workaround
-was no longer necessary for the model on which the issue was first
-reported.
-
-But it turns out that the workaround is still necessary because some
-affected models report a chassis-type of 31 which is on the allow-list.
-
-BugLink: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1894017
-Fixes: 21d64817c724 ("platform/x86: intel-vbtn: Revert "Fix SW_TABLET_MODE always reporting 1 on the HP Pavilion 11 x360"")
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/intel-vbtn.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ arch/x86/include/asm/sync_core.h |    9 +++++----
+ arch/x86/mm/tlb.c                |   10 ++++++++--
+ 2 files changed, 13 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/platform/x86/intel-vbtn.c b/drivers/platform/x86/intel-vbtn.c
-index 0419c8001fe33..123401f04b55a 100644
---- a/drivers/platform/x86/intel-vbtn.c
-+++ b/drivers/platform/x86/intel-vbtn.c
-@@ -15,9 +15,13 @@
- #include <linux/platform_device.h>
- #include <linux/suspend.h>
- 
-+/* Returned when NOT in tablet mode on some HP Stream x360 11 models */
-+#define VGBS_TABLET_MODE_FLAG_ALT	0x10
- /* When NOT in tablet mode, VGBS returns with the flag 0x40 */
--#define TABLET_MODE_FLAG 0x40
--#define DOCK_MODE_FLAG   0x80
-+#define VGBS_TABLET_MODE_FLAG		0x40
-+#define VGBS_DOCK_MODE_FLAG		0x80
-+
-+#define VGBS_TABLET_MODE_FLAGS (VGBS_TABLET_MODE_FLAG | VGBS_TABLET_MODE_FLAG_ALT)
- 
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("AceLan Kao");
-@@ -72,9 +76,9 @@ static void detect_tablet_mode(struct platform_device *device)
- 	if (ACPI_FAILURE(status))
+--- a/arch/x86/include/asm/sync_core.h
++++ b/arch/x86/include/asm/sync_core.h
+@@ -16,12 +16,13 @@ static inline void sync_core_before_user
+ 	/* With PTI, we unconditionally serialize before running user code. */
+ 	if (static_cpu_has(X86_FEATURE_PTI))
  		return;
- 
--	m = !(vgbs & TABLET_MODE_FLAG);
-+	m = !(vgbs & VGBS_TABLET_MODE_FLAGS);
- 	input_report_switch(priv->input_dev, SW_TABLET_MODE, m);
--	m = (vgbs & DOCK_MODE_FLAG) ? 1 : 0;
-+	m = (vgbs & VGBS_DOCK_MODE_FLAG) ? 1 : 0;
- 	input_report_switch(priv->input_dev, SW_DOCK, m);
++
+ 	/*
+-	 * Return from interrupt and NMI is done through iret, which is core
+-	 * serializing.
++	 * Even if we're in an interrupt, we might reschedule before returning,
++	 * in which case we could switch to a different thread in the same mm
++	 * and return using SYSRET or SYSEXIT.  Instead of trying to keep
++	 * track of our need to sync the core, just sync right away.
+ 	 */
+-	if (in_irq() || in_nmi())
+-		return;
+ 	sync_core();
  }
  
--- 
-2.27.0
-
+--- a/arch/x86/mm/tlb.c
++++ b/arch/x86/mm/tlb.c
+@@ -321,8 +321,14 @@ void switch_mm_irqs_off(struct mm_struct
+ 	/*
+ 	 * The membarrier system call requires a full memory barrier and
+ 	 * core serialization before returning to user-space, after
+-	 * storing to rq->curr. Writing to CR3 provides that full
+-	 * memory barrier and core serializing instruction.
++	 * storing to rq->curr, when changing mm.  This is because
++	 * membarrier() sends IPIs to all CPUs that are in the target mm
++	 * to make them issue memory barriers.  However, if another CPU
++	 * switches to/from the target mm concurrently with
++	 * membarrier(), it can cause that CPU not to receive an IPI
++	 * when it really should issue a memory barrier.  Writing to CR3
++	 * provides that full memory barrier and core serializing
++	 * instruction.
+ 	 */
+ 	if (real_prev == next) {
+ 		VM_WARN_ON(this_cpu_read(cpu_tlbstate.ctxs[prev_asid].ctx_id) !=
 
 
