@@ -2,40 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 128F72E67A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:28:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BECD2E661E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:10:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633494AbgL1Q1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:27:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35858 "EHLO mail.kernel.org"
+        id S2633041AbgL1QJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:09:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730876AbgL1NIP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:08:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FDA4208B6;
-        Mon, 28 Dec 2020 13:07:34 +0000 (UTC)
+        id S2388814AbgL1NY4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:24:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BC39E206ED;
+        Mon, 28 Dec 2020 13:24:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160855;
-        bh=mO0L3GZjY/iQu0aOfTqBqJ0euAD8j2aeJ+KkTPJ3IgE=;
+        s=korg; t=1609161856;
+        bh=a3VtAI9EWvHTMsREjZvzqzchoZk68QqwDXfiu3G1nnQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sHaCHFcm2pYYjyqR3exX2st7Xi6/Rge2y/7LlWbj8De7qsLzYzwqDFAwKDllZ0Hsn
-         K7z0Bg55l5D7dnGHImsspo/vuX642dd2V2f2WMc+Blg4LIf9JCL3f9z1pDt09aZ2Qu
-         aJhQfYCd3x2POKxzElKlmitJNUEVxtcbgxx7usZM=
+        b=B7CrZSSu6JJLdySqmTVZ/1i1lSBh2WlTQkZ5+ZucOljE58Y6Lz5wZacmRNRmvKP3o
+         SlvD/wEyG/qc/R9NvaXI2HUh7MdZkQJmS+3TrklbN4a4I3nnFS/6DLIOFFHddRd2mc
+         UbesMTC1UbRo9fa/jQKHaiNEmqzWhOAve0gKANMM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Ingemar Johansson <ingemar.s.johansson@ericsson.com>,
-        Neal Cardwell <ncardwell@google.com>,
-        Yuchung Cheng <ycheng@google.com>,
-        Soheil Hassas Yeganeh <soheil@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.14 018/242] tcp: fix cwnd-limited bug for TSO deferral where we send nothing
-Date:   Mon, 28 Dec 2020 13:47:03 +0100
-Message-Id: <20201228124905.562635497@linuxfoundation.org>
+        stable@vger.kernel.org, John Wang <wangzhiqiang.bj@bytedance.com>,
+        Joel Stanley <joel@jms.id.au>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 105/346] ARM: dts: aspeed: s2600wf: Fix VGA memory region location
+Date:   Mon, 28 Dec 2020 13:47:04 +0100
+Message-Id: <20201228124924.859898132@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,86 +39,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Neal Cardwell <ncardwell@google.com>
+From: Joel Stanley <joel@jms.id.au>
 
-[ Upstream commit 299bcb55ecd1412f6df606e9dc0912d55610029e ]
+[ Upstream commit 9e1cc9679776f5b9e42481d392b1550753ebd084 ]
 
-When cwnd is not a multiple of the TSO skb size of N*MSS, we can get
-into persistent scenarios where we have the following sequence:
+The VGA memory region is always from the top of RAM. On this board, that
+is 0x80000000 + 0x20000000 - 0x01000000 = 0x9f000000.
 
-(1) ACK for full-sized skb of N*MSS arrives
-  -> tcp_write_xmit() transmit full-sized skb with N*MSS
-  -> move pacing release time forward
-  -> exit tcp_write_xmit() because pacing time is in the future
+This was not an issue in practice as the region is "reserved" by the
+vendor's u-boot reducing the amount of available RAM, and the only user
+is the host VGA device poking at RAM over PCIe. That is, nothing from
+the ARM touches it.
 
-(2) TSQ callback or TCP internal pacing timer fires
-  -> try to transmit next skb, but TSO deferral finds remainder of
-     available cwnd is not big enough to trigger an immediate send
-     now, so we defer sending until the next ACK.
+It is worth fixing as developers copy existing device trees when
+building their machines, and the XDMA driver does use the memory region
+from the ARM side.
 
-(3) repeat...
-
-So we can get into a case where we never mark ourselves as
-cwnd-limited for many seconds at a time, even with
-bulk/infinite-backlog senders, because:
-
-o In case (1) above, every time in tcp_write_xmit() we have enough
-cwnd to send a full-sized skb, we are not fully using the cwnd
-(because cwnd is not a multiple of the TSO skb size). So every time we
-send data, we are not cwnd limited, and so in the cwnd-limited
-tracking code in tcp_cwnd_validate() we mark ourselves as not
-cwnd-limited.
-
-o In case (2) above, every time in tcp_write_xmit() that we try to
-transmit the "remainder" of the cwnd but defer, we set the local
-variable is_cwnd_limited to true, but we do not send any packets, so
-sent_pkts is zero, so we don't call the cwnd-limited logic to update
-tp->is_cwnd_limited.
-
-Fixes: ca8a22634381 ("tcp: make cwnd-limited checks measurement-based, and gentler")
-Reported-by: Ingemar Johansson <ingemar.s.johansson@ericsson.com>
-Signed-off-by: Neal Cardwell <ncardwell@google.com>
-Signed-off-by: Yuchung Cheng <ycheng@google.com>
-Acked-by: Soheil Hassas Yeganeh <soheil@google.com>
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Link: https://lore.kernel.org/r/20201209035759.1225145-1-ncardwell.kernel@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: c4043ecac34a ("ARM: dts: aspeed: Add S2600WF BMC Machine")
+Reported-by: John Wang <wangzhiqiang.bj@bytedance.com>
+Link: https://lore.kernel.org/r/20200922064234.163799-1-joel@jms.id.au
+Signed-off-by: Joel Stanley <joel@jms.id.au>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/tcp_output.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ arch/arm/boot/dts/aspeed-bmc-intel-s2600wf.dts | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/net/ipv4/tcp_output.c
-+++ b/net/ipv4/tcp_output.c
-@@ -1620,7 +1620,8 @@ static void tcp_cwnd_validate(struct soc
- 	 * window, and remember whether we were cwnd-limited then.
- 	 */
- 	if (!before(tp->snd_una, tp->max_packets_seq) ||
--	    tp->packets_out > tp->max_packets_out) {
-+	    tp->packets_out > tp->max_packets_out ||
-+	    is_cwnd_limited) {
- 		tp->max_packets_out = tp->packets_out;
- 		tp->max_packets_seq = tp->snd_nxt;
- 		tp->is_cwnd_limited = is_cwnd_limited;
-@@ -2411,6 +2412,10 @@ repair:
- 	else
- 		tcp_chrono_stop(sk, TCP_CHRONO_RWND_LIMITED);
+diff --git a/arch/arm/boot/dts/aspeed-bmc-intel-s2600wf.dts b/arch/arm/boot/dts/aspeed-bmc-intel-s2600wf.dts
+index 22dade6393d06..d1dbe3b6ad5a7 100644
+--- a/arch/arm/boot/dts/aspeed-bmc-intel-s2600wf.dts
++++ b/arch/arm/boot/dts/aspeed-bmc-intel-s2600wf.dts
+@@ -22,9 +22,9 @@
+ 		#size-cells = <1>;
+ 		ranges;
  
-+	is_cwnd_limited |= (tcp_packets_in_flight(tp) >= tp->snd_cwnd);
-+	if (likely(sent_pkts || is_cwnd_limited))
-+		tcp_cwnd_validate(sk, is_cwnd_limited);
-+
- 	if (likely(sent_pkts)) {
- 		if (tcp_in_cwnd_reduction(sk))
- 			tp->prr_out += sent_pkts;
-@@ -2418,8 +2423,6 @@ repair:
- 		/* Send one loss probe per tail loss episode. */
- 		if (push_one != 2)
- 			tcp_schedule_loss_probe(sk, false);
--		is_cwnd_limited |= (tcp_packets_in_flight(tp) >= tp->snd_cwnd);
--		tcp_cwnd_validate(sk, is_cwnd_limited);
- 		return false;
- 	}
- 	return !tp->packets_out && tcp_send_head(sk);
+-		vga_memory: framebuffer@7f000000 {
++		vga_memory: framebuffer@9f000000 {
+ 			no-map;
+-			reg = <0x7f000000 0x01000000>;
++			reg = <0x9f000000 0x01000000>; /* 16M */
+ 		};
+ 	};
+ 
+-- 
+2.27.0
+
 
 
