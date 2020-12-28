@@ -2,164 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F01F2E6C4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:18:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 991992E6C47
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:18:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730095AbgL1Wzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 17:55:41 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:30740 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729325AbgL1To4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 14:44:56 -0500
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BSJWmXV087244;
-        Mon, 28 Dec 2020 14:44:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=FFC1pIh9Jx3Vm1rVMfDgprQvk4esrJQ88xEvb228pWQ=;
- b=PKh5KhiUgozAkhHVNi5TelmKS12GtPwEaDTPwKrjGvOgHezPVk2urrt1tw3z0c2Jq1tP
- G0HeIK1bYzBsPaAM4tWTEtpEuyDRKXy963HKP3Xa09WB904J7+QxSudjGfSVKuvzqODk
- 6+ilTvqlLdoIHPipsRIxYwNWsjKCQ1/1PGKuCbcJRIrCSHmPHLdjFJPtv3B5sCmfVevY
- 5wMHiHwnvBIUVMwVfMRT9GUCVVLCP9V1UaGglnETD42dcjZ3npVUWvR1eXRopxG9KbHQ
- iBKZ1XOlVwD8hKNttAik6gIh/vmu1alIa4I3igY157wxngxG2lfsjhTybLAeaM1bSLd5 Wg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35qmwts065-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Dec 2020 14:44:04 -0500
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BSJWmJj087289;
-        Mon, 28 Dec 2020 14:44:03 -0500
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35qmwts05k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Dec 2020 14:44:03 -0500
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BSJfdFM019890;
-        Mon, 28 Dec 2020 19:44:02 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma04fra.de.ibm.com with ESMTP id 35nvt895fp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Dec 2020 19:44:02 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BSJhv9X28639742
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 28 Dec 2020 19:43:57 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BA7C7A405C;
-        Mon, 28 Dec 2020 19:43:59 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A9390A405F;
-        Mon, 28 Dec 2020 19:43:56 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.72.172])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 28 Dec 2020 19:43:56 +0000 (GMT)
-Message-ID: <564953d7ffb847365236a37639b81cbb7bca2aa6.camel@linux.ibm.com>
-Subject: Re: [PATCH v23 02/23] LSM: Create and manage the lsmblob data
- structure.
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Casey Schaufler <casey@schaufler-ca.com>,
-        casey.schaufler@intel.com, jmorris@namei.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org
-Cc:     linux-audit@redhat.com, keescook@chromium.org,
-        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
-        paul@paul-moore.com, sds@tycho.nsa.gov,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Date:   Mon, 28 Dec 2020 14:43:55 -0500
-In-Reply-To: <c88bc01f-3b65-f320-b42b-5ecde3e29448@schaufler-ca.com>
-References: <20201120201507.11993-1-casey@schaufler-ca.com>
-         <20201120201507.11993-3-casey@schaufler-ca.com>
-         <903c37e9036d167958165ab700e646c1622a9c40.camel@linux.ibm.com>
-         <c88bc01f-3b65-f320-b42b-5ecde3e29448@schaufler-ca.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-28_17:2020-12-28,2020-12-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- adultscore=0 clxscore=1015 mlxscore=0 suspectscore=0 impostorscore=0
- spamscore=0 mlxlogscore=999 phishscore=0 priorityscore=1501
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012280115
+        id S1730135AbgL1Wzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 17:55:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44720 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729328AbgL1Tp2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 14:45:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2240D22B4B
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 19:44:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609184687;
+        bh=AxhsmIbR6fuF0/wfAYB1xeObY1rv+Sgxjjkn0MgbRwg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=r7Cro1T22YoDTkjsEcATSOT6NFNlfjfAEFGipjpR+w+XZLbNZS4+GSNM3rI2Od0Yj
+         oX4WBoMEQckMAxOuX3r66Y0vfPd/DMjTZNWd2NYpo4s80AsH24TT9/obx5WaSir0T7
+         1t2lSnVPNfdloVvirqOiSslsTb0eVhYHsdVhSLhMoogfqs5IOPpfH6QQWAwexB0eBx
+         9vp3ml9mowJ1HXHP4utgokfqestgQfsuOJ8F3kINezqdk+pkNJqcyCVfAOjc0QQS5w
+         TDJaBNvHE65YN7miG4rERGsA8y7JNQGbFn4ev46u9m8VxYEh15HWJdUrgJdILJICbL
+         3PfohfX07nGKA==
+Received: by mail-wr1-f54.google.com with SMTP id t30so12379091wrb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 11:44:47 -0800 (PST)
+X-Gm-Message-State: AOAM531SAi5T8E6TzwFtjwFEH7LOZ1S+lKoT3aBZhkmkK5fimsnP0VWP
+        V7sLsH0yKSGYolt4ugMUkLFdWNkzSThItbShRxccJQ==
+X-Google-Smtp-Source: ABdhPJzjhdge7EO34jRsNBFMSG/TIQyan751y+QjzNZ5oVO9OIJTvIGiqcZiVQnIIpAkwgBmDcT9uYsIbtM9knsNNds=
+X-Received: by 2002:a5d:43c3:: with SMTP id v3mr51547660wrr.184.1609184685561;
+ Mon, 28 Dec 2020 11:44:45 -0800 (PST)
+MIME-Version: 1.0
+References: <bf59ecb5487171a852bcc8cdd553ec797aedc485.1609093476.git.luto@kernel.org>
+ <1836294649.3345.1609100294833.JavaMail.zimbra@efficios.com>
+ <CALCETrVdcn2r2Jvd1=-bM=FQ8KbX4aH-v4ytdojL7r7Nb6k8YQ@mail.gmail.com>
+ <20201228102537.GG1551@shell.armlinux.org.uk> <CALCETrWQx0qwthBc5pJBxs2PWAQo-roAz-6g=7HOs+dsiokVsg@mail.gmail.com>
+ <CAG48ez0YZ_iy6qZpdGUj38wqeg_NzLHHhU-mBCBf5hcopYGVPg@mail.gmail.com> <20201228190852.GI1551@shell.armlinux.org.uk>
+In-Reply-To: <20201228190852.GI1551@shell.armlinux.org.uk>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Mon, 28 Dec 2020 11:44:33 -0800
+X-Gmail-Original-Message-ID: <CALCETrVpvrBufrJgXNY=ogtZQLo7zgxQmD7k9eVCFjcdcvarmA@mail.gmail.com>
+Message-ID: <CALCETrVpvrBufrJgXNY=ogtZQLo7zgxQmD7k9eVCFjcdcvarmA@mail.gmail.com>
+Subject: Re: [RFC please help] membarrier: Rewrite sync_core_before_usermode()
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Jann Horn <jannh@google.com>, Andy Lutomirski <luto@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        x86 <x86@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-12-28 at 11:22 -0800, Casey Schaufler wrote:
-> On 12/28/2020 9:54 AM, Mimi Zohar wrote:
-> > Hi Casey,
+On Mon, Dec 28, 2020 at 11:09 AM Russell King - ARM Linux admin
+<linux@armlinux.org.uk> wrote:
+>
+> On Mon, Dec 28, 2020 at 07:29:34PM +0100, Jann Horn wrote:
+> > After chatting with rmk about this (but without claiming that any of
+> > this is his opinion), based on the manpage, I think membarrier()
+> > currently doesn't really claim to be synchronizing caches? It just
+> > serializes cores. So arguably if userspace wants to use membarrier()
+> > to synchronize code changes, userspace should first do the code
+> > change, then flush icache as appropriate for the architecture, and
+> > then do the membarrier() to ensure that the old code is unused?
 > >
-> > On Fri, 2020-11-20 at 12:14 -0800, Casey Schaufler wrote:
-> >> When more than one security module is exporting data to
-> >> audit and networking sub-systems a single 32 bit integer
-> >> is no longer sufficient to represent the data. Add a
-> >> structure to be used instead.
-> >>
-> >> The lsmblob structure is currently an array of
-> >> u32 "secids". There is an entry for each of the
-> >> security modules built into the system that would
-> >> use secids if active. The system assigns the module
-> >> a "slot" when it registers hooks. If modules are
-> >> compiled in but not registered there will be unused
-> >> slots.
-> >>
-> >> A new lsm_id structure, which contains the name
-> >> of the LSM and its slot number, is created. There
-> >> is an instance for each LSM, which assigns the name
-> >> and passes it to the infrastructure to set the slot.
-> >>
-> >> The audit rules data is expanded to use an array of
-> >> security module data rather than a single instance.
-> >> Because IMA uses the audit rule functions it is
-> >> affected as well.
-> > This patch is quite large, even without the audit rule change.  I would
-> > limit this patch to the new lsm_id structure changes.  The audit rule
-> > change should be broken out as a separate patch so that the audit
-> > changes aren't hidden.
-> 
-> Breaking up the patch in any meaningful way would require
-> scaffolding code that is as extensive and invasive as the
-> final change. I can do that if you really need it, but it
-> won't be any easier to read.
+> > For 32-bit arm, rmk pointed out that that would be the cacheflush()
+> > syscall. That might cause you to end up with two IPIs instead of one
+> > in total, but we probably don't care _that_ much about extra IPIs on
+> > 32-bit arm?
+> >
+> > For arm64, I believe userspace can flush icache across the entire
+> > system with some instructions from userspace - "DC CVAU" followed by
+> > "DSB ISH", or something like that, I think? (See e.g.
+> > compat_arm_syscall(), the arm64 compat code that implements the 32-bit
+> > arm cacheflush() syscall.)
+>
+> Note that the ARM cacheflush syscall calls flush_icache_user_range()
+> over the range of addresses that userspace has passed - it's intention
+> since day one is to support cases where userspace wants to change
+> executable code.
+>
+> It will issue the appropriate write-backs to the data cache (DCCMVAU),
+> the invalidates to the instruction cache (ICIMVAU), invalidate the
+> branch target buffer (BPIALLIS or BPIALL as appropriate), and issue
+> the appropriate barriers (DSB ISHST, ISB).
+>
+> Note that neither flush_icache_user_range() nor flush_icache_range()
+> result in IPIs; cache operations are broadcast across all CPUs (which
+> is one of the minimums we require for SMP systems.)
+>
+> Now, that all said, I think the question that has to be asked is...
+>
+>         What is the basic purpose of membarrier?
+>
+> Is the purpose of it to provide memory barriers, or is it to provide
+> memory coherence?
+>
+> If it's the former and not the latter, then cache flushes are out of
+> scope, and expecting memory written to be visible to the instruction
+> stream is totally out of scope of the membarrier interface, whether
+> or not the writes happen on the same or a different CPU to the one
+> executing the rewritten code.
+>
+> The documentation in the kernel does not seem to describe what it's
+> supposed to be doing - the only thing I could find is this:
+> Documentation/features/sched/membarrier-sync-core/arch-support.txt
+> which describes it as "arch supports core serializing membarrier"
+> whatever that means.
+>
+> Seems to be the standard and usual case of utterly poor to non-existent
+> documentation within the kernel tree, or even a pointer to where any
+> useful documentation can be found.
+>
+> Reading the membarrier(2) man page, I find nothing in there that talks
+> about any kind of cache coherency for self-modifying code - it only
+> seems to be about _barriers_ and nothing more, and barriers alone do
+> precisely nothing to save you from non-coherent Harvard caches.
+>
+> So, either Andy has a misunderstanding, or the man page is wrong, or
+> my rudimentary understanding of what membarrier is supposed to be
+> doing is wrong...
 
-Hidden in this patch is the new behavior of security_audit_rule_init(),
-security_audit_rule_free(), and security_audit_rule_match().  My
-concern is with label collision.  Details are in a subsequent post. 
-Can an LSM prevent label collision?
+Look at the latest man page:
 
-> 
-> > In addition, here are a few high level nits:
-> > - The (patch description) body of the explanation, line wrapped at 75
-> > columns, which will be copied to the permanent changelog to describe
-> > this patch. (Refer  Documentation/process/submitting-patches.rst.)
-> 
-> Will fix.
-> 
-> > - The brief kernel-doc descriptions should not have a trailing period. 
-> > Nor should kernel-doc variable definitions have a trailing period. 
-> > Example(s) inline below.  (The existing kernel-doc is mostly correct.)
-> 
-> Will fix.
-> 
-> > - For some reason existing comments that span multiple lines aren't
-> > formatted properly.   In those cases, where there is another change,
-> > please fix the comment and function description.
-> 
-> Can you give an example? There are multiple comment styles
-> used in the various components.
+https://man7.org/linux/man-pages/man2/membarrier.2.html
 
-Never mind.  All three examples are in tomoyo.
+for MEMBARRIER_CMD_PRIVATE_EXPEDITED_SYNC_CORE.  The result may not be
+all that enlightening.
 
-> I don't see any comments on the ima code changes. I really
-> don't want to spin a new patch set that does nothing but change
-> two periods in comments only to find out two months from now
-> that the code changes are completely borked. I really don't
-> want to go through the process of breaking up the patch that has
-> been widely Acked if there's no reason to expect it would require
-> significant work otherwise.
-
-Understood.
-
+--Andy
