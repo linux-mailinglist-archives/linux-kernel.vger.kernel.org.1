@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04FEC2E3F8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:42:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB84F2E382F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:07:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502522AbgL1O1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:27:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34872 "EHLO mail.kernel.org"
+        id S1729590AbgL1NF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:05:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502262AbgL1O1U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:27:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C73C4207B2;
-        Mon, 28 Dec 2020 14:27:04 +0000 (UTC)
+        id S1730661AbgL1NFp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:05:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C17A22583;
+        Mon, 28 Dec 2020 13:05:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165625;
-        bh=YUvDYKl1YaQMAKEZb9Jty3IKzOJ0k5YRbzPmcB8eCt0=;
+        s=korg; t=1609160704;
+        bh=Ed7G+Ve7B0rvQklr6MqKHAeDjIyVTNfHzgYEmp4xBl0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Oc1Nd6Bg2cjBDVwKcbXZHupxzfjs6MLEdyLJ/z3AX09Me1qJZR45wLeHkfGwyws4T
-         qcbaMcxPEkJVZ8xMxb7ZA/yyubUHRdiLGKqa5FREYvEBYygORpHmypfv+9/W7W+pQe
-         0mO/RIFhoBGJ9eVAj8uZdqxdB5+FKo9AnZl3vy/8=
+        b=KPAkIgkYyV5CI4d3cjIKzuecXYILXH5B6X6s5BjWKHezkK83c/JDwvn6LZ0XxeAnS
+         N4gFvo0nn6zMDXaKs20S+CyrYUTxtJqzDNQz+BfJTdJpmflmq+3lGSK8IozGPITQ6e
+         YLNgGYNn9S8IDHbzTncO2v/6HBER33NoqklRzHIU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, James Morse <james.morse@arm.com>,
-        Marc Zyngier <maz@kernel.org>
-Subject: [PATCH 5.10 597/717] KVM: arm64: Introduce handling of AArch32 TTBCR2 traps
+        stable@vger.kernel.org, Rostislav Lisovy <lisovy@gmail.com>,
+        Ian Abbott <abbotti@mev.co.uk>
+Subject: [PATCH 4.9 142/175] staging: comedi: mf6x4: Fix AI end-of-conversion detection
 Date:   Mon, 28 Dec 2020 13:49:55 +0100
-Message-Id: <20201228125049.515721353@linuxfoundation.org>
+Message-Id: <20201228124900.134917491@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,42 +39,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+From: Ian Abbott <abbotti@mev.co.uk>
 
-commit ca4e514774930f30b66375a974b5edcbebaf0e7e upstream.
+commit 56c90457ebfe9422496aac6ef3d3f0f0ea8b2ec2 upstream.
 
-ARMv8.2 introduced TTBCR2, which shares TCR_EL1 with TTBCR.
-Gracefully handle traps to this register when HCR_EL2.TVM is set.
+I have had reports from two different people that attempts to read the
+analog input channels of the MF624 board fail with an `ETIMEDOUT` error.
 
-Cc: stable@vger.kernel.org
-Reported-by: James Morse <james.morse@arm.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
+After triggering the conversion, the code calls `comedi_timeout()` with
+`mf6x4_ai_eoc()` as the callback function to check if the conversion is
+complete.  The callback returns 0 if complete or `-EBUSY` if not yet
+complete.  `comedi_timeout()` returns `-ETIMEDOUT` if it has not
+completed within a timeout period which is propagated as an error to the
+user application.
+
+The existing code considers the conversion to be complete when the EOLC
+bit is high.  However, according to the user manuals for the MF624 and
+MF634 boards, this test is incorrect because EOLC is an active low
+signal that goes high when the conversion is triggered, and goes low
+when the conversion is complete.  Fix the problem by inverting the test
+of the EOLC bit state.
+
+Fixes: 04b565021a83 ("comedi: Humusoft MF634 and MF624 DAQ cards driver")
+Cc: <stable@vger.kernel.org> # v4.4+
+Cc: Rostislav Lisovy <lisovy@gmail.com>
+Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
+Link: https://lore.kernel.org/r/20201207145806.4046-1-abbotti@mev.co.uk
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm64/include/asm/kvm_host.h |    1 +
- arch/arm64/kvm/sys_regs.c         |    1 +
- 2 files changed, 2 insertions(+)
+ drivers/staging/comedi/drivers/mf6x4.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/arch/arm64/include/asm/kvm_host.h
-+++ b/arch/arm64/include/asm/kvm_host.h
-@@ -214,6 +214,7 @@ enum vcpu_sysreg {
- #define c2_TTBR1	(TTBR1_EL1 * 2)	/* Translation Table Base Register 1 */
- #define c2_TTBR1_high	(c2_TTBR1 + 1)	/* TTBR1 top 32 bits */
- #define c2_TTBCR	(TCR_EL1 * 2)	/* Translation Table Base Control R. */
-+#define c2_TTBCR2	(c2_TTBCR + 1)	/* Translation Table Base Control R. 2 */
- #define c3_DACR		(DACR32_EL2 * 2)/* Domain Access Control Register */
- #define c5_DFSR		(ESR_EL1 * 2)	/* Data Fault Status Register */
- #define c5_IFSR		(IFSR32_EL2 * 2)/* Instruction Fault Status Register */
---- a/arch/arm64/kvm/sys_regs.c
-+++ b/arch/arm64/kvm/sys_regs.c
-@@ -1987,6 +1987,7 @@ static const struct sys_reg_desc cp15_re
- 	{ Op1( 0), CRn( 2), CRm( 0), Op2( 0), access_vm_reg, NULL, c2_TTBR0 },
- 	{ Op1( 0), CRn( 2), CRm( 0), Op2( 1), access_vm_reg, NULL, c2_TTBR1 },
- 	{ Op1( 0), CRn( 2), CRm( 0), Op2( 2), access_vm_reg, NULL, c2_TTBCR },
-+	{ Op1( 0), CRn( 2), CRm( 0), Op2( 3), access_vm_reg, NULL, c2_TTBCR2 },
- 	{ Op1( 0), CRn( 3), CRm( 0), Op2( 0), access_vm_reg, NULL, c3_DACR },
- 	{ Op1( 0), CRn( 5), CRm( 0), Op2( 0), access_vm_reg, NULL, c5_DFSR },
- 	{ Op1( 0), CRn( 5), CRm( 0), Op2( 1), access_vm_reg, NULL, c5_IFSR },
+--- a/drivers/staging/comedi/drivers/mf6x4.c
++++ b/drivers/staging/comedi/drivers/mf6x4.c
+@@ -121,8 +121,9 @@ static int mf6x4_ai_eoc(struct comedi_de
+ 	struct mf6x4_private *devpriv = dev->private;
+ 	unsigned int status;
+ 
++	/* EOLC goes low at end of conversion. */
+ 	status = ioread32(devpriv->gpioc_reg);
+-	if (status & MF6X4_GPIOC_EOLC)
++	if ((status & MF6X4_GPIOC_EOLC) == 0)
+ 		return 0;
+ 	return -EBUSY;
+ }
 
 
