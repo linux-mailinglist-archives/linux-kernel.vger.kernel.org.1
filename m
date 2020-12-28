@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A222E3944
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:22:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC8992E3D8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:17:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388127AbgL1NVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:21:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49632 "EHLO mail.kernel.org"
+        id S2441311AbgL1OQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:16:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387831AbgL1NVJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:21:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E341207CF;
-        Mon, 28 Dec 2020 13:20:27 +0000 (UTC)
+        id S2441193AbgL1OQ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:16:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5893222B2A;
+        Mon, 28 Dec 2020 14:15:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161628;
-        bh=VnU2hsuye1dxQWSsDFeU5tHpZiqoe5rdbw3/tas6XXo=;
+        s=korg; t=1609164947;
+        bh=XN9h/n7d0dlZQAeGsr1xE1rKp7jDSmvSkmJ5je6ujrY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oMQgGfy08irkMOEMtoNUoAmywbzP6SDAaHHx6ZHVF1ZDjgvrkYP0ihcTs0j89sS5E
-         EL5t7T6c0grn2eC7vlE+xMIJ+RzjXMoG9aGgyh8ihusDH0CkVF2NcDuSx7+ehBG+m9
-         xGrYrxgPca7blUSs7HNTtk7XI9/vjXLVjyRaOxxs=
+        b=cgMbLFB11iSaP4icLru3rQGYZL97zZK/HvuuxLuIBG6zCK1sdPXO59riZD5fXYUag
+         dfasDqRvLWV344FRhEHWg4c7zeQBmT/ZuemJ6XW5d2nJtMZVh8MdBZcX9Nf9DYOSGY
+         9cfJwCjTxmTA3VPhJ40IRUgTBNUW4d1vs/G6dWYY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Moshe Shemesh <moshe@mellanox.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 034/346] net/mlx4_en: Handle TX error CQE
-Date:   Mon, 28 Dec 2020 13:45:53 +0100
-Message-Id: <20201228124921.431293634@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Mike Christie <michael.christie@oracle.com>,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 356/717] scsi: qedi: Fix missing destroy_workqueue() on error in __qedi_probe
+Date:   Mon, 28 Dec 2020 13:45:54 +0100
+Message-Id: <20201228125038.075355614@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,114 +42,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Moshe Shemesh <moshe@mellanox.com>
+From: Qinglang Miao <miaoqinglang@huawei.com>
 
-[ Upstream commit ba603d9d7b1215c72513d7c7aa02b6775fd4891b ]
+[ Upstream commit 62eebd5247c4e4ce08826ad5995cf4dd7ce919dd ]
 
-In case error CQE was found while polling TX CQ, the QP is in error
-state and all posted WQEs will generate error CQEs without any data
-transmitted. Fix it by reopening the channels, via same method used for
-TX timeout handling.
+Add the missing destroy_workqueue() before return from __qedi_probe in the
+error handling case when fails to create workqueue qedi->offload_thread.
 
-In addition add some more info on error CQE and WQE for debug.
-
-Fixes: bd2f631d7c60 ("net/mlx4_en: Notify user when TX ring in error state")
-Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
-Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20201109091518.55941-1-miaoqinglang@huawei.com
+Fixes: ace7f46ba5fd ("scsi: qedi: Add QLogic FastLinQ offload iSCSI driver framework.")
+Reviewed-by: Mike Christie <michael.christie@oracle.com>
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx4/en_netdev.c |    1 
- drivers/net/ethernet/mellanox/mlx4/en_tx.c     |   40 ++++++++++++++++++++-----
- drivers/net/ethernet/mellanox/mlx4/mlx4_en.h   |    5 +++
- 3 files changed, 39 insertions(+), 7 deletions(-)
+ drivers/scsi/qedi/qedi_main.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
-@@ -1741,6 +1741,7 @@ int mlx4_en_start_port(struct net_device
- 				mlx4_en_deactivate_cq(priv, cq);
- 				goto tx_err;
- 			}
-+			clear_bit(MLX4_EN_TX_RING_STATE_RECOVERING, &tx_ring->state);
- 			if (t != TX_XDP) {
- 				tx_ring->tx_queue = netdev_get_tx_queue(dev, i);
- 				tx_ring->recycle_ring = NULL;
---- a/drivers/net/ethernet/mellanox/mlx4/en_tx.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/en_tx.c
-@@ -385,6 +385,35 @@ int mlx4_en_free_tx_buf(struct net_devic
- 	return cnt;
- }
+diff --git a/drivers/scsi/qedi/qedi_main.c b/drivers/scsi/qedi/qedi_main.c
+index 61fab01d2d527..f5fc7f518f8af 100644
+--- a/drivers/scsi/qedi/qedi_main.c
++++ b/drivers/scsi/qedi/qedi_main.c
+@@ -2766,7 +2766,7 @@ retry_probe:
+ 			QEDI_ERR(&qedi->dbg_ctx,
+ 				 "Unable to start offload thread!\n");
+ 			rc = -ENODEV;
+-			goto free_cid_que;
++			goto free_tmf_thread;
+ 		}
  
-+static void mlx4_en_handle_err_cqe(struct mlx4_en_priv *priv, struct mlx4_err_cqe *err_cqe,
-+				   u16 cqe_index, struct mlx4_en_tx_ring *ring)
-+{
-+	struct mlx4_en_dev *mdev = priv->mdev;
-+	struct mlx4_en_tx_info *tx_info;
-+	struct mlx4_en_tx_desc *tx_desc;
-+	u16 wqe_index;
-+	int desc_size;
-+
-+	en_err(priv, "CQE error - cqn 0x%x, ci 0x%x, vendor syndrome: 0x%x syndrome: 0x%x\n",
-+	       ring->sp_cqn, cqe_index, err_cqe->vendor_err_syndrome, err_cqe->syndrome);
-+	print_hex_dump(KERN_WARNING, "", DUMP_PREFIX_OFFSET, 16, 1, err_cqe, sizeof(*err_cqe),
-+		       false);
-+
-+	wqe_index = be16_to_cpu(err_cqe->wqe_index) & ring->size_mask;
-+	tx_info = &ring->tx_info[wqe_index];
-+	desc_size = tx_info->nr_txbb << LOG_TXBB_SIZE;
-+	en_err(priv, "Related WQE - qpn 0x%x, wqe index 0x%x, wqe size 0x%x\n", ring->qpn,
-+	       wqe_index, desc_size);
-+	tx_desc = ring->buf + (wqe_index << LOG_TXBB_SIZE);
-+	print_hex_dump(KERN_WARNING, "", DUMP_PREFIX_OFFSET, 16, 1, tx_desc, desc_size, false);
-+
-+	if (test_and_set_bit(MLX4_EN_STATE_FLAG_RESTARTING, &priv->state))
-+		return;
-+
-+	en_err(priv, "Scheduling port restart\n");
-+	queue_work(mdev->workqueue, &priv->restart_task);
-+}
-+
- bool mlx4_en_process_tx_cq(struct net_device *dev,
- 			   struct mlx4_en_cq *cq, int napi_budget)
- {
-@@ -431,13 +460,10 @@ bool mlx4_en_process_tx_cq(struct net_de
- 		dma_rmb();
+ 		INIT_DELAYED_WORK(&qedi->recovery_work, qedi_recovery_handler);
+@@ -2790,6 +2790,8 @@ retry_probe:
  
- 		if (unlikely((cqe->owner_sr_opcode & MLX4_CQE_OPCODE_MASK) ==
--			     MLX4_CQE_OPCODE_ERROR)) {
--			struct mlx4_err_cqe *cqe_err = (struct mlx4_err_cqe *)cqe;
--
--			en_err(priv, "CQE error - vendor syndrome: 0x%x syndrome: 0x%x\n",
--			       cqe_err->vendor_err_syndrome,
--			       cqe_err->syndrome);
--		}
-+			     MLX4_CQE_OPCODE_ERROR))
-+			if (!test_and_set_bit(MLX4_EN_TX_RING_STATE_RECOVERING, &ring->state))
-+				mlx4_en_handle_err_cqe(priv, (struct mlx4_err_cqe *)cqe, index,
-+						       ring);
+ 	return 0;
  
- 		/* Skip over last polled CQE */
- 		new_index = be16_to_cpu(cqe->wqe_index) & size_mask;
---- a/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
-+++ b/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
-@@ -271,6 +271,10 @@ struct mlx4_en_page_cache {
- 	} buf[MLX4_EN_CACHE_SIZE];
- };
- 
-+enum {
-+	MLX4_EN_TX_RING_STATE_RECOVERING,
-+};
-+
- struct mlx4_en_priv;
- 
- struct mlx4_en_tx_ring {
-@@ -317,6 +321,7 @@ struct mlx4_en_tx_ring {
- 	 * Only queue_stopped might be used if BQL is not properly working.
- 	 */
- 	unsigned long		queue_stopped;
-+	unsigned long		state;
- 	struct mlx4_hwq_resources sp_wqres;
- 	struct mlx4_qp		sp_qp;
- 	struct mlx4_qp_context	sp_context;
++free_tmf_thread:
++	destroy_workqueue(qedi->tmf_thread);
+ free_cid_que:
+ 	qedi_release_cid_que(qedi);
+ free_uio:
+-- 
+2.27.0
+
 
 
