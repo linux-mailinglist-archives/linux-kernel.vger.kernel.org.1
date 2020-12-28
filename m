@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C4382E42E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:29:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4789A2E3A52
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:35:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406459AbgL1N4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:56:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57774 "EHLO mail.kernel.org"
+        id S2389335AbgL1NfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:35:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407551AbgL1N4G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:56:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BB452078D;
-        Mon, 28 Dec 2020 13:55:24 +0000 (UTC)
+        id S2389232AbgL1Neo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:34:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EC75C22583;
+        Mon, 28 Dec 2020 13:34:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163725;
-        bh=5+jCPEnxzT88Ufbndc9xXHUd4Qjz0Lq7q5hDSn+glGI=;
+        s=korg; t=1609162443;
+        bh=ckG7p101FaZzQCJzSoB5eM0PLkPmKyC6aILJ71zdxhk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ba59qZBdMeGjFGPD5QHOEH1rFe+9SpV5gKmDhlgPK+Y7+ToVVaH5XDyQwqXodGyet
-         iJfQ5ndBN9IutUjhOs7Y2/R7e4W4x6BrLVX227GvI6G6UwXdStRZPCXNaUbkaHVWeQ
-         2fMzUMJrR+nyzjsT2Ui3s6O+KNTl7orBCksJGbgM=
+        b=L2xBrid4lNImowbTlt/YsZ0o2LBgudnN2SVZdklJqcZBWIGXTWjtiaPDZEQgkodl4
+         usd00f2kgaVy4N+VaSwoysMaHNUX393zWVjlP0LUpPToCW5x6P3ZUydQzgtX30L4ey
+         DetTAWDsxN3pXhJ9DmdAr5tgYV9iOER8ZjIqnglM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
         David Hildenbrand <david@redhat.com>,
         Oscar Salvador <osalvador@suse.de>
-Subject: [PATCH 5.4 387/453] powerpc/powernv/memtrace: Dont leak kernel memory to user space
-Date:   Mon, 28 Dec 2020 13:50:23 +0100
-Message-Id: <20201228124955.825161991@linuxfoundation.org>
+Subject: [PATCH 4.19 305/346] powerpc/powernv/memtrace: Dont leak kernel memory to user space
+Date:   Mon, 28 Dec 2020 13:50:24 +0100
+Message-Id: <20201228124934.532018025@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -102,7 +102,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/arch/powerpc/platforms/powernv/memtrace.c
 +++ b/arch/powerpc/platforms/powernv/memtrace.c
-@@ -67,6 +67,23 @@ static int change_memblock_state(struct
+@@ -70,6 +70,23 @@ static int change_memblock_state(struct
  	return 0;
  }
  
@@ -126,7 +126,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  /* called with device_hotplug_lock held */
  static bool memtrace_offline_pages(u32 nid, u64 start_pfn, u64 nr_pages)
  {
-@@ -112,6 +129,11 @@ static u64 memtrace_alloc_node(u32 nid,
+@@ -115,6 +132,11 @@ static u64 memtrace_alloc_node(u32 nid,
  	for (base_pfn = end_pfn; base_pfn > start_pfn; base_pfn -= nr_pages) {
  		if (memtrace_offline_pages(nid, base_pfn, nr_pages) == true) {
  			/*
