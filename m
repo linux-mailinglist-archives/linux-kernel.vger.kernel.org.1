@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1AA72E3935
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:22:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C3D2E40D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:59:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387567AbgL1NUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:20:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48992 "EHLO mail.kernel.org"
+        id S2440471AbgL1OOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:14:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387515AbgL1NU2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:20:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D2825207C9;
-        Mon, 28 Dec 2020 13:19:46 +0000 (UTC)
+        id S2440442AbgL1OOf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:14:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DF1120791;
+        Mon, 28 Dec 2020 14:14:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161587;
-        bh=loO3fcbnZq6yWGDjrMScXV8PinQTGCawLfaIzEjZKRc=;
+        s=korg; t=1609164859;
+        bh=vebW2t4L4Bf5BGZ2fToRavMUeapsg1Jl7zxW+l+kXzk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FfMoTsU3+Kek0JxXMdQLmXd4ac7i3GAu+QLcigGagvhF9j7n6RD9sYQ8CCX41Htmu
-         nZSGpJm09u9tdq4IoDPUBvRzsUYIQKphk+1g9SEYkP+8rRRcuRn8j73OjoV76/WscM
-         svi3MtXhYlMZGyQap0UIuYmHwWoKC76Liyh9ieMc=
+        b=lLbMfoeUFDq/U40WCGep/wnIecoshv7knYWgh3MqB7h0KRZqNO0+Puug1yeSrWH0i
+         75L1W8hsWqso+lS3S1he2HubD+4IsuDzaB+SdCPZZ0lqENJVnQwgVzqIQtFjZg/Ygn
+         znbJpWuFH8gZYMWwtNvYLO9tsxUaxk3lwNSCa3B0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Lukas Wunner <lukas@wunner.de>
-Subject: [PATCH 4.19 004/346] spi: bcm2835aux: Restore err assignment in bcm2835aux_spi_probe
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 325/717] cpufreq: mediatek: Add missing MODULE_DEVICE_TABLE
 Date:   Mon, 28 Dec 2020 13:45:23 +0100
-Message-Id: <20201228124919.969957866@linuxfoundation.org>
+Message-Id: <20201228125036.589788302@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,55 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <natechancellor@gmail.com>
+From: Pali Rohár <pali@kernel.org>
 
-[ Upstream commit d853b3406903a7dc5b14eb5bada3e8cd677f66a2 ]
+[ Upstream commit af6eca06501118af3e2ad46eee8edab20624b74e ]
 
-Clang warns:
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this cpufreq driver when it is
+compiled as an external module.
 
-drivers/spi/spi-bcm2835aux.c:532:50: warning: variable 'err' is
-uninitialized when used here [-Wuninitialized]
-                dev_err(&pdev->dev, "could not get clk: %d\n", err);
-                                                               ^~~
-./include/linux/dev_printk.h:112:32: note: expanded from macro 'dev_err'
-        _dev_err(dev, dev_fmt(fmt), ##__VA_ARGS__)
-                                      ^~~~~~~~~~~
-drivers/spi/spi-bcm2835aux.c:495:9: note: initialize the variable 'err'
-to silence this warning
-        int err;
-               ^
-                = 0
-1 warning generated.
-
-Restore the assignment so that the error value can be used in the
-dev_err statement and there is no uninitialized memory being leaked.
-
-Fixes: e13ee6cc4781 ("spi: bcm2835aux: Fix use-after-free on unbind")
-Link: https://github.com/ClangBuiltLinux/linux/issues/1199
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-Link: https://lore.kernel.org/r/20201113180701.455541-1-natechancellor@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-[lukas: backport to 4.19-stable, add stable designation]
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Cc: <stable@vger.kernel.org> # v4.4+: e13ee6cc4781: spi: bcm2835aux: Fix use-after-free on unbind
-Cc: <stable@vger.kernel.org> # v4.4+
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Fixes: 501c574f4e3a5 ("cpufreq: mediatek: Add support of cpufreq to MT2701/MT7623 SoC")
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-bcm2835aux.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/cpufreq/mediatek-cpufreq.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/spi/spi-bcm2835aux.c
-+++ b/drivers/spi/spi-bcm2835aux.c
-@@ -444,8 +444,9 @@ static int bcm2835aux_spi_probe(struct p
+diff --git a/drivers/cpufreq/mediatek-cpufreq.c b/drivers/cpufreq/mediatek-cpufreq.c
+index 7d1212c9b7c88..a310372dc53e9 100644
+--- a/drivers/cpufreq/mediatek-cpufreq.c
++++ b/drivers/cpufreq/mediatek-cpufreq.c
+@@ -540,6 +540,7 @@ static const struct of_device_id mtk_cpufreq_machines[] __initconst = {
  
- 	bs->clk = devm_clk_get(&pdev->dev, NULL);
- 	if ((!bs->clk) || (IS_ERR(bs->clk))) {
-+		err = PTR_ERR(bs->clk);
- 		dev_err(&pdev->dev, "could not get clk: %d\n", err);
--		return PTR_ERR(bs->clk);
-+		return err;
- 	}
+ 	{ }
+ };
++MODULE_DEVICE_TABLE(of, mtk_cpufreq_machines);
  
- 	bs->irq = platform_get_irq(pdev, 0);
+ static int __init mtk_cpufreq_driver_init(void)
+ {
+-- 
+2.27.0
+
 
 
