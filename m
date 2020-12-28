@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19D3A2E6783
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:26:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A4E42E65C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:07:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731056AbgL1NJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:09:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36046 "EHLO mail.kernel.org"
+        id S2389618AbgL1N1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:27:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731011AbgL1NIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:08:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 02C032076D;
-        Mon, 28 Dec 2020 13:08:38 +0000 (UTC)
+        id S2389569AbgL1N04 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:26:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25C502072C;
+        Mon, 28 Dec 2020 13:26:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160919;
-        bh=PsggyikTz3ZfDUADG0zA8/DVJ2pK+14Uh7TcdsbIcjE=;
+        s=korg; t=1609162000;
+        bh=x2p/D07PbKbZDnlNXyl4gTBzc4bBU9Xll+vSn6QWDi8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TSx7CPVe3IeXcllWKLh9V9Bv+kQl1tgsLpY0UZ9OdveKswcp0XkTlVU2rtHIFyg+s
-         mFaU/Vcl3jMFgb+4G9pa/eGeHMCAcWNt2rMY4DGaL3YagfdKzRJguy3E3wThRKQAV1
-         z3Vk66JB/QAqG8z88/Y33lbJy+xp8S6+VAvQoA5E=
+        b=Ep8qUBdNCi6O/TUU3bQ6ow4aNGEQsnvKXigprDpaZN6LATLqNAlmUQg+jOTxtDkpc
+         KIxxOSXxuMrMHTKv9XMmXFPrXY4SkrzI9v1Syz+HebtA2n0X8HMT8uP68FCdpKGfuo
+         HuPY1OyFfZ+HUEmskI9gOvrVxEYMNOX2Q/toCa+Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        stable@vger.kernel.org,
+        syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com,
+        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 038/242] gpio: mvebu: fix potential user-after-free on probe
+Subject: [PATCH 4.19 124/346] Bluetooth: hci_h5: fix memory leak in h5_close
 Date:   Mon, 28 Dec 2020 13:47:23 +0100
-Message-Id: <20201228124906.543278032@linuxfoundation.org>
+Message-Id: <20201228124925.791725380@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,67 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Baruch Siach <baruch@tkos.co.il>
+From: Anant Thazhemadam <anant.thazhemadam@gmail.com>
 
-[ Upstream commit 7ee1a01e47403f72b9f38839a737692f6991263e ]
+[ Upstream commit 855af2d74c870d747bf53509f8b2d7b9dc9ee2c3 ]
 
-When mvebu_pwm_probe() fails IRQ domain is not released. Move pwm probe
-before IRQ domain allocation. Add pwm cleanup code to the failure path.
+When h5_close() is called, h5 is directly freed when !hu->serdev.
+However, h5->rx_skb is not freed, which causes a memory leak.
 
-Fixes: 757642f9a584 ("gpio: mvebu: Add limited PWM support")
-Reported-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: Baruch Siach <baruch@tkos.co.il>
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Freeing h5->rx_skb and setting it to NULL, fixes this memory leak.
+
+Fixes: ce945552fde4 ("Bluetooth: hci_h5: Add support for serdev enumerated devices")
+Reported-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
+Tested-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
+Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpio/gpio-mvebu.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ drivers/bluetooth/hci_h5.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/gpio/gpio-mvebu.c b/drivers/gpio/gpio-mvebu.c
-index be85d4b39e997..fc762b4adcb22 100644
---- a/drivers/gpio/gpio-mvebu.c
-+++ b/drivers/gpio/gpio-mvebu.c
-@@ -1195,6 +1195,13 @@ static int mvebu_gpio_probe(struct platform_device *pdev)
+diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
+index 5a68cd4dd71cb..7ffeb37e8f202 100644
+--- a/drivers/bluetooth/hci_h5.c
++++ b/drivers/bluetooth/hci_h5.c
+@@ -257,6 +257,9 @@ static int h5_close(struct hci_uart *hu)
+ 	skb_queue_purge(&h5->rel);
+ 	skb_queue_purge(&h5->unrel);
  
- 	devm_gpiochip_add_data(&pdev->dev, &mvchip->chip, mvchip);
- 
-+	/* Some MVEBU SoCs have simple PWM support for GPIO lines */
-+	if (IS_ENABLED(CONFIG_PWM)) {
-+		err = mvebu_pwm_probe(pdev, mvchip, id);
-+		if (err)
-+			return err;
-+	}
++	kfree_skb(h5->rx_skb);
++	h5->rx_skb = NULL;
 +
- 	/* Some gpio controllers do not provide irq support */
- 	if (!have_irqs)
- 		return 0;
-@@ -1204,7 +1211,8 @@ static int mvebu_gpio_probe(struct platform_device *pdev)
- 	if (!mvchip->domain) {
- 		dev_err(&pdev->dev, "couldn't allocate irq domain %s (DT).\n",
- 			mvchip->chip.label);
--		return -ENODEV;
-+		err = -ENODEV;
-+		goto err_pwm;
- 	}
+ 	if (h5->vnd && h5->vnd->close)
+ 		h5->vnd->close(h5);
  
- 	err = irq_alloc_domain_generic_chips(
-@@ -1252,14 +1260,12 @@ static int mvebu_gpio_probe(struct platform_device *pdev)
- 						 mvchip);
- 	}
- 
--	/* Some MVEBU SoCs have simple PWM support for GPIO lines */
--	if (IS_ENABLED(CONFIG_PWM))
--		return mvebu_pwm_probe(pdev, mvchip, id);
--
- 	return 0;
- 
- err_domain:
- 	irq_domain_remove(mvchip->domain);
-+err_pwm:
-+	pwmchip_remove(&mvchip->mvpwm->chip);
- 
- 	return err;
- }
 -- 
 2.27.0
 
