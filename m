@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5F562E6571
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:01:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 726D82E692D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:47:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393331AbgL1QBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:01:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60788 "EHLO mail.kernel.org"
+        id S2634696AbgL1Qp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:45:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390963AbgL1NcC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:32:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 54498207FF;
-        Mon, 28 Dec 2020 13:31:21 +0000 (UTC)
+        id S1728668AbgL1Mz7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:55:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B01C022B2A;
+        Mon, 28 Dec 2020 12:55:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162281;
-        bh=3MvjJK7NXXo0b+heKUPMqD3OjLCvrvsPV5iXJXMW0hM=;
+        s=korg; t=1609160143;
+        bh=4jLqyF3EjFvGTRYAS3QjW9dDV4q6T3QEhnp5c8bsMhY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=De+bLqHOJ/PzWyIkpjbzaNsBC0AqXZYvRtGhFPZ53mCSxaxjo5ygoiYi91EHWN7fI
-         ENvtkfLD0WEfTsECif0jyYO0dRFli8nvga3OOqJ9yKheifgPJPSloaSn3JVbErUh2K
-         3nU1+579F9Z6afIqzCb5mtY0Y2fRAYCOlhZN+DEc=
+        b=yRh5lx6IqZ9OALk0LF0xh52VZhbNwcQkV69GB801mCzGOcYj/VBMChDUL2Y7vH6K9
+         3yY41c5H06MIH7O5zi7VLoqEh3JVCYJRyUSNRaSjK9vMpwEfSQw5MJcfI4wtNvrRbt
+         tHF+mAd+efFRYwKE9mADAKgQjwO0CAUffdPn5IPo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Richard Weinberger <richard@nod.at>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 248/346] qlcnic: Fix error code in probe
+Subject: [PATCH 4.4 083/132] um: chan_xterm: Fix fd leak
 Date:   Mon, 28 Dec 2020 13:49:27 +0100
-Message-Id: <20201228124931.765807638@linuxfoundation.org>
+Message-Id: <20201228124850.446993739@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,33 +41,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-[ Upstream commit 0d52848632a357948028eab67ff9b7cc0c12a0fb ]
+[ Upstream commit 9431f7c199ab0d02da1482d62255e0b4621cb1b5 ]
 
-Return -EINVAL if we can't find the correct device.  Currently it
-returns success.
+xterm serial channel was leaking a fd used in setting up the
+port helper
 
-Fixes: 13159183ec7a ("qlcnic: 83xx base driver")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/X9nHbMqEyI/xPfGd@mwanda
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+This bug is prehistoric - it predates switching to git. The "fixes"
+header here is really just to mark all the versions we would like this to
+apply to which is "Anything from the Cretaceous period onwards".
+
+No dinosaurs were harmed in fixing this bug.
+
+Fixes: b40997b872cd ("um: drivers/xterm.c: fix a file descriptor leak")
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/um/drivers/xterm.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
-index dbd48012224f2..ed34b7d1a9e11 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
-@@ -2508,6 +2508,7 @@ qlcnic_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		qlcnic_sriov_vf_register_map(ahw);
- 		break;
- 	default:
-+		err = -EINVAL;
- 		goto err_out_free_hw_res;
+diff --git a/arch/um/drivers/xterm.c b/arch/um/drivers/xterm.c
+index 20e30be44795b..e3b422ebce09f 100644
+--- a/arch/um/drivers/xterm.c
++++ b/arch/um/drivers/xterm.c
+@@ -18,6 +18,7 @@
+ struct xterm_chan {
+ 	int pid;
+ 	int helper_pid;
++	int chan_fd;
+ 	char *title;
+ 	int device;
+ 	int raw;
+@@ -33,6 +34,7 @@ static void *xterm_init(char *str, int device, const struct chan_opts *opts)
+ 		return NULL;
+ 	*data = ((struct xterm_chan) { .pid 		= -1,
+ 				       .helper_pid 	= -1,
++				       .chan_fd		= -1,
+ 				       .device 		= device,
+ 				       .title 		= opts->xterm_title,
+ 				       .raw  		= opts->raw } );
+@@ -149,6 +151,7 @@ static int xterm_open(int input, int output, int primary, void *d,
+ 		goto out_kill;
  	}
+ 
++	data->chan_fd = fd;
+ 	new = xterm_fd(fd, &data->helper_pid);
+ 	if (new < 0) {
+ 		err = new;
+@@ -206,6 +209,8 @@ static void xterm_close(int fd, void *d)
+ 		os_kill_process(data->helper_pid, 0);
+ 	data->helper_pid = -1;
+ 
++	if (data->chan_fd != -1)
++		os_close_file(data->chan_fd);
+ 	os_close_file(fd);
+ }
  
 -- 
 2.27.0
