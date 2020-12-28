@@ -2,73 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DDDA2E6B32
+	by mail.lfdr.de (Postfix) with ESMTP id AA1242E6B33
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:00:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732295AbgL1W4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1732309AbgL1W4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 28 Dec 2020 17:56:34 -0500
-Received: from shards.monkeyblade.net ([23.128.96.9]:44328 "EHLO
-        mail.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729696AbgL1WwJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 17:52:09 -0500
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        by mail.monkeyblade.net (Postfix) with ESMTPSA id AC5C04CE686D1;
-        Mon, 28 Dec 2020 14:51:28 -0800 (PST)
-Date:   Mon, 28 Dec 2020 14:51:28 -0800 (PST)
-Message-Id: <20201228.145128.1498314185351532341.davem@davemloft.net>
-To:     weichen.chen@linux.alibaba.com
-Cc:     eric.dumazet@gmail.com, kuba@kernel.org,
-        splendidsky.cwc@alibaba-inc.com, yanxu.zw@alibaba-inc.com,
-        dsahern@kernel.org, liuhangbin@gmail.com,
-        roopa@cumulusnetworks.com, jdike@akamai.com,
-        nikolay@cumulusnetworks.com, lirongqing@baidu.com,
-        mrv@mojatatu.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] net: neighbor: fix a crash caused by mod zero
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20201225054448.73256-1-weichen.chen@linux.alibaba.com>
-References: <dbc6cd85-c58b-add2-5801-06e8e94b7d6b@gmail.com>
-        <20201225054448.73256-1-weichen.chen@linux.alibaba.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Mon, 28 Dec 2020 14:51:29 -0800 (PST)
+Received: from mga17.intel.com ([192.55.52.151]:18631 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727795AbgL1Wzc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 17:55:32 -0500
+IronPort-SDR: +UegUQW+HNgdpnQbckhf3QEZKFkdFD2Z8FGfSoh+Z3lXVcpUoRwqznQY8AAC5XhfZqDC19X1W9
+ aIc75MvaiWnA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9848"; a="156219592"
+X-IronPort-AV: E=Sophos;i="5.78,456,1599548400"; 
+   d="scan'208";a="156219592"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2020 14:54:50 -0800
+IronPort-SDR: P8pRkp4r4hleaTdW98lANxtwRf91Y1VewUXny3A6f5SumEy48JGwSfyQyqMDBPQcqmziskMV8e
+ WeEiLzDvAsLQ==
+X-IronPort-AV: E=Sophos;i="5.78,456,1599548400"; 
+   d="scan'208";a="400097145"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2020 14:54:44 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1ku1QX-000IqD-09; Tue, 29 Dec 2020 00:55:45 +0200
+Date:   Tue, 29 Dec 2020 00:55:44 +0200
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        devel@acpica.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tian Shu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        kieran.bingham+renesas@ideasonboard.com,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        niklas.soderlund+renesas@ragnatech.se,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH v3 14/14] ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver
+Message-ID: <20201228225544.GH4077@smile.fi.intel.com>
+References: <20201224010907.263125-1-djrscally@gmail.com>
+ <20201224010907.263125-15-djrscally@gmail.com>
+ <CAHp75VeXN6PnV7Mzz6UMpD+m-yjPi6XK0kx1=+-M5mci=Vb=YQ@mail.gmail.com>
+ <20201228170521.GZ26370@paasikivi.fi.intel.com>
+ <2d37df3d-f04c-6679-6e27-6c7f82e9b158@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2d37df3d-f04c-6679-6e27-6c7f82e9b158@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: weichenchen <weichen.chen@linux.alibaba.com>
-Date: Fri, 25 Dec 2020 13:44:45 +0800
+On Mon, Dec 28, 2020 at 10:37:38PM +0000, Daniel Scally wrote:
+> On 28/12/2020 17:05, Sakari Ailus wrote:
+> > On Thu, Dec 24, 2020 at 02:54:44PM +0200, Andy Shevchenko wrote:
 
-> pneigh_enqueue() tries to obtain a random delay by mod
-> NEIGH_VAR(p, PROXY_DELAY). However, NEIGH_VAR(p, PROXY_DELAY)
-> migth be zero at that point because someone could write zero
-> to /proc/sys/net/ipv4/neigh/[device]/proxy_delay after the
-> callers check it.
-> 
-> This patch uses prandom_u32_max() to get a random delay instead
-> which avoids potential division by zero.
-> 
-> Signed-off-by: weichenchen <weichen.chen@linux.alibaba.com>
-> ---
-> V4:
->     - Use prandom_u32_max() to get a random delay in
->       pneigh_enqueue().
-> V3:
->     - Callers need to pass the delay time to pneigh_enqueue()
->       now and they should guarantee it is not zero.
->     - Use READ_ONCE() to read NEIGH_VAR(p, PROXY_DELAY) in both
->       of the existing callers of pneigh_enqueue() and then pass
->       it to pneigh_enqueue().
-> V2:
->     - Use READ_ONCE() to prevent the complier from re-reading
->       NEIGH_VAR(p, PROXY_DELAY).
->     - Give a hint to the complier that delay <= 0 is unlikely
->       to happen.
-> 
-> V4 is quite concise and works well.
-> Thanks for Eric's and Jakub's advice.
+...
 
-Applied and queued up for -stable, thanks.
+> >>> +#include <linux/property.h>
+> >>> +
+> >>> +#define CIO2_HID                               "INT343E"
+> >>> +#define CIO2_NUM_PORTS                         4
+> > 
+> > This is already defined in ipu3-cio2.h. Could you include that instead?
+> 
+> Yes; but I'd need to also include media/v4l2-device.h and
+> media/videobuf2-dma-sg.h (they're included in ipu3-cio2-main.c at the
+> moment). It didn't seem worth it; but I can move those two includes from
+> the .c to the .h and then include ipu3-cio2.h in cio2-bridge.h
+> 
+> Which do you prefer?
+
+Actually ipu3-cio2.h misses a lot of inclusions (like mutex.h which I
+immediately noticed when scrolled over data types). I think here should be a
+compromise variant, split out something like ipu3-cio2-defs.h which can be
+included in both ipu3-cio2.h and cio2-bridge.h.
+
+And cio2-bridge.h needs more inclusions like types.h.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
