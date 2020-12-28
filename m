@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C2DE2E4066
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:52:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FB112E39A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:27:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505362AbgL1OwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:52:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53606 "EHLO mail.kernel.org"
+        id S2389016AbgL1NZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:25:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54044 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502029AbgL1OSy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:18:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C9F9B206D4;
-        Mon, 28 Dec 2020 14:18:32 +0000 (UTC)
+        id S2388902AbgL1NZ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:25:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF9F220719;
+        Mon, 28 Dec 2020 13:24:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165113;
-        bh=nGCLY8IT6dAMWqZXpIhlhyg/Rhh9fWVJzV5hz+KEYQE=;
+        s=korg; t=1609161885;
+        bh=6JE0UNhSRbQ5lIXyrZXz7GwSnXiv+R1sJx4VaR0Fduk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fuInG9wyxq98g9H3fLXH9zG0Wj83ox3N0Et/IfCHxxE035hC2V33Fw2xYIU9aeNoR
-         KTpeICG35cM8R35uzymFDMOWE9O21/8cLiLGe1z26PmM1QnUcpDcBHTW4X/TspvOF4
-         gMRNa0w0dcir1PTfXtSG82DK30L+YLYKdn4fmU68=
+        b=E1J6TdSD0SA1HLcmzkxoCyqr3g80TuNdXT2kt6cz6g1SS+YiNfL5XuVIhaDal683q
+         /8n+8tA3w86PXC3nNKXQspiBRVKXsLZnUljdret5kWDQVR6Qh+oaW354zXN4h8/jpb
+         ygQtlsaRd/7EZikZjIVaQS23jaYcNGoSuMTmKEu4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 409/717] mtd: rawnand: meson: Fix a resource leak in init
+        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 4.19 088/346] scsi: megaraid_sas: Check user-provided offsets
 Date:   Mon, 28 Dec 2020 13:46:47 +0100
-Message-Id: <20201228125040.575969990@linuxfoundation.org>
+Message-Id: <20201228124924.055088871@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +40,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit ad8566d3555c4731e6b48823b92d3929b0394c14 ]
+commit 381d34e376e3d9d27730fda8a0e870600e6c8196 upstream.
 
-Call clk_disable_unprepare(nfc->phase_rx) if the clk_set_rate() function
-fails to avoid a resource leak.
+It sounds unwise to let user space pass an unchecked 32-bit offset into a
+kernel structure in an ioctl. This is an unsigned variable, so checking the
+upper bound for the size of the structure it points into is sufficient to
+avoid data corruption, but as the pointer might also be unaligned, it has
+to be written carefully as well.
 
-Fixes: 8fae856c5350 ("mtd: rawnand: meson: add support for Amlogic NAND flash controller")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/X8ikVCnUsfTpffFB@mwanda
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+While I stumbled over this problem by reading the code, I did not continue
+checking the function for further problems like it.
+
+Link: https://lore.kernel.org/r/20201030164450.1253641-2-arnd@kernel.org
+Fixes: c4a3e0a529ab ("[SCSI] MegaRAID SAS RAID: new driver")
+Cc: <stable@vger.kernel.org> # v2.6.15+
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/mtd/nand/raw/meson_nand.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/scsi/megaraid/megaraid_sas_base.c |   16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
-index 48e6dac96be6d..1fd7f7024c0b4 100644
---- a/drivers/mtd/nand/raw/meson_nand.c
-+++ b/drivers/mtd/nand/raw/meson_nand.c
-@@ -1044,9 +1044,12 @@ static int meson_nfc_clk_init(struct meson_nfc *nfc)
+--- a/drivers/scsi/megaraid/megaraid_sas_base.c
++++ b/drivers/scsi/megaraid/megaraid_sas_base.c
+@@ -7192,7 +7192,7 @@ megasas_mgmt_fw_ioctl(struct megasas_ins
+ 	int error = 0, i;
+ 	void *sense = NULL;
+ 	dma_addr_t sense_handle;
+-	unsigned long *sense_ptr;
++	void *sense_ptr;
+ 	u32 opcode = 0;
  
- 	ret = clk_set_rate(nfc->device_clk, 24000000);
- 	if (ret)
--		goto err_phase_rx;
-+		goto err_disable_rx;
+ 	memset(kbuff_arr, 0, sizeof(kbuff_arr));
+@@ -7309,6 +7309,13 @@ megasas_mgmt_fw_ioctl(struct megasas_ins
+ 	}
  
- 	return 0;
+ 	if (ioc->sense_len) {
++		/* make sure the pointer is part of the frame */
++		if (ioc->sense_off >
++		    (sizeof(union megasas_frame) - sizeof(__le64))) {
++			error = -EINVAL;
++			goto out;
++		}
 +
-+err_disable_rx:
-+	clk_disable_unprepare(nfc->phase_rx);
- err_phase_rx:
- 	clk_disable_unprepare(nfc->phase_tx);
- err_phase_tx:
--- 
-2.27.0
-
+ 		sense = dma_alloc_coherent(&instance->pdev->dev, ioc->sense_len,
+ 					     &sense_handle, GFP_KERNEL);
+ 		if (!sense) {
+@@ -7316,12 +7323,11 @@ megasas_mgmt_fw_ioctl(struct megasas_ins
+ 			goto out;
+ 		}
+ 
+-		sense_ptr =
+-		(unsigned long *) ((unsigned long)cmd->frame + ioc->sense_off);
++		sense_ptr = (void *)cmd->frame + ioc->sense_off;
+ 		if (instance->consistent_mask_64bit)
+-			*sense_ptr = cpu_to_le64(sense_handle);
++			put_unaligned_le64(sense_handle, sense_ptr);
+ 		else
+-			*sense_ptr = cpu_to_le32(sense_handle);
++			put_unaligned_le32(sense_handle, sense_ptr);
+ 	}
+ 
+ 	/*
 
 
