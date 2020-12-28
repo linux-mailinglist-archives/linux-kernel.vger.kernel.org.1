@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E8F92E3FA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:44:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7AFF2E381C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:06:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389191AbgL1Omj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:42:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35440 "EHLO mail.kernel.org"
+        id S1730627AbgL1NFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:05:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502321AbgL1O1h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:27:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 260E822B3B;
-        Mon, 28 Dec 2020 14:26:56 +0000 (UTC)
+        id S1730569AbgL1NFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:05:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C27CD22A84;
+        Mon, 28 Dec 2020 13:04:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165616;
-        bh=jsXIYmTeoZcSyAe/wWWFr28PMJlixSJ1U0qNOZYhKUY=;
+        s=korg; t=1609160696;
+        bh=M7feVJb4J5+v0RDefL6gJZZ685A7+llWtYvbk39kb8Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yUup/evK+yO8p/XW6C26QLNnB0lh8o1nR14XkFh/o8TAApmho1bgZbtAINX8LF4JL
-         3m4sG9e+svt0eyJB3a4pAFpiaJoVX6WqVVxJNG99UiFqN8c1mmagSwr2B38BInefTt
-         GNuvS3Wb56B2EMxRqjsPWGMpm95HPHqCiWcgkhVM=
+        b=SqXTPzQu3J1fdYhPgr8vQgy/vHr+lp3zJUZP40ahe54G/XGBnRRkS6t+MCQ6Peg6l
+         FuyZ/YB2Q9/1OrN/Wx3PrajiCxmdfUHd2mFhZrsHaykABKjyXzs+e4yxjQxdPg5Sk7
+         FhqnhW32JQc3uN0rMYjnGylrz+SqSJDbblqS9et8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bin Meng <bin.meng@windriver.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: [PATCH 5.10 594/717] RISC-V: Fix usage of memblock_enforce_memory_limit
+        stable@vger.kernel.org, Stefan Haberland <sth@linux.ibm.com>,
+        Jan Hoeppner <hoeppner@linux.ibm.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 4.9 139/175] s390/dasd: prevent inconsistent LCU device data
 Date:   Mon, 28 Dec 2020 13:49:52 +0100
-Message-Id: <20201228125049.370627127@linuxfoundation.org>
+Message-Id: <20201228124859.981154467@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Atish Patra <atish.patra@wdc.com>
+From: Stefan Haberland <sth@linux.ibm.com>
 
-commit de043da0b9e71147ca610ed542d34858aadfc61c upstream.
+commit a29ea01653493b94ea12bb2b89d1564a265081b6 upstream.
 
-memblock_enforce_memory_limit accepts the maximum memory size not the
-maximum address that can be handled by kernel. Fix the function invocation
-accordingly.
+Prevent _lcu_update from adding a device to a pavgroup if the LCU still
+requires an update. The data is not reliable any longer and in parallel
+devices might have been moved on the lists already.
+This might lead to list corruptions or invalid PAV grouping.
+Only add devices to a pavgroup if the LCU is up to date. Additional steps
+are taken by the scheduled lcu update.
 
-Fixes: 1bd14a66ee52 ("RISC-V: Remove any memblock representing unusable memory area")
+Fixes: 8e09f21574ea ("[S390] dasd: add hyper PAV support to DASD device driver, part 1")
 Cc: stable@vger.kernel.org
-Reported-by: Bin Meng <bin.meng@windriver.com>
-Tested-by: Bin Meng <bin.meng@windriver.com>
-Acked-by: Mike Rapoport <rppt@linux.ibm.com>
-Signed-off-by: Atish Patra <atish.patra@wdc.com>
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Signed-off-by: Stefan Haberland <sth@linux.ibm.com>
+Reviewed-by: Jan Hoeppner <hoeppner@linux.ibm.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/riscv/mm/init.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/s390/block/dasd_alias.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -174,7 +174,7 @@ void __init setup_bootmem(void)
- 	 * Make sure that any memory beyond mem_start + (-PAGE_OFFSET) is removed
- 	 * as it is unusable by kernel.
- 	 */
--	memblock_enforce_memory_limit(mem_start - PAGE_OFFSET);
-+	memblock_enforce_memory_limit(-PAGE_OFFSET);
+--- a/drivers/s390/block/dasd_alias.c
++++ b/drivers/s390/block/dasd_alias.c
+@@ -502,6 +502,14 @@ static int _lcu_update(struct dasd_devic
+ 		return rc;
  
- 	/* Reserve from the start of the kernel to the end of the kernel */
- 	memblock_reserve(vmlinux_start, vmlinux_end - vmlinux_start);
+ 	spin_lock_irqsave(&lcu->lock, flags);
++	/*
++	 * there is another update needed skip the remaining handling
++	 * the data might already be outdated
++	 * but especially do not add the device to an LCU with pending
++	 * update
++	 */
++	if (lcu->flags & NEED_UAC_UPDATE)
++		goto out;
+ 	lcu->pav = NO_PAV;
+ 	for (i = 0; i < MAX_DEVICES_PER_LCU; ++i) {
+ 		switch (lcu->uac->unit[i].ua_type) {
+@@ -520,6 +528,7 @@ static int _lcu_update(struct dasd_devic
+ 				 alias_list) {
+ 		_add_device_to_lcu(lcu, device, refdev);
+ 	}
++out:
+ 	spin_unlock_irqrestore(&lcu->lock, flags);
+ 	return 0;
+ }
 
 
