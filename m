@@ -2,119 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B52362E3510
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 09:30:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E24512E3516
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 09:33:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726477AbgL1IaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 03:30:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46552 "EHLO
+        id S1726520AbgL1Icz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 03:32:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59378 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726282AbgL1IaT (ORCPT
+        by vger.kernel.org with ESMTP id S1726282AbgL1Icy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 03:30:19 -0500
+        Mon, 28 Dec 2020 03:32:54 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609144132;
+        s=mimecast20190719; t=1609144288;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=UaOuLgpFoeN0oTRLHLO4TgNcGhQC3vq+vzim6sDzPWg=;
-        b=MvENQa0j/gWTVGlWnLq4xrg/LAsi0ZDkAn7OvWGLERJDZRR9xKKYs9Ot7hPF0FCObBWWTM
-        D5IDNvFP2E8QIYStzvcoDDwQbq3/25mXbRfsZsw3dsivAxxfKMoAMUOIblh2Hn6FBEVWDg
-        cHB5SaB6qouAqqIEyX87SqKQlYYerbA=
+        bh=L0irfHFdDSN+gi4QxY+Eyd06TB6TiH/k57Saupd0Qtc=;
+        b=fTwdWk6hknkqzViJTPIJyzTB4kge/tf2KnHH7IE88WbaBiiLM4Hxu7jJ43Hvznh30yYvjc
+        Uj+gz5Inqc61uhWeFYvNJts40UzpAqDZOfvTsNIhNbVkPGyUo6gUsxInW9DsiNcqQvDjql
+        PmrkjHF28rv2/RoO6u2J0Axl0+CELCs=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-391-vPJBaJFINfWXd14xKzAlXw-1; Mon, 28 Dec 2020 03:28:47 -0500
-X-MC-Unique: vPJBaJFINfWXd14xKzAlXw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+ us-mta-475-2dg01nSANUGl60BCcEA5eg-1; Mon, 28 Dec 2020 03:31:25 -0500
+X-MC-Unique: 2dg01nSANUGl60BCcEA5eg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 54A761005513;
-        Mon, 28 Dec 2020 08:28:46 +0000 (UTC)
-Received: from T590 (ovpn-13-139.pek2.redhat.com [10.72.13.139])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0253C1F44D;
-        Mon, 28 Dec 2020 08:28:39 +0000 (UTC)
-Date:   Mon, 28 Dec 2020 16:28:35 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     "yukuai (C)" <yukuai3@huawei.com>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        zhangxiaoxu5@huawei.com
-Subject: Re: [PATCH 1/3] blk-mq: allow hardware queue to get more tag while
- sharing a tag set
-Message-ID: <20201228082835.GB3304670@T590>
-References: <20201226102808.2534966-1-yukuai3@huawei.com>
- <20201226102808.2534966-2-yukuai3@huawei.com>
- <20201227115859.GA3282759@T590>
- <04c39621-0c4a-e593-5545-c4bd274c5fc2@huawei.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 17607107ACF6;
+        Mon, 28 Dec 2020 08:31:24 +0000 (UTC)
+Received: from krava (unknown [10.40.192.84])
+        by smtp.corp.redhat.com (Postfix) with SMTP id AF71E19441;
+        Mon, 28 Dec 2020 08:31:21 +0000 (UTC)
+Date:   Mon, 28 Dec 2020 09:31:20 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>,
+        Andi Kleen <ak@linux.intel.com>
+Subject: Re: [PATCH 2/3] tools/lib/fs: Diet cgroupfs_find_mountpoint()
+Message-ID: <20201228083120.GA450923@krava>
+References: <20201216090556.813996-1-namhyung@kernel.org>
+ <20201216090556.813996-2-namhyung@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <04c39621-0c4a-e593-5545-c4bd274c5fc2@huawei.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <20201216090556.813996-2-namhyung@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 09:56:15AM +0800, yukuai (C) wrote:
-> Hi,
+On Wed, Dec 16, 2020 at 06:05:55PM +0900, Namhyung Kim wrote:
+
+SNIP
+
+> +		*p++ = '\0';
+>  
+> -			while (token != NULL) {
+> -				if (subsys && !strcmp(token, subsys)) {
+> -					/* found */
+> -					fclose(fp);
+> +		/* check filesystem type */
+> +		if (strncmp(p, "cgroup", 6))
+> +			continue;
+>  
+> -					if (strlen(mountpoint) < maxlen) {
+> -						strcpy(buf, mountpoint);
+> -						return 0;
+> -					}
+> -					return -1;
+> -				}
+> -				token = strtok_r(NULL, ",", &saved_ptr);
+> -			}
+> +		if (p[6] == '2') {
+> +			/* save cgroup v2 path */
+> +			strcpy(mountpoint, path);
+> +			continue;
+>  		}
+>  
+> -		if (!strcmp(type, "cgroup2"))
+> -			strcpy(path_v2, mountpoint);
+> +		/* now we have cgroup v1, check the options for subsystem */
+> +		p += 7;
+> +
+> +		p = strstr(p, subsys);
+
+not sure this is a real problem, but this would mixe up for
+cpu/cpuacct/cpuset no? we are using the function for perf_event
+subsys only, but it's globaly availble
+
+jirka
+
+> +		if (p == NULL)
+> +			continue;
+> +
+> +		/* sanity check: it should be separated by a space or a comma */
+> +		if (!strchr(" ,", p[-1]) || !strchr(" ,", p[strlen(subsys)]))
+> +			continue;
+> +
+> +		strcpy(mountpoint, path);
+> +		break;
+>  	}
+> +	free(line);
+>  	fclose(fp);
+>  
+> -	if (path_v2[0] && strlen(path_v2) < maxlen) {
+> -		strcpy(buf, path_v2);
+> +	if (mountpoint[0] && strlen(mountpoint) < maxlen) {
+> +		strcpy(buf, mountpoint);
+>  		return 0;
+>  	}
+>  	return -1;
+> -- 
+> 2.29.2.684.gfbc64c5ab5-goog
 > 
-> On 2020/12/27 19:58, Ming Lei wrote:
-> > Hi Yu Kuai,
-> > 
-> > On Sat, Dec 26, 2020 at 06:28:06PM +0800, Yu Kuai wrote:
-> > > When sharing a tag set, if most disks are issuing small amount of IO, and
-> > > only a few is issuing a large amount of IO. Current approach is to limit
-> > > the max amount of tags a disk can get equally to the average of total
-> > > tags. Thus the few heavy load disk can't get enough tags while many tags
-> > > are still free in the tag set.
-> > 
-> > Yeah, current approach just allocates same share for each active queue
-> > which is evaluated in each timeout period.
-> > 
-> > That said you are trying to improve the following case:
-> > - heavy IO on one or several disks, and the average share for these
-> >    disks become bottleneck of IO performance
-> > - small amount IO on other disks attached to the same host, and all IOs are
-> > submitted to disk in <30 second period.
-> > 
-> > Just wondering if you may share the workload you are trying to optimize,
-> > or it is just one improvement in theory? And what is the disk(hdd, ssd
-> > or nvme) and host? And how many disks in your setting? And how deep the tagset
-> > depth is?
-> 
-> The details of the environment that we found the problem are as follows:
-> 
->  total driver tags: 128
-
-Looks the tagset depth is a bit low.
-
->  number of disks: 13 (network drive, and they form a dm-multipath)
->  default queue_depth: 32
-
-Another candidate solution may be to always return true from hctx_may_queue()
-for this kind of queue because queue_depth has provided fair allocation for
-each LUN, and looks not necessary to do that again.
-
->  disk performance: when test with 4k randread and single thread, iops is
->                    300. And can up to 4000 with 32 thread.
->  test cmd: fio -ioengine=psync -numjobs=32 ...
-> 
-> We found that mpath will issue sg_io periodically(about 15s)，which lead
-> to active_queues setting to 13 for about 5s in every 15s.
-
-BTW, I just observe sg_io on rhel8 & rhel7 on mpath over scsi_debug, looks not
-see any such activity.
-
-> 
-> By the way, I'm not sure this is a common scenario, however, sq don't
-> have such problem,
-
-If it is done by mpath at default setting, I think it can be thought as
-one common case.
-
-
-Thanks,
-Ming
 
