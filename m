@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5526D2E3A16
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:32:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BC292E3BA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:53:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390979AbgL1NcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:32:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59138 "EHLO mail.kernel.org"
+        id S2407195AbgL1Nw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:52:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390452AbgL1Nap (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:30:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 699CE207C9;
-        Mon, 28 Dec 2020 13:30:29 +0000 (UTC)
+        id S2407158AbgL1Nwl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:52:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2BB7205CB;
+        Mon, 28 Dec 2020 13:51:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162230;
-        bh=Gs6G0xxq3byMPSbtf2nupJr6Ofe6obu7bxSUjM2rhXc=;
+        s=korg; t=1609163520;
+        bh=wkgRYiQ9peJU+x7wP2bPPnDxmwh+pI6/UVGrQmVkiko=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SIJtTh/dsraW447j9s0GSG9OZnaRMFbTUA4ju6CyJ01vrJFRccpUgxb83ONnMWFND
-         ikzNwaAHdOR+iZq1o28yb8N/3sk8ljLKz3dN0gJcyY4GK3o16u+cVmSYD19dvG4R35
-         8pGV9luch3Ze8nCQdji8ft8uTa4VZDd6bbsJUHfw=
+        b=1fPQn35SDE4bJmR00iMhViCOK6ijhH2dTfGIryjNS1sYCJUgvDXLYsMJeyKIIZEZ9
+         FoIGNgjLCCs0n8y4FHvMtk1VQkvlc8Ozfg1rHeHTMne5jQeLjnJeKATpdN+5GAPgcD
+         goUK1CqUYYfuG2DXnkrPXPV506/Z6CiFLwfU3xCQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Richard Weinberger <richard@nod.at>,
+        stable@vger.kernel.org, Chris Park <Chris.Park@amd.com>,
+        Wenjing Liu <Wenjing.Liu@amd.com>,
+        Eryk Brol <eryk.brol@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 232/346] um: Monitor error events in IRQ controller
+Subject: [PATCH 5.4 315/453] drm/amd/display: Prevent bandwidth overflow
 Date:   Mon, 28 Dec 2020 13:49:11 +0100
-Message-Id: <20201228124930.993321400@linuxfoundation.org>
+Message-Id: <20201228124952.365781046@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,34 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+From: Chris Park <Chris.Park@amd.com>
 
-[ Upstream commit e3a01cbee9c5f2c6fc813dd6af007716e60257e7 ]
+[ Upstream commit 80089dd8410f356d5104496d5ab71a66a4f4646b ]
 
-Ensure that file closes, connection closes, etc are propagated
-as interrupts in the interrupt controller.
+[Why]
+At very high pixel clock, bandwidth calculation exceeds 32 bit size
+and overflow value. This causes the resulting selection of link rate
+to be inaccurate.
 
-Fixes: ff6a17989c08 ("Epoll based IRQ controller")
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+[How]
+Change order of operation and use fixed point to deal with integer
+accuracy. Also address bug found when forcing link rate.
+
+Signed-off-by: Chris Park <Chris.Park@amd.com>
+Reviewed-by: Wenjing Liu <Wenjing.Liu@amd.com>
+Acked-by: Eryk Brol <eryk.brol@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/os-Linux/irq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/display/dc/core/dc_link.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/arch/um/os-Linux/irq.c b/arch/um/os-Linux/irq.c
-index 365823010346a..90ef404622805 100644
---- a/arch/um/os-Linux/irq.c
-+++ b/arch/um/os-Linux/irq.c
-@@ -48,7 +48,7 @@ int os_epoll_triggered(int index, int events)
- int os_event_mask(int irq_type)
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link.c b/drivers/gpu/drm/amd/display/dc/core/dc_link.c
+index 47cefc05fd3f5..f933791f1fbbb 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc_link.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc_link.c
+@@ -2906,11 +2906,14 @@ uint32_t dc_bandwidth_in_kbps_from_timing(
  {
- 	if (irq_type == IRQ_READ)
--		return EPOLLIN | EPOLLPRI;
-+		return EPOLLIN | EPOLLPRI | EPOLLERR | EPOLLHUP | EPOLLRDHUP;
- 	if (irq_type == IRQ_WRITE)
- 		return EPOLLOUT;
- 	return 0;
+ 	uint32_t bits_per_channel = 0;
+ 	uint32_t kbps;
++	struct fixed31_32 link_bw_kbps;
+ 
+ #ifdef CONFIG_DRM_AMD_DC_DSC_SUPPORT
+ 	if (timing->flags.DSC) {
+-		kbps = (timing->pix_clk_100hz * timing->dsc_cfg.bits_per_pixel);
+-		kbps = kbps / 160 + ((kbps % 160) ? 1 : 0);
++		link_bw_kbps = dc_fixpt_from_int(timing->pix_clk_100hz);
++		link_bw_kbps = dc_fixpt_div_int(link_bw_kbps, 160);
++		link_bw_kbps = dc_fixpt_mul_int(link_bw_kbps, timing->dsc_cfg.bits_per_pixel);
++		kbps = dc_fixpt_ceil(link_bw_kbps);
+ 		return kbps;
+ 	}
+ #endif
 -- 
 2.27.0
 
