@@ -2,90 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05C3C2E6B80
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:12:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE8A02E6B76
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:10:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730906AbgL1Wz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1730929AbgL1Wz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 28 Dec 2020 17:55:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60884 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729409AbgL1UXq (ORCPT
+        with ESMTP id S1729412AbgL1UZL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 15:23:46 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 389F0C061796
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 12:23:06 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id w79so9821333qkb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 12:23:06 -0800 (PST)
+        Mon, 28 Dec 2020 15:25:11 -0500
+Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D12FFC0613D6;
+        Mon, 28 Dec 2020 12:24:30 -0800 (PST)
+Received: by mail-oo1-xc33.google.com with SMTP id x23so2459109oop.1;
+        Mon, 28 Dec 2020 12:24:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9EpTdIYOFXIEGqAx9s+sFGrEVZtrYKtNXXy9SEY9qRE=;
-        b=XzEoX7se7gdT+PPesqt7TRoQ5DJYbGHBQPFSEnWBTeaycsn8zErxFaVUwZ6O0/eBQX
-         JvXxcj07SrGRt8NC+oCDbEX8H9ZEy8wQwyzMPGTYjfgh5PwbOjZCH4sux40D36rzbCl8
-         a5zKHuOxyxEYgEc6rSpQIj9wvML1U7hH2O23Y=
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Mpgdo06G2MJ3Ovx5E1thu4LgBiE86lTGSA2yG+EAtm4=;
+        b=VVQ2honX+RV8CKFoFkAzyPrk4damX9DcKn2EKU4BSR/kaBJakBrFBEi1ZfZn1XDfif
+         cpOlKmwqDVEGwqjbQMvHlUL3gAoUKCMY8xS6ALo6ud/KO6uoCa/vQ8FKaKI7eQT1rZqf
+         YTs37iPX8i+TaGTIRpRmGEQeR77N4Xmw+PT9oNKCVZ7IoKQjRqEVQYG4U9cGcQ1XvY3O
+         jqk2FMYOGFwFNMtrMRhDkXJ/fY8QjBlNBJ2KOor181M2BPwQXFxpHajYu8d1S225hGfd
+         UUZiMJ4NFpvZRHRB8uAPH5fHhEYuBUHuEiXj07xCkz1O2/HMGU9svBGBN0Dh5GsB4IAB
+         RvgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9EpTdIYOFXIEGqAx9s+sFGrEVZtrYKtNXXy9SEY9qRE=;
-        b=UfSplpnLpQ2LW15OULi05XklOyznU1UA4KRyS88+yakLhyvvuRaIECcosC+gvUMg+Z
-         fA4hujxrz14KwfGJXMLALRHf3AVpQjRUrG7xKL7nGOFERK7YMxB8lSrdZ+3C0Z4wGBDN
-         IFsRBdOXG6NIkPqsfApzd7QFAzrD3PHI6Cd2m8J3B/MqCqSnd/gRnfiZ3xCyuj213MMK
-         Dk/nHBaoq4maeDEoTWHxen4Fum3+7hqwt8KIdCXvCuM4Pyrn9entMOiviPIsIBYCxxRO
-         uXnJEtKCQUdMrTtjY7sFejHSfDI4YlPKVdKZFL6tGTGESQWXi5FJsJwGxcFysX9jwug/
-         lrjg==
-X-Gm-Message-State: AOAM5330cU9JkXD4I3qIJ/Zoj1LMel30q1NSO9/DuMTXQcBo08uBF5DI
-        gJzbb0928Eh7NNvJ2BoBn5wPuw==
-X-Google-Smtp-Source: ABdhPJxq/0XcSIyWLCuk2o5XNjIVM6Bureox3/RV7HCZzpMA0Y+pdx2v3wSOCsNVXetAzx3iObNPoQ==
-X-Received: by 2002:a37:b543:: with SMTP id e64mr37520059qkf.10.1609186985195;
-        Mon, 28 Dec 2020 12:23:05 -0800 (PST)
-Received: from chatter.i7.local ([89.36.78.230])
-        by smtp.gmail.com with ESMTPSA id g26sm24036747qkl.60.2020.12.28.12.23.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Dec 2020 12:23:04 -0800 (PST)
-Date:   Mon, 28 Dec 2020 15:23:02 -0500
-From:   Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>, kjlu@umn.edu,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: ethernet: Fix memleak in ethoc_probe
-Message-ID: <20201228202302.afkxtco27j4ahh6d@chatter.i7.local>
-References: <20201223110615.31389-1-dinghao.liu@zju.edu.cn>
- <20201223153304.GD3198262@lunn.ch>
- <20201223123218.1cf7d9cb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20201223210044.GA3253993@lunn.ch>
- <20201223131149.15fff8d2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <680850a9-8ab0-4672-498e-6dc740720da3@gmail.com>
- <20201223174146.37e62326@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20201224180631.l4zieher54ncqvwl@chatter.i7.local>
- <fc7be127-648c-6b09-6f00-3542e0388197@gmail.com>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Mpgdo06G2MJ3Ovx5E1thu4LgBiE86lTGSA2yG+EAtm4=;
+        b=A5fiRWxLqVPn+p9iTqiKrXQAMO2dJe4u/pg2VrCv8S5mWAKpus3bO9zK9gJ8jKaqXn
+         i25cEcBE0Wq3RWzcFJTXfWDgTuaJia3odZLa8HhykCq53YpJORY3gRYYGu8ffzEVlelZ
+         PWnFcwXwZRRo9IyOR/92KEhBDO3EKZuRZPonUGAX5XSWQ5F6NSBihDRgGBeMXdgQWClc
+         pLBE4T7c0kUOkRNOlz4EJjVI7cCFn5FbgHiuZaoclATOnicgww+ve1/UQETcbJ3/yUBc
+         gWK9dMXYb+Mgu4eKBEyzIZeWUDicgY9vJxQuC5QfaNsVWJMEfTGnM6+k29ETDz4zzNKc
+         wqzQ==
+X-Gm-Message-State: AOAM533IFAp2j/sI1I++sAInPzhy2Kmo3qe9SXtMHYXsLvOZioPo6e0q
+        CVOltNUpQWF1HRYKUJT0msM=
+X-Google-Smtp-Source: ABdhPJzVHw4Gu6HeWHF5strsg4JX35vlwKBaUjuyvu83sFSxPpaStvPM/rCBrkWuC/STm22b9ECvPA==
+X-Received: by 2002:a4a:2cc9:: with SMTP id o192mr30407447ooo.66.1609187070312;
+        Mon, 28 Dec 2020 12:24:30 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id a26sm7666495oos.46.2020.12.28.12.24.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 28 Dec 2020 12:24:29 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 28 Dec 2020 12:24:28 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 000/132] 4.4.249-rc1 review
+Message-ID: <20201228202428.GA9868@roeck-us.net>
+References: <20201228124846.409999325@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fc7be127-648c-6b09-6f00-3542e0388197@gmail.com>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 24, 2020 at 01:57:40PM -0800, Florian Fainelli wrote:
-> >> Konstantin, would you be willing to mod the kernel.org instance of
-> >> patchwork to populate Fixes tags in the generated mboxes?
-> > 
-> > I'd really rather not -- we try not to diverge from project upstream if at all
-> > possible, as this dramatically complicates upgrades.
+On Mon, Dec 28, 2020 at 01:48:04PM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.4.249 release.
+> There are 132 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Well that is really unfortunate then because the Linux developer
-> community settled on using the Fixes: tag for years now and having
-> patchwork automatically append those tags would greatly help maintainers.
+> Responses should be made by Wed, 30 Dec 2020 12:48:23 +0000.
+> Anything received after that time might be too late.
+> 
 
-I agree -- but this is something that needs to be implemented upstream.
-Picking up a one-off patch just for patchwork.kernel.org is not the right way
-to go about this.
+Build results:
+	total: 165 pass: 165 fail: 0
+Qemu test results:
+	total: 328 pass: 328 fail: 0
 
--K
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+
+Guenter
