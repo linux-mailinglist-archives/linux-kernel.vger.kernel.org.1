@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8AF42E6568
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:01:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DD3D2E6819
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:33:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387682AbgL1NcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:32:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59522 "EHLO mail.kernel.org"
+        id S2441981AbgL1Qct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:32:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390563AbgL1NbI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:31:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA679207C9;
-        Mon, 28 Dec 2020 13:30:51 +0000 (UTC)
+        id S1730338AbgL1NEC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:04:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B782208B6;
+        Mon, 28 Dec 2020 13:03:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162252;
-        bh=etFg+hdY9cYDgYnDmZBzPds9btDoJxw4EV86C3JFYyc=;
+        s=korg; t=1609160602;
+        bh=Jt5ah7W6jt8vYVVXZz8JhEpNRQ0h7d7odSb+gh5XBgc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UjskC6bu147HNzftAhWtrye4fy+UpaYTiceUj0lVkCvurlMEv/tqX0m5JJKPHd3cf
-         TuoTD7SnuBQdLfMvvFmmT6bOX1QKRCdYqMQ+1AS6t4zN4gnpL/NfbhPD6fvURVXrAE
-         y/FFKdeN8bGaAHIAIK8UXbfhT0MPFmWArxlHDH9U=
+        b=iBMfd215wwgqQb4Cgql6pSzRixZ+/94jbaGNmZ7ehU74iFRivppIwPVmD9d1I8617
+         M8kikKtYT4uY9tFpyagETWyeTGnF5XYr9TluYQiDajWe/OeZ+SZtUKlHaZAH666M3N
+         NA87wMmyq6gAUT8OMWrxQOwsqjIFyUzYBjiQ+ujI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 239/346] net: allwinner: Fix some resources leak in the error handling path of the probe and in the remove function
-Date:   Mon, 28 Dec 2020 13:49:18 +0100
-Message-Id: <20201228124931.316767201@linuxfoundation.org>
+Subject: [PATCH 4.9 106/175] usb: ehci-omap: Fix PM disable depth umbalance in ehci_hcd_omap_probe
+Date:   Mon, 28 Dec 2020 13:49:19 +0100
+Message-Id: <20201228124858.388195843@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,62 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit 322e53d1e2529ae9d501f5e0f20604a79b873aef ]
+[ Upstream commit d6ff32478d7e95d6ca199b5c852710d6964d5811 ]
 
-'irq_of_parse_and_map()' should be balanced by a corresponding
-'irq_dispose_mapping()' call. Otherwise, there is some resources leaks.
+The pm_runtime_enable will decrement the power disable depth. Imbalance
+depth will resulted in enabling runtime PM of device fails later.  Thus
+a pairing decrement must be needed on the error handling path to keep it
+balanced.
 
-Add such a call in the error handling path of the probe function and in the
-remove function.
-
-Fixes: 492205050d77 ("net: Add EMAC ethernet driver found on Allwinner A10 SoC's")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/20201214202117.146293-1-christophe.jaillet@wanadoo.fr
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 6c984b066d84b ("ARM: OMAP: USBHOST: Replace usbhs core driver APIs by Runtime pm APIs")
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Link: https://lore.kernel.org/r/20201123145719.1455849-1-zhangqilong3@huawei.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/allwinner/sun4i-emac.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/usb/host/ehci-omap.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/allwinner/sun4i-emac.c b/drivers/net/ethernet/allwinner/sun4i-emac.c
-index c458b81ba63af..d249a4309da2f 100644
---- a/drivers/net/ethernet/allwinner/sun4i-emac.c
-+++ b/drivers/net/ethernet/allwinner/sun4i-emac.c
-@@ -847,13 +847,13 @@ static int emac_probe(struct platform_device *pdev)
- 	db->clk = devm_clk_get(&pdev->dev, NULL);
- 	if (IS_ERR(db->clk)) {
- 		ret = PTR_ERR(db->clk);
--		goto out_iounmap;
-+		goto out_dispose_mapping;
- 	}
+diff --git a/drivers/usb/host/ehci-omap.c b/drivers/usb/host/ehci-omap.c
+index 94ea9fff13e6d..9227a9ddac609 100644
+--- a/drivers/usb/host/ehci-omap.c
++++ b/drivers/usb/host/ehci-omap.c
+@@ -237,6 +237,7 @@ static int ehci_hcd_omap_probe(struct platform_device *pdev)
  
- 	ret = clk_prepare_enable(db->clk);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Error couldn't enable clock (%d)\n", ret);
--		goto out_iounmap;
-+		goto out_dispose_mapping;
- 	}
+ err_pm_runtime:
+ 	pm_runtime_put_sync(dev);
++	pm_runtime_disable(dev);
  
- 	ret = sunxi_sram_claim(&pdev->dev);
-@@ -910,6 +910,8 @@ out_release_sram:
- 	sunxi_sram_release(&pdev->dev);
- out_clk_disable_unprepare:
- 	clk_disable_unprepare(db->clk);
-+out_dispose_mapping:
-+	irq_dispose_mapping(ndev->irq);
- out_iounmap:
- 	iounmap(db->membase);
- out:
-@@ -928,6 +930,7 @@ static int emac_remove(struct platform_device *pdev)
- 	unregister_netdev(ndev);
- 	sunxi_sram_release(&pdev->dev);
- 	clk_disable_unprepare(db->clk);
-+	irq_dispose_mapping(ndev->irq);
- 	iounmap(db->membase);
- 	free_netdev(ndev);
- 
+ err_phy:
+ 	for (i = 0; i < omap->nports; i++) {
 -- 
 2.27.0
 
