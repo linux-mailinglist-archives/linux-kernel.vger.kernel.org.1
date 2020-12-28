@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 566B52E67D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:30:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2E442E68C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:42:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633625AbgL1Q3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:29:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34638 "EHLO mail.kernel.org"
+        id S1728306AbgL1M6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:58:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730695AbgL1NHM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:07:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B403207C9;
-        Mon, 28 Dec 2020 13:06:55 +0000 (UTC)
+        id S1728162AbgL1M6h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:58:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B1F3B22573;
+        Mon, 28 Dec 2020 12:57:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160816;
-        bh=8Rwy/Rs4ImkiFEX0hYOi5VDqlNDWf8hygiylf9soHH8=;
+        s=korg; t=1609160276;
+        bh=ZhPJvr4T5Hc51Jhsmbvw8vrcuIYjwobBSzb5/C5zD2Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1dz1IIkQtOo9S/sudVBQBuLvxASwOzImAHGxKIozJYDr4Yn3efr1Qwa0pmgHXIWhB
-         y783UqR2gV2HghXY9ZPdKgTFvCt7t2mtaFKkkYrFnoQA5yYVLTqBk7sDwsBjaTSNV+
-         Vaodrf1KxS32sXPCOERJq9V9NwQodzmmiB9TraIk=
+        b=GD/AOkMRbe/eXitbUba25C02f0sPMshZyGHdmMHbauQcRxeCzj01Fnc1JWi1HSXYg
+         YThFKEEIz45yAGCmgMibGCU2JH7ZyNPQ0yBKSBH9j0oJVJObgTpszDdpPDOj8nbGby
+         NpuT8lJDLtaweaR11CHKHnGwPC4suaeRk1zdj6SA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
-        Luis Henriques <lhenriques@suse.de>,
-        Ilya Dryomov <idryomov@gmail.com>
-Subject: [PATCH 4.9 158/175] ceph: fix race in concurrent __ceph_remove_cap invocations
-Date:   Mon, 28 Dec 2020 13:50:11 +0100
-Message-Id: <20201228124900.903174927@linuxfoundation.org>
+        stable@vger.kernel.org, SeongJae Park <sjpark@amazon.de>,
+        Michael Kurth <mku@amazon.de>,
+        Pawel Wieczorkiewicz <wipawel@amazon.de>,
+        Juergen Gross <jgross@suse.com>
+Subject: [PATCH 4.4 129/132] xen/xenbus/xen_bus_type: Support will_handle watch callback
+Date:   Mon, 28 Dec 2020 13:50:13 +0100
+Message-Id: <20201228124852.641102092@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,53 +41,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luis Henriques <lhenriques@suse.de>
+From: SeongJae Park <sjpark@amazon.de>
 
-commit e5cafce3ad0f8652d6849314d951459c2bff7233 upstream.
+commit be987200fbaceaef340872841d4f7af2c5ee8dc3 upstream.
 
-A NULL pointer dereference may occur in __ceph_remove_cap with some of the
-callbacks used in ceph_iterate_session_caps, namely trim_caps_cb and
-remove_session_caps_cb. Those callers hold the session->s_mutex, so they
-are prevented from concurrent execution, but ceph_evict_inode does not.
+This commit adds support of the 'will_handle' watch callback for
+'xen_bus_type' users.
 
-Since the callers of this function hold the i_ceph_lock, the fix is simply
-a matter of returning immediately if caps->ci is NULL.
+This is part of XSA-349
 
 Cc: stable@vger.kernel.org
-URL: https://tracker.ceph.com/issues/43272
-Suggested-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Luis Henriques <lhenriques@suse.de>
-Reviewed-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+Signed-off-by: SeongJae Park <sjpark@amazon.de>
+Reported-by: Michael Kurth <mku@amazon.de>
+Reported-by: Pawel Wieczorkiewicz <wipawel@amazon.de>
+Reviewed-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
----
- fs/ceph/caps.c |   11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
 
---- a/fs/ceph/caps.c
-+++ b/fs/ceph/caps.c
-@@ -927,12 +927,19 @@ void __ceph_remove_cap(struct ceph_cap *
- {
- 	struct ceph_mds_session *session = cap->session;
- 	struct ceph_inode_info *ci = cap->ci;
--	struct ceph_mds_client *mdsc =
--		ceph_sb_to_client(ci->vfs_inode.i_sb)->mdsc;
-+	struct ceph_mds_client *mdsc;
- 	int removed = 0;
+---
+ drivers/xen/xenbus/xenbus_probe.c |    3 ++-
+ drivers/xen/xenbus/xenbus_probe.h |    2 ++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+
+--- a/drivers/xen/xenbus/xenbus_probe.c
++++ b/drivers/xen/xenbus/xenbus_probe.c
+@@ -137,7 +137,8 @@ static int watch_otherend(struct xenbus_
+ 		container_of(dev->dev.bus, struct xen_bus_type, bus);
  
-+	/* 'ci' being NULL means the remove have already occurred */
-+	if (!ci) {
-+		dout("%s: cap inode is NULL\n", __func__);
-+		return;
-+	}
-+
- 	dout("__ceph_remove_cap %p from %p\n", cap, &ci->vfs_inode);
+ 	return xenbus_watch_pathfmt(dev, &dev->otherend_watch,
+-				    NULL, bus->otherend_changed,
++				    bus->otherend_will_handle,
++				    bus->otherend_changed,
+ 				    "%s/%s", dev->otherend, "state");
+ }
  
-+	mdsc = ceph_inode_to_client(&ci->vfs_inode)->mdsc;
-+
- 	/* remove from inode's cap rbtree, and clear auth cap */
- 	rb_erase(&cap->ci_node, &ci->i_caps);
- 	if (ci->i_auth_cap == cap)
+--- a/drivers/xen/xenbus/xenbus_probe.h
++++ b/drivers/xen/xenbus/xenbus_probe.h
+@@ -42,6 +42,8 @@ struct xen_bus_type {
+ 	int (*get_bus_id)(char bus_id[XEN_BUS_ID_SIZE], const char *nodename);
+ 	int (*probe)(struct xen_bus_type *bus, const char *type,
+ 		     const char *dir);
++	bool (*otherend_will_handle)(struct xenbus_watch *watch,
++				     const char **vec, unsigned int len);
+ 	void (*otherend_changed)(struct xenbus_watch *watch, const char **vec,
+ 				 unsigned int len);
+ 	struct bus_type bus;
 
 
