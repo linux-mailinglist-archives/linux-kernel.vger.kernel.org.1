@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20B162E3A37
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:34:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 233A92E3779
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:57:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387953AbgL1Ndj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:33:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59522 "EHLO mail.kernel.org"
+        id S1728661AbgL1Mzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:55:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390825AbgL1NbY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:31:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B13A521D94;
-        Mon, 28 Dec 2020 13:31:08 +0000 (UTC)
+        id S1727744AbgL1Mzt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:55:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 03E03229C6;
+        Mon, 28 Dec 2020 12:55:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162269;
-        bh=fWQJ8GJNj4rZDgu6T4wbPlxyJHgCU5LZGAH2iFSLVAo=;
+        s=korg; t=1609160134;
+        bh=QqLnu4EI7L+TPQImoyt9LuFY3DbX6COmrtlP5YR/69c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FPNxOcisU0y3h7i6VEx3FrctHDuqX4kN7HdHiXY2RH+YfupQ6GxaWBwbkpRJ8OU5d
-         jr4hxWJWlZoYs2L9ssDw0xmn/+UuxbBTMXVWdvzlAK6PKZpNz8fI1DcLQgXmG8V+kS
-         4HYjlmc0Gq7D0Buiyv2tBqLRIwFySqM2yHcjfnys=
+        b=oKb3a8CYVW+qyeQol2nQ5S7tS0YKB0z1FqfAwYoIpGysQ4UxNYtAvXy4PDjPNHca8
+         StemhdxBwHgEMjPsohshFsrHZ8oxDyG96JjFzhO0XFTneg+uawYigsvKwH1T31tn0g
+         BAlG6mS1ff4NQ/GNWFO199pQu8pKxUg5QpFpLULw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
+        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 245/346] pwm: zx: Add missing cleanup in error path
+Subject: [PATCH 4.4 080/132] x86/kprobes: Restore BTF if the single-stepping is cancelled
 Date:   Mon, 28 Dec 2020 13:49:24 +0100
-Message-Id: <20201228124931.617592311@linuxfoundation.org>
+Message-Id: <20201228124850.308205244@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,34 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-[ Upstream commit 269effd03f6142df4c74814cfdd5f0b041b30bf9 ]
+[ Upstream commit 78ff2733ff352175eb7f4418a34654346e1b6cd2 ]
 
-zx_pwm_probe() called clk_prepare_enable() before; this must be undone
-in the error path.
+Fix to restore BTF if single-stepping causes a page fault and
+it is cancelled.
 
-Fixes: 4836193c435c ("pwm: Add ZTE ZX PWM device driver")
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Acked-by: Shawn Guo <shawn.guo@linaro.org>
-Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
+Usually the BTF flag was restored when the single stepping is done
+(in resume_execution()). However, if a page fault happens on the
+single stepping instruction, the fault handler is invoked and
+the single stepping is cancelled. Thus, the BTF flag is not
+restored.
+
+Fixes: 1ecc798c6764 ("x86: debugctlmsr kprobes")
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/160389546985.106936.12727996109376240993.stgit@devnote2
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pwm/pwm-zx.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/kernel/kprobes/core.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/pwm/pwm-zx.c b/drivers/pwm/pwm-zx.c
-index 5d27c16edfb13..0d4112410b69d 100644
---- a/drivers/pwm/pwm-zx.c
-+++ b/drivers/pwm/pwm-zx.c
-@@ -241,6 +241,7 @@ static int zx_pwm_probe(struct platform_device *pdev)
- 	ret = pwmchip_add(&zpc->chip);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "failed to add PWM chip: %d\n", ret);
-+		clk_disable_unprepare(zpc->pclk);
- 		return ret;
- 	}
+diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+index 5a6cb30b1c621..ebd4da00a56ea 100644
+--- a/arch/x86/kernel/kprobes/core.c
++++ b/arch/x86/kernel/kprobes/core.c
+@@ -1014,6 +1014,11 @@ int kprobe_fault_handler(struct pt_regs *regs, int trapnr)
+ 		 * So clear it by resetting the current kprobe:
+ 		 */
+ 		regs->flags &= ~X86_EFLAGS_TF;
++		/*
++		 * Since the single step (trap) has been cancelled,
++		 * we need to restore BTF here.
++		 */
++		restore_btf();
  
+ 		/*
+ 		 * If the TF flag was set before the kprobe hit,
 -- 
 2.27.0
 
