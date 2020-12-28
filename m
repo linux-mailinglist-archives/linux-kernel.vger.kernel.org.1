@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07F312E6501
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:57:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACD222E383F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:09:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391144AbgL1Nee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:34:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34406 "EHLO mail.kernel.org"
+        id S1729802AbgL1NHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:07:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34784 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391118AbgL1NeO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:34:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 356B6205CB;
-        Mon, 28 Dec 2020 13:33:58 +0000 (UTC)
+        id S1729617AbgL1NHE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:07:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94D1E21D94;
+        Mon, 28 Dec 2020 13:06:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162438;
-        bh=prpfV/7K5WxJDZkiaCAbTfjnEQzp7qDjT+B6Bxk0+rs=;
+        s=korg; t=1609160783;
+        bh=ZC7jmSmNoxuf+N+gxg4VQ1KIKXp32QeS8eSK5iclPyg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rk6dR78Bibx8vIMR+KCQDT2soLUbk4L9tbS74Bfw/vBynTFmZRWLIoWo0aR//ireb
-         q2hz1NrqrvlP8prTQeh0DRpWqdPa50pcaEPE99KCSqYwVh6i28tlr1IYz7Jp9QcCuN
-         e0ko8yiLiii/sttCOYwe/Mea96edchOLAy4OVfuQ=
+        b=UNt0p0rtqDVTItnsZNSQoHofppfEqSsOgvTUyn+xmF7CB4x05S4kFX2TLEYip0XTF
+         RA1up6iDR5i0rXwQPrOcmnFQLaZWa6hWVQ0ST8ozp63QQ/US30xH3G/MA1rfeW5Wha
+         uQafaqw6mx+fhA3/QnHXoxNHkN8LatLQth+Nacws=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 4.19 304/346] powerpc/xmon: Change printk() to pr_cont()
+        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 4.9 170/175] iio: buffer: Fix demux update
 Date:   Mon, 28 Dec 2020 13:50:23 +0100
-Message-Id: <20201228124934.482528292@linuxfoundation.org>
+Message-Id: <20201228124901.462790066@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,66 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Nuno Sá <nuno.sa@analog.com>
 
-commit 7c6c86b36a36dd4a13d30bba07718e767aa2e7a1 upstream.
+commit 19ef7b70ca9487773c29b449adf0c70f540a0aab upstream.
 
-Since some time now, printk() adds carriage return, leading to
-unusable xmon output if there is no udbg backend available:
+When updating the buffer demux, we will skip a scan element from the
+device in the case `in_ind != out_ind` and we enter the while loop.
+in_ind should only be refreshed with `find_next_bit()` in the end of the
+loop.
 
-  [   54.288722] sysrq: Entering xmon
-  [   54.292209] Vector: 0  at [cace3d2c]
-  [   54.292274]     pc:
-  [   54.292331] c0023650
-  [   54.292468] : xmon+0x28/0x58
-  [   54.292519]
-  [   54.292574]     lr:
-  [   54.292630] c0023724
-  [   54.292749] : sysrq_handle_xmon+0xa4/0xfc
-  [   54.292801]
-  [   54.292867]     sp: cace3de8
-  [   54.292931]    msr: 9032
-  [   54.292999]   current = 0xc28d0000
-  [   54.293072]     pid   = 377, comm = sh
-  [   54.293157] Linux version 5.10.0-rc6-s3k-dev-01364-gedf13f0ccd76-dirty (root@po17688vm.idsi0.si.c-s.fr) (powerpc64-linux-gcc (GCC) 10.1.0, GNU ld (GNU Binutils) 2.34) #4211 PREEMPT Fri Dec 4 09:32:11 UTC 2020
-  [   54.293287] enter ? for help
-  [   54.293470] [cace3de8]
-  [   54.293532] c0023724
-  [   54.293654]  sysrq_handle_xmon+0xa4/0xfc
-  [   54.293711]  (unreliable)
-  ...
-  [   54.296002]
-  [   54.296159] --- Exception: c01 (System Call) at
-  [   54.296217] 0fd4e784
-  [   54.296303]
-  [   54.296375] SP (7fca6ff0) is in userspace
-  [   54.296431] mon>
-  [   54.296484]  <no input ...>
+Note, to cause problems we need a situation where we are skippig over
+an element (channel not enabled) that happens to not have the same size
+as the next element.   Whilst this is a possible situation we haven't
+actually identified any cases in mainline where it happens as most drivers
+have consistent channel storage sizes with the exception of the timestamp
+which is the last element and hence never skipped over.
 
-Use pr_cont() instead.
-
-Fixes: 4bcc595ccd80 ("printk: reinstate KERN_CONT for printing continuation lines")
-Cc: stable@vger.kernel.org # v4.9+
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-[mpe: Mention that it only happens when udbg is not available]
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/c8a6ec704416ecd5ff2bd26213c9bc026bdd19de.1607077340.git.christophe.leroy@csgroup.eu
+Fixes: 5ada4ea9be16 ("staging:iio: add demux optionally to path from device to buffer")
+Signed-off-by: Nuno Sá <nuno.sa@analog.com>
+Link: https://lore.kernel.org/r/20201112144323.28887-1-nuno.sa@analog.com
+Cc: <Stable@vger.kernel.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/xmon/nonstdio.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iio/industrialio-buffer.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/arch/powerpc/xmon/nonstdio.c
-+++ b/arch/powerpc/xmon/nonstdio.c
-@@ -182,7 +182,7 @@ void xmon_printf(const char *format, ...
- 
- 	if (n && rc == 0) {
- 		/* No udbg hooks, fallback to printk() - dangerous */
--		printk("%s", xmon_outbuf);
-+		pr_cont("%s", xmon_outbuf);
- 	}
- }
- 
+--- a/drivers/iio/industrialio-buffer.c
++++ b/drivers/iio/industrialio-buffer.c
+@@ -1335,12 +1335,12 @@ static int iio_buffer_update_demux(struc
+ 				       indio_dev->masklength,
+ 				       in_ind + 1);
+ 		while (in_ind != out_ind) {
+-			in_ind = find_next_bit(indio_dev->active_scan_mask,
+-					       indio_dev->masklength,
+-					       in_ind + 1);
+ 			length = iio_storage_bytes_for_si(indio_dev, in_ind);
+ 			/* Make sure we are aligned */
+ 			in_loc = roundup(in_loc, length) + length;
++			in_ind = find_next_bit(indio_dev->active_scan_mask,
++					       indio_dev->masklength,
++					       in_ind + 1);
+ 		}
+ 		length = iio_storage_bytes_for_si(indio_dev, in_ind);
+ 		out_loc = roundup(out_loc, length);
 
 
