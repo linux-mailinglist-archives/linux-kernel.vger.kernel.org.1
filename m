@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB7FD2E63DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:45:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DF032E3846
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:09:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406766AbgL1Pn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:43:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46016 "EHLO mail.kernel.org"
+        id S1730834AbgL1NIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:08:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405164AbgL1Nqj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:46:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E6E4206D4;
-        Mon, 28 Dec 2020 13:46:22 +0000 (UTC)
+        id S1730789AbgL1NHa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:07:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE52D207C9;
+        Mon, 28 Dec 2020 13:07:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163183;
-        bh=GG3XJYXgPEDJd9UUS4D3qvuSMIwVzJkmtv1/p+sFdzI=;
+        s=korg; t=1609160834;
+        bh=Sci19GEnAvDhZmNb0XOluqAUViisP5ppM/Rb2xHp+eQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YeMhO+sXGw0yEYz8zpqsH6pwjQkdIZodDjp4JvnmyRFsAsj1YkCmizgKOF9oVu89L
-         C4P6mlXlyeJtkf9z9M2QbVHFlm0bTDG9mtGhWqLfImQsGcPufmXwcfuzCWPnBsd2bA
-         A/6pYZ1AKVQFJNq8qoTCcjN8yMAxe/HU7tmLhvMc=
+        b=aek/hAa2KyKk9uFd/OVzS0ztHdoEPqxxWS6r4CwGWcFwiYUAs9cBVc1Qoclpq44jP
+         UsuFSKJYqPsP++57tKrtXp2muMKSYC7hpLx3Hyt/+AiI0UEMf0/34PiHtrbzvNg+5p
+         kr3JmKE56skCU6SJJZE8d6SLKA9Qhw42WmCJbcS4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vadim Pasternak <vadimp@nvidia.com>,
-        Hans de Goede <hdegoede@redhat.com>,
+        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
+        Mordechay Goodstein <mordechay.goodstein@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 172/453] platform/x86: mlx-platform: Remove PSU EEPROM from default platform configuration
+Subject: [PATCH 4.14 003/242] iwlwifi: pcie: limit memory read spin time
 Date:   Mon, 28 Dec 2020 13:46:48 +0100
-Message-Id: <20201228124945.473722428@linuxfoundation.org>
+Message-Id: <20201228124904.827765325@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,54 +42,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vadim Pasternak <vadimp@nvidia.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 2bf5046bdb649908df8bcc0a012c56eee931a9af ]
+[ Upstream commit 04516706bb99889986ddfa3a769ed50d2dc7ac13 ]
 
-Remove PSU EEPROM configuration for systems class equipped with
-Mellanox chip Spectrum and Celeron CPU - system types MSN2700, MSN2100.
-Till now all the systems from this class used few types of power units,
-all equipped with EEPROM device with address space two bytes. Thus, all
-these devices have been handled by EEPROM driver "24c02".
+When we read device memory, we lock a spinlock, write the address we
+want to read from the device and then spin in a loop reading the data
+in 32-bit quantities from another register.
 
-There is a new requirement is to support power unit replacement by "off
-the shelf" device, matching electrical required parameters. Such device
-can be equipped with different EEPROM type, which could be one byte
-address space addressing or even could be not equipped with EEPROM.
-In such case "24c02" will not work.
+As the description makes clear, this is rather inefficient, incurring
+a PCIe bus transaction for every read. In a typical device today, we
+want to read 786k SMEM if it crashes, leading to 192k register reads.
+Occasionally, we've seen the whole loop take over 20 seconds and then
+triggering the soft lockup detector.
 
-Fixes: c6acad68e ("platform/mellanox: mlxreg-hotplug: Modify to use a regmap interface")
-Fixes: ba814fdd0 ("platform/x86: mlx-platform: Use defines for bus assignment")
-Signed-off-by: Vadim Pasternak <vadimp@nvidia.com>
-Link: https://lore.kernel.org/r/20201125101056.174708-2-vadimp@nvidia.com
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Clearly, it is unreasonable to spin here for such extended periods of
+time.
+
+To fix this, break the loop down into an outer and an inner loop, and
+break out of the inner loop if more than half a second elapsed. To
+avoid too much overhead, check for that only every 128 reads, though
+there's no particular reason for that number. Then, unlock and relock
+to obtain NIC access again, reprogram the start address and continue.
+
+This will keep (interrupt) latencies on the CPU down to a reasonable
+time.
+
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Mordechay Goodstein <mordechay.goodstein@intel.com>
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/iwlwifi.20201022165103.45878a7e49aa.I3b9b9c5a10002915072312ce75b68ed5b3dc6e14@changeid
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/mlx-platform.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ .../net/wireless/intel/iwlwifi/pcie/trans.c   | 36 ++++++++++++++-----
+ 1 file changed, 27 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/platform/x86/mlx-platform.c b/drivers/platform/x86/mlx-platform.c
-index 59b5b7eebb05a..bd57d3bbaa432 100644
---- a/drivers/platform/x86/mlx-platform.c
-+++ b/drivers/platform/x86/mlx-platform.c
-@@ -273,15 +273,13 @@ static struct mlxreg_core_data mlxplat_mlxcpld_default_psu_items_data[] = {
- 		.label = "psu1",
- 		.reg = MLXPLAT_CPLD_LPC_REG_PSU_OFFSET,
- 		.mask = BIT(0),
--		.hpdev.brdinfo = &mlxplat_mlxcpld_psu[0],
--		.hpdev.nr = MLXPLAT_CPLD_PSU_DEFAULT_NR,
-+		.hpdev.nr = MLXPLAT_CPLD_NR_NONE,
- 	},
- 	{
- 		.label = "psu2",
- 		.reg = MLXPLAT_CPLD_LPC_REG_PSU_OFFSET,
- 		.mask = BIT(1),
--		.hpdev.brdinfo = &mlxplat_mlxcpld_psu[1],
--		.hpdev.nr = MLXPLAT_CPLD_PSU_DEFAULT_NR,
-+		.hpdev.nr = MLXPLAT_CPLD_NR_NONE,
- 	},
- };
+diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/trans.c b/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
+index 8a074a516fb26..910edd034fe3a 100644
+--- a/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
++++ b/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
+@@ -1927,18 +1927,36 @@ static int iwl_trans_pcie_read_mem(struct iwl_trans *trans, u32 addr,
+ 				   void *buf, int dwords)
+ {
+ 	unsigned long flags;
+-	int offs, ret = 0;
++	int offs = 0;
+ 	u32 *vals = buf;
  
+-	if (iwl_trans_grab_nic_access(trans, &flags)) {
+-		iwl_write32(trans, HBUS_TARG_MEM_RADDR, addr);
+-		for (offs = 0; offs < dwords; offs++)
+-			vals[offs] = iwl_read32(trans, HBUS_TARG_MEM_RDAT);
+-		iwl_trans_release_nic_access(trans, &flags);
+-	} else {
+-		ret = -EBUSY;
++	while (offs < dwords) {
++		/* limit the time we spin here under lock to 1/2s */
++		ktime_t timeout = ktime_add_us(ktime_get(), 500 * USEC_PER_MSEC);
++
++		if (iwl_trans_grab_nic_access(trans, &flags)) {
++			iwl_write32(trans, HBUS_TARG_MEM_RADDR,
++				    addr + 4 * offs);
++
++			while (offs < dwords) {
++				vals[offs] = iwl_read32(trans,
++							HBUS_TARG_MEM_RDAT);
++				offs++;
++
++				/* calling ktime_get is expensive so
++				 * do it once in 128 reads
++				 */
++				if (offs % 128 == 0 && ktime_after(ktime_get(),
++								   timeout))
++					break;
++			}
++			iwl_trans_release_nic_access(trans, &flags);
++		} else {
++			return -EBUSY;
++		}
+ 	}
+-	return ret;
++
++	return 0;
+ }
+ 
+ static int iwl_trans_pcie_write_mem(struct iwl_trans *trans, u32 addr,
 -- 
 2.27.0
 
