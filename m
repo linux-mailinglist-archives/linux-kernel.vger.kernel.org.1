@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 409C02E641D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:48:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF5612E40CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:58:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406005AbgL1Pry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:47:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43460 "EHLO mail.kernel.org"
+        id S2503147AbgL1O5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:57:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733245AbgL1NnG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:43:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B73202064B;
-        Mon, 28 Dec 2020 13:42:24 +0000 (UTC)
+        id S2391762AbgL1OQV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:16:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C1771205CB;
+        Mon, 28 Dec 2020 14:15:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162945;
-        bh=U8PU8k4XkuE7XkJAA7fvh/s1HA+nsegywggQybwCYno=;
+        s=korg; t=1609164941;
+        bh=t2KiuKrSO9+O6HtV6of99uW/qq+i5Z+wUiYtJ3tFonc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PisAWYxN8aFuYt3ueYhQxRR+oEUqdfxDFwTWv9HISpMxXLQQ+bKFHn3bpwWFz7rse
-         8BuHSo5zJ+k73dGDjvbLc86bFrQV90AcRST1uzaEkpbzDouCgKD8YYQBO3w8IDDxT5
-         kZYKWf/Mg5BM0yoapsaNijDRY6w0/zpeGzeAZolQ=
+        b=E5NfZbNigH1FKd6VN1lktSStoA667IwrL0PgLhRzhygiC8a80FQiSN3NjWBJDbq/x
+         6Q5BWVzFC9KRBd1lw6FWA/wWnnCvXB2GcCe6yhfKY9NYP6ztw1IiOtb6f72pxrZcWM
+         svNQ7XAWLGZaqlOmyBtucJMIMdidwp5xcf+DlzO0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Stefan Agner <stefan@agner.ch>,
+        Kevin Hilman <khilman@baylibre.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 116/453] spi: tegra20-slink: fix reference leak in slink ops of tegra20
+Subject: [PATCH 5.10 354/717] arm64: dts: meson: g12b: w400: fix PHY deassert timing requirements
 Date:   Mon, 28 Dec 2020 13:45:52 +0100
-Message-Id: <20201228124942.795111924@linuxfoundation.org>
+Message-Id: <20201228125037.979499850@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,44 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Stefan Agner <stefan@agner.ch>
 
-[ Upstream commit 763eab7074f6e71babd85d796156f05a675f9510 ]
+[ Upstream commit 9e454e37dc7c0ee9e108d70b983e7a71332aedff ]
 
-pm_runtime_get_sync will increment pm usage counter even it
-failed. Forgetting to pm_runtime_put_noidle will result in
-reference leak in two callers(tegra_slink_setup and
-tegra_slink_resume), so we should fix it.
+According to the datasheet (Rev. 1.9) the RTL8211F requires at least
+72ms "for internal circuits settling time" before accessing the PHY
+egisters. On similar boards with the same PHY this fixes an issue where
+Ethernet link would not come up when using ip link set down/up.
 
-Fixes: dc4dc36056392 ("spi: tegra: add spi driver for SLINK controller")
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201103141345.6188-1-zhangqilong3@huawei.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 2cd2310fca4c ("arm64: dts: meson-g12b-ugoos-am6: add initial device-tree")
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+Signed-off-by: Kevin Hilman <khilman@baylibre.com>
+Link: https://lore.kernel.org/r/46298e66572784c44f873f1b71cc4ab3d8fc5aa6.1607363522.git.stefan@agner.ch
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-tegra20-slink.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/arm64/boot/dts/amlogic/meson-g12b-w400.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-tegra20-slink.c b/drivers/spi/spi-tegra20-slink.c
-index 374a2a32edcd3..2a1905c43a0b7 100644
---- a/drivers/spi/spi-tegra20-slink.c
-+++ b/drivers/spi/spi-tegra20-slink.c
-@@ -756,6 +756,7 @@ static int tegra_slink_setup(struct spi_device *spi)
+diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-w400.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12b-w400.dtsi
+index 2802ddbb83ac7..feb0885047400 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-g12b-w400.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-g12b-w400.dtsi
+@@ -264,7 +264,7 @@
+ 		max-speed = <1000>;
  
- 	ret = pm_runtime_get_sync(tspi->dev);
- 	if (ret < 0) {
-+		pm_runtime_put_noidle(tspi->dev);
- 		dev_err(tspi->dev, "pm runtime failed, e = %d\n", ret);
- 		return ret;
- 	}
-@@ -1192,6 +1193,7 @@ static int tegra_slink_resume(struct device *dev)
+ 		reset-assert-us = <10000>;
+-		reset-deassert-us = <30000>;
++		reset-deassert-us = <80000>;
+ 		reset-gpios = <&gpio GPIOZ_15 (GPIO_ACTIVE_LOW | GPIO_OPEN_DRAIN)>;
  
- 	ret = pm_runtime_get_sync(dev);
- 	if (ret < 0) {
-+		pm_runtime_put_noidle(dev);
- 		dev_err(dev, "pm runtime failed, e = %d\n", ret);
- 		return ret;
- 	}
+ 		interrupt-parent = <&gpio_intc>;
 -- 
 2.27.0
 
