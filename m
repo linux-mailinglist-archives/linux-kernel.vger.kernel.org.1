@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0670D2E6726
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:22:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 726FE2E6848
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:35:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633274AbgL1QVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:21:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41510 "EHLO mail.kernel.org"
+        id S1730740AbgL1Qe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:34:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732237AbgL1NNc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:13:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F95122582;
-        Mon, 28 Dec 2020 13:12:51 +0000 (UTC)
+        id S1730016AbgL1NCO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:02:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D79022582;
+        Mon, 28 Dec 2020 13:01:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161171;
-        bh=/yoQPsmUbUpRS0Cqc/iYTyFUX82i8An682kI99S8HcM=;
+        s=korg; t=1609160518;
+        bh=PF4I2P7BGc5oBenV3i5/Fv0AUPZIbZiMI+6umWtVkC8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OMw+jtdg9iyxWtQZQ2RQPSh61T7rqzFLjLka8JK8Jm+MduFvGXqgFYEK1EAoQpi+u
-         +7EICNM8ATIm+uZ+ykhXE29rFoPZ9v655s1Dtqe16d0uaKW20QQMxBWgwdASXW45YW
-         fIs6r3tQam33V/RF1ukylNMBobBmZUAQpB0octgI=
+        b=wuRrZeWQAjicJSMmmj6+l08SLz42T5CF9hKAuz6YPWNM8RaPQIreO0tfXWt3ECWpZ
+         SXLVb5QJRqr3DxDSNyDp7eFVaLUevFYEuyOzbsBhVok0fyVRueuep+g2mecZEeOQLd
+         r/fqEuVqLuofKTjx4X2QW0vWQ4AMEuYZuWO3/Qdc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Cristian Birsan <cristian.birsan@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 125/242] SUNRPC: xprt_load_transport() needs to support the netid "rdma6"
-Date:   Mon, 28 Dec 2020 13:48:50 +0100
-Message-Id: <20201228124910.851074875@linuxfoundation.org>
+Subject: [PATCH 4.9 078/175] ARM: dts: at91: sama5d4_xplained: add pincontrol for USB Host
+Date:   Mon, 28 Dec 2020 13:48:51 +0100
+Message-Id: <20201228124857.013195492@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,183 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Cristian Birsan <cristian.birsan@microchip.com>
 
-[ Upstream commit d5aa6b22e2258f05317313ecc02efbb988ed6d38 ]
+[ Upstream commit be4dd2d448816a27c1446f8f37fce375daf64148 ]
 
-According to RFC5666, the correct netid for an IPv6 addressed RDMA
-transport is "rdma6", which we've supported as a mount option since
-Linux-4.7. The problem is when we try to load the module "xprtrdma6",
-that will fail, since there is no modulealias of that name.
+The pincontrol node is needed for USB Host since Linux v5.7-rc1. Without
+it the driver probes but VBus is not powered because of wrong pincontrol
+configuration.
 
-Fixes: 181342c5ebe8 ("xprtrdma: Add rdma6 option to support NFS/RDMA IPv6")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Fixes: 38153a017896f ("ARM: at91/dt: sama5d4: add dts for sama5d4 xplained board")
+Signed-off-by: Cristian Birsan <cristian.birsan@microchip.com>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Acked-by: Ludovic Desroches <ludovic.desroches@microchip.com>
+Link: https://lore.kernel.org/r/20201118120019.1257580-3-cristian.birsan@microchip.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/sunrpc/xprt.h     |  1 +
- net/sunrpc/xprt.c               | 65 +++++++++++++++++++++++++--------
- net/sunrpc/xprtrdma/module.c    |  1 +
- net/sunrpc/xprtrdma/transport.c |  1 +
- net/sunrpc/xprtsock.c           |  4 ++
- 5 files changed, 56 insertions(+), 16 deletions(-)
+ arch/arm/boot/dts/at91-sama5d4_xplained.dts | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/include/linux/sunrpc/xprt.h b/include/linux/sunrpc/xprt.h
-index 7fad83881ce19..9785715eea145 100644
---- a/include/linux/sunrpc/xprt.h
-+++ b/include/linux/sunrpc/xprt.h
-@@ -316,6 +316,7 @@ struct xprt_class {
- 	struct rpc_xprt *	(*setup)(struct xprt_create *);
- 	struct module		*owner;
- 	char			name[32];
-+	const char *		netid[];
- };
+diff --git a/arch/arm/boot/dts/at91-sama5d4_xplained.dts b/arch/arm/boot/dts/at91-sama5d4_xplained.dts
+index 44d1171c7fc04..4ce8656293837 100644
+--- a/arch/arm/boot/dts/at91-sama5d4_xplained.dts
++++ b/arch/arm/boot/dts/at91-sama5d4_xplained.dts
+@@ -152,6 +152,11 @@
+ 						atmel,pins =
+ 							<AT91_PIOE 31 AT91_PERIPH_GPIO AT91_PINCTRL_DEGLITCH>;
+ 					};
++					pinctrl_usb_default: usb_default {
++						atmel,pins =
++							<AT91_PIOE 11 AT91_PERIPH_GPIO AT91_PINCTRL_NONE
++							 AT91_PIOE 14 AT91_PERIPH_GPIO AT91_PINCTRL_NONE>;
++					};
+ 					pinctrl_key_gpio: key_gpio_0 {
+ 						atmel,pins =
+ 							<AT91_PIOE 8 AT91_PERIPH_GPIO AT91_PINCTRL_PULL_UP_DEGLITCH>;
+@@ -177,6 +182,8 @@
+ 					   &pioE 11 GPIO_ACTIVE_HIGH
+ 					   &pioE 14 GPIO_ACTIVE_HIGH
+ 					  >;
++			pinctrl-names = "default";
++			pinctrl-0 = <&pinctrl_usb_default>;
+ 			status = "okay";
+ 		};
  
- /*
-diff --git a/net/sunrpc/xprt.c b/net/sunrpc/xprt.c
-index b852c34bb6373..7b1213be3e81a 100644
---- a/net/sunrpc/xprt.c
-+++ b/net/sunrpc/xprt.c
-@@ -143,31 +143,64 @@ out:
- }
- EXPORT_SYMBOL_GPL(xprt_unregister_transport);
- 
-+static void
-+xprt_class_release(const struct xprt_class *t)
-+{
-+	module_put(t->owner);
-+}
-+
-+static const struct xprt_class *
-+xprt_class_find_by_netid_locked(const char *netid)
-+{
-+	const struct xprt_class *t;
-+	unsigned int i;
-+
-+	list_for_each_entry(t, &xprt_list, list) {
-+		for (i = 0; t->netid[i][0] != '\0'; i++) {
-+			if (strcmp(t->netid[i], netid) != 0)
-+				continue;
-+			if (!try_module_get(t->owner))
-+				continue;
-+			return t;
-+		}
-+	}
-+	return NULL;
-+}
-+
-+static const struct xprt_class *
-+xprt_class_find_by_netid(const char *netid)
-+{
-+	const struct xprt_class *t;
-+
-+	spin_lock(&xprt_list_lock);
-+	t = xprt_class_find_by_netid_locked(netid);
-+	if (!t) {
-+		spin_unlock(&xprt_list_lock);
-+		request_module("rpc%s", netid);
-+		spin_lock(&xprt_list_lock);
-+		t = xprt_class_find_by_netid_locked(netid);
-+	}
-+	spin_unlock(&xprt_list_lock);
-+	return t;
-+}
-+
- /**
-  * xprt_load_transport - load a transport implementation
-- * @transport_name: transport to load
-+ * @netid: transport to load
-  *
-  * Returns:
-  * 0:		transport successfully loaded
-  * -ENOENT:	transport module not available
-  */
--int xprt_load_transport(const char *transport_name)
-+int xprt_load_transport(const char *netid)
- {
--	struct xprt_class *t;
--	int result;
-+	const struct xprt_class *t;
- 
--	result = 0;
--	spin_lock(&xprt_list_lock);
--	list_for_each_entry(t, &xprt_list, list) {
--		if (strcmp(t->name, transport_name) == 0) {
--			spin_unlock(&xprt_list_lock);
--			goto out;
--		}
--	}
--	spin_unlock(&xprt_list_lock);
--	result = request_module("xprt%s", transport_name);
--out:
--	return result;
-+	t = xprt_class_find_by_netid(netid);
-+	if (!t)
-+		return -ENOENT;
-+	xprt_class_release(t);
-+	return 0;
- }
- EXPORT_SYMBOL_GPL(xprt_load_transport);
- 
-diff --git a/net/sunrpc/xprtrdma/module.c b/net/sunrpc/xprtrdma/module.c
-index 560712bd9fa2c..dd227de31a589 100644
---- a/net/sunrpc/xprtrdma/module.c
-+++ b/net/sunrpc/xprtrdma/module.c
-@@ -19,6 +19,7 @@ MODULE_DESCRIPTION("RPC/RDMA Transport");
- MODULE_LICENSE("Dual BSD/GPL");
- MODULE_ALIAS("svcrdma");
- MODULE_ALIAS("xprtrdma");
-+MODULE_ALIAS("rpcrdma6");
- 
- static void __exit rpc_rdma_cleanup(void)
- {
-diff --git a/net/sunrpc/xprtrdma/transport.c b/net/sunrpc/xprtrdma/transport.c
-index b1b40a1be8c57..ead20e6754ab7 100644
---- a/net/sunrpc/xprtrdma/transport.c
-+++ b/net/sunrpc/xprtrdma/transport.c
-@@ -849,6 +849,7 @@ static struct xprt_class xprt_rdma = {
- 	.owner			= THIS_MODULE,
- 	.ident			= XPRT_TRANSPORT_RDMA,
- 	.setup			= xprt_setup_rdma,
-+	.netid			= { "rdma", "rdma6", "" },
- };
- 
- void xprt_rdma_cleanup(void)
-diff --git a/net/sunrpc/xprtsock.c b/net/sunrpc/xprtsock.c
-index f75b5b7c1fc2a..5124a21ecfa39 100644
---- a/net/sunrpc/xprtsock.c
-+++ b/net/sunrpc/xprtsock.c
-@@ -3208,6 +3208,7 @@ static struct xprt_class	xs_local_transport = {
- 	.owner		= THIS_MODULE,
- 	.ident		= XPRT_TRANSPORT_LOCAL,
- 	.setup		= xs_setup_local,
-+	.netid		= { "" },
- };
- 
- static struct xprt_class	xs_udp_transport = {
-@@ -3216,6 +3217,7 @@ static struct xprt_class	xs_udp_transport = {
- 	.owner		= THIS_MODULE,
- 	.ident		= XPRT_TRANSPORT_UDP,
- 	.setup		= xs_setup_udp,
-+	.netid		= { "udp", "udp6", "" },
- };
- 
- static struct xprt_class	xs_tcp_transport = {
-@@ -3224,6 +3226,7 @@ static struct xprt_class	xs_tcp_transport = {
- 	.owner		= THIS_MODULE,
- 	.ident		= XPRT_TRANSPORT_TCP,
- 	.setup		= xs_setup_tcp,
-+	.netid		= { "tcp", "tcp6", "" },
- };
- 
- static struct xprt_class	xs_bc_tcp_transport = {
-@@ -3232,6 +3235,7 @@ static struct xprt_class	xs_bc_tcp_transport = {
- 	.owner		= THIS_MODULE,
- 	.ident		= XPRT_TRANSPORT_BC_TCP,
- 	.setup		= xs_setup_bc_tcp,
-+	.netid		= { "" },
- };
- 
- /**
 -- 
 2.27.0
 
