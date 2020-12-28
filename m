@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B78C2E3C15
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:59:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46E542E3927
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:22:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391617AbgL1N6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:58:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59100 "EHLO mail.kernel.org"
+        id S1733013AbgL1NTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:19:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391579AbgL1N6O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:58:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 76578207B2;
-        Mon, 28 Dec 2020 13:57:58 +0000 (UTC)
+        id S1728256AbgL1NTr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:19:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E0B34207F7;
+        Mon, 28 Dec 2020 13:19:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163879;
-        bh=rOx0zv4PClnfji+d6QeAD2mvY5IM4oStEk6fOIU/We0=;
+        s=korg; t=1609161546;
+        bh=0aLngOLlZjpxpVbTroKiMfMr9Wb/XUWSAoNOcIe9ss8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OaHRaZXujfyxfA3if9XnZt/K0kF89KIFI73vIQwQJdlrIoHJ1JPRfFFamSZ5z8mFu
-         Z41u1OcwuVaYZo5vRzXOliTqb54hNmKDj2X0tu7q8IqHbcPVBD+aqjNmNdtevOEr2x
-         1vIm6dblzj+BQISqYiHjTpi7R2Ek8TmoOaK/1AL8=
+        b=zaf/EMljKigwOEqpiykrasLTQtyUd/uTnTdRy2mtSG29pYpzvGgUFbxdJ7su+JwDE
+         XTFP3Q/0t0lmLvM8CVLV8WTjkg2PpctgP/4N5vUKHRJkb5mxB0sKMOzPy5oQDKL/Ov
+         qy0HxiEiIzoCbI4usJRttCVJkmVoXXe+fX8Vwyj8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Phil Reid <preid@electromag.com.au>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.4 410/453] spi: sc18is602: Dont leak SPI master in probe error path
-Date:   Mon, 28 Dec 2020 13:50:46 +0100
-Message-Id: <20201228124956.939750481@linuxfoundation.org>
+        stable@vger.kernel.org, Jubin Zhong <zhongjubin@huawei.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: [PATCH 4.14 242/242] PCI: Fix pci_slot_release() NULL pointer dereference
+Date:   Mon, 28 Dec 2020 13:50:47 +0100
+Message-Id: <20201228124916.602815383@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,61 +39,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: Jubin Zhong <zhongjubin@huawei.com>
 
-commit 5b8c88462d83331dacb48aeaec8388117fef82e0 upstream.
+commit 4684709bf81a2d98152ed6b610e3d5c403f9bced upstream.
 
-If the call to devm_gpiod_get_optional() fails on probe of the NXP
-SC18IS602/603 SPI driver, the spi_master struct is erroneously not freed.
+If kobject_init_and_add() fails, pci_slot_release() is called to delete
+slot->list from parent->slots.  But slot->list hasn't been initialized
+yet, so we dereference a NULL pointer:
 
-Fix by switching over to the new devm_spi_alloc_master() helper.
+  Unable to handle kernel NULL pointer dereference at virtual address
+00000000
+  ...
+  CPU: 10 PID: 1 Comm: swapper/0 Not tainted 4.4.240 #197
+  task: ffffeb398a45ef10 task.stack: ffffeb398a470000
+  PC is at __list_del_entry_valid+0x5c/0xb0
+  LR is at pci_slot_release+0x84/0xe4
+  ...
+  __list_del_entry_valid+0x5c/0xb0
+  pci_slot_release+0x84/0xe4
+  kobject_put+0x184/0x1c4
+  pci_create_slot+0x17c/0x1b4
+  __pci_hp_initialize+0x68/0xa4
+  pciehp_probe+0x1a4/0x2fc
+  pcie_port_probe_service+0x58/0x84
+  driver_probe_device+0x320/0x470
 
-Fixes: f99008013e19 ("spi: sc18is602: Add reset control via gpio pin.")
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Cc: <stable@vger.kernel.org> # v4.9+: 5e844cc37a5c: spi: Introduce device-managed SPI controller allocation
-Cc: <stable@vger.kernel.org> # v4.9+
-Cc: Phil Reid <preid@electromag.com.au>
-Link: https://lore.kernel.org/r/d5f715527b894b91d530fe11a86f51b3184a4e1a.1607286887.git.lukas@wunner.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Initialize slot->list before calling kobject_init_and_add() to avoid this.
+
+Fixes: 8a94644b440e ("PCI: Fix pci_create_slot() reference count leak")
+Link: https://lore.kernel.org/r/1606876422-117457-1-git-send-email-zhongjubin@huawei.com
+Signed-off-by: Jubin Zhong <zhongjubin@huawei.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Cc: stable@vger.kernel.org	# v5.9+
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/spi/spi-sc18is602.c |   13 ++-----------
- 1 file changed, 2 insertions(+), 11 deletions(-)
+ drivers/pci/slot.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/spi/spi-sc18is602.c
-+++ b/drivers/spi/spi-sc18is602.c
-@@ -239,13 +239,12 @@ static int sc18is602_probe(struct i2c_cl
- 	struct sc18is602_platform_data *pdata = dev_get_platdata(dev);
- 	struct sc18is602 *hw;
- 	struct spi_master *master;
--	int error;
+--- a/drivers/pci/slot.c
++++ b/drivers/pci/slot.c
+@@ -307,6 +307,9 @@ placeholder:
+ 		goto err;
+ 	}
  
- 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C |
- 				     I2C_FUNC_SMBUS_WRITE_BYTE_DATA))
- 		return -EINVAL;
++	INIT_LIST_HEAD(&slot->list);
++	list_add(&slot->list, &parent->slots);
++
+ 	err = kobject_init_and_add(&slot->kobj, &pci_slot_ktype, NULL,
+ 				   "%s", slot_name);
+ 	if (err) {
+@@ -314,9 +317,6 @@ placeholder:
+ 		goto err;
+ 	}
  
--	master = spi_alloc_master(dev, sizeof(struct sc18is602));
-+	master = devm_spi_alloc_master(dev, sizeof(struct sc18is602));
- 	if (!master)
- 		return -ENOMEM;
- 
-@@ -299,15 +298,7 @@ static int sc18is602_probe(struct i2c_cl
- 	master->min_speed_hz = hw->freq / 128;
- 	master->max_speed_hz = hw->freq / 4;
- 
--	error = devm_spi_register_master(dev, master);
--	if (error)
--		goto error_reg;
+-	INIT_LIST_HEAD(&slot->list);
+-	list_add(&slot->list, &parent->slots);
 -
--	return 0;
--
--error_reg:
--	spi_master_put(master);
--	return error;
-+	return devm_spi_register_master(dev, master);
- }
- 
- static const struct i2c_device_id sc18is602_id[] = {
+ 	down_read(&pci_bus_sem);
+ 	list_for_each_entry(dev, &parent->devices, bus_list)
+ 		if (PCI_SLOT(dev->devfn) == slot_nr)
 
 
