@@ -2,332 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 301BB2E400A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:48:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECB342E407E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:53:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392391AbgL1OrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:47:01 -0500
-Received: from mail2.protonmail.ch ([185.70.40.22]:48062 "EHLO
-        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387440AbgL1Oq7 (ORCPT
+        id S2505415AbgL1Ow6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:52:58 -0500
+Received: from mail-oo1-f42.google.com ([209.85.161.42]:45764 "EHLO
+        mail-oo1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437739AbgL1Owy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:46:59 -0500
-Date:   Mon, 28 Dec 2020 14:46:07 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1609166774;
-        bh=RHGVTBBSe3J8pgiH7UN2WJKVqia+Zw9bkLblI03PsLo=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=bWCdv4hllX2Ge7kCnBy9mPoD/DZ9HnMwn3+Xzp+g80hyp77dsxG+R6QuTOkghBidp
-         lEPedcHG5cjlxUTRluchu4kVkwvZ11HlBbmia4DeDC6WUfevdJVtGYzLTJm6XtpzXw
-         Evbm37E+/FR0VuS2apKkbzrPoEVTU5AHweg7LMyE=
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>
-From:   =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
-        <nfraprado@protonmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>, rcu@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lkcamp@lists.libreplanetbr.org,
-        andrealmeid@collabora.com
-Reply-To: =?utf-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
-          <nfraprado@protonmail.com>
-Subject: [PATCH v2] docs: Fix reST markup when linking to sections
-Message-ID: <20201228144537.135353-1-nfraprado@protonmail.com>
+        Mon, 28 Dec 2020 09:52:54 -0500
+Received: by mail-oo1-f42.google.com with SMTP id o5so2230026oop.12;
+        Mon, 28 Dec 2020 06:52:38 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lzhU6x7q9tWWEZluySDNSm1PfLQqLCAdnh/1Z7uXq4c=;
+        b=lc9HDUWLHs3Ag32XV0mr6N0niP/BpLMtB4nYkdyu9hWfmr4MKwn/hbJcBVHp0boiEL
+         lEnxmG5axssPYhtMnQY+a34UG1ESTpU4UodFtwocfhghGmEq+hGwcDjFwXI/5Svd05C3
+         FvStfBc3Ih4Ho1XwQMsnq+lnvDrMTqFVspLitX+n72QBHTUlKBT2gvdVnrlJ2oMmMHes
+         meW8jmreagg76+E3kzcrja/fdniQ58W3RiK3Kb5a3hH2eqz6cgln2Q0XcyDiSOTRvjJJ
+         Ij6gHDCWr8KSyC7HI6Z77/Qy9BRcpO3M2jFZqqgntLXEFzk38wxXqiN9XL8vGPvNlISN
+         uhSQ==
+X-Gm-Message-State: AOAM530X74fQc8yWvlMtMO/V5ha67EGsyfQhKqEXKYLYd0+tZ7afX8X5
+        CfYuOm0gkQiXIWYJHyQWWZqVKzwY3tUKdXA/1yo=
+X-Google-Smtp-Source: ABdhPJzE8ma8vpGdCuIHIHd9dw/4pIrgXU+4nmFVZQ5n7LgWqqkiM1xQ2tgxkqaytqlmVLcGRGnSTsbZBKyv3moPOWI=
+X-Received: by 2002:a4a:ca14:: with SMTP id w20mr30969578ooq.11.1609167132953;
+ Mon, 28 Dec 2020 06:52:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+References: <20201213183759.223246-1-aford173@gmail.com> <20201213183759.223246-2-aford173@gmail.com>
+ <CAMuHMdWRieM1H5WLySVDVQds-xKgsqo-OibegJrXgonfqbAL8g@mail.gmail.com>
+ <CAHCN7xL3KU4dA=0-S7J5AEPmjAtpz4j-frEUqBD=JU7BV7g1WA@mail.gmail.com>
+ <CAMuHMdWc=qD=Oqa-7o9K1bd_OM0L7Br8BVAbDvYNraO0wAX2jw@mail.gmail.com>
+ <CAHCN7xKsSgM+=MFOKpNZTsJJiNyx6_mqZL2g_PKhN5fWyE6y7Q@mail.gmail.com>
+ <CAMuHMdVxzcyVuK06BqE4GQPLE8J7V5Jc-W_RSENNxEQG68krCw@mail.gmail.com>
+ <CAHCN7xJVn7gbCX8ibSFbyjA4HqyxPR9_vXvJQQSbJRKoaF_51Q@mail.gmail.com>
+ <CAMuHMdV0djkKTSHbCuv0d2sh+rGs1=WNNEcCNXE3daM8uAcRxw@mail.gmail.com>
+ <CAHCN7x+re5Qswbw=n8Gq0newXW0WoO7=ZseD3YZWMvD_nmBq3w@mail.gmail.com>
+ <CAMuHMdUDb8e3Vv3C3N74D2-VYgsyVEHG9iVcnuNESTX6NArkFA@mail.gmail.com> <CAHCN7xJdR13sqX0H_WTx795P8D1mcNQo65XwrvWYF6k0pUGEAg@mail.gmail.com>
+In-Reply-To: <CAHCN7xJdR13sqX0H_WTx795P8D1mcNQo65XwrvWYF6k0pUGEAg@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 28 Dec 2020 15:52:01 +0100
+Message-ID: <CAMuHMdUeo=64AH2ubJxKP2cGTMCV=qeaYy9yhttrQqSJu=iwrw@mail.gmail.com>
+Subject: Re: [PATCH 01/18] arm64: dts: renesas: beacon kit: Configure
+ programmable clocks
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Luca Ceresoli <luca@lucaceresoli.net>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During the process of converting the documentation to reST, some links
-were converted using the following wrong syntax (and sometimes using %20
-instead of spaces):
+Hi Adam,
 
-   `Display text <#section-name-in-html>`__
+On Mon, Dec 28, 2020 at 3:39 PM Adam Ford <aford173@gmail.com> wrote:
+> On Mon, Dec 28, 2020 at 6:33 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Thu, Dec 24, 2020 at 2:53 PM Adam Ford <aford173@gmail.com> wrote:
+> > > On Tue, Dec 22, 2020 at 2:03 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > > On Tue, Dec 22, 2020 at 2:39 AM Adam Ford <aford173@gmail.com> wrote:
+> > > > > On Fri, Dec 18, 2020 at 7:16 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > > > > On Thu, Dec 17, 2020 at 12:52 PM Adam Ford <aford173@gmail.com> wrote:
+> > > > > > > On Thu, Dec 17, 2020 at 2:16 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > > > > > > On Wed, Dec 16, 2020 at 6:03 PM Adam Ford <aford173@gmail.com> wrote:
+> > > > > > > > > On Wed, Dec 16, 2020 at 8:55 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > > > > > > > > On Sun, Dec 13, 2020 at 7:38 PM Adam Ford <aford173@gmail.com> wrote:
+> > > > > > > > > > > When the board was added, clock drivers were being updated done at
+> > > > > > > > > > > the same time to allow the versaclock driver to properly configure
+> > > > > > > > > > > the modes.  Unforutnately, the updates were not applied to the board
+> > > > > > > >
+> > > > > > > > > > > --- a/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
+> > > > > > > > > > > +++ b/arch/arm64/boot/dts/renesas/beacon-renesom-baseboard.dtsi
+> > > > > > > > > > > @@ -5,6 +5,7 @@
+> > > > > > > > > > >
+> > > > > > > > > > >  #include <dt-bindings/gpio/gpio.h>
+> > > > > > > > > > >  #include <dt-bindings/input/input.h>
+> > > > > > > > > > > +#include <dt-bindings/clk/versaclock.h>
+> > > > > > > > > > >
+> > > > > > > > > > >  / {
+> > > > > > > > > > >         backlight_lvds: backlight-lvds {
+> > > > > > > > > > > @@ -294,12 +295,12 @@ &du_out_rgb {
+> > > > > > > > > > >  &ehci0 {
+> > > > > > > > > > >         dr_mode = "otg";
+> > > > > > > > > > >         status = "okay";
+> > > > > > > > > > > -       clocks = <&cpg CPG_MOD 703>, <&cpg CPG_MOD 704>;
+> > > > > > > > > > > +       clocks = <&cpg CPG_MOD 703>, <&cpg CPG_MOD 704>, <&versaclock5 3>;
+> > > > > > > > > >
+> > > > > > > > > > Why this change? You said before you don't need this
+> > > > > > > > > > https://lore.kernel.org/linux-renesas-soc/CAHCN7xJWbP16SA-Ok-5syNnqOZAt8OFJo2_rtg5VrNVsN2-eiQ@mail.gmail.com/
+> > > > > > > > > >
+> > > > > > > > >
+> > > > > > > > > I had talked with the hardware guys about buy pre-programmed
+> > > > > > > > > versaclock chips which would have been pre-configured and pre-enabled.
+> > > > > > > > > I thought it was going to happen, but it didn't, so we need the
+> > > > > > > > > versaclock driver to enable the reference clock for the USB
+> > > > > > > > > controllers, ethernet controller and audio clocks.  Previously we were
+> > > > > > > > > manually configuring it or it was coincidentally working. Ideally,
+> > > > > > > > > we'd have the clock system intentionally enable/disable the clocks
+> > > > > > > > > when drivers are loaded/unloaded for for power management reasons.
+> > > > > > > >
+> > > > > > > > Can you tell me how exactly the Versaclock outputs are wired?
+> > > > > > >
+> > > > > > > The SoC is expecting a fixed external 50 MHz clock connected to
+> > > > > > > USB_EXTAL.  Instead of a fixed clock, we're using the Versaclock.
+> > > > > > > We're also using the Versaclock to drive the AVB TXCRefClk,
+> > > > > > > du_dotclkiun0 and du_dotclkin2 (also also called du_dotclkin3 on
+> > > > > > > RZ/G2N) instead of fixed clocks.
+> > > > > > >
+> > > > > > > > E.g. for USB, the bindings don't say anything about a third clock input,
+> > > > > > > > so I'd like to know where that clock is fed into USB.
+> > > > > > >
+> > > > > > > The way the driver is crafted, it can take in multiple clocks and it
+> > > > > > > goes through a list to enable them all, so I added the versaclock to
+> > > > > > > the array.  Without the versaclock reference, the clock doesn't get
+> > > > > > > turned on and the USB fails to operate.
+> > > > > >
+> > > > > > According to the Hardware User's Manual, USBL_EXTAL is used for USB3.0,
+> > > > > > while you added the clock references to the EHCI nodes.
+> > > > > > Are you sure EHCI is failing without this?
+> > >
+> > > I talked to a colleague about the USB_EXTAL.  He pointed me to table
+> > > 60.1 of the RZ/2 Series, 2nd Generate reference manual
+> > > (R01UH0808EJ0100 Rev.1.00),  which shows the USB EHCI needing the
+> > > 50MHz.  When I clear out the references from ehci0 and echi1, the USB
+> > > stops working, so it does appear that using the versaclock as the 3rd
+> > > clock is needed for operating.  The device tree bindings for the
+> > > generic-ehci provide for up to 4 clocks, so it seems like referencing
+> > > clocks = <&cpg CPG_MOD 703>, <&cpg CPG_MOD 704>, <&versaclock5 3> are
+> > > not a violation of the bindings.
+> >
+> > Perhaps you need to use renesas,rcar-usb2-clock-sel?
+> > Documentation/devicetree/bindings/clock/renesas,rcar-usb2-clock-sel.yaml
+>
+> Thanks for the pointer. I didn't know this existed.  It looks like the
+> right thing to do.  With that node, it appears to enable the
+> versaclock and USB works.
+> I'll submit a V3 at some point with this node added to each of the
+> kit-level files since they use slightly different power-domains.
+>
+> Do I need to add updates to the bindings for
+> renesas,r8a774a1-rcar-usb2-clock-sel; r8a774b1-rcar-usb2-clock-sel;
+> and renesas,r8a774e1-rcar-usb2-clock-sel; or I can I just use the
+> generic reference to renesas,rcar-gen3-usb2-clock-sel?
 
-This syntax isn't valid according to the docutils' spec [1], but more
-importantly, it is specific to HTML, since it uses '#' to link to an
-HTML anchor.
+Please update the bindings to add support for RZ/G1[MNH].
+Note that without doing so, checkpatch will complain when adding the
+device nodes to the .dtsi files.
 
-The right syntax would instead use a docutils hyperlink reference as the
-embedded URI to point to the section [2], that is:
+Thanks!
 
-   `Display text <Section Name_>`__
+Gr{oetje,eeting}s,
 
-This syntax works in both HTML and PDF.
+                        Geert
 
-The LaTeX toolchain doesn't mind the HTML anchor syntax when generating
-the pdf documentation (make pdfdocs), that is, the build succeeds but
-the links don't work, but that syntax causes errors when trying to build
-using the not-yet-merged rst2pdf:
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-   ValueError: format not resolved, probably missing URL scheme or undefine=
-d destination target for 'Forcing%20Quiescent%20States'
-
-So, use the correct syntax in order to have it work in all different
-output formats.
-
-[1]: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#ref=
-erence-names
-[2]: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#emb=
-edded-uris-and-aliases
-
-Fixes: ccc9971e2147 ("docs: rcu: convert some articles from html to ReST")
-Fixes: c8cce10a62aa ("docs: Fix the reference labels in Locking.rst")
-Fixes: e548cdeffcd8 ("docs-rst: convert kernel-locking to ReST")
-Fixes: 7ddedebb03b7 ("ALSA: doc: ReSTize writing-an-alsa-driver document")
-Signed-off-by: N=C3=ADcolas F. R. A. Prado <nfraprado@protonmail.com>
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
----
-
-Changes in v2:
-- Thanks to Mauro:
-  - Simplify the syntax of some links by taking advantage of docutils'
-    case-insensitivity when dealing with references.
-
- .../Tree-RCU-Memory-Ordering.rst              |  8 ++++----
- .../RCU/Design/Requirements/Requirements.rst  | 20 +++++++++----------
- Documentation/kernel-hacking/locking.rst      |  8 ++++----
- .../kernel-api/writing-an-alsa-driver.rst     | 16 +++++++--------
- 4 files changed, 26 insertions(+), 26 deletions(-)
-
-diff --git a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Order=
-ing.rst b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering=
-.rst
-index e44cfcb7adcc..e57927427786 100644
---- a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-+++ b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.rst
-@@ -473,7 +473,7 @@ read-side critical sections that follow the idle period=
- (the oval near
- the bottom of the diagram above).
-=20
- Plumbing this into the full grace-period execution is described
--`below <#Forcing%20Quiescent%20States>`__.
-+`below <Forcing Quiescent States_>`__.
-=20
- CPU-Hotplug Interface
- ^^^^^^^^^^^^^^^^^^^^^
-@@ -494,7 +494,7 @@ mask to detect CPUs having gone offline since the begin=
-ning of this
- grace period.
-=20
- Plumbing this into the full grace-period execution is described
--`below <#Forcing%20Quiescent%20States>`__.
-+`below <Forcing Quiescent States_>`__.
-=20
- Forcing Quiescent States
- ^^^^^^^^^^^^^^^^^^^^^^^^
-@@ -532,7 +532,7 @@ from other CPUs.
- | RCU. But this diagram is complex enough as it is, so simplicity       |
- | overrode accuracy. You can think of it as poetic license, or you can  |
- | think of it as misdirection that is resolved in the                   |
--| `stitched-together diagram <#Putting%20It%20All%20Together>`__.       |
-+| `stitched-together diagram <Putting It All Together_>`__.             |
- +-----------------------------------------------------------------------+
-=20
- Grace-Period Cleanup
-@@ -596,7 +596,7 @@ maintain ordering. For example, if the callback functio=
-n wakes up a task
- that runs on some other CPU, proper ordering must in place in both the
- callback function and the task being awakened. To see why this is
- important, consider the top half of the `grace-period
--cleanup <#Grace-Period%20Cleanup>`__ diagram. The callback might be
-+cleanup`_ diagram. The callback might be
- running on a CPU corresponding to the leftmost leaf ``rcu_node``
- structure, and awaken a task that is to run on a CPU corresponding to
- the rightmost leaf ``rcu_node`` structure, and the grace-period kernel
-diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Docum=
-entation/RCU/Design/Requirements/Requirements.rst
-index 1ae79a10a8de..ce1075f040be 100644
---- a/Documentation/RCU/Design/Requirements/Requirements.rst
-+++ b/Documentation/RCU/Design/Requirements/Requirements.rst
-@@ -45,7 +45,7 @@ requirements:
- #. `Other RCU Flavors`_
- #. `Possible Future Changes`_
-=20
--This is followed by a `summary <#Summary>`__, however, the answers to
-+This is followed by a summary_, however, the answers to
- each quick quiz immediately follows the quiz. Select the big white space
- with your mouse to see the answer.
-=20
-@@ -1096,7 +1096,7 @@ memory barriers.
- | case, voluntary context switch) within an RCU read-side critical      |
- | section. However, sleeping locks may be used within userspace RCU     |
- | read-side critical sections, and also within Linux-kernel sleepable   |
--| RCU `(SRCU) <#Sleepable%20RCU>`__ read-side critical sections. In     |
-+| RCU `(SRCU) <Sleepable RCU_>`__ read-side critical sections. In       |
- | addition, the -rt patchset turns spinlocks into a sleeping locks so   |
- | that the corresponding critical sections can be preempted, which also |
- | means that these sleeplockified spinlocks (but not other sleeping     |
-@@ -1186,7 +1186,7 @@ non-preemptible (``CONFIG_PREEMPT=3Dn``) kernels, and=
- thus `tiny
- RCU <https://lkml.kernel.org/g/20090113221724.GA15307@linux.vnet.ibm.com>`=
-__
- was born. Josh Triplett has since taken over the small-memory banner
- with his `Linux kernel tinification <https://tiny.wiki.kernel.org/>`__
--project, which resulted in `SRCU <#Sleepable%20RCU>`__ becoming optional
-+project, which resulted in `SRCU <Sleepable RCU_>`__ becoming optional
- for those kernels not needing it.
-=20
- The remaining performance requirements are, for the most part,
-@@ -1457,8 +1457,8 @@ will vary as the value of ``HZ`` varies, and can also=
- be changed using
- the relevant Kconfig options and kernel boot parameters. RCU currently
- does not do much sanity checking of these parameters, so please use
- caution when changing them. Note that these forward-progress measures
--are provided only for RCU, not for `SRCU <#Sleepable%20RCU>`__ or `Tasks
--RCU <#Tasks%20RCU>`__.
-+are provided only for RCU, not for `SRCU <Sleepable RCU_>`__ or `Tasks
-+RCU`_.
-=20
- RCU takes the following steps in ``call_rcu()`` to encourage timely
- invocation of callbacks when any given non-\ ``rcu_nocbs`` CPU has
-@@ -1477,8 +1477,8 @@ encouragement was provided:
-=20
- Again, these are default values when running at ``HZ=3D1000``, and can be
- overridden. Again, these forward-progress measures are provided only for
--RCU, not for `SRCU <#Sleepable%20RCU>`__ or `Tasks
--RCU <#Tasks%20RCU>`__. Even for RCU, callback-invocation forward
-+RCU, not for `SRCU <Sleepable RCU_>`__ or `Tasks
-+RCU`_. Even for RCU, callback-invocation forward
- progress for ``rcu_nocbs`` CPUs is much less well-developed, in part
- because workloads benefiting from ``rcu_nocbs`` CPUs tend to invoke
- ``call_rcu()`` relatively infrequently. If workloads emerge that need
-@@ -1920,7 +1920,7 @@ Hotplug CPU
-=20
- The Linux kernel supports CPU hotplug, which means that CPUs can come
- and go. It is of course illegal to use any RCU API member from an
--offline CPU, with the exception of `SRCU <#Sleepable%20RCU>`__ read-side
-+offline CPU, with the exception of `SRCU <Sleepable RCU_>`__ read-side
- critical sections. This requirement was present from day one in
- DYNIX/ptx, but on the other hand, the Linux kernel's CPU-hotplug
- implementation is =E2=80=9Cinteresting.=E2=80=9D
-@@ -2147,7 +2147,7 @@ handles these states differently:
- However, RCU must be reliably informed as to whether any given CPU is
- currently in the idle loop, and, for ``NO_HZ_FULL``, also whether that
- CPU is executing in usermode, as discussed
--`earlier <#Energy%20Efficiency>`__. It also requires that the
-+`earlier <Energy Efficiency_>`__. It also requires that the
- scheduling-clock interrupt be enabled when RCU needs it to be:
-=20
- #. If a CPU is either idle or executing in usermode, and RCU believes it
-@@ -2264,7 +2264,7 @@ Performance, Scalability, Response Time, and Reliabil=
-ity
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-=20
- Expanding on the `earlier
--discussion <#Performance%20and%20Scalability>`__, RCU is used heavily by
-+discussion <Performance and Scalability_>`__, RCU is used heavily by
- hot code paths in performance-critical portions of the Linux kernel's
- networking, security, virtualization, and scheduling code paths. RCU
- must therefore use efficient implementations, especially in its
-diff --git a/Documentation/kernel-hacking/locking.rst b/Documentation/kerne=
-l-hacking/locking.rst
-index 6ed806e6061b..c3448929a824 100644
---- a/Documentation/kernel-hacking/locking.rst
-+++ b/Documentation/kernel-hacking/locking.rst
-@@ -118,11 +118,11 @@ spinlock, but you may block holding a mutex. If you c=
-an't lock a mutex,
- your task will suspend itself, and be woken up when the mutex is
- released. This means the CPU can do something else while you are
- waiting. There are many cases when you simply can't sleep (see
--`What Functions Are Safe To Call From Interrupts? <#sleeping-things>`__),
-+`What Functions Are Safe To Call From Interrupts?`_),
- and so have to use a spinlock instead.
-=20
- Neither type of lock is recursive: see
--`Deadlock: Simple and Advanced <#deadlock>`__.
-+`Deadlock: Simple and Advanced`_.
-=20
- Locks and Uniprocessor Kernels
- ------------------------------
-@@ -179,7 +179,7 @@ perfect world).
-=20
- Note that you can also use spin_lock_irq() or
- spin_lock_irqsave() here, which stop hardware interrupts
--as well: see `Hard IRQ Context <#hard-irq-context>`__.
-+as well: see `Hard IRQ Context`_.
-=20
- This works perfectly for UP as well: the spin lock vanishes, and this
- macro simply becomes local_bh_disable()
-@@ -230,7 +230,7 @@ The Same Softirq
- ~~~~~~~~~~~~~~~~
-=20
- The same softirq can run on the other CPUs: you can use a per-CPU array
--(see `Per-CPU Data <#per-cpu-data>`__) for better performance. If you're
-+(see `Per-CPU Data`_) for better performance. If you're
- going so far as to use a softirq, you probably care about scalable
- performance enough to justify the extra complexity.
-=20
-diff --git a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst b/Do=
-cumentation/sound/kernel-api/writing-an-alsa-driver.rst
-index 73bbd59afc33..e6365836fa8b 100644
---- a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
-+++ b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
-@@ -71,7 +71,7 @@ core/oss
- The codes for PCM and mixer OSS emulation modules are stored in this
- directory. The rawmidi OSS emulation is included in the ALSA rawmidi
- code since it's quite small. The sequencer code is stored in
--``core/seq/oss`` directory (see `below <#core-seq-oss>`__).
-+``core/seq/oss`` directory (see `below <core/seq/oss_>`__).
-=20
- core/seq
- ~~~~~~~~
-@@ -382,7 +382,7 @@ where ``enable[dev]`` is the module option.
- Each time the ``probe`` callback is called, check the availability of
- the device. If not available, simply increment the device index and
- returns. dev will be incremented also later (`step 7
--<#set-the-pci-driver-data-and-return-zero>`__).
-+<7) Set the PCI driver data and return zero._>`__).
-=20
- 2) Create a card instance
- ~~~~~~~~~~~~~~~~~~~~~~~~~
-@@ -450,10 +450,10 @@ field contains the information shown in ``/proc/asoun=
-d/cards``.
- 5) Create other components, such as mixer, MIDI, etc.
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-=20
--Here you define the basic components such as `PCM <#PCM-Interface>`__,
--mixer (e.g. `AC97 <#API-for-AC97-Codec>`__), MIDI (e.g.
--`MPU-401 <#MIDI-MPU401-UART-Interface>`__), and other interfaces.
--Also, if you want a `proc file <#Proc-Interface>`__, define it here,
-+Here you define the basic components such as `PCM <PCM Interface_>`__,
-+mixer (e.g. `AC97 <API for AC97 Codec_>`__), MIDI (e.g.
-+`MPU-401 <MIDI (MPU401-UART) Interface_>`__), and other interfaces.
-+Also, if you want a `proc file <Proc Interface_>`__, define it here,
- too.
-=20
- 6) Register the card instance.
-@@ -941,7 +941,7 @@ The allocation of an interrupt source is done like this=
-:
-   chip->irq =3D pci->irq;
-=20
- where :c:func:`snd_mychip_interrupt()` is the interrupt handler
--defined `later <#pcm-interface-interrupt-handler>`__. Note that
-+defined `later <PCM Interrupt Handler_>`__. Note that
- ``chip->irq`` should be defined only when :c:func:`request_irq()`
- succeeded.
-=20
-@@ -3104,7 +3104,7 @@ processing the output stream in the irq handler.
-=20
- If the MPU-401 interface shares its interrupt with the other logical
- devices on the card, set ``MPU401_INFO_IRQ_HOOK`` (see
--`below <#MIDI-Interrupt-Handler>`__).
-+`below <MIDI Interrupt Handler_>`__).
-=20
- Usually, the port address corresponds to the command port and port + 1
- corresponds to the data port. If not, you may change the ``cport``
---=20
-2.29.2
-
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
