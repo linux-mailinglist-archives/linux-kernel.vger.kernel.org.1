@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A14A2E3B4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:49:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C1B42E3E17
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:24:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405871AbgL1Ns2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:48:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49718 "EHLO mail.kernel.org"
+        id S2502817AbgL1OXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:23:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405846AbgL1NsW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:48:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A82C20715;
-        Mon, 28 Dec 2020 13:47:40 +0000 (UTC)
+        id S2437893AbgL1OVA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:21:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6281E22B2E;
+        Mon, 28 Dec 2020 14:20:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163261;
-        bh=oB31TNYw/hziIM+G/DK8bjQfj64HSVpYJB/rqIP7RSs=;
+        s=korg; t=1609165245;
+        bh=5zn/4xyB1eu5gYq4y6UvWcr7Apf3HUkruUXsWMQBIZo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UUxEwOJBrHNgFkqyzdJko4QN6U2RyvortKd/RFNvrZVGlWViQrSKl73xsnp6+W480
-         dB1u94nmoELq+Yi+RZvEnt7jYZr84sAyk1UqV/u7YCwadCZXGKPhc6B8vXFf2MhhbR
-         N2sMNBvqb/KQN7Ci91xS4dI6WPtAQ/kxJh6NAEhI=
+        b=VSRUstEipRUM6ql2dMRS4XkScUJEjardLrBqG6j31oPXRSJrSMWS7gKccVrOHS83/
+         NZFy+mVLO+UTg7BJu5qyTcuWORpsLTPhosfc1V/QAziMRP8/+dAMiyWNyXHr09gyZs
+         +aVBdUXLKAsL4y1PJD9rSWE1ldpTMz4MJKkUobek=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Keqian Zhu <zhukeqian1@huawei.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 225/453] clocksource/drivers/arm_arch_timer: Use stable count reader in erratum sne
+Subject: [PATCH 5.10 463/717] i40e, xsk: clear the status bits for the next_to_use descriptor
 Date:   Mon, 28 Dec 2020 13:47:41 +0100
-Message-Id: <20201228124948.048116529@linuxfoundation.org>
+Message-Id: <20201228125043.154251286@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,44 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Keqian Zhu <zhukeqian1@huawei.com>
+From: Björn Töpel <bjorn.topel@intel.com>
 
-[ Upstream commit d8cc3905b8073c7cfbff94af889fa8dc71f21dd5 ]
+[ Upstream commit 64050b5b8706d304ba647591b06e1eddc55e8bd9 ]
 
-In commit 0ea415390cd3 ("clocksource/arm_arch_timer: Use arch_timer_read_counter
-to access stable counters"), we separate stable and normal count reader to omit
-unnecessary overhead on systems that have no timer erratum.
+On the Rx side, the next_to_use index points to the next item in the
+HW ring to be refilled/allocated, and next_to_clean points to the next
+item to potentially be processed.
 
-However, in erratum_set_next_event_tval_generic(), count reader becomes normal
-reader. This converts it to stable reader.
+When the HW Rx ring is fully refilled, i.e. no packets has been
+processed, the next_to_use will be next_to_clean - 1. When the ring is
+fully processed next_to_clean will be equal to next_to_use. The latter
+case is where a bug is triggered.
 
-Fixes: 0ea415390cd3 ("clocksource/arm_arch_timer: Use arch_timer_read_counter to access stable counters")
-Acked-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20201204073126.6920-2-zhukeqian1@huawei.com
+If the next_to_use bits are not cleared, and the "fully processed"
+state is entered, a stale descriptor can be processed.
+
+The skb-path correctly clear the status bit for the next_to_use
+descriptor, but the AF_XDP zero-copy path did not do that.
+
+This change adds the status bits clearing of the next_to_use
+descriptor.
+
+Fixes: 3b4f0b66c2b3 ("i40e, xsk: Migrate to new MEM_TYPE_XSK_BUFF_POOL")
+Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clocksource/arm_arch_timer.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
-index 4be83b4de2a0a..d2120fcf1f3f6 100644
---- a/drivers/clocksource/arm_arch_timer.c
-+++ b/drivers/clocksource/arm_arch_timer.c
-@@ -392,10 +392,10 @@ static void erratum_set_next_event_tval_generic(const int access, unsigned long
- 	ctrl &= ~ARCH_TIMER_CTRL_IT_MASK;
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+index 567fd67e900ef..e402c62eb3137 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+@@ -219,8 +219,11 @@ bool i40e_alloc_rx_buffers_zc(struct i40e_ring *rx_ring, u16 count)
+ 	} while (count);
  
- 	if (access == ARCH_TIMER_PHYS_ACCESS) {
--		cval = evt + arch_counter_get_cntpct();
-+		cval = evt + arch_counter_get_cntpct_stable();
- 		write_sysreg(cval, cntp_cval_el0);
- 	} else {
--		cval = evt + arch_counter_get_cntvct();
-+		cval = evt + arch_counter_get_cntvct_stable();
- 		write_sysreg(cval, cntv_cval_el0);
- 	}
+ no_buffers:
+-	if (rx_ring->next_to_use != ntu)
++	if (rx_ring->next_to_use != ntu) {
++		/* clear the status bits for the next_to_use descriptor */
++		rx_desc->wb.qword1.status_error_len = 0;
+ 		i40e_release_rx_desc(rx_ring, ntu);
++	}
  
+ 	return ok;
+ }
 -- 
 2.27.0
 
