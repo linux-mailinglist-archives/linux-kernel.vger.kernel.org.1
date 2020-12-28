@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 862D72E3B6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:51:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BF162E3E08
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:24:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406209AbgL1Ntq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:49:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51136 "EHLO mail.kernel.org"
+        id S2502756AbgL1OWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:22:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406182AbgL1Ntm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:49:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA26F2078D;
-        Mon, 28 Dec 2020 13:49:26 +0000 (UTC)
+        id S2502725AbgL1OWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:22:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A52E1206D4;
+        Mon, 28 Dec 2020 14:22:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163367;
-        bh=ksJdsnzpFH6ZnsbcVUKUPft0YhC8DH+GHnR27VWGIZs=;
+        s=korg; t=1609165350;
+        bh=iCaYDlAzEiBveYoobdPRUO9FaEYrf3eoqc+1e4iMvio=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bYYBBZhZ/FhZSETLaACWvuWdGUWC7BXYFvXHuaPRhKmoxFBBEHD2H3tguE8F1dKrA
-         C0EK0EtztyrGYr3c9JsRJC+AMS3Tr0SYWNPtNrEU4JC00cNwDfkAqVRyEPTJWI8T9R
-         M4uDXGtI6DsPh86QlulUkTIYMwlO0G5uzo6i6kcw=
+        b=ck3ENNdRhzZNjzKmluFtFjevlD9ge77PuVar3ra1oOWAIiDINTUeaYnd1z/7Gscca
+         EfrDi1TxoEd3k8+s7WaAAebS6vSxSb+5Yjppftj0mQE0mMybeDWUFpuKbHVUvoTBxo
+         9LDEHGbc7tyk7putceLbDbD6ad5blcHr4f8PfJfY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Nyekjaer <sean@geanix.com>,
-        Sriram Dash <sriram.dash@samsung.com>,
-        Dan Murphy <dmurphy@ti.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Luca Ceresoli <luca@lucaceresoli.net>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 261/453] can: m_can: m_can_config_endisable(): remove double clearing of clock stop request bit
+Subject: [PATCH 5.10 499/717] clk: vc5: Use "idt,voltage-microvolt" instead of "idt,voltage-microvolts"
 Date:   Mon, 28 Dec 2020 13:48:17 +0100
-Message-Id: <20201228124949.783718994@linuxfoundation.org>
+Message-Id: <20201228125044.870388370@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,42 +42,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Nyekjaer <sean@geanix.com>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-[ Upstream commit c9f4cad6cdfe350ce2637e57f7f2aa7ff326bcc6 ]
+[ Upstream commit 4b003f5fcadfa2d0e087e907b0c65d023f6e29fb ]
 
-The CSR bit is already cleared when arriving here so remove this section of
-duplicate code.
+Commit 45c940184b501fc6 ("dt-bindings: clk: versaclock5: convert to
+yaml") accidentally changed "idt,voltage-microvolts" to
+"idt,voltage-microvolt" in the DT bindings, while the driver still used
+the former.
 
-The registers set in m_can_config_endisable() is set to same exact values as
-before this patch.
+Update the driver to match the bindings, as
+Documentation/devicetree/bindings/property-units.txt actually recommends
+using "microvolt".
 
-Signed-off-by: Sean Nyekjaer <sean@geanix.com>
-Acked-by: Sriram Dash <sriram.dash@samsung.com>
-Acked-by: Dan Murphy <dmurphy@ti.com>
-Link: https://lore.kernel.org/r/20191211063227.84259-1-sean@geanix.com
-Fixes: f524f829b75a ("can: m_can: Create a m_can platform framework")
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Fixes: 260249f929e81d3d ("clk: vc5: Enable addition output configurations of the Versaclock")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://lore.kernel.org/r/20201218125253.3815567-1-geert+renesas@glider.be
+Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/m_can/m_can.c | 4 ----
- 1 file changed, 4 deletions(-)
+ drivers/clk/clk-versaclock5.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index c84114b44ee07..d2bb9a87eff9a 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -379,10 +379,6 @@ void m_can_config_endisable(struct m_can_classdev *cdev, bool enable)
- 		cccr &= ~CCCR_CSR;
+diff --git a/drivers/clk/clk-versaclock5.c b/drivers/clk/clk-versaclock5.c
+index c90460e7ef215..43db67337bc06 100644
+--- a/drivers/clk/clk-versaclock5.c
++++ b/drivers/clk/clk-versaclock5.c
+@@ -739,8 +739,8 @@ static int vc5_update_power(struct device_node *np_output,
+ {
+ 	u32 value;
  
- 	if (enable) {
--		/* Clear the Clock stop request if it was set */
--		if (cccr & CCCR_CSR)
--			cccr &= ~CCCR_CSR;
--
- 		/* enable m_can configuration */
- 		m_can_write(cdev, M_CAN_CCCR, cccr | CCCR_INIT);
- 		udelay(5);
+-	if (!of_property_read_u32(np_output,
+-				  "idt,voltage-microvolts", &value)) {
++	if (!of_property_read_u32(np_output, "idt,voltage-microvolt",
++				  &value)) {
+ 		clk_out->clk_output_cfg0_mask |= VC5_CLK_OUTPUT_CFG0_PWR_MASK;
+ 		switch (value) {
+ 		case 1800000:
 -- 
 2.27.0
 
