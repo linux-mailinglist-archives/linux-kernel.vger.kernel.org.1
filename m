@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67CFD2E3EDA
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:33:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1C432E3C0C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:59:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504974AbgL1OdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:33:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39376 "EHLO mail.kernel.org"
+        id S2407489AbgL1N57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:57:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2504230AbgL1ObN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:31:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D81E02242A;
-        Mon, 28 Dec 2020 14:30:31 +0000 (UTC)
+        id S2405112AbgL1N55 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:57:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A960722B49;
+        Mon, 28 Dec 2020 13:57:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165832;
-        bh=5kUw6xINQzqCX/9KsdwsemcGkxbASYE+So9v/uQK7s8=;
+        s=korg; t=1609163862;
+        bh=98X/jcCRH0yQuqv6py0Piexc/IZcMKBVJxzrDjazN7E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SUUsU1IRvxN0A2VLV8rok3nsRy0fy2t4yjW2DDD/EtE/E4dwua51RijR6pyKmFhJs
-         +F90wRCI/aABlPrLBbNTHRxbtzxzFu5RZUEF+RDPqsIiPO4od63VK+atkTlAVvsh+c
-         qvtVTJApA/EeV5dhfMbtAJIA9TwfwUMY4WZoEvS8=
+        b=mQUMSdnh10fcSFmdXvW5NF1hX/fNGW1g5hvd9G0GuXzf6Kfa7UMVS6xR7DIUjF9rt
+         0acQh6yMGTOnLdjY6wOrXEjzn3vIoMztvGogIpGiGzwdvT53isMe5vBWCj/PhKZnwe
+         cvS6UnBtViD/eKO8EI+LQBywHjyQ6NN5tlTdwWK4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dick Kennedy <dick.kennedy@broadcom.com>,
-        James Smart <james.smart@broadcom.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.10 670/717] scsi: lpfc: Fix invalid sleeping context in lpfc_sli4_nvmet_alloc()
-Date:   Mon, 28 Dec 2020 13:51:08 +0100
-Message-Id: <20201228125053.085491795@linuxfoundation.org>
+        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Dan Murphy <dmurphy@ti.com>, Stable@vger.kernel.org
+Subject: [PATCH 5.4 433/453] iio:adc:ti-ads124s08: Fix alignment and data leak issues.
+Date:   Mon, 28 Dec 2020 13:51:09 +0100
+Message-Id: <20201228124958.063703304@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,102 +41,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Smart <james.smart@broadcom.com>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-commit 62e3a931db60daf94fdb3159d685a5bc6ad4d0cf upstream.
+commit 1e405bc2512f80a903ddd6ba8740cee885238d7f upstream.
 
-The following calltrace was seen:
+One of a class of bugs pointed out by Lars in a recent review.
+iio_push_to_buffers_with_timestamp() assumes the buffer used is aligned
+to the size of the timestamp (8 bytes).  This is not guaranteed in
+this driver which uses an array of smaller elements on the stack.
+As Lars also noted this anti pattern can involve a leak of data to
+userspace and that indeed can happen here.  We close both issues by
+moving to a suitable structure in the iio_priv() data with alignment
+explicitly requested.  This data is allocated with kzalloc() so no
+data can leak apart from previous readings.
 
-BUG: sleeping function called from invalid context at mm/slab.h:494
-...
-Call Trace:
- dump_stack+0x9a/0xf0
- ___might_sleep.cold.63+0x13d/0x178
- slab_pre_alloc_hook+0x6a/0x90
- kmem_cache_alloc_trace+0x3a/0x2d0
- lpfc_sli4_nvmet_alloc+0x4c/0x280 [lpfc]
- lpfc_post_rq_buffer+0x2e7/0xa60 [lpfc]
- lpfc_sli4_hba_setup+0x6b4c/0xa4b0 [lpfc]
- lpfc_pci_probe_one_s4.isra.15+0x14f8/0x2280 [lpfc]
- lpfc_pci_probe_one+0x260/0x2880 [lpfc]
- local_pci_probe+0xd4/0x180
- work_for_cpu_fn+0x51/0xa0
- process_one_work+0x8f0/0x17b0
- worker_thread+0x536/0xb50
- kthread+0x30c/0x3d0
- ret_from_fork+0x3a/0x50
+In this driver the timestamp can end up in various different locations
+depending on what other channels are enabled.  As a result, we don't
+use a structure to specify it's position as that would be misleading.
 
-A prior patch introduced a spin_lock_irqsave(hbalock) in the
-lpfc_post_rq_buffer() routine. Call trace is seen as the hbalock is held
-with interrupts disabled during a GFP_KERNEL allocation in
-lpfc_sli4_nvmet_alloc().
-
-Fix by reordering locking so that hbalock not held when calling
-sli4_nvmet_alloc() (aka rqb_buf_list()).
-
-Link: https://lore.kernel.org/r/20201020202719.54726-2-james.smart@broadcom.com
-Fixes: 411de511c694 ("scsi: lpfc: Fix RQ empty firmware trap")
-Cc: <stable@vger.kernel.org> # v4.17+
-Co-developed-by: Dick Kennedy <dick.kennedy@broadcom.com>
-Signed-off-by: Dick Kennedy <dick.kennedy@broadcom.com>
-Signed-off-by: James Smart <james.smart@broadcom.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: e717f8c6dfec ("iio: adc: Add the TI ads124s08 ADC code")
+Reported-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc: Dan Murphy <dmurphy@ti.com>
+Cc: <Stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200920112742.170751-9-jic23@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/scsi/lpfc/lpfc_mem.c |    4 +---
- drivers/scsi/lpfc/lpfc_sli.c |   10 ++++++++--
- 2 files changed, 9 insertions(+), 5 deletions(-)
+ drivers/iio/adc/ti-ads124s08.c |   13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
---- a/drivers/scsi/lpfc/lpfc_mem.c
-+++ b/drivers/scsi/lpfc/lpfc_mem.c
-@@ -588,8 +588,6 @@ lpfc_sli4_rb_free(struct lpfc_hba *phba,
-  * Description: Allocates a DMA-mapped receive buffer from the lpfc_hrb_pool PCI
-  * pool along a non-DMA-mapped container for it.
-  *
-- * Notes: Not interrupt-safe.  Must be called with no locks held.
-- *
-  * Returns:
-  *   pointer to HBQ on success
-  *   NULL on failure
-@@ -599,7 +597,7 @@ lpfc_sli4_nvmet_alloc(struct lpfc_hba *p
- {
- 	struct rqb_dmabuf *dma_buf;
+--- a/drivers/iio/adc/ti-ads124s08.c
++++ b/drivers/iio/adc/ti-ads124s08.c
+@@ -97,6 +97,14 @@ struct ads124s_private {
+ 	struct gpio_desc *reset_gpio;
+ 	struct spi_device *spi;
+ 	struct mutex lock;
++	/*
++	 * Used to correctly align data.
++	 * Ensure timestamp is naturally aligned.
++	 * Note that the full buffer length may not be needed if not
++	 * all channels are enabled, as long as the alignment of the
++	 * timestamp is maintained.
++	 */
++	u32 buffer[ADS124S08_MAX_CHANNELS + sizeof(s64)/sizeof(u32)] __aligned(8);
+ 	u8 data[5] ____cacheline_aligned;
+ };
  
--	dma_buf = kzalloc(sizeof(struct rqb_dmabuf), GFP_KERNEL);
-+	dma_buf = kzalloc(sizeof(*dma_buf), GFP_KERNEL);
- 	if (!dma_buf)
- 		return NULL;
+@@ -270,7 +278,6 @@ static irqreturn_t ads124s_trigger_handl
+ 	struct iio_poll_func *pf = p;
+ 	struct iio_dev *indio_dev = pf->indio_dev;
+ 	struct ads124s_private *priv = iio_priv(indio_dev);
+-	u32 buffer[ADS124S08_MAX_CHANNELS + sizeof(s64)/sizeof(u32)];
+ 	int scan_index, j = 0;
+ 	int ret;
  
---- a/drivers/scsi/lpfc/lpfc_sli.c
-+++ b/drivers/scsi/lpfc/lpfc_sli.c
-@@ -7248,12 +7248,16 @@ lpfc_post_rq_buffer(struct lpfc_hba *phb
- 	struct rqb_dmabuf *rqb_buffer;
- 	LIST_HEAD(rqb_buf_list);
+@@ -285,7 +292,7 @@ static irqreturn_t ads124s_trigger_handl
+ 		if (ret)
+ 			dev_err(&priv->spi->dev, "Start ADC conversions failed\n");
  
--	spin_lock_irqsave(&phba->hbalock, flags);
- 	rqbp = hrq->rqbp;
- 	for (i = 0; i < count; i++) {
-+		spin_lock_irqsave(&phba->hbalock, flags);
- 		/* IF RQ is already full, don't bother */
--		if (rqbp->buffer_count + i >= rqbp->entry_count - 1)
-+		if (rqbp->buffer_count + i >= rqbp->entry_count - 1) {
-+			spin_unlock_irqrestore(&phba->hbalock, flags);
- 			break;
-+		}
-+		spin_unlock_irqrestore(&phba->hbalock, flags);
-+
- 		rqb_buffer = rqbp->rqb_alloc_buffer(phba);
- 		if (!rqb_buffer)
- 			break;
-@@ -7262,6 +7266,8 @@ lpfc_post_rq_buffer(struct lpfc_hba *phb
- 		rqb_buffer->idx = idx;
- 		list_add_tail(&rqb_buffer->hbuf.list, &rqb_buf_list);
+-		buffer[j] = ads124s_read(indio_dev, scan_index);
++		priv->buffer[j] = ads124s_read(indio_dev, scan_index);
+ 		ret = ads124s_write_cmd(indio_dev, ADS124S08_STOP_CONV);
+ 		if (ret)
+ 			dev_err(&priv->spi->dev, "Stop ADC conversions failed\n");
+@@ -293,7 +300,7 @@ static irqreturn_t ads124s_trigger_handl
+ 		j++;
  	}
-+
-+	spin_lock_irqsave(&phba->hbalock, flags);
- 	while (!list_empty(&rqb_buf_list)) {
- 		list_remove_head(&rqb_buf_list, rqb_buffer, struct rqb_dmabuf,
- 				 hbuf.list);
+ 
+-	iio_push_to_buffers_with_timestamp(indio_dev, buffer,
++	iio_push_to_buffers_with_timestamp(indio_dev, priv->buffer,
+ 			pf->timestamp);
+ 
+ 	iio_trigger_notify_done(indio_dev->trig);
 
 
