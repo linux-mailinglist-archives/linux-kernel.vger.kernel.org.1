@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 970162E3837
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:07:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D53BE2E3F6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:40:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730682AbgL1NHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:07:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33828 "EHLO mail.kernel.org"
+        id S2503556AbgL1O3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:29:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729749AbgL1NGu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:06:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E704207C9;
-        Mon, 28 Dec 2020 13:06:33 +0000 (UTC)
+        id S2503453AbgL1O3O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:29:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EFC2820715;
+        Mon, 28 Dec 2020 14:28:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160794;
-        bh=2zswwcbAHBiiyXxKUukt8I2higsivO73El+lvUDkKBQ=;
+        s=korg; t=1609165713;
+        bh=bLXY2QJ8ravuJUg6Jp4AGdYctMCvagFpq6R7cFlUvaY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KG8QW2Rk/St+5fbNoen4YPsC1v5/07R+kmgoKen8ZNqi3uxTUqXW5fS/CDG7GDLS3
-         Tu8XEEXX7CeeQNcRg8foVMMSBxBsKLNYi/nplRVDmUG++0IEDm1P6e6M0pe74p/YSo
-         MF4ANO1czK2vE6sr5Onmv/hxlE7diJDbT1F3SXK8=
+        b=kZcDPTA5X//fnvpXKY+XBT0tpqJBrGetwA79jfiWUXfYeTIZNUOm2BGogUGkWqjSn
+         ysJMezO4Stzxk1fUSsZsoAA6mUd3DSfWljb7YbLYpzoZC0HxKBGa4qQDpoNj5ev69r
+         AgPXtT1Fr0kkJf94Zd4J4DeNKfw88zbxpoQWNiNI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Terry Zhou <bjzhou@marvell.com>,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Subject: [PATCH 4.9 173/175] clk: mvebu: a3700: fix the XTAL MODE pin to MPP1_9
+        stable@vger.kernel.org, lizhe <lizhe67@huawei.com>,
+        Richard Weinberger <richard@nod.at>
+Subject: [PATCH 5.10 628/717] jffs2: Fix ignoring mounting options problem during remounting
 Date:   Mon, 28 Dec 2020 13:50:26 +0100
-Message-Id: <20201228124901.612196612@linuxfoundation.org>
+Message-Id: <20201228125051.008707227@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +39,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Terry Zhou <bjzhou@marvell.com>
+From: lizhe <lizhe67@huawei.com>
 
-commit 6f37689cf6b38fff96de52e7f0d3e78f22803ba0 upstream.
+commit 08cd274f9b8283a1da93e2ccab216a336da83525 upstream.
 
-There is an error in the current code that the XTAL MODE
-pin was set to NB MPP1_31 which should be NB MPP1_9.
-The latch register of NB MPP1_9 has different offset of 0x8.
+The jffs2 mount options will be ignored when remounting jffs2.
+It can be easily reproduced with the steps listed below.
+1. mount -t jffs2 -o compr=none /dev/mtdblockx /mnt
+2. mount -o remount compr=zlib /mnt
 
-Signed-off-by: Terry Zhou <bjzhou@marvell.com>
-[pali: Fix pin name in commit message]
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Fixes: 7ea8250406a6 ("clk: mvebu: Add the xtal clock for Armada 3700 SoC")
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20201106100039.11385-1-pali@kernel.org
-Reviewed-by: Marek Behún <kabel@kernel.org>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Since ec10a24f10c8, the option parsing happens before fill_super and
+then pass fc, which contains the options parsing results, to function
+jffs2_reconfigure during remounting. But function jffs2_reconfigure do
+not update c->mount_opts.
+
+This patch add a function jffs2_update_mount_opts to fix this problem.
+
+By the way, I notice that tmpfs use the same way to update remounting
+options. If it is necessary to unify them?
+
+Cc: <stable@vger.kernel.org>
+Fixes: ec10a24f10c8 ("vfs: Convert jffs2 to use the new mount API")
+Signed-off-by: lizhe <lizhe67@huawei.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/clk/mvebu/armada-37xx-xtal.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/jffs2/super.c |   17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
---- a/drivers/clk/mvebu/armada-37xx-xtal.c
-+++ b/drivers/clk/mvebu/armada-37xx-xtal.c
-@@ -15,8 +15,8 @@
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
+--- a/fs/jffs2/super.c
++++ b/fs/jffs2/super.c
+@@ -215,11 +215,28 @@ static int jffs2_parse_param(struct fs_c
+ 	return 0;
+ }
  
--#define NB_GPIO1_LATCH	0xC
--#define XTAL_MODE	    BIT(31)
-+#define NB_GPIO1_LATCH	0x8
-+#define XTAL_MODE	    BIT(9)
- 
- static int armada_3700_xtal_clock_probe(struct platform_device *pdev)
++static inline void jffs2_update_mount_opts(struct fs_context *fc)
++{
++	struct jffs2_sb_info *new_c = fc->s_fs_info;
++	struct jffs2_sb_info *c = JFFS2_SB_INFO(fc->root->d_sb);
++
++	mutex_lock(&c->alloc_sem);
++	if (new_c->mount_opts.override_compr) {
++		c->mount_opts.override_compr = new_c->mount_opts.override_compr;
++		c->mount_opts.compr = new_c->mount_opts.compr;
++	}
++	if (new_c->mount_opts.rp_size)
++		c->mount_opts.rp_size = new_c->mount_opts.rp_size;
++	mutex_unlock(&c->alloc_sem);
++}
++
+ static int jffs2_reconfigure(struct fs_context *fc)
  {
+ 	struct super_block *sb = fc->root->d_sb;
+ 
+ 	sync_filesystem(sb);
++	jffs2_update_mount_opts(fc);
++
+ 	return jffs2_do_remount_fs(sb, fc);
+ }
+ 
 
 
