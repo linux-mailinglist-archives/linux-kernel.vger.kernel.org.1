@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCE022E42BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:28:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 840872E382C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:07:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406769AbgL1N5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:57:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57712 "EHLO mail.kernel.org"
+        id S1729031AbgL1NGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:06:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405399AbgL1N4A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:56:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 55FCE207B2;
-        Mon, 28 Dec 2020 13:55:19 +0000 (UTC)
+        id S1729639AbgL1NGd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:06:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BEC35208BA;
+        Mon, 28 Dec 2020 13:06:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163719;
-        bh=PZUVlD8vaoqY2SjVW9TsaC6wGz3NxxKcN0zJnovltDY=;
+        s=korg; t=1609160777;
+        bh=FQP+rt9NpICwzj/HNlIQdtXAEm7tcSEAdjcSZDwBpWA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yuCsnYGFBe/eHQsuODZylTSsZXyoKv/wtY3C/GZKcr3XCscy5GT3VOl8JPT0aEhoR
-         7garK3Jb8fgpbcOjFhgJEd4akyFi8syRn0kuAH1+t/7NoOP2OSfgo24hnk0KTV/4t/
-         LKKb/XRXhfycevHUAw6VJmodgYC/DKqoInXdJj2E=
+        b=aQoEaJe/PYanlZQcFFNE+6F9vrHrQl8dFzMsDnP92gOLHIhWT6D06Hxi7QMXPrYHb
+         //g1iTN5yVSKHHksJpgSM2nc+oMfIp3edoOnK3kCRbFVFOhJhM8vkwJ/5pmJ8O7sIx
+         oEOrjeA2EkB1eQ8zfDx6PYH4u1rL9gRTmADmJhKo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.4 385/453] powerpc/mm: Fix verification of MMU_FTR_TYPE_44x
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Evan Green <evgreen@chromium.org>
+Subject: [PATCH 4.9 168/175] soc: qcom: smp2p: Safely acquire spinlock without IRQs
 Date:   Mon, 28 Dec 2020 13:50:21 +0100
-Message-Id: <20201228124955.728150407@linuxfoundation.org>
+Message-Id: <20201228124901.372180359@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +41,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Evan Green <evgreen@chromium.org>
 
-commit 17179aeb9d34cc81e1a4ae3f85e5b12b13a1f8d0 upstream.
+commit fc3e62e25c3896855b7c3d72df19ca6be3459c9f upstream.
 
-MMU_FTR_TYPE_44x cannot be checked by cpu_has_feature()
+smp2p_update_bits() should disable interrupts when it acquires its
+spinlock. This is important because without the _irqsave, a priority
+inversion can occur.
 
-Use mmu_has_feature() instead
+This function is called both with interrupts enabled in
+qcom_q6v5_request_stop(), and with interrupts disabled in
+ipa_smp2p_panic_notifier(). IRQ handling of spinlocks should be
+consistent to avoid the panic notifier deadlocking because it's
+sitting on the thread that's already got the lock via _request_stop().
 
-Fixes: 23eb7f560a2a ("powerpc: Convert flush_icache_range & friends to C")
+Found via lockdep.
+
 Cc: stable@vger.kernel.org
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/ceede82fadf37f3b8275e61fcf8cf29a3e2ec7fe.1602351011.git.christophe.leroy@csgroup.eu
+Fixes: 50e99641413e7 ("soc: qcom: smp2p: Qualcomm Shared Memory Point to Point")
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Evan Green <evgreen@chromium.org>
+Link: https://lore.kernel.org/r/20200929133040.RESEND.1.Ideabf6dcdfc577cf39ce3d95b0e4aa1ac8b38f0c@changeid
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/mm/mem.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/soc/qcom/smp2p.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/arch/powerpc/mm/mem.c
-+++ b/arch/powerpc/mm/mem.c
-@@ -530,7 +530,7 @@ void __flush_dcache_icache(void *p)
- 	 * space occurs, before returning to user space.
- 	 */
+--- a/drivers/soc/qcom/smp2p.c
++++ b/drivers/soc/qcom/smp2p.c
+@@ -314,15 +314,16 @@ static int qcom_smp2p_inbound_entry(stru
+ static int smp2p_update_bits(void *data, u32 mask, u32 value)
+ {
+ 	struct smp2p_entry *entry = data;
++	unsigned long flags;
+ 	u32 orig;
+ 	u32 val;
  
--	if (cpu_has_feature(MMU_FTR_TYPE_44x))
-+	if (mmu_has_feature(MMU_FTR_TYPE_44x))
- 		return;
+-	spin_lock(&entry->lock);
++	spin_lock_irqsave(&entry->lock, flags);
+ 	val = orig = readl(entry->value);
+ 	val &= ~mask;
+ 	val |= value;
+ 	writel(val, entry->value);
+-	spin_unlock(&entry->lock);
++	spin_unlock_irqrestore(&entry->lock, flags);
  
- 	invalidate_icache_range(addr, addr + PAGE_SIZE);
+ 	if (val != orig)
+ 		qcom_smp2p_kick(entry->smp2p);
 
 
