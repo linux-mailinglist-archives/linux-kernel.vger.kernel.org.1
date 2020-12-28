@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FD8E2E658B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:03:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD5A62E6711
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:22:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391907AbgL1QCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:02:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58384 "EHLO mail.kernel.org"
+        id S1732285AbgL1NNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:13:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390209AbgL1N3z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:29:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D68322AAA;
-        Mon, 28 Dec 2020 13:29:39 +0000 (UTC)
+        id S1732227AbgL1NNl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:13:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CCFDA22AAD;
+        Mon, 28 Dec 2020 13:12:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162179;
-        bh=v2j1NgCtxry56d7xIUjlsxc1o//7prUvdw6+0kbhgtw=;
+        s=korg; t=1609161180;
+        bh=1b/fIMg3IWYi4cQ4mqSoGTUdKQFkfICjXpcA5uI8n5s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AfLQJaQ0lf4bfOTj6q1r7Nnt8d558hE6zDUznxdGnwN5QWwaGsp59l61p3hl0Y/vR
-         WBZQ9HMi4h7ilinM51vK3LZAtcZ5OzfbO2KxfQFvi88+htmSRVx9OdWjJJfsgL5Emr
-         eoJG8W5pyaS6RT5ep5rHzfWUqeTLntbAjkVO0D4I=
+        b=hwMZUFam2JwpGkHvsZNC/P2eUkIu0BgcT1no64TnpjP23wF0YrG13zxGtF6NW59dF
+         GMKqHuCKs5bKPQa/THrvM/HYCtCWhf/41XjVVVgp4QZJF5v9tgc9PDDoZRluDXhdsU
+         6Xi2CIU2TmuAg/+S0ES+W7qB62M2AzElo90ggUtU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vadim Pasternak <vadimp@nvidia.com>,
-        Hans de Goede <hdegoede@redhat.com>,
+        stable@vger.kernel.org, Jason Gunthorpe <jgg@nvidia.com>,
+        Peter Xu <peterx@redhat.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 213/346] platform/x86: mlx-platform: Fix item counter assignment for MSN2700, MSN24xx systems
-Date:   Mon, 28 Dec 2020 13:48:52 +0100
-Message-Id: <20201228124930.084876385@linuxfoundation.org>
+Subject: [PATCH 4.14 128/242] vfio-pci: Use io_remap_pfn_range() for PCI IO memory
+Date:   Mon, 28 Dec 2020 13:48:53 +0100
+Message-Id: <20201228124910.999527634@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,55 +42,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vadim Pasternak <vadimp@nvidia.com>
+From: Jason Gunthorpe <jgg@nvidia.com>
 
-[ Upstream commit ba4939f1dd46dde08c2f9b9d7ac86ed3ea7ead86 ]
+[ Upstream commit 7b06a56d468b756ad6bb43ac21b11e474ebc54a0 ]
 
-Fix array names to match assignments for data items and data items
-counter in 'mlxplat_mlxcpld_default_items' structure for:
-	.data = mlxplat_mlxcpld_default_pwr_items_data,
-	.count = ARRAY_SIZE(mlxplat_mlxcpld_pwr),
-and
-	.data = mlxplat_mlxcpld_default_fan_items_data,
-	.count = ARRAY_SIZE(mlxplat_mlxcpld_fan),
+commit f8f6ae5d077a ("mm: always have io_remap_pfn_range() set
+pgprot_decrypted()") allows drivers using mmap to put PCI memory mapped
+BAR space into userspace to work correctly on AMD SME systems that default
+to all memory encrypted.
 
-Replace:
-- 'mlxplat_mlxcpld_pwr' by 'mlxplat_mlxcpld_default_pwr_items_data' for
-   ARRAY_SIZE() calculation.
-- 'mlxplat_mlxcpld_fan' by 'mlxplat_mlxcpld_default_fan_items_data'
-   for ARRAY_SIZE() calculation.
+Since vfio_pci_mmap_fault() is working with PCI memory mapped BAR space it
+should be calling io_remap_pfn_range() otherwise it will not work on SME
+systems.
 
-Fixes: c6acad68eb2d ("platform/mellanox: mlxreg-hotplug: Modify to use a regmap interface")
-Signed-off-by: Vadim Pasternak <vadimp@nvidia.com>
-Link: https://lore.kernel.org/r/20201207174745.22889-2-vadimp@nvidia.com
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Fixes: 11c4cd07ba11 ("vfio-pci: Fault mmaps to enable vma tracking")
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Acked-by: Peter Xu <peterx@redhat.com>
+Tested-by: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/mlx-platform.c | 4 ++--
+ drivers/vfio/pci/vfio_pci.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/platform/x86/mlx-platform.c b/drivers/platform/x86/mlx-platform.c
-index 850c719de68d4..39f2c0428a046 100644
---- a/drivers/platform/x86/mlx-platform.c
-+++ b/drivers/platform/x86/mlx-platform.c
-@@ -333,7 +333,7 @@ static struct mlxreg_core_item mlxplat_mlxcpld_default_items[] = {
- 		.aggr_mask = MLXPLAT_CPLD_AGGR_PWR_MASK_DEF,
- 		.reg = MLXPLAT_CPLD_LPC_REG_PWR_OFFSET,
- 		.mask = MLXPLAT_CPLD_PWR_MASK,
--		.count = ARRAY_SIZE(mlxplat_mlxcpld_pwr),
-+		.count = ARRAY_SIZE(mlxplat_mlxcpld_default_pwr_items_data),
- 		.inversed = 0,
- 		.health = false,
- 	},
-@@ -342,7 +342,7 @@ static struct mlxreg_core_item mlxplat_mlxcpld_default_items[] = {
- 		.aggr_mask = MLXPLAT_CPLD_AGGR_FAN_MASK_DEF,
- 		.reg = MLXPLAT_CPLD_LPC_REG_FAN_OFFSET,
- 		.mask = MLXPLAT_CPLD_FAN_MASK,
--		.count = ARRAY_SIZE(mlxplat_mlxcpld_fan),
-+		.count = ARRAY_SIZE(mlxplat_mlxcpld_default_fan_items_data),
- 		.inversed = 1,
- 		.health = false,
- 	},
+diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
+index ac1c54bcfe8fb..6fceefcab81db 100644
+--- a/drivers/vfio/pci/vfio_pci.c
++++ b/drivers/vfio/pci/vfio_pci.c
+@@ -1380,8 +1380,8 @@ static int vfio_pci_mmap_fault(struct vm_fault *vmf)
+ 
+ 	mutex_unlock(&vdev->vma_lock);
+ 
+-	if (remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff,
+-			    vma->vm_end - vma->vm_start, vma->vm_page_prot))
++	if (io_remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff,
++			       vma->vm_end - vma->vm_start, vma->vm_page_prot))
+ 		ret = VM_FAULT_SIGBUS;
+ 
+ up_out:
 -- 
 2.27.0
 
