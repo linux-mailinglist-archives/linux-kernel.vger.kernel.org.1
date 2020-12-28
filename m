@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE9B2E3B3F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:49:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 019412E37BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:01:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405730AbgL1Nrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:47:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48260 "EHLO mail.kernel.org"
+        id S1729374AbgL1M75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:59:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405694AbgL1Nrn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:47:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7715B22AAA;
-        Mon, 28 Dec 2020 13:47:27 +0000 (UTC)
+        id S1728898AbgL1M7v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:59:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D4680224D2;
+        Mon, 28 Dec 2020 12:59:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163248;
-        bh=/55/JP/FhZyIUNXvPY1v/rmi6f/wfMoZw5L4P7xXBj0=;
+        s=korg; t=1609160350;
+        bh=p1SBuvEuvOnE6F0Yhv0RPPh1j3jJpmrPEhHjsIXR10c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hE3S6d2HmAOcElB/Ir42dU6l5RDO7UDd3TA0MHc+UKl3hwZteZLAskiCoFLe/a1kd
-         MFMAmH2rJ+9wxEe+Yw/rsryyFfWsNLSdysNvpxegSyZrmCUNtJ+exzP7RV3rzkIhLc
-         OXI3AJjQQz8ih37oliKaG9YJVwCYPsQsWDKF8u8M=
+        b=kWRbKqKcYLyeeDHDR1+aM2oyTtt+oEiEBpY7WT9CfR6w1w7JxqMECq08gbeYhC4Nz
+         OhwaQJZ7b7xb5XXX8rhzWGn/BORSAM5rPj0tCFeyTL4hTgez8pp3nlNmmfBZ7iFT8t
+         htTFDjv3XTPU/Db/PA48ZRaTdVISRUbvD1j6HiNY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
+        stable@vger.kernel.org, Markus Reichl <m.reichl@fivetechno.de>,
+        Douglas Anderson <dianders@chromium.org>,
+        Heiko Stuebner <heiko@sntech.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 221/453] net/mlx5: Properly convey driver version to firmware
+Subject: [PATCH 4.9 004/175] arm64: dts: rockchip: Assign a fixed index to mmc devices on rk3399 boards.
 Date:   Mon, 28 Dec 2020 13:47:37 +0100
-Message-Id: <20201228124947.852760547@linuxfoundation.org>
+Message-Id: <20201228124853.453748321@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,45 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+From: Markus Reichl <m.reichl@fivetechno.de>
 
-[ Upstream commit 907af0f0cab4ee5d5604f182ecec2c5b5119d294 ]
+[ Upstream commit 0011c6d182774fc781fb9e115ebe8baa356029ae ]
 
-mlx5 firmware expects driver version in specific format X.X.X, so
-make it always correct and based on real kernel version aligned with
-the driver.
+Recently introduced async probe on mmc devices can shuffle block IDs.
+Pin them to fixed values to ease booting in environments where UUIDs
+are not practical. Use newly introduced aliases for mmcblk devices from [1].
 
-Fixes: 012e50e109fd ("net/mlx5: Set driver version into firmware")
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+[1]
+https://patchwork.kernel.org/patch/11747669/
+
+Signed-off-by: Markus Reichl <m.reichl@fivetechno.de>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Link: https://lore.kernel.org/r/20201104162356.1251-1-m.reichl@fivetechno.de
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/main.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-index 7c0a726277b00..f2657cd3ffa4f 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-@@ -50,6 +50,7 @@
- #ifdef CONFIG_RFS_ACCEL
- #include <linux/cpu_rmap.h>
- #endif
-+#include <linux/version.h>
- #include <net/devlink.h>
- #include "mlx5_core.h"
- #include "lib/eq.h"
-@@ -227,7 +228,10 @@ static void mlx5_set_driver_version(struct mlx5_core_dev *dev)
- 	strncat(string, ",", remaining_size);
- 
- 	remaining_size = max_t(int, 0, driver_ver_sz - strlen(string));
--	strncat(string, DRIVER_VERSION, remaining_size);
-+
-+	snprintf(string + strlen(string), remaining_size, "%u.%u.%u",
-+		 (u8)((LINUX_VERSION_CODE >> 16) & 0xff), (u8)((LINUX_VERSION_CODE >> 8) & 0xff),
-+		 (u16)(LINUX_VERSION_CODE & 0xffff));
- 
- 	/*Send the command*/
- 	MLX5_SET(set_driver_version_in, in, opcode,
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+index 7afbfb0f96a3c..dd211dbdaaae0 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+@@ -65,6 +65,9 @@
+ 		i2c6 = &i2c6;
+ 		i2c7 = &i2c7;
+ 		i2c8 = &i2c8;
++		mmc0 = &sdio0;
++		mmc1 = &sdmmc;
++		mmc2 = &sdhci;
+ 		serial0 = &uart0;
+ 		serial1 = &uart1;
+ 		serial2 = &uart2;
 -- 
 2.27.0
 
