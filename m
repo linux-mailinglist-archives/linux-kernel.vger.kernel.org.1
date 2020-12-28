@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CE042E3ACF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:43:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 653C32E3AD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:43:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404067AbgL1Nlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:41:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41100 "EHLO mail.kernel.org"
+        id S2391926AbgL1NmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:42:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391652AbgL1NlL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:41:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F820206ED;
-        Mon, 28 Dec 2020 13:40:54 +0000 (UTC)
+        id S2391674AbgL1NlO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:41:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EB6B21D94;
+        Mon, 28 Dec 2020 13:40:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162855;
-        bh=YA6j4qZiu18JaJvx4krCxHDiwwN3paQ2Tfar/rBxgXc=;
+        s=korg; t=1609162858;
+        bh=a3VtAI9EWvHTMsREjZvzqzchoZk68QqwDXfiu3G1nnQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r9pkVyOIH93fRbgOA4/yQut0Wg170Cl0aIyIez8MZNS7Ku/H5zCs8tTg9I5p33oFt
-         LhztHdu2GjKL5IHaocCpSFBzud/Huz0ysolxw5Cm2c0bqwqfwwpwj2U80+oHSmGtKZ
-         km/r0SOJ/ExL7Yt2N9Wvx8ARFuYH2TVeO2etUgok=
+        b=ZBz+AcTO8mI8C1uDfKJdbkn+zOzfdVFVeP56YQCCYIFWG+GpE7Ut3jNOTALeHt1vn
+         XvUJBzR7tzAo4eUDk9zEOEQwvuQ0Ubk6oYOGu5Oc2xzsjsfq/DPvzLXT4fD4NSKcFa
+         Bd1HziZHLbhpNgEcASdM1AriwQv44fvy+1fP3yuQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tianyue Ren <rentianyue@kylinos.cn>,
-        Paul Moore <paul@paul-moore.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 085/453] selinux: fix error initialization in inode_doinit_with_dentry()
-Date:   Mon, 28 Dec 2020 13:45:21 +0100
-Message-Id: <20201228124941.320561527@linuxfoundation.org>
+        stable@vger.kernel.org, John Wang <wangzhiqiang.bj@bytedance.com>,
+        Joel Stanley <joel@jms.id.au>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 086/453] ARM: dts: aspeed: s2600wf: Fix VGA memory region location
+Date:   Mon, 28 Dec 2020 13:45:22 +0100
+Message-Id: <20201228124941.369267197@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
 References: <20201228124937.240114599@linuxfoundation.org>
@@ -40,60 +39,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tianyue Ren <rentianyue@kylinos.cn>
+From: Joel Stanley <joel@jms.id.au>
 
-[ Upstream commit 83370b31a915493231e5b9addc72e4bef69f8d31 ]
+[ Upstream commit 9e1cc9679776f5b9e42481d392b1550753ebd084 ]
 
-Mark the inode security label as invalid if we cannot find
-a dentry so that we will retry later rather than marking it
-initialized with the unlabeled SID.
+The VGA memory region is always from the top of RAM. On this board, that
+is 0x80000000 + 0x20000000 - 0x01000000 = 0x9f000000.
 
-Fixes: 9287aed2ad1f ("selinux: Convert isec->lock into a spinlock")
-Signed-off-by: Tianyue Ren <rentianyue@kylinos.cn>
-[PM: minor comment tweaks]
-Signed-off-by: Paul Moore <paul@paul-moore.com>
+This was not an issue in practice as the region is "reserved" by the
+vendor's u-boot reducing the amount of available RAM, and the only user
+is the host VGA device poking at RAM over PCIe. That is, nothing from
+the ARM touches it.
+
+It is worth fixing as developers copy existing device trees when
+building their machines, and the XDMA driver does use the memory region
+from the ARM side.
+
+Fixes: c4043ecac34a ("ARM: dts: aspeed: Add S2600WF BMC Machine")
+Reported-by: John Wang <wangzhiqiang.bj@bytedance.com>
+Link: https://lore.kernel.org/r/20200922064234.163799-1-joel@jms.id.au
+Signed-off-by: Joel Stanley <joel@jms.id.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/selinux/hooks.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
+ arch/arm/boot/dts/aspeed-bmc-intel-s2600wf.dts | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-index 212f48025db81..76f7eb5690c8e 100644
---- a/security/selinux/hooks.c
-+++ b/security/selinux/hooks.c
-@@ -1499,7 +1499,13 @@ static int inode_doinit_with_dentry(struct inode *inode, struct dentry *opt_dent
- 			 * inode_doinit with a dentry, before these inodes could
- 			 * be used again by userspace.
- 			 */
--			goto out;
-+			isec->initialized = LABEL_INVALID;
-+			/*
-+			 * There is nothing useful to jump to the "out"
-+			 * label, except a needless spin lock/unlock
-+			 * cycle.
-+			 */
-+			return 0;
- 		}
+diff --git a/arch/arm/boot/dts/aspeed-bmc-intel-s2600wf.dts b/arch/arm/boot/dts/aspeed-bmc-intel-s2600wf.dts
+index 22dade6393d06..d1dbe3b6ad5a7 100644
+--- a/arch/arm/boot/dts/aspeed-bmc-intel-s2600wf.dts
++++ b/arch/arm/boot/dts/aspeed-bmc-intel-s2600wf.dts
+@@ -22,9 +22,9 @@
+ 		#size-cells = <1>;
+ 		ranges;
  
- 		rc = inode_doinit_use_xattr(inode, dentry, sbsec->def_sid,
-@@ -1553,8 +1559,15 @@ static int inode_doinit_with_dentry(struct inode *inode, struct dentry *opt_dent
- 			 * inode_doinit() with a dentry, before these inodes
- 			 * could be used again by userspace.
- 			 */
--			if (!dentry)
--				goto out;
-+			if (!dentry) {
-+				isec->initialized = LABEL_INVALID;
-+				/*
-+				 * There is nothing useful to jump to the "out"
-+				 * label, except a needless spin lock/unlock
-+				 * cycle.
-+				 */
-+				return 0;
-+			}
- 			rc = selinux_genfs_get_sid(dentry, sclass,
- 						   sbsec->flags, &sid);
- 			if (rc) {
+-		vga_memory: framebuffer@7f000000 {
++		vga_memory: framebuffer@9f000000 {
+ 			no-map;
+-			reg = <0x7f000000 0x01000000>;
++			reg = <0x9f000000 0x01000000>; /* 16M */
+ 		};
+ 	};
+ 
 -- 
 2.27.0
 
