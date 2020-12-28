@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5D4E2E658E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:03:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD3882E6753
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:24:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390192AbgL1N3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:29:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58016 "EHLO mail.kernel.org"
+        id S2388543AbgL1QXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:23:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390062AbgL1N3N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:29:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F3EC207CF;
-        Mon, 28 Dec 2020 13:28:32 +0000 (UTC)
+        id S1731859AbgL1NLu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:11:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BC3922AEC;
+        Mon, 28 Dec 2020 13:11:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162113;
-        bh=xPhre7l8dT8O8tjD8Y4PnUjg+62h/YxwsgXebb5np7k=;
+        s=korg; t=1609161094;
+        bh=m7W4TKN+pz1FPn3U3CcLtI0In9PRR9pUBl7A3UEoAOI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Km/Ucu5QR963oeOZlrDXIUTBUR1EUINe03VAePPhoUwnZzl+jkekV5l5BgZwHaQ/3
-         mH5vYnGzJ5DKx3Yjp+0Exd2kdSwg5Ac+wWVGJUJHaMolheX+4/T3JolUlOrzjqcxwX
-         ojcP0XaECynbsUYSnqC+WXD1xNksl7fDvWMvfyOE=
+        b=q+oLlLmWOOGDnLhTSzFK7+seC2NHptnPtnzkZB+RzUHeqA3GgymwJx4IYjDaDBFpy
+         EH0WKfDVqqwppqSE380SUkhPrn/3VAEllww+9K+R1U7KWj7Uhw/s/YutHl0+0xXn+L
+         QhBFLZW3V0MgpUjLstw8vdGHqY45xxUZnn/SqKNM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        stable@vger.kernel.org, David Jander <david@protonic.nl>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 184/346] ARM: dts: at91: at91sam9rl: fix ADC triggers
+Subject: [PATCH 4.14 098/242] Input: ads7846 - fix integer overflow on Rt calculation
 Date:   Mon, 28 Dec 2020 13:48:23 +0100
-Message-Id: <20201228124928.680981222@linuxfoundation.org>
+Message-Id: <20201228124909.514419706@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,60 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+From: Oleksij Rempel <o.rempel@pengutronix.de>
 
-[ Upstream commit 851a95da583c26e2ddeb7281e9b61f0d76ea5aba ]
+[ Upstream commit 820830ec918f6c3dcd77a54a1c6198ab57407916 ]
 
-The triggers for the ADC were taken from at91sam9260 dtsi but are not
-correct.
+In some rare cases the 32 bit Rt value will overflow if z2 and x is max,
+z1 is minimal value and x_plate_ohms is relatively high (for example 800
+ohm). This would happen on some screen age with low pressure.
 
-Fixes: a4c1d6c75822 ("ARM: at91/dt: sam9rl: add lcd, adc, usb gadget and pwm support")
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Link: https://lore.kernel.org/r/20201128222818.1910764-10-alexandre.belloni@bootlin.com
+There are two possible fixes:
+- make Rt 64bit
+- reorder calculation to avoid overflow
+
+The second variant seems to be preferable, since 64 bit calculation on
+32 bit system is a bit more expensive.
+
+Fixes: ffa458c1bd9b6f653008d450f337602f3d52a646 ("spi: ads7846 driver")
+Co-developed-by: David Jander <david@protonic.nl>
+Signed-off-by: David Jander <david@protonic.nl>
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Link: https://lore.kernel.org/r/20201113112240.1360-1-o.rempel@pengutronix.de
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/at91sam9rl.dtsi | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+ drivers/input/touchscreen/ads7846.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/at91sam9rl.dtsi b/arch/arm/boot/dts/at91sam9rl.dtsi
-index ad495f5a5790f..cdf016232fb7d 100644
---- a/arch/arm/boot/dts/at91sam9rl.dtsi
-+++ b/arch/arm/boot/dts/at91sam9rl.dtsi
-@@ -277,23 +277,26 @@
- 				atmel,adc-use-res = "highres";
- 
- 				trigger0 {
--					trigger-name = "timer-counter-0";
-+					trigger-name = "external-rising";
- 					trigger-value = <0x1>;
-+					trigger-external;
- 				};
-+
- 				trigger1 {
--					trigger-name = "timer-counter-1";
--					trigger-value = <0x3>;
-+					trigger-name = "external-falling";
-+					trigger-value = <0x2>;
-+					trigger-external;
- 				};
- 
- 				trigger2 {
--					trigger-name = "timer-counter-2";
--					trigger-value = <0x5>;
-+					trigger-name = "external-any";
-+					trigger-value = <0x3>;
-+					trigger-external;
- 				};
- 
- 				trigger3 {
--					trigger-name = "external";
--					trigger-value = <0x13>;
--					trigger-external;
-+					trigger-name = "continuous";
-+					trigger-value = <0x6>;
- 				};
- 			};
- 
+diff --git a/drivers/input/touchscreen/ads7846.c b/drivers/input/touchscreen/ads7846.c
+index 0fbad337e45a3..7ce0eedaa0e5e 100644
+--- a/drivers/input/touchscreen/ads7846.c
++++ b/drivers/input/touchscreen/ads7846.c
+@@ -801,10 +801,11 @@ static void ads7846_report_state(struct ads7846 *ts)
+ 		/* compute touch pressure resistance using equation #2 */
+ 		Rt = z2;
+ 		Rt -= z1;
+-		Rt *= x;
+ 		Rt *= ts->x_plate_ohms;
++		Rt = DIV_ROUND_CLOSEST(Rt, 16);
++		Rt *= x;
+ 		Rt /= z1;
+-		Rt = (Rt + 2047) >> 12;
++		Rt = DIV_ROUND_CLOSEST(Rt, 256);
+ 	} else {
+ 		Rt = 0;
+ 	}
 -- 
 2.27.0
 
