@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BE2F2E39C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:28:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42BC62E3DD6
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:22:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389788AbgL1N14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:27:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56314 "EHLO mail.kernel.org"
+        id S2392055AbgL1OUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:20:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389200AbgL1N1d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:27:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DB54207CF;
-        Mon, 28 Dec 2020 13:26:51 +0000 (UTC)
+        id S2437736AbgL1OUV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:20:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 169E5206D4;
+        Mon, 28 Dec 2020 14:19:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162012;
-        bh=InYEAi5x9ssMkOFcR2sFRHZZKhTE2Ms5ZxN+puv4VaE=;
+        s=korg; t=1609165180;
+        bh=jRqT8nYudhOBYdVE/1rRl62axBpiHWvNo7/32kcQivQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sqvH4KDSVpx0Lq13b4bSxNnml/2XsgCnaw1l5D1osOeYforQ6DjrQPsjaewchSgBD
-         uhHZHLmlEuDxkrnYbX6zfqm8qLUl3+WbKbDWSusY5UY2Qp2HnPzDq/0Aqm0Mzq3m5Y
-         uuflAHWGxDELXXsq59NlrQ+I9kzvfVMdJFGPxfbM=
+        b=Q/7TPF4SQEDIylkZZdcUpLbsgVKseJS3xJdUnZJA7aRxixJRej9Xw5GdkEMXE1sTI
+         o/LqWadVZsJoJvyIMcoOhpQYcJrYSVCQ++IwRZUz7uKYFAwH8GOogwnSgyLDFNCOdm
+         M476UHX57gQwYJ6092Qdg9jej2ulFoBREn7gwMfw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark <robdclark@chromium.org>,
+        stable@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 118/346] drm/msm/dsi_pll_10nm: restore VCO rate during restore_state
+Subject: [PATCH 5.10 439/717] RDMA/cma: Dont overwrite sgid_attr after device is released
 Date:   Mon, 28 Dec 2020 13:47:17 +0100
-Message-Id: <20201228124925.498438496@linuxfoundation.org>
+Message-Id: <20201228125042.003164929@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,48 +40,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-[ Upstream commit a4ccc37693a271330a46208afbeaed939d54fdbb ]
+[ Upstream commit e246b7c035d74abfb3507fa10082d0c42cc016c3 ]
 
-PHY disable/enable resets PLL registers to default values. Thus in
-addition to restoring several registers we also need to restore VCO rate
-settings.
+As part of the cma_dev release, that pointer will be set to NULL.  In case
+it happens in rdma_bind_addr() (part of an error flow), the next call to
+addr_handler() will have a call to cma_acquire_dev_by_src_ip() which will
+overwrite sgid_attr without releasing it.
 
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Fixes: c6659785dfb3 ("drm/msm/dsi/pll: call vco set rate explicitly")
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+  WARNING: CPU: 2 PID: 108 at drivers/infiniband/core/cma.c:606 cma_bind_sgid_attr drivers/infiniband/core/cma.c:606 [inline]
+  WARNING: CPU: 2 PID: 108 at drivers/infiniband/core/cma.c:606 cma_acquire_dev_by_src_ip+0x470/0x4b0 drivers/infiniband/core/cma.c:649
+  CPU: 2 PID: 108 Comm: kworker/u8:1 Not tainted 5.10.0-rc6+ #257
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+  Workqueue: ib_addr process_one_req
+  RIP: 0010:cma_bind_sgid_attr drivers/infiniband/core/cma.c:606 [inline]
+  RIP: 0010:cma_acquire_dev_by_src_ip+0x470/0x4b0 drivers/infiniband/core/cma.c:649
+  Code: 66 d9 4a ff 4d 8b 6e 10 49 8d bd 1c 08 00 00 e8 b6 d6 4a ff 45 0f b6 bd 1c 08 00 00 41 83 e7 01 e9 49 fd ff ff e8 90 c5 29 ff <0f> 0b e9 80 fe ff ff e8 84 c5 29 ff 4c 89 f7 e8 2c d9 4a ff 4d 8b
+  RSP: 0018:ffff8881047c7b40 EFLAGS: 00010293
+  RAX: ffff888104789c80 RBX: 0000000000000001 RCX: ffffffff820b8ef8
+  RDX: 0000000000000000 RSI: ffffffff820b9080 RDI: ffff88810cd4c998
+  RBP: ffff8881047c7c08 R08: ffff888104789c80 R09: ffffed10209f4036
+  R10: ffff888104fa01ab R11: ffffed10209f4035 R12: ffff88810cd4c800
+  R13: ffff888105750e28 R14: ffff888108f0a100 R15: ffff88810cd4c998
+  FS:  0000000000000000(0000) GS:ffff888119c00000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 0000000000000000 CR3: 0000000104e60005 CR4: 0000000000370ea0
+  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+  Call Trace:
+   addr_handler+0x266/0x350 drivers/infiniband/core/cma.c:3190
+   process_one_req+0xa3/0x300 drivers/infiniband/core/addr.c:645
+   process_one_work+0x54c/0x930 kernel/workqueue.c:2272
+   worker_thread+0x82/0x830 kernel/workqueue.c:2418
+   kthread+0x1ca/0x220 kernel/kthread.c:292
+   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+Fixes: ff11c6cd521f ("RDMA/cma: Introduce and use cma_acquire_dev_by_src_ip()")
+Link: https://lore.kernel.org/r/20201213132940.345554-5-leon@kernel.org
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/infiniband/core/cma.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c b/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c
-index 21a69b046625a..d15511b521cb7 100644
---- a/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c
-+++ b/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c
-@@ -554,6 +554,7 @@ static int dsi_pll_10nm_restore_state(struct msm_dsi_pll *pll)
- 	struct pll_10nm_cached_state *cached = &pll_10nm->cached_state;
- 	void __iomem *phy_base = pll_10nm->phy_cmn_mmio;
- 	u32 val;
-+	int ret;
- 
- 	val = pll_read(pll_10nm->mmio + REG_DSI_10nm_PHY_PLL_PLL_OUTDIV_RATE);
- 	val &= ~0x3;
-@@ -568,6 +569,13 @@ static int dsi_pll_10nm_restore_state(struct msm_dsi_pll *pll)
- 	val |= cached->pll_mux;
- 	pll_write(phy_base + REG_DSI_10nm_PHY_CMN_CLK_CFG1, val);
- 
-+	ret = dsi_pll_10nm_vco_set_rate(&pll->clk_hw, pll_10nm->vco_current_rate, pll_10nm->vco_ref_clk_rate);
-+	if (ret) {
-+		DRM_DEV_ERROR(&pll_10nm->pdev->dev,
-+			"restore vco rate failed. ret=%d\n", ret);
-+		return ret;
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index c06c87a4dc5e7..c51b84b2d2f37 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -477,6 +477,10 @@ static void cma_release_dev(struct rdma_id_private *id_priv)
+ 	list_del(&id_priv->list);
+ 	cma_dev_put(id_priv->cma_dev);
+ 	id_priv->cma_dev = NULL;
++	if (id_priv->id.route.addr.dev_addr.sgid_attr) {
++		rdma_put_gid_attr(id_priv->id.route.addr.dev_addr.sgid_attr);
++		id_priv->id.route.addr.dev_addr.sgid_attr = NULL;
 +	}
-+
- 	DBG("DSI PLL%d", pll_10nm->id);
+ 	mutex_unlock(&lock);
+ }
  
- 	return 0;
+@@ -1861,9 +1865,6 @@ static void _destroy_id(struct rdma_id_private *id_priv,
+ 
+ 	kfree(id_priv->id.route.path_rec);
+ 
+-	if (id_priv->id.route.addr.dev_addr.sgid_attr)
+-		rdma_put_gid_attr(id_priv->id.route.addr.dev_addr.sgid_attr);
+-
+ 	put_net(id_priv->id.route.addr.dev_addr.net);
+ 	rdma_restrack_del(&id_priv->res);
+ 	kfree(id_priv);
 -- 
 2.27.0
 
