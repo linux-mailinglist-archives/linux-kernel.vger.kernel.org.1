@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D8F62E67D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:30:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1C52E66A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:16:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633615AbgL1Q3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:29:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34940 "EHLO mail.kernel.org"
+        id S1731747AbgL1NS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:18:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730697AbgL1NHM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:07:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6601B206ED;
-        Mon, 28 Dec 2020 13:06:31 +0000 (UTC)
+        id S1731715AbgL1NSY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:18:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1441222582;
+        Mon, 28 Dec 2020 13:17:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160792;
-        bh=U/rmShT16J06mM0R42BKT9PDN+UC8RCxGEEbHBvPTYo=;
+        s=korg; t=1609161463;
+        bh=S2Gm+2LduLGDibjztpCREUCr1DEBjI0No2m5GcTBuhA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yCi+N6lTd85IRVYYfm1VnMS/kiPEH/tB8D+f1RoE5Qw0o2vu2nbk3Gu4Xw+kIx7e4
-         hDSP5iVQLa4IYeY+AQIBYMB82KFXalUGKbJmCz2iNNGBWGfyTUUm3Is3+5PGQryi5J
-         v8ETHDwdk9Wrn2Kunk+d2iRQfbuOFnQa3kzjZmtM=
+        b=e/UTUGrMmwXDMWRVBSuQTdN0ud14m/8ULIwWXi34kibMyZove3yiFhQCvrIusJUMK
+         ssJ32YQde75fjTAeDs1kpwHgmLqID4H67Um4odtbdKX1O9pk0BOHOqnMwsPFtE22Cj
+         ccn0Ay03G6lVWlrlKp28wi9oDxFJGO+4+g8jxZPI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Peter Meerwald <pmeerw@pmeerw.net>, Stable@vger.kernel.org
-Subject: [PATCH 4.9 172/175] iio:pressure:mpl3115: Force alignment of buffer
-Date:   Mon, 28 Dec 2020 13:50:25 +0100
-Message-Id: <20201228124901.562817115@linuxfoundation.org>
+        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.14 221/242] spi: davinci: Fix use-after-free on unbind
+Date:   Mon, 28 Dec 2020 13:50:26 +0100
+Message-Id: <20201228124915.546348145@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,55 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Lukas Wunner <lukas@wunner.de>
 
-commit 198cf32f0503d2ad60d320b95ef6fb8243db857f upstream.
+commit 373afef350a93519b4b8d636b0895da8650b714b upstream.
 
-Whilst this is another case of the issue Lars reported with
-an array of elements of smaller than 8 bytes being passed
-to iio_push_to_buffers_with_timestamp(), the solution here is
-a bit different from the other cases and relies on __aligned
-working on the stack (true since 4.6?)
+davinci_spi_remove() accesses the driver's private data after it's been
+freed with spi_master_put().
 
-This one is unusual.  We have to do an explicit memset() each time
-as we are reading 3 bytes into a potential 4 byte channel which
-may sometimes be a 2 byte channel depending on what is enabled.
-As such, moving the buffer to the heap in the iio_priv structure
-doesn't save us much.  We can't use a nice explicit structure
-on the stack either as the data channels have different storage
-sizes and are all separately controlled.
+Fix by moving the spi_master_put() to the end of the function.
 
-Fixes: cc26ad455f57 ("iio: Add Freescale MPL3115A2 pressure / temperature sensor driver")
-Reported-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Reviewed-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc: Peter Meerwald <pmeerw@pmeerw.net>
-Cc: <Stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200920112742.170751-7-jic23@kernel.org
+Fixes: fe5fd2540947 ("spi: davinci: Use dma_request_chan() for requesting DMA channel")
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: <stable@vger.kernel.org> # v4.7+
+Link: https://lore.kernel.org/r/412f7eb1cf8990e0a3a2153f4c577298deab623e.1607286887.git.lukas@wunner.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/pressure/mpl3115.c |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/spi/spi-davinci.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/iio/pressure/mpl3115.c
-+++ b/drivers/iio/pressure/mpl3115.c
-@@ -139,7 +139,14 @@ static irqreturn_t mpl3115_trigger_handl
- 	struct iio_poll_func *pf = p;
- 	struct iio_dev *indio_dev = pf->indio_dev;
- 	struct mpl3115_data *data = iio_priv(indio_dev);
--	u8 buffer[16]; /* 32-bit channel + 16-bit channel + padding + ts */
-+	/*
-+	 * 32-bit channel + 16-bit channel + padding + ts
-+	 * Note that it is possible for only one of the first 2
-+	 * channels to be enabled. If that happens, the first element
-+	 * of the buffer may be either 16 or 32-bits.  As such we cannot
-+	 * use a simple structure definition to express this data layout.
-+	 */
-+	u8 buffer[16] __aligned(8);
- 	int ret, pos = 0;
+--- a/drivers/spi/spi-davinci.c
++++ b/drivers/spi/spi-davinci.c
+@@ -1085,13 +1085,13 @@ static int davinci_spi_remove(struct pla
+ 	spi_bitbang_stop(&dspi->bitbang);
  
- 	mutex_lock(&data->lock);
+ 	clk_disable_unprepare(dspi->clk);
+-	spi_master_put(master);
+ 
+ 	if (dspi->dma_rx) {
+ 		dma_release_channel(dspi->dma_rx);
+ 		dma_release_channel(dspi->dma_tx);
+ 	}
+ 
++	spi_master_put(master);
+ 	return 0;
+ }
+ 
 
 
