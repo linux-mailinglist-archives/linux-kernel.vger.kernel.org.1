@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D13B2E39CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:29:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E26C92E6339
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:40:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389898AbgL1N2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:28:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56888 "EHLO mail.kernel.org"
+        id S2408491AbgL1PjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:39:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389832AbgL1N2E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:28:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FDA322583;
-        Mon, 28 Dec 2020 13:27:23 +0000 (UTC)
+        id S2406091AbgL1NtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:49:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 575C72063A;
+        Mon, 28 Dec 2020 13:48:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162043;
-        bh=hPfss7ITlAlcJ4amQ7Rzj5DQlapOMkc9UQVJeaPc5WM=;
+        s=korg; t=1609163338;
+        bh=sp4axyxxl5S/xptDsExnUqSqOihMvEg2Eg9j/uWFKKY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=as+ssF3RQuuksVlTQIEyiFf75o8ZA5evMT43Yr9FhwonL0vn3WOI3hl/VFda5q3WI
-         vOk6Exda5Yv7EH/Uvtwxlej+UpBA9ngex6/5vARMwsU7izen5gqqOyap3Vaja3GjhG
-         Zy73JvQ5IbXm6s5GClkw+li3yXkE6ol2O0gJ8+m8=
+        b=E2l+JMjwhOLccSggoRCfF4vPZ4vTPH4ACJr3OVNv2Jj9moSeBxzJ4Aggs7GSGAE9z
+         0u6r0FoPQNmeS0oOfSwLlA8cnuuvTr9Y7DU7iPeTOEFd+VpyosPezLlASgSF1RNeO5
+         PoNgX9373IWFZy9xAkb0ZBdW9oofQnDZd6CCOqq4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vadim Pasternak <vadimp@nvidia.com>,
-        Hans de Goede <hdegoede@redhat.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        Yang Yingliang <yangyingliang@huawei.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 169/346] platform/x86: mlx-platform: Remove PSU EEPROM from MSN274x platform configuration
+Subject: [PATCH 5.4 252/453] speakup: fix uninitialized flush_lock
 Date:   Mon, 28 Dec 2020 13:48:08 +0100
-Message-Id: <20201228124927.962973932@linuxfoundation.org>
+Message-Id: <20201228124949.353126663@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,53 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vadim Pasternak <vadimp@nvidia.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 912b341585e302ee44fc5a2733f7bcf505e2c86f ]
+[ Upstream commit d1b928ee1cfa965a3327bbaa59bfa005d97fa0fe ]
 
-Remove PSU EEPROM configuration for systems class equipped with
-Mellanox chip Spectrum and ATOM CPU - system types MSN274x. Till now
-all the systems from this class used few types of power units, all
-equipped with EEPROM device with address space two bytes. Thus, all
-these devices have been handled by EEPROM driver "24c02".
+The flush_lock is uninitialized, use DEFINE_SPINLOCK
+to define and initialize flush_lock.
 
-There is a new requirement is to support power unit replacement by "off
-the shelf" device, matching electrical required parameters. Such device
-can be equipped with different EEPROM type, which could be one byte
-address space addressing or even could be not equipped with EEPROM.
-In such case "24c02" will not work.
-
-Fixes: ef08e14a3 ("platform/x86: mlx-platform: Add support for new msn274x system type")
-Signed-off-by: Vadim Pasternak <vadimp@nvidia.com>
-Link: https://lore.kernel.org/r/20201125101056.174708-3-vadimp@nvidia.com
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Fixes: c6e3fd22cd53 ("Staging: add speakup to the staging directory")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Reviewed-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Link: https://lore.kernel.org/r/20201117012229.3395186-1-yangyingliang@huawei.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/mlx-platform.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/staging/speakup/speakup_dectlk.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/platform/x86/mlx-platform.c b/drivers/platform/x86/mlx-platform.c
-index 62c749180bb78..850c719de68d4 100644
---- a/drivers/platform/x86/mlx-platform.c
-+++ b/drivers/platform/x86/mlx-platform.c
-@@ -420,15 +420,13 @@ static struct mlxreg_core_data mlxplat_mlxcpld_msn274x_psu_items_data[] = {
- 		.label = "psu1",
- 		.reg = MLXPLAT_CPLD_LPC_REG_PSU_OFFSET,
- 		.mask = BIT(0),
--		.hpdev.brdinfo = &mlxplat_mlxcpld_psu[0],
--		.hpdev.nr = MLXPLAT_CPLD_PSU_MSNXXXX_NR,
-+		.hpdev.nr = MLXPLAT_CPLD_NR_NONE,
- 	},
- 	{
- 		.label = "psu2",
- 		.reg = MLXPLAT_CPLD_LPC_REG_PSU_OFFSET,
- 		.mask = BIT(1),
--		.hpdev.brdinfo = &mlxplat_mlxcpld_psu[1],
--		.hpdev.nr = MLXPLAT_CPLD_PSU_MSNXXXX_NR,
-+		.hpdev.nr = MLXPLAT_CPLD_NR_NONE,
- 	},
- };
+diff --git a/drivers/staging/speakup/speakup_dectlk.c b/drivers/staging/speakup/speakup_dectlk.c
+index dccb4ea29d379..45ac48d031805 100644
+--- a/drivers/staging/speakup/speakup_dectlk.c
++++ b/drivers/staging/speakup/speakup_dectlk.c
+@@ -37,7 +37,7 @@ static unsigned char get_index(struct spk_synth *synth);
+ static int in_escape;
+ static int is_flushing;
  
+-static spinlock_t flush_lock;
++static DEFINE_SPINLOCK(flush_lock);
+ static DECLARE_WAIT_QUEUE_HEAD(flush);
+ 
+ static struct var_t vars[] = {
 -- 
 2.27.0
 
