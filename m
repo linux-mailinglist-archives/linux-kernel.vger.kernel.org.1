@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB4CE2E6407
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:48:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 488942E395E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:25:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2632771AbgL1Pps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:45:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45420 "EHLO mail.kernel.org"
+        id S1728642AbgL1NWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:22:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404652AbgL1Noo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:44:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E62C322583;
-        Mon, 28 Dec 2020 13:44:02 +0000 (UTC)
+        id S2388320AbgL1NWm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:22:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3BF4207C9;
+        Mon, 28 Dec 2020 13:22:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163043;
-        bh=MpvcWBcRcmHhhLO6Hi2HRC7lIUzhMPPVIXn4GXh1hM0=;
+        s=korg; t=1609161746;
+        bh=Hx+uRCefzJN6KKyGC2UDODJX1x8RkQ9wEXlhqDRDedM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1n853YJK5x06b5GS2iCTNxMryL3PVKPjeuVIqAt4zyVwSREFFjsDH+9TmZ0YdvHSq
-         9Ub/Z0YebjFQ3RedrUCUdnAGOdB4VgzLGHmgYkBeln0rM9p+njHygcOMEySW7hn97/
-         6r5oUaOyrGVOs3yzhVKvXMrtsKdaWkUzyHYU08uo=
+        b=1A28JSYugtvTPUuupBpu+B5LFCHAcPr+hXCfRKiFuSbhQQDwQq4UNE3a2f/2XXyW9
+         /5Wj7X41kT9TWlxJB76slmORkgQjtLUv218MvsFcDXpKz7lFbpdK8Db8pfKioRKkYk
+         mRHLv2bRF2e+hk7Ht/mtPh1Zamnzdm02HGrA0Am8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yazen Ghannam <yazen.ghannam@amd.com>,
-        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 150/453] EDAC/mce_amd: Use struct cpuinfo_x86.cpu_die_id for AMD NodeId
-Date:   Mon, 28 Dec 2020 13:46:26 +0100
-Message-Id: <20201228124944.423928426@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        Sandeep Penigalapati <sandeep.penigalapati@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Li RongQing <lirongqing@baidu.com>
+Subject: [PATCH 4.19 068/346] ixgbe: avoid premature Rx buffer reuse
+Date:   Mon, 28 Dec 2020 13:46:27 +0100
+Message-Id: <20201228124923.086677040@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,53 +43,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yazen Ghannam <yazen.ghannam@amd.com>
+From: Björn Töpel <bjorn.topel@intel.com>
 
-[ Upstream commit 8de0c9917cc1297bc5543b61992d5bdee4ce621a ]
+[ Upstream commit a06316dc87bdc000f7f39a315476957af2ba0f05 ]
 
-The edac_mce_amd module calls decode_dram_ecc() on AMD Family17h and
-later systems. This function is used in amd64_edac_mod to do
-system-specific decoding for DRAM ECC errors. The function takes a
-"NodeId" as a parameter.
+The page recycle code, incorrectly, relied on that a page fragment
+could not be freed inside xdp_do_redirect(). This assumption leads to
+that page fragments that are used by the stack/XDP redirect can be
+reused and overwritten.
 
-In AMD documentation, NodeId is used to identify a physical die in a
-system. This can be used to identify a node in the AMD_NB code and also
-it is used with umc_normaddr_to_sysaddr().
+To avoid this, store the page count prior invoking xdp_do_redirect().
 
-However, the input used for decode_dram_ecc() is currently the NUMA node
-of a logical CPU. In the default configuration, the NUMA node and
-physical die will be equivalent, so this doesn't have an impact.
-
-But the NUMA node configuration can be adjusted with optional memory
-interleaving modes. This will cause the NUMA node enumeration to not
-match the physical die enumeration. The mismatch will cause the address
-translation function to fail or report incorrect results.
-
-Use struct cpuinfo_x86.cpu_die_id for the node_id parameter to ensure the
-physical ID is used.
-
-Fixes: fbe63acf62f5 ("EDAC, mce_amd: Use cpu_to_node() to find the node ID")
-Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20201109210659.754018-4-Yazen.Ghannam@amd.com
+Fixes: 6453073987ba ("ixgbe: add initial support for xdp redirect")
+Reported-and-analyzed-by: Li RongQing <lirongqing@baidu.com>
+Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+Tested-by: Sandeep Penigalapati <sandeep.penigalapati@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/edac/mce_amd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 24 +++++++++++++------
+ 1 file changed, 17 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/edac/mce_amd.c b/drivers/edac/mce_amd.c
-index ea622c6f3a393..c19640a453f22 100644
---- a/drivers/edac/mce_amd.c
-+++ b/drivers/edac/mce_amd.c
-@@ -975,7 +975,7 @@ static void decode_smca_error(struct mce *m)
- 	}
- 
- 	if (bank_type == SMCA_UMC && xec == 0 && decode_dram_ecc)
--		decode_dram_ecc(cpu_to_node(m->extcpu), m);
-+		decode_dram_ecc(topology_die_id(m->extcpu), m);
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+index 4243ff4ec4b1d..faee77fa08044 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+@@ -1943,7 +1943,8 @@ static inline bool ixgbe_page_is_reserved(struct page *page)
+ 	return (page_to_nid(page) != numa_mem_id()) || page_is_pfmemalloc(page);
  }
  
- static inline void amd_decode_err_code(u16 ec)
+-static bool ixgbe_can_reuse_rx_page(struct ixgbe_rx_buffer *rx_buffer)
++static bool ixgbe_can_reuse_rx_page(struct ixgbe_rx_buffer *rx_buffer,
++				    int rx_buffer_pgcnt)
+ {
+ 	unsigned int pagecnt_bias = rx_buffer->pagecnt_bias;
+ 	struct page *page = rx_buffer->page;
+@@ -1954,7 +1955,7 @@ static bool ixgbe_can_reuse_rx_page(struct ixgbe_rx_buffer *rx_buffer)
+ 
+ #if (PAGE_SIZE < 8192)
+ 	/* if we are only owner of page we can reuse it */
+-	if (unlikely((page_ref_count(page) - pagecnt_bias) > 1))
++	if (unlikely((rx_buffer_pgcnt - pagecnt_bias) > 1))
+ 		return false;
+ #else
+ 	/* The last offset is a bit aggressive in that we assume the
+@@ -2019,11 +2020,18 @@ static void ixgbe_add_rx_frag(struct ixgbe_ring *rx_ring,
+ static struct ixgbe_rx_buffer *ixgbe_get_rx_buffer(struct ixgbe_ring *rx_ring,
+ 						   union ixgbe_adv_rx_desc *rx_desc,
+ 						   struct sk_buff **skb,
+-						   const unsigned int size)
++						   const unsigned int size,
++						   int *rx_buffer_pgcnt)
+ {
+ 	struct ixgbe_rx_buffer *rx_buffer;
+ 
+ 	rx_buffer = &rx_ring->rx_buffer_info[rx_ring->next_to_clean];
++	*rx_buffer_pgcnt =
++#if (PAGE_SIZE < 8192)
++		page_count(rx_buffer->page);
++#else
++		0;
++#endif
+ 	prefetchw(rx_buffer->page);
+ 	*skb = rx_buffer->skb;
+ 
+@@ -2053,9 +2061,10 @@ static struct ixgbe_rx_buffer *ixgbe_get_rx_buffer(struct ixgbe_ring *rx_ring,
+ 
+ static void ixgbe_put_rx_buffer(struct ixgbe_ring *rx_ring,
+ 				struct ixgbe_rx_buffer *rx_buffer,
+-				struct sk_buff *skb)
++				struct sk_buff *skb,
++				int rx_buffer_pgcnt)
+ {
+-	if (ixgbe_can_reuse_rx_page(rx_buffer)) {
++	if (ixgbe_can_reuse_rx_page(rx_buffer, rx_buffer_pgcnt)) {
+ 		/* hand second half of page back to the ring */
+ 		ixgbe_reuse_rx_page(rx_ring, rx_buffer);
+ 	} else {
+@@ -2299,6 +2308,7 @@ static int ixgbe_clean_rx_irq(struct ixgbe_q_vector *q_vector,
+ 		union ixgbe_adv_rx_desc *rx_desc;
+ 		struct ixgbe_rx_buffer *rx_buffer;
+ 		struct sk_buff *skb;
++		int rx_buffer_pgcnt;
+ 		unsigned int size;
+ 
+ 		/* return some buffers to hardware, one at a time is too slow */
+@@ -2318,7 +2328,7 @@ static int ixgbe_clean_rx_irq(struct ixgbe_q_vector *q_vector,
+ 		 */
+ 		dma_rmb();
+ 
+-		rx_buffer = ixgbe_get_rx_buffer(rx_ring, rx_desc, &skb, size);
++		rx_buffer = ixgbe_get_rx_buffer(rx_ring, rx_desc, &skb, size, &rx_buffer_pgcnt);
+ 
+ 		/* retrieve a buffer from the ring */
+ 		if (!skb) {
+@@ -2360,7 +2370,7 @@ static int ixgbe_clean_rx_irq(struct ixgbe_q_vector *q_vector,
+ 			break;
+ 		}
+ 
+-		ixgbe_put_rx_buffer(rx_ring, rx_buffer, skb);
++		ixgbe_put_rx_buffer(rx_ring, rx_buffer, skb, rx_buffer_pgcnt);
+ 		cleaned_count++;
+ 
+ 		/* place incomplete frames back on ring for completion */
 -- 
 2.27.0
 
