@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E50432E435F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:38:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 126EC2E38DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:16:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392751AbgL1Pfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:35:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54320 "EHLO mail.kernel.org"
+        id S1732823AbgL1NP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:15:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44300 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407121AbgL1Nwc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:52:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 29E9E22AAA;
-        Mon, 28 Dec 2020 13:51:50 +0000 (UTC)
+        id S1732810AbgL1NP4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:15:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BEE2222582;
+        Mon, 28 Dec 2020 13:15:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163511;
-        bh=8AeXi7EimSHDcRRbeiKaqfXJa7RlKoRcC32jkoPhIJM=;
+        s=korg; t=1609161315;
+        bh=gP1foLUUdg/7syDwKdPrxtcLYaHWc5A2HoKR/Wems5M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2QyM/vbDOAmj62QFT4PDmgiZV1RZxqr5RnUVMUF5rCFtDPW+qnc+T+Nwm2kmIInKl
-         AYWKI11+Jdhk+ublyqVBZYdF8dduV1dDAfYx2yXjCCg/6DJMDQdLjsI0h6tTDD34ed
-         2RsUe98kw8bUttwZgSH4KkwcX/jZ3/YAAbKQDHgk=
+        b=SYd/4Gm0mXtzAgVHiQGkNXRnS9vTipGa9AsF6+WTFahMvjIyMhdPp8qa2Xcc1kGyB
+         xhmqhy7EGwTbSB5aebS4hnNZK9GGFoHSbd1SY4oOffXn2A047ngPbL2TygbArWzUlB
+         YzgdyNE6BNkdTu/GiLThozaLHMm43gaG9wcrBUC4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sara Sharon <sara.sharon@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 312/453] cfg80211: initialize rekey_data
+Subject: [PATCH 4.14 143/242] cpufreq: scpi: Add missing MODULE_ALIAS
 Date:   Mon, 28 Dec 2020 13:49:08 +0100
-Message-Id: <20201228124952.227288680@linuxfoundation.org>
+Message-Id: <20201228124911.743860357@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,34 +41,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sara Sharon <sara.sharon@intel.com>
+From: Pali Rohár <pali@kernel.org>
 
-[ Upstream commit f495acd8851d7b345e5f0e521b2645b1e1f928a0 ]
+[ Upstream commit c0382d049d2def37b81e907a8b22661a4a4a6eb5 ]
 
-In case we have old supplicant, the akm field is uninitialized.
+This patch adds missing MODULE_ALIAS for automatic loading of this cpufreq
+driver when it is compiled as an external module.
 
-Signed-off-by: Sara Sharon <sara.sharon@intel.com>
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Link: https://lore.kernel.org/r/iwlwifi.20201129172929.930f0ab7ebee.Ic546e384efab3f4a89f318eafddc3eb7d556aecb@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Fixes: 8def31034d033 ("cpufreq: arm_big_little: add SCPI interface driver")
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/wireless/nl80211.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/cpufreq/scpi-cpufreq.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
-index dbac5c0995a0f..5bb2316befb98 100644
---- a/net/wireless/nl80211.c
-+++ b/net/wireless/nl80211.c
-@@ -12033,7 +12033,7 @@ static int nl80211_set_rekey_data(struct sk_buff *skb, struct genl_info *info)
- 	struct net_device *dev = info->user_ptr[1];
- 	struct wireless_dev *wdev = dev->ieee80211_ptr;
- 	struct nlattr *tb[NUM_NL80211_REKEY_DATA];
--	struct cfg80211_gtk_rekey_data rekey_data;
-+	struct cfg80211_gtk_rekey_data rekey_data = {};
- 	int err;
+diff --git a/drivers/cpufreq/scpi-cpufreq.c b/drivers/cpufreq/scpi-cpufreq.c
+index 8de2364b5995a..df6617b19de28 100644
+--- a/drivers/cpufreq/scpi-cpufreq.c
++++ b/drivers/cpufreq/scpi-cpufreq.c
+@@ -85,6 +85,7 @@ static struct platform_driver scpi_cpufreq_platdrv = {
+ };
+ module_platform_driver(scpi_cpufreq_platdrv);
  
- 	if (!info->attrs[NL80211_ATTR_REKEY_DATA])
++MODULE_ALIAS("platform:scpi-cpufreq");
+ MODULE_AUTHOR("Sudeep Holla <sudeep.holla@arm.com>");
+ MODULE_DESCRIPTION("ARM SCPI CPUFreq interface driver");
+ MODULE_LICENSE("GPL v2");
 -- 
 2.27.0
 
