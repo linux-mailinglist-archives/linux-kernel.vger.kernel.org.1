@@ -2,118 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A97852E33FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 05:06:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DB4B2E33FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 05:23:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726178AbgL1EF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 23:05:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46410 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726167AbgL1EF5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 23:05:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 180E8206D4;
-        Mon, 28 Dec 2020 04:05:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609128316;
-        bh=MdjD7BH+41KU7Oxxv0Urq2PeP/eYK+mpFjsS8iyMIHo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Yd7HBr0ZBUEp/nRAC1TCrR02b2boWh7wSdnwYTFz1kjS2TZkVhHYBClyzzRPiTy74
-         XOgC6LrxYEO1gzprhBfOqMXENxFl2kq8T+0hDqZj/OhRkA9ETsHnpFuvzVHx3AozAA
-         blq1yhrkjPFgRD1/GphflJFFq79laiaOgSTQ2XmSg7hITM8cUQ43WJpR/IPl0e0s/w
-         GKcLRgn1d2r+zbkOv3OomZra5vGy0qmbpblqO1v5F1P7UkY2IyaitYE0Xq/2AY0KH9
-         Mqw5E89rf/a8SpFaoqmPfBBL798GCPZsOvCfOUBRoIMIEKA9nylSVgvF2y/rtNGpBr
-         Phvuf1ee1KF2w==
-Date:   Sun, 27 Dec 2020 22:05:13 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Kenneth R. Crudup" <kenny@panix.com>
-Cc:     Vidya Sagar <vidyas@nvidia.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Commit 4257f7e0 ("PCI/ASPM: Save/restore L1SS Capability for
- suspend/resume") causing hibernate resume failures
-Message-ID: <20201228040513.GA611645@bjorn-Precision-5520>
+        id S1726316AbgL1EU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 23:20:27 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:59990 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726167AbgL1EU0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Dec 2020 23:20:26 -0500
+X-UUID: 22f4a0dbc6904c20a40138dc987cf8d1-20201228
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=pa5xLy2qDxc+uq3HbpERterwMGHDaoImzt4/agoCKIs=;
+        b=HtptWxBrQ8MGZXxYv0F2Z9K45XJBqWwDkHZX9whs/LgnO9+lpat0uip8Y0+2kYFFlJ1Y8VKb9oVKUhh47CRZxVqr0Eyp2Fv+/mZ8KDPJsMBbhLqmirLkjcN8XwM55GYdypNVzQV5DsdeWqq+0pe4HQtBiWbPpW2fzdiCmoQLD64=;
+X-UUID: 22f4a0dbc6904c20a40138dc987cf8d1-20201228
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <walter-zh.wu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1027952524; Mon, 28 Dec 2020 12:19:37 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 28 Dec 2020 12:20:37 +0800
+Received: from [172.21.84.99] (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 28 Dec 2020 12:20:37 +0800
+Message-ID: <1609129169.6472.1.camel@mtksdccf07>
+Subject: Re: BUG: unable to handle kernel NULL pointer dereference in
+ call_rcu
+From:   Walter Wu <walter-zh.wu@mediatek.com>
+To:     Dmitry Vyukov <dvyukov@google.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        syzbot <syzbot+9d3ede723bdc58553f13@syzkaller.appspotmail.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Vasily Averin <vvs@virtuozzo.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        "Alexander Potapenko" <glider@google.com>
+Date:   Mon, 28 Dec 2020 12:19:29 +0800
+In-Reply-To: <CACT4Y+ac+mo9VvwvQ-OD+OXR77g1STbc8Dv+VDLYjJyOCvCW0w@mail.gmail.com>
+References: <0000000000005ccf1b05b7665adc@google.com>
+         <20201227114534.1b3f407caaf9ec0e821f56f4@linux-foundation.org>
+         <CACT4Y+ac+mo9VvwvQ-OD+OXR77g1STbc8Dv+VDLYjJyOCvCW0w@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-TM-SNTS-SMTP: A66264A3B3863547C86EAA5E7BFB314FCE050F66B8DEA2AA5BE81D57E7DE73512000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Kenneth R. Crudup <kenny@panix.com>
-> 
-> I've been running Linus' master branch on my laptop (Dell XPS 13
-> 2-in-1).  With this commit in place, after resuming from hibernate
-> my machine is essentially useless, with a torrent of disk I/O errors
-> on my NVMe device (at least, and possibly other devices affected)
-> until a reboot.
-> 
-> I do use tlp to set the PCIe ASPM to "performance" on AC and
-> "powersupersave" on battery.
+T24gU3VuLCAyMDIwLTEyLTI3IGF0IDIwOjUxICswMTAwLCBEbWl0cnkgVnl1a292IHdyb3RlOg0K
+PiAvXC9cL1wvXE9uIFN1biwgRGVjIDI3LCAyMDIwIGF0IDg6NDUgUE0gQW5kcmV3IE1vcnRvbg0K
+PiA8YWtwbUBsaW51eC1mb3VuZGF0aW9uLm9yZz4gd3JvdGU6DQo+ID4NCj4gPiAoY2MgS0FTQU4g
+ZGV2ZWxvcGVycykNCj4gPg0KPiA+IE9uIFNhdCwgMjYgRGVjIDIwMjAgMTU6MjU6MTQgLTA4MDAg
+c3l6Ym90IDxzeXpib3QrOWQzZWRlNzIzYmRjNTg1NTNmMTNAc3l6a2FsbGVyLmFwcHNwb3RtYWls
+LmNvbT4gd3JvdGU6DQo+ID4NCj4gPiA+IEhlbGxvLA0KPiA+ID4NCj4gPiA+IHN5emJvdCBmb3Vu
+ZCB0aGUgZm9sbG93aW5nIGlzc3VlIG9uOg0KPiA+ID4NCj4gPiA+IEhFQUQgY29tbWl0OiAgICA2
+MTRjYjU4OSBNZXJnZSB0YWcgJ2FjcGktNS4xMS1yYzEtMicgb2YgZ2l0Oi8vZ2l0Lmtlcm5lbC5v
+Li4NCj4gPiA+IGdpdCB0cmVlOiAgICAgICB1cHN0cmVhbQ0KPiA+ID4gY29uc29sZSBvdXRwdXQ6
+IGh0dHBzOi8vc3l6a2FsbGVyLmFwcHNwb3QuY29tL3gvbG9nLnR4dD94PTEwYTgyYTUwZDAwMDAw
+DQo+ID4gPiBrZXJuZWwgY29uZmlnOiAgaHR0cHM6Ly9zeXprYWxsZXIuYXBwc3BvdC5jb20veC8u
+Y29uZmlnP3g9YmY1MTllMWU5NjE5MTU3Ng0KPiA+ID4gZGFzaGJvYXJkIGxpbms6IGh0dHBzOi8v
+c3l6a2FsbGVyLmFwcHNwb3QuY29tL2J1Zz9leHRpZD05ZDNlZGU3MjNiZGM1ODU1M2YxMw0KPiA+
+ID4gY29tcGlsZXI6ICAgICAgIGdjYyAoR0NDKSAxMC4xLjAtc3l6IDIwMjAwNTA3DQo+ID4gPiBz
+eXogcmVwcm86ICAgICAgaHR0cHM6Ly9zeXprYWxsZXIuYXBwc3BvdC5jb20veC9yZXByby5zeXo/
+eD0xMTgzMGU5MzUwMDAwMA0KPiA+ID4gQyByZXByb2R1Y2VyOiAgIGh0dHBzOi8vc3l6a2FsbGVy
+LmFwcHNwb3QuY29tL3gvcmVwcm8uYz94PTEzZDkyMDU3NTAwMDAwDQo+ID4gPg0KPiA+ID4gSU1Q
+T1JUQU5UOiBpZiB5b3UgZml4IHRoZSBpc3N1ZSwgcGxlYXNlIGFkZCB0aGUgZm9sbG93aW5nIHRh
+ZyB0byB0aGUgY29tbWl0Og0KPiA+ID4gUmVwb3J0ZWQtYnk6IHN5emJvdCs5ZDNlZGU3MjNiZGM1
+ODU1M2YxM0BzeXprYWxsZXIuYXBwc3BvdG1haWwuY29tDQo+ID4gPg0KPiA+ID4gQlVHOiBrZXJu
+ZWwgTlVMTCBwb2ludGVyIGRlcmVmZXJlbmNlLCBhZGRyZXNzOiAwMDAwMDAwMDAwMDAwMDA4DQo+
+ID4gPiAjUEY6IHN1cGVydmlzb3IgcmVhZCBhY2Nlc3MgaW4ga2VybmVsIG1vZGUNCj4gPiA+ICNQ
+RjogZXJyb3JfY29kZSgweDAwMDApIC0gbm90LXByZXNlbnQgcGFnZQ0KPiA+ID4gUEdEIDJkOTkz
+MDY3IFA0RCAyZDk5MzA2NyBQVUQgMTlhM2MwNjcgUE1EIDANCj4gPiA+IE9vcHM6IDAwMDAgWyMx
+XSBQUkVFTVBUIFNNUCBLQVNBTg0KPiA+ID4gQ1BVOiAxIFBJRDogMzg1MiBDb21tOiBrd29ya2Vy
+LzE6MiBOb3QgdGFpbnRlZCA1LjEwLjAtc3l6a2FsbGVyICMwDQo+ID4gPiBIYXJkd2FyZSBuYW1l
+OiBHb29nbGUgR29vZ2xlIENvbXB1dGUgRW5naW5lL0dvb2dsZSBDb21wdXRlIEVuZ2luZSwgQklP
+UyBHb29nbGUgMDEvMDEvMjAxMQ0KPiA+ID4gV29ya3F1ZXVlOiBldmVudHMgZnJlZV9pcGMNCj4g
+PiA+IFJJUDogMDAxMDprYXNhbl9yZWNvcmRfYXV4X3N0YWNrKzB4NzcvMHhiMCBtbS9rYXNhbi9n
+ZW5lcmljLmM6MzQxDQo+IA0KPiArV2FsdGVyLCBBbmRyZXkNCj4gDQo+IHZvaWQga2FzYW5fcmVj
+b3JkX2F1eF9zdGFjayh2b2lkICphZGRyKQ0KPiB7DQo+ICAgICAuLi4NCj4gICAgIGFsbG9jX21l
+dGEgPSBrYXNhbl9nZXRfYWxsb2NfbWV0YShjYWNoZSwgb2JqZWN0KTsNCj4gICAgIGFsbG9jX21l
+dGEtPmF1eF9zdGFja1sxXSA9IGFsbG9jX21ldGEtPmF1eF9zdGFja1swXTsNCj4gDQo+IC9cL1wv
+XC9cL1wvXC9cL1wvXC9cL1wvXC9cL1wvXC9cL1wvXC9cL1wvXC9cDQo+IEl0IGNyYXNoZXMgb24g
+TlVMTCBkZXJlZiBoZXJlLCBJIGFzc3VtZSBhbGxvY19tZXRhIGlzIE5VTEwuIFdlIG1heSBub3QN
+Cj4gaGF2ZSBpdCBmb3Igc29tZSBzbGFicy4gRG8gd2UgbWlzcyBhIE5VTEwgY2hlY2sgaGVyZT8N
+Cj4gDQpIaSBEbWl0cnksDQoNClllcywgSSB3aWxsIHNlbmQgYSBwYXRjaCB0byBmaXggaXQuDQoN
+ClRoYW5rcyBmb3IgeW91ciBzdWdnZXN0aW9uLg0KDQpXYWx0ZXINCg0KPiANCj4gDQo+IA0KPiA+
+ID4gQ29kZTogNDggZjcgZmUgOGIgNDcgMjQgNDkgODkgZjAgNDggMjkgZDMgOGQgNzAgZmYgNDEg
+MGYgYWYgZjAgNDggMDEgY2UgNDggMzkgZjMgNDggMGYgNDYgZjMgZTggODEgZTkgZmYgZmYgYmYg
+MDAgMDggMDAgMDAgNDggODkgYzMgPDhiPiA0MCAwOCA4OSA0MyAwYyBlOCAxZSBlNiBmZiBmZiA4
+OSA0MyAwOCA1YiBjMyA0OCA4YiA1MCAwOCA0OCBjNw0KPiA+ID4gUlNQOiAwMDE4OmZmZmZjOTAw
+MDJlNmZhZTggRUZMQUdTOiAwMDAxMDA0Ng0KPiA+ID4gUkFYOiAwMDAwMDAwMDAwMDAwMDAwIFJC
+WDogMDAwMDAwMDAwMDAwMDAwMCBSQ1g6IGZmZmY4ODgwMzk4MDAwMDANCj4gPiA+IFJEWDogMDAw
+MDAwMDAwMDAwMDA3OCBSU0k6IGZmZmY4ODgwMzk4MDAwMDAgUkRJOiAwMDAwMDAwMDAwMDAwODAw
+DQo+ID4gPiBSQlA6IGZmZmZmZmZmODM3ZWYzYTAgUjA4OiAwMDAwMDAwMDAwNDAwMDAwIFIwOTog
+MDAwMDAwMDAwMDAwMDAyZQ0KPiA+ID4gUjEwOiBmZmZmZmZmZjgxMzJiN2VhIFIxMTogMDAwMDAw
+MDAwMDAwMDAzZiBSMTI6IDAwMDAwMDAwMDAwMzViNDANCj4gPiA+IFIxMzogZmZmZjg4ODAzOTgw
+MDA4OCBSMTQ6IGZmZmZjOTAwMDJlNmZjMDggUjE1OiAwMDAwMDAwMDAwMDAwMjAwDQo+ID4gPiBG
+UzogIDAwMDAwMDAwMDAwMDAwMDAoMDAwMCkgR1M6ZmZmZjg4ODBiOWQwMDAwMCgwMDAwKSBrbmxH
+UzowMDAwMDAwMDAwMDAwMDAwDQo+ID4gPiBDUzogIDAwMTAgRFM6IDAwMDAgRVM6IDAwMDAgQ1Iw
+OiAwMDAwMDAwMDgwMDUwMDMzDQo+ID4gPiBDUjI6IDAwMDAwMDAwMDAwMDAwMDggQ1IzOiAwMDAw
+MDAwMDExODQxMDAwIENSNDogMDAwMDAwMDAwMDE1MDZlMA0KPiA+ID4gRFIwOiAwMDAwMDAwMDAw
+MDAwMDAwIERSMTogMDAwMDAwMDAwMDAwMDAwMCBEUjI6IDAwMDAwMDAwMDAwMDAwMDANCj4gPiA+
+IERSMzogMDAwMDAwMDAwMDAwMDAwMCBEUjY6IDAwMDAwMDAwZmZmZTBmZjAgRFI3OiAwMDAwMDAw
+MDAwMDAwNDAwDQo+ID4gPiBDYWxsIFRyYWNlOg0KPiA+ID4gIF9fY2FsbF9yY3Uga2VybmVsL3Jj
+dS90cmVlLmM6Mjk2NSBbaW5saW5lXQ0KPiA+ID4gIGNhbGxfcmN1KzB4YmIvMHg3MTAga2VybmVs
+L3JjdS90cmVlLmM6MzAzOA0KPiA+ID4gIGlwY19yY3VfcHV0cmVmKzB4ODMvMHhiMCBpcGMvdXRp
+bC5jOjUwNQ0KPiA+ID4gIGZyZWVhcnkrMHgxMzljLzB4MWIzMCBpcGMvc2VtLmM6MTE4OA0KPiA+
+ID4gIGZyZWVfaXBjcysweDk4LzB4MWUwIGlwYy9uYW1lc3BhY2UuYzoxMTINCj4gPiA+ICBzZW1f
+ZXhpdF9ucysweDFiLzB4NDAgaXBjL3NlbS5jOjI2MA0KPiA+ID4gIGZyZWVfaXBjX25zIGlwYy9u
+YW1lc3BhY2UuYzoxMjQgW2lubGluZV0NCj4gPiA+ICBmcmVlX2lwYysweGY4LzB4MjAwIGlwYy9u
+YW1lc3BhY2UuYzoxNDENCj4gPiA+ICBwcm9jZXNzX29uZV93b3JrKzB4OThkLzB4MTYzMCBrZXJu
+ZWwvd29ya3F1ZXVlLmM6MjI3NQ0KPiA+ID4gIHdvcmtlcl90aHJlYWQrMHg2NGMvMHgxMTIwIGtl
+cm5lbC93b3JrcXVldWUuYzoyNDIxDQo+ID4gPiAga3RocmVhZCsweDNiMS8weDRhMCBrZXJuZWwv
+a3RocmVhZC5jOjI5Mg0KPiA+ID4gIHJldF9mcm9tX2ZvcmsrMHgxZi8weDMwIGFyY2gveDg2L2Vu
+dHJ5L2VudHJ5XzY0LlM6Mjk2DQo+ID4gPiBNb2R1bGVzIGxpbmtlZCBpbjoNCj4gPiA+IENSMjog
+MDAwMDAwMDAwMDAwMDAwOA0KPiA+ID4gLS0tWyBlbmQgdHJhY2UgMjhkYzA5M2U2MWQ0NGRjMiBd
+LS0tDQo+ID4gPiBSSVA6IDAwMTA6a2FzYW5fcmVjb3JkX2F1eF9zdGFjaysweDc3LzB4YjAgbW0v
+a2FzYW4vZ2VuZXJpYy5jOjM0MQ0KPiA+ID4gQ29kZTogNDggZjcgZmUgOGIgNDcgMjQgNDkgODkg
+ZjAgNDggMjkgZDMgOGQgNzAgZmYgNDEgMGYgYWYgZjAgNDggMDEgY2UgNDggMzkgZjMgNDggMGYg
+NDYgZjMgZTggODEgZTkgZmYgZmYgYmYgMDAgMDggMDAgMDAgNDggODkgYzMgPDhiPiA0MCAwOCA4
+OSA0MyAwYyBlOCAxZSBlNiBmZiBmZiA4OSA0MyAwOCA1YiBjMyA0OCA4YiA1MCAwOCA0OCBjNw0K
+PiA+ID4gUlNQOiAwMDE4OmZmZmZjOTAwMDJlNmZhZTggRUZMQUdTOiAwMDAxMDA0Ng0KPiA+ID4g
+UkFYOiAwMDAwMDAwMDAwMDAwMDAwIFJCWDogMDAwMDAwMDAwMDAwMDAwMCBSQ1g6IGZmZmY4ODgw
+Mzk4MDAwMDANCj4gPiA+IFJEWDogMDAwMDAwMDAwMDAwMDA3OCBSU0k6IGZmZmY4ODgwMzk4MDAw
+MDAgUkRJOiAwMDAwMDAwMDAwMDAwODAwDQo+ID4gPiBSQlA6IGZmZmZmZmZmODM3ZWYzYTAgUjA4
+OiAwMDAwMDAwMDAwNDAwMDAwIFIwOTogMDAwMDAwMDAwMDAwMDAyZQ0KPiA+ID4gUjEwOiBmZmZm
+ZmZmZjgxMzJiN2VhIFIxMTogMDAwMDAwMDAwMDAwMDAzZiBSMTI6IDAwMDAwMDAwMDAwMzViNDAN
+Cj4gPiA+IFIxMzogZmZmZjg4ODAzOTgwMDA4OCBSMTQ6IGZmZmZjOTAwMDJlNmZjMDggUjE1OiAw
+MDAwMDAwMDAwMDAwMjAwDQo+ID4gPiBGUzogIDAwMDAwMDAwMDAwMDAwMDAoMDAwMCkgR1M6ZmZm
+Zjg4ODBiOWQwMDAwMCgwMDAwKSBrbmxHUzowMDAwMDAwMDAwMDAwMDAwDQo+ID4gPiBDUzogIDAw
+MTAgRFM6IDAwMDAgRVM6IDAwMDAgQ1IwOiAwMDAwMDAwMDgwMDUwMDMzDQo+ID4gPiBDUjI6IDAw
+MDAwMDAwMDAwMDAwMDggQ1IzOiAwMDAwMDAwMDExODQxMDAwIENSNDogMDAwMDAwMDAwMDE1MDZl
+MA0KPiA+ID4gRFIwOiAwMDAwMDAwMDAwMDAwMDAwIERSMTogMDAwMDAwMDAwMDAwMDAwMCBEUjI6
+IDAwMDAwMDAwMDAwMDAwMDANCj4gPiA+IERSMzogMDAwMDAwMDAwMDAwMDAwMCBEUjY6IDAwMDAw
+MDAwZmZmZTBmZjAgRFI3OiAwMDAwMDAwMDAwMDAwNDAwDQo+ID4gPg0KPiA+ID4NCj4gPiA+IC0t
+LQ0KPiA+ID4gVGhpcyByZXBvcnQgaXMgZ2VuZXJhdGVkIGJ5IGEgYm90LiBJdCBtYXkgY29udGFp
+biBlcnJvcnMuDQo+ID4gPiBTZWUgaHR0cHM6Ly9nb28uZ2wvdHBzbUVKIGZvciBtb3JlIGluZm9y
+bWF0aW9uIGFib3V0IHN5emJvdC4NCj4gPiA+IHN5emJvdCBlbmdpbmVlcnMgY2FuIGJlIHJlYWNo
+ZWQgYXQgc3l6a2FsbGVyQGdvb2dsZWdyb3Vwcy5jb20uDQo+ID4gPg0KPiA+ID4gc3l6Ym90IHdp
+bGwga2VlcCB0cmFjayBvZiB0aGlzIGlzc3VlLiBTZWU6DQo+ID4gPiBodHRwczovL2dvby5nbC90
+cHNtRUojc3RhdHVzIGZvciBob3cgdG8gY29tbXVuaWNhdGUgd2l0aCBzeXpib3QuDQo+ID4gPiBz
+eXpib3QgY2FuIHRlc3QgcGF0Y2hlcyBmb3IgdGhpcyBpc3N1ZSwgZm9yIGRldGFpbHMgc2VlOg0K
+PiA+ID4gaHR0cHM6Ly9nb28uZ2wvdHBzbUVKI3Rlc3RpbmctcGF0Y2hlcw0KDQo=
 
-Thanks a lot for the report, and sorry for the breakage.
-
-4257f7e008ea restores PCI_L1SS_CTL1, then PCI_L1SS_CTL2.  I think it
-should do those in the reverse order, since the Enable bits are in
-PCI_L1SS_CTL1.  It also restores L1SS state (potentially enabling
-L1.x) before we restore the PCIe Capability (potentially enabling ASPM
-as a whole).  Those probably should also be in the other order.
-
-If it's convenient, can you try the patch below?  If the debug patch
-doesn't help:
-
-  - Are you seeing the hibernate/resume problem when on AC or on
-    battery?
-
-  - What if you don't use tlp?  Does hibernate/resume work fine then?
-    If tlp makes a difference, can you collect "sudo lspci -vv" output
-    with and without using tlp (before hibernate)?
-
-  - If you revert 4257f7e008ea, does hibernate/resume work fine?  Both
-    with the tlp tweak and without?
-
-  - Collect "sudo lspci -vv" output before hibernate and (if possible)
-    after resume when you see the problem.
-
-I guess tlp only uses /sys/module/pcie_aspm/parameters/policy, so it
-sets the same ASPM policy system-wide.
-
-Bjorn
-
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index b9fecc25d213..6598b5cd3154 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -1665,9 +1665,8 @@ void pci_restore_state(struct pci_dev *dev)
- 	 * LTR itself (in the PCIe capability).
- 	 */
- 	pci_restore_ltr_state(dev);
--	pci_restore_aspm_l1ss_state(dev);
--
- 	pci_restore_pcie_state(dev);
-+	pci_restore_aspm_l1ss_state(dev);
- 	pci_restore_pasid_state(dev);
- 	pci_restore_pri_state(dev);
- 	pci_restore_ats_state(dev);
-diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-index a08e7d6dc248..c4a99274b4bb 100644
---- a/drivers/pci/pcie/aspm.c
-+++ b/drivers/pci/pcie/aspm.c
-@@ -752,8 +752,8 @@ void pci_save_aspm_l1ss_state(struct pci_dev *dev)
- 		return;
- 
- 	cap = (u32 *)&save_state->cap.data[0];
--	pci_read_config_dword(dev, aspm_l1ss + PCI_L1SS_CTL1, cap++);
- 	pci_read_config_dword(dev, aspm_l1ss + PCI_L1SS_CTL2, cap++);
-+	pci_read_config_dword(dev, aspm_l1ss + PCI_L1SS_CTL1, cap++);
- }
- 
- void pci_restore_aspm_l1ss_state(struct pci_dev *dev)
-@@ -774,8 +774,8 @@ void pci_restore_aspm_l1ss_state(struct pci_dev *dev)
- 		return;
- 
- 	cap = (u32 *)&save_state->cap.data[0];
--	pci_write_config_dword(dev, aspm_l1ss + PCI_L1SS_CTL1, *cap++);
- 	pci_write_config_dword(dev, aspm_l1ss + PCI_L1SS_CTL2, *cap++);
-+	pci_write_config_dword(dev, aspm_l1ss + PCI_L1SS_CTL1, *cap++);
- }
- 
- static void pcie_config_aspm_dev(struct pci_dev *pdev, u32 val)
