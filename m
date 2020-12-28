@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3702E6572
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:01:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A57C72E6929
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:47:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393709AbgL1QBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:01:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60432 "EHLO mail.kernel.org"
+        id S2634390AbgL1Qpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:45:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52460 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732782AbgL1Nby (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:31:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2176220728;
-        Mon, 28 Dec 2020 13:31:37 +0000 (UTC)
+        id S1728734AbgL1M4T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:56:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62862224D2;
+        Mon, 28 Dec 2020 12:56:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162298;
-        bh=0I3ivL1fi+Ma3R/Ndly0hUdzlv2gO8bLrn9+nE4Eghs=;
+        s=korg; t=1609160164;
+        bh=GwLfizYky5koo3y6Jw4xslhpspIHRjQRdYqK8Qj9jUs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mBozVeahW1sdJw8ZHXNdv8n2ymkEwXqdpAwal2H+BQpPAuxF0KC6Y56z20vyCCSZJ
-         5CFRJ3E258BeXSmSPTVGbsrzThFcckyh55Nk20/sIvQ6sYdHfodtPP6xKb5BJhHifB
-         HH9Nlzu4ygFxG4AqLt7f7epRc0KTbr1v4dSQ18H8=
+        b=QBmejKic6Oa9XdVYEcmz+pz5+91HgDEqY4uDtPAtlubXXMnc0io9t6bWaW5+YNr1v
+         zyyyfo7cPWTX//kbBu+yftHRIdoWrfy37da8d5ZJAbFxw8GQFvRb1ppq+4LIJWp5uH
+         VoYapmcRR48y6BRuMiGfqLilO5LmZPZ+0s+/piOU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
+        stable@vger.kernel.org, Calum Mackay <calum.mackay@oracle.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 225/346] mac80211: dont set set TDLS STA bandwidth wider than possible
-Date:   Mon, 28 Dec 2020 13:49:04 +0100
-Message-Id: <20201228124930.649284046@linuxfoundation.org>
+Subject: [PATCH 4.4 061/132] lockd: dont use interval-based rebinding over TCP
+Date:   Mon, 28 Dec 2020 13:49:05 +0100
+Message-Id: <20201228124849.401233508@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,69 +40,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Calum Mackay <calum.mackay@oracle.com>
 
-[ Upstream commit f65607cdbc6b0da356ef5a22552ddd9313cf87a0 ]
+[ Upstream commit 9b82d88d5976e5f2b8015d58913654856576ace5 ]
 
-When we set up a TDLS station, we set sta->sta.bandwidth solely based
-on the capabilities, because the "what's the current bandwidth" check
-is bypassed and only applied for other types of stations.
+NLM uses an interval-based rebinding, i.e. it clears the transport's
+binding under certain conditions if more than 60 seconds have elapsed
+since the connection was last bound.
 
-This leads to the unfortunate scenario that the sta->sta.bandwidth is
-160 MHz if both stations support it, but we never actually configure
-this bandwidth unless the AP is already using 160 MHz; even for wider
-bandwidth support we only go up to 80 MHz (at least right now.)
+This rebinding is not necessary for an autobind RPC client over a
+connection-oriented protocol like TCP.
 
-For iwlwifi, this can also lead to firmware asserts, telling us that
-we've configured the TX rates for a higher bandwidth than is actually
-available due to the PHY configuration.
+It can also cause problems: it is possible for nlm_bind_host() to clear
+XPRT_BOUND whilst a connection worker is in the middle of trying to
+reconnect, after it had already been checked in xprt_connect().
 
-For non-TDLS, we check against the interface's requested bandwidth,
-but we explicitly skip this check for TDLS to cope with the wider BW
-case. Change this to
- (a) still limit to the TDLS peer's own chandef, which gets factored
-     into the overall PHY configuration we request from the driver,
-     and
- (b) limit it to when the TDLS peer is authorized, because it's only
-     factored into the channel context in this case.
+When the connection worker notices that XPRT_BOUND has been cleared
+under it, in xs_tcp_finish_connecting(), that results in:
 
-Fixes: 504871e602d9 ("mac80211: fix bandwidth computation for TDLS peers")
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Link: https://lore.kernel.org/r/iwlwifi.20201206145305.fcc7d29c4590.I11f77e9e25ddf871a3c8d5604650c763e2c5887a@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+	xs_tcp_setup_socket: connect returned unhandled error -107
+
+Worse, it's possible that the two can get into lockstep, resulting in
+the same behaviour repeated indefinitely, with the above error every
+300 seconds, without ever recovering, and the connection never being
+established. This has been seen in practice, with a large number of NLM
+client tasks, following a server restart.
+
+The existing callers of nlm_bind_host & nlm_rebind_host should not need
+to force the rebind, for TCP, so restrict the interval-based rebinding
+to UDP only.
+
+For TCP, we will still rebind when needed, e.g. on timeout, and connection
+error (including closure), since connection-related errors on an existing
+connection, ECONNREFUSED when trying to connect, and rpc_check_timeout(),
+already unconditionally clear XPRT_BOUND.
+
+To avoid having to add the fix, and explanation, to both nlm_bind_host()
+and nlm_rebind_host(), remove the duplicate code from the former, and
+have it call the latter.
+
+Drop the dprintk, which adds no value over a trace.
+
+Signed-off-by: Calum Mackay <calum.mackay@oracle.com>
+Fixes: 35f5a422ce1a ("SUNRPC: new interface to force an RPC rebind")
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/vht.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ fs/lockd/host.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
-diff --git a/net/mac80211/vht.c b/net/mac80211/vht.c
-index 4d154efb80c88..d691c2f2e92e7 100644
---- a/net/mac80211/vht.c
-+++ b/net/mac80211/vht.c
-@@ -421,12 +421,18 @@ enum ieee80211_sta_rx_bandwidth ieee80211_sta_cur_vht_bw(struct sta_info *sta)
- 	 * IEEE80211-2016 specification makes higher bandwidth operation
- 	 * possible on the TDLS link if the peers have wider bandwidth
- 	 * capability.
-+	 *
-+	 * However, in this case, and only if the TDLS peer is authorized,
-+	 * limit to the tdls_chandef so that the configuration here isn't
-+	 * wider than what's actually requested on the channel context.
+diff --git a/fs/lockd/host.c b/fs/lockd/host.c
+index c7eb47f2fb6c3..603fa652b965d 100644
+--- a/fs/lockd/host.c
++++ b/fs/lockd/host.c
+@@ -430,12 +430,7 @@ nlm_bind_host(struct nlm_host *host)
+ 	 * RPC rebind is required
  	 */
- 	if (test_sta_flag(sta, WLAN_STA_TDLS_PEER) &&
--	    test_sta_flag(sta, WLAN_STA_TDLS_WIDER_BW))
--		return bw;
--
--	bw = min(bw, ieee80211_chan_width_to_rx_bw(bss_width));
-+	    test_sta_flag(sta, WLAN_STA_TDLS_WIDER_BW) &&
-+	    test_sta_flag(sta, WLAN_STA_AUTHORIZED) &&
-+	    sta->tdls_chandef.chan)
-+		bw = min(bw, ieee80211_chan_width_to_rx_bw(sta->tdls_chandef.width));
-+	else
-+		bw = min(bw, ieee80211_chan_width_to_rx_bw(bss_width));
- 
- 	return bw;
+ 	if ((clnt = host->h_rpcclnt) != NULL) {
+-		if (time_after_eq(jiffies, host->h_nextrebind)) {
+-			rpc_force_rebind(clnt);
+-			host->h_nextrebind = jiffies + NLM_HOST_REBIND;
+-			dprintk("lockd: next rebind in %lu jiffies\n",
+-					host->h_nextrebind - jiffies);
+-		}
++		nlm_rebind_host(host);
+ 	} else {
+ 		unsigned long increment = nlmsvc_timeout;
+ 		struct rpc_timeout timeparms = {
+@@ -483,13 +478,20 @@ nlm_bind_host(struct nlm_host *host)
+ 	return clnt;
  }
+ 
+-/*
+- * Force a portmap lookup of the remote lockd port
++/**
++ * nlm_rebind_host - If needed, force a portmap lookup of the peer's lockd port
++ * @host: NLM host handle for peer
++ *
++ * This is not needed when using a connection-oriented protocol, such as TCP.
++ * The existing autobind mechanism is sufficient to force a rebind when
++ * required, e.g. on connection state transitions.
+  */
+ void
+ nlm_rebind_host(struct nlm_host *host)
+ {
+-	dprintk("lockd: rebind host %s\n", host->h_name);
++	if (host->h_proto != IPPROTO_UDP)
++		return;
++
+ 	if (host->h_rpcclnt && time_after_eq(jiffies, host->h_nextrebind)) {
+ 		rpc_force_rebind(host->h_rpcclnt);
+ 		host->h_nextrebind = jiffies + NLM_HOST_REBIND;
 -- 
 2.27.0
 
