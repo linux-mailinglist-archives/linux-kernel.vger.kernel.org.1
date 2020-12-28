@@ -2,163 +2,343 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DE4F2E6B7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:12:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 007B32E6B78
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:12:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730866AbgL1Wz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1730888AbgL1Wz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 28 Dec 2020 17:55:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729400AbgL1UXL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 15:23:11 -0500
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A566C061793;
-        Mon, 28 Dec 2020 12:22:31 -0800 (PST)
-Received: by mail-il1-x12d.google.com with SMTP id w17so10404979ilj.8;
-        Mon, 28 Dec 2020 12:22:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Xxquc3ewI0O/zXR70TYlCPWwGQHiUyK2IYglZ5RF74A=;
-        b=nI5EVkWP7ysJbwXaE7zmsLZdQIpnUzaFmfAVb+yYDkZMw+ujnURX3vBspKBr3RKPy3
-         rv78MVBaARcvwFI1zF0Exy+3KSCK/Ych6PD9ZYDcdCsPIePM8kOixqkI90jNLPsPtrym
-         jlyTQfM7Mu3JhUGwhnRA6Jews19b8wt+JHRvKwjv56SP1Agr37vePticr//k4eK6OMlt
-         /ra7faTENbsrWWl+ENowvOf87kjMoHclwzRl64/LhcIzUIyNKe+ateXagmHRwH4zU24N
-         XwOljSFcXXXcO1VpfenhtqlB5nJ+2cug6ogT888qP3bzFu4CMI9kcjpKlEmxrZmB+dKQ
-         J5WA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Xxquc3ewI0O/zXR70TYlCPWwGQHiUyK2IYglZ5RF74A=;
-        b=sLXyfJsxu5kAuxMaKJ+Gt7iLnxEBIImK66htqjFtXoDsJZD8eLWAZ+P5VzzOkw54Jm
-         jfB8+tSzlvIl2HXuJbHP/Ch7fcPtVF8XCnQpZHGQUDk7ChOfB09T31/iQg8PTXn6pbOn
-         mT8YfVN7rLypuDulV0t69oJch8Yy9ImNAd5Asr+PjZ60nZVvgdPV1JsqghZftUXZAjMG
-         9sGGZPoglWEU9LJSgGJJrkR2piPn/a8pm6Pl72PF/orhRw3eApWa1ONfnolbKvYPQsdJ
-         c4dpGYp+AkbWaHf9wGjYY558VREVcM3T6Cg2RtYhz5jciT6LhZAkCdFo0uIYyoP2S7cX
-         EhZA==
-X-Gm-Message-State: AOAM533A52soE4jhf+WgqvUdigZkodzRSrO2xPeqe5vaIxL97neaMZCG
-        WJmcNM/0mkyyz9gw0mXs9VfEFl9IKjx5PA==
-X-Google-Smtp-Source: ABdhPJx18NiuthAgsp/AZRDVzF4gtVdZbpuTRTpo5OQMqYy22nfnMuxNCXmx9vuxHmmjGi7711yv8w==
-X-Received: by 2002:a92:8495:: with SMTP id y21mr44221168ilk.55.1609186950476;
-        Mon, 28 Dec 2020 12:22:30 -0800 (PST)
-Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:f45d:df49:9a4c:4914])
-        by smtp.gmail.com with ESMTPSA id w3sm29043763ilk.17.2020.12.28.12.22.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Dec 2020 12:22:30 -0800 (PST)
-From:   Adam Ford <aford173@gmail.com>
-To:     linux-renesas-soc@vger.kernel.org
-Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] arm64: dts: renesas: Add usb2_clksel to RZ/G2 M/N/H
-Date:   Mon, 28 Dec 2020 14:22:21 -0600
-Message-Id: <20201228202221.2327468-2-aford173@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201228202221.2327468-1-aford173@gmail.com>
-References: <20201228202221.2327468-1-aford173@gmail.com>
+Received: from mail.kernel.org ([198.145.29.99]:46918 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729401AbgL1UXU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 15:23:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5268C221F0;
+        Mon, 28 Dec 2020 20:22:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609186959;
+        bh=gwzjkPVAYXAvPmbN+6H6qRPKQZ8npBiFAq4O8w/zpIU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DdB2emFBBE6JhFer1VsHFY3Q8YrLRf2KS5uIHrtfCRMxcftu1H1ZLd5OICxNdLBIs
+         PKejflDjmXPwbfwqno5+CcBQG/BgRRQyBQL+kj0jZIHiSbEHBN+XsjzDIOaT5M6us6
+         QAr6knquoFyTzhqNVIB77jNV6G9OsUFHAPP6v2wCyb8Del5GSPWApUUOApPAq7hOQB
+         XNiNlJQ6jxsMj9mW+vKE9VV3h0DEioc+595h/awxIY25oDNlOAPyk7n+D2RQsjRR/e
+         cIKwfL1OJ9fwVyw5ODF957oK6qSF6zJ25Oc2MpGqBfbucD3mLHovBtxK5U4B8E36KV
+         DhmsvZz4aPAQQ==
+Date:   Mon, 28 Dec 2020 21:22:32 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     "=?UTF-8?B?TsOtY29sYXM=?= F. R. A. Prado" <nfraprado@protonmail.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Stephen Boyd <swboyd@chromium.org>, rcu@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lkcamp@lists.libreplanetbr.org,
+        andrealmeid@collabora.com
+Subject: Re: [PATCH v2] docs: Fix reST markup when linking to sections
+Message-ID: <20201228212232.34cef61f@coco.lan>
+In-Reply-To: <20201228144537.135353-1-nfraprado@protonmail.com>
+References: <20201228144537.135353-1-nfraprado@protonmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Per the reference manal for the RZ/G Series, 2nd Generation,
-the RZ/G2M, RZ/G2N, and RZ/G2H have a bit that can be set to
-choose between a crystal oscillator and an external oscillator.
+Em Mon, 28 Dec 2020 14:46:07 +0000
+N=C3=ADcolas F. R. A. Prado <nfraprado@protonmail.com> escreveu:
 
-Because only boards that need this should enable it, it's marked
-as disabled by default for backwards compatibility with existing
-boards.
+> During the process of converting the documentation to reST, some links
+> were converted using the following wrong syntax (and sometimes using %20
+> instead of spaces):
+>=20
+>    `Display text <#section-name-in-html>`__
+>=20
+> This syntax isn't valid according to the docutils' spec [1], but more
+> importantly, it is specific to HTML, since it uses '#' to link to an
+> HTML anchor.
+>=20
+> The right syntax would instead use a docutils hyperlink reference as the
+> embedded URI to point to the section [2], that is:
+>=20
+>    `Display text <Section Name_>`__
+>=20
+> This syntax works in both HTML and PDF.
+>=20
+> The LaTeX toolchain doesn't mind the HTML anchor syntax when generating
+> the pdf documentation (make pdfdocs), that is, the build succeeds but
+> the links don't work, but that syntax causes errors when trying to build
+> using the not-yet-merged rst2pdf:
+>=20
+>    ValueError: format not resolved, probably missing URL scheme or undefi=
+ned destination target for 'Forcing%20Quiescent%20States'
+>=20
+> So, use the correct syntax in order to have it work in all different
+> output formats.
+>=20
+> [1]: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#r=
+eference-names
+> [2]: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#e=
+mbedded-uris-and-aliases
+>=20
+> Fixes: ccc9971e2147 ("docs: rcu: convert some articles from html to ReST")
+> Fixes: c8cce10a62aa ("docs: Fix the reference labels in Locking.rst")
+> Fixes: e548cdeffcd8 ("docs-rst: convert kernel-locking to ReST")
+> Fixes: 7ddedebb03b7 ("ALSA: doc: ReSTize writing-an-alsa-driver document")
+> Signed-off-by: N=C3=ADcolas F. R. A. Prado <nfraprado@protonmail.com>
+> Reviewed-by: Takashi Iwai <tiwai@suse.de>
+Reviewed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
+Regards,
+Mauro
 
-diff --git a/arch/arm64/boot/dts/renesas/r8a774a1.dtsi b/arch/arm64/boot/dts/renesas/r8a774a1.dtsi
-index d37ec42a1caa..60e150320ce8 100644
---- a/arch/arm64/boot/dts/renesas/r8a774a1.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r8a774a1.dtsi
-@@ -835,6 +835,21 @@ hsusb: usb@e6590000 {
- 			status = "disabled";
- 		};
- 
-+		usb2_clksel: clock-controller@e6590630 {
-+			compatible = "renesas,r8a774a1-rcar-usb2-clock-sel",
-+				     "renesas,rcar-gen3-usb2-clock-sel";
-+			reg = <0 0xe6590630 0 0x02>;
-+			clocks = <&cpg CPG_MOD 703>, <&cpg CPG_MOD 704>,
-+				 <&usb_extal_clk>, <&usb3s0_clk>;
-+			clock-names = "ehci_ohci", "hs-usb-if",
-+				      "usb_extal", "usb_xtal";
-+			#clock-cells = <0>;
-+			power-domains = <&sysc R8A774A1_PD_ALWAYS_ON>;
-+			resets = <&cpg 703>, <&cpg 704>;
-+			reset-names = "ehci_ohci", "hs-usb-if";
-+			status = "disabled";
-+		};
-+
- 		usb_dmac0: dma-controller@e65a0000 {
- 			compatible = "renesas,r8a774a1-usb-dmac",
- 				     "renesas,usb-dmac";
-diff --git a/arch/arm64/boot/dts/renesas/r8a774b1.dtsi b/arch/arm64/boot/dts/renesas/r8a774b1.dtsi
-index 83523916d360..20003a41a706 100644
---- a/arch/arm64/boot/dts/renesas/r8a774b1.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r8a774b1.dtsi
-@@ -709,6 +709,21 @@ hsusb: usb@e6590000 {
- 			status = "disabled";
- 		};
- 
-+		usb2_clksel: clock-controller@e6590630 {
-+			compatible = "renesas,r8a774b1-rcar-usb2-clock-sel",
-+				     "renesas,rcar-gen3-usb2-clock-sel";
-+			reg = <0 0xe6590630 0 0x02>;
-+			clocks = <&cpg CPG_MOD 703>, <&cpg CPG_MOD 704>,
-+				 <&usb_extal_clk>, <&usb3s0_clk>;
-+			clock-names = "ehci_ohci", "hs-usb-if",
-+				      "usb_extal", "usb_xtal";
-+			#clock-cells = <0>;
-+			power-domains = <&sysc R8A774B1_PD_ALWAYS_ON>;
-+			resets = <&cpg 703>, <&cpg 704>;
-+			reset-names = "ehci_ohci", "hs-usb-if";
-+			status = "disabled";
-+		};
-+
- 		usb_dmac0: dma-controller@e65a0000 {
- 			compatible = "renesas,r8a774b1-usb-dmac",
- 				     "renesas,usb-dmac";
-diff --git a/arch/arm64/boot/dts/renesas/r8a774e1.dtsi b/arch/arm64/boot/dts/renesas/r8a774e1.dtsi
-index 1333b02d623a..2e6c12a46daf 100644
---- a/arch/arm64/boot/dts/renesas/r8a774e1.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r8a774e1.dtsi
-@@ -890,6 +890,21 @@ hsusb: usb@e6590000 {
- 			status = "disabled";
- 		};
- 
-+		usb2_clksel: clock-controller@e6590630 {
-+			compatible = "renesas,r8a774e1-rcar-usb2-clock-sel",
-+				     "renesas,rcar-gen3-usb2-clock-sel";
-+			reg = <0 0xe6590630 0 0x02>;
-+			clocks = <&cpg CPG_MOD 703>, <&cpg CPG_MOD 704>,
-+				 <&usb_extal_clk>, <&usb3s0_clk>;
-+			clock-names = "ehci_ohci", "hs-usb-if",
-+				      "usb_extal", "usb_xtal";
-+			#clock-cells = <0>;
-+			power-domains = <&sysc R8A774E1_PD_ALWAYS_ON>;
-+			resets = <&cpg 703>, <&cpg 704>;
-+			reset-names = "ehci_ohci", "hs-usb-if";
-+			status = "disabled";
-+		};
-+
- 		usb_dmac0: dma-controller@e65a0000 {
- 			compatible = "renesas,r8a774e1-usb-dmac",
- 				     "renesas,usb-dmac";
--- 
-2.25.1
+> ---
+>=20
+> Changes in v2:
+> - Thanks to Mauro:
+>   - Simplify the syntax of some links by taking advantage of docutils'
+>     case-insensitivity when dealing with references.
+>=20
+>  .../Tree-RCU-Memory-Ordering.rst              |  8 ++++----
+>  .../RCU/Design/Requirements/Requirements.rst  | 20 +++++++++----------
+>  Documentation/kernel-hacking/locking.rst      |  8 ++++----
+>  .../kernel-api/writing-an-alsa-driver.rst     | 16 +++++++--------
+>  4 files changed, 26 insertions(+), 26 deletions(-)
+>=20
+> diff --git a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ord=
+ering.rst b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Orderi=
+ng.rst
+> index e44cfcb7adcc..e57927427786 100644
+> --- a/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.r=
+st
+> +++ b/Documentation/RCU/Design/Memory-Ordering/Tree-RCU-Memory-Ordering.r=
+st
+> @@ -473,7 +473,7 @@ read-side critical sections that follow the idle peri=
+od (the oval near
+>  the bottom of the diagram above).
+> =20
+>  Plumbing this into the full grace-period execution is described
+> -`below <#Forcing%20Quiescent%20States>`__.
+> +`below <Forcing Quiescent States_>`__.
+> =20
+>  CPU-Hotplug Interface
+>  ^^^^^^^^^^^^^^^^^^^^^
+> @@ -494,7 +494,7 @@ mask to detect CPUs having gone offline since the beg=
+inning of this
+>  grace period.
+> =20
+>  Plumbing this into the full grace-period execution is described
+> -`below <#Forcing%20Quiescent%20States>`__.
+> +`below <Forcing Quiescent States_>`__.
+> =20
+>  Forcing Quiescent States
+>  ^^^^^^^^^^^^^^^^^^^^^^^^
+> @@ -532,7 +532,7 @@ from other CPUs.
+>  | RCU. But this diagram is complex enough as it is, so simplicity       |
+>  | overrode accuracy. You can think of it as poetic license, or you can  |
+>  | think of it as misdirection that is resolved in the                   |
+> -| `stitched-together diagram <#Putting%20It%20All%20Together>`__.       |
+> +| `stitched-together diagram <Putting It All Together_>`__.             |
+>  +-----------------------------------------------------------------------+
+> =20
+>  Grace-Period Cleanup
+> @@ -596,7 +596,7 @@ maintain ordering. For example, if the callback funct=
+ion wakes up a task
+>  that runs on some other CPU, proper ordering must in place in both the
+>  callback function and the task being awakened. To see why this is
+>  important, consider the top half of the `grace-period
+> -cleanup <#Grace-Period%20Cleanup>`__ diagram. The callback might be
+> +cleanup`_ diagram. The callback might be
+>  running on a CPU corresponding to the leftmost leaf ``rcu_node``
+>  structure, and awaken a task that is to run on a CPU corresponding to
+>  the rightmost leaf ``rcu_node`` structure, and the grace-period kernel
+> diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Doc=
+umentation/RCU/Design/Requirements/Requirements.rst
+> index 1ae79a10a8de..ce1075f040be 100644
+> --- a/Documentation/RCU/Design/Requirements/Requirements.rst
+> +++ b/Documentation/RCU/Design/Requirements/Requirements.rst
+> @@ -45,7 +45,7 @@ requirements:
+>  #. `Other RCU Flavors`_
+>  #. `Possible Future Changes`_
+> =20
+> -This is followed by a `summary <#Summary>`__, however, the answers to
+> +This is followed by a summary_, however, the answers to
+>  each quick quiz immediately follows the quiz. Select the big white space
+>  with your mouse to see the answer.
+> =20
+> @@ -1096,7 +1096,7 @@ memory barriers.
+>  | case, voluntary context switch) within an RCU read-side critical      |
+>  | section. However, sleeping locks may be used within userspace RCU     |
+>  | read-side critical sections, and also within Linux-kernel sleepable   |
+> -| RCU `(SRCU) <#Sleepable%20RCU>`__ read-side critical sections. In     |
+> +| RCU `(SRCU) <Sleepable RCU_>`__ read-side critical sections. In       |
+>  | addition, the -rt patchset turns spinlocks into a sleeping locks so   |
+>  | that the corresponding critical sections can be preempted, which also |
+>  | means that these sleeplockified spinlocks (but not other sleeping     |
+> @@ -1186,7 +1186,7 @@ non-preemptible (``CONFIG_PREEMPT=3Dn``) kernels, a=
+nd thus `tiny
+>  RCU <https://lkml.kernel.org/g/20090113221724.GA15307@linux.vnet.ibm.com=
+>`__
+>  was born. Josh Triplett has since taken over the small-memory banner
+>  with his `Linux kernel tinification <https://tiny.wiki.kernel.org/>`__
+> -project, which resulted in `SRCU <#Sleepable%20RCU>`__ becoming optional
+> +project, which resulted in `SRCU <Sleepable RCU_>`__ becoming optional
+>  for those kernels not needing it.
+> =20
+>  The remaining performance requirements are, for the most part,
+> @@ -1457,8 +1457,8 @@ will vary as the value of ``HZ`` varies, and can al=
+so be changed using
+>  the relevant Kconfig options and kernel boot parameters. RCU currently
+>  does not do much sanity checking of these parameters, so please use
+>  caution when changing them. Note that these forward-progress measures
+> -are provided only for RCU, not for `SRCU <#Sleepable%20RCU>`__ or `Tasks
+> -RCU <#Tasks%20RCU>`__.
+> +are provided only for RCU, not for `SRCU <Sleepable RCU_>`__ or `Tasks
+> +RCU`_.
+> =20
+>  RCU takes the following steps in ``call_rcu()`` to encourage timely
+>  invocation of callbacks when any given non-\ ``rcu_nocbs`` CPU has
+> @@ -1477,8 +1477,8 @@ encouragement was provided:
+> =20
+>  Again, these are default values when running at ``HZ=3D1000``, and can be
+>  overridden. Again, these forward-progress measures are provided only for
+> -RCU, not for `SRCU <#Sleepable%20RCU>`__ or `Tasks
+> -RCU <#Tasks%20RCU>`__. Even for RCU, callback-invocation forward
+> +RCU, not for `SRCU <Sleepable RCU_>`__ or `Tasks
+> +RCU`_. Even for RCU, callback-invocation forward
+>  progress for ``rcu_nocbs`` CPUs is much less well-developed, in part
+>  because workloads benefiting from ``rcu_nocbs`` CPUs tend to invoke
+>  ``call_rcu()`` relatively infrequently. If workloads emerge that need
+> @@ -1920,7 +1920,7 @@ Hotplug CPU
+> =20
+>  The Linux kernel supports CPU hotplug, which means that CPUs can come
+>  and go. It is of course illegal to use any RCU API member from an
+> -offline CPU, with the exception of `SRCU <#Sleepable%20RCU>`__ read-side
+> +offline CPU, with the exception of `SRCU <Sleepable RCU_>`__ read-side
+>  critical sections. This requirement was present from day one in
+>  DYNIX/ptx, but on the other hand, the Linux kernel's CPU-hotplug
+>  implementation is =E2=80=9Cinteresting.=E2=80=9D
+> @@ -2147,7 +2147,7 @@ handles these states differently:
+>  However, RCU must be reliably informed as to whether any given CPU is
+>  currently in the idle loop, and, for ``NO_HZ_FULL``, also whether that
+>  CPU is executing in usermode, as discussed
+> -`earlier <#Energy%20Efficiency>`__. It also requires that the
+> +`earlier <Energy Efficiency_>`__. It also requires that the
+>  scheduling-clock interrupt be enabled when RCU needs it to be:
+> =20
+>  #. If a CPU is either idle or executing in usermode, and RCU believes it
+> @@ -2264,7 +2264,7 @@ Performance, Scalability, Response Time, and Reliab=
+ility
+>  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> =20
+>  Expanding on the `earlier
+> -discussion <#Performance%20and%20Scalability>`__, RCU is used heavily by
+> +discussion <Performance and Scalability_>`__, RCU is used heavily by
+>  hot code paths in performance-critical portions of the Linux kernel's
+>  networking, security, virtualization, and scheduling code paths. RCU
+>  must therefore use efficient implementations, especially in its
+> diff --git a/Documentation/kernel-hacking/locking.rst b/Documentation/ker=
+nel-hacking/locking.rst
+> index 6ed806e6061b..c3448929a824 100644
+> --- a/Documentation/kernel-hacking/locking.rst
+> +++ b/Documentation/kernel-hacking/locking.rst
+> @@ -118,11 +118,11 @@ spinlock, but you may block holding a mutex. If you=
+ can't lock a mutex,
+>  your task will suspend itself, and be woken up when the mutex is
+>  released. This means the CPU can do something else while you are
+>  waiting. There are many cases when you simply can't sleep (see
+> -`What Functions Are Safe To Call From Interrupts? <#sleeping-things>`__),
+> +`What Functions Are Safe To Call From Interrupts?`_),
+>  and so have to use a spinlock instead.
+> =20
+>  Neither type of lock is recursive: see
+> -`Deadlock: Simple and Advanced <#deadlock>`__.
+> +`Deadlock: Simple and Advanced`_.
+> =20
+>  Locks and Uniprocessor Kernels
+>  ------------------------------
+> @@ -179,7 +179,7 @@ perfect world).
+> =20
+>  Note that you can also use spin_lock_irq() or
+>  spin_lock_irqsave() here, which stop hardware interrupts
+> -as well: see `Hard IRQ Context <#hard-irq-context>`__.
+> +as well: see `Hard IRQ Context`_.
+> =20
+>  This works perfectly for UP as well: the spin lock vanishes, and this
+>  macro simply becomes local_bh_disable()
+> @@ -230,7 +230,7 @@ The Same Softirq
+>  ~~~~~~~~~~~~~~~~
+> =20
+>  The same softirq can run on the other CPUs: you can use a per-CPU array
+> -(see `Per-CPU Data <#per-cpu-data>`__) for better performance. If you're
+> +(see `Per-CPU Data`_) for better performance. If you're
+>  going so far as to use a softirq, you probably care about scalable
+>  performance enough to justify the extra complexity.
+> =20
+> diff --git a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst b/=
+Documentation/sound/kernel-api/writing-an-alsa-driver.rst
+> index 73bbd59afc33..e6365836fa8b 100644
+> --- a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
+> +++ b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
+> @@ -71,7 +71,7 @@ core/oss
+>  The codes for PCM and mixer OSS emulation modules are stored in this
+>  directory. The rawmidi OSS emulation is included in the ALSA rawmidi
+>  code since it's quite small. The sequencer code is stored in
+> -``core/seq/oss`` directory (see `below <#core-seq-oss>`__).
+> +``core/seq/oss`` directory (see `below <core/seq/oss_>`__).
+> =20
+>  core/seq
+>  ~~~~~~~~
+> @@ -382,7 +382,7 @@ where ``enable[dev]`` is the module option.
+>  Each time the ``probe`` callback is called, check the availability of
+>  the device. If not available, simply increment the device index and
+>  returns. dev will be incremented also later (`step 7
+> -<#set-the-pci-driver-data-and-return-zero>`__).
+> +<7) Set the PCI driver data and return zero._>`__).
+> =20
+>  2) Create a card instance
+>  ~~~~~~~~~~~~~~~~~~~~~~~~~
+> @@ -450,10 +450,10 @@ field contains the information shown in ``/proc/aso=
+und/cards``.
+>  5) Create other components, such as mixer, MIDI, etc.
+>  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> =20
+> -Here you define the basic components such as `PCM <#PCM-Interface>`__,
+> -mixer (e.g. `AC97 <#API-for-AC97-Codec>`__), MIDI (e.g.
+> -`MPU-401 <#MIDI-MPU401-UART-Interface>`__), and other interfaces.
+> -Also, if you want a `proc file <#Proc-Interface>`__, define it here,
+> +Here you define the basic components such as `PCM <PCM Interface_>`__,
+> +mixer (e.g. `AC97 <API for AC97 Codec_>`__), MIDI (e.g.
+> +`MPU-401 <MIDI (MPU401-UART) Interface_>`__), and other interfaces.
+> +Also, if you want a `proc file <Proc Interface_>`__, define it here,
+>  too.
+> =20
+>  6) Register the card instance.
+> @@ -941,7 +941,7 @@ The allocation of an interrupt source is done like th=
+is:
+>    chip->irq =3D pci->irq;
+> =20
+>  where :c:func:`snd_mychip_interrupt()` is the interrupt handler
+> -defined `later <#pcm-interface-interrupt-handler>`__. Note that
+> +defined `later <PCM Interrupt Handler_>`__. Note that
+>  ``chip->irq`` should be defined only when :c:func:`request_irq()`
+>  succeeded.
+> =20
+> @@ -3104,7 +3104,7 @@ processing the output stream in the irq handler.
+> =20
+>  If the MPU-401 interface shares its interrupt with the other logical
+>  devices on the card, set ``MPU401_INFO_IRQ_HOOK`` (see
+> -`below <#MIDI-Interrupt-Handler>`__).
+> +`below <MIDI Interrupt Handler_>`__).
+> =20
+>  Usually, the port address corresponds to the command port and port + 1
+>  corresponds to the data port. If not, you may change the ``cport``
 
+
+
+Thanks,
+Mauro
