@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25B2B2E39E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:30:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFF562E3767
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:56:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390100AbgL1N3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:29:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57530 "EHLO mail.kernel.org"
+        id S1728461AbgL1MzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:55:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390019AbgL1N27 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:28:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C2FC022AAA;
-        Mon, 28 Dec 2020 13:28:43 +0000 (UTC)
+        id S1728418AbgL1Myy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:54:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2C022242A;
+        Mon, 28 Dec 2020 12:54:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162124;
-        bh=N7oWq1TSHJJXcpLjjSC+29H7BiQDeXX0UwpvMvsDtnI=;
+        s=korg; t=1609160078;
+        bh=ybeW+MRvfiry6Slx1IHoz96EyqhddNY5zVuH8+nABLg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LGwdwxbWjjFkxq+XdzIgS6TAmbR8CGNLqWQzi9kefcV4WQoAuJXYPzXqQqMXI8eXG
-         nRf7l3t+1CqUU/j8vnNFNy4g0GGDcShebzxPNsJn8r+p/eDh6oLR3U0v45wx/J7KQK
-         W2Xoli2M7IPv0IBHYqKxmAcRRlavWFgMdnYUdg4I=
+        b=sAhp2P8zaQOuwMd8z8USbsb69LZJQ5PYw5etE5VYTcgrYo8WaIkS7ZYNqv3Ap4hHY
+         vT5SM16U3gT0MdPel19KPPP1bcz5+c5nqaxPRVpVU2JiZZtCqIYPlgLOauk5xb4uk5
+         mocPRfYMITOicNLSCS0LRENPtk4txGaEfPhy+uVo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 196/346] ARM: dts: at91: sama5d2: map securam as device
+        stable@vger.kernel.org, Peilin Ye <yepeilin.cs@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        syzbot+24ebd650e20bd263ca01@syzkaller.appspotmail.com
+Subject: [PATCH 4.4 031/132] Bluetooth: Fix slab-out-of-bounds read in hci_le_direct_adv_report_evt()
 Date:   Mon, 28 Dec 2020 13:48:35 +0100
-Message-Id: <20201228124929.269707945@linuxfoundation.org>
+Message-Id: <20201228124847.907457202@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,39 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudiu Beznea <claudiu.beznea@microchip.com>
+From: Peilin Ye <yepeilin.cs@gmail.com>
 
-[ Upstream commit 9b5dcc8d427e2bcb84c49eb03ffefe11e7537a55 ]
+commit f7e0e8b2f1b0a09b527885babda3e912ba820798 upstream.
 
-Due to strobe signal not being propagated from CPU to securam
-the securam needs to be mapped as device or strongly ordered memory
-to work properly. Otherwise, updating to one offset may affect
-the adjacent locations in securam.
+`num_reports` is not being properly checked. A malformed event packet with
+a large `num_reports` number makes hci_le_direct_adv_report_evt() read out
+of bounds. Fix it.
 
-Fixes: d4ce5f44d4409 ("ARM: dts: at91: sama5d2: Add securam node")
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-Link: https://lore.kernel.org/r/1606903025-14197-3-git-send-email-claudiu.beznea@microchip.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Fixes: 2f010b55884e ("Bluetooth: Add support for handling LE Direct Advertising Report events")
+Reported-and-tested-by: syzbot+24ebd650e20bd263ca01@syzkaller.appspotmail.com
+Link: https://syzkaller.appspot.com/bug?extid=24ebd650e20bd263ca01
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/arm/boot/dts/sama5d2.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+ net/bluetooth/hci_event.c |   12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/arch/arm/boot/dts/sama5d2.dtsi b/arch/arm/boot/dts/sama5d2.dtsi
-index b405992eb6016..d57be54f5df9c 100644
---- a/arch/arm/boot/dts/sama5d2.dtsi
-+++ b/arch/arm/boot/dts/sama5d2.dtsi
-@@ -1247,6 +1247,7 @@
- 				clocks = <&securam_clk>;
- 				#address-cells = <1>;
- 				#size-cells = <1>;
-+				no-memory-wc;
- 				ranges = <0 0xf8044000 0x1420>;
- 			};
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -5114,20 +5114,18 @@ static void hci_le_direct_adv_report_evt
+ 					 struct sk_buff *skb)
+ {
+ 	u8 num_reports = skb->data[0];
+-	void *ptr = &skb->data[1];
++	struct hci_ev_le_direct_adv_info *ev = (void *)&skb->data[1];
  
--- 
-2.27.0
-
+-	hci_dev_lock(hdev);
++	if (!num_reports || skb->len < num_reports * sizeof(*ev) + 1)
++		return;
+ 
+-	while (num_reports--) {
+-		struct hci_ev_le_direct_adv_info *ev = ptr;
++	hci_dev_lock(hdev);
+ 
++	for (; num_reports; num_reports--, ev++)
+ 		process_adv_report(hdev, ev->evt_type, &ev->bdaddr,
+ 				   ev->bdaddr_type, &ev->direct_addr,
+ 				   ev->direct_addr_type, ev->rssi, NULL, 0);
+ 
+-		ptr += sizeof(*ev);
+-	}
+-
+ 	hci_dev_unlock(hdev);
+ }
+ 
 
 
