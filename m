@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D48F82E3F87
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:42:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB4362E652A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:58:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505841AbgL1Ok6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:40:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36430 "EHLO mail.kernel.org"
+        id S2391110AbgL1NeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:34:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33496 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502473AbgL1O2g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:28:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C6EC620739;
-        Mon, 28 Dec 2020 14:27:55 +0000 (UTC)
+        id S2387855AbgL1NdO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:33:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0747C205CB;
+        Mon, 28 Dec 2020 13:32:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165676;
-        bh=I2cXp1MT7EnjWf0cayzQn7ATh5TaaXPWvohR2tD1TEU=;
+        s=korg; t=1609162378;
+        bh=WwdSu1cG6CLU8EYZ1nQEUZzBfnFvqLD1stcDgrJK7CE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uIyHc9ydFlRa5c3HJw5tMWNJGex/n4zECohOuI4cGQ7Lp8VEs5O7nbkgGP0JC2TFk
-         3Vnc+dF0JlsnzDtNMNW0HZGGn7NzAeQbqB8fh6fYCVY6rdIzJS8WyK4dX5lUZhU/Iq
-         kWB1DMI8CwtMu1y251pP3Zm7YyokcrWzG9xI+U+Y=
+        b=NmsoFCtxRwYCjdsb9VqWWdMSex9H7S2sEbeLc3FFfBvwsnNP5W2HpmOSfuSzSFbF6
+         c1RHMVQTLEdMWOPucU/j7xmxPD46gIwrZylkmb9rXJoifYUD/QrfdJ3RNoGu820ByV
+         ISvjxUhASsAUu0q25mqE090qw30BA+Hdg/fajnGk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH 5.10 574/717] Documentation: seqlock: s/LOCKTYPE/LOCKNAME/g
-Date:   Mon, 28 Dec 2020 13:49:32 +0100
-Message-Id: <20201228125048.421617679@linuxfoundation.org>
+        =?UTF-8?q?Herv=C3=A9=20Guillemet?= <herve@guillemet.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Serge Hallyn <shallyn@cisco.com>,
+        "Andrew G. Morgan" <morgan@kernel.org>,
+        James Morris <jamorris@linux.microsoft.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 254/346] [SECURITY] fix namespaced fscaps when !CONFIG_SECURITY
+Date:   Mon, 28 Dec 2020 13:49:33 +0100
+Message-Id: <20201228124932.060888289@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,74 +44,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ahmed S. Darwish <a.darwish@linutronix.de>
+From: Serge Hallyn <shallyn@cisco.com>
 
-commit cf48647243cc28d15280600292db5777592606c5 upstream.
+[ Upstream commit ed9b25d1970a4787ac6a39c2091e63b127ecbfc1 ]
 
-Sequence counters with an associated write serialization lock are called
-seqcount_LOCKNAME_t. Fix the documentation accordingly.
+Namespaced file capabilities were introduced in 8db6c34f1dbc .
+When userspace reads an xattr for a namespaced capability, a
+virtualized representation of it is returned if the caller is
+in a user namespace owned by the capability's owning rootid.
+The function which performs this virtualization was not hooked
+up if CONFIG_SECURITY=n.  Therefore in that case the original
+xattr was shown instead of the virtualized one.
 
-While at it, remove a paragraph that inappropriately discussed a
-seqlock.h implementation detail.
+To test this using libcap-bin (*1),
 
-Fixes: 6dd699b13d53 ("seqlock: seqcount_LOCKNAME_t: Standardize naming convention")
-Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/20201206162143.14387-2-a.darwish@linutronix.de
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+$ v=$(mktemp)
+$ unshare -Ur setcap cap_sys_admin-eip $v
+$ unshare -Ur setcap -v cap_sys_admin-eip $v
+/tmp/tmp.lSiIFRvt8Y: OK
 
+"setcap -v" verifies the values instead of setting them, and
+will check whether the rootid value is set.  Therefore, with
+this bug un-fixed, and with CONFIG_SECURITY=n, setcap -v will
+fail:
+
+$ v=$(mktemp)
+$ unshare -Ur setcap cap_sys_admin=eip $v
+$ unshare -Ur setcap -v cap_sys_admin=eip $v
+nsowner[got=1000, want=0],/tmp/tmp.HHDiOOl9fY differs in []
+
+Fix this bug by calling cap_inode_getsecurity() in
+security_inode_getsecurity() instead of returning
+-EOPNOTSUPP, when CONFIG_SECURITY=n.
+
+*1 - note, if libcap is too old for getcap to have the '-n'
+option, then use verify-caps instead.
+
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=209689
+Cc: Hervé Guillemet <herve@guillemet.org>
+Acked-by: Casey Schaufler <casey@schaufler-ca.com>
+Signed-off-by: Serge Hallyn <shallyn@cisco.com>
+Signed-off-by: Andrew G. Morgan <morgan@kernel.org>
+Signed-off-by: James Morris <jamorris@linux.microsoft.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Documentation/locking/seqlock.rst |   21 ++++++++++-----------
- 1 file changed, 10 insertions(+), 11 deletions(-)
+ include/linux/security.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/Documentation/locking/seqlock.rst
-+++ b/Documentation/locking/seqlock.rst
-@@ -89,7 +89,7 @@ Read path::
+diff --git a/include/linux/security.h b/include/linux/security.h
+index d2240605edc46..454cc963d1457 100644
+--- a/include/linux/security.h
++++ b/include/linux/security.h
+@@ -787,7 +787,7 @@ static inline int security_inode_killpriv(struct dentry *dentry)
  
- .. _seqcount_locktype_t:
+ static inline int security_inode_getsecurity(struct inode *inode, const char *name, void **buffer, bool alloc)
+ {
+-	return -EOPNOTSUPP;
++	return cap_inode_getsecurity(inode, name, buffer, alloc);
+ }
  
--Sequence counters with associated locks (``seqcount_LOCKTYPE_t``)
-+Sequence counters with associated locks (``seqcount_LOCKNAME_t``)
- -----------------------------------------------------------------
- 
- As discussed at :ref:`seqcount_t`, sequence count write side critical
-@@ -115,27 +115,26 @@ The following sequence counters with ass
-   - ``seqcount_mutex_t``
-   - ``seqcount_ww_mutex_t``
- 
--The plain seqcount read and write APIs branch out to the specific
--seqcount_LOCKTYPE_t implementation at compile-time. This avoids kernel
--API explosion per each new seqcount LOCKTYPE.
-+The sequence counter read and write APIs can take either a plain
-+seqcount_t or any of the seqcount_LOCKNAME_t variants above.
- 
--Initialization (replace "LOCKTYPE" with one of the supported locks)::
-+Initialization (replace "LOCKNAME" with one of the supported locks)::
- 
- 	/* dynamic */
--	seqcount_LOCKTYPE_t foo_seqcount;
--	seqcount_LOCKTYPE_init(&foo_seqcount, &lock);
-+	seqcount_LOCKNAME_t foo_seqcount;
-+	seqcount_LOCKNAME_init(&foo_seqcount, &lock);
- 
- 	/* static */
--	static seqcount_LOCKTYPE_t foo_seqcount =
--		SEQCNT_LOCKTYPE_ZERO(foo_seqcount, &lock);
-+	static seqcount_LOCKNAME_t foo_seqcount =
-+		SEQCNT_LOCKNAME_ZERO(foo_seqcount, &lock);
- 
- 	/* C99 struct init */
- 	struct {
--		.seq   = SEQCNT_LOCKTYPE_ZERO(foo.seq, &lock),
-+		.seq   = SEQCNT_LOCKNAME_ZERO(foo.seq, &lock),
- 	} foo;
- 
- Write path: same as in :ref:`seqcount_t`, while running from a context
--with the associated LOCKTYPE lock acquired.
-+with the associated write serialization lock acquired.
- 
- Read path: same as in :ref:`seqcount_t`.
- 
+ static inline int security_inode_setsecurity(struct inode *inode, const char *name, const void *value, size_t size, int flags)
+-- 
+2.27.0
+
 
 
