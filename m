@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB582E3B02
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:44:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC7142E4084
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:55:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404623AbgL1Noi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:44:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44444 "EHLO mail.kernel.org"
+        id S2441437AbgL1ORS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:17:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403793AbgL1Nnt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:43:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 671172064B;
-        Mon, 28 Dec 2020 13:43:08 +0000 (UTC)
+        id S2439596AbgL1ORD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:17:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BBC9021D94;
+        Mon, 28 Dec 2020 14:16:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162989;
-        bh=nr0VlxGqmc+nQNVKeKswqnm56odsGdNOXV9JQM4Mvyg=;
+        s=korg; t=1609164983;
+        bh=w4YmsWXHjdQPGZvq3Q0Eia9vzReOyT6SGDhhpyVpUww=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zI3uF/WSoP2/5WpIku0Vsoc+2RxOZwd+H9qTkYxDj+qQQAlK62NFqwgaAc5XJbVY1
-         35sQfT2NN3UFnN2jzgTAMAqetoCqE8IE6oNf6YDoRV4ir9l663SWdIwP+gcYnWyFAs
-         S/mmyV1tPWtMBbJds49Epoit/dsGlfzAzS3Y8gLw=
+        b=B4b5E7KeLODPE+kQWun1KmNPbavN0Q2b4TZ6R9+9cOSnyzXcv1VAJmEmjooIUiznR
+         oMwFiDK4A+zJQdsOOW0LQIdJ/wB0Fow0CZmp7r4xQt4JKFBCDNn784XFOROUaNRemq
+         F8+Wot23VqNnsuLjr7eVl7pbMf1a2GXnYCyasGow=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
+        stable@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 130/453] staging: greybus: codecs: Fix reference counter leak in error handling
+Subject: [PATCH 5.10 368/717] ASoC: amd: change clk_get() to devm_clk_get() and add missed checks
 Date:   Mon, 28 Dec 2020 13:46:06 +0100
-Message-Id: <20201228124943.467899093@linuxfoundation.org>
+Message-Id: <20201228125038.638623156@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,44 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Chuhong Yuan <hslester96@gmail.com>
 
-[ Upstream commit 3952659a6108f77a0d062d8e8487bdbdaf52a66c ]
+[ Upstream commit 95d3befbc5e1ee39fc8a78713924cf7ed2b3cabe ]
 
-gb_pm_runtime_get_sync has increased the usage counter of the device here.
-Forgetting to call gb_pm_runtime_put_noidle will result in usage counter
-leak in the error branch of (gbcodec_hw_params and gbcodec_prepare). We
-fixed it by adding it.
+cz_da7219_init() does not check the return values of clk_get(),
+while da7219_clk_enable() calls clk_set_rate() to dereference
+the pointers.
+Add checks to fix the problems.
+Also, change clk_get() to devm_clk_get() to avoid data leak after
+failures.
 
-Fixes: c388ae7696992 ("greybus: audio: Update pm runtime support in dai_ops callback")
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201109131347.1725288-2-zhangqilong3@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: bb24a31ed584 ("ASoC: AMD: Configure wclk and bclk of master codec")
+Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+Link: https://lore.kernel.org/r/20201204063610.513556-1-hslester96@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/greybus/audio_codec.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/amd/acp-da7219-max98357a.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/staging/greybus/audio_codec.c b/drivers/staging/greybus/audio_codec.c
-index 08746c85dea6d..3259bf02ba25e 100644
---- a/drivers/staging/greybus/audio_codec.c
-+++ b/drivers/staging/greybus/audio_codec.c
-@@ -489,6 +489,7 @@ static int gbcodec_hw_params(struct snd_pcm_substream *substream,
- 	if (ret) {
- 		dev_err_ratelimited(dai->dev, "%d: Error during set_config\n",
- 				    ret);
-+		gb_pm_runtime_put_noidle(bundle);
- 		mutex_unlock(&codec->lock);
+diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
+index a7702e64ec512..849288d01c6b4 100644
+--- a/sound/soc/amd/acp-da7219-max98357a.c
++++ b/sound/soc/amd/acp-da7219-max98357a.c
+@@ -73,8 +73,13 @@ static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
  		return ret;
  	}
-@@ -565,6 +566,7 @@ static int gbcodec_prepare(struct snd_pcm_substream *substream,
- 		break;
- 	}
- 	if (ret) {
-+		gb_pm_runtime_put_noidle(bundle);
- 		mutex_unlock(&codec->lock);
- 		dev_err_ratelimited(dai->dev, "set_data_size failed:%d\n",
- 				    ret);
+ 
+-	da7219_dai_wclk = clk_get(component->dev, "da7219-dai-wclk");
+-	da7219_dai_bclk = clk_get(component->dev, "da7219-dai-bclk");
++	da7219_dai_wclk = devm_clk_get(component->dev, "da7219-dai-wclk");
++	if (IS_ERR(da7219_dai_wclk))
++		return PTR_ERR(da7219_dai_wclk);
++
++	da7219_dai_bclk = devm_clk_get(component->dev, "da7219-dai-bclk");
++	if (IS_ERR(da7219_dai_bclk))
++		return PTR_ERR(da7219_dai_bclk);
+ 
+ 	ret = snd_soc_card_jack_new(card, "Headset Jack",
+ 				SND_JACK_HEADSET | SND_JACK_LINEOUT |
 -- 
 2.27.0
 
