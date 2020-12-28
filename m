@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABD952E63E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:45:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D87AF2E3971
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:25:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391554AbgL1Pon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:44:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45286 "EHLO mail.kernel.org"
+        id S2388563AbgL1NXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:23:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404718AbgL1No4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:44:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B5E820715;
-        Mon, 28 Dec 2020 13:44:39 +0000 (UTC)
+        id S2388546AbgL1NXm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:23:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE73120719;
+        Mon, 28 Dec 2020 13:23:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163080;
-        bh=z/kmuhUIlnPUg4UqrHzDly2/T/p1yyW8poqRO0yIIPo=;
+        s=korg; t=1609161781;
+        bh=sV9cifRcauNGZ0LjAcCcdK89ZPt8u2a8dtWMPcGAeOM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XPtK1/CoQ9Z53ytiEfhicYenAH7QhnXN3gt8JwM6oL+oQPWhZiRtuLWifzbJzvWpm
-         tKOFsadiJnlP0NcQOFR8Maw6t5DNxDZqqdAWV4EXrf6nQF2yRLDbcW87VtAlOUyqSR
-         NEHEyLU/u8rFtpnRiCuO0w0RQPe2VDb2uqFVjJsk=
+        b=xzYA4wUvSGkDwHn6TG6TfcyknLFQpUe3IhAI8OzguoMTgMYkJNVwIpPsZD0jXYa7+
+         M2FSON+9AACGzD5sfWo4m8cBGbN1hgJph2zRxdE2ig/JTvuV7fWc0EZHdPd5fr24r+
+         AvCdl50cVI/oPgqWDh7sH1MgtGgHdAMdOzfy+8pU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Cristian Birsan <cristian.birsan@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 162/453] ARM: dts: at91: sama5d3_xplained: add pincontrol for USB Host
+        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        "taehyun.cho" <taehyun.cho@samsung.com>,
+        Will McVicker <willmcvicker@google.com>,
+        Peter Chen <peter.chen@nxp.com>
+Subject: [PATCH 4.19 079/346] USB: gadget: f_acm: add support for SuperSpeed Plus
 Date:   Mon, 28 Dec 2020 13:46:38 +0100
-Message-Id: <20201228124945.005583016@linuxfoundation.org>
+Message-Id: <20201228124923.618767109@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,51 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cristian Birsan <cristian.birsan@microchip.com>
+From: taehyun.cho <taehyun.cho@samsung.com>
 
-[ Upstream commit e1062fa7292f1e3744db0a487c4ac0109e09b03d ]
+commit 3ee05c20656782387aa9eb010fdb9bb16982ac3f upstream.
 
-The pincontrol node is needed for USB Host since Linux v5.7-rc1. Without
-it the driver probes but VBus is not powered because of wrong pincontrol
-configuration.
+Setup the SuperSpeed Plus descriptors for f_acm.  This allows the gadget
+to work properly without crashing at SuperSpeed rates.
 
-Fixes: b7c2b61570798 ("ARM: at91: add Atmel's SAMA5D3 Xplained board")
-Signed-off-by: Cristian Birsan <cristian.birsan@microchip.com>
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Acked-by: Ludovic Desroches <ludovic.desroches@microchip.com>
-Link: https://lore.kernel.org/r/20201118120019.1257580-4-cristian.birsan@microchip.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: Felipe Balbi <balbi@kernel.org>
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: taehyun.cho <taehyun.cho@samsung.com>
+Signed-off-by: Will McVicker <willmcvicker@google.com>
+Reviewed-by: Peter Chen <peter.chen@nxp.com>
+Link: https://lore.kernel.org/r/20201127140559.381351-3-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/arm/boot/dts/at91-sama5d3_xplained.dts | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/usb/gadget/function/f_acm.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/at91-sama5d3_xplained.dts b/arch/arm/boot/dts/at91-sama5d3_xplained.dts
-index 61f068a7b362a..400eaf640fe42 100644
---- a/arch/arm/boot/dts/at91-sama5d3_xplained.dts
-+++ b/arch/arm/boot/dts/at91-sama5d3_xplained.dts
-@@ -242,6 +242,11 @@
- 						atmel,pins =
- 							<AT91_PIOE 9 AT91_PERIPH_GPIO AT91_PINCTRL_DEGLITCH>;	/* PE9, conflicts with A9 */
- 					};
-+					pinctrl_usb_default: usb_default {
-+						atmel,pins =
-+							<AT91_PIOE 3 AT91_PERIPH_GPIO AT91_PINCTRL_NONE
-+							 AT91_PIOE 4 AT91_PERIPH_GPIO AT91_PINCTRL_NONE>;
-+					};
- 				};
- 			};
- 		};
-@@ -259,6 +264,8 @@
- 					   &pioE 3 GPIO_ACTIVE_LOW
- 					   &pioE 4 GPIO_ACTIVE_LOW
- 					  >;
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&pinctrl_usb_default>;
- 			status = "okay";
- 		};
+--- a/drivers/usb/gadget/function/f_acm.c
++++ b/drivers/usb/gadget/function/f_acm.c
+@@ -684,7 +684,7 @@ acm_bind(struct usb_configuration *c, st
+ 	acm_ss_out_desc.bEndpointAddress = acm_fs_out_desc.bEndpointAddress;
  
--- 
-2.27.0
-
+ 	status = usb_assign_descriptors(f, acm_fs_function, acm_hs_function,
+-			acm_ss_function, NULL);
++			acm_ss_function, acm_ss_function);
+ 	if (status)
+ 		goto fail;
+ 
 
 
