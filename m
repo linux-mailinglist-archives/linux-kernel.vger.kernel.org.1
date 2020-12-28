@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE9B2E670A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:20:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D75EE2E6950
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:48:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732431AbgL1NOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:14:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41930 "EHLO mail.kernel.org"
+        id S2441729AbgL1Qrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:47:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732388AbgL1NOF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:14:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F8CA2076D;
-        Mon, 28 Dec 2020 13:13:49 +0000 (UTC)
+        id S1728064AbgL1MzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:55:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0463B207C9;
+        Mon, 28 Dec 2020 12:54:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161230;
-        bh=9/u1tfMPEVt67nmI4SkUXtwtNr5voLRc4WjZV+Ess7c=;
+        s=korg; t=1609160096;
+        bh=NcOZgAUmwTadk2VZ5sgjaOQfN3EteHVDTXXbCFU3xH4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kiJUsWQX0tp3ZvmGFiQrKwec0YSwMBWay15ASTF+zIrdGNOI0iSb6FrjK+utTgyO4
-         pSk7aO/cld3bOewI0+X0XcHZawqsnubh7dJ9mlxrSlRljLB5efZuukGNLWR1QafAlL
-         zjdGMU8ETt1uHrhAecSBjlPKF3nooggJ2fZPp9yI=
+        b=JoB2/VHafwnxHmgF14O/jRNyuFvy5SDH851//876NqhCiLQPKIvf2AoUnYg4XHoeW
+         Xbs0F5d3AUSnABIp5ATZR4pqtCKIvCrS+A1/ODRjo0U7x4qVCUhye+Tb4WwrCD/tIU
+         S45KtpYvuOQELj0Tk9T71lw1N+bFOUKzmjz7lKdY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Keqian Zhu <zhukeqian1@huawei.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 146/242] seq_buf: Avoid type mismatch for seq_buf_init
-Date:   Mon, 28 Dec 2020 13:49:11 +0100
-Message-Id: <20201228124911.891869411@linuxfoundation.org>
+Subject: [PATCH 4.4 068/132] clocksource/drivers/arm_arch_timer: Correct fault programming of CNTKCTL_EL1.EVNTI
+Date:   Mon, 28 Dec 2020 13:49:12 +0100
+Message-Id: <20201228124849.736450149@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,66 +41,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Keqian Zhu <zhukeqian1@huawei.com>
 
-[ Upstream commit d9a9280a0d0ae51dc1d4142138b99242b7ec8ac6 ]
+[ Upstream commit 8b7770b877d187bfdae1eaf587bd2b792479a31c ]
 
-Building with W=2 prints a number of warnings for one function that
-has a pointer type mismatch:
+ARM virtual counter supports event stream, it can only trigger an event
+when the trigger bit (the value of CNTKCTL_EL1.EVNTI) of CNTVCT_EL0 changes,
+so the actual period of event stream is 2^(cntkctl_evnti + 1). For example,
+when the trigger bit is 0, then virtual counter trigger an event for every
+two cycles.
 
-linux/seq_buf.h: In function 'seq_buf_init':
-linux/seq_buf.h:35:12: warning: pointer targets in assignment from 'unsigned char *' to 'char *' differ in signedness [-Wpointer-sign]
+While we're at it, rework the way we compute the trigger bit position
+by making it more obvious that when bits [n:n-1] are both set (with n
+being the most significant bit), we pick bit (n + 1).
 
-Change the type in the function prototype according to the type in
-the structure.
-
-Link: https://lkml.kernel.org/r/20201026161108.3707783-1-arnd@kernel.org
-
-Fixes: 9a7777935c34 ("tracing: Convert seq_buf fields to be like seq_file fields")
-Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Fixes: 037f637767a8 ("drivers: clocksource: add support for ARM architected timer event stream")
+Suggested-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+Acked-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20201204073126.6920-3-zhukeqian1@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/seq_buf.h   | 2 +-
- include/linux/trace_seq.h | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/clocksource/arm_arch_timer.c | 23 ++++++++++++++++-------
+ 1 file changed, 16 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/seq_buf.h b/include/linux/seq_buf.h
-index aa5deb041c25d..7cc952282e8be 100644
---- a/include/linux/seq_buf.h
-+++ b/include/linux/seq_buf.h
-@@ -30,7 +30,7 @@ static inline void seq_buf_clear(struct seq_buf *s)
+diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
+index c64d543d64bf6..4e303c77caed5 100644
+--- a/drivers/clocksource/arm_arch_timer.c
++++ b/drivers/clocksource/arm_arch_timer.c
+@@ -310,15 +310,24 @@ static void arch_timer_evtstrm_enable(int divider)
+ 
+ static void arch_timer_configure_evtstream(void)
+ {
+-	int evt_stream_div, pos;
++	int evt_stream_div, lsb;
++
++	/*
++	 * As the event stream can at most be generated at half the frequency
++	 * of the counter, use half the frequency when computing the divider.
++	 */
++	evt_stream_div = arch_timer_rate / ARCH_TIMER_EVT_STREAM_FREQ / 2;
++
++	/*
++	 * Find the closest power of two to the divisor. If the adjacent bit
++	 * of lsb (last set bit, starts from 0) is set, then we use (lsb + 1).
++	 */
++	lsb = fls(evt_stream_div) - 1;
++	if (lsb > 0 && (evt_stream_div & BIT(lsb - 1)))
++		lsb++;
+ 
+-	/* Find the closest power of two to the divisor */
+-	evt_stream_div = arch_timer_rate / ARCH_TIMER_EVT_STREAM_FREQ;
+-	pos = fls(evt_stream_div);
+-	if (pos > 1 && !(evt_stream_div & (1 << (pos - 2))))
+-		pos--;
+ 	/* enable event stream */
+-	arch_timer_evtstrm_enable(min(pos, 15));
++	arch_timer_evtstrm_enable(max(0, min(lsb, 15)));
  }
  
- static inline void
--seq_buf_init(struct seq_buf *s, unsigned char *buf, unsigned int size)
-+seq_buf_init(struct seq_buf *s, char *buf, unsigned int size)
- {
- 	s->buffer = buf;
- 	s->size = size;
-diff --git a/include/linux/trace_seq.h b/include/linux/trace_seq.h
-index 6609b39a72326..6db257466af68 100644
---- a/include/linux/trace_seq.h
-+++ b/include/linux/trace_seq.h
-@@ -12,7 +12,7 @@
-  */
- 
- struct trace_seq {
--	unsigned char		buffer[PAGE_SIZE];
-+	char			buffer[PAGE_SIZE];
- 	struct seq_buf		seq;
- 	int			full;
- };
-@@ -51,7 +51,7 @@ static inline int trace_seq_used(struct trace_seq *s)
-  * that is about to be written to and then return the result
-  * of that write.
-  */
--static inline unsigned char *
-+static inline char *
- trace_seq_buffer_ptr(struct trace_seq *s)
- {
- 	return s->buffer + seq_buf_used(&s->seq);
+ static void arch_counter_set_user_access(void)
 -- 
 2.27.0
 
