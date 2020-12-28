@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B64752E6636
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:11:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 537AA2E6637
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:11:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388412AbgL1NXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:23:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49480 "EHLO mail.kernel.org"
+        id S2388440AbgL1NXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:23:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387633AbgL1NUw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:20:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A3A422B3A;
-        Mon, 28 Dec 2020 13:20:11 +0000 (UTC)
+        id S2387979AbgL1NVP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:21:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D406420719;
+        Mon, 28 Dec 2020 13:20:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161611;
-        bh=psMJmn0U8LBYlZGjFhl2S4Bx8FPMsq6TB8tL321W/Nk=;
+        s=korg; t=1609161634;
+        bh=IPRCRMx1NWZm9WCdFPX6plJI+eVb9ePtPGyfNQw/Dbo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tZNuGH/t/kxvZFGoJet1UgbW0+Vjy3D/YwwQoc8KVcuNlG4sJ7c5G2VPorwkBqWeu
-         Ofb0fjpIboUScJIkrVrf6bJxr0ZM0LEp8fnMw6l3Kl2ngQQ1qGU1i5c1LjlT87HbsE
-         5VH8FZOkmk5OGGicT5SzV9RG7b0vNx90cJikpaL4=
+        b=JVJxfpp6GG8xuH+QRKDsdFM3mMK6hlHnbkKqusPT/6WnRDMff9QmE/OkE7nsOZHvs
+         ovXb6w0oye7EDPc502thJ+3VToMI+2tEQ/vqzTekXbOG7ykij+0dVV+K3F22lsaG3Q
+         1MMEaY0OF8SkmOEZ1m91mSOaPh/8KPxbj97T0RnA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fugang Duan <fugang.duan@nxp.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 029/346] net: stmmac: free tx skb buffer in stmmac_resume()
-Date:   Mon, 28 Dec 2020 13:45:48 +0100
-Message-Id: <20201228124921.187857361@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.19 036/346] net: stmmac: dwmac-meson8b: fix mask definition of the m250_sel mux
+Date:   Mon, 28 Dec 2020 13:45:55 +0100
+Message-Id: <20201228124921.530728803@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
 References: <20201228124919.745526410@linuxfoundation.org>
@@ -40,111 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fugang Duan <fugang.duan@nxp.com>
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-[ Upstream commit 4ec236c7c51f89abb0224a4da4a6b77f9beb6600 ]
+[ Upstream commit 82ca4c922b8992013a238d65cf4e60cc33e12f36 ]
 
-When do suspend/resume test, there have WARN_ON() log dump from
-stmmac_xmit() funciton, the code logic:
-	entry = tx_q->cur_tx;
-	first_entry = entry;
-	WARN_ON(tx_q->tx_skbuff[first_entry]);
+The m250_sel mux clock uses bit 4 in the PRG_ETH0 register. Fix this by
+shifting the PRG_ETH0_CLK_M250_SEL_MASK accordingly as the "mask" in
+struct clk_mux expects the mask relative to the "shift" field in the
+same struct.
 
-In normal case, tx_q->tx_skbuff[txq->cur_tx] should be NULL because
-the skb should be handled and freed in stmmac_tx_clean().
+While here, get rid of the PRG_ETH0_CLK_M250_SEL_SHIFT macro and use
+__ffs() to determine it from the existing PRG_ETH0_CLK_M250_SEL_MASK
+macro.
 
-But stmmac_resume() reset queue parameters like below, skb buffers
-may not be freed.
-	tx_q->cur_tx = 0;
-	tx_q->dirty_tx = 0;
-
-So free tx skb buffer in stmmac_resume() to avoid warning and
-memory leak.
-
-log:
-[   46.139824] ------------[ cut here ]------------
-[   46.144453] WARNING: CPU: 0 PID: 0 at drivers/net/ethernet/stmicro/stmmac/stmmac_main.c:3235 stmmac_xmit+0x7a0/0x9d0
-[   46.154969] Modules linked in: crct10dif_ce vvcam(O) flexcan can_dev
-[   46.161328] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G           O      5.4.24-2.1.0+g2ad925d15481 #1
-[   46.170369] Hardware name: NXP i.MX8MPlus EVK board (DT)
-[   46.175677] pstate: 80000005 (Nzcv daif -PAN -UAO)
-[   46.180465] pc : stmmac_xmit+0x7a0/0x9d0
-[   46.184387] lr : dev_hard_start_xmit+0x94/0x158
-[   46.188913] sp : ffff800010003cc0
-[   46.192224] x29: ffff800010003cc0 x28: ffff000177e2a100
-[   46.197533] x27: ffff000176ef0840 x26: ffff000176ef0090
-[   46.202842] x25: 0000000000000000 x24: 0000000000000000
-[   46.208151] x23: 0000000000000003 x22: ffff8000119ddd30
-[   46.213460] x21: ffff00017636f000 x20: ffff000176ef0cc0
-[   46.218769] x19: 0000000000000003 x18: 0000000000000000
-[   46.224078] x17: 0000000000000000 x16: 0000000000000000
-[   46.229386] x15: 0000000000000079 x14: 0000000000000000
-[   46.234695] x13: 0000000000000003 x12: 0000000000000003
-[   46.240003] x11: 0000000000000010 x10: 0000000000000010
-[   46.245312] x9 : ffff00017002b140 x8 : 0000000000000000
-[   46.250621] x7 : ffff00017636f000 x6 : 0000000000000010
-[   46.255930] x5 : 0000000000000001 x4 : ffff000176ef0000
-[   46.261238] x3 : 0000000000000003 x2 : 00000000ffffffff
-[   46.266547] x1 : ffff000177e2a000 x0 : 0000000000000000
-[   46.271856] Call trace:
-[   46.274302]  stmmac_xmit+0x7a0/0x9d0
-[   46.277874]  dev_hard_start_xmit+0x94/0x158
-[   46.282056]  sch_direct_xmit+0x11c/0x338
-[   46.285976]  __qdisc_run+0x118/0x5f0
-[   46.289549]  net_tx_action+0x110/0x198
-[   46.293297]  __do_softirq+0x120/0x23c
-[   46.296958]  irq_exit+0xb8/0xd8
-[   46.300098]  __handle_domain_irq+0x64/0xb8
-[   46.304191]  gic_handle_irq+0x5c/0x148
-[   46.307936]  el1_irq+0xb8/0x180
-[   46.311076]  cpuidle_enter_state+0x84/0x360
-[   46.315256]  cpuidle_enter+0x34/0x48
-[   46.318829]  call_cpuidle+0x18/0x38
-[   46.322314]  do_idle+0x1e0/0x280
-[   46.325539]  cpu_startup_entry+0x24/0x40
-[   46.329460]  rest_init+0xd4/0xe0
-[   46.332687]  arch_call_rest_init+0xc/0x14
-[   46.336695]  start_kernel+0x420/0x44c
-[   46.340353] ---[ end trace bc1ee695123cbacd ]---
-
-Fixes: 47dd7a540b8a0 ("net: add support for STMicroelectronics Ethernet controllers.")
-Signed-off-by: Fugang Duan <fugang.duan@nxp.com>
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 566e8251625304 ("net: stmmac: add a glue driver for the Amlogic Meson 8b / GXBB DWMAC")
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Reviewed-by: Jerome Brunet <jbrunet@baylibre.com>
+Link: https://lore.kernel.org/r/20201205213207.519341-1-martin.blumenstingl@googlemail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c |   14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -1429,6 +1429,19 @@ static void dma_free_tx_skbufs(struct st
- }
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
+@@ -35,7 +35,6 @@
+ #define PRG_ETH0_EXT_RMII_MODE		4
  
- /**
-+ * stmmac_free_tx_skbufs - free TX skb buffers
-+ * @priv: private structure
-+ */
-+static void stmmac_free_tx_skbufs(struct stmmac_priv *priv)
-+{
-+	u32 tx_queue_cnt = priv->plat->tx_queues_to_use;
-+	u32 queue;
-+
-+	for (queue = 0; queue < tx_queue_cnt; queue++)
-+		dma_free_tx_skbufs(priv, queue);
-+}
-+
-+/**
-  * free_dma_rx_desc_resources - free RX dma desc resources
-  * @priv: private structure
-  */
-@@ -4591,6 +4604,7 @@ int stmmac_resume(struct device *dev)
+ /* mux to choose between fclk_div2 (bit unset) and mpll2 (bit set) */
+-#define PRG_ETH0_CLK_M250_SEL_SHIFT	4
+ #define PRG_ETH0_CLK_M250_SEL_MASK	GENMASK(4, 4)
  
- 	stmmac_reset_queues_param(priv);
+ #define PRG_ETH0_TXDLY_SHIFT		5
+@@ -149,8 +148,9 @@ static int meson8b_init_rgmii_tx_clk(str
+ 	}
  
-+	stmmac_free_tx_skbufs(priv);
- 	stmmac_clear_descriptors(priv);
- 
- 	stmmac_hw_setup(ndev, false);
+ 	clk_configs->m250_mux.reg = dwmac->regs + PRG_ETH0;
+-	clk_configs->m250_mux.shift = PRG_ETH0_CLK_M250_SEL_SHIFT;
+-	clk_configs->m250_mux.mask = PRG_ETH0_CLK_M250_SEL_MASK;
++	clk_configs->m250_mux.shift = __ffs(PRG_ETH0_CLK_M250_SEL_MASK);
++	clk_configs->m250_mux.mask = PRG_ETH0_CLK_M250_SEL_MASK >>
++				     clk_configs->m250_mux.shift;
+ 	clk = meson8b_dwmac_register_clk(dwmac, "m250_sel", mux_parent_names,
+ 					 MUX_CLK_NUM_PARENTS, &clk_mux_ops,
+ 					 &clk_configs->m250_mux.hw);
 
 
