@@ -2,35 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B206A2E3DB5
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:20:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 436CB2E385A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:09:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502072AbgL1OTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:19:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53122 "EHLO mail.kernel.org"
+        id S1731112AbgL1NJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:09:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502038AbgL1OS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:18:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 58492208B6;
-        Mon, 28 Dec 2020 14:18:41 +0000 (UTC)
+        id S1731064AbgL1NJH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:09:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 65F7C20728;
+        Mon, 28 Dec 2020 13:08:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165122;
-        bh=pcjUrjtlDVxadrX/fxFj28t2bvrOiK0FHXp453RgHfA=;
+        s=korg; t=1609160932;
+        bh=w1B80InT3GeQCkzsfsLRnH6hwn/Ke3XQB3TgRmdg73c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uucUnCbC0DKA/R2xxhtEE6ri1FaKdJ7GYW5BPWByPHl+0CIex2wet20e6gzP0JbQ4
-         fE1VEI+oQ/Fog3AqI/mzglgV/mRvxfmWPZsjDCCKrPB4cC1rg0yc/jJa9rMLj1pQd0
-         a0bkmq6dG685Jt8lh89g0IBa9a+jOpKrj2lcO12c=
+        b=S1uqwuLM/km/v1MsaUrzDccHIL/GFi9q1e+9g3YA4m8DEajcHqFDeCwJiCj27bYPm
+         qNlq3Pwb6bP0/j1TowFrpAqLGU8blruwdI892t5vSs5cx7F/Ub9JVKhiFfVhHuUhhb
+         r2dO9f2v4lBAGzSwYxbLvYEhzAQqp/aWrTDvzdcc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lokesh Vutla <lokeshvutla@ti.com>,
-        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 420/717] irqchip/ti-sci-intr: Fix freeing of irqs
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Kees Cook <keescook@chromium.org>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.14 013/242] kbuild: avoid static_assert for genksyms
 Date:   Mon, 28 Dec 2020 13:46:58 +0100
-Message-Id: <20201228125041.082636388@linuxfoundation.org>
+Message-Id: <20201228124905.315839390@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,76 +46,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lokesh Vutla <lokeshvutla@ti.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit fc6c7cd3878641fd43189f15697e7ad0871f5c1a ]
+commit 14dc3983b5dff513a90bd5a8cc90acaf7867c3d0 upstream.
 
-ti_sci_intr_irq_domain_free() assumes that out_irq of intr is stored in
-data->chip_data and uses it for calling ti_sci irq_free() and then
-mark the out_irq as available resource. But ti_sci_intr_irq_domain_alloc()
-is storing p_hwirq(parent's hardware irq) which is translated from out_irq.
-This is causing resource leakage and eventually out_irq resources might
-be exhausted. Fix ti_sci_intr_irq_domain_alloc() by storing the out_irq
-in data->chip_data.
+genksyms does not know or care about the _Static_assert() built-in, and
+sometimes falls back to ignoring the later symbols, which causes
+undefined behavior such as
 
-Fixes: a5b659bd4bc7 ("irqchip/ti-sci-intr: Add support for INTR being a parent to INTR")
-Signed-off-by: Lokesh Vutla <lokeshvutla@ti.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20201102120631.11165-1-lokeshvutla@ti.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+  WARNING: modpost: EXPORT symbol "ethtool_set_ethtool_phy_ops" [vmlinux] version generation failed, symbol will not be versioned.
+  ld: net/ethtool/common.o: relocation R_AARCH64_ABS32 against `__crc_ethtool_set_ethtool_phy_ops' can not be used when making a shared object
+  net/ethtool/common.o:(_ftrace_annotated_branch+0x0): dangerous relocation: unsupported relocation
+
+Redefine static_assert for genksyms to avoid that.
+
+Link: https://lkml.kernel.org/r/20201203230955.1482058-1-arnd@kernel.org
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Michal Marek <michal.lkml@markovi.net>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Cc: Marco Elver <elver@google.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/irqchip/irq-ti-sci-intr.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ include/linux/build_bug.h |    5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/irqchip/irq-ti-sci-intr.c b/drivers/irqchip/irq-ti-sci-intr.c
-index ac9d6d658e65c..fe8fad22bcf96 100644
---- a/drivers/irqchip/irq-ti-sci-intr.c
-+++ b/drivers/irqchip/irq-ti-sci-intr.c
-@@ -129,7 +129,7 @@ static void ti_sci_intr_irq_domain_free(struct irq_domain *domain,
-  * @virq:	Corresponding Linux virtual IRQ number
-  * @hwirq:	Corresponding hwirq for the IRQ within this IRQ domain
-  *
-- * Returns parent irq if all went well else appropriate error pointer.
-+ * Returns intr output irq if all went well else appropriate error pointer.
-  */
- static int ti_sci_intr_alloc_parent_irq(struct irq_domain *domain,
- 					unsigned int virq, u32 hwirq)
-@@ -173,7 +173,7 @@ static int ti_sci_intr_alloc_parent_irq(struct irq_domain *domain,
- 	if (err)
- 		goto err_msg;
+--- a/include/linux/build_bug.h
++++ b/include/linux/build_bug.h
+@@ -82,4 +82,9 @@
  
--	return p_hwirq;
-+	return out_irq;
+ #endif	/* __CHECKER__ */
  
- err_msg:
- 	irq_domain_free_irqs_parent(domain, virq, 1);
-@@ -198,19 +198,19 @@ static int ti_sci_intr_irq_domain_alloc(struct irq_domain *domain,
- 	struct irq_fwspec *fwspec = data;
- 	unsigned long hwirq;
- 	unsigned int flags;
--	int err, p_hwirq;
-+	int err, out_irq;
- 
- 	err = ti_sci_intr_irq_domain_translate(domain, fwspec, &hwirq, &flags);
- 	if (err)
- 		return err;
- 
--	p_hwirq = ti_sci_intr_alloc_parent_irq(domain, virq, hwirq);
--	if (p_hwirq < 0)
--		return p_hwirq;
-+	out_irq = ti_sci_intr_alloc_parent_irq(domain, virq, hwirq);
-+	if (out_irq < 0)
-+		return out_irq;
- 
- 	irq_domain_set_hwirq_and_chip(domain, virq, hwirq,
- 				      &ti_sci_intr_irq_chip,
--				      (void *)(uintptr_t)p_hwirq);
-+				      (void *)(uintptr_t)out_irq);
- 
- 	return 0;
- }
--- 
-2.27.0
-
++#ifdef __GENKSYMS__
++/* genksyms gets confused by _Static_assert */
++#define _Static_assert(expr, ...)
++#endif
++
+ #endif	/* _LINUX_BUILD_BUG_H */
 
 
