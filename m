@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 560D02E42C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:28:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90D242E3EA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:31:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392590AbgL1P1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:27:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59544 "EHLO mail.kernel.org"
+        id S2504036AbgL1OaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:30:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407356AbgL1N5u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:57:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 04CD6207B2;
-        Mon, 28 Dec 2020 13:57:08 +0000 (UTC)
+        id S2503617AbgL1OaQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:30:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B54FB20715;
+        Mon, 28 Dec 2020 14:30:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163829;
-        bh=0UXZ5Xu4lGwMTbbpkjoPkzPf6hBHmRGue10oF+aePmQ=;
+        s=korg; t=1609165801;
+        bh=1BSslsqxMy717FWz4yCJakZK4RQeXyjOWZHJDGse5vE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M/OJnK0GUgHoj9p6Vx1V5UqBILNdAEKSOVRzJ00kuHdgC/VUBR/uQNmUck4DMVwc6
-         dMHSacaFmn/YF8zmdpNJxyPeYG4Snorw9itKQrWN7VFtxVAXkP58V8cm2MlVXXzJ04
-         ZDoREXzMy/coSlF+yBg/12NrVfQb4SCDYs74lIjY=
+        b=cy65uM1CVcqNzXgFlRe8RkdWzM4RUi9dav6MfughIlMWucNp+KRq9iRRuLP8XMEtC
+         yY2e0i/sXYLqfFECPuUm+zVB5aTcG8EichjWAL0shf8mKDnBmrRWYAkYH8pHIO4Csg
+         M3nT7kEuUolxay1EvuYTlbtIEWVGsPHDu1S90zAk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Arun Easi <aeasi@marvell.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 5.4 422/453] scsi: qla2xxx: Fix crash during driver load on big endian machines
+        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
+        Stefan Roese <sr@denx.de>, Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.10 660/717] spi: mt7621: Dont leak SPI master in probe error path
 Date:   Mon, 28 Dec 2020 13:50:58 +0100
-Message-Id: <20201228124957.526710894@linuxfoundation.org>
+Message-Id: <20201228125052.585986478@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,89 +39,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arun Easi <aeasi@marvell.com>
+From: Lukas Wunner <lukas@wunner.de>
 
-commit 8de309e7299a00b3045fb274f82b326f356404f0 upstream.
+commit 46b5c4fb87ce8211e0f9b0383dbde72c3652d2ba upstream.
 
-Crash stack:
-	[576544.715489] Unable to handle kernel paging request for data at address 0xd00000000f970000
-	[576544.715497] Faulting instruction address: 0xd00000000f880f64
-	[576544.715503] Oops: Kernel access of bad area, sig: 11 [#1]
-	[576544.715506] SMP NR_CPUS=2048 NUMA pSeries
-	:
-	[576544.715703] NIP [d00000000f880f64] .qla27xx_fwdt_template_valid+0x94/0x100 [qla2xxx]
-	[576544.715722] LR [d00000000f7952dc] .qla24xx_load_risc_flash+0x2fc/0x590 [qla2xxx]
-	[576544.715726] Call Trace:
-	[576544.715731] [c0000004d0ffb000] [c0000006fe02c350] 0xc0000006fe02c350 (unreliable)
-	[576544.715750] [c0000004d0ffb080] [d00000000f7952dc] .qla24xx_load_risc_flash+0x2fc/0x590 [qla2xxx]
-	[576544.715770] [c0000004d0ffb170] [d00000000f7aa034] .qla81xx_load_risc+0x84/0x1a0 [qla2xxx]
-	[576544.715789] [c0000004d0ffb210] [d00000000f79f7c8] .qla2x00_setup_chip+0xc8/0x910 [qla2xxx]
-	[576544.715808] [c0000004d0ffb300] [d00000000f7a631c] .qla2x00_initialize_adapter+0x4dc/0xb00 [qla2xxx]
-	[576544.715826] [c0000004d0ffb3e0] [d00000000f78ce28] .qla2x00_probe_one+0xf08/0x2200 [qla2xxx]
+If the calls to device_reset() or devm_spi_register_controller() fail on
+probe of the MediaTek MT7621 SPI driver, the spi_controller struct is
+erroneously not freed.  Fix by switching over to the new
+devm_spi_alloc_master() helper.
 
-Link: https://lore.kernel.org/r/20201202132312.19966-8-njavali@marvell.com
-Fixes: f73cb695d3ec ("[SCSI] qla2xxx: Add support for ISP2071.")
-Cc: stable@vger.kernel.org
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Signed-off-by: Arun Easi <aeasi@marvell.com>
-Signed-off-by: Nilesh Javali <njavali@marvell.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Additionally, there's an ordering issue in mt7621_spi_remove() wherein
+the spi_controller is unregistered after disabling the SYS clock.
+The correct order is to call spi_unregister_controller() *before* this
+teardown step because bus accesses may still be ongoing until that
+function returns.
+
+All of these bugs have existed since the driver was first introduced,
+so it seems fair to fix them together in a single commit.
+
+Fixes: 1ab7f2a43558 ("staging: mt7621-spi: add mt7621 support")
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Reviewed-by: Stefan Roese <sr@denx.de>
+Cc: <stable@vger.kernel.org> # v4.17+: 5e844cc37a5c: spi: Introduce device-managed SPI controller allocation
+Cc: <stable@vger.kernel.org> # v4.17+
+Link: https://lore.kernel.org/r/72b680796149f5fcda0b3f530ffb7ee73b04f224.1607286887.git.lukas@wunner.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/scsi/qla2xxx/qla_tmpl.c |    9 +++++----
- drivers/scsi/qla2xxx/qla_tmpl.h |    2 +-
- 2 files changed, 6 insertions(+), 5 deletions(-)
+ drivers/spi/spi-mt7621.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/drivers/scsi/qla2xxx/qla_tmpl.c
-+++ b/drivers/scsi/qla2xxx/qla_tmpl.c
-@@ -910,7 +910,8 @@ qla27xx_template_checksum(void *p, ulong
- static inline int
- qla27xx_verify_template_checksum(struct qla27xx_fwdt_template *tmp)
- {
--	return qla27xx_template_checksum(tmp, tmp->template_size) == 0;
-+	return qla27xx_template_checksum(tmp,
-+		le32_to_cpu(tmp->template_size)) == 0;
- }
+--- a/drivers/spi/spi-mt7621.c
++++ b/drivers/spi/spi-mt7621.c
+@@ -350,7 +350,7 @@ static int mt7621_spi_probe(struct platf
+ 	if (status)
+ 		return status;
  
- static inline int
-@@ -926,7 +927,7 @@ qla27xx_execute_fwdt_template(struct scs
- 	ulong len = 0;
- 
- 	if (qla27xx_fwdt_template_valid(tmp)) {
--		len = tmp->template_size;
-+		len = le32_to_cpu(tmp->template_size);
- 		tmp = memcpy(buf, tmp, len);
- 		ql27xx_edit_template(vha, tmp);
- 		qla27xx_walk_template(vha, tmp, buf, &len);
-@@ -942,7 +943,7 @@ qla27xx_fwdt_calculate_dump_size(struct
- 	ulong len = 0;
- 
- 	if (qla27xx_fwdt_template_valid(tmp)) {
--		len = tmp->template_size;
-+		len = le32_to_cpu(tmp->template_size);
- 		qla27xx_walk_template(vha, tmp, NULL, &len);
+-	master = spi_alloc_master(&pdev->dev, sizeof(*rs));
++	master = devm_spi_alloc_master(&pdev->dev, sizeof(*rs));
+ 	if (!master) {
+ 		dev_info(&pdev->dev, "master allocation failed\n");
+ 		clk_disable_unprepare(clk);
+@@ -382,7 +382,7 @@ static int mt7621_spi_probe(struct platf
+ 		return ret;
  	}
  
-@@ -954,7 +955,7 @@ qla27xx_fwdt_template_size(void *p)
- {
- 	struct qla27xx_fwdt_template *tmp = p;
+-	ret = devm_spi_register_controller(&pdev->dev, master);
++	ret = spi_register_controller(master);
+ 	if (ret)
+ 		clk_disable_unprepare(clk);
  
--	return tmp->template_size;
-+	return le32_to_cpu(tmp->template_size);
- }
+@@ -397,6 +397,7 @@ static int mt7621_spi_remove(struct plat
+ 	master = dev_get_drvdata(&pdev->dev);
+ 	rs = spi_controller_get_devdata(master);
  
- int
---- a/drivers/scsi/qla2xxx/qla_tmpl.h
-+++ b/drivers/scsi/qla2xxx/qla_tmpl.h
-@@ -13,7 +13,7 @@
- struct __packed qla27xx_fwdt_template {
- 	__le32 template_type;
- 	__le32 entry_offset;
--	uint32_t template_size;
-+	__le32 template_size;
- 	uint32_t count;		/* borrow field for running/residual count */
++	spi_unregister_controller(master);
+ 	clk_disable_unprepare(rs->clk);
  
- 	__le32 entry_count;
+ 	return 0;
 
 
