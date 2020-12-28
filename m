@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A7922E6957
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:49:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0638D2E65A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:04:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441785AbgL1QsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:48:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50486 "EHLO mail.kernel.org"
+        id S2393786AbgL1QDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:03:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57580 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728202AbgL1Mxg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:53:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95AA922BE8;
-        Mon, 28 Dec 2020 12:52:43 +0000 (UTC)
+        id S2390101AbgL1N3X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:29:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 17CCC22B37;
+        Mon, 28 Dec 2020 13:29:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609159964;
-        bh=2lmkGSeICL+gUo4GLuxikk17+2L/ltPOFXWSUpZBlWE=;
+        s=korg; t=1609162147;
+        bh=CeaGhshSLGKTwnL/FwrVDGESE8C450OfSrM/l9PS8NE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E7YH8ECX9DG32tvKyvDTwCrgW5n8Q/PlHDfT6jubuOGPKeEOZsiPryjthULRafcfg
-         TUih4hhqqQJjB+QQi5mpKiJcHPDQn73yTsGuQOqPwjKumCNNMj8VK6fD+1luO/m1Od
-         5d2rn7zQB/SAR6g7ddpjsZNhUogWLGTJ/c0awWTw=
+        b=OhuZC8XK5BDM0/I9XugDL1eAaJG/2PDhpmtIFm9Ectm7kpPP7de1+GdCLyrtF2QTG
+         U4rwSEuTjngZxWIrQuFIW0O8SuUDyv1qBuWmgMUn7vJHtSk1xk+mwg6JaayP6/Xytl
+         mICmC4mq5xttEK2nwlO59qWT/SDq41kIaPbr8zbc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anmol Karn <anmol.karan123@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Sasha Levin <sashal@kernel.org>,
-        syzbot+0bef568258653cff272f@syzkaller.appspotmail.com
-Subject: [PATCH 4.4 037/132] Bluetooth: Fix null pointer dereference in hci_event_packet()
-Date:   Mon, 28 Dec 2020 13:48:41 +0100
-Message-Id: <20201228124848.205392764@linuxfoundation.org>
+        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Keqian Zhu <zhukeqian1@huawei.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 203/346] clocksource/drivers/arm_arch_timer: Correct fault programming of CNTKCTL_EL1.EVNTI
+Date:   Mon, 28 Dec 2020 13:48:42 +0100
+Message-Id: <20201228124929.608264279@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,47 +41,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anmol Karn <anmol.karan123@gmail.com>
+From: Keqian Zhu <zhukeqian1@huawei.com>
 
-[ Upstream commit 6dfccd13db2ff2b709ef60a50163925d477549aa ]
+[ Upstream commit 8b7770b877d187bfdae1eaf587bd2b792479a31c ]
 
-AMP_MGR is getting derefernced in hci_phy_link_complete_evt(), when called
-from hci_event_packet() and there is a possibility, that hcon->amp_mgr may
-not be found when accessing after initialization of hcon.
+ARM virtual counter supports event stream, it can only trigger an event
+when the trigger bit (the value of CNTKCTL_EL1.EVNTI) of CNTVCT_EL0 changes,
+so the actual period of event stream is 2^(cntkctl_evnti + 1). For example,
+when the trigger bit is 0, then virtual counter trigger an event for every
+two cycles.
 
-- net/bluetooth/hci_event.c:4945
-The bug seems to get triggered in this line:
+While we're at it, rework the way we compute the trigger bit position
+by making it more obvious that when bits [n:n-1] are both set (with n
+being the most significant bit), we pick bit (n + 1).
 
-bredr_hcon = hcon->amp_mgr->l2cap_conn->hcon;
-
-Fix it by adding a NULL check for the hcon->amp_mgr before checking the ev-status.
-
-Fixes: d5e911928bd8 ("Bluetooth: AMP: Process Physical Link Complete evt")
-Reported-and-tested-by: syzbot+0bef568258653cff272f@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?extid=0bef568258653cff272f
-Signed-off-by: Anmol Karn <anmol.karan123@gmail.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Fixes: 037f637767a8 ("drivers: clocksource: add support for ARM architected timer event stream")
+Suggested-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+Acked-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20201204073126.6920-3-zhukeqian1@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/hci_event.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/clocksource/arm_arch_timer.c | 23 ++++++++++++++++-------
+ 1 file changed, 16 insertions(+), 7 deletions(-)
 
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index 70a73e7dbf161..586c005bdc1ee 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -4336,6 +4336,11 @@ static void hci_phy_link_complete_evt(struct hci_dev *hdev,
- 		return;
- 	}
+diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
+index 0445ad7e559e5..e67ab217eef41 100644
+--- a/drivers/clocksource/arm_arch_timer.c
++++ b/drivers/clocksource/arm_arch_timer.c
+@@ -827,15 +827,24 @@ static void arch_timer_evtstrm_enable(int divider)
  
-+	if (!hcon->amp_mgr) {
-+		hci_dev_unlock(hdev);
-+		return;
-+	}
+ static void arch_timer_configure_evtstream(void)
+ {
+-	int evt_stream_div, pos;
++	int evt_stream_div, lsb;
 +
- 	if (ev->status) {
- 		hci_conn_del(hcon);
- 		hci_dev_unlock(hdev);
++	/*
++	 * As the event stream can at most be generated at half the frequency
++	 * of the counter, use half the frequency when computing the divider.
++	 */
++	evt_stream_div = arch_timer_rate / ARCH_TIMER_EVT_STREAM_FREQ / 2;
++
++	/*
++	 * Find the closest power of two to the divisor. If the adjacent bit
++	 * of lsb (last set bit, starts from 0) is set, then we use (lsb + 1).
++	 */
++	lsb = fls(evt_stream_div) - 1;
++	if (lsb > 0 && (evt_stream_div & BIT(lsb - 1)))
++		lsb++;
+ 
+-	/* Find the closest power of two to the divisor */
+-	evt_stream_div = arch_timer_rate / ARCH_TIMER_EVT_STREAM_FREQ;
+-	pos = fls(evt_stream_div);
+-	if (pos > 1 && !(evt_stream_div & (1 << (pos - 2))))
+-		pos--;
+ 	/* enable event stream */
+-	arch_timer_evtstrm_enable(min(pos, 15));
++	arch_timer_evtstrm_enable(max(0, min(lsb, 15)));
+ }
+ 
+ static void arch_counter_set_user_access(void)
 -- 
 2.27.0
 
