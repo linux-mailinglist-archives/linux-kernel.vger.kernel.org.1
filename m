@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D87AF2E3971
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:25:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07E1E2E406D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:53:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388563AbgL1NXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:23:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52282 "EHLO mail.kernel.org"
+        id S2501999AbgL1OSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:18:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388546AbgL1NXm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:23:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE73120719;
-        Mon, 28 Dec 2020 13:23:00 +0000 (UTC)
+        id S2391829AbgL1OSd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:18:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 09BE1224D2;
+        Mon, 28 Dec 2020 14:17:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161781;
-        bh=sV9cifRcauNGZ0LjAcCcdK89ZPt8u2a8dtWMPcGAeOM=;
+        s=korg; t=1609165072;
+        bh=1mpwmu2rQjWyRA2OQ+RoeB/jIrG4Sa2HWw1nGCzIb90=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xzYA4wUvSGkDwHn6TG6TfcyknLFQpUe3IhAI8OzguoMTgMYkJNVwIpPsZD0jXYa7+
-         M2FSON+9AACGzD5sfWo4m8cBGbN1hgJph2zRxdE2ig/JTvuV7fWc0EZHdPd5fr24r+
-         AvCdl50cVI/oPgqWDh7sH1MgtGgHdAMdOzfy+8pU=
+        b=B/SzPe2lmGUizKnSx5eNu5H8JPXUpZZlgtNFjf48wXN7gI96x22LmMmr7c2h+/cdE
+         Boy+yJITArOn2pdbMlJtUjHzPgpQy03ivRHaI7SQx648BqymVYkr4ACdQuwIEfldBx
+         lRs4HXw6PeHqVdqOOFSUZfjoakNC3Eirgm9NVHGc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        "taehyun.cho" <taehyun.cho@samsung.com>,
-        Will McVicker <willmcvicker@google.com>,
-        Peter Chen <peter.chen@nxp.com>
-Subject: [PATCH 4.19 079/346] USB: gadget: f_acm: add support for SuperSpeed Plus
+        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 400/717] remoteproc: q6v5-mss: fix error handling in q6v5_pds_enable
 Date:   Mon, 28 Dec 2020 13:46:38 +0100
-Message-Id: <20201228124923.618767109@linuxfoundation.org>
+Message-Id: <20201228125040.156084975@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +40,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: taehyun.cho <taehyun.cho@samsung.com>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-commit 3ee05c20656782387aa9eb010fdb9bb16982ac3f upstream.
+[ Upstream commit a24723050037303e4008b37f1f8dcc99c58901aa ]
 
-Setup the SuperSpeed Plus descriptors for f_acm.  This allows the gadget
-to work properly without crashing at SuperSpeed rates.
+If the pm_runtime_get_sync failed in q6v5_pds_enable when
+loop (i), The unroll_pd_votes will start from (i - 1), and
+it will resulted in following problems:
 
-Cc: Felipe Balbi <balbi@kernel.org>
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: taehyun.cho <taehyun.cho@samsung.com>
-Signed-off-by: Will McVicker <willmcvicker@google.com>
-Reviewed-by: Peter Chen <peter.chen@nxp.com>
-Link: https://lore.kernel.org/r/20201127140559.381351-3-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+  1) pm_runtime_get_sync will increment pm usage counter even it
+     failed. Forgetting to pm_runtime_put_noidle will result in
+     reference leak.
 
+  2) Have not reset pds[i] performance state.
+
+Then we fix it.
+
+Fixes: 4760a896be88e ("remoteproc: q6v5-mss: Vote for rpmh power domains")
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Link: https://lore.kernel.org/r/20201102143433.143996-1-zhangqilong3@huawei.com
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/function/f_acm.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/remoteproc/qcom_q6v5_mss.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/gadget/function/f_acm.c
-+++ b/drivers/usb/gadget/function/f_acm.c
-@@ -684,7 +684,7 @@ acm_bind(struct usb_configuration *c, st
- 	acm_ss_out_desc.bEndpointAddress = acm_fs_out_desc.bEndpointAddress;
+diff --git a/drivers/remoteproc/qcom_q6v5_mss.c b/drivers/remoteproc/qcom_q6v5_mss.c
+index eb3457a6c3b73..ba6f7551242de 100644
+--- a/drivers/remoteproc/qcom_q6v5_mss.c
++++ b/drivers/remoteproc/qcom_q6v5_mss.c
+@@ -349,8 +349,11 @@ static int q6v5_pds_enable(struct q6v5 *qproc, struct device **pds,
+ 	for (i = 0; i < pd_count; i++) {
+ 		dev_pm_genpd_set_performance_state(pds[i], INT_MAX);
+ 		ret = pm_runtime_get_sync(pds[i]);
+-		if (ret < 0)
++		if (ret < 0) {
++			pm_runtime_put_noidle(pds[i]);
++			dev_pm_genpd_set_performance_state(pds[i], 0);
+ 			goto unroll_pd_votes;
++		}
+ 	}
  
- 	status = usb_assign_descriptors(f, acm_fs_function, acm_hs_function,
--			acm_ss_function, NULL);
-+			acm_ss_function, acm_ss_function);
- 	if (status)
- 		goto fail;
- 
+ 	return 0;
+-- 
+2.27.0
+
 
 
