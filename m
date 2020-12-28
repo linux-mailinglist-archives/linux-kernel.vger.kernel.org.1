@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A7B02E6877
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:37:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 841A62E657A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:03:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633716AbgL1Qh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:37:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58074 "EHLO mail.kernel.org"
+        id S2390291AbgL1NaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:30:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729851AbgL1NBs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:01:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3947C22573;
-        Mon, 28 Dec 2020 13:01:07 +0000 (UTC)
+        id S2390264AbgL1NaG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:30:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB98522B3A;
+        Mon, 28 Dec 2020 13:29:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160467;
-        bh=jxrjnqIMyw4tF0dbRn8yKHdCEljgt65L9YbVWa44q3k=;
+        s=korg; t=1609162191;
+        bh=waV4/zyCcsTYaqm0wBqC73lPK4M+tQcsB5fXUOYMaZM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=11inM8qXW/iwVHi1fLCdaP8AKEZa4woZ/CQujPq/IQFTASohdDo96PsFcI1+x0ccP
-         kA6avLqL5/nH6SbHh7SoH88vIhgfYVLuB1EwVgJgzxuXgPfBt8+WOSZfejJ22vj9xL
-         Qz7Fsjvl5kvlsl97tO8C7tsats4pkR+lpeZZ/Rt4=
+        b=u95/ZMo6OTodXRKvcrN8vxUoRgWHFd/gzVi2hhep8MS+dmwR0bg6SYnCab3p3svNJ
+         kjmlwm2Cm8Jk5a0qa4FxkmpQcNGl50GOGikyIAAnpsBoZOmJVvHJiPWzBqC1QovbTS
+         kQ5CGshzKnBEJwFPER59Pr9CDu7XItPgfa3dTrR8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 054/175] spi: img-spfi: fix reference leak in img_spfi_resume
+Subject: [PATCH 4.19 188/346] ath10k: Release some resources in an error handling path
 Date:   Mon, 28 Dec 2020 13:48:27 +0100
-Message-Id: <20201228124855.874677417@linuxfoundation.org>
+Message-Id: <20201228124928.875918249@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit ee5558a9084584015c8754ffd029ce14a5827fa8 ]
+[ Upstream commit 6364e693f4a7a89a2fb3dd2cbd6cc06d5fd6e26d ]
 
-pm_runtime_get_sync will increment pm usage counter even it
-failed. Forgetting to pm_runtime_put_noidle will result in
-reference leak in img_spfi_resume, so we should fix it.
+Should an error occur after calling 'ath10k_usb_create()', it should be
+undone by a corresponding 'ath10k_usb_destroy()' call
 
-Fixes: deba25800a12b ("spi: Add driver for IMG SPFI controller")
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201102145651.3875-1-zhangqilong3@huawei.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 4db66499df91 ("ath10k: add initial USB support")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20201122170358.1346065-1-christophe.jaillet@wanadoo.fr
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-img-spfi.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/usb.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-img-spfi.c b/drivers/spi/spi-img-spfi.c
-index 2e65b70c78792..2a340234c85c1 100644
---- a/drivers/spi/spi-img-spfi.c
-+++ b/drivers/spi/spi-img-spfi.c
-@@ -771,8 +771,10 @@ static int img_spfi_resume(struct device *dev)
- 	int ret;
+diff --git a/drivers/net/wireless/ath/ath10k/usb.c b/drivers/net/wireless/ath/ath10k/usb.c
+index f4e6d84bfb91c..16d5fe6d1e2e4 100644
+--- a/drivers/net/wireless/ath/ath10k/usb.c
++++ b/drivers/net/wireless/ath/ath10k/usb.c
+@@ -1032,7 +1032,7 @@ static int ath10k_usb_probe(struct usb_interface *interface,
+ 	ret = ath10k_core_register(ar, chip_id);
+ 	if (ret) {
+ 		ath10k_warn(ar, "failed to register driver core: %d\n", ret);
+-		goto err;
++		goto err_usb_destroy;
+ 	}
  
- 	ret = pm_runtime_get_sync(dev);
--	if (ret)
-+	if (ret) {
-+		pm_runtime_put_noidle(dev);
- 		return ret;
-+	}
- 	spfi_reset(spfi);
- 	pm_runtime_put(dev);
+ 	/* TODO: remove this once USB support is fully implemented */
+@@ -1040,6 +1040,9 @@ static int ath10k_usb_probe(struct usb_interface *interface,
+ 
+ 	return 0;
+ 
++err_usb_destroy:
++	ath10k_usb_destroy(ar);
++
+ err:
+ 	ath10k_core_destroy(ar);
  
 -- 
 2.27.0
