@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E442E6576
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:03:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29D512E6861
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:37:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390256AbgL1NaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:30:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58438 "EHLO mail.kernel.org"
+        id S2392761AbgL1Qf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:35:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390139AbgL1N3j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:29:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC0DE2063A;
-        Mon, 28 Dec 2020 13:28:58 +0000 (UTC)
+        id S1729966AbgL1NCG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:02:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4410224D2;
+        Mon, 28 Dec 2020 13:01:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162139;
-        bh=e7PJ60N0tiJPWbx21m2LVM5TJk2QavQRE4Mm0hJiDA8=;
+        s=korg; t=1609160485;
+        bh=9/8GsZg8kvKV8XE3LxsYiNOmganx7LZuZdKDGykeqgU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nqLeJKFKlvu3t2zzfmGucrndQ4Kjq1OanGnPRIHNJsuRRANLT4/5/u1q8EGhanVlq
-         ug3+AO+1C4oR53GMVHQEv4Lg5Rfg2i2+ylYloFPFullfLN+44YP2u92vlzxRrcQ8+D
-         S+fJAYKtEwRS7/JPlOEXyEPBVMxkcNaz/Y91CE5I=
+        b=hoU3KFBgOoAjjerE809aM6oGDa7cWqwUUQvBWtX238NAjb53fTW2QY37KMfh0eTtF
+         AbTN6BACkmqxnZUoqdHaw/YTkPaYN/17MkO4xxc4gVVdmeP/cr/aAVPN0F+9sNKKml
+         CJ12HUqiW52r1ui0BCMlvP8670F3T870mtKTXygA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 201/346] ASoC: jz4740-i2s: add missed checks for clk_get()
-Date:   Mon, 28 Dec 2020 13:48:40 +0100
-Message-Id: <20201228124929.511997569@linuxfoundation.org>
+Subject: [PATCH 4.9 068/175] drm/omap: dmm_tiler: fix return error code in omap_dmm_probe()
+Date:   Mon, 28 Dec 2020 13:48:41 +0100
+Message-Id: <20201228124856.545358160@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chuhong Yuan <hslester96@gmail.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 1c1fb2653a0c2e3f310c07eacd8fc3a10e08c97a ]
+[ Upstream commit 723ae803218da993143387bf966042eccefac077 ]
 
-jz4740_i2s_set_sysclk() does not check the return values of clk_get(),
-while the file dereferences the pointers in clk_put().
-Add the missed checks to fix it.
+Return -ENOMEM when allocating refill memory failed.
 
-Fixes: 11bd3dd1b7c2 ("ASoC: Add JZ4740 ASoC support")
-Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
-Link: https://lore.kernel.org/r/20201203144227.418194-1-hslester96@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 71e8831f6407 ("drm/omap: DMM/TILER support for OMAP4+ platform")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+Link: https://patchwork.freedesktop.org/patch/msgid/20201117061045.3452287-1-yangyingliang@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/jz4740/jz4740-i2s.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/gpu/drm/omapdrm/omap_dmm_tiler.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
-index e099c0505b765..2c6b0ac97c684 100644
---- a/sound/soc/jz4740/jz4740-i2s.c
-+++ b/sound/soc/jz4740/jz4740-i2s.c
-@@ -318,10 +318,14 @@ static int jz4740_i2s_set_sysclk(struct snd_soc_dai *dai, int clk_id,
- 	switch (clk_id) {
- 	case JZ4740_I2S_CLKSRC_EXT:
- 		parent = clk_get(NULL, "ext");
-+		if (IS_ERR(parent))
-+			return PTR_ERR(parent);
- 		clk_set_parent(i2s->clk_i2s, parent);
- 		break;
- 	case JZ4740_I2S_CLKSRC_PLL:
- 		parent = clk_get(NULL, "pll half");
-+		if (IS_ERR(parent))
-+			return PTR_ERR(parent);
- 		clk_set_parent(i2s->clk_i2s, parent);
- 		ret = clk_set_rate(i2s->clk_i2s, freq);
- 		break;
+diff --git a/drivers/gpu/drm/omapdrm/omap_dmm_tiler.c b/drivers/gpu/drm/omapdrm/omap_dmm_tiler.c
+index 6a0b25e0823fa..6b64a1e07c017 100644
+--- a/drivers/gpu/drm/omapdrm/omap_dmm_tiler.c
++++ b/drivers/gpu/drm/omapdrm/omap_dmm_tiler.c
+@@ -747,6 +747,7 @@ static int omap_dmm_probe(struct platform_device *dev)
+ 					   &omap_dmm->refill_pa, GFP_KERNEL);
+ 	if (!omap_dmm->refill_va) {
+ 		dev_err(&dev->dev, "could not allocate refill memory\n");
++		ret = -ENOMEM;
+ 		goto fail;
+ 	}
+ 
 -- 
 2.27.0
 
