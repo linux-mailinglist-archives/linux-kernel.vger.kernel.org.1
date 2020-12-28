@@ -2,105 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9A912E69BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 18:32:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6CC2E69C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 18:32:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727730AbgL1RcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 12:32:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34570 "EHLO
+        id S1728227AbgL1RcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 12:32:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726848AbgL1RcA (ORCPT
+        with ESMTP id S1727870AbgL1RcW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 12:32:00 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D96B7C0613D6;
-        Mon, 28 Dec 2020 09:31:19 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id x16so15082505ejj.7;
-        Mon, 28 Dec 2020 09:31:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=L6jMggetbrrUEJcKxjzuL9oTosulpOnPLZ2l3XhwKRs=;
-        b=sTNImozLG8IUJ7j7UwjMpqjYlF4QAZZpCW/LSq75Vt0RO1PNnl+NlthpsCUNTS+oEY
-         Oji8WEtUKftUwXdtwbJzUQPnMJGy3Jv4UTXDo6EiV5zRGfTHvxEXGd0GtAD2rOKX8c5J
-         Hb+ec3q1e8ssIeDfVC+hOSCnKd/LiTdq5ZP5h0pMDXO9SKgijrI7UZ5fld2y3w48q7Zu
-         jByVPXR06kOSCI7JBI4qkUv+/ASVdjPP6ai0lrfqwJxiRxO9jtHe8mYAzbmh6RlHdJ+M
-         HL8UADYYuHy/ja4ArNgBGG15iWstN9HGqBT7aEtva3IvIKH77bETrMrW+u+s9Q6mS4/B
-         6E3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=L6jMggetbrrUEJcKxjzuL9oTosulpOnPLZ2l3XhwKRs=;
-        b=XHq3H/o4/5aJ/sHFlRuP+6BtmSb+8f1xFpQ7X4gVhfF3VQMpWdSx0dSLerjD1NqPB2
-         a0dKhZFfk2is6ORbon6uMJrZb6qVafBxNQEXxuxTJdgDzoUnqxKWBZVp36LAiWxcJYV2
-         ruY7upC1HTPATrbS1cQgvisiDgYz0WQzWO5yRaLgAay/079mJgwAgMwhJhEZuMDDFXW4
-         4B94JX9ZXiiFhqxqQiqzp+euBAu4yXjCvfFSuNXpK1XATVss7gYk9+L+SKsSkRfKZtdA
-         9abOqys0nr3KLpbMHmoHPmol8WxLgCCKV5Nzp9rqhmAypg4avc22gBVl/PY+SzanNRPI
-         bAIg==
-X-Gm-Message-State: AOAM5309KyWPf2c/znQHbM1JTY1v3k6bL/FtEV7zQfk0Ncx7CwqUsw2e
-        VB45dpT6z5MgGXqH8/g3E1HVduWLCCyL5u5igQQ=
-X-Google-Smtp-Source: ABdhPJwnGEJ77oSQj1FpVI6e1CvKlbyKgsHA+UHCeVILPPWIBeIAH1mKdtiFuhAXf57/MP63eN9cjUHniQLXulXtYgc=
-X-Received: by 2002:a17:906:b04f:: with SMTP id bj15mr41116505ejb.383.1609176677425;
- Mon, 28 Dec 2020 09:31:17 -0800 (PST)
+        Mon, 28 Dec 2020 12:32:22 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D080BC061796;
+        Mon, 28 Dec 2020 09:31:41 -0800 (PST)
+Date:   Mon, 28 Dec 2020 17:31:37 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1609176699;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rp2hmtzdwNqOlRd+jHcdZuHF2Sq1ESHpdEGqoRBejMI=;
+        b=YsAxoRVVwumvK3fBu9jw0b4hItPDD3ENMBvCu9JcZr4xRHiOdB5dqigyop5c9Q5l8ZVuj2
+        nNEH9JsZZQAlwE+LWskESQLlB8HRKxwcK403dHAS0tI+xNqK25hLmBi7zqGLNPmBcLIWPt
+        QUW3/R3OFi4HVr3y2natJJdhoPmmQt1vF1+AAR31UFVESZJ/4D3MWVhg8MoU8LvJhtDmpV
+        8evPquyaLFXV56zj+bEErcU87W+0b8onXb29qOxQ6UDbAXuyCBjnHZvNyyGbGAkC9ss2mJ
+        GcNJcJcct+n2UL2HgcmMUn4q+3wiF1CLRytGe8ZIrmCZDoocGM5xsmcdPWspBA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1609176699;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rp2hmtzdwNqOlRd+jHcdZuHF2Sq1ESHpdEGqoRBejMI=;
+        b=w9otdPTOl+2VNPGnZfJuu375QyO+hyFOtX+Af/l4KsRoT6HcHHEvIvyuaycVFVcq2zQhH7
+        izFQ45rA6Ec5zkAQ==
+From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/build] x86/build: Realign archhelp
+Cc:     Borislav Petkov <bp@suse.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20201217134608.31811-2-bp@alien8.de>
+References: <20201217134608.31811-2-bp@alien8.de>
 MIME-Version: 1.0
-References: <20201227181310.3235210-1-shakeelb@google.com>
-In-Reply-To: <20201227181310.3235210-1-shakeelb@google.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Mon, 28 Dec 2020 09:31:05 -0800
-Message-ID: <CAHbLzkr16NLLLj2QoJRTsVBwvJHcfeHeubnx7sT28J4G3FYx2w@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mm: memcg: fix memcg file_dirty numa stat
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Muchun Song <songmuchun@bytedance.com>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <160917669777.414.8237968960616891230.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 27, 2020 at 10:13 AM Shakeel Butt <shakeelb@google.com> wrote:
->
-> The kernel updates the per-node NR_FILE_DIRTY stats on page migration
-> but not the memcg numa stats. That was not an issue until recently the
-> commit 5f9a4f4a7096 ("mm: memcontrol: add the missing numa_stat interface
-> for cgroup v2") exposed numa stats for the memcg. So fixing the
-> file_dirty per-memcg numa stat.
->
-> Fixes: 5f9a4f4a7096 ("mm: memcontrol: add the missing numa_stat interface for cgroup v2")
-> Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> Cc: <stable@vger.kernel.org>
+The following commit has been merged into the x86/build branch of tip:
 
-Acked-by: Yang Shi <shy828301@gmail.com>
+Commit-ID:     ac5d08870d0b94cbfa8103c9e294de2b96f249bc
+Gitweb:        https://git.kernel.org/tip/ac5d08870d0b94cbfa8103c9e294de2b96f249bc
+Author:        Borislav Petkov <bp@suse.de>
+AuthorDate:    Thu, 17 Dec 2020 14:42:00 +01:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Mon, 28 Dec 2020 18:25:53 +01:00
 
-> ---
->  mm/migrate.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/mm/migrate.c b/mm/migrate.c
-> index ee5e612b4cd8..613794f6a433 100644
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -500,9 +500,9 @@ int migrate_page_move_mapping(struct address_space *mapping,
->                         __inc_lruvec_state(new_lruvec, NR_SHMEM);
->                 }
->                 if (dirty && mapping_can_writeback(mapping)) {
-> -                       __dec_node_state(oldzone->zone_pgdat, NR_FILE_DIRTY);
-> +                       __dec_lruvec_state(old_lruvec, NR_FILE_DIRTY);
->                         __dec_zone_state(oldzone, NR_ZONE_WRITE_PENDING);
-> -                       __inc_node_state(newzone->zone_pgdat, NR_FILE_DIRTY);
-> +                       __inc_lruvec_state(new_lruvec, NR_FILE_DIRTY);
->                         __inc_zone_state(newzone, NR_ZONE_WRITE_PENDING);
->                 }
->         }
-> --
-> 2.29.2.729.g45daf8777d-goog
->
->
+x86/build: Realign archhelp
+
+Realign help text vertically and add spacing so that the target help
+text is properly separated.
+
+No functional changes.
+
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20201217134608.31811-2-bp@alien8.de
+---
+ arch/x86/Makefile | 29 +++++++++++++++--------------
+ 1 file changed, 15 insertions(+), 14 deletions(-)
+
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index 3dae5c9..32dcddd 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -292,19 +292,20 @@ archclean:
+ 	$(Q)$(MAKE) $(clean)=arch/x86/tools
+ 
+ define archhelp
+-  echo  '* bzImage      - Compressed kernel image (arch/x86/boot/bzImage)'
+-  echo  '  install      - Install kernel using'
+-  echo  '                  (your) ~/bin/$(INSTALLKERNEL) or'
+-  echo  '                  (distribution) /sbin/$(INSTALLKERNEL) or'
+-  echo  '                  install to $$(INSTALL_PATH) and run lilo'
+-  echo  '  fdimage      - Create 1.4MB boot floppy image (arch/x86/boot/fdimage)'
+-  echo  '  fdimage144   - Create 1.4MB boot floppy image (arch/x86/boot/fdimage)'
+-  echo  '  fdimage288   - Create 2.8MB boot floppy image (arch/x86/boot/fdimage)'
+-  echo  '  isoimage     - Create a boot CD-ROM image (arch/x86/boot/image.iso)'
+-  echo  '                  bzdisk/fdimage*/isoimage also accept:'
+-  echo  '                  FDARGS="..."  arguments for the booted kernel'
+-  echo  '                  FDINITRD=file initrd for the booted kernel'
+-  echo  '  kvm_guest.config - Enable Kconfig items for running this kernel as a KVM guest'
+-  echo  '  xen.config	  - Enable Kconfig items for running this kernel as a Xen guest'
++  echo  '* bzImage		- Compressed kernel image (arch/x86/boot/bzImage)'
++  echo  '  install		- Install kernel using (your) ~/bin/$(INSTALLKERNEL) or'
++  echo  '			  (distribution) /sbin/$(INSTALLKERNEL) or install to '
++  echo  '			  $$(INSTALL_PATH) and run lilo'
++  echo  ''
++  echo  '  fdimage		- Create 1.4MB boot floppy image (arch/x86/boot/fdimage)'
++  echo  '  fdimage144		- Create 1.4MB boot floppy image (arch/x86/boot/fdimage)'
++  echo  '  fdimage288		- Create 2.8MB boot floppy image (arch/x86/boot/fdimage)'
++  echo  '  isoimage		- Create a boot CD-ROM image (arch/x86/boot/image.iso)'
++  echo  '			  bzdisk/fdimage*/isoimage also accept:'
++  echo  '			  FDARGS="..."  arguments for the booted kernel'
++  echo  '                  	  FDINITRD=file initrd for the booted kernel'
++  echo  ''
++  echo  '  kvm_guest.config	- Enable Kconfig items for running this kernel as a KVM guest'
++  echo  '  xen.config		- Enable Kconfig items for running this kernel as a Xen guest'
+ 
+ endef
