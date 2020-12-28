@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 347E92E3BEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:57:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 970162E3837
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:07:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406519AbgL1N43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:56:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58000 "EHLO mail.kernel.org"
+        id S1730682AbgL1NHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:07:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407852AbgL1N4R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:56:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 325F921D94;
-        Mon, 28 Dec 2020 13:55:36 +0000 (UTC)
+        id S1729749AbgL1NGu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:06:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E704207C9;
+        Mon, 28 Dec 2020 13:06:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163736;
-        bh=Ozb6FoNu4dexz7v04R9eUZUqUWtOG50d1+5FMMFhUqA=;
+        s=korg; t=1609160794;
+        bh=2zswwcbAHBiiyXxKUukt8I2higsivO73El+lvUDkKBQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=16Gzm9CrKdoxkFDOlfTedKJ1jfubl2lioakzCZT4h064RGUx+BUueDf8VMhzr9hvn
-         ecf8p6eKCk+kRbCey/TtZVGo2XcLLG/fScGTU1efWWiT3ndVsjyU7Cm9qM5ZhCciJ8
-         2+Cvcz/gA0tcQAZnHBmJfq8AxV9JEJfNbCo7igkA=
+        b=KG8QW2Rk/St+5fbNoen4YPsC1v5/07R+kmgoKen8ZNqi3uxTUqXW5fS/CDG7GDLS3
+         Tu8XEEXX7CeeQNcRg8foVMMSBxBsKLNYi/nplRVDmUG++0IEDm1P6e6M0pe74p/YSo
+         MF4ANO1czK2vE6sr5Onmv/hxlE7diJDbT1F3SXK8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Richard Weinberger <richard@nod.at>
-Subject: [PATCH 5.4 390/453] um: Remove use of asprinf in umid.c
+        stable@vger.kernel.org, Terry Zhou <bjzhou@marvell.com>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Subject: [PATCH 4.9 173/175] clk: mvebu: a3700: fix the XTAL MODE pin to MPP1_9
 Date:   Mon, 28 Dec 2020 13:50:26 +0100
-Message-Id: <20201228124955.974756850@linuxfoundation.org>
+Message-Id: <20201228124901.612196612@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,51 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+From: Terry Zhou <bjzhou@marvell.com>
 
-commit 97be7ceaf7fea68104824b6aa874cff235333ac1 upstream.
+commit 6f37689cf6b38fff96de52e7f0d3e78f22803ba0 upstream.
 
-asprintf is not compatible with the existing uml memory allocation
-mechanism. Its use on the "user" side of UML results in a corrupt slab
-state.
+There is an error in the current code that the XTAL MODE
+pin was set to NB MPP1_31 which should be NB MPP1_9.
+The latch register of NB MPP1_9 has different offset of 0x8.
 
-Fixes: 0d4e5ac7e780 ("um: remove uses of variable length arrays")
+Signed-off-by: Terry Zhou <bjzhou@marvell.com>
+[pali: Fix pin name in commit message]
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Fixes: 7ea8250406a6 ("clk: mvebu: Add the xtal clock for Armada 3700 SoC")
 Cc: stable@vger.kernel.org
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Link: https://lore.kernel.org/r/20201106100039.11385-1-pali@kernel.org
+Reviewed-by: Marek Behún <kabel@kernel.org>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/um/os-Linux/umid.c |   17 +++++------------
- 1 file changed, 5 insertions(+), 12 deletions(-)
+ drivers/clk/mvebu/armada-37xx-xtal.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/um/os-Linux/umid.c
-+++ b/arch/um/os-Linux/umid.c
-@@ -137,20 +137,13 @@ static inline int is_umdir_used(char *di
+--- a/drivers/clk/mvebu/armada-37xx-xtal.c
++++ b/drivers/clk/mvebu/armada-37xx-xtal.c
+@@ -15,8 +15,8 @@
+ #include <linux/platform_device.h>
+ #include <linux/regmap.h>
+ 
+-#define NB_GPIO1_LATCH	0xC
+-#define XTAL_MODE	    BIT(31)
++#define NB_GPIO1_LATCH	0x8
++#define XTAL_MODE	    BIT(9)
+ 
+ static int armada_3700_xtal_clock_probe(struct platform_device *pdev)
  {
- 	char pid[sizeof("nnnnn\0")], *end, *file;
- 	int dead, fd, p, n, err;
--	size_t filelen;
-+	size_t filelen = strlen(dir) + sizeof("/pid") + 1;
- 
--	err = asprintf(&file, "%s/pid", dir);
--	if (err < 0)
--		return 0;
-+	file = malloc(filelen);
-+	if (!file)
-+		return -ENOMEM;
- 
--	filelen = strlen(file);
--
--	n = snprintf(file, filelen, "%s/pid", dir);
--	if (n >= filelen) {
--		printk(UM_KERN_ERR "is_umdir_used - pid filename too long\n");
--		err = -E2BIG;
--		goto out;
--	}
-+	snprintf(file, filelen, "%s/pid", dir);
- 
- 	dead = 0;
- 	fd = open(file, O_RDONLY);
 
 
