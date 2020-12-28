@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA7BA2E3955
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:22:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D0D12E63AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:43:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388270AbgL1NW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:22:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50680 "EHLO mail.kernel.org"
+        id S2405454AbgL1Nqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:46:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388235AbgL1NWX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:22:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B9A59207C9;
-        Mon, 28 Dec 2020 13:21:41 +0000 (UTC)
+        id S2404991AbgL1NqC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:46:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B8B1122583;
+        Mon, 28 Dec 2020 13:45:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161702;
-        bh=SEF2i0iPA5d6UNnZnlZX4c/P+nQpD0ufL6j88hVYMu8=;
+        s=korg; t=1609163121;
+        bh=Vq9XUJqWy4XatoLeG3O5BRx/Xka+t1uuhwviqJbgojU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gHH7UBbO6UxsBMgFS25CkxjVytHhg1oHhoBBQd9DNLsNX+R9oGpW2aETIZkQMcU7S
-         +9hdUigT9cqdf09GPTWue7uHLVT+r17k6tdtAdvfGw6fLQZceC0Uh1meQIYrYi1yKY
-         JpLshJHwobUC2GFZIlnzZB5DISYVGaA69tFLcAZM=
+        b=bldWGtcVkDdvUAPLU3Fqyok6i/prnuzGzVAHoLqmP/Jrw100imuCzL67ZBMzSIZ/1
+         BK14EsKGkh5+p0HDwDfZKrMn0pRGVAAtqdtgFgtzfSmBhu2Z1P6hm2tNb4FXs1lmuv
+         9yfn+9X2p5UmnOq+qMoNfct7Db2e68nuOpW+qkwc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Amit Kachhap <Amit.Kachhap@arm.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: [PATCH 4.19 051/346] arm64: lse: Fix LSE atomics with LLVM
-Date:   Mon, 28 Dec 2020 13:46:10 +0100
-Message-Id: <20201228124922.260235014@linuxfoundation.org>
+        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 135/453] media: mtk-vcodec: add missing put_device() call in mtk_vcodec_init_enc_pm()
+Date:   Mon, 28 Dec 2020 13:46:11 +0100
+Message-Id: <20201228124943.697267668@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,60 +41,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincenzo Frascino <vincenzo.frascino@arm.com>
+From: Yu Kuai <yukuai3@huawei.com>
 
-commit dd1f6308b28edf0452dd5dc7877992903ec61e69 upstream.
+[ Upstream commit 4affafd7bec7c65da31777f18bd20420f1aeb5f8 ]
 
-Commit e0d5896bd356 ("arm64: lse: fix LSE atomics with LLVM's integrated
-assembler") broke the build when clang is used in connjunction with the
-binutils assembler ("-no-integrated-as"). This happens because
-__LSE_PREAMBLE is defined as ".arch armv8-a+lse", which overrides the
-version of the CPU architecture passed via the "-march" paramter to gas:
+if of_find_device_by_node() succeed, mtk_vcodec_init_enc_pm() doesn't have
+a corresponding put_device(). Thus add jump target to fix the exception
+handling for this function implementation.
 
-$ aarch64-none-linux-gnu-as -EL -I ./arch/arm64/include
-                                -I ./arch/arm64/include/generated
-                                -I ./include -I ./include
-                                -I ./arch/arm64/include/uapi
-                                -I ./arch/arm64/include/generated/uapi
-                                -I ./include/uapi -I ./include/generated/uapi
-                                -I ./init -I ./init
-                                -march=armv8.3-a -o init/do_mounts.o
-                                /tmp/do_mounts-d7992a.s
-/tmp/do_mounts-d7992a.s: Assembler messages:
-/tmp/do_mounts-d7992a.s:1959: Error: selected processor does not support `autiasp'
-/tmp/do_mounts-d7992a.s:2021: Error: selected processor does not support `paciasp'
-/tmp/do_mounts-d7992a.s:2157: Error: selected processor does not support `autiasp'
-/tmp/do_mounts-d7992a.s:2175: Error: selected processor does not support `paciasp'
-/tmp/do_mounts-d7992a.s:2494: Error: selected processor does not support `autiasp'
-
-Fix the issue by replacing ".arch armv8-a+lse" with ".arch_extension lse".
-Sami confirms that the clang integrated assembler does now support the
-'.arch_extension' directive, so this change will be fine even for LTO
-builds in future.
-
-Fixes: e0d5896bd356cd ("arm64: lse: fix LSE atomics with LLVM's integrated assembler")
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Reported-by: Amit Kachhap <Amit.Kachhap@arm.com>
-Tested-by: Sami Tolvanen <samitolvanen@google.com>
-Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Signed-off-by: Will Deacon <will@kernel.org>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 4e855a6efa54 ("[media] vcodec: mediatek: Add Mediatek V4L2 Video Encoder Driver")
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/include/asm/lse.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../platform/mtk-vcodec/mtk_vcodec_enc_pm.c   | 26 ++++++++++++++-----
+ 1 file changed, 19 insertions(+), 7 deletions(-)
 
---- a/arch/arm64/include/asm/lse.h
-+++ b/arch/arm64/include/asm/lse.h
-@@ -4,7 +4,7 @@
+diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.c
+index 3e2bfded79a66..e682bdb1ed453 100644
+--- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.c
++++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_pm.c
+@@ -49,14 +49,16 @@ int mtk_vcodec_init_enc_pm(struct mtk_vcodec_dev *mtkdev)
+ 	node = of_parse_phandle(dev->of_node, "mediatek,larb", 1);
+ 	if (!node) {
+ 		mtk_v4l2_err("no mediatek,larb found");
+-		return -ENODEV;
++		ret = -ENODEV;
++		goto put_larbvenc;
+ 	}
  
- #if defined(CONFIG_AS_LSE) && defined(CONFIG_ARM64_LSE_ATOMICS)
+ 	pdev = of_find_device_by_node(node);
+ 	of_node_put(node);
+ 	if (!pdev) {
+ 		mtk_v4l2_err("no mediatek,larb device found");
+-		return -ENODEV;
++		ret = -ENODEV;
++		goto put_larbvenc;
+ 	}
  
--#define __LSE_PREAMBLE	".arch armv8-a+lse\n"
-+#define __LSE_PREAMBLE	".arch_extension lse\n"
+ 	pm->larbvenclt = &pdev->dev;
+@@ -69,11 +71,14 @@ int mtk_vcodec_init_enc_pm(struct mtk_vcodec_dev *mtkdev)
+ 		enc_clk->clk_info = devm_kcalloc(&pdev->dev,
+ 			enc_clk->clk_num, sizeof(*clk_info),
+ 			GFP_KERNEL);
+-		if (!enc_clk->clk_info)
+-			return -ENOMEM;
++		if (!enc_clk->clk_info) {
++			ret = -ENOMEM;
++			goto put_larbvenclt;
++		}
+ 	} else {
+ 		mtk_v4l2_err("Failed to get venc clock count");
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto put_larbvenclt;
+ 	}
  
- #include <linux/compiler_types.h>
- #include <linux/export.h>
+ 	for (i = 0; i < enc_clk->clk_num; i++) {
+@@ -82,17 +87,24 @@ int mtk_vcodec_init_enc_pm(struct mtk_vcodec_dev *mtkdev)
+ 			"clock-names", i, &clk_info->clk_name);
+ 		if (ret) {
+ 			mtk_v4l2_err("venc failed to get clk name %d", i);
+-			return ret;
++			goto put_larbvenclt;
+ 		}
+ 		clk_info->vcodec_clk = devm_clk_get(&pdev->dev,
+ 			clk_info->clk_name);
+ 		if (IS_ERR(clk_info->vcodec_clk)) {
+ 			mtk_v4l2_err("venc devm_clk_get (%d)%s fail", i,
+ 				clk_info->clk_name);
+-			return PTR_ERR(clk_info->vcodec_clk);
++			ret = PTR_ERR(clk_info->vcodec_clk);
++			goto put_larbvenclt;
+ 		}
+ 	}
+ 
++	return 0;
++
++put_larbvenclt:
++	put_device(pm->larbvenclt);
++put_larbvenc:
++	put_device(pm->larbvenc);
+ 	return ret;
+ }
+ 
+-- 
+2.27.0
+
 
 
