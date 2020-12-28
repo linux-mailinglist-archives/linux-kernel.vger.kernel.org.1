@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 591182E68B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:40:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 006FD2E6770
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:25:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730942AbgL1Qkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:40:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55918 "EHLO mail.kernel.org"
+        id S2633423AbgL1QYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:24:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728035AbgL1M7g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:59:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FA6522B3B;
-        Mon, 28 Dec 2020 12:58:55 +0000 (UTC)
+        id S1731328AbgL1NKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:10:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7989F208BA;
+        Mon, 28 Dec 2020 13:09:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160336;
-        bh=Mz+qnzZbX/0kdmm2zW1A8sH+DRTk7o7kVx2xh4J0xDg=;
+        s=korg; t=1609161000;
+        bh=u0oCJXxMJ3xICbV8bdTrpRsE6r99GQjewMSFCa2WdC0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K3qQsCYi+ZxefcdZ5pQYEWojXQzvzzGsJbjeRrXINE96WOSGEV9qGzz+62GjBZTGT
-         b24ACaTAPohygD3HCVobe3JbL2b3Jbo3MCdLF/e6REf+9qap8316EZ40VcEJtZ/T6V
-         cNCJzMBd6dRIJVoKF2xPz8mU3CmJdz21BO5nAPtg=
+        b=Xe+gCFyXCgOm0B2xpNIaKB6KCERUNQzZeEFCQjVPPI90H7j7s8Fg85+I5+/f3rBmK
+         ae8TxAVZ+4JnaekSkJnOq6UT2SsGPNY1AkIRl/gMen1Qr2XrHMcsRQZpAvqtFo948j
+         PDFGjnkX4gtSvK/lmhm0aNZvPzzBjU8Ik9El7dbo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.9 017/175] mac80211: mesh: fix mesh_pathtbl_init() error path
-Date:   Mon, 28 Dec 2020 13:47:50 +0100
-Message-Id: <20201228124854.097155104@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 066/242] soc: renesas: rmobile-sysc: Fix some leaks in rmobile_init_pm_domains()
+Date:   Mon, 28 Dec 2020 13:47:51 +0100
+Message-Id: <20201228124907.931061857@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,91 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 905b2032fa424f253d9126271439cc1db2b01130 ]
+[ Upstream commit cf25d802e029c31efac8bdc979236927f37183bd ]
 
-If tbl_mpp can not be allocated, we call mesh_table_free(tbl_path)
-while tbl_path rhashtable has not yet been initialized, which causes
-panics.
+This code needs to call iounmap() on one error path.
 
-Simply factorize the rhashtable_init() call into mesh_table_alloc()
-
-WARNING: CPU: 1 PID: 8474 at kernel/workqueue.c:3040 __flush_work kernel/workqueue.c:3040 [inline]
-WARNING: CPU: 1 PID: 8474 at kernel/workqueue.c:3040 __cancel_work_timer+0x514/0x540 kernel/workqueue.c:3136
-Modules linked in:
-CPU: 1 PID: 8474 Comm: syz-executor663 Not tainted 5.10.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__flush_work kernel/workqueue.c:3040 [inline]
-RIP: 0010:__cancel_work_timer+0x514/0x540 kernel/workqueue.c:3136
-Code: 5d c3 e8 bf ae 29 00 0f 0b e9 f0 fd ff ff e8 b3 ae 29 00 0f 0b 43 80 3c 3e 00 0f 85 31 ff ff ff e9 34 ff ff ff e8 9c ae 29 00 <0f> 0b e9 dc fe ff ff 89 e9 80 e1 07 80 c1 03 38 c1 0f 8c 7d fd ff
-RSP: 0018:ffffc9000165f5a0 EFLAGS: 00010293
-RAX: ffffffff814b7064 RBX: 0000000000000001 RCX: ffff888021c80000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffff888024039ca0 R08: dffffc0000000000 R09: fffffbfff1dd3e64
-R10: fffffbfff1dd3e64 R11: 0000000000000000 R12: 1ffff920002cbebd
-R13: ffff888024039c88 R14: 1ffff11004807391 R15: dffffc0000000000
-FS:  0000000001347880(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000140 CR3: 000000002cc0a000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- rhashtable_free_and_destroy+0x25/0x9c0 lib/rhashtable.c:1137
- mesh_table_free net/mac80211/mesh_pathtbl.c:69 [inline]
- mesh_pathtbl_init+0x287/0x2e0 net/mac80211/mesh_pathtbl.c:785
- ieee80211_mesh_init_sdata+0x2ee/0x530 net/mac80211/mesh.c:1591
- ieee80211_setup_sdata+0x733/0xc40 net/mac80211/iface.c:1569
- ieee80211_if_add+0xd5c/0x1cd0 net/mac80211/iface.c:1987
- ieee80211_add_iface+0x59/0x130 net/mac80211/cfg.c:125
- rdev_add_virtual_intf net/wireless/rdev-ops.h:45 [inline]
- nl80211_new_interface+0x563/0xb40 net/wireless/nl80211.c:3855
- genl_family_rcv_msg_doit net/netlink/genetlink.c:739 [inline]
- genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
- genl_rcv_msg+0xe4e/0x1280 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x190/0x3a0 net/netlink/af_netlink.c:2494
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x780/0x930 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x9a8/0xd40 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg net/socket.c:671 [inline]
- ____sys_sendmsg+0x519/0x800 net/socket.c:2353
- ___sys_sendmsg net/socket.c:2407 [inline]
- __sys_sendmsg+0x2b1/0x360 net/socket.c:2440
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Fixes: 60854fd94573 ("mac80211: mesh: convert path table to rhashtable")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Reviewed-by: Johannes Berg <johannes@sipsolutions.net>
-Link: https://lore.kernel.org/r/20201204162428.2583119-1-eric.dumazet@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 2173fc7cb681 ("ARM: shmobile: R-Mobile: Add DT support for PM domains")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/20200923113142.GC1473821@mwanda
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/mesh_pathtbl.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ arch/arm/mach-shmobile/pm-rmobile.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/net/mac80211/mesh_pathtbl.c
-+++ b/net/mac80211/mesh_pathtbl.c
-@@ -61,6 +61,7 @@ static struct mesh_table *mesh_table_all
- 	INIT_HLIST_HEAD(&newtbl->known_gates);
- 	atomic_set(&newtbl->entries,  0);
- 	spin_lock_init(&newtbl->gates_lock);
-+	rhashtable_init(&newtbl->rhead, &mesh_rht_params);
+diff --git a/arch/arm/mach-shmobile/pm-rmobile.c b/arch/arm/mach-shmobile/pm-rmobile.c
+index 3a4ed4c33a68e..e312f676a0fdf 100644
+--- a/arch/arm/mach-shmobile/pm-rmobile.c
++++ b/arch/arm/mach-shmobile/pm-rmobile.c
+@@ -336,6 +336,7 @@ static int __init rmobile_init_pm_domains(void)
  
- 	return newtbl;
- }
-@@ -849,9 +850,6 @@ int mesh_pathtbl_init(struct ieee80211_s
- 		goto free_path;
- 	}
- 
--	rhashtable_init(&tbl_path->rhead, &mesh_rht_params);
--	rhashtable_init(&tbl_mpp->rhead, &mesh_rht_params);
--
- 	sdata->u.mesh.mesh_paths = tbl_path;
- 	sdata->u.mesh.mpp_paths = tbl_mpp;
- 
+ 		pmd = of_get_child_by_name(np, "pm-domains");
+ 		if (!pmd) {
++			iounmap(base);
+ 			pr_warn("%pOF lacks pm-domains node\n", np);
+ 			continue;
+ 		}
+-- 
+2.27.0
+
 
 
