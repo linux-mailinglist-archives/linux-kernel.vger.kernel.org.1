@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3CDF2E3D93
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:18:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C55832E643F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:50:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441418AbgL1ORP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:17:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50722 "EHLO mail.kernel.org"
+        id S2405414AbgL1Psy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:48:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2438885AbgL1OPs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:15:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 191142063A;
-        Mon, 28 Dec 2020 14:15:06 +0000 (UTC)
+        id S2404110AbgL1Nm0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:42:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0D232072C;
+        Mon, 28 Dec 2020 13:42:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609164907;
-        bh=8Ms/lSEYHBmgeXBQgEazfZHhVpyEwc9ERK9/wEkTuF0=;
+        s=korg; t=1609162931;
+        bh=Be0IGeLwspxQDrgJ54iD7P/S9slPdJBLxD6QQMcabg0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VuDD/exp5j9gb4Okf5JX7VeUH0cQwAY7wPo4aj2F5x9EiV7kGBEv2fRkN+OPYf5El
-         NlBe5GBGBJcAD4UKP1B1gzuSlazuy5qMbyc6UscKd+nXFHNLXKhBkUk5LdN49PxK06
-         9sJpudWOeGPIPaVTNkQC92M7b453KkUeS4qbV944=
+        b=GLKFNJ1iLM1/dDhjXeZPy0W4dsIar5+wrX2y3e7HlPWh2DxzDkEXx18p8zwXNcqp+
+         qNUnriKCdW5WG2uBjVkhJhN0a138PyuWK68RoNAtVm3dxA/7+Y+gY1m/wiyzlN/joV
+         4QKKDPpL9YsfDVEdqLGV8WCqHllwC0+O9eQJpCMY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        Luiz Augusto Von Dentz <luiz.von.dentz@intel.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@intel.com>,
+        stable@vger.kernel.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rob Clark <robdclark@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 340/717] Bluetooth: sco: Fix crash when using BT_SNDMTU/BT_RCVMTU option
-Date:   Mon, 28 Dec 2020 13:45:38 +0100
-Message-Id: <20201228125037.311778744@linuxfoundation.org>
+Subject: [PATCH 5.4 103/453] drm/msm/dsi_pll_10nm: restore VCO rate during restore_state
+Date:   Mon, 28 Dec 2020 13:45:39 +0100
+Message-Id: <20201228124942.175453910@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,71 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Yongjun <weiyongjun1@huawei.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-[ Upstream commit f6b8c6b5543983e9de29dc14716bfa4eb3f157c4 ]
+[ Upstream commit a4ccc37693a271330a46208afbeaed939d54fdbb ]
 
-This commit add the invalid check for connected socket, without it will
-causes the following crash due to sco_pi(sk)->conn being NULL:
+PHY disable/enable resets PLL registers to default values. Thus in
+addition to restoring several registers we also need to restore VCO rate
+settings.
 
-KASAN: null-ptr-deref in range [0x0000000000000050-0x0000000000000057]
-CPU: 3 PID: 4284 Comm: test_sco Not tainted 5.10.0-rc3+ #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1 04/01/2014
-RIP: 0010:sco_sock_getsockopt+0x45d/0x8e0
-Code: 48 c1 ea 03 80 3c 02 00 0f 85 ca 03 00 00 49 8b 9d f8 04 00 00 48 b8 00
-      00 00 00 00 fc ff df 48 8d 7b 50 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84
-      c0 74 08 3c 03 0f 8e b5 03 00 00 8b 43 50 48 8b 0c
-RSP: 0018:ffff88801bb17d88 EFLAGS: 00010206
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff83a4ecdf
-RDX: 000000000000000a RSI: ffffc90002fce000 RDI: 0000000000000050
-RBP: 1ffff11003762fb4 R08: 0000000000000001 R09: ffff88810e1008c0
-R10: ffffffffbd695dcf R11: fffffbfff7ad2bb9 R12: 0000000000000000
-R13: ffff888018ff1000 R14: dffffc0000000000 R15: 000000000000000d
-FS:  00007fb4f76c1700(0000) GS:ffff88811af80000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005555e3b7a938 CR3: 00000001117be001 CR4: 0000000000770ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-PKRU: 55555554
-Call Trace:
- ? sco_skb_put_cmsg+0x80/0x80
- ? sco_skb_put_cmsg+0x80/0x80
- __sys_getsockopt+0x12a/0x220
- ? __ia32_sys_setsockopt+0x150/0x150
- ? syscall_enter_from_user_mode+0x18/0x50
- ? rcu_read_lock_bh_held+0xb0/0xb0
- __x64_sys_getsockopt+0xba/0x150
- ? syscall_enter_from_user_mode+0x1d/0x50
- do_syscall_64+0x33/0x40
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Fixes: 0fc1a726f897 ("Bluetooth: sco: new getsockopt options BT_SNDMTU/BT_RCVMTU")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Reviewed-by: Luiz Augusto Von Dentz <luiz.von.dentz@intel.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
-Signed-off-by: Johan Hedberg <johan.hedberg@intel.com>
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Fixes: c6659785dfb3 ("drm/msm/dsi/pll: call vco set rate explicitly")
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/sco.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
-index 79ffcdef0b7ad..22a110f37abc6 100644
---- a/net/bluetooth/sco.c
-+++ b/net/bluetooth/sco.c
-@@ -1003,6 +1003,11 @@ static int sco_sock_getsockopt(struct socket *sock, int level, int optname,
+diff --git a/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c b/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c
+index aa9385d5bfff9..33033b94935ed 100644
+--- a/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c
++++ b/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c
+@@ -559,6 +559,7 @@ static int dsi_pll_10nm_restore_state(struct msm_dsi_pll *pll)
+ 	struct pll_10nm_cached_state *cached = &pll_10nm->cached_state;
+ 	void __iomem *phy_base = pll_10nm->phy_cmn_mmio;
+ 	u32 val;
++	int ret;
  
- 	case BT_SNDMTU:
- 	case BT_RCVMTU:
-+		if (sk->sk_state != BT_CONNECTED) {
-+			err = -ENOTCONN;
-+			break;
-+		}
+ 	val = pll_read(pll_10nm->mmio + REG_DSI_10nm_PHY_PLL_PLL_OUTDIV_RATE);
+ 	val &= ~0x3;
+@@ -573,6 +574,13 @@ static int dsi_pll_10nm_restore_state(struct msm_dsi_pll *pll)
+ 	val |= cached->pll_mux;
+ 	pll_write(phy_base + REG_DSI_10nm_PHY_CMN_CLK_CFG1, val);
+ 
++	ret = dsi_pll_10nm_vco_set_rate(&pll->clk_hw, pll_10nm->vco_current_rate, pll_10nm->vco_ref_clk_rate);
++	if (ret) {
++		DRM_DEV_ERROR(&pll_10nm->pdev->dev,
++			"restore vco rate failed. ret=%d\n", ret);
++		return ret;
++	}
 +
- 		if (put_user(sco_pi(sk)->conn->mtu, (u32 __user *)optval))
- 			err = -EFAULT;
- 		break;
+ 	DBG("DSI PLL%d", pll_10nm->id);
+ 
+ 	return 0;
 -- 
 2.27.0
 
