@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17CE42E410A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:03:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C35FD2E64D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:55:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439968AbgL1OMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:12:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46838 "EHLO mail.kernel.org"
+        id S2390775AbgL1Nh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:37:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37046 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439892AbgL1OMe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:12:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3098720791;
-        Mon, 28 Dec 2020 14:12:18 +0000 (UTC)
+        id S2390641AbgL1NhF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:37:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A3A71207C9;
+        Mon, 28 Dec 2020 13:36:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609164738;
-        bh=gSS2vlDOAi6OYsuXe17tLsbwFm5CEC6ChWEJjmiHSAc=;
+        s=korg; t=1609162610;
+        bh=NSI0TtcbDGgzvXfHX3RQC+tY4OOEILtZdDQ3LbzVD6o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1XIC5NpvN9xPmNdklhIFdsREE97rksNsHs/OZC85nMvZM9mDf7xTv2Y7NONvXwpGn
-         pAFSfUnqOL51BdN6knBu0SCuvb0K6BBnQBwmv2rX+z2WnMS+DGSvii7k8oS80pyPPs
-         A4qDfmnjw+Z1FUwPZExBmOJKO7WEo/jCn+FLO5Ug=
+        b=QtnCnq87GoxhagdLvDUmcebc9m56E+3voaQz8YLwwywL+CTwBFLGcbyh3Zz+Bv0Z4
+         rj7Z1JZToe0IBJFvWdZkaKvSKUyAgvVhywq9VjIRpbUt5jwUX8LvyHeO7wo5JO9U/3
+         0FX/DEC3+YW4lgmamoFCX66qOYL2VSiKbQqBXFo0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxim Kochetkov <fido_max@inbox.ru>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 249/717] spi: spi-fsl-dspi: Use max_native_cs instead of num_chipselect to set SPI_MCR
-Date:   Mon, 28 Dec 2020 13:44:07 +0100
-Message-Id: <20201228125032.916685247@linuxfoundation.org>
+Subject: [PATCH 5.4 012/453] gpio: mvebu: fix potential user-after-free on probe
+Date:   Mon, 28 Dec 2020 13:44:08 +0100
+Message-Id: <20201228124937.837715222@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,54 +41,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxim Kochetkov <fido_max@inbox.ru>
+From: Baruch Siach <baruch@tkos.co.il>
 
-[ Upstream commit 2c2b3ad2c4c801bab1eec7264ea6991b1e4e8f2c ]
+[ Upstream commit 7ee1a01e47403f72b9f38839a737692f6991263e ]
 
-If cs-gpios property is used in devicetree then ctlr->num_chipselect value
-may be changed by spi_get_gpio_descs().
-So use ctlr->max_native_cs instead of ctlr->num_chipselect to set SPI_MCR
+When mvebu_pwm_probe() fails IRQ domain is not released. Move pwm probe
+before IRQ domain allocation. Add pwm cleanup code to the failure path.
 
-Fixes: 4fcc7c2292de (spi: spi-fsl-dspi: Don't access reserved fields in SPI_MCR)
-Signed-off-by: Maxim Kochetkov <fido_max@inbox.ru>
-Link: https://lore.kernel.org/r/20201201085916.63543-1-fido_max@inbox.ru
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 757642f9a584 ("gpio: mvebu: Add limited PWM support")
+Reported-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Baruch Siach <baruch@tkos.co.il>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-fsl-dspi.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/gpio/gpio-mvebu.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/spi/spi-fsl-dspi.c b/drivers/spi/spi-fsl-dspi.c
-index 1a08c1d584abe..0287366874882 100644
---- a/drivers/spi/spi-fsl-dspi.c
-+++ b/drivers/spi/spi-fsl-dspi.c
-@@ -1165,7 +1165,7 @@ static int dspi_init(struct fsl_dspi *dspi)
- 	unsigned int mcr;
+diff --git a/drivers/gpio/gpio-mvebu.c b/drivers/gpio/gpio-mvebu.c
+index 6c06876943412..3985d6e1c17dc 100644
+--- a/drivers/gpio/gpio-mvebu.c
++++ b/drivers/gpio/gpio-mvebu.c
+@@ -1196,6 +1196,13 @@ static int mvebu_gpio_probe(struct platform_device *pdev)
  
- 	/* Set idle states for all chip select signals to high */
--	mcr = SPI_MCR_PCSIS(GENMASK(dspi->ctlr->num_chipselect - 1, 0));
-+	mcr = SPI_MCR_PCSIS(GENMASK(dspi->ctlr->max_native_cs - 1, 0));
+ 	devm_gpiochip_add_data(&pdev->dev, &mvchip->chip, mvchip);
  
- 	if (dspi->devtype_data->trans_mode == DSPI_XSPI_MODE)
- 		mcr |= SPI_MCR_XSPI;
-@@ -1250,7 +1250,7 @@ static int dspi_probe(struct platform_device *pdev)
++	/* Some MVEBU SoCs have simple PWM support for GPIO lines */
++	if (IS_ENABLED(CONFIG_PWM)) {
++		err = mvebu_pwm_probe(pdev, mvchip, id);
++		if (err)
++			return err;
++	}
++
+ 	/* Some gpio controllers do not provide irq support */
+ 	if (!have_irqs)
+ 		return 0;
+@@ -1205,7 +1212,8 @@ static int mvebu_gpio_probe(struct platform_device *pdev)
+ 	if (!mvchip->domain) {
+ 		dev_err(&pdev->dev, "couldn't allocate irq domain %s (DT).\n",
+ 			mvchip->chip.label);
+-		return -ENODEV;
++		err = -ENODEV;
++		goto err_pwm;
+ 	}
  
- 	pdata = dev_get_platdata(&pdev->dev);
- 	if (pdata) {
--		ctlr->num_chipselect = pdata->cs_num;
-+		ctlr->num_chipselect = ctlr->max_native_cs = pdata->cs_num;
- 		ctlr->bus_num = pdata->bus_num;
+ 	err = irq_alloc_domain_generic_chips(
+@@ -1253,14 +1261,12 @@ static int mvebu_gpio_probe(struct platform_device *pdev)
+ 						 mvchip);
+ 	}
  
- 		/* Only Coldfire uses platform data */
-@@ -1263,7 +1263,7 @@ static int dspi_probe(struct platform_device *pdev)
- 			dev_err(&pdev->dev, "can't get spi-num-chipselects\n");
- 			goto out_ctlr_put;
- 		}
--		ctlr->num_chipselect = cs_num;
-+		ctlr->num_chipselect = ctlr->max_native_cs = cs_num;
+-	/* Some MVEBU SoCs have simple PWM support for GPIO lines */
+-	if (IS_ENABLED(CONFIG_PWM))
+-		return mvebu_pwm_probe(pdev, mvchip, id);
+-
+ 	return 0;
  
- 		of_property_read_u32(np, "bus-num", &bus_num);
- 		ctlr->bus_num = bus_num;
+ err_domain:
+ 	irq_domain_remove(mvchip->domain);
++err_pwm:
++	pwmchip_remove(&mvchip->mvpwm->chip);
+ 
+ 	return err;
+ }
 -- 
 2.27.0
 
