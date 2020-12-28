@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 356772E672D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:22:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BA492E6852
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:37:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732027AbgL1NMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:12:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39816 "EHLO mail.kernel.org"
+        id S1728705AbgL1NBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:01:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731924AbgL1NL7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:11:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8787720776;
-        Mon, 28 Dec 2020 13:11:18 +0000 (UTC)
+        id S1729610AbgL1NBB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:01:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B19FF22B40;
+        Mon, 28 Dec 2020 13:00:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161079;
-        bh=O4CSAGa5Z9/miuUnMjw8DLTlmpWSSZZ/K5bZIbYNyNg=;
+        s=korg; t=1609160421;
+        bh=5bGTUm81ag/3S89yN7MpSFV2B8qeibKXJ+LYrlFFpEI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SBQ2r0TsOa881VFWm9z3GooNNKhUkfmmOYa3p7ioJ6qF7w5DotbmQUMXVx45ByyBM
-         nrbIygWybvD/xyMsJYh2ERtHHnhbDUFD/fDJ8sURr5AFgfHz0FStW1nIXD0mS5KfR9
-         NRigDy/qBv/WN1AzdHwjgF+tmpYBEy41Hyz7Xxkc=
+        b=vyc3zPOzVh7QvCEZaqV1L5s+FKxNLPeyxlZ9xu05qxxK9SyIUBzE9OcVUKrlE3I/W
+         tehYHoWg9K5dWbpD4CZweAACe7XKB70giWYY6oGTvZseZPYQA7aMw55fJsLbtd2XMy
+         /NjlcpcsTChdhQexbhTqM2U7qA+Pcf86iwIQfURI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 093/242] media: mtk-vcodec: add missing put_device() call in mtk_vcodec_release_dec_pm()
+        stable@vger.kernel.org, Julian Sax <jsbc@gmx.de>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Jiri Kosina <jkosina@suse.cz>
+Subject: [PATCH 4.9 045/175] HID: i2c-hid: add Vero K147 to descriptor override
 Date:   Mon, 28 Dec 2020 13:48:18 +0100
-Message-Id: <20201228124909.276945504@linuxfoundation.org>
+Message-Id: <20201228124855.436560568@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+From: Julian Sax <jsbc@gmx.de>
 
-[ Upstream commit 27c3943683f74e35e1d390ceb2e3639eff616ad6 ]
+commit c870d50ce387d84b6438211a7044c60afbd5d60a upstream.
 
-mtk_vcodec_release_dec_pm() will be called in two places:
+This device uses the SIPODEV SP1064 touchpad, which does not
+supply descriptors, so it has to be added to the override list.
 
-a. mtk_vcodec_init_dec_pm() succeed while mtk_vcodec_probe() return error.
-b. mtk_vcodec_dec_remove().
+Cc: stable@vger.kernel.org
+Signed-off-by: Julian Sax <jsbc@gmx.de>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-In both cases put_device() call is needed, since of_find_device_by_node()
-was called in mtk_vcodec_init_dec_pm() previously.
-
-Thus add put_devices() call in mtk_vcodec_release_dec_pm()
-
-Fixes: 590577a4e525 ("[media] vcodec: mediatek: Add Mediatek V4L2 Video Decoder Driver")
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/hid/i2c-hid/i2c-hid-dmi-quirks.c |    8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.c
-index 79ca03ac449c3..3f64119e8c082 100644
---- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.c
-+++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_pm.c
-@@ -103,6 +103,7 @@ int mtk_vcodec_init_dec_pm(struct mtk_vcodec_dev *mtkdev)
- void mtk_vcodec_release_dec_pm(struct mtk_vcodec_dev *dev)
- {
- 	pm_runtime_disable(dev->pm.dev);
-+	put_device(dev->pm.larbvdec);
- }
+--- a/drivers/hid/i2c-hid/i2c-hid-dmi-quirks.c
++++ b/drivers/hid/i2c-hid/i2c-hid-dmi-quirks.c
+@@ -397,6 +397,14 @@ static const struct dmi_system_id i2c_hi
+ 		},
+ 		.driver_data = (void *)&sipodev_desc
+ 	},
++	{
++		.ident = "Vero K147",
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "VERO"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "K147"),
++		},
++		.driver_data = (void *)&sipodev_desc
++	},
+ 	{ }	/* Terminate list */
+ };
  
- void mtk_vcodec_dec_pw_on(struct mtk_vcodec_pm *pm)
--- 
-2.27.0
-
 
 
