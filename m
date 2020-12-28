@@ -2,95 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BB1D2E668F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:14:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFE722E6952
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:48:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633065AbgL1QOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:14:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47572 "EHLO mail.kernel.org"
+        id S2441746AbgL1Qry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:47:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732996AbgL1NTQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:19:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 760D8208D5;
-        Mon, 28 Dec 2020 13:19:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161541;
-        bh=+pSnwWsCMByYdsFsfpHiPyCaC6g7YzUC9AlAXhW96sA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DAA9kyO5XZ30sWVgl3pQjjSXCRmJDtEtFLmJVo+muO0ekHhh10i4pa6Kp/PivxpUA
-         qYIpx8+8cvPBGdwxswRH8+OHTS9yfJLZ/3zHCUtqRQbWXVUTL0pjl9q+ugqx7UDK7W
-         5+ijhecpgIZmapBjjTcmI1xA+ywxT5Gfokn28l3s=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, SeongJae Park <sjpark@amazon.de>,
-        Michael Kurth <mku@amazon.de>,
-        Pawel Wieczorkiewicz <wipawel@amazon.de>,
-        Juergen Gross <jgross@suse.com>
-Subject: [PATCH 4.14 240/242] xenbus/xenbus_backend: Disallow pending watch messages
-Date:   Mon, 28 Dec 2020 13:50:45 +0100
-Message-Id: <20201228124916.501288077@linuxfoundation.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1728474AbgL1MzJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:55:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FCD322573;
+        Mon, 28 Dec 2020 12:54:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609160069;
+        bh=cCr9rjr5oy6TVkR4t8ptkBnMacdfaREGpVlXYRjz16w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZAmbgUMKHomsZQXSf3pdqO6VeQKjIo9oLoo18Su6+qJ/3zKyVt8fWKNLlGC0szWCM
+         DHuYxhQmmrzC2SdHCVroQuT3ZdDdP79cKz6ovN2D7hfgwvvz3B6+nhmpqu42f1k885
+         +5Ra2LQB2HP4G1VK5eGwMljUUNcvrj29aISIZFcgQG0u4sbM4MhAOWDxsQO8exrtLS
+         efYmHWW6W1NTDZRkfNv8PUFifn0rVJ9F5dw6dBwxd6HWYRDWPYLI3pijXo46QzsRob
+         43uJKcUbeK2YWdQOALsGaj8dNaEuuGSyPcx9+9+AJiyrRDfTosOGB22bx9TUXAlVGX
+         noM9Uhp8ofsOA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 5AA3B411E9; Mon, 28 Dec 2020 09:54:43 -0300 (-03)
+Date:   Mon, 28 Dec 2020 09:54:43 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     John Garry <john.garry@huawei.com>, Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexandre Truong <alexandre.truong@arm.com>,
+        Ian Rogers <irogers@google.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        He Zhe <zhe.he@windriver.com>,
+        Sumanth Korikkar <sumanthk@linux.ibm.com>,
+        Alexis Berlemont <alexis.berlemont@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] perf arm64: Support SDT
+Message-ID: <20201228125443.GA521329@kernel.org>
+References: <20201225052751.24513-1-leo.yan@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201225052751.24513-1-leo.yan@linaro.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+Em Fri, Dec 25, 2020 at 01:27:48PM +0800, Leo Yan escreveu:
+> This patch is to enable SDT on Arm64.
+> 
+> Since Arm64 SDT marker in ELF file is different from other archs,
+> especially for using stack pointer (sp) to retrieve data for local
+> variables, patch 01 is used to fixup the arguments for this special
+> case.  Patch 02 is to add argument support for Arm64 SDT.
+> 
+> This patch set has been verified on Arm64/x86_64 platforms with a
+> testing program usdt_test.  The testing approach is described in the
+> patch set v1 [1].
+> 
+> Changes from v1:
+> * Added Arnaldo's patch for fixing memory leak (Arnaldo);
+> * Refined patch "perf probe: Fixup Arm64 SDT arguments" to use
+>   asprintf() and check pointer is valid or not (Arnaldo);
+> * Minor changes in patch "perf arm64: Add argument support for SDT"
+>   for the regular expression;
+> * Added Masami's Ack tag for patch 03.
+> 
+> [1] https://lore.kernel.org/patchwork/cover/1356212/
+> 
 
-commit 9996bd494794a2fe393e97e7a982388c6249aa76 upstream.
-
-'xenbus_backend' watches 'state' of devices, which is writable by
-guests.  Hence, if guests intensively updates it, dom0 will have lots of
-pending events that exhausting memory of dom0.  In other words, guests
-can trigger dom0 memory pressure.  This is known as XSA-349.  However,
-the watch callback of it, 'frontend_changed()', reads only 'state', so
-doesn't need to have the pending events.
-
-To avoid the problem, this commit disallows pending watch messages for
-'xenbus_backend' using the 'will_handle()' watch callback.
-
-This is part of XSA-349
-
-Cc: stable@vger.kernel.org
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
-Reported-by: Michael Kurth <mku@amazon.de>
-Reported-by: Pawel Wieczorkiewicz <wipawel@amazon.de>
-Reviewed-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- drivers/xen/xenbus/xenbus_probe_backend.c |    7 +++++++
- 1 file changed, 7 insertions(+)
-
---- a/drivers/xen/xenbus/xenbus_probe_backend.c
-+++ b/drivers/xen/xenbus/xenbus_probe_backend.c
-@@ -180,6 +180,12 @@ static int xenbus_probe_backend(struct x
- 	return err;
- }
+This one made it into 5.11
  
-+static bool frontend_will_handle(struct xenbus_watch *watch,
-+				 const char *path, const char *token)
-+{
-+	return watch->nr_pending == 0;
-+}
-+
- static void frontend_changed(struct xenbus_watch *watch,
- 			     const char *path, const char *token)
- {
-@@ -191,6 +197,7 @@ static struct xen_bus_type xenbus_backen
- 	.levels = 3,		/* backend/type/<frontend>/<id> */
- 	.get_bus_id = backend_bus_id,
- 	.probe = xenbus_probe_backend,
-+	.otherend_will_handle = frontend_will_handle,
- 	.otherend_changed = frontend_changed,
- 	.bus = {
- 		.name		= "xen-backend",
+> Arnaldo Carvalho de Melo (1):
+>   perf probe: Fix memory leak in synthesize_sdt_probe_command()
+ 
+These were now merged in perf/core.
 
+> Leo Yan (2):
+>   perf probe: Fixup Arm64 SDT arguments
+>   perf arm64: Add argument support for SDT
 
+Thanks,
+
+- Arnaldo
