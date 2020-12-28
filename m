@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E02D52E3EC7
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:33:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A68E82E3A6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:37:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504652AbgL1OcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:32:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39282 "EHLO mail.kernel.org"
+        id S2390763AbgL1Ngt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:36:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2504359AbgL1ObW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:31:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D300920731;
-        Mon, 28 Dec 2020 14:31:05 +0000 (UTC)
+        id S2390713AbgL1Ngh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:36:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 18ECE20867;
+        Mon, 28 Dec 2020 13:36:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165866;
-        bh=87RGqwbipPsHoe8KTxCUzb+H8t2y4Ndb8/ky8BPf+zo=;
+        s=korg; t=1609162581;
+        bh=3fNXPCLn+df4fHPGcmz0dIT0FYWo1Wbk35m/GDVDrW0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u+LfA2IcGNKbAfqJokZ+7ZCaHBKG9FVi4nw/mTo76IH5RIZSUPjDh8pSGCopXX7jQ
-         PBCWtE/3qDBdzkMWR9yBQUt1R9Qg4pknULxkD3jDemnU5FyZpljGpT9yAHhzGwjELR
-         Jl5Ab0viS/almd2UUZIpomHdoOkmmyoBGRg0/j1E=
+        b=PoBJJA0eguqfmvgrAqgAGugyDsSI/ADZbg9qS3K4Naht6FouMjaFWchr0tXnsUtO+
+         sZpSaRRuyzoXwdf2VP8i7e5heLOcL4/V/FRDqzhgwc4dEf5xqCV1c+dqsDS6uCUpIi
+         MzYCUFYhjnr5vqshbSpHreySUO2gIEWVjSJdZVwQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
+        Chuhong Yuan <hslester96@gmail.com>,
         Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.10 641/717] spi: pxa2xx: Fix use-after-free on unbind
+Subject: [PATCH 4.19 320/346] spi: st-ssc4: Fix unbalanced pm_runtime_disable() in probe error path
 Date:   Mon, 28 Dec 2020 13:50:39 +0100
-Message-Id: <20201228125051.641238521@linuxfoundation.org>
+Message-Id: <20201228124935.262621586@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,49 +42,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lukas Wunner <lukas@wunner.de>
 
-commit 5626308bb94d9f930aa5f7c77327df4c6daa7759 upstream.
+commit 5ef76dac0f2c26aeae4ee79eb830280f16d5aceb upstream.
 
-pxa2xx_spi_remove() accesses the driver's private data after calling
-spi_unregister_controller() even though that function releases the last
-reference on the spi_controller and thereby frees the private data.
+If the calls to devm_platform_ioremap_resource(), irq_of_parse_and_map()
+or devm_request_irq() fail on probe of the ST SSC4 SPI driver, the
+runtime PM disable depth is incremented even though it was not
+decremented before.  Fix it.
 
-Fix by switching over to the new devm_spi_alloc_master/slave() helper
-which keeps the private data accessible until the driver has unbound.
-
-Fixes: 32e5b57232c0 ("spi: pxa2xx: Fix controller unregister order")
+Fixes: cd050abeba2a ("spi: st-ssc4: add missed pm_runtime_disable")
 Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Cc: <stable@vger.kernel.org> # v2.6.17+: 5e844cc37a5c: spi: Introduce device-managed SPI controller allocation
-Cc: <stable@vger.kernel.org> # v2.6.17+: 32e5b57232c0: spi: pxa2xx: Fix controller unregister order
-Cc: <stable@vger.kernel.org> # v2.6.17+
-Link: https://lore.kernel.org/r/5764b04d4a6e43069ebb7808f64c2f774ac6f193.1607286887.git.lukas@wunner.de
+Cc: <stable@vger.kernel.org> # v5.5+
+Cc: Chuhong Yuan <hslester96@gmail.com>
+Link: https://lore.kernel.org/r/fbe8768c30dc829e2d77eabe7be062ca22f84024.1604874488.git.lukas@wunner.de
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/spi/spi-pxa2xx.c |    5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/spi/spi-st-ssc4.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/drivers/spi/spi-pxa2xx.c
-+++ b/drivers/spi/spi-pxa2xx.c
-@@ -1686,9 +1686,9 @@ static int pxa2xx_spi_probe(struct platf
+--- a/drivers/spi/spi-st-ssc4.c
++++ b/drivers/spi/spi-st-ssc4.c
+@@ -379,13 +379,14 @@ static int spi_st_probe(struct platform_
+ 	ret = devm_spi_register_master(&pdev->dev, master);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Failed to register master\n");
+-		goto clk_disable;
++		goto rpm_disable;
  	}
  
- 	if (platform_info->is_slave)
--		controller = spi_alloc_slave(dev, sizeof(struct driver_data));
-+		controller = devm_spi_alloc_slave(dev, sizeof(*drv_data));
- 	else
--		controller = spi_alloc_master(dev, sizeof(struct driver_data));
-+		controller = devm_spi_alloc_master(dev, sizeof(*drv_data));
+ 	return 0;
  
- 	if (!controller) {
- 		dev_err(&pdev->dev, "cannot alloc spi_controller\n");
-@@ -1911,7 +1911,6 @@ out_error_dma_irq_alloc:
- 	free_irq(ssp->irq, drv_data);
- 
- out_error_controller_alloc:
--	spi_controller_put(controller);
- 	pxa_ssp_free(ssp);
- 	return status;
- }
+-clk_disable:
++rpm_disable:
+ 	pm_runtime_disable(&pdev->dev);
++clk_disable:
+ 	clk_disable_unprepare(spi_st->clk);
+ put_master:
+ 	spi_master_put(master);
 
 
