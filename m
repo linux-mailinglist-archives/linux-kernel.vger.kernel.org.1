@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10D7E2E3E9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:31:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 773F82E3919
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:19:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503577AbgL1OaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:30:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38194 "EHLO mail.kernel.org"
+        id S1732911AbgL1NS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:18:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47174 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503596AbgL1OaL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:30:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DF0E0206D4;
-        Mon, 28 Dec 2020 14:29:29 +0000 (UTC)
+        id S1732869AbgL1NS4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:18:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3D65206ED;
+        Mon, 28 Dec 2020 13:18:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165770;
-        bh=nJ8OkkptHKXpXmXLhKcCk1US9mbqar6Gka9Jv9LTp1Q=;
+        s=korg; t=1609161520;
+        bh=r9xCeAMs5iAVd1Tko00oM32AUvZdGbhJW/nO/a7uMbc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z6rBvGL3x244s8k7OvrbV1rIHkA3phv0QmKWKkjnOeCbZQajD73Q438y9EudF6JqG
-         bkA3N18TYc7+pUNxEsG6nM4/x+cA8/9us5S4UFXkaUHW87NEIS1AkIjyaWozPpVuEK
-         zlNaHwrXZ7gHbQX8Z7eoON8M+rQMG5MFYVhyUcDU=
+        b=nMBJh1dhbMm5ld/YIXjdBYQYUTRN8Zp3UYQ5Ek3M0cSBb/b+Z+vdiKZ/bGw6f8uGV
+         OrfFX/UpfZ1ZBZkRHWckprJWrLiA1f+nV6p7cORDrDU5RH7r+gSMDMrF5Un9q7tVR+
+         j1QnL2pbUwFnCx6C7+zF7gDvwaIRP+YRPJSwiVaA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.10 608/717] powerpc: Fix incorrect stw{, ux, u, x} instructions in __set_pte_at
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.14 201/242] USB: serial: keyspan_pda: fix write deadlock
 Date:   Mon, 28 Dec 2020 13:50:06 +0100
-Message-Id: <20201228125050.045165745@linuxfoundation.org>
+Message-Id: <20201228124914.573434701@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,63 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit d85be8a49e733dcd23674aa6202870d54bf5600d upstream.
+commit 7353cad7ee4deaefc16e94727e69285563e219f6 upstream.
 
-The placeholder for instruction selection should use the second
-argument's operand, which is %1, not %0. This could generate incorrect
-assembly code if the memory addressing of operand %0 is a different
-form from that of operand %1.
+The write() callback can be called in interrupt context (e.g. when used
+as a console) so interrupts must be disabled while holding the port lock
+to prevent a possible deadlock.
 
-Also remove the %Un placeholder because having %Un placeholders
-for two operands which are based on the same local var (ptep) doesn't
-make much sense. By the way, it doesn't change the current behaviour
-because "<>" constraint is missing for the associated "=m".
-
-[chleroy: revised commit log iaw segher's comments and removed %U0]
-
-Fixes: 9bf2b5cdc5fe ("powerpc: Fixes for CONFIG_PTE_64BIT for SMP support")
-Cc: <stable@vger.kernel.org> # v2.6.28+
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Acked-by: Segher Boessenkool <segher@kernel.crashing.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/96354bd77977a6a933fe9020da57629007fdb920.1603358942.git.christophe.leroy@csgroup.eu
+Fixes: e81ee637e4ae ("usb-serial: possible irq lock inversion (PPP vs. usb/serial)")
+Fixes: 507ca9bc0476 ("[PATCH] USB: add ability for usb-serial drivers to determine if their write urb is currently being used.")
+Cc: stable <stable@vger.kernel.org>     # 2.6.19
+Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/include/asm/book3s/32/pgtable.h |    4 ++--
- arch/powerpc/include/asm/nohash/pgtable.h    |    4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/usb/serial/keyspan_pda.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- a/arch/powerpc/include/asm/book3s/32/pgtable.h
-+++ b/arch/powerpc/include/asm/book3s/32/pgtable.h
-@@ -524,9 +524,9 @@ static inline void __set_pte_at(struct m
- 	if (pte_val(*ptep) & _PAGE_HASHPTE)
- 		flush_hash_entry(mm, ptep, addr);
- 	__asm__ __volatile__("\
--		stw%U0%X0 %2,%0\n\
-+		stw%X0 %2,%0\n\
- 		eieio\n\
--		stw%U0%X0 %L2,%1"
-+		stw%X1 %L2,%1"
- 	: "=m" (*ptep), "=m" (*((unsigned char *)ptep+4))
- 	: "r" (pte) : "memory");
+--- a/drivers/usb/serial/keyspan_pda.c
++++ b/drivers/usb/serial/keyspan_pda.c
+@@ -447,6 +447,7 @@ static int keyspan_pda_write(struct tty_
+ 	int request_unthrottle = 0;
+ 	int rc = 0;
+ 	struct keyspan_pda_private *priv;
++	unsigned long flags;
  
---- a/arch/powerpc/include/asm/nohash/pgtable.h
-+++ b/arch/powerpc/include/asm/nohash/pgtable.h
-@@ -192,9 +192,9 @@ static inline void __set_pte_at(struct m
- 	 */
- 	if (IS_ENABLED(CONFIG_PPC32) && IS_ENABLED(CONFIG_PTE_64BIT) && !percpu) {
- 		__asm__ __volatile__("\
--			stw%U0%X0 %2,%0\n\
-+			stw%X0 %2,%0\n\
- 			eieio\n\
--			stw%U0%X0 %L2,%1"
-+			stw%X1 %L2,%1"
- 		: "=m" (*ptep), "=m" (*((unsigned char *)ptep+4))
- 		: "r" (pte) : "memory");
- 		return;
+ 	priv = usb_get_serial_port_data(port);
+ 	/* guess how much room is left in the device's ring buffer, and if we
+@@ -466,13 +467,13 @@ static int keyspan_pda_write(struct tty_
+ 	   the TX urb is in-flight (wait until it completes)
+ 	   the device is full (wait until it says there is room)
+ 	*/
+-	spin_lock_bh(&port->lock);
++	spin_lock_irqsave(&port->lock, flags);
+ 	if (!test_bit(0, &port->write_urbs_free) || priv->tx_throttled) {
+-		spin_unlock_bh(&port->lock);
++		spin_unlock_irqrestore(&port->lock, flags);
+ 		return 0;
+ 	}
+ 	clear_bit(0, &port->write_urbs_free);
+-	spin_unlock_bh(&port->lock);
++	spin_unlock_irqrestore(&port->lock, flags);
+ 
+ 	/* At this point the URB is in our control, nobody else can submit it
+ 	   again (the only sudden transition was the one from EINPROGRESS to
 
 
