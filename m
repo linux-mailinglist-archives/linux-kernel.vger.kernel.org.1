@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E57AA2E6423
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:48:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E331A2E3AE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:43:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404354AbgL1NnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:43:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42802 "EHLO mail.kernel.org"
+        id S2404339AbgL1Nm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:42:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404300AbgL1Nmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:42:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CBBD12072C;
-        Mon, 28 Dec 2020 13:42:30 +0000 (UTC)
+        id S2404310AbgL1Nmt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:42:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C453422583;
+        Mon, 28 Dec 2020 13:42:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162951;
-        bh=XJEZDLXC9tySH+fMBbsB+74kFzf3SVYlO/GRCf7iwTA=;
+        s=korg; t=1609162954;
+        bh=lXd5M9oJwY5eLecW8I2aF+82EEg6Pg0rXCj9d8iT/Pg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qFdy/L/BhW+Tv/Sx05ly4YuE/ZK77aDfKSI1QwiBynzSMXVM02vVngOqgrCGfw5Pp
-         B44JPZXFO1Vd3DomilzplaxjIYABH4+8Mmxm00X/1rmEaDCXOQZocySG7+8mZMO3Bs
-         60Yz7sjiPlrYI8Y/DmvQ+5qWU0YGSQeef3BbRY8k=
+        b=mayrhNdUOpi80wXL1r2TtmAjvayyqWC850F58frRApd5tP6yoq0oZF9ZjJUl5XxVZ
+         iizoH+lggmHnx6jdncIbOoB9APGi+eQN3Rby3bc+H3Sgw4iML32ZosxvQyCiXrARj/
+         HPYpkgCj6DFunLok1Ux/Zn6rmmdrY2TnXZ3CT5Cs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
+        stable@vger.kernel.org, Qinglang Miao <miaoqinglang@huawei.com>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 118/453] spi: tegra114: fix reference leak in tegra spi ops
-Date:   Mon, 28 Dec 2020 13:45:54 +0100
-Message-Id: <20201228124942.894434047@linuxfoundation.org>
+Subject: [PATCH 5.4 119/453] spi: bcm63xx-hsspi: fix missing clk_disable_unprepare() on error in bcm63xx_hsspi_resume
+Date:   Mon, 28 Dec 2020 13:45:55 +0100
+Message-Id: <20201228124942.941163476@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
 References: <20201228124937.240114599@linuxfoundation.org>
@@ -40,44 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Qinglang Miao <miaoqinglang@huawei.com>
 
-[ Upstream commit a042184c7fb99961ea083d4ec192614bec671969 ]
+[ Upstream commit 9bb9ef2b3e5d9d012876e7e2d7757eb30e865bee ]
 
-pm_runtime_get_sync will increment pm usage counter even it
-failed. Forgetting to pm_runtime_put_noidle will result in
-reference leak in two callers(tegra_spi_setup and
-tegra_spi_resume), so we should fix it.
+Fix the missing clk_disable_unprepare() before return
+from bcm63xx_hsspi_resume in the error handling case when
+fails to prepare and enable bs->pll_clk.
 
-Fixes: f333a331adfac ("spi/tegra114: add spi driver")
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201103141306.5607-1-zhangqilong3@huawei.com
+Fixes: 0fd85869c2a9 ("spi/bcm63xx-hsspi: keep pll clk enabled")
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+Link: https://lore.kernel.org/r/20201103074911.195530-1-miaoqinglang@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-tegra114.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/spi/spi-bcm63xx-hsspi.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-tegra114.c b/drivers/spi/spi-tegra114.c
-index 39374c2edcf3b..594905bf89aa8 100644
---- a/drivers/spi/spi-tegra114.c
-+++ b/drivers/spi/spi-tegra114.c
-@@ -954,6 +954,7 @@ static int tegra_spi_setup(struct spi_device *spi)
+diff --git a/drivers/spi/spi-bcm63xx-hsspi.c b/drivers/spi/spi-bcm63xx-hsspi.c
+index 36f7eb8ab2df1..509476a2d79bb 100644
+--- a/drivers/spi/spi-bcm63xx-hsspi.c
++++ b/drivers/spi/spi-bcm63xx-hsspi.c
+@@ -483,8 +483,10 @@ static int bcm63xx_hsspi_resume(struct device *dev)
  
- 	ret = pm_runtime_get_sync(tspi->dev);
- 	if (ret < 0) {
-+		pm_runtime_put_noidle(tspi->dev);
- 		dev_err(tspi->dev, "pm runtime failed, e = %d\n", ret);
- 		if (cdata)
- 			tegra_spi_cleanup(spi);
-@@ -1472,6 +1473,7 @@ static int tegra_spi_resume(struct device *dev)
- 
- 	ret = pm_runtime_get_sync(dev);
- 	if (ret < 0) {
-+		pm_runtime_put_noidle(dev);
- 		dev_err(dev, "pm runtime failed, e = %d\n", ret);
- 		return ret;
+ 	if (bs->pll_clk) {
+ 		ret = clk_prepare_enable(bs->pll_clk);
+-		if (ret)
++		if (ret) {
++			clk_disable_unprepare(bs->clk);
+ 			return ret;
++		}
  	}
+ 
+ 	spi_master_resume(master);
 -- 
 2.27.0
 
