@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F4852E37EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:04:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9DB2E4353
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:36:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728733AbgL1NCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:02:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58754 "EHLO mail.kernel.org"
+        id S2408705AbgL1Pf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:35:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730112AbgL1NCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:02:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DFE7208D5;
-        Mon, 28 Dec 2020 13:01:55 +0000 (UTC)
+        id S2405630AbgL1NvR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:51:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD7FB206D4;
+        Mon, 28 Dec 2020 13:51:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160516;
-        bh=nZBP5cnI8bEjDbd9B4b4iJzMT36/HOi4uySoS/y2+qA=;
+        s=korg; t=1609163462;
+        bh=Q7iuGwhXio1TWt9u6d1V9bWObd4jcJvFwHvZOEyNLO8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r26h2c7tEgpyr2TajqT5BfP7EXwL2HE4xoFLGnKSd8xelxokDG0zyWczgAV3/4J5Q
-         dE6uZPqntNqb/E0v+QKu2mpt624YpRDmyHiO8yIJS7MyXs3C7nfGJ75ZD724FMUx33
-         o/AL8pN3/qEToqsJdc0Cwm7wF3JgsncN3zYMcQhU=
+        b=UUPACSBpNlxLWKmMd18veL/bxWuuPE3tO8GGghF738xcfvnBwwZRsUgxqLZjmYyQP
+         QvK+PDJW/m958mO5q0qPX/4E1YlWSKkZEC6TVa4qu4zT+UP2v72LP2c1tsvcvBGe6s
+         jD6JZtB+Ai+v55CvkXpPFmX/QwXYSHWUv/XXvwLA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        =?UTF-8?q?Vincent=20Stehl=C3=A9?= <vincent.stehle@laposte.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 077/175] memstick: fix a double-free bug in memstick_check
+Subject: [PATCH 5.4 294/453] net: korina: fix return value
 Date:   Mon, 28 Dec 2020 13:48:50 +0100
-Message-Id: <20201228124856.973177909@linuxfoundation.org>
+Message-Id: <20201228124951.351324312@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qinglang Miao <miaoqinglang@huawei.com>
+From: Vincent Stehlé <vincent.stehle@laposte.net>
 
-[ Upstream commit e3e9ced5c93803d5b2ea1942c4bf0192622531d6 ]
+[ Upstream commit 7eb000bdbe7c7da811ef51942b356f6e819b13ba ]
 
-kfree(host->card) has been called in put_device so that
-another kfree would raise cause a double-free bug.
+The ndo_start_xmit() method must not attempt to free the skb to transmit
+when returning NETDEV_TX_BUSY. Therefore, make sure the
+korina_send_packet() function returns NETDEV_TX_OK when it frees a packet.
 
-Fixes: 0193383a5833 ("memstick: core: fix device_register() error handling")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-Link: https://lore.kernel.org/r/20201120074846.31322-1-miaoqinglang@huawei.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Fixes: ef11291bcd5f ("Add support the Korina (IDT RC32434) Ethernet MAC")
+Suggested-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Vincent Stehlé <vincent.stehle@laposte.net>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Link: https://lore.kernel.org/r/20201214220952.19935-1-vincent.stehle@laposte.net
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/memstick/core/memstick.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/net/ethernet/korina.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/memstick/core/memstick.c b/drivers/memstick/core/memstick.c
-index 1041eb7a61672..2cae85a7ca6de 100644
---- a/drivers/memstick/core/memstick.c
-+++ b/drivers/memstick/core/memstick.c
-@@ -469,7 +469,6 @@ static void memstick_check(struct work_struct *work)
- 			host->card = card;
- 			if (device_register(&card->dev)) {
- 				put_device(&card->dev);
--				kfree(host->card);
- 				host->card = NULL;
- 			}
- 		} else
+diff --git a/drivers/net/ethernet/korina.c b/drivers/net/ethernet/korina.c
+index 993f495e2bf7b..9f804e2aba359 100644
+--- a/drivers/net/ethernet/korina.c
++++ b/drivers/net/ethernet/korina.c
+@@ -219,7 +219,7 @@ static int korina_send_packet(struct sk_buff *skb, struct net_device *dev)
+ 			dev_kfree_skb_any(skb);
+ 			spin_unlock_irqrestore(&lp->lock, flags);
+ 
+-			return NETDEV_TX_BUSY;
++			return NETDEV_TX_OK;
+ 		}
+ 	}
+ 
 -- 
 2.27.0
 
