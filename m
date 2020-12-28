@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13B362E3A1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:32:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF6952E3F7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:42:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391049AbgL1Ncf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:32:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33044 "EHLO mail.kernel.org"
+        id S2502487AbgL1O2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:28:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36314 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391035AbgL1Nc1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:32:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CDCC02063A;
-        Mon, 28 Dec 2020 13:31:46 +0000 (UTC)
+        id S2502423AbgL1O22 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:28:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F256207B2;
+        Mon, 28 Dec 2020 14:27:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162307;
-        bh=1mN1gvFPpgh3S5yaPiOksxal2vVQ++Atys4FqiF8s4w=;
+        s=korg; t=1609165668;
+        bh=7cQDaEUqqy2Z+ZsG1YF2Up5+GInOJP/+GzQEoaKyGPM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DRLnU1CHax+S+gcyss1M+pwxmrJnszhUq0nLrOp0TormOSeY0/xsLHDqreW78PfWV
-         Wh785gbs1FybgZ0lFN9vmA4VK0wSE/YPTQs/jsjBkM1WfO9Zw2gYFvkKBlPjqcAwSI
-         F+T5T5dt3ONLxZMpcYyfOS03XagBkHF/jSnVHmSA=
+        b=h1qU8KnzE4syDojaDtwplzBwdwjwICoumcDu/AAedXq/G6ouM7XY4xpY3hVzywiyq
+         KFHXEvzNZ8p4kMCWwgPqcK0oF1Gy17hOS/WubzmPC/ZMrEUdotODB755p0dMn5b7EP
+         05sej9S0NChSBtb1k7FKWZBi36bwuyCny+153tcg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans Verkuil <hverkuil@xs4all.nl>,
-        Maxime Ripard <mripard@kernel.org>, Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 4.19 259/346] media: sunxi-cir: ensure IR is handled when it is continuous
-Date:   Mon, 28 Dec 2020 13:49:38 +0100
-Message-Id: <20201228124932.302990081@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.10 581/717] USB: serial: keyspan_pda: fix dropped unthrottle interrupts
+Date:   Mon, 28 Dec 2020 13:49:39 +0100
+Message-Id: <20201228125048.753578764@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Young <sean@mess.org>
+From: Johan Hovold <johan@kernel.org>
 
-commit 3f56df4c8ffeb120ed41906d3aae71799b7e726a upstream.
+commit 696c541c8c6cfa05d65aa24ae2b9e720fc01766e upstream.
 
-If a user holds a button down on a remote, then no ir idle interrupt will
-be generated until the user releases the button, depending on how quickly
-the remote repeats. No IR is processed until that point, which means that
-holding down a button may not do anything.
+Commit c528fcb116e6 ("USB: serial: keyspan_pda: fix receive sanity
+checks") broke write-unthrottle handling by dropping well-formed
+unthrottle-interrupt packets which are precisely two bytes long. This
+could lead to blocked writers not being woken up when buffer space again
+becomes available.
 
-This also resolves an issue on a Cubieboard 1 where the IR receiver is
-picking up ambient infrared as IR and spews out endless
-"rc rc0: IR event FIFO is full!" messages unless you choose to live in
-the dark.
+Instead, stop unconditionally printing the third byte which is
+(presumably) only valid on modem-line changes.
 
-Cc: stable@vger.kernel.org
-Tested-by: Hans Verkuil <hverkuil@xs4all.nl>
-Acked-by: Maxime Ripard <mripard@kernel.org>
-Reported-by: Hans Verkuil <hverkuil@xs4all.nl>
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: c528fcb116e6 ("USB: serial: keyspan_pda: fix receive sanity checks")
+Cc: stable <stable@vger.kernel.org>     # 4.11
+Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/media/rc/sunxi-cir.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/usb/serial/keyspan_pda.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/media/rc/sunxi-cir.c
-+++ b/drivers/media/rc/sunxi-cir.c
-@@ -129,6 +129,8 @@ static irqreturn_t sunxi_ir_irq(int irqn
- 	} else if (status & REG_RXINT_RPEI_EN) {
- 		ir_raw_event_set_idle(ir->rc, true);
- 		ir_raw_event_handle(ir->rc);
-+	} else {
-+		ir_raw_event_handle(ir->rc);
- 	}
- 
- 	spin_unlock(&ir->ir_lock);
+--- a/drivers/usb/serial/keyspan_pda.c
++++ b/drivers/usb/serial/keyspan_pda.c
+@@ -172,11 +172,11 @@ static void keyspan_pda_rx_interrupt(str
+ 		break;
+ 	case 1:
+ 		/* status interrupt */
+-		if (len < 3) {
++		if (len < 2) {
+ 			dev_warn(&port->dev, "short interrupt message received\n");
+ 			break;
+ 		}
+-		dev_dbg(&port->dev, "rx int, d1=%d, d2=%d\n", data[1], data[2]);
++		dev_dbg(&port->dev, "rx int, d1=%d\n", data[1]);
+ 		switch (data[1]) {
+ 		case 1: /* modemline change */
+ 			break;
 
 
