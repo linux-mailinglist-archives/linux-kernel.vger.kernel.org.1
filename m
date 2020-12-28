@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7B5E2E6585
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:03:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 487932E6749
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:23:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393752AbgL1QCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:02:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58910 "EHLO mail.kernel.org"
+        id S2387408AbgL1QXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:23:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390262AbgL1NaG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:30:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95DB9207FF;
-        Mon, 28 Dec 2020 13:29:24 +0000 (UTC)
+        id S1732224AbgL1NNY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:13:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E221C208D5;
+        Mon, 28 Dec 2020 13:12:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162165;
-        bh=q9A9/ARIjd3r/XPaKErR5Z81PWbqIoSoO65bkl3WWXs=;
+        s=korg; t=1609161163;
+        bh=waV4/zyCcsTYaqm0wBqC73lPK4M+tQcsB5fXUOYMaZM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J0QJLmmMAjWw8hyx720AIHZ5tCypb2uS0icav2JfMbXZDOTYk7/3jOfs7yViqyuDz
-         H+dFCiXlSoiPoXBfht/7fflgyMoWczi3wJv6W3tj0ZeXrIkgxk4UtuuWGBBhE/B/da
-         mQugCZPJIX1j+PCkWCOBzzUdl2wVM0blAwWy2C/8=
+        b=PAi13fgoeiIHhsK+HcXj04I9zig0E1DWf9S3RvO/VjJ5VI4nGD2y3p8Ko1uBfcKax
+         SFLCJT7f/8p2pDef6sZGSHG6KOvBpgy4jJzF/UFxbp5oULzbea8VblrbCWJlHEScJV
+         YP+p3Pg8CEKqhWURh7MFPWWehEH9+3EI7MZT55+M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Mike Christie <michael.christie@oracle.com>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 209/346] scsi: qedi: Fix missing destroy_workqueue() on error in __qedi_probe
+Subject: [PATCH 4.14 123/242] ath10k: Release some resources in an error handling path
 Date:   Mon, 28 Dec 2020 13:48:48 +0100
-Message-Id: <20201228124929.894079334@linuxfoundation.org>
+Message-Id: <20201228124910.751751761@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,45 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qinglang Miao <miaoqinglang@huawei.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 62eebd5247c4e4ce08826ad5995cf4dd7ce919dd ]
+[ Upstream commit 6364e693f4a7a89a2fb3dd2cbd6cc06d5fd6e26d ]
 
-Add the missing destroy_workqueue() before return from __qedi_probe in the
-error handling case when fails to create workqueue qedi->offload_thread.
+Should an error occur after calling 'ath10k_usb_create()', it should be
+undone by a corresponding 'ath10k_usb_destroy()' call
 
-Link: https://lore.kernel.org/r/20201109091518.55941-1-miaoqinglang@huawei.com
-Fixes: ace7f46ba5fd ("scsi: qedi: Add QLogic FastLinQ offload iSCSI driver framework.")
-Reviewed-by: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: 4db66499df91 ("ath10k: add initial USB support")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20201122170358.1346065-1-christophe.jaillet@wanadoo.fr
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qedi/qedi_main.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/usb.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/qedi/qedi_main.c b/drivers/scsi/qedi/qedi_main.c
-index 763c7628356b1..eaa50328de90c 100644
---- a/drivers/scsi/qedi/qedi_main.c
-+++ b/drivers/scsi/qedi/qedi_main.c
-@@ -2580,7 +2580,7 @@ static int __qedi_probe(struct pci_dev *pdev, int mode)
- 			QEDI_ERR(&qedi->dbg_ctx,
- 				 "Unable to start offload thread!\n");
- 			rc = -ENODEV;
--			goto free_cid_que;
-+			goto free_tmf_thread;
- 		}
+diff --git a/drivers/net/wireless/ath/ath10k/usb.c b/drivers/net/wireless/ath/ath10k/usb.c
+index f4e6d84bfb91c..16d5fe6d1e2e4 100644
+--- a/drivers/net/wireless/ath/ath10k/usb.c
++++ b/drivers/net/wireless/ath/ath10k/usb.c
+@@ -1032,7 +1032,7 @@ static int ath10k_usb_probe(struct usb_interface *interface,
+ 	ret = ath10k_core_register(ar, chip_id);
+ 	if (ret) {
+ 		ath10k_warn(ar, "failed to register driver core: %d\n", ret);
+-		goto err;
++		goto err_usb_destroy;
+ 	}
  
- 		/* F/w needs 1st task context memory entry for performance */
-@@ -2600,6 +2600,8 @@ static int __qedi_probe(struct pci_dev *pdev, int mode)
+ 	/* TODO: remove this once USB support is fully implemented */
+@@ -1040,6 +1040,9 @@ static int ath10k_usb_probe(struct usb_interface *interface,
  
  	return 0;
  
-+free_tmf_thread:
-+	destroy_workqueue(qedi->tmf_thread);
- free_cid_que:
- 	qedi_release_cid_que(qedi);
- free_uio:
++err_usb_destroy:
++	ath10k_usb_destroy(ar);
++
+ err:
+ 	ath10k_core_destroy(ar);
+ 
 -- 
 2.27.0
 
