@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D2092E384E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:09:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6956A2E3DC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:20:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730939AbgL1NIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:08:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36074 "EHLO mail.kernel.org"
+        id S2392051AbgL1OT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:19:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730926AbgL1NIY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:08:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19C6D22582;
-        Mon, 28 Dec 2020 13:07:42 +0000 (UTC)
+        id S2502151AbgL1OTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:19:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B125820731;
+        Mon, 28 Dec 2020 14:19:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160863;
-        bh=xjtL+iv3DcMyV6dkej0drfYg8VG96FI18LRjD0Omnlw=;
+        s=korg; t=1609165150;
+        bh=TWbu2r3Uhk3b7ljFSFzuvKyKwXb+PRqbbToS6v7JESw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GADUdhdxwhaR9uRhzJjpkNoQDA/qo1t9sJA6oEff4oxevrNSfbTgS4/fOedczgb/G
-         z9xtItyWcKBreFq+PIGd4/TFGnTdTPfPbsc4nRfcf6cET57QHTyxy2f4lsL11txQWQ
-         jBiUJS7by3Q9DWbI/kKe6H0VjNywN7+IzI6mwUgA=
+        b=GJM1fHMnskT5QU5D8Q+kPIbJRoOAmpi5uDbJMGlrdgtxWWnVyaZyGRkZrBbyVgqLZ
+         aCSJfZLSppHmje8YeWASd6WkhbhhDgNNy5SisZP1MtZrTlaC/Tnxqnr2t1Yoh2rn0P
+         1f7MK84cooRl/HQ+otcmD0JW+PTwTt2iMAFBn/Eg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fugang Duan <fugang.duan@nxp.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 021/242] net: stmmac: delete the eee_ctrl_timer after napi disabled
-Date:   Mon, 28 Dec 2020 13:47:06 +0100
-Message-Id: <20201228124905.714771477@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 429/717] watchdog: sirfsoc: Add missing dependency on HAS_IOMEM
+Date:   Mon, 28 Dec 2020 13:47:07 +0100
+Message-Id: <20201228125041.520197536@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,62 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fugang Duan <fugang.duan@nxp.com>
+From: Guenter Roeck <linux@roeck-us.net>
 
-[ Upstream commit 5f58591323bf3f342920179f24515935c4b5fd60 ]
+[ Upstream commit 8ae2511112d2e18bc7d324b77f965d34083a25a2 ]
 
-There have chance to re-enable the eee_ctrl_timer and fire the timer
-in napi callback after delete the timer in .stmmac_release(), which
-introduces to access eee registers in the timer function after clocks
-are disabled then causes system hang. Found this issue when do
-suspend/resume and reboot stress test.
+If HAS_IOMEM is not defined and SIRFSOC_WATCHDOG is enabled,
+the build fails with the following error.
 
-It is safe to delete the timer after napi disabled and disable lpi mode.
+drivers/watchdog/sirfsoc_wdt.o: in function `sirfsoc_wdt_probe':
+sirfsoc_wdt.c:(.text+0x112):
+	undefined reference to `devm_platform_ioremap_resource'
 
-Fixes: d765955d2ae0b ("stmmac: add the Energy Efficient Ethernet support")
-Signed-off-by: Fugang Duan <fugang.duan@nxp.com>
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Fixes: da2a68b3eb47 ("watchdog: Enable COMPILE_TEST where possible")
+Link: https://lore.kernel.org/r/20201108162550.27660-2-linux@roeck-us.net
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c |   13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ drivers/watchdog/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -2705,9 +2705,6 @@ static int stmmac_release(struct net_dev
- {
- 	struct stmmac_priv *priv = netdev_priv(dev);
+diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+index b3e8bdaa2a112..f8e9be65036ae 100644
+--- a/drivers/watchdog/Kconfig
++++ b/drivers/watchdog/Kconfig
+@@ -790,6 +790,7 @@ config MOXART_WDT
  
--	if (priv->eee_enabled)
--		del_timer_sync(&priv->eee_ctrl_timer);
--
- 	/* Stop and disconnect the PHY */
- 	if (dev->phydev) {
- 		phy_stop(dev->phydev);
-@@ -2727,6 +2724,11 @@ static int stmmac_release(struct net_dev
- 	if (priv->lpi_irq > 0)
- 		free_irq(priv->lpi_irq, dev);
- 
-+	if (priv->eee_enabled) {
-+		priv->tx_path_in_lpi_mode = false;
-+		del_timer_sync(&priv->eee_ctrl_timer);
-+	}
-+
- 	/* Stop TX/RX DMA and clear the descriptors */
- 	stmmac_stop_all_dma(priv);
- 
-@@ -4418,6 +4420,11 @@ int stmmac_suspend(struct device *dev)
- 
- 	stmmac_disable_all_queues(priv);
- 
-+	if (priv->eee_enabled) {
-+		priv->tx_path_in_lpi_mode = false;
-+		del_timer_sync(&priv->eee_ctrl_timer);
-+	}
-+
- 	/* Stop TX/RX DMA */
- 	stmmac_stop_all_dma(priv);
- 
+ config SIRFSOC_WATCHDOG
+ 	tristate "SiRFSOC watchdog"
++	depends on HAS_IOMEM
+ 	depends on ARCH_SIRF || COMPILE_TEST
+ 	select WATCHDOG_CORE
+ 	default y
+-- 
+2.27.0
+
 
 
