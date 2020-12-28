@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC9E12E3C32
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:59:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A602A2E4294
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:25:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407686AbgL1N7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:59:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33326 "EHLO mail.kernel.org"
+        id S2504266AbgL1PYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:24:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436505AbgL1N7d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:59:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 04295207BC;
-        Mon, 28 Dec 2020 13:58:51 +0000 (UTC)
+        id S2407902AbgL1N7L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:59:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B5A7F205CB;
+        Mon, 28 Dec 2020 13:58:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163932;
-        bh=yRp7TAlyMOY3UjlQS2qI9K6VQ2w8z6dQqYEKaquX9g0=;
+        s=korg; t=1609163935;
+        bh=Onhd4CKiwI1ET6b9/v345pCurlZoNKRRJNBGGAMCTyI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Trdry1H27AwtGDmML/ooSGeVfybZcxyq2YuCAoqgyjyixCUeYaf1qJgAWqQ5whR8e
-         YIkuFo6ug2LQ2WVDKDHSJhUZGHdZmKQaFeqtKn5u+KEigm+MCFFyo4qVkopcEw+x4O
-         JDuJmjcmqPONnZUj3qwJ22FaaEeq5L/rq5zPJBA8=
+        b=taX5dQFZZyw04+u934d4d1Gzc/JFF6kSwDxg5Oz6IwD3fChXYUWkNIYDAuuPCxODS
+         oI1duGzTyQw3VefRYtb3aX2NGFsCCzdgT3+i6ec8Wp3/Fs2NHBVnviYUhuMzXmZVVB
+         m/ntzD8Nw2LCyM3Y0AsBr/6lrBfi0AKKqOPs9rok=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Michael Kurth <mku@amazon.de>,
         Pawel Wieczorkiewicz <wipawel@amazon.de>,
         Juergen Gross <jgross@suse.com>
-Subject: [PATCH 5.4 443/453] xen/xenbus: Allow watches discard events before queueing
-Date:   Mon, 28 Dec 2020 13:51:19 +0100
-Message-Id: <20201228124958.537598224@linuxfoundation.org>
+Subject: [PATCH 5.4 444/453] xen/xenbus: Add will_handle callback support in xenbus_watch_path()
+Date:   Mon, 28 Dec 2020 13:51:20 +0100
+Message-Id: <20201228124958.585176574@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
 References: <20201228124937.240114599@linuxfoundation.org>
@@ -43,23 +43,12 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: SeongJae Park <sjpark@amazon.de>
 
-commit fed1755b118147721f2c87b37b9d66e62c39b668 upstream.
+commit 2e85d32b1c865bec703ce0c962221a5e955c52c2 upstream.
 
-If handling logics of watch events are slower than the events enqueue
-logic and the events can be created from the guests, the guests could
-trigger memory pressure by intensively inducing the events, because it
-will create a huge number of pending events that exhausting the memory.
-
-Fortunately, some watch events could be ignored, depending on its
-handler callback.  For example, if the callback has interest in only one
-single path, the watch wouldn't want multiple pending events.  Or, some
-watches could ignore events to same path.
-
-To let such watches to volutarily help avoiding the memory pressure
-situation, this commit introduces new watch callback, 'will_handle'.  If
-it is not NULL, it will be called for each new event just before
-enqueuing it.  Then, if the callback returns false, the event will be
-discarded.  No watch is using the callback for now, though.
+Some code does not directly make 'xenbus_watch' object and call
+'register_xenbus_watch()' but use 'xenbus_watch_path()' instead.  This
+commit adds support of 'will_handle' callback in the
+'xenbus_watch_path()' and it's wrapper, 'xenbus_watch_pathfmt()'.
 
 This is part of XSA-349
 
@@ -72,84 +61,120 @@ Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/xen-netback/xenbus.c   |    4 ++++
- drivers/xen/xenbus/xenbus_client.c |    1 +
- drivers/xen/xenbus/xenbus_xs.c     |    5 ++++-
- include/xen/xenbus.h               |    7 +++++++
- 4 files changed, 16 insertions(+), 1 deletion(-)
+ drivers/block/xen-blkback/xenbus.c |    3 ++-
+ drivers/net/xen-netback/xenbus.c   |    2 +-
+ drivers/xen/xen-pciback/xenbus.c   |    2 +-
+ drivers/xen/xenbus/xenbus_client.c |    9 +++++++--
+ drivers/xen/xenbus/xenbus_probe.c  |    2 +-
+ include/xen/xenbus.h               |    6 +++++-
+ 6 files changed, 17 insertions(+), 7 deletions(-)
 
+--- a/drivers/block/xen-blkback/xenbus.c
++++ b/drivers/block/xen-blkback/xenbus.c
+@@ -644,7 +644,8 @@ static int xen_blkbk_probe(struct xenbus
+ 	/* setup back pointer */
+ 	be->blkif->be = be;
+ 
+-	err = xenbus_watch_pathfmt(dev, &be->backend_watch, backend_changed,
++	err = xenbus_watch_pathfmt(dev, &be->backend_watch, NULL,
++				   backend_changed,
+ 				   "%s/%s", dev->nodename, "physical-device");
+ 	if (err)
+ 		goto fail;
 --- a/drivers/net/xen-netback/xenbus.c
 +++ b/drivers/net/xen-netback/xenbus.c
-@@ -713,12 +713,14 @@ static int xen_register_credit_watch(str
- 		return -ENOMEM;
- 	snprintf(node, maxlen, "%s/rate", dev->nodename);
- 	vif->credit_watch.node = node;
-+	vif->credit_watch.will_handle = NULL;
- 	vif->credit_watch.callback = xen_net_rate_changed;
- 	err = register_xenbus_watch(&vif->credit_watch);
- 	if (err) {
- 		pr_err("Failed to set watcher %s\n", vif->credit_watch.node);
- 		kfree(node);
- 		vif->credit_watch.node = NULL;
-+		vif->credit_watch.will_handle = NULL;
- 		vif->credit_watch.callback = NULL;
- 	}
- 	return err;
-@@ -765,6 +767,7 @@ static int xen_register_mcast_ctrl_watch
- 	snprintf(node, maxlen, "%s/request-multicast-control",
- 		 dev->otherend);
- 	vif->mcast_ctrl_watch.node = node;
-+	vif->mcast_ctrl_watch.will_handle = NULL;
- 	vif->mcast_ctrl_watch.callback = xen_mcast_ctrl_changed;
- 	err = register_xenbus_watch(&vif->mcast_ctrl_watch);
- 	if (err) {
-@@ -772,6 +775,7 @@ static int xen_register_mcast_ctrl_watch
- 		       vif->mcast_ctrl_watch.node);
- 		kfree(node);
- 		vif->mcast_ctrl_watch.node = NULL;
-+		vif->mcast_ctrl_watch.will_handle = NULL;
- 		vif->mcast_ctrl_watch.callback = NULL;
- 	}
- 	return err;
+@@ -979,7 +979,7 @@ static void connect(struct backend_info
+ 	xenvif_carrier_on(be->vif);
+ 
+ 	unregister_hotplug_status_watch(be);
+-	err = xenbus_watch_pathfmt(dev, &be->hotplug_status_watch,
++	err = xenbus_watch_pathfmt(dev, &be->hotplug_status_watch, NULL,
+ 				   hotplug_status_changed,
+ 				   "%s/%s", dev->nodename, "hotplug-status");
+ 	if (!err)
+--- a/drivers/xen/xen-pciback/xenbus.c
++++ b/drivers/xen/xen-pciback/xenbus.c
+@@ -688,7 +688,7 @@ static int xen_pcibk_xenbus_probe(struct
+ 
+ 	/* watch the backend node for backend configuration information */
+ 	err = xenbus_watch_path(dev, dev->nodename, &pdev->be_watch,
+-				xen_pcibk_be_watch);
++				NULL, xen_pcibk_be_watch);
+ 	if (err)
+ 		goto out;
+ 
 --- a/drivers/xen/xenbus/xenbus_client.c
 +++ b/drivers/xen/xenbus/xenbus_client.c
-@@ -120,6 +120,7 @@ int xenbus_watch_path(struct xenbus_devi
+@@ -114,19 +114,22 @@ EXPORT_SYMBOL_GPL(xenbus_strstate);
+  */
+ int xenbus_watch_path(struct xenbus_device *dev, const char *path,
+ 		      struct xenbus_watch *watch,
++		      bool (*will_handle)(struct xenbus_watch *,
++					  const char *, const char *),
+ 		      void (*callback)(struct xenbus_watch *,
+ 				       const char *, const char *))
+ {
  	int err;
  
  	watch->node = path;
-+	watch->will_handle = NULL;
+-	watch->will_handle = NULL;
++	watch->will_handle = will_handle;
  	watch->callback = callback;
  
  	err = register_xenbus_watch(watch);
---- a/drivers/xen/xenbus/xenbus_xs.c
-+++ b/drivers/xen/xenbus/xenbus_xs.c
-@@ -705,7 +705,10 @@ int xs_watch_msg(struct xs_watch_event *
  
- 	spin_lock(&watches_lock);
- 	event->handle = find_watch(event->token);
--	if (event->handle != NULL) {
-+	if (event->handle != NULL &&
-+			(!event->handle->will_handle ||
-+			 event->handle->will_handle(event->handle,
-+				 event->path, event->token))) {
- 		spin_lock(&watch_events_lock);
- 		list_add_tail(&event->list, &watch_events);
- 		wake_up(&watch_events_waitq);
+ 	if (err) {
+ 		watch->node = NULL;
++		watch->will_handle = NULL;
+ 		watch->callback = NULL;
+ 		xenbus_dev_fatal(dev, err, "adding watch on %s", path);
+ 	}
+@@ -153,6 +156,8 @@ EXPORT_SYMBOL_GPL(xenbus_watch_path);
+  */
+ int xenbus_watch_pathfmt(struct xenbus_device *dev,
+ 			 struct xenbus_watch *watch,
++			 bool (*will_handle)(struct xenbus_watch *,
++					const char *, const char *),
+ 			 void (*callback)(struct xenbus_watch *,
+ 					  const char *, const char *),
+ 			 const char *pathfmt, ...)
+@@ -169,7 +174,7 @@ int xenbus_watch_pathfmt(struct xenbus_d
+ 		xenbus_dev_fatal(dev, -ENOMEM, "allocating path for watch");
+ 		return -ENOMEM;
+ 	}
+-	err = xenbus_watch_path(dev, path, watch, callback);
++	err = xenbus_watch_path(dev, path, watch, will_handle, callback);
+ 
+ 	if (err)
+ 		kfree(path);
+--- a/drivers/xen/xenbus/xenbus_probe.c
++++ b/drivers/xen/xenbus/xenbus_probe.c
+@@ -136,7 +136,7 @@ static int watch_otherend(struct xenbus_
+ 		container_of(dev->dev.bus, struct xen_bus_type, bus);
+ 
+ 	return xenbus_watch_pathfmt(dev, &dev->otherend_watch,
+-				    bus->otherend_changed,
++				    NULL, bus->otherend_changed,
+ 				    "%s/%s", dev->otherend, "state");
+ }
+ 
 --- a/include/xen/xenbus.h
 +++ b/include/xen/xenbus.h
-@@ -59,6 +59,13 @@ struct xenbus_watch
- 	/* Path being watched. */
- 	const char *node;
+@@ -199,10 +199,14 @@ void xenbus_probe(struct work_struct *);
  
-+	/*
-+	 * Called just before enqueing new event while a spinlock is held.
-+	 * The event will be discarded if this callback returns false.
-+	 */
-+	bool (*will_handle)(struct xenbus_watch *,
-+			      const char *path, const char *token);
-+
- 	/* Callback (executed in a process context with no locks held). */
- 	void (*callback)(struct xenbus_watch *,
- 			 const char *path, const char *token);
+ int xenbus_watch_path(struct xenbus_device *dev, const char *path,
+ 		      struct xenbus_watch *watch,
++		      bool (*will_handle)(struct xenbus_watch *,
++					  const char *, const char *),
+ 		      void (*callback)(struct xenbus_watch *,
+ 				       const char *, const char *));
+-__printf(4, 5)
++__printf(5, 6)
+ int xenbus_watch_pathfmt(struct xenbus_device *dev, struct xenbus_watch *watch,
++			 bool (*will_handle)(struct xenbus_watch *,
++					     const char *, const char *),
+ 			 void (*callback)(struct xenbus_watch *,
+ 					  const char *, const char *),
+ 			 const char *pathfmt, ...);
 
 
