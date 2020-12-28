@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8633F2E432D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:34:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD4B12E38F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:17:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407071AbgL1Pd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:33:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55884 "EHLO mail.kernel.org"
+        id S1731447AbgL1NRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:17:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405061AbgL1Nyt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:54:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB8B520731;
-        Mon, 28 Dec 2020 13:54:33 +0000 (UTC)
+        id S1733303AbgL1NQs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:16:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3291206ED;
+        Mon, 28 Dec 2020 13:16:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163674;
-        bh=gUQzAdPCX55oMJ9NUDZLCAt00yC3cJNBAcYgtNs8HK8=;
+        s=korg; t=1609161392;
+        bh=RbDcjuJnyl4u7qF5cQy8ysnjkXs0VKIHaADtPawkIe8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oecG+57pkv59zOlWT61SUj+mxGLgGrcjUwiuYvHsV996QG4NC9elUtBtfAyfUybSG
-         DT3dYyL1KN01clt16NHu6UP9p+GfX/U0fqTpgZEL7JnHF/RxVyysXY2PtZ/4FXZ6v0
-         mg5984HQsA6uAiL2tJdjVS5vo2V18CrrYImEa5Vc=
+        b=RqwB5sJ42KlZS5b/fr3LcdRqtP1pcBO8UxIOTl812bNDvzyui6/T4ZznZbNVNHPau
+         xjrDT7A07NvLG0LMv7p5N5IMVR7U4pvH4vONj+Zw4j2ReyNUc8WBQo6Kd41dadpgtI
+         lnyMJEEUFxlQ7J4KfBvp6b3b8BAPFf5AS3oVvjMs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.4 367/453] USB: serial: keyspan_pda: fix write deadlock
+        stable@vger.kernel.org, Borislav Petkov <bp@suse.de>
+Subject: [PATCH 4.14 198/242] EDAC/amd64: Fix PCI component registration
 Date:   Mon, 28 Dec 2020 13:50:03 +0100
-Message-Id: <20201228124954.868515759@linuxfoundation.org>
+Message-Id: <20201228124914.430606835@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +38,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Borislav Petkov <bp@suse.de>
 
-commit 7353cad7ee4deaefc16e94727e69285563e219f6 upstream.
+commit 706657b1febf446a9ba37dc51b89f46604f57ee9 upstream.
 
-The write() callback can be called in interrupt context (e.g. when used
-as a console) so interrupts must be disabled while holding the port lock
-to prevent a possible deadlock.
+In order to setup its PCI component, the driver needs any node private
+instance in order to get a reference to the PCI device and hand that
+into edac_pci_create_generic_ctl(). For convenience, it uses the 0th
+memory controller descriptor under the assumption that if any, the 0th
+will be always present.
 
-Fixes: e81ee637e4ae ("usb-serial: possible irq lock inversion (PPP vs. usb/serial)")
-Fixes: 507ca9bc0476 ("[PATCH] USB: add ability for usb-serial drivers to determine if their write urb is currently being used.")
-Cc: stable <stable@vger.kernel.org>     # 2.6.19
-Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Johan Hovold <johan@kernel.org>
+However, this assumption goes wrong when the 0th node doesn't have
+memory and the driver doesn't initialize an instance for it:
+
+  EDAC amd64: F17h detected (node 0).
+  ...
+  EDAC amd64: Node 0: No DIMMs detected.
+
+But looking up node instances is not really needed - all one needs is
+the pointer to the proper device which gets discovered during instance
+init.
+
+So stash that pointer into a variable and use it when setting up the
+EDAC PCI component.
+
+Clear that variable when the driver needs to unwind due to some
+instances failing init to avoid any registration imbalance.
+
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20201122150815.13808-1-bp@alien8.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/serial/keyspan_pda.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/edac/amd64_edac.c |   26 ++++++++++++++------------
+ 1 file changed, 14 insertions(+), 12 deletions(-)
 
---- a/drivers/usb/serial/keyspan_pda.c
-+++ b/drivers/usb/serial/keyspan_pda.c
-@@ -443,6 +443,7 @@ static int keyspan_pda_write(struct tty_
- 	int request_unthrottle = 0;
- 	int rc = 0;
- 	struct keyspan_pda_private *priv;
-+	unsigned long flags;
+--- a/drivers/edac/amd64_edac.c
++++ b/drivers/edac/amd64_edac.c
+@@ -18,6 +18,9 @@ static struct msr __percpu *msrs;
+ /* Per-node stuff */
+ static struct ecc_settings **ecc_stngs;
  
- 	priv = usb_get_serial_port_data(port);
- 	/* guess how much room is left in the device's ring buffer, and if we
-@@ -462,13 +463,13 @@ static int keyspan_pda_write(struct tty_
- 	   the TX urb is in-flight (wait until it completes)
- 	   the device is full (wait until it says there is room)
- 	*/
--	spin_lock_bh(&port->lock);
-+	spin_lock_irqsave(&port->lock, flags);
- 	if (!test_bit(0, &port->write_urbs_free) || priv->tx_throttled) {
--		spin_unlock_bh(&port->lock);
-+		spin_unlock_irqrestore(&port->lock, flags);
- 		return 0;
++/* Device for the PCI component */
++static struct device *pci_ctl_dev;
++
+ /*
+  * Valid scrub rates for the K8 hardware memory scrubber. We map the scrubbing
+  * bandwidth to a valid bit pattern. The 'set' operation finds the 'matching-
+@@ -2554,6 +2557,9 @@ reserve_mc_sibling_devs(struct amd64_pvt
+ 			return -ENODEV;
+ 		}
+ 
++		if (!pci_ctl_dev)
++			pci_ctl_dev = &pvt->F0->dev;
++
+ 		edac_dbg(1, "F0: %s\n", pci_name(pvt->F0));
+ 		edac_dbg(1, "F3: %s\n", pci_name(pvt->F3));
+ 		edac_dbg(1, "F6: %s\n", pci_name(pvt->F6));
+@@ -2578,6 +2584,9 @@ reserve_mc_sibling_devs(struct amd64_pvt
+ 		return -ENODEV;
  	}
- 	clear_bit(0, &port->write_urbs_free);
--	spin_unlock_bh(&port->lock);
-+	spin_unlock_irqrestore(&port->lock, flags);
  
- 	/* At this point the URB is in our control, nobody else can submit it
- 	   again (the only sudden transition was the one from EINPROGRESS to
++	if (!pci_ctl_dev)
++		pci_ctl_dev = &pvt->F2->dev;
++
+ 	edac_dbg(1, "F1: %s\n", pci_name(pvt->F1));
+ 	edac_dbg(1, "F2: %s\n", pci_name(pvt->F2));
+ 	edac_dbg(1, "F3: %s\n", pci_name(pvt->F3));
+@@ -3428,21 +3437,10 @@ static void remove_one_instance(unsigned
+ 
+ static void setup_pci_device(void)
+ {
+-	struct mem_ctl_info *mci;
+-	struct amd64_pvt *pvt;
+-
+ 	if (pci_ctl)
+ 		return;
+ 
+-	mci = edac_mc_find(0);
+-	if (!mci)
+-		return;
+-
+-	pvt = mci->pvt_info;
+-	if (pvt->umc)
+-		pci_ctl = edac_pci_create_generic_ctl(&pvt->F0->dev, EDAC_MOD_STR);
+-	else
+-		pci_ctl = edac_pci_create_generic_ctl(&pvt->F2->dev, EDAC_MOD_STR);
++	pci_ctl = edac_pci_create_generic_ctl(pci_ctl_dev, EDAC_MOD_STR);
+ 	if (!pci_ctl) {
+ 		pr_warn("%s(): Unable to create PCI control\n", __func__);
+ 		pr_warn("%s(): PCI error report via EDAC not set\n", __func__);
+@@ -3517,6 +3515,8 @@ static int __init amd64_edac_init(void)
+ 	return 0;
+ 
+ err_pci:
++	pci_ctl_dev = NULL;
++
+ 	msrs_free(msrs);
+ 	msrs = NULL;
+ 
+@@ -3548,6 +3548,8 @@ static void __exit amd64_edac_exit(void)
+ 	kfree(ecc_stngs);
+ 	ecc_stngs = NULL;
+ 
++	pci_ctl_dev = NULL;
++
+ 	msrs_free(msrs);
+ 	msrs = NULL;
+ }
 
 
