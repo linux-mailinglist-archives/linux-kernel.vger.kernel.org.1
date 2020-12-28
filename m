@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 487932E6749
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:23:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 221E12E695D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:49:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387408AbgL1QXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:23:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41416 "EHLO mail.kernel.org"
+        id S1728168AbgL1Mx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:53:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49800 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732224AbgL1NNY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:13:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E221C208D5;
-        Mon, 28 Dec 2020 13:12:42 +0000 (UTC)
+        id S1728092AbgL1MxZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:53:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C9D5921D94;
+        Mon, 28 Dec 2020 12:53:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161163;
-        bh=waV4/zyCcsTYaqm0wBqC73lPK4M+tQcsB5fXUOYMaZM=;
+        s=korg; t=1609159990;
+        bh=pTvif6N61dk2LqyTuqvqgcraYYX9lXCcL5IFWOtqYGQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PAi13fgoeiIHhsK+HcXj04I9zig0E1DWf9S3RvO/VjJ5VI4nGD2y3p8Ko1uBfcKax
-         SFLCJT7f/8p2pDef6sZGSHG6KOvBpgy4jJzF/UFxbp5oULzbea8VblrbCWJlHEScJV
-         YP+p3Pg8CEKqhWURh7MFPWWehEH9+3EI7MZT55+M=
+        b=OvamTBkoDDK0TMy9wFgsJYp1g6N2tC54n81dsGP5vuoSjAXevw+O5oFUXNs8opmqn
+         fO/05rsuzQWmUDiQeUpqAnJ6t6iua/8MvfXVvtyw2Rf65gvcb0M1plbx9euQ1WBna6
+         kYD04n2pkbTWeSpmJLN8SLJkZRfQ3Gc6XMERto0M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 123/242] ath10k: Release some resources in an error handling path
-Date:   Mon, 28 Dec 2020 13:48:48 +0100
-Message-Id: <20201228124910.751751761@linuxfoundation.org>
+Subject: [PATCH 4.4 045/132] MIPS: BCM47XX: fix kconfig dependency bug for BCM47XX_BCMA
+Date:   Mon, 28 Dec 2020 13:48:49 +0100
+Message-Id: <20201228124848.604885251@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,45 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Necip Fazil Yildiran <fazilyildiran@gmail.com>
 
-[ Upstream commit 6364e693f4a7a89a2fb3dd2cbd6cc06d5fd6e26d ]
+[ Upstream commit 3a5fe2fb9635c43359c9729352f45044f3c8df6b ]
 
-Should an error occur after calling 'ath10k_usb_create()', it should be
-undone by a corresponding 'ath10k_usb_destroy()' call
+When BCM47XX_BCMA is enabled and BCMA_DRIVER_PCI is disabled, it results
+in the following Kbuild warning:
 
-Fixes: 4db66499df91 ("ath10k: add initial USB support")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20201122170358.1346065-1-christophe.jaillet@wanadoo.fr
+WARNING: unmet direct dependencies detected for BCMA_DRIVER_PCI_HOSTMODE
+  Depends on [n]: MIPS [=y] && BCMA_DRIVER_PCI [=n] && PCI_DRIVERS_LEGACY [=y] && BCMA [=y]=y
+  Selected by [y]:
+  - BCM47XX_BCMA [=y] && BCM47XX [=y] && PCI [=y]
+
+The reason is that BCM47XX_BCMA selects BCMA_DRIVER_PCI_HOSTMODE without
+depending on or selecting BCMA_DRIVER_PCI while BCMA_DRIVER_PCI_HOSTMODE
+depends on BCMA_DRIVER_PCI. This can also fail building the kernel.
+
+Honor the kconfig dependency to remove unmet direct dependency warnings
+and avoid any potential build failures.
+
+Fixes: c1d1c5d4213e ("bcm47xx: add support for bcma bus")
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=209879
+Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/usb.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/mips/bcm47xx/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/usb.c b/drivers/net/wireless/ath/ath10k/usb.c
-index f4e6d84bfb91c..16d5fe6d1e2e4 100644
---- a/drivers/net/wireless/ath/ath10k/usb.c
-+++ b/drivers/net/wireless/ath/ath10k/usb.c
-@@ -1032,7 +1032,7 @@ static int ath10k_usb_probe(struct usb_interface *interface,
- 	ret = ath10k_core_register(ar, chip_id);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to register driver core: %d\n", ret);
--		goto err;
-+		goto err_usb_destroy;
- 	}
- 
- 	/* TODO: remove this once USB support is fully implemented */
-@@ -1040,6 +1040,9 @@ static int ath10k_usb_probe(struct usb_interface *interface,
- 
- 	return 0;
- 
-+err_usb_destroy:
-+	ath10k_usb_destroy(ar);
-+
- err:
- 	ath10k_core_destroy(ar);
- 
+diff --git a/arch/mips/bcm47xx/Kconfig b/arch/mips/bcm47xx/Kconfig
+index e970fd9cf7693..7ca7384fd5c9d 100644
+--- a/arch/mips/bcm47xx/Kconfig
++++ b/arch/mips/bcm47xx/Kconfig
+@@ -26,6 +26,7 @@ config BCM47XX_BCMA
+ 	select BCMA
+ 	select BCMA_HOST_SOC
+ 	select BCMA_DRIVER_MIPS
++	select BCMA_DRIVER_PCI if PCI
+ 	select BCMA_DRIVER_PCI_HOSTMODE if PCI
+ 	select BCMA_DRIVER_GPIO
+ 	default y
 -- 
 2.27.0
 
