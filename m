@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E4F2E3894
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:13:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E7E72E3DFF
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:24:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729295AbgL1NMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:12:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39606 "EHLO mail.kernel.org"
+        id S2502682AbgL1OWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:22:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731812AbgL1NLj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:11:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EB2322583;
-        Mon, 28 Dec 2020 13:10:58 +0000 (UTC)
+        id S2502667AbgL1OWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:22:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 51AD320731;
+        Mon, 28 Dec 2020 14:22:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161059;
-        bh=FPl1n4rY6j8/9aRcctzB8Cg//MkGQH+LPD2+M9kwdxA=;
+        s=korg; t=1609165335;
+        bh=Al+ew9otR+njL6C8r5gDrw2MpAKsbWvr1VcofJGPCAM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pSOP5IPnBySSn1mWTdEyXUWWQAXdnzluxqd1+UkiR0XUqqdUKMd+myIieO88qjxmC
-         h+XomksTsUmSAVCv7K8PZkFWYc9vSbn+9fPVPUgBVFGP01gh9XeYBic0C1Not2/f5h
-         h1i82ywL65m+NAQhcdPzTRO1i5H+E3jq+gM4v8LE=
+        b=k/SaoEcn0hJfJfEhZD6RuD+HHl94wQqc5JGi+zUGhP5hUHXZ3I+f70toZ1FPDzFBE
+         /aZhmu9zaHeTTf97i0EAo3wUMJD2aFfX3lj2nL41weNHbZhwnJOfJtRYLAumZb8Ir+
+         sP7oLxUkPwd9aCqGOpYYNC91vXv0QHitJJtNalnk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vincent Bernat <vincent@bernat.ch>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 087/242] net: evaluate net.ipvX.conf.all.ignore_routes_with_linkdown
+Subject: [PATCH 5.10 494/717] clk: bcm: dvp: Add MODULE_DEVICE_TABLE()
 Date:   Mon, 28 Dec 2020 13:48:12 +0100
-Message-Id: <20201228124908.978501280@linuxfoundation.org>
+Message-Id: <20201228125044.632201023@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,109 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Bernat <vincent@bernat.ch>
+From: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 
-[ Upstream commit c0c5a60f0f1311bcf08bbe735122096d6326fb5b ]
+[ Upstream commit be439cc4c404f646a8ba090fa786d53c10926b12 ]
 
-Introduced in 0eeb075fad73, the "ignore_routes_with_linkdown" sysctl
-ignores a route whose interface is down. It is provided as a
-per-interface sysctl. However, while a "all" variant is exposed, it
-was a noop since it was never evaluated. We use the usual "or" logic
-for this kind of sysctls.
+Add MODULE_DEVICE_TABLE() so as to be able to use the driver as a
+module. More precisely, for the driver to be loaded automatically at
+boot.
 
-Tested with:
-
-    ip link add type veth # veth0 + veth1
-    ip link add type veth # veth1 + veth2
-    ip link set up dev veth0
-    ip link set up dev veth1 # link-status paired with veth0
-    ip link set up dev veth2
-    ip link set up dev veth3 # link-status paired with veth2
-
-    # First available path
-    ip -4 addr add 203.0.113.${uts#H}/24 dev veth0
-    ip -6 addr add 2001:db8:1::${uts#H}/64 dev veth0
-
-    # Second available path
-    ip -4 addr add 192.0.2.${uts#H}/24 dev veth2
-    ip -6 addr add 2001:db8:2::${uts#H}/64 dev veth2
-
-    # More specific route through first path
-    ip -4 route add 198.51.100.0/25 via 203.0.113.254 # via veth0
-    ip -6 route add 2001:db8:3::/56 via 2001:db8:1::ff # via veth0
-
-    # Less specific route through second path
-    ip -4 route add 198.51.100.0/24 via 192.0.2.254 # via veth2
-    ip -6 route add 2001:db8:3::/48 via 2001:db8:2::ff # via veth2
-
-    # H1: enable on "all"
-    # H2: enable on "veth0"
-    for v in ipv4 ipv6; do
-      case $uts in
-        H1)
-          sysctl -qw net.${v}.conf.all.ignore_routes_with_linkdown=1
-          ;;
-        H2)
-          sysctl -qw net.${v}.conf.veth0.ignore_routes_with_linkdown=1
-          ;;
-      esac
-    done
-
-    set -xe
-    # When veth0 is up, best route is through veth0
-    ip -o route get 198.51.100.1 | grep -Fw veth0
-    ip -o route get 2001:db8:3::1 | grep -Fw veth0
-
-    # When veth0 is down, best route should be through veth2 on H1/H2,
-    # but on veth0 on H2
-    ip link set down dev veth1 # down veth0
-    ip route show
-    [ $uts != H3 ] || ip -o route get 198.51.100.1 | grep -Fw veth0
-    [ $uts != H3 ] || ip -o route get 2001:db8:3::1 | grep -Fw veth0
-    [ $uts = H3 ] || ip -o route get 198.51.100.1 | grep -Fw veth2
-    [ $uts = H3 ] || ip -o route get 2001:db8:3::1 | grep -Fw veth2
-
-Without this patch, the two last lines would fail on H1 (the one using
-the "all" sysctl). With the patch, everything succeeds as expected.
-
-Also document the sysctl in `ip-sysctl.rst`.
-
-Fixes: 0eeb075fad73 ("net: ipv4 sysctl option to ignore routes when nexthop link is down")
-Signed-off-by: Vincent Bernat <vincent@bernat.ch>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 1bc95972715a ("clk: bcm: Add BCM2711 DVP driver")
+Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Link: https://lore.kernel.org/r/20201202103518.21889-1-nsaenzjulienne@suse.de
+Reviewed-by: Maxime Ripard <mripard@kernel.org>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Documentation/networking/ip-sysctl.txt | 3 +++
- include/linux/inetdevice.h             | 2 +-
- 2 files changed, 4 insertions(+), 1 deletion(-)
+ drivers/clk/bcm/clk-bcm2711-dvp.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/networking/ip-sysctl.txt b/Documentation/networking/ip-sysctl.txt
-index 5f1e3dc567f1d..fe0e46418f6db 100644
---- a/Documentation/networking/ip-sysctl.txt
-+++ b/Documentation/networking/ip-sysctl.txt
-@@ -1271,6 +1271,9 @@ igmpv3_unsolicited_report_interval - INTEGER
- 	IGMPv3 report retransmit will take place.
- 	Default: 1000 (1 seconds)
+diff --git a/drivers/clk/bcm/clk-bcm2711-dvp.c b/drivers/clk/bcm/clk-bcm2711-dvp.c
+index 8333e20dc9d22..69e2f85f7029d 100644
+--- a/drivers/clk/bcm/clk-bcm2711-dvp.c
++++ b/drivers/clk/bcm/clk-bcm2711-dvp.c
+@@ -108,6 +108,7 @@ static const struct of_device_id clk_dvp_dt_ids[] = {
+ 	{ .compatible = "brcm,brcm2711-dvp", },
+ 	{ /* sentinel */ }
+ };
++MODULE_DEVICE_TABLE(of, clk_dvp_dt_ids);
  
-+ignore_routes_with_linkdown - BOOLEAN
-+        Ignore routes whose link is down when performing a FIB lookup.
-+
- promote_secondaries - BOOLEAN
- 	When a primary IP address is removed from this interface
- 	promote a corresponding secondary IP address instead of
-diff --git a/include/linux/inetdevice.h b/include/linux/inetdevice.h
-index 5058f061cb2bd..ff876bf66cf25 100644
---- a/include/linux/inetdevice.h
-+++ b/include/linux/inetdevice.h
-@@ -123,7 +123,7 @@ static inline void ipv4_devconf_setall(struct in_device *in_dev)
- 	  IN_DEV_ORCONF((in_dev), ACCEPT_REDIRECTS)))
- 
- #define IN_DEV_IGNORE_ROUTES_WITH_LINKDOWN(in_dev) \
--	IN_DEV_CONF_GET((in_dev), IGNORE_ROUTES_WITH_LINKDOWN)
-+	IN_DEV_ORCONF((in_dev), IGNORE_ROUTES_WITH_LINKDOWN)
- 
- #define IN_DEV_ARPFILTER(in_dev)	IN_DEV_ORCONF((in_dev), ARPFILTER)
- #define IN_DEV_ARP_ACCEPT(in_dev)	IN_DEV_ORCONF((in_dev), ARP_ACCEPT)
+ static struct platform_driver clk_dvp_driver = {
+ 	.probe	= clk_dvp_probe,
 -- 
 2.27.0
 
