@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49C822E651C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:57:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 520472E3BE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:57:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393283AbgL1P5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:57:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34926 "EHLO mail.kernel.org"
+        id S2406927AbgL1N4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:56:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390196AbgL1NeY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:34:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10AE521D94;
-        Mon, 28 Dec 2020 13:33:42 +0000 (UTC)
+        id S2405369AbgL1Nzy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:55:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF996205CB;
+        Mon, 28 Dec 2020 13:55:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162423;
-        bh=RR43aPk48dbG4yENq2dC3AtIW2qeyAkKaAk+MLeDzC4=;
+        s=korg; t=1609163714;
+        bh=Xpd+pIEKctHJU2+pXj8imbHkhlwWecnZgI8/5R8H2ho=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z1uUKVWVYea0pXPV/pN/ZQy2bZjILm78b7yumpPzts68sogsZMZjQGAKVzR6U5tJo
-         pi8waHJXmpUx0JxQk4tTpzNcCx6nS+f/rbjs6DLT0iXmoS9VpDJ41m4awq4dzgFrkN
-         FD7YW0GRnO+o5GN18jemmS5zie5gJWTLd7QFq7OQ=
+        b=tjWhOLZ7+JocQwEMSB48qIUohgdR3xpeV1hDrLUv7ctyXYgjaDeyaKBsM5AjG/2Qi
+         JPM8CFbfxPcgPE0r0A8k7BnhTeA6c4b2LmDH5cjLRBoKpmiYyZ4do6YS1OBiXvWagn
+         AqLK5K9tATlgosdTTOhiDwpHz2gHej2+9EftXl6o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "H. Nikolaus Schaller" <hns@goldelico.com>,
-        Tony Lindgren <tony@atomide.com>
-Subject: [PATCH 4.19 300/346] ARM: dts: pandaboard: fix pinmux for gpio user button of Pandaboard ES
+        stable@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.4 383/453] powerpc/xmon: Change printk() to pr_cont()
 Date:   Mon, 28 Dec 2020 13:50:19 +0100
-Message-Id: <20201228124934.287904655@linuxfoundation.org>
+Message-Id: <20201228124955.631364324@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,32 +40,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: H. Nikolaus Schaller <hns@goldelico.com>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-commit df9dbaf2c415cd94ad520067a1eccfee62f00a33 upstream.
+commit 7c6c86b36a36dd4a13d30bba07718e767aa2e7a1 upstream.
 
-The pinmux control register offset passed to OMAP4_IOPAD is odd.
+Since some time now, printk() adds carriage return, leading to
+unusable xmon output if there is no udbg backend available:
 
-Fixes: ab9a13665e7c ("ARM: dts: pandaboard: add gpio user button")
-Cc: stable@vger.kernel.org
-Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+  [   54.288722] sysrq: Entering xmon
+  [   54.292209] Vector: 0  at [cace3d2c]
+  [   54.292274]     pc:
+  [   54.292331] c0023650
+  [   54.292468] : xmon+0x28/0x58
+  [   54.292519]
+  [   54.292574]     lr:
+  [   54.292630] c0023724
+  [   54.292749] : sysrq_handle_xmon+0xa4/0xfc
+  [   54.292801]
+  [   54.292867]     sp: cace3de8
+  [   54.292931]    msr: 9032
+  [   54.292999]   current = 0xc28d0000
+  [   54.293072]     pid   = 377, comm = sh
+  [   54.293157] Linux version 5.10.0-rc6-s3k-dev-01364-gedf13f0ccd76-dirty (root@po17688vm.idsi0.si.c-s.fr) (powerpc64-linux-gcc (GCC) 10.1.0, GNU ld (GNU Binutils) 2.34) #4211 PREEMPT Fri Dec 4 09:32:11 UTC 2020
+  [   54.293287] enter ? for help
+  [   54.293470] [cace3de8]
+  [   54.293532] c0023724
+  [   54.293654]  sysrq_handle_xmon+0xa4/0xfc
+  [   54.293711]  (unreliable)
+  ...
+  [   54.296002]
+  [   54.296159] --- Exception: c01 (System Call) at
+  [   54.296217] 0fd4e784
+  [   54.296303]
+  [   54.296375] SP (7fca6ff0) is in userspace
+  [   54.296431] mon>
+  [   54.296484]  <no input ...>
+
+Use pr_cont() instead.
+
+Fixes: 4bcc595ccd80 ("printk: reinstate KERN_CONT for printing continuation lines")
+Cc: stable@vger.kernel.org # v4.9+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+[mpe: Mention that it only happens when udbg is not available]
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/c8a6ec704416ecd5ff2bd26213c9bc026bdd19de.1607077340.git.christophe.leroy@csgroup.eu
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm/boot/dts/omap4-panda-es.dts |    2 +-
+ arch/powerpc/xmon/nonstdio.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/arm/boot/dts/omap4-panda-es.dts
-+++ b/arch/arm/boot/dts/omap4-panda-es.dts
-@@ -49,7 +49,7 @@
+--- a/arch/powerpc/xmon/nonstdio.c
++++ b/arch/powerpc/xmon/nonstdio.c
+@@ -178,7 +178,7 @@ void xmon_printf(const char *format, ...
  
- 	button_pins: pinmux_button_pins {
- 		pinctrl-single,pins = <
--			OMAP4_IOPAD(0x11b, PIN_INPUT_PULLUP | MUX_MODE3) /* gpio_113 */
-+			OMAP4_IOPAD(0x0fc, PIN_INPUT_PULLUP | MUX_MODE3) /* gpio_113 */
- 		>;
- 	};
- };
+ 	if (n && rc == 0) {
+ 		/* No udbg hooks, fallback to printk() - dangerous */
+-		printk("%s", xmon_outbuf);
++		pr_cont("%s", xmon_outbuf);
+ 	}
+ }
+ 
 
 
