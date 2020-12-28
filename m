@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8A0C2E37F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:04:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E88E62E38B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:14:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730191AbgL1NDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:03:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59232 "EHLO mail.kernel.org"
+        id S1732257AbgL1NNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:13:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730166AbgL1NDE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:03:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 497D822BEA;
-        Mon, 28 Dec 2020 13:02:23 +0000 (UTC)
+        id S1732234AbgL1NN0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:13:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B3035207C9;
+        Mon, 28 Dec 2020 13:12:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160543;
-        bh=WEUAieE3Ak362iDkgtVFkxR33MpKfrCs5zA1z0i8KTc=;
+        s=korg; t=1609161166;
+        bh=E1GYUYAbH9ykkfF4Oarmxgi3hbfAtM29mibHRjVhMaY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lP1s4o61JMVpI1u70CxxZ2KMP0qBofcL8gSc8SMmBlLOmSRU/z0gDE9o/XrwOz38B
-         gz8jMaXMCdbZCoKS4aafDKPV+aZVjdLsEaSObYaoESrHdf/ziYyYQsG2ovmE5DssT1
-         vEOCUkK+aBfmV3IZbXOyfYo2otsg5mjj8KZaDLV0=
+        b=Z8wI/xnHGX2q2fGTmq+N5sVy2AvFPdyPOqeRakrCINalrd0O5nnl7jP+yJB/8nsoI
+         ZWF2mDo1IzZCfg62YibVVH0J3RRYwdG0kJoNH+ffXQQUdJQW0OEDuwAILvahAfPxRF
+         5uGRvwpbvhDHZBEB0i0orfaF8hR6EYZaqy7Jxp3c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anmol Karn <anmol.karan123@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Sasha Levin <sashal@kernel.org>,
-        syzbot+0bef568258653cff272f@syzkaller.appspotmail.com
-Subject: [PATCH 4.9 057/175] Bluetooth: Fix null pointer dereference in hci_event_packet()
-Date:   Mon, 28 Dec 2020 13:48:30 +0100
-Message-Id: <20201228124856.025318580@linuxfoundation.org>
+        stable@vger.kernel.org, Kamal Heib <kamalheib1@gmail.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 106/242] RDMA/cxgb4: Validate the number of CQEs
+Date:   Mon, 28 Dec 2020 13:48:31 +0100
+Message-Id: <20201228124909.913851885@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,49 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anmol Karn <anmol.karan123@gmail.com>
+From: Kamal Heib <kamalheib1@gmail.com>
 
-[ Upstream commit 6dfccd13db2ff2b709ef60a50163925d477549aa ]
+[ Upstream commit 6d8285e604e0221b67bd5db736921b7ddce37d00 ]
 
-AMP_MGR is getting derefernced in hci_phy_link_complete_evt(), when called
-from hci_event_packet() and there is a possibility, that hcon->amp_mgr may
-not be found when accessing after initialization of hcon.
+Before create CQ, make sure that the requested number of CQEs is in the
+supported range.
 
-- net/bluetooth/hci_event.c:4945
-The bug seems to get triggered in this line:
-
-bredr_hcon = hcon->amp_mgr->l2cap_conn->hcon;
-
-Fix it by adding a NULL check for the hcon->amp_mgr before checking the ev-status.
-
-Fixes: d5e911928bd8 ("Bluetooth: AMP: Process Physical Link Complete evt")
-Reported-and-tested-by: syzbot+0bef568258653cff272f@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?extid=0bef568258653cff272f
-Signed-off-by: Anmol Karn <anmol.karan123@gmail.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Fixes: cfdda9d76436 ("RDMA/cxgb4: Add driver for Chelsio T4 RNIC")
+Link: https://lore.kernel.org/r/20201108132007.67537-1-kamalheib1@gmail.com
+Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/bluetooth/hci_event.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/infiniband/hw/cxgb4/cq.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index d4c1c34cfa945..d01bf6a111cee 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -4350,6 +4350,11 @@ static void hci_phy_link_complete_evt(struct hci_dev *hdev,
- 		return;
- 	}
+--- a/drivers/infiniband/hw/cxgb4/cq.c
++++ b/drivers/infiniband/hw/cxgb4/cq.c
+@@ -906,6 +906,9 @@ struct ib_cq *c4iw_create_cq(struct ib_d
  
-+	if (!hcon->amp_mgr) {
-+		hci_dev_unlock(hdev);
-+		return;
-+	}
+ 	rhp = to_c4iw_dev(ibdev);
+ 
++	if (entries < 1 || entries > ibdev->attrs.max_cqe)
++		return ERR_PTR(-EINVAL);
 +
- 	if (ev->status) {
- 		hci_conn_del(hcon);
- 		hci_dev_unlock(hdev);
--- 
-2.27.0
-
+ 	if (vector >= rhp->rdev.lldi.nciq)
+ 		return ERR_PTR(-EINVAL);
+ 
 
 
