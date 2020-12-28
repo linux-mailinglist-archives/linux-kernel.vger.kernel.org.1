@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 312D72E3EE2
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:34:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 521F92E3A5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:36:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505055AbgL1Odg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:33:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39864 "EHLO mail.kernel.org"
+        id S2389428AbgL1Nfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:35:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35692 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2504541AbgL1Obg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:31:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C545B22CBB;
-        Mon, 28 Dec 2020 14:30:54 +0000 (UTC)
+        id S2389360AbgL1Nfb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:35:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C7DC0205CB;
+        Mon, 28 Dec 2020 13:35:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165855;
-        bh=hTgKd8eqcaSpYFPoLXo4UUr75XvZusgjY1FtHNvlaSA=;
+        s=korg; t=1609162515;
+        bh=oWdZEh3yVi7ZbfrCYKGw3o1vNbUgx3LgvH41n+SR7tM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KIklA1htqVpJgNuaLtvKnULNAQJIFaC7LB6bqzpHXWmdgE7c8QRbtvxZC51Hrri2/
-         d3TyHezIu+010YNLNhikQ5UDUv2cRCYGYQlKJnZjtVYkopdlkOqv5MZh+WjxyiTTjf
-         q+tSc7cZ7jel3NMv3K8La+gKeTy4zqqY9VI3Rgy4=
+        b=i6SFXRDl/uUkwd4FNizR1C0RiN7Mh4ADlr7gcqto4fHH83NTojjoeepD1EUs1rW8F
+         uFfjKhPy18PoJnDFabadTA08JjtjeWLocc7VWZBrl9OA07SwPuLHlWKojomSmJbm7J
+         +IA+5VJIooYKsHg/bAROfPBpT9vjzgysyHOQwOds=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christophe Leroy <christophe.leroy@c-s.fr>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.10 647/717] spi: fsl: fix use of spisel_boot signal on MPC8309
+        stable@vger.kernel.org, Dick Kennedy <dick.kennedy@broadcom.com>,
+        James Smart <james.smart@broadcom.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 4.19 326/346] scsi: lpfc: Fix invalid sleeping context in lpfc_sli4_nvmet_alloc()
 Date:   Mon, 28 Dec 2020 13:50:45 +0100
-Message-Id: <20201228125051.940773646@linuxfoundation.org>
+Message-Id: <20201228124935.546086922@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,62 +40,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+From: James Smart <james.smart@broadcom.com>
 
-commit 122541f2b10897b08f7f7e6db5f1eb693e51f0a1 upstream.
+commit 62e3a931db60daf94fdb3159d685a5bc6ad4d0cf upstream.
 
-Commit 0f0581b24bd0 ("spi: fsl: Convert to use CS GPIO descriptors")
-broke the use of the SPISEL_BOOT signal as a chip select on the
-MPC8309.
+The following calltrace was seen:
 
-pdata->max_chipselect, which becomes master->num_chipselect, must be
-initialized to take into account the possibility that there's one more
-chip select in use than the number of GPIO chip selects.
+BUG: sleeping function called from invalid context at mm/slab.h:494
+...
+Call Trace:
+ dump_stack+0x9a/0xf0
+ ___might_sleep.cold.63+0x13d/0x178
+ slab_pre_alloc_hook+0x6a/0x90
+ kmem_cache_alloc_trace+0x3a/0x2d0
+ lpfc_sli4_nvmet_alloc+0x4c/0x280 [lpfc]
+ lpfc_post_rq_buffer+0x2e7/0xa60 [lpfc]
+ lpfc_sli4_hba_setup+0x6b4c/0xa4b0 [lpfc]
+ lpfc_pci_probe_one_s4.isra.15+0x14f8/0x2280 [lpfc]
+ lpfc_pci_probe_one+0x260/0x2880 [lpfc]
+ local_pci_probe+0xd4/0x180
+ work_for_cpu_fn+0x51/0xa0
+ process_one_work+0x8f0/0x17b0
+ worker_thread+0x536/0xb50
+ kthread+0x30c/0x3d0
+ ret_from_fork+0x3a/0x50
 
-Cc: stable@vger.kernel.org # v5.4+
-Cc: Christophe Leroy <christophe.leroy@c-s.fr>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Fixes: 0f0581b24bd0 ("spi: fsl: Convert to use CS GPIO descriptors")
-Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Link: https://lore.kernel.org/r/20201127152947.376-1-rasmus.villemoes@prevas.dk
-Signed-off-by: Mark Brown <broonie@kernel.org>
+A prior patch introduced a spin_lock_irqsave(hbalock) in the
+lpfc_post_rq_buffer() routine. Call trace is seen as the hbalock is held
+with interrupts disabled during a GFP_KERNEL allocation in
+lpfc_sli4_nvmet_alloc().
+
+Fix by reordering locking so that hbalock not held when calling
+sli4_nvmet_alloc() (aka rqb_buf_list()).
+
+Link: https://lore.kernel.org/r/20201020202719.54726-2-james.smart@broadcom.com
+Fixes: 411de511c694 ("scsi: lpfc: Fix RQ empty firmware trap")
+Cc: <stable@vger.kernel.org> # v4.17+
+Co-developed-by: Dick Kennedy <dick.kennedy@broadcom.com>
+Signed-off-by: Dick Kennedy <dick.kennedy@broadcom.com>
+Signed-off-by: James Smart <james.smart@broadcom.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/spi/spi-fsl-spi.c |   11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ drivers/scsi/lpfc/lpfc_mem.c |    4 +---
+ drivers/scsi/lpfc/lpfc_sli.c |   10 ++++++++--
+ 2 files changed, 9 insertions(+), 5 deletions(-)
 
---- a/drivers/spi/spi-fsl-spi.c
-+++ b/drivers/spi/spi-fsl-spi.c
-@@ -716,10 +716,11 @@ static int of_fsl_spi_probe(struct platf
- 	type = fsl_spi_get_type(&ofdev->dev);
- 	if (type == TYPE_FSL) {
- 		struct fsl_spi_platform_data *pdata = dev_get_platdata(dev);
-+		bool spisel_boot = false;
- #if IS_ENABLED(CONFIG_FSL_SOC)
- 		struct mpc8xxx_spi_probe_info *pinfo = to_of_pinfo(pdata);
--		bool spisel_boot = of_property_read_bool(np, "fsl,spisel_boot");
+--- a/drivers/scsi/lpfc/lpfc_mem.c
++++ b/drivers/scsi/lpfc/lpfc_mem.c
+@@ -560,8 +560,6 @@ lpfc_els_hbq_free(struct lpfc_hba *phba,
+  * Description: Allocates a DMA-mapped receive buffer from the lpfc_hrb_pool PCI
+  * pool along a non-DMA-mapped container for it.
+  *
+- * Notes: Not interrupt-safe.  Must be called with no locks held.
+- *
+  * Returns:
+  *   pointer to HBQ on success
+  *   NULL on failure
+@@ -631,7 +629,7 @@ lpfc_sli4_nvmet_alloc(struct lpfc_hba *p
+ {
+ 	struct rqb_dmabuf *dma_buf;
  
-+		spisel_boot = of_property_read_bool(np, "fsl,spisel_boot");
- 		if (spisel_boot) {
- 			pinfo->immr_spi_cs = ioremap(get_immrbase() + IMMR_SPI_CS_OFFSET, 4);
- 			if (!pinfo->immr_spi_cs)
-@@ -734,10 +735,14 @@ static int of_fsl_spi_probe(struct platf
- 		 * supported on the GRLIB variant.
- 		 */
- 		ret = gpiod_count(dev, "cs");
--		if (ret <= 0)
-+		if (ret < 0)
-+			ret = 0;
-+		if (ret == 0 && !spisel_boot) {
- 			pdata->max_chipselect = 1;
--		else
-+		} else {
-+			pdata->max_chipselect = ret + spisel_boot;
- 			pdata->cs_control = fsl_spi_cs_control;
+-	dma_buf = kzalloc(sizeof(struct rqb_dmabuf), GFP_KERNEL);
++	dma_buf = kzalloc(sizeof(*dma_buf), GFP_KERNEL);
+ 	if (!dma_buf)
+ 		return NULL;
+ 
+--- a/drivers/scsi/lpfc/lpfc_sli.c
++++ b/drivers/scsi/lpfc/lpfc_sli.c
+@@ -6755,12 +6755,16 @@ lpfc_post_rq_buffer(struct lpfc_hba *phb
+ 	struct rqb_dmabuf *rqb_buffer;
+ 	LIST_HEAD(rqb_buf_list);
+ 
+-	spin_lock_irqsave(&phba->hbalock, flags);
+ 	rqbp = hrq->rqbp;
+ 	for (i = 0; i < count; i++) {
++		spin_lock_irqsave(&phba->hbalock, flags);
+ 		/* IF RQ is already full, don't bother */
+-		if (rqbp->buffer_count + i >= rqbp->entry_count - 1)
++		if (rqbp->buffer_count + i >= rqbp->entry_count - 1) {
++			spin_unlock_irqrestore(&phba->hbalock, flags);
+ 			break;
 +		}
++		spin_unlock_irqrestore(&phba->hbalock, flags);
++
+ 		rqb_buffer = rqbp->rqb_alloc_buffer(phba);
+ 		if (!rqb_buffer)
+ 			break;
+@@ -6769,6 +6773,8 @@ lpfc_post_rq_buffer(struct lpfc_hba *phb
+ 		rqb_buffer->idx = idx;
+ 		list_add_tail(&rqb_buffer->hbuf.list, &rqb_buf_list);
  	}
- 
- 	ret = of_address_to_resource(np, 0, &mem);
++
++	spin_lock_irqsave(&phba->hbalock, flags);
+ 	while (!list_empty(&rqb_buf_list)) {
+ 		list_remove_head(&rqb_buf_list, rqb_buffer, struct rqb_dmabuf,
+ 				 hbuf.list);
 
 
