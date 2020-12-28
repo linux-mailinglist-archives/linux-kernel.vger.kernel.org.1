@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B5A2E67FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:32:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 933532E6917
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:47:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634027AbgL1QbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:31:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32854 "EHLO mail.kernel.org"
+        id S2634614AbgL1QoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:44:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730621AbgL1NF3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:05:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 132712242A;
-        Mon, 28 Dec 2020 13:05:12 +0000 (UTC)
+        id S1728983AbgL1M5e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:57:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 32CDA21D94;
+        Mon, 28 Dec 2020 12:57:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160713;
-        bh=WxAUeKSKOvzBCHMhXnRw11xywl3lvvwy8E/MCivO0EQ=;
+        s=korg; t=1609160238;
+        bh=oDISvas2pGZUuW07NLlTAfNN1dOhEfPKWMbtilyRO+Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AdvMOJOII3IwxwcP2djiIA41j1jfMUnn4BPr31CzwLz4OTqjLu3vri7zM2fnpvtLc
-         8juLtLvN5vv4Bk9IVRqFHqHE7bb38YCE1n+l7FZu9gJF8nEullIfO5p6sQMTcL+7A0
-         8GRRYB8v8i5mL6FpNzPXnN1wvWrATNEfj57may1E=
+        b=S5dhLXJhg5eLpLLQzVF4YPOjrMcJyDgXFbOGqVioMPK6SD/TBcbe02uYGQwf06CKS
+         Ed+0MVuuCpz2VXCACbtpRt/MshK8HVPtMeOAYGXxgRmojsAWcahpr0C190mWVYECDA
+         SlKLQjmyXpo7tn6nLndg2PkXQtYGgr0BOrqJZKuE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.9 145/175] USB: serial: keyspan_pda: fix dropped unthrottle interrupts
-Date:   Mon, 28 Dec 2020 13:49:58 +0100
-Message-Id: <20201228124900.276232789@linuxfoundation.org>
+        Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>,
+        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH 4.4 115/132] btrfs: quota: Set rescan progress to (u64)-1 if we hit last leaf
+Date:   Mon, 28 Dec 2020 13:49:59 +0100
+Message-Id: <20201228124851.968470638@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,45 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Qu Wenruo <wqu@suse.com>
 
-commit 696c541c8c6cfa05d65aa24ae2b9e720fc01766e upstream.
+commoit 6f7de19ed3d4d3526ca5eca428009f97cf969c2f upstream
 
-Commit c528fcb116e6 ("USB: serial: keyspan_pda: fix receive sanity
-checks") broke write-unthrottle handling by dropping well-formed
-unthrottle-interrupt packets which are precisely two bytes long. This
-could lead to blocked writers not being woken up when buffer space again
-becomes available.
+Commit ff3d27a048d9 ("btrfs: qgroup: Finish rescan when hit the last leaf
+of extent tree") added a new exit for rescan finish.
 
-Instead, stop unconditionally printing the third byte which is
-(presumably) only valid on modem-line changes.
+However after finishing quota rescan, we set
+fs_info->qgroup_rescan_progress to (u64)-1 before we exit through the
+original exit path.
+While we missed that assignment of (u64)-1 in the new exit path.
 
-Fixes: c528fcb116e6 ("USB: serial: keyspan_pda: fix receive sanity checks")
-Cc: stable <stable@vger.kernel.org>     # 4.11
-Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Johan Hovold <johan@kernel.org>
+The end result is, the quota status item doesn't have the same value.
+(-1 vs the last bytenr + 1)
+Although it doesn't affect quota accounting, it's still better to keep
+the original behavior.
+
+Reported-by: Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>
+Fixes: ff3d27a048d9 ("btrfs: qgroup: Finish rescan when hit the last leaf of extent tree")
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/usb/serial/keyspan_pda.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/btrfs/qgroup.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/serial/keyspan_pda.c
-+++ b/drivers/usb/serial/keyspan_pda.c
-@@ -176,11 +176,11 @@ static void keyspan_pda_rx_interrupt(str
- 		break;
- 	case 1:
- 		/* status interrupt */
--		if (len < 3) {
-+		if (len < 2) {
- 			dev_warn(&port->dev, "short interrupt message received\n");
- 			break;
- 		}
--		dev_dbg(&port->dev, "rx int, d1=%d, d2=%d\n", data[1], data[2]);
-+		dev_dbg(&port->dev, "rx int, d1=%d\n", data[1]);
- 		switch (data[1]) {
- 		case 1: /* modemline change */
- 			break;
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -2288,8 +2288,10 @@ out:
+ 	}
+ 	btrfs_put_tree_mod_seq(fs_info, &tree_mod_seq_elem);
+ 
+-	if (done && !ret)
++	if (done && !ret) {
+ 		ret = 1;
++		fs_info->qgroup_rescan_progress.objectid = (u64)-1;
++	}
+ 	return ret;
+ }
+ 
 
 
