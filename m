@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE3222E3D60
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:15:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 436E42E3929
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:22:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440548AbgL1OO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:14:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49800 "EHLO mail.kernel.org"
+        id S1733117AbgL1NT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:19:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440508AbgL1OOv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:14:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71541205CB;
-        Mon, 28 Dec 2020 14:14:10 +0000 (UTC)
+        id S1733006AbgL1NTx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:19:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D48F22583;
+        Mon, 28 Dec 2020 13:19:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609164851;
-        bh=nDzqTCQBvYJcWljCaBjgQPs9tM8ztehQbCRDvMe8o7M=;
+        s=korg; t=1609161552;
+        bh=C3YwL2f4xogoUOPxv3liD/thayajrduA9lFFDYXaz+E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dIjUHgmkx5TI1ATk929ZTLTdXK8rO1pnFjvOJHRQgnKPfslW255fDK+AiIvK9UWey
-         GFRZtMrhwD1/9YmxOWBd5nw5yIVcheRaCvvIgvUbGNsiCNChjOjUuX3MbIly7g0pPk
-         lUrvgTrM+MReL0hwiofPPsVuLSzQw+la7F2Kwzm4=
+        b=VbJ2DTMmBnrYbWLCmyboBemxCiQtDgoY0I6GMs8grdDKvnb+ubuyynw6xvAsK1kwm
+         IifAGCrV/OTZjSFqcmNZWJW1dzAKfP5qGkGu0XIxDEOaMX7csl0I6Bp1cL/NeWly9g
+         xFoREWYCnP3ib7bESx8sHSyhOUnPciXfTpOyaUes=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Keqian Zhu <zhukeqian1@huawei.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 322/717] clocksource/drivers/arm_arch_timer: Correct fault programming of CNTKCTL_EL1.EVNTI
+        stable@vger.kernel.org, Dmitry Golovin <dima@golovin.in>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Fangrui Song <maskray@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 4.19 001/346] Kbuild: do not emit debug info for assembly with LLVM_IAS=1
 Date:   Mon, 28 Dec 2020 13:45:20 +0100
-Message-Id: <20201228125036.454436556@linuxfoundation.org>
+Message-Id: <20201228124919.821830406@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -41,69 +45,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Keqian Zhu <zhukeqian1@huawei.com>
+From: Nick Desaulniers <ndesaulniers@google.com>
 
-[ Upstream commit 8b7770b877d187bfdae1eaf587bd2b792479a31c ]
+commit b8a9092330da2030496ff357272f342eb970d51b upstream.
 
-ARM virtual counter supports event stream, it can only trigger an event
-when the trigger bit (the value of CNTKCTL_EL1.EVNTI) of CNTVCT_EL0 changes,
-so the actual period of event stream is 2^(cntkctl_evnti + 1). For example,
-when the trigger bit is 0, then virtual counter trigger an event for every
-two cycles.
+Clang's integrated assembler produces the warning for assembly files:
 
-While we're at it, rework the way we compute the trigger bit position
-by making it more obvious that when bits [n:n-1] are both set (with n
-being the most significant bit), we pick bit (n + 1).
+warning: DWARF2 only supports one section per compilation unit
 
-Fixes: 037f637767a8 ("drivers: clocksource: add support for ARM architected timer event stream")
-Suggested-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
-Acked-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20201204073126.6920-3-zhukeqian1@huawei.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+If -Wa,-gdwarf-* is unspecified, then debug info is not emitted for
+assembly sources (it is still emitted for C sources).  This will be
+re-enabled for newer DWARF versions in a follow up patch.
+
+Enables defconfig+CONFIG_DEBUG_INFO to build cleanly with
+LLVM=1 LLVM_IAS=1 for x86_64 and arm64.
+
+Cc: <stable@vger.kernel.org>
+Link: https://github.com/ClangBuiltLinux/linux/issues/716
+Reported-by: Dmitry Golovin <dima@golovin.in>
+Reported-by: Nathan Chancellor <natechancellor@gmail.com>
+Suggested-by: Dmitry Golovin <dima@golovin.in>
+Suggested-by: Nathan Chancellor <natechancellor@gmail.com>
+Suggested-by: Sedat Dilek <sedat.dilek@gmail.com>
+Reviewed-by: Fangrui Song <maskray@google.com>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+[nd: backport to avoid conflicts from:
+  commit 10e68b02c861 ("Makefile: support compressed debug info")
+  commit 7b16994437c7 ("Makefile: Improve compressed debug info support detection")
+  commit 695afd3d7d58 ("kbuild: Simplify DEBUG_INFO Kconfig handling")]
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/clocksource/arm_arch_timer.c | 23 ++++++++++++++++-------
- 1 file changed, 16 insertions(+), 7 deletions(-)
+ Makefile |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
-index 777d38cb39b09..d0177824c518b 100644
---- a/drivers/clocksource/arm_arch_timer.c
-+++ b/drivers/clocksource/arm_arch_timer.c
-@@ -822,15 +822,24 @@ static void arch_timer_evtstrm_enable(int divider)
- 
- static void arch_timer_configure_evtstream(void)
- {
--	int evt_stream_div, pos;
-+	int evt_stream_div, lsb;
+--- a/Makefile
++++ b/Makefile
+@@ -745,8 +745,11 @@ KBUILD_CFLAGS   += $(call cc-option, -gs
+ else
+ KBUILD_CFLAGS	+= -g
+ endif
++ifneq ($(LLVM_IAS),1)
+ KBUILD_AFLAGS	+= -Wa,-gdwarf-2
+ endif
++endif
 +
-+	/*
-+	 * As the event stream can at most be generated at half the frequency
-+	 * of the counter, use half the frequency when computing the divider.
-+	 */
-+	evt_stream_div = arch_timer_rate / ARCH_TIMER_EVT_STREAM_FREQ / 2;
-+
-+	/*
-+	 * Find the closest power of two to the divisor. If the adjacent bit
-+	 * of lsb (last set bit, starts from 0) is set, then we use (lsb + 1).
-+	 */
-+	lsb = fls(evt_stream_div) - 1;
-+	if (lsb > 0 && (evt_stream_div & BIT(lsb - 1)))
-+		lsb++;
- 
--	/* Find the closest power of two to the divisor */
--	evt_stream_div = arch_timer_rate / ARCH_TIMER_EVT_STREAM_FREQ;
--	pos = fls(evt_stream_div);
--	if (pos > 1 && !(evt_stream_div & (1 << (pos - 2))))
--		pos--;
- 	/* enable event stream */
--	arch_timer_evtstrm_enable(min(pos, 15));
-+	arch_timer_evtstrm_enable(max(0, min(lsb, 15)));
- }
- 
- static void arch_counter_set_user_access(void)
--- 
-2.27.0
-
+ ifdef CONFIG_DEBUG_INFO_DWARF4
+ KBUILD_CFLAGS	+= $(call cc-option, -gdwarf-4,)
+ endif
 
 
