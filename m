@@ -2,101 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 298372E3344
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 01:15:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E83702E3348
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 01:27:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726391AbgL1AP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 19:15:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726226AbgL1APZ (ORCPT
+        id S1726363AbgL1A1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 19:27:20 -0500
+Received: from mail-il1-f176.google.com ([209.85.166.176]:45352 "EHLO
+        mail-il1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726226AbgL1A1U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 19:15:25 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D27EC061794;
-        Sun, 27 Dec 2020 16:14:45 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id j13so5596494pjz.3;
-        Sun, 27 Dec 2020 16:14:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oZEv+bW9CjN9VY+lYyzIh0+MFHMRTUdBkL+wcZGDg9Y=;
-        b=kwRbPeE0fgWdNQ4lqr4Jhs1gVJjwKgWhSv72K82HBsI/KW+TjSmex65EU8rReNhtUh
-         OtjwVxh8PKzHED8BiYKbwaSV6vmtok0MGPVsb9OZ6z19ayn9TCdWi85ePfP2TMREy9aE
-         OBESMeP3y3MiDTeFNFXE/vWfHM2yIUwHm0UkbLZIJGCMkoDkuKTg8Or31rofkKf3mtxe
-         oOGfB+OVOmZampjKcs5TQ09ggOfwS5NntWeZ4BLShMnTsj7hSK5zrZ4AvySoRuWEwq41
-         aEPlueCtDl5x/ZWTaVRJ9JG578dsDYXKrfRroJ51YNamg8ijdr1nKD4vyAnaOI1L4mix
-         5jUg==
+        Sun, 27 Dec 2020 19:27:20 -0500
+Received: by mail-il1-f176.google.com with SMTP id w12so8167522ilm.12;
+        Sun, 27 Dec 2020 16:27:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oZEv+bW9CjN9VY+lYyzIh0+MFHMRTUdBkL+wcZGDg9Y=;
-        b=eMadlIzYYtm3KS6/+ZMKTT9+IdHwS5bnqT5CJ57190MKpRFW8vS7NiL1b6wWXeIkLR
-         kXr2SjQhhcsdoUJRaU8R8AiEZ2WPjFBlD5uzTq37YDLz9707at29fGLuYCMH04zBFqPW
-         7aNH1zIb9ldmIMeFy1D1Rae96e2Ov3+zukyoulywp9ZQ3uzrupZH3Dy+73mSAFIfJrad
-         lW4a+zOBdJ/IceJ3lS9lsGrQZ531knNc5xhB2J1iBQNCL0lTg2i6QvjAhOjV6jTqMtfw
-         kHTzEunSNFLloizktvRvg4AntqrBYSxCeH6QbdyLfVX45pWQRhP2tUt2ENHNHiU/kLeB
-         1IHg==
-X-Gm-Message-State: AOAM531TN7gzpPpK1LnRp4GFbBCnNMd0d/4/MILIKrS/1mhX5bM1a6x4
-        PUF4B9wcE1EyupD/RnWRrsAW+iyIOVY=
-X-Google-Smtp-Source: ABdhPJyhlMx0whdIo9jQVDIbnh+9K2BVgp9oMxEatRqEcUYClluPO3un6EJcAYJyuz5KQ499Xna5tA==
-X-Received: by 2002:a17:90a:a012:: with SMTP id q18mr17928439pjp.223.1609114484297;
-        Sun, 27 Dec 2020 16:14:44 -0800 (PST)
-Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:936f:d5a6:f7f3:4f2d])
-        by smtp.gmail.com with ESMTPSA id p9sm12359660pjb.3.2020.12.27.16.14.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Dec 2020 16:14:43 -0800 (PST)
-From:   Xie He <xie.he.0141@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Krzysztof Halasa <khc@pm.waw.pl>
-Cc:     Xie He <xie.he.0141@gmail.com>
-Subject: [PATCH net] net: hdlc_ppp: Fix issues when mod_timer is called while timer is running
-Date:   Sun, 27 Dec 2020 16:14:25 -0800
-Message-Id: <20201228001425.821582-1-xie.he.0141@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GxF6gjxDj1D5oG9BFZvSKyyiGl1MUnLLDiE1YxgJ6wM=;
+        b=CUePESMrQCqJYogxcY0LfdtCZ57MDKTc/iWIRiIEzMxqAgomh8O3vB7QE4zucM++6G
+         1CtYmxVhnTuQHdR7OA694VOaMyC37OQxEa/JueCKuCYM6/tTP6LdXpXObbZBCzctLOQ1
+         0CPhZf70q/UPAKOkRfWrRpgD893joPdA2bzC0fVPIx82AK2xpa4y3OXIwbTv+rl1Qbvu
+         AxmIgQ8i7ZNFJqTjLSNXr4fJLhkuJZPdUjKTIbPg0/tuk1oqRUuNHhAFts9m4XDaGUPw
+         8xSLYWslOshl2f2awNsbOu33dDmxAchywkkTKhPd3XtS3Ud39tk+D0+018ltspu3tutW
+         f4+g==
+X-Gm-Message-State: AOAM531236MKOBVDQJ3LPXGbDAiHrpIlQhBtjubf8ajnrSl58SWnbuYs
+        GBuIoXFYmx2XYABIn/xZVe02a4UeSt08fpavaYg=
+X-Google-Smtp-Source: ABdhPJwqWQzgWx9rHhJtLVsy+SFYeDCm+6mrk4i78hCJjXkIngpvN6ZcMJqvBVVvccqmAsUPnBG5MBs4U7VGTuwuSEI=
+X-Received: by 2002:a05:6e02:1187:: with SMTP id y7mr42039158ili.143.1609115199086;
+ Sun, 27 Dec 2020 16:26:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1608973923-8328-1-git-send-email-zhangqing@loongson.cn> <1608973923-8328-2-git-send-email-zhangqing@loongson.cn>
+In-Reply-To: <1608973923-8328-2-git-send-email-zhangqing@loongson.cn>
+From:   Huacai Chen <chenhc@lemote.com>
+Date:   Mon, 28 Dec 2020 08:26:27 +0800
+Message-ID: <CAAhV-H5xEf93_OXRLBFkaMhah5keHESiVbPhj0Fs=ajjCgWefg@mail.gmail.com>
+Subject: Re: [PATCH v5 2/4] spi: ls7a: Add YAML schemas
+To:     Qing Zhang <zhangqing@loongson.cn>
+Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        ThomasBogendoerfer <tsbogend@alpha.franken.de>,
+        linux-spi@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        devicetree@vger.kernel.org,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ppp_cp_event is called directly or indirectly by ppp_rx with "ppp->lock"
-held. It may call mod_timer to add a new timer. However, at the same time
-ppp_timer may be already running and waiting for "ppp->lock". In this
-case, there's no need for ppp_timer to continue running and it can just
-exit.
+Reviewed-by: Huacai Chen <chenhuacai@kernel.org>
 
-If we let ppp_timer continue running, it may call add_timer. This causes
-kernel panic because add_timer can't be called with a timer pending.
-This patch fixes this problem.
-
-Cc: Krzysztof Halasa <khc@pm.waw.pl>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
----
- drivers/net/wan/hdlc_ppp.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/drivers/net/wan/hdlc_ppp.c b/drivers/net/wan/hdlc_ppp.c
-index 64f855651336..261b53fc8e04 100644
---- a/drivers/net/wan/hdlc_ppp.c
-+++ b/drivers/net/wan/hdlc_ppp.c
-@@ -569,6 +569,13 @@ static void ppp_timer(struct timer_list *t)
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(&ppp->lock, flags);
-+	/* mod_timer could be called after we entered this function but
-+	 * before we got the lock.
-+	 */
-+	if (timer_pending(&proto->timer)) {
-+		spin_unlock_irqrestore(&ppp->lock, flags);
-+		return;
-+	}
- 	switch (proto->state) {
- 	case STOPPING:
- 	case REQ_SENT:
--- 
-2.27.0
-
+On Sat, Dec 26, 2020 at 5:13 PM Qing Zhang <zhangqing@loongson.cn> wrote:
+>
+> Switch the DT binding to a YAML schema to enable the DT validation.
+>
+> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+> ---
+>
+> v4:
+>  - fix warnings/errors about running 'make dt_binding_check'
+>
+> v5:
+>  - remove num-chipelects
+>
+> ---
+>  .../devicetree/bindings/spi/loongson,spi-ls7a.yaml | 44 ++++++++++++++++++++++
+>  1 file changed, 44 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/spi/loongson,spi-ls7a.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/spi/loongson,spi-ls7a.yaml b/Documentation/devicetree/bindings/spi/loongson,spi-ls7a.yaml
+> new file mode 100644
+> index 0000000..b90b28b
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/spi/loongson,spi-ls7a.yaml
+> @@ -0,0 +1,44 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/spi/loongson,spi-ls7a.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Loongson LS7A PCH SPI Controller
+> +
+> +maintainers:
+> +  - Qing Zhang <zhangqing@loongson.cn>
+> +
+> +description: |
+> +  This controller can be found in Loongson-3 systems with LS7A PCH.
+> +
+> +properties:
+> +  compatible:
+> +    const: loongson,ls7a-spi
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    pci {
+> +        #address-cells = <3>;
+> +        #size-cells = <2>;
+> +
+> +        spi@16,0 {
+> +            compatible = "pci0014,7a0b.0",
+> +                             "pci0014,7a0b",
+> +                             "pciclass088000",
+> +                             "pciclass0800";
+> +
+> +            reg = <0xb000 0x0 0x0 0x0 0x0>;
+> +        };
+> +    };
+> +
+> +...
+> --
+> 2.1.0
+>
