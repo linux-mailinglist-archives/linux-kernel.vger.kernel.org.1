@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B0D12E39FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:30:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4BC72E3748
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:54:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390419AbgL1Nap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:30:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59522 "EHLO mail.kernel.org"
+        id S1728147AbgL1MxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:53:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390392AbgL1Naf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:30:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AAD3C22B37;
-        Mon, 28 Dec 2020 13:29:53 +0000 (UTC)
+        id S1728119AbgL1MxO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:53:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2962022582;
+        Mon, 28 Dec 2020 12:52:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162194;
-        bh=RDtDIuD4ctPNmHaOHCk9zXG9K0V2zEWKfmAdnPO22Fs=;
+        s=korg; t=1609159978;
+        bh=xXN3M/cPbS01n1Fiyh1Znkl6aWDA6rrp0qfFo1VCzpI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Zfg1N8uOczZyhIG6ZNtHUnMOyo6H01Ou5EzPev3YiEH5hF2ceWQwi/UAVmq5x5J49
-         mT17GmW2kAjn5MNEIn/UKxhntxnHfzXggEb/rZU6LoCuo6V64Oi5vLxGFDFm/Pm74o
-         BT53gF9ZBKwT8xx9lkQpKvKwSc86fgK2xm6AtN8E=
+        b=vkjivRW251Wkkyft/bhyuJFsiqeZ/wNoiERR4JdwnPaKP8d+dMoKtQmOfA7E1ysIp
+         zGrcWPLHGfbskK/JL7V+SsdMRuTghqGc8PTtAiZJTAsCMQWga7SRDpJdQj6S7aHKjo
+         tFuBzQRojlssnjAfNa5+GOKwOVV48MJEnbUwwdH0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ondrej Mosnacek <omosnace@redhat.com>,
-        Scott Mayhew <smayhew@redhat.com>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        stable@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>,
+        Amit Matityahu <mitm@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 189/346] NFSv4.2: condition READDIRs mask for security label based on LSM state
+Subject: [PATCH 4.4 024/132] RDMA/cm: Fix an attempt to use non-valid pointer when cleaning timewait
 Date:   Mon, 28 Dec 2020 13:48:28 +0100
-Message-Id: <20201228124928.925918024@linuxfoundation.org>
+Message-Id: <20201228124847.572078917@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,71 +42,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Olga Kornievskaia <kolga@netapp.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-[ Upstream commit 05ad917561fca39a03338cb21fe9622f998b0f9c ]
+[ Upstream commit 340b940ea0ed12d9adbb8f72dea17d516b2019e8 ]
 
-Currently, the client will always ask for security_labels if the server
-returns that it supports that feature regardless of any LSM modules
-(such as Selinux) enforcing security policy. This adds performance
-penalty to the READDIR operation.
+If cm_create_timewait_info() fails, the timewait_info pointer will contain
+an error value and will be used in cm_remove_remote() later.
 
-Client adjusts superblock's support of the security_label based on
-the server's support but also current client's configuration of the
-LSM modules. Thus, prior to using the default bitmask in READDIR,
-this patch checks the server's capabilities and then instructs
-READDIR to remove FATTR4_WORD2_SECURITY_LABEL from the bitmask.
+  general protection fault, probably for non-canonical address 0xdffffc0000000024: 0000 [#1] SMP KASAN PTI
+  KASAN: null-ptr-deref in range [0×0000000000000120-0×0000000000000127]
+  CPU: 2 PID: 12446 Comm: syz-executor.3 Not tainted 5.10.0-rc5-5d4c0742a60e #27
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+  RIP: 0010:cm_remove_remote.isra.0+0x24/0×170 drivers/infiniband/core/cm.c:978
+  Code: 84 00 00 00 00 00 41 54 55 53 48 89 fb 48 8d ab 2d 01 00 00 e8 7d bf 4b fe 48 89 ea 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <0f> b6 04 02 48 89 ea 83 e2 07 38 d0 7f 08 84 c0 0f 85 fc 00 00 00
+  RSP: 0018:ffff888013127918 EFLAGS: 00010006
+  RAX: dffffc0000000000 RBX: fffffffffffffff4 RCX: ffffc9000a18b000
+  RDX: 0000000000000024 RSI: ffffffff82edc573 RDI: fffffffffffffff4
+  RBP: 0000000000000121 R08: 0000000000000001 R09: ffffed1002624f1d
+  R10: 0000000000000003 R11: ffffed1002624f1c R12: ffff888107760c70
+  R13: ffff888107760c40 R14: fffffffffffffff4 R15: ffff888107760c9c
+  FS:  00007fe1ffcc1700(0000) GS:ffff88811a600000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 0000001b2ff21000 CR3: 000000010f504001 CR4: 0000000000370ee0
+  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+  Call Trace:
+   cm_destroy_id+0x189/0×15b0 drivers/infiniband/core/cm.c:1155
+   cma_connect_ib drivers/infiniband/core/cma.c:4029 [inline]
+   rdma_connect_locked+0x1100/0×17c0 drivers/infiniband/core/cma.c:4107
+   rdma_connect+0x2a/0×40 drivers/infiniband/core/cma.c:4140
+   ucma_connect+0x277/0×340 drivers/infiniband/core/ucma.c:1069
+   ucma_write+0x236/0×2f0 drivers/infiniband/core/ucma.c:1724
+   vfs_write+0x220/0×830 fs/read_write.c:603
+   ksys_write+0x1df/0×240 fs/read_write.c:658
+   do_syscall_64+0x33/0×40 arch/x86/entry/common.c:46
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-v5: fixing silly mistakes of the rushed v4
-v4: simplifying logic
-v3: changing label's initialization per Ondrej's comment
-v2: dropping selinux hook and using the sb cap.
-
-Suggested-by: Ondrej Mosnacek <omosnace@redhat.com>
-Suggested-by: Scott Mayhew <smayhew@redhat.com>
-Signed-off-by: Olga Kornievskaia <kolga@netapp.com>
-Fixes: 2b0143b5c986 ("VFS: normal filesystems (and lustre): d_inode() annotations")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Fixes: a977049dacde ("[PATCH] IB: Add the kernel CM implementation")
+Link: https://lore.kernel.org/r/20201204064205.145795-1-leon@kernel.org
+Reviewed-by: Maor Gottlieb <maorg@nvidia.com>
+Reported-by: Amit Matityahu <mitm@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/nfs4proc.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ drivers/infiniband/core/cm.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
-index fe7b42c277ac5..1a395647ae265 100644
---- a/fs/nfs/nfs4proc.c
-+++ b/fs/nfs/nfs4proc.c
-@@ -4687,12 +4687,12 @@ static int _nfs4_proc_readdir(struct dentry *dentry, struct rpc_cred *cred,
- 		u64 cookie, struct page **pages, unsigned int count, bool plus)
- {
- 	struct inode		*dir = d_inode(dentry);
-+	struct nfs_server	*server = NFS_SERVER(dir);
- 	struct nfs4_readdir_arg args = {
- 		.fh = NFS_FH(dir),
- 		.pages = pages,
- 		.pgbase = 0,
- 		.count = count,
--		.bitmask = NFS_SERVER(d_inode(dentry))->attr_bitmask,
- 		.plus = plus,
- 	};
- 	struct nfs4_readdir_res res;
-@@ -4707,9 +4707,15 @@ static int _nfs4_proc_readdir(struct dentry *dentry, struct rpc_cred *cred,
- 	dprintk("%s: dentry = %pd2, cookie = %Lu\n", __func__,
- 			dentry,
- 			(unsigned long long)cookie);
-+	if (!(server->caps & NFS_CAP_SECURITY_LABEL))
-+		args.bitmask = server->attr_bitmask_nl;
-+	else
-+		args.bitmask = server->attr_bitmask;
-+
- 	nfs4_setup_readdir(cookie, NFS_I(dir)->cookieverf, dentry, &args);
- 	res.pgbase = args.pgbase;
--	status = nfs4_call_sync(NFS_SERVER(dir)->client, NFS_SERVER(dir), &msg, &args.seq_args, &res.seq_res, 0);
-+	status = nfs4_call_sync(server->client, server, &msg, &args.seq_args,
-+			&res.seq_res, 0);
- 	if (status >= 0) {
- 		memcpy(NFS_I(dir)->cookieverf, res.verifier.data, NFS4_VERIFIER_SIZE);
- 		status += args.pgbase;
+diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+index 53c622c99ee40..ba713bc27c5f9 100644
+--- a/drivers/infiniband/core/cm.c
++++ b/drivers/infiniband/core/cm.c
+@@ -1252,6 +1252,7 @@ int ib_send_cm_req(struct ib_cm_id *cm_id,
+ 							    id.local_id);
+ 	if (IS_ERR(cm_id_priv->timewait_info)) {
+ 		ret = PTR_ERR(cm_id_priv->timewait_info);
++		cm_id_priv->timewait_info = NULL;
+ 		goto out;
+ 	}
+ 
+@@ -1681,6 +1682,7 @@ static int cm_req_handler(struct cm_work *work)
+ 							    id.local_id);
+ 	if (IS_ERR(cm_id_priv->timewait_info)) {
+ 		ret = PTR_ERR(cm_id_priv->timewait_info);
++		cm_id_priv->timewait_info = NULL;
+ 		goto destroy;
+ 	}
+ 	cm_id_priv->timewait_info->work.remote_id = req_msg->local_comm_id;
 -- 
 2.27.0
 
