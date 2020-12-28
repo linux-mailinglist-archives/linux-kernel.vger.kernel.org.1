@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B25FA2E3892
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:13:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFB9C2E3862
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:11:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731927AbgL1NL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:11:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39212 "EHLO mail.kernel.org"
+        id S1731190AbgL1NJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:09:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37532 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731698AbgL1NLT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:11:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8687B208D5;
-        Mon, 28 Dec 2020 13:10:38 +0000 (UTC)
+        id S1731160AbgL1NJp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:09:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C0E0422B47;
+        Mon, 28 Dec 2020 13:09:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161039;
-        bh=DzQVrDmpBv/nzWuap9GEoQhzLuYOWJZ/LoOP4HLkE0s=;
+        s=korg; t=1609160944;
+        bh=g/4f5Xc7ROlr45Ko0wP8u+ZhDu3oOij8mjHyT7godJQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SYzc8OCa1etYTR+OO/wRUUXpNn+cvn1vJmfDeoa4cZ5cduGD1PNIol1ZaVfVTAbca
-         eHAFlOFabcT4gkgik2lEXjMtf16U7NVps9WsvCawHxltQU1inLU1FfB+DGrq2Nzgoc
-         X7FxBROFFDQZFjrw8t/EeTzBX1ZFH0aZBL5ae7qU=
+        b=vsLtPLLbpxpupaE2XjN4P9aWAOOKho6MJVZbolVy9wvjqNaeXZeaomrW0Eu3VSFn8
+         h53sNhsRrVJr2aSKYUkyHM8tQSNEl2DSB892HZnmNixG0WWbSOQGjIY5k55ZmuCsUx
+         en7GXMPzNfiTRxzTquIgIsSfRb8bykRJq9NzeGi0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, linux-scsi@vger.kernel.org,
-        Nilesh Javali <njavali@marvell.com>,
-        Manish Rangankar <mrangankar@marvell.com>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
+        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
+        Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 039/242] scsi: bnx2i: Requires MMU
-Date:   Mon, 28 Dec 2020 13:47:24 +0100
-Message-Id: <20201228124906.594643809@linuxfoundation.org>
+Subject: [PATCH 4.14 040/242] can: softing: softing_netdev_open(): fix error handling
+Date:   Mon, 28 Dec 2020 13:47:25 +0100
+Message-Id: <20201228124906.644879306@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
 References: <20201228124904.654293249@linuxfoundation.org>
@@ -45,50 +42,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit 2d586494c4a001312650f0b919d534e429dd1e09 ]
+[ Upstream commit 4d1be581ec6b92a338bb7ed23e1381f45ddf336f ]
 
-The SCSI_BNX2_ISCSI kconfig symbol selects CNIC and CNIC selects UIO, which
-depends on MMU.
+If softing_netdev_open() fails, we should call close_candev() to avoid
+reference leak.
 
-Since 'select' does not follow dependency chains, add the same MMU
-dependency to SCSI_BNX2_ISCSI.
-
-Quietens this kconfig warning:
-
-WARNING: unmet direct dependencies detected for CNIC
-  Depends on [n]: NETDEVICES [=y] && ETHERNET [=y] && NET_VENDOR_BROADCOM [=y] && PCI [=y] && (IPV6 [=m] || IPV6 [=m]=n) && MMU [=n]
-  Selected by [m]:
-  - SCSI_BNX2_ISCSI [=m] && SCSI_LOWLEVEL [=y] && SCSI [=y] && NET [=y] && PCI [=y] && (IPV6 [=m] || IPV6 [=m]=n)
-
-Link: https://lore.kernel.org/r/20201129070916.3919-1-rdunlap@infradead.org
-Fixes: cf4e6363859d ("[SCSI] bnx2i: Add bnx2i iSCSI driver.")
-Cc: linux-scsi@vger.kernel.org
-Cc: Nilesh Javali <njavali@marvell.com>
-Cc: Manish Rangankar <mrangankar@marvell.com>
-Cc: GR-QLogic-Storage-Upstream@marvell.com
-Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
-Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: 03fd3cf5a179d ("can: add driver for Softing card")
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Acked-by: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Link: https://lore.kernel.org/r/20201202151632.1343786-1-zhangqilong3@huawei.com
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Link: https://lore.kernel.org/r/20201204133508.742120-2-mkl@pengutronix.de
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/bnx2i/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/can/softing/softing_main.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/bnx2i/Kconfig b/drivers/scsi/bnx2i/Kconfig
-index ba30ff86d5818..b27a3738d940c 100644
---- a/drivers/scsi/bnx2i/Kconfig
-+++ b/drivers/scsi/bnx2i/Kconfig
-@@ -3,6 +3,7 @@ config SCSI_BNX2_ISCSI
- 	depends on NET
- 	depends on PCI
- 	depends on (IPV6 || IPV6=n)
-+	depends on MMU
- 	select SCSI_ISCSI_ATTRS
- 	select NETDEVICES
- 	select ETHERNET
+diff --git a/drivers/net/can/softing/softing_main.c b/drivers/net/can/softing/softing_main.c
+index 5f64deec9f6c1..26b3072daabd6 100644
+--- a/drivers/net/can/softing/softing_main.c
++++ b/drivers/net/can/softing/softing_main.c
+@@ -393,8 +393,13 @@ static int softing_netdev_open(struct net_device *ndev)
+ 
+ 	/* check or determine and set bittime */
+ 	ret = open_candev(ndev);
+-	if (!ret)
+-		ret = softing_startstop(ndev, 1);
++	if (ret)
++		return ret;
++
++	ret = softing_startstop(ndev, 1);
++	if (ret < 0)
++		close_candev(ndev);
++
+ 	return ret;
+ }
+ 
 -- 
 2.27.0
 
