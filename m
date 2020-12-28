@@ -2,155 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DB4B2E33FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 05:23:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 728A82E3404
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 05:30:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726316AbgL1EU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 23:20:27 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:59990 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726167AbgL1EU0 (ORCPT
+        id S1726330AbgL1EaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 23:30:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726167AbgL1EaM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 23:20:26 -0500
-X-UUID: 22f4a0dbc6904c20a40138dc987cf8d1-20201228
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=pa5xLy2qDxc+uq3HbpERterwMGHDaoImzt4/agoCKIs=;
-        b=HtptWxBrQ8MGZXxYv0F2Z9K45XJBqWwDkHZX9whs/LgnO9+lpat0uip8Y0+2kYFFlJ1Y8VKb9oVKUhh47CRZxVqr0Eyp2Fv+/mZ8KDPJsMBbhLqmirLkjcN8XwM55GYdypNVzQV5DsdeWqq+0pe4HQtBiWbPpW2fzdiCmoQLD64=;
-X-UUID: 22f4a0dbc6904c20a40138dc987cf8d1-20201228
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <walter-zh.wu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1027952524; Mon, 28 Dec 2020 12:19:37 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 28 Dec 2020 12:20:37 +0800
-Received: from [172.21.84.99] (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 28 Dec 2020 12:20:37 +0800
-Message-ID: <1609129169.6472.1.camel@mtksdccf07>
-Subject: Re: BUG: unable to handle kernel NULL pointer dereference in
- call_rcu
-From:   Walter Wu <walter-zh.wu@mediatek.com>
-To:     Dmitry Vyukov <dvyukov@google.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        syzbot <syzbot+9d3ede723bdc58553f13@syzkaller.appspotmail.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Vasily Averin <vvs@virtuozzo.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        "Alexander Potapenko" <glider@google.com>
-Date:   Mon, 28 Dec 2020 12:19:29 +0800
-In-Reply-To: <CACT4Y+ac+mo9VvwvQ-OD+OXR77g1STbc8Dv+VDLYjJyOCvCW0w@mail.gmail.com>
-References: <0000000000005ccf1b05b7665adc@google.com>
-         <20201227114534.1b3f407caaf9ec0e821f56f4@linux-foundation.org>
-         <CACT4Y+ac+mo9VvwvQ-OD+OXR77g1STbc8Dv+VDLYjJyOCvCW0w@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Sun, 27 Dec 2020 23:30:12 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC74BC061795
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 20:29:25 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id q75so8944293wme.2
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 20:29:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Wjb+LO/ssuceHPKZ/ftYW2L7sh6AvUBxbmjIMtkzZqE=;
+        b=vNLyIrHDJ8HRiUDhPhwNOjFF4Ghdggy2jXkEf7p45zpM4vy6UYPdXmSO762obMK/De
+         QHfsS2PS6so0x0mVsyapPYQTnzLOOk/kN/ALwnXYkjK+O9pogKphZGm5Bz+4GKgofnmo
+         0+wf36CXATc7aqClo64cjjRjibPZm6kuZwYpaSDx5UWxyEluktzLBNvlj81SKq+4qx/K
+         l3eN2eqqh4yn5RVHAannbIUtyMwWot7vhPVz0SzibLePbe8VRfXvDj1pFKGXCA5glmo+
+         tblwwfyRsMlzhqr0XpyB5jVPPnaEPIyYrnjpHR/6i5eX+KHh20WiwA3f4zDKCdzVGyXn
+         qb+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Wjb+LO/ssuceHPKZ/ftYW2L7sh6AvUBxbmjIMtkzZqE=;
+        b=WER2ALEsaq98pbbOrHENjwvyxddIpd5LXeTzBSbS0giwQ7g32SDoEFEjZEr7pzBL27
+         Afn9WJoSPZCrf1/dV98y5zbyEKjx+/3slz2mG3SJY+0Nh93quo8Ebqx9EdtOSsQjgqt5
+         yxPWfPJ5QhQZ7B9yiSsxCa+bHdWO4XaEyY+rPFAAYnBPUWF8wVlgcgvngm8lMeTG6aUA
+         Mel3OtFB1tm5X0rZHMm9NPI4TPOlGMzoa7svxYgLh412C3HsudP48DiABN/xGlbag4lV
+         6zUKzA7UCuGlMD+T84L5sM4CpxB66XiLFQ7o9ARkJdRdf/sWS5QD+BpEPtjG/yYoI5GS
+         c7NQ==
+X-Gm-Message-State: AOAM530PPBFb22Kq3jimNKdMJCAbSrDNhsAhRs4E2V78TPPz2ynmrQ/4
+        6jwXdaTSZlrri8FRt4nMZfBitkydYTGTD3A63CWHtg==
+X-Google-Smtp-Source: ABdhPJzLY3n9dp7VwXrIfmnAWn81h57NTQfZPAg7EPAmaWCfaEYjm25PeSjYFfk1njw/JjqV5aDagF311R4+zQTrb6Y=
+X-Received: by 2002:a7b:cf37:: with SMTP id m23mr18480668wmg.37.1609129763943;
+ Sun, 27 Dec 2020 20:29:23 -0800 (PST)
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: A66264A3B3863547C86EAA5E7BFB314FCE050F66B8DEA2AA5BE81D57E7DE73512000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20201208132835.6151-1-will@kernel.org> <20201208132835.6151-11-will@kernel.org>
+In-Reply-To: <20201208132835.6151-11-will@kernel.org>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Sun, 27 Dec 2020 20:29:13 -0800
+Message-ID: <CAJuCfpE9WGaNPkFC+GrdMnHV+pFaH+r1zLvbBbcsFy4ACim94w@mail.gmail.com>
+Subject: Re: [PATCH v5 10/15] sched: Introduce force_compatible_cpus_allowed_ptr()
+ to limit CPU affinity
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gU3VuLCAyMDIwLTEyLTI3IGF0IDIwOjUxICswMTAwLCBEbWl0cnkgVnl1a292IHdyb3RlOg0K
-PiAvXC9cL1wvXE9uIFN1biwgRGVjIDI3LCAyMDIwIGF0IDg6NDUgUE0gQW5kcmV3IE1vcnRvbg0K
-PiA8YWtwbUBsaW51eC1mb3VuZGF0aW9uLm9yZz4gd3JvdGU6DQo+ID4NCj4gPiAoY2MgS0FTQU4g
-ZGV2ZWxvcGVycykNCj4gPg0KPiA+IE9uIFNhdCwgMjYgRGVjIDIwMjAgMTU6MjU6MTQgLTA4MDAg
-c3l6Ym90IDxzeXpib3QrOWQzZWRlNzIzYmRjNTg1NTNmMTNAc3l6a2FsbGVyLmFwcHNwb3RtYWls
-LmNvbT4gd3JvdGU6DQo+ID4NCj4gPiA+IEhlbGxvLA0KPiA+ID4NCj4gPiA+IHN5emJvdCBmb3Vu
-ZCB0aGUgZm9sbG93aW5nIGlzc3VlIG9uOg0KPiA+ID4NCj4gPiA+IEhFQUQgY29tbWl0OiAgICA2
-MTRjYjU4OSBNZXJnZSB0YWcgJ2FjcGktNS4xMS1yYzEtMicgb2YgZ2l0Oi8vZ2l0Lmtlcm5lbC5v
-Li4NCj4gPiA+IGdpdCB0cmVlOiAgICAgICB1cHN0cmVhbQ0KPiA+ID4gY29uc29sZSBvdXRwdXQ6
-IGh0dHBzOi8vc3l6a2FsbGVyLmFwcHNwb3QuY29tL3gvbG9nLnR4dD94PTEwYTgyYTUwZDAwMDAw
-DQo+ID4gPiBrZXJuZWwgY29uZmlnOiAgaHR0cHM6Ly9zeXprYWxsZXIuYXBwc3BvdC5jb20veC8u
-Y29uZmlnP3g9YmY1MTllMWU5NjE5MTU3Ng0KPiA+ID4gZGFzaGJvYXJkIGxpbms6IGh0dHBzOi8v
-c3l6a2FsbGVyLmFwcHNwb3QuY29tL2J1Zz9leHRpZD05ZDNlZGU3MjNiZGM1ODU1M2YxMw0KPiA+
-ID4gY29tcGlsZXI6ICAgICAgIGdjYyAoR0NDKSAxMC4xLjAtc3l6IDIwMjAwNTA3DQo+ID4gPiBz
-eXogcmVwcm86ICAgICAgaHR0cHM6Ly9zeXprYWxsZXIuYXBwc3BvdC5jb20veC9yZXByby5zeXo/
-eD0xMTgzMGU5MzUwMDAwMA0KPiA+ID4gQyByZXByb2R1Y2VyOiAgIGh0dHBzOi8vc3l6a2FsbGVy
-LmFwcHNwb3QuY29tL3gvcmVwcm8uYz94PTEzZDkyMDU3NTAwMDAwDQo+ID4gPg0KPiA+ID4gSU1Q
-T1JUQU5UOiBpZiB5b3UgZml4IHRoZSBpc3N1ZSwgcGxlYXNlIGFkZCB0aGUgZm9sbG93aW5nIHRh
-ZyB0byB0aGUgY29tbWl0Og0KPiA+ID4gUmVwb3J0ZWQtYnk6IHN5emJvdCs5ZDNlZGU3MjNiZGM1
-ODU1M2YxM0BzeXprYWxsZXIuYXBwc3BvdG1haWwuY29tDQo+ID4gPg0KPiA+ID4gQlVHOiBrZXJu
-ZWwgTlVMTCBwb2ludGVyIGRlcmVmZXJlbmNlLCBhZGRyZXNzOiAwMDAwMDAwMDAwMDAwMDA4DQo+
-ID4gPiAjUEY6IHN1cGVydmlzb3IgcmVhZCBhY2Nlc3MgaW4ga2VybmVsIG1vZGUNCj4gPiA+ICNQ
-RjogZXJyb3JfY29kZSgweDAwMDApIC0gbm90LXByZXNlbnQgcGFnZQ0KPiA+ID4gUEdEIDJkOTkz
-MDY3IFA0RCAyZDk5MzA2NyBQVUQgMTlhM2MwNjcgUE1EIDANCj4gPiA+IE9vcHM6IDAwMDAgWyMx
-XSBQUkVFTVBUIFNNUCBLQVNBTg0KPiA+ID4gQ1BVOiAxIFBJRDogMzg1MiBDb21tOiBrd29ya2Vy
-LzE6MiBOb3QgdGFpbnRlZCA1LjEwLjAtc3l6a2FsbGVyICMwDQo+ID4gPiBIYXJkd2FyZSBuYW1l
-OiBHb29nbGUgR29vZ2xlIENvbXB1dGUgRW5naW5lL0dvb2dsZSBDb21wdXRlIEVuZ2luZSwgQklP
-UyBHb29nbGUgMDEvMDEvMjAxMQ0KPiA+ID4gV29ya3F1ZXVlOiBldmVudHMgZnJlZV9pcGMNCj4g
-PiA+IFJJUDogMDAxMDprYXNhbl9yZWNvcmRfYXV4X3N0YWNrKzB4NzcvMHhiMCBtbS9rYXNhbi9n
-ZW5lcmljLmM6MzQxDQo+IA0KPiArV2FsdGVyLCBBbmRyZXkNCj4gDQo+IHZvaWQga2FzYW5fcmVj
-b3JkX2F1eF9zdGFjayh2b2lkICphZGRyKQ0KPiB7DQo+ICAgICAuLi4NCj4gICAgIGFsbG9jX21l
-dGEgPSBrYXNhbl9nZXRfYWxsb2NfbWV0YShjYWNoZSwgb2JqZWN0KTsNCj4gICAgIGFsbG9jX21l
-dGEtPmF1eF9zdGFja1sxXSA9IGFsbG9jX21ldGEtPmF1eF9zdGFja1swXTsNCj4gDQo+IC9cL1wv
-XC9cL1wvXC9cL1wvXC9cL1wvXC9cL1wvXC9cL1wvXC9cL1wvXC9cDQo+IEl0IGNyYXNoZXMgb24g
-TlVMTCBkZXJlZiBoZXJlLCBJIGFzc3VtZSBhbGxvY19tZXRhIGlzIE5VTEwuIFdlIG1heSBub3QN
-Cj4gaGF2ZSBpdCBmb3Igc29tZSBzbGFicy4gRG8gd2UgbWlzcyBhIE5VTEwgY2hlY2sgaGVyZT8N
-Cj4gDQpIaSBEbWl0cnksDQoNClllcywgSSB3aWxsIHNlbmQgYSBwYXRjaCB0byBmaXggaXQuDQoN
-ClRoYW5rcyBmb3IgeW91ciBzdWdnZXN0aW9uLg0KDQpXYWx0ZXINCg0KPiANCj4gDQo+IA0KPiA+
-ID4gQ29kZTogNDggZjcgZmUgOGIgNDcgMjQgNDkgODkgZjAgNDggMjkgZDMgOGQgNzAgZmYgNDEg
-MGYgYWYgZjAgNDggMDEgY2UgNDggMzkgZjMgNDggMGYgNDYgZjMgZTggODEgZTkgZmYgZmYgYmYg
-MDAgMDggMDAgMDAgNDggODkgYzMgPDhiPiA0MCAwOCA4OSA0MyAwYyBlOCAxZSBlNiBmZiBmZiA4
-OSA0MyAwOCA1YiBjMyA0OCA4YiA1MCAwOCA0OCBjNw0KPiA+ID4gUlNQOiAwMDE4OmZmZmZjOTAw
-MDJlNmZhZTggRUZMQUdTOiAwMDAxMDA0Ng0KPiA+ID4gUkFYOiAwMDAwMDAwMDAwMDAwMDAwIFJC
-WDogMDAwMDAwMDAwMDAwMDAwMCBSQ1g6IGZmZmY4ODgwMzk4MDAwMDANCj4gPiA+IFJEWDogMDAw
-MDAwMDAwMDAwMDA3OCBSU0k6IGZmZmY4ODgwMzk4MDAwMDAgUkRJOiAwMDAwMDAwMDAwMDAwODAw
-DQo+ID4gPiBSQlA6IGZmZmZmZmZmODM3ZWYzYTAgUjA4OiAwMDAwMDAwMDAwNDAwMDAwIFIwOTog
-MDAwMDAwMDAwMDAwMDAyZQ0KPiA+ID4gUjEwOiBmZmZmZmZmZjgxMzJiN2VhIFIxMTogMDAwMDAw
-MDAwMDAwMDAzZiBSMTI6IDAwMDAwMDAwMDAwMzViNDANCj4gPiA+IFIxMzogZmZmZjg4ODAzOTgw
-MDA4OCBSMTQ6IGZmZmZjOTAwMDJlNmZjMDggUjE1OiAwMDAwMDAwMDAwMDAwMjAwDQo+ID4gPiBG
-UzogIDAwMDAwMDAwMDAwMDAwMDAoMDAwMCkgR1M6ZmZmZjg4ODBiOWQwMDAwMCgwMDAwKSBrbmxH
-UzowMDAwMDAwMDAwMDAwMDAwDQo+ID4gPiBDUzogIDAwMTAgRFM6IDAwMDAgRVM6IDAwMDAgQ1Iw
-OiAwMDAwMDAwMDgwMDUwMDMzDQo+ID4gPiBDUjI6IDAwMDAwMDAwMDAwMDAwMDggQ1IzOiAwMDAw
-MDAwMDExODQxMDAwIENSNDogMDAwMDAwMDAwMDE1MDZlMA0KPiA+ID4gRFIwOiAwMDAwMDAwMDAw
-MDAwMDAwIERSMTogMDAwMDAwMDAwMDAwMDAwMCBEUjI6IDAwMDAwMDAwMDAwMDAwMDANCj4gPiA+
-IERSMzogMDAwMDAwMDAwMDAwMDAwMCBEUjY6IDAwMDAwMDAwZmZmZTBmZjAgRFI3OiAwMDAwMDAw
-MDAwMDAwNDAwDQo+ID4gPiBDYWxsIFRyYWNlOg0KPiA+ID4gIF9fY2FsbF9yY3Uga2VybmVsL3Jj
-dS90cmVlLmM6Mjk2NSBbaW5saW5lXQ0KPiA+ID4gIGNhbGxfcmN1KzB4YmIvMHg3MTAga2VybmVs
-L3JjdS90cmVlLmM6MzAzOA0KPiA+ID4gIGlwY19yY3VfcHV0cmVmKzB4ODMvMHhiMCBpcGMvdXRp
-bC5jOjUwNQ0KPiA+ID4gIGZyZWVhcnkrMHgxMzljLzB4MWIzMCBpcGMvc2VtLmM6MTE4OA0KPiA+
-ID4gIGZyZWVfaXBjcysweDk4LzB4MWUwIGlwYy9uYW1lc3BhY2UuYzoxMTINCj4gPiA+ICBzZW1f
-ZXhpdF9ucysweDFiLzB4NDAgaXBjL3NlbS5jOjI2MA0KPiA+ID4gIGZyZWVfaXBjX25zIGlwYy9u
-YW1lc3BhY2UuYzoxMjQgW2lubGluZV0NCj4gPiA+ICBmcmVlX2lwYysweGY4LzB4MjAwIGlwYy9u
-YW1lc3BhY2UuYzoxNDENCj4gPiA+ICBwcm9jZXNzX29uZV93b3JrKzB4OThkLzB4MTYzMCBrZXJu
-ZWwvd29ya3F1ZXVlLmM6MjI3NQ0KPiA+ID4gIHdvcmtlcl90aHJlYWQrMHg2NGMvMHgxMTIwIGtl
-cm5lbC93b3JrcXVldWUuYzoyNDIxDQo+ID4gPiAga3RocmVhZCsweDNiMS8weDRhMCBrZXJuZWwv
-a3RocmVhZC5jOjI5Mg0KPiA+ID4gIHJldF9mcm9tX2ZvcmsrMHgxZi8weDMwIGFyY2gveDg2L2Vu
-dHJ5L2VudHJ5XzY0LlM6Mjk2DQo+ID4gPiBNb2R1bGVzIGxpbmtlZCBpbjoNCj4gPiA+IENSMjog
-MDAwMDAwMDAwMDAwMDAwOA0KPiA+ID4gLS0tWyBlbmQgdHJhY2UgMjhkYzA5M2U2MWQ0NGRjMiBd
-LS0tDQo+ID4gPiBSSVA6IDAwMTA6a2FzYW5fcmVjb3JkX2F1eF9zdGFjaysweDc3LzB4YjAgbW0v
-a2FzYW4vZ2VuZXJpYy5jOjM0MQ0KPiA+ID4gQ29kZTogNDggZjcgZmUgOGIgNDcgMjQgNDkgODkg
-ZjAgNDggMjkgZDMgOGQgNzAgZmYgNDEgMGYgYWYgZjAgNDggMDEgY2UgNDggMzkgZjMgNDggMGYg
-NDYgZjMgZTggODEgZTkgZmYgZmYgYmYgMDAgMDggMDAgMDAgNDggODkgYzMgPDhiPiA0MCAwOCA4
-OSA0MyAwYyBlOCAxZSBlNiBmZiBmZiA4OSA0MyAwOCA1YiBjMyA0OCA4YiA1MCAwOCA0OCBjNw0K
-PiA+ID4gUlNQOiAwMDE4OmZmZmZjOTAwMDJlNmZhZTggRUZMQUdTOiAwMDAxMDA0Ng0KPiA+ID4g
-UkFYOiAwMDAwMDAwMDAwMDAwMDAwIFJCWDogMDAwMDAwMDAwMDAwMDAwMCBSQ1g6IGZmZmY4ODgw
-Mzk4MDAwMDANCj4gPiA+IFJEWDogMDAwMDAwMDAwMDAwMDA3OCBSU0k6IGZmZmY4ODgwMzk4MDAw
-MDAgUkRJOiAwMDAwMDAwMDAwMDAwODAwDQo+ID4gPiBSQlA6IGZmZmZmZmZmODM3ZWYzYTAgUjA4
-OiAwMDAwMDAwMDAwNDAwMDAwIFIwOTogMDAwMDAwMDAwMDAwMDAyZQ0KPiA+ID4gUjEwOiBmZmZm
-ZmZmZjgxMzJiN2VhIFIxMTogMDAwMDAwMDAwMDAwMDAzZiBSMTI6IDAwMDAwMDAwMDAwMzViNDAN
-Cj4gPiA+IFIxMzogZmZmZjg4ODAzOTgwMDA4OCBSMTQ6IGZmZmZjOTAwMDJlNmZjMDggUjE1OiAw
-MDAwMDAwMDAwMDAwMjAwDQo+ID4gPiBGUzogIDAwMDAwMDAwMDAwMDAwMDAoMDAwMCkgR1M6ZmZm
-Zjg4ODBiOWQwMDAwMCgwMDAwKSBrbmxHUzowMDAwMDAwMDAwMDAwMDAwDQo+ID4gPiBDUzogIDAw
-MTAgRFM6IDAwMDAgRVM6IDAwMDAgQ1IwOiAwMDAwMDAwMDgwMDUwMDMzDQo+ID4gPiBDUjI6IDAw
-MDAwMDAwMDAwMDAwMDggQ1IzOiAwMDAwMDAwMDExODQxMDAwIENSNDogMDAwMDAwMDAwMDE1MDZl
-MA0KPiA+ID4gRFIwOiAwMDAwMDAwMDAwMDAwMDAwIERSMTogMDAwMDAwMDAwMDAwMDAwMCBEUjI6
-IDAwMDAwMDAwMDAwMDAwMDANCj4gPiA+IERSMzogMDAwMDAwMDAwMDAwMDAwMCBEUjY6IDAwMDAw
-MDAwZmZmZTBmZjAgRFI3OiAwMDAwMDAwMDAwMDAwNDAwDQo+ID4gPg0KPiA+ID4NCj4gPiA+IC0t
-LQ0KPiA+ID4gVGhpcyByZXBvcnQgaXMgZ2VuZXJhdGVkIGJ5IGEgYm90LiBJdCBtYXkgY29udGFp
-biBlcnJvcnMuDQo+ID4gPiBTZWUgaHR0cHM6Ly9nb28uZ2wvdHBzbUVKIGZvciBtb3JlIGluZm9y
-bWF0aW9uIGFib3V0IHN5emJvdC4NCj4gPiA+IHN5emJvdCBlbmdpbmVlcnMgY2FuIGJlIHJlYWNo
-ZWQgYXQgc3l6a2FsbGVyQGdvb2dsZWdyb3Vwcy5jb20uDQo+ID4gPg0KPiA+ID4gc3l6Ym90IHdp
-bGwga2VlcCB0cmFjayBvZiB0aGlzIGlzc3VlLiBTZWU6DQo+ID4gPiBodHRwczovL2dvby5nbC90
-cHNtRUojc3RhdHVzIGZvciBob3cgdG8gY29tbXVuaWNhdGUgd2l0aCBzeXpib3QuDQo+ID4gPiBz
-eXpib3QgY2FuIHRlc3QgcGF0Y2hlcyBmb3IgdGhpcyBpc3N1ZSwgZm9yIGRldGFpbHMgc2VlOg0K
-PiA+ID4gaHR0cHM6Ly9nb28uZ2wvdHBzbUVKI3Rlc3RpbmctcGF0Y2hlcw0KDQo=
+Just a couple minor nits.
 
+On Tue, Dec 8, 2020 at 5:29 AM Will Deacon <will@kernel.org> wrote:
+>
+> Asymmetric systems may not offer the same level of userspace ISA support
+> across all CPUs, meaning that some applications cannot be executed by
+> some CPUs. As a concrete example, upcoming arm64 big.LITTLE designs do
+> not feature support for 32-bit applications on both clusters.
+>
+> Although userspace can carefully manage the affinity masks for such
+> tasks, one place where it is particularly problematic is execve()
+> because the CPU on which the execve() is occurring may be incompatible
+> with the new application image. In such a situation, it is desirable to
+> restrict the affinity mask of the task and ensure that the new image is
+> entered on a compatible CPU. From userspace's point of view, this looks
+> the same as if the incompatible CPUs have been hotplugged off in the
+> task's affinity mask.
+>
+> In preparation for restricting the affinity mask for compat tasks on
+> arm64 systems without uniform support for 32-bit applications, introduce
+> force_compatible_cpus_allowed_ptr(), which restricts the affinity mask
+> for a task to contain only compatible CPUs.
+>
+> Reviewed-by: Quentin Perret <qperret@google.com>
+> Signed-off-by: Will Deacon <will@kernel.org>
+> ---
+>  include/linux/sched.h |   1 +
+>  kernel/sched/core.c   | 100 +++++++++++++++++++++++++++++++++++-------
+>  2 files changed, 86 insertions(+), 15 deletions(-)
+>
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index 76cd21fa5501..e42dd0fb85c5 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -1653,6 +1653,7 @@ extern int task_can_attach(struct task_struct *p, const struct cpumask *cs_cpus_
+>  #ifdef CONFIG_SMP
+>  extern void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask);
+>  extern int set_cpus_allowed_ptr(struct task_struct *p, const struct cpumask *new_mask);
+> +extern void force_compatible_cpus_allowed_ptr(struct task_struct *p);
+>  #else
+>  static inline void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask)
+>  {
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 92ac3e53f50a..1cfc94be18a9 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -1863,25 +1863,19 @@ void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask)
+>  }
+>
+>  /*
+> - * Change a given task's CPU affinity. Migrate the thread to a
+> - * proper CPU and schedule it away if the CPU it's executing on
+> - * is removed from the allowed bitmask.
+> - *
+> - * NOTE: the caller must have a valid reference to the task, the
+> - * task must not exit() & deallocate itself prematurely. The
+> - * call is not atomic; no spinlocks may be held.
+> + * Called with both p->pi_lock and rq->lock held; drops both before returning.
+
+Maybe annotate with __releases()?
+
+>   */
+> -static int __set_cpus_allowed_ptr(struct task_struct *p,
+> -                                 const struct cpumask *new_mask, bool check)
+> +static int __set_cpus_allowed_ptr_locked(struct task_struct *p,
+> +                                        const struct cpumask *new_mask,
+> +                                        bool check,
+> +                                        struct rq *rq,
+> +                                        struct rq_flags *rf)
+>  {
+>         const struct cpumask *cpu_valid_mask = cpu_active_mask;
+>         const struct cpumask *cpu_allowed_mask = task_cpu_possible_mask(p);
+>         unsigned int dest_cpu;
+> -       struct rq_flags rf;
+> -       struct rq *rq;
+>         int ret = 0;
+>
+> -       rq = task_rq_lock(p, &rf);
+>         update_rq_clock(rq);
+>
+>         if (p->flags & PF_KTHREAD) {
+> @@ -1936,7 +1930,7 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
+>         if (task_running(rq, p) || p->state == TASK_WAKING) {
+>                 struct migration_arg arg = { p, dest_cpu };
+>                 /* Need help from migration thread: drop lock and wait. */
+> -               task_rq_unlock(rq, p, &rf);
+> +               task_rq_unlock(rq, p, rf);
+>                 stop_one_cpu(cpu_of(rq), migration_cpu_stop, &arg);
+>                 return 0;
+>         } else if (task_on_rq_queued(p)) {
+> @@ -1944,20 +1938,96 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
+>                  * OK, since we're going to drop the lock immediately
+>                  * afterwards anyway.
+>                  */
+> -               rq = move_queued_task(rq, &rf, p, dest_cpu);
+> +               rq = move_queued_task(rq, rf, p, dest_cpu);
+>         }
+>  out:
+> -       task_rq_unlock(rq, p, &rf);
+> +       task_rq_unlock(rq, p, rf);
+>
+>         return ret;
+>  }
+>
+> +/*
+> + * Change a given task's CPU affinity. Migrate the thread to a
+> + * proper CPU and schedule it away if the CPU it's executing on
+> + * is removed from the allowed bitmask.
+> + *
+> + * NOTE: the caller must have a valid reference to the task, the
+> + * task must not exit() & deallocate itself prematurely. The
+> + * call is not atomic; no spinlocks may be held.
+> + */
+> +static int __set_cpus_allowed_ptr(struct task_struct *p,
+> +                                 const struct cpumask *new_mask, bool check)
+> +{
+> +       struct rq_flags rf;
+> +       struct rq *rq;
+> +
+> +       rq = task_rq_lock(p, &rf);
+> +       return __set_cpus_allowed_ptr_locked(p, new_mask, check, rq, &rf);
+> +}
+> +
+>  int set_cpus_allowed_ptr(struct task_struct *p, const struct cpumask *new_mask)
+>  {
+>         return __set_cpus_allowed_ptr(p, new_mask, false);
+>  }
+>  EXPORT_SYMBOL_GPL(set_cpus_allowed_ptr);
+>
+> +/*
+> + * Change a given task's CPU affinity to the intersection of its current
+> + * affinity mask and @subset_mask, writing the resulting mask to @new_mask.
+> + * If the resulting mask is empty, leave the affinity unchanged and return
+> + * -EINVAL.
+> + */
+> +static int restrict_cpus_allowed_ptr(struct task_struct *p,
+> +                                    struct cpumask *new_mask,
+> +                                    const struct cpumask *subset_mask)
+> +{
+> +       struct rq_flags rf;
+> +       struct rq *rq;
+> +
+> +       rq = task_rq_lock(p, &rf);
+> +       if (!cpumask_and(new_mask, &p->cpus_mask, subset_mask)) {
+> +               task_rq_unlock(rq, p, &rf);
+> +               return -EINVAL;
+> +       }
+> +
+> +       return __set_cpus_allowed_ptr_locked(p, new_mask, false, rq, &rf);
+> +}
+> +
+> +/*
+> + * Restrict a given task's CPU affinity so that it is a subset of
+> + * task_cpu_possible_mask(). If the resulting mask is empty, we warn and
+> + * walk up the cpuset hierarchy until we find a suitable mask.
+
+Technically you also have a case when new_mask allocation fails, in
+which case task_cpu_possible_mask() is forced instead. Maybe add a
+clarifying comment at "goto out_set_mask" ?
+
+> + */
+> +void force_compatible_cpus_allowed_ptr(struct task_struct *p)
+> +{
+> +       cpumask_var_t new_mask;
+> +       const struct cpumask *override_mask = task_cpu_possible_mask(p);
+> +
+> +       if (!alloc_cpumask_var(&new_mask, GFP_KERNEL))
+> +               goto out_set_mask;
+> +
+> +       if (!restrict_cpus_allowed_ptr(p, new_mask, override_mask))
+> +               goto out_free_mask;
+> +
+> +       /*
+> +        * We failed to find a valid subset of the affinity mask for the
+> +        * task, so override it based on its cpuset hierarchy.
+> +        */
+> +       cpuset_cpus_allowed(p, new_mask);
+> +       override_mask = new_mask;
+> +
+> +out_set_mask:
+> +       if (printk_ratelimit()) {
+> +               printk_deferred("Overriding affinity for process %d (%s) to CPUs %*pbl\n",
+> +                               task_pid_nr(p), p->comm,
+> +                               cpumask_pr_args(override_mask));
+> +       }
+> +
+> +       set_cpus_allowed_ptr(p, override_mask);
+> +out_free_mask:
+> +       free_cpumask_var(new_mask);
+> +}
+> +
+>  void set_task_cpu(struct task_struct *p, unsigned int new_cpu)
+>  {
+>  #ifdef CONFIG_SCHED_DEBUG
+> --
+> 2.29.2.576.ga3fc446d84-goog
+>
