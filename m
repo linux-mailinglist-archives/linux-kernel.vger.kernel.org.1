@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFE0B2E3FB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:44:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CD0F2E38F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:19:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502212AbgL1OnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:43:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34896 "EHLO mail.kernel.org"
+        id S1731542AbgL1NRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:17:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437875AbgL1O1G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:27:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14BED22B37;
-        Mon, 28 Dec 2020 14:26:24 +0000 (UTC)
+        id S1731523AbgL1NRN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:17:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B2F520776;
+        Mon, 28 Dec 2020 13:16:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165585;
-        bh=7hQPigtsRT2t7knbIwv1eFx0rp32ngh5c8ITz69p8O0=;
+        s=korg; t=1609161417;
+        bh=p666qLicgP8Y8aG+ATTzgbNunfD3U0QKrETk7ChM4zc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SBZcBamzgaPA+Ql0Mfs2q4OqJFy4uIX+9n7oAVabaOVqmiy0oklRQUfaxuzCJDwMz
-         a//X3Uza78gFal+tXsmSkQYlfLVftZ/HU/AsV2VdUgAnRlD5lJ1t/OPZTyMB19hmhF
-         zJTylQej1LyYi6AaG37n6eYms2MmjRWR3tHwhg1c=
+        b=ztpshACCYigSffn2j4t/vXW7y82qf8KW4dsVwCy9ZxEWgdpQ3IYk30E8Ouka4pBze
+         q4ly77S/e5Rjng8mEUDTbtHWNtp739LkFQqoHwz+wEJe+HagXANt5x7Fzf0THdE+Im
+         8MapUiQxwIGlZ7+Ty2Ywo/RubO8m9PPBei2wvdQI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.10 584/717] USB: serial: keyspan_pda: fix write-wakeup use-after-free
+        stable@vger.kernel.org, Sara Sharon <sara.sharon@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 177/242] cfg80211: initialize rekey_data
 Date:   Mon, 28 Dec 2020 13:49:42 +0100
-Message-Id: <20201228125048.891593697@linuxfoundation.org>
+Message-Id: <20201228124913.403638637@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,81 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Sara Sharon <sara.sharon@intel.com>
 
-commit 37faf50615412947868c49aee62f68233307f4e4 upstream.
+[ Upstream commit f495acd8851d7b345e5f0e521b2645b1e1f928a0 ]
 
-The driver's deferred write wakeup was never flushed on disconnect,
-something which could lead to the driver port data being freed while the
-wakeup work is still scheduled.
+In case we have old supplicant, the akm field is uninitialized.
 
-Fix this by using the usb-serial write wakeup which gets cancelled
-properly on disconnect.
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Cc: stable@vger.kernel.org
-Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Sara Sharon <sara.sharon@intel.com>
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Link: https://lore.kernel.org/r/iwlwifi.20201129172929.930f0ab7ebee.Ic546e384efab3f4a89f318eafddc3eb7d556aecb@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/serial/keyspan_pda.c |   17 +++--------------
- 1 file changed, 3 insertions(+), 14 deletions(-)
+ net/wireless/nl80211.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/serial/keyspan_pda.c
-+++ b/drivers/usb/serial/keyspan_pda.c
-@@ -43,8 +43,7 @@
- struct keyspan_pda_private {
- 	int			tx_room;
- 	int			tx_throttled;
--	struct work_struct			wakeup_work;
--	struct work_struct			unthrottle_work;
-+	struct work_struct	unthrottle_work;
- 	struct usb_serial	*serial;
- 	struct usb_serial_port	*port;
- };
-@@ -97,15 +96,6 @@ static const struct usb_device_id id_tab
- };
- #endif
+diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
+index 6bd4f6c8fc2ef..f630fa2e31647 100644
+--- a/net/wireless/nl80211.c
++++ b/net/wireless/nl80211.c
+@@ -10969,7 +10969,7 @@ static int nl80211_set_rekey_data(struct sk_buff *skb, struct genl_info *info)
+ 	struct net_device *dev = info->user_ptr[1];
+ 	struct wireless_dev *wdev = dev->ieee80211_ptr;
+ 	struct nlattr *tb[NUM_NL80211_REKEY_DATA];
+-	struct cfg80211_gtk_rekey_data rekey_data;
++	struct cfg80211_gtk_rekey_data rekey_data = {};
+ 	int err;
  
--static void keyspan_pda_wakeup_write(struct work_struct *work)
--{
--	struct keyspan_pda_private *priv =
--		container_of(work, struct keyspan_pda_private, wakeup_work);
--	struct usb_serial_port *port = priv->port;
--
--	tty_port_tty_wakeup(&port->port);
--}
--
- static void keyspan_pda_request_unthrottle(struct work_struct *work)
- {
- 	struct keyspan_pda_private *priv =
-@@ -183,7 +173,7 @@ static void keyspan_pda_rx_interrupt(str
- 		case 2: /* tx unthrottle interrupt */
- 			priv->tx_throttled = 0;
- 			/* queue up a wakeup at scheduler time */
--			schedule_work(&priv->wakeup_work);
-+			usb_serial_port_softint(port);
- 			break;
- 		default:
- 			break;
-@@ -563,7 +553,7 @@ static void keyspan_pda_write_bulk_callb
- 	priv = usb_get_serial_port_data(port);
- 
- 	/* queue up a wakeup at scheduler time */
--	schedule_work(&priv->wakeup_work);
-+	usb_serial_port_softint(port);
- }
- 
- 
-@@ -715,7 +705,6 @@ static int keyspan_pda_port_probe(struct
- 	if (!priv)
- 		return -ENOMEM;
- 
--	INIT_WORK(&priv->wakeup_work, keyspan_pda_wakeup_write);
- 	INIT_WORK(&priv->unthrottle_work, keyspan_pda_request_unthrottle);
- 	priv->serial = port->serial;
- 	priv->port = port;
+ 	if (!info->attrs[NL80211_ATTR_REKEY_DATA])
+-- 
+2.27.0
+
 
 
