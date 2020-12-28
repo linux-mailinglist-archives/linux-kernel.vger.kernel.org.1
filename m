@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FAAC2E4316
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:34:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 580102E4314
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:34:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392799AbgL1PaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:30:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58052 "EHLO mail.kernel.org"
+        id S2405767AbgL1N4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:56:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57376 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405187AbgL1N4W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:56:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7108E20731;
-        Mon, 28 Dec 2020 13:55:41 +0000 (UTC)
+        id S2405394AbgL1N4A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:56:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 04C3C20738;
+        Mon, 28 Dec 2020 13:55:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163742;
-        bh=tF9kVQT9TFMYMJzjFnsDgG33Cr39hZP/BIcPcBdVfxo=;
+        s=korg; t=1609163744;
+        bh=0mA020p+l0nBuEoHzeLGKy4wgdjQDlB+neXTbKoMuh0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p+FcBMJ5WXEpp5SB2wKmQvU15WsESuZHXWjBKwQ64PFoKE9O6Dwbbs4WXOPo3CNOy
-         A8Je8/z0SJRQrw4L+HeBbwCEbkxs08lyzVxh6LOm4DaS/F9PiqU3l9b1xv9kF/rDxV
-         qdxVb2uIGYCnBracn5u1LOLcrrA+mJcYYyASTCzw=
+        b=wlDUhQkaj0suV5ndO3alNngvJqOlxMnanG3vpdWkf8ytWIM9qms5hrHn4HytA2C+S
+         ST2iyjFrQUegge9LMKsBVdlqB0k3J7UVSCZ8lVMtyy3pOXOwnTcahsWI4vfQkCzAMt
+         rEq1yiwFrswQFkiMTiER82g4o0f15zMDrJWCGXc8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ronnie Sahlberg <lsahlber@redhat.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: [PATCH 5.4 392/453] SMB3: avoid confusing warning message on mount to Azure
-Date:   Mon, 28 Dec 2020 13:50:28 +0100
-Message-Id: <20201228124956.074382683@linuxfoundation.org>
+        stable@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+        Zhihao Cheng <chengzhihao1@huawei.com>
+Subject: [PATCH 5.4 393/453] ubifs: wbuf: Dont leak kernel memory to flash
+Date:   Mon, 28 Dec 2020 13:50:29 +0100
+Message-Id: <20201228124956.114133105@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
 References: <20201228124937.240114599@linuxfoundation.org>
@@ -39,40 +39,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steve French <stfrench@microsoft.com>
+From: Richard Weinberger <richard@nod.at>
 
-commit ebcd6de98754d9b6a5f89d7835864b1c365d432f upstream.
+commit 20f1431160c6b590cdc269a846fc5a448abf5b98 upstream.
 
-Mounts to Azure cause an unneeded warning message in dmesg
-   "CIFS: VFS: parse_server_interfaces: incomplete interface info"
+Write buffers use a kmalloc()'ed buffer, they can leak
+up to seven bytes of kernel memory to flash if writes are not
+aligned.
+So use ubifs_pad() to fill these gaps with padding bytes.
+This was never a problem while scanning because the scanner logic
+manually aligns node lengths and skips over these gaps.
 
-Azure rounds up the size (by 8 additional bytes, to a
-16 byte boundary) of the structure returned on the query
-of the server interfaces at mount time.  This is permissible
-even though different than other servers so do not log a warning
-if query network interfaces response is only rounded up by 8
-bytes or fewer.
-
-CC: Stable <stable@vger.kernel.org>
-Reviewed-by: Ronnie Sahlberg <lsahlber@redhat.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+Cc: <stable@vger.kernel.org>
+Fixes: 1e51764a3c2ac05a2 ("UBIFS: add new flash file system")
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/cifs/smb2ops.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/ubifs/io.c |   13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
---- a/fs/cifs/smb2ops.c
-+++ b/fs/cifs/smb2ops.c
-@@ -478,7 +478,8 @@ parse_server_interfaces(struct network_i
- 		goto out;
+--- a/fs/ubifs/io.c
++++ b/fs/ubifs/io.c
+@@ -319,7 +319,7 @@ void ubifs_pad(const struct ubifs_info *
+ {
+ 	uint32_t crc;
+ 
+-	ubifs_assert(c, pad >= 0 && !(pad & 7));
++	ubifs_assert(c, pad >= 0);
+ 
+ 	if (pad >= UBIFS_PAD_NODE_SZ) {
+ 		struct ubifs_ch *ch = buf;
+@@ -764,6 +764,10 @@ int ubifs_wbuf_write_nolock(struct ubifs
+ 		 * write-buffer.
+ 		 */
+ 		memcpy(wbuf->buf + wbuf->used, buf, len);
++		if (aligned_len > len) {
++			ubifs_assert(c, aligned_len - len < 8);
++			ubifs_pad(c, wbuf->buf + wbuf->used + len, aligned_len - len);
++		}
+ 
+ 		if (aligned_len == wbuf->avail) {
+ 			dbg_io("flush jhead %s wbuf to LEB %d:%d",
+@@ -856,13 +860,18 @@ int ubifs_wbuf_write_nolock(struct ubifs
  	}
  
--	if (bytes_left || p->Next)
-+	/* Azure rounds the buffer size up 8, to a 16 byte boundary */
-+	if ((bytes_left > 8) || p->Next)
- 		cifs_dbg(VFS, "%s: incomplete interface info\n", __func__);
+ 	spin_lock(&wbuf->lock);
+-	if (aligned_len)
++	if (aligned_len) {
+ 		/*
+ 		 * And now we have what's left and what does not take whole
+ 		 * max. write unit, so write it to the write-buffer and we are
+ 		 * done.
+ 		 */
+ 		memcpy(wbuf->buf, buf + written, len);
++		if (aligned_len > len) {
++			ubifs_assert(c, aligned_len - len < 8);
++			ubifs_pad(c, wbuf->buf + len, aligned_len - len);
++		}
++	}
  
- 
+ 	if (c->leb_size - wbuf->offs >= c->max_write_size)
+ 		wbuf->size = c->max_write_size;
 
 
