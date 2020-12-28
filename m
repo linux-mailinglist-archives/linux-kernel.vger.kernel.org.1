@@ -2,34 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AE432E3872
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:11:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D8342E37B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:01:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731383AbgL1NKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:10:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38030 "EHLO mail.kernel.org"
+        id S1728226AbgL1M71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:59:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55584 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731359AbgL1NKU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:10:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 246B022A84;
-        Mon, 28 Dec 2020 13:09:38 +0000 (UTC)
+        id S1726606AbgL1M7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:59:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 68D2422573;
+        Mon, 28 Dec 2020 12:58:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160979;
-        bh=k48YHGmEnT4sQWtHkPdkLaz6oOYF6LTXY9/Hwp2J8fc=;
+        s=korg; t=1609160319;
+        bh=Qd6aj9x/qUTjM3GHQ853OvkN2U3bcXzD0Z2BxUwS9uY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0QUIM+Ftl3Ag78A0UFgzA7Ajdj3CkLiERMRuC8bnrbHKzQAXKU/0u+v2bC0TShYBO
-         3J+nfFCfguVgdMF+UMFDWUT1u06laQcrw0VJg+HAp8NNcoNmya6pcvtDcrMO/nx+Of
-         qjiaAXNgogrdMguFf2FC8R8lKQwdFtFCt6j9KwDQ=
+        b=0RBWjr/fMjz60uE1JHvvow3Za7fPKWnM6kpsxt8NQ0dS9NlOy5zF0h0K+XVaYFui4
+         N8rUNOHVHd+yTKXkadSzZnCTSCo8VYSJqfkB74hpq/kZQU1bzYdLDtkE6RtISCPqjr
+         GKjUJL2Vvr4cV+ZN/8iiDqvdkFdEcOnhrwQFv/lY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>
-Subject: [PATCH 4.14 059/242] serial_core: Check for port state when tty is in error state
+        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Octavian Purdila <octavian.purdila@intel.com>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH 4.9 011/175] spi: Prevent adding devices below an unregistering controller
 Date:   Mon, 28 Dec 2020 13:47:44 +0100
-Message-Id: <20201228124907.588529532@linuxfoundation.org>
+Message-Id: <20201228124853.801123776@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,47 +43,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexey Kardashevskiy <aik@ozlabs.ru>
+From: Lukas Wunner <lukas@wunner.de>
 
-commit 2f70e49ed860020f5abae4f7015018ebc10e1f0e upstream.
+commit ddf75be47ca748f8b12d28ac64d624354fddf189 upstream
 
-At the moment opening a serial device node (such as /dev/ttyS3)
-succeeds even if there is no actual serial device behind it.
-Reading/writing/ioctls fail as expected because the uart port is not
-initialized (the type is PORT_UNKNOWN) and the TTY_IO_ERROR error state
-bit is set fot the tty.
+CONFIG_OF_DYNAMIC and CONFIG_ACPI allow adding SPI devices at runtime
+using a DeviceTree overlay or DSDT patch.  CONFIG_SPI_SLAVE allows the
+same via sysfs.
 
-However setting line discipline does not have these checks
-8250_port.c (8250 is the default choice made by univ8250_console_init()).
-As the result of PORT_UNKNOWN, uart_port::iobase is NULL which
-a platform translates onto some address accessing which produces a crash
-like below.
+But there are no precautions to prevent adding a device below a
+controller that's being removed.  Such a device is unusable and may not
+even be able to unbind cleanly as it becomes inaccessible once the
+controller has been torn down.  E.g. it is then impossible to quiesce
+the device's interrupt.
 
-This adds tty_port_initialized() to uart_set_ldisc() to prevent the crash.
+of_spi_notify() and acpi_spi_notify() do hold a ref on the controller,
+but otherwise run lockless against spi_unregister_controller().
 
-Found by syzkaller.
+Fix by holding the spi_add_lock in spi_unregister_controller() and
+bailing out of spi_add_device() if the controller has been unregistered
+concurrently.
 
-Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-Link: https://lore.kernel.org/r/20201203055834.45838-1-aik@ozlabs.ru
-Cc: stable <stable@vger.kernel.org>
+Fixes: ce79d54ae447 ("spi/of: Add OF notifier handler")
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Cc: stable@vger.kernel.org # v3.19+
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: Octavian Purdila <octavian.purdila@intel.com>
+Cc: Pantelis Antoniou <pantelis.antoniou@konsulko.com>
+Link: https://lore.kernel.org/r/a8c3205088a969dc8410eec1eba9aface60f36af.1596451035.git.lukas@wunner.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
+[sudip: adjust context]
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/tty/serial/serial_core.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/spi/Kconfig |    3 +++
+ drivers/spi/spi.c   |   21 ++++++++++++++++++++-
+ 2 files changed, 23 insertions(+), 1 deletion(-)
 
---- a/drivers/tty/serial/serial_core.c
-+++ b/drivers/tty/serial/serial_core.c
-@@ -1434,6 +1434,10 @@ static void uart_set_ldisc(struct tty_st
- {
- 	struct uart_state *state = tty->driver_data;
- 	struct uart_port *uport;
-+	struct tty_port *port = &state->port;
-+
-+	if (!tty_port_initialized(port))
-+		return;
+--- a/drivers/spi/Kconfig
++++ b/drivers/spi/Kconfig
+@@ -763,4 +763,7 @@ endif # SPI_MASTER
  
- 	mutex_lock(&state->port.mutex);
- 	uport = uart_port_check(state);
+ # (slave support would go here)
+ 
++config SPI_DYNAMIC
++	def_bool ACPI || OF_DYNAMIC || SPI_SLAVE
++
+ endif # SPI
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -422,6 +422,12 @@ static LIST_HEAD(spi_master_list);
+  */
+ static DEFINE_MUTEX(board_lock);
+ 
++/*
++ * Prevents addition of devices with same chip select and
++ * addition of devices below an unregistering controller.
++ */
++static DEFINE_MUTEX(spi_add_lock);
++
+ /**
+  * spi_alloc_device - Allocate a new SPI device
+  * @master: Controller to which device is connected
+@@ -500,7 +506,6 @@ static int spi_dev_check(struct device *
+  */
+ int spi_add_device(struct spi_device *spi)
+ {
+-	static DEFINE_MUTEX(spi_add_lock);
+ 	struct spi_master *master = spi->master;
+ 	struct device *dev = master->dev.parent;
+ 	int status;
+@@ -529,6 +534,13 @@ int spi_add_device(struct spi_device *sp
+ 		goto done;
+ 	}
+ 
++	/* Controller may unregister concurrently */
++	if (IS_ENABLED(CONFIG_SPI_DYNAMIC) &&
++	    !device_is_registered(&master->dev)) {
++		status = -ENODEV;
++		goto done;
++	}
++
+ 	if (master->cs_gpios)
+ 		spi->cs_gpio = master->cs_gpios[spi->chip_select];
+ 
+@@ -2070,6 +2082,10 @@ static int __unregister(struct device *d
+  */
+ void spi_unregister_master(struct spi_master *master)
+ {
++	/* Prevent addition of new devices, unregister existing ones */
++	if (IS_ENABLED(CONFIG_SPI_DYNAMIC))
++		mutex_lock(&spi_add_lock);
++
+ 	device_for_each_child(&master->dev, NULL, __unregister);
+ 
+ 	if (master->queued) {
+@@ -2089,6 +2105,9 @@ void spi_unregister_master(struct spi_ma
+ 	if (!devres_find(master->dev.parent, devm_spi_release_master,
+ 			 devm_spi_match_master, master))
+ 		put_device(&master->dev);
++
++	if (IS_ENABLED(CONFIG_SPI_DYNAMIC))
++		mutex_unlock(&spi_add_lock);
+ }
+ EXPORT_SYMBOL_GPL(spi_unregister_master);
+ 
 
 
