@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8A382E4359
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:36:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF5C2E3B81
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:51:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408758AbgL1PgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:36:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52566 "EHLO mail.kernel.org"
+        id S2406428AbgL1Nuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:50:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52576 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406391AbgL1Nuo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:50:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8405622AAA;
-        Mon, 28 Dec 2020 13:50:01 +0000 (UTC)
+        id S2406393AbgL1Nup (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:50:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3ABB22B45;
+        Mon, 28 Dec 2020 13:50:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163402;
-        bh=9/u1tfMPEVt67nmI4SkUXtwtNr5voLRc4WjZV+Ess7c=;
+        s=korg; t=1609163404;
+        bh=HJXWCu/izvTBPjAeF83P24eLZC0teLISiU7P4bEBWw4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k2Rl5SYwtoMcdZ5soztajBtNIi5PQPNmjdxgU/8tzYztOwPonDFRXtfNDtLbx25Gw
-         QNb74AH5xQZXw4GH7sgZUoXrXQL0QXkyCMFb0ag+tEGC+SlMBI6lhdYZC4IHTy5UNk
-         xt7DUuvsJYVgh5+a76j8kjHC3EjBsNF2Gp+T4X70=
+        b=IyEINAKN0FE2Iirlm+efFyCSHD2pCKKX8yyQB0OYCixYaIVxskNw1Wsitm5hdhUHk
+         5aUirW7egfC302zZi60ocd7fnlGRuKXTviMVBU5SzHPuWHI33znEx5oRTmzVY+vaWh
+         A7u4RmBuWP0ba6rRCfswzroVOcxe5+4gBrOqgmmQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Karan Tilak Kumar <kartilak@cisco.com>,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 242/453] seq_buf: Avoid type mismatch for seq_buf_init
-Date:   Mon, 28 Dec 2020 13:47:58 +0100
-Message-Id: <20201228124948.870144409@linuxfoundation.org>
+Subject: [PATCH 5.4 243/453] scsi: fnic: Fix error return code in fnic_probe()
+Date:   Mon, 28 Dec 2020 13:47:59 +0100
+Message-Id: <20201228124948.919360361@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
 References: <20201228124937.240114599@linuxfoundation.org>
@@ -42,66 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-[ Upstream commit d9a9280a0d0ae51dc1d4142138b99242b7ec8ac6 ]
+[ Upstream commit d4fc94fe65578738ded138e9fce043db6bfc3241 ]
 
-Building with W=2 prints a number of warnings for one function that
-has a pointer type mismatch:
+Return a negative error code from the error handling case instead of 0 as
+done elsewhere in this function.
 
-linux/seq_buf.h: In function 'seq_buf_init':
-linux/seq_buf.h:35:12: warning: pointer targets in assignment from 'unsigned char *' to 'char *' differ in signedness [-Wpointer-sign]
-
-Change the type in the function prototype according to the type in
-the structure.
-
-Link: https://lkml.kernel.org/r/20201026161108.3707783-1-arnd@kernel.org
-
-Fixes: 9a7777935c34 ("tracing: Convert seq_buf fields to be like seq_file fields")
-Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Link: https://lore.kernel.org/r/1607068060-31203-1-git-send-email-zhangchangzhong@huawei.com
+Fixes: 5df6d737dd4b ("[SCSI] fnic: Add new Cisco PCI-Express FCoE HBA")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Reviewed-by: Karan Tilak Kumar <kartilak@cisco.com>
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/seq_buf.h   | 2 +-
- include/linux/trace_seq.h | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/scsi/fnic/fnic_main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/linux/seq_buf.h b/include/linux/seq_buf.h
-index aa5deb041c25d..7cc952282e8be 100644
---- a/include/linux/seq_buf.h
-+++ b/include/linux/seq_buf.h
-@@ -30,7 +30,7 @@ static inline void seq_buf_clear(struct seq_buf *s)
- }
+diff --git a/drivers/scsi/fnic/fnic_main.c b/drivers/scsi/fnic/fnic_main.c
+index 18584ab27c329..3a2618bcce67b 100644
+--- a/drivers/scsi/fnic/fnic_main.c
++++ b/drivers/scsi/fnic/fnic_main.c
+@@ -741,6 +741,7 @@ static int fnic_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	for (i = 0; i < FNIC_IO_LOCKS; i++)
+ 		spin_lock_init(&fnic->io_req_lock[i]);
  
- static inline void
--seq_buf_init(struct seq_buf *s, unsigned char *buf, unsigned int size)
-+seq_buf_init(struct seq_buf *s, char *buf, unsigned int size)
- {
- 	s->buffer = buf;
- 	s->size = size;
-diff --git a/include/linux/trace_seq.h b/include/linux/trace_seq.h
-index 6609b39a72326..6db257466af68 100644
---- a/include/linux/trace_seq.h
-+++ b/include/linux/trace_seq.h
-@@ -12,7 +12,7 @@
-  */
- 
- struct trace_seq {
--	unsigned char		buffer[PAGE_SIZE];
-+	char			buffer[PAGE_SIZE];
- 	struct seq_buf		seq;
- 	int			full;
- };
-@@ -51,7 +51,7 @@ static inline int trace_seq_used(struct trace_seq *s)
-  * that is about to be written to and then return the result
-  * of that write.
-  */
--static inline unsigned char *
-+static inline char *
- trace_seq_buffer_ptr(struct trace_seq *s)
- {
- 	return s->buffer + seq_buf_used(&s->seq);
++	err = -ENOMEM;
+ 	fnic->io_req_pool = mempool_create_slab_pool(2, fnic_io_req_cache);
+ 	if (!fnic->io_req_pool)
+ 		goto err_out_free_resources;
 -- 
 2.27.0
 
