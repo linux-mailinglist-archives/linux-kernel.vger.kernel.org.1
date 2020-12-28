@@ -2,94 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A7A72E35E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 11:24:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C9DE2E35E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 11:27:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727088AbgL1KX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 05:23:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51778 "EHLO
+        id S1727187AbgL1K0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 05:26:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726958AbgL1KX3 (ORCPT
+        with ESMTP id S1727080AbgL1K0j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 05:23:29 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6012C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 02:22:48 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id 15so7090402pgx.7
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 02:22:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ez6/tVB0AA3uK98gtiJ9kcTSMn3gjBIVz5DwqLzPqc8=;
-        b=jxIfKfPf6nmn/o//XvSP7lePRuBVBpKNawBvC2IGhRJtjxRG8oBOf8Il/D3KDSXGo9
-         Y/Qy0DQIwTgNW/f1M9hlEHiANQDkHrcrTLaI6ISlXnZvZ8hiDx0DXPEh/tzeALUD8/a6
-         nsCi9y/btvuXU+OvyylkjpZQxk87NBtArQWJDZSOCPa7T43LwV0SHkF9egIXGoD/QZS7
-         SEv2/JPPn9MrNzU0Ti62etcIKxkVGXDzn72AixxGcQ1BnPi9/LhQjdxY1GZ3GfeGwatM
-         0aiIJ64tieC947iz/mgQ4KmrdHMiO2iaUurFIB0RKqCnNRAxgEP4CrUeLoNWxtp9mGlR
-         uUWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ez6/tVB0AA3uK98gtiJ9kcTSMn3gjBIVz5DwqLzPqc8=;
-        b=jKwYYm3usOCIq+EEEircv38d0y9oUmfrPBoYzmKzH5TfiqUtm2m0rOCajBo/VCLmAI
-         8Eh0KxvJjSgkO81rUja4jDTFAL5rHIs4ng44kOssuU4JoOQBElv//f2e+XaLiWmu4MlT
-         Q1z5E3yb2wbptnLTRQPtmilFXp7v4Edg7Sj3pr2yHuF2p09X5C/mvGztSxQ/Xx19vnvv
-         XONh++iahwXnjjINbInbwc2KRyy53xEJ1L3WVH6pDht8gwsPZaKD1GatyQTfF59oFv4P
-         +XWMmAhftauaavvmuzajifWdKsN1eb15sc5HwbXTnLh/OtvwUOUoQkBVEUyEojZJ6XiO
-         rOLw==
-X-Gm-Message-State: AOAM530hxzSJ8jylXGWdOdfH65J+o8KRoTYIFoV/oQ7LVZstdlKe5Bja
-        wIdA3UKw7jDgcQ3bSmNz2iUPOL8j1sJ4eIIj63M=
-X-Google-Smtp-Source: ABdhPJznnfxinb9csIFX7dRokfsKllGI3MdBiIP3/XB6Ff90bz4Jf4Oj4EcO+G2FMR3hrYOpyeZpHiSp/jrlpzJKkrs=
-X-Received: by 2002:a63:f016:: with SMTP id k22mr23687183pgh.233.1609150968461;
- Mon, 28 Dec 2020 02:22:48 -0800 (PST)
+        Mon, 28 Dec 2020 05:26:39 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA2F8C061795;
+        Mon, 28 Dec 2020 02:25:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=KFHMNIJdJQgc7k2MpIWgEZIVRXKh/hl0VpPbl95Wj24=; b=h30/GxdgAhHlsBbJPSjlJ8Mug
+        9M1YG6RYYa/gwy5tEt6qDesqLU2ezI2zY0VuJgJZS2sgz8cuBtJbDnH4HxigRXUUhDIx1hPBRuiTk
+        lZxIdGgnk9leKNqn0Ez2tBKl8ZyUMTp+wcNjizIlk1FW1Cw9yOzCn5Q6cYRndJo51zAP6allXlrrU
+        Oo7bDiUkZwnIBHqdr+VCfUn3qCmOUzN5Cd0UMG1P0wzdNyotxaag/94/kmDJOpznJlcfiWaoaRut0
+        F76z3eNzY2KD85mOAGw14rTXAMSQ72umaaa6LpJrHqH3Ofaz3fy397PGK0IkueabDrOeV+UZ/fuXm
+        V76NAbWCw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44598)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1ktpig-0004Lr-Ob; Mon, 28 Dec 2020 10:25:42 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1ktpib-0000CL-9P; Mon, 28 Dec 2020 10:25:37 +0000
+Date:   Mon, 28 Dec 2020 10:25:37 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        x86 <x86@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        stable <stable@vger.kernel.org>
+Subject: Re: [RFC please help] membarrier: Rewrite sync_core_before_usermode()
+Message-ID: <20201228102537.GG1551@shell.armlinux.org.uk>
+References: <bf59ecb5487171a852bcc8cdd553ec797aedc485.1609093476.git.luto@kernel.org>
+ <1836294649.3345.1609100294833.JavaMail.zimbra@efficios.com>
+ <CALCETrVdcn2r2Jvd1=-bM=FQ8KbX4aH-v4ytdojL7r7Nb6k8YQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201228025339.3210-1-xie.he.0141@gmail.com> <20201228091654.1963-1-hdanton@sina.com>
-In-Reply-To: <20201228091654.1963-1-hdanton@sina.com>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Mon, 28 Dec 2020 02:22:37 -0800
-Message-ID: <CAJht_ENqaJtUwfcXCC2WXNJi+9_HuYX4SrY-QZd19mZrL0EHBg@mail.gmail.com>
-Subject: Re: [PATCH net v2] net: hdlc_ppp: Fix issues when mod_timer is called
- while timer is running
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Krzysztof Halasa <khc@pm.waw.pl>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALCETrVdcn2r2Jvd1=-bM=FQ8KbX4aH-v4ytdojL7r7Nb6k8YQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 1:17 AM Hillf Danton <hdanton@sina.com> wrote:
->
-> On Sun, 27 Dec 2020 18:53:39 -0800 Xie He wrote:
-> > ppp_cp_event is called directly or indirectly by ppp_rx with "ppp->lock"
-> > held. It may call mod_timer to add a new timer. However, at the same time
-> > ppp_timer may be already running and waiting for "ppp->lock". In this
-> > case, there's no need for ppp_timer to continue running and it can just
-> > exit.
->
-> Because the timer callback loses the race in acquiring the ppp->lock
-> does not mean it should abort.
+On Sun, Dec 27, 2020 at 01:36:13PM -0800, Andy Lutomirski wrote:
+> On Sun, Dec 27, 2020 at 12:18 PM Mathieu Desnoyers
+> <mathieu.desnoyers@efficios.com> wrote:
+> >
+> > ----- On Dec 27, 2020, at 1:28 PM, Andy Lutomirski luto@kernel.org wrote:
+> >
+> 
+> > >
+> > > I admit that I'm rather surprised that the code worked at all on arm64,
+> > > and I'm suspicious that it has never been very well tested.  My apologies
+> > > for not reviewing this more carefully in the first place.
+> >
+> > Please refer to Documentation/features/sched/membarrier-sync-core/arch-support.txt
+> >
+> > It clearly states that only arm, arm64, powerpc and x86 support the membarrier
+> > sync core feature as of now:
+> 
+> Sigh, I missed arm (32).  Russell or ARM folks, what's the right
+> incantation to make the CPU notice instruction changes initiated by
+> other cores on 32-bit ARM?
 
-I think aborting ppp_timer is the correct solution. When mod_timer is
-called by ppp_cp_event, which is (directly or indirectly) called by
-ppp_rx, this means we received something on the line that makes the
-original timer no longer necessary. If the timer is pending, mod_timer
-will delete it. If the timer is running and waiting for the lock, I
-think it should abort. This way it would appear that the timer hasn't
-fired and is deleted before it fires.
+You need to call flush_icache_range(), since the changes need to be
+flushed from the data cache to the point of unification (of the Harvard
+I and D), and the instruction cache needs to be invalidated so it can
+then see those updated instructions. This will also take care of the
+necessary barriers that the CPU requires for you.
 
-> > If we let ppp_timer continue running, it may call add_timer. This causes
-> > kernel panic because add_timer can't be called with a timer pending.
->
-> Meanwhie we can defuse the peril following add_timer() added in
-> e022c2f07ae5, say by replacing add_timer() with mod_timer().
+... as documented in Documentation/core-api/cachetlb.rst and so
+should be available on every kernel supported CPU.
 
-The code path that calls add_timer is for sending keep-alive packets
-when operating in the OPENED state. If we have just changed to the
-OPENED state in ppp_cp_event, we should wait for the amount of time
-set by the (2nd) mod_timer call in ppp_cp_event, before firing the
-timer. We shouldn't fire the timer immediately after we change to the
-OPENED state. This is not the intention of the (2nd) mod_timer call in
-ppp_cp_event. Therefore aborting ppp_timer is the correct solution.
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
