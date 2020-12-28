@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD6C02E3A67
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:37:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F7A92E3EAB
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:31:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390654AbgL1Ng2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:36:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36366 "EHLO mail.kernel.org"
+        id S2504114AbgL1ObC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:31:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390523AbgL1NgV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:36:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C29F22072C;
-        Mon, 28 Dec 2020 13:36:04 +0000 (UTC)
+        id S2504066AbgL1Oax (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:30:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F63A206D4;
+        Mon, 28 Dec 2020 14:30:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162565;
-        bh=Rb9gVF6snt8o4h8pQ9mprHThiSD9X64SAysIHTmO9Hs=;
+        s=korg; t=1609165813;
+        bh=nVSzycZt+EukXHEr+gvwkZdSZQA/LEWomxafvatUCB8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YsQAAQbWmIFvBR1RO33dwAq1cRAImW9gu9es8UnAVKbZSvRw9Gu4UoJng6l46yzM5
-         Bd+wy5mvEWaBNUPkYqKQb6jZoB+ynzmYViQBl5EusjinvCPqXcbGZI6Sr0iByV9Qbd
-         2TjJO4my4I2j9H34pxpIVZEh4LdIvoXULIyhMF4Q=
+        b=dZ82h/7DXLASCk+G+rXqXuc2rvUu6yoL1iuwMRlm9YKr2JFsQA3gDX2qp/YNvJhAa
+         Gn1pQl72ca21nouoUTtpEAp4P251MAL3KwrIIA5LUWPN5eCD0qHDApWGM+5r2duojR
+         oSY1FoSs16L45jJDIu9KbQ8lhmcVHICPGo+jS6bY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, SeongJae Park <sjpark@amazon.de>,
-        Michael Kurth <mku@amazon.de>,
-        Pawel Wieczorkiewicz <wipawel@amazon.de>,
-        Juergen Gross <jgross@suse.com>
-Subject: [PATCH 4.19 342/346] xen/xenbus: Count pending messages for each watch
+        stable@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Evan Green <evgreen@chromium.org>
+Subject: [PATCH 5.10 663/717] soc: qcom: smp2p: Safely acquire spinlock without IRQs
 Date:   Mon, 28 Dec 2020 13:51:01 +0100
-Message-Id: <20201228124936.287678811@linuxfoundation.org>
+Message-Id: <20201228125052.740191406@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,108 +41,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+From: Evan Green <evgreen@chromium.org>
 
-commit 3dc86ca6b4c8cfcba9da7996189d1b5a358a94fc upstream.
+commit fc3e62e25c3896855b7c3d72df19ca6be3459c9f upstream.
 
-This commit adds a counter of pending messages for each watch in the
-struct.  It is used to skip unnecessary pending messages lookup in
-'unregister_xenbus_watch()'.  It could also be used in 'will_handle'
-callback.
+smp2p_update_bits() should disable interrupts when it acquires its
+spinlock. This is important because without the _irqsave, a priority
+inversion can occur.
 
-This is part of XSA-349
+This function is called both with interrupts enabled in
+qcom_q6v5_request_stop(), and with interrupts disabled in
+ipa_smp2p_panic_notifier(). IRQ handling of spinlocks should be
+consistent to avoid the panic notifier deadlocking because it's
+sitting on the thread that's already got the lock via _request_stop().
+
+Found via lockdep.
 
 Cc: stable@vger.kernel.org
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
-Reported-by: Michael Kurth <mku@amazon.de>
-Reported-by: Pawel Wieczorkiewicz <wipawel@amazon.de>
-Reviewed-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Juergen Gross <jgross@suse.com>
+Fixes: 50e99641413e7 ("soc: qcom: smp2p: Qualcomm Shared Memory Point to Point")
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Evan Green <evgreen@chromium.org>
+Link: https://lore.kernel.org/r/20200929133040.RESEND.1.Ideabf6dcdfc577cf39ce3d95b0e4aa1ac8b38f0c@changeid
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/xen/xenbus/xenbus_xs.c |   29 ++++++++++++++++++-----------
- include/xen/xenbus.h           |    2 ++
- 2 files changed, 20 insertions(+), 11 deletions(-)
+ drivers/soc/qcom/smp2p.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/drivers/xen/xenbus/xenbus_xs.c
-+++ b/drivers/xen/xenbus/xenbus_xs.c
-@@ -711,6 +711,7 @@ int xs_watch_msg(struct xs_watch_event *
- 				 event->path, event->token))) {
- 		spin_lock(&watch_events_lock);
- 		list_add_tail(&event->list, &watch_events);
-+		event->handle->nr_pending++;
- 		wake_up(&watch_events_waitq);
- 		spin_unlock(&watch_events_lock);
- 	} else
-@@ -768,6 +769,8 @@ int register_xenbus_watch(struct xenbus_
- 
- 	sprintf(token, "%lX", (long)watch);
- 
-+	watch->nr_pending = 0;
-+
- 	down_read(&xs_watch_rwsem);
- 
- 	spin_lock(&watches_lock);
-@@ -817,11 +820,14 @@ void unregister_xenbus_watch(struct xenb
- 
- 	/* Cancel pending watch events. */
- 	spin_lock(&watch_events_lock);
--	list_for_each_entry_safe(event, tmp, &watch_events, list) {
--		if (event->handle != watch)
--			continue;
--		list_del(&event->list);
--		kfree(event);
-+	if (watch->nr_pending) {
-+		list_for_each_entry_safe(event, tmp, &watch_events, list) {
-+			if (event->handle != watch)
-+				continue;
-+			list_del(&event->list);
-+			kfree(event);
-+		}
-+		watch->nr_pending = 0;
- 	}
- 	spin_unlock(&watch_events_lock);
- 
-@@ -868,7 +874,6 @@ void xs_suspend_cancel(void)
- 
- static int xenwatch_thread(void *unused)
+--- a/drivers/soc/qcom/smp2p.c
++++ b/drivers/soc/qcom/smp2p.c
+@@ -318,15 +318,16 @@ static int qcom_smp2p_inbound_entry(stru
+ static int smp2p_update_bits(void *data, u32 mask, u32 value)
  {
--	struct list_head *ent;
- 	struct xs_watch_event *event;
+ 	struct smp2p_entry *entry = data;
++	unsigned long flags;
+ 	u32 orig;
+ 	u32 val;
  
- 	xenwatch_pid = current->pid;
-@@ -883,13 +888,15 @@ static int xenwatch_thread(void *unused)
- 		mutex_lock(&xenwatch_mutex);
+-	spin_lock(&entry->lock);
++	spin_lock_irqsave(&entry->lock, flags);
+ 	val = orig = readl(entry->value);
+ 	val &= ~mask;
+ 	val |= value;
+ 	writel(val, entry->value);
+-	spin_unlock(&entry->lock);
++	spin_unlock_irqrestore(&entry->lock, flags);
  
- 		spin_lock(&watch_events_lock);
--		ent = watch_events.next;
--		if (ent != &watch_events)
--			list_del(ent);
-+		event = list_first_entry_or_null(&watch_events,
-+				struct xs_watch_event, list);
-+		if (event) {
-+			list_del(&event->list);
-+			event->handle->nr_pending--;
-+		}
- 		spin_unlock(&watch_events_lock);
- 
--		if (ent != &watch_events) {
--			event = list_entry(ent, struct xs_watch_event, list);
-+		if (event) {
- 			event->handle->callback(event->handle, event->path,
- 						event->token);
- 			kfree(event);
---- a/include/xen/xenbus.h
-+++ b/include/xen/xenbus.h
-@@ -59,6 +59,8 @@ struct xenbus_watch
- 	/* Path being watched. */
- 	const char *node;
- 
-+	unsigned int nr_pending;
-+
- 	/*
- 	 * Called just before enqueing new event while a spinlock is held.
- 	 * The event will be discarded if this callback returns false.
+ 	if (val != orig)
+ 		qcom_smp2p_kick(entry->smp2p);
 
 
