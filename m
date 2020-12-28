@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9812E653D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:59:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B75F12E383B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:09:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393363AbgL1P7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:59:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33748 "EHLO mail.kernel.org"
+        id S1728480AbgL1NHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:07:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387907AbgL1Nd0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:33:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4990B208BA;
-        Mon, 28 Dec 2020 13:33:10 +0000 (UTC)
+        id S1730976AbgL1NGU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:06:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FEB221D94;
+        Mon, 28 Dec 2020 13:05:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162390;
-        bh=3wSvMfr6rAe3rr5bfNq49T8RsR1hMLZUWvLvwV6wReY=;
+        s=korg; t=1609160739;
+        bh=qCPZnGg71nA+DH7EWZ4M3f0d3yuNrU/7XVXfB7ri/M0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C8cEZWpUdlpLXtjTWqCfV1FYiXmAiKeELGy9pW/PjpPfcgpePeRDbfLgB9PfWad1x
-         879DIzDSnP4wohUFVykzYKkKWPUyEWrj7cNXwF+sFr2pbfWZ378BbZIKPwSO9Xgd5E
-         Wv7y63YYtmV2fYjEWeq1Rv/MrW6LpCiUE2Nk6Je8=
+        b=sS4Ne+vxgRBk0BQvQg8j+X+ka4MrU3Gpd+Kl2lGroKkBe/2lFCKYZTwH9kIPLTlWA
+         f4aZOe95/8yNoOUssYDZ02lwxOAMQ8KpAJLFos61w5gEf/JgcMsO6KlEEHv3zVPH1I
+         qlAkuOPd0KrHfr/DzfxxeyQrdPJKL8uSk+CgFAO4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        syzbot+44e64397bd81d5e84cba@syzkaller.appspotmail.com
-Subject: [PATCH 4.19 258/346] media: gspca: Fix memory leak in probe
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 124/175] clk: ti: Fix memleak in ti_fapll_synth_setup
 Date:   Mon, 28 Dec 2020 13:49:37 +0100
-Message-Id: <20201228124932.252331748@linuxfoundation.org>
+Message-Id: <20201228124859.257486233@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +42,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alan Stern <stern@rowland.harvard.edu>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-commit e469d0b09a19496e1972a20974bbf55b728151eb upstream.
+[ Upstream commit 8c6239f6e95f583bb763d0228e02d4dd0fb3d492 ]
 
-The gspca driver leaks memory when a probe fails.  gspca_dev_probe2()
-calls v4l2_device_register(), which takes a reference to the
-underlying device node (in this case, a USB interface).  But the
-failure pathway neglects to call v4l2_device_unregister(), the routine
-responsible for dropping this reference.  Consequently the memory for
-the USB interface and its device never gets released.
+If clk_register fails, we should goto free branch
+before function returns to prevent memleak.
 
-This patch adds the missing function call.
-
-Reported-and-tested-by: syzbot+44e64397bd81d5e84cba@syzkaller.appspotmail.com
-
-Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
-CC: <stable@vger.kernel.org>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 163152cbbe321 ("clk: ti: Add support for FAPLL on dm816x")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Link: https://lore.kernel.org/r/20201113131623.2098222-1-zhangqilong3@huawei.com
+Acked-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/gspca/gspca.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/clk/ti/fapll.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
---- a/drivers/media/usb/gspca/gspca.c
-+++ b/drivers/media/usb/gspca/gspca.c
-@@ -1585,6 +1585,7 @@ out:
- 		input_unregister_device(gspca_dev->input_dev);
- #endif
- 	v4l2_ctrl_handler_free(gspca_dev->vdev.ctrl_handler);
-+	v4l2_device_unregister(&gspca_dev->v4l2_dev);
- 	kfree(gspca_dev->usb_buf);
- 	kfree(gspca_dev);
- 	return ret;
+diff --git a/drivers/clk/ti/fapll.c b/drivers/clk/ti/fapll.c
+index 66a0d0ed8b550..02ff499e36536 100644
+--- a/drivers/clk/ti/fapll.c
++++ b/drivers/clk/ti/fapll.c
+@@ -497,6 +497,7 @@ static struct clk * __init ti_fapll_synth_setup(struct fapll_data *fd,
+ {
+ 	struct clk_init_data *init;
+ 	struct fapll_synth *synth;
++	struct clk *clk = ERR_PTR(-ENOMEM);
+ 
+ 	init = kzalloc(sizeof(*init), GFP_KERNEL);
+ 	if (!init)
+@@ -519,13 +520,19 @@ static struct clk * __init ti_fapll_synth_setup(struct fapll_data *fd,
+ 	synth->hw.init = init;
+ 	synth->clk_pll = pll_clk;
+ 
+-	return clk_register(NULL, &synth->hw);
++	clk = clk_register(NULL, &synth->hw);
++	if (IS_ERR(clk)) {
++		pr_err("failed to register clock\n");
++		goto free;
++	}
++
++	return clk;
+ 
+ free:
+ 	kfree(synth);
+ 	kfree(init);
+ 
+-	return ERR_PTR(-ENOMEM);
++	return clk;
+ }
+ 
+ static void __init ti_fapll_setup(struct device_node *node)
+-- 
+2.27.0
+
 
 
