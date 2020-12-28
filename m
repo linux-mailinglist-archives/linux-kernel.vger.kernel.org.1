@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F6982E6686
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:14:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BB1D2E668F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:14:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732920AbgL1NTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:19:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48082 "EHLO mail.kernel.org"
+        id S2633065AbgL1QOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:14:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733079AbgL1NTg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:19:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE932207CF;
-        Mon, 28 Dec 2020 13:18:54 +0000 (UTC)
+        id S1732996AbgL1NTQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:19:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 760D8208D5;
+        Mon, 28 Dec 2020 13:19:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161535;
-        bh=3pitrn+OSz+zq9Mn/OzSQ97Z+lpLb4gLAO+mHS1U07o=;
+        s=korg; t=1609161541;
+        bh=+pSnwWsCMByYdsFsfpHiPyCaC6g7YzUC9AlAXhW96sA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1rzvLmp/ELUBkBYjE+Z47j3mCID/We2G29rz5dwXLfaX2cZA0WCopUUZwHTpTvzOb
-         G92LY9Rbg18GtOOOJv0cYz2Xw4mZ28v/cRokBAdB5vrfY2GM+RbI+X2m+v9CHwDeWn
-         lgklrDxni6dxiIUMSu/D8lh/aE8BjPqDDRd+ywsQ=
+        b=DAA9kyO5XZ30sWVgl3pQjjSXCRmJDtEtFLmJVo+muO0ekHhh10i4pa6Kp/PivxpUA
+         qYIpx8+8cvPBGdwxswRH8+OHTS9yfJLZ/3zHCUtqRQbWXVUTL0pjl9q+ugqx7UDK7W
+         5+ijhecpgIZmapBjjTcmI1xA+ywxT5Gfokn28l3s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Michael Kurth <mku@amazon.de>,
         Pawel Wieczorkiewicz <wipawel@amazon.de>,
         Juergen Gross <jgross@suse.com>
-Subject: [PATCH 4.14 238/242] xen/xenbus/xen_bus_type: Support will_handle watch callback
-Date:   Mon, 28 Dec 2020 13:50:43 +0100
-Message-Id: <20201228124916.402987167@linuxfoundation.org>
+Subject: [PATCH 4.14 240/242] xenbus/xenbus_backend: Disallow pending watch messages
+Date:   Mon, 28 Dec 2020 13:50:45 +0100
+Message-Id: <20201228124916.501288077@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
 References: <20201228124904.654293249@linuxfoundation.org>
@@ -43,10 +43,17 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: SeongJae Park <sjpark@amazon.de>
 
-commit be987200fbaceaef340872841d4f7af2c5ee8dc3 upstream.
+commit 9996bd494794a2fe393e97e7a982388c6249aa76 upstream.
 
-This commit adds support of the 'will_handle' watch callback for
-'xen_bus_type' users.
+'xenbus_backend' watches 'state' of devices, which is writable by
+guests.  Hence, if guests intensively updates it, dom0 will have lots of
+pending events that exhausting memory of dom0.  In other words, guests
+can trigger dom0 memory pressure.  This is known as XSA-349.  However,
+the watch callback of it, 'frontend_changed()', reads only 'state', so
+doesn't need to have the pending events.
+
+To avoid the problem, this commit disallows pending watch messages for
+'xenbus_backend' using the 'will_handle()' watch callback.
 
 This is part of XSA-349
 
@@ -59,32 +66,31 @@ Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/xen/xenbus/xenbus.h       |    2 ++
- drivers/xen/xenbus/xenbus_probe.c |    3 ++-
- 2 files changed, 4 insertions(+), 1 deletion(-)
+ drivers/xen/xenbus/xenbus_probe_backend.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/drivers/xen/xenbus/xenbus.h
-+++ b/drivers/xen/xenbus/xenbus.h
-@@ -44,6 +44,8 @@ struct xen_bus_type {
- 	int (*get_bus_id)(char bus_id[XEN_BUS_ID_SIZE], const char *nodename);
- 	int (*probe)(struct xen_bus_type *bus, const char *type,
- 		     const char *dir);
-+	bool (*otherend_will_handle)(struct xenbus_watch *watch,
-+				     const char *path, const char *token);
- 	void (*otherend_changed)(struct xenbus_watch *watch, const char *path,
- 				 const char *token);
- 	struct bus_type bus;
---- a/drivers/xen/xenbus/xenbus_probe.c
-+++ b/drivers/xen/xenbus/xenbus_probe.c
-@@ -136,7 +136,8 @@ static int watch_otherend(struct xenbus_
- 		container_of(dev->dev.bus, struct xen_bus_type, bus);
- 
- 	return xenbus_watch_pathfmt(dev, &dev->otherend_watch,
--				    NULL, bus->otherend_changed,
-+				    bus->otherend_will_handle,
-+				    bus->otherend_changed,
- 				    "%s/%s", dev->otherend, "state");
+--- a/drivers/xen/xenbus/xenbus_probe_backend.c
++++ b/drivers/xen/xenbus/xenbus_probe_backend.c
+@@ -180,6 +180,12 @@ static int xenbus_probe_backend(struct x
+ 	return err;
  }
  
++static bool frontend_will_handle(struct xenbus_watch *watch,
++				 const char *path, const char *token)
++{
++	return watch->nr_pending == 0;
++}
++
+ static void frontend_changed(struct xenbus_watch *watch,
+ 			     const char *path, const char *token)
+ {
+@@ -191,6 +197,7 @@ static struct xen_bus_type xenbus_backen
+ 	.levels = 3,		/* backend/type/<frontend>/<id> */
+ 	.get_bus_id = backend_bus_id,
+ 	.probe = xenbus_probe_backend,
++	.otherend_will_handle = frontend_will_handle,
+ 	.otherend_changed = frontend_changed,
+ 	.bus = {
+ 		.name		= "xen-backend",
 
 
