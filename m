@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9AF72E3B2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:47:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2F7D2E63AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:43:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405482AbgL1Nq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:46:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47132 "EHLO mail.kernel.org"
+        id S2405496AbgL1NrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:47:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405074AbgL1NqI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:46:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C054720738;
-        Mon, 28 Dec 2020 13:45:27 +0000 (UTC)
+        id S2405115AbgL1NqL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:46:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D4E82063A;
+        Mon, 28 Dec 2020 13:45:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163128;
-        bh=p8ZeSZ2RQZSt4u0oW7YVPwubcLyOe0Er0S2X8i2XSLg=;
+        s=korg; t=1609163131;
+        bh=9U3upSxYlBXjhkpUqNlElFC4H3T32885hb1ZB7T2aXo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yq4VMJrEvQ8yYfJiy9o1DG5hO8n2nHGrkQVTlvzE/ayTpwmjXbqfW84YEQBS8FGFH
-         Q83lPm45W12SI1Wrkf+qNG8Jd3OCSTMwgVKTy1Lne89RUGsNYSFYoX9Yo5SOV452EF
-         9wjCQNKji+eRnVhJN5EEcLNU6iv8VnE6iptBUMXI=
+        b=MlrLIGVLgwYqTpS3dlBwrot4TEPwyNCbf9cknjhd2nhHmvL8oYb8RSiPp6RcCTr8C
+         j4QJKYvRCwpq+ahYkcfNRYDxl8g86YQNYAfK5mkWVu9PyA6WGepW2FriNkmpXT5nCo
+         jplFMN/uSJYgnBy6MAhCtyEfIMQWqc44ZI36u1BY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Andrew Lunn <andrew@lunn.ch>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
         Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 180/453] ARM: dts: Remove non-existent i2c1 from 98dx3236
-Date:   Mon, 28 Dec 2020 13:46:56 +0100
-Message-Id: <20201228124945.863273872@linuxfoundation.org>
+        Andrew Lunn <andrew@lunn.ch>, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 181/453] arm64: dts: armada-3720-turris-mox: update ethernet-phy handle name
+Date:   Mon, 28 Dec 2020 13:46:57 +0100
+Message-Id: <20201228124945.912741305@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
 References: <20201228124937.240114599@linuxfoundation.org>
@@ -42,38 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+From: Marek Behún <kabel@kernel.org>
 
-[ Upstream commit 7f24479ead579459106bb55c2320a000135731f9 ]
+[ Upstream commit 3aa669a994c9110a2dc7e08a5c0958a9ea5eb17c ]
 
-The switches with integrated CPUs have only got a single i2c controller.
-They incorrectly gained one when they were split from the Armada-XP.
+Use property name `phy-handle` instead of the deprecated `phy` to
+connect eth2 to the PHY.
 
-Fixes: 43e28ba87708 ("ARM: dts: Use armada-370-xp as a base for armada-xp-98dx3236")
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Signed-off-by: Marek Behún <kabel@kernel.org>
+Fixes: 7109d817db2e ("arm64: dts: marvell: add DTS for Turris Mox")
+Cc: Gregory CLEMENT <gregory.clement@bootlin.com>
+Cc: Andrew Lunn <andrew@lunn.ch>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: devicetree@vger.kernel.org
 Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/armada-xp-98dx3236.dtsi | 5 -----
- 1 file changed, 5 deletions(-)
+ arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/armada-xp-98dx3236.dtsi b/arch/arm/boot/dts/armada-xp-98dx3236.dtsi
-index 267d0c178e55c..30abb4b64a1b6 100644
---- a/arch/arm/boot/dts/armada-xp-98dx3236.dtsi
-+++ b/arch/arm/boot/dts/armada-xp-98dx3236.dtsi
-@@ -266,11 +266,6 @@
- 	reg = <0x11000 0x100>;
+diff --git a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
+index c3668187b8446..aa52927e2e9c2 100644
+--- a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
++++ b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
+@@ -144,7 +144,7 @@
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&rgmii_pins>;
+ 	phy-mode = "rgmii-id";
+-	phy = <&phy1>;
++	phy-handle = <&phy1>;
+ 	status = "okay";
  };
  
--&i2c1 {
--	compatible = "marvell,mv78230-i2c", "marvell,mv64xxx-i2c";
--	reg = <0x11100 0x100>;
--};
--
- &mpic {
- 	reg = <0x20a00 0x2d0>, <0x21070 0x58>;
- };
 -- 
 2.27.0
 
