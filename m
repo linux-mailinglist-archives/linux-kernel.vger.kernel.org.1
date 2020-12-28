@@ -2,163 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0BC72E40DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:59:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E182A2E3D6E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:16:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392465AbgL1O7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:59:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59126 "EHLO
+        id S2440689AbgL1OPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:15:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2440481AbgL1OOp (ORCPT
+        with ESMTP id S2440654AbgL1OPY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:14:45 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53B7FC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 06:14:05 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id h205so24142714lfd.5
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 06:14:05 -0800 (PST)
+        Mon, 28 Dec 2020 09:15:24 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B16CAC061796
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 06:14:44 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id n7so7411193pgg.2
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 06:14:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=NPeSW+R1SSfRx+04CRlDhpX7N3sgocK07oaNDyUcAtQ=;
-        b=ca8s8BXf1hhY+CYTlYaY7cbOnbBLNRpJziaNgNL0O1DmVav7uY5DZU2FrvBAul3FPK
-         qASLpWCCyZr9LhbzyJyL0w2jNgqhiCu7DzFiLXvv+70lS6bxurLywKj+A2S933Y09OIR
-         kntxzCfNY2NlsQpftT/btNwnwCnQWF9KIY9dbib2K5X3Ll0lHqxXETqnUCW/U+Fh93zo
-         il/p3u/GOX8kaoIqzEqV+5OycVEntz0Vc7SOeV0vXzya03eFYka/8dnE1D7k/Zgk8ZR9
-         g55hWD6PTSH11D9lCwPnoTp1QtW0Ks7lGV2ZF8eDa+m4YAOc/9tO9ABvEPrvio0PgqM5
-         G+0w==
+        bh=jzv76ZxrfyN9aLufGK4Ag7xuBKo0xh2BNWYNmVhmZnU=;
+        b=rg7WbRj11lokwdONgJDWxxmo2Cd5hR3p5eTsMApwFhZ6YrjXaJ2X9Ld3UxV/xCqYPc
+         h/65VLLkmldjIfJsYlSpXTBQWFibWMITt0L8g6yE9Y/Hw1E+qWVySxw6amuAbuWnaDeq
+         p+MnueT1C2ayp5PExAHLUuQ6FMFRKlniOkFt600zGL6Wu7sFTqZtfcpoNuNNc0ZjXIL5
+         lYOn1VnmkFaeI+zEPdHxh8xXir1e+F/6HcRf48MQ/x5fBra3uB9pw0QXKGOiuM717k0n
+         7ZhUl5bhEqbO8+GXpI38MiNEFG2hHYa3jSRtzl6QpRhv6iaryfxb1rcN5sOgaNkilPVl
+         UOLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=NPeSW+R1SSfRx+04CRlDhpX7N3sgocK07oaNDyUcAtQ=;
-        b=Hm2v++mGR0oFTc3Rrw6GWo0u6OAKjjpZLUmwUPsHgIRHoOd84xvy7BVOMF+I4zNPVb
-         tvpk7eW0nm9KTDrst3Jst1De/BORWTJ1hgDDsdSGDQkE0IbGEnKal4XEGRB3lT5btxT9
-         RGEZCz2Zzt14jTJ6q+eIIxTcwNtcLf80Wh/MnITssXcV/GFlhqixXmsDkHN1967BWaM/
-         xI6A0TteG7twqyfb+/VKVK82hjqyqRyJ9Fc+g1whyK9qt+TyOScsxau4J7YaONvqFxLR
-         Mve6Ak+gGfnpzsjdcgzGPOPPnlbtiNrr4vyKsg7szFzDFNuER/r/HIuhGr+scCRSjYQk
-         lzPw==
-X-Gm-Message-State: AOAM532avxFf+I1Il4nrk+DOxM4keM0aIkFVQ0ABxFbEa7CNo8U+IajC
-        2eJCrHXBye+6KfdMYsi+B60vtZfKjfdRqxYVNplpHw==
-X-Google-Smtp-Source: ABdhPJxkOkUZ2+WFCA9kUXkWVgnWKZbc6ENUsxa3iUZhVqA8izUArbjN5NvmwueKDr2OZFrqx7CqbYQQPKiwAhSOzRs=
-X-Received: by 2002:a05:651c:202:: with SMTP id y2mr21433617ljn.162.1609164843848;
- Mon, 28 Dec 2020 06:14:03 -0800 (PST)
+        bh=jzv76ZxrfyN9aLufGK4Ag7xuBKo0xh2BNWYNmVhmZnU=;
+        b=WvUYIsYVc9elw4x7RMqJdmAsMs+Zgxqbo9r1+G/cMsfL4DYVXSKxnDmGuz2qg2eag8
+         ZP/8Ff0BmyI/fWlYPaifqGFoxcWyFZrUL1FF0KIsiOa9iV+9klV5HlPwVUNaXLZLHBQ6
+         2xWSdnQr4Rv2X79DBxW6Udh36kAZIYNlrYqc+vgk6YX6jF0xvenR+YLXZuwx77C6haYs
+         mgueFb/am5lanegbKK6Ka+8evtvYFBUshG1OA+p9lgshfC7hdpSKabju+aMPrl1GaUTV
+         3hWAD8gl/Jne7jZIQ/c0RX90snh4Eu8Kbqr4t1V4LOSKCxXpHu0KVruiOvJQo//VdlSj
+         ZVbw==
+X-Gm-Message-State: AOAM530H7j2r85ThgD87gallRw8ptwqWDGnqYBKP5BrDR1XB+8lY61oi
+        DO5F1PKESLm9ns9YDnU7RKc4pm/uDh5xzBfQEMo=
+X-Google-Smtp-Source: ABdhPJw0jdWVruIXOd+HR2C6dc9/TXCfNZWddyDREtzDGvhSptycRDJkF3safh2eGG216pDI3oUUfKtBMTD5AmHVd6g=
+X-Received: by 2002:a63:b1e:: with SMTP id 30mr43734626pgl.203.1609164884087;
+ Mon, 28 Dec 2020 06:14:44 -0800 (PST)
 MIME-Version: 1.0
-References: <20201226163037.43691-1-vitaly.wool@konsulko.com>
- <CAAhSdy1M5pMjYHNWdOicb3N3fjTfQLEgE8tFb74sqGbPE_9eyQ@mail.gmail.com> <CAM4kBBJ3Vbytx=dFK7+DMByV3zK=FVLATSwjyuuygkDK1MCQjA@mail.gmail.com>
-In-Reply-To: <CAM4kBBJ3Vbytx=dFK7+DMByV3zK=FVLATSwjyuuygkDK1MCQjA@mail.gmail.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Mon, 28 Dec 2020 19:43:52 +0530
-Message-ID: <CAAhSdy2CssmEJVP=+eXsNqRXbQgTSn=+1d6w1UcFOJTA3Zbcug@mail.gmail.com>
-Subject: Re: [PATCH] riscv: add BUILTIN_DTB support for MMU-enabled targets
-To:     Vitaly Wool <vitaly.wool@konsulko.com>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Bin Meng <bin.meng@windriver.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        devicetree@vger.kernel.org
+References: <20201227211232.117801-1-hdegoede@redhat.com> <20201227211232.117801-4-hdegoede@redhat.com>
+In-Reply-To: <20201227211232.117801-4-hdegoede@redhat.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 28 Dec 2020 16:14:27 +0200
+Message-ID: <CAHp75VesAo9-GGCVyGcQuNLG8KOLcB_S+bokcxJTfeDn7sb0Bg@mail.gmail.com>
+Subject: Re: [PATCH 03/14] mfd: arizona: Add support for ACPI enumeration of
+ WM5102 connected over SPI
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Christian Hartmann <cornogle@googlemail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 7:05 PM Vitaly Wool <vitaly.wool@konsulko.com> wrote:
+On Sun, Dec 27, 2020 at 11:16 PM Hans de Goede <hdegoede@redhat.com> wrote:
 >
-> On Mon, Dec 28, 2020 at 12:59 PM Anup Patel <anup@brainfault.org> wrote:
-> >
-> > On Sat, Dec 26, 2020 at 10:03 PM Vitaly Wool <vitaly.wool@konsulko.com> wrote:
-> > >
-> > > Sometimes, especially in a production system we may not want to
-> > > use a "smart bootloader" like u-boot to load kernel, ramdisk and
-> > > device tree from a filesystem on eMMC, but rather load the kernel
-> > > from a NAND partition and just run it as soon as we can, and in
-> > > this case it is convenient to have device tree compiled into the
-> > > kernel binary. Since this case is not limited to MMU-less systems,
-> > > let's support it for these which have MMU enabled too.
-> > >
-> > > Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.com>
-> > > ---
-> > >  arch/riscv/Kconfig   |  1 -
-> > >  arch/riscv/mm/init.c | 12 ++++++++++--
-> > >  2 files changed, 10 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> > > index 2b41f6d8e458..9464b4e3a71a 100644
-> > > --- a/arch/riscv/Kconfig
-> > > +++ b/arch/riscv/Kconfig
-> > > @@ -419,7 +419,6 @@ endmenu
-> > >
-> > >  config BUILTIN_DTB
-> > >         def_bool n
-> > > -       depends on RISCV_M_MODE
-> > >         depends on OF
-> > >
-> > >  menu "Power management options"
-> > > diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> > > index 87c305c566ac..5d1c7a3ec01c 100644
-> > > --- a/arch/riscv/mm/init.c
-> > > +++ b/arch/riscv/mm/init.c
-> > > @@ -194,12 +194,20 @@ void __init setup_bootmem(void)
-> > >         setup_initrd();
-> > >  #endif /* CONFIG_BLK_DEV_INITRD */
-> > >
-> > > +       /*
-> > > +        * If DTB is built in, no need to reserve its memblock.
-> > > +        * OTOH, initial_boot_params has to be set to properly copy DTB
-> > > +        * before unflattening later on.
-> > > +        */
-> > > +       if (IS_ENABLED(CONFIG_BUILTIN_DTB))
-> > > +               initial_boot_params = __va(dtb_early_pa);
-> >
-> > Don't assign initial_boot_params directly here because the
-> > early_init_dt_scan() will do it.
+> The Intel Bay Trail (x86/ACPI) based Lenovo Yoga Tablet 2 series use
+> a WM5102 codec connected over SPI.
 >
-> early_init_dt_scan will set initial_boot_params to dtb_early_va from
-> the early mapping which will be gone by the time
-> unflatten_and_copy_device_tree() is called.
+> Add support for ACPI enumeration to arizona-spi so that arizona-spi can
+> bind to the codec on these tablets.
+>
+> This is loosely based on an earlier attempt (for Android-x86) at this by
+> Christian Hartmann, combined with insights in things like the speaker GPIO
+> from the android-x86 android port for the Lenovo Yoga Tablet 2 1051F/L [1].
 
-The throw-away early DTB mapping in early_pg_dir is anyway
-redundant when we have built-in DTB so this patch needs to
-add an "#ifdef" around it for the MMU-enabled case. Also, please
-update dtb_early_va and dtb_early_pa separately for MMU-enabled
-case in the setup_vm()
+Few nitpicks here and there, but the most important bit that hits me
+is device_get_match_data().
 
+> [1] https://github.com/Kitsune2222/Android_Yoga_Tablet_2-1051F_Kernel
 >
-> > The setup_vm() is supposed to setup dtb_early_va and dtb_early_pa
-> > for MMU-enabled case so please add a "#ifdef" over there for the
-> > built-in DTB case.
-> >
-> > > +       else
-> > > +               memblock_reserve(dtb_early_pa, fdt_totalsize(dtb_early_va));
-> > > +
-> > >         /*
-> > >          * Avoid using early_init_fdt_reserve_self() since __pa() does
-> > >          * not work for DTB pointers that are fixmap addresses
-> > >          */
-> >
-> > This comment needs to be updated and moved along the memblock_reserve()
-> > statement.
-> >
-> > > -       memblock_reserve(dtb_early_pa, fdt_totalsize(dtb_early_va));
-> > > -
-> > >         early_init_fdt_scan_reserved_mem();
-> > >         dma_contiguous_reserve(dma32_phys_limit);
-> > >         memblock_allow_resize();
-> > > --
-> > > 2.29.2
-> > >
-> >
-> > This patch should be based upon Damiens builtin DTB patch.
-> > Refer, https://www.spinics.net/lists/linux-gpio/msg56616.html
+> Cc: Christian Hartmann <cornogle@googlemail.com>
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> ---
+>  drivers/mfd/arizona-spi.c | 120 ++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 120 insertions(+)
 >
-> Thanks for the pointer, however I don't think our patches have
-> intersections. Besides, Damien is dealing with the MMU-less case
-> there.
+> diff --git a/drivers/mfd/arizona-spi.c b/drivers/mfd/arizona-spi.c
+> index 704f214d2614..bcdbd72fefb5 100644
+> --- a/drivers/mfd/arizona-spi.c
+> +++ b/drivers/mfd/arizona-spi.c
+> @@ -7,7 +7,10 @@
+>   * Author: Mark Brown <broonie@opensource.wolfsonmicro.com>
+>   */
 >
-> Best regards,
->    Vitaly
+> +#include <linux/acpi.h>
+>  #include <linux/err.h>
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/gpio/machine.h>
+>  #include <linux/module.h>
+>  #include <linux/pm_runtime.h>
+>  #include <linux/regmap.h>
+> @@ -15,11 +18,119 @@
+>  #include <linux/slab.h>
+>  #include <linux/spi/spi.h>
+>  #include <linux/of.h>
+> +#include <uapi/linux/input-event-codes.h>
+>
+>  #include <linux/mfd/arizona/core.h>
+>
+>  #include "arizona.h"
+>
+> +#ifdef CONFIG_ACPI
+> +const struct acpi_gpio_params reset_gpios = { 1, 0, false };
+> +const struct acpi_gpio_params ldoena_gpios = { 2, 0, false };
+> +
+> +static const struct acpi_gpio_mapping arizona_acpi_gpios[] = {
+> +       { "reset-gpios", &reset_gpios, 1, },
+> +       { "wlf,ldoena-gpios", &ldoena_gpios, 1 },
+> +       { }
+> +};
+> +
+> +/*
+> + * The ACPI resources for the device only describe external GPIO-s. They do
+> + * not provide mappings for the GPIO-s coming from the Arizona codec itself.
+> + */
+> +static const struct gpiod_lookup arizona_soc_gpios[] = {
+> +       { "arizona", 2, "wlf,spkvdd-ena", 0, GPIO_ACTIVE_HIGH },
+> +       { "arizona", 4, "wlf,micd-pol", 0, GPIO_ACTIVE_LOW },
+> +};
+> +
+> +/*
+> + * The AOSP 3.5 mm Headset: Accessory Specification gives the following values:
+> + * Function A Play/Pause:           0 ohm
+> + * Function D Voice assistant:    135 ohm
+> + * Function B Volume Up           240 ohm
+> + * Function C Volume Down         470 ohm
+> + * Minimum Mic DC resistance     1000 ohm
+> + * Minimum Ear speaker impedance   16 ohm
+> + * Note the first max value below must be less then the min. speaker impedance,
+> + * to allow CTIA/OMTP detection to work. The other max values are the closest
+> + * value from extcon-arizona.c:arizona_micd_levels halfway 2 button resistances.
+> + */
+> +static const struct arizona_micd_range arizona_micd_aosp_ranges[] = {
+> +       { .max =  11, .key = KEY_PLAYPAUSE },
+> +       { .max = 186, .key = KEY_VOICECOMMAND },
+> +       { .max = 348, .key = KEY_VOLUMEUP },
+> +       { .max = 752, .key = KEY_VOLUMEDOWN },
+> +};
+> +
+> +static void arizona_spi_acpi_remove_lookup(void *lookup)
+> +{
+> +       gpiod_remove_lookup_table(lookup);
+> +}
+> +
+> +static int arizona_spi_acpi_probe(struct arizona *arizona)
+> +{
+> +       struct gpiod_lookup_table *lookup;
+> +       int i, ret;
+> +
+> +       /* Add mappings for the 2 ACPI declared GPIOs used for reset and ldo-ena */
+> +       devm_acpi_dev_add_driver_gpios(arizona->dev, arizona_acpi_gpios);
+> +
+> +       /* Add lookups for the SoCs own GPIOs used for micdet-polarity and spkVDD-enable */
+> +       lookup = devm_kzalloc(arizona->dev,
+> +                             struct_size(lookup, table, ARRAY_SIZE(arizona_soc_gpios) + 1),
+> +                             GFP_KERNEL);
+> +       if (!lookup)
+> +               return -ENOMEM;
+> +
+> +       lookup->dev_id = dev_name(arizona->dev);
 
-Regards,
-Anup
+> +       for (i = 0; i < ARRAY_SIZE(arizona_soc_gpios); i++)
+> +               lookup->table[i] = arizona_soc_gpios[i];
+
+Would memcpy() do the same at one pass?
+
+> +       gpiod_add_lookup_table(lookup);
+> +       ret = devm_add_action_or_reset(arizona->dev, arizona_spi_acpi_remove_lookup, lookup);
+> +       if (ret)
+> +               return ret;
+
+> +       /* Enable 32KHz clock from SoC to codec for jack-detect */
+> +       acpi_evaluate_object(ACPI_HANDLE(arizona->dev), "CLKE", NULL, NULL);
+
+No error check?
+
+> +       /*
+> +        * Some DSDTs wrongly declare the IRQ trigger-type as IRQF_TRIGGER_FALLING
+> +        * The IRQ line will stay low when a new IRQ event happens between reading
+> +        * the IRQ status flags and acknowledging them. When the IRQ line stays
+> +        * low like this the IRQ will never trigger again when its type is set
+> +        * to IRQF_TRIGGER_FALLING. Correct the IRQ trigger-type to fix this.
+> +        */
+> +       arizona->pdata.irq_flags = IRQF_TRIGGER_LOW;
+> +
+> +       /* Wait 200 ms after jack insertion */
+> +       arizona->pdata.micd_detect_debounce = 200;
+> +
+> +       /* Use standard AOSP values for headset-button mappings */
+> +       arizona->pdata.micd_ranges = arizona_micd_aosp_ranges;
+> +       arizona->pdata.num_micd_ranges = ARRAY_SIZE(arizona_micd_aosp_ranges);
+> +
+> +       return 0;
+> +}
+> +
+> +static const struct acpi_device_id arizona_acpi_match[] = {
+> +       {
+> +               .id = "WM510204",
+> +               .driver_data = WM5102,
+> +       },
+> +       {
+> +               .id = "WM510205",
+> +               .driver_data = WM5102,
+> +       },
+
+> +       { },
+
+No need for comma here.
+
+> +};
+> +MODULE_DEVICE_TABLE(acpi, arizona_acpi_match);
+> +#else
+
+> +static void arizona_spi_acpi_probe(struct arizona *arizona)
+> +{
+> +}
+
+Can be one line?
+
+> +#endif
+> +
+>  static int arizona_spi_probe(struct spi_device *spi)
+>  {
+>         const struct spi_device_id *id = spi_get_device_id(spi);
+> @@ -30,6 +141,8 @@ static int arizona_spi_probe(struct spi_device *spi)
+>
+>         if (spi->dev.of_node)
+>                 type = arizona_of_get_type(&spi->dev);
+> +       else if (ACPI_COMPANION(&spi->dev))
+> +               type = (unsigned long)acpi_device_get_match_data(&spi->dev);
+
+Can we rather get rid of these and use device_get_match_data() directly?
+
+>         else
+>                 type = id->driver_data;
+>
+> @@ -75,6 +188,12 @@ static int arizona_spi_probe(struct spi_device *spi)
+>         arizona->dev = &spi->dev;
+>         arizona->irq = spi->irq;
+>
+> +       if (ACPI_COMPANION(&spi->dev)) {
+
+has_acpi_companion() ?
+
+> +               ret = arizona_spi_acpi_probe(arizona);
+> +               if (ret)
+> +                       return ret;
+> +       }
+> +
+>         return arizona_dev_init(arizona);
+>  }
+>
+> @@ -102,6 +221,7 @@ static struct spi_driver arizona_spi_driver = {
+>                 .name   = "arizona",
+>                 .pm     = &arizona_pm_ops,
+>                 .of_match_table = of_match_ptr(arizona_of_match),
+> +               .acpi_match_table = ACPI_PTR(arizona_acpi_match),
+>         },
+>         .probe          = arizona_spi_probe,
+>         .remove         = arizona_spi_remove,
+> --
+> 2.28.0
+>
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
