@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83C752E3FE9
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:46:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 794F62E374C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:54:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502997AbgL1OYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:24:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60020 "EHLO mail.kernel.org"
+        id S1728200AbgL1Mxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:53:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439240AbgL1OX4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:23:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA75C22CAF;
-        Mon, 28 Dec 2020 14:23:14 +0000 (UTC)
+        id S1728171AbgL1Mxa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:53:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 653F72245C;
+        Mon, 28 Dec 2020 12:52:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165395;
-        bh=hBUNVKBil8CIRkRX0SEmR023sBelO4cWLfyYWBPcvaQ=;
+        s=korg; t=1609159947;
+        bh=pgLXocH2vJ9te5HZy5zwbwL6P1bRMwPOKZSh4VVgUUI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h+3WToUo9iynsFjTa2YRf/hXI1EJ9rhY/DioDNdQ7XnlG4p6LzO2tYt7r/sAJthmK
-         HWYAI/lSuSS53tLvkRmw0OHu5mryRm4tkpwpzcJ3lFnn/eKqhSwpbhlN1VU3r9cynL
-         Ul55ks6hvNYlQW3Q9hP6iDx+1IY6EOhexiauTO4g=
+        b=UVShaxSCn1yw36t3USQNoqSl2GpIqmeWS2LgO+CsJut2EDL6P+/3XiS1MTeujU29m
+         fv4pFmzb1nimyLp5ifEFqV38afr3FbG1ILTURa6AKETk2aBreGFnLWiWQyJdYkvJ4Q
+         mZ4f43IYDVv2sH/eUPV/ocWMaX7vzswsLREDhih8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Joan=20Bruguera=20Mic=C3=B3?= <joanbrugueram@gmail.com>,
-        Jussi Kivilinna <jussi.kivilinna@iki.fi>,
-        Christoph Hellwig <hch@lst.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
+        Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 509/717] proc mountinfo: make splice available again
+Subject: [PATCH 4.4 023/132] can: softing: softing_netdev_open(): fix error handling
 Date:   Mon, 28 Dec 2020 13:48:27 +0100
-Message-Id: <20201228125045.347625595@linuxfoundation.org>
+Message-Id: <20201228124847.531480524@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,66 +42,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit 14e3e989f6a5d9646b6cf60690499cc8bdc11f7d ]
+[ Upstream commit 4d1be581ec6b92a338bb7ed23e1381f45ddf336f ]
 
-Since commit 36e2c7421f02 ("fs: don't allow splice read/write without
-explicit ops") we've required that file operation structures explicitly
-enable splice support, rather than falling back to the default handlers.
+If softing_netdev_open() fails, we should call close_candev() to avoid
+reference leak.
 
-Most /proc files use the indirect 'struct proc_ops' to describe their
-file operations, and were fixed up to support splice earlier in commits
-40be821d627c..b24c30c67863, but the mountinfo files interact with the
-VFS directly using their own 'struct file_operations' and got missed as
-a result.
-
-This adds the necessary support for splice to work for /proc/*/mountinfo
-and friends.
-
-Reported-by: Joan Bruguera Micó <joanbrugueram@gmail.com>
-Reported-by: Jussi Kivilinna <jussi.kivilinna@iki.fi>
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=209971
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 03fd3cf5a179d ("can: add driver for Softing card")
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Acked-by: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Link: https://lore.kernel.org/r/20201202151632.1343786-1-zhangqilong3@huawei.com
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Link: https://lore.kernel.org/r/20201204133508.742120-2-mkl@pengutronix.de
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/proc_namespace.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/net/can/softing/softing_main.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
---- a/fs/proc_namespace.c
-+++ b/fs/proc_namespace.c
-@@ -320,7 +320,8 @@ static int mountstats_open(struct inode
+diff --git a/drivers/net/can/softing/softing_main.c b/drivers/net/can/softing/softing_main.c
+index 7621f91a8a209..fd48770ba7920 100644
+--- a/drivers/net/can/softing/softing_main.c
++++ b/drivers/net/can/softing/softing_main.c
+@@ -393,8 +393,13 @@ static int softing_netdev_open(struct net_device *ndev)
  
- const struct file_operations proc_mounts_operations = {
- 	.open		= mounts_open,
--	.read		= seq_read,
-+	.read_iter	= seq_read_iter,
-+	.splice_read	= generic_file_splice_read,
- 	.llseek		= seq_lseek,
- 	.release	= mounts_release,
- 	.poll		= mounts_poll,
-@@ -328,7 +329,8 @@ const struct file_operations proc_mounts
+ 	/* check or determine and set bittime */
+ 	ret = open_candev(ndev);
+-	if (!ret)
+-		ret = softing_startstop(ndev, 1);
++	if (ret)
++		return ret;
++
++	ret = softing_startstop(ndev, 1);
++	if (ret < 0)
++		close_candev(ndev);
++
+ 	return ret;
+ }
  
- const struct file_operations proc_mountinfo_operations = {
- 	.open		= mountinfo_open,
--	.read		= seq_read,
-+	.read_iter	= seq_read_iter,
-+	.splice_read	= generic_file_splice_read,
- 	.llseek		= seq_lseek,
- 	.release	= mounts_release,
- 	.poll		= mounts_poll,
-@@ -336,7 +338,8 @@ const struct file_operations proc_mounti
- 
- const struct file_operations proc_mountstats_operations = {
- 	.open		= mountstats_open,
--	.read		= seq_read,
-+	.read_iter	= seq_read_iter,
-+	.splice_read	= generic_file_splice_read,
- 	.llseek		= seq_lseek,
- 	.release	= mounts_release,
- };
+-- 
+2.27.0
+
 
 
