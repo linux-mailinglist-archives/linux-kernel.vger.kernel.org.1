@@ -2,36 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2403F2E3A8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:39:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 941A12E6492
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:53:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391472AbgL1NiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:38:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38336 "EHLO mail.kernel.org"
+        id S2393056AbgL1Pwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:52:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391177AbgL1NiB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:38:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D3D9208B3;
-        Mon, 28 Dec 2020 13:37:20 +0000 (UTC)
+        id S2391199AbgL1NiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:38:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0637321D94;
+        Mon, 28 Dec 2020 13:37:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162640;
-        bh=8xu1w7oIX7+HLRmXujkBO4p2QjrBuXKqX8drfMGGCbs=;
+        s=korg; t=1609162643;
+        bh=pWFcgJnEpPRBx3+LSSh3e7Tj68NxMszCxzBSFJwjvT4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gKrGnFsX+ipPPhqsHromTz1nE6MInGlTeRkVMAiQyTmdscJLvby7N3DkrDYO8h/vu
-         9tn3JmJrBO0AjhTRb0VPWWm3bwR2D5iKzyF7nPJJ1VMnybKJNtKa7lQGnBz9ZRN2lq
-         k8/SOKxMRigzOl3p+QtfhYXM5tc7les2+Y6JD8yo=
+        b=E+cCtl0L1F2sWsNWtnx21OcrphCQNlaXWSWDER0Icpijhc+oGNFUBQdM1kNXNVgBy
+         23Lb8zuY4iOzIhCZiLJ1bs14XVp0yybfL1WQbiybVKK7ALuWHz78dopfe2Xoyp7HOl
+         36CPDoyTx9VllpsLxCdKeIKVoFfb7Az0YZC8MszY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Tranchetti <stranche@codeaurora.org>,
-        kernel test robot <lkp@intel.com>,
+        stable@vger.kernel.org, Pablo Neira Ayso <pablo@netfilter.org>,
         Florian Westphal <fw@strlen.de>,
-        Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 022/453] netfilter: x_tables: Switch synchronization to RCU
-Date:   Mon, 28 Dec 2020 13:44:18 +0100
-Message-Id: <20201228124938.323082742@linuxfoundation.org>
+Subject: [PATCH 5.4 023/453] netfilter: nft_compat: make sure xtables destructors have run
+Date:   Mon, 28 Dec 2020 13:44:19 +0100
+Message-Id: <20201228124938.370882595@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
 References: <20201228124937.240114599@linuxfoundation.org>
@@ -43,392 +40,187 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>
+From: Florian Westphal <fw@strlen.de>
 
-[ Upstream commit cc00bcaa589914096edef7fb87ca5cee4a166b5c ]
+[ Upstream commit ffe8923f109b7ea92c0842c89e61300eefa11c94 ]
 
-When running concurrent iptables rules replacement with data, the per CPU
-sequence count is checked after the assignment of the new information.
-The sequence count is used to synchronize with the packet path without the
-use of any explicit locking. If there are any packets in the packet path using
-the table information, the sequence count is incremented to an odd value and
-is incremented to an even after the packet process completion.
+Pablo Neira found that after recent update of xt_IDLETIMER the
+iptables-nft tests sometimes show an error.
 
-The new table value assignment is followed by a write memory barrier so every
-CPU should see the latest value. If the packet path has started with the old
-table information, the sequence counter will be odd and the iptables
-replacement will wait till the sequence count is even prior to freeing the
-old table info.
+He tracked this down to the delayed cleanup used by nf_tables core:
+del rule (transaction A)
+add rule (transaction B)
 
-However, this assumes that the new table information assignment and the memory
-barrier is actually executed prior to the counter check in the replacement
-thread. If CPU decides to execute the assignment later as there is no user of
-the table information prior to the sequence check, the packet path in another
-CPU may use the old table information. The replacement thread would then free
-the table information under it leading to a use after free in the packet
-processing context-
+Its possible that by time transaction B (both in same netns) runs,
+the xt target destructor has not been invoked yet.
 
-Unable to handle kernel NULL pointer dereference at virtual
-address 000000000000008e
-pc : ip6t_do_table+0x5d0/0x89c
-lr : ip6t_do_table+0x5b8/0x89c
-ip6t_do_table+0x5d0/0x89c
-ip6table_filter_hook+0x24/0x30
-nf_hook_slow+0x84/0x120
-ip6_input+0x74/0xe0
-ip6_rcv_finish+0x7c/0x128
-ipv6_rcv+0xac/0xe4
-__netif_receive_skb+0x84/0x17c
-process_backlog+0x15c/0x1b8
-napi_poll+0x88/0x284
-net_rx_action+0xbc/0x23c
-__do_softirq+0x20c/0x48c
+For native nft expressions this is no problem because all expressions
+that have such side effects make sure these are handled from the commit
+phase, rather than async cleanup.
 
-This could be fixed by forcing instruction order after the new table
-information assignment or by switching to RCU for the synchronization.
+For nft_compat however this isn't true.
 
-Fixes: 80055dab5de0 ("netfilter: x_tables: make xt_replace_table wait until old rules are not used anymore")
-Reported-by: Sean Tranchetti <stranche@codeaurora.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Suggested-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>
+Instead of forcing synchronous behaviour for nft_compat, keep track
+of the number of outstanding destructor calls.
+
+When we attempt to create a new expression, flush the cleanup worker
+to make sure destructors have completed.
+
+With lots of help from Pablo Neira.
+
+Reported-by: Pablo Neira Ayso <pablo@netfilter.org>
+Signed-off-by: Florian Westphal <fw@strlen.de>
 Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/netfilter/x_tables.h |  5 ++-
- net/ipv4/netfilter/arp_tables.c    | 14 ++++-----
- net/ipv4/netfilter/ip_tables.c     | 14 ++++-----
- net/ipv6/netfilter/ip6_tables.c    | 14 ++++-----
- net/netfilter/x_tables.c           | 49 +++++++++---------------------
- 5 files changed, 40 insertions(+), 56 deletions(-)
+ include/net/netfilter/nf_tables.h |  2 ++
+ net/netfilter/nf_tables_api.c     | 10 +++++++--
+ net/netfilter/nft_compat.c        | 36 +++++++++++++++++++++++++++----
+ 3 files changed, 42 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/netfilter/x_tables.h b/include/linux/netfilter/x_tables.h
-index 1b261c51b3a3a..f5c21b7d29748 100644
---- a/include/linux/netfilter/x_tables.h
-+++ b/include/linux/netfilter/x_tables.h
-@@ -227,7 +227,7 @@ struct xt_table {
- 	unsigned int valid_hooks;
+diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
+index a576bcbba2fcc..6a6fcd10d3185 100644
+--- a/include/net/netfilter/nf_tables.h
++++ b/include/net/netfilter/nf_tables.h
+@@ -1462,4 +1462,6 @@ void nft_chain_filter_fini(void);
  
- 	/* Man behind the curtain... */
--	struct xt_table_info *private;
-+	struct xt_table_info __rcu *private;
- 
- 	/* Set this to THIS_MODULE if you are a module, otherwise NULL */
- 	struct module *me;
-@@ -448,6 +448,9 @@ xt_get_per_cpu_counter(struct xt_counters *cnt, unsigned int cpu)
- 
- struct nf_hook_ops *xt_hook_ops_alloc(const struct xt_table *, nf_hookfn *);
- 
-+struct xt_table_info
-+*xt_table_get_private_protected(const struct xt_table *table);
+ void __init nft_chain_route_init(void);
+ void nft_chain_route_fini(void);
 +
- #ifdef CONFIG_COMPAT
- #include <net/compat.h>
- 
-diff --git a/net/ipv4/netfilter/arp_tables.c b/net/ipv4/netfilter/arp_tables.c
-index f1f78a742b36a..8a6a4384e7916 100644
---- a/net/ipv4/netfilter/arp_tables.c
-+++ b/net/ipv4/netfilter/arp_tables.c
-@@ -203,7 +203,7 @@ unsigned int arpt_do_table(struct sk_buff *skb,
- 
- 	local_bh_disable();
- 	addend = xt_write_recseq_begin();
--	private = READ_ONCE(table->private); /* Address dependency. */
-+	private = rcu_access_pointer(table->private);
- 	cpu     = smp_processor_id();
- 	table_base = private->entries;
- 	jumpstack  = (struct arpt_entry **)private->jumpstack[cpu];
-@@ -649,7 +649,7 @@ static struct xt_counters *alloc_counters(const struct xt_table *table)
- {
- 	unsigned int countersize;
- 	struct xt_counters *counters;
--	const struct xt_table_info *private = table->private;
-+	const struct xt_table_info *private = xt_table_get_private_protected(table);
- 
- 	/* We need atomic snapshot of counters: rest doesn't change
- 	 * (other than comefrom, which userspace doesn't care
-@@ -673,7 +673,7 @@ static int copy_entries_to_user(unsigned int total_size,
- 	unsigned int off, num;
- 	const struct arpt_entry *e;
- 	struct xt_counters *counters;
--	struct xt_table_info *private = table->private;
-+	struct xt_table_info *private = xt_table_get_private_protected(table);
- 	int ret = 0;
- 	void *loc_cpu_entry;
- 
-@@ -808,7 +808,7 @@ static int get_info(struct net *net, void __user *user,
- 	t = xt_request_find_table_lock(net, NFPROTO_ARP, name);
- 	if (!IS_ERR(t)) {
- 		struct arpt_getinfo info;
--		const struct xt_table_info *private = t->private;
-+		const struct xt_table_info *private = xt_table_get_private_protected(t);
- #ifdef CONFIG_COMPAT
- 		struct xt_table_info tmp;
- 
-@@ -861,7 +861,7 @@ static int get_entries(struct net *net, struct arpt_get_entries __user *uptr,
- 
- 	t = xt_find_table_lock(net, NFPROTO_ARP, get.name);
- 	if (!IS_ERR(t)) {
--		const struct xt_table_info *private = t->private;
-+		const struct xt_table_info *private = xt_table_get_private_protected(t);
- 
- 		if (get.size == private->size)
- 			ret = copy_entries_to_user(private->size,
-@@ -1020,7 +1020,7 @@ static int do_add_counters(struct net *net, const void __user *user,
++void nf_tables_trans_destroy_flush_work(void);
+ #endif /* _NET_NF_TABLES_H */
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index 459b7c0547115..7753d6f1467c9 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -6605,6 +6605,12 @@ static void nf_tables_trans_destroy_work(struct work_struct *w)
  	}
- 
- 	local_bh_disable();
--	private = t->private;
-+	private = xt_table_get_private_protected(t);
- 	if (private->number != tmp.num_counters) {
- 		ret = -EINVAL;
- 		goto unlock_up_free;
-@@ -1357,7 +1357,7 @@ static int compat_copy_entries_to_user(unsigned int total_size,
- 				       void __user *userptr)
- {
- 	struct xt_counters *counters;
--	const struct xt_table_info *private = table->private;
-+	const struct xt_table_info *private = xt_table_get_private_protected(table);
- 	void __user *pos;
- 	unsigned int size;
- 	int ret = 0;
-diff --git a/net/ipv4/netfilter/ip_tables.c b/net/ipv4/netfilter/ip_tables.c
-index 10b91ebdf2131..4852769995440 100644
---- a/net/ipv4/netfilter/ip_tables.c
-+++ b/net/ipv4/netfilter/ip_tables.c
-@@ -258,7 +258,7 @@ ipt_do_table(struct sk_buff *skb,
- 	WARN_ON(!(table->valid_hooks & (1 << hook)));
- 	local_bh_disable();
- 	addend = xt_write_recseq_begin();
--	private = READ_ONCE(table->private); /* Address dependency. */
-+	private = rcu_access_pointer(table->private);
- 	cpu        = smp_processor_id();
- 	table_base = private->entries;
- 	jumpstack  = (struct ipt_entry **)private->jumpstack[cpu];
-@@ -791,7 +791,7 @@ static struct xt_counters *alloc_counters(const struct xt_table *table)
- {
- 	unsigned int countersize;
- 	struct xt_counters *counters;
--	const struct xt_table_info *private = table->private;
-+	const struct xt_table_info *private = xt_table_get_private_protected(table);
- 
- 	/* We need atomic snapshot of counters: rest doesn't change
- 	   (other than comefrom, which userspace doesn't care
-@@ -815,7 +815,7 @@ copy_entries_to_user(unsigned int total_size,
- 	unsigned int off, num;
- 	const struct ipt_entry *e;
- 	struct xt_counters *counters;
--	const struct xt_table_info *private = table->private;
-+	const struct xt_table_info *private = xt_table_get_private_protected(table);
- 	int ret = 0;
- 	const void *loc_cpu_entry;
- 
-@@ -965,7 +965,7 @@ static int get_info(struct net *net, void __user *user,
- 	t = xt_request_find_table_lock(net, AF_INET, name);
- 	if (!IS_ERR(t)) {
- 		struct ipt_getinfo info;
--		const struct xt_table_info *private = t->private;
-+		const struct xt_table_info *private = xt_table_get_private_protected(t);
- #ifdef CONFIG_COMPAT
- 		struct xt_table_info tmp;
- 
-@@ -1019,7 +1019,7 @@ get_entries(struct net *net, struct ipt_get_entries __user *uptr,
- 
- 	t = xt_find_table_lock(net, AF_INET, get.name);
- 	if (!IS_ERR(t)) {
--		const struct xt_table_info *private = t->private;
-+		const struct xt_table_info *private = xt_table_get_private_protected(t);
- 		if (get.size == private->size)
- 			ret = copy_entries_to_user(private->size,
- 						   t, uptr->entrytable);
-@@ -1175,7 +1175,7 @@ do_add_counters(struct net *net, const void __user *user,
- 	}
- 
- 	local_bh_disable();
--	private = t->private;
-+	private = xt_table_get_private_protected(t);
- 	if (private->number != tmp.num_counters) {
- 		ret = -EINVAL;
- 		goto unlock_up_free;
-@@ -1570,7 +1570,7 @@ compat_copy_entries_to_user(unsigned int total_size, struct xt_table *table,
- 			    void __user *userptr)
- {
- 	struct xt_counters *counters;
--	const struct xt_table_info *private = table->private;
-+	const struct xt_table_info *private = xt_table_get_private_protected(table);
- 	void __user *pos;
- 	unsigned int size;
- 	int ret = 0;
-diff --git a/net/ipv6/netfilter/ip6_tables.c b/net/ipv6/netfilter/ip6_tables.c
-index c973ace208c51..12735ee7713a7 100644
---- a/net/ipv6/netfilter/ip6_tables.c
-+++ b/net/ipv6/netfilter/ip6_tables.c
-@@ -280,7 +280,7 @@ ip6t_do_table(struct sk_buff *skb,
- 
- 	local_bh_disable();
- 	addend = xt_write_recseq_begin();
--	private = READ_ONCE(table->private); /* Address dependency. */
-+	private = rcu_access_pointer(table->private);
- 	cpu        = smp_processor_id();
- 	table_base = private->entries;
- 	jumpstack  = (struct ip6t_entry **)private->jumpstack[cpu];
-@@ -807,7 +807,7 @@ static struct xt_counters *alloc_counters(const struct xt_table *table)
- {
- 	unsigned int countersize;
- 	struct xt_counters *counters;
--	const struct xt_table_info *private = table->private;
-+	const struct xt_table_info *private = xt_table_get_private_protected(table);
- 
- 	/* We need atomic snapshot of counters: rest doesn't change
- 	   (other than comefrom, which userspace doesn't care
-@@ -831,7 +831,7 @@ copy_entries_to_user(unsigned int total_size,
- 	unsigned int off, num;
- 	const struct ip6t_entry *e;
- 	struct xt_counters *counters;
--	const struct xt_table_info *private = table->private;
-+	const struct xt_table_info *private = xt_table_get_private_protected(table);
- 	int ret = 0;
- 	const void *loc_cpu_entry;
- 
-@@ -981,7 +981,7 @@ static int get_info(struct net *net, void __user *user,
- 	t = xt_request_find_table_lock(net, AF_INET6, name);
- 	if (!IS_ERR(t)) {
- 		struct ip6t_getinfo info;
--		const struct xt_table_info *private = t->private;
-+		const struct xt_table_info *private = xt_table_get_private_protected(t);
- #ifdef CONFIG_COMPAT
- 		struct xt_table_info tmp;
- 
-@@ -1036,7 +1036,7 @@ get_entries(struct net *net, struct ip6t_get_entries __user *uptr,
- 
- 	t = xt_find_table_lock(net, AF_INET6, get.name);
- 	if (!IS_ERR(t)) {
--		struct xt_table_info *private = t->private;
-+		struct xt_table_info *private = xt_table_get_private_protected(t);
- 		if (get.size == private->size)
- 			ret = copy_entries_to_user(private->size,
- 						   t, uptr->entrytable);
-@@ -1191,7 +1191,7 @@ do_add_counters(struct net *net, const void __user *user, unsigned int len,
- 	}
- 
- 	local_bh_disable();
--	private = t->private;
-+	private = xt_table_get_private_protected(t);
- 	if (private->number != tmp.num_counters) {
- 		ret = -EINVAL;
- 		goto unlock_up_free;
-@@ -1579,7 +1579,7 @@ compat_copy_entries_to_user(unsigned int total_size, struct xt_table *table,
- 			    void __user *userptr)
- {
- 	struct xt_counters *counters;
--	const struct xt_table_info *private = table->private;
-+	const struct xt_table_info *private = xt_table_get_private_protected(table);
- 	void __user *pos;
- 	unsigned int size;
- 	int ret = 0;
-diff --git a/net/netfilter/x_tables.c b/net/netfilter/x_tables.c
-index 44f971f319920..d1ef2d7930739 100644
---- a/net/netfilter/x_tables.c
-+++ b/net/netfilter/x_tables.c
-@@ -1349,6 +1349,14 @@ struct xt_counters *xt_counters_alloc(unsigned int counters)
  }
- EXPORT_SYMBOL(xt_counters_alloc);
  
-+struct xt_table_info
-+*xt_table_get_private_protected(const struct xt_table *table)
++void nf_tables_trans_destroy_flush_work(void)
 +{
-+	return rcu_dereference_protected(table->private,
-+					 mutex_is_locked(&xt[table->af].mutex));
++	flush_work(&trans_destroy_work);
 +}
-+EXPORT_SYMBOL(xt_table_get_private_protected);
++EXPORT_SYMBOL_GPL(nf_tables_trans_destroy_flush_work);
 +
- struct xt_table_info *
- xt_replace_table(struct xt_table *table,
- 	      unsigned int num_counters,
-@@ -1356,7 +1364,6 @@ xt_replace_table(struct xt_table *table,
- 	      int *error)
+ static int nf_tables_commit_chain_prepare(struct net *net, struct nft_chain *chain)
  {
- 	struct xt_table_info *private;
--	unsigned int cpu;
- 	int ret;
+ 	struct nft_rule *rule;
+@@ -6776,9 +6782,9 @@ static void nf_tables_commit_release(struct net *net)
+ 	spin_unlock(&nf_tables_destroy_list_lock);
  
- 	ret = xt_jumpstack_alloc(newinfo);
-@@ -1366,47 +1373,20 @@ xt_replace_table(struct xt_table *table,
- 	}
- 
- 	/* Do the substitution. */
--	local_bh_disable();
--	private = table->private;
-+	private = xt_table_get_private_protected(table);
- 
- 	/* Check inside lock: is the old number correct? */
- 	if (num_counters != private->number) {
- 		pr_debug("num_counters != table->private->number (%u/%u)\n",
- 			 num_counters, private->number);
--		local_bh_enable();
- 		*error = -EAGAIN;
- 		return NULL;
- 	}
- 
- 	newinfo->initial_entries = private->initial_entries;
--	/*
--	 * Ensure contents of newinfo are visible before assigning to
--	 * private.
--	 */
--	smp_wmb();
--	table->private = newinfo;
+ 	nf_tables_module_autoload_cleanup(net);
+-	mutex_unlock(&net->nft.commit_mutex);
 -
--	/* make sure all cpus see new ->private value */
--	smp_wmb();
+ 	schedule_work(&trans_destroy_work);
++
++	mutex_unlock(&net->nft.commit_mutex);
+ }
  
--	/*
--	 * Even though table entries have now been swapped, other CPU's
--	 * may still be using the old entries...
--	 */
--	local_bh_enable();
--
--	/* ... so wait for even xt_recseq on all cpus */
--	for_each_possible_cpu(cpu) {
--		seqcount_t *s = &per_cpu(xt_recseq, cpu);
--		u32 seq = raw_read_seqcount(s);
--
--		if (seq & 1) {
--			do {
--				cond_resched();
--				cpu_relax();
--			} while (seq == raw_read_seqcount(s));
--		}
--	}
-+	rcu_assign_pointer(table->private, newinfo);
-+	synchronize_rcu();
+ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
+diff --git a/net/netfilter/nft_compat.c b/net/netfilter/nft_compat.c
+index f9adca62ccb3d..0e3e0ff805812 100644
+--- a/net/netfilter/nft_compat.c
++++ b/net/netfilter/nft_compat.c
+@@ -27,6 +27,8 @@ struct nft_xt_match_priv {
+ 	void *info;
+ };
  
- #ifdef CONFIG_AUDIT
- 	if (audit_enabled) {
-@@ -1447,12 +1427,12 @@ struct xt_table *xt_register_table(struct net *net,
- 	}
++static refcount_t nft_compat_pending_destroy = REFCOUNT_INIT(1);
++
+ static int nft_compat_chain_validate_dependency(const struct nft_ctx *ctx,
+ 						const char *tablename)
+ {
+@@ -236,6 +238,15 @@ nft_target_init(const struct nft_ctx *ctx, const struct nft_expr *expr,
  
- 	/* Simplifies replace_table code. */
--	table->private = bootstrap;
-+	rcu_assign_pointer(table->private, bootstrap);
+ 	nft_target_set_tgchk_param(&par, ctx, target, info, &e, proto, inv);
  
- 	if (!xt_replace_table(table, 0, newinfo, &ret))
- 		goto unlock;
++	/* xtables matches or targets can have side effects, e.g.
++	 * creation/destruction of /proc files.
++	 * The xt ->destroy functions are run asynchronously from
++	 * work queue.  If we have pending invocations we thus
++	 * need to wait for those to finish.
++	 */
++	if (refcount_read(&nft_compat_pending_destroy) > 1)
++		nf_tables_trans_destroy_flush_work();
++
+ 	ret = xt_check_target(&par, size, proto, inv);
+ 	if (ret < 0)
+ 		return ret;
+@@ -247,6 +258,13 @@ nft_target_init(const struct nft_ctx *ctx, const struct nft_expr *expr,
+ 	return 0;
+ }
  
--	private = table->private;
-+	private = xt_table_get_private_protected(table);
- 	pr_debug("table->private->number = %u\n", private->number);
++static void __nft_mt_tg_destroy(struct module *me, const struct nft_expr *expr)
++{
++	refcount_dec(&nft_compat_pending_destroy);
++	module_put(me);
++	kfree(expr->ops);
++}
++
+ static void
+ nft_target_destroy(const struct nft_ctx *ctx, const struct nft_expr *expr)
+ {
+@@ -262,8 +280,7 @@ nft_target_destroy(const struct nft_ctx *ctx, const struct nft_expr *expr)
+ 	if (par.target->destroy != NULL)
+ 		par.target->destroy(&par);
  
- 	/* save number of initial entries */
-@@ -1475,7 +1455,8 @@ void *xt_unregister_table(struct xt_table *table)
- 	struct xt_table_info *private;
+-	module_put(me);
+-	kfree(expr->ops);
++	__nft_mt_tg_destroy(me, expr);
+ }
  
- 	mutex_lock(&xt[table->af].mutex);
--	private = table->private;
-+	private = xt_table_get_private_protected(table);
-+	RCU_INIT_POINTER(table->private, NULL);
- 	list_del(&table->list);
- 	mutex_unlock(&xt[table->af].mutex);
- 	kfree(table);
+ static int nft_extension_dump_info(struct sk_buff *skb, int attr,
+@@ -494,8 +511,7 @@ __nft_match_destroy(const struct nft_ctx *ctx, const struct nft_expr *expr,
+ 	if (par.match->destroy != NULL)
+ 		par.match->destroy(&par);
+ 
+-	module_put(me);
+-	kfree(expr->ops);
++	__nft_mt_tg_destroy(me, expr);
+ }
+ 
+ static void
+@@ -700,6 +716,14 @@ static const struct nfnetlink_subsystem nfnl_compat_subsys = {
+ 
+ static struct nft_expr_type nft_match_type;
+ 
++static void nft_mt_tg_deactivate(const struct nft_ctx *ctx,
++				 const struct nft_expr *expr,
++				 enum nft_trans_phase phase)
++{
++	if (phase == NFT_TRANS_COMMIT)
++		refcount_inc(&nft_compat_pending_destroy);
++}
++
+ static const struct nft_expr_ops *
+ nft_match_select_ops(const struct nft_ctx *ctx,
+ 		     const struct nlattr * const tb[])
+@@ -738,6 +762,7 @@ nft_match_select_ops(const struct nft_ctx *ctx,
+ 	ops->type = &nft_match_type;
+ 	ops->eval = nft_match_eval;
+ 	ops->init = nft_match_init;
++	ops->deactivate = nft_mt_tg_deactivate,
+ 	ops->destroy = nft_match_destroy;
+ 	ops->dump = nft_match_dump;
+ 	ops->validate = nft_match_validate;
+@@ -828,6 +853,7 @@ nft_target_select_ops(const struct nft_ctx *ctx,
+ 	ops->size = NFT_EXPR_SIZE(XT_ALIGN(target->targetsize));
+ 	ops->init = nft_target_init;
+ 	ops->destroy = nft_target_destroy;
++	ops->deactivate = nft_mt_tg_deactivate,
+ 	ops->dump = nft_target_dump;
+ 	ops->validate = nft_target_validate;
+ 	ops->data = target;
+@@ -891,6 +917,8 @@ static void __exit nft_compat_module_exit(void)
+ 	nfnetlink_subsys_unregister(&nfnl_compat_subsys);
+ 	nft_unregister_expr(&nft_target_type);
+ 	nft_unregister_expr(&nft_match_type);
++
++	WARN_ON_ONCE(refcount_read(&nft_compat_pending_destroy) != 1);
+ }
+ 
+ MODULE_ALIAS_NFNL_SUBSYS(NFNL_SUBSYS_NFT_COMPAT);
 -- 
 2.27.0
 
