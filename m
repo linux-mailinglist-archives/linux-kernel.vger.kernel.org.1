@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88ECC2E3F71
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:40:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A24222E390C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:19:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503431AbgL1O3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:29:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36844 "EHLO mail.kernel.org"
+        id S2387481AbgL1NSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:18:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46694 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390307AbgL1O3D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:29:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E4E03206D4;
-        Mon, 28 Dec 2020 14:28:21 +0000 (UTC)
+        id S2387473AbgL1NSM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:18:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D62220728;
+        Mon, 28 Dec 2020 13:17:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165702;
-        bh=GCRSd7zD/TEBVbBx3Dw7+c2VxWwOYBBPm5G7HSOutqk=;
+        s=korg; t=1609161451;
+        bh=DmmkrcitPC7QTS2tPwHnuEaW7XBeQ9vxE83FylVSuew=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a3xp4viMJBy6UldbOWEWZzLqHuTfxeiw6jRskudFfE1XXTVVm6JgWXxfb6bHgvDFM
-         ifYpbj7upCQKkCibG8Pk6acKK7V3bs0IRxEF6H8uA20nnhurEt1QhCg2XyoCOEhoY2
-         evh60yiYaxqT72XmrZ1QpduREhGCZHHZxo2OjZI8=
+        b=ycSSLTX25+mWPoCNsUzQulEDQefvlqOCbB45I0jy9p+FXNagOs984E6wxkwn7Ll7y
+         2NBN4f7WFTTqbbrC5WVyM30v6V98Mf7Z5osc/9kTz2vAzBgnN2szGGamAXiB0TJFTv
+         CWncr1RDjWaHW46NJl7rzvNeRG0zdyDHOzu+vhvE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shyam Prasad N <sprasad@microsoft.com>,
-        Pavel Shilovsky <pshilov@microsoft.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: [PATCH 5.10 625/717] SMB3.1.1: do not log warning message if server doesnt populate salt
+        stable@vger.kernel.org, Dave Kleikamp <dave.kleikamp@oracle.com>,
+        butt3rflyh4ck <butterflyhuangxx@gmail.com>
+Subject: [PATCH 4.14 218/242] jfs: Fix array index bounds check in dbAdjTree
 Date:   Mon, 28 Dec 2020 13:50:23 +0100
-Message-Id: <20201228125050.864074925@linuxfoundation.org>
+Message-Id: <20201228124915.401408063@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,87 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steve French <stfrench@microsoft.com>
+From: Dave Kleikamp <dave.kleikamp@oracle.com>
 
-commit 7955f105afb6034af344038d663bc98809483cdd upstream.
+commit c61b3e4839007668360ed8b87d7da96d2e59fc6c upstream.
 
-In the negotiate protocol preauth context, the server is not required
-to populate the salt (although it is done by most servers) so do
-not warn on mount.
+Bounds checking tools can flag a bug in dbAdjTree() for an array index
+out of bounds in dmt_stree. Since dmt_stree can refer to the stree in
+both structures dmaptree and dmapctl, use the larger array to eliminate
+the false positive.
 
-We retain the checks (warn) that the preauth context is the minimum
-size and that the salt does not exceed DataLength of the SMB response.
-Although we use the defaults in the case that the preauth context
-response is invalid, these checks may be useful in the future
-as servers add support for additional mechanisms.
-
-CC: Stable <stable@vger.kernel.org>
-Reviewed-by: Shyam Prasad N <sprasad@microsoft.com>
-Reviewed-by: Pavel Shilovsky <pshilov@microsoft.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
+Reported-by: butt3rflyh4ck <butterflyhuangxx@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/cifs/smb2pdu.c |    7 +++++--
- fs/cifs/smb2pdu.h |   14 +++++++++++---
- 2 files changed, 16 insertions(+), 5 deletions(-)
+ fs/jfs/jfs_dmap.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/cifs/smb2pdu.c
-+++ b/fs/cifs/smb2pdu.c
-@@ -427,8 +427,8 @@ build_preauth_ctxt(struct smb2_preauth_n
- 	pneg_ctxt->ContextType = SMB2_PREAUTH_INTEGRITY_CAPABILITIES;
- 	pneg_ctxt->DataLength = cpu_to_le16(38);
- 	pneg_ctxt->HashAlgorithmCount = cpu_to_le16(1);
--	pneg_ctxt->SaltLength = cpu_to_le16(SMB311_SALT_SIZE);
--	get_random_bytes(pneg_ctxt->Salt, SMB311_SALT_SIZE);
-+	pneg_ctxt->SaltLength = cpu_to_le16(SMB311_LINUX_CLIENT_SALT_SIZE);
-+	get_random_bytes(pneg_ctxt->Salt, SMB311_LINUX_CLIENT_SALT_SIZE);
- 	pneg_ctxt->HashAlgorithms = SMB2_PREAUTH_INTEGRITY_SHA512;
- }
+--- a/fs/jfs/jfs_dmap.h
++++ b/fs/jfs/jfs_dmap.h
+@@ -196,7 +196,7 @@ typedef union dmtree {
+ #define	dmt_leafidx	t1.leafidx
+ #define	dmt_height	t1.height
+ #define	dmt_budmin	t1.budmin
+-#define	dmt_stree	t1.stree
++#define	dmt_stree	t2.stree
  
-@@ -566,6 +566,9 @@ static void decode_preauth_context(struc
- 	if (len < MIN_PREAUTH_CTXT_DATA_LEN) {
- 		pr_warn_once("server sent bad preauth context\n");
- 		return;
-+	} else if (len < MIN_PREAUTH_CTXT_DATA_LEN + le16_to_cpu(ctxt->SaltLength)) {
-+		pr_warn_once("server sent invalid SaltLength\n");
-+		return;
- 	}
- 	if (le16_to_cpu(ctxt->HashAlgorithmCount) != 1)
- 		pr_warn_once("Invalid SMB3 hash algorithm count\n");
---- a/fs/cifs/smb2pdu.h
-+++ b/fs/cifs/smb2pdu.h
-@@ -333,12 +333,20 @@ struct smb2_neg_context {
- 	/* Followed by array of data */
- } __packed;
- 
--#define SMB311_SALT_SIZE			32
-+#define SMB311_LINUX_CLIENT_SALT_SIZE			32
- /* Hash Algorithm Types */
- #define SMB2_PREAUTH_INTEGRITY_SHA512	cpu_to_le16(0x0001)
- #define SMB2_PREAUTH_HASH_SIZE 64
- 
--#define MIN_PREAUTH_CTXT_DATA_LEN	(SMB311_SALT_SIZE + 6)
-+/*
-+ * SaltLength that the server send can be zero, so the only three required
-+ * fields (all __le16) end up six bytes total, so the minimum context data len
-+ * in the response is six bytes which accounts for
-+ *
-+ *      HashAlgorithmCount, SaltLength, and 1 HashAlgorithm.
-+ */
-+#define MIN_PREAUTH_CTXT_DATA_LEN 6
-+
- struct smb2_preauth_neg_context {
- 	__le16	ContextType; /* 1 */
- 	__le16	DataLength;
-@@ -346,7 +354,7 @@ struct smb2_preauth_neg_context {
- 	__le16	HashAlgorithmCount; /* 1 */
- 	__le16	SaltLength;
- 	__le16	HashAlgorithms; /* HashAlgorithms[0] since only one defined */
--	__u8	Salt[SMB311_SALT_SIZE];
-+	__u8	Salt[SMB311_LINUX_CLIENT_SALT_SIZE];
- } __packed;
- 
- /* Encryption Algorithms Ciphers */
+ /*
+  *	on-disk aggregate disk allocation map descriptor.
 
 
