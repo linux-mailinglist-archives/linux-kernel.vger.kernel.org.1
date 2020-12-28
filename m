@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3B712E690A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:46:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C8572E66C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:17:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728811AbgL1M4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:56:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52674 "EHLO mail.kernel.org"
+        id S2440823AbgL1QQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:16:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728775AbgL1M4h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:56:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 665DF208B6;
-        Mon, 28 Dec 2020 12:56:21 +0000 (UTC)
+        id S1731578AbgL1NRf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:17:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B8E03206ED;
+        Mon, 28 Dec 2020 13:16:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160182;
-        bh=hN//SUe8IPgpmWtUUzsfGKLVhQz8xJVBNrm0Inhur+Y=;
+        s=korg; t=1609161414;
+        bh=w1uyj+8QB9GT5kwpX/XN0NBBS6PW0xTqQK9FkK3cUos=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H7AUfV57IUBWGNaNBgVxUQxS9KO/fkUGuv0TTDAShAEY66W87xYQIW8LqPjIc3cRK
-         OpTvjkisJ26r5dKqWALrWJTEps9uhDsckd2SF5U09uC80FxQsPrMIXhfRGvnPzwZ0I
-         PGuBKHx9cLRvcjWbSC9W13Fm4T+e1BnAIlUplx2w=
+        b=zCV+nwiZOMmJxkKKA6tBcx8t5rHiGrbwrgQkOYMzEIlK+Oim5Trzp/BKc2823Cng+
+         wfqLeb6KNwi/4qP9/5uyZq4KNbt4rJkTjT2B3s6Ukz26/PETf+GM0xOnl6IASgDoMJ
+         USV94qVxUd9vZkrkalnNe8c5qrQ6HSRR4xp/vHlc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        syzbot+44e64397bd81d5e84cba@syzkaller.appspotmail.com
-Subject: [PATCH 4.4 097/132] media: gspca: Fix memory leak in probe
+        stable@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
+        Maxime Ripard <mripard@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 176/242] clk: sunxi-ng: Make sure divider tables have sentinel
 Date:   Mon, 28 Dec 2020 13:49:41 +0100
-Message-Id: <20201228124851.099553745@linuxfoundation.org>
+Message-Id: <20201228124913.363353964@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +41,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alan Stern <stern@rowland.harvard.edu>
+From: Jernej Skrabec <jernej.skrabec@siol.net>
 
-commit e469d0b09a19496e1972a20974bbf55b728151eb upstream.
+[ Upstream commit 48f68de00c1405351fa0e7bc44bca067c49cd0a3 ]
 
-The gspca driver leaks memory when a probe fails.  gspca_dev_probe2()
-calls v4l2_device_register(), which takes a reference to the
-underlying device node (in this case, a USB interface).  But the
-failure pathway neglects to call v4l2_device_unregister(), the routine
-responsible for dropping this reference.  Consequently the memory for
-the USB interface and its device never gets released.
+Two clock divider tables are missing sentinel at the end. Effect of that
+is that clock framework reads past the last entry. Fix that with adding
+sentinel at the end.
 
-This patch adds the missing function call.
+Issue was discovered with KASan.
 
-Reported-and-tested-by: syzbot+44e64397bd81d5e84cba@syzkaller.appspotmail.com
-
-Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
-CC: <stable@vger.kernel.org>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 0577e4853bfb ("clk: sunxi-ng: Add H3 clocks")
+Fixes: c6a0637460c2 ("clk: sunxi-ng: Add A64 clocks")
+Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+Link: https://lore.kernel.org/r/20201202203817.438713-1-jernej.skrabec@siol.net
+Acked-by: Maxime Ripard <mripard@kernel.org>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/gspca/gspca.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/clk/sunxi-ng/ccu-sun50i-a64.c | 1 +
+ drivers/clk/sunxi-ng/ccu-sun8i-h3.c   | 1 +
+ 2 files changed, 2 insertions(+)
 
---- a/drivers/media/usb/gspca/gspca.c
-+++ b/drivers/media/usb/gspca/gspca.c
-@@ -2130,6 +2130,7 @@ out:
- 		input_unregister_device(gspca_dev->input_dev);
- #endif
- 	v4l2_ctrl_handler_free(gspca_dev->vdev.ctrl_handler);
-+	v4l2_device_unregister(&gspca_dev->v4l2_dev);
- 	kfree(gspca_dev->usb_buf);
- 	kfree(gspca_dev);
- 	return ret;
+diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-a64.c b/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
+index 183985c8c9bab..7e3cd0bd597dc 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
++++ b/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
+@@ -381,6 +381,7 @@ static struct clk_div_table ths_div_table[] = {
+ 	{ .val = 1, .div = 2 },
+ 	{ .val = 2, .div = 4 },
+ 	{ .val = 3, .div = 6 },
++	{ /* Sentinel */ },
+ };
+ static const char * const ths_parents[] = { "osc24M" };
+ static struct ccu_div ths_clk = {
+diff --git a/drivers/clk/sunxi-ng/ccu-sun8i-h3.c b/drivers/clk/sunxi-ng/ccu-sun8i-h3.c
+index b09acda71abe9..aa44602896fac 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun8i-h3.c
++++ b/drivers/clk/sunxi-ng/ccu-sun8i-h3.c
+@@ -315,6 +315,7 @@ static struct clk_div_table ths_div_table[] = {
+ 	{ .val = 1, .div = 2 },
+ 	{ .val = 2, .div = 4 },
+ 	{ .val = 3, .div = 6 },
++	{ /* Sentinel */ },
+ };
+ static SUNXI_CCU_DIV_TABLE_WITH_GATE(ths_clk, "ths", "osc24M",
+ 				     0x074, 0, 2, ths_div_table, BIT(31), 0);
+-- 
+2.27.0
+
 
 
