@@ -2,171 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1522D2E68A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:40:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BE152E68EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:44:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441184AbgL1Qjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:39:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729444AbgL1Qjb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 11:39:31 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C5BFC0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 08:38:51 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id a12so25107864lfl.6
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 08:38:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=konsulko.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=l6SS1scNjE1vPCP4wCk2BIZ3zGkp8hqDahwS2HOGBHc=;
-        b=cI8VJXC1C/bDkRCEq7hbWM0zAjKz9rkUJwyt//MfgJsGxs31rPM8LDXwxR7+KO7bZT
-         Sxb4blwNTPzKpjcqaNAiCVXhq2o0SvFVBjbCCU2lVaeH0O4FWkBotHzFUWtDYXUcuwZe
-         tm6SULa0zv72CxkoEwKgqwMYW3JZAKNRWBBIY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l6SS1scNjE1vPCP4wCk2BIZ3zGkp8hqDahwS2HOGBHc=;
-        b=FNWQZiITwZsX/8po/Y9lz6WnrD3iB60DGBtbB0xWMrlsFisTQ9DS5aI8ErsvZ8VIl3
-         qLj88Sc+G1+ragZs/yS4US2mlOTEKKSvUAR1EQNdzfKF7w3MoNWkZZJVeRwT3E2ZP3Bn
-         fIWw2nLGHjPSoB8sq9iG7HTl33aBP1Lys/wla5eO+E7eZjJAJ01H0LVNJwou4k0A3Szl
-         ZZgbHHDY1WydVDurHlMUnNRijejrVxXbh+/PmUrimQSpbdbMC+bqGzCRGxIjs14NO6p4
-         yXoLLg6kVN7PeCs5y2/z5crDY5ACBKQAPqn5Yy2MQ/cvwtqSHlKM8kitE0vk1ggnMBSU
-         LhjA==
-X-Gm-Message-State: AOAM5300G2zIuWbw5H39wWRlOOR2BbmBbsn56pj3sxISZbaiZjrwZxEN
-        zATdhT26KAaKv/meGPkPXVd5l5OwY3VyqwbDsC8ZOg==
-X-Google-Smtp-Source: ABdhPJwz0Fxx9LLj2z88LTe0UC1LHs48miC1FDDtUcODfBZNxv/T65x8UtIsLR6HBrIViAxHgL0KvEm8Cu74BBDBfvw=
-X-Received: by 2002:ac2:5edb:: with SMTP id d27mr18240410lfq.411.1609173529728;
- Mon, 28 Dec 2020 08:38:49 -0800 (PST)
+        id S2634487AbgL1QnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:43:11 -0500
+Received: from mga06.intel.com ([134.134.136.31]:42993 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2441174AbgL1Qm4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 11:42:56 -0500
+IronPort-SDR: BMKb+f/PkCwUNrptxiN4rAH+/3FQiD7FnfdjMo72ktot1KVoS7WDG35ekdtxO/GcHKIcITvQ45
+ 6bL/E4P+ZtGg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9848"; a="237954339"
+X-IronPort-AV: E=Sophos;i="5.78,455,1599548400"; 
+   d="scan'208";a="237954339"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2020 08:41:09 -0800
+IronPort-SDR: zhtrSmxO38BP8LFTDnbtKWbj9P2lMU+twqCBjYKfblBqDSJldD0w9bbqj8SzOvYoAIq5G8cI1E
+ GyQzP8h07DFg==
+X-IronPort-AV: E=Sophos;i="5.78,455,1599548400"; 
+   d="scan'208";a="562877701"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2020 08:41:03 -0800
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id 2F443207BF; Mon, 28 Dec 2020 18:41:01 +0200 (EET)
+Date:   Mon, 28 Dec 2020 18:41:01 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        devel@acpica.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tian Shu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        kieran.bingham+renesas@ideasonboard.com,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        niklas.soderlund+renesas@ragnatech.se,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH v3 07/14] software_node: Add support for fwnode_graph*()
+ family of functions
+Message-ID: <20201228164101.GY26370@paasikivi.fi.intel.com>
+References: <20201224010907.263125-1-djrscally@gmail.com>
+ <20201224010907.263125-8-djrscally@gmail.com>
+ <CAHp75Vft7gg1AcKCEU+E74eB_ZMouHFd-8uZ7pcVj5CoJzZpvQ@mail.gmail.com>
+ <X+SPsks5itN9OFqB@pendragon.ideasonboard.com>
+ <CAHp75Ve6YHm-tdqFPvOhfJiT=uRK_dpKY3mnhQd6Mg3KkSuKqA@mail.gmail.com>
+ <d47e0ccf-9def-e9c9-fdfb-390ad5d2ee5e@gmail.com>
 MIME-Version: 1.0
-References: <20201226163037.43691-1-vitaly.wool@konsulko.com>
- <CAAhSdy1M5pMjYHNWdOicb3N3fjTfQLEgE8tFb74sqGbPE_9eyQ@mail.gmail.com>
- <CAM4kBBJ3Vbytx=dFK7+DMByV3zK=FVLATSwjyuuygkDK1MCQjA@mail.gmail.com> <CAAhSdy0E8xspb3epBdrTmjg7vSQanG9zwyMY19eeDDL8z=WJFg@mail.gmail.com>
-In-Reply-To: <CAAhSdy0E8xspb3epBdrTmjg7vSQanG9zwyMY19eeDDL8z=WJFg@mail.gmail.com>
-From:   Vitaly Wool <vitaly.wool@konsulko.com>
-Date:   Mon, 28 Dec 2020 17:38:38 +0100
-Message-ID: <CAM4kBBJLnrp8XB1OZnv2FEuKdEQuQfDWdgwsV--9mZYB=JmJPQ@mail.gmail.com>
-Subject: Re: [PATCH] riscv: add BUILTIN_DTB support for MMU-enabled targets
-To:     Anup Patel <anup@brainfault.org>
-Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Bin Meng <bin.meng@windriver.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d47e0ccf-9def-e9c9-fdfb-390ad5d2ee5e@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 3:10 PM Anup Patel <anup@brainfault.org> wrote:
->
-> On Mon, Dec 28, 2020 at 7:05 PM Vitaly Wool <vitaly.wool@konsulko.com> wrote:
-> >
-> > On Mon, Dec 28, 2020 at 12:59 PM Anup Patel <anup@brainfault.org> wrote:
-> > >
-> > > On Sat, Dec 26, 2020 at 10:03 PM Vitaly Wool <vitaly.wool@konsulko.com> wrote:
-> > > >
-> > > > Sometimes, especially in a production system we may not want to
-> > > > use a "smart bootloader" like u-boot to load kernel, ramdisk and
-> > > > device tree from a filesystem on eMMC, but rather load the kernel
-> > > > from a NAND partition and just run it as soon as we can, and in
-> > > > this case it is convenient to have device tree compiled into the
-> > > > kernel binary. Since this case is not limited to MMU-less systems,
-> > > > let's support it for these which have MMU enabled too.
-> > > >
-> > > > Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.com>
-> > > > ---
-> > > >  arch/riscv/Kconfig   |  1 -
-> > > >  arch/riscv/mm/init.c | 12 ++++++++++--
-> > > >  2 files changed, 10 insertions(+), 3 deletions(-)
-> > > >
-> > > > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> > > > index 2b41f6d8e458..9464b4e3a71a 100644
-> > > > --- a/arch/riscv/Kconfig
-> > > > +++ b/arch/riscv/Kconfig
-> > > > @@ -419,7 +419,6 @@ endmenu
-> > > >
-> > > >  config BUILTIN_DTB
-> > > >         def_bool n
-> > > > -       depends on RISCV_M_MODE
-> > > >         depends on OF
-> > > >
-> > > >  menu "Power management options"
-> > > > diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> > > > index 87c305c566ac..5d1c7a3ec01c 100644
-> > > > --- a/arch/riscv/mm/init.c
-> > > > +++ b/arch/riscv/mm/init.c
-> > > > @@ -194,12 +194,20 @@ void __init setup_bootmem(void)
-> > > >         setup_initrd();
-> > > >  #endif /* CONFIG_BLK_DEV_INITRD */
-> > > >
-> > > > +       /*
-> > > > +        * If DTB is built in, no need to reserve its memblock.
-> > > > +        * OTOH, initial_boot_params has to be set to properly copy DTB
-> > > > +        * before unflattening later on.
-> > > > +        */
-> > > > +       if (IS_ENABLED(CONFIG_BUILTIN_DTB))
-> > > > +               initial_boot_params = __va(dtb_early_pa);
-> > >
-> > > Don't assign initial_boot_params directly here because the
-> > > early_init_dt_scan() will do it.
-> >
-> > early_init_dt_scan will set initial_boot_params to dtb_early_va from
-> > the early mapping which will be gone by the time
-> > unflatten_and_copy_device_tree() is called.
->
-> That's why we are doing early_init_dt_verify() again for the MMU-enabled
-> case which already takes care of your concern.
+Hi Daniel,
 
-I might be out in the woods here but... Do you mean the call to
-early_init_dt_verify() in setup_arch() which is compiled out
-completely in the CONFIG_BUILTIN_DTB case?
-Or is there any other call that I'm overlooking?
+On Thu, Dec 24, 2020 at 02:21:15PM +0000, Daniel Scally wrote:
+> Hi Andy, Laurent
+> 
+> > On Thu, Dec 24, 2020 at 2:55 PM Laurent Pinchart
+> > <laurent.pinchart@ideasonboard.com> wrote:
+> >> On Thu, Dec 24, 2020 at 02:24:12PM +0200, Andy Shevchenko wrote:
+> >>> On Thu, Dec 24, 2020 at 3:14 AM Daniel Scally wrote:
+> > 
+> > ...
+> > 
+> >>>> +               if (!strncmp(to_swnode(port)->node->name, "port@",
+> >>>
+> >>> You may use here corresponding _FMT macro.
+> >>>
+> >>>> +                            FWNODE_GRAPH_PORT_NAME_PREFIX_LEN))
+> >>>> +                       return port;
+> > 
+> > ...
+> > 
+> >>>> +       /* Ports have naming style "port@n", we need to select the n */
+> >>>
+> >>>> +       ret = kstrtou32(swnode->parent->node->name + FWNODE_GRAPH_PORT_NAME_PREFIX_LEN,
+> >>>
+> >>> Maybe a temporary variable?
+> >>>
+> >>>   unsigned int prefix_len = FWNODE_GRAPH_PORT_NAME_PREFIX_LEN;
+> >>>   ...
+> >>>   ret = kstrtou32(swnode->parent->node->name + prefix_len,
+> >>
+> >> Honestly I'm wondering if those macros don't hinder readability. I'd
+> >> rather write
+> >>
+> >>         + strlen("port@")
+> > 
+> > Works for me, since the compiler optimizes this away to be a plain constant.
+> 
+> Well, how about instead of the LEN macro, we have:
+> 
+> #define FWNODE_GRAPH_PORT_NAME_PREFIX	"port@"
+> #define FWNODE_GRAPH_PORT_NAME_FMT FWNODE_GRAPH_PORT_NAME_PREFIX "%u"
+> 
+> And then it's still maintainable in one place but (I think) slightly
+> less clunky, since we can do strlen(FWNODE_GRAPH_PORT_NAME_PREFIX)
+> 
+> Or we can do strlen("port@"), I'm good either way :)
 
-Best regards,
-   Vitaly
+I'd be in favour of using strlen("port@") here.
 
-> We use early_init_dt_verify() like most architectures to set the initial DTB.
->
-> >
-> > > The setup_vm() is supposed to setup dtb_early_va and dtb_early_pa
-> > > for MMU-enabled case so please add a "#ifdef" over there for the
-> > > built-in DTB case.
-> > >
-> > > > +       else
-> > > > +               memblock_reserve(dtb_early_pa, fdt_totalsize(dtb_early_va));
-> > > > +
-> > > >         /*
-> > > >          * Avoid using early_init_fdt_reserve_self() since __pa() does
-> > > >          * not work for DTB pointers that are fixmap addresses
-> > > >          */
-> > >
-> > > This comment needs to be updated and moved along the memblock_reserve()
-> > > statement.
-> > >
-> > > > -       memblock_reserve(dtb_early_pa, fdt_totalsize(dtb_early_va));
-> > > > -
-> > > >         early_init_fdt_scan_reserved_mem();
-> > > >         dma_contiguous_reserve(dma32_phys_limit);
-> > > >         memblock_allow_resize();
-> > > > --
-> > > > 2.29.2
-> > > >
-> > >
-> > > This patch should be based upon Damiens builtin DTB patch.
-> > > Refer, https://www.spinics.net/lists/linux-gpio/msg56616.html
-> >
-> > Thanks for the pointer, however I don't think our patches have
-> > intersections. Besides, Damien is dealing with the MMU-less case
-> > there.
->
-> Damien's patch is also trying to move to use generic BUILTIN_DTB
-> support for the MMU-less case so it is similar work hence the chance
-> of patch conflict.
->
-> Regards,
-> Anup
+At least for now. I think refactoring the use of such strings could be a
+separate set at another time, if that's seen as the way to go.
+
+-- 
+Kind regards,
+
+Sakari Ailus
