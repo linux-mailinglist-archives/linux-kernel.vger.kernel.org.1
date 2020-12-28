@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B35C02E394A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:22:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C7CA2E409D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:55:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388208AbgL1NWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:22:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50398 "EHLO mail.kernel.org"
+        id S2439290AbgL1Oyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:54:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52332 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388140AbgL1NWB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:22:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C98C2076D;
-        Mon, 28 Dec 2020 13:21:19 +0000 (UTC)
+        id S2441393AbgL1ORM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:17:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59E61205CB;
+        Mon, 28 Dec 2020 14:16:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161680;
-        bh=eg4fi6qKnB7mzX9PnPZ8OEhZzr/7dxH8YPQE19RtqU4=;
+        s=korg; t=1609164992;
+        bh=RlDsBlXLsQ3QoR4KAsOlMurTbZ/ADKzYradXQZvelg0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TdQz37CwAumBTUb7eai6yjj1juUKvcW9+9In12wXL2RkpqHZzN6j5ZxXLCLEBF/8e
-         383jDYNP+4A/RN/boIYhab4PLTtB/mOCRk6bmQLluS4t+yO2apOFmKBKPDvIz29oWp
-         yB/c9gMFRYjXgJz/aLeHZ9L/ir+Dl6D1qF4rtmwM=
+        b=OBRlbtUft8X9UM5uR1FQQ6w5dhei7K1B2LhLihOAG8NtWf9umXKCGk3V6STqzlGBH
+         dU+2CzybvTnOVN4Ua2qy76M5iS0/1esw+TJyReKUgrErwk59hM9VdYYbUdaW09Z/sA
+         SgNa8Wq0PJy2/kjTfH6Pg9pfwOeuBeelhRX/2Olw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        Xin Xiong <xiongx18@fudan.edu.cn>,
-        Lyude Paul <lyude@redhat.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.19 049/346] drm: fix drm_dp_mst_port refcount leaks in drm_dp_mst_allocate_vcpi
-Date:   Mon, 28 Dec 2020 13:46:08 +0100
-Message-Id: <20201228124922.160033040@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 371/717] powerpc/mm: sanity_check_fault() should work for all, not only BOOK3S
+Date:   Mon, 28 Dec 2020 13:46:09 +0100
+Message-Id: <20201228125038.782440876@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,63 +42,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Xiong <xiongx18@fudan.edu.cn>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-commit a34a0a632dd991a371fec56431d73279f9c54029 upstream
+[ Upstream commit 7ceb40027e19567a0a066e3b380cc034cdd9a124 ]
 
-drm_dp_mst_allocate_vcpi() invokes
-drm_dp_mst_topology_get_port_validated(), which increases the refcount
-of the "port".
+The verification and message introduced by commit 374f3f5979f9
+("powerpc/mm/hash: Handle user access of kernel address gracefully")
+applies to all platforms, it should not be limited to BOOK3S.
 
-These reference counting issues take place in two exception handling
-paths separately. Either when “slots” is less than 0 or when
-drm_dp_init_vcpi() returns a negative value, the function forgets to
-reduce the refcnt increased drm_dp_mst_topology_get_port_validated(),
-which results in a refcount leak.
+Make the BOOK3S version of sanity_check_fault() the one for all,
+and bail out earlier if not BOOK3S.
 
-Fix these issues by pulling up the error handling when "slots" is less
-than 0, and calling drm_dp_mst_topology_put_port() before termination
-when drm_dp_init_vcpi() returns a negative value.
-
-Fixes: 1e797f556c61 ("drm/dp: Split drm_dp_mst_allocate_vcpi")
-Cc: <stable@vger.kernel.org> # v4.12+
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
-Reviewed-by: Lyude Paul <lyude@redhat.com>
-Signed-off-by: Lyude Paul <lyude@redhat.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200719154545.GA41231@xin-virtual-machine
-[sudip: use old functions before rename]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 374f3f5979f9 ("powerpc/mm/hash: Handle user access of kernel address gracefully")
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/fe199d5af3578d3bf80035d203a94d742a7a28af.1607491748.git.christophe.leroy@csgroup.eu
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_dp_mst_topology.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ arch/powerpc/mm/fault.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
---- a/drivers/gpu/drm/drm_dp_mst_topology.c
-+++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-@@ -2706,11 +2706,11 @@ bool drm_dp_mst_allocate_vcpi(struct drm
+diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
+index 0add963a849b3..72e1b51beb10c 100644
+--- a/arch/powerpc/mm/fault.c
++++ b/arch/powerpc/mm/fault.c
+@@ -303,7 +303,6 @@ static inline void cmo_account_page_fault(void)
+ static inline void cmo_account_page_fault(void) { }
+ #endif /* CONFIG_PPC_SMLPAR */
+ 
+-#ifdef CONFIG_PPC_BOOK3S
+ static void sanity_check_fault(bool is_write, bool is_user,
+ 			       unsigned long error_code, unsigned long address)
  {
- 	int ret;
- 
--	port = drm_dp_get_validated_port_ref(mgr, port);
--	if (!port)
-+	if (slots < 0)
- 		return false;
- 
--	if (slots < 0)
-+	port = drm_dp_get_validated_port_ref(mgr, port);
-+	if (!port)
- 		return false;
- 
- 	if (port->vcpi.vcpi > 0) {
-@@ -2725,6 +2725,7 @@ bool drm_dp_mst_allocate_vcpi(struct drm
- 	if (ret) {
- 		DRM_DEBUG_KMS("failed to init vcpi slots=%d max=63 ret=%d\n",
- 				DIV_ROUND_UP(pbn, mgr->pbn_div), ret);
-+		drm_dp_put_port(port);
- 		goto out;
+@@ -320,6 +319,9 @@ static void sanity_check_fault(bool is_write, bool is_user,
+ 		return;
  	}
- 	DRM_DEBUG_KMS("initing vcpi for pbn=%d slots=%d\n",
+ 
++	if (!IS_ENABLED(CONFIG_PPC_BOOK3S))
++		return;
++
+ 	/*
+ 	 * For hash translation mode, we should never get a
+ 	 * PROTFAULT. Any update to pte to reduce access will result in us
+@@ -354,10 +356,6 @@ static void sanity_check_fault(bool is_write, bool is_user,
+ 
+ 	WARN_ON_ONCE(error_code & DSISR_PROTFAULT);
+ }
+-#else
+-static void sanity_check_fault(bool is_write, bool is_user,
+-			       unsigned long error_code, unsigned long address) { }
+-#endif /* CONFIG_PPC_BOOK3S */
+ 
+ /*
+  * Define the correct "is_write" bit in error_code based
+-- 
+2.27.0
+
 
 
