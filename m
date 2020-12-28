@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11CE62E3AB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:41:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AECA22E40E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:00:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404011AbgL1Nkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:40:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41054 "EHLO mail.kernel.org"
+        id S2392462AbgL1PAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:00:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403993AbgL1Nkr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:40:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 491C42064B;
-        Mon, 28 Dec 2020 13:40:06 +0000 (UTC)
+        id S2440357AbgL1OON (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:14:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D892A20715;
+        Mon, 28 Dec 2020 14:13:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162806;
-        bh=PgZc5JUc6jmwgOPavstr/bY5HmIRdWH1dO6XscYa5Es=;
+        s=korg; t=1609164813;
+        bh=wcmKxwR9PM5XOJr+mOpXsc4uN0LazjCQbhJ2DSn2Wag=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N52O/39WidZ4Cyr0gGytaCoG0tPHHGR2yGSmELJkP4EuOPdm2kWJki+q7ntH26i5z
-         ye43/MCjlQC3SRke5YAyowwFmi0aWT58uXjhWQBswAeDapD89wbiWq8MO+Y6W/0yXG
-         Jw3TFDI1vNZ+ilxsNlt4CEPDpagiVtfBMnfiubOU=
+        b=mJfe1fcuNmPyHl5B+m9Rp7HV1Zdd6KMf5o9zCK4RvVKrbIfH8sQeUm/2Q5Gb7YKoU
+         ERemMgpryIsOijC8z4k61/TSbk+V9eSr+sFjp/p8JDoK+sZ9dC6USfLnh1riQl6EpC
+         8+n+V+/DCYYSDGT6Bp/Kl9wHG1mmOT2wIJmiK/Tw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>
-Subject: [PATCH 5.4 067/453] serial_core: Check for port state when tty is in error state
-Date:   Mon, 28 Dec 2020 13:45:03 +0100
-Message-Id: <20201228124940.472108599@linuxfoundation.org>
+        stable@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 306/717] net/mlx5: Properly convey driver version to firmware
+Date:   Mon, 28 Dec 2020 13:45:04 +0100
+Message-Id: <20201228125035.688467910@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,47 +39,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexey Kardashevskiy <aik@ozlabs.ru>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-commit 2f70e49ed860020f5abae4f7015018ebc10e1f0e upstream.
+[ Upstream commit 907af0f0cab4ee5d5604f182ecec2c5b5119d294 ]
 
-At the moment opening a serial device node (such as /dev/ttyS3)
-succeeds even if there is no actual serial device behind it.
-Reading/writing/ioctls fail as expected because the uart port is not
-initialized (the type is PORT_UNKNOWN) and the TTY_IO_ERROR error state
-bit is set fot the tty.
+mlx5 firmware expects driver version in specific format X.X.X, so
+make it always correct and based on real kernel version aligned with
+the driver.
 
-However setting line discipline does not have these checks
-8250_port.c (8250 is the default choice made by univ8250_console_init()).
-As the result of PORT_UNKNOWN, uart_port::iobase is NULL which
-a platform translates onto some address accessing which produces a crash
-like below.
-
-This adds tty_port_initialized() to uart_set_ldisc() to prevent the crash.
-
-Found by syzkaller.
-
-Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-Link: https://lore.kernel.org/r/20201203055834.45838-1-aik@ozlabs.ru
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 012e50e109fd ("net/mlx5: Set driver version into firmware")
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/serial_core.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/ethernet/mellanox/mlx5/core/main.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/drivers/tty/serial/serial_core.c
-+++ b/drivers/tty/serial/serial_core.c
-@@ -1465,6 +1465,10 @@ static void uart_set_ldisc(struct tty_st
- {
- 	struct uart_state *state = tty->driver_data;
- 	struct uart_port *uport;
-+	struct tty_port *port = &state->port;
-+
-+	if (!tty_port_initialized(port))
-+		return;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+index 8ff207aa14792..e455a2f31f070 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+@@ -50,6 +50,7 @@
+ #ifdef CONFIG_RFS_ACCEL
+ #include <linux/cpu_rmap.h>
+ #endif
++#include <linux/version.h>
+ #include <net/devlink.h>
+ #include "mlx5_core.h"
+ #include "lib/eq.h"
+@@ -233,7 +234,10 @@ static void mlx5_set_driver_version(struct mlx5_core_dev *dev)
+ 	strncat(string, ",", remaining_size);
  
- 	mutex_lock(&state->port.mutex);
- 	uport = uart_port_check(state);
+ 	remaining_size = max_t(int, 0, driver_ver_sz - strlen(string));
+-	strncat(string, DRIVER_VERSION, remaining_size);
++
++	snprintf(string + strlen(string), remaining_size, "%u.%u.%u",
++		 (u8)((LINUX_VERSION_CODE >> 16) & 0xff), (u8)((LINUX_VERSION_CODE >> 8) & 0xff),
++		 (u16)(LINUX_VERSION_CODE & 0xffff));
+ 
+ 	/*Send the command*/
+ 	MLX5_SET(set_driver_version_in, in, opcode,
+-- 
+2.27.0
+
 
 
