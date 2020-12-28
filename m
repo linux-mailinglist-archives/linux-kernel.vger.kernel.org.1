@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FEF92E3B20
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:47:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A1E22E398A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:25:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404973AbgL1Np6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:45:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46016 "EHLO mail.kernel.org"
+        id S2388786AbgL1NYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:24:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404928AbgL1Nps (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:45:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA03322B37;
-        Mon, 28 Dec 2020 13:45:32 +0000 (UTC)
+        id S2388765AbgL1NYj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:24:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ABC7222475;
+        Mon, 28 Dec 2020 13:23:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163133;
-        bh=GmKuwiXazNMZNr5xazk8D9WwTK/OqUPIL1IVpCS/mFs=;
+        s=korg; t=1609161839;
+        bh=hibfEYcZMpAQOZQcxA1X8HzL8fC7B2ItYcXpA3QsG5U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FDpPjDEb70f6lv641kH7smfJGQ2zADRNqfD5TmrBSJ/i6a70iaW2/5BOLSIoT89i9
-         gMNPyPMp+qL8BqPsHz2OfBE/zOU+5FcFVBzb0kOotLZZqs3ileoM5LAaMgL62CIC2l
-         +Puc6Hhl4hkeZ8n/yltiyxxS6CDDrGy9o2ag/BC4=
+        b=RwlJFUU4HAr5cJBwwnBkqOUDJ3Qmf+zKiw+80V57FM7t1CbUNO+4aQ48go2q395Ef
+         NxppuN9M9sEkmGuCkvpGzw5/5F1N4ULudXrxj2kumOt1bPEFaMHPqBgYVpWicIwCzQ
+         Ww2tR6+pFrDaDNyyinpDX8+LSK503OCZQuZK2OaQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
-        Heiko Stuebner <heiko@sntech.de>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 182/453] arm64: dts: rockchip: Set dr_mode to "host" for OTG on rk3328-roc-cc
-Date:   Mon, 28 Dec 2020 13:46:58 +0100
-Message-Id: <20201228124945.964649064@linuxfoundation.org>
+Subject: [PATCH 4.19 100/346] soc: renesas: rmobile-sysc: Fix some leaks in rmobile_init_pm_domains()
+Date:   Mon, 28 Dec 2020 13:46:59 +0100
+Message-Id: <20201228124924.617704645@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +40,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen-Yu Tsai <wens@csie.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 4076a007bd0f6171434bdb119a0b8797749b0502 ]
+[ Upstream commit cf25d802e029c31efac8bdc979236927f37183bd ]
 
-The board has a standard USB A female port connected to the USB OTG
-controller's data pins. Set dr_mode in the OTG controller node to
-indicate this usage, instead of having the implementation guess.
+This code needs to call iounmap() on one error path.
 
-Fixes: 2171f4fdac06 ("arm64: dts: rockchip: add roc-rk3328-cc board")
-Signed-off-by: Chen-Yu Tsai <wens@csie.org>
-Link: https://lore.kernel.org/r/20201126073336.30794-2-wens@kernel.org
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Fixes: 2173fc7cb681 ("ARM: shmobile: R-Mobile: Add DT support for PM domains")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/20200923113142.GC1473821@mwanda
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/rockchip/rk3328-roc-cc.dts | 1 +
+ arch/arm/mach-shmobile/pm-rmobile.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3328-roc-cc.dts b/arch/arm64/boot/dts/rockchip/rk3328-roc-cc.dts
-index bb40c163b05dc..6c3368f795ca3 100644
---- a/arch/arm64/boot/dts/rockchip/rk3328-roc-cc.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3328-roc-cc.dts
-@@ -333,6 +333,7 @@
- };
+diff --git a/arch/arm/mach-shmobile/pm-rmobile.c b/arch/arm/mach-shmobile/pm-rmobile.c
+index e348bcfe389da..cb8b02a1abe26 100644
+--- a/arch/arm/mach-shmobile/pm-rmobile.c
++++ b/arch/arm/mach-shmobile/pm-rmobile.c
+@@ -330,6 +330,7 @@ static int __init rmobile_init_pm_domains(void)
  
- &usb20_otg {
-+	dr_mode = "host";
- 	status = "okay";
- };
- 
+ 		pmd = of_get_child_by_name(np, "pm-domains");
+ 		if (!pmd) {
++			iounmap(base);
+ 			pr_warn("%pOF lacks pm-domains node\n", np);
+ 			continue;
+ 		}
 -- 
 2.27.0
 
