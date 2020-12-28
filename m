@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8D692E633D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:41:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C98D2E3B39
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:49:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408777AbgL1Pjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:39:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49836 "EHLO mail.kernel.org"
+        id S2404128AbgL1Nra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:47:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405963AbgL1Nsr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:48:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78488206D4;
-        Mon, 28 Dec 2020 13:48:31 +0000 (UTC)
+        id S2405569AbgL1NrM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:47:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE4C32063A;
+        Mon, 28 Dec 2020 13:46:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163312;
-        bh=9zCcxbBZCihROBVI0RDvidq1dZsuhI1UZG8VfSxOiH8=;
+        s=korg; t=1609163217;
+        bh=VzmwSly9OGY6Tl/9K8gxHqG98NunnJFINc05TrFHU+U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lRNZCZwxI3sF/+A/K/3hfy/u9rxMW5jhTF6hFFSJjy3jgHJBa9owsMFnksLoXCwUd
-         tGnqsta9VYXZAtcNwIMneIeQ8EsyVJqnRe/UPuDBzKlFXD5qENX6iSS6fD0XiSKpSg
-         8U6qw2qOsz8G6FEM35eBXQke0276/zyQOw6lS3GE=
+        b=Ttm5sWFXybJubRYIN8kbju5IFhF2APQmffj2qynYHIKDo2T7XUTP52FUgVZNngwOI
+         3U6qcTFn/ARjLOIUIbUGqRq7ienXUKnHJY4iMuH9nxe6pcjj2ePrT3VyHVV6w9+OWi
+         tkGp1HSxkAM0XYw45TfQAUymG/L3tIPAJnTYX6NY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
+        stable@vger.kernel.org, Fedor Tokarev <ftokarev@gmail.com>,
         Trond Myklebust <trond.myklebust@hammerspace.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 202/453] NFSv4: Fix the alignment of page data in the getdeviceinfo reply
-Date:   Mon, 28 Dec 2020 13:47:18 +0100
-Message-Id: <20201228124946.933598986@linuxfoundation.org>
+Subject: [PATCH 5.4 203/453] net: sunrpc: Fix snprintf return value check in do_xprt_debugfs
+Date:   Mon, 28 Dec 2020 13:47:19 +0100
+Message-Id: <20201228124946.981405787@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
 References: <20201228124937.240114599@linuxfoundation.org>
@@ -40,46 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Fedor Tokarev <ftokarev@gmail.com>
 
-[ Upstream commit 046e5ccb4198b990190e11fb52fd9cfd264402eb ]
+[ Upstream commit 35a6d396721e28ba161595b0fc9e8896c00399bb ]
 
-We can fit the device_addr4 opaque data padding in the pages.
+'snprintf' returns the number of characters which would have been written
+if enough space had been available, excluding the terminating null byte.
+Thus, the return value of 'sizeof(buf)' means that the last character
+has been dropped.
 
-Fixes: cf500bac8fd4 ("SUNRPC: Introduce rpc_prepare_reply_pages()")
+Signed-off-by: Fedor Tokarev <ftokarev@gmail.com>
+Fixes: 2f34b8bfae19 ("SUNRPC: add links for all client xprts to debugfs")
 Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/nfs4xdr.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ net/sunrpc/debugfs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/nfs/nfs4xdr.c b/fs/nfs/nfs4xdr.c
-index 677751bc3a334..9a022a4fb9643 100644
---- a/fs/nfs/nfs4xdr.c
-+++ b/fs/nfs/nfs4xdr.c
-@@ -3012,15 +3012,19 @@ static void nfs4_xdr_enc_getdeviceinfo(struct rpc_rqst *req,
- 	struct compound_hdr hdr = {
- 		.minorversion = nfs4_xdr_minorversion(&args->seq_args),
- 	};
-+	uint32_t replen;
- 
- 	encode_compound_hdr(xdr, req, &hdr);
- 	encode_sequence(xdr, &args->seq_args, &hdr);
-+
-+	replen = hdr.replen + op_decode_hdr_maxsz;
-+
- 	encode_getdeviceinfo(xdr, args, &hdr);
- 
--	/* set up reply kvec. Subtract notification bitmap max size (2)
--	 * so that notification bitmap is put in xdr_buf tail */
-+	/* set up reply kvec. device_addr4 opaque data is read into the
-+	 * pages */
- 	rpc_prepare_reply_pages(req, args->pdev->pages, args->pdev->pgbase,
--				args->pdev->pglen, hdr.replen - 2);
-+				args->pdev->pglen, replen + 2 + 1);
- 	encode_nops(&hdr);
- }
- 
+diff --git a/net/sunrpc/debugfs.c b/net/sunrpc/debugfs.c
+index fd9bca2427242..56029e3af6ff0 100644
+--- a/net/sunrpc/debugfs.c
++++ b/net/sunrpc/debugfs.c
+@@ -128,13 +128,13 @@ static int do_xprt_debugfs(struct rpc_clnt *clnt, struct rpc_xprt *xprt, void *n
+ 		return 0;
+ 	len = snprintf(name, sizeof(name), "../../rpc_xprt/%s",
+ 		       xprt->debugfs->d_name.name);
+-	if (len > sizeof(name))
++	if (len >= sizeof(name))
+ 		return -1;
+ 	if (*nump == 0)
+ 		strcpy(link, "xprt");
+ 	else {
+ 		len = snprintf(link, sizeof(link), "xprt%d", *nump);
+-		if (len > sizeof(link))
++		if (len >= sizeof(link))
+ 			return -1;
+ 	}
+ 	debugfs_create_symlink(link, clnt->cl_debugfs, name);
 -- 
 2.27.0
 
