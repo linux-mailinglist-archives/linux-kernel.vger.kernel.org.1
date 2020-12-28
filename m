@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 172322E6612
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:10:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86B502E65E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:08:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393481AbgL1QIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:08:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54044 "EHLO mail.kernel.org"
+        id S2632937AbgL1QHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:07:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53950 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388961AbgL1NZm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:25:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 670752076D;
-        Mon, 28 Dec 2020 13:25:26 +0000 (UTC)
+        id S2389023AbgL1NZu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:25:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E17C1229EF;
+        Mon, 28 Dec 2020 13:25:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161927;
-        bh=ZM6945hW+VurihacRNMCKryFmFTqojT2LcBgpOGm+nc=;
+        s=korg; t=1609161935;
+        bh=7z9r4zbDd9yReADfDcPk3FM0WgEtmV5I67BjWjr/t+k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ticCn4kM/DtCDk+FRs/5kSr1nKbyJSBESImaQRbCVOWGgkzGfc0E5DxMP9UfrcClr
-         JMYUDMYiwHaeAXZ0JD1aZs6Cznr6CgCsyf3eWlRSvqjUcAlomOXXxTphbiaSE4T0DE
-         PvxE+DZu0oyi/BBpfSoBn9jPExLVDSodCiwEHXSk=
+        b=gvs6Jfz9HYL+nuI6VSwYzMMlkuwUD0VdL6vtX+tHmdR+vlSspYTA48nEGwksnPFgz
+         SKkpW37FeL8QnlwUwRqGgU4mT3Bu5UU4NKo86leR+JIz54fcRMHCT4KDH6C+fe0GYG
+         nTyE9P8bnobWs1DJnm1Ko0LOUBVpQIXIP6FZRd4I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tsuchiya Yuto <kitakar@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Vincent Bernat <vincent@bernat.ch>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 130/346] mwifiex: fix mwifiex_shutdown_sw() causing sw reset failure
-Date:   Mon, 28 Dec 2020 13:47:29 +0100
-Message-Id: <20201228124926.072743752@linuxfoundation.org>
+Subject: [PATCH 4.19 133/346] net: evaluate net.ipv4.conf.all.proxy_arp_pvlan
+Date:   Mon, 28 Dec 2020 13:47:32 +0100
+Message-Id: <20201228124926.218414289@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
 References: <20201228124919.745526410@linuxfoundation.org>
@@ -40,76 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tsuchiya Yuto <kitakar@gmail.com>
+From: Vincent Bernat <vincent@bernat.ch>
 
-[ Upstream commit fa74cb1dc0f4da46c441b735ca865ac52de42c0e ]
+[ Upstream commit 1af5318c00a8acc33a90537af49b3f23f72a2c4b ]
 
-When a PCIe function level reset (FLR) is performed but without fw reset for
-some reasons (e.g., on Microsoft Surface devices, fw reset requires other
-quirks), it fails to reset wifi properly. You can trigger the issue on such
-devices via debugfs entry for reset:
+Introduced in 65324144b50b, the "proxy_arp_vlan" sysctl is a
+per-interface sysctl to tune proxy ARP support for private VLANs.
+While the "all" variant is exposed, it was a noop and never evaluated.
+We use the usual "or" logic for this kind of sysctls.
 
-    $ echo 1 | sudo tee /sys/kernel/debug/mwifiex/mlan0/reset
-
-and the resulting dmesg log:
-
-    [   45.740508] mwifiex_pcie 0000:03:00.0: Resetting per request
-    [   45.742937] mwifiex_pcie 0000:03:00.0: info: successfully disconnected from [BSSID]: reason code 3
-    [   45.744666] mwifiex_pcie 0000:03:00.0: info: shutdown mwifiex...
-    [   45.751530] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
-    [   45.751539] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
-    [   45.771691] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
-    [   45.771695] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
-    [   45.771697] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
-    [   45.771698] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
-    [   45.771699] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
-    [   45.771701] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
-    [   45.771702] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
-    [   45.771703] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
-    [   45.771704] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
-    [   45.771705] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
-    [   45.771707] mwifiex_pcie 0000:03:00.0: PREP_CMD: card is removed
-    [   45.771708] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
-    [   53.099343] mwifiex_pcie 0000:03:00.0: info: trying to associate to '[SSID]' bssid [BSSID]
-    [   53.241870] mwifiex_pcie 0000:03:00.0: info: associated to bssid [BSSID] successfully
-    [   75.377942] mwifiex_pcie 0000:03:00.0: cmd_wait_q terminated: -110
-    [   85.385491] mwifiex_pcie 0000:03:00.0: info: successfully disconnected from [BSSID]: reason code 15
-    [   87.539408] mwifiex_pcie 0000:03:00.0: cmd_wait_q terminated: -110
-    [   87.539412] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
-    [   99.699917] mwifiex_pcie 0000:03:00.0: cmd_wait_q terminated: -110
-    [   99.699925] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
-    [  111.859802] mwifiex_pcie 0000:03:00.0: cmd_wait_q terminated: -110
-    [  111.859808] mwifiex_pcie 0000:03:00.0: deleting the crypto keys
-    [...]
-
-When comparing mwifiex_shutdown_sw() with mwifiex_pcie_remove(), it
-lacks mwifiex_init_shutdown_fw().
-
-This commit fixes mwifiex_shutdown_sw() by adding the missing
-mwifiex_init_shutdown_fw().
-
-Fixes: 4c5dae59d2e9 ("mwifiex: add PCIe function level reset support")
-Signed-off-by: Tsuchiya Yuto <kitakar@gmail.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20201028142110.18144-2-kitakar@gmail.com
+Fixes: 65324144b50b ("net: RFC3069, private VLAN proxy arp support")
+Signed-off-by: Vincent Bernat <vincent@bernat.ch>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/marvell/mwifiex/main.c | 2 ++
- 1 file changed, 2 insertions(+)
+ include/linux/inetdevice.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/marvell/mwifiex/main.c b/drivers/net/wireless/marvell/mwifiex/main.c
-index e48b47f425540..ceac611ef0864 100644
---- a/drivers/net/wireless/marvell/mwifiex/main.c
-+++ b/drivers/net/wireless/marvell/mwifiex/main.c
-@@ -1474,6 +1474,8 @@ int mwifiex_shutdown_sw(struct mwifiex_adapter *adapter)
- 	priv = mwifiex_get_priv(adapter, MWIFIEX_BSS_ROLE_ANY);
- 	mwifiex_deauthenticate(priv, NULL);
+diff --git a/include/linux/inetdevice.h b/include/linux/inetdevice.h
+index 11adf828edf58..141abec5cf957 100644
+--- a/include/linux/inetdevice.h
++++ b/include/linux/inetdevice.h
+@@ -105,7 +105,7 @@ static inline void ipv4_devconf_setall(struct in_device *in_dev)
  
-+	mwifiex_init_shutdown_fw(priv, MWIFIEX_FUNC_SHUTDOWN);
-+
- 	mwifiex_uninit_sw(adapter);
- 
- 	if (adapter->if_ops.down_dev)
+ #define IN_DEV_LOG_MARTIANS(in_dev)	IN_DEV_ORCONF((in_dev), LOG_MARTIANS)
+ #define IN_DEV_PROXY_ARP(in_dev)	IN_DEV_ORCONF((in_dev), PROXY_ARP)
+-#define IN_DEV_PROXY_ARP_PVLAN(in_dev)	IN_DEV_CONF_GET(in_dev, PROXY_ARP_PVLAN)
++#define IN_DEV_PROXY_ARP_PVLAN(in_dev)	IN_DEV_ORCONF((in_dev), PROXY_ARP_PVLAN)
+ #define IN_DEV_SHARED_MEDIA(in_dev)	IN_DEV_ORCONF((in_dev), SHARED_MEDIA)
+ #define IN_DEV_TX_REDIRECTS(in_dev)	IN_DEV_ORCONF((in_dev), SEND_REDIRECTS)
+ #define IN_DEV_SEC_REDIRECTS(in_dev)	IN_DEV_ORCONF((in_dev), \
 -- 
 2.27.0
 
