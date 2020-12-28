@@ -2,288 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 959012E33DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 04:10:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 310162E33E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 04:19:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726491AbgL1DJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 22:09:40 -0500
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:58532 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726455AbgL1DJj (ORCPT
+        id S1726485AbgL1DRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 22:17:18 -0500
+Received: from m15112.mail.126.com ([220.181.15.112]:51046 "EHLO
+        m15112.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726408AbgL1DRS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 22:09:39 -0500
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 0BS34TRg024144;
-        Mon, 28 Dec 2020 11:04:29 +0800 (GMT-8)
-        (envelope-from kuohsiang_chou@aspeedtech.com)
-Received: from localhost.localdomain.com (192.168.2.206) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 28 Dec
- 2020 11:08:30 +0800
-From:   KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
-To:     <tzimmermann@suse.de>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <airlied@redhat.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
-        <jenmin_yuan@aspeedtech.com>, <kuohsiang_chou@aspeedtech.com>,
-        <arc_sung@aspeedtech.com>, <tommy_huang@aspeedtech.com>
-Subject: [PATCH V3] drm/ast: Fixed CVE for DP501
-Date:   Mon, 28 Dec 2020 11:08:23 +0800
-Message-ID: <20201228030823.294147-1-kuohsiang_chou@aspeedtech.com>
-X-Mailer: git-send-email 2.18.4
-In-Reply-To: <202012120256.nX6SgoRT-lkp@intel.com>
-References: <202012120256.nX6SgoRT-lkp@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.2.206]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 0BS34TRg024144
+        Sun, 27 Dec 2020 22:17:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=rHDg0EM4Tc1M0YYKA4
+        UQMqhy0tOgpr+WAMZImhXGOPI=; b=NtHzNaDkdtCeFRfNcfqGRqx3IgKH9zeS3l
+        zRMSm+9FOhhQQIRYnVg5N+i4zKgyO+xHQzDpUNz6BgLZiz1E6+g61pfOlE77N1cy
+        IJQrmGDlqv0DpVj0WAgcWHpOu8BdKAn41HLj/ib6zornorzyZe62JqEpF39pjKdD
+        DqehwFycY=
+Received: from localhost.localdomain (unknown [36.112.86.14])
+        by smtp2 (Coremail) with SMTP id DMmowAAX3UDBTOlf7uVwKg--.26924S2;
+        Mon, 28 Dec 2020 11:10:58 +0800 (CST)
+From:   Defang Bo <bodefang@126.com>
+To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        christophe.leroy@csgroup.eu, akpm@linux-foundation.org,
+        geert@linux-m68k.org, rppt@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     Defang Bo <bodefang@126.com>
+Subject: [PATCH] powerpc/mm: add sanity check to avoid null pointer dereference
+Date:   Mon, 28 Dec 2020 11:10:50 +0800
+Message-Id: <1609125050-240351-1-git-send-email-bodefang@126.com>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: DMmowAAX3UDBTOlf7uVwKg--.26924S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWrZFW3Cw4xCF17Wr4xuFW3Jrb_yoW8JF4rpw
+        1vyr1vvw4Fq3Z5KrySkF1DWryYga1ktF1xC39Fk398ua4rtws5uF1fKwnYya13XF95C3WS
+        kFZxKw15Jr13X37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRX_-QUUUUU=
+X-Originating-IP: [36.112.86.14]
+X-CM-SenderInfo: pergvwxdqjqiyswou0bp/1tbiFgwJ11pECtLJ6gAAsh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Bug][DP501]
-If ASPEED P2A (PCI to AHB) bridge is disabled and disallowed for
-CVE_2019_6260 item3, and then the monitor's EDID is unable read through
-Parade DP501.
-The reason is the DP501's FW is mapped to BMC addressing space rather
-than Host addressing space.
-The resolution is that using "pci_iomap_range()" maps to DP501's FW that
-stored on the end of FB (Frame Buffer).
-0In this case, FrameBuffer reserves the last 2MB used for the image of
-DP501.
+Similar to commit<0dc294f717d4>("powerpc/mm: bail out early when flushing TLB page"),
+there should be a check for 'mm' to prevent Null pointer dereference
+in case of 'mm' argument was legitimately passed.
 
-Signed-off-by: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
-Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Defang Bo <bodefang@126.com>
 ---
- drivers/gpu/drm/ast/ast_dp501.c | 139 +++++++++++++++++++++++---------
- drivers/gpu/drm/ast/ast_drv.h   |  12 +++
- drivers/gpu/drm/ast/ast_main.c  |   8 ++
- 3 files changed, 123 insertions(+), 36 deletions(-)
+ arch/powerpc/mm/nohash/tlb.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/ast/ast_dp501.c b/drivers/gpu/drm/ast/ast_dp501.c
-index 88121c0e0d05..cd93c44f2662 100644
---- a/drivers/gpu/drm/ast/ast_dp501.c
-+++ b/drivers/gpu/drm/ast/ast_dp501.c
-@@ -189,6 +189,9 @@ bool ast_backup_fw(struct drm_device *dev, u8 *addr, u32 size)
- 	u32 i, data;
- 	u32 boot_address;
-
-+	if (ast->config_mode != ast_use_p2a)
-+		return false;
-+
- 	data = ast_mindwm(ast, 0x1e6e2100) & 0x01;
- 	if (data) {
- 		boot_address = get_fw_base(ast);
-@@ -207,6 +210,9 @@ static bool ast_launch_m68k(struct drm_device *dev)
- 	u8 *fw_addr = NULL;
- 	u8 jreg;
-
-+	if (ast->config_mode != ast_use_p2a)
-+		return false;
-+
- 	data = ast_mindwm(ast, 0x1e6e2100) & 0x01;
- 	if (!data) {
-
-@@ -271,25 +277,55 @@ u8 ast_get_dp501_max_clk(struct drm_device *dev)
- 	struct ast_private *ast = to_ast_private(dev);
- 	u32 boot_address, offset, data;
- 	u8 linkcap[4], linkrate, linklanes, maxclk = 0xff;
-+	u32 *plinkcap;
-
--	boot_address = get_fw_base(ast);
--
--	/* validate FW version */
--	offset = 0xf000;
--	data = ast_mindwm(ast, boot_address + offset);
--	if ((data & 0xf0) != 0x10) /* version: 1x */
--		return maxclk;
--
--	/* Read Link Capability */
--	offset  = 0xf014;
--	*(u32 *)linkcap = ast_mindwm(ast, boot_address + offset);
--	if (linkcap[2] == 0) {
--		linkrate = linkcap[0];
--		linklanes = linkcap[1];
--		data = (linkrate == 0x0a) ? (90 * linklanes) : (54 * linklanes);
--		if (data > 0xff)
--			data = 0xff;
--		maxclk = (u8)data;
-+	if (ast->config_mode == ast_use_p2a) {
-+		boot_address = get_fw_base(ast);
-+
-+		/* validate FW version */
-+		offset = AST_DP501_GBL_VERSION;
-+		data = ast_mindwm(ast, boot_address + offset);
-+		if ((data & AST_DP501_FW_VERSION_MASK) != AST_DP501_FW_VERSION_1) /* version: 1x */
-+			return maxclk;
-+
-+		/* Read Link Capability */
-+		offset  = AST_DP501_LINKRATE;
-+		plinkcap = (u32 *)linkcap;
-+		*plinkcap  = ast_mindwm(ast, boot_address + offset);
-+		if (linkcap[2] == 0) {
-+			linkrate = linkcap[0];
-+			linklanes = linkcap[1];
-+			data = (linkrate == 0x0a) ? (90 * linklanes) : (54 * linklanes);
-+			if (data > 0xff)
-+				data = 0xff;
-+			maxclk = (u8)data;
-+		}
-+	} else {
-+		if (!ast->dp501_fw_buf)
-+			return AST_DP501_DEFAULT_DCLK;	/* 1024x768 as default */
-+
-+		/* dummy read */
-+		offset = 0x0000;
-+		data = readl(ast->dp501_fw_buf + offset);
-+
-+		/* validate FW version */
-+		offset = AST_DP501_GBL_VERSION;
-+		data = readl(ast->dp501_fw_buf + offset);
-+		if ((data & AST_DP501_FW_VERSION_MASK) != AST_DP501_FW_VERSION_1) /* version: 1x */
-+			return maxclk;
-+
-+		/* Read Link Capability */
-+		offset = AST_DP501_LINKRATE;
-+		plinkcap = (u32 *)linkcap;
-+		*plinkcap = readl(ast->dp501_fw_buf + offset);
-+		if (linkcap[2] == 0) {
-+			linkrate = linkcap[0];
-+			linklanes = linkcap[1];
-+			data = (linkrate == 0x0a) ? (90 * linklanes) : (54 * linklanes);
-+			if (data > 0xff)
-+				data = 0xff;
-+			maxclk = (u8)data;
-+		}
- 	}
- 	return maxclk;
- }
-@@ -298,26 +334,57 @@ bool ast_dp501_read_edid(struct drm_device *dev, u8 *ediddata)
+diff --git a/arch/powerpc/mm/nohash/tlb.c b/arch/powerpc/mm/nohash/tlb.c
+index 5872f69..1d89335 100644
+--- a/arch/powerpc/mm/nohash/tlb.c
++++ b/arch/powerpc/mm/nohash/tlb.c
+@@ -192,6 +192,9 @@ void local_flush_tlb_mm(struct mm_struct *mm)
  {
- 	struct ast_private *ast = to_ast_private(dev);
- 	u32 i, boot_address, offset, data;
-+	u32 *pEDIDidx;
-
--	boot_address = get_fw_base(ast);
--
--	/* validate FW version */
--	offset = 0xf000;
--	data = ast_mindwm(ast, boot_address + offset);
--	if ((data & 0xf0) != 0x10)
--		return false;
--
--	/* validate PnP Monitor */
--	offset = 0xf010;
--	data = ast_mindwm(ast, boot_address + offset);
--	if (!(data & 0x01))
--		return false;
-+	if (ast->config_mode == ast_use_p2a) {
-+		boot_address = get_fw_base(ast);
-
--	/* Read EDID */
--	offset = 0xf020;
--	for (i = 0; i < 128; i += 4) {
--		data = ast_mindwm(ast, boot_address + offset + i);
--		*(u32 *)(ediddata + i) = data;
-+		/* validate FW version */
-+		offset = AST_DP501_GBL_VERSION;
-+		data = ast_mindwm(ast, boot_address + offset);
-+		if ((data & AST_DP501_FW_VERSION_MASK) != AST_DP501_FW_VERSION_1)
-+			return false;
+ 	unsigned int pid;
+ 
++	if (WARN_ON(!mm))
++		return;
 +
-+		/* validate PnP Monitor */
-+		offset = AST_DP501_PNPMONITOR;
-+		data = ast_mindwm(ast, boot_address + offset);
-+		if (!(data & AST_DP501_PNP_CONNECTED))
-+			return false;
+ 	preempt_disable();
+ 	pid = mm->context.id;
+ 	if (pid != MMU_NO_CONTEXT)
+@@ -205,8 +208,11 @@ void __local_flush_tlb_page(struct mm_struct *mm, unsigned long vmaddr,
+ {
+ 	unsigned int pid;
+ 
++	if (WARN_ON(!mm))
++		return;
 +
-+		/* Read EDID */
-+		offset = AST_DP501_EDID_DATA;
-+		for (i = 0; i < 128; i += 4) {
-+			data = ast_mindwm(ast, boot_address + offset + i);
-+			pEDIDidx = (u32 *)(ediddata + i);
-+			*pEDIDidx = data;
-+		}
-+	} else {
-+		if (!ast->dp501_fw_buf)
-+			return false;
+ 	preempt_disable();
+-	pid = mm ? mm->context.id : 0;
++	pid = mm->context.id;
+ 	if (pid != MMU_NO_CONTEXT)
+ 		_tlbil_va(vmaddr, pid, tsize, ind);
+ 	preempt_enable();
+@@ -268,6 +274,9 @@ void flush_tlb_mm(struct mm_struct *mm)
+ {
+ 	unsigned int pid;
+ 
++	if (WARN_ON(!mm))
++		return;
 +
-+		/* dummy read */
-+		offset = 0x0000;
-+		data = readl(ast->dp501_fw_buf + offset);
-+
-+		/* validate FW version */
-+		offset = AST_DP501_GBL_VERSION;
-+		data = readl(ast->dp501_fw_buf + offset);
-+		if ((data & AST_DP501_FW_VERSION_MASK) != AST_DP501_FW_VERSION_1)
-+			return false;
-+
-+		/* validate PnP Monitor */
-+		offset = AST_DP501_PNPMONITOR;
-+		data = readl(ast->dp501_fw_buf + offset);
-+		if (!(data & AST_DP501_PNP_CONNECTED))
-+			return false;
-+
-+		/* Read EDID */
-+		offset = AST_DP501_EDID_DATA;
-+		for (i = 0; i < 128; i += 4) {
-+			data = readl(ast->dp501_fw_buf + offset + i);
-+			pEDIDidx = (u32 *)(ediddata + i);
-+			*pEDIDidx = data;
-+		}
- 	}
-
- 	return true;
-diff --git a/drivers/gpu/drm/ast/ast_drv.h b/drivers/gpu/drm/ast/ast_drv.h
-index 6b9e3b94a712..da6dfb677540 100644
---- a/drivers/gpu/drm/ast/ast_drv.h
-+++ b/drivers/gpu/drm/ast/ast_drv.h
-@@ -121,6 +121,7 @@ struct ast_private {
-
- 	void __iomem *regs;
- 	void __iomem *ioregs;
-+	void __iomem *dp501_fw_buf;
-
- 	enum ast_chip chip;
- 	bool vga2_clone;
-@@ -299,6 +300,17 @@ int ast_mode_config_init(struct ast_private *ast);
- #define AST_MM_ALIGN_SHIFT 4
- #define AST_MM_ALIGN_MASK ((1 << AST_MM_ALIGN_SHIFT) - 1)
-
-+#define AST_DP501_FW_VERSION_MASK	GENMASK(7, 4)
-+#define AST_DP501_FW_VERSION_1		BIT(4)
-+#define AST_DP501_PNP_CONNECTED		BIT(1)
-+
-+#define AST_DP501_DEFAULT_DCLK	65
-+
-+#define AST_DP501_GBL_VERSION	0xf000
-+#define AST_DP501_PNPMONITOR	0xf010
-+#define AST_DP501_LINKRATE	0xf014
-+#define AST_DP501_EDID_DATA	0xf020
-+
- int ast_mm_init(struct ast_private *ast);
-
- /* ast post */
-diff --git a/drivers/gpu/drm/ast/ast_main.c b/drivers/gpu/drm/ast/ast_main.c
-index 4ec6884f6c65..3775fe26f792 100644
---- a/drivers/gpu/drm/ast/ast_main.c
-+++ b/drivers/gpu/drm/ast/ast_main.c
-@@ -449,6 +449,14 @@ struct ast_private *ast_device_create(struct drm_driver *drv,
- 	if (ret)
- 		return ERR_PTR(ret);
-
-+	/* map reserved buffer */
-+	ast->dp501_fw_buf = NULL;
-+	if (dev->vram_mm->vram_size < pci_resource_len(dev->pdev, 0)) {
-+		ast->dp501_fw_buf = pci_iomap_range(dev->pdev, 0, dev->vram_mm->vram_size, 0);
-+		if (!ast->dp501_fw_buf)
-+			drm_info(dev, "failed to map reserved buffer!\n");
-+	}
-+
- 	ret = ast_mode_config_init(ast);
- 	if (ret)
- 		return ERR_PTR(ret);
---
-2.18.4
+ 	preempt_disable();
+ 	pid = mm->context.id;
+ 	if (unlikely(pid == MMU_NO_CONTEXT))
+-- 
+2.7.4
 
