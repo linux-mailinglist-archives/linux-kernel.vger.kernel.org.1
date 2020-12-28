@@ -2,159 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EBE12E6BE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:15:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9EB12E6C76
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:24:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729714AbgL1XOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 18:14:22 -0500
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:50131 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729666AbgL1XOR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 18:14:17 -0500
-Received: from [192.168.0.8] (ip5f5aef2f.dynamic.kabel-deutschland.de [95.90.239.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: buczek)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 4C9012064622D;
-        Tue, 29 Dec 2020 00:13:34 +0100 (CET)
-Subject: Re: v5.10.1 xfs deadlock
-From:   Donald Buczek <buczek@molgen.mpg.de>
-To:     Brian Foster <bfoster@redhat.com>
-Cc:     linux-xfs@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        it+linux-xfs@molgen.mpg.de
-References: <b8da4aed-ee44-5d9f-88dc-3d32f0298564@molgen.mpg.de>
- <20201217194317.GD2507317@bfoster>
- <39b92850-f2ff-e4b6-0b2e-477ab3ec3c87@molgen.mpg.de>
- <20201218153533.GA2563439@bfoster>
- <8e9a2939-220d-b12f-a24e-0fb48fa95215@molgen.mpg.de>
- <066cb9e2-f583-b2c7-f42c-861568d38e2f@molgen.mpg.de>
-Message-ID: <1705b481-16db-391e-48a8-a932d1f137e7@molgen.mpg.de>
-Date:   Tue, 29 Dec 2020 00:13:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729857AbgL1XTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 18:19:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34662 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729720AbgL1XSs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 18:18:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78D17207A6;
+        Mon, 28 Dec 2020 23:18:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609197488;
+        bh=cVPHpuIudEjc8zGIFUCZFRFCaeipjTtrxj4IKwblofE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DadDNsHQ68t73hWMsNiDvIClRfAxs1Le0bjjw+lZZWueQN0QTzLuPmnMaHsEPAdiK
+         Q+VfIUj30eaDv3Nb9n09BGzL5OTghjMk+w2pWHL8S5cwk0vdVqOx7SSn6EW1G/68/X
+         YnLaLHYLVAD2ZCOWUl9Y5HzKiLEs1Bw3GuKOCflRUMDdtit1xcK2y4986ZX5hUXjsx
+         7TV576wKwnmBRVypkX5DssXn36Irmpn5govYMobjvf5yrBVU5N+4DqLAlWVgylbBH5
+         LqZbNS1tPu89x8FKil82IWhzkVaGv2GaCVKglplyOO6NYFfXY0ten0hFu1OfmRy820
+         6wgL38L+mM5OQ==
+Date:   Tue, 29 Dec 2020 00:18:04 +0100
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org
+Subject: Re: [RFC PATCH] Documentation: doc-guide: fixes to sphinx.rst
+Message-ID: <20201229001804.33721e6d@coco.lan>
+In-Reply-To: <20201228231212.22448-1-rdunlap@infradead.org>
+References: <20201228231212.22448-1-rdunlap@infradead.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <066cb9e2-f583-b2c7-f42c-861568d38e2f@molgen.mpg.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Mon, 28 Dec 2020 15:12:12 -0800
+Randy Dunlap <rdunlap@infradead.org> escreveu:
 
-
-On 27.12.20 18:34, Donald Buczek wrote:
-> On 18.12.20 19:35, Donald Buczek wrote:
->> On 18.12.20 16:35, Brian Foster wrote:
->>> On Thu, Dec 17, 2020 at 10:30:37PM +0100, Donald Buczek wrote:
->>>> On 17.12.20 20:43, Brian Foster wrote:
->>>>> On Thu, Dec 17, 2020 at 06:44:51PM +0100, Donald Buczek wrote:
->>>>>> Dear xfs developer,
->>>>>>
->>>>>> I was doing some testing on a Linux 5.10.1 system with two 100 TB xfs filesystems on md raid6 raids.
->>>>>>
->>>>>> The stress test was essentially `cp -a`ing a Linux source repository with two threads in parallel on each filesystem.
->>>>>>
->>>>>> After about on hour, the processes to one filesystem (md1) blocked, 30 minutes later the process to the other filesystem (md0) did.
->>>>>>
->>>>>>       root      7322  2167  0 Dec16 pts/1    00:00:06 cp -a /jbod/M8068/scratch/linux /jbod/M8068/scratch/1/linux.018.TMP
->>>>>>       root      7329  2169  0 Dec16 pts/1    00:00:05 cp -a /jbod/M8068/scratch/linux /jbod/M8068/scratch/2/linux.019.TMP
->>>>>>       root     13856  2170  0 Dec16 pts/1    00:00:08 cp -a /jbod/M8067/scratch/linux /jbod/M8067/scratch/2/linux.028.TMP
->>>>>>       root     13899  2168  0 Dec16 pts/1    00:00:05 cp -a /jbod/M8067/scratch/linux /jbod/M8067/scratch/1/linux.027.TMP
->>>>>>
->>>
->>> Do you have any indication of whether these workloads actually hung or
->>> just became incredibly slow?
->>
->> There is zero progress. iostat doesn't show any I/O on any of the block devices (md or member)
->>
->>>>>> Some info from the system (all stack traces, slabinfo) is available here: https://owww.molgen.mpg.de/~buczek/2020-12-16.info.txt
->>>>>>
->>>>>> It stands out, that there are many (549 for md0, but only 10 for md1)  "xfs-conv" threads all with stacks like this
->>>>>>
->>>>>>       [<0>] xfs_log_commit_cil+0x6cc/0x7c0
->>>>>>       [<0>] __xfs_trans_commit+0xab/0x320
->>>>>>       [<0>] xfs_iomap_write_unwritten+0xcb/0x2e0
->>>>>>       [<0>] xfs_end_ioend+0xc6/0x110
->>>>>>       [<0>] xfs_end_io+0xad/0xe0
->>>>>>       [<0>] process_one_work+0x1dd/0x3e0
->>>>>>       [<0>] worker_thread+0x2d/0x3b0
->>>>>>       [<0>] kthread+0x118/0x130
->>>>>>       [<0>] ret_from_fork+0x22/0x30
->>>>>>
->>>>>> xfs_log_commit_cil+0x6cc is
->>>>>>
->>>>>>     xfs_log_commit_cil()
->>>>>>       xlog_cil_push_background(log)
->>>>>>         xlog_wait(&cil->xc_push_wait, &cil->xc_push_lock);
->>>>>>
->>>
->>> This looks like the transaction commit throttling code. That was
->>> introduced earlier this year in v5.7 via commit 0e7ab7efe7745 ("xfs:
->>> Throttle commits on delayed background CIL push"). The purpose of that
->>> change was to prevent the CIL from growing too large. FWIW, I don't
->>> recall that being a functional problem so it should be possible to
->>> simply remove that blocking point and see if that avoids the problem or
->>> if we simply stall out somewhere else, if you wanted to give that a
->>> test.
->>
->> Will do. Before trying with this commit reverted, I will repeat the test without any change to see if the problem is reproducible at all.
+> Various fixes to sphinx.rst:
 > 
-> I'm now able to reliably reproduce the deadlock with a little less complex setup (e.g. with only one filesystem involved). One key to that was to run the test against a freshly created filesystem (mkfs).
+> - eliminate a double-space between 2 words
+> - grammar/wording
+> - punctuation
+> - call rows in a table 'rows' instead of 'columns' (or does Sphinx
+>   call everything a column?)
+> - It seems that "amdfonts" should be "amsfonts". I can't find any
+>   amdfonts.
 > 
-> And, yes, you are right: When I revert ef565ab8cc2e ("xfs: Throttle commits on delayed background CIL push") and 7ee6dfa2a245 ("xfs: fix use-after-free on CIL context on shutdown") the deadlock seems to be gone.
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: linux-doc@vger.kernel.org
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
 
-Hash Correction: 0e7ab7efe774 ("xfs: Throttle commits on delayed background CIL push") and c7f87f3984cf ("xfs: fix use-after-free on CIL context on shutdown")
+Reviewed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-When I tried to remove only the wait:
-
-     --- a/fs/xfs/xfs_log_cil.c
-     +++ b/fs/xfs/xfs_log_cil.c
-     @@ -936,7 +936,6 @@ xlog_cil_push_background(
-             if (cil->xc_ctx->space_used >= XLOG_CIL_BLOCKING_SPACE_LIMIT(log)) {
-                     trace_xfs_log_cil_wait(log, cil->xc_ctx->ticket);
-                     ASSERT(cil->xc_ctx->space_used < log->l_logsize);
-     -               xlog_wait(&cil->xc_push_wait, &cil->xc_push_lock);
-                     return;
-             }
-
-the system got into a critical overload situation with many kworker threads at 100% CPU and became totally unresponsive after a while, requiring sysrq triggered reboot.
-
-I noticed, that 7ee6dfa2a245 ("xfs: fix use-after-free on CIL context on shutdown") put the `wake_up_all(&ctx->push_wait)` into an additional conditional `if (ctx->space_used >= XLOG_CIL_BLOCKING_SPACE_LIMIT(log))` - the same as is used to decide whether the background push is triggered at all. But in the deadlock situation, I've seen waiters waiting on cil->xc_push_wait with ctx->space_used being zero with the debugger:
-
-     $L_003: (struct xfs_cil *) 0xffff889886db0700 : {
-         xc_cil = {next = 0xffff889886db0708, prev = 0xffff889886db0708}    /* empty */
-         xc_ctx = 0xffff888e2cb6dd80 /* --> $L_004 */
-         xc_push_seq = 31
-         xc_committing = {next = 0xffff889886db0790, prev = 0xffff889886db0790}    /* empty */
-         xc_current_sequence = 32
-         xc_push_wait = {
-             head = {next = 0xffffc9000dbcbd48, prev = 0xffffc90021a1bd20}
-         }
-     }
-     $L_004: (struct xfs_cil_ctx *) 0xffff888e2cb6dd80 : {
-         sequence = 32
-         start_lsn = 0
-         commit_lsn = 0
-         space_used = 0
-         committing = {next = 0xffff888e2cb6ddd8, prev = 0xffff888e2cb6ddd8}    /* empty */
-     }
+Regards,
+Mauro
 
 
-So, out of curiosity I've tried
+> ---
+>  Documentation/doc-guide/sphinx.rst |   32 +++++++++++++--------------
+>  1 file changed, 16 insertions(+), 16 deletions(-)
+> 
+> --- lnx-511-rc1.orig/Documentation/doc-guide/sphinx.rst
+> +++ lnx-511-rc1/Documentation/doc-guide/sphinx.rst
+> @@ -48,12 +48,12 @@ or ``virtualenv``, depending on how your
+>        those versions, you should run ``pip install 'docutils==0.12'``.
+>  
+>     #) It is recommended to use the RTD theme for html output. Depending
+> -      on the Sphinx version, it should be installed  in separate,
+> +      on the Sphinx version, it should be installed separately,
+>        with ``pip install sphinx_rtd_theme``.
+>  
+> -   #) Some ReST pages contain math expressions. Due to the way Sphinx work,
+> +   #) Some ReST pages contain math expressions. Due to the way Sphinx works,
+>        those expressions are written using LaTeX notation. It needs texlive
+> -      installed with amdfonts and amsmath in order to evaluate them.
+> +      installed with amsfonts and amsmath in order to evaluate them.
+>  
+>  In summary, if you want to install Sphinx version 1.7.9, you should do::
+>  
+> @@ -128,7 +128,7 @@ Sphinx Build
+>  ============
+>  
+>  The usual way to generate the documentation is to run ``make htmldocs`` or
+> -``make pdfdocs``. There are also other formats available, see the documentation
+> +``make pdfdocs``. There are also other formats available: see the documentation
+>  section of ``make help``. The generated documentation is placed in
+>  format-specific subdirectories under ``Documentation/output``.
+>  
+> @@ -303,17 +303,17 @@ and *targets* (e.g. a ref to ``:ref:`las
+>          - head col 3
+>          - head col 4
+>  
+> -      * - column 1
+> +      * - row 1
+>          - field 1.1
+>          - field 1.2 with autospan
+>  
+> -      * - column 2
+> +      * - row 2
+>          - field 2.1
+>          - :rspan:`1` :cspan:`1` field 2.2 - 3.3
+>  
+>        * .. _`last row`:
+>  
+> -        - column 3
+> +        - row 3
+>  
+>  Rendered as:
+>  
+> @@ -325,17 +325,17 @@ Rendered as:
+>          - head col 3
+>          - head col 4
+>  
+> -      * - column 1
+> +      * - row 1
+>          - field 1.1
+>          - field 1.2 with autospan
+>  
+> -      * - column 2
+> +      * - row 2
+>          - field 2.1
+>          - :rspan:`1` :cspan:`1` field 2.2 - 3.3
+>  
+>        * .. _`last row`:
+>  
+> -        - column 3
+> +        - row 3
+>  
+>  Cross-referencing
+>  -----------------
+> @@ -361,7 +361,7 @@ Figures & Images
+>  
+>  If you want to add an image, you should use the ``kernel-figure`` and
+>  ``kernel-image`` directives. E.g. to insert a figure with a scalable
+> -image format use SVG (:ref:`svg_image_example`)::
+> +image format, use SVG (:ref:`svg_image_example`)::
+>  
+>      .. kernel-figure::  svg_image.svg
+>         :alt:    simple SVG image
+> @@ -375,7 +375,7 @@ image format use SVG (:ref:`svg_image_ex
+>  
+>     SVG image example
+>  
+> -The kernel figure (and image) directive support **DOT** formatted files, see
+> +The kernel figure (and image) directive supports **DOT** formatted files, see
+>  
+>  * DOT: http://graphviz.org/pdf/dotguide.pdf
+>  * Graphviz: http://www.graphviz.org/content/dot-language
+> @@ -394,7 +394,7 @@ A simple example (:ref:`hello_dot_file`)
+>  
+>     DOT's hello world example
+>  
+> -Embed *render* markups (or languages) like Graphviz's **DOT** is provided by the
+> +Embedded *render* markups (or languages) like Graphviz's **DOT** are provided by the
+>  ``kernel-render`` directives.::
+>  
+>    .. kernel-render:: DOT
+> @@ -406,7 +406,7 @@ Embed *render* markups (or languages) li
+>       }
+>  
+>  How this will be rendered depends on the installed tools. If Graphviz is
+> -installed, you will see an vector image. If not the raw markup is inserted as
+> +installed, you will see a vector image. If not, the raw markup is inserted as
+>  *literal-block* (:ref:`hello_dot_render`).
+>  
+>  .. _hello_dot_render:
+> @@ -421,8 +421,8 @@ installed, you will see an vector image.
+>  
+>  The *render* directive has all the options known from the *figure* directive,
+>  plus option ``caption``.  If ``caption`` has a value, a *figure* node is
+> -inserted. If not, a *image* node is inserted. A ``caption`` is also needed, if
+> -you want to refer it (:ref:`hello_svg_render`).
+> +inserted. If not, an *image* node is inserted. A ``caption`` is also needed, if
+> +you want to refer to it (:ref:`hello_svg_render`).
+>  
+>  Embedded **SVG**::
+>  
 
-     --- a/fs/xfs/xfs_log_cil.c
-     +++ b/fs/xfs/xfs_log_cil.c
-     @@ -670,8 +670,7 @@ xlog_cil_push_work(
-             /*
-              * Wake up any background push waiters now this context is being pushed.
-              */
-     -       if (ctx->space_used >= XLOG_CIL_BLOCKING_SPACE_LIMIT(log))
-     -               wake_up_all(&cil->xc_push_wait);
-     +       wake_up_all(&cil->xc_push_wait);
-      
-             /*
-              * Check if we've anything to push. If there is nothing, then we don't
 
-and this seems to fix the problem. But I don't understand, how this is possible.
+
+Thanks,
+Mauro
