@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B9202E6822
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:33:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A658A2E67F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:32:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633526AbgL1QdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:33:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33276 "EHLO mail.kernel.org"
+        id S1730628AbgL1NFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:05:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730615AbgL1NF1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:05:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 637C821D94;
-        Mon, 28 Dec 2020 13:04:44 +0000 (UTC)
+        id S1730548AbgL1NFD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:05:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3455D207C9;
+        Mon, 28 Dec 2020 13:04:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160685;
-        bh=cRicDIf1s2m/epyd1+FFfQ5TZVTtW4rSXtzd0631iK0=;
+        s=korg; t=1609160687;
+        bh=WdurbeE7w9m4BV2zK+5mwDEtJ8g1Z6Fx4p6Gs1JHmNA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DqU6jQMljyrFHhwNbsmsPkvmkKcylmqyPtp0ds2Ic7KC356THu016VSr5nr7JIz69
-         Y3MgBWGonn1S/AXDww8Omu7FuM0LDbsO6vHYLaqFCbyawaHni6u/VZyzFWTGb9m4Pn
-         MI4N+74Aiu2kPSItF0C0mKaHDHsSSxTNM1cOrH3w=
+        b=xdn03ESYc6nC7iEYRGuk8hYSBV7zNtIqOzAEfWjyQ6m+IfMs4tu3ZK2+NcIHD1dZm
+         77Di0Za+tGd1dg8cCiIRpypyxjFh2xiBoHpXUUgJKG2nyxVi47420ZJbtVBK8PRi8c
+         3YL1/Xbbl9ybHLBXHzk83wT3tsBbHMMG4odVvgQo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH 4.9 136/175] ACPI: PNP: compare the string length in the matching_id()
-Date:   Mon, 28 Dec 2020 13:49:49 +0100
-Message-Id: <20201228124859.835762152@linuxfoundation.org>
+        syzbot+33ef0b6639a8d2d42b4c@syzkaller.appspotmail.com,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.9 137/175] ALSA: pcm: oss: Fix a few more UBSAN fixes
+Date:   Mon, 28 Dec 2020 13:49:50 +0100
+Message-Id: <20201228124859.887924291@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
 References: <20201228124853.216621466@linuxfoundation.org>
@@ -40,48 +40,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Wang <hui.wang@canonical.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit b08221c40febcbda9309dd70c61cf1b0ebb0e351 upstream.
+commit 11cb881bf075cea41092a20236ba708b18e1dbb2 upstream.
 
-Recently we met a touchscreen problem on some Thinkpad machines, the
-touchscreen driver (i2c-hid) is not loaded and the touchscreen can't
-work.
+There are a few places that call round{up|down}_pow_of_two() with the
+value zero, and this causes undefined behavior warnings.  Avoid
+calling those macros if such a nonsense value is passed; it's a minor
+optimization as well, as we handle it as either an error or a value to
+be skipped, instead.
 
-An i2c ACPI device with the name WACF2200 is defined in the BIOS, with
-the current rule in matching_id(), this device will be regarded as
-a PNP device since there is WACFXXX in the acpi_pnp_device_ids[] and
-this PNP device is attached to the acpi device as the 1st
-physical_node, this will make the i2c bus match fail when i2c bus
-calls acpi_companion_match() to match the acpi_id_table in the i2c-hid
-driver.
-
-WACF2200 is an i2c device instead of a PNP device, after adding the
-string length comparing, the matching_id() will return false when
-matching WACF2200 and WACFXXX, and it is reasonable to compare the
-string length when matching two IDs.
-
-Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
-Cc: All applicable <stable@vger.kernel.org>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reported-by: syzbot+33ef0b6639a8d2d42b4c@syzkaller.appspotmail.com
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201218161730.26596-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/acpi/acpi_pnp.c |    3 +++
- 1 file changed, 3 insertions(+)
+ sound/core/oss/pcm_oss.c |   22 ++++++++++++++--------
+ 1 file changed, 14 insertions(+), 8 deletions(-)
 
---- a/drivers/acpi/acpi_pnp.c
-+++ b/drivers/acpi/acpi_pnp.c
-@@ -320,6 +320,9 @@ static bool matching_id(const char *idst
- {
- 	int i;
+--- a/sound/core/oss/pcm_oss.c
++++ b/sound/core/oss/pcm_oss.c
+@@ -719,6 +719,8 @@ static int snd_pcm_oss_period_size(struc
  
-+	if (strlen(idstr) != strlen(list_id))
-+		return false;
-+
- 	if (memcmp(idstr, list_id, 3))
- 		return false;
+ 	oss_buffer_size = snd_pcm_plug_client_size(substream,
+ 						   snd_pcm_hw_param_value_max(slave_params, SNDRV_PCM_HW_PARAM_BUFFER_SIZE, NULL)) * oss_frame_size;
++	if (!oss_buffer_size)
++		return -EINVAL;
+ 	oss_buffer_size = rounddown_pow_of_two(oss_buffer_size);
+ 	if (atomic_read(&substream->mmap_count)) {
+ 		if (oss_buffer_size > runtime->oss.mmap_bytes)
+@@ -754,17 +756,21 @@ static int snd_pcm_oss_period_size(struc
+ 
+ 	min_period_size = snd_pcm_plug_client_size(substream,
+ 						   snd_pcm_hw_param_value_min(slave_params, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, NULL));
+-	min_period_size *= oss_frame_size;
+-	min_period_size = roundup_pow_of_two(min_period_size);
+-	if (oss_period_size < min_period_size)
+-		oss_period_size = min_period_size;
++	if (min_period_size) {
++		min_period_size *= oss_frame_size;
++		min_period_size = roundup_pow_of_two(min_period_size);
++		if (oss_period_size < min_period_size)
++			oss_period_size = min_period_size;
++	}
+ 
+ 	max_period_size = snd_pcm_plug_client_size(substream,
+ 						   snd_pcm_hw_param_value_max(slave_params, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, NULL));
+-	max_period_size *= oss_frame_size;
+-	max_period_size = rounddown_pow_of_two(max_period_size);
+-	if (oss_period_size > max_period_size)
+-		oss_period_size = max_period_size;
++	if (max_period_size) {
++		max_period_size *= oss_frame_size;
++		max_period_size = rounddown_pow_of_two(max_period_size);
++		if (oss_period_size > max_period_size)
++			oss_period_size = max_period_size;
++	}
+ 
+ 	oss_periods = oss_buffer_size / oss_period_size;
  
 
 
