@@ -2,36 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 704FC2E389C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:14:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EA9C2E3DFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:24:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732073AbgL1NMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:12:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39566 "EHLO mail.kernel.org"
+        id S2502657AbgL1OW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:22:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731968AbgL1NMK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:12:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 45E93206ED;
-        Mon, 28 Dec 2020 13:11:54 +0000 (UTC)
+        id S2502626AbgL1OWU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:22:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 60954208B6;
+        Mon, 28 Dec 2020 14:21:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161114;
-        bh=jxrjnqIMyw4tF0dbRn8yKHdCEljgt65L9YbVWa44q3k=;
+        s=korg; t=1609165299;
+        bh=Nw5CMUlX2uugcK8l6sq0exxNXT5hptZ93RPt4+Z22KQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oMHolew5Nn7E4p+FE+YcsmuwyBEkemDodOcUqfzLMr5rSGunQrYFd6CEeKlD0p3j6
-         o5/pikJLMcs2f5DYOqt3OV9xWY6xZCUvXFr81sWCiBY4P57HHeBR6/kCq26nFbXCYl
-         uMpCEVU/tFuBkcTLr3D9w8OtjL4f9dvAaZW2+wkk=
+        b=hVlC91pFvtGF+OfILdWOmrPPivEk9ML7l0orNZc7nK9HfYW2+7nVz5QCZGce7P9Ay
+         1WMeziyhN/KXBYXJfvrjfrLgk42hqvaIkupWOjHhdCSiko9MHnn1P4eZokJBp2/7TW
+         +9OQ0W/xqJlGXp85xDg8PmtpDNLVf6jS7SBBs+wg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Igor Lubashev <ilubashe@akamai.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stephane Eranian <eranian@google.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 076/242] spi: img-spfi: fix reference leak in img_spfi_resume
-Date:   Mon, 28 Dec 2020 13:48:01 +0100
-Message-Id: <20201228124908.428565523@linuxfoundation.org>
+Subject: [PATCH 5.10 484/717] tools build: Add missing libcap to test-all.bin target
+Date:   Mon, 28 Dec 2020 13:48:02 +0100
+Message-Id: <20201228125044.151227320@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +48,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Jiri Olsa <jolsa@kernel.org>
 
-[ Upstream commit ee5558a9084584015c8754ffd029ce14a5827fa8 ]
+[ Upstream commit 09d59c2f3465fb01e65a0c96698697b026ea8e79 ]
 
-pm_runtime_get_sync will increment pm usage counter even it
-failed. Forgetting to pm_runtime_put_noidle will result in
-reference leak in img_spfi_resume, so we should fix it.
+We're missing -lcap in test-all.bin target, so in case it's the only
+library missing (if more are missing test-all.bin fails anyway), we will
+falsely claim that we detected it and fail build, like:
 
-Fixes: deba25800a12b ("spi: Add driver for IMG SPFI controller")
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201102145651.3875-1-zhangqilong3@huawei.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+  $ make
+  ...
+  Auto-detecting system features:
+  ...                         dwarf: [ on  ]
+  ...            dwarf_getlocations: [ on  ]
+  ...                         glibc: [ on  ]
+  ...                        libbfd: [ on  ]
+  ...                libbfd-buildid: [ on  ]
+  ...                        libcap: [ on  ]
+  ...                        libelf: [ on  ]
+  ...                       libnuma: [ on  ]
+  ...        numa_num_possible_cpus: [ on  ]
+  ...                       libperl: [ on  ]
+  ...                     libpython: [ on  ]
+  ...                     libcrypto: [ on  ]
+  ...                     libunwind: [ on  ]
+  ...            libdw-dwarf-unwind: [ on  ]
+  ...                          zlib: [ on  ]
+  ...                          lzma: [ on  ]
+  ...                     get_cpuid: [ on  ]
+  ...                           bpf: [ on  ]
+  ...                        libaio: [ on  ]
+  ...                       libzstd: [ on  ]
+  ...        disassembler-four-args: [ on  ]
+
+  ...
+
+    CC       builtin-ftrace.o
+
+  In file included from builtin-ftrace.c:29:
+  util/cap.h:11:10: fatal error: sys/capability.h: No such file or directory
+     11 | #include <sys/capability.h>
+        |          ^~~~~~~~~~~~~~~~~~
+  compilation terminated.
+
+Fixes: 74d5f3d06f707eb5 ("tools build: Add capability-related feature detection")
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Igor Lubashev <ilubashe@akamai.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Michael Petlan <mpetlan@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Stephane Eranian <eranian@google.com>
+Link: http://lore.kernel.org/lkml/20201203230836.3751981-1-jolsa@kernel.org
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-img-spfi.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ tools/build/feature/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-img-spfi.c b/drivers/spi/spi-img-spfi.c
-index 2e65b70c78792..2a340234c85c1 100644
---- a/drivers/spi/spi-img-spfi.c
-+++ b/drivers/spi/spi-img-spfi.c
-@@ -771,8 +771,10 @@ static int img_spfi_resume(struct device *dev)
- 	int ret;
+diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
+index cdde783f3018b..89ba522e377dc 100644
+--- a/tools/build/feature/Makefile
++++ b/tools/build/feature/Makefile
+@@ -90,7 +90,7 @@ __BUILDXX = $(CXX) $(CXXFLAGS) -MD -Wall -Werror -o $@ $(patsubst %.bin,%.cpp,$(
+ ###############################
  
- 	ret = pm_runtime_get_sync(dev);
--	if (ret)
-+	if (ret) {
-+		pm_runtime_put_noidle(dev);
- 		return ret;
-+	}
- 	spfi_reset(spfi);
- 	pm_runtime_put(dev);
+ $(OUTPUT)test-all.bin:
+-	$(BUILD) -fstack-protector-all -O2 -D_FORTIFY_SOURCE=2 -ldw -lelf -lnuma -lelf -I/usr/include/slang -lslang $(FLAGS_PERL_EMBED) $(FLAGS_PYTHON_EMBED) -DPACKAGE='"perf"' -lbfd -ldl -lz -llzma -lzstd
++	$(BUILD) -fstack-protector-all -O2 -D_FORTIFY_SOURCE=2 -ldw -lelf -lnuma -lelf -I/usr/include/slang -lslang $(FLAGS_PERL_EMBED) $(FLAGS_PYTHON_EMBED) -DPACKAGE='"perf"' -lbfd -ldl -lz -llzma -lzstd -lcap
  
+ $(OUTPUT)test-hello.bin:
+ 	$(BUILD)
 -- 
 2.27.0
 
