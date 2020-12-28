@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 357B02E3867
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:11:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 079602E39AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:27:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731260AbgL1NJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:09:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37698 "EHLO mail.kernel.org"
+        id S2389503AbgL1N0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:26:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731244AbgL1NJ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:09:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A2BDE208BA;
-        Mon, 28 Dec 2020 13:09:15 +0000 (UTC)
+        id S2389269AbgL1N0M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:26:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD3E822475;
+        Mon, 28 Dec 2020 13:25:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160956;
-        bh=cj5sgS/Minp5KVuWIjmrxGnsQ0SEpKr8dj4vTk6yJy0=;
+        s=korg; t=1609161956;
+        bh=L9mDBH5eVRZxfYI8UmkOCZQry8Z7AIK961Dix1H0Myc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MfG4QAUXXFPY8lqwlLrTHDDc4HaK6N/tVbTEzDECfJkt1TzOHtitTQLBTg8e+vbiF
-         MhLd74nrU4BTMOHFB01wlAfkfV0h9nLROCEqcC/fF0l8EoGEzEkZbQFCAtOMxNabac
-         az3v1xS3khLQmG7s9+aj1xsppjIbibQ1Hb5ue1tw=
+        b=OkInzqMWtrLGTFx059xVHo8QznKPkBlhaXxzKxA651AyVzF/OilI9SVx6cRriFHZK
+         6D5ycX4VL8LKT3QDgD2NDA690zZaIPNbCvLXOc7yPDD60saPXiHOrg82j9yYcB1jIN
+         7Oj4DmuUa0NS3R3OqHOmZyzWzlLK/yGeP/m1+v3g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jack Pham <jackp@codeaurora.org>
-Subject: [PATCH 4.14 052/242] usb: gadget: f_fs: Re-use SS descriptors for SuperSpeedPlus
-Date:   Mon, 28 Dec 2020 13:47:37 +0100
-Message-Id: <20201228124907.243090287@linuxfoundation.org>
+        stable@vger.kernel.org, Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 139/346] staging: gasket: interrupt: fix the missed eventfd_ctx_put() in gasket_interrupt.c
+Date:   Mon, 28 Dec 2020 13:47:38 +0100
+Message-Id: <20201228124926.511801349@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,68 +39,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jack Pham <jackp@codeaurora.org>
+From: Jing Xiangfeng <jingxiangfeng@huawei.com>
 
-commit a353397b0d5dfa3c99b372505db3378fc919c6c6 upstream.
+[ Upstream commit ab5b769a23af12a675b9f3d7dd529250c527f5ac ]
 
-In many cases a function that supports SuperSpeed can very well
-operate in SuperSpeedPlus, if a gadget controller supports it,
-as the endpoint descriptors (and companion descriptors) are
-generally identical and can be re-used. This is true for two
-commonly used functions: Android's ADB and MTP. So we can simply
-assign the usb_function's ssp_descriptors array to point to its
-ss_descriptors, if available. Similarly, we need to allow an
-epfile's ioctl for FUNCTIONFS_ENDPOINT_DESC to correctly
-return the corresponding SuperSpeed endpoint descriptor in case
-the connected speed is SuperSpeedPlus as well.
+gasket_interrupt_set_eventfd() misses to call eventfd_ctx_put() in an
+error path. We check interrupt is valid before calling
+eventfd_ctx_fdget() to fix it.
 
-The only exception is if a function wants to implement an
-Isochronous endpoint capable of transferring more than 48KB per
-service interval when operating at greater than USB 3.1 Gen1
-speed, in which case it would require an additional SuperSpeedPlus
-Isochronous Endpoint Companion descriptor to be returned as part
-of the Configuration Descriptor. Support for that would need
-to be separately added to the userspace-facing FunctionFS API
-which may not be a trivial task--likely a new descriptor format
-(v3?) may need to be devised to allow for separate SS and SSP
-descriptors to be supplied.
+There is the same issue in gasket_interrupt_clear_eventfd(), Add the
+missed function call to fix it.
 
-Signed-off-by: Jack Pham <jackp@codeaurora.org>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201027230731.9073-1-jackp@codeaurora.org
+Fixes: 9a69f5087ccc ("drivers/staging: Gasket driver framework + Apex driver")
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+Link: https://lore.kernel.org/r/20201112064924.99680-1-jingxiangfeng@huawei.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/function/f_fs.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/staging/gasket/gasket_interrupt.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
---- a/drivers/usb/gadget/function/f_fs.c
-+++ b/drivers/usb/gadget/function/f_fs.c
-@@ -1248,6 +1248,7 @@ static long ffs_epfile_ioctl(struct file
+diff --git a/drivers/staging/gasket/gasket_interrupt.c b/drivers/staging/gasket/gasket_interrupt.c
+index 1cfbc120f2284..225460c535d61 100644
+--- a/drivers/staging/gasket/gasket_interrupt.c
++++ b/drivers/staging/gasket/gasket_interrupt.c
+@@ -527,14 +527,16 @@ int gasket_interrupt_system_status(struct gasket_dev *gasket_dev)
+ int gasket_interrupt_set_eventfd(struct gasket_interrupt_data *interrupt_data,
+ 				 int interrupt, int event_fd)
+ {
+-	struct eventfd_ctx *ctx = eventfd_ctx_fdget(event_fd);
+-
+-	if (IS_ERR(ctx))
+-		return PTR_ERR(ctx);
++	struct eventfd_ctx *ctx;
  
- 		switch (epfile->ffs->gadget->speed) {
- 		case USB_SPEED_SUPER:
-+		case USB_SPEED_SUPER_PLUS:
- 			desc_idx = 2;
- 			break;
- 		case USB_SPEED_HIGH:
-@@ -3067,7 +3068,8 @@ static int _ffs_func_bind(struct usb_con
- 	}
+ 	if (interrupt < 0 || interrupt >= interrupt_data->num_interrupts)
+ 		return -EINVAL;
  
- 	if (likely(super)) {
--		func->function.ss_descriptors = vla_ptr(vlabuf, d, ss_descs);
-+		func->function.ss_descriptors = func->function.ssp_descriptors =
-+			vla_ptr(vlabuf, d, ss_descs);
- 		ss_len = ffs_do_descs(ffs->ss_descs_count,
- 				vla_ptr(vlabuf, d, raw_descs) + fs_len + hs_len,
- 				d_raw_descs__sz - fs_len - hs_len,
-@@ -3477,6 +3479,7 @@ static void ffs_func_unbind(struct usb_c
- 	func->function.fs_descriptors = NULL;
- 	func->function.hs_descriptors = NULL;
- 	func->function.ss_descriptors = NULL;
-+	func->function.ssp_descriptors = NULL;
- 	func->interfaces_nums = NULL;
++	ctx = eventfd_ctx_fdget(event_fd);
++
++	if (IS_ERR(ctx))
++		return PTR_ERR(ctx);
++
+ 	interrupt_data->eventfd_ctxs[interrupt] = ctx;
+ 	return 0;
+ }
+@@ -545,6 +547,9 @@ int gasket_interrupt_clear_eventfd(struct gasket_interrupt_data *interrupt_data,
+ 	if (interrupt < 0 || interrupt >= interrupt_data->num_interrupts)
+ 		return -EINVAL;
  
- 	ffs_event_add(ffs, FUNCTIONFS_UNBIND);
+-	interrupt_data->eventfd_ctxs[interrupt] = NULL;
++	if (interrupt_data->eventfd_ctxs[interrupt]) {
++		eventfd_ctx_put(interrupt_data->eventfd_ctxs[interrupt]);
++		interrupt_data->eventfd_ctxs[interrupt] = NULL;
++	}
+ 	return 0;
+ }
+-- 
+2.27.0
+
 
 
