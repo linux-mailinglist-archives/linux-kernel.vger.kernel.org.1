@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90D242E3EA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:31:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C39D2E3C0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:57:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504036AbgL1OaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:30:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38076 "EHLO mail.kernel.org"
+        id S2407900AbgL1N5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:57:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59576 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503617AbgL1OaQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:30:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B54FB20715;
-        Mon, 28 Dec 2020 14:30:00 +0000 (UTC)
+        id S2407413AbgL1N5w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:57:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8514420782;
+        Mon, 28 Dec 2020 13:57:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165801;
-        bh=1BSslsqxMy717FWz4yCJakZK4RQeXyjOWZHJDGse5vE=;
+        s=korg; t=1609163832;
+        bh=moODPkrfC++ildKLR07t2aUiMPnatOOn4vrPfX9GpZg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cy65uM1CVcqNzXgFlRe8RkdWzM4RUi9dav6MfughIlMWucNp+KRq9iRRuLP8XMEtC
-         yY2e0i/sXYLqfFECPuUm+zVB5aTcG8EichjWAL0shf8mKDnBmrRWYAkYH8pHIO4Csg
-         M3nT7kEuUolxay1EvuYTlbtIEWVGsPHDu1S90zAk=
+        b=P9LvWyJnyaDmcGVIV2rWMwNQ2fF7RP0U9hJuM3j+aKV1eneh5BTTUvfjev6S25tSm
+         teJCHFAJZPlG57HP2YZ06r1VZNokyxgHyLcTUT/zzGIB4A6aENhGfK8P0Zvxh6Vol/
+         Z4hNMLDa5R3v1TzIlkRLE4Dtwlkmkz5YDpzZRwO0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Stefan Roese <sr@denx.de>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.10 660/717] spi: mt7621: Dont leak SPI master in probe error path
-Date:   Mon, 28 Dec 2020 13:50:58 +0100
-Message-Id: <20201228125052.585986478@linuxfoundation.org>
+        stable@vger.kernel.org, Dick Kennedy <dick.kennedy@broadcom.com>,
+        James Smart <james.smart@broadcom.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: [PATCH 5.4 423/453] scsi: lpfc: Fix invalid sleeping context in lpfc_sli4_nvmet_alloc()
+Date:   Mon, 28 Dec 2020 13:50:59 +0100
+Message-Id: <20201228124957.575665697@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,64 +40,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: James Smart <james.smart@broadcom.com>
 
-commit 46b5c4fb87ce8211e0f9b0383dbde72c3652d2ba upstream.
+commit 62e3a931db60daf94fdb3159d685a5bc6ad4d0cf upstream.
 
-If the calls to device_reset() or devm_spi_register_controller() fail on
-probe of the MediaTek MT7621 SPI driver, the spi_controller struct is
-erroneously not freed.  Fix by switching over to the new
-devm_spi_alloc_master() helper.
+The following calltrace was seen:
 
-Additionally, there's an ordering issue in mt7621_spi_remove() wherein
-the spi_controller is unregistered after disabling the SYS clock.
-The correct order is to call spi_unregister_controller() *before* this
-teardown step because bus accesses may still be ongoing until that
-function returns.
+BUG: sleeping function called from invalid context at mm/slab.h:494
+...
+Call Trace:
+ dump_stack+0x9a/0xf0
+ ___might_sleep.cold.63+0x13d/0x178
+ slab_pre_alloc_hook+0x6a/0x90
+ kmem_cache_alloc_trace+0x3a/0x2d0
+ lpfc_sli4_nvmet_alloc+0x4c/0x280 [lpfc]
+ lpfc_post_rq_buffer+0x2e7/0xa60 [lpfc]
+ lpfc_sli4_hba_setup+0x6b4c/0xa4b0 [lpfc]
+ lpfc_pci_probe_one_s4.isra.15+0x14f8/0x2280 [lpfc]
+ lpfc_pci_probe_one+0x260/0x2880 [lpfc]
+ local_pci_probe+0xd4/0x180
+ work_for_cpu_fn+0x51/0xa0
+ process_one_work+0x8f0/0x17b0
+ worker_thread+0x536/0xb50
+ kthread+0x30c/0x3d0
+ ret_from_fork+0x3a/0x50
 
-All of these bugs have existed since the driver was first introduced,
-so it seems fair to fix them together in a single commit.
+A prior patch introduced a spin_lock_irqsave(hbalock) in the
+lpfc_post_rq_buffer() routine. Call trace is seen as the hbalock is held
+with interrupts disabled during a GFP_KERNEL allocation in
+lpfc_sli4_nvmet_alloc().
 
-Fixes: 1ab7f2a43558 ("staging: mt7621-spi: add mt7621 support")
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Reviewed-by: Stefan Roese <sr@denx.de>
-Cc: <stable@vger.kernel.org> # v4.17+: 5e844cc37a5c: spi: Introduce device-managed SPI controller allocation
+Fix by reordering locking so that hbalock not held when calling
+sli4_nvmet_alloc() (aka rqb_buf_list()).
+
+Link: https://lore.kernel.org/r/20201020202719.54726-2-james.smart@broadcom.com
+Fixes: 411de511c694 ("scsi: lpfc: Fix RQ empty firmware trap")
 Cc: <stable@vger.kernel.org> # v4.17+
-Link: https://lore.kernel.org/r/72b680796149f5fcda0b3f530ffb7ee73b04f224.1607286887.git.lukas@wunner.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Co-developed-by: Dick Kennedy <dick.kennedy@broadcom.com>
+Signed-off-by: Dick Kennedy <dick.kennedy@broadcom.com>
+Signed-off-by: James Smart <james.smart@broadcom.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/spi/spi-mt7621.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/scsi/lpfc/lpfc_mem.c |    4 +---
+ drivers/scsi/lpfc/lpfc_sli.c |   10 ++++++++--
+ 2 files changed, 9 insertions(+), 5 deletions(-)
 
---- a/drivers/spi/spi-mt7621.c
-+++ b/drivers/spi/spi-mt7621.c
-@@ -350,7 +350,7 @@ static int mt7621_spi_probe(struct platf
- 	if (status)
- 		return status;
+--- a/drivers/scsi/lpfc/lpfc_mem.c
++++ b/drivers/scsi/lpfc/lpfc_mem.c
+@@ -593,8 +593,6 @@ lpfc_sli4_rb_free(struct lpfc_hba *phba,
+  * Description: Allocates a DMA-mapped receive buffer from the lpfc_hrb_pool PCI
+  * pool along a non-DMA-mapped container for it.
+  *
+- * Notes: Not interrupt-safe.  Must be called with no locks held.
+- *
+  * Returns:
+  *   pointer to HBQ on success
+  *   NULL on failure
+@@ -604,7 +602,7 @@ lpfc_sli4_nvmet_alloc(struct lpfc_hba *p
+ {
+ 	struct rqb_dmabuf *dma_buf;
  
--	master = spi_alloc_master(&pdev->dev, sizeof(*rs));
-+	master = devm_spi_alloc_master(&pdev->dev, sizeof(*rs));
- 	if (!master) {
- 		dev_info(&pdev->dev, "master allocation failed\n");
- 		clk_disable_unprepare(clk);
-@@ -382,7 +382,7 @@ static int mt7621_spi_probe(struct platf
- 		return ret;
+-	dma_buf = kzalloc(sizeof(struct rqb_dmabuf), GFP_KERNEL);
++	dma_buf = kzalloc(sizeof(*dma_buf), GFP_KERNEL);
+ 	if (!dma_buf)
+ 		return NULL;
+ 
+--- a/drivers/scsi/lpfc/lpfc_sli.c
++++ b/drivers/scsi/lpfc/lpfc_sli.c
+@@ -7102,12 +7102,16 @@ lpfc_post_rq_buffer(struct lpfc_hba *phb
+ 	struct rqb_dmabuf *rqb_buffer;
+ 	LIST_HEAD(rqb_buf_list);
+ 
+-	spin_lock_irqsave(&phba->hbalock, flags);
+ 	rqbp = hrq->rqbp;
+ 	for (i = 0; i < count; i++) {
++		spin_lock_irqsave(&phba->hbalock, flags);
+ 		/* IF RQ is already full, don't bother */
+-		if (rqbp->buffer_count + i >= rqbp->entry_count - 1)
++		if (rqbp->buffer_count + i >= rqbp->entry_count - 1) {
++			spin_unlock_irqrestore(&phba->hbalock, flags);
+ 			break;
++		}
++		spin_unlock_irqrestore(&phba->hbalock, flags);
++
+ 		rqb_buffer = rqbp->rqb_alloc_buffer(phba);
+ 		if (!rqb_buffer)
+ 			break;
+@@ -7116,6 +7120,8 @@ lpfc_post_rq_buffer(struct lpfc_hba *phb
+ 		rqb_buffer->idx = idx;
+ 		list_add_tail(&rqb_buffer->hbuf.list, &rqb_buf_list);
  	}
- 
--	ret = devm_spi_register_controller(&pdev->dev, master);
-+	ret = spi_register_controller(master);
- 	if (ret)
- 		clk_disable_unprepare(clk);
- 
-@@ -397,6 +397,7 @@ static int mt7621_spi_remove(struct plat
- 	master = dev_get_drvdata(&pdev->dev);
- 	rs = spi_controller_get_devdata(master);
- 
-+	spi_unregister_controller(master);
- 	clk_disable_unprepare(rs->clk);
- 
- 	return 0;
++
++	spin_lock_irqsave(&phba->hbalock, flags);
+ 	while (!list_empty(&rqb_buf_list)) {
+ 		list_remove_head(&rqb_buf_list, rqb_buffer, struct rqb_dmabuf,
+ 				 hbuf.list);
 
 
