@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F25822E434A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:36:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 019A62E3E63
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:27:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408635AbgL1PfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:35:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55016 "EHLO mail.kernel.org"
+        id S2502305AbgL1O1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:27:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407260AbgL1NxJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:53:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F99B2078D;
-        Mon, 28 Dec 2020 13:52:28 +0000 (UTC)
+        id S2503578AbgL1O0G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:26:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B1C422B40;
+        Mon, 28 Dec 2020 14:25:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163549;
-        bh=z+XlOehCvNsUqzGQ2Rv/7OCrXSImv7/79uw5cQeuxMQ=;
+        s=korg; t=1609165525;
+        bh=MJb6rgT/CLr74sfiJb2dNz0DdNWAxqXSu6EFZIFb3qc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L3F+sq7ekdcjMqxFOhbRyVCWC0OVxtsr6AJwCOL/GHsp+NxsY0/ggRGgCmkxGCgFy
-         /N88sRaQ877I2xGYo6f4C+NEr5ep+6N4cR9hYljXMDJNPLHFuCniEAYz+bFDPY1u8T
-         vwXMdd4MS3xXqRbz7ol+e9lYJujj8XMC7vi75iAc=
+        b=MO5MwaZN6hlZHM4NeergFBimZc2XnhTkAwJRCqFurH68pGXN1kx/ncW0iG06T32mA
+         64df6XkQf8okW83fcYocsc9N/+6E2ordXgqpKzFbjdqCRKt1p3+WiIrvs3Bv6Ta9FV
+         2WjljDZ1WWcumS93z+j5owGZUYyR0STnTaXiK2ak=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.4 324/453] media: ipu3-cio2: Remove traces of returned buffers
+        stable@vger.kernel.org, stable@kernel.org,
+        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>
+Subject: [PATCH 5.10 562/717] ASoC: AMD Raven/Renoir - fix the PCI probe (PCI revision)
 Date:   Mon, 28 Dec 2020 13:49:20 +0100
-Message-Id: <20201228124952.800058190@linuxfoundation.org>
+Message-Id: <20201228125047.848721184@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,35 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
+From: Jaroslav Kysela <perex@perex.cz>
 
-commit 61e7f892b5ee1dd10ea8bff805f3c3fe6e535959 upstream.
+commit 55d8e6a85bce21f748c42eedea63681219f70523 upstream.
 
-If starting a video buffer queue fails, the buffers are returned to
-videobuf2. Remove the reference to the buffer from the driver's queue as
-well.
+The Raven and Renoir ACP can be distinguished by the PCI revision.
+Let's do the check very early, otherwise the wrong probe code
+can be run.
 
-Fixes: c2a6a07afe4a ("media: intel-ipu3: cio2: add new MIPI-CSI2 driver")
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc: stable@vger.kernel.org # v4.16 and up
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Link: https://lore.kernel.org/alsa-devel/2e4587f8-f602-cf23-4845-fd27a32b1cfc@amd.com/
+Cc: <stable@kernel.org>
+Cc: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Cc: Mark Brown <broonie@kernel.org>
+Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+Link: https://lore.kernel.org/r/20201208181233.2745726-1-perex@perex.cz
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/media/pci/intel/ipu3/ipu3-cio2.c |    1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/amd/raven/pci-acp3x.c     |    4 ++++
+ sound/soc/amd/renoir/rn-pci-acp3x.c |    4 ++++
+ 2 files changed, 8 insertions(+)
 
---- a/drivers/media/pci/intel/ipu3/ipu3-cio2.c
-+++ b/drivers/media/pci/intel/ipu3/ipu3-cio2.c
-@@ -799,6 +799,7 @@ static void cio2_vb2_return_all_buffers(
- 			atomic_dec(&q->bufs_queued);
- 			vb2_buffer_done(&q->bufs[i]->vbb.vb2_buf,
- 					state);
-+			q->bufs[i] = NULL;
- 		}
- 	}
- }
+--- a/sound/soc/amd/raven/pci-acp3x.c
++++ b/sound/soc/amd/raven/pci-acp3x.c
+@@ -118,6 +118,10 @@ static int snd_acp3x_probe(struct pci_de
+ 	int ret, i;
+ 	u32 addr, val;
+ 
++	/* Raven device detection */
++	if (pci->revision != 0x00)
++		return -ENODEV;
++
+ 	if (pci_enable_device(pci)) {
+ 		dev_err(&pci->dev, "pci_enable_device failed\n");
+ 		return -ENODEV;
+--- a/sound/soc/amd/renoir/rn-pci-acp3x.c
++++ b/sound/soc/amd/renoir/rn-pci-acp3x.c
+@@ -188,6 +188,10 @@ static int snd_rn_acp_probe(struct pci_d
+ 	int ret, index;
+ 	u32 addr;
+ 
++	/* Renoir device check */
++	if (pci->revision != 0x01)
++		return -ENODEV;
++
+ 	if (pci_enable_device(pci)) {
+ 		dev_err(&pci->dev, "pci_enable_device failed\n");
+ 		return -ENODEV;
 
 
