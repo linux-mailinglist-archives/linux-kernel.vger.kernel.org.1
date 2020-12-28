@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 750062E3A23
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:34:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F1CA2E375E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:54:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390394AbgL1Na2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:30:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59282 "EHLO mail.kernel.org"
+        id S1728385AbgL1Myk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:54:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51274 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390331AbgL1Na0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:30:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F09D8207C9;
-        Mon, 28 Dec 2020 13:29:44 +0000 (UTC)
+        id S1728295AbgL1Myd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:54:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E79E208B6;
+        Mon, 28 Dec 2020 12:53:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162185;
-        bh=wSiy2zUiLFgk5SMolocnVKB+aoC52/+xxhFH4Ud+Yd0=;
+        s=korg; t=1609160032;
+        bh=OsQghq4JYevEWWoaveaqpmnPovEI4eDgUJYUTL8nzMM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tH7gIqNk5LX+3U4AbvLyo4KI6aRdhrhj5ALJ134BiXcv1Oonw+3Nnp411PDN5SSnb
-         BJqfFvMQtrRX6TUUr1yb5sw3wsSiAemRqkb/iFiCpzSY5SOWVjr6VW5YcEkrxMqnY4
-         Tn5RYnlvoRm89+Drion3//r/JPq6YBav9vDfSJeE=
+        b=p6hGvFNZvPzit6tt7L2EZfGLqZtq0DgE6UFdNtTQ3FS677yt7twg8aIgvnSuc1ATm
+         rMt5JmsYp4LpupWhpSlHkjNf2j04rDH1eHqmwnmI0nDSCH5uIm7kYiQJ4CuUYUO62C
+         /PlFQZ/fOaudBfv4Li/6eTAE5u8mW2nnLUytCcKY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nathan Lynch <nathanl@linux.ibm.com>,
+        stable@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 215/346] powerpc/pseries/hibernation: remove redundant cacheinfo update
+Subject: [PATCH 4.4 050/132] powerpc/feature: Fix CPU_FTRS_ALWAYS by removing CPU_FTRS_GENERIC_32
 Date:   Mon, 28 Dec 2020 13:48:54 +0100
-Message-Id: <20201228124930.172063792@linuxfoundation.org>
+Message-Id: <20201228124848.854973543@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,51 +41,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Lynch <nathanl@linux.ibm.com>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-[ Upstream commit b866459489fe8ef0e92cde3cbd6bbb1af6c4e99b ]
+[ Upstream commit 78665179e569c7e1fe102fb6c21d0f5b6951f084 ]
 
-Partitions with cache nodes in the device tree can encounter the
-following warning on resume:
+On 8xx, we get the following features:
 
-CPU 0 already accounted in PowerPC,POWER9@0(Data)
-WARNING: CPU: 0 PID: 3177 at arch/powerpc/kernel/cacheinfo.c:197 cacheinfo_cpu_online+0x640/0x820
+[    0.000000] cpu_features      = 0x0000000000000100
+[    0.000000]   possible        = 0x0000000000000120
+[    0.000000]   always          = 0x0000000000000000
 
-These calls to cacheinfo_cpu_offline/online have been redundant since
-commit e610a466d16a ("powerpc/pseries/mobility: rebuild cacheinfo
-hierarchy post-migration").
+This is not correct. As CONFIG_PPC_8xx is mutually exclusive with all
+other configurations, the three lines should be equal.
 
-Fixes: e610a466d16a ("powerpc/pseries/mobility: rebuild cacheinfo hierarchy post-migration")
-Signed-off-by: Nathan Lynch <nathanl@linux.ibm.com>
+The problem is due to CPU_FTRS_GENERIC_32 which is taken when
+CONFIG_BOOK3S_32 is NOT selected. This CPU_FTRS_GENERIC_32 is
+pointless because there is no generic configuration supporting
+all 32 bits but book3s/32.
+
+Remove this pointless generic features definition to unbreak the
+calculation of 'possible' features and 'always' features.
+
+Fixes: 76bc080ef5a3 ("[POWERPC] Make default cputable entries reflect selected CPU family")
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20201207215200.1785968-25-nathanl@linux.ibm.com
+Link: https://lore.kernel.org/r/76a85f30bf981d1aeaae00df99321235494da254.1604426550.git.christophe.leroy@csgroup.eu
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/platforms/pseries/suspend.c | 3 ---
- 1 file changed, 3 deletions(-)
+ arch/powerpc/include/asm/cputable.h | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/arch/powerpc/platforms/pseries/suspend.c b/arch/powerpc/platforms/pseries/suspend.c
-index fd2c090681aa6..5414d3295e0a1 100644
---- a/arch/powerpc/platforms/pseries/suspend.c
-+++ b/arch/powerpc/platforms/pseries/suspend.c
-@@ -26,7 +26,6 @@
- #include <asm/mmu.h>
- #include <asm/rtas.h>
- #include <asm/topology.h>
--#include "../../kernel/cacheinfo.h"
+diff --git a/arch/powerpc/include/asm/cputable.h b/arch/powerpc/include/asm/cputable.h
+index b118072670fb1..9fe3f05000e31 100644
+--- a/arch/powerpc/include/asm/cputable.h
++++ b/arch/powerpc/include/asm/cputable.h
+@@ -400,7 +400,6 @@ enum {
+ 	    CPU_FTR_DBELL | CPU_FTR_POPCNTB | CPU_FTR_POPCNTD | \
+ 	    CPU_FTR_DEBUG_LVL_EXC | CPU_FTR_EMB_HV | CPU_FTR_ALTIVEC_COMP | \
+ 	    CPU_FTR_CELL_TB_BUG | CPU_FTR_SMT)
+-#define CPU_FTRS_GENERIC_32	(CPU_FTR_COMMON | CPU_FTR_NODSISRALIGN)
  
- static u64 stream_id;
- static struct device suspend_dev;
-@@ -91,9 +90,7 @@ static void pseries_suspend_enable_irqs(void)
- 	 * Update configuration which can be modified based on device tree
- 	 * changes during resume.
- 	 */
--	cacheinfo_cpu_offline(smp_processor_id());
- 	post_mobility_fixup();
--	cacheinfo_cpu_online(smp_processor_id());
- }
- 
- /**
+ /* 64-bit CPUs */
+ #define CPU_FTRS_POWER4	(CPU_FTR_USE_TB | CPU_FTR_LWSYNC | \
+@@ -479,8 +478,6 @@ enum {
+ 	    CPU_FTRS_7447 | CPU_FTRS_7447A | CPU_FTRS_82XX |
+ 	    CPU_FTRS_G2_LE | CPU_FTRS_E300 | CPU_FTRS_E300C2 |
+ 	    CPU_FTRS_CLASSIC32 |
+-#else
+-	    CPU_FTRS_GENERIC_32 |
+ #endif
+ #ifdef CONFIG_8xx
+ 	    CPU_FTRS_8XX |
+@@ -530,8 +527,6 @@ enum {
+ 	    CPU_FTRS_7447 & CPU_FTRS_7447A & CPU_FTRS_82XX &
+ 	    CPU_FTRS_G2_LE & CPU_FTRS_E300 & CPU_FTRS_E300C2 &
+ 	    CPU_FTRS_CLASSIC32 &
+-#else
+-	    CPU_FTRS_GENERIC_32 &
+ #endif
+ #ifdef CONFIG_8xx
+ 	    CPU_FTRS_8XX &
 -- 
 2.27.0
 
