@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB8432E3E02
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:24:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17A932E3897
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:14:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502708AbgL1OWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:22:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57978 "EHLO mail.kernel.org"
+        id S1731988AbgL1NMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:12:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39688 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502696AbgL1OWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:22:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D35CC2245C;
-        Mon, 28 Dec 2020 14:22:20 +0000 (UTC)
+        id S1731852AbgL1NLs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:11:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C389322AAD;
+        Mon, 28 Dec 2020 13:11:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165341;
-        bh=hPjhXAoIm/w9iNN0/IKZTd6AgKR4XWkQMRic0MeKI+o=;
+        s=korg; t=1609161067;
+        bh=hyiAsy6c7eBpZHIvv+FZ5sk0u/tMYGT42n1KA2RuZMk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G1MlboQgl3fTrl6Gb7x2Ity6rx/Il5lY/hfJDG6ijtzZRk3/6B3NawaQyxHuXMY0W
-         VM/6acbkrHXfsbyAJ2cziwt9+31w/5LNV1ndZ2aPShj3WPf4S/I+ZczOBmBAAhvIfD
-         tmwfh2MYCKg778LsTjT4iBgyQLH1r890OuMTLoAk=
+        b=Ksb/cA71mMOBcXqcyJPI+WtvWCq4KaxcPtw+9qt22shzVkKJZj8mGpQmPmtM7LVSz
+         2FjhLImWp/5k/w2matbnI9VXnwrrjO1fLA/YjK67xiFB4kfjn+N987i8Vww9AaEvqm
+         +j6iGbkdl9slUmoeyiiX5lJLJvqS7LoJNcPDtv/I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 496/717] clk: at91: sam9x60: remove atmel,osc-bypass support
-Date:   Mon, 28 Dec 2020 13:48:14 +0100
-Message-Id: <20201228125044.728604509@linuxfoundation.org>
+Subject: [PATCH 4.14 090/242] RDMa/mthca: Work around -Wenum-conversion warning
+Date:   Mon, 28 Dec 2020 13:48:15 +0100
+Message-Id: <20201228124909.128272773@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,49 +40,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 01324f9e88b5cfc1f4c26eef66bdcb52596c9af8 ]
+[ Upstream commit fbb7dc5db6dee553b5a07c27e86364a5223e244c ]
 
-The sam9x60 doesn't have the MOSCXTBY bit to enable the crystal oscillator
-bypass.
+gcc points out a suspicious mixing of enum types in a function that
+converts from MTHCA_OPCODE_* values to IB_WC_* values:
 
-Fixes: 01e2113de9a5 ("clk: at91: add sam9x60 pmc driver")
-Reported-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Link: https://lore.kernel.org/r/20201202125816.168618-1-alexandre.belloni@bootlin.com
-Reviewed-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-Tested-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+drivers/infiniband/hw/mthca/mthca_cq.c: In function 'mthca_poll_one':
+drivers/infiniband/hw/mthca/mthca_cq.c:607:21: warning: implicit conversion from 'enum <anonymous>' to 'enum ib_wc_opcode' [-Wenum-conversion]
+  607 |    entry->opcode    = MTHCA_OPCODE_INVALID;
+
+Nothing seems to ever check for MTHCA_OPCODE_INVALID again, no idea if
+this is meaningful, but it seems harmless as it deals with an invalid
+input.
+
+Remove MTHCA_OPCODE_INVALID and set the ib_wc_opcode to 0xFF, which is
+still bogus, but at least doesn't make compiler warnings.
+
+Fixes: 2a4443a69934 ("[PATCH] IB/mthca: fill in opcode field for send completions")
+Link: https://lore.kernel.org/r/20201026211311.3887003-1-arnd@kernel.org
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/at91/sam9x60.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ drivers/infiniband/hw/mthca/mthca_cq.c  | 2 +-
+ drivers/infiniband/hw/mthca/mthca_dev.h | 1 -
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/clk/at91/sam9x60.c b/drivers/clk/at91/sam9x60.c
-index 3c4c956035954..c8cbec5308f02 100644
---- a/drivers/clk/at91/sam9x60.c
-+++ b/drivers/clk/at91/sam9x60.c
-@@ -174,7 +174,6 @@ static void __init sam9x60_pmc_setup(struct device_node *np)
- 	struct regmap *regmap;
- 	struct clk_hw *hw;
- 	int i;
--	bool bypass;
+diff --git a/drivers/infiniband/hw/mthca/mthca_cq.c b/drivers/infiniband/hw/mthca/mthca_cq.c
+index a5694dec3f2ee..098653b8157ed 100644
+--- a/drivers/infiniband/hw/mthca/mthca_cq.c
++++ b/drivers/infiniband/hw/mthca/mthca_cq.c
+@@ -609,7 +609,7 @@ static inline int mthca_poll_one(struct mthca_dev *dev,
+ 			entry->byte_len  = MTHCA_ATOMIC_BYTE_LEN;
+ 			break;
+ 		default:
+-			entry->opcode    = MTHCA_OPCODE_INVALID;
++			entry->opcode = 0xFF;
+ 			break;
+ 		}
+ 	} else {
+diff --git a/drivers/infiniband/hw/mthca/mthca_dev.h b/drivers/infiniband/hw/mthca/mthca_dev.h
+index 5508afbf1c677..b487e1339c7fb 100644
+--- a/drivers/infiniband/hw/mthca/mthca_dev.h
++++ b/drivers/infiniband/hw/mthca/mthca_dev.h
+@@ -105,7 +105,6 @@ enum {
+ 	MTHCA_OPCODE_ATOMIC_CS      = 0x11,
+ 	MTHCA_OPCODE_ATOMIC_FA      = 0x12,
+ 	MTHCA_OPCODE_BIND_MW        = 0x18,
+-	MTHCA_OPCODE_INVALID        = 0xff
+ };
  
- 	i = of_property_match_string(np, "clock-names", "td_slck");
- 	if (i < 0)
-@@ -209,10 +208,7 @@ static void __init sam9x60_pmc_setup(struct device_node *np)
- 	if (IS_ERR(hw))
- 		goto err_free;
- 
--	bypass = of_property_read_bool(np, "atmel,osc-bypass");
--
--	hw = at91_clk_register_main_osc(regmap, "main_osc", mainxtal_name,
--					bypass);
-+	hw = at91_clk_register_main_osc(regmap, "main_osc", mainxtal_name, 0);
- 	if (IS_ERR(hw))
- 		goto err_free;
- 	main_osc_hw = hw;
+ enum {
 -- 
 2.27.0
 
