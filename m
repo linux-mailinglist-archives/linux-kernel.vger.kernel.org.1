@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BB242E3BDB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:55:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 500482E38D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:16:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405289AbgL1Nzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:55:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57308 "EHLO mail.kernel.org"
+        id S1732730AbgL1NPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:15:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405266AbgL1Nzh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:55:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C4C320715;
-        Mon, 28 Dec 2020 13:54:56 +0000 (UTC)
+        id S1732707AbgL1NPg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:15:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EE67207C9;
+        Mon, 28 Dec 2020 13:14:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163697;
-        bh=NecWOzjnZUiftZew2B7dyjBERYLrGFApJjP+NCByVC8=;
+        s=korg; t=1609161296;
+        bh=etFg+hdY9cYDgYnDmZBzPds9btDoJxw4EV86C3JFYyc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VKUuKEmnK7TkS8fUdYaN+as92ITh9Zx40GmY0u+hme+7fUpb/ZRy+D/eS0ETWbERb
-         n7d/VCORxASeAl4ArH79bTeCNXx/2qnoeJGemrVKMYbm/z2REvcvWJUQDCTILDkqkQ
-         jWTc6QvFB3O7AmnnZ8TDYYHK8CRcFWipFf6e2WWE=
+        b=x1xVUCnOJAfez7ayxa/xon4EW8Y72F2M5X7k5gzieZrKZDi4lMX9tvp10d/UtEZB0
+         PGDRSElVGaCPtRey3r+YCwoAO5UDmjznEFmXrUnU0+DzCrkA+x0Jzr8WjDiz3ErPT5
+         yelRYoaGXkMbMXk+etvnI1TBXALQdnUWnNiLxKUI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@kernel.org,
-        Connor McAdams <conmanx360@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 335/453] ALSA: hda/ca0132 - Fix AE-5 rear headphone pincfg.
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 166/242] net: allwinner: Fix some resources leak in the error handling path of the probe and in the remove function
 Date:   Mon, 28 Dec 2020 13:49:31 +0100
-Message-Id: <20201228124953.343674398@linuxfoundation.org>
+Message-Id: <20201228124912.873105684@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +41,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Connor McAdams <conmanx360@gmail.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit c697ba85a94b8f65bf90dec5ef9af5c39c3e73b2 upstream.
+[ Upstream commit 322e53d1e2529ae9d501f5e0f20604a79b873aef ]
 
-The Windows driver sets the pincfg for the AE-5's rear-headphone to
-report as a microphone. This causes issues with Pulseaudio mistakenly
-believing there is no headphone plugged in. In Linux, we should instead
-set it to be a headphone.
+'irq_of_parse_and_map()' should be balanced by a corresponding
+'irq_dispose_mapping()' call. Otherwise, there is some resources leaks.
 
-Fixes: a6b0961b39896 ("ALSA: hda/ca0132 - fix AE-5 pincfg")
-Cc: <stable@kernel.org>
-Signed-off-by: Connor McAdams <conmanx360@gmail.com>
-Link: https://lore.kernel.org/r/20201208195223.424753-1-conmanx360@gmail.com
-Link: https://lore.kernel.org/r/20201210173550.2968-1-conmanx360@gmail.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Add such a call in the error handling path of the probe function and in the
+remove function.
 
+Fixes: 492205050d77 ("net: Add EMAC ethernet driver found on Allwinner A10 SoC's")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/20201214202117.146293-1-christophe.jaillet@wanadoo.fr
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_ca0132.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/allwinner/sun4i-emac.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/sound/pci/hda/patch_ca0132.c
-+++ b/sound/pci/hda/patch_ca0132.c
-@@ -1147,7 +1147,7 @@ static const struct hda_pintbl ae5_pincf
- 	{ 0x0e, 0x01c510f0 }, /* SPDIF In */
- 	{ 0x0f, 0x01017114 }, /* Port A -- Rear L/R. */
- 	{ 0x10, 0x01017012 }, /* Port D -- Center/LFE or FP Hp */
--	{ 0x11, 0x01a170ff }, /* Port B -- LineMicIn2 / Rear Headphone */
-+	{ 0x11, 0x012170ff }, /* Port B -- LineMicIn2 / Rear Headphone */
- 	{ 0x12, 0x01a170f0 }, /* Port C -- LineIn1 */
- 	{ 0x13, 0x908700f0 }, /* What U Hear In*/
- 	{ 0x18, 0x50d000f0 }, /* N/A */
+diff --git a/drivers/net/ethernet/allwinner/sun4i-emac.c b/drivers/net/ethernet/allwinner/sun4i-emac.c
+index c458b81ba63af..d249a4309da2f 100644
+--- a/drivers/net/ethernet/allwinner/sun4i-emac.c
++++ b/drivers/net/ethernet/allwinner/sun4i-emac.c
+@@ -847,13 +847,13 @@ static int emac_probe(struct platform_device *pdev)
+ 	db->clk = devm_clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(db->clk)) {
+ 		ret = PTR_ERR(db->clk);
+-		goto out_iounmap;
++		goto out_dispose_mapping;
+ 	}
+ 
+ 	ret = clk_prepare_enable(db->clk);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Error couldn't enable clock (%d)\n", ret);
+-		goto out_iounmap;
++		goto out_dispose_mapping;
+ 	}
+ 
+ 	ret = sunxi_sram_claim(&pdev->dev);
+@@ -910,6 +910,8 @@ out_release_sram:
+ 	sunxi_sram_release(&pdev->dev);
+ out_clk_disable_unprepare:
+ 	clk_disable_unprepare(db->clk);
++out_dispose_mapping:
++	irq_dispose_mapping(ndev->irq);
+ out_iounmap:
+ 	iounmap(db->membase);
+ out:
+@@ -928,6 +930,7 @@ static int emac_remove(struct platform_device *pdev)
+ 	unregister_netdev(ndev);
+ 	sunxi_sram_release(&pdev->dev);
+ 	clk_disable_unprepare(db->clk);
++	irq_dispose_mapping(ndev->irq);
+ 	iounmap(db->membase);
+ 	free_netdev(ndev);
+ 
+-- 
+2.27.0
+
 
 
