@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 825D12E65BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:07:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2C482E68AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:40:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389286AbgL1N0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:26:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54456 "EHLO mail.kernel.org"
+        id S2441427AbgL1Qjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:39:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389120AbgL1N0C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:26:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ADE2A22A84;
-        Mon, 28 Dec 2020 13:25:46 +0000 (UTC)
+        id S1729189AbgL1M7y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:59:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B677D22583;
+        Mon, 28 Dec 2020 12:59:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161947;
-        bh=OsXEu+1bLjL7vCoVVfeanmBzQ/qMtk8V3PeEXvPDxHk=;
+        s=korg; t=1609160353;
+        bh=4RVsrHt+swWkgwGUunNrBplzgzeOI/Zp42aT6hjTzQ0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=luWAMQshLhuAMzRxHmaAVoT7f2K/jgfCWxamduyZPkK2Xc/HNZjJI3hEm8vEpG48j
-         R+RTKFi5wgudEmEHsM6/pBqEDBXb3p8q0x1gsx45APG0kLgnoutDOKA9oYKa/8HOgb
-         XfrY8XiWtF6Dk3ZDnf/T5A/AFPHEx2NIbtahXNIE=
+        b=x7kN5M8vm/ZWk20t3ZUehIJNL7HgnyLgYEAtFg/5GdjNM7Fb9Trj1UQBaDGdMqKyC
+         hKwD8VahcbrR7viq19ofAzkVy3UGNSOePCrHmst0yEsPx73sZascJ1X/SJDGV0BL1i
+         6/LLMmJKRzSZo6//MftwQYZLi3jnFp6vardjBwiU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jack Xu <jack.xu@intel.com>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Fiona Trahe <fiona.trahe@intel.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org, Vineet Gupta <vgupta@synopsys.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 137/346] crypto: qat - fix status check in qat_hal_put_rel_rd_xfer()
-Date:   Mon, 28 Dec 2020 13:47:36 +0100
-Message-Id: <20201228124926.414690448@linuxfoundation.org>
+Subject: [PATCH 4.9 005/175] ARC: stack unwinding: dont assume non-current task is sleeping
+Date:   Mon, 28 Dec 2020 13:47:38 +0100
+Message-Id: <20201228124853.506539508@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,42 +39,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jack Xu <jack.xu@intel.com>
+From: Vineet Gupta <vgupta@synopsys.com>
 
-[ Upstream commit 3b5c130fb2e4c045369791c33c83b59f6e84f7d6 ]
+[ Upstream commit e42404fa10fd11fe72d0a0e149a321d10e577715 ]
 
-The return value of qat_hal_rd_ae_csr() is always a CSR value and never
-a status and should not be stored in the status variable of
-qat_hal_put_rel_rd_xfer().
+To start stack unwinding (SP, PC and BLINK) are needed. When the
+explicit execution context (pt_regs etc) is not available, unwinder
+assumes the task is sleeping (in __switch_to()) and fetches SP and BLINK
+from kernel mode stack.
 
-This removes the assignment as qat_hal_rd_ae_csr() is not expected to
-fail.
-A more comprehensive handling of the theoretical corner case which could
-result in a fail will be submitted in a separate patch.
+But this assumption is not true, specially in a SMP system, when top
+runs on 1 core, there may be active running processes on all cores.
 
-Fixes: 8c9478a400b7 ("crypto: qat - reduce stack size with KASAN")
-Signed-off-by: Jack Xu <jack.xu@intel.com>
-Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Reviewed-by: Fiona Trahe <fiona.trahe@intel.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+So when unwinding non courrent tasks, ensure they are NOT running.
+
+And while at it, handle the self unwinding case explicitly.
+
+This came out of investigation of a customer reported hang with
+rcutorture+top
+
+Link: https://github.com/foss-for-synopsys-dwc-arc-processors/linux/issues/31
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/qat/qat_common/qat_hal.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arc/kernel/stacktrace.c | 23 +++++++++++++++--------
+ 1 file changed, 15 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/crypto/qat/qat_common/qat_hal.c b/drivers/crypto/qat/qat_common/qat_hal.c
-index ff149e176f649..dac130bb807ae 100644
---- a/drivers/crypto/qat/qat_common/qat_hal.c
-+++ b/drivers/crypto/qat/qat_common/qat_hal.c
-@@ -1189,7 +1189,7 @@ static int qat_hal_put_rel_rd_xfer(struct icp_qat_fw_loader_handle *handle,
- 	unsigned short mask;
- 	unsigned short dr_offset = 0x10;
+diff --git a/arch/arc/kernel/stacktrace.c b/arch/arc/kernel/stacktrace.c
+index 165158735aa6b..3ee19b1e79be5 100644
+--- a/arch/arc/kernel/stacktrace.c
++++ b/arch/arc/kernel/stacktrace.c
+@@ -39,15 +39,15 @@
  
--	status = ctx_enables = qat_hal_rd_ae_csr(handle, ae, CTX_ENABLES);
-+	ctx_enables = qat_hal_rd_ae_csr(handle, ae, CTX_ENABLES);
- 	if (CE_INUSE_CONTEXTS & ctx_enables) {
- 		if (ctx & 0x1) {
- 			pr_err("QAT: bad 4-ctx mode,ctx=0x%x\n", ctx);
+ #ifdef CONFIG_ARC_DW2_UNWIND
+ 
+-static void seed_unwind_frame_info(struct task_struct *tsk,
+-				   struct pt_regs *regs,
+-				   struct unwind_frame_info *frame_info)
++static int
++seed_unwind_frame_info(struct task_struct *tsk, struct pt_regs *regs,
++		       struct unwind_frame_info *frame_info)
+ {
+ 	/*
+ 	 * synchronous unwinding (e.g. dump_stack)
+ 	 *  - uses current values of SP and friends
+ 	 */
+-	if (tsk == NULL && regs == NULL) {
++	if (regs == NULL && (tsk == NULL || tsk == current)) {
+ 		unsigned long fp, sp, blink, ret;
+ 		frame_info->task = current;
+ 
+@@ -66,11 +66,15 @@ static void seed_unwind_frame_info(struct task_struct *tsk,
+ 		frame_info->call_frame = 0;
+ 	} else if (regs == NULL) {
+ 		/*
+-		 * Asynchronous unwinding of sleeping task
+-		 *  - Gets SP etc from task's pt_regs (saved bottom of kernel
+-		 *    mode stack of task)
++		 * Asynchronous unwinding of a likely sleeping task
++		 *  - first ensure it is actually sleeping
++		 *  - if so, it will be in __switch_to, kernel mode SP of task
++		 *    is safe-kept and BLINK at a well known location in there
+ 		 */
+ 
++		if (tsk->state == TASK_RUNNING)
++			return -1;
++
+ 		frame_info->task = tsk;
+ 
+ 		frame_info->regs.r27 = TSK_K_FP(tsk);
+@@ -104,6 +108,8 @@ static void seed_unwind_frame_info(struct task_struct *tsk,
+ 		frame_info->regs.r63 = regs->ret;
+ 		frame_info->call_frame = 0;
+ 	}
++
++	return 0;
+ }
+ 
+ #endif
+@@ -117,7 +123,8 @@ arc_unwind_core(struct task_struct *tsk, struct pt_regs *regs,
+ 	unsigned int address;
+ 	struct unwind_frame_info frame_info;
+ 
+-	seed_unwind_frame_info(tsk, regs, &frame_info);
++	if (seed_unwind_frame_info(tsk, regs, &frame_info))
++		return 0;
+ 
+ 	while (1) {
+ 		address = UNW_PC(&frame_info);
 -- 
 2.27.0
 
