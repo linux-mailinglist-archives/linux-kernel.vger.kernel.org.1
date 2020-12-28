@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 267AD2E37D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:01:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 947012E3896
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:14:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729557AbgL1NA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:00:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56678 "EHLO mail.kernel.org"
+        id S1731974AbgL1NML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:12:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729513AbgL1NAm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:00:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A31E522582;
-        Mon, 28 Dec 2020 13:00:26 +0000 (UTC)
+        id S1731815AbgL1NLk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:11:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C6E1207F7;
+        Mon, 28 Dec 2020 13:11:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160427;
-        bh=32N3iBa7n5TJdAl+gIU8U6PfxFqNxfabR2e5sxFeG04=;
+        s=korg; t=1609161084;
+        bh=VqL2OATNs0qR6LC6351gPx+pmlFZtKKbIT+PUkmUzGM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o/ximupigvadfxW135KkSgjuXimTlM35G8VlG9JzwfK2zkJtVY5RaBCbUb0cgMM1W
-         5o/M38v0WiNXRN4KOD1ePl4e9M90JFCLb6w2H0hPK6BQwZCcqavYRcvxi1BTSiQ0Fj
-         gsbIlNQ9NR7hiLzIgmgtRwUJaSsAZ3P3eROOKtdY=
+        b=RtF6N6UnTBY2E1GK0fRNeonZ2b/rVkwtjRowj0het5xIpFmxKomVLfkjJzIYxZ2N/
+         pcjvZuK9bxlogddp+iSPp4RQWc5kpHlo/iXPrqcC2NcaNF3pL+SlgDsgYJjP8uLOXS
+         2mWIfcgxBix/GUCKaec7boI391NEVDZI1HFcZ54o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Antti Palosaari <crope@iki.fi>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        syzbot+c60ddb60b685777d9d59@syzkaller.appspotmail.com
-Subject: [PATCH 4.9 047/175] media: msi2500: assign SPI bus number dynamically
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 095/242] media: solo6x10: fix missing snd_card_free in error handling case
 Date:   Mon, 28 Dec 2020 13:48:20 +0100
-Message-Id: <20201228124855.535574802@linuxfoundation.org>
+Message-Id: <20201228124909.364407952@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Antti Palosaari <crope@iki.fi>
+From: Qinglang Miao <miaoqinglang@huawei.com>
 
-commit 9c60cc797cf72e95bb39f32316e9f0e5f85435f9 upstream.
+[ Upstream commit dcdff74fa6bc00c32079d0bebd620764c26f2d89 ]
 
-SPI bus number must be assigned dynamically for each device, otherwise it
-will crash when multiple devices are plugged to system.
+Fix to goto snd_error in error handling case when fails
+to do snd_ctl_add, as done elsewhere in this function.
 
-Reported-and-tested-by: syzbot+c60ddb60b685777d9d59@syzkaller.appspotmail.com
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Antti Palosaari <crope@iki.fi>
+Fixes: 28cae868cd24 ("[media] solo6x10: move out of staging into drivers/media/pci.")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/msi2500/msi2500.c |    2 +-
+ drivers/media/pci/solo6x10/solo6x10-g723.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/media/usb/msi2500/msi2500.c
-+++ b/drivers/media/usb/msi2500/msi2500.c
-@@ -1250,7 +1250,7 @@ static int msi2500_probe(struct usb_inte
- 	}
+diff --git a/drivers/media/pci/solo6x10/solo6x10-g723.c b/drivers/media/pci/solo6x10/solo6x10-g723.c
+index 81be1b8df7584..0cbb3ee96e1e8 100644
+--- a/drivers/media/pci/solo6x10/solo6x10-g723.c
++++ b/drivers/media/pci/solo6x10/solo6x10-g723.c
+@@ -401,7 +401,7 @@ int solo_g723_init(struct solo_dev *solo_dev)
  
- 	dev->master = master;
--	master->bus_num = 0;
-+	master->bus_num = -1;
- 	master->num_chipselect = 1;
- 	master->transfer_one_message = msi2500_transfer_one_message;
- 	spi_master_set_devdata(master, dev);
+ 	ret = snd_ctl_add(card, snd_ctl_new1(&kctl, solo_dev));
+ 	if (ret < 0)
+-		return ret;
++		goto snd_error;
+ 
+ 	ret = solo_snd_pcm_init(solo_dev);
+ 	if (ret < 0)
+-- 
+2.27.0
+
 
 
