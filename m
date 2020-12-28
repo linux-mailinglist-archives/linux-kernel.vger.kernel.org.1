@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E15592E373E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:54:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EE782E39C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:29:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728017AbgL1Mw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:52:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49820 "EHLO mail.kernel.org"
+        id S2389853AbgL1N2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:28:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56724 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727994AbgL1Mwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:52:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 04021229C6;
-        Mon, 28 Dec 2020 12:51:54 +0000 (UTC)
+        id S2389792AbgL1N15 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:27:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 174DC22475;
+        Mon, 28 Dec 2020 13:27:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609159915;
-        bh=m17xW3VM15KVS2s8C5E4GEW6nQag9CrdQWXtRVV2uOY=;
+        s=korg; t=1609162036;
+        bh=H3xXG7heZmr8E3pR8ey6f5OW8FXgOIqPx2xWFJZAaNc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q9nOLWmW7wEZeszjPKSlzPnMt9wsAxXUCSyk7oexki2q3rFwPA7zhh7IYPSUdyjn9
-         k1T6JpP/SoDjBMk6WxIl8JQi431qVh4OL27yaOdw+zvCPSoXzh9OQfbq6hDTNc4CjG
-         aZbHJbIr44l0EhlY8QdtJgbVELRa727Saar1zu9w=
+        b=OuipYNXLHPA85VNGA4HNXNjSVdMHS4+LwruL5KJetHh4t26KdOKyZ33h18EtX/4kE
+         EqkXfV/NTvcMcIdMvSYaw9FYr4lWmVNIhJJ13PhkNkE86o1VawdCC8P2qIzAAIfgDb
+         P2ExYBmwQul9evQ+RzY4hUDavnl/ZRa9JEyjWGys=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Lukas Wunner <lukas@wunner.de>
-Subject: [PATCH 4.4 002/132] spi: bcm2835aux: Restore err assignment in bcm2835aux_spi_probe
+        Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>,
+        Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 167/346] media: siano: fix memory leak of debugfs members in smsdvb_hotplug
 Date:   Mon, 28 Dec 2020 13:48:06 +0100
-Message-Id: <20201228124846.541065310@linuxfoundation.org>
+Message-Id: <20201228124927.864396552@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,55 +42,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <natechancellor@gmail.com>
+From: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
 
-[ Upstream commit d853b3406903a7dc5b14eb5bada3e8cd677f66a2 ]
+[ Upstream commit abf287eeff4c6da6aa804bbd429dfd9d0dfb6ea7 ]
 
-Clang warns:
+When dvb_create_media_graph fails, the debugfs kept inside client should
+be released. However, the current implementation does not release them.
 
-drivers/spi/spi-bcm2835aux.c:532:50: warning: variable 'err' is
-uninitialized when used here [-Wuninitialized]
-                dev_err(&pdev->dev, "could not get clk: %d\n", err);
-                                                               ^~~
-./include/linux/dev_printk.h:112:32: note: expanded from macro 'dev_err'
-        _dev_err(dev, dev_fmt(fmt), ##__VA_ARGS__)
-                                      ^~~~~~~~~~~
-drivers/spi/spi-bcm2835aux.c:495:9: note: initialize the variable 'err'
-to silence this warning
-        int err;
-               ^
-                = 0
-1 warning generated.
+Fix this by adding a new goto label to call smsdvb_debugfs_release.
 
-Restore the assignment so that the error value can be used in the
-dev_err statement and there is no uninitialized memory being leaked.
-
-Fixes: e13ee6cc4781 ("spi: bcm2835aux: Fix use-after-free on unbind")
-Link: https://github.com/ClangBuiltLinux/linux/issues/1199
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-Link: https://lore.kernel.org/r/20201113180701.455541-1-natechancellor@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-[lukas: backport to 4.19-stable, add stable designation]
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Cc: <stable@vger.kernel.org> # v4.4+: e13ee6cc4781: spi: bcm2835aux: Fix use-after-free on unbind
-Cc: <stable@vger.kernel.org> # v4.4+
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 0d3ab8410dcb ("[media] dvb core: must check dvb_create_media_graph()")
+Signed-off-by: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
+Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-bcm2835aux.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/media/common/siano/smsdvb-main.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/drivers/spi/spi-bcm2835aux.c
-+++ b/drivers/spi/spi-bcm2835aux.c
-@@ -416,8 +416,9 @@ static int bcm2835aux_spi_probe(struct p
- 
- 	bs->clk = devm_clk_get(&pdev->dev, NULL);
- 	if ((!bs->clk) || (IS_ERR(bs->clk))) {
-+		err = PTR_ERR(bs->clk);
- 		dev_err(&pdev->dev, "could not get clk: %d\n", err);
--		return PTR_ERR(bs->clk);
-+		return err;
+diff --git a/drivers/media/common/siano/smsdvb-main.c b/drivers/media/common/siano/smsdvb-main.c
+index 43cfd1dbda014..afca47b97c2a2 100644
+--- a/drivers/media/common/siano/smsdvb-main.c
++++ b/drivers/media/common/siano/smsdvb-main.c
+@@ -1180,12 +1180,15 @@ static int smsdvb_hotplug(struct smscore_device_t *coredev,
+ 	rc = dvb_create_media_graph(&client->adapter, true);
+ 	if (rc < 0) {
+ 		pr_err("dvb_create_media_graph failed %d\n", rc);
+-		goto client_error;
++		goto media_graph_error;
  	}
  
- 	bs->irq = platform_get_irq(pdev, 0);
+ 	pr_info("DVB interface registered.\n");
+ 	return 0;
+ 
++media_graph_error:
++	smsdvb_debugfs_release(client);
++
+ client_error:
+ 	dvb_unregister_frontend(&client->frontend);
+ 
+-- 
+2.27.0
+
 
 
