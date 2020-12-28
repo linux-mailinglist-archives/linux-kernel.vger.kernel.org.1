@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A85502E3F12
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:38:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F094B2E3ED9
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:33:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504922AbgL1OdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:33:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40238 "EHLO mail.kernel.org"
+        id S2504934AbgL1OdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:33:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2504795AbgL1Ocp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:32:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 99AB02063A;
-        Mon, 28 Dec 2020 14:32:29 +0000 (UTC)
+        id S2504813AbgL1Ocs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:32:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8443A206D4;
+        Mon, 28 Dec 2020 14:32:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165950;
-        bh=B88tFzYB7Wcia0t530oTc625taDcTdsUFlGMrJnGv3A=;
+        s=korg; t=1609165953;
+        bh=smG/aTLmxfW2OTiLlHbG4bk9Dx2lwdkpKXFG26FYYK8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BqoZdjM6u2Sxws9zvgkdlr5N5YX5pzuNG0nOAfu8Kfyug6zT9mqedDZaG2l+APjdO
-         cQSuzSojmkTD4kqpAj10c0jw2jwU9fTftvHidhfQ8vz83i7y2pbeQUREQDHnLsT/NF
-         Fbu7rNqSp9bPLlvfIRhmJX1VDsvA36du7/uJ/SFw=
+        b=VedWapl3QYltKdg9JGOmed6QJY32CE7Uqp9rPSvqQWXyZ8UMonLuKapNiiIb9u7IG
+         7M8tQI8RyJKEmXSMN1oc62Oa9Hpn6wySqcoLtS/YxF487ykGSpeeTxoDhWK0OSa/DS
+         xcl6ECEzaOHYLX0LxJ9iVrIisqphJmx/lxcOQ+W4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        stable@vger.kernel.org,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>,
         Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Daniel Baluta <daniel.baluta@gmail.com>,
-        Daniel Baluta <daniel.baluta@oss.nxp.com>,
-        Stable@vger.kernel.org
-Subject: [PATCH 5.10 682/717] iio:imu:bmi160: Fix alignment and data leak issues
-Date:   Mon, 28 Dec 2020 13:51:20 +0100
-Message-Id: <20201228125053.656836534@linuxfoundation.org>
+        Dan Murphy <dmurphy@ti.com>, Stable@vger.kernel.org
+Subject: [PATCH 5.10 683/717] iio:adc:ti-ads124s08: Fix buffer being too long.
+Date:   Mon, 28 Dec 2020 13:51:21 +0100
+Message-Id: <20201228125053.703955270@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
 References: <20201228125020.963311703@linuxfoundation.org>
@@ -45,76 +43,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-commit 7b6b51234df6cd8b04fe736b0b89c25612d896b8 upstream.
+commit b0bd27f02d768e3a861c4e6c27f8e369720e6c25 upstream.
 
-One of a class of bugs pointed out by Lars in a recent review.
-iio_push_to_buffers_with_timestamp assumes the buffer used is aligned
-to the size of the timestamp (8 bytes).  This is not guaranteed in
-this driver which uses an array of smaller elements on the stack.
-As Lars also noted this anti pattern can involve a leak of data to
-userspace and that indeed can happen here.  We close both issues by
-moving to a suitable array in the iio_priv() data with alignment
-explicitly requested.  This data is allocated with kzalloc() so no
-data can leak apart from previous readings.
+The buffer is expressed as a u32 array, yet the extra space for
+the s64 timestamp was expressed as sizeof(s64)/sizeof(u16).
+This will result in 2 extra u32 elements.
+Fix by dividing by sizeof(u32).
 
-In this driver, depending on which channels are enabled, the timestamp
-can be in a number of locations.  Hence we cannot use a structure
-to specify the data layout without it being misleading.
-
-Fixes: 77c4ad2d6a9b ("iio: imu: Add initial support for Bosch BMI160")
-Reported-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Fixes: e717f8c6dfec ("iio: adc: Add the TI ads124s08 ADC code")
+Signed-off-by: Jonathan Cameron<Jonathan.Cameron@huawei.com>
 Reviewed-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc: Daniel Baluta  <daniel.baluta@gmail.com>
-Cc: Daniel Baluta <daniel.baluta@oss.nxp.com>
+Cc: Dan Murphy <dmurphy@ti.com>
 Cc: <Stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200920112742.170751-6-jic23@kernel.org
+Link: https://lore.kernel.org/r/20200920112742.170751-8-jic23@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/imu/bmi160/bmi160.h      |    7 +++++++
- drivers/iio/imu/bmi160/bmi160_core.c |    6 ++----
- 2 files changed, 9 insertions(+), 4 deletions(-)
+ drivers/iio/adc/ti-ads124s08.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/iio/imu/bmi160/bmi160.h
-+++ b/drivers/iio/imu/bmi160/bmi160.h
-@@ -10,6 +10,13 @@ struct bmi160_data {
- 	struct iio_trigger *trig;
- 	struct regulator_bulk_data supplies[2];
- 	struct iio_mount_matrix orientation;
-+	/*
-+	 * Ensure natural alignment for timestamp if present.
-+	 * Max length needed: 2 * 3 channels + 4 bytes padding + 8 byte ts.
-+	 * If fewer channels are enabled, less space may be needed, as
-+	 * long as the timestamp is still aligned to 8 bytes.
-+	 */
-+	__le16 buf[12] __aligned(8);
- };
- 
- extern const struct regmap_config bmi160_regmap_config;
---- a/drivers/iio/imu/bmi160/bmi160_core.c
-+++ b/drivers/iio/imu/bmi160/bmi160_core.c
-@@ -427,8 +427,6 @@ static irqreturn_t bmi160_trigger_handle
+--- a/drivers/iio/adc/ti-ads124s08.c
++++ b/drivers/iio/adc/ti-ads124s08.c
+@@ -269,7 +269,7 @@ static irqreturn_t ads124s_trigger_handl
  	struct iio_poll_func *pf = p;
  	struct iio_dev *indio_dev = pf->indio_dev;
- 	struct bmi160_data *data = iio_priv(indio_dev);
--	__le16 buf[12];
--	/* 2 sens x 3 axis x __le16 + 2 x __le16 pad + 4 x __le16 tstamp */
- 	int i, ret, j = 0, base = BMI160_REG_DATA_MAGN_XOUT_L;
- 	__le16 sample;
+ 	struct ads124s_private *priv = iio_priv(indio_dev);
+-	u32 buffer[ADS124S08_MAX_CHANNELS + sizeof(s64)/sizeof(u16)];
++	u32 buffer[ADS124S08_MAX_CHANNELS + sizeof(s64)/sizeof(u32)];
+ 	int scan_index, j = 0;
+ 	int ret;
  
-@@ -438,10 +436,10 @@ static irqreturn_t bmi160_trigger_handle
- 				       &sample, sizeof(sample));
- 		if (ret)
- 			goto done;
--		buf[j++] = sample;
-+		data->buf[j++] = sample;
- 	}
- 
--	iio_push_to_buffers_with_timestamp(indio_dev, buf, pf->timestamp);
-+	iio_push_to_buffers_with_timestamp(indio_dev, data->buf, pf->timestamp);
- done:
- 	iio_trigger_notify_done(indio_dev->trig);
- 	return IRQ_HANDLED;
 
 
