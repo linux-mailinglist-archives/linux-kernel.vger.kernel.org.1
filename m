@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47A472E3D8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:17:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED83F2E40A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:56:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441324AbgL1ORA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:17:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51720 "EHLO mail.kernel.org"
+        id S2441338AbgL1ORB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:17:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51890 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441219AbgL1OQi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:16:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BEA41206D4;
-        Mon, 28 Dec 2020 14:15:57 +0000 (UTC)
+        id S2441226AbgL1OQl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:16:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A12D4224D2;
+        Mon, 28 Dec 2020 14:16:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609164958;
-        bh=i1Dt65RvreWIrBV+6ERdoz0JaZiix6xmnIsd71PAcxQ=;
+        s=korg; t=1609164961;
+        bh=6NUQfFcG03f7O66ImdpoJiKW22X+jMROlqTRRLmSNrY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pJxCxSG8D1IVyY49Rh6mIhdokr9F9ktU4FoCH3nzarORZH8rNNpy5g0H5vE9SMRgL
-         S3faZVoyinGAqtyWhHkXPjVLXPxIpyO397WxDjHvQdNqvcYXJOqhtg/LfvPMtYkpgx
-         cucOmKgU4K18B8IoTmOWX5ZprjFCOJQYfFHvZUho=
+        b=kSe9Fw+oef8du/iCw9mWweSwZ5fHhVHxv9b1tSP9FpB1AKghl8cDVy54q9LU1lPxC
+         +DeWVYfAscxVPStyUy8eoOU9QzsTABWYGgMqTMgpTgld3woASNMZHU60EAz4vUwtdm
+         redT0Y8LORaP1FW/i7aeRpPaElvuV/1P5CSD3O4I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Karan Tilak Kumar <kartilak@cisco.com>,
-        Zhang Changzhong <zhangchangzhong@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Vadim Pasternak <vadimp@nvidia.com>,
+        Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 360/717] scsi: fnic: Fix error return code in fnic_probe()
-Date:   Mon, 28 Dec 2020 13:45:58 +0100
-Message-Id: <20201228125038.260978936@linuxfoundation.org>
+Subject: [PATCH 5.10 361/717] platform/x86: mlx-platform: Fix item counter assignment for MSN2700, MSN24xx systems
+Date:   Mon, 28 Dec 2020 13:45:59 +0100
+Message-Id: <20201228125038.309393286@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
 References: <20201228125020.963311703@linuxfoundation.org>
@@ -42,36 +40,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Changzhong <zhangchangzhong@huawei.com>
+From: Vadim Pasternak <vadimp@nvidia.com>
 
-[ Upstream commit d4fc94fe65578738ded138e9fce043db6bfc3241 ]
+[ Upstream commit ba4939f1dd46dde08c2f9b9d7ac86ed3ea7ead86 ]
 
-Return a negative error code from the error handling case instead of 0 as
-done elsewhere in this function.
+Fix array names to match assignments for data items and data items
+counter in 'mlxplat_mlxcpld_default_items' structure for:
+	.data = mlxplat_mlxcpld_default_pwr_items_data,
+	.count = ARRAY_SIZE(mlxplat_mlxcpld_pwr),
+and
+	.data = mlxplat_mlxcpld_default_fan_items_data,
+	.count = ARRAY_SIZE(mlxplat_mlxcpld_fan),
 
-Link: https://lore.kernel.org/r/1607068060-31203-1-git-send-email-zhangchangzhong@huawei.com
-Fixes: 5df6d737dd4b ("[SCSI] fnic: Add new Cisco PCI-Express FCoE HBA")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Reviewed-by: Karan Tilak Kumar <kartilak@cisco.com>
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Replace:
+- 'mlxplat_mlxcpld_pwr' by 'mlxplat_mlxcpld_default_pwr_items_data' for
+   ARRAY_SIZE() calculation.
+- 'mlxplat_mlxcpld_fan' by 'mlxplat_mlxcpld_default_fan_items_data'
+   for ARRAY_SIZE() calculation.
+
+Fixes: c6acad68eb2d ("platform/mellanox: mlxreg-hotplug: Modify to use a regmap interface")
+Signed-off-by: Vadim Pasternak <vadimp@nvidia.com>
+Link: https://lore.kernel.org/r/20201207174745.22889-2-vadimp@nvidia.com
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/fnic/fnic_main.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/platform/x86/mlx-platform.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/fnic/fnic_main.c b/drivers/scsi/fnic/fnic_main.c
-index 5f8a7ef8f6a8e..4f7befb43d604 100644
---- a/drivers/scsi/fnic/fnic_main.c
-+++ b/drivers/scsi/fnic/fnic_main.c
-@@ -740,6 +740,7 @@ static int fnic_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	for (i = 0; i < FNIC_IO_LOCKS; i++)
- 		spin_lock_init(&fnic->io_req_lock[i]);
- 
-+	err = -ENOMEM;
- 	fnic->io_req_pool = mempool_create_slab_pool(2, fnic_io_req_cache);
- 	if (!fnic->io_req_pool)
- 		goto err_out_free_resources;
+diff --git a/drivers/platform/x86/mlx-platform.c b/drivers/platform/x86/mlx-platform.c
+index 598f445587649..902424e06180c 100644
+--- a/drivers/platform/x86/mlx-platform.c
++++ b/drivers/platform/x86/mlx-platform.c
+@@ -465,7 +465,7 @@ static struct mlxreg_core_item mlxplat_mlxcpld_default_items[] = {
+ 		.aggr_mask = MLXPLAT_CPLD_AGGR_PWR_MASK_DEF,
+ 		.reg = MLXPLAT_CPLD_LPC_REG_PWR_OFFSET,
+ 		.mask = MLXPLAT_CPLD_PWR_MASK,
+-		.count = ARRAY_SIZE(mlxplat_mlxcpld_pwr),
++		.count = ARRAY_SIZE(mlxplat_mlxcpld_default_pwr_items_data),
+ 		.inversed = 0,
+ 		.health = false,
+ 	},
+@@ -474,7 +474,7 @@ static struct mlxreg_core_item mlxplat_mlxcpld_default_items[] = {
+ 		.aggr_mask = MLXPLAT_CPLD_AGGR_FAN_MASK_DEF,
+ 		.reg = MLXPLAT_CPLD_LPC_REG_FAN_OFFSET,
+ 		.mask = MLXPLAT_CPLD_FAN_MASK,
+-		.count = ARRAY_SIZE(mlxplat_mlxcpld_fan),
++		.count = ARRAY_SIZE(mlxplat_mlxcpld_default_fan_items_data),
+ 		.inversed = 1,
+ 		.health = false,
+ 	},
 -- 
 2.27.0
 
