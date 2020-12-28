@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E4D72E3A31
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:34:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04FEC2E3F8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:42:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390433AbgL1NdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:33:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32848 "EHLO mail.kernel.org"
+        id S2502522AbgL1O1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:27:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34872 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387791AbgL1Nct (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:32:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B192206ED;
-        Mon, 28 Dec 2020 13:32:33 +0000 (UTC)
+        id S2502262AbgL1O1U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:27:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C73C4207B2;
+        Mon, 28 Dec 2020 14:27:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162353;
-        bh=clJZFqz47lC2BUHaEJunfWg2ftVZBeAXl1QyWTgrI7w=;
+        s=korg; t=1609165625;
+        bh=YUvDYKl1YaQMAKEZb9Jty3IKzOJ0k5YRbzPmcB8eCt0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QceeVKvbdIVYdhp+cCECujB/6wT2JQ2GnMtTOIg66jeOoqaeyv9ZGNOrV9U4vyqwO
-         OY0azWPwPSITrN21H3QB2HmPPzlQ8Z7jn8VKbhgxg/PNalMZOuBA8FDnfYWqpoENZM
-         2lqVA678pQOa3xMj0oGfId16zdIMvHnQ8refLBIM=
+        b=Oc1Nd6Bg2cjBDVwKcbXZHupxzfjs6MLEdyLJ/z3AX09Me1qJZR45wLeHkfGwyws4T
+         qcbaMcxPEkJVZ8xMxb7ZA/yyubUHRdiLGKqa5FREYvEBYygORpHmypfv+9/W7W+pQe
+         0mO/RIFhoBGJ9eVAj8uZdqxdB5+FKo9AnZl3vy/8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.19 275/346] ALSA: hda/realtek: Add quirk for MSI-GP73
-Date:   Mon, 28 Dec 2020 13:49:54 +0100
-Message-Id: <20201228124933.070950438@linuxfoundation.org>
+        stable@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Marc Zyngier <maz@kernel.org>
+Subject: [PATCH 5.10 597/717] KVM: arm64: Introduce handling of AArch32 TTBCR2 traps
+Date:   Mon, 28 Dec 2020 13:49:55 +0100
+Message-Id: <20201228125049.515721353@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,32 +39,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Marc Zyngier <maz@kernel.org>
 
-commit 09926202e939fd699650ac0fc0baa5757e069390 upstream.
+commit ca4e514774930f30b66375a974b5edcbebaf0e7e upstream.
 
-MSI-GP73 (with SSID 1462:1229) requires yet again
-ALC1220_FIXUP_CLEVO_P950 quirk like other MSI models.
+ARMv8.2 introduced TTBCR2, which shares TCR_EL1 with TTBCR.
+Gracefully handle traps to this register when HCR_EL2.TVM is set.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=210793
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201220080943.24839-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Cc: stable@vger.kernel.org
+Reported-by: James Morse <james.morse@arm.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/patch_realtek.c |    1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/include/asm/kvm_host.h |    1 +
+ arch/arm64/kvm/sys_regs.c         |    1 +
+ 2 files changed, 2 insertions(+)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -2491,6 +2491,7 @@ static const struct snd_pci_quirk alc882
- 	SND_PCI_QUIRK(0x1458, 0xa0ce, "Gigabyte X570 Aorus Xtreme", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x11f7, "MSI-GE63", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x1228, "MSI-GP63", ALC1220_FIXUP_CLEVO_P950),
-+	SND_PCI_QUIRK(0x1462, 0x1229, "MSI-GP73", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x1275, "MSI-GL63", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x1276, "MSI-GL73", ALC1220_FIXUP_CLEVO_P950),
- 	SND_PCI_QUIRK(0x1462, 0x1293, "MSI-GP65", ALC1220_FIXUP_CLEVO_P950),
+--- a/arch/arm64/include/asm/kvm_host.h
++++ b/arch/arm64/include/asm/kvm_host.h
+@@ -214,6 +214,7 @@ enum vcpu_sysreg {
+ #define c2_TTBR1	(TTBR1_EL1 * 2)	/* Translation Table Base Register 1 */
+ #define c2_TTBR1_high	(c2_TTBR1 + 1)	/* TTBR1 top 32 bits */
+ #define c2_TTBCR	(TCR_EL1 * 2)	/* Translation Table Base Control R. */
++#define c2_TTBCR2	(c2_TTBCR + 1)	/* Translation Table Base Control R. 2 */
+ #define c3_DACR		(DACR32_EL2 * 2)/* Domain Access Control Register */
+ #define c5_DFSR		(ESR_EL1 * 2)	/* Data Fault Status Register */
+ #define c5_IFSR		(IFSR32_EL2 * 2)/* Instruction Fault Status Register */
+--- a/arch/arm64/kvm/sys_regs.c
++++ b/arch/arm64/kvm/sys_regs.c
+@@ -1987,6 +1987,7 @@ static const struct sys_reg_desc cp15_re
+ 	{ Op1( 0), CRn( 2), CRm( 0), Op2( 0), access_vm_reg, NULL, c2_TTBR0 },
+ 	{ Op1( 0), CRn( 2), CRm( 0), Op2( 1), access_vm_reg, NULL, c2_TTBR1 },
+ 	{ Op1( 0), CRn( 2), CRm( 0), Op2( 2), access_vm_reg, NULL, c2_TTBCR },
++	{ Op1( 0), CRn( 2), CRm( 0), Op2( 3), access_vm_reg, NULL, c2_TTBCR2 },
+ 	{ Op1( 0), CRn( 3), CRm( 0), Op2( 0), access_vm_reg, NULL, c3_DACR },
+ 	{ Op1( 0), CRn( 5), CRm( 0), Op2( 0), access_vm_reg, NULL, c5_DFSR },
+ 	{ Op1( 0), CRn( 5), CRm( 0), Op2( 1), access_vm_reg, NULL, c5_IFSR },
 
 
