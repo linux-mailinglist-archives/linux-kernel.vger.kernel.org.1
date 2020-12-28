@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E112E6691
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:14:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36AFC2E68C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:42:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732855AbgL1NSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:18:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47074 "EHLO mail.kernel.org"
+        id S1729237AbgL1M6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:58:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731163AbgL1NSr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:18:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F309120728;
-        Mon, 28 Dec 2020 13:18:30 +0000 (UTC)
+        id S1729202AbgL1M6j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:58:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 92D8A22AAA;
+        Mon, 28 Dec 2020 12:57:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161511;
-        bh=xCzLdZIJGpDeYRSRaM9qH/0dI37zodJo6aRBYCqnnmg=;
+        s=korg; t=1609160279;
+        bh=KObyH6ahfweNZ/faqBtGnFVuOHfUERsb1qn7bYDbTRs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zcBPz4QH1RQyyxdet07d1QBTYOA1DgxdmCka/eOJdsi2TsxtsQMlYcEwT377L749h
-         UqKZsVt/oJ2jJENZFGjhDTUV/WFLtWlBU90pFenN624cxDcGkR9v7jIj/NzYRp9OKz
-         JgK4ynVzVSNOetSvRSCov347FltE7FMRE7iSef+Q=
+        b=2S9Oir9Ua1779BjsBuzb14Q5naYO82VeRXOeahTHgk3I0f+3A9fq2yiwq4gxHu+30
+         NdhjAA0b1rQLht37xBQbyfAf8XfgIrHe5Sxzmqgmtsa1lx4icsNZDnjZN5+YphjLqK
+         zwfCPj7cizev+H5f3tiP1jn/Haa/MbyZsapua370=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chunguang Xu <brookxu@tencent.com>,
-        Theodore Tso <tytso@mit.edu>, stable@kernel.org
-Subject: [PATCH 4.14 208/242] ext4: fix a memory leak of ext4_free_data
-Date:   Mon, 28 Dec 2020 13:50:13 +0100
-Message-Id: <20201228124914.915132835@linuxfoundation.org>
+        stable@vger.kernel.org, SeongJae Park <sjpark@amazon.de>,
+        Michael Kurth <mku@amazon.de>,
+        Pawel Wieczorkiewicz <wipawel@amazon.de>,
+        Juergen Gross <jgross@suse.com>
+Subject: [PATCH 4.4 130/132] xen/xenbus: Count pending messages for each watch
+Date:   Mon, 28 Dec 2020 13:50:14 +0100
+Message-Id: <20201228124852.693932549@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,40 +41,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunguang Xu <brookxu@tencent.com>
+From: SeongJae Park <sjpark@amazon.de>
 
-commit cca415537244f6102cbb09b5b90db6ae2c953bdd upstream.
+commit 3dc86ca6b4c8cfcba9da7996189d1b5a358a94fc upstream.
 
-When freeing metadata, we will create an ext4_free_data and
-insert it into the pending free list.  After the current
-transaction is committed, the object will be freed.
+This commit adds a counter of pending messages for each watch in the
+struct.  It is used to skip unnecessary pending messages lookup in
+'unregister_xenbus_watch()'.  It could also be used in 'will_handle'
+callback.
 
-ext4_mb_free_metadata() will check whether the area to be freed
-overlaps with the pending free list. If true, return directly. At this
-time, ext4_free_data is leaked.  Fortunately, the probability of this
-problem is small, since it only occurs if the file system is corrupted
-such that a block is claimed by more one inode and those inodes are
-deleted within a single jbd2 transaction.
+This is part of XSA-349
 
-Signed-off-by: Chunguang Xu <brookxu@tencent.com>
-Link: https://lore.kernel.org/r/1604764698-4269-8-git-send-email-brookxu@tencent.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Cc: stable@kernel.org
+Cc: stable@vger.kernel.org
+Signed-off-by: SeongJae Park <sjpark@amazon.de>
+Reported-by: Michael Kurth <mku@amazon.de>
+Reported-by: Pawel Wieczorkiewicz <wipawel@amazon.de>
+Reviewed-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
----
- fs/ext4/mballoc.c |    1 +
- 1 file changed, 1 insertion(+)
 
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -4718,6 +4718,7 @@ ext4_mb_free_metadata(handle_t *handle,
- 				ext4_group_first_block_no(sb, group) +
- 				EXT4_C2B(sbi, cluster),
- 				"Block already on to-be-freed list");
-+			kmem_cache_free(ext4_free_data_cachep, new_entry);
- 			return 0;
- 		}
+---
+ drivers/xen/xenbus/xenbus_xs.c |   31 +++++++++++++++++++------------
+ include/xen/xenbus.h           |    2 ++
+ 2 files changed, 21 insertions(+), 12 deletions(-)
+
+--- a/drivers/xen/xenbus/xenbus_xs.c
++++ b/drivers/xen/xenbus/xenbus_xs.c
+@@ -701,6 +701,8 @@ int register_xenbus_watch(struct xenbus_
+ 
+ 	sprintf(token, "%lX", (long)watch);
+ 
++	watch->nr_pending = 0;
++
+ 	down_read(&xs_state.watch_mutex);
+ 
+ 	spin_lock(&watches_lock);
+@@ -750,12 +752,15 @@ void unregister_xenbus_watch(struct xenb
+ 
+ 	/* Cancel pending watch events. */
+ 	spin_lock(&watch_events_lock);
+-	list_for_each_entry_safe(msg, tmp, &watch_events, list) {
+-		if (msg->u.watch.handle != watch)
+-			continue;
+-		list_del(&msg->list);
+-		kfree(msg->u.watch.vec);
+-		kfree(msg);
++	if (watch->nr_pending) {
++		list_for_each_entry_safe(msg, tmp, &watch_events, list) {
++			if (msg->u.watch.handle != watch)
++				continue;
++			list_del(&msg->list);
++			kfree(msg->u.watch.vec);
++			kfree(msg);
++		}
++		watch->nr_pending = 0;
  	}
+ 	spin_unlock(&watch_events_lock);
+ 
+@@ -802,7 +807,6 @@ void xs_suspend_cancel(void)
+ 
+ static int xenwatch_thread(void *unused)
+ {
+-	struct list_head *ent;
+ 	struct xs_stored_msg *msg;
+ 
+ 	for (;;) {
+@@ -815,13 +819,15 @@ static int xenwatch_thread(void *unused)
+ 		mutex_lock(&xenwatch_mutex);
+ 
+ 		spin_lock(&watch_events_lock);
+-		ent = watch_events.next;
+-		if (ent != &watch_events)
+-			list_del(ent);
++		msg = list_first_entry_or_null(&watch_events,
++				struct xs_stored_msg, list);
++		if (msg) {
++			list_del(&msg->list);
++			msg->u.watch.handle->nr_pending--;
++		}
+ 		spin_unlock(&watch_events_lock);
+ 
+-		if (ent != &watch_events) {
+-			msg = list_entry(ent, struct xs_stored_msg, list);
++		if (msg) {
+ 			msg->u.watch.handle->callback(
+ 				msg->u.watch.handle,
+ 				(const char **)msg->u.watch.vec,
+@@ -911,6 +917,7 @@ static int process_msg(void)
+ 					 msg->u.watch.vec_size))) {
+ 			spin_lock(&watch_events_lock);
+ 			list_add_tail(&msg->list, &watch_events);
++			msg->u.watch.handle->nr_pending++;
+ 			wake_up(&watch_events_waitq);
+ 			spin_unlock(&watch_events_lock);
+ 		} else {
+--- a/include/xen/xenbus.h
++++ b/include/xen/xenbus.h
+@@ -58,6 +58,8 @@ struct xenbus_watch
+ 	/* Path being watched. */
+ 	const char *node;
+ 
++	unsigned int nr_pending;
++
+ 	/*
+ 	 * Called just before enqueing new event while a spinlock is held.
+ 	 * The event will be discarded if this callback returns false.
 
 
