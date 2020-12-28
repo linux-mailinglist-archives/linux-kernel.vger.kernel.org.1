@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C4FD2E65AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:04:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8391F2E676D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:25:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389912AbgL1N21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:28:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57200 "EHLO mail.kernel.org"
+        id S2633387AbgL1QYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:24:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389832AbgL1N2Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:28:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EAE7020728;
-        Mon, 28 Dec 2020 13:27:43 +0000 (UTC)
+        id S1730797AbgL1NLZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:11:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B3F7C206ED;
+        Mon, 28 Dec 2020 13:11:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162064;
-        bh=XqN+R25YosZQ5FWbb5570T593/SZUdje/I/dKAs/bqI=;
+        s=korg; t=1609161070;
+        bh=Fl2siaoJyc8HjAOQguAav/uWtoacuvzIBUcl1LSUC88=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i5DnKE+PJcvrNhB+/xhzCucb4dWPC7S7hriSVGzoV1HNV5PSqnWw7+y45N+lhQbJa
-         mkP9xpIc7u4zJ/tneX50GtFdt0hcL/pBr2Za5agyeEkAyOxGNToWSvdbdqu28uJR79
-         znKjFO9QVfH8B5zebs+SRrgB2hiF1QfTiWXJ6fWc=
+        b=N1aJB1jPmyYCs59rqcrVjKqKs0q/JP4KmZiviAyW84OQnGc+AIU8RLqTzJJzjRUpp
+         kEfbAt0JlahPmQaow2+oa65ekzac53U7wfBfKtIL8GgR7/dbUbVuJznsXMQnumMZPH
+         NmugHuingmmEwOYCPhgeI5Cu+TgJx4YZsPKI96Ec=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 175/346] ARM: dts: Remove non-existent i2c1 from 98dx3236
-Date:   Mon, 28 Dec 2020 13:48:14 +0100
-Message-Id: <20201228124928.245123394@linuxfoundation.org>
+Subject: [PATCH 4.14 091/242] MIPS: BCM47XX: fix kconfig dependency bug for BCM47XX_BCMA
+Date:   Mon, 28 Dec 2020 13:48:16 +0100
+Message-Id: <20201228124909.180446652@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,38 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+From: Necip Fazil Yildiran <fazilyildiran@gmail.com>
 
-[ Upstream commit 7f24479ead579459106bb55c2320a000135731f9 ]
+[ Upstream commit 3a5fe2fb9635c43359c9729352f45044f3c8df6b ]
 
-The switches with integrated CPUs have only got a single i2c controller.
-They incorrectly gained one when they were split from the Armada-XP.
+When BCM47XX_BCMA is enabled and BCMA_DRIVER_PCI is disabled, it results
+in the following Kbuild warning:
 
-Fixes: 43e28ba87708 ("ARM: dts: Use armada-370-xp as a base for armada-xp-98dx3236")
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+WARNING: unmet direct dependencies detected for BCMA_DRIVER_PCI_HOSTMODE
+  Depends on [n]: MIPS [=y] && BCMA_DRIVER_PCI [=n] && PCI_DRIVERS_LEGACY [=y] && BCMA [=y]=y
+  Selected by [y]:
+  - BCM47XX_BCMA [=y] && BCM47XX [=y] && PCI [=y]
+
+The reason is that BCM47XX_BCMA selects BCMA_DRIVER_PCI_HOSTMODE without
+depending on or selecting BCMA_DRIVER_PCI while BCMA_DRIVER_PCI_HOSTMODE
+depends on BCMA_DRIVER_PCI. This can also fail building the kernel.
+
+Honor the kconfig dependency to remove unmet direct dependency warnings
+and avoid any potential build failures.
+
+Fixes: c1d1c5d4213e ("bcm47xx: add support for bcma bus")
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=209879
+Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/armada-xp-98dx3236.dtsi | 5 -----
- 1 file changed, 5 deletions(-)
+ arch/mips/bcm47xx/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/armada-xp-98dx3236.dtsi b/arch/arm/boot/dts/armada-xp-98dx3236.dtsi
-index 3e7d093d7a9a2..966d9a6c40fca 100644
---- a/arch/arm/boot/dts/armada-xp-98dx3236.dtsi
-+++ b/arch/arm/boot/dts/armada-xp-98dx3236.dtsi
-@@ -266,11 +266,6 @@
- 	reg = <0x11000 0x100>;
- };
- 
--&i2c1 {
--	compatible = "marvell,mv78230-i2c", "marvell,mv64xxx-i2c";
--	reg = <0x11100 0x100>;
--};
--
- &mpic {
- 	reg = <0x20a00 0x2d0>, <0x21070 0x58>;
- };
+diff --git a/arch/mips/bcm47xx/Kconfig b/arch/mips/bcm47xx/Kconfig
+index 29471038d817e..c6b99845fb377 100644
+--- a/arch/mips/bcm47xx/Kconfig
++++ b/arch/mips/bcm47xx/Kconfig
+@@ -27,6 +27,7 @@ config BCM47XX_BCMA
+ 	select BCMA
+ 	select BCMA_HOST_SOC
+ 	select BCMA_DRIVER_MIPS
++	select BCMA_DRIVER_PCI if PCI
+ 	select BCMA_DRIVER_PCI_HOSTMODE if PCI
+ 	select BCMA_DRIVER_GPIO
+ 	default y
 -- 
 2.27.0
 
