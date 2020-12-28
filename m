@@ -2,135 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6136A2E6C6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:24:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 108DB2E6C67
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:24:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729826AbgL1Wzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1729881AbgL1Wzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 28 Dec 2020 17:55:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53888 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729304AbgL1TiG (ORCPT
+        with ESMTP id S1729305AbgL1Ti3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 14:38:06 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2781C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 11:37:25 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id m5so171622pjv.5
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 11:37:25 -0800 (PST)
+        Mon, 28 Dec 2020 14:38:29 -0500
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38003C061793;
+        Mon, 28 Dec 2020 11:37:49 -0800 (PST)
+Received: by mail-io1-xd35.google.com with SMTP id m23so10331895ioy.2;
+        Mon, 28 Dec 2020 11:37:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=aP2IflqGvTJUzzYvZuXImaRefVVA1KclE0g//wHvG0o=;
-        b=Hml9ivOHfPvshZaA12WNqRUgdZAAyt57TXxuUZj+sWsZr8L3xhCl4iUagk6wILT7Dj
-         4WWcHBHv+5dERmVqytuRecoW5NWsqsoIxdxzYvLMEwgMtfUZWwM7OmO6dpy7PwYUaOSJ
-         d8iMHjvR26M8P2ivMKIdQ/gXHV6MIgA9eveTVG7N3ygdKpJy57xjA2hsIjWwXdQwrd7N
-         MxidSJ2SeK6gcFEbTTWb6fxi9okqQgboXkjbd4/RI65LgW0EpIJEOWg4fPv63k2URI8b
-         7NeJ1WBu9BtVvCpvJAUOqU9S4J1beXmbqhUzAUrOdhhSa/sZ8W9sVieuD5GVI5s5G1/C
-         QttQ==
+        bh=dCBCEsht9qkuf5Ona8kNwyBV6hGMdb7gZ2iBC9FCRP4=;
+        b=Q9TFyFiU7kqB2e88OvbB+lyrxcqI/TwitqgP1IRr2q0KyCnDwRUvNMmbcq/LEBjqsW
+         /Y5dx1Q06XyUqXGZjLbFw2iHPeeK93uA0ylkM67TpDI/HIAWTNTqNG96uzh3CGn1me3X
+         8zzi6Q0LFo7dkNPzNvt6pYi5Qx/LnklEoUg2xKmSZZNriamx9QpU3wdtxg1j8Cxs4NW4
+         BCuMNLC0Rxwu1nF6lfYzNDzXViws/ObGDaJxXzSu5REzpnhHnHWqYHLqXRKBqfJOr5vp
+         b8n63vg6pkw+JKr7g8q6DfJSo56I61rHrZsimKFOIj3SK+4VwRE7gz57NoLAFiAFPl1z
+         XlAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=aP2IflqGvTJUzzYvZuXImaRefVVA1KclE0g//wHvG0o=;
-        b=DC/BQYOxCtpel35dScacnYPdFpah21tAYmICfmQcX24p4j3DSpIcCLfypHWRNgyOF7
-         xgqchvGW8HGSEeWqI3/agRzG+kI8PBPkmoO5rhWq2GSX+77orbMc4jMbjXtNdku72JOn
-         kZ00W6f8Xo7SS9HT3m0+afDlrSl3LFlG/GghiUEShS78Rl0czB1QCeSTIc6iESxG4IiL
-         GHv59S5+cgGa4oUIPW+wF9HLrPPtFLw54w0Yd1Hzhnu/8+IZdc4BAhCSbYzA4q5ysVov
-         Ig/xdSGdtv4vGHRxGWW1pGUY33MAbkNhAz0QlbkyOXtaEl3bq7F0ZfbjztVmN2H1BUw6
-         cneg==
-X-Gm-Message-State: AOAM530Y4Czhn0IcT5qkA5MtuWPTIDVr0H+dqxUjMmGYQ3mtrXlFFgNH
-        nHQicrNuySjR+G44X2lNswghNdUCMcK57dHTYWq8vi7wnw7aRQ==
-X-Google-Smtp-Source: ABdhPJxjMTApkB84jlQZm3rnt7KguKNjWbwsQ/Ajio0Pnp5P4W8EGniAe7xMgl3wcI+t5/CwyjeUsX6d7WEP+4TRbVs=
-X-Received: by 2002:a17:902:7592:b029:dc:3c87:1c63 with SMTP id
- j18-20020a1709027592b02900dc3c871c63mr34844772pll.47.1609184245208; Mon, 28
- Dec 2020 11:37:25 -0800 (PST)
+        bh=dCBCEsht9qkuf5Ona8kNwyBV6hGMdb7gZ2iBC9FCRP4=;
+        b=Zl5CjcWqttiletmGIAXFJRwHyUG4CSun7387arNXuxgL6mPb8Jq0kQ89ZZKm/tS4rl
+         KWMA8+4u3kPL7YMxj2TZh36R0f0YwXq2gGfMKA7he1hYKLUgGUy5dIAc98CR8L4nXiAd
+         nmXBP9ONp8yBpJa3BLINPMlzR4Z8ebgh66bMxlAsaEcjcHEHGjPk2m8EnYwDYKrRzsOM
+         9lFWF5pOpyru858eyRQBA7lw50eilnuDYORRK/04QbPIpPWQkOalxD9GGc9KWxvz4OPB
+         7D4YF+KczH+Ekcgar1ufNMDqHUd3wjk96njekm/HkEliep7mFVbxSUNDtG053tfI7qxh
+         Lr8A==
+X-Gm-Message-State: AOAM530dnL/SkEXkMrr4wPdvjr3awNy2vEE/mbX1iMMypKBNSKTi+HWb
+        NybL2QSIqEmRhIizDYXiLh88QYvW/u3Wy9httTc=
+X-Google-Smtp-Source: ABdhPJw7C7qxRijlGNpz54cxtrCtrh8jFk9tDMaZzuvDrGOoZYY3dhbizc2BsSDNyomhfLcDoRpzH8Ul4lCQrIfgFfo=
+X-Received: by 2002:a5e:de08:: with SMTP id e8mr37384460iok.203.1609184268515;
+ Mon, 28 Dec 2020 11:37:48 -0800 (PST)
 MIME-Version: 1.0
-References: <CAHk-=wg1+kf1AVzXA-RQX0zjM6t9J2Kay9xyuNqcFHWV-y5ZYw@mail.gmail.com>
- <20201228155149.GA197954@roeck-us.net> <CAHk-=whHbfec+vxjpCXhRdSwA7uw6m0hS9kGqqJv6Af0EMFVBw@mail.gmail.com>
-In-Reply-To: <CAHk-=whHbfec+vxjpCXhRdSwA7uw6m0hS9kGqqJv6Af0EMFVBw@mail.gmail.com>
-From:   Kalesh Singh <kaleshsingh@google.com>
-Date:   Mon, 28 Dec 2020 13:37:13 -0600
-Message-ID: <CAC_TJvfpeRh322usynr2Ud3KVCd3HaNnviOmdhekXSnC-sq2sA@mail.gmail.com>
-Subject: Re: Linux 5.11-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201223182026.GA9935@ircssh-2.c.rugged-nimbus-611.internal>
+ <20201223185044.GQ874@casper.infradead.org> <20201223192940.GA11012@ircssh-2.c.rugged-nimbus-611.internal>
+ <20201223200746.GR874@casper.infradead.org> <20201223202140.GB11012@ircssh-2.c.rugged-nimbus-611.internal>
+ <20201223204428.GS874@casper.infradead.org> <CAOQ4uxjAeGv8x2hBBzHz5PjSDq0Q+RN-ikgqEvAA+XE_U-U5Nw@mail.gmail.com>
+ <20201224121352.GT874@casper.infradead.org> <CAOQ4uxj5YS9LSPoBZ3uakb6NeBG7g-Zeu+8Vt57tizEH6xu0cw@mail.gmail.com>
+ <1334bba9cefa81f80005f8416680afb29044379c.camel@kernel.org>
+ <20201228155618.GA6211@casper.infradead.org> <5bc11eb2e02893e7976f89a888221c902c11a2b4.camel@kernel.org>
+In-Reply-To: <5bc11eb2e02893e7976f89a888221c902c11a2b4.camel@kernel.org>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Mon, 28 Dec 2020 21:37:37 +0200
+Message-ID: <CAOQ4uxhFz=Uervz6sMuz=RcFUWAxyLEhBrWnjQ+U0Jj_AaU59w@mail.gmail.com>
+Subject: Re: [PATCH 3/3] overlayfs: Report writeback errors on upper
+To:     Jeff Layton <jlayton@kernel.org>, Sargun Dhillon <sargun@sargun.me>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>, Jan Kara <jack@suse.cz>,
+        NeilBrown <neilb@suse.com>, Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>,
+        Chengguang Xu <cgxu519@mykernel.net>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 12:59 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+On Mon, Dec 28, 2020 at 7:26 PM Jeff Layton <jlayton@kernel.org> wrote:
 >
-> On Mon, Dec 28, 2020 at 7:51 AM Guenter Roeck <linux@roeck-us.net> wrote:
+> On Mon, 2020-12-28 at 15:56 +0000, Matthew Wilcox wrote:
+> > On Mon, Dec 28, 2020 at 08:25:50AM -0500, Jeff Layton wrote:
+> > > To be clear, the main thing you'll lose with the method above is the
+> > > ability to see an unseen error on a newly opened fd, if there was an
+> > > overlayfs mount using the same upper sb before your open occurred.
+> > >
+> > > IOW, consider two overlayfs mounts using the same upper layer sb:
+> > >
+> > > ovlfs1                              ovlfs2
+> > > ----------------------------------------------------------------------
+> > > mount
+> > > open fd1
+> > > write to fd1
+> > > <writeback fails>
+> > >                             mount (upper errseq_t SEEN flag marked)
+> > > open fd2
+> > > syncfs(fd2)
+> > > syncfs(fd1)
+> > >
+> > >
+> > > On a "normal" (non-overlay) fs, you'd get an error back on both syncfs
+> > > calls. The first one has a sample from before the error occurred, and
+> > > the second one has a sample of 0, due to the fact that the error was
+> > > unseen at open time.
+> > >
+> > > On overlayfs, with the intervening mount of ovlfs2, syncfs(fd1) will
+> > > return an error and syncfs(fd2) will not. If we split the SEEN flag into
+> > > two, then we can ensure that they both still get an error in this
+> > > situation.
 > >
-> > Build results:
-> >         total: 153 pass: 151 fail: 2
->
-> Thanks for doing these for the mainline rc's too. I've seen them for
-> the stable kernels, but it's lovely to see it for rc1.
->
-> > ERROR: modpost: "irq_check_status_bit" [drivers/perf/arm_spe_pmu.ko] undefined!
+> > But do we need to?  If the inode has been evicted we also lose the errno.
+> > The guarantee we provide is that a fd that was open before the error
+> > occurred will see the error.  An fd that's opened after the error occurred
+> > may or may not see the error.
 > >
-> > Caused by: fdd029630434 ("genirq: Move status flag checks to core")
 >
-> Ahh. Does it just need a
+> In principle, you can lose errors this way (which was the justification
+> for making errseq_sample return 0 when there are unseen errors). E.g.,
+> if you close fd1 instead of doing a syncfs on it, that error will be
+> lost forever.
 >
->  EXPORT_SYMBOL_GPL(irq_check_status_bit);
+> As to whether that's OK, it's hard to say. It is a deviation from how
+> this works in a non-containerized situation, and I'd argue that it's
+> less than ideal. You may or may not see the error on fd2, but it's
+> dependent on events that take place outside the container and that
+> aren't observable from within it. That effectively makes the results
+> non-deterministic, which is usually a bad thing in computing...
 >
-> in there? Because it looks like at least irq_is_percpu() and
-> irq_is_percpu_devid() are used in drivers/perf/ and can apparently be
-> modules.
->
-> Thomas?
->
-> > ia64:defconfig:
-> >
-> > include/linux/mmzone.h:1156:2: error: #error Allocator MAX_ORDER exceeds SECTION_SIZE
-> >
-> > and various related warnings.
-> >
-> > Caused by: 214496cb1870 ("ia64: make SPARSEMEM default and disable DISCONTIGMEM")
-> >
-> > Fix submitted ("ia64: fix build failure caused by memory model changes").
->
-> Ok, I won't worry about that one.
->
-> > qemu boot tests:
-> >
-> > arm:raspi2 hangs during boot.
-> >
-> > Caused by: ffdad793d579 ("irqchip/bcm2836: Make IPIs use handle_percpu_devid_irq()")
-> >
-> > Fix submitted ("irqchip/bcm2836: Fix IPI acknowledgement after conversion to
-> > handle_percpu_devid_irq").
->
-> Same.
->
-> > parisc: Failed to execute /sbin/init (error -12)
-> >
-> > Caused by: c49dd3401802 ("mm: speedup mremap on 1GB or larger regions")
->
-> Looks like Kalesh is looking at it.
->
-> I don't think that was supposed to matter at all on parisc, but
-> clearly something bad happened.
->
-> parsic doesn't even enable HAVE_MOVE_PMD, much less the new
-> HAVE_MOVE_PUD. Strange.
 
-Hi Linus,
+I understand that user experience inside containers will deviate from
+non containerized use cases. I can't say that I fully understand the
+situations that deviate.
 
-I had sent the fix for this issue which was taken into the -mm tree by
-Andrew. (https://ozlabs.org/~akpm/mmotm/broken-out/mm-mremap-fix-extent-calculation.patch)
+Having said that, I never objected to the SEEN flag split.
+To me, the split looks architecturally correct. If not for anything else,
+then for not observing past errors inside the overlay mount.
+I think you still need to convince Matthew though.
 
-Please, let me know if there is anything else needed on my end.
+The question remains what, if anything, should be nominated for
+stable. I was trying to propose the minimal patch that fixes the
+most basic syncfs overlayfs issues. In that context, it seemed
+that the issues that SEEN flag split solves are not on the
+MUST HAVE list, but maybe I am wrong.
+
+Sargun,
+
+How about sending another version of your patch, with or without the
+SEEN flag split (up to you) but not only for both the volatile and non-
+volatile cases, following my proposal.
+
+At least we can continue debating on a concrete patch instead of
+an envisioned combination of pieces posted to the list.
+
+If you can give some examples of use cases that the patch fixes
+with and without the SEEN flag split that could be useful for the
+discussion.
 
 Thanks,
-Kalesh
-
->
->                  Linus
+Amir.
