@@ -2,36 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB0062E410B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:03:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A00F92E3A7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:37:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439980AbgL1OMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:12:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46870 "EHLO mail.kernel.org"
+        id S2388061AbgL1Nhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:37:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439901AbgL1OMg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:12:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E5410207B2;
-        Mon, 28 Dec 2020 14:12:20 +0000 (UTC)
+        id S2390657AbgL1NhJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:37:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 979CE208B3;
+        Mon, 28 Dec 2020 13:36:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609164741;
-        bh=xkVwTlQKoeBRjRMfMVMMsBVDaghygZpptWfyJFmZItM=;
+        s=korg; t=1609162613;
+        bh=TLTqXpD2Sp6EJXCfXHmUQ+JTchvHrg/sIhbXQ/OTlAk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UXsr3rrD3pJfr99yI9O3QNwBYM27nsGOqt6W4YihfjvOQ7vb+/kvLsmTQndCBbE0h
-         HbBbBiOPSazzQqSGr+XbLBCKXYRo2sP2SjBUvp17eNqvzbzziAKi3btC6fcfzAxjC2
-         nTDtyrdluiBle8lMGLA45RKeuJ6QQV4+vP4eTBv0=
+        b=OWvNYmI9hTkWF+Mp3So7ymBl0CkNEx32d4cLyT/vsjZ336zg8oSswAYAcLT4YIDmX
+         dK6CdkegOv9jVnwgO2DHQp9gUVAF1nUKRXvZcjvV6Rr3KpCJ5xUeXAkRveKpUHcRxo
+         PnrctHykR4xZLzgMAsa8eq0p4F5Avs/6ZtwCITbE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        stable@vger.kernel.org, linux-scsi@vger.kernel.org,
+        Nilesh Javali <njavali@marvell.com>,
+        Manish Rangankar <mrangankar@marvell.com>,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 250/717] ARM: dts: at91: at91sam9rl: fix ADC triggers
-Date:   Mon, 28 Dec 2020 13:44:08 +0100
-Message-Id: <20201228125032.965028511@linuxfoundation.org>
+Subject: [PATCH 5.4 013/453] scsi: bnx2i: Requires MMU
+Date:   Mon, 28 Dec 2020 13:44:09 +0100
+Message-Id: <20201228124937.886443742@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,60 +45,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 851a95da583c26e2ddeb7281e9b61f0d76ea5aba ]
+[ Upstream commit 2d586494c4a001312650f0b919d534e429dd1e09 ]
 
-The triggers for the ADC were taken from at91sam9260 dtsi but are not
-correct.
+The SCSI_BNX2_ISCSI kconfig symbol selects CNIC and CNIC selects UIO, which
+depends on MMU.
 
-Fixes: a4c1d6c75822 ("ARM: at91/dt: sam9rl: add lcd, adc, usb gadget and pwm support")
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Link: https://lore.kernel.org/r/20201128222818.1910764-10-alexandre.belloni@bootlin.com
+Since 'select' does not follow dependency chains, add the same MMU
+dependency to SCSI_BNX2_ISCSI.
+
+Quietens this kconfig warning:
+
+WARNING: unmet direct dependencies detected for CNIC
+  Depends on [n]: NETDEVICES [=y] && ETHERNET [=y] && NET_VENDOR_BROADCOM [=y] && PCI [=y] && (IPV6 [=m] || IPV6 [=m]=n) && MMU [=n]
+  Selected by [m]:
+  - SCSI_BNX2_ISCSI [=m] && SCSI_LOWLEVEL [=y] && SCSI [=y] && NET [=y] && PCI [=y] && (IPV6 [=m] || IPV6 [=m]=n)
+
+Link: https://lore.kernel.org/r/20201129070916.3919-1-rdunlap@infradead.org
+Fixes: cf4e6363859d ("[SCSI] bnx2i: Add bnx2i iSCSI driver.")
+Cc: linux-scsi@vger.kernel.org
+Cc: Nilesh Javali <njavali@marvell.com>
+Cc: Manish Rangankar <mrangankar@marvell.com>
+Cc: GR-QLogic-Storage-Upstream@marvell.com
+Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
+Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/at91sam9rl.dtsi | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+ drivers/scsi/bnx2i/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/at91sam9rl.dtsi b/arch/arm/boot/dts/at91sam9rl.dtsi
-index 5653e70c84b4b..36a42a9fe1957 100644
---- a/arch/arm/boot/dts/at91sam9rl.dtsi
-+++ b/arch/arm/boot/dts/at91sam9rl.dtsi
-@@ -282,23 +282,26 @@
- 				atmel,adc-use-res = "highres";
- 
- 				trigger0 {
--					trigger-name = "timer-counter-0";
-+					trigger-name = "external-rising";
- 					trigger-value = <0x1>;
-+					trigger-external;
- 				};
-+
- 				trigger1 {
--					trigger-name = "timer-counter-1";
--					trigger-value = <0x3>;
-+					trigger-name = "external-falling";
-+					trigger-value = <0x2>;
-+					trigger-external;
- 				};
- 
- 				trigger2 {
--					trigger-name = "timer-counter-2";
--					trigger-value = <0x5>;
-+					trigger-name = "external-any";
-+					trigger-value = <0x3>;
-+					trigger-external;
- 				};
- 
- 				trigger3 {
--					trigger-name = "external";
--					trigger-value = <0x13>;
--					trigger-external;
-+					trigger-name = "continuous";
-+					trigger-value = <0x6>;
- 				};
- 			};
- 
+diff --git a/drivers/scsi/bnx2i/Kconfig b/drivers/scsi/bnx2i/Kconfig
+index 702dc82c9501d..a0c0791abee69 100644
+--- a/drivers/scsi/bnx2i/Kconfig
++++ b/drivers/scsi/bnx2i/Kconfig
+@@ -4,6 +4,7 @@ config SCSI_BNX2_ISCSI
+ 	depends on NET
+ 	depends on PCI
+ 	depends on (IPV6 || IPV6=n)
++	depends on MMU
+ 	select SCSI_ISCSI_ATTRS
+ 	select NETDEVICES
+ 	select ETHERNET
 -- 
 2.27.0
 
