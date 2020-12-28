@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF4F52E430A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:34:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 890AA2E3E6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:29:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407400AbgL1Nyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:54:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55626 "EHLO mail.kernel.org"
+        id S2502470AbgL1O1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:27:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407426AbgL1NyV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:54:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1719E20731;
-        Mon, 28 Dec 2020 13:54:04 +0000 (UTC)
+        id S2502225AbgL1O1S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:27:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE83F22B2E;
+        Mon, 28 Dec 2020 14:27:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163645;
-        bh=kDeyWoOTSIi6e2FPwv9y7pptJVbrcPiTxTn3WalqPg4=;
+        s=korg; t=1609165622;
+        bh=/wY3/37D7ZQyGMdrybsJuDdFPlJTJU1cdaim5Hjs0GA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w9IF/0q0doE8TGH0c0UkBbFNgWo4Bi31PBo3ug7IQXB3hG+FEuqwv39tSimOf54WV
-         mPHTxKeMxy1zaIYslwGCjENrdSWIsWumM6RTb1t2UIaPdDrmshp/yTW1Gka/En1f3r
-         HslamLWf+76YmfC/5GuuoVsl5OPLl8iIMovC6i1Y=
+        b=N7muLXvsJ8nCLRMDmRzB+iZZDumLULHVKxZ1TDvOcW0XL98ue4wqFqDcTnA0e8MGU
+         x932jez7gXhHV1KFl07zmPnxXkV+DvzV/adNOg9bAzz48gK1j9KnxkSkVCGIacZkEb
+         8T76USYv8HpwPMVsKTEfKtkvh/BrAhd+KRuuONic=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.4 358/453] powerpc/perf: Exclude kernel samples while counting events in user space.
+        stable@vger.kernel.org, Tomasz Nowicki <tn@semihalf.com>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>
+Subject: [PATCH 5.10 596/717] arm64: dts: marvell: keep SMMU disabled by default for Armada 7040 and 8040
 Date:   Mon, 28 Dec 2020 13:49:54 +0100
-Message-Id: <20201228124954.435901547@linuxfoundation.org>
+Message-Id: <20201228125049.467143019@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +39,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+From: Tomasz Nowicki <tn@semihalf.com>
 
-commit aa8e21c053d72b6639ea5a7f1d3a1d0209534c94 upstream.
+commit f43cadef2df260101497a6aace05e24201f00202 upstream.
 
-Perf event attritube supports exclude_kernel flag to avoid
-sampling/profiling in supervisor state (kernel). Based on this event
-attr flag, Monitor Mode Control Register bit is set to freeze on
-supervisor state. But sometimes (due to hardware limitation), Sampled
-Instruction Address Register (SIAR) locks on to kernel address even
-when freeze on supervisor is set. Patch here adds a check to drop
-those samples.
+FW has to configure devices' StreamIDs so that SMMU is able to lookup
+context and do proper translation later on. For Armada 7040 & 8040 and
+publicly available FW, most of the devices are configured properly,
+but some like ap_sdhci0, PCIe, NIC still remain unassigned which
+results in SMMU faults about unmatched StreamID (assuming
+ARM_SMMU_DISABLE_BYPASS_BY_DEFAUL=y).
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/1606289215-1433-1-git-send-email-atrajeev@linux.vnet.ibm.com
+Since there is dependency on custom FW let SMMU be disabled by default.
+People who still willing to use SMMU need to enable manually and
+use ARM_SMMU_DISABLE_BYPASS_BY_DEFAUL=n (or via kernel command line)
+with extra caution.
+
+Fixes: 83a3545d9c37 ("arm64: dts: marvell: add SMMU support")
+Cc: <stable@vger.kernel.org> # 5.9+
+Signed-off-by: Tomasz Nowicki <tn@semihalf.com>
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/perf/core-book3s.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ arch/arm64/boot/dts/marvell/armada-7040.dtsi |    4 ----
+ arch/arm64/boot/dts/marvell/armada-8040.dtsi |    4 ----
+ 2 files changed, 8 deletions(-)
 
---- a/arch/powerpc/perf/core-book3s.c
-+++ b/arch/powerpc/perf/core-book3s.c
-@@ -2090,6 +2090,16 @@ static void record_and_restart(struct pe
- 	perf_event_update_userpage(event);
+--- a/arch/arm64/boot/dts/marvell/armada-7040.dtsi
++++ b/arch/arm64/boot/dts/marvell/armada-7040.dtsi
+@@ -15,10 +15,6 @@
+ 		     "marvell,armada-ap806";
+ };
  
- 	/*
-+	 * Due to hardware limitation, sometimes SIAR could sample a kernel
-+	 * address even when freeze on supervisor state (kernel) is set in
-+	 * MMCR2. Check attr.exclude_kernel and address to drop the sample in
-+	 * these cases.
-+	 */
-+	if (event->attr.exclude_kernel && record)
-+		if (is_kernel_addr(mfspr(SPRN_SIAR)))
-+			record = 0;
-+
-+	/*
- 	 * Finally record data if requested.
- 	 */
- 	if (record) {
+-&smmu {
+-	status = "okay";
+-};
+-
+ &cp0_pcie0 {
+ 	iommu-map =
+ 		<0x0   &smmu 0x480 0x20>,
+--- a/arch/arm64/boot/dts/marvell/armada-8040.dtsi
++++ b/arch/arm64/boot/dts/marvell/armada-8040.dtsi
+@@ -15,10 +15,6 @@
+ 		     "marvell,armada-ap806";
+ };
+ 
+-&smmu {
+-	status = "okay";
+-};
+-
+ &cp0_pcie0 {
+ 	iommu-map =
+ 		<0x0   &smmu 0x480 0x20>,
 
 
