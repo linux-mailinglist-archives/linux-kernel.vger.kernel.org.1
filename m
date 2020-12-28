@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA1B2E685C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:37:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 585602E6977
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:50:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729978AbgL1NCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:02:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58094 "EHLO mail.kernel.org"
+        id S1728894AbgL1QtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:49:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729865AbgL1NBv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:01:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 346C022582;
-        Mon, 28 Dec 2020 13:01:10 +0000 (UTC)
+        id S1728080AbgL1MxI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:53:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 55EA622B47;
+        Mon, 28 Dec 2020 12:52:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160470;
-        bh=Fmm/kgXWpnxgmi4B8ecICshe5ASoWJhbr29YPa50a4U=;
+        s=korg; t=1609159952;
+        bh=YStn6+xfoChb/ZUebmuhPMCzr1wh5qHt8/j/I5c1E2Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ErTX3MOlp5mtE4/LrlPxkPTbU88D9oKr5TRUPH5imDx5rbnOYmpqSpPCY2j7ic9ed
-         wveqXcXZwJvTQaL9gK/5wJIWOQJ9svQHHzKgHgi2Oz3FDlnhYbceAGVfNu1En+9w0K
-         TQVYOA5JpOsO15Kx+X8o7vq/RhYT88iRlrwwHGDg=
+        b=njM3nqW+9fhL9QpHkrMZ+/zKWG0NifN8IigSjxkYA0TsnV+riSlarw7lekV1sHQMm
+         6pmD58UUzpasVM10jBKSloQbFIdvqZWNwLgpMeSR0siF+sFrIvr5wW/sAkORc+54HO
+         /BsPdutRaxd7iJQhSBNjZ9Mlrg4jLTSoDTZMeGpk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vincent Bernat <vincent@bernat.ch>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Nicolas Pitre <nico@fluxnic.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 063/175] net: evaluate net.ipv4.conf.all.proxy_arp_pvlan
-Date:   Mon, 28 Dec 2020 13:48:36 +0100
-Message-Id: <20201228124856.298104909@linuxfoundation.org>
+Subject: [PATCH 4.4 033/132] ARM: p2v: fix handling of LPAE translation in BE mode
+Date:   Mon, 28 Dec 2020 13:48:37 +0100
+Message-Id: <20201228124848.005352515@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Bernat <vincent@bernat.ch>
+From: Ard Biesheuvel <ardb@kernel.org>
 
-[ Upstream commit 1af5318c00a8acc33a90537af49b3f23f72a2c4b ]
+[ Upstream commit 4e79f0211b473f8e1eab8211a9fd50cc41a3a061 ]
 
-Introduced in 65324144b50b, the "proxy_arp_vlan" sysctl is a
-per-interface sysctl to tune proxy ARP support for private VLANs.
-While the "all" variant is exposed, it was a noop and never evaluated.
-We use the usual "or" logic for this kind of sysctls.
+When running in BE mode on LPAE hardware with a PA-to-VA translation
+that exceeds 4 GB, we patch bits 39:32 of the offset into the wrong
+byte of the opcode. So fix that, by rotating the offset in r0 to the
+right by 8 bits, which will put the 8-bit immediate in bits 31:24.
 
-Fixes: 65324144b50b ("net: RFC3069, private VLAN proxy arp support")
-Signed-off-by: Vincent Bernat <vincent@bernat.ch>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Note that this will also move bit #22 in its correct place when
+applying the rotation to the constant #0x400000.
+
+Fixes: d9a790df8e984 ("ARM: 7883/1: fix mov to mvn conversion in case of 64 bit phys_addr_t and BE")
+Acked-by: Nicolas Pitre <nico@fluxnic.net>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/inetdevice.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/kernel/head.S | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/include/linux/inetdevice.h b/include/linux/inetdevice.h
-index 0e6cd645f67f3..65e88c62db7b2 100644
---- a/include/linux/inetdevice.h
-+++ b/include/linux/inetdevice.h
-@@ -100,7 +100,7 @@ static inline void ipv4_devconf_setall(struct in_device *in_dev)
- 
- #define IN_DEV_LOG_MARTIANS(in_dev)	IN_DEV_ORCONF((in_dev), LOG_MARTIANS)
- #define IN_DEV_PROXY_ARP(in_dev)	IN_DEV_ORCONF((in_dev), PROXY_ARP)
--#define IN_DEV_PROXY_ARP_PVLAN(in_dev)	IN_DEV_CONF_GET(in_dev, PROXY_ARP_PVLAN)
-+#define IN_DEV_PROXY_ARP_PVLAN(in_dev)	IN_DEV_ORCONF((in_dev), PROXY_ARP_PVLAN)
- #define IN_DEV_SHARED_MEDIA(in_dev)	IN_DEV_ORCONF((in_dev), SHARED_MEDIA)
- #define IN_DEV_TX_REDIRECTS(in_dev)	IN_DEV_ORCONF((in_dev), SEND_REDIRECTS)
- #define IN_DEV_SEC_REDIRECTS(in_dev)	IN_DEV_ORCONF((in_dev), \
+diff --git a/arch/arm/kernel/head.S b/arch/arm/kernel/head.S
+index 04286fd9e09ce..2e336acd68b0a 100644
+--- a/arch/arm/kernel/head.S
++++ b/arch/arm/kernel/head.S
+@@ -673,12 +673,8 @@ ARM_BE8(rev16	ip, ip)
+ 	ldrcc	r7, [r4], #4	@ use branch for delay slot
+ 	bcc	1b
+ 	bx	lr
+-#else
+-#ifdef CONFIG_CPU_ENDIAN_BE8
+-	moveq	r0, #0x00004000	@ set bit 22, mov to mvn instruction
+ #else
+ 	moveq	r0, #0x400000	@ set bit 22, mov to mvn instruction
+-#endif
+ 	b	2f
+ 1:	ldr	ip, [r7, r3]
+ #ifdef CONFIG_CPU_ENDIAN_BE8
+@@ -687,7 +683,7 @@ ARM_BE8(rev16	ip, ip)
+ 	tst	ip, #0x000f0000	@ check the rotation field
+ 	orrne	ip, ip, r6, lsl #24 @ mask in offset bits 31-24
+ 	biceq	ip, ip, #0x00004000 @ clear bit 22
+-	orreq	ip, ip, r0      @ mask in offset bits 7-0
++	orreq	ip, ip, r0, ror #8  @ mask in offset bits 7-0
+ #else
+ 	bic	ip, ip, #0x000000ff
+ 	tst	ip, #0xf00	@ check the rotation field
 -- 
 2.27.0
 
