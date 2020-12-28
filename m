@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD1A22E392A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:22:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 714632E40CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:58:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733090AbgL1NUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:20:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48560 "EHLO mail.kernel.org"
+        id S2440673AbgL1OP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:15:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50348 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733033AbgL1NUB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:20:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4845E208BA;
-        Mon, 28 Dec 2020 13:19:20 +0000 (UTC)
+        id S2440655AbgL1OPZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:15:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F054520791;
+        Mon, 28 Dec 2020 14:14:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161560;
-        bh=O/RA9eiCIx9J7hmnF22cx+Ga4Fg9ZZ25eNlgM4QpPJ4=;
+        s=korg; t=1609164884;
+        bh=IrbmXb/o4P1fVDB+f5BWqDuRb5dThD2u1inhrivjWuU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vhS1dgcyoK4h8gAapUn8MMAGIpLjb6ihoiehG2Ho9RzDp6OZLv6QXcqUBsUvBDKdw
-         EcDxzQH9v44481gBK/sHlMl9HF6BxaNI/vCd66CnYf/w3vKR60fLjtggPN5nctf9Hq
-         heGspBiURpdxpS6D6ohNP8MD50WsBjmHHTya4Q/s=
+        b=ntox8Gl4CJVt4mJ1T5jdheEMIhqQCO/ha2RkmOWKNahhGSHzVPJQ6+JFQPno5sjNu
+         sd379n5mvFYg4rQWggnHdNwB8RP5eOcmsCX9cZ9y28cgcUdIlaEOrnE8RMHvzTkxSZ
+         Dx7B5gicMMbmxES0Rd2CDeMb610YIdeZiUOQBf2o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hao Si <si.hao@zte.com.cn>,
-        Lin Chen <chen.lin5@zte.com.cn>,
-        Yi Wang <wang.yi59@zte.com.cn>, Li Yang <leoyang.li@nxp.com>,
+        stable@vger.kernel.org, Joshua Thompson <funaho@jurai.org>,
+        Stan Johnson <userm57@yahoo.com>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 012/346] soc: fsl: dpio: Get the cpumask through cpumask_of(cpu)
+Subject: [PATCH 5.10 333/717] macintosh/adb-iop: Always wait for reply message from IOP
 Date:   Mon, 28 Dec 2020 13:45:31 +0100
-Message-Id: <20201228124920.359055096@linuxfoundation.org>
+Message-Id: <20201228125036.978731208@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,108 +42,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hao Si <si.hao@zte.com.cn>
+From: Finn Thain <fthain@telegraphics.com.au>
 
-[ Upstream commit 2663b3388551230cbc4606a40fabf3331ceb59e4 ]
+[ Upstream commit 2c9cfbadfa234b03473f1ef54e6f4772cc07a371 ]
 
-The local variable 'cpumask_t mask' is in the stack memory, and its address
-is assigned to 'desc->affinity' in 'irq_set_affinity_hint()'.
-But the memory area where this variable is located is at risk of being
-modified.
+A recent patch incorrectly altered the adb-iop state machine behaviour
+and introduced a regression that can appear intermittently as a
+malfunctioning ADB input device. This seems to be caused when reply
+packets from different ADB commands become mixed up, especially during
+the adb bus scan. Fix this by unconditionally entering the awaiting_reply
+state after sending an explicit command, even when the ADB command won't
+generate a reply from the ADB device.
 
-During LTP testing, the following error was generated:
+It turns out that the IOP always generates reply messages, even when the
+ADB command does not produce a reply packet (e.g. ADB Listen command).
+So it's not really the ADB reply packets that are being mixed up, it's the
+IOP messages that enclose them. The bug goes like this:
 
-Unable to handle kernel paging request at virtual address ffff000012e9b790
-Mem abort info:
-  ESR = 0x96000007
-  Exception class = DABT (current EL), IL = 32 bits
-  SET = 0, FnV = 0
-  EA = 0, S1PTW = 0
-Data abort info:
-  ISV = 0, ISS = 0x00000007
-  CM = 0, WnR = 0
-swapper pgtable: 4k pages, 48-bit VAs, pgdp = 0000000075ac5e07
-[ffff000012e9b790] pgd=00000027dbffe003, pud=00000027dbffd003,
-pmd=00000027b6d61003, pte=0000000000000000
-Internal error: Oops: 96000007 [#1] PREEMPT SMP
-Modules linked in: xt_conntrack
-Process read_all (pid: 20171, stack limit = 0x0000000044ea4095)
-CPU: 14 PID: 20171 Comm: read_all Tainted: G    B   W
-Hardware name: NXP Layerscape LX2160ARDB (DT)
-pstate: 80000085 (Nzcv daIf -PAN -UAO)
-pc : irq_affinity_hint_proc_show+0x54/0xb0
-lr : irq_affinity_hint_proc_show+0x4c/0xb0
-sp : ffff00001138bc10
-x29: ffff00001138bc10 x28: 0000ffffd131d1e0
-x27: 00000000007000c0 x26: ffff8025b9480dc0
-x25: ffff8025b9480da8 x24: 00000000000003ff
-x23: ffff8027334f8300 x22: ffff80272e97d000
-x21: ffff80272e97d0b0 x20: ffff8025b9480d80
-x19: ffff000009a49000 x18: 0000000000000000
-x17: 0000000000000000 x16: 0000000000000000
-x15: 0000000000000000 x14: 0000000000000000
-x13: 0000000000000000 x12: 0000000000000040
-x11: 0000000000000000 x10: ffff802735b79b88
-x9 : 0000000000000000 x8 : 0000000000000000
-x7 : ffff000009a49848 x6 : 0000000000000003
-x5 : 0000000000000000 x4 : ffff000008157d6c
-x3 : ffff00001138bc10 x2 : ffff000012e9b790
-x1 : 0000000000000000 x0 : 0000000000000000
-Call trace:
- irq_affinity_hint_proc_show+0x54/0xb0
- seq_read+0x1b0/0x440
- proc_reg_read+0x80/0xd8
- __vfs_read+0x60/0x178
- vfs_read+0x94/0x150
- ksys_read+0x74/0xf0
- __arm64_sys_read+0x24/0x30
- el0_svc_common.constprop.0+0xd8/0x1a0
- el0_svc_handler+0x34/0x88
- el0_svc+0x10/0x14
-Code: f9001bbf 943e0732 f94066c2 b4000062 (f9400041)
----[ end trace b495bdcb0b3b732b ]---
-Kernel panic - not syncing: Fatal exception
-SMP: stopping secondary CPUs
-SMP: failed to stop secondary CPUs 0,2-4,6,8,11,13-15
-Kernel Offset: disabled
-CPU features: 0x0,21006008
-Memory Limit: none
----[ end Kernel panic - not syncing: Fatal exception ]---
+  1. CPU sends a message to the IOP, expecting no response because this
+     message contains an ADB Listen command. The ADB command is now
+     considered complete.
 
-Fix it by using 'cpumask_of(cpu)' to get the cpumask.
+  2. CPU sends a second message to the IOP, this time expecting a
+     response because this message contains an ADB Talk command. This
+     ADB command needs a reply before it can be completed.
 
-Signed-off-by: Hao Si <si.hao@zte.com.cn>
-Signed-off-by: Lin Chen <chen.lin5@zte.com.cn>
-Signed-off-by: Yi Wang <wang.yi59@zte.com.cn>
-Signed-off-by: Li Yang <leoyang.li@nxp.com>
+  3. adb-iop driver receives an IOP message and assumes that it relates
+     to the Talk command. It's actually an empty one (with flags ==
+     ADB_IOP_EXPLICIT|ADB_IOP_TIMEOUT) for the previous command. The
+     Talk command is now considered complete but it gets the wrong reply
+     data.
+
+  4. adb-iop driver gets another IOP response message, which contains
+     the actual reply data for the Talk command, but this is dropped
+     (the driver is no longer in awaiting_reply state).
+
+Cc: Joshua Thompson <funaho@jurai.org>
+Fixes: e2954e5f727f ("macintosh/adb-iop: Implement sending -> idle state transition")
+Tested-by: Stan Johnson <userm57@yahoo.com>
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+Link: https://lore.kernel.org/r/0f0a25855391e7eaa53a50f651aea0124e8525dd.1605847196.git.fthain@telegraphics.com.au
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soc/fsl/dpio/dpio-driver.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/macintosh/adb-iop.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/soc/fsl/dpio/dpio-driver.c b/drivers/soc/fsl/dpio/dpio-driver.c
-index b60b77bfaffae..ea6f8904c01b5 100644
---- a/drivers/soc/fsl/dpio/dpio-driver.c
-+++ b/drivers/soc/fsl/dpio/dpio-driver.c
-@@ -53,7 +53,6 @@ static int register_dpio_irq_handlers(struct fsl_mc_device *dpio_dev, int cpu)
- 	struct dpio_priv *priv;
- 	int error;
- 	struct fsl_mc_device_irq *irq;
--	cpumask_t mask;
+diff --git a/drivers/macintosh/adb-iop.c b/drivers/macintosh/adb-iop.c
+index f3d1a460fbce1..422abd1d48e18 100644
+--- a/drivers/macintosh/adb-iop.c
++++ b/drivers/macintosh/adb-iop.c
+@@ -78,10 +78,7 @@ static void adb_iop_complete(struct iop_msg *msg)
  
- 	priv = dev_get_drvdata(&dpio_dev->dev);
+ 	local_irq_save(flags);
  
-@@ -72,9 +71,7 @@ static int register_dpio_irq_handlers(struct fsl_mc_device *dpio_dev, int cpu)
- 	}
+-	if (current_req->reply_expected)
+-		adb_iop_state = awaiting_reply;
+-	else
+-		adb_iop_done();
++	adb_iop_state = awaiting_reply;
  
- 	/* set the affinity hint */
--	cpumask_clear(&mask);
--	cpumask_set_cpu(cpu, &mask);
--	if (irq_set_affinity_hint(irq->msi_desc->irq, &mask))
-+	if (irq_set_affinity_hint(irq->msi_desc->irq, cpumask_of(cpu)))
- 		dev_err(&dpio_dev->dev,
- 			"irq_set_affinity failed irq %d cpu %d\n",
- 			irq->msi_desc->irq, cpu);
+ 	local_irq_restore(flags);
+ }
+@@ -89,8 +86,9 @@ static void adb_iop_complete(struct iop_msg *msg)
+ /*
+  * Listen for ADB messages from the IOP.
+  *
+- * This will be called when unsolicited messages (usually replies to TALK
+- * commands or autopoll packets) are received.
++ * This will be called when unsolicited IOP messages are received.
++ * These IOP messages can carry ADB autopoll responses and also occur
++ * after explicit ADB commands.
+  */
+ 
+ static void adb_iop_listen(struct iop_msg *msg)
+@@ -110,8 +108,10 @@ static void adb_iop_listen(struct iop_msg *msg)
+ 		if (adb_iop_state == awaiting_reply) {
+ 			struct adb_request *req = current_req;
+ 
+-			req->reply_len = amsg->count + 1;
+-			memcpy(req->reply, &amsg->cmd, req->reply_len);
++			if (req->reply_expected) {
++				req->reply_len = amsg->count + 1;
++				memcpy(req->reply, &amsg->cmd, req->reply_len);
++			}
+ 
+ 			req_done = true;
+ 		}
 -- 
 2.27.0
 
