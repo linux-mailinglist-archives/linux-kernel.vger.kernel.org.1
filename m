@@ -2,161 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 461C92E6999
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 18:16:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 515142E699B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 18:16:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728036AbgL1ROP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 12:14:15 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:44273 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727534AbgL1ROO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 12:14:14 -0500
-Received: from mail-oo1-f71.google.com ([209.85.161.71])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1ktw5L-0000I1-OK
-        for linux-kernel@vger.kernel.org; Mon, 28 Dec 2020 17:13:31 +0000
-Received: by mail-oo1-f71.google.com with SMTP id f23so6060388oov.3
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 09:13:31 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3AREO2qVhTwtQVFWu5d92puZAYkGCodAaQymslEY8ZI=;
-        b=NGItugQ95yn1I3bL8s6TcEkhG6v4tQ7MZbKjc0EZ06wD5ZKDP6OH1EpOOr8G4L2v7a
-         DSETAKjtSV2k4FThA0CVi8fpghjiWtOsOjUDMKBN7xWGphUI31zg7l7Gd0bpdB/s+NXL
-         JoDnx1IvGFi8PjU60sKERDulhBUzwxHxSPGpw0IgxDommrMChuAfrWA2kQEzw5VUU3S1
-         Be+a8jO6LUkHhN32sYFd5nd3TFRdyEC/rOuhYJ7hZSpo1NXhDAeKeRTGhGNinH8ddPM3
-         F43p/g/p20bl4Xum70Ih7rqHXdwth0BaEvnvFnFlV7O7V1wuQWahYYc0P+ImWpY2TB7a
-         jCvg==
-X-Gm-Message-State: AOAM531I4SpHlnjo+lWIspkbIjlc8krOSXOuLPyaW0DDVa3ATVtIUH35
-        l2RyNMkgJ1eUo2A0DrKTPo6uMHLojbFB4945/xv3jk4YD3zioe1e0wLQT8gYWICDyzsQKjHK5zc
-        U7uPllOjZNAJ+AiHQOh0sfn6Hsi2pPJWuDKDS+wDat4SeuOQmu3sWLor5/g==
-X-Received: by 2002:a9d:ea6:: with SMTP id 35mr6080580otj.188.1609175610633;
-        Mon, 28 Dec 2020 09:13:30 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyxJtyk21lN8oCPqZD3h/TV0OTLqyx6QSCXYVEQKeWNXngzpE6iT2U9TeSZxLS+1UCaeSSY2VtrdMoRXv9hJUQ=
-X-Received: by 2002:a9d:ea6:: with SMTP id 35mr6080557otj.188.1609175610344;
- Mon, 28 Dec 2020 09:13:30 -0800 (PST)
+        id S1728084AbgL1RPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 12:15:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51354 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727784AbgL1RPR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 12:15:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 27513225AB
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 17:14:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609175676;
+        bh=nMFBr3AvYXRRq2owotQjD2yoFpgfyoWAPgMz9PhnD/Q=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ZeSX2vRlCanroSsW4BK7DGUrK3k2SOzmqV2xEXyMyPjqu44pP9BiMfE8tPd3llJsX
+         HUJ/W5trVCAdI7BSXID6rGbWhICir5MECyTiACa1g1J2CK43kMFJ9WaPpCNkxF8Joo
+         EaN3FUyXtsgJiCyfnKA/EQBgRM+ls3mmBaXjI7gLHAHQBT5L1B+DKxooB1H4Mqx51z
+         ngviP39PLF3mgFDcWB/8wL0SM/PIWLfUIcrvO5KuB8525M997tpEidUOcGxQKUfhxP
+         Pg5tXjIQVuLfdHVd7iWP1C/S4quq69OdNPfQwCRTb4Aj4d6KObdBM86I/C8LATMP5B
+         W7XvKz/a3n/fg==
+Received: by mail-wr1-f51.google.com with SMTP id a12so11877552wrv.8
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 09:14:36 -0800 (PST)
+X-Gm-Message-State: AOAM533eBZ8MW+mT7MU+7Dqjab81WrLfycFL1ZmGoyrym1TtwDY3tTrD
+        GSlCukiZz8MtC+D4b2Yi70fEEdjcXQ81hgIMsM+kKw==
+X-Google-Smtp-Source: ABdhPJy0oinDLzaLY7q03WGWqBsF+upjqJxfvdljiaLA/MhTFGMKNak9Fp8Heg/rl+JnpYn31/xU0l5Nkg8k+wnrVDI=
+X-Received: by 2002:a5d:43c3:: with SMTP id v3mr51067579wrr.184.1609175674739;
+ Mon, 28 Dec 2020 09:14:34 -0800 (PST)
 MIME-Version: 1.0
-References: <20201225164727.103280-1-kai.heng.feng@canonical.com> <s5hft3tf1r2.wl-tiwai@suse.de>
-In-Reply-To: <s5hft3tf1r2.wl-tiwai@suse.de>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Tue, 29 Dec 2020 01:13:17 +0800
-Message-ID: <CAAd53p6jYWp3NdDmfAq76rcMkj26nrkFxmLjLa75CV30otWVig@mail.gmail.com>
-Subject: Re: [PATCH] ALSA: hda: Resume codec for system suspend if LED is
- controlled by codec
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     tiwai@suse.com, Jaroslav Kysela <perex@perex.cz>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        "moderated list:SOUND" <alsa-devel@alsa-project.org>,
-        open list <linux-kernel@vger.kernel.org>
+References: <bf59ecb5487171a852bcc8cdd553ec797aedc485.1609093476.git.luto@kernel.org>
+ <1836294649.3345.1609100294833.JavaMail.zimbra@efficios.com>
+ <CALCETrVdcn2r2Jvd1=-bM=FQ8KbX4aH-v4ytdojL7r7Nb6k8YQ@mail.gmail.com> <20201228102537.GG1551@shell.armlinux.org.uk>
+In-Reply-To: <20201228102537.GG1551@shell.armlinux.org.uk>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Mon, 28 Dec 2020 09:14:23 -0800
+X-Gmail-Original-Message-ID: <CALCETrWQx0qwthBc5pJBxs2PWAQo-roAz-6g=7HOs+dsiokVsg@mail.gmail.com>
+Message-ID: <CALCETrWQx0qwthBc5pJBxs2PWAQo-roAz-6g=7HOs+dsiokVsg@mail.gmail.com>
+Subject: Re: [RFC please help] membarrier: Rewrite sync_core_before_usermode()
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        x86 <x86@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        stable <stable@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 26, 2020 at 3:46 PM Takashi Iwai <tiwai@suse.de> wrote:
+On Mon, Dec 28, 2020 at 2:25 AM Russell King - ARM Linux admin
+<linux@armlinux.org.uk> wrote:
 >
-> On Fri, 25 Dec 2020 17:47:23 +0100,
-> Kai-Heng Feng wrote:
+> On Sun, Dec 27, 2020 at 01:36:13PM -0800, Andy Lutomirski wrote:
+> > On Sun, Dec 27, 2020 at 12:18 PM Mathieu Desnoyers
+> > <mathieu.desnoyers@efficios.com> wrote:
+> > >
+> > > ----- On Dec 27, 2020, at 1:28 PM, Andy Lutomirski luto@kernel.org wrote:
+> > >
 > >
-> > Laptop with codec controlled LEDs takes a very long time to suspend
-> > after commit 215a22ed31a1 ("ALSA: hda: Refactor codec PM to use
-> > direct-complete optimization"):
-> > [   90.065964] PM: suspend entry (s2idle)
-> > [   90.067337] Filesystems sync: 0.001 seconds
-> > [   90.185758] Freezing user space processes ... (elapsed 0.002 seconds) done.
-> > [   90.188713] OOM killer disabled.
-> > [   90.188714] Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
-> > [   90.190024] printk: Suspending console(s) (use no_console_suspend to debug)
-> > [   90.904912] intel_pch_thermal 0000:00:12.0: CPU-PCH is cool [49C], continue to suspend
-> > [  321.262505] snd_hda_codec_realtek ehdaudio0D0: Unable to sync register 0x2b8000. -5
-> > [  328.426919] snd_hda_codec_realtek ehdaudio0D0: Unable to sync register 0x2b8000. -5
-> > [  329.490933] ACPI: EC: interrupt blocked
+> > > >
+> > > > I admit that I'm rather surprised that the code worked at all on arm64,
+> > > > and I'm suspicious that it has never been very well tested.  My apologies
+> > > > for not reviewing this more carefully in the first place.
+> > >
+> > > Please refer to Documentation/features/sched/membarrier-sync-core/arch-support.txt
+> > >
+> > > It clearly states that only arm, arm64, powerpc and x86 support the membarrier
+> > > sync core feature as of now:
 > >
-> > That commit keeps codec suspended during the system suspend. This
-> > doesn't play well with codec controlled mute and micmute LEDs, because
-> > LED core will use codec registers to turn off those LEDs.
-> >
-> > Currently, all users of create_mute_led_cdev() use codec to control
-> > LED, so unconditionally runtime resume those codecs before system
-> > suspend to solve the problem.
-> >
-> > Fixes: 215a22ed31a1 ("ALSA: hda: Refactor codec PM to use direct-complete optimization")
-> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > Sigh, I missed arm (32).  Russell or ARM folks, what's the right
+> > incantation to make the CPU notice instruction changes initiated by
+> > other cores on 32-bit ARM?
 >
-> A puzzling point is that it's applied only to the cases with the led
-> cdev.  Or does it basically apply for the ASoC controller?
-> That is, if you run with legacy HDA (snd-intel-dspcfg.dsp_driver=1),
-> does the issue appear as well on those machines?
+> You need to call flush_icache_range(), since the changes need to be
+> flushed from the data cache to the point of unification (of the Harvard
+> I and D), and the instruction cache needs to be invalidated so it can
+> then see those updated instructions. This will also take care of the
+> necessary barriers that the CPU requires for you.
 
-No, the issue doesn't happen with snd-intel-dspcfg.dsp_driver=1. It
-only happens when SOF driver is in use.
-My analysis was wrong, I will send a new patch to address the root cause.
+With what parameters?   From looking at the header, this is for the
+case in which the kernel writes some memory and then intends to
+execute it.  That's not what membarrier() does at all.  membarrier()
+works like this:
 
-Kai-Heng
+User thread 1:
 
->
->
-> thanks,
->
-> Takashi
->
-> > ---
-> >  include/sound/hda_codec.h   | 1 +
-> >  sound/pci/hda/hda_codec.c   | 7 +++++++
-> >  sound/pci/hda/hda_generic.c | 1 +
-> >  3 files changed, 9 insertions(+)
-> >
-> > diff --git a/include/sound/hda_codec.h b/include/sound/hda_codec.h
-> > index 2e8d51937acd..b01d76abe008 100644
-> > --- a/include/sound/hda_codec.h
-> > +++ b/include/sound/hda_codec.h
-> > @@ -255,6 +255,7 @@ struct hda_codec {
-> >       unsigned int relaxed_resume:1;  /* don't resume forcibly for jack */
-> >       unsigned int forced_resume:1; /* forced resume for jack */
-> >       unsigned int mst_no_extra_pcms:1; /* no backup PCMs for DP-MST */
-> > +     unsigned int resume_for_sleep:1;  /* runtime resume for system sleep */
-> >
-> >  #ifdef CONFIG_PM
-> >       unsigned long power_on_acct;
-> > diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-> > index 687216e74526..b890d9b4339e 100644
-> > --- a/sound/pci/hda/hda_codec.c
-> > +++ b/sound/pci/hda/hda_codec.c
-> > @@ -2983,6 +2983,13 @@ static int hda_codec_runtime_resume(struct device *dev)
-> >  #ifdef CONFIG_PM_SLEEP
-> >  static int hda_codec_pm_prepare(struct device *dev)
-> >  {
-> > +     struct hda_codec *codec = dev_to_hda_codec(dev);
-> > +
-> > +     if (codec->resume_for_sleep) {
-> > +             pm_runtime_resume(dev);
-> > +             return 0;
-> > +     }
-> > +
-> >       return pm_runtime_suspended(dev);
-> >  }
-> >
-> > diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-> > index 8060cc86dfea..6d259d5bb5bb 100644
-> > --- a/sound/pci/hda/hda_generic.c
-> > +++ b/sound/pci/hda/hda_generic.c
-> > @@ -3913,6 +3913,7 @@ static int create_mute_led_cdev(struct hda_codec *codec,
-> >       cdev->brightness_set_blocking = callback;
-> >       cdev->brightness = ledtrig_audio_get(micmute ? LED_AUDIO_MICMUTE : LED_AUDIO_MUTE);
-> >       cdev->flags = LED_CORE_SUSPENDRESUME;
-> > +     codec->resume_for_sleep = 1;
-> >
-> >       return devm_led_classdev_register(&codec->core.dev, cdev);
-> >  }
-> > --
-> > 2.29.2
-> >
+write to RWX memory *or* write to an RW alias of an X region.
+membarrier(...);
+somehow tell thread 2 that we're ready (with a store release, perhaps,
+or even just a relaxed store.)
+
+User thread 2:
+
+wait for the indication from thread 1.
+barrier();
+jump to the code.
+
+membarrier() is, for better or for worse, not given a range of addresses.
+
+On x86, the documentation is a bit weak, but a strict reading
+indicates that thread 2 must execute a serializing instruction at some
+point after thread 1 writes the code and before thread 2 runs it.
+membarrier() does this by sending an IPI and ensuring that a
+"serializing" instruction (thanks for great terminology, Intel) is
+executed.  Note that flush_icache_range() is a no-op on x86, and I've
+asked Intel's architects to please clarify their precise rules.  No
+response yet.
+
+On arm64, flush_icache_range() seems to send an IPI, and that's not
+what I want.  membarrier() already does an IPI.
+
+I suppose one option is to revert support for this membarrier()
+operation on arm, but it would be nice to just implement it instead.
+
+--Andy
