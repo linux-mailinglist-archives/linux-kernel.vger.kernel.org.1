@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A6F82E6515
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:57:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF40D2E3F4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:40:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391915AbgL1Pzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:55:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35674 "EHLO mail.kernel.org"
+        id S2503502AbgL1O36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:29:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389418AbgL1Nfo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:35:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 84BCF22A84;
-        Mon, 28 Dec 2020 13:35:28 +0000 (UTC)
+        id S2503450AbgL1O3y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:29:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 97B1120739;
+        Mon, 28 Dec 2020 14:29:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162529;
-        bh=fT2Ef8ACX3SqVzjESbjRL4wVWp/i1bWFda6mD95v0zM=;
+        s=korg; t=1609165779;
+        bh=SVczAbKMfCMYD/0DL2Z/KeIitDI4liWOhNw6S+Eg5P0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1Fop+1lEGT/J5nsmihAuGPJ/tSUb+xgNnBUweCOlKCQxOSONE1ROx1LggLmx68EtR
-         +3ecUgdQ9UM09qN4KcLPUCUwtGLDebPjjK03bZmfZfTtg+wPUqcJxrl96VJfANchBh
-         MY48gO2n1GaosPhZM0bkX8BBMu6ypAsRD+23Yhgo=
+        b=G8C2qK9aseYgq74WeDjs1TXRKhx4GF0aiF3o5wMwAK+pRFIt8/KB112Nq1FezTW8f
+         2DXy9yxVFY1WaVBdXlQP6SR640ncsbi3Vwn9J5gTkziU/NvUkwWsOLeFKHw8AnA3Xb
+         cXpavfYHbAFyBz7yHu3HGXMFjaSv8Fz6RbBq9E7s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, Stable@vger.kernel.org
-Subject: [PATCH 4.19 331/346] iio:light:st_uvis25: Fix timestamp alignment and prevent data leak.
+        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
+        Bert Vermeulen <bert@biot.com>, Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.10 652/717] spi: rb4xx: Dont leak SPI master in probe error path
 Date:   Mon, 28 Dec 2020 13:50:50 +0100
-Message-Id: <20201228124935.776763822@linuxfoundation.org>
+Message-Id: <20201228125052.188410854@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,77 +39,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: Lukas Wunner <lukas@wunner.de>
 
-commit d837a996f57c29a985177bc03b0e599082047f27 upstream.
+commit a4729c3506c3eb1a6ca5c0289f4e7cafa4115065 upstream.
 
-One of a class of bugs pointed out by Lars in a recent review.
-iio_push_to_buffers_with_timestamp() assumes the buffer used is aligned
-to the size of the timestamp (8 bytes).  This is not guaranteed in
-this driver which uses an array of smaller elements on the stack.
-As Lars also noted this anti pattern can involve a leak of data to
-userspace and that indeed can happen here.  We close both issues by
-moving to a suitable structure in the iio_priv()
+If the calls to devm_clk_get(), devm_spi_register_master() or
+clk_prepare_enable() fail on probe of the Mikrotik RB4xx SPI driver,
+the spi_master struct is erroneously not freed.
 
-This data is allocated with kzalloc() so no data can leak apart
-from previous readings.
+Fix by switching over to the new devm_spi_alloc_master() helper.
 
-A local unsigned int variable is used for the regmap call so it
-is clear there is no potential issue with writing into the padding
-of the structure.
-
-Fixes: 3025c8688c1e ("iio: light: add support for UVIS25 sensor")
-Reported-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-Acked-by: Lorenzo Bianconi <lorenzo@kernel.org>
-Cc: <Stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200920112742.170751-3-jic23@kernel.org
+Fixes: 05aec357871f ("spi: Add SPI driver for Mikrotik RB4xx series boards")
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Cc: <stable@vger.kernel.org> # v4.2+: 5e844cc37a5c: spi: Introduce device-managed SPI controller allocation
+Cc: <stable@vger.kernel.org> # v4.2+
+Cc: Bert Vermeulen <bert@biot.com>
+Link: https://lore.kernel.org/r/369bf26d71927f60943b1d9d8f51810f00b0237d.1607286887.git.lukas@wunner.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/light/st_uvis25.h      |    5 +++++
- drivers/iio/light/st_uvis25_core.c |    8 +++++---
- 2 files changed, 10 insertions(+), 3 deletions(-)
+ drivers/spi/spi-rb4xx.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/iio/light/st_uvis25.h
-+++ b/drivers/iio/light/st_uvis25.h
-@@ -28,6 +28,11 @@ struct st_uvis25_hw {
- 	struct iio_trigger *trig;
- 	bool enabled;
- 	int irq;
-+	/* Ensure timestamp is naturally aligned */
-+	struct {
-+		u8 chan;
-+		s64 ts __aligned(8);
-+	} scan;
- };
+--- a/drivers/spi/spi-rb4xx.c
++++ b/drivers/spi/spi-rb4xx.c
+@@ -143,7 +143,7 @@ static int rb4xx_spi_probe(struct platfo
+ 	if (IS_ERR(spi_base))
+ 		return PTR_ERR(spi_base);
  
- extern const struct dev_pm_ops st_uvis25_pm_ops;
---- a/drivers/iio/light/st_uvis25_core.c
-+++ b/drivers/iio/light/st_uvis25_core.c
-@@ -235,17 +235,19 @@ static const struct iio_buffer_setup_ops
+-	master = spi_alloc_master(&pdev->dev, sizeof(*rbspi));
++	master = devm_spi_alloc_master(&pdev->dev, sizeof(*rbspi));
+ 	if (!master)
+ 		return -ENOMEM;
  
- static irqreturn_t st_uvis25_buffer_handler_thread(int irq, void *p)
- {
--	u8 buffer[ALIGN(sizeof(u8), sizeof(s64)) + sizeof(s64)];
- 	struct iio_poll_func *pf = p;
- 	struct iio_dev *iio_dev = pf->indio_dev;
- 	struct st_uvis25_hw *hw = iio_priv(iio_dev);
-+	unsigned int val;
- 	int err;
- 
--	err = regmap_read(hw->regmap, ST_UVIS25_REG_OUT_ADDR, (int *)buffer);
-+	err = regmap_read(hw->regmap, ST_UVIS25_REG_OUT_ADDR, &val);
- 	if (err < 0)
- 		goto out;
- 
--	iio_push_to_buffers_with_timestamp(iio_dev, buffer,
-+	hw->scan.chan = val;
-+
-+	iio_push_to_buffers_with_timestamp(iio_dev, &hw->scan,
- 					   iio_get_time_ns(iio_dev));
- 
- out:
 
 
