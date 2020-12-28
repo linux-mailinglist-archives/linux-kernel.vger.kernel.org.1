@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DA062E3947
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:22:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 459652E6415
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:48:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388179AbgL1NVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:21:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50218 "EHLO mail.kernel.org"
+        id S2405166AbgL1PrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:47:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388140AbgL1NVp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:21:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 21C6E208D5;
-        Mon, 28 Dec 2020 13:21:03 +0000 (UTC)
+        id S2391948AbgL1Nnq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:43:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 85E4B20715;
+        Mon, 28 Dec 2020 13:43:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161664;
-        bh=ZQx4jiJYSqq0ifLV2fS+ihkyAB+CjY19pTM7Afr80S8=;
+        s=korg; t=1609162986;
+        bh=OsXEu+1bLjL7vCoVVfeanmBzQ/qMtk8V3PeEXvPDxHk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=su/9JC9Q9nM7Gl48S7bwWXKHWRQTwMRjIRigA7ZNbORc1uR7awSrKgTRIXaY6UQJ0
-         Ak+Pr+W5nzAkYfNvRZfLfr6heUdo4y6hqW+e7+FStqAjaqzxZVliTeHY0BI9g3KV+v
-         hLUSIjGIcPyx+x9o/q3ZdLhS0K9kPamsPPNkcmVo=
+        b=hzelg0X4tIGxNHWdoosCjGwhIZwgARcmoSoq1h6eaAFM9Y5god6eQP2gz1XX7X00w
+         xHZlLNK70L1gKJSoUuwh8u59H/WHcYxwoLNn5W3nTRChoPoFf61AHmIgwe16HQx+BN
+         aAZQ/M+p5QNc0S9IGOBmaDt74mJHjrRldV+EIbJc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Thomas Winischhofer <thomas@winischhofer.net>,
-        linux-usb@vger.kernel.org
-Subject: [PATCH 4.19 045/346] USB: sisusbvga: Make console support depend on BROKEN
-Date:   Mon, 28 Dec 2020 13:46:04 +0100
-Message-Id: <20201228124921.968764856@linuxfoundation.org>
+        stable@vger.kernel.org, Jack Xu <jack.xu@intel.com>,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Fiona Trahe <fiona.trahe@intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 129/453] crypto: qat - fix status check in qat_hal_put_rel_rd_xfer()
+Date:   Mon, 28 Dec 2020 13:46:05 +0100
+Message-Id: <20201228124943.419221322@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +42,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Jack Xu <jack.xu@intel.com>
 
-commit 862ee699fefe1e6d6f2c1518395f0b999b8beb15 upstream.
+[ Upstream commit 3b5c130fb2e4c045369791c33c83b59f6e84f7d6 ]
 
-The console part of sisusbvga is broken vs. printk(). It uses in_atomic()
-to detect contexts in which it cannot sleep despite the big fat comment in
-preempt.h which says: Do not use in_atomic() in driver code.
+The return value of qat_hal_rd_ae_csr() is always a CSR value and never
+a status and should not be stored in the status variable of
+qat_hal_put_rel_rd_xfer().
 
-in_atomic() does not work on kernels with CONFIG_PREEMPT_COUNT=n which
-means that spin/rw_lock held regions are not detected by it.
+This removes the assignment as qat_hal_rd_ae_csr() is not expected to
+fail.
+A more comprehensive handling of the theoretical corner case which could
+result in a fail will be submitted in a separate patch.
 
-There is no way to make this work by handing context information through to
-the driver and this only can be solved once the core printk infrastructure
-supports sleepable console drivers.
-
-Make it depend on BROKEN for now.
-
-Fixes: 1bbb4f2035d9 ("[PATCH] USB: sisusb[vga] update")
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Thomas Winischhofer <thomas@winischhofer.net>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-usb@vger.kernel.org
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20201019101109.603244207@linutronix.de
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 8c9478a400b7 ("crypto: qat - reduce stack size with KASAN")
+Signed-off-by: Jack Xu <jack.xu@intel.com>
+Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Reviewed-by: Fiona Trahe <fiona.trahe@intel.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/misc/sisusbvga/Kconfig |    2 +-
+ drivers/crypto/qat/qat_common/qat_hal.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/misc/sisusbvga/Kconfig
-+++ b/drivers/usb/misc/sisusbvga/Kconfig
-@@ -15,7 +15,7 @@ config USB_SISUSBVGA
+diff --git a/drivers/crypto/qat/qat_common/qat_hal.c b/drivers/crypto/qat/qat_common/qat_hal.c
+index ff149e176f649..dac130bb807ae 100644
+--- a/drivers/crypto/qat/qat_common/qat_hal.c
++++ b/drivers/crypto/qat/qat_common/qat_hal.c
+@@ -1189,7 +1189,7 @@ static int qat_hal_put_rel_rd_xfer(struct icp_qat_fw_loader_handle *handle,
+ 	unsigned short mask;
+ 	unsigned short dr_offset = 0x10;
  
- config USB_SISUSBVGA_CON
- 	bool "Text console and mode switching support" if USB_SISUSBVGA
--	depends on VT
-+	depends on VT && BROKEN
- 	select FONT_8x16
- 	---help---
- 	  Say Y here if you want a VGA text console via the USB dongle or
+-	status = ctx_enables = qat_hal_rd_ae_csr(handle, ae, CTX_ENABLES);
++	ctx_enables = qat_hal_rd_ae_csr(handle, ae, CTX_ENABLES);
+ 	if (CE_INUSE_CONTEXTS & ctx_enables) {
+ 		if (ctx & 0x1) {
+ 			pr_err("QAT: bad 4-ctx mode,ctx=0x%x\n", ctx);
+-- 
+2.27.0
+
 
 
