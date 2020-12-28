@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 495682E38B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:14:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B1232E3B9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:53:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732313AbgL1NNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:13:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41908 "EHLO mail.kernel.org"
+        id S2407088AbgL1NwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:52:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732263AbgL1NNq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:13:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB9332076D;
-        Mon, 28 Dec 2020 13:13:05 +0000 (UTC)
+        id S2407018AbgL1NwA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:52:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 995E7208B3;
+        Mon, 28 Dec 2020 13:51:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161186;
-        bh=VeHRtpoquhQQYA5JHb3VFW5DjNs3ejr8fduawio3IEo=;
+        s=korg; t=1609163480;
+        bh=9NahrlYyNAdZZ/yKDuE0CcW/q+WhkGrcf3ZkyE8qS/s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=clTOPJgxoSHXHIpP5cvITWMqfDVYnWCU6VhVOGjEZMmU4F3iIt7oOyfEfsxqz159W
-         Dq4E28S3WgfAdnTk968h6LTgPmr3cetEOo270I/xQuF7gWDJWDcUhuT4ARw6ayaosL
-         j1ZI2SIBXftSHfEKXIYCjrZrJ5yhi0LzP64A3sOk=
+        b=alerZu8G5q++v1yW/gbcq8PrBZU9ueq+a7FAhIAR20CKj4sxzy8E/28E+F3nspBuS
+         7hZVFOf2xDY8YaVf7G3an3BLTewBRzJBtJAR/yqeYvGuHIq/utMIPPvPCS3NfYWKAk
+         o6FevhPZc7Rj+OVwJvD6ASFmNcCrsMW7C/lqS5+I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yu Kuai <yukuai3@huawei.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 130/242] clocksource/drivers/cadence_ttc: Fix memory leak in ttc_setup_clockevent()
+Subject: [PATCH 5.4 299/453] pwm: zx: Add missing cleanup in error path
 Date:   Mon, 28 Dec 2020 13:48:55 +0100
-Message-Id: <20201228124911.099785735@linuxfoundation.org>
+Message-Id: <20201228124951.593616726@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,71 +42,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-[ Upstream commit eee422c46e6840a81c9db18a497b74387a557b29 ]
+[ Upstream commit 269effd03f6142df4c74814cfdd5f0b041b30bf9 ]
 
-If clk_notifier_register() failed, ttc_setup_clockevent() will return
-without freeing 'ttcce', which will leak memory.
+zx_pwm_probe() called clk_prepare_enable() before; this must be undone
+in the error path.
 
-Fixes: 70504f311d4b ("clocksource/drivers/cadence_ttc: Convert init function to return error")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20201116135123.2164033-1-yukuai3@huawei.com
+Fixes: 4836193c435c ("pwm: Add ZTE ZX PWM device driver")
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Acked-by: Shawn Guo <shawn.guo@linaro.org>
+Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clocksource/cadence_ttc_timer.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ drivers/pwm/pwm-zx.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/clocksource/cadence_ttc_timer.c b/drivers/clocksource/cadence_ttc_timer.c
-index 29d51755e18b2..a7eb858a84a0f 100644
---- a/drivers/clocksource/cadence_ttc_timer.c
-+++ b/drivers/clocksource/cadence_ttc_timer.c
-@@ -419,10 +419,8 @@ static int __init ttc_setup_clockevent(struct clk *clk,
- 	ttcce->ttc.clk = clk;
- 
- 	err = clk_prepare_enable(ttcce->ttc.clk);
--	if (err) {
--		kfree(ttcce);
--		return err;
--	}
-+	if (err)
-+		goto out_kfree;
- 
- 	ttcce->ttc.clk_rate_change_nb.notifier_call =
- 		ttc_rate_change_clockevent_cb;
-@@ -432,7 +430,7 @@ static int __init ttc_setup_clockevent(struct clk *clk,
- 				    &ttcce->ttc.clk_rate_change_nb);
- 	if (err) {
- 		pr_warn("Unable to register clock notifier.\n");
--		return err;
-+		goto out_kfree;
+diff --git a/drivers/pwm/pwm-zx.c b/drivers/pwm/pwm-zx.c
+index e2c21cc34a96a..3763ce5311ac2 100644
+--- a/drivers/pwm/pwm-zx.c
++++ b/drivers/pwm/pwm-zx.c
+@@ -238,6 +238,7 @@ static int zx_pwm_probe(struct platform_device *pdev)
+ 	ret = pwmchip_add(&zpc->chip);
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "failed to add PWM chip: %d\n", ret);
++		clk_disable_unprepare(zpc->pclk);
+ 		return ret;
  	}
  
- 	ttcce->ttc.freq = clk_get_rate(ttcce->ttc.clk);
-@@ -461,15 +459,17 @@ static int __init ttc_setup_clockevent(struct clk *clk,
- 
- 	err = request_irq(irq, ttc_clock_event_interrupt,
- 			  IRQF_TIMER, ttcce->ce.name, ttcce);
--	if (err) {
--		kfree(ttcce);
--		return err;
--	}
-+	if (err)
-+		goto out_kfree;
- 
- 	clockevents_config_and_register(&ttcce->ce,
- 			ttcce->ttc.freq / PRESCALE, 1, 0xfffe);
- 
- 	return 0;
-+
-+out_kfree:
-+	kfree(ttcce);
-+	return err;
- }
- 
- /**
 -- 
 2.27.0
 
