@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE3BA2E3F17
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:38:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE3CD2E3C1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:59:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505044AbgL1Odf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:33:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39410 "EHLO mail.kernel.org"
+        id S2436466AbgL1N6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:58:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2504508AbgL1Obc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:31:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A2877224D2;
-        Mon, 28 Dec 2020 14:31:16 +0000 (UTC)
+        id S2407795AbgL1N6h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:58:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F2FF2064B;
+        Mon, 28 Dec 2020 13:58:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165877;
-        bh=4IfPtZxWxvuuZ66WxMPDfNGc+ygfhzEZNT0ub8Utrhg=;
+        s=korg; t=1609163902;
+        bh=e0IZh525pkgb6dEeDXzOIDHtJSeTXIyNUPCn/PWaoHk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dkrg/EXmEcASirkCCuzcFPvwBA+jWSlojqf1XeR0W6RsFvBgbnKBfJ7WXDhjOZ7ZM
-         eHcAhGV9WNe1cQFxOXj80eD3WZW6oLbqf5DZp1ZMQ9fH1yvrPSNKAcsUQOKaQsrHp1
-         jPWlyAqx+vd6Gz1Mbsu3negB9KZXDG2o95PcT4tk=
+        b=XljvKxkZCejf85m8cAf8H0HyKzQqF/NJwk8Ad/zCP1xfUNlkJxL/tvFScvaOXDrbC
+         ovd+1ZICzW6rXgat6lBuKoNF1KxHfHWkslB3dLtapFV5qJMskrMp6G38MQ8Bj8Mz4v
+         Pnvn/s+G1fpaHnAfJQbBFQ/U4fS4KasMR1i0oEZo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yangtao Li <frank@allwinnertech.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 5.10 687/717] pinctrl: sunxi: Always call chained_irq_{enter, exit} in sunxi_pinctrl_irq_handler
+        stable@vger.kernel.org, Carlos Garnacho <carlosg@gnome.org>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH 5.4 449/453] platform/x86: intel-vbtn: Allow switch events on Acer Switch Alpha 12
 Date:   Mon, 28 Dec 2020 13:51:25 +0100
-Message-Id: <20201228125053.892723322@linuxfoundation.org>
+Message-Id: <20201228124958.825925512@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,53 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yangtao Li <frank@allwinnertech.com>
+From: Carlos Garnacho <carlosg@gnome.org>
 
-commit a1158e36f876f6269978a4176e3a1d48d27fe7a1 upstream.
+commit fe6000990394639ed374cb76c313be3640714f47 upstream.
 
-It is found on many allwinner soc that there is a low probability that
-the interrupt status cannot be read in sunxi_pinctrl_irq_handler. This
-will cause the interrupt status of a gpio bank to always be active on
-gic, preventing gic from responding to other spi interrupts correctly.
+This 2-in-1 model (Product name: Switch SA5-271) features a SW_TABLET_MODE
+that works as it would be expected, both when detaching the keyboard and
+when folding it behind the tablet body.
 
-So we should call the chained_irq_* each time enter sunxi_pinctrl_irq_handler().
+It used to work until the introduction of the allow list at
+commit 8169bd3e6e193 ("platform/x86: intel-vbtn: Switch to an allow-list
+for SW_TABLET_MODE reporting"). Add this model to it, so that the Virtual
+Buttons device announces the EV_SW features again.
 
-Signed-off-by: Yangtao Li <frank@allwinnertech.com>
+Fixes: 8169bd3e6e193 ("platform/x86: intel-vbtn: Switch to an allow-list for SW_TABLET_MODE reporting")
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/85263ce8b058e80cea25c6ad6383eb256ce96cc8.1604988979.git.frank@allwinnertech.com
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Carlos Garnacho <carlosg@gnome.org>
+Link: https://lore.kernel.org/r/20201201135727.212917-1-carlosg@gnome.org
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/pinctrl/sunxi/pinctrl-sunxi.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/platform/x86/intel-vbtn.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/pinctrl/sunxi/pinctrl-sunxi.c
-+++ b/drivers/pinctrl/sunxi/pinctrl-sunxi.c
-@@ -1142,20 +1142,22 @@ static void sunxi_pinctrl_irq_handler(st
- 	if (bank == pctl->desc->irq_banks)
- 		return;
+--- a/drivers/platform/x86/intel-vbtn.c
++++ b/drivers/platform/x86/intel-vbtn.c
+@@ -203,6 +203,12 @@ static const struct dmi_system_id dmi_sw
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "HP Pavilion 13 x360 PC"),
+ 		},
+ 	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Switch SA5-271"),
++		},
++	},
+ 	{} /* Array terminator */
+ };
  
-+	chained_irq_enter(chip, desc);
-+
- 	reg = sunxi_irq_status_reg_from_bank(pctl->desc, bank);
- 	val = readl(pctl->membase + reg);
- 
- 	if (val) {
- 		int irqoffset;
- 
--		chained_irq_enter(chip, desc);
- 		for_each_set_bit(irqoffset, &val, IRQ_PER_BANK) {
- 			int pin_irq = irq_find_mapping(pctl->domain,
- 						       bank * IRQ_PER_BANK + irqoffset);
- 			generic_handle_irq(pin_irq);
- 		}
--		chained_irq_exit(chip, desc);
- 	}
-+
-+	chained_irq_exit(chip, desc);
- }
- 
- static int sunxi_pinctrl_add_function(struct sunxi_pinctrl *pctl,
 
 
