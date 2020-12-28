@@ -2,436 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9459B2E65D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:07:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E16932E65EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:08:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392907AbgL1QEz convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 28 Dec 2020 11:04:55 -0500
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:53207 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389760AbgL1QEx (ORCPT
+        id S2632985AbgL1QHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:07:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393365AbgL1QG4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 11:04:53 -0500
-X-Originating-IP: 91.224.148.103
-Received: from xps13 (unknown [91.224.148.103])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id A3384C0005;
-        Mon, 28 Dec 2020 16:04:07 +0000 (UTC)
-Date:   Mon, 28 Dec 2020 17:04:05 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Boris Brezillon <boris.brezillon@collabora.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     linux-i3c@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
-        <devicetree@vger.kernel.org>,
-        Rajeev Huralikoppi <rajeev.huralikoppi@silvaco.com>,
-        Nicolas Pitre <nico@fluxnic.net>, linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Conor Culhane <conor.culhane@silvaco.com>
-Subject: Re: [PATCH v2 3/4] i3c: master: svc: Add Silvaco I3C master driver
-Message-ID: <20201228170405.3ee40b28@xps13>
-In-Reply-To: <20200819110432.0df68db9@collabora.com>
-References: <20200812141312.3331-1-miquel.raynal@bootlin.com>
- <20200812141312.3331-3-miquel.raynal@bootlin.com>
- <20200819110432.0df68db9@collabora.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Mon, 28 Dec 2020 11:06:56 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EF3DC06179A;
+        Mon, 28 Dec 2020 08:06:05 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id x20so24822927lfe.12;
+        Mon, 28 Dec 2020 08:06:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JLh0QpsCd9OrmRyukAVsjurqv+HRFzes5LCotbb5RJ8=;
+        b=rmgmZ0DjB9XoRC9isfDn+QOHo4UOpjUsW5j6PCCgPXnNRxAHfawouTFTIh7G2afjNv
+         y9grkZM6VkPhN7KFY9R/Ixm8pGd5CLKY+QSY9ACBHZwQ57a5i1y5jbmqPDV/VDXi8fHI
+         NDCuTdeQLBg3DiQrUoGdFts8JUzg5WEIlXL2m23iNyutXJFwLK37pSBwI2Ufu6QEoLXo
+         QJQTgU3225tw81+ira/yOqxh/UaSH28hMdC7rkTnoBPtEPACy0hxE7jT3zW366vWKsLl
+         MIRGDCXDsDEjOuuN1zNR79D95U0kt2IZ56NkcKMU1J+Kac8vK6jlKK6RDDBtTRFAlUQZ
+         n6lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JLh0QpsCd9OrmRyukAVsjurqv+HRFzes5LCotbb5RJ8=;
+        b=UjGGPeIA9UEMjyg1/nxNNBN4N9ibT9hzwt1ei8K8bo2fKa5GJC0+Jbr3lqO95+Kx2e
+         lMKYshBfVlYORtqZkhT+4oZW5jXzO6/9v1tFOStw2FD+OdbQI4EgsUKgBZuGqTWHsKqz
+         Vg4KKAJvjQ7E71XS0L/Mn11eBa0uYAg0lYXZf3JCoQ4kTgon378qS1zsqXchcGoxKTbH
+         Dl73SPjVrhZsIooFnz2U5JO/r0aTXJ7rzuf/CLoKLAgB8iR0J6n6HFlboLaSLy+B1Kct
+         CqMUFgJD9PxXN/BPihUpk5kht4f1hJqNkRY7DoKUZA7Nl0VVK2HkX+jo4h9QnF3QbbUe
+         23PQ==
+X-Gm-Message-State: AOAM532bUtT0EzXCpWT4YEE3UIC/65MUk7rvn7h+zsBz5SRORXFVE8lT
+        umUtOyVl1SRQwZg3lwgLZDY=
+X-Google-Smtp-Source: ABdhPJykASQRrZuu8pgpmv8hsQQirEcTyxl8Csyq3q/V72g/SyAd/Uln/N//1f3moHsftS4ktDKRBA==
+X-Received: by 2002:a05:6512:6cd:: with SMTP id u13mr18811103lff.288.1609171563846;
+        Mon, 28 Dec 2020 08:06:03 -0800 (PST)
+Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.gmail.com with ESMTPSA id v28sm5338837lfd.57.2020.12.28.08.06.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Dec 2020 08:06:03 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Dan Murphy <dmurphy@ti.com>, Sebastian Reichel <sre@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v8 0/3] Introduce Embedded Controller driver for Acer A500
+Date:   Mon, 28 Dec 2020 19:05:44 +0300
+Message-Id: <20201228160547.30562-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Boris,
+This series adds support for the Embedded Controller which is found on
+Acer Iconia Tab A500 (Android tablet device).
 
-It's been quite some time since you made this review, but now that I am
-ready to send a new version, I think it is useful to answer your
-questions and remarks below which I pretty much all addressed with
-significant changes.
+The Embedded Controller is ENE KB930 and it's running firmware customized
+for the A500. The firmware interface may be reused by some other sibling
+Acer tablets, although none of those tablets are supported in upstream yet.
 
-Also adding Alexandre so he can smoothly get into this driver :)
+Changelog:
 
-> > +static int svc_i3c_master_handle_ibi(struct svc_i3c_master *master,
-> > +				     struct i3c_dev_desc *dev)
-> > +{
-> > +	struct svc_i3c_i2c_dev_data *data = i3c_dev_get_master_data(dev);
-> > +	struct i3c_ibi_slot *slot;
-> > +	unsigned int count;
-> > +	u32 mdatactrl;
-> > +	int ret = 0;
-> > +	u8 *buf;
-> > +
-> > +	spin_lock(&master->ibi.lock);
-> > +
-> > +	slot = i3c_generic_ibi_get_free_slot(data->ibi_pool);
-> > +	if (!slot) {
-> > +		ret = -ENOSPC;
-> > +		goto unlock;
-> > +	}
-> > +
-> > +	slot->len = 0;
-> > +	buf = slot->data;
-> > +	while (readl(master->regs + SVC_I3C_MSTATUS) & SVC_I3C_MINT_RXPEND) {
-> > +		mdatactrl = readl(master->regs + SVC_I3C_MDATACTRL);
-> > +		count = SVC_I3C_MDATACTRL_RXCOUNT(mdatactrl);
-> > +		readsl(master->regs + SVC_I3C_MRDATAB, buf, count);
-> > +		slot->len += count;
-> > +		buf += count;
-> > +	}  
-> 
-> I don't think the while loop and i3c_generic_ibi_get_free_slot() call
-> have to be protected by the ibi lock (having an unbounded while loop in
-> a critical section makes me nervous).
+v8: - This series partially missed v5.11 kernel release, hence resending
+      for v5.12.
 
-Dropped indeed, I don't think it is needed as well.
+      Please note that Thierry Reding already applied the v7 DT patch which
+      added the EC node to the Acer A500 device-tree, this change presents
+      in v5.11.
 
-> We also discussed the race you have because IBIs and regular transfers
-> share the same RX FIFO, which you mentioned in your previous reply
-> already.
+v7: - Improved MFD Kconfig entry by adding explicit dependency on OF and
+      by rewording the help message, matching it to the other MFD drivers.
 
-I addressed this issue by automatically nacking IBIs happening during
-transfers (hardware feature).
+    - Improved comments in the code by removing unnecessary comments, adding
+      necessary and rewording some others.
 
-> > +
-> > +	i3c_master_queue_ibi(dev, slot);
-> > +
-> > +unlock:
-> > +	spin_unlock(&master->ibi.lock);
-> > +	svc_i3c_master_emit_stop(master);
-> > +	svc_i3c_master_flush_fifo(master);  
-> 
-> Flush FIFOs? Does it flush all remaining bytes present in the RX/TX
-> FIFOs? Are you sure that's appropriate?
+    - Added expressive defines for the command opcodes.
 
-Indeed this is not appropriate and has been dropped.
+    - Fixed alphabet order of the MFD driver includes.
 
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +static void svc_i3c_master_ack_ibi(struct svc_i3c_master *master,
-> > +				   bool mandatory_byte)
-> > +{
-> > +	unsigned int ibi_ack_nack;
-> > +
-> > +	ibi_ack_nack = SVC_I3C_MCTRL_REQUEST_IBI_ACKNACK;
-> > +	if (mandatory_byte)
-> > +		ibi_ack_nack |= SVC_I3C_MCTRL_IBIRESP_ACK_WITH_BYTE;  
-> 
-> 
-> IIRC, some devices send more than one byte, does that mean you don't
-> support those?
+    - Removed unnecessary size checks which are already done by regmap core.
 
-The dequeuing mechanism is able to read up to 16 bytes (FIFO size), it
-should not be a problem.
+    - Renamed 'rmap' variable to 'regmap'.
 
-> > +	else
-> > +		ibi_ack_nack |= SVC_I3C_MCTRL_IBIRESP_ACK_WITHOUT_BYTE;
-> > +
-> > +	writel(ibi_ack_nack, master->regs + SVC_I3C_MCTRL);
-> > +}
-> > +
-> > +static void svc_i3c_master_nack_ibi(struct svc_i3c_master *master)
-> > +{
-> > +	writel(SVC_I3C_MCTRL_REQUEST_IBI_ACKNACK |
-> > +	       SVC_I3C_MCTRL_IBIRESP_NACK,
-> > +	       master->regs + SVC_I3C_MCTRL);
-> > +}
-> > +
-> > +static irqreturn_t svc_i3c_master_irq_handler(int irq, void *dev_id)
-> > +{
-> > +	struct svc_i3c_master *master = (struct svc_i3c_master *)dev_id;
-> > +	u32 active = readl(master->regs + SVC_I3C_MINTMASKED);
-> > +	u32 status = readl(master->regs + SVC_I3C_MSTATUS);
-> > +	unsigned int ibitype = SVC_I3C_MSTATUS_IBITYPE(status);
-> > +	unsigned int ibiaddr = SVC_I3C_MSTATUS_IBIADDR(status);
-> > +	struct i3c_dev_desc *dev;
-> > +	bool rdata;
-> > +
-> > +	if (active & SVC_I3C_MINT_SLVSTART) {
-> > +		writel(SVC_I3C_MINT_SLVSTART, master->regs + SVC_I3C_MSTATUS);
-> > +		writel(SVC_I3C_MCTRL_REQUEST_AUTO_IBI |
-> > +		       SVC_I3C_MCTRL_IBIRESP_MANUAL,
-> > +		       master->regs + SVC_I3C_MCTRL);  
-> 
-> I would expect some kind of auto-ack/nack mechanism. Not sure what
-> happens when you do it manually, but if that blocks the bus waiting for
-> the interrupt handler to tell the I3C master what to do with IBI,
-> that's far from ideal.
+v6: - Fixed dtschema-checker warning about a wrong indentation, reported
+      by kernel bot for v5.
 
-After discussing with people who designed the IP, they told me that
-the time between SDA being pulled low to interrupt the master and the
-master responding is unbounded. What is critical is the handling of
-the interrupt once the master authorized the interrupt. I entirely
-reworked the IRQ handling for that in v3.
+v5: - No changes. Re-sending again in order to check whether dtschema-bot
+      warning is resolved now, which didn't happen in v4 because bot used
+      older 5.9 kernel code base instead of 5.10.
 
-> > +		return IRQ_HANDLED;
-> > +	}
-> > +
-> > +	if (!(active & SVC_I3C_MINT_IBIWON))
-> > +		return IRQ_NONE;
-> > +
-> > +	writel(SVC_I3C_MINT_IBIWON, master->regs + SVC_I3C_MSTATUS);
-> > +
-> > +	switch (ibitype) {
-> > +	case SVC_I3C_MSTATUS_IBITYPE_IBI:
-> > +		dev = svc_i3c_master_dev_from_addr(master, ibiaddr);
-> > +		if (WARN_ON(!dev)) {  
-> 
-> I wouldn't WARN_ON() that. I wouldn't be surprised if some slaves send
-> IBIs without being allowed, and you're in an interrupt context. This
-> being said, you should probably trigger a DISEC on this device when
-> that happens.
+v4: - No code changes. Added r-b from Rob Herring and Sebastian Reichel.
+      Re-sending for 5.11.
 
-I dropped the warning, however the point of warning here is that I
-cannot identify the device, hence I cannot disable the event calls
-coming from this device :)
+    - The v3 of LED driver was applied by Pavel Machek and already presents
+      in v5.10 kernel.
 
-> > +			svc_i3c_master_nack_ibi(master);
-> > +			break;
-> > +		}
-> > +
-> > +		rdata = dev->info.bcr & I3C_BCR_IBI_PAYLOAD;
-> > +		svc_i3c_master_ack_ibi(master, rdata);
-> > +		if (rdata) {
-> > +			svc_i3c_master_disable_interrupts(master);
-> > +			return IRQ_WAKE_THREAD;
-> > +		}
-> > +
-> > +		break;
-> > +	case SVC_I3C_MSTATUS_IBITYPE_MASTER_REQUEST:
-> > +		svc_i3c_master_nack_ibi(master);
-> > +		break;
-> > +	case SVC_I3C_MSTATUS_IBITYPE_HOT_JOIN:
-> > +		svc_i3c_master_ack_ibi(master, false);
-> > +		queue_work(master->base.wq, &master->hj_work);
-> > +		break;
-> > +	default:
-> > +		return IRQ_NONE;
-> > +	}
-> > +
-> > +	return IRQ_HANDLED;
-> > +}
-> > +
-> > +static irqreturn_t svc_i3c_master_threaded_handler(int irq, void *dev_id)
-> > +{
-> > +	struct svc_i3c_master *master = (struct svc_i3c_master *)dev_id;
-> > +	u32 status = readl(master->regs + SVC_I3C_MSTATUS);
-> > +	unsigned int ibiaddr = SVC_I3C_MSTATUS_IBIADDR(status);
-> > +	struct i3c_dev_desc *dev;  
-> 
-> Do you really need a threaded irq? We already have a workqueue per
-> master, maybe you can use it to schedule the IBI dequeuing?
+v3: - Rebased on a recent linux-next. Fixed new merge conflict and dropped
+      "regmap: Use flexible sleep" patch because it's already applied.
 
-Right, I moved the code to an "IBI work" over the master's workqueue.
+v2: - Factored out KB930 device-tree binding into a separate file, like it
+      was suggested by Lubomir Rintel.
 
-> > +
-> > +	dev = svc_i3c_master_dev_from_addr(master, ibiaddr);
-> > +	if (WARN_ON(!dev)) {
-> > +		svc_i3c_master_emit_stop(master);
-> > +		svc_i3c_master_flush_fifo(master);
-> > +		return IRQ_HANDLED;
-> > +	}
-> > +
-> > +	svc_i3c_master_handle_ibi(master, dev);
-> > +	svc_i3c_master_enable_interrupts(master,
-> > +					 SVC_I3C_MINT_SLVSTART |
-> > +					 SVC_I3C_MINT_IBIWON);
-> > +
-> > +	return IRQ_HANDLED;
-> > +}
-> > +  
+    - Switched to use regmap API like it was suggested by Lubomir Rintel.
 
-[...]
+    - Added patch "regmap: Use flexible sleep" which allows not to hog
+      CPU while LED is switching state.
 
-> > +static int svc_i3c_master_do_daa_locked(struct svc_i3c_master
-*master,
-> > +					u8 *addrs, unsigned int *count)
-> > +{
-> > +	u64 prov_id[SVC_I3C_MAX_DEVS] = {}, nacking_prov_id = 0;
-> > +	unsigned int dev_nb = 0, last_addr = 0;
-> > +	u32 reg;
-> > +	int ret, i;
-> > +
-> > +	while (true) {
-> > +		/* Enter/proceed with DAA */
-> > +		writel(SVC_I3C_MCTRL_REQUEST_PROC_DAA |
-> > +		       SVC_I3C_MCTRL_TYPE_I3C |
-> > +		       SVC_I3C_MCTRL_IBIRESP_MANUAL |
-> > +		       SVC_I3C_MCTRL_DIR(SVC_I3C_MCTRL_DIR_WRITE),
-> > +		       master->regs + SVC_I3C_MCTRL);
-> > +
-> > +		/*
-> > +		 * Either one slave will send its ID, or the assignment process
-> > +		 * is done.
-> > +		 */
-> > +		ret = readl_poll_timeout(master->regs + SVC_I3C_MSTATUS, reg,
-> > +					 reg & (SVC_I3C_MINT_RXPEND |
-> > +						SVC_I3C_MINT_MCTRLDONE),
-> > +					 1, 1000);  
-> 
-> No interrupt for the DAA? I'm also curious about the RX FIFO size.
-> Looks like PIDs/BCRs/DCRs of attached devices go there. What happens if
-> it exceeds the size of the FIFO and you're not dequeuing things fast
-> enough?
+    - Corrected MODULE_LICENSE to use "GPL" in all patches.
 
-Interrupts are available but for clarity reasons (the current handler
-is already very complicated to avoid any races and prevent misreads
-or endless loops) I decided to keep using polling here. I guess it does
-not hurt anyway.
+    - Corrected MFD driver Kconfig entry like it was suggested by
+      Lubomir Rintel, it now depends on I2C.
 
-About the FIFO size, it is 16 bytes, so it is pretty safe for this kind
-of operation.
+    - Switched to use I2C probe_new() in the MFD driver.
 
-> > +		if (ret)
-> > +			return ret;
-> > +
-> > +		if (reg & SVC_I3C_MINT_RXPEND) {
-> > +			u8 datab;
-> > +
-> > +			/*
-> > +			 * We only care about the 48-bit provisional ID yet to
-> > +			 * be sure a device does not nack an address twice.
-> > +			 * Otherwise, we would just need to flush the RX FIFO.
-> > +			 */
-> > +			for (i = 0; i < 6; i++) {
-> > +				ret = readl_poll_timeout(master->regs + SVC_I3C_MSTATUS,
-> > +							 reg,
-> > +							 reg & SVC_I3C_MINT_RXPEND,
-> > +							 0, 1000);
-> > +				if (ret)
-> > +					return ret;
-> > +
-> > +				datab = readl(master->regs + SVC_I3C_MRDATAB);
-> > +				prov_id[dev_nb] |= (u64)(datab) << (8 * (5 - i));  
-> 
-> This calls for an svc_i3c_read_bytes() helper.
+    - Renamed the global pm_off variable, like it was suggested by
+      Lubomir Rintel and Lee Jones.
 
-Done.
+    - Dropped serial number from the battery driver because I realized
+      that it's not a battery serial, but a device serial.
 
-> 
-> > +			}
-> > +
-> > +			/* We do not care about the BCR and DCR yet */
-> > +			for (i = 0; i < 2; i++) {
-> > +				ret = readl_poll_timeout(master->regs + SVC_I3C_MSTATUS,
-> > +							 reg,
-> > +							 reg & SVC_I3C_MINT_RXPEND,
-> > +							 0, 1000);
-> > +				if (ret)
-> > +					return ret;
-> > +
-> > +				reg = readl(master->regs + SVC_I3C_MRDATAB);
-> > +			}
-> > +		} else if (SVC_I3C_MSTATUS_MCTRLDONE(reg)) {  
-> 
-> Can't you have both SVC_I3C_MSTATUS_MCTRLDONE and SVC_I3C_MINT_RXPEND?
+    - Battery driver now uses dev_err_probe(), like it was suggested by
+      Sebastian Reichel.
 
-If we have MCTRLDONE it means there is nothing left to read, so RXPEND
-cannot be also set.
+    - Dropped legacy LED_ON usage from the LED driver and renamed the
+      LEDs, like it was suggested by Pavel Machek. I also checked whether
+      LED-name customization via device-tree could be needed by other
+      potentially compatible devices and it shouldn't be needed, anyways it
+      won't be difficult to extend the code even if I'm wrong.
 
-> BTW, can we make the bit definitions consistent. You sometimes have:
-> 
-> #define FOO(x)	FIELD_GET(BIT(n), (x))
-> 
-> and sometimes
-> 
-> #define BAR	BIT(n)
-> 
-> which leads to inconsistencies in how you test presence of those bits:
-> 
-> 'if (FOO(reg))' vs 'if (reg & BAR)'.
 
-Done.
+Dmitry Osipenko (3):
+  dt-bindings: mfd: Add ENE KB930 Embedded Controller binding
+  mfd: Add driver for Embedded Controller found on Acer Iconia Tab A500
+  power: supply: Add battery gauge driver for Acer Iconia Tab A500
 
-> > +			if (SVC_I3C_MSTATUS_STATE_IDLE(reg) &&
-> > +			    SVC_I3C_MSTATUS_COMPLETE(reg)) {
-> > +				/*
-> > +				 * All devices received and acked they dynamic
-> > +				 * address, this is the natural end of the DAA
-> > +				 * procedure.
-> > +				 */
-> > +				break;
-> > +			} else if (SVC_I3C_MSTATUS_NACKED(reg)) {
-> > +				/*
-> > +				 * A slave device nacked the address, this is
-> > +				 * allowed only once, DAA will be stopped and
-> > +				 * then resumed. The same device is supposed to
-> > +				 * answer again immediately and shall ack the
-> > +				 * address this time.
-> > +				 */  
-> 
-> 
-> I couldn't find where this is described in v1 of the spec. All I see is:
-> 
-> "
-> The Arbitration-winning Device shall acknowledge the assigned Dynamic
-> Address
-> "
+ .../devicetree/bindings/mfd/ene-kb930.yaml    |  65 ++++
+ drivers/mfd/Kconfig                           |  11 +
+ drivers/mfd/Makefile                          |   1 +
+ drivers/mfd/acer-ec-a500.c                    | 202 ++++++++++++
+ drivers/power/supply/Kconfig                  |   6 +
+ drivers/power/supply/Makefile                 |   1 +
+ drivers/power/supply/acer_a500_battery.c      | 297 ++++++++++++++++++
+ 7 files changed, 583 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mfd/ene-kb930.yaml
+ create mode 100644 drivers/mfd/acer-ec-a500.c
+ create mode 100644 drivers/power/supply/acer_a500_battery.c
 
-I was told to do it this way, and got the following snippet from the
-I3C v1 spec:
+-- 
+2.29.2
 
-"
-If a given Slave does not acknowledge its assigned Dynamic Address,
-then the procedure requires the Main Master to continue from step 4
-[sending the broadcast address and iterating again]. The Slave will
-then participate in the Address Arbitration using the same 48-bit
-Provisional ID, and as a result the Slave will win the Arbitration
-round. If the Slave does not ACK the Dynamic Address a second time,
-then the Main Master shall exit the Dynamic Address Assignment
-procedure and execute an error management procedure provided by the I3C
-Bus designer.
-"
-
-> 
-> > +				if (prov_id[dev_nb] ==
-> > nacking_prov_id)
-> > +					return -EIO;
-> > +
-> > +				dev_nb--;
-> > +				nacking_prov_id = prov_id[dev_nb];
-> > +				svc_i3c_master_emit_stop(master);
-> > +
-> > +				continue;
-> > +			} else {
-> > +				return -EIO;
-> > +			}
-> > +		}
-> > +
-> > +		/* Wait for the slave to be ready to receive its
-> > address */
-> > +		ret = readl_poll_timeout(master->regs +
-> > SVC_I3C_MSTATUS, reg,
-> > +
-> > SVC_I3C_MSTATUS_MCTRLDONE(reg) &&
-> > +
-> > SVC_I3C_MSTATUS_STATE_DAA(reg) &&
-> > +
-> > SVC_I3C_MSTATUS_BETWEEN(reg),
-> > +					 0, 1000);
-> > +		if (ret)
-> > +			return ret;
-> > +
-> > +		/* Give the slave device a suitable dynamic
-> > address */
-> > +		ret = i3c_master_get_free_addr(&master->base,
-> > last_addr + 1);
-> > +		if (ret < 0)
-> > +			return ret;
-> > +
-> > +		addrs[dev_nb] = ret;
-> > +
-> > +		writel(addrs[dev_nb], master->regs +
-> > SVC_I3C_MWDATAB);
-> > +		last_addr = addrs[dev_nb++];
-> > +	}
-> > +
-> > +	*count = dev_nb;
-> > +
-> > +	return 0;
-> > +}  
-
-Thanks for the review :)
-
-Miquèl
