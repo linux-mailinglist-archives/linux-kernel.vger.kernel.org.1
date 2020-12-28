@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7AFF2E381C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:06:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C3572E654A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:59:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730627AbgL1NFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:05:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32854 "EHLO mail.kernel.org"
+        id S2393399AbgL1P7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:59:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730569AbgL1NFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:05:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C27CD22A84;
-        Mon, 28 Dec 2020 13:04:55 +0000 (UTC)
+        id S2387851AbgL1NdM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:33:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0523222AAA;
+        Mon, 28 Dec 2020 13:32:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160696;
-        bh=M7feVJb4J5+v0RDefL6gJZZ685A7+llWtYvbk39kb8Q=;
+        s=korg; t=1609162351;
+        bh=4pKSHHTAMsA8a3Dqhp1akLyFJ8DIxV3rVTcOKmonuZU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SqXTPzQu3J1fdYhPgr8vQgy/vHr+lp3zJUZP40ahe54G/XGBnRRkS6t+MCQ6Peg6l
-         FuyZ/YB2Q9/1OrN/Wx3PrajiCxmdfUHd2mFhZrsHaykABKjyXzs+e4yxjQxdPg5Sk7
-         FhqnhW32JQc3uN0rMYjnGylrz+SqSJDbblqS9et8=
+        b=TNKqK45YSndPty7HjtXvSqtFETp6yoMaG+CJHRyhUuoKag6m7/yrXLSO896EAay4j
+         IcBNrPql7/zx5sQU3o6u95Y5au1jp+LKbWApc/+UnIgnM3Yie9MR5wkvVqLUZ2KUg4
+         Wuf0erg5hVmLPefYeI7tOxP43vTwdbNSSzgcjxd8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Haberland <sth@linux.ibm.com>,
-        Jan Hoeppner <hoeppner@linux.ibm.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 4.9 139/175] s390/dasd: prevent inconsistent LCU device data
-Date:   Mon, 28 Dec 2020 13:49:52 +0100
-Message-Id: <20201228124859.981154467@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+33ef0b6639a8d2d42b4c@syzkaller.appspotmail.com,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.19 274/346] ALSA: pcm: oss: Fix a few more UBSAN fixes
+Date:   Mon, 28 Dec 2020 13:49:53 +0100
+Message-Id: <20201228124933.022303366@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +40,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Haberland <sth@linux.ibm.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit a29ea01653493b94ea12bb2b89d1564a265081b6 upstream.
+commit 11cb881bf075cea41092a20236ba708b18e1dbb2 upstream.
 
-Prevent _lcu_update from adding a device to a pavgroup if the LCU still
-requires an update. The data is not reliable any longer and in parallel
-devices might have been moved on the lists already.
-This might lead to list corruptions or invalid PAV grouping.
-Only add devices to a pavgroup if the LCU is up to date. Additional steps
-are taken by the scheduled lcu update.
+There are a few places that call round{up|down}_pow_of_two() with the
+value zero, and this causes undefined behavior warnings.  Avoid
+calling those macros if such a nonsense value is passed; it's a minor
+optimization as well, as we handle it as either an error or a value to
+be skipped, instead.
 
-Fixes: 8e09f21574ea ("[S390] dasd: add hyper PAV support to DASD device driver, part 1")
-Cc: stable@vger.kernel.org
-Signed-off-by: Stefan Haberland <sth@linux.ibm.com>
-Reviewed-by: Jan Hoeppner <hoeppner@linux.ibm.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Reported-by: syzbot+33ef0b6639a8d2d42b4c@syzkaller.appspotmail.com
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201218161730.26596-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/s390/block/dasd_alias.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/core/oss/pcm_oss.c |   22 ++++++++++++++--------
+ 1 file changed, 14 insertions(+), 8 deletions(-)
 
---- a/drivers/s390/block/dasd_alias.c
-+++ b/drivers/s390/block/dasd_alias.c
-@@ -502,6 +502,14 @@ static int _lcu_update(struct dasd_devic
- 		return rc;
+--- a/sound/core/oss/pcm_oss.c
++++ b/sound/core/oss/pcm_oss.c
+@@ -708,6 +708,8 @@ static int snd_pcm_oss_period_size(struc
  
- 	spin_lock_irqsave(&lcu->lock, flags);
-+	/*
-+	 * there is another update needed skip the remaining handling
-+	 * the data might already be outdated
-+	 * but especially do not add the device to an LCU with pending
-+	 * update
-+	 */
-+	if (lcu->flags & NEED_UAC_UPDATE)
-+		goto out;
- 	lcu->pav = NO_PAV;
- 	for (i = 0; i < MAX_DEVICES_PER_LCU; ++i) {
- 		switch (lcu->uac->unit[i].ua_type) {
-@@ -520,6 +528,7 @@ static int _lcu_update(struct dasd_devic
- 				 alias_list) {
- 		_add_device_to_lcu(lcu, device, refdev);
- 	}
-+out:
- 	spin_unlock_irqrestore(&lcu->lock, flags);
- 	return 0;
- }
+ 	oss_buffer_size = snd_pcm_plug_client_size(substream,
+ 						   snd_pcm_hw_param_value_max(slave_params, SNDRV_PCM_HW_PARAM_BUFFER_SIZE, NULL)) * oss_frame_size;
++	if (!oss_buffer_size)
++		return -EINVAL;
+ 	oss_buffer_size = rounddown_pow_of_two(oss_buffer_size);
+ 	if (atomic_read(&substream->mmap_count)) {
+ 		if (oss_buffer_size > runtime->oss.mmap_bytes)
+@@ -743,17 +745,21 @@ static int snd_pcm_oss_period_size(struc
+ 
+ 	min_period_size = snd_pcm_plug_client_size(substream,
+ 						   snd_pcm_hw_param_value_min(slave_params, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, NULL));
+-	min_period_size *= oss_frame_size;
+-	min_period_size = roundup_pow_of_two(min_period_size);
+-	if (oss_period_size < min_period_size)
+-		oss_period_size = min_period_size;
++	if (min_period_size) {
++		min_period_size *= oss_frame_size;
++		min_period_size = roundup_pow_of_two(min_period_size);
++		if (oss_period_size < min_period_size)
++			oss_period_size = min_period_size;
++	}
+ 
+ 	max_period_size = snd_pcm_plug_client_size(substream,
+ 						   snd_pcm_hw_param_value_max(slave_params, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, NULL));
+-	max_period_size *= oss_frame_size;
+-	max_period_size = rounddown_pow_of_two(max_period_size);
+-	if (oss_period_size > max_period_size)
+-		oss_period_size = max_period_size;
++	if (max_period_size) {
++		max_period_size *= oss_frame_size;
++		max_period_size = rounddown_pow_of_two(max_period_size);
++		if (oss_period_size > max_period_size)
++			oss_period_size = max_period_size;
++	}
+ 
+ 	oss_periods = oss_buffer_size / oss_period_size;
+ 
 
 
