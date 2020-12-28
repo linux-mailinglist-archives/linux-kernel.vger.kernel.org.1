@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EC622E3B85
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:51:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D89F2E3B8B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:51:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406465AbgL1Nu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:50:58 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9694 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404961AbgL1Nuz (ORCPT
+        id S2406862AbgL1NvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:51:25 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:10369 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406511AbgL1NvD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:50:55 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4D4Jn16RWXzkxTC;
-        Mon, 28 Dec 2020 21:49:09 +0800 (CST)
+        Mon, 28 Dec 2020 08:51:03 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4D4JnS2TnQz7KSm
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 21:49:32 +0800 (CST)
 Received: from ubuntu.network (10.175.138.68) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 28 Dec 2020 21:49:59 +0800
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 28 Dec 2020 21:50:13 +0800
 From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <bhelgaas@google.com>, Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] pci: hotplug: Use DEFINE_SPINLOCK() for spinlock
-Date:   Mon, 28 Dec 2020 21:50:38 +0800
-Message-ID: <20201228135038.28401-1-zhengyongjun3@huawei.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH -next] drivers: most: Use DEFINE_SPINLOCK() for spinlock
+Date:   Mon, 28 Dec 2020 21:50:48 +0800
+Message-ID: <20201228135048.28456-1-zhengyongjun3@huawei.com>
 X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -39,32 +39,30 @@ rather than explicitly calling spin_lock_init().
 
 Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- drivers/pci/hotplug/cpqphp_nvram.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/most/most_cdev.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/pci/hotplug/cpqphp_nvram.c b/drivers/pci/hotplug/cpqphp_nvram.c
-index 00cd2b43364f..7a65d427ac11 100644
---- a/drivers/pci/hotplug/cpqphp_nvram.c
-+++ b/drivers/pci/hotplug/cpqphp_nvram.c
-@@ -80,7 +80,7 @@ static u8 evbuffer[1024];
- static void __iomem *compaq_int15_entry_point;
+diff --git a/drivers/most/most_cdev.c b/drivers/most/most_cdev.c
+index 044880760b58..8b69cf3ca60b 100644
+--- a/drivers/most/most_cdev.c
++++ b/drivers/most/most_cdev.c
+@@ -45,7 +45,7 @@ struct comp_channel {
  
- /* lock for ordering int15_bios_call() */
--static spinlock_t int15_lock;
-+static DEFINE_SPINLOCK(int15_lock);
+ #define to_channel(d) container_of(d, struct comp_channel, cdev)
+ static struct list_head channel_list;
+-static spinlock_t ch_list_lock;
++static DEFINE_SPINLOCK(ch_list_lock);
  
+ static inline bool ch_has_mbo(struct comp_channel *c)
+ {
+@@ -495,7 +495,6 @@ static int __init mod_init(void)
+ 		return PTR_ERR(comp.class);
  
- /* This is a series of function that deals with
-@@ -415,9 +415,6 @@ void compaq_nvram_init(void __iomem *rom_start)
- 		compaq_int15_entry_point = (rom_start + ROM_INT15_PHY_ADDR - ROM_PHY_ADDR);
+ 	INIT_LIST_HEAD(&channel_list);
+-	spin_lock_init(&ch_list_lock);
+ 	ida_init(&comp.minor_id);
  
- 	dbg("int15 entry  = %p\n", compaq_int15_entry_point);
--
--	/* initialize our int15 lock */
--	spin_lock_init(&int15_lock);
- }
- 
- 
+ 	err = alloc_chrdev_region(&comp.devno, 0, CHRDEV_REGION_SIZE, "cdev");
 -- 
 2.22.0
 
