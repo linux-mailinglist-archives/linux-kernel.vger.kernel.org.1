@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7A602E66FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:19:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BDE22E693C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:47:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732532AbgL1NOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:14:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42616 "EHLO mail.kernel.org"
+        id S2634526AbgL1QrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:47:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732440AbgL1NOd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:14:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 563DF20776;
-        Mon, 28 Dec 2020 13:13:52 +0000 (UTC)
+        id S1728498AbgL1MzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:55:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F23312242A;
+        Mon, 28 Dec 2020 12:54:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161232;
-        bh=1HKm8A/RJzXlQcgNFDpF2YbZ7UZI3cbSrbp3YAdUJyg=;
+        s=korg; t=1609160099;
+        bh=iRrV4hdtPk4eKcU5Iq0aDCH+J2vIQi9boaG6kCWLdjY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F5yTuuaG1fX/h++/dESBq1ZSUCD3oom2k3xuqdZX2P7T/dHsMeYKoFB/hr6k5D75E
-         85w3ir0I6xtA/udQPr+K7q5zLSLA01Q7eP5F7I32xaoWtkd/WYODP7FQGg23Y6Pd28
-         2wL/On0vy0Ms676rR+BeRuvUENf/NadKA2dtZIUY=
+        b=VY5Mi6aHf8H1nlXwMJZCqJKB8F2e/kRAkujpz0Kf6ya6ZimnV9q7+/cQ0NpUsIFUC
+         jc3UECv3F9QoR8rQh45TrNaWJums6lywV0fjbelXkzukcUVPOb/i8Fi9imlMU2PUTl
+         ARGcWm8ZBtDGcsfzKGQ8X/h1RD9IOamyLaRVZd3I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Karan Tilak Kumar <kartilak@cisco.com>,
-        Zhang Changzhong <zhangchangzhong@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 147/242] scsi: fnic: Fix error return code in fnic_probe()
-Date:   Mon, 28 Dec 2020 13:49:12 +0100
-Message-Id: <20201228124911.941490459@linuxfoundation.org>
+Subject: [PATCH 4.4 069/132] cpufreq: highbank: Add missing MODULE_DEVICE_TABLE
+Date:   Mon, 28 Dec 2020 13:49:13 +0100
+Message-Id: <20201228124849.776804680@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,36 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Changzhong <zhangchangzhong@huawei.com>
+From: Pali Rohár <pali@kernel.org>
 
-[ Upstream commit d4fc94fe65578738ded138e9fce043db6bfc3241 ]
+[ Upstream commit 9433777a6e0aae27468d3434b75cd51bb88ff711 ]
 
-Return a negative error code from the error handling case instead of 0 as
-done elsewhere in this function.
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this cpufreq driver when it is
+compiled as an external module.
 
-Link: https://lore.kernel.org/r/1607068060-31203-1-git-send-email-zhangchangzhong@huawei.com
-Fixes: 5df6d737dd4b ("[SCSI] fnic: Add new Cisco PCI-Express FCoE HBA")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Reviewed-by: Karan Tilak Kumar <kartilak@cisco.com>
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Fixes: 6754f556103be ("cpufreq / highbank: add support for highbank cpufreq")
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/fnic/fnic_main.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/cpufreq/highbank-cpufreq.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/scsi/fnic/fnic_main.c b/drivers/scsi/fnic/fnic_main.c
-index aacadbf20b695..878e486762729 100644
---- a/drivers/scsi/fnic/fnic_main.c
-+++ b/drivers/scsi/fnic/fnic_main.c
-@@ -746,6 +746,7 @@ static int fnic_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	for (i = 0; i < FNIC_IO_LOCKS; i++)
- 		spin_lock_init(&fnic->io_req_lock[i]);
+diff --git a/drivers/cpufreq/highbank-cpufreq.c b/drivers/cpufreq/highbank-cpufreq.c
+index 1608f7105c9f8..ad743f2f31e78 100644
+--- a/drivers/cpufreq/highbank-cpufreq.c
++++ b/drivers/cpufreq/highbank-cpufreq.c
+@@ -104,6 +104,13 @@ out_put_node:
+ }
+ module_init(hb_cpufreq_driver_init);
  
-+	err = -ENOMEM;
- 	fnic->io_req_pool = mempool_create_slab_pool(2, fnic_io_req_cache);
- 	if (!fnic->io_req_pool)
- 		goto err_out_free_resources;
++static const struct of_device_id __maybe_unused hb_cpufreq_of_match[] = {
++	{ .compatible = "calxeda,highbank" },
++	{ .compatible = "calxeda,ecx-2000" },
++	{ },
++};
++MODULE_DEVICE_TABLE(of, hb_cpufreq_of_match);
++
+ MODULE_AUTHOR("Mark Langsdorf <mark.langsdorf@calxeda.com>");
+ MODULE_DESCRIPTION("Calxeda Highbank cpufreq driver");
+ MODULE_LICENSE("GPL");
 -- 
 2.27.0
 
