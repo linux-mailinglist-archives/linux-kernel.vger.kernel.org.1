@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BDE42E3754
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:54:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAF9C2E3FCD
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:46:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728289AbgL1Mx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:53:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50724 "EHLO mail.kernel.org"
+        id S2503118AbgL1OYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:24:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728247AbgL1Mxp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:53:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0952E208B6;
-        Mon, 28 Dec 2020 12:53:03 +0000 (UTC)
+        id S2503084AbgL1OYc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:24:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B0B2207B2;
+        Mon, 28 Dec 2020 14:23:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609159984;
-        bh=Fmm/kgXWpnxgmi4B8ecICshe5ASoWJhbr29YPa50a4U=;
+        s=korg; t=1609165432;
+        bh=JevaJKgB0OQZVfFrtoZeKjvd2DOI6bStpsdjPtf2Kkk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aOYwVCj78cTGppkuEQpkgQYn7zvTlwmpkCBEpcedON3mufbp7PeOZ2BAbpRlgV2He
-         I4Pu/4CFM80IVX0Afwx3EZr6EybMEIaJl+vVRsq0ltNzncVdrDr+WY8wa2p+hT7dpY
-         ZNe8LliW5WL8TEQDb/VALzndTGkIGRduYWSZ5fug=
+        b=r33Qd8Jpxpfv7vEFanBDAl4+Mm7649uCA/WlhY6i/tQwRkbsMfdvqmHKeplnW15tY
+         fZefDBAD0fN1Fpig/8PYfcjeQh/4pw8lLdu7PmfgGDWLyly0uGxVt1qtsSL+Evj67b
+         td3QEI0lSRT9e4fQfBSp9RtGr9ADYJthEovvI8Qk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vincent Bernat <vincent@bernat.ch>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 043/132] net: evaluate net.ipv4.conf.all.proxy_arp_pvlan
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH 5.10 529/717] Input: cyapa_gen6 - fix out-of-bounds stack access
 Date:   Mon, 28 Dec 2020 13:48:47 +0100
-Message-Id: <20201228124848.506437697@linuxfoundation.org>
+Message-Id: <20201228125046.313733217@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Bernat <vincent@bernat.ch>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 1af5318c00a8acc33a90537af49b3f23f72a2c4b ]
+commit f051ae4f6c732c231046945b36234e977f8467c6 upstream.
 
-Introduced in 65324144b50b, the "proxy_arp_vlan" sysctl is a
-per-interface sysctl to tune proxy ARP support for private VLANs.
-While the "all" variant is exposed, it was a noop and never evaluated.
-We use the usual "or" logic for this kind of sysctls.
+gcc -Warray-bounds warns about a serious bug in
+cyapa_pip_retrieve_data_structure:
 
-Fixes: 65324144b50b ("net: RFC3069, private VLAN proxy arp support")
-Signed-off-by: Vincent Bernat <vincent@bernat.ch>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+drivers/input/mouse/cyapa_gen6.c: In function 'cyapa_pip_retrieve_data_structure.constprop':
+include/linux/unaligned/access_ok.h:40:17: warning: array subscript -1 is outside array bounds of 'struct retrieve_data_struct_cmd[1]' [-Warray-bounds]
+   40 |  *((__le16 *)p) = cpu_to_le16(val);
+drivers/input/mouse/cyapa_gen6.c:569:13: note: while referencing 'cmd'
+  569 |  } __packed cmd;
+      |             ^~~
+
+Apparently the '-2' was added to the pointer instead of the value,
+writing garbage into the stack next to this variable.
+
+Fixes: c2c06c41f700 ("Input: cyapa - add gen6 device module support")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/r/20201026161332.3708389-1-arnd@kernel.org
+Cc: stable@vger.kernel.org
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- include/linux/inetdevice.h | 2 +-
+ drivers/input/mouse/cyapa_gen6.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/inetdevice.h b/include/linux/inetdevice.h
-index 0e6cd645f67f3..65e88c62db7b2 100644
---- a/include/linux/inetdevice.h
-+++ b/include/linux/inetdevice.h
-@@ -100,7 +100,7 @@ static inline void ipv4_devconf_setall(struct in_device *in_dev)
+--- a/drivers/input/mouse/cyapa_gen6.c
++++ b/drivers/input/mouse/cyapa_gen6.c
+@@ -573,7 +573,7 @@ static int cyapa_pip_retrieve_data_struc
  
- #define IN_DEV_LOG_MARTIANS(in_dev)	IN_DEV_ORCONF((in_dev), LOG_MARTIANS)
- #define IN_DEV_PROXY_ARP(in_dev)	IN_DEV_ORCONF((in_dev), PROXY_ARP)
--#define IN_DEV_PROXY_ARP_PVLAN(in_dev)	IN_DEV_CONF_GET(in_dev, PROXY_ARP_PVLAN)
-+#define IN_DEV_PROXY_ARP_PVLAN(in_dev)	IN_DEV_ORCONF((in_dev), PROXY_ARP_PVLAN)
- #define IN_DEV_SHARED_MEDIA(in_dev)	IN_DEV_ORCONF((in_dev), SHARED_MEDIA)
- #define IN_DEV_TX_REDIRECTS(in_dev)	IN_DEV_ORCONF((in_dev), SEND_REDIRECTS)
- #define IN_DEV_SEC_REDIRECTS(in_dev)	IN_DEV_ORCONF((in_dev), \
--- 
-2.27.0
-
+ 	memset(&cmd, 0, sizeof(cmd));
+ 	put_unaligned_le16(PIP_OUTPUT_REPORT_ADDR, &cmd.head.addr);
+-	put_unaligned_le16(sizeof(cmd), &cmd.head.length - 2);
++	put_unaligned_le16(sizeof(cmd) - 2, &cmd.head.length);
+ 	cmd.head.report_id = PIP_APP_CMD_REPORT_ID;
+ 	cmd.head.cmd_code = PIP_RETRIEVE_DATA_STRUCTURE;
+ 	put_unaligned_le16(read_offset, &cmd.read_offset);
 
 
