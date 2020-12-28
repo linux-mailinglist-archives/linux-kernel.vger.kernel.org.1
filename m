@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C5262E3BCD
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:55:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B64DB2E378F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:59:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405116AbgL1Ny7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:54:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56336 "EHLO mail.kernel.org"
+        id S1728934AbgL1M5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:57:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405002AbgL1Nye (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:54:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 54176208B3;
-        Mon, 28 Dec 2020 13:53:53 +0000 (UTC)
+        id S1728286AbgL1M5H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:57:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B770E208D5;
+        Mon, 28 Dec 2020 12:56:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163633;
-        bh=KmEfOch+xGhmsOnZy1O0ijzC8WO47xzgGnlmXeZU0Cc=;
+        s=korg; t=1609160212;
+        bh=4+Xwuj3IhhfZm3bvxIG3Mu+IlvJnYtLjnj4L+yuV/S0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V0eHuan2sWAt6BIiemwOtmAxiAGZGBGT/XAZo8nZuEpbbURsjnP9D2LbGZ0g7XwfC
-         uSAhJNBjpJR8Mcs79rCL/VcLMvPLAvoH1ol6ef98rMa12RtJwU0RBZU1p+mCLHX4Er
-         uyHxC5IKKQ6RpTt17JcGQwkc0VCXnVdvjL4HzVqs=
+        b=rQM8I2zHuMvBUlp5rNdupom00oNvynHGSDjnIFehCddSK1OO5Lbt5Azyxy1KnPOXJ
+         8qZrkhaimM1dDv88l1htlNbG4QGpQpJOl8FxqjtQJcCs5l5Dy8+RRqxHI4BD5Ke/3G
+         K80mpo/VJTaF+EhfkqPTeA7ViRiXMhGF1pgrRX4c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Chiu <chiu@endlessos.org>,
-        Jian-Hong Pan <jhp@endlessos.org>, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 337/453] ALSA: hda/realtek - Enable headset mic of ASUS X430UN with ALC256
+        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        =?UTF-8?q?Vincent=20Stehl=C3=A9?= <vincent.stehle@laposte.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 089/132] net: korina: fix return value
 Date:   Mon, 28 Dec 2020 13:49:33 +0100
-Message-Id: <20201228124953.439621428@linuxfoundation.org>
+Message-Id: <20201228124850.735518680@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,33 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Chiu <chiu@endlessos.org>
+From: Vincent Stehlé <vincent.stehle@laposte.net>
 
-commit 5cfca59604e423f720297e30a9dc493eea623493 upstream.
+[ Upstream commit 7eb000bdbe7c7da811ef51942b356f6e819b13ba ]
 
-The ASUS laptop X430UN with ALC256 can't detect the headset microphone
-until ALC256_FIXUP_ASUS_MIC_NO_PRESENCE quirk applied.
+The ndo_start_xmit() method must not attempt to free the skb to transmit
+when returning NETDEV_TX_BUSY. Therefore, make sure the
+korina_send_packet() function returns NETDEV_TX_OK when it frees a packet.
 
-Signed-off-by: Chris Chiu <chiu@endlessos.org>
-Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201207072755.16210-1-chiu@endlessos.org
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: ef11291bcd5f ("Add support the Korina (IDT RC32434) Ethernet MAC")
+Suggested-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Vincent Stehlé <vincent.stehle@laposte.net>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Link: https://lore.kernel.org/r/20201214220952.19935-1-vincent.stehle@laposte.net
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_realtek.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/korina.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -7884,6 +7884,7 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x1043, 0x10d0, "ASUS X540LA/X540LJ", ALC255_FIXUP_ASUS_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1043, 0x115d, "Asus 1015E", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x1043, 0x11c0, "ASUS X556UR", ALC255_FIXUP_ASUS_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1043, 0x1271, "ASUS X430UN", ALC256_FIXUP_ASUS_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1043, 0x1290, "ASUS X441SA", ALC233_FIXUP_EAPD_COEF_AND_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1043, 0x12a0, "ASUS X441UV", ALC233_FIXUP_EAPD_COEF_AND_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1043, 0x12f0, "ASUS X541UV", ALC256_FIXUP_ASUS_MIC),
+diff --git a/drivers/net/ethernet/korina.c b/drivers/net/ethernet/korina.c
+index b491de946a0e6..88f5c45d9eef4 100644
+--- a/drivers/net/ethernet/korina.c
++++ b/drivers/net/ethernet/korina.c
+@@ -216,7 +216,7 @@ static int korina_send_packet(struct sk_buff *skb, struct net_device *dev)
+ 			dev_kfree_skb_any(skb);
+ 			spin_unlock_irqrestore(&lp->lock, flags);
+ 
+-			return NETDEV_TX_BUSY;
++			return NETDEV_TX_OK;
+ 		}
+ 	}
+ 
+-- 
+2.27.0
+
 
 
