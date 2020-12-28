@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11E942E3BAB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:53:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2332E2E38BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:16:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407225AbgL1NxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:53:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54650 "EHLO mail.kernel.org"
+        id S1732473AbgL1NOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:14:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391525AbgL1Nwr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:52:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFBE820791;
-        Mon, 28 Dec 2020 13:52:05 +0000 (UTC)
+        id S1732440AbgL1NOO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:14:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C51AC22BEF;
+        Mon, 28 Dec 2020 13:13:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163526;
-        bh=8oGGp5xXe/o8MkOEYfYerB3yQG5FjAmtKGpzIWitqTM=;
+        s=korg; t=1609161238;
+        bh=aHGF5GRRwAoFtRgVjPWdmlpM/DCLHAZJp3duD7olTO4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eXltDuCTwDkiGG2eVj5tN54gfjBIkPKI9Fpib2/1Gwvi4ajKqc0O3M9upYqd8Cpiw
-         jN2Ydq1Qaf1sbkWLeVGqC8HjG72PSc9qR7PgRzDZlaNWYq6IbjYdYe68QRv6fAtprf
-         cwXz3gCuJtLYFaqlC2/jAKFnGm+p/8wjgzN/wxBI=
+        b=haEzEkfOHaQfkMZkknNTpynlp00bPZoQw7npoDEMYd+nUMj6DaaJEeIXYc3I2X2ry
+         XfNQ9p8MZyPdLoto8nfjVq+I0LhzMPUYhtkJHhR9pS+HVzWt/ROWsl9pce4K/Jsehh
+         NZ2bBh4CuBS2amQW7K3XcA6r17Wj4yFo0COlVagA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rajat Jain <rajatja@google.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        stable@vger.kernel.org, Nathan Lynch <nathanl@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 317/453] Input: cros_ec_keyb - send scancodes in addition to key events
-Date:   Mon, 28 Dec 2020 13:49:13 +0100
-Message-Id: <20201228124952.464705574@linuxfoundation.org>
+Subject: [PATCH 4.14 149/242] powerpc/pseries/hibernation: remove redundant cacheinfo update
+Date:   Mon, 28 Dec 2020 13:49:14 +0100
+Message-Id: <20201228124912.042221843@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+From: Nathan Lynch <nathanl@linux.ibm.com>
 
-[ Upstream commit 80db2a087f425b63f0163bc95217abd01c637cb5 ]
+[ Upstream commit b866459489fe8ef0e92cde3cbd6bbb1af6c4e99b ]
 
-To let userspace know what 'scancodes' should be used in EVIOCGKEYCODE
-and EVIOCSKEYCODE ioctls, we should send EV_MSC/MSC_SCAN events in
-addition to EV_KEY/KEY_* events. The driver already declared MSC_SCAN
-capability, so it is only matter of actually sending the events.
+Partitions with cache nodes in the device tree can encounter the
+following warning on resume:
 
-Link: https://lore.kernel.org/r/X87aOaSptPTvZ3nZ@google.com
-Acked-by: Rajat Jain <rajatja@google.com>
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+CPU 0 already accounted in PowerPC,POWER9@0(Data)
+WARNING: CPU: 0 PID: 3177 at arch/powerpc/kernel/cacheinfo.c:197 cacheinfo_cpu_online+0x640/0x820
+
+These calls to cacheinfo_cpu_offline/online have been redundant since
+commit e610a466d16a ("powerpc/pseries/mobility: rebuild cacheinfo
+hierarchy post-migration").
+
+Fixes: e610a466d16a ("powerpc/pseries/mobility: rebuild cacheinfo hierarchy post-migration")
+Signed-off-by: Nathan Lynch <nathanl@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20201207215200.1785968-25-nathanl@linux.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/keyboard/cros_ec_keyb.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/powerpc/platforms/pseries/suspend.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/input/keyboard/cros_ec_keyb.c b/drivers/input/keyboard/cros_ec_keyb.c
-index 8d4d9786cc745..cae262b6ff398 100644
---- a/drivers/input/keyboard/cros_ec_keyb.c
-+++ b/drivers/input/keyboard/cros_ec_keyb.c
-@@ -183,6 +183,7 @@ static void cros_ec_keyb_process(struct cros_ec_keyb *ckdev,
- 					"changed: [r%d c%d]: byte %02x\n",
- 					row, col, new_state);
+diff --git a/arch/powerpc/platforms/pseries/suspend.c b/arch/powerpc/platforms/pseries/suspend.c
+index 33077ad106cf0..b7cdad95584da 100644
+--- a/arch/powerpc/platforms/pseries/suspend.c
++++ b/arch/powerpc/platforms/pseries/suspend.c
+@@ -26,7 +26,6 @@
+ #include <asm/mmu.h>
+ #include <asm/rtas.h>
+ #include <asm/topology.h>
+-#include "../../kernel/cacheinfo.h"
  
-+				input_event(idev, EV_MSC, MSC_SCAN, pos);
- 				input_report_key(idev, keycodes[pos],
- 						 new_state);
- 			}
+ static u64 stream_id;
+ static struct device suspend_dev;
+@@ -91,9 +90,7 @@ static void pseries_suspend_enable_irqs(void)
+ 	 * Update configuration which can be modified based on device tree
+ 	 * changes during resume.
+ 	 */
+-	cacheinfo_cpu_offline(smp_processor_id());
+ 	post_mobility_fixup();
+-	cacheinfo_cpu_online(smp_processor_id());
+ }
+ 
+ /**
 -- 
 2.27.0
 
