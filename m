@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E84E82E3793
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:59:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A3782E38E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:17:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728979AbgL1M5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:57:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53728 "EHLO mail.kernel.org"
+        id S1733244AbgL1NQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:16:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44714 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728332AbgL1M5V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:57:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A235207C9;
-        Mon, 28 Dec 2020 12:56:39 +0000 (UTC)
+        id S1733190AbgL1NQX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:16:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 50262207C9;
+        Mon, 28 Dec 2020 13:15:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160200;
-        bh=Y9aZMQcK4Chcm2VzbTFBgyiYcd6l0/nSSRjaagxz/Fk=;
+        s=korg; t=1609161342;
+        bh=rN1UhIVGmv1kbOBSZbu95fHxVkQe5md3+jf0hDU4j3c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P3zuD4uCaWoJ5CpnUOYJhc/fuDiz7dJyD2sMZeE2vDZYbuO6pQXZVwTidyCejd0Cs
-         t/SgSTpveFrOw8PYsS1xmqrxbKdeGmnyCS6tXuM3ZT6mgT/HgWaK+z+x0eTbHg8A0h
-         iYF/Rn8X7adruWUqUlBs34MlDP0NqDSsOV1Ts9zg=
+        b=FrEj0kz/gq0IXLsENKM1Fwbxom1vHWxyTLRwIWIz9GZ2QNAv008CelMWnMee3LY49
+         Ifp7akbAaKBZ0r9S4lzdHuhGdoEYnu2/tY3qmhqsaEY4ryALncokdKLtFSi+iuAfM4
+         zMgxlunNunmQwvKNYgzAZba52qhUVn2fcVnhrEWc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+33ef0b6639a8d2d42b4c@syzkaller.appspotmail.com,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.4 103/132] ALSA: pcm: oss: Fix a few more UBSAN fixes
-Date:   Mon, 28 Dec 2020 13:49:47 +0100
-Message-Id: <20201228124851.394677184@linuxfoundation.org>
+        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Kozlov Sergey <serjk@netup.ru>, Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.14 183/242] media: netup_unidvb: Dont leak SPI master in probe error path
+Date:   Mon, 28 Dec 2020 13:49:48 +0100
+Message-Id: <20201228124913.693729843@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,66 +40,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Lukas Wunner <lukas@wunner.de>
 
-commit 11cb881bf075cea41092a20236ba708b18e1dbb2 upstream.
+commit e297ddf296de35037fa97f4302782def196d350a upstream.
 
-There are a few places that call round{up|down}_pow_of_two() with the
-value zero, and this causes undefined behavior warnings.  Avoid
-calling those macros if such a nonsense value is passed; it's a minor
-optimization as well, as we handle it as either an error or a value to
-be skipped, instead.
+If the call to spi_register_master() fails on probe of the NetUP
+Universal DVB driver, the spi_master struct is erroneously not freed.
 
-Reported-by: syzbot+33ef0b6639a8d2d42b4c@syzkaller.appspotmail.com
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201218161730.26596-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Likewise, if spi_new_device() fails, the spi_controller struct is
+not unregistered.  Plug the leaks.
+
+While at it, fix an ordering issue in netup_spi_release() wherein
+spi_unregister_master() is called after fiddling with the IRQ control
+register.  The correct order is to call spi_unregister_master() *before*
+this teardown step because bus accesses may still be ongoing until that
+function returns.
+
+Fixes: 52b1eaf4c59a ("[media] netup_unidvb: NetUP Universal DVB-S/S2/T/T2/C PCI-E card driver")
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Reviewed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc: <stable@vger.kernel.org> # v4.3+: 5e844cc37a5c: spi: Introduce device-managed SPI controller allocation
+Cc: <stable@vger.kernel.org> # v4.3+
+Cc: Kozlov Sergey <serjk@netup.ru>
+Link: https://lore.kernel.org/r/c4c24f333fc7840f4a3db24789e6e10dd660bede.1607286887.git.lukas@wunner.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/core/oss/pcm_oss.c |   22 ++++++++++++++--------
- 1 file changed, 14 insertions(+), 8 deletions(-)
+ drivers/media/pci/netup_unidvb/netup_unidvb_spi.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/sound/core/oss/pcm_oss.c
-+++ b/sound/core/oss/pcm_oss.c
-@@ -718,6 +718,8 @@ static int snd_pcm_oss_period_size(struc
+--- a/drivers/media/pci/netup_unidvb/netup_unidvb_spi.c
++++ b/drivers/media/pci/netup_unidvb/netup_unidvb_spi.c
+@@ -184,7 +184,7 @@ int netup_spi_init(struct netup_unidvb_d
+ 	struct spi_master *master;
+ 	struct netup_spi *nspi;
  
- 	oss_buffer_size = snd_pcm_plug_client_size(substream,
- 						   snd_pcm_hw_param_value_max(slave_params, SNDRV_PCM_HW_PARAM_BUFFER_SIZE, NULL)) * oss_frame_size;
-+	if (!oss_buffer_size)
-+		return -EINVAL;
- 	oss_buffer_size = rounddown_pow_of_two(oss_buffer_size);
- 	if (atomic_read(&substream->mmap_count)) {
- 		if (oss_buffer_size > runtime->oss.mmap_bytes)
-@@ -753,17 +755,21 @@ static int snd_pcm_oss_period_size(struc
+-	master = spi_alloc_master(&ndev->pci_dev->dev,
++	master = devm_spi_alloc_master(&ndev->pci_dev->dev,
+ 		sizeof(struct netup_spi));
+ 	if (!master) {
+ 		dev_err(&ndev->pci_dev->dev,
+@@ -217,6 +217,7 @@ int netup_spi_init(struct netup_unidvb_d
+ 		ndev->pci_slot,
+ 		ndev->pci_func);
+ 	if (!spi_new_device(master, &netup_spi_board)) {
++		spi_unregister_master(master);
+ 		ndev->spi = NULL;
+ 		dev_err(&ndev->pci_dev->dev,
+ 			"%s(): unable to create SPI device\n", __func__);
+@@ -235,13 +236,13 @@ void netup_spi_release(struct netup_unid
+ 	if (!spi)
+ 		return;
  
- 	min_period_size = snd_pcm_plug_client_size(substream,
- 						   snd_pcm_hw_param_value_min(slave_params, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, NULL));
--	min_period_size *= oss_frame_size;
--	min_period_size = roundup_pow_of_two(min_period_size);
--	if (oss_period_size < min_period_size)
--		oss_period_size = min_period_size;
-+	if (min_period_size) {
-+		min_period_size *= oss_frame_size;
-+		min_period_size = roundup_pow_of_two(min_period_size);
-+		if (oss_period_size < min_period_size)
-+			oss_period_size = min_period_size;
-+	}
- 
- 	max_period_size = snd_pcm_plug_client_size(substream,
- 						   snd_pcm_hw_param_value_max(slave_params, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, NULL));
--	max_period_size *= oss_frame_size;
--	max_period_size = rounddown_pow_of_two(max_period_size);
--	if (oss_period_size > max_period_size)
--		oss_period_size = max_period_size;
-+	if (max_period_size) {
-+		max_period_size *= oss_frame_size;
-+		max_period_size = rounddown_pow_of_two(max_period_size);
-+		if (oss_period_size > max_period_size)
-+			oss_period_size = max_period_size;
-+	}
- 
- 	oss_periods = oss_buffer_size / oss_period_size;
++	spi_unregister_master(spi->master);
+ 	spin_lock_irqsave(&spi->lock, flags);
+ 	reg = readw(&spi->regs->control_stat);
+ 	writew(reg | NETUP_SPI_CTRL_IRQ, &spi->regs->control_stat);
+ 	reg = readw(&spi->regs->control_stat);
+ 	writew(reg & ~NETUP_SPI_CTRL_IMASK, &spi->regs->control_stat);
+ 	spin_unlock_irqrestore(&spi->lock, flags);
+-	spi_unregister_master(spi->master);
+ 	ndev->spi = NULL;
+ }
  
 
 
