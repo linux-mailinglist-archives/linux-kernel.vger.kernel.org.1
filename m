@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BCCE2E6421
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:48:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB35E2E3D55
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:14:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404368AbgL1NnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:43:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40824 "EHLO mail.kernel.org"
+        id S2440408AbgL1OOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:14:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391447AbgL1Nk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:40:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4515E208B3;
-        Mon, 28 Dec 2020 13:40:40 +0000 (UTC)
+        id S2440380AbgL1OOS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:14:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AEE2B207AB;
+        Mon, 28 Dec 2020 14:14:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162840;
-        bh=t/rfeu57RAL2bNFOcWNdK40LMyWaEQqN6/nhxeaZb58=;
+        s=korg; t=1609164843;
+        bh=6i/clCzBH3uarIZ3RgFanfUSn3WBwtaGc4nPJE7PGtc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sFctida2v5ix7x+Hcx5CHUXau2VxsafzE7ybhZSjgo3uxAtsqkuGf5qmKwwXh8QQ8
-         M3f7x3blikg40dgBATX07HSkcEmuNZtbev8WJdgdga7pn12nJBNNkHIseBSGTU11l3
-         9gWERg6C7gS5v5jG3D1pAVisMh/daotv+M236eqI=
+        b=os7bSPjEhY4+bGiCBP+HEMlmZRoZnovn2J7SQsKl/NmeWrZk+t8nvCEFRuFNcE9ru
+         8nbnTKL78StzaZT74ETzq34zy2HcPonIVt91SmY65s1paiPMx7s3ytFnKN/Bjv1ECW
+         k4gdwl6AXHpNpVwbJqLzTifxF8gKJgBCwrcm+a/M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicolas Boichat <drinkcat@chromium.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
+        stable@vger.kernel.org,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Rob Clark <robdclark@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 080/453] soc: mediatek: Check if power domains can be powered on at boot time
-Date:   Mon, 28 Dec 2020 13:45:16 +0100
-Message-Id: <20201228124941.088928381@linuxfoundation.org>
+Subject: [PATCH 5.10 319/717] drm/msm: a5xx: Make preemption reset case reentrant
+Date:   Mon, 28 Dec 2020 13:45:17 +0100
+Message-Id: <20201228125036.318013218@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,53 +44,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Boichat <drinkcat@chromium.org>
+From: Marijn Suijten <marijn.suijten@somainline.org>
 
-[ Upstream commit 4007844b05815717f522c7ea9914e24ad0ff6c79 ]
+[ Upstream commit 7cc29fcdfcc8784e97c5151c848e193800ec79ac ]
 
-In the error case, where a power domain cannot be powered on
-successfully at boot time (in mtk_register_power_domains),
-pm_genpd_init would still be called with is_off=false, and the
-system would later try to disable the power domain again, triggering
-warnings as disabled clocks are disabled again (and other potential
-issues).
+nr_rings is reset to 1, but when this function is called for a second
+(and third!) time nr_rings > 1 is false, thus the else case is entered
+to set up a buffer for the RPTR shadow and consequently written to
+RB_RPTR_ADDR, hanging platforms without WHERE_AM_I firmware support.
 
-Also print a warning splat in that case, as this should never
-happen.
+Restructure the condition in such a way that shadow buffer setup only
+ever happens when has_whereami is true; otherwise preemption is only
+finalized when the number of ring buffers has not been reset to 1 yet.
 
-Fixes: c84e358718a66f7 ("soc: Mediatek: Add SCPSYS power domain driver")
-Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
-Link: https://lore.kernel.org/r/20200928113107.v2.1.I5e6f8c262031d0451fe7241b744f4f3111c1ce71@changeid
-Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
+Fixes: 8907afb476ac ("drm/msm: Allow a5xx to mark the RPTR shadow as privileged")
+Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
+Tested-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+Reviewed-by: Jordan Crouse <jcrouse@codeaurora.org>
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soc/mediatek/mtk-scpsys.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/msm/adreno/a5xx_gpu.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/soc/mediatek/mtk-scpsys.c b/drivers/soc/mediatek/mtk-scpsys.c
-index 503222d0d0da1..75f25f08245fd 100644
---- a/drivers/soc/mediatek/mtk-scpsys.c
-+++ b/drivers/soc/mediatek/mtk-scpsys.c
-@@ -446,6 +446,7 @@ static void mtk_register_power_domains(struct platform_device *pdev,
- 	for (i = 0; i < num; i++) {
- 		struct scp_domain *scpd = &scp->domains[i];
- 		struct generic_pm_domain *genpd = &scpd->genpd;
-+		bool on;
+diff --git a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+index 8aa08976aad17..69ed2c6094665 100644
+--- a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
++++ b/drivers/gpu/drm/msm/adreno/a5xx_gpu.c
+@@ -755,12 +755,8 @@ static int a5xx_hw_init(struct msm_gpu *gpu)
+ 	gpu_write(gpu, REG_A5XX_CP_RB_CNTL,
+ 		MSM_GPU_RB_CNTL_DEFAULT | AXXX_CP_RB_CNTL_NO_UPDATE);
  
- 		/*
- 		 * Initially turn on all domains to make the domains usable
-@@ -453,9 +454,9 @@ static void mtk_register_power_domains(struct platform_device *pdev,
- 		 * software.  The unused domains will be switched off during
- 		 * late_init time.
- 		 */
--		genpd->power_on(genpd);
-+		on = !WARN_ON(genpd->power_on(genpd) < 0);
+-	/* Disable preemption if WHERE_AM_I isn't available */
+-	if (!a5xx_gpu->has_whereami && gpu->nr_rings > 1) {
+-		a5xx_preempt_fini(gpu);
+-		gpu->nr_rings = 1;
+-	} else {
+-		/* Create a privileged buffer for the RPTR shadow */
++	/* Create a privileged buffer for the RPTR shadow */
++	if (a5xx_gpu->has_whereami) {
+ 		if (!a5xx_gpu->shadow_bo) {
+ 			a5xx_gpu->shadow = msm_gem_kernel_new(gpu->dev,
+ 				sizeof(u32) * gpu->nr_rings,
+@@ -774,6 +770,10 @@ static int a5xx_hw_init(struct msm_gpu *gpu)
  
--		pm_genpd_init(genpd, NULL, false);
-+		pm_genpd_init(genpd, NULL, !on);
+ 		gpu_write64(gpu, REG_A5XX_CP_RB_RPTR_ADDR,
+ 			REG_A5XX_CP_RB_RPTR_ADDR_HI, shadowptr(a5xx_gpu, gpu->rb[0]));
++	} else if (gpu->nr_rings > 1) {
++		/* Disable preemption if WHERE_AM_I isn't available */
++		a5xx_preempt_fini(gpu);
++		gpu->nr_rings = 1;
  	}
  
- 	/*
+ 	a5xx_preempt_hw_init(gpu);
 -- 
 2.27.0
 
