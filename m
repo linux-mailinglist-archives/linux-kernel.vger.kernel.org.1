@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D1DF2E6921
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:47:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EEF82E6910
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:47:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441090AbgL1QpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:45:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53240 "EHLO mail.kernel.org"
+        id S1728880AbgL1M5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:57:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53280 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728837AbgL1M4u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:56:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 794E3229C6;
-        Mon, 28 Dec 2020 12:56:09 +0000 (UTC)
+        id S1728859AbgL1M4x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:56:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62EE322583;
+        Mon, 28 Dec 2020 12:56:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160170;
-        bh=0C+GYIfeZWybqBTy4yX7z13bK34Q9hixK18jECqWek8=;
+        s=korg; t=1609160173;
+        bh=GF3KQyN3rtuUpoa7lKZkvuJXX0pYjjNIGaempjK5EbM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EzDXmltsFVBeOyF0aBHYG9geZeb6w0bD+nZX28Ha8gcv/h3/HtHvRHCIfQPGqr8KX
-         1oVPQhlwyJqJpaxJdVjmTOEuK9GoUCLB+Vx81uHbfyhLDIL7zG2bQ8q4BJg00sq2k0
-         S+j+MgKo1dQDa8vl1HA58sWsCi83YrDKorUDZFXU=
+        b=zqH8UICke3rXJkgBIkXhttKEGcil0TxFnZfV5wUWaxuFaXuAlg26IhNU1JwRjSKdo
+         7jy9dKrpYqboFCnOuiXedfOopsESZ5wsiC9atif1zDvjhmXR1JAOxOmi1d84R9Z39W
+         bonBx6Vg2s+PD1yvSGE57A/5C8+Uyg04GZBnANrc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 063/132] media: saa7146: fix array overflow in vidioc_s_audio()
-Date:   Mon, 28 Dec 2020 13:49:07 +0100
-Message-Id: <20201228124849.500961047@linuxfoundation.org>
+Subject: [PATCH 4.4 064/132] pinctrl: falcon: add missing put_device() call in pinctrl_falcon_probe()
+Date:   Mon, 28 Dec 2020 13:49:08 +0100
+Message-Id: <20201228124849.550392242@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
 References: <20201228124846.409999325@linuxfoundation.org>
@@ -41,54 +40,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Yu Kuai <yukuai3@huawei.com>
 
-[ Upstream commit 8e4d86e241cf035d6d3467cd346e7ce490681937 ]
+[ Upstream commit 89cce2b3f247a434ee174ab6803698041df98014 ]
 
-The "a->index" value comes from the user via the ioctl.  The problem is
-that the shift can wrap resulting in setting "mxb->cur_audinput" to an
-invalid value, which later results in an array overflow.
+if of_find_device_by_node() succeed, pinctrl_falcon_probe() doesn't have
+a corresponding put_device(). Thus add put_device() to fix the exception
+handling for this function implementation.
 
-Fixes: 6680427791c9 ("[media] mxb: fix audio handling")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: e316cb2b16bb ("OF: pinctrl: MIPS: lantiq: adds support for FALCON SoC")
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Link: https://lore.kernel.org/r/20201119011219.2248232-1-yukuai3@huawei.com
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/pci/saa7146/mxb.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ drivers/pinctrl/pinctrl-falcon.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/media/pci/saa7146/mxb.c b/drivers/media/pci/saa7146/mxb.c
-index 0ca1e07ae7837..868af73c5536a 100644
---- a/drivers/media/pci/saa7146/mxb.c
-+++ b/drivers/media/pci/saa7146/mxb.c
-@@ -652,16 +652,17 @@ static int vidioc_s_audio(struct file *file, void *fh, const struct v4l2_audio *
- 	struct mxb *mxb = (struct mxb *)dev->ext_priv;
+diff --git a/drivers/pinctrl/pinctrl-falcon.c b/drivers/pinctrl/pinctrl-falcon.c
+index 0b0fc2eb48e0b..adcdb0585d398 100644
+--- a/drivers/pinctrl/pinctrl-falcon.c
++++ b/drivers/pinctrl/pinctrl-falcon.c
+@@ -438,24 +438,28 @@ static int pinctrl_falcon_probe(struct platform_device *pdev)
  
- 	DEB_D("VIDIOC_S_AUDIO %d\n", a->index);
--	if (mxb_inputs[mxb->cur_input].audioset & (1 << a->index)) {
--		if (mxb->cur_audinput != a->index) {
--			mxb->cur_audinput = a->index;
--			tea6420_route(mxb, a->index);
--			if (mxb->cur_audinput == 0)
--				mxb_update_audmode(mxb);
+ 	/* load and remap the pad resources of the different banks */
+ 	for_each_compatible_node(np, NULL, "lantiq,pad-falcon") {
+-		struct platform_device *ppdev = of_find_device_by_node(np);
+ 		const __be32 *bank = of_get_property(np, "lantiq,bank", NULL);
+ 		struct resource res;
++		struct platform_device *ppdev;
+ 		u32 avail;
+ 		int pins;
+ 
+ 		if (!of_device_is_available(np))
+ 			continue;
+ 
+-		if (!ppdev) {
+-			dev_err(&pdev->dev, "failed to find pad pdev\n");
+-			continue;
 -		}
--		return 0;
-+	if (a->index >= 32 ||
-+	    !(mxb_inputs[mxb->cur_input].audioset & (1 << a->index)))
-+		return -EINVAL;
+ 		if (!bank || *bank >= PORTS)
+ 			continue;
+ 		if (of_address_to_resource(np, 0, &res))
+ 			continue;
 +
-+	if (mxb->cur_audinput != a->index) {
-+		mxb->cur_audinput = a->index;
-+		tea6420_route(mxb, a->index);
-+		if (mxb->cur_audinput == 0)
-+			mxb_update_audmode(mxb);
- 	}
--	return -EINVAL;
-+	return 0;
- }
- 
- #ifdef CONFIG_VIDEO_ADV_DEBUG
++		ppdev = of_find_device_by_node(np);
++		if (!ppdev) {
++			dev_err(&pdev->dev, "failed to find pad pdev\n");
++			continue;
++		}
++
+ 		falcon_info.clk[*bank] = clk_get(&ppdev->dev, NULL);
++		put_device(&ppdev->dev);
+ 		if (IS_ERR(falcon_info.clk[*bank])) {
+ 			dev_err(&ppdev->dev, "failed to get clock\n");
+ 			return PTR_ERR(falcon_info.clk[*bank]);
 -- 
 2.27.0
 
