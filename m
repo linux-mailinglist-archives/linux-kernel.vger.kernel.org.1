@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C482E68AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:40:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF6742E68AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:40:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441427AbgL1Qjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:39:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56074 "EHLO mail.kernel.org"
+        id S2441354AbgL1Qjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:39:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56110 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729189AbgL1M7y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:59:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B677D22583;
-        Mon, 28 Dec 2020 12:59:12 +0000 (UTC)
+        id S1729366AbgL1M74 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:59:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC3DF22582;
+        Mon, 28 Dec 2020 12:59:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160353;
-        bh=4RVsrHt+swWkgwGUunNrBplzgzeOI/Zp42aT6hjTzQ0=;
+        s=korg; t=1609160356;
+        bh=mVeXhq4sJ2hihUK43w8WVwVZbrqDMGkLZY7ds9Ra2Ks=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x7kN5M8vm/ZWk20t3ZUehIJNL7HgnyLgYEAtFg/5GdjNM7Fb9Trj1UQBaDGdMqKyC
-         hKwD8VahcbrR7viq19ofAzkVy3UGNSOePCrHmst0yEsPx73sZascJ1X/SJDGV0BL1i
-         6/LLMmJKRzSZo6//MftwQYZLi3jnFp6vardjBwiU=
+        b=KbFkbGNNjSyarhvHPck62oxgIT2/i+IkgRckqLpvhSCQVV6Ddy5i6C47e9OBm6rvW
+         rUGYv19b4OLLYoTMJ1b1Y3g3zWiMWXDBTWcqm9atuZB8dBVeI6H9I4GwIxxdoyce8T
+         XdK0uSPSOiHKvIHe7g7kojKX5vKFStLq+S0Np74I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vineet Gupta <vgupta@synopsys.com>,
+        stable@vger.kernel.org, Timo Witte <timo.witte@gmail.com>,
+        "Lee, Chun-Yi" <jlee@suse.com>,
+        Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 005/175] ARC: stack unwinding: dont assume non-current task is sleeping
-Date:   Mon, 28 Dec 2020 13:47:38 +0100
-Message-Id: <20201228124853.506539508@linuxfoundation.org>
+Subject: [PATCH 4.9 006/175] platform/x86: acer-wmi: add automatic keyboard background light toggle key as KEY_LIGHTS_TOGGLE
+Date:   Mon, 28 Dec 2020 13:47:39 +0100
+Message-Id: <20201228124853.555789949@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
 References: <20201228124853.216621466@linuxfoundation.org>
@@ -39,94 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vineet Gupta <vgupta@synopsys.com>
+From: Timo Witte <timo.witte@gmail.com>
 
-[ Upstream commit e42404fa10fd11fe72d0a0e149a321d10e577715 ]
+[ Upstream commit 9e7a005ad56aa7d6ea5830c5ffcc60bf35de380b ]
 
-To start stack unwinding (SP, PC and BLINK) are needed. When the
-explicit execution context (pt_regs etc) is not available, unwinder
-assumes the task is sleeping (in __switch_to()) and fetches SP and BLINK
-from kernel mode stack.
+Got a dmesg message on my AMD Renoir based Acer laptop:
+"acer_wmi: Unknown key number - 0x84" when toggling keyboard
+background light
 
-But this assumption is not true, specially in a SMP system, when top
-runs on 1 core, there may be active running processes on all cores.
-
-So when unwinding non courrent tasks, ensure they are NOT running.
-
-And while at it, handle the self unwinding case explicitly.
-
-This came out of investigation of a customer reported hang with
-rcutorture+top
-
-Link: https://github.com/foss-for-synopsys-dwc-arc-processors/linux/issues/31
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+Signed-off-by: Timo Witte <timo.witte@gmail.com>
+Reviewed-by: "Lee, Chun-Yi" <jlee@suse.com>
+Link: https://lore.kernel.org/r/20200804001423.36778-1-timo.witte@gmail.com
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arc/kernel/stacktrace.c | 23 +++++++++++++++--------
- 1 file changed, 15 insertions(+), 8 deletions(-)
+ drivers/platform/x86/acer-wmi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arc/kernel/stacktrace.c b/arch/arc/kernel/stacktrace.c
-index 165158735aa6b..3ee19b1e79be5 100644
---- a/arch/arc/kernel/stacktrace.c
-+++ b/arch/arc/kernel/stacktrace.c
-@@ -39,15 +39,15 @@
- 
- #ifdef CONFIG_ARC_DW2_UNWIND
- 
--static void seed_unwind_frame_info(struct task_struct *tsk,
--				   struct pt_regs *regs,
--				   struct unwind_frame_info *frame_info)
-+static int
-+seed_unwind_frame_info(struct task_struct *tsk, struct pt_regs *regs,
-+		       struct unwind_frame_info *frame_info)
- {
- 	/*
- 	 * synchronous unwinding (e.g. dump_stack)
- 	 *  - uses current values of SP and friends
- 	 */
--	if (tsk == NULL && regs == NULL) {
-+	if (regs == NULL && (tsk == NULL || tsk == current)) {
- 		unsigned long fp, sp, blink, ret;
- 		frame_info->task = current;
- 
-@@ -66,11 +66,15 @@ static void seed_unwind_frame_info(struct task_struct *tsk,
- 		frame_info->call_frame = 0;
- 	} else if (regs == NULL) {
- 		/*
--		 * Asynchronous unwinding of sleeping task
--		 *  - Gets SP etc from task's pt_regs (saved bottom of kernel
--		 *    mode stack of task)
-+		 * Asynchronous unwinding of a likely sleeping task
-+		 *  - first ensure it is actually sleeping
-+		 *  - if so, it will be in __switch_to, kernel mode SP of task
-+		 *    is safe-kept and BLINK at a well known location in there
- 		 */
- 
-+		if (tsk->state == TASK_RUNNING)
-+			return -1;
-+
- 		frame_info->task = tsk;
- 
- 		frame_info->regs.r27 = TSK_K_FP(tsk);
-@@ -104,6 +108,8 @@ static void seed_unwind_frame_info(struct task_struct *tsk,
- 		frame_info->regs.r63 = regs->ret;
- 		frame_info->call_frame = 0;
- 	}
-+
-+	return 0;
- }
- 
- #endif
-@@ -117,7 +123,8 @@ arc_unwind_core(struct task_struct *tsk, struct pt_regs *regs,
- 	unsigned int address;
- 	struct unwind_frame_info frame_info;
- 
--	seed_unwind_frame_info(tsk, regs, &frame_info);
-+	if (seed_unwind_frame_info(tsk, regs, &frame_info))
-+		return 0;
- 
- 	while (1) {
- 		address = UNW_PC(&frame_info);
+diff --git a/drivers/platform/x86/acer-wmi.c b/drivers/platform/x86/acer-wmi.c
+index 1515c9480f89f..90015e2cce9bf 100644
+--- a/drivers/platform/x86/acer-wmi.c
++++ b/drivers/platform/x86/acer-wmi.c
+@@ -124,6 +124,7 @@ static const struct key_entry acer_wmi_keymap[] __initconst = {
+ 	{KE_KEY, 0x64, {KEY_SWITCHVIDEOMODE} },	/* Display Switch */
+ 	{KE_IGNORE, 0x81, {KEY_SLEEP} },
+ 	{KE_KEY, 0x82, {KEY_TOUCHPAD_TOGGLE} },	/* Touch Pad Toggle */
++	{KE_IGNORE, 0x84, {KEY_KBDILLUMTOGGLE} }, /* Automatic Keyboard background light toggle */
+ 	{KE_KEY, KEY_TOUCHPAD_ON, {KEY_TOUCHPAD_ON} },
+ 	{KE_KEY, KEY_TOUCHPAD_OFF, {KEY_TOUCHPAD_OFF} },
+ 	{KE_IGNORE, 0x83, {KEY_TOUCHPAD_TOGGLE} },
 -- 
 2.27.0
 
