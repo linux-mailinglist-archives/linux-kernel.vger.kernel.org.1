@@ -2,88 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC5B22E35B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 11:13:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08DD42E35BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 11:15:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727167AbgL1KM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 05:12:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726944AbgL1KM3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 05:12:29 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76882C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 02:11:48 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id dk8so9321926edb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 02:11:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MdQ/D46RCr2gXEW9dmoWKE5z9/ANQwkSP5KORk8yc40=;
-        b=ZBuKDesRddgX9RuM0o93raruELuqg8VG7S9kK93UqTMa+aks62BN7/+4o//wzVUEBh
-         qivzEiNeTLfajSJaZvGzJFLYS91CJyuMy1vK6xu91HjRGkvqTUJCxNSzLfdCspYqLb+w
-         EqBzSdBsJIewfU/F9vkeMKceMOcSBYu4944ZBdpRyqAn7zGEWn31Gkf3KYGqJXNL1wuv
-         14bjishNlU0BYaYxRsocQQqsVDHKbmpI5ZIOvS6L1aNs2TiIvgLK5dQr5hROvFPYJ4a4
-         4iQ0OizTb5qe2A58Mt8b2ugNilPKaFLLx6DFZ9BAyEp8qAX8chL4eLNJ6zGhO9kkhyfF
-         LzSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MdQ/D46RCr2gXEW9dmoWKE5z9/ANQwkSP5KORk8yc40=;
-        b=PSKbZGSRrKc3f2qlwmkpo9tb4ubaytKJAX42uz7d8qD6qRSuogRcGxbyV80qOE++k0
-         m3r4AMKtesgw/aCs6xJL7+j2dFlWgtg5p2jIKdE9QZE9hx7O6gqvlDuYF999sn2bEBPj
-         0KX8BGZ7dNkABA1GPa+KZVCtm9tVvO+IMzo3nnGI3yVii/+cb0Rflh8lWzLbFIWWPBaV
-         U4DZFCScaLKNjI0eUHqZEUPZairNz0UOkwJ9lopobukU9J5VQ1MGBxN8PCDzY1I1veOG
-         DTJzI/xCaVyPydeTqO4CRd33tE3W2+HXh1HHHPSAw1nZZMzk6SbutRWg7PWUgZI8q4bT
-         TzXQ==
-X-Gm-Message-State: AOAM5322Rym0DRi+4+hF8Rww/Vx4PIAunkRW/24/7p8VFya82AvJd3me
-        G23e75VkiEIv1JAKJn0kIceERg==
-X-Google-Smtp-Source: ABdhPJzeBaAkxj3tRnfGYpjL14Szrs6UwTMpJTmk/jp+31CRpAHxsvrevzdJBUP+5u2X2QeyPEqkdA==
-X-Received: by 2002:a50:d5d5:: with SMTP id g21mr42913750edj.41.1609150306867;
-        Mon, 28 Dec 2020 02:11:46 -0800 (PST)
-Received: from localhost ([86.61.181.4])
-        by smtp.gmail.com with ESMTPSA id ca4sm35731648edb.80.2020.12.28.02.11.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Dec 2020 02:11:46 -0800 (PST)
-Date:   Mon, 28 Dec 2020 11:11:45 +0100
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Jarod Wilson <jarod@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Jay Vosburgh <j.vosburgh@gmail.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
-Subject: Re: [RFC PATCH net-next] bonding: add a vlan+srcmac tx hashing option
-Message-ID: <20201228101145.GC3565223@nanopsycho.orion>
-References: <20201218193033.6138-1-jarod@redhat.com>
+        id S1727198AbgL1KPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 05:15:15 -0500
+Received: from mga11.intel.com ([192.55.52.93]:30884 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727013AbgL1KPN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 05:15:13 -0500
+IronPort-SDR: HBP2g1Q93KKK65JbxiSPMynVPbZOitzEy5YfqrGjZV4VXGO1AhB9SLujPmdc148flvUXdGatzr
+ iEUKZxLb/iQw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9847"; a="172857407"
+X-IronPort-AV: E=Sophos;i="5.78,454,1599548400"; 
+   d="scan'208";a="172857407"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2020 02:14:32 -0800
+IronPort-SDR: 2o4QrVc5rt8K5snm4jNOP8DVG+i65S6cUj1QRCuntb4Jlr6nOgSwGZOxSK/8GtFxZXGVM90fgy
+ 5VWJOoopVeow==
+X-IronPort-AV: E=Sophos;i="5.78,454,1599548400"; 
+   d="scan'208";a="384530659"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2020 02:14:25 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1ktpYk-000CE8-13; Mon, 28 Dec 2020 12:15:26 +0200
+Date:   Mon, 28 Dec 2020 12:15:26 +0200
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     'Daniel Scally' <djrscally@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "devel@acpica.org" <devel@acpica.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tian Shu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        "kieran.bingham+renesas@ideasonboard.com" 
+        <kieran.bingham+renesas@ideasonboard.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        "niklas.soderlund+renesas@ragnatech.se" 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH v3 05/14] software_node: unregister software_nodes in
+ reverse order
+Message-ID: <20201228101526.GV4077@smile.fi.intel.com>
+References: <20201224010907.263125-1-djrscally@gmail.com>
+ <20201224010907.263125-6-djrscally@gmail.com>
+ <CAHp75VdF5NdjrSxcOafh7KNNDteYEUDk9otA0HKX-iks7G0D4g@mail.gmail.com>
+ <de478ef0-0b4d-df1d-2651-9cc35bf2f45b@gmail.com>
+ <CAHp75VdWuowLenNPQRNc+QXeyuvwKqh_bjw=1WvmFrzoygXFRw@mail.gmail.com>
+ <2b415312-fe30-c73b-0077-4ec2a07116df@gmail.com>
+ <fcb07dea193b4b99b11f2a8e684d8acf@AcuMS.aculab.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201218193033.6138-1-jarod@redhat.com>
+In-Reply-To: <fcb07dea193b4b99b11f2a8e684d8acf@AcuMS.aculab.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fri, Dec 18, 2020 at 08:30:33PM CET, jarod@redhat.com wrote:
->This comes from an end-user request, where they're running multiple VMs on
->hosts with bonded interfaces connected to some interest switch topologies,
->where 802.3ad isn't an option. They're currently running a proprietary
->solution that effectively achieves load-balancing of VMs and bandwidth
->utilization improvements with a similar form of transmission algorithm.
->
->Basically, each VM has it's own vlan, so it always sends its traffic out
->the same interface, unless that interface fails. Traffic gets split
->between the interfaces, maintaining a consistent path, with failover still
->available if an interface goes down.
->
->This has been rudimetarily tested to provide similar results, suitable for
->them to use to move off their current proprietary solution.
->
->Still on the TODO list, if these even looks sane to begin with, is
->fleshing out Documentation/networking/bonding.rst.
+On Thu, Dec 24, 2020 at 06:36:10PM +0000, David Laight wrote:
+> From: Daniel Scally 
+> > Sent: 24 December 2020 14:14
+> ...
+> > >> The array will be unwound in reverse order (i.e. last entry first). If
+> > >> any member of the array is a child of another member then the child must
+> > > children ?
+> > 
+> > Yes, you are right of course.
+> 
+> The second 'child' is a back-reference to 'any member' so is singular
+> so 'child' is correct.
+> 'the child' could be replaced by 'it'
+> 
+> You could have:
+>    If any members of the array are children of another member then the
+>    children must appear later in the list.
 
-Jarod, did you consider using team driver instead ? :)
+Works for me!
+Dan, can you consider David's proposal?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
