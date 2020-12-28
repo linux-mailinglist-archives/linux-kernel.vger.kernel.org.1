@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F30942E6531
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:59:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D81982E3E75
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:29:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393314AbgL1P6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:58:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34316 "EHLO mail.kernel.org"
+        id S2502398AbgL1O2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:28:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387995AbgL1Nds (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:33:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 82B6D2072C;
-        Mon, 28 Dec 2020 13:33:07 +0000 (UTC)
+        id S2502358AbgL1O2T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:28:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 64270206D4;
+        Mon, 28 Dec 2020 14:27:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162388;
-        bh=iIM2tHMOBC+WoiU3bgfrPJUNfj95wccv3JdIwPv3XOU=;
+        s=korg; t=1609165659;
+        bh=aZwdFjxzpDrDs30YAcOvGiCDupbp5UYPJBHDopEQny0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zSSB6xgDl95CEKHbqR0sohqkG4fULuAKovYEyIwsoXqJQy3bNvNmrcKlZ6obYPP4Z
-         4YSCpALCCzBJqgZXepFIdJVcbqCtp9LaHSPWDezQgKS0zljsqm1UwD6wHyEJgUyeMY
-         ioBLV0kt2h/1KqxRJzToe+woFsFUswW4hKMyQKpg=
+        b=m8azPOAhJNWVqmTCDQ4xiaMcptf8CUAiS1BvISxnmpuG3M9YYOeCEYq7t0Jk05oB/
+         LIKIcJ5MzrRZDyihz+bRYO7DGNTbEI8CnV+syZrppHohgYLMQsDVVOOFZlCoSAt8lW
+         +RyCJ6/Y6TSAU73HrQW/qDz9KbhTLdxYvdXRuVJc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Simon Beginn <linux@simonmicro.de>,
-        Bastien Nocera <hadess@hadess.net>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 257/346] Input: goodix - add upside-down quirk for Teclast X98 Pro tablet
+        stable@vger.kernel.org, Jim Cromie <jim.cromie@gmail.com>
+Subject: [PATCH 5.10 578/717] dyndbg: fix use before null check
 Date:   Mon, 28 Dec 2020 13:49:36 +0100
-Message-Id: <20201228124932.204723050@linuxfoundation.org>
+Message-Id: <20201228125048.602826394@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,47 +38,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Simon Beginn <linux@simonmicro.de>
+From: Jim Cromie <jim.cromie@gmail.com>
 
-[ Upstream commit cffdd6d90482316e18d686060a4397902ea04bd2 ]
+commit 3577afb0052fca65e67efdfc8e0859bb7bac87a6 upstream.
 
-The touchscreen on the Teclast x98 Pro is also mounted upside-down in
-relation to the display orientation.
+In commit a2d375eda771 ("dyndbg: refine export, rename to
+dynamic_debug_exec_queries()"), a string is copied before checking it
+isn't NULL.  Fix this, report a usage/interface error, and return the
+proper error code.
 
-Signed-off-by: Simon Beginn <linux@simonmicro.de>
-Signed-off-by: Bastien Nocera <hadess@hadess.net>
-Link: https://lore.kernel.org/r/20201117004253.27A5A27EFD@localhost
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: a2d375eda771 ("dyndbg: refine export, rename to dynamic_debug_exec_queries()")
+Cc: stable@vger.kernel.org
+Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+Link: https://lore.kernel.org/r/20201209183625.2432329-1-jim.cromie@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/input/touchscreen/goodix.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ lib/dynamic_debug.c |    9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/input/touchscreen/goodix.c b/drivers/input/touchscreen/goodix.c
-index b20ba65992735..7e480e2364216 100644
---- a/drivers/input/touchscreen/goodix.c
-+++ b/drivers/input/touchscreen/goodix.c
-@@ -136,6 +136,18 @@ static const struct dmi_system_id rotated_screen[] = {
- 			DMI_MATCH(DMI_BIOS_DATE, "12/19/2014"),
- 		},
- 	},
-+	{
-+		.ident = "Teclast X98 Pro",
-+		.matches = {
-+			/*
-+			 * Only match BIOS date, because the manufacturers
-+			 * BIOS does not report the board name at all
-+			 * (sometimes)...
-+			 */
-+			DMI_MATCH(DMI_BOARD_VENDOR, "TECLAST"),
-+			DMI_MATCH(DMI_BIOS_DATE, "10/28/2015"),
-+		},
-+	},
- 	{
- 		.ident = "WinBook TW100",
- 		.matches = {
--- 
-2.27.0
-
+--- a/lib/dynamic_debug.c
++++ b/lib/dynamic_debug.c
+@@ -561,9 +561,14 @@ static int ddebug_exec_queries(char *que
+ int dynamic_debug_exec_queries(const char *query, const char *modname)
+ {
+ 	int rc;
+-	char *qry = kstrndup(query, PAGE_SIZE, GFP_KERNEL);
++	char *qry; /* writable copy of query */
+ 
+-	if (!query)
++	if (!query) {
++		pr_err("non-null query/command string expected\n");
++		return -EINVAL;
++	}
++	qry = kstrndup(query, PAGE_SIZE, GFP_KERNEL);
++	if (!qry)
+ 		return -ENOMEM;
+ 
+ 	rc = ddebug_exec_queries(qry, modname);
 
 
