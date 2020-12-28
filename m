@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75C182E37BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:01:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C0C72E62BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:40:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729389AbgL1NAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:00:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55612 "EHLO mail.kernel.org"
+        id S2406086AbgL1NtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:49:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49620 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728898AbgL1M76 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:59:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 050F0207C9;
-        Mon, 28 Dec 2020 12:59:41 +0000 (UTC)
+        id S2406079AbgL1NtL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:49:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A09B520738;
+        Mon, 28 Dec 2020 13:48:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160382;
-        bh=uk0DM0zMWvCwM7+u/s74nhU1zvTRlz3ushlb/+OpKVk=;
+        s=korg; t=1609163336;
+        bh=/QTD93ioTxXLqscl0R4W/C93PNa/4cpPRsqMePBQCcQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tOJkxYDKm5LKlaFOFNE6vrseBO4qKp0aWipfRghPjcCuMGpCRePpdGs50IrBZJ3Xz
-         F8z102rodVYGITL1EPVQDCFANKFCYmWgcxOnR3FgDD2rNwaEr6WaoQu7bHqNUkLy83
-         ccCqi1fK0KFG6sXWGROEhB+Elw/aahVxhdp17YJY=
+        b=JcsYPSJuATitH0sOYCFkpsUKZozJO77O27Ni0iq/4eWuPX1tTDwG2hej5+3Q4ErSC
+         TcKORjzPyX8jcQRS+zIyLckq3x+h/O59vSl8gMrH6TrjUbntt76FPXL0TdL1kjd4Rc
+         Gws/7aJiottFjhGma0pPibcRvabKTZZ3azAJH8BY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 033/175] scsi: mpt3sas: Increase IOCInit request timeout to 30s
-Date:   Mon, 28 Dec 2020 13:48:06 +0100
-Message-Id: <20201228124854.861668832@linuxfoundation.org>
+Subject: [PATCH 5.4 251/453] usb: oxu210hp-hcd: Fix memory leak in oxu_create
+Date:   Mon, 28 Dec 2020 13:48:07 +0100
+Message-Id: <20201228124949.304670323@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sreekanth Reddy <sreekanth.reddy@broadcom.com>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit 85dad327d9b58b4c9ce08189a2707167de392d23 ]
+[ Upstream commit e5548b05631ec3e6bfdaef1cad28c799545b791b ]
 
-Currently the IOCInit request message timeout is set to 10s. This is not
-sufficient in some scenarios such as during HBA FW downgrade operations.
+usb_create_hcd will alloc memory for hcd, and we should
+call usb_put_hcd to free it when adding fails to prevent
+memory leak.
 
-Increase the IOCInit request timeout to 30s.
-
-Link: https://lore.kernel.org/r/20201130082733.26120-1-sreekanth.reddy@broadcom.com
-Signed-off-by: Sreekanth Reddy <sreekanth.reddy@broadcom.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: b92a78e582b1a ("usb host: Oxford OXU210HP HCD driver")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Link: https://lore.kernel.org/r/20201123145809.1456541-1-zhangqilong3@huawei.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/mpt3sas/mpt3sas_base.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/host/oxu210hp-hcd.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/mpt3sas/mpt3sas_base.c b/drivers/scsi/mpt3sas/mpt3sas_base.c
-index 601a93953307d..16716b2644020 100644
---- a/drivers/scsi/mpt3sas/mpt3sas_base.c
-+++ b/drivers/scsi/mpt3sas/mpt3sas_base.c
-@@ -4477,7 +4477,7 @@ _base_send_ioc_init(struct MPT3SAS_ADAPTER *ioc)
+diff --git a/drivers/usb/host/oxu210hp-hcd.c b/drivers/usb/host/oxu210hp-hcd.c
+index e67242e437edc..65985247fc00f 100644
+--- a/drivers/usb/host/oxu210hp-hcd.c
++++ b/drivers/usb/host/oxu210hp-hcd.c
+@@ -4149,8 +4149,10 @@ static struct usb_hcd *oxu_create(struct platform_device *pdev,
+ 	oxu->is_otg = otg;
  
- 	r = _base_handshake_req_reply_wait(ioc,
- 	    sizeof(Mpi2IOCInitRequest_t), (u32 *)&mpi_request,
--	    sizeof(Mpi2IOCInitReply_t), (u16 *)&mpi_reply, 10);
-+	    sizeof(Mpi2IOCInitReply_t), (u16 *)&mpi_reply, 30);
+ 	ret = usb_add_hcd(hcd, irq, IRQF_SHARED);
+-	if (ret < 0)
++	if (ret < 0) {
++		usb_put_hcd(hcd);
+ 		return ERR_PTR(ret);
++	}
  
- 	if (r != 0) {
- 		pr_err(MPT3SAS_FMT "%s: handshake failed (r=%d)\n",
+ 	device_wakeup_enable(hcd->self.controller);
+ 	return hcd;
 -- 
 2.27.0
 
