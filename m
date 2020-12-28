@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E8392E6714
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:22:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BEE82E657F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:03:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732332AbgL1NNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:13:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41930 "EHLO mail.kernel.org"
+        id S2393716AbgL1QBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:01:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732315AbgL1NNt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:13:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7523120776;
-        Mon, 28 Dec 2020 13:13:08 +0000 (UTC)
+        id S2390471AbgL1Nby (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:31:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D3CD02072C;
+        Mon, 28 Dec 2020 13:31:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161189;
-        bh=E5KaS4Hoa52hXqI/4RI+ExeS0aDhKRCmCEwd5G0LEJc=;
+        s=korg; t=1609162273;
+        bh=nlvaaxPyovPRjoHXoH4Gxj+sebjgFQrAzLubLCepMHE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CGmqGXfk3RSesB16OapfKkWesWX91SDgq8fRSY0WF2IStzmm7b4S5nWz/d75QKmIC
-         g4jWi2fJ1d6acFl0soRxWnPM3YRK21AEq7RoTPUFfQ0RihvqFkX+lsDcUjdr4tlGTV
-         bjfVDKML6c6gNl76f4c5a9EOOFHMTfKdBlZxyUv0=
+        b=A/9SPyV/BoqIkLTjgDgQAhH5hFXjcEcibL3PAKrD6ZTSf40Zn7Ktq0YXimTik3rtf
+         09TCcxTmTusrnFWmn1gHfOywTyHqJIH0MbVXtxgEjv5rGDtvYYgXZJ7RCBsS43DCh1
+         +zFVwqPndsRckBL13trTf8EP3DJb5abe4nNMRkW8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        stable@vger.kernel.org, kazuo ito <kzpn200@gmail.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 131/242] ARM: dts: at91: sama5d2: map securam as device
-Date:   Mon, 28 Dec 2020 13:48:56 +0100
-Message-Id: <20201228124911.151012157@linuxfoundation.org>
+Subject: [PATCH 4.19 219/346] nfsd: Fix message level for normal termination
+Date:   Mon, 28 Dec 2020 13:48:58 +0100
+Message-Id: <20201228124930.368707639@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,36 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudiu Beznea <claudiu.beznea@microchip.com>
+From: kazuo ito <kzpn200@gmail.com>
 
-[ Upstream commit 9b5dcc8d427e2bcb84c49eb03ffefe11e7537a55 ]
+[ Upstream commit 4420440c57892779f265108f46f83832a88ca795 ]
 
-Due to strobe signal not being propagated from CPU to securam
-the securam needs to be mapped as device or strongly ordered memory
-to work properly. Otherwise, updating to one offset may affect
-the adjacent locations in securam.
+The warning message from nfsd terminating normally
+can confuse system adminstrators or monitoring software.
 
-Fixes: d4ce5f44d4409 ("ARM: dts: at91: sama5d2: Add securam node")
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-Link: https://lore.kernel.org/r/1606903025-14197-3-git-send-email-claudiu.beznea@microchip.com
+Though it's not exactly fair to pin-point a commit where it
+originated, the current form in the current place started
+to appear in:
+
+Fixes: e096bbc6488d ("knfsd: remove special handling for SIGHUP")
+Signed-off-by: kazuo ito <kzpn200@gmail.com>
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/sama5d2.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+ fs/nfsd/nfssvc.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/sama5d2.dtsi b/arch/arm/boot/dts/sama5d2.dtsi
-index a8e4b89097d9c..8a09c2eab0f97 100644
---- a/arch/arm/boot/dts/sama5d2.dtsi
-+++ b/arch/arm/boot/dts/sama5d2.dtsi
-@@ -1243,6 +1243,7 @@
- 				clocks = <&securam_clk>;
- 				#address-cells = <1>;
- 				#size-cells = <1>;
-+				no-memory-wc;
- 				ranges = <0 0xf8044000 0x1420>;
- 			};
+diff --git a/fs/nfsd/nfssvc.c b/fs/nfsd/nfssvc.c
+index 89cb484f1cfbe..ad38633392a0d 100644
+--- a/fs/nfsd/nfssvc.c
++++ b/fs/nfsd/nfssvc.c
+@@ -417,8 +417,7 @@ static void nfsd_last_thread(struct svc_serv *serv, struct net *net)
+ 		return;
+ 
+ 	nfsd_shutdown_net(net);
+-	printk(KERN_WARNING "nfsd: last server has exited, flushing export "
+-			    "cache\n");
++	pr_info("nfsd: last server has exited, flushing export cache\n");
+ 	nfsd_export_flush(net);
+ }
  
 -- 
 2.27.0
