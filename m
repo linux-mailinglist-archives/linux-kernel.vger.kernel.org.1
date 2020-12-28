@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D215C2E6343
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:41:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 742422E39EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:30:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408795AbgL1PkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:40:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49122 "EHLO mail.kernel.org"
+        id S2390167AbgL1N3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:29:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405863AbgL1Ns1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:48:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25E99205CB;
-        Mon, 28 Dec 2020 13:48:11 +0000 (UTC)
+        id S2390048AbgL1N3K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:29:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6556D206ED;
+        Mon, 28 Dec 2020 13:28:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163291;
-        bh=mX2TkD6zpHLPFDP1hQhcaLT5edWDLw7gHBo+aZKePFU=;
+        s=korg; t=1609162110;
+        bh=mlTsnEcIZHlHnH1ZBt4xncgPjTJtWeF6V9bH9LIpUXo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gmuIbJWWsozsU7qm5f9SoCX7VSTfdk6/KBLYs0KQZnhve2DIp8BwOmlJs5Fzj7cpv
-         3I2KqA6WZGDpgfeLRY6BY/GY1X0O5JQRPJZMj2s2tzOC9u2JnsOmAH50jY/DiFQKLe
-         J0HRzAYwJUdjEena78qsjRhlJ9RT1cECnXRodIIs=
+        b=RTLEozTB35o/BZ5QrVjKfpwbC+sKXxiw9TC6o4UMmwEaJa0/e4tQfD8JYtSa2FfKk
+         YTuy6YBVks57bI50P+m5+u3iktNsc8bgq6hJTAIXOGeUupRqwSaLZr7+psukp7QGCX
+         Cxe+MMFDsS8vZ7enkY7R1KMs3qokUXA52HTun2dw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
+        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 234/453] cpufreq: scpi: Add missing MODULE_ALIAS
+Subject: [PATCH 4.19 151/346] spi: mxs: fix reference leak in mxs_spi_probe
 Date:   Mon, 28 Dec 2020 13:47:50 +0100
-Message-Id: <20201228124948.479913218@linuxfoundation.org>
+Message-Id: <20201228124927.086950526@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,33 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit c0382d049d2def37b81e907a8b22661a4a4a6eb5 ]
+[ Upstream commit 03fc41afaa6549baa2dab7a84e1afaf5cadb5b18 ]
 
-This patch adds missing MODULE_ALIAS for automatic loading of this cpufreq
-driver when it is compiled as an external module.
+pm_runtime_get_sync will increment pm usage counter even it
+failed. Forgetting to pm_runtime_put_noidle will result in
+reference leak in mxs_spi_probe, so we should fix it.
 
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Fixes: 8def31034d033 ("cpufreq: arm_big_little: add SCPI interface driver")
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Fixes: b7969caf41a1d ("spi: mxs: implement runtime pm")
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Link: https://lore.kernel.org/r/20201106012421.95420-1-zhangqilong3@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpufreq/scpi-cpufreq.c | 1 +
+ drivers/spi/spi-mxs.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/cpufreq/scpi-cpufreq.c b/drivers/cpufreq/scpi-cpufreq.c
-index 2b51e0718c9f6..b341ffbf56bc3 100644
---- a/drivers/cpufreq/scpi-cpufreq.c
-+++ b/drivers/cpufreq/scpi-cpufreq.c
-@@ -239,6 +239,7 @@ static struct platform_driver scpi_cpufreq_platdrv = {
- };
- module_platform_driver(scpi_cpufreq_platdrv);
+diff --git a/drivers/spi/spi-mxs.c b/drivers/spi/spi-mxs.c
+index 6ac95a2a21cef..4a7375ecb65ef 100644
+--- a/drivers/spi/spi-mxs.c
++++ b/drivers/spi/spi-mxs.c
+@@ -605,6 +605,7 @@ static int mxs_spi_probe(struct platform_device *pdev)
  
-+MODULE_ALIAS("platform:scpi-cpufreq");
- MODULE_AUTHOR("Sudeep Holla <sudeep.holla@arm.com>");
- MODULE_DESCRIPTION("ARM SCPI CPUFreq interface driver");
- MODULE_LICENSE("GPL v2");
+ 	ret = pm_runtime_get_sync(ssp->dev);
+ 	if (ret < 0) {
++		pm_runtime_put_noidle(ssp->dev);
+ 		dev_err(ssp->dev, "runtime_get_sync failed\n");
+ 		goto out_pm_runtime_disable;
+ 	}
 -- 
 2.27.0
 
