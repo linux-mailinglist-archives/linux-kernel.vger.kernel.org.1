@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD0E52E39E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:30:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C08932E37EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:04:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390087AbgL1N3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:29:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57866 "EHLO mail.kernel.org"
+        id S1730164AbgL1NDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:03:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56742 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390018AbgL1N27 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:28:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C34422583;
-        Mon, 28 Dec 2020 13:28:17 +0000 (UTC)
+        id S1729540AbgL1NAv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:00:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 425B4224D2;
+        Mon, 28 Dec 2020 13:00:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162098;
-        bh=a8rweLZd5JsqRDzBlBAYE+KB21mQGLYdkiAT7oZFWyU=;
+        s=korg; t=1609160435;
+        bh=ZQx4jiJYSqq0ifLV2fS+ihkyAB+CjY19pTM7Afr80S8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MCiiBKjmcbMQ7qF+wyzhAzAnhBnhDIR7xKRwWZiLRHWRzIoxr16VzG8KQXomWmfQQ
-         wCYu203n30l1raOC73FSvEiI/ZlahSFMv+SkciFNWQuPKeDOirNRJ2aNxPsDkSbU8I
-         eyd3+nx9kjiB/aE3reC5/9ttXSdxsiWWIOO6gSwM=
+        b=fjHlw31e/tRaNrKd5a0CSoxQqeNxbf7Imhrhz59Rt99irrgWRyJpXXwyVUdqaqvN8
+         fDKLGD+4kIQJ2uT42fBB4V8L0RLckSAE+oiCta/oadBJi6bkDevL18poH7oHeDItUu
+         KGMsG07ryCKT2BOnEwcIaQsS6yO01ijhgrPwAFTs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 157/346] soc: ti: Fix reference imbalance in knav_dma_probe
+        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Thomas Winischhofer <thomas@winischhofer.net>,
+        linux-usb@vger.kernel.org
+Subject: [PATCH 4.9 023/175] USB: sisusbvga: Make console support depend on BROKEN
 Date:   Mon, 28 Dec 2020 13:47:56 +0100
-Message-Id: <20201228124927.376572468@linuxfoundation.org>
+Message-Id: <20201228124854.378474266@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,73 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-[ Upstream commit b4fa73358c306d747a2200aec6f7acb97e5750e6 ]
+commit 862ee699fefe1e6d6f2c1518395f0b999b8beb15 upstream.
 
-The patch fix two reference leak.
+The console part of sisusbvga is broken vs. printk(). It uses in_atomic()
+to detect contexts in which it cannot sleep despite the big fat comment in
+preempt.h which says: Do not use in_atomic() in driver code.
 
-  1) pm_runtime_get_sync will increment pm usage counter even it
-     failed. Forgetting to call put operation will result in
-     reference leak.
+in_atomic() does not work on kernels with CONFIG_PREEMPT_COUNT=n which
+means that spin/rw_lock held regions are not detected by it.
 
-  2) The pm_runtime_enable will increase power disable depth. Thus
-     a pairing decrement is needed on the error handling path to
-     keep it balanced.
+There is no way to make this work by handing context information through to
+the driver and this only can be solved once the core printk infrastructure
+supports sleepable console drivers.
 
-We fix it by: 1) adding call pm_runtime_put_noidle or
-pm_runtime_put_sync in error handling. 2) adding pm_runtime_disable
-in error handling, to keep usage counter and disable depth balanced.
+Make it depend on BROKEN for now.
 
-Fixes: 88139ed030583 ("soc: ti: add Keystone Navigator DMA support")
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Signed-off-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 1bbb4f2035d9 ("[PATCH] USB: sisusb[vga] update")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: Thomas Winischhofer <thomas@winischhofer.net>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-usb@vger.kernel.org
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20201019101109.603244207@linutronix.de
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/soc/ti/knav_dma.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ drivers/usb/misc/sisusbvga/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/soc/ti/knav_dma.c b/drivers/soc/ti/knav_dma.c
-index 224d7ddeeb767..eb2e87229c1da 100644
---- a/drivers/soc/ti/knav_dma.c
-+++ b/drivers/soc/ti/knav_dma.c
-@@ -759,8 +759,9 @@ static int knav_dma_probe(struct platform_device *pdev)
- 	pm_runtime_enable(kdev->dev);
- 	ret = pm_runtime_get_sync(kdev->dev);
- 	if (ret < 0) {
-+		pm_runtime_put_noidle(kdev->dev);
- 		dev_err(kdev->dev, "unable to enable pktdma, err %d\n", ret);
--		return ret;
-+		goto err_pm_disable;
- 	}
+--- a/drivers/usb/misc/sisusbvga/Kconfig
++++ b/drivers/usb/misc/sisusbvga/Kconfig
+@@ -15,7 +15,7 @@ config USB_SISUSBVGA
  
- 	/* Initialise all packet dmas */
-@@ -774,7 +775,8 @@ static int knav_dma_probe(struct platform_device *pdev)
- 
- 	if (list_empty(&kdev->list)) {
- 		dev_err(dev, "no valid dma instance\n");
--		return -ENODEV;
-+		ret = -ENODEV;
-+		goto err_put_sync;
- 	}
- 
- 	debugfs_create_file("knav_dma", S_IFREG | S_IRUGO, NULL, NULL,
-@@ -782,6 +784,13 @@ static int knav_dma_probe(struct platform_device *pdev)
- 
- 	device_ready = true;
- 	return ret;
-+
-+err_put_sync:
-+	pm_runtime_put_sync(kdev->dev);
-+err_pm_disable:
-+	pm_runtime_disable(kdev->dev);
-+
-+	return ret;
- }
- 
- static int knav_dma_remove(struct platform_device *pdev)
--- 
-2.27.0
-
+ config USB_SISUSBVGA_CON
+ 	bool "Text console and mode switching support" if USB_SISUSBVGA
+-	depends on VT
++	depends on VT && BROKEN
+ 	select FONT_8x16
+ 	---help---
+ 	  Say Y here if you want a VGA text console via the USB dongle or
 
 
