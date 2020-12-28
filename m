@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 279FD2E37A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:59:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CED72E3902
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:19:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729165AbgL1M63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:58:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54596 "EHLO mail.kernel.org"
+        id S1731600AbgL1NRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:17:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729128AbgL1M6T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:58:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C620208D5;
-        Mon, 28 Dec 2020 12:57:37 +0000 (UTC)
+        id S1731548AbgL1NRZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:17:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F93C22AAA;
+        Mon, 28 Dec 2020 13:16:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160258;
-        bh=8dyUYSe/Na24K0kM/LeTfDuyVy+8G6zFL/I6y3Mm1eU=;
+        s=korg; t=1609161404;
+        bh=aFf5JEWVvxQo8R81FyuTXrBlrMNqF3NmYTsE9QYvN8U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S95gK+s/fltKPgNTokuuozhv0SnQMbPVlnMUjf8jyPy5Ba5Vrn0F8Dkscli81OPMJ
-         lzVBGpvWKctONVwiTsSWfhm3yvG/epODVHtWyfEH60EtY8eWr4iAfbLDfSA7DDgVhl
-         Px07luoDl2N9SBlw5/cTadll8rupZVZU+ZPDk6s8=
+        b=d+uLk2h1fEHUHcrteUIsz3ORPjljCwg8JpmnlOlxzkhGEj2TmnN2FJg+2+B68O5fS
+         D+dmiFAsYzcwS1iU9dQoa+SK6wnCgxiZblGFstnoT77rUiuz7WZJ7/lWEFGqr8X2KC
+         Z/XrO8EtwzG1cLyVsm+BzSC1rLL6/+suT8eTahx0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org, Zheng Zengkai <zhengzengkai@huawei.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Li Bin <huawei.libin@huawei.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 093/132] clk: s2mps11: Fix a resource leak in error handling paths in the probe function
-Date:   Mon, 28 Dec 2020 13:49:37 +0100
-Message-Id: <20201228124850.926719457@linuxfoundation.org>
+Subject: [PATCH 4.14 173/242] =?UTF-8?q?perf=20record:=20Fix=20memory=20leak=20when=20using=20?= =?UTF-8?q?--user-regs=3D=3F=20to=20list=20registers?=
+Date:   Mon, 28 Dec 2020 13:49:38 +0100
+Message-Id: <20201228124913.216991023@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,38 +45,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Zheng Zengkai <zhengzengkai@huawei.com>
 
-[ Upstream commit d2d94fc567624f96187e8b52083795620f93e69f ]
+[ Upstream commit 2eb5dd418034ecea2f7031e3d33f2991a878b148 ]
 
-Some resource should be released in the error handling path of the probe
-function, as already done in the remove function.
+When using 'perf record's option '-I' or '--user-regs=' along with
+argument '?' to list available register names, memory of variable 'os'
+allocated by strdup() needs to be released before __parse_regs()
+returns, otherwise memory leak will occur.
 
-The remove function was fixed in commit bf416bd45738 ("clk: s2mps11: Add
-missing of_node_put and of_clk_del_provider")
-
-Fixes: 7cc560dea415 ("clk: s2mps11: Add support for s2mps11")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/20201212122818.86195-1-christophe.jaillet@wanadoo.fr
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Fixes: bcc84ec65ad1 ("perf record: Add ability to name registers to record")
+Signed-off-by: Zheng Zengkai <zhengzengkai@huawei.com>
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Li Bin <huawei.libin@huawei.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Link: https://lore.kernel.org/r/20200703093344.189450-1-zhengzengkai@huawei.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/clk-s2mps11.c | 1 +
- 1 file changed, 1 insertion(+)
+ tools/perf/util/parse-regs-options.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/clk/clk-s2mps11.c b/drivers/clk/clk-s2mps11.c
-index 14af5c916c9ca..8a42a9c2a8f28 100644
---- a/drivers/clk/clk-s2mps11.c
-+++ b/drivers/clk/clk-s2mps11.c
-@@ -263,6 +263,7 @@ static int s2mps11_clk_probe(struct platform_device *pdev)
- 	return ret;
- 
- err_reg:
-+	of_node_put(s2mps11_clks[0].clk_np);
- 	while (--i >= 0)
- 		clkdev_drop(s2mps11_clks[i].lookup);
- 
+diff --git a/tools/perf/util/parse-regs-options.c b/tools/perf/util/parse-regs-options.c
+index e6599e290f467..e5ad120e7f69a 100644
+--- a/tools/perf/util/parse-regs-options.c
++++ b/tools/perf/util/parse-regs-options.c
+@@ -41,7 +41,7 @@ parse_regs(const struct option *opt, const char *str, int unset)
+ 				}
+ 				fputc('\n', stderr);
+ 				/* just printing available regs */
+-				return -1;
++				goto error;
+ 			}
+ 			for (r = sample_reg_masks; r->name; r++) {
+ 				if (!strcasecmp(s, r->name))
 -- 
 2.27.0
 
