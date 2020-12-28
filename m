@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B2FA2E4358
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:36:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 588292E37DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:04:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504306AbgL1PgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:36:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52484 "EHLO mail.kernel.org"
+        id S1729908AbgL1NB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:01:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405014AbgL1Nuj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:50:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 11248206D4;
-        Mon, 28 Dec 2020 13:49:55 +0000 (UTC)
+        id S1729789AbgL1NB2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:01:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0ABCC22B2A;
+        Mon, 28 Dec 2020 13:00:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163396;
-        bh=2FhLYakiejrjUTLx5UvoDzFh8fQtHXIRD5RyFN2aFbE=;
+        s=korg; t=1609160447;
+        bh=C1HU05v2WrIhDgrXB/EuS5sq9eP3kYw95gyL9K81B7s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oq57ZJ+OKHwcPmxjTIR4vjNIZN/dnACyw3DrKDGT4zzaXugwohzOLQ2Tz80WHxDdY
-         nF1t5kpLECN1ACVP8RYUiwcX7ln8YimSlTF33QSkBLGu/TadurlzBVkMYvTPuqYMux
-         PptaohGPmnmBlX/rgHNlqNs4reA2n1BTh58LMbow=
+        b=OQdPq7voyIPUxZlbXo/QT7jQ9yTD+6n0JVYys4f28fVfPyNePF44VUGdkNNd1RwRR
+         RMxsvuHHoISeLyGvemUsYOs1UIFARrUsgqNNhtoQpPzRUL5Q2tw+JJZUyiihsIP1Ki
+         6D8IyhsRh9dOdCGdEs1TAAgcr9nAy9cKSbBsdOh0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Mike Christie <michael.christie@oracle.com>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 240/453] scsi: qedi: Fix missing destroy_workqueue() on error in __qedi_probe
-Date:   Mon, 28 Dec 2020 13:47:56 +0100
-Message-Id: <20201228124948.771701275@linuxfoundation.org>
+        syzbot+df7dc146ebdd6435eea3@syzkaller.appspotmail.com,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.9 024/175] ALSA: pcm: oss: Fix potential out-of-bounds shift
+Date:   Mon, 28 Dec 2020 13:47:57 +0100
+Message-Id: <20201228124854.428034957@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,47 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qinglang Miao <miaoqinglang@huawei.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 62eebd5247c4e4ce08826ad5995cf4dd7ce919dd ]
+commit 175b8d89fe292796811fdee87fa39799a5b6b87a upstream.
 
-Add the missing destroy_workqueue() before return from __qedi_probe in the
-error handling case when fails to create workqueue qedi->offload_thread.
+syzbot spotted a potential out-of-bounds shift in the PCM OSS layer
+where it calculates the buffer size with the arbitrary shift value
+given via an ioctl.
 
-Link: https://lore.kernel.org/r/20201109091518.55941-1-miaoqinglang@huawei.com
-Fixes: ace7f46ba5fd ("scsi: qedi: Add QLogic FastLinQ offload iSCSI driver framework.")
-Reviewed-by: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Add a range check for avoiding the undefined behavior.
+As the value can be treated by a signed integer, the max shift should
+be 30.
+
+Reported-by: syzbot+df7dc146ebdd6435eea3@syzkaller.appspotmail.com
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201209084552.17109-2-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/scsi/qedi/qedi_main.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/core/oss/pcm_oss.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/qedi/qedi_main.c b/drivers/scsi/qedi/qedi_main.c
-index acb930b8c6a64..35c96ea2653be 100644
---- a/drivers/scsi/qedi/qedi_main.c
-+++ b/drivers/scsi/qedi/qedi_main.c
-@@ -2630,7 +2630,7 @@ static int __qedi_probe(struct pci_dev *pdev, int mode)
- 			QEDI_ERR(&qedi->dbg_ctx,
- 				 "Unable to start offload thread!\n");
- 			rc = -ENODEV;
--			goto free_cid_que;
-+			goto free_tmf_thread;
- 		}
+--- a/sound/core/oss/pcm_oss.c
++++ b/sound/core/oss/pcm_oss.c
+@@ -2001,11 +2001,15 @@ static int snd_pcm_oss_set_subdivide(str
+ static int snd_pcm_oss_set_fragment1(struct snd_pcm_substream *substream, unsigned int val)
+ {
+ 	struct snd_pcm_runtime *runtime;
++	int fragshift;
  
- 		/* F/w needs 1st task context memory entry for performance */
-@@ -2650,6 +2650,8 @@ static int __qedi_probe(struct pci_dev *pdev, int mode)
- 
- 	return 0;
- 
-+free_tmf_thread:
-+	destroy_workqueue(qedi->tmf_thread);
- free_cid_que:
- 	qedi_release_cid_que(qedi);
- free_uio:
--- 
-2.27.0
-
+ 	runtime = substream->runtime;
+ 	if (runtime->oss.subdivision || runtime->oss.fragshift)
+ 		return -EINVAL;
+-	runtime->oss.fragshift = val & 0xffff;
++	fragshift = val & 0xffff;
++	if (fragshift >= 31)
++		return -EINVAL;
++	runtime->oss.fragshift = fragshift;
+ 	runtime->oss.maxfrags = (val >> 16) & 0xffff;
+ 	if (runtime->oss.fragshift < 4)		/* < 16 */
+ 		runtime->oss.fragshift = 4;
 
 
