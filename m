@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE2A82E3BFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:57:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB84D2E6509
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:57:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406491AbgL1N5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:57:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58298 "EHLO mail.kernel.org"
+        id S2389415AbgL1Nfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:35:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406678AbgL1N4u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:56:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0938820782;
-        Mon, 28 Dec 2020 13:56:33 +0000 (UTC)
+        id S2389337AbgL1NfY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:35:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A7E8206ED;
+        Mon, 28 Dec 2020 13:34:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163794;
-        bh=HgdXahm1Zzqe7TN4Ff96NVdu2PDMzEhyVy3av+zvSio=;
+        s=korg; t=1609162483;
+        bh=FDM1bQrrBwAJ8UlQWbpyLw1SCK+IuHp/9BB247poVos=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LA4YHMeJ9sBNkpsUy37HZaS9SsDmc76g7k94SYPpKp+dGSKSHdsFiaNgQgEAtscZn
-         kO56yx4i7j/h81GlhzPENpAWnlOQRxMBRYH3ESsxhrf/BPSyH0K8boNWkXQ3JYv22D
-         OetY0zXZOORDux+ajWUdX8OXS4yVWG1fUpUbgF78=
+        b=aZd6ubNB4yBbLJO74gQf7PTk+ioJ7TFh+Rz/v5O5KYA32m2eGgFNyz8SGMLZh2Vlu
+         gnWZrDW9TSDMeukRrny+D0ZcsGNoZAAFF0hNQrns+JGXkqatjBmc27SAcMXz0cg+ET
+         pUQ7HCHIv39mii/UERQhanO8B/kyI2B6mkpEOPN4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.4 369/453] USB: serial: keyspan_pda: fix write-wakeup use-after-free
-Date:   Mon, 28 Dec 2020 13:50:05 +0100
-Message-Id: <20201228124954.967508343@linuxfoundation.org>
+        stable@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: [PATCH 4.19 287/346] crypto: ecdh - avoid unaligned accesses in ecdh_set_secret()
+Date:   Mon, 28 Dec 2020 13:50:06 +0100
+Message-Id: <20201228124933.649086790@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,81 +39,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Ard Biesheuvel <ardb@kernel.org>
 
-commit 37faf50615412947868c49aee62f68233307f4e4 upstream.
+commit 17858b140bf49961b71d4e73f1c3ea9bc8e7dda0 upstream.
 
-The driver's deferred write wakeup was never flushed on disconnect,
-something which could lead to the driver port data being freed while the
-wakeup work is still scheduled.
+ecdh_set_secret() casts a void* pointer to a const u64* in order to
+feed it into ecc_is_key_valid(). This is not generally permitted by
+the C standard, and leads to actual misalignment faults on ARMv6
+cores. In some cases, these are fixed up in software, but this still
+leads to performance hits that are entirely avoidable.
 
-Fix this by using the usb-serial write wakeup which gets cancelled
-properly on disconnect.
+So let's copy the key into the ctx buffer first, which we will do
+anyway in the common case, and which guarantees correct alignment.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Cc: stable@vger.kernel.org
-Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/serial/keyspan_pda.c |   17 +++--------------
- 1 file changed, 3 insertions(+), 14 deletions(-)
+ crypto/ecdh.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
---- a/drivers/usb/serial/keyspan_pda.c
-+++ b/drivers/usb/serial/keyspan_pda.c
-@@ -43,8 +43,7 @@
- struct keyspan_pda_private {
- 	int			tx_room;
- 	int			tx_throttled;
--	struct work_struct			wakeup_work;
--	struct work_struct			unthrottle_work;
-+	struct work_struct	unthrottle_work;
- 	struct usb_serial	*serial;
- 	struct usb_serial_port	*port;
- };
-@@ -97,15 +96,6 @@ static const struct usb_device_id id_tab
- };
- #endif
+--- a/crypto/ecdh.c
++++ b/crypto/ecdh.c
+@@ -57,12 +57,13 @@ static int ecdh_set_secret(struct crypto
+ 		return ecc_gen_privkey(ctx->curve_id, ctx->ndigits,
+ 				       ctx->private_key);
  
--static void keyspan_pda_wakeup_write(struct work_struct *work)
--{
--	struct keyspan_pda_private *priv =
--		container_of(work, struct keyspan_pda_private, wakeup_work);
--	struct usb_serial_port *port = priv->port;
+-	if (ecc_is_key_valid(ctx->curve_id, ctx->ndigits,
+-			     (const u64 *)params.key, params.key_size) < 0)
+-		return -EINVAL;
 -
--	tty_port_tty_wakeup(&port->port);
--}
--
- static void keyspan_pda_request_unthrottle(struct work_struct *work)
- {
- 	struct keyspan_pda_private *priv =
-@@ -183,7 +173,7 @@ static void keyspan_pda_rx_interrupt(str
- 		case 2: /* tx unthrottle interrupt */
- 			priv->tx_throttled = 0;
- 			/* queue up a wakeup at scheduler time */
--			schedule_work(&priv->wakeup_work);
-+			usb_serial_port_softint(port);
- 			break;
- 		default:
- 			break;
-@@ -563,7 +553,7 @@ static void keyspan_pda_write_bulk_callb
- 	priv = usb_get_serial_port_data(port);
+ 	memcpy(ctx->private_key, params.key, params.key_size);
  
- 	/* queue up a wakeup at scheduler time */
--	schedule_work(&priv->wakeup_work);
-+	usb_serial_port_softint(port);
++	if (ecc_is_key_valid(ctx->curve_id, ctx->ndigits,
++			     ctx->private_key, params.key_size) < 0) {
++		memzero_explicit(ctx->private_key, params.key_size);
++		return -EINVAL;
++	}
+ 	return 0;
  }
  
- 
-@@ -716,7 +706,6 @@ static int keyspan_pda_port_probe(struct
- 	if (!priv)
- 		return -ENOMEM;
- 
--	INIT_WORK(&priv->wakeup_work, keyspan_pda_wakeup_write);
- 	INIT_WORK(&priv->unthrottle_work, keyspan_pda_request_unthrottle);
- 	priv->serial = port->serial;
- 	priv->port = port;
 
 
