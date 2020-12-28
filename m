@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4451E2E63DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:45:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90DD82E399A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:25:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406899AbgL1Pnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:43:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47906 "EHLO mail.kernel.org"
+        id S2388892AbgL1NZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:25:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405155AbgL1Nqj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:46:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 96FAD20715;
-        Mon, 28 Dec 2020 13:45:57 +0000 (UTC)
+        id S2388835AbgL1NZD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:25:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96F3F22A84;
+        Mon, 28 Dec 2020 13:24:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163158;
-        bh=wddrTEZSFp8tpg3DEI4euQqLtSB2pEiOL2ZO9DJISmI=;
+        s=korg; t=1609161862;
+        bh=16ofqNDOtTdD+Nbw3rTnBhytlvP13deUuWsiMlij8zo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fA82Xce6dkbyZkTjdmefThBnamH4qyeGVwQjmwKOUNNozIhFSk38cEfqCh1qGJ9oD
-         A8izXjwczMblY8EdjwtzZJS/7G035/fwjxjzEhJyT5qLnGFUQr9uex/bJzciB619WO
-         qsRyAvGVMoxAIYsmPnMhbCWEh2LOz4p09qb99Ou4=
+        b=w2KrN+YC1QCi+M1+KmayJaiaKFL95Rb1aMpx5Q3zt+jc1cnJ/UX5C6/nFzPF6gM1b
+         sbGePG5YNJm9pOBjDCuOJ0iIatoUjL1ewNmMyqab8LIc8tsThOwUnsCRZ34z3LaTLk
+         wGzmuUNnzvAAOMBSecEG81GfFbjdhAlTgR/XfvCY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bharat Gooty <bharat.gooty@broadcom.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        stable@vger.kernel.org, Arvind Sankar <nivedita@alum.mit.edu>,
+        Borislav Petkov <bp@suse.de>, Joerg Roedel <jroedel@suse.de>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 190/453] PCI: iproc: Fix out-of-bound array accesses
+Subject: [PATCH 4.19 107/346] x86/mm/ident_map: Check for errors from ident_pud_init()
 Date:   Mon, 28 Dec 2020 13:47:06 +0100
-Message-Id: <20201228124946.354888773@linuxfoundation.org>
+Message-Id: <20201228124924.958176082@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,72 +41,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bharat Gooty <bharat.gooty@broadcom.com>
+From: Arvind Sankar <nivedita@alum.mit.edu>
 
-[ Upstream commit a3ff529f5d368a17ff35ada8009e101162ebeaf9 ]
+[ Upstream commit 1fcd009102ee02e217f2e7635ab65517d785da8e ]
 
-Declare the full size array for all revisions of PAX register sets
-to avoid potentially out of bound access of the register array
-when they are being initialized in iproc_pcie_rev_init().
+Commit
 
-Link: https://lore.kernel.org/r/20201001060054.6616-2-srinath.mannam@broadcom.com
-Fixes: 06324ede76cdf ("PCI: iproc: Improve core register population")
-Signed-off-by: Bharat Gooty <bharat.gooty@broadcom.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+  ea3b5e60ce80 ("x86/mm/ident_map: Add 5-level paging support")
+
+added ident_p4d_init() to support 5-level paging, but this function
+doesn't check and return errors from ident_pud_init().
+
+For example, the decompressor stub uses this code to create an identity
+mapping. If it runs out of pages while trying to allocate a PMD
+pagetable, the error will be currently ignored.
+
+Fix this to propagate errors.
+
+ [ bp: Space out statements for better readability. ]
+
+Fixes: ea3b5e60ce80 ("x86/mm/ident_map: Add 5-level paging support")
+Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Joerg Roedel <jroedel@suse.de>
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Link: https://lkml.kernel.org/r/20201027230648.1885111-1-nivedita@alum.mit.edu
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/pcie-iproc.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ arch/x86/mm/ident_map.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/pci/controller/pcie-iproc.c b/drivers/pci/controller/pcie-iproc.c
-index 933a4346ae5d6..c6b1c18165e5c 100644
---- a/drivers/pci/controller/pcie-iproc.c
-+++ b/drivers/pci/controller/pcie-iproc.c
-@@ -307,7 +307,7 @@ enum iproc_pcie_reg {
- };
+diff --git a/arch/x86/mm/ident_map.c b/arch/x86/mm/ident_map.c
+index fe7a12599d8eb..968d7005f4a72 100644
+--- a/arch/x86/mm/ident_map.c
++++ b/arch/x86/mm/ident_map.c
+@@ -62,6 +62,7 @@ static int ident_p4d_init(struct x86_mapping_info *info, p4d_t *p4d_page,
+ 			  unsigned long addr, unsigned long end)
+ {
+ 	unsigned long next;
++	int result;
  
- /* iProc PCIe PAXB BCMA registers */
--static const u16 iproc_pcie_reg_paxb_bcma[] = {
-+static const u16 iproc_pcie_reg_paxb_bcma[IPROC_PCIE_MAX_NUM_REG] = {
- 	[IPROC_PCIE_CLK_CTRL]		= 0x000,
- 	[IPROC_PCIE_CFG_IND_ADDR]	= 0x120,
- 	[IPROC_PCIE_CFG_IND_DATA]	= 0x124,
-@@ -318,7 +318,7 @@ static const u16 iproc_pcie_reg_paxb_bcma[] = {
- };
+ 	for (; addr < end; addr = next) {
+ 		p4d_t *p4d = p4d_page + p4d_index(addr);
+@@ -73,13 +74,20 @@ static int ident_p4d_init(struct x86_mapping_info *info, p4d_t *p4d_page,
  
- /* iProc PCIe PAXB registers */
--static const u16 iproc_pcie_reg_paxb[] = {
-+static const u16 iproc_pcie_reg_paxb[IPROC_PCIE_MAX_NUM_REG] = {
- 	[IPROC_PCIE_CLK_CTRL]		= 0x000,
- 	[IPROC_PCIE_CFG_IND_ADDR]	= 0x120,
- 	[IPROC_PCIE_CFG_IND_DATA]	= 0x124,
-@@ -334,7 +334,7 @@ static const u16 iproc_pcie_reg_paxb[] = {
- };
+ 		if (p4d_present(*p4d)) {
+ 			pud = pud_offset(p4d, 0);
+-			ident_pud_init(info, pud, addr, next);
++			result = ident_pud_init(info, pud, addr, next);
++			if (result)
++				return result;
++
+ 			continue;
+ 		}
+ 		pud = (pud_t *)info->alloc_pgt_page(info->context);
+ 		if (!pud)
+ 			return -ENOMEM;
+-		ident_pud_init(info, pud, addr, next);
++
++		result = ident_pud_init(info, pud, addr, next);
++		if (result)
++			return result;
++
+ 		set_p4d(p4d, __p4d(__pa(pud) | info->kernpg_flag));
+ 	}
  
- /* iProc PCIe PAXB v2 registers */
--static const u16 iproc_pcie_reg_paxb_v2[] = {
-+static const u16 iproc_pcie_reg_paxb_v2[IPROC_PCIE_MAX_NUM_REG] = {
- 	[IPROC_PCIE_CLK_CTRL]		= 0x000,
- 	[IPROC_PCIE_CFG_IND_ADDR]	= 0x120,
- 	[IPROC_PCIE_CFG_IND_DATA]	= 0x124,
-@@ -363,7 +363,7 @@ static const u16 iproc_pcie_reg_paxb_v2[] = {
- };
- 
- /* iProc PCIe PAXC v1 registers */
--static const u16 iproc_pcie_reg_paxc[] = {
-+static const u16 iproc_pcie_reg_paxc[IPROC_PCIE_MAX_NUM_REG] = {
- 	[IPROC_PCIE_CLK_CTRL]		= 0x000,
- 	[IPROC_PCIE_CFG_IND_ADDR]	= 0x1f0,
- 	[IPROC_PCIE_CFG_IND_DATA]	= 0x1f4,
-@@ -372,7 +372,7 @@ static const u16 iproc_pcie_reg_paxc[] = {
- };
- 
- /* iProc PCIe PAXC v2 registers */
--static const u16 iproc_pcie_reg_paxc_v2[] = {
-+static const u16 iproc_pcie_reg_paxc_v2[IPROC_PCIE_MAX_NUM_REG] = {
- 	[IPROC_PCIE_MSI_GIC_MODE]	= 0x050,
- 	[IPROC_PCIE_MSI_BASE_ADDR]	= 0x074,
- 	[IPROC_PCIE_MSI_WINDOW_SIZE]	= 0x078,
 -- 
 2.27.0
 
