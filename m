@@ -2,43 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4A372E404B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:51:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D93132E63E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:45:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437929AbgL1OVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:21:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56442 "EHLO mail.kernel.org"
+        id S2408199AbgL1Pnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:43:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502207AbgL1OVC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:21:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C59E20791;
-        Mon, 28 Dec 2020 14:20:15 +0000 (UTC)
+        id S2405648AbgL1Nr2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:47:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F3692072C;
+        Mon, 28 Dec 2020 13:47:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165216;
-        bh=mPmKAdohop4jaoZA/YxlgERgOmGMVxNu2YzXJicrU9U=;
+        s=korg; t=1609163232;
+        bh=gP0Ok61iEpEARPAp79nD/b4yoKps0F5dI7IcnTs5RR0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MKJaFvAiZCpjO/22ru63iHm3attIV4/wb6zZ8C0HLVzIJnYUqMBOH21zoIglKQJKV
-         X3MCa85klVNkj+1ef+cyYmvu5PkmGtwpkYbQqt+byO7R3yiwq1+ipPlZNMx0vdnYtZ
-         fS61OmjnT3LhrM5WTtMbYLPHsiuN3wd5tFq6nSfo=
+        b=A5iJwtbQ2XMQ+57DNeKh0SOmYef+aAPEtSEiPZohjq4ajd5D87Cg3XSUp/wux3P/t
+         mgeJD1nl2/p8tOQTRg1BUN3PtkgKA6K8+Tk13187giR3LtF+4/HXckNle0fOU67Mb0
+         Oqlt70kWRxyGcxKiiX/v6hQ9Wm9yDYxocxMnKCIo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 454/717] mm/vmalloc.c: fix kasan shadow poisoning size
+Subject: [PATCH 5.4 216/453] bpf: Fix bpf_put_raw_tracepoint()s use of __module_address()
 Date:   Mon, 28 Dec 2020 13:47:32 +0100
-Message-Id: <20201228125042.721318825@linuxfoundation.org>
+Message-Id: <20201228124947.611645842@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,54 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincenzo Frascino <vincenzo.frascino@arm.com>
+From: Andrii Nakryiko <andrii@kernel.org>
 
-[ Upstream commit c041098c690fe53cea5d20c62f128a4f7a5c19fe ]
+[ Upstream commit 12cc126df82c96c89706aa207ad27c56f219047c ]
 
-The size of vm area can be affected by the presence or not of the guard
-page.  In particular when VM_NO_GUARD is present, the actual accessible
-size has to be considered like the real size minus the guard page.
+__module_address() needs to be called with preemption disabled or with
+module_mutex taken. preempt_disable() is enough for read-only uses, which is
+what this fix does. Also, module_put() does internal check for NULL, so drop
+it as well.
 
-Currently kasan does not keep into account this information during the
-poison operation and in particular tries to poison the guard page as well.
-
-This approach, even if incorrect, does not cause an issue because the tags
-for the guard page are written in the shadow memory.  With the future
-introduction of the Tag-Based KASAN, being the guard page inaccessible by
-nature, the write tag operation on this page triggers a fault.
-
-Fix kasan shadow poisoning size invoking get_vm_area_size() instead of
-accessing directly the field in the data structure to detect the correct
-value.
-
-Link: https://lkml.kernel.org/r/20201027160213.32904-1-vincenzo.frascino@arm.com
-Fixes: d98c9e83b5e7c ("kasan: fix crashes on access to memory mapped by vm_map_ram()")
-Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc: Andrey Konovalov <andreyknvl@google.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-Cc: Alexander Potapenko <glider@google.com>
-Cc: Marco Elver <elver@google.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: a38d1107f937 ("bpf: support raw tracepoints in modules")
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
+Link: https://lore.kernel.org/bpf/20201203204634.1325171-2-andrii@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/vmalloc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/trace/bpf_trace.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 75913f685c71e..279dc0c96568c 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -2256,7 +2256,7 @@ static void __vunmap(const void *addr, int deallocate_pages)
- 	debug_check_no_locks_freed(area->addr, get_vm_area_size(area));
- 	debug_check_no_obj_freed(area->addr, get_vm_area_size(area));
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 2372b861f2cfa..74c1db7178cff 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1320,10 +1320,12 @@ struct bpf_raw_event_map *bpf_get_raw_tracepoint(const char *name)
  
--	kasan_poison_vmalloc(area->addr, area->size);
-+	kasan_poison_vmalloc(area->addr, get_vm_area_size(area));
+ void bpf_put_raw_tracepoint(struct bpf_raw_event_map *btp)
+ {
+-	struct module *mod = __module_address((unsigned long)btp);
++	struct module *mod;
  
- 	vm_remove_mappings(area, deallocate_pages);
+-	if (mod)
+-		module_put(mod);
++	preempt_disable();
++	mod = __module_address((unsigned long)btp);
++	module_put(mod);
++	preempt_enable();
+ }
  
+ static __always_inline
 -- 
 2.27.0
 
