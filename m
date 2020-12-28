@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2631E2E3AEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:43:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 042882E3D89
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:17:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404440AbgL1NnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:43:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41510 "EHLO mail.kernel.org"
+        id S2441241AbgL1OQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:16:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391739AbgL1NlS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:41:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A2D02063A;
-        Mon, 28 Dec 2020 13:40:37 +0000 (UTC)
+        id S2440885AbgL1OQH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:16:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EF8320791;
+        Mon, 28 Dec 2020 14:15:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162838;
-        bh=4WkGcy/+keBscqkemL2ALHP+oJLlWlSiD0U4fUeB4C8=;
+        s=korg; t=1609164927;
+        bh=WDcTPrTXz9qUtyo8bsOW9H+jSc4yZdmHOzryDsLKWVA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AbhCa3UnltCuIvYFuMQVe4DKAYNCtUQzrgnXP7uFzM06EHMv4a7/hCXgWpTkyUSKW
-         6apbQu4018JrcB8zN5om6SQwqPkaRQVqTHnVIyXUtkSqWXgHVOoVghUqvesajwiz3j
-         fq50EoCWfkUcyIS14clWN72SvsDQUDEulMmGMbxk=
+        b=G4Mrxj7tr92Ah02QvnNP0MhxO7Ow8F8xAPyqN0m3xwkTtURTP/iYrWPGytyqv2oY9
+         KM+S1PU7GWZPEndIJaIXTd4QJuVnvwlM3AxIK/knOQoPKsRU3gF2pfr5xfaf/IRdsI
+         vzvfWhr03HFE0OzXl0m+UgZUg9ybE5/YWy28DzO8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 079/453] soc: renesas: rmobile-sysc: Fix some leaks in rmobile_init_pm_domains()
+Subject: [PATCH 5.10 317/717] memory: ti-emif-sram: only build for ARMv7
 Date:   Mon, 28 Dec 2020 13:45:15 +0100
-Message-Id: <20201228124941.040127794@linuxfoundation.org>
+Message-Id: <20201228125036.221339172@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,33 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit cf25d802e029c31efac8bdc979236927f37183bd ]
+[ Upstream commit d77d22d701b0471584abe1871570bb43deb6e3c4 ]
 
-This code needs to call iounmap() on one error path.
+The driver can be compile-tested on all ARM machines, but
+causes a failure when built for ARMv7-M:
 
-Fixes: 2173fc7cb681 ("ARM: shmobile: R-Mobile: Add DT support for PM domains")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/20200923113142.GC1473821@mwanda
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+arm-linux-gnueabi-ld: error: drivers/memory/ti-emif-sram-pm.o: conflicting architecture profiles A/M
+
+Limit the target machines to configurations that have ARMv7 enabled.
+
+Fixes: ea0c0ad6b6eb ("memory: Enable compile testing for most of the drivers")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/r/20201203230832.1481767-1-arnd@kernel.org
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soc/renesas/rmobile-sysc.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/memory/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/soc/renesas/rmobile-sysc.c b/drivers/soc/renesas/rmobile-sysc.c
-index 54b616ad4a62a..beb1c7211c3d6 100644
---- a/drivers/soc/renesas/rmobile-sysc.c
-+++ b/drivers/soc/renesas/rmobile-sysc.c
-@@ -327,6 +327,7 @@ static int __init rmobile_init_pm_domains(void)
+diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
+index 00e013b14703e..cc2c83e1accfb 100644
+--- a/drivers/memory/Kconfig
++++ b/drivers/memory/Kconfig
+@@ -128,7 +128,7 @@ config OMAP_GPMC_DEBUG
  
- 		pmd = of_get_child_by_name(np, "pm-domains");
- 		if (!pmd) {
-+			iounmap(base);
- 			pr_warn("%pOF lacks pm-domains node\n", np);
- 			continue;
- 		}
+ config TI_EMIF_SRAM
+ 	tristate "Texas Instruments EMIF SRAM driver"
+-	depends on SOC_AM33XX || SOC_AM43XX || (ARM && COMPILE_TEST)
++	depends on SOC_AM33XX || SOC_AM43XX || (ARM && CPU_V7 && COMPILE_TEST)
+ 	depends on SRAM
+ 	help
+ 	  This driver is for the EMIF module available on Texas Instruments
 -- 
 2.27.0
 
