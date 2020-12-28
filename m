@@ -2,154 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05ADD2E686E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:37:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7EBB2E687D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:37:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634218AbgL1Qf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:35:57 -0500
-Received: from mout.kundenserver.de ([212.227.17.13]:34673 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729933AbgL1Qfu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 11:35:50 -0500
-Received: from methusalix.internal.home.lespocky.de ([92.117.54.172]) by
- mrelayeu.kundenserver.de (mreue109 [212.227.15.183]) with ESMTPSA (Nemesis)
- id 1MxmBc-1k66FO0Vl0-00zH4a; Mon, 28 Dec 2020 17:33:00 +0100
-Received: from lemmy.internal.home.lespocky.de ([192.168.243.175] helo=lemmy.home.lespocky.de)
-        by methusalix.internal.home.lespocky.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <alex@home.lespocky.de>)
-        id 1ktvS5-0002GX-8S; Mon, 28 Dec 2020 17:32:58 +0100
-Received: (nullmailer pid 32629 invoked by uid 2001);
-        Mon, 28 Dec 2020 16:32:54 -0000
-From:   Alexander Dahl <post@lespocky.de>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Alexander Dahl <ada@thorsis.com>, linux-leds@vger.kernel.org,
-        Alexander Dahl <post@lespocky.de>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-amlogic@lists.infradead.org,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH v9 4/4] arm64: dts: meson: Fix schema warnings for pwm-leds
-Date:   Mon, 28 Dec 2020 17:32:17 +0100
-Message-Id: <20201228163217.32520-5-post@lespocky.de>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201228163217.32520-1-post@lespocky.de>
-References: <20201228163217.32520-1-post@lespocky.de>
+        id S2441797AbgL1QhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:37:17 -0500
+Received: from mga14.intel.com ([192.55.52.115]:36250 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2441103AbgL1QgF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 11:36:05 -0500
+IronPort-SDR: 8elH/iUiOfTs1DIlPIHiCPdiqrUwmwxmeE02PqGVi6exeAcSJR1iGM8/G2yUQF4uF38DNlhzdJ
+ V7h6g+oddIZw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9848"; a="175625333"
+X-IronPort-AV: E=Sophos;i="5.78,455,1599548400"; 
+   d="scan'208";a="175625333"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2020 08:34:19 -0800
+IronPort-SDR: b35JriF62zCofJ9ZL8YXIcOBbyZDYqOLX87t5r6MJ5OD/E6aBCqRI65Jbsfmd2sHOqg9Galo8v
+ HbMJkot5cJDA==
+X-IronPort-AV: E=Sophos;i="5.78,455,1599548400"; 
+   d="scan'208";a="343785389"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2020 08:34:12 -0800
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id 84608207BF; Mon, 28 Dec 2020 18:34:10 +0200 (EET)
+Date:   Mon, 28 Dec 2020 18:34:10 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
+        lenb@kernel.org, gregkh@linuxfoundation.org, yong.zhi@intel.com,
+        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
+        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
+        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
+        andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jacopo+renesas@jmondi.org, kieran.bingham+renesas@ideasonboard.com,
+        hverkuil-cisco@xs4all.nl, m.felsch@pengutronix.de,
+        niklas.soderlund+renesas@ragnatech.se, slongerbeam@gmail.com,
+        heikki.krogerus@linux.intel.com, linus.walleij@linaro.org,
+        kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH v3 05/14] software_node: unregister software_nodes in
+ reverse order
+Message-ID: <20201228163410.GX26370@paasikivi.fi.intel.com>
+References: <20201224010907.263125-1-djrscally@gmail.com>
+ <20201224010907.263125-6-djrscally@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scan-Signature: 9f3e2451014eddb8c015276babd3c637
-X-Spam-Score: -2.9 (--)
-X-Provags-ID: V03:K1:8uronqTsuXPgzFbvVftbTks1E0sX0UeFjWtLf04xFRehTTCBYdy
- yzCyTwaCtC765Xf57s/UyBYY/JNonjzM3opE6ZEG8Cyi3xo9I02Yks2bzoUC5hpA2AvojQP
- td6yXilYMGXIWOvY5ba9NbYTWUIJbGr+GOkJQnccJsc3buNLMJy9A4ywOK6qnjshKj3sRlx
- yaulYhkUGnXPRPKpLFRfQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:n/+RqIPN01Q=:RYT4l5liSU5gg7GNcMZE12
- Jpr1bRg4dGohmKMtq6H0aS4fujycVB/eVOXky4hQkVI/FNpQ24cLhG8S6jI7ruGjqijpTT7+J
- byBP+xjAHWYL3fRZBp0yWS2j4QCaN0ZTfPU4+S+E+yT3TLnJL8k13Lo6i5lNt61iAfjY4Y7Rl
- B8sV2qnNeebpNfZNRbUUKeBvcV052PmI8YMvJ0sgP0zjM4rLeJ54IZWTWxQri8aP9p7/I7Xec
- 9Lu02oDjbhyg2Dj9UcNvZJ0SoxNbVUqgfMvnkjSlsUrFMsU8jLlYNuf271RPLl/yBm1ke6SNU
- bxaeKcRqLvsjL5JqrqszJ+hc+HsD1G9QM9pGqR0BZIcx/WaoY/AzWGxqcnPrUv3gilqkL51TD
- DJT18xCikn6NhFFdGr5x9qTQsaOPueEJrIyak3hVX7GvPTLzLurwFk5FiEymOHkuVBQAAv6Y1
- 8f1rxzI8kg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201224010907.263125-6-djrscally@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The node names for devices using the pwm-leds driver follow a certain
-naming scheme (now).  Parent node name is not enforced, but recommended
-by DT project.
+Hi Daniel,
 
-Signed-off-by: Alexander Dahl <post@lespocky.de>
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
----
+On Thu, Dec 24, 2020 at 01:08:58AM +0000, Daniel Scally wrote:
+> To maintain consistency with software_node_unregister_nodes(), reverse
+> the order in which the software_node_unregister_node_group() function
+> unregisters nodes.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Daniel Scally <djrscally@gmail.com>
+> ---
+> Changes in v3
+> 	- Fixed the dereference of the terminating NULL entry
+> 	- Comment cleanup
+> 
+>  drivers/base/swnode.c | 12 +++++++++---
+>  1 file changed, 9 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
+> index ade49173ff8d..2d07eb04c6c8 100644
+> --- a/drivers/base/swnode.c
+> +++ b/drivers/base/swnode.c
+> @@ -779,16 +779,22 @@ EXPORT_SYMBOL_GPL(software_node_register_node_group);
+>   * software_node_unregister_node_group - Unregister a group of software nodes
+>   * @node_group: NULL terminated array of software node pointers to be unregistered
+>   *
+> - * Unregister multiple software nodes at once.
+> + * Unregister multiple software nodes at once. The array will be unwound in
+> + * reverse order (i.e. last entry first) and thus if any member of the array
+> + * has its .parent member set then they should appear later in the array such
+> + * that they are unregistered first.
+>   */
+>  void software_node_unregister_node_group(const struct software_node **node_group)
 
-Notes:
-    v8 -> v9:
-      * rebased on v5.11-rc1
-    
-    v7 -> v8:
-      * rebased on pavel/for-next (post v5.10-rc1)
-    
-    v6 -> v7:
-      * added Reviewed-by
-      * added another explaining sentence to commit message
-    
-    v6:
-      * added this patch to series
+With this line wrapped,
 
- .../arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts | 4 ++--
- arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts     | 4 ++--
- arch/arm64/boot/dts/amlogic/meson-sm1-sei610.dts          | 8 ++++----
- 3 files changed, 8 insertions(+), 8 deletions(-)
+Reviewed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
-index 6fe589cd2ba2..45adae480a3d 100644
---- a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
-@@ -42,10 +42,10 @@
- 		};
- 	};
- 
--	pwmleds {
-+	led-controller {
- 		compatible = "pwm-leds";
- 
--		power {
-+		led-1 {
- 			label = "vim:red:power";
- 			pwms = <&pwm_AO_ab 1 7812500 0>;
- 			max-brightness = <255>;
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
-index bf9877d33427..25857e0c0831 100644
---- a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
-@@ -81,10 +81,10 @@
- 		};
- 	};
- 
--	pwmleds {
-+	led-controller {
- 		compatible = "pwm-leds";
- 
--		power {
-+		led-1 {
- 			label = "vim:red:power";
- 			pwms = <&pwm_AO_ab 1 7812500 0>;
- 			max-brightness = <255>;
-diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1-sei610.dts b/arch/arm64/boot/dts/amlogic/meson-sm1-sei610.dts
-index 5ab139a34c01..039a8d0d1e9b 100644
---- a/arch/arm64/boot/dts/amlogic/meson-sm1-sei610.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-sm1-sei610.dts
-@@ -101,20 +101,20 @@
- 		};
- 	};
- 
--	leds {
-+	led-controller-1 {
- 		compatible = "gpio-leds";
- 
--		led-bluetooth {
-+		led-1 {
- 			label = "sei610:blue:bt";
- 			gpios = <&gpio GPIOC_7 (GPIO_ACTIVE_LOW | GPIO_OPEN_DRAIN)>;
- 			default-state = "off";
- 		};
- 	};
- 
--	pwmleds {
-+	led-controller-2 {
- 		compatible = "pwm-leds";
- 
--		power {
-+		led-2 {
- 			label = "sei610:red:power";
- 			pwms = <&pwm_AO_ab 0 30518 0>;
- 			max-brightness = <255>;
+>  {
+> -	unsigned int i;
+> +	unsigned int i = 0;
+>  
+>  	if (!node_group)
+>  		return;
+>  
+> -	for (i = 0; node_group[i]; i++)
+> +	while (node_group[i])
+> +		i++;
+> +
+> +	while (i--)
+>  		software_node_unregister(node_group[i]);
+>  }
+>  EXPORT_SYMBOL_GPL(software_node_unregister_node_group);
+
 -- 
-2.20.1
+Kind regards,
 
+Sakari Ailus
