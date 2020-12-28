@@ -2,105 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABE072E680F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:33:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E14A42E687B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:37:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441922AbgL1QcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:32:21 -0500
-Received: from mga17.intel.com ([192.55.52.151]:17717 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730398AbgL1QcS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 11:32:18 -0500
-IronPort-SDR: hkw0kfPw/9Fya3Zy/aOuKVoktjMD4DeYIikD5VoXQGnTNPSoN5UgpGHo4Q0SjjaG2cyHRFmpGN
- uOqRVhTj+lww==
-X-IronPort-AV: E=McAfee;i="6000,8403,9848"; a="156187358"
-X-IronPort-AV: E=Sophos;i="5.78,455,1599548400"; 
-   d="scan'208";a="156187358"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2020 08:30:32 -0800
-IronPort-SDR: 4plwmwqgfU1YwMF6ojQ7/zbzJC1rAmMd7ojVVtilery2ZvyGSAZJ6J6K0oKkQh02CQCtDPCe/d
- peDg6dZ5IkWQ==
-X-IronPort-AV: E=Sophos;i="5.78,455,1599548400"; 
-   d="scan'208";a="564725651"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2020 08:30:26 -0800
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id 7B0F6207BF; Mon, 28 Dec 2020 18:30:24 +0200 (EET)
-Date:   Mon, 28 Dec 2020 18:30:24 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org, yong.zhi@intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org, kieran.bingham+renesas@ideasonboard.com,
-        hverkuil-cisco@xs4all.nl, m.felsch@pengutronix.de,
-        niklas.soderlund+renesas@ragnatech.se, slongerbeam@gmail.com,
-        heikki.krogerus@linux.intel.com, linus.walleij@linaro.org
-Subject: Re: [PATCH v3 06/14] include: fwnode.h: Define format macros for
- ports and endpoints
-Message-ID: <20201228163024.GW26370@paasikivi.fi.intel.com>
-References: <20201224010907.263125-1-djrscally@gmail.com>
- <20201224010907.263125-7-djrscally@gmail.com>
+        id S2442145AbgL1QhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:37:20 -0500
+Received: from mout.kundenserver.de ([212.227.126.187]:43641 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2634203AbgL1Qfv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 11:35:51 -0500
+Received: from methusalix.internal.home.lespocky.de ([92.117.54.172]) by
+ mrelayeu.kundenserver.de (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis)
+ id 1MhFpq-1kOjYv2tNq-00eJLS; Mon, 28 Dec 2020 17:32:59 +0100
+Received: from lemmy.internal.home.lespocky.de ([192.168.243.175] helo=lemmy.home.lespocky.de)
+        by methusalix.internal.home.lespocky.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <alex@home.lespocky.de>)
+        id 1ktvS2-0002GJ-5N; Mon, 28 Dec 2020 17:32:55 +0100
+Received: (nullmailer pid 32604 invoked by uid 2001);
+        Mon, 28 Dec 2020 16:32:53 -0000
+From:   Alexander Dahl <post@lespocky.de>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Alexander Dahl <ada@thorsis.com>, linux-leds@vger.kernel.org,
+        Alexander Dahl <post@lespocky.de>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-amlogic@lists.infradead.org
+Subject: [PATCH v9 0/4] leds: pwm: Make automatic labels work
+Date:   Mon, 28 Dec 2020 17:32:13 +0100
+Message-Id: <20201228163217.32520-1-post@lespocky.de>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201224010907.263125-7-djrscally@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scan-Signature: e9056562e10c809dee3344e50e145a1f
+X-Spam-Score: -2.9 (--)
+X-Provags-ID: V03:K1:ztIxjkZXmzA4zIV1xgFd+DY20dZqEQMIRVMHSPYRMW3VFcqIiZw
+ n9f6GRjs+5QUaQjm5RvcphCke18ZeRqeibmGi/uiyzWXTS3qJGNYbEJTzYwZZyL2xi/5G5X
+ pk07IfD1zPx2OQ/t6ey+RPliD/dYCy/vL/hJgUMbQpEKtWbAii+kSAMSx2pEizt+uTt6Qug
+ 59hx5SzeZ4RSpArkPg95g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:RQlq3c2RuHM=:OfzQvvbw4nmVmbV7Hct3WL
+ kvLq1UK438l/NeFTcb9L1gMen7sj2Isbqok1YD9HEv6/3VMu5HBYcwLm0pVbKrjRIRdlUhnyz
+ 0uccCuUAJiOJU0sNmXI7NxnJypmSoCuvWw7zIy7fMctiYakM/rROpU2DqN4JQtMwWg+kSJZQX
+ rsnx+iIRuDLY0GClkUhhZS4Jk4dCzXlpCIMdOnRyjbGONzPjp5nm+IGGoOneMutjYUYDg0v+s
+ NWby0pvE0EZl8f2z8JNZpAuep5fJ8oqHWmW59sCOTyCq354LoLuSLZu1NzUJYj+IRy4SIX0K4
+ fP+1t/FNaHhAFSphWcp36/4dAO4JzsqEPZDgWXttXZCukJqfDQd8oavxpSLvY+Zssh8v1N3Rn
+ D7GVGANRiNTlmphvMDw6PkO7wIVTr6/ihboppxpBQtUB1YZU6ol8ISg+m0Wrdd6yVkYN807cK
+ s2wYjuyqUQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel, Andy,
+Hei hei,
 
-On Thu, Dec 24, 2020 at 01:08:59AM +0000, Daniel Scally wrote:
-> OF, ACPI and software_nodes all implement graphs including nodes for ports
-> and endpoints. These are all intended to be named with a common schema,
-> as "port@n" and "endpoint@n" where n is an unsigned int representing the
-> index of the node. To ensure commonality across the subsystems, provide a
-> set of macros to define the format.
-> 
-> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Signed-off-by: Daniel Scally <djrscally@gmail.com>
-> ---
-> Changes in v3
-> 	- Patch introduced
-> 
->  include/linux/fwnode.h | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
-> 
-> diff --git a/include/linux/fwnode.h b/include/linux/fwnode.h
-> index 9506f8ec0974..52889efceb7d 100644
-> --- a/include/linux/fwnode.h
-> +++ b/include/linux/fwnode.h
-> @@ -32,6 +32,19 @@ struct fwnode_endpoint {
->  	const struct fwnode_handle *local_fwnode;
->  };
->  
-> +/*
-> + * ports and endpoints defined in OF, ACPI and as software_nodes should all
-> + * follow a common naming scheme; use these macros to ensure commonality across
-> + * the subsystems.
-> + *
-> + * The *PREFIX_LEN macros refer to the length of the "port@" and "endpoint@"
-> + * sections of the naming scheme.
-> + */
-> +#define FWNODE_GRAPH_PORT_NAME_FORMAT		"port@%u"
-> +#define FWNODE_GRAPH_PORT_NAME_PREFIX_LEN	5
-> +#define FWNODE_GRAPH_ENDPOINT_NAME_FORMAT	"endpoint@%u"
-> +#define FWNODE_GRAPH_ENDPOINT_PREFIX_LEN	9
-> +
->  #define NR_FWNODE_REFERENCE_ARGS	8
+these are the not yet taken patches from a series which originally fixed
+a minor issue in the leds pwm driver, then migrated the leds pwm dts
+docs to yaml (by request), and then fixed all the dts files triggering
+warnings on those new bindings.  The remaining four patches now only fix
+dts warnings, the base fix and the yaml conversion is already merged to
+master.
 
-I'd keep such definitions local to the swnode implementation as neither
-ACPI nor DT have an apparent need for them. They do use the naming, but
-don't appear to format such strings.
+Series changelog below …
 
+Greets
+Alex
+
+v9:
+- rebased series on v5.11-rc1
+- removed already applied patches
+- added some more Acked-by
+
+v8:
+- rebased series on recent pavel/for-next (post v5.10-rc1)
+- removed already applied patches
+- added Acked-by on patch 1/5
+- updated patch 3/5 based on comments by Ahmad Fatoum
+
+v7:
+- rebased series on recent pavel/for-next
+- split up arm dts patch by arm sub arch (suggested by Krzysztof Kozlowski)
+- added multiple Reviewed-by tags
+- slightly reworded commit messages (suggested by Krzysztof Kozlowski)
+- added actual dtbs_check warnings to commit messages
+- added Russell King to Cc for binding conversion patch (because license)
+
+v6:
+- rebased series on recent pavel/for-next
+- added Reviewed-by from Marek to patch 1
+- patch 2 from v5 was picked by Pavel and is already in his for-next
+  branch
+- previous patch 3/3 (now 2/7) was reworked based on feedback by Rob
+- added more dt patches fixing warnings after binding conversion to yaml
+
+v5:
+- replaced patch 1/3 by a new patch removing platform_data support for
+  the leds-pwm driver
+- little rewording of commit message in patch 2/3
+- updated patch 3/3 based on feedback by Rob Herring
+- added Marek Behún to Cc, because he also works on removing
+  platform_data support
+- rebased series on pavel/for-next
+
+v4:
+- added led-class patch handling fwnode passing differently (patch 1/3)
+- adapted leds-pwm patch to new led-class (patch 2/3)
+- contacted original author of leds-pwm dt binding on license issue
+  (patch 3/3)
+
+v3:
+- series rebased on v5.9-rc4
+- changed license of .yaml file to recommended one (patch 2/2)
+- added Acked-by to both patches
+
+v2:
+- series rebased on v5.9-rc3
+- added the dt-bindings update patch (2/2)
+
+v1:
+- based on v5.9-rc2
+- backport on v5.4.59 tested and working
+
+Cc: linux-leds@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-stm32@st-md-mailman.stormreply.com
+Cc: linux-amlogic@lists.infradead.org
+
+
+Alexander Dahl (4):
+  dt-bindings: mfd: Fix schema warnings for pwm-leds
+  ARM: dts: berlin: Fix schema warnings for pwm-leds
+  ARM: dts: stm32: Fix schema warnings for pwm-leds
+  arm64: dts: meson: Fix schema warnings for pwm-leds
+
+ Documentation/devicetree/bindings/mfd/iqs62x.yaml   |  5 +++--
+ arch/arm/boot/dts/berlin2cd-google-chromecast.dts   |  6 +++---
+ arch/arm/boot/dts/stm32mp157c-lxa-mc1.dts           | 13 +++++++------
+ .../boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts |  4 ++--
+ .../boot/dts/amlogic/meson-gxm-khadas-vim2.dts      |  4 ++--
+ arch/arm64/boot/dts/amlogic/meson-sm1-sei610.dts    |  8 ++++----
+ 6 files changed, 21 insertions(+), 19 deletions(-)
+
+
+base-commit: 5c8fe583cce542aa0b84adc939ce85293de36e5e
 -- 
-Regards,
+2.20.1
 
-Sakari Ailus
