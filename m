@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0CF72E3A8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:39:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAE7A2E649C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:53:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391485AbgL1Nic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:38:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38794 "EHLO mail.kernel.org"
+        id S2408881AbgL1PwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:52:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391475AbgL1Nia (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:38:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A81E207C9;
-        Mon, 28 Dec 2020 13:37:48 +0000 (UTC)
+        id S2391225AbgL1Nim (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:38:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EB62205CB;
+        Mon, 28 Dec 2020 13:38:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162669;
-        bh=qbEtMZJktTNYtVXibHZ0fe4tlOtLL1pmTgkGf+DQaAA=;
+        s=korg; t=1609162681;
+        bh=pR26vfX01sjE8P13sv0GYBuJB2wouUtS0lCio6Fb2Bk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HtI+gEsAsZy86QPdUgKzjaXRV8i0dM+F/AVP9TiNH/JRSXPPu50gNsdMUCYAgnQCK
-         0GzuGqHJFjbrzRYC7NiTG8gbzOVxX/2C9HVBr2DqR1FMC9JPzi5BgKC0FjZjOHmmCu
-         xj7ZQjWkoVka0KCMX5k6m9UCI+pR9opZs8YUAU3g=
+        b=UuIYWdreB/wuu0U8c93hjTln17Af6+SynAky/aw2xZfMFq6lIYvwUJ4JCHlE1PC0Z
+         rcfUpexNvxsdVctQehUMrB5irbiZTX+8x2XZrh6NAxV+Z5FBkZrO5XQdpw5/57/6Gn
+         8zkqXzeVo5MF44CVtY0a1gBXNgbSQnc8hKf6d5Xs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        stable@vger.kernel.org, Icenowy Zheng <icenowy@aosc.io>,
+        Maxime Ripard <maxime@cerno.tech>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 005/453] pinctrl: baytrail: Avoid clearing debounce value when turning it off
-Date:   Mon, 28 Dec 2020 13:44:01 +0100
-Message-Id: <20201228124937.501438978@linuxfoundation.org>
+Subject: [PATCH 5.4 006/453] ARM: dts: sun8i: v3s: fix GIC node memory range
+Date:   Mon, 28 Dec 2020 13:44:02 +0100
+Message-Id: <20201228124937.550013014@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
 References: <20201228124937.240114599@linuxfoundation.org>
@@ -41,70 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Icenowy Zheng <icenowy@aosc.io>
 
-[ Upstream commit 0b74e40a4e41f3cbad76dff4c50850d47b525b26 ]
+[ Upstream commit a98fd117a2553ab1a6d2fe3c7acae88c1eca4372 ]
 
-Baytrail pin control has a common register to set up debounce timeout.
-When a pin configuration requested debounce to be disabled, the rest
-of the pins may still want to have debounce enabled and thus rely on
-the common timeout value. Avoid clearing debounce value when turning
-it off for one pin while others may still use it.
+Currently the GIC node in V3s DTSI follows some old DT examples, and
+being broken. This leads a warning at boot.
 
-Fixes: 658b476c742f ("pinctrl: baytrail: Add debounce configuration")
-Depends-on: 04ff5a095d66 ("pinctrl: baytrail: Rectify debounce support")
-Depends-on: 827e1579e1d5 ("pinctrl: baytrail: Rectify debounce support (part 2)")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Fix this.
+
+Fixes: f989086ccbc6 ("ARM: dts: sunxi: add dtsi file for V3s SoC")
+Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://lore.kernel.org/r/20201120050851.4123759-1-icenowy@aosc.io
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/intel/pinctrl-baytrail.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/sun8i-v3s.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pinctrl/intel/pinctrl-baytrail.c b/drivers/pinctrl/intel/pinctrl-baytrail.c
-index 5a1174a8e2bac..d05f20ca90d7e 100644
---- a/drivers/pinctrl/intel/pinctrl-baytrail.c
-+++ b/drivers/pinctrl/intel/pinctrl-baytrail.c
-@@ -1060,7 +1060,6 @@ static int byt_pin_config_set(struct pinctrl_dev *pctl_dev,
- 			break;
- 		case PIN_CONFIG_INPUT_DEBOUNCE:
- 			debounce = readl(db_reg);
--			debounce &= ~BYT_DEBOUNCE_PULSE_MASK;
- 
- 			if (arg)
- 				conf |= BYT_DEBOUNCE_EN;
-@@ -1069,24 +1068,31 @@ static int byt_pin_config_set(struct pinctrl_dev *pctl_dev,
- 
- 			switch (arg) {
- 			case 375:
-+				debounce &= ~BYT_DEBOUNCE_PULSE_MASK;
- 				debounce |= BYT_DEBOUNCE_PULSE_375US;
- 				break;
- 			case 750:
-+				debounce &= ~BYT_DEBOUNCE_PULSE_MASK;
- 				debounce |= BYT_DEBOUNCE_PULSE_750US;
- 				break;
- 			case 1500:
-+				debounce &= ~BYT_DEBOUNCE_PULSE_MASK;
- 				debounce |= BYT_DEBOUNCE_PULSE_1500US;
- 				break;
- 			case 3000:
-+				debounce &= ~BYT_DEBOUNCE_PULSE_MASK;
- 				debounce |= BYT_DEBOUNCE_PULSE_3MS;
- 				break;
- 			case 6000:
-+				debounce &= ~BYT_DEBOUNCE_PULSE_MASK;
- 				debounce |= BYT_DEBOUNCE_PULSE_6MS;
- 				break;
- 			case 12000:
-+				debounce &= ~BYT_DEBOUNCE_PULSE_MASK;
- 				debounce |= BYT_DEBOUNCE_PULSE_12MS;
- 				break;
- 			case 24000:
-+				debounce &= ~BYT_DEBOUNCE_PULSE_MASK;
- 				debounce |= BYT_DEBOUNCE_PULSE_24MS;
- 				break;
- 			default:
+diff --git a/arch/arm/boot/dts/sun8i-v3s.dtsi b/arch/arm/boot/dts/sun8i-v3s.dtsi
+index 2abcba35d27e6..50c32cf72c65c 100644
+--- a/arch/arm/boot/dts/sun8i-v3s.dtsi
++++ b/arch/arm/boot/dts/sun8i-v3s.dtsi
+@@ -423,7 +423,7 @@
+ 		gic: interrupt-controller@1c81000 {
+ 			compatible = "arm,gic-400";
+ 			reg = <0x01c81000 0x1000>,
+-			      <0x01c82000 0x1000>,
++			      <0x01c82000 0x2000>,
+ 			      <0x01c84000 0x2000>,
+ 			      <0x01c86000 0x2000>;
+ 			interrupt-controller;
 -- 
 2.27.0
 
