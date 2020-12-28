@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 665B12E62C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:40:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F5A32E3898
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:14:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406269AbgL1NuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:50:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51172 "EHLO mail.kernel.org"
+        id S1732040AbgL1NMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:12:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406228AbgL1Nty (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:49:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7ECBD206D4;
-        Mon, 28 Dec 2020 13:49:32 +0000 (UTC)
+        id S1731701AbgL1NMC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:12:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D0392076D;
+        Mon, 28 Dec 2020 13:11:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163373;
-        bh=a/C7CUnfF6EEVyg8ji+Ascg7XvcMX91RRzmPssUk0S4=;
+        s=korg; t=1609161081;
+        bh=1qZOMy+bYF2Q3OTuskbhJRVfHU0KBdYSVAwrOrjkkWw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Aq4pLLlwpReZNjIPFr6Pho0xxu45bdRr1TGDVhknH9m4qXQhUdmrxOGgk+7J0dKWF
-         IrZ1P3GF7Lfj7ZvQTkjqggKxIeBI3Xy7n7VGCKz/PEKuG05H1F9WijWy5WpI9HpkjH
-         0XHPsF0Dkigr2L/XOhCL7gRVXzNziEKYDjxdKC80=
+        b=f410pUnz+Nkx79mv0lBnNQpsKgs3nxVGq44dVjxSXFIl/brPntMCe49piLj2gdgE4
+         CuL2MnKiFz3dOt+oeXjYWhPvfyv4L6+Wwb42Vd2YxSBkDtZLtdSrc7RFwdsYan6xYx
+         QCyyY73aQhAU4oOqyh1UJuAv9xrkGBpa7H2YJRYo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
+        Martin Wilck <mwilck@suse.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 263/453] remoteproc: q6v5-mss: fix error handling in q6v5_pds_enable
+Subject: [PATCH 4.14 094/242] scsi: core: Fix VPD LUN ID designator priorities
 Date:   Mon, 28 Dec 2020 13:48:19 +0100
-Message-Id: <20201228124949.879848158@linuxfoundation.org>
+Message-Id: <20201228124909.325414942@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,48 +41,259 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Martin Wilck <mwilck@suse.com>
 
-[ Upstream commit a24723050037303e4008b37f1f8dcc99c58901aa ]
+[ Upstream commit 2e4209b3806cda9b89c30fd5e7bfecb7044ec78b ]
 
-If the pm_runtime_get_sync failed in q6v5_pds_enable when
-loop (i), The unroll_pd_votes will start from (i - 1), and
-it will resulted in following problems:
+The current implementation of scsi_vpd_lun_id() uses the designator length
+as an implicit measure of priority. This works most of the time, but not
+always. For example, some Hitachi storage arrays return this in VPD 0x83:
 
-  1) pm_runtime_get_sync will increment pm usage counter even it
-     failed. Forgetting to pm_runtime_put_noidle will result in
-     reference leak.
+VPD INQUIRY: Device Identification page
+  Designation descriptor number 1, descriptor length: 24
+    designator_type: T10 vendor identification,  code_set: ASCII
+    associated with the Addressed logical unit
+      vendor id: HITACHI
+      vendor specific: 5030C3502025
+  Designation descriptor number 2, descriptor length: 6
+    designator_type: vendor specific [0x0],  code_set: Binary
+    associated with the Target port
+      vendor specific: 08 03
+  Designation descriptor number 3, descriptor length: 20
+    designator_type: NAA,  code_set: Binary
+    associated with the Addressed logical unit
+      NAA 6, IEEE Company_id: 0x60e8
+      Vendor Specific Identifier: 0x7c35000
+      Vendor Specific Identifier Extension: 0x30c35000002025
+      [0x60060e8007c350000030c35000002025]
 
-  2) Have not reset pds[i] performance state.
+The current code would use the first descriptor because it's longer than
+the NAA descriptor. But this is wrong, the kernel is supposed to prefer NAA
+descriptors over T10 vendor ID. Designator length should only be used to
+compare designators of the same type.
 
-Then we fix it.
+This patch addresses the issue by separating designator priority and
+length.
 
-Fixes: 4760a896be88e ("remoteproc: q6v5-mss: Vote for rpmh power domains")
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201102143433.143996-1-zhangqilong3@huawei.com
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Link: https://lore.kernel.org/r/20201029170846.14786-1-mwilck@suse.com
+Fixes: 9983bed3907c ("scsi: Add scsi_vpd_lun_id()")
+Reviewed-by: Hannes Reinecke <hare@suse.de>
+Signed-off-by: Martin Wilck <mwilck@suse.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/remoteproc/qcom_q6v5_mss.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/scsi/scsi_lib.c | 126 +++++++++++++++++++++++++++-------------
+ 1 file changed, 86 insertions(+), 40 deletions(-)
 
-diff --git a/drivers/remoteproc/qcom_q6v5_mss.c b/drivers/remoteproc/qcom_q6v5_mss.c
-index a67c55785b4de..5e54e6f5edb1a 100644
---- a/drivers/remoteproc/qcom_q6v5_mss.c
-+++ b/drivers/remoteproc/qcom_q6v5_mss.c
-@@ -331,8 +331,11 @@ static int q6v5_pds_enable(struct q6v5 *qproc, struct device **pds,
- 	for (i = 0; i < pd_count; i++) {
- 		dev_pm_genpd_set_performance_state(pds[i], INT_MAX);
- 		ret = pm_runtime_get_sync(pds[i]);
--		if (ret < 0)
-+		if (ret < 0) {
-+			pm_runtime_put_noidle(pds[i]);
-+			dev_pm_genpd_set_performance_state(pds[i], 0);
- 			goto unroll_pd_votes;
+diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
+index c36c84c8725a0..6e0981b09c58b 100644
+--- a/drivers/scsi/scsi_lib.c
++++ b/drivers/scsi/scsi_lib.c
+@@ -3326,6 +3326,78 @@ void sdev_enable_disk_events(struct scsi_device *sdev)
+ }
+ EXPORT_SYMBOL(sdev_enable_disk_events);
+ 
++static unsigned char designator_prio(const unsigned char *d)
++{
++	if (d[1] & 0x30)
++		/* not associated with LUN */
++		return 0;
++
++	if (d[3] == 0)
++		/* invalid length */
++		return 0;
++
++	/*
++	 * Order of preference for lun descriptor:
++	 * - SCSI name string
++	 * - NAA IEEE Registered Extended
++	 * - EUI-64 based 16-byte
++	 * - EUI-64 based 12-byte
++	 * - NAA IEEE Registered
++	 * - NAA IEEE Extended
++	 * - EUI-64 based 8-byte
++	 * - SCSI name string (truncated)
++	 * - T10 Vendor ID
++	 * as longer descriptors reduce the likelyhood
++	 * of identification clashes.
++	 */
++
++	switch (d[1] & 0xf) {
++	case 8:
++		/* SCSI name string, variable-length UTF-8 */
++		return 9;
++	case 3:
++		switch (d[4] >> 4) {
++		case 6:
++			/* NAA registered extended */
++			return 8;
++		case 5:
++			/* NAA registered */
++			return 5;
++		case 4:
++			/* NAA extended */
++			return 4;
++		case 3:
++			/* NAA locally assigned */
++			return 1;
++		default:
++			break;
 +		}
++		break;
++	case 2:
++		switch (d[3]) {
++		case 16:
++			/* EUI64-based, 16 byte */
++			return 7;
++		case 12:
++			/* EUI64-based, 12 byte */
++			return 6;
++		case 8:
++			/* EUI64-based, 8 byte */
++			return 3;
++		default:
++			break;
++		}
++		break;
++	case 1:
++		/* T10 vendor ID */
++		return 1;
++	default:
++		break;
++	}
++
++	return 0;
++}
++
+ /**
+  * scsi_vpd_lun_id - return a unique device identification
+  * @sdev: SCSI device
+@@ -3342,7 +3414,7 @@ EXPORT_SYMBOL(sdev_enable_disk_events);
+  */
+ int scsi_vpd_lun_id(struct scsi_device *sdev, char *id, size_t id_len)
+ {
+-	u8 cur_id_type = 0xff;
++	u8 cur_id_prio = 0;
+ 	u8 cur_id_size = 0;
+ 	const unsigned char *d, *cur_id_str;
+ 	const struct scsi_vpd *vpd_pg83;
+@@ -3355,20 +3427,6 @@ int scsi_vpd_lun_id(struct scsi_device *sdev, char *id, size_t id_len)
+ 		return -ENXIO;
  	}
  
- 	return 0;
+-	/*
+-	 * Look for the correct descriptor.
+-	 * Order of preference for lun descriptor:
+-	 * - SCSI name string
+-	 * - NAA IEEE Registered Extended
+-	 * - EUI-64 based 16-byte
+-	 * - EUI-64 based 12-byte
+-	 * - NAA IEEE Registered
+-	 * - NAA IEEE Extended
+-	 * - T10 Vendor ID
+-	 * as longer descriptors reduce the likelyhood
+-	 * of identification clashes.
+-	 */
+-
+ 	/* The id string must be at least 20 bytes + terminating NULL byte */
+ 	if (id_len < 21) {
+ 		rcu_read_unlock();
+@@ -3378,8 +3436,9 @@ int scsi_vpd_lun_id(struct scsi_device *sdev, char *id, size_t id_len)
+ 	memset(id, 0, id_len);
+ 	d = vpd_pg83->data + 4;
+ 	while (d < vpd_pg83->data + vpd_pg83->len) {
+-		/* Skip designators not referring to the LUN */
+-		if ((d[1] & 0x30) != 0x00)
++		u8 prio = designator_prio(d);
++
++		if (prio == 0 || cur_id_prio > prio)
+ 			goto next_desig;
+ 
+ 		switch (d[1] & 0xf) {
+@@ -3387,28 +3446,19 @@ int scsi_vpd_lun_id(struct scsi_device *sdev, char *id, size_t id_len)
+ 			/* T10 Vendor ID */
+ 			if (cur_id_size > d[3])
+ 				break;
+-			/* Prefer anything */
+-			if (cur_id_type > 0x01 && cur_id_type != 0xff)
+-				break;
++			cur_id_prio = prio;
+ 			cur_id_size = d[3];
+ 			if (cur_id_size + 4 > id_len)
+ 				cur_id_size = id_len - 4;
+ 			cur_id_str = d + 4;
+-			cur_id_type = d[1] & 0xf;
+ 			id_size = snprintf(id, id_len, "t10.%*pE",
+ 					   cur_id_size, cur_id_str);
+ 			break;
+ 		case 0x2:
+ 			/* EUI-64 */
+-			if (cur_id_size > d[3])
+-				break;
+-			/* Prefer NAA IEEE Registered Extended */
+-			if (cur_id_type == 0x3 &&
+-			    cur_id_size == d[3])
+-				break;
++			cur_id_prio = prio;
+ 			cur_id_size = d[3];
+ 			cur_id_str = d + 4;
+-			cur_id_type = d[1] & 0xf;
+ 			switch (cur_id_size) {
+ 			case 8:
+ 				id_size = snprintf(id, id_len,
+@@ -3426,17 +3476,14 @@ int scsi_vpd_lun_id(struct scsi_device *sdev, char *id, size_t id_len)
+ 						   cur_id_str);
+ 				break;
+ 			default:
+-				cur_id_size = 0;
+ 				break;
+ 			}
+ 			break;
+ 		case 0x3:
+ 			/* NAA */
+-			if (cur_id_size > d[3])
+-				break;
++			cur_id_prio = prio;
+ 			cur_id_size = d[3];
+ 			cur_id_str = d + 4;
+-			cur_id_type = d[1] & 0xf;
+ 			switch (cur_id_size) {
+ 			case 8:
+ 				id_size = snprintf(id, id_len,
+@@ -3449,26 +3496,25 @@ int scsi_vpd_lun_id(struct scsi_device *sdev, char *id, size_t id_len)
+ 						   cur_id_str);
+ 				break;
+ 			default:
+-				cur_id_size = 0;
+ 				break;
+ 			}
+ 			break;
+ 		case 0x8:
+ 			/* SCSI name string */
+-			if (cur_id_size + 4 > d[3])
++			if (cur_id_size > d[3])
+ 				break;
+ 			/* Prefer others for truncated descriptor */
+-			if (cur_id_size && d[3] > id_len)
+-				break;
++			if (d[3] > id_len) {
++				prio = 2;
++				if (cur_id_prio > prio)
++					break;
++			}
++			cur_id_prio = prio;
+ 			cur_id_size = id_size = d[3];
+ 			cur_id_str = d + 4;
+-			cur_id_type = d[1] & 0xf;
+ 			if (cur_id_size >= id_len)
+ 				cur_id_size = id_len - 1;
+ 			memcpy(id, cur_id_str, cur_id_size);
+-			/* Decrease priority for truncated descriptor */
+-			if (cur_id_size != id_size)
+-				cur_id_size = 6;
+ 			break;
+ 		default:
+ 			break;
 -- 
 2.27.0
 
