@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 505092E6620
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:10:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B42512E6609
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:10:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393537AbgL1QJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:09:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53118 "EHLO mail.kernel.org"
+        id S2388773AbgL1NYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:24:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388745AbgL1NYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:24:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B19E6208D5;
-        Mon, 28 Dec 2020 13:23:52 +0000 (UTC)
+        id S2388754AbgL1NYg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:24:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B3BD52076D;
+        Mon, 28 Dec 2020 13:23:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161833;
-        bh=CRnndIvHQY0zl6wa+Y7Gp2oOuKghheazrB9fl+qO+Qk=;
+        s=korg; t=1609161836;
+        bh=omeGwpKob5krkYf00FuukKZDGrFgRZLhv+qccT7cFTk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=akc5nIQ3a0R8L1AWukCKqOmjK8Vd0bxbqfbGyHvX11JwVAfsTRMTOW/KLKjLnVIL+
-         bKxZ3f+uCVtyoLnfsG1mGXfqFSuGOm1e/og0uGc++nj2BJOQOEkJwkc6vGWDztuRFf
-         N+KL2f2oBYf/EjaGivOMrkV3MCavbWQekrQusDo4=
+        b=O0WFycbC/6WomUyfeiLkOQkPG3fV7Bq7LuXiaHxJ+69UIacYNzDd5gHqcTr2P2l9U
+         cXdnqhI7poaxGBHy5gPku7UqnhK6F6cc/TU5mBvVIxy3fYF2uiwF6MYNG77GvLWFWJ
+         ohGe3B9v4Ma0iRew9YVFQejPs0TiCuSJnn8o5B4M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 098/346] drm/gma500: fix double free of gma_connector
-Date:   Mon, 28 Dec 2020 13:46:57 +0100
-Message-Id: <20201228124924.519338988@linuxfoundation.org>
+Subject: [PATCH 4.19 099/346] drm/tve200: Fix handling of platform_get_irq() error
+Date:   Mon, 28 Dec 2020 13:46:58 +0100
+Message-Id: <20201228124924.568494183@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
 References: <20201228124919.745526410@linuxfoundation.org>
@@ -40,43 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-[ Upstream commit 4e19d51ca5b28a1d435a844c7b2a8e1b1b6fa237 ]
+[ Upstream commit 77bb5aaf2bb8180e7d1bb70b4df306f511707a7d ]
 
-clang static analysis reports this problem:
+platform_get_irq() returns -ERRNO on error.  In such case comparison
+to 0 would pass the check.
 
-cdv_intel_dp.c:2101:2: warning: Attempt to free released memory
-        kfree(gma_connector);
-        ^~~~~~~~~~~~~~~~~~~~
-
-In cdv_intel_dp_init() when the call to cdv_intel_edp_panel_vdd_off()
-fails, the handler calls cdv_intel_dp_destroy(connector) which does
-the first free of gma_connector. So adjust the goto label and skip
-the second free.
-
-Fixes: d112a8163f83 ("gma500/cdv: Add eDP support")
-Signed-off-by: Tom Rix <trix@redhat.com>
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20201003193928.18869-1-trix@redhat.com
+Fixes: 179c02fe90a4 ("drm/tve200: Add new driver for TVE200")
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200827071107.27429-2-krzk@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/gma500/cdv_intel_dp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/tve200/tve200_drv.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/gma500/cdv_intel_dp.c b/drivers/gpu/drm/gma500/cdv_intel_dp.c
-index 05eba6dec5ebf..3e8b804cf7e7e 100644
---- a/drivers/gpu/drm/gma500/cdv_intel_dp.c
-+++ b/drivers/gpu/drm/gma500/cdv_intel_dp.c
-@@ -2124,7 +2124,7 @@ cdv_intel_dp_init(struct drm_device *dev, struct psb_intel_mode_device *mode_dev
- 			DRM_INFO("failed to retrieve link info, disabling eDP\n");
- 			cdv_intel_dp_encoder_destroy(encoder);
- 			cdv_intel_dp_destroy(connector);
--			goto err_priv;
-+			goto err_connector;
- 		} else {
-         		DRM_DEBUG_KMS("DPCD: Rev=%x LN_Rate=%x LN_CNT=%x LN_DOWNSP=%x\n",
- 				intel_dp->dpcd[0], intel_dp->dpcd[1], 
+diff --git a/drivers/gpu/drm/tve200/tve200_drv.c b/drivers/gpu/drm/tve200/tve200_drv.c
+index ac344ddb23bc8..f93384c232066 100644
+--- a/drivers/gpu/drm/tve200/tve200_drv.c
++++ b/drivers/gpu/drm/tve200/tve200_drv.c
+@@ -223,8 +223,8 @@ static int tve200_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	irq = platform_get_irq(pdev, 0);
+-	if (!irq) {
+-		ret = -EINVAL;
++	if (irq < 0) {
++		ret = irq;
+ 		goto clk_disable;
+ 	}
+ 
 -- 
 2.27.0
 
