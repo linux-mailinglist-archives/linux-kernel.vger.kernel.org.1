@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B2152E3D9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:18:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4322E3960
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:25:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441478AbgL1ORg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:17:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52136 "EHLO mail.kernel.org"
+        id S2388357AbgL1NWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:22:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50740 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2501881AbgL1ORe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:17:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27E59207B2;
-        Mon, 28 Dec 2020 14:17:17 +0000 (UTC)
+        id S2388293AbgL1NWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:22:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7778207CF;
+        Mon, 28 Dec 2020 13:22:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165038;
-        bh=+ckL7sCwj843aPBGGz7Zq03vrwFIHW76lI/94Rcm2x8=;
+        s=korg; t=1609161749;
+        bh=ZPGfBGeYg9CItXjRwc2VcSkGB4JLLeRan4J7333eP2g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MJS8d1/bjjUDbxPpTFXx2kCuV6I8fQjG7U4FJBl1oLMomD3E2s8ARs19L39XndTVn
-         54A1IjG2ZFXQ3kpD5ion1raoVuEspX6+l39ULrDggAVue5aU1BEdxI/7vZbU1+OX8n
-         88aAbmQBcKzBVSRbmhe1AsYpUoRLBLd5sXTfKKpY=
+        b=or3TO5yge4D+cOl31Ys5GGCCnnsmi4+e+2N0v590qkCYundm7wxhMgWzgKhiIt92g
+         KkR9vfmDz8C0Wva09yDRnzzRaIU5k1KoSjbUOcNLPfTC9V/CpBpXqk6yOmqzN34ReG
+         yjEAJnLwR0X4l0uU0BUBd21akAJWVAc607cO+vYs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
-        Gao Xiang <hsiangkao@redhat.com>,
-        Huang Jianan <huangjianan@oppo.com>,
-        Guo Weichao <guoweichao@oppo.com>,
+        stable@vger.kernel.org, Deepak R Varma <mh12gx2825@gmail.com>,
+        Thierry Reding <treding@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 389/717] erofs: avoid using generic_block_bmap
-Date:   Mon, 28 Dec 2020 13:46:27 +0100
-Message-Id: <20201228125039.642500610@linuxfoundation.org>
+Subject: [PATCH 4.19 069/346] drm/tegra: replace idr_init() by idr_init_base()
+Date:   Mon, 28 Dec 2020 13:46:28 +0100
+Message-Id: <20201228124923.135109179@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,76 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Huang Jianan <huangjianan@oppo.com>
+From: Deepak R Varma <mh12gx2825@gmail.com>
 
-[ Upstream commit d8b3df8b1048405e73558b88cba2adf29490d468 ]
+[ Upstream commit 41f71629b4c432f8dd47d70ace813be5f79d4d75 ]
 
-Surprisingly, `block' in sector_t indicates the number of
-i_blkbits-sized blocks rather than sectors for bmap.
+idr_init() uses base 0 which is an invalid identifier for this driver.
+The new function idr_init_base allows IDR to set the ID lookup from
+base 1. This avoids all lookups that otherwise starts from 0 since
+0 is always unused.
 
-In addition, considering buffer_head limits mapped size to 32-bits,
-should avoid using generic_block_bmap.
 
-Link: https://lore.kernel.org/r/20201209115740.18802-1-huangjianan@oppo.com
-Fixes: 9da681e017a3 ("staging: erofs: support bmap")
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
-Reviewed-by: Gao Xiang <hsiangkao@redhat.com>
-Signed-off-by: Huang Jianan <huangjianan@oppo.com>
-Signed-off-by: Guo Weichao <guoweichao@oppo.com>
-[ Gao Xiang: slightly update the commit message description. ]
-Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
+Signed-off-by: Deepak R Varma <mh12gx2825@gmail.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/erofs/data.c | 26 +++++++-------------------
- 1 file changed, 7 insertions(+), 19 deletions(-)
+ drivers/gpu/drm/tegra/drm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/erofs/data.c b/fs/erofs/data.c
-index 347be146884c3..ea4f693bee224 100644
---- a/fs/erofs/data.c
-+++ b/fs/erofs/data.c
-@@ -312,27 +312,12 @@ static void erofs_raw_access_readahead(struct readahead_control *rac)
- 		submit_bio(bio);
- }
+diff --git a/drivers/gpu/drm/tegra/drm.c b/drivers/gpu/drm/tegra/drm.c
+index a2bd5876c6335..00808a3d67832 100644
+--- a/drivers/gpu/drm/tegra/drm.c
++++ b/drivers/gpu/drm/tegra/drm.c
+@@ -242,7 +242,7 @@ static int tegra_drm_open(struct drm_device *drm, struct drm_file *filp)
+ 	if (!fpriv)
+ 		return -ENOMEM;
  
--static int erofs_get_block(struct inode *inode, sector_t iblock,
--			   struct buffer_head *bh, int create)
--{
--	struct erofs_map_blocks map = {
--		.m_la = iblock << 9,
--	};
--	int err;
--
--	err = erofs_map_blocks(inode, &map, EROFS_GET_BLOCKS_RAW);
--	if (err)
--		return err;
--
--	if (map.m_flags & EROFS_MAP_MAPPED)
--		bh->b_blocknr = erofs_blknr(map.m_pa);
--
--	return err;
--}
--
- static sector_t erofs_bmap(struct address_space *mapping, sector_t block)
- {
- 	struct inode *inode = mapping->host;
-+	struct erofs_map_blocks map = {
-+		.m_la = blknr_to_addr(block),
-+	};
+-	idr_init(&fpriv->contexts);
++	idr_init_base(&fpriv->contexts, 1);
+ 	mutex_init(&fpriv->lock);
+ 	filp->driver_priv = fpriv;
  
- 	if (EROFS_I(inode)->datalayout == EROFS_INODE_FLAT_INLINE) {
- 		erofs_blk_t blks = i_size_read(inode) >> LOG_BLOCK_SIZE;
-@@ -341,7 +326,10 @@ static sector_t erofs_bmap(struct address_space *mapping, sector_t block)
- 			return 0;
- 	}
- 
--	return generic_block_bmap(mapping, block, erofs_get_block);
-+	if (!erofs_map_blocks(inode, &map, EROFS_GET_BLOCKS_RAW))
-+		return erofs_blknr(map.m_pa);
-+
-+	return 0;
- }
- 
- /* for uncompressed (aligned) files and raw access for other files */
 -- 
 2.27.0
 
