@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 188842E3FFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:48:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF4712E3740
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:54:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439236AbgL1OXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:23:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59646 "EHLO mail.kernel.org"
+        id S1728047AbgL1MxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:53:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502813AbgL1OXe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:23:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9781B20731;
-        Mon, 28 Dec 2020 14:22:53 +0000 (UTC)
+        id S1728013AbgL1Mw6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:52:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 989CB22A84;
+        Mon, 28 Dec 2020 12:52:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165374;
-        bh=WJeUAuTdeT5MrHYibK7LHhElDRROfb2vnw0VRIECb3k=;
+        s=korg; t=1609159921;
+        bh=MaF1T6jqWdINqnGa6B+VEZSYtLvkMn9uFHu3KkglKbs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2JXJLno0kLCntu6oHlM9AMoEmVMHRF95cNr2ubwTnwQgQLC0g0snxMlp/+8sEym2H
-         4D/sqzMwoPemb4hxTClv0e7+3Nzsmj83jaaYWLWGjNIFOwjheA4JK/LIemzDYnllb1
-         UlncPZsq4iekhxWBLRy6No3ybIL/7IFQJILo4OVo=
+        b=uRopOMKxfLmGdz4WCivWERC07fRdLlFQXTlqFF8tULID0SNsnPdjqwA5QsbPOeC8V
+         HMfyho2MTQuV4HBPBpCoufvKeD51IXnAouJoVuSJt2GIPAtWUP2nOYoGIbm0RI/M5W
+         iE5N2uDgXMB39p7mYZgTTGgLwgVIAvqKNgzYzogo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 507/717] io_uring: cancel reqs shouldnt kill overflow list
+        stable@vger.kernel.org, Brant Merryman <brant.merryman@silabs.com>,
+        Phu Luu <phu.luu@silabs.com>, Johan Hovold <johan@kernel.org>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH 4.4 021/132] USB: serial: cp210x: enable usb generic throttle/unthrottle
 Date:   Mon, 28 Dec 2020 13:48:25 +0100
-Message-Id: <20201228125045.251872226@linuxfoundation.org>
+Message-Id: <20201228124847.436946473@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,57 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Begunkov <asml.silence@gmail.com>
+From: Brant Merryman <brant.merryman@silabs.com>
 
-[ Upstream commit cda286f0715c82f8117e166afd42cca068876dde ]
+commit 4387b3dbb079d482d3c2b43a703ceed4dd27ed28 upstream
 
-io_uring_cancel_task_requests() doesn't imply that the ring is going
-away, it may continue to work well after that. The problem is that it
-sets ->cq_overflow_flushed effectively disabling the CQ overflow feature
+Assign the .throttle and .unthrottle functions to be generic function
+in the driver structure to prevent data loss that can otherwise occur
+if the host does not enable USB throttling.
 
-Split setting cq_overflow_flushed from flush, and do the first one only
-on exit. It's ok in terms of cancellations because there is a
-io_uring->in_idle check in __io_cqring_fill_event().
-
-It also fixes a race with setting ->cq_overflow_flushed in
-io_uring_cancel_task_requests, whuch's is not atomic and a part of a
-bitmask with other flags. Though, the only other flag that's not set
-during init is drain_next, so it's not as bad for sane architectures.
-
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-Fixes: 0f2122045b946 ("io_uring: don't rely on weak ->files references")
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Brant Merryman <brant.merryman@silabs.com>
+Co-developed-by: Phu Luu <phu.luu@silabs.com>
+Signed-off-by: Phu Luu <phu.luu@silabs.com>
+Link: https://lore.kernel.org/r/57401AF3-9961-461F-95E1-F8AFC2105F5E@silabs.com
+[ johan: fix up tags ]
+Fixes: 39a66b8d22a3 ("[PATCH] USB: CP2101 Add support for flow control")
+Cc: stable <stable@vger.kernel.org>     # 2.6.12
+Signed-off-by: Johan Hovold <johan@kernel.org>
+[sudip: adjust context]
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/io_uring.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/usb/serial/cp210x.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index b9d3209a5f9de..e9219841923cc 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -1641,10 +1641,6 @@ static bool io_cqring_overflow_flush(struct io_ring_ctx *ctx, bool force,
- 
- 	spin_lock_irqsave(&ctx->completion_lock, flags);
- 
--	/* if force is set, the ring is going away. always drop after that */
--	if (force)
--		ctx->cq_overflow_flushed = 1;
--
- 	cqe = NULL;
- 	list_for_each_entry_safe(req, tmp, &ctx->cq_overflow_list, compl.list) {
- 		if (tsk && req->task != tsk)
-@@ -8378,6 +8374,8 @@ static void io_ring_ctx_wait_and_kill(struct io_ring_ctx *ctx)
- {
- 	mutex_lock(&ctx->uring_lock);
- 	percpu_ref_kill(&ctx->refs);
-+	/* if force is set, the ring is going away. always drop after that */
-+	ctx->cq_overflow_flushed = 1;
- 	if (ctx->rings)
- 		io_cqring_overflow_flush(ctx, true, NULL, NULL);
- 	mutex_unlock(&ctx->uring_lock);
--- 
-2.27.0
-
+--- a/drivers/usb/serial/cp210x.c
++++ b/drivers/usb/serial/cp210x.c
+@@ -252,6 +252,8 @@ static struct usb_serial_driver cp210x_d
+ 	.close			= cp210x_close,
+ 	.break_ctl		= cp210x_break_ctl,
+ 	.set_termios		= cp210x_set_termios,
++	.throttle		= usb_serial_generic_throttle,
++	.unthrottle		= usb_serial_generic_unthrottle,
+ 	.tiocmget		= cp210x_tiocmget,
+ 	.tiocmset		= cp210x_tiocmset,
+ 	.attach			= cp210x_startup,
 
 
