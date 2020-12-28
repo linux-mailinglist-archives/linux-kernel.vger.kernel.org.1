@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C31F02E63D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:45:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83C5F2E3B37
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:49:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408818AbgL1Pmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:42:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48158 "EHLO mail.kernel.org"
+        id S2405639AbgL1Nr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:47:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404972AbgL1NrB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:47:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A46C205CB;
-        Mon, 28 Dec 2020 13:46:20 +0000 (UTC)
+        id S2405353AbgL1NrH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:47:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57D912072C;
+        Mon, 28 Dec 2020 13:46:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163180;
-        bh=yA00cOct8NAreEj6dOkgoSW+IU9a5MeZjUrMP32aASU=;
+        s=korg; t=1609163187;
+        bh=hKcySnxvhB2SuNJhJeHTyiw12Nq9oNGnByAaxfZnXlc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AE2e7IEBi97Bx74ARw/NrmtoNF18zwti3RVAqcE9wWXDaR0A75oPQQsf4xMyG/Uq1
-         IY2cJ/ZI3NC2vaivr1X49HfyUGqrKkZXbRNqXOSZC3mZ8w/KmpSXko+ST0aSK/k6+M
-         Eqz9v/xRYw2PS1yjYb43G8GcsLlTbEv/9++mUJjk=
+        b=Tp/Xf/n/8T2dhhT3zzr+27DKekWcGoZf1K+rWUG06hRys6hFkH3lfm76buxdYn7L2
+         oj8V5zlsLxUKH0IZf1KckZ2RQ1/6qzeEn2QQ+b6xyTxXj5KEZpFpLC1wiBa2GOz0tt
+         xdWIC6e0vxT9Thhe7Fh4tjTBo29g+YbcXuQrZzno=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 198/453] ath10k: Release some resources in an error handling path
-Date:   Mon, 28 Dec 2020 13:47:14 +0100
-Message-Id: <20201228124946.739644616@linuxfoundation.org>
+Subject: [PATCH 5.4 199/453] SUNRPC: rpc_wake_up() should wake up tasks in the correct order
+Date:   Mon, 28 Dec 2020 13:47:15 +0100
+Message-Id: <20201228124946.787925110@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
 References: <20201228124937.240114599@linuxfoundation.org>
@@ -41,45 +40,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-[ Upstream commit 6364e693f4a7a89a2fb3dd2cbd6cc06d5fd6e26d ]
+[ Upstream commit e4c72201b6ec3173dfe13fa2e2335a3ad78d4921 ]
 
-Should an error occur after calling 'ath10k_usb_create()', it should be
-undone by a corresponding 'ath10k_usb_destroy()' call
+Currently, we wake up the tasks by priority queue ordering, which means
+that we ignore the batching that is supposed to help with QoS issues.
 
-Fixes: 4db66499df91 ("ath10k: add initial USB support")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20201122170358.1346065-1-christophe.jaillet@wanadoo.fr
+Fixes: c049f8ea9a0d ("SUNRPC: Remove the bh-safe lock requirement on the rpc_wait_queue->lock")
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/usb.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ net/sunrpc/sched.c | 65 +++++++++++++++++++++++++---------------------
+ 1 file changed, 35 insertions(+), 30 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/usb.c b/drivers/net/wireless/ath/ath10k/usb.c
-index 3f3675aa782fb..05c0d5e92475e 100644
---- a/drivers/net/wireless/ath/ath10k/usb.c
-+++ b/drivers/net/wireless/ath/ath10k/usb.c
-@@ -1023,7 +1023,7 @@ static int ath10k_usb_probe(struct usb_interface *interface,
- 	ret = ath10k_core_register(ar, &bus_params);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to register driver core: %d\n", ret);
--		goto err;
-+		goto err_usb_destroy;
- 	}
+diff --git a/net/sunrpc/sched.c b/net/sunrpc/sched.c
+index 53d8b82eda006..7afbf15bcbd9a 100644
+--- a/net/sunrpc/sched.c
++++ b/net/sunrpc/sched.c
+@@ -699,6 +699,23 @@ struct rpc_task *rpc_wake_up_next(struct rpc_wait_queue *queue)
+ }
+ EXPORT_SYMBOL_GPL(rpc_wake_up_next);
  
- 	/* TODO: remove this once USB support is fully implemented */
-@@ -1031,6 +1031,9 @@ static int ath10k_usb_probe(struct usb_interface *interface,
- 
- 	return 0;
- 
-+err_usb_destroy:
-+	ath10k_usb_destroy(ar);
++/**
++ * rpc_wake_up_locked - wake up all rpc_tasks
++ * @queue: rpc_wait_queue on which the tasks are sleeping
++ *
++ */
++static void rpc_wake_up_locked(struct rpc_wait_queue *queue)
++{
++	struct rpc_task *task;
 +
- err:
- 	ath10k_core_destroy(ar);
++	for (;;) {
++		task = __rpc_find_next_queued(queue);
++		if (task == NULL)
++			break;
++		rpc_wake_up_task_queue_locked(queue, task);
++	}
++}
++
+ /**
+  * rpc_wake_up - wake up all rpc_tasks
+  * @queue: rpc_wait_queue on which the tasks are sleeping
+@@ -707,25 +724,28 @@ EXPORT_SYMBOL_GPL(rpc_wake_up_next);
+  */
+ void rpc_wake_up(struct rpc_wait_queue *queue)
+ {
+-	struct list_head *head;
+-
+ 	spin_lock(&queue->lock);
+-	head = &queue->tasks[queue->maxpriority];
++	rpc_wake_up_locked(queue);
++	spin_unlock(&queue->lock);
++}
++EXPORT_SYMBOL_GPL(rpc_wake_up);
++
++/**
++ * rpc_wake_up_status_locked - wake up all rpc_tasks and set their status value.
++ * @queue: rpc_wait_queue on which the tasks are sleeping
++ * @status: status value to set
++ */
++static void rpc_wake_up_status_locked(struct rpc_wait_queue *queue, int status)
++{
++	struct rpc_task *task;
++
+ 	for (;;) {
+-		while (!list_empty(head)) {
+-			struct rpc_task *task;
+-			task = list_first_entry(head,
+-					struct rpc_task,
+-					u.tk_wait.list);
+-			rpc_wake_up_task_queue_locked(queue, task);
+-		}
+-		if (head == &queue->tasks[0])
++		task = __rpc_find_next_queued(queue);
++		if (task == NULL)
+ 			break;
+-		head--;
++		rpc_wake_up_task_queue_set_status_locked(queue, task, status);
+ 	}
+-	spin_unlock(&queue->lock);
+ }
+-EXPORT_SYMBOL_GPL(rpc_wake_up);
  
+ /**
+  * rpc_wake_up_status - wake up all rpc_tasks and set their status value.
+@@ -736,23 +756,8 @@ EXPORT_SYMBOL_GPL(rpc_wake_up);
+  */
+ void rpc_wake_up_status(struct rpc_wait_queue *queue, int status)
+ {
+-	struct list_head *head;
+-
+ 	spin_lock(&queue->lock);
+-	head = &queue->tasks[queue->maxpriority];
+-	for (;;) {
+-		while (!list_empty(head)) {
+-			struct rpc_task *task;
+-			task = list_first_entry(head,
+-					struct rpc_task,
+-					u.tk_wait.list);
+-			task->tk_status = status;
+-			rpc_wake_up_task_queue_locked(queue, task);
+-		}
+-		if (head == &queue->tasks[0])
+-			break;
+-		head--;
+-	}
++	rpc_wake_up_status_locked(queue, status);
+ 	spin_unlock(&queue->lock);
+ }
+ EXPORT_SYMBOL_GPL(rpc_wake_up_status);
 -- 
 2.27.0
 
