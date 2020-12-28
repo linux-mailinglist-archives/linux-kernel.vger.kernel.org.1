@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99F702E3A1D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:32:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26F0F2E3812
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:06:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387756AbgL1Ncd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:32:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33020 "EHLO mail.kernel.org"
+        id S1730521AbgL1NEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:04:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60740 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387725AbgL1NcZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:32:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F0E3C22B37;
-        Mon, 28 Dec 2020 13:31:43 +0000 (UTC)
+        id S1730463AbgL1NEe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:04:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB5772245C;
+        Mon, 28 Dec 2020 13:03:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162304;
-        bh=pxTx6PyFtjISTgUey0+sl+YVLAPFdJ+nASxXyKqrlXY=;
+        s=korg; t=1609160633;
+        bh=4jLqyF3EjFvGTRYAS3QjW9dDV4q6T3QEhnp5c8bsMhY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vB5PKAGqb/UHHQfTFc3L5VCsb6h10ZBD9EgrKkiU7j5055K08BByvQk1YJq8YXroP
-         XTpUCm/BbKHhHMVYX3SiAVd7WxhdCifuDfEEHNZM+fSVxsJsj/1cuVgkixgWclkiaf
-         vx+VBo8dLHD/e0lFCBViocgTe2a+HO5zajo3R8Q0=
+        b=R5lyglrAMplPiShTvTTAFg8Vf8/GPg1av48B16AyxTMxqUEWbJ1mnTTN1GbocifVX
+         w/6vPKkUhY9VBVEtwdUMdriGI25qraN7Nw9JChynyofGPSJmlRp4pvvvI/uEyaGDIL
+         jV1QePoiNGp1fDWjLSiImFx1RBoN4Su1wYTtZscQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
-        Maxime Ripard <mripard@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Richard Weinberger <richard@nod.at>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 250/346] clk: sunxi-ng: Make sure divider tables have sentinel
+Subject: [PATCH 4.9 116/175] um: chan_xterm: Fix fd leak
 Date:   Mon, 28 Dec 2020 13:49:29 +0100
-Message-Id: <20201228124931.867424482@linuxfoundation.org>
+Message-Id: <20201228124858.874477091@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,52 +41,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jernej Skrabec <jernej.skrabec@siol.net>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-[ Upstream commit 48f68de00c1405351fa0e7bc44bca067c49cd0a3 ]
+[ Upstream commit 9431f7c199ab0d02da1482d62255e0b4621cb1b5 ]
 
-Two clock divider tables are missing sentinel at the end. Effect of that
-is that clock framework reads past the last entry. Fix that with adding
-sentinel at the end.
+xterm serial channel was leaking a fd used in setting up the
+port helper
 
-Issue was discovered with KASan.
+This bug is prehistoric - it predates switching to git. The "fixes"
+header here is really just to mark all the versions we would like this to
+apply to which is "Anything from the Cretaceous period onwards".
 
-Fixes: 0577e4853bfb ("clk: sunxi-ng: Add H3 clocks")
-Fixes: c6a0637460c2 ("clk: sunxi-ng: Add A64 clocks")
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Link: https://lore.kernel.org/r/20201202203817.438713-1-jernej.skrabec@siol.net
-Acked-by: Maxime Ripard <mripard@kernel.org>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+No dinosaurs were harmed in fixing this bug.
+
+Fixes: b40997b872cd ("um: drivers/xterm.c: fix a file descriptor leak")
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/sunxi-ng/ccu-sun50i-a64.c | 1 +
- drivers/clk/sunxi-ng/ccu-sun8i-h3.c   | 1 +
- 2 files changed, 2 insertions(+)
+ arch/um/drivers/xterm.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-a64.c b/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
-index 9ac6c299e0744..19304d6b2c05d 100644
---- a/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
-+++ b/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
-@@ -381,6 +381,7 @@ static struct clk_div_table ths_div_table[] = {
- 	{ .val = 1, .div = 2 },
- 	{ .val = 2, .div = 4 },
- 	{ .val = 3, .div = 6 },
-+	{ /* Sentinel */ },
- };
- static const char * const ths_parents[] = { "osc24M" };
- static struct ccu_div ths_clk = {
-diff --git a/drivers/clk/sunxi-ng/ccu-sun8i-h3.c b/drivers/clk/sunxi-ng/ccu-sun8i-h3.c
-index 61e3ba12773ea..d9789378caf55 100644
---- a/drivers/clk/sunxi-ng/ccu-sun8i-h3.c
-+++ b/drivers/clk/sunxi-ng/ccu-sun8i-h3.c
-@@ -328,6 +328,7 @@ static struct clk_div_table ths_div_table[] = {
- 	{ .val = 1, .div = 2 },
- 	{ .val = 2, .div = 4 },
- 	{ .val = 3, .div = 6 },
-+	{ /* Sentinel */ },
- };
- static SUNXI_CCU_DIV_TABLE_WITH_GATE(ths_clk, "ths", "osc24M",
- 				     0x074, 0, 2, ths_div_table, BIT(31), 0);
+diff --git a/arch/um/drivers/xterm.c b/arch/um/drivers/xterm.c
+index 20e30be44795b..e3b422ebce09f 100644
+--- a/arch/um/drivers/xterm.c
++++ b/arch/um/drivers/xterm.c
+@@ -18,6 +18,7 @@
+ struct xterm_chan {
+ 	int pid;
+ 	int helper_pid;
++	int chan_fd;
+ 	char *title;
+ 	int device;
+ 	int raw;
+@@ -33,6 +34,7 @@ static void *xterm_init(char *str, int device, const struct chan_opts *opts)
+ 		return NULL;
+ 	*data = ((struct xterm_chan) { .pid 		= -1,
+ 				       .helper_pid 	= -1,
++				       .chan_fd		= -1,
+ 				       .device 		= device,
+ 				       .title 		= opts->xterm_title,
+ 				       .raw  		= opts->raw } );
+@@ -149,6 +151,7 @@ static int xterm_open(int input, int output, int primary, void *d,
+ 		goto out_kill;
+ 	}
+ 
++	data->chan_fd = fd;
+ 	new = xterm_fd(fd, &data->helper_pid);
+ 	if (new < 0) {
+ 		err = new;
+@@ -206,6 +209,8 @@ static void xterm_close(int fd, void *d)
+ 		os_kill_process(data->helper_pid, 0);
+ 	data->helper_pid = -1;
+ 
++	if (data->chan_fd != -1)
++		os_close_file(data->chan_fd);
+ 	os_close_file(fd);
+ }
+ 
 -- 
 2.27.0
 
