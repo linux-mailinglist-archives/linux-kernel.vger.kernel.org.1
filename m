@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 548852E42FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:34:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FF002E652D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:59:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407211AbgL1NxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:53:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53574 "EHLO mail.kernel.org"
+        id S2387917AbgL1Nd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:33:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407018AbgL1Nwl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:52:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A660520738;
-        Mon, 28 Dec 2020 13:52:25 +0000 (UTC)
+        id S2390640AbgL1NbN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:31:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C29A820719;
+        Mon, 28 Dec 2020 13:30:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163546;
-        bh=yyNTEGvidqyY7u2UNfNu6Uh8DCiiaOGctmRuLJ5eDAQ=;
+        s=korg; t=1609162258;
+        bh=b01FG28bAqW0npP4iYMhAJICKnRlez/iQqlnBe5jC1Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F7X9eP18oKo7dTay0rEC9Ffm5ccLXqyLC284hOiX0sCJ7ZayXHgfras4Q21TwAoFC
-         7XLOvstcbjCJkvB4Gk+qNQk/g0FZfA7lnImJwlop8afgwV2RHsa2do4ByJ03+LATp2
-         H/hGLcNLR+j97iOlh+4DYkTuuHq/L+60pvL9PQVY=
+        b=g1LfeG6xyuQydtVkkZxokaDl3+F8P3POc+PmagfoKoSB00nASFihY8YBwAei0PVRw
+         R7b5j/iq83LD2MVc5uirBmaxddt2iL7flfz+5c8CjfK5jmTAZDApBTOlcFj0W7EqG7
+         qumb/NEiRDT0dxMbiGy/EGDCh/uBDv7CZYJWim5Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Kozlov Sergey <serjk@netup.ru>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.4 323/453] media: netup_unidvb: Dont leak SPI master in probe error path
-Date:   Mon, 28 Dec 2020 13:49:19 +0100
-Message-Id: <20201228124952.751312582@linuxfoundation.org>
+        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 241/346] libnvdimm/label: Return -ENXIO for no slot in __blk_label_update
+Date:   Mon, 28 Dec 2020 13:49:20 +0100
+Message-Id: <20201228124931.417433128@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,69 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-commit e297ddf296de35037fa97f4302782def196d350a upstream.
+[ Upstream commit 4c46764733c85b82c07e9559b39da4d00a7dd659 ]
 
-If the call to spi_register_master() fails on probe of the NetUP
-Universal DVB driver, the spi_master struct is erroneously not freed.
+Forget to set error code when nd_label_alloc_slot failed, and we
+add it to avoid overwritten error code.
 
-Likewise, if spi_new_device() fails, the spi_controller struct is
-not unregistered.  Plug the leaks.
-
-While at it, fix an ordering issue in netup_spi_release() wherein
-spi_unregister_master() is called after fiddling with the IRQ control
-register.  The correct order is to call spi_unregister_master() *before*
-this teardown step because bus accesses may still be ongoing until that
-function returns.
-
-Fixes: 52b1eaf4c59a ("[media] netup_unidvb: NetUP Universal DVB-S/S2/T/T2/C PCI-E card driver")
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Reviewed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc: <stable@vger.kernel.org> # v4.3+: 5e844cc37a5c: spi: Introduce device-managed SPI controller allocation
-Cc: <stable@vger.kernel.org> # v4.3+
-Cc: Kozlov Sergey <serjk@netup.ru>
-Link: https://lore.kernel.org/r/c4c24f333fc7840f4a3db24789e6e10dd660bede.1607286887.git.lukas@wunner.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 0ba1c634892b ("libnvdimm: write blk label set")
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Link: https://lore.kernel.org/r/20201205115056.2076523-1-zhangqilong3@huawei.com
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/pci/netup_unidvb/netup_unidvb_spi.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/nvdimm/label.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/media/pci/netup_unidvb/netup_unidvb_spi.c
-+++ b/drivers/media/pci/netup_unidvb/netup_unidvb_spi.c
-@@ -175,7 +175,7 @@ int netup_spi_init(struct netup_unidvb_d
- 	struct spi_master *master;
- 	struct netup_spi *nspi;
+diff --git a/drivers/nvdimm/label.c b/drivers/nvdimm/label.c
+index 9f1b7e3153f99..df9ca82f459ba 100644
+--- a/drivers/nvdimm/label.c
++++ b/drivers/nvdimm/label.c
+@@ -880,8 +880,10 @@ static int __blk_label_update(struct nd_region *nd_region,
+ 		if (is_old_resource(res, old_res_list, old_num_resources))
+ 			continue; /* carry-over */
+ 		slot = nd_label_alloc_slot(ndd);
+-		if (slot == UINT_MAX)
++		if (slot == UINT_MAX) {
++			rc = -ENXIO;
+ 			goto abort;
++		}
+ 		dev_dbg(ndd->dev, "allocated: %d\n", slot);
  
--	master = spi_alloc_master(&ndev->pci_dev->dev,
-+	master = devm_spi_alloc_master(&ndev->pci_dev->dev,
- 		sizeof(struct netup_spi));
- 	if (!master) {
- 		dev_err(&ndev->pci_dev->dev,
-@@ -208,6 +208,7 @@ int netup_spi_init(struct netup_unidvb_d
- 		ndev->pci_slot,
- 		ndev->pci_func);
- 	if (!spi_new_device(master, &netup_spi_board)) {
-+		spi_unregister_master(master);
- 		ndev->spi = NULL;
- 		dev_err(&ndev->pci_dev->dev,
- 			"%s(): unable to create SPI device\n", __func__);
-@@ -226,13 +227,13 @@ void netup_spi_release(struct netup_unid
- 	if (!spi)
- 		return;
- 
-+	spi_unregister_master(spi->master);
- 	spin_lock_irqsave(&spi->lock, flags);
- 	reg = readw(&spi->regs->control_stat);
- 	writew(reg | NETUP_SPI_CTRL_IRQ, &spi->regs->control_stat);
- 	reg = readw(&spi->regs->control_stat);
- 	writew(reg & ~NETUP_SPI_CTRL_IMASK, &spi->regs->control_stat);
- 	spin_unlock_irqrestore(&spi->lock, flags);
--	spi_unregister_master(spi->master);
- 	ndev->spi = NULL;
- }
- 
+ 		nd_label = to_label(ndd, slot);
+-- 
+2.27.0
+
 
 
