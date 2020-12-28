@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BDF12E6898
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:40:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 819DE2E674E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:24:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633741AbgL1Qib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:38:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57636 "EHLO mail.kernel.org"
+        id S2441022AbgL1QXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:23:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729762AbgL1NBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:01:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A95E22AAA;
-        Mon, 28 Dec 2020 13:00:37 +0000 (UTC)
+        id S1731873AbgL1NLx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:11:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B00C206ED;
+        Mon, 28 Dec 2020 13:11:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160438;
-        bh=UM07LVbFrKGNSwO8zjsZD2hQhntSihKDIJTgII1pFTc=;
+        s=korg; t=1609161097;
+        bh=WF8aRP6p1aUlzCdp0ecf9XIz/Sv0Ovile1e3WDDEPS8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uCyGQNT/njFZH3Hdm9UJohkamN2bBpMQiJ0hzG9Abb4q6NrVLUi5RwPKCzyPK+5Z2
-         OdslfQ4jBFth4vAlA1lUO3NW6sXcO4C8UpsmV50+CLQGz4YLDOY4Bn8fDK0nH69vYl
-         kCEueALfLMdc2V4a6ipgtIklOvB/jND1r7qsoq8M=
+        b=u/S7RvulMcwgU9IK5fXlST815ZEK7oIfaFBLhMY/xHmlt4kGynS7Sj6oE7ovPDYUC
+         tt3h1eSXqzwkQRg9tMCybC9ciai04JsHdHXgLlU8cUdpFEYJJhVOpxyNKKLZuX104I
+         Gk7oWv9AOmz1Rm7RZ1XvVHmGN9QCEIdQRSzjZ8q8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        stable@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 050/175] drm/gma500: fix double free of gma_connector
-Date:   Mon, 28 Dec 2020 13:48:23 +0100
-Message-Id: <20201228124855.682996197@linuxfoundation.org>
+Subject: [PATCH 4.14 099/242] Input: ads7846 - fix unaligned access on 7845
+Date:   Mon, 28 Dec 2020 13:48:24 +0100
+Message-Id: <20201228124909.565611099@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-[ Upstream commit 4e19d51ca5b28a1d435a844c7b2a8e1b1b6fa237 ]
+[ Upstream commit 03e2c9c782f721b661a0e42b1b58f394b5298544 ]
 
-clang static analysis reports this problem:
+req->sample[1] is not naturally aligned at word boundary, and therefore we
+should use get_unaligned_be16() when accessing it.
 
-cdv_intel_dp.c:2101:2: warning: Attempt to free released memory
-        kfree(gma_connector);
-        ^~~~~~~~~~~~~~~~~~~~
-
-In cdv_intel_dp_init() when the call to cdv_intel_edp_panel_vdd_off()
-fails, the handler calls cdv_intel_dp_destroy(connector) which does
-the first free of gma_connector. So adjust the goto label and skip
-the second free.
-
-Fixes: d112a8163f83 ("gma500/cdv: Add eDP support")
-Signed-off-by: Tom Rix <trix@redhat.com>
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20201003193928.18869-1-trix@redhat.com
+Fixes: 3eac5c7e44f3 ("Input: ads7846 - extend the driver for ads7845 controller support")
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/gma500/cdv_intel_dp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/input/touchscreen/ads7846.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/gma500/cdv_intel_dp.c b/drivers/gpu/drm/gma500/cdv_intel_dp.c
-index 7ec4e3fbafd8c..ec6ea202cf5de 100644
---- a/drivers/gpu/drm/gma500/cdv_intel_dp.c
-+++ b/drivers/gpu/drm/gma500/cdv_intel_dp.c
-@@ -2126,7 +2126,7 @@ cdv_intel_dp_init(struct drm_device *dev, struct psb_intel_mode_device *mode_dev
- 			DRM_INFO("failed to retrieve link info, disabling eDP\n");
- 			cdv_intel_dp_encoder_destroy(encoder);
- 			cdv_intel_dp_destroy(connector);
--			goto err_priv;
-+			goto err_connector;
- 		} else {
-         		DRM_DEBUG_KMS("DPCD: Rev=%x LN_Rate=%x LN_CNT=%x LN_DOWNSP=%x\n",
- 				intel_dp->dpcd[0], intel_dp->dpcd[1], 
+diff --git a/drivers/input/touchscreen/ads7846.c b/drivers/input/touchscreen/ads7846.c
+index 7ce0eedaa0e5e..b536768234b7c 100644
+--- a/drivers/input/touchscreen/ads7846.c
++++ b/drivers/input/touchscreen/ads7846.c
+@@ -35,6 +35,7 @@
+ #include <linux/regulator/consumer.h>
+ #include <linux/module.h>
+ #include <asm/irq.h>
++#include <asm/unaligned.h>
+ 
+ /*
+  * This code has been heavily tested on a Nokia 770, and lightly
+@@ -434,7 +435,7 @@ static int ads7845_read12_ser(struct device *dev, unsigned command)
+ 
+ 	if (status == 0) {
+ 		/* BE12 value, then padding */
+-		status = be16_to_cpu(*((u16 *)&req->sample[1]));
++		status = get_unaligned_be16(&req->sample[1]);
+ 		status = status >> 3;
+ 		status &= 0x0fff;
+ 	}
 -- 
 2.27.0
 
