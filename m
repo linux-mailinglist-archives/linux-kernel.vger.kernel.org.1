@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E953A2E3B31
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:47:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A8D32E4075
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:53:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405521AbgL1NrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:47:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46652 "EHLO mail.kernel.org"
+        id S2505382AbgL1OwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:52:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404870AbgL1Npm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:45:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 61A17208BA;
-        Mon, 28 Dec 2020 13:45:01 +0000 (UTC)
+        id S2502012AbgL1OSu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:18:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 628FF2063A;
+        Mon, 28 Dec 2020 14:18:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163101;
-        bh=kcQcT50e+KY9CvtMnXIEG9ksrtvfBy4mW+T/7NcRMfY=;
+        s=korg; t=1609165089;
+        bh=I7KN9RE/rgQ73uafjBQeSk8pFjgBk+T0c0TxwLU0UL8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JaxIOTu7bdKvAzqdEc0a42vtTxFIyMe0aCn8NgLpiq2gG90ojppaQegJL4iNN3KnC
-         dvuUUSCImEA4bZNE84qJl7NXu7ZRMvAJrnm/L96jCe/v5nr9SIYgHa0O3kFN/czid2
-         B8pzKTf/d8VQNbZ1Xzkpjv73gbXeA0Us4hK4+pqw=
+        b=QFwtVvq2C0w+87cW08UDH7Ts1Kx5xruE0g3GvKgMqz3FnLy2C1yrDYR/kriiyYPC+
+         Is7tUI6GuCnpmbwJ6/7JoF6tavbKxxaVObff5LAjhrV3Nj3TiHfgkK4QfvBVC/8rqv
+         xiXshS/CA481sB9ltKlqfHE+Tw0y6oeK4fvTW4ok=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhihao Cheng <chengzhihao1@huawei.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 168/453] dmaengine: mv_xor_v2: Fix error return code in mv_xor_v2_probe()
+        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 406/717] clk: qcom: gcc-sc7180: Use floor ops for sdcc clks
 Date:   Mon, 28 Dec 2020 13:46:44 +0100
-Message-Id: <20201228124945.280092805@linuxfoundation.org>
+Message-Id: <20201228125040.440530127@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhihao Cheng <chengzhihao1@huawei.com>
+From: Douglas Anderson <dianders@chromium.org>
 
-[ Upstream commit c95e6515a8c065862361f7e0e452978ade7f94ec ]
+[ Upstream commit 6d37a8d192830267e6b10a6d57ae28d2e89097e7 ]
 
-Return the corresponding error code when first_msi_entry() returns
-NULL in mv_xor_v2_probe().
+I would repeat the same commit message that was in commit 5e4b7e82d497
+("clk: qcom: gcc-sdm845: Use floor ops for sdcc clks") but it seems
+silly to do so when you could just go read that commit.
 
-Fixes: 19a340b1a820430 ("dmaengine: mv_xor_v2: new driver")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Link: https://lore.kernel.org/r/20201124010813.1939095-1-chengzhihao1@huawei.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+NOTE: this is actually extra terrible because we're missing the 50 MHz
+rate in the table (see the next patch AKA ("clk: qcom: gcc-sc7180: Add
+50 MHz clock rate for SDC2")).  That means then when you run an older
+SD card it'll try to clock it at 100 MHz when it's only specced to run
+at 50 MHz max.  As you can probably guess that doesn't work super
+well.
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Fixes: 17269568f726 ("clk: qcom: Add Global Clock controller (GCC) driver for SC7180")
+Link: https://lore.kernel.org/r/20201210102234.1.I096779f219625148900fc984dd0084ed1ba87c7f@changeid
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/mv_xor_v2.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/clk/qcom/gcc-sc7180.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/dma/mv_xor_v2.c b/drivers/dma/mv_xor_v2.c
-index e3850f04f6763..889a94af4c851 100644
---- a/drivers/dma/mv_xor_v2.c
-+++ b/drivers/dma/mv_xor_v2.c
-@@ -766,8 +766,10 @@ static int mv_xor_v2_probe(struct platform_device *pdev)
- 		goto disable_clk;
+diff --git a/drivers/clk/qcom/gcc-sc7180.c b/drivers/clk/qcom/gcc-sc7180.c
+index 68d8f7aaf64e1..b080739ab0c33 100644
+--- a/drivers/clk/qcom/gcc-sc7180.c
++++ b/drivers/clk/qcom/gcc-sc7180.c
+@@ -642,7 +642,7 @@ static struct clk_rcg2 gcc_sdcc1_ice_core_clk_src = {
+ 		.name = "gcc_sdcc1_ice_core_clk_src",
+ 		.parent_data = gcc_parent_data_0,
+ 		.num_parents = 4,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_floor_ops,
+ 	},
+ };
  
- 	msi_desc = first_msi_entry(&pdev->dev);
--	if (!msi_desc)
-+	if (!msi_desc) {
-+		ret = -ENODEV;
- 		goto free_msi_irqs;
-+	}
- 	xor_dev->msi_desc = msi_desc;
+@@ -666,7 +666,7 @@ static struct clk_rcg2 gcc_sdcc2_apps_clk_src = {
+ 		.name = "gcc_sdcc2_apps_clk_src",
+ 		.parent_data = gcc_parent_data_5,
+ 		.num_parents = 5,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_floor_ops,
+ 	},
+ };
  
- 	ret = devm_request_irq(&pdev->dev, msi_desc->irq,
 -- 
 2.27.0
 
