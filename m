@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C7562E39D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:29:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C22B2E3B69
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:51:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389954AbgL1N2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:28:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57278 "EHLO mail.kernel.org"
+        id S2406192AbgL1Ntm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:49:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51082 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389914AbgL1N2b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:28:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C1C47207CF;
-        Mon, 28 Dec 2020 13:27:49 +0000 (UTC)
+        id S2406182AbgL1Ntk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:49:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 050C120738;
+        Mon, 28 Dec 2020 13:49:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162070;
-        bh=0SNkv9WRtjEi8ZFcxzNhkn6QqEyGrzSBGHpKDnejghQ=;
+        s=korg; t=1609163364;
+        bh=Kb1WTf/if7ztm6KCptekc7ovnNtabWGDWlP8K4EUyjs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wMMfZI34600Kz9Ptn4VH3ApVNY2BoIRR84oRVUAgPqSVmC/G+m4ayUjFEkQEBV6CM
-         Z+KkzXtmxL+0W613yIrSoWTmqox9GV9X7jAEDMN3aNi0LikxqnLOY5itC8kplxVB6V
-         csfXR5dKNFw3cMqcUL7u7Unkj1kuvuGBy3aVwjhM=
+        b=Id/wK9BD6d8op4gvXTvLGVmY7mMpIm+PXtzO8ClKNj7mOQc0WgE+G1btYQS9pDBqV
+         39c5URk4P66i/MITAmye6t6a0Qdu1zH1hJJeNND5LGn9VCd1hXv0dMcWxmngKMLldi
+         jpR5B7nD52TFxSXyz4bFGw5zSc1RlfBTUmtOu4zo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        stable@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
+        Gao Xiang <hsiangkao@redhat.com>,
+        Huang Jianan <huangjianan@oppo.com>,
+        Guo Weichao <guoweichao@oppo.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 177/346] power: supply: axp288_charger: Fix HP Pavilion x2 10 DMI matching
+Subject: [PATCH 5.4 260/453] erofs: avoid using generic_block_bmap
 Date:   Mon, 28 Dec 2020 13:48:16 +0100
-Message-Id: <20201228124928.343574539@linuxfoundation.org>
+Message-Id: <20201228124949.735361752@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,100 +42,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Huang Jianan <huangjianan@oppo.com>
 
-[ Upstream commit a0f1ccd96c7049377d892a4299b6d5e47ec9179d ]
+[ Upstream commit d8b3df8b1048405e73558b88cba2adf29490d468 ]
 
-Commit 9c80662a74cd ("power: supply: axp288_charger: Add special handling
-for HP Pavilion x2 10") added special handling for HP Pavilion x2 10
-models which use the weird combination of a Type-C connector and the
-non Type-C aware AXP288 PMIC.
+Surprisingly, `block' in sector_t indicates the number of
+i_blkbits-sized blocks rather than sectors for bmap.
 
-This special handling was activated by a DMI match a the product-name
-of "HP Pavilion x2 Detachable". Recently I've learned that there are
-also older "HP Pavilion x2 Detachable" models with an AXP288 PMIC +
-a micro-usb connector where we should not activate the special handling
-for the Type-C connectors.
+In addition, considering buffer_head limits mapped size to 32-bits,
+should avoid using generic_block_bmap.
 
-Extend the matching to also match on the DMI board-name and match on the
-2 boards (one Bay Trail based one Cherry Trail based) of which we are
-certain that they use the AXP288 + Type-C connector combination.
-
-Note the DSDT code from these older (AXP288 + micro-USB) models contains
-some AML code (which never runs under Linux) which reads the micro-USB
-connector id-pin and if it is pulled to ground, which would normally mean
-the port is in host mode!, then it sets the input-current-limit to 3A,
-it seems HP is using the micro-USB port as a charging only connector
-and identifies their own 3A capable charger though this hack which is a
-major violation of the USB specs. Note HP also hardcodes a 2A limit
-when the id-pin is not pulled to ground, which is also in violation
-of the specs.
-
-I've no intention to add support for HP's hack to support 3A charging
-on these older models. By making the DMI matches for the Type-C equipped
-models workaround more tighter, these older models will be treated just
-like any other AXP288 + micro-USB equipped device and the input-current
-limit will follow the BC 1.2 spec (using the defacto standard values
-there where the BC 1.2 spec defines a range).
-
-Fixes: 9c80662a74cd ("power: supply: axp288_charger: Add special handling for HP Pavilion x2 10")
-BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1896924
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Link: https://lore.kernel.org/r/20201209115740.18802-1-huangjianan@oppo.com
+Fixes: 9da681e017a3 ("staging: erofs: support bmap")
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Reviewed-by: Gao Xiang <hsiangkao@redhat.com>
+Signed-off-by: Huang Jianan <huangjianan@oppo.com>
+Signed-off-by: Guo Weichao <guoweichao@oppo.com>
+[ Gao Xiang: slightly update the commit message description. ]
+Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/axp288_charger.c | 28 ++++++++++++++++-----------
- 1 file changed, 17 insertions(+), 11 deletions(-)
+ fs/erofs/data.c | 26 +++++++-------------------
+ 1 file changed, 7 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/power/supply/axp288_charger.c b/drivers/power/supply/axp288_charger.c
-index 46eb7716c35c8..84106a9836c8f 100644
---- a/drivers/power/supply/axp288_charger.c
-+++ b/drivers/power/supply/axp288_charger.c
-@@ -555,14 +555,15 @@ out:
+diff --git a/fs/erofs/data.c b/fs/erofs/data.c
+index fc3a8d8064f84..b22a08ac53a23 100644
+--- a/fs/erofs/data.c
++++ b/fs/erofs/data.c
+@@ -323,27 +323,12 @@ static int erofs_raw_access_readpages(struct file *filp,
+ 	return 0;
+ }
  
- /*
-  * The HP Pavilion x2 10 series comes in a number of variants:
-- * Bay Trail SoC    + AXP288 PMIC, DMI_BOARD_NAME: "815D"
-- * Cherry Trail SoC + AXP288 PMIC, DMI_BOARD_NAME: "813E"
-- * Cherry Trail SoC + TI PMIC,     DMI_BOARD_NAME: "827C" or "82F4"
-+ * Bay Trail SoC    + AXP288 PMIC, Micro-USB, DMI_BOARD_NAME: "8021"
-+ * Bay Trail SoC    + AXP288 PMIC, Type-C,    DMI_BOARD_NAME: "815D"
-+ * Cherry Trail SoC + AXP288 PMIC, Type-C,    DMI_BOARD_NAME: "813E"
-+ * Cherry Trail SoC + TI PMIC,     Type-C,    DMI_BOARD_NAME: "827C" or "82F4"
-  *
-- * The variants with the AXP288 PMIC are all kinds of special:
-+ * The variants with the AXP288 + Type-C connector are all kinds of special:
-  *
-- * 1. All variants use a Type-C connector which the AXP288 does not support, so
-- * when using a Type-C charger it is not recognized. Unlike most AXP288 devices,
-+ * 1. They use a Type-C connector which the AXP288 does not support, so when
-+ * using a Type-C charger it is not recognized. Unlike most AXP288 devices,
-  * this model actually has mostly working ACPI AC / Battery code, the ACPI code
-  * "solves" this by simply setting the input_current_limit to 3A.
-  * There are still some issues with the ACPI code, so we use this native driver,
-@@ -585,12 +586,17 @@ out:
-  */
- static const struct dmi_system_id axp288_hp_x2_dmi_ids[] = {
- 	{
--		/*
--		 * Bay Trail model has "Hewlett-Packard" as sys_vendor, Cherry
--		 * Trail model has "HP", so we only match on product_name.
--		 */
- 		.matches = {
--			DMI_MATCH(DMI_PRODUCT_NAME, "HP Pavilion x2 Detachable"),
-+			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Hewlett-Packard"),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "HP Pavilion x2 Detachable"),
-+			DMI_EXACT_MATCH(DMI_BOARD_NAME, "815D"),
-+		},
-+	},
-+	{
-+		.matches = {
-+			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "HP"),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "HP Pavilion x2 Detachable"),
-+			DMI_EXACT_MATCH(DMI_BOARD_NAME, "813E"),
- 		},
- 	},
- 	{} /* Terminating entry */
+-static int erofs_get_block(struct inode *inode, sector_t iblock,
+-			   struct buffer_head *bh, int create)
+-{
+-	struct erofs_map_blocks map = {
+-		.m_la = iblock << 9,
+-	};
+-	int err;
+-
+-	err = erofs_map_blocks(inode, &map, EROFS_GET_BLOCKS_RAW);
+-	if (err)
+-		return err;
+-
+-	if (map.m_flags & EROFS_MAP_MAPPED)
+-		bh->b_blocknr = erofs_blknr(map.m_pa);
+-
+-	return err;
+-}
+-
+ static sector_t erofs_bmap(struct address_space *mapping, sector_t block)
+ {
+ 	struct inode *inode = mapping->host;
++	struct erofs_map_blocks map = {
++		.m_la = blknr_to_addr(block),
++	};
+ 
+ 	if (EROFS_I(inode)->datalayout == EROFS_INODE_FLAT_INLINE) {
+ 		erofs_blk_t blks = i_size_read(inode) >> LOG_BLOCK_SIZE;
+@@ -352,7 +337,10 @@ static sector_t erofs_bmap(struct address_space *mapping, sector_t block)
+ 			return 0;
+ 	}
+ 
+-	return generic_block_bmap(mapping, block, erofs_get_block);
++	if (!erofs_map_blocks(inode, &map, EROFS_GET_BLOCKS_RAW))
++		return erofs_blknr(map.m_pa);
++
++	return 0;
+ }
+ 
+ /* for uncompressed (aligned) files and raw access for other files */
 -- 
 2.27.0
 
