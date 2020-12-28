@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C08932E37EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:04:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B2FA2E4358
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:36:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730164AbgL1NDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:03:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56742 "EHLO mail.kernel.org"
+        id S2504306AbgL1PgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:36:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729540AbgL1NAv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:00:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 425B4224D2;
-        Mon, 28 Dec 2020 13:00:35 +0000 (UTC)
+        id S2405014AbgL1Nuj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:50:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 11248206D4;
+        Mon, 28 Dec 2020 13:49:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160435;
-        bh=ZQx4jiJYSqq0ifLV2fS+ihkyAB+CjY19pTM7Afr80S8=;
+        s=korg; t=1609163396;
+        bh=2FhLYakiejrjUTLx5UvoDzFh8fQtHXIRD5RyFN2aFbE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fjHlw31e/tRaNrKd5a0CSoxQqeNxbf7Imhrhz59Rt99irrgWRyJpXXwyVUdqaqvN8
-         fDKLGD+4kIQJ2uT42fBB4V8L0RLckSAE+oiCta/oadBJi6bkDevL18poH7oHeDItUu
-         KGMsG07ryCKT2BOnEwcIaQsS6yO01ijhgrPwAFTs=
+        b=oq57ZJ+OKHwcPmxjTIR4vjNIZN/dnACyw3DrKDGT4zzaXugwohzOLQ2Tz80WHxDdY
+         nF1t5kpLECN1ACVP8RYUiwcX7ln8YimSlTF33QSkBLGu/TadurlzBVkMYvTPuqYMux
+         PptaohGPmnmBlX/rgHNlqNs4reA2n1BTh58LMbow=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Thomas Winischhofer <thomas@winischhofer.net>,
-        linux-usb@vger.kernel.org
-Subject: [PATCH 4.9 023/175] USB: sisusbvga: Make console support depend on BROKEN
+        stable@vger.kernel.org,
+        Mike Christie <michael.christie@oracle.com>,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 240/453] scsi: qedi: Fix missing destroy_workqueue() on error in __qedi_probe
 Date:   Mon, 28 Dec 2020 13:47:56 +0100
-Message-Id: <20201228124854.378474266@linuxfoundation.org>
+Message-Id: <20201228124948.771701275@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +42,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Qinglang Miao <miaoqinglang@huawei.com>
 
-commit 862ee699fefe1e6d6f2c1518395f0b999b8beb15 upstream.
+[ Upstream commit 62eebd5247c4e4ce08826ad5995cf4dd7ce919dd ]
 
-The console part of sisusbvga is broken vs. printk(). It uses in_atomic()
-to detect contexts in which it cannot sleep despite the big fat comment in
-preempt.h which says: Do not use in_atomic() in driver code.
+Add the missing destroy_workqueue() before return from __qedi_probe in the
+error handling case when fails to create workqueue qedi->offload_thread.
 
-in_atomic() does not work on kernels with CONFIG_PREEMPT_COUNT=n which
-means that spin/rw_lock held regions are not detected by it.
-
-There is no way to make this work by handing context information through to
-the driver and this only can be solved once the core printk infrastructure
-supports sleepable console drivers.
-
-Make it depend on BROKEN for now.
-
-Fixes: 1bbb4f2035d9 ("[PATCH] USB: sisusb[vga] update")
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Thomas Winischhofer <thomas@winischhofer.net>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-usb@vger.kernel.org
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20201019101109.603244207@linutronix.de
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Link: https://lore.kernel.org/r/20201109091518.55941-1-miaoqinglang@huawei.com
+Fixes: ace7f46ba5fd ("scsi: qedi: Add QLogic FastLinQ offload iSCSI driver framework.")
+Reviewed-by: Mike Christie <michael.christie@oracle.com>
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/misc/sisusbvga/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/qedi/qedi_main.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/misc/sisusbvga/Kconfig
-+++ b/drivers/usb/misc/sisusbvga/Kconfig
-@@ -15,7 +15,7 @@ config USB_SISUSBVGA
+diff --git a/drivers/scsi/qedi/qedi_main.c b/drivers/scsi/qedi/qedi_main.c
+index acb930b8c6a64..35c96ea2653be 100644
+--- a/drivers/scsi/qedi/qedi_main.c
++++ b/drivers/scsi/qedi/qedi_main.c
+@@ -2630,7 +2630,7 @@ static int __qedi_probe(struct pci_dev *pdev, int mode)
+ 			QEDI_ERR(&qedi->dbg_ctx,
+ 				 "Unable to start offload thread!\n");
+ 			rc = -ENODEV;
+-			goto free_cid_que;
++			goto free_tmf_thread;
+ 		}
  
- config USB_SISUSBVGA_CON
- 	bool "Text console and mode switching support" if USB_SISUSBVGA
--	depends on VT
-+	depends on VT && BROKEN
- 	select FONT_8x16
- 	---help---
- 	  Say Y here if you want a VGA text console via the USB dongle or
+ 		/* F/w needs 1st task context memory entry for performance */
+@@ -2650,6 +2650,8 @@ static int __qedi_probe(struct pci_dev *pdev, int mode)
+ 
+ 	return 0;
+ 
++free_tmf_thread:
++	destroy_workqueue(qedi->tmf_thread);
+ free_cid_que:
+ 	qedi_release_cid_que(qedi);
+ free_uio:
+-- 
+2.27.0
+
 
 
