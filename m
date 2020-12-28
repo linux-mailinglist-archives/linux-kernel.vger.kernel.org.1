@@ -2,183 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E4132E6B48
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:04:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB082E6B4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:04:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731423AbgL1W4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 17:56:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37504 "EHLO
+        id S1731441AbgL1W4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 17:56:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729481AbgL1UzF (ORCPT
+        with ESMTP id S1729483AbgL1VGR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 15:55:05 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E076C06179F;
-        Mon, 28 Dec 2020 12:54:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=ppRSnb5Uz4jIDnyS28Gp9E63hTbg6xv1tyWfwaISO2E=; b=aaRSuaaT0OUxbLka9O/IWIfosq
-        9feyWDp5ilTRnODWdjvuQFzQeQoWWurQdYN3NJ0sgB519+MJD6GeHo0hyB+sILQYlyOCg3IQvl4dk
-        NMGpaEKhSLOkPWsH0CDWReXxsRJmGFwGJxn9dkWs04dmckUOn4dI8rF60EmLqQPmulM3Z7h3Madn0
-        hjpLZPZ/EP8zYNtTx/n6rkVnsT6iSSwOx01+xLV20G0uSD2xU2S8iPbUV/cm/AD8ccecg18rBGSnh
-        Dray8JDH1B7PlejrGT/0f6/6M7ouTAYHOi1mR+JunbWzkwctpbCNERBewGK8ZoRKpPRoBacHqufDs
-        z52O4mYA==;
-Received: from [2601:1c0:6280:3f0::64ea] (helo=smtpauth.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ktzWm-0002ml-MW; Mon, 28 Dec 2020 20:54:05 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        linux-iio@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        linux-doc@vger.kernel.org, David Herrmann <dh.herrmann@gmail.com>
-Subject: [PATCH v2 8/8] Documentation: HID: uhid editing & corrections
-Date:   Mon, 28 Dec 2020 12:53:27 -0800
-Message-Id: <20201228205327.1063-9-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201228205327.1063-1-rdunlap@infradead.org>
-References: <20201228205327.1063-1-rdunlap@infradead.org>
+        Mon, 28 Dec 2020 16:06:17 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0359EC0613D6;
+        Mon, 28 Dec 2020 13:05:36 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id z12so285157pjn.1;
+        Mon, 28 Dec 2020 13:05:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=caUK5bWQMn4p+E5nxU+Ce3Moy1Jc2Ri59w2uOeD1O9s=;
+        b=RtBNEEVOMl18VdLGqSiwC78IE17t6k5ypI3praa5yNTu05lxPMNdV8DUVUhNBLLMe8
+         FoUBSI028gDRDeL/8Zy/XFVIVEGBEegzXsGUZkPdS4VEjOho1RY9rzK4WfDsbrAW1O2r
+         JdkLKyZUmKj5CsgFMxT9cH0A2zKbkfyaQNe07CfjyXlMZjiPk03b5fBN7sdyfvQOwS1/
+         f0wQAS7sMFF82zkrFf1IzohorWSCbJe5trZI+Hn3N6zD0IOWCA0dhoN+trzu01Ibt0J+
+         9ybe1sFFmrfpVM1MY0I2iQkLpUwbv7BLEmtnmmtqQQ4tiWWEh38wsArNIYSA4vgtR01N
+         NMEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=caUK5bWQMn4p+E5nxU+Ce3Moy1Jc2Ri59w2uOeD1O9s=;
+        b=fV4a+V+/AV7weuJxVO5yHkMK2+zg8rdKFOpCFKlj6oo5CoRcgkw05BP7P9Rr73H6gy
+         NfV4vH5uKtYCYiITFplacbY5fWn9T68vrfOS3oW8J87A6loZSZSIwFD+fuBKnQJ+rIjg
+         SSBa1tJO6JV/PVPktrWB3dUPODsOLBaKSRu31kvP1lahiHQaJGvgDInhSfSEnA3NkEwq
+         R7L+FOujJs8+BPyykdDx3bFLHFXCsT+oKc7CTnZGaWif4G0VdrPOKfMZHkXJeKKxLu9Q
+         Wf0IflDz6Ibt4YFI1TT2sAsO7F/VtDj+Qw+b6YpziLxc5s6MbF5Rr9vld50M/tM6E8wI
+         jpew==
+X-Gm-Message-State: AOAM532oNvd8D5vO9yQCI51WYRrPWR7KjlK7tfi5oz5mM6uRk7efAJli
+        9lai8+LwnvR4Z/PZ5I58ZD3jysYyeRM=
+X-Google-Smtp-Source: ABdhPJzaZaRVJWxgwJNfKCeDohuo3+A7Yb29ocP72FubM/z4kBwl7cpo3eiysphzZOvHF+TJ3iQhJg==
+X-Received: by 2002:a17:90a:31cb:: with SMTP id j11mr752176pjf.6.1609189535444;
+        Mon, 28 Dec 2020 13:05:35 -0800 (PST)
+Received: from [10.230.29.27] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id n7sm37461127pfn.141.2020.12.28.13.05.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Dec 2020 13:05:34 -0800 (PST)
+Subject: Re: [PATCH] net: ethernet: Fix memleak in ethoc_probe
+To:     Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Dinghao Liu <dinghao.liu@zju.edu.cn>, kjlu@umn.edu,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201223110615.31389-1-dinghao.liu@zju.edu.cn>
+ <20201223153304.GD3198262@lunn.ch>
+ <20201223123218.1cf7d9cb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20201223210044.GA3253993@lunn.ch>
+ <20201223131149.15fff8d2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <680850a9-8ab0-4672-498e-6dc740720da3@gmail.com>
+ <20201223174146.37e62326@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20201224180631.l4zieher54ncqvwl@chatter.i7.local>
+ <fc7be127-648c-6b09-6f00-3542e0388197@gmail.com>
+ <20201228202302.afkxtco27j4ahh6d@chatter.i7.local>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <08e2b663-c144-d1bb-3f90-5e4ef240d14b@gmail.com>
+Date:   Mon, 28 Dec 2020 13:05:26 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201228202302.afkxtco27j4ahh6d@chatter.i7.local>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Do basic editing & correction to hid-alps.rst:
-- correct a file name (.txt -> .rst)
-- use less hyphenation when not needed
-- fix grammar & punctuation
-- fix article adjectives
-- fix typos/spellos
-- use HID instead of hid consistently
 
+On 12/28/2020 12:23 PM, Konstantin Ryabitsev wrote:
+> On Thu, Dec 24, 2020 at 01:57:40PM -0800, Florian Fainelli wrote:
+>>>> Konstantin, would you be willing to mod the kernel.org instance of
+>>>> patchwork to populate Fixes tags in the generated mboxes?
+>>>
+>>> I'd really rather not -- we try not to diverge from project upstream if at all
+>>> possible, as this dramatically complicates upgrades.
+>>
+>> Well that is really unfortunate then because the Linux developer
+>> community settled on using the Fixes: tag for years now and having
+>> patchwork automatically append those tags would greatly help maintainers.
+> 
+> I agree -- but this is something that needs to be implemented upstream.
+> Picking up a one-off patch just for patchwork.kernel.org is not the right way
+> to go about this.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Jiri Kosina <jikos@kernel.org>
-Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc: linux-input@vger.kernel.org
-Cc: David Herrmann <dh.herrmann@gmail.com>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: linux-doc@vger.kernel.org
-Cc: Jonathan Cameron <jic23@kernel.org>
----
-v2: rebase & resend
-
- Documentation/hid/uhid.rst |   34 +++++++++++++++++-----------------
- 1 file changed, 17 insertions(+), 17 deletions(-)
-
---- linux-next-20201201.orig/Documentation/hid/uhid.rst
-+++ linux-next-20201201/Documentation/hid/uhid.rst
-@@ -3,7 +3,7 @@ UHID - User-space I/O driver support for
- ======================================================
- 
- UHID allows user-space to implement HID transport drivers. Please see
--hid-transport.txt for an introduction into HID transport drivers. This document
-+hid-transport.rst for an introduction into HID transport drivers. This document
- relies heavily on the definitions declared there.
- 
- With UHID, a user-space transport driver can create kernel hid-devices for each
-@@ -15,7 +15,7 @@ There is an example user-space applicati
- The UHID API
- ------------
- 
--UHID is accessed through a character misc-device. The minor-number is allocated
-+UHID is accessed through a character misc-device. The minor number is allocated
- dynamically so you need to rely on udev (or similar) to create the device node.
- This is /dev/uhid by default.
- 
-@@ -45,23 +45,23 @@ The "type" field defines the payload. Fo
- payload-structure available in the union "u" (except for empty payloads). This
- payload contains management and/or device data.
- 
--The first thing you should do is sending an UHID_CREATE2 event. This will
--register the device. UHID will respond with an UHID_START event. You can now
-+The first thing you should do is send a UHID_CREATE2 event. This will
-+register the device. UHID will respond with a UHID_START event. You can now
- start sending data to and reading data from UHID. However, unless UHID sends the
- UHID_OPEN event, the internally attached HID Device Driver has no user attached.
- That is, you might put your device asleep unless you receive the UHID_OPEN
- event. If you receive the UHID_OPEN event, you should start I/O. If the last
--user closes the HID device, you will receive an UHID_CLOSE event. This may be
--followed by an UHID_OPEN event again and so on. There is no need to perform
-+user closes the HID device, you will receive a UHID_CLOSE event. This may be
-+followed by a UHID_OPEN event again and so on. There is no need to perform
- reference-counting in user-space. That is, you will never receive multiple
--UHID_OPEN events without an UHID_CLOSE event. The HID subsystem performs
-+UHID_OPEN events without a UHID_CLOSE event. The HID subsystem performs
- ref-counting for you.
- You may decide to ignore UHID_OPEN/UHID_CLOSE, though. I/O is allowed even
- though the device may have no users.
- 
- If you want to send data on the interrupt channel to the HID subsystem, you send
--an HID_INPUT2 event with your raw data payload. If the kernel wants to send data
--on the interrupt channel to the device, you will read an UHID_OUTPUT event.
-+a HID_INPUT2 event with your raw data payload. If the kernel wants to send data
-+on the interrupt channel to the device, you will read a UHID_OUTPUT event.
- Data requests on the control channel are currently limited to GET_REPORT and
- SET_REPORT (no other data reports on the control channel are defined so far).
- Those requests are always synchronous. That means, the kernel sends
-@@ -71,7 +71,7 @@ the response via UHID_GET_REPORT_REPLY a
- The kernel blocks internal driver-execution during such round-trips (times out
- after a hard-coded period).
- 
--If your device disconnects, you should send an UHID_DESTROY event. This will
-+If your device disconnects, you should send a UHID_DESTROY event. This will
- unregister the device. You can now send UHID_CREATE2 again to register a new
- device.
- If you close() the fd, the device is automatically unregistered and destroyed
-@@ -125,7 +125,7 @@ UHID_START:
-   This is sent when the HID device is started. Consider this as an answer to
-   UHID_CREATE2. This is always the first event that is sent. Note that this
-   event might not be available immediately after write(UHID_CREATE2) returns.
--  Device drivers might required delayed setups.
-+  Device drivers might require delayed setups.
-   This event contains a payload of type uhid_start_req. The "dev_flags" field
-   describes special behaviors of a device. The following flags are defined:
- 
-@@ -149,7 +149,7 @@ UHID_STOP:
-   reloaded/changed the device driver loaded on your HID device (or some other
-   maintenance actions happened).
- 
--  You can usually ignored any UHID_STOP events safely.
-+  You can usually ignore any UHID_STOP events safely.
- 
- UHID_OPEN:
-   This is sent when the HID device is opened. That is, the data that the HID
-@@ -166,17 +166,17 @@ UHID_OUTPUT:
-   This is sent if the HID device driver wants to send raw data to the I/O
-   device on the interrupt channel. You should read the payload and forward it to
-   the device. The payload is of type "struct uhid_output_req".
--  This may be received even though you haven't received UHID_OPEN, yet.
-+  This may be received even though you haven't received UHID_OPEN yet.
- 
- UHID_GET_REPORT:
-   This event is sent if the kernel driver wants to perform a GET_REPORT request
--  on the control channeld as described in the HID specs. The report-type and
-+  on the control channel as described in the HID specs. The report-type and
-   report-number are available in the payload.
-   The kernel serializes GET_REPORT requests so there will never be two in
-   parallel. However, if you fail to respond with a UHID_GET_REPORT_REPLY, the
-   request might silently time out.
--  Once you read a GET_REPORT request, you shall forward it to the hid device and
--  remember the "id" field in the payload. Once your hid device responds to the
-+  Once you read a GET_REPORT request, you shall forward it to the HID device and
-+  remember the "id" field in the payload. Once your HID device responds to the
-   GET_REPORT (or if it fails), you must send a UHID_GET_REPORT_REPLY to the
-   kernel with the exact same "id" as in the request. If the request already
-   timed out, the kernel will ignore the response silently. The "id" field is
-@@ -184,7 +184,7 @@ UHID_GET_REPORT:
- 
- UHID_SET_REPORT:
-   This is the SET_REPORT equivalent of UHID_GET_REPORT. On receipt, you shall
--  send a SET_REPORT request to your hid device. Once it replies, you must tell
-+  send a SET_REPORT request to your HID device. Once it replies, you must tell
-   the kernel about it via UHID_SET_REPORT_REPLY.
-   The same restrictions as for UHID_GET_REPORT apply.
- 
+You should be able to tune this from the patchwork administrative
+interface and add new tags there, would not that be acceptable?
+-- 
+Florian
