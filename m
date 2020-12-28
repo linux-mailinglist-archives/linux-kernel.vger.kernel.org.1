@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F33D92E382D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:07:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C8E12E37A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:59:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730148AbgL1NGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:06:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34294 "EHLO mail.kernel.org"
+        id S1729259AbgL1M6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:58:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729657AbgL1NGf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:06:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CBD8422583;
-        Mon, 28 Dec 2020 13:05:53 +0000 (UTC)
+        id S1729244AbgL1M6s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:58:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F268B22AAD;
+        Mon, 28 Dec 2020 12:58:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160754;
-        bh=Kb+FOsQMUlU45v7HgtHVomXRIUI2/2di63Cmzi3ur5k=;
+        s=korg; t=1609160287;
+        bh=CEl+1ESaSoBIrIofVwhgvL92q+5GbtH7VRLy0yOgss0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MGuCcBqAb71LMNx5M4aZl1mgc7aoh/Vmn4+7l3UxW1/A6V2KPVhvsGqTdIZzoFGx5
-         9YQWiRybKvng9ePgROr1fuCqlqKNK40E4635+7nYiD3sacQDwcMqqGPZFBQKJ8Y2yF
-         2PcztWqkFtHEDbtzF/RyycvSbiSJAe+wlgRqurJs=
+        b=KPAiUIO0mJq0QPDh3YfL1z8lGa3ZX/SQkklnv6qvitJj9HVg2y0QZH9L/DuNMEclF
+         5SBBPkoznbufVQ1H1ca2VGVDbA4fDgad6xG2OOoB+IcUBn1POAQmRxAu8rC80yCtVX
+         0j3t1IwgldMEiVwkVV/2zlzNmZcDN83QXNPt891M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
-        David Sterba <dsterba@suse.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.9 152/175] btrfs: scrub: Dont use inode page cache in scrub_handle_errored_block()
+        stable@vger.kernel.org, Zhe Li <lizhe67@huawei.com>,
+        Richard Weinberger <richard@nod.at>
+Subject: [PATCH 4.4 121/132] jffs2: Fix GC exit abnormally
 Date:   Mon, 28 Dec 2020 13:50:05 +0100
-Message-Id: <20201228124900.623478349@linuxfoundation.org>
+Message-Id: <20201228124852.262096210@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,89 +39,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+From: Zhe Li <lizhe67@huawei.com>
 
-commit 665d4953cde6d9e75c62a07ec8f4f8fd7d396ade upstream
+commit 9afc9a8a4909fece0e911e72b1060614ba2f7969 upstream.
 
-In commit ac0b4145d662 ("btrfs: scrub: Don't use inode pages for device
-replace") we removed the branch of copy_nocow_pages() to avoid
-corruption for compressed nodatasum extents.
+The log of this problem is:
+jffs2: Error garbage collecting node at 0x***!
+jffs2: No space for garbage collection. Aborting GC thread
 
-However above commit only solves the problem in scrub_extent(), if
-during scrub_pages() we failed to read some pages,
-sctx->no_io_error_seen will be non-zero and we go to fixup function
-scrub_handle_errored_block().
+This is because GC believe that it do nothing, so it abort.
 
-In scrub_handle_errored_block(), for sctx without csum (no matter if
-we're doing replace or scrub) we go to scrub_fixup_nodatasum() routine,
-which does the similar thing with copy_nocow_pages(), but does it
-without the extra check in copy_nocow_pages() routine.
+After going over the image of jffs2, I find a scene that
+can trigger this problem stably.
+The scene is: there is a normal dirent node at summary-area,
+but abnormal at corresponding not-summary-area with error
+name_crc.
 
-So for test cases like btrfs/100, where we emulate read errors during
-replace/scrub, we could corrupt compressed extent data again.
+The reason that GC exit abnormally is because it find that
+abnormal dirent node to GC, but when it goes to function
+jffs2_add_fd_to_list, it cannot meet the condition listed
+below:
 
-This patch will fix it just by avoiding any "optimization" for
-nodatasum, just falls back to the normal fixup routine by try read from
-any good copy.
+if ((*prev)->nhash == new->nhash && !strcmp((*prev)->name, new->name))
 
-This also solves WARN_ON() or dead lock caused by lame backref iteration
-in scrub_fixup_nodatasum() routine.
+So no node is marked obsolete, statistical information of
+erase_block do not change, which cause GC exit abnormally.
 
-The deadlock or WARN_ON() won't be triggered before commit ac0b4145d662
-("btrfs: scrub: Don't use inode pages for device replace") since
-copy_nocow_pages() have better locking and extra check for data extent,
-and it's already doing the fixup work by try to read data from any good
-copy, so it won't go scrub_fixup_nodatasum() anyway.
+The root cause of this problem is: we do not check the
+name_crc of the abnormal dirent node with summary is enabled.
 
-This patch disables the faulty code and will be removed completely in a
-followup patch.
+Noticed that in function jffs2_scan_dirent_node, we use
+function jffs2_scan_dirty_space to deal with the dirent
+node with error name_crc. So this patch add a checking
+code in function read_direntry to ensure the correctness
+of dirent node. If checked failed, the dirent node will
+be marked obsolete so GC will pass this node and this
+problem will be fixed.
 
-Fixes: ac0b4145d662 ("btrfs: scrub: Don't use inode pages for device replace")
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-[sudip: adjust context]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Zhe Li <lizhe67@huawei.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- fs/btrfs/scrub.c |   17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
 
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -919,11 +919,6 @@ static int scrub_handle_errored_block(st
- 	have_csum = sblock_to_check->pagev[0]->have_csum;
- 	dev = sblock_to_check->pagev[0]->dev;
- 
--	if (sctx->is_dev_replace && !is_metadata && !have_csum) {
--		sblocks_for_recheck = NULL;
--		goto nodatasum_case;
--	}
--
- 	/*
- 	 * read all mirrors one after the other. This includes to
- 	 * re-read the extent or metadata block that failed (that was
-@@ -1036,13 +1031,19 @@ static int scrub_handle_errored_block(st
- 		goto out;
+---
+ fs/jffs2/readinode.c |   16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+--- a/fs/jffs2/readinode.c
++++ b/fs/jffs2/readinode.c
+@@ -672,6 +672,22 @@ static inline int read_direntry(struct j
+ 			jffs2_free_full_dirent(fd);
+ 			return -EIO;
+ 		}
++
++#ifdef CONFIG_JFFS2_SUMMARY
++		/*
++		 * we use CONFIG_JFFS2_SUMMARY because without it, we
++		 * have checked it while mounting
++		 */
++		crc = crc32(0, fd->name, rd->nsize);
++		if (unlikely(crc != je32_to_cpu(rd->name_crc))) {
++			JFFS2_NOTICE("name CRC failed on dirent node at"
++			   "%#08x: read %#08x,calculated %#08x\n",
++			   ref_offset(ref), je32_to_cpu(rd->node_crc), crc);
++			jffs2_mark_node_obsolete(c, ref);
++			jffs2_free_full_dirent(fd);
++			return 0;
++		}
++#endif
  	}
  
--	if (!is_metadata && !have_csum) {
-+	/*
-+	 * NOTE: Even for nodatasum case, it's still possible that it's a
-+	 * compressed data extent, thus scrub_fixup_nodatasum(), which write
-+	 * inode page cache onto disk, could cause serious data corruption.
-+	 *
-+	 * So here we could only read from disk, and hope our recovery could
-+	 * reach disk before the newer write.
-+	 */
-+	if (0 && !is_metadata && !have_csum) {
- 		struct scrub_fixup_nodatasum *fixup_nodatasum;
- 
- 		WARN_ON(sctx->is_dev_replace);
- 
--nodatasum_case:
--
- 		/*
- 		 * !is_metadata and !have_csum, this means that the data
- 		 * might not be COWed, that it might be modified
+ 	fd->nhash = full_name_hash(fd->name, rd->nsize);
 
 
