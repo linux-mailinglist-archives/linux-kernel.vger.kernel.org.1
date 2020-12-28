@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E58912E3A3B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:34:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 171AA2E38F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:19:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388016AbgL1Ndx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:33:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33044 "EHLO mail.kernel.org"
+        id S2387429AbgL1NRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:17:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387827AbgL1NdA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:33:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78D712072C;
-        Mon, 28 Dec 2020 13:32:44 +0000 (UTC)
+        id S2387410AbgL1NQ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:16:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 82495207CF;
+        Mon, 28 Dec 2020 13:16:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162365;
-        bh=DqaDuenVWDuPim+nlw0OQY6Pd9PF9YPO0SjC34NwOXQ=;
+        s=korg; t=1609161377;
+        bh=SnmQ7xExflvTQ9e7DPhplcTUzYhGNeJnVXpuzLjSSVk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Cg5M/3qgGwQk3VSCX1dDwtD8wJ7hdQiSo+Ae/W/U87PBeI59XHg6H/5hwSwQdtIEK
-         yvx3MLzycv2ugSDf/3102MMNde1YeJ/6sV09wtgGdWhd1FkKTqg1TJUIlgC2ChNZSW
-         /CCnNbG7HxrkZU3LSXFVOyWAZNcfaDSVFDMf5OJE=
+        b=A3sz0qUJDR6GMPNCz7+b/bRn7KcPuG0v7X0/8TAERDiaqv03WoSPicF6H4X/Ed0oL
+         yGz9f0riTCHMCNmQGbFN1vSgzEd3Nhl7UwZ0YrQYP1dEcDMjDAcP7Ugf3ILOMwa+xn
+         704sCel7MJponvTgRBXlw1u4F8Vmy6tCZ5kt7w0o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>, stable@kernel.org
-Subject: [PATCH 4.19 279/346] s390/smp: perform initial CPU reset also for SMT siblings
+        stable@vger.kernel.org, Stefan Haberland <sth@linux.ibm.com>,
+        Jan Hoeppner <hoeppner@linux.ibm.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 4.14 193/242] s390/dasd: fix list corruption of pavgroup group list
 Date:   Mon, 28 Dec 2020 13:49:58 +0100
-Message-Id: <20201228124933.267704720@linuxfoundation.org>
+Message-Id: <20201228124914.180944959@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,55 +40,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Schnelle <svens@linux.ibm.com>
+From: Stefan Haberland <sth@linux.ibm.com>
 
-commit b5e438ebd7e808d1d2435159ac4742e01a94b8da upstream.
+commit 0ede91f83aa335da1c3ec68eb0f9e228f269f6d8 upstream.
 
-Not resetting the SMT siblings might leave them in unpredictable
-state. One of the observed problems was that the CPU timer wasn't
-reset and therefore large system time values where accounted during
-CPU bringup.
+dasd_alias_add_device() moves devices to the active_devices list in case
+of a scheduled LCU update regardless if they have previously been in a
+pavgroup or not.
 
-Cc: <stable@kernel.org> # 4.0
-Fixes: 10ad34bc76dfb ("s390: add SMT support")
-Reviewed-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Example: device A and B are in the same pavgroup.
+
+Device A has already been in a pavgroup and the private->pavgroup pointer
+is set and points to a valid pavgroup. While going through dasd_add_device
+it is moved from the pavgroup to the active_devices list.
+
+In parallel device B might be removed from the same pavgroup in
+remove_device_from_lcu() which in turn checks if the group is empty
+and deletes it accordingly because device A has already been removed from
+there.
+
+When now device A enters remove_device_from_lcu() it is tried to remove it
+from the pavgroup again because the pavgroup pointer is still set and again
+the empty group will be cleaned up which leads to a list corruption.
+
+Fix by setting private->pavgroup to NULL in dasd_add_device.
+
+If the device has been the last device on the pavgroup an empty pavgroup
+remains but this will be cleaned up by the scheduled lcu_update which
+iterates over all existing pavgroups.
+
+Fixes: 8e09f21574ea ("[S390] dasd: add hyper PAV support to DASD device driver, part 1")
+Cc: stable@vger.kernel.org
+Signed-off-by: Stefan Haberland <sth@linux.ibm.com>
+Reviewed-by: Jan Hoeppner <hoeppner@linux.ibm.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/s390/kernel/smp.c |   18 +++---------------
- 1 file changed, 3 insertions(+), 15 deletions(-)
+ drivers/s390/block/dasd_alias.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/s390/kernel/smp.c
-+++ b/arch/s390/kernel/smp.c
-@@ -863,24 +863,12 @@ static void smp_start_secondary(void *cp
- /* Upping and downing of CPUs */
- int __cpu_up(unsigned int cpu, struct task_struct *tidle)
- {
--	struct pcpu *pcpu;
--	int base, i, rc;
-+	struct pcpu *pcpu = pcpu_devices + cpu;
-+	int rc;
- 
--	pcpu = pcpu_devices + cpu;
- 	if (pcpu->state != CPU_STATE_CONFIGURED)
- 		return -EIO;
--	base = smp_get_base_cpu(cpu);
--	for (i = 0; i <= smp_cpu_mtid; i++) {
--		if (base + i < nr_cpu_ids)
--			if (cpu_online(base + i))
--				break;
--	}
--	/*
--	 * If this is the first CPU of the core to get online
--	 * do an initial CPU reset.
--	 */
--	if (i > smp_cpu_mtid &&
--	    pcpu_sigp_retry(pcpu_devices + base, SIGP_INITIAL_CPU_RESET, 0) !=
-+	if (pcpu_sigp_retry(pcpu, SIGP_INITIAL_CPU_RESET, 0) !=
- 	    SIGP_CC_ORDER_CODE_ACCEPTED)
- 		return -EIO;
- 
+--- a/drivers/s390/block/dasd_alias.c
++++ b/drivers/s390/block/dasd_alias.c
+@@ -634,6 +634,7 @@ int dasd_alias_add_device(struct dasd_de
+ 	}
+ 	if (lcu->flags & UPDATE_PENDING) {
+ 		list_move(&device->alias_list, &lcu->active_devices);
++		private->pavgroup = NULL;
+ 		_schedule_lcu_update(lcu, device);
+ 	}
+ 	spin_unlock_irqrestore(&lcu->lock, flags);
 
 
