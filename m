@@ -2,109 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 850022E3D15
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:11:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EC012E4154
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:06:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439169AbgL1OK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:10:56 -0500
-Received: from mail-vs1-f53.google.com ([209.85.217.53]:40502 "EHLO
-        mail-vs1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439140AbgL1OKw (ORCPT
+        id S2439598AbgL1OLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:11:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2439164AbgL1OKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:10:52 -0500
-Received: by mail-vs1-f53.google.com with SMTP id x4so5565613vsp.7;
-        Mon, 28 Dec 2020 06:10:36 -0800 (PST)
+        Mon, 28 Dec 2020 09:10:55 -0500
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78DB3C061798
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 06:10:15 -0800 (PST)
+Received: by mail-qk1-x736.google.com with SMTP id 19so8817984qkm.8
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 06:10:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=660sEowX8NUl1TY2PSGi855PhDC79tS6p6oPbmXtfW8=;
+        b=fBVUWIf8P3+k3u5W4NjqjSEmtkBfy31xsHGz2+wwYB3OWCmY1NJDqzYjnpwg9UcXn2
+         1Gj5NdEfnTDuxNPVFSvl3Ky0U0XBMi5DYNgVfAi4ZmICQLoZ18soaqGPUhSz3VXzOPGR
+         jrRAlisAAj+pPA8j4CjlWTqKV54VDj587pMPWQh1InG9qoYXvBgrGCHz1nTN69FWiX1N
+         zMDzZbvABPFD14qXk/J6+Qe1g0cIrDf8knaxw5sfC1CWPoDiYWL31tFF+J653midM54S
+         4HCEnVmBG1iQ4KthlhHyfHXT0CQFRMRinVb3UE54jqIzZnJlmHVtn+oSLiUp23Q8+JO7
+         a86Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kVDVcWWL6BrKWAViQNJ51zoi/mT+OBUb6BuJEL+vMoo=;
-        b=pE4CTaRrZYjFplGHrWnQdEsl68KB7lK0M4s8XWTiGRuYAT6sW+RzYZQdLZJAcO4zu+
-         pqn/oaceomlj59wTB7ZB4PPOgVVknq3jp4LBSfUbTaZO3rXHcxVw7Ab2pc1MpkjsgBmZ
-         bxGlyauAfTRm2gk6n7p/2ohOJmweAjZm3aDRUv5IA4zbS4gnYiWKcwcrS7UeASihKPsn
-         8PUVKsu+HTd9Ac58qS0Q0y5X+EeEVqR3ZWMkXzkaJxCeE5RFqHyVttQAYU+bKS2uIjnW
-         h8Uk44fSw4EfkC/aJifP3aVn3vLevRw5ghdGJOEjwK4fznZrhm+/uBXb0idDBeM80Lb0
-         6KYA==
-X-Gm-Message-State: AOAM5330QSiltI+gY6MW3N+embluiTwUXfYi8Tr1C8bMfEEGts/VodDT
-        sdEVeQV4ztt3hGPNkfP8oz2ZR2Xj+wwTGRt8kiOWlCjItTg=
-X-Google-Smtp-Source: ABdhPJyMFLLyG19RShLswn1DSR8JZ58ywdALLa9LeyQVLy11CNG6bQXE6EcX/vDssohktYYfTRnABoFmZNKkk1D0UR4=
-X-Received: by 2002:a67:f601:: with SMTP id k1mr28677791vso.46.1609164610688;
- Mon, 28 Dec 2020 06:10:10 -0800 (PST)
+         :message-id:subject:to;
+        bh=660sEowX8NUl1TY2PSGi855PhDC79tS6p6oPbmXtfW8=;
+        b=Wqr0exUhNOjGtNdAzoP+N1AlpdM1oYo0l1Jr8RABp2ltyfaZRazucx/XbCYErHUBZt
+         RLlTC/AZITib+z6gHoAsmzsHTetlJbXUMJYCMEsGgXKsLt/4XEKpL6iUX/4KTwZ28OkT
+         8jXSa5E1VPOgi3j5Foa6J9uB4RZN3mBJdyPuyq5ej20G9NnsbNnV6/N93QDYmUQp0NGi
+         9oettza5w7ovKaNXllsU/Zrv/XkpvMabQkvu3lOEKpEJbVdtNQjszJwYR7oCtXtrWp/O
+         n8e0Eyv1YIRZNX6BNmZkBl/0ghlxU+LR1taG9i8KLSi91igWpdKloUO03mEbgCskDkGf
+         gahg==
+X-Gm-Message-State: AOAM532fF/511Bl7ASo4aZ+8EF87o/KMvCyIRtUBdMKat39fHDREfphC
+        2edg6Snu5arhF4eFaeFp/453o8Y0emkm+IYFxtQ=
+X-Google-Smtp-Source: ABdhPJwzPxtVoTPN0Nmz+v1/YjM5oX41b9gzZxow/JI60gsV+mqAwAVkzphIxglY5Y6AEsHufDxPJfImTGUN9Ju/rfw=
+X-Received: by 2002:ae9:f312:: with SMTP id p18mr43728735qkg.311.1609164614671;
+ Mon, 28 Dec 2020 06:10:14 -0800 (PST)
 MIME-Version: 1.0
-References: <20201228125020.963311703@linuxfoundation.org> <20201228125024.061845231@linuxfoundation.org>
-In-Reply-To: <20201228125024.061845231@linuxfoundation.org>
-From:   Ilia Mirkin <imirkin@alum.mit.edu>
-Date:   Mon, 28 Dec 2020 09:09:59 -0500
-Message-ID: <CAKb7UvhvjW+q+FXKoNaWUYm1QqzZ_o6FNjJQbwBJ+Lo9ybBcKQ@mail.gmail.com>
-Subject: Re: [PATCH 5.10 064/717] drm/edid: Fix uninitialized variable in drm_cvt_modes()
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "# 3.9+" <stable@vger.kernel.org>, Lyude Paul <lyude@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
+References: <20201217170009.GA29186@192.168.3.9>
+In-Reply-To: <20201217170009.GA29186@192.168.3.9>
+From:   Weiping Zhang <zwp10758@gmail.com>
+Date:   Mon, 28 Dec 2020 22:10:03 +0800
+Message-ID: <CAA70yB6O2on1tpoA8TpT+Hp03iu_Xrpaa_d0HjVa75UFMTA4yg@mail.gmail.com>
+Subject: Re: [RFC PATCH v2] taskstats: add /proc/taskstats to fetch pid/tgid status
+To:     davem@davemloft.net, bsingharora@gmail.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+Hi David,
 
-Linus had to apply a fixup for this patch. Please ensure that it's in
-your patch list:
+Could you help review this patch ?
 
-commit d652d5f1eeeb06046009f4fcb9b4542249526916
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu Dec 17 09:27:57 2020 -0800
+thanks
 
-    drm/edid: fix objtool warning in drm_cvt_modes()
-
-It does not appear to have a Fixes tag, so may not have been picked up
-by your automated tooling.
-
-Cheers,
-
-  -ilia
-
-On Mon, Dec 28, 2020 at 9:01 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Fri, Dec 18, 2020 at 1:24 AM Weiping Zhang
+<zhangweiping@didiglobal.com> wrote:
 >
-> From: Lyude Paul <lyude@redhat.com>
+> If a program needs monitor lots of process's status, it needs two
+> syscalls for every process. The first one is telling kernel which
+> pid/tgid should be monitored by send a command(write socket) to kernel.
+> The second one is read the statistics by read socket. This patch add
+> a new interface /proc/taskstats to reduce two syscalls to one ioctl.
+> The user just set the target pid/tgid to the struct taskstats.ac_pid,
+> then kernel will collect statistics for that pid/tgid.
 >
-> [ Upstream commit 991fcb77f490390bcad89fa67d95763c58cdc04c ]
->
-> Noticed this when trying to compile with -Wall on a kernel fork. We
-> potentially don't set width here, which causes the compiler to complain
-> about width potentially being uninitialized in drm_cvt_modes(). So, let's
-> fix that.
->
-> Changes since v1:
-> * Don't emit an error as this code isn't reachable, just mark it as such
-> Changes since v2:
-> * Remove now unused variable
->
-> Fixes: 3f649ab728cd ("treewide: Remove uninitialized_var() usage")
-> Signed-off-by: Lyude Paul <lyude@redhat.com>
-> Reviewed-by: Ilia Mirkin <imirkin@alum.mit.edu>
-> Link: https://patchwork.freedesktop.org/patch/msgid/20201105235703.1328115-1-lyude@redhat.com
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> Signed-off-by: Weiping Zhang <zhangweiping@didiglobal.com>
 > ---
->  drivers/gpu/drm/drm_edid.c | 2 ++
->  1 file changed, 2 insertions(+)
+> Changes since v1:
+>  * use /proc/taskstats instead of /dev/taskstats
 >
-> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
-> index 631125b46e04c..b84efd538a702 100644
-> --- a/drivers/gpu/drm/drm_edid.c
-> +++ b/drivers/gpu/drm/drm_edid.c
-> @@ -3114,6 +3114,8 @@ static int drm_cvt_modes(struct drm_connector *connector,
->                 case 0x0c:
->                         width = height * 15 / 9;
->                         break;
-> +               default:
-> +                       unreachable();
->                 }
+>  include/uapi/linux/taskstats.h |  5 +++
+>  kernel/taskstats.c             | 73 +++++++++++++++++++++++++++++++++-
+>  2 files changed, 77 insertions(+), 1 deletion(-)
 >
->                 for (j = 1; j < 5; j++) {
+> diff --git a/include/uapi/linux/taskstats.h b/include/uapi/linux/taskstats.h
+> index ccbd08709321..077eab84c77e 100644
+> --- a/include/uapi/linux/taskstats.h
+> +++ b/include/uapi/linux/taskstats.h
+> @@ -214,6 +214,11 @@ enum {
+>
+>  #define TASKSTATS_CMD_ATTR_MAX (__TASKSTATS_CMD_ATTR_MAX - 1)
+>
+> +/* ioctl command */
+> +#define TASKSTATS_IOC_ATTR_PID _IO('T', TASKSTATS_CMD_ATTR_PID)
+> +#define TASKSTATS_IOC_ATTR_TGID        _IO('T', TASKSTATS_CMD_ATTR_TGID)
+> +
+> +
+>  /* NETLINK_GENERIC related info */
+>
+>  #define TASKSTATS_GENL_NAME    "TASKSTATS"
+> diff --git a/kernel/taskstats.c b/kernel/taskstats.c
+> index a2802b6ff4bb..c0f9e2f2308b 100644
+> --- a/kernel/taskstats.c
+> +++ b/kernel/taskstats.c
+> @@ -21,6 +21,8 @@
+>  #include <net/genetlink.h>
+>  #include <linux/atomic.h>
+>  #include <linux/sched/cputime.h>
+> +#include <linux/proc_fs.h>
+> +#include <linux/uio.h>
+>
+>  /*
+>   * Maximum length of a cpumask that can be specified in
+> @@ -28,6 +30,10 @@
+>   */
+>  #define TASKSTATS_CPUMASK_MAXLEN       (100+6*NR_CPUS)
+>
+> +#ifdef CONFIG_PROC_FS
+> +#define PROC_TASKSTATS "taskstats"
+> +#endif
+> +
+>  static DEFINE_PER_CPU(__u32, taskstats_seqnum);
+>  static int family_registered;
+>  struct kmem_cache *taskstats_cache;
+> @@ -666,6 +672,60 @@ static struct genl_family family __ro_after_init = {
+>         .n_ops          = ARRAY_SIZE(taskstats_ops),
+>  };
+>
+> +#ifdef CONFIG_PROC_FS
+> +static long taskstats_ioctl_pid_tgid(unsigned long arg, bool tgid)
+> +{
+> +       struct taskstats kstat;
+> +       struct taskstats *ustat = (struct taskstats *)arg;
+> +       u32 id;
+> +       unsigned long offset = offsetof(struct taskstats, ac_pid);
+> +       long ret;
+> +
+> +       /* userspace set monitored pid/tgid to the field "ac_pid" */
+> +       if (unlikely(copy_from_user(&id, (void *)(arg + offset), sizeof(u32))))
+> +               return -EFAULT;
+> +
+> +       if (tgid)
+> +               ret = fill_stats_for_tgid(id, &kstat);
+> +       else
+> +               ret = fill_stats_for_pid(id, &kstat);
+> +       if (ret < 0)
+> +               return ret;
+> +
+> +       if (unlikely(copy_to_user(ustat, &kstat, sizeof(struct taskstats))))
+> +               return -EFAULT;
+> +
+> +       return 0;
+> +}
+> +
+> +static long taskstats_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+> +{
+> +       long ret;
+> +
+> +       switch (cmd) {
+> +       case TASKSTATS_IOC_ATTR_PID:
+> +               ret = taskstats_ioctl_pid_tgid(arg, false);
+> +               break;
+> +       case TASKSTATS_IOC_ATTR_TGID:
+> +               ret = taskstats_ioctl_pid_tgid(arg, true);
+> +               break;
+> +       default:
+> +               ret = -EINVAL;
+> +               break;
+> +       }
+> +
+> +       return ret;
+> +}
+> +
+> +static const struct proc_ops taskstats_proc_ops = {
+> +       .proc_ioctl = taskstats_ioctl,
+> +#ifdef CONFIG_COMPAT
+> +       .proc_compat_ioctl = taskstats_ioctl,
+> +#endif
+> +};
+> +#endif
+> +
+> +
+>  /* Needed early in initialization */
+>  void __init taskstats_init_early(void)
+>  {
+> @@ -682,9 +742,20 @@ static int __init taskstats_init(void)
+>  {
+>         int rc;
+>
+> +#ifdef CONFIG_PROC_FS
+> +       if (!proc_create(PROC_TASKSTATS,  0, NULL, &taskstats_proc_ops)) {
+> +               pr_err("failed to create /proc/%s\n", PROC_TASKSTATS);
+> +               return -1;
+> +       }
+> +#endif
+> +
+>         rc = genl_register_family(&family);
+> -       if (rc)
+> +       if (rc) {
+> +#ifdef CONFIG_PROC_FS
+> +               remove_proc_entry(PROC_TASKSTATS, NULL);
+> +#endif
+>                 return rc;
+> +       }
+>
+>         family_registered = 1;
+>         pr_info("registered taskstats version %d\n", TASKSTATS_GENL_VERSION);
 > --
-> 2.27.0
->
->
+> 2.17.2
 >
