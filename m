@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D75EE2E6950
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:48:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7A602E66FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:19:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441729AbgL1Qrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:47:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51530 "EHLO mail.kernel.org"
+        id S1732532AbgL1NOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:14:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42616 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728064AbgL1MzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:55:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0463B207C9;
-        Mon, 28 Dec 2020 12:54:55 +0000 (UTC)
+        id S1732440AbgL1NOd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:14:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 563DF20776;
+        Mon, 28 Dec 2020 13:13:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160096;
-        bh=NcOZgAUmwTadk2VZ5sgjaOQfN3EteHVDTXXbCFU3xH4=;
+        s=korg; t=1609161232;
+        bh=1HKm8A/RJzXlQcgNFDpF2YbZ7UZI3cbSrbp3YAdUJyg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JoB2/VHafwnxHmgF14O/jRNyuFvy5SDH851//876NqhCiLQPKIvf2AoUnYg4XHoeW
-         Xbs0F5d3AUSnABIp5ATZR4pqtCKIvCrS+A1/ODRjo0U7x4qVCUhye+Tb4WwrCD/tIU
-         S45KtpYvuOQELj0Tk9T71lw1N+bFOUKzmjz7lKdY=
+        b=F5yTuuaG1fX/h++/dESBq1ZSUCD3oom2k3xuqdZX2P7T/dHsMeYKoFB/hr6k5D75E
+         85w3ir0I6xtA/udQPr+K7q5zLSLA01Q7eP5F7I32xaoWtkd/WYODP7FQGg23Y6Pd28
+         2wL/On0vy0Ms676rR+BeRuvUENf/NadKA2dtZIUY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Keqian Zhu <zhukeqian1@huawei.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Karan Tilak Kumar <kartilak@cisco.com>,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 068/132] clocksource/drivers/arm_arch_timer: Correct fault programming of CNTKCTL_EL1.EVNTI
+Subject: [PATCH 4.14 147/242] scsi: fnic: Fix error return code in fnic_probe()
 Date:   Mon, 28 Dec 2020 13:49:12 +0100
-Message-Id: <20201228124849.736450149@linuxfoundation.org>
+Message-Id: <20201228124911.941490459@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,67 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Keqian Zhu <zhukeqian1@huawei.com>
+From: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-[ Upstream commit 8b7770b877d187bfdae1eaf587bd2b792479a31c ]
+[ Upstream commit d4fc94fe65578738ded138e9fce043db6bfc3241 ]
 
-ARM virtual counter supports event stream, it can only trigger an event
-when the trigger bit (the value of CNTKCTL_EL1.EVNTI) of CNTVCT_EL0 changes,
-so the actual period of event stream is 2^(cntkctl_evnti + 1). For example,
-when the trigger bit is 0, then virtual counter trigger an event for every
-two cycles.
+Return a negative error code from the error handling case instead of 0 as
+done elsewhere in this function.
 
-While we're at it, rework the way we compute the trigger bit position
-by making it more obvious that when bits [n:n-1] are both set (with n
-being the most significant bit), we pick bit (n + 1).
-
-Fixes: 037f637767a8 ("drivers: clocksource: add support for ARM architected timer event stream")
-Suggested-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
-Acked-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20201204073126.6920-3-zhukeqian1@huawei.com
+Link: https://lore.kernel.org/r/1607068060-31203-1-git-send-email-zhangchangzhong@huawei.com
+Fixes: 5df6d737dd4b ("[SCSI] fnic: Add new Cisco PCI-Express FCoE HBA")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Reviewed-by: Karan Tilak Kumar <kartilak@cisco.com>
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clocksource/arm_arch_timer.c | 23 ++++++++++++++++-------
- 1 file changed, 16 insertions(+), 7 deletions(-)
+ drivers/scsi/fnic/fnic_main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
-index c64d543d64bf6..4e303c77caed5 100644
---- a/drivers/clocksource/arm_arch_timer.c
-+++ b/drivers/clocksource/arm_arch_timer.c
-@@ -310,15 +310,24 @@ static void arch_timer_evtstrm_enable(int divider)
+diff --git a/drivers/scsi/fnic/fnic_main.c b/drivers/scsi/fnic/fnic_main.c
+index aacadbf20b695..878e486762729 100644
+--- a/drivers/scsi/fnic/fnic_main.c
++++ b/drivers/scsi/fnic/fnic_main.c
+@@ -746,6 +746,7 @@ static int fnic_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	for (i = 0; i < FNIC_IO_LOCKS; i++)
+ 		spin_lock_init(&fnic->io_req_lock[i]);
  
- static void arch_timer_configure_evtstream(void)
- {
--	int evt_stream_div, pos;
-+	int evt_stream_div, lsb;
-+
-+	/*
-+	 * As the event stream can at most be generated at half the frequency
-+	 * of the counter, use half the frequency when computing the divider.
-+	 */
-+	evt_stream_div = arch_timer_rate / ARCH_TIMER_EVT_STREAM_FREQ / 2;
-+
-+	/*
-+	 * Find the closest power of two to the divisor. If the adjacent bit
-+	 * of lsb (last set bit, starts from 0) is set, then we use (lsb + 1).
-+	 */
-+	lsb = fls(evt_stream_div) - 1;
-+	if (lsb > 0 && (evt_stream_div & BIT(lsb - 1)))
-+		lsb++;
- 
--	/* Find the closest power of two to the divisor */
--	evt_stream_div = arch_timer_rate / ARCH_TIMER_EVT_STREAM_FREQ;
--	pos = fls(evt_stream_div);
--	if (pos > 1 && !(evt_stream_div & (1 << (pos - 2))))
--		pos--;
- 	/* enable event stream */
--	arch_timer_evtstrm_enable(min(pos, 15));
-+	arch_timer_evtstrm_enable(max(0, min(lsb, 15)));
- }
- 
- static void arch_counter_set_user_access(void)
++	err = -ENOMEM;
+ 	fnic->io_req_pool = mempool_create_slab_pool(2, fnic_io_req_cache);
+ 	if (!fnic->io_req_pool)
+ 		goto err_out_free_resources;
 -- 
 2.27.0
 
