@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F7F82E3B12
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:46:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A59A92E406A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:53:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404854AbgL1NpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:45:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45900 "EHLO mail.kernel.org"
+        id S2391850AbgL1OSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:18:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53160 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404825AbgL1NpX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:45:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C18A20738;
-        Mon, 28 Dec 2020 13:45:07 +0000 (UTC)
+        id S2501952AbgL1OS0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:18:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD1202245C;
+        Mon, 28 Dec 2020 14:18:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163108;
-        bh=bF7vx4Z85YMV/kPTaza6pJ7mCMjjtOpTG/9JuN7czHQ=;
+        s=korg; t=1609165085;
+        bh=2WvY5f03cvQy4xUZwAWoi107DIC22ZBcmbic3ZzcDHk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IGVQgHmaiYUrIZvrolKSS+HptBjaOaCSg1jSTW9Phni+XpTI9gZR6Tr9G5KZAt8pS
-         JXowmV7EGzMdvydrMbx2tuYDGMpbXfyjf1owe5Cepwa4txMNqRth2QKAAaTWgN3ap7
-         QV5CLsfSgFEbYxvsRW2R2te+zpvmrA9ZsKU+fInc=
+        b=c+yrGuvQ29IxRaXzgGN1DOpfw1rrc8jPGZNm2L5YJPZJWzeMQ7jQchO4aFApoohxJ
+         W3mBpendjx5lgv6IyFCQ5ybEtGSD1dvWaCkj3V+F7UtG3fuSDjEIQJQs2QfDbBWSkk
+         PF+3MBs7GxvDzjObN57Eb0h12JtkpoaZM4DXucF4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
+        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 140/453] video: fbdev: atmel_lcdfb: fix return error code in atmel_lcdfb_of_init()
+Subject: [PATCH 5.10 378/717] x86/kprobes: Restore BTF if the single-stepping is cancelled
 Date:   Mon, 28 Dec 2020 13:46:16 +0100
-Message-Id: <20201228124943.941391847@linuxfoundation.org>
+Message-Id: <20201228125039.119863260@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-[ Upstream commit ba236455ee750270f33998df57f982433cea4d8e ]
+[ Upstream commit 78ff2733ff352175eb7f4418a34654346e1b6cd2 ]
 
-If devm_kzalloc() failed after the first time, atmel_lcdfb_of_init()
-can't return -ENOMEM, fix this by putting the error code in loop.
+Fix to restore BTF if single-stepping causes a page fault and
+it is cancelled.
 
-Fixes: b985172b328a ("video: atmel_lcdfb: add device tree suport")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-Link: https://patchwork.freedesktop.org/patch/msgid/20201117061350.3453742-1-yangyingliang@huawei.com
+Usually the BTF flag was restored when the single stepping is done
+(in resume_execution()). However, if a page fault happens on the
+single stepping instruction, the fault handler is invoked and
+the single stepping is cancelled. Thus, the BTF flag is not
+restored.
+
+Fixes: 1ecc798c6764 ("x86: debugctlmsr kprobes")
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/160389546985.106936.12727996109376240993.stgit@devnote2
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/atmel_lcdfb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kernel/kprobes/core.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/video/fbdev/atmel_lcdfb.c b/drivers/video/fbdev/atmel_lcdfb.c
-index 5ff8e0320d95b..cf2bfff2efbf1 100644
---- a/drivers/video/fbdev/atmel_lcdfb.c
-+++ b/drivers/video/fbdev/atmel_lcdfb.c
-@@ -987,8 +987,8 @@ static int atmel_lcdfb_of_init(struct atmel_lcdfb_info *sinfo)
- 	}
+diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+index 547c7abb39f51..39f7d8c3c064b 100644
+--- a/arch/x86/kernel/kprobes/core.c
++++ b/arch/x86/kernel/kprobes/core.c
+@@ -937,6 +937,11 @@ int kprobe_fault_handler(struct pt_regs *regs, int trapnr)
+ 		 * So clear it by resetting the current kprobe:
+ 		 */
+ 		regs->flags &= ~X86_EFLAGS_TF;
++		/*
++		 * Since the single step (trap) has been cancelled,
++		 * we need to restore BTF here.
++		 */
++		restore_btf();
  
- 	INIT_LIST_HEAD(&pdata->pwr_gpios);
--	ret = -ENOMEM;
- 	for (i = 0; i < gpiod_count(dev, "atmel,power-control"); i++) {
-+		ret = -ENOMEM;
- 		gpiod = devm_gpiod_get_index(dev, "atmel,power-control",
- 					     i, GPIOD_ASIS);
- 		if (IS_ERR(gpiod))
+ 		/*
+ 		 * If the TF flag was set before the kprobe hit,
 -- 
 2.27.0
 
