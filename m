@@ -2,271 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 728A82E3404
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 05:30:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB672E3407
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 05:36:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726330AbgL1EaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 23:30:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726167AbgL1EaM (ORCPT
+        id S1726503AbgL1Efx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 23:35:53 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:58309 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726485AbgL1Efw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 23:30:12 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC74BC061795
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 20:29:25 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id q75so8944293wme.2
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 20:29:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Wjb+LO/ssuceHPKZ/ftYW2L7sh6AvUBxbmjIMtkzZqE=;
-        b=vNLyIrHDJ8HRiUDhPhwNOjFF4Ghdggy2jXkEf7p45zpM4vy6UYPdXmSO762obMK/De
-         QHfsS2PS6so0x0mVsyapPYQTnzLOOk/kN/ALwnXYkjK+O9pogKphZGm5Bz+4GKgofnmo
-         0+wf36CXATc7aqClo64cjjRjibPZm6kuZwYpaSDx5UWxyEluktzLBNvlj81SKq+4qx/K
-         l3eN2eqqh4yn5RVHAannbIUtyMwWot7vhPVz0SzibLePbe8VRfXvDj1pFKGXCA5glmo+
-         tblwwfyRsMlzhqr0XpyB5jVPPnaEPIyYrnjpHR/6i5eX+KHh20WiwA3f4zDKCdzVGyXn
-         qb+w==
+        Sun, 27 Dec 2020 23:35:52 -0500
+Received: from mail-pj1-f71.google.com ([209.85.216.71])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <po-hsu.lin@canonical.com>)
+        id 1ktkFR-0005R8-VN
+        for linux-kernel@vger.kernel.org; Mon, 28 Dec 2020 04:35:10 +0000
+Received: by mail-pj1-f71.google.com with SMTP id gt6so5635710pjb.7
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 20:35:09 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Wjb+LO/ssuceHPKZ/ftYW2L7sh6AvUBxbmjIMtkzZqE=;
-        b=WER2ALEsaq98pbbOrHENjwvyxddIpd5LXeTzBSbS0giwQ7g32SDoEFEjZEr7pzBL27
-         Afn9WJoSPZCrf1/dV98y5zbyEKjx+/3slz2mG3SJY+0Nh93quo8Ebqx9EdtOSsQjgqt5
-         yxPWfPJ5QhQZ7B9yiSsxCa+bHdWO4XaEyY+rPFAAYnBPUWF8wVlgcgvngm8lMeTG6aUA
-         Mel3OtFB1tm5X0rZHMm9NPI4TPOlGMzoa7svxYgLh412C3HsudP48DiABN/xGlbag4lV
-         6zUKzA7UCuGlMD+T84L5sM4CpxB66XiLFQ7o9ARkJdRdf/sWS5QD+BpEPtjG/yYoI5GS
-         c7NQ==
-X-Gm-Message-State: AOAM530PPBFb22Kq3jimNKdMJCAbSrDNhsAhRs4E2V78TPPz2ynmrQ/4
-        6jwXdaTSZlrri8FRt4nMZfBitkydYTGTD3A63CWHtg==
-X-Google-Smtp-Source: ABdhPJzLY3n9dp7VwXrIfmnAWn81h57NTQfZPAg7EPAmaWCfaEYjm25PeSjYFfk1njw/JjqV5aDagF311R4+zQTrb6Y=
-X-Received: by 2002:a7b:cf37:: with SMTP id m23mr18480668wmg.37.1609129763943;
- Sun, 27 Dec 2020 20:29:23 -0800 (PST)
-MIME-Version: 1.0
-References: <20201208132835.6151-1-will@kernel.org> <20201208132835.6151-11-will@kernel.org>
-In-Reply-To: <20201208132835.6151-11-will@kernel.org>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Sun, 27 Dec 2020 20:29:13 -0800
-Message-ID: <CAJuCfpE9WGaNPkFC+GrdMnHV+pFaH+r1zLvbBbcsFy4ACim94w@mail.gmail.com>
-Subject: Re: [PATCH v5 10/15] sched: Introduce force_compatible_cpus_allowed_ptr()
- to limit CPU affinity
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=xDaj2aGFc8Ryio1B37xmDRbgZ25x8BPX+LqRqApW28A=;
+        b=rjFq9qEKf1YmZN9d1rCvqC5PYwHphotVx4QEorRhjVxC66WItIcSGascXrL661RM48
+         gTA8bEfKHfkervFBDb1MLm+ElsdZ+F+QXq6vU67wvelV1Yt14DKUuFDz43jz2jFas2Wc
+         p+BiorwkmUXf27AGEHQbdPIN2UOl0rP46cjt9okvbFLY/timFV92FsxalJ7qMaVkLDnc
+         WYyoYkF83lyaUz0wIBQSQ7tRnwu3+DXwKexvHDm01mj9uds7oWgT4ltkaq3NWu4ExqCN
+         slUd3GZUytVGri5g+sk0amIMh61as6ZOMG1TMVzwYjKE0VAEGqOtv81u7csqdt04XD1E
+         TEyQ==
+X-Gm-Message-State: AOAM533G88fMIl2FV5INp+5UMCA98F7MZ+ji5z+pxfBY/o5BrvIJ6EWW
+        6E453WE5xfWWlxA1Udtf2LQh9Z8jN/FF9B20Bvtbj+wS8Gef0FXHpeJCSYujoSB/o3EwDrCnf/4
+        DXFJK1iEDVeEL/H0LsQqHJdWdSS5L8+mYvc7qJB6t
+X-Received: by 2002:a05:6a00:8c7:b029:19d:afa5:34e5 with SMTP id s7-20020a056a0008c7b029019dafa534e5mr39739021pfu.30.1609130108308;
+        Sun, 27 Dec 2020 20:35:08 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxAvOE6o0cTX5MNAozIzz9VZuWmqcjEVnhGxLPmH3qElG3qiwVdIXI/yBMtB9j5uKel2nyJxA==
+X-Received: by 2002:a05:6a00:8c7:b029:19d:afa5:34e5 with SMTP id s7-20020a056a0008c7b029019dafa534e5mr39739005pfu.30.1609130107999;
+        Sun, 27 Dec 2020 20:35:07 -0800 (PST)
+Received: from Leggiero.taipei.internal (61-220-137-38.HINET-IP.hinet.net. [61.220.137.38])
+        by smtp.gmail.com with ESMTPSA id a1sm34567962pfo.56.2020.12.27.20.35.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Dec 2020 20:35:07 -0800 (PST)
+From:   Po-Hsu Lin <po-hsu.lin@canonical.com>
+To:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     po-hsu.lin@canonical.com, shuah@kernel.org, paulus@samba.org,
+        benh@kernel.crashing.org, oohall@gmail.com, mpe@ellerman.id.au
+Subject: [PATCH] selftests/powerpc: make the test check in eeh-basic.sh posix compliant
+Date:   Mon, 28 Dec 2020 12:34:59 +0800
+Message-Id: <20201228043459.14281-1-po-hsu.lin@canonical.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just a couple minor nits.
+The == operand is a bash extension, thus this will fail on Ubuntu with
 
-On Tue, Dec 8, 2020 at 5:29 AM Will Deacon <will@kernel.org> wrote:
->
-> Asymmetric systems may not offer the same level of userspace ISA support
-> across all CPUs, meaning that some applications cannot be executed by
-> some CPUs. As a concrete example, upcoming arm64 big.LITTLE designs do
-> not feature support for 32-bit applications on both clusters.
->
-> Although userspace can carefully manage the affinity masks for such
-> tasks, one place where it is particularly problematic is execve()
-> because the CPU on which the execve() is occurring may be incompatible
-> with the new application image. In such a situation, it is desirable to
-> restrict the affinity mask of the task and ensure that the new image is
-> entered on a compatible CPU. From userspace's point of view, this looks
-> the same as if the incompatible CPUs have been hotplugged off in the
-> task's affinity mask.
->
-> In preparation for restricting the affinity mask for compat tasks on
-> arm64 systems without uniform support for 32-bit applications, introduce
-> force_compatible_cpus_allowed_ptr(), which restricts the affinity mask
-> for a task to contain only compatible CPUs.
->
-> Reviewed-by: Quentin Perret <qperret@google.com>
-> Signed-off-by: Will Deacon <will@kernel.org>
-> ---
->  include/linux/sched.h |   1 +
->  kernel/sched/core.c   | 100 +++++++++++++++++++++++++++++++++++-------
->  2 files changed, 86 insertions(+), 15 deletions(-)
->
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index 76cd21fa5501..e42dd0fb85c5 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -1653,6 +1653,7 @@ extern int task_can_attach(struct task_struct *p, const struct cpumask *cs_cpus_
->  #ifdef CONFIG_SMP
->  extern void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask);
->  extern int set_cpus_allowed_ptr(struct task_struct *p, const struct cpumask *new_mask);
-> +extern void force_compatible_cpus_allowed_ptr(struct task_struct *p);
->  #else
->  static inline void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask)
->  {
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 92ac3e53f50a..1cfc94be18a9 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -1863,25 +1863,19 @@ void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask)
->  }
->
->  /*
-> - * Change a given task's CPU affinity. Migrate the thread to a
-> - * proper CPU and schedule it away if the CPU it's executing on
-> - * is removed from the allowed bitmask.
-> - *
-> - * NOTE: the caller must have a valid reference to the task, the
-> - * task must not exit() & deallocate itself prematurely. The
-> - * call is not atomic; no spinlocks may be held.
-> + * Called with both p->pi_lock and rq->lock held; drops both before returning.
+As the /bin/sh on Ubuntu is pointed to DASH.
 
-Maybe annotate with __releases()?
+Use -eq to fix this posix compatibility issue.
 
->   */
-> -static int __set_cpus_allowed_ptr(struct task_struct *p,
-> -                                 const struct cpumask *new_mask, bool check)
-> +static int __set_cpus_allowed_ptr_locked(struct task_struct *p,
-> +                                        const struct cpumask *new_mask,
-> +                                        bool check,
-> +                                        struct rq *rq,
-> +                                        struct rq_flags *rf)
->  {
->         const struct cpumask *cpu_valid_mask = cpu_active_mask;
->         const struct cpumask *cpu_allowed_mask = task_cpu_possible_mask(p);
->         unsigned int dest_cpu;
-> -       struct rq_flags rf;
-> -       struct rq *rq;
->         int ret = 0;
->
-> -       rq = task_rq_lock(p, &rf);
->         update_rq_clock(rq);
->
->         if (p->flags & PF_KTHREAD) {
-> @@ -1936,7 +1930,7 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
->         if (task_running(rq, p) || p->state == TASK_WAKING) {
->                 struct migration_arg arg = { p, dest_cpu };
->                 /* Need help from migration thread: drop lock and wait. */
-> -               task_rq_unlock(rq, p, &rf);
-> +               task_rq_unlock(rq, p, rf);
->                 stop_one_cpu(cpu_of(rq), migration_cpu_stop, &arg);
->                 return 0;
->         } else if (task_on_rq_queued(p)) {
-> @@ -1944,20 +1938,96 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
->                  * OK, since we're going to drop the lock immediately
->                  * afterwards anyway.
->                  */
-> -               rq = move_queued_task(rq, &rf, p, dest_cpu);
-> +               rq = move_queued_task(rq, rf, p, dest_cpu);
->         }
->  out:
-> -       task_rq_unlock(rq, p, &rf);
-> +       task_rq_unlock(rq, p, rf);
->
->         return ret;
->  }
->
-> +/*
-> + * Change a given task's CPU affinity. Migrate the thread to a
-> + * proper CPU and schedule it away if the CPU it's executing on
-> + * is removed from the allowed bitmask.
-> + *
-> + * NOTE: the caller must have a valid reference to the task, the
-> + * task must not exit() & deallocate itself prematurely. The
-> + * call is not atomic; no spinlocks may be held.
-> + */
-> +static int __set_cpus_allowed_ptr(struct task_struct *p,
-> +                                 const struct cpumask *new_mask, bool check)
-> +{
-> +       struct rq_flags rf;
-> +       struct rq *rq;
-> +
-> +       rq = task_rq_lock(p, &rf);
-> +       return __set_cpus_allowed_ptr_locked(p, new_mask, check, rq, &rf);
-> +}
-> +
->  int set_cpus_allowed_ptr(struct task_struct *p, const struct cpumask *new_mask)
->  {
->         return __set_cpus_allowed_ptr(p, new_mask, false);
->  }
->  EXPORT_SYMBOL_GPL(set_cpus_allowed_ptr);
->
-> +/*
-> + * Change a given task's CPU affinity to the intersection of its current
-> + * affinity mask and @subset_mask, writing the resulting mask to @new_mask.
-> + * If the resulting mask is empty, leave the affinity unchanged and return
-> + * -EINVAL.
-> + */
-> +static int restrict_cpus_allowed_ptr(struct task_struct *p,
-> +                                    struct cpumask *new_mask,
-> +                                    const struct cpumask *subset_mask)
-> +{
-> +       struct rq_flags rf;
-> +       struct rq *rq;
-> +
-> +       rq = task_rq_lock(p, &rf);
-> +       if (!cpumask_and(new_mask, &p->cpus_mask, subset_mask)) {
-> +               task_rq_unlock(rq, p, &rf);
-> +               return -EINVAL;
-> +       }
-> +
-> +       return __set_cpus_allowed_ptr_locked(p, new_mask, false, rq, &rf);
-> +}
-> +
-> +/*
-> + * Restrict a given task's CPU affinity so that it is a subset of
-> + * task_cpu_possible_mask(). If the resulting mask is empty, we warn and
-> + * walk up the cpuset hierarchy until we find a suitable mask.
+Fixes: 996f9e0f93f162 ("selftests/powerpc: Fix eeh-basic.sh exit codes")
+Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+---
+ tools/testing/selftests/powerpc/eeh/eeh-basic.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Technically you also have a case when new_mask allocation fails, in
-which case task_cpu_possible_mask() is forced instead. Maybe add a
-clarifying comment at "goto out_set_mask" ?
+diff --git a/tools/testing/selftests/powerpc/eeh/eeh-basic.sh b/tools/testing/selftests/powerpc/eeh/eeh-basic.sh
+index 0d783e1..64779f0 100755
+--- a/tools/testing/selftests/powerpc/eeh/eeh-basic.sh
++++ b/tools/testing/selftests/powerpc/eeh/eeh-basic.sh
+@@ -86,5 +86,5 @@ echo "$failed devices failed to recover ($dev_count tested)"
+ lspci | diff -u $pre_lspci -
+ rm -f $pre_lspci
+ 
+-test "$failed" == 0
++test "$failed" -eq 0
+ exit $?
+-- 
+2.7.4
 
-> + */
-> +void force_compatible_cpus_allowed_ptr(struct task_struct *p)
-> +{
-> +       cpumask_var_t new_mask;
-> +       const struct cpumask *override_mask = task_cpu_possible_mask(p);
-> +
-> +       if (!alloc_cpumask_var(&new_mask, GFP_KERNEL))
-> +               goto out_set_mask;
-> +
-> +       if (!restrict_cpus_allowed_ptr(p, new_mask, override_mask))
-> +               goto out_free_mask;
-> +
-> +       /*
-> +        * We failed to find a valid subset of the affinity mask for the
-> +        * task, so override it based on its cpuset hierarchy.
-> +        */
-> +       cpuset_cpus_allowed(p, new_mask);
-> +       override_mask = new_mask;
-> +
-> +out_set_mask:
-> +       if (printk_ratelimit()) {
-> +               printk_deferred("Overriding affinity for process %d (%s) to CPUs %*pbl\n",
-> +                               task_pid_nr(p), p->comm,
-> +                               cpumask_pr_args(override_mask));
-> +       }
-> +
-> +       set_cpus_allowed_ptr(p, override_mask);
-> +out_free_mask:
-> +       free_cpumask_var(new_mask);
-> +}
-> +
->  void set_task_cpu(struct task_struct *p, unsigned int new_cpu)
->  {
->  #ifdef CONFIG_SCHED_DEBUG
-> --
-> 2.29.2.576.ga3fc446d84-goog
->
