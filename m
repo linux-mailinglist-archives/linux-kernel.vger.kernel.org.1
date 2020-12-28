@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB0B22E40D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:58:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C98D22E6414
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:48:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439310AbgL1O6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:58:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48914 "EHLO mail.kernel.org"
+        id S2632749AbgL1PrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:47:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440624AbgL1OPU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:15:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 11D2B20731;
-        Mon, 28 Dec 2020 14:15:03 +0000 (UTC)
+        id S2404470AbgL1NoY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:44:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2199D208B3;
+        Mon, 28 Dec 2020 13:43:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609164904;
-        bh=QUCzMLjXo7RbE+T5uGyeAbkNHSENdxL1Gl/rAZhHAiE=;
+        s=korg; t=1609163023;
+        bh=1UMIi5cA6bV/1FYQ8Z0Hc6qGD11glO1XaIT1zqVgcLo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IAuIwDq+LrWoUuzSfs8DhZpBtnosmAvpFeae3CnsdXyLyUSwqD/jo75HqSmFVoM0J
-         dwOdY4pAPhItyDF0q5hAI26pDjI/yV31f+1vPkjDAiaW2DOIB6lt7TsbpZNojG36Ci
-         c10K4H9B77PfO46Tml0/ctJXblbmfIR9CtM9uS3k=
+        b=tJnSbYn4fQ76+lY2PEjpn96m8xCOv3syedR6sDJk07f7sBMnnvjCApbs5NfNoURge
+         LwCkB3flhuMK+f6JdmEWDttSde8wBk0E0cZ5wE4avM8Dv0mT8/U2KFrQ408YZMNLrK
+         LY2khq6/72iKIuc32pLsIayi8bs0bqZye1Q876qc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@intel.com>,
+        stable@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 339/717] Bluetooth: btmtksdio: Add the missed release_firmware() in mtk_setup_firmware()
-Date:   Mon, 28 Dec 2020 13:45:37 +0100
-Message-Id: <20201228125037.263315306@linuxfoundation.org>
+Subject: [PATCH 5.4 102/453] f2fs: call f2fs_get_meta_page_retry for nat page
+Date:   Mon, 28 Dec 2020 13:45:38 +0100
+Message-Id: <20201228124942.126906185@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Xiangfeng <jingxiangfeng@huawei.com>
+From: Jaegeuk Kim <jaegeuk@kernel.org>
 
-[ Upstream commit b73b5781a85c03113476f62346c390f0277baa4b ]
+[ Upstream commit 3acc4522d89e0a326db69e9d0afaad8cf763a54c ]
 
-mtk_setup_firmware() misses to call release_firmware() in an error
-path. Jump to free_fw to fix it.
+When running fault injection test, if we don't stop checkpoint, some stale
+NAT entries were flushed which breaks consistency.
 
-Fixes: 737cd06072a7 ("Bluetooth: btmtksdio: fix up firmware download sequence")
-Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
-Signed-off-by: Johan Hedberg <johan.hedberg@intel.com>
+Fixes: 86f33603f8c5 ("f2fs: handle errors of f2fs_get_meta_page_nofail")
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bluetooth/btmtksdio.c | 2 +-
+ fs/f2fs/node.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/bluetooth/btmtksdio.c b/drivers/bluetooth/btmtksdio.c
-index ba45c59bd9f36..5f9f027956317 100644
---- a/drivers/bluetooth/btmtksdio.c
-+++ b/drivers/bluetooth/btmtksdio.c
-@@ -704,7 +704,7 @@ static int mtk_setup_firmware(struct hci_dev *hdev, const char *fwname)
- 	err = mtk_hci_wmt_sync(hdev, &wmt_params);
- 	if (err < 0) {
- 		bt_dev_err(hdev, "Failed to power on data RAM (%d)", err);
--		return err;
-+		goto free_fw;
- 	}
+diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
+index 2a4a382f28fed..3ac2a4b32375d 100644
+--- a/fs/f2fs/node.c
++++ b/fs/f2fs/node.c
+@@ -109,7 +109,7 @@ static void clear_node_page_dirty(struct page *page)
  
- 	fw_ptr = fw->data;
+ static struct page *get_current_nat_page(struct f2fs_sb_info *sbi, nid_t nid)
+ {
+-	return f2fs_get_meta_page(sbi, current_nat_addr(sbi, nid));
++	return f2fs_get_meta_page_retry(sbi, current_nat_addr(sbi, nid));
+ }
+ 
+ static struct page *get_next_nat_page(struct f2fs_sb_info *sbi, nid_t nid)
 -- 
 2.27.0
 
