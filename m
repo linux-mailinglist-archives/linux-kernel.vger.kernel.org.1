@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 053802E3E37
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:25:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5526D2E3A16
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:32:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503257AbgL1OZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:25:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33542 "EHLO mail.kernel.org"
+        id S2390979AbgL1NcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:32:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59138 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503235AbgL1OZf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:25:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BCF720715;
-        Mon, 28 Dec 2020 14:24:54 +0000 (UTC)
+        id S2390452AbgL1Nap (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:30:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 699CE207C9;
+        Mon, 28 Dec 2020 13:30:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165495;
-        bh=zhsGXA6SJ+1ImAgzlI7jwTdc5LjYtY66jcdT1t/BwLU=;
+        s=korg; t=1609162230;
+        bh=Gs6G0xxq3byMPSbtf2nupJr6Ofe6obu7bxSUjM2rhXc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Jfm5VxLLgh28uksZwEwA6zlRGAkDq5qO4mMoGbL+WM0hkyfrExm4qPIFf7DPbNtYe
-         s6ncn43Zm+Six/BW2QVffuvv4mnMDpefL99vrwcQlLeo4WJ75G93lqQreKSIoP062Q
-         1l90uB+HkbmWZBRpJvPFqm+3sZi3sGlZvkB9WCYY=
+        b=SIJtTh/dsraW447j9s0GSG9OZnaRMFbTUA4ju6CyJ01vrJFRccpUgxb83ONnMWFND
+         ikzNwaAHdOR+iZq1o28yb8N/3sk8ljLKz3dN0gJcyY4GK3o16u+cVmSYD19dvG4R35
+         8pGV9luch3Ze8nCQdji8ft8uTa4VZDd6bbsJUHfw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Philipp Rudo <prudo@linux.ibm.com>,
-        Xiaoying Yan <yiyan@redhat.com>,
-        Lianbo Jiang <lijiang@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-Subject: [PATCH 5.10 552/717] s390/kexec_file: fix diag308 subcode when loading crash kernel
-Date:   Mon, 28 Dec 2020 13:49:10 +0100
-Message-Id: <20201228125047.382031421@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Richard Weinberger <richard@nod.at>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 232/346] um: Monitor error events in IRQ controller
+Date:   Mon, 28 Dec 2020 13:49:11 +0100
+Message-Id: <20201228124930.993321400@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,65 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Philipp Rudo <prudo@linux.ibm.com>
+From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
-commit 613775d62ec60202f98d2c5f520e6e9ba6dd4ac4 upstream.
+[ Upstream commit e3a01cbee9c5f2c6fc813dd6af007716e60257e7 ]
 
-diag308 subcode 0 performes a clear reset which inlcudes the reset of
-all registers in the system. While this is the preferred behavior when
-loading a normal kernel via kexec it prevents the crash kernel to store
-the register values in the dump. To prevent this use subcode 1 when
-loading a crash kernel instead.
+Ensure that file closes, connection closes, etc are propagated
+as interrupts in the interrupt controller.
 
-Fixes: ee337f5469fd ("s390/kexec_file: Add crash support to image loader")
-Cc: <stable@vger.kernel.org> # 4.17
-Signed-off-by: Philipp Rudo <prudo@linux.ibm.com>
-Reported-by: Xiaoying Yan <yiyan@redhat.com>
-Tested-by: Lianbo Jiang <lijiang@redhat.com>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: ff6a17989c08 ("Epoll based IRQ controller")
+Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/purgatory/head.S |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ arch/um/os-Linux/irq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/s390/purgatory/head.S
-+++ b/arch/s390/purgatory/head.S
-@@ -62,14 +62,15 @@
- 	jh	10b
- .endm
- 
--.macro START_NEXT_KERNEL base
-+.macro START_NEXT_KERNEL base subcode
- 	lg	%r4,kernel_entry-\base(%r13)
- 	lg	%r5,load_psw_mask-\base(%r13)
- 	ogr	%r4,%r5
- 	stg	%r4,0(%r0)
- 
- 	xgr	%r0,%r0
--	diag	%r0,%r0,0x308
-+	lghi	%r1,\subcode
-+	diag	%r0,%r1,0x308
- .endm
- 
- .text
-@@ -123,7 +124,7 @@ ENTRY(purgatory_start)
- 	je	.start_crash_kernel
- 
- 	/* start normal kernel */
--	START_NEXT_KERNEL .base_crash
-+	START_NEXT_KERNEL .base_crash 0
- 
- .return_old_kernel:
- 	lmg	%r6,%r15,gprregs-.base_crash(%r13)
-@@ -227,7 +228,7 @@ ENTRY(purgatory_start)
- 	MEMCPY	%r9,%r10,%r11
- 
- 	/* start crash kernel */
--	START_NEXT_KERNEL .base_dst
-+	START_NEXT_KERNEL .base_dst 1
- 
- 
- load_psw_mask:
+diff --git a/arch/um/os-Linux/irq.c b/arch/um/os-Linux/irq.c
+index 365823010346a..90ef404622805 100644
+--- a/arch/um/os-Linux/irq.c
++++ b/arch/um/os-Linux/irq.c
+@@ -48,7 +48,7 @@ int os_epoll_triggered(int index, int events)
+ int os_event_mask(int irq_type)
+ {
+ 	if (irq_type == IRQ_READ)
+-		return EPOLLIN | EPOLLPRI;
++		return EPOLLIN | EPOLLPRI | EPOLLERR | EPOLLHUP | EPOLLRDHUP;
+ 	if (irq_type == IRQ_WRITE)
+ 		return EPOLLOUT;
+ 	return 0;
+-- 
+2.27.0
+
 
 
