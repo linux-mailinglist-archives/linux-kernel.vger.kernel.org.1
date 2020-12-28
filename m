@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E1D32E411B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:03:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 957132E4123
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:03:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408121AbgL1PCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:02:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47560 "EHLO mail.kernel.org"
+        id S2439927AbgL1OMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:12:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46760 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439974AbgL1OMv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:12:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BD8622BF3;
-        Mon, 28 Dec 2020 14:12:09 +0000 (UTC)
+        id S2439876AbgL1OM2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:12:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D17D620731;
+        Mon, 28 Dec 2020 14:12:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609164730;
-        bh=mi/DeJzRXz47S3VNF9DlNrEgzgIcmxls+PobV+WzrQE=;
+        s=korg; t=1609164733;
+        bh=VJeCSk2OcPWhoWvyAv2BOS9dluNOfHJJX4tTZ0+pxPE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O8xXIu+4r8CMs9nPangDpCIOJ7qvPqceQkhoqmGPmyA7IMLPr0WkaWwocVbQNNVoi
-         fsTNVxulHP8SePmKh44LP1Tby9Fj964XU54T9Y38oNMBMzNqr3FwAHKfAOAxOw2/+J
-         rRXFKalyJe+u8/HpfQvMO0MHgtcS7Ukyum+kbUtI=
+        b=Ly61r5u5MzvGcWKYyOMDYvuLWLEZFuW+0W1enGQeeQCGYReF3x2PKJ4vBH9J+sxoh
+         As31LlgYk6ZU+SDnDgckaqNH+jN0N9t3PH10QuKC8RLDp7+gJWR6Ur/BkTjw12lmfX
+         g39rOcaNQOzeb+CgK8E+S6Pb0yT7uLMkPBoDmMtM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
+        stable@vger.kernel.org, Xiang Chen <chenxiang66@hisilicon.com>,
+        John Garry <john.garry@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 246/717] soc: amlogic: canvas: add missing put_device() call in meson_canvas_get()
-Date:   Mon, 28 Dec 2020 13:44:04 +0100
-Message-Id: <20201228125032.770101033@linuxfoundation.org>
+Subject: [PATCH 5.10 247/717] scsi: hisi_sas: Fix up probe error handling for v3 hw
+Date:   Mon, 28 Dec 2020 13:44:05 +0100
+Message-Id: <20201228125032.820369419@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
 References: <20201228125020.963311703@linuxfoundation.org>
@@ -41,40 +41,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+From: Xiang Chen <chenxiang66@hisilicon.com>
 
-[ Upstream commit 28f851e6afa858f182802e23ac60c3ed7d1c04a1 ]
+[ Upstream commit 2ebde94f2ea4cffd812ece2f318c2f4922239b1d ]
 
-if of_find_device_by_node() succeed, meson_canvas_get() doesn't have
-a corresponding put_device(). Thus add put_device() to fix the exception
-handling for this function implementation.
+Fix some rollbacks in function hisi_sas_v3_probe() and
+interrupt_init_v3_hw().
 
-Fixes: 382f8be04551 ("soc: amlogic: canvas: Fix meson_canvas_get when probe failed")
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
-Signed-off-by: Kevin Hilman <khilman@baylibre.com>
-Link: https://lore.kernel.org/r/20201117011322.522477-1-yukuai3@huawei.com
+Link: https://lore.kernel.org/r/1606207594-196362-3-git-send-email-john.garry@huawei.com
+Fixes: 8d98416a55eb ("scsi: hisi_sas: Switch v3 hw to MQ")
+Signed-off-by: Xiang Chen <chenxiang66@hisilicon.com>
+Signed-off-by: John Garry <john.garry@huawei.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soc/amlogic/meson-canvas.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/scsi/hisi_sas/hisi_sas_v3_hw.c | 26 +++++++++++---------------
+ 1 file changed, 11 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/soc/amlogic/meson-canvas.c b/drivers/soc/amlogic/meson-canvas.c
-index c655f5f92b124..d0329ad170d13 100644
---- a/drivers/soc/amlogic/meson-canvas.c
-+++ b/drivers/soc/amlogic/meson-canvas.c
-@@ -72,8 +72,10 @@ struct meson_canvas *meson_canvas_get(struct device *dev)
- 	 * current state, this driver probe cannot return -EPROBE_DEFER
- 	 */
- 	canvas = dev_get_drvdata(&canvas_pdev->dev);
--	if (!canvas)
-+	if (!canvas) {
-+		put_device(&canvas_pdev->dev);
- 		return ERR_PTR(-EINVAL);
-+	}
+diff --git a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+index 960de375ce699..2cbd8a524edab 100644
+--- a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
++++ b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
+@@ -2409,8 +2409,7 @@ static int interrupt_init_v3_hw(struct hisi_hba *hisi_hba)
+ 			      DRV_NAME " phy", hisi_hba);
+ 	if (rc) {
+ 		dev_err(dev, "could not request phy interrupt, rc=%d\n", rc);
+-		rc = -ENOENT;
+-		goto free_irq_vectors;
++		return -ENOENT;
+ 	}
  
- 	return canvas;
+ 	rc = devm_request_irq(dev, pci_irq_vector(pdev, 2),
+@@ -2418,8 +2417,7 @@ static int interrupt_init_v3_hw(struct hisi_hba *hisi_hba)
+ 			      DRV_NAME " channel", hisi_hba);
+ 	if (rc) {
+ 		dev_err(dev, "could not request chnl interrupt, rc=%d\n", rc);
+-		rc = -ENOENT;
+-		goto free_irq_vectors;
++		return -ENOENT;
+ 	}
+ 
+ 	rc = devm_request_irq(dev, pci_irq_vector(pdev, 11),
+@@ -2427,8 +2425,7 @@ static int interrupt_init_v3_hw(struct hisi_hba *hisi_hba)
+ 			      DRV_NAME " fatal", hisi_hba);
+ 	if (rc) {
+ 		dev_err(dev, "could not request fatal interrupt, rc=%d\n", rc);
+-		rc = -ENOENT;
+-		goto free_irq_vectors;
++		return -ENOENT;
+ 	}
+ 
+ 	if (hisi_sas_intr_conv)
+@@ -2449,8 +2446,7 @@ static int interrupt_init_v3_hw(struct hisi_hba *hisi_hba)
+ 		if (rc) {
+ 			dev_err(dev, "could not request cq%d interrupt, rc=%d\n",
+ 				i, rc);
+-			rc = -ENOENT;
+-			goto free_irq_vectors;
++			return -ENOENT;
+ 		}
+ 		cq->irq_mask = pci_irq_get_affinity(pdev, i + BASE_VECTORS_V3_HW);
+ 		if (!cq->irq_mask) {
+@@ -2460,10 +2456,6 @@ static int interrupt_init_v3_hw(struct hisi_hba *hisi_hba)
+ 	}
+ 
+ 	return 0;
+-
+-free_irq_vectors:
+-	pci_free_irq_vectors(pdev);
+-	return rc;
  }
+ 
+ static int hisi_sas_v3_init(struct hisi_hba *hisi_hba)
+@@ -3317,11 +3309,11 @@ hisi_sas_v3_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 
+ 	rc = interrupt_preinit_v3_hw(hisi_hba);
+ 	if (rc)
+-		goto err_out_ha;
++		goto err_out_debugfs;
+ 	dev_err(dev, "%d hw queues\n", shost->nr_hw_queues);
+ 	rc = scsi_add_host(shost, dev);
+ 	if (rc)
+-		goto err_out_ha;
++		goto err_out_free_irq_vectors;
+ 
+ 	rc = sas_register_ha(sha);
+ 	if (rc)
+@@ -3348,8 +3340,12 @@ hisi_sas_v3_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 
+ err_out_register_ha:
+ 	scsi_remove_host(shost);
+-err_out_ha:
++err_out_free_irq_vectors:
++	pci_free_irq_vectors(pdev);
++err_out_debugfs:
+ 	hisi_sas_debugfs_exit(hisi_hba);
++err_out_ha:
++	hisi_sas_free(hisi_hba);
+ 	scsi_host_put(shost);
+ err_out_regions:
+ 	pci_release_regions(pdev);
 -- 
 2.27.0
 
