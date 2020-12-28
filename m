@@ -2,253 +2,376 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E9AE2E69E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 18:56:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EA692E69E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 18:56:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728543AbgL1R4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 12:56:14 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:39704 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728580AbgL1R4B (ORCPT
+        id S1728348AbgL1Rzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 12:55:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727213AbgL1Rzt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 12:56:01 -0500
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BSHVBRr181258;
-        Mon, 28 Dec 2020 12:55:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=575WtQFj0wqQyr0cGY9p3bIWqpxBZ1k/uxC+oK37Iy0=;
- b=L2l2XDVoznzmqLRMDcCy7ZzPiir4Qc+76Tn2I76txrpqZP9bPVh9Kdifvh4Fzkdai673
- rqSOQxuTunKupSuRRvliDMVw2jBJKxa4nQt/iNk89JraLO6B1mPRwohgr4TpuJD+dfsY
- ItKrJpzdoNNIxGpM1h/vQUbY9DXJbH6W6obn90nvxBLMn+2XMIUJCyYL2vJamP3RCuL/
- j4Us1q13QYTDK4aB/0yaqBWxGsFxoe1Lq25lqUtJfef13IQOJYnwGNImXYrerpmEqNhq
- tDBN1d1LE7r+rCN9qt5Cu0hJxct/80vCiqYpeWfj0hQ55034oxtHX5lnRHJ6dxcfgVCQ BA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35qkcjgyvm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Dec 2020 12:55:08 -0500
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BSHYUW6194223;
-        Mon, 28 Dec 2020 12:55:07 -0500
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 35qkcjgyuv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Dec 2020 12:55:07 -0500
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BSHbhF5020741;
-        Mon, 28 Dec 2020 17:55:05 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma05fra.de.ibm.com with ESMTP id 35qfp6g3bk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Dec 2020 17:55:05 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BSHt3sR47055324
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 28 Dec 2020 17:55:03 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4007C4C046;
-        Mon, 28 Dec 2020 17:55:03 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5171D4C040;
-        Mon, 28 Dec 2020 17:55:00 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.72.172])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 28 Dec 2020 17:55:00 +0000 (GMT)
-Message-ID: <903c37e9036d167958165ab700e646c1622a9c40.camel@linux.ibm.com>
-Subject: Re: [PATCH v23 02/23] LSM: Create and manage the lsmblob data
- structure.
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Casey Schaufler <casey@schaufler-ca.com>,
-        casey.schaufler@intel.com, jmorris@namei.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org
-Cc:     linux-audit@redhat.com, keescook@chromium.org,
-        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
-        paul@paul-moore.com, sds@tycho.nsa.gov,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Date:   Mon, 28 Dec 2020 12:54:59 -0500
-In-Reply-To: <20201120201507.11993-3-casey@schaufler-ca.com>
-References: <20201120201507.11993-1-casey@schaufler-ca.com>
-         <20201120201507.11993-3-casey@schaufler-ca.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-28_15:2020-12-28,2020-12-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 adultscore=0 spamscore=0 clxscore=1011 mlxscore=0
- impostorscore=0 mlxlogscore=999 malwarescore=0 phishscore=0 bulkscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012280107
+        Mon, 28 Dec 2020 12:55:49 -0500
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A835C061796
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 09:55:09 -0800 (PST)
+Received: by mail-oi1-x234.google.com with SMTP id 15so12193360oix.8
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 09:55:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wAXWrK6yPqZbzcB3tp/4dVOfpb8jWgVjl1NqZcBGL9I=;
+        b=ewsn7mi0BfRyiCOKN/CBebmrdqZfaOxSf/y12awqwKn3RWCNYXW6ofJ56bpocKP4g7
+         R5LZCfM2y+obs47SeRjFs2RY+kAWIXCTdco+AlDeTnW3oXn8pqQ61vIOdQk6/Fjmmced
+         +xjq2nkwfdSsS7M0Ut1KitDxFqkDkFwGKE0ZokBOggtAWXiHv0WXLQcpRYELOQAOW5DJ
+         lg7ysTIS/JI7iKYIbXERT+uT7b1aFN7oyCpLJFwUgUG0gNtfmMmxCPP0kMCElyb4kfod
+         8DgtL5eJJInbRvMJTP12aHPu8qmAxoC3shvUl6xHBfWwZSWjWAOftnSQmy/bqL2xwLRo
+         DTGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wAXWrK6yPqZbzcB3tp/4dVOfpb8jWgVjl1NqZcBGL9I=;
+        b=BxYJX/uNV7o1haa9RoouBk5J7U87l2aP0WAa8HBaujZlWJbtRREjDdsCl7I1tBIsYD
+         T/J72N4+wQk8wGX5RCSMaITJlkQyj7FmWuD+a1h8oIqkDpOxj5OU+iL4uQ3pyoTac7WV
+         y1BOUyAXdlofPhjqw4t/1kdFisi/j77cI40QlUcKd3MRo9CR5DiHPTiWvz0L59gVXnit
+         B8LMkWtq+bw9CJmz/6mtFY0qBjkTosG2DaRjZlB4vcGqAeQnJ91hjW2BsXSVNoF/372Z
+         NYMej+KiAKQgCLiK/aNWBgCUEGCIiHWi1tA6uAaRKL6op5fc+tfsG7v5lHwUlhPx3CAo
+         tFXA==
+X-Gm-Message-State: AOAM530V+TwwKThkVQFKlUm5AfDFn/fMQKoh6qg4Bn3Wk9F8jUnycfxO
+        uszrK/MwtqTvK87Q4jqPm1mB6g==
+X-Google-Smtp-Source: ABdhPJwDKBevXJgR110hFfrq3RnVdqM/0wyMDTmrCNnhlPx52yTaZFoJEDh0SNFeR+qVSku155FObw==
+X-Received: by 2002:aca:c388:: with SMTP id t130mr61197oif.36.1609178107680;
+        Mon, 28 Dec 2020 09:55:07 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id e10sm8507350otr.73.2020.12.28.09.55.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Dec 2020 09:55:07 -0800 (PST)
+Date:   Mon, 28 Dec 2020 11:55:04 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Ziqi Chen <ziqichen@codeaurora.org>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        cang@codeaurora.org, hongwus@codeaurora.org, rnayak@codeaurora.org,
+        vinholikatti@gmail.com, jejb@linux.vnet.ibm.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
+        kwmad.kim@samsung.com, stanley.chu@mediatek.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Andy Gross <agross@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Satya Tangirala <satyat@google.com>,
+        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
+        <linux-mediatek@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH RFC v4 1/1] scsi: ufs: Fix ufs power down/on specs
+ violation
+Message-ID: <X+ob+FylvPfl3NR/@builder.lan>
+References: <1608644981-46267-1-git-send-email-ziqichen@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1608644981-46267-1-git-send-email-ziqichen@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Casey,
+On Tue 22 Dec 07:49 CST 2020, Ziqi Chen wrote:
 
-On Fri, 2020-11-20 at 12:14 -0800, Casey Schaufler wrote:
-> When more than one security module is exporting data to
-> audit and networking sub-systems a single 32 bit integer
-> is no longer sufficient to represent the data. Add a
-> structure to be used instead.
+> As per specs, e.g, JESD220E chapter 7.2, while powering
+> off/on the ufs device, RST_N signal and REF_CLK signal
+> should be between VSS(Ground) and VCCQ/VCCQ2.
 > 
-> The lsmblob structure is currently an array of
-> u32 "secids". There is an entry for each of the
-> security modules built into the system that would
-> use secids if active. The system assigns the module
-> a "slot" when it registers hooks. If modules are
-> compiled in but not registered there will be unused
-> slots.
+> To flexibly control device reset line, refactor the function
+> ufschd_vops_device_reset(sturct ufs_hba *hba) to ufshcd_
+> vops_device_reset(sturct ufs_hba *hba, bool asserted). The
+> new parameter "bool asserted" is used to separate device reset
+> line pulling down from pulling up.
 > 
-> A new lsm_id structure, which contains the name
-> of the LSM and its slot number, is created. There
-> is an instance for each LSM, which assigns the name
-> and passes it to the infrastructure to set the slot.
-> 
-> The audit rules data is expanded to use an array of
-> security module data rather than a single instance.
-> Because IMA uses the audit rule functions it is
-> affected as well.
-
-This patch is quite large, even without the audit rule change.  I would
-limit this patch to the new lsm_id structure changes.  The audit rule
-change should be broken out as a separate patch so that the audit
-changes aren't hidden.
-
-In addition, here are a few high level nits:
-- The (patch description) body of the explanation, line wrapped at 75
-columns, which will be copied to the permanent changelog to describe
-this patch. (Refer  Documentation/process/submitting-patches.rst.)
-
-- The brief kernel-doc descriptions should not have a trailing period. 
-Nor should kernel-doc variable definitions have a trailing period. 
-Example(s) inline below.  (The existing kernel-doc is mostly correct.)
-
-- For some reason existing comments that span multiple lines aren't
-formatted properly.   In those cases, where there is another change,
-please fix the comment and function description.
-
-thanks,
-
-Mimi
-
-> 
-> Acked-by: Stephen Smalley <sds@tycho.nsa.gov>
-> Acked-by: Paul Moore <paul@paul-moore.com>
-> Acked-by: John Johansen <john.johansen@canonical.com>
-> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
-
-> Cc: <bpf@vger.kernel.org>
-> Cc: linux-audit@redhat.com
-> Cc: linux-security-module@vger.kernel.org
-> Cc: selinux@vger.kernel.org
+> Cc: Kiwoong Kim <kwmad.kim@samsung.com>
+> Cc: Stanley Chu <stanley.chu@mediatek.com>
+> Signed-off-by: Ziqi Chen <ziqichen@codeaurora.org>
 > ---
-
-> diff --git a/include/linux/security.h b/include/linux/security.h
-> index bc2725491560..fdb6e95c98e8 100644
-> --- a/include/linux/security.h
-> +++ b/include/linux/security.h
-> @@ -132,6 +132,65 @@ enum lockdown_reason {
+>  drivers/scsi/ufs/ufs-mediatek.c | 32 ++++++++++++++++----------------
+>  drivers/scsi/ufs/ufs-qcom.c     | 24 +++++++++++++++---------
+>  drivers/scsi/ufs/ufshcd.c       | 36 +++++++++++++++++++++++++-----------
+>  drivers/scsi/ufs/ufshcd.h       |  8 ++++----
+>  4 files changed, 60 insertions(+), 40 deletions(-)
 > 
->  extern const char *const lockdown_reasons[LOCKDOWN_CONFIDENTIALITY_MAX+1];
+> diff --git a/drivers/scsi/ufs/ufs-mediatek.c b/drivers/scsi/ufs/ufs-mediatek.c
+> index 80618af..072f4db 100644
+> --- a/drivers/scsi/ufs/ufs-mediatek.c
+> +++ b/drivers/scsi/ufs/ufs-mediatek.c
+> @@ -841,27 +841,27 @@ static int ufs_mtk_link_startup_notify(struct ufs_hba *hba,
+>  	return ret;
+>  }
+>  
+> -static int ufs_mtk_device_reset(struct ufs_hba *hba)
+> +static int ufs_mtk_device_reset(struct ufs_hba *hba, bool asserted)
+>  {
+>  	struct arm_smccc_res res;
+>  
+> -	ufs_mtk_device_reset_ctrl(0, res);
+> +	if (asserted) {
+> +		ufs_mtk_device_reset_ctrl(0, res);
+>  
+> -	/*
+> -	 * The reset signal is active low. UFS devices shall detect
+> -	 * more than or equal to 1us of positive or negative RST_n
+> -	 * pulse width.
+> -	 *
+> -	 * To be on safe side, keep the reset low for at least 10us.
+> -	 */
+> -	usleep_range(10, 15);
+> -
+> -	ufs_mtk_device_reset_ctrl(1, res);
+> -
+> -	/* Some devices may need time to respond to rst_n */
+> -	usleep_range(10000, 15000);
+> +		/*
+> +		 * The reset signal is active low. UFS devices shall detect
+> +		 * more than or equal to 1us of positive or negative RST_n
+> +		 * pulse width.
+> +		 *
+> +		 * To be on safe side, keep the reset low for at least 10us.
+> +		 */
+> +		usleep_range(10, 15);
+
+I see no point in allowing vendors to "tweak" the 1us->10us adjustment.
+The specification says 1us and we all agree that 10us gives us good
+enough slack. I.e. this is common code.
+
+> +	} else {
+> +		ufs_mtk_device_reset_ctrl(1, res);
+>  
+> -	dev_info(hba->dev, "device reset done\n");
+> +		/* Some devices may need time to respond to rst_n */
+> +		usleep_range(10000, 15000);
+
+The comment in both the Qualcomm and Mediatek drivers claim that this is
+sleep relates to the UFS device (not host), so why should it be
+different?
+
+What happens if I take the device that Mediatek see a need for a 10ms
+delay and hook that up to a Qualcomm host? This really should go in the
+common code.
+
+
+
+As such I really would prefer to see these delays in the common code!
+You really shouldn't write code based on a speculation that one day
+there might come someone who need other values - when that day come we
+can just change the code, and if it never comes we're better off with
+the cleaner implementation.
+
+Regards,
+Bjorn
+
+> +	}
+>  
+>  	return 0;
+>  }
+> diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
+> index 2206b1e..fed10e5 100644
+> --- a/drivers/scsi/ufs/ufs-qcom.c
+> +++ b/drivers/scsi/ufs/ufs-qcom.c
+> @@ -1406,10 +1406,11 @@ static void ufs_qcom_dump_dbg_regs(struct ufs_hba *hba)
+>  /**
+>   * ufs_qcom_device_reset() - toggle the (optional) device reset line
+>   * @hba: per-adapter instance
+> + * @asserted: assert or deassert device reset line
+>   *
+>   * Toggles the (optional) reset line to reset the attached device.
+>   */
+> -static int ufs_qcom_device_reset(struct ufs_hba *hba)
+> +static int ufs_qcom_device_reset(struct ufs_hba *hba, bool asserted)
+>  {
+>  	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
+>  
+> @@ -1417,15 +1418,20 @@ static int ufs_qcom_device_reset(struct ufs_hba *hba)
+>  	if (!host->device_reset)
+>  		return -EOPNOTSUPP;
+>  
+> -	/*
+> -	 * The UFS device shall detect reset pulses of 1us, sleep for 10us to
+> -	 * be on the safe side.
+> -	 */
+> -	gpiod_set_value_cansleep(host->device_reset, 1);
+> -	usleep_range(10, 15);
+> +	if (asserted) {
+> +		gpiod_set_value_cansleep(host->device_reset, 1);
+>  
+> -	gpiod_set_value_cansleep(host->device_reset, 0);
+> -	usleep_range(10, 15);
+> +		/*
+> +		 * The UFS device shall detect reset pulses of 1us, sleep for 10us to
+> +		 * be on the safe side.
+> +		 */
+> +		usleep_range(10, 15);
+> +	} else {
+> +		gpiod_set_value_cansleep(host->device_reset, 0);
+> +
+> +		 /* Some devices may need time to respond to rst_n */
+> +		usleep_range(10, 15);
+> +	}
+>  
+>  	return 0;
+>  }
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index e221add..f2daac2 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -585,7 +585,13 @@ static void ufshcd_device_reset(struct ufs_hba *hba)
+>  {
+>  	int err;
+>  
+> -	err = ufshcd_vops_device_reset(hba);
+> +	err = ufshcd_vops_device_reset(hba, true);
+> +	if (err) {
+> +		dev_err(hba->dev, "asserting device reset failed: %d\n", err);
+> +		return;
+> +	}
+> +
+> +	err = ufshcd_vops_device_reset(hba, false);
+>  
+>  	if (!err) {
+>  		ufshcd_set_ufs_dev_active(hba);
+> @@ -593,7 +599,11 @@ static void ufshcd_device_reset(struct ufs_hba *hba)
+>  			hba->wb_enabled = false;
+>  			hba->wb_buf_flush_enabled = false;
+>  		}
+> +		dev_dbg(hba->dev, "device reset done\n");
+> +	} else {
+> +		dev_err(hba->dev, "deasserting device reset failed: %d\n", err);
+>  	}
+> +
+>  	if (err != -EOPNOTSUPP)
+>  		ufshcd_update_evt_hist(hba, UFS_EVT_DEV_RESET, err);
+>  }
+> @@ -8686,8 +8696,6 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+>  	if (ret)
+>  		goto set_dev_active;
+>  
+> -	ufshcd_vreg_set_lpm(hba);
+> -
+>  disable_clks:
+>  	/*
+>  	 * Call vendor specific suspend callback. As these callbacks may access
+> @@ -8703,6 +8711,9 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+>  	 */
+>  	ufshcd_disable_irq(hba);
+>  
+> +	if (ufshcd_is_link_off(hba))
+> +		ufshcd_vops_device_reset(hba, true);
+> +
+>  	ufshcd_setup_clocks(hba, false);
+>  
+>  	if (ufshcd_is_clkgating_allowed(hba)) {
+> @@ -8711,6 +8722,8 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+>  					hba->clk_gating.state);
+>  	}
+>  
+> +	ufshcd_vreg_set_lpm(hba);
+> +
+>  	/* Put the host controller in low power mode if possible */
+>  	ufshcd_hba_vreg_set_lpm(hba);
+>  	goto out;
+> @@ -8778,18 +8791,19 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+>  	old_link_state = hba->uic_link_state;
+>  
+>  	ufshcd_hba_vreg_set_hpm(hba);
+> +
+> +	ret = ufshcd_vreg_set_hpm(hba);
+> +	if (ret)
+> +		goto out;
+> +
+>  	/* Make sure clocks are enabled before accessing controller */
+>  	ret = ufshcd_setup_clocks(hba, true);
+>  	if (ret)
+> -		goto out;
+> +		goto disable_vreg;
+>  
+>  	/* enable the host irq as host controller would be active soon */
+>  	ufshcd_enable_irq(hba);
+>  
+> -	ret = ufshcd_vreg_set_hpm(hba);
+> -	if (ret)
+> -		goto disable_irq_and_vops_clks;
+> -
+>  	/*
+>  	 * Call vendor specific resume callback. As these callbacks may access
+>  	 * vendor specific host controller register space call them when the
+> @@ -8797,7 +8811,7 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+>  	 */
+>  	ret = ufshcd_vops_resume(hba, pm_op);
+>  	if (ret)
+> -		goto disable_vreg;
+> +		goto disable_irq_and_vops_clks;
+>  
+>  	/* For DeepSleep, the only supported option is to have the link off */
+>  	WARN_ON(ufshcd_is_ufs_dev_deepsleep(hba) && !ufshcd_is_link_off(hba));
+> @@ -8864,8 +8878,6 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+>  	ufshcd_link_state_transition(hba, old_link_state, 0);
+>  vendor_suspend:
+>  	ufshcd_vops_suspend(hba, pm_op);
+> -disable_vreg:
+> -	ufshcd_vreg_set_lpm(hba);
+>  disable_irq_and_vops_clks:
+>  	ufshcd_disable_irq(hba);
+>  	if (hba->clk_scaling.is_allowed)
+> @@ -8876,6 +8888,8 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+>  		trace_ufshcd_clk_gating(dev_name(hba->dev),
+>  					hba->clk_gating.state);
+>  	}
+> +disable_vreg:
+> +	ufshcd_vreg_set_lpm(hba);
+>  out:
+>  	hba->pm_op_in_progress = 0;
+>  	if (ret)
+> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+> index 9bb5f0e..d5fbaba 100644
+> --- a/drivers/scsi/ufs/ufshcd.h
+> +++ b/drivers/scsi/ufs/ufshcd.h
+> @@ -319,7 +319,7 @@ struct ufs_pwr_mode_info {
+>   * @resume: called during host controller PM callback
+>   * @dbg_register_dump: used to dump controller debug information
+>   * @phy_initialization: used to initialize phys
+> - * @device_reset: called to issue a reset pulse on the UFS device
+> + * @device_reset: called to assert or deassert device reset line
+>   * @program_key: program or evict an inline encryption key
+>   * @event_notify: called to notify important events
+>   */
+> @@ -350,7 +350,7 @@ struct ufs_hba_variant_ops {
+>  	int     (*resume)(struct ufs_hba *, enum ufs_pm_op);
+>  	void	(*dbg_register_dump)(struct ufs_hba *hba);
+>  	int	(*phy_initialization)(struct ufs_hba *);
+> -	int	(*device_reset)(struct ufs_hba *hba);
+> +	int	(*device_reset)(struct ufs_hba *hba, bool asserted);
+>  	void	(*config_scaling_param)(struct ufs_hba *hba,
+>  					struct devfreq_dev_profile *profile,
+>  					void *data);
+> @@ -1216,10 +1216,10 @@ static inline void ufshcd_vops_dbg_register_dump(struct ufs_hba *hba)
+>  		hba->vops->dbg_register_dump(hba);
+>  }
+>  
+> -static inline int ufshcd_vops_device_reset(struct ufs_hba *hba)
+> +static inline int ufshcd_vops_device_reset(struct ufs_hba *hba, bool asserted)
+>  {
+>  	if (hba->vops && hba->vops->device_reset)
+> -		return hba->vops->device_reset(hba);
+> +		return hba->vops->device_reset(hba, asserted);
+>  
+>  	return -EOPNOTSUPP;
+>  }
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
 > 
-> +/*
-> + * Data exported by the security modules
-> + *
-> + * Any LSM that provides secid or secctx based hooks must be included.
-> + */
-> +#define LSMBLOB_ENTRIES ( \
-> +	(IS_ENABLED(CONFIG_SECURITY_SELINUX) ? 1 : 0) + \
-> +	(IS_ENABLED(CONFIG_SECURITY_SMACK) ? 1 : 0) + \
-> +	(IS_ENABLED(CONFIG_SECURITY_APPARMOR) ? 1 : 0) + \
-> +	(IS_ENABLED(CONFIG_BPF_LSM) ? 1 : 0))
-> +
-> +struct lsmblob {
-> +	u32     secid[LSMBLOB_ENTRIES];
-> +};
-> +
-> +#define LSMBLOB_INVALID		-1	/* Not a valid LSM slot number */
-> +#define LSMBLOB_NEEDED		-2	/* Slot requested on initialization */
-> +#define LSMBLOB_NOT_NEEDED	-3	/* Slot not requested */
-> +
-> +/**
-> + * lsmblob_init - initialize an lsmblob structure.
-
-Only this kernel-doc brief description is suffixed with a period.  
-Please remove.
-
-> + * @blob: Pointer to the data to initialize
-> + * @secid: The initial secid value
-> + *
-> + * Set all secid for all modules to the specified value.
-> + */
-> +static inline void lsmblob_init(struct lsmblob *blob, u32 secid)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < LSMBLOB_ENTRIES; i++)
-> +		blob->secid[i] = secid;
-> +}
-> +
-> +/**
-> + * lsmblob_is_set - report if there is an value in the lsmblob
-> + * @blob: Pointer to the exported LSM data
-> + *
-> + * Returns true if there is a secid set, false otherwise
-> + */
-> +static inline bool lsmblob_is_set(struct lsmblob *blob)
-> +{
-> +	struct lsmblob empty = {};
-> +
-> +	return !!memcmp(blob, &empty, sizeof(*blob));
-> +}
-> +
-> +/**
-> + * lsmblob_equal - report if the two lsmblob's are equal
-> + * @bloba: Pointer to one LSM data
-> + * @blobb: Pointer to the other LSM data
-> + *
-> + * Returns true if all entries in the two are equal, false otherwise
-> + */
-> +static inline bool lsmblob_equal(struct lsmblob *bloba, struct lsmblob *blobb)
-> +{
-> +	return !memcmp(bloba, blobb, sizeof(*bloba));
-> +}
-> +
->  /* These functions are in security/commoncap.c */
->  extern int cap_capable(const struct cred *cred, struct user_namespace *ns,
-
-> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
-> index 9b5adeaa47fc..cd393aaa17d5 100644
-> --- a/security/integrity/ima/ima_policy.c
-> +++ b/security/integrity/ima/ima_policy.c
->  	} lsm[MAX_LSM_RULES];
-> @@ -88,6 +88,22 @@ struct ima_rule_entry {
->  	struct ima_template_desc *template;
->  };
-> 
-> +/**
-> + * ima_lsm_isset - Is a rule set for any of the active security modules
-> + * @rules: The set of IMA rules to check.
-
-Nor do kernel-doc variable definitions have a trailing period.
-
-> + *
-> + * If a rule is set for any LSM return true, otherwise return false.
-> + */
-> +static inline bool ima_lsm_isset(void *rules[])
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < LSMBLOB_ENTRIES; i++)
-> +		if (rules[i])
-> +			return true;
-> +	return false;
-> +}
-> +
->  /*
->   * Without LSM specific knowledge, the default policy can only be
->   * written in terms of .action, .func, .mask, .fsmagic, .uid, and .fowner
-
