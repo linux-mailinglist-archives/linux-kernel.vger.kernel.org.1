@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 567882E3E51
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:27:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56ACB2E4307
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:34:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503904AbgL1O0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:26:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34680 "EHLO mail.kernel.org"
+        id S2404992AbgL1Nya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:54:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503869AbgL1O0n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:26:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AAC6207B2;
-        Mon, 28 Dec 2020 14:26:01 +0000 (UTC)
+        id S2407361AbgL1Nxu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:53:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F371E206D4;
+        Mon, 28 Dec 2020 13:53:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165562;
-        bh=DieRUxCgiy8BL/gIK1JwZmNJdIR2pQqOk5P2wFx3Of4=;
+        s=korg; t=1609163589;
+        bh=SGoB8j5yDF3J909SAHZihhflgFYzkjcmdLEJAdoZbjc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0XB+wvPlPAcKb08HPFJElzI9Af0k1OLjQ6vm9xLmV+Z/ADGv6XoUj3s4dDZVqpxhA
-         hfEJyrC9nCKq8QehI6KjfSgJMxtlc5awo84UmfTb66SWZCMyeyV2xqDvu8ECWq2MWa
-         vcziY4y0z0HuuongCxZaQnDIvPxKkfzoMkzf6ARo=
+        b=EiDMUKYgoI8uum7lN4/+xDSEPKEGRyUZ9YX+KQ9S8dISaHenxzXBYEtlaIO0JA+iq
+         2rztZqNF4ff6oceNFKvz3Nmcz4a3ZyxNsHpqv1dyCLIrdb6H5f6eNmn+q6o63x2nM/
+         uNGddxgf7ciVVqpxNXwiBzO6DNhX2+92YRv/1kQ4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Chiu <chiu@endlessos.org>,
-        Jian-Hong Pan <jhp@endlessos.org>, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 545/717] ALSA: hda/realtek: Remove dummy lineout on Acer TravelMate P648/P658
-Date:   Mon, 28 Dec 2020 13:49:03 +0100
-Message-Id: <20201228125047.051904184@linuxfoundation.org>
+        stable@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
+        Maxime Ripard <mripard@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 308/453] clk: sunxi-ng: Make sure divider tables have sentinel
+Date:   Mon, 28 Dec 2020 13:49:04 +0100
+Message-Id: <20201228124952.034517149@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,79 +41,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Chiu <chiu@endlessos.org>
+From: Jernej Skrabec <jernej.skrabec@siol.net>
 
-commit 34cdf405aa5de827b8bef79a6c82c39120b3729b upstream.
+[ Upstream commit 48f68de00c1405351fa0e7bc44bca067c49cd0a3 ]
 
-Acer TravelMate laptops P648/P658 series with codec ALC282 only have
-one physical jack for headset but there's a confusing lineout pin on
-NID 0x1b reported. Audio applications hence misunderstand that there
-are a speaker and a lineout, and take the lineout as the default audio
-output.
+Two clock divider tables are missing sentinel at the end. Effect of that
+is that clock framework reads past the last entry. Fix that with adding
+sentinel at the end.
 
-Add a new quirk to remove the useless lineout and enable the pin 0x18
-for jack sensing and headset microphone.
+Issue was discovered with KASan.
 
-Signed-off-by: Chris Chiu <chiu@endlessos.org>
-Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201216125200.27053-1-chiu@endlessos.org
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 0577e4853bfb ("clk: sunxi-ng: Add H3 clocks")
+Fixes: c6a0637460c2 ("clk: sunxi-ng: Add A64 clocks")
+Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+Link: https://lore.kernel.org/r/20201202203817.438713-1-jernej.skrabec@siol.net
+Acked-by: Maxime Ripard <mripard@kernel.org>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_realtek.c |   27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ drivers/clk/sunxi-ng/ccu-sun50i-a64.c | 1 +
+ drivers/clk/sunxi-ng/ccu-sun8i-h3.c   | 1 +
+ 2 files changed, 2 insertions(+)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6369,6 +6369,7 @@ enum {
- 	ALC287_FIXUP_HP_GPIO_LED,
- 	ALC256_FIXUP_HP_HEADSET_MIC,
- 	ALC236_FIXUP_DELL_AIO_HEADSET_MIC,
-+	ALC282_FIXUP_ACER_DISABLE_LINEOUT,
+diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-a64.c b/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
+index 5f66bf8797723..149cfde817cba 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
++++ b/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
+@@ -389,6 +389,7 @@ static struct clk_div_table ths_div_table[] = {
+ 	{ .val = 1, .div = 2 },
+ 	{ .val = 2, .div = 4 },
+ 	{ .val = 3, .div = 6 },
++	{ /* Sentinel */ },
  };
- 
- static const struct hda_fixup alc269_fixups[] = {
-@@ -7792,6 +7793,16 @@ static const struct hda_fixup alc269_fix
- 		.chained = true,
- 		.chain_id = ALC255_FIXUP_DELL1_MIC_NO_PRESENCE
- 	},
-+	[ALC282_FIXUP_ACER_DISABLE_LINEOUT] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = (const struct hda_pintbl[]) {
-+			{ 0x1b, 0x411111f0 },
-+			{ 0x18, 0x01a1913c }, /* use as headset mic, without its own jack detect */
-+			{ },
-+		},
-+		.chained = true,
-+		.chain_id = ALC269_FIXUP_HEADSET_MODE
-+	},
+ static const char * const ths_parents[] = { "osc24M" };
+ static struct ccu_div ths_clk = {
+diff --git a/drivers/clk/sunxi-ng/ccu-sun8i-h3.c b/drivers/clk/sunxi-ng/ccu-sun8i-h3.c
+index 6b636362379ee..7e629a4493afd 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun8i-h3.c
++++ b/drivers/clk/sunxi-ng/ccu-sun8i-h3.c
+@@ -322,6 +322,7 @@ static struct clk_div_table ths_div_table[] = {
+ 	{ .val = 1, .div = 2 },
+ 	{ .val = 2, .div = 4 },
+ 	{ .val = 3, .div = 6 },
++	{ /* Sentinel */ },
  };
- 
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-@@ -8569,6 +8580,22 @@ static const struct snd_hda_pin_quirk al
- 		{0x12, 0x90a60140},
- 		{0x19, 0x04a11030},
- 		{0x21, 0x04211020}),
-+	SND_HDA_PIN_QUIRK(0x10ec0282, 0x1025, "Acer", ALC282_FIXUP_ACER_DISABLE_LINEOUT,
-+		ALC282_STANDARD_PINS,
-+		{0x12, 0x90a609c0},
-+		{0x18, 0x03a11830},
-+		{0x19, 0x04a19831},
-+		{0x1a, 0x0481303f},
-+		{0x1b, 0x04211020},
-+		{0x21, 0x0321101f}),
-+	SND_HDA_PIN_QUIRK(0x10ec0282, 0x1025, "Acer", ALC282_FIXUP_ACER_DISABLE_LINEOUT,
-+		ALC282_STANDARD_PINS,
-+		{0x12, 0x90a60940},
-+		{0x18, 0x03a11830},
-+		{0x19, 0x04a19831},
-+		{0x1a, 0x0481303f},
-+		{0x1b, 0x04211020},
-+		{0x21, 0x0321101f}),
- 	SND_HDA_PIN_QUIRK(0x10ec0283, 0x1028, "Dell", ALC269_FIXUP_DELL1_MIC_NO_PRESENCE,
- 		ALC282_STANDARD_PINS,
- 		{0x12, 0x90a60130},
+ static SUNXI_CCU_DIV_TABLE_WITH_GATE(ths_clk, "ths", "osc24M",
+ 				     0x074, 0, 2, ths_div_table, BIT(31), 0);
+-- 
+2.27.0
+
 
 
