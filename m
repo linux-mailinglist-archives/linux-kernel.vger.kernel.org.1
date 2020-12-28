@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48C762E404E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:51:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A0AC2E37C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:01:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437959AbgL1OVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:21:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55430 "EHLO mail.kernel.org"
+        id S1729403AbgL1NAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:00:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502218AbgL1OVE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:21:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BBCF206D4;
-        Mon, 28 Dec 2020 14:20:41 +0000 (UTC)
+        id S1728898AbgL1NAC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:00:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 840FA22A84;
+        Mon, 28 Dec 2020 12:59:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165242;
-        bh=tz/dodCeW1DHdwoGekz2Ot5tcOa7R/FRsYGAIh+bSLk=;
+        s=korg; t=1609160362;
+        bh=CAZpmqYhFcjlsXXL+wvpPr150+FymCry+J9YQd151xE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K/ERgqEMHJwqKqZlbv5Quy+25QXjVf1AeSTZEWJ2STLNcxJyMpJP7cCNiJESmpXBu
-         XQIPjn0kpfXYfI+SjflmYkIl8zUzcbzqmG+SUnVwIOw/p5UMzIOIUo9AwQ3VmOSs4l
-         HbsHQCruuF1EGyNY6IQ4xJDfgMSyA28Bhx80f3vQ=
+        b=1J4EpKuLiuhvuoVXQYx224EvIchmxb83Ikj8jpHkeGtxOzKgLsF3QHz1E0S54mGG1
+         PHr+9vaC9sgT6ENvIi0cSD1NmXvi2zguINF3sde2N1JKlEeR/TvM2BkyEGC8rXje3r
+         nl7b2CmWGTXqdxSkqz0fC7vcQopL+T5DPdTStFL4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 462/717] ice, xsk: clear the status bits for the next_to_use descriptor
-Date:   Mon, 28 Dec 2020 13:47:40 +0100
-Message-Id: <20201228125043.105740628@linuxfoundation.org>
+        stable@vger.kernel.org, Chris Chiu <chiu@endlessos.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH 4.9 008/175] Input: i8042 - add Acer laptops to the i8042 reset list
+Date:   Mon, 28 Dec 2020 13:47:41 +0100
+Message-Id: <20201228124853.651758250@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,55 +39,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
+From: Chris Chiu <chiu@endlessos.org>
 
-[ Upstream commit 8d14768a7972b92c73259f0c9c45b969d85e3a60 ]
+commit ce6520b0eafad5962ffc21dc47cd7bd3250e9045 upstream.
 
-On the Rx side, the next_to_use index points to the next item in the
-HW ring to be refilled/allocated, and next_to_clean points to the next
-item to potentially be processed.
+The touchpad operates in Basic Mode by default in the Acer BIOS
+setup, but some Aspire/TravelMate models require the i8042 to be
+reset in order to be correctly detected.
 
-When the HW Rx ring is fully refilled, i.e. no packets has been
-processed, the next_to_use will be next_to_clean - 1. When the ring is
-fully processed next_to_clean will be equal to next_to_use. The latter
-case is where a bug is triggered.
+Signed-off-by: Chris Chiu <chiu@endlessos.org>
+Link: https://lore.kernel.org/r/20201207071250.15021-1-chiu@endlessos.org
+Cc: stable@vger.kernel.org
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-If the next_to_use bits are not cleared, and the "fully processed"
-state is entered, a stale descriptor can be processed.
-
-The skb-path correctly clear the status bit for the next_to_use
-descriptor, but the AF_XDP zero-copy path did not do that.
-
-This change adds the status bits clearing of the next_to_use
-descriptor.
-
-Fixes: 2d4238f55697 ("ice: Add support for AF_XDP")
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/ice/ice_xsk.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/input/serio/i8042-x86ia64io.h |   42 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-index 797886524054c..98101a8e2952d 100644
---- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-+++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-@@ -446,8 +446,11 @@ bool ice_alloc_rx_bufs_zc(struct ice_ring *rx_ring, u16 count)
- 		}
- 	} while (--count);
- 
--	if (rx_ring->next_to_use != ntu)
-+	if (rx_ring->next_to_use != ntu) {
-+		/* clear the status bits for the next_to_use descriptor */
-+		rx_desc->wb.status_error0 = 0;
- 		ice_release_rx_desc(rx_ring, ntu);
-+	}
- 
- 	return ret;
- }
--- 
-2.27.0
-
+--- a/drivers/input/serio/i8042-x86ia64io.h
++++ b/drivers/input/serio/i8042-x86ia64io.h
+@@ -688,6 +688,48 @@ static const struct dmi_system_id __init
+ 		},
+ 	},
+ 	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire A114-31"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire A314-31"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire A315-31"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire ES1-132"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire ES1-332"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire ES1-432"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "TravelMate Spin B118-RN"),
++		},
++	},
++	{
+ 		/* Advent 4211 */
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "DIXONSXP"),
 
 
