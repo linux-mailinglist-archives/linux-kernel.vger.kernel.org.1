@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2332E2E38BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:16:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B98D52E3776
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:57:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732473AbgL1NOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:14:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41832 "EHLO mail.kernel.org"
+        id S1728615AbgL1Mzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:55:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732440AbgL1NOO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:14:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C51AC22BEF;
-        Mon, 28 Dec 2020 13:13:57 +0000 (UTC)
+        id S1728597AbgL1Mzn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:55:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AA37208BA;
+        Mon, 28 Dec 2020 12:55:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161238;
-        bh=aHGF5GRRwAoFtRgVjPWdmlpM/DCLHAZJp3duD7olTO4=;
+        s=korg; t=1609160102;
+        bh=xvxEK+dhAsqyF62rtdJUybRBa9CaZRDIvG8ECLBo2MM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=haEzEkfOHaQfkMZkknNTpynlp00bPZoQw7npoDEMYd+nUMj6DaaJEeIXYc3I2X2ry
-         XfNQ9p8MZyPdLoto8nfjVq+I0LhzMPUYhtkJHhR9pS+HVzWt/ROWsl9pce4K/Jsehh
-         NZ2bBh4CuBS2amQW7K3XcA6r17Wj4yFo0COlVagA=
+        b=c+2EhF8GzV0b7bd5ZkfJKFztq2zBPnUlNHeCr3i6S3Z8ytmxURRvH4VIaAAUHCd1n
+         WsURoWjhdyDnE1av4LO4/G6eIduiIJc7AiiefnmyyHql/Z5jwchzR9I23A/zIqj82K
+         BHbePuUtRsNPTEbjCC4kEE6XRtjgt0TYE6AhK7jA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nathan Lynch <nathanl@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 149/242] powerpc/pseries/hibernation: remove redundant cacheinfo update
+Subject: [PATCH 4.4 070/132] cpufreq: loongson1: Add missing MODULE_ALIAS
 Date:   Mon, 28 Dec 2020 13:49:14 +0100
-Message-Id: <20201228124912.042221843@linuxfoundation.org>
+Message-Id: <20201228124849.828882142@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,51 +41,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Lynch <nathanl@linux.ibm.com>
+From: Pali Rohár <pali@kernel.org>
 
-[ Upstream commit b866459489fe8ef0e92cde3cbd6bbb1af6c4e99b ]
+[ Upstream commit b9acab091842ca8b288882798bb809f7abf5408a ]
 
-Partitions with cache nodes in the device tree can encounter the
-following warning on resume:
+This patch adds missing MODULE_ALIAS for automatic loading of this cpufreq
+driver when it is compiled as an external module.
 
-CPU 0 already accounted in PowerPC,POWER9@0(Data)
-WARNING: CPU: 0 PID: 3177 at arch/powerpc/kernel/cacheinfo.c:197 cacheinfo_cpu_online+0x640/0x820
-
-These calls to cacheinfo_cpu_offline/online have been redundant since
-commit e610a466d16a ("powerpc/pseries/mobility: rebuild cacheinfo
-hierarchy post-migration").
-
-Fixes: e610a466d16a ("powerpc/pseries/mobility: rebuild cacheinfo hierarchy post-migration")
-Signed-off-by: Nathan Lynch <nathanl@linux.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20201207215200.1785968-25-nathanl@linux.ibm.com
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Fixes: a0a22cf14472f ("cpufreq: Loongson1: Add cpufreq driver for Loongson1B")
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/platforms/pseries/suspend.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/cpufreq/ls1x-cpufreq.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/powerpc/platforms/pseries/suspend.c b/arch/powerpc/platforms/pseries/suspend.c
-index 33077ad106cf0..b7cdad95584da 100644
---- a/arch/powerpc/platforms/pseries/suspend.c
-+++ b/arch/powerpc/platforms/pseries/suspend.c
-@@ -26,7 +26,6 @@
- #include <asm/mmu.h>
- #include <asm/rtas.h>
- #include <asm/topology.h>
--#include "../../kernel/cacheinfo.h"
+diff --git a/drivers/cpufreq/ls1x-cpufreq.c b/drivers/cpufreq/ls1x-cpufreq.c
+index 262581b3318d7..367cb1615c30d 100644
+--- a/drivers/cpufreq/ls1x-cpufreq.c
++++ b/drivers/cpufreq/ls1x-cpufreq.c
+@@ -217,6 +217,7 @@ static struct platform_driver ls1x_cpufreq_platdrv = {
  
- static u64 stream_id;
- static struct device suspend_dev;
-@@ -91,9 +90,7 @@ static void pseries_suspend_enable_irqs(void)
- 	 * Update configuration which can be modified based on device tree
- 	 * changes during resume.
- 	 */
--	cacheinfo_cpu_offline(smp_processor_id());
- 	post_mobility_fixup();
--	cacheinfo_cpu_online(smp_processor_id());
- }
+ module_platform_driver(ls1x_cpufreq_platdrv);
  
- /**
++MODULE_ALIAS("platform:ls1x-cpufreq");
+ MODULE_AUTHOR("Kelvin Cheung <keguang.zhang@gmail.com>");
+ MODULE_DESCRIPTION("Loongson 1 CPUFreq driver");
+ MODULE_LICENSE("GPL");
 -- 
 2.27.0
 
