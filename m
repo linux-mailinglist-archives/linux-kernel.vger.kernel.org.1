@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85A432E3B6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:51:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4469B2E39C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:29:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406224AbgL1Ntx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:49:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51258 "EHLO mail.kernel.org"
+        id S2389867AbgL1N2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:28:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406211AbgL1Nts (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:49:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14DFC208B3;
-        Mon, 28 Dec 2020 13:49:00 +0000 (UTC)
+        id S2389792AbgL1N2H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:28:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 39C01207C9;
+        Mon, 28 Dec 2020 13:27:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163341;
-        bh=5h16ZCx7Qhv8wGHAFqhxjy79CIfTYPfRVRf15QgHFdg=;
+        s=korg; t=1609162046;
+        bh=b4HI2o2L0UGgvI4NCxWbGluFCSpvWLmEED1AhU6H+18=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IGtqEp36bVLJiPobtQDMWM+EfBnkgj3HIn7cS9Xc3uP+AsyXvs0b0CV5K3aNwiq/F
-         RnoGk9cSiCHqu49cc/6GLnzmy1RRBT9e3Ps3eyLdox/0wMR2RGO+nOd72Il6jDWoGV
-         mWN1Oxyiz/pWDscOvLgyQaQZBJFFnfRCxowJwD7Q=
+        b=r0nculEON/47bx9AmYxPIcTPZoPwLvRsz+Ke5DPAFOnopOj2EpCBfeVLMEB7Q7ZI4
+         L83HP2JnG/miEotyhulWCrfe3OTjhI7ZHaYeEzS0CacGiOHBPkt0BQoPXKPa5PFmdG
+         XbE24gdW/t7xuRkIW0vS5OBVVGo4/eBJsLxPuwPk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kazuo ito <kzpn200@gmail.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
+        stable@vger.kernel.org, "Daniel T. Lee" <danieltimlee@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 253/453] nfsd: Fix message level for normal termination
+Subject: [PATCH 4.19 170/346] samples: bpf: Fix lwt_len_hist reusing previous BPF map
 Date:   Mon, 28 Dec 2020 13:48:09 +0100
-Message-Id: <20201228124949.401311111@linuxfoundation.org>
+Message-Id: <20201228124928.011524667@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kazuo ito <kzpn200@gmail.com>
+From: Daniel T. Lee <danieltimlee@gmail.com>
 
-[ Upstream commit 4420440c57892779f265108f46f83832a88ca795 ]
+[ Upstream commit 0afe0a998c40085a6342e1aeb4c510cccba46caf ]
 
-The warning message from nfsd terminating normally
-can confuse system adminstrators or monitoring software.
+Currently, lwt_len_hist's map lwt_len_hist_map is uses pinning, and the
+map isn't cleared on test end. This leds to reuse of that map for
+each test, which prevents the results of the test from being accurate.
 
-Though it's not exactly fair to pin-point a commit where it
-originated, the current form in the current place started
-to appear in:
+This commit fixes the problem by removing of pinned map from bpffs.
+Also, this commit add the executable permission to shell script
+files.
 
-Fixes: e096bbc6488d ("knfsd: remove special handling for SIGHUP")
-Signed-off-by: kazuo ito <kzpn200@gmail.com>
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Fixes: f74599f7c5309 ("bpf: Add tests and samples for LWT-BPF")
+Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20201124090310.24374-7-danieltimlee@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfsd/nfssvc.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ samples/bpf/lwt_len_hist.sh | 2 ++
+ samples/bpf/test_lwt_bpf.sh | 0
+ 2 files changed, 2 insertions(+)
+ mode change 100644 => 100755 samples/bpf/lwt_len_hist.sh
+ mode change 100644 => 100755 samples/bpf/test_lwt_bpf.sh
 
-diff --git a/fs/nfsd/nfssvc.c b/fs/nfsd/nfssvc.c
-index e8bee8ff30c59..155a4e43b24ee 100644
---- a/fs/nfsd/nfssvc.c
-+++ b/fs/nfsd/nfssvc.c
-@@ -516,8 +516,7 @@ static void nfsd_last_thread(struct svc_serv *serv, struct net *net)
- 		return;
+diff --git a/samples/bpf/lwt_len_hist.sh b/samples/bpf/lwt_len_hist.sh
+old mode 100644
+new mode 100755
+index 090b96eaf7f76..0eda9754f50b8
+--- a/samples/bpf/lwt_len_hist.sh
++++ b/samples/bpf/lwt_len_hist.sh
+@@ -8,6 +8,8 @@ VETH1=tst_lwt1b
+ TRACE_ROOT=/sys/kernel/debug/tracing
  
- 	nfsd_shutdown_net(net);
--	printk(KERN_WARNING "nfsd: last server has exited, flushing export "
--			    "cache\n");
-+	pr_info("nfsd: last server has exited, flushing export cache\n");
- 	nfsd_export_flush(net);
- }
- 
+ function cleanup {
++	# To reset saved histogram, remove pinned map
++	rm /sys/fs/bpf/tc/globals/lwt_len_hist_map
+ 	ip route del 192.168.253.2/32 dev $VETH0 2> /dev/null
+ 	ip link del $VETH0 2> /dev/null
+ 	ip link del $VETH1 2> /dev/null
+diff --git a/samples/bpf/test_lwt_bpf.sh b/samples/bpf/test_lwt_bpf.sh
+old mode 100644
+new mode 100755
 -- 
 2.27.0
 
