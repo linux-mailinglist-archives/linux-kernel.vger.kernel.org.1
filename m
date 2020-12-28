@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 968A52E3F96
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:42:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B85002E37B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:01:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506318AbgL1OmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:42:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35216 "EHLO mail.kernel.org"
+        id S1728102AbgL1M7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:59:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502456AbgL1O1p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:27:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D73CB207B2;
-        Mon, 28 Dec 2020 14:27:29 +0000 (UTC)
+        id S1728694AbgL1M7K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:59:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA99722583;
+        Mon, 28 Dec 2020 12:58:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165650;
-        bh=Z0h+6bmR7wNimKkpK7ZfJsCK9K1YgiLPBioUdJ2aJFg=;
+        s=korg; t=1609160310;
+        bh=JjJnrxL9fLKasLQsKk98xYTc7Jc8DgzQAlhOH4Xd/Ho=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BtulNGZYR1irNX4mwg06A047Dk1Zk+cUWVijh/sK6PXlYdPGk6XHOlZ3X8+yHdP2W
-         UEE88DwqtBsctqslFqSyE31WwV4sGTI8M9o4Yqds5SfNbFbi0ewyb+/s8d4LYUzhB8
-         e46h9cp06sDl7nwDjWVPa4EdovrCi1xF6sag+j6Q=
+        b=nQ2/B8mnmgGZhsqk42Z8KuptzOlBJ/Z3Dnq2fR2Gbw7dTbMB3NgKToWCcWfG9PTvh
+         ZyoEAbQB1vSQL0PW751amDZCIPUVVp/3jhfk+7TEqzShe5nPox0Jnyf+bjyej+tLLD
+         kvMy60ODUTKPr88JBkYFt4GqlxJNW08Px5tbqw6E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jon Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <treding@nvidia.com>
-Subject: [PATCH 5.10 605/717] ARM: tegra: Populate OPP table for Tegra20 Ventana
+        stable@vger.kernel.org, Chunguang Xu <brookxu@tencent.com>,
+        Theodore Tso <tytso@mit.edu>, stable@kernel.org
+Subject: [PATCH 4.4 119/132] ext4: fix a memory leak of ext4_free_data
 Date:   Mon, 28 Dec 2020 13:50:03 +0100
-Message-Id: <20201228125049.895071844@linuxfoundation.org>
+Message-Id: <20201228124852.159119104@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,54 +39,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jon Hunter <jonathanh@nvidia.com>
+From: Chunguang Xu <brookxu@tencent.com>
 
-commit bd7cd7e05a42491469ca19861da44abc3168cf5f upstream.
+commit cca415537244f6102cbb09b5b90db6ae2c953bdd upstream.
 
-Commit 9ce274630495 ("cpufreq: tegra20: Use generic cpufreq-dt driver
-(Tegra30 supported now)") update the Tegra20 CPUFREQ driver to use the
-generic CPUFREQ device-tree driver. Since this change CPUFREQ support
-on the Tegra20 Ventana platform has been broken because the necessary
-device-tree nodes with the operating point information are not populated
-for this platform. Fix this by updating device-tree for Venata to
-include the operating point informration for Tegra20.
+When freeing metadata, we will create an ext4_free_data and
+insert it into the pending free list.  After the current
+transaction is committed, the object will be freed.
 
-Fixes: 9ce274630495 ("cpufreq: tegra20: Use generic cpufreq-dt driver (Tegra30 supported now)")
-Cc: stable@vger.kernel.org
-Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
+ext4_mb_free_metadata() will check whether the area to be freed
+overlaps with the pending free list. If true, return directly. At this
+time, ext4_free_data is leaked.  Fortunately, the probability of this
+problem is small, since it only occurs if the file system is corrupted
+such that a block is claimed by more one inode and those inodes are
+deleted within a single jbd2 transaction.
+
+Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+Link: https://lore.kernel.org/r/1604764698-4269-8-git-send-email-brookxu@tencent.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Cc: stable@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm/boot/dts/tegra20-ventana.dts |   11 +++++++++++
- 1 file changed, 11 insertions(+)
+ fs/ext4/mballoc.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/arm/boot/dts/tegra20-ventana.dts
-+++ b/arch/arm/boot/dts/tegra20-ventana.dts
-@@ -3,6 +3,7 @@
- 
- #include <dt-bindings/input/input.h>
- #include "tegra20.dtsi"
-+#include "tegra20-cpu-opp.dtsi"
- 
- / {
- 	model = "NVIDIA Tegra20 Ventana evaluation board";
-@@ -592,6 +593,16 @@
- 		#clock-cells = <0>;
- 	};
- 
-+	cpus {
-+		cpu0: cpu@0 {
-+			operating-points-v2 = <&cpu0_opp_table>;
-+		};
-+
-+		cpu@1 {
-+			operating-points-v2 = <&cpu0_opp_table>;
-+		};
-+	};
-+
- 	gpio-keys {
- 		compatible = "gpio-keys";
- 
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -4646,6 +4646,7 @@ ext4_mb_free_metadata(handle_t *handle,
+ 				ext4_group_first_block_no(sb, group) +
+ 				EXT4_C2B(sbi, cluster),
+ 				"Block already on to-be-freed list");
++			kmem_cache_free(ext4_free_data_cachep, new_entry);
+ 			return 0;
+ 		}
+ 	}
 
 
