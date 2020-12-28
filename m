@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5E272E3B3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:49:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B1F62E39A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:27:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405677AbgL1Nrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:47:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48306 "EHLO mail.kernel.org"
+        id S2389049AbgL1NZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:25:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53950 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405571AbgL1NrO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:47:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A4BAA22A84;
-        Mon, 28 Dec 2020 13:46:32 +0000 (UTC)
+        id S2388913AbgL1NZd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:25:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F35E2072C;
+        Mon, 28 Dec 2020 13:25:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163193;
-        bh=nIMgCP4zhChQ/IOqGzEJYBk6jPnO2yMfXTQxvlQBPkg=;
+        s=korg; t=1609161918;
+        bh=V/6JNkaSfVK6TfVI1895ZxL0BT9b7+WoGm6BJcSfgi4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d6xhrGeHLIkj0Uw5pKGUIj05NPVFMs70wEhflJ2o6Gda/bOqW6XuSXpUqV1eTB7ng
-         VprUbtccmmNNoPsyx41vzosps8HaViJGJjSV03io2U4SBKH83eFSdIs05Nrl+9eOg2
-         MUXOWWdffFJS0kCBhYRxvGpP+LlN+PGSrrzvTCOk=
+        b=PvikxRpEmKDEhzLMtqmXVT7985mWGc551mfYiinD1vzZS/cLxT6llRn7+kmCCsZPA
+         I/uzSzyRTQM2sV+9Oqvrxf9YYjRvS8/ylvRQYau3b8sVsl/aIEbvsppy54cTEAJgGB
+         +1OpwC6cXH814dSX3e5530MoFWLw60JdcWSrlvMM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 201/453] SUNRPC: xprt_load_transport() needs to support the netid "rdma6"
-Date:   Mon, 28 Dec 2020 13:47:17 +0100
-Message-Id: <20201228124946.885624631@linuxfoundation.org>
+Subject: [PATCH 4.19 119/346] ASoC: pcm: DRAIN support reactivation
+Date:   Mon, 28 Dec 2020 13:47:18 +0100
+Message-Id: <20201228124925.546595955@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,183 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Cezary Rojewski <cezary.rojewski@intel.com>
 
-[ Upstream commit d5aa6b22e2258f05317313ecc02efbb988ed6d38 ]
+[ Upstream commit 4c22b80f61540ea99d9b4af0127315338755f05b ]
 
-According to RFC5666, the correct netid for an IPv6 addressed RDMA
-transport is "rdma6", which we've supported as a mount option since
-Linux-4.7. The problem is when we try to load the module "xprtrdma6",
-that will fail, since there is no modulealias of that name.
+soc-pcm's dpcm_fe_dai_do_trigger() supported DRAIN commnad up to kernel
+v5.4 where explicit switch(cmd) has been introduced which takes into
+account all SNDRV_PCM_TRIGGER_xxx but SNDRV_PCM_TRIGGER_DRAIN. Update
+switch statement to reactive support for it.
 
-Fixes: 181342c5ebe8 ("xprtrdma: Add rdma6 option to support NFS/RDMA IPv6")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+As DRAIN is somewhat unique by lacking negative/stop counterpart, bring
+behaviour of dpcm_fe_dai_do_trigger() for said command back to its
+pre-v5.4 state by adding it to START/RESUME/PAUSE_RELEASE group.
+
+Fixes: acbf27746ecf ("ASoC: pcm: update FE/BE trigger order based on the command")
+Signed-off-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Link: https://lore.kernel.org/r/20201026100129.8216-1-cezary.rojewski@intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/sunrpc/xprt.h     |  1 +
- net/sunrpc/xprt.c               | 65 +++++++++++++++++++++++++--------
- net/sunrpc/xprtrdma/module.c    |  1 +
- net/sunrpc/xprtrdma/transport.c |  1 +
- net/sunrpc/xprtsock.c           |  4 ++
- 5 files changed, 56 insertions(+), 16 deletions(-)
+ sound/soc/soc-pcm.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/include/linux/sunrpc/xprt.h b/include/linux/sunrpc/xprt.h
-index d783e15ba898c..d7ef5b97174ce 100644
---- a/include/linux/sunrpc/xprt.h
-+++ b/include/linux/sunrpc/xprt.h
-@@ -330,6 +330,7 @@ struct xprt_class {
- 	struct rpc_xprt *	(*setup)(struct xprt_create *);
- 	struct module		*owner;
- 	char			name[32];
-+	const char *		netid[];
- };
- 
- /*
-diff --git a/net/sunrpc/xprt.c b/net/sunrpc/xprt.c
-index a6fee86f400ec..639837b3a5d90 100644
---- a/net/sunrpc/xprt.c
-+++ b/net/sunrpc/xprt.c
-@@ -151,31 +151,64 @@ out:
- }
- EXPORT_SYMBOL_GPL(xprt_unregister_transport);
- 
-+static void
-+xprt_class_release(const struct xprt_class *t)
-+{
-+	module_put(t->owner);
-+}
-+
-+static const struct xprt_class *
-+xprt_class_find_by_netid_locked(const char *netid)
-+{
-+	const struct xprt_class *t;
-+	unsigned int i;
-+
-+	list_for_each_entry(t, &xprt_list, list) {
-+		for (i = 0; t->netid[i][0] != '\0'; i++) {
-+			if (strcmp(t->netid[i], netid) != 0)
-+				continue;
-+			if (!try_module_get(t->owner))
-+				continue;
-+			return t;
-+		}
-+	}
-+	return NULL;
-+}
-+
-+static const struct xprt_class *
-+xprt_class_find_by_netid(const char *netid)
-+{
-+	const struct xprt_class *t;
-+
-+	spin_lock(&xprt_list_lock);
-+	t = xprt_class_find_by_netid_locked(netid);
-+	if (!t) {
-+		spin_unlock(&xprt_list_lock);
-+		request_module("rpc%s", netid);
-+		spin_lock(&xprt_list_lock);
-+		t = xprt_class_find_by_netid_locked(netid);
-+	}
-+	spin_unlock(&xprt_list_lock);
-+	return t;
-+}
-+
- /**
-  * xprt_load_transport - load a transport implementation
-- * @transport_name: transport to load
-+ * @netid: transport to load
-  *
-  * Returns:
-  * 0:		transport successfully loaded
-  * -ENOENT:	transport module not available
-  */
--int xprt_load_transport(const char *transport_name)
-+int xprt_load_transport(const char *netid)
- {
--	struct xprt_class *t;
--	int result;
-+	const struct xprt_class *t;
- 
--	result = 0;
--	spin_lock(&xprt_list_lock);
--	list_for_each_entry(t, &xprt_list, list) {
--		if (strcmp(t->name, transport_name) == 0) {
--			spin_unlock(&xprt_list_lock);
--			goto out;
--		}
--	}
--	spin_unlock(&xprt_list_lock);
--	result = request_module("xprt%s", transport_name);
--out:
--	return result;
-+	t = xprt_class_find_by_netid(netid);
-+	if (!t)
-+		return -ENOENT;
-+	xprt_class_release(t);
-+	return 0;
- }
- EXPORT_SYMBOL_GPL(xprt_load_transport);
- 
-diff --git a/net/sunrpc/xprtrdma/module.c b/net/sunrpc/xprtrdma/module.c
-index 620327c01302c..45c5b41ac8dc9 100644
---- a/net/sunrpc/xprtrdma/module.c
-+++ b/net/sunrpc/xprtrdma/module.c
-@@ -24,6 +24,7 @@ MODULE_DESCRIPTION("RPC/RDMA Transport");
- MODULE_LICENSE("Dual BSD/GPL");
- MODULE_ALIAS("svcrdma");
- MODULE_ALIAS("xprtrdma");
-+MODULE_ALIAS("rpcrdma6");
- 
- static void __exit rpc_rdma_cleanup(void)
- {
-diff --git a/net/sunrpc/xprtrdma/transport.c b/net/sunrpc/xprtrdma/transport.c
-index c67d465dc0620..2f21e3c52bfc1 100644
---- a/net/sunrpc/xprtrdma/transport.c
-+++ b/net/sunrpc/xprtrdma/transport.c
-@@ -827,6 +827,7 @@ static struct xprt_class xprt_rdma = {
- 	.owner			= THIS_MODULE,
- 	.ident			= XPRT_TRANSPORT_RDMA,
- 	.setup			= xprt_setup_rdma,
-+	.netid			= { "rdma", "rdma6", "" },
- };
- 
- void xprt_rdma_cleanup(void)
-diff --git a/net/sunrpc/xprtsock.c b/net/sunrpc/xprtsock.c
-index 934e30e675375..449f193b5a886 100644
---- a/net/sunrpc/xprtsock.c
-+++ b/net/sunrpc/xprtsock.c
-@@ -3204,6 +3204,7 @@ static struct xprt_class	xs_local_transport = {
- 	.owner		= THIS_MODULE,
- 	.ident		= XPRT_TRANSPORT_LOCAL,
- 	.setup		= xs_setup_local,
-+	.netid		= { "" },
- };
- 
- static struct xprt_class	xs_udp_transport = {
-@@ -3212,6 +3213,7 @@ static struct xprt_class	xs_udp_transport = {
- 	.owner		= THIS_MODULE,
- 	.ident		= XPRT_TRANSPORT_UDP,
- 	.setup		= xs_setup_udp,
-+	.netid		= { "udp", "udp6", "" },
- };
- 
- static struct xprt_class	xs_tcp_transport = {
-@@ -3220,6 +3222,7 @@ static struct xprt_class	xs_tcp_transport = {
- 	.owner		= THIS_MODULE,
- 	.ident		= XPRT_TRANSPORT_TCP,
- 	.setup		= xs_setup_tcp,
-+	.netid		= { "tcp", "tcp6", "" },
- };
- 
- static struct xprt_class	xs_bc_tcp_transport = {
-@@ -3228,6 +3231,7 @@ static struct xprt_class	xs_bc_tcp_transport = {
- 	.owner		= THIS_MODULE,
- 	.ident		= XPRT_TRANSPORT_BC_TCP,
- 	.setup		= xs_setup_bc_tcp,
-+	.netid		= { "" },
- };
- 
- /**
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index a0d1ce0edaf9a..af14304645ce8 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2390,6 +2390,7 @@ static int dpcm_fe_dai_do_trigger(struct snd_pcm_substream *substream, int cmd)
+ 		case SNDRV_PCM_TRIGGER_START:
+ 		case SNDRV_PCM_TRIGGER_RESUME:
+ 		case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		case SNDRV_PCM_TRIGGER_DRAIN:
+ 			ret = dpcm_dai_trigger_fe_be(substream, cmd, true);
+ 			break;
+ 		case SNDRV_PCM_TRIGGER_STOP:
+@@ -2407,6 +2408,7 @@ static int dpcm_fe_dai_do_trigger(struct snd_pcm_substream *substream, int cmd)
+ 		case SNDRV_PCM_TRIGGER_START:
+ 		case SNDRV_PCM_TRIGGER_RESUME:
+ 		case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		case SNDRV_PCM_TRIGGER_DRAIN:
+ 			ret = dpcm_dai_trigger_fe_be(substream, cmd, false);
+ 			break;
+ 		case SNDRV_PCM_TRIGGER_STOP:
 -- 
 2.27.0
 
