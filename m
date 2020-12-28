@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E13F92E3966
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:25:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B715F2E408A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:55:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388452AbgL1NXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:23:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51464 "EHLO mail.kernel.org"
+        id S2391822AbgL1ORc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:17:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387639AbgL1NXB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:23:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2727922B37;
-        Mon, 28 Dec 2020 13:22:19 +0000 (UTC)
+        id S2391802AbgL1OR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:17:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A6BD5206D4;
+        Mon, 28 Dec 2020 14:17:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161740;
-        bh=ZEwHuEGQ+vf2UNUct46rsFOozmqr9HZK0SBkkoaJ5G8=;
+        s=korg; t=1609165033;
+        bh=Yd9oCDHvXydzN29nOp7x6zy+P2ktIVDoGN93GaZerrc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TAE3WqyavfJJMb1a2qfCK0lYlTzFyt4tns/wJQ4eZPhTlSVMWHfPLUTWHIa5f4dbR
-         bMZJfLvhl5m+vdK5D1pKptSn4kJaMXSyKHsFRXJM2svx/NvBTMGgwDNqIp1U14OQTJ
-         esHLPbZZla+bb6+rDq14WjqnBojklJ+pxn2EFFcs=
+        b=pNzApnGRCtwGWE7WgMKGYtPffeMsT+dNY/wIE3fxMN23B0SMPKLGYj/q7ETrWx3vV
+         Uob0Ph5c05IFrHkfllammf8TeKXnp4aJ7hq1kFJet38BJgY499KbbApfjp1fWajw0l
+         KMeHBrf889Af2+50zoJhHC2D5bWB97/tWr/UtxrU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Daniel Gabay <daniel.gabay@intel.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 066/346] selftests/bpf/test_offload.py: Reset ethtool features after failed setting
+Subject: [PATCH 5.10 387/717] iwlwifi: dbg-tlv: fix old length in is_trig_data_contained()
 Date:   Mon, 28 Dec 2020 13:46:25 +0100
-Message-Id: <20201228124922.990491256@linuxfoundation.org>
+Message-Id: <20201228125039.546474151@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,37 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Toke Høiland-Jørgensen <toke@redhat.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 766e62b7fcd2cf1d43e6594ba37c659dc48f7ddb ]
+[ Upstream commit 58a1c9f9a9b6b9092ae10b84f6b571a06596e296 ]
 
-When setting the ethtool feature flag fails (as expected for the test), the
-kernel now tracks that the feature was requested to be 'off' and refuses to
-subsequently disable it again. So reset it back to 'on' so a subsequent
-disable (that's not supposed to fail) can succeed.
+There's a bug in the lengths - the 'old length' needs to be calculated
+using the 'old' pointer, of course, likely a copy/paste mistake. Fix
+this.
 
-Fixes: 417ec26477a5 ("selftests/bpf: add offload test based on netdevsim")
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Jakub Kicinski <kuba@kernel.org>
-Link: https://lore.kernel.org/bpf/160752226280.110217.10696241563705667871.stgit@toke.dk
+Reported-by: Daniel Gabay <daniel.gabay@intel.com>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Fixes: cf29c5b66b9f ("iwlwifi: dbg_ini: implement time point handling")
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Link: https://lore.kernel.org/r/iwlwifi.20201209231352.c0105ddffa74.I1ddb243053ff763c91b663748b6a593ecc3b5634@changeid
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/test_offload.py | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/wireless/intel/iwlwifi/iwl-dbg-tlv.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/test_offload.py b/tools/testing/selftests/bpf/test_offload.py
-index d59642e70f562..2229e55216a97 100755
---- a/tools/testing/selftests/bpf/test_offload.py
-+++ b/tools/testing/selftests/bpf/test_offload.py
-@@ -787,6 +787,7 @@ try:
-     start_test("Test disabling TC offloads is rejected while filters installed...")
-     ret, _ = sim.set_ethtool_tc_offloads(False, fail=False)
-     fail(ret == 0, "Driver should refuse to disable TC offloads with filters installed...")
-+    sim.set_ethtool_tc_offloads(True)
+diff --git a/drivers/net/wireless/intel/iwlwifi/iwl-dbg-tlv.c b/drivers/net/wireless/intel/iwlwifi/iwl-dbg-tlv.c
+index 51ce93d21ffe5..8fa1c22fd96db 100644
+--- a/drivers/net/wireless/intel/iwlwifi/iwl-dbg-tlv.c
++++ b/drivers/net/wireless/intel/iwlwifi/iwl-dbg-tlv.c
+@@ -808,7 +808,7 @@ static bool is_trig_data_contained(struct iwl_ucode_tlv *new,
+ 	struct iwl_fw_ini_trigger_tlv *old_trig = (void *)old->data;
+ 	__le32 *new_data = new_trig->data, *old_data = old_trig->data;
+ 	u32 new_dwords_num = iwl_tlv_array_len(new, new_trig, data);
+-	u32 old_dwords_num = iwl_tlv_array_len(new, new_trig, data);
++	u32 old_dwords_num = iwl_tlv_array_len(old, old_trig, data);
+ 	int i, j;
  
-     start_test("Test qdisc removal frees things...")
-     sim.tc_flush_filters()
+ 	for (i = 0; i < new_dwords_num; i++) {
 -- 
 2.27.0
 
