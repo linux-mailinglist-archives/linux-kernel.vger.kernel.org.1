@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7B292E40FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:01:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AF452E40F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:01:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392512AbgL1PAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:00:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48708 "EHLO mail.kernel.org"
+        id S2440166AbgL1ONb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:13:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47866 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440264AbgL1ONv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:13:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6466C206E5;
-        Mon, 28 Dec 2020 14:13:10 +0000 (UTC)
+        id S2440179AbgL1ON3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:13:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FFCD20715;
+        Mon, 28 Dec 2020 14:13:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609164790;
-        bh=A2U2Idw6zhrKTIlrvzcNSb53rId3h8/pk/9WKJBalBk=;
+        s=korg; t=1609164793;
+        bh=aVFpPXGvmw0OX3WEYtjlnggwAkKFDkbWOUwsy8Faa/A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QmiRsBD0s+XQP+Q08QBRMoGN7/1wAfjDNAKGMZq4OQfhjOJ1woq2aOtDnwTHKrH2N
-         3puddxbEfOSZbVsWgxOov+QzPm5rGT854R/GvaWmOPrWPJmaCpY1qHK4HCbJUOk2VR
-         VQEpPiuYNjB6YopFQ/QtOEU5eP/887Pvxw7pSE04=
+        b=EwPaxwZ25xP8CELDWFH/1/HMzwwFUXEoru3zb9VuL1wj1SXA15lr3uXHHIBsZWWGp
+         AdY1N8zbUpy6esPe22RUXpwqBbGK0GuwubnGQpuDu3c/QZ3Ln9lhOhx/Dajf40Oxx7
+         deJgLSGxhX4zC/UaZcxAW2hYUaly8z9nQq0hlbOM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
-        Heiko Stuebner <heiko@sntech.de>,
+        stable@vger.kernel.org, Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 299/717] arm64: dts: rockchip: Fix UART pull-ups on rk3328
-Date:   Mon, 28 Dec 2020 13:44:57 +0100
-Message-Id: <20201228125035.352326201@linuxfoundation.org>
+Subject: [PATCH 5.10 300/717] memstick: r592: Fix error return in r592_probe()
+Date:   Mon, 28 Dec 2020 13:44:58 +0100
+Message-Id: <20201228125035.401919220@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
 References: <20201228125020.963311703@linuxfoundation.org>
@@ -40,73 +40,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen-Yu Tsai <wens@csie.org>
+From: Jing Xiangfeng <jingxiangfeng@huawei.com>
 
-[ Upstream commit 94dad6bed3c86c00050bf7c2b2ad6b630facae31 ]
+[ Upstream commit db29d3d1c2451e673e29c7257471e3ce9d50383a ]
 
-For UARTs, the local pull-ups should be on the RX pin, not the TX pin.
-UARTs transmit active-low, so a disconnected RX pin should be pulled
-high instead of left floating to prevent noise being interpreted as
-transmissions.
+Fix to return a error code from the error handling case instead of 0.
 
-This gets rid of bogus sysrq events when the UART console is not
-connected.
-
-Fixes: 52e02d377a72 ("arm64: dts: rockchip: add core dtsi file for RK3328 SoCs")
-Signed-off-by: Chen-Yu Tsai <wens@csie.org>
-Link: https://lore.kernel.org/r/20201204064805.6480-1-wens@kernel.org
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Fixes: 926341250102 ("memstick: add driver for Ricoh R5C592 card reader")
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+Link: https://lore.kernel.org/r/20201125014718.153563-1-jingxiangfeng@huawei.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/rockchip/rk3328.dtsi | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/memstick/host/r592.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-index bbdb19a3e85d1..db0d5c8e5f96a 100644
---- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-@@ -1237,8 +1237,8 @@
+diff --git a/drivers/memstick/host/r592.c b/drivers/memstick/host/r592.c
+index dd3a1f3dcc191..d2ef46337191c 100644
+--- a/drivers/memstick/host/r592.c
++++ b/drivers/memstick/host/r592.c
+@@ -759,8 +759,10 @@ static int r592_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 		goto error3;
  
- 		uart0 {
- 			uart0_xfer: uart0-xfer {
--				rockchip,pins = <1 RK_PB1 1 &pcfg_pull_up>,
--						<1 RK_PB0 1 &pcfg_pull_none>;
-+				rockchip,pins = <1 RK_PB1 1 &pcfg_pull_none>,
-+						<1 RK_PB0 1 &pcfg_pull_up>;
- 			};
+ 	dev->mmio = pci_ioremap_bar(pdev, 0);
+-	if (!dev->mmio)
++	if (!dev->mmio) {
++		error = -ENOMEM;
+ 		goto error4;
++	}
  
- 			uart0_cts: uart0-cts {
-@@ -1256,8 +1256,8 @@
+ 	dev->irq = pdev->irq;
+ 	spin_lock_init(&dev->irq_lock);
+@@ -786,12 +788,14 @@ static int r592_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 		&dev->dummy_dma_page_physical_address, GFP_KERNEL);
+ 	r592_stop_dma(dev , 0);
  
- 		uart1 {
- 			uart1_xfer: uart1-xfer {
--				rockchip,pins = <3 RK_PA4 4 &pcfg_pull_up>,
--						<3 RK_PA6 4 &pcfg_pull_none>;
-+				rockchip,pins = <3 RK_PA4 4 &pcfg_pull_none>,
-+						<3 RK_PA6 4 &pcfg_pull_up>;
- 			};
+-	if (request_irq(dev->irq, &r592_irq, IRQF_SHARED,
+-			  DRV_NAME, dev))
++	error = request_irq(dev->irq, &r592_irq, IRQF_SHARED,
++			  DRV_NAME, dev);
++	if (error)
+ 		goto error6;
  
- 			uart1_cts: uart1-cts {
-@@ -1275,15 +1275,15 @@
+ 	r592_update_card_detect(dev);
+-	if (memstick_add_host(host))
++	error = memstick_add_host(host);
++	if (error)
+ 		goto error7;
  
- 		uart2-0 {
- 			uart2m0_xfer: uart2m0-xfer {
--				rockchip,pins = <1 RK_PA0 2 &pcfg_pull_up>,
--						<1 RK_PA1 2 &pcfg_pull_none>;
-+				rockchip,pins = <1 RK_PA0 2 &pcfg_pull_none>,
-+						<1 RK_PA1 2 &pcfg_pull_up>;
- 			};
- 		};
- 
- 		uart2-1 {
- 			uart2m1_xfer: uart2m1-xfer {
--				rockchip,pins = <2 RK_PA0 1 &pcfg_pull_up>,
--						<2 RK_PA1 1 &pcfg_pull_none>;
-+				rockchip,pins = <2 RK_PA0 1 &pcfg_pull_none>,
-+						<2 RK_PA1 1 &pcfg_pull_up>;
- 			};
- 		};
- 
+ 	message("driver successfully loaded");
 -- 
 2.27.0
 
