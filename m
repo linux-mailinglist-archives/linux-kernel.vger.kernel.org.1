@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18B0F2E3E5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:27:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 941432E377A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:57:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503943AbgL1O1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:27:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33900 "EHLO mail.kernel.org"
+        id S1728675AbgL1M4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:56:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52368 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503370AbgL1OZ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:25:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7468122B2C;
-        Mon, 28 Dec 2020 14:25:16 +0000 (UTC)
+        id S1728657AbgL1Mzy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:55:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EA08207C9;
+        Mon, 28 Dec 2020 12:55:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165517;
-        bh=80Df07jw8u0rPfckof6unHZA8g2+cWiNH7Dx5mLknAM=;
+        s=korg; t=1609160114;
+        bh=Q8Jma1sP/c+EfQWsNXNfmNNGb0Xk9HnEbDSWPklweC8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MdY8Aw0o5qW+2FS4yN3CR8KGQkW1phwOQZA1hZ/D4S4zskAsbTP7qtm9xTwv5XhMO
-         PjCDxdYQO/BD1wNOSwRq2o28I3eMBX6QbID5y5GFjmpMgbgisv4zSR6WwgrLMA5GQQ
-         Cg4l0bRGt2t9lPgj9mrPlgmeo0q/j7klUpJyZxWM=
+        b=PvxymbtSciFlnHQeBmZwTrl94VOQZWmL3ITRV7/8wnJuXometj2CYq2h/79sjycZe
+         p7gCZJAjxrzshILuVxguc+6lZpMefmkDCNdc7jTQZx7cxsAqtiy5OQoXpew8Mfgh7b
+         If3fsa5piMG3gpdZF0ex8y4meOHPguuPwL3yOUbs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.10 560/717] ASoC: cx2072x: Fix doubly definitions of Playback and Capture streams
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Karan Tilak Kumar <kartilak@cisco.com>,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 074/132] scsi: fnic: Fix error return code in fnic_probe()
 Date:   Mon, 28 Dec 2020 13:49:18 +0100
-Message-Id: <20201228125047.753708470@linuxfoundation.org>
+Message-Id: <20201228124850.018852032@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,49 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-commit 0d024a8bec084205fdd9fa17479ba91f45f85db3 upstream.
+[ Upstream commit d4fc94fe65578738ded138e9fce043db6bfc3241 ]
 
-The cx2072x codec driver defines multiple DAIs with the same stream
-name "Playback" and "Capture".  Although the current code works more
-or less as is as the secondary streams are never used, it still leads
-the error message like:
- debugfs: File 'Playback' in directory 'dapm' already present!
- debugfs: File 'Capture' in directory 'dapm' already present!
+Return a negative error code from the error handling case instead of 0 as
+done elsewhere in this function.
 
-Fix it by renaming the secondary streams to unique names.
-
-Fixes: a497a4363706 ("ASoC: Add support for Conexant CX2072X CODEC")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Link: https://lore.kernel.org/r/20201208135154.9188-1-tiwai@suse.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Link: https://lore.kernel.org/r/1607068060-31203-1-git-send-email-zhangchangzhong@huawei.com
+Fixes: 5df6d737dd4b ("[SCSI] fnic: Add new Cisco PCI-Express FCoE HBA")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Reviewed-by: Karan Tilak Kumar <kartilak@cisco.com>
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/cx2072x.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/scsi/fnic/fnic_main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/sound/soc/codecs/cx2072x.c
-+++ b/sound/soc/codecs/cx2072x.c
-@@ -1579,7 +1579,7 @@ static struct snd_soc_dai_driver soc_cod
- 		.id	= CX2072X_DAI_DSP,
- 		.probe = cx2072x_dsp_dai_probe,
- 		.playback = {
--			.stream_name = "Playback",
-+			.stream_name = "DSP Playback",
- 			.channels_min = 2,
- 			.channels_max = 2,
- 			.rates = CX2072X_RATES_DSP,
-@@ -1591,7 +1591,7 @@ static struct snd_soc_dai_driver soc_cod
- 		.name = "cx2072x-aec",
- 		.id	= 3,
- 		.capture = {
--			.stream_name = "Capture",
-+			.stream_name = "AEC Capture",
- 			.channels_min = 2,
- 			.channels_max = 2,
- 			.rates = CX2072X_RATES_DSP,
+diff --git a/drivers/scsi/fnic/fnic_main.c b/drivers/scsi/fnic/fnic_main.c
+index 58ce9020d69c5..389c13e1c9788 100644
+--- a/drivers/scsi/fnic/fnic_main.c
++++ b/drivers/scsi/fnic/fnic_main.c
+@@ -735,6 +735,7 @@ static int fnic_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	for (i = 0; i < FNIC_IO_LOCKS; i++)
+ 		spin_lock_init(&fnic->io_req_lock[i]);
+ 
++	err = -ENOMEM;
+ 	fnic->io_req_pool = mempool_create_slab_pool(2, fnic_io_req_cache);
+ 	if (!fnic->io_req_pool)
+ 		goto err_out_free_resources;
+-- 
+2.27.0
+
 
 
