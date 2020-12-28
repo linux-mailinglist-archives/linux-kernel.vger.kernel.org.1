@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C95C2E3BF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:57:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F26F2E3914
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:19:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406571AbgL1N4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:56:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58324 "EHLO mail.kernel.org"
+        id S1731805AbgL1NSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:18:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47174 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406531AbgL1N4f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:56:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A2A12064B;
-        Mon, 28 Dec 2020 13:55:54 +0000 (UTC)
+        id S1731793AbgL1NSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:18:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6743622583;
+        Mon, 28 Dec 2020 13:17:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163754;
-        bh=tI9wce+BunvcXZ1k12lQIL1jSlbuXYGqwp+jozGk0AE=;
+        s=korg; t=1609161479;
+        bh=FQP+rt9NpICwzj/HNlIQdtXAEm7tcSEAdjcSZDwBpWA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w0jc7FPdKmqDQm87ObkcRJerwz7nQqclTN5mKqrCxQns8bN3te+1e0mxmKvgwrfK0
-         0SWnY3eTvhN0CTB+rp9jJG+/pP2FlLaDRHZYB6hY0n7Fv/KfL+JrQfkactVvRaevp9
-         kC/7OAMOxUDMXAJ1OtRrAbS4ZJxL+jzxBjfmZxGk=
+        b=r/Am6bLnbWmZDHfXoiz8+PLfqQEc/AiR66wg+lRAcaTG94B+wEYxn+CMhcnfkEoVZ
+         yTK7/gWh6itU7nWRVYXnwTxCeca+LXblS6dNKLTY/+AmmxITWiRFYVhXtywjdVuJWy
+         o7eodRIyJ8zYrcxlFuMH0UQqDfpflQJEVrmeXL7g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, lizhe <lizhe67@huawei.com>,
-        Richard Weinberger <richard@nod.at>
-Subject: [PATCH 5.4 395/453] jffs2: Fix ignoring mounting options problem during remounting
+        stable@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Evan Green <evgreen@chromium.org>
+Subject: [PATCH 4.14 226/242] soc: qcom: smp2p: Safely acquire spinlock without IRQs
 Date:   Mon, 28 Dec 2020 13:50:31 +0100
-Message-Id: <20201228124956.210657737@linuxfoundation.org>
+Message-Id: <20201228124915.797161331@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,65 +41,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: lizhe <lizhe67@huawei.com>
+From: Evan Green <evgreen@chromium.org>
 
-commit 08cd274f9b8283a1da93e2ccab216a336da83525 upstream.
+commit fc3e62e25c3896855b7c3d72df19ca6be3459c9f upstream.
 
-The jffs2 mount options will be ignored when remounting jffs2.
-It can be easily reproduced with the steps listed below.
-1. mount -t jffs2 -o compr=none /dev/mtdblockx /mnt
-2. mount -o remount compr=zlib /mnt
+smp2p_update_bits() should disable interrupts when it acquires its
+spinlock. This is important because without the _irqsave, a priority
+inversion can occur.
 
-Since ec10a24f10c8, the option parsing happens before fill_super and
-then pass fc, which contains the options parsing results, to function
-jffs2_reconfigure during remounting. But function jffs2_reconfigure do
-not update c->mount_opts.
+This function is called both with interrupts enabled in
+qcom_q6v5_request_stop(), and with interrupts disabled in
+ipa_smp2p_panic_notifier(). IRQ handling of spinlocks should be
+consistent to avoid the panic notifier deadlocking because it's
+sitting on the thread that's already got the lock via _request_stop().
 
-This patch add a function jffs2_update_mount_opts to fix this problem.
+Found via lockdep.
 
-By the way, I notice that tmpfs use the same way to update remounting
-options. If it is necessary to unify them?
-
-Cc: <stable@vger.kernel.org>
-Fixes: ec10a24f10c8 ("vfs: Convert jffs2 to use the new mount API")
-Signed-off-by: lizhe <lizhe67@huawei.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Cc: stable@vger.kernel.org
+Fixes: 50e99641413e7 ("soc: qcom: smp2p: Qualcomm Shared Memory Point to Point")
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Evan Green <evgreen@chromium.org>
+Link: https://lore.kernel.org/r/20200929133040.RESEND.1.Ideabf6dcdfc577cf39ce3d95b0e4aa1ac8b38f0c@changeid
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/jffs2/super.c |   17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ drivers/soc/qcom/smp2p.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/fs/jffs2/super.c
-+++ b/fs/jffs2/super.c
-@@ -221,11 +221,28 @@ static int jffs2_parse_param(struct fs_c
- 	return 0;
- }
- 
-+static inline void jffs2_update_mount_opts(struct fs_context *fc)
-+{
-+	struct jffs2_sb_info *new_c = fc->s_fs_info;
-+	struct jffs2_sb_info *c = JFFS2_SB_INFO(fc->root->d_sb);
-+
-+	mutex_lock(&c->alloc_sem);
-+	if (new_c->mount_opts.override_compr) {
-+		c->mount_opts.override_compr = new_c->mount_opts.override_compr;
-+		c->mount_opts.compr = new_c->mount_opts.compr;
-+	}
-+	if (new_c->mount_opts.rp_size)
-+		c->mount_opts.rp_size = new_c->mount_opts.rp_size;
-+	mutex_unlock(&c->alloc_sem);
-+}
-+
- static int jffs2_reconfigure(struct fs_context *fc)
+--- a/drivers/soc/qcom/smp2p.c
++++ b/drivers/soc/qcom/smp2p.c
+@@ -314,15 +314,16 @@ static int qcom_smp2p_inbound_entry(stru
+ static int smp2p_update_bits(void *data, u32 mask, u32 value)
  {
- 	struct super_block *sb = fc->root->d_sb;
+ 	struct smp2p_entry *entry = data;
++	unsigned long flags;
+ 	u32 orig;
+ 	u32 val;
  
- 	sync_filesystem(sb);
-+	jffs2_update_mount_opts(fc);
-+
- 	return jffs2_do_remount_fs(sb, fc);
- }
+-	spin_lock(&entry->lock);
++	spin_lock_irqsave(&entry->lock, flags);
+ 	val = orig = readl(entry->value);
+ 	val &= ~mask;
+ 	val |= value;
+ 	writel(val, entry->value);
+-	spin_unlock(&entry->lock);
++	spin_unlock_irqrestore(&entry->lock, flags);
  
+ 	if (val != orig)
+ 		qcom_smp2p_kick(entry->smp2p);
 
 
