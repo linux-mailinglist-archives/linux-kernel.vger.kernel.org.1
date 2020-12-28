@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53FE52E6511
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:57:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 277212E42DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:29:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393205AbgL1PzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:55:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36670 "EHLO mail.kernel.org"
+        id S1729955AbgL1P3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:29:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390565AbgL1NgX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:36:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BE94820728;
-        Mon, 28 Dec 2020 13:35:42 +0000 (UTC)
+        id S2406733AbgL1N4z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:56:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB1CC20791;
+        Mon, 28 Dec 2020 13:56:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162543;
-        bh=HKVBM16avOEKdjz+NaHmxjroT+xlNi3GmgGkoe+Jq/U=;
+        s=korg; t=1609163774;
+        bh=/P8tw5j8a33bjUfju7ChaCo8HSR2Zz1Rf3Z3F+5yHyo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gkvRF5WnHRoicggnbSn8Z5XfV/aO+TFRUz5AxCOxovV1wmMBV05+JaJL6BPAS5LO9
-         W0v6XCvuY8+tcgGw3Ga71YOHhExQhrJOqXktSgcRfYVhj1tabcwoLGI/2It3/xFBXC
-         HVcvmuYr+C90CD0zcXm86HDGPG0mJXrnrTDH/IGQ=
+        b=OxoPXT7lrtRKcF+ME3D7XiG9q5l7lgOxnCfJEBzxF0gxuucN/y+OwUJC2O0pPrK2+
+         lB7NcSY09R2QBcng5ZR80YUNRFJs9XDpXM7JUfsyso4h2WxAUc7iTLEqLPP6Nx/n+x
+         f46pIsloVLgxf7lgBKa1WuZZ2GxBW3Q/KvlvGQN0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Bert Vermeulen <bert@biot.com>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.19 318/346] spi: rb4xx: Dont leak SPI master in probe error path
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.4 401/453] spi: pxa2xx: Fix use-after-free on unbind
 Date:   Mon, 28 Dec 2020 13:50:37 +0100
-Message-Id: <20201228124935.164003017@linuxfoundation.org>
+Message-Id: <20201228124956.505583443@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +41,49 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lukas Wunner <lukas@wunner.de>
 
-commit a4729c3506c3eb1a6ca5c0289f4e7cafa4115065 upstream.
+commit 5626308bb94d9f930aa5f7c77327df4c6daa7759 upstream.
 
-If the calls to devm_clk_get(), devm_spi_register_master() or
-clk_prepare_enable() fail on probe of the Mikrotik RB4xx SPI driver,
-the spi_master struct is erroneously not freed.
+pxa2xx_spi_remove() accesses the driver's private data after calling
+spi_unregister_controller() even though that function releases the last
+reference on the spi_controller and thereby frees the private data.
 
-Fix by switching over to the new devm_spi_alloc_master() helper.
+Fix by switching over to the new devm_spi_alloc_master/slave() helper
+which keeps the private data accessible until the driver has unbound.
 
-Fixes: 05aec357871f ("spi: Add SPI driver for Mikrotik RB4xx series boards")
+Fixes: 32e5b57232c0 ("spi: pxa2xx: Fix controller unregister order")
 Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Cc: <stable@vger.kernel.org> # v4.2+: 5e844cc37a5c: spi: Introduce device-managed SPI controller allocation
-Cc: <stable@vger.kernel.org> # v4.2+
-Cc: Bert Vermeulen <bert@biot.com>
-Link: https://lore.kernel.org/r/369bf26d71927f60943b1d9d8f51810f00b0237d.1607286887.git.lukas@wunner.de
+Cc: <stable@vger.kernel.org> # v2.6.17+: 5e844cc37a5c: spi: Introduce device-managed SPI controller allocation
+Cc: <stable@vger.kernel.org> # v2.6.17+: 32e5b57232c0: spi: pxa2xx: Fix controller unregister order
+Cc: <stable@vger.kernel.org> # v2.6.17+
+Link: https://lore.kernel.org/r/5764b04d4a6e43069ebb7808f64c2f774ac6f193.1607286887.git.lukas@wunner.de
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/spi/spi-rb4xx.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/spi/spi-pxa2xx.c |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
---- a/drivers/spi/spi-rb4xx.c
-+++ b/drivers/spi/spi-rb4xx.c
-@@ -148,7 +148,7 @@ static int rb4xx_spi_probe(struct platfo
- 	if (IS_ERR(spi_base))
- 		return PTR_ERR(spi_base);
+--- a/drivers/spi/spi-pxa2xx.c
++++ b/drivers/spi/spi-pxa2xx.c
+@@ -1675,9 +1675,9 @@ static int pxa2xx_spi_probe(struct platf
+ 	}
  
--	master = spi_alloc_master(&pdev->dev, sizeof(*rbspi));
-+	master = devm_spi_alloc_master(&pdev->dev, sizeof(*rbspi));
- 	if (!master)
- 		return -ENOMEM;
+ 	if (platform_info->is_slave)
+-		controller = spi_alloc_slave(dev, sizeof(struct driver_data));
++		controller = devm_spi_alloc_slave(dev, sizeof(*drv_data));
+ 	else
+-		controller = spi_alloc_master(dev, sizeof(struct driver_data));
++		controller = devm_spi_alloc_master(dev, sizeof(*drv_data));
  
+ 	if (!controller) {
+ 		dev_err(&pdev->dev, "cannot alloc spi_controller\n");
+@@ -1900,7 +1900,6 @@ out_error_dma_irq_alloc:
+ 	free_irq(ssp->irq, drv_data);
+ 
+ out_error_controller_alloc:
+-	spi_controller_put(controller);
+ 	pxa_ssp_free(ssp);
+ 	return status;
+ }
 
 
