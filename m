@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E64622E3797
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:59:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C0FE2E383C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:09:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729044AbgL1M5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:57:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54074 "EHLO mail.kernel.org"
+        id S1728317AbgL1NHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:07:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728363AbgL1M5o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:57:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 30AED22A84;
-        Mon, 28 Dec 2020 12:57:02 +0000 (UTC)
+        id S1729829AbgL1NFn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:05:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADFB7208D5;
+        Mon, 28 Dec 2020 13:05:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160223;
-        bh=r9xCeAMs5iAVd1Tko00oM32AUvZdGbhJW/nO/a7uMbc=;
+        s=korg; t=1609160702;
+        bh=RD+4gNf0fKUzEDW/Yl9NecqLk1rl32n6y7pUiwD/Mwc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cuECBL7fWX+SLfNyWfmWdmS1zLWTtlK7cWatutLw/5C0k/MgdUzZ/yT82hYaaPUmz
-         FKvyIVAgbONP9lBiTdXlxUDGo2LkvF+ChCexIclCikCzIEbc6Zspop/zt4bQA5LsQs
-         3pcXQbuZT3BpJJjfhqgtxgaIqv8CrLQEEmfcZyEE=
+        b=EwyiQaqUgBZCE2VTVDGMC5+rUqQMtLLxhuoyNCoHFhqOmnabeTMHfxTQBQfTczS1u
+         WnMPtCWIsN+xSM2RIJW0O7k+DTQI/wuV7oBhb9uI3q9V/fQjF04gMW27WkNU45te/p
+         ixRJuTKQysz8gUVo0TcbsLGnSXxmpbbnCCpFSYLY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.4 110/132] USB: serial: keyspan_pda: fix write deadlock
+        stable@vger.kernel.org, Stefan Haberland <sth@linux.ibm.com>,
+        Jan Hoeppner <hoeppner@linux.ibm.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 4.9 141/175] s390/dasd: fix list corruption of lcu list
 Date:   Mon, 28 Dec 2020 13:49:54 +0100
-Message-Id: <20201228124851.729338834@linuxfoundation.org>
+Message-Id: <20201228124900.083389309@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Stefan Haberland <sth@linux.ibm.com>
 
-commit 7353cad7ee4deaefc16e94727e69285563e219f6 upstream.
+commit 53a7f655834c7c335bf683f248208d4fbe4b47bc upstream.
 
-The write() callback can be called in interrupt context (e.g. when used
-as a console) so interrupts must be disabled while holding the port lock
-to prevent a possible deadlock.
+In dasd_alias_disconnect_device_from_lcu the device is removed from any
+list on the LCU. Afterwards the LCU is removed from the lcu list if it
+does not contain devices any longer.
 
-Fixes: e81ee637e4ae ("usb-serial: possible irq lock inversion (PPP vs. usb/serial)")
-Fixes: 507ca9bc0476 ("[PATCH] USB: add ability for usb-serial drivers to determine if their write urb is currently being used.")
-Cc: stable <stable@vger.kernel.org>     # 2.6.19
-Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Johan Hovold <johan@kernel.org>
+The lcu->lock protects the lcu from parallel updates. But to cancel all
+workers and wait for completion the lcu->lock has to be unlocked.
+
+If two devices are removed in parallel and both are removed from the LCU
+the first device that takes the lcu->lock again will delete the LCU because
+it is already empty but the second device also tries to free the LCU which
+leads to a list corruption of the lcu list.
+
+Fix by removing the device right before the lcu is checked without
+unlocking the lcu->lock in between.
+
+Fixes: 8e09f21574ea ("[S390] dasd: add hyper PAV support to DASD device driver, part 1")
+Cc: stable@vger.kernel.org
+Signed-off-by: Stefan Haberland <sth@linux.ibm.com>
+Reviewed-by: Jan Hoeppner <hoeppner@linux.ibm.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/serial/keyspan_pda.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/s390/block/dasd_alias.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/serial/keyspan_pda.c
-+++ b/drivers/usb/serial/keyspan_pda.c
-@@ -447,6 +447,7 @@ static int keyspan_pda_write(struct tty_
- 	int request_unthrottle = 0;
- 	int rc = 0;
- 	struct keyspan_pda_private *priv;
-+	unsigned long flags;
+--- a/drivers/s390/block/dasd_alias.c
++++ b/drivers/s390/block/dasd_alias.c
+@@ -255,7 +255,6 @@ void dasd_alias_disconnect_device_from_l
+ 		return;
+ 	device->discipline->get_uid(device, &uid);
+ 	spin_lock_irqsave(&lcu->lock, flags);
+-	list_del_init(&device->alias_list);
+ 	/* make sure that the workers don't use this device */
+ 	if (device == lcu->suc_data.device) {
+ 		spin_unlock_irqrestore(&lcu->lock, flags);
+@@ -282,6 +281,7 @@ void dasd_alias_disconnect_device_from_l
  
- 	priv = usb_get_serial_port_data(port);
- 	/* guess how much room is left in the device's ring buffer, and if we
-@@ -466,13 +467,13 @@ static int keyspan_pda_write(struct tty_
- 	   the TX urb is in-flight (wait until it completes)
- 	   the device is full (wait until it says there is room)
- 	*/
--	spin_lock_bh(&port->lock);
-+	spin_lock_irqsave(&port->lock, flags);
- 	if (!test_bit(0, &port->write_urbs_free) || priv->tx_throttled) {
--		spin_unlock_bh(&port->lock);
-+		spin_unlock_irqrestore(&port->lock, flags);
- 		return 0;
- 	}
- 	clear_bit(0, &port->write_urbs_free);
--	spin_unlock_bh(&port->lock);
-+	spin_unlock_irqrestore(&port->lock, flags);
- 
- 	/* At this point the URB is in our control, nobody else can submit it
- 	   again (the only sudden transition was the one from EINPROGRESS to
+ 	spin_lock_irqsave(&aliastree.lock, flags);
+ 	spin_lock(&lcu->lock);
++	list_del_init(&device->alias_list);
+ 	if (list_empty(&lcu->grouplist) &&
+ 	    list_empty(&lcu->active_devices) &&
+ 	    list_empty(&lcu->inactive_devices)) {
 
 
