@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BF162E3E08
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:24:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9ADC2E3B74
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:51:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502756AbgL1OWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:22:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58134 "EHLO mail.kernel.org"
+        id S2406308AbgL1NuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:50:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502725AbgL1OWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:22:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A52E1206D4;
-        Mon, 28 Dec 2020 14:22:29 +0000 (UTC)
+        id S2406280AbgL1NuK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:50:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FA8420791;
+        Mon, 28 Dec 2020 13:49:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165350;
-        bh=iCaYDlAzEiBveYoobdPRUO9FaEYrf3eoqc+1e4iMvio=;
+        s=korg; t=1609163370;
+        bh=CjYf9f2XmS3RsLeROuWhottwVogT1E4DeNMNT43GUP8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ck3ENNdRhzZNjzKmluFtFjevlD9ge77PuVar3ra1oOWAIiDINTUeaYnd1z/7Gscca
-         EfrDi1TxoEd3k8+s7WaAAebS6vSxSb+5Yjppftj0mQE0mMybeDWUFpuKbHVUvoTBxo
-         9LDEHGbc7tyk7putceLbDbD6ad5blcHr4f8PfJfY=
+        b=DA7tnTqMjqwucaGq35dYOm8O20IrzWweKIC5jazD8jFCZHC6c7HeDrAasq6fxtnv1
+         1w80iE8E2MeMombrEC27uIHGo0zd4rT4M9BduAeCBfkdZgZrSJWvvjNbSJapka/bnv
+         wC8/N4hUTC7+5zaUs4eIcGXwh1cusCYUdKqQlStA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Luca Ceresoli <luca@lucaceresoli.net>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org, Leon Romanovsky <leonro@mellanox.com>,
+        Jack Morgenstein <jackm@dev.mellanox.co.il>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 499/717] clk: vc5: Use "idt,voltage-microvolt" instead of "idt,voltage-microvolts"
-Date:   Mon, 28 Dec 2020 13:48:17 +0100
-Message-Id: <20201228125044.870388370@linuxfoundation.org>
+Subject: [PATCH 5.4 262/453] RDMA/core: Do not indicate device ready when device enablement fails
+Date:   Mon, 28 Dec 2020 13:48:18 +0100
+Message-Id: <20201228124949.832942716@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,44 +42,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Jack Morgenstein <jackm@dev.mellanox.co.il>
 
-[ Upstream commit 4b003f5fcadfa2d0e087e907b0c65d023f6e29fb ]
+[ Upstream commit 779e0bf47632c609c59f527f9711ecd3214dccb0 ]
 
-Commit 45c940184b501fc6 ("dt-bindings: clk: versaclock5: convert to
-yaml") accidentally changed "idt,voltage-microvolts" to
-"idt,voltage-microvolt" in the DT bindings, while the driver still used
-the former.
+In procedure ib_register_device, procedure kobject_uevent is called
+(advertising that the device is ready for userspace usage) even when
+device_enable_and_get() returned an error.
 
-Update the driver to match the bindings, as
-Documentation/devicetree/bindings/property-units.txt actually recommends
-using "microvolt".
+As a result, various RDMA modules attempted to register for the device
+even while the device driver was preparing to unregister the device.
 
-Fixes: 260249f929e81d3d ("clk: vc5: Enable addition output configurations of the Versaclock")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://lore.kernel.org/r/20201218125253.3815567-1-geert+renesas@glider.be
-Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Fix this by advertising the device availability only after enabling the
+device succeeds.
+
+Fixes: e7a5b4aafd82 ("RDMA/device: Don't fire uevent before device is fully initialized")
+Link: https://lore.kernel.org/r/20201208073545.9723-3-leon@kernel.org
+Suggested-by: Leon Romanovsky <leonro@mellanox.com>
+Signed-off-by: Jack Morgenstein <jackm@dev.mellanox.co.il>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/clk-versaclock5.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/infiniband/core/device.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/clk/clk-versaclock5.c b/drivers/clk/clk-versaclock5.c
-index c90460e7ef215..43db67337bc06 100644
---- a/drivers/clk/clk-versaclock5.c
-+++ b/drivers/clk/clk-versaclock5.c
-@@ -739,8 +739,8 @@ static int vc5_update_power(struct device_node *np_output,
- {
- 	u32 value;
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index 59dc9f3cfb376..256d379bba676 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -1387,9 +1387,6 @@ int ib_register_device(struct ib_device *device, const char *name)
+ 	}
  
--	if (!of_property_read_u32(np_output,
--				  "idt,voltage-microvolts", &value)) {
-+	if (!of_property_read_u32(np_output, "idt,voltage-microvolt",
-+				  &value)) {
- 		clk_out->clk_output_cfg0_mask |= VC5_CLK_OUTPUT_CFG0_PWR_MASK;
- 		switch (value) {
- 		case 1800000:
+ 	ret = enable_device_and_get(device);
+-	dev_set_uevent_suppress(&device->dev, false);
+-	/* Mark for userspace that device is ready */
+-	kobject_uevent(&device->dev.kobj, KOBJ_ADD);
+ 	if (ret) {
+ 		void (*dealloc_fn)(struct ib_device *);
+ 
+@@ -1409,8 +1406,12 @@ int ib_register_device(struct ib_device *device, const char *name)
+ 		ib_device_put(device);
+ 		__ib_unregister_device(device);
+ 		device->ops.dealloc_driver = dealloc_fn;
++		dev_set_uevent_suppress(&device->dev, false);
+ 		return ret;
+ 	}
++	dev_set_uevent_suppress(&device->dev, false);
++	/* Mark for userspace that device is ready */
++	kobject_uevent(&device->dev.kobj, KOBJ_ADD);
+ 	ib_device_put(device);
+ 
+ 	return 0;
 -- 
 2.27.0
 
