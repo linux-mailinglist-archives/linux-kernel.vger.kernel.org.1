@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0A972E3EA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:31:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58FAF2E42B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:27:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504059AbgL1Oau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:30:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38902 "EHLO mail.kernel.org"
+        id S2388879AbgL1P0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:26:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503719AbgL1Oao (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:30:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C59782063A;
-        Mon, 28 Dec 2020 14:30:03 +0000 (UTC)
+        id S2407499AbgL1N6D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:58:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 51F592072C;
+        Mon, 28 Dec 2020 13:57:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165804;
-        bh=u1Rb0Gtsl9RKgD2iH9QXEnvnwF01Ibb2MopdOSdHccA=;
+        s=korg; t=1609163867;
+        bh=FiS6FgLjIsQWPstbtfUA+QjlKOETfN+XdRGCiVURacE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Adwo0DCIPH4aasx/za8uWRfyxsmOfmpP0TT5q+5jpgzEZw724D0DZyRyirSDLIPaU
-         tTohKDHAhOZprDoaxv/VYn7J5Dh2loz/nNQOQR/GOdO1bthJzjMRimiXJjd/dzJO1L
-         BZtiVSuIYwz9MGuqbGqe7Yk0lYaeyuG20xcZphII=
+        b=MswwAsfs/8Knu+fmf06+gg/Lz+f3inkNSBdJEoZfEdEX2vskTfXtQTbmjFZ/lRflJ
+         s+Jbi27DUIbkYxb4blUuxnuk7fGq6PYeGNgt1bB0ESURzu70wO4lp52T6q9cbe5smH
+         hLLD6yu9C4+zouaLsqvZzSQ+g5BZ6fP6iQEFcXsU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Piotr Bugalski <bugalski.piotr@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Navid Emamdoost <navid.emamdoost@gmail.com>,
+        Andrey Smirnov <andrew.smirnov@gmail.com>,
         Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.10 643/717] spi: atmel-quadspi: Fix use-after-free on unbind
-Date:   Mon, 28 Dec 2020 13:50:41 +0100
-Message-Id: <20201228125051.742956441@linuxfoundation.org>
+Subject: [PATCH 5.4 406/453] spi: gpio: Dont leak SPI master in probe error path
+Date:   Mon, 28 Dec 2020 13:50:42 +0100
+Message-Id: <20201228124956.751633756@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,85 +44,92 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lukas Wunner <lukas@wunner.de>
 
-commit c7b884561cb5b641f3dbba950094110794119a6d upstream.
+commit 7174dc655ef0578877b0b4598e69619d2be28b4d upstream.
 
-atmel_qspi_remove() accesses the driver's private data after calling
-spi_unregister_controller() even though that function releases the last
-reference on the spi_controller and thereby frees the private data.
+If the call to devm_spi_register_master() fails on probe of the GPIO SPI
+driver, the spi_master struct is erroneously not freed:
 
-Fix by switching over to the new devm_spi_alloc_master() helper which
-keeps the private data accessible until the driver has unbound.
+After allocating the spi_master, its reference count is 1.  The driver
+unconditionally decrements the reference count on unbind using a devm
+action.  Before calling devm_spi_register_master(), the driver
+unconditionally increments the reference count because on success,
+that function will decrement the reference count on unbind.  However on
+failure, devm_spi_register_master() does *not* decrement the reference
+count, so the spi_master is leaked.
 
-Fixes: 2d30ac5ed633 ("mtd: spi-nor: atmel-quadspi: Use spi-mem interface for atmel-quadspi driver")
+The issue was introduced by commits 8b797490b4db ("spi: gpio: Make sure
+spi_master_put() is called in every error path") and 79567c1a321e ("spi:
+gpio: Use devm_spi_register_master()"), which sought to plug leaks
+introduced by 9b00bc7b901f ("spi: spi-gpio: Rewrite to use GPIO
+descriptors") but missed this remaining leak.
+
+The situation was later aggravated by commit d3b0ffa1d75d ("spi: gpio:
+prevent memory leak in spi_gpio_probe"), which introduced a
+use-after-free because it releases a reference on the spi_master if
+devm_add_action_or_reset() fails even though the function already
+does that.
+
+Fix by switching over to the new devm_spi_alloc_master() helper.
+
+Fixes: 9b00bc7b901f ("spi: spi-gpio: Rewrite to use GPIO descriptors")
 Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Cc: <stable@vger.kernel.org> # v5.0+: 5e844cc37a5c: spi: Introduce device-managed SPI controller allocation
-Cc: <stable@vger.kernel.org> # v5.0+
-Cc: Piotr Bugalski <bugalski.piotr@gmail.com>
-Link: https://lore.kernel.org/r/4b05c65cf6f1ea3251484fe9a00b4c65478a1ae3.1607286887.git.lukas@wunner.de
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Cc: <stable@vger.kernel.org> # v4.17+: 5e844cc37a5c: spi: Introduce device-managed SPI controller allocation
+Cc: <stable@vger.kernel.org> # v5.1-: 8b797490b4db: spi: gpio: Make sure spi_master_put() is called in every error path
+Cc: <stable@vger.kernel.org> # v5.1-: 45beec351998: spi: bitbang: Introduce spi_bitbang_init()
+Cc: <stable@vger.kernel.org> # v5.1-: 79567c1a321e: spi: gpio: Use devm_spi_register_master()
+Cc: <stable@vger.kernel.org> # v5.4-: d3b0ffa1d75d: spi: gpio: prevent memory leak in spi_gpio_probe
+Cc: <stable@vger.kernel.org> # v4.17+
+Cc: Navid Emamdoost <navid.emamdoost@gmail.com>
+Cc: Andrey Smirnov <andrew.smirnov@gmail.com>
+Link: https://lore.kernel.org/r/86eaed27431c3d709e3748eb76ceecbfc790dd37.1607286887.git.lukas@wunner.de
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/spi/atmel-quadspi.c |   15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
+ drivers/spi/spi-gpio.c |   15 ++-------------
+ 1 file changed, 2 insertions(+), 13 deletions(-)
 
---- a/drivers/spi/atmel-quadspi.c
-+++ b/drivers/spi/atmel-quadspi.c
-@@ -535,7 +535,7 @@ static int atmel_qspi_probe(struct platf
- 	struct resource *res;
- 	int irq, err = 0;
+--- a/drivers/spi/spi-gpio.c
++++ b/drivers/spi/spi-gpio.c
+@@ -350,11 +350,6 @@ static int spi_gpio_probe_pdata(struct p
+ 	return 0;
+ }
  
--	ctrl = spi_alloc_master(&pdev->dev, sizeof(*aq));
-+	ctrl = devm_spi_alloc_master(&pdev->dev, sizeof(*aq));
- 	if (!ctrl)
+-static void spi_gpio_put(void *data)
+-{
+-	spi_master_put(data);
+-}
+-
+ static int spi_gpio_probe(struct platform_device *pdev)
+ {
+ 	int				status;
+@@ -366,16 +361,10 @@ static int spi_gpio_probe(struct platfor
+ 
+ 	of_id = of_match_device(spi_gpio_dt_ids, &pdev->dev);
+ 
+-	master = spi_alloc_master(dev, sizeof(*spi_gpio));
++	master = devm_spi_alloc_master(dev, sizeof(*spi_gpio));
+ 	if (!master)
  		return -ENOMEM;
  
-@@ -557,8 +557,7 @@ static int atmel_qspi_probe(struct platf
- 	aq->regs = devm_ioremap_resource(&pdev->dev, res);
- 	if (IS_ERR(aq->regs)) {
- 		dev_err(&pdev->dev, "missing registers\n");
--		err = PTR_ERR(aq->regs);
--		goto exit;
-+		return PTR_ERR(aq->regs);
- 	}
+-	status = devm_add_action_or_reset(&pdev->dev, spi_gpio_put, master);
+-	if (status) {
+-		spi_master_put(master);
+-		return status;
+-	}
+-
+ 	if (of_id)
+ 		status = spi_gpio_probe_dt(pdev, master);
+ 	else
+@@ -435,7 +424,7 @@ static int spi_gpio_probe(struct platfor
+ 	if (status)
+ 		return status;
  
- 	/* Map the AHB memory */
-@@ -566,8 +565,7 @@ static int atmel_qspi_probe(struct platf
- 	aq->mem = devm_ioremap_resource(&pdev->dev, res);
- 	if (IS_ERR(aq->mem)) {
- 		dev_err(&pdev->dev, "missing AHB memory\n");
--		err = PTR_ERR(aq->mem);
--		goto exit;
-+		return PTR_ERR(aq->mem);
- 	}
- 
- 	aq->mmap_size = resource_size(res);
-@@ -579,15 +577,14 @@ static int atmel_qspi_probe(struct platf
- 
- 	if (IS_ERR(aq->pclk)) {
- 		dev_err(&pdev->dev, "missing peripheral clock\n");
--		err = PTR_ERR(aq->pclk);
--		goto exit;
-+		return PTR_ERR(aq->pclk);
- 	}
- 
- 	/* Enable the peripheral clock */
- 	err = clk_prepare_enable(aq->pclk);
- 	if (err) {
- 		dev_err(&pdev->dev, "failed to enable the peripheral clock\n");
--		goto exit;
-+		return err;
- 	}
- 
- 	aq->caps = of_device_get_match_data(&pdev->dev);
-@@ -638,8 +635,6 @@ disable_qspick:
- 	clk_disable_unprepare(aq->qspick);
- disable_pclk:
- 	clk_disable_unprepare(aq->pclk);
--exit:
--	spi_controller_put(ctrl);
- 
- 	return err;
+-	return devm_spi_register_master(&pdev->dev, spi_master_get(master));
++	return devm_spi_register_master(&pdev->dev, master);
  }
+ 
+ MODULE_ALIAS("platform:" DRIVER_NAME);
 
 
