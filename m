@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D5AB2E3F46
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:38:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 854C62E3EBD
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:32:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504199AbgL1Ob6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:31:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39246 "EHLO mail.kernel.org"
+        id S2504601AbgL1OcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:32:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2504107AbgL1ObB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:31:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC15420715;
-        Mon, 28 Dec 2020 14:30:20 +0000 (UTC)
+        id S2504127AbgL1ObE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:31:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CDB720731;
+        Mon, 28 Dec 2020 14:30:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165821;
-        bh=w2MbZqHrbnV1/3vTaIVxhKkrqqnlg4ERx7+X5Is3acI=;
+        s=korg; t=1609165824;
+        bh=928TzreslQ5IpUfPn0ImDZSaWSiNvOAFCxBNWBX/BXU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rsvU26eWK13TazqIE2JHkxpH0AWXXJpmyziCwFS3iz4DujYfZduk2IEv7nDxSnLDr
-         Lkso3fmwwpiuQvrdKM5KkbiIqe0ENUd8XIYvbfJEz+BlvvIX4CFbhGwihZ7EKesvLp
-         FbG+y+Y3cwfmUlk6ERKgrNeWihWyjXIWAQOFxaik=
+        b=lKpJqmpNhKp15UakrjjwmC1KgQszZPjdk5QVujHp1G6O+id+bLz8F4UVvDIlQI362
+         eLiIfX4n7t4+RewQH+z3YkEFWdw3n+Dc9wLxUIa5d5IjZ65dRWRwGgBMcfXAY23F2i
+         VX9eXrtFDl3xBZ6c2g7fB8IuZ0Ss35hD2hN+lG6s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+        stable@vger.kernel.org, Praveenkumar I <ipkumar@codeaurora.org>,
         Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 5.10 666/717] mtd: core: Fix refcounting for unpartitioned MTDs
-Date:   Mon, 28 Dec 2020 13:51:04 +0100
-Message-Id: <20201228125052.887156137@linuxfoundation.org>
+Subject: [PATCH 5.10 667/717] mtd: rawnand: qcom: Fix DMA sync on FLASH_STATUS register read
+Date:   Mon, 28 Dec 2020 13:51:05 +0100
+Message-Id: <20201228125052.936376219@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
 References: <20201228125020.963311703@linuxfoundation.org>
@@ -39,43 +39,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Weinberger <richard@nod.at>
+From: Praveenkumar I <ipkumar@codeaurora.org>
 
-commit 1ca71415f075353974524e96ed175306d8a937a8 upstream.
+commit bc3686021122de953858a5be4cbf6e3f1d821e79 upstream.
 
-Apply changes to usecount also to the master partition.
-Otherwise we have no refcounting at all if an MTD has no partitions.
+After each codeword NAND_FLASH_STATUS is read for possible operational
+failures. But there is no DMA sync for CPU operation before reading it
+and this leads to incorrect or older copy of DMA buffer in reg_read_buf.
 
+This patch adds the DMA sync on reg_read_buf for CPU before reading it.
+
+Fixes: 5bc36b2bf6e2 ("mtd: rawnand: qcom: check for operation errors in case of raw read")
 Cc: stable@vger.kernel.org
-Fixes: 46b5889cc2c5 ("mtd: implement proper partition handling")
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Praveenkumar I <ipkumar@codeaurora.org>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20201206202220.27290-1-richard@nod.at
+Link: https://lore.kernel.org/linux-mtd/1602230872-25616-1-git-send-email-ipkumar@codeaurora.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mtd/mtdcore.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/mtd/nand/raw/qcom_nandc.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -993,6 +993,8 @@ int __get_mtd_device(struct mtd_info *mt
- 		}
- 	}
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -1570,6 +1570,8 @@ static int check_flash_errors(struct qco
+ 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+ 	int i;
  
-+	master->usecount++;
++	nandc_read_buffer_sync(nandc, true);
 +
- 	while (mtd->parent) {
- 		mtd->usecount++;
- 		mtd = mtd->parent;
-@@ -1059,6 +1061,8 @@ void __put_mtd_device(struct mtd_info *m
- 		mtd = mtd->parent;
- 	}
- 
-+	master->usecount--;
-+
- 	if (master->_put_device)
- 		master->_put_device(master);
+ 	for (i = 0; i < cw_cnt; i++) {
+ 		u32 flash = le32_to_cpu(nandc->reg_read_buf[i]);
  
 
 
