@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B55092E3E00
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:24:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75C182E37BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:01:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502694AbgL1OWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:22:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58200 "EHLO mail.kernel.org"
+        id S1729389AbgL1NAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:00:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502668AbgL1OWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:22:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E0B322B2C;
-        Mon, 28 Dec 2020 14:21:50 +0000 (UTC)
+        id S1728898AbgL1M76 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:59:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 050F0207C9;
+        Mon, 28 Dec 2020 12:59:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165310;
-        bh=+b53wZI83On3aGmgbPMhWqXugTD39OtO0fF5cNEUbHU=;
+        s=korg; t=1609160382;
+        bh=uk0DM0zMWvCwM7+u/s74nhU1zvTRlz3ushlb/+OpKVk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vc7epCMYW0uUesdzsujixAw6sw6lDYCD+5n1EMywV8H88hG5ZSYBnxOPKvqieuApb
-         w+aV1tsyYAt16jkai7peinrvrap8EXmtOLuku1ms8XiymXLIUMyclNbVOBSWuAPfCN
-         kTpR+txqMroIGcHDwG9/nfrwBxDJIQTIB4veeX5w=
+        b=tOJkxYDKm5LKlaFOFNE6vrseBO4qKp0aWipfRghPjcCuMGpCRePpdGs50IrBZJ3Xz
+         F8z102rodVYGITL1EPVQDCFANKFCYmWgcxOnR3FgDD2rNwaEr6WaoQu7bHqNUkLy83
+         ccCqi1fK0KFG6sXWGROEhB+Elw/aahVxhdp17YJY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
+        stable@vger.kernel.org,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 488/717] vdpa/mlx5: Use write memory barrier after updating CQ index
+Subject: [PATCH 4.9 033/175] scsi: mpt3sas: Increase IOCInit request timeout to 30s
 Date:   Mon, 28 Dec 2020 13:48:06 +0100
-Message-Id: <20201228125044.344626701@linuxfoundation.org>
+Message-Id: <20201228124854.861668832@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eli Cohen <elic@nvidia.com>
+From: Sreekanth Reddy <sreekanth.reddy@broadcom.com>
 
-[ Upstream commit 83ef73b27eb2363f44faf9c3ee28a3fe752cfd15 ]
+[ Upstream commit 85dad327d9b58b4c9ce08189a2707167de392d23 ]
 
-Make sure to put dma write memory barrier after updating CQ consumer
-index so the hardware knows that there are available CQE slots in the
-queue.
+Currently the IOCInit request message timeout is set to 10s. This is not
+sufficient in some scenarios such as during HBA FW downgrade operations.
 
-Failure to do this can cause the update of the RX doorbell record to get
-updated before the CQ consumer index resulting in CQ overrun.
+Increase the IOCInit request timeout to 30s.
 
-Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
-Signed-off-by: Eli Cohen <elic@nvidia.com>
-Link: https://lore.kernel.org/r/20201209140004.15892-1-elic@nvidia.com
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Link: https://lore.kernel.org/r/20201130082733.26120-1-sreekanth.reddy@broadcom.com
+Signed-off-by: Sreekanth Reddy <sreekanth.reddy@broadcom.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vdpa/mlx5/net/mlx5_vnet.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/scsi/mpt3sas/mpt3sas_base.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-index 1fa6fcac82992..81b932f72e103 100644
---- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-+++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-@@ -464,6 +464,11 @@ static int mlx5_vdpa_poll_one(struct mlx5_vdpa_cq *vcq)
- static void mlx5_vdpa_handle_completions(struct mlx5_vdpa_virtqueue *mvq, int num)
- {
- 	mlx5_cq_set_ci(&mvq->cq.mcq);
-+
-+	/* make sure CQ cosumer update is visible to the hardware before updating
-+	 * RX doorbell record.
-+	 */
-+	dma_wmb();
- 	rx_post(&mvq->vqqp, num);
- 	if (mvq->event_cb.callback)
- 		mvq->event_cb.callback(mvq->event_cb.private);
+diff --git a/drivers/scsi/mpt3sas/mpt3sas_base.c b/drivers/scsi/mpt3sas/mpt3sas_base.c
+index 601a93953307d..16716b2644020 100644
+--- a/drivers/scsi/mpt3sas/mpt3sas_base.c
++++ b/drivers/scsi/mpt3sas/mpt3sas_base.c
+@@ -4477,7 +4477,7 @@ _base_send_ioc_init(struct MPT3SAS_ADAPTER *ioc)
+ 
+ 	r = _base_handshake_req_reply_wait(ioc,
+ 	    sizeof(Mpi2IOCInitRequest_t), (u32 *)&mpi_request,
+-	    sizeof(Mpi2IOCInitReply_t), (u16 *)&mpi_reply, 10);
++	    sizeof(Mpi2IOCInitReply_t), (u16 *)&mpi_reply, 30);
+ 
+ 	if (r != 0) {
+ 		pr_err(MPT3SAS_FMT "%s: handshake failed (r=%d)\n",
 -- 
 2.27.0
 
