@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EB542E6674
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:14:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E9352E667C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:14:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394194AbgL1QMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:12:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48968 "EHLO mail.kernel.org"
+        id S2633007AbgL1QNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:13:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387549AbgL1NUZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:20:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD82C229EF;
-        Mon, 28 Dec 2020 13:19:43 +0000 (UTC)
+        id S1733122AbgL1NUR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:20:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 64FBF206ED;
+        Mon, 28 Dec 2020 13:20:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161584;
-        bh=cp5yAWSsmGzTB6HvGKaK6i/WsFk3L5RGH48JWKlLltg=;
+        s=korg; t=1609161602;
+        bh=v7HWiYDlfNHmpuEUJsjGKYeYfXHQock60CVtbU65HT0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yWBnzTXr7SuMZxsLiBP6kqRo6BWxIVp7c/7yNj6wCOh6tvsneMQHdZ0xSVrgipNYp
-         qxQn7w3tp6lsgx7yjxC7QwcHbI8MmXjgr97BLJXmD4592gT75tMH+iWFMfiiXd59/8
-         dwTyjSy0+dY9mllTjDGhbogFX20fRdnADh+56nq0=
+        b=ACD30OerPIa7EtOGs/1J56Mdu6aMJDbNy/hk1XnQVWCf/s+QyXgn3Z6XwlCJcVRJu
+         edFfmNMfgJ/bibStmF3VHqq5c1p3c40wbcBUqCqL2mesNSP3auSWjYVK2uykhMThfz
+         DubbrPgwg3i+P/YdJgOTJ/dFuJx9jwvZ1WpuB2Ds=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.19 003/346] spi: bcm2835aux: Fix use-after-free on unbind
-Date:   Mon, 28 Dec 2020 13:45:22 +0100
-Message-Id: <20201228124919.920683667@linuxfoundation.org>
+        stable@vger.kernel.org, Vineet Gupta <vgupta@synopsys.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 009/346] ARC: stack unwinding: dont assume non-current task is sleeping
+Date:   Mon, 28 Dec 2020 13:45:28 +0100
+Message-Id: <20201228124920.211875933@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
 References: <20201228124919.745526410@linuxfoundation.org>
@@ -39,84 +39,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: Vineet Gupta <vgupta@synopsys.com>
 
-[ Upstream commit e13ee6cc4781edaf8c7321bee19217e3702ed481 ]
+[ Upstream commit e42404fa10fd11fe72d0a0e149a321d10e577715 ]
 
-bcm2835aux_spi_remove() accesses the driver's private data after calling
-spi_unregister_master() even though that function releases the last
-reference on the spi_master and thereby frees the private data.
+To start stack unwinding (SP, PC and BLINK) are needed. When the
+explicit execution context (pt_regs etc) is not available, unwinder
+assumes the task is sleeping (in __switch_to()) and fetches SP and BLINK
+from kernel mode stack.
 
-Fix by switching over to the new devm_spi_alloc_master() helper which
-keeps the private data accessible until the driver has unbound.
+But this assumption is not true, specially in a SMP system, when top
+runs on 1 core, there may be active running processes on all cores.
 
-Fixes: b9dd3f6d4172 ("spi: bcm2835aux: Fix controller unregister order")
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Cc: <stable@vger.kernel.org> # v4.4+: 5e844cc37a5c: spi: Introduce device-managed SPI controller allocation
-Cc: <stable@vger.kernel.org> # v4.4+: b9dd3f6d4172: spi: bcm2835aux: Fix controller unregister order
-Cc: <stable@vger.kernel.org> # v4.4+
-Link: https://lore.kernel.org/r/b290b06357d0c0bdee9cecc539b840a90630f101.1605121038.git.lukas@wunner.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+So when unwinding non courrent tasks, ensure they are NOT running.
+
+And while at it, handle the self unwinding case explicitly.
+
+This came out of investigation of a customer reported hang with
+rcutorture+top
+
+Link: https://github.com/foss-for-synopsys-dwc-arc-processors/linux/issues/31
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-bcm2835aux.c |   18 ++++++------------
- 1 file changed, 6 insertions(+), 12 deletions(-)
+ arch/arc/kernel/stacktrace.c | 23 +++++++++++++++--------
+ 1 file changed, 15 insertions(+), 8 deletions(-)
 
---- a/drivers/spi/spi-bcm2835aux.c
-+++ b/drivers/spi/spi-bcm2835aux.c
-@@ -407,7 +407,7 @@ static int bcm2835aux_spi_probe(struct p
- 	unsigned long clk_hz;
- 	int err;
+diff --git a/arch/arc/kernel/stacktrace.c b/arch/arc/kernel/stacktrace.c
+index 0fed32b959232..a211e87aa6d93 100644
+--- a/arch/arc/kernel/stacktrace.c
++++ b/arch/arc/kernel/stacktrace.c
+@@ -41,15 +41,15 @@
  
--	master = spi_alloc_master(&pdev->dev, sizeof(*bs));
-+	master = devm_spi_alloc_master(&pdev->dev, sizeof(*bs));
- 	if (!master) {
- 		dev_err(&pdev->dev, "spi_alloc_master() failed\n");
- 		return -ENOMEM;
-@@ -439,30 +439,26 @@ static int bcm2835aux_spi_probe(struct p
- 	/* the main area */
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	bs->regs = devm_ioremap_resource(&pdev->dev, res);
--	if (IS_ERR(bs->regs)) {
--		err = PTR_ERR(bs->regs);
--		goto out_master_put;
--	}
-+	if (IS_ERR(bs->regs))
-+		return PTR_ERR(bs->regs);
+ #ifdef CONFIG_ARC_DW2_UNWIND
  
- 	bs->clk = devm_clk_get(&pdev->dev, NULL);
- 	if ((!bs->clk) || (IS_ERR(bs->clk))) {
--		err = PTR_ERR(bs->clk);
- 		dev_err(&pdev->dev, "could not get clk: %d\n", err);
--		goto out_master_put;
-+		return PTR_ERR(bs->clk);
+-static void seed_unwind_frame_info(struct task_struct *tsk,
+-				   struct pt_regs *regs,
+-				   struct unwind_frame_info *frame_info)
++static int
++seed_unwind_frame_info(struct task_struct *tsk, struct pt_regs *regs,
++		       struct unwind_frame_info *frame_info)
+ {
+ 	/*
+ 	 * synchronous unwinding (e.g. dump_stack)
+ 	 *  - uses current values of SP and friends
+ 	 */
+-	if (tsk == NULL && regs == NULL) {
++	if (regs == NULL && (tsk == NULL || tsk == current)) {
+ 		unsigned long fp, sp, blink, ret;
+ 		frame_info->task = current;
+ 
+@@ -68,11 +68,15 @@ static void seed_unwind_frame_info(struct task_struct *tsk,
+ 		frame_info->call_frame = 0;
+ 	} else if (regs == NULL) {
+ 		/*
+-		 * Asynchronous unwinding of sleeping task
+-		 *  - Gets SP etc from task's pt_regs (saved bottom of kernel
+-		 *    mode stack of task)
++		 * Asynchronous unwinding of a likely sleeping task
++		 *  - first ensure it is actually sleeping
++		 *  - if so, it will be in __switch_to, kernel mode SP of task
++		 *    is safe-kept and BLINK at a well known location in there
+ 		 */
+ 
++		if (tsk->state == TASK_RUNNING)
++			return -1;
++
+ 		frame_info->task = tsk;
+ 
+ 		frame_info->regs.r27 = TSK_K_FP(tsk);
+@@ -106,6 +110,8 @@ static void seed_unwind_frame_info(struct task_struct *tsk,
+ 		frame_info->regs.r63 = regs->ret;
+ 		frame_info->call_frame = 0;
  	}
- 
- 	bs->irq = platform_get_irq(pdev, 0);
- 	if (bs->irq <= 0) {
- 		dev_err(&pdev->dev, "could not get IRQ: %d\n", bs->irq);
--		err = bs->irq ? bs->irq : -ENODEV;
--		goto out_master_put;
-+		return bs->irq ? bs->irq : -ENODEV;
- 	}
- 
- 	/* this also enables the HW block */
- 	err = clk_prepare_enable(bs->clk);
- 	if (err) {
- 		dev_err(&pdev->dev, "could not prepare clock: %d\n", err);
--		goto out_master_put;
-+		return err;
- 	}
- 
- 	/* just checking if the clock returns a sane value */
-@@ -495,8 +491,6 @@ static int bcm2835aux_spi_probe(struct p
- 
- out_clk_disable:
- 	clk_disable_unprepare(bs->clk);
--out_master_put:
--	spi_master_put(master);
- 	return err;
++
++	return 0;
  }
  
+ #endif
+@@ -119,7 +125,8 @@ arc_unwind_core(struct task_struct *tsk, struct pt_regs *regs,
+ 	unsigned int address;
+ 	struct unwind_frame_info frame_info;
+ 
+-	seed_unwind_frame_info(tsk, regs, &frame_info);
++	if (seed_unwind_frame_info(tsk, regs, &frame_info))
++		return 0;
+ 
+ 	while (1) {
+ 		address = UNW_PC(&frame_info);
+-- 
+2.27.0
+
 
 
