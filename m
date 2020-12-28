@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B50652E3E99
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:31:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99BD92E6539
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:59:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503549AbgL1OaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:30:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38046 "EHLO mail.kernel.org"
+        id S2393344AbgL1P6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:58:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33562 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503479AbgL1O35 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:29:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F048920715;
-        Mon, 28 Dec 2020 14:29:15 +0000 (UTC)
+        id S2387947AbgL1Ndf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:33:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC79D20719;
+        Mon, 28 Dec 2020 13:33:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165756;
-        bh=LO60mf2UALiMu1xO/Jw4nMzD7JclZyMfE+EJXbiWE5Q=;
+        s=korg; t=1609162400;
+        bh=YjNg8SlL5OTnUWLU0Vwf+ApLV0hz6is7mq4c6veIfCc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qp70y4bX67FBRl6x38xHtP0Tmj6d9VylOrUGcqwT5kqXRsyU/SgMXahTe+JZ+i1IS
-         nCpBqsXzz8RK8iKvQN8AORCRpARfFN50WFCZY9Ei4DTF+bJH+DI48JEGWkg6Q8rQlp
-         CiKuxe1dd5edain4lkmF35evJbY/atBGMiLLz1yE=
+        b=k4UBiL9brebYmU85qzs/JgzAijQx7NnCvABFIap8Qt9EILQTHO0EjnhWXhV0zaYJZ
+         NAix52u/9LQ2OlVODb95Ov1JRnEnXSVURMDJ2Ut36tHSZ9JbsWRlRVSXEJVAZBtSC5
+         LKEC/Gk+KFERIU6KOpS2r+DTiV1jlsqmucyVWPvM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.10 613/717] powerpc/8xx: Fix early debug when SMC1 is relocated
-Date:   Mon, 28 Dec 2020 13:50:11 +0100
-Message-Id: <20201228125050.286785483@linuxfoundation.org>
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.19 293/346] USB: serial: keyspan_pda: fix stalled writes
+Date:   Mon, 28 Dec 2020 13:50:12 +0100
+Message-Id: <20201228124933.941316951@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,59 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Johan Hovold <johan@kernel.org>
 
-commit 1e78f723d6a52966bfe3804209dbf404fdc9d3bb upstream.
+commit c01d2c58698f710c9e13ba3e2d296328606f74fd upstream.
 
-When SMC1 is relocated and early debug is selected, the
-board hangs is ppc_md.setup_arch(). This is because ones
-the microcode has been loaded and SMC1 relocated, early
-debug writes in the weed.
+Make sure to clear the write-busy flag also in case no new data was
+submitted due to lack of device buffer space so that writing is
+resumed once space again becomes available.
 
-To allow smooth continuation, the SMC1 parameter RAM set up
-by the bootloader have to be copied into the new location.
-
-Fixes: 43db76f41824 ("powerpc/8xx: Add microcode patch to move SMC parameter RAM.")
-Cc: stable@vger.kernel.org
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/b2f71f39eca543f1e4ec06596f09a8b12235c701.1607076683.git.christophe.leroy@csgroup.eu
+Fixes: 507ca9bc0476 ("[PATCH] USB: add ability for usb-serial drivers to determine if their write urb is currently being used.")
+Cc: stable <stable@vger.kernel.org>     # 2.6.13
+Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/include/asm/cpm1.h         |    1 +
- arch/powerpc/platforms/8xx/micropatch.c |   11 +++++++++++
- 2 files changed, 12 insertions(+)
+ drivers/usb/serial/keyspan_pda.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/powerpc/include/asm/cpm1.h
-+++ b/arch/powerpc/include/asm/cpm1.h
-@@ -68,6 +68,7 @@ extern void cpm_reset(void);
- #define PROFF_SPI	((uint)0x0180)
- #define PROFF_SCC3	((uint)0x0200)
- #define PROFF_SMC1	((uint)0x0280)
-+#define PROFF_DSP1	((uint)0x02c0)
- #define PROFF_SCC4	((uint)0x0300)
- #define PROFF_SMC2	((uint)0x0380)
+--- a/drivers/usb/serial/keyspan_pda.c
++++ b/drivers/usb/serial/keyspan_pda.c
+@@ -548,7 +548,7 @@ static int keyspan_pda_write(struct tty_
  
---- a/arch/powerpc/platforms/8xx/micropatch.c
-+++ b/arch/powerpc/platforms/8xx/micropatch.c
-@@ -360,6 +360,17 @@ void __init cpm_load_patch(cpm8xx_t *cp)
- 	if (IS_ENABLED(CONFIG_SMC_UCODE_PATCH)) {
- 		smc_uart_t *smp;
- 
-+		if (IS_ENABLED(CONFIG_PPC_EARLY_DEBUG_CPM)) {
-+			int i;
-+
-+			for (i = 0; i < sizeof(*smp); i += 4) {
-+				u32 __iomem *src = (u32 __iomem *)&cp->cp_dparam[PROFF_SMC1 + i];
-+				u32 __iomem *dst = (u32 __iomem *)&cp->cp_dparam[PROFF_DSP1 + i];
-+
-+				out_be32(dst, in_be32(src));
-+			}
-+		}
-+
- 		smp = (smc_uart_t *)&cp->cp_dparam[PROFF_SMC1];
- 		out_be16(&smp->smc_rpbase, 0x1ec0);
- 		smp = (smc_uart_t *)&cp->cp_dparam[PROFF_SMC2];
+ 	rc = count;
+ exit:
+-	if (rc < 0)
++	if (rc <= 0)
+ 		set_bit(0, &port->write_urbs_free);
+ 	return rc;
+ }
 
 
