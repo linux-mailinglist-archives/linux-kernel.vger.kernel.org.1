@@ -2,94 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A09E32E69BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 18:32:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A79B2E69C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 18:32:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728137AbgL1RcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 12:32:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34626 "EHLO
+        id S1728387AbgL1Rcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 12:32:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727858AbgL1RcW (ORCPT
+        with ESMTP id S1728360AbgL1Rci (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 12:32:22 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8A39C061793;
-        Mon, 28 Dec 2020 09:31:41 -0800 (PST)
-Date:   Mon, 28 Dec 2020 17:31:38 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1609176699;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gbYt5ha6t/G78Q/Qi2TwNtvCP2zEJ9PJnFzzqSjT/z0=;
-        b=BZp7UhMkJdy0rspPVRL9xEna3FWmmUhTjOVWb0PaF3C96xQx0kZeWQxqSkBsUxGuBVwKiz
-        GKK7RNU8OPlkzV55HqJdxib2gCDQZjJzDTPBKf7LYWx6SAiNwxCgBK1z5y7c8hfN6t22w5
-        JIkbxJK6q7ivlZTvsvOsOQfDKOKeJrRQTpxXes139uL3ApUaq2h6wByUanjHZVpbnZK5Kd
-        2ExnnxS76UJgkA3+tS77Dn44hwroGaj8QZ5jS3xLLsQdBHk1QUzMxlwnE1fuOVG2qkvHPp
-        uPMyV1w/4NZiHGz3pFzSRiqWg78/TND8nTqQzDMayG6YBI7ypizLt8kIc/sZpQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1609176699;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gbYt5ha6t/G78Q/Qi2TwNtvCP2zEJ9PJnFzzqSjT/z0=;
-        b=Y8iRMlmqabvYc4boQIKoaKlm7EjBBkibn3qmW74pFF6HmgeGtY1XChQ5k1nHt1fpWWCuD6
-        x26GPN+uq9FzalBg==
-From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/build] x86/build: Add {kvm_guest,xen}.config targets to
- make help's output
-Cc:     Borislav Petkov <bp@suse.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20201217134608.31811-1-bp@alien8.de>
-References: <20201217134608.31811-1-bp@alien8.de>
+        Mon, 28 Dec 2020 12:32:38 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13827C061798;
+        Mon, 28 Dec 2020 09:31:58 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id ce23so15068266ejb.8;
+        Mon, 28 Dec 2020 09:31:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uMJv2lHE34Rym/NavReAV+zZuMZZwc2rochor9I7cUk=;
+        b=vLPjujywSriLbbbiWgkv3ouyHNliTmrBC13fnxtXf3p5EdEkmPy8fjwLxYBzletbU2
+         Y9VXV4wEV2YlNjWsd50etSvFYzhK6CanfhVa14AC0JRHzsAvc9QqZkaLC1okmuwCI/zp
+         6SgsMIAXYonjX0eU77bCj5AuZy4cUE1gc+vLMGI92yXhNKtyJ1w7Zi7ibDXAFuNn+1IR
+         W+gouTA96SF6W2a5hufEGWescv0KcA2OD/8Y7DLgL9YETPfbM+f/HCvQP0V/DDiT3JjA
+         80cZnTEJSqcl1k1jt968Mr69xOR+mHhFrrMBjy32xqIX/PjPpgQl1t88jsxwp90dfoZL
+         Byzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uMJv2lHE34Rym/NavReAV+zZuMZZwc2rochor9I7cUk=;
+        b=prwfh93Sc8/i4F2/NF8pQuiJUAGnRvTltbFRrFxtjvQwmOSZKRrFV+5bhY6QlVAOqv
+         Kr/eKd5RRumEaiEMFUqejVzUjHgW3lenWSbblT2wV36cCUIdpLItKm7qbSJr5gQAekzY
+         HHaNFPxy74u28oEr3l/HwKHNWpJ0OH0HKYaNg6Qo5QkgR6bFuoV1PImghEnNFlXv6v4O
+         xWDNBqnL55v1U8fMbOz0fsx0Pbd4CeVG2ntm00eojw65wwxirq6IYcE0OlGKudyPPFHE
+         DmfjCYQnNNHF6H/DX7kGlELYpadpX6K06ratubq8d9pTrI8jZuviw7qA5/w5DLfTkjES
+         yrGg==
+X-Gm-Message-State: AOAM531SWrZokgHolok/Wyiri2SgrRqWIlMH/qUqWUMyZlLtkvthlROX
+        QhvAsLyVBAAkbUriDA9Hfz7p3qgOp3ngHwaonwA=
+X-Google-Smtp-Source: ABdhPJwlEdPEG6+Ljrdij9m+oxcj4tYDG90MJqOSvbjZQgN/UtokII1B0CsF/WGzvH1xL8Y92L+rW2nu+KGZWALfB5Y=
+X-Received: by 2002:a17:906:6a45:: with SMTP id n5mr43209968ejs.514.1609176716860;
+ Mon, 28 Dec 2020 09:31:56 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <160917669805.414.15671728042538230971.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20201227181310.3235210-1-shakeelb@google.com> <20201227181310.3235210-2-shakeelb@google.com>
+ <CALvZod5bH6gP=_Qo5d2wx=mpRxXDKGcoxwO3oXGPqe=HXx8ifA@mail.gmail.com>
+In-Reply-To: <CALvZod5bH6gP=_Qo5d2wx=mpRxXDKGcoxwO3oXGPqe=HXx8ifA@mail.gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Mon, 28 Dec 2020 09:31:45 -0800
+Message-ID: <CAHbLzkrR1VQLN8+i4S52F-6dJiTx7TExj+rMuMWqou7Ff7SkPA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mm: fix numa stats for thp migration
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Muchun Song <songmuchun@bytedance.com>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/build branch of tip:
+On Sun, Dec 27, 2020 at 10:16 AM Shakeel Butt <shakeelb@google.com> wrote:
+>
+> On Sun, Dec 27, 2020 at 10:14 AM Shakeel Butt <shakeelb@google.com> wrote:
+> >
+> > Currently the kernel is not correctly updating the numa stats for
+> > NR_FILE_PAGES and NR_SHMEM on THP migration. Fix that. For NR_FILE_DIRTY
+> > and NR_ZONE_WRITE_PENDING, although at the moment there is no need to
+> > handle THP migration as kernel still does not have write support for
+> > file THP but to be more future proof, this patch adds the THP support
+> > for those stats as well.
+> >
+> > Fixes: e71769ae52609 ("mm: enable thp migration for shmem thp")
+> > Signed-off-by: Shakeel Butt <shakeelb@google.com>
+> > Cc: <stable@vger.kernel.org>
+> > ---
+> >  mm/migrate.c | 23 ++++++++++++-----------
+> >  1 file changed, 12 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/mm/migrate.c b/mm/migrate.c
+> > index 613794f6a433..ade163c6ecdf 100644
+> > --- a/mm/migrate.c
+> > +++ b/mm/migrate.c
+> > @@ -402,6 +402,7 @@ int migrate_page_move_mapping(struct address_space *mapping,
+> >         struct zone *oldzone, *newzone;
+> >         int dirty;
+> >         int expected_count = expected_page_refs(mapping, page) + extra_count;
+> > +       int nr = thp_nr_pages(page);
+> >
+> >         if (!mapping) {
+> >                 /* Anonymous page without mapping */
+> > @@ -437,7 +438,7 @@ int migrate_page_move_mapping(struct address_space *mapping,
+> >          */
+> >         newpage->index = page->index;
+> >         newpage->mapping = page->mapping;
+> > -       page_ref_add(newpage, thp_nr_pages(page)); /* add cache reference */
+> > +       page_ref_add(newpage, nr); /* add cache reference */
+> >         if (PageSwapBacked(page)) {
+> >                 __SetPageSwapBacked(newpage);
+> >                 if (PageSwapCache(page)) {
+> > @@ -459,7 +460,7 @@ int migrate_page_move_mapping(struct address_space *mapping,
+> >         if (PageTransHuge(page)) {
+> >                 int i;
+> >
+> > -               for (i = 1; i < HPAGE_PMD_NR; i++) {
+> > +               for (i = 1; i < nr; i++) {
+> >                         xas_next(&xas);
+> >                         xas_store(&xas, newpage);
+> >                 }
+> > @@ -470,7 +471,7 @@ int migrate_page_move_mapping(struct address_space *mapping,
+> >          * to one less reference.
+> >          * We know this isn't the last reference.
+> >          */
+> > -       page_ref_unfreeze(page, expected_count - thp_nr_pages(page));
+> > +       page_ref_unfreeze(page, expected_count - nr);
+> >
+> >         xas_unlock(&xas);
+> >         /* Leave irq disabled to prevent preemption while updating stats */
+> > @@ -493,17 +494,17 @@ int migrate_page_move_mapping(struct address_space *mapping,
+> >                 old_lruvec = mem_cgroup_lruvec(memcg, oldzone->zone_pgdat);
+> >                 new_lruvec = mem_cgroup_lruvec(memcg, newzone->zone_pgdat);
+> >
+> > -               __dec_lruvec_state(old_lruvec, NR_FILE_PAGES);
+> > -               __inc_lruvec_state(new_lruvec, NR_FILE_PAGES);
+> > +               __mod_lruvec_state(old_lruvec, NR_FILE_PAGES, -nr);
+> > +               __mod_lruvec_state(new_lruvec, NR_FILE_PAGES, nr);
+> >                 if (PageSwapBacked(page) && !PageSwapCache(page)) {
+> > -                       __dec_lruvec_state(old_lruvec, NR_SHMEM);
+> > -                       __inc_lruvec_state(new_lruvec, NR_SHMEM);
+> > +                       __mod_lruvec_state(old_lruvec, NR_SHMEM, -nr);
+> > +                       __mod_lruvec_state(new_lruvec, NR_SHMEM, nr);
+> >                 }
+> >                 if (dirty && mapping_can_writeback(mapping)) {
+> > -                       __dec_lruvec_state(old_lruvec, NR_FILE_DIRTY);
+> > -                       __dec_zone_state(oldzone, NR_ZONE_WRITE_PENDING);
+> > -                       __inc_lruvec_state(new_lruvec, NR_FILE_DIRTY);
+> > -                       __inc_zone_state(newzone, NR_ZONE_WRITE_PENDING);
+> > +                       __mod_lruvec_state(old_lruvec, NR_FILE_DIRTY, -nr);
+> > +                       __mod_zone_page_tate(oldzone, NR_ZONE_WRITE_PENDING, -nr);
+>
+> This should be __mod_zone_page_state(). I fixed locally but sent the
+> older patch by mistake.
 
-Commit-ID:     fbaf0aa8c7a8d4f7c3e4664f2f03ec8c7cc79910
-Gitweb:        https://git.kernel.org/tip/fbaf0aa8c7a8d4f7c3e4664f2f03ec8c7cc79910
-Author:        Borislav Petkov <bp@suse.de>
-AuthorDate:    Thu, 17 Dec 2020 13:13:34 +01:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Mon, 28 Dec 2020 18:23:25 +01:00
+Acked-by: Yang Shi <shy828301@gmail.com>
 
-x86/build: Add {kvm_guest,xen}.config targets to make help's output
-
-Add the targets which add additional items to the .config which
-facilitate running the kernel as a guest, to the 'make help' output so
-that they can be found easier and there's no need to grep the tree each
-time to remember what they should be called.
-
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20201217134608.31811-1-bp@alien8.de
----
- arch/x86/Makefile | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-index 7116da3..3dae5c9 100644
---- a/arch/x86/Makefile
-+++ b/arch/x86/Makefile
-@@ -304,4 +304,7 @@ define archhelp
-   echo  '                  bzdisk/fdimage*/isoimage also accept:'
-   echo  '                  FDARGS="..."  arguments for the booted kernel'
-   echo  '                  FDINITRD=file initrd for the booted kernel'
-+  echo  '  kvm_guest.config - Enable Kconfig items for running this kernel as a KVM guest'
-+  echo  '  xen.config	  - Enable Kconfig items for running this kernel as a Xen guest'
-+
- endef
+>
+> > +                       __mod_lruvec_state(new_lruvec, NR_FILE_DIRTY, nr);
+> > +                       __mod_zone_page_state(newzone, NR_ZONE_WRITE_PENDING, nr);
+> >                 }
+> >         }
+> >         local_irq_enable();
+> > --
+> > 2.29.2.729.g45daf8777d-goog
+> >
+>
