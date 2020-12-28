@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9CE22E3B99
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:53:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 750062E3A23
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:34:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407050AbgL1NwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:52:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53664 "EHLO mail.kernel.org"
+        id S2390394AbgL1Na2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:30:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407001AbgL1Nvy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:51:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8BC221D94;
-        Mon, 28 Dec 2020 13:51:13 +0000 (UTC)
+        id S2390331AbgL1Na0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:30:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F09D8207C9;
+        Mon, 28 Dec 2020 13:29:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163474;
-        bh=hJPvZ98uWfYMgHk6MR39rxcwhu74WZNtnAqFZCpUbFE=;
+        s=korg; t=1609162185;
+        bh=wSiy2zUiLFgk5SMolocnVKB+aoC52/+xxhFH4Ud+Yd0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kwxh97tXLZv4zvQGw5/lBS76Bz7v7MWpEPCmYs8g6f9FQG7uSMqric5KY067fqUjm
-         unMzs/unhEgSgAfQCVKQ6F5R5DFpPwoOHCGhVnSLq81YfqGGRM16cIi5ZFAS5d6V62
-         pTl8mWuYEs33wagDOm6zx7nzj/qGVgVeYGio2Qsw=
+        b=tH7gIqNk5LX+3U4AbvLyo4KI6aRdhrhj5ALJ134BiXcv1Oonw+3Nnp411PDN5SSnb
+         BJqfFvMQtrRX6TUUr1yb5sw3wsSiAemRqkb/iFiCpzSY5SOWVjr6VW5YcEkrxMqnY4
+         Tn5RYnlvoRm89+Drion3//r/JPq6YBav9vDfSJeE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org, Nathan Lynch <nathanl@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 298/453] clk: ti: Fix memleak in ti_fapll_synth_setup
+Subject: [PATCH 4.19 215/346] powerpc/pseries/hibernation: remove redundant cacheinfo update
 Date:   Mon, 28 Dec 2020 13:48:54 +0100
-Message-Id: <20201228124951.544748021@linuxfoundation.org>
+Message-Id: <20201228124930.172063792@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,58 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Nathan Lynch <nathanl@linux.ibm.com>
 
-[ Upstream commit 8c6239f6e95f583bb763d0228e02d4dd0fb3d492 ]
+[ Upstream commit b866459489fe8ef0e92cde3cbd6bbb1af6c4e99b ]
 
-If clk_register fails, we should goto free branch
-before function returns to prevent memleak.
+Partitions with cache nodes in the device tree can encounter the
+following warning on resume:
 
-Fixes: 163152cbbe321 ("clk: ti: Add support for FAPLL on dm816x")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201113131623.2098222-1-zhangqilong3@huawei.com
-Acked-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+CPU 0 already accounted in PowerPC,POWER9@0(Data)
+WARNING: CPU: 0 PID: 3177 at arch/powerpc/kernel/cacheinfo.c:197 cacheinfo_cpu_online+0x640/0x820
+
+These calls to cacheinfo_cpu_offline/online have been redundant since
+commit e610a466d16a ("powerpc/pseries/mobility: rebuild cacheinfo
+hierarchy post-migration").
+
+Fixes: e610a466d16a ("powerpc/pseries/mobility: rebuild cacheinfo hierarchy post-migration")
+Signed-off-by: Nathan Lynch <nathanl@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20201207215200.1785968-25-nathanl@linux.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/ti/fapll.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ arch/powerpc/platforms/pseries/suspend.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/clk/ti/fapll.c b/drivers/clk/ti/fapll.c
-index 95e36ba64accf..8024c6d2b9e95 100644
---- a/drivers/clk/ti/fapll.c
-+++ b/drivers/clk/ti/fapll.c
-@@ -498,6 +498,7 @@ static struct clk * __init ti_fapll_synth_setup(struct fapll_data *fd,
- {
- 	struct clk_init_data *init;
- 	struct fapll_synth *synth;
-+	struct clk *clk = ERR_PTR(-ENOMEM);
+diff --git a/arch/powerpc/platforms/pseries/suspend.c b/arch/powerpc/platforms/pseries/suspend.c
+index fd2c090681aa6..5414d3295e0a1 100644
+--- a/arch/powerpc/platforms/pseries/suspend.c
++++ b/arch/powerpc/platforms/pseries/suspend.c
+@@ -26,7 +26,6 @@
+ #include <asm/mmu.h>
+ #include <asm/rtas.h>
+ #include <asm/topology.h>
+-#include "../../kernel/cacheinfo.h"
  
- 	init = kzalloc(sizeof(*init), GFP_KERNEL);
- 	if (!init)
-@@ -520,13 +521,19 @@ static struct clk * __init ti_fapll_synth_setup(struct fapll_data *fd,
- 	synth->hw.init = init;
- 	synth->clk_pll = pll_clk;
- 
--	return clk_register(NULL, &synth->hw);
-+	clk = clk_register(NULL, &synth->hw);
-+	if (IS_ERR(clk)) {
-+		pr_err("failed to register clock\n");
-+		goto free;
-+	}
-+
-+	return clk;
- 
- free:
- 	kfree(synth);
- 	kfree(init);
- 
--	return ERR_PTR(-ENOMEM);
-+	return clk;
+ static u64 stream_id;
+ static struct device suspend_dev;
+@@ -91,9 +90,7 @@ static void pseries_suspend_enable_irqs(void)
+ 	 * Update configuration which can be modified based on device tree
+ 	 * changes during resume.
+ 	 */
+-	cacheinfo_cpu_offline(smp_processor_id());
+ 	post_mobility_fixup();
+-	cacheinfo_cpu_online(smp_processor_id());
  }
  
- static void __init ti_fapll_setup(struct device_node *node)
+ /**
 -- 
 2.27.0
 
