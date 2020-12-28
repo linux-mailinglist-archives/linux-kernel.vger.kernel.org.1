@@ -2,104 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A998B2E6C50
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:18:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F01F2E6C4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:18:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730048AbgL1Wzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1730095AbgL1Wzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 28 Dec 2020 17:55:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729320AbgL1To2 (ORCPT
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:30740 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729325AbgL1To4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 14:44:28 -0500
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F19FC061796
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 11:43:48 -0800 (PST)
-Received: by mail-qt1-x836.google.com with SMTP id 7so7626628qtp.1
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 11:43:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tvBWnxy2Os8fNxMPtsKuOpXMECffdeXa05h7jmnjYvo=;
-        b=C81kQ0IFEbAKzJlIKUFX2qvxYiOo2fZN0+HaLLqcezyVvY8R+Q7XOuCReoVIW9IjPn
-         dmEdZX/NCR7js+WWj7+gvQs+kPFjwkqYguF7I/0JUDU23EDt6ahjo8h7ChQ29x3Izvmz
-         VvWvoWXQAK40yBgoyMbklp6fIhb8Pht3WyEpydIjWaKc+P9N7hk2pRyrMIzp4IFOgYt1
-         Wrc8Y1SVFPt4VgsD7NZnZfms8eOXBM/yIfy3y6tveIZ77nEbaPH5VQDQl6G2xO3umV63
-         QTYoh4y64K7YoO7mA/yVGA6zkkF06glkvhWq9s2OBokFKS+Wcz/wSplTBWpRwq9R+dxo
-         6SPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tvBWnxy2Os8fNxMPtsKuOpXMECffdeXa05h7jmnjYvo=;
-        b=VYBTbIG/KbuNoPetwpfHFboAUkmTGvN/2MyXxB2XuL4wjxHBeNgC4MAXwleLwUEXVA
-         0WfzmdyWxdapCLHrRfidLmhLi0NTgwdIFI01oFjYg45YhId+w3Erutt+RUGzLhA4AKvU
-         TSG/7sxi6dVGwLlQLZoiFlHrwCNatNkgoO9vYTtghcEuyGmGptqe5ujHhZnqln+kuPiB
-         /AV+Wq8GhTLMbasd9KluL2ltRL26/8YA49Pz6kzMwWrZB+LEzt2QrO5UvZXfdRCRpWbk
-         OzVUdUVTLw7DbabuqHWnFdJYEZAZIQoPmF0H4g2qyr0QsrhIxiEoe4NCZy2qlPdybaXq
-         XOkg==
-X-Gm-Message-State: AOAM533n65W2+BhdqFo+W2ZuoarKkKFoxE7BlScGV+H3YIiWsGG/7b5r
-        QYJkxkMzxgOFk/TuAfqJVXk=
-X-Google-Smtp-Source: ABdhPJxmGUuisBdx2PbWWrLf89l6nQ0u3+RKRJRgje8dtCerbPuMt37m25pnsvavE22ggRIndU74Tw==
-X-Received: by 2002:aed:20ea:: with SMTP id 97mr44777793qtb.125.1609184627269;
-        Mon, 28 Dec 2020 11:43:47 -0800 (PST)
-Received: from localhost (d27-96-190-162.evv.wideopenwest.com. [96.27.162.190])
-        by smtp.gmail.com with ESMTPSA id a9sm24299136qkk.39.2020.12.28.11.43.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Dec 2020 11:43:46 -0800 (PST)
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Carsten Haitzler <carsten.haitzler@arm.com>,
-        Liviu Dudau <liviu.dudau@arm.com>, linux-kernel@vger.kernel.org
-Cc:     Yury Norov <yury.norov@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Subject: [PATCH] drm/komeda: use bitmap API to convert U32 to bitmap
-Date:   Mon, 28 Dec 2020 11:43:43 -0800
-Message-Id: <20201228194343.88880-1-yury.norov@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Mon, 28 Dec 2020 14:44:56 -0500
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BSJWmXV087244;
+        Mon, 28 Dec 2020 14:44:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=FFC1pIh9Jx3Vm1rVMfDgprQvk4esrJQ88xEvb228pWQ=;
+ b=PKh5KhiUgozAkhHVNi5TelmKS12GtPwEaDTPwKrjGvOgHezPVk2urrt1tw3z0c2Jq1tP
+ G0HeIK1bYzBsPaAM4tWTEtpEuyDRKXy963HKP3Xa09WB904J7+QxSudjGfSVKuvzqODk
+ 6+ilTvqlLdoIHPipsRIxYwNWsjKCQ1/1PGKuCbcJRIrCSHmPHLdjFJPtv3B5sCmfVevY
+ 5wMHiHwnvBIUVMwVfMRT9GUCVVLCP9V1UaGglnETD42dcjZ3npVUWvR1eXRopxG9KbHQ
+ iBKZ1XOlVwD8hKNttAik6gIh/vmu1alIa4I3igY157wxngxG2lfsjhTybLAeaM1bSLd5 Wg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 35qmwts065-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Dec 2020 14:44:04 -0500
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BSJWmJj087289;
+        Mon, 28 Dec 2020 14:44:03 -0500
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 35qmwts05k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Dec 2020 14:44:03 -0500
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BSJfdFM019890;
+        Mon, 28 Dec 2020 19:44:02 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04fra.de.ibm.com with ESMTP id 35nvt895fp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Dec 2020 19:44:02 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BSJhv9X28639742
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 28 Dec 2020 19:43:57 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BA7C7A405C;
+        Mon, 28 Dec 2020 19:43:59 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A9390A405F;
+        Mon, 28 Dec 2020 19:43:56 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.72.172])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 28 Dec 2020 19:43:56 +0000 (GMT)
+Message-ID: <564953d7ffb847365236a37639b81cbb7bca2aa6.camel@linux.ibm.com>
+Subject: Re: [PATCH v23 02/23] LSM: Create and manage the lsmblob data
+ structure.
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Casey Schaufler <casey@schaufler-ca.com>,
+        casey.schaufler@intel.com, jmorris@namei.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org
+Cc:     linux-audit@redhat.com, keescook@chromium.org,
+        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
+        paul@paul-moore.com, sds@tycho.nsa.gov,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Date:   Mon, 28 Dec 2020 14:43:55 -0500
+In-Reply-To: <c88bc01f-3b65-f320-b42b-5ecde3e29448@schaufler-ca.com>
+References: <20201120201507.11993-1-casey@schaufler-ca.com>
+         <20201120201507.11993-3-casey@schaufler-ca.com>
+         <903c37e9036d167958165ab700e646c1622a9c40.camel@linux.ibm.com>
+         <c88bc01f-3b65-f320-b42b-5ecde3e29448@schaufler-ca.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-28_17:2020-12-28,2020-12-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
+ adultscore=0 clxscore=1015 mlxscore=0 suspectscore=0 impostorscore=0
+ spamscore=0 mlxlogscore=999 phishscore=0 priorityscore=1501
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012280115
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit be3e477effba636ad25 ("drm/komeda: Fix bit
-check to import to value of proper type") fixes possible
-out-of-bound issue related to find_first_bit() usage, but
-does not address the endianness problem.
+On Mon, 2020-12-28 at 11:22 -0800, Casey Schaufler wrote:
+> On 12/28/2020 9:54 AM, Mimi Zohar wrote:
+> > Hi Casey,
+> >
+> > On Fri, 2020-11-20 at 12:14 -0800, Casey Schaufler wrote:
+> >> When more than one security module is exporting data to
+> >> audit and networking sub-systems a single 32 bit integer
+> >> is no longer sufficient to represent the data. Add a
+> >> structure to be used instead.
+> >>
+> >> The lsmblob structure is currently an array of
+> >> u32 "secids". There is an entry for each of the
+> >> security modules built into the system that would
+> >> use secids if active. The system assigns the module
+> >> a "slot" when it registers hooks. If modules are
+> >> compiled in but not registered there will be unused
+> >> slots.
+> >>
+> >> A new lsm_id structure, which contains the name
+> >> of the LSM and its slot number, is created. There
+> >> is an instance for each LSM, which assigns the name
+> >> and passes it to the infrastructure to set the slot.
+> >>
+> >> The audit rules data is expanded to use an array of
+> >> security module data rather than a single instance.
+> >> Because IMA uses the audit rule functions it is
+> >> affected as well.
+> > This patch is quite large, even without the audit rule change.  I would
+> > limit this patch to the new lsm_id structure changes.  The audit rule
+> > change should be broken out as a separate patch so that the audit
+> > changes aren't hidden.
+> 
+> Breaking up the patch in any meaningful way would require
+> scaffolding code that is as extensive and invasive as the
+> final change. I can do that if you really need it, but it
+> won't be any easier to read.
 
-We can use bitmap_from_arr32() here.
+Hidden in this patch is the new behavior of security_audit_rule_init(),
+security_audit_rule_free(), and security_audit_rule_match().  My
+concern is with label collision.  Details are in a subsequent post. 
+Can an LSM prevent label collision?
 
-Since I have no hardware, the patch is compile-testes only.
-Carsten, could you please test it and consider including into
-your tree?
+> 
+> > In addition, here are a few high level nits:
+> > - The (patch description) body of the explanation, line wrapped at 75
+> > columns, which will be copied to the permanent changelog to describe
+> > this patch. (Refer  Documentation/process/submitting-patches.rst.)
+> 
+> Will fix.
+> 
+> > - The brief kernel-doc descriptions should not have a trailing period. 
+> > Nor should kernel-doc variable definitions have a trailing period. 
+> > Example(s) inline below.  (The existing kernel-doc is mostly correct.)
+> 
+> Will fix.
+> 
+> > - For some reason existing comments that span multiple lines aren't
+> > formatted properly.   In those cases, where there is another change,
+> > please fix the comment and function description.
+> 
+> Can you give an example? There are multiple comment styles
+> used in the various components.
 
-Signed-off-by: Yury Norov <yury.norov@gmail.com>
----
- drivers/gpu/drm/arm/display/komeda/komeda_pipeline.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Never mind.  All three examples are in tomoyo.
 
-diff --git a/drivers/gpu/drm/arm/display/komeda/komeda_pipeline.c b/drivers/gpu/drm/arm/display/komeda/komeda_pipeline.c
-index 719a79728e24..27968215e41d 100644
---- a/drivers/gpu/drm/arm/display/komeda/komeda_pipeline.c
-+++ b/drivers/gpu/drm/arm/display/komeda/komeda_pipeline.c
-@@ -136,11 +136,12 @@ struct komeda_component *
- komeda_pipeline_get_first_component(struct komeda_pipeline *pipe,
- 				    u32 comp_mask)
- {
-+	DECLARE_BITMAP(comp_mask_local, 32);
- 	struct komeda_component *c = NULL;
--	unsigned long comp_mask_local = (unsigned long)comp_mask;
- 	int id;
- 
--	id = find_first_bit(&comp_mask_local, 32);
-+	bitmap_from_arr32(comp_mask_local, &comp_mask, 32);
-+	id = find_first_bit(comp_mask_local, 32);
- 	if (id < 32)
- 		c = komeda_pipeline_get_component(pipe, id);
- 
--- 
-2.25.1
+> I don't see any comments on the ima code changes. I really
+> don't want to spin a new patch set that does nothing but change
+> two periods in comments only to find out two months from now
+> that the code changes are completely borked. I really don't
+> want to go through the process of breaking up the patch that has
+> been widely Acked if there's no reason to expect it would require
+> significant work otherwise.
+
+Understood.
 
