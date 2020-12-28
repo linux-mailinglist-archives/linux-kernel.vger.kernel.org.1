@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CDBA2E676C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:25:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCFAF2E6856
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:37:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633356AbgL1QYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:24:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39320 "EHLO mail.kernel.org"
+        id S1729867AbgL1NBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:01:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731806AbgL1NLZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:11:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 545E422582;
-        Mon, 28 Dec 2020 13:10:44 +0000 (UTC)
+        id S1729464AbgL1NAZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:00:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E79E22B2A;
+        Mon, 28 Dec 2020 12:59:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161044;
-        bh=sZGKCIYyPzHBDLidcEsBcFCsUVUjCutr2XKDRYN9eJs=;
+        s=korg; t=1609160385;
+        bh=SGlegLTLtGNir0urkvQvD8y2E5Ey3+y4+dIcD55sGMA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RPePh9v9jqpdkYKRyVUR9x+lcD63kxLzywG0VsWYC1l5fTzIDuEb2s1kpKhhCYvJ1
-         sEgcEkyxmNgXg4HTy5pBJjZSnk0VxfQ3nLI1Ffoy62fGjLomKRRtUZc+DQGdgf4Cmw
-         Zb+lStHxmuRhlyh2ttW4EmRLguKYzAnw7trcYhF4=
+        b=YQD0qbxJzHxfUP9JB4C5O/U8ZJNvzTDc7VwupLmtckU0aN54z49QB1LfXp1YBhE7Z
+         KiUX/XRFp4iJYxyvAvTJU4rC+dpv5N9WONaYc3CHo26sz3ErHT3OPA82U1P4mlBlld
+         Ye5jAb6npwCQAX4skz0ndW/1FJudKUonHJakbu6k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Mike Snitzer <snitzer@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 082/242] spi: tegra20-slink: fix reference leak in slink ops of tegra20
+Subject: [PATCH 4.9 034/175] dm table: Remove BUG_ON(in_interrupt())
 Date:   Mon, 28 Dec 2020 13:48:07 +0100
-Message-Id: <20201228124908.726949569@linuxfoundation.org>
+Message-Id: <20201228124854.909417576@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,44 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-[ Upstream commit 763eab7074f6e71babd85d796156f05a675f9510 ]
+[ Upstream commit e7b624183d921b49ef0a96329f21647d38865ee9 ]
 
-pm_runtime_get_sync will increment pm usage counter even it
-failed. Forgetting to pm_runtime_put_noidle will result in
-reference leak in two callers(tegra_slink_setup and
-tegra_slink_resume), so we should fix it.
+The BUG_ON(in_interrupt()) in dm_table_event() is a historic leftover from
+a rework of the dm table code which changed the calling context.
 
-Fixes: dc4dc36056392 ("spi: tegra: add spi driver for SLINK controller")
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201103141345.6188-1-zhangqilong3@huawei.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Issuing a BUG for a wrong calling context is frowned upon and
+in_interrupt() is deprecated and only covering parts of the wrong
+contexts. The sanity check for the context is covered by
+CONFIG_DEBUG_ATOMIC_SLEEP and other debug facilities already.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-tegra20-slink.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/md/dm-table.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/drivers/spi/spi-tegra20-slink.c b/drivers/spi/spi-tegra20-slink.c
-index 62b074b167a9a..c39bfcbda5f2c 100644
---- a/drivers/spi/spi-tegra20-slink.c
-+++ b/drivers/spi/spi-tegra20-slink.c
-@@ -761,6 +761,7 @@ static int tegra_slink_setup(struct spi_device *spi)
+diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
+index 2d3ff028f50c9..62e3dc19b6099 100644
+--- a/drivers/md/dm-table.c
++++ b/drivers/md/dm-table.c
+@@ -1250,12 +1250,6 @@ void dm_table_event_callback(struct dm_table *t,
  
- 	ret = pm_runtime_get_sync(tspi->dev);
- 	if (ret < 0) {
-+		pm_runtime_put_noidle(tspi->dev);
- 		dev_err(tspi->dev, "pm runtime failed, e = %d\n", ret);
- 		return ret;
- 	}
-@@ -1197,6 +1198,7 @@ static int tegra_slink_resume(struct device *dev)
- 
- 	ret = pm_runtime_get_sync(dev);
- 	if (ret < 0) {
-+		pm_runtime_put_noidle(dev);
- 		dev_err(dev, "pm runtime failed, e = %d\n", ret);
- 		return ret;
- 	}
+ void dm_table_event(struct dm_table *t)
+ {
+-	/*
+-	 * You can no longer call dm_table_event() from interrupt
+-	 * context, use a bottom half instead.
+-	 */
+-	BUG_ON(in_interrupt());
+-
+ 	mutex_lock(&_event_lock);
+ 	if (t->event_fn)
+ 		t->event_fn(t->event_context);
 -- 
 2.27.0
 
