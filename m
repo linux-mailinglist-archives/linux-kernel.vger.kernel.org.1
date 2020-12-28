@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C22B2E3B69
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:51:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA74B2E37D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:01:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406192AbgL1Ntm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:49:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51082 "EHLO mail.kernel.org"
+        id S1729774AbgL1NBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:01:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406182AbgL1Ntk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:49:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 050C120738;
-        Mon, 28 Dec 2020 13:49:23 +0000 (UTC)
+        id S1729550AbgL1NAz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:00:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB3BA208BA;
+        Mon, 28 Dec 2020 13:00:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163364;
-        bh=Kb1WTf/if7ztm6KCptekc7ovnNtabWGDWlP8K4EUyjs=;
+        s=korg; t=1609160415;
+        bh=GM+YXtKnwpXiwJEeex6kgrefmXnYadOXIVmVQ4YOkrQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Id/wK9BD6d8op4gvXTvLGVmY7mMpIm+PXtzO8ClKNj7mOQc0WgE+G1btYQS9pDBqV
-         39c5URk4P66i/MITAmye6t6a0Qdu1zH1hJJeNND5LGn9VCd1hXv0dMcWxmngKMLldi
-         jpR5B7nD52TFxSXyz4bFGw5zSc1RlfBTUmtOu4zo=
+        b=sgpnKHOAYEplMHsltzA4Q549Ch6fCbuoWucP7Nof15fccYWZGO5CD+f0TTIM+RS3T
+         4vE28Aw5Vt4yW5/QwOo3BUf77PHDnfwlLtRWC8g1z5rarpwM9q0IoNRFm0h7pPGBPo
+         A3gKVCv2N/YIaWwqnkO0Niz2gWjTOFzjEu6XexfU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chao Yu <yuchao0@huawei.com>,
-        Gao Xiang <hsiangkao@redhat.com>,
-        Huang Jianan <huangjianan@oppo.com>,
-        Guo Weichao <guoweichao@oppo.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 260/453] erofs: avoid using generic_block_bmap
+        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        Gabriel Ribba Esteva <gabriel.ribbae@gmail.com>
+Subject: [PATCH 4.9 043/175] ARM: dts: exynos: fix USB 3.0 VBUS control and over-current pins on Exynos5410
 Date:   Mon, 28 Dec 2020 13:48:16 +0100
-Message-Id: <20201228124949.735361752@linuxfoundation.org>
+Message-Id: <20201228124855.339419949@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,78 +39,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Huang Jianan <huangjianan@oppo.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-[ Upstream commit d8b3df8b1048405e73558b88cba2adf29490d468 ]
+commit 3d992fd8f4e0f09c980726308d2f2725587b32d6 upstream.
 
-Surprisingly, `block' in sector_t indicates the number of
-i_blkbits-sized blocks rather than sectors for bmap.
+The VBUS control (PWREN) and over-current pins of USB 3.0 DWC3
+controllers are on Exynos5410 regular GPIOs.  This is different than for
+example on Exynos5422 where these are special ETC pins with proper reset
+values (pulls, functions).
 
-In addition, considering buffer_head limits mapped size to 32-bits,
-should avoid using generic_block_bmap.
+Therefore these pins should be configured to enable proper USB 3.0
+peripheral and host modes.  This also fixes over-current warning:
 
-Link: https://lore.kernel.org/r/20201209115740.18802-1-huangjianan@oppo.com
-Fixes: 9da681e017a3 ("staging: erofs: support bmap")
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
-Reviewed-by: Gao Xiang <hsiangkao@redhat.com>
-Signed-off-by: Huang Jianan <huangjianan@oppo.com>
-Signed-off-by: Guo Weichao <guoweichao@oppo.com>
-[ Gao Xiang: slightly update the commit message description. ]
-Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+    [    6.024658] usb usb4-port1: over-current condition
+    [    6.028271] usb usb3-port1: over-current condition
+
+Fixes: cb0896562228 ("ARM: dts: exynos: Add USB to Exynos5410")
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201015182044.480562-2-krzk@kernel.org
+Tested-by: Gabriel Ribba Esteva <gabriel.ribbae@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- fs/erofs/data.c | 26 +++++++-------------------
- 1 file changed, 7 insertions(+), 19 deletions(-)
+ arch/arm/boot/dts/exynos5410-pinctrl.dtsi |   28 ++++++++++++++++++++++++++++
+ arch/arm/boot/dts/exynos5410.dtsi         |    4 ++++
+ 2 files changed, 32 insertions(+)
 
-diff --git a/fs/erofs/data.c b/fs/erofs/data.c
-index fc3a8d8064f84..b22a08ac53a23 100644
---- a/fs/erofs/data.c
-+++ b/fs/erofs/data.c
-@@ -323,27 +323,12 @@ static int erofs_raw_access_readpages(struct file *filp,
- 	return 0;
- }
- 
--static int erofs_get_block(struct inode *inode, sector_t iblock,
--			   struct buffer_head *bh, int create)
--{
--	struct erofs_map_blocks map = {
--		.m_la = iblock << 9,
--	};
--	int err;
--
--	err = erofs_map_blocks(inode, &map, EROFS_GET_BLOCKS_RAW);
--	if (err)
--		return err;
--
--	if (map.m_flags & EROFS_MAP_MAPPED)
--		bh->b_blocknr = erofs_blknr(map.m_pa);
--
--	return err;
--}
--
- static sector_t erofs_bmap(struct address_space *mapping, sector_t block)
- {
- 	struct inode *inode = mapping->host;
-+	struct erofs_map_blocks map = {
-+		.m_la = blknr_to_addr(block),
-+	};
- 
- 	if (EROFS_I(inode)->datalayout == EROFS_INODE_FLAT_INLINE) {
- 		erofs_blk_t blks = i_size_read(inode) >> LOG_BLOCK_SIZE;
-@@ -352,7 +337,10 @@ static sector_t erofs_bmap(struct address_space *mapping, sector_t block)
- 			return 0;
- 	}
- 
--	return generic_block_bmap(mapping, block, erofs_get_block);
-+	if (!erofs_map_blocks(inode, &map, EROFS_GET_BLOCKS_RAW))
-+		return erofs_blknr(map.m_pa);
+--- a/arch/arm/boot/dts/exynos5410-pinctrl.dtsi
++++ b/arch/arm/boot/dts/exynos5410-pinctrl.dtsi
+@@ -563,6 +563,34 @@
+ 		interrupt-controller;
+ 		#interrupt-cells = <2>;
+ 	};
 +
-+	return 0;
- }
++	usb3_1_oc: usb3-1-oc {
++		samsung,pins = "gpk2-4", "gpk2-5";
++		samsung,pin-function = <EXYNOS_PIN_FUNC_2>;
++		samsung,pin-pud = <EXYNOS_PIN_PULL_UP>;
++		samsung,pin-drv = <EXYNOS5420_PIN_DRV_LV1>;
++	};
++
++	usb3_1_vbusctrl: usb3-1-vbusctrl {
++		samsung,pins = "gpk2-6", "gpk2-7";
++		samsung,pin-function = <EXYNOS_PIN_FUNC_2>;
++		samsung,pin-pud = <EXYNOS_PIN_PULL_DOWN>;
++		samsung,pin-drv = <EXYNOS5420_PIN_DRV_LV1>;
++	};
++
++	usb3_0_oc: usb3-0-oc {
++		samsung,pins = "gpk3-0", "gpk3-1";
++		samsung,pin-function = <EXYNOS_PIN_FUNC_2>;
++		samsung,pin-pud = <EXYNOS_PIN_PULL_UP>;
++		samsung,pin-drv = <EXYNOS5420_PIN_DRV_LV1>;
++	};
++
++	usb3_0_vbusctrl: usb3-0-vbusctrl {
++		samsung,pins = "gpk3-2", "gpk3-3";
++		samsung,pin-function = <EXYNOS_PIN_FUNC_2>;
++		samsung,pin-pud = <EXYNOS_PIN_PULL_DOWN>;
++		samsung,pin-drv = <EXYNOS5420_PIN_DRV_LV1>;
++	};
+ };
  
- /* for uncompressed (aligned) files and raw access for other files */
--- 
-2.27.0
-
+ &pinctrl_2 {
+--- a/arch/arm/boot/dts/exynos5410.dtsi
++++ b/arch/arm/boot/dts/exynos5410.dtsi
+@@ -314,6 +314,8 @@
+ &usbdrd3_0 {
+ 	clocks = <&clock CLK_USBD300>;
+ 	clock-names = "usbdrd30";
++	pinctrl-names = "default";
++	pinctrl-0 = <&usb3_0_oc>, <&usb3_0_vbusctrl>;
+ };
+ 
+ &usbdrd_phy0 {
+@@ -325,6 +327,8 @@
+ &usbdrd3_1 {
+ 	clocks = <&clock CLK_USBD301>;
+ 	clock-names = "usbdrd30";
++	pinctrl-names = "default";
++	pinctrl-0 = <&usb3_1_oc>, <&usb3_1_vbusctrl>;
+ };
+ 
+ &usbdrd_dwc3_1 {
 
 
