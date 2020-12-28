@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE48F2E42CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:28:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D1222E651F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:57:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731386AbgL1N5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:57:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57810 "EHLO mail.kernel.org"
+        id S2393290AbgL1P5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:57:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407634AbgL1N4J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:56:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2842B206D4;
-        Mon, 28 Dec 2020 13:55:27 +0000 (UTC)
+        id S2391131AbgL1NeW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:34:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E07FB206ED;
+        Mon, 28 Dec 2020 13:34:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163728;
-        bh=tKqsXdFU/NeplTA1uxAAQHyltAEXFIkAEkoqLe0Zp2M=;
+        s=korg; t=1609162446;
+        bh=4bsiPwCWsX5NqCLv94bD/B+YY8dp9nloPABhBeBSIMc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y7xotaSCV0t56YpzONBb7MTOdnMuwH4gESIF7cgKbm60oU63dde8EDjq7illbJtSi
-         8xCmPae1wPcCioRR6GeSOvhCa8RftEaKRXBpkOBzSXeGtyElD/24hJ8yrtn+zUS4rO
-         Ld9m9csjFOAUjCowE1bC2E6ieDSIH0vVG558kLJM=
+        b=VQw4BJC/dnTalQ0M5hwVrwAJWiyM7Xc/yraKh6PQlorq1E1xHGveR3goetlR6D2/X
+         CnqxaMv6yW8CeHJH+QXaPLAKq72hyU/J5BirMgqzVz1Ye3ITrHoSWJfmT5bXIuKS0L
+         VLcxWGcWwwsyMuRYaQuzHPFK7C7DHp4JKUJst1Ew=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, David Hildenbrand <david@redhat.com>,
         Oscar Salvador <osalvador@suse.de>,
         Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.4 388/453] powerpc/powernv/memtrace: Fix crashing the kernel when enabling concurrently
-Date:   Mon, 28 Dec 2020 13:50:24 +0100
-Message-Id: <20201228124955.874536718@linuxfoundation.org>
+Subject: [PATCH 4.19 306/346] powerpc/powernv/memtrace: Fix crashing the kernel when enabling concurrently
+Date:   Mon, 28 Dec 2020 13:50:25 +0100
+Message-Id: <20201228124934.583283046@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -76,7 +76,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/arch/powerpc/platforms/powernv/memtrace.c
 +++ b/arch/powerpc/platforms/powernv/memtrace.c
-@@ -30,6 +30,7 @@ struct memtrace_entry {
+@@ -33,6 +33,7 @@ struct memtrace_entry {
  	char name[16];
  };
  
@@ -84,7 +84,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  static u64 memtrace_size;
  
  static struct memtrace_entry *memtrace_array;
-@@ -290,6 +291,7 @@ static int memtrace_online(void)
+@@ -294,6 +295,7 @@ static int memtrace_online(void)
  
  static int memtrace_enable_set(void *data, u64 val)
  {
@@ -92,7 +92,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	u64 bytes;
  
  	/*
-@@ -302,25 +304,31 @@ static int memtrace_enable_set(void *dat
+@@ -306,25 +308,31 @@ static int memtrace_enable_set(void *dat
  		return -EINVAL;
  	}
  
