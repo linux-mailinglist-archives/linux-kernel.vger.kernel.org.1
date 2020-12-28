@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B942E6925
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:47:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF1D82E6801
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:32:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441487AbgL1QpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:45:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53214 "EHLO mail.kernel.org"
+        id S2634053AbgL1Qbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:31:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728827AbgL1M4r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:56:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D7E922582;
-        Mon, 28 Dec 2020 12:56:06 +0000 (UTC)
+        id S1730525AbgL1NEy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:04:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A3754208D5;
+        Mon, 28 Dec 2020 13:04:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160167;
-        bh=P5ggYJNhpB8IrdBefx32WiCzNydd6ToP4X3ZJroicdc=;
+        s=korg; t=1609160653;
+        bh=Rly/IMK4SHISlyefPIldBfTI4/G1zP6YXDYT7WQekaE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zxro5P6nI5JLmVki6CWfmXhJySt0qZ7jDo3MOE5jUaulu16O8tQIwFTyuQEOwK+Dj
-         P/6AvjIWdLt14yRsN4xLcz52CGYqr5c+UmWXxHNmKPOYOr94EyWiOA0ir9e0eSJEHq
-         mQ4tTkO0eRQw32iKAYhFNtcGSREq01fkINCxg24s=
+        b=pjixkbC4UOrXZDFhDTUKcKX0c8laT0o/oPdrgLcIwkZEQgLBMiPR+mmLY8gzIKL8r
+         ThpS7PN92qifKCq1K40bLioDTsC9oaAKlDyRM36JKEnIz8FElPrixuhRxd5liEy3kj
+         Fz3CLO8kXmR9JCakdZECQdydfTztATgs1fvu6y6I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, NeilBrown <neilb@suse.de>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        stable@vger.kernel.org, Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 062/132] NFS: switch nfsiod to be an UNBOUND workqueue.
-Date:   Mon, 28 Dec 2020 13:49:06 +0100
-Message-Id: <20201228124849.453204274@linuxfoundation.org>
+Subject: [PATCH 4.9 094/175] memstick: r592: Fix error return in r592_probe()
+Date:   Mon, 28 Dec 2020 13:49:07 +0100
+Message-Id: <20201228124857.796335730@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,50 +40,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: NeilBrown <neilb@suse.de>
+From: Jing Xiangfeng <jingxiangfeng@huawei.com>
 
-[ Upstream commit bf701b765eaa82dd164d65edc5747ec7288bb5c3 ]
+[ Upstream commit db29d3d1c2451e673e29c7257471e3ce9d50383a ]
 
-nfsiod is currently a concurrency-managed workqueue (CMWQ).
-This means that workitems scheduled to nfsiod on a given CPU are queued
-behind all other work items queued on any CMWQ on the same CPU.  This
-can introduce unexpected latency.
+Fix to return a error code from the error handling case instead of 0.
 
-Occaionally nfsiod can even cause excessive latency.  If the work item
-to complete a CLOSE request calls the final iput() on an inode, the
-address_space of that inode will be dismantled.  This takes time
-proportional to the number of in-memory pages, which on a large host
-working on large files (e.g..  5TB), can be a large number of pages
-resulting in a noticable number of seconds.
-
-We can avoid these latency problems by switching nfsiod to WQ_UNBOUND.
-This causes each concurrent work item to gets a dedicated thread which
-can be scheduled to an idle CPU.
-
-There is precedent for this as several other filesystems use WQ_UNBOUND
-workqueue for handling various async events.
-
-Signed-off-by: NeilBrown <neilb@suse.de>
-Fixes: ada609ee2ac2 ("workqueue: use WQ_MEM_RECLAIM instead of WQ_RESCUER")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Fixes: 926341250102 ("memstick: add driver for Ricoh R5C592 card reader")
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+Link: https://lore.kernel.org/r/20201125014718.153563-1-jingxiangfeng@huawei.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/inode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/memstick/host/r592.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/fs/nfs/inode.c b/fs/nfs/inode.c
-index d25b55ceb9d58..b152366411917 100644
---- a/fs/nfs/inode.c
-+++ b/fs/nfs/inode.c
-@@ -1964,7 +1964,7 @@ static int nfsiod_start(void)
- {
- 	struct workqueue_struct *wq;
- 	dprintk("RPC:       creating workqueue nfsiod\n");
--	wq = alloc_workqueue("nfsiod", WQ_MEM_RECLAIM, 0);
-+	wq = alloc_workqueue("nfsiod", WQ_MEM_RECLAIM | WQ_UNBOUND, 0);
- 	if (wq == NULL)
- 		return -ENOMEM;
- 	nfsiod_workqueue = wq;
+diff --git a/drivers/memstick/host/r592.c b/drivers/memstick/host/r592.c
+index d5cfb503b9d69..2539984c1db1c 100644
+--- a/drivers/memstick/host/r592.c
++++ b/drivers/memstick/host/r592.c
+@@ -762,8 +762,10 @@ static int r592_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 		goto error3;
+ 
+ 	dev->mmio = pci_ioremap_bar(pdev, 0);
+-	if (!dev->mmio)
++	if (!dev->mmio) {
++		error = -ENOMEM;
+ 		goto error4;
++	}
+ 
+ 	dev->irq = pdev->irq;
+ 	spin_lock_init(&dev->irq_lock);
+@@ -790,12 +792,14 @@ static int r592_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 		&dev->dummy_dma_page_physical_address, GFP_KERNEL);
+ 	r592_stop_dma(dev , 0);
+ 
+-	if (request_irq(dev->irq, &r592_irq, IRQF_SHARED,
+-			  DRV_NAME, dev))
++	error = request_irq(dev->irq, &r592_irq, IRQF_SHARED,
++			  DRV_NAME, dev);
++	if (error)
+ 		goto error6;
+ 
+ 	r592_update_card_detect(dev);
+-	if (memstick_add_host(host))
++	error = memstick_add_host(host);
++	if (error)
+ 		goto error7;
+ 
+ 	message("driver successfully loaded");
 -- 
 2.27.0
 
