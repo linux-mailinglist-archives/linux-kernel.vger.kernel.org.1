@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6D002E6656
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:12:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE9E62E6630
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:11:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388257AbgL1NW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:22:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50700 "EHLO mail.kernel.org"
+        id S2388316AbgL1NWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:22:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50950 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726650AbgL1NW0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:22:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9820A207CF;
-        Mon, 28 Dec 2020 13:21:44 +0000 (UTC)
+        id S2388272AbgL1NWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:22:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A44E206ED;
+        Mon, 28 Dec 2020 13:21:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161705;
-        bh=hkOGyiel6DQQsHN0zdExQmw97p7GybAFPgwUZOCrP7I=;
+        s=korg; t=1609161711;
+        bh=FVFgeD6GAnJJ54zu38wHBE18rKu95IbcNPBfUQYdYrY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PUrZxYsP/YS6lgBhQ+RP4mCqd7BX+u3ojWUY/7qPzpsE/nPEfM/vOqLhEPl7MuJRf
-         e1c1g9DHMehT7oGRrDmR1c+5tA3FRmZMFSSmWNsMxzoRzOrUHOIraRSmx+2gCbpvu4
-         Ulhst5Os6Bi6Uu/6UXeS8x/b8ZJ4VWrl9VceF1bI=
+        b=aC5pCGG/hOI3zgd30htAh6mBDShM581cY6mzrnfsMwoIv7aAnO3Cg3g+V9IzjMzC6
+         Rk7o/Gec8XMyA1wtd9BahpLTM+E8rj8yVGh/vLl8MwJyn51EYCV2B8yoJcOJB3lZp7
+         R8NNLaxronGx3kDZMFqkVu4DZp4TIfseejm2G8bM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arvind Sankar <nivedita@alum.mit.edu>,
-        Borislav Petkov <bp@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Subject: [PATCH 4.19 023/346] x86/mm/mem_encrypt: Fix definition of PMD_FLAGS_DEC_WP
-Date:   Mon, 28 Dec 2020 13:45:42 +0100
-Message-Id: <20201228124920.894651104@linuxfoundation.org>
+        stable@vger.kernel.org, Prarit Bhargava <prarit@redhat.com>,
+        Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 4.19 025/346] x86/apic/vector: Fix ordering in vector assignment
+Date:   Mon, 28 Dec 2020 13:45:44 +0100
+Message-Id: <20201228124920.990187689@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
 References: <20201228124919.745526410@linuxfoundation.org>
@@ -40,53 +40,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arvind Sankar <nivedita@alum.mit.edu>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-commit 29ac40cbed2bc06fa218ca25d7f5e280d3d08a25 upstream.
+commit 190113b4c6531c8e09b31d5235f9b5175cbb0f72 upstream.
 
-The PAT bit is in different locations for 4k and 2M/1G page table
-entries.
+Prarit reported that depending on the affinity setting the
 
-Add a definition for _PAGE_LARGE_CACHE_MASK to represent the three
-caching bits (PWT, PCD, PAT), similar to _PAGE_CACHE_MASK for 4k pages,
-and use it in the definition of PMD_FLAGS_DEC_WP to get the correct PAT
-index for write-protected pages.
+ ' irq $N: Affinity broken due to vector space exhaustion.'
 
-Fixes: 6ebcb060713f ("x86/mm: Add support to encrypt the kernel in-place")
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Tested-by: Tom Lendacky <thomas.lendacky@amd.com>
+message is showing up in dmesg, but the vector space on the CPUs in the
+affinity mask is definitely not exhausted.
+
+Shung-Hsi provided traces and analysis which pinpoints the problem:
+
+The ordering of trying to assign an interrupt vector in
+assign_irq_vector_any_locked() is simply wrong if the interrupt data has a
+valid node assigned. It does:
+
+ 1) Try the intersection of affinity mask and node mask
+ 2) Try the node mask
+ 3) Try the full affinity mask
+ 4) Try the full online mask
+
+Obviously #2 and #3 are in the wrong order as the requested affinity
+mask has to take precedence.
+
+In the observed cases #1 failed because the affinity mask did not contain
+CPUs from node 0. That made it allocate a vector from node 0, thereby
+breaking affinity and emitting the misleading message.
+
+Revert the order of #2 and #3 so the full affinity mask without the node
+intersection is tried before actually affinity is broken.
+
+If no node is assigned then only the full affinity mask and if that fails
+the full online mask is tried.
+
+Fixes: d6ffc6ac83b1 ("x86/vector: Respect affinity mask in irq descriptor")
+Reported-by: Prarit Bhargava <prarit@redhat.com>
+Reported-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
 Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/20201111160946.147341-1-nivedita@alum.mit.edu
+Link: https://lore.kernel.org/r/87ft4djtyp.fsf@nanos.tec.linutronix.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/include/asm/pgtable_types.h |    1 +
- arch/x86/mm/mem_encrypt_identity.c   |    4 ++--
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ arch/x86/kernel/apic/vector.c |   24 ++++++++++++++----------
+ 1 file changed, 14 insertions(+), 10 deletions(-)
 
---- a/arch/x86/include/asm/pgtable_types.h
-+++ b/arch/x86/include/asm/pgtable_types.h
-@@ -148,6 +148,7 @@ enum page_cache_mode {
- #endif
+--- a/arch/x86/kernel/apic/vector.c
++++ b/arch/x86/kernel/apic/vector.c
+@@ -274,20 +274,24 @@ static int assign_irq_vector_any_locked(
+ 	const struct cpumask *affmsk = irq_data_get_affinity_mask(irqd);
+ 	int node = irq_data_get_node(irqd);
  
- #define _PAGE_CACHE_MASK	(_PAGE_PAT | _PAGE_PCD | _PAGE_PWT)
-+#define _PAGE_LARGE_CACHE_MASK	(_PAGE_PWT | _PAGE_PCD | _PAGE_PAT_LARGE)
- #define _PAGE_NOCACHE		(cachemode2protval(_PAGE_CACHE_MODE_UC))
- #define _PAGE_CACHE_WP		(cachemode2protval(_PAGE_CACHE_MODE_WP))
- 
---- a/arch/x86/mm/mem_encrypt_identity.c
-+++ b/arch/x86/mm/mem_encrypt_identity.c
-@@ -47,8 +47,8 @@
- #define PMD_FLAGS_LARGE		(__PAGE_KERNEL_LARGE_EXEC & ~_PAGE_GLOBAL)
- 
- #define PMD_FLAGS_DEC		PMD_FLAGS_LARGE
--#define PMD_FLAGS_DEC_WP	((PMD_FLAGS_DEC & ~_PAGE_CACHE_MASK) | \
--				 (_PAGE_PAT | _PAGE_PWT))
-+#define PMD_FLAGS_DEC_WP	((PMD_FLAGS_DEC & ~_PAGE_LARGE_CACHE_MASK) | \
-+				 (_PAGE_PAT_LARGE | _PAGE_PWT))
- 
- #define PMD_FLAGS_ENC		(PMD_FLAGS_LARGE | _PAGE_ENC)
- 
+-	if (node == NUMA_NO_NODE)
+-		goto all;
+-	/* Try the intersection of @affmsk and node mask */
+-	cpumask_and(vector_searchmask, cpumask_of_node(node), affmsk);
+-	if (!assign_vector_locked(irqd, vector_searchmask))
+-		return 0;
+-	/* Try the node mask */
+-	if (!assign_vector_locked(irqd, cpumask_of_node(node)))
+-		return 0;
+-all:
++	if (node != NUMA_NO_NODE) {
++		/* Try the intersection of @affmsk and node mask */
++		cpumask_and(vector_searchmask, cpumask_of_node(node), affmsk);
++		if (!assign_vector_locked(irqd, vector_searchmask))
++			return 0;
++	}
++
+ 	/* Try the full affinity mask */
+ 	cpumask_and(vector_searchmask, affmsk, cpu_online_mask);
+ 	if (!assign_vector_locked(irqd, vector_searchmask))
+ 		return 0;
++
++	if (node != NUMA_NO_NODE) {
++		/* Try the node mask */
++		if (!assign_vector_locked(irqd, cpumask_of_node(node)))
++			return 0;
++	}
++
+ 	/* Try the full online mask */
+ 	return assign_vector_locked(irqd, cpu_online_mask);
+ }
 
 
