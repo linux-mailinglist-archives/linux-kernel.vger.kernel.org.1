@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E32102E6405
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:48:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F8072E3B0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:46:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2632750AbgL1Ppn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:45:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45162 "EHLO mail.kernel.org"
+        id S2404828AbgL1NpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:45:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404654AbgL1Noo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:44:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80014205CB;
-        Mon, 28 Dec 2020 13:44:28 +0000 (UTC)
+        id S2404810AbgL1NpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:45:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 710B32063A;
+        Mon, 28 Dec 2020 13:44:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163069;
-        bh=qmWQmxdPvn09YYGmNGIJb+8FozXlDtKJpd/7SJqFVLA=;
+        s=korg; t=1609163072;
+        bh=9CtOtGjV/IPQVT9keuS0uQL9Gcj+GKnOiX7JyVT3gcs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=snjjpdCY7ITg056cfRHxMFHUvPoeOSvGm3kEP8X6LOPhibQBKb1Xqvz6E1225iQQF
-         1kcv510KzoR7o5M/xSBjzAka/bJymWhcIJ/GAE0m7hRRr3FBrGvcfbHHHhp+cAoLnb
-         XnFGpPojCfO0z0ljhrpKZ/p3117pfCKB/wXFcWS0=
+        b=Wbt+1lPO1vDTGhQ7HXE1xnXDl9wcnDUN9eV+EcMWaWIsBrGmzWzHXr59hb17ao3YN
+         R2TrmQD40+yOVvol8UqS4boJal5XEhwJvTheDzc1OZHEMYu1ZHuiFBe5Si+2fgEcBn
+         ZDQHvfwzU286y1lDSNLp6gbm+VmCPzcus/ervNaQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
+        stable@vger.kernel.org, Kamal Heib <kamalheib1@gmail.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 158/453] clk: meson: Kconfig: fix dependency for G12A
-Date:   Mon, 28 Dec 2020 13:46:34 +0100
-Message-Id: <20201228124944.810656460@linuxfoundation.org>
+Subject: [PATCH 5.4 159/453] RDMA/cxgb4: Validate the number of CQEs
+Date:   Mon, 28 Dec 2020 13:46:35 +0100
+Message-Id: <20201228124944.859359180@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
 References: <20201228124937.240114599@linuxfoundation.org>
@@ -40,36 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kevin Hilman <khilman@baylibre.com>
+From: Kamal Heib <kamalheib1@gmail.com>
 
-[ Upstream commit bae69bfa3a586493469078ec4ca35499b754ba5c ]
+[ Upstream commit 6d8285e604e0221b67bd5db736921b7ddce37d00 ]
 
-When building only G12A, ensure that VID_PLL_DIV clock driver is
-selected, otherwise results in this build error:
+Before create CQ, make sure that the requested number of CQEs is in the
+supported range.
 
-ERROR: modpost: "meson_vid_pll_div_ro_ops" [drivers/clk/meson/g12a.ko] undefined!
-
-Fixes: 085a4ea93d54 ("clk: meson: g12a: add peripheral clock controller")
-Signed-off-by: Kevin Hilman <khilman@baylibre.com>
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Link: https://lore.kernel.org/r/20201118190930.34352-1-khilman@baylibre.com
+Fixes: cfdda9d76436 ("RDMA/cxgb4: Add driver for Chelsio T4 RNIC")
+Link: https://lore.kernel.org/r/20201108132007.67537-1-kamalheib1@gmail.com
+Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/meson/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/infiniband/hw/cxgb4/cq.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/clk/meson/Kconfig b/drivers/clk/meson/Kconfig
-index dabeb435d0678..3f8dcdcdde499 100644
---- a/drivers/clk/meson/Kconfig
-+++ b/drivers/clk/meson/Kconfig
-@@ -103,6 +103,7 @@ config COMMON_CLK_G12A
- 	select COMMON_CLK_MESON_AO_CLKC
- 	select COMMON_CLK_MESON_EE_CLKC
- 	select COMMON_CLK_MESON_CPU_DYNDIV
-+	select COMMON_CLK_MESON_VID_PLL_DIV
- 	select MFD_SYSCON
- 	help
- 	  Support for the clock controller on Amlogic S905D2, S905X2 and S905Y2
+diff --git a/drivers/infiniband/hw/cxgb4/cq.c b/drivers/infiniband/hw/cxgb4/cq.c
+index b1bb61c65f4f6..16b74591a68db 100644
+--- a/drivers/infiniband/hw/cxgb4/cq.c
++++ b/drivers/infiniband/hw/cxgb4/cq.c
+@@ -1007,6 +1007,9 @@ int c4iw_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 	if (attr->flags)
+ 		return -EINVAL;
+ 
++	if (entries < 1 || entries > ibdev->attrs.max_cqe)
++		return -EINVAL;
++
+ 	if (vector >= rhp->rdev.lldi.nciq)
+ 		return -EINVAL;
+ 
 -- 
 2.27.0
 
