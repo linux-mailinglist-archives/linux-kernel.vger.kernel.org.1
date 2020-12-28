@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 840382E3AAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:41:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A1262E40EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:01:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403886AbgL1NkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:40:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40536 "EHLO mail.kernel.org"
+        id S2440180AbgL1ON2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:13:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403846AbgL1NkV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:40:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 218B42072C;
-        Mon, 28 Dec 2020 13:39:39 +0000 (UTC)
+        id S2440158AbgL1ONX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:13:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AAC35206D8;
+        Mon, 28 Dec 2020 14:13:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162780;
-        bh=i5LWZ+IXrysT58bAcuyZ/c0MjDkxaXrcvFHl2RguIhc=;
+        s=korg; t=1609164788;
+        bh=viPBgMreGWdxLX96yFg9b+DQ1cPOL1SE5DYqkihxFt0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=toQtaZw67DN8iy8Z/5qUcMZYz4111ns0H+kpzeb4ruiUEA2jLznv+l1D5L11nlWaf
-         +fTL4a5OqGPMmg2OqIm2sxi92YjxG5vibVmbSx1tB9dt8yguNTitA/21fwtf8bJFW3
-         EptKJgBW8BYdPV23WGtwjTVCVC2t23HE7YvQstWA=
+        b=OGJCdyhXuEL4T+nfl1qNMH3tPVPQTqw7sbQOZV0dajw5DFZsJmzPZv8aKJA/mtjxv
+         faZfQelDNn51DOJizzOEErODr/i/6KWVi+t3/qzT5kkS4N/q9KSCSdk0EEJMH9iWmw
+         lZDPYsEK5dhuc+EE4jmaDnPKdgozAxxLgkyZ+Vm4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Gabriel Ribba Esteva <gabriel.ribbae@gmail.com>
-Subject: [PATCH 5.4 059/453] ARM: dts: exynos: fix USB 3.0 VBUS control and over-current pins on Exynos5410
-Date:   Mon, 28 Dec 2020 13:44:55 +0100
-Message-Id: <20201228124940.089194004@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 298/717] soc: rockchip: io-domain: Fix error return code in rockchip_iodomain_probe()
+Date:   Mon, 28 Dec 2020 13:44:56 +0100
+Message-Id: <20201228125035.304415094@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,89 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-commit 3d992fd8f4e0f09c980726308d2f2725587b32d6 upstream.
+[ Upstream commit c2867b2e710fc85bb39c6f6e5948450c48e8a33e ]
 
-The VBUS control (PWREN) and over-current pins of USB 3.0 DWC3
-controllers are on Exynos5410 regular GPIOs.  This is different than for
-example on Exynos5422 where these are special ETC pins with proper reset
-values (pulls, functions).
+Fix to return a negative error code from the error handling
+case instead of 0, as done elsewhere in this function.
 
-Therefore these pins should be configured to enable proper USB 3.0
-peripheral and host modes.  This also fixes over-current warning:
-
-    [    6.024658] usb usb4-port1: over-current condition
-    [    6.028271] usb usb3-port1: over-current condition
-
-Fixes: cb0896562228 ("ARM: dts: exynos: Add USB to Exynos5410")
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201015182044.480562-2-krzk@kernel.org
-Tested-by: Gabriel Ribba Esteva <gabriel.ribbae@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: e943c43b32ce ("PM: AVS: rockchip-io: Move the driver to the rockchip specific drivers")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+Link: https://lore.kernel.org/r/1607070805-33038-1-git-send-email-zhangchangzhong@huawei.com
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/exynos5410-pinctrl.dtsi |   28 ++++++++++++++++++++++++++++
- arch/arm/boot/dts/exynos5410.dtsi         |    4 ++++
- 2 files changed, 32 insertions(+)
+ drivers/soc/rockchip/io-domain.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/arm/boot/dts/exynos5410-pinctrl.dtsi
-+++ b/arch/arm/boot/dts/exynos5410-pinctrl.dtsi
-@@ -560,6 +560,34 @@
- 		interrupt-controller;
- 		#interrupt-cells = <2>;
- 	};
-+
-+	usb3_1_oc: usb3-1-oc {
-+		samsung,pins = "gpk2-4", "gpk2-5";
-+		samsung,pin-function = <EXYNOS_PIN_FUNC_2>;
-+		samsung,pin-pud = <EXYNOS_PIN_PULL_UP>;
-+		samsung,pin-drv = <EXYNOS5420_PIN_DRV_LV1>;
-+	};
-+
-+	usb3_1_vbusctrl: usb3-1-vbusctrl {
-+		samsung,pins = "gpk2-6", "gpk2-7";
-+		samsung,pin-function = <EXYNOS_PIN_FUNC_2>;
-+		samsung,pin-pud = <EXYNOS_PIN_PULL_DOWN>;
-+		samsung,pin-drv = <EXYNOS5420_PIN_DRV_LV1>;
-+	};
-+
-+	usb3_0_oc: usb3-0-oc {
-+		samsung,pins = "gpk3-0", "gpk3-1";
-+		samsung,pin-function = <EXYNOS_PIN_FUNC_2>;
-+		samsung,pin-pud = <EXYNOS_PIN_PULL_UP>;
-+		samsung,pin-drv = <EXYNOS5420_PIN_DRV_LV1>;
-+	};
-+
-+	usb3_0_vbusctrl: usb3-0-vbusctrl {
-+		samsung,pins = "gpk3-2", "gpk3-3";
-+		samsung,pin-function = <EXYNOS_PIN_FUNC_2>;
-+		samsung,pin-pud = <EXYNOS_PIN_PULL_DOWN>;
-+		samsung,pin-drv = <EXYNOS5420_PIN_DRV_LV1>;
-+	};
- };
+diff --git a/drivers/soc/rockchip/io-domain.c b/drivers/soc/rockchip/io-domain.c
+index eece97f97ef8f..b29e829e815e5 100644
+--- a/drivers/soc/rockchip/io-domain.c
++++ b/drivers/soc/rockchip/io-domain.c
+@@ -547,6 +547,7 @@ static int rockchip_iodomain_probe(struct platform_device *pdev)
+ 		if (uV < 0) {
+ 			dev_err(iod->dev, "Can't determine voltage: %s\n",
+ 				supply_name);
++			ret = uV;
+ 			goto unreg_notify;
+ 		}
  
- &pinctrl_2 {
---- a/arch/arm/boot/dts/exynos5410.dtsi
-+++ b/arch/arm/boot/dts/exynos5410.dtsi
-@@ -398,6 +398,8 @@
- &usbdrd3_0 {
- 	clocks = <&clock CLK_USBD300>;
- 	clock-names = "usbdrd30";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&usb3_0_oc>, <&usb3_0_vbusctrl>;
- };
- 
- &usbdrd_phy0 {
-@@ -409,6 +411,8 @@
- &usbdrd3_1 {
- 	clocks = <&clock CLK_USBD301>;
- 	clock-names = "usbdrd30";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&usb3_1_oc>, <&usb3_1_vbusctrl>;
- };
- 
- &usbdrd_dwc3_1 {
+-- 
+2.27.0
+
 
 
