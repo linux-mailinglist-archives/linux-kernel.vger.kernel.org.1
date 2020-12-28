@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 777D92E666D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:14:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53FB32E664A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:12:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408262AbgL1QMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:12:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49514 "EHLO mail.kernel.org"
+        id S2632983AbgL1QLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:11:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51118 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387967AbgL1NV3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:21:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 60598207C9;
-        Mon, 28 Dec 2020 13:21:13 +0000 (UTC)
+        id S2388342AbgL1NWr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:22:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D21722583;
+        Mon, 28 Dec 2020 13:22:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161674;
-        bh=zVhJz5NUX6hGPxi2AWc77kBUaBzn4WGc1q3gf0E/Xpc=;
+        s=korg; t=1609161726;
+        bh=kGYWbheCbox4Uoqz29HHoyXVbVYFaolTrpAcZlcE2Sg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QTzSdefijYiGsohz/r+ZPlkpZ4mM/+JRvTVi9NYEINQonQBI/hiLvcGWe08OLiWM8
-         Kl44R7ci7fIBjk1SyvxuJCfxnvfxiBQAix9XPho4X0T7iqINIUkSzkadOeXupniMFb
-         769u0YSQam/1Znah6Puq8q5NyIOMPdtpIDYZUsCI=
+        b=xJb66H4hnrBemUGg3aXyLuA52d8X0dprFn8kvae1aMTY0ZL0I10TKroebcnUm2mRJ
+         9MWi+S3hvYuGhv8dHplRHKiXmh57919gzC3lXYl89ezoNKaNaQ+cUIeEjufBZ+KtxL
+         TXez9EnqzEsNS5mA0VJ0P6HMaC9mnHBUOJg5MJjY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
+        stable@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Borislav Petkov <bp@suse.de>,
+        Reinette Chatre <reinette.chatre@intel.com>,
         Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.19 048/346] drm/xen-front: Fix misused IS_ERR_OR_NULL checks
-Date:   Mon, 28 Dec 2020 13:46:07 +0100
-Message-Id: <20201228124922.112563517@linuxfoundation.org>
+Subject: [PATCH 4.19 053/346] x86/resctrl: Remove unused struct mbm_state::chunks_bw
+Date:   Mon, 28 Dec 2020 13:46:12 +0100
+Message-Id: <20201228124922.359620325@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
 References: <20201228124919.745526410@linuxfoundation.org>
@@ -42,106 +41,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+From: James Morse <james.morse@arm.com>
 
-commit 14dee058610446aa464254fc5c8e88c7535195e0 upstream
+commit abe8f12b44250d02937665033a8b750c1bfeb26e upstream
 
-The patch c575b7eeb89f: "drm/xen-front: Add support for Xen PV
-display frontend" from Apr 3, 2018, leads to the following static
-checker warning:
+Nothing reads struct mbm_states's chunks_bw value, its a copy of
+chunks. Remove it.
 
-	drivers/gpu/drm/xen/xen_drm_front_gem.c:140 xen_drm_front_gem_create()
-	warn: passing zero to 'ERR_CAST'
-
-drivers/gpu/drm/xen/xen_drm_front_gem.c
-   133  struct drm_gem_object *xen_drm_front_gem_create(struct drm_device *dev,
-   134                                                  size_t size)
-   135  {
-   136          struct xen_gem_object *xen_obj;
-   137
-   138          xen_obj = gem_create(dev, size);
-   139          if (IS_ERR_OR_NULL(xen_obj))
-   140                  return ERR_CAST(xen_obj);
-
-Fix this and the rest of misused places with IS_ERR_OR_NULL in the
-driver.
-
-Fixes:  c575b7eeb89f: "drm/xen-front: Add support for Xen PV display frontend"
-
-Signed-off-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200813062113.11030-3-andr2000@gmail.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
-[sudip: adjust context]
+Signed-off-by: James Morse <james.morse@arm.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+Link: https://lkml.kernel.org/r/20200708163929.2783-2-james.morse@arm.com
+[sudip: manual backport to file at old path]
 Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/xen/xen_drm_front.c     |    2 +-
- drivers/gpu/drm/xen/xen_drm_front_gem.c |    8 ++++----
- drivers/gpu/drm/xen/xen_drm_front_kms.c |    2 +-
- 3 files changed, 6 insertions(+), 6 deletions(-)
+ arch/x86/kernel/cpu/intel_rdt.h         |    2 --
+ arch/x86/kernel/cpu/intel_rdt_monitor.c |    3 +--
+ 2 files changed, 1 insertion(+), 4 deletions(-)
 
---- a/drivers/gpu/drm/xen/xen_drm_front.c
-+++ b/drivers/gpu/drm/xen/xen_drm_front.c
-@@ -410,7 +410,7 @@ static int xen_drm_drv_dumb_create(struc
- 	args->size = args->pitch * args->height;
+--- a/arch/x86/kernel/cpu/intel_rdt.h
++++ b/arch/x86/kernel/cpu/intel_rdt.h
+@@ -251,7 +251,6 @@ struct rftype {
+  * struct mbm_state - status for each MBM counter in each domain
+  * @chunks:	Total data moved (multiply by rdt_group.mon_scale to get bytes)
+  * @prev_msr	Value of IA32_QM_CTR for this RMID last time we read it
+- * @chunks_bw	Total local data moved. Used for bandwidth calculation
+  * @prev_bw_msr:Value of previous IA32_QM_CTR for bandwidth counting
+  * @prev_bw	The most recent bandwidth in MBps
+  * @delta_bw	Difference between the current and previous bandwidth
+@@ -260,7 +259,6 @@ struct rftype {
+ struct mbm_state {
+ 	u64	chunks;
+ 	u64	prev_msr;
+-	u64	chunks_bw;
+ 	u64	prev_bw_msr;
+ 	u32	prev_bw;
+ 	u32	delta_bw;
+--- a/arch/x86/kernel/cpu/intel_rdt_monitor.c
++++ b/arch/x86/kernel/cpu/intel_rdt_monitor.c
+@@ -290,8 +290,7 @@ static void mbm_bw_count(u32 rmid, struc
+ 		return;
  
- 	obj = xen_drm_front_gem_create(dev, args->size);
--	if (IS_ERR_OR_NULL(obj)) {
-+	if (IS_ERR(obj)) {
- 		ret = PTR_ERR(obj);
- 		goto fail;
- 	}
---- a/drivers/gpu/drm/xen/xen_drm_front_gem.c
-+++ b/drivers/gpu/drm/xen/xen_drm_front_gem.c
-@@ -85,7 +85,7 @@ static struct xen_gem_object *gem_create
+ 	chunks = mbm_overflow_count(m->prev_bw_msr, tval);
+-	m->chunks_bw += chunks;
+-	m->chunks = m->chunks_bw;
++	m->chunks += chunks;
+ 	cur_bw = (chunks * r->mon_scale) >> 20;
  
- 	size = round_up(size, PAGE_SIZE);
- 	xen_obj = gem_create_obj(dev, size);
--	if (IS_ERR_OR_NULL(xen_obj))
-+	if (IS_ERR(xen_obj))
- 		return xen_obj;
- 
- 	if (drm_info->front_info->cfg.be_alloc) {
-@@ -119,7 +119,7 @@ static struct xen_gem_object *gem_create
- 	 */
- 	xen_obj->num_pages = DIV_ROUND_UP(size, PAGE_SIZE);
- 	xen_obj->pages = drm_gem_get_pages(&xen_obj->base);
--	if (IS_ERR_OR_NULL(xen_obj->pages)) {
-+	if (IS_ERR(xen_obj->pages)) {
- 		ret = PTR_ERR(xen_obj->pages);
- 		xen_obj->pages = NULL;
- 		goto fail;
-@@ -138,7 +138,7 @@ struct drm_gem_object *xen_drm_front_gem
- 	struct xen_gem_object *xen_obj;
- 
- 	xen_obj = gem_create(dev, size);
--	if (IS_ERR_OR_NULL(xen_obj))
-+	if (IS_ERR(xen_obj))
- 		return ERR_CAST(xen_obj);
- 
- 	return &xen_obj->base;
-@@ -196,7 +196,7 @@ xen_drm_front_gem_import_sg_table(struct
- 
- 	size = attach->dmabuf->size;
- 	xen_obj = gem_create_obj(dev, size);
--	if (IS_ERR_OR_NULL(xen_obj))
-+	if (IS_ERR(xen_obj))
- 		return ERR_CAST(xen_obj);
- 
- 	ret = gem_alloc_pages_array(xen_obj, size);
---- a/drivers/gpu/drm/xen/xen_drm_front_kms.c
-+++ b/drivers/gpu/drm/xen/xen_drm_front_kms.c
-@@ -59,7 +59,7 @@ fb_create(struct drm_device *dev, struct
- 	int ret;
- 
- 	fb = drm_gem_fb_create_with_funcs(dev, filp, mode_cmd, &fb_funcs);
--	if (IS_ERR_OR_NULL(fb))
-+	if (IS_ERR(fb))
- 		return fb;
- 
- 	gem_obj = drm_gem_object_lookup(filp, mode_cmd->handles[0]);
+ 	if (m->delta_comp)
 
 
