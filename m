@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 631C82E3A73
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:37:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1020C2E6522
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:57:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390643AbgL1NhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:37:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36366 "EHLO mail.kernel.org"
+        id S2393265AbgL1P5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:57:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35674 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390534AbgL1Ngx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:36:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD4C72063A;
-        Mon, 28 Dec 2020 13:36:37 +0000 (UTC)
+        id S2389347AbgL1Nf2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:35:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25CDA20719;
+        Mon, 28 Dec 2020 13:35:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162598;
-        bh=thcVgCl8YGMnTQ9kSct9cT9kC/pyl7k40nnBS9VcJ28=;
+        s=korg; t=1609162512;
+        bh=aRFtjc0P4kSaBuZtpRKNgR4103VojKbxB7pdrr3GHNA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k1y69R4gyKryW1zUgcVgCYReLo7QD7DIS3KyNeqUoimGJtDbfSGSXY51YyOUvIxCY
-         t/tAfh8YbGag2igFpruNLE1J802/7yBDHxtecld6GaOQfiiOSloJsl0iRpdpsW7Alm
-         d3gF991tVMC5jgeBTflFXUYdb4QpTgJ9EUlODOAE=
+        b=HY07Z1laMZZk9SOzX6vYZ9+PlZ5f9XJJJHFMWkwuoZZej4pSCQta2Vz3uVEBW8xTW
+         BVcQjYcpCMqGlfrGn1hEmBmulL4dUQaMoGsaQlkcxZt/hOucUFv0sCtsAhuFHbjAjT
+         Gnd9pH3etmfC1Q4tAetfIKlSpbb63tjT3kwHbWl4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Purna Chandra Mandal <purna.mandal@microchip.com>,
         Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.19 316/346] spi: davinci: Fix use-after-free on unbind
-Date:   Mon, 28 Dec 2020 13:50:35 +0100
-Message-Id: <20201228124935.064214071@linuxfoundation.org>
+Subject: [PATCH 4.19 317/346] spi: pic32: Dont leak DMA channels in probe error path
+Date:   Mon, 28 Dec 2020 13:50:36 +0100
+Message-Id: <20201228124935.114493856@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
 References: <20201228124919.745526410@linuxfoundation.org>
@@ -42,41 +42,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lukas Wunner <lukas@wunner.de>
 
-commit 373afef350a93519b4b8d636b0895da8650b714b upstream.
+commit c575e9113bff5e024d75481613faed5ef9d465b2 upstream.
 
-davinci_spi_remove() accesses the driver's private data after it's been
-freed with spi_master_put().
+If the calls to devm_request_irq() or devm_spi_register_master() fail
+on probe of the PIC32 SPI driver, the DMA channels requested by
+pic32_spi_dma_prep() are erroneously not released.  Plug the leak.
 
-Fix by moving the spi_master_put() to the end of the function.
-
-Fixes: fe5fd2540947 ("spi: davinci: Use dma_request_chan() for requesting DMA channel")
+Fixes: 1bcb9f8ceb67 ("spi: spi-pic32: Add PIC32 SPI master driver")
 Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Cc: <stable@vger.kernel.org> # v4.7+
-Link: https://lore.kernel.org/r/412f7eb1cf8990e0a3a2153f4c577298deab623e.1607286887.git.lukas@wunner.de
+Cc: Purna Chandra Mandal <purna.mandal@microchip.com>
+Link: https://lore.kernel.org/r/9624250e3a7aa61274b38219a62375bac1def637.1604874488.git.lukas@wunner.de
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/spi/spi-davinci.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/spi/spi-pic32.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/spi/spi-davinci.c
-+++ b/drivers/spi/spi-davinci.c
-@@ -1086,13 +1086,13 @@ static int davinci_spi_remove(struct pla
- 	spi_bitbang_stop(&dspi->bitbang);
- 
- 	clk_disable_unprepare(dspi->clk);
--	spi_master_put(master);
- 
- 	if (dspi->dma_rx) {
- 		dma_release_channel(dspi->dma_rx);
- 		dma_release_channel(dspi->dma_tx);
- 	}
- 
-+	spi_master_put(master);
+--- a/drivers/spi/spi-pic32.c
++++ b/drivers/spi/spi-pic32.c
+@@ -839,6 +839,7 @@ static int pic32_spi_probe(struct platfo
  	return 0;
- }
  
+ err_bailout:
++	pic32_spi_dma_unprep(pic32s);
+ 	clk_disable_unprepare(pic32s->clk);
+ err_master:
+ 	spi_master_put(master);
 
 
