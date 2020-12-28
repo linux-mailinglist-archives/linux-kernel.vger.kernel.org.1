@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 464302E375B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:54:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 334482E3B98
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:53:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728357AbgL1My0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:54:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50530 "EHLO mail.kernel.org"
+        id S2407032AbgL1NwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:52:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727480AbgL1MyQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:54:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6695E208D5;
-        Mon, 28 Dec 2020 12:54:00 +0000 (UTC)
+        id S2405759AbgL1Nvw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:51:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25A5120715;
+        Mon, 28 Dec 2020 13:51:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160040;
-        bh=NM5CCaDJZXCTnYJpbpwTRI5NGDrpIlVns1J0g7rR2HQ=;
+        s=korg; t=1609163491;
+        bh=FMkKkDgfoQxTyWnUE2Qst9nVebKm1Hc8yMuI6M2USe4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Cwqz9AU7BiJFuFqmZkP3ui93Sbgc0jRm0uEouxiCwD1H2ZZdv+RVLX6EmfHrvZNDC
-         J9vxgSmLTtseYXeSSQ9Jwovs33M3+lW6ZQ0vfWfRoSHUaVdLQ3JWnCPzxEK3+0Ppkk
-         pIWJuBDZDXPE/6yZIV3eNy6YAq8Ozaap/0Uq6kVo=
+        b=2e6RhgZmseLC7L9DxwCUqS91bBscIGx8LYn3rGRj7Uxx5yMV47Kjp3qFImsI4Yxrg
+         YFz6UGDq3iGRe0sdn/+sUVVJl57Qt7PxfzWyIMRZQM95jGdAJ9s0sJl75VvfM7EhO1
+         qcxmzYLmF/sya8EpjsnQhrhe+yxtlz1iBN39R5wM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Mike Snitzer <snitzer@redhat.com>,
+        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Antoine Tenart <atenart@kernel.org>,
+        Tsahee Zidenberg <tsahee@annapurnalabs.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 025/132] dm table: Remove BUG_ON(in_interrupt())
-Date:   Mon, 28 Dec 2020 13:48:29 +0100
-Message-Id: <20201228124847.621854540@linuxfoundation.org>
+Subject: [PATCH 5.4 274/453] irqchip/alpine-msi: Fix freeing of interrupts on allocation error path
+Date:   Mon, 28 Dec 2020 13:48:30 +0100
+Message-Id: <20201228124950.415054810@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Marc Zyngier <maz@kernel.org>
 
-[ Upstream commit e7b624183d921b49ef0a96329f21647d38865ee9 ]
+[ Upstream commit 3841245e8498a789c65dedd7ffa8fb2fee2c0684 ]
 
-The BUG_ON(in_interrupt()) in dm_table_event() is a historic leftover from
-a rework of the dm table code which changed the calling context.
+The alpine-msi driver has an interesting allocation error handling,
+where it frees the same interrupts repeatedly. Hilarity follows.
 
-Issuing a BUG for a wrong calling context is frowned upon and
-in_interrupt() is deprecated and only covering parts of the wrong
-contexts. The sanity check for the context is covered by
-CONFIG_DEBUG_ATOMIC_SLEEP and other debug facilities already.
+This code is probably never executed, but let's fix it nonetheless.
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Fixes: e6b78f2c3e14 ("irqchip: Add the Alpine MSIX interrupt controller")
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Reviewed-by: Antoine Tenart <atenart@kernel.org>
+Cc: Tsahee Zidenberg <tsahee@annapurnalabs.com>
+Cc: Antoine Tenart <atenart@kernel.org>
+Link: https://lore.kernel.org/r/20201129135525.396671-1-maz@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/dm-table.c | 6 ------
- 1 file changed, 6 deletions(-)
+ drivers/irqchip/irq-alpine-msi.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
-index 466158d06ab1b..8eed39dc2036a 100644
---- a/drivers/md/dm-table.c
-+++ b/drivers/md/dm-table.c
-@@ -1154,12 +1154,6 @@ void dm_table_event_callback(struct dm_table *t,
+diff --git a/drivers/irqchip/irq-alpine-msi.c b/drivers/irqchip/irq-alpine-msi.c
+index 23a3b877f7f1d..ede02dc2bcd0b 100644
+--- a/drivers/irqchip/irq-alpine-msi.c
++++ b/drivers/irqchip/irq-alpine-msi.c
+@@ -165,8 +165,7 @@ static int alpine_msix_middle_domain_alloc(struct irq_domain *domain,
+ 	return 0;
  
- void dm_table_event(struct dm_table *t)
- {
--	/*
--	 * You can no longer call dm_table_event() from interrupt
--	 * context, use a bottom half instead.
--	 */
--	BUG_ON(in_interrupt());
--
- 	mutex_lock(&_event_lock);
- 	if (t->event_fn)
- 		t->event_fn(t->event_context);
+ err_sgi:
+-	while (--i >= 0)
+-		irq_domain_free_irqs_parent(domain, virq, i);
++	irq_domain_free_irqs_parent(domain, virq, i - 1);
+ 	alpine_msix_free_sgi(priv, sgi, nr_irqs);
+ 	return err;
+ }
 -- 
 2.27.0
 
