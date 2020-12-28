@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FB112E39A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:27:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C04E72E3DC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:20:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389016AbgL1NZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:25:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54044 "EHLO mail.kernel.org"
+        id S2441646AbgL1OTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:19:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54324 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388902AbgL1NZ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:25:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF9F220719;
-        Mon, 28 Dec 2020 13:24:44 +0000 (UTC)
+        id S2441632AbgL1OT0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:19:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CAB92242A;
+        Mon, 28 Dec 2020 14:19:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161885;
-        bh=6JE0UNhSRbQ5lIXyrZXz7GwSnXiv+R1sJx4VaR0Fduk=;
+        s=korg; t=1609165144;
+        bh=W0qVIYo/ka7tGnZLFCWqObdNMfHfJoZLfeQDzUDxYFg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E1J6TdSD0SA1HLcmzkxoCyqr3g80TuNdXT2kt6cz6g1SS+YiNfL5XuVIhaDal683q
-         /8n+8tA3w86PXC3nNKXQspiBRVKXsLZnUljdret5kWDQVR6Qh+oaW354zXN4h8/jpb
-         ygQtlsaRd/7EZikZjIVaQS23jaYcNGoSuMTmKEu4=
+        b=Tz0mkDdOnocsEv49tzrj2ETDAihLjkMajTWuAY4ZZukcQNDK7FZ8HXtn7nn8sYfdV
+         4c50Y1swYDBb9UL1v6zPWhSZnJYPGnzQHFKPjYd/EIhyABEtYb8KgT/24WVMGKiqqv
+         ILQ+EQQMM6MCD5umuN+fchyWwWWnbbUcqTGSTWC0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: [PATCH 4.19 088/346] scsi: megaraid_sas: Check user-provided offsets
-Date:   Mon, 28 Dec 2020 13:46:47 +0100
-Message-Id: <20201228124924.055088871@linuxfoundation.org>
+        stable@vger.kernel.org, Han Xu <han.xu@nxp.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 410/717] mtd: rawnand: gpmi: Fix the random DMA timeout issue
+Date:   Mon, 28 Dec 2020 13:46:48 +0100
+Message-Id: <20201228125040.624718380@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,71 +41,216 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Han Xu <han.xu@nxp.com>
 
-commit 381d34e376e3d9d27730fda8a0e870600e6c8196 upstream.
+[ Upstream commit 7671edeb193910482a9b0c22cd32176e7de7b2ed ]
 
-It sounds unwise to let user space pass an unchecked 32-bit offset into a
-kernel structure in an ioctl. This is an unsigned variable, so checking the
-upper bound for the size of the structure it points into is sufficient to
-avoid data corruption, but as the pointer might also be unaligned, it has
-to be written carefully as well.
+To get better performance, current gpmi driver collected and chained all
+small DMA transfers in gpmi_nfc_exec_op, the whole chain triggered and
+wait for complete at the end.
 
-While I stumbled over this problem by reading the code, I did not continue
-checking the function for further problems like it.
+But some random DMA timeout found in this new driver, with the help of
+ftrace, we found the root cause is as follows:
 
-Link: https://lore.kernel.org/r/20201030164450.1253641-2-arnd@kernel.org
-Fixes: c4a3e0a529ab ("[SCSI] MegaRAID SAS RAID: new driver")
-Cc: <stable@vger.kernel.org> # v2.6.15+
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Take gpmi_ecc_read_page() as an example, gpmi_nfc_exec_op collected 6
+DMA transfers and the DMA chain triggered at the end. It waits for bch
+completion and check jiffies if it's timeout. The typical function graph
+shown below,
 
+   63.216351 |   1)               |  gpmi_ecc_read_page() {
+   63.216352 |   1)   0.750 us    |    gpmi_bch_layout_std();
+   63.216354 |   1)               |    gpmi_nfc_exec_op() {
+   63.216355 |   1)               |      gpmi_chain_command() {
+   63.216356 |   1)               |        mxs_dma_prep_slave_sg() {
+   63.216357 |   1)               |          /* mxs chan ccw idx: 0 */
+   63.216358 |   1)   1.750 us    |        }
+   63.216359 |   1)               |        mxs_dma_prep_slave_sg() {
+   63.216360 |   1)               |          /* mxs chan ccw idx: 1 */
+   63.216361 |   1)   2.000 us    |        }
+   63.216361 |   1)   6.500 us    |      }
+   63.216362 |   1)               |      gpmi_chain_command() {
+   63.216363 |   1)               |        mxs_dma_prep_slave_sg() {
+   63.216364 |   1)               |          /* mxs chan ccw idx: 2 */
+   63.216365 |   1)   1.750 us    |        }
+   63.216366 |   1)               |        mxs_dma_prep_slave_sg() {
+   63.216367 |   1)               |          /* mxs chan ccw idx: 3 */
+   63.216367 |   1)   1.750 us    |        }
+   63.216368 |   1)   5.875 us    |      }
+   63.216369 |   1)               |      /* gpmi_chain_wait_ready */
+   63.216370 |   1)               |      mxs_dma_prep_slave_sg() {
+   63.216372 |   1)               |        /* mxs chan ccw idx: 4 */
+   63.216373 |   1)   3.000 us    |      }
+   63.216374 |   1)               |      /* gpmi_chain_data_read */
+   63.216376 |   1)               |      mxs_dma_prep_slave_sg() {
+   63.216377 |   1)               |        /* mxs chan ccw idx: 5 */
+   63.216378 |   1)   2.000 us    |      }
+   63.216379 |   1)   1.125 us    |      mxs_dma_tx_submit();
+   63.216381 |   1)   1.000 us    |      mxs_dma_enable_chan();
+   63.216712 |   0)   2.625 us    |  mxs_dma_int_handler();
+   63.216717 |   0)   4.250 us    |  bch_irq();
+   63.216723 |   0)   1.250 us    |  mxs_dma_tasklet();
+   63.216723 |   1)               |      /* jiffies left 250 */
+   63.216725 |   1) ! 372.000 us  |    }
+   63.216726 |   1)   2.625 us    |    gpmi_count_bitflips();
+   63.216730 |   1) ! 379.125 us  |  }
+
+but it's not gurantee that bch irq handled always after dma irq handled,
+sometimes bch_irq comes first and gpmi_nfc_exec_op won't wait anymore,
+another gpmi_nfc_exec_op may get invoked before last DMA chain IRQ
+handled, this messed up the next DMA chain and causes DMA timeout. Check
+the trace log when issue happened.
+
+   63.218923 |   1)               |  gpmi_ecc_read_page() {
+   63.218924 |   1)   0.625 us    |    gpmi_bch_layout_std();
+   63.218926 |   1)               |    gpmi_nfc_exec_op() {
+   63.218927 |   1)               |      gpmi_chain_command() {
+   63.218928 |   1)               |        mxs_dma_prep_slave_sg() {
+   63.218929 |   1)               |          /* mxs chan ccw idx: 0 */
+   63.218929 |   1)   1.625 us    |        }
+   63.218931 |   1)               |        mxs_dma_prep_slave_sg() {
+   63.218931 |   1)               |          /* mxs chan ccw idx: 1 */
+   63.218932 |   1)   1.750 us    |        }
+   63.218933 |   1)   5.875 us    |      }
+   63.218934 |   1)               |      gpmi_chain_command() {
+   63.218934 |   1)               |        mxs_dma_prep_slave_sg() {
+   63.218935 |   1)               |          /* mxs chan ccw idx: 2 */
+   63.218936 |   1)   1.875 us    |        }
+   63.218937 |   1)               |        mxs_dma_prep_slave_sg() {
+   63.218938 |   1)               |          /* mxs chan ccw idx: 3 */
+   63.218939 |   1)   1.625 us    |        }
+   63.218939 |   1)   5.875 us    |      }
+   63.218940 |   1)               |      /* gpmi_chain_wait_ready */
+   63.218941 |   1)               |      mxs_dma_prep_slave_sg() {
+   63.218942 |   1)               |        /* mxs chan ccw idx: 4 */
+   63.218942 |   1)   1.625 us    |      }
+   63.218943 |   1)               |      /* gpmi_chain_data_read */
+   63.218944 |   1)               |      mxs_dma_prep_slave_sg() {
+   63.218945 |   1)               |        /* mxs chan ccw idx: 5 */
+   63.218947 |   1)   2.375 us    |      }
+   63.218948 |   1)   0.625 us    |      mxs_dma_tx_submit();
+   63.218949 |   1)   1.000 us    |      mxs_dma_enable_chan();
+   63.219276 |   0)   5.125 us    |  bch_irq();                  <----
+   63.219283 |   1)               |      /* jiffies left 250 */
+   63.219285 |   1) ! 358.625 us  |    }
+   63.219286 |   1)   2.750 us    |    gpmi_count_bitflips();
+   63.219289 |   1) ! 366.000 us  |  }
+   63.219290 |   1)               |  gpmi_ecc_read_page() {
+   63.219291 |   1)   0.750 us    |    gpmi_bch_layout_std();
+   63.219293 |   1)               |    gpmi_nfc_exec_op() {
+   63.219294 |   1)               |      gpmi_chain_command() {
+   63.219295 |   1)               |        mxs_dma_prep_slave_sg() {
+   63.219295 |   0)   1.875 us    |  mxs_dma_int_handler();      <----
+   63.219296 |   1)               |          /* mxs chan ccw idx: 6 */
+   63.219297 |   1)   2.250 us    |        }
+   63.219298 |   1)               |        mxs_dma_prep_slave_sg() {
+   63.219298 |   0)   1.000 us    |  mxs_dma_tasklet();
+   63.219299 |   1)               |          /* mxs chan ccw idx: 0 */
+   63.219300 |   1)   1.625 us    |        }
+   63.219300 |   1)   6.375 us    |      }
+   63.219301 |   1)               |      gpmi_chain_command() {
+   63.219302 |   1)               |        mxs_dma_prep_slave_sg() {
+   63.219303 |   1)               |          /* mxs chan ccw idx: 1 */
+   63.219304 |   1)   1.625 us    |        }
+   63.219305 |   1)               |        mxs_dma_prep_slave_sg() {
+   63.219306 |   1)               |          /* mxs chan ccw idx: 2 */
+   63.219306 |   1)   1.875 us    |        }
+   63.219307 |   1)   6.000 us    |      }
+   63.219308 |   1)               |      /* gpmi_chain_wait_ready */
+   63.219308 |   1)               |      mxs_dma_prep_slave_sg() {
+   63.219309 |   1)               |        /* mxs chan ccw idx: 3 */
+   63.219310 |   1)   2.000 us    |      }
+   63.219311 |   1)               |      /* gpmi_chain_data_read */
+   63.219312 |   1)               |      mxs_dma_prep_slave_sg() {
+   63.219313 |   1)               |        /* mxs chan ccw idx: 4 */
+   63.219314 |   1)   1.750 us    |      }
+   63.219315 |   1)   0.625 us    |      mxs_dma_tx_submit();
+   63.219316 |   1)   0.875 us    |      mxs_dma_enable_chan();
+   64.224227 |   1)               |      /* jiffies left 0 */
+
+In the first gpmi_nfc_exec_op, bch_irq comes first and gpmi_nfc_exec_op
+exits, but DMA IRQ still not happened yet until the middle of following
+gpmi_nfc_exec_op, the first DMA transfer index get messed and DMA get
+timeout.
+
+To fix the issue, when there is bch ops in DMA chain, the
+gpmi_nfc_exec_op should wait for both completions rather than bch
+completion only.
+
+Fixes: ef347c0cfd61 ("mtd: rawnand: gpmi: Implement exec_op")
+Signed-off-by: Han Xu <han.xu@nxp.com>
+Reviewed-by: Sascha Hauer <s.hauer@pengutronix.de>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/20201209035104.22679-3-han.xu@nxp.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/megaraid/megaraid_sas_base.c |   16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 30 +++++++++++++++-------
+ 1 file changed, 21 insertions(+), 9 deletions(-)
 
---- a/drivers/scsi/megaraid/megaraid_sas_base.c
-+++ b/drivers/scsi/megaraid/megaraid_sas_base.c
-@@ -7192,7 +7192,7 @@ megasas_mgmt_fw_ioctl(struct megasas_ins
- 	int error = 0, i;
- 	void *sense = NULL;
- 	dma_addr_t sense_handle;
--	unsigned long *sense_ptr;
-+	void *sense_ptr;
- 	u32 opcode = 0;
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+index b5f46f214a582..81028ba35f35d 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+@@ -2254,7 +2254,7 @@ static int gpmi_nfc_exec_op(struct nand_chip *chip,
+ 	void *buf_read = NULL;
+ 	const void *buf_write = NULL;
+ 	bool direct = false;
+-	struct completion *completion;
++	struct completion *dma_completion, *bch_completion;
+ 	unsigned long to;
  
- 	memset(kbuff_arr, 0, sizeof(kbuff_arr));
-@@ -7309,6 +7309,13 @@ megasas_mgmt_fw_ioctl(struct megasas_ins
+ 	if (check_only)
+@@ -2351,22 +2351,24 @@ static int gpmi_nfc_exec_op(struct nand_chip *chip,
+ 		       this->resources.bch_regs + HW_BCH_FLASH0LAYOUT1);
  	}
  
- 	if (ioc->sense_len) {
-+		/* make sure the pointer is part of the frame */
-+		if (ioc->sense_off >
-+		    (sizeof(union megasas_frame) - sizeof(__le64))) {
-+			error = -EINVAL;
-+			goto out;
-+		}
++	desc->callback = dma_irq_callback;
++	desc->callback_param = this;
++	dma_completion = &this->dma_done;
++	bch_completion = NULL;
 +
- 		sense = dma_alloc_coherent(&instance->pdev->dev, ioc->sense_len,
- 					     &sense_handle, GFP_KERNEL);
- 		if (!sense) {
-@@ -7316,12 +7323,11 @@ megasas_mgmt_fw_ioctl(struct megasas_ins
- 			goto out;
- 		}
- 
--		sense_ptr =
--		(unsigned long *) ((unsigned long)cmd->frame + ioc->sense_off);
-+		sense_ptr = (void *)cmd->frame + ioc->sense_off;
- 		if (instance->consistent_mask_64bit)
--			*sense_ptr = cpu_to_le64(sense_handle);
-+			put_unaligned_le64(sense_handle, sense_ptr);
- 		else
--			*sense_ptr = cpu_to_le32(sense_handle);
-+			put_unaligned_le32(sense_handle, sense_ptr);
++	init_completion(dma_completion);
++
+ 	if (this->bch && buf_read) {
+ 		writel(BM_BCH_CTRL_COMPLETE_IRQ_EN,
+ 		       this->resources.bch_regs + HW_BCH_CTRL_SET);
+-		completion = &this->bch_done;
+-	} else {
+-		desc->callback = dma_irq_callback;
+-		desc->callback_param = this;
+-		completion = &this->dma_done;
++		bch_completion = &this->bch_done;
++		init_completion(bch_completion);
  	}
  
- 	/*
+-	init_completion(completion);
+-
+ 	dmaengine_submit(desc);
+ 	dma_async_issue_pending(get_dma_chan(this));
+ 
+-	to = wait_for_completion_timeout(completion, msecs_to_jiffies(1000));
++	to = wait_for_completion_timeout(dma_completion, msecs_to_jiffies(1000));
+ 	if (!to) {
+ 		dev_err(this->dev, "DMA timeout, last DMA\n");
+ 		gpmi_dump_info(this);
+@@ -2374,6 +2376,16 @@ static int gpmi_nfc_exec_op(struct nand_chip *chip,
+ 		goto unmap;
+ 	}
+ 
++	if (this->bch && buf_read) {
++		to = wait_for_completion_timeout(bch_completion, msecs_to_jiffies(1000));
++		if (!to) {
++			dev_err(this->dev, "BCH timeout, last DMA\n");
++			gpmi_dump_info(this);
++			ret = -ETIMEDOUT;
++			goto unmap;
++		}
++	}
++
+ 	writel(BM_BCH_CTRL_COMPLETE_IRQ_EN,
+ 	       this->resources.bch_regs + HW_BCH_CTRL_CLR);
+ 	gpmi_clear_bch(this);
+-- 
+2.27.0
+
 
 
