@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70FA02E393B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:22:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47A922E3AE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:43:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387628AbgL1NUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:20:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48458 "EHLO mail.kernel.org"
+        id S2404294AbgL1Nmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:42:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387609AbgL1NUk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:20:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6083020728;
-        Mon, 28 Dec 2020 13:20:24 +0000 (UTC)
+        id S2404280AbgL1Nmn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:42:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BC4E522AAA;
+        Mon, 28 Dec 2020 13:42:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161625;
-        bh=mg9C9BOsc8Yb4r1plntlZtnY6RBd9cn1Dr0NSo/2R3c=;
+        s=korg; t=1609162948;
+        bh=wVi6T/8gGEmINXaUTqxXXtxgQN3ORT6vIJsJZ35/0Vk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qa4q5BwQG5TjnS8dp22LNDnRf9GpDb/tN+VYaU9jHV8/DakShkhgkA3YFM+SIt9Vh
-         Z38W+0gr5qG85N/drrES8sLV0UxidozR2lSbVRx1eqIcSRv7PHk6QlubLvqGNDT4wQ
-         Z+OKy3aqTmM3SwjgF3K8o4Aign00xVTDLJAfUvhE=
+        b=k6tW6cKN7DKiDYWvd1nxuP95cSCAUUae4GO/nJJ3nILNLsfsJCzuCP9VIJok+y0Xp
+         to3XymU80nquIElGUswpwYb5hVYV332wA6+9BXUzs2jVowFHCPKKE/SnGiUIpYS8Yz
+         9mGR4tsZPCtnj27zujWak0sltRiu6veIbNDXRCQE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergej Bauer <sbauer@blackbox.su>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 033/346] lan743x: fix for potential NULL pointer dereference with bare card
-Date:   Mon, 28 Dec 2020 13:45:52 +0100
-Message-Id: <20201228124921.384198148@linuxfoundation.org>
+        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 117/453] spi: tegra20-sflash: fix reference leak in tegra_sflash_resume
+Date:   Mon, 28 Dec 2020 13:45:53 +0100
+Message-Id: <20201228124942.845353920@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,87 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergej Bauer <sbauer@blackbox.su>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit e9e13b6adc338be1eb88db87bcb392696144bd02 ]
+[ Upstream commit 3482e797ab688da6703fe18d8bad52f94199f4f2 ]
 
-This is the 3rd revision of the patch fix for potential null pointer dereference
-with lan743x card.
+pm_runtime_get_sync will increment pm usage counter even it
+failed. Forgetting to pm_runtime_put_noidle will result in
+reference leak in tegra_sflash_resume, so we should fix it.
 
-The simpliest way to reproduce: boot with bare lan743x and issue "ethtool ethN"
-commant where ethN is the interface with lan743x card. Example:
-
-$ sudo ethtool eth7
-dmesg:
-[  103.510336] BUG: kernel NULL pointer dereference, address: 0000000000000340
-...
-[  103.510836] RIP: 0010:phy_ethtool_get_wol+0x5/0x30 [libphy]
-...
-[  103.511629] Call Trace:
-[  103.511666]  lan743x_ethtool_get_wol+0x21/0x40 [lan743x]
-[  103.511724]  dev_ethtool+0x1507/0x29d0
-[  103.511769]  ? avc_has_extended_perms+0x17f/0x440
-[  103.511820]  ? tomoyo_init_request_info+0x84/0x90
-[  103.511870]  ? tomoyo_path_number_perm+0x68/0x1e0
-[  103.511919]  ? tty_insert_flip_string_fixed_flag+0x82/0xe0
-[  103.511973]  ? inet_ioctl+0x187/0x1d0
-[  103.512016]  dev_ioctl+0xb5/0x560
-[  103.512055]  sock_do_ioctl+0xa0/0x140
-[  103.512098]  sock_ioctl+0x2cb/0x3c0
-[  103.512139]  __x64_sys_ioctl+0x84/0xc0
-[  103.512183]  do_syscall_64+0x33/0x80
-[  103.512224]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  103.512274] RIP: 0033:0x7f54a9cba427
-...
-
-Previous versions can be found at:
-v1:
-initial version
-    https://lkml.org/lkml/2020/10/28/921
-
-v2:
-do not return from lan743x_ethtool_set_wol if netdev->phydev == NULL, just skip
-the call of phy_ethtool_set_wol() instead.
-    https://lkml.org/lkml/2020/10/31/380
-
-v3:
-in function lan743x_ethtool_set_wol:
-use ternary operator instead of if-else sentence (review by Markus Elfring)
-return -ENETDOWN insted of -EIO (review by Andrew Lunn)
-
-Signed-off-by: Sergej Bauer <sbauer@blackbox.su>
-
-Link: https://lore.kernel.org/r/20201101223556.16116-1-sbauer@blackbox.su
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 8528547bcc336 ("spi: tegra: add spi driver for sflash controller")
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Link: https://lore.kernel.org/r/20201103141323.5841-1-zhangqilong3@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/microchip/lan743x_ethtool.c |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/spi/spi-tegra20-sflash.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/net/ethernet/microchip/lan743x_ethtool.c
-+++ b/drivers/net/ethernet/microchip/lan743x_ethtool.c
-@@ -659,7 +659,9 @@ static void lan743x_ethtool_get_wol(stru
+diff --git a/drivers/spi/spi-tegra20-sflash.c b/drivers/spi/spi-tegra20-sflash.c
+index a841a7250d14b..ecb620169753a 100644
+--- a/drivers/spi/spi-tegra20-sflash.c
++++ b/drivers/spi/spi-tegra20-sflash.c
+@@ -551,6 +551,7 @@ static int tegra_sflash_resume(struct device *dev)
  
- 	wol->supported = 0;
- 	wol->wolopts = 0;
--	phy_ethtool_get_wol(netdev->phydev, wol);
-+
-+	if (netdev->phydev)
-+		phy_ethtool_get_wol(netdev->phydev, wol);
- 
- 	wol->supported |= WAKE_BCAST | WAKE_UCAST | WAKE_MCAST |
- 		WAKE_MAGIC | WAKE_PHY | WAKE_ARP;
-@@ -688,9 +690,8 @@ static int lan743x_ethtool_set_wol(struc
- 
- 	device_set_wakeup_enable(&adapter->pdev->dev, (bool)wol->wolopts);
- 
--	phy_ethtool_set_wol(netdev->phydev, wol);
--
--	return 0;
-+	return netdev->phydev ? phy_ethtool_set_wol(netdev->phydev, wol)
-+			: -ENETDOWN;
- }
- #endif /* CONFIG_PM */
- 
+ 	ret = pm_runtime_get_sync(dev);
+ 	if (ret < 0) {
++		pm_runtime_put_noidle(dev);
+ 		dev_err(dev, "pm runtime failed, e = %d\n", ret);
+ 		return ret;
+ 	}
+-- 
+2.27.0
+
 
 
