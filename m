@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA74B2E37D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:01:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABAF62E3E06
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:24:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729774AbgL1NBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:01:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57190 "EHLO mail.kernel.org"
+        id S2502739AbgL1OWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:22:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729550AbgL1NAz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:00:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB3BA208BA;
-        Mon, 28 Dec 2020 13:00:14 +0000 (UTC)
+        id S2502696AbgL1OWn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:22:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C51C522B30;
+        Mon, 28 Dec 2020 14:22:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160415;
-        bh=GM+YXtKnwpXiwJEeex6kgrefmXnYadOXIVmVQ4YOkrQ=;
+        s=korg; t=1609165347;
+        bh=SGoB8j5yDF3J909SAHZihhflgFYzkjcmdLEJAdoZbjc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sgpnKHOAYEplMHsltzA4Q549Ch6fCbuoWucP7Nof15fccYWZGO5CD+f0TTIM+RS3T
-         4vE28Aw5Vt4yW5/QwOo3BUf77PHDnfwlLtRWC8g1z5rarpwM9q0IoNRFm0h7pPGBPo
-         A3gKVCv2N/YIaWwqnkO0Niz2gWjTOFzjEu6XexfU=
+        b=DCyhoPgKa/eApoOLnlaAOnIq8XKZcqMjqh7I77d58Xt649S6qkqPIZSdoCKwuIqKf
+         i9JwqHhUY/DZB5Hyzoz8jxF+Mm2TorkNTJjC6glxHotjPiVonXaBqnhg0jQYWYLzN8
+         w6nnE2k7mfnXOoNEWZz1CdnzP1uFNVFl2X6SK0l8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Gabriel Ribba Esteva <gabriel.ribbae@gmail.com>
-Subject: [PATCH 4.9 043/175] ARM: dts: exynos: fix USB 3.0 VBUS control and over-current pins on Exynos5410
+        stable@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
+        Maxime Ripard <mripard@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 498/717] clk: sunxi-ng: Make sure divider tables have sentinel
 Date:   Mon, 28 Dec 2020 13:48:16 +0100
-Message-Id: <20201228124855.339419949@linuxfoundation.org>
+Message-Id: <20201228125044.826880929@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,89 +41,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Jernej Skrabec <jernej.skrabec@siol.net>
 
-commit 3d992fd8f4e0f09c980726308d2f2725587b32d6 upstream.
+[ Upstream commit 48f68de00c1405351fa0e7bc44bca067c49cd0a3 ]
 
-The VBUS control (PWREN) and over-current pins of USB 3.0 DWC3
-controllers are on Exynos5410 regular GPIOs.  This is different than for
-example on Exynos5422 where these are special ETC pins with proper reset
-values (pulls, functions).
+Two clock divider tables are missing sentinel at the end. Effect of that
+is that clock framework reads past the last entry. Fix that with adding
+sentinel at the end.
 
-Therefore these pins should be configured to enable proper USB 3.0
-peripheral and host modes.  This also fixes over-current warning:
+Issue was discovered with KASan.
 
-    [    6.024658] usb usb4-port1: over-current condition
-    [    6.028271] usb usb3-port1: over-current condition
-
-Fixes: cb0896562228 ("ARM: dts: exynos: Add USB to Exynos5410")
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201015182044.480562-2-krzk@kernel.org
-Tested-by: Gabriel Ribba Esteva <gabriel.ribbae@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 0577e4853bfb ("clk: sunxi-ng: Add H3 clocks")
+Fixes: c6a0637460c2 ("clk: sunxi-ng: Add A64 clocks")
+Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+Link: https://lore.kernel.org/r/20201202203817.438713-1-jernej.skrabec@siol.net
+Acked-by: Maxime Ripard <mripard@kernel.org>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/exynos5410-pinctrl.dtsi |   28 ++++++++++++++++++++++++++++
- arch/arm/boot/dts/exynos5410.dtsi         |    4 ++++
- 2 files changed, 32 insertions(+)
+ drivers/clk/sunxi-ng/ccu-sun50i-a64.c | 1 +
+ drivers/clk/sunxi-ng/ccu-sun8i-h3.c   | 1 +
+ 2 files changed, 2 insertions(+)
 
---- a/arch/arm/boot/dts/exynos5410-pinctrl.dtsi
-+++ b/arch/arm/boot/dts/exynos5410-pinctrl.dtsi
-@@ -563,6 +563,34 @@
- 		interrupt-controller;
- 		#interrupt-cells = <2>;
- 	};
-+
-+	usb3_1_oc: usb3-1-oc {
-+		samsung,pins = "gpk2-4", "gpk2-5";
-+		samsung,pin-function = <EXYNOS_PIN_FUNC_2>;
-+		samsung,pin-pud = <EXYNOS_PIN_PULL_UP>;
-+		samsung,pin-drv = <EXYNOS5420_PIN_DRV_LV1>;
-+	};
-+
-+	usb3_1_vbusctrl: usb3-1-vbusctrl {
-+		samsung,pins = "gpk2-6", "gpk2-7";
-+		samsung,pin-function = <EXYNOS_PIN_FUNC_2>;
-+		samsung,pin-pud = <EXYNOS_PIN_PULL_DOWN>;
-+		samsung,pin-drv = <EXYNOS5420_PIN_DRV_LV1>;
-+	};
-+
-+	usb3_0_oc: usb3-0-oc {
-+		samsung,pins = "gpk3-0", "gpk3-1";
-+		samsung,pin-function = <EXYNOS_PIN_FUNC_2>;
-+		samsung,pin-pud = <EXYNOS_PIN_PULL_UP>;
-+		samsung,pin-drv = <EXYNOS5420_PIN_DRV_LV1>;
-+	};
-+
-+	usb3_0_vbusctrl: usb3-0-vbusctrl {
-+		samsung,pins = "gpk3-2", "gpk3-3";
-+		samsung,pin-function = <EXYNOS_PIN_FUNC_2>;
-+		samsung,pin-pud = <EXYNOS_PIN_PULL_DOWN>;
-+		samsung,pin-drv = <EXYNOS5420_PIN_DRV_LV1>;
-+	};
+diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-a64.c b/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
+index 5f66bf8797723..149cfde817cba 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
++++ b/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
+@@ -389,6 +389,7 @@ static struct clk_div_table ths_div_table[] = {
+ 	{ .val = 1, .div = 2 },
+ 	{ .val = 2, .div = 4 },
+ 	{ .val = 3, .div = 6 },
++	{ /* Sentinel */ },
  };
- 
- &pinctrl_2 {
---- a/arch/arm/boot/dts/exynos5410.dtsi
-+++ b/arch/arm/boot/dts/exynos5410.dtsi
-@@ -314,6 +314,8 @@
- &usbdrd3_0 {
- 	clocks = <&clock CLK_USBD300>;
- 	clock-names = "usbdrd30";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&usb3_0_oc>, <&usb3_0_vbusctrl>;
+ static const char * const ths_parents[] = { "osc24M" };
+ static struct ccu_div ths_clk = {
+diff --git a/drivers/clk/sunxi-ng/ccu-sun8i-h3.c b/drivers/clk/sunxi-ng/ccu-sun8i-h3.c
+index 6b636362379ee..7e629a4493afd 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun8i-h3.c
++++ b/drivers/clk/sunxi-ng/ccu-sun8i-h3.c
+@@ -322,6 +322,7 @@ static struct clk_div_table ths_div_table[] = {
+ 	{ .val = 1, .div = 2 },
+ 	{ .val = 2, .div = 4 },
+ 	{ .val = 3, .div = 6 },
++	{ /* Sentinel */ },
  };
- 
- &usbdrd_phy0 {
-@@ -325,6 +327,8 @@
- &usbdrd3_1 {
- 	clocks = <&clock CLK_USBD301>;
- 	clock-names = "usbdrd30";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&usb3_1_oc>, <&usb3_1_vbusctrl>;
- };
- 
- &usbdrd_dwc3_1 {
+ static SUNXI_CCU_DIV_TABLE_WITH_GATE(ths_clk, "ths", "osc24M",
+ 				     0x074, 0, 2, ths_div_table, BIT(31), 0);
+-- 
+2.27.0
+
 
 
