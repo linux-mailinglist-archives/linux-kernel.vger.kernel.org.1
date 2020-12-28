@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA6282E6418
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:48:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D0682E3D94
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:18:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2632800AbgL1PrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:47:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44484 "EHLO mail.kernel.org"
+        id S2441449AbgL1ORU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:17:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404441AbgL1Nnw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:43:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2069420738;
-        Mon, 28 Dec 2020 13:43:10 +0000 (UTC)
+        id S2441369AbgL1ORJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:17:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7737722AAD;
+        Mon, 28 Dec 2020 14:16:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162991;
-        bh=TEdnqWdjjDu9DHd2eze2o2SrxM0uyzuNi3qi3D26uHk=;
+        s=korg; t=1609164989;
+        bh=Q60UCZxrw2ozqBbgnzkUMsK84+wPaDDO9eItx9L/cr4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eXvjCQm52OqLkQxX6XfZlIG83O8a862Aswo6xt1vsBlNBwxWgxCpFjbBZ3mXXzIHa
-         R+8yia7CQICbNgfdRwfWmB6+daI/PrapsvJvZ2m5RLqCM02lW0DZ5TGGhcJSfE30Uo
-         y2spJ3jkflQunLvRg2vNmBfhry57rmttb8LauKuc=
+        b=PbVV/XTJoKT84pcr7yOj4KeMEduRpYI9EXyTl+mh1OlfaA2tAMHZMQGzJW3mc7F89
+         dzWkPLXg+s8w9iMybAoX4yLzHmE+Lf9nmA5eXHJQmERii3Zz4I56jsgq7mUQzsY7KD
+         a6RvGXjxlFSdvlGG4oJJnoJrh8muGZeWftg6G9BY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 131/453] staging: gasket: interrupt: fix the missed eventfd_ctx_put() in gasket_interrupt.c
-Date:   Mon, 28 Dec 2020 13:46:07 +0100
-Message-Id: <20201228124943.510684219@linuxfoundation.org>
+Subject: [PATCH 5.10 370/717] ASoC: max98390: Fix error codes in max98390_dsm_init()
+Date:   Mon, 28 Dec 2020 13:46:08 +0100
+Message-Id: <20201228125038.733987758@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,62 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Xiangfeng <jingxiangfeng@huawei.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit ab5b769a23af12a675b9f3d7dd529250c527f5ac ]
+[ Upstream commit 3cea33b6f2d7782d1be17c71509986f33ee93541 ]
 
-gasket_interrupt_set_eventfd() misses to call eventfd_ctx_put() in an
-error path. We check interrupt is valid before calling
-eventfd_ctx_fdget() to fix it.
+These error paths return success but they should return -EINVAL.
 
-There is the same issue in gasket_interrupt_clear_eventfd(), Add the
-missed function call to fix it.
-
-Fixes: 9a69f5087ccc ("drivers/staging: Gasket driver framework + Apex driver")
-Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
-Link: https://lore.kernel.org/r/20201112064924.99680-1-jingxiangfeng@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 97ed3e509ee6 ("ASoC: max98390: Fix potential crash during param fw loading")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/X9B0uz4svyNTqeMb@mwanda
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/gasket/gasket_interrupt.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+ sound/soc/codecs/max98390.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/staging/gasket/gasket_interrupt.c b/drivers/staging/gasket/gasket_interrupt.c
-index 2d6195f7300e9..864342acfd86e 100644
---- a/drivers/staging/gasket/gasket_interrupt.c
-+++ b/drivers/staging/gasket/gasket_interrupt.c
-@@ -487,14 +487,16 @@ int gasket_interrupt_system_status(struct gasket_dev *gasket_dev)
- int gasket_interrupt_set_eventfd(struct gasket_interrupt_data *interrupt_data,
- 				 int interrupt, int event_fd)
- {
--	struct eventfd_ctx *ctx = eventfd_ctx_fdget(event_fd);
--
--	if (IS_ERR(ctx))
--		return PTR_ERR(ctx);
-+	struct eventfd_ctx *ctx;
- 
- 	if (interrupt < 0 || interrupt >= interrupt_data->num_interrupts)
- 		return -EINVAL;
- 
-+	ctx = eventfd_ctx_fdget(event_fd);
-+
-+	if (IS_ERR(ctx))
-+		return PTR_ERR(ctx);
-+
- 	interrupt_data->eventfd_ctxs[interrupt] = ctx;
- 	return 0;
- }
-@@ -505,6 +507,9 @@ int gasket_interrupt_clear_eventfd(struct gasket_interrupt_data *interrupt_data,
- 	if (interrupt < 0 || interrupt >= interrupt_data->num_interrupts)
- 		return -EINVAL;
- 
--	interrupt_data->eventfd_ctxs[interrupt] = NULL;
-+	if (interrupt_data->eventfd_ctxs[interrupt]) {
-+		eventfd_ctx_put(interrupt_data->eventfd_ctxs[interrupt]);
-+		interrupt_data->eventfd_ctxs[interrupt] = NULL;
-+	}
- 	return 0;
- }
+diff --git a/sound/soc/codecs/max98390.c b/sound/soc/codecs/max98390.c
+index ff5cc9bbec291..bb736c44e68a3 100644
+--- a/sound/soc/codecs/max98390.c
++++ b/sound/soc/codecs/max98390.c
+@@ -784,6 +784,7 @@ static int max98390_dsm_init(struct snd_soc_component *component)
+ 	if (fw->size < MAX98390_DSM_PARAM_MIN_SIZE) {
+ 		dev_err(component->dev,
+ 			"param fw is invalid.\n");
++		ret = -EINVAL;
+ 		goto err_alloc;
+ 	}
+ 	dsm_param = (char *)fw->data;
+@@ -794,6 +795,7 @@ static int max98390_dsm_init(struct snd_soc_component *component)
+ 		fw->size < param_size + MAX98390_DSM_PAYLOAD_OFFSET) {
+ 		dev_err(component->dev,
+ 			"param fw is invalid.\n");
++		ret = -EINVAL;
+ 		goto err_alloc;
+ 	}
+ 	regmap_write(max98390->regmap, MAX98390_R203A_AMP_EN, 0x80);
 -- 
 2.27.0
 
