@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B61C2E3E6C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:29:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E84E82E3793
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:59:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503975AbgL1O1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:27:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35134 "EHLO mail.kernel.org"
+        id S1728979AbgL1M5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:57:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53728 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502253AbgL1O1U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:27:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DBB622B2C;
-        Mon, 28 Dec 2020 14:26:39 +0000 (UTC)
+        id S1728332AbgL1M5V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:57:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A235207C9;
+        Mon, 28 Dec 2020 12:56:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165600;
-        bh=0/3qRoxR9KL2kG9m6r72SRIejD0G7iMdTuCEwu+ey0s=;
+        s=korg; t=1609160200;
+        bh=Y9aZMQcK4Chcm2VzbTFBgyiYcd6l0/nSSRjaagxz/Fk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R2ZH0bu8fPDm7Sd4/ekuWnrsFFDHgk/PMINg3FUbcr5lB/V7CFrOqDeyr7gxsFabt
-         3jh14zyOCg1KhDhx39GEtSljjAGkfENIpzwfRNCJ0kzLrn6KSrpuGJUBW3TybI5V5a
-         XwL5IY4i+qI1oiuGc/O48BH/GYDXYhq9rlkgCuqI=
+        b=P3zuD4uCaWoJ5CpnUOYJhc/fuDiz7dJyD2sMZeE2vDZYbuO6pQXZVwTidyCejd0Cs
+         t/SgSTpveFrOw8PYsS1xmqrxbKdeGmnyCS6tXuM3ZT6mgT/HgWaK+z+x0eTbHg8A0h
+         iYF/Rn8X7adruWUqUlBs34MlDP0NqDSsOV1Ts9zg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        Filipe Manana <fdmanana@suse.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.10 589/717] btrfs: fix race when defragmenting leads to unnecessary IO
+        stable@vger.kernel.org,
+        syzbot+33ef0b6639a8d2d42b4c@syzkaller.appspotmail.com,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.4 103/132] ALSA: pcm: oss: Fix a few more UBSAN fixes
 Date:   Mon, 28 Dec 2020 13:49:47 +0100
-Message-Id: <20201228125049.127499593@linuxfoundation.org>
+Message-Id: <20201228124851.394677184@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,105 +40,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 7f458a3873ae94efe1f37c8b96c97e7298769e98 upstream.
+commit 11cb881bf075cea41092a20236ba708b18e1dbb2 upstream.
 
-When defragmenting we skip ranges that have holes or inline extents, so that
-we don't do unnecessary IO and waste space. We do this check when calling
-should_defrag_range() at btrfs_defrag_file(). However we do it without
-holding the inode's lock. The reason we do it like this is to avoid
-blocking other tasks for too long, that possibly want to operate on other
-file ranges, since after the call to should_defrag_range() and before
-locking the inode, we trigger a synchronous page cache readahead. However
-before we were able to lock the inode, some other task might have punched
-a hole in our range, or we may now have an inline extent there, in which
-case we should not set the range for defrag anymore since that would cause
-unnecessary IO and make us waste space (i.e. allocating extents to contain
-zeros for a hole).
+There are a few places that call round{up|down}_pow_of_two() with the
+value zero, and this causes undefined behavior warnings.  Avoid
+calling those macros if such a nonsense value is passed; it's a minor
+optimization as well, as we handle it as either an error or a value to
+be skipped, instead.
 
-So after we locked the inode and the range in the iotree, check again if
-we have holes or an inline extent, and if we do, just skip the range.
-
-I hit this while testing my next patch that fixes races when updating an
-inode's number of bytes (subject "btrfs: update the number of bytes used
-by an inode atomically"), and it depends on this change in order to work
-correctly. Alternatively I could rework that other patch to detect holes
-and flag their range with the 'new delalloc' bit, but this itself fixes
-an efficiency problem due a race that from a functional point of view is
-not harmful (it could be triggered with btrfs/062 from fstests).
-
-CC: stable@vger.kernel.org # 5.4+
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Reported-by: syzbot+33ef0b6639a8d2d42b4c@syzkaller.appspotmail.com
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201218161730.26596-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/btrfs/ioctl.c |   39 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+ sound/core/oss/pcm_oss.c |   22 ++++++++++++++--------
+ 1 file changed, 14 insertions(+), 8 deletions(-)
 
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -1275,6 +1275,7 @@ static int cluster_pages_for_defrag(stru
- 	u64 page_end;
- 	u64 page_cnt;
- 	u64 start = (u64)start_index << PAGE_SHIFT;
-+	u64 search_start;
- 	int ret;
- 	int i;
- 	int i_done;
-@@ -1371,6 +1372,40 @@ again:
+--- a/sound/core/oss/pcm_oss.c
++++ b/sound/core/oss/pcm_oss.c
+@@ -718,6 +718,8 @@ static int snd_pcm_oss_period_size(struc
  
- 	lock_extent_bits(&BTRFS_I(inode)->io_tree,
- 			 page_start, page_end - 1, &cached_state);
-+
-+	/*
-+	 * When defragmenting we skip ranges that have holes or inline extents,
-+	 * (check should_defrag_range()), to avoid unnecessary IO and wasting
-+	 * space. At btrfs_defrag_file(), we check if a range should be defragged
-+	 * before locking the inode and then, if it should, we trigger a sync
-+	 * page cache readahead - we lock the inode only after that to avoid
-+	 * blocking for too long other tasks that possibly want to operate on
-+	 * other file ranges. But before we were able to get the inode lock,
-+	 * some other task may have punched a hole in the range, or we may have
-+	 * now an inline extent, in which case we should not defrag. So check
-+	 * for that here, where we have the inode and the range locked, and bail
-+	 * out if that happened.
-+	 */
-+	search_start = page_start;
-+	while (search_start < page_end) {
-+		struct extent_map *em;
-+
-+		em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, search_start,
-+				      page_end - search_start);
-+		if (IS_ERR(em)) {
-+			ret = PTR_ERR(em);
-+			goto out_unlock_range;
-+		}
-+		if (em->block_start >= EXTENT_MAP_LAST_BYTE) {
-+			free_extent_map(em);
-+			/* Ok, 0 means we did not defrag anything */
-+			ret = 0;
-+			goto out_unlock_range;
-+		}
-+		search_start = extent_map_end(em);
-+		free_extent_map(em);
+ 	oss_buffer_size = snd_pcm_plug_client_size(substream,
+ 						   snd_pcm_hw_param_value_max(slave_params, SNDRV_PCM_HW_PARAM_BUFFER_SIZE, NULL)) * oss_frame_size;
++	if (!oss_buffer_size)
++		return -EINVAL;
+ 	oss_buffer_size = rounddown_pow_of_two(oss_buffer_size);
+ 	if (atomic_read(&substream->mmap_count)) {
+ 		if (oss_buffer_size > runtime->oss.mmap_bytes)
+@@ -753,17 +755,21 @@ static int snd_pcm_oss_period_size(struc
+ 
+ 	min_period_size = snd_pcm_plug_client_size(substream,
+ 						   snd_pcm_hw_param_value_min(slave_params, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, NULL));
+-	min_period_size *= oss_frame_size;
+-	min_period_size = roundup_pow_of_two(min_period_size);
+-	if (oss_period_size < min_period_size)
+-		oss_period_size = min_period_size;
++	if (min_period_size) {
++		min_period_size *= oss_frame_size;
++		min_period_size = roundup_pow_of_two(min_period_size);
++		if (oss_period_size < min_period_size)
++			oss_period_size = min_period_size;
 +	}
-+
- 	clear_extent_bit(&BTRFS_I(inode)->io_tree, page_start,
- 			  page_end - 1, EXTENT_DELALLOC | EXTENT_DO_ACCOUNTING |
- 			  EXTENT_DEFRAG, 0, 0, &cached_state);
-@@ -1401,6 +1436,10 @@ again:
- 	btrfs_delalloc_release_extents(BTRFS_I(inode), page_cnt << PAGE_SHIFT);
- 	extent_changeset_free(data_reserved);
- 	return i_done;
-+
-+out_unlock_range:
-+	unlock_extent_cached(&BTRFS_I(inode)->io_tree,
-+			     page_start, page_end - 1, &cached_state);
- out:
- 	for (i = 0; i < i_done; i++) {
- 		unlock_page(pages[i]);
+ 
+ 	max_period_size = snd_pcm_plug_client_size(substream,
+ 						   snd_pcm_hw_param_value_max(slave_params, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, NULL));
+-	max_period_size *= oss_frame_size;
+-	max_period_size = rounddown_pow_of_two(max_period_size);
+-	if (oss_period_size > max_period_size)
+-		oss_period_size = max_period_size;
++	if (max_period_size) {
++		max_period_size *= oss_frame_size;
++		max_period_size = rounddown_pow_of_two(max_period_size);
++		if (oss_period_size > max_period_size)
++			oss_period_size = max_period_size;
++	}
+ 
+ 	oss_periods = oss_buffer_size / oss_period_size;
+ 
 
 
