@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 119CB2E6806
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:33:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42A472E6553
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:01:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441868AbgL1Qbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:31:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60500 "EHLO mail.kernel.org"
+        id S2387797AbgL1Ncq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:32:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730492AbgL1NEk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:04:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 23324208B6;
-        Mon, 28 Dec 2020 13:04:23 +0000 (UTC)
+        id S2387786AbgL1Ncm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:32:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 44DE82072C;
+        Mon, 28 Dec 2020 13:32:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160664;
-        bh=DNj8wKmS+On55spJH+hBnLHl71y+QuPxP82hLgDYX0Q=;
+        s=korg; t=1609162321;
+        bh=mjH3s++s2NZwACRh8No1gLtdj/M3SLyh40brublCB9k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fLyR3uCxebTlWWNYjCB2IKBCtvQBOltUbffTQ0Ci5sQL6HhgMPT2aQjGDC9nuY6ve
-         6D51Tn33nXF5njkYN08rEzkJFCcD4jt0y+9SCr6JrfYgWXTcpMxvjf1tjErcMlEEcs
-         BkI9q2w/YHeARHRcgxI4WsQN/Vw4M3fuCzvQwTIk=
+        b=IdeWo2LZubX6670Za4rYrWk8PqSIBEff+o8wLdQrTllze0wZNa22LWone9qlYUsPK
+         dM53gdCgbj9gkB3jDsNaqy/qiSaaGgrSuN43ThI+sYhm8eXitGt+YsqcXDFNgHke21
+         G1167nVrGdYZ5uhcTF/Xa/jkKcDvojtnKKK5Y+tU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rajat Jain <rajatja@google.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 129/175] Input: cros_ec_keyb - send scancodes in addition to key events
-Date:   Mon, 28 Dec 2020 13:49:42 +0100
-Message-Id: <20201228124859.505795207@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 4.19 264/346] media: ipu3-cio2: Validate mbus format in setting subdev format
+Date:   Mon, 28 Dec 2020 13:49:43 +0100
+Message-Id: <20201228124932.526808559@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +42,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
 
-[ Upstream commit 80db2a087f425b63f0163bc95217abd01c637cb5 ]
+commit a86cf9b29e8b12811cf53c4970eefe0c1d290476 upstream.
 
-To let userspace know what 'scancodes' should be used in EVIOCGKEYCODE
-and EVIOCSKEYCODE ioctls, we should send EV_MSC/MSC_SCAN events in
-addition to EV_KEY/KEY_* events. The driver already declared MSC_SCAN
-capability, so it is only matter of actually sending the events.
+Validate media bus code, width and height when setting the subdev format.
 
-Link: https://lore.kernel.org/r/X87aOaSptPTvZ3nZ@google.com
-Acked-by: Rajat Jain <rajatja@google.com>
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This effectively reworks how setting subdev format is implemented in the
+driver.
+
+Fixes: c2a6a07afe4a ("media: intel-ipu3: cio2: add new MIPI-CSI2 driver")
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: stable@vger.kernel.org # v4.16 and up
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/input/keyboard/cros_ec_keyb.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/media/pci/intel/ipu3/ipu3-cio2.c |   29 ++++++++++++++++++++---------
+ 1 file changed, 20 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/input/keyboard/cros_ec_keyb.c b/drivers/input/keyboard/cros_ec_keyb.c
-index 25943e9bc8bff..328792e26a9f6 100644
---- a/drivers/input/keyboard/cros_ec_keyb.c
-+++ b/drivers/input/keyboard/cros_ec_keyb.c
-@@ -140,6 +140,7 @@ static void cros_ec_keyb_process(struct cros_ec_keyb *ckdev,
- 					"changed: [r%d c%d]: byte %02x\n",
- 					row, col, new_state);
+--- a/drivers/media/pci/intel/ipu3/ipu3-cio2.c
++++ b/drivers/media/pci/intel/ipu3/ipu3-cio2.c
+@@ -1271,6 +1271,9 @@ static int cio2_subdev_set_fmt(struct v4
+ 			       struct v4l2_subdev_format *fmt)
+ {
+ 	struct cio2_queue *q = container_of(sd, struct cio2_queue, subdev);
++	struct v4l2_mbus_framefmt *mbus;
++	u32 mbus_code = fmt->format.code;
++	unsigned int i;
  
-+				input_event(idev, EV_MSC, MSC_SCAN, pos);
- 				input_report_key(idev, keycodes[pos],
- 						 new_state);
- 			}
--- 
-2.27.0
-
+ 	/*
+ 	 * Only allow setting sink pad format;
+@@ -1279,18 +1282,26 @@ static int cio2_subdev_set_fmt(struct v4
+ 	if (fmt->pad == CIO2_PAD_SOURCE)
+ 		return cio2_subdev_get_fmt(sd, cfg, fmt);
+ 
+-	mutex_lock(&q->subdev_lock);
++	if (fmt->which == V4L2_SUBDEV_FORMAT_TRY)
++		mbus = v4l2_subdev_get_try_format(sd, cfg, fmt->pad);
++	else
++		mbus = &q->subdev_fmt;
++
++	fmt->format.code = formats[0].mbus_code;
+ 
+-	if (fmt->which == V4L2_SUBDEV_FORMAT_TRY) {
+-		*v4l2_subdev_get_try_format(sd, cfg, fmt->pad) = fmt->format;
+-	} else {
+-		/* It's the sink, allow changing frame size */
+-		q->subdev_fmt.width = fmt->format.width;
+-		q->subdev_fmt.height = fmt->format.height;
+-		q->subdev_fmt.code = fmt->format.code;
+-		fmt->format = q->subdev_fmt;
++	for (i = 0; i < ARRAY_SIZE(formats); i++) {
++		if (formats[i].mbus_code == fmt->format.code) {
++			fmt->format.code = mbus_code;
++			break;
++		}
+ 	}
+ 
++	fmt->format.width = min_t(u32, fmt->format.width, CIO2_IMAGE_MAX_WIDTH);
++	fmt->format.height = min_t(u32, fmt->format.height,
++				   CIO2_IMAGE_MAX_LENGTH);
++
++	mutex_lock(&q->subdev_lock);
++	*mbus = fmt->format;
+ 	mutex_unlock(&q->subdev_lock);
+ 
+ 	return 0;
 
 
