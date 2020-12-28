@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 687042E694F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:48:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E5BD2E671E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:22:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441717AbgL1Qro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:47:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51804 "EHLO mail.kernel.org"
+        id S2393643AbgL1QUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:20:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42232 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728488AbgL1MzM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:55:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5285822582;
-        Mon, 28 Dec 2020 12:54:31 +0000 (UTC)
+        id S1732398AbgL1NOH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:14:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CDC4B22B3A;
+        Mon, 28 Dec 2020 13:13:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160072;
-        bh=HSsrWUVJ4Kt0fQdjn8a6khJxIphGBlzXIPwXgT7t4rA=;
+        s=korg; t=1609161206;
+        bh=VMCbE7nrLhhGfe1E7kARDa8URoATMwrEDL3yoARcwTI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G7ur//hMeMHx3aroxOM9IS4lyyQwjcfhVfcmbkKsW2x+A2w5bQz2ufcG4wX4VFB5x
-         WUokQYDJLwu8l8pCzYl4Bw1qWQ/JbQTTL19Y2MzgF65/1u07KKkf05DHGuASAUH6ct
-         P+GYKAt3o83k+XS7Bh5phVVSMgTtZK4vMo99KLqY=
+        b=PfJ9ZVjJYEl8b6RsZe3nZEtNsDsWc/Roh91/wCQiks+Td6GI3ckTwrWBJySqqsA/E
+         8RJxiDHU+m89M2h+1gBMmdEXbrUQphNtJt76RUE4TtNjXTX1smgGi2bDTSMLcJ/xVy
+         I4+KdwqJXd9MTJE70RGZSGChxbJGRuLesJMF36EU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        Peter Chen <peter.chen@nxp.com>
-Subject: [PATCH 4.4 029/132] usb: chipidea: ci_hdrc_imx: Pass DISABLE_DEVICE_STREAMING flag to imx6ul
+        stable@vger.kernel.org,
+        Cristian Birsan <cristian.birsan@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 108/242] ARM: dts: at91: sama5d4_xplained: add pincontrol for USB Host
 Date:   Mon, 28 Dec 2020 13:48:33 +0100
-Message-Id: <20201228124847.811682185@linuxfoundation.org>
+Message-Id: <20201228124910.010635078@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,38 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabio Estevam <festevam@gmail.com>
+From: Cristian Birsan <cristian.birsan@microchip.com>
 
-commit c7721e15f434920145c376e8fe77e1c079fc3726 upstream.
+[ Upstream commit be4dd2d448816a27c1446f8f37fce375daf64148 ]
 
-According to the i.MX6UL Errata document:
-https://www.nxp.com/docs/en/errata/IMX6ULCE.pdf
+The pincontrol node is needed for USB Host since Linux v5.7-rc1. Without
+it the driver probes but VBus is not powered because of wrong pincontrol
+configuration.
 
-ERR007881 also affects i.MX6UL, so pass the
-CI_HDRC_DISABLE_DEVICE_STREAMING flag to workaround the issue.
-
-Fixes: 52fe568e5d71 ("usb: chipidea: imx: add imx6ul usb support")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Fabio Estevam <festevam@gmail.com>
-Signed-off-by: Peter Chen <peter.chen@nxp.com>
-Link: https://lore.kernel.org/r/20201207020909.22483-2-peter.chen@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 38153a017896f ("ARM: at91/dt: sama5d4: add dts for sama5d4 xplained board")
+Signed-off-by: Cristian Birsan <cristian.birsan@microchip.com>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Acked-by: Ludovic Desroches <ludovic.desroches@microchip.com>
+Link: https://lore.kernel.org/r/20201118120019.1257580-3-cristian.birsan@microchip.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/chipidea/ci_hdrc_imx.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/at91-sama5d4_xplained.dts | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/drivers/usb/chipidea/ci_hdrc_imx.c
-+++ b/drivers/usb/chipidea/ci_hdrc_imx.c
-@@ -58,7 +58,8 @@ static const struct ci_hdrc_imx_platform
+diff --git a/arch/arm/boot/dts/at91-sama5d4_xplained.dts b/arch/arm/boot/dts/at91-sama5d4_xplained.dts
+index 10f2fb9e0ea61..c271ca960caee 100644
+--- a/arch/arm/boot/dts/at91-sama5d4_xplained.dts
++++ b/arch/arm/boot/dts/at91-sama5d4_xplained.dts
+@@ -158,6 +158,11 @@
+ 						atmel,pins =
+ 							<AT91_PIOE 31 AT91_PERIPH_GPIO AT91_PINCTRL_DEGLITCH>;
+ 					};
++					pinctrl_usb_default: usb_default {
++						atmel,pins =
++							<AT91_PIOE 11 AT91_PERIPH_GPIO AT91_PINCTRL_NONE
++							 AT91_PIOE 14 AT91_PERIPH_GPIO AT91_PINCTRL_NONE>;
++					};
+ 					pinctrl_key_gpio: key_gpio_0 {
+ 						atmel,pins =
+ 							<AT91_PIOE 8 AT91_PERIPH_GPIO AT91_PINCTRL_PULL_UP_DEGLITCH>;
+@@ -183,6 +188,8 @@
+ 					   &pioE 11 GPIO_ACTIVE_HIGH
+ 					   &pioE 14 GPIO_ACTIVE_HIGH
+ 					  >;
++			pinctrl-names = "default";
++			pinctrl-0 = <&pinctrl_usb_default>;
+ 			status = "okay";
+ 		};
  
- static const struct ci_hdrc_imx_platform_flag imx6ul_usb_data = {
- 	.flags = CI_HDRC_SUPPORTS_RUNTIME_PM |
--		CI_HDRC_TURN_VBUS_EARLY_ON,
-+		CI_HDRC_TURN_VBUS_EARLY_ON |
-+		CI_HDRC_DISABLE_DEVICE_STREAMING,
- };
- 
- static const struct ci_hdrc_imx_platform_flag imx7d_usb_data = {
+-- 
+2.27.0
+
 
 
