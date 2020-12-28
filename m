@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E9302E68A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:40:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 273552E65D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:07:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633805AbgL1Qj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:39:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56074 "EHLO mail.kernel.org"
+        id S2391776AbgL1QEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:04:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729424AbgL1NAM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:00:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB42722573;
-        Mon, 28 Dec 2020 12:59:56 +0000 (UTC)
+        id S2389760AbgL1N1y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:27:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD77322B40;
+        Mon, 28 Dec 2020 13:27:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160397;
-        bh=DE3cR/WXTTulpqmIcWjEFEhHP2EW4aJJyfdFm0vLJWE=;
+        s=korg; t=1609162058;
+        bh=/Jik/UAVugPTOcm7K+/Agzh+F93IeBdxAX1SpkyMsfk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aqL7HrUgc84vjW84d5QolGQ7rsuxnvpX2TsBV4AmJYd3HdZxPMrgz4UdssYO5zzsl
-         W7qeTruG+dKrRywnBmbXIUbK+abVFsQeEHJAZfLLq15A6qWeoL6Gy4E+1R//odrqmp
-         CMzny94APNqzqM1LQbWQ+H3bXxjG0jDi7qUavSyU=
+        b=DGWlM3vG99aLctKRJHPoby3ikMJK7dqdeBrGttfXBzKk7uQLvwUqHGk3p+qV9e223
+         vkxo/lg48R0X7FlDRsUdVz3tu27C86XFbNje29W5qBZETw+5e0lgo5N2cal95aLfd9
+         8t4dB2oK8xfR+v535AxNAXX1Gh7cKUT//nhMzvjU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        Will McVicker <willmcvicker@google.com>,
-        Peter Chen <peter.chen@nxp.com>
-Subject: [PATCH 4.9 038/175] USB: gadget: f_midi: setup SuperSpeed Plus descriptors
-Date:   Mon, 28 Dec 2020 13:48:11 +0100
-Message-Id: <20201228124855.092762987@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 173/346] slimbus: qcom-ngd-ctrl: Avoid sending power requests without QMI
+Date:   Mon, 28 Dec 2020 13:48:12 +0100
+Message-Id: <20201228124928.146879893@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +41,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Will McVicker <willmcvicker@google.com>
+From: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-commit 457a902ba1a73b7720666b21ca038cd19764db18 upstream.
+[ Upstream commit 39014ce6d6028614a46395923a2c92d058b6fa87 ]
 
-Needed for SuperSpeed Plus support for f_midi.  This allows the
-gadget to work properly without crashing at SuperSpeed rates.
+Attempting to send a power request during PM operations, when the QMI
+handle isn't initialized results in a NULL pointer dereference. So check
+if the QMI handle has been initialized before attempting to post the
+power requests.
 
-Cc: Felipe Balbi <balbi@kernel.org>
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Will McVicker <willmcvicker@google.com>
-Reviewed-by: Peter Chen <peter.chen@nxp.com>
-Link: https://lore.kernel.org/r/20201127140559.381351-4-gregkh@linuxfoundation.org
+Fixes: 917809e2280b ("slimbus: ngd: Add qcom SLIMBus NGD driver")
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20201127102451.17114-7-srinivas.kandagatla@linaro.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/function/f_midi.c |    6 ++++++
+ drivers/slimbus/qcom-ngd-ctrl.c | 6 ++++++
  1 file changed, 6 insertions(+)
 
---- a/drivers/usb/gadget/function/f_midi.c
-+++ b/drivers/usb/gadget/function/f_midi.c
-@@ -1008,6 +1008,12 @@ static int f_midi_bind(struct usb_config
- 		f->hs_descriptors = usb_copy_descriptors(midi_function);
- 		if (!f->hs_descriptors)
- 			goto fail_f_midi;
-+
-+		if (gadget_is_superspeed_plus(c->cdev->gadget)) {
-+			f->ssp_descriptors = usb_copy_descriptors(midi_function);
-+			if (!f->ssp_descriptors)
-+				goto fail_f_midi;
-+		}
- 	}
+diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
+index 522a87fc573a6..44021620d1013 100644
+--- a/drivers/slimbus/qcom-ngd-ctrl.c
++++ b/drivers/slimbus/qcom-ngd-ctrl.c
+@@ -1200,6 +1200,9 @@ static int qcom_slim_ngd_runtime_resume(struct device *dev)
+ 	struct qcom_slim_ngd_ctrl *ctrl = dev_get_drvdata(dev);
+ 	int ret = 0;
  
- 	kfree(midi_function);
++	if (!ctrl->qmi.handle)
++		return 0;
++
+ 	if (ctrl->state >= QCOM_SLIM_NGD_CTRL_ASLEEP)
+ 		ret = qcom_slim_ngd_power_up(ctrl);
+ 	if (ret) {
+@@ -1493,6 +1496,9 @@ static int __maybe_unused qcom_slim_ngd_runtime_suspend(struct device *dev)
+ 	struct qcom_slim_ngd_ctrl *ctrl = dev_get_drvdata(dev);
+ 	int ret = 0;
+ 
++	if (!ctrl->qmi.handle)
++		return 0;
++
+ 	ret = qcom_slim_qmi_power_request(ctrl, false);
+ 	if (ret && ret != -EBUSY)
+ 		dev_info(ctrl->dev, "slim resource not idle:%d\n", ret);
+-- 
+2.27.0
+
 
 
