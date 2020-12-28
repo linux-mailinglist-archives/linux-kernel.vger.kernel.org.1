@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8578C2E3979
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:25:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E953A2E3B31
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:47:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388635AbgL1NYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:24:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52600 "EHLO mail.kernel.org"
+        id S2405521AbgL1NrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:47:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388603AbgL1NX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:23:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 34EA722472;
-        Mon, 28 Dec 2020 13:23:18 +0000 (UTC)
+        id S2404870AbgL1Npm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:45:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 61A17208BA;
+        Mon, 28 Dec 2020 13:45:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161798;
-        bh=MkK3j7ZomOYFFJqGfh8X0raUHFSG9RMvM+M6u7FC2fo=;
+        s=korg; t=1609163101;
+        bh=kcQcT50e+KY9CvtMnXIEG9ksrtvfBy4mW+T/7NcRMfY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Phy1uGljV6X8NoorvN9Sooxvlyz8QUjZaaMGzrjsNVSSAyefOCgS/CfShmyJaKFsR
-         AxU+5VVNcHPSU7sxP572pIDqtiQzP9YdLiM9m3zm2oSLtV2lY0wz1eSilOIorOiQUI
-         eWzY0AHsfGFIHH6onlJ2QDtYHnUI/Lh7I2hnTthg=
+        b=JaxIOTu7bdKvAzqdEc0a42vtTxFIyMe0aCn8NgLpiq2gG90ojppaQegJL4iNN3KnC
+         dvuUUSCImEA4bZNE84qJl7NXu7ZRMvAJrnm/L96jCe/v5nr9SIYgHa0O3kFN/czid2
+         B8pzKTf/d8VQNbZ1Xzkpjv73gbXeA0Us4hK4+pqw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Gabriel Ribba Esteva <gabriel.ribbae@gmail.com>
-Subject: [PATCH 4.19 084/346] ARM: dts: exynos: fix roles of USB 3.0 ports on Odroid XU
-Date:   Mon, 28 Dec 2020 13:46:43 +0100
-Message-Id: <20201228124923.862782343@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhihao Cheng <chengzhihao1@huawei.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 168/453] dmaengine: mv_xor_v2: Fix error return code in mv_xor_v2_probe()
+Date:   Mon, 28 Dec 2020 13:46:44 +0100
+Message-Id: <20201228124945.280092805@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,40 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
 
-commit ecc1ff532b499d20304a4f682247137025814c34 upstream.
+[ Upstream commit c95e6515a8c065862361f7e0e452978ade7f94ec ]
 
-On Odroid XU board the USB3-0 port is a microUSB and USB3-1 port is USB
-type A (host).  The roles were copied from Odroid XU3 (Exynos5422)
-design which has it reversed.
+Return the corresponding error code when first_msi_entry() returns
+NULL in mv_xor_v2_probe().
 
-Fixes: 8149afe4dbf9 ("ARM: dts: exynos: Add initial support for Odroid XU board")
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201015182044.480562-1-krzk@kernel.org
-Tested-by: Gabriel Ribba Esteva <gabriel.ribbae@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 19a340b1a820430 ("dmaengine: mv_xor_v2: new driver")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Link: https://lore.kernel.org/r/20201124010813.1939095-1-chengzhihao1@huawei.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/exynos5410-odroidxu.dts |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/dma/mv_xor_v2.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/arch/arm/boot/dts/exynos5410-odroidxu.dts
-+++ b/arch/arm/boot/dts/exynos5410-odroidxu.dts
-@@ -626,11 +626,11 @@
- };
+diff --git a/drivers/dma/mv_xor_v2.c b/drivers/dma/mv_xor_v2.c
+index e3850f04f6763..889a94af4c851 100644
+--- a/drivers/dma/mv_xor_v2.c
++++ b/drivers/dma/mv_xor_v2.c
+@@ -766,8 +766,10 @@ static int mv_xor_v2_probe(struct platform_device *pdev)
+ 		goto disable_clk;
  
- &usbdrd_dwc3_0 {
--	dr_mode = "host";
-+	dr_mode = "peripheral";
- };
+ 	msi_desc = first_msi_entry(&pdev->dev);
+-	if (!msi_desc)
++	if (!msi_desc) {
++		ret = -ENODEV;
+ 		goto free_msi_irqs;
++	}
+ 	xor_dev->msi_desc = msi_desc;
  
- &usbdrd_dwc3_1 {
--	dr_mode = "peripheral";
-+	dr_mode = "host";
- };
- 
- &usbdrd3_0 {
+ 	ret = devm_request_irq(&pdev->dev, msi_desc->irq,
+-- 
+2.27.0
+
 
 
