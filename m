@@ -2,92 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13F362E69DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 18:51:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E9AE2E69E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 18:56:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728648AbgL1RvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 12:51:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728683AbgL1RvD (ORCPT
+        id S1728543AbgL1R4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 12:56:14 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:39704 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728580AbgL1R4B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 12:51:03 -0500
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56231C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 09:50:23 -0800 (PST)
-Received: by mail-qv1-xf33.google.com with SMTP id et9so5263110qvb.10
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 09:50:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=ZMfCfjHbif2syrZaGixEYwXg5QwVzqeWzIKkiTTdBE4=;
-        b=gV6ksufRtAkuL5xKIiYHzgXP+k4lTwFRxFlgyXAWKgvH0I+1OtNxHkrNmbg2O7pDHC
-         wj7zqhUMeHbX/cSSxmZp1qcmq3BH4Efe2S1MTI57Nb20hUFMMVZPBqnbcsx897jRpBmz
-         Fc/chi2YRddKt66mKky9KJtZ4d1Z2qtF3ls3D/OrD05ozmzAuz9c2G22ACI/YVgmOf4E
-         CbO6XTSl+Cx9BNxNSS/3BNidMj4/kgSzw7WdZNJCfj+p1XuDF0PwQoyNjqZXPMd4rGvb
-         q81Eii/rMDEDVCRxUm05ijfLQTj9DFMmGxGIBBS1UlbPlWhSPEg+YEJcKGZpNfojYDr/
-         T4ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=ZMfCfjHbif2syrZaGixEYwXg5QwVzqeWzIKkiTTdBE4=;
-        b=S7kA8iyDOXDhP92TOG8PzcfoZWvDfGvFQi+456h50LJmtbO6eKtubq3Ik2p5nN3sdQ
-         GY8ocAmi19hVMAZ9zonkd1Dh0NU7F7BExSorFAc8ig/U2jeUaiujxFEMZXYnNhJ1nKJI
-         Hqhrm99/Zr+mbd1JbcifBGshSFnWU7rttV7EgEkYMB22UNhvumO5Tm2nyJNqFi1RrwYl
-         lfZJ7Njx9TlkLssbkJT11qN9rwVO9/ooNkAdOu7Pg5wNYvVVWjOQnccwVewzwLfJ4YqK
-         Jrceuzk/euUIkSe2njmRTDKpVbNSYnVFl4DqfahOhqBlAiMmuaQIm5pnhphcK0kcDAsD
-         cH7Q==
-X-Gm-Message-State: AOAM531tDLD2cdB5dFHi1yR0TlnnqoGxbYwBvhffKhTFacVxsYw/0GQd
-        tAq4wpPKKkExhdfuWqZQuvA=
-X-Google-Smtp-Source: ABdhPJwFzFW6MReKZpZ1zPsma6IkUvgRspZiLsERIe8ejATwJUKD7UxkL1UoK6tskWlvyZk4XRs6zw==
-X-Received: by 2002:a05:6214:a94:: with SMTP id ev20mr48150602qvb.56.1609177822430;
-        Mon, 28 Dec 2020 09:50:22 -0800 (PST)
-Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
-        by smtp.gmail.com with ESMTPSA id d14sm24645100qtg.97.2020.12.28.09.50.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Dec 2020 09:50:21 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 28 Dec 2020 12:49:43 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [GIT PULL] workqueue changes for v5.11-rc1
-Message-ID: <X+oat9YaT6+ZKTL5@mtj.duckdns.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+        Mon, 28 Dec 2020 12:56:01 -0500
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BSHVBRr181258;
+        Mon, 28 Dec 2020 12:55:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=575WtQFj0wqQyr0cGY9p3bIWqpxBZ1k/uxC+oK37Iy0=;
+ b=L2l2XDVoznzmqLRMDcCy7ZzPiir4Qc+76Tn2I76txrpqZP9bPVh9Kdifvh4Fzkdai673
+ rqSOQxuTunKupSuRRvliDMVw2jBJKxa4nQt/iNk89JraLO6B1mPRwohgr4TpuJD+dfsY
+ ItKrJpzdoNNIxGpM1h/vQUbY9DXJbH6W6obn90nvxBLMn+2XMIUJCyYL2vJamP3RCuL/
+ j4Us1q13QYTDK4aB/0yaqBWxGsFxoe1Lq25lqUtJfef13IQOJYnwGNImXYrerpmEqNhq
+ tDBN1d1LE7r+rCN9qt5Cu0hJxct/80vCiqYpeWfj0hQ55034oxtHX5lnRHJ6dxcfgVCQ BA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 35qkcjgyvm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Dec 2020 12:55:08 -0500
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BSHYUW6194223;
+        Mon, 28 Dec 2020 12:55:07 -0500
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 35qkcjgyuv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Dec 2020 12:55:07 -0500
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BSHbhF5020741;
+        Mon, 28 Dec 2020 17:55:05 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma05fra.de.ibm.com with ESMTP id 35qfp6g3bk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Dec 2020 17:55:05 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BSHt3sR47055324
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 28 Dec 2020 17:55:03 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4007C4C046;
+        Mon, 28 Dec 2020 17:55:03 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5171D4C040;
+        Mon, 28 Dec 2020 17:55:00 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.72.172])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 28 Dec 2020 17:55:00 +0000 (GMT)
+Message-ID: <903c37e9036d167958165ab700e646c1622a9c40.camel@linux.ibm.com>
+Subject: Re: [PATCH v23 02/23] LSM: Create and manage the lsmblob data
+ structure.
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Casey Schaufler <casey@schaufler-ca.com>,
+        casey.schaufler@intel.com, jmorris@namei.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org
+Cc:     linux-audit@redhat.com, keescook@chromium.org,
+        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
+        paul@paul-moore.com, sds@tycho.nsa.gov,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Date:   Mon, 28 Dec 2020 12:54:59 -0500
+In-Reply-To: <20201120201507.11993-3-casey@schaufler-ca.com>
+References: <20201120201507.11993-1-casey@schaufler-ca.com>
+         <20201120201507.11993-3-casey@schaufler-ca.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-28_15:2020-12-28,2020-12-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 adultscore=0 spamscore=0 clxscore=1011 mlxscore=0
+ impostorscore=0 mlxlogscore=999 malwarescore=0 phishscore=0 bulkscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012280107
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, again.
+Hi Casey,
 
-The same as the cgroup tree - one commit which was scheduled for the 5.11
-merge window. All the commit does is avoding spurious worker wakeups from
-workqueue allocation / config change path to help cpuisol use cases.
+On Fri, 2020-11-20 at 12:14 -0800, Casey Schaufler wrote:
+> When more than one security module is exporting data to
+> audit and networking sub-systems a single 32 bit integer
+> is no longer sufficient to represent the data. Add a
+> structure to be used instead.
+> 
+> The lsmblob structure is currently an array of
+> u32 "secids". There is an entry for each of the
+> security modules built into the system that would
+> use secids if active. The system assigns the module
+> a "slot" when it registers hooks. If modules are
+> compiled in but not registered there will be unused
+> slots.
+> 
+> A new lsm_id structure, which contains the name
+> of the LSM and its slot number, is created. There
+> is an instance for each LSM, which assigns the name
+> and passes it to the infrastructure to set the slot.
+> 
+> The audit rules data is expanded to use an array of
+> security module data rather than a single instance.
+> Because IMA uses the audit rule functions it is
+> affected as well.
 
-Thank you.
+This patch is quite large, even without the audit rule change.  I would
+limit this patch to the new lsm_id structure changes.  The audit rule
+change should be broken out as a separate patch so that the audit
+changes aren't hidden.
 
-The following changes since commit 127c501a03d5db8b833e953728d3bcf53c8832a9:
+In addition, here are a few high level nits:
+- The (patch description) body of the explanation, line wrapped at 75
+columns, which will be copied to the permanent changelog to describe
+this patch. (Refer  Documentation/process/submitting-patches.rst.)
 
-  Merge tag '5.10-rc5-smb3-fixes' of git://git.samba.org/sfrench/cifs-2.6 (2020-11-24 15:33:18 -0800)
+- The brief kernel-doc descriptions should not have a trailing period. 
+Nor should kernel-doc variable definitions have a trailing period. 
+Example(s) inline below.  (The existing kernel-doc is mostly correct.)
 
-are available in the Git repository at:
+- For some reason existing comments that span multiple lines aren't
+formatted properly.   In those cases, where there is another change,
+please fix the comment and function description.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git for-5.11
+thanks,
 
-for you to fetch changes up to 01341fbd0d8d4e717fc1231cdffe00343088ce0b:
+Mimi
 
-  workqueue: Kick a worker based on the actual activation of delayed works (2020-11-25 17:10:28 -0500)
+> 
+> Acked-by: Stephen Smalley <sds@tycho.nsa.gov>
+> Acked-by: Paul Moore <paul@paul-moore.com>
+> Acked-by: John Johansen <john.johansen@canonical.com>
+> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
 
-----------------------------------------------------------------
-Yunfeng Ye (1):
-      workqueue: Kick a worker based on the actual activation of delayed works
+> Cc: <bpf@vger.kernel.org>
+> Cc: linux-audit@redhat.com
+> Cc: linux-security-module@vger.kernel.org
+> Cc: selinux@vger.kernel.org
+> ---
 
- kernel/workqueue.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+> diff --git a/include/linux/security.h b/include/linux/security.h
+> index bc2725491560..fdb6e95c98e8 100644
+> --- a/include/linux/security.h
+> +++ b/include/linux/security.h
+> @@ -132,6 +132,65 @@ enum lockdown_reason {
+> 
+>  extern const char *const lockdown_reasons[LOCKDOWN_CONFIDENTIALITY_MAX+1];
+> 
+> +/*
+> + * Data exported by the security modules
+> + *
+> + * Any LSM that provides secid or secctx based hooks must be included.
+> + */
+> +#define LSMBLOB_ENTRIES ( \
+> +	(IS_ENABLED(CONFIG_SECURITY_SELINUX) ? 1 : 0) + \
+> +	(IS_ENABLED(CONFIG_SECURITY_SMACK) ? 1 : 0) + \
+> +	(IS_ENABLED(CONFIG_SECURITY_APPARMOR) ? 1 : 0) + \
+> +	(IS_ENABLED(CONFIG_BPF_LSM) ? 1 : 0))
+> +
+> +struct lsmblob {
+> +	u32     secid[LSMBLOB_ENTRIES];
+> +};
+> +
+> +#define LSMBLOB_INVALID		-1	/* Not a valid LSM slot number */
+> +#define LSMBLOB_NEEDED		-2	/* Slot requested on initialization */
+> +#define LSMBLOB_NOT_NEEDED	-3	/* Slot not requested */
+> +
+> +/**
+> + * lsmblob_init - initialize an lsmblob structure.
 
--- 
-tejun
+Only this kernel-doc brief description is suffixed with a period.  
+Please remove.
+
+> + * @blob: Pointer to the data to initialize
+> + * @secid: The initial secid value
+> + *
+> + * Set all secid for all modules to the specified value.
+> + */
+> +static inline void lsmblob_init(struct lsmblob *blob, u32 secid)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < LSMBLOB_ENTRIES; i++)
+> +		blob->secid[i] = secid;
+> +}
+> +
+> +/**
+> + * lsmblob_is_set - report if there is an value in the lsmblob
+> + * @blob: Pointer to the exported LSM data
+> + *
+> + * Returns true if there is a secid set, false otherwise
+> + */
+> +static inline bool lsmblob_is_set(struct lsmblob *blob)
+> +{
+> +	struct lsmblob empty = {};
+> +
+> +	return !!memcmp(blob, &empty, sizeof(*blob));
+> +}
+> +
+> +/**
+> + * lsmblob_equal - report if the two lsmblob's are equal
+> + * @bloba: Pointer to one LSM data
+> + * @blobb: Pointer to the other LSM data
+> + *
+> + * Returns true if all entries in the two are equal, false otherwise
+> + */
+> +static inline bool lsmblob_equal(struct lsmblob *bloba, struct lsmblob *blobb)
+> +{
+> +	return !memcmp(bloba, blobb, sizeof(*bloba));
+> +}
+> +
+>  /* These functions are in security/commoncap.c */
+>  extern int cap_capable(const struct cred *cred, struct user_namespace *ns,
+
+> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+> index 9b5adeaa47fc..cd393aaa17d5 100644
+> --- a/security/integrity/ima/ima_policy.c
+> +++ b/security/integrity/ima/ima_policy.c
+>  	} lsm[MAX_LSM_RULES];
+> @@ -88,6 +88,22 @@ struct ima_rule_entry {
+>  	struct ima_template_desc *template;
+>  };
+> 
+> +/**
+> + * ima_lsm_isset - Is a rule set for any of the active security modules
+> + * @rules: The set of IMA rules to check.
+
+Nor do kernel-doc variable definitions have a trailing period.
+
+> + *
+> + * If a rule is set for any LSM return true, otherwise return false.
+> + */
+> +static inline bool ima_lsm_isset(void *rules[])
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < LSMBLOB_ENTRIES; i++)
+> +		if (rules[i])
+> +			return true;
+> +	return false;
+> +}
+> +
+>  /*
+>   * Without LSM specific knowledge, the default policy can only be
+>   * written in terms of .action, .func, .mask, .fsmagic, .uid, and .fowner
+
