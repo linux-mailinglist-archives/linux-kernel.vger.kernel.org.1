@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A9CD2E6784
+	by mail.lfdr.de (Postfix) with ESMTP id 19D3A2E6783
 	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:26:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731044AbgL1NJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:09:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35858 "EHLO mail.kernel.org"
+        id S1731056AbgL1NJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:09:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36046 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731004AbgL1NIw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:08:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CF8A21D94;
-        Mon, 28 Dec 2020 13:08:36 +0000 (UTC)
+        id S1731011AbgL1NIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:08:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02C032076D;
+        Mon, 28 Dec 2020 13:08:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160916;
-        bh=X96PO8BdZCvgbfOFmq4uZWAEJtyxaZVVbHWkC5QIHc0=;
+        s=korg; t=1609160919;
+        bh=PsggyikTz3ZfDUADG0zA8/DVJ2pK+14Uh7TcdsbIcjE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qr+glZxAwThKgtQ7oJ0iGAuUnAFwvTGdBZaXMifneRHg7uQaAAO9ODPOdl5TelI0Q
-         zIMYi457HXnYOkOZytp1hmCTfkLH2xYmlSClW9h3QrDOl27HM8dUdjdgk32H3ljBkE
-         MyyfTURnC1XjYdI4w+qXP478JiZmb5HSoF+iKS/I=
+        b=TSx7CPVe3IeXcllWKLh9V9Bv+kQl1tgsLpY0UZ9OdveKswcp0XkTlVU2rtHIFyg+s
+         mFaU/Vcl3jMFgb+4G9pa/eGeHMCAcWNt2rMY4DGaL3YagfdKzRJguy3E3wThRKQAV1
+         z3Vk66JB/QAqG8z88/Y33lbJy+xp8S6+VAvQoA5E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Icenowy Zheng <icenowy@aosc.io>,
-        Maxime Ripard <maxime@cerno.tech>,
+        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 037/242] ARM: dts: sun8i: v3s: fix GIC node memory range
-Date:   Mon, 28 Dec 2020 13:47:22 +0100
-Message-Id: <20201228124906.492826572@linuxfoundation.org>
+Subject: [PATCH 4.14 038/242] gpio: mvebu: fix potential user-after-free on probe
+Date:   Mon, 28 Dec 2020 13:47:23 +0100
+Message-Id: <20201228124906.543278032@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
 References: <20201228124904.654293249@linuxfoundation.org>
@@ -40,37 +41,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Icenowy Zheng <icenowy@aosc.io>
+From: Baruch Siach <baruch@tkos.co.il>
 
-[ Upstream commit a98fd117a2553ab1a6d2fe3c7acae88c1eca4372 ]
+[ Upstream commit 7ee1a01e47403f72b9f38839a737692f6991263e ]
 
-Currently the GIC node in V3s DTSI follows some old DT examples, and
-being broken. This leads a warning at boot.
+When mvebu_pwm_probe() fails IRQ domain is not released. Move pwm probe
+before IRQ domain allocation. Add pwm cleanup code to the failure path.
 
-Fix this.
-
-Fixes: f989086ccbc6 ("ARM: dts: sunxi: add dtsi file for V3s SoC")
-Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Link: https://lore.kernel.org/r/20201120050851.4123759-1-icenowy@aosc.io
+Fixes: 757642f9a584 ("gpio: mvebu: Add limited PWM support")
+Reported-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Baruch Siach <baruch@tkos.co.il>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/sun8i-v3s.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpio/gpio-mvebu.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm/boot/dts/sun8i-v3s.dtsi b/arch/arm/boot/dts/sun8i-v3s.dtsi
-index da5823c6fa3e6..e31804e448da2 100644
---- a/arch/arm/boot/dts/sun8i-v3s.dtsi
-+++ b/arch/arm/boot/dts/sun8i-v3s.dtsi
-@@ -419,7 +419,7 @@
- 		gic: interrupt-controller@01c81000 {
- 			compatible = "arm,cortex-a7-gic", "arm,cortex-a15-gic";
- 			reg = <0x01c81000 0x1000>,
--			      <0x01c82000 0x1000>,
-+			      <0x01c82000 0x2000>,
- 			      <0x01c84000 0x2000>,
- 			      <0x01c86000 0x2000>;
- 			interrupt-controller;
+diff --git a/drivers/gpio/gpio-mvebu.c b/drivers/gpio/gpio-mvebu.c
+index be85d4b39e997..fc762b4adcb22 100644
+--- a/drivers/gpio/gpio-mvebu.c
++++ b/drivers/gpio/gpio-mvebu.c
+@@ -1195,6 +1195,13 @@ static int mvebu_gpio_probe(struct platform_device *pdev)
+ 
+ 	devm_gpiochip_add_data(&pdev->dev, &mvchip->chip, mvchip);
+ 
++	/* Some MVEBU SoCs have simple PWM support for GPIO lines */
++	if (IS_ENABLED(CONFIG_PWM)) {
++		err = mvebu_pwm_probe(pdev, mvchip, id);
++		if (err)
++			return err;
++	}
++
+ 	/* Some gpio controllers do not provide irq support */
+ 	if (!have_irqs)
+ 		return 0;
+@@ -1204,7 +1211,8 @@ static int mvebu_gpio_probe(struct platform_device *pdev)
+ 	if (!mvchip->domain) {
+ 		dev_err(&pdev->dev, "couldn't allocate irq domain %s (DT).\n",
+ 			mvchip->chip.label);
+-		return -ENODEV;
++		err = -ENODEV;
++		goto err_pwm;
+ 	}
+ 
+ 	err = irq_alloc_domain_generic_chips(
+@@ -1252,14 +1260,12 @@ static int mvebu_gpio_probe(struct platform_device *pdev)
+ 						 mvchip);
+ 	}
+ 
+-	/* Some MVEBU SoCs have simple PWM support for GPIO lines */
+-	if (IS_ENABLED(CONFIG_PWM))
+-		return mvebu_pwm_probe(pdev, mvchip, id);
+-
+ 	return 0;
+ 
+ err_domain:
+ 	irq_domain_remove(mvchip->domain);
++err_pwm:
++	pwmchip_remove(&mvchip->mvpwm->chip);
+ 
+ 	return err;
+ }
 -- 
 2.27.0
 
