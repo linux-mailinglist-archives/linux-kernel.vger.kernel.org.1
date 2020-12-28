@@ -2,91 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB7B2E3383
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 02:49:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE9AF2E3385
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 02:51:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726485AbgL1BrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 20:47:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726293AbgL1BrK (ORCPT
+        id S1726429AbgL1Bvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 20:51:35 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:38480 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726269AbgL1Bvf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 20:47:10 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15037C061794;
-        Sun, 27 Dec 2020 17:46:45 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id n3so4216240pjm.1;
-        Sun, 27 Dec 2020 17:46:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=M7WvI72wl4WUEMHOhb+lrKhfdYvvrF6GMV1dg1VMpQc=;
-        b=d27FTPDqa40m8Gq0jAM0JQ21hyBIelFtGhpLuyYUu3Un4u30e5R7gBFiCVfb0n0E/N
-         +3lw67S6Ztfi5pDuQjaB5MeLNnidR1bUWtX9bWln+Q1yH+5yo9DlKhKiVMr+Tsy4GhIP
-         f4O7RwPnp2We+Iq38rrpr5A4Njo/R2DnYNAl/HOWKqhXN90xnmpDHpH0n0t9ponbKZSk
-         tQsZpX517b2fNx5vYUgQOM47Z1HJO2TVd5K0N57KHQcY1U/SQ/e96l4WI44ft9bkOJ7u
-         Qmtl1qA8O8wMYkA136FfPp+9DmxPOANrs1KJNUGVPPxovMB/Y+xuVCpR980uKMIpP8/v
-         rpJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=M7WvI72wl4WUEMHOhb+lrKhfdYvvrF6GMV1dg1VMpQc=;
-        b=ttuiDI2WwYPc1gzqy6tnaWr8z9jCnn+gNy0q0baG9Q8fPseUKHUWgn7zF+5mRdjWlN
-         MICzXzZi9t413SQdKbiNVKrwzEVHpSmDgZKqAXorvhZoWLjc4ZEAlrg3osiNdEhK8/Ue
-         Hz5x8r5R3eKw51LI1hzyufipBlPH4xqAg4Ibwlex2tOWrAa73EP6qVjRb2eNUYbNfpX4
-         /FZ3q32kiBv5hvMZj/ky71LR3pSCbgMIVMPOHe/0EYOk8Iu26mICxJDUhroxRA9gXMVC
-         Xs1cu6dccEZZ8/IoaJoZi3WVjuGxGsUyIVPoEcbYbQYrbtq5CBxeLEwbcT5OdrpBxEP/
-         XAEA==
-X-Gm-Message-State: AOAM530GQhPeD41z09wVk9rYJVJMo4PJZFZcNIrEJCvfZFN3UMynLkYu
-        NPel6rTymdUqZxIZdFVQPgA=
-X-Google-Smtp-Source: ABdhPJzXnMa13lXrovP0yhARfbP6Y1l2a0JaHzpYO7B2/f2mEt/w9mo26TYEkenv4zix1BXI+y65cA==
-X-Received: by 2002:a17:90a:1bc7:: with SMTP id r7mr19379497pjr.33.1609120004569;
-        Sun, 27 Dec 2020 17:46:44 -0800 (PST)
-Received: from localhost.localdomain ([182.226.226.37])
-        by smtp.googlemail.com with ESMTPSA id q4sm10145896pgr.39.2020.12.27.17.46.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Dec 2020 17:46:43 -0800 (PST)
-From:   Bongsu Jeon <bongsu.jeon2@gmail.com>
-X-Google-Original-From: Bongsu Jeon
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfc@lists.01.org, Bongsu Jeon <bongsu.jeon@samsung.com>
-Subject: [PATCH net-next] net: nfc: nci: Change the NCI close sequence
-Date:   Mon, 28 Dec 2020 10:46:31 +0900
-Message-Id: <20201228014631.5557-1-bongsu.jeon@samsung.com>
-X-Mailer: git-send-email 2.17.1
+        Sun, 27 Dec 2020 20:51:35 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1609120275; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=1/ATFb4h/mKgO2ui0Fg3/kyVv/b+xfwzspEHFWWxsa8=;
+ b=oEvqU/3bGuB2Dh5xlUCf7RSkWsq9LZebSJCVUgz6nxL2d8wYuB1Z3qD3hnB8WdQAgOcoBtbt
+ w4zHAZ6QIeevKfgX4i1GNNas951T6lCe+GEg4YUDrIcT/j4E08cJX4Zf70GOs9r6E82ZAyYw
+ 6SQdVto0qIbNrkjer1eHinIwpvU=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5fe939e8120d248bb5a3b892 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 28 Dec 2020 01:50:32
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 92BB7C43461; Mon, 28 Dec 2020 01:50:31 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 44C15C433CA;
+        Mon, 28 Dec 2020 01:50:30 +0000 (UTC)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 28 Dec 2020 09:50:30 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bean Huo <huobean@gmail.com>
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rjw@rjwysocki.net
+Subject: Re: [PATCH v2 2/3] scsi: ufs: Add handling of the return value of
+ pm_runtime_get_sync()
+In-Reply-To: <20201224172010.10701-3-huobean@gmail.com>
+References: <20201224172010.10701-1-huobean@gmail.com>
+ <20201224172010.10701-3-huobean@gmail.com>
+Message-ID: <88069c938a06b06f89cc4662cef3c1be@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bongsu Jeon <bongsu.jeon@samsung.com>
+On 2020-12-25 01:20, Bean Huo wrote:
+> From: Bean Huo <beanhuo@micron.com>
+> 
+> The race issue may exist between UFS access in UFS sysfs context and 
+> UFS
+> shutdown, thus will cause pm_runtime_get_sync() resume failure.
 
-Change the NCI close sequence because the NCI Command timer should be
-deleted after flushing the NCI command work queue.
+Are you trying to fix the race condition by adding these checks or just
+adding these checks in case pm_runtime_get_sync() fails?
 
-Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
----
- net/nfc/nci/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Can Guo.
 
-diff --git a/net/nfc/nci/core.c b/net/nfc/nci/core.c
-index e64727e1a72f..79bebf4b0796 100644
---- a/net/nfc/nci/core.c
-+++ b/net/nfc/nci/core.c
-@@ -579,11 +579,11 @@ static int nci_close_device(struct nci_dev *ndev)
- 
- 	clear_bit(NCI_INIT, &ndev->flags);
- 
--	del_timer_sync(&ndev->cmd_timer);
--
- 	/* Flush cmd wq */
- 	flush_workqueue(ndev->cmd_wq);
- 
-+	del_timer_sync(&ndev->cmd_timer);
-+
- 	/* Clear flags */
- 	ndev->flags = 0;
- 
--- 
-2.17.1
-
+> Add handling of the return value of pm_runtime_get_sync(). Let it 
+> return
+> in case pm_runtime_get_sync() resume failed.
+> 
+> Signed-off-by: Bean Huo <beanhuo@micron.com>
+> ---
+>  drivers/scsi/ufs/ufs-sysfs.c | 38 ++++++++++++++++++++++++++++++------
+>  1 file changed, 32 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufs-sysfs.c 
+> b/drivers/scsi/ufs/ufs-sysfs.c
+> index 0e1438485133..8e5e36e01bee 100644
+> --- a/drivers/scsi/ufs/ufs-sysfs.c
+> +++ b/drivers/scsi/ufs/ufs-sysfs.c
+> @@ -154,12 +154,17 @@ static ssize_t auto_hibern8_show(struct device 
+> *dev,
+>  				 struct device_attribute *attr, char *buf)
+>  {
+>  	u32 ahit;
+> +	int ret;
+>  	struct ufs_hba *hba = dev_get_drvdata(dev);
+> 
+>  	if (!ufshcd_is_auto_hibern8_supported(hba))
+>  		return -EOPNOTSUPP;
+> 
+> -	pm_runtime_get_sync(hba->dev);
+> +	ret = pm_runtime_get_sync(hba->dev);
+> +	if (ret < 0) {
+> +		pm_runtime_put_noidle(hba->dev);
+> +		return ret;
+> +	}
+>  	ufshcd_hold(hba, false);
+>  	ahit = ufshcd_readl(hba, REG_AUTO_HIBERNATE_IDLE_TIMER);
+>  	ufshcd_release(hba);
+> @@ -225,7 +230,12 @@ static ssize_t ufs_sysfs_read_desc_param(struct
+> ufs_hba *hba,
+>  	if (param_size > 8)
+>  		return -EINVAL;
+> 
+> -	pm_runtime_get_sync(hba->dev);
+> +	ret = pm_runtime_get_sync(hba->dev);
+> +	if (ret < 0) {
+> +		pm_runtime_put_noidle(hba->dev);
+> +		return ret;
+> +	}
+> +
+>  	ret = ufshcd_read_desc_param(hba, desc_id, desc_index,
+>  				param_offset, desc_buf, param_size);
+>  	pm_runtime_put_sync(hba->dev);
+> @@ -594,7 +604,11 @@ static ssize_t _name##_show(struct device 
+> *dev,				\
+>  	desc_buf = kzalloc(QUERY_DESC_MAX_SIZE, GFP_ATOMIC);		\
+>  	if (!desc_buf)                                                  \
+>  		return -ENOMEM;                                         \
+> -	pm_runtime_get_sync(hba->dev);					\
+> +	ret = pm_runtime_get_sync(hba->dev);				\
+> +	if (ret < 0) {							\
+> +		pm_runtime_put_noidle(hba->dev);			\
+> +		return ret;						\
+> +	}								\
+>  	ret = ufshcd_query_descriptor_retry(hba,			\
+>  		UPIU_QUERY_OPCODE_READ_DESC, QUERY_DESC_IDN_DEVICE,	\
+>  		0, 0, desc_buf, &desc_len);				\
+> @@ -653,7 +667,11 @@ static ssize_t _name##_show(struct device 
+> *dev,				\
+>  	struct ufs_hba *hba = dev_get_drvdata(dev);			\
+>  	if (ufshcd_is_wb_flags(QUERY_FLAG_IDN##_uname))			\
+>  		index = ufshcd_wb_get_query_index(hba);			\
+> -	pm_runtime_get_sync(hba->dev);					\
+> +	ret = pm_runtime_get_sync(hba->dev);				\
+> +	if (ret < 0) {							\
+> +		pm_runtime_put_noidle(hba->dev);			\
+> +		return ret;						\
+> +	}								\
+>  	ret = ufshcd_query_flag(hba, UPIU_QUERY_OPCODE_READ_FLAG,	\
+>  		QUERY_FLAG_IDN##_uname, index, &flag);			\
+>  	pm_runtime_put_sync(hba->dev);					\
+> @@ -711,7 +729,11 @@ static ssize_t _name##_show(struct device 
+> *dev,				\
+>  	u8 index = 0;							\
+>  	if (ufshcd_is_wb_attrs(QUERY_ATTR_IDN##_uname))			\
+>  		index = ufshcd_wb_get_query_index(hba);			\
+> -	pm_runtime_get_sync(hba->dev);					\
+> +	ret = pm_runtime_get_sync(hba->dev);				\
+> +	if (ret < 0) {							\
+> +		pm_runtime_put_noidle(hba->dev);			\
+> +		return ret;						\
+> +	}								\
+>  	ret = ufshcd_query_attr(hba, UPIU_QUERY_OPCODE_READ_ATTR,	\
+>  		QUERY_ATTR_IDN##_uname, index, 0, &value);		\
+>  	pm_runtime_put_sync(hba->dev);					\
+> @@ -850,7 +872,11 @@ static ssize_t
+> dyn_cap_needed_attribute_show(struct device *dev,
+>  	u8 lun = ufshcd_scsi_to_upiu_lun(sdev->lun);
+>  	int ret;
+> 
+> -	pm_runtime_get_sync(hba->dev);
+> +	ret = pm_runtime_get_sync(hba->dev);
+> +	if (ret < 0) {
+> +		pm_runtime_put_noidle(hba->dev);
+> +		return ret;
+> +	}
+>  	ret = ufshcd_query_attr(hba, UPIU_QUERY_OPCODE_READ_ATTR,
+>  		QUERY_ATTR_IDN_DYN_CAP_NEEDED, lun, 0, &value);
+>  	pm_runtime_put_sync(hba->dev);
