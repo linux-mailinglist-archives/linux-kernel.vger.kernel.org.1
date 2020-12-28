@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C9DB2E4353
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:36:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FBFE2E3B96
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:53:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408705AbgL1Pf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:35:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52842 "EHLO mail.kernel.org"
+        id S2407004AbgL1Nvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:51:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405630AbgL1NvR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:51:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD7FB206D4;
-        Mon, 28 Dec 2020 13:51:01 +0000 (UTC)
+        id S2406976AbgL1Nvp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:51:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90BDD2072C;
+        Mon, 28 Dec 2020 13:51:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163462;
-        bh=Q7iuGwhXio1TWt9u6d1V9bWObd4jcJvFwHvZOEyNLO8=;
+        s=korg; t=1609163465;
+        bh=ZnULBoh5qmZPHWWE9q2VxdVQt5TjHmDwwe8aLxDIELM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UUPACSBpNlxLWKmMd18veL/bxWuuPE3tO8GGghF738xcfvnBwwZRsUgxqLZjmYyQP
-         QvK+PDJW/m958mO5q0qPX/4E1YlWSKkZEC6TVa4qu4zT+UP2v72LP2c1tsvcvBGe6s
-         jD6JZtB+Ai+v55CvkXpPFmX/QwXYSHWUv/XXvwLA=
+        b=njH5qYtdr/c+siwHn9LXpuALzstHUkAketjwse7aRsU1i++o16z029WbeXMwqv9ng
+         Jl2m8NBFEa/O1YNowflgI6JhBSctv7M2EqOap+nTcxKTk4fNWcIhLOvUFwU0z2qNhX
+         kkc3U7TF1CVkswdHgegGOPC8fLTuNBWKhzXM50Dk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        =?UTF-8?q?Vincent=20Stehl=C3=A9?= <vincent.stehle@laposte.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
+        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
+        Dan Williams <dan.j.williams@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 294/453] net: korina: fix return value
-Date:   Mon, 28 Dec 2020 13:48:50 +0100
-Message-Id: <20201228124951.351324312@linuxfoundation.org>
+Subject: [PATCH 5.4 295/453] libnvdimm/label: Return -ENXIO for no slot in __blk_label_update
+Date:   Mon, 28 Dec 2020 13:48:51 +0100
+Message-Id: <20201228124951.399694435@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
 References: <20201228124937.240114599@linuxfoundation.org>
@@ -41,38 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Stehlé <vincent.stehle@laposte.net>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit 7eb000bdbe7c7da811ef51942b356f6e819b13ba ]
+[ Upstream commit 4c46764733c85b82c07e9559b39da4d00a7dd659 ]
 
-The ndo_start_xmit() method must not attempt to free the skb to transmit
-when returning NETDEV_TX_BUSY. Therefore, make sure the
-korina_send_packet() function returns NETDEV_TX_OK when it frees a packet.
+Forget to set error code when nd_label_alloc_slot failed, and we
+add it to avoid overwritten error code.
 
-Fixes: ef11291bcd5f ("Add support the Korina (IDT RC32434) Ethernet MAC")
-Suggested-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Vincent Stehlé <vincent.stehle@laposte.net>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Link: https://lore.kernel.org/r/20201214220952.19935-1-vincent.stehle@laposte.net
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 0ba1c634892b ("libnvdimm: write blk label set")
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Link: https://lore.kernel.org/r/20201205115056.2076523-1-zhangqilong3@huawei.com
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/korina.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/nvdimm/label.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/korina.c b/drivers/net/ethernet/korina.c
-index 993f495e2bf7b..9f804e2aba359 100644
---- a/drivers/net/ethernet/korina.c
-+++ b/drivers/net/ethernet/korina.c
-@@ -219,7 +219,7 @@ static int korina_send_packet(struct sk_buff *skb, struct net_device *dev)
- 			dev_kfree_skb_any(skb);
- 			spin_unlock_irqrestore(&lp->lock, flags);
+diff --git a/drivers/nvdimm/label.c b/drivers/nvdimm/label.c
+index 47a4828b8b310..05c1f186a6be8 100644
+--- a/drivers/nvdimm/label.c
++++ b/drivers/nvdimm/label.c
+@@ -999,8 +999,10 @@ static int __blk_label_update(struct nd_region *nd_region,
+ 		if (is_old_resource(res, old_res_list, old_num_resources))
+ 			continue; /* carry-over */
+ 		slot = nd_label_alloc_slot(ndd);
+-		if (slot == UINT_MAX)
++		if (slot == UINT_MAX) {
++			rc = -ENXIO;
+ 			goto abort;
++		}
+ 		dev_dbg(ndd->dev, "allocated: %d\n", slot);
  
--			return NETDEV_TX_BUSY;
-+			return NETDEV_TX_OK;
- 		}
- 	}
- 
+ 		nd_label = to_label(ndd, slot);
 -- 
 2.27.0
 
