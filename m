@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB6082E68A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:40:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E62A22E6737
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:22:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441167AbgL1QjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:39:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57558 "EHLO mail.kernel.org"
+        id S2633190AbgL1QW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:22:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729731AbgL1NBK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:01:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81922208B6;
-        Mon, 28 Dec 2020 13:00:29 +0000 (UTC)
+        id S1731977AbgL1NMM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:12:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DE9D22AAA;
+        Mon, 28 Dec 2020 13:11:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160430;
-        bh=JuwKukq8lgf5WbumW5sYzDx3og/QUFn4dWKuiTmMJN8=;
+        s=korg; t=1609161091;
+        bh=JMp0wial69jrL6aFyW+zOQgg+WkIMrPu8HjSfNA2Cf4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Pkl2IlYywPh0jb56wngpUp8tMx0EKVaRWFbWKGpypp2y4X1pv6qmq6ilS+jLJ9dGR
-         6DgqTu3lPTvx6nCLgXO2mUlfcdEhBBS1Le1QXYLe41uKSr+iosS4c6rZozcH4cVYWh
-         /0enF88ZjQ48GJ+i6HE6OKxKP7BhKh8Pz4zE3/ic=
+        b=xitt4bC2H7GHOWvw7IA0TU+0K2pMVQOOMPnJ5F5FEQtuBqDe1YoPYUc9ByWgcgSiR
+         qvkoKPsUFqG4OgM4S/vkaMkbX7tQDtlWWVzJ2Z2ZirWFK7l5xEWA7SNyDuv/SqmsC+
+         9mMWuqeW/IL2O1xzJdq8OC4ddyLcKm3cTW5WooBs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+1e46a0864c1a6e9bd3d8@syzkaller.appspotmail.com,
-        "Dae R. Jeong" <dae.r.jeong@kaist.ac.kr>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH 4.9 048/175] md: fix a warning caused by a race between concurrent md_ioctl()s
-Date:   Mon, 28 Dec 2020 13:48:21 +0100
-Message-Id: <20201228124855.584925250@linuxfoundation.org>
+        stable@vger.kernel.org, David Jander <david@protonic.nl>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 097/242] Input: ads7846 - fix race that causes missing releases
+Date:   Mon, 28 Dec 2020 13:48:22 +0100
+Message-Id: <20201228124909.464919583@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,75 +41,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dae R. Jeong <dae.r.jeong@kaist.ac.kr>
+From: David Jander <david@protonic.nl>
 
-commit c731b84b51bf7fe83448bea8f56a6d55006b0615 upstream.
+[ Upstream commit e52cd628a03f72a547dbf90ccb703ee64800504a ]
 
-Syzkaller reports a warning as belows.
-WARNING: CPU: 0 PID: 9647 at drivers/md/md.c:7169
-...
-Call Trace:
-...
-RIP: 0010:md_ioctl+0x4017/0x5980 drivers/md/md.c:7169
-RSP: 0018:ffff888096027950 EFLAGS: 00010293
-RAX: ffff88809322c380 RBX: 0000000000000932 RCX: ffffffff84e266f2
-RDX: 0000000000000000 RSI: ffffffff84e299f7 RDI: 0000000000000007
-RBP: ffff888096027bc0 R08: ffff88809322c380 R09: ffffed101341a482
-R10: ffff888096027940 R11: ffff88809a0d240f R12: 0000000000000932
-R13: ffff8880a2c14100 R14: ffff88809a0d2268 R15: ffff88809a0d2408
- __blkdev_driver_ioctl block/ioctl.c:304 [inline]
- blkdev_ioctl+0xece/0x1c10 block/ioctl.c:606
- block_ioctl+0xee/0x130 fs/block_dev.c:1930
- vfs_ioctl fs/ioctl.c:46 [inline]
- file_ioctl fs/ioctl.c:509 [inline]
- do_vfs_ioctl+0xd5f/0x1380 fs/ioctl.c:696
- ksys_ioctl+0xab/0xd0 fs/ioctl.c:713
- __do_sys_ioctl fs/ioctl.c:720 [inline]
- __se_sys_ioctl fs/ioctl.c:718 [inline]
- __x64_sys_ioctl+0x73/0xb0 fs/ioctl.c:718
- do_syscall_64+0xfd/0x680 arch/x86/entry/common.c:301
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
+If touchscreen is released while busy reading HWMON device, the release
+can be missed. The IRQ thread is not started because no touch is active
+and BTN_TOUCH release event is never sent.
 
-This is caused by a race between two concurrenct md_ioctl()s closing
-the array.
-CPU1 (md_ioctl())                   CPU2 (md_ioctl())
-------                              ------
-set_bit(MD_CLOSING, &mddev->flags);
-did_set_md_closing = true;
-                                    WARN_ON_ONCE(test_bit(MD_CLOSING,
-                                            &mddev->flags));
-if(did_set_md_closing)
-    clear_bit(MD_CLOSING, &mddev->flags);
-
-Fix the warning by returning immediately if the MD_CLOSING bit is set
-in &mddev->flags which indicates that the array is being closed.
-
-Fixes: 065e519e71b2 ("md: MD_CLOSING needs to be cleared after called md_set_readonly or do_md_stop")
-Reported-by: syzbot+1e46a0864c1a6e9bd3d8@syzkaller.appspotmail.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Dae R. Jeong <dae.r.jeong@kaist.ac.kr>
-Signed-off-by: Song Liu <songliubraving@fb.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: f5a28a7d4858f94a ("Input: ads7846 - avoid pen up/down when reading hwmon")
+Co-developed-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Signed-off-by: David Jander <david@protonic.nl>
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Link: https://lore.kernel.org/r/20201027105416.18773-1-o.rempel@pengutronix.de
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/md.c |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/input/touchscreen/ads7846.c | 44 +++++++++++++++++------------
+ 1 file changed, 26 insertions(+), 18 deletions(-)
 
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -6857,8 +6857,11 @@ static int md_ioctl(struct block_device
- 			err = -EBUSY;
- 			goto out;
- 		}
--		WARN_ON_ONCE(test_bit(MD_CLOSING, &mddev->flags));
--		set_bit(MD_CLOSING, &mddev->flags);
-+		if (test_and_set_bit(MD_CLOSING, &mddev->flags)) {
-+			mutex_unlock(&mddev->open_mutex);
-+			err = -EBUSY;
-+			goto out;
-+		}
- 		did_set_md_closing = true;
- 		mutex_unlock(&mddev->open_mutex);
- 		sync_blockdev(bdev);
+diff --git a/drivers/input/touchscreen/ads7846.c b/drivers/input/touchscreen/ads7846.c
+index a2f45aefce08a..0fbad337e45a3 100644
+--- a/drivers/input/touchscreen/ads7846.c
++++ b/drivers/input/touchscreen/ads7846.c
+@@ -199,6 +199,26 @@ struct ads7846 {
+ #define	REF_ON	(READ_12BIT_DFR(x, 1, 1))
+ #define	REF_OFF	(READ_12BIT_DFR(y, 0, 0))
+ 
++static int get_pendown_state(struct ads7846 *ts)
++{
++	if (ts->get_pendown_state)
++		return ts->get_pendown_state();
++
++	return !gpio_get_value(ts->gpio_pendown);
++}
++
++static void ads7846_report_pen_up(struct ads7846 *ts)
++{
++	struct input_dev *input = ts->input;
++
++	input_report_key(input, BTN_TOUCH, 0);
++	input_report_abs(input, ABS_PRESSURE, 0);
++	input_sync(input);
++
++	ts->pendown = false;
++	dev_vdbg(&ts->spi->dev, "UP\n");
++}
++
+ /* Must be called with ts->lock held */
+ static void ads7846_stop(struct ads7846 *ts)
+ {
+@@ -215,6 +235,10 @@ static void ads7846_stop(struct ads7846 *ts)
+ static void ads7846_restart(struct ads7846 *ts)
+ {
+ 	if (!ts->disabled && !ts->suspended) {
++		/* Check if pen was released since last stop */
++		if (ts->pendown && !get_pendown_state(ts))
++			ads7846_report_pen_up(ts);
++
+ 		/* Tell IRQ thread that it may poll the device. */
+ 		ts->stopped = false;
+ 		mb();
+@@ -605,14 +629,6 @@ static const struct attribute_group ads784x_attr_group = {
+ 
+ /*--------------------------------------------------------------------------*/
+ 
+-static int get_pendown_state(struct ads7846 *ts)
+-{
+-	if (ts->get_pendown_state)
+-		return ts->get_pendown_state();
+-
+-	return !gpio_get_value(ts->gpio_pendown);
+-}
+-
+ static void null_wait_for_sync(void)
+ {
+ }
+@@ -871,16 +887,8 @@ static irqreturn_t ads7846_irq(int irq, void *handle)
+ 				   msecs_to_jiffies(TS_POLL_PERIOD));
+ 	}
+ 
+-	if (ts->pendown && !ts->stopped) {
+-		struct input_dev *input = ts->input;
+-
+-		input_report_key(input, BTN_TOUCH, 0);
+-		input_report_abs(input, ABS_PRESSURE, 0);
+-		input_sync(input);
+-
+-		ts->pendown = false;
+-		dev_vdbg(&ts->spi->dev, "UP\n");
+-	}
++	if (ts->pendown && !ts->stopped)
++		ads7846_report_pen_up(ts);
+ 
+ 	return IRQ_HANDLED;
+ }
+-- 
+2.27.0
+
 
 
