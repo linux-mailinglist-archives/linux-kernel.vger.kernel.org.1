@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 299472E38D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:16:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A74C92E3FB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:44:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732789AbgL1NPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:15:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44056 "EHLO mail.kernel.org"
+        id S2506394AbgL1Ono (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:43:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34740 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732760AbgL1NPq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:15:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C94321D94;
-        Mon, 28 Dec 2020 13:15:05 +0000 (UTC)
+        id S2503892AbgL1O0s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:26:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 61C7F22AEC;
+        Mon, 28 Dec 2020 14:26:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161306;
-        bh=+Cb/wO9jXs+HL2Z43UiRUVoYTUbfbptfW21HF6Y2sZk=;
+        s=korg; t=1609165567;
+        bh=f9n92v3ennDuws7EOTB+m0XzhxI8hwSU2vpCCgSXu6M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lOXweLlrY8aBKdA2EFu7nvZP+sv3kH+zNuaKdiQZhl5Z5uQJhuX8pL8fy5lQEFbOy
-         3pyHJW3x7ffpPJ9Y4ZfzwuTuEyiKVdu4oAC1BIeZSQCsJGrSf0wZ2Bw33Qh6I0HUbh
-         0lc/zA1pZqa4b1ffbUUkTev8K/I3xJszEzgKwMOs=
+        b=GflqbkiSAOBDBYQQ2FFeRxa833wbDHQVDBgQ/DZWXhqpvfb/l+qRsMmv6qCV7uYI3
+         n3S8tQRi8dFVcJkuti6dQtGnRy0WptlvSY+7/kOqAVjilIlByPlR0Q0OR2YONQwqFv
+         rdx7aSsG334vcBKXATkEXeAu2VcriNo+Lkj0jb0k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 140/242] cpufreq: mediatek: Add missing MODULE_DEVICE_TABLE
+        Amadej Kastelic <amadejkastelic7@gmail.com>,
+        Emilio Moretti <emilio.moretti@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.10 547/717] ALSA: usb-audio: Add VID to support native DSD reproduction on FiiO devices
 Date:   Mon, 28 Dec 2020 13:49:05 +0100
-Message-Id: <20201228124911.593936418@linuxfoundation.org>
+Message-Id: <20201228125047.148431834@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +41,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Amadej Kastelic <amadejkastelic7@gmail.com>
 
-[ Upstream commit af6eca06501118af3e2ad46eee8edab20624b74e ]
+commit 725124d10d00b2f56bb5bd08b431cc74ab3b3ace upstream.
 
-This patch adds missing MODULE_DEVICE_TABLE definition which generates
-correct modalias for automatic loading of this cpufreq driver when it is
-compiled as an external module.
+Add VID to support native DSD reproduction on FiiO devices.
 
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Fixes: 501c574f4e3a5 ("cpufreq: mediatek: Add support of cpufreq to MT2701/MT7623 SoC")
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Tested-by: Amadej Kastelic <amadejkastelic7@gmail.com>
+Signed-off-by: Emilio Moretti <emilio.moretti@gmail.com>
+Signed-off-by: Amadej Kastelic <amadejkastelic7@gmail.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/X9j7wdXSr4XyK7Bd@ryzen.localdomain
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/cpufreq/mediatek-cpufreq.c | 1 +
+ sound/usb/quirks.c |    1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/cpufreq/mediatek-cpufreq.c b/drivers/cpufreq/mediatek-cpufreq.c
-index 18c4bd9a5c656..993cd461e34c1 100644
---- a/drivers/cpufreq/mediatek-cpufreq.c
-+++ b/drivers/cpufreq/mediatek-cpufreq.c
-@@ -582,6 +582,7 @@ static const struct of_device_id mtk_cpufreq_machines[] __initconst = {
- 
- 	{ }
- };
-+MODULE_DEVICE_TABLE(of, mtk_cpufreq_machines);
- 
- static int __init mtk_cpufreq_driver_init(void)
- {
--- 
-2.27.0
-
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1799,6 +1799,7 @@ u64 snd_usb_interface_dsd_format_quirks(
+ 	case 0x25ce:  /* Mytek devices */
+ 	case 0x278b:  /* Rotel? */
+ 	case 0x292b:  /* Gustard/Ess based devices */
++	case 0x2972:  /* FiiO devices */
+ 	case 0x2ab6:  /* T+A devices */
+ 	case 0x3353:  /* Khadas devices */
+ 	case 0x3842:  /* EVGA */
 
 
