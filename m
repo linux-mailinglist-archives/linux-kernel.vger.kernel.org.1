@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C08EF2E3839
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:09:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A47962E3901
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:19:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730772AbgL1NHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:07:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33858 "EHLO mail.kernel.org"
+        id S1731587AbgL1NRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:17:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45380 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730928AbgL1NGS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:06:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D13A22B37;
-        Mon, 28 Dec 2020 13:06:02 +0000 (UTC)
+        id S1731549AbgL1NRZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:17:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A1642076D;
+        Mon, 28 Dec 2020 13:17:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160763;
-        bh=HY46YxwB5HXsh0BRI/dtmz2jSvT1qJ0lXV0bFYH0z7Q=;
+        s=korg; t=1609161429;
+        bh=HAaUaajR84gIA9vDyPTHnXJOC9zOSbX8JjPBxpf8Y+o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Dyc00IjoHb7dzUIXWPoux/8yk966YpaohQs56DFTmDcz5nV6CtoIe+1qR6wYll8v0
-         3jbqTAZxW72ITnYU43BavbyVcLIJcRBN66N9bNqWCqWFg+DZ00xqjTreWQoYZqlv6y
-         V1IW9m3MAyDhWlqvBJgWA5Wcs84dSoCSHMm0M6Ro=
+        b=yhEkNwLbc9YTfbiAwNTFx2lnJun+yhxcgPddkkhKskC3GTuRcqa2cBW2PhMnDxFAt
+         O4U45UEACQAiXO8WTajHXP+NK31yi2DnHa/OPwV0oM/3zCOWa1TK67483kVVSV9+7+
+         6Kk54V1b6e/duNFrm99QbgCaz9G+qEbldE5le5SM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.9 163/175] spi: davinci: Fix use-after-free on unbind
+        stable@vger.kernel.org, Dan Sneddon <dan.sneddon@microchip.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Cristian Birsan <cristian.birsan@microchip.com>
+Subject: [PATCH 4.14 211/242] ARM: dts: at91: sama5d2: fix CAN message ram offset and size
 Date:   Mon, 28 Dec 2020 13:50:16 +0100
-Message-Id: <20201228124901.145037587@linuxfoundation.org>
+Message-Id: <20201228124915.056617198@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +41,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-commit 373afef350a93519b4b8d636b0895da8650b714b upstream.
+commit 85b8350ae99d1300eb6dc072459246c2649a8e50 upstream.
 
-davinci_spi_remove() accesses the driver's private data after it's been
-freed with spi_master_put().
+CAN0 and CAN1 instances share the same message ram configured
+at 0x210000 on sama5d2 Linux systems.
+According to current configuration of CAN0, we need 0x1c00 bytes
+so that the CAN1 don't overlap its message ram:
+64 x RX FIFO0 elements => 64 x 72 bytes
+32 x TXE (TX Event FIFO) elements => 32 x 8 bytes
+32 x TXB (TX Buffer) elements => 32 x 72 bytes
+So a total of 7168 bytes (0x1C00).
 
-Fix by moving the spi_master_put() to the end of the function.
+Fix offset to match this needed size.
+Make the CAN0 message ram ioremap match exactly this size so that is
+easily understandable.  Adapt CAN1 size accordingly.
 
-Fixes: fe5fd2540947 ("spi: davinci: Use dma_request_chan() for requesting DMA channel")
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: <stable@vger.kernel.org> # v4.7+
-Link: https://lore.kernel.org/r/412f7eb1cf8990e0a3a2153f4c577298deab623e.1607286887.git.lukas@wunner.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: bc6d5d7666b7 ("ARM: dts: at91: sama5d2: add m_can nodes")
+Reported-by: Dan Sneddon <dan.sneddon@microchip.com>
+Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Tested-by: Cristian Birsan <cristian.birsan@microchip.com>
+Cc: stable@vger.kernel.org # v4.13+
+Link: https://lore.kernel.org/r/20201203091949.9015-1-nicolas.ferre@microchip.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/spi/spi-davinci.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/sama5d2.dtsi |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/spi/spi-davinci.c
-+++ b/drivers/spi/spi-davinci.c
-@@ -1099,13 +1099,13 @@ static int davinci_spi_remove(struct pla
- 	spi_bitbang_stop(&dspi->bitbang);
+--- a/arch/arm/boot/dts/sama5d2.dtsi
++++ b/arch/arm/boot/dts/sama5d2.dtsi
+@@ -1294,7 +1294,7 @@
  
- 	clk_disable_unprepare(dspi->clk);
--	spi_master_put(master);
+ 			can0: can@f8054000 {
+ 				compatible = "bosch,m_can";
+-				reg = <0xf8054000 0x4000>, <0x210000 0x4000>;
++				reg = <0xf8054000 0x4000>, <0x210000 0x1c00>;
+ 				reg-names = "m_can", "message_ram";
+ 				interrupts = <56 IRQ_TYPE_LEVEL_HIGH 7>,
+ 					     <64 IRQ_TYPE_LEVEL_HIGH 7>;
+@@ -1485,7 +1485,7 @@
  
- 	if (dspi->dma_rx) {
- 		dma_release_channel(dspi->dma_rx);
- 		dma_release_channel(dspi->dma_tx);
- 	}
- 
-+	spi_master_put(master);
- 	return 0;
- }
+ 			can1: can@fc050000 {
+ 				compatible = "bosch,m_can";
+-				reg = <0xfc050000 0x4000>, <0x210000 0x4000>;
++				reg = <0xfc050000 0x4000>, <0x210000 0x3800>;
+ 				reg-names = "m_can", "message_ram";
+ 				interrupts = <57 IRQ_TYPE_LEVEL_HIGH 7>,
+ 					     <65 IRQ_TYPE_LEVEL_HIGH 7>;
+@@ -1495,7 +1495,7 @@
+ 				assigned-clocks = <&can1_gclk>;
+ 				assigned-clock-parents = <&utmi>;
+ 				assigned-clock-rates = <40000000>;
+-				bosch,mram-cfg = <0x1100 0 0 64 0 0 32 32>;
++				bosch,mram-cfg = <0x1c00 0 0 64 0 0 32 32>;
+ 				status = "disabled";
+ 			};
  
 
 
