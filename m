@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 560E92E3B07
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:46:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D89072E3D95
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:18:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404754AbgL1No7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:44:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45262 "EHLO mail.kernel.org"
+        id S2391800AbgL1OR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:17:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404597AbgL1Nog (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:44:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C75A420715;
-        Mon, 28 Dec 2020 13:43:54 +0000 (UTC)
+        id S2440203AbgL1OR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:17:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BBD222063A;
+        Mon, 28 Dec 2020 14:17:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163035;
-        bh=dfkWJpZfplISCTJBEALmGj372CmMoqnsoVwIYcrFsUs=;
+        s=korg; t=1609165030;
+        bh=E0AtVvM9J6+qU1oA0xg0oXB1ALa+lGHAU7dIFhTwAk0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0uj3ivVF1TIwEsrZoWxr7wIJ+c77pXpRl8rRPoFuCFguQ8KihNjnpDH9vEiMbSivx
-         gbNRsEqKa7gRYLB26Lc9hZBUZklZYw5H2XcFBf8DIu1kTsnmheSUPvFkxxrqFf/4jt
-         gm0jvMqz5CKlZdtjxHGEsbFb731uh/jdoWWD9Tjg=
+        b=ABHfQBxbTTUrjs65STmm57NKf5DHn7iI9MtzkxLF8fKSUXVMJYMGxfKH1kO59q+ad
+         UftyrJmsM75mDDYtyXt4zy7pKtgnTHk/CkEzPYrBQqnAm5Iypz32qDyflRhs3Py4UY
+         ydGJBBqeTGYRSRCUNz4d9ohVOzETs0qxwTX9AEjM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Luke Nelson <luke.r.nels@gmail.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 147/453] selftests/bpf: Fix broken riscv build
-Date:   Mon, 28 Dec 2020 13:46:23 +0100
-Message-Id: <20201228124944.276123975@linuxfoundation.org>
+Subject: [PATCH 5.10 386/717] s390/cio: fix use-after-free in ccw_device_destroy_console
+Date:   Mon, 28 Dec 2020 13:46:24 +0100
+Message-Id: <20201228125039.498060061@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,43 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@gmail.com>
+From: Qinglang Miao <miaoqinglang@huawei.com>
 
-[ Upstream commit 6016df8fe874e1cf36f6357d71438b384198ce06 ]
+[ Upstream commit 14d4c4fa46eeaa3922e8e1c4aa727eb0a1412804 ]
 
-The selftests/bpf Makefile includes system include directories from
-the host, when building BPF programs. On RISC-V glibc requires that
-__riscv_xlen is defined. This is not the case for "clang -target bpf",
-which messes up __WORDSIZE (errno.h -> ... -> wordsize.h) and breaks
-the build.
+Use of sch->dev reference after the put_device() call could trigger
+the use-after-free bugs.
 
-By explicitly defining __risc_xlen correctly for riscv, we can
-workaround this.
+Fix this by simply adjusting the position of put_device.
 
-Fixes: 167381f3eac0 ("selftests/bpf: Makefile fix "missing" headers on build with -idirafter")
-Signed-off-by: Björn Töpel <bjorn.topel@gmail.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Acked-by: Luke Nelson <luke.r.nels@gmail.com>
-Link: https://lore.kernel.org/bpf/20201118071640.83773-2-bjorn.topel@gmail.com
+Fixes: 37db8985b211 ("s390/cio: add basic protected virtualization support")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Suggested-by: Cornelia Huck <cohuck@redhat.com>
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+Reviewed-by: Vineeth Vijayan <vneethv@linux.ibm.com>
+[vneethv@linux.ibm.com: Slight modification in the commit-message]
+Signed-off-by: Vineeth Vijayan <vneethv@linux.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/Makefile | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/s390/cio/device.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 6889c19a628c2..544bd1028baee 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -144,7 +144,8 @@ endif
- # build would have failed anyways.
- define get_sys_includes
- $(shell $(1) -v -E - </dev/null 2>&1 \
--	| sed -n '/<...> search starts here:/,/End of search list./{ s| \(/.*\)|-idirafter \1|p }')
-+	| sed -n '/<...> search starts here:/,/End of search list./{ s| \(/.*\)|-idirafter \1|p }') \
-+$(shell $(1) -dM -E - </dev/null | grep '#define __riscv_xlen ' | sed 's/#define /-D/' | sed 's/ /=/')
- endef
- CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG))
- BPF_CFLAGS = -I. -I./include/uapi -I../../../include/uapi \
+diff --git a/drivers/s390/cio/device.c b/drivers/s390/cio/device.c
+index b29fe8d50baf2..33280ca181e95 100644
+--- a/drivers/s390/cio/device.c
++++ b/drivers/s390/cio/device.c
+@@ -1664,10 +1664,10 @@ void __init ccw_device_destroy_console(struct ccw_device *cdev)
+ 	struct io_subchannel_private *io_priv = to_io_private(sch);
+ 
+ 	set_io_private(sch, NULL);
+-	put_device(&sch->dev);
+-	put_device(&cdev->dev);
+ 	dma_free_coherent(&sch->dev, sizeof(*io_priv->dma_area),
+ 			  io_priv->dma_area, io_priv->dma_area_dma);
++	put_device(&sch->dev);
++	put_device(&cdev->dev);
+ 	kfree(io_priv);
+ }
+ 
 -- 
 2.27.0
 
