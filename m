@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 623782E3B48
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:49:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C86C2E39AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:27:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405826AbgL1NsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:48:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48892 "EHLO mail.kernel.org"
+        id S2389488AbgL1N03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:26:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405761AbgL1Nrr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:47:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3098C208BA;
-        Mon, 28 Dec 2020 13:47:06 +0000 (UTC)
+        id S2389240AbgL1N0K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:26:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4771920719;
+        Mon, 28 Dec 2020 13:25:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163226;
-        bh=rDa+tRso19nOXqK3oypBBItt/qOeQF0e38L5BfD5xm0=;
+        s=korg; t=1609161929;
+        bh=FMHxA0GgkyOiHtCnpZuU4+vdxmo2u7Z5sjtSLL5hPg8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vEoWyptQlvhw9M0R8ww+tDFWe3w8WrSBDqqm3U6Sb+eTTEq+M04kHW/n9S/fC+YLF
-         5biWSMXV7EWt6d3p90ri3l/WOlba8vmUaSuMMFrBREnNO6h5RO+xt8XjNFQc9BdJaE
-         Ub5WmMWD8iH14qKsFhrnzB22l7mOAI0F3VuamjVI=
+        b=1ZScKSFk8hz2FNhrMZRePjV6QH0xOW2fHWc9OXvFCUhlNb4cGi6z/DteduNRcwJM/
+         rnoJeBY4xnnjZqWvSasKP5Jp+h91SFMgDpadDngA9yRM6v28o+sfUKkYZ833B5V4hy
+         b63ZeBZUfZh31KGibpeOvAfQQWkghI5iqq8O8T4Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christian Eggers <ceggers@arri.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 214/453] iio: hrtimer-trigger: Mark hrtimer to expire in hard interrupt context
+Subject: [PATCH 4.19 131/346] ASoC: wm8998: Fix PM disable depth imbalance on error
 Date:   Mon, 28 Dec 2020 13:47:30 +0100
-Message-Id: <20201228124947.517349703@linuxfoundation.org>
+Message-Id: <20201228124926.121298628@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,53 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lars-Peter Clausen <lars@metafoo.de>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit 0178297c1e6898e2197fe169ef3be723e019b971 ]
+[ Upstream commit 193aa0a043645220d2a2f783ba06ae13d4601078 ]
 
-On PREEMPT_RT enabled kernels unmarked hrtimers are moved into soft
-interrupt expiry mode by default.
+The pm_runtime_enable will increase power disable depth. Thus
+a pairing decrement is needed on the error handling path to
+keep it balanced according to context.
 
-The IIO hrtimer-trigger needs to run in hard interrupt context since it
-will end up calling generic_handle_irq() which has the requirement to run
-in hard interrupt context.
-
-Explicitly specify that the timer needs to run in hard interrupt context by
-using the HRTIMER_MODE_REL_HARD flag.
-
-Fixes: f5c2f0215e36 ("hrtimer: Move unmarked hrtimers to soft interrupt expiry on RT")
-Reported-by: Christian Eggers <ceggers@arri.de>
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Link: https://lore.kernel.org/r/20201117103751.16131-1-lars@metafoo.de
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Fixes: 31833ead95c2c ("ASoC: arizona: Move request of speaker IRQs into bus probe")
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Reviewed-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20201111041326.1257558-4-zhangqilong3@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/trigger/iio-trig-hrtimer.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm8998.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/iio/trigger/iio-trig-hrtimer.c b/drivers/iio/trigger/iio-trig-hrtimer.c
-index a5e670726717f..58c1c30d5612b 100644
---- a/drivers/iio/trigger/iio-trig-hrtimer.c
-+++ b/drivers/iio/trigger/iio-trig-hrtimer.c
-@@ -102,7 +102,7 @@ static int iio_trig_hrtimer_set_state(struct iio_trigger *trig, bool state)
+diff --git a/sound/soc/codecs/wm8998.c b/sound/soc/codecs/wm8998.c
+index 61294c787f274..17dc5780ab686 100644
+--- a/sound/soc/codecs/wm8998.c
++++ b/sound/soc/codecs/wm8998.c
+@@ -1378,7 +1378,7 @@ static int wm8998_probe(struct platform_device *pdev)
  
- 	if (state)
- 		hrtimer_start(&trig_info->timer, trig_info->period,
--			      HRTIMER_MODE_REL);
-+			      HRTIMER_MODE_REL_HARD);
- 	else
- 		hrtimer_cancel(&trig_info->timer);
+ 	ret = arizona_init_spk_irqs(arizona);
+ 	if (ret < 0)
+-		return ret;
++		goto err_pm_disable;
  
-@@ -132,7 +132,7 @@ static struct iio_sw_trigger *iio_trig_hrtimer_probe(const char *name)
- 	trig_info->swt.trigger->ops = &iio_hrtimer_trigger_ops;
- 	trig_info->swt.trigger->dev.groups = iio_hrtimer_attr_groups;
+ 	ret = devm_snd_soc_register_component(&pdev->dev,
+ 					      &soc_component_dev_wm8998,
+@@ -1393,6 +1393,8 @@ static int wm8998_probe(struct platform_device *pdev)
  
--	hrtimer_init(&trig_info->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
-+	hrtimer_init(&trig_info->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_HARD);
- 	trig_info->timer.function = iio_hrtimer_trig_handler;
+ err_spk_irqs:
+ 	arizona_free_spk_irqs(arizona);
++err_pm_disable:
++	pm_runtime_disable(&pdev->dev);
  
- 	trig_info->sampling_frequency = HRTIMER_DEFAULT_SAMPLING_FREQUENCY;
+ 	return ret;
+ }
 -- 
 2.27.0
 
