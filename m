@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D25482E63D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:45:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CECC2E3B1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:46:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2632928AbgL1Pmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:42:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48642 "EHLO mail.kernel.org"
+        id S2404929AbgL1Nps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:45:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405680AbgL1Nrc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:47:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B186206D4;
-        Mon, 28 Dec 2020 13:46:50 +0000 (UTC)
+        id S2404900AbgL1Npl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:45:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BD732072C;
+        Mon, 28 Dec 2020 13:45:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163210;
-        bh=oZHEHga3a4A0j+x16WE6ttuTxmINWbB2O/a7ejfUP8o=;
+        s=korg; t=1609163125;
+        bh=4jSSyZ0r5+PNBCPZq7Ft0Utddr2hanooyBcC/bmj6EU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vLHVYhkwyvZJ3zObKNg0BII7YrFp/MiVpBq/goqw8bpvv2lfs25EVw0dXK2cVj3Vd
-         SCqkKfRn9o5otkq+WXUuGLy3t43zwo3KiczYMXK1X5UIU1Vxn1r+EVeTd3lqOK/zbC
-         C4FA92+lxPOCLN4Kgccnk6JPFEZ7vTAmR8rr+Uss=
+        b=QlVSKDKkqoUtPB7V32Vqyq60kH2srrSr6BBmFY8ETw1x1kg7AeyVuenZfBRG5Oe+f
+         VG4Kn3LZaarqH1PaSnPPG4wROIdEpIPqEAtv5XmMFy8ls60HGIVoTrcW/DdyUU4SBW
+         guoL2H7Yd96K2/PAMR59yxEi5/MZpCYuPxELtAvg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        stable@vger.kernel.org, Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 178/453] slimbus: qcom-ngd-ctrl: Avoid sending power requests without QMI
-Date:   Mon, 28 Dec 2020 13:46:54 +0100
-Message-Id: <20201228124945.765286201@linuxfoundation.org>
+Subject: [PATCH 5.4 179/453] HSI: omap_ssi: Dont jump to free ID in ssi_add_controller()
+Date:   Mon, 28 Dec 2020 13:46:55 +0100
+Message-Id: <20201228124945.814203745@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
 References: <20201228124937.240114599@linuxfoundation.org>
@@ -41,49 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
+From: Jing Xiangfeng <jingxiangfeng@huawei.com>
 
-[ Upstream commit 39014ce6d6028614a46395923a2c92d058b6fa87 ]
+[ Upstream commit 41fff6e19bc8d6d8bca79ea388427c426e72e097 ]
 
-Attempting to send a power request during PM operations, when the QMI
-handle isn't initialized results in a NULL pointer dereference. So check
-if the QMI handle has been initialized before attempting to post the
-power requests.
+In current code, it jumps to ida_simple_remove() when ida_simple_get()
+failes to allocate an ID. Just return to fix it.
 
-Fixes: 917809e2280b ("slimbus: ngd: Add qcom SLIMBus NGD driver")
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20201127102451.17114-7-srinivas.kandagatla@linaro.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 0fae198988b8 ("HSI: omap_ssi: built omap_ssi and omap_ssi_port into one module")
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/slimbus/qcom-ngd-ctrl.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/hsi/controllers/omap_ssi_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
-index ce265bf7de868..b60541c3f72da 100644
---- a/drivers/slimbus/qcom-ngd-ctrl.c
-+++ b/drivers/slimbus/qcom-ngd-ctrl.c
-@@ -1201,6 +1201,9 @@ static int qcom_slim_ngd_runtime_resume(struct device *dev)
- 	struct qcom_slim_ngd_ctrl *ctrl = dev_get_drvdata(dev);
- 	int ret = 0;
+diff --git a/drivers/hsi/controllers/omap_ssi_core.c b/drivers/hsi/controllers/omap_ssi_core.c
+index 4bc4a201f0f6c..2be9c01e175ca 100644
+--- a/drivers/hsi/controllers/omap_ssi_core.c
++++ b/drivers/hsi/controllers/omap_ssi_core.c
+@@ -355,7 +355,7 @@ static int ssi_add_controller(struct hsi_controller *ssi,
  
-+	if (!ctrl->qmi.handle)
-+		return 0;
-+
- 	if (ctrl->state >= QCOM_SLIM_NGD_CTRL_ASLEEP)
- 		ret = qcom_slim_ngd_power_up(ctrl);
- 	if (ret) {
-@@ -1497,6 +1500,9 @@ static int __maybe_unused qcom_slim_ngd_runtime_suspend(struct device *dev)
- 	struct qcom_slim_ngd_ctrl *ctrl = dev_get_drvdata(dev);
- 	int ret = 0;
+ 	err = ida_simple_get(&platform_omap_ssi_ida, 0, 0, GFP_KERNEL);
+ 	if (err < 0)
+-		goto out_err;
++		return err;
+ 	ssi->id = err;
  
-+	if (!ctrl->qmi.handle)
-+		return 0;
-+
- 	ret = qcom_slim_qmi_power_request(ctrl, false);
- 	if (ret && ret != -EBUSY)
- 		dev_info(ctrl->dev, "slim resource not idle:%d\n", ret);
+ 	ssi->owner = THIS_MODULE;
 -- 
 2.27.0
 
