@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5F812E37CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:01:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BCB42E3B6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:51:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729502AbgL1NAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:00:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56742 "EHLO mail.kernel.org"
+        id S2406243AbgL1Nt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:49:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729489AbgL1NAe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:00:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C36A4224D2;
-        Mon, 28 Dec 2020 12:59:53 +0000 (UTC)
+        id S2406216AbgL1Ntu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:49:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 783F52064B;
+        Mon, 28 Dec 2020 13:49:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160394;
-        bh=Eu3WwfxvjsfbZcO5t0tR1Cdq6NyZA4LKnONh3i5U5sc=;
+        s=korg; t=1609163350;
+        bh=8EGLseDchkl6v2bDPaXrx+vIuUkblSXJmmhu5YI6sFA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uOUXYDrSJ+Yc2TB4CorQAfwfCU9LpvlduNYENcxDkFRNU8i5K652CaOJpKT+z1S1M
-         m0pgMmJUUHpBsXMFhOB5QtQiz0SyYUKHPnuewnFOReeNkSnoKnKytbrWyrW8AdHRB+
-         g6+TXXwmBnFHA1Q5Ar+MJv98YTv4fuEIAau1JRNw=
+        b=U6I+Zg9mDUNCQhyBRIQOKCoZ89tD/oLOGSR2FzNh6kC7aD55uugdtIclHTroP/1ON
+         FyvJsxeUCwPCNrf5GrNbywEAFhmnchYMOKq/4n8uX8p210rc1csgipAgyUbKOq6dxJ
+         TWAPj0dpZUavo4fuGvQDwTpEz1Wzd3TGAShms7ck=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        "taehyun.cho" <taehyun.cho@samsung.com>,
-        Will McVicker <willmcvicker@google.com>,
-        Peter Chen <peter.chen@nxp.com>
-Subject: [PATCH 4.9 037/175] USB: gadget: f_acm: add support for SuperSpeed Plus
-Date:   Mon, 28 Dec 2020 13:48:10 +0100
-Message-Id: <20201228124855.043326993@linuxfoundation.org>
+        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 255/453] x86/kprobes: Restore BTF if the single-stepping is cancelled
+Date:   Mon, 28 Dec 2020 13:48:11 +0100
+Message-Id: <20201228124949.498448870@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: taehyun.cho <taehyun.cho@samsung.com>
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-commit 3ee05c20656782387aa9eb010fdb9bb16982ac3f upstream.
+[ Upstream commit 78ff2733ff352175eb7f4418a34654346e1b6cd2 ]
 
-Setup the SuperSpeed Plus descriptors for f_acm.  This allows the gadget
-to work properly without crashing at SuperSpeed rates.
+Fix to restore BTF if single-stepping causes a page fault and
+it is cancelled.
 
-Cc: Felipe Balbi <balbi@kernel.org>
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: taehyun.cho <taehyun.cho@samsung.com>
-Signed-off-by: Will McVicker <willmcvicker@google.com>
-Reviewed-by: Peter Chen <peter.chen@nxp.com>
-Link: https://lore.kernel.org/r/20201127140559.381351-3-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Usually the BTF flag was restored when the single stepping is done
+(in resume_execution()). However, if a page fault happens on the
+single stepping instruction, the fault handler is invoked and
+the single stepping is cancelled. Thus, the BTF flag is not
+restored.
 
+Fixes: 1ecc798c6764 ("x86: debugctlmsr kprobes")
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/160389546985.106936.12727996109376240993.stgit@devnote2
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/function/f_acm.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kernel/kprobes/core.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/drivers/usb/gadget/function/f_acm.c
-+++ b/drivers/usb/gadget/function/f_acm.c
-@@ -687,7 +687,7 @@ acm_bind(struct usb_configuration *c, st
- 	acm_ss_out_desc.bEndpointAddress = acm_fs_out_desc.bEndpointAddress;
+diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+index 62c39baea39e3..5294018535d0c 100644
+--- a/arch/x86/kernel/kprobes/core.c
++++ b/arch/x86/kernel/kprobes/core.c
+@@ -1019,6 +1019,11 @@ int kprobe_fault_handler(struct pt_regs *regs, int trapnr)
+ 		 * So clear it by resetting the current kprobe:
+ 		 */
+ 		regs->flags &= ~X86_EFLAGS_TF;
++		/*
++		 * Since the single step (trap) has been cancelled,
++		 * we need to restore BTF here.
++		 */
++		restore_btf();
  
- 	status = usb_assign_descriptors(f, acm_fs_function, acm_hs_function,
--			acm_ss_function, NULL);
-+			acm_ss_function, acm_ss_function);
- 	if (status)
- 		goto fail;
- 
+ 		/*
+ 		 * If the TF flag was set before the kprobe hit,
+-- 
+2.27.0
+
 
 
