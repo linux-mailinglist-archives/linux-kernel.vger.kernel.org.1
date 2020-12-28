@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BECDF2E3928
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:22:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B78C2E3C15
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:59:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733100AbgL1NTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:19:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48352 "EHLO mail.kernel.org"
+        id S2391617AbgL1N6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:58:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732932AbgL1NTo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:19:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 54EA3207C9;
-        Mon, 28 Dec 2020 13:19:03 +0000 (UTC)
+        id S2391579AbgL1N6O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:58:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 76578207B2;
+        Mon, 28 Dec 2020 13:57:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161543;
-        bh=CP2b5ra7DAz0Q62CS5Q9Smn/aFgXZzFz6sp9jmRjcjE=;
+        s=korg; t=1609163879;
+        bh=rOx0zv4PClnfji+d6QeAD2mvY5IM4oStEk6fOIU/We0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zZWs7iCI5Udu5mmKwpQzaQ38+4nf08POutZTCVFla9oXmAopknMvAog1dJOreLsoN
-         rotoxb5BmQN1+eCbyCwQepcY08H9J5HD/HSgh9vzZEe8ceo/p/zg/8N77B1MVH54fi
-         CnFkNsyLxeyl1kwp7R7WgBwioPXPmWl3MGbSNW58=
+        b=OaHRaZXujfyxfA3if9XnZt/K0kF89KIFI73vIQwQJdlrIoHJ1JPRfFFamSZ5z8mFu
+         Z41u1OcwuVaYZo5vRzXOliTqb54hNmKDj2X0tu7q8IqHbcPVBD+aqjNmNdtevOEr2x
+         1vIm6dblzj+BQISqYiHjTpi7R2Ek8TmoOaK/1AL8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Subject: [PATCH 4.14 241/242] libnvdimm/namespace: Fix reaping of invalidated block-window-namespace labels
+        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
+        Phil Reid <preid@electromag.com.au>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.4 410/453] spi: sc18is602: Dont leak SPI master in probe error path
 Date:   Mon, 28 Dec 2020 13:50:46 +0100
-Message-Id: <20201228124916.554029416@linuxfoundation.org>
+Message-Id: <20201228124956.939750481@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,65 +40,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Williams <dan.j.williams@intel.com>
+From: Lukas Wunner <lukas@wunner.de>
 
-commit 2dd2a1740ee19cd2636d247276cf27bfa434b0e2 upstream.
+commit 5b8c88462d83331dacb48aeaec8388117fef82e0 upstream.
 
-A recent change to ndctl to attempt to reconfigure namespaces in place
-uncovered a label accounting problem in block-window-type namespaces.
-The ndctl "create.sh" test is able to trigger this signature:
+If the call to devm_gpiod_get_optional() fails on probe of the NXP
+SC18IS602/603 SPI driver, the spi_master struct is erroneously not freed.
 
- WARNING: CPU: 34 PID: 9167 at drivers/nvdimm/label.c:1100 __blk_label_update+0x9a3/0xbc0 [libnvdimm]
- [..]
- RIP: 0010:__blk_label_update+0x9a3/0xbc0 [libnvdimm]
- [..]
- Call Trace:
-  uuid_store+0x21b/0x2f0 [libnvdimm]
-  kernfs_fop_write+0xcf/0x1c0
-  vfs_write+0xcc/0x380
-  ksys_write+0x68/0xe0
+Fix by switching over to the new devm_spi_alloc_master() helper.
 
-When allocated capacity for a namespace is renamed (new UUID) the labels
-with the old UUID need to be deleted. The ndctl behavior to always
-destroy namespaces on reconfiguration hid this problem.
-
-The immediate impact of this bug is limited since block-window-type
-namespaces only seem to exist in the specification and not in any
-shipping products. However, the label handling code is being reused for
-other technologies like CXL region labels, so there is a benefit to
-making sure both vertical labels sets (block-window) and horizontal
-label sets (pmem) have a functional reference implementation in
-libnvdimm.
-
-Fixes: c4703ce11c23 ("libnvdimm/namespace: Fix label tracking error")
-Cc: <stable@vger.kernel.org>
-Cc: Vishal Verma <vishal.l.verma@intel.com>
-Cc: Dave Jiang <dave.jiang@intel.com>
-Cc: Ira Weiny <ira.weiny@intel.com>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+Fixes: f99008013e19 ("spi: sc18is602: Add reset control via gpio pin.")
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Cc: <stable@vger.kernel.org> # v4.9+: 5e844cc37a5c: spi: Introduce device-managed SPI controller allocation
+Cc: <stable@vger.kernel.org> # v4.9+
+Cc: Phil Reid <preid@electromag.com.au>
+Link: https://lore.kernel.org/r/d5f715527b894b91d530fe11a86f51b3184a4e1a.1607286887.git.lukas@wunner.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/nvdimm/label.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/spi/spi-sc18is602.c |   13 ++-----------
+ 1 file changed, 2 insertions(+), 11 deletions(-)
 
---- a/drivers/nvdimm/label.c
-+++ b/drivers/nvdimm/label.c
-@@ -852,6 +852,15 @@ static int __blk_label_update(struct nd_
- 		}
- 	}
+--- a/drivers/spi/spi-sc18is602.c
++++ b/drivers/spi/spi-sc18is602.c
+@@ -239,13 +239,12 @@ static int sc18is602_probe(struct i2c_cl
+ 	struct sc18is602_platform_data *pdata = dev_get_platdata(dev);
+ 	struct sc18is602 *hw;
+ 	struct spi_master *master;
+-	int error;
  
-+	/* release slots associated with any invalidated UUIDs */
-+	mutex_lock(&nd_mapping->lock);
-+	list_for_each_entry_safe(label_ent, e, &nd_mapping->labels, list)
-+		if (test_and_clear_bit(ND_LABEL_REAP, &label_ent->flags)) {
-+			reap_victim(nd_mapping, label_ent);
-+			list_move(&label_ent->list, &list);
-+		}
-+	mutex_unlock(&nd_mapping->lock);
-+
- 	/*
- 	 * Find the resource associated with the first label in the set
- 	 * per the v1.2 namespace specification.
+ 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C |
+ 				     I2C_FUNC_SMBUS_WRITE_BYTE_DATA))
+ 		return -EINVAL;
+ 
+-	master = spi_alloc_master(dev, sizeof(struct sc18is602));
++	master = devm_spi_alloc_master(dev, sizeof(struct sc18is602));
+ 	if (!master)
+ 		return -ENOMEM;
+ 
+@@ -299,15 +298,7 @@ static int sc18is602_probe(struct i2c_cl
+ 	master->min_speed_hz = hw->freq / 128;
+ 	master->max_speed_hz = hw->freq / 4;
+ 
+-	error = devm_spi_register_master(dev, master);
+-	if (error)
+-		goto error_reg;
+-
+-	return 0;
+-
+-error_reg:
+-	spi_master_put(master);
+-	return error;
++	return devm_spi_register_master(dev, master);
+ }
+ 
+ static const struct i2c_device_id sc18is602_id[] = {
 
 
