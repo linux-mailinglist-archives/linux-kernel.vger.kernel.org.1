@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01E422E66EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:19:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1997F2E66E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:18:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633043AbgL1QSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:18:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43694 "EHLO mail.kernel.org"
+        id S2440976AbgL1QSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:18:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732693AbgL1NP1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:15:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EA02207CF;
-        Mon, 28 Dec 2020 13:14:46 +0000 (UTC)
+        id S1732703AbgL1NPa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:15:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E018207F7;
+        Mon, 28 Dec 2020 13:14:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161286;
-        bh=US1AXJuyZco8jIPnYDsi6W5nDTiNHFjGMwhYwGdXBUU=;
+        s=korg; t=1609161289;
+        bh=u7CIHf/dDFgrykRtPa391aRQl2kDb3EmGEJwUoVbDjw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lt7sUTWVBgs5hzZkydQjU2XRKy77BFrMrgKcRNT6zQfF6cRNId3XjeA9i8po4b+K7
-         JW7Jy33Ie7spapULFgZ9pXaju18coqdkW2fm7ZEiFGjOzsL3xFlR88CB9co7zYyjmR
-         WK19vS4kKm+YqZdUES34TgE5RyoIPa+KgFtdfivc=
+        b=tfPQbhYmDukgaJD50NMXLZdJOI/u6efbPu9eIFFQJayt4HmV1EEP9Fql7dJ27Pvsh
+         ExHyVSYSPuabEXt2hPil6wcciNFdw/dsKmOM7fxW16kKOox1ch2MVo/guWl9ntxCa6
+         LzMQtQVcgOz3Y1GSZO66HwX1osBKHMLQ4mhPtDhg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Joe Perches <joe@perches.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 164/242] checkpatch: fix unescaped left brace
-Date:   Mon, 28 Dec 2020 13:49:29 +0100
-Message-Id: <20201228124912.772850863@linuxfoundation.org>
+Subject: [PATCH 4.14 165/242] net: bcmgenet: Fix a resource leak in an error handling path in the probe functin
+Date:   Mon, 28 Dec 2020 13:49:30 +0100
+Message-Id: <20201228124912.823025242@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
 References: <20201228124904.654293249@linuxfoundation.org>
@@ -42,40 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dwaipayan Ray <dwaipayanray1@gmail.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 03f4935135b9efeb780b970ba023c201f81cf4e6 ]
+[ Upstream commit 4375ada01963d1ebf733d60d1bb6e5db401e1ac6 ]
 
-There is an unescaped left brace in a regex in OPEN_BRACE check.  This
-throws a runtime error when checkpatch is run with --fix flag and the
-OPEN_BRACE check is executed.
+If the 'register_netdev()' call fails, we must undo a previous
+'bcmgenet_mii_init()' call.
 
-Fix it by escaping the left brace.
-
-Link: https://lkml.kernel.org/r/20201115202928.81955-1-dwaipayanray1@gmail.com
-Fixes: 8d1824780f2f ("checkpatch: add --fix option for a couple OPEN_BRACE misuses")
-Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
-Acked-by: Joe Perches <joe@perches.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 1c1008c793fa ("net: bcmgenet: add main driver file")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Link: https://lore.kernel.org/r/20201212182005.120437-1-christophe.jaillet@wanadoo.fr
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/checkpatch.pl | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/broadcom/genet/bcmgenet.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index d702bdf19eb10..0f24a6f3af995 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -3898,7 +3898,7 @@ sub process {
- 			    $fix) {
- 				fix_delete_line($fixlinenr, $rawline);
- 				my $fixed_line = $rawline;
--				$fixed_line =~ /(^..*$Type\s*$Ident\(.*\)\s*){(.*)$/;
-+				$fixed_line =~ /(^..*$Type\s*$Ident\(.*\)\s*)\{(.*)$/;
- 				my $line1 = $1;
- 				my $line2 = $2;
- 				fix_insert_line($fixlinenr, ltrim($line1));
+diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+index 8bfa2523e2533..5855ffec49528 100644
+--- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
++++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+@@ -3593,8 +3593,10 @@ static int bcmgenet_probe(struct platform_device *pdev)
+ 	clk_disable_unprepare(priv->clk);
+ 
+ 	err = register_netdev(dev);
+-	if (err)
++	if (err) {
++		bcmgenet_mii_exit(dev);
+ 		goto err;
++	}
+ 
+ 	return err;
+ 
 -- 
 2.27.0
 
