@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 262A22E3842
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:09:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72D9D2E3910
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:19:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730777AbgL1NH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:07:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35020 "EHLO mail.kernel.org"
+        id S2387524AbgL1NSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:18:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730771AbgL1NHV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:07:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C692E208BA;
-        Mon, 28 Dec 2020 13:06:39 +0000 (UTC)
+        id S2387517AbgL1NSa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:18:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 32662208BA;
+        Mon, 28 Dec 2020 13:17:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160800;
-        bh=0aLngOLlZjpxpVbTroKiMfMr9Wb/XUWSAoNOcIe9ss8=;
+        s=korg; t=1609161469;
+        bh=HKVBM16avOEKdjz+NaHmxjroT+xlNi3GmgGkoe+Jq/U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=18dLkgS81hIT+6U0IIm5wmfHe3uTzA8oWhkmyfU6l40AP1GW4YuPWHFa/qtltQlpn
-         6CQ4fgJuHrpALuib3Dw/HYFQ6Of3fz+s7YpMvdjSddhQCAdauIqWqdf8VEgjL6We+3
-         EK/goyd72TZnpmI/lFRmr5xigVwrV4cyuoAVeMYc=
+        b=LIrqxJipnRbvU5u0CnuIJS2V+Dj96XnZA/jIP/K5vCp18mTZHnlOvwvss1foCFcIY
+         uxMKqMNbV7JCTIp1q3xY2NKsFynRwimdDskrMsSwZowb6udo4brVYao0la7fhCEHZV
+         0mBlU8vKseWjW5Bgm1Nn/Flv7SQnNGapu8qIdF2k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jubin Zhong <zhongjubin@huawei.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 4.9 175/175] PCI: Fix pci_slot_release() NULL pointer dereference
+        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
+        Bert Vermeulen <bert@biot.com>, Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.14 223/242] spi: rb4xx: Dont leak SPI master in probe error path
 Date:   Mon, 28 Dec 2020 13:50:28 +0100
-Message-Id: <20201228124901.716690755@linuxfoundation.org>
+Message-Id: <20201228124915.647530034@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,65 +39,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jubin Zhong <zhongjubin@huawei.com>
+From: Lukas Wunner <lukas@wunner.de>
 
-commit 4684709bf81a2d98152ed6b610e3d5c403f9bced upstream.
+commit a4729c3506c3eb1a6ca5c0289f4e7cafa4115065 upstream.
 
-If kobject_init_and_add() fails, pci_slot_release() is called to delete
-slot->list from parent->slots.  But slot->list hasn't been initialized
-yet, so we dereference a NULL pointer:
+If the calls to devm_clk_get(), devm_spi_register_master() or
+clk_prepare_enable() fail on probe of the Mikrotik RB4xx SPI driver,
+the spi_master struct is erroneously not freed.
 
-  Unable to handle kernel NULL pointer dereference at virtual address
-00000000
-  ...
-  CPU: 10 PID: 1 Comm: swapper/0 Not tainted 4.4.240 #197
-  task: ffffeb398a45ef10 task.stack: ffffeb398a470000
-  PC is at __list_del_entry_valid+0x5c/0xb0
-  LR is at pci_slot_release+0x84/0xe4
-  ...
-  __list_del_entry_valid+0x5c/0xb0
-  pci_slot_release+0x84/0xe4
-  kobject_put+0x184/0x1c4
-  pci_create_slot+0x17c/0x1b4
-  __pci_hp_initialize+0x68/0xa4
-  pciehp_probe+0x1a4/0x2fc
-  pcie_port_probe_service+0x58/0x84
-  driver_probe_device+0x320/0x470
+Fix by switching over to the new devm_spi_alloc_master() helper.
 
-Initialize slot->list before calling kobject_init_and_add() to avoid this.
-
-Fixes: 8a94644b440e ("PCI: Fix pci_create_slot() reference count leak")
-Link: https://lore.kernel.org/r/1606876422-117457-1-git-send-email-zhongjubin@huawei.com
-Signed-off-by: Jubin Zhong <zhongjubin@huawei.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Cc: stable@vger.kernel.org	# v5.9+
+Fixes: 05aec357871f ("spi: Add SPI driver for Mikrotik RB4xx series boards")
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Cc: <stable@vger.kernel.org> # v4.2+: 5e844cc37a5c: spi: Introduce device-managed SPI controller allocation
+Cc: <stable@vger.kernel.org> # v4.2+
+Cc: Bert Vermeulen <bert@biot.com>
+Link: https://lore.kernel.org/r/369bf26d71927f60943b1d9d8f51810f00b0237d.1607286887.git.lukas@wunner.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/pci/slot.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/spi/spi-rb4xx.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/pci/slot.c
-+++ b/drivers/pci/slot.c
-@@ -307,6 +307,9 @@ placeholder:
- 		goto err;
- 	}
+--- a/drivers/spi/spi-rb4xx.c
++++ b/drivers/spi/spi-rb4xx.c
+@@ -148,7 +148,7 @@ static int rb4xx_spi_probe(struct platfo
+ 	if (IS_ERR(spi_base))
+ 		return PTR_ERR(spi_base);
  
-+	INIT_LIST_HEAD(&slot->list);
-+	list_add(&slot->list, &parent->slots);
-+
- 	err = kobject_init_and_add(&slot->kobj, &pci_slot_ktype, NULL,
- 				   "%s", slot_name);
- 	if (err) {
-@@ -314,9 +317,6 @@ placeholder:
- 		goto err;
- 	}
+-	master = spi_alloc_master(&pdev->dev, sizeof(*rbspi));
++	master = devm_spi_alloc_master(&pdev->dev, sizeof(*rbspi));
+ 	if (!master)
+ 		return -ENOMEM;
  
--	INIT_LIST_HEAD(&slot->list);
--	list_add(&slot->list, &parent->slots);
--
- 	down_read(&pci_bus_sem);
- 	list_for_each_entry(dev, &parent->devices, bus_list)
- 		if (PCI_SLOT(dev->devfn) == slot_nr)
 
 
