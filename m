@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D47E82E3C18
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:59:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B72672E3A7B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:37:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407696AbgL1N61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:58:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60016 "EHLO mail.kernel.org"
+        id S2390800AbgL1Nhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:37:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391620AbgL1N6R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:58:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 724DC206D4;
-        Mon, 28 Dec 2020 13:57:36 +0000 (UTC)
+        id S2390648AbgL1NhI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:37:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DF2012072C;
+        Mon, 28 Dec 2020 13:36:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163857;
-        bh=QUQBwe+w8UY2x4I69f9tbE4aqveZ8D5HF1lCcBfUCWI=;
+        s=korg; t=1609162587;
+        bh=EgEwkxeHYGzHCVQxUxkdRvN9i/l0RM58uL9yO3ezm48=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uY99wrkpbzOZiK5Wyu3uRd0/QF3P6dSW8QIZTBRjcXX6u1hwttX61eVsv1HL8cAKF
-         PP1Q9BXmJR376JiUoy0Q1dePYHf4SvpFATXAnYLdMx0TJtQV/+zSv2/P42UVaioQle
-         FSmzFWYd/JerLzcisCBRVRKh95KjijIDMJxiW2q8=
+        b=VFhHbHnvzUrprhZPjpk5wGFbbWp+ogMghHyJ+6/r9kK61KqStRYmw4RJ4j+b/xwXF
+         79rus11BpQo62JuixC5YHmQ993f2ZN4hAxrwBl2yOgJ64mdm124tWsa7YScEAaK9kX
+         bJ5OQRf/862hKKdifVwTUfsQppct3MYbC8Fcp/84=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christophe Leroy <christophe.leroy@c-s.fr>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.4 405/453] spi: fsl: fix use of spisel_boot signal on MPC8309
+        stable@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Evan Green <evgreen@chromium.org>
+Subject: [PATCH 4.19 322/346] soc: qcom: smp2p: Safely acquire spinlock without IRQs
 Date:   Mon, 28 Dec 2020 13:50:41 +0100
-Message-Id: <20201228124956.701538844@linuxfoundation.org>
+Message-Id: <20201228124935.349205784@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,62 +41,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+From: Evan Green <evgreen@chromium.org>
 
-commit 122541f2b10897b08f7f7e6db5f1eb693e51f0a1 upstream.
+commit fc3e62e25c3896855b7c3d72df19ca6be3459c9f upstream.
 
-Commit 0f0581b24bd0 ("spi: fsl: Convert to use CS GPIO descriptors")
-broke the use of the SPISEL_BOOT signal as a chip select on the
-MPC8309.
+smp2p_update_bits() should disable interrupts when it acquires its
+spinlock. This is important because without the _irqsave, a priority
+inversion can occur.
 
-pdata->max_chipselect, which becomes master->num_chipselect, must be
-initialized to take into account the possibility that there's one more
-chip select in use than the number of GPIO chip selects.
+This function is called both with interrupts enabled in
+qcom_q6v5_request_stop(), and with interrupts disabled in
+ipa_smp2p_panic_notifier(). IRQ handling of spinlocks should be
+consistent to avoid the panic notifier deadlocking because it's
+sitting on the thread that's already got the lock via _request_stop().
 
-Cc: stable@vger.kernel.org # v5.4+
-Cc: Christophe Leroy <christophe.leroy@c-s.fr>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Fixes: 0f0581b24bd0 ("spi: fsl: Convert to use CS GPIO descriptors")
-Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Link: https://lore.kernel.org/r/20201127152947.376-1-rasmus.villemoes@prevas.dk
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Found via lockdep.
+
+Cc: stable@vger.kernel.org
+Fixes: 50e99641413e7 ("soc: qcom: smp2p: Qualcomm Shared Memory Point to Point")
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Evan Green <evgreen@chromium.org>
+Link: https://lore.kernel.org/r/20200929133040.RESEND.1.Ideabf6dcdfc577cf39ce3d95b0e4aa1ac8b38f0c@changeid
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/spi/spi-fsl-spi.c |   11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ drivers/soc/qcom/smp2p.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/drivers/spi/spi-fsl-spi.c
-+++ b/drivers/spi/spi-fsl-spi.c
-@@ -717,10 +717,11 @@ static int of_fsl_spi_probe(struct platf
- 	type = fsl_spi_get_type(&ofdev->dev);
- 	if (type == TYPE_FSL) {
- 		struct fsl_spi_platform_data *pdata = dev_get_platdata(dev);
-+		bool spisel_boot = false;
- #if IS_ENABLED(CONFIG_FSL_SOC)
- 		struct mpc8xxx_spi_probe_info *pinfo = to_of_pinfo(pdata);
--		bool spisel_boot = of_property_read_bool(np, "fsl,spisel_boot");
+--- a/drivers/soc/qcom/smp2p.c
++++ b/drivers/soc/qcom/smp2p.c
+@@ -326,15 +326,16 @@ static int qcom_smp2p_inbound_entry(stru
+ static int smp2p_update_bits(void *data, u32 mask, u32 value)
+ {
+ 	struct smp2p_entry *entry = data;
++	unsigned long flags;
+ 	u32 orig;
+ 	u32 val;
  
-+		spisel_boot = of_property_read_bool(np, "fsl,spisel_boot");
- 		if (spisel_boot) {
- 			pinfo->immr_spi_cs = ioremap(get_immrbase() + IMMR_SPI_CS_OFFSET, 4);
- 			if (!pinfo->immr_spi_cs) {
-@@ -737,10 +738,14 @@ static int of_fsl_spi_probe(struct platf
- 		 * supported on the GRLIB variant.
- 		 */
- 		ret = gpiod_count(dev, "cs");
--		if (ret <= 0)
-+		if (ret < 0)
-+			ret = 0;
-+		if (ret == 0 && !spisel_boot) {
- 			pdata->max_chipselect = 1;
--		else
-+		} else {
-+			pdata->max_chipselect = ret + spisel_boot;
- 			pdata->cs_control = fsl_spi_cs_control;
-+		}
- 	}
+-	spin_lock(&entry->lock);
++	spin_lock_irqsave(&entry->lock, flags);
+ 	val = orig = readl(entry->value);
+ 	val &= ~mask;
+ 	val |= value;
+ 	writel(val, entry->value);
+-	spin_unlock(&entry->lock);
++	spin_unlock_irqrestore(&entry->lock, flags);
  
- 	ret = of_address_to_resource(np, 0, &mem);
+ 	if (val != orig)
+ 		qcom_smp2p_kick(entry->smp2p);
 
 
