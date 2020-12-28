@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B21A72E693B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:47:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E722E66E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:18:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441699AbgL1QrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:47:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51924 "EHLO mail.kernel.org"
+        id S2440959AbgL1QSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:18:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43604 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728539AbgL1Mz2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:55:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DDFED229C6;
-        Mon, 28 Dec 2020 12:54:46 +0000 (UTC)
+        id S1732709AbgL1NPh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:15:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F9C32076D;
+        Mon, 28 Dec 2020 13:15:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160087;
-        bh=iQ2pgHyxagMNYrbhI0krd2g79Mq5f/r7oir/o7uiFs4=;
+        s=korg; t=1609161321;
+        bh=sGXZ3I6qiui6Kj2Gy9swHJhCbRugfhmlmZHm86NumJg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oNK2KdvM2d4D/k/1+oSBWLTAXlCVsxHJyiV/yVEYxQXZbLu47JQSUUyyFLq4S1bF+
-         jgsH08J3x8DxRm0xwezt15yapbOS0xDn+bBc+jp7zu1A6GebxdDGW9ZFY1+QRtzDoC
-         zkoT5knK5TyghjVT0koArMgMgNHqwHhM8oYkcF1Q=
+        b=t29B4oDcZ8YcXXtMLLS3XIDa6mUD1SenInugivOvFnmjJ9h4REpk+HuCLPmu3PZVR
+         rFX6vB/CAnZaDXARit06XwvQEBJqUMmApWtw+gbUBLHTHWqcKzwiHoOuhna+GqVXJG
+         fcdQjCTFMfe5lB4mXWiSV3GtiBW2BchL7aM0jRbY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, Jack Wang <jinpu.wang@cloud.ionos.com>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 065/132] memstick: r592: Fix error return in r592_probe()
-Date:   Mon, 28 Dec 2020 13:49:09 +0100
-Message-Id: <20201228124849.598644588@linuxfoundation.org>
+Subject: [PATCH 4.14 145/242] scsi: pm80xx: Fix error return in pm8001_pci_probe()
+Date:   Mon, 28 Dec 2020 13:49:10 +0100
+Message-Id: <20201228124911.842957287@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,55 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Xiangfeng <jingxiangfeng@huawei.com>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit db29d3d1c2451e673e29c7257471e3ce9d50383a ]
+[ Upstream commit 97031ccffa4f62728602bfea8439dd045cd3aeb2 ]
 
-Fix to return a error code from the error handling case instead of 0.
+The driver did not return an error in the case where
+pm8001_configure_phy_settings() failed.
 
-Fixes: 926341250102 ("memstick: add driver for Ricoh R5C592 card reader")
-Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
-Link: https://lore.kernel.org/r/20201125014718.153563-1-jingxiangfeng@huawei.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Use rc to store the return value of pm8001_configure_phy_settings().
+
+Link: https://lore.kernel.org/r/20201205115551.2079471-1-zhangqilong3@huawei.com
+Fixes: 279094079a44 ("[SCSI] pm80xx: Phy settings support for motherboard controller.")
+Acked-by: Jack Wang <jinpu.wang@cloud.ionos.com>
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/memstick/host/r592.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ drivers/scsi/pm8001/pm8001_init.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/memstick/host/r592.c b/drivers/memstick/host/r592.c
-index ef09ba0289d72..b3857445d6736 100644
---- a/drivers/memstick/host/r592.c
-+++ b/drivers/memstick/host/r592.c
-@@ -763,8 +763,10 @@ static int r592_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 		goto error3;
+diff --git a/drivers/scsi/pm8001/pm8001_init.c b/drivers/scsi/pm8001/pm8001_init.c
+index 0e013f76b582e..30e49b4acaeaf 100644
+--- a/drivers/scsi/pm8001/pm8001_init.c
++++ b/drivers/scsi/pm8001/pm8001_init.c
+@@ -1054,7 +1054,8 @@ static int pm8001_pci_probe(struct pci_dev *pdev,
  
- 	dev->mmio = pci_ioremap_bar(pdev, 0);
--	if (!dev->mmio)
-+	if (!dev->mmio) {
-+		error = -ENOMEM;
- 		goto error4;
-+	}
+ 	pm8001_init_sas_add(pm8001_ha);
+ 	/* phy setting support for motherboard controller */
+-	if (pm8001_configure_phy_settings(pm8001_ha))
++	rc = pm8001_configure_phy_settings(pm8001_ha);
++	if (rc)
+ 		goto err_out_shost;
  
- 	dev->irq = pdev->irq;
- 	spin_lock_init(&dev->irq_lock);
-@@ -791,12 +793,14 @@ static int r592_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 		&dev->dummy_dma_page_physical_address, GFP_KERNEL);
- 	r592_stop_dma(dev , 0);
- 
--	if (request_irq(dev->irq, &r592_irq, IRQF_SHARED,
--			  DRV_NAME, dev))
-+	error = request_irq(dev->irq, &r592_irq, IRQF_SHARED,
-+			  DRV_NAME, dev);
-+	if (error)
- 		goto error6;
- 
- 	r592_update_card_detect(dev);
--	if (memstick_add_host(host))
-+	error = memstick_add_host(host);
-+	if (error)
- 		goto error7;
- 
- 	message("driver successfully loaded");
+ 	pm8001_post_sas_ha_init(shost, chip);
 -- 
 2.27.0
 
