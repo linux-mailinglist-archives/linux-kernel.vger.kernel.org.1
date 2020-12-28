@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AD602E3DA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:18:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D08602E3B08
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:46:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2501919AbgL1OSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:18:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53122 "EHLO mail.kernel.org"
+        id S2404768AbgL1NpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:45:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45532 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2501901AbgL1OSC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:18:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2163B22583;
-        Mon, 28 Dec 2020 14:17:20 +0000 (UTC)
+        id S2404587AbgL1Nox (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:44:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9200F208BA;
+        Mon, 28 Dec 2020 13:44:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165041;
-        bh=R2kS0c/cPf48Einw0w4fo7O3z6wO6Wh2MOgQXaZBF/4=;
+        s=korg; t=1609163052;
+        bh=77ZFFo5hrk/uXSBVZ6/tTaGTUzN7+IcPxBLFM8HQSyM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1oeSpJAtr6BJCPDgfZdzqwd/xLOa6Tn/CAIW6mE2OkSNNfpURV18tlH4O1c+5AQlP
-         DNKcXylGNr8LazAB++dX//1CLQjMH8c2VcTXYm0lo7rHpv3+qpNpRaGltm4Xsic/me
-         QitgehlYKv6gw73XVLI5glw53YSebgv+S1A81qAA=
+        b=pEzDIFNqFtyjECrA060fuQR3p2zvie541l8GBtwXSG4EuDqISm4/jkgYSfxxSW/Nw
+         Clw+DZuse2JkqG3lHwcO7xRyIs3wVafhRXGMmsNqbn3QHcMJoGb7CApagfDwU0th5u
+         jRiF+8jw7+Umf2iDFMfYhjv8/VMB/v35vTBgAb9s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 390/717] clk: renesas: r8a779a0: Fix R and OSC clocks
-Date:   Mon, 28 Dec 2020 13:46:28 +0100
-Message-Id: <20201228125039.690625700@linuxfoundation.org>
+Subject: [PATCH 5.4 153/453] spi: fix resource leak for drivers without .remove callback
+Date:   Mon, 28 Dec 2020 13:46:29 +0100
+Message-Id: <20201228124944.567208116@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,69 +41,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-[ Upstream commit 14653942de7f63e21ece32e3901f09a248598a43 ]
+[ Upstream commit 440408dbadfe47a615afd0a0a4a402e629be658a ]
 
-The R-Car V3U clock driver defines the R and OSC clocks using R-Car Gen3
-clock types.  However, The R-Car V3U clock driver does not use the R-Car
-Gen3 clock driver core, hence registering the R and OSC clocks fails:
+Consider an spi driver with a .probe but without a .remove callback (e.g.
+rtc-ds1347). The function spi_drv_probe() is called to bind a device and
+so dev_pm_domain_attach() is called. As there is no remove callback
+spi_drv_remove() isn't called at unbind time however and so calling
+dev_pm_domain_detach() is missed and the pm domain keeps active.
 
-    renesas-cpg-mssr e6150000.clock-controller: Failed to register core clock osc: -22
-    renesas-cpg-mssr e6150000.clock-controller: Failed to register core clock r: -22
+To fix this always use both spi_drv_probe() and spi_drv_remove() and
+make them handle the respective callback not being set. This has the
+side effect that for a (hypothetical) driver that has neither .probe nor
+remove the clk and pm domain setup is done.
 
-Fix this by introducing clock definition macros specific to R-Car V3U.
-Note that rcar_r8a779a0_cpg_clk_register() already handled the related
-clock types.  Drop the now unneeded include of rcar-gen3-cpg.h.
-
-Fixes: 17bcc8035d2d19fc ("clk: renesas: cpg-mssr: Add support for R-Car V3U")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Tested-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Reviewed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Link: https://lore.kernel.org/r/20201109152614.2465483-1-geert+renesas@glider.be
+Fixes: 33cf00e57082 ("spi: attach/detach SPI device to the ACPI power domain")
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Link: https://lore.kernel.org/r/20201119161604.2633521-1-u.kleine-koenig@pengutronix.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/renesas/r8a779a0-cpg-mssr.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ drivers/spi/spi.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/clk/renesas/r8a779a0-cpg-mssr.c b/drivers/clk/renesas/r8a779a0-cpg-mssr.c
-index 17ebbac7ddfb4..046d79416b7d0 100644
---- a/drivers/clk/renesas/r8a779a0-cpg-mssr.c
-+++ b/drivers/clk/renesas/r8a779a0-cpg-mssr.c
-@@ -26,7 +26,6 @@
- #include <dt-bindings/clock/r8a779a0-cpg-mssr.h>
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 4c96c7c9e335e..e1205d72be523 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -405,9 +405,11 @@ static int spi_drv_probe(struct device *dev)
+ 	if (ret)
+ 		return ret;
  
- #include "renesas-cpg-mssr.h"
--#include "rcar-gen3-cpg.h"
+-	ret = sdrv->probe(spi);
+-	if (ret)
+-		dev_pm_domain_detach(dev, true);
++	if (sdrv->probe) {
++		ret = sdrv->probe(spi);
++		if (ret)
++			dev_pm_domain_detach(dev, true);
++	}
  
- enum rcar_r8a779a0_clk_types {
- 	CLK_TYPE_R8A779A0_MAIN = CLK_TYPE_CUSTOM,
-@@ -84,6 +83,14 @@ enum clk_ids {
- 	DEF_BASE(_name, _id, CLK_TYPE_R8A779A0_PLL2X_3X, CLK_MAIN, \
- 		 .offset = _offset)
+ 	return ret;
+ }
+@@ -415,9 +417,10 @@ static int spi_drv_probe(struct device *dev)
+ static int spi_drv_remove(struct device *dev)
+ {
+ 	const struct spi_driver		*sdrv = to_spi_driver(dev->driver);
+-	int ret;
++	int ret = 0;
  
-+#define DEF_MDSEL(_name, _id, _md, _parent0, _div0, _parent1, _div1) \
-+	DEF_BASE(_name, _id, CLK_TYPE_R8A779A0_MDSEL,	\
-+		 (_parent0) << 16 | (_parent1),		\
-+		 .div = (_div0) << 16 | (_div1), .offset = _md)
-+
-+#define DEF_OSC(_name, _id, _parent, _div)		\
-+	DEF_BASE(_name, _id, CLK_TYPE_R8A779A0_OSC, _parent, .div = _div)
-+
- static const struct cpg_core_clk r8a779a0_core_clks[] __initconst = {
- 	/* External Clock Inputs */
- 	DEF_INPUT("extal",  CLK_EXTAL),
-@@ -136,8 +143,8 @@ static const struct cpg_core_clk r8a779a0_core_clks[] __initconst = {
- 	DEF_DIV6P1("canfd",	R8A779A0_CLK_CANFD,	CLK_PLL5_DIV4,	0x878),
- 	DEF_DIV6P1("csi0",	R8A779A0_CLK_CSI0,	CLK_PLL5_DIV4,	0x880),
+-	ret = sdrv->remove(to_spi_device(dev));
++	if (sdrv->remove)
++		ret = sdrv->remove(to_spi_device(dev));
+ 	dev_pm_domain_detach(dev, true);
  
--	DEF_GEN3_OSC("osc",	R8A779A0_CLK_OSC,	CLK_EXTAL,	8),
--	DEF_GEN3_MDSEL("r",	R8A779A0_CLK_R, 29, CLK_EXTALR, 1, CLK_OCO, 1),
-+	DEF_OSC("osc",		R8A779A0_CLK_OSC,	CLK_EXTAL,	8),
-+	DEF_MDSEL("r",		R8A779A0_CLK_R, 29, CLK_EXTALR, 1, CLK_OCO, 1),
- };
- 
- static const struct mssr_mod_clk r8a779a0_mod_clks[] __initconst = {
+ 	return ret;
+@@ -442,10 +445,8 @@ int __spi_register_driver(struct module *owner, struct spi_driver *sdrv)
+ {
+ 	sdrv->driver.owner = owner;
+ 	sdrv->driver.bus = &spi_bus_type;
+-	if (sdrv->probe)
+-		sdrv->driver.probe = spi_drv_probe;
+-	if (sdrv->remove)
+-		sdrv->driver.remove = spi_drv_remove;
++	sdrv->driver.probe = spi_drv_probe;
++	sdrv->driver.remove = spi_drv_remove;
+ 	if (sdrv->shutdown)
+ 		sdrv->driver.shutdown = spi_drv_shutdown;
+ 	return driver_register(&sdrv->driver);
 -- 
 2.27.0
 
