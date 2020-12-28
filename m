@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25CC32E641F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:48:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01EEE2E393A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:22:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2632797AbgL1PsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:48:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43414 "EHLO mail.kernel.org"
+        id S2387615AbgL1NUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:20:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404371AbgL1NnD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:43:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E478922472;
-        Mon, 28 Dec 2020 13:42:21 +0000 (UTC)
+        id S2387598AbgL1NUi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:20:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A6931206ED;
+        Mon, 28 Dec 2020 13:20:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162942;
-        bh=uK7ZcFfCS7K7aNfFEFcM0fZ+Z+I7c2//vK28nrvLgZ4=;
+        s=korg; t=1609161622;
+        bh=qsmmPX6pmSoGwGwZr2ikKchIhMXq13YrZ/QwNbpVD/I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=efbAyz7Vb7hVzkwmqGcdpS7Shhqt0IkUKI+Y4NptEl69qUUZvaYIXxyDrLhZCicBK
-         O/b8X0sW3DkZWs47WaCncVfsJZqkuaCFzkuVwN8NJnGHwQxYPwM498NaxhyxGnDMhQ
-         pdB7gYWdtrpAh9J3CbyUsgJZ4NgOMiF+m3TvW4nI=
+        b=DDAcQoJTNVKAde0rR9qpNFe/oQjHfJGteKXPCeh19c6/onR2qdk9Fd/mOsk+TZCeO
+         0BZj7HxcIUUDCIMezFb45gUuSBumhmzVwmIrPNLRbb5CgLGfzSE6r++5W9nA8H1MdZ
+         /3CyrPRx1p0L9mtrGwKI+X+IUV1CaCpIMpTTTRc4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qinglang Miao <miaoqinglang@huawei.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 115/453] spi: mt7621: fix missing clk_disable_unprepare() on error in mt7621_spi_probe
+        stable@vger.kernel.org, Moshe Shemesh <moshe@mellanox.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 032/346] net/mlx4_en: Avoid scheduling restart task if it is already running
 Date:   Mon, 28 Dec 2020 13:45:51 +0100
-Message-Id: <20201228124942.746942335@linuxfoundation.org>
+Message-Id: <20201228124921.335339693@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,44 +40,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qinglang Miao <miaoqinglang@huawei.com>
+From: Moshe Shemesh <moshe@mellanox.com>
 
-[ Upstream commit 702b15cb97123cedcec56a39d9a21c5288eb9ae1 ]
+[ Upstream commit fed91613c9dd455dd154b22fa8e11b8526466082 ]
 
-Fix the missing clk_disable_unprepare() before return
-from mt7621_spi_probe in the error handling case.
+Add restarting state flag to avoid scheduling another restart task while
+such task is already running. Change task name from watchdog_task to
+restart_task to better fit the task role.
 
-Fixes: cbd66c626e16 ("spi: mt7621: Move SPI driver out of staging")
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-Link: https://lore.kernel.org/r/20201103074912.195576-1-miaoqinglang@huawei.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 1e338db56e5a ("mlx4_en: Fix a race at restart task")
+Signed-off-by: Moshe Shemesh <moshe@mellanox.com>
+Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/spi/spi-mt7621.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/ethernet/mellanox/mlx4/en_netdev.c |   20 +++++++++++++-------
+ drivers/net/ethernet/mellanox/mlx4/mlx4_en.h   |    7 ++++++-
+ 2 files changed, 19 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/spi/spi-mt7621.c b/drivers/spi/spi-mt7621.c
-index 2c3b7a2a1ec77..2cdae7994e2aa 100644
---- a/drivers/spi/spi-mt7621.c
-+++ b/drivers/spi/spi-mt7621.c
-@@ -353,6 +353,7 @@ static int mt7621_spi_probe(struct platform_device *pdev)
- 	master = spi_alloc_master(&pdev->dev, sizeof(*rs));
- 	if (!master) {
- 		dev_info(&pdev->dev, "master allocation failed\n");
-+		clk_disable_unprepare(clk);
- 		return -ENOMEM;
+--- a/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_netdev.c
+@@ -1384,8 +1384,10 @@ static void mlx4_en_tx_timeout(struct ne
  	}
  
-@@ -377,6 +378,7 @@ static int mt7621_spi_probe(struct platform_device *pdev)
- 	ret = device_reset(&pdev->dev);
- 	if (ret) {
- 		dev_err(&pdev->dev, "SPI reset failed!\n");
-+		clk_disable_unprepare(clk);
- 		return ret;
+ 	priv->port_stats.tx_timeout++;
+-	en_dbg(DRV, priv, "Scheduling watchdog\n");
+-	queue_work(mdev->workqueue, &priv->watchdog_task);
++	if (!test_and_set_bit(MLX4_EN_STATE_FLAG_RESTARTING, &priv->state)) {
++		en_dbg(DRV, priv, "Scheduling port restart\n");
++		queue_work(mdev->workqueue, &priv->restart_task);
++	}
+ }
+ 
+ 
+@@ -1835,6 +1837,7 @@ int mlx4_en_start_port(struct net_device
+ 		local_bh_enable();
  	}
  
--- 
-2.27.0
-
++	clear_bit(MLX4_EN_STATE_FLAG_RESTARTING, &priv->state);
+ 	netif_tx_start_all_queues(dev);
+ 	netif_device_attach(dev);
+ 
+@@ -2005,7 +2008,7 @@ void mlx4_en_stop_port(struct net_device
+ static void mlx4_en_restart(struct work_struct *work)
+ {
+ 	struct mlx4_en_priv *priv = container_of(work, struct mlx4_en_priv,
+-						 watchdog_task);
++						 restart_task);
+ 	struct mlx4_en_dev *mdev = priv->mdev;
+ 	struct net_device *dev = priv->dev;
+ 
+@@ -2387,7 +2390,7 @@ static int mlx4_en_change_mtu(struct net
+ 	if (netif_running(dev)) {
+ 		mutex_lock(&mdev->state_lock);
+ 		if (!mdev->device_up) {
+-			/* NIC is probably restarting - let watchdog task reset
++			/* NIC is probably restarting - let restart task reset
+ 			 * the port */
+ 			en_dbg(DRV, priv, "Change MTU called with card down!?\n");
+ 		} else {
+@@ -2396,7 +2399,9 @@ static int mlx4_en_change_mtu(struct net
+ 			if (err) {
+ 				en_err(priv, "Failed restarting port:%d\n",
+ 					 priv->port);
+-				queue_work(mdev->workqueue, &priv->watchdog_task);
++				if (!test_and_set_bit(MLX4_EN_STATE_FLAG_RESTARTING,
++						      &priv->state))
++					queue_work(mdev->workqueue, &priv->restart_task);
+ 			}
+ 		}
+ 		mutex_unlock(&mdev->state_lock);
+@@ -2882,7 +2887,8 @@ static int mlx4_xdp_set(struct net_devic
+ 		if (err) {
+ 			en_err(priv, "Failed starting port %d for XDP change\n",
+ 			       priv->port);
+-			queue_work(mdev->workqueue, &priv->watchdog_task);
++			if (!test_and_set_bit(MLX4_EN_STATE_FLAG_RESTARTING, &priv->state))
++				queue_work(mdev->workqueue, &priv->restart_task);
+ 		}
+ 	}
+ 
+@@ -3280,7 +3286,7 @@ int mlx4_en_init_netdev(struct mlx4_en_d
+ 	priv->counter_index = MLX4_SINK_COUNTER_INDEX(mdev->dev);
+ 	spin_lock_init(&priv->stats_lock);
+ 	INIT_WORK(&priv->rx_mode_task, mlx4_en_do_set_rx_mode);
+-	INIT_WORK(&priv->watchdog_task, mlx4_en_restart);
++	INIT_WORK(&priv->restart_task, mlx4_en_restart);
+ 	INIT_WORK(&priv->linkstate_task, mlx4_en_linkstate);
+ 	INIT_DELAYED_WORK(&priv->stats_task, mlx4_en_do_get_stats);
+ 	INIT_DELAYED_WORK(&priv->service_task, mlx4_en_service_task);
+--- a/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
++++ b/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
+@@ -530,6 +530,10 @@ struct mlx4_en_stats_bitmap {
+ 	struct mutex mutex; /* for mutual access to stats bitmap */
+ };
+ 
++enum {
++	MLX4_EN_STATE_FLAG_RESTARTING,
++};
++
+ struct mlx4_en_priv {
+ 	struct mlx4_en_dev *mdev;
+ 	struct mlx4_en_port_profile *prof;
+@@ -595,7 +599,7 @@ struct mlx4_en_priv {
+ 	struct mlx4_en_cq *rx_cq[MAX_RX_RINGS];
+ 	struct mlx4_qp drop_qp;
+ 	struct work_struct rx_mode_task;
+-	struct work_struct watchdog_task;
++	struct work_struct restart_task;
+ 	struct work_struct linkstate_task;
+ 	struct delayed_work stats_task;
+ 	struct delayed_work service_task;
+@@ -643,6 +647,7 @@ struct mlx4_en_priv {
+ 	u32 pflags;
+ 	u8 rss_key[MLX4_EN_RSS_KEY_SIZE];
+ 	u8 rss_hash_fn;
++	unsigned long state;
+ };
+ 
+ enum mlx4_en_wol {
 
 
