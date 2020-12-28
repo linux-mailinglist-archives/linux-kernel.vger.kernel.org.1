@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B299D2E3849
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:09:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9642E3DD5
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:22:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730874AbgL1NIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:08:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35592 "EHLO mail.kernel.org"
+        id S2437784AbgL1OU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:20:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730766AbgL1NH5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:07:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A94862245C;
-        Mon, 28 Dec 2020 13:07:16 +0000 (UTC)
+        id S2437756AbgL1OUV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:20:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 861D2206E5;
+        Mon, 28 Dec 2020 14:19:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160837;
-        bh=pInZGmeCRYkJUxjiYlHUxcW6jZVZh4yKMCpscyyS310=;
+        s=korg; t=1609165175;
+        bh=4X371F7lEJI/Lc7h9xUNP6ceNwUzEUDsuASy1FPiDHE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rfvlo8bSLQpY7GTDOHCu15iDz3e1PnFg9mD8GknGoQLPzLsi8/O38h1tVAOMvUdbI
-         ml15I8ALeSpDjxLTegScFKZ74klkRV671v2D0OcxDfmCQ7fRJwgY+Yqr1ibdJRY7Mb
-         fbivs1HlTRrMYtscaJkEr43Sy+Tojj3p8q2Tzbfc=
+        b=NUpX2OeicOGSIo/+sk1S2H/HHMWH7ZHozpsdKYThpP+kLsU+WTcULAQChhvz/YKoS
+         jBAy3IUb1OfTJnM8beWDiCELSYb+uYk4Fgh8dV9qYgZI/sWTqEOWJOEGaOKtPnkatN
+         zY0RJWubeXHya35n4h7Vi+xkIVuG25Ofjs38SiVU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Markus Reichl <m.reichl@fivetechno.de>,
-        Douglas Anderson <dianders@chromium.org>,
-        Heiko Stuebner <heiko@sntech.de>,
+        stable@vger.kernel.org,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 004/242] arm64: dts: rockchip: Assign a fixed index to mmc devices on rk3399 boards.
+Subject: [PATCH 5.10 411/717] samples/bpf: Fix possible hang in xdpsock with multiple threads
 Date:   Mon, 28 Dec 2020 13:46:49 +0100
-Message-Id: <20201228124904.877913366@linuxfoundation.org>
+Message-Id: <20201228125040.666742163@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Markus Reichl <m.reichl@fivetechno.de>
+From: Magnus Karlsson <magnus.karlsson@intel.com>
 
-[ Upstream commit 0011c6d182774fc781fb9e115ebe8baa356029ae ]
+[ Upstream commit 092fde0f863b72b67c4d6dc03844f5658fc00a35 ]
 
-Recently introduced async probe on mmc devices can shuffle block IDs.
-Pin them to fixed values to ease booting in environments where UUIDs
-are not practical. Use newly introduced aliases for mmcblk devices from [1].
+Fix a possible hang in xdpsock that can occur when using multiple
+threads. In this case, one or more of the threads might get stuck in
+the while-loop in tx_only after the user has signaled the main thread
+to stop execution. In this case, no more Tx packets will be sent, so a
+thread might get stuck in the aforementioned while-loop. Fix this by
+introducing a test inside the while-loop to check if the benchmark has
+been terminated. If so, return from the function.
 
-[1]
-https://patchwork.kernel.org/patch/11747669/
-
-Signed-off-by: Markus Reichl <m.reichl@fivetechno.de>
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Link: https://lore.kernel.org/r/20201104162356.1251-1-m.reichl@fivetechno.de
-Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Fixes: cd9e72b6f210 ("samples/bpf: xdpsock: Add option to specify batch size")
+Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Link: https://lore.kernel.org/bpf/20201210163407.22066-1-magnus.karlsson@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/rockchip/rk3399.dtsi | 3 +++
- 1 file changed, 3 insertions(+)
+ samples/bpf/xdpsock_user.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-index b63d9653ff559..82747048381fa 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-@@ -66,6 +66,9 @@
- 		i2c6 = &i2c6;
- 		i2c7 = &i2c7;
- 		i2c8 = &i2c8;
-+		mmc0 = &sdio0;
-+		mmc1 = &sdmmc;
-+		mmc2 = &sdhci;
- 		serial0 = &uart0;
- 		serial1 = &uart1;
- 		serial2 = &uart2;
+diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
+index 1149e94ca32fd..33c58de58626c 100644
+--- a/samples/bpf/xdpsock_user.c
++++ b/samples/bpf/xdpsock_user.c
+@@ -1250,6 +1250,8 @@ static void tx_only(struct xsk_socket_info *xsk, u32 *frame_nb, int batch_size)
+ 	while (xsk_ring_prod__reserve(&xsk->tx, batch_size, &idx) <
+ 				      batch_size) {
+ 		complete_tx_only(xsk, batch_size);
++		if (benchmark_done)
++			return;
+ 	}
+ 
+ 	for (i = 0; i < batch_size; i++) {
 -- 
 2.27.0
 
