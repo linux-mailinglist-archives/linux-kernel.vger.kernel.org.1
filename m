@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC2C52E3A15
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:32:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C49D2E3802
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:04:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390973AbgL1NcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:32:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59958 "EHLO mail.kernel.org"
+        id S1730333AbgL1NEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:04:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59646 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390507AbgL1NbC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:31:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 97792206ED;
-        Mon, 28 Dec 2020 13:30:20 +0000 (UTC)
+        id S1730225AbgL1NDa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:03:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AFDF222582;
+        Mon, 28 Dec 2020 13:02:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162221;
-        bh=34jlbLC7X+MvXZPxaSiNrgJDbHdBMDHUSBSMCEWZYng=;
+        s=korg; t=1609160570;
+        bh=wXBaScD4/w/XArzcbfOiAv5YV72PALyJRo9O6USkGNA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nwk5ttphVMN7M4ST/5lPVT6dFrrer+02AtqqpMYIbPaY1J8rfOQ56pmDOawkImz7W
-         9WXmwOk6oQRUIMtiEMoiPe2efLtDD2W2YwM4hQsPhafIExT9np07or86HPrF9sKVuR
-         sl4m0Kmdh2RsoQsXn1f82gvPMsGLl202JNAF29/k=
+        b=FkpHp8ob+85qdot2jEYH311ky2T9PD8ROQBfdjJ6eHmbAdnGB9ROdkX22j/T5QZx/
+         7H2kyZPEHu3m041oVhRgYO0zMSrvoX6XMGhsz9AwMwU+VAOeGHiKpjyPPHImpPUUA9
+         jSfCqb0zCEnpqiq5WXncgZ4WeLFSm7RUWMl5GXZk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lingling Xu <ling_ling.xu@unisoc.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        Mike Snitzer <snitzer@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 229/346] watchdog: sprd: remove watchdog disable from resume fail path
-Date:   Mon, 28 Dec 2020 13:49:08 +0100
-Message-Id: <20201228124930.845473990@linuxfoundation.org>
+Subject: [PATCH 4.9 096/175] dm ioctl: fix error return code in target_message
+Date:   Mon, 28 Dec 2020 13:49:09 +0100
+Message-Id: <20201228124857.897615525@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,52 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lingling Xu <ling_ling.xu@unisoc.com>
+From: Qinglang Miao <miaoqinglang@huawei.com>
 
-[ Upstream commit f61a59acb462840bebcc192f754fe71b6a16ff99 ]
+[ Upstream commit 4d7659bfbe277a43399a4a2d90fca141e70f29e1 ]
 
-sprd_wdt_start() would return fail if the loading operation is not completed
-in a certain time, disabling watchdog for that case would probably cause
-the kernel crash when kick watchdog later, that's too bad, so remove the
-watchdog disable operation for the fail case to make sure other parts in
-the kernel can run normally.
+Fix to return a negative error code from the error handling
+case instead of 0, as done elsewhere in this function.
 
-[ chunyan: Massaged changelog ]
-
-Fixes: 477603467009 ("watchdog: Add Spreadtrum watchdog driver")
-Signed-off-by: Lingling Xu <ling_ling.xu@unisoc.com>
-Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lore.kernel.org/r/20201029023933.24548-2-zhang.lyra@gmail.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
+Fixes: 2ca4c92f58f9 ("dm ioctl: prevent empty message")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/watchdog/sprd_wdt.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+ drivers/md/dm-ioctl.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/watchdog/sprd_wdt.c b/drivers/watchdog/sprd_wdt.c
-index b6c65afd36778..ffe0346c5d0eb 100644
---- a/drivers/watchdog/sprd_wdt.c
-+++ b/drivers/watchdog/sprd_wdt.c
-@@ -360,15 +360,10 @@ static int __maybe_unused sprd_wdt_pm_resume(struct device *dev)
- 	if (ret)
- 		return ret;
+diff --git a/drivers/md/dm-ioctl.c b/drivers/md/dm-ioctl.c
+index 6964b252952a4..836a2808c0c71 100644
+--- a/drivers/md/dm-ioctl.c
++++ b/drivers/md/dm-ioctl.c
+@@ -1549,6 +1549,7 @@ static int target_message(struct dm_ioctl *param, size_t param_size)
  
--	if (watchdog_active(&wdt->wdd)) {
-+	if (watchdog_active(&wdt->wdd))
- 		ret = sprd_wdt_start(&wdt->wdd);
--		if (ret) {
--			sprd_wdt_disable(wdt);
--			return ret;
--		}
--	}
+ 	if (!argc) {
+ 		DMWARN("Empty message received.");
++		r = -EINVAL;
+ 		goto out_argv;
+ 	}
  
--	return 0;
-+	return ret;
- }
- 
- static const struct dev_pm_ops sprd_wdt_pm_ops = {
 -- 
 2.27.0
 
