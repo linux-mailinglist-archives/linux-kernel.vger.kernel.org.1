@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A57C72E6929
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:47:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6210E2E656E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:01:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634390AbgL1Qpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:45:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52460 "EHLO mail.kernel.org"
+        id S2387666AbgL1Nb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:31:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728734AbgL1M4T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:56:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62862224D2;
-        Mon, 28 Dec 2020 12:56:03 +0000 (UTC)
+        id S2390476AbgL1Naz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:30:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BFC9D22582;
+        Mon, 28 Dec 2020 13:30:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160164;
-        bh=GwLfizYky5koo3y6Jw4xslhpspIHRjQRdYqK8Qj9jUs=;
+        s=korg; t=1609162215;
+        bh=FMkKkDgfoQxTyWnUE2Qst9nVebKm1Hc8yMuI6M2USe4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QBmejKic6Oa9XdVYEcmz+pz5+91HgDEqY4uDtPAtlubXXMnc0io9t6bWaW5+YNr1v
-         zyyyfo7cPWTX//kbBu+yftHRIdoWrfy37da8d5ZJAbFxw8GQFvRb1ppq+4LIJWp5uH
-         VoYapmcRR48y6BRuMiGfqLilO5LmZPZ+0s+/piOU=
+        b=nGM5AH9FU/Mf+jyt+66+qcEx5YtksbMxd0th5uvHY4UTGLaYu/ygss2b8kcHGQb6F
+         9U+bMZz/tMYceQCnb4MAQWndhPNlESdi/GVbort3R8AsRerVoTKx8/gLnUEdpzakX/
+         XzBpjyrtk5eq6O7Zt5sJxUKnqjSjiLmDhwmGeLow=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Calum Mackay <calum.mackay@oracle.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Antoine Tenart <atenart@kernel.org>,
+        Tsahee Zidenberg <tsahee@annapurnalabs.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 061/132] lockd: dont use interval-based rebinding over TCP
-Date:   Mon, 28 Dec 2020 13:49:05 +0100
-Message-Id: <20201228124849.401233508@linuxfoundation.org>
+Subject: [PATCH 4.19 227/346] irqchip/alpine-msi: Fix freeing of interrupts on allocation error path
+Date:   Mon, 28 Dec 2020 13:49:06 +0100
+Message-Id: <20201228124930.747944053@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,97 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Calum Mackay <calum.mackay@oracle.com>
+From: Marc Zyngier <maz@kernel.org>
 
-[ Upstream commit 9b82d88d5976e5f2b8015d58913654856576ace5 ]
+[ Upstream commit 3841245e8498a789c65dedd7ffa8fb2fee2c0684 ]
 
-NLM uses an interval-based rebinding, i.e. it clears the transport's
-binding under certain conditions if more than 60 seconds have elapsed
-since the connection was last bound.
+The alpine-msi driver has an interesting allocation error handling,
+where it frees the same interrupts repeatedly. Hilarity follows.
 
-This rebinding is not necessary for an autobind RPC client over a
-connection-oriented protocol like TCP.
+This code is probably never executed, but let's fix it nonetheless.
 
-It can also cause problems: it is possible for nlm_bind_host() to clear
-XPRT_BOUND whilst a connection worker is in the middle of trying to
-reconnect, after it had already been checked in xprt_connect().
-
-When the connection worker notices that XPRT_BOUND has been cleared
-under it, in xs_tcp_finish_connecting(), that results in:
-
-	xs_tcp_setup_socket: connect returned unhandled error -107
-
-Worse, it's possible that the two can get into lockstep, resulting in
-the same behaviour repeated indefinitely, with the above error every
-300 seconds, without ever recovering, and the connection never being
-established. This has been seen in practice, with a large number of NLM
-client tasks, following a server restart.
-
-The existing callers of nlm_bind_host & nlm_rebind_host should not need
-to force the rebind, for TCP, so restrict the interval-based rebinding
-to UDP only.
-
-For TCP, we will still rebind when needed, e.g. on timeout, and connection
-error (including closure), since connection-related errors on an existing
-connection, ECONNREFUSED when trying to connect, and rpc_check_timeout(),
-already unconditionally clear XPRT_BOUND.
-
-To avoid having to add the fix, and explanation, to both nlm_bind_host()
-and nlm_rebind_host(), remove the duplicate code from the former, and
-have it call the latter.
-
-Drop the dprintk, which adds no value over a trace.
-
-Signed-off-by: Calum Mackay <calum.mackay@oracle.com>
-Fixes: 35f5a422ce1a ("SUNRPC: new interface to force an RPC rebind")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Fixes: e6b78f2c3e14 ("irqchip: Add the Alpine MSIX interrupt controller")
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Reviewed-by: Antoine Tenart <atenart@kernel.org>
+Cc: Tsahee Zidenberg <tsahee@annapurnalabs.com>
+Cc: Antoine Tenart <atenart@kernel.org>
+Link: https://lore.kernel.org/r/20201129135525.396671-1-maz@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/lockd/host.c | 20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
+ drivers/irqchip/irq-alpine-msi.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/fs/lockd/host.c b/fs/lockd/host.c
-index c7eb47f2fb6c3..603fa652b965d 100644
---- a/fs/lockd/host.c
-+++ b/fs/lockd/host.c
-@@ -430,12 +430,7 @@ nlm_bind_host(struct nlm_host *host)
- 	 * RPC rebind is required
- 	 */
- 	if ((clnt = host->h_rpcclnt) != NULL) {
--		if (time_after_eq(jiffies, host->h_nextrebind)) {
--			rpc_force_rebind(clnt);
--			host->h_nextrebind = jiffies + NLM_HOST_REBIND;
--			dprintk("lockd: next rebind in %lu jiffies\n",
--					host->h_nextrebind - jiffies);
--		}
-+		nlm_rebind_host(host);
- 	} else {
- 		unsigned long increment = nlmsvc_timeout;
- 		struct rpc_timeout timeparms = {
-@@ -483,13 +478,20 @@ nlm_bind_host(struct nlm_host *host)
- 	return clnt;
- }
+diff --git a/drivers/irqchip/irq-alpine-msi.c b/drivers/irqchip/irq-alpine-msi.c
+index 23a3b877f7f1d..ede02dc2bcd0b 100644
+--- a/drivers/irqchip/irq-alpine-msi.c
++++ b/drivers/irqchip/irq-alpine-msi.c
+@@ -165,8 +165,7 @@ static int alpine_msix_middle_domain_alloc(struct irq_domain *domain,
+ 	return 0;
  
--/*
-- * Force a portmap lookup of the remote lockd port
-+/**
-+ * nlm_rebind_host - If needed, force a portmap lookup of the peer's lockd port
-+ * @host: NLM host handle for peer
-+ *
-+ * This is not needed when using a connection-oriented protocol, such as TCP.
-+ * The existing autobind mechanism is sufficient to force a rebind when
-+ * required, e.g. on connection state transitions.
-  */
- void
- nlm_rebind_host(struct nlm_host *host)
- {
--	dprintk("lockd: rebind host %s\n", host->h_name);
-+	if (host->h_proto != IPPROTO_UDP)
-+		return;
-+
- 	if (host->h_rpcclnt && time_after_eq(jiffies, host->h_nextrebind)) {
- 		rpc_force_rebind(host->h_rpcclnt);
- 		host->h_nextrebind = jiffies + NLM_HOST_REBIND;
+ err_sgi:
+-	while (--i >= 0)
+-		irq_domain_free_irqs_parent(domain, virq, i);
++	irq_domain_free_irqs_parent(domain, virq, i - 1);
+ 	alpine_msix_free_sgi(priv, sgi, nr_irqs);
+ 	return err;
+ }
 -- 
 2.27.0
 
