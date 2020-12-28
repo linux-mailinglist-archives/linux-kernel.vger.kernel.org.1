@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4FD82E67FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:32:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B32A2E691B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:47:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634039AbgL1QbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:31:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33172 "EHLO mail.kernel.org"
+        id S2634636AbgL1Qoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:44:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730586AbgL1NFR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:05:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C4D622245C;
-        Mon, 28 Dec 2020 13:04:35 +0000 (UTC)
+        id S1728314AbgL1M5Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:57:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA5ED21D94;
+        Mon, 28 Dec 2020 12:56:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160676;
-        bh=rN1UhIVGmv1kbOBSZbu95fHxVkQe5md3+jf0hDU4j3c=;
+        s=korg; t=1609160196;
+        bh=cRicDIf1s2m/epyd1+FFfQ5TZVTtW4rSXtzd0631iK0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iyheYx+9LRpvtrXlfHeP7XlcK3PPZO+EyEHtB39PzM7kFyrQvSefGL1QHZLUqCVP9
-         8qBH/KOHU1WiKUg1vOPZxhK8VlNuhFnk/73bURDPY71n8YVAfGXSHw+XhMjbatYyyU
-         Kfp+SkCLOqK2M3XzMVEnm4V07BRHqhgTk43H4vs8=
+        b=emSZyFGxI7bL8iBxbFiS1qzfs+GzC7rq+Qx+Rb8UivjbAQMbBNyB2p3NfIC0snBFE
+         fjl70nIMjpiByZxpSa4JLKff+FR+LMOfBflzk3RHIhLb72piZ96n/Ac9GJk9lvmvvE
+         HzVIXko96VMnANWFBILTbmkAKQYZsXBCXUo/y7nc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Kozlov Sergey <serjk@netup.ru>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.9 133/175] media: netup_unidvb: Dont leak SPI master in probe error path
+        stable@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH 4.4 102/132] ACPI: PNP: compare the string length in the matching_id()
 Date:   Mon, 28 Dec 2020 13:49:46 +0100
-Message-Id: <20201228124859.696786162@linuxfoundation.org>
+Message-Id: <20201228124851.349723624@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,69 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: Hui Wang <hui.wang@canonical.com>
 
-commit e297ddf296de35037fa97f4302782def196d350a upstream.
+commit b08221c40febcbda9309dd70c61cf1b0ebb0e351 upstream.
 
-If the call to spi_register_master() fails on probe of the NetUP
-Universal DVB driver, the spi_master struct is erroneously not freed.
+Recently we met a touchscreen problem on some Thinkpad machines, the
+touchscreen driver (i2c-hid) is not loaded and the touchscreen can't
+work.
 
-Likewise, if spi_new_device() fails, the spi_controller struct is
-not unregistered.  Plug the leaks.
+An i2c ACPI device with the name WACF2200 is defined in the BIOS, with
+the current rule in matching_id(), this device will be regarded as
+a PNP device since there is WACFXXX in the acpi_pnp_device_ids[] and
+this PNP device is attached to the acpi device as the 1st
+physical_node, this will make the i2c bus match fail when i2c bus
+calls acpi_companion_match() to match the acpi_id_table in the i2c-hid
+driver.
 
-While at it, fix an ordering issue in netup_spi_release() wherein
-spi_unregister_master() is called after fiddling with the IRQ control
-register.  The correct order is to call spi_unregister_master() *before*
-this teardown step because bus accesses may still be ongoing until that
-function returns.
+WACF2200 is an i2c device instead of a PNP device, after adding the
+string length comparing, the matching_id() will return false when
+matching WACF2200 and WACFXXX, and it is reasonable to compare the
+string length when matching two IDs.
 
-Fixes: 52b1eaf4c59a ("[media] netup_unidvb: NetUP Universal DVB-S/S2/T/T2/C PCI-E card driver")
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Reviewed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc: <stable@vger.kernel.org> # v4.3+: 5e844cc37a5c: spi: Introduce device-managed SPI controller allocation
-Cc: <stable@vger.kernel.org> # v4.3+
-Cc: Kozlov Sergey <serjk@netup.ru>
-Link: https://lore.kernel.org/r/c4c24f333fc7840f4a3db24789e6e10dd660bede.1607286887.git.lukas@wunner.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+Cc: All applicable <stable@vger.kernel.org>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/media/pci/netup_unidvb/netup_unidvb_spi.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/acpi/acpi_pnp.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/media/pci/netup_unidvb/netup_unidvb_spi.c
-+++ b/drivers/media/pci/netup_unidvb/netup_unidvb_spi.c
-@@ -184,7 +184,7 @@ int netup_spi_init(struct netup_unidvb_d
- 	struct spi_master *master;
- 	struct netup_spi *nspi;
+--- a/drivers/acpi/acpi_pnp.c
++++ b/drivers/acpi/acpi_pnp.c
+@@ -320,6 +320,9 @@ static bool matching_id(const char *idst
+ {
+ 	int i;
  
--	master = spi_alloc_master(&ndev->pci_dev->dev,
-+	master = devm_spi_alloc_master(&ndev->pci_dev->dev,
- 		sizeof(struct netup_spi));
- 	if (!master) {
- 		dev_err(&ndev->pci_dev->dev,
-@@ -217,6 +217,7 @@ int netup_spi_init(struct netup_unidvb_d
- 		ndev->pci_slot,
- 		ndev->pci_func);
- 	if (!spi_new_device(master, &netup_spi_board)) {
-+		spi_unregister_master(master);
- 		ndev->spi = NULL;
- 		dev_err(&ndev->pci_dev->dev,
- 			"%s(): unable to create SPI device\n", __func__);
-@@ -235,13 +236,13 @@ void netup_spi_release(struct netup_unid
- 	if (!spi)
- 		return;
- 
-+	spi_unregister_master(spi->master);
- 	spin_lock_irqsave(&spi->lock, flags);
- 	reg = readw(&spi->regs->control_stat);
- 	writew(reg | NETUP_SPI_CTRL_IRQ, &spi->regs->control_stat);
- 	reg = readw(&spi->regs->control_stat);
- 	writew(reg & ~NETUP_SPI_CTRL_IMASK, &spi->regs->control_stat);
- 	spin_unlock_irqrestore(&spi->lock, flags);
--	spi_unregister_master(spi->master);
- 	ndev->spi = NULL;
- }
++	if (strlen(idstr) != strlen(list_id))
++		return false;
++
+ 	if (memcmp(idstr, list_id, 3))
+ 		return false;
  
 
 
