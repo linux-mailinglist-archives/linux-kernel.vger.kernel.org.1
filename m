@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 454292E66B0
+	by mail.lfdr.de (Postfix) with ESMTP id B34D42E66B1
 	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:17:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633085AbgL1QO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:14:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54604 "EHLO mail.kernel.org"
+        id S2633091AbgL1QPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:15:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394281AbgL1QOt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 11:14:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D78D8207C9;
-        Mon, 28 Dec 2020 16:14:07 +0000 (UTC)
+        id S2633076AbgL1QOx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 11:14:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D0974207FB;
+        Mon, 28 Dec 2020 16:14:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609172048;
-        bh=naum8L8oSehOyhZmfJmb4m7YJLenIjVIzdFir8lLc4Y=;
+        s=k20201202; t=1609172053;
+        bh=lpQg7KEIaNjzaVRL5PdEW5Sw6Kl0BuNVVJChQmSvcws=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=h1rW5zzIQZH4aI8WfiLkf/H3jx412sBhcSWA5zblH20t5VqzeAUM5+l5hlWx2HKGN
-         xtaoIbdRQ6ci3wmoSmfGj5FYgAGz+Ytpo3xQVxrZcMTf4Jbi87JwHXB+cqmSTej1Hi
-         jqOnT683Mx2vtMQZBuZtd47fu4vik+9M+wWEMAaffzxSWuogop784gvr0naI6ciwAV
-         XUr/guDxdV56S7XLFygf/RxHXC9fef7t/ZB3JPQs1t5ZWrLrlGPaNX6I/fc4OXuQ3i
-         qQ9ixa3umZpiAMsCXEybBvLvCPHYbLHYYjxT7w4+d1G7T9/kzJwV1yo24yT9xV53MS
-         1XVn//AaQESiA==
+        b=EE3/XBxTEkj9kyGWxu8xMgld8BGNzUtEJl85Qd7Sdno2Q+yYAud+wy/5T3+nJ+lWQ
+         XaHYJ9nSXZkDLGr68+sc3kQhQ62AbNMNwG+nI9ghcrHdlv8dNxUIvfR6LyUjPSmvZs
+         W5k5Zj9ipkBH2dwbsGzLxWmCYEhoVCHWnSdbV8QaC5DYLi1tNaXJnYG8UNmLrZ0BM0
+         bAY0w8+l/kJJzAQxQVWcrTFyR5c2XhV3xqF8TeNFBzzsWWtoWI9hItktqLFErFqU7J
+         I7QffXOL+y9WzbR7vV4mJlZLLrxljDIusiy4WKAgIM6Bd6B+szqwNIITlo3TPrOSxt
+         gNe2VYgAuGTpw==
 From:   Mark Brown <broonie@kernel.org>
-To:     lgirdwood@gmail.com, jingoohan1@gmail.com,
-        cy_huang <u0084500@gmail.com>, lee.jones@linaro.org,
-        b.zolnierkie@samsung.com, daniel.thompson@linaro.org
-Cc:     linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        ChiYuan Huang <cy_huang@richtek.com>
-In-Reply-To: <1608217244-314-1-git-send-email-u0084500@gmail.com>
-References: <1608217244-314-1-git-send-email-u0084500@gmail.com>
-Subject: Re: (subset) [PATCH v5 1/6] mfd: rt4831: Adds support for Richtek RT4831 core
-Message-Id: <160917202696.51934.11035418068149645714.b4-ty@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+In-Reply-To: <20201221040610.12809-1-rdunlap@infradead.org>
+References: <20201221040610.12809-1-rdunlap@infradead.org>
+Subject: Re: [PATCH] lib/linear_ranges: fix repeated words & one typo
+Message-Id: <160917202696.51934.15084967539647503221.b4-ty@kernel.org>
 Date:   Mon, 28 Dec 2020 16:13:46 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -42,9 +39,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Dec 2020 23:00:39 +0800, cy_huang wrote:
-> This adds support Richtek RT4831 core. It includes four channel WLED driver
-> and Display Bias Voltage outputs.
+On Sun, 20 Dec 2020 20:06:10 -0800, Randy Dunlap wrote:
+> Change "which which" to "for which" in 3 places.
+> Change "ranges" to possessive "range's" in 1 place.
 
 Applied to
 
@@ -52,10 +49,8 @@ Applied to
 
 Thanks!
 
-[3/6] regulator: rt4831: Adds DT binding document for Richtek RT4831 DSV regulator
-      commit: 934b05e818620e922151734b2d0e070e388e3c53
-[6/6] regulator: rt4831: Adds support for Richtek RT4831 DSV regulator
-      commit: 9351ab8b0cb61ffbef30343d28d1855e329c98fb
+[1/1] lib/linear_ranges: fix repeated words & one typo
+      commit: 4d5270e70981c278307e6c25666c300653ed5f4c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
