@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A909D2E4290
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:25:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0F4E2E3C27
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:59:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437281AbgL1PYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:24:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33280 "EHLO mail.kernel.org"
+        id S2407409AbgL1N7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:59:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407613AbgL1N71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:59:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 36290207B2;
-        Mon, 28 Dec 2020 13:58:46 +0000 (UTC)
+        id S2407552AbgL1N7F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:59:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 166D5207B6;
+        Mon, 28 Dec 2020 13:58:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163926;
-        bh=W0L6kL1OSxKoJDIBmCbwWyQB3weWlp3Og+PBPNAjtCM=;
+        s=korg; t=1609163929;
+        bh=126DyR7Al/jU3BS/3tjkiSs5SvipR9PHry6P/nsXQb0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FfdS6km2KDVbUKqpFZJU3iu6hnu1cy4hWE874ogF/EJvdC9bZL37sA4vC0s6yOwyj
-         4r5aHUJRGO0Vyoe5Kvm0ptT1urQhOdGzBUVqHfo4ZYZz3HjvI65nMkU1v5QZHn+yNv
-         ZEbTERv81+aUMhZQng/nNkMCDwtu7aAuycMdM7uY=
+        b=lEq+RFUgH2q19QWKJAW1dZFgm9AjnCu/Q3VQcfgvBGdlv3lN0Q3IHMbdpoP76G5VA
+         VlSHtvj2MzrBIx5bnI1IilWrASnM5SR+8+6WI6bW8zDRfqzY5CjSqlS7h1lC5VX4Hx
+         Wmf80puKwiayNrgclase2ltplE+XXfz+HfTzw/qI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Niranjana Vishwanathapura <niranjana.vishwanathapura@intel.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= 
-        <thomas.hellstrom@linux.intel.com>
-Subject: [PATCH 5.4 441/453] dma-buf/dma-resv: Respect num_fences when initializing the shared fence list.
-Date:   Mon, 28 Dec 2020 13:51:17 +0100
-Message-Id: <20201228124958.440896210@linuxfoundation.org>
+        stable@vger.kernel.org, Olivier Benjamin <oliben@amazon.com>,
+        Pawel Wieczorkiewicz <wipawel@amazon.de>,
+        Julien Grall <jgrall@amazon.com>,
+        Juergen Gross <jgross@suse.com>
+Subject: [PATCH 5.4 442/453] xen-blkback: set ring->xenblkd to NULL after kthread_stop()
+Date:   Mon, 28 Dec 2020 13:51:18 +0100
+Message-Id: <20201228124958.489563361@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
 References: <20201228124937.240114599@linuxfoundation.org>
@@ -42,39 +41,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+From: Pawel Wieczorkiewicz <wipawel@amazon.de>
 
-commit bf8975837dac156c33a4d15d46602700998cb6dd upstream.
+commit 1c728719a4da6e654afb9cc047164755072ed7c9 upstream.
 
-We hardcode the maximum number of shared fences to 4, instead of
-respecting num_fences. Use a minimum of 4, but more if num_fences
-is higher.
+When xen_blkif_disconnect() is called, the kernel thread behind the
+block interface is stopped by calling kthread_stop(ring->xenblkd).
+The ring->xenblkd thread pointer being non-NULL determines if the
+thread has been already stopped.
+Normally, the thread's function xen_blkif_schedule() sets the
+ring->xenblkd to NULL, when the thread's main loop ends.
 
-This seems to have been an oversight when first implementing the
-api.
+However, when the thread has not been started yet (i.e.
+wake_up_process() has not been called on it), the xen_blkif_schedule()
+function would not be called yet.
 
-Fixes: 04a5faa8cbe5 ("reservation: update api and add some helpers")
-Cc: <stable@vger.kernel.org> # v3.17+
-Reported-by: Niranjana Vishwanathapura <niranjana.vishwanathapura@intel.com>
-Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Reviewed-by: Thomas Hellström <thomas.hellstrom@linux.intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20201124115707.406917-1-maarten.lankhorst@linux.intel.com
+In such case the kthread_stop() call returns -EINTR and the
+ring->xenblkd remains dangling.
+When this happens, any consecutive call to xen_blkif_disconnect (for
+example in frontend_changed() callback) leads to a kernel crash in
+kthread_stop() (e.g. NULL pointer dereference in exit_creds()).
+
+This is XSA-350.
+
+Cc: <stable@vger.kernel.org> # 4.12
+Fixes: a24fa22ce22a ("xen/blkback: don't use xen_blkif_get() in xen-blkback kthread")
+Reported-by: Olivier Benjamin <oliben@amazon.com>
+Reported-by: Pawel Wieczorkiewicz <wipawel@amazon.de>
+Signed-off-by: Pawel Wieczorkiewicz <wipawel@amazon.de>
+Reviewed-by: Julien Grall <jgrall@amazon.com>
+Reviewed-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/dma-buf/dma-resv.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/block/xen-blkback/xenbus.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/dma-buf/dma-resv.c
-+++ b/drivers/dma-buf/dma-resv.c
-@@ -161,7 +161,7 @@ int dma_resv_reserve_shared(struct dma_r
- 			max = max(old->shared_count + num_fences,
- 				  old->shared_max * 2);
- 	} else {
--		max = 4;
-+		max = max(4ul, roundup_pow_of_two(num_fences));
- 	}
+--- a/drivers/block/xen-blkback/xenbus.c
++++ b/drivers/block/xen-blkback/xenbus.c
+@@ -256,6 +256,7 @@ static int xen_blkif_disconnect(struct x
  
- 	new = dma_resv_list_alloc(max);
+ 		if (ring->xenblkd) {
+ 			kthread_stop(ring->xenblkd);
++			ring->xenblkd = NULL;
+ 			wake_up(&ring->shutdown_wq);
+ 		}
+ 
 
 
