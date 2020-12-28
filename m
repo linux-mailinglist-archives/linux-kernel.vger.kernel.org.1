@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBFF72E3B06
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:46:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA8E2E63E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:45:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404727AbgL1No4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:44:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44922 "EHLO mail.kernel.org"
+        id S2407358AbgL1PoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:44:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45502 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391994AbgL1Nod (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:44:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10EF2206D4;
-        Mon, 28 Dec 2020 13:44:16 +0000 (UTC)
+        id S2392018AbgL1NpF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:45:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 76BFB20738;
+        Mon, 28 Dec 2020 13:44:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163057;
-        bh=7ZHXY9GvIdgV9UtZpoUr77Rfjkpt79bSQK93shU30A8=;
+        s=korg; t=1609163090;
+        bh=q3tVlUYuJYwRWgBYZAblJRwHUc87xIiOmQlNyMvFcdE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XgctZQ1RZLNodW6DvTCVjfzAWZsThywLQiQ3XScvRS1B6SIdpECZPe8Fff0/0oD/S
-         5P2bd5js2r0ERWxsqubS3nz+OFhz5wIWB+N0j5In07BuiMt+ItnOAAGPehasiKPcax
-         19WIWB1N+vCQLokSDAjtpKBHi/oiebnHWDBrfssc=
+        b=h90uL+O6DhwYCEq8c91+aQqJDyRJ4ZfHjnFsgo9Kg+wGIDl1Byh1OY94qqdee9nNN
+         1mzWYrUGrEBK5P8/lqj4DlQx0gnQN5N9ogoklXdImItbX375wisXk7/YxF3rEnDU1z
+         cBrMSfcmr8ypqoXyynIqY1Io9o20ODCte2Y9soY0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
+        Martin Wilck <mwilck@suse.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 137/453] ASoC: meson: fix COMPILE_TEST error
-Date:   Mon, 28 Dec 2020 13:46:13 +0100
-Message-Id: <20201228124943.798416608@linuxfoundation.org>
+Subject: [PATCH 5.4 138/453] scsi: core: Fix VPD LUN ID designator priorities
+Date:   Mon, 28 Dec 2020 13:46:14 +0100
+Message-Id: <20201228124943.848376874@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
 References: <20201228124937.240114599@linuxfoundation.org>
@@ -41,43 +41,259 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jerome Brunet <jbrunet@baylibre.com>
+From: Martin Wilck <mwilck@suse.com>
 
-[ Upstream commit 299fe9937dbd1a4d9a1da6a2b6f222298534ca57 ]
+[ Upstream commit 2e4209b3806cda9b89c30fd5e7bfecb7044ec78b ]
 
-When compiled with CONFIG_HAVE_CLK, the kernel need to get provider for the
-clock API. This is usually selected by the platform and the sound drivers
-should not really care about this. However COMPILE_TEST is special and the
-platform required may not have been selected, leading to this type of
-error:
+The current implementation of scsi_vpd_lun_id() uses the designator length
+as an implicit measure of priority. This works most of the time, but not
+always. For example, some Hitachi storage arrays return this in VPD 0x83:
 
-> aiu-encoder-spdif.c:(.text+0x3a0): undefined reference to `clk_set_parent'
+VPD INQUIRY: Device Identification page
+  Designation descriptor number 1, descriptor length: 24
+    designator_type: T10 vendor identification,  code_set: ASCII
+    associated with the Addressed logical unit
+      vendor id: HITACHI
+      vendor specific: 5030C3502025
+  Designation descriptor number 2, descriptor length: 6
+    designator_type: vendor specific [0x0],  code_set: Binary
+    associated with the Target port
+      vendor specific: 08 03
+  Designation descriptor number 3, descriptor length: 20
+    designator_type: NAA,  code_set: Binary
+    associated with the Addressed logical unit
+      NAA 6, IEEE Company_id: 0x60e8
+      Vendor Specific Identifier: 0x7c35000
+      Vendor Specific Identifier Extension: 0x30c35000002025
+      [0x60060e8007c350000030c35000002025]
 
-Since we need a sane provider of the API with COMPILE_TEST, depends on
-COMMON_CLK.
+The current code would use the first descriptor because it's longer than
+the NAA descriptor. But this is wrong, the kernel is supposed to prefer NAA
+descriptors over T10 vendor ID. Designator length should only be used to
+compare designators of the same type.
 
-Fixes: 6dc4fa179fb8 ("ASoC: meson: add axg fifo base driver")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Link: https://lore.kernel.org/r/20201116172423.546855-1-jbrunet@baylibre.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+This patch addresses the issue by separating designator priority and
+length.
+
+Link: https://lore.kernel.org/r/20201029170846.14786-1-mwilck@suse.com
+Fixes: 9983bed3907c ("scsi: Add scsi_vpd_lun_id()")
+Reviewed-by: Hannes Reinecke <hare@suse.de>
+Signed-off-by: Martin Wilck <mwilck@suse.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/meson/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/scsi_lib.c | 126 +++++++++++++++++++++++++++-------------
+ 1 file changed, 86 insertions(+), 40 deletions(-)
 
-diff --git a/sound/soc/meson/Kconfig b/sound/soc/meson/Kconfig
-index 2e3676147ceaf..e0d24592ebd70 100644
---- a/sound/soc/meson/Kconfig
-+++ b/sound/soc/meson/Kconfig
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0-only
- menu "ASoC support for Amlogic platforms"
--	depends on ARCH_MESON || COMPILE_TEST
-+	depends on ARCH_MESON || (COMPILE_TEST && COMMON_CLK)
+diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
+index e6944e1cba2ba..b5867e1566f42 100644
+--- a/drivers/scsi/scsi_lib.c
++++ b/drivers/scsi/scsi_lib.c
+@@ -2930,6 +2930,78 @@ void sdev_enable_disk_events(struct scsi_device *sdev)
+ }
+ EXPORT_SYMBOL(sdev_enable_disk_events);
  
- config SND_MESON_AXG_FIFO
- 	tristate
++static unsigned char designator_prio(const unsigned char *d)
++{
++	if (d[1] & 0x30)
++		/* not associated with LUN */
++		return 0;
++
++	if (d[3] == 0)
++		/* invalid length */
++		return 0;
++
++	/*
++	 * Order of preference for lun descriptor:
++	 * - SCSI name string
++	 * - NAA IEEE Registered Extended
++	 * - EUI-64 based 16-byte
++	 * - EUI-64 based 12-byte
++	 * - NAA IEEE Registered
++	 * - NAA IEEE Extended
++	 * - EUI-64 based 8-byte
++	 * - SCSI name string (truncated)
++	 * - T10 Vendor ID
++	 * as longer descriptors reduce the likelyhood
++	 * of identification clashes.
++	 */
++
++	switch (d[1] & 0xf) {
++	case 8:
++		/* SCSI name string, variable-length UTF-8 */
++		return 9;
++	case 3:
++		switch (d[4] >> 4) {
++		case 6:
++			/* NAA registered extended */
++			return 8;
++		case 5:
++			/* NAA registered */
++			return 5;
++		case 4:
++			/* NAA extended */
++			return 4;
++		case 3:
++			/* NAA locally assigned */
++			return 1;
++		default:
++			break;
++		}
++		break;
++	case 2:
++		switch (d[3]) {
++		case 16:
++			/* EUI64-based, 16 byte */
++			return 7;
++		case 12:
++			/* EUI64-based, 12 byte */
++			return 6;
++		case 8:
++			/* EUI64-based, 8 byte */
++			return 3;
++		default:
++			break;
++		}
++		break;
++	case 1:
++		/* T10 vendor ID */
++		return 1;
++	default:
++		break;
++	}
++
++	return 0;
++}
++
+ /**
+  * scsi_vpd_lun_id - return a unique device identification
+  * @sdev: SCSI device
+@@ -2946,7 +3018,7 @@ EXPORT_SYMBOL(sdev_enable_disk_events);
+  */
+ int scsi_vpd_lun_id(struct scsi_device *sdev, char *id, size_t id_len)
+ {
+-	u8 cur_id_type = 0xff;
++	u8 cur_id_prio = 0;
+ 	u8 cur_id_size = 0;
+ 	const unsigned char *d, *cur_id_str;
+ 	const struct scsi_vpd *vpd_pg83;
+@@ -2959,20 +3031,6 @@ int scsi_vpd_lun_id(struct scsi_device *sdev, char *id, size_t id_len)
+ 		return -ENXIO;
+ 	}
+ 
+-	/*
+-	 * Look for the correct descriptor.
+-	 * Order of preference for lun descriptor:
+-	 * - SCSI name string
+-	 * - NAA IEEE Registered Extended
+-	 * - EUI-64 based 16-byte
+-	 * - EUI-64 based 12-byte
+-	 * - NAA IEEE Registered
+-	 * - NAA IEEE Extended
+-	 * - T10 Vendor ID
+-	 * as longer descriptors reduce the likelyhood
+-	 * of identification clashes.
+-	 */
+-
+ 	/* The id string must be at least 20 bytes + terminating NULL byte */
+ 	if (id_len < 21) {
+ 		rcu_read_unlock();
+@@ -2982,8 +3040,9 @@ int scsi_vpd_lun_id(struct scsi_device *sdev, char *id, size_t id_len)
+ 	memset(id, 0, id_len);
+ 	d = vpd_pg83->data + 4;
+ 	while (d < vpd_pg83->data + vpd_pg83->len) {
+-		/* Skip designators not referring to the LUN */
+-		if ((d[1] & 0x30) != 0x00)
++		u8 prio = designator_prio(d);
++
++		if (prio == 0 || cur_id_prio > prio)
+ 			goto next_desig;
+ 
+ 		switch (d[1] & 0xf) {
+@@ -2991,28 +3050,19 @@ int scsi_vpd_lun_id(struct scsi_device *sdev, char *id, size_t id_len)
+ 			/* T10 Vendor ID */
+ 			if (cur_id_size > d[3])
+ 				break;
+-			/* Prefer anything */
+-			if (cur_id_type > 0x01 && cur_id_type != 0xff)
+-				break;
++			cur_id_prio = prio;
+ 			cur_id_size = d[3];
+ 			if (cur_id_size + 4 > id_len)
+ 				cur_id_size = id_len - 4;
+ 			cur_id_str = d + 4;
+-			cur_id_type = d[1] & 0xf;
+ 			id_size = snprintf(id, id_len, "t10.%*pE",
+ 					   cur_id_size, cur_id_str);
+ 			break;
+ 		case 0x2:
+ 			/* EUI-64 */
+-			if (cur_id_size > d[3])
+-				break;
+-			/* Prefer NAA IEEE Registered Extended */
+-			if (cur_id_type == 0x3 &&
+-			    cur_id_size == d[3])
+-				break;
++			cur_id_prio = prio;
+ 			cur_id_size = d[3];
+ 			cur_id_str = d + 4;
+-			cur_id_type = d[1] & 0xf;
+ 			switch (cur_id_size) {
+ 			case 8:
+ 				id_size = snprintf(id, id_len,
+@@ -3030,17 +3080,14 @@ int scsi_vpd_lun_id(struct scsi_device *sdev, char *id, size_t id_len)
+ 						   cur_id_str);
+ 				break;
+ 			default:
+-				cur_id_size = 0;
+ 				break;
+ 			}
+ 			break;
+ 		case 0x3:
+ 			/* NAA */
+-			if (cur_id_size > d[3])
+-				break;
++			cur_id_prio = prio;
+ 			cur_id_size = d[3];
+ 			cur_id_str = d + 4;
+-			cur_id_type = d[1] & 0xf;
+ 			switch (cur_id_size) {
+ 			case 8:
+ 				id_size = snprintf(id, id_len,
+@@ -3053,26 +3100,25 @@ int scsi_vpd_lun_id(struct scsi_device *sdev, char *id, size_t id_len)
+ 						   cur_id_str);
+ 				break;
+ 			default:
+-				cur_id_size = 0;
+ 				break;
+ 			}
+ 			break;
+ 		case 0x8:
+ 			/* SCSI name string */
+-			if (cur_id_size + 4 > d[3])
++			if (cur_id_size > d[3])
+ 				break;
+ 			/* Prefer others for truncated descriptor */
+-			if (cur_id_size && d[3] > id_len)
+-				break;
++			if (d[3] > id_len) {
++				prio = 2;
++				if (cur_id_prio > prio)
++					break;
++			}
++			cur_id_prio = prio;
+ 			cur_id_size = id_size = d[3];
+ 			cur_id_str = d + 4;
+-			cur_id_type = d[1] & 0xf;
+ 			if (cur_id_size >= id_len)
+ 				cur_id_size = id_len - 1;
+ 			memcpy(id, cur_id_str, cur_id_size);
+-			/* Decrease priority for truncated descriptor */
+-			if (cur_id_size != id_size)
+-				cur_id_size = 6;
+ 			break;
+ 		default:
+ 			break;
 -- 
 2.27.0
 
