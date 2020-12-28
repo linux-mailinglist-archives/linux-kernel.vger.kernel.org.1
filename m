@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 172A82E3962
+	by mail.lfdr.de (Postfix) with ESMTP id 838952E3963
 	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:25:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388376AbgL1NW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:22:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51142 "EHLO mail.kernel.org"
+        id S2388391AbgL1NXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:23:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387466AbgL1NWt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:22:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7973B229EF;
-        Mon, 28 Dec 2020 13:22:08 +0000 (UTC)
+        id S2388293AbgL1NWw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:22:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7965722AAA;
+        Mon, 28 Dec 2020 13:22:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161729;
-        bh=eOP+vXFR5tfMTr0Q8g3JlI51nP/diSCqfmjt3wSh9g8=;
+        s=korg; t=1609161732;
+        bh=3VZTTU1/DT5s99lAbcVAK0JpoApMgDxTEM2O7AhCz5k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pIfJW7lgRaa+UQtxGD1RjTBtaWCivvqKGDN9qaABstqcx5P9xCRJBFU6Zt3b2Xbzs
-         a+HV1yIrXMpRbA39UmiEIKzYAFVZ3KYRbxA7I0TueF1Bd31UxUSYoFWWKGJNpriY/B
-         2igYMZbEUwJAL4GvInFoiMmcv5Ozk3cU6UQeuf+I=
+        b=ba/yjm6xop4sMUz8y67TU6EmorwSwE/1zTzwvsEurRkN/XaAXQY1lY31XE6t5vZno
+         EkrtC/veUqh5y9V75hyj3xr35lpfLmpCmD5/cEKHQZquVFU6Rq2Ia763r2NbVfitJK
+         lccLQjwtkF5j7wBNdD4elh2aLOw1Gj5Vw3YLk3D0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 062/346] clk: renesas: r9a06g032: Drop __packed for portability
-Date:   Mon, 28 Dec 2020 13:46:21 +0100
-Message-Id: <20201228124922.794235996@linuxfoundation.org>
+Subject: [PATCH 4.19 063/346] block: factor out requeue handling from dispatch code
+Date:   Mon, 28 Dec 2020 13:46:22 +0100
+Message-Id: <20201228124922.842719364@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
 References: <20201228124919.745526410@linuxfoundation.org>
@@ -41,53 +41,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-[ Upstream commit ceabbf94c317c6175dee6e91805fca4a6353745a ]
+[ Upstream commit c92a41031a6d57395889b5c87cea359220a24d2a ]
 
-The R9A06G032 clock driver uses an array of packed structures to reduce
-kernel size.  However, this array contains pointers, which are no longer
-aligned naturally, and cannot be relocated on PPC64.  Hence when
-compile-testing this driver on PPC64 with CONFIG_RELOCATABLE=y (e.g.
-PowerPC allyesconfig), the following warnings are produced:
+Factor out the requeue handling from the dispatch code, this will make
+subsequent addition of different requeueing schemes easier.
 
-    WARNING: 136 bad relocations
-    c000000000616be3 R_PPC64_UADDR64   .rodata+0x00000000000cf338
-    c000000000616bfe R_PPC64_UADDR64   .rodata+0x00000000000cf370
-    ...
-
-Fix this by dropping the __packed attribute from the r9a06g032_clkdesc
-definition, trading a small size increase for portability.
-
-This increases the 156-entry clock table by 1 byte per entry, but due to
-the compiler generating more efficient code for unpacked accesses, the
-net size increase is only 76 bytes (gcc 9.3.0 on arm32).
-
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Fixes: 4c3d88526eba2143 ("clk: renesas: Renesas R9A06G032 clock driver")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://lore.kernel.org/r/20201130085743.1656317-1-geert+renesas@glider.be
-Tested-by: Stephen Rothwell <sfr@canb.auug.org.au> # PowerPC allyesconfig build
-Acked-by: Stephen Boyd <sboyd@kernel.org>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/renesas/r9a06g032-clocks.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ block/blk-mq.c | 29 ++++++++++++++++++-----------
+ 1 file changed, 18 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/clk/renesas/r9a06g032-clocks.c b/drivers/clk/renesas/r9a06g032-clocks.c
-index 6d2b568915597..6e03b467395b2 100644
---- a/drivers/clk/renesas/r9a06g032-clocks.c
-+++ b/drivers/clk/renesas/r9a06g032-clocks.c
-@@ -51,7 +51,7 @@ struct r9a06g032_clkdesc {
- 			u16 sel, g1, r1, g2, r2;
- 		} dual;
- 	};
--} __packed;
-+};
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index db2db0b70d34f..0df43515ff949 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -1118,6 +1118,23 @@ static void blk_mq_update_dispatch_busy(struct blk_mq_hw_ctx *hctx, bool busy)
  
- #define I_GATE(_clk, _rst, _rdy, _midle, _scon, _mirack, _mistat) \
- 	{ .gate = _clk, .reset = _rst, \
+ #define BLK_MQ_RESOURCE_DELAY	3		/* ms units */
+ 
++static void blk_mq_handle_dev_resource(struct request *rq,
++				       struct list_head *list)
++{
++	struct request *next =
++		list_first_entry_or_null(list, struct request, queuelist);
++
++	/*
++	 * If an I/O scheduler has been configured and we got a driver tag for
++	 * the next request already, free it.
++	 */
++	if (next)
++		blk_mq_put_driver_tag(next);
++
++	list_add(&rq->queuelist, list);
++	__blk_mq_requeue_request(rq);
++}
++
+ /*
+  * Returns true if we did some work AND can potentially do more.
+  */
+@@ -1185,17 +1202,7 @@ bool blk_mq_dispatch_rq_list(struct request_queue *q, struct list_head *list,
+ 
+ 		ret = q->mq_ops->queue_rq(hctx, &bd);
+ 		if (ret == BLK_STS_RESOURCE || ret == BLK_STS_DEV_RESOURCE) {
+-			/*
+-			 * If an I/O scheduler has been configured and we got a
+-			 * driver tag for the next request already, free it
+-			 * again.
+-			 */
+-			if (!list_empty(list)) {
+-				nxt = list_first_entry(list, struct request, queuelist);
+-				blk_mq_put_driver_tag(nxt);
+-			}
+-			list_add(&rq->queuelist, list);
+-			__blk_mq_requeue_request(rq);
++			blk_mq_handle_dev_resource(rq, list);
+ 			break;
+ 		}
+ 
 -- 
 2.27.0
 
