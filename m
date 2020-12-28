@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A8AA2E3E7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:29:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34EA42E390B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:19:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502526AbgL1O2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:28:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36226 "EHLO mail.kernel.org"
+        id S1731705AbgL1NSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:18:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502477AbgL1O2f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:28:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8F4F22583;
-        Mon, 28 Dec 2020 14:28:18 +0000 (UTC)
+        id S2387466AbgL1NSJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:18:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 039A02076D;
+        Mon, 28 Dec 2020 13:17:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165699;
-        bh=2eT1tiFrlrdnQyphbP6Kozpy3B250w82TeHZUqxlaJY=;
+        s=korg; t=1609161448;
+        bh=i7OZ7g5EYwwab0/iT21/W9zFYz9gbkRlmjrjXA+IToU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qfGxchV9Sd3J3Bc/HeGzCFPFTm+vrrHvCvFCxN9cjD9NTJCS1DxHxyCSRLggDjuk+
-         rb+OWeObHudOV9hiNU7+mcHCsPq8JyXbJEILA3kTL/C9fEtuwSSp3MwoCWmi2kiiVh
-         9TB8jaarKX3nFjTIQnmMuKL0Vo4Nb6P1tfuGsm+U=
+        b=HL1zOqcsFw+8OYuMjSTN0ngsUo5cAhwLC/qLvUS8xV5wQWFSPVRMi+bT6L8nmULyj
+         E7mCC9YRbvt6pFdOHX/r4Fai5iE6JUUH/35NJcWZ6V2V6qY2VHQXdgbuT4uBMekxCE
+         RCZOLQl9YSF2FICPtPZxgHba5ehD1s4ngAEWj3LU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Shilovsky <pshilov@microsoft.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: [PATCH 5.10 624/717] SMB3.1.1: remove confusing mount warning when no SPNEGO info on negprot rsp
+        stable@vger.kernel.org, Zhe Li <lizhe67@huawei.com>,
+        Richard Weinberger <richard@nod.at>
+Subject: [PATCH 4.14 217/242] jffs2: Fix GC exit abnormally
 Date:   Mon, 28 Dec 2020 13:50:22 +0100
-Message-Id: <20201228125050.815411013@linuxfoundation.org>
+Message-Id: <20201228124915.352914906@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,58 +39,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steve French <stfrench@microsoft.com>
+From: Zhe Li <lizhe67@huawei.com>
 
-commit bc7c4129d4cdc56d1b5477c1714246f27df914dd upstream.
+commit 9afc9a8a4909fece0e911e72b1060614ba2f7969 upstream.
 
-Azure does not send an SPNEGO blob in the negotiate protocol response,
-so we shouldn't assume that it is there when validating the location
-of the first negotiate context.  This avoids the potential confusing
-mount warning:
+The log of this problem is:
+jffs2: Error garbage collecting node at 0x***!
+jffs2: No space for garbage collection. Aborting GC thread
 
-   CIFS: Invalid negotiate context offset
+This is because GC believe that it do nothing, so it abort.
 
-CC: Stable <stable@vger.kernel.org>
-Reviewed-by: Pavel Shilovsky <pshilov@microsoft.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+After going over the image of jffs2, I find a scene that
+can trigger this problem stably.
+The scene is: there is a normal dirent node at summary-area,
+but abnormal at corresponding not-summary-area with error
+name_crc.
+
+The reason that GC exit abnormally is because it find that
+abnormal dirent node to GC, but when it goes to function
+jffs2_add_fd_to_list, it cannot meet the condition listed
+below:
+
+if ((*prev)->nhash == new->nhash && !strcmp((*prev)->name, new->name))
+
+So no node is marked obsolete, statistical information of
+erase_block do not change, which cause GC exit abnormally.
+
+The root cause of this problem is: we do not check the
+name_crc of the abnormal dirent node with summary is enabled.
+
+Noticed that in function jffs2_scan_dirent_node, we use
+function jffs2_scan_dirty_space to deal with the dirent
+node with error name_crc. So this patch add a checking
+code in function read_direntry to ensure the correctness
+of dirent node. If checked failed, the dirent node will
+be marked obsolete so GC will pass this node and this
+problem will be fixed.
+
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Zhe Li <lizhe67@huawei.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/cifs/smb2misc.c |   16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ fs/jffs2/readinode.c |   16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
---- a/fs/cifs/smb2misc.c
-+++ b/fs/cifs/smb2misc.c
-@@ -94,6 +94,8 @@ static const __le16 smb2_rsp_struct_size
- 	/* SMB2_OPLOCK_BREAK */ cpu_to_le16(24)
- };
- 
-+#define SMB311_NEGPROT_BASE_SIZE (sizeof(struct smb2_sync_hdr) + sizeof(struct smb2_negotiate_rsp))
+--- a/fs/jffs2/readinode.c
++++ b/fs/jffs2/readinode.c
+@@ -672,6 +672,22 @@ static inline int read_direntry(struct j
+ 			jffs2_free_full_dirent(fd);
+ 			return -EIO;
+ 		}
 +
- static __u32 get_neg_ctxt_len(struct smb2_sync_hdr *hdr, __u32 len,
- 			      __u32 non_ctxlen)
- {
-@@ -109,11 +111,17 @@ static __u32 get_neg_ctxt_len(struct smb
++#ifdef CONFIG_JFFS2_SUMMARY
++		/*
++		 * we use CONFIG_JFFS2_SUMMARY because without it, we
++		 * have checked it while mounting
++		 */
++		crc = crc32(0, fd->name, rd->nsize);
++		if (unlikely(crc != je32_to_cpu(rd->name_crc))) {
++			JFFS2_NOTICE("name CRC failed on dirent node at"
++			   "%#08x: read %#08x,calculated %#08x\n",
++			   ref_offset(ref), je32_to_cpu(rd->node_crc), crc);
++			jffs2_mark_node_obsolete(c, ref);
++			jffs2_free_full_dirent(fd);
++			return 0;
++		}
++#endif
+ 	}
  
- 	/* Make sure that negotiate contexts start after gss security blob */
- 	nc_offset = le32_to_cpu(pneg_rsp->NegotiateContextOffset);
--	if (nc_offset < non_ctxlen) {
--		pr_warn_once("Invalid negotiate context offset\n");
-+	if (nc_offset + 1 < non_ctxlen) {
-+		pr_warn_once("Invalid negotiate context offset %d\n", nc_offset);
- 		return 0;
--	}
--	size_of_pad_before_neg_ctxts = nc_offset - non_ctxlen;
-+	} else if (nc_offset + 1 == non_ctxlen) {
-+		cifs_dbg(FYI, "no SPNEGO security blob in negprot rsp\n");
-+		size_of_pad_before_neg_ctxts = 0;
-+	} else if (non_ctxlen == SMB311_NEGPROT_BASE_SIZE)
-+		/* has padding, but no SPNEGO blob */
-+		size_of_pad_before_neg_ctxts = nc_offset - non_ctxlen + 1;
-+	else
-+		size_of_pad_before_neg_ctxts = nc_offset - non_ctxlen;
- 
- 	/* Verify that at least minimal negotiate contexts fit within frame */
- 	if (len < nc_offset + (neg_count * sizeof(struct smb2_neg_context))) {
+ 	fd->nhash = full_name_hash(NULL, fd->name, rd->nsize);
 
 
