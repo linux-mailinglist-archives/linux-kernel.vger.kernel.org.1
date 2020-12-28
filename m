@@ -2,40 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BDA52E434B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:36:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D72FF2E3E30
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:25:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392669AbgL1Pfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:35:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54906 "EHLO mail.kernel.org"
+        id S2503191AbgL1OZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:25:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407018AbgL1NxB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:53:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BB2822583;
-        Mon, 28 Dec 2020 13:52:19 +0000 (UTC)
+        id S2392074AbgL1OZE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:25:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B77820791;
+        Mon, 28 Dec 2020 14:24:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163540;
-        bh=NL/llxcaFjnXWr1uNTIGnR162QIbsvB+qULrRl+eU2k=;
+        s=korg; t=1609165488;
+        bh=IEnwiGwEXJyLA1WhjQu1BUQUtvB2m6bt/wI1PQ6SCwE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mDbFZFE56UU6dLTlmHD7wZxVxeT+ndhPK3+hLWzW61mudCVVUbkDveY3ozfwa8lKY
-         KMMOxe7uNvKf1XWo59mbfEvn2a99ozIiympyjVDSAeS3PNuPdmf/WR1onTUdQccssb
-         Tvex73HkfKRLf6ByBhETxe/BsGqp7VnMVh5bknRY=
+        b=WS6gFlVXpI5jHOX9iZo/wiEWzaKWqe3TBxjcpHsvhenGFc5YNYElJWY6Wsqf3JDCA
+         lsHei+9Yni9dfxGa3lXPIqvAp+38wz465gN1MvS/2b7pLPu+yxQiL08Xl7FD1RaF9j
+         X1bHvt6sNmwsvHsPSD3vw8LHtsmIWCAeeyYre2do=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Robert Buhren <robert.buhren@sect.tu-berlin.de>,
-        Felicitas Hetzelt <file@sect.tu-berlin.de>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 304/453] virtio_net: Fix error code in probe()
+        stable@vger.kernel.org, Chris Chiu <chiu@endlessos.org>,
+        Jian-Hong Pan <jhp@endlessos.org>, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.10 542/717] ALSA/hda: apply jack fixup for the Acer Veriton N4640G/N6640G/N2510G
 Date:   Mon, 28 Dec 2020 13:49:00 +0100
-Message-Id: <20201228124951.836754240@linuxfoundation.org>
+Message-Id: <20201228125046.916868787@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,39 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Chris Chiu <chiu@endlessos.org>
 
-[ Upstream commit 411ea23a76526e6efed0b601abb603d3c981b333 ]
+commit 13be30f156fda725b168ac89fc91f78651575307 upstream.
 
-Set a negative error code intead of returning success if the MTU has
-been changed to something invalid.
+This Acer Veriton N4640G/N6640G/N2510G desktops have 2 headphone
+jacks(front and rear), and a separate Mic In jack.
 
-Fixes: fe36cbe0671e ("virtio_net: clear MTU when out of range")
-Reported-by: Robert Buhren <robert.buhren@sect.tu-berlin.de>
-Reported-by: Felicitas Hetzelt <file@sect.tu-berlin.de>
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/X8pGVJSeeCdII1Ys@mwanda
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The rear headphone jack is actually a line out jack but always silent
+while playing audio. The front 'Mic In' also fails the jack sensing.
+Apply the ALC269_FIXUP_LIFEBOOK to have all audio jacks to work as
+expected.
+
+Signed-off-by: Chris Chiu <chiu@endlessos.org>
+Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201222150459.9545-2-chiu@endlessos.org
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/virtio_net.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/pci/hda/patch_realtek.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 99e1a7bc06886..7cc8f405be1ad 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -3114,6 +3114,7 @@ static int virtnet_probe(struct virtio_device *vdev)
- 			dev_err(&vdev->dev,
- 				"device MTU appears to have changed it is now %d < %d",
- 				mtu, dev->min_mtu);
-+			err = -EINVAL;
- 			goto free;
- 		}
- 
--- 
-2.27.0
-
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -7805,11 +7805,14 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x1025, 0x0762, "Acer Aspire E1-472", ALC271_FIXUP_HP_GATE_MIC_JACK_E1_572),
+ 	SND_PCI_QUIRK(0x1025, 0x0775, "Acer Aspire E1-572", ALC271_FIXUP_HP_GATE_MIC_JACK_E1_572),
+ 	SND_PCI_QUIRK(0x1025, 0x079b, "Acer Aspire V5-573G", ALC282_FIXUP_ASPIRE_V5_PINS),
++	SND_PCI_QUIRK(0x1025, 0x101c, "Acer Veriton N2510G", ALC269_FIXUP_LIFEBOOK),
+ 	SND_PCI_QUIRK(0x1025, 0x102b, "Acer Aspire C24-860", ALC286_FIXUP_ACER_AIO_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1025, 0x1065, "Acer Aspire C20-820", ALC269VC_FIXUP_ACER_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1025, 0x106d, "Acer Cloudbook 14", ALC283_FIXUP_CHROME_BOOK),
+ 	SND_PCI_QUIRK(0x1025, 0x1099, "Acer Aspire E5-523G", ALC255_FIXUP_ACER_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1025, 0x110e, "Acer Aspire ES1-432", ALC255_FIXUP_ACER_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1025, 0x1166, "Acer Veriton N4640G", ALC269_FIXUP_LIFEBOOK),
++	SND_PCI_QUIRK(0x1025, 0x1167, "Acer Veriton N6640G", ALC269_FIXUP_LIFEBOOK),
+ 	SND_PCI_QUIRK(0x1025, 0x1246, "Acer Predator Helios 500", ALC299_FIXUP_PREDATOR_SPK),
+ 	SND_PCI_QUIRK(0x1025, 0x1247, "Acer vCopperbox", ALC269VC_FIXUP_ACER_VCOPPERBOX_PINS),
+ 	SND_PCI_QUIRK(0x1025, 0x1248, "Acer Veriton N4660G", ALC269VC_FIXUP_ACER_MIC_NO_PRESENCE),
 
 
