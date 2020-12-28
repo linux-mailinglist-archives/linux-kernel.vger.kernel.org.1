@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5057C2E3995
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:25:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 283232E3B32
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:49:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388854AbgL1NZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:25:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53494 "EHLO mail.kernel.org"
+        id S2405562AbgL1NrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:47:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388805AbgL1NYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:24:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DBC8A229EF;
-        Mon, 28 Dec 2020 13:24:12 +0000 (UTC)
+        id S2405054AbgL1NqH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:46:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF198208B3;
+        Mon, 28 Dec 2020 13:45:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161853;
-        bh=t9K5CfISInwcT+8p3Cm6DucWHTaMEzf4lThFKR6c7CY=;
+        s=korg; t=1609163152;
+        bh=9SWr3GY0CZmbvRCe5GvFrozejTm1sVJ+CVP5sXM0E9I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IF8R+f+m/xtY490VBD3BRjUi6XT4rfQ0h4w4hXwAUvkVA77AMKd/FoQKGN5kkx03H
-         wJTtbFHkTpG2huaR6j2Ew47wOtxh8HiuBzVX63dEYi4+S1HLIl/v100q/voFVMyPLh
-         DgsRc2EfZwjPy2dmZn9mP6mCYf7F1d+ftKUR7ySA=
+        b=eNjLK0ExfCYeFW22U8j3G5b4mxe+SpDbbEtzv+GDWePJlOhE8PhLI0lDLCoT45gni
+         Wmjh+76ObjYapj7gVFb0vulX1ncjWoWoqv2w2C3Qwph6iL2npAhOB5aiXfTSShZggN
+         f58bu4ihGvWKfH3Xz5Bi8LP1RPCYiTidXHa0QrtU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mao Jinlong <jinlmao@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-Subject: [PATCH 4.19 087/346] coresight: tmc-etr: Check if page is valid before dma_map_page()
-Date:   Mon, 28 Dec 2020 13:46:46 +0100
-Message-Id: <20201228124924.011181694@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>,
+        Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 171/453] media: siano: fix memory leak of debugfs members in smsdvb_hotplug
+Date:   Mon, 28 Dec 2020 13:46:47 +0100
+Message-Id: <20201228124945.424828023@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,58 +42,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mao Jinlong <jinlmao@codeaurora.org>
+From: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
 
-commit 1cc573d5754e92372a7e30e35468644f8811e1a4 upstream.
+[ Upstream commit abf287eeff4c6da6aa804bbd429dfd9d0dfb6ea7 ]
 
-alloc_pages_node() return should be checked before calling
-dma_map_page() to make sure that valid page is mapped or
-else it can lead to aborts as below:
+When dvb_create_media_graph fails, the debugfs kept inside client should
+be released. However, the current implementation does not release them.
 
- Unable to handle kernel paging request at virtual address ffffffc008000000
- Mem abort info:
- <snip>...
- pc : __dma_inv_area+0x40/0x58
- lr : dma_direct_map_page+0xd8/0x1c8
+Fix this by adding a new goto label to call smsdvb_debugfs_release.
 
- Call trace:
-  __dma_inv_area
-  tmc_pages_alloc
-  tmc_alloc_data_pages
-  tmc_alloc_sg_table
-  tmc_init_etr_sg_table
-  tmc_alloc_etr_buf
-  tmc_enable_etr_sink_sysfs
-  tmc_enable_etr_sink
-  coresight_enable_path
-  coresight_enable
-  enable_source_store
-  dev_attr_store
-  sysfs_kf_write
-
-Fixes: 99443ea19e8b ("coresight: Add generic TMC sg table framework")
-Cc: stable@vger.kernel.org
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Signed-off-by: Mao Jinlong <jinlmao@codeaurora.org>
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Link: https://lore.kernel.org/r/20201127175256.1092685-13-mathieu.poirier@linaro.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 0d3ab8410dcb ("[media] dvb core: must check dvb_create_media_graph()")
+Signed-off-by: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
+Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwtracing/coresight/coresight-tmc-etr.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/media/common/siano/smsdvb-main.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/drivers/hwtracing/coresight/coresight-tmc-etr.c
-+++ b/drivers/hwtracing/coresight/coresight-tmc-etr.c
-@@ -183,6 +183,8 @@ static int tmc_pages_alloc(struct tmc_pa
- 		} else {
- 			page = alloc_pages_node(node,
- 						GFP_KERNEL | __GFP_ZERO, 0);
-+			if (!page)
-+				goto err;
- 		}
- 		paddr = dma_map_page(dev, page, 0, PAGE_SIZE, dir);
- 		if (dma_mapping_error(dev, paddr))
+diff --git a/drivers/media/common/siano/smsdvb-main.c b/drivers/media/common/siano/smsdvb-main.c
+index 88f90dfd368b1..ae17407e477a4 100644
+--- a/drivers/media/common/siano/smsdvb-main.c
++++ b/drivers/media/common/siano/smsdvb-main.c
+@@ -1169,12 +1169,15 @@ static int smsdvb_hotplug(struct smscore_device_t *coredev,
+ 	rc = dvb_create_media_graph(&client->adapter, true);
+ 	if (rc < 0) {
+ 		pr_err("dvb_create_media_graph failed %d\n", rc);
+-		goto client_error;
++		goto media_graph_error;
+ 	}
+ 
+ 	pr_info("DVB interface registered.\n");
+ 	return 0;
+ 
++media_graph_error:
++	smsdvb_debugfs_release(client);
++
+ client_error:
+ 	dvb_unregister_frontend(&client->frontend);
+ 
+-- 
+2.27.0
+
 
 
