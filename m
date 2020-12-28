@@ -2,88 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D16C2E6A42
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 20:07:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEDAB2E6A45
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 20:11:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728789AbgL1THB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 14:07:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49124 "EHLO
+        id S1728943AbgL1TJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 14:09:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726420AbgL1THB (ORCPT
+        with ESMTP id S1726420AbgL1TJm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 14:07:01 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15810C061793
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 11:06:21 -0800 (PST)
-Received: from zn.tnic (p200300ec2f07e400d86914afc5d02204.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:e400:d869:14af:c5d0:2204])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0ABA01EC04EC;
-        Mon, 28 Dec 2020 20:06:18 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1609182378;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=epJ8+KmcZxZ40J2MpLxroms446T7wcU+Dw83zuJ6onM=;
-        b=JGbjrreN0GxkoFhL2HslUSuO58F9Iy7PKW2r033V5uAg0MP//Y0XvnNMlSqkUIVtYzn/Gn
-        gT7wuZ4KBOAqOUG1iQflxGZyQJLJ3FBEqEV7/sYnrkuCDoWFKVwvnArY3+zSJ21CShow6k
-        dZiscCbgGBmiOC/RGQ4zfqYvseRQ1BQ=
-Date:   Mon, 28 Dec 2020 20:06:15 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 04/19] x86/insn-eval: Handle return values from the
- decoder
-Message-ID: <20201228190615.GC20321@zn.tnic>
-References: <20201223174233.28638-1-bp@alien8.de>
- <20201223174233.28638-5-bp@alien8.de>
- <X+opI92rzCNZ151F@google.com>
+        Mon, 28 Dec 2020 14:09:42 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8678C0613D6;
+        Mon, 28 Dec 2020 11:09:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=eSd/w17xiPPnLAKIvbc4UG/p09zbwuPGzXqzRTsYu+8=; b=CByjhLjVZIVi+YbXCKUmIlvUn
+        r9hy7wCEq46kHeYDMPFAGAI7FXlkBBapUVKxYRx7kWbb9YrwumQRz865RcDVTtAFVon7wtSGRGE7R
+        bxvEACxEKGRZi1UWoB9e0/9CRVqkkbPuc0f/9lTNa4UvyfcOgs1mpT8kXXf4DCuwRIb7oTWQyQ2V1
+        18WSXm8IqVlwYe6UbFjuSD+Iy36OFYfYjqOIFPtcsjij1zrIWpgKFl6K1D9tlZfILFXw4Ply0IKb7
+        +3ire6hjbCpuwRcO+z4jjkFpxsC+lsJxoMuhoCpgZiTdlbotqQjKyX2Y0mv1faZ3ntUChS/zz4UsZ
+        jI0iOd7eg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44612)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1ktxt1-0004df-Ab; Mon, 28 Dec 2020 19:08:55 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1ktxsy-0000VF-Nz; Mon, 28 Dec 2020 19:08:52 +0000
+Date:   Mon, 28 Dec 2020 19:08:52 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Jann Horn <jannh@google.com>
+Cc:     Andy Lutomirski <luto@kernel.org>, Will Deacon <will@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        x86 <x86@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        stable <stable@vger.kernel.org>
+Subject: Re: [RFC please help] membarrier: Rewrite sync_core_before_usermode()
+Message-ID: <20201228190852.GI1551@shell.armlinux.org.uk>
+References: <bf59ecb5487171a852bcc8cdd553ec797aedc485.1609093476.git.luto@kernel.org>
+ <1836294649.3345.1609100294833.JavaMail.zimbra@efficios.com>
+ <CALCETrVdcn2r2Jvd1=-bM=FQ8KbX4aH-v4ytdojL7r7Nb6k8YQ@mail.gmail.com>
+ <20201228102537.GG1551@shell.armlinux.org.uk>
+ <CALCETrWQx0qwthBc5pJBxs2PWAQo-roAz-6g=7HOs+dsiokVsg@mail.gmail.com>
+ <CAG48ez0YZ_iy6qZpdGUj38wqeg_NzLHHhU-mBCBf5hcopYGVPg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <X+opI92rzCNZ151F@google.com>
+In-Reply-To: <CAG48ez0YZ_iy6qZpdGUj38wqeg_NzLHHhU-mBCBf5hcopYGVPg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 10:51:15AM -0800, Sean Christopherson wrote:
-> This patch is incomplete/inconsistent, and arguably wrong.
+On Mon, Dec 28, 2020 at 07:29:34PM +0100, Jann Horn wrote:
+> After chatting with rmk about this (but without claiming that any of
+> this is his opinion), based on the manpage, I think membarrier()
+> currently doesn't really claim to be synchronizing caches? It just
+> serializes cores. So arguably if userspace wants to use membarrier()
+> to synchronize code changes, userspace should first do the code
+> change, then flush icache as appropriate for the architecture, and
+> then do the membarrier() to ensure that the old code is unused?
 > 
->   - get_eff_addr_reg() and get_eff_addr_modrm() still ignore the return of
->     insn_get_modrm() after this patch.
-
-Ah, will fix, thx.
-
->   - Calling insn_get_modrm() from get_eff_addr_sib() is unnecessary (unless the
->     caller passed uninitialized garbage in @insn) as get_eff_addr_sib() is
->     called if and only if sib.nbytes!=0, and sib.nbytes can be non-zero if and
->     only if the modrm and sib have been got.
+> For 32-bit arm, rmk pointed out that that would be the cacheflush()
+> syscall. That might cause you to end up with two IPIs instead of one
+> in total, but we probably don't care _that_ much about extra IPIs on
+> 32-bit arm?
 > 
->   - get_addr_ref_16() does insn_get_displacement, i.e. guarantees the modrm is
->     parsed, while the 32/64 variants do not.
-> 
-> What about adding a prereq patch (or three) to call insn_get_displacement() in
-> insn_get_addr_ref() prior to switching on insn->addr_bytes?  Then the various
-> internal helpers could be changed to either omit the sanity checks entirely or
-> WARN on invalid calls?  Or better yet, add an INSN_WARN_ON() macro that compiles
-> out the checks by default?  E.g. something like:
+> For arm64, I believe userspace can flush icache across the entire
+> system with some instructions from userspace - "DC CVAU" followed by
+> "DSB ISH", or something like that, I think? (See e.g.
+> compat_arm_syscall(), the arm64 compat code that implements the 32-bit
+> arm cacheflush() syscall.)
 
-So the idea is one construction site at a time (that's a German saying :)).
+Note that the ARM cacheflush syscall calls flush_icache_user_range()
+over the range of addresses that userspace has passed - it's intention
+since day one is to support cases where userspace wants to change
+executable code.
 
-This set deals with whacking the insn decoder into returning
-proper error/success values. The next set should do
-simplifications/fixes/cleanups/whatever but not all at the same time for
-obvious reasons.
+It will issue the appropriate write-backs to the data cache (DCCMVAU),
+the invalidates to the instruction cache (ICIMVAU), invalidate the
+branch target buffer (BPIALLIS or BPIALL as appropriate), and issue
+the appropriate barriers (DSB ISHST, ISB).
 
-So yeah, I'm all for omitting useless code but let's do that ontop.
+Note that neither flush_icache_user_range() nor flush_icache_range()
+result in IPIs; cache operations are broadcast across all CPUs (which
+is one of the minimums we require for SMP systems.)
 
-Thx.
+Now, that all said, I think the question that has to be asked is...
+
+	What is the basic purpose of membarrier?
+
+Is the purpose of it to provide memory barriers, or is it to provide
+memory coherence?
+
+If it's the former and not the latter, then cache flushes are out of
+scope, and expecting memory written to be visible to the instruction
+stream is totally out of scope of the membarrier interface, whether
+or not the writes happen on the same or a different CPU to the one
+executing the rewritten code.
+
+The documentation in the kernel does not seem to describe what it's
+supposed to be doing - the only thing I could find is this:
+Documentation/features/sched/membarrier-sync-core/arch-support.txt
+which describes it as "arch supports core serializing membarrier"
+whatever that means.
+
+Seems to be the standard and usual case of utterly poor to non-existent
+documentation within the kernel tree, or even a pointer to where any
+useful documentation can be found.
+
+Reading the membarrier(2) man page, I find nothing in there that talks
+about any kind of cache coherency for self-modifying code - it only
+seems to be about _barriers_ and nothing more, and barriers alone do
+precisely nothing to save you from non-coherent Harvard caches.
+
+So, either Andy has a misunderstanding, or the man page is wrong, or
+my rudimentary understanding of what membarrier is supposed to be
+doing is wrong...
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
