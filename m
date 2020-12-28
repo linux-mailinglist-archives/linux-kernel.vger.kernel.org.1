@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DCF52E38C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:16:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7958E2E377C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:57:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732608AbgL1NPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:15:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43030 "EHLO mail.kernel.org"
+        id S1728691AbgL1M4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:56:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732583AbgL1NOx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:14:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 812F7207C9;
-        Mon, 28 Dec 2020 13:14:12 +0000 (UTC)
+        id S1728672AbgL1M4A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:56:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 593A9224D2;
+        Mon, 28 Dec 2020 12:55:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161253;
-        bh=5edn3WqNlmk3g3uK+pzaKXVoJ9oJ7VprZO77+CHT69c=;
+        s=korg; t=1609160119;
+        bh=Wdwhs5Y5kdLWDSBFMmEc8WP8wop4/0dX/8rxrLoADWA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2mCJfMKyk0hYtj9sA5G9iMcoNotKtQBQYjOG7EvbD+LiaYqenOEG5ZOq0N9O/xLtj
-         UsvHXqaO+iGOD2OrKH+cbHeZlfGRJ1X2RT/V8dH9xbxnq+9r2pR2SVwRaDv0GO/j05
-         ywd47Dou22AIAMtB6OKiZqztG5sjQLm/8EpAm/Pk=
+        b=F1Kk56Y2flyEhJbrbwRxyBXSHhUb7OZOgFMd3vNoCrXc96y+dSlD6jRymc3MOVcyo
+         kq0SFSDLMD95HxsRf0SIZkrxClSHz2wxkXbvzGRpG2fY4tv78BLCEgBPa8JMQjwSOt
+         GENq1+MSBNtUoCI2CVAK/doW74yvJKnDNfQjeZ9A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?=C2=A0Cheng=C2=A0Lin=C2=A0?= <cheng.lin130@zte.com.cn>,
-        =?UTF-8?q?=C2=A0Yi=C2=A0Wang=C2=A0?= <wang.yi59@zte.com.cn>,
-        Chuck Lever <chuck.lever@oracle.com>,
+        stable@vger.kernel.org, Nathan Lynch <nathanl@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 154/242] nfs_common: need lock during iterate through the list
+Subject: [PATCH 4.4 075/132] powerpc/pseries/hibernation: drop pseries_suspend_begin() from suspend ops
 Date:   Mon, 28 Dec 2020 13:49:19 +0100
-Message-Id: <20201228124912.285004439@linuxfoundation.org>
+Message-Id: <20201228124850.068851547@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,74 +40,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cheng Lin <cheng.lin130@zte.com.cn>
+From: Nathan Lynch <nathanl@linux.ibm.com>
 
-[ Upstream commit 4a9d81caf841cd2c0ae36abec9c2963bf21d0284 ]
+[ Upstream commit 52719fce3f4c7a8ac9eaa191e8d75a697f9fbcbc ]
 
-If the elem is deleted during be iterated on it, the iteration
-process will fall into an endless loop.
+There are three ways pseries_suspend_begin() can be reached:
 
-kernel: NMI watchdog: BUG: soft lockup - CPU#4 stuck for 22s! [nfsd:17137]
+1. When "mem" is written to /sys/power/state:
 
-PID: 17137  TASK: ffff8818d93c0000  CPU: 4   COMMAND: "nfsd"
-    [exception RIP: __state_in_grace+76]
-    RIP: ffffffffc00e817c  RSP: ffff8818d3aefc98  RFLAGS: 00000246
-    RAX: ffff881dc0c38298  RBX: ffffffff81b03580  RCX: ffff881dc02c9f50
-    RDX: ffff881e3fce8500  RSI: 0000000000000001  RDI: ffffffff81b03580
-    RBP: ffff8818d3aefca0   R8: 0000000000000020   R9: ffff8818d3aefd40
-    R10: ffff88017fc03800  R11: ffff8818e83933c0  R12: ffff8818d3aefd40
-    R13: 0000000000000000  R14: ffff8818e8391068  R15: ffff8818fa6e4000
-    CS: 0010  SS: 0018
- #0 [ffff8818d3aefc98] opens_in_grace at ffffffffc00e81e3 [grace]
- #1 [ffff8818d3aefca8] nfs4_preprocess_stateid_op at ffffffffc02a3e6c [nfsd]
- #2 [ffff8818d3aefd18] nfsd4_write at ffffffffc028ed5b [nfsd]
- #3 [ffff8818d3aefd80] nfsd4_proc_compound at ffffffffc0290a0d [nfsd]
- #4 [ffff8818d3aefdd0] nfsd_dispatch at ffffffffc027b800 [nfsd]
- #5 [ffff8818d3aefe08] svc_process_common at ffffffffc02017f3 [sunrpc]
- #6 [ffff8818d3aefe70] svc_process at ffffffffc0201ce3 [sunrpc]
- #7 [ffff8818d3aefe98] nfsd at ffffffffc027b117 [nfsd]
- #8 [ffff8818d3aefec8] kthread at ffffffff810b88c1
- #9 [ffff8818d3aeff50] ret_from_fork at ffffffff816d1607
+kobj_attr_store()
+-> state_store()
+  -> pm_suspend()
+    -> suspend_devices_and_enter()
+      -> pseries_suspend_begin()
 
-The troublemake elem:
-crash> lock_manager ffff881dc0c38298
-struct lock_manager {
-  list = {
-    next = 0xffff881dc0c38298,
-    prev = 0xffff881dc0c38298
-  },
-  block_opens = false
-}
+This never works because there is no way to supply a valid stream id
+using this interface, and H_VASI_STATE is called with a stream id of
+zero. So this call path is useless at best.
 
-Fixes: c87fb4a378f9 ("lockd: NLM grace period shouldn't block NFSv4 opens")
-Signed-off-by: Cheng Lin <cheng.lin130@zte.com.cn>
-Signed-off-by: Yi Wang <wang.yi59@zte.com.cn>
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+2. When a stream id is written to /sys/devices/system/power/hibernate.
+pseries_suspend_begin() is polled directly from store_hibernate()
+until the stream is in the "Suspending" state (i.e. the platform is
+ready for the OS to suspend execution):
+
+dev_attr_store()
+-> store_hibernate()
+  -> pseries_suspend_begin()
+
+3. When a stream id is written to /sys/devices/system/power/hibernate
+(continued). After #2, pseries_suspend_begin() is called once again
+from the pm core:
+
+dev_attr_store()
+-> store_hibernate()
+  -> pm_suspend()
+    -> suspend_devices_and_enter()
+      -> pseries_suspend_begin()
+
+This is redundant because the VASI suspend state is already known to
+be Suspending.
+
+The begin() callback of platform_suspend_ops is optional, so we can
+simply remove that assignment with no loss of function.
+
+Fixes: 32d8ad4e621d ("powerpc/pseries: Partition hibernation support")
+Signed-off-by: Nathan Lynch <nathanl@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20201207215200.1785968-18-nathanl@linux.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs_common/grace.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ arch/powerpc/platforms/pseries/suspend.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/fs/nfs_common/grace.c b/fs/nfs_common/grace.c
-index 3b13fb3b05530..63c9c2a70937f 100644
---- a/fs/nfs_common/grace.c
-+++ b/fs/nfs_common/grace.c
-@@ -75,10 +75,14 @@ __state_in_grace(struct net *net, bool open)
- 	if (!open)
- 		return !list_empty(grace_list);
+diff --git a/arch/powerpc/platforms/pseries/suspend.c b/arch/powerpc/platforms/pseries/suspend.c
+index e76aefae2aa2b..0a0e0c8256f67 100644
+--- a/arch/powerpc/platforms/pseries/suspend.c
++++ b/arch/powerpc/platforms/pseries/suspend.c
+@@ -224,7 +224,6 @@ static struct bus_type suspend_subsys = {
  
-+	spin_lock(&grace_lock);
- 	list_for_each_entry(lm, grace_list, list) {
--		if (lm->block_opens)
-+		if (lm->block_opens) {
-+			spin_unlock(&grace_lock);
- 			return true;
-+		}
- 	}
-+	spin_unlock(&grace_lock);
- 	return false;
- }
- 
+ static const struct platform_suspend_ops pseries_suspend_ops = {
+ 	.valid		= suspend_valid_only_mem,
+-	.begin		= pseries_suspend_begin,
+ 	.prepare_late	= pseries_prepare_late,
+ 	.enter		= pseries_suspend_enter,
+ };
 -- 
 2.27.0
 
