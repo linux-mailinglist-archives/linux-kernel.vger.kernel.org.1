@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9C652E3968
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:25:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60D282E63EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:45:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732851AbgL1NXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:23:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51020 "EHLO mail.kernel.org"
+        id S2405792AbgL1PpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:45:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387639AbgL1NXO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:23:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24E67206ED;
-        Mon, 28 Dec 2020 13:22:57 +0000 (UTC)
+        id S2404700AbgL1Nox (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:44:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 49013206D4;
+        Mon, 28 Dec 2020 13:44:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161778;
-        bh=dh1QcVDrB5waoPZzSjsgOaEidFcBQFFUDRUV/K0lodc=;
+        s=korg; t=1609163077;
+        bh=Odzqy1uJbLLqHLbq5wtNqKP57ACPsZmos0XYpZehMlA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bRO6Eir/ySRsrN3LXUaF1Yx6ctvXKTc8xmOYX3Aa4Vuwc+JgGW+BnafwcilEQ5KyU
-         T7maddC5d6ZPGYZs1KdVJqdssc3iOOh+CnpCAowvPA/HYry3V6F1hAVFO0K/rhONeg
-         ZsVTo/0JLPFcFsrdt0fZavrV7LJBOmbeA38UAAzI=
+        b=ZwzhVdkYBDCXqu7yHtZ7Mzgbe9PdI+ri82hkPpCrxIW/cI4CczCfnCJA52wu9mf9r
+         T62vRwgmMyfS1zDKbNiZItd+hZuxnx2U0j1uNoWtN+B7N6QUvTJ5re49+XTKQNbSWi
+         jLbTWKEcGIszcVcZKL0Dt+l9a5DdRPx5k1bJ8ZuY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+8881b478dad0a7971f79@syzkaller.appspotmail.com,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.19 078/346] USB: serial: option: add interface-number sanity check to flag handling
+        Cristian Birsan <cristian.birsan@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 161/453] ARM: dts: at91: sama5d4_xplained: add pincontrol for USB Host
 Date:   Mon, 28 Dec 2020 13:46:37 +0100
-Message-Id: <20201228124923.571043745@linuxfoundation.org>
+Message-Id: <20201228124944.957814734@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,85 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Cristian Birsan <cristian.birsan@microchip.com>
 
-commit a251963f76fa0226d0fdf0c4f989496f18d9ae7f upstream.
+[ Upstream commit be4dd2d448816a27c1446f8f37fce375daf64148 ]
 
-Add an interface-number sanity check before testing the device flags to
-avoid relying on undefined behaviour when left shifting in case a device
-uses an interface number greater than or equal to BITS_PER_LONG (i.e. 64
-or 32).
+The pincontrol node is needed for USB Host since Linux v5.7-rc1. Without
+it the driver probes but VBus is not powered because of wrong pincontrol
+configuration.
 
-Reported-by: syzbot+8881b478dad0a7971f79@syzkaller.appspotmail.com
-Fixes: c3a65808f04a ("USB: serial: option: reimplement interface masking")
-Cc: stable@vger.kernel.org
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 38153a017896f ("ARM: at91/dt: sama5d4: add dts for sama5d4 xplained board")
+Signed-off-by: Cristian Birsan <cristian.birsan@microchip.com>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Acked-by: Ludovic Desroches <ludovic.desroches@microchip.com>
+Link: https://lore.kernel.org/r/20201118120019.1257580-3-cristian.birsan@microchip.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/serial/option.c |   23 +++++++++++++++++++++--
- 1 file changed, 21 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/at91-sama5d4_xplained.dts | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -563,6 +563,9 @@ static void option_instat_callback(struc
+diff --git a/arch/arm/boot/dts/at91-sama5d4_xplained.dts b/arch/arm/boot/dts/at91-sama5d4_xplained.dts
+index fdfc37d716e01..1d101067371b4 100644
+--- a/arch/arm/boot/dts/at91-sama5d4_xplained.dts
++++ b/arch/arm/boot/dts/at91-sama5d4_xplained.dts
+@@ -133,6 +133,11 @@
+ 						atmel,pins =
+ 							<AT91_PIOE 31 AT91_PERIPH_GPIO AT91_PINCTRL_DEGLITCH>;
+ 					};
++					pinctrl_usb_default: usb_default {
++						atmel,pins =
++							<AT91_PIOE 11 AT91_PERIPH_GPIO AT91_PINCTRL_NONE
++							 AT91_PIOE 14 AT91_PERIPH_GPIO AT91_PINCTRL_NONE>;
++					};
+ 					pinctrl_key_gpio: key_gpio_0 {
+ 						atmel,pins =
+ 							<AT91_PIOE 8 AT91_PERIPH_GPIO AT91_PINCTRL_PULL_UP_DEGLITCH>;
+@@ -158,6 +163,8 @@
+ 					   &pioE 11 GPIO_ACTIVE_HIGH
+ 					   &pioE 14 GPIO_ACTIVE_HIGH
+ 					  >;
++			pinctrl-names = "default";
++			pinctrl-0 = <&pinctrl_usb_default>;
+ 			status = "okay";
+ 		};
  
- /* Device flags */
- 
-+/* Highest interface number which can be used with NCTRL() and RSVD() */
-+#define FLAG_IFNUM_MAX	7
-+
- /* Interface does not support modem-control requests */
- #define NCTRL(ifnum)	((BIT(ifnum) & 0xff) << 8)
- 
-@@ -2100,6 +2103,14 @@ static struct usb_serial_driver * const
- 
- module_usb_serial_driver(serial_drivers, option_ids);
- 
-+static bool iface_is_reserved(unsigned long device_flags, u8 ifnum)
-+{
-+	if (ifnum > FLAG_IFNUM_MAX)
-+		return false;
-+
-+	return device_flags & RSVD(ifnum);
-+}
-+
- static int option_probe(struct usb_serial *serial,
- 			const struct usb_device_id *id)
- {
-@@ -2116,7 +2127,7 @@ static int option_probe(struct usb_seria
- 	 * the same class/subclass/protocol as the serial interfaces.  Look at
- 	 * the Windows driver .INF files for reserved interface numbers.
- 	 */
--	if (device_flags & RSVD(iface_desc->bInterfaceNumber))
-+	if (iface_is_reserved(device_flags, iface_desc->bInterfaceNumber))
- 		return -ENODEV;
- 
- 	/*
-@@ -2132,6 +2143,14 @@ static int option_probe(struct usb_seria
- 	return 0;
- }
- 
-+static bool iface_no_modem_control(unsigned long device_flags, u8 ifnum)
-+{
-+	if (ifnum > FLAG_IFNUM_MAX)
-+		return false;
-+
-+	return device_flags & NCTRL(ifnum);
-+}
-+
- static int option_attach(struct usb_serial *serial)
- {
- 	struct usb_interface_descriptor *iface_desc;
-@@ -2147,7 +2166,7 @@ static int option_attach(struct usb_seri
- 
- 	iface_desc = &serial->interface->cur_altsetting->desc;
- 
--	if (!(device_flags & NCTRL(iface_desc->bInterfaceNumber)))
-+	if (!iface_no_modem_control(device_flags, iface_desc->bInterfaceNumber))
- 		data->use_send_setup = 1;
- 
- 	if (device_flags & ZLP)
+-- 
+2.27.0
+
 
 
