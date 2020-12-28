@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79CDF2E3991
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:25:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 390162E3B2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:47:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388830AbgL1NZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:25:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53452 "EHLO mail.kernel.org"
+        id S2405469AbgL1Nq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:46:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46702 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388797AbgL1NYv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:24:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0840E22472;
-        Mon, 28 Dec 2020 13:24:09 +0000 (UTC)
+        id S2404993AbgL1NqC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:46:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 03D0E205CB;
+        Mon, 28 Dec 2020 13:45:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161850;
-        bh=HDwlYGneSzJdBRGA+B74WKAYCNDSr1mKmwZpoyynbGs=;
+        s=korg; t=1609163146;
+        bh=ZMz1VaCoNoltprG8mhf06g9t/TJKHaD2DDu0AwVhxso=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AGoOvzoELB4+fA567ARKV7Hq5pGR8DxCCZDjADsUUSCD3ihyiAvceVQMKwD8SvEqR
-         XzRMwJ0aaSMuSjS74irimtV0kumwY+CNGxHvD/6ZWF/1atw6D5+IOiMGmN1rGi0ayT
-         uRSWkITCahCHjOSgJuq5+8Ato7G+/S0VzRSF1YoU=
+        b=Zc62AZlwcud0hvvfKX4q7yIayYn5MW+u+3BHFRja+CFA992JUTWF1l8HbOWINQ2HR
+         ZEC+t2RsrcUIFxEMgOk1m8Q3JI38pM6PjtISs0Q2hNxMpRy4347I6DlRs63+0lIUXy
+         hhAC1H9Ukug0LOBcXGBzQkmkLQF3MsPUNNJXNVeQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tianyue Ren <rentianyue@kylinos.cn>,
-        Paul Moore <paul@paul-moore.com>,
+        stable@vger.kernel.org, Steev Klimaszewski <steev@kali.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 104/346] selinux: fix error initialization in inode_doinit_with_dentry()
+Subject: [PATCH 5.4 187/453] arm64: dts: qcom: c630: Polish i2c-hid devices
 Date:   Mon, 28 Dec 2020 13:47:03 +0100
-Message-Id: <20201228124924.811297318@linuxfoundation.org>
+Message-Id: <20201228124946.209170540@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,60 +40,129 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tianyue Ren <rentianyue@kylinos.cn>
+From: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-[ Upstream commit 83370b31a915493231e5b9addc72e4bef69f8d31 ]
+[ Upstream commit 11d0e4f281565ef757479764ce7fd8d35eeb01b0 ]
 
-Mark the inode security label as invalid if we cannot find
-a dentry so that we will retry later rather than marking it
-initialized with the unlabeled SID.
+The numbering of the i2c busses differs from ACPI and a number of typos
+was made in the original patch. Further more the irq flags for the
+various resources was not correct and i2c3 only has one of the two
+client devices active in any one device.
 
-Fixes: 9287aed2ad1f ("selinux: Convert isec->lock into a spinlock")
-Signed-off-by: Tianyue Ren <rentianyue@kylinos.cn>
-[PM: minor comment tweaks]
-Signed-off-by: Paul Moore <paul@paul-moore.com>
+Also label the various devices, for easier comparison with the ACPI
+tables.
+
+Tested-by: Steev Klimaszewski <steev@kali.org>
+Fixes: 44acee207844 ("arm64: dts: qcom: Add Lenovo Yoga C630")
+Link: https://lore.kernel.org/r/20201130165924.319708-1-bjorn.andersson@linaro.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/selinux/hooks.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
+ .../boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 31 +++++++++++--------
+ 1 file changed, 18 insertions(+), 13 deletions(-)
 
-diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-index 250b725f5754c..02afe52a55d0d 100644
---- a/security/selinux/hooks.c
-+++ b/security/selinux/hooks.c
-@@ -1618,7 +1618,13 @@ static int inode_doinit_with_dentry(struct inode *inode, struct dentry *opt_dent
- 			 * inode_doinit with a dentry, before these inodes could
- 			 * be used again by userspace.
- 			 */
--			goto out;
-+			isec->initialized = LABEL_INVALID;
-+			/*
-+			 * There is nothing useful to jump to the "out"
-+			 * label, except a needless spin lock/unlock
-+			 * cycle.
-+			 */
-+			return 0;
- 		}
+diff --git a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+index ded120d3aef58..f539b3655f6b9 100644
+--- a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
++++ b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
+@@ -244,23 +244,28 @@
+ 	status = "okay";
+ 	clock-frequency = <400000>;
  
- 		len = INITCONTEXTLEN;
-@@ -1733,8 +1739,15 @@ static int inode_doinit_with_dentry(struct inode *inode, struct dentry *opt_dent
- 			 * inode_doinit() with a dentry, before these inodes
- 			 * could be used again by userspace.
- 			 */
--			if (!dentry)
--				goto out;
-+			if (!dentry) {
-+				isec->initialized = LABEL_INVALID;
-+				/*
-+				 * There is nothing useful to jump to the "out"
-+				 * label, except a needless spin lock/unlock
-+				 * cycle.
-+				 */
-+				return 0;
-+			}
- 			rc = selinux_genfs_get_sid(dentry, sclass,
- 						   sbsec->flags, &sid);
- 			dput(dentry);
+-	hid@15 {
++	tsel: hid@15 {
+ 		compatible = "hid-over-i2c";
+ 		reg = <0x15>;
+ 		hid-descr-addr = <0x1>;
+ 
+-		interrupts-extended = <&tlmm 37 IRQ_TYPE_EDGE_RISING>;
++		interrupts-extended = <&tlmm 37 IRQ_TYPE_LEVEL_HIGH>;
++
++		pinctrl-names = "default";
++		pinctrl-0 = <&i2c3_hid_active>;
+ 	};
+ 
+-	hid@2c {
++	tsc2: hid@2c {
+ 		compatible = "hid-over-i2c";
+ 		reg = <0x2c>;
+ 		hid-descr-addr = <0x20>;
+ 
+-		interrupts-extended = <&tlmm 37 IRQ_TYPE_EDGE_RISING>;
++		interrupts-extended = <&tlmm 37 IRQ_TYPE_LEVEL_HIGH>;
+ 
+ 		pinctrl-names = "default";
+-		pinctrl-0 = <&i2c2_hid_active>;
++		pinctrl-0 = <&i2c3_hid_active>;
++
++		status = "disabled";
+ 	};
+ };
+ 
+@@ -268,15 +273,15 @@
+ 	status = "okay";
+ 	clock-frequency = <400000>;
+ 
+-	hid@10 {
++	tsc1: hid@10 {
+ 		compatible = "hid-over-i2c";
+ 		reg = <0x10>;
+ 		hid-descr-addr = <0x1>;
+ 
+-		interrupts-extended = <&tlmm 125 IRQ_TYPE_EDGE_FALLING>;
++		interrupts-extended = <&tlmm 125 IRQ_TYPE_LEVEL_LOW>;
+ 
+ 		pinctrl-names = "default";
+-		pinctrl-0 = <&i2c6_hid_active>;
++		pinctrl-0 = <&i2c5_hid_active>;
+ 	};
+ };
+ 
+@@ -284,7 +289,7 @@
+ 	status = "okay";
+ 	clock-frequency = <400000>;
+ 
+-	hid@5c {
++	ecsh: hid@5c {
+ 		compatible = "hid-over-i2c";
+ 		reg = <0x5c>;
+ 		hid-descr-addr = <0x1>;
+@@ -292,7 +297,7 @@
+ 		interrupts-extended = <&tlmm 92 IRQ_TYPE_LEVEL_LOW>;
+ 
+ 		pinctrl-names = "default";
+-		pinctrl-0 = <&i2c12_hid_active>;
++		pinctrl-0 = <&i2c11_hid_active>;
+ 	};
+ };
+ 
+@@ -335,7 +340,7 @@
+ &tlmm {
+ 	gpio-reserved-ranges = <0 4>, <81 4>;
+ 
+-	i2c2_hid_active: i2c2-hid-active {
++	i2c3_hid_active: i2c2-hid-active {
+ 		pins = <37>;
+ 		function = "gpio";
+ 
+@@ -344,7 +349,7 @@
+ 		drive-strength = <2>;
+ 	};
+ 
+-	i2c6_hid_active: i2c6-hid-active {
++	i2c5_hid_active: i2c5-hid-active {
+ 		pins = <125>;
+ 		function = "gpio";
+ 
+@@ -353,7 +358,7 @@
+ 		drive-strength = <2>;
+ 	};
+ 
+-	i2c12_hid_active: i2c12-hid-active {
++	i2c11_hid_active: i2c11-hid-active {
+ 		pins = <92>;
+ 		function = "gpio";
+ 
 -- 
 2.27.0
 
