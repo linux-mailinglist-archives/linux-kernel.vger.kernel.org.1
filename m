@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C5542E3A84
+	by mail.lfdr.de (Postfix) with ESMTP id D3BC22E3A85
 	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:39:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390865AbgL1Nhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:37:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37084 "EHLO mail.kernel.org"
+        id S2390887AbgL1Nh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:37:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390786AbgL1Nh2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:37:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90A81208BA;
-        Mon, 28 Dec 2020 13:37:12 +0000 (UTC)
+        id S2390798AbgL1Nhb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:37:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 15AB720719;
+        Mon, 28 Dec 2020 13:37:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162633;
-        bh=DYQ9s/7wtHpTAFw8NvX1NAsWf42X/bqg7gd1gFhpoZI=;
+        s=korg; t=1609162635;
+        bh=b3W3qxLUR+uGTD4xK2QVvQWDVrAxkeDSCuy0HJfUHEc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vtAfAGnrlAuvP+A1Krql3PEsaBcW+jxQDJLrN1zVPvvyfr/9nMxQNo/xZULHiu46R
-         TjCfOLjyb3sx9RXGpHhrW2ugsPKcJ5Ro3IOWSEtz4EpApmXCSjIlbr1+45RYI4pZq+
-         7VNozU4NfQA8YmpyQZ544277gTf3pGKicUft2z0g=
+        b=Q61SWo2NVuAqHvQAPXhOVOqMqdMB49jKH6IxeQnymMLTfA2QBEOMG0EMuPmUIn0a0
+         554A3boqJR7ZPQeCBGG171P4X1Z0TFUGvwjTXsUPGpKU4VCMgRbeXIMA69SAYKtMAx
+         ivzzAMLSlH6z8J35ImtMyVKZnOGh+cVLUYXIWaSQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
-        Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        stable@vger.kernel.org, Andrew Jeffery <andrew@aj.id.au>,
+        Joel Stanley <joel@jms.id.au>,
+        Billy Tsai <billy_tsai@aspeedtech.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 020/453] blk-mq: In blk_mq_dispatch_rq_list() "no budget" is a reason to kick
-Date:   Mon, 28 Dec 2020 13:44:16 +0100
-Message-Id: <20201228124938.225832767@linuxfoundation.org>
+Subject: [PATCH 5.4 021/453] pinctrl: aspeed: Fix GPIO requests on pass-through banks
+Date:   Mon, 28 Dec 2020 13:44:17 +0100
+Message-Id: <20201228124938.274155220@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
 References: <20201228124937.240114599@linuxfoundation.org>
@@ -40,70 +42,163 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Douglas Anderson <dianders@chromium.org>
+From: Andrew Jeffery <andrew@aj.id.au>
 
-[ Upstream commit ab3cee3762e5e69f27c302c43691289fdfc12316 ]
+[ Upstream commit 7aeb353802611a8e655e019f09a370ff682af1a6 ]
 
-In blk_mq_dispatch_rq_list(), if blk_mq_sched_needs_restart() returns
-true and the driver returns BLK_STS_RESOURCE then we'll kick the
-queue.  However, there's another case where we might need to kick it.
-If we were unable to get budget we can be in much the same state as
-when the driver returns BLK_STS_RESOURCE, so we should treat it the
-same.
+Commit 6726fbff19bf ("pinctrl: aspeed: Fix GPI only function problem.")
+fixes access to GPIO banks T and U on the AST2600. Both banks contain
+input-only pins and the GPIO pin function is named GPITx and GPIUx
+respectively. Unfortunately the fix had a negative impact on GPIO banks
+D and E for the AST2400 and AST2500 where the GPIO pass-through
+functions take similar "GPI"-style names. The net effect on the older
+SoCs was that when the GPIO subsystem requested a pin in banks D or E be
+muxed for GPIO, they were instead muxed for pass-through mode.
+Mistakenly muxing pass-through mode e.g. breaks booting the host on
+IBM's Witherspoon (AC922) platform where GPIOE0 is used for FSI.
 
-It should be noted that even if we add a whole bunch of extra kicking
-to the queue in other patches this patch is still important.
-Specifically any kicking that happened before we re-spliced leftover
-requests into 'hctx->dispatch' wouldn't have found any work, so we
-really need to make sure we kick ourselves after we've done the
-splicing.
+Further exploit the names in the provided expression structure to
+differentiate pass-through from pin-specific GPIO modes.
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+This follow-up fix gives the expected behaviour for the following tests:
+
+Witherspoon BMC (AST2500):
+
+1. Power-on the Witherspoon host
+2. Request GPIOD1 be muxed via /sys/class/gpio/export
+3. Request GPIOE1 be muxed via /sys/class/gpio/export
+4. Request the balls for GPIOs E2 and E3 be muxed as GPIO pass-through
+   ("GPIE2" mode) via a pinctrl hog in the devicetree
+
+Rainier BMC (AST2600):
+
+5. Request GPIT0 be muxed via /sys/class/gpio/export
+6. Request GPIU0 be muxed via /sys/class/gpio/export
+
+Together the tests demonstrate that all three pieces of functionality
+(general GPIOs via 1, 2 and 3, input-only GPIOs via 5 and 6, pass-through
+mode via 4) operate as desired across old and new SoCs.
+
+Fixes: 9b92f5c51e9a ("pinctrl: aspeed: Fix GPI only function problem.")
+Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+Tested-by: Joel Stanley <joel@jms.id.au>
+Reviewed-by: Joel Stanley <joel@jms.id.au>
+Cc: Billy Tsai <billy_tsai@aspeedtech.com>
+Cc: Joel Stanley <joel@jms.id.au>
+Link: https://lore.kernel.org/r/20201126063337.489927-1-andrew@aj.id.au
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-mq.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/pinctrl/aspeed/pinctrl-aspeed.c | 74 +++++++++++++++++++++++--
+ drivers/pinctrl/aspeed/pinmux-aspeed.h  |  7 ++-
+ 2 files changed, 72 insertions(+), 9 deletions(-)
 
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index c0efd3e278da6..057a634396a90 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -1233,6 +1233,7 @@ bool blk_mq_dispatch_rq_list(struct request_queue *q, struct list_head *list,
- 	bool no_tag = false;
- 	int errors, queued;
- 	blk_status_t ret = BLK_STS_OK;
-+	bool no_budget_avail = false;
+diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed.c b/drivers/pinctrl/aspeed/pinctrl-aspeed.c
+index 93b5654ff2828..22aca6d182c0c 100644
+--- a/drivers/pinctrl/aspeed/pinctrl-aspeed.c
++++ b/drivers/pinctrl/aspeed/pinctrl-aspeed.c
+@@ -277,14 +277,76 @@ int aspeed_pinmux_set_mux(struct pinctrl_dev *pctldev, unsigned int function,
+ static bool aspeed_expr_is_gpio(const struct aspeed_sig_expr *expr)
+ {
+ 	/*
+-	 * The signal type is GPIO if the signal name has "GPI" as a prefix.
+-	 * strncmp (rather than strcmp) is used to implement the prefix
+-	 * requirement.
++	 * We need to differentiate between GPIO and non-GPIO signals to
++	 * implement the gpio_request_enable() interface. For better or worse
++	 * the ASPEED pinctrl driver uses the expression names to determine
++	 * whether an expression will mux a pin for GPIO.
+ 	 *
+-	 * expr->signal might look like "GPIOB1" in the GPIO case.
+-	 * expr->signal might look like "GPIT0" in the GPI case.
++	 * Generally we have the following - A GPIO such as B1 has:
++	 *
++	 *    - expr->signal set to "GPIOB1"
++	 *    - expr->function set to "GPIOB1"
++	 *
++	 * Using this fact we can determine whether the provided expression is
++	 * a GPIO expression by testing the signal name for the string prefix
++	 * "GPIO".
++	 *
++	 * However, some GPIOs are input-only, and the ASPEED datasheets name
++	 * them differently. An input-only GPIO such as T0 has:
++	 *
++	 *    - expr->signal set to "GPIT0"
++	 *    - expr->function set to "GPIT0"
++	 *
++	 * It's tempting to generalise the prefix test from "GPIO" to "GPI" to
++	 * account for both GPIOs and GPIs, but in doing so we run aground on
++	 * another feature:
++	 *
++	 * Some pins in the ASPEED BMC SoCs have a "pass-through" GPIO
++	 * function where the input state of one pin is replicated as the
++	 * output state of another (as if they were shorted together - a mux
++	 * configuration that is typically enabled by hardware strapping).
++	 * This feature allows the BMC to pass e.g. power button state through
++	 * to the host while the BMC is yet to boot, but take control of the
++	 * button state once the BMC has booted by muxing each pin as a
++	 * separate, pin-specific GPIO.
++	 *
++	 * Conceptually this pass-through mode is a form of GPIO and is named
++	 * as such in the datasheets, e.g. "GPID0". This naming similarity
++	 * trips us up with the simple GPI-prefixed-signal-name scheme
++	 * discussed above, as the pass-through configuration is not what we
++	 * want when muxing a pin as GPIO for the GPIO subsystem.
++	 *
++	 * On e.g. the AST2400, a pass-through function "GPID0" is grouped on
++	 * balls A18 and D16, where we have:
++	 *
++	 *    For ball A18:
++	 *    - expr->signal set to "GPID0IN"
++	 *    - expr->function set to "GPID0"
++	 *
++	 *    For ball D16:
++	 *    - expr->signal set to "GPID0OUT"
++	 *    - expr->function set to "GPID0"
++	 *
++	 * By contrast, the pin-specific GPIO expressions for the same pins are
++	 * as follows:
++	 *
++	 *    For ball A18:
++	 *    - expr->signal looks like "GPIOD0"
++	 *    - expr->function looks like "GPIOD0"
++	 *
++	 *    For ball D16:
++	 *    - expr->signal looks like "GPIOD1"
++	 *    - expr->function looks like "GPIOD1"
++	 *
++	 * Testing both the signal _and_ function names gives us the means
++	 * differentiate the pass-through GPIO pinmux configuration from the
++	 * pin-specific configuration that the GPIO subsystem is after: An
++	 * expression is a pin-specific (non-pass-through) GPIO configuration
++	 * if the signal prefix is "GPI" and the signal name matches the
++	 * function name.
+ 	 */
+-	return strncmp(expr->signal, "GPI", 3) == 0;
++	return !strncmp(expr->signal, "GPI", 3) &&
++			!strcmp(expr->signal, expr->function);
+ }
  
- 	if (list_empty(list))
- 		return false;
-@@ -1251,6 +1252,7 @@ bool blk_mq_dispatch_rq_list(struct request_queue *q, struct list_head *list,
- 		hctx = rq->mq_hctx;
- 		if (!got_budget && !blk_mq_get_dispatch_budget(hctx)) {
- 			blk_mq_put_driver_tag(rq);
-+			no_budget_avail = true;
- 			break;
- 		}
- 
-@@ -1356,13 +1358,15 @@ bool blk_mq_dispatch_rq_list(struct request_queue *q, struct list_head *list,
- 		 *
- 		 * If driver returns BLK_STS_RESOURCE and SCHED_RESTART
- 		 * bit is set, run queue after a delay to avoid IO stalls
--		 * that could otherwise occur if the queue is idle.
-+		 * that could otherwise occur if the queue is idle.  We'll do
-+		 * similar if we couldn't get budget and SCHED_RESTART is set.
- 		 */
- 		needs_restart = blk_mq_sched_needs_restart(hctx);
- 		if (!needs_restart ||
- 		    (no_tag && list_empty_careful(&hctx->dispatch_wait.entry)))
- 			blk_mq_run_hw_queue(hctx, true);
--		else if (needs_restart && (ret == BLK_STS_RESOURCE))
-+		else if (needs_restart && (ret == BLK_STS_RESOURCE ||
-+					   no_budget_avail))
- 			blk_mq_delay_run_hw_queue(hctx, BLK_MQ_RESOURCE_DELAY);
- 
- 		blk_mq_update_dispatch_busy(hctx, true);
+ static bool aspeed_gpio_in_exprs(const struct aspeed_sig_expr **exprs)
+diff --git a/drivers/pinctrl/aspeed/pinmux-aspeed.h b/drivers/pinctrl/aspeed/pinmux-aspeed.h
+index 140c5ce9fbc11..0aaa20653536f 100644
+--- a/drivers/pinctrl/aspeed/pinmux-aspeed.h
++++ b/drivers/pinctrl/aspeed/pinmux-aspeed.h
+@@ -452,10 +452,11 @@ struct aspeed_sig_desc {
+  * evaluation of the descriptors.
+  *
+  * @signal: The signal name for the priority level on the pin. If the signal
+- *          type is GPIO, then the signal name must begin with the string
+- *          "GPIO", e.g. GPIOA0, GPIOT4 etc.
++ *          type is GPIO, then the signal name must begin with the
++ *          prefix "GPI", e.g. GPIOA0, GPIT0 etc.
+  * @function: The name of the function the signal participates in for the
+- *            associated expression
++ *            associated expression. For pin-specific GPIO, the function
++ *            name must match the signal name.
+  * @ndescs: The number of signal descriptors in the expression
+  * @descs: Pointer to an array of signal descriptors that comprise the
+  *         function expression
 -- 
 2.27.0
 
