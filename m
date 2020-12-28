@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FDC62E4341
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:34:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF4352E3E52
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:27:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408538AbgL1Pem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:34:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56038 "EHLO mail.kernel.org"
+        id S2503917AbgL1O0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:26:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407405AbgL1NyM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:54:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D622C20738;
-        Mon, 28 Dec 2020 13:53:28 +0000 (UTC)
+        id S2503871AbgL1O0n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:26:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E7F7B22C9E;
+        Mon, 28 Dec 2020 14:26:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163609;
-        bh=r24g29K/F1pGRKDRsBgJJuEEfKWtMmPrNKuHGtX5zjk=;
+        s=korg; t=1609165588;
+        bh=ZVH6mPmmfFa3nYou8QGvUJ84cqwMDtba7EMR8XuKack=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EB3LC1qLhnH/yzktjsrpWAyvSR1aB8JBVEPOuaKHEUAJJ6yvKngzrEa2vUlJ3QkA4
-         KVMVDsSvB0wXg/D9tt6kHYX93WW/7wfSSGB46XsWnte1SnPk2U5PZnTVDXkL3Iziyb
-         RRQDC+0xmxuNlEE0P2vdziXbZxdHaH8L1hcgzeB4=
+        b=aqfDRoE6gF0R44zcwM289BhlBZyLmHWZdvgyptEHUn7VIGF2SapXpMhjJCVOS4/aw
+         n5FcJzsUMw30NO7NPoA8tor0TaGiAUthjFOYWtr6jQ69MDBcnXV/Queh1H7sNhVqhp
+         3mYJJHt4kltq8nASNrspmjJpo+MVcFPYsqqFQYxI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Robin Gong <yibin.gong@nxp.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 346/453] ALSA: core: memalloc: add page alignment for iram
-Date:   Mon, 28 Dec 2020 13:49:42 +0100
-Message-Id: <20201228124953.871962440@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.10 585/717] USB: serial: keyspan_pda: fix tx-unthrottle use-after-free
+Date:   Mon, 28 Dec 2020 13:49:43 +0100
+Message-Id: <20201228125048.942385623@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,35 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robin Gong <yibin.gong@nxp.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit 74c64efa1557fef731b59eb813f115436d18078e upstream.
+commit 49fbb8e37a961396a5b6c82937c70df91de45e9d upstream.
 
-Since mmap for userspace is based on page alignment, add page alignment
-for iram alloc from pool, otherwise, some good data located in the same
-page of dmab->area maybe touched wrongly by userspace like pulseaudio.
+The driver's transmit-unthrottle work was never flushed on disconnect,
+something which could lead to the driver port data being freed while the
+unthrottle work is still scheduled.
 
-Signed-off-by: Robin Gong <yibin.gong@nxp.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/1608221747-3474-1-git-send-email-yibin.gong@nxp.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fix this by cancelling the unthrottle work when shutting down the port.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Cc: stable@vger.kernel.org
+Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/core/memalloc.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/usb/serial/keyspan_pda.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/sound/core/memalloc.c
-+++ b/sound/core/memalloc.c
-@@ -76,7 +76,8 @@ static void snd_malloc_dev_iram(struct s
- 	/* Assign the pool into private_data field */
- 	dmab->private_data = pool;
- 
--	dmab->area = gen_pool_dma_alloc(pool, size, &dmab->addr);
-+	dmab->area = gen_pool_dma_alloc_align(pool, size, &dmab->addr,
-+					PAGE_SIZE);
+--- a/drivers/usb/serial/keyspan_pda.c
++++ b/drivers/usb/serial/keyspan_pda.c
+@@ -647,8 +647,12 @@ error:
+ }
+ static void keyspan_pda_close(struct usb_serial_port *port)
+ {
++	struct keyspan_pda_private *priv = usb_get_serial_port_data(port);
++
+ 	usb_kill_urb(port->write_urb);
+ 	usb_kill_urb(port->interrupt_in_urb);
++
++	cancel_work_sync(&priv->unthrottle_work);
  }
  
- /**
+ 
 
 
