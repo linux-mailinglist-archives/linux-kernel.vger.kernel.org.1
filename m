@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2EA2E395B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:25:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 960EA2E3D9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:18:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388302AbgL1NWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:22:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50978 "EHLO mail.kernel.org"
+        id S2441508AbgL1ORu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:17:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388291AbgL1NWf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:22:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A057208BA;
-        Mon, 28 Dec 2020 13:21:53 +0000 (UTC)
+        id S2501883AbgL1ORe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:17:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7B81207A9;
+        Mon, 28 Dec 2020 14:16:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161714;
-        bh=LIoN4sHjZ9CILxxIIUYHgb99RMJPp6BZLGeWeHf3D/k=;
+        s=korg; t=1609165008;
+        bh=J8EDAHR5nrjdH7QAF5tISe7lha4W7Duhqv6amCs6azE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wrVZQAYnSltSg2Hp4jsDbRzxG4niqRIzWP4C6ZHQLaGBvcb9QpFCuuCpr7Bm0roiO
-         Q6tuj9mizApnP+D3muktBDnXRMgCI7huNuR9i8nWpnFDTeTMrwAHYm31bsJ+kH4+K2
-         0548Zc44nocqYaVBeymB7dR+Adl1LN8yNdL7Nj2M=
+        b=mDZmqz3NfbvXJpt9yFDVkSHLXA9K8AJhwcFhJw6aSx6ZnMcBNlDOIyjXzW3kc735P
+         Z+6q5yvt0iwxeB1h/M45XIxO6zh2zw/HKoLiorrhCzKTGPOVX1tq4mp6Y2zOMXotgK
+         8f37FPnC5+SiwxtaBT3BK96K0hgV6380OlG1iglo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arvind Sankar <nivedita@alum.mit.edu>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.19 026/346] compiler.h: fix barrier_data() on clang
+        stable@vger.kernel.org, Michael Walle <michael@walle.cc>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 347/717] mtd: spi-nor: ignore errors in spi_nor_unlock_all()
 Date:   Mon, 28 Dec 2020 13:45:45 +0100
-Message-Id: <20201228124921.041082673@linuxfoundation.org>
+Message-Id: <20201228125037.652430535@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,119 +41,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arvind Sankar <nivedita@alum.mit.edu>
+From: Michael Walle <michael@walle.cc>
 
-commit 3347acc6fcd4ee71ad18a9ff9d9dac176b517329 upstream.
+[ Upstream commit bdb1a75e4b9df6861ec6a6e3e3997820d3cebabe ]
 
-Commit 815f0ddb346c ("include/linux/compiler*.h: make compiler-*.h
-mutually exclusive") neglected to copy barrier_data() from
-compiler-gcc.h into compiler-clang.h.
+Just try to unlock the whole SPI-NOR flash array. Don't abort the
+probing in case of an error. Justifications:
+ (1) For some boards, this just works because
+     spi_nor_write_16bit_sr_and_check() is broken and just checks the
+     second half of the 16bit. Once that will be fixed, SPI probe will
+     fail for boards which has hardware-write protected SPI-NOR flashes.
+ (2) Until now, hardware write-protection was the only viable solution
+     to use the block protection bits. This is because this very
+     function spi_nor_unlock_all() will be called unconditionally on
+     every linux boot. Therefore, this bits only makes sense in
+     combination with the hardware write-protection. If we would fail
+     the SPI probe on an error in spi_nor_unlock_all() we'd break
+     virtually all users of the block protection bits.
+ (3) We should try hard to keep the MTD working even if the flash might
+     not be writable/erasable.
 
-The definition in compiler-gcc.h was really to work around clang's more
-aggressive optimization, so this broke barrier_data() on clang, and
-consequently memzero_explicit() as well.
-
-For example, this results in at least the memzero_explicit() call in
-lib/crypto/sha256.c:sha256_transform() being optimized away by clang.
-
-Fix this by moving the definition of barrier_data() into compiler.h.
-
-Also move the gcc/clang definition of barrier() into compiler.h,
-__memory_barrier() is icc-specific (and barrier() is already defined
-using it in compiler-intel.h) and doesn't belong in compiler.h.
-
-[rdunlap@infradead.org: fix ALPHA builds when SMP is not enabled]
-
-Link: https://lkml.kernel.org/r/20201101231835.4589-1-rdunlap@infradead.org
-Fixes: 815f0ddb346c ("include/linux/compiler*.h: make compiler-*.h mutually exclusive")
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/20201014212631.207844-1-nivedita@alum.mit.edu
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-[nd: backport to account for missing
-  commit e506ea451254a ("compiler.h: Split {READ,WRITE}_ONCE definitions out into rwonce.h")
-  commit d08b9f0ca6605 ("scs: Add support for Clang's Shadow Call Stack (SCS)")
-  commit a3f8a30f3f00 ("Compiler Attributes: use feature checks instead of version checks")]
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 3e0930f109e7 ("mtd: spi-nor: Rework the disabling of block write protection")
+Signed-off-by: Michael Walle <michael@walle.cc>
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Link: https://lore.kernel.org/r/20201203162959.29589-3-michael@walle.cc
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/compiler-clang.h |    1 -
- include/linux/compiler-gcc.h   |   19 -------------------
- include/linux/compiler.h       |   18 ++++++++++++++++--
- 3 files changed, 16 insertions(+), 22 deletions(-)
+ drivers/mtd/spi-nor/core.c | 23 +++++++++++++----------
+ 1 file changed, 13 insertions(+), 10 deletions(-)
 
---- a/include/linux/compiler-clang.h
-+++ b/include/linux/compiler-clang.h
-@@ -39,7 +39,6 @@
-  * and may be redefined here because they should not be shared with other
-  * compilers, like ICC.
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index f0ae7a01703a1..61b00d4965475 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -2915,20 +2915,27 @@ static int spi_nor_quad_enable(struct spi_nor *nor)
+ }
+ 
+ /**
+- * spi_nor_unlock_all() - Unlocks the entire flash memory array.
++ * spi_nor_try_unlock_all() - Tries to unlock the entire flash memory array.
+  * @nor:	pointer to a 'struct spi_nor'.
+  *
+  * Some SPI NOR flashes are write protected by default after a power-on reset
+  * cycle, in order to avoid inadvertent writes during power-up. Backward
+  * compatibility imposes to unlock the entire flash memory array at power-up
+  * by default.
++ *
++ * Unprotecting the entire flash array will fail for boards which are hardware
++ * write-protected. Thus any errors are ignored.
   */
--#define barrier() __asm__ __volatile__("" : : : "memory")
- #define __must_be_array(a) BUILD_BUG_ON_ZERO(__same_type((a), &(a)[0]))
- #define __assume_aligned(a, ...)	\
- 	__attribute__((__assume_aligned__(a, ## __VA_ARGS__)))
---- a/include/linux/compiler-gcc.h
-+++ b/include/linux/compiler-gcc.h
-@@ -14,25 +14,6 @@
- # error Sorry, your compiler is too old - please upgrade it.
- #endif
+-static int spi_nor_unlock_all(struct spi_nor *nor)
++static void spi_nor_try_unlock_all(struct spi_nor *nor)
+ {
+-	if (nor->flags & SNOR_F_HAS_LOCK)
+-		return spi_nor_unlock(&nor->mtd, 0, nor->params->size);
++	int ret;
  
--/* Optimization barrier */
--
--/* The "volatile" is due to gcc bugs */
--#define barrier() __asm__ __volatile__("": : :"memory")
--/*
-- * This version is i.e. to prevent dead stores elimination on @ptr
-- * where gcc and llvm may behave differently when otherwise using
-- * normal barrier(): while gcc behavior gets along with a normal
-- * barrier(), llvm needs an explicit input variable to be assumed
-- * clobbered. The issue is as follows: while the inline asm might
-- * access any memory it wants, the compiler could have fit all of
-- * @ptr into memory registers instead, and since @ptr never escaped
-- * from that, it proved that the inline asm wasn't touching any of
-- * it. This version works well with both compilers, i.e. we're telling
-- * the compiler that the inline asm absolutely may see the contents
-- * of @ptr. See also: https://llvm.org/bugs/show_bug.cgi?id=15495
-- */
--#define barrier_data(ptr) __asm__ __volatile__("": :"r"(ptr) :"memory")
--
- /*
-  * This macro obfuscates arithmetic on a variable address so that gcc
-  * shouldn't recognize the original var, and make assumptions about it.
---- a/include/linux/compiler.h
-+++ b/include/linux/compiler.h
-@@ -79,11 +79,25 @@ void ftrace_likely_update(struct ftrace_
+-	return 0;
++	if (!(nor->flags & SNOR_F_HAS_LOCK))
++		return;
++
++	ret = spi_nor_unlock(&nor->mtd, 0, nor->params->size);
++	if (ret)
++		dev_dbg(nor->dev, "Failed to unlock the entire flash memory array\n");
+ }
  
- /* Optimization barrier */
- #ifndef barrier
--# define barrier() __memory_barrier()
-+/* The "volatile" is due to gcc bugs */
-+# define barrier() __asm__ __volatile__("": : :"memory")
- #endif
+ static int spi_nor_init(struct spi_nor *nor)
+@@ -2941,11 +2948,7 @@ static int spi_nor_init(struct spi_nor *nor)
+ 		return err;
+ 	}
  
- #ifndef barrier_data
--# define barrier_data(ptr) barrier()
-+/*
-+ * This version is i.e. to prevent dead stores elimination on @ptr
-+ * where gcc and llvm may behave differently when otherwise using
-+ * normal barrier(): while gcc behavior gets along with a normal
-+ * barrier(), llvm needs an explicit input variable to be assumed
-+ * clobbered. The issue is as follows: while the inline asm might
-+ * access any memory it wants, the compiler could have fit all of
-+ * @ptr into memory registers instead, and since @ptr never escaped
-+ * from that, it proved that the inline asm wasn't touching any of
-+ * it. This version works well with both compilers, i.e. we're telling
-+ * the compiler that the inline asm absolutely may see the contents
-+ * of @ptr. See also: https://llvm.org/bugs/show_bug.cgi?id=15495
-+ */
-+# define barrier_data(ptr) __asm__ __volatile__("": :"r"(ptr) :"memory")
- #endif
+-	err = spi_nor_unlock_all(nor);
+-	if (err) {
+-		dev_dbg(nor->dev, "Failed to unlock the entire flash memory array\n");
+-		return err;
+-	}
++	spi_nor_try_unlock_all(nor);
  
- /* workaround for GCC PR82365 if needed */
+ 	if (nor->addr_width == 4 && !(nor->flags & SNOR_F_4B_OPCODES)) {
+ 		/*
+-- 
+2.27.0
+
 
 
