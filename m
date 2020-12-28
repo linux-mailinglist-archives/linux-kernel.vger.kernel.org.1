@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 944792E4034
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:49:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19C352E39BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:28:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438011AbgL1OVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:21:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56634 "EHLO mail.kernel.org"
+        id S2389637AbgL1N1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:27:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502324AbgL1OVL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:21:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F5F1221F0;
-        Mon, 28 Dec 2020 14:20:29 +0000 (UTC)
+        id S2389200AbgL1N0I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:26:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B5ABC22472;
+        Mon, 28 Dec 2020 13:25:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165230;
-        bh=fv281GONAecwfU735Iudm85vXf0DXrWC57GJ8ZIqFEI=;
+        s=korg; t=1609161953;
+        bh=NyJxix9UlwTf3UE+Z333I0rQe4WgJburj1ZJcyQebMY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EV5vz0UnRrD5WtGHlkk0u41TlfqG9GnySvYY3MvPf0zkcq0T4wcTQcbK/afsYk8LB
-         RC6ofN5CWR90MfnXz6l3lLw9C15hY6stXwbrY9Hptlao5LYfnK1R5GtEGwasAStHa0
-         bttz5VFQWfmfftt/s1rFEcQ1ajcQfSNl5/C6PBNI=
+        b=WKxkwSTuMpWb9O17cEHJ+MGDnz/uFJcTZ61CmZtXtL+RmetF17sUhkHi0jnRYoqXW
+         45C+nf9EHt6WZpCEGJCzdzMY4GLdDgIYepfgM+bjdHmEWoxCIYiJ2h8EYyx/wMTN6W
+         4hrGe3GaykFs71/yLidBJim+5xAA9p7Aj4BaKGF4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Joe Perches <joe@perches.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 459/717] checkpatch: fix unescaped left brace
+Subject: [PATCH 4.19 138/346] staging: greybus: codecs: Fix reference counter leak in error handling
 Date:   Mon, 28 Dec 2020 13:47:37 +0100
-Message-Id: <20201228125042.959231952@linuxfoundation.org>
+Message-Id: <20201228124926.462859447@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,40 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dwaipayan Ray <dwaipayanray1@gmail.com>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit 03f4935135b9efeb780b970ba023c201f81cf4e6 ]
+[ Upstream commit 3952659a6108f77a0d062d8e8487bdbdaf52a66c ]
 
-There is an unescaped left brace in a regex in OPEN_BRACE check.  This
-throws a runtime error when checkpatch is run with --fix flag and the
-OPEN_BRACE check is executed.
+gb_pm_runtime_get_sync has increased the usage counter of the device here.
+Forgetting to call gb_pm_runtime_put_noidle will result in usage counter
+leak in the error branch of (gbcodec_hw_params and gbcodec_prepare). We
+fixed it by adding it.
 
-Fix it by escaping the left brace.
-
-Link: https://lkml.kernel.org/r/20201115202928.81955-1-dwaipayanray1@gmail.com
-Fixes: 8d1824780f2f ("checkpatch: add --fix option for a couple OPEN_BRACE misuses")
-Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
-Acked-by: Joe Perches <joe@perches.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: c388ae7696992 ("greybus: audio: Update pm runtime support in dai_ops callback")
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Link: https://lore.kernel.org/r/20201109131347.1725288-2-zhangqilong3@huawei.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/checkpatch.pl | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/greybus/audio_codec.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index fab38b493cef7..0ad235ee96f91 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -4384,7 +4384,7 @@ sub process {
- 			    $fix) {
- 				fix_delete_line($fixlinenr, $rawline);
- 				my $fixed_line = $rawline;
--				$fixed_line =~ /(^..*$Type\s*$Ident\(.*\)\s*){(.*)$/;
-+				$fixed_line =~ /(^..*$Type\s*$Ident\(.*\)\s*)\{(.*)$/;
- 				my $line1 = $1;
- 				my $line2 = $2;
- 				fix_insert_line($fixlinenr, ltrim($line1));
+diff --git a/drivers/staging/greybus/audio_codec.c b/drivers/staging/greybus/audio_codec.c
+index 35acd55ca5ab7..6cbf69a57dfd9 100644
+--- a/drivers/staging/greybus/audio_codec.c
++++ b/drivers/staging/greybus/audio_codec.c
+@@ -489,6 +489,7 @@ static int gbcodec_hw_params(struct snd_pcm_substream *substream,
+ 	if (ret) {
+ 		dev_err_ratelimited(dai->dev, "%d: Error during set_config\n",
+ 				    ret);
++		gb_pm_runtime_put_noidle(bundle);
+ 		mutex_unlock(&codec->lock);
+ 		return ret;
+ 	}
+@@ -565,6 +566,7 @@ static int gbcodec_prepare(struct snd_pcm_substream *substream,
+ 		break;
+ 	}
+ 	if (ret) {
++		gb_pm_runtime_put_noidle(bundle);
+ 		mutex_unlock(&codec->lock);
+ 		dev_err_ratelimited(dai->dev, "set_data_size failed:%d\n",
+ 				    ret);
 -- 
 2.27.0
 
