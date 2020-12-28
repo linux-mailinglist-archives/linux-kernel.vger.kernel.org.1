@@ -2,66 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0720D2E6B60
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:06:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 411D82E6B65
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:06:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731280AbgL1W4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 17:56:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36656 "EHLO
+        id S1731295AbgL1W4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 17:56:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729457AbgL1Uto (ORCPT
+        with ESMTP id S1729466AbgL1UyS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 15:49:44 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16820C0613D6;
-        Mon, 28 Dec 2020 12:49:03 -0800 (PST)
+        Mon, 28 Dec 2020 15:54:18 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 677CDC0613D6;
+        Mon, 28 Dec 2020 12:53:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=FrB/y6cXrm8/7RnJKAfFvaXuj1DLc5dHGGTX7neRwVU=; b=gFRd1vbjeHG/rlpqny3Motu1NL
-        dAQ5+ksACy9pQ9fxS9/gOv9iZZhXTgnHdpPWvEGfQ1Y+3x9lZjpwXld05hgqFGflQl2pDIsRwE/Uo
-        d7V1nkzxeBxZWeOMm4+ZmvIHYMEqGkhtnCDyYuhrZ+RuBkQKyq6KeT3V+VgGjRWbhq3Ox9ODXQbxE
-        MIPBOu5iQ0cUcDx99sqjJbrPGa0w0SYXvRsrgeQRrJvhAOfyqRRj9VY1n28BKInZFCaPHgP1Obec7
-        Uu1BHbKoBE/+nnfA5FptkL2BhDuj/rZS8z+Es3nsVykKSg6zI+v4OZx1x03jyA3Q7Y3fIhSny75N9
-        H+3VNwgQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ktzRV-0001z3-L5; Mon, 28 Dec 2020 20:48:40 +0000
-Date:   Mon, 28 Dec 2020 20:48:37 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Jeff Layton <jlayton@kernel.org>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>, Jan Kara <jack@suse.cz>,
-        NeilBrown <neilb@suse.com>, Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>,
-        Chengguang Xu <cgxu519@mykernel.net>
-Subject: Re: [PATCH 3/3] overlayfs: Report writeback errors on upper
-Message-ID: <20201228204837.GA28221@casper.infradead.org>
-References: <20201223200746.GR874@casper.infradead.org>
- <20201223202140.GB11012@ircssh-2.c.rugged-nimbus-611.internal>
- <20201223204428.GS874@casper.infradead.org>
- <CAOQ4uxjAeGv8x2hBBzHz5PjSDq0Q+RN-ikgqEvAA+XE_U-U5Nw@mail.gmail.com>
- <20201224121352.GT874@casper.infradead.org>
- <CAOQ4uxj5YS9LSPoBZ3uakb6NeBG7g-Zeu+8Vt57tizEH6xu0cw@mail.gmail.com>
- <1334bba9cefa81f80005f8416680afb29044379c.camel@kernel.org>
- <20201228155618.GA6211@casper.infradead.org>
- <5bc11eb2e02893e7976f89a888221c902c11a2b4.camel@kernel.org>
- <CAOQ4uxhFz=Uervz6sMuz=RcFUWAxyLEhBrWnjQ+U0Jj_AaU59w@mail.gmail.com>
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=v09Nc7+APqPjSs0d+VhDDcdKOvqlpFdSna4lZxnE79c=; b=C4h8jv0NQBbAdGq4GtSw7fQC0Q
+        krlUD94moocoN71JdNZgiOdOoDbMQxtdyJbyFM+9IYDQ3WcHLrgHtyAb3pZC/FmfxLRdCfybrt/Zj
+        F+hJyNzh5iDMjzZcm/1z4mqpsjjtqngdNqwcpvj8DLHorf5gvOD5p6lzG9eWqNqWJBz17PDMPsNt/
+        vQilrUCWxvNAlLlbIaSZRer2DhOTe3FAXWcrQX9ZCT9N8xRTxKTQErG5DhMtUNtu00tig/ak6xdcg
+        /5brB4XSaSF9rLgVomfwIFpA/YCSvrZTOPB716cIEBJIVXh9HVPtlxscVhp3aQyTlNsFzC3sjh8M1
+        wVchFCPA==;
+Received: from [2601:1c0:6280:3f0::64ea] (helo=smtpauth.infradead.org)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1ktzWJ-0002ml-9z; Mon, 28 Dec 2020 20:53:35 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        linux-iio@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org
+Subject: [PATCH v2 0/8] Documentation: HID: edit/correct all files
+Date:   Mon, 28 Dec 2020 12:53:19 -0800
+Message-Id: <20201228205327.1063-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOQ4uxhFz=Uervz6sMuz=RcFUWAxyLEhBrWnjQ+U0Jj_AaU59w@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 09:37:37PM +0200, Amir Goldstein wrote:
-> Having said that, I never objected to the SEEN flag split.
+Make editing corrections to all files in Documentation/hid/.
 
-I STRONGLY object to the SEEN flag split.  I think it is completely
-unnecessary and nobody's shown me a use-case that changes my mind.
+Cc: Jiri Kosina <jikos@kernel.org>
+Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc: linux-input@vger.kernel.org
+Cc: Jonathan Cameron <jic23@kernel.org>
+Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc: linux-iio@vger.kernel.org
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-doc@vger.kernel.org
+
+ [PATCH v2 1/8] Documentation: HID: hid-alps editing & corrections
+ [PATCH v2 2/8] Documentation: HID: amd-sfh-hid editing & corrections
+ [PATCH v2 3/8] Documentation: HID: hiddev editing & corrections
+ [PATCH v2 4/8] Documentation: HID: intel-ish-hid editing & corrections
+ [PATCH v2 5/8] Documentation: HID: hidraw editing & corrections
+ [PATCH v2 6/8] Documentation: HID: hid-sensor editing & corrections
+ [PATCH v2 7/8] Documentation: HID: hid-transport editing & corrections
+ [PATCH v2 8/8] Documentation: HID: uhid editing & corrections
+
+ Documentation/hid/amd-sfh-hid.rst   |   22 +++----
+ Documentation/hid/hid-alps.rst      |    4 -
+ Documentation/hid/hid-sensor.rst    |   18 +++---
+ Documentation/hid/hid-transport.rst |   12 ++--
+ Documentation/hid/hiddev.rst        |   10 +--
+ Documentation/hid/hidraw.rst        |    5 +
+ Documentation/hid/intel-ish-hid.rst |   78 +++++++++++++-------------
+ Documentation/hid/uhid.rst          |   34 +++++------
+ 8 files changed, 93 insertions(+), 90 deletions(-)
