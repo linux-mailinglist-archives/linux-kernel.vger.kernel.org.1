@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 895DE2E6823
+	by mail.lfdr.de (Postfix) with ESMTP id 1B9202E6822
 	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:33:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634072AbgL1QdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:33:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33246 "EHLO mail.kernel.org"
+        id S2633526AbgL1QdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:33:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33276 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729849AbgL1NFW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:05:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7692B208B6;
-        Mon, 28 Dec 2020 13:04:41 +0000 (UTC)
+        id S1730615AbgL1NF1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:05:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 637C821D94;
+        Mon, 28 Dec 2020 13:04:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160682;
-        bh=IaOJYKUmy9GSwpodXH1qaeXbqk96Ux5wgeJUHdrUMM0=;
+        s=korg; t=1609160685;
+        bh=cRicDIf1s2m/epyd1+FFfQ5TZVTtW4rSXtzd0631iK0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1S77OCWzUEIKuE3jA1pl0oT/R/aXvdAH3/BjoKfX+UbrTbLotlsiMXLb6BOqIjy++
-         PdxEzu+K0hZUw3lg47dJGV0oAlj4uI5o4WG6t6HgvQxtsYcWZ8Ac7RrXW4zUFR3EFz
-         wcZZsGijwv7TM2/5o8JP8DfUISkfFh5o19XbAzO0=
+        b=DqU6jQMljyrFHhwNbsmsPkvmkKcylmqyPtp0ds2Ic7KC356THu016VSr5nr7JIz69
+         Y3MgBWGonn1S/AXDww8Omu7FuM0LDbsO6vHYLaqFCbyawaHni6u/VZyzFWTGb9m4Pn
+         MI4N+74Aiu2kPSItF0C0mKaHDHsSSxTNM1cOrH3w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Scally <djrscally@gmail.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 4.9 135/175] Revert "ACPI / resources: Use AE_CTRL_TERMINATE to terminate resources walks"
-Date:   Mon, 28 Dec 2020 13:49:48 +0100
-Message-Id: <20201228124859.785375000@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH 4.9 136/175] ACPI: PNP: compare the string length in the matching_id()
+Date:   Mon, 28 Dec 2020 13:49:49 +0100
+Message-Id: <20201228124859.835762152@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
 References: <20201228124853.216621466@linuxfoundation.org>
@@ -39,39 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Scally <djrscally@gmail.com>
+From: Hui Wang <hui.wang@canonical.com>
 
-commit 12fc4dad94dfac25599f31257aac181c691ca96f upstream.
+commit b08221c40febcbda9309dd70c61cf1b0ebb0e351 upstream.
 
-This reverts commit 8a66790b7850a6669129af078768a1d42076a0ef.
+Recently we met a touchscreen problem on some Thinkpad machines, the
+touchscreen driver (i2c-hid) is not loaded and the touchscreen can't
+work.
 
-Switching this function to AE_CTRL_TERMINATE broke the documented
-behaviour of acpi_dev_get_resources() - AE_CTRL_TERMINATE does not, in
-fact, terminate the resource walk because acpi_walk_resource_buffer()
-ignores it (specifically converting it to AE_OK), referring to that
-value as "an OK termination by the user function". This means that
-acpi_dev_get_resources() does not abort processing when the preproc
-function returns a negative value.
+An i2c ACPI device with the name WACF2200 is defined in the BIOS, with
+the current rule in matching_id(), this device will be regarded as
+a PNP device since there is WACFXXX in the acpi_pnp_device_ids[] and
+this PNP device is attached to the acpi device as the 1st
+physical_node, this will make the i2c bus match fail when i2c bus
+calls acpi_companion_match() to match the acpi_id_table in the i2c-hid
+driver.
 
-Signed-off-by: Daniel Scally <djrscally@gmail.com>
-Cc: 3.10+ <stable@vger.kernel.org> # 3.10+
+WACF2200 is an i2c device instead of a PNP device, after adding the
+string length comparing, the matching_id() will return false when
+matching WACF2200 and WACFXXX, and it is reasonable to compare the
+string length when matching two IDs.
+
+Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+Cc: All applicable <stable@vger.kernel.org>
 Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/acpi/resource.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/acpi/acpi_pnp.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/acpi/resource.c
-+++ b/drivers/acpi/resource.c
-@@ -532,7 +532,7 @@ static acpi_status acpi_dev_process_reso
- 		ret = c->preproc(ares, c->preproc_data);
- 		if (ret < 0) {
- 			c->error = ret;
--			return AE_CTRL_TERMINATE;
-+			return AE_ABORT_METHOD;
- 		} else if (ret > 0) {
- 			return AE_OK;
- 		}
+--- a/drivers/acpi/acpi_pnp.c
++++ b/drivers/acpi/acpi_pnp.c
+@@ -320,6 +320,9 @@ static bool matching_id(const char *idst
+ {
+ 	int i;
+ 
++	if (strlen(idstr) != strlen(list_id))
++		return false;
++
+ 	if (memcmp(idstr, list_id, 3))
+ 		return false;
+ 
 
 
