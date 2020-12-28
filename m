@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 431772E3848
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:09:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1B442E3C00
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:57:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730860AbgL1NIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:08:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35342 "EHLO mail.kernel.org"
+        id S2407283AbgL1N5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:57:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730805AbgL1NHk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:07:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EBEE022AAA;
-        Mon, 28 Dec 2020 13:06:58 +0000 (UTC)
+        id S2406512AbgL1N5G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:57:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 36CAA20731;
+        Mon, 28 Dec 2020 13:56:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160819;
-        bh=i7OZ7g5EYwwab0/iT21/W9zFYz9gbkRlmjrjXA+IToU=;
+        s=korg; t=1609163785;
+        bh=gRqv+bXUF7OfOcorPigBcxLaD+/i8zlRLh0gtR/jp0A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aR1AhipCDObhlfOnGu0ClVdtgrT7cPn1s3tIA3vH+MGuAzgGiCKn8Z65OiqhSIzc+
-         1+qDJLJTYr37BzSGM86doW36GicIX+YNzbzjF+LxrYLWN4S48T2429z7Ky0sCsMUGy
-         6jbJ++bByC7+p7qlvkHVth5e8t6F1uhyaptkGe9k=
+        b=fCexUYnKBG4SswQ55OnqnWheEUZa7z8NAQn2gDfFMEplO881zLAwTrYG/BNqHfb18
+         Pqh6xKNcs/yl52utj8W5DdCHHx1Ct6Miaycb0gG5xfNRxd0np/y/4sXgtwx7g+yEFj
+         wAx9smK8Vp0KBuppAQZWB4G8QSQFltHqbw3Ah8fQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhe Li <lizhe67@huawei.com>,
-        Richard Weinberger <richard@nod.at>
-Subject: [PATCH 4.9 159/175] jffs2: Fix GC exit abnormally
+        stable@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Marc Zyngier <maz@kernel.org>
+Subject: [PATCH 5.4 376/453] KVM: arm64: Introduce handling of AArch32 TTBCR2 traps
 Date:   Mon, 28 Dec 2020 13:50:12 +0100
-Message-Id: <20201228124900.943466481@linuxfoundation.org>
+Message-Id: <20201228124955.296753643@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,76 +39,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhe Li <lizhe67@huawei.com>
+From: Marc Zyngier <maz@kernel.org>
 
-commit 9afc9a8a4909fece0e911e72b1060614ba2f7969 upstream.
+commit ca4e514774930f30b66375a974b5edcbebaf0e7e upstream.
 
-The log of this problem is:
-jffs2: Error garbage collecting node at 0x***!
-jffs2: No space for garbage collection. Aborting GC thread
+ARMv8.2 introduced TTBCR2, which shares TCR_EL1 with TTBCR.
+Gracefully handle traps to this register when HCR_EL2.TVM is set.
 
-This is because GC believe that it do nothing, so it abort.
-
-After going over the image of jffs2, I find a scene that
-can trigger this problem stably.
-The scene is: there is a normal dirent node at summary-area,
-but abnormal at corresponding not-summary-area with error
-name_crc.
-
-The reason that GC exit abnormally is because it find that
-abnormal dirent node to GC, but when it goes to function
-jffs2_add_fd_to_list, it cannot meet the condition listed
-below:
-
-if ((*prev)->nhash == new->nhash && !strcmp((*prev)->name, new->name))
-
-So no node is marked obsolete, statistical information of
-erase_block do not change, which cause GC exit abnormally.
-
-The root cause of this problem is: we do not check the
-name_crc of the abnormal dirent node with summary is enabled.
-
-Noticed that in function jffs2_scan_dirent_node, we use
-function jffs2_scan_dirty_space to deal with the dirent
-node with error name_crc. So this patch add a checking
-code in function read_direntry to ensure the correctness
-of dirent node. If checked failed, the dirent node will
-be marked obsolete so GC will pass this node and this
-problem will be fixed.
-
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Zhe Li <lizhe67@huawei.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Cc: stable@vger.kernel.org
+Reported-by: James Morse <james.morse@arm.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/jffs2/readinode.c |   16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ arch/arm64/include/asm/kvm_host.h |    1 +
+ arch/arm64/kvm/sys_regs.c         |    1 +
+ 2 files changed, 2 insertions(+)
 
---- a/fs/jffs2/readinode.c
-+++ b/fs/jffs2/readinode.c
-@@ -672,6 +672,22 @@ static inline int read_direntry(struct j
- 			jffs2_free_full_dirent(fd);
- 			return -EIO;
- 		}
-+
-+#ifdef CONFIG_JFFS2_SUMMARY
-+		/*
-+		 * we use CONFIG_JFFS2_SUMMARY because without it, we
-+		 * have checked it while mounting
-+		 */
-+		crc = crc32(0, fd->name, rd->nsize);
-+		if (unlikely(crc != je32_to_cpu(rd->name_crc))) {
-+			JFFS2_NOTICE("name CRC failed on dirent node at"
-+			   "%#08x: read %#08x,calculated %#08x\n",
-+			   ref_offset(ref), je32_to_cpu(rd->node_crc), crc);
-+			jffs2_mark_node_obsolete(c, ref);
-+			jffs2_free_full_dirent(fd);
-+			return 0;
-+		}
-+#endif
- 	}
- 
- 	fd->nhash = full_name_hash(NULL, fd->name, rd->nsize);
+--- a/arch/arm64/include/asm/kvm_host.h
++++ b/arch/arm64/include/asm/kvm_host.h
+@@ -182,6 +182,7 @@ enum vcpu_sysreg {
+ #define c2_TTBR1	(TTBR1_EL1 * 2)	/* Translation Table Base Register 1 */
+ #define c2_TTBR1_high	(c2_TTBR1 + 1)	/* TTBR1 top 32 bits */
+ #define c2_TTBCR	(TCR_EL1 * 2)	/* Translation Table Base Control R. */
++#define c2_TTBCR2	(c2_TTBCR + 1)	/* Translation Table Base Control R. 2 */
+ #define c3_DACR		(DACR32_EL2 * 2)/* Domain Access Control Register */
+ #define c5_DFSR		(ESR_EL1 * 2)	/* Data Fault Status Register */
+ #define c5_IFSR		(IFSR32_EL2 * 2)/* Instruction Fault Status Register */
+--- a/arch/arm64/kvm/sys_regs.c
++++ b/arch/arm64/kvm/sys_regs.c
+@@ -1837,6 +1837,7 @@ static const struct sys_reg_desc cp15_re
+ 	{ Op1( 0), CRn( 2), CRm( 0), Op2( 0), access_vm_reg, NULL, c2_TTBR0 },
+ 	{ Op1( 0), CRn( 2), CRm( 0), Op2( 1), access_vm_reg, NULL, c2_TTBR1 },
+ 	{ Op1( 0), CRn( 2), CRm( 0), Op2( 2), access_vm_reg, NULL, c2_TTBCR },
++	{ Op1( 0), CRn( 2), CRm( 0), Op2( 3), access_vm_reg, NULL, c2_TTBCR2 },
+ 	{ Op1( 0), CRn( 3), CRm( 0), Op2( 0), access_vm_reg, NULL, c3_DACR },
+ 	{ Op1( 0), CRn( 5), CRm( 0), Op2( 0), access_vm_reg, NULL, c5_DFSR },
+ 	{ Op1( 0), CRn( 5), CRm( 0), Op2( 1), access_vm_reg, NULL, c5_IFSR },
 
 
