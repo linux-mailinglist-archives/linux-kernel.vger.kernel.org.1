@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 766522E66D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:18:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6735A2E6924
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:47:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731491AbgL1NRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:17:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44606 "EHLO mail.kernel.org"
+        id S1728655AbgL1QpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:45:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733085AbgL1NQO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:16:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 66754207CF;
-        Mon, 28 Dec 2020 13:15:33 +0000 (UTC)
+        id S1728831AbgL1M4t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:56:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FEFC208D5;
+        Mon, 28 Dec 2020 12:56:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161334;
-        bh=Vp37tht4LYIiuS99/4aMDCAyv9doVc/dWN+7hCcm6Kg=;
+        s=korg; t=1609160193;
+        bh=fI4JeCBIOMgmJEBljdtZVIXUtoKF/x3OGmUcqh+eO+w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ITj8sferiwbitA8BT9SQIpXuANhRE67QoV4ZMi5T+zTBTtQQtruZTF0G1SHtvvct7
-         IdUaxEtbsg7CP134LiJdZKwWOkVQ5naF7NyZZZW8eaaS5wlYvNf7DbScuJwGwyZ4u9
-         aQ9gIb0aXlDSaMd4qHERnCPQopnxTgLJBRhILZ7M=
+        b=gFM/99Rd+cGU7KNzdUU0oIPc0r434DlpilqSEQJa3MakKbHroGAPYxN55Ne6ATPyi
+         JgPsQX6KaEtob+PzGILbeCvhyNNGtPmGJiiZfJCOWgIzJ+f6Nq5H8DE9dFl1/3N7nm
+         NHGAB9OcWOAkntbHodgYcWH+IbPtSdZU11JcdsaQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Simon Beginn <linux@simonmicro.de>,
-        Bastien Nocera <hadess@hadess.net>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 180/242] Input: goodix - add upside-down quirk for Teclast X98 Pro tablet
+        stable@vger.kernel.org, Daniel Scally <djrscally@gmail.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 4.4 101/132] Revert "ACPI / resources: Use AE_CTRL_TERMINATE to terminate resources walks"
 Date:   Mon, 28 Dec 2020 13:49:45 +0100
-Message-Id: <20201228124913.542046828@linuxfoundation.org>
+Message-Id: <20201228124851.300725133@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,47 +39,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Simon Beginn <linux@simonmicro.de>
+From: Daniel Scally <djrscally@gmail.com>
 
-[ Upstream commit cffdd6d90482316e18d686060a4397902ea04bd2 ]
+commit 12fc4dad94dfac25599f31257aac181c691ca96f upstream.
 
-The touchscreen on the Teclast x98 Pro is also mounted upside-down in
-relation to the display orientation.
+This reverts commit 8a66790b7850a6669129af078768a1d42076a0ef.
 
-Signed-off-by: Simon Beginn <linux@simonmicro.de>
-Signed-off-by: Bastien Nocera <hadess@hadess.net>
-Link: https://lore.kernel.org/r/20201117004253.27A5A27EFD@localhost
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Switching this function to AE_CTRL_TERMINATE broke the documented
+behaviour of acpi_dev_get_resources() - AE_CTRL_TERMINATE does not, in
+fact, terminate the resource walk because acpi_walk_resource_buffer()
+ignores it (specifically converting it to AE_OK), referring to that
+value as "an OK termination by the user function". This means that
+acpi_dev_get_resources() does not abort processing when the preproc
+function returns a negative value.
+
+Signed-off-by: Daniel Scally <djrscally@gmail.com>
+Cc: 3.10+ <stable@vger.kernel.org> # 3.10+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/input/touchscreen/goodix.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/acpi/resource.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/input/touchscreen/goodix.c b/drivers/input/touchscreen/goodix.c
-index 777dd5b159d39..87f5722a67829 100644
---- a/drivers/input/touchscreen/goodix.c
-+++ b/drivers/input/touchscreen/goodix.c
-@@ -101,6 +101,18 @@ static const struct dmi_system_id rotated_screen[] = {
- 			DMI_MATCH(DMI_BIOS_DATE, "12/19/2014"),
- 		},
- 	},
-+	{
-+		.ident = "Teclast X98 Pro",
-+		.matches = {
-+			/*
-+			 * Only match BIOS date, because the manufacturers
-+			 * BIOS does not report the board name at all
-+			 * (sometimes)...
-+			 */
-+			DMI_MATCH(DMI_BOARD_VENDOR, "TECLAST"),
-+			DMI_MATCH(DMI_BIOS_DATE, "10/28/2015"),
-+		},
-+	},
- 	{
- 		.ident = "WinBook TW100",
- 		.matches = {
--- 
-2.27.0
-
+--- a/drivers/acpi/resource.c
++++ b/drivers/acpi/resource.c
+@@ -506,7 +506,7 @@ static acpi_status acpi_dev_process_reso
+ 		ret = c->preproc(ares, c->preproc_data);
+ 		if (ret < 0) {
+ 			c->error = ret;
+-			return AE_CTRL_TERMINATE;
++			return AE_ABORT_METHOD;
+ 		} else if (ret > 0) {
+ 			return AE_OK;
+ 		}
 
 
