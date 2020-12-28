@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEB332E68E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:44:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0D692E67F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:32:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441093AbgL1Qms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:42:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53728 "EHLO mail.kernel.org"
+        id S2502506AbgL1Qat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:30:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728380AbgL1M55 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:57:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E27B21D94;
-        Mon, 28 Dec 2020 12:57:40 +0000 (UTC)
+        id S1728712AbgL1NG0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:06:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E2F4A208D5;
+        Mon, 28 Dec 2020 13:05:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160261;
-        bh=fReGIGQu1LkWSVh5Pf8Peep6B+5Bo7W7k0DYixId1pc=;
+        s=korg; t=1609160745;
+        bh=SmTaqo7WzE/EmaufsDZ7mCiHw4+6ilbbmMuXd2r1WVs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=brQjhMn+A08zMYVoG6VLqUwy9vI/MN53hFoGRyK8LuWKzMLckhvtcZwXb5LOaX4Kb
-         OU7aCfYBhwIhpTPHqAlVsyOJ0YFPTiUr2EX37ESZC5oNtzV0UjQc9jRkk4s7yAxoOH
-         qUCidtCb6hGG9HYdGvZrrjdsuRt992B7MEGUU/UU=
+        b=UL/1aMYjPtcBv6eWEWMudJPxtsbOHOpzRs5aUC9xhSt2Ux0nExGijKX0Sul94EkHB
+         i42MFHrIxSxqNccPaLnQVdhIs0PYRQmMrveDJICsFxkyVDejcGQqmE6coG4J50sZ8t
+         9pS/HpGFFSXhrZgiRXj6g0VTPVuxE8hl0mc4CJ58=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sara Sharon <sara.sharon@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 094/132] cfg80211: initialize rekey_data
-Date:   Mon, 28 Dec 2020 13:49:38 +0100
-Message-Id: <20201228124850.970693582@linuxfoundation.org>
+Subject: [PATCH 4.9 126/175] qlcnic: Fix error code in probe
+Date:   Mon, 28 Dec 2020 13:49:39 +0100
+Message-Id: <20201228124859.359088678@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,34 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sara Sharon <sara.sharon@intel.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit f495acd8851d7b345e5f0e521b2645b1e1f928a0 ]
+[ Upstream commit 0d52848632a357948028eab67ff9b7cc0c12a0fb ]
 
-In case we have old supplicant, the akm field is uninitialized.
+Return -EINVAL if we can't find the correct device.  Currently it
+returns success.
 
-Signed-off-by: Sara Sharon <sara.sharon@intel.com>
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Link: https://lore.kernel.org/r/iwlwifi.20201129172929.930f0ab7ebee.Ic546e384efab3f4a89f318eafddc3eb7d556aecb@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Fixes: 13159183ec7a ("qlcnic: 83xx base driver")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/X9nHbMqEyI/xPfGd@mwanda
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/wireless/nl80211.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
-index 7748d674677c9..eb25998a0032e 100644
---- a/net/wireless/nl80211.c
-+++ b/net/wireless/nl80211.c
-@@ -9836,7 +9836,7 @@ static int nl80211_set_rekey_data(struct sk_buff *skb, struct genl_info *info)
- 	struct net_device *dev = info->user_ptr[1];
- 	struct wireless_dev *wdev = dev->ieee80211_ptr;
- 	struct nlattr *tb[NUM_NL80211_REKEY_DATA];
--	struct cfg80211_gtk_rekey_data rekey_data;
-+	struct cfg80211_gtk_rekey_data rekey_data = {};
- 	int err;
+diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
+index ebf5ead16939a..0928da21efd04 100644
+--- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
++++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
+@@ -2507,6 +2507,7 @@ qlcnic_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		qlcnic_sriov_vf_register_map(ahw);
+ 		break;
+ 	default:
++		err = -EINVAL;
+ 		goto err_out_free_hw_res;
+ 	}
  
- 	if (!info->attrs[NL80211_ATTR_REKEY_DATA])
 -- 
 2.27.0
 
