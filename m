@@ -2,104 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB0F2E6622
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:10:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 319D52E6688
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:14:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393548AbgL1QJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:09:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393535AbgL1QJY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 11:09:24 -0500
-X-Greylist: delayed 121 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 28 Dec 2020 08:08:43 PST
-Received: from shrek.podlesie.net (shrek-3s.podlesie.net [IPv6:2a00:13a0:3010::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9F08FC061794;
-        Mon, 28 Dec 2020 08:08:43 -0800 (PST)
-Received: from geronimo.kostuchna.emnet (unknown [127.0.0.1])
-        by shrek.podlesie.net (Postfix) with ESMTP id 9119E1636;
-        Mon, 28 Dec 2020 16:06:40 +0000 (UTC)
-From:   Krzysztof Mazur <krzysiek@podlesie.net>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Krzysztof Mazur <krzysiek@podlesie.net>, stable@vger.kernel.org
-Subject: [PATCH] x86/lib: don't use MMX before FPU initialization
-Date:   Mon, 28 Dec 2020 17:06:31 +0100
-Message-Id: <20201228160631.32732-1-krzysiek@podlesie.net>
-X-Mailer: git-send-email 2.27.0.rc1.207.gb85828341f
+        id S2633054AbgL1QOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:14:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54324 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2394270AbgL1QOC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 11:14:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 13F7E2084D;
+        Mon, 28 Dec 2020 16:13:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609172001;
+        bh=ITfs0W/+RpXTKRzJEvABqjsZfGEPs/V/z9bip7jFNo4=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=d1V40PzHeYxxfXzjxWxCzHwYJE/Ad5XkchDbhQVuLAWHfe4rQm0aDo5d7Jg2HZLqO
+         uzfDnBAlu7LrI1gOh2yJca4caskyNzU8hNQHt3IjD0FxNdxNYK+Oflvpc6XxuJAA7X
+         vh+ywvK9BSYIXn6d9SeVYuvQfKN6HTvvTWBOAkaKbGPJW+wiSwzNLwV3el35VsPfbB
+         PY5AAH96HhK7npELSbEXC7W9uJRRWf3pnoJ6GPqXZ7at4l3/GaIXJQNXdpWM8K3GvX
+         HAWU7lwJ57nIOIIhub3zETK/XAOTpcSrjCUI8rclVKXMs2kpi2BtEs18bBcI4h8Z9H
+         BeHO/RTroOa2Q==
+From:   Mark Brown <broonie@kernel.org>
+To:     Ravulapati Vishnu vardhan rao 
+        <Vishnuvardhanrao.Ravulapati@amd.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+        Takashi Iwai <tiwai@suse.com>, Alexander.Deucher@amd.com,
+        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
+        <alsa-devel@alsa-project.org>,
+        Akshu Agrawal <akshu.agrawal@amd.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+In-Reply-To: <20201222115929.11222-1-Vishnuvardhanrao.Ravulapati@amd.com>
+References: <20201222115929.11222-1-Vishnuvardhanrao.Ravulapati@amd.com>
+Subject: Re: [PATCH] ASoC: amd:Replacing MSI with Legacy IRQ model
+Message-Id: <160917197014.51862.14166013678155131576.b4-ty@kernel.org>
+Date:   Mon, 28 Dec 2020 16:12:50 +0000
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When enabled, the MMX 3DNow! optimized memcpy() is used very early,
-even before FPU is initialized. It worked fine, but commit
-7ad816762f9bf89e940e618ea40c43138b479e10 ("x86/fpu: Reset MXCSR
-to default in kernel_fpu_begin()") broke that. After that commit
-the kernel crashes just after "Booting the kernel." message.
-It affects all kernels with CONFIG_X86_USE_3DNOW=y (enabled when
-some AMD/Cyrix processors are selected). So, enable MMX 3DNow!
-optimized memcpy() later.
+On Tue, 22 Dec 2020 17:29:18 +0530, Ravulapati Vishnu vardhan rao wrote:
+> When we try to play and capture simultaneously we see that
+> interrupts are genrated but our handler is not being acknowledged,
+> After investigating further more in detail on this issue we found
+> that IRQ delivery via MSI from the ACP IP is unreliable and so sometimes
+> interrupt generated will not be acknowledged so MSI model shouldn't be used
+> and using legacy IRQs will resolve interrupt handling issue.
+> 
+> [...]
 
-Cc: <stable@vger.kernel.org> # 5.8+
-Signed-off-by: Krzysztof Mazur <krzysiek@podlesie.net>
----
-Hi,
+Applied to
 
-this patch fixes a kernel crash during boot observed on AMD Athlon XP
-(with CONFIG_MK7=y).
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-The static key adds 5 byte NOP in the "fast" path. The 3DNow! usage
-can be enabled earlier, but arch_initcall should be ok.
-The static_cpu_has() does not work because the kernel with
-CONFIG_X86_USE_3DNOW=y assumes that 3DNOW! is available,
-so a static key is used instead. "Alternatives" should
-also work, as long they not assume that required features
-(REQUIRED_MASK*) are available early.
+Thanks!
 
-Similar bugs are possible. For easier debugging, maybe
-kernel_fpu_begin() should catch such cases and print something?
+[1/1] ASoC: amd:Replacing MSI with Legacy IRQ model
+      commit: a523e1538fdd5f00ea3289cc0b3c6c1785b89814
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
-Krzysiek
-
- arch/x86/lib/mmx_32.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/lib/mmx_32.c b/arch/x86/lib/mmx_32.c
-index 4321fa02e18d..375bf0798993 100644
---- a/arch/x86/lib/mmx_32.c
-+++ b/arch/x86/lib/mmx_32.c
-@@ -26,12 +26,14 @@
- #include <asm/fpu/api.h>
- #include <asm/asm.h>
- 
-+static __ro_after_init DEFINE_STATIC_KEY_FALSE(use_mmx);
-+
- void *_mmx_memcpy(void *to, const void *from, size_t len)
- {
- 	void *p;
- 	int i;
- 
--	if (unlikely(in_interrupt()))
-+	if (unlikely(in_interrupt()) || !static_branch_likely(&use_mmx))
- 		return __memcpy(to, from, len);
- 
- 	p = to;
-@@ -376,3 +378,11 @@ void mmx_copy_page(void *to, void *from)
- 		fast_copy_page(to, from);
- }
- EXPORT_SYMBOL(mmx_copy_page);
-+
-+static int __init mmx_32_init(void)
-+{
-+	static_branch_enable(&use_mmx);
-+	return 0;
-+}
-+
-+arch_initcall(mmx_32_init);
--- 
-2.27.0.rc1.207.gb85828341f
-
+Mark
