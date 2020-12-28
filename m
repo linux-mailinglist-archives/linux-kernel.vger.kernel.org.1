@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E0C52E3B5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:49:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B55092E3E00
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:24:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406109AbgL1NtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:49:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49880 "EHLO mail.kernel.org"
+        id S2502694AbgL1OWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:22:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58200 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406093AbgL1NtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:49:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7CC92072C;
-        Mon, 28 Dec 2020 13:48:52 +0000 (UTC)
+        id S2502668AbgL1OWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:22:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E0B322B2C;
+        Mon, 28 Dec 2020 14:21:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163333;
-        bh=TvIlDPjdIkJe+7zN6vQIRqWJZHwYCQXkBF9bLH5BiFw=;
+        s=korg; t=1609165310;
+        bh=+b53wZI83On3aGmgbPMhWqXugTD39OtO0fF5cNEUbHU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VWSwLMqpFLPUpXU14ZOOa8cfnRLJj3QSdPhxxcX3wVK75KjmTuYJzkuLor3yUpH+3
-         YJWf/RI3vE8U0Rfx4JT/oRMssRBvd0wEPC0/bFtLh1ffAnFqdvyA0rT6Ad7Z7QNr3L
-         ve4833bSNbxQAPIPpX080EvgwtFRt/8r1r2UzXs0=
+        b=vc7epCMYW0uUesdzsujixAw6sw6lDYCD+5n1EMywV8H88hG5ZSYBnxOPKvqieuApb
+         w+aV1tsyYAt16jkai7peinrvrap8EXmtOLuku1ms8XiymXLIUMyclNbVOBSWuAPfCN
+         kTpR+txqMroIGcHDwG9/nfrwBxDJIQTIB4veeX5w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
+        stable@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 250/453] usb: ehci-omap: Fix PM disable depth umbalance in ehci_hcd_omap_probe
+Subject: [PATCH 5.10 488/717] vdpa/mlx5: Use write memory barrier after updating CQ index
 Date:   Mon, 28 Dec 2020 13:48:06 +0100
-Message-Id: <20201228124949.255487380@linuxfoundation.org>
+Message-Id: <20201228125044.344626701@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Eli Cohen <elic@nvidia.com>
 
-[ Upstream commit d6ff32478d7e95d6ca199b5c852710d6964d5811 ]
+[ Upstream commit 83ef73b27eb2363f44faf9c3ee28a3fe752cfd15 ]
 
-The pm_runtime_enable will decrement the power disable depth. Imbalance
-depth will resulted in enabling runtime PM of device fails later.  Thus
-a pairing decrement must be needed on the error handling path to keep it
-balanced.
+Make sure to put dma write memory barrier after updating CQ consumer
+index so the hardware knows that there are available CQE slots in the
+queue.
 
-Fixes: 6c984b066d84b ("ARM: OMAP: USBHOST: Replace usbhs core driver APIs by Runtime pm APIs")
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201123145719.1455849-1-zhangqilong3@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Failure to do this can cause the update of the RX doorbell record to get
+updated before the CQ consumer index resulting in CQ overrun.
+
+Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
+Signed-off-by: Eli Cohen <elic@nvidia.com>
+Link: https://lore.kernel.org/r/20201209140004.15892-1-elic@nvidia.com
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/ehci-omap.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/vdpa/mlx5/net/mlx5_vnet.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/usb/host/ehci-omap.c b/drivers/usb/host/ehci-omap.c
-index fc125b3d06e7d..03122dc332eda 100644
---- a/drivers/usb/host/ehci-omap.c
-+++ b/drivers/usb/host/ehci-omap.c
-@@ -220,6 +220,7 @@ static int ehci_hcd_omap_probe(struct platform_device *pdev)
- 
- err_pm_runtime:
- 	pm_runtime_put_sync(dev);
-+	pm_runtime_disable(dev);
- 
- err_phy:
- 	for (i = 0; i < omap->nports; i++) {
+diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+index 1fa6fcac82992..81b932f72e103 100644
+--- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
++++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+@@ -464,6 +464,11 @@ static int mlx5_vdpa_poll_one(struct mlx5_vdpa_cq *vcq)
+ static void mlx5_vdpa_handle_completions(struct mlx5_vdpa_virtqueue *mvq, int num)
+ {
+ 	mlx5_cq_set_ci(&mvq->cq.mcq);
++
++	/* make sure CQ cosumer update is visible to the hardware before updating
++	 * RX doorbell record.
++	 */
++	dma_wmb();
+ 	rx_post(&mvq->vqqp, num);
+ 	if (mvq->event_cb.callback)
+ 		mvq->event_cb.callback(mvq->event_cb.private);
 -- 
 2.27.0
 
