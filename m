@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D7B82E3753
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:54:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87B5B2E3BAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:53:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728272AbgL1Mxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:53:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50530 "EHLO mail.kernel.org"
+        id S2407301AbgL1NxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:53:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728234AbgL1Mxm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:53:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 45DC522573;
-        Mon, 28 Dec 2020 12:53:01 +0000 (UTC)
+        id S2406646AbgL1NvI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:51:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DCF402064B;
+        Mon, 28 Dec 2020 13:50:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609159981;
-        bh=x2i2j2GA5uhmcG1HtSTWkMEVMLdkt1XLMlF+HzyL8ww=;
+        s=korg; t=1609163453;
+        bh=BtPVhPJzBoASupEFiofBwLMZqJdYayCdDQn6SPxwVR4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NoHAhaFoT1rhROPZitNYVuCWxduP3wAqYEhvWjYLF1KmdY/1TnJa9ODkJ/rW74BTG
-         7Yt37xxLZNTyhVm2+inFjgRsI3mj+/Yg5d7rZYQ1zCV8dkxPfl+xMiVLOVVJWmqCFO
-         oqIVoozMIvfsa0nu6e8kVDTU5wJBY+5ay1EIV2bw=
+        b=y+plI3/FwRftj2YqKpDE9T9Q+F7FfsxWKxmtHrv1KS2vwL/EkwRLOhELh11ktvhDq
+         pRZ9bUrcdPJXBli80OebjrCR4f1MPOvgTmBZmOlIS6mbZI/qn3aG0tvCsAtUr4W+MO
+         QFaihPVa8NfSfVMJPmeOjXVDVSPjkavbzMxt1g6s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vincent Bernat <vincent@bernat.ch>,
+        stable@vger.kernel.org, Sven Van Asbroeck <thesven73@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 042/132] net: evaluate net.ipvX.conf.all.ignore_routes_with_linkdown
-Date:   Mon, 28 Dec 2020 13:48:46 +0100
-Message-Id: <20201228124848.454413153@linuxfoundation.org>
+Subject: [PATCH 5.4 291/453] lan743x: fix rx_napi_poll/interrupt ping-pong
+Date:   Mon, 28 Dec 2020 13:48:47 +0100
+Message-Id: <20201228124951.211204293@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,109 +40,146 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Bernat <vincent@bernat.ch>
+From: Sven Van Asbroeck <thesven73@gmail.com>
 
-[ Upstream commit c0c5a60f0f1311bcf08bbe735122096d6326fb5b ]
+[ Upstream commit 57030a0b620f735bf557696e5ceb9f32c2b3bb8f ]
 
-Introduced in 0eeb075fad73, the "ignore_routes_with_linkdown" sysctl
-ignores a route whose interface is down. It is provided as a
-per-interface sysctl. However, while a "all" variant is exposed, it
-was a noop since it was never evaluated. We use the usual "or" logic
-for this kind of sysctls.
+Even if there is more rx data waiting on the chip, the rx napi poll fn
+will never run more than once - it will always read a few buffers, then
+bail out and re-arm interrupts. Which results in ping-pong between napi
+and interrupt.
 
-Tested with:
+This defeats the purpose of napi, and is bad for performance.
 
-    ip link add type veth # veth0 + veth1
-    ip link add type veth # veth1 + veth2
-    ip link set up dev veth0
-    ip link set up dev veth1 # link-status paired with veth0
-    ip link set up dev veth2
-    ip link set up dev veth3 # link-status paired with veth2
+Fix by making the rx napi poll behave identically to other ethernet
+drivers:
+1. initialize rx napi polling with an arbitrary budget (64).
+2. in the polling fn, return full weight if rx queue is not depleted,
+   this tells the napi core to "keep polling".
+3. update the rx tail ("ring the doorbell") once for every 8 processed
+   rx ring buffers.
 
-    # First available path
-    ip -4 addr add 203.0.113.${uts#H}/24 dev veth0
-    ip -6 addr add 2001:db8:1::${uts#H}/64 dev veth0
+Thanks to Jakub Kicinski, Eric Dumazet and Andrew Lunn for their expert
+opinions and suggestions.
 
-    # Second available path
-    ip -4 addr add 192.0.2.${uts#H}/24 dev veth2
-    ip -6 addr add 2001:db8:2::${uts#H}/64 dev veth2
+Tested with 20 seconds of full bandwidth receive (iperf3):
+        rx irqs      softirqs(NET_RX)
+        -----------------------------
+before  23827        33620
+after   129          4081
 
-    # More specific route through first path
-    ip -4 route add 198.51.100.0/25 via 203.0.113.254 # via veth0
-    ip -6 route add 2001:db8:3::/56 via 2001:db8:1::ff # via veth0
-
-    # Less specific route through second path
-    ip -4 route add 198.51.100.0/24 via 192.0.2.254 # via veth2
-    ip -6 route add 2001:db8:3::/48 via 2001:db8:2::ff # via veth2
-
-    # H1: enable on "all"
-    # H2: enable on "veth0"
-    for v in ipv4 ipv6; do
-      case $uts in
-        H1)
-          sysctl -qw net.${v}.conf.all.ignore_routes_with_linkdown=1
-          ;;
-        H2)
-          sysctl -qw net.${v}.conf.veth0.ignore_routes_with_linkdown=1
-          ;;
-      esac
-    done
-
-    set -xe
-    # When veth0 is up, best route is through veth0
-    ip -o route get 198.51.100.1 | grep -Fw veth0
-    ip -o route get 2001:db8:3::1 | grep -Fw veth0
-
-    # When veth0 is down, best route should be through veth2 on H1/H2,
-    # but on veth0 on H2
-    ip link set down dev veth1 # down veth0
-    ip route show
-    [ $uts != H3 ] || ip -o route get 198.51.100.1 | grep -Fw veth0
-    [ $uts != H3 ] || ip -o route get 2001:db8:3::1 | grep -Fw veth0
-    [ $uts = H3 ] || ip -o route get 198.51.100.1 | grep -Fw veth2
-    [ $uts = H3 ] || ip -o route get 2001:db8:3::1 | grep -Fw veth2
-
-Without this patch, the two last lines would fail on H1 (the one using
-the "all" sysctl). With the patch, everything succeeds as expected.
-
-Also document the sysctl in `ip-sysctl.rst`.
-
-Fixes: 0eeb075fad73 ("net: ipv4 sysctl option to ignore routes when nexthop link is down")
-Signed-off-by: Vincent Bernat <vincent@bernat.ch>
+Tested-by: Sven Van Asbroeck <thesven73@gmail.com> # lan7430
+Fixes: 23f0703c125be ("lan743x: Add main source files for new lan743x driver")
+Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>
+Link: https://lore.kernel.org/r/20201215161954.5950-1-TheSven73@gmail.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Documentation/networking/ip-sysctl.txt | 3 +++
- include/linux/inetdevice.h             | 2 +-
- 2 files changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/microchip/lan743x_main.c | 43 ++++++++++---------
+ 1 file changed, 23 insertions(+), 20 deletions(-)
 
-diff --git a/Documentation/networking/ip-sysctl.txt b/Documentation/networking/ip-sysctl.txt
-index eac939abe6c4c..b25308b621d6f 100644
---- a/Documentation/networking/ip-sysctl.txt
-+++ b/Documentation/networking/ip-sysctl.txt
-@@ -1211,6 +1211,9 @@ igmpv3_unsolicited_report_interval - INTEGER
- 	IGMPv3 report retransmit will take place.
- 	Default: 1000 (1 seconds)
+diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
+index 7526af27a59da..4bbdc53eaf3f3 100644
+--- a/drivers/net/ethernet/microchip/lan743x_main.c
++++ b/drivers/net/ethernet/microchip/lan743x_main.c
+@@ -1899,6 +1899,14 @@ static struct sk_buff *lan743x_rx_allocate_skb(struct lan743x_rx *rx)
+ 				  length, GFP_ATOMIC | GFP_DMA);
+ }
  
-+ignore_routes_with_linkdown - BOOLEAN
-+        Ignore routes whose link is down when performing a FIB lookup.
++static void lan743x_rx_update_tail(struct lan743x_rx *rx, int index)
++{
++	/* update the tail once per 8 descriptors */
++	if ((index & 7) == 7)
++		lan743x_csr_write(rx->adapter, RX_TAIL(rx->channel_number),
++				  index);
++}
 +
- promote_secondaries - BOOLEAN
- 	When a primary IP address is removed from this interface
- 	promote a corresponding secondary IP address instead of
-diff --git a/include/linux/inetdevice.h b/include/linux/inetdevice.h
-index ee971f335a8b6..0e6cd645f67f3 100644
---- a/include/linux/inetdevice.h
-+++ b/include/linux/inetdevice.h
-@@ -121,7 +121,7 @@ static inline void ipv4_devconf_setall(struct in_device *in_dev)
- 	  IN_DEV_ORCONF((in_dev), ACCEPT_REDIRECTS)))
+ static int lan743x_rx_init_ring_element(struct lan743x_rx *rx, int index,
+ 					struct sk_buff *skb)
+ {
+@@ -1929,6 +1937,7 @@ static int lan743x_rx_init_ring_element(struct lan743x_rx *rx, int index,
+ 	descriptor->data0 = (RX_DESC_DATA0_OWN_ |
+ 			    (length & RX_DESC_DATA0_BUF_LENGTH_MASK_));
+ 	skb_reserve(buffer_info->skb, RX_HEAD_PADDING);
++	lan743x_rx_update_tail(rx, index);
  
- #define IN_DEV_IGNORE_ROUTES_WITH_LINKDOWN(in_dev) \
--	IN_DEV_CONF_GET((in_dev), IGNORE_ROUTES_WITH_LINKDOWN)
-+	IN_DEV_ORCONF((in_dev), IGNORE_ROUTES_WITH_LINKDOWN)
+ 	return 0;
+ }
+@@ -1947,6 +1956,7 @@ static void lan743x_rx_reuse_ring_element(struct lan743x_rx *rx, int index)
+ 	descriptor->data0 = (RX_DESC_DATA0_OWN_ |
+ 			    ((buffer_info->buffer_length) &
+ 			    RX_DESC_DATA0_BUF_LENGTH_MASK_));
++	lan743x_rx_update_tail(rx, index);
+ }
  
- #define IN_DEV_ARPFILTER(in_dev)	IN_DEV_ORCONF((in_dev), ARPFILTER)
- #define IN_DEV_ARP_ACCEPT(in_dev)	IN_DEV_ORCONF((in_dev), ARP_ACCEPT)
+ static void lan743x_rx_release_ring_element(struct lan743x_rx *rx, int index)
+@@ -2158,6 +2168,7 @@ static int lan743x_rx_napi_poll(struct napi_struct *napi, int weight)
+ {
+ 	struct lan743x_rx *rx = container_of(napi, struct lan743x_rx, napi);
+ 	struct lan743x_adapter *adapter = rx->adapter;
++	int result = RX_PROCESS_RESULT_NOTHING_TO_DO;
+ 	u32 rx_tail_flags = 0;
+ 	int count;
+ 
+@@ -2166,27 +2177,19 @@ static int lan743x_rx_napi_poll(struct napi_struct *napi, int weight)
+ 		lan743x_csr_write(adapter, DMAC_INT_STS,
+ 				  DMAC_INT_BIT_RXFRM_(rx->channel_number));
+ 	}
+-	count = 0;
+-	while (count < weight) {
+-		int rx_process_result = lan743x_rx_process_packet(rx);
+-
+-		if (rx_process_result == RX_PROCESS_RESULT_PACKET_RECEIVED) {
+-			count++;
+-		} else if (rx_process_result ==
+-			RX_PROCESS_RESULT_NOTHING_TO_DO) {
++	for (count = 0; count < weight; count++) {
++		result = lan743x_rx_process_packet(rx);
++		if (result == RX_PROCESS_RESULT_NOTHING_TO_DO)
+ 			break;
+-		} else if (rx_process_result ==
+-			RX_PROCESS_RESULT_PACKET_DROPPED) {
+-			continue;
+-		}
+ 	}
+ 	rx->frame_count += count;
+-	if (count == weight)
+-		goto done;
++	if (count == weight || result == RX_PROCESS_RESULT_PACKET_RECEIVED)
++		return weight;
+ 
+ 	if (!napi_complete_done(napi, count))
+-		goto done;
++		return count;
+ 
++	/* re-arm interrupts, must write to rx tail on some chip variants */
+ 	if (rx->vector_flags & LAN743X_VECTOR_FLAG_VECTOR_ENABLE_AUTO_SET)
+ 		rx_tail_flags |= RX_TAIL_SET_TOP_INT_VEC_EN_;
+ 	if (rx->vector_flags & LAN743X_VECTOR_FLAG_SOURCE_ENABLE_AUTO_SET) {
+@@ -2196,10 +2199,10 @@ static int lan743x_rx_napi_poll(struct napi_struct *napi, int weight)
+ 				  INT_BIT_DMA_RX_(rx->channel_number));
+ 	}
+ 
+-	/* update RX_TAIL */
+-	lan743x_csr_write(adapter, RX_TAIL(rx->channel_number),
+-			  rx_tail_flags | rx->last_tail);
+-done:
++	if (rx_tail_flags)
++		lan743x_csr_write(adapter, RX_TAIL(rx->channel_number),
++				  rx_tail_flags | rx->last_tail);
++
+ 	return count;
+ }
+ 
+@@ -2344,7 +2347,7 @@ static int lan743x_rx_open(struct lan743x_rx *rx)
+ 
+ 	netif_napi_add(adapter->netdev,
+ 		       &rx->napi, lan743x_rx_napi_poll,
+-		       rx->ring_size - 1);
++		       NAPI_POLL_WEIGHT);
+ 
+ 	lan743x_csr_write(adapter, DMAC_CMD,
+ 			  DMAC_CMD_RX_SWR_(rx->channel_number));
 -- 
 2.27.0
 
