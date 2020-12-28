@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 924AE2E387E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:11:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B0EF2E39C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:28:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731484AbgL1NLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:11:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38274 "EHLO mail.kernel.org"
+        id S2389651AbgL1N1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:27:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731446AbgL1NKq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:10:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D138208BA;
-        Mon, 28 Dec 2020 13:10:29 +0000 (UTC)
+        id S2389292AbgL1N0N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:26:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2926B208D5;
+        Mon, 28 Dec 2020 13:25:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161030;
-        bh=tAIYs5Fs+P/1M+IOkkbEFCUOHkgLbpdXy4FPgTenYrg=;
+        s=korg; t=1609161932;
+        bh=lKUKgVhGoxoF78/HQuY7Nq7q2AACJYLhri4h8N3WYHg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CrGeOZLKGonQxBnHt2D5+w8jRE6KQPKPIbmDjvxe75XtVQ4Jj4hjqJcwJDoz8YFCN
-         +Zj9UPzoTJePemHkp8l2hOvwRiB0qlwElM222taVENykQoCeIkQiyfVF0x29IMT0+V
-         LdegXTNVoObxjsYkBuX7murDSYIQEJJKlsdb7D38=
+        b=2WA0za1rOTdrW5MrNKfw5WB/+vA7KgHrWVJqmkHpF1csQiNm5r7rekfZWt2LbasfL
+         iXGCSu1bnJI8eErFI8oOm7NordqnupiIKGSdbCd3QuLcZtU68JsyCzs+yWaABgflZE
+         MkrcprgmbLmPqzvczLvV6eMdN5gKiyon6mPfsbOk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Vincent Bernat <vincent@bernat.ch>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 046/242] scsi: mpt3sas: Increase IOCInit request timeout to 30s
+Subject: [PATCH 4.19 132/346] net: evaluate net.ipvX.conf.all.ignore_routes_with_linkdown
 Date:   Mon, 28 Dec 2020 13:47:31 +0100
-Message-Id: <20201228124906.946349904@linuxfoundation.org>
+Message-Id: <20201228124926.168774822@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +40,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sreekanth Reddy <sreekanth.reddy@broadcom.com>
+From: Vincent Bernat <vincent@bernat.ch>
 
-[ Upstream commit 85dad327d9b58b4c9ce08189a2707167de392d23 ]
+[ Upstream commit c0c5a60f0f1311bcf08bbe735122096d6326fb5b ]
 
-Currently the IOCInit request message timeout is set to 10s. This is not
-sufficient in some scenarios such as during HBA FW downgrade operations.
+Introduced in 0eeb075fad73, the "ignore_routes_with_linkdown" sysctl
+ignores a route whose interface is down. It is provided as a
+per-interface sysctl. However, while a "all" variant is exposed, it
+was a noop since it was never evaluated. We use the usual "or" logic
+for this kind of sysctls.
 
-Increase the IOCInit request timeout to 30s.
+Tested with:
 
-Link: https://lore.kernel.org/r/20201130082733.26120-1-sreekanth.reddy@broadcom.com
-Signed-off-by: Sreekanth Reddy <sreekanth.reddy@broadcom.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+    ip link add type veth # veth0 + veth1
+    ip link add type veth # veth1 + veth2
+    ip link set up dev veth0
+    ip link set up dev veth1 # link-status paired with veth0
+    ip link set up dev veth2
+    ip link set up dev veth3 # link-status paired with veth2
+
+    # First available path
+    ip -4 addr add 203.0.113.${uts#H}/24 dev veth0
+    ip -6 addr add 2001:db8:1::${uts#H}/64 dev veth0
+
+    # Second available path
+    ip -4 addr add 192.0.2.${uts#H}/24 dev veth2
+    ip -6 addr add 2001:db8:2::${uts#H}/64 dev veth2
+
+    # More specific route through first path
+    ip -4 route add 198.51.100.0/25 via 203.0.113.254 # via veth0
+    ip -6 route add 2001:db8:3::/56 via 2001:db8:1::ff # via veth0
+
+    # Less specific route through second path
+    ip -4 route add 198.51.100.0/24 via 192.0.2.254 # via veth2
+    ip -6 route add 2001:db8:3::/48 via 2001:db8:2::ff # via veth2
+
+    # H1: enable on "all"
+    # H2: enable on "veth0"
+    for v in ipv4 ipv6; do
+      case $uts in
+        H1)
+          sysctl -qw net.${v}.conf.all.ignore_routes_with_linkdown=1
+          ;;
+        H2)
+          sysctl -qw net.${v}.conf.veth0.ignore_routes_with_linkdown=1
+          ;;
+      esac
+    done
+
+    set -xe
+    # When veth0 is up, best route is through veth0
+    ip -o route get 198.51.100.1 | grep -Fw veth0
+    ip -o route get 2001:db8:3::1 | grep -Fw veth0
+
+    # When veth0 is down, best route should be through veth2 on H1/H2,
+    # but on veth0 on H2
+    ip link set down dev veth1 # down veth0
+    ip route show
+    [ $uts != H3 ] || ip -o route get 198.51.100.1 | grep -Fw veth0
+    [ $uts != H3 ] || ip -o route get 2001:db8:3::1 | grep -Fw veth0
+    [ $uts = H3 ] || ip -o route get 198.51.100.1 | grep -Fw veth2
+    [ $uts = H3 ] || ip -o route get 2001:db8:3::1 | grep -Fw veth2
+
+Without this patch, the two last lines would fail on H1 (the one using
+the "all" sysctl). With the patch, everything succeeds as expected.
+
+Also document the sysctl in `ip-sysctl.rst`.
+
+Fixes: 0eeb075fad73 ("net: ipv4 sysctl option to ignore routes when nexthop link is down")
+Signed-off-by: Vincent Bernat <vincent@bernat.ch>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/mpt3sas/mpt3sas_base.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/networking/ip-sysctl.txt | 3 +++
+ include/linux/inetdevice.h             | 2 +-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/mpt3sas/mpt3sas_base.c b/drivers/scsi/mpt3sas/mpt3sas_base.c
-index 556971c5f0b0e..20bf1fa7f2733 100644
---- a/drivers/scsi/mpt3sas/mpt3sas_base.c
-+++ b/drivers/scsi/mpt3sas/mpt3sas_base.c
-@@ -4575,7 +4575,7 @@ _base_send_ioc_init(struct MPT3SAS_ADAPTER *ioc)
+diff --git a/Documentation/networking/ip-sysctl.txt b/Documentation/networking/ip-sysctl.txt
+index 3c617d620b6f8..94d42eb83588b 100644
+--- a/Documentation/networking/ip-sysctl.txt
++++ b/Documentation/networking/ip-sysctl.txt
+@@ -1300,6 +1300,9 @@ igmpv3_unsolicited_report_interval - INTEGER
+ 	IGMPv3 report retransmit will take place.
+ 	Default: 1000 (1 seconds)
  
- 	r = _base_handshake_req_reply_wait(ioc,
- 	    sizeof(Mpi2IOCInitRequest_t), (u32 *)&mpi_request,
--	    sizeof(Mpi2IOCInitReply_t), (u16 *)&mpi_reply, 10);
-+	    sizeof(Mpi2IOCInitReply_t), (u16 *)&mpi_reply, 30);
++ignore_routes_with_linkdown - BOOLEAN
++        Ignore routes whose link is down when performing a FIB lookup.
++
+ promote_secondaries - BOOLEAN
+ 	When a primary IP address is removed from this interface
+ 	promote a corresponding secondary IP address instead of
+diff --git a/include/linux/inetdevice.h b/include/linux/inetdevice.h
+index a64f21a97369a..11adf828edf58 100644
+--- a/include/linux/inetdevice.h
++++ b/include/linux/inetdevice.h
+@@ -126,7 +126,7 @@ static inline void ipv4_devconf_setall(struct in_device *in_dev)
+ 	  IN_DEV_ORCONF((in_dev), ACCEPT_REDIRECTS)))
  
- 	if (r != 0) {
- 		pr_err(MPT3SAS_FMT "%s: handshake failed (r=%d)\n",
+ #define IN_DEV_IGNORE_ROUTES_WITH_LINKDOWN(in_dev) \
+-	IN_DEV_CONF_GET((in_dev), IGNORE_ROUTES_WITH_LINKDOWN)
++	IN_DEV_ORCONF((in_dev), IGNORE_ROUTES_WITH_LINKDOWN)
+ 
+ #define IN_DEV_ARPFILTER(in_dev)	IN_DEV_ORCONF((in_dev), ARPFILTER)
+ #define IN_DEV_ARP_ACCEPT(in_dev)	IN_DEV_ORCONF((in_dev), ARP_ACCEPT)
 -- 
 2.27.0
 
