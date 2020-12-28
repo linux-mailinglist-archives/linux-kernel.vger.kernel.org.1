@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C33E2E383E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:09:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07F312E6501
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:57:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730836AbgL1NHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:07:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34734 "EHLO mail.kernel.org"
+        id S2391144AbgL1Nee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:34:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730654AbgL1NHB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:07:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A09202242A;
-        Mon, 28 Dec 2020 13:06:19 +0000 (UTC)
+        id S2391118AbgL1NeO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:34:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 356B6205CB;
+        Mon, 28 Dec 2020 13:33:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160780;
-        bh=4FLg/tRKbiYKuEHf1ONFKkPAmAa3l7zTo+kJRelJwxk=;
+        s=korg; t=1609162438;
+        bh=prpfV/7K5WxJDZkiaCAbTfjnEQzp7qDjT+B6Bxk0+rs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D+pZMSsZ6+6LvZUdfKr2Gwio82S+3Mc4G8Wh1NvemlIcANe1iCdTnNSCsVv8QyG8O
-         jh6Y55KjHGdwMRldACiz66uOsDs9TeG7g23q3GnZtT9ayHxU3iQGkWJCidAHz2cZF7
-         6+4v0o7sNq1722UPas5nLPuNC1nkS3dQvLdMs2kA=
+        b=Rk6dR78Bibx8vIMR+KCQDT2soLUbk4L9tbS74Bfw/vBynTFmZRWLIoWo0aR//ireb
+         q2hz1NrqrvlP8prTQeh0DRpWqdPa50pcaEPE99KCSqYwVh6i28tlr1IYz7Jp9QcCuN
+         e0ko8yiLiii/sttCOYwe/Mea96edchOLAy4OVfuQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ron Minnich <rminnich@google.com>,
-        Sven Eckelmann <sven@narfation.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 4.9 169/175] mtd: parser: cmdline: Fix parsing of part-names with colons
-Date:   Mon, 28 Dec 2020 13:50:22 +0100
-Message-Id: <20201228124901.421407170@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 4.19 304/346] powerpc/xmon: Change printk() to pr_cont()
+Date:   Mon, 28 Dec 2020 13:50:23 +0100
+Message-Id: <20201228124934.482528292@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,75 +40,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Eckelmann <sven@narfation.org>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-commit 639a82434f16a6df0ce0e7c8595976f1293940fd upstream.
+commit 7c6c86b36a36dd4a13d30bba07718e767aa2e7a1 upstream.
 
-Some devices (especially QCA ones) are already using hardcoded partition
-names with colons in it. The OpenMesh A62 for example provides following
-mtd relevant information via cmdline:
+Since some time now, printk() adds carriage return, leading to
+unusable xmon output if there is no udbg backend available:
 
-  root=31:11 mtdparts=spi0.0:256k(0:SBL1),128k(0:MIBIB),384k(0:QSEE),64k(0:CDT),64k(0:DDRPARAMS),64k(0:APPSBLENV),512k(0:APPSBL),64k(0:ART),64k(custom),64k(0:KEYS),0x002b0000(kernel),0x00c80000(rootfs),15552k(inactive) rootfsname=rootfs rootwait
+  [   54.288722] sysrq: Entering xmon
+  [   54.292209] Vector: 0  at [cace3d2c]
+  [   54.292274]     pc:
+  [   54.292331] c0023650
+  [   54.292468] : xmon+0x28/0x58
+  [   54.292519]
+  [   54.292574]     lr:
+  [   54.292630] c0023724
+  [   54.292749] : sysrq_handle_xmon+0xa4/0xfc
+  [   54.292801]
+  [   54.292867]     sp: cace3de8
+  [   54.292931]    msr: 9032
+  [   54.292999]   current = 0xc28d0000
+  [   54.293072]     pid   = 377, comm = sh
+  [   54.293157] Linux version 5.10.0-rc6-s3k-dev-01364-gedf13f0ccd76-dirty (root@po17688vm.idsi0.si.c-s.fr) (powerpc64-linux-gcc (GCC) 10.1.0, GNU ld (GNU Binutils) 2.34) #4211 PREEMPT Fri Dec 4 09:32:11 UTC 2020
+  [   54.293287] enter ? for help
+  [   54.293470] [cace3de8]
+  [   54.293532] c0023724
+  [   54.293654]  sysrq_handle_xmon+0xa4/0xfc
+  [   54.293711]  (unreliable)
+  ...
+  [   54.296002]
+  [   54.296159] --- Exception: c01 (System Call) at
+  [   54.296217] 0fd4e784
+  [   54.296303]
+  [   54.296375] SP (7fca6ff0) is in userspace
+  [   54.296431] mon>
+  [   54.296484]  <no input ...>
 
-The change to split only on the last colon between mtd-id and partitions
-will cause newpart to see following string for the first partition:
+Use pr_cont() instead.
 
-  KEYS),0x002b0000(kernel),0x00c80000(rootfs),15552k(inactive)
-
-Such a partition list cannot be parsed and thus the device fails to boot.
-
-Avoid this behavior by making sure that the start of the first part-name
-("(") will also be the last byte the mtd-id split algorithm is using for
-its colon search.
-
-Fixes: eb13fa022741 ("mtd: parser: cmdline: Support MTD names containing one or more colons")
-Cc: stable@vger.kernel.org
-Cc: Ron Minnich <rminnich@google.com>
-Signed-off-by: Sven Eckelmann <sven@narfation.org>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20201124062506.185392-1-sven@narfation.org
+Fixes: 4bcc595ccd80 ("printk: reinstate KERN_CONT for printing continuation lines")
+Cc: stable@vger.kernel.org # v4.9+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+[mpe: Mention that it only happens when udbg is not available]
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/c8a6ec704416ecd5ff2bd26213c9bc026bdd19de.1607077340.git.christophe.leroy@csgroup.eu
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mtd/cmdlinepart.c |   14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ arch/powerpc/xmon/nonstdio.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/mtd/cmdlinepart.c
-+++ b/drivers/mtd/cmdlinepart.c
-@@ -228,7 +228,7 @@ static int mtdpart_setup_real(char *s)
- 		struct cmdline_mtd_partition *this_mtd;
- 		struct mtd_partition *parts;
- 		int mtd_id_len, num_parts;
--		char *p, *mtd_id, *semicol;
-+		char *p, *mtd_id, *semicol, *open_parenth;
+--- a/arch/powerpc/xmon/nonstdio.c
++++ b/arch/powerpc/xmon/nonstdio.c
+@@ -182,7 +182,7 @@ void xmon_printf(const char *format, ...
  
- 		/*
- 		 * Replace the first ';' by a NULL char so strrchr can work
-@@ -238,6 +238,14 @@ static int mtdpart_setup_real(char *s)
- 		if (semicol)
- 			*semicol = '\0';
+ 	if (n && rc == 0) {
+ 		/* No udbg hooks, fallback to printk() - dangerous */
+-		printk("%s", xmon_outbuf);
++		pr_cont("%s", xmon_outbuf);
+ 	}
+ }
  
-+		/*
-+		 * make sure that part-names with ":" will not be handled as
-+		 * part of the mtd-id with an ":"
-+		 */
-+		open_parenth = strchr(s, '(');
-+		if (open_parenth)
-+			*open_parenth = '\0';
-+
- 		mtd_id = s;
- 
- 		/*
-@@ -247,6 +255,10 @@ static int mtdpart_setup_real(char *s)
- 		 */
- 		p = strrchr(s, ':');
- 
-+		/* Restore the '(' now. */
-+		if (open_parenth)
-+			*open_parenth = '(';
-+
- 		/* Restore the ';' now. */
- 		if (semicol)
- 			*semicol = ';';
 
 
