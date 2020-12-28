@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BEE82E657F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:03:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 509332E671A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:22:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393716AbgL1QBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:01:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60700 "EHLO mail.kernel.org"
+        id S1732391AbgL1NOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:14:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390471AbgL1Nby (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:31:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D3CD02072C;
-        Mon, 28 Dec 2020 13:31:12 +0000 (UTC)
+        id S1732364AbgL1NOB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:14:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 18444207F7;
+        Mon, 28 Dec 2020 13:13:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162273;
-        bh=nlvaaxPyovPRjoHXoH4Gxj+sebjgFQrAzLubLCepMHE=;
+        s=korg; t=1609161200;
+        bh=Rly/IMK4SHISlyefPIldBfTI4/G1zP6YXDYT7WQekaE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A/9SPyV/BoqIkLTjgDgQAhH5hFXjcEcibL3PAKrD6ZTSf40Zn7Ktq0YXimTik3rtf
-         09TCcxTmTusrnFWmn1gHfOywTyHqJIH0MbVXtxgEjv5rGDtvYYgXZJ7RCBsS43DCh1
-         +zFVwqPndsRckBL13trTf8EP3DJb5abe4nNMRkW8=
+        b=VDil4Ir7BlibCTmkixFwaUUCQxhqGhOqvtLJRKA4uQWDvSgpcX+rBLPIzx7HOuLem
+         emtKePtLL83Sgboh94NPR8aCxzP5HK2d2HD2t78XNNQBEn/FQRWPr1aFevnOtl4uU3
+         oY95NxdaXYEdec5LjPYcXMyXXS4I4bGIbVXC2ViQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kazuo ito <kzpn200@gmail.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
+        stable@vger.kernel.org, Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 219/346] nfsd: Fix message level for normal termination
-Date:   Mon, 28 Dec 2020 13:48:58 +0100
-Message-Id: <20201228124930.368707639@linuxfoundation.org>
+Subject: [PATCH 4.14 134/242] memstick: r592: Fix error return in r592_probe()
+Date:   Mon, 28 Dec 2020 13:48:59 +0100
+Message-Id: <20201228124911.302972784@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +40,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kazuo ito <kzpn200@gmail.com>
+From: Jing Xiangfeng <jingxiangfeng@huawei.com>
 
-[ Upstream commit 4420440c57892779f265108f46f83832a88ca795 ]
+[ Upstream commit db29d3d1c2451e673e29c7257471e3ce9d50383a ]
 
-The warning message from nfsd terminating normally
-can confuse system adminstrators or monitoring software.
+Fix to return a error code from the error handling case instead of 0.
 
-Though it's not exactly fair to pin-point a commit where it
-originated, the current form in the current place started
-to appear in:
-
-Fixes: e096bbc6488d ("knfsd: remove special handling for SIGHUP")
-Signed-off-by: kazuo ito <kzpn200@gmail.com>
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Fixes: 926341250102 ("memstick: add driver for Ricoh R5C592 card reader")
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+Link: https://lore.kernel.org/r/20201125014718.153563-1-jingxiangfeng@huawei.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfsd/nfssvc.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/memstick/host/r592.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/fs/nfsd/nfssvc.c b/fs/nfsd/nfssvc.c
-index 89cb484f1cfbe..ad38633392a0d 100644
---- a/fs/nfsd/nfssvc.c
-+++ b/fs/nfsd/nfssvc.c
-@@ -417,8 +417,7 @@ static void nfsd_last_thread(struct svc_serv *serv, struct net *net)
- 		return;
+diff --git a/drivers/memstick/host/r592.c b/drivers/memstick/host/r592.c
+index d5cfb503b9d69..2539984c1db1c 100644
+--- a/drivers/memstick/host/r592.c
++++ b/drivers/memstick/host/r592.c
+@@ -762,8 +762,10 @@ static int r592_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 		goto error3;
  
- 	nfsd_shutdown_net(net);
--	printk(KERN_WARNING "nfsd: last server has exited, flushing export "
--			    "cache\n");
-+	pr_info("nfsd: last server has exited, flushing export cache\n");
- 	nfsd_export_flush(net);
- }
+ 	dev->mmio = pci_ioremap_bar(pdev, 0);
+-	if (!dev->mmio)
++	if (!dev->mmio) {
++		error = -ENOMEM;
+ 		goto error4;
++	}
  
+ 	dev->irq = pdev->irq;
+ 	spin_lock_init(&dev->irq_lock);
+@@ -790,12 +792,14 @@ static int r592_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 		&dev->dummy_dma_page_physical_address, GFP_KERNEL);
+ 	r592_stop_dma(dev , 0);
+ 
+-	if (request_irq(dev->irq, &r592_irq, IRQF_SHARED,
+-			  DRV_NAME, dev))
++	error = request_irq(dev->irq, &r592_irq, IRQF_SHARED,
++			  DRV_NAME, dev);
++	if (error)
+ 		goto error6;
+ 
+ 	r592_update_card_detect(dev);
+-	if (memstick_add_host(host))
++	error = memstick_add_host(host);
++	if (error)
+ 		goto error7;
+ 
+ 	message("driver successfully loaded");
 -- 
 2.27.0
 
