@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E50092E3906
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:19:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCBCC2E3BD7
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:55:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387439AbgL1NRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:17:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45502 "EHLO mail.kernel.org"
+        id S2405255AbgL1Nza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:55:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731575AbgL1NRc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:17:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B009022B37;
-        Mon, 28 Dec 2020 13:17:15 +0000 (UTC)
+        id S2405226AbgL1Nz0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:55:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF96F206D4;
+        Mon, 28 Dec 2020 13:55:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161436;
-        bh=prpfV/7K5WxJDZkiaCAbTfjnEQzp7qDjT+B6Bxk0+rs=;
+        s=korg; t=1609163711;
+        bh=QP+TBF0pG/qsyhBBxAFldz9+dC8+WRduNbkOf+HQf/Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BiP5KjvKwhT9/5eyrLpR0ArneBQZ2SAR2cD5aBoiTghlS507IEKYy2bg784mT6DzN
-         usduH/7mq7UfIPRZMPyQVSKFF2MZqpslzjVBePq/Hqyb9Fsn3SrKMdRJkk633xbYzN
-         VeL4IdbrVtZYv502q4mi4Q0loE+G43deYD+ZOkNo=
+        b=ryTa1g+NOdoExvmj5p1NO7/RxDjDrzMfGDsCeDTPEVmovc91JDHOPQC3iEmsVD9dm
+         6TodPjovkw/TGSBjm8ZhkmA3O8QbYWr6URY0PxKFNrM5QYFPH0Gn3BOcGxWvgzCZMK
+         PQ9iIoILk5XOCKJh9bdm+2ZZ+ljCUsWd8wSwD8/w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Christophe Leroy <christophe.leroy@csgroup.eu>,
         Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 4.14 213/242] powerpc/xmon: Change printk() to pr_cont()
+Subject: [PATCH 5.4 382/453] powerpc/feature: Add CPU_FTR_NOEXECUTE to G2_LE
 Date:   Mon, 28 Dec 2020 13:50:18 +0100
-Message-Id: <20201228124915.155964290@linuxfoundation.org>
+Message-Id: <20201228124955.584259268@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,64 +42,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-commit 7c6c86b36a36dd4a13d30bba07718e767aa2e7a1 upstream.
+commit 197493af414ee22427be3343637ac290a791925a upstream.
 
-Since some time now, printk() adds carriage return, leading to
-unusable xmon output if there is no udbg backend available:
+G2_LE has a 603 core, add CPU_FTR_NOEXECUTE.
 
-  [   54.288722] sysrq: Entering xmon
-  [   54.292209] Vector: 0  at [cace3d2c]
-  [   54.292274]     pc:
-  [   54.292331] c0023650
-  [   54.292468] : xmon+0x28/0x58
-  [   54.292519]
-  [   54.292574]     lr:
-  [   54.292630] c0023724
-  [   54.292749] : sysrq_handle_xmon+0xa4/0xfc
-  [   54.292801]
-  [   54.292867]     sp: cace3de8
-  [   54.292931]    msr: 9032
-  [   54.292999]   current = 0xc28d0000
-  [   54.293072]     pid   = 377, comm = sh
-  [   54.293157] Linux version 5.10.0-rc6-s3k-dev-01364-gedf13f0ccd76-dirty (root@po17688vm.idsi0.si.c-s.fr) (powerpc64-linux-gcc (GCC) 10.1.0, GNU ld (GNU Binutils) 2.34) #4211 PREEMPT Fri Dec 4 09:32:11 UTC 2020
-  [   54.293287] enter ? for help
-  [   54.293470] [cace3de8]
-  [   54.293532] c0023724
-  [   54.293654]  sysrq_handle_xmon+0xa4/0xfc
-  [   54.293711]  (unreliable)
-  ...
-  [   54.296002]
-  [   54.296159] --- Exception: c01 (System Call) at
-  [   54.296217] 0fd4e784
-  [   54.296303]
-  [   54.296375] SP (7fca6ff0) is in userspace
-  [   54.296431] mon>
-  [   54.296484]  <no input ...>
-
-Use pr_cont() instead.
-
-Fixes: 4bcc595ccd80 ("printk: reinstate KERN_CONT for printing continuation lines")
-Cc: stable@vger.kernel.org # v4.9+
+Fixes: 385e89d5b20f ("powerpc/mm: add exec protection on powerpc 603")
+Cc: stable@vger.kernel.org
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-[mpe: Mention that it only happens when udbg is not available]
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/c8a6ec704416ecd5ff2bd26213c9bc026bdd19de.1607077340.git.christophe.leroy@csgroup.eu
+Link: https://lore.kernel.org/r/39a530ee41d83f49747ab3af8e39c056450b9b4d.1602489653.git.christophe.leroy@csgroup.eu
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/xmon/nonstdio.c |    2 +-
+ arch/powerpc/include/asm/cputable.h |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/powerpc/xmon/nonstdio.c
-+++ b/arch/powerpc/xmon/nonstdio.c
-@@ -182,7 +182,7 @@ void xmon_printf(const char *format, ...
- 
- 	if (n && rc == 0) {
- 		/* No udbg hooks, fallback to printk() - dangerous */
--		printk("%s", xmon_outbuf);
-+		pr_cont("%s", xmon_outbuf);
- 	}
- }
- 
+--- a/arch/powerpc/include/asm/cputable.h
++++ b/arch/powerpc/include/asm/cputable.h
+@@ -367,7 +367,7 @@ static inline void cpu_feature_keys_init
+ 	    CPU_FTR_PPC_LE | CPU_FTR_NEED_PAIRED_STWCX)
+ #define CPU_FTRS_82XX	(CPU_FTR_COMMON | CPU_FTR_MAYBE_CAN_DOZE | CPU_FTR_NOEXECUTE)
+ #define CPU_FTRS_G2_LE	(CPU_FTR_COMMON | CPU_FTR_MAYBE_CAN_DOZE | \
+-	    CPU_FTR_MAYBE_CAN_NAP)
++	    CPU_FTR_MAYBE_CAN_NAP | CPU_FTR_NOEXECUTE)
+ #define CPU_FTRS_E300	(CPU_FTR_MAYBE_CAN_DOZE | \
+ 	    CPU_FTR_MAYBE_CAN_NAP | \
+ 	    CPU_FTR_COMMON  | CPU_FTR_NOEXECUTE)
 
 
