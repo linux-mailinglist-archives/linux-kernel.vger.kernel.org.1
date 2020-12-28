@@ -2,78 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A63652E6B2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:00:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04DFD2E6B2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:00:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732148AbgL1W4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 17:56:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55938 "EHLO mail.kernel.org"
+        id S1732182AbgL1W4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 17:56:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729608AbgL1W1f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 17:27:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F98020829;
-        Mon, 28 Dec 2020 22:26:54 +0000 (UTC)
+        id S1729635AbgL1W3t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 17:29:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 56A3520829;
+        Mon, 28 Dec 2020 22:29:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609194414;
-        bh=zzXcS/voSL8xh/stF+PRvCY4adKxzk7/Qfd2xuMJbv4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=PyYudmcwEhbVp5IyvQupjd6Sf0LirLTX7KAq8Wq54DL6u6lVHr/HL2DfY7fSywEfI
-         HqonOK9lYCnQbekC1g3m1B1dVdroFfipPgMRbtUA8qFDOTmtUVxi2cJoj3r1aAeoY7
-         tjxyXzgRgQRvYHa++GQM2AirKcaWF/6FS+2GpcInse8SIrk6WGoYxSKyADxi8vmdm0
-         XlOadpwx0DSpCBtSsFb1Vp2PRJFeU391AmL5gbDcXhi+ZQBKBpzJIqIvKDSoNW7frG
-         DSY7wIx922g0tTJ/45ahBnTzHLcd1AEFKHSCyY+OrcmLEW14tYB+rLZawXD0kMySAd
-         19KvQHPg25n3w==
-Date:   Mon, 28 Dec 2020 14:26:53 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Cc:     netdev@vger.kernel.org,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH net 2/2] net: switchdev: don't set
- port_obj_info->handled true when -EOPNOTSUPP
-Message-ID: <20201228142653.2987e42d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201223144533.4145-3-rasmus.villemoes@prevas.dk>
-References: <20201223144533.4145-1-rasmus.villemoes@prevas.dk>
-        <20201223144533.4145-3-rasmus.villemoes@prevas.dk>
+        s=k20201202; t=1609194548;
+        bh=Y2GOHtdtH/fvxVgbYtAC1xBKmPCbZZacEpn/jItt9Oo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JZEJYTfmS2NrYvN3hoUcpI/JfnloYWgYq4yCUaDMPqOfhFrXpAtSUR52Vycco5nNT
+         bKF5EDgSNZ8jhHrU7tgg1TZ/uHnw/wnYNN7ddACdE2rXB+vhamEKE1CuwFNiMURPp1
+         frIBomY16Zg13X6s/XarXOq2vTR3Qh1KXAcCXhz3yx7XdksvC6+4TYsb/+LJ4hCOkS
+         WgbLSA2tnj1KTRHb4/bQ1nMXrz+4HUm1lZVCmlstWgKlm6DDcnfA+HjZZHpMrbswnX
+         6TpH/EDdbYGStKchWS3pz5dnci7Ifs4OrV9T/40gB7TKCG7ncu2/ZhO2QPkYkhqY6S
+         g2+ZI5To+Az8g==
+Date:   Mon, 28 Dec 2020 17:29:07 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>
+Subject: Re: [PATCH 5.10 462/717] ice, xsk: clear the status bits for the
+ next_to_use descriptor
+Message-ID: <20201228222907.GG2790422@sasha-vm>
+References: <20201228125020.963311703@linuxfoundation.org>
+ <20201228125043.105740628@linuxfoundation.org>
+ <20201228105423.46e77460@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201228105423.46e77460@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Dec 2020 15:45:33 +0100 Rasmus Villemoes wrote:
-> It's not true that switchdev_port_obj_notify() only inspects the
-> ->handled field of "struct switchdev_notifier_port_obj_info" if  
-> call_switchdev_blocking_notifiers() returns 0 - there's a WARN_ON()
-> triggering for a non-zero return combined with ->handled not being
-> true. But the real problem here is that -EOPNOTSUPP is not being
-> properly handled.
-> 
-> The wrapper functions switchdev_handle_port_obj_add() et al change a
-> return value of -EOPNOTSUPP to 0, and the treatment of ->handled in
-> switchdev_port_obj_notify() seems to be designed to change that back
-> to -EOPNOTSUPP in case nobody actually acted on the notifier (i.e.,
-> everybody returned -EOPNOTSUPP).
-> 
-> Currently, as soon as some device down the stack passes the check_cb()
-> check, ->handled gets set to true, which means that
-> switchdev_port_obj_notify() cannot actually ever return -EOPNOTSUPP.
-> 
-> This, for example, means that the detection of hardware offload
-> support in the MRP code is broken - br_mrp_set_ring_role() always ends
-> up setting mrp->ring_role_offloaded to 1, despite not a single
-> mainline driver implementing any of the SWITCHDEV_OBJ_ID*_MRP. So
-> since the MRP code thinks the generation of MRP test frames has been
-> offloaded, no such frames are actually put on the wire.
-> 
-> So, continue to set ->handled true if any callback returns success or
-> any error distinct from -EOPNOTSUPP. But if all the callbacks return
-> -EOPNOTSUPP, make sure that ->handled stays false, so the logic in
-> switchdev_port_obj_notify() can propagate that information.
-> 
-> Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+On Mon, Dec 28, 2020 at 10:54:23AM -0800, Jakub Kicinski wrote:
+>On Mon, 28 Dec 2020 13:47:40 +0100 Greg Kroah-Hartman wrote:
+>> From: Björn Töpel <bjorn.topel@intel.com>
+>>
+>> [ Upstream commit 8d14768a7972b92c73259f0c9c45b969d85e3a60 ]
+>>
+>> On the Rx side, the next_to_use index points to the next item in the
+>> HW ring to be refilled/allocated, and next_to_clean points to the next
+>> item to potentially be processed.
+>>
+>> When the HW Rx ring is fully refilled, i.e. no packets has been
+>> processed, the next_to_use will be next_to_clean - 1. When the ring is
+>> fully processed next_to_clean will be equal to next_to_use. The latter
+>> case is where a bug is triggered.
+>>
+>> If the next_to_use bits are not cleared, and the "fully processed"
+>> state is entered, a stale descriptor can be processed.
+>>
+>> The skb-path correctly clear the status bit for the next_to_use
+>> descriptor, but the AF_XDP zero-copy path did not do that.
+>>
+>> This change adds the status bits clearing of the next_to_use
+>> descriptor.
+>>
+>> Fixes: 2d4238f55697 ("ice: Add support for AF_XDP")
+>> Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+>> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+>> Signed-off-by: Sasha Levin <sashal@kernel.org>
+>
+>Oh wow, so much for Sasha waiting longer for code to get tested before
+>auto-pulling things into stable :/
 
-Please make sure you CC the folks who may have something to say about
-this - Jiri, Ivan, Ido, Florian, etc.
+The timeline is usually for a commit to appear in a release, and it did.
+Was it too early?
+
+>I have this change and other changes here queued, but haven't sent the
+>submission yet.
+
+What do you mean with "queued"? Its in Linus's tree for about two weeks
+now.
+
+>How long is the auto-backporting delay in terms of calendar days?
+
+The autosel stuff is about 2-3(-4) weeks at this point, stuff with a
+fixes tag gets picked up in about 2 weeks.
+
+-- 
+Thanks,
+Sasha
