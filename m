@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DAE92E6730
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:22:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F03532E65AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:04:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732014AbgL1NMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:12:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39792 "EHLO mail.kernel.org"
+        id S2393853AbgL1QED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:04:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731898AbgL1NL4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:11:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C18720728;
-        Mon, 28 Dec 2020 13:11:15 +0000 (UTC)
+        id S2389955AbgL1N2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:28:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B082A2063A;
+        Mon, 28 Dec 2020 13:27:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161076;
-        bh=LDUSEzgpQCg/tQ503EdAynkOAI60OzN7LY9fFmOsqNw=;
+        s=korg; t=1609162076;
+        bh=HdLseoInt71HfnRMfCq6HUtvPugn160byvqCV7QqdOs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RvFCL5Zkv0wLfNVkaUdpdoGUzR5TUnBH9eZhAq/AEElvl8H8UHlTLC0uT55ajMRrz
-         dzObOqjqv8S01SuDqK4Aah4zIdPM4mmhctCo35z7TsNPqGHBa/ZHUC7nVztEW0mnJ1
-         crbTIFxu3y+17H3rgtOr2ifhwmpB+EZtuzA1FXY8=
+        b=Kz9y/5MyDkbZrF2HWz3v0iyHXmLo7jvzhBRqXM4e/Agv7PKU5tFKoYDr21vi6N5dh
+         1ZLAexCLh4y4aGheQFTheAbyn7rKGbF/UR55G9Yf2MyaiHSQeKV3rG8P/WRmiCMlFX
+         5TynkegMI7chamR+y5VcYBYV5Ym5pGjWlhw7QKyk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
+        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 092/242] staging: greybus: codecs: Fix reference counter leak in error handling
-Date:   Mon, 28 Dec 2020 13:48:17 +0100
-Message-Id: <20201228124909.229498820@linuxfoundation.org>
+Subject: [PATCH 4.19 179/346] genirq/irqdomain: Dont try to free an interrupt that has no mapping
+Date:   Mon, 28 Dec 2020 13:48:18 +0100
+Message-Id: <20201228124928.441796020@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,44 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Marc Zyngier <maz@kernel.org>
 
-[ Upstream commit 3952659a6108f77a0d062d8e8487bdbdaf52a66c ]
+[ Upstream commit 4615fbc3788ddc8e7c6d697714ad35a53729aa2c ]
 
-gb_pm_runtime_get_sync has increased the usage counter of the device here.
-Forgetting to call gb_pm_runtime_put_noidle will result in usage counter
-leak in the error branch of (gbcodec_hw_params and gbcodec_prepare). We
-fixed it by adding it.
+When an interrupt allocation fails for N interrupts, it is pretty
+common for the error handling code to free the same number of interrupts,
+no matter how many interrupts have actually been allocated.
 
-Fixes: c388ae7696992 ("greybus: audio: Update pm runtime support in dai_ops callback")
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201109131347.1725288-2-zhangqilong3@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This may result in the domain freeing code to be unexpectedly called
+for interrupts that have no mapping in that domain. Things end pretty
+badly.
+
+Instead, add some checks to irq_domain_free_irqs_hierarchy() to make sure
+that thiss does not follow the hierarchy if no mapping exists for a given
+interrupt.
+
+Fixes: 6a6544e520abe ("genirq/irqdomain: Remove auto-recursive hierarchy support")
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20201129135551.396777-1-maz@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/greybus/audio_codec.c | 2 ++
- 1 file changed, 2 insertions(+)
+ kernel/irq/irqdomain.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/staging/greybus/audio_codec.c b/drivers/staging/greybus/audio_codec.c
-index a6d01f0761f32..6ba5a34fcdf29 100644
---- a/drivers/staging/greybus/audio_codec.c
-+++ b/drivers/staging/greybus/audio_codec.c
-@@ -490,6 +490,7 @@ static int gbcodec_hw_params(struct snd_pcm_substream *substream,
- 	if (ret) {
- 		dev_err_ratelimited(dai->dev, "%d: Error during set_config\n",
- 				    ret);
-+		gb_pm_runtime_put_noidle(bundle);
- 		mutex_unlock(&codec->lock);
- 		return ret;
- 	}
-@@ -566,6 +567,7 @@ static int gbcodec_prepare(struct snd_pcm_substream *substream,
- 		break;
- 	}
- 	if (ret) {
-+		gb_pm_runtime_put_noidle(bundle);
- 		mutex_unlock(&codec->lock);
- 		dev_err_ratelimited(dai->dev, "set_data_size failed:%d\n",
- 				     ret);
+diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
+index 0a76c44eb6b29..1e42fc2ad4d57 100644
+--- a/kernel/irq/irqdomain.c
++++ b/kernel/irq/irqdomain.c
+@@ -1247,8 +1247,15 @@ static void irq_domain_free_irqs_hierarchy(struct irq_domain *domain,
+ 					   unsigned int irq_base,
+ 					   unsigned int nr_irqs)
+ {
+-	if (domain->ops->free)
+-		domain->ops->free(domain, irq_base, nr_irqs);
++	unsigned int i;
++
++	if (!domain->ops->free)
++		return;
++
++	for (i = 0; i < nr_irqs; i++) {
++		if (irq_domain_get_irq_data(domain, irq_base + i))
++			domain->ops->free(domain, irq_base + i, 1);
++	}
+ }
+ 
+ int irq_domain_alloc_irqs_hierarchy(struct irq_domain *domain,
 -- 
 2.27.0
 
