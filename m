@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E1E2E406D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:53:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 121642E407A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:53:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2501999AbgL1OSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:18:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53606 "EHLO mail.kernel.org"
+        id S1726766AbgL1Owj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:52:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53782 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391829AbgL1OSd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:18:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 09BE1224D2;
-        Mon, 28 Dec 2020 14:17:51 +0000 (UTC)
+        id S2391848AbgL1OSf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:18:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A77B1229C5;
+        Mon, 28 Dec 2020 14:17:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165072;
-        bh=1mpwmu2rQjWyRA2OQ+RoeB/jIrG4Sa2HWw1nGCzIb90=;
+        s=korg; t=1609165075;
+        bh=QFcOCf6/dqVbQdjswjoTMGQEZimxv/lEJji/qplAcpo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B/SzPe2lmGUizKnSx5eNu5H8JPXUpZZlgtNFjf48wXN7gI96x22LmMmr7c2h+/cdE
-         Boy+yJITArOn2pdbMlJtUjHzPgpQy03ivRHaI7SQx648BqymVYkr4ACdQuwIEfldBx
-         lRs4HXw6PeHqVdqOOFSUZfjoakNC3Eirgm9NVHGc=
+        b=kgnano+A9zxigYuFoOpJWviiL8sR9zFhelxDUHPA+lBQRMeWH1+Su381Of21muk2x
+         4j/blyvSsQ3dYpL4RSP+mpr7daSD9wOjdhJR7vs23l3heFAC5ZjRfevYbsO0AhNloV
+         yY9B7gFtgq5rd/hH63qbcMqswKCRbCBUi5zMRXXg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 400/717] remoteproc: q6v5-mss: fix error handling in q6v5_pds_enable
-Date:   Mon, 28 Dec 2020 13:46:38 +0100
-Message-Id: <20201228125040.156084975@linuxfoundation.org>
+Subject: [PATCH 5.10 401/717] remoteproc: qcom: fix reference leak in adsp_start
+Date:   Mon, 28 Dec 2020 13:46:39 +0100
+Message-Id: <20201228125040.202981948@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
 References: <20201228125020.963311703@linuxfoundation.org>
@@ -42,46 +42,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit a24723050037303e4008b37f1f8dcc99c58901aa ]
+[ Upstream commit aa37448f597c09844942da87d042fc6793f989c2 ]
 
-If the pm_runtime_get_sync failed in q6v5_pds_enable when
-loop (i), The unroll_pd_votes will start from (i - 1), and
-it will resulted in following problems:
+pm_runtime_get_sync will increment pm usage counter even it
+failed. Forgetting to pm_runtime_put_noidle will result in
+reference leak in adsp_start, so we should fix it.
 
-  1) pm_runtime_get_sync will increment pm usage counter even it
-     failed. Forgetting to pm_runtime_put_noidle will result in
-     reference leak.
-
-  2) Have not reset pds[i] performance state.
-
-Then we fix it.
-
-Fixes: 4760a896be88e ("remoteproc: q6v5-mss: Vote for rpmh power domains")
+Fixes: dc160e4491222 ("remoteproc: qcom: Introduce Non-PAS ADSP PIL driver")
 Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201102143433.143996-1-zhangqilong3@huawei.com
+Link: https://lore.kernel.org/r/20201102143534.144484-1-zhangqilong3@huawei.com
 Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/remoteproc/qcom_q6v5_mss.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/remoteproc/qcom_q6v5_adsp.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/remoteproc/qcom_q6v5_mss.c b/drivers/remoteproc/qcom_q6v5_mss.c
-index eb3457a6c3b73..ba6f7551242de 100644
---- a/drivers/remoteproc/qcom_q6v5_mss.c
-+++ b/drivers/remoteproc/qcom_q6v5_mss.c
-@@ -349,8 +349,11 @@ static int q6v5_pds_enable(struct q6v5 *qproc, struct device **pds,
- 	for (i = 0; i < pd_count; i++) {
- 		dev_pm_genpd_set_performance_state(pds[i], INT_MAX);
- 		ret = pm_runtime_get_sync(pds[i]);
--		if (ret < 0)
-+		if (ret < 0) {
-+			pm_runtime_put_noidle(pds[i]);
-+			dev_pm_genpd_set_performance_state(pds[i], 0);
- 			goto unroll_pd_votes;
-+		}
- 	}
+diff --git a/drivers/remoteproc/qcom_q6v5_adsp.c b/drivers/remoteproc/qcom_q6v5_adsp.c
+index efb2c1aa80a3c..f0b7363b5b268 100644
+--- a/drivers/remoteproc/qcom_q6v5_adsp.c
++++ b/drivers/remoteproc/qcom_q6v5_adsp.c
+@@ -193,8 +193,10 @@ static int adsp_start(struct rproc *rproc)
  
- 	return 0;
+ 	dev_pm_genpd_set_performance_state(adsp->dev, INT_MAX);
+ 	ret = pm_runtime_get_sync(adsp->dev);
+-	if (ret)
++	if (ret) {
++		pm_runtime_put_noidle(adsp->dev);
+ 		goto disable_xo_clk;
++	}
+ 
+ 	ret = clk_bulk_prepare_enable(adsp->num_clks, adsp->clks);
+ 	if (ret) {
 -- 
 2.27.0
 
