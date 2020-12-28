@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE3B12E68D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:42:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D88492E67B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:28:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729103AbgL1M6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:58:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54162 "EHLO mail.kernel.org"
+        id S2633578AbgL1Q2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:28:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34784 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729041AbgL1M6J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:58:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D1BF822583;
-        Mon, 28 Dec 2020 12:57:52 +0000 (UTC)
+        id S1730769AbgL1NHU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:07:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C3F8421D94;
+        Mon, 28 Dec 2020 13:07:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160273;
-        bh=XNUT/zhrydKZ2ZoLA9bXfxOYLb6acnw01IGB8X9deQg=;
+        s=korg; t=1609160825;
+        bh=1r5zoLsFnihtbS6peEyTW2l0dkQjHRAT4xSKpGJHh+o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0JL+LvMwWGM6HTTBuOxkWw6G2BX5oTTjQkYW9A6GxAHvTl4CM8w64Ed2wFc3gT2a0
-         lMABqYYY9pRvuWtbp9Q/lWsPd5kSFNncBqDFalE7HDSjt8KHvBcJyhwmdJTm6Bo32L
-         lF/5+8UFTt3/7C2g8Khi7QjikTIXT4eT3NQSJFcM=
+        b=ee7nunORxKorMnKrwmb6i0v3lCRZL9gBqoPsZCdKPBwZPZFpHrD2makHrzwTZ9Nje
+         ejUdlJgtPwZhWBUE+Ozkm6Mqm5J+RxD7eCVBscrT5nDCT4kNssdjngZjlL1t7+Nb7z
+         EXYd7LMEWMnvP9zr8twAk+/Cuuq4qTjf+SgSaG8k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
-        Luis Henriques <lhenriques@suse.de>,
-        Ilya Dryomov <idryomov@gmail.com>
-Subject: [PATCH 4.4 120/132] ceph: fix race in concurrent __ceph_remove_cap invocations
+        stable@vger.kernel.org,
+        Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>,
+        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH 4.9 151/175] btrfs: quota: Set rescan progress to (u64)-1 if we hit last leaf
 Date:   Mon, 28 Dec 2020 13:50:04 +0100
-Message-Id: <20201228124852.212569819@linuxfoundation.org>
+Message-Id: <20201228124900.575870911@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,53 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luis Henriques <lhenriques@suse.de>
+From: Qu Wenruo <wqu@suse.com>
 
-commit e5cafce3ad0f8652d6849314d951459c2bff7233 upstream.
+commoit 6f7de19ed3d4d3526ca5eca428009f97cf969c2f upstream
 
-A NULL pointer dereference may occur in __ceph_remove_cap with some of the
-callbacks used in ceph_iterate_session_caps, namely trim_caps_cb and
-remove_session_caps_cb. Those callers hold the session->s_mutex, so they
-are prevented from concurrent execution, but ceph_evict_inode does not.
+Commit ff3d27a048d9 ("btrfs: qgroup: Finish rescan when hit the last leaf
+of extent tree") added a new exit for rescan finish.
 
-Since the callers of this function hold the i_ceph_lock, the fix is simply
-a matter of returning immediately if caps->ci is NULL.
+However after finishing quota rescan, we set
+fs_info->qgroup_rescan_progress to (u64)-1 before we exit through the
+original exit path.
+While we missed that assignment of (u64)-1 in the new exit path.
 
-Cc: stable@vger.kernel.org
-URL: https://tracker.ceph.com/issues/43272
-Suggested-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Luis Henriques <lhenriques@suse.de>
-Reviewed-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+The end result is, the quota status item doesn't have the same value.
+(-1 vs the last bytenr + 1)
+Although it doesn't affect quota accounting, it's still better to keep
+the original behavior.
+
+Reported-by: Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>
+Fixes: ff3d27a048d9 ("btrfs: qgroup: Finish rescan when hit the last leaf of extent tree")
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- fs/ceph/caps.c |   11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ fs/btrfs/qgroup.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/fs/ceph/caps.c
-+++ b/fs/ceph/caps.c
-@@ -920,12 +920,19 @@ void __ceph_remove_cap(struct ceph_cap *
- {
- 	struct ceph_mds_session *session = cap->session;
- 	struct ceph_inode_info *ci = cap->ci;
--	struct ceph_mds_client *mdsc =
--		ceph_sb_to_client(ci->vfs_inode.i_sb)->mdsc;
-+	struct ceph_mds_client *mdsc;
- 	int removed = 0;
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -2340,8 +2340,10 @@ out:
+ 	}
+ 	btrfs_put_tree_mod_seq(fs_info, &tree_mod_seq_elem);
  
-+	/* 'ci' being NULL means the remove have already occurred */
-+	if (!ci) {
-+		dout("%s: cap inode is NULL\n", __func__);
-+		return;
+-	if (done && !ret)
++	if (done && !ret) {
+ 		ret = 1;
++		fs_info->qgroup_rescan_progress.objectid = (u64)-1;
 +	}
-+
- 	dout("__ceph_remove_cap %p from %p\n", cap, &ci->vfs_inode);
+ 	return ret;
+ }
  
-+	mdsc = ceph_inode_to_client(&ci->vfs_inode)->mdsc;
-+
- 	/* remove from inode's cap rbtree, and clear auth cap */
- 	rb_erase(&cap->ci_node, &ci->i_caps);
- 	if (ci->i_auth_cap == cap)
 
 
