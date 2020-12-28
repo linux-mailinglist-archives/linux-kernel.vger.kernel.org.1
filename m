@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD5E72E641E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:48:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A04EE2E6464
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:52:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404383AbgL1NnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:43:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41374 "EHLO mail.kernel.org"
+        id S1731426AbgL1NjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:39:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39460 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391592AbgL1NlG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:41:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 61163207B2;
-        Mon, 28 Dec 2020 13:40:25 +0000 (UTC)
+        id S2391276AbgL1NjE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:39:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B5E6822582;
+        Mon, 28 Dec 2020 13:38:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162826;
-        bh=9OVlinFu55mMDsokad68VCkP2b+rOt47iil3/hEQMNQ=;
+        s=korg; t=1609162704;
+        bh=UZAils1d1ISw3y85mSNJwLZjqWdqUOrAT0KIiE0n4d0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r8fCb9H0TwD/okQ7CBWhgCk2xmU5yYSg+bv+ZJ0cL8DZckgeOO4YD0WoKCE/XRiCW
-         cVf40lXNPzgwbSbldXD/xQ0Syv7FT/xcT8gBQCx8Xi+VSJynmetgWVo/T/94q1ugtm
-         1ijoqW+FKVbgdDRKxihc0FSOWgJbAGciHJvQ7SMI=
+        b=KScC1nnHRo8zYvRxN74lBotnaEUr13alrwawUs999yel09EmZyhlBmim7FKw6f9Hx
+         c+FqWeTSBO9hzKScL/7sRUBncNnLUss9+tI0rhHXYC7Q72FtCCSbuJv7EGhTBENMoz
+         BDLoLagXhCjwqKGZAvt3KHBZMlK2zpUbXwb3CdHA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Mike Snitzer <snitzer@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 044/453] scsi: mpt3sas: Increase IOCInit request timeout to 30s
-Date:   Mon, 28 Dec 2020 13:44:40 +0100
-Message-Id: <20201228124939.372347283@linuxfoundation.org>
+Subject: [PATCH 5.4 045/453] dm table: Remove BUG_ON(in_interrupt())
+Date:   Mon, 28 Dec 2020 13:44:41 +0100
+Message-Id: <20201228124939.420659906@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
 References: <20201228124937.240114599@linuxfoundation.org>
@@ -41,36 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sreekanth Reddy <sreekanth.reddy@broadcom.com>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-[ Upstream commit 85dad327d9b58b4c9ce08189a2707167de392d23 ]
+[ Upstream commit e7b624183d921b49ef0a96329f21647d38865ee9 ]
 
-Currently the IOCInit request message timeout is set to 10s. This is not
-sufficient in some scenarios such as during HBA FW downgrade operations.
+The BUG_ON(in_interrupt()) in dm_table_event() is a historic leftover from
+a rework of the dm table code which changed the calling context.
 
-Increase the IOCInit request timeout to 30s.
+Issuing a BUG for a wrong calling context is frowned upon and
+in_interrupt() is deprecated and only covering parts of the wrong
+contexts. The sanity check for the context is covered by
+CONFIG_DEBUG_ATOMIC_SLEEP and other debug facilities already.
 
-Link: https://lore.kernel.org/r/20201130082733.26120-1-sreekanth.reddy@broadcom.com
-Signed-off-by: Sreekanth Reddy <sreekanth.reddy@broadcom.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/mpt3sas/mpt3sas_base.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/md/dm-table.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/drivers/scsi/mpt3sas/mpt3sas_base.c b/drivers/scsi/mpt3sas/mpt3sas_base.c
-index 8be8c510fdf79..7532603aafb15 100644
---- a/drivers/scsi/mpt3sas/mpt3sas_base.c
-+++ b/drivers/scsi/mpt3sas/mpt3sas_base.c
-@@ -6227,7 +6227,7 @@ _base_send_ioc_init(struct MPT3SAS_ADAPTER *ioc)
+diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
+index 13ad791126618..6dd56afa048c2 100644
+--- a/drivers/md/dm-table.c
++++ b/drivers/md/dm-table.c
+@@ -1320,12 +1320,6 @@ void dm_table_event_callback(struct dm_table *t,
  
- 	r = _base_handshake_req_reply_wait(ioc,
- 	    sizeof(Mpi2IOCInitRequest_t), (u32 *)&mpi_request,
--	    sizeof(Mpi2IOCInitReply_t), (u16 *)&mpi_reply, 10);
-+	    sizeof(Mpi2IOCInitReply_t), (u16 *)&mpi_reply, 30);
- 
- 	if (r != 0) {
- 		ioc_err(ioc, "%s: handshake failed (r=%d)\n", __func__, r);
+ void dm_table_event(struct dm_table *t)
+ {
+-	/*
+-	 * You can no longer call dm_table_event() from interrupt
+-	 * context, use a bottom half instead.
+-	 */
+-	BUG_ON(in_interrupt());
+-
+ 	mutex_lock(&_event_lock);
+ 	if (t->event_fn)
+ 		t->event_fn(t->event_context);
 -- 
 2.27.0
 
