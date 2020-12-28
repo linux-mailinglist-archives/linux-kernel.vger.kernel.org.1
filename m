@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 978BB2E6521
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:57:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 108142E42D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:29:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393280AbgL1P5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:57:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35738 "EHLO mail.kernel.org"
+        id S2406680AbgL1N4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:56:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389319AbgL1NfU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:35:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 601312072C;
-        Mon, 28 Dec 2020 13:34:39 +0000 (UTC)
+        id S2406605AbgL1N4n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:56:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 88C442072C;
+        Mon, 28 Dec 2020 13:56:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162480;
-        bh=U8Fj+ddiucHY5sTsAIB4Yu2qi5hTr4vuPIsYSreRKfk=;
+        s=korg; t=1609163763;
+        bh=rtXe47oXIk8fyQqWal2ZIsT7HCmvbt9xl6J7butPMqk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QiQYuizd5H0QfIUYYPUrbr12Iko/ISTwokP7mWsYf3ICdqfVy3852XCwGqJPk5POo
-         Y4d4kGKrFRgxwNLFEBHrEI8GjKwUSbe+VciVCDRC3fH9A27hpwHoBKb8ae6Aw11Pl3
-         s5YiYGiQr/D7sv8L5dzTxBrsVF3K8fT94Pz2oE08=
+        b=uB4SgUog8fzMzOQXdqukUL+cyTu6NkiUlXiiP2p58xBBBY8dHiVN2gT+5e5mBUpDw
+         hca73s4DzV1IaoYmEcqtFT97fz4cYy1baeRGSZK+DdQCTmX5mxrIXHUb5IzOvU9H22
+         lQtG/8DfKN7fZY0tac56c+2dX4whMngEhnHqukoM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.19 315/346] spi: spi-sh: Fix use-after-free on unbind
+        stable@vger.kernel.org, Harry Wentland <harry.wentland@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Stylon Wang <stylon.wang@amd.com>
+Subject: [PATCH 5.4 398/453] drm/amd/display: Fix memory leaks in S3 resume
 Date:   Mon, 28 Dec 2020 13:50:34 +0100
-Message-Id: <20201228124935.016947730@linuxfoundation.org>
+Message-Id: <20201228124956.358473388@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,78 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: Stylon Wang <stylon.wang@amd.com>
 
-commit e77df3eca12be4b17f13cf9f215cff248c57d98f upstream.
+commit a135a1b4c4db1f3b8cbed9676a40ede39feb3362 upstream.
 
-spi_sh_remove() accesses the driver's private data after calling
-spi_unregister_master() even though that function releases the last
-reference on the spi_master and thereby frees the private data.
+EDID parsing in S3 resume pushes new display modes
+to probed_modes list but doesn't consolidate to actual
+mode list. This creates a race condition when
+amdgpu_dm_connector_ddc_get_modes() re-initializes the
+list head without walking the list and results in  memory leak.
 
-Fix by switching over to the new devm_spi_alloc_master() helper which
-keeps the private data accessible until the driver has unbound.
-
-Fixes: 680c1305e259 ("spi/spi_sh: use spi_unregister_master instead of spi_master_put in remove path")
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Cc: <stable@vger.kernel.org> # v3.0+: 5e844cc37a5c: spi: Introduce device-managed SPI controller allocation
-Cc: <stable@vger.kernel.org> # v3.0+
-Cc: Axel Lin <axel.lin@ingics.com>
-Link: https://lore.kernel.org/r/6d97628b536baf01d5e3e39db61108f84d44c8b2.1607286887.git.lukas@wunner.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Bug: https://bugzilla.kernel.org/show_bug.cgi?id=209987
+Acked-by: Harry Wentland <harry.wentland@amd.com>
+Acked-by: Alex Deucher <alexander.deucher@amd.com>
+Reviewed-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+Signed-off-by: Stylon Wang <stylon.wang@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/spi/spi-sh.c |   13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/spi/spi-sh.c
-+++ b/drivers/spi/spi-sh.c
-@@ -450,7 +450,7 @@ static int spi_sh_probe(struct platform_
- 		return irq;
- 	}
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -1434,7 +1434,8 @@ amdgpu_dm_update_connector_after_detect(
  
--	master = spi_alloc_master(&pdev->dev, sizeof(struct spi_sh_data));
-+	master = devm_spi_alloc_master(&pdev->dev, sizeof(struct spi_sh_data));
- 	if (master == NULL) {
- 		dev_err(&pdev->dev, "spi_alloc_master error.\n");
- 		return -ENOMEM;
-@@ -468,16 +468,14 @@ static int spi_sh_probe(struct platform_
- 		break;
- 	default:
- 		dev_err(&pdev->dev, "No support width\n");
--		ret = -ENODEV;
--		goto error1;
-+		return -ENODEV;
- 	}
- 	ss->irq = irq;
- 	ss->master = master;
- 	ss->addr = devm_ioremap(&pdev->dev, res->start, resource_size(res));
- 	if (ss->addr == NULL) {
- 		dev_err(&pdev->dev, "ioremap error.\n");
--		ret = -ENOMEM;
--		goto error1;
-+		return -ENOMEM;
- 	}
- 	INIT_LIST_HEAD(&ss->queue);
- 	spin_lock_init(&ss->lock);
-@@ -487,7 +485,7 @@ static int spi_sh_probe(struct platform_
- 	ret = request_irq(irq, spi_sh_irq, 0, "spi_sh", ss);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "request_irq error\n");
--		goto error1;
-+		return ret;
- 	}
+ 			drm_connector_update_edid_property(connector,
+ 							   aconnector->edid);
+-			drm_add_edid_modes(connector, aconnector->edid);
++			aconnector->num_modes = drm_add_edid_modes(connector, aconnector->edid);
++			drm_connector_list_update(connector);
  
- 	master->num_chipselect = 2;
-@@ -506,9 +504,6 @@ static int spi_sh_probe(struct platform_
- 
-  error3:
- 	free_irq(irq, ss);
-- error1:
--	spi_master_put(master);
--
- 	return ret;
- }
- 
+ 			if (aconnector->dc_link->aux_mode)
+ 				drm_dp_cec_set_edid(&aconnector->dm_dp_aux.aux,
 
 
