@@ -2,201 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD1FB2E3504
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 09:22:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B52362E3510
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 09:30:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726509AbgL1IVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 03:21:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726363AbgL1IVs (ORCPT
+        id S1726477AbgL1IaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 03:30:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46552 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726282AbgL1IaT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 03:21:48 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21B2CC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 00:21:08 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id lt17so13235512ejb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 00:21:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YEqUsm2Ug03agSnR9VCC2DGwWqGxQTTzvFac2nF2ZaQ=;
-        b=LAFOX54FlmvMu9abO6JG9xu7ZOXFYk8MGfcQFnG6LT38pljFcanAz3pYMSFYmMrTur
-         bXTY4C3hD69mZvJFTeriarybKN5qd0vBoKKYaZRHd+m7dTlVWLYxuh3+Nm/OxtsSyBi3
-         GO2HLzt0pC4SQvszlBjTvdNviYhZuqJFstV9I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YEqUsm2Ug03agSnR9VCC2DGwWqGxQTTzvFac2nF2ZaQ=;
-        b=hcuNdDFeicFdF9xliO0PdRLUTutyh+73yg48BvTOco+Wl1GGDL68BM5KfZpbNE1hwQ
-         xBWG7qi/3HO0W7ilRBZPZziextWs+hqeVYlCIVYYISVaXcG2p3EZ0eyvpIVCWeTmEACJ
-         E8FEWKHZOX54y0lV+64wXDBjXFP8M6PNGtUdelWt3926n277QTH2dDtqab6BPza1883R
-         tkLmXC4IYHYQfhYOr/mSImTHROLioY2Bm/KrLSa9CBY5TIKfU5coRrRe9cYFUHdr8ZDR
-         S3HIc7imbVYJbSFsJlA65+tChSo/rc8/ERFR0oJB0PaemqUn02lz3EPprO2O0fUmXXIc
-         0M0A==
-X-Gm-Message-State: AOAM5305aN+3SjvhYz/9PjJePL0HCrf0TtuYKwvBGhn1ehLYBYzOim0g
-        QNaoZaLlL+PblH+TuGOFCk8MHnf2Rrf/OOw3T3rkCQ==
-X-Google-Smtp-Source: ABdhPJythkg1EI2s5XzfBo8zJ1GXIzRnE/3Dq2ib1E07cyfneEu4T/68QmpJvbu2PUWw7r9XXxk1HkHs+SPlrG0Gv0c=
-X-Received: by 2002:a17:906:2707:: with SMTP id z7mr41082373ejc.418.1609143666663;
- Mon, 28 Dec 2020 00:21:06 -0800 (PST)
+        Mon, 28 Dec 2020 03:30:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609144132;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UaOuLgpFoeN0oTRLHLO4TgNcGhQC3vq+vzim6sDzPWg=;
+        b=MvENQa0j/gWTVGlWnLq4xrg/LAsi0ZDkAn7OvWGLERJDZRR9xKKYs9Ot7hPF0FCObBWWTM
+        D5IDNvFP2E8QIYStzvcoDDwQbq3/25mXbRfsZsw3dsivAxxfKMoAMUOIblh2Hn6FBEVWDg
+        cHB5SaB6qouAqqIEyX87SqKQlYYerbA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-391-vPJBaJFINfWXd14xKzAlXw-1; Mon, 28 Dec 2020 03:28:47 -0500
+X-MC-Unique: vPJBaJFINfWXd14xKzAlXw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 54A761005513;
+        Mon, 28 Dec 2020 08:28:46 +0000 (UTC)
+Received: from T590 (ovpn-13-139.pek2.redhat.com [10.72.13.139])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0253C1F44D;
+        Mon, 28 Dec 2020 08:28:39 +0000 (UTC)
+Date:   Mon, 28 Dec 2020 16:28:35 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     "yukuai (C)" <yukuai3@huawei.com>
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        zhangxiaoxu5@huawei.com
+Subject: Re: [PATCH 1/3] blk-mq: allow hardware queue to get more tag while
+ sharing a tag set
+Message-ID: <20201228082835.GB3304670@T590>
+References: <20201226102808.2534966-1-yukuai3@huawei.com>
+ <20201226102808.2534966-2-yukuai3@huawei.com>
+ <20201227115859.GA3282759@T590>
+ <04c39621-0c4a-e593-5545-c4bd274c5fc2@huawei.com>
 MIME-Version: 1.0
-References: <20201223110343.126638-1-jagan@amarulasolutions.com>
- <20201223110343.126638-5-jagan@amarulasolutions.com> <20201223115933.GC21091@kozik-lap>
- <CAMty3ZA0zrHS_wVKm8gdqU1q5ONokoT7aG_MBcWtXTJK59Bozg@mail.gmail.com>
- <CAJKOXPfNP+6uv6PXmyTCimRd1hrQUbosnY--55yUQh4G4jfZWw@mail.gmail.com>
- <CAMty3ZBWteW2OZMNwFT5hSRegy-AARqqkR7SAz53fDoM3j5Ong@mail.gmail.com> <CAJKOXPey8+k7_uT4LLTwo8-UY51+TwUgWhtkPDRW3AD-BCi1Bw@mail.gmail.com>
-In-Reply-To: <CAJKOXPey8+k7_uT4LLTwo8-UY51+TwUgWhtkPDRW3AD-BCi1Bw@mail.gmail.com>
-From:   Jagan Teki <jagan@amarulasolutions.com>
-Date:   Mon, 28 Dec 2020 13:50:54 +0530
-Message-ID: <CAMty3ZAo+9L4rtkJgBkimJu4SPv=gycVUFaUYtL_RSAhs7yGWw@mail.gmail.com>
-Subject: Re: [PATCH v3 4/6] arm64: dts: imx8mm: Add Engicam i.Core MX8M Mini
- C.TOUCH 2.0
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Li Yang <leoyang.li@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-amarula <linux-amarula@amarulasolutions.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Matteo Lisi <matteo.lisi@engicam.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <04c39621-0c4a-e593-5545-c4bd274c5fc2@huawei.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 24, 2020 at 3:51 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
->
-> On Thu, 24 Dec 2020 at 11:08, Jagan Teki <jagan@amarulasolutions.com> wrote:
-> >
-> > On Thu, Dec 24, 2020 at 2:48 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> > >
-> > > On Wed, 23 Dec 2020 at 13:07, Jagan Teki <jagan@amarulasolutions.com> wrote:
-> > > >
-> > > > On Wed, Dec 23, 2020 at 5:29 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> > > > >
-> > > > > On Wed, Dec 23, 2020 at 04:33:41PM +0530, Jagan Teki wrote:
-> > > > > > Engicam C.TOUCH 2.0 is an EDIMM compliant general purpose Carrier
-> > > > > > board.
-> > > > > >
-> > > > > > Genaral features:
-> > > > > > - Ethernet 10/100
-> > > > > > - Wifi/BT
-> > > > > > - USB Type A/OTG
-> > > > > > - Audio Out
-> > > > > > - CAN
-> > > > > > - LVDS panel connector
-> > > > > >
-> > > > > > i.Core MX8M Mini is an EDIMM SoM based on NXP i.MX8M Mini from Engicam.
-> > > > > >
-> > > > > > i.Core MX8M Mini needs to mount on top of this Carrier board for
-> > > > > > creating complete i.Core MX8M Mini C.TOUCH 2.0 board.
-> > > > > >
-> > > > > > Add support for it.
-> > > > > >
-> > > > > > Signed-off-by: Matteo Lisi <matteo.lisi@engicam.com>
-> > > > > > Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-> > > > > > ---
-> > > > > > Changes for v3:
-> > > > > > - don't maintain common nodes and include it, if no feature diff
-> > > > > > Changes for v2:
-> > > > > > - enabled fec1 node
-> > > > > > - updated commit message
-> > > > > > - dropped engicam from filename since it aligned with imx6 engicam
-> > > > > >   dts files naming conventions.
-> > > > > > - add i2c nodes
-> > > > > > - fixed v1 comments
-> > > > > >
-> > > > > >  arch/arm64/boot/dts/freescale/Makefile        |  1 +
-> > > > > >  .../dts/freescale/imx8mm-engicam-ctouch2.dtsi | 82 +++++++++++++++++++
-> > > > > >  .../freescale/imx8mm-icore-mx8mm-ctouch2.dts  | 21 +++++
-> > > > > >  3 files changed, 104 insertions(+)
-> > > > > >  create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-engicam-ctouch2.dtsi
-> > > > >
-> > > > > You split some common part to ctouch2.dtsi so it can be reused in
-> > > > > multiple places. I saw so far only one usage, where are the others?
-> > > >
-> > > > To be clear, ctouch2.dtsi not mean for common it is C.TOUCH2 carrier
-> > > > board dtsi. The other carrier is C.TOUCH2 10.1" Open Frame(display),
-> > > > since DSI is not yet mainlined, I didn't add this yet.
-> > >
-> > > If I understand correctly: it is a DTSI which is included only by one
-> > > DTS... and DTS does not have any other nodes. This as well is not the
-> >
-> > This is not mandatory as per my understanding, including exiting DTS
-> > topologies in Mainline.
-> >
-> > There are several places where more than one dtsi has been included,
-> > Simple example of imx8mm tree is
->
-> It's not the problem of including more than one DTSI. It's the problem
-> of creating fake DTS or DTSI files whose purpose is only to include
-> others. Keep it simple. Don't create unnecessary files. "Entities
-> should not be multiplied without necessity."
->
-> >
-> > arch/arm64/boot/dts/freescale/imx8mm-beacon-kit.dts
->
-> Which was wrong as well. Don't create unnecessary files.
->
-> >
-> > /dts-v1/;
-> >
-> > #include "imx8mm.dtsi"
-> > #include "imx8mm-beacon-som.dtsi"
-> > #include "imx8mm-beacon-baseboard.dtsi"
-> >
-> > (SoC dtsi, SoM dtsi, Carrier board dtsi)
-> >
-> > > design which makes any sense. We do not create empty DTS files which
-> > > only include one more DTSI. The contents of
-> > > imx8mm-engicam-ctouch2.dtsi should be directly in
-> > > imx8mm-icore-mx8mm-ctouch2.dts. That's the same problem as with v1 -
-> > > you overcomplicate simple stuff. It really looks like you ignored the
-> > > comments from v1 in multiple places.
-> >
-> > As explained above, the design is pretty much the same as the existing SoM's.
-> >
-> > imx8mm-engicam-ctouch2.dtsi is not just a dtsi file where nodes are
-> > enabled. It has nodes enabled for Carrier board, so keeping nodes
-> > separately will
->
-> The files represent real devices or their components. So you have a
-> SOM - a DTSI file. You have a carrier board - a DTS file. That's
-> simple design which is mostly followed, unless something over
-> complicated passes the review.
->
-> > 1. More verbose for which IP's are available in the carrier board
->
-> No difference when carrier DTSI is the DTS. Exactly the same.
->
-> > 2. Easy to extend if someone can create another SoM with a similar Carrier.
->
-> Not really, if they include carrier DTSI they need to override a lot.
-> So usually (including practice - I did it) they *copy* the carrier to
-> create their own design.
+On Mon, Dec 28, 2020 at 09:56:15AM +0800, yukuai (C) wrote:
+> Hi,
+> 
+> On 2020/12/27 19:58, Ming Lei wrote:
+> > Hi Yu Kuai,
+> > 
+> > On Sat, Dec 26, 2020 at 06:28:06PM +0800, Yu Kuai wrote:
+> > > When sharing a tag set, if most disks are issuing small amount of IO, and
+> > > only a few is issuing a large amount of IO. Current approach is to limit
+> > > the max amount of tags a disk can get equally to the average of total
+> > > tags. Thus the few heavy load disk can't get enough tags while many tags
+> > > are still free in the tag set.
+> > 
+> > Yeah, current approach just allocates same share for each active queue
+> > which is evaluated in each timeout period.
+> > 
+> > That said you are trying to improve the following case:
+> > - heavy IO on one or several disks, and the average share for these
+> >    disks become bottleneck of IO performance
+> > - small amount IO on other disks attached to the same host, and all IOs are
+> > submitted to disk in <30 second period.
+> > 
+> > Just wondering if you may share the workload you are trying to optimize,
+> > or it is just one improvement in theory? And what is the disk(hdd, ssd
+> > or nvme) and host? And how many disks in your setting? And how deep the tagset
+> > depth is?
+> 
+> The details of the environment that we found the problem are as follows:
+> 
+>  total driver tags: 128
 
-But what if the new board has slite change to use exiting carrier like
-what ctouch2 10" OF. Can we add ctouch2 dtsi as a separate file for
-this case?
+Looks the tagset depth is a bit low.
 
->
-> >
-> > Ie is the whole idea to keep carrier board dtsi and includes them in dts.
-> >
-> > As I suggest, if you can look into px30 you can understand more easily.
->
-> NAK from my side. I explained my reasoning. You created a fake, empty
-> DTSI which included only other DTSI. After review, you agreed to fix
-> it. However you still create a fake DTS which includes only a DTSI.
+>  number of disks: 13 (network drive, and they form a dm-multipath)
+>  default queue_depth: 32
 
-Not sure. I have updated the series according to comments by dropping
--common.dtsi ie what I was thought of  "empty DTSI inclusion" you have
-pointed at previous versions.
+Another candidate solution may be to always return true from hctx_may_queue()
+for this kind of queue because queue_depth has provided fair allocation for
+each LUN, and looks not necessary to do that again.
 
-Jagan.
+>  disk performance: when test with 4k randread and single thread, iops is
+>                    300. And can up to 4000 with 32 thread.
+>  test cmd: fio -ioengine=psync -numjobs=32 ...
+> 
+> We found that mpath will issue sg_io periodically(about 15s)，which lead
+> to active_queues setting to 13 for about 5s in every 15s.
+
+BTW, I just observe sg_io on rhel8 & rhel7 on mpath over scsi_debug, looks not
+see any such activity.
+
+> 
+> By the way, I'm not sure this is a common scenario, however, sq don't
+> have such problem,
+
+If it is done by mpath at default setting, I think it can be thought as
+one common case.
+
+
+Thanks,
+Ming
+
