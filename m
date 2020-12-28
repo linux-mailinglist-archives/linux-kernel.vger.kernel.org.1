@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DF032E3846
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:09:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B299D2E3849
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:09:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730834AbgL1NIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:08:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34940 "EHLO mail.kernel.org"
+        id S1730874AbgL1NIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:08:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730789AbgL1NHa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:07:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE52D207C9;
-        Mon, 28 Dec 2020 13:07:13 +0000 (UTC)
+        id S1730766AbgL1NH5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:07:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A94862245C;
+        Mon, 28 Dec 2020 13:07:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160834;
-        bh=Sci19GEnAvDhZmNb0XOluqAUViisP5ppM/Rb2xHp+eQ=;
+        s=korg; t=1609160837;
+        bh=pInZGmeCRYkJUxjiYlHUxcW6jZVZh4yKMCpscyyS310=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aek/hAa2KyKk9uFd/OVzS0ztHdoEPqxxWS6r4CwGWcFwiYUAs9cBVc1Qoclpq44jP
-         UsuFSKJYqPsP++57tKrtXp2muMKSYC7hpLx3Hyt/+AiI0UEMf0/34PiHtrbzvNg+5p
-         kr3JmKE56skCU6SJJZE8d6SLKA9Qhw42WmCJbcS4=
+        b=rfvlo8bSLQpY7GTDOHCu15iDz3e1PnFg9mD8GknGoQLPzLsi8/O38h1tVAOMvUdbI
+         ml15I8ALeSpDjxLTegScFKZ74klkRV671v2D0OcxDfmCQ7fRJwgY+Yqr1ibdJRY7Mb
+         fbivs1HlTRrMYtscaJkEr43Sy+Tojj3p8q2Tzbfc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
-        Mordechay Goodstein <mordechay.goodstein@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Markus Reichl <m.reichl@fivetechno.de>,
+        Douglas Anderson <dianders@chromium.org>,
+        Heiko Stuebner <heiko@sntech.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 003/242] iwlwifi: pcie: limit memory read spin time
-Date:   Mon, 28 Dec 2020 13:46:48 +0100
-Message-Id: <20201228124904.827765325@linuxfoundation.org>
+Subject: [PATCH 4.14 004/242] arm64: dts: rockchip: Assign a fixed index to mmc devices on rk3399 boards.
+Date:   Mon, 28 Dec 2020 13:46:49 +0100
+Message-Id: <20201228124904.877913366@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
 References: <20201228124904.654293249@linuxfoundation.org>
@@ -42,92 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Markus Reichl <m.reichl@fivetechno.de>
 
-[ Upstream commit 04516706bb99889986ddfa3a769ed50d2dc7ac13 ]
+[ Upstream commit 0011c6d182774fc781fb9e115ebe8baa356029ae ]
 
-When we read device memory, we lock a spinlock, write the address we
-want to read from the device and then spin in a loop reading the data
-in 32-bit quantities from another register.
+Recently introduced async probe on mmc devices can shuffle block IDs.
+Pin them to fixed values to ease booting in environments where UUIDs
+are not practical. Use newly introduced aliases for mmcblk devices from [1].
 
-As the description makes clear, this is rather inefficient, incurring
-a PCIe bus transaction for every read. In a typical device today, we
-want to read 786k SMEM if it crashes, leading to 192k register reads.
-Occasionally, we've seen the whole loop take over 20 seconds and then
-triggering the soft lockup detector.
+[1]
+https://patchwork.kernel.org/patch/11747669/
 
-Clearly, it is unreasonable to spin here for such extended periods of
-time.
-
-To fix this, break the loop down into an outer and an inner loop, and
-break out of the inner loop if more than half a second elapsed. To
-avoid too much overhead, check for that only every 128 reads, though
-there's no particular reason for that number. Then, unlock and relock
-to obtain NIC access again, reprogram the start address and continue.
-
-This will keep (interrupt) latencies on the CPU down to a reasonable
-time.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Mordechay Goodstein <mordechay.goodstein@intel.com>
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/iwlwifi.20201022165103.45878a7e49aa.I3b9b9c5a10002915072312ce75b68ed5b3dc6e14@changeid
+Signed-off-by: Markus Reichl <m.reichl@fivetechno.de>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Link: https://lore.kernel.org/r/20201104162356.1251-1-m.reichl@fivetechno.de
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/wireless/intel/iwlwifi/pcie/trans.c   | 36 ++++++++++++++-----
- 1 file changed, 27 insertions(+), 9 deletions(-)
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/trans.c b/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
-index 8a074a516fb26..910edd034fe3a 100644
---- a/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
-+++ b/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
-@@ -1927,18 +1927,36 @@ static int iwl_trans_pcie_read_mem(struct iwl_trans *trans, u32 addr,
- 				   void *buf, int dwords)
- {
- 	unsigned long flags;
--	int offs, ret = 0;
-+	int offs = 0;
- 	u32 *vals = buf;
- 
--	if (iwl_trans_grab_nic_access(trans, &flags)) {
--		iwl_write32(trans, HBUS_TARG_MEM_RADDR, addr);
--		for (offs = 0; offs < dwords; offs++)
--			vals[offs] = iwl_read32(trans, HBUS_TARG_MEM_RDAT);
--		iwl_trans_release_nic_access(trans, &flags);
--	} else {
--		ret = -EBUSY;
-+	while (offs < dwords) {
-+		/* limit the time we spin here under lock to 1/2s */
-+		ktime_t timeout = ktime_add_us(ktime_get(), 500 * USEC_PER_MSEC);
-+
-+		if (iwl_trans_grab_nic_access(trans, &flags)) {
-+			iwl_write32(trans, HBUS_TARG_MEM_RADDR,
-+				    addr + 4 * offs);
-+
-+			while (offs < dwords) {
-+				vals[offs] = iwl_read32(trans,
-+							HBUS_TARG_MEM_RDAT);
-+				offs++;
-+
-+				/* calling ktime_get is expensive so
-+				 * do it once in 128 reads
-+				 */
-+				if (offs % 128 == 0 && ktime_after(ktime_get(),
-+								   timeout))
-+					break;
-+			}
-+			iwl_trans_release_nic_access(trans, &flags);
-+		} else {
-+			return -EBUSY;
-+		}
- 	}
--	return ret;
-+
-+	return 0;
- }
- 
- static int iwl_trans_pcie_write_mem(struct iwl_trans *trans, u32 addr,
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+index b63d9653ff559..82747048381fa 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+@@ -66,6 +66,9 @@
+ 		i2c6 = &i2c6;
+ 		i2c7 = &i2c7;
+ 		i2c8 = &i2c8;
++		mmc0 = &sdio0;
++		mmc1 = &sdmmc;
++		mmc2 = &sdhci;
+ 		serial0 = &uart0;
+ 		serial1 = &uart1;
+ 		serial2 = &uart2;
 -- 
 2.27.0
 
