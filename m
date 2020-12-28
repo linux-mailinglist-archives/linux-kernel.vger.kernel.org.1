@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D88492E67B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:28:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B60352E66DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:18:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633578AbgL1Q2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:28:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34784 "EHLO mail.kernel.org"
+        id S2440949AbgL1QRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:17:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730769AbgL1NHU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:07:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C3F8421D94;
-        Mon, 28 Dec 2020 13:07:04 +0000 (UTC)
+        id S2387408AbgL1NQ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:16:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3410C208BA;
+        Mon, 28 Dec 2020 13:16:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160825;
-        bh=1r5zoLsFnihtbS6peEyTW2l0dkQjHRAT4xSKpGJHh+o=;
+        s=korg; t=1609161401;
+        bh=WxAUeKSKOvzBCHMhXnRw11xywl3lvvwy8E/MCivO0EQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ee7nunORxKorMnKrwmb6i0v3lCRZL9gBqoPsZCdKPBwZPZFpHrD2makHrzwTZ9Nje
-         ejUdlJgtPwZhWBUE+Ozkm6Mqm5J+RxD7eCVBscrT5nDCT4kNssdjngZjlL1t7+Nb7z
-         EXYd7LMEWMnvP9zr8twAk+/Cuuq4qTjf+SgSaG8k=
+        b=ufaNHVwAjv67ffD17+0sQyMBX24o99jrwfCJQ/7YJ0EJBrl/RvZyr7GXpV8KEhJY3
+         EPqvdEwHLeDTgtSEHDaAGOiNRnw6gIB1+BKZaQ9/TvkMKbWch+EKXK53k8Q29ErkbZ
+         hJanUC+IIe6EBhVbn+IRQnDidkZpNoK/3V/7TW2M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>,
-        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.9 151/175] btrfs: quota: Set rescan progress to (u64)-1 if we hit last leaf
-Date:   Mon, 28 Dec 2020 13:50:04 +0100
-Message-Id: <20201228124900.575870911@linuxfoundation.org>
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.14 200/242] USB: serial: keyspan_pda: fix dropped unthrottle interrupts
+Date:   Mon, 28 Dec 2020 13:50:05 +0100
+Message-Id: <20201228124914.522329825@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,47 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+From: Johan Hovold <johan@kernel.org>
 
-commoit 6f7de19ed3d4d3526ca5eca428009f97cf969c2f upstream
+commit 696c541c8c6cfa05d65aa24ae2b9e720fc01766e upstream.
 
-Commit ff3d27a048d9 ("btrfs: qgroup: Finish rescan when hit the last leaf
-of extent tree") added a new exit for rescan finish.
+Commit c528fcb116e6 ("USB: serial: keyspan_pda: fix receive sanity
+checks") broke write-unthrottle handling by dropping well-formed
+unthrottle-interrupt packets which are precisely two bytes long. This
+could lead to blocked writers not being woken up when buffer space again
+becomes available.
 
-However after finishing quota rescan, we set
-fs_info->qgroup_rescan_progress to (u64)-1 before we exit through the
-original exit path.
-While we missed that assignment of (u64)-1 in the new exit path.
+Instead, stop unconditionally printing the third byte which is
+(presumably) only valid on modem-line changes.
 
-The end result is, the quota status item doesn't have the same value.
-(-1 vs the last bytenr + 1)
-Although it doesn't affect quota accounting, it's still better to keep
-the original behavior.
-
-Reported-by: Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>
-Fixes: ff3d27a048d9 ("btrfs: qgroup: Finish rescan when hit the last leaf of extent tree")
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: Misono Tomohiro <misono.tomohiro@jp.fujitsu.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Fixes: c528fcb116e6 ("USB: serial: keyspan_pda: fix receive sanity checks")
+Cc: stable <stable@vger.kernel.org>     # 4.11
+Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- fs/btrfs/qgroup.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -2340,8 +2340,10 @@ out:
- 	}
- 	btrfs_put_tree_mod_seq(fs_info, &tree_mod_seq_elem);
- 
--	if (done && !ret)
-+	if (done && !ret) {
- 		ret = 1;
-+		fs_info->qgroup_rescan_progress.objectid = (u64)-1;
-+	}
- 	return ret;
- }
- 
+---
+ drivers/usb/serial/keyspan_pda.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/drivers/usb/serial/keyspan_pda.c
++++ b/drivers/usb/serial/keyspan_pda.c
+@@ -176,11 +176,11 @@ static void keyspan_pda_rx_interrupt(str
+ 		break;
+ 	case 1:
+ 		/* status interrupt */
+-		if (len < 3) {
++		if (len < 2) {
+ 			dev_warn(&port->dev, "short interrupt message received\n");
+ 			break;
+ 		}
+-		dev_dbg(&port->dev, "rx int, d1=%d, d2=%d\n", data[1], data[2]);
++		dev_dbg(&port->dev, "rx int, d1=%d\n", data[1]);
+ 		switch (data[1]) {
+ 		case 1: /* modemline change */
+ 			break;
 
 
