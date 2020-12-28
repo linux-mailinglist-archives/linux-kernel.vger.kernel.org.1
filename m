@@ -2,86 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC6172E6B6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:08:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 996F22E6B6A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:06:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731076AbgL1W4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1731096AbgL1W4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 28 Dec 2020 17:56:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729427AbgL1U2K (ORCPT
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:41407 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729423AbgL1UbG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 15:28:10 -0500
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EF8FC061793;
-        Mon, 28 Dec 2020 12:27:30 -0800 (PST)
-Received: by mail-ot1-x32e.google.com with SMTP id q25so10141417otn.10;
-        Mon, 28 Dec 2020 12:27:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=mulHJ1nXguCKszBa7egioUWJ/dA7Q36evr4RCKBZvGY=;
-        b=vN1f+7x+MXeOgmQZNIj6fMTp/+pEe2DKGXCCaWmrS1Xb1d7bsjExzCVKR8d+jLOzDM
-         Dg6c524aF6t3XykRRqXeulP1B0TET20xtIxroNICu6ELVKJc2m3OTzQeJpOPcIqdGmHY
-         AUztg4QDO+UTItkHFw/m4cOmFMJnumLwcT2JLjffC3Q49gr4riZXlt5I5YudhCk8+9C1
-         zaA+3/XFeiC15F/y8mFMSULWi9mme+2CLewlyBlv3tOej5AO26vtbFNIyJgal67hflY9
-         sz6IfPh0lv+n4vrmwsyBsbzlfJz0kt1ndiR3+JqgNYYOj5o1Co4SE1dHs97O7Iyb52yN
-         4nfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=mulHJ1nXguCKszBa7egioUWJ/dA7Q36evr4RCKBZvGY=;
-        b=LMdMuxu4LkerUQ5lNhF0P5UXxTWjqquDnBgrlM4I/fvJ5sgVJ7l4wlHm4QTzRGwXEx
-         UqpMUgt2WDxEVLxkrRq7Sg13pIJNcUEHDtRDD/OcNDhcuN1wzncYgwDnxoyATY6jh6li
-         1YQLNu0/zW7z8dShmgwJY4aTObtLPs+qiAQJOdv5HkF5OQRVJPu2anBDbBQfC1ovh8/e
-         bXMusH3A8rKbyO9q1R6F4fgqucfOEKnnmuf9IVfumnOcEx/2B8LcN1R+hxO191YfAoKs
-         TjRaPS1eaDYndV49G7SUg+I3P78jMFRS6KV+0npUk71Z8btL7Z/WBICZankS7kZJ49pZ
-         fSmw==
-X-Gm-Message-State: AOAM530ZxH6qHmRAgGHrZsBfQL9usZ9aqyizogNCJtgA0U0XKpYREG3W
-        c/6650nm9AFMc3P1hckkJcDSbyH00wY=
-X-Google-Smtp-Source: ABdhPJyIB/ZnrA/x0lSUrLr3W+VvBtUMWouEjZV3RGO364x0/nbKVZTYmXGKt5690BPNEZO01HUm8Q==
-X-Received: by 2002:a9d:640b:: with SMTP id h11mr22165700otl.224.1609187249546;
-        Mon, 28 Dec 2020 12:27:29 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id m7sm6205325ool.29.2020.12.28.12.27.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 28 Dec 2020 12:27:28 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 28 Dec 2020 12:27:27 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/717] 5.10.4-rc1 review
-Message-ID: <20201228202727.GF9868@roeck-us.net>
-References: <20201228125020.963311703@linuxfoundation.org>
+        Mon, 28 Dec 2020 15:31:06 -0500
+X-Originating-IP: 86.202.109.140
+Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id B82C6E0005;
+        Mon, 28 Dec 2020 20:30:23 +0000 (UTC)
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        dmaengine@vger.kernel.org
+Subject: [PATCH] dmaengine: at_hdmac: remove platform data header
+Date:   Mon, 28 Dec 2020 21:30:21 +0100
+Message-Id: <20201228203022.2674133-1-alexandre.belloni@bootlin.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 01:39:58PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.4 release.
-> There are 717 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 30 Dec 2020 12:48:23 +0000.
-> Anything received after that time might be too late.
-> 
+linux/platform_data/dma-atmel.h is only used by the at_hdmac driver. Move
+the CFG bits definitions back in at_hdmac_regs.h and the remaining
+definitions in the driver.
 
-Build results:
-	total: 154 pass: 154 fail: 0
-Qemu test results:
-	total: 427 pass: 427 fail: 0
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+---
+ MAINTAINERS                             |  1 -
+ drivers/dma/at_hdmac.c                  | 19 ++++++++
+ drivers/dma/at_hdmac_regs.h             | 28 ++++++++++--
+ include/linux/platform_data/dma-atmel.h | 61 -------------------------
+ 4 files changed, 44 insertions(+), 65 deletions(-)
+ delete mode 100644 include/linux/platform_data/dma-atmel.h
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 546aa66428c9..0d62310a31f8 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -11604,7 +11604,6 @@ F:	drivers/dma/at_hdmac.c
+ F:	drivers/dma/at_hdmac_regs.h
+ F:	drivers/dma/at_xdmac.c
+ F:	include/dt-bindings/dma/at91.h
+-F:	include/linux/platform_data/dma-atmel.h
+ 
+ MICROCHIP AT91 SERIAL DRIVER
+ M:	Richard Genoud <richard.genoud@gmail.com>
+diff --git a/drivers/dma/at_hdmac.c b/drivers/dma/at_hdmac.c
+index 7eaee5b705b1..30ae36124b1d 100644
+--- a/drivers/dma/at_hdmac.c
++++ b/drivers/dma/at_hdmac.c
+@@ -54,6 +54,25 @@ module_param(init_nr_desc_per_channel, uint, 0644);
+ MODULE_PARM_DESC(init_nr_desc_per_channel,
+ 		 "initial descriptors per channel (default: 64)");
+ 
++/**
++ * struct at_dma_platform_data - Controller configuration parameters
++ * @nr_channels: Number of channels supported by hardware (max 8)
++ * @cap_mask: dma_capability flags supported by the platform
++ */
++struct at_dma_platform_data {
++	unsigned int	nr_channels;
++	dma_cap_mask_t  cap_mask;
++};
++
++/**
++ * struct at_dma_slave - Controller-specific information about a slave
++ * @dma_dev: required DMA master device
++ * @cfg: Platform-specific initializer for the CFG register
++ */
++struct at_dma_slave {
++	struct device		*dma_dev;
++	u32			cfg;
++};
+ 
+ /* prototypes */
+ static dma_cookie_t atc_tx_submit(struct dma_async_tx_descriptor *tx);
+diff --git a/drivers/dma/at_hdmac_regs.h b/drivers/dma/at_hdmac_regs.h
+index 80fc2fe8c77e..4d1ebc040031 100644
+--- a/drivers/dma/at_hdmac_regs.h
++++ b/drivers/dma/at_hdmac_regs.h
+@@ -7,8 +7,6 @@
+ #ifndef AT_HDMAC_REGS_H
+ #define	AT_HDMAC_REGS_H
+ 
+-#include <linux/platform_data/dma-atmel.h>
+-
+ #define	AT_DMA_MAX_NR_CHANNELS	8
+ 
+ 
+@@ -148,7 +146,31 @@
+ #define	ATC_AUTO		(0x1 << 31)	/* Auto multiple buffer tx enable */
+ 
+ /* Bitfields in CFG */
+-/* are in at_hdmac.h */
++#define ATC_PER_MSB(h)	((0x30U & (h)) >> 4)	/* Extract most significant bits of a handshaking identifier */
++
++#define	ATC_SRC_PER(h)		(0xFU & (h))	/* Channel src rq associated with periph handshaking ifc h */
++#define	ATC_DST_PER(h)		((0xFU & (h)) <<  4)	/* Channel dst rq associated with periph handshaking ifc h */
++#define	ATC_SRC_REP		(0x1 <<  8)	/* Source Replay Mod */
++#define	ATC_SRC_H2SEL		(0x1 <<  9)	/* Source Handshaking Mod */
++#define		ATC_SRC_H2SEL_SW	(0x0 <<  9)
++#define		ATC_SRC_H2SEL_HW	(0x1 <<  9)
++#define	ATC_SRC_PER_MSB(h)	(ATC_PER_MSB(h) << 10)	/* Channel src rq (most significant bits) */
++#define	ATC_DST_REP		(0x1 << 12)	/* Destination Replay Mod */
++#define	ATC_DST_H2SEL		(0x1 << 13)	/* Destination Handshaking Mod */
++#define		ATC_DST_H2SEL_SW	(0x0 << 13)
++#define		ATC_DST_H2SEL_HW	(0x1 << 13)
++#define	ATC_DST_PER_MSB(h)	(ATC_PER_MSB(h) << 14)	/* Channel dst rq (most significant bits) */
++#define	ATC_SOD			(0x1 << 16)	/* Stop On Done */
++#define	ATC_LOCK_IF		(0x1 << 20)	/* Interface Lock */
++#define	ATC_LOCK_B		(0x1 << 21)	/* AHB Bus Lock */
++#define	ATC_LOCK_IF_L		(0x1 << 22)	/* Master Interface Arbiter Lock */
++#define		ATC_LOCK_IF_L_CHUNK	(0x0 << 22)
++#define		ATC_LOCK_IF_L_BUFFER	(0x1 << 22)
++#define	ATC_AHB_PROT_MASK	(0x7 << 24)	/* AHB Protection */
++#define	ATC_FIFOCFG_MASK	(0x3 << 28)	/* FIFO Request Configuration */
++#define		ATC_FIFOCFG_LARGESTBURST	(0x0 << 28)
++#define		ATC_FIFOCFG_HALFFIFO		(0x1 << 28)
++#define		ATC_FIFOCFG_ENOUGHSPACE		(0x2 << 28)
+ 
+ /* Bitfields in SPIP */
+ #define	ATC_SPIP_HOLE(x)	(0xFFFFU & (x))
+diff --git a/include/linux/platform_data/dma-atmel.h b/include/linux/platform_data/dma-atmel.h
+deleted file mode 100644
+index 069637e6004f..000000000000
+--- a/include/linux/platform_data/dma-atmel.h
++++ /dev/null
+@@ -1,61 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-or-later */
+-/*
+- * Header file for the Atmel AHB DMA Controller driver
+- *
+- * Copyright (C) 2008 Atmel Corporation
+- */
+-#ifndef AT_HDMAC_H
+-#define AT_HDMAC_H
+-
+-#include <linux/dmaengine.h>
+-
+-/**
+- * struct at_dma_platform_data - Controller configuration parameters
+- * @nr_channels: Number of channels supported by hardware (max 8)
+- * @cap_mask: dma_capability flags supported by the platform
+- */
+-struct at_dma_platform_data {
+-	unsigned int	nr_channels;
+-	dma_cap_mask_t  cap_mask;
+-};
+-
+-/**
+- * struct at_dma_slave - Controller-specific information about a slave
+- * @dma_dev: required DMA master device
+- * @cfg: Platform-specific initializer for the CFG register
+- */
+-struct at_dma_slave {
+-	struct device		*dma_dev;
+-	u32			cfg;
+-};
+-
+-
+-/* Platform-configurable bits in CFG */
+-#define ATC_PER_MSB(h)	((0x30U & (h)) >> 4)	/* Extract most significant bits of a handshaking identifier */
+-
+-#define	ATC_SRC_PER(h)		(0xFU & (h))	/* Channel src rq associated with periph handshaking ifc h */
+-#define	ATC_DST_PER(h)		((0xFU & (h)) <<  4)	/* Channel dst rq associated with periph handshaking ifc h */
+-#define	ATC_SRC_REP		(0x1 <<  8)	/* Source Replay Mod */
+-#define	ATC_SRC_H2SEL		(0x1 <<  9)	/* Source Handshaking Mod */
+-#define		ATC_SRC_H2SEL_SW	(0x0 <<  9)
+-#define		ATC_SRC_H2SEL_HW	(0x1 <<  9)
+-#define	ATC_SRC_PER_MSB(h)	(ATC_PER_MSB(h) << 10)	/* Channel src rq (most significant bits) */
+-#define	ATC_DST_REP		(0x1 << 12)	/* Destination Replay Mod */
+-#define	ATC_DST_H2SEL		(0x1 << 13)	/* Destination Handshaking Mod */
+-#define		ATC_DST_H2SEL_SW	(0x0 << 13)
+-#define		ATC_DST_H2SEL_HW	(0x1 << 13)
+-#define	ATC_DST_PER_MSB(h)	(ATC_PER_MSB(h) << 14)	/* Channel dst rq (most significant bits) */
+-#define	ATC_SOD			(0x1 << 16)	/* Stop On Done */
+-#define	ATC_LOCK_IF		(0x1 << 20)	/* Interface Lock */
+-#define	ATC_LOCK_B		(0x1 << 21)	/* AHB Bus Lock */
+-#define	ATC_LOCK_IF_L		(0x1 << 22)	/* Master Interface Arbiter Lock */
+-#define		ATC_LOCK_IF_L_CHUNK	(0x0 << 22)
+-#define		ATC_LOCK_IF_L_BUFFER	(0x1 << 22)
+-#define	ATC_AHB_PROT_MASK	(0x7 << 24)	/* AHB Protection */
+-#define	ATC_FIFOCFG_MASK	(0x3 << 28)	/* FIFO Request Configuration */
+-#define		ATC_FIFOCFG_LARGESTBURST	(0x0 << 28)
+-#define		ATC_FIFOCFG_HALFFIFO		(0x1 << 28)
+-#define		ATC_FIFOCFG_ENOUGHSPACE		(0x2 << 28)
+-
+-
+-#endif /* AT_HDMAC_H */
+-- 
+2.29.2
 
-Guenter
