@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25D682E67DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:30:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACF132E66AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:17:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633651AbgL1Q3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:29:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34616 "EHLO mail.kernel.org"
+        id S2438029AbgL1QOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:14:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729191AbgL1NHJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:07:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10FF1208B6;
-        Mon, 28 Dec 2020 13:06:52 +0000 (UTC)
+        id S1728260AbgL1NSl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:18:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C6E7207CF;
+        Mon, 28 Dec 2020 13:18:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160813;
-        bh=prpfV/7K5WxJDZkiaCAbTfjnEQzp7qDjT+B6Bxk0+rs=;
+        s=korg; t=1609161505;
+        bh=HVbqvAAOwKCjeUuSvkGAPBsS4i41WktIU71zxCGbU5s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uNKdrzMIEU+bTNJGu2zC71elGLd8O4rVivMuWwUCgIqfBOuOaaEmcwNlCU1wgs/F5
-         wcNgyU8bc5DDbW5W0+34JnRiJYLwEPTou76mRpDUEJsxw/8v4jlGz4dOu+PjMYFiKX
-         c9jPldfr4Hxd+ioAk1awOd0Vt0SlJzuvF2TeAmN0=
+        b=V/+lFzsnfdJxw8HVqw2Is4OMdOGX+ivvzfnImLz0XkyciWUe7bzUH39K8fEFKg1Ep
+         OTLD0W1QJvKUv2eunG+qPXy9/PiuD2RJIA123V+1leb3GaM0vMtly+O5KbRTpTJ/pS
+         6uPEXouMTgBm7HJRnsT9Ce6CBk26fXnQBKIgPnm8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 4.9 157/175] powerpc/xmon: Change printk() to pr_cont()
-Date:   Mon, 28 Dec 2020 13:50:10 +0100
-Message-Id: <20201228124900.850183967@linuxfoundation.org>
+        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
+        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH 4.14 206/242] Btrfs: fix selftests failure due to uninitialized i_mode in test inodes
+Date:   Mon, 28 Dec 2020 13:50:11 +0100
+Message-Id: <20201228124914.815803832@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,66 +40,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Filipe Manana <fdmanana@suse.com>
 
-commit 7c6c86b36a36dd4a13d30bba07718e767aa2e7a1 upstream.
+commit 9f7fec0ba89108b9385f1b9fb167861224912a4a upstream
 
-Since some time now, printk() adds carriage return, leading to
-unusable xmon output if there is no udbg backend available:
+Some of the self tests create a test inode, setup some extents and then do
+calls to btrfs_get_extent() to test that the corresponding extent maps
+exist and are correct. However btrfs_get_extent(), since the 5.2 merge
+window, now errors out when it finds a regular or prealloc extent for an
+inode that does not correspond to a regular file (its ->i_mode is not
+S_IFREG). This causes the self tests to fail sometimes, specially when
+KASAN, slub_debug and page poisoning are enabled:
 
-  [   54.288722] sysrq: Entering xmon
-  [   54.292209] Vector: 0  at [cace3d2c]
-  [   54.292274]     pc:
-  [   54.292331] c0023650
-  [   54.292468] : xmon+0x28/0x58
-  [   54.292519]
-  [   54.292574]     lr:
-  [   54.292630] c0023724
-  [   54.292749] : sysrq_handle_xmon+0xa4/0xfc
-  [   54.292801]
-  [   54.292867]     sp: cace3de8
-  [   54.292931]    msr: 9032
-  [   54.292999]   current = 0xc28d0000
-  [   54.293072]     pid   = 377, comm = sh
-  [   54.293157] Linux version 5.10.0-rc6-s3k-dev-01364-gedf13f0ccd76-dirty (root@po17688vm.idsi0.si.c-s.fr) (powerpc64-linux-gcc (GCC) 10.1.0, GNU ld (GNU Binutils) 2.34) #4211 PREEMPT Fri Dec 4 09:32:11 UTC 2020
-  [   54.293287] enter ? for help
-  [   54.293470] [cace3de8]
-  [   54.293532] c0023724
-  [   54.293654]  sysrq_handle_xmon+0xa4/0xfc
-  [   54.293711]  (unreliable)
-  ...
-  [   54.296002]
-  [   54.296159] --- Exception: c01 (System Call) at
-  [   54.296217] 0fd4e784
-  [   54.296303]
-  [   54.296375] SP (7fca6ff0) is in userspace
-  [   54.296431] mon>
-  [   54.296484]  <no input ...>
+  $ modprobe btrfs
+  modprobe: ERROR: could not insert 'btrfs': Invalid argument
 
-Use pr_cont() instead.
+  $ dmesg
+  [ 9414.691648] Btrfs loaded, crc32c=crc32c-intel, debug=on, assert=on, integrity-checker=on, ref-verify=on
+  [ 9414.692655] BTRFS: selftest: sectorsize: 4096  nodesize: 4096
+  [ 9414.692658] BTRFS: selftest: running btrfs free space cache tests
+  [ 9414.692918] BTRFS: selftest: running extent only tests
+  [ 9414.693061] BTRFS: selftest: running bitmap only tests
+  [ 9414.693366] BTRFS: selftest: running bitmap and extent tests
+  [ 9414.696455] BTRFS: selftest: running space stealing from bitmap to extent tests
+  [ 9414.697131] BTRFS: selftest: running extent buffer operation tests
+  [ 9414.697133] BTRFS: selftest: running btrfs_split_item tests
+  [ 9414.697564] BTRFS: selftest: running extent I/O tests
+  [ 9414.697583] BTRFS: selftest: running find delalloc tests
+  [ 9415.081125] BTRFS: selftest: running find_first_clear_extent_bit test
+  [ 9415.081278] BTRFS: selftest: running extent buffer bitmap tests
+  [ 9415.124192] BTRFS: selftest: running inode tests
+  [ 9415.124195] BTRFS: selftest: running btrfs_get_extent tests
+  [ 9415.127909] BTRFS: selftest: running hole first btrfs_get_extent test
+  [ 9415.128343] BTRFS critical (device (efault)): regular/prealloc extent found for non-regular inode 256
+  [ 9415.131428] BTRFS: selftest: fs/btrfs/tests/inode-tests.c:904 expected a real extent, got 0
 
-Fixes: 4bcc595ccd80 ("printk: reinstate KERN_CONT for printing continuation lines")
-Cc: stable@vger.kernel.org # v4.9+
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-[mpe: Mention that it only happens when udbg is not available]
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/c8a6ec704416ecd5ff2bd26213c9bc026bdd19de.1607077340.git.christophe.leroy@csgroup.eu
+This happens because the test inodes are created without ever initializing
+the i_mode field of the inode, and neither VFS's new_inode() nor the btrfs
+callback btrfs_alloc_inode() initialize the i_mode. Initialization of the
+i_mode is done through the various callbacks used by the VFS to create
+new inodes (regular files, directories, symlinks, tmpfiles, etc), which
+all call btrfs_new_inode() which in turn calls inode_init_owner(), which
+sets the inode's i_mode. Since the tests only uses new_inode() to create
+the test inodes, the i_mode was never initialized.
+
+This always happens on a VM I used with kasan, slub_debug and many other
+debug facilities enabled. It also happened to someone who reported this
+on bugzilla (on a 5.3-rc).
+
+Fix this by setting i_mode to S_IFREG at btrfs_new_test_inode().
+
+Fixes: 6bf9e4bd6a2778 ("btrfs: inode: Verify inode mode to avoid NULL pointer dereference")
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=204397
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- arch/powerpc/xmon/nonstdio.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/tests/btrfs-tests.c |    8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
---- a/arch/powerpc/xmon/nonstdio.c
-+++ b/arch/powerpc/xmon/nonstdio.c
-@@ -182,7 +182,7 @@ void xmon_printf(const char *format, ...
+--- a/fs/btrfs/tests/btrfs-tests.c
++++ b/fs/btrfs/tests/btrfs-tests.c
+@@ -51,7 +51,13 @@ static struct file_system_type test_type
  
- 	if (n && rc == 0) {
- 		/* No udbg hooks, fallback to printk() - dangerous */
--		printk("%s", xmon_outbuf);
-+		pr_cont("%s", xmon_outbuf);
- 	}
+ struct inode *btrfs_new_test_inode(void)
+ {
+-	return new_inode(test_mnt->mnt_sb);
++	struct inode *inode;
++
++	inode = new_inode(test_mnt->mnt_sb);
++	if (inode)
++		inode_init_owner(inode, NULL, S_IFREG);
++
++	return inode;
  }
  
+ static int btrfs_init_test_fs(void)
 
 
