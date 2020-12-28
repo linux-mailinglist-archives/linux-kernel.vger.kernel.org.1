@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF49A2E3BC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:55:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BADB2E3FA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:44:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407440AbgL1Nyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:54:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55626 "EHLO mail.kernel.org"
+        id S2502370AbgL1O1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:27:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407389AbgL1NyE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:54:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD13520782;
-        Mon, 28 Dec 2020 13:53:47 +0000 (UTC)
+        id S2503935AbgL1O1A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:27:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C5FE207B2;
+        Mon, 28 Dec 2020 14:26:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163628;
-        bh=BLhgA+3v/QK6Owk8XZsvvW9oksCl6btWtbJOugOYS0c=;
+        s=korg; t=1609165605;
+        bh=XmOpnECry1YS+uxU0Q2msMB5AQI+nTVWso2eaeqKG6w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oPlvF6fDAjNF15Nj8DJ+lmgtfJ+OuCzK68+UV/DxncCZC96SENgIVFBiG4vo+hgLJ
-         Uh4cHzQuaq0o5YitJRLXO+LS45gr4Ei8gqO7dK3o6pc/xFRAYmtQKsUzIa1H4CmmRb
-         3Uka02S4ugnEMq/SxjfZtJIDQWifhmAXxqXxkeIY=
+        b=Heer65OA4436+AFNa+cEy57XGQgN+36YqfWqPMG0zENZXZ7tX0hzNtffx9JxdQLPT
+         m4WSVrdURN+mAkxqWfIRxoB8ZltPhaJ3oyy9mDmqQ8n/lo64nmuJEHeRibAeD1iohm
+         wwYefeBBOjtI5RT7wlC/XG0CJ2afIFUOKXy+W74w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Todd Kjos <tkjos@google.com>
-Subject: [PATCH 5.4 353/453] binder: add flag to clear buffer on txn complete
+        stable@vger.kernel.org, Chunguang Xu <brookxu@tencent.com>,
+        Theodore Tso <tytso@mit.edu>, stable@kernel.org
+Subject: [PATCH 5.10 591/717] ext4: fix a memory leak of ext4_free_data
 Date:   Mon, 28 Dec 2020 13:49:49 +0100
-Message-Id: <20201228124954.192014069@linuxfoundation.org>
+Message-Id: <20201228125049.226835526@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,146 +39,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Todd Kjos <tkjos@google.com>
+From: Chunguang Xu <brookxu@tencent.com>
 
-commit 0f966cba95c78029f491b433ea95ff38f414a761 upstream.
+commit cca415537244f6102cbb09b5b90db6ae2c953bdd upstream.
 
-Add a per-transaction flag to indicate that the buffer
-must be cleared when the transaction is complete to
-prevent copies of sensitive data from being preserved
-in memory.
+When freeing metadata, we will create an ext4_free_data and
+insert it into the pending free list.  After the current
+transaction is committed, the object will be freed.
 
-Signed-off-by: Todd Kjos <tkjos@google.com>
-Link: https://lore.kernel.org/r/20201120233743.3617529-1-tkjos@google.com
-Cc: stable <stable@vger.kernel.org>
+ext4_mb_free_metadata() will check whether the area to be freed
+overlaps with the pending free list. If true, return directly. At this
+time, ext4_free_data is leaked.  Fortunately, the probability of this
+problem is small, since it only occurs if the file system is corrupted
+such that a block is claimed by more one inode and those inodes are
+deleted within a single jbd2 transaction.
+
+Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+Link: https://lore.kernel.org/r/1604764698-4269-8-git-send-email-brookxu@tencent.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Cc: stable@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/android/binder.c            |    1 
- drivers/android/binder_alloc.c      |   48 ++++++++++++++++++++++++++++++++++++
- drivers/android/binder_alloc.h      |    4 ++-
- include/uapi/linux/android/binder.h |    1 
- 4 files changed, 53 insertions(+), 1 deletion(-)
+ fs/ext4/mballoc.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/android/binder.c
-+++ b/drivers/android/binder.c
-@@ -3150,6 +3150,7 @@ static void binder_transaction(struct bi
- 	t->buffer->debug_id = t->debug_id;
- 	t->buffer->transaction = t;
- 	t->buffer->target_node = target_node;
-+	t->buffer->clear_on_free = !!(t->flags & TF_CLEAR_BUF);
- 	trace_binder_transaction_alloc_buf(t->buffer);
- 
- 	if (binder_alloc_copy_user_to_buffer(
---- a/drivers/android/binder_alloc.c
-+++ b/drivers/android/binder_alloc.c
-@@ -647,6 +647,8 @@ static void binder_free_buf_locked(struc
- 	binder_insert_free_buffer(alloc, buffer);
- }
- 
-+static void binder_alloc_clear_buf(struct binder_alloc *alloc,
-+				   struct binder_buffer *buffer);
- /**
-  * binder_alloc_free_buf() - free a binder buffer
-  * @alloc:	binder_alloc for this proc
-@@ -657,6 +659,18 @@ static void binder_free_buf_locked(struc
- void binder_alloc_free_buf(struct binder_alloc *alloc,
- 			    struct binder_buffer *buffer)
- {
-+	/*
-+	 * We could eliminate the call to binder_alloc_clear_buf()
-+	 * from binder_alloc_deferred_release() by moving this to
-+	 * binder_alloc_free_buf_locked(). However, that could
-+	 * increase contention for the alloc mutex if clear_on_free
-+	 * is used frequently for large buffers. The mutex is not
-+	 * needed for correctness here.
-+	 */
-+	if (buffer->clear_on_free) {
-+		binder_alloc_clear_buf(alloc, buffer);
-+		buffer->clear_on_free = false;
-+	}
- 	mutex_lock(&alloc->mutex);
- 	binder_free_buf_locked(alloc, buffer);
- 	mutex_unlock(&alloc->mutex);
-@@ -753,6 +767,10 @@ void binder_alloc_deferred_release(struc
- 		/* Transaction should already have been freed */
- 		BUG_ON(buffer->transaction);
- 
-+		if (buffer->clear_on_free) {
-+			binder_alloc_clear_buf(alloc, buffer);
-+			buffer->clear_on_free = false;
-+		}
- 		binder_free_buf_locked(alloc, buffer);
- 		buffers++;
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -5126,6 +5126,7 @@ ext4_mb_free_metadata(handle_t *handle,
+ 				ext4_group_first_block_no(sb, group) +
+ 				EXT4_C2B(sbi, cluster),
+ 				"Block already on to-be-freed list");
++			kmem_cache_free(ext4_free_data_cachep, new_entry);
+ 			return 0;
+ 		}
  	}
-@@ -1087,6 +1105,36 @@ static struct page *binder_alloc_get_pag
- }
- 
- /**
-+ * binder_alloc_clear_buf() - zero out buffer
-+ * @alloc: binder_alloc for this proc
-+ * @buffer: binder buffer to be cleared
-+ *
-+ * memset the given buffer to 0
-+ */
-+static void binder_alloc_clear_buf(struct binder_alloc *alloc,
-+				   struct binder_buffer *buffer)
-+{
-+	size_t bytes = binder_alloc_buffer_size(alloc, buffer);
-+	binder_size_t buffer_offset = 0;
-+
-+	while (bytes) {
-+		unsigned long size;
-+		struct page *page;
-+		pgoff_t pgoff;
-+		void *kptr;
-+
-+		page = binder_alloc_get_page(alloc, buffer,
-+					     buffer_offset, &pgoff);
-+		size = min_t(size_t, bytes, PAGE_SIZE - pgoff);
-+		kptr = kmap(page) + pgoff;
-+		memset(kptr, 0, size);
-+		kunmap(page);
-+		bytes -= size;
-+		buffer_offset += size;
-+	}
-+}
-+
-+/**
-  * binder_alloc_copy_user_to_buffer() - copy src user to tgt user
-  * @alloc: binder_alloc for this proc
-  * @buffer: binder buffer to be accessed
---- a/drivers/android/binder_alloc.h
-+++ b/drivers/android/binder_alloc.h
-@@ -23,6 +23,7 @@ struct binder_transaction;
-  * @entry:              entry alloc->buffers
-  * @rb_node:            node for allocated_buffers/free_buffers rb trees
-  * @free:               %true if buffer is free
-+ * @clear_on_free:      %true if buffer must be zeroed after use
-  * @allow_user_free:    %true if user is allowed to free buffer
-  * @async_transaction:  %true if buffer is in use for an async txn
-  * @debug_id:           unique ID for debugging
-@@ -40,9 +41,10 @@ struct binder_buffer {
- 	struct rb_node rb_node; /* free entry by size or allocated entry */
- 				/* by address */
- 	unsigned free:1;
-+	unsigned clear_on_free:1;
- 	unsigned allow_user_free:1;
- 	unsigned async_transaction:1;
--	unsigned debug_id:29;
-+	unsigned debug_id:28;
- 
- 	struct binder_transaction *transaction;
- 
---- a/include/uapi/linux/android/binder.h
-+++ b/include/uapi/linux/android/binder.h
-@@ -248,6 +248,7 @@ enum transaction_flags {
- 	TF_ROOT_OBJECT	= 0x04,	/* contents are the component's root object */
- 	TF_STATUS_CODE	= 0x08,	/* contents are a 32-bit status code */
- 	TF_ACCEPT_FDS	= 0x10,	/* allow replies with file descriptors */
-+	TF_CLEAR_BUF	= 0x20,	/* clear buffer on txn complete */
- };
- 
- struct binder_transaction_data {
 
 
