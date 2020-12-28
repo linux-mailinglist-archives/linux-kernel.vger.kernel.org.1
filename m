@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3772E651E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:57:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D09F82E3BEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:57:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393306AbgL1P50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:57:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34950 "EHLO mail.kernel.org"
+        id S2407486AbgL1N4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:56:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390338AbgL1Ne1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:34:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D9E8122582;
-        Mon, 28 Dec 2020 13:33:45 +0000 (UTC)
+        id S2405382AbgL1Nz5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:55:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7382F2072C;
+        Mon, 28 Dec 2020 13:55:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162426;
-        bh=J2SqDQrRDDD2Lz1QVpJNR4dJlokZt+XplGNZdAynU2A=;
+        s=korg; t=1609163717;
+        bh=l84i1o2N3eXj9wR2DZx72bRt1gQMuTkxm0VCs0qJR7o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iSxycVy9up2S+ItXFn/NEE+frY2T5zr3TxS/BgXgKtOVwy/xehX1aLX4zwN86+PYO
-         U+jtHT2agIwzuN7OW42NiHG1OuCdAFy+xvzmh8MQh6U+E4QWH3qvYaD/hxL9hF80Tw
-         PWuTCIGD6ic2BQRzM3Atwc2ODkSDhK5t+7MX6lX4=
+        b=MRZZqYeaefD8jjbdZIjwC0OFnNVg/I2L6udjfFai9Rnb/BNlPBDMgU4Pb1p7YjQy4
+         Zap3yI/frnS3q7+chL+ZSWzUCaIzlxR1sVRwJAJ/kMzNG95SsD+RVXnjC8N16738Q+
+         DkXdZ9VHZko4YItYrehJ82cuyQLzy4+XQVTaTLUk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Sneddon <dan.sneddon@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Cristian Birsan <cristian.birsan@microchip.com>
-Subject: [PATCH 4.19 301/346] ARM: dts: at91: sama5d2: fix CAN message ram offset and size
+        stable@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.4 384/453] powerpc/8xx: Fix early debug when SMC1 is relocated
 Date:   Mon, 28 Dec 2020 13:50:20 +0100
-Message-Id: <20201228124934.334416531@linuxfoundation.org>
+Message-Id: <20201228124955.680310657@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,64 +40,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Ferre <nicolas.ferre@microchip.com>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-commit 85b8350ae99d1300eb6dc072459246c2649a8e50 upstream.
+commit 1e78f723d6a52966bfe3804209dbf404fdc9d3bb upstream.
 
-CAN0 and CAN1 instances share the same message ram configured
-at 0x210000 on sama5d2 Linux systems.
-According to current configuration of CAN0, we need 0x1c00 bytes
-so that the CAN1 don't overlap its message ram:
-64 x RX FIFO0 elements => 64 x 72 bytes
-32 x TXE (TX Event FIFO) elements => 32 x 8 bytes
-32 x TXB (TX Buffer) elements => 32 x 72 bytes
-So a total of 7168 bytes (0x1C00).
+When SMC1 is relocated and early debug is selected, the
+board hangs is ppc_md.setup_arch(). This is because ones
+the microcode has been loaded and SMC1 relocated, early
+debug writes in the weed.
 
-Fix offset to match this needed size.
-Make the CAN0 message ram ioremap match exactly this size so that is
-easily understandable.  Adapt CAN1 size accordingly.
+To allow smooth continuation, the SMC1 parameter RAM set up
+by the bootloader have to be copied into the new location.
 
-Fixes: bc6d5d7666b7 ("ARM: dts: at91: sama5d2: add m_can nodes")
-Reported-by: Dan Sneddon <dan.sneddon@microchip.com>
-Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Tested-by: Cristian Birsan <cristian.birsan@microchip.com>
-Cc: stable@vger.kernel.org # v4.13+
-Link: https://lore.kernel.org/r/20201203091949.9015-1-nicolas.ferre@microchip.com
+Fixes: 43db76f41824 ("powerpc/8xx: Add microcode patch to move SMC parameter RAM.")
+Cc: stable@vger.kernel.org
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/b2f71f39eca543f1e4ec06596f09a8b12235c701.1607076683.git.christophe.leroy@csgroup.eu
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm/boot/dts/sama5d2.dtsi |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/powerpc/include/asm/cpm1.h         |    1 +
+ arch/powerpc/platforms/8xx/micropatch.c |   11 +++++++++++
+ 2 files changed, 12 insertions(+)
 
---- a/arch/arm/boot/dts/sama5d2.dtsi
-+++ b/arch/arm/boot/dts/sama5d2.dtsi
-@@ -1298,7 +1298,7 @@
+--- a/arch/powerpc/include/asm/cpm1.h
++++ b/arch/powerpc/include/asm/cpm1.h
+@@ -68,6 +68,7 @@ extern void cpm_reset(void);
+ #define PROFF_SPI	((uint)0x0180)
+ #define PROFF_SCC3	((uint)0x0200)
+ #define PROFF_SMC1	((uint)0x0280)
++#define PROFF_DSP1	((uint)0x02c0)
+ #define PROFF_SCC4	((uint)0x0300)
+ #define PROFF_SMC2	((uint)0x0380)
  
- 			can0: can@f8054000 {
- 				compatible = "bosch,m_can";
--				reg = <0xf8054000 0x4000>, <0x210000 0x4000>;
-+				reg = <0xf8054000 0x4000>, <0x210000 0x1c00>;
- 				reg-names = "m_can", "message_ram";
- 				interrupts = <56 IRQ_TYPE_LEVEL_HIGH 7>,
- 					     <64 IRQ_TYPE_LEVEL_HIGH 7>;
-@@ -1491,7 +1491,7 @@
+--- a/arch/powerpc/platforms/8xx/micropatch.c
++++ b/arch/powerpc/platforms/8xx/micropatch.c
+@@ -361,6 +361,17 @@ void __init cpm_load_patch(cpm8xx_t *cp)
+ 	if (IS_ENABLED(CONFIG_SMC_UCODE_PATCH)) {
+ 		smc_uart_t *smp;
  
- 			can1: can@fc050000 {
- 				compatible = "bosch,m_can";
--				reg = <0xfc050000 0x4000>, <0x210000 0x4000>;
-+				reg = <0xfc050000 0x4000>, <0x210000 0x3800>;
- 				reg-names = "m_can", "message_ram";
- 				interrupts = <57 IRQ_TYPE_LEVEL_HIGH 7>,
- 					     <65 IRQ_TYPE_LEVEL_HIGH 7>;
-@@ -1501,7 +1501,7 @@
- 				assigned-clocks = <&can1_gclk>;
- 				assigned-clock-parents = <&utmi>;
- 				assigned-clock-rates = <40000000>;
--				bosch,mram-cfg = <0x1100 0 0 64 0 0 32 32>;
-+				bosch,mram-cfg = <0x1c00 0 0 64 0 0 32 32>;
- 				status = "disabled";
- 			};
- 
++		if (IS_ENABLED(CONFIG_PPC_EARLY_DEBUG_CPM)) {
++			int i;
++
++			for (i = 0; i < sizeof(*smp); i += 4) {
++				u32 __iomem *src = (u32 __iomem *)&cp->cp_dparam[PROFF_SMC1 + i];
++				u32 __iomem *dst = (u32 __iomem *)&cp->cp_dparam[PROFF_DSP1 + i];
++
++				out_be32(dst, in_be32(src));
++			}
++		}
++
+ 		smp = (smc_uart_t *)&cp->cp_dparam[PROFF_SMC1];
+ 		out_be16(&smp->smc_rpbase, 0x1ec0);
+ 		smp = (smc_uart_t *)&cp->cp_dparam[PROFF_SMC2];
 
 
