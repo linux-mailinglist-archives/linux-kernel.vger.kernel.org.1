@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB0AE2E677D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:26:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DBB72E65F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:08:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731104AbgL1NJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:09:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36924 "EHLO mail.kernel.org"
+        id S2393458AbgL1QG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:06:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731065AbgL1NJI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:09:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5301E208BA;
-        Mon, 28 Dec 2020 13:08:27 +0000 (UTC)
+        id S2389524AbgL1N0i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:26:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 526A522475;
+        Mon, 28 Dec 2020 13:26:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160907;
-        bh=anA706eWbbofSFlDtUglG1pbTgCiWoN5E+dER4Bl1WU=;
+        s=korg; t=1609161983;
+        bh=3eWDB9OsAbmc9/uqUMhmfDFYxJ0LVDMxRLeyCrIVHV8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PwSs7mQBhLaCF1XbMsDzXFLbXLezgETGW3XDRHlql94mLactQ2jmdTvpm3MriX4NW
-         oeysIjCkjlEDOzLz0bTTKn/Cbz3yA2STZ1o4yJ69RR9ob9FqOVJvHiB68WUKpgOTnm
-         Kkxmf/LBjDwQn2i3X8GaXBwN7U6Ao+hSwJ1CJoxE=
+        b=bsTuzgBJ2FFmZupB2phb+wNKLt2Buif6ELYF5ol4UtgaKHvMQe2SO16eQoaXMSJf8
+         EyObfmLgq0Y/ERiRCGvgLPsMVRQMz9+w4KsUmVv1ecqkAAviGBVtkWl4FbW8A0Ew87
+         aWZdS/kpyryPbWtg+xG69sLUAqTClWS4BtMGgiX0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        =?UTF-8?q?Pawe=C5=82=20Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 035/242] pinctrl: merrifield: Set default bias in case no particular value given
+Subject: [PATCH 4.19 121/346] arm64: dts: exynos: Include common syscon restart/poweroff for Exynos7
 Date:   Mon, 28 Dec 2020 13:47:20 +0100
-Message-Id: <20201228124906.394283432@linuxfoundation.org>
+Message-Id: <20201228124925.646591886@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,55 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Paweł Chmiel <pawel.mikolaj.chmiel@gmail.com>
 
-[ Upstream commit 0fa86fc2e28227f1e64f13867e73cf864c6d25ad ]
+[ Upstream commit 73bc7510ea0dafb4ff1ae6808759627a8ec51f5a ]
 
-When GPIO library asks pin control to set the bias, it doesn't pass
-any value of it and argument is considered boolean (and this is true
-for ACPI GpioIo() / GpioInt() resources, by the way). Thus, individual
-drivers must behave well, when they got the resistance value of 1 Ohm,
-i.e. transforming it to sane default.
+Exynos7 uses the same syscon reboot and poweroff nodes as other Exynos
+SoCs, so instead of duplicating code we can just include common dtsi
+file, which already contains definitions of them. After this change,
+poweroff node will be also available, previously this dts file did
+contain only reboot node.
 
-In case of Intel Merrifield pin control hardware the 20 kOhm sounds plausible
-because it gives a good trade off between weakness and minimization of leakage
-current (will be only 50 uA with the above choice).
-
-Fixes: 4e80c8f50574 ("pinctrl: intel: Add Intel Merrifield pin controller support")
-Depends-on: 2956b5d94a76 ("pinctrl / gpio: Introduce .set_config() callback for GPIO chips")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Fixes: fb026cb65247 ("arm64: dts: Add reboot node for exynos7")
+Fixes: b9024cbc937d ("arm64: dts: Add initial device tree support for exynos7")
+Signed-off-by: Paweł Chmiel <pawel.mikolaj.chmiel@gmail.com>
+Link: https://lore.kernel.org/r/20201107133926.37187-1-pawel.mikolaj.chmiel@gmail.com
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/intel/pinctrl-merrifield.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ arch/arm64/boot/dts/exynos/exynos7.dtsi | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/drivers/pinctrl/intel/pinctrl-merrifield.c b/drivers/pinctrl/intel/pinctrl-merrifield.c
-index 86c4b3fab7b0e..5aa6d1dbc70ae 100644
---- a/drivers/pinctrl/intel/pinctrl-merrifield.c
-+++ b/drivers/pinctrl/intel/pinctrl-merrifield.c
-@@ -731,6 +731,10 @@ static int mrfld_config_set_pin(struct mrfld_pinctrl *mp, unsigned int pin,
- 		mask |= BUFCFG_Px_EN_MASK | BUFCFG_PUPD_VAL_MASK;
- 		bits |= BUFCFG_PU_EN;
+diff --git a/arch/arm64/boot/dts/exynos/exynos7.dtsi b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+index 31b1a606cb664..38a07d9763a3f 100644
+--- a/arch/arm64/boot/dts/exynos/exynos7.dtsi
++++ b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+@@ -494,13 +494,6 @@
+ 		pmu_system_controller: system-controller@105c0000 {
+ 			compatible = "samsung,exynos7-pmu", "syscon";
+ 			reg = <0x105c0000 0x5000>;
+-
+-			reboot: syscon-reboot {
+-				compatible = "syscon-reboot";
+-				regmap = <&pmu_system_controller>;
+-				offset = <0x0400>;
+-				mask = <0x1>;
+-			};
+ 		};
  
-+		/* Set default strength value in case none is given */
-+		if (arg == 1)
-+			arg = 20000;
-+
- 		switch (arg) {
- 		case 50000:
- 			bits |= BUFCFG_PUPD_VAL_50K << BUFCFG_PUPD_VAL_SHIFT;
-@@ -751,6 +755,10 @@ static int mrfld_config_set_pin(struct mrfld_pinctrl *mp, unsigned int pin,
- 		mask |= BUFCFG_Px_EN_MASK | BUFCFG_PUPD_VAL_MASK;
- 		bits |= BUFCFG_PD_EN;
+ 		rtc: rtc@10590000 {
+@@ -638,3 +631,4 @@
+ };
  
-+		/* Set default strength value in case none is given */
-+		if (arg == 1)
-+			arg = 20000;
-+
- 		switch (arg) {
- 		case 50000:
- 			bits |= BUFCFG_PUPD_VAL_50K << BUFCFG_PUPD_VAL_SHIFT;
+ #include "exynos7-pinctrl.dtsi"
++#include "arm/exynos-syscon-restart.dtsi"
 -- 
 2.27.0
 
