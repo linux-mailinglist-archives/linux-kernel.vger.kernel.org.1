@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C0F92E6841
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:35:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E8392E6714
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:22:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634157AbgL1Qe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:34:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58372 "EHLO mail.kernel.org"
+        id S1732332AbgL1NNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:13:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730078AbgL1NC1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:02:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8142521D94;
-        Mon, 28 Dec 2020 13:02:11 +0000 (UTC)
+        id S1732315AbgL1NNt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:13:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7523120776;
+        Mon, 28 Dec 2020 13:13:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160532;
-        bh=ZijW0fd6+XeeCoA6v6xCG6PygtIcTmm7hOp34t7rj+0=;
+        s=korg; t=1609161189;
+        bh=E5KaS4Hoa52hXqI/4RI+ExeS0aDhKRCmCEwd5G0LEJc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GeEoW3OtllEcF+ZUXhLURT86ToqeVjhOJEcRgo9oQlKDKS3SHvarqazBfhYn/N6m1
-         omS1rtGhNPDesKDnw39bZZi5TC0H1oxUjMy5EBUUK9JByTEpXm3Q6k4I6YQAxMJ3w2
-         nOeEcSlnE0pVii7sWosoqhDkPT5j2yMVLwawNuX8=
+        b=CGmqGXfk3RSesB16OapfKkWesWX91SDgq8fRSY0WF2IStzmm7b4S5nWz/d75QKmIC
+         g4jWi2fJ1d6acFl0soRxWnPM3YRK21AEq7RoTPUFfQ0RihvqFkX+lsDcUjdr4tlGTV
+         bjfVDKML6c6gNl76f4c5a9EOOFHMTfKdBlZxyUv0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>,
-        Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 082/175] media: siano: fix memory leak of debugfs members in smsdvb_hotplug
-Date:   Mon, 28 Dec 2020 13:48:55 +0100
-Message-Id: <20201228124857.212997058@linuxfoundation.org>
+Subject: [PATCH 4.14 131/242] ARM: dts: at91: sama5d2: map securam as device
+Date:   Mon, 28 Dec 2020 13:48:56 +0100
+Message-Id: <20201228124911.151012157@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,44 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
+From: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-[ Upstream commit abf287eeff4c6da6aa804bbd429dfd9d0dfb6ea7 ]
+[ Upstream commit 9b5dcc8d427e2bcb84c49eb03ffefe11e7537a55 ]
 
-When dvb_create_media_graph fails, the debugfs kept inside client should
-be released. However, the current implementation does not release them.
+Due to strobe signal not being propagated from CPU to securam
+the securam needs to be mapped as device or strongly ordered memory
+to work properly. Otherwise, updating to one offset may affect
+the adjacent locations in securam.
 
-Fix this by adding a new goto label to call smsdvb_debugfs_release.
-
-Fixes: 0d3ab8410dcb ("[media] dvb core: must check dvb_create_media_graph()")
-Signed-off-by: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: d4ce5f44d4409 ("ARM: dts: at91: sama5d2: Add securam node")
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Link: https://lore.kernel.org/r/1606903025-14197-3-git-send-email-claudiu.beznea@microchip.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/common/siano/smsdvb-main.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/sama5d2.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/media/common/siano/smsdvb-main.c b/drivers/media/common/siano/smsdvb-main.c
-index 9148e14c9d077..9d5eb8b6aede9 100644
---- a/drivers/media/common/siano/smsdvb-main.c
-+++ b/drivers/media/common/siano/smsdvb-main.c
-@@ -1180,12 +1180,15 @@ static int smsdvb_hotplug(struct smscore_device_t *coredev,
- 	rc = dvb_create_media_graph(&client->adapter, true);
- 	if (rc < 0) {
- 		pr_err("dvb_create_media_graph failed %d\n", rc);
--		goto client_error;
-+		goto media_graph_error;
- 	}
- 
- 	pr_info("DVB interface registered.\n");
- 	return 0;
- 
-+media_graph_error:
-+	smsdvb_debugfs_release(client);
-+
- client_error:
- 	dvb_unregister_frontend(&client->frontend);
+diff --git a/arch/arm/boot/dts/sama5d2.dtsi b/arch/arm/boot/dts/sama5d2.dtsi
+index a8e4b89097d9c..8a09c2eab0f97 100644
+--- a/arch/arm/boot/dts/sama5d2.dtsi
++++ b/arch/arm/boot/dts/sama5d2.dtsi
+@@ -1243,6 +1243,7 @@
+ 				clocks = <&securam_clk>;
+ 				#address-cells = <1>;
+ 				#size-cells = <1>;
++				no-memory-wc;
+ 				ranges = <0 0xf8044000 0x1420>;
+ 			};
  
 -- 
 2.27.0
