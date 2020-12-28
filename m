@@ -2,135 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EF972E4227
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:19:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4B012E3EEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:35:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438313AbgL1PRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:17:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437278AbgL1OEH (ORCPT
+        id S2392139AbgL1OeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:34:14 -0500
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:56929 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2505121AbgL1OeH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:04:07 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBA96C06179B;
-        Mon, 28 Dec 2020 06:03:26 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id b26so24049748lff.9;
-        Mon, 28 Dec 2020 06:03:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4qvAPOSnb3gCPzAXuw8OIJYZA27uuHy18ix0nvJW1CU=;
-        b=bl3r2U9yXYFzTcL+MMt8/u3WC03Tv2y9aGpfMDF+N5t5SOd8te41chnr2P+tYXgxap
-         qwi67ZrMGeBXFF6i2U1/h8fpFscRnAJlA+bG6BE++9jg1sJirjaO75C7ygUTfOp9iHPc
-         Yars2YYOMCQH/+4lrFdWgHgHubxtlUGfSVWkGmuTDRDCNETQoRFqyJm1yOemv2j+fOXU
-         5/WBa1SGMKBukcACZnAJkY1bpWqyZu0kDtPBWL8qeKDNz7QV8CxI3OuE7812UUrxl/Ya
-         aAvrf8QxKJLq4+dD8I+H5iaFUT2AaRAEOFTZRmLcbpirb4b1hMFAXt64Gu5605ULqSGz
-         0zSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4qvAPOSnb3gCPzAXuw8OIJYZA27uuHy18ix0nvJW1CU=;
-        b=na61UGSU/DZ0aenfWKJYKOyIzvSAOVDZiPphjqKuOeplwGhHkrph8xmMg/IZuyCQL5
-         hSGAWhJnZcSSoOf3Bql9CR9O3aL1Z5P73a7Wh8UUAECogRSe4BsWwM6b/I21U6qEAxy/
-         lRCrRg76Qf2RTEUzzbfw0o2C2jlcS+WGwSQNrOr2pMbcNyXff2wB7e9m5EQ96qFm8vFa
-         HbfWYnlmuJ9Ra2A7iDKOucMrj+cmrKdI9MXglVP1Yi3J3RDXJaz4Y+zFXWch7Wbet0vj
-         QcHmNgVXUu5iqG6K+JqKuFOd5mTPDS22jaLMoMASXxwOD3uX+5ZitXGkpQdokxUZRNSo
-         v8CQ==
-X-Gm-Message-State: AOAM531MIWHKrI2gdOXoPt8jjktN5MgdJUjd5RnmPmBssS0GUpbaIMXS
-        cyq2Mu57A0isWLm/5Vo5dKKBWfGWEIQ=
-X-Google-Smtp-Source: ABdhPJzUpl1/di7tj7MASZGrGRvUabOdas4lVkZNDhVFRvZuxbYB/Sicx781pXRzuHaMyLMY0tnsEQ==
-X-Received: by 2002:a19:ccc9:: with SMTP id c192mr12718066lfg.98.1609164205141;
-        Mon, 28 Dec 2020 06:03:25 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.googlemail.com with ESMTPSA id d23sm5324052lfl.115.2020.12.28.06.03.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Dec 2020 06:03:24 -0800 (PST)
-Subject: Re: [PATCH v2 11/48] opp: Add dev_pm_opp_find_level_ceil()
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-clk@vger.kernel.org
-References: <20201217180638.22748-1-digetx@gmail.com>
- <20201217180638.22748-12-digetx@gmail.com>
- <20201222064253.x7vsurh7q5k7qzb5@vireshk-i7>
- <fd7b9f42-d0a7-45eb-2a17-d46779011c58@gmail.com>
- <20201223041931.klnppy4fu3sdgtsz@vireshk-i7>
- <f00e0c74-8d9a-d3d3-81bb-3ac25a74175d@gmail.com>
- <20201224064339.zngidobhstnlu2a3@vireshk-i7>
- <780db190-d93d-3bca-4819-790010f82c62@gmail.com>
- <20201228062254.ui727ka2ftijov4m@vireshk-i7>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <c4a6336f-e7e6-b23e-4d60-a41d8e09aef3@gmail.com>
-Date:   Mon, 28 Dec 2020 17:03:23 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        Mon, 28 Dec 2020 09:34:07 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 6589D5C00F5;
+        Mon, 28 Dec 2020 09:33:19 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Mon, 28 Dec 2020 09:33:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=sJoC7/Ia5+/htiaRt2Q8tV5e8MA
+        bHQsr4knpVzsRSFs=; b=jdGHQ5PQjk1eA1NrLLcz3AVUzt7eyCR+vkphTKiVziC
+        loeXEgUHVEEFeoDPT0lIGg2YJtUGtqK3NNKw+7HBMGdKwD4kFInNPa92CtF1CCp/
+        zNHyHcOKiJ6hNs4xa3hr/xw7zxH6n+mw3dW6+MVUZiE11iNRf79NmMKHQchusNQG
+        ktzbTKd0yVD78WR/y7cBNp+2w0U6YdHyepTIqbOAveavuwEGCjI39/bCWOPkedq7
+        oVw3/MZu5Jzuyf4cDrHhbJpTGN6OZJ+OE5gK07ZOz5uWN49KbH2pq104UFrDMl2K
+        FS/45GI2/gzjtJRIB0M3aa0NTcF4uqnI414BbKLgjiw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=sJoC7/
+        Ia5+/htiaRt2Q8tV5e8MAbHQsr4knpVzsRSFs=; b=ATrJwwC0SJOPs8L/bfQK9C
+        6ZHEh/oKXKhIunP4ig7mvSXomCQ6cSgnquVgftoljS/fY/x2M1ZnAoRf6bQnibZQ
+        /sqVgQd7MSwHMUI/Xg+OdAPm8SyzlcfsjcRAL2GZon9jun9CJ9P2rVVG74d3bBg5
+        SSaIjHMtSuPQ1TdO1WBA3HaI9NBkIUMg4KLkNpLdw0QaV6m78pI0lWdyrLUzdUum
+        /T9RGlWA1a93H5Gxu5usXIJymD5U8XijN+1cOAlyyudgJPYMhU5IOOrzWlV53hn5
+        uI/tsFZ+b8Zp89E9KGiqVdMILV2kjUOnALVXqtK621xMbu0eX2OWVwZRi0KWTTIg
+        ==
+X-ME-Sender: <xms:ruzpX8-xhRWgKYdoIqU4jas7PZw0brX5fXihoueW97Nc780xMuTASA>
+    <xme:ruzpX6tOFI2EM6F61ox7BunSshUbEIPrccGbM9XR-ZYr2bSbKlPBrqfGkDTD6jFTW
+    tA4Eu0TTbQivQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdduledgieekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
+    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:ruzpX_oWQFRyGirMfpB1SIWscKRx5ihTgUfi25_QiIoiOc_wMCzlrA>
+    <xmx:ruzpX3mtQJaSOhzP7J1mOo7RZvcuJ0JbL2fy3cmeD4Ff5l_DpJz2Ag>
+    <xmx:ruzpXzwQt9h_lEcC1Phk5YVximHV0_pvfCilioHY-yvsntdq8uOcOw>
+    <xmx:r-zpX1JrhPFnwW7L0Pk0o_snFJlYkLz2rbsTgh1v-7FBhOoIn19PIA>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 544E0108005F;
+        Mon, 28 Dec 2020 09:33:18 -0500 (EST)
+Date:   Mon, 28 Dec 2020 15:04:47 +0100
+From:   Greg KH <greg@kroah.com>
+To:     Song Chen <chensong_2000@189.cn>
+Cc:     linux-kernel@vger.kernel.org, abbotti@mev.co.uk,
+        hsweeten@visionengravers.com
+Subject: Re: [PATCH] staging: comedi: remove warnings of comedi_lrange
+Message-ID: <X+nl/xjHSBwpqWjF@kroah.com>
+References: <1608771498-13335-1-git-send-email-chensong_2000@189.cn>
 MIME-Version: 1.0
-In-Reply-To: <20201228062254.ui727ka2ftijov4m@vireshk-i7>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1608771498-13335-1-git-send-email-chensong_2000@189.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-28.12.2020 09:22, Viresh Kumar пишет:
-> On 24-12-20, 16:00, Dmitry Osipenko wrote:
->> In a device driver I want to set PD to the lowest performance state by
->> removing the performance vote when dev_pm_opp_set_rate(dev, 0) is
->> invoked by the driver.
->>
->> The OPP core already does this, but if OPP levels don't start from 0 in
->> a device-tree for PD, then it currently doesn't work since there is a
->> need to get a rounded-up performance state because
->> dev_pm_opp_set_voltage() takes OPP entry for the argument (patches 9 and
->> 28).
->>
->> The PD powering off and performance-changes are separate from each other
->> in the GENPD core. The GENPD core automatically turns off domain when
->> all devices within the domain are suspended by system-suspend or RPM.
->>
->> The performance state of a power domain is controlled solely by a device
->> driver. GENPD core only aggregates the performance requests, it doesn't
->> change the performance state of a domain by itself when device is
->> suspended or resumed, IIUC this is intentional. And I want to put domain
->> into lowest performance state when device is suspended.
+On Thu, Dec 24, 2020 at 08:58:18AM +0800, Song Chen wrote:
+> Checkpatch.pl reports "warning: struct comedi_lrange should
+> normally be const" in some places, which are supposed to
+> be removed.
 > 
-> Right, so if you really want to just drop the performance vote, then with a
-> value of 0 for the performance state the call will reach to your genpd's
-> callback ->set_performance_state(). Just as dev_pm_opp_set_rate() accepts the
-> frequency to be 0, I would expect dev_pm_opp_set_rate() to accept opp argument
-> as NULL and in that case set voltage to 0 and do regulator_disable() as well.
-> Won't that work better than going for the lowest voltage ?
-> 
+> Signed-off-by: Song Chen <chensong_2000@189.cn>
+> ---
+>  drivers/staging/comedi/drivers/das16.c   | 4 ++--
+>  drivers/staging/comedi/drivers/jr3_pci.c | 4 ++--
+>  drivers/staging/comedi/drivers/ni_670x.c | 2 +-
+>  3 files changed, 5 insertions(+), 5 deletions(-)
 
-We can make dev_pm_opp_set_voltage() to accept OPP=NULL in order to
-disable the regulator, like it's done for dev_pm_opp_set_rate(dev, 0).
-Although, I don't need this kind of behaviour for the Tegra PD driver,
-and thus, would prefer to leave this for somebody else to implement in
-the future, once it will be really needed.
+Never send out patches that you do not test-build yourself.  Breaking
+the build is a quick way to make a maintainer grumpy :(
 
-Still we need the dev_pm_opp_find_level_ceil() because level=0 means
-that we want to set PD to the lowest (minimal) performance state, i.e.
-it doesn't necessarily mean that we want to set the voltage to 0 and
-disable the PD entirely. GENPD has a separate controls for on/off.
+greg k-h
