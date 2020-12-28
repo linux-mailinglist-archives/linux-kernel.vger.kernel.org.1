@@ -2,42 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 436E42E3929
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:22:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC6652E40E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:00:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733117AbgL1NT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:19:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48458 "EHLO mail.kernel.org"
+        id S2440443AbgL1OOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:14:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733006AbgL1NTx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:19:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D48F22583;
-        Mon, 28 Dec 2020 13:19:11 +0000 (UTC)
+        id S2440420AbgL1OO3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:14:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62B5E206E5;
+        Mon, 28 Dec 2020 14:14:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161552;
-        bh=C3YwL2f4xogoUOPxv3liD/thayajrduA9lFFDYXaz+E=;
+        s=korg; t=1609164854;
+        bh=USMpCL9bNvMHIeZ3KURxV+/tP3/hVUWvPmJp/zlBXZ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VbJ2DTMmBnrYbWLCmyboBemxCiQtDgoY0I6GMs8grdDKvnb+ubuyynw6xvAsK1kwm
-         IifAGCrV/OTZjSFqcmNZWJW1dzAKfP5qGkGu0XIxDEOaMX7csl0I6Bp1cL/NeWly9g
-         xFoREWYCnP3ib7bESx8sHSyhOUnPciXfTpOyaUes=
+        b=gTcR9rqZEGpzwy0fOMzfASNbRIombh3YMS0YVXL0okvnA74BxrOE1mlSXcb3uniW0
+         LiJJREFlSJn39wqhZB08zWsQBb8J6tV/WYxG6NuqC4xCWiXKfzlkTJuJO4XZwH6b32
+         86RS6EFEMvowI4HbKaYywZR9AEr7BdA00QRpyJ20=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dmitry Golovin <dima@golovin.in>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Fangrui Song <maskray@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 4.19 001/346] Kbuild: do not emit debug info for assembly with LLVM_IAS=1
-Date:   Mon, 28 Dec 2020 13:45:20 +0100
-Message-Id: <20201228124919.821830406@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 323/717] cpufreq: ap806: Add missing MODULE_DEVICE_TABLE
+Date:   Mon, 28 Dec 2020 13:45:21 +0100
+Message-Id: <20201228125036.493834162@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -45,54 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Desaulniers <ndesaulniers@google.com>
+From: Pali Rohár <pali@kernel.org>
 
-commit b8a9092330da2030496ff357272f342eb970d51b upstream.
+[ Upstream commit 925a5bcefe105f2790ecbdc252eb2315573f309d ]
 
-Clang's integrated assembler produces the warning for assembly files:
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this cpufreq driver when it is
+compiled as an external module.
 
-warning: DWARF2 only supports one section per compilation unit
-
-If -Wa,-gdwarf-* is unspecified, then debug info is not emitted for
-assembly sources (it is still emitted for C sources).  This will be
-re-enabled for newer DWARF versions in a follow up patch.
-
-Enables defconfig+CONFIG_DEBUG_INFO to build cleanly with
-LLVM=1 LLVM_IAS=1 for x86_64 and arm64.
-
-Cc: <stable@vger.kernel.org>
-Link: https://github.com/ClangBuiltLinux/linux/issues/716
-Reported-by: Dmitry Golovin <dima@golovin.in>
-Reported-by: Nathan Chancellor <natechancellor@gmail.com>
-Suggested-by: Dmitry Golovin <dima@golovin.in>
-Suggested-by: Nathan Chancellor <natechancellor@gmail.com>
-Suggested-by: Sedat Dilek <sedat.dilek@gmail.com>
-Reviewed-by: Fangrui Song <maskray@google.com>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-[nd: backport to avoid conflicts from:
-  commit 10e68b02c861 ("Makefile: support compressed debug info")
-  commit 7b16994437c7 ("Makefile: Improve compressed debug info support detection")
-  commit 695afd3d7d58 ("kbuild: Simplify DEBUG_INFO Kconfig handling")]
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Fixes: f525a670533d9 ("cpufreq: ap806: add cpufreq driver for Armada 8K")
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Makefile |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/cpufreq/armada-8k-cpufreq.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/Makefile
-+++ b/Makefile
-@@ -745,8 +745,11 @@ KBUILD_CFLAGS   += $(call cc-option, -gs
- else
- KBUILD_CFLAGS	+= -g
- endif
-+ifneq ($(LLVM_IAS),1)
- KBUILD_AFLAGS	+= -Wa,-gdwarf-2
- endif
-+endif
+diff --git a/drivers/cpufreq/armada-8k-cpufreq.c b/drivers/cpufreq/armada-8k-cpufreq.c
+index 39e34f5066d3d..b0fc5e84f8570 100644
+--- a/drivers/cpufreq/armada-8k-cpufreq.c
++++ b/drivers/cpufreq/armada-8k-cpufreq.c
+@@ -204,6 +204,12 @@ static void __exit armada_8k_cpufreq_exit(void)
+ }
+ module_exit(armada_8k_cpufreq_exit);
+ 
++static const struct of_device_id __maybe_unused armada_8k_cpufreq_of_match[] = {
++	{ .compatible = "marvell,ap806-cpu-clock" },
++	{ },
++};
++MODULE_DEVICE_TABLE(of, armada_8k_cpufreq_of_match);
 +
- ifdef CONFIG_DEBUG_INFO_DWARF4
- KBUILD_CFLAGS	+= $(call cc-option, -gdwarf-4,)
- endif
+ MODULE_AUTHOR("Gregory Clement <gregory.clement@bootlin.com>");
+ MODULE_DESCRIPTION("Armada 8K cpufreq driver");
+ MODULE_LICENSE("GPL");
+-- 
+2.27.0
+
 
 
