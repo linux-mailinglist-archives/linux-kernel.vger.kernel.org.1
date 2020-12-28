@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81CAB2E3BFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:57:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D57D2E6506
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:57:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406644AbgL1N5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:57:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57968 "EHLO mail.kernel.org"
+        id S2389307AbgL1NfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:35:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407797AbgL1N4O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:56:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 848A120795;
-        Mon, 28 Dec 2020 13:55:33 +0000 (UTC)
+        id S2389242AbgL1Neu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:34:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 12F6120728;
+        Mon, 28 Dec 2020 13:34:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163734;
-        bh=6V6iKFoAGv1qM3dVP0Nqu5Bfj6BGNAOmEN7TAaGxpKI=;
+        s=korg; t=1609162449;
+        bh=n1t75KBzTYYPQMYwPd+M5JaNDaWblMLcGWzgPNEmyag=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iwCvfoHU3ajm0gMyMVEkSVfyQN9tWgWXOdDR3HpvrM+Ywh28jGRNpGQCTDNWLqhsh
-         7ST4xSnYdXFWPreidIHtllXCzs5tuI5DDxzn83WYazTcTR0naJDcA1bTMfl/b3CJEU
-         USzRvmfaVBIuJQq7zmL9dia1ujFFVdxXvDcNfsIs=
+        b=BrOFGZlBKX4YwfDG9q7j49D+hBAnaHdaXNfKINX48N8KgnW4cbY0x1+3uq6qSODKZ
+         u220oL2vbb91DYCMDcU3yG2TyehH7a1wKiBTLv74aLsbFXrb8enio9CWuZ8Tv4u73g
+         vZq47EHb1i5PzzmymwUof1TK1F/I8ExfR5cGnYR4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
         Christoph Hellwig <hch@lst.de>,
         Mimi Zohar <zohar@linux.ibm.com>
-Subject: [PATCH 5.4 389/453] ima: Dont modify file descriptor mode on the fly
-Date:   Mon, 28 Dec 2020 13:50:25 +0100
-Message-Id: <20201228124955.924931778@linuxfoundation.org>
+Subject: [PATCH 4.19 307/346] ima: Dont modify file descriptor mode on the fly
+Date:   Mon, 28 Dec 2020 13:50:26 +0100
+Message-Id: <20201228124934.635786213@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -69,7 +69,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/security/integrity/ima/ima_crypto.c
 +++ b/security/integrity/ima/ima_crypto.c
-@@ -411,7 +411,7 @@ int ima_calc_file_hash(struct file *file
+@@ -415,7 +415,7 @@ int ima_calc_file_hash(struct file *file
  	loff_t i_size;
  	int rc;
  	struct file *f = file;
@@ -78,7 +78,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  
  	/*
  	 * For consistency, fail file's opened with the O_DIRECT flag on
-@@ -429,18 +429,10 @@ int ima_calc_file_hash(struct file *file
+@@ -433,18 +433,10 @@ int ima_calc_file_hash(struct file *file
  				O_TRUNC | O_CREAT | O_NOCTTY | O_EXCL);
  		flags |= O_RDONLY;
  		f = dentry_open(&file->f_path, flags, file->f_cred);
@@ -101,7 +101,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	}
  
  	i_size = i_size_read(file_inode(f));
-@@ -455,8 +447,6 @@ int ima_calc_file_hash(struct file *file
+@@ -459,8 +451,6 @@ int ima_calc_file_hash(struct file *file
  out:
  	if (new_file_instance)
  		fput(f);
