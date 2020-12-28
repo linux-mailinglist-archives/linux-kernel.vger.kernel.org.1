@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 051662E380A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:06:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 371392E3782
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:57:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730439AbgL1NE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:04:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59368 "EHLO mail.kernel.org"
+        id S1728759AbgL1M4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:56:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730234AbgL1NEF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:04:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E285B22A84;
-        Mon, 28 Dec 2020 13:03:49 +0000 (UTC)
+        id S1727880AbgL1M40 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:56:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A6281208BA;
+        Mon, 28 Dec 2020 12:55:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160630;
-        bh=1c16DeVlrkOsAw+l3Lm1Es+96/1hWK5NAZRQZL8BiEA=;
+        s=korg; t=1609160146;
+        bh=ZfmRCxWQg9s5e913kMLw80E0+cqobIeZiMmy9oWO2vo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j2R83XmC2u9YeIxzGtH/XgH4Uj2+gWXWmgqNCU0JNEXGH8zI+ccCGQ1fz6yQEKBZg
-         9tnaX6xiKWq8u2MFxo376Sh8NMcitcmxqcXmqQ8AQGrdk/aplcE5dvXNLArcJbrWO7
-         5eX5/ubv29hDvWhzkjA3/BzQRQoqFEYyse9uwJaA=
+        b=1mhr4tf9njIRVBXVIHV70q61ZjdEdxeYnKu77oPMwDtusUPluLz4l/0ab1YZJDYR3
+         6wz2HKjOZijdUcn7QAcBNnncFin0oY3RPo6JbABbSItrZBl06VekOk/XcTa2LO/H0l
+         OedOWJNRGMU+02hO0TuCh8YdiKl7UZ2jtm1iVpIA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Antoine Tenart <atenart@kernel.org>,
-        Tsahee Zidenberg <tsahee@annapurnalabs.com>,
+        stable@vger.kernel.org, Bongsu Jeon <bongsu.jeon@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 115/175] irqchip/alpine-msi: Fix freeing of interrupts on allocation error path
+Subject: [PATCH 4.4 084/132] nfc: s3fwrn5: Release the nfc firmware
 Date:   Mon, 28 Dec 2020 13:49:28 +0100
-Message-Id: <20201228124858.825585388@linuxfoundation.org>
+Message-Id: <20201228124850.495097740@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+From: Bongsu Jeon <bongsu.jeon@samsung.com>
 
-[ Upstream commit 3841245e8498a789c65dedd7ffa8fb2fee2c0684 ]
+[ Upstream commit a4485baefa1efa596702ebffd5a9c760d42b14b5 ]
 
-The alpine-msi driver has an interesting allocation error handling,
-where it frees the same interrupts repeatedly. Hilarity follows.
+add the code to release the nfc firmware when the firmware image size is
+wrong.
 
-This code is probably never executed, but let's fix it nonetheless.
-
-Fixes: e6b78f2c3e14 ("irqchip: Add the Alpine MSIX interrupt controller")
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Reviewed-by: Antoine Tenart <atenart@kernel.org>
-Cc: Tsahee Zidenberg <tsahee@annapurnalabs.com>
-Cc: Antoine Tenart <atenart@kernel.org>
-Link: https://lore.kernel.org/r/20201129135525.396671-1-maz@kernel.org
+Fixes: c04c674fadeb ("nfc: s3fwrn5: Add driver for Samsung S3FWRN5 NFC Chip")
+Signed-off-by: Bongsu Jeon <bongsu.jeon@samsung.com>
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Link: https://lore.kernel.org/r/20201213095850.28169-1-bongsu.jeon@samsung.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/irqchip/irq-alpine-msi.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/nfc/s3fwrn5/firmware.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/irqchip/irq-alpine-msi.c b/drivers/irqchip/irq-alpine-msi.c
-index 63d980995d17d..ac431697ebe1c 100644
---- a/drivers/irqchip/irq-alpine-msi.c
-+++ b/drivers/irqchip/irq-alpine-msi.c
-@@ -165,8 +165,7 @@ static int alpine_msix_middle_domain_alloc(struct irq_domain *domain,
- 	return 0;
+diff --git a/drivers/nfc/s3fwrn5/firmware.c b/drivers/nfc/s3fwrn5/firmware.c
+index 64a90252c57f2..b387845d3c72a 100644
+--- a/drivers/nfc/s3fwrn5/firmware.c
++++ b/drivers/nfc/s3fwrn5/firmware.c
+@@ -304,8 +304,10 @@ static int s3fwrn5_fw_request_firmware(struct s3fwrn5_fw_info *fw_info)
+ 	if (ret < 0)
+ 		return ret;
  
- err_sgi:
--	while (--i >= 0)
--		irq_domain_free_irqs_parent(domain, virq, i);
-+	irq_domain_free_irqs_parent(domain, virq, i - 1);
- 	alpine_msix_free_sgi(priv, sgi, nr_irqs);
- 	return err;
- }
+-	if (fw->fw->size < S3FWRN5_FW_IMAGE_HEADER_SIZE)
++	if (fw->fw->size < S3FWRN5_FW_IMAGE_HEADER_SIZE) {
++		release_firmware(fw->fw);
+ 		return -EINVAL;
++	}
+ 
+ 	memcpy(fw->date, fw->fw->data + 0x00, 12);
+ 	fw->date[12] = '\0';
 -- 
 2.27.0
 
