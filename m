@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D566B2E38D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:16:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 616F52E3BBB
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:54:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732717AbgL1NPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:15:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43642 "EHLO mail.kernel.org"
+        id S2407381AbgL1Nx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:53:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55548 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732680AbgL1NPY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:15:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 55C40206ED;
-        Mon, 28 Dec 2020 13:14:43 +0000 (UTC)
+        id S2407334AbgL1Nxi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:53:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 688DB20715;
+        Mon, 28 Dec 2020 13:52:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161284;
-        bh=UAFTBRjOWayQArKHk2ibWenA7R1IHmPQWIiHUJtUm0M=;
+        s=korg; t=1609163578;
+        bh=wSPhDxRyT4PeZSatzt6FDcS55+Dy8gu93xNK4cWhe0Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ojGxat2d3iVMyPIsNcsqfcKiBjpK55peG7ezNHcs+G9HmHzkVE5NepXoZoqsVbfIJ
-         Tk7z6KC7jU8nym6NhcYnac1aTeDyz2mXUGOH9An/5/LVeSpPON29Z0tW5oinijkJ+p
-         ovVzOQ52ipYIkq9HIuj3MZyIC/cMSi1rviEJhWzs=
+        b=QrCwNCEM6N4lKlDKXgSwZWWOdL6ZrEW8/KoC8/sLcriBOSpnmTnTRDoDtvgoPpFSm
+         fSP7KYq72/HsE811IsS5dlTvVnXxfotlWaMl6o8/o64obxe9zlm29zJP+ButvBkCZU
+         4BTt7V7v57RkeHkhOQNiPUgx1x9qLf4Bk3qjyftE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Vincent=20Stehl=C3=A9?= <vincent.stehle@laposte.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 163/242] powerpc/ps3: use dma_mapping_error()
-Date:   Mon, 28 Dec 2020 13:49:28 +0100
-Message-Id: <20201228124912.723080100@linuxfoundation.org>
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH 5.4 333/453] ACPI: PNP: compare the string length in the matching_id()
+Date:   Mon, 28 Dec 2020 13:49:29 +0100
+Message-Id: <20201228124953.244598715@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,38 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Stehlé <vincent.stehle@laposte.net>
+From: Hui Wang <hui.wang@canonical.com>
 
-[ Upstream commit d0edaa28a1f7830997131cbce87b6c52472825d1 ]
+commit b08221c40febcbda9309dd70c61cf1b0ebb0e351 upstream.
 
-The DMA address returned by dma_map_single() should be checked with
-dma_mapping_error(). Fix the ps3stor_setup() function accordingly.
+Recently we met a touchscreen problem on some Thinkpad machines, the
+touchscreen driver (i2c-hid) is not loaded and the touchscreen can't
+work.
 
-Fixes: 80071802cb9c ("[POWERPC] PS3: Storage Driver Core")
-Signed-off-by: Vincent Stehlé <vincent.stehle@laposte.net>
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20201213182622.23047-1-vincent.stehle@laposte.net
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+An i2c ACPI device with the name WACF2200 is defined in the BIOS, with
+the current rule in matching_id(), this device will be regarded as
+a PNP device since there is WACFXXX in the acpi_pnp_device_ids[] and
+this PNP device is attached to the acpi device as the 1st
+physical_node, this will make the i2c bus match fail when i2c bus
+calls acpi_companion_match() to match the acpi_id_table in the i2c-hid
+driver.
+
+WACF2200 is an i2c device instead of a PNP device, after adding the
+string length comparing, the matching_id() will return false when
+matching WACF2200 and WACFXXX, and it is reasonable to compare the
+string length when matching two IDs.
+
+Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+Cc: All applicable <stable@vger.kernel.org>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/ps3/ps3stor_lib.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/acpi/acpi_pnp.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/ps3/ps3stor_lib.c b/drivers/ps3/ps3stor_lib.c
-index 8c3f5adf1bc65..2d76183756626 100644
---- a/drivers/ps3/ps3stor_lib.c
-+++ b/drivers/ps3/ps3stor_lib.c
-@@ -201,7 +201,7 @@ int ps3stor_setup(struct ps3_storage_device *dev, irq_handler_t handler)
- 	dev->bounce_lpar = ps3_mm_phys_to_lpar(__pa(dev->bounce_buf));
- 	dev->bounce_dma = dma_map_single(&dev->sbd.core, dev->bounce_buf,
- 					 dev->bounce_size, DMA_BIDIRECTIONAL);
--	if (!dev->bounce_dma) {
-+	if (dma_mapping_error(&dev->sbd.core, dev->bounce_dma)) {
- 		dev_err(&dev->sbd.core, "%s:%u: map DMA region failed\n",
- 			__func__, __LINE__);
- 		error = -ENODEV;
--- 
-2.27.0
-
+--- a/drivers/acpi/acpi_pnp.c
++++ b/drivers/acpi/acpi_pnp.c
+@@ -317,6 +317,9 @@ static bool matching_id(const char *idst
+ {
+ 	int i;
+ 
++	if (strlen(idstr) != strlen(list_id))
++		return false;
++
+ 	if (memcmp(idstr, list_id, 3))
+ 		return false;
+ 
 
 
