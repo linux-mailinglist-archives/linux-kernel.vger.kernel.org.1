@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0AE22E3759
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:54:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33A782E37E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:04:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728339AbgL1MyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:54:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50798 "EHLO mail.kernel.org"
+        id S1730072AbgL1NC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:02:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58244 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728312AbgL1MyF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:54:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CCC8207C9;
-        Mon, 28 Dec 2020 12:53:48 +0000 (UTC)
+        id S1730056AbgL1NCU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:02:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 29935208B6;
+        Mon, 28 Dec 2020 13:02:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160029;
-        bh=PJPfqOCIwCtxfZRcij9grBZ2SWWpzfuOijX5NuUNmEk=;
+        s=korg; t=1609160524;
+        bh=qhDfQ2L5gkXut6BkNW3v3ZYyBtI5jQZJYTNpSA/GefY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NKj/I5IXbpQYrRY5eHKNpXDxasw/oa6g7eKut9zuIFOeKOich+TF0I0MDZ930FqRB
-         fHwlteBMA5zr3S7ofbWrcoM7Q7Dg1oxIiyyB1oJv5AVd5CWXFgnQ7W/zEtu/npX8Rw
-         1aQs4YbdNT7y+Tfyq4Qd4c8SaW2q7Mis1zlKvH2g=
+        b=Lm1f36ACYe1An6wTYiPkxHhrJdHdravCfeZJENgjx+xZ0U2L9TwSPVA5pV+R9kv4S
+         lXX8IIcuCOmTze26gb21M5JWNSyvzPd08M4/zwEDqT5IzzdK8YeSPjaESZLwykt4cW
+         ViY5onWg4XXgSGi+SUAZzdutW/7K/Bhu+71cjmzk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 049/132] Input: ads7846 - fix unaligned access on 7845
+Subject: [PATCH 4.9 080/175] orinoco: Move context allocation after processing the skb
 Date:   Mon, 28 Dec 2020 13:48:53 +0100
-Message-Id: <20201228124848.806279622@linuxfoundation.org>
+Message-Id: <20201228124857.110446927@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,41 +41,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-[ Upstream commit 03e2c9c782f721b661a0e42b1b58f394b5298544 ]
+[ Upstream commit a31eb615646a63370aa1da1053c45439c7653d83 ]
 
-req->sample[1] is not naturally aligned at word boundary, and therefore we
-should use get_unaligned_be16() when accessing it.
+ezusb_xmit() allocates a context which is leaked if
+orinoco_process_xmit_skb() returns an error.
 
-Fixes: 3eac5c7e44f3 ("Input: ads7846 - extend the driver for ads7845 controller support")
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Move ezusb_alloc_ctx() after the invocation of
+orinoco_process_xmit_skb() because the context is not needed so early.
+ezusb_access_ltv() will cleanup the context in case of an error.
+
+Fixes: bac6fafd4d6a0 ("orinoco: refactor xmit path")
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20201113212252.2243570-2-bigeasy@linutronix.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/touchscreen/ads7846.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ .../net/wireless/intersil/orinoco/orinoco_usb.c    | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/input/touchscreen/ads7846.c b/drivers/input/touchscreen/ads7846.c
-index b4ded36cc4162..1d98198c4bdfb 100644
---- a/drivers/input/touchscreen/ads7846.c
-+++ b/drivers/input/touchscreen/ads7846.c
-@@ -35,6 +35,7 @@
- #include <linux/regulator/consumer.h>
- #include <linux/module.h>
- #include <asm/irq.h>
-+#include <asm/unaligned.h>
+diff --git a/drivers/net/wireless/intersil/orinoco/orinoco_usb.c b/drivers/net/wireless/intersil/orinoco/orinoco_usb.c
+index 4e91c74fcfad9..de928938c7a1c 100644
+--- a/drivers/net/wireless/intersil/orinoco/orinoco_usb.c
++++ b/drivers/net/wireless/intersil/orinoco/orinoco_usb.c
+@@ -1224,13 +1224,6 @@ static netdev_tx_t ezusb_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	if (skb->len < ETH_HLEN)
+ 		goto drop;
  
- /*
-  * This code has been heavily tested on a Nokia 770, and lightly
-@@ -410,7 +411,7 @@ static int ads7845_read12_ser(struct device *dev, unsigned command)
+-	ctx = ezusb_alloc_ctx(upriv, EZUSB_RID_TX, 0);
+-	if (!ctx)
+-		goto busy;
+-
+-	memset(ctx->buf, 0, BULK_BUF_SIZE);
+-	buf = ctx->buf->data;
+-
+ 	tx_control = 0;
  
- 	if (status == 0) {
- 		/* BE12 value, then padding */
--		status = be16_to_cpu(*((u16 *)&req->sample[1]));
-+		status = get_unaligned_be16(&req->sample[1]);
- 		status = status >> 3;
- 		status &= 0x0fff;
- 	}
+ 	err = orinoco_process_xmit_skb(skb, dev, priv, &tx_control,
+@@ -1238,6 +1231,13 @@ static netdev_tx_t ezusb_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	if (err)
+ 		goto drop;
+ 
++	ctx = ezusb_alloc_ctx(upriv, EZUSB_RID_TX, 0);
++	if (!ctx)
++		goto drop;
++
++	memset(ctx->buf, 0, BULK_BUF_SIZE);
++	buf = ctx->buf->data;
++
+ 	{
+ 		__le16 *tx_cntl = (__le16 *)buf;
+ 		*tx_cntl = cpu_to_le16(tx_control);
 -- 
 2.27.0
 
