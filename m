@@ -2,171 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6084A2E3907
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:19:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A53E2E3970
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:25:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387442AbgL1NR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:17:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29672 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731579AbgL1NRg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:17:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609161369;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BpGZqNqjl/EqgtMH0TEGlmSlmsvZxZ2+cVJLVuiye3o=;
-        b=hlIOp88NkWMBrqaZi+T4Ov1F1QR7ZYLolExdHOzPJIamyhPpr857/VxBEXFQNENPelEObG
-        QGY/jHjSaFmlAHlfSjOp3GDjCWeYkmSkXE1jLftCiuiA8pqNogKUmbZyOauY6gbeiKjqbt
-        pREzI2cRxqsFvElOR/cX4CdRxa4X+kQ=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-404-HSDRE9GMPhe8H1VbWT7SkA-1; Mon, 28 Dec 2020 08:16:07 -0500
-X-MC-Unique: HSDRE9GMPhe8H1VbWT7SkA-1
-Received: by mail-ej1-f72.google.com with SMTP id u25so3995703ejf.3
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 05:16:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=BpGZqNqjl/EqgtMH0TEGlmSlmsvZxZ2+cVJLVuiye3o=;
-        b=cAMeNjyUD5JwsyJ3au8DFkzikbjoUXlibXlTQIYtIDTEuQx6ClIZuKb/yCOaZfg1OY
-         4wsir4FJP+OnpdAd25hSxiXEjVmMAIftDuW/ic2gON5Je0ais2KzyLvFHoT16WPsjZB0
-         Xe3SatJSNl/tZRPsN3+cwbUN3n9x7L7DXN6hf2Zwno6b7U58HEYjjPX07RtMTMbj0Vs9
-         1+Qed/SqorHZ4paZiFn1zYEaZR6vf1ZwRO1+KXJQ/R9b7EzjYxCbpdOr4bb3MOO3P8dF
-         aDXL3XdP7KBuRAL7rX6TDTeDXmu0gc4A+8eTHiPGk0Y7j+8adN+gNp4kvm+PqJx62gf6
-         gR5A==
-X-Gm-Message-State: AOAM533GRAJZtx91mhLZZvRt1hSy5Y0qP0EILKMSsxARf8AK9K/Rue8F
-        ANcVWE7CuCQ55Vh8HlX7kyyM0+7JWsDMI9OMOuS8/wyxojUHn9hoc3yDRSIAdXtlsHp3WsFWKoq
-        2uQK2zHJA5H2u9NQ0Nny/E4ic
-X-Received: by 2002:a17:907:40f0:: with SMTP id nn24mr40959174ejb.233.1609161366032;
-        Mon, 28 Dec 2020 05:16:06 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxzrt1uKlVWXyK7ZFE9xUmRMZZXRSzEOAZI8gbA5K9cPIpgkRK+cinnSnJmQyqJNyCEoqnoxw==
-X-Received: by 2002:a17:907:40f0:: with SMTP id nn24mr40959157ejb.233.1609161365830;
-        Mon, 28 Dec 2020 05:16:05 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id e19sm36838102edr.61.2020.12.28.05.16.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Dec 2020 05:16:05 -0800 (PST)
-Subject: Re: [PATCH 01/14] mfd: arizona: Add jack pointer to struct arizona
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org
-References: <20201227211232.117801-1-hdegoede@redhat.com>
- <20201227211232.117801-2-hdegoede@redhat.com>
- <20201228122138.GA5352@sirena.org.uk>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <44f84485-8efc-39f9-d0a7-cb8db2ea3faa@redhat.com>
-Date:   Mon, 28 Dec 2020 14:16:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S2388549AbgL1NXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:23:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52238 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388533AbgL1NXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:23:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 848C622583;
+        Mon, 28 Dec 2020 13:22:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609161777;
+        bh=DhYUTYqHNosTc9hXftPIlKWAxz5GzU0HqicuYZ4+dsw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Dv9t8sSmKMfPY1gp3cCkqHcigqi13922EdFdrt2sCrconibtsVexm7c1sfqtPbonN
+         T0Xk4mRWf+p9VeUspsFLoGycOBdzTRknucTvvHi+CVS3jYIN5WXt2aLbkHrQeeiBtT
+         OZ9P3+6P4PErQjcQltkyoQQ0n6ACUey9Tr5IBag4QrKuejBoFW3zWUA3X/Ov22/skX
+         69OSME5l6ayllIyhX5WJQrETdb6flIWWpr/WCGl8LI9Xo5oMyqwK5G9ILZ6GTYAcRH
+         V3EaOq0ewFTcSOJ4YjRWmV8AhmtA6kCmJ+zxx89F5WpJ7dGe8ce48intDiOLIpckle
+         +WBzjGPKPTwGQ==
+Received: by pali.im (Postfix)
+        id 92715843; Mon, 28 Dec 2020 14:22:55 +0100 (CET)
+Date:   Mon, 28 Dec 2020 14:22:55 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Marek Behun <marek.behun@nic.cz>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Chen <peter.chen@nxp.com>
+Subject: Re: [PATCH] usb: host: xhci: mvebu: make USB 3.0 PHY optional for
+ Armada 3720
+Message-ID: <20201228132255.yqhpjifgbccp4gfe@pali>
+References: <20201223162403.10897-1-pali@kernel.org>
+ <20201228131149.30907b44@nic.cz>
 MIME-Version: 1.0
-In-Reply-To: <20201228122138.GA5352@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201228131149.30907b44@nic.cz>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello!
 
-On 12/28/20 1:21 PM, Mark Brown wrote:
-> On Sun, Dec 27, 2020 at 10:12:19PM +0100, Hans de Goede wrote:
->> The Linux Arizona driver uses the MFD framework to create several
->> sub-devices for the Arizona codec and then uses a driver per function.
->>
->> The jack-detect support for the Arizona codec is handled by the
->> extcon-arizona driver. This driver exports info about the jack state
->> to userspace through the standard extcon sysfs class interface.
->>
->> But standard Linux userspace does not monitor/use the extcon sysfs
->> interface for jack-detection.
+On Monday 28 December 2020 13:11:49 Marek Behun wrote:
+> Hi Pali and Miquel,
 > 
-> This seems like the wrong layer to fix this problem at, this issue will
-> apply to all extcon devices that can detect audio.
+> On Wed, 23 Dec 2020 17:24:03 +0100
+> Pali Rohár <pali@kernel.org> wrote:
+> 
+> >  int xhci_mvebu_a3700_init_quirk(struct usb_hcd *hcd)
+> >  {
+> >  	struct xhci_hcd	*xhci = hcd_to_xhci(hcd);
+> > +	struct device *dev = hcd->self.controller;
+> > +	struct phy *phy;
+> > +	int ret;
+> >  
+> >  	/* Without reset on resume, the HC won't work at all */
+> >  	xhci->quirks |= XHCI_RESET_ON_RESUME;
+> >  
+> > +	/* Old bindings miss the PHY handle */
+> > +	phy = of_phy_get(dev->of_node, "usb3-phy");
+> > +	if (IS_ERR(phy) && PTR_ERR(phy) == -EPROBE_DEFER)
+> > +		return -EPROBE_DEFER;
+> > +	else if (IS_ERR(phy))
+> > +		goto phy_out;
+> > +
+> > +	ret = phy_init(phy);
+> > +	if (ret)
+> > +		goto phy_put;
+> > +
+> > +	ret = phy_set_mode(phy, PHY_MODE_USB_HOST_SS);
+> > +	if (ret)
+> > +		goto phy_exit;
+> > +
+> > +	ret = phy_power_on(phy);
+> > +	if (ret == -EOPNOTSUPP) {
+> > +		/* Skip initializatin of XHCI PHY when it is unsupported by firmware */
+> > +		dev_warn(dev, "PHY unsupported by firmware\n");
+> > +		xhci->quirks |= XHCI_SKIP_PHY_INIT;
+> > +	}
+> > +	if (ret)
+> > +		goto phy_exit;
+> 
+> I am not sure if this is the correct way to check whether PHY_INIT
+> should be skipped.
 
-Well, the problem really is that using extcon to report jack-state is
-rather unusual to do, extcon-arizona.c is the only extcon driver which
-deals with jack-state (typically extcon is used for things like determining
-the type of charger connected to an USB charging port):
+I do not have a better idea how to fix described issue for Armada 3720
+boards without touching other usb/core/hdc code. I wanted to put these
+Armada 3720 changes only into xhci-mvebu/xhci_mvebu_a3700_init_quirk
+code so it does not "pollute" other usb generic code.
 
-[hans@x1 linux]$ grep -lr EXTCON_JACK_HEADPHONE drivers/extcon/
-drivers/extcon/extcon-arizona.c
-drivers/extcon/extcon.c
+> Moreover the subsequent phy_power_off:
+> 
+> > +
+> > +	phy_power_off(phy);
+> 
+> won't power off the PHY, because the corresponding handler in ATF is
+> currently empty. 
 
-And more in general AFAIK extcon is sort of deprecated and it is
-not advised to use it for new code. I would esp. not expect it to
-be used for new jack-detection code since we already have standard
-uAPI support for that through sound/core/jack.c .
+This is not an issue as the usb core will later power on PHY during
+initialization. So I can remove this line, it has no effect on
+functionality.
 
-So extcon-arizona really is the odd duck here and writing some
-generic extcon to sound/core/jack.c glue seems unnecessary since
-we are just trying dealing with one special case here.
+> I guess the patch needs to be in kernel if users are unwilling to upgrade
+> ATF firmware.
 
-Also at first I tried to use extcon-glue like code in
-sound/soc/intel/boards/bytcr_wm5102.c making it listen for
-extcon events and have sound/soc/intel/boards/bytcr_wm5102.c
-report jack events instead of sharing the jack with extcon-arizona.c
-through the shared MFD data struct. But that did not work, because
-the extcon-arizona.c probe function already (before this patch-set)
-has this:
+Yes. If distributions which are running stable kernels (4.14, 4.19)
+start updating their kernels to new stable versions (5.4+) then this
+upgrade can break support for USB. Similarly for SATA and PCIe (already
+fixed and backported to stable kernels). This is relevant e.g. to Debian
+which stable version is on 4.19 and therefore is not affected by this
+issue yet.
 
-        if (!arizona->dapm || !arizona->dapm->card)
-                return -EPROBE_DEFER;
+So my opinion is that such thing is a regression if kernel starts
+depending on a new firmware version and cause malfunctions of some
+subsystems.
 
-Which means that the sound/soc/intel/boards/bytcr_wm5102.c machine
-driver must first complete calling devm_snd_soc_register_card() before
-the extcon driver will bind and register the extcon device.
+Updating kernel on Espressobin or Turris MOX (both A3720) when using
+Debian, OpenWRT (or any similar distribution) is relatively easy as
+kernel is stored on SD card on rootfs filesystem. Package manager will
+update it easily and can do it automatically (without user interation).
 
-But listening to extcon events requires the machine driver to do an:
-extcon_get_extcon_dev("arizona-extcon") and as long as that returns
-NULL, return -EPROBE_DEFER.
+But updating ATF firmware is harder as it is stored in nand and on
+Espressobin it is part of another M3 secure firmware image. I do not
+know any distribution which can do it automatically, it needs to be done
+by user.
 
-So now we have the machine-driver's probe returning with -EPROBE_DEFER
-until the extcon driver shows up and the other-way around, so neither
-ever binds.
+> The SMC calls for Marvell's comphy are designed to be generic for
+> several Marvell platforms (the constants are the same and so one), but
+> we still have different drivers for them anyway.
+> 
+> Maybe it would be better to just not use the ATF implementation at all,
+> and implement the comphy driver for A3720 entirely in kernel...
 
-I could have fixed this by making the machine driver bind without the
-extcon driver being bound and then poll every second for the extcon device
-to show up, and once it has shown up stop polling and register the jack,
-once it has the extcon device.
+Globalscaletechnolgies already implemented something in their kernel:
+https://github.com/globalscaletechnologies/linux/commit/86fa2470c3a867ca9a78e5521a7af037617f5b3b
 
-But that seems quite ugly, so I did not even try to implement that
-coming up with this solution instead which is much more KISS really.
+I do not like too an idea to depends on external RPC API in kernel.
+I think that it is better to have native driver in linux kernel instead
+of current RPC driver. Bugs in our kernel drivers can be fixed and
+backported to stable kernels. But bugs in firmware we cannot fix and we
+have to deal with them (in case we are using it).
 
-Also note that sharing the jack is necessary to avoid creating 2
-separate input_device-s for the headset, which also looks weird / ugly.
+I think that in past Linus said that Linux kernel does not use nor
+depend on x86 BIOS routines/interrupts for similar reasons.
 
-Besides being ugly, there also is another potential problem with
-polling to wait for the extcon device to show up: the jack must be
-registered before the card registration completes otherwise
-snd_jack_dev_register will not run, since we are post registration.
-But I guess that the sound core might be smart enough to call
-the dev_register op immediately if the card has already been
-registered ?
-
-TL;DR: writing a generic solution for what is a special case used
-in just driver seems like overkill and also writing such a
-generic solution is not easily possible because of probe ordering
-issues. So instead I've gone with this approach which is a much
-simpler solution and as such seems a better way to deal with this
-special case.
-
-Regards,
-
-Hans
-
-
-
+> Miquel, what do you think?
+> 
+> Marek
