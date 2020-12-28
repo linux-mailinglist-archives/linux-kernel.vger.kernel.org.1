@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43B792E3934
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:22:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB0B22E40D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:58:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387563AbgL1NU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:20:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48892 "EHLO mail.kernel.org"
+        id S2439310AbgL1O6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:58:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733146AbgL1NUT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:20:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E840920728;
-        Mon, 28 Dec 2020 13:19:37 +0000 (UTC)
+        id S2440624AbgL1OPU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:15:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 11D2B20731;
+        Mon, 28 Dec 2020 14:15:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161578;
-        bh=ro9uDqoENnND9sZN3HRgrjd+oZ5Q6SBCXI2tgvvnXQI=;
+        s=korg; t=1609164904;
+        bh=QUCzMLjXo7RbE+T5uGyeAbkNHSENdxL1Gl/rAZhHAiE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UViT2J7XSBUuvnUA+fKOn+gt3cWIfKxSBeevXa/Vb1ISJZQ7sP8edf2aX5oqhMX6s
-         MqlE8cA/l3ZubViRNqT2LELX11lVc3t1x26akUSL3Chku83QBB5HgjrZj/OKHHs2/h
-         UBH0nTuTBJf6t+qz0MjCCnLMaRqYoQfoS8rsRe94=
+        b=IAuIwDq+LrWoUuzSfs8DhZpBtnosmAvpFeae3CnsdXyLyUSwqD/jo75HqSmFVoM0J
+         dwOdY4pAPhItyDF0q5hAI26pDjI/yV31f+1vPkjDAiaW2DOIB6lt7TsbpZNojG36Ci
+         c10K4H9B77PfO46Tml0/ctJXblbmfIR9CtM9uS3k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Chiu <chiu@endlessos.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: [PATCH 4.19 018/346] Input: i8042 - add Acer laptops to the i8042 reset list
+        stable@vger.kernel.org, Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 339/717] Bluetooth: btmtksdio: Add the missed release_firmware() in mtk_setup_firmware()
 Date:   Mon, 28 Dec 2020 13:45:37 +0100
-Message-Id: <20201228124920.650519884@linuxfoundation.org>
+Message-Id: <20201228125037.263315306@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,74 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Chiu <chiu@endlessos.org>
+From: Jing Xiangfeng <jingxiangfeng@huawei.com>
 
-commit ce6520b0eafad5962ffc21dc47cd7bd3250e9045 upstream.
+[ Upstream commit b73b5781a85c03113476f62346c390f0277baa4b ]
 
-The touchpad operates in Basic Mode by default in the Acer BIOS
-setup, but some Aspire/TravelMate models require the i8042 to be
-reset in order to be correctly detected.
+mtk_setup_firmware() misses to call release_firmware() in an error
+path. Jump to free_fw to fix it.
 
-Signed-off-by: Chris Chiu <chiu@endlessos.org>
-Link: https://lore.kernel.org/r/20201207071250.15021-1-chiu@endlessos.org
-Cc: stable@vger.kernel.org
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 737cd06072a7 ("Bluetooth: btmtksdio: fix up firmware download sequence")
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Signed-off-by: Johan Hedberg <johan.hedberg@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/serio/i8042-x86ia64io.h |   42 ++++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+ drivers/bluetooth/btmtksdio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/input/serio/i8042-x86ia64io.h
-+++ b/drivers/input/serio/i8042-x86ia64io.h
-@@ -616,6 +616,48 @@ static const struct dmi_system_id __init
- 		},
- 	},
- 	{
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire A114-31"),
-+		},
-+	},
-+	{
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire A314-31"),
-+		},
-+	},
-+	{
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire A315-31"),
-+		},
-+	},
-+	{
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire ES1-132"),
-+		},
-+	},
-+	{
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire ES1-332"),
-+		},
-+	},
-+	{
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire ES1-432"),
-+		},
-+	},
-+	{
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "TravelMate Spin B118-RN"),
-+		},
-+	},
-+	{
- 		/* Advent 4211 */
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "DIXONSXP"),
+diff --git a/drivers/bluetooth/btmtksdio.c b/drivers/bluetooth/btmtksdio.c
+index ba45c59bd9f36..5f9f027956317 100644
+--- a/drivers/bluetooth/btmtksdio.c
++++ b/drivers/bluetooth/btmtksdio.c
+@@ -704,7 +704,7 @@ static int mtk_setup_firmware(struct hci_dev *hdev, const char *fwname)
+ 	err = mtk_hci_wmt_sync(hdev, &wmt_params);
+ 	if (err < 0) {
+ 		bt_dev_err(hdev, "Failed to power on data RAM (%d)", err);
+-		return err;
++		goto free_fw;
+ 	}
+ 
+ 	fw_ptr = fw->data;
+-- 
+2.27.0
+
 
 
