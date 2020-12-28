@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 330A42E3A77
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:37:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FF0F2E42C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:28:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390690AbgL1NhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:37:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35674 "EHLO mail.kernel.org"
+        id S2392660AbgL1P2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:28:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391243AbgL1NgB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:36:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CC7E208BA;
-        Mon, 28 Dec 2020 13:35:45 +0000 (UTC)
+        id S2406784AbgL1N5R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:57:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C01920715;
+        Mon, 28 Dec 2020 13:57:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162546;
-        bh=XzsH2Q/ocLHZ+e33xlKac2hhFE/qebg0xmfxEOt6V+I=;
+        s=korg; t=1609163821;
+        bh=928TzreslQ5IpUfPn0ImDZSaWSiNvOAFCxBNWBX/BXU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OAQl2bsRFNdc/bIkhGuhpMrkNx9xhOLkcsf4K+GXNkgphvf3doB621iSikTx+qVTQ
-         YnQ0NTNz32YHGo14oipl4kWPEmwfQQPVJ6WXYuZS7r7DIyRNsdJ80wYvcUDDYOp+x7
-         9xOX2gp6eo9eme+lCx+ZjD8ZTz3dMk+2mqCAN4q0=
+        b=hT6AA113hTBxOsHan/vj3Q/TCzh+xtmnCVSQOu7hnR3CMCyeP+1Hm8JIFO2JYHczo
+         KLKonBU9hkkaZQS+s8aBkkKEdkFmt06WVsgmKTfr+QCgCZc5f74USEni6g6FkSw2y9
+         uoepAYv2biqDTX4jQKC7ntNaPIqTSb/plyQ4zV5E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yangtao Li <frank@allwinnertech.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 4.19 336/346] pinctrl: sunxi: Always call chained_irq_{enter, exit} in sunxi_pinctrl_irq_handler
-Date:   Mon, 28 Dec 2020 13:50:55 +0100
-Message-Id: <20201228124936.007795639@linuxfoundation.org>
+        stable@vger.kernel.org, Praveenkumar I <ipkumar@codeaurora.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH 5.4 420/453] mtd: rawnand: qcom: Fix DMA sync on FLASH_STATUS register read
+Date:   Mon, 28 Dec 2020 13:50:56 +0100
+Message-Id: <20201228124957.431039654@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,53 +39,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yangtao Li <frank@allwinnertech.com>
+From: Praveenkumar I <ipkumar@codeaurora.org>
 
-commit a1158e36f876f6269978a4176e3a1d48d27fe7a1 upstream.
+commit bc3686021122de953858a5be4cbf6e3f1d821e79 upstream.
 
-It is found on many allwinner soc that there is a low probability that
-the interrupt status cannot be read in sunxi_pinctrl_irq_handler. This
-will cause the interrupt status of a gpio bank to always be active on
-gic, preventing gic from responding to other spi interrupts correctly.
+After each codeword NAND_FLASH_STATUS is read for possible operational
+failures. But there is no DMA sync for CPU operation before reading it
+and this leads to incorrect or older copy of DMA buffer in reg_read_buf.
 
-So we should call the chained_irq_* each time enter sunxi_pinctrl_irq_handler().
+This patch adds the DMA sync on reg_read_buf for CPU before reading it.
 
-Signed-off-by: Yangtao Li <frank@allwinnertech.com>
+Fixes: 5bc36b2bf6e2 ("mtd: rawnand: qcom: check for operation errors in case of raw read")
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/85263ce8b058e80cea25c6ad6383eb256ce96cc8.1604988979.git.frank@allwinnertech.com
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Praveenkumar I <ipkumar@codeaurora.org>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/1602230872-25616-1-git-send-email-ipkumar@codeaurora.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/pinctrl/sunxi/pinctrl-sunxi.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/raw/qcom_nandc.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/pinctrl/sunxi/pinctrl-sunxi.c
-+++ b/drivers/pinctrl/sunxi/pinctrl-sunxi.c
-@@ -1001,20 +1001,22 @@ static void sunxi_pinctrl_irq_handler(st
- 	if (bank == pctl->desc->irq_banks)
- 		return;
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -1570,6 +1570,8 @@ static int check_flash_errors(struct qco
+ 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+ 	int i;
  
-+	chained_irq_enter(chip, desc);
++	nandc_read_buffer_sync(nandc, true);
 +
- 	reg = sunxi_irq_status_reg_from_bank(pctl->desc, bank);
- 	val = readl(pctl->membase + reg);
+ 	for (i = 0; i < cw_cnt; i++) {
+ 		u32 flash = le32_to_cpu(nandc->reg_read_buf[i]);
  
- 	if (val) {
- 		int irqoffset;
- 
--		chained_irq_enter(chip, desc);
- 		for_each_set_bit(irqoffset, &val, IRQ_PER_BANK) {
- 			int pin_irq = irq_find_mapping(pctl->domain,
- 						       bank * IRQ_PER_BANK + irqoffset);
- 			generic_handle_irq(pin_irq);
- 		}
--		chained_irq_exit(chip, desc);
- 	}
-+
-+	chained_irq_exit(chip, desc);
- }
- 
- static int sunxi_pinctrl_add_function(struct sunxi_pinctrl *pctl,
 
 
