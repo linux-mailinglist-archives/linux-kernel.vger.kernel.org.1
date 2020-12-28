@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 860EC2E3A1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:32:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1B642E431F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:34:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391057AbgL1Ncg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:32:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33076 "EHLO mail.kernel.org"
+        id S2392875AbgL1Paq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:30:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391038AbgL1Ncb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:32:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC28A206ED;
-        Mon, 28 Dec 2020 13:31:49 +0000 (UTC)
+        id S2405137AbgL1NzG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:55:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C095B207B2;
+        Mon, 28 Dec 2020 13:54:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162310;
-        bh=rN1UhIVGmv1kbOBSZbu95fHxVkQe5md3+jf0hDU4j3c=;
+        s=korg; t=1609163691;
+        bh=xf5MggKXe0tyKS3Ob8Gkx2Y7Y5B3DXK6e8tsJeiSo38=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J+HQy1XfOD3vUI1ihEWkStObEE4Vl/stiPn3iMW18wnOASyvBh1IraTmwbpGIMtja
-         xtcNgsxu395ZGH0DDwvS220pfDBU86MsN/UvSS0aG7sYUjRk/TiBsv03Rlky8rYcgF
-         uj2wsZCH8mXp8FoM0jZzNe0PGSNGHe114sw7xu3E=
+        b=nOf629zzQKYU8ReBQ0Zl3E61KkXe/GIBTkpKXVq8cMP+8EiJLM632wnMXG7k7umgx
+         1taQpAKTEDA0QvXQoOZKJAqJQI6rvF+xL0UNR2qumEkRu1mJuxPIcxAIhbo3YqSc2L
+         2xtytysCe+VV72B1m+kmWh/PJ5UfaNvPjKDj7ab0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Kozlov Sergey <serjk@netup.ru>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.19 260/346] media: netup_unidvb: Dont leak SPI master in probe error path
+        stable@vger.kernel.org, Chris Chiu <chiu@endlessos.org>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 343/453] ALSA: hda/realtek: Apply jack fixup for Quanta NL3
 Date:   Mon, 28 Dec 2020 13:49:39 +0100
-Message-Id: <20201228124932.350895318@linuxfoundation.org>
+Message-Id: <20201228124953.724338532@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,69 +39,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: Chris Chiu <chiu@endlessos.org>
 
-commit e297ddf296de35037fa97f4302782def196d350a upstream.
+commit 6ca653e3f73a1af0f30dbf9c2c79d2897074989f upstream.
 
-If the call to spi_register_master() fails on probe of the NetUP
-Universal DVB driver, the spi_master struct is erroneously not freed.
+The Quanta NL3 laptop has both a headphone output jack and a headset
+jack, on the right edge of the chassis.
 
-Likewise, if spi_new_device() fails, the spi_controller struct is
-not unregistered.  Plug the leaks.
+The pin information suggests that both of these are at the Front.
+The PulseAudio is confused to differentiate them so one of the jack
+can neither get the jack sense working nor the audio output.
 
-While at it, fix an ordering issue in netup_spi_release() wherein
-spi_unregister_master() is called after fiddling with the IRQ control
-register.  The correct order is to call spi_unregister_master() *before*
-this teardown step because bus accesses may still be ongoing until that
-function returns.
+The ALC269_FIXUP_LIFEBOOK chained with ALC269_FIXUP_QUANTA_MUTE can
+help to differentiate 2 jacks and get the 'Auto-Mute Mode' working
+correctly.
 
-Fixes: 52b1eaf4c59a ("[media] netup_unidvb: NetUP Universal DVB-S/S2/T/T2/C PCI-E card driver")
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Reviewed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc: <stable@vger.kernel.org> # v4.3+: 5e844cc37a5c: spi: Introduce device-managed SPI controller allocation
-Cc: <stable@vger.kernel.org> # v4.3+
-Cc: Kozlov Sergey <serjk@netup.ru>
-Link: https://lore.kernel.org/r/c4c24f333fc7840f4a3db24789e6e10dd660bede.1607286887.git.lukas@wunner.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Chris Chiu <chiu@endlessos.org>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201222150459.9545-1-chiu@endlessos.org
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/media/pci/netup_unidvb/netup_unidvb_spi.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/media/pci/netup_unidvb/netup_unidvb_spi.c
-+++ b/drivers/media/pci/netup_unidvb/netup_unidvb_spi.c
-@@ -184,7 +184,7 @@ int netup_spi_init(struct netup_unidvb_d
- 	struct spi_master *master;
- 	struct netup_spi *nspi;
- 
--	master = spi_alloc_master(&ndev->pci_dev->dev,
-+	master = devm_spi_alloc_master(&ndev->pci_dev->dev,
- 		sizeof(struct netup_spi));
- 	if (!master) {
- 		dev_err(&ndev->pci_dev->dev,
-@@ -217,6 +217,7 @@ int netup_spi_init(struct netup_unidvb_d
- 		ndev->pci_slot,
- 		ndev->pci_func);
- 	if (!spi_new_device(master, &netup_spi_board)) {
-+		spi_unregister_master(master);
- 		ndev->spi = NULL;
- 		dev_err(&ndev->pci_dev->dev,
- 			"%s(): unable to create SPI device\n", __func__);
-@@ -235,13 +236,13 @@ void netup_spi_release(struct netup_unid
- 	if (!spi)
- 		return;
- 
-+	spi_unregister_master(spi->master);
- 	spin_lock_irqsave(&spi->lock, flags);
- 	reg = readw(&spi->regs->control_stat);
- 	writew(reg | NETUP_SPI_CTRL_IRQ, &spi->regs->control_stat);
- 	reg = readw(&spi->regs->control_stat);
- 	writew(reg & ~NETUP_SPI_CTRL_IMASK, &spi->regs->control_stat);
- 	spin_unlock_irqrestore(&spi->lock, flags);
--	spi_unregister_master(spi->master);
- 	ndev->spi = NULL;
- }
- 
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -7947,6 +7947,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x1458, 0xfa53, "Gigabyte BXBT-2807", ALC283_FIXUP_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1462, 0xb120, "MSI Cubi MS-B120", ALC283_FIXUP_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1462, 0xb171, "Cubi N 8GL (MS-B171)", ALC283_FIXUP_HEADSET_MIC),
++	SND_PCI_QUIRK(0x152d, 0x1082, "Quanta NL3", ALC269_FIXUP_LIFEBOOK),
+ 	SND_PCI_QUIRK(0x1558, 0x1323, "Clevo N130ZU", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x1325, "System76 Darter Pro (darp5)", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x1401, "Clevo L140[CZ]U", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
 
 
