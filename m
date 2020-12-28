@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC0E72E3876
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:11:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F3682E39E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:30:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731425AbgL1NKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:10:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37962 "EHLO mail.kernel.org"
+        id S2390073AbgL1N3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:29:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729679AbgL1NKa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:10:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E441A20728;
-        Mon, 28 Dec 2020 13:10:13 +0000 (UTC)
+        id S2390010AbgL1N2z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:28:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BC4AD22582;
+        Mon, 28 Dec 2020 13:28:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161014;
-        bh=fRTe/BIEwO1lR6nwfXwwrFYIGxDT2pdPzAUgcL/kN0M=;
+        s=korg; t=1609162095;
+        bh=X6kk+vmnDN51qBg7Y7eRVjGS7L2G8ywbtoWUCD0tlLc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D2UPcqcVHhlQEb/ojl327mHCBX+MXCq0ivV6z1cl2loksL3kVcNp9rPyBItMpzfNB
-         12sy9A5+idS5ahACVV33oqHEHvofGL6OqpfY15NQ8cGiplspMm7XMQEab451+bewjB
-         zgqR5kg4cly/8wEukQjSWyTH+NRhFUQC5ufsUgE4=
+        b=Negnh7ceerwd7jjoUHfYxH9kOPjWSXGDU8UowFSNIfwMfTpIM2r4TKIHG9wxhlhbr
+         GUa3MUZCgvsJHcmAsebepCU9blbDNJNhSkbn/aHyhWtqmz/Wnq8f1s7J8aP3qJIl51
+         MvGlBjNO9+eCD7jM7uDkXIT2Lo8Fe7AEz9SWE6+g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bob Pearson <rpearson@hpe.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 070/242] RDMA/rxe: Compute PSN windows correctly
+Subject: [PATCH 4.19 156/346] soc: ti: knav_qmss: fix reference leak in knav_queue_probe
 Date:   Mon, 28 Dec 2020 13:47:55 +0100
-Message-Id: <20201228124908.132070682@linuxfoundation.org>
+Message-Id: <20201228124927.327854287@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +40,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Pearson <rpearsonhpe@gmail.com>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit bb3ab2979fd69db23328691cb10067861df89037 ]
+[ Upstream commit ec8684847d8062496c4619bc3fcff31c19d56847 ]
 
-The code which limited the number of unacknowledged PSNs was incorrect.
-The PSNs are limited to 24 bits and wrap back to zero from 0x00ffffff.
-The test was computing a 32 bit value which wraps at 32 bits so that
-qp->req.psn can appear smaller than the limit when it is actually larger.
+pm_runtime_get_sync will increment pm usage counter even it
+failed. Forgetting to pm_runtime_put_noidle will result in
+reference leak in knav_queue_probe, so we should fix it.
 
-Replace '>' test with psn_compare which is used for other PSN comparisons
-and correctly handles the 24 bit size.
-
-Fixes: 8700e3e7c485 ("Soft RoCE driver")
-Link: https://lore.kernel.org/r/20201013170741.3590-1-rpearson@hpe.com
-Signed-off-by: Bob Pearson <rpearson@hpe.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: 41f93af900a20 ("soc: ti: add Keystone Navigator QMSS driver")
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Signed-off-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/sw/rxe/rxe_req.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/soc/ti/knav_qmss_queue.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-index e6785b1ea85fc..693884160f001 100644
---- a/drivers/infiniband/sw/rxe/rxe_req.c
-+++ b/drivers/infiniband/sw/rxe/rxe_req.c
-@@ -664,7 +664,8 @@ next_wqe:
- 	}
- 
- 	if (unlikely(qp_type(qp) == IB_QPT_RC &&
--		     qp->req.psn > (qp->comp.psn + RXE_MAX_UNACKED_PSNS))) {
-+		psn_compare(qp->req.psn, (qp->comp.psn +
-+				RXE_MAX_UNACKED_PSNS)) > 0)) {
- 		qp->req.wait_psn = 1;
- 		goto exit;
+diff --git a/drivers/soc/ti/knav_qmss_queue.c b/drivers/soc/ti/knav_qmss_queue.c
+index ef36acc0e7088..ffd7046caa2ca 100644
+--- a/drivers/soc/ti/knav_qmss_queue.c
++++ b/drivers/soc/ti/knav_qmss_queue.c
+@@ -1799,6 +1799,7 @@ static int knav_queue_probe(struct platform_device *pdev)
+ 	pm_runtime_enable(&pdev->dev);
+ 	ret = pm_runtime_get_sync(&pdev->dev);
+ 	if (ret < 0) {
++		pm_runtime_put_noidle(&pdev->dev);
+ 		dev_err(dev, "Failed to enable QMSS\n");
+ 		return ret;
  	}
 -- 
 2.27.0
