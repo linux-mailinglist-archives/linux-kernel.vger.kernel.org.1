@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5A32E3898
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:14:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63D932E39D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:29:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732040AbgL1NMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:12:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39848 "EHLO mail.kernel.org"
+        id S2389984AbgL1N2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:28:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731701AbgL1NMC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:12:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D0392076D;
-        Mon, 28 Dec 2020 13:11:21 +0000 (UTC)
+        id S2389965AbgL1N2l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:28:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F19B207FF;
+        Mon, 28 Dec 2020 13:27:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161081;
-        bh=1qZOMy+bYF2Q3OTuskbhJRVfHU0KBdYSVAwrOrjkkWw=;
+        s=korg; t=1609162080;
+        bh=R2JNKXKJLp+/RplIksuI/Oz7ovJqYk/Hgm0atTwAcFM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f410pUnz+Nkx79mv0lBnNQpsKgs3nxVGq44dVjxSXFIl/brPntMCe49piLj2gdgE4
-         CuL2MnKiFz3dOt+oeXjYWhPvfyv4L6+Wwb42Vd2YxSBkDtZLtdSrc7RFwdsYan6xYx
-         QCyyY73aQhAU4oOqyh1UJuAv9xrkGBpa7H2YJRYo=
+        b=hHmYmlqb7zOtITkVS+NDwJiPhSGhhKCnPxmqzs1Bfh0zaGneyw3afNzytQEOAWebF
+         v7tWm6H7UaaN9M94q/zCrlM34CkpdBHLXzFB8/xeE07fGSClY+nTn7bZtbOQXR6Jc8
+         e+VRuI/32563+5RIk39LYhmx/0HtNgOfleney9es=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
-        Martin Wilck <mwilck@suse.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 094/242] scsi: core: Fix VPD LUN ID designator priorities
+Subject: [PATCH 4.19 180/346] PCI: Bounds-check command-line resource alignment requests
 Date:   Mon, 28 Dec 2020 13:48:19 +0100
-Message-Id: <20201228124909.325414942@linuxfoundation.org>
+Message-Id: <20201228124928.490779191@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,259 +40,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Wilck <mwilck@suse.com>
+From: Bjorn Helgaas <bhelgaas@google.com>
 
-[ Upstream commit 2e4209b3806cda9b89c30fd5e7bfecb7044ec78b ]
+[ Upstream commit 6534aac198b58309ff2337981d3f893e0be1d19d ]
 
-The current implementation of scsi_vpd_lun_id() uses the designator length
-as an implicit measure of priority. This works most of the time, but not
-always. For example, some Hitachi storage arrays return this in VPD 0x83:
+32-bit BARs are limited to 2GB size (2^31).  By extension, I assume 64-bit
+BARs are limited to 2^63 bytes.  Limit the alignment requested by the
+"pci=resource_alignment=" command-line parameter to 2^63.
 
-VPD INQUIRY: Device Identification page
-  Designation descriptor number 1, descriptor length: 24
-    designator_type: T10 vendor identification,  code_set: ASCII
-    associated with the Addressed logical unit
-      vendor id: HITACHI
-      vendor specific: 5030C3502025
-  Designation descriptor number 2, descriptor length: 6
-    designator_type: vendor specific [0x0],  code_set: Binary
-    associated with the Target port
-      vendor specific: 08 03
-  Designation descriptor number 3, descriptor length: 20
-    designator_type: NAA,  code_set: Binary
-    associated with the Addressed logical unit
-      NAA 6, IEEE Company_id: 0x60e8
-      Vendor Specific Identifier: 0x7c35000
-      Vendor Specific Identifier Extension: 0x30c35000002025
-      [0x60060e8007c350000030c35000002025]
-
-The current code would use the first descriptor because it's longer than
-the NAA descriptor. But this is wrong, the kernel is supposed to prefer NAA
-descriptors over T10 vendor ID. Designator length should only be used to
-compare designators of the same type.
-
-This patch addresses the issue by separating designator priority and
-length.
-
-Link: https://lore.kernel.org/r/20201029170846.14786-1-mwilck@suse.com
-Fixes: 9983bed3907c ("scsi: Add scsi_vpd_lun_id()")
-Reviewed-by: Hannes Reinecke <hare@suse.de>
-Signed-off-by: Martin Wilck <mwilck@suse.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Link: https://lore.kernel.org/r/20201007123045.GS4282@kadam
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/scsi_lib.c | 126 +++++++++++++++++++++++++++-------------
- 1 file changed, 86 insertions(+), 40 deletions(-)
+ drivers/pci/pci.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
-index c36c84c8725a0..6e0981b09c58b 100644
---- a/drivers/scsi/scsi_lib.c
-+++ b/drivers/scsi/scsi_lib.c
-@@ -3326,6 +3326,78 @@ void sdev_enable_disk_events(struct scsi_device *sdev)
- }
- EXPORT_SYMBOL(sdev_enable_disk_events);
- 
-+static unsigned char designator_prio(const unsigned char *d)
-+{
-+	if (d[1] & 0x30)
-+		/* not associated with LUN */
-+		return 0;
-+
-+	if (d[3] == 0)
-+		/* invalid length */
-+		return 0;
-+
-+	/*
-+	 * Order of preference for lun descriptor:
-+	 * - SCSI name string
-+	 * - NAA IEEE Registered Extended
-+	 * - EUI-64 based 16-byte
-+	 * - EUI-64 based 12-byte
-+	 * - NAA IEEE Registered
-+	 * - NAA IEEE Extended
-+	 * - EUI-64 based 8-byte
-+	 * - SCSI name string (truncated)
-+	 * - T10 Vendor ID
-+	 * as longer descriptors reduce the likelyhood
-+	 * of identification clashes.
-+	 */
-+
-+	switch (d[1] & 0xf) {
-+	case 8:
-+		/* SCSI name string, variable-length UTF-8 */
-+		return 9;
-+	case 3:
-+		switch (d[4] >> 4) {
-+		case 6:
-+			/* NAA registered extended */
-+			return 8;
-+		case 5:
-+			/* NAA registered */
-+			return 5;
-+		case 4:
-+			/* NAA extended */
-+			return 4;
-+		case 3:
-+			/* NAA locally assigned */
-+			return 1;
-+		default:
-+			break;
-+		}
-+		break;
-+	case 2:
-+		switch (d[3]) {
-+		case 16:
-+			/* EUI64-based, 16 byte */
-+			return 7;
-+		case 12:
-+			/* EUI64-based, 12 byte */
-+			return 6;
-+		case 8:
-+			/* EUI64-based, 8 byte */
-+			return 3;
-+		default:
-+			break;
-+		}
-+		break;
-+	case 1:
-+		/* T10 vendor ID */
-+		return 1;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
- /**
-  * scsi_vpd_lun_id - return a unique device identification
-  * @sdev: SCSI device
-@@ -3342,7 +3414,7 @@ EXPORT_SYMBOL(sdev_enable_disk_events);
-  */
- int scsi_vpd_lun_id(struct scsi_device *sdev, char *id, size_t id_len)
- {
--	u8 cur_id_type = 0xff;
-+	u8 cur_id_prio = 0;
- 	u8 cur_id_size = 0;
- 	const unsigned char *d, *cur_id_str;
- 	const struct scsi_vpd *vpd_pg83;
-@@ -3355,20 +3427,6 @@ int scsi_vpd_lun_id(struct scsi_device *sdev, char *id, size_t id_len)
- 		return -ENXIO;
- 	}
- 
--	/*
--	 * Look for the correct descriptor.
--	 * Order of preference for lun descriptor:
--	 * - SCSI name string
--	 * - NAA IEEE Registered Extended
--	 * - EUI-64 based 16-byte
--	 * - EUI-64 based 12-byte
--	 * - NAA IEEE Registered
--	 * - NAA IEEE Extended
--	 * - T10 Vendor ID
--	 * as longer descriptors reduce the likelyhood
--	 * of identification clashes.
--	 */
--
- 	/* The id string must be at least 20 bytes + terminating NULL byte */
- 	if (id_len < 21) {
- 		rcu_read_unlock();
-@@ -3378,8 +3436,9 @@ int scsi_vpd_lun_id(struct scsi_device *sdev, char *id, size_t id_len)
- 	memset(id, 0, id_len);
- 	d = vpd_pg83->data + 4;
- 	while (d < vpd_pg83->data + vpd_pg83->len) {
--		/* Skip designators not referring to the LUN */
--		if ((d[1] & 0x30) != 0x00)
-+		u8 prio = designator_prio(d);
-+
-+		if (prio == 0 || cur_id_prio > prio)
- 			goto next_desig;
- 
- 		switch (d[1] & 0xf) {
-@@ -3387,28 +3446,19 @@ int scsi_vpd_lun_id(struct scsi_device *sdev, char *id, size_t id_len)
- 			/* T10 Vendor ID */
- 			if (cur_id_size > d[3])
- 				break;
--			/* Prefer anything */
--			if (cur_id_type > 0x01 && cur_id_type != 0xff)
--				break;
-+			cur_id_prio = prio;
- 			cur_id_size = d[3];
- 			if (cur_id_size + 4 > id_len)
- 				cur_id_size = id_len - 4;
- 			cur_id_str = d + 4;
--			cur_id_type = d[1] & 0xf;
- 			id_size = snprintf(id, id_len, "t10.%*pE",
- 					   cur_id_size, cur_id_str);
- 			break;
- 		case 0x2:
- 			/* EUI-64 */
--			if (cur_id_size > d[3])
--				break;
--			/* Prefer NAA IEEE Registered Extended */
--			if (cur_id_type == 0x3 &&
--			    cur_id_size == d[3])
--				break;
-+			cur_id_prio = prio;
- 			cur_id_size = d[3];
- 			cur_id_str = d + 4;
--			cur_id_type = d[1] & 0xf;
- 			switch (cur_id_size) {
- 			case 8:
- 				id_size = snprintf(id, id_len,
-@@ -3426,17 +3476,14 @@ int scsi_vpd_lun_id(struct scsi_device *sdev, char *id, size_t id_len)
- 						   cur_id_str);
- 				break;
- 			default:
--				cur_id_size = 0;
- 				break;
- 			}
- 			break;
- 		case 0x3:
- 			/* NAA */
--			if (cur_id_size > d[3])
--				break;
-+			cur_id_prio = prio;
- 			cur_id_size = d[3];
- 			cur_id_str = d + 4;
--			cur_id_type = d[1] & 0xf;
- 			switch (cur_id_size) {
- 			case 8:
- 				id_size = snprintf(id, id_len,
-@@ -3449,26 +3496,25 @@ int scsi_vpd_lun_id(struct scsi_device *sdev, char *id, size_t id_len)
- 						   cur_id_str);
- 				break;
- 			default:
--				cur_id_size = 0;
- 				break;
- 			}
- 			break;
- 		case 0x8:
- 			/* SCSI name string */
--			if (cur_id_size + 4 > d[3])
-+			if (cur_id_size > d[3])
- 				break;
- 			/* Prefer others for truncated descriptor */
--			if (cur_id_size && d[3] > id_len)
--				break;
-+			if (d[3] > id_len) {
-+				prio = 2;
-+				if (cur_id_prio > prio)
-+					break;
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index 57a87a001b4f4..5103d4b140ee3 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -5840,19 +5840,21 @@ static resource_size_t pci_specified_resource_alignment(struct pci_dev *dev,
+ 	while (*p) {
+ 		count = 0;
+ 		if (sscanf(p, "%d%n", &align_order, &count) == 1 &&
+-							p[count] == '@') {
++		    p[count] == '@') {
+ 			p += count + 1;
++			if (align_order > 63) {
++				pr_err("PCI: Invalid requested alignment (order %d)\n",
++				       align_order);
++				align_order = PAGE_SHIFT;
 +			}
-+			cur_id_prio = prio;
- 			cur_id_size = id_size = d[3];
- 			cur_id_str = d + 4;
--			cur_id_type = d[1] & 0xf;
- 			if (cur_id_size >= id_len)
- 				cur_id_size = id_len - 1;
- 			memcpy(id, cur_id_str, cur_id_size);
--			/* Decrease priority for truncated descriptor */
--			if (cur_id_size != id_size)
--				cur_id_size = 6;
+ 		} else {
+-			align_order = -1;
++			align_order = PAGE_SHIFT;
+ 		}
+ 
+ 		ret = pci_dev_str_match(dev, p, &p);
+ 		if (ret == 1) {
+ 			*resize = true;
+-			if (align_order == -1)
+-				align = PAGE_SIZE;
+-			else
+-				align = 1 << align_order;
++			align = 1 << align_order;
  			break;
- 		default:
- 			break;
+ 		} else if (ret < 0) {
+ 			pr_err("PCI: Can't parse resource_alignment parameter: %s\n",
 -- 
 2.27.0
 
