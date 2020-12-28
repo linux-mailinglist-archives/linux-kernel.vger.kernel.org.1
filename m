@@ -2,126 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 638902E344E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 06:29:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B53622E3451
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 06:29:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727868AbgL1F2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 00:28:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34712 "EHLO
+        id S1727998AbgL1F3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 00:29:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726417AbgL1F2R (ORCPT
+        with ESMTP id S1727943AbgL1F3K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 00:28:17 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80AFAC061794
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 21:27:37 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id g15so6726030pgu.9
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 21:27:37 -0800 (PST)
+        Mon, 28 Dec 2020 00:29:10 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74114C061796
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 21:28:30 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id y8so5119260plp.8
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 21:28:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=m6iGFAz/o22U6PmB3WkdjaUQwLdQTi18fE/pFAkMQkY=;
-        b=ag7J8eZ563WdkpxC/oJWe2X6CKpfPEfNcj5tJENe/6miIBnVH0nJ0arfa9180VIZtR
-         MzOcV1yijQRo+0uhzmnsihgXRAzxv27+x6tNE6dHGJ0A/ufNIQPvHn0nNX0mm8qKaeJu
-         Joi/SdnpKJifhhrJ/k3swT6dhdxwYMKAAqcS48l3hoaDEmAMKD4j9XO7o31QixdKXBBN
-         qnCbaltwN9JujCS8N8L0WkS0vz4NRxvaECe+8vYB8DQGz93IKj3lgatRPTtEKne/xnEQ
-         XR6x36lCcSvQD2KHA3NZL7M4k8wdoUwaxxPMlVveDOrqjcBajOcIYGYk5+NzcLNej9Hv
-         /imw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=3oz21Ub57lWDH8p5jFu652FsrPXlKogfC2kiSGZUKOQ=;
+        b=SvA4JT7MAFuwp9CQ6cuq8DL+TCJ2DsQxbu+hdbTjLKxrSMynLkEHR6xUklwa7YoW5Q
+         XwlsrF57LtmrOpYlahHLPGBEsXjBK0aSiWmJcldWFEm1N/M+uk+lKlM3eCAyTt+EUxYW
+         4pA+ydtxyXGKgkgXa0TQS7xznu34l0U88QhCKJuEcDdY7ry2XuK1fXd2RNCjVhCn5E3Q
+         Owy+126qF3oWD+fjp/kdBZswVKmSX7+/j9X1auJcwHaBU8Km/0UT8q40ey4CA5Q3GQaz
+         /jmAJsFk98TpUypvhSF1K7FHHJQvjPd3RVPoofl+uYnJAQVPWAWzesxpB4BocKXRBvFv
+         0Obw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=m6iGFAz/o22U6PmB3WkdjaUQwLdQTi18fE/pFAkMQkY=;
-        b=R6sZX66qxFIQ/uoMamCZG520zfuYSUvJehF1wMYv5QVLWNnjWJwHFjz2KWAYy+Kpfo
-         w+cI/wOfL66omYrwFLO6UyPMdf+UU7Y8HnvKbQiE7ZYHqWxs9dV+JJZgrDe9kCKzuCbA
-         buYIh8SqgT0IJ37stF2mWmHoQKwvOCgr2kEQWT1mLNE1sxjc65rQ+rRJeOTDUL2LFusk
-         6kIKAnCfT0PUhKxSSVMDXuhUeFG7tIe4uvjbHftYfGZ9jphl12q9geUyirg1gaWPgqDk
-         lOz2uSgIcMeYORe7m9Cm9mkPVSFitNupR/t//bztjDtUL7xSmkCW/cySVVaBuM6gDDcK
-         3FXw==
-X-Gm-Message-State: AOAM533MP8nwUy/uV0NyOGzHCoP5WsUcreN49yMjuT109gkqRYI4D+a8
-        3e1H1+GHTMT5fHvsVtWfOwLZWw==
-X-Google-Smtp-Source: ABdhPJxHP1zQadptEw3kENTzYuSjxHYcBX5Q0UZwbXn0p3j/ap4yYCdzDqmUlgmDFFXt5WybE0P0oQ==
-X-Received: by 2002:a63:794:: with SMTP id 142mr41874141pgh.187.1609133256843;
-        Sun, 27 Dec 2020 21:27:36 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=3oz21Ub57lWDH8p5jFu652FsrPXlKogfC2kiSGZUKOQ=;
+        b=L0ga6PvdoGgOwrUxCOa/Br9s5+LqsC+jzwiVxUYy3+5XMVVDD9ZbJndrj3tpDVo2Va
+         +5KJ9WH21KPFKyH7UfpZflQzVlCr8lE/K0FSZLTWscKQFhkcKiLuvvylzpzKkcC0MDmK
+         qOVTvwADBR9NPtz4Zbo/F1vakZts2pdBupEzvyoUStNu7uQvsC6M2by64MFQEi8jloEr
+         ZhmcE0V0h3ZnHMQVzPkt/WyV+evbDE4ShBpA9i+/8FvC814wpTcKOXVVdu4UtKFMhyxY
+         Z0Yf/+Ow4MYfSsil0whmeLmY2J10r8tsq3PuKFl3vrYDqwOpjIgyou4Wqh93tl7/NCsU
+         vb9g==
+X-Gm-Message-State: AOAM530QtmFpu2VbU3ex4BQ3ggPZLtuEJwwQjeDE+oybYssckeh58Zbq
+        WW63vQ17FFhU/bXjrHrIvBYYaQ==
+X-Google-Smtp-Source: ABdhPJy1JAI4TTJp55VsTyJnfdEhOTvktuLnYwC+MftyBcUZ8fYv8WVgIZhvCLKRLgnCeTOcgkilGw==
+X-Received: by 2002:a17:90a:e005:: with SMTP id u5mr19325143pjy.64.1609133309944;
+        Sun, 27 Dec 2020 21:28:29 -0800 (PST)
 Received: from localhost ([122.172.20.109])
-        by smtp.gmail.com with ESMTPSA id k11sm37735624pgt.83.2020.12.27.21.27.35
+        by smtp.gmail.com with ESMTPSA id p3sm12399613pjg.53.2020.12.27.21.28.29
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 27 Dec 2020 21:27:35 -0800 (PST)
-Date:   Mon, 28 Dec 2020 10:57:33 +0530
+        Sun, 27 Dec 2020 21:28:29 -0800 (PST)
 From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     quanyang.wang@windriver.com
-Cc:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+To:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
         Stephen Boyd <sboyd@kernel.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] opp: fix memory leak in _allocate_opp_table
-Message-ID: <20201228052733.wbrckyooh6bp2mmo@vireshk-i7>
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Stephan Gerhold <stephan@gerhold.net>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        quanyang.wang@windriver.com, "v5 . 10" <stable@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] opp: Call the missing clk_put() on error
+Date:   Mon, 28 Dec 2020 10:58:21 +0530
+Message-Id: <0e1d9ca1766f5d95fb881f57b6c4a1ffa63d4648.1609133256.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+In-Reply-To: <20201224104927.722763-1-quanyang.wang@windriver.com>
 References: <20201224104927.722763-1-quanyang.wang@windriver.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201224104927.722763-1-quanyang.wang@windriver.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24-12-20, 18:49, quanyang.wang@windriver.com wrote:
-> From: Quanyang Wang <quanyang.wang@windriver.com>
-> 
-> In function _allocate_opp_table, opp_dev is allocated and referenced
-> by opp_table via _add_opp_dev. But in the case that the subsequent calls
-> return -EPROBE_DEFER, it will jump to err label and opp_table will be
-> freed. Then opp_dev becomes an unreferenced object to cause memory leak.
-> So let's call _remove_opp_dev to do the cleanup.
-> 
-> This fixes the following kmemleak report:
-> 
-> unreferenced object 0xffff000801524a00 (size 128):
->   comm "swapper/0", pid 1, jiffies 4294892465 (age 84.616s)
->   hex dump (first 32 bytes):
->     40 00 56 01 08 00 ff ff 40 00 56 01 08 00 ff ff  @.V.....@.V.....
->     b8 52 77 7f 08 00 ff ff 00 3c 4c 00 08 00 ff ff  .Rw......<L.....
->   backtrace:
->     [<00000000b1289fb1>] kmemleak_alloc+0x30/0x40
->     [<0000000056da48f0>] kmem_cache_alloc+0x3d4/0x588
->     [<00000000a84b3b0e>] _add_opp_dev+0x2c/0x88
->     [<0000000062a380cd>] _add_opp_table_indexed+0x124/0x268
->     [<000000008b4c8f1f>] dev_pm_opp_of_add_table+0x20/0x1d8
->     [<00000000e5316798>] dev_pm_opp_of_cpumask_add_table+0x48/0xf0
->     [<00000000db0a8ec2>] dt_cpufreq_probe+0x20c/0x448
->     [<0000000030a3a26c>] platform_probe+0x68/0xd8
->     [<00000000c618e78d>] really_probe+0xd0/0x3a0
->     [<00000000642e856f>] driver_probe_device+0x58/0xb8
->     [<00000000f10f5307>] device_driver_attach+0x74/0x80
->     [<0000000004f254b8>] __driver_attach+0x58/0xe0
->     [<0000000009d5d19e>] bus_for_each_dev+0x70/0xc8
->     [<0000000000d22e1c>] driver_attach+0x24/0x30
->     [<0000000001d4e952>] bus_add_driver+0x14c/0x1f0
->     [<0000000089928aaa>] driver_register+0x64/0x120
-> 
-> Fixes: dd461cd9183f ("opp: Allow dev_pm_opp_get_opp_table() to return -EPROBE_DEFER")
-> Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
-> ---
->  drivers/opp/core.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+Fix the clock reference counting by calling the missing clk_put() in the
+error path.
 
-Applied with an additional patch. Thanks.
-
-Author: Viresh Kumar <viresh.kumar@linaro.org>
-Date:   Mon Dec 28 10:51:04 2020 +0530
-
-    opp: Call the missing clk_put() on error
-    
-    Fix the clock reference counting by calling the missing clk_put() in the
-    error path.
-    
-    Cc: v5.10 <stable@vger.kernel.org> # v5.10
-    Fixes: dd461cd9183f ("opp: Allow dev_pm_opp_get_opp_table() to return -EPROBE_DEFER")
-    Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Cc: v5.10 <stable@vger.kernel.org> # v5.10
+Fixes: dd461cd9183f ("opp: Allow dev_pm_opp_get_opp_table() to return -EPROBE_DEFER")
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
  drivers/opp/core.c | 5 ++++-
  1 file changed, 4 insertions(+), 1 deletion(-)
@@ -131,24 +86,24 @@ index c9e50836b4c2..8c905aabacc0 100644
 --- a/drivers/opp/core.c
 +++ b/drivers/opp/core.c
 @@ -1101,7 +1101,7 @@ static struct opp_table *_allocate_opp_table(struct device *dev, int index)
-        ret = dev_pm_opp_of_find_icc_paths(dev, opp_table);
-        if (ret) {
-                if (ret == -EPROBE_DEFER)
--                       goto remove_opp_dev;
-+                       goto put_clk;
+ 	ret = dev_pm_opp_of_find_icc_paths(dev, opp_table);
+ 	if (ret) {
+ 		if (ret == -EPROBE_DEFER)
+-			goto remove_opp_dev;
++			goto put_clk;
  
-                dev_warn(dev, "%s: Error finding interconnect paths: %d\n",
-                         __func__, ret);
+ 		dev_warn(dev, "%s: Error finding interconnect paths: %d\n",
+ 			 __func__, ret);
 @@ -1113,6 +1113,9 @@ static struct opp_table *_allocate_opp_table(struct device *dev, int index)
  
-        return opp_table;
+ 	return opp_table;
  
 +put_clk:
-+       if (!IS_ERR(opp_table->clk))
-+               clk_put(opp_table->clk);
++	if (!IS_ERR(opp_table->clk))
++		clk_put(opp_table->clk);
  remove_opp_dev:
-        _remove_opp_dev(opp_dev, opp_table);
+ 	_remove_opp_dev(opp_dev, opp_table);
  err:
-
 -- 
-viresh
+2.25.0.rc1.19.g042ed3e048af
+
