@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1E22E398A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:25:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48BBB2E4082
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:53:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388786AbgL1NYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:24:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53180 "EHLO mail.kernel.org"
+        id S2505427AbgL1OxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:53:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388765AbgL1NYj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:24:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ABC7222475;
-        Mon, 28 Dec 2020 13:23:58 +0000 (UTC)
+        id S2441630AbgL1OTZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:19:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CFF122B2C;
+        Mon, 28 Dec 2020 14:18:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161839;
-        bh=hibfEYcZMpAQOZQcxA1X8HzL8fC7B2ItYcXpA3QsG5U=;
+        s=korg; t=1609165124;
+        bh=9g0/XxWyP3jMlOsB5v6yCEAHuPcYlFakdyDme1xpF90=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RwlJFUU4HAr5cJBwwnBkqOUDJ3Qmf+zKiw+80V57FM7t1CbUNO+4aQ48go2q395Ef
-         NxppuN9M9sEkmGuCkvpGzw5/5F1N4ULudXrxj2kumOt1bPEFaMHPqBgYVpWicIwCzQ
-         Ww2tR6+pFrDaDNyyinpDX8+LSK503OCZQuZK2OaQ=
+        b=S9Uq+TmgZMFgxJ038nCf9KWDK+conzJRmbihJ36QHuYDcLgRKHaHdr1LsTQ9jDJ07
+         2sAycyA7j19PeGEUSmDRVM/KxGdQygIs5pZyt7QOavaRqF1liA2t5UvYcE6dGK8R6b
+         5kVEXHDXRAsojnczReBAsj20RqlE03X9b8bJnsGM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 100/346] soc: renesas: rmobile-sysc: Fix some leaks in rmobile_init_pm_domains()
+        stable@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 421/717] dmaengine: ti: k3-udma: Correct normal channel offset when uchan_cnt is not 0
 Date:   Mon, 28 Dec 2020 13:46:59 +0100
-Message-Id: <20201228124924.617704645@linuxfoundation.org>
+Message-Id: <20201228125041.133605068@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,33 +39,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
 
-[ Upstream commit cf25d802e029c31efac8bdc979236927f37183bd ]
+[ Upstream commit e2de925bbfe321ba0588c99f577c59386ab1f428 ]
 
-This code needs to call iounmap() on one error path.
+According to different sections of the TRM, the hchan_cnt of CAP3 includes
+the number of uchan in UDMA, thus the start offset of the normal channels
+are hchan_cnt.
 
-Fixes: 2173fc7cb681 ("ARM: shmobile: R-Mobile: Add DT support for PM domains")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/20200923113142.GC1473821@mwanda
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Fixes: daf4ad0499aa4 ("dmaengine: ti: k3-udma: Query throughput level information from hardware")
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Link: https://lore.kernel.org/r/20201208090440.31792-2-peter.ujfalusi@ti.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/mach-shmobile/pm-rmobile.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/dma/ti/k3-udma.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/arm/mach-shmobile/pm-rmobile.c b/arch/arm/mach-shmobile/pm-rmobile.c
-index e348bcfe389da..cb8b02a1abe26 100644
---- a/arch/arm/mach-shmobile/pm-rmobile.c
-+++ b/arch/arm/mach-shmobile/pm-rmobile.c
-@@ -330,6 +330,7 @@ static int __init rmobile_init_pm_domains(void)
- 
- 		pmd = of_get_child_by_name(np, "pm-domains");
- 		if (!pmd) {
-+			iounmap(base);
- 			pr_warn("%pOF lacks pm-domains node\n", np);
- 			continue;
- 		}
+diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
+index 82cf6c77f5c93..d3902784cae24 100644
+--- a/drivers/dma/ti/k3-udma.c
++++ b/drivers/dma/ti/k3-udma.c
+@@ -3201,8 +3201,7 @@ static int udma_setup_resources(struct udma_dev *ud)
+ 	} else if (UDMA_CAP3_UCHAN_CNT(cap3)) {
+ 		ud->tpl_levels = 3;
+ 		ud->tpl_start_idx[1] = UDMA_CAP3_UCHAN_CNT(cap3);
+-		ud->tpl_start_idx[0] = ud->tpl_start_idx[1] +
+-				       UDMA_CAP3_HCHAN_CNT(cap3);
++		ud->tpl_start_idx[0] = UDMA_CAP3_HCHAN_CNT(cap3);
+ 	} else if (UDMA_CAP3_HCHAN_CNT(cap3)) {
+ 		ud->tpl_levels = 2;
+ 		ud->tpl_start_idx[0] = UDMA_CAP3_HCHAN_CNT(cap3);
 -- 
 2.27.0
 
