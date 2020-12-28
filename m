@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCE1D2E3E80
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:29:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F348B2E382B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:07:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502598AbgL1O2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:28:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36662 "EHLO mail.kernel.org"
+        id S1729722AbgL1NGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:06:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502519AbgL1O2p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:28:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EC31208B6;
-        Mon, 28 Dec 2020 14:28:04 +0000 (UTC)
+        id S1730997AbgL1NGV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:06:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B23E22582;
+        Mon, 28 Dec 2020 13:06:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165685;
-        bh=wAAhsgCdQH/YGceVJMG3dh+I4tdKvBIPXAipij5iSCY=;
+        s=korg; t=1609160766;
+        bh=aRFtjc0P4kSaBuZtpRKNgR4103VojKbxB7pdrr3GHNA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zZxnIxI7jf/75J7MAWxAxHU8K8q2/FLGyHGLJnxQV2maOrrqklFDglQ+uBsRFM8XI
-         /iLRDcAA2sc7wEceebNzaf6UoETfmcw/aAWVIHbNLnhwGjpJmSQXKI94WLT34VebAO
-         Hhu5O1wvZbfPkPoSxso0xaDilE8R5j+RphhvKEk0=
+        b=xzKNLR1VuzKx02mt2qpj0Z/anTgTv7dQzwb6XGakk11RSW/XknBz/Swd8K6g4TuDo
+         8Bqq8MKoLLtH3lMNylz6wePoYDQk4m9pmJSVEoxG1hQHO5rhAknJCiXXfiTZFW3aTJ
+         sWf/iwyR5K3DpmVa2MtFReDRDSQLuLPXtfsftTM4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Mimi Zohar <zohar@linux.ibm.com>
-Subject: [PATCH 5.10 619/717] ima: Dont modify file descriptor mode on the fly
+        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
+        Purna Chandra Mandal <purna.mandal@microchip.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.9 164/175] spi: pic32: Dont leak DMA channels in probe error path
 Date:   Mon, 28 Dec 2020 13:50:17 +0100
-Message-Id: <20201228125050.581685971@linuxfoundation.org>
+Message-Id: <20201228124901.185726786@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,75 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roberto Sassu <roberto.sassu@huawei.com>
+From: Lukas Wunner <lukas@wunner.de>
 
-commit 207cdd565dfc95a0a5185263a567817b7ebf5467 upstream.
+commit c575e9113bff5e024d75481613faed5ef9d465b2 upstream.
 
-Commit a408e4a86b36b ("ima: open a new file instance if no read
-permissions") already introduced a second open to measure a file when the
-original file descriptor does not allow it. However, it didn't remove the
-existing method of changing the mode of the original file descriptor, which
-is still necessary if the current process does not have enough privileges
-to open a new one.
+If the calls to devm_request_irq() or devm_spi_register_master() fail
+on probe of the PIC32 SPI driver, the DMA channels requested by
+pic32_spi_dma_prep() are erroneously not released.  Plug the leak.
 
-Changing the mode isn't really an option, as the filesystem might need to
-do preliminary steps to make the read possible. Thus, this patch removes
-the code and keeps the second open as the only option to measure a file
-when it is unreadable with the original file descriptor.
-
-Cc: <stable@vger.kernel.org> # 4.20.x: 0014cc04e8ec0 ima: Set file->f_mode
-Fixes: 2fe5d6def1672 ("ima: integrity appraisal extension")
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+Fixes: 1bcb9f8ceb67 ("spi: spi-pic32: Add PIC32 SPI master driver")
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Cc: <stable@vger.kernel.org> # v4.7+
+Cc: Purna Chandra Mandal <purna.mandal@microchip.com>
+Link: https://lore.kernel.org/r/9624250e3a7aa61274b38219a62375bac1def637.1604874488.git.lukas@wunner.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- security/integrity/ima/ima_crypto.c |   20 +++++---------------
- 1 file changed, 5 insertions(+), 15 deletions(-)
+ drivers/spi/spi-pic32.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/security/integrity/ima/ima_crypto.c
-+++ b/security/integrity/ima/ima_crypto.c
-@@ -537,7 +537,7 @@ int ima_calc_file_hash(struct file *file
- 	loff_t i_size;
- 	int rc;
- 	struct file *f = file;
--	bool new_file_instance = false, modified_mode = false;
-+	bool new_file_instance = false;
+--- a/drivers/spi/spi-pic32.c
++++ b/drivers/spi/spi-pic32.c
+@@ -839,6 +839,7 @@ static int pic32_spi_probe(struct platfo
+ 	return 0;
  
- 	/*
- 	 * For consistency, fail file's opened with the O_DIRECT flag on
-@@ -555,18 +555,10 @@ int ima_calc_file_hash(struct file *file
- 				O_TRUNC | O_CREAT | O_NOCTTY | O_EXCL);
- 		flags |= O_RDONLY;
- 		f = dentry_open(&file->f_path, flags, file->f_cred);
--		if (IS_ERR(f)) {
--			/*
--			 * Cannot open the file again, lets modify f_mode
--			 * of original and continue
--			 */
--			pr_info_ratelimited("Unable to reopen file for reading.\n");
--			f = file;
--			f->f_mode |= FMODE_READ;
--			modified_mode = true;
--		} else {
--			new_file_instance = true;
--		}
-+		if (IS_ERR(f))
-+			return PTR_ERR(f);
-+
-+		new_file_instance = true;
- 	}
- 
- 	i_size = i_size_read(file_inode(f));
-@@ -581,8 +573,6 @@ int ima_calc_file_hash(struct file *file
- out:
- 	if (new_file_instance)
- 		fput(f);
--	else if (modified_mode)
--		f->f_mode &= ~FMODE_READ;
- 	return rc;
- }
- 
+ err_bailout:
++	pic32_spi_dma_unprep(pic32s);
+ 	clk_disable_unprepare(pic32s->clk);
+ err_master:
+ 	spi_master_put(master);
 
 
