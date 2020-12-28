@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7D32E4007
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:48:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CB902E3E1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:24:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392372AbgL1Oqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:46:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59798 "EHLO mail.kernel.org"
+        id S2502981AbgL1OYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:24:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502900AbgL1OXs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:23:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4582206D4;
-        Mon, 28 Dec 2020 14:23:06 +0000 (UTC)
+        id S2502922AbgL1OXu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:23:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AEA4207B2;
+        Mon, 28 Dec 2020 14:23:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165387;
-        bh=MmG8KOuktm7mFn9OvCZwv5Ou7Rl4C6yIs4bp9OjUqw0=;
+        s=korg; t=1609165390;
+        bh=WBPwrnMQKvcObH2RsuhW9WupIBbX4ocOY1SQ/Up1nRM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tAUEREY6sa9X+5/4bdpnnRlUs3oc2CNnqg07rO8XYxEmOpbzPj4bE1GzrRs71X6no
-         QQ+yOWq7UgMcG5A8071KdbcwJDEzY4syicQ37CFu+g84KYeXt5FoU6GyAmp4gyI+0Y
-         fsGMJNn8miYgbMd/eP24bYdg3ZBhS+B1IXr89zyU=
+        b=uDUMi7iA/sf/mT5kBjc1sHKHO8Z9R+E7GyjPnzMzGmS1htz8fw6zSP4PEppUcE0yD
+         66zZHY71iMW0KNBq3g4ulq6mHZ8Xr8NCMlzfbTxaGkyOHS5V7sR5P/Col5XbCwDXOv
+         3Y4d97+U4hKgwT3k3dLcXTg7QadsPdDF/5oY8nIE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Taras Galchenko <tpgalchenko@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 482/717] pwm: sun4i: Remove erroneous else branch
-Date:   Mon, 28 Dec 2020 13:48:00 +0100
-Message-Id: <20201228125044.061381976@linuxfoundation.org>
+        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 483/717] io_uring: cancel only requests of current task
+Date:   Mon, 28 Dec 2020 13:48:01 +0100
+Message-Id: <20201228125044.109059952@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
 References: <20201228125020.963311703@linuxfoundation.org>
@@ -42,51 +39,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thierry Reding <thierry.reding@gmail.com>
+From: Pavel Begunkov <asml.silence@gmail.com>
 
-[ Upstream commit 6eefb79d6f5bc4086bd02c76f1072dd4a8d9d9f6 ]
+[ Upstream commit df9923f96717d0aebb0a73adbcf6285fa79e38cb ]
 
-Commit d3817a647059 ("pwm: sun4i: Remove redundant needs_delay") changed
-the logic of an else branch so that the PWM_EN and PWM_CLK_GATING bits
-are now cleared if the PWM is to be disabled, whereas previously the
-condition was always false, and hence the branch never got executed.
+io_uring_cancel_files() cancels all request that match files regardless
+of task. There is no real need in that, cancel only requests of the
+specified task. That also handles SQPOLL case as it already changes task
+to it.
 
-This code is reported causing backlight issues on boards based on the
-Allwinner A20 SoC. Fix this by removing the else branch, which restores
-the behaviour prior to the offending commit.
-
-Note that the PWM_EN and PWM_CLK_GATING bits still get cleared later in
-sun4i_pwm_apply() if the PWM is to be disabled.
-
-Fixes: d3817a647059 ("pwm: sun4i: Remove redundant needs_delay")
-Reported-by: Taras Galchenko <tpgalchenko@gmail.com>
-Suggested-by: Taras Galchenko <tpgalchenko@gmail.com>
-Tested-by: Taras Galchenko <tpgalchenko@gmail.com>
-Reviewed-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pwm/pwm-sun4i.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ fs/io_uring.c | 23 +++++------------------
+ 1 file changed, 5 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/pwm/pwm-sun4i.c b/drivers/pwm/pwm-sun4i.c
-index 38a4c5c1317b2..482d5b9cec1fb 100644
---- a/drivers/pwm/pwm-sun4i.c
-+++ b/drivers/pwm/pwm-sun4i.c
-@@ -294,12 +294,8 @@ static int sun4i_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 86dac2b2e2763..0621f581943cd 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -8421,14 +8421,6 @@ static int io_uring_release(struct inode *inode, struct file *file)
+ 	return 0;
+ }
  
- 	ctrl |= BIT_CH(PWM_CLK_GATING, pwm->hwpwm);
+-static bool io_wq_files_match(struct io_wq_work *work, void *data)
+-{
+-	struct files_struct *files = data;
+-
+-	return !files || ((work->flags & IO_WQ_WORK_FILES) &&
+-				work->identity->files == files);
+-}
+-
+ /*
+  * Returns true if 'preq' is the link parent of 'req'
+  */
+@@ -8566,21 +8558,20 @@ static void io_cancel_defer_files(struct io_ring_ctx *ctx,
+  * Returns true if we found and killed one or more files pinning requests
+  */
+ static bool io_uring_cancel_files(struct io_ring_ctx *ctx,
++				  struct task_struct *task,
+ 				  struct files_struct *files)
+ {
+ 	if (list_empty_careful(&ctx->inflight_list))
+ 		return false;
  
--	if (state->enabled) {
-+	if (state->enabled)
- 		ctrl |= BIT_CH(PWM_EN, pwm->hwpwm);
--	} else {
--		ctrl &= ~BIT_CH(PWM_EN, pwm->hwpwm);
--		ctrl &= ~BIT_CH(PWM_CLK_GATING, pwm->hwpwm);
--	}
+-	/* cancel all at once, should be faster than doing it one by one*/
+-	io_wq_cancel_cb(ctx->io_wq, io_wq_files_match, files, true);
+-
+ 	while (!list_empty_careful(&ctx->inflight_list)) {
+ 		struct io_kiocb *cancel_req = NULL, *req;
+ 		DEFINE_WAIT(wait);
  
- 	sun4i_pwm_writel(sun4i_pwm, ctrl, PWM_CTRL_REG);
+ 		spin_lock_irq(&ctx->inflight_lock);
+ 		list_for_each_entry(req, &ctx->inflight_list, inflight_entry) {
+-			if (files && (req->work.flags & IO_WQ_WORK_FILES) &&
++			if (req->task == task &&
++			    (req->work.flags & IO_WQ_WORK_FILES) &&
+ 			    req->work.identity->files != files)
+ 				continue;
+ 			/* req is being completed, ignore */
+@@ -8623,7 +8614,7 @@ static bool __io_uring_cancel_task_requests(struct io_ring_ctx *ctx,
+ {
+ 	bool ret;
  
+-	ret = io_uring_cancel_files(ctx, files);
++	ret = io_uring_cancel_files(ctx, task, files);
+ 	if (!files) {
+ 		enum io_wq_cancel cret;
+ 
+@@ -8662,11 +8653,7 @@ static void io_uring_cancel_task_requests(struct io_ring_ctx *ctx,
+ 		io_sq_thread_park(ctx->sq_data);
+ 	}
+ 
+-	if (files)
+-		io_cancel_defer_files(ctx, NULL, files);
+-	else
+-		io_cancel_defer_files(ctx, task, NULL);
+-
++	io_cancel_defer_files(ctx, task, files);
+ 	io_cqring_overflow_flush(ctx, true, task, files);
+ 
+ 	while (__io_uring_cancel_task_requests(ctx, task, files)) {
 -- 
 2.27.0
 
