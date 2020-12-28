@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B5AF2E3A95
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:39:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A27C2E6461
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:52:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390493AbgL1Niu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:38:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39114 "EHLO mail.kernel.org"
+        id S2391277AbgL1Nix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:38:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391142AbgL1Nip (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:38:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14C542063A;
-        Mon, 28 Dec 2020 13:38:03 +0000 (UTC)
+        id S2391211AbgL1Nis (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:38:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D89CB2064B;
+        Mon, 28 Dec 2020 13:38:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162684;
-        bh=NeFd4lEf32w+JFO2vKinOV5tLGKEUrFRfWp0DtDf0Ek=;
+        s=korg; t=1609162687;
+        bh=RUQ6/a/KD6+eMtUrSnB4E38U6LQ3EDElnSgw3JLvZag=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dt0iudFE1Cp+LCsjklOhzmaZKWA8bIZB+k4rL4BdI3V5hPyptwdfqe5cImTDEfuYE
-         ZVrVL2h1X5jXSMNarQ1HRF4Gvcn6iTd0v9t4AJEi5ygCoG8AOq6qJ3Jzh5vipNOtQA
-         I/i6n95QBv0yFATYHG4cgTN79AQNTSGQQBPdFDPo=
+        b=ULkpfdd6JFCMn1wDuA5FryO4Ty3JSEId29JDmR4C/qFOYPQPXiVNsH4Zh1WeDjKjR
+         LUcLVH6uwm3FzrsKfeq09FODh+ALukR/M/3c8cKQvHHkBCty2YI/yJuQ3XgqjNBg4G
+         oObioMXZiGgE8J/nd5vB/lVMo3eIK2BLOmSOHsIs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adam Sampson <ats@offog.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Andrew Lunn <andrew@lunn.ch>, Chen-Yu Tsai <wens@csie.org>,
+        stable@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 007/453] ARM: dts: sun7i: pcduino3-nano: enable RGMII RX/TX delay on PHY
-Date:   Mon, 28 Dec 2020 13:44:03 +0100
-Message-Id: <20201228124937.598033257@linuxfoundation.org>
+Subject: [PATCH 5.4 008/453] ARM: dts: imx6qdl-wandboard-revd1: Remove PAD_GPIO_6 from enetgrp
+Date:   Mon, 28 Dec 2020 13:44:04 +0100
+Message-Id: <20201228124937.645247729@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
 References: <20201228124937.240114599@linuxfoundation.org>
@@ -41,53 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adam Sampson <ats@offog.org>
+From: Fabio Estevam <festevam@gmail.com>
 
-[ Upstream commit a7361b9c4615951f52ffd2b1afa09a1384c7b4e4 ]
+[ Upstream commit 58d6bca5efc73235b0f84c0d53321737177c651e ]
 
-The RX/TX delays for the Ethernet PHY on the Linksprite pcDuino 3 Nano
-are configured in hardware, using resistors that are populated to pull
-the RTL8211E's RXDLY/TXDLY pins low or high as needed.
+Since commit 8ad2d1dcce54 ("ARM: dts: imx6qdl-wandboard: Add OV5645 camera
+support") the PAD_GPIO_6 is used for providing the camera sensor clock.
 
-phy-mode should be set to rgmii-id to reflect this. Previously it was
-set to rgmii, which used to work but now results in the delays being
-disabled again as a result of the bugfix in commit bbc4d71d6354 ("net:
-phy: realtek: fix rtl8211e rx/tx delay config").
+Remove it from the enetgrp to fix the following IOMXU conflict:
 
-Tested on two pcDuino 3 Nano boards purchased in 2015. Without this fix,
-Ethernet works unreliably on one board and doesn't work at all on the
-other.
+[    9.972414] imx6q-pinctrl 20e0000.pinctrl: pin MX6Q_PAD_GPIO_6 already requested by 2188000.ethernet; cannot claim for 1-003c
+[    9.983857] imx6q-pinctrl 20e0000.pinctrl: pin-140 (1-003c) status -22
+[    9.990514] imx6q-pinctrl 20e0000.pinctrl: could not request pin 140 (MX6Q_PAD_GPIO_6) from group ov5645grp  on device 20e0000.pinctrl
 
-Fixes: 061035d456c9 ("ARM: dts: sun7i: Add dts file for pcDuino 3 Nano board")
-Signed-off-by: Adam Sampson <ats@offog.org>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Acked-by: Chen-Yu Tsai <wens@csie.org>
-Link: https://lore.kernel.org/r/20201123174739.6809-1-ats@offog.org
+Fixes: 8ad2d1dcce54 ("ARM: dts: imx6qdl-wandboard: Add OV5645 camera support")
+Signed-off-by: Fabio Estevam <festevam@gmail.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/sun7i-a20-pcduino3-nano.dts | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/imx6qdl-wandboard-revd1.dtsi | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/sun7i-a20-pcduino3-nano.dts b/arch/arm/boot/dts/sun7i-a20-pcduino3-nano.dts
-index fce2f7fcd084a..bf38c66c1815b 100644
---- a/arch/arm/boot/dts/sun7i-a20-pcduino3-nano.dts
-+++ b/arch/arm/boot/dts/sun7i-a20-pcduino3-nano.dts
-@@ -1,5 +1,5 @@
- /*
-- * Copyright 2015 Adam Sampson <ats@offog.org>
-+ * Copyright 2015-2020 Adam Sampson <ats@offog.org>
-  *
-  * This file is dual-licensed: you can use it either under the terms
-  * of the GPL or the X11 license, at your option. Note that this dual
-@@ -115,7 +115,7 @@
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&gmac_rgmii_pins>;
- 	phy-handle = <&phy1>;
--	phy-mode = "rgmii";
-+	phy-mode = "rgmii-id";
- 	status = "okay";
- };
+diff --git a/arch/arm/boot/dts/imx6qdl-wandboard-revd1.dtsi b/arch/arm/boot/dts/imx6qdl-wandboard-revd1.dtsi
+index 93909796885a0..b9b698f72b261 100644
+--- a/arch/arm/boot/dts/imx6qdl-wandboard-revd1.dtsi
++++ b/arch/arm/boot/dts/imx6qdl-wandboard-revd1.dtsi
+@@ -166,7 +166,6 @@
+ 				MX6QDL_PAD_RGMII_RD2__RGMII_RD2		0x1b030
+ 				MX6QDL_PAD_RGMII_RD3__RGMII_RD3		0x1b030
+ 				MX6QDL_PAD_RGMII_RX_CTL__RGMII_RX_CTL	0x1b030
+-				MX6QDL_PAD_GPIO_6__ENET_IRQ		0x000b1
+ 			>;
+ 		};
  
 -- 
 2.27.0
