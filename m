@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C60772E3A21
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:32:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE0B2E3FB0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:44:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391059AbgL1Ncl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:32:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33138 "EHLO mail.kernel.org"
+        id S2502212AbgL1OnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:43:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34896 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391053AbgL1Ncg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:32:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CF2720728;
-        Mon, 28 Dec 2020 13:31:55 +0000 (UTC)
+        id S2437875AbgL1O1G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:27:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 14BED22B37;
+        Mon, 28 Dec 2020 14:26:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162316;
-        bh=g96etGiV2d5ehJX+/Xag/V1VghQcs7dqNcLvQJaaCA0=;
+        s=korg; t=1609165585;
+        bh=7hQPigtsRT2t7knbIwv1eFx0rp32ngh5c8ITz69p8O0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pV2MRNy8/ojOzNctL5aJ+oNQ0fc7XdbU8fnec82kkRdX3Pd2Zwd2RKGwXy5u/ct6D
-         27023r4OgUomoq/b5LIP+fUpEh/G6Mu9B6FqA9TpYYk/7lF/O7AyiY+8Pq8sY359Fo
-         bnyOxpVZDq/tTTw72xHgEHKOPFEE0+fyXKNjdFdY=
+        b=SBZcBamzgaPA+Ql0Mfs2q4OqJFy4uIX+9n7oAVabaOVqmiy0oklRQUfaxuzCJDwMz
+         a//X3Uza78gFal+tXsmSkQYlfLVftZ/HU/AsV2VdUgAnRlD5lJ1t/OPZTyMB19hmhF
+         zJTylQej1LyYi6AaG37n6eYms2MmjRWR3tHwhg1c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tsuchiya Yuto <kitakar@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 4.19 262/346] media: ipu3-cio2: Return actual subdev format
-Date:   Mon, 28 Dec 2020 13:49:41 +0100
-Message-Id: <20201228124932.437369100@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.10 584/717] USB: serial: keyspan_pda: fix write-wakeup use-after-free
+Date:   Mon, 28 Dec 2020 13:49:42 +0100
+Message-Id: <20201228125048.891593697@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,62 +40,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit 8160e86702e0807bd36d40f82648f9f9820b9d5a upstream.
+commit 37faf50615412947868c49aee62f68233307f4e4 upstream.
 
-Return actual subdev format on ipu3-cio2 subdev pads. The earlier
-implementation was based on an infinite recursion that exhausted the
-stack.
+The driver's deferred write wakeup was never flushed on disconnect,
+something which could lead to the driver port data being freed while the
+wakeup work is still scheduled.
 
-Reported-by: Tsuchiya Yuto <kitakar@gmail.com>
-Fixes: c2a6a07afe4a ("media: intel-ipu3: cio2: add new MIPI-CSI2 driver")
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Reviewed-by: Bingbu Cao <bingbu.cao@intel.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: stable@vger.kernel.org # v4.16 and up
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fix this by using the usb-serial write wakeup which gets cancelled
+properly on disconnect.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Cc: stable@vger.kernel.org
+Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/media/pci/intel/ipu3/ipu3-cio2.c |   24 +++---------------------
- 1 file changed, 3 insertions(+), 21 deletions(-)
+ drivers/usb/serial/keyspan_pda.c |   17 +++--------------
+ 1 file changed, 3 insertions(+), 14 deletions(-)
 
---- a/drivers/media/pci/intel/ipu3/ipu3-cio2.c
-+++ b/drivers/media/pci/intel/ipu3/ipu3-cio2.c
-@@ -1246,29 +1246,11 @@ static int cio2_subdev_get_fmt(struct v4
- 			       struct v4l2_subdev_format *fmt)
+--- a/drivers/usb/serial/keyspan_pda.c
++++ b/drivers/usb/serial/keyspan_pda.c
+@@ -43,8 +43,7 @@
+ struct keyspan_pda_private {
+ 	int			tx_room;
+ 	int			tx_throttled;
+-	struct work_struct			wakeup_work;
+-	struct work_struct			unthrottle_work;
++	struct work_struct	unthrottle_work;
+ 	struct usb_serial	*serial;
+ 	struct usb_serial_port	*port;
+ };
+@@ -97,15 +96,6 @@ static const struct usb_device_id id_tab
+ };
+ #endif
+ 
+-static void keyspan_pda_wakeup_write(struct work_struct *work)
+-{
+-	struct keyspan_pda_private *priv =
+-		container_of(work, struct keyspan_pda_private, wakeup_work);
+-	struct usb_serial_port *port = priv->port;
+-
+-	tty_port_tty_wakeup(&port->port);
+-}
+-
+ static void keyspan_pda_request_unthrottle(struct work_struct *work)
  {
- 	struct cio2_queue *q = container_of(sd, struct cio2_queue, subdev);
--	struct v4l2_subdev_format format;
--	int ret;
+ 	struct keyspan_pda_private *priv =
+@@ -183,7 +173,7 @@ static void keyspan_pda_rx_interrupt(str
+ 		case 2: /* tx unthrottle interrupt */
+ 			priv->tx_throttled = 0;
+ 			/* queue up a wakeup at scheduler time */
+-			schedule_work(&priv->wakeup_work);
++			usb_serial_port_softint(port);
+ 			break;
+ 		default:
+ 			break;
+@@ -563,7 +553,7 @@ static void keyspan_pda_write_bulk_callb
+ 	priv = usb_get_serial_port_data(port);
  
--	if (fmt->which == V4L2_SUBDEV_FORMAT_TRY) {
-+	if (fmt->which == V4L2_SUBDEV_FORMAT_TRY)
- 		fmt->format = *v4l2_subdev_get_try_format(sd, cfg, fmt->pad);
--		return 0;
--	}
--
--	if (fmt->pad == CIO2_PAD_SINK) {
--		format.which = V4L2_SUBDEV_FORMAT_ACTIVE;
--		ret = v4l2_subdev_call(sd, pad, get_fmt, NULL,
--				       &format);
--
--		if (ret)
--			return ret;
--		/* update colorspace etc */
--		q->subdev_fmt.colorspace = format.format.colorspace;
--		q->subdev_fmt.ycbcr_enc = format.format.ycbcr_enc;
--		q->subdev_fmt.quantization = format.format.quantization;
--		q->subdev_fmt.xfer_func = format.format.xfer_func;
--	}
--
--	fmt->format = q->subdev_fmt;
-+	else
-+		fmt->format = q->subdev_fmt;
- 
- 	return 0;
+ 	/* queue up a wakeup at scheduler time */
+-	schedule_work(&priv->wakeup_work);
++	usb_serial_port_softint(port);
  }
+ 
+ 
+@@ -715,7 +705,6 @@ static int keyspan_pda_port_probe(struct
+ 	if (!priv)
+ 		return -ENOMEM;
+ 
+-	INIT_WORK(&priv->wakeup_work, keyspan_pda_wakeup_write);
+ 	INIT_WORK(&priv->unthrottle_work, keyspan_pda_request_unthrottle);
+ 	priv->serial = port->serial;
+ 	priv->port = port;
 
 
