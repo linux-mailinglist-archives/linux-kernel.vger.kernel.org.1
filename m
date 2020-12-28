@@ -2,38 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C01A72E3FF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:48:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E452E37DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:01:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502876AbgL1OXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:23:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58784 "EHLO mail.kernel.org"
+        id S1729826AbgL1NBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:01:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439198AbgL1OW7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:22:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 16CE2206E5;
-        Mon, 28 Dec 2020 14:22:17 +0000 (UTC)
+        id S1729528AbgL1NAr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:00:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1552A22583;
+        Mon, 28 Dec 2020 13:00:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165338;
-        bh=Tx1vtWgUCMvdAmoYjMA8T8oel78Nl0iT5cbRkDrgrMk=;
+        s=korg; t=1609160406;
+        bh=lLyxgcPt9F8rPa/YebkBCTauAUTHPvX84Z7WFjxvB/Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l/Lhr56IvNgmIzDCTH9aCQjzm9OaieAYspCjGIZ0rC3XamB82WrB7nh0xPC99Ngt0
-         m3CPvQ72RN55ymAyVHW5Cp9Ep95jzS+okFd68viofi8C1X0ukTGYpBalVeOo5elMtk
-         ZoazVrlTPcOum9NsANKsSMgewaOdgyA2LNp7lcY8=
+        b=m4ipM92qRtA7dTcvnIfj+JEAVnfm7SqmFXT98c4ECz83nZnDJ+7bUyd0s3S1kC71q
+         sWpe3UZ8ADmYF2+B4sCKbO1T7dBz1cen5IYJelI/h4ocu3yFgJM7uqE/04cGruMuDJ
+         4nh5LL63wBoprNfCno0eQAHLMGHUwS5mceVeN79o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 495/717] clk: at91: sama7g5: fix compilation error
+        stable@vger.kernel.org, Jack Pham <jackp@codeaurora.org>
+Subject: [PATCH 4.9 040/175] usb: gadget: f_fs: Re-use SS descriptors for SuperSpeedPlus
 Date:   Mon, 28 Dec 2020 13:48:13 +0100
-Message-Id: <20201228125044.680226617@linuxfoundation.org>
+Message-Id: <20201228124855.191101535@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,59 +38,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudiu Beznea <claudiu.beznea@microchip.com>
+From: Jack Pham <jackp@codeaurora.org>
 
-[ Upstream commit 91274497c79170aaadc491d4ffe4de35495a060d ]
+commit a353397b0d5dfa3c99b372505db3378fc919c6c6 upstream.
 
-pmc_data_allocate() has been changed. pmc_data_free() was removed.
-Adapt the code taking this into consideration. With this the programmable
-clocks were also saved in sama7g5_pmc so that they could be later
-referenced.
+In many cases a function that supports SuperSpeed can very well
+operate in SuperSpeedPlus, if a gadget controller supports it,
+as the endpoint descriptors (and companion descriptors) are
+generally identical and can be re-used. This is true for two
+commonly used functions: Android's ADB and MTP. So we can simply
+assign the usb_function's ssp_descriptors array to point to its
+ss_descriptors, if available. Similarly, we need to allow an
+epfile's ioctl for FUNCTIONFS_ENDPOINT_DESC to correctly
+return the corresponding SuperSpeed endpoint descriptor in case
+the connected speed is SuperSpeedPlus as well.
 
-Fixes: cb783bbbcf54 ("clk: at91: sama7g5: add clock support for sama7g5")
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-Tested-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-Link: https://lore.kernel.org/r/1605800597-16720-2-git-send-email-claudiu.beznea@microchip.com
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The only exception is if a function wants to implement an
+Isochronous endpoint capable of transferring more than 48KB per
+service interval when operating at greater than USB 3.1 Gen1
+speed, in which case it would require an additional SuperSpeedPlus
+Isochronous Endpoint Companion descriptor to be returned as part
+of the Configuration Descriptor. Support for that would need
+to be separately added to the userspace-facing FunctionFS API
+which may not be a trivial task--likely a new descriptor format
+(v3?) may need to be devised to allow for separate SS and SSP
+descriptors to be supplied.
+
+Signed-off-by: Jack Pham <jackp@codeaurora.org>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201027230731.9073-1-jackp@codeaurora.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/clk/at91/sama7g5.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/usb/gadget/function/f_fs.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clk/at91/sama7g5.c b/drivers/clk/at91/sama7g5.c
-index 0db2ab3eca147..a092a940baa40 100644
---- a/drivers/clk/at91/sama7g5.c
-+++ b/drivers/clk/at91/sama7g5.c
-@@ -838,7 +838,7 @@ static void __init sama7g5_pmc_setup(struct device_node *np)
- 	sama7g5_pmc = pmc_data_allocate(PMC_I2S1_MUX + 1,
- 					nck(sama7g5_systemck),
- 					nck(sama7g5_periphck),
--					nck(sama7g5_gck));
-+					nck(sama7g5_gck), 8);
- 	if (!sama7g5_pmc)
- 		return;
+--- a/drivers/usb/gadget/function/f_fs.c
++++ b/drivers/usb/gadget/function/f_fs.c
+@@ -1228,6 +1228,7 @@ static long ffs_epfile_ioctl(struct file
  
-@@ -980,6 +980,8 @@ static void __init sama7g5_pmc_setup(struct device_node *np)
- 						    sama7g5_prog_mux_table);
- 		if (IS_ERR(hw))
- 			goto err_free;
-+
-+		sama7g5_pmc->pchws[i] = hw;
+ 			switch (epfile->ffs->gadget->speed) {
+ 			case USB_SPEED_SUPER:
++			case USB_SPEED_SUPER_PLUS:
+ 				desc_idx = 2;
+ 				break;
+ 			case USB_SPEED_HIGH:
+@@ -3067,7 +3068,8 @@ static int _ffs_func_bind(struct usb_con
  	}
  
- 	for (i = 0; i < ARRAY_SIZE(sama7g5_systemck); i++) {
-@@ -1052,7 +1054,7 @@ err_free:
- 		kfree(alloc_mem);
- 	}
+ 	if (likely(super)) {
+-		func->function.ss_descriptors = vla_ptr(vlabuf, d, ss_descs);
++		func->function.ss_descriptors = func->function.ssp_descriptors =
++			vla_ptr(vlabuf, d, ss_descs);
+ 		ss_len = ffs_do_descs(ffs->ss_descs_count,
+ 				vla_ptr(vlabuf, d, raw_descs) + fs_len + hs_len,
+ 				d_raw_descs__sz - fs_len - hs_len,
+@@ -3507,6 +3509,7 @@ static void ffs_func_unbind(struct usb_c
+ 	func->function.fs_descriptors = NULL;
+ 	func->function.hs_descriptors = NULL;
+ 	func->function.ss_descriptors = NULL;
++	func->function.ssp_descriptors = NULL;
+ 	func->interfaces_nums = NULL;
  
--	pmc_data_free(sama7g5_pmc);
-+	kfree(sama7g5_pmc);
- }
- 
- /* Some clks are used for a clocksource */
--- 
-2.27.0
-
+ 	ffs_event_add(ffs, FUNCTIONFS_UNBIND);
 
 
