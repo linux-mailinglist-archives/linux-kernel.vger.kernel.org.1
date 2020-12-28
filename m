@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FB322E650F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:57:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86DD62E429E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:27:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390567AbgL1NgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:36:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36366 "EHLO mail.kernel.org"
+        id S2406697AbgL1N5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:57:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391289AbgL1NgE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:36:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 34D892072C;
-        Mon, 28 Dec 2020 13:35:22 +0000 (UTC)
+        id S2406619AbgL1N5V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:57:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E5D04205CB;
+        Mon, 28 Dec 2020 13:56:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162523;
-        bh=jetCLQ5ZMASVFbesRiQ3AkFev++1o0f/gyoA+r9PKCg=;
+        s=korg; t=1609163800;
+        bh=ubymZCjQGn2uuKScntdazCd+0zunQYuz5VcadBJ2peM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YjAwcDGBdSYvauUngilfE16SudjMeszDzf1NOTeQxxkeTqdl/RESCdtr9UY8FaLDO
-         MlKQOv0+Ol0RRll1ZH91m1VCn5ol0EsSUIDXl4Sl8XELdMr1vHuLbd/otPll+T+Bj2
-         7KlA9yYvnmnxawUJY7zu4bURh5h/bEksGVWZA844=
+        b=xRKE3MtOX1OGk5/Rpfytu46R3AHR61sm1xCXTZGXOVFPqHakzKvh2sHv0knL2FCMR
+         xLKzuzOaKirhSkHseLUAV/h1T5rBiUzop5RkobwCt/LkSKy99P0nHjFrPDuLP5kOqh
+         gujcFHRyoqlDYXo4DZb5k/V7Z/oVZwn822oZxsVI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH 4.19 329/346] iio: adc: rockchip_saradc: fix missing clk_disable_unprepare() on error in rockchip_saradc_resume
+        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
+        Masahisa Kojima <masahisa.kojima@linaro.org>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.4 412/453] spi: synquacer: Disable clock in probe error path
 Date:   Mon, 28 Dec 2020 13:50:48 +0100
-Message-Id: <20201228124935.682655007@linuxfoundation.org>
+Message-Id: <20201228124957.041558147@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,36 +40,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qinglang Miao <miaoqinglang@huawei.com>
+From: Lukas Wunner <lukas@wunner.de>
 
-commit 560c6b914c6ec7d9d9a69fddbb5bf3bf71433e8b upstream.
+commit 8853b2503014aca5c793d2c7f0aabc990b32bdad upstream.
 
-Fix the missing clk_disable_unprepare() of info->pclk
-before return from rockchip_saradc_resume in the error
-handling case when fails to prepare and enable info->clk.
+If the calls to platform_get_irq() or devm_request_irq() fail on probe
+of the SynQuacer SPI driver, the clock "sspi->clk" is erroneously not
+unprepared and disabled.
 
-Suggested-by: Robin Murphy <robin.murphy@arm.com>
-Fixes: 44d6f2ef94f9 ("iio: adc: add driver for Rockchip saradc")
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-Cc: <Stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201103120743.110662-1-miaoqinglang@huawei.com
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+If the clock rate "master->max_speed_hz" cannot be determined, the same
+happens and in addition the spi_master struct is not freed.
+
+Fix it.
+
+Fixes: b0823ee35cf9 ("spi: Add spi driver for Socionext SynQuacer platform")
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Cc: <stable@vger.kernel.org> # v5.3+
+Cc: Masahisa Kojima <masahisa.kojima@linaro.org>
+Link: https://lore.kernel.org/r/232281df1ab91d8f0f553a62d5f97fc264ace4da.1604874488.git.lukas@wunner.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/adc/rockchip_saradc.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/spi/spi-synquacer.c |   15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
---- a/drivers/iio/adc/rockchip_saradc.c
-+++ b/drivers/iio/adc/rockchip_saradc.c
-@@ -383,7 +383,7 @@ static int rockchip_saradc_resume(struct
+--- a/drivers/spi/spi-synquacer.c
++++ b/drivers/spi/spi-synquacer.c
+@@ -658,7 +658,8 @@ static int synquacer_spi_probe(struct pl
  
- 	ret = clk_prepare_enable(info->clk);
+ 	if (!master->max_speed_hz) {
+ 		dev_err(&pdev->dev, "missing clock source\n");
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto disable_clk;
+ 	}
+ 	master->min_speed_hz = master->max_speed_hz / 254;
+ 
+@@ -671,7 +672,7 @@ static int synquacer_spi_probe(struct pl
+ 	rx_irq = platform_get_irq(pdev, 0);
+ 	if (rx_irq <= 0) {
+ 		ret = rx_irq;
+-		goto put_spi;
++		goto disable_clk;
+ 	}
+ 	snprintf(sspi->rx_irq_name, SYNQUACER_HSSPI_IRQ_NAME_MAX, "%s-rx",
+ 		 dev_name(&pdev->dev));
+@@ -679,13 +680,13 @@ static int synquacer_spi_probe(struct pl
+ 				0, sspi->rx_irq_name, sspi);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "request rx_irq failed (%d)\n", ret);
+-		goto put_spi;
++		goto disable_clk;
+ 	}
+ 
+ 	tx_irq = platform_get_irq(pdev, 1);
+ 	if (tx_irq <= 0) {
+ 		ret = tx_irq;
+-		goto put_spi;
++		goto disable_clk;
+ 	}
+ 	snprintf(sspi->tx_irq_name, SYNQUACER_HSSPI_IRQ_NAME_MAX, "%s-tx",
+ 		 dev_name(&pdev->dev));
+@@ -693,7 +694,7 @@ static int synquacer_spi_probe(struct pl
+ 				0, sspi->tx_irq_name, sspi);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "request tx_irq failed (%d)\n", ret);
+-		goto put_spi;
++		goto disable_clk;
+ 	}
+ 
+ 	master->dev.of_node = np;
+@@ -711,7 +712,7 @@ static int synquacer_spi_probe(struct pl
+ 
+ 	ret = synquacer_spi_enable(master);
  	if (ret)
--		return ret;
-+		clk_disable_unprepare(info->pclk);
+-		goto fail_enable;
++		goto disable_clk;
  
- 	return ret;
- }
+ 	pm_runtime_set_active(sspi->dev);
+ 	pm_runtime_enable(sspi->dev);
+@@ -724,7 +725,7 @@ static int synquacer_spi_probe(struct pl
+ 
+ disable_pm:
+ 	pm_runtime_disable(sspi->dev);
+-fail_enable:
++disable_clk:
+ 	clk_disable_unprepare(sspi->clk);
+ put_spi:
+ 	spi_master_put(master);
 
 
