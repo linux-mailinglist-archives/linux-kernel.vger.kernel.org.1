@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE44B2E433F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:34:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3858E2E38F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:17:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408511AbgL1Pe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:34:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56240 "EHLO mail.kernel.org"
+        id S1731514AbgL1NRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:17:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407425AbgL1NyU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:54:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 87605207B2;
-        Mon, 28 Dec 2020 13:53:39 +0000 (UTC)
+        id S1733148AbgL1NQR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:16:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 58B41207F7;
+        Mon, 28 Dec 2020 13:15:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163620;
-        bh=68WcUA4SCIq5euYBlkcE9hSO8wqkCfcl9VXdHARhno0=;
+        s=korg; t=1609161337;
+        bh=Zk/fkRtIIpQdewPWSBL5BjP2GLGAsjF6KeSuKgOzpdE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rWPPKWM0mRgpAd/jca+R2iSEaEuBwirvX8wMP5Y+zsRrpEADqDb2SCJOGk+KqQ7b1
-         0VkZ+GoQjicF24/hB5Q7c0mZEqDzd801lM9NcUqbMcnHmTztKwid4BcYhVlNTgz3mR
-         v+vrmlBwsUrNHW6tBPDJQrW52BDlGaPdWF0YRAXs=
+        b=cXQ6EfSsz7sjKYqZruJt8Jyzz+uIZx1f0jgSW3qMcNPlQewAhcgpCJI++kyV3phGX
+         +6bL5D6RY47Gx7VsXj1GrMX0C/E3lTeDo6Nl5OKyoC+H0QPvdxR5rWUM/x2kdkyb2B
+         K+w+1QXUKmJ3Tqa/075FU+5TmFN/khn1PKffF07c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Haberland <sth@linux.ibm.com>,
-        Jan Hoeppner <hoeppner@linux.ibm.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.4 350/453] s390/dasd: prevent inconsistent LCU device data
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        syzbot+44e64397bd81d5e84cba@syzkaller.appspotmail.com
+Subject: [PATCH 4.14 181/242] media: gspca: Fix memory leak in probe
 Date:   Mon, 28 Dec 2020 13:49:46 +0100
-Message-Id: <20201228124954.052404902@linuxfoundation.org>
+Message-Id: <20201228124913.593561819@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Haberland <sth@linux.ibm.com>
+From: Alan Stern <stern@rowland.harvard.edu>
 
-commit a29ea01653493b94ea12bb2b89d1564a265081b6 upstream.
+commit e469d0b09a19496e1972a20974bbf55b728151eb upstream.
 
-Prevent _lcu_update from adding a device to a pavgroup if the LCU still
-requires an update. The data is not reliable any longer and in parallel
-devices might have been moved on the lists already.
-This might lead to list corruptions or invalid PAV grouping.
-Only add devices to a pavgroup if the LCU is up to date. Additional steps
-are taken by the scheduled lcu update.
+The gspca driver leaks memory when a probe fails.  gspca_dev_probe2()
+calls v4l2_device_register(), which takes a reference to the
+underlying device node (in this case, a USB interface).  But the
+failure pathway neglects to call v4l2_device_unregister(), the routine
+responsible for dropping this reference.  Consequently the memory for
+the USB interface and its device never gets released.
 
-Fixes: 8e09f21574ea ("[S390] dasd: add hyper PAV support to DASD device driver, part 1")
-Cc: stable@vger.kernel.org
-Signed-off-by: Stefan Haberland <sth@linux.ibm.com>
-Reviewed-by: Jan Hoeppner <hoeppner@linux.ibm.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+This patch adds the missing function call.
+
+Reported-and-tested-by: syzbot+44e64397bd81d5e84cba@syzkaller.appspotmail.com
+
+Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
+CC: <stable@vger.kernel.org>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/s390/block/dasd_alias.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/media/usb/gspca/gspca.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/s390/block/dasd_alias.c
-+++ b/drivers/s390/block/dasd_alias.c
-@@ -511,6 +511,14 @@ static int _lcu_update(struct dasd_devic
- 		return rc;
- 
- 	spin_lock_irqsave(&lcu->lock, flags);
-+	/*
-+	 * there is another update needed skip the remaining handling
-+	 * the data might already be outdated
-+	 * but especially do not add the device to an LCU with pending
-+	 * update
-+	 */
-+	if (lcu->flags & NEED_UAC_UPDATE)
-+		goto out;
- 	lcu->pav = NO_PAV;
- 	for (i = 0; i < MAX_DEVICES_PER_LCU; ++i) {
- 		switch (lcu->uac->unit[i].ua_type) {
-@@ -529,6 +537,7 @@ static int _lcu_update(struct dasd_devic
- 				 alias_list) {
- 		_add_device_to_lcu(lcu, device, refdev);
- 	}
-+out:
- 	spin_unlock_irqrestore(&lcu->lock, flags);
- 	return 0;
- }
+--- a/drivers/media/usb/gspca/gspca.c
++++ b/drivers/media/usb/gspca/gspca.c
+@@ -2140,6 +2140,7 @@ out:
+ 		input_unregister_device(gspca_dev->input_dev);
+ #endif
+ 	v4l2_ctrl_handler_free(gspca_dev->vdev.ctrl_handler);
++	v4l2_device_unregister(&gspca_dev->v4l2_dev);
+ 	kfree(gspca_dev->usb_buf);
+ 	kfree(gspca_dev);
+ 	return ret;
 
 
