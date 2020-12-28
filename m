@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E5B62E672F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:22:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5B6F2E65B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:04:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440679AbgL1QWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:22:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39688 "EHLO mail.kernel.org"
+        id S2391129AbgL1QEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:04:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56850 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732024AbgL1NMV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:12:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F11B2076D;
-        Mon, 28 Dec 2020 13:12:05 +0000 (UTC)
+        id S2389798AbgL1N2A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:28:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F9682072C;
+        Mon, 28 Dec 2020 13:27:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161126;
-        bh=98j60LUhmHB494svGp885uJNy9G2/CW/lflLT5Rejug=;
+        s=korg; t=1609162039;
+        bh=J2zl8JF8p3s9MZPxdaH5Ig/SGlaNQWoTVOp5qtXUS3A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D/aUuZBhd2RjE4n2QHORlKzxMZO7ixNrLruyvnIGb5Dx27RsUtH/ArrYtW+CKdciB
-         AOa0gKLn1w5b61A3UmZajJMeW6OMNEm6ceW9yoOTXPXa72PlMjCIAtgP7pJB8z1xvj
-         M16fxl4rDuWbqcbm+8Qm/nZUgAo0cYobJMFDm9/E=
+        b=JVZnl8WWjquvqTRPGkqmQBDARNwQ20HK34fpZyQixaPfX+RUEbIt5XRc8XoP56lYv
+         syBvtoYfcTz/Dar855IeyV5ca8VLgQv4GU1r0YJTjRdA3E0NaW34U7nqP0OksCtVYw
+         1trOuf+TVOfX5ek0chLeq3tYm93vy4STqr13887E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anmol Karn <anmol.karan123@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Sasha Levin <sashal@kernel.org>,
-        syzbot+0bef568258653cff272f@syzkaller.appspotmail.com
-Subject: [PATCH 4.14 080/242] Bluetooth: Fix null pointer dereference in hci_event_packet()
-Date:   Mon, 28 Dec 2020 13:48:05 +0100
-Message-Id: <20201228124908.628189007@linuxfoundation.org>
+        stable@vger.kernel.org, Vadim Pasternak <vadimp@nvidia.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 168/346] platform/x86: mlx-platform: Remove PSU EEPROM from default platform configuration
+Date:   Mon, 28 Dec 2020 13:48:07 +0100
+Message-Id: <20201228124927.913428210@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,47 +40,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anmol Karn <anmol.karan123@gmail.com>
+From: Vadim Pasternak <vadimp@nvidia.com>
 
-[ Upstream commit 6dfccd13db2ff2b709ef60a50163925d477549aa ]
+[ Upstream commit 2bf5046bdb649908df8bcc0a012c56eee931a9af ]
 
-AMP_MGR is getting derefernced in hci_phy_link_complete_evt(), when called
-from hci_event_packet() and there is a possibility, that hcon->amp_mgr may
-not be found when accessing after initialization of hcon.
+Remove PSU EEPROM configuration for systems class equipped with
+Mellanox chip Spectrum and Celeron CPU - system types MSN2700, MSN2100.
+Till now all the systems from this class used few types of power units,
+all equipped with EEPROM device with address space two bytes. Thus, all
+these devices have been handled by EEPROM driver "24c02".
 
-- net/bluetooth/hci_event.c:4945
-The bug seems to get triggered in this line:
+There is a new requirement is to support power unit replacement by "off
+the shelf" device, matching electrical required parameters. Such device
+can be equipped with different EEPROM type, which could be one byte
+address space addressing or even could be not equipped with EEPROM.
+In such case "24c02" will not work.
 
-bredr_hcon = hcon->amp_mgr->l2cap_conn->hcon;
-
-Fix it by adding a NULL check for the hcon->amp_mgr before checking the ev-status.
-
-Fixes: d5e911928bd8 ("Bluetooth: AMP: Process Physical Link Complete evt")
-Reported-and-tested-by: syzbot+0bef568258653cff272f@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?extid=0bef568258653cff272f
-Signed-off-by: Anmol Karn <anmol.karan123@gmail.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Fixes: c6acad68e ("platform/mellanox: mlxreg-hotplug: Modify to use a regmap interface")
+Fixes: ba814fdd0 ("platform/x86: mlx-platform: Use defines for bus assignment")
+Signed-off-by: Vadim Pasternak <vadimp@nvidia.com>
+Link: https://lore.kernel.org/r/20201125101056.174708-2-vadimp@nvidia.com
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/hci_event.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/platform/x86/mlx-platform.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index 0db218b14bf3c..5e05a96e0646a 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -4350,6 +4350,11 @@ static void hci_phy_link_complete_evt(struct hci_dev *hdev,
- 		return;
- 	}
+diff --git a/drivers/platform/x86/mlx-platform.c b/drivers/platform/x86/mlx-platform.c
+index 0c72de95b5ccd..62c749180bb78 100644
+--- a/drivers/platform/x86/mlx-platform.c
++++ b/drivers/platform/x86/mlx-platform.c
+@@ -251,15 +251,13 @@ static struct mlxreg_core_data mlxplat_mlxcpld_default_psu_items_data[] = {
+ 		.label = "psu1",
+ 		.reg = MLXPLAT_CPLD_LPC_REG_PSU_OFFSET,
+ 		.mask = BIT(0),
+-		.hpdev.brdinfo = &mlxplat_mlxcpld_psu[0],
+-		.hpdev.nr = MLXPLAT_CPLD_PSU_DEFAULT_NR,
++		.hpdev.nr = MLXPLAT_CPLD_NR_NONE,
+ 	},
+ 	{
+ 		.label = "psu2",
+ 		.reg = MLXPLAT_CPLD_LPC_REG_PSU_OFFSET,
+ 		.mask = BIT(1),
+-		.hpdev.brdinfo = &mlxplat_mlxcpld_psu[1],
+-		.hpdev.nr = MLXPLAT_CPLD_PSU_DEFAULT_NR,
++		.hpdev.nr = MLXPLAT_CPLD_NR_NONE,
+ 	},
+ };
  
-+	if (!hcon->amp_mgr) {
-+		hci_dev_unlock(hdev);
-+		return;
-+	}
-+
- 	if (ev->status) {
- 		hci_conn_del(hcon);
- 		hci_dev_unlock(hdev);
 -- 
 2.27.0
 
