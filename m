@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63BFE2E66FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:19:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E650E2E656D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:01:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388374AbgL1QTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:19:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42886 "EHLO mail.kernel.org"
+        id S2387681AbgL1NcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:32:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59138 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732519AbgL1NOl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:14:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7586207CF;
-        Mon, 28 Dec 2020 13:14:00 +0000 (UTC)
+        id S2390513AbgL1NbC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:31:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B72C2063A;
+        Mon, 28 Dec 2020 13:30:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161241;
-        bh=js/n0fm6os4CoVcjcCuaxZVTNlaKZ10A00fmQMp8Cak=;
+        s=korg; t=1609162247;
+        bh=gRrXgq1PQVIFpp0lYZ6kmYk7t8/lNj+WZGrm1MT0R7w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xV5mP55mOmqZ43MzlUM/pyf+NwNfMg/gHqjBiXtDENYvjM0Nj5rNjR5izgEckeCF4
-         NCuVi3QAKEtnu5I4KXQlZaBA7p66I9140SCUIBT3kXlXCn1E0bye02Fu5dv6IVSitf
-         3ZubxjYvC32FqtYjh8nSt2EASLI/0P7TsS/rwhBI=
+        b=xr+ltnh7hgS0wVMtIRdwfK3md+8qPqJHm6Zydd8TH8yOAuHIzI1XbgiwzFG08dSJw
+         QXFRUhgrMgvG5a1qRIqA6vZNBH13dRAqMpQGRwu+ddc/l0x59CG7DYzGdVbJ/0t1rT
+         q/C6/KkF8xNquaz6rKCdasJ63m+nxub/B694FEk0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
+        stable@vger.kernel.org, Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Joe Perches <joe@perches.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 150/242] usb: ehci-omap: Fix PM disable depth umbalance in ehci_hcd_omap_probe
-Date:   Mon, 28 Dec 2020 13:49:15 +0100
-Message-Id: <20201228124912.093053648@linuxfoundation.org>
+Subject: [PATCH 4.19 237/346] checkpatch: fix unescaped left brace
+Date:   Mon, 28 Dec 2020 13:49:16 +0100
+Message-Id: <20201228124931.229690810@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Dwaipayan Ray <dwaipayanray1@gmail.com>
 
-[ Upstream commit d6ff32478d7e95d6ca199b5c852710d6964d5811 ]
+[ Upstream commit 03f4935135b9efeb780b970ba023c201f81cf4e6 ]
 
-The pm_runtime_enable will decrement the power disable depth. Imbalance
-depth will resulted in enabling runtime PM of device fails later.  Thus
-a pairing decrement must be needed on the error handling path to keep it
-balanced.
+There is an unescaped left brace in a regex in OPEN_BRACE check.  This
+throws a runtime error when checkpatch is run with --fix flag and the
+OPEN_BRACE check is executed.
 
-Fixes: 6c984b066d84b ("ARM: OMAP: USBHOST: Replace usbhs core driver APIs by Runtime pm APIs")
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201123145719.1455849-1-zhangqilong3@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix it by escaping the left brace.
+
+Link: https://lkml.kernel.org/r/20201115202928.81955-1-dwaipayanray1@gmail.com
+Fixes: 8d1824780f2f ("checkpatch: add --fix option for a couple OPEN_BRACE misuses")
+Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+Acked-by: Joe Perches <joe@perches.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/ehci-omap.c | 1 +
- 1 file changed, 1 insertion(+)
+ scripts/checkpatch.pl | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/host/ehci-omap.c b/drivers/usb/host/ehci-omap.c
-index 4d308533bc835..a6b738139cd21 100644
---- a/drivers/usb/host/ehci-omap.c
-+++ b/drivers/usb/host/ehci-omap.c
-@@ -237,6 +237,7 @@ static int ehci_hcd_omap_probe(struct platform_device *pdev)
- 
- err_pm_runtime:
- 	pm_runtime_put_sync(dev);
-+	pm_runtime_disable(dev);
- 
- err_phy:
- 	for (i = 0; i < omap->nports; i++) {
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 7eb944cbbaeab..2e31ec1378219 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -4059,7 +4059,7 @@ sub process {
+ 			    $fix) {
+ 				fix_delete_line($fixlinenr, $rawline);
+ 				my $fixed_line = $rawline;
+-				$fixed_line =~ /(^..*$Type\s*$Ident\(.*\)\s*){(.*)$/;
++				$fixed_line =~ /(^..*$Type\s*$Ident\(.*\)\s*)\{(.*)$/;
+ 				my $line1 = $1;
+ 				my $line2 = $2;
+ 				fix_insert_line($fixlinenr, ltrim($line1));
 -- 
 2.27.0
 
