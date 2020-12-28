@@ -2,130 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EF0E2E6B4E
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:04:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 984FD2E6B4D
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:04:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731475AbgL1W4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1731491AbgL1W4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 28 Dec 2020 17:56:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49452 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729486AbgL1VHu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 16:07:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 30F5A225AB
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 21:07:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609189629;
-        bh=27KIURwqt1RL2uI90GMMltkVqkqP6J5+DLiEDUmWBQU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=DtQTxCxMN4G6UUHNKgX6MwbZUqPdjE6JjBxXZPdj0zWdX7gsZSDdo/C8xwp+lQL54
-         NBzKb3iMOLLl+ooPPX+uDCXfGSGiAJGCyGuQPPxE89gl/uIHrwh/HV+RGF5/LVTpQ4
-         7xR85q4ojktFqvTOuAoTFu5ysSy5NRBPttYeK643j5DLOtPQanqRbL339jIUFnX7Uj
-         1TsfvHMwMFcF8emTrLa4I9yh+VeQmGSVkWzMHIJyvLWndSC3wqlRmenlposPQkFlCJ
-         HR+88klPTEYBgGF6Bk68JJRI3iceniZzpHlfVMC5fiuZLPwxWw3g3WHtjhCwtsI+b5
-         TdxMw2v6zY+xg==
-Received: by mail-wr1-f54.google.com with SMTP id t16so12538252wra.3
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 13:07:09 -0800 (PST)
-X-Gm-Message-State: AOAM531M66HSOGt5rBPY84iMEMCylvKnwxbuJ73ZZ2WExCe43VVokpp0
-        Q1bjuhWsmhOgqu35kJ1gIZ5rr/tH+xqn8tWfGOJAjA==
-X-Google-Smtp-Source: ABdhPJzLxjROX7Kr2gE7TOhHSUuU+1LZHqFzLu9v1+05RcKic1KF5QVniGH4/+FdCVG2zacKFF1YcGM3iKhXVViXwfc=
-X-Received: by 2002:a5d:62c7:: with SMTP id o7mr846007wrv.257.1609189627549;
- Mon, 28 Dec 2020 13:07:07 -0800 (PST)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729493AbgL1VJn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 16:09:43 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D17CBC061793
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 13:09:02 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id t30so12557498wrb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 13:09:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UhuhFwDBpnue8NMFhTCdyQgKIPZtaS0TCc7EAkELyOk=;
+        b=P1mGykHV5DcrKhwSVonNTIWBzaaisO/PBBF2I1RVPmMMHkpkgk+c2tPC36S481bmm1
+         Eke0ftw+b1toxwEZpTC/UrEg6mvwRQ1LvjDGvE00ncnE59Qt9B+S6PMSkaQzPqE0Jion
+         9h9nYq+akcjIshxL++XXnV9rNaOm+Q6SP0YhNpBTBzKYqtz84Bv/rJS9XT2hlslxsXbh
+         NgWIXcMLWuB1UUlZPlnPoANWFJf5qqO+SqymDpr2BX0uP9RGAr7QQM4GOAcY3dyeuGjx
+         yM8Zjck8y81SpngJFbdz8EnCaVEL5lPNhkBEM0WwcwdpxYI1kw0FIy8Z5Ynwq3uQHTBE
+         qiRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UhuhFwDBpnue8NMFhTCdyQgKIPZtaS0TCc7EAkELyOk=;
+        b=lBdWBMtLFPojv1OQNJimZshHFPQss7DaqXJqBOqycLkYPGP31wIng+1MgT40XdoJZK
+         pIt7OmzmM5DYexHjNgbkfrdKaGrq32nDdL6Qg1DuxE2AhqJ4WPNWOh9bNbEkyQqblAE9
+         t8bEjkRaK295VfcO3AMHkavcLPsEEK4oRbhQgKy/cbp7lRz09mNdMgOxTHcI4mZJIrK2
+         eluu+IqMHs22C/greuH9oBZgfQy7IDFg0jfD8q0oj//0L4ynuA6bGk8VL8blXVuh1vsL
+         tsTJ6++OdBf7uNqhcHxXay3MHSz8F1xnNj5O0bBeEiFbPknuDilh/GPV8PYX1T8ksFZZ
+         c6TQ==
+X-Gm-Message-State: AOAM533IxveJGA5R7SeR6Y7uyxvogwo+JFRHZFsOUkvNXiKkohp/yS/N
+        +dNCkwFahaNlvZ73wd4EeGY3+TSFPawuwkKhuNQ=
+X-Google-Smtp-Source: ABdhPJyLQP00+NgkTDvXJDf3P/BaUpBJcpB2dSx1VIzEvgnHs9knkAOD4CEH6S+8KuCruUJJrpWZrxlqTOJFumKpNKw=
+X-Received: by 2002:a5d:6ccb:: with SMTP id c11mr52718987wrc.224.1609189741482;
+ Mon, 28 Dec 2020 13:09:01 -0800 (PST)
 MIME-Version: 1.0
-References: <bf59ecb5487171a852bcc8cdd553ec797aedc485.1609093476.git.luto@kernel.org>
- <1836294649.3345.1609100294833.JavaMail.zimbra@efficios.com>
- <CALCETrVdcn2r2Jvd1=-bM=FQ8KbX4aH-v4ytdojL7r7Nb6k8YQ@mail.gmail.com>
- <20201228102537.GG1551@shell.armlinux.org.uk> <CALCETrWQx0qwthBc5pJBxs2PWAQo-roAz-6g=7HOs+dsiokVsg@mail.gmail.com>
- <CAG48ez0YZ_iy6qZpdGUj38wqeg_NzLHHhU-mBCBf5hcopYGVPg@mail.gmail.com>
- <20201228190852.GI1551@shell.armlinux.org.uk> <CALCETrVpvrBufrJgXNY=ogtZQLo7zgxQmD7k9eVCFjcdcvarmA@mail.gmail.com>
- <1086654515.3607.1609187556216.JavaMail.zimbra@efficios.com>
-In-Reply-To: <1086654515.3607.1609187556216.JavaMail.zimbra@efficios.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Mon, 28 Dec 2020 13:06:55 -0800
-X-Gmail-Original-Message-ID: <CALCETrXx3Xe+4Y6WM-mp0cTUU=r3bW6PV2b25yA8bm1Gvak6wQ@mail.gmail.com>
-Message-ID: <CALCETrXx3Xe+4Y6WM-mp0cTUU=r3bW6PV2b25yA8bm1Gvak6wQ@mail.gmail.com>
-Subject: Re: [RFC please help] membarrier: Rewrite sync_core_before_usermode()
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Andy Lutomirski <luto@kernel.org>, paulmck <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Russell King, ARM Linux" <linux@armlinux.org.uk>,
-        Jann Horn <jannh@google.com>, Will Deacon <will@kernel.org>,
-        x86 <x86@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        stable <stable@vger.kernel.org>
+References: <1608762196-29871-1-git-send-email-tharvey@gateworks.com>
+ <1608762196-29871-2-git-send-email-tharvey@gateworks.com> <CAGngYiXSyNXjxTHBVd13NfjexzZpOZb1dayWDWO7eV19xNr5wg@mail.gmail.com>
+ <CAJ+vNU3in8f1zchYj=X3LFY8P6G-_zTeOvCQ1u_rjp8+Bdmicw@mail.gmail.com>
+In-Reply-To: <CAJ+vNU3in8f1zchYj=X3LFY8P6G-_zTeOvCQ1u_rjp8+Bdmicw@mail.gmail.com>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Mon, 28 Dec 2020 16:08:49 -0500
+Message-ID: <CAGngYiXiJq3Xp9fSrs21QcTzOHJC0Yg9OVU+5648_-pVgV5bvg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] arm64: dts: imx8mm: Add Gateworks IMX8MM Development Kits
+To:     Tim Harvey <tharvey@gateworks.com>
+Cc:     =?UTF-8?Q?Anders_R=C3=B8nningen?= <anders@ronningen.priv.no>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 12:32 PM Mathieu Desnoyers
-<mathieu.desnoyers@efficios.com> wrote:
+On Mon, Dec 28, 2020 at 12:55 PM Tim Harvey <tharvey@gateworks.com> wrote:
 >
-> ----- On Dec 28, 2020, at 2:44 PM, Andy Lutomirski luto@kernel.org wrote:
+> I'm happy to test your patches for lan743x.
 >
-> > On Mon, Dec 28, 2020 at 11:09 AM Russell King - ARM Linux admin
-> > <linux@armlinux.org.uk> wrote:
-> >>
-> >> On Mon, Dec 28, 2020 at 07:29:34PM +0100, Jann Horn wrote:
-> >> > After chatting with rmk about this (but without claiming that any of
-> >> > this is his opinion), based on the manpage, I think membarrier()
-> >> > currently doesn't really claim to be synchronizing caches? It just
-> >> > serializes cores. So arguably if userspace wants to use membarrier()
-> >> > to synchronize code changes, userspace should first do the code
-> >> > change, then flush icache as appropriate for the architecture, and
-> >> > then do the membarrier() to ensure that the old code is unused?
->
-> ^ exactly, yes.
->
-> >> >
-> >> > For 32-bit arm, rmk pointed out that that would be the cacheflush()
-> >> > syscall. That might cause you to end up with two IPIs instead of one
-> >> > in total, but we probably don't care _that_ much about extra IPIs on
-> >> > 32-bit arm?
->
-> This was the original thinking, yes. The cacheflush IPI will flush specific
-> regions of code, and the membarrier IPI issues context synchronizing
-> instructions.
->
-> Architectures with coherent i/d caches don't need the cacheflush step.
 
-There are different levels of coherency -- VIVT architectures may have
-differing requirements compared to PIPT, etc.
-
-In any case, I feel like the approach taken by the documentation is
-fundamentally confusing.  Architectures don't all speak the same
-language  How about something like:
-
-The SYNC_CORE operation causes all threads in the caller's address
-space (including the caller) to execute an architecture-defined
-barrier operation.  membarrier() will ensure that this barrier is
-executed at a time such that all data writes done by the calling
-thread before membarrier() are made visible by the barrier.
-Additional architecture-dependent cache management operations may be
-required to use this for JIT code.
-
-x86: SYNC_CORE executes a barrier that will cause subsequent
-instruction fetches to observe prior writes.  Currently this will be a
-"serializing" instruction, but, if future improved CPU documentation
-becomes available and relaxes this requirement, the barrier may
-change.  The kernel guarantees that writing new or modified
-instructions to normal memory (and issuing SFENCE if the writes were
-non-temporal) then doing a membarrier SYNC_CORE operation is
-sufficient to cause all threads in the caller's address space to
-execute the new or modified instructions.  This is true regardless of
-whether or not those instructions are written at the same virtual
-address from which they are subsequently executed.  No additional
-cache management is required on x86.
-
-arm: Something about the cache management syscalls.
-
-arm64: Ditto
-
-powerpc: I have no idea.
+That's awesome ! I'll post them early in the new year, so that test + review can
+happen in parallel.
