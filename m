@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B9672E3A35
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:34:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 962B82E3BC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:55:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391085AbgL1Ndc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:33:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59138 "EHLO mail.kernel.org"
+        id S2406400AbgL1Nye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:54:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390379AbgL1Na1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:30:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C8720207FF;
-        Mon, 28 Dec 2020 13:30:11 +0000 (UTC)
+        id S2407369AbgL1Nxw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:53:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B97BD2078D;
+        Mon, 28 Dec 2020 13:53:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162212;
-        bh=ydZ9pHHSLYBLgsIP5jsl2lRECoK6qeUGsIe3s54yXk8=;
+        s=korg; t=1609163592;
+        bh=NQWHQvaQphVXKPh//J8vr+afTSGvyzyE21jpRPHA51s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z7rDR9atbEWrdlnTE07jRcPbVUAPut7n8kJMRy5yzptSGxCdC4KIZqnZuRMex+Fx8
-         acJ8jHq11Ln8al1LEVoSpnJIZsrf0Wi/w7PWc/9WaZSTjq6VcZNgnxoYKaD3ip1Ekm
-         ZrebtJKbycOBBcQWw/sOi6Wq3+lL+3VMr2vOiFSA=
+        b=LA8OVl2QUZSQRfinM5eoPCe2/U9/buAy6OrcuK7Axd8MRRRGyOtZE4EAymst60e0N
+         B2T7whSVSjVRZB3VK/ec3tibQ6UYUHY9/hYv/RLepd0fIwxq7iNEkciXKDR8cwvRVk
+         vCtOLf/IW7/x3EkjCj+ofMO5aRnJihBFFAhmjU7k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 226/346] ASoC: wm_adsp: remove "ctl" from list on error in wm_adsp_create_control()
+Subject: [PATCH 5.4 309/453] kconfig: fix return value of do_error_if()
 Date:   Mon, 28 Dec 2020 13:49:05 +0100
-Message-Id: <20201228124930.698014626@linuxfoundation.org>
+Message-Id: <20201228124952.082201074@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,47 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
 
-[ Upstream commit 85a7555575a0e48f9b73db310d0d762a08a46d63 ]
+[ Upstream commit 135b4957eac43af2aedf8e2a277b9540f33c2558 ]
 
-The error handling frees "ctl" but it's still on the "dsp->ctl_list"
-list so that could result in a use after free.  Remove it from the list
-before returning.
+$(error-if,...) is expanded to an empty string. Currently, it relies on
+eval_clause() returning xstrdup("") when all attempts for expansion fail,
+but the correct implementation is to make do_error_if() return xstrdup("").
 
-Fixes: 2323736dca72 ("ASoC: wm_adsp: Add basic support for rev 1 firmware file format")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/X9B0keV/02wrx9Xs@mwanda
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 1d6272e6fe43 ("kconfig: add 'info', 'warning-if', and 'error-if' built-in functions")
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ scripts/kconfig/preprocess.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index b114fc7b2a95e..02c557e1f779c 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -1379,7 +1379,7 @@ static int wm_adsp_create_control(struct wm_adsp *dsp,
- 	ctl_work = kzalloc(sizeof(*ctl_work), GFP_KERNEL);
- 	if (!ctl_work) {
- 		ret = -ENOMEM;
--		goto err_ctl_cache;
-+		goto err_list_del;
- 	}
+diff --git a/scripts/kconfig/preprocess.c b/scripts/kconfig/preprocess.c
+index 0243086fb1685..0590f86df6e40 100644
+--- a/scripts/kconfig/preprocess.c
++++ b/scripts/kconfig/preprocess.c
+@@ -114,7 +114,7 @@ static char *do_error_if(int argc, char *argv[])
+ 	if (!strcmp(argv[0], "y"))
+ 		pperror("%s", argv[1]);
  
- 	ctl_work->dsp = dsp;
-@@ -1389,7 +1389,8 @@ static int wm_adsp_create_control(struct wm_adsp *dsp,
+-	return NULL;
++	return xstrdup("");
+ }
  
- 	return 0;
- 
--err_ctl_cache:
-+err_list_del:
-+	list_del(&ctl->list);
- 	kfree(ctl->cache);
- err_ctl_name:
- 	kfree(ctl->name);
+ static char *do_filename(int argc, char *argv[])
 -- 
 2.27.0
 
