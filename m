@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7757B2E6919
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:47:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B23E2E66DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:18:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634623AbgL1Qod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:44:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53240 "EHLO mail.kernel.org"
+        id S2394350AbgL1QRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:17:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728323AbgL1M5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:57:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E377D208D5;
-        Mon, 28 Dec 2020 12:57:08 +0000 (UTC)
+        id S1733276AbgL1NQz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:16:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A417D22583;
+        Mon, 28 Dec 2020 13:16:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160229;
-        bh=KOoJc5JTb36RPmNjEg6gF6NNmOD4K3nWpA6dERLmLYw=;
+        s=korg; t=1609161374;
+        bh=m3/3x9AANiyrBZ/NkeUEI3WE9L/neCAgUnormjva8/0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0/o/gk9IDTs1O+gQSbDLt/Pz5tDj2KfG2dXebwXpwtbEplH6MaIqw/kLyPleghLfE
-         2oqBODcE23fDoqnUSJXe1IpexD3ddbMrkOpgUjw+uCaVE+dPsxa1/bMfnGxmmQVoTI
-         sLFLTqdjCU8O7XnbuCM2pm7+i6BsH7EX0+vW4kRc=
+        b=v+g6GrHgFSRYlO+aQmfIzcTMgn96N8UYpF09YLe91uzQAqlhrwPYPc6gHrBLeXtfI
+         H09LJAS/FOObXwYEeL8vjhGrwz0FFXrEBw4jlOR8GTkUj4X/nZQs3HNQWHIRdvD4+H
+         YV9nCiGlEHBbiWEKu31sfCWVXSDRGygAEpHgJ37c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.4 112/132] USB: serial: keyspan_pda: fix write-wakeup use-after-free
-Date:   Mon, 28 Dec 2020 13:49:56 +0100
-Message-Id: <20201228124851.827005376@linuxfoundation.org>
+        stable@vger.kernel.org, Stefan Haberland <sth@linux.ibm.com>,
+        Jan Hoeppner <hoeppner@linux.ibm.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 4.14 192/242] s390/dasd: prevent inconsistent LCU device data
+Date:   Mon, 28 Dec 2020 13:49:57 +0100
+Message-Id: <20201228124914.139293843@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,81 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Stefan Haberland <sth@linux.ibm.com>
 
-commit 37faf50615412947868c49aee62f68233307f4e4 upstream.
+commit a29ea01653493b94ea12bb2b89d1564a265081b6 upstream.
 
-The driver's deferred write wakeup was never flushed on disconnect,
-something which could lead to the driver port data being freed while the
-wakeup work is still scheduled.
+Prevent _lcu_update from adding a device to a pavgroup if the LCU still
+requires an update. The data is not reliable any longer and in parallel
+devices might have been moved on the lists already.
+This might lead to list corruptions or invalid PAV grouping.
+Only add devices to a pavgroup if the LCU is up to date. Additional steps
+are taken by the scheduled lcu update.
 
-Fix this by using the usb-serial write wakeup which gets cancelled
-properly on disconnect.
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Fixes: 8e09f21574ea ("[S390] dasd: add hyper PAV support to DASD device driver, part 1")
 Cc: stable@vger.kernel.org
-Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Stefan Haberland <sth@linux.ibm.com>
+Reviewed-by: Jan Hoeppner <hoeppner@linux.ibm.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/serial/keyspan_pda.c |   17 +++--------------
- 1 file changed, 3 insertions(+), 14 deletions(-)
+ drivers/s390/block/dasd_alias.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
---- a/drivers/usb/serial/keyspan_pda.c
-+++ b/drivers/usb/serial/keyspan_pda.c
-@@ -47,8 +47,7 @@
- struct keyspan_pda_private {
- 	int			tx_room;
- 	int			tx_throttled;
--	struct work_struct			wakeup_work;
--	struct work_struct			unthrottle_work;
-+	struct work_struct	unthrottle_work;
- 	struct usb_serial	*serial;
- 	struct usb_serial_port	*port;
- };
-@@ -101,15 +100,6 @@ static const struct usb_device_id id_tab
- };
- #endif
+--- a/drivers/s390/block/dasd_alias.c
++++ b/drivers/s390/block/dasd_alias.c
+@@ -503,6 +503,14 @@ static int _lcu_update(struct dasd_devic
+ 		return rc;
  
--static void keyspan_pda_wakeup_write(struct work_struct *work)
--{
--	struct keyspan_pda_private *priv =
--		container_of(work, struct keyspan_pda_private, wakeup_work);
--	struct usb_serial_port *port = priv->port;
--
--	tty_port_tty_wakeup(&port->port);
--}
--
- static void keyspan_pda_request_unthrottle(struct work_struct *work)
- {
- 	struct keyspan_pda_private *priv =
-@@ -187,7 +177,7 @@ static void keyspan_pda_rx_interrupt(str
- 		case 2: /* tx unthrottle interrupt */
- 			priv->tx_throttled = 0;
- 			/* queue up a wakeup at scheduler time */
--			schedule_work(&priv->wakeup_work);
-+			usb_serial_port_softint(port);
- 			break;
- 		default:
- 			break;
-@@ -567,7 +557,7 @@ static void keyspan_pda_write_bulk_callb
- 	priv = usb_get_serial_port_data(port);
- 
- 	/* queue up a wakeup at scheduler time */
--	schedule_work(&priv->wakeup_work);
-+	usb_serial_port_softint(port);
+ 	spin_lock_irqsave(&lcu->lock, flags);
++	/*
++	 * there is another update needed skip the remaining handling
++	 * the data might already be outdated
++	 * but especially do not add the device to an LCU with pending
++	 * update
++	 */
++	if (lcu->flags & NEED_UAC_UPDATE)
++		goto out;
+ 	lcu->pav = NO_PAV;
+ 	for (i = 0; i < MAX_DEVICES_PER_LCU; ++i) {
+ 		switch (lcu->uac->unit[i].ua_type) {
+@@ -521,6 +529,7 @@ static int _lcu_update(struct dasd_devic
+ 				 alias_list) {
+ 		_add_device_to_lcu(lcu, device, refdev);
+ 	}
++out:
+ 	spin_unlock_irqrestore(&lcu->lock, flags);
+ 	return 0;
  }
- 
- 
-@@ -733,7 +723,6 @@ static int keyspan_pda_port_probe(struct
- 	if (!priv)
- 		return -ENOMEM;
- 
--	INIT_WORK(&priv->wakeup_work, keyspan_pda_wakeup_write);
- 	INIT_WORK(&priv->unthrottle_work, keyspan_pda_request_unthrottle);
- 	priv->serial = port->serial;
- 	priv->port = port;
 
 
