@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F58D2E6854
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:37:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BF6C2E696A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:50:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729878AbgL1NBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:01:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57512 "EHLO mail.kernel.org"
+        id S1727864AbgL1Mwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:52:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729633AbgL1NBE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:01:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AFA8722573;
-        Mon, 28 Dec 2020 13:00:23 +0000 (UTC)
+        id S1726420AbgL1Mwt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:52:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE30222573;
+        Mon, 28 Dec 2020 12:51:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160424;
-        bh=2qAZyJ0KhRZMRyr9LxKdCJ+yR8vg/BJqnkPg1iliz4U=;
+        s=korg; t=1609159905;
+        bh=WtlSLN4XZP4ZNu6wKgOsvW+Y/Df6jIb8sTST1jujJt0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M4vOIC83mfm5wUN9qarhQBZFlTXdAeF5ItM9L/nEYQFlyu8VjX5WtxDAmFKam+WYn
-         EWOpqMelClI25pQYwpgO6oUlEAcfYX5voZVAOfKXwMQLk5P2Qj/IBNb89qC+LLGxf4
-         RMG2fChxWemkmIUsmm4/O9BJGNYC8FGdqjiPsCMo=
+        b=PhKh2yImDny+kNLtflPlyJjLftO15qZ02+LAiMKI+DGxPZMmolyjUW2qgN1bDAlrZ
+         0yG3SkreLhdTLuAZnlqcH1SJ+Xbrnfuf25xOv5CQ8MgO+BRk2zRvedCiSIeAzncxX7
+         PUFsJ3sVipKrhQclJNdM5yAx37u3CA0gxzFW80r4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>
-Subject: [PATCH 4.9 046/175] serial_core: Check for port state when tty is in error state
-Date:   Mon, 28 Dec 2020 13:48:19 +0100
-Message-Id: <20201228124855.485989423@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.4 016/132] ALSA: usb-audio: Fix control access overflow errors from chmap
+Date:   Mon, 28 Dec 2020 13:48:20 +0100
+Message-Id: <20201228124847.189863677@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,47 +38,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexey Kardashevskiy <aik@ozlabs.ru>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 2f70e49ed860020f5abae4f7015018ebc10e1f0e upstream.
+commit c6dde8ffd071aea9d1ce64279178e470977b235c upstream.
 
-At the moment opening a serial device node (such as /dev/ttyS3)
-succeeds even if there is no actual serial device behind it.
-Reading/writing/ioctls fail as expected because the uart port is not
-initialized (the type is PORT_UNKNOWN) and the TTY_IO_ERROR error state
-bit is set fot the tty.
+The current channel-map control implementation in USB-audio driver may
+lead to an error message like
+  "control 3:0:0:Playback Channel Map:0: access overflow"
+when CONFIG_SND_CTL_VALIDATION is set.  It's because the chmap get
+callback clears the whole array no matter which count is set, and
+rather the false-positive detection.
 
-However setting line discipline does not have these checks
-8250_port.c (8250 is the default choice made by univ8250_console_init()).
-As the result of PORT_UNKNOWN, uart_port::iobase is NULL which
-a platform translates onto some address accessing which produces a crash
-like below.
+This patch fixes the problem by clearing only the needed array range
+at usb_chmap_ctl_get().
 
-This adds tty_port_initialized() to uart_set_ldisc() to prevent the crash.
-
-Found by syzkaller.
-
-Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-Link: https://lore.kernel.org/r/20201203055834.45838-1-aik@ozlabs.ru
-Cc: stable <stable@vger.kernel.org>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201211130048.6358-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/tty/serial/serial_core.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ sound/usb/stream.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/tty/serial/serial_core.c
-+++ b/drivers/tty/serial/serial_core.c
-@@ -1415,6 +1415,10 @@ static void uart_set_ldisc(struct tty_st
- {
- 	struct uart_state *state = tty->driver_data;
- 	struct uart_port *uport;
-+	struct tty_port *port = &state->port;
-+
-+	if (!tty_port_initialized(port))
-+		return;
+--- a/sound/usb/stream.c
++++ b/sound/usb/stream.c
+@@ -187,16 +187,16 @@ static int usb_chmap_ctl_get(struct snd_
+ 	struct snd_pcm_chmap *info = snd_kcontrol_chip(kcontrol);
+ 	struct snd_usb_substream *subs = info->private_data;
+ 	struct snd_pcm_chmap_elem *chmap = NULL;
+-	int i;
++	int i = 0;
  
- 	mutex_lock(&state->port.mutex);
- 	uport = uart_port_check(state);
+-	memset(ucontrol->value.integer.value, 0,
+-	       sizeof(ucontrol->value.integer.value));
+ 	if (subs->cur_audiofmt)
+ 		chmap = subs->cur_audiofmt->chmap;
+ 	if (chmap) {
+ 		for (i = 0; i < chmap->channels; i++)
+ 			ucontrol->value.integer.value[i] = chmap->map[i];
+ 	}
++	for (; i < subs->channels_max; i++)
++		ucontrol->value.integer.value[i] = 0;
+ 	return 0;
+ }
+ 
 
 
