@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CC622E3B14
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:46:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBB172E63DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:45:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404871AbgL1Npc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:45:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45566 "EHLO mail.kernel.org"
+        id S2407533AbgL1Pnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:43:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404818AbgL1Np3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:45:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F016D2063A;
-        Mon, 28 Dec 2020 13:45:12 +0000 (UTC)
+        id S2404865AbgL1Npb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:45:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB6D3206D4;
+        Mon, 28 Dec 2020 13:45:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163113;
-        bh=g5gEpoWN0kzKl52o2CAiyoOmjE8HaQ4c5cLo9I/lgAA=;
+        s=korg; t=1609163116;
+        bh=GnH9NXXYou2eeAB2fvdVW3NJX0qAsqPkZDBPKyZu7TA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BAjgRSdT1opxQrRJTKh0lq/Eqe3zWJql1PNPbsbhv6DOEv5G4KWJ0oaxUwHoSsy3c
-         qcXs95Z1rRodwI21tdFgIGeQTSuVBVm9NA0GMK8UZvYm6enO0o0pX96PERu6weNGui
-         Wa7hlti9bKDOhxmpyLIqP43sfnMlVHoFHvhGAdEM=
+        b=e52NOyh730okN6MvW6g5ZS0EC6OlM3Ntvw7pyT+9C99JT56D4sXH9GN/dQR1QId+i
+         nRv8pMvOjZ9pyxxojnlVDjdJt8/jEszyLni8xCybjQ7RSmxKyPI39zpBcGwjaRufaI
+         SMv2th5m5k7q4cC0pA1xloW1pVVALgxXzKi9sqn4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Oleksij Rempel <o.rempel@pengutronix.de>,
         Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 142/453] Input: ads7846 - fix race that causes missing releases
-Date:   Mon, 28 Dec 2020 13:46:18 +0100
-Message-Id: <20201228124944.037454335@linuxfoundation.org>
+Subject: [PATCH 5.4 143/453] Input: ads7846 - fix integer overflow on Rt calculation
+Date:   Mon, 28 Dec 2020 13:46:19 +0100
+Message-Id: <20201228124944.083780038@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
 References: <20201228124937.240114599@linuxfoundation.org>
@@ -41,101 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Jander <david@protonic.nl>
+From: Oleksij Rempel <o.rempel@pengutronix.de>
 
-[ Upstream commit e52cd628a03f72a547dbf90ccb703ee64800504a ]
+[ Upstream commit 820830ec918f6c3dcd77a54a1c6198ab57407916 ]
 
-If touchscreen is released while busy reading HWMON device, the release
-can be missed. The IRQ thread is not started because no touch is active
-and BTN_TOUCH release event is never sent.
+In some rare cases the 32 bit Rt value will overflow if z2 and x is max,
+z1 is minimal value and x_plate_ohms is relatively high (for example 800
+ohm). This would happen on some screen age with low pressure.
 
-Fixes: f5a28a7d4858f94a ("Input: ads7846 - avoid pen up/down when reading hwmon")
-Co-developed-by: Oleksij Rempel <o.rempel@pengutronix.de>
+There are two possible fixes:
+- make Rt 64bit
+- reorder calculation to avoid overflow
+
+The second variant seems to be preferable, since 64 bit calculation on
+32 bit system is a bit more expensive.
+
+Fixes: ffa458c1bd9b6f653008d450f337602f3d52a646 ("spi: ads7846 driver")
+Co-developed-by: David Jander <david@protonic.nl>
 Signed-off-by: David Jander <david@protonic.nl>
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Link: https://lore.kernel.org/r/20201027105416.18773-1-o.rempel@pengutronix.de
+Link: https://lore.kernel.org/r/20201113112240.1360-1-o.rempel@pengutronix.de
 Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/touchscreen/ads7846.c | 44 +++++++++++++++++------------
- 1 file changed, 26 insertions(+), 18 deletions(-)
+ drivers/input/touchscreen/ads7846.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/input/touchscreen/ads7846.c b/drivers/input/touchscreen/ads7846.c
-index 51ddb204ca1ba..1e19af0da13a3 100644
+index 1e19af0da13a3..a5b1b41464f99 100644
 --- a/drivers/input/touchscreen/ads7846.c
 +++ b/drivers/input/touchscreen/ads7846.c
-@@ -199,6 +199,26 @@ struct ads7846 {
- #define	REF_ON	(READ_12BIT_DFR(x, 1, 1))
- #define	REF_OFF	(READ_12BIT_DFR(y, 0, 0))
- 
-+static int get_pendown_state(struct ads7846 *ts)
-+{
-+	if (ts->get_pendown_state)
-+		return ts->get_pendown_state();
-+
-+	return !gpio_get_value(ts->gpio_pendown);
-+}
-+
-+static void ads7846_report_pen_up(struct ads7846 *ts)
-+{
-+	struct input_dev *input = ts->input;
-+
-+	input_report_key(input, BTN_TOUCH, 0);
-+	input_report_abs(input, ABS_PRESSURE, 0);
-+	input_sync(input);
-+
-+	ts->pendown = false;
-+	dev_vdbg(&ts->spi->dev, "UP\n");
-+}
-+
- /* Must be called with ts->lock held */
- static void ads7846_stop(struct ads7846 *ts)
- {
-@@ -215,6 +235,10 @@ static void ads7846_stop(struct ads7846 *ts)
- static void ads7846_restart(struct ads7846 *ts)
- {
- 	if (!ts->disabled && !ts->suspended) {
-+		/* Check if pen was released since last stop */
-+		if (ts->pendown && !get_pendown_state(ts))
-+			ads7846_report_pen_up(ts);
-+
- 		/* Tell IRQ thread that it may poll the device. */
- 		ts->stopped = false;
- 		mb();
-@@ -605,14 +629,6 @@ static const struct attribute_group ads784x_attr_group = {
- 
- /*--------------------------------------------------------------------------*/
- 
--static int get_pendown_state(struct ads7846 *ts)
--{
--	if (ts->get_pendown_state)
--		return ts->get_pendown_state();
--
--	return !gpio_get_value(ts->gpio_pendown);
--}
--
- static void null_wait_for_sync(void)
- {
- }
-@@ -867,16 +883,8 @@ static irqreturn_t ads7846_irq(int irq, void *handle)
- 				   msecs_to_jiffies(TS_POLL_PERIOD));
+@@ -801,10 +801,11 @@ static void ads7846_report_state(struct ads7846 *ts)
+ 		/* compute touch pressure resistance using equation #2 */
+ 		Rt = z2;
+ 		Rt -= z1;
+-		Rt *= x;
+ 		Rt *= ts->x_plate_ohms;
++		Rt = DIV_ROUND_CLOSEST(Rt, 16);
++		Rt *= x;
+ 		Rt /= z1;
+-		Rt = (Rt + 2047) >> 12;
++		Rt = DIV_ROUND_CLOSEST(Rt, 256);
+ 	} else {
+ 		Rt = 0;
  	}
- 
--	if (ts->pendown && !ts->stopped) {
--		struct input_dev *input = ts->input;
--
--		input_report_key(input, BTN_TOUCH, 0);
--		input_report_abs(input, ABS_PRESSURE, 0);
--		input_sync(input);
--
--		ts->pendown = false;
--		dev_vdbg(&ts->spi->dev, "UP\n");
--	}
-+	if (ts->pendown && !ts->stopped)
-+		ads7846_report_pen_up(ts);
- 
- 	return IRQ_HANDLED;
- }
 -- 
 2.27.0
 
