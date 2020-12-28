@@ -2,168 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CACB62E66F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:19:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 729D62E66FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:19:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633192AbgL1QSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:18:46 -0500
-Received: from mail-ot1-f52.google.com ([209.85.210.52]:47029 "EHLO
-        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2633046AbgL1QSn (ORCPT
+        id S2633230AbgL1QTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:19:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2633219AbgL1QTK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 11:18:43 -0500
-Received: by mail-ot1-f52.google.com with SMTP id w3so9501374otp.13;
-        Mon, 28 Dec 2020 08:18:27 -0800 (PST)
+        Mon, 28 Dec 2020 11:19:10 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C3DAC061793
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 08:18:30 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id d17so14776546ejy.9
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 08:18:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gateworks-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TOPSXu09PYTsiu/Wdh2HSg+eyyVEEi2NvtnN4/vv3Wg=;
+        b=SAuHeVN65tID5NqatUXbrkPK84oWTgv369sJyXjv6OiZVCwsjkMvIpx6urKsXLjIvA
+         PQnDVKgO3PhNKLa0B0ufpvE0awZxc7LMUvc6WdIy+nHv4t+cl0BMEqVHs/XIWYvjgP4V
+         R+oxDoX5BXorOMNmPZRnt9tb/s+Pya8Xd5R4jLKN4+zgZKmZxQDYg1n8+B4M7+boU1Y0
+         lkj1lNWzFdiO1rp5Qg0K50xtgz/bmgAttfAWENmENfzfgMBushQR6Xwi59C+dbl5z/gD
+         zoSYtGSUlRyyYPb8xlcLyLQK8ImgQEZx+dnEWNxJMA8sr2Dj3PUTNDXLzp6zznbh5XaT
+         YFAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=3bMFyLrNXYKkHBMjSrQQwVWB5IIqbb7QcW+GHhEb7po=;
-        b=h1qGb8OYn/v9Rhk4BP9XwN8FskTRYNpoDcrb7bXPGf2Lgw0QbA87PRG0pur+wES8Vj
-         Xqr1YRJxlw6OAhLOtgX8ESRKbtYtGMUyGiT1F3SpoMM9yIMaQGRBq3kpH+nZcxWJDbWa
-         gIGOHKXHJDL85I93ZTKjrirQ+aEguHMOG+kKJaTfWqwiPDu5WXTGSBP81rMrWdd3/EMo
-         dimsx4Wu4JyceGJEUMYUNnBIlmK/GxkWRAZK4HlGxnEC2o01C+RLP09XvsA9X4SVgt81
-         4JX84R4NKDNxI4F7TYK4W5wuh8+PTXMrxuzeFStFCDgv3IYgImSBJbw6phyvktQDzy5Q
-         vqzA==
-X-Gm-Message-State: AOAM531aaUL0neV2NhldI1eEliqpyiUqY8he457fRAacsOZuVTjfDWDk
-        TTVjuZH4qYnkhxh6kQ4gAbRDPV9NJBoDlIr3eyO5Xgi5hlg=
-X-Google-Smtp-Source: ABdhPJzoKsz+m5Nt7TMgWgCUitHebt9ovB68151JyGE+slM8gyWz9+7nOPZIbgO7FfX/0pQBXVveUrnuoCpYf8WHOsg=
-X-Received: by 2002:a9d:c01:: with SMTP id 1mr18630563otr.107.1609172282400;
- Mon, 28 Dec 2020 08:18:02 -0800 (PST)
+        bh=TOPSXu09PYTsiu/Wdh2HSg+eyyVEEi2NvtnN4/vv3Wg=;
+        b=dRVyTPjsOXIpH76PMeB3EljdG/aL2ludt7e50up7UQWwLTjAXS+RbBVRwnI0xR4DRi
+         nFAKiEiTa0/iCKzBOdlxVSZXUduqbOPEZyGuEJxyVNhl07+6FoQLWZ9pLPMo99X7uvjr
+         DO4lSl5zIWOOLR71aAShF33hNC3FtYdzvCxnS7CnrwcElcFe5foRtw4Hc9+e1LhFP9JL
+         qQDNi4XnEnLTPKdBw7voEmVy03Dat3oOKI57GNK4AYcQwlPYwimoSA33mAXOI4TQ3V2O
+         NhXZh5hZogF3onelDkMPjRDUzihXkyL0Mw78jLUdWv2WJelGSj7ZGa9wYiUYykM4B4Ti
+         yrAw==
+X-Gm-Message-State: AOAM532vl5gq3imBYsmXHoRTl3YigaKL1DrRZwc/cHtBrsnn0U4+gUJB
+        LeLgu8PrFKxyq4ND3AZ5FXOM2W6SNoIfVYp2Fm8L2Q==
+X-Google-Smtp-Source: ABdhPJzpGxgLX1x1kHX5FmBn5e3K0N3tgN2POjPbGkgKYNPn7agrr/SlgWVd+qedEODn+u5XsCI1WNi9lz6D9jhJ8LA=
+X-Received: by 2002:a17:907:3e23:: with SMTP id hp35mr42624451ejc.254.1609172308970;
+ Mon, 28 Dec 2020 08:18:28 -0800 (PST)
 MIME-Version: 1.0
-References: <20201212165648.166220-1-aford173@gmail.com> <CAMuHMdUr5MWpa5fhpKgAm7zRgzzJga=pjNSVG3aoTvCmuq5poQ@mail.gmail.com>
- <CAHCN7x+jm8agBzqDqnkmW1Obtd0zL6EA_xbicvkroZ+kmgEqiA@mail.gmail.com>
-In-Reply-To: <CAHCN7x+jm8agBzqDqnkmW1Obtd0zL6EA_xbicvkroZ+kmgEqiA@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 28 Dec 2020 17:17:51 +0100
-Message-ID: <CAMuHMdU-FY9cHXP2+tbHRShZw52UudQTRNx58Cw9F_JV73pB-A@mail.gmail.com>
-Subject: Re: [RFC] ravb: Add support for optional txc_refclk
-To:     Adam Ford <aford173@gmail.com>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        Charles Stevens <charles.stevens@logicpd.com>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
+References: <1608762196-29871-1-git-send-email-tharvey@gateworks.com> <20201224112335.GA15628@kozik-lap>
+In-Reply-To: <20201224112335.GA15628@kozik-lap>
+From:   Tim Harvey <tharvey@gateworks.com>
+Date:   Mon, 28 Dec 2020 08:18:17 -0800
+Message-ID: <CAJ+vNU0cEvMMFQXmO9KOG3WR4Cu1E+o1XSWv8xx35ALeZ=pzzg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: arm: fsl: Add binding for Gateworks
+ boards with IMX8MM
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Device Tree Mailing List <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adam,
-
-CC devicetree
-
-On Mon, Dec 28, 2020 at 2:49 PM Adam Ford <aford173@gmail.com> wrote:
-> On Mon, Dec 14, 2020 at 4:05 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Sun, Dec 13, 2020 at 5:18 PM Adam Ford <aford173@gmail.com> wrote:
-> > > The SoC expects the txv_refclk is provided, but if it is provided
-> > > by a programmable clock, there needs to be a way to get and enable
-> > > this clock to operate.  It needs to be optional since it's only
-> > > necessary for those with programmable clocks.
-> > >
-> > > Signed-off-by: Adam Ford <aford173@gmail.com>
+On Thu, Dec 24, 2020 at 3:23 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> On Wed, Dec 23, 2020 at 02:23:15PM -0800, Tim Harvey wrote:
+> > Add bindings for the Gateworks Venice Development kit boards with
+> > IMX8MM System on Module.
 > >
-> > Thanks for your patch!
+> > Signed-off-by: Tim Harvey <tharvey@gateworks.com>
+> > ---
+> >  Documentation/devicetree/bindings/arm/fsl.yaml | 3 +++
+> >  1 file changed, 3 insertions(+)
 > >
-> > > --- a/drivers/net/ethernet/renesas/ravb.h
-> > > +++ b/drivers/net/ethernet/renesas/ravb.h
-> > > @@ -994,6 +994,7 @@ struct ravb_private {
-> > >         struct platform_device *pdev;
-> > >         void __iomem *addr;
-> > >         struct clk *clk;
-> > > +       struct clk *ref_clk;
-> > >         struct mdiobb_ctrl mdiobb;
-> > >         u32 num_rx_ring[NUM_RX_QUEUE];
-> > >         u32 num_tx_ring[NUM_TX_QUEUE];
-> > > diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-> > > index bd30505fbc57..4c3f95923ef2 100644
-> > > --- a/drivers/net/ethernet/renesas/ravb_main.c
-> > > +++ b/drivers/net/ethernet/renesas/ravb_main.c
-> > > @@ -2148,6 +2148,18 @@ static int ravb_probe(struct platform_device *pdev)
-> > >                 goto out_release;
-> > >         }
-> > >
-> > > +       priv->ref_clk = devm_clk_get(&pdev->dev, "txc_refclk");
-> >
-> > Please also update the DT bindings[1], to document the optional
-> > presence of the clock.
+> > diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+> > index 1ca9dfa..705c6e8 100644
+> > --- a/Documentation/devicetree/bindings/arm/fsl.yaml
+> > +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+> > @@ -405,6 +405,9 @@ properties:
+> >                - beacon,imx8mm-beacon-kit  # i.MX8MM Beacon Development Kit
+> >                - fsl,imx8mm-ddr4-evk       # i.MX8MM DDR4 EVK Board
+> >                - fsl,imx8mm-evk            # i.MX8MM EVK Board
+> > +              - gw,imx8mm-gw71xx-0x       # i.MX8MM Gateworks Development Kit
+> > +              - gw,imx8mm-gw72xx-0x       # i.MX8MM Gateworks Development Kit
+> > +              - gw,imx8mm-gw73xx-0x       # i.MX8MM Gateworks Development Kit
 >
-> I am not all that familiar with the YAML syntax, but right now, the
-> clock-names property isn't in the binding, and the driver doesn't use
-> a name when requesting the single clock it's expecting.
-> Since the txc_refclk is optional, can the clock-names property allow
-> for 0-2 names while the number of clocks be 1-2?
+> I think you should skip the wildcards in compatible and choose one
+> specific compatible. What if at some point you would like to add gw,imx8mm-gw7113-0x?
 >
-> clocks:
->     minItems: 1
->     maxItems: 2
->
->   clock-names:
->     minItems: 0
->     maxItems: 2
->     items:
->       enum:
->         - fck # AVB functional clock (optional if it is the only clock)
->         - txc_refclk # TXC reference clock
 
-With "enum", it accepts any order. But for compatibility, we want to force
-"fck" first.
+Krzysztof,
 
-Something like:
+Thanks for the review. I do want the wildcards as above because they
+represent model variations that do not affect device-tree such as
+component subloads.
 
-  clocks:
-    minItems: 1
-    items:
-      - description: AVB functional clock
-      - description: Optional TXC reference clock
+Thanks,
 
-  clock-names:
-    items:
-      - const: fck
-      - const: txc_refclk
-
-> With the above proposal, the clock-names would only be necessary when
-> using the txc_refclk.
-
-I think that's difficult to express: either make clock-names optional (i.e.
-don't list it under "required"), or make it required in all cases (which need
-fixups for the existing users, and "minItems: 1" for "clock-names", too).
-
-> > > +       if (IS_ERR(priv->ref_clk)) {
-> > > +               if (PTR_ERR(priv->ref_clk) == -EPROBE_DEFER) {
-> > > +                       /* for Probe defer return error */
-> > > +                       error = PTR_ERR(priv->ref_clk);
-> > > +                       goto out_release;
-> > > +               }
-> > > +               /* Ignore other errors since it's optional */
-> > > +       } else {
-> > > +               (void)clk_prepare_enable(priv->ref_clk);
-> >
-> > This can fail.
-> > Does this clock need to be enabled all the time?
-> > At least it should be disabled in the probe failure path, and in
-> > ravb_remove().
->
-> I'll do that for the next rev.
->
-> thanks,
->
-> adam
-> >
-> > [1] Documentation/devicetree/bindings/net/renesas,etheravb.yaml
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Tim
