@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D8B22E6417
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:48:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0E432E3953
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:22:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408831AbgL1PrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:47:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44248 "EHLO mail.kernel.org"
+        id S2388244AbgL1NWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:22:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50142 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404482AbgL1Nnf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:43:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D7FA2072C;
-        Mon, 28 Dec 2020 13:42:53 +0000 (UTC)
+        id S2388095AbgL1NVg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:21:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBA25208BA;
+        Mon, 28 Dec 2020 13:20:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162974;
-        bh=4qUT6tC2xgZIPjC7ymiaJDr1MFzALDWyl3GbY7lufFM=;
+        s=korg; t=1609161655;
+        bh=e+yxeZxMeAL9DiZyVGoWrKdVC3Kb41WnnxKacxxwxkA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Fwqy3/AbhEodS+esNtr60IJzJRLiTawk38rb30BtF6eLy8IFu7+j0evge+DSKEZbG
-         0uFLz4PANBad8k4kBt6hEvXK6yVWNGEn1I5uXs5NnuLQEPMBezU3wyjkqVJqzpMTro
-         JYzqrbKzJ9g99qCYVe36cQahyWmiARRYFHbDkTeM=
+        b=WypNJuessSf6+KcUVb3YJ8a79Jak6Ic6kdaaYi2E4ql1mgbekSRAR11BLifZ7jGK1
+         NjVR3m6R2oKQPLmtjVLvj/b+UJ/GcuaggkCjkckMxeqs+Y3uahWMxdO9Ehgl+h9Ay2
+         SSUgjIaP/0uzcoThmzLJOZVObwQOy3xvhfz34B7A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vincent Bernat <vincent@bernat.ch>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 125/453] net: evaluate net.ipv4.conf.all.proxy_arp_pvlan
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.19 042/346] ALSA: usb-audio: Fix control access overflow errors from chmap
 Date:   Mon, 28 Dec 2020 13:46:01 +0100
-Message-Id: <20201228124943.231586570@linuxfoundation.org>
+Message-Id: <20201228124921.822780571@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +38,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Bernat <vincent@bernat.ch>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 1af5318c00a8acc33a90537af49b3f23f72a2c4b ]
+commit c6dde8ffd071aea9d1ce64279178e470977b235c upstream.
 
-Introduced in 65324144b50b, the "proxy_arp_vlan" sysctl is a
-per-interface sysctl to tune proxy ARP support for private VLANs.
-While the "all" variant is exposed, it was a noop and never evaluated.
-We use the usual "or" logic for this kind of sysctls.
+The current channel-map control implementation in USB-audio driver may
+lead to an error message like
+  "control 3:0:0:Playback Channel Map:0: access overflow"
+when CONFIG_SND_CTL_VALIDATION is set.  It's because the chmap get
+callback clears the whole array no matter which count is set, and
+rather the false-positive detection.
 
-Fixes: 65324144b50b ("net: RFC3069, private VLAN proxy arp support")
-Signed-off-by: Vincent Bernat <vincent@bernat.ch>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This patch fixes the problem by clearing only the needed array range
+at usb_chmap_ctl_get().
+
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201211130048.6358-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- include/linux/inetdevice.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/usb/stream.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/inetdevice.h b/include/linux/inetdevice.h
-index 3bbcddd22df8c..53aa0343bf694 100644
---- a/include/linux/inetdevice.h
-+++ b/include/linux/inetdevice.h
-@@ -105,7 +105,7 @@ static inline void ipv4_devconf_setall(struct in_device *in_dev)
+--- a/sound/usb/stream.c
++++ b/sound/usb/stream.c
+@@ -198,16 +198,16 @@ static int usb_chmap_ctl_get(struct snd_
+ 	struct snd_pcm_chmap *info = snd_kcontrol_chip(kcontrol);
+ 	struct snd_usb_substream *subs = info->private_data;
+ 	struct snd_pcm_chmap_elem *chmap = NULL;
+-	int i;
++	int i = 0;
  
- #define IN_DEV_LOG_MARTIANS(in_dev)	IN_DEV_ORCONF((in_dev), LOG_MARTIANS)
- #define IN_DEV_PROXY_ARP(in_dev)	IN_DEV_ORCONF((in_dev), PROXY_ARP)
--#define IN_DEV_PROXY_ARP_PVLAN(in_dev)	IN_DEV_CONF_GET(in_dev, PROXY_ARP_PVLAN)
-+#define IN_DEV_PROXY_ARP_PVLAN(in_dev)	IN_DEV_ORCONF((in_dev), PROXY_ARP_PVLAN)
- #define IN_DEV_SHARED_MEDIA(in_dev)	IN_DEV_ORCONF((in_dev), SHARED_MEDIA)
- #define IN_DEV_TX_REDIRECTS(in_dev)	IN_DEV_ORCONF((in_dev), SEND_REDIRECTS)
- #define IN_DEV_SEC_REDIRECTS(in_dev)	IN_DEV_ORCONF((in_dev), \
--- 
-2.27.0
-
+-	memset(ucontrol->value.integer.value, 0,
+-	       sizeof(ucontrol->value.integer.value));
+ 	if (subs->cur_audiofmt)
+ 		chmap = subs->cur_audiofmt->chmap;
+ 	if (chmap) {
+ 		for (i = 0; i < chmap->channels; i++)
+ 			ucontrol->value.integer.value[i] = chmap->map[i];
+ 	}
++	for (; i < subs->channels_max; i++)
++		ucontrol->value.integer.value[i] = 0;
+ 	return 0;
+ }
+ 
 
 
