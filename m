@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15BE72E3F27
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:38:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 306BE2E3F0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:38:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392227AbgL1Ogc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:36:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41024 "EHLO mail.kernel.org"
+        id S2504895AbgL1OdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:33:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2504886AbgL1OdF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:33:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 00155224D2;
-        Mon, 28 Dec 2020 14:32:23 +0000 (UTC)
+        id S2504777AbgL1Ocm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:32:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BC3E0207B2;
+        Mon, 28 Dec 2020 14:32:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165944;
-        bh=M+utYt6pr6YBpAd8O1kfh4QtaFja7vdkmDgoY6zssAs=;
+        s=korg; t=1609165947;
+        bh=K24iJRIX4DRU9kl3rbz/XpvapenhOV22LKkXKlb/PJY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RDxer4/rkV6Q3pNQ4OxDxQS3z5plGMjOFu5Ekk/oQ0jloSwlY8xAK0XjpLIMa84lS
-         bymtAe+ReyknmErc4wwMzhJvOYctDydam4O4O0p05XEyKHkwngclzVS03b6DlvS2zT
-         Ef3YHMGR0zdmMsRdDHsKdqrjspZ3/BKZlIWBEJ+c=
+        b=o+CNjFyBO/uuWMs4wwStOlEAEHE0jyc+erJriEuVOYObsh05dn8WnJ+jRfw9rFsjn
+         YCDEqP/E6SJ2M1Q6bBBIQGd3dGVSz7GAN5IPlcKgDysoS2BHxD0wKwhUaopa62PFTt
+         xkMgHvK/jO7yTyUbRdIUBgHF4ty1W2HOk69GCk78=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        stable@vger.kernel.org,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
         Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Peter Meerwald <pmeerw@pmeerw.net>, Stable@vger.kernel.org
-Subject: [PATCH 5.10 680/717] iio:pressure:mpl3115: Force alignment of buffer
-Date:   Mon, 28 Dec 2020 13:51:18 +0100
-Message-Id: <20201228125053.558187217@linuxfoundation.org>
+        Daniel Baluta <daniel.baluta@oss.nxp.com>,
+        Stable@vger.kernel.org
+Subject: [PATCH 5.10 681/717] iio:imu:bmi160: Fix too large a buffer.
+Date:   Mon, 28 Dec 2020 13:51:19 +0100
+Message-Id: <20201228125053.607081381@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
 References: <20201228125020.963311703@linuxfoundation.org>
@@ -44,53 +44,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-commit 198cf32f0503d2ad60d320b95ef6fb8243db857f upstream.
+commit dc7de42d6b50a07b37feeba4c6b5136290fcee81 upstream.
 
-Whilst this is another case of the issue Lars reported with
-an array of elements of smaller than 8 bytes being passed
-to iio_push_to_buffers_with_timestamp(), the solution here is
-a bit different from the other cases and relies on __aligned
-working on the stack (true since 4.6?)
+The comment implies this device has 3 sensor types, but it only
+has an accelerometer and a gyroscope (both 3D).  As such the
+buffer does not need to be as long as stated.
 
-This one is unusual.  We have to do an explicit memset() each time
-as we are reading 3 bytes into a potential 4 byte channel which
-may sometimes be a 2 byte channel depending on what is enabled.
-As such, moving the buffer to the heap in the iio_priv structure
-doesn't save us much.  We can't use a nice explicit structure
-on the stack either as the data channels have different storage
-sizes and are all separately controlled.
+Note I've separated this from the following patch which fixes
+the alignment for passing to iio_push_to_buffers_with_timestamp()
+as they are different issues even if they affect the same line
+of code.
 
-Fixes: cc26ad455f57 ("iio: Add Freescale MPL3115A2 pressure / temperature sensor driver")
-Reported-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 Reviewed-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc: Peter Meerwald <pmeerw@pmeerw.net>
+Cc: Daniel Baluta <daniel.baluta@oss.nxp.com>
 Cc: <Stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200920112742.170751-7-jic23@kernel.org
+Link: https://lore.kernel.org/r/20200920112742.170751-5-jic23@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/pressure/mpl3115.c |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/iio/imu/bmi160/bmi160_core.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/iio/pressure/mpl3115.c
-+++ b/drivers/iio/pressure/mpl3115.c
-@@ -144,7 +144,14 @@ static irqreturn_t mpl3115_trigger_handl
+--- a/drivers/iio/imu/bmi160/bmi160_core.c
++++ b/drivers/iio/imu/bmi160/bmi160_core.c
+@@ -427,8 +427,8 @@ static irqreturn_t bmi160_trigger_handle
  	struct iio_poll_func *pf = p;
  	struct iio_dev *indio_dev = pf->indio_dev;
- 	struct mpl3115_data *data = iio_priv(indio_dev);
--	u8 buffer[16]; /* 32-bit channel + 16-bit channel + padding + ts */
-+	/*
-+	 * 32-bit channel + 16-bit channel + padding + ts
-+	 * Note that it is possible for only one of the first 2
-+	 * channels to be enabled. If that happens, the first element
-+	 * of the buffer may be either 16 or 32-bits.  As such we cannot
-+	 * use a simple structure definition to express this data layout.
-+	 */
-+	u8 buffer[16] __aligned(8);
- 	int ret, pos = 0;
+ 	struct bmi160_data *data = iio_priv(indio_dev);
+-	__le16 buf[16];
+-	/* 3 sens x 3 axis x __le16 + 3 x __le16 pad + 4 x __le16 tstamp */
++	__le16 buf[12];
++	/* 2 sens x 3 axis x __le16 + 2 x __le16 pad + 4 x __le16 tstamp */
+ 	int i, ret, j = 0, base = BMI160_REG_DATA_MAGN_XOUT_L;
+ 	__le16 sample;
  
- 	mutex_lock(&data->lock);
 
 
