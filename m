@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8947C2E683B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:35:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89D192E6949
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:48:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634136AbgL1Qdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:33:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59934 "EHLO mail.kernel.org"
+        id S2441695AbgL1QrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:47:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730272AbgL1NDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:03:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F054C22A84;
-        Mon, 28 Dec 2020 13:03:03 +0000 (UTC)
+        id S1728614AbgL1Mzq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:55:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C5D5208D5;
+        Mon, 28 Dec 2020 12:55:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160584;
-        bh=YyWkyWuF9tgUxC8gDThyGZ7RnztBkp7dslztdFZuTbg=;
+        s=korg; t=1609160106;
+        bh=nse2/lH7GiPM5GDrfQ+M1mb+40BJ4+k+utImoH1uKeM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GzTdVZrY9qCAdeOLptO86gtUjxACzdaCi4JnJu/rnlWgzKFizOUKZwXlbVkOjaxqJ
-         BBYHzc1D6kXMjP/zjc3mqrdDvUl8OWCLefxePrpfMGIXB9q0M+/klaF1BwroR4qY1Y
-         Bckqjk4V4XvScltVd6zmgoGnGUxxQ5cVMI+dX50Y=
+        b=yVsyDXf1QqEKryYPTEWK9FqgZbH9d3bCMkPa2yQZaz3xUBoMSOr9k9V4F+x3GM6Ki
+         b9LSnfqyWNMF5Ps+rdb6nx8g6HWSvWtoX1JGLdBionLKERk/NhQdcO6F+c5U71aSZS
+         3l68kzGBxGIbZ1iNaryUDECxnVm4i5B5slb0MJpY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,12 +27,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
         Viresh Kumar <viresh.kumar@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 101/175] cpufreq: scpi: Add missing MODULE_ALIAS
-Date:   Mon, 28 Dec 2020 13:49:14 +0100
-Message-Id: <20201228124858.142579635@linuxfoundation.org>
+Subject: [PATCH 4.4 071/132] cpufreq: scpi: Add missing MODULE_ALIAS
+Date:   Mon, 28 Dec 2020 13:49:15 +0100
+Message-Id: <20201228124849.879506496@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -57,10 +57,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/drivers/cpufreq/scpi-cpufreq.c b/drivers/cpufreq/scpi-cpufreq.c
-index ea7a4e1b68c26..1a45fbb00d877 100644
+index de5e89b2eaaa3..98f762cca9010 100644
 --- a/drivers/cpufreq/scpi-cpufreq.c
 +++ b/drivers/cpufreq/scpi-cpufreq.c
-@@ -111,6 +111,7 @@ static struct platform_driver scpi_cpufreq_platdrv = {
+@@ -119,6 +119,7 @@ static struct platform_driver scpi_cpufreq_platdrv = {
  };
  module_platform_driver(scpi_cpufreq_platdrv);
  
