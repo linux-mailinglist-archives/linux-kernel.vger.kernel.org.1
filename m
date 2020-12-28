@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20A442E4346
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:36:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9523C2E38CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:16:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437387AbgL1PfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:35:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55244 "EHLO mail.kernel.org"
+        id S1732667AbgL1NPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:15:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43460 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407295AbgL1NxV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:53:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 35B6622B37;
-        Mon, 28 Dec 2020 13:52:40 +0000 (UTC)
+        id S1732641AbgL1NPM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:15:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 73A2B22582;
+        Mon, 28 Dec 2020 13:14:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163560;
-        bh=hi5aIWuUTk/lV2HCHbNEAoPGuYjf9GREJYAYDau+TLo=;
+        s=korg; t=1609161272;
+        bh=1c16DeVlrkOsAw+l3Lm1Es+96/1hWK5NAZRQZL8BiEA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qnh4uReCNbgUMQAIb+B4ziKFwh3hBocHByvbwEm7Q7uvT/Ruf/OQ8aD2WcmLRkoti
-         jcgR/lpQDdX2t+LDRyT2EKqTHL8uUsmaXWw860WAoPc25DELLF0yygdsVcCQFg2Us3
-         fFke3z1chfvfpVfBcXO6t7eJQ2osVpiWwyet41hw=
+        b=oqEyorQhxIQF6Oz8oMIO9gFp2fjDpRCIsS/5yuzXi8tHQ55aI4WH7j4F2ctZ67p6t
+         wIXVsn6o60LZ2u5/QY+iLokORuGKUva2PJHK2zV6yeqy+dWMhpx1BuVszrwVYjmP7F
+         BhqgGwoin+KSn1v/SdS8S5r7JzpdtRdElYkU9P6A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.4 328/453] media: ipu3-cio2: Make the field on subdev format V4L2_FIELD_NONE
+        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Antoine Tenart <atenart@kernel.org>,
+        Tsahee Zidenberg <tsahee@annapurnalabs.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 159/242] irqchip/alpine-msi: Fix freeing of interrupts on allocation error path
 Date:   Mon, 28 Dec 2020 13:49:24 +0100
-Message-Id: <20201228124952.996379688@linuxfoundation.org>
+Message-Id: <20201228124912.525158358@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,35 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
+From: Marc Zyngier <maz@kernel.org>
 
-commit 219a8b9c04e54872f9a4d566633fb42f08bcbe2a upstream.
+[ Upstream commit 3841245e8498a789c65dedd7ffa8fb2fee2c0684 ]
 
-The ipu3-cio2 doesn't make use of the field and this is reflected in V4L2
-buffers as well as the try format. Do this in active format, too.
+The alpine-msi driver has an interesting allocation error handling,
+where it frees the same interrupts repeatedly. Hilarity follows.
 
-Fixes: c2a6a07afe4a ("media: intel-ipu3: cio2: add new MIPI-CSI2 driver")
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Reviewed-by: Bingbu Cao <bingbu.cao@intel.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: stable@vger.kernel.org # v4.16 and up
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This code is probably never executed, but let's fix it nonetheless.
 
+Fixes: e6b78f2c3e14 ("irqchip: Add the Alpine MSIX interrupt controller")
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Reviewed-by: Antoine Tenart <atenart@kernel.org>
+Cc: Tsahee Zidenberg <tsahee@annapurnalabs.com>
+Cc: Antoine Tenart <atenart@kernel.org>
+Link: https://lore.kernel.org/r/20201129135525.396671-1-maz@kernel.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/pci/intel/ipu3/ipu3-cio2.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/irqchip/irq-alpine-msi.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/drivers/media/pci/intel/ipu3/ipu3-cio2.c
-+++ b/drivers/media/pci/intel/ipu3/ipu3-cio2.c
-@@ -1297,6 +1297,7 @@ static int cio2_subdev_set_fmt(struct v4
- 	fmt->format.width = min_t(u32, fmt->format.width, CIO2_IMAGE_MAX_WIDTH);
- 	fmt->format.height = min_t(u32, fmt->format.height,
- 				   CIO2_IMAGE_MAX_LENGTH);
-+	fmt->format.field = V4L2_FIELD_NONE;
+diff --git a/drivers/irqchip/irq-alpine-msi.c b/drivers/irqchip/irq-alpine-msi.c
+index 63d980995d17d..ac431697ebe1c 100644
+--- a/drivers/irqchip/irq-alpine-msi.c
++++ b/drivers/irqchip/irq-alpine-msi.c
+@@ -165,8 +165,7 @@ static int alpine_msix_middle_domain_alloc(struct irq_domain *domain,
+ 	return 0;
  
- 	mutex_lock(&q->subdev_lock);
- 	*mbus = fmt->format;
+ err_sgi:
+-	while (--i >= 0)
+-		irq_domain_free_irqs_parent(domain, virq, i);
++	irq_domain_free_irqs_parent(domain, virq, i - 1);
+ 	alpine_msix_free_sgi(priv, sgi, nr_irqs);
+ 	return err;
+ }
+-- 
+2.27.0
+
 
 
