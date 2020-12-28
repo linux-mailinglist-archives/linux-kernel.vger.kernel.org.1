@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F17F2E42B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:27:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5260D2E429B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:25:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392608AbgL1P1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:27:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58638 "EHLO mail.kernel.org"
+        id S2407610AbgL1N6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:58:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406792AbgL1N5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:57:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C8C5F22583;
-        Mon, 28 Dec 2020 13:57:33 +0000 (UTC)
+        id S2391624AbgL1N6V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:58:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 37A3F2078D;
+        Mon, 28 Dec 2020 13:57:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163854;
-        bh=2gBg5QTkC7zG046XzWyEoeI1tTw2t8h+4ks/k1PY7iU=;
+        s=korg; t=1609163859;
+        bh=JJ98nMTw0U+b1TISDdZ/VTbdI0leF7vvt/tfhi4+4g0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JPITaN5vdTVCZyDwDeCAwX5ZnJzh7RwY+6UIsV+ssfI5SEATjWySy4XbApwJKdymA
-         RQEfpQU/nFp5KPfwDE0FPuyinseNTCTgDtSyh5/aVpI5oOuGniEWxAsbI4h9uR8jLP
-         k9PkDypq+vbZEqLg/xxVLRGD+/oAeoAa1fUgcoJU=
+        b=IJ4fAW4BVYWzRBUXQW8YPgIhIx8mn1S8ykj01Ta4tTJvoArN0M6cBqqam25w2ioGp
+         vMaqhCIHWYojkOaJ4XzFECDX2bMVDPZ6YqOIlGAe94TYExSczgVMWFsdlhQKb+gOyW
+         9a0k9/gsEyQYX1zXdrzsHKv+bnTeHr7e2wwAU7sU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>,
         Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Daniel Baluta <daniel.baluta@oss.nxp.com>,
-        Stable@vger.kernel.org
-Subject: [PATCH 5.4 431/453] iio:imu:bmi160: Fix too large a buffer.
-Date:   Mon, 28 Dec 2020 13:51:07 +0100
-Message-Id: <20201228124957.966222135@linuxfoundation.org>
+        Dan Murphy <dmurphy@ti.com>, Stable@vger.kernel.org
+Subject: [PATCH 5.4 432/453] iio:adc:ti-ads124s08: Fix buffer being too long.
+Date:   Mon, 28 Dec 2020 13:51:08 +0100
+Message-Id: <20201228124958.015381701@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
 References: <20201228124937.240114599@linuxfoundation.org>
@@ -44,40 +43,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-commit dc7de42d6b50a07b37feeba4c6b5136290fcee81 upstream.
+commit b0bd27f02d768e3a861c4e6c27f8e369720e6c25 upstream.
 
-The comment implies this device has 3 sensor types, but it only
-has an accelerometer and a gyroscope (both 3D).  As such the
-buffer does not need to be as long as stated.
+The buffer is expressed as a u32 array, yet the extra space for
+the s64 timestamp was expressed as sizeof(s64)/sizeof(u16).
+This will result in 2 extra u32 elements.
+Fix by dividing by sizeof(u32).
 
-Note I've separated this from the following patch which fixes
-the alignment for passing to iio_push_to_buffers_with_timestamp()
-as they are different issues even if they affect the same line
-of code.
-
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Fixes: e717f8c6dfec ("iio: adc: Add the TI ads124s08 ADC code")
+Signed-off-by: Jonathan Cameron<Jonathan.Cameron@huawei.com>
 Reviewed-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc: Daniel Baluta <daniel.baluta@oss.nxp.com>
+Cc: Dan Murphy <dmurphy@ti.com>
 Cc: <Stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200920112742.170751-5-jic23@kernel.org
+Link: https://lore.kernel.org/r/20200920112742.170751-8-jic23@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iio/imu/bmi160/bmi160_core.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/iio/adc/ti-ads124s08.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/iio/imu/bmi160/bmi160_core.c
-+++ b/drivers/iio/imu/bmi160/bmi160_core.c
-@@ -411,8 +411,8 @@ static irqreturn_t bmi160_trigger_handle
+--- a/drivers/iio/adc/ti-ads124s08.c
++++ b/drivers/iio/adc/ti-ads124s08.c
+@@ -270,7 +270,7 @@ static irqreturn_t ads124s_trigger_handl
  	struct iio_poll_func *pf = p;
  	struct iio_dev *indio_dev = pf->indio_dev;
- 	struct bmi160_data *data = iio_priv(indio_dev);
--	__le16 buf[16];
--	/* 3 sens x 3 axis x __le16 + 3 x __le16 pad + 4 x __le16 tstamp */
-+	__le16 buf[12];
-+	/* 2 sens x 3 axis x __le16 + 2 x __le16 pad + 4 x __le16 tstamp */
- 	int i, ret, j = 0, base = BMI160_REG_DATA_MAGN_XOUT_L;
- 	__le16 sample;
+ 	struct ads124s_private *priv = iio_priv(indio_dev);
+-	u32 buffer[ADS124S08_MAX_CHANNELS + sizeof(s64)/sizeof(u16)];
++	u32 buffer[ADS124S08_MAX_CHANNELS + sizeof(s64)/sizeof(u32)];
+ 	int scan_index, j = 0;
+ 	int ret;
  
 
 
