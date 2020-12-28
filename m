@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0367C2E3D49
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:14:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 900302E40FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:01:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440240AbgL1ONm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:13:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48494 "EHLO mail.kernel.org"
+        id S2392553AbgL1PBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:01:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440210AbgL1ONf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:13:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5A5922C97;
-        Mon, 28 Dec 2020 14:12:53 +0000 (UTC)
+        id S2440225AbgL1ONk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:13:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 58EBF207A9;
+        Mon, 28 Dec 2020 14:12:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609164774;
-        bh=YluCWdZM4mCS8hD73LBm0Q/wuzWnO7VOYpz5c2pvBCQ=;
+        s=korg; t=1609164780;
+        bh=5q5Y9s5C1q7o1t5RfIRykLjMtnHKqtXg45MqgLD44QY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TTeI73RbaYa0jra69MOjC3u5pWqLov+uBYxhNiiL9rNwXKDCNAcgYwJ1eEg+9+239
-         EogAKPoIcZxR9gUKoc89ueP8v1Z80+abQsMB1/WKflC2uajWRAJ5aOI70frXADNGJU
-         PGQ2OyzSbYydwWdHS7JOEy7yh++l5ox72SIVcK+4=
+        b=XN80wcoIPWX64LlTmeKaZwoaB4CQMynrjqYNEt5RwHWOeXyXMz4AjJsW8hzXykqcz
+         aWUCR+uiiRHOa1UISenGRZp+zAND5saf+2Gr2NklhhCFWtp2CTWEccldnB0mRFHeMz
+         SQpEl9fvY1hxjbVRRYddNnpSqNkv2D5KWLEhalMQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
+        stable@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 294/717] scripts: kernel-doc: fix parsing function-like typedefs
-Date:   Mon, 28 Dec 2020 13:44:52 +0100
-Message-Id: <20201228125035.111957081@linuxfoundation.org>
+Subject: [PATCH 5.10 295/717] bpf: Fix bpf_put_raw_tracepoint()s use of __module_address()
+Date:   Mon, 28 Dec 2020 13:44:53 +0100
+Message-Id: <20201228125035.159490812@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
 References: <20201228125020.963311703@linuxfoundation.org>
@@ -41,53 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+From: Andrii Nakryiko <andrii@kernel.org>
 
-[ Upstream commit 7d2c6b1edf790d96e9017a0b27be2425e1af1532 ]
+[ Upstream commit 12cc126df82c96c89706aa207ad27c56f219047c ]
 
-Changeset 6b80975c6308 ("scripts: kernel-doc: fix typedef parsing")
-added support for things like:
+__module_address() needs to be called with preemption disabled or with
+module_mutex taken. preempt_disable() is enough for read-only uses, which is
+what this fix does. Also, module_put() does internal check for NULL, so drop
+it as well.
 
-	typedef unsigned long foo();
-
-However, it caused a regression on this prototype:
-
-	typedef bool v4l2_check_dv_timings_fnc(const struct v4l2_dv_timings *t, void *handle);
-
-This is only noticed after adding a patch that checks if the
-kernel-doc identifier matches the typedef:
-
-	./scripts/kernel-doc -none $(git grep '^.. kernel-doc::' Documentation/ |cut -d ' ' -f 3|sort|uniq) 2>&1|grep expecting
-	include/media/v4l2-dv-timings.h:38: warning: expecting prototype for typedef v4l2_check_dv_timings_fnc. Prototype was for typedef nc instead
-
-The problem is that, with the new parsing logic, it is not
-checking for complete words at the type part.
-
-Fix it by adding a \b at the end of each type word at the
-regex.
-
-fixes: 6b80975c6308 ("scripts: kernel-doc: fix typedef parsing")
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Link: https://lore.kernel.org/r/218ff56dcb8e73755005d3fb64586eb1841a276b.1606896997.git.mchehab+huawei@kernel.org
-Signed-off-by: Jonathan Corbet <corbet@lwn.net>
+Fixes: a38d1107f937 ("bpf: support raw tracepoints in modules")
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
+Link: https://lore.kernel.org/bpf/20201203204634.1325171-2-andrii@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/kernel-doc | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/trace/bpf_trace.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/scripts/kernel-doc b/scripts/kernel-doc
-index 9b6ddeb097e93..6325bec3f66f8 100755
---- a/scripts/kernel-doc
-+++ b/scripts/kernel-doc
-@@ -1431,7 +1431,7 @@ sub dump_enum($$) {
-     }
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index a125ea5e04cd7..0dde84b9d29fe 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -2041,10 +2041,12 @@ struct bpf_raw_event_map *bpf_get_raw_tracepoint(const char *name)
+ 
+ void bpf_put_raw_tracepoint(struct bpf_raw_event_map *btp)
+ {
+-	struct module *mod = __module_address((unsigned long)btp);
++	struct module *mod;
+ 
+-	if (mod)
+-		module_put(mod);
++	preempt_disable();
++	mod = __module_address((unsigned long)btp);
++	module_put(mod);
++	preempt_enable();
  }
  
--my $typedef_type = qr { ((?:\s+[\w\*]+){1,8})\s* }x;
-+my $typedef_type = qr { ((?:\s+[\w\*]+\b){1,8})\s* }x;
- my $typedef_ident = qr { \*?\s*(\w\S+)\s* }x;
- my $typedef_args = qr { \s*\((.*)\); }x;
- 
+ static __always_inline
 -- 
 2.27.0
 
