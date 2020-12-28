@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E62A22E6737
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:22:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B47EF2E689D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:40:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633190AbgL1QW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:22:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40112 "EHLO mail.kernel.org"
+        id S2633589AbgL1Qis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:38:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731977AbgL1NMM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:12:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DE9D22AAA;
-        Mon, 28 Dec 2020 13:11:31 +0000 (UTC)
+        id S1729743AbgL1NBN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:01:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6267122A84;
+        Mon, 28 Dec 2020 13:00:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161091;
-        bh=JMp0wial69jrL6aFyW+zOQgg+WkIMrPu8HjSfNA2Cf4=;
+        s=korg; t=1609160433;
+        bh=jWWecCvtWSloin1KklTI0i6RRAy8XgIXFUC1cw82+x0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xitt4bC2H7GHOWvw7IA0TU+0K2pMVQOOMPnJ5F5FEQtuBqDe1YoPYUc9ByWgcgSiR
-         qvkoKPsUFqG4OgM4S/vkaMkbX7tQDtlWWVzJ2Z2ZirWFK7l5xEWA7SNyDuv/SqmsC+
-         9mMWuqeW/IL2O1xzJdq8OC4ddyLcKm3cTW5WooBs=
+        b=YCCzoVPKgcyb8ftO2AT8zeNUqnOkr7gP8nJbx8RPrGynuBkEOxmJbZ+YUT1z2CIPM
+         VTJ5qYh8VLNROxpTY+UTiAocASBDPcsKFnpWV16C22Cur/Y7a4WBUgDwr0lSM7XWBe
+         DOkKJsJVsPkXzNLgQiMYiwHEesGFVTyY4aFRwxcM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Jander <david@protonic.nl>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 097/242] Input: ads7846 - fix race that causes missing releases
+        stable@vger.kernel.org, Peilin Ye <yepeilin.cs@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        syzbot+24ebd650e20bd263ca01@syzkaller.appspotmail.com
+Subject: [PATCH 4.9 049/175] Bluetooth: Fix slab-out-of-bounds read in hci_le_direct_adv_report_evt()
 Date:   Mon, 28 Dec 2020 13:48:22 +0100
-Message-Id: <20201228124909.464919583@linuxfoundation.org>
+Message-Id: <20201228124855.632869877@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,103 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Jander <david@protonic.nl>
+From: Peilin Ye <yepeilin.cs@gmail.com>
 
-[ Upstream commit e52cd628a03f72a547dbf90ccb703ee64800504a ]
+commit f7e0e8b2f1b0a09b527885babda3e912ba820798 upstream.
 
-If touchscreen is released while busy reading HWMON device, the release
-can be missed. The IRQ thread is not started because no touch is active
-and BTN_TOUCH release event is never sent.
+`num_reports` is not being properly checked. A malformed event packet with
+a large `num_reports` number makes hci_le_direct_adv_report_evt() read out
+of bounds. Fix it.
 
-Fixes: f5a28a7d4858f94a ("Input: ads7846 - avoid pen up/down when reading hwmon")
-Co-developed-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Signed-off-by: David Jander <david@protonic.nl>
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Link: https://lore.kernel.org/r/20201027105416.18773-1-o.rempel@pengutronix.de
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Fixes: 2f010b55884e ("Bluetooth: Add support for handling LE Direct Advertising Report events")
+Reported-and-tested-by: syzbot+24ebd650e20bd263ca01@syzkaller.appspotmail.com
+Link: https://syzkaller.appspot.com/bug?extid=24ebd650e20bd263ca01
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/input/touchscreen/ads7846.c | 44 +++++++++++++++++------------
- 1 file changed, 26 insertions(+), 18 deletions(-)
+ net/bluetooth/hci_event.c |   12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/input/touchscreen/ads7846.c b/drivers/input/touchscreen/ads7846.c
-index a2f45aefce08a..0fbad337e45a3 100644
---- a/drivers/input/touchscreen/ads7846.c
-+++ b/drivers/input/touchscreen/ads7846.c
-@@ -199,6 +199,26 @@ struct ads7846 {
- #define	REF_ON	(READ_12BIT_DFR(x, 1, 1))
- #define	REF_OFF	(READ_12BIT_DFR(y, 0, 0))
- 
-+static int get_pendown_state(struct ads7846 *ts)
-+{
-+	if (ts->get_pendown_state)
-+		return ts->get_pendown_state();
-+
-+	return !gpio_get_value(ts->gpio_pendown);
-+}
-+
-+static void ads7846_report_pen_up(struct ads7846 *ts)
-+{
-+	struct input_dev *input = ts->input;
-+
-+	input_report_key(input, BTN_TOUCH, 0);
-+	input_report_abs(input, ABS_PRESSURE, 0);
-+	input_sync(input);
-+
-+	ts->pendown = false;
-+	dev_vdbg(&ts->spi->dev, "UP\n");
-+}
-+
- /* Must be called with ts->lock held */
- static void ads7846_stop(struct ads7846 *ts)
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -5141,20 +5141,18 @@ static void hci_le_direct_adv_report_evt
+ 					 struct sk_buff *skb)
  {
-@@ -215,6 +235,10 @@ static void ads7846_stop(struct ads7846 *ts)
- static void ads7846_restart(struct ads7846 *ts)
- {
- 	if (!ts->disabled && !ts->suspended) {
-+		/* Check if pen was released since last stop */
-+		if (ts->pendown && !get_pendown_state(ts))
-+			ads7846_report_pen_up(ts);
-+
- 		/* Tell IRQ thread that it may poll the device. */
- 		ts->stopped = false;
- 		mb();
-@@ -605,14 +629,6 @@ static const struct attribute_group ads784x_attr_group = {
+ 	u8 num_reports = skb->data[0];
+-	void *ptr = &skb->data[1];
++	struct hci_ev_le_direct_adv_info *ev = (void *)&skb->data[1];
  
- /*--------------------------------------------------------------------------*/
+-	hci_dev_lock(hdev);
++	if (!num_reports || skb->len < num_reports * sizeof(*ev) + 1)
++		return;
  
--static int get_pendown_state(struct ads7846 *ts)
--{
--	if (ts->get_pendown_state)
--		return ts->get_pendown_state();
--
--	return !gpio_get_value(ts->gpio_pendown);
--}
--
- static void null_wait_for_sync(void)
- {
- }
-@@ -871,16 +887,8 @@ static irqreturn_t ads7846_irq(int irq, void *handle)
- 				   msecs_to_jiffies(TS_POLL_PERIOD));
- 	}
+-	while (num_reports--) {
+-		struct hci_ev_le_direct_adv_info *ev = ptr;
++	hci_dev_lock(hdev);
  
--	if (ts->pendown && !ts->stopped) {
--		struct input_dev *input = ts->input;
--
--		input_report_key(input, BTN_TOUCH, 0);
--		input_report_abs(input, ABS_PRESSURE, 0);
--		input_sync(input);
--
--		ts->pendown = false;
--		dev_vdbg(&ts->spi->dev, "UP\n");
++	for (; num_reports; num_reports--, ev++)
+ 		process_adv_report(hdev, ev->evt_type, &ev->bdaddr,
+ 				   ev->bdaddr_type, &ev->direct_addr,
+ 				   ev->direct_addr_type, ev->rssi, NULL, 0);
+ 
+-		ptr += sizeof(*ev);
 -	}
-+	if (ts->pendown && !ts->stopped)
-+		ads7846_report_pen_up(ts);
- 
- 	return IRQ_HANDLED;
+-
+ 	hci_dev_unlock(hdev);
  }
--- 
-2.27.0
-
+ 
 
 
