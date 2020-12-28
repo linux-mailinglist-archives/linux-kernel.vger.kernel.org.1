@@ -2,229 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEFCC2E4164
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:06:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A62ED2E41A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:10:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504260AbgL1PGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:06:02 -0500
-Received: from forward500p.mail.yandex.net ([77.88.28.110]:53577 "EHLO
-        forward500p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2504228AbgL1PF4 (ORCPT
+        id S2440545AbgL1PKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:10:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2440286AbgL1PJt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 10:05:56 -0500
-Received: from iva3-4f441b146a71.qloud-c.yandex.net (iva3-4f441b146a71.qloud-c.yandex.net [IPv6:2a02:6b8:c0c:498c:0:640:4f44:1b14])
-        by forward500p.mail.yandex.net (Yandex) with ESMTP id 48127940423;
-        Mon, 28 Dec 2020 18:05:08 +0300 (MSK)
-Received: from localhost (localhost [::1])
-        by iva3-4f441b146a71.qloud-c.yandex.net (mxback/Yandex) with ESMTP id 3PoAR5PxjQ-57DKFFLj;
-        Mon, 28 Dec 2020 18:05:07 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1609167907;
-        bh=LbIGQYGVuU5ladSSucPcONHVBEN4CnC07EgGwEb9mJM=;
-        h=Message-Id:Cc:Subject:In-Reply-To:Date:References:To:From;
-        b=XomDNzRhsgUveeGirs/jYiRH5/+75xmaf0/IO7vrtBGbnJeDfZIdHkeeQTITyiPZN
-         8IaIuwjACxJEFd0AhQqnzUkYNcdmVa2GfGc6LTbrSsrI3Z8WX7JvyF6k/8zCfeP72M
-         rEuru72NrUmnKngZ0ndx7qqHRCYe735Aw217y+1o=
-Authentication-Results: iva3-4f441b146a71.qloud-c.yandex.net; dkim=pass header.i=@maquefel.me
-Received: by iva4-0814df7d67c8.qloud-c.yandex.net with HTTP;
-        Mon, 28 Dec 2020 18:05:07 +0300
-From:   nikita.shubin@maquefel.me
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-In-Reply-To: <CAHp75VctYjASuKeEqOQDH1k5XKSYVGMFsf+_cOCx72JtiMnBSw@mail.gmail.com>
-References: <20201224112203.7174-1-nikita.shubin@maquefel.me> <20201224112203.7174-2-nikita.shubin@maquefel.me> <CAHp75VctYjASuKeEqOQDH1k5XKSYVGMFsf+_cOCx72JtiMnBSw@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/3] gpio: ep93xx: convert to multi irqchips
+        Mon, 28 Dec 2020 10:09:49 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D0FC061794;
+        Mon, 28 Dec 2020 07:09:09 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8969B99;
+        Mon, 28 Dec 2020 16:09:06 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1609168146;
+        bh=BNY31dBvBUFP1U6FYYy/epeGZDj+VnkZejf+O7DTcTg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AeTK3VEeFqHGfSMYp5yReXu7Z2I2AXq8NNODSZ/vyaYQuW3ayiHwVZNftw7VXbLwH
+         Ddwl2UBdv7TSZbt1IWa6uapGJA3RDGGdlqzcrjNTuNvN0yCLO4f+NH75xuVdmOb9pn
+         D8InRDdvY7x1JvoHJo1dgJUcqzWpg//8gQ3gdIG0=
+Date:   Mon, 28 Dec 2020 17:08:56 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Xin Ji <xji@analogixsemi.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, David Airlie <airlied@linux.ie>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Ricardo =?utf-8?Q?Ca=C3=B1uelo?= <ricardo.canuelo@collabora.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        Sheng Pan <span@analogixsemi.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/2] dt-bindings: drm/bridge: anx7625: add DPI flag
+ and swing setting
+Message-ID: <X+n1COtS8nrCFUHd@pendragon.ideasonboard.com>
+References: <cover.1608883950.git.xji@analogixsemi.com>
+ <c29b7d9fda9ce8619d1c718b077250998a8600b8.1608883950.git.xji@analogixsemi.com>
 MIME-Version: 1.0
-X-Mailer: Yamail [ http://yandex.ru ] 5.0
-Date:   Mon, 28 Dec 2020 18:05:07 +0300
-Message-Id: <715101609167778@mail.yandex.ru>
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <c29b7d9fda9ce8619d1c718b077250998a8600b8.1608883950.git.xji@analogixsemi.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-26.12.2020, 20:52, "Andy Shevchenko" <andy.shevchenko@gmail.com>:
-> On Thu, Dec 24, 2020 at 1:23 PM Nikita Shubin <nikita.shubin@maquefel.me> wrote:
->>  Since gpiolib requires having separate irqchips for each gpiochip, we
->>  need to add some we definetly need a separate one for F port, and we
->
-> definitely
->
->>  could combine gpiochip A and B into one - but this will break namespace
->>  and logick.
->>
->>  So despite 3 irqchips is a bit beefy we need a separate irqchip for each
->
-> is a -> being a
->
->>  interrupt capable port.
->>
->>  - added separate irqchip for each iterrupt capable gpiochip
->
-> interrupt
->
->>  - dropped ep93xx_gpio_port (it wasn't working correct for port F anyway)
->>  - moved irq registers into separate struct ep93xx_irq_chip, togather
->
-> irq -> IRQ (everywhere)
->
-> together
->
->>    with regs current state
->>  - reworked irq handle for ab gpiochips (through bit not tottaly sure this
->>    is a correct thing to do)
->
-> ab -> AB ?
->
-> In the parentheses something like "I'm not totally sure that this is a
-> correct thing to do, though".
->
->>  - dropped has_irq and has_hierarchical_irq and added a simple index
->>    which we rely on when adding irq's to gpiochip's
->
-> IRQs to GPIO chips
->
-> (It would be nice if you can spell check and proofread commit
-> messages and comments in the code.
->
-> ...
->
->>  +struct ep93xx_irq_chip {
->>  + void __iomem *int_type1;
->>  + void __iomem *int_type2;
->>  + void __iomem *eoi;
->>  + void __iomem *en;
->>  + void __iomem *debounce;
->>  + void __iomem *status;
->
-> This is a bit... overcomplicated.
-> Can we rather use regmap API?
->
->>  + u8 gpio_int_unmasked;
->>  + u8 gpio_int_enabled;
->>  + u8 gpio_int_type1;
->>  + u8 gpio_int_type2;
->>  + u8 gpio_int_debounce;
->>  + struct irq_chip chip;
->>  +};
->
-> ...
->
->>   /* Port ordering is: A B F */
->>  +static const char *irq_chip_names[3] = {"gpio-irq-a",
->>  + "gpio-irq-b",
->>  + "gpio-irq-f"};
->
-> Can you use better pattern, ie.
-> static const char * const foo[] = {
->   ...
-> };
->
-> (there are two things: splitting per lines and additional const)?
->
-> ...
->
->>  + ab_parent_irq = platform_get_irq(pdev, 0);
->
-> Error check, please?
-> Also, if it's an optional resource, use platform_get_irq_optional().
->
->>  + err = devm_request_irq(dev, ab_parent_irq,
->>  + ep93xx_ab_irq_handler,
->>  + IRQF_SHARED, eic->chip.name, gc);
->
->>  +
->
-> Redundant blank line.
->
->>  + if (err) {
->>  + dev_err(dev, "error requesting IRQ : %d\n", ab_parent_irq);
->>  + return err;
->>  + }
->
-> ...
->
->>  + girq->num_parents = 1;
->>  + girq->parents = devm_kcalloc(dev, 1,
->>  + sizeof(*girq->parents),
->>  + GFP_KERNEL);
->
-> Can be squeezed to less amount of LOCs. Also consider to use
-> girq->num_parents as a parameter to devm_kcalloc().
->
->>  + if (!girq->parents)
->>  + return -ENOMEM;
->
-> ...
->
->>  + girq->handler = handle_level_irq;
->
-> Don't we want to mark them as bad by using handle_bad_irq() as default handler?
->
-> ...
->
->>  + /*
->>  + * FIXME: convert this to use hierarchical IRQ support!
->>  + * this requires fixing the root irqchip to be hierarchial.
->
-> hierarchical
->
->>  + */
->
-> ...
->
->>  + girq->num_parents = 8;
->>  + girq->parents = devm_kcalloc(dev, 8,
->>  + sizeof(*girq->parents),
->>  + GFP_KERNEL);
->
-> As per above.
->
->>  +
->
-> Redundant blank line.
->
->>  + if (!girq->parents)
->>  + return -ENOMEM;
->
-> ...
->
->>  + /* Pick resources 1..8 for these IRQs */
->>  + for (i = 1; i <= 8; i++)
->>  + girq->parents[i - 1] = platform_get_irq(pdev, i);
->
-> I would rather like to see i + 1 as a parameter which is much easier
-> to read and understand.
->
->>  + for (i = 0; i < 8; i++) {
->
-> Also in both cases replace 8 by ARRAY_SIZE() or predefined constant.
->
->>  + gpio_irq = EP93XX_GPIO_F_IRQ_BASE + i;
->>  + irq_set_chip_data(gpio_irq, gc);
->>  + irq_set_chip_and_handler(gpio_irq,
->>  + girq->chip,
->>  + handle_level_irq);
->>  + irq_clear_status_flags(gpio_irq, IRQ_NOREQUEST);
->>  + }
->
-> Okay, I see that this is in the original code. Consider them as
-> suggestions for additional changes.
->
-> And briefly looking into the rest of the code the recommendation is to
-> split this and perhaps other patches to smaller logical pieces.
->
-> Also, try to organize your series in groups each of them respectively
-> represents the following
-> 1) fixes (can be backported, usually contain Fixes tag to the culprit commit);
-> 2) preparatory refactoring patches / cleanups;
-> 3) new features.
->
-> --
-> With Best Regards,
-> Andy Shevchenko
+Hi Xin Ji,
 
-Thank you, Andy, i ll rework my RFC patch according to your advices and resubmit.
+Thank you for the patch.
+
+On Fri, Dec 25, 2020 at 07:01:09PM +0800, Xin Ji wrote:
+> Add DPI flag for distinguish MIPI input signal type, DSI or DPI. Add
+> swing setting for adjusting DP tx PHY swing
+> 
+> Signed-off-by: Xin Ji <xji@analogixsemi.com>
+> ---
+>  .../bindings/display/bridge/analogix,anx7625.yaml     | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+> index 60585a4..34a7faf 100644
+> --- a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+> +++ b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+> @@ -34,6 +34,14 @@ properties:
+>      description: used for reset chip control, RESET_N pin B7.
+>      maxItems: 1
+>  
+> +  anx,swing-setting:
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +    description: an array of swing register setting for DP tx PHY
+
+Register values in DT are frowned upon.
+
+> +  anx,mipi-dpi-in:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: indicate the MIPI rx signal type is DPI or DSI
+
+This sounds similar to the bus-type property defined in
+Documentation/devicetree/bindings/media/video-interfaces.txt (which is
+getting converted to YAML, Rob has posted a patch series, I expect it to
+land in v5.13). I think it would make sense to extend bus-type to
+support DSI, and use that property.
+
+> +
+>    ports:
+>      type: object
+>  
+> @@ -72,6 +80,17 @@ examples:
+>              reg = <0x58>;
+>              enable-gpios = <&pio 45 GPIO_ACTIVE_HIGH>;
+>              reset-gpios = <&pio 73 GPIO_ACTIVE_HIGH>;
+> +            anx,swing-setting = <0x00 0x14>, <0x01 0x54>,
+> +                <0x02 0x64>, <0x03 0x74>, <0x04 0x29>,
+> +                <0x05 0x7b>, <0x06 0x77>, <0x07 0x5b>,
+> +                <0x08 0x7f>, <0x0c 0x20>, <0x0d 0x60>,
+> +                <0x10 0x60>, <0x12 0x40>, <0x13 0x60>,
+> +                <0x14 0x14>, <0x15 0x54>, <0x16 0x64>,
+> +                <0x17 0x74>, <0x18 0x29>, <0x19 0x7b>,
+> +                <0x1a 0x77>, <0x1b 0x5b>, <0x1c 0x7f>,
+> +                <0x20 0x20>, <0x21 0x60>, <0x24 0x60>,
+> +                <0x26 0x40>, <0x27 0x60>;
+> +            anx,mipi-dpi-in = <0>;
+>  
+>              ports {
+>                  #address-cells = <1>;
+
+-- 
+Regards,
+
+Laurent Pinchart
