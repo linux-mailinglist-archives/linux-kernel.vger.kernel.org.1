@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 562472E409B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:55:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 436F82E3AF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:43:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408076AbgL1Oy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:54:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51890 "EHLO mail.kernel.org"
+        id S2404479AbgL1Nnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:43:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441406AbgL1ORP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:17:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5C00224D2;
-        Mon, 28 Dec 2020 14:16:58 +0000 (UTC)
+        id S2404300AbgL1NnA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:43:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 28F2F205CB;
+        Mon, 28 Dec 2020 13:42:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165019;
-        bh=7Sg5z2LFIBoU0sYqpSGLCyBm0aHGsvk7lRjq0LwXLbU=;
+        s=korg; t=1609162939;
+        bh=Fpdr+QCfNFR0xtIO25R8NfCWiNGBQtEvuZiKYFuqPBg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bn8WOHEkyBVrjDz4Rom1kZK96hzLx8b6HtwDmE3+0Hb8Tx7Ivx9AJFP3vPgp2jGPA
-         3e7mjfhRY6/VA+HXkbhth0XUz8qPBE+0T/9SZBEdWcosWim5yawxwnlOT8j97kKZGQ
-         F8JZSbah2D6pTofBvXBc+JV24D8JYDs3VYxNx/10=
+        b=1JqnpE6q8I7uNGrRBZJxyVrteflby2YkyxV2GICYTExba/un29KcjmXwg58NBlt7i
+         +uQmdBjgJqh+Q/e5xiq3QgKLIArZVlEoV/BPnDITJ1tzYAYy+hyCtcd9c4MRBgC/Zh
+         9cep1UZ6TPoAAOj+zDJYNqPjrgCAbP9Uo/Orults=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Stefan Agner <stefan@agner.ch>,
-        Kevin Hilman <khilman@baylibre.com>,
+        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 351/717] arm64: dts: meson: fix PHY deassert timing requirements
-Date:   Mon, 28 Dec 2020 13:45:49 +0100
-Message-Id: <20201228125037.843972631@linuxfoundation.org>
+Subject: [PATCH 5.4 114/453] spi: spi-ti-qspi: fix reference leak in ti_qspi_setup
+Date:   Mon, 28 Dec 2020 13:45:50 +0100
+Message-Id: <20201228124942.698276804@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,155 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Agner <stefan@agner.ch>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit c183c406c4321002fe85b345b51bc1a3a04b6d33 ]
+[ Upstream commit 45c0cba753641e5d7c3207f04241bd0e7a021698 ]
 
-According to the datasheet (Rev. 1.9) the RTL8211F requires at least
-72ms "for internal circuits settling time" before accessing the PHY
-registers. This fixes an issue seen on ODROID-C2 where the Ethernet
-link doesn't come up when using ip link set down/up:
-  [ 6630.714855] meson8b-dwmac c9410000.ethernet eth0: Link is Down
-  [ 6630.785775] meson8b-dwmac c9410000.ethernet eth0: PHY [stmmac-0:00] driver [RTL8211F Gigabit Ethernet] (irq=36)
-  [ 6630.893071] meson8b-dwmac c9410000.ethernet: Failed to reset the dma
-  [ 6630.893800] meson8b-dwmac c9410000.ethernet eth0: stmmac_hw_setup: DMA engine initialization failed
-  [ 6630.902835] meson8b-dwmac c9410000.ethernet eth0: stmmac_open: Hw setup failed
+pm_runtime_get_sync will increment pm usage counter even it
+failed. Forgetting to pm_runtime_put_noidle will result in
+reference leak in ti_qspi_setup, so we should fix it.
 
-Fixes: f29cabf240ed ("arm64: dts: meson: use the generic Ethernet PHY reset GPIO bindings")
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Signed-off-by: Stefan Agner <stefan@agner.ch>
-Signed-off-by: Kevin Hilman <khilman@baylibre.com>
-Link: https://lore.kernel.org/r/4a322c198b86e4c8b3dda015560a683babea4d63.1607363522.git.stefan@agner.ch
+Fixes: 505a14954e2d7 ("spi/qspi: Add qspi flash controller")
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Link: https://lore.kernel.org/r/20201103140947.3815-1-zhangqilong3@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/amlogic/meson-gxbb-nanopi-k2.dts  | 2 +-
- arch/arm64/boot/dts/amlogic/meson-gxbb-odroidc2.dts   | 2 +-
- arch/arm64/boot/dts/amlogic/meson-gxbb-vega-s95.dtsi  | 2 +-
- arch/arm64/boot/dts/amlogic/meson-gxbb-wetek.dtsi     | 2 +-
- arch/arm64/boot/dts/amlogic/meson-gxl-s905d-p230.dts  | 2 +-
- arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts | 2 +-
- arch/arm64/boot/dts/amlogic/meson-gxm-nexbox-a1.dts   | 2 +-
- arch/arm64/boot/dts/amlogic/meson-gxm-q200.dts        | 2 +-
- arch/arm64/boot/dts/amlogic/meson-gxm-rbox-pro.dts    | 2 +-
- 9 files changed, 9 insertions(+), 9 deletions(-)
+ drivers/spi/spi-ti-qspi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gxbb-nanopi-k2.dts b/arch/arm64/boot/dts/amlogic/meson-gxbb-nanopi-k2.dts
-index 7be3e354093bf..de27beafe9db9 100644
---- a/arch/arm64/boot/dts/amlogic/meson-gxbb-nanopi-k2.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-gxbb-nanopi-k2.dts
-@@ -165,7 +165,7 @@
- 			reg = <0>;
+diff --git a/drivers/spi/spi-ti-qspi.c b/drivers/spi/spi-ti-qspi.c
+index 66dcb61285392..cad2abcbd9c78 100644
+--- a/drivers/spi/spi-ti-qspi.c
++++ b/drivers/spi/spi-ti-qspi.c
+@@ -176,6 +176,7 @@ static int ti_qspi_setup(struct spi_device *spi)
  
- 			reset-assert-us = <10000>;
--			reset-deassert-us = <30000>;
-+			reset-deassert-us = <80000>;
- 			reset-gpios = <&gpio GPIOZ_14 GPIO_ACTIVE_LOW>;
- 
- 			interrupt-parent = <&gpio_intc>;
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gxbb-odroidc2.dts b/arch/arm64/boot/dts/amlogic/meson-gxbb-odroidc2.dts
-index 70fcfb7b0683d..50de1d01e5655 100644
---- a/arch/arm64/boot/dts/amlogic/meson-gxbb-odroidc2.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-gxbb-odroidc2.dts
-@@ -200,7 +200,7 @@
- 			reg = <0>;
- 
- 			reset-assert-us = <10000>;
--			reset-deassert-us = <30000>;
-+			reset-deassert-us = <80000>;
- 			reset-gpios = <&gpio GPIOZ_14 GPIO_ACTIVE_LOW>;
- 
- 			interrupt-parent = <&gpio_intc>;
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gxbb-vega-s95.dtsi b/arch/arm64/boot/dts/amlogic/meson-gxbb-vega-s95.dtsi
-index 222ee8069cfaa..9b0b81f191f1f 100644
---- a/arch/arm64/boot/dts/amlogic/meson-gxbb-vega-s95.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-gxbb-vega-s95.dtsi
-@@ -126,7 +126,7 @@
- 			reg = <0>;
- 
- 			reset-assert-us = <10000>;
--			reset-deassert-us = <30000>;
-+			reset-deassert-us = <80000>;
- 			reset-gpios = <&gpio GPIOZ_14 GPIO_ACTIVE_LOW>;
- 
- 			interrupt-parent = <&gpio_intc>;
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gxbb-wetek.dtsi b/arch/arm64/boot/dts/amlogic/meson-gxbb-wetek.dtsi
-index ad812854a107f..a350fee1264d7 100644
---- a/arch/arm64/boot/dts/amlogic/meson-gxbb-wetek.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-gxbb-wetek.dtsi
-@@ -147,7 +147,7 @@
- 			reg = <0>;
- 
- 			reset-assert-us = <10000>;
--			reset-deassert-us = <30000>;
-+			reset-deassert-us = <80000>;
- 			reset-gpios = <&gpio GPIOZ_14 GPIO_ACTIVE_LOW>;
- 
- 			interrupt-parent = <&gpio_intc>;
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl-s905d-p230.dts b/arch/arm64/boot/dts/amlogic/meson-gxl-s905d-p230.dts
-index b08c4537f260d..b2ab05c220903 100644
---- a/arch/arm64/boot/dts/amlogic/meson-gxl-s905d-p230.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-gxl-s905d-p230.dts
-@@ -82,7 +82,7 @@
- 
- 		/* External PHY reset is shared with internal PHY Led signal */
- 		reset-assert-us = <10000>;
--		reset-deassert-us = <30000>;
-+		reset-deassert-us = <80000>;
- 		reset-gpios = <&gpio GPIOZ_14 GPIO_ACTIVE_LOW>;
- 
- 		interrupt-parent = <&gpio_intc>;
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
-index e2bd9c7c817d7..62d3e04299b67 100644
---- a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
-@@ -194,7 +194,7 @@
- 		reg = <0>;
- 
- 		reset-assert-us = <10000>;
--		reset-deassert-us = <30000>;
-+		reset-deassert-us = <80000>;
- 		reset-gpios = <&gpio GPIOZ_14 GPIO_ACTIVE_LOW>;
- 
- 		interrupt-parent = <&gpio_intc>;
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-nexbox-a1.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-nexbox-a1.dts
-index 83eca3af44ce7..dfa7a37a1281f 100644
---- a/arch/arm64/boot/dts/amlogic/meson-gxm-nexbox-a1.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-gxm-nexbox-a1.dts
-@@ -112,7 +112,7 @@
- 		max-speed = <1000>;
- 
- 		reset-assert-us = <10000>;
--		reset-deassert-us = <30000>;
-+		reset-deassert-us = <80000>;
- 		reset-gpios = <&gpio GPIOZ_14 GPIO_ACTIVE_LOW>;
- 	};
- };
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-q200.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-q200.dts
-index ea45ae0c71b7f..8edbfe040805c 100644
---- a/arch/arm64/boot/dts/amlogic/meson-gxm-q200.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-gxm-q200.dts
-@@ -64,7 +64,7 @@
- 
- 		/* External PHY reset is shared with internal PHY Led signal */
- 		reset-assert-us = <10000>;
--		reset-deassert-us = <30000>;
-+		reset-deassert-us = <80000>;
- 		reset-gpios = <&gpio GPIOZ_14 GPIO_ACTIVE_LOW>;
- 
- 		interrupt-parent = <&gpio_intc>;
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-rbox-pro.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-rbox-pro.dts
-index c89c9f846fb10..dde7cfe12cffa 100644
---- a/arch/arm64/boot/dts/amlogic/meson-gxm-rbox-pro.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-gxm-rbox-pro.dts
-@@ -114,7 +114,7 @@
- 		max-speed = <1000>;
- 
- 		reset-assert-us = <10000>;
--		reset-deassert-us = <30000>;
-+		reset-deassert-us = <80000>;
- 		reset-gpios = <&gpio GPIOZ_14 GPIO_ACTIVE_LOW>;
- 	};
- };
+ 	ret = pm_runtime_get_sync(qspi->dev);
+ 	if (ret < 0) {
++		pm_runtime_put_noidle(qspi->dev);
+ 		dev_err(qspi->dev, "pm_runtime_get_sync() failed\n");
+ 		return ret;
+ 	}
 -- 
 2.27.0
 
