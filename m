@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A275F2E653F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:59:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 161A82E3803
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:04:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387883AbgL1NdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:33:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59282 "EHLO mail.kernel.org"
+        id S1730364AbgL1NEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:04:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59668 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390439AbgL1Nam (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:30:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 700562063A;
-        Mon, 28 Dec 2020 13:30:26 +0000 (UTC)
+        id S1730240AbgL1NDd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:03:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8112E22583;
+        Mon, 28 Dec 2020 13:02:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162227;
-        bh=g69J1vYUOlnSGrlWdGzCdIsix7tK9GYMkZA/3nkrK9w=;
+        s=korg; t=1609160573;
+        bh=BXoseXLqsmTvoiuD9ILe66ltxgzsJ25N9S0bGuGCgns=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yuBz1q3PBJOpzyomU1Im3IufLPsyMKP3tSBUMIoPNDlr++sx+9NJh1Z8U5YmCCZWs
-         toXZXl42VE3Qt+I8BETFZSV61dr+7QRnv5YwFbdAMdNIS+My0xutyBX6rxyTvCXMdy
-         0WuIbdp5oKWpl9EtF0wal6KShQ7FAa+gKqEtuAZw=
+        b=Ft6XqiJGofcpDfa3OJUxDwSP/onf3yepal2ySsi+ellm+k2VuiObMfaZ+UpyJAx6z
+         EfAGCwGS8vn5JBpcIlqe/Sy3uxeYcAUNenH/nbUYrSFWF17Pt1DZ2z6rOHUnmXYf54
+         FYaxDoiEtirlAXQlfdB85bNxyLk/f1HVbTdpv2uY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wang Wensheng <wangwensheng4@huawei.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Keqian Zhu <zhukeqian1@huawei.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 231/346] watchdog: Fix potential dereferencing of null pointer
+Subject: [PATCH 4.9 097/175] clocksource/drivers/arm_arch_timer: Correct fault programming of CNTKCTL_EL1.EVNTI
 Date:   Mon, 28 Dec 2020 13:49:10 +0100
-Message-Id: <20201228124930.941903973@linuxfoundation.org>
+Message-Id: <20201228124857.943284191@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,69 +41,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Wensheng <wangwensheng4@huawei.com>
+From: Keqian Zhu <zhukeqian1@huawei.com>
 
-[ Upstream commit 6f733cb2e7db38f8141b14740bcde577844a03b7 ]
+[ Upstream commit 8b7770b877d187bfdae1eaf587bd2b792479a31c ]
 
-A reboot notifier, which stops the WDT by calling the stop hook without
-any check, would be registered when we set WDOG_STOP_ON_REBOOT flag.
+ARM virtual counter supports event stream, it can only trigger an event
+when the trigger bit (the value of CNTKCTL_EL1.EVNTI) of CNTVCT_EL0 changes,
+so the actual period of event stream is 2^(cntkctl_evnti + 1). For example,
+when the trigger bit is 0, then virtual counter trigger an event for every
+two cycles.
 
-Howerer we allow the WDT driver to omit the stop hook since commit
-"d0684c8a93549" ("watchdog: Make stop function optional") and provide
-a module parameter for user that controls the WDOG_STOP_ON_REBOOT flag
-in commit 9232c80659e94 ("watchdog: Add stop_on_reboot parameter to
-control reboot policy"). Together that commits make user potential to
-insert a watchdog driver that don't provide a stop hook but with the
-stop_on_reboot parameter set, then dereferencing of null pointer occurs
-on system reboot.
+While we're at it, rework the way we compute the trigger bit position
+by making it more obvious that when bits [n:n-1] are both set (with n
+being the most significant bit), we pick bit (n + 1).
 
-Check the stop hook before registering the reboot notifier to fix the
-issue.
-
-Fixes: d0684c8a9354 ("watchdog: Make stop function optional")
-Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lore.kernel.org/r/20201109130512.28121-1-wangwensheng4@huawei.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
+Fixes: 037f637767a8 ("drivers: clocksource: add support for ARM architected timer event stream")
+Suggested-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+Acked-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20201204073126.6920-3-zhukeqian1@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/watchdog/watchdog_core.c | 22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
+ drivers/clocksource/arm_arch_timer.c | 23 ++++++++++++++++-------
+ 1 file changed, 16 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/watchdog/watchdog_core.c b/drivers/watchdog/watchdog_core.c
-index 8b1f37ffb65ac..5c600a3706505 100644
---- a/drivers/watchdog/watchdog_core.c
-+++ b/drivers/watchdog/watchdog_core.c
-@@ -246,15 +246,19 @@ static int __watchdog_register_device(struct watchdog_device *wdd)
- 	}
+diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
+index a2503db7e533e..5d7f83d27093f 100644
+--- a/drivers/clocksource/arm_arch_timer.c
++++ b/drivers/clocksource/arm_arch_timer.c
+@@ -426,15 +426,24 @@ static void arch_timer_evtstrm_enable(int divider)
  
- 	if (test_bit(WDOG_STOP_ON_REBOOT, &wdd->status)) {
--		wdd->reboot_nb.notifier_call = watchdog_reboot_notifier;
--
--		ret = register_reboot_notifier(&wdd->reboot_nb);
--		if (ret) {
--			pr_err("watchdog%d: Cannot register reboot notifier (%d)\n",
--			       wdd->id, ret);
--			watchdog_dev_unregister(wdd);
--			ida_simple_remove(&watchdog_ida, id);
--			return ret;
-+		if (!wdd->ops->stop)
-+			pr_warn("watchdog%d: stop_on_reboot not supported\n", wdd->id);
-+		else {
-+			wdd->reboot_nb.notifier_call = watchdog_reboot_notifier;
+ static void arch_timer_configure_evtstream(void)
+ {
+-	int evt_stream_div, pos;
++	int evt_stream_div, lsb;
 +
-+			ret = register_reboot_notifier(&wdd->reboot_nb);
-+			if (ret) {
-+				pr_err("watchdog%d: Cannot register reboot notifier (%d)\n",
-+					wdd->id, ret);
-+				watchdog_dev_unregister(wdd);
-+				ida_simple_remove(&watchdog_ida, id);
-+				return ret;
-+			}
- 		}
- 	}
++	/*
++	 * As the event stream can at most be generated at half the frequency
++	 * of the counter, use half the frequency when computing the divider.
++	 */
++	evt_stream_div = arch_timer_rate / ARCH_TIMER_EVT_STREAM_FREQ / 2;
++
++	/*
++	 * Find the closest power of two to the divisor. If the adjacent bit
++	 * of lsb (last set bit, starts from 0) is set, then we use (lsb + 1).
++	 */
++	lsb = fls(evt_stream_div) - 1;
++	if (lsb > 0 && (evt_stream_div & BIT(lsb - 1)))
++		lsb++;
  
+-	/* Find the closest power of two to the divisor */
+-	evt_stream_div = arch_timer_rate / ARCH_TIMER_EVT_STREAM_FREQ;
+-	pos = fls(evt_stream_div);
+-	if (pos > 1 && !(evt_stream_div & (1 << (pos - 2))))
+-		pos--;
+ 	/* enable event stream */
+-	arch_timer_evtstrm_enable(min(pos, 15));
++	arch_timer_evtstrm_enable(max(0, min(lsb, 15)));
+ }
+ 
+ static void arch_counter_set_user_access(void)
 -- 
 2.27.0
 
