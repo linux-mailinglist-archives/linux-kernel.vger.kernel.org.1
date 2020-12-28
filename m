@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 381CB2E3777
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:57:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13B9C2E4348
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:36:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728631AbgL1Mzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:55:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51758 "EHLO mail.kernel.org"
+        id S2408611AbgL1PfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:35:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727744AbgL1Mzo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:55:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28F1022583;
-        Mon, 28 Dec 2020 12:55:27 +0000 (UTC)
+        id S2407285AbgL1NxP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:53:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 63C9721D94;
+        Mon, 28 Dec 2020 13:52:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160128;
-        bh=15D66lAmC5ujMvsiQPtB5KNQLQq+7RPCCp9Gt1GWBx0=;
+        s=korg; t=1609163555;
+        bh=8W7/UbKT4IKzBx2mjAVno5Z6ewQ4qx+xBS0ILnnNQFs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O2xaf5H+FtnBlZL8jXN6ALHMpLiJu4RaiDJdVBYJDP4AOuoplg4sjnZ4eO8BZmRMh
-         aO0rW9OTAJBrWd9HnQ0iGHMYFFziQ+AG+/hcBN3NTt34o+ACFK2ZF7QIjBfvlDmfoE
-         nVPtdb9bawlPcYTAmsh7evrPRlllTo4k+c7R+JOU=
+        b=TLErrBNiGI9yeBVeBAJeq8pd7POFeCjyuDBxFHQQQTMfZ8amGqCXXdj4phDa1YuTk
+         dpmo3QYxG948WlzsB5yJGg/vC8Gk34Espc4r47KGTPA9QRPUQ5sDAlJaIi6K66WmuB
+         shXpGtTI1S6ozBSozeBO5L5Z6WoOTeyIBW6HHP8s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 078/132] speakup: fix uninitialized flush_lock
+        stable@vger.kernel.org,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 5.4 326/453] media: ipu3-cio2: Serialise access to pad format
 Date:   Mon, 28 Dec 2020 13:49:22 +0100
-Message-Id: <20201228124850.206005931@linuxfoundation.org>
+Message-Id: <20201228124952.897283258@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +43,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
 
-[ Upstream commit d1b928ee1cfa965a3327bbaa59bfa005d97fa0fe ]
+commit 55a6c6b2be3d6670bf5772364d8208bd8dc17da4 upstream.
 
-The flush_lock is uninitialized, use DEFINE_SPINLOCK
-to define and initialize flush_lock.
+Pad format can be accessed from user space. Serialise access to it.
 
-Fixes: c6e3fd22cd53 ("Staging: add speakup to the staging directory")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Reviewed-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Link: https://lore.kernel.org/r/20201117012229.3395186-1-yangyingliang@huawei.com
+Fixes: c2a6a07afe4a ("media: intel-ipu3: cio2: add new MIPI-CSI2 driver")
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Reviewed-by: Bingbu Cao <bingbu.cao@intel.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: stable@vger.kernel.org # v4.16 and up
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+
 ---
- drivers/staging/speakup/speakup_dectlk.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/pci/intel/ipu3/ipu3-cio2.c |   11 +++++++++++
+ drivers/media/pci/intel/ipu3/ipu3-cio2.h |    1 +
+ 2 files changed, 12 insertions(+)
 
-diff --git a/drivers/staging/speakup/speakup_dectlk.c b/drivers/staging/speakup/speakup_dectlk.c
-index 09063b82326f1..71aa623facd69 100644
---- a/drivers/staging/speakup/speakup_dectlk.c
-+++ b/drivers/staging/speakup/speakup_dectlk.c
-@@ -51,7 +51,7 @@ static unsigned char get_index(void);
- static int in_escape;
- static int is_flushing;
+--- a/drivers/media/pci/intel/ipu3/ipu3-cio2.c
++++ b/drivers/media/pci/intel/ipu3/ipu3-cio2.c
+@@ -1245,11 +1245,15 @@ static int cio2_subdev_get_fmt(struct v4
+ {
+ 	struct cio2_queue *q = container_of(sd, struct cio2_queue, subdev);
  
--static spinlock_t flush_lock;
-+static DEFINE_SPINLOCK(flush_lock);
- static DECLARE_WAIT_QUEUE_HEAD(flush);
++	mutex_lock(&q->subdev_lock);
++
+ 	if (fmt->which == V4L2_SUBDEV_FORMAT_TRY)
+ 		fmt->format = *v4l2_subdev_get_try_format(sd, cfg, fmt->pad);
+ 	else
+ 		fmt->format = q->subdev_fmt;
  
- static struct var_t vars[] = {
--- 
-2.27.0
-
++	mutex_unlock(&q->subdev_lock);
++
+ 	return 0;
+ }
+ 
+@@ -1273,6 +1277,8 @@ static int cio2_subdev_set_fmt(struct v4
+ 	if (fmt->pad == CIO2_PAD_SOURCE)
+ 		return cio2_subdev_get_fmt(sd, cfg, fmt);
+ 
++	mutex_lock(&q->subdev_lock);
++
+ 	if (fmt->which == V4L2_SUBDEV_FORMAT_TRY) {
+ 		*v4l2_subdev_get_try_format(sd, cfg, fmt->pad) = fmt->format;
+ 	} else {
+@@ -1283,6 +1289,8 @@ static int cio2_subdev_set_fmt(struct v4
+ 		fmt->format = q->subdev_fmt;
+ 	}
+ 
++	mutex_unlock(&q->subdev_lock);
++
+ 	return 0;
+ }
+ 
+@@ -1541,6 +1549,7 @@ static int cio2_queue_init(struct cio2_d
+ 
+ 	/* Initialize miscellaneous variables */
+ 	mutex_init(&q->lock);
++	mutex_init(&q->subdev_lock);
+ 
+ 	/* Initialize formats to default values */
+ 	fmt = &q->subdev_fmt;
+@@ -1659,6 +1668,7 @@ fail_vdev_media_entity:
+ fail_subdev_media_entity:
+ 	cio2_fbpt_exit(q, &cio2->pci_dev->dev);
+ fail_fbpt:
++	mutex_destroy(&q->subdev_lock);
+ 	mutex_destroy(&q->lock);
+ 
+ 	return r;
+@@ -1672,6 +1682,7 @@ static void cio2_queue_exit(struct cio2_
+ 	v4l2_device_unregister_subdev(&q->subdev);
+ 	media_entity_cleanup(&q->subdev.entity);
+ 	cio2_fbpt_exit(q, &cio2->pci_dev->dev);
++	mutex_destroy(&q->subdev_lock);
+ 	mutex_destroy(&q->lock);
+ }
+ 
+--- a/drivers/media/pci/intel/ipu3/ipu3-cio2.h
++++ b/drivers/media/pci/intel/ipu3/ipu3-cio2.h
+@@ -332,6 +332,7 @@ struct cio2_queue {
+ 
+ 	/* Subdev, /dev/v4l-subdevX */
+ 	struct v4l2_subdev subdev;
++	struct mutex subdev_lock; /* Serialise acces to subdev_fmt field */
+ 	struct media_pad subdev_pads[CIO2_PADS];
+ 	struct v4l2_mbus_framefmt subdev_fmt;
+ 	atomic_t frame_sequence;
 
 
