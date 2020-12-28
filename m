@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A95032E409E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:55:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F35F2E6426
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:48:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392442AbgL1Oyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:54:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52078 "EHLO mail.kernel.org"
+        id S2632809AbgL1PsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:48:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441390AbgL1ORM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:17:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2565D206D4;
-        Mon, 28 Dec 2020 14:16:55 +0000 (UTC)
+        id S2404338AbgL1Nm5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:42:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A3E121D94;
+        Mon, 28 Dec 2020 13:42:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165016;
-        bh=NNZwcEfpwbXIVyZo4YkPxPqtl3xvEcGYnuyijk9fYQs=;
+        s=korg; t=1609162936;
+        bh=7qbWvyUZhBuQsezQYC36NKvbJ3vyf0uItlpsM9fJzB8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wqZtNoyunE015zabXtM508cFwsoW2ShxPKJRpyS4OEjViGzHSWbt4L1oofiw/bMkv
-         Gug6fqTCHJndq3jrwMeQl0c+ZcbMBGd9xWIXlcfZvAQgX8X5XOpP+rTXSabEwHN+xD
-         q2b+Pek0kGWZuErdUzQ9LWsGWbLX2zod985audkQ=
+        b=s2jG4PscTpeCgQKIlVSVUUNOaOqwZ/nzla/4edbzPq1r9I2AtLQTrexesSShxI2dG
+         xfTUp969tXD66v+68++CTGQHkhIWQLf2lVnPcE+pSsoVRCYCDqYHcmpmRHx6HWObI1
+         kTXVEDhC6j2/qMFQoBny1apobanvBIXcQK6pMEIY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Stefan Agner <stefan@agner.ch>,
-        Kevin Hilman <khilman@baylibre.com>,
+        syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com,
+        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 350/717] arm64: dts: meson: g12b: odroid-n2: fix PHY deassert timing requirements
-Date:   Mon, 28 Dec 2020 13:45:48 +0100
-Message-Id: <20201228125037.795599848@linuxfoundation.org>
+Subject: [PATCH 5.4 113/453] Bluetooth: hci_h5: fix memory leak in h5_close
+Date:   Mon, 28 Dec 2020 13:45:49 +0100
+Message-Id: <20201228124942.649868483@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,43 +43,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Agner <stefan@agner.ch>
+From: Anant Thazhemadam <anant.thazhemadam@gmail.com>
 
-[ Upstream commit 1c7412530d5d0e0a0b27f1642f5c13c8b9f36f05 ]
+[ Upstream commit 855af2d74c870d747bf53509f8b2d7b9dc9ee2c3 ]
 
-According to the datasheet (Rev. 1.9) the RTL8211F requires at least
-72ms "for internal circuits settling time" before accessing the PHY
-registers. This fixes an issue where the Ethernet link doesn't come up
-when using ip link set down/up:
-  [   29.360965] meson8b-dwmac ff3f0000.ethernet eth0: Link is Down
-  [   34.569012] meson8b-dwmac ff3f0000.ethernet eth0: PHY [0.0:00] driver [RTL8211F Gigabit Ethernet] (irq=31)
-  [   34.676732] meson8b-dwmac ff3f0000.ethernet: Failed to reset the dma
-  [   34.678874] meson8b-dwmac ff3f0000.ethernet eth0: stmmac_hw_setup: DMA engine initialization failed
-  [   34.687850] meson8b-dwmac ff3f0000.ethernet eth0: stmmac_open: Hw setup failed
+When h5_close() is called, h5 is directly freed when !hu->serdev.
+However, h5->rx_skb is not freed, which causes a memory leak.
 
-Fixes: 658e4129bb81 ("arm64: dts: meson: g12b: odroid-n2: add the Ethernet PHY reset line")
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Signed-off-by: Stefan Agner <stefan@agner.ch>
-Signed-off-by: Kevin Hilman <khilman@baylibre.com>
-Link: https://lore.kernel.org/r/df3f5c4fc6e43c55429fd3662a636036a21eed49.1607363522.git.stefan@agner.ch
+Freeing h5->rx_skb and setting it to NULL, fixes this memory leak.
+
+Fixes: ce945552fde4 ("Bluetooth: hci_h5: Add support for serdev enumerated devices")
+Reported-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
+Tested-by: syzbot+6ce141c55b2f7aafd1c4@syzkaller.appspotmail.com
+Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/bluetooth/hci_h5.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
-index 6982632ae6461..39a09661c5f62 100644
---- a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
-@@ -413,7 +413,7 @@
- 		max-speed = <1000>;
+diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
+index 5df0651b6cd55..e11af747395dd 100644
+--- a/drivers/bluetooth/hci_h5.c
++++ b/drivers/bluetooth/hci_h5.c
+@@ -244,6 +244,9 @@ static int h5_close(struct hci_uart *hu)
+ 	skb_queue_purge(&h5->rel);
+ 	skb_queue_purge(&h5->unrel);
  
- 		reset-assert-us = <10000>;
--		reset-deassert-us = <30000>;
-+		reset-deassert-us = <80000>;
- 		reset-gpios = <&gpio GPIOZ_15 (GPIO_ACTIVE_LOW | GPIO_OPEN_DRAIN)>;
++	kfree_skb(h5->rx_skb);
++	h5->rx_skb = NULL;
++
+ 	if (h5->vnd && h5->vnd->close)
+ 		h5->vnd->close(h5);
  
- 		interrupt-parent = <&gpio_intc>;
 -- 
 2.27.0
 
