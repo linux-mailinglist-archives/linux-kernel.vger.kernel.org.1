@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67E832E3D6F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:16:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 053952E392F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:22:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440699AbgL1OPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:15:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50548 "EHLO mail.kernel.org"
+        id S1733143AbgL1NUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:20:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440654AbgL1OPd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:15:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8621D22B2B;
-        Mon, 28 Dec 2020 14:14:52 +0000 (UTC)
+        id S1733122AbgL1NUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:20:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 24CFE2076D;
+        Mon, 28 Dec 2020 13:19:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609164893;
-        bh=EwWYf0l3c77LObBRIzTxn4rOwQxgD5rxQ9U3iVNuaQA=;
+        s=korg; t=1609161569;
+        bh=CeN0e7ojfLUjLVO6BbrPu3j3TW27jbRhkikIHmisSu4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XqI2q/THEqsycNomFW//S+VUHLCuZNYlOmzngxbS5g0XtGrGQDB2Tam2We56j15+h
-         OJXDjfg9T7/oQOUWaDApquvLHfzJWgFpxnqRQtMGRinzdoPys7UrJxN5hmazsRB7j7
-         anxvyzZAn3z7ZJm7ZnTdC78Ifa1YlZ4Jax4GzM9U=
+        b=Yujx1CJwAYBGgLAzncoqHhr0hhZy9NkycxRM7axGQc/Xr4gR/B/b6M17blV5k1OYE
+         sSDz392sxKb+a9TWSGcwq7hZit/vD28PXkjS/iRGuH5YwHEzxnFYrb0YU7IJP3z1m7
+         5grecQgZtb6I1bPWYaTkoeqLB4FNczv80NfUGUQQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Vaibhav Agarwal <vaibhav.sr@gmail.com>,
-        Wang Hai <wanghai38@huawei.com>,
+        stable@vger.kernel.org, Timo Witte <timo.witte@gmail.com>,
+        "Lee, Chun-Yi" <jlee@suse.com>,
+        Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 336/717] staging: greybus: audio: Fix possible leak free widgets in gbaudio_dapm_free_controls
+Subject: [PATCH 4.19 015/346] platform/x86: acer-wmi: add automatic keyboard background light toggle key as KEY_LIGHTS_TOGGLE
 Date:   Mon, 28 Dec 2020 13:45:34 +0100
-Message-Id: <20201228125037.119719747@linuxfoundation.org>
+Message-Id: <20201228124920.505529664@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,41 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Hai <wanghai38@huawei.com>
+From: Timo Witte <timo.witte@gmail.com>
 
-[ Upstream commit e77b259f67ab99f1e22ce895b9b1c637fd5f2d4c ]
+[ Upstream commit 9e7a005ad56aa7d6ea5830c5ffcc60bf35de380b ]
 
-In gbaudio_dapm_free_controls(), if one of the widgets is not found, an error
-will be returned directly, which will cause the rest to be unable to be freed,
-resulting in leak.
+Got a dmesg message on my AMD Renoir based Acer laptop:
+"acer_wmi: Unknown key number - 0x84" when toggling keyboard
+background light
 
-This patch fixes the bug. If if one of them is not found, just skip and free the others.
-
-Fixes: 510e340efe0c ("staging: greybus: audio: Add helper APIs for dynamic audio module")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Reviewed-by: Vaibhav Agarwal <vaibhav.sr@gmail.com>
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
-Link: https://lore.kernel.org/r/20201205103827.31244-1-wanghai38@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Timo Witte <timo.witte@gmail.com>
+Reviewed-by: "Lee, Chun-Yi" <jlee@suse.com>
+Link: https://lore.kernel.org/r/20200804001423.36778-1-timo.witte@gmail.com
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/greybus/audio_helper.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/platform/x86/acer-wmi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/staging/greybus/audio_helper.c b/drivers/staging/greybus/audio_helper.c
-index 237531ba60f30..3011b8abce389 100644
---- a/drivers/staging/greybus/audio_helper.c
-+++ b/drivers/staging/greybus/audio_helper.c
-@@ -135,7 +135,8 @@ int gbaudio_dapm_free_controls(struct snd_soc_dapm_context *dapm,
- 		if (!w) {
- 			dev_err(dapm->dev, "%s: widget not found\n",
- 				widget->name);
--			return -EINVAL;
-+			widget++;
-+			continue;
- 		}
- 		widget++;
- #ifdef CONFIG_DEBUG_FS
+diff --git a/drivers/platform/x86/acer-wmi.c b/drivers/platform/x86/acer-wmi.c
+index fcfeadd1301f4..92400abe35520 100644
+--- a/drivers/platform/x86/acer-wmi.c
++++ b/drivers/platform/x86/acer-wmi.c
+@@ -124,6 +124,7 @@ static const struct key_entry acer_wmi_keymap[] __initconst = {
+ 	{KE_KEY, 0x64, {KEY_SWITCHVIDEOMODE} },	/* Display Switch */
+ 	{KE_IGNORE, 0x81, {KEY_SLEEP} },
+ 	{KE_KEY, 0x82, {KEY_TOUCHPAD_TOGGLE} },	/* Touch Pad Toggle */
++	{KE_IGNORE, 0x84, {KEY_KBDILLUMTOGGLE} }, /* Automatic Keyboard background light toggle */
+ 	{KE_KEY, KEY_TOUCHPAD_ON, {KEY_TOUCHPAD_ON} },
+ 	{KE_KEY, KEY_TOUCHPAD_OFF, {KEY_TOUCHPAD_OFF} },
+ 	{KE_IGNORE, 0x83, {KEY_TOUCHPAD_TOGGLE} },
 -- 
 2.27.0
 
