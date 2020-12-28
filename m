@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92E092E3BD0
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:55:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C04312E3BCC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:55:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405139AbgL1NzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:55:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56642 "EHLO mail.kernel.org"
+        id S2405102AbgL1Ny5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:54:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405092AbgL1Nyy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:54:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0460A20782;
-        Mon, 28 Dec 2020 13:54:13 +0000 (UTC)
+        id S2407435AbgL1Nyc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:54:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C02682078D;
+        Mon, 28 Dec 2020 13:54:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163654;
-        bh=y4SfpPFbFE6NSq2aVXjGsVDHDs1ZYgWjYCZfWwhbDXk=;
+        s=korg; t=1609163657;
+        bh=sPag3cLLCt1QnPUmMbo5zJk1ZDJ1i9W8wMeUdoZBYp0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aK0H+Sky55FM67GAaDNVEMuZ4DT0J8vAJRj1pCIdJJYk8oJKgFOzIV2zln4Sntd7Q
-         YctAZH1KfYmDzzaYHL/2qqdBxWsKZVgMZWUSvKdrJZAdsNfh0yKFBh4dun8FgdnP3F
-         OEzEbImsyARKK4PzsxCIIxI0DZ2QKIHe9nNk5fO4=
+        b=jUc7t31l2Mgs+BfrcO/skwZ3xr6FJR0IKBFVougEq4ObjJsTtkOkfiAP+kbOM9BH5
+         TvctXDtOjjGR/tyiOLEN1l1c30q0fMGXRkbElXYs1EjJqJB4cVam2iCetFATf2pXCN
+         hHTlFo/0ygzKtBs83hYBDJcO5C5cl9D5908B2wN0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
-        Tony Luck <tony.luck@intel.com>
-Subject: [PATCH 5.4 361/453] EDAC/i10nm: Use readl() to access MMIO registers
-Date:   Mon, 28 Dec 2020 13:49:57 +0100
-Message-Id: <20201228124954.573493466@linuxfoundation.org>
+        stable@vger.kernel.org, Borislav Petkov <bp@suse.de>
+Subject: [PATCH 5.4 362/453] EDAC/amd64: Fix PCI component registration
+Date:   Mon, 28 Dec 2020 13:49:58 +0100
+Message-Id: <20201228124954.621781330@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
 References: <20201228124937.240114599@linuxfoundation.org>
@@ -39,61 +38,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+From: Borislav Petkov <bp@suse.de>
 
-commit 83ff51c4e3fecf6b8587ce4d46f6eac59f5d7c5a upstream.
+commit 706657b1febf446a9ba37dc51b89f46604f57ee9 upstream.
 
-Instead of raw access, use readl() to access MMIO registers of
-memory controller to avoid possible compiler re-ordering.
+In order to setup its PCI component, the driver needs any node private
+instance in order to get a reference to the PCI device and hand that
+into edac_pci_create_generic_ctl(). For convenience, it uses the 0th
+memory controller descriptor under the assumption that if any, the 0th
+will be always present.
 
-Fixes: d4dc89d069aa ("EDAC, i10nm: Add a driver for Intel 10nm server processors")
+However, this assumption goes wrong when the 0th node doesn't have
+memory and the driver doesn't initialize an instance for it:
+
+  EDAC amd64: F17h detected (node 0).
+  ...
+  EDAC amd64: Node 0: No DIMMs detected.
+
+But looking up node instances is not really needed - all one needs is
+the pointer to the proper device which gets discovered during instance
+init.
+
+So stash that pointer into a variable and use it when setting up the
+EDAC PCI component.
+
+Clear that variable when the driver needs to unwind due to some
+instances failing init to avoid any registration imbalance.
+
 Cc: <stable@vger.kernel.org>
-Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-Signed-off-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20201122150815.13808-1-bp@alien8.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/edac/i10nm_base.c |   11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ drivers/edac/amd64_edac.c |   26 ++++++++++++++------------
+ 1 file changed, 14 insertions(+), 12 deletions(-)
 
---- a/drivers/edac/i10nm_base.c
-+++ b/drivers/edac/i10nm_base.c
-@@ -6,6 +6,7 @@
-  */
+--- a/drivers/edac/amd64_edac.c
++++ b/drivers/edac/amd64_edac.c
+@@ -22,6 +22,9 @@ static struct ecc_settings **ecc_stngs;
+ /* Number of Unified Memory Controllers */
+ static u8 num_umcs;
  
- #include <linux/kernel.h>
-+#include <linux/io.h>
- #include <asm/cpu_device_id.h>
- #include <asm/intel-family.h>
- #include <asm/mce.h>
-@@ -19,14 +20,16 @@
- #define i10nm_printk(level, fmt, arg...)	\
- 	edac_printk(level, "i10nm", fmt, ##arg)
++/* Device for the PCI component */
++static struct device *pci_ctl_dev;
++
+ /*
+  * Valid scrub rates for the K8 hardware memory scrubber. We map the scrubbing
+  * bandwidth to a valid bit pattern. The 'set' operation finds the 'matching-
+@@ -2672,6 +2675,9 @@ reserve_mc_sibling_devs(struct amd64_pvt
+ 			return -ENODEV;
+ 		}
  
--#define I10NM_GET_SCK_BAR(d, reg)		\
-+#define I10NM_GET_SCK_BAR(d, reg)	\
- 	pci_read_config_dword((d)->uracu, 0xd0, &(reg))
- #define I10NM_GET_IMC_BAR(d, i, reg)	\
- 	pci_read_config_dword((d)->uracu, 0xd8 + (i) * 4, &(reg))
- #define I10NM_GET_DIMMMTR(m, i, j)	\
--	(*(u32 *)((m)->mbase + 0x2080c + (i) * 0x4000 + (j) * 4))
-+	readl((m)->mbase + 0x2080c + (i) * 0x4000 + (j) * 4)
- #define I10NM_GET_MCDDRTCFG(m, i, j)	\
--	(*(u32 *)((m)->mbase + 0x20970 + (i) * 0x4000 + (j) * 4))
-+	readl((m)->mbase + 0x20970 + (i) * 0x4000 + (j) * 4)
-+#define I10NM_GET_MCMTR(m, i)		\
-+	readl((m)->mbase + 0x20ef8 + (i) * 0x4000)
++		if (!pci_ctl_dev)
++			pci_ctl_dev = &pvt->F0->dev;
++
+ 		edac_dbg(1, "F0: %s\n", pci_name(pvt->F0));
+ 		edac_dbg(1, "F3: %s\n", pci_name(pvt->F3));
+ 		edac_dbg(1, "F6: %s\n", pci_name(pvt->F6));
+@@ -2696,6 +2702,9 @@ reserve_mc_sibling_devs(struct amd64_pvt
+ 		return -ENODEV;
+ 	}
  
- #define I10NM_GET_SCK_MMIO_BASE(reg)	(GET_BITFIELD(reg, 0, 28) << 23)
- #define I10NM_GET_IMC_MMIO_OFFSET(reg)	(GET_BITFIELD(reg, 0, 10) << 12)
-@@ -134,7 +137,7 @@ static bool i10nm_check_ecc(struct skx_i
++	if (!pci_ctl_dev)
++		pci_ctl_dev = &pvt->F2->dev;
++
+ 	edac_dbg(1, "F1: %s\n", pci_name(pvt->F1));
+ 	edac_dbg(1, "F2: %s\n", pci_name(pvt->F2));
+ 	edac_dbg(1, "F3: %s\n", pci_name(pvt->F3));
+@@ -3626,21 +3635,10 @@ static void remove_one_instance(unsigned
+ 
+ static void setup_pci_device(void)
  {
- 	u32 mcmtr;
+-	struct mem_ctl_info *mci;
+-	struct amd64_pvt *pvt;
+-
+ 	if (pci_ctl)
+ 		return;
  
--	mcmtr = *(u32 *)(imc->mbase + 0x20ef8 + chan * 0x4000);
-+	mcmtr = I10NM_GET_MCMTR(imc, chan);
- 	edac_dbg(1, "ch%d mcmtr reg %x\n", chan, mcmtr);
+-	mci = edac_mc_find(0);
+-	if (!mci)
+-		return;
+-
+-	pvt = mci->pvt_info;
+-	if (pvt->umc)
+-		pci_ctl = edac_pci_create_generic_ctl(&pvt->F0->dev, EDAC_MOD_STR);
+-	else
+-		pci_ctl = edac_pci_create_generic_ctl(&pvt->F2->dev, EDAC_MOD_STR);
++	pci_ctl = edac_pci_create_generic_ctl(pci_ctl_dev, EDAC_MOD_STR);
+ 	if (!pci_ctl) {
+ 		pr_warn("%s(): Unable to create PCI control\n", __func__);
+ 		pr_warn("%s(): PCI error report via EDAC not set\n", __func__);
+@@ -3723,6 +3721,8 @@ static int __init amd64_edac_init(void)
+ 	return 0;
  
- 	return !!GET_BITFIELD(mcmtr, 2, 2);
+ err_pci:
++	pci_ctl_dev = NULL;
++
+ 	msrs_free(msrs);
+ 	msrs = NULL;
+ 
+@@ -3754,6 +3754,8 @@ static void __exit amd64_edac_exit(void)
+ 	kfree(ecc_stngs);
+ 	ecc_stngs = NULL;
+ 
++	pci_ctl_dev = NULL;
++
+ 	msrs_free(msrs);
+ 	msrs = NULL;
+ }
 
 
