@@ -2,94 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA5DF2E69FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 19:29:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF1502E6A03
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 19:33:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728776AbgL1S3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 13:29:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43346 "EHLO
+        id S1728918AbgL1SbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 13:31:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728667AbgL1S3W (ORCPT
+        with ESMTP id S1728888AbgL1SbX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 13:29:22 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36D77C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 10:28:42 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id g185so177258wmf.3
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 10:28:42 -0800 (PST)
+        Mon, 28 Dec 2020 13:31:23 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 188E7C061793
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 10:30:03 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id s26so25753581lfc.8
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 10:30:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mjW3/q0lVCljlllJ6ZMktDcPybhk2GgzF/uSDg3ACeg=;
-        b=pL9krZSpTJDehyFTt0OC3FZqPWGpSDJf+d4XLJmNFoA3BT7EMrugYBT6uLayv0Gnqq
-         jQtz6Nd8Y+kbjPx7+8h788NxynFA+0SCGiNrSAYXUT216PJ8DqMFI047MYxrNPVEzYMR
-         GlvTcRJ8vNH+WkiZHRrj66KawJTJbs2Ecj/rq7EjPQtBF1DxA90VS9pZ46NvkzJjk1j4
-         Trvu/SdgzqGMWrxzeqCK2Ve3HCqf6IAi6eXlFnN6i1lo3IgUKGAqoNXIJ7VZ2jDlrvRs
-         PHowQBhpt+0z7C/HJrxATT/rSemtLuWYHONa2/fcC/cVHMQ5DdEGiReOQ7kf8OPPVLGw
-         LNVw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9QWueFoX46bASvYc3JoD/wDe6SIFvsehDB2wYLC5Qro=;
+        b=kC8erHWC7LJljd/G34/JaHHsVnKmOkmodMYD6VYbi1frfV7aUiFi4ghdP5U/jRYjxy
+         Tnnwz+m3WZxE/dL3rkP+C4A/veMY+6cha1JGdQaGU8Wz1F1bxwm/R2RZMdRO98LnkUBm
+         cYPK1X8bqfX/mKN53uFzCwLJfQOB3+zF892PLrZTmSH8IocXMFfPvCQnYoCAfLsExCZl
+         Sgm0r3NQPWN5nJkagtSh/CbGKomwwEFYDVDryUx9aRtUw95jIZf3obX3t0zci7zmGP4S
+         a4ECxd5nFqgw7+mPV8Dee4cuyjkV2RBVkp4uN5wld/yuUnwFjs5Q4WB6U+KIrk84OcpQ
+         gmDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mjW3/q0lVCljlllJ6ZMktDcPybhk2GgzF/uSDg3ACeg=;
-        b=IDO6OQynM6GKqKiKw+1LWO1C5TLfcz+Mi2+Ee/h/idSeEyMr07x0mB13Tm3JHVCAAB
-         8YidWB74VYqKsJobYD+DT/NVgVLMivAet2LeilTZGzTDroA67/wxmQCS9vqfSkx8i7AK
-         IOKBT5GFah3KCVDTWtG1xpMu4exYxVJH69Cksm/b+tJ9jnFYjHnJKsCsQhZhX+YLcNVp
-         Vi7lapbu2xDmg5lJx6wnMXI1yJ91rEzgz/XM8VK8h1gz6wGeB/I8ng1Gz8QDM6epfkzM
-         rmztoNS3VeFrYfcGr+IQK+RRRVBhs+zzxXb1pmAFzL0NjDYbfZpjilhAomPTjXDYWP0G
-         r7eA==
-X-Gm-Message-State: AOAM533wuJjL3bgDAmx5aZpAMjyRJH95MU6N+rFh1HTP+um2S2SBz+YM
-        Uj5xW/Jjh/0IZbBQQc3W4Q==
-X-Google-Smtp-Source: ABdhPJxmB56KJx0kSILOSB/Pbmd15HsvVb4tjufU7iawRO1BS+eDDG5KQKwkRxfiw3+X/zrX4WhtlA==
-X-Received: by 2002:a1c:43c6:: with SMTP id q189mr157379wma.7.1609180121012;
-        Mon, 28 Dec 2020 10:28:41 -0800 (PST)
-Received: from localhost.localdomain ([46.53.251.87])
-        by smtp.gmail.com with ESMTPSA id t10sm55130108wrp.39.2020.12.28.10.28.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Dec 2020 10:28:40 -0800 (PST)
-Date:   Mon, 28 Dec 2020 21:28:38 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, deller@gmx.de
-Subject: Re: +
- proc-wchan-use-printk-format-instead-of-lookup_symbol_name-fix.patch added
- to -mm tree
-Message-ID: <20201228182838.GA38914@localhost.localdomain>
-References: <20201223021834.9n93L%akpm@linux-foundation.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9QWueFoX46bASvYc3JoD/wDe6SIFvsehDB2wYLC5Qro=;
+        b=LSAA7PsxcNtYk7nJEV3vnSVTZPLSEfWDRLU1epDiu0g0LLoGJp8hnlFIrlxpc9sHzJ
+         OqS4ByQISQ1Src617IZMDhWiNRJLK6Kf0WHZfE+NQPAVd+kQhMC10c3nZZLckGIZBc6W
+         +K5u68IEHYH168p+BUqxTaqO2o2ml4FkXcUk3sWySHmUDAgU4Y01WMYn5x7VXid6symp
+         6UvRTgNWgMPJL/sR8WXoBwmn7Fez9NcahF4a1tZuKSlvyFD5Gjll0/Ha0EdN6ZJLZJdz
+         EmhW43GF15xmck4dg6PSTQ0XRAMjcrutKh2JiTf8UrRB8F+EPfH8PjSz2n5zaCtZvpcP
+         ECsA==
+X-Gm-Message-State: AOAM531lpWT1uG2eux40ozlVXMwm+GV01x2Ueoe+qxfHH/ER6/yyCvyL
+        b4G/MM04USpd/Y+FBiSmYTIoNKfbRQayoKyspKN+WEn34l2QGw==
+X-Google-Smtp-Source: ABdhPJywKGjXCnfRINymslg8vxwCZQ4aJBBOn7s5tOWzXMqifOLiV/yzFYOyqzq8yfaa/m/8xi9I99ioXvGTSrAh/F8=
+X-Received: by 2002:a19:716:: with SMTP id 22mr19106749lfh.390.1609180201389;
+ Mon, 28 Dec 2020 10:30:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201223021834.9n93L%akpm@linux-foundation.org>
+References: <bf59ecb5487171a852bcc8cdd553ec797aedc485.1609093476.git.luto@kernel.org>
+ <1836294649.3345.1609100294833.JavaMail.zimbra@efficios.com>
+ <CALCETrVdcn2r2Jvd1=-bM=FQ8KbX4aH-v4ytdojL7r7Nb6k8YQ@mail.gmail.com>
+ <20201228102537.GG1551@shell.armlinux.org.uk> <CALCETrWQx0qwthBc5pJBxs2PWAQo-roAz-6g=7HOs+dsiokVsg@mail.gmail.com>
+In-Reply-To: <CALCETrWQx0qwthBc5pJBxs2PWAQo-roAz-6g=7HOs+dsiokVsg@mail.gmail.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Mon, 28 Dec 2020 19:29:34 +0100
+Message-ID: <CAG48ez0YZ_iy6qZpdGUj38wqeg_NzLHHhU-mBCBf5hcopYGVPg@mail.gmail.com>
+Subject: Re: [RFC please help] membarrier: Rewrite sync_core_before_usermode()
+To:     Andy Lutomirski <luto@kernel.org>, Will Deacon <will@kernel.org>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        x86 <x86@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 06:18:34PM -0800, akpm@linux-foundation.org wrote:
+On Mon, Dec 28, 2020 at 6:14 PM Andy Lutomirski <luto@kernel.org> wrote:
+> On Mon, Dec 28, 2020 at 2:25 AM Russell King - ARM Linux admin
+> <linux@armlinux.org.uk> wrote:
+> >
+> > On Sun, Dec 27, 2020 at 01:36:13PM -0800, Andy Lutomirski wrote:
+> > > On Sun, Dec 27, 2020 at 12:18 PM Mathieu Desnoyers
+> > > <mathieu.desnoyers@efficios.com> wrote:
+> > > >
+> > > > ----- On Dec 27, 2020, at 1:28 PM, Andy Lutomirski luto@kernel.org wrote:
+> > > >
+> > >
+> > > > >
+> > > > > I admit that I'm rather surprised that the code worked at all on arm64,
+> > > > > and I'm suspicious that it has never been very well tested.  My apologies
+> > > > > for not reviewing this more carefully in the first place.
+> > > >
+> > > > Please refer to Documentation/features/sched/membarrier-sync-core/arch-support.txt
+> > > >
+> > > > It clearly states that only arm, arm64, powerpc and x86 support the membarrier
+> > > > sync core feature as of now:
+> > >
+> > > Sigh, I missed arm (32).  Russell or ARM folks, what's the right
+> > > incantation to make the CPU notice instruction changes initiated by
+> > > other cores on 32-bit ARM?
+> >
+> > You need to call flush_icache_range(), since the changes need to be
+> > flushed from the data cache to the point of unification (of the Harvard
+> > I and D), and the instruction cache needs to be invalidated so it can
+> > then see those updated instructions. This will also take care of the
+> > necessary barriers that the CPU requires for you.
 >
->      proc-wchan-use-printk-format-instead-of-lookup_symbol_name-fix.patch
+> With what parameters?   From looking at the header, this is for the
+> case in which the kernel writes some memory and then intends to
+> execute it.  That's not what membarrier() does at all.  membarrier()
+> works like this:
+>
+> User thread 1:
+>
+> write to RWX memory *or* write to an RW alias of an X region.
+> membarrier(...);
+> somehow tell thread 2 that we're ready (with a store release, perhaps,
+> or even just a relaxed store.)
+>
+> User thread 2:
+>
+> wait for the indication from thread 1.
+> barrier();
+> jump to the code.
+>
+> membarrier() is, for better or for worse, not given a range of addresses.
+>
+> On x86, the documentation is a bit weak, but a strict reading
+> indicates that thread 2 must execute a serializing instruction at some
+> point after thread 1 writes the code and before thread 2 runs it.
+> membarrier() does this by sending an IPI and ensuring that a
+> "serializing" instruction (thanks for great terminology, Intel) is
+> executed.  Note that flush_icache_range() is a no-op on x86, and I've
+> asked Intel's architects to please clarify their precise rules.  No
+> response yet.
+>
+> On arm64, flush_icache_range() seems to send an IPI, and that's not
+> what I want.  membarrier() already does an IPI.
 
-> --- a/fs/proc/base.c~proc-wchan-use-printk-format-instead-of-lookup_symbol_name-fix
-> +++ a/fs/proc/base.c
-> @@ -384,15 +384,8 @@ static const struct file_operations proc
->  static int proc_pid_wchan(struct seq_file *m, struct pid_namespace *ns,
->  			  struct pid *pid, struct task_struct *task)
->  {
-> -	unsigned long wchan;
-> -
->  	if (ptrace_may_access(task, PTRACE_MODE_READ_FSCREDS))
-> -		wchan = get_wchan(task);
-> -	else
-> -		wchan = 0;
-> -
-> -	if (wchan)
-> -		seq_printf(m, "%ps", (void *) wchan);
-> +		seq_printf(m, "%ps", (void *)get_wchan(task));
->  	else
->  		seq_putc(m, '0');
+After chatting with rmk about this (but without claiming that any of
+this is his opinion), based on the manpage, I think membarrier()
+currently doesn't really claim to be synchronizing caches? It just
+serializes cores. So arguably if userspace wants to use membarrier()
+to synchronize code changes, userspace should first do the code
+change, then flush icache as appropriate for the architecture, and
+then do the membarrier() to ensure that the old code is unused?
 
-These patches change '0' to '0x0'.
+For 32-bit arm, rmk pointed out that that would be the cacheflush()
+syscall. That might cause you to end up with two IPIs instead of one
+in total, but we probably don't care _that_ much about extra IPIs on
+32-bit arm?
 
-Also /proc/*/wchan shows '0' for everything which is strange.
-
-I'm not sure if we should care as wchan is obsoleted by /proc/*/stack .
+For arm64, I believe userspace can flush icache across the entire
+system with some instructions from userspace - "DC CVAU" followed by
+"DSB ISH", or something like that, I think? (See e.g.
+compat_arm_syscall(), the arm64 compat code that implements the 32-bit
+arm cacheflush() syscall.)
