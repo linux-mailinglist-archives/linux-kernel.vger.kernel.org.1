@@ -2,96 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22B0B2E64F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:55:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3DA02E6537
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:59:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393192AbgL1Py7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:54:59 -0500
-Received: from mx2.suse.de ([195.135.220.15]:49210 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393182AbgL1Pyz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 10:54:55 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AA7A8AB8B;
-        Mon, 28 Dec 2020 15:54:13 +0000 (UTC)
-Date:   Mon, 28 Dec 2020 16:54:09 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Yazen Ghannam <yazen.ghannam@amd.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.4 150/453] EDAC/mce_amd: Use struct
- cpuinfo_x86.cpu_die_id for AMD NodeId
-Message-ID: <20201228155409.GA19838@zn.tnic>
-References: <20201228124937.240114599@linuxfoundation.org>
- <20201228124944.423928426@linuxfoundation.org>
+        id S2393345AbgL1P6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:58:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393323AbgL1P6W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 10:58:22 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA6DCC06179B;
+        Mon, 28 Dec 2020 07:57:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=FGpC//fOURR6xbsUxytCh0bux+vv2dcWmfFgyJiqKQ8=; b=QL7PQTdZ3w2Zu/c+bVynnSoH+C
+        9k8q+5hWkvSV2XCDBDEb3+dM7z4qTbL+xORHbkS8ej+Yg8tG7uZoC/DCyA9C+L6FASNWkbeRdbbFQ
+        YFGYgZ2z6H+46KVo9UfsINGlMF7Y3YpJh5Q8t8zYoa90EWKbtDoertRpKqTB57EqPurQUlyx6h7iA
+        hqqpvYVI4JFBcpvKyah3mC2VVrzwIqwLVknTtLdf7ikp/lbsoo/b9L4gBCdR5S+bneE4iENY3FeTz
+        xH7GTvcYHXLL+d+jKEx09XV1KsQdy1ZV0/GFHA5jnmDmiOsv4TT3B3hhWSIrZoL11ghOhRaSou5A6
+        OgXTq9DQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1ktusc-0001eS-6o; Mon, 28 Dec 2020 15:56:36 +0000
+Date:   Mon, 28 Dec 2020 15:56:18 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Amir Goldstein <amir73il@gmail.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>, Jan Kara <jack@suse.cz>,
+        NeilBrown <neilb@suse.com>, Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>,
+        Chengguang Xu <cgxu519@mykernel.net>
+Subject: Re: [PATCH 3/3] overlayfs: Report writeback errors on upper
+Message-ID: <20201228155618.GA6211@casper.infradead.org>
+References: <20201223182026.GA9935@ircssh-2.c.rugged-nimbus-611.internal>
+ <20201223185044.GQ874@casper.infradead.org>
+ <20201223192940.GA11012@ircssh-2.c.rugged-nimbus-611.internal>
+ <20201223200746.GR874@casper.infradead.org>
+ <20201223202140.GB11012@ircssh-2.c.rugged-nimbus-611.internal>
+ <20201223204428.GS874@casper.infradead.org>
+ <CAOQ4uxjAeGv8x2hBBzHz5PjSDq0Q+RN-ikgqEvAA+XE_U-U5Nw@mail.gmail.com>
+ <20201224121352.GT874@casper.infradead.org>
+ <CAOQ4uxj5YS9LSPoBZ3uakb6NeBG7g-Zeu+8Vt57tizEH6xu0cw@mail.gmail.com>
+ <1334bba9cefa81f80005f8416680afb29044379c.camel@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201228124944.423928426@linuxfoundation.org>
+In-Reply-To: <1334bba9cefa81f80005f8416680afb29044379c.camel@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 01:46:26PM +0100, Greg Kroah-Hartman wrote:
-> From: Yazen Ghannam <yazen.ghannam@amd.com>
+On Mon, Dec 28, 2020 at 08:25:50AM -0500, Jeff Layton wrote:
+> To be clear, the main thing you'll lose with the method above is the
+> ability to see an unseen error on a newly opened fd, if there was an
+> overlayfs mount using the same upper sb before your open occurred.
 > 
-> [ Upstream commit 8de0c9917cc1297bc5543b61992d5bdee4ce621a ]
+> IOW, consider two overlayfs mounts using the same upper layer sb:
 > 
-> The edac_mce_amd module calls decode_dram_ecc() on AMD Family17h and
-> later systems. This function is used in amd64_edac_mod to do
-> system-specific decoding for DRAM ECC errors. The function takes a
-> "NodeId" as a parameter.
+> ovlfs1				ovlfs2
+> ----------------------------------------------------------------------
+> mount
+> open fd1
+> write to fd1
+> <writeback fails>
+> 				mount (upper errseq_t SEEN flag marked)
+> open fd2
+> syncfs(fd2)
+> syncfs(fd1)
 > 
-> In AMD documentation, NodeId is used to identify a physical die in a
-> system. This can be used to identify a node in the AMD_NB code and also
-> it is used with umc_normaddr_to_sysaddr().
 > 
-> However, the input used for decode_dram_ecc() is currently the NUMA node
-> of a logical CPU. In the default configuration, the NUMA node and
-> physical die will be equivalent, so this doesn't have an impact.
+> On a "normal" (non-overlay) fs, you'd get an error back on both syncfs
+> calls. The first one has a sample from before the error occurred, and
+> the second one has a sample of 0, due to the fact that the error was
+> unseen at open time.
 > 
-> But the NUMA node configuration can be adjusted with optional memory
-> interleaving modes. This will cause the NUMA node enumeration to not
-> match the physical die enumeration. The mismatch will cause the address
-> translation function to fail or report incorrect results.
-> 
-> Use struct cpuinfo_x86.cpu_die_id for the node_id parameter to ensure the
-> physical ID is used.
-> 
-> Fixes: fbe63acf62f5 ("EDAC, mce_amd: Use cpu_to_node() to find the node ID")
-> Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
-> Signed-off-by: Borislav Petkov <bp@suse.de>
-> Link: https://lkml.kernel.org/r/20201109210659.754018-4-Yazen.Ghannam@amd.com
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  drivers/edac/mce_amd.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/edac/mce_amd.c b/drivers/edac/mce_amd.c
-> index ea622c6f3a393..c19640a453f22 100644
-> --- a/drivers/edac/mce_amd.c
-> +++ b/drivers/edac/mce_amd.c
-> @@ -975,7 +975,7 @@ static void decode_smca_error(struct mce *m)
->  	}
->  
->  	if (bank_type == SMCA_UMC && xec == 0 && decode_dram_ecc)
-> -		decode_dram_ecc(cpu_to_node(m->extcpu), m);
-> +		decode_dram_ecc(topology_die_id(m->extcpu), m);
->  }
->  
->  static inline void amd_decode_err_code(u16 ec)
+> On overlayfs, with the intervening mount of ovlfs2, syncfs(fd1) will
+> return an error and syncfs(fd2) will not. If we split the SEEN flag into
+> two, then we can ensure that they both still get an error in this
+> situation.
 
-I believe this one needs:
+But do we need to?  If the inode has been evicted we also lose the errno.
+The guarantee we provide is that a fd that was open before the error
+occurred will see the error.  An fd that's opened after the error occurred
+may or may not see the error.
 
-028c221ed190 ("x86/CPU/AMD: Save AMD NodeId as cpu_die_id")
-
-to be backported too otherwise ->cpu_die_id will be uninitialized.
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
