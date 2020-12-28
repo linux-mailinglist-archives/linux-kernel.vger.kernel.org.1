@@ -2,210 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EC012E4154
+	by mail.lfdr.de (Postfix) with ESMTP id CE0D32E4155
 	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:06:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439598AbgL1OLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:11:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58492 "EHLO
+        id S2439611AbgL1OLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:11:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439164AbgL1OKz (ORCPT
+        with ESMTP id S2439202AbgL1OK7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:10:55 -0500
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78DB3C061798
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 06:10:15 -0800 (PST)
-Received: by mail-qk1-x736.google.com with SMTP id 19so8817984qkm.8
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 06:10:15 -0800 (PST)
+        Mon, 28 Dec 2020 09:10:59 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB1E1C06179A
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 06:10:18 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id h205so24116871lfd.5
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 06:10:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=660sEowX8NUl1TY2PSGi855PhDC79tS6p6oPbmXtfW8=;
-        b=fBVUWIf8P3+k3u5W4NjqjSEmtkBfy31xsHGz2+wwYB3OWCmY1NJDqzYjnpwg9UcXn2
-         1Gj5NdEfnTDuxNPVFSvl3Ky0U0XBMi5DYNgVfAi4ZmICQLoZ18soaqGPUhSz3VXzOPGR
-         jrRAlisAAj+pPA8j4CjlWTqKV54VDj587pMPWQh1InG9qoYXvBgrGCHz1nTN69FWiX1N
-         zMDzZbvABPFD14qXk/J6+Qe1g0cIrDf8knaxw5sfC1CWPoDiYWL31tFF+J653midM54S
-         4HCEnVmBG1iQ4KthlhHyfHXT0CQFRMRinVb3UE54jqIzZnJlmHVtn+oSLiUp23Q8+JO7
-         a86Q==
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eDrae5NlX7atsBnbOFDs+BsHNDAqH6cr7KQ2BZiRu9g=;
+        b=dqHY0sUVNmDOTf+aHtGeQqT+ubwl8V7kw7gIzNrTS/0Zd7s285xIvbrMgrA93eRMAB
+         /1GHwOroZP8yTdaDh+c/YPuYv6yF+l/23WK0pNPHosyN8/V+rJBncoRkWCiIxhDSuIOE
+         sZq2Rs5xOn4W34uvmQXhL/gWHkBMVsxzvVHwV/phaWnNqkCZpJ/HXcjktxusJCdKGsky
+         MtDEp8TBZdd1BbHpyknD+6LjUm9fdAaczpGPMbYX9r7PtCaL2c/KQxSld+s+AaIA6TbK
+         JuzxMFf5+a71DwaQ2MWRs6FU8ho1Af0S6leDecn3FSRMB+NMuO5RuzBRmU1/mndvj2W0
+         vjAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=660sEowX8NUl1TY2PSGi855PhDC79tS6p6oPbmXtfW8=;
-        b=Wqr0exUhNOjGtNdAzoP+N1AlpdM1oYo0l1Jr8RABp2ltyfaZRazucx/XbCYErHUBZt
-         RLlTC/AZITib+z6gHoAsmzsHTetlJbXUMJYCMEsGgXKsLt/4XEKpL6iUX/4KTwZ28OkT
-         8jXSa5E1VPOgi3j5Foa6J9uB4RZN3mBJdyPuyq5ej20G9NnsbNnV6/N93QDYmUQp0NGi
-         9oettza5w7ovKaNXllsU/Zrv/XkpvMabQkvu3lOEKpEJbVdtNQjszJwYR7oCtXtrWp/O
-         n8e0Eyv1YIRZNX6BNmZkBl/0ghlxU+LR1taG9i8KLSi91igWpdKloUO03mEbgCskDkGf
-         gahg==
-X-Gm-Message-State: AOAM532fF/511Bl7ASo4aZ+8EF87o/KMvCyIRtUBdMKat39fHDREfphC
-        2edg6Snu5arhF4eFaeFp/453o8Y0emkm+IYFxtQ=
-X-Google-Smtp-Source: ABdhPJwzPxtVoTPN0Nmz+v1/YjM5oX41b9gzZxow/JI60gsV+mqAwAVkzphIxglY5Y6AEsHufDxPJfImTGUN9Ju/rfw=
-X-Received: by 2002:ae9:f312:: with SMTP id p18mr43728735qkg.311.1609164614671;
- Mon, 28 Dec 2020 06:10:14 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=eDrae5NlX7atsBnbOFDs+BsHNDAqH6cr7KQ2BZiRu9g=;
+        b=aMJmMoRTUW2CFnjbIaFKiaf6zhR2wPZpGsyM8a5wfZ7LcIinL/ED1Ad1lQSU7PhHG/
+         Z9URmIgahZoX3nVscD7cqVKccT5YFfK08elpAvRzySNHCK0psF538zIw/CW+OYEetgQP
+         gxjTfLc1pbMBFew8fAepvX2w8m+z174Im2pTXH9HNdH1GM92OWX4e+YDdBnYm+WOKcuk
+         zGqC7JDMOM2y4nMaGdvXg9nrD7Yw36eENELKeg07ONM/VlM6VAvIJhkgIncjw4eVNqY3
+         rwueoSL0AQghXS/H4lQ0rSlxJhi4nEmD4Xv0HaZEQXVH2E9U8hinrKvGxJqiGNQZtUqK
+         E/ww==
+X-Gm-Message-State: AOAM530Isaa6WJqvOW/ugr9eTV+ps5mir31z3YjWvzb3wEtzNP2I/vlL
+        6rEtc7cHBrxgD/L/p4nDkeuJzH8nEbmc2x8Z88TE0w==
+X-Google-Smtp-Source: ABdhPJxse0shOvUnwJroAasQ1isNMTLZzoRqEfI03iytFRHnoPYRsIhHIflw56KmNtLdTnzsGf7RkAiaClFzBR41C6M=
+X-Received: by 2002:a05:651c:202:: with SMTP id y2mr21426940ljn.162.1609164617377;
+ Mon, 28 Dec 2020 06:10:17 -0800 (PST)
 MIME-Version: 1.0
-References: <20201217170009.GA29186@192.168.3.9>
-In-Reply-To: <20201217170009.GA29186@192.168.3.9>
-From:   Weiping Zhang <zwp10758@gmail.com>
-Date:   Mon, 28 Dec 2020 22:10:03 +0800
-Message-ID: <CAA70yB6O2on1tpoA8TpT+Hp03iu_Xrpaa_d0HjVa75UFMTA4yg@mail.gmail.com>
-Subject: Re: [RFC PATCH v2] taskstats: add /proc/taskstats to fetch pid/tgid status
-To:     davem@davemloft.net, bsingharora@gmail.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201226163037.43691-1-vitaly.wool@konsulko.com>
+ <CAAhSdy1M5pMjYHNWdOicb3N3fjTfQLEgE8tFb74sqGbPE_9eyQ@mail.gmail.com> <CAM4kBBJ3Vbytx=dFK7+DMByV3zK=FVLATSwjyuuygkDK1MCQjA@mail.gmail.com>
+In-Reply-To: <CAM4kBBJ3Vbytx=dFK7+DMByV3zK=FVLATSwjyuuygkDK1MCQjA@mail.gmail.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Mon, 28 Dec 2020 19:40:05 +0530
+Message-ID: <CAAhSdy0E8xspb3epBdrTmjg7vSQanG9zwyMY19eeDDL8z=WJFg@mail.gmail.com>
+Subject: Re: [PATCH] riscv: add BUILTIN_DTB support for MMU-enabled targets
+To:     Vitaly Wool <vitaly.wool@konsulko.com>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Bin Meng <bin.meng@windriver.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        devicetree@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+On Mon, Dec 28, 2020 at 7:05 PM Vitaly Wool <vitaly.wool@konsulko.com> wrote:
+>
+> On Mon, Dec 28, 2020 at 12:59 PM Anup Patel <anup@brainfault.org> wrote:
+> >
+> > On Sat, Dec 26, 2020 at 10:03 PM Vitaly Wool <vitaly.wool@konsulko.com> wrote:
+> > >
+> > > Sometimes, especially in a production system we may not want to
+> > > use a "smart bootloader" like u-boot to load kernel, ramdisk and
+> > > device tree from a filesystem on eMMC, but rather load the kernel
+> > > from a NAND partition and just run it as soon as we can, and in
+> > > this case it is convenient to have device tree compiled into the
+> > > kernel binary. Since this case is not limited to MMU-less systems,
+> > > let's support it for these which have MMU enabled too.
+> > >
+> > > Signed-off-by: Vitaly Wool <vitaly.wool@konsulko.com>
+> > > ---
+> > >  arch/riscv/Kconfig   |  1 -
+> > >  arch/riscv/mm/init.c | 12 ++++++++++--
+> > >  2 files changed, 10 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> > > index 2b41f6d8e458..9464b4e3a71a 100644
+> > > --- a/arch/riscv/Kconfig
+> > > +++ b/arch/riscv/Kconfig
+> > > @@ -419,7 +419,6 @@ endmenu
+> > >
+> > >  config BUILTIN_DTB
+> > >         def_bool n
+> > > -       depends on RISCV_M_MODE
+> > >         depends on OF
+> > >
+> > >  menu "Power management options"
+> > > diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> > > index 87c305c566ac..5d1c7a3ec01c 100644
+> > > --- a/arch/riscv/mm/init.c
+> > > +++ b/arch/riscv/mm/init.c
+> > > @@ -194,12 +194,20 @@ void __init setup_bootmem(void)
+> > >         setup_initrd();
+> > >  #endif /* CONFIG_BLK_DEV_INITRD */
+> > >
+> > > +       /*
+> > > +        * If DTB is built in, no need to reserve its memblock.
+> > > +        * OTOH, initial_boot_params has to be set to properly copy DTB
+> > > +        * before unflattening later on.
+> > > +        */
+> > > +       if (IS_ENABLED(CONFIG_BUILTIN_DTB))
+> > > +               initial_boot_params = __va(dtb_early_pa);
+> >
+> > Don't assign initial_boot_params directly here because the
+> > early_init_dt_scan() will do it.
+>
+> early_init_dt_scan will set initial_boot_params to dtb_early_va from
+> the early mapping which will be gone by the time
+> unflatten_and_copy_device_tree() is called.
 
-Could you help review this patch ?
+That's why we are doing early_init_dt_verify() again for the MMU-enabled
+case which already takes care of your concern.
 
-thanks
+We use early_init_dt_verify() like most architectures to set the initial DTB.
 
-On Fri, Dec 18, 2020 at 1:24 AM Weiping Zhang
-<zhangweiping@didiglobal.com> wrote:
 >
-> If a program needs monitor lots of process's status, it needs two
-> syscalls for every process. The first one is telling kernel which
-> pid/tgid should be monitored by send a command(write socket) to kernel.
-> The second one is read the statistics by read socket. This patch add
-> a new interface /proc/taskstats to reduce two syscalls to one ioctl.
-> The user just set the target pid/tgid to the struct taskstats.ac_pid,
-> then kernel will collect statistics for that pid/tgid.
+> > The setup_vm() is supposed to setup dtb_early_va and dtb_early_pa
+> > for MMU-enabled case so please add a "#ifdef" over there for the
+> > built-in DTB case.
+> >
+> > > +       else
+> > > +               memblock_reserve(dtb_early_pa, fdt_totalsize(dtb_early_va));
+> > > +
+> > >         /*
+> > >          * Avoid using early_init_fdt_reserve_self() since __pa() does
+> > >          * not work for DTB pointers that are fixmap addresses
+> > >          */
+> >
+> > This comment needs to be updated and moved along the memblock_reserve()
+> > statement.
+> >
+> > > -       memblock_reserve(dtb_early_pa, fdt_totalsize(dtb_early_va));
+> > > -
+> > >         early_init_fdt_scan_reserved_mem();
+> > >         dma_contiguous_reserve(dma32_phys_limit);
+> > >         memblock_allow_resize();
+> > > --
+> > > 2.29.2
+> > >
+> >
+> > This patch should be based upon Damiens builtin DTB patch.
+> > Refer, https://www.spinics.net/lists/linux-gpio/msg56616.html
 >
-> Signed-off-by: Weiping Zhang <zhangweiping@didiglobal.com>
-> ---
-> Changes since v1:
->  * use /proc/taskstats instead of /dev/taskstats
->
->  include/uapi/linux/taskstats.h |  5 +++
->  kernel/taskstats.c             | 73 +++++++++++++++++++++++++++++++++-
->  2 files changed, 77 insertions(+), 1 deletion(-)
->
-> diff --git a/include/uapi/linux/taskstats.h b/include/uapi/linux/taskstats.h
-> index ccbd08709321..077eab84c77e 100644
-> --- a/include/uapi/linux/taskstats.h
-> +++ b/include/uapi/linux/taskstats.h
-> @@ -214,6 +214,11 @@ enum {
->
->  #define TASKSTATS_CMD_ATTR_MAX (__TASKSTATS_CMD_ATTR_MAX - 1)
->
-> +/* ioctl command */
-> +#define TASKSTATS_IOC_ATTR_PID _IO('T', TASKSTATS_CMD_ATTR_PID)
-> +#define TASKSTATS_IOC_ATTR_TGID        _IO('T', TASKSTATS_CMD_ATTR_TGID)
-> +
-> +
->  /* NETLINK_GENERIC related info */
->
->  #define TASKSTATS_GENL_NAME    "TASKSTATS"
-> diff --git a/kernel/taskstats.c b/kernel/taskstats.c
-> index a2802b6ff4bb..c0f9e2f2308b 100644
-> --- a/kernel/taskstats.c
-> +++ b/kernel/taskstats.c
-> @@ -21,6 +21,8 @@
->  #include <net/genetlink.h>
->  #include <linux/atomic.h>
->  #include <linux/sched/cputime.h>
-> +#include <linux/proc_fs.h>
-> +#include <linux/uio.h>
->
->  /*
->   * Maximum length of a cpumask that can be specified in
-> @@ -28,6 +30,10 @@
->   */
->  #define TASKSTATS_CPUMASK_MAXLEN       (100+6*NR_CPUS)
->
-> +#ifdef CONFIG_PROC_FS
-> +#define PROC_TASKSTATS "taskstats"
-> +#endif
-> +
->  static DEFINE_PER_CPU(__u32, taskstats_seqnum);
->  static int family_registered;
->  struct kmem_cache *taskstats_cache;
-> @@ -666,6 +672,60 @@ static struct genl_family family __ro_after_init = {
->         .n_ops          = ARRAY_SIZE(taskstats_ops),
->  };
->
-> +#ifdef CONFIG_PROC_FS
-> +static long taskstats_ioctl_pid_tgid(unsigned long arg, bool tgid)
-> +{
-> +       struct taskstats kstat;
-> +       struct taskstats *ustat = (struct taskstats *)arg;
-> +       u32 id;
-> +       unsigned long offset = offsetof(struct taskstats, ac_pid);
-> +       long ret;
-> +
-> +       /* userspace set monitored pid/tgid to the field "ac_pid" */
-> +       if (unlikely(copy_from_user(&id, (void *)(arg + offset), sizeof(u32))))
-> +               return -EFAULT;
-> +
-> +       if (tgid)
-> +               ret = fill_stats_for_tgid(id, &kstat);
-> +       else
-> +               ret = fill_stats_for_pid(id, &kstat);
-> +       if (ret < 0)
-> +               return ret;
-> +
-> +       if (unlikely(copy_to_user(ustat, &kstat, sizeof(struct taskstats))))
-> +               return -EFAULT;
-> +
-> +       return 0;
-> +}
-> +
-> +static long taskstats_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
-> +{
-> +       long ret;
-> +
-> +       switch (cmd) {
-> +       case TASKSTATS_IOC_ATTR_PID:
-> +               ret = taskstats_ioctl_pid_tgid(arg, false);
-> +               break;
-> +       case TASKSTATS_IOC_ATTR_TGID:
-> +               ret = taskstats_ioctl_pid_tgid(arg, true);
-> +               break;
-> +       default:
-> +               ret = -EINVAL;
-> +               break;
-> +       }
-> +
-> +       return ret;
-> +}
-> +
-> +static const struct proc_ops taskstats_proc_ops = {
-> +       .proc_ioctl = taskstats_ioctl,
-> +#ifdef CONFIG_COMPAT
-> +       .proc_compat_ioctl = taskstats_ioctl,
-> +#endif
-> +};
-> +#endif
-> +
-> +
->  /* Needed early in initialization */
->  void __init taskstats_init_early(void)
->  {
-> @@ -682,9 +742,20 @@ static int __init taskstats_init(void)
->  {
->         int rc;
->
-> +#ifdef CONFIG_PROC_FS
-> +       if (!proc_create(PROC_TASKSTATS,  0, NULL, &taskstats_proc_ops)) {
-> +               pr_err("failed to create /proc/%s\n", PROC_TASKSTATS);
-> +               return -1;
-> +       }
-> +#endif
-> +
->         rc = genl_register_family(&family);
-> -       if (rc)
-> +       if (rc) {
-> +#ifdef CONFIG_PROC_FS
-> +               remove_proc_entry(PROC_TASKSTATS, NULL);
-> +#endif
->                 return rc;
-> +       }
->
->         family_registered = 1;
->         pr_info("registered taskstats version %d\n", TASKSTATS_GENL_VERSION);
-> --
-> 2.17.2
->
+> Thanks for the pointer, however I don't think our patches have
+> intersections. Besides, Damien is dealing with the MMU-less case
+> there.
+
+Damien's patch is also trying to move to use generic BUILTIN_DTB
+support for the MMU-less case so it is similar work hence the chance
+of patch conflict.
+
+Regards,
+Anup
