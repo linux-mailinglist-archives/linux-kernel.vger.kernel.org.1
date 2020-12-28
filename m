@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 588292E37DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:04:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DC012E400C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:48:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729908AbgL1NB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:01:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57886 "EHLO mail.kernel.org"
+        id S2392398AbgL1Or1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:47:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729789AbgL1NB2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:01:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0ABCC22B2A;
-        Mon, 28 Dec 2020 13:00:46 +0000 (UTC)
+        id S2502843AbgL1OXj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:23:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C06D9221F0;
+        Mon, 28 Dec 2020 14:22:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160447;
-        bh=C1HU05v2WrIhDgrXB/EuS5sq9eP3kYw95gyL9K81B7s=;
+        s=korg; t=1609165379;
+        bh=9NahrlYyNAdZZ/yKDuE0CcW/q+WhkGrcf3ZkyE8qS/s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OQdPq7voyIPUxZlbXo/QT7jQ9yTD+6n0JVYys4f28fVfPyNePF44VUGdkNNd1RwRR
-         RMxsvuHHoISeLyGvemUsYOs1UIFARrUsgqNNhtoQpPzRUL5Q2tw+JJZUyiihsIP1Ki
-         6D8IyhsRh9dOdCGdEs1TAAgcr9nAy9cKSbBsdOh0=
+        b=a9aPrI2PnqVo28Gjv8JXbZptgLzUsGugxzNF8xN+GiJh0vwobIfbq/y+SU7ltE9hu
+         NLgP6P7ikurSUEQY/c/Y/B/9Ve72VdIg/I8JIFwzKCCTx1W/eA5HOfLcqZ+rnAnrfq
+         UiyUSY3SrU1YIwsbzd0X600ph0jsBcdPy7IkjCvY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+df7dc146ebdd6435eea3@syzkaller.appspotmail.com,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.9 024/175] ALSA: pcm: oss: Fix potential out-of-bounds shift
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Shawn Guo <shawn.guo@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 479/717] pwm: zx: Add missing cleanup in error path
 Date:   Mon, 28 Dec 2020 13:47:57 +0100
-Message-Id: <20201228124854.428034957@linuxfoundation.org>
+Message-Id: <20201228125043.916154515@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-commit 175b8d89fe292796811fdee87fa39799a5b6b87a upstream.
+[ Upstream commit 269effd03f6142df4c74814cfdd5f0b041b30bf9 ]
 
-syzbot spotted a potential out-of-bounds shift in the PCM OSS layer
-where it calculates the buffer size with the arbitrary shift value
-given via an ioctl.
+zx_pwm_probe() called clk_prepare_enable() before; this must be undone
+in the error path.
 
-Add a range check for avoiding the undefined behavior.
-As the value can be treated by a signed integer, the max shift should
-be 30.
-
-Reported-by: syzbot+df7dc146ebdd6435eea3@syzkaller.appspotmail.com
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201209084552.17109-2-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 4836193c435c ("pwm: Add ZTE ZX PWM device driver")
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Acked-by: Shawn Guo <shawn.guo@linaro.org>
+Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/core/oss/pcm_oss.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/pwm/pwm-zx.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/sound/core/oss/pcm_oss.c
-+++ b/sound/core/oss/pcm_oss.c
-@@ -2001,11 +2001,15 @@ static int snd_pcm_oss_set_subdivide(str
- static int snd_pcm_oss_set_fragment1(struct snd_pcm_substream *substream, unsigned int val)
- {
- 	struct snd_pcm_runtime *runtime;
-+	int fragshift;
+diff --git a/drivers/pwm/pwm-zx.c b/drivers/pwm/pwm-zx.c
+index e2c21cc34a96a..3763ce5311ac2 100644
+--- a/drivers/pwm/pwm-zx.c
++++ b/drivers/pwm/pwm-zx.c
+@@ -238,6 +238,7 @@ static int zx_pwm_probe(struct platform_device *pdev)
+ 	ret = pwmchip_add(&zpc->chip);
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "failed to add PWM chip: %d\n", ret);
++		clk_disable_unprepare(zpc->pclk);
+ 		return ret;
+ 	}
  
- 	runtime = substream->runtime;
- 	if (runtime->oss.subdivision || runtime->oss.fragshift)
- 		return -EINVAL;
--	runtime->oss.fragshift = val & 0xffff;
-+	fragshift = val & 0xffff;
-+	if (fragshift >= 31)
-+		return -EINVAL;
-+	runtime->oss.fragshift = fragshift;
- 	runtime->oss.maxfrags = (val >> 16) & 0xffff;
- 	if (runtime->oss.fragshift < 4)		/* < 16 */
- 		runtime->oss.fragshift = 4;
+-- 
+2.27.0
+
 
 
