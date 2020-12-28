@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B13C92E65F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:08:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2242B2E6790
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:28:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2632877AbgL1QHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:07:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55328 "EHLO mail.kernel.org"
+        id S1730996AbgL1NIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:08:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389494AbgL1N0b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:26:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A374220728;
-        Mon, 28 Dec 2020 13:25:49 +0000 (UTC)
+        id S1730964AbgL1NIk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:08:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DECF20776;
+        Mon, 28 Dec 2020 13:08:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161950;
-        bh=L29C2rA1dyuGhtjDbgne65PWnPns4sq593oj4UkwEus=;
+        s=korg; t=1609160905;
+        bh=hzLATFhTMvw5U2Ue3r+WBe0nWrIZBhd8kcXXvpxzRPg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PPdglN8uye48WLxSPZnGliE5Oj3ClnkCdi+SuTE52hqObMeYLp3gkkYA6utxBF2vP
-         GQQJHbPE0GrpJ9Qp+9GDNfXN/53aQfOovQtAU3CyOtf7renvDcl05wuZFy8eqKZ6TS
-         NjSEhNhx8wgIOrCJfsrxKeKijxwOZ9NiHnCHAZro=
+        b=b/kS3lx9S6occfOCcbUQ+GJLJhVPvKc1DtDsvKKU9oNm93Q+PLON6BdWZn7xl5GfG
+         ImJT6d8PrTg6+iHvHnFHvY0TjYdqz1xkaLvgu/2XkXzQ+2tEdJ73BhRxHI9owYPgvQ
+         p7+mvz82C0tKjG5NNO5Dd3B4HpY1BPS6/26+kxeY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 120/346] selinux: fix inode_doinit_with_dentry() LABEL_INVALID error handling
+        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>,
+        Xin Xiong <xiongx18@fudan.edu.cn>,
+        Lyude Paul <lyude@redhat.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH 4.14 034/242] drm: fix drm_dp_mst_port refcount leaks in drm_dp_mst_allocate_vcpi
 Date:   Mon, 28 Dec 2020 13:47:19 +0100
-Message-Id: <20201228124925.596058220@linuxfoundation.org>
+Message-Id: <20201228124906.342397483@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,101 +42,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Moore <paul@paul-moore.com>
+From: Xin Xiong <xiongx18@fudan.edu.cn>
 
-[ Upstream commit 200ea5a2292dc444a818b096ae6a32ba3caa51b9 ]
+commit a34a0a632dd991a371fec56431d73279f9c54029 upstream
 
-A previous fix, commit 83370b31a915 ("selinux: fix error initialization
-in inode_doinit_with_dentry()"), changed how failures were handled
-before a SELinux policy was loaded.  Unfortunately that patch was
-potentially problematic for two reasons: it set the isec->initialized
-state without holding a lock, and it didn't set the inode's SELinux
-label to the "default" for the particular filesystem.  The later can
-be a problem if/when a later attempt to revalidate the inode fails
-and SELinux reverts to the existing inode label.
+drm_dp_mst_allocate_vcpi() invokes
+drm_dp_mst_topology_get_port_validated(), which increases the refcount
+of the "port".
 
-This patch should restore the default inode labeling that existed
-before the original fix, without affecting the LABEL_INVALID marking
-such that revalidation will still be attempted in the future.
+These reference counting issues take place in two exception handling
+paths separately. Either when “slots” is less than 0 or when
+drm_dp_init_vcpi() returns a negative value, the function forgets to
+reduce the refcnt increased drm_dp_mst_topology_get_port_validated(),
+which results in a refcount leak.
 
-Fixes: 83370b31a915 ("selinux: fix error initialization in inode_doinit_with_dentry()")
-Reported-by: Sven Schnelle <svens@linux.ibm.com>
-Tested-by: Sven Schnelle <svens@linux.ibm.com>
-Reviewed-by: Ondrej Mosnacek <omosnace@redhat.com>
-Signed-off-by: Paul Moore <paul@paul-moore.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fix these issues by pulling up the error handling when "slots" is less
+than 0, and calling drm_dp_mst_topology_put_port() before termination
+when drm_dp_init_vcpi() returns a negative value.
+
+Fixes: 1e797f556c61 ("drm/dp: Split drm_dp_mst_allocate_vcpi")
+Cc: <stable@vger.kernel.org> # v4.12+
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
+Reviewed-by: Lyude Paul <lyude@redhat.com>
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200719154545.GA41231@xin-virtual-machine
+[sudip: use old functions before rename]
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- security/selinux/hooks.c | 31 +++++++++++++------------------
- 1 file changed, 13 insertions(+), 18 deletions(-)
+ drivers/gpu/drm/drm_dp_mst_topology.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-index 02afe52a55d0d..08833bbb97aab 100644
---- a/security/selinux/hooks.c
-+++ b/security/selinux/hooks.c
-@@ -1618,13 +1618,7 @@ static int inode_doinit_with_dentry(struct inode *inode, struct dentry *opt_dent
- 			 * inode_doinit with a dentry, before these inodes could
- 			 * be used again by userspace.
- 			 */
--			isec->initialized = LABEL_INVALID;
--			/*
--			 * There is nothing useful to jump to the "out"
--			 * label, except a needless spin lock/unlock
--			 * cycle.
--			 */
--			return 0;
-+			goto out_invalid;
- 		}
+--- a/drivers/gpu/drm/drm_dp_mst_topology.c
++++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+@@ -2629,11 +2629,11 @@ bool drm_dp_mst_allocate_vcpi(struct drm
+ {
+ 	int ret;
  
- 		len = INITCONTEXTLEN;
-@@ -1739,15 +1733,8 @@ static int inode_doinit_with_dentry(struct inode *inode, struct dentry *opt_dent
- 			 * inode_doinit() with a dentry, before these inodes
- 			 * could be used again by userspace.
- 			 */
--			if (!dentry) {
--				isec->initialized = LABEL_INVALID;
--				/*
--				 * There is nothing useful to jump to the "out"
--				 * label, except a needless spin lock/unlock
--				 * cycle.
--				 */
--				return 0;
--			}
-+			if (!dentry)
-+				goto out_invalid;
- 			rc = selinux_genfs_get_sid(dentry, sclass,
- 						   sbsec->flags, &sid);
- 			dput(dentry);
-@@ -1760,11 +1747,10 @@ static int inode_doinit_with_dentry(struct inode *inode, struct dentry *opt_dent
- out:
- 	spin_lock(&isec->lock);
- 	if (isec->initialized == LABEL_PENDING) {
--		if (!sid || rc) {
-+		if (rc) {
- 			isec->initialized = LABEL_INVALID;
- 			goto out_unlock;
- 		}
--
- 		isec->initialized = LABEL_INITIALIZED;
- 		isec->sid = sid;
+-	port = drm_dp_get_validated_port_ref(mgr, port);
+-	if (!port)
++	if (slots < 0)
+ 		return false;
+ 
+-	if (slots < 0)
++	port = drm_dp_get_validated_port_ref(mgr, port);
++	if (!port)
+ 		return false;
+ 
+ 	if (port->vcpi.vcpi > 0) {
+@@ -2648,6 +2648,7 @@ bool drm_dp_mst_allocate_vcpi(struct drm
+ 	if (ret) {
+ 		DRM_DEBUG_KMS("failed to init vcpi slots=%d max=63 ret=%d\n",
+ 				DIV_ROUND_UP(pbn, mgr->pbn_div), ret);
++		drm_dp_put_port(port);
+ 		goto out;
  	}
-@@ -1772,6 +1758,15 @@ out:
- out_unlock:
- 	spin_unlock(&isec->lock);
- 	return rc;
-+
-+out_invalid:
-+	spin_lock(&isec->lock);
-+	if (isec->initialized == LABEL_PENDING) {
-+		isec->initialized = LABEL_INVALID;
-+		isec->sid = sid;
-+	}
-+	spin_unlock(&isec->lock);
-+	return 0;
- }
- 
- /* Convert a Linux signal to an access vector. */
--- 
-2.27.0
-
+ 	DRM_DEBUG_KMS("initing vcpi for pbn=%d slots=%d\n",
 
 
