@@ -2,108 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B53622E3451
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 06:29:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A9712E345C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 06:38:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727998AbgL1F3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 00:29:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34852 "EHLO
+        id S1727943AbgL1FiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 00:38:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727943AbgL1F3K (ORCPT
+        with ESMTP id S1726657AbgL1FiW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 00:29:10 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74114C061796
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 21:28:30 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id y8so5119260plp.8
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 21:28:30 -0800 (PST)
+        Mon, 28 Dec 2020 00:38:22 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E06EC061795
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 21:37:41 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id f14so5396236pju.4
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 21:37:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3oz21Ub57lWDH8p5jFu652FsrPXlKogfC2kiSGZUKOQ=;
-        b=SvA4JT7MAFuwp9CQ6cuq8DL+TCJ2DsQxbu+hdbTjLKxrSMynLkEHR6xUklwa7YoW5Q
-         XwlsrF57LtmrOpYlahHLPGBEsXjBK0aSiWmJcldWFEm1N/M+uk+lKlM3eCAyTt+EUxYW
-         4pA+ydtxyXGKgkgXa0TQS7xznu34l0U88QhCKJuEcDdY7ry2XuK1fXd2RNCjVhCn5E3Q
-         Owy+126qF3oWD+fjp/kdBZswVKmSX7+/j9X1auJcwHaBU8Km/0UT8q40ey4CA5Q3GQaz
-         /jmAJsFk98TpUypvhSF1K7FHHJQvjPd3RVPoofl+uYnJAQVPWAWzesxpB4BocKXRBvFv
-         0Obw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=zegu0X9sZDxNvLaLEb6B1P2y6YF1mpAuGwZH8pLcUFA=;
+        b=kGu4z+nkVQp+gc3xdhla18BclFTp67yzoxD+9RMY/GNIXQuJexMdOsKGqMSyUf1E/l
+         5CB7kIpM6JGNNbciDg+zesEBaWdz1pBhFlY7EJdHT1T+liJT84FxCNu+mMoBZeWEkzJ6
+         Q52JQkCXPH4rhP8Y3QYUtl/ZOCyEeePFYh74dpzixQjAYGJzhX0cD3gFD3E4Eid1d7Cx
+         dbWFydxsZnVIzQxYWP6sy6nbUdVlaeyP3LjdaasrPTmMxEQNIXRasuR6qjl9MS/p7E33
+         gSVdelpIQSxrGGuumL9cdg5LYxRoRR5Z2A6zoM3Tu5mCXTZu/cfiGCDdoolQJxZB1rfa
+         axIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3oz21Ub57lWDH8p5jFu652FsrPXlKogfC2kiSGZUKOQ=;
-        b=L0ga6PvdoGgOwrUxCOa/Br9s5+LqsC+jzwiVxUYy3+5XMVVDD9ZbJndrj3tpDVo2Va
-         +5KJ9WH21KPFKyH7UfpZflQzVlCr8lE/K0FSZLTWscKQFhkcKiLuvvylzpzKkcC0MDmK
-         qOVTvwADBR9NPtz4Zbo/F1vakZts2pdBupEzvyoUStNu7uQvsC6M2by64MFQEi8jloEr
-         ZhmcE0V0h3ZnHMQVzPkt/WyV+evbDE4ShBpA9i+/8FvC814wpTcKOXVVdu4UtKFMhyxY
-         Z0Yf/+Ow4MYfSsil0whmeLmY2J10r8tsq3PuKFl3vrYDqwOpjIgyou4Wqh93tl7/NCsU
-         vb9g==
-X-Gm-Message-State: AOAM530QtmFpu2VbU3ex4BQ3ggPZLtuEJwwQjeDE+oybYssckeh58Zbq
-        WW63vQ17FFhU/bXjrHrIvBYYaQ==
-X-Google-Smtp-Source: ABdhPJy1JAI4TTJp55VsTyJnfdEhOTvktuLnYwC+MftyBcUZ8fYv8WVgIZhvCLKRLgnCeTOcgkilGw==
-X-Received: by 2002:a17:90a:e005:: with SMTP id u5mr19325143pjy.64.1609133309944;
-        Sun, 27 Dec 2020 21:28:29 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=zegu0X9sZDxNvLaLEb6B1P2y6YF1mpAuGwZH8pLcUFA=;
+        b=bH4wIbdIfO2Q+RDZTIMZNCF2kU+yP1zJlrBUV3PXz5uw/8AEsJW4ky3kBMYMCd2LSH
+         bl9owjDXljiNOw/rXX/n92tgjUsFYdTXlJ8iOBctXxAu46bqfRzkWELj6tjGINWgVrOu
+         0isnYsbFjhhO6khj/TvZokO5RohoaHvL3IVYK1QT5lmCTa8GbC3Z3gtNF5wrx/hpLbrj
+         EMVwdDLm8yw813xv9mlbyqAMIyFbgTk+ny0HZMJhItq+utVHwyBeJ4LDN0jr/sKn6VpA
+         n41EGnrMVQeKsl3cVcpuby3PBJ8dqnmaa/DjZXcKi+Oe00Tyf80nHGfEYmaw5DAkVOAN
+         gazg==
+X-Gm-Message-State: AOAM530t1lXwr324kUerg5nV1hFZFERWWReWSnY3Gwv1+cCRGrtwT/5H
+        rURVKl7K6gLBTTdRC3HyxsFW6g==
+X-Google-Smtp-Source: ABdhPJxZONjSIasQCRp/1pDOfNWPBn0hTvHIEA8MIs0tOmtvQDHZvqlafaqvzNUcqKO4wHrWxx/3HA==
+X-Received: by 2002:a17:90a:ee8e:: with SMTP id i14mr19562217pjz.190.1609133861327;
+        Sun, 27 Dec 2020 21:37:41 -0800 (PST)
 Received: from localhost ([122.172.20.109])
-        by smtp.gmail.com with ESMTPSA id p3sm12399613pjg.53.2020.12.27.21.28.29
+        by smtp.gmail.com with ESMTPSA id d124sm36711730pgc.68.2020.12.27.21.37.40
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 27 Dec 2020 21:28:29 -0800 (PST)
+        Sun, 27 Dec 2020 21:37:40 -0800 (PST)
+Date:   Mon, 28 Dec 2020 11:07:38 +0530
 From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Stephan Gerhold <stephan@gerhold.net>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        quanyang.wang@windriver.com, "v5 . 10" <stable@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] opp: Call the missing clk_put() on error
-Date:   Mon, 28 Dec 2020 10:58:21 +0530
-Message-Id: <0e1d9ca1766f5d95fb881f57b6c4a1ffa63d4648.1609133256.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
-In-Reply-To: <20201224104927.722763-1-quanyang.wang@windriver.com>
-References: <20201224104927.722763-1-quanyang.wang@windriver.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     mmayer@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
+        rjw@rjwysocki.net, f.fainelli@gmail.com, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] cpufreq: brcmstb-avs-cpufreq: Fix some resource leaks in
+ the error handling path of the probe function
+Message-ID: <20201228053738.6b6uaz2ipzjpwzet@vireshk-i7>
+References: <20201219101751.181783-1-christophe.jaillet@wanadoo.fr>
+ <20201222043505.rq3cmajc3mxv3p2z@vireshk-i7>
+ <a7e1f78c-b4c9-4ef5-7ca4-94a65fefd299@wanadoo.fr>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <a7e1f78c-b4c9-4ef5-7ca4-94a65fefd299@wanadoo.fr>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the clock reference counting by calling the missing clk_put() in the
-error path.
+On 27-12-20, 18:22, Christophe JAILLET wrote:
+> Le 22/12/2020 à 05:35, Viresh Kumar a écrit :
+> > On 19-12-20, 11:17, Christophe JAILLET wrote:
+> > > If 'cpufreq_register_driver()' fails, we must release the resources
+> > > allocated in 'brcm_avs_prepare_init()' as already done in the remove
+> > > function.
+> > > 
+> > > To do that, introduce a new function 'brcm_avs_prepare_uninit()' in order
+> > > to avoid code duplication. This also makes the code more readable (IMHO).
+> > > 
+> > > Fixes: de322e085995 ("cpufreq: brcmstb-avs-cpufreq: AVS CPUfreq driver for Broadcom STB SoCs")
+> > > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> > > ---
+> > > I'm not sure that the existing error handling in the remove function is
+> > > correct and/or needed.
+> > > ---
+> > >   drivers/cpufreq/brcmstb-avs-cpufreq.c | 25 ++++++++++++++++++++-----
+> > >   1 file changed, 20 insertions(+), 5 deletions(-)
+> > > 
+> > > diff --git a/drivers/cpufreq/brcmstb-avs-cpufreq.c b/drivers/cpufreq/brcmstb-avs-cpufreq.c
+> > > index 3e31e5d28b79..750ca7cfccb0 100644
+> > > --- a/drivers/cpufreq/brcmstb-avs-cpufreq.c
+> > > +++ b/drivers/cpufreq/brcmstb-avs-cpufreq.c
+> > > @@ -597,6 +597,16 @@ static int brcm_avs_prepare_init(struct platform_device *pdev)
+> > >   	return ret;
+> > >   }
+> > > +static void brcm_avs_prepare_uninit(struct platform_device *pdev)
+> > > +{
+> > > +	struct private_data *priv;
+> > > +
+> > > +	priv = platform_get_drvdata(pdev);
+> > > +
+> > > +	iounmap(priv->avs_intr_base);
+> > > +	iounmap(priv->base);
+> > > +}
+> > > +
+> > >   static int brcm_avs_cpufreq_init(struct cpufreq_policy *policy)
+> > >   {
+> > >   	struct cpufreq_frequency_table *freq_table;
+> > > @@ -732,21 +742,26 @@ static int brcm_avs_cpufreq_probe(struct platform_device *pdev)
+> > >   	brcm_avs_driver.driver_data = pdev;
+> > > -	return cpufreq_register_driver(&brcm_avs_driver);
+> > > +	ret = cpufreq_register_driver(&brcm_avs_driver);
+> > > +	if (ret)
+> > > +		goto err_uninit;
+> > > +
+> > > +	return 0;
+> > > +
+> > > +err_uninit:
+> > > +	brcm_avs_prepare_uninit(pdev);
+> > > +	return ret;
+> > 
+> > Maybe rewrite as:
+> > 
+> > 	ret = cpufreq_register_driver(&brcm_avs_driver);
+> > 	if (ret)
+> >                  brcm_avs_prepare_uninit(pdev);
+> > 	return ret;
+> > 
+> 
+> Personlaly, I prefer what I have proposed. Having a clear and dedicated
+> error handling path is more future proff, IMHO.
 
-Cc: v5.10 <stable@vger.kernel.org> # v5.10
-Fixes: dd461cd9183f ("opp: Allow dev_pm_opp_get_opp_table() to return -EPROBE_DEFER")
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- drivers/opp/core.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+I would have agreed to that if there were other things we were handling in the
+error path, but right now we are adding an extra label, goto, etc without any
+need. If in future this needs a change, we can always come back to it and update
+with a label. But right now I would suggest to keep it simple.
 
-diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-index c9e50836b4c2..8c905aabacc0 100644
---- a/drivers/opp/core.c
-+++ b/drivers/opp/core.c
-@@ -1101,7 +1101,7 @@ static struct opp_table *_allocate_opp_table(struct device *dev, int index)
- 	ret = dev_pm_opp_of_find_icc_paths(dev, opp_table);
- 	if (ret) {
- 		if (ret == -EPROBE_DEFER)
--			goto remove_opp_dev;
-+			goto put_clk;
- 
- 		dev_warn(dev, "%s: Error finding interconnect paths: %d\n",
- 			 __func__, ret);
-@@ -1113,6 +1113,9 @@ static struct opp_table *_allocate_opp_table(struct device *dev, int index)
- 
- 	return opp_table;
- 
-+put_clk:
-+	if (!IS_ERR(opp_table->clk))
-+		clk_put(opp_table->clk);
- remove_opp_dev:
- 	_remove_opp_dev(opp_dev, opp_table);
- err:
+> > >   }
+> > >   static int brcm_avs_cpufreq_remove(struct platform_device *pdev)
+> > >   {
+> > > -	struct private_data *priv;
+> > >   	int ret;
+> > >   	ret = cpufreq_unregister_driver(&brcm_avs_driver);
+> > >   	if (ret)
+> > >   		return ret;
+> > 
+> > Instead of returning here, it can be just WARN_ON(ret); and then go on and free
+> > the resources and this needs to be done in a separate patch.
+> 
+> Ok, I agree (see my comment below the --- in my patch).
+> I'll send a patch for it when the first patch will be applied, unless you
+> prefer if I resend as a serie.
+
+Based on the above comment from me, I am expecting another version from you for
+this patch. So you can fix both the issues in the same patchset.
+
 -- 
-2.25.0.rc1.19.g042ed3e048af
-
+viresh
