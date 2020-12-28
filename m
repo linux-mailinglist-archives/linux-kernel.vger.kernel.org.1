@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D87622E6835
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:35:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8AF42E6568
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:01:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633605AbgL1QdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:33:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60124 "EHLO mail.kernel.org"
+        id S2387682AbgL1NcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:32:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730326AbgL1NEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:04:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90E97207C9;
-        Mon, 28 Dec 2020 13:03:18 +0000 (UTC)
+        id S2390563AbgL1NbI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:31:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA679207C9;
+        Mon, 28 Dec 2020 13:30:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160599;
-        bh=Wdwhs5Y5kdLWDSBFMmEc8WP8wop4/0dX/8rxrLoADWA=;
+        s=korg; t=1609162252;
+        bh=etFg+hdY9cYDgYnDmZBzPds9btDoJxw4EV86C3JFYyc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aOzgsDoIZUJovsN+m2W/K1R2k/fTrQgOA4MEcVvgPrtYOszqqaBag1o/cobv21KUK
-         CoR7qFvWnPGI9lRJ1msxdpsNb6r5PCbmC6pKPoSzWYLQM9951fLqtm8A/BlaTkrvYP
-         Apiz/v1gC4fDy+dJb7z1HqXGyjY8dwz/CGV+5muU=
+        b=UjskC6bu147HNzftAhWtrye4fy+UpaYTiceUj0lVkCvurlMEv/tqX0m5JJKPHd3cf
+         TuoTD7SnuBQdLfMvvFmmT6bOX1QKRCdYqMQ+1AS6t4zN4gnpL/NfbhPD6fvURVXrAE
+         y/FFKdeN8bGaAHIAIK8UXbfhT0MPFmWArxlHDH9U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nathan Lynch <nathanl@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 105/175] powerpc/pseries/hibernation: drop pseries_suspend_begin() from suspend ops
+Subject: [PATCH 4.19 239/346] net: allwinner: Fix some resources leak in the error handling path of the probe and in the remove function
 Date:   Mon, 28 Dec 2020 13:49:18 +0100
-Message-Id: <20201228124858.338904074@linuxfoundation.org>
+Message-Id: <20201228124931.316767201@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,70 +41,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Lynch <nathanl@linux.ibm.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 52719fce3f4c7a8ac9eaa191e8d75a697f9fbcbc ]
+[ Upstream commit 322e53d1e2529ae9d501f5e0f20604a79b873aef ]
 
-There are three ways pseries_suspend_begin() can be reached:
+'irq_of_parse_and_map()' should be balanced by a corresponding
+'irq_dispose_mapping()' call. Otherwise, there is some resources leaks.
 
-1. When "mem" is written to /sys/power/state:
+Add such a call in the error handling path of the probe function and in the
+remove function.
 
-kobj_attr_store()
--> state_store()
-  -> pm_suspend()
-    -> suspend_devices_and_enter()
-      -> pseries_suspend_begin()
-
-This never works because there is no way to supply a valid stream id
-using this interface, and H_VASI_STATE is called with a stream id of
-zero. So this call path is useless at best.
-
-2. When a stream id is written to /sys/devices/system/power/hibernate.
-pseries_suspend_begin() is polled directly from store_hibernate()
-until the stream is in the "Suspending" state (i.e. the platform is
-ready for the OS to suspend execution):
-
-dev_attr_store()
--> store_hibernate()
-  -> pseries_suspend_begin()
-
-3. When a stream id is written to /sys/devices/system/power/hibernate
-(continued). After #2, pseries_suspend_begin() is called once again
-from the pm core:
-
-dev_attr_store()
--> store_hibernate()
-  -> pm_suspend()
-    -> suspend_devices_and_enter()
-      -> pseries_suspend_begin()
-
-This is redundant because the VASI suspend state is already known to
-be Suspending.
-
-The begin() callback of platform_suspend_ops is optional, so we can
-simply remove that assignment with no loss of function.
-
-Fixes: 32d8ad4e621d ("powerpc/pseries: Partition hibernation support")
-Signed-off-by: Nathan Lynch <nathanl@linux.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20201207215200.1785968-18-nathanl@linux.ibm.com
+Fixes: 492205050d77 ("net: Add EMAC ethernet driver found on Allwinner A10 SoC's")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/20201214202117.146293-1-christophe.jaillet@wanadoo.fr
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/platforms/pseries/suspend.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/net/ethernet/allwinner/sun4i-emac.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/platforms/pseries/suspend.c b/arch/powerpc/platforms/pseries/suspend.c
-index e76aefae2aa2b..0a0e0c8256f67 100644
---- a/arch/powerpc/platforms/pseries/suspend.c
-+++ b/arch/powerpc/platforms/pseries/suspend.c
-@@ -224,7 +224,6 @@ static struct bus_type suspend_subsys = {
+diff --git a/drivers/net/ethernet/allwinner/sun4i-emac.c b/drivers/net/ethernet/allwinner/sun4i-emac.c
+index c458b81ba63af..d249a4309da2f 100644
+--- a/drivers/net/ethernet/allwinner/sun4i-emac.c
++++ b/drivers/net/ethernet/allwinner/sun4i-emac.c
+@@ -847,13 +847,13 @@ static int emac_probe(struct platform_device *pdev)
+ 	db->clk = devm_clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(db->clk)) {
+ 		ret = PTR_ERR(db->clk);
+-		goto out_iounmap;
++		goto out_dispose_mapping;
+ 	}
  
- static const struct platform_suspend_ops pseries_suspend_ops = {
- 	.valid		= suspend_valid_only_mem,
--	.begin		= pseries_suspend_begin,
- 	.prepare_late	= pseries_prepare_late,
- 	.enter		= pseries_suspend_enter,
- };
+ 	ret = clk_prepare_enable(db->clk);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Error couldn't enable clock (%d)\n", ret);
+-		goto out_iounmap;
++		goto out_dispose_mapping;
+ 	}
+ 
+ 	ret = sunxi_sram_claim(&pdev->dev);
+@@ -910,6 +910,8 @@ out_release_sram:
+ 	sunxi_sram_release(&pdev->dev);
+ out_clk_disable_unprepare:
+ 	clk_disable_unprepare(db->clk);
++out_dispose_mapping:
++	irq_dispose_mapping(ndev->irq);
+ out_iounmap:
+ 	iounmap(db->membase);
+ out:
+@@ -928,6 +930,7 @@ static int emac_remove(struct platform_device *pdev)
+ 	unregister_netdev(ndev);
+ 	sunxi_sram_release(&pdev->dev);
+ 	clk_disable_unprepare(db->clk);
++	irq_dispose_mapping(ndev->irq);
+ 	iounmap(db->membase);
+ 	free_netdev(ndev);
+ 
 -- 
 2.27.0
 
