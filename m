@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D4302E6704
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:19:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02DB82E6581
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:03:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404328AbgL1QTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:19:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42214 "EHLO mail.kernel.org"
+        id S2393729AbgL1QCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:02:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732477AbgL1NOT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:14:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DD9D206ED;
-        Mon, 28 Dec 2020 13:14:03 +0000 (UTC)
+        id S2389536AbgL1Nba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:31:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3F8920728;
+        Mon, 28 Dec 2020 13:30:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161244;
-        bh=y6ZQLzeaVOvYgTngfNR5QHOnwq4Foe2LejqIuPXYogY=;
+        s=korg; t=1609162249;
+        bh=DilgPCEYNKulBt2jpnQxaepZv0vFRE1WB3AwTzIHGPU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lc60eVXIAnH5M4niD8p/a+G/Mg7oKpRWlF9E6bt5HZs9ahyrLwBPXHNRD7Ot9NqSu
-         BQV0n5XXEya8ISv1Kf1eU/0Mgjo1X1Dq/wkl4eulAzlmGVv0A8XceNRR6CCGLWv+7H
-         6K8zNd6ysKp5RKvuxDEjz/gWNjD9oYifkU8OPWlg=
+        b=lox8N0qQTEamJs+UfJZLGTKFHBKOm6gfwkvNUwPVSW0PtMmpKLZhRaLY8ZmR55G9b
+         6Pr3Lqni9Kt+eXynSb59+qLucKAaSA7j/rLqsFDOK4nKqX/lsXtlToghovkQCkF6xl
+         FKsdUI3JoHh8RC2gjWFuI/HWjQWuPegYnVdEIrek=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 151/242] usb: oxu210hp-hcd: Fix memory leak in oxu_create
-Date:   Mon, 28 Dec 2020 13:49:16 +0100
-Message-Id: <20201228124912.140077998@linuxfoundation.org>
+Subject: [PATCH 4.19 238/346] net: bcmgenet: Fix a resource leak in an error handling path in the probe functin
+Date:   Mon, 28 Dec 2020 13:49:17 +0100
+Message-Id: <20201228124931.281102335@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit e5548b05631ec3e6bfdaef1cad28c799545b791b ]
+[ Upstream commit 4375ada01963d1ebf733d60d1bb6e5db401e1ac6 ]
 
-usb_create_hcd will alloc memory for hcd, and we should
-call usb_put_hcd to free it when adding fails to prevent
-memory leak.
+If the 'register_netdev()' call fails, we must undo a previous
+'bcmgenet_mii_init()' call.
 
-Fixes: b92a78e582b1a ("usb host: Oxford OXU210HP HCD driver")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201123145809.1456541-1-zhangqilong3@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 1c1008c793fa ("net: bcmgenet: add main driver file")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Link: https://lore.kernel.org/r/20201212182005.120437-1-christophe.jaillet@wanadoo.fr
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/oxu210hp-hcd.c | 4 +++-
+ drivers/net/ethernet/broadcom/genet/bcmgenet.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/usb/host/oxu210hp-hcd.c b/drivers/usb/host/oxu210hp-hcd.c
-index ed20fb34c897f..1d3a79c2eba2f 100644
---- a/drivers/usb/host/oxu210hp-hcd.c
-+++ b/drivers/usb/host/oxu210hp-hcd.c
-@@ -3732,8 +3732,10 @@ static struct usb_hcd *oxu_create(struct platform_device *pdev,
- 	oxu->is_otg = otg;
+diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+index c7667017c1a3f..c3e824f5e50e8 100644
+--- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
++++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+@@ -3593,8 +3593,10 @@ static int bcmgenet_probe(struct platform_device *pdev)
+ 	clk_disable_unprepare(priv->clk);
  
- 	ret = usb_add_hcd(hcd, irq, IRQF_SHARED);
--	if (ret < 0)
-+	if (ret < 0) {
-+		usb_put_hcd(hcd);
- 		return ERR_PTR(ret);
+ 	err = register_netdev(dev);
+-	if (err)
++	if (err) {
++		bcmgenet_mii_exit(dev);
+ 		goto err;
 +	}
  
- 	device_wakeup_enable(hcd->self.controller);
- 	return hcd;
+ 	return err;
+ 
 -- 
 2.27.0
 
