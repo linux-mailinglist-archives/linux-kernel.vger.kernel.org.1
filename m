@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C7272E67DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:30:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3222E2E678E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:28:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633661AbgL1Q3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:29:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34840 "EHLO mail.kernel.org"
+        id S1730819AbgL1NIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:08:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730683AbgL1NHH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:07:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DA342245C;
-        Mon, 28 Dec 2020 13:06:25 +0000 (UTC)
+        id S1730776AbgL1NHZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:07:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3492B208D5;
+        Mon, 28 Dec 2020 13:06:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160786;
-        bh=HVbqvAAOwKCjeUuSvkGAPBsS4i41WktIU71zxCGbU5s=;
+        s=korg; t=1609160804;
+        bh=/i6sFlmN61X0wPI49xuMfIOqhc5hoE42yAtMu2XvkTg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=koftqpHcv46NHwonWhqnm+S72Xtuaok51AYjdVrjn3S7cCG5AWm05KsIqaiaoYxjx
-         d8E6TbO/wksNJYoDmKGRoXppXS6fZWNlJRt+bjdc0fUSY1OuHRdc2vRPJezkOn2O3h
-         7OsXue/WwW/fuSCJj2RNtHuZfTdANICodxuCgmwU=
+        b=AE5+uLLcewRIwpNqoLDYW+ErTd8WMEdN64+tIHc0xICo1yZgSFdfJ+HOkjttJfcxT
+         3sVw/aVjwbApjS+v6xbfB9xWRs2jVJB3yf3o6ofryy4VQF/ErsyiPOxCTTLvxKVZDq
+         GYhPR9iiYnEiozNzhmJU5MkNoZAAgXC9ls4Y8/ic=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
-        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
+        stable@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>,
+        "Pavel Machek (CIP)" <pavel@denx.de>,
+        David Sterba <dsterba@suse.com>,
         Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.9 153/175] Btrfs: fix selftests failure due to uninitialized i_mode in test inodes
-Date:   Mon, 28 Dec 2020 13:50:06 +0100
-Message-Id: <20201228124900.670519237@linuxfoundation.org>
+Subject: [PATCH 4.9 154/175] btrfs: fix return value mixup in btrfs_get_extent
+Date:   Mon, 28 Dec 2020 13:50:07 +0100
+Message-Id: <20201228124900.718807653@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
 References: <20201228124853.216621466@linuxfoundation.org>
@@ -40,83 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Pavel Machek <pavel@denx.de>
 
-commit 9f7fec0ba89108b9385f1b9fb167861224912a4a upstream
+commit 881a3a11c2b858fe9b69ef79ac5ee9978a266dc9 upstream
 
-Some of the self tests create a test inode, setup some extents and then do
-calls to btrfs_get_extent() to test that the corresponding extent maps
-exist and are correct. However btrfs_get_extent(), since the 5.2 merge
-window, now errors out when it finds a regular or prealloc extent for an
-inode that does not correspond to a regular file (its ->i_mode is not
-S_IFREG). This causes the self tests to fail sometimes, specially when
-KASAN, slub_debug and page poisoning are enabled:
+btrfs_get_extent() sets variable ret, but out: error path expect error
+to be in variable err so the error code is lost.
 
-  $ modprobe btrfs
-  modprobe: ERROR: could not insert 'btrfs': Invalid argument
-
-  $ dmesg
-  [ 9414.691648] Btrfs loaded, crc32c=crc32c-intel, debug=on, assert=on, integrity-checker=on, ref-verify=on
-  [ 9414.692655] BTRFS: selftest: sectorsize: 4096  nodesize: 4096
-  [ 9414.692658] BTRFS: selftest: running btrfs free space cache tests
-  [ 9414.692918] BTRFS: selftest: running extent only tests
-  [ 9414.693061] BTRFS: selftest: running bitmap only tests
-  [ 9414.693366] BTRFS: selftest: running bitmap and extent tests
-  [ 9414.696455] BTRFS: selftest: running space stealing from bitmap to extent tests
-  [ 9414.697131] BTRFS: selftest: running extent buffer operation tests
-  [ 9414.697133] BTRFS: selftest: running btrfs_split_item tests
-  [ 9414.697564] BTRFS: selftest: running extent I/O tests
-  [ 9414.697583] BTRFS: selftest: running find delalloc tests
-  [ 9415.081125] BTRFS: selftest: running find_first_clear_extent_bit test
-  [ 9415.081278] BTRFS: selftest: running extent buffer bitmap tests
-  [ 9415.124192] BTRFS: selftest: running inode tests
-  [ 9415.124195] BTRFS: selftest: running btrfs_get_extent tests
-  [ 9415.127909] BTRFS: selftest: running hole first btrfs_get_extent test
-  [ 9415.128343] BTRFS critical (device (efault)): regular/prealloc extent found for non-regular inode 256
-  [ 9415.131428] BTRFS: selftest: fs/btrfs/tests/inode-tests.c:904 expected a real extent, got 0
-
-This happens because the test inodes are created without ever initializing
-the i_mode field of the inode, and neither VFS's new_inode() nor the btrfs
-callback btrfs_alloc_inode() initialize the i_mode. Initialization of the
-i_mode is done through the various callbacks used by the VFS to create
-new inodes (regular files, directories, symlinks, tmpfiles, etc), which
-all call btrfs_new_inode() which in turn calls inode_init_owner(), which
-sets the inode's i_mode. Since the tests only uses new_inode() to create
-the test inodes, the i_mode was never initialized.
-
-This always happens on a VM I used with kasan, slub_debug and many other
-debug facilities enabled. It also happened to someone who reported this
-on bugzilla (on a 5.3-rc).
-
-Fix this by setting i_mode to S_IFREG at btrfs_new_test_inode().
-
-Fixes: 6bf9e4bd6a2778 ("btrfs: inode: Verify inode mode to avoid NULL pointer dereference")
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=204397
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+Fixes: 6bf9e4bd6a27 ("btrfs: inode: Verify inode mode to avoid NULL pointer dereference")
+CC: stable@vger.kernel.org # 5.4+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
+[sudip: adjust context]
 Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/btrfs/tests/btrfs-tests.c |    8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ fs/btrfs/inode.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/btrfs/tests/btrfs-tests.c
-+++ b/fs/btrfs/tests/btrfs-tests.c
-@@ -51,7 +51,13 @@ static struct file_system_type test_type
- 
- struct inode *btrfs_new_test_inode(void)
- {
--	return new_inode(test_mnt->mnt_sb);
-+	struct inode *inode;
-+
-+	inode = new_inode(test_mnt->mnt_sb);
-+	if (inode)
-+		inode_init_owner(inode, NULL, S_IFREG);
-+
-+	return inode;
- }
- 
- static int btrfs_init_test_fs(void)
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -7000,7 +7000,7 @@ again:
+ 	    found_type == BTRFS_FILE_EXTENT_PREALLOC) {
+ 		/* Only regular file could have regular/prealloc extent */
+ 		if (!S_ISREG(inode->i_mode)) {
+-			ret = -EUCLEAN;
++			err = -EUCLEAN;
+ 			btrfs_crit(root->fs_info,
+ 		"regular/prealloc extent found for non-regular inode %llu",
+ 				   btrfs_ino(inode));
 
 
