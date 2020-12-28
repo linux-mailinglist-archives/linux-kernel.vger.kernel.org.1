@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CBE62E38E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:17:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE4082E3A3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:34:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733284AbgL1NQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:16:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44940 "EHLO mail.kernel.org"
+        id S2388056AbgL1NeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:34:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733219AbgL1NQc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:16:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 267AF21D94;
-        Mon, 28 Dec 2020 13:15:50 +0000 (UTC)
+        id S2390317AbgL1NdH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:33:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F05B22583;
+        Mon, 28 Dec 2020 13:32:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161351;
-        bh=uCSZ2S0uiBhH2ima5mqECjLF01VKfsPu/to1MACyatg=;
+        s=korg; t=1609162347;
+        bh=STAq70HSzh8ys+q9xjgGIxuRu4mhl50ONMQngQZxmzE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i7NIHAg+fu5DUeOKsKD2okBe2r99G9HaIklDxH5AHB+78iSQkFrVNAHOSxXSjSxSi
-         /XOrX7aVykP2snTltjqNQ2pNi6yNMwr1U0upQteD49dZNYEjyO+cB796JQpCLSe+ej
-         ZQWqCg8g93r7FVNeCWsRtHMqY2FsB7L6iTZawVyI=
+        b=oemhUp9Gyrj6uz8RhdBuJ5t/PNEODEqHKGDKrmp2MBto4d9qz4Vqhi5iDvPs2qe08
+         zn50YhKtLJllT6YRXAa0pxPXTHdsHHMmDiT2YREtG12z1PIaJ12K7uFN+Ce5Ygrcv9
+         Ylzb+BIYrFqOwjxymC28HLdRDymj7v57otC9Ptkg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Scally <djrscally@gmail.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 4.14 186/242] Revert "ACPI / resources: Use AE_CTRL_TERMINATE to terminate resources walks"
+        stable@vger.kernel.org, Chris Chiu <chiu@endlessos.org>,
+        Jian-Hong Pan <jhp@endlessos.org>, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.19 272/346] ALSA: hda/realtek - Enable headset mic of ASUS X430UN with ALC256
 Date:   Mon, 28 Dec 2020 13:49:51 +0100
-Message-Id: <20201228124913.851374622@linuxfoundation.org>
+Message-Id: <20201228124932.921919619@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,39 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Scally <djrscally@gmail.com>
+From: Chris Chiu <chiu@endlessos.org>
 
-commit 12fc4dad94dfac25599f31257aac181c691ca96f upstream.
+commit 5cfca59604e423f720297e30a9dc493eea623493 upstream.
 
-This reverts commit 8a66790b7850a6669129af078768a1d42076a0ef.
+The ASUS laptop X430UN with ALC256 can't detect the headset microphone
+until ALC256_FIXUP_ASUS_MIC_NO_PRESENCE quirk applied.
 
-Switching this function to AE_CTRL_TERMINATE broke the documented
-behaviour of acpi_dev_get_resources() - AE_CTRL_TERMINATE does not, in
-fact, terminate the resource walk because acpi_walk_resource_buffer()
-ignores it (specifically converting it to AE_OK), referring to that
-value as "an OK termination by the user function". This means that
-acpi_dev_get_resources() does not abort processing when the preproc
-function returns a negative value.
-
-Signed-off-by: Daniel Scally <djrscally@gmail.com>
-Cc: 3.10+ <stable@vger.kernel.org> # 3.10+
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Chris Chiu <chiu@endlessos.org>
+Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201207072755.16210-1-chiu@endlessos.org
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/acpi/resource.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/patch_realtek.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/acpi/resource.c
-+++ b/drivers/acpi/resource.c
-@@ -548,7 +548,7 @@ static acpi_status acpi_dev_process_reso
- 		ret = c->preproc(ares, c->preproc_data);
- 		if (ret < 0) {
- 			c->error = ret;
--			return AE_CTRL_TERMINATE;
-+			return AE_ABORT_METHOD;
- 		} else if (ret > 0) {
- 			return AE_OK;
- 		}
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -7084,6 +7084,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x1043, 0x10d0, "ASUS X540LA/X540LJ", ALC255_FIXUP_ASUS_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1043, 0x115d, "Asus 1015E", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
+ 	SND_PCI_QUIRK(0x1043, 0x11c0, "ASUS X556UR", ALC255_FIXUP_ASUS_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1043, 0x1271, "ASUS X430UN", ALC256_FIXUP_ASUS_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1043, 0x1290, "ASUS X441SA", ALC233_FIXUP_EAPD_COEF_AND_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1043, 0x12a0, "ASUS X441UV", ALC233_FIXUP_EAPD_COEF_AND_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1043, 0x12f0, "ASUS X541UV", ALC256_FIXUP_ASUS_MIC),
 
 
