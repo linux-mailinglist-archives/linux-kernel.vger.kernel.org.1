@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4469B2E39C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:29:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7A702E37C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:01:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389867AbgL1N2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:28:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56930 "EHLO mail.kernel.org"
+        id S1729421AbgL1NAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:00:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389792AbgL1N2H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:28:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 39C01207C9;
-        Mon, 28 Dec 2020 13:27:26 +0000 (UTC)
+        id S1728898AbgL1NAH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:00:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E2FE9208D5;
+        Mon, 28 Dec 2020 12:59:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162046;
-        bh=b4HI2o2L0UGgvI4NCxWbGluFCSpvWLmEED1AhU6H+18=;
+        s=korg; t=1609160391;
+        bh=qR99icXdOK7HuB957VYZGa+83XTQNyl3hqtIOgs/ch4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r0nculEON/47bx9AmYxPIcTPZoPwLvRsz+Ke5DPAFOnopOj2EpCBfeVLMEB7Q7ZI4
-         L83HP2JnG/miEotyhulWCrfe3OTjhI7ZHaYeEzS0CacGiOHBPkt0BQoPXKPa5PFmdG
-         XbE24gdW/t7xuRkIW0vS5OBVVGo4/eBJsLxPuwPk=
+        b=FJsIB5Yraq0xiSOncBHRgBFDh3gBd0b/drN5u2MTv3N4S1hKcNH8oHZwozPUsWr3W
+         EPgV7Cmt/oPfo6Cdj71Muiw7l0lVu25+fjr/E3mZZNqeUM8UO5npmHtoxTNzVAbCRJ
+         9FWNLXP7nyv/K16qzuv3dF6sCo1WK1EMdry2WiCQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Daniel T. Lee" <danieltimlee@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 170/346] samples: bpf: Fix lwt_len_hist reusing previous BPF map
+        stable@vger.kernel.org,
+        syzbot+8881b478dad0a7971f79@syzkaller.appspotmail.com,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.9 036/175] USB: serial: option: add interface-number sanity check to flag handling
 Date:   Mon, 28 Dec 2020 13:48:09 +0100
-Message-Id: <20201228124928.011524667@linuxfoundation.org>
+Message-Id: <20201228124854.993702994@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,50 +40,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel T. Lee <danieltimlee@gmail.com>
+From: Johan Hovold <johan@kernel.org>
 
-[ Upstream commit 0afe0a998c40085a6342e1aeb4c510cccba46caf ]
+commit a251963f76fa0226d0fdf0c4f989496f18d9ae7f upstream.
 
-Currently, lwt_len_hist's map lwt_len_hist_map is uses pinning, and the
-map isn't cleared on test end. This leds to reuse of that map for
-each test, which prevents the results of the test from being accurate.
+Add an interface-number sanity check before testing the device flags to
+avoid relying on undefined behaviour when left shifting in case a device
+uses an interface number greater than or equal to BITS_PER_LONG (i.e. 64
+or 32).
 
-This commit fixes the problem by removing of pinned map from bpffs.
-Also, this commit add the executable permission to shell script
-files.
+Reported-by: syzbot+8881b478dad0a7971f79@syzkaller.appspotmail.com
+Fixes: c3a65808f04a ("USB: serial: option: reimplement interface masking")
+Cc: stable@vger.kernel.org
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Fixes: f74599f7c5309 ("bpf: Add tests and samples for LWT-BPF")
-Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20201124090310.24374-7-danieltimlee@gmail.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- samples/bpf/lwt_len_hist.sh | 2 ++
- samples/bpf/test_lwt_bpf.sh | 0
- 2 files changed, 2 insertions(+)
- mode change 100644 => 100755 samples/bpf/lwt_len_hist.sh
- mode change 100644 => 100755 samples/bpf/test_lwt_bpf.sh
+ drivers/usb/serial/option.c |   23 +++++++++++++++++++++--
+ 1 file changed, 21 insertions(+), 2 deletions(-)
 
-diff --git a/samples/bpf/lwt_len_hist.sh b/samples/bpf/lwt_len_hist.sh
-old mode 100644
-new mode 100755
-index 090b96eaf7f76..0eda9754f50b8
---- a/samples/bpf/lwt_len_hist.sh
-+++ b/samples/bpf/lwt_len_hist.sh
-@@ -8,6 +8,8 @@ VETH1=tst_lwt1b
- TRACE_ROOT=/sys/kernel/debug/tracing
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -563,6 +563,9 @@ static void option_instat_callback(struc
  
- function cleanup {
-+	# To reset saved histogram, remove pinned map
-+	rm /sys/fs/bpf/tc/globals/lwt_len_hist_map
- 	ip route del 192.168.253.2/32 dev $VETH0 2> /dev/null
- 	ip link del $VETH0 2> /dev/null
- 	ip link del $VETH1 2> /dev/null
-diff --git a/samples/bpf/test_lwt_bpf.sh b/samples/bpf/test_lwt_bpf.sh
-old mode 100644
-new mode 100755
--- 
-2.27.0
-
+ /* Device flags */
+ 
++/* Highest interface number which can be used with NCTRL() and RSVD() */
++#define FLAG_IFNUM_MAX	7
++
+ /* Interface does not support modem-control requests */
+ #define NCTRL(ifnum)	((BIT(ifnum) & 0xff) << 8)
+ 
+@@ -2086,6 +2089,14 @@ static struct usb_serial_driver * const
+ 
+ module_usb_serial_driver(serial_drivers, option_ids);
+ 
++static bool iface_is_reserved(unsigned long device_flags, u8 ifnum)
++{
++	if (ifnum > FLAG_IFNUM_MAX)
++		return false;
++
++	return device_flags & RSVD(ifnum);
++}
++
+ static int option_probe(struct usb_serial *serial,
+ 			const struct usb_device_id *id)
+ {
+@@ -2103,7 +2114,7 @@ static int option_probe(struct usb_seria
+ 	 * the same class/subclass/protocol as the serial interfaces.  Look at
+ 	 * the Windows driver .INF files for reserved interface numbers.
+ 	 */
+-	if (device_flags & RSVD(iface_desc->bInterfaceNumber))
++	if (iface_is_reserved(device_flags, iface_desc->bInterfaceNumber))
+ 		return -ENODEV;
+ 	/*
+ 	 * Don't bind network interface on Samsung GT-B3730, it is handled by
+@@ -2120,6 +2131,14 @@ static int option_probe(struct usb_seria
+ 	return 0;
+ }
+ 
++static bool iface_no_modem_control(unsigned long device_flags, u8 ifnum)
++{
++	if (ifnum > FLAG_IFNUM_MAX)
++		return false;
++
++	return device_flags & NCTRL(ifnum);
++}
++
+ static int option_attach(struct usb_serial *serial)
+ {
+ 	struct usb_interface_descriptor *iface_desc;
+@@ -2135,7 +2154,7 @@ static int option_attach(struct usb_seri
+ 
+ 	iface_desc = &serial->interface->cur_altsetting->desc;
+ 
+-	if (!(device_flags & NCTRL(iface_desc->bInterfaceNumber)))
++	if (!iface_no_modem_control(device_flags, iface_desc->bInterfaceNumber))
+ 		data->use_send_setup = 1;
+ 
+ 	if (device_flags & ZLP)
 
 
