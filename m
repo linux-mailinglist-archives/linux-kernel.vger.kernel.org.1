@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F27A92E67EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:30:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A12642E655D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:01:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441848AbgL1Qak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:30:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34254 "EHLO mail.kernel.org"
+        id S2393421AbgL1P7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:59:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729637AbgL1NGc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:06:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D3228207C9;
-        Mon, 28 Dec 2020 13:05:50 +0000 (UTC)
+        id S2387830AbgL1Nc6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:32:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 464C620719;
+        Mon, 28 Dec 2020 13:32:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160751;
-        bh=UAFTBRjOWayQArKHk2ibWenA7R1IHmPQWIiHUJtUm0M=;
+        s=korg; t=1609162362;
+        bh=OBsQR/1RGwJkIal+UEwrsvtNd/nlVETJ1k/lt38u53A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GJwjK+Olzo8cvEng+RE3MSYMwq3LJROE0oU9MlkzSTpEiLiBqU8+BAdtrpBe/amnk
-         sk+RjojDW25m61kqHPapH7C1nQZSELZClxIal3nhWQOwmWZvNh341fcMQqfygXcrBY
-         wkoBOC/AKdFcvH9qUGY+zufkaAT0gS1xqogHK3vw=
+        b=GOl9v7TqnLfALq1Le8iZvGIltBCHopKsDOiv7MIg4NfRzmVUm4oyvkIf6XEZH2oNa
+         FknRecRT4jsZi0iFIZMaVC+l8cUt7Xlr6dyLFAflB/5b0vAlmTSxL1oEEsT7LSr1Bz
+         IfjQdHjARKjyf3yW7lkiiCzeqMeBWHJmrdWM0pDI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Vincent=20Stehl=C3=A9?= <vincent.stehle@laposte.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Paul Kocialkowski <contact@paulk.fr>,
+        Maxime Ripard <maxime@cerno.tech>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 118/175] powerpc/ps3: use dma_mapping_error()
+Subject: [PATCH 4.19 252/346] ARM: sunxi: Add machine match for the Allwinner V3 SoC
 Date:   Mon, 28 Dec 2020 13:49:31 +0100
-Message-Id: <20201228124858.973482136@linuxfoundation.org>
+Message-Id: <20201228124931.966448836@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,36 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Stehlé <vincent.stehle@laposte.net>
+From: Paul Kocialkowski <contact@paulk.fr>
 
-[ Upstream commit d0edaa28a1f7830997131cbce87b6c52472825d1 ]
+[ Upstream commit ad2091f893bd5dfe2824f0d6819600d120698e9f ]
 
-The DMA address returned by dma_map_single() should be checked with
-dma_mapping_error(). Fix the ps3stor_setup() function accordingly.
+The Allwinner V3 SoC shares the same base as the V3s but comes with
+extra pins and features available. As a result, it has its dedicated
+compatible string (already used in device trees), which is added here.
 
-Fixes: 80071802cb9c ("[POWERPC] PS3: Storage Driver Core")
-Signed-off-by: Vincent Stehlé <vincent.stehle@laposte.net>
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20201213182622.23047-1-vincent.stehle@laposte.net
+Signed-off-by: Paul Kocialkowski <contact@paulk.fr>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Link: https://lore.kernel.org/r/20201031182137.1879521-2-contact@paulk.fr
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ps3/ps3stor_lib.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/mach-sunxi/sunxi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/ps3/ps3stor_lib.c b/drivers/ps3/ps3stor_lib.c
-index 8c3f5adf1bc65..2d76183756626 100644
---- a/drivers/ps3/ps3stor_lib.c
-+++ b/drivers/ps3/ps3stor_lib.c
-@@ -201,7 +201,7 @@ int ps3stor_setup(struct ps3_storage_device *dev, irq_handler_t handler)
- 	dev->bounce_lpar = ps3_mm_phys_to_lpar(__pa(dev->bounce_buf));
- 	dev->bounce_dma = dma_map_single(&dev->sbd.core, dev->bounce_buf,
- 					 dev->bounce_size, DMA_BIDIRECTIONAL);
--	if (!dev->bounce_dma) {
-+	if (dma_mapping_error(&dev->sbd.core, dev->bounce_dma)) {
- 		dev_err(&dev->sbd.core, "%s:%u: map DMA region failed\n",
- 			__func__, __LINE__);
- 		error = -ENODEV;
+diff --git a/arch/arm/mach-sunxi/sunxi.c b/arch/arm/mach-sunxi/sunxi.c
+index de4b0e932f22e..aa08b8cb01524 100644
+--- a/arch/arm/mach-sunxi/sunxi.c
++++ b/arch/arm/mach-sunxi/sunxi.c
+@@ -66,6 +66,7 @@ static const char * const sun8i_board_dt_compat[] = {
+ 	"allwinner,sun8i-h2-plus",
+ 	"allwinner,sun8i-h3",
+ 	"allwinner,sun8i-r40",
++	"allwinner,sun8i-v3",
+ 	"allwinner,sun8i-v3s",
+ 	NULL,
+ };
 -- 
 2.27.0
 
