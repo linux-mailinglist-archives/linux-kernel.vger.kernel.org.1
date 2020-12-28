@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 233A92E3779
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:57:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8602D2E3E5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:27:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728661AbgL1Mzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:55:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52092 "EHLO mail.kernel.org"
+        id S2502186AbgL1O1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:27:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33542 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727744AbgL1Mzt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:55:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 03E03229C6;
-        Mon, 28 Dec 2020 12:55:33 +0000 (UTC)
+        id S2503304AbgL1OZw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:25:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 54BBA20715;
+        Mon, 28 Dec 2020 14:25:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160134;
-        bh=QqLnu4EI7L+TPQImoyt9LuFY3DbX6COmrtlP5YR/69c=;
+        s=korg; t=1609165536;
+        bh=pY0itU/xOz4MGKhhC9FFmTZzOSMxhay0JtAGkES93VQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oKb3a8CYVW+qyeQol2nQ5S7tS0YKB0z1FqfAwYoIpGysQ4UxNYtAvXy4PDjPNHca8
-         StemhdxBwHgEMjPsohshFsrHZ8oxDyG96JjFzhO0XFTneg+uawYigsvKwH1T31tn0g
-         BAlG6mS1ff4NQ/GNWFO199pQu8pKxUg5QpFpLULw=
+        b=TDU+JGceMZswQlo6TUGZ5S/Xbhxtgfamu9z8z9rzSTs2y65i4Ib0+qd85ZixWrq0K
+         R3aO8AlxG/XkUHJZSj6D6el2gcgkVgayI6ExBaxr2NgETsJ/G1FuYjuliL1tlujjX2
+         rh9hv93x7SByJJc/yKDOKjSeAZEAxbzb8ZUPGdaM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 080/132] x86/kprobes: Restore BTF if the single-stepping is cancelled
+        stable@vger.kernel.org, Andi Kleen <ak@linux.intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: [PATCH 5.10 566/717] perf/x86/intel: Add event constraint for CYCLE_ACTIVITY.STALLS_MEM_ANY
 Date:   Mon, 28 Dec 2020 13:49:24 +0100
-Message-Id: <20201228124850.308205244@linuxfoundation.org>
+Message-Id: <20201228125048.029549742@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu <mhiramat@kernel.org>
+From: Kan Liang <kan.liang@linux.intel.com>
 
-[ Upstream commit 78ff2733ff352175eb7f4418a34654346e1b6cd2 ]
+commit 306e3e91edf1c6739a55312edd110d298ff498dd upstream.
 
-Fix to restore BTF if single-stepping causes a page fault and
-it is cancelled.
+The event CYCLE_ACTIVITY.STALLS_MEM_ANY (0x14a3) should be available on
+all 8 GP counters on ICL, but it's only scheduled on the first four
+counters due to the current ICL constraint table.
 
-Usually the BTF flag was restored when the single stepping is done
-(in resume_execution()). However, if a page fault happens on the
-single stepping instruction, the fault handler is invoked and
-the single stepping is cancelled. Thus, the BTF flag is not
-restored.
+Add a line for the CYCLE_ACTIVITY.STALLS_MEM_ANY event in the ICL
+constraint table.
+Correct the comments for the CYCLE_ACTIVITY.CYCLES_MEM_ANY event.
 
-Fixes: 1ecc798c6764 ("x86: debugctlmsr kprobes")
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Fixes: 6017608936c1 ("perf/x86/intel: Add Icelake support")
+Reported-by: Andi Kleen <ak@linux.intel.com>
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/160389546985.106936.12727996109376240993.stgit@devnote2
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/20201019164529.32154-1-kan.liang@linux.intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/x86/kernel/kprobes/core.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/x86/events/intel/core.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-index 5a6cb30b1c621..ebd4da00a56ea 100644
---- a/arch/x86/kernel/kprobes/core.c
-+++ b/arch/x86/kernel/kprobes/core.c
-@@ -1014,6 +1014,11 @@ int kprobe_fault_handler(struct pt_regs *regs, int trapnr)
- 		 * So clear it by resetting the current kprobe:
- 		 */
- 		regs->flags &= ~X86_EFLAGS_TF;
-+		/*
-+		 * Since the single step (trap) has been cancelled,
-+		 * we need to restore BTF here.
-+		 */
-+		restore_btf();
- 
- 		/*
- 		 * If the TF flag was set before the kprobe hit,
--- 
-2.27.0
-
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -257,7 +257,8 @@ static struct event_constraint intel_icl
+ 	INTEL_EVENT_CONSTRAINT_RANGE(0x48, 0x54, 0xf),
+ 	INTEL_EVENT_CONSTRAINT_RANGE(0x60, 0x8b, 0xf),
+ 	INTEL_UEVENT_CONSTRAINT(0x04a3, 0xff),  /* CYCLE_ACTIVITY.STALLS_TOTAL */
+-	INTEL_UEVENT_CONSTRAINT(0x10a3, 0xff),  /* CYCLE_ACTIVITY.STALLS_MEM_ANY */
++	INTEL_UEVENT_CONSTRAINT(0x10a3, 0xff),  /* CYCLE_ACTIVITY.CYCLES_MEM_ANY */
++	INTEL_UEVENT_CONSTRAINT(0x14a3, 0xff),  /* CYCLE_ACTIVITY.STALLS_MEM_ANY */
+ 	INTEL_EVENT_CONSTRAINT(0xa3, 0xf),      /* CYCLE_ACTIVITY.* */
+ 	INTEL_EVENT_CONSTRAINT_RANGE(0xa8, 0xb0, 0xf),
+ 	INTEL_EVENT_CONSTRAINT_RANGE(0xb7, 0xbd, 0xf),
 
 
