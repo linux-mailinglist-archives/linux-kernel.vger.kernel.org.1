@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC65C2E68B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:40:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 468D22E65E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:08:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729326AbgL1M7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:59:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55612 "EHLO mail.kernel.org"
+        id S2393180AbgL1QGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:06:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728898AbgL1M7l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:59:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 958EE22AAA;
-        Mon, 28 Dec 2020 12:59:24 +0000 (UTC)
+        id S2389553AbgL1N0t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:26:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 779E322583;
+        Mon, 28 Dec 2020 13:26:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160365;
-        bh=FwRUHDdPGtpKSW/WBJ6ArrHLmmHoqdAXZgw0/96+PxY=;
+        s=korg; t=1609161968;
+        bh=NJNJjFN2jYrgPs9/CjylmAxINwqm4XykE8NI9sQAEY0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0nSiA2KcZ2o/QwmISzbJdpIUttQGYgDfIhFynjqmUbo+e8Tmzc6kFtaHIspzxLdZ0
-         FHgEskAAVfHUDoiEsChRcM2mhLIp8tviZ2z2Wkt6Wm5IN97AB5KM3u+GdHQ1ciQRIP
-         W0844zV8Qw/2HlNueygOWDZivZR9qzsogaOZDm3s=
+        b=nJU8egRWQouKAnxTRISSRpRzuon6MLhzseti1ACAWDm99u5wOnUJKZIVWJgYqI8S1
+         ylCEdsCXGQNHbpnXicc9YBsMAcfqMoYOtoRHF1e+yxqEtysQr+m2OtNlUiEkMAdx3l
+         7zO/U0jJEwkMqjjuSZjbxqMaDC8c3LUCu6Z4uRk8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Coiby Xu <coiby.xu@gmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 4.9 009/175] pinctrl: amd: remove debounce filter setting in IRQ type setting
+        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
+        Martin Wilck <mwilck@suse.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 143/346] scsi: core: Fix VPD LUN ID designator priorities
 Date:   Mon, 28 Dec 2020 13:47:42 +0100
-Message-Id: <20201228124853.700206948@linuxfoundation.org>
+Message-Id: <20201228124926.698635809@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,93 +41,261 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Coiby Xu <coiby.xu@gmail.com>
+From: Martin Wilck <mwilck@suse.com>
 
-commit 47a0001436352c9853d72bf2071e85b316d688a2 upstream.
+[ Upstream commit 2e4209b3806cda9b89c30fd5e7bfecb7044ec78b ]
 
-Debounce filter setting should be independent from IRQ type setting
-because according to the ACPI specs, there are separate arguments for
-specifying debounce timeout and IRQ type in GpioIo() and GpioInt().
+The current implementation of scsi_vpd_lun_id() uses the designator length
+as an implicit measure of priority. This works most of the time, but not
+always. For example, some Hitachi storage arrays return this in VPD 0x83:
 
-Together with commit 06abe8291bc31839950f7d0362d9979edc88a666
-("pinctrl: amd: fix incorrect way to disable debounce filter") and
-Andy's patch "gpiolib: acpi: Take into account debounce settings" [1],
-this will fix broken touchpads for laptops whose BIOS set the
-debounce timeout to a relatively large value. For example, the BIOS
-of Lenovo AMD gaming laptops including Legion-5 15ARH05 (R7000),
-Legion-5P (R7000P) and IdeaPad Gaming 3 15ARH05, set the debounce
-timeout to 124.8ms. This led to the kernel receiving only ~7 HID
-reports per second from the Synaptics touchpad
-(MSFT0001:00 06CB:7F28).
+VPD INQUIRY: Device Identification page
+  Designation descriptor number 1, descriptor length: 24
+    designator_type: T10 vendor identification,  code_set: ASCII
+    associated with the Addressed logical unit
+      vendor id: HITACHI
+      vendor specific: 5030C3502025
+  Designation descriptor number 2, descriptor length: 6
+    designator_type: vendor specific [0x0],  code_set: Binary
+    associated with the Target port
+      vendor specific: 08 03
+  Designation descriptor number 3, descriptor length: 20
+    designator_type: NAA,  code_set: Binary
+    associated with the Addressed logical unit
+      NAA 6, IEEE Company_id: 0x60e8
+      Vendor Specific Identifier: 0x7c35000
+      Vendor Specific Identifier Extension: 0x30c35000002025
+      [0x60060e8007c350000030c35000002025]
 
-Existing touchpads like [2][3] are not troubled by this bug because
-the debounce timeout has been set to 0 by the BIOS before enabling
-the debounce filter in setting IRQ type.
+The current code would use the first descriptor because it's longer than
+the NAA descriptor. But this is wrong, the kernel is supposed to prefer NAA
+descriptors over T10 vendor ID. Designator length should only be used to
+compare designators of the same type.
 
-[1] https://lore.kernel.org/linux-gpio/20201111222008.39993-11-andriy.shevchenko@linux.intel.com/
-    8dcb7a15a585 ("gpiolib: acpi: Take into account debounce settings")
-[2] https://github.com/Syniurge/i2c-amd-mp2/issues/11#issuecomment-721331582
-[3] https://forum.manjaro.org/t/random-short-touchpad-freezes/30832/28
+This patch addresses the issue by separating designator priority and
+length.
 
-Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Hans de Goede <hdegoede@redhat.com>
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/linux-gpio/CAHp75VcwiGREBUJ0A06EEw-SyabqYsp%2Bdqs2DpSrhaY-2GVdAA%40mail.gmail.com/
-BugLink: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1887190
-Link: https://lore.kernel.org/r/20201125130320.311059-1-coiby.xu@gmail.com
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Link: https://lore.kernel.org/r/20201029170846.14786-1-mwilck@suse.com
+Fixes: 9983bed3907c ("scsi: Add scsi_vpd_lun_id()")
+Reviewed-by: Hannes Reinecke <hare@suse.de>
+Signed-off-by: Martin Wilck <mwilck@suse.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/pinctrl-amd.c |    7 -------
- 1 file changed, 7 deletions(-)
+ drivers/scsi/scsi_lib.c | 126 +++++++++++++++++++++++++++-------------
+ 1 file changed, 86 insertions(+), 40 deletions(-)
 
---- a/drivers/pinctrl/pinctrl-amd.c
-+++ b/drivers/pinctrl/pinctrl-amd.c
-@@ -404,7 +404,6 @@ static int amd_gpio_irq_set_type(struct
- 		pin_reg &= ~BIT(LEVEL_TRIG_OFF);
- 		pin_reg &= ~(ACTIVE_LEVEL_MASK << ACTIVE_LEVEL_OFF);
- 		pin_reg |= ACTIVE_HIGH << ACTIVE_LEVEL_OFF;
--		pin_reg |= DB_TYPE_REMOVE_GLITCH << DB_CNTRL_OFF;
- 		irq_set_handler_locked(d, handle_edge_irq);
- 		break;
+diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
+index c501fb5190a38..fe5ae2b221c19 100644
+--- a/drivers/scsi/scsi_lib.c
++++ b/drivers/scsi/scsi_lib.c
+@@ -3446,6 +3446,78 @@ void sdev_enable_disk_events(struct scsi_device *sdev)
+ }
+ EXPORT_SYMBOL(sdev_enable_disk_events);
  
-@@ -412,7 +411,6 @@ static int amd_gpio_irq_set_type(struct
- 		pin_reg &= ~BIT(LEVEL_TRIG_OFF);
- 		pin_reg &= ~(ACTIVE_LEVEL_MASK << ACTIVE_LEVEL_OFF);
- 		pin_reg |= ACTIVE_LOW << ACTIVE_LEVEL_OFF;
--		pin_reg |= DB_TYPE_REMOVE_GLITCH << DB_CNTRL_OFF;
- 		irq_set_handler_locked(d, handle_edge_irq);
- 		break;
++static unsigned char designator_prio(const unsigned char *d)
++{
++	if (d[1] & 0x30)
++		/* not associated with LUN */
++		return 0;
++
++	if (d[3] == 0)
++		/* invalid length */
++		return 0;
++
++	/*
++	 * Order of preference for lun descriptor:
++	 * - SCSI name string
++	 * - NAA IEEE Registered Extended
++	 * - EUI-64 based 16-byte
++	 * - EUI-64 based 12-byte
++	 * - NAA IEEE Registered
++	 * - NAA IEEE Extended
++	 * - EUI-64 based 8-byte
++	 * - SCSI name string (truncated)
++	 * - T10 Vendor ID
++	 * as longer descriptors reduce the likelyhood
++	 * of identification clashes.
++	 */
++
++	switch (d[1] & 0xf) {
++	case 8:
++		/* SCSI name string, variable-length UTF-8 */
++		return 9;
++	case 3:
++		switch (d[4] >> 4) {
++		case 6:
++			/* NAA registered extended */
++			return 8;
++		case 5:
++			/* NAA registered */
++			return 5;
++		case 4:
++			/* NAA extended */
++			return 4;
++		case 3:
++			/* NAA locally assigned */
++			return 1;
++		default:
++			break;
++		}
++		break;
++	case 2:
++		switch (d[3]) {
++		case 16:
++			/* EUI64-based, 16 byte */
++			return 7;
++		case 12:
++			/* EUI64-based, 12 byte */
++			return 6;
++		case 8:
++			/* EUI64-based, 8 byte */
++			return 3;
++		default:
++			break;
++		}
++		break;
++	case 1:
++		/* T10 vendor ID */
++		return 1;
++	default:
++		break;
++	}
++
++	return 0;
++}
++
+ /**
+  * scsi_vpd_lun_id - return a unique device identification
+  * @sdev: SCSI device
+@@ -3462,7 +3534,7 @@ EXPORT_SYMBOL(sdev_enable_disk_events);
+  */
+ int scsi_vpd_lun_id(struct scsi_device *sdev, char *id, size_t id_len)
+ {
+-	u8 cur_id_type = 0xff;
++	u8 cur_id_prio = 0;
+ 	u8 cur_id_size = 0;
+ 	const unsigned char *d, *cur_id_str;
+ 	const struct scsi_vpd *vpd_pg83;
+@@ -3475,20 +3547,6 @@ int scsi_vpd_lun_id(struct scsi_device *sdev, char *id, size_t id_len)
+ 		return -ENXIO;
+ 	}
  
-@@ -420,7 +418,6 @@ static int amd_gpio_irq_set_type(struct
- 		pin_reg &= ~BIT(LEVEL_TRIG_OFF);
- 		pin_reg &= ~(ACTIVE_LEVEL_MASK << ACTIVE_LEVEL_OFF);
- 		pin_reg |= BOTH_EADGE << ACTIVE_LEVEL_OFF;
--		pin_reg |= DB_TYPE_REMOVE_GLITCH << DB_CNTRL_OFF;
- 		irq_set_handler_locked(d, handle_edge_irq);
- 		break;
+-	/*
+-	 * Look for the correct descriptor.
+-	 * Order of preference for lun descriptor:
+-	 * - SCSI name string
+-	 * - NAA IEEE Registered Extended
+-	 * - EUI-64 based 16-byte
+-	 * - EUI-64 based 12-byte
+-	 * - NAA IEEE Registered
+-	 * - NAA IEEE Extended
+-	 * - T10 Vendor ID
+-	 * as longer descriptors reduce the likelyhood
+-	 * of identification clashes.
+-	 */
+-
+ 	/* The id string must be at least 20 bytes + terminating NULL byte */
+ 	if (id_len < 21) {
+ 		rcu_read_unlock();
+@@ -3498,8 +3556,9 @@ int scsi_vpd_lun_id(struct scsi_device *sdev, char *id, size_t id_len)
+ 	memset(id, 0, id_len);
+ 	d = vpd_pg83->data + 4;
+ 	while (d < vpd_pg83->data + vpd_pg83->len) {
+-		/* Skip designators not referring to the LUN */
+-		if ((d[1] & 0x30) != 0x00)
++		u8 prio = designator_prio(d);
++
++		if (prio == 0 || cur_id_prio > prio)
+ 			goto next_desig;
  
-@@ -428,8 +425,6 @@ static int amd_gpio_irq_set_type(struct
- 		pin_reg |= LEVEL_TRIGGER << LEVEL_TRIG_OFF;
- 		pin_reg &= ~(ACTIVE_LEVEL_MASK << ACTIVE_LEVEL_OFF);
- 		pin_reg |= ACTIVE_HIGH << ACTIVE_LEVEL_OFF;
--		pin_reg &= ~(DB_CNTRl_MASK << DB_CNTRL_OFF);
--		pin_reg |= DB_TYPE_PRESERVE_LOW_GLITCH << DB_CNTRL_OFF;
- 		irq_set_handler_locked(d, handle_level_irq);
- 		break;
- 
-@@ -437,8 +432,6 @@ static int amd_gpio_irq_set_type(struct
- 		pin_reg |= LEVEL_TRIGGER << LEVEL_TRIG_OFF;
- 		pin_reg &= ~(ACTIVE_LEVEL_MASK << ACTIVE_LEVEL_OFF);
- 		pin_reg |= ACTIVE_LOW << ACTIVE_LEVEL_OFF;
--		pin_reg &= ~(DB_CNTRl_MASK << DB_CNTRL_OFF);
--		pin_reg |= DB_TYPE_PRESERVE_HIGH_GLITCH << DB_CNTRL_OFF;
- 		irq_set_handler_locked(d, handle_level_irq);
- 		break;
- 
+ 		switch (d[1] & 0xf) {
+@@ -3507,28 +3566,19 @@ int scsi_vpd_lun_id(struct scsi_device *sdev, char *id, size_t id_len)
+ 			/* T10 Vendor ID */
+ 			if (cur_id_size > d[3])
+ 				break;
+-			/* Prefer anything */
+-			if (cur_id_type > 0x01 && cur_id_type != 0xff)
+-				break;
++			cur_id_prio = prio;
+ 			cur_id_size = d[3];
+ 			if (cur_id_size + 4 > id_len)
+ 				cur_id_size = id_len - 4;
+ 			cur_id_str = d + 4;
+-			cur_id_type = d[1] & 0xf;
+ 			id_size = snprintf(id, id_len, "t10.%*pE",
+ 					   cur_id_size, cur_id_str);
+ 			break;
+ 		case 0x2:
+ 			/* EUI-64 */
+-			if (cur_id_size > d[3])
+-				break;
+-			/* Prefer NAA IEEE Registered Extended */
+-			if (cur_id_type == 0x3 &&
+-			    cur_id_size == d[3])
+-				break;
++			cur_id_prio = prio;
+ 			cur_id_size = d[3];
+ 			cur_id_str = d + 4;
+-			cur_id_type = d[1] & 0xf;
+ 			switch (cur_id_size) {
+ 			case 8:
+ 				id_size = snprintf(id, id_len,
+@@ -3546,17 +3596,14 @@ int scsi_vpd_lun_id(struct scsi_device *sdev, char *id, size_t id_len)
+ 						   cur_id_str);
+ 				break;
+ 			default:
+-				cur_id_size = 0;
+ 				break;
+ 			}
+ 			break;
+ 		case 0x3:
+ 			/* NAA */
+-			if (cur_id_size > d[3])
+-				break;
++			cur_id_prio = prio;
+ 			cur_id_size = d[3];
+ 			cur_id_str = d + 4;
+-			cur_id_type = d[1] & 0xf;
+ 			switch (cur_id_size) {
+ 			case 8:
+ 				id_size = snprintf(id, id_len,
+@@ -3569,26 +3616,25 @@ int scsi_vpd_lun_id(struct scsi_device *sdev, char *id, size_t id_len)
+ 						   cur_id_str);
+ 				break;
+ 			default:
+-				cur_id_size = 0;
+ 				break;
+ 			}
+ 			break;
+ 		case 0x8:
+ 			/* SCSI name string */
+-			if (cur_id_size + 4 > d[3])
++			if (cur_id_size > d[3])
+ 				break;
+ 			/* Prefer others for truncated descriptor */
+-			if (cur_id_size && d[3] > id_len)
+-				break;
++			if (d[3] > id_len) {
++				prio = 2;
++				if (cur_id_prio > prio)
++					break;
++			}
++			cur_id_prio = prio;
+ 			cur_id_size = id_size = d[3];
+ 			cur_id_str = d + 4;
+-			cur_id_type = d[1] & 0xf;
+ 			if (cur_id_size >= id_len)
+ 				cur_id_size = id_len - 1;
+ 			memcpy(id, cur_id_str, cur_id_size);
+-			/* Decrease priority for truncated descriptor */
+-			if (cur_id_size != id_size)
+-				cur_id_size = 6;
+ 			break;
+ 		default:
+ 			break;
+-- 
+2.27.0
+
 
 
