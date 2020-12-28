@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36AFC2E68C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:42:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 472322E67E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:30:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729237AbgL1M6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:58:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54972 "EHLO mail.kernel.org"
+        id S1729698AbgL1NGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:06:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729202AbgL1M6j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:58:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 92D8A22AAA;
-        Mon, 28 Dec 2020 12:57:58 +0000 (UTC)
+        id S1730863AbgL1NGQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:06:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D63B922A84;
+        Mon, 28 Dec 2020 13:05:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160279;
-        bh=KObyH6ahfweNZ/faqBtGnFVuOHfUERsb1qn7bYDbTRs=;
+        s=korg; t=1609160760;
+        bh=AGbZjThtdrTkvoPM+uTHatoHh9P2el0rwGqYVMnMn+4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2S9Oir9Ua1779BjsBuzb14Q5naYO82VeRXOeahTHgk3I0f+3A9fq2yiwq4gxHu+30
-         NdhjAA0b1rQLht37xBQbyfAf8XfgIrHe5Sxzmqgmtsa1lx4icsNZDnjZN5+YphjLqK
-         zwfCPj7cizev+H5f3tiP1jn/Haa/MbyZsapua370=
+        b=OR8mKZQfr5v5z5YfGpLKPWUP5v9fQbxHjJxiQDWUQ/LU6T2sIFYOBrzoRKB1eM4OG
+         whXa/r5uwyMYa4BZU9SggwGZgwWxrhBoGTfxkcEkZq112oSG/ig3dcLcs6EL3nDB7J
+         0F2LaEmmTwlMhOU6OcFLqRbx5/QNz06cxvniS+Aw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, SeongJae Park <sjpark@amazon.de>,
-        Michael Kurth <mku@amazon.de>,
-        Pawel Wieczorkiewicz <wipawel@amazon.de>,
-        Juergen Gross <jgross@suse.com>
-Subject: [PATCH 4.4 130/132] xen/xenbus: Count pending messages for each watch
-Date:   Mon, 28 Dec 2020 13:50:14 +0100
-Message-Id: <20201228124852.693932549@linuxfoundation.org>
+        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
+        Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.9 162/175] spi: spi-sh: Fix use-after-free on unbind
+Date:   Mon, 28 Dec 2020 13:50:15 +0100
+Message-Id: <20201228124901.094894186@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,111 +39,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+From: Lukas Wunner <lukas@wunner.de>
 
-commit 3dc86ca6b4c8cfcba9da7996189d1b5a358a94fc upstream.
+commit e77df3eca12be4b17f13cf9f215cff248c57d98f upstream.
 
-This commit adds a counter of pending messages for each watch in the
-struct.  It is used to skip unnecessary pending messages lookup in
-'unregister_xenbus_watch()'.  It could also be used in 'will_handle'
-callback.
+spi_sh_remove() accesses the driver's private data after calling
+spi_unregister_master() even though that function releases the last
+reference on the spi_master and thereby frees the private data.
 
-This is part of XSA-349
+Fix by switching over to the new devm_spi_alloc_master() helper which
+keeps the private data accessible until the driver has unbound.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
-Reported-by: Michael Kurth <mku@amazon.de>
-Reported-by: Pawel Wieczorkiewicz <wipawel@amazon.de>
-Reviewed-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Juergen Gross <jgross@suse.com>
+Fixes: 680c1305e259 ("spi/spi_sh: use spi_unregister_master instead of spi_master_put in remove path")
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Cc: <stable@vger.kernel.org> # v3.0+: 5e844cc37a5c: spi: Introduce device-managed SPI controller allocation
+Cc: <stable@vger.kernel.org> # v3.0+
+Cc: Axel Lin <axel.lin@ingics.com>
+Link: https://lore.kernel.org/r/6d97628b536baf01d5e3e39db61108f84d44c8b2.1607286887.git.lukas@wunner.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-
 ---
- drivers/xen/xenbus/xenbus_xs.c |   31 +++++++++++++++++++------------
- include/xen/xenbus.h           |    2 ++
- 2 files changed, 21 insertions(+), 12 deletions(-)
+ drivers/spi/spi-sh.c |   13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
 
---- a/drivers/xen/xenbus/xenbus_xs.c
-+++ b/drivers/xen/xenbus/xenbus_xs.c
-@@ -701,6 +701,8 @@ int register_xenbus_watch(struct xenbus_
- 
- 	sprintf(token, "%lX", (long)watch);
- 
-+	watch->nr_pending = 0;
-+
- 	down_read(&xs_state.watch_mutex);
- 
- 	spin_lock(&watches_lock);
-@@ -750,12 +752,15 @@ void unregister_xenbus_watch(struct xenb
- 
- 	/* Cancel pending watch events. */
- 	spin_lock(&watch_events_lock);
--	list_for_each_entry_safe(msg, tmp, &watch_events, list) {
--		if (msg->u.watch.handle != watch)
--			continue;
--		list_del(&msg->list);
--		kfree(msg->u.watch.vec);
--		kfree(msg);
-+	if (watch->nr_pending) {
-+		list_for_each_entry_safe(msg, tmp, &watch_events, list) {
-+			if (msg->u.watch.handle != watch)
-+				continue;
-+			list_del(&msg->list);
-+			kfree(msg->u.watch.vec);
-+			kfree(msg);
-+		}
-+		watch->nr_pending = 0;
+--- a/drivers/spi/spi-sh.c
++++ b/drivers/spi/spi-sh.c
+@@ -450,7 +450,7 @@ static int spi_sh_probe(struct platform_
+ 		return -ENODEV;
  	}
- 	spin_unlock(&watch_events_lock);
  
-@@ -802,7 +807,6 @@ void xs_suspend_cancel(void)
+-	master = spi_alloc_master(&pdev->dev, sizeof(struct spi_sh_data));
++	master = devm_spi_alloc_master(&pdev->dev, sizeof(struct spi_sh_data));
+ 	if (master == NULL) {
+ 		dev_err(&pdev->dev, "spi_alloc_master error.\n");
+ 		return -ENOMEM;
+@@ -468,16 +468,14 @@ static int spi_sh_probe(struct platform_
+ 		break;
+ 	default:
+ 		dev_err(&pdev->dev, "No support width\n");
+-		ret = -ENODEV;
+-		goto error1;
++		return -ENODEV;
+ 	}
+ 	ss->irq = irq;
+ 	ss->master = master;
+ 	ss->addr = devm_ioremap(&pdev->dev, res->start, resource_size(res));
+ 	if (ss->addr == NULL) {
+ 		dev_err(&pdev->dev, "ioremap error.\n");
+-		ret = -ENOMEM;
+-		goto error1;
++		return -ENOMEM;
+ 	}
+ 	INIT_LIST_HEAD(&ss->queue);
+ 	spin_lock_init(&ss->lock);
+@@ -487,7 +485,7 @@ static int spi_sh_probe(struct platform_
+ 	ret = request_irq(irq, spi_sh_irq, 0, "spi_sh", ss);
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "request_irq error\n");
+-		goto error1;
++		return ret;
+ 	}
  
- static int xenwatch_thread(void *unused)
- {
--	struct list_head *ent;
- 	struct xs_stored_msg *msg;
+ 	master->num_chipselect = 2;
+@@ -506,9 +504,6 @@ static int spi_sh_probe(struct platform_
  
- 	for (;;) {
-@@ -815,13 +819,15 @@ static int xenwatch_thread(void *unused)
- 		mutex_lock(&xenwatch_mutex);
+  error3:
+ 	free_irq(irq, ss);
+- error1:
+-	spi_master_put(master);
+-
+ 	return ret;
+ }
  
- 		spin_lock(&watch_events_lock);
--		ent = watch_events.next;
--		if (ent != &watch_events)
--			list_del(ent);
-+		msg = list_first_entry_or_null(&watch_events,
-+				struct xs_stored_msg, list);
-+		if (msg) {
-+			list_del(&msg->list);
-+			msg->u.watch.handle->nr_pending--;
-+		}
- 		spin_unlock(&watch_events_lock);
- 
--		if (ent != &watch_events) {
--			msg = list_entry(ent, struct xs_stored_msg, list);
-+		if (msg) {
- 			msg->u.watch.handle->callback(
- 				msg->u.watch.handle,
- 				(const char **)msg->u.watch.vec,
-@@ -911,6 +917,7 @@ static int process_msg(void)
- 					 msg->u.watch.vec_size))) {
- 			spin_lock(&watch_events_lock);
- 			list_add_tail(&msg->list, &watch_events);
-+			msg->u.watch.handle->nr_pending++;
- 			wake_up(&watch_events_waitq);
- 			spin_unlock(&watch_events_lock);
- 		} else {
---- a/include/xen/xenbus.h
-+++ b/include/xen/xenbus.h
-@@ -58,6 +58,8 @@ struct xenbus_watch
- 	/* Path being watched. */
- 	const char *node;
- 
-+	unsigned int nr_pending;
-+
- 	/*
- 	 * Called just before enqueing new event while a spinlock is held.
- 	 * The event will be discarded if this callback returns false.
 
 
