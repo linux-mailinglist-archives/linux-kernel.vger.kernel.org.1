@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B5192E3AAB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:41:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C84EC2E3AA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:41:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403828AbgL1NkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:40:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39600 "EHLO mail.kernel.org"
+        id S2403787AbgL1Nju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:39:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391420AbgL1Njd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:39:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 30EE620719;
-        Mon, 28 Dec 2020 13:39:17 +0000 (UTC)
+        id S2391427AbgL1Njg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:39:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 14F6B2063A;
+        Mon, 28 Dec 2020 13:39:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162757;
-        bh=tBsx2KdAvoC5HYiI6USyasBd4jn2kMi3TDAdAjnRUV8=;
+        s=korg; t=1609162760;
+        bh=sV9cifRcauNGZ0LjAcCcdK89ZPt8u2a8dtWMPcGAeOM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g23bv6XTrILs4UDp+4UtPD2gKV3yU1Mqvtg/vhFpXv0/zZFdE7O086w6eL/0+JT+b
-         sYpTBtnLQIUqWDqsyfaryaOYfDUcMLWIWmCUemnP4vN8VdaPm4OmEyArvueEJtAPlt
-         7zMiY2PxCWiF+ULxf4GdFZJSl0gtmWtSL6U0Evpg=
+        b=S8yMzH1J6PHs9jVG543YeonVFbbqHJaqYcSOVuCfTttSG2NWB3313vTJ0u7Ud3m1c
+         LAT1RlrVVoLbIVsGRJ/wqLbTOakXZXjbIVkvRz+f4Es/6UAHH9GjESy6V9gS7Bqlrk
+         dTXGrIDvIxPaDWFkMCoOn0GLnOgUmkJj2o6RColE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+8881b478dad0a7971f79@syzkaller.appspotmail.com,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.4 052/453] USB: serial: option: add interface-number sanity check to flag handling
-Date:   Mon, 28 Dec 2020 13:44:48 +0100
-Message-Id: <20201228124939.761115144@linuxfoundation.org>
+        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        "taehyun.cho" <taehyun.cho@samsung.com>,
+        Will McVicker <willmcvicker@google.com>,
+        Peter Chen <peter.chen@nxp.com>
+Subject: [PATCH 5.4 053/453] USB: gadget: f_acm: add support for SuperSpeed Plus
+Date:   Mon, 28 Dec 2020 13:44:49 +0100
+Message-Id: <20201228124939.807713207@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
 References: <20201228124937.240114599@linuxfoundation.org>
@@ -40,85 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: taehyun.cho <taehyun.cho@samsung.com>
 
-commit a251963f76fa0226d0fdf0c4f989496f18d9ae7f upstream.
+commit 3ee05c20656782387aa9eb010fdb9bb16982ac3f upstream.
 
-Add an interface-number sanity check before testing the device flags to
-avoid relying on undefined behaviour when left shifting in case a device
-uses an interface number greater than or equal to BITS_PER_LONG (i.e. 64
-or 32).
+Setup the SuperSpeed Plus descriptors for f_acm.  This allows the gadget
+to work properly without crashing at SuperSpeed rates.
 
-Reported-by: syzbot+8881b478dad0a7971f79@syzkaller.appspotmail.com
-Fixes: c3a65808f04a ("USB: serial: option: reimplement interface masking")
-Cc: stable@vger.kernel.org
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Cc: Felipe Balbi <balbi@kernel.org>
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: taehyun.cho <taehyun.cho@samsung.com>
+Signed-off-by: Will McVicker <willmcvicker@google.com>
+Reviewed-by: Peter Chen <peter.chen@nxp.com>
+Link: https://lore.kernel.org/r/20201127140559.381351-3-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/serial/option.c |   23 +++++++++++++++++++++--
- 1 file changed, 21 insertions(+), 2 deletions(-)
+ drivers/usb/gadget/function/f_acm.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -563,6 +563,9 @@ static void option_instat_callback(struc
+--- a/drivers/usb/gadget/function/f_acm.c
++++ b/drivers/usb/gadget/function/f_acm.c
+@@ -684,7 +684,7 @@ acm_bind(struct usb_configuration *c, st
+ 	acm_ss_out_desc.bEndpointAddress = acm_fs_out_desc.bEndpointAddress;
  
- /* Device flags */
+ 	status = usb_assign_descriptors(f, acm_fs_function, acm_hs_function,
+-			acm_ss_function, NULL);
++			acm_ss_function, acm_ss_function);
+ 	if (status)
+ 		goto fail;
  
-+/* Highest interface number which can be used with NCTRL() and RSVD() */
-+#define FLAG_IFNUM_MAX	7
-+
- /* Interface does not support modem-control requests */
- #define NCTRL(ifnum)	((BIT(ifnum) & 0xff) << 8)
- 
-@@ -2101,6 +2104,14 @@ static struct usb_serial_driver * const
- 
- module_usb_serial_driver(serial_drivers, option_ids);
- 
-+static bool iface_is_reserved(unsigned long device_flags, u8 ifnum)
-+{
-+	if (ifnum > FLAG_IFNUM_MAX)
-+		return false;
-+
-+	return device_flags & RSVD(ifnum);
-+}
-+
- static int option_probe(struct usb_serial *serial,
- 			const struct usb_device_id *id)
- {
-@@ -2117,7 +2128,7 @@ static int option_probe(struct usb_seria
- 	 * the same class/subclass/protocol as the serial interfaces.  Look at
- 	 * the Windows driver .INF files for reserved interface numbers.
- 	 */
--	if (device_flags & RSVD(iface_desc->bInterfaceNumber))
-+	if (iface_is_reserved(device_flags, iface_desc->bInterfaceNumber))
- 		return -ENODEV;
- 
- 	/*
-@@ -2133,6 +2144,14 @@ static int option_probe(struct usb_seria
- 	return 0;
- }
- 
-+static bool iface_no_modem_control(unsigned long device_flags, u8 ifnum)
-+{
-+	if (ifnum > FLAG_IFNUM_MAX)
-+		return false;
-+
-+	return device_flags & NCTRL(ifnum);
-+}
-+
- static int option_attach(struct usb_serial *serial)
- {
- 	struct usb_interface_descriptor *iface_desc;
-@@ -2148,7 +2167,7 @@ static int option_attach(struct usb_seri
- 
- 	iface_desc = &serial->interface->cur_altsetting->desc;
- 
--	if (!(device_flags & NCTRL(iface_desc->bInterfaceNumber)))
-+	if (!iface_no_modem_control(device_flags, iface_desc->bInterfaceNumber))
- 		data->use_send_setup = 1;
- 
- 	if (device_flags & ZLP)
 
 
