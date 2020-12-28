@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D2D2E40FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:01:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07E652E6486
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:53:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392525AbgL1PAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:00:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47362 "EHLO mail.kernel.org"
+        id S2408480AbgL1Pu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:50:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42050 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440265AbgL1ONv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:13:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E17F205CB;
-        Mon, 28 Dec 2020 14:13:35 +0000 (UTC)
+        id S2391894AbgL1Nlo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:41:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE764208B3;
+        Mon, 28 Dec 2020 13:41:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609164816;
-        bh=jFVmtSDrJWKo8NAfmlnhVC/H6IFl7Pdu6U35T7j7Dek=;
+        s=korg; t=1609162864;
+        bh=6j8gNj3ChfDsSKFT31tCf5q7DGa1g8dy5yXaBnO5t3Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BSZA4xs0zwzVtpadBpABHFlBSl+xSsaRIzpgyeVD/xnSNJ4HFWmcHfSk32KV7LWeS
-         fB2TiR3occCP1Nep0qvPsp3EjH8w9HBHCktEshmXwGRyGvvojFtjZRlcBp8HZHQe89
-         k3soTxTHbLv+PYc2OApzjvuCqeNg/3o+mbAJIG5k=
+        b=qnf1OB2QqflmaHy9JpuNTEXlQSrryXs7EU6bptn/mziS7JQfC5As/NIZs4gCLRpob
+         hN3LLEycCGThIiaKsyO8kCuShiDr8+5qGkfAfObxWaZARMm4QcUsxUZkxJrhR2CA6M
+         Lf4OQY31asnYt3ieXnakOY1exuKc3JQyeo100CL8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 307/717] mt76: fix memory leak if device probing fails
-Date:   Mon, 28 Dec 2020 13:45:05 +0100
-Message-Id: <20201228125035.736189244@linuxfoundation.org>
+        stable@vger.kernel.org, Antti Palosaari <crope@iki.fi>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        syzbot+c60ddb60b685777d9d59@syzkaller.appspotmail.com
+Subject: [PATCH 5.4 070/453] media: msi2500: assign SPI bus number dynamically
+Date:   Mon, 28 Dec 2020 13:45:06 +0100
+Message-Id: <20201228124940.615848762@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,107 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lorenzo Bianconi <lorenzo@kernel.org>
+From: Antti Palosaari <crope@iki.fi>
 
-[ Upstream commit bc348defcc6eceeb4f7784bf9a263ddb72fd3fb4 ]
+commit 9c60cc797cf72e95bb39f32316e9f0e5f85435f9 upstream.
 
-Run mt76_free_device instead of ieee80211_free_hw if device probing
-fails in order to remove the already allocated mt76 workqueue
+SPI bus number must be assigned dynamically for each device, otherwise it
+will crash when multiple devices are plugged to system.
 
-Fixes: a86f1d01f5ce5 ("mt76: move mt76 workqueue in common code")
-Fixes: f1d962369d568 ("mt76: mt7915: implement HE per-rate tx power support")
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-and-tested-by: syzbot+c60ddb60b685777d9d59@syzkaller.appspotmail.com
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Antti Palosaari <crope@iki.fi>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/wireless/mediatek/mt76/mt7603/pci.c  | 3 ++-
- drivers/net/wireless/mediatek/mt76/mt7615/mmio.c | 3 ++-
- drivers/net/wireless/mediatek/mt76/mt76x0/pci.c  | 3 ++-
- drivers/net/wireless/mediatek/mt76/mt76x2/pci.c  | 3 ++-
- drivers/net/wireless/mediatek/mt76/mt7915/pci.c  | 5 +++--
- 5 files changed, 11 insertions(+), 6 deletions(-)
+ drivers/media/usb/msi2500/msi2500.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7603/pci.c b/drivers/net/wireless/mediatek/mt76/mt7603/pci.c
-index a5845da3547a9..06fa28f645f28 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7603/pci.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7603/pci.c
-@@ -57,7 +57,8 @@ mt76pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+--- a/drivers/media/usb/msi2500/msi2500.c
++++ b/drivers/media/usb/msi2500/msi2500.c
+@@ -1230,7 +1230,7 @@ static int msi2500_probe(struct usb_inte
+ 	}
  
- 	return 0;
- error:
--	ieee80211_free_hw(mt76_hw(dev));
-+	mt76_free_device(&dev->mt76);
-+
- 	return ret;
- }
- 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7615/mmio.c b/drivers/net/wireless/mediatek/mt76/mt7615/mmio.c
-index 6de492a4cf025..9b191307e140e 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7615/mmio.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7615/mmio.c
-@@ -240,7 +240,8 @@ int mt7615_mmio_probe(struct device *pdev, void __iomem *mem_base,
- 
- 	return 0;
- error:
--	ieee80211_free_hw(mt76_hw(dev));
-+	mt76_free_device(&dev->mt76);
-+
- 	return ret;
- }
- 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt76x0/pci.c b/drivers/net/wireless/mediatek/mt76/mt76x0/pci.c
-index dda11c704abaa..b87d8e136cb9a 100644
---- a/drivers/net/wireless/mediatek/mt76/mt76x0/pci.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt76x0/pci.c
-@@ -194,7 +194,8 @@ mt76x0e_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	return 0;
- 
- error:
--	ieee80211_free_hw(mt76_hw(dev));
-+	mt76_free_device(&dev->mt76);
-+
- 	return ret;
- }
- 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt76x2/pci.c b/drivers/net/wireless/mediatek/mt76/mt76x2/pci.c
-index 4d50dad29ddff..ecaf85b483ac3 100644
---- a/drivers/net/wireless/mediatek/mt76/mt76x2/pci.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt76x2/pci.c
-@@ -90,7 +90,8 @@ mt76x2e_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	return 0;
- 
- error:
--	ieee80211_free_hw(mt76_hw(dev));
-+	mt76_free_device(&dev->mt76);
-+
- 	return ret;
- }
- 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/pci.c b/drivers/net/wireless/mediatek/mt76/mt7915/pci.c
-index fe62b4d853e48..3ac5bbb94d294 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7915/pci.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7915/pci.c
-@@ -140,7 +140,7 @@ static int mt7915_pci_probe(struct pci_dev *pdev,
- 	dev = container_of(mdev, struct mt7915_dev, mt76);
- 	ret = mt7915_alloc_device(pdev, dev);
- 	if (ret)
--		return ret;
-+		goto error;
- 
- 	mt76_mmio_init(&dev->mt76, pcim_iomap_table(pdev)[0]);
- 	mdev->rev = (mt7915_l1_rr(dev, MT_HW_CHIPID) << 16) |
-@@ -163,7 +163,8 @@ static int mt7915_pci_probe(struct pci_dev *pdev,
- 
- 	return 0;
- error:
--	ieee80211_free_hw(mt76_hw(dev));
-+	mt76_free_device(&dev->mt76);
-+
- 	return ret;
- }
- 
--- 
-2.27.0
-
+ 	dev->master = master;
+-	master->bus_num = 0;
++	master->bus_num = -1;
+ 	master->num_chipselect = 1;
+ 	master->transfer_one_message = msi2500_transfer_one_message;
+ 	spi_master_set_devdata(master, dev);
 
 
