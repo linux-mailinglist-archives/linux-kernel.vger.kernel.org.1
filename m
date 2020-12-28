@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D9742E42DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:29:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CAFF2E3E98
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:31:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406534AbgL1N4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:56:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57376 "EHLO mail.kernel.org"
+        id S2503520AbgL1OaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:30:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37894 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406507AbgL1N4c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:56:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AA9720795;
-        Mon, 28 Dec 2020 13:56:16 +0000 (UTC)
+        id S2503408AbgL1O3y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:29:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5142922C7E;
+        Mon, 28 Dec 2020 14:29:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163777;
-        bh=OBOWqs3Y3owxPRmyIVVPSmU9Vk4ArbLKTlqsKZB/f1Q=;
+        s=korg; t=1609165753;
+        bh=Xpd+pIEKctHJU2+pXj8imbHkhlwWecnZgI8/5R8H2ho=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QBIVvcTCEF824pPqBQK2N+1sshizm9tndcJcqoe54HGiiWHhll+zy6uhdkxkHchA6
-         51vA4Xaeh5BNElkW/UJqlWVbP2PhO8XbiF+DlB7Ljxo4uNeOKlqdOmNYFhZD6suDfs
-         OGh6lE3ykkdWiWLR5i17M9rVmmCmBJGXcVadPcKM=
+        b=GCYyH6U3QOw4Yr6zR+qyC4Mbv4ouAILLjzcSblWs7MrXLkKu5155Ies50XagFWZww
+         Lf0uIniHOq03MApospDA/5zftcds5pS9wnSpvsXshx0Qs3rJzFuPhepQPrVIhILVhF
+         slvBT+XN2BHpXDrznSdZ/OTFOVD2JyHpkvqefnvQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
-        Filipe Manana <fdmanana@suse.com>,
-        David Sterba <dsterba@suse.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 5.4 373/453] btrfs: trim: fix underflow in trim length to prevent access beyond device boundary
-Date:   Mon, 28 Dec 2020 13:50:09 +0100
-Message-Id: <20201228124955.155159314@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.10 612/717] powerpc/xmon: Change printk() to pr_cont()
+Date:   Mon, 28 Dec 2020 13:50:10 +0100
+Message-Id: <20201228125050.234256296@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,115 +40,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-commit c57dd1f2f6a7cd1bb61802344f59ccdc5278c983 upstream
+commit 7c6c86b36a36dd4a13d30bba07718e767aa2e7a1 upstream.
 
-[BUG]
-The following script can lead to tons of beyond device boundary access:
+Since some time now, printk() adds carriage return, leading to
+unusable xmon output if there is no udbg backend available:
 
-  mkfs.btrfs -f $dev -b 10G
-  mount $dev $mnt
-  trimfs $mnt
-  btrfs filesystem resize 1:-1G $mnt
-  trimfs $mnt
+  [   54.288722] sysrq: Entering xmon
+  [   54.292209] Vector: 0  at [cace3d2c]
+  [   54.292274]     pc:
+  [   54.292331] c0023650
+  [   54.292468] : xmon+0x28/0x58
+  [   54.292519]
+  [   54.292574]     lr:
+  [   54.292630] c0023724
+  [   54.292749] : sysrq_handle_xmon+0xa4/0xfc
+  [   54.292801]
+  [   54.292867]     sp: cace3de8
+  [   54.292931]    msr: 9032
+  [   54.292999]   current = 0xc28d0000
+  [   54.293072]     pid   = 377, comm = sh
+  [   54.293157] Linux version 5.10.0-rc6-s3k-dev-01364-gedf13f0ccd76-dirty (root@po17688vm.idsi0.si.c-s.fr) (powerpc64-linux-gcc (GCC) 10.1.0, GNU ld (GNU Binutils) 2.34) #4211 PREEMPT Fri Dec 4 09:32:11 UTC 2020
+  [   54.293287] enter ? for help
+  [   54.293470] [cace3de8]
+  [   54.293532] c0023724
+  [   54.293654]  sysrq_handle_xmon+0xa4/0xfc
+  [   54.293711]  (unreliable)
+  ...
+  [   54.296002]
+  [   54.296159] --- Exception: c01 (System Call) at
+  [   54.296217] 0fd4e784
+  [   54.296303]
+  [   54.296375] SP (7fca6ff0) is in userspace
+  [   54.296431] mon>
+  [   54.296484]  <no input ...>
 
-[CAUSE]
-Since commit 929be17a9b49 ("btrfs: Switch btrfs_trim_free_extents to
-find_first_clear_extent_bit"), we try to avoid trimming ranges that's
-already trimmed.
+Use pr_cont() instead.
 
-So we check device->alloc_state by finding the first range which doesn't
-have CHUNK_TRIMMED and CHUNK_ALLOCATED not set.
-
-But if we shrunk the device, that bits are not cleared, thus we could
-easily got a range starts beyond the shrunk device size.
-
-This results the returned @start and @end are all beyond device size,
-then we call "end = min(end, device->total_bytes -1);" making @end
-smaller than device size.
-
-Then finally we goes "len = end - start + 1", totally underflow the
-result, and lead to the beyond-device-boundary access.
-
-[FIX]
-This patch will fix the problem in two ways:
-
-- Clear CHUNK_TRIMMED | CHUNK_ALLOCATED bits when shrinking device
-  This is the root fix
-
-- Add extra safety check when trimming free device extents
-  We check and warn if the returned range is already beyond current
-  device.
-
-Link: https://github.com/kdave/btrfs-progs/issues/282
-Fixes: 929be17a9b49 ("btrfs: Switch btrfs_trim_free_extents to find_first_clear_extent_bit")
-CC: stable@vger.kernel.org # 5.4+
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-[sudip: adjust context and use extent_io.h]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Fixes: 4bcc595ccd80 ("printk: reinstate KERN_CONT for printing continuation lines")
+Cc: stable@vger.kernel.org # v4.9+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+[mpe: Mention that it only happens when udbg is not available]
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/c8a6ec704416ecd5ff2bd26213c9bc026bdd19de.1607077340.git.christophe.leroy@csgroup.eu
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- fs/btrfs/extent-tree.c |   14 ++++++++++++++
- fs/btrfs/extent_io.h   |    2 ++
- fs/btrfs/volumes.c     |    4 ++++
- 3 files changed, 20 insertions(+)
 
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -32,6 +32,7 @@
- #include "block-rsv.h"
- #include "delalloc-space.h"
- #include "block-group.h"
-+#include "rcu-string.h"
+---
+ arch/powerpc/xmon/nonstdio.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/arch/powerpc/xmon/nonstdio.c
++++ b/arch/powerpc/xmon/nonstdio.c
+@@ -178,7 +178,7 @@ void xmon_printf(const char *format, ...
  
- #undef SCRAMBLE_DELAYED_REFS
- 
-@@ -5618,6 +5619,19 @@ static int btrfs_trim_free_extents(struc
- 					    &start, &end,
- 					    CHUNK_TRIMMED | CHUNK_ALLOCATED);
- 
-+		/* Check if there are any CHUNK_* bits left */
-+		if (start > device->total_bytes) {
-+			WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
-+			btrfs_warn_in_rcu(fs_info,
-+"ignoring attempt to trim beyond device size: offset %llu length %llu device %s device size %llu",
-+					  start, end - start + 1,
-+					  rcu_str_deref(device->name),
-+					  device->total_bytes);
-+			mutex_unlock(&fs_info->chunk_mutex);
-+			ret = 0;
-+			break;
-+		}
-+
- 		/* Ensure we skip the reserved area in the first 1M */
- 		start = max_t(u64, start, SZ_1M);
- 
---- a/fs/btrfs/extent_io.h
-+++ b/fs/btrfs/extent_io.h
-@@ -35,6 +35,8 @@
-  */
- #define CHUNK_ALLOCATED EXTENT_DIRTY
- #define CHUNK_TRIMMED   EXTENT_DEFRAG
-+#define CHUNK_STATE_MASK			(CHUNK_ALLOCATED |		\
-+						 CHUNK_TRIMMED)
- 
- /*
-  * flags for bio submission. The high bits indicate the compression
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -4908,6 +4908,10 @@ again:
+ 	if (n && rc == 0) {
+ 		/* No udbg hooks, fallback to printk() - dangerous */
+-		printk("%s", xmon_outbuf);
++		pr_cont("%s", xmon_outbuf);
  	}
+ }
  
- 	mutex_lock(&fs_info->chunk_mutex);
-+	/* Clear all state bits beyond the shrunk device size */
-+	clear_extent_bits(&device->alloc_state, new_size, (u64)-1,
-+			  CHUNK_STATE_MASK);
-+
- 	btrfs_device_set_disk_total_bytes(device, new_size);
- 	if (list_empty(&device->post_commit_list))
- 		list_add_tail(&device->post_commit_list,
 
 
