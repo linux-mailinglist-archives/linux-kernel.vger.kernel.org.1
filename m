@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2242B2E6790
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:28:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB0AE2E677D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:26:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730996AbgL1NIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:08:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36074 "EHLO mail.kernel.org"
+        id S1731104AbgL1NJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:09:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730964AbgL1NIk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:08:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DECF20776;
-        Mon, 28 Dec 2020 13:08:24 +0000 (UTC)
+        id S1731065AbgL1NJI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:09:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5301E208BA;
+        Mon, 28 Dec 2020 13:08:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160905;
-        bh=hzLATFhTMvw5U2Ue3r+WBe0nWrIZBhd8kcXXvpxzRPg=;
+        s=korg; t=1609160907;
+        bh=anA706eWbbofSFlDtUglG1pbTgCiWoN5E+dER4Bl1WU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b/kS3lx9S6occfOCcbUQ+GJLJhVPvKc1DtDsvKKU9oNm93Q+PLON6BdWZn7xl5GfG
-         ImJT6d8PrTg6+iHvHnFHvY0TjYdqz1xkaLvgu/2XkXzQ+2tEdJ73BhRxHI9owYPgvQ
-         p7+mvz82C0tKjG5NNO5Dd3B4HpY1BPS6/26+kxeY=
+        b=PwSs7mQBhLaCF1XbMsDzXFLbXLezgETGW3XDRHlql94mLactQ2jmdTvpm3MriX4NW
+         oeysIjCkjlEDOzLz0bTTKn/Cbz3yA2STZ1o4yJ69RR9ob9FqOVJvHiB68WUKpgOTnm
+         Kkxmf/LBjDwQn2i3X8GaXBwN7U6Ao+hSwJ1CJoxE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        Xin Xiong <xiongx18@fudan.edu.cn>,
-        Lyude Paul <lyude@redhat.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.14 034/242] drm: fix drm_dp_mst_port refcount leaks in drm_dp_mst_allocate_vcpi
-Date:   Mon, 28 Dec 2020 13:47:19 +0100
-Message-Id: <20201228124906.342397483@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 035/242] pinctrl: merrifield: Set default bias in case no particular value given
+Date:   Mon, 28 Dec 2020 13:47:20 +0100
+Message-Id: <20201228124906.394283432@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
 References: <20201228124904.654293249@linuxfoundation.org>
@@ -42,63 +41,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Xiong <xiongx18@fudan.edu.cn>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-commit a34a0a632dd991a371fec56431d73279f9c54029 upstream
+[ Upstream commit 0fa86fc2e28227f1e64f13867e73cf864c6d25ad ]
 
-drm_dp_mst_allocate_vcpi() invokes
-drm_dp_mst_topology_get_port_validated(), which increases the refcount
-of the "port".
+When GPIO library asks pin control to set the bias, it doesn't pass
+any value of it and argument is considered boolean (and this is true
+for ACPI GpioIo() / GpioInt() resources, by the way). Thus, individual
+drivers must behave well, when they got the resistance value of 1 Ohm,
+i.e. transforming it to sane default.
 
-These reference counting issues take place in two exception handling
-paths separately. Either when “slots” is less than 0 or when
-drm_dp_init_vcpi() returns a negative value, the function forgets to
-reduce the refcnt increased drm_dp_mst_topology_get_port_validated(),
-which results in a refcount leak.
+In case of Intel Merrifield pin control hardware the 20 kOhm sounds plausible
+because it gives a good trade off between weakness and minimization of leakage
+current (will be only 50 uA with the above choice).
 
-Fix these issues by pulling up the error handling when "slots" is less
-than 0, and calling drm_dp_mst_topology_put_port() before termination
-when drm_dp_init_vcpi() returns a negative value.
-
-Fixes: 1e797f556c61 ("drm/dp: Split drm_dp_mst_allocate_vcpi")
-Cc: <stable@vger.kernel.org> # v4.12+
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
-Reviewed-by: Lyude Paul <lyude@redhat.com>
-Signed-off-by: Lyude Paul <lyude@redhat.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200719154545.GA41231@xin-virtual-machine
-[sudip: use old functions before rename]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 4e80c8f50574 ("pinctrl: intel: Add Intel Merrifield pin controller support")
+Depends-on: 2956b5d94a76 ("pinctrl / gpio: Introduce .set_config() callback for GPIO chips")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_dp_mst_topology.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/pinctrl/intel/pinctrl-merrifield.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
---- a/drivers/gpu/drm/drm_dp_mst_topology.c
-+++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-@@ -2629,11 +2629,11 @@ bool drm_dp_mst_allocate_vcpi(struct drm
- {
- 	int ret;
+diff --git a/drivers/pinctrl/intel/pinctrl-merrifield.c b/drivers/pinctrl/intel/pinctrl-merrifield.c
+index 86c4b3fab7b0e..5aa6d1dbc70ae 100644
+--- a/drivers/pinctrl/intel/pinctrl-merrifield.c
++++ b/drivers/pinctrl/intel/pinctrl-merrifield.c
+@@ -731,6 +731,10 @@ static int mrfld_config_set_pin(struct mrfld_pinctrl *mp, unsigned int pin,
+ 		mask |= BUFCFG_Px_EN_MASK | BUFCFG_PUPD_VAL_MASK;
+ 		bits |= BUFCFG_PU_EN;
  
--	port = drm_dp_get_validated_port_ref(mgr, port);
--	if (!port)
-+	if (slots < 0)
- 		return false;
++		/* Set default strength value in case none is given */
++		if (arg == 1)
++			arg = 20000;
++
+ 		switch (arg) {
+ 		case 50000:
+ 			bits |= BUFCFG_PUPD_VAL_50K << BUFCFG_PUPD_VAL_SHIFT;
+@@ -751,6 +755,10 @@ static int mrfld_config_set_pin(struct mrfld_pinctrl *mp, unsigned int pin,
+ 		mask |= BUFCFG_Px_EN_MASK | BUFCFG_PUPD_VAL_MASK;
+ 		bits |= BUFCFG_PD_EN;
  
--	if (slots < 0)
-+	port = drm_dp_get_validated_port_ref(mgr, port);
-+	if (!port)
- 		return false;
- 
- 	if (port->vcpi.vcpi > 0) {
-@@ -2648,6 +2648,7 @@ bool drm_dp_mst_allocate_vcpi(struct drm
- 	if (ret) {
- 		DRM_DEBUG_KMS("failed to init vcpi slots=%d max=63 ret=%d\n",
- 				DIV_ROUND_UP(pbn, mgr->pbn_div), ret);
-+		drm_dp_put_port(port);
- 		goto out;
- 	}
- 	DRM_DEBUG_KMS("initing vcpi for pbn=%d slots=%d\n",
++		/* Set default strength value in case none is given */
++		if (arg == 1)
++			arg = 20000;
++
+ 		switch (arg) {
+ 		case 50000:
+ 			bits |= BUFCFG_PUPD_VAL_50K << BUFCFG_PUPD_VAL_SHIFT;
+-- 
+2.27.0
+
 
 
