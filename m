@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8923B2E3BC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:55:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01C822E3A30
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:34:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405026AbgL1Nyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:54:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55222 "EHLO mail.kernel.org"
+        id S2387857AbgL1NdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:33:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407370AbgL1Nxx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:53:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 183EC2064B;
-        Mon, 28 Dec 2020 13:53:36 +0000 (UTC)
+        id S2391068AbgL1Ncs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:32:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA078207CF;
+        Mon, 28 Dec 2020 13:32:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163617;
-        bh=g2Zt8DLmwegqzrGW2W4zZDFBNp5yfj7K/uAC3UoCwFo=;
+        s=korg; t=1609162327;
+        bh=JevaJKgB0OQZVfFrtoZeKjvd2DOI6bStpsdjPtf2Kkk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P3pqoo/+YCFr0CvLGhKvbxcNcsbGd2XDSeOaVS+cTUSbd7vtwUreU+2OeqN8wekWo
-         Nsl9Alv0rvh/wmZBQOCFrcqPVc4hIy3pF2nKbvUzGoZQA+3uRGuDQ99/SUJ9Dctbkl
-         IU7VFNXSTjieCrdnr7RskvhE/c4F/AojcxwKZ4gs=
+        b=bGOHC/Gwf7me/mVvhBB/ZvABBeVt8XIb5A6hqimbBbjHNmCEpx3AYvC0jFkURw2CI
+         z6PrHVhLK0pSGWtfxdc1M4ULTAGMW2sQadQIu3u7pfdLWmJa1Hz4JaCT9HZmkj/5Ua
+         v6YWgeD8sH8sjRxIZncyf75QCFVeCoWECeB7LcY4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Haberland <sth@linux.ibm.com>,
-        Jan Hoeppner <hoeppner@linux.ibm.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.4 349/453] s390/dasd: fix hanging device offline processing
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH 4.19 266/346] Input: cyapa_gen6 - fix out-of-bounds stack access
 Date:   Mon, 28 Dec 2020 13:49:45 +0100
-Message-Id: <20201228124954.002822703@linuxfoundation.org>
+Message-Id: <20201228124932.630251638@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,58 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Haberland <sth@linux.ibm.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit 658a337a606f48b7ebe451591f7681d383fa115e upstream.
+commit f051ae4f6c732c231046945b36234e977f8467c6 upstream.
 
-For an LCU update a read unit address configuration IO is required.
-This is started using sleep_on(), which has early exit paths in case the
-device is not usable for IO. For example when it is in offline processing.
+gcc -Warray-bounds warns about a serious bug in
+cyapa_pip_retrieve_data_structure:
 
-In those cases the LCU update should fail and not be retried.
-Therefore lcu_update_work checks if EOPNOTSUPP is returned or not.
+drivers/input/mouse/cyapa_gen6.c: In function 'cyapa_pip_retrieve_data_structure.constprop':
+include/linux/unaligned/access_ok.h:40:17: warning: array subscript -1 is outside array bounds of 'struct retrieve_data_struct_cmd[1]' [-Warray-bounds]
+   40 |  *((__le16 *)p) = cpu_to_le16(val);
+drivers/input/mouse/cyapa_gen6.c:569:13: note: while referencing 'cmd'
+  569 |  } __packed cmd;
+      |             ^~~
 
-Commit 41995342b40c ("s390/dasd: fix endless loop after read unit address configuration")
-accidentally removed the EOPNOTSUPP return code from
-read_unit_address_configuration(), which in turn might lead to an endless
-loop of the LCU update in offline processing.
+Apparently the '-2' was added to the pointer instead of the value,
+writing garbage into the stack next to this variable.
 
-Fix by returning EOPNOTSUPP again if the device is not able to perform the
-request.
-
-Fixes: 41995342b40c ("s390/dasd: fix endless loop after read unit address configuration")
-Cc: stable@vger.kernel.org #5.3
-Signed-off-by: Stefan Haberland <sth@linux.ibm.com>
-Reviewed-by: Jan Hoeppner <hoeppner@linux.ibm.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: c2c06c41f700 ("Input: cyapa - add gen6 device module support")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/r/20201026161332.3708389-1-arnd@kernel.org
+Cc: stable@vger.kernel.org
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/s390/block/dasd_alias.c |   10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ drivers/input/mouse/cyapa_gen6.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/s390/block/dasd_alias.c
-+++ b/drivers/s390/block/dasd_alias.c
-@@ -462,11 +462,19 @@ static int read_unit_address_configurati
- 	spin_unlock_irqrestore(&lcu->lock, flags);
+--- a/drivers/input/mouse/cyapa_gen6.c
++++ b/drivers/input/mouse/cyapa_gen6.c
+@@ -573,7 +573,7 @@ static int cyapa_pip_retrieve_data_struc
  
- 	rc = dasd_sleep_on(cqr);
--	if (rc && !suborder_not_supported(cqr)) {
-+	if (!rc)
-+		goto out;
-+
-+	if (suborder_not_supported(cqr)) {
-+		/* suborder not supported or device unusable for IO */
-+		rc = -EOPNOTSUPP;
-+	} else {
-+		/* IO failed but should be retried */
- 		spin_lock_irqsave(&lcu->lock, flags);
- 		lcu->flags |= NEED_UAC_UPDATE;
- 		spin_unlock_irqrestore(&lcu->lock, flags);
- 	}
-+out:
- 	dasd_sfree_request(cqr, cqr->memdev);
- 	return rc;
- }
+ 	memset(&cmd, 0, sizeof(cmd));
+ 	put_unaligned_le16(PIP_OUTPUT_REPORT_ADDR, &cmd.head.addr);
+-	put_unaligned_le16(sizeof(cmd), &cmd.head.length - 2);
++	put_unaligned_le16(sizeof(cmd) - 2, &cmd.head.length);
+ 	cmd.head.report_id = PIP_APP_CMD_REPORT_ID;
+ 	cmd.head.cmd_code = PIP_RETRIEVE_DATA_STRUCTURE;
+ 	put_unaligned_le16(read_offset, &cmd.read_offset);
 
 
