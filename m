@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 893CB2E3943
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:22:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 582232E40B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:57:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388115AbgL1NVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:21:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49292 "EHLO mail.kernel.org"
+        id S2440795AbgL1O4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:56:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51980 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387822AbgL1NVI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:21:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C1BEE229EF;
-        Mon, 28 Dec 2020 13:20:51 +0000 (UTC)
+        id S2441249AbgL1OQr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:16:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 673AD229C5;
+        Mon, 28 Dec 2020 14:16:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161652;
-        bh=a1wG/TPHZb8ALz2ofho0xleXqKP2jse8QTl+y1PG4z0=;
+        s=korg; t=1609164967;
+        bh=U2wwaEzDWBIk2SyEdeQYW9xWQFkmzgDyOBRrc9IR9MM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m7Kts8R/OYfNR17SyN8PHzv5RP0jzNHqP4h0Iej/KP/QtEUahFPyFsDEoTUytrapE
-         nbBHEaFKZ6WfFA9QcnwZj3WuT3BS9jgGmvrCpVZrjoFKnsfq43AjKoo6zThl9ectSu
-         UwK2p+9mrf/ZCSx++BmoM81YdCt/m00wkoZ3TqWE=
+        b=ssqlJRFz3orNR0i84hy3Tjgu3QGkiUoW6fD9kHVrfVTaT+68ILXYkbgQ9Nd4W98Ak
+         nJi7ziZmXZBQTd1Q3Fb1dmTfYllpEzxrfN/8dMpkm2ZBQk+dP8+e54phyZLlXUSinq
+         T2tzzpyE/p1TjKwmh4n18dhCm6UVkZLnR+517/Rw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+df7dc146ebdd6435eea3@syzkaller.appspotmail.com,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.19 041/346] ALSA: usb-audio: Fix potential out-of-bounds shift
+        stable@vger.kernel.org, Vadim Pasternak <vadimp@nvidia.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 362/717] platform/x86: mlx-platform: Fix item counter assignment for MSN2700/ComEx system
 Date:   Mon, 28 Dec 2020 13:46:00 +0100
-Message-Id: <20201228124921.773903007@linuxfoundation.org>
+Message-Id: <20201228125038.357285184@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +40,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Vadim Pasternak <vadimp@nvidia.com>
 
-commit 43d5ca88dfcd35e43010fdd818e067aa9a55f5ba upstream.
+[ Upstream commit cf791774a16caf87b0e4c0c55b82979bad0b6c01 ]
 
-syzbot spotted a potential out-of-bounds shift in the USB-audio format
-parser that receives the arbitrary shift value from the USB
-descriptor.
+Fix array names to match assignments for data items and data items
+counter in 'mlxplat_mlxcpld_comex_items' structure for:
+	.data = mlxplat_mlxcpld_default_pwr_items_data,
+	.count = ARRAY_SIZE(mlxplat_mlxcpld_pwr),
+and
+	.data = mlxplat_mlxcpld_default_fan_items_data,
+	.count = ARRAY_SIZE(mlxplat_mlxcpld_fan),
 
-Add a range check for avoiding the undefined behavior.
+Replace:
+- 'mlxplat_mlxcpld_pwr' by 'mlxplat_mlxcpld_default_pwr_items_data' for
+   ARRAY_SIZE() calculation.
+- 'mlxplat_mlxcpld_fan' by 'mlxplat_mlxcpld_default_fan_items_data'
+   for ARRAY_SIZE() calculation.
 
-Reported-by: syzbot+df7dc146ebdd6435eea3@syzkaller.appspotmail.com
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201209084552.17109-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: bdd6e155e0d6 ("platform/x86: mlx-platform: Add support for new system type")
+Signed-off-by: Vadim Pasternak <vadimp@nvidia.com>
+Link: https://lore.kernel.org/r/20201207174745.22889-3-vadimp@nvidia.com
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/format.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/platform/x86/mlx-platform.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/sound/usb/format.c
-+++ b/sound/usb/format.c
-@@ -53,6 +53,8 @@ static u64 parse_audio_format_i_type(str
- 	case UAC_VERSION_1:
- 	default: {
- 		struct uac_format_type_i_discrete_descriptor *fmt = _fmt;
-+		if (format >= 64)
-+			return 0; /* invalid format */
- 		sample_width = fmt->bBitResolution;
- 		sample_bytes = fmt->bSubframeSize;
- 		format = 1ULL << format;
+diff --git a/drivers/platform/x86/mlx-platform.c b/drivers/platform/x86/mlx-platform.c
+index 902424e06180c..be8cb880de596 100644
+--- a/drivers/platform/x86/mlx-platform.c
++++ b/drivers/platform/x86/mlx-platform.c
+@@ -504,7 +504,7 @@ static struct mlxreg_core_item mlxplat_mlxcpld_comex_items[] = {
+ 		.aggr_mask = MLXPLAT_CPLD_AGGR_MASK_CARRIER,
+ 		.reg = MLXPLAT_CPLD_LPC_REG_PWR_OFFSET,
+ 		.mask = MLXPLAT_CPLD_PWR_MASK,
+-		.count = ARRAY_SIZE(mlxplat_mlxcpld_pwr),
++		.count = ARRAY_SIZE(mlxplat_mlxcpld_default_pwr_items_data),
+ 		.inversed = 0,
+ 		.health = false,
+ 	},
+@@ -513,7 +513,7 @@ static struct mlxreg_core_item mlxplat_mlxcpld_comex_items[] = {
+ 		.aggr_mask = MLXPLAT_CPLD_AGGR_MASK_CARRIER,
+ 		.reg = MLXPLAT_CPLD_LPC_REG_FAN_OFFSET,
+ 		.mask = MLXPLAT_CPLD_FAN_MASK,
+-		.count = ARRAY_SIZE(mlxplat_mlxcpld_fan),
++		.count = ARRAY_SIZE(mlxplat_mlxcpld_default_fan_items_data),
+ 		.inversed = 1,
+ 		.health = false,
+ 	},
+-- 
+2.27.0
+
 
 
