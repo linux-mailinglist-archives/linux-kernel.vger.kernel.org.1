@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54ED62E389E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:14:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E15592E373E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:54:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732111AbgL1NMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:12:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40082 "EHLO mail.kernel.org"
+        id S1728017AbgL1Mw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:52:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732043AbgL1NMY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:12:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 60A9C208BA;
-        Mon, 28 Dec 2020 13:12:08 +0000 (UTC)
+        id S1727994AbgL1Mwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:52:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 04021229C6;
+        Mon, 28 Dec 2020 12:51:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161129;
-        bh=Ntdgzys9pNxmvBXWNqZtoLpmHbRUUGtqnnDd7boFn7Q=;
+        s=korg; t=1609159915;
+        bh=m17xW3VM15KVS2s8C5E4GEW6nQag9CrdQWXtRVV2uOY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x03ljSe+tswfZaGit86nQzJvJ7NLoaq+Vx+6asu44xGohmgbv2d0v3ZfihM5pfSPu
-         afWRm87gniKFdSAKo+7XjQhaL+JD03bAfHHjktBfVpo3a4QUsoZXZbq/DQmmPecMnc
-         V1KH9xoJNq2XexmtB9nLz1wevpsJz5eG4ze9zQsk=
+        b=q9nOLWmW7wEZeszjPKSlzPnMt9wsAxXUCSyk7oexki2q3rFwPA7zhh7IYPSUdyjn9
+         k1T6JpP/SoDjBMk6WxIl8JQi431qVh4OL27yaOdw+zvCPSoXzh9OQfbq6hDTNc4CjG
+         aZbHJbIr44l0EhlY8QdtJgbVELRa727Saar1zu9w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 081/242] spi: spi-ti-qspi: fix reference leak in ti_qspi_setup
+        stable@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Lukas Wunner <lukas@wunner.de>
+Subject: [PATCH 4.4 002/132] spi: bcm2835aux: Restore err assignment in bcm2835aux_spi_probe
 Date:   Mon, 28 Dec 2020 13:48:06 +0100
-Message-Id: <20201228124908.677235115@linuxfoundation.org>
+Message-Id: <20201228124846.541065310@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +40,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Nathan Chancellor <natechancellor@gmail.com>
 
-[ Upstream commit 45c0cba753641e5d7c3207f04241bd0e7a021698 ]
+[ Upstream commit d853b3406903a7dc5b14eb5bada3e8cd677f66a2 ]
 
-pm_runtime_get_sync will increment pm usage counter even it
-failed. Forgetting to pm_runtime_put_noidle will result in
-reference leak in ti_qspi_setup, so we should fix it.
+Clang warns:
 
-Fixes: 505a14954e2d7 ("spi/qspi: Add qspi flash controller")
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201103140947.3815-1-zhangqilong3@huawei.com
+drivers/spi/spi-bcm2835aux.c:532:50: warning: variable 'err' is
+uninitialized when used here [-Wuninitialized]
+                dev_err(&pdev->dev, "could not get clk: %d\n", err);
+                                                               ^~~
+./include/linux/dev_printk.h:112:32: note: expanded from macro 'dev_err'
+        _dev_err(dev, dev_fmt(fmt), ##__VA_ARGS__)
+                                      ^~~~~~~~~~~
+drivers/spi/spi-bcm2835aux.c:495:9: note: initialize the variable 'err'
+to silence this warning
+        int err;
+               ^
+                = 0
+1 warning generated.
+
+Restore the assignment so that the error value can be used in the
+dev_err statement and there is no uninitialized memory being leaked.
+
+Fixes: e13ee6cc4781 ("spi: bcm2835aux: Fix use-after-free on unbind")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1199
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Link: https://lore.kernel.org/r/20201113180701.455541-1-natechancellor@gmail.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+[lukas: backport to 4.19-stable, add stable designation]
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Cc: <stable@vger.kernel.org> # v4.4+: e13ee6cc4781: spi: bcm2835aux: Fix use-after-free on unbind
+Cc: <stable@vger.kernel.org> # v4.4+
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/spi/spi-ti-qspi.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/spi/spi-bcm2835aux.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-ti-qspi.c b/drivers/spi/spi-ti-qspi.c
-index d0ea62d151c0f..29c1b5d3ae7ad 100644
---- a/drivers/spi/spi-ti-qspi.c
-+++ b/drivers/spi/spi-ti-qspi.c
-@@ -180,6 +180,7 @@ static int ti_qspi_setup(struct spi_device *spi)
+--- a/drivers/spi/spi-bcm2835aux.c
++++ b/drivers/spi/spi-bcm2835aux.c
+@@ -416,8 +416,9 @@ static int bcm2835aux_spi_probe(struct p
  
- 	ret = pm_runtime_get_sync(qspi->dev);
- 	if (ret < 0) {
-+		pm_runtime_put_noidle(qspi->dev);
- 		dev_err(qspi->dev, "pm_runtime_get_sync() failed\n");
- 		return ret;
+ 	bs->clk = devm_clk_get(&pdev->dev, NULL);
+ 	if ((!bs->clk) || (IS_ERR(bs->clk))) {
++		err = PTR_ERR(bs->clk);
+ 		dev_err(&pdev->dev, "could not get clk: %d\n", err);
+-		return PTR_ERR(bs->clk);
++		return err;
  	}
--- 
-2.27.0
-
+ 
+ 	bs->irq = platform_get_irq(pdev, 0);
 
 
