@@ -2,180 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B31A2E6CA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:56:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CA982E6CA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 01:01:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729734AbgL1Xz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 18:55:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729580AbgL1Xz4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 18:55:56 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22063C061796;
-        Mon, 28 Dec 2020 15:55:16 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id w6so7121749pfu.1;
-        Mon, 28 Dec 2020 15:55:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vMXcPyqogv+uoJYzhVOVnDAaZJOmErDohwQ6l3V0Tbg=;
-        b=RCwxzjHgHRywdIjnZhfHqWQT88k6zkvKX7/pgZLdGjNj/hqXpZSJxxHzpffIWF/YMP
-         MsAk01fhCsjBD2lJKQN3JYTB0LhDDy8S7pzJgUJwoDB38B2a0/CXPDr+DQ0aZLNu8UAr
-         SrF5DqcHUQIGz+0z99sqk8sp/Y/2dlCvdJKiVV+gGTkX4qkrLyykJ69L2WoZk/K7kwxb
-         vpU9/c5vHcBp9iRzwduHRTwayvWriDXBf0Amif2B14KYNOTr/XAR0M1hwY5XMjJiLRP2
-         eOZyRQynCBNuXz1oXtWtXJqG90WDqHNpICCyiHzhNBeU4tSBHr9i0j337HXoxKzV3Gp3
-         /HEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vMXcPyqogv+uoJYzhVOVnDAaZJOmErDohwQ6l3V0Tbg=;
-        b=QTMmWjjON/n78wUSikhwJ62cFunaKZCqKsuBrSVO4j1PPduMqi/1WWb8cW2nbaOclF
-         56p1Ki/kn9xxhBjTpdo/BO9Hw9tx0fJxBkQMnxxX5ReSbcN1oHfs6Mr9E+Le2Dbwxrh3
-         CskM8+sLGSTahkjnfdCJEwE02YyAYMSRTyrcpUVbAeKHPdHgbDHqH35qfxJxFU9oA7GJ
-         PcRNPG78yOxZlFYpIOjZlAU5L943/3hgpYNM/Ml+xgOV4fcqGq/yjJG1wsP8kPgBo8q7
-         /cFmlBg6PZ5WO+CWkI8T7aMsI44lQbhdPe0Km1qzIijEVL0E4VEiKQ5vKR/UAaKL7bPe
-         n0Vg==
-X-Gm-Message-State: AOAM533F/8H25IFV7lUAo8s8lfQFB5GqPnbnUa6a0bVO2pNJMLDIBeRB
-        XBc1Fp2NljXBM9LrYsIEpQU+bv4N286qFsw2Rw8=
-X-Google-Smtp-Source: ABdhPJxcIpwrhXTCnpSHYMrG7oyN/71F7WSecxf2mRW4vD9HklVZpmkRH89e6+SPSny/u87BGg+x3d2aAuPAG0PAwpc=
-X-Received: by 2002:a05:6a00:170a:b029:19d:afca:4704 with SMTP id
- h10-20020a056a00170ab029019dafca4704mr21836791pfc.7.1609199715686; Mon, 28
- Dec 2020 15:55:15 -0800 (PST)
+        id S1729874AbgL2AAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 19:00:17 -0500
+Received: from smtp.infotech.no ([82.134.31.41]:59799 "EHLO smtp.infotech.no"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729004AbgL2AAR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 19:00:17 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by smtp.infotech.no (Postfix) with ESMTP id 34DD4204271;
+        Tue, 29 Dec 2020 00:50:06 +0100 (CET)
+X-Virus-Scanned: by amavisd-new-2.6.6 (20110518) (Debian) at infotech.no
+Received: from smtp.infotech.no ([127.0.0.1])
+        by localhost (smtp.infotech.no [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id JvVK8k-3kqyi; Tue, 29 Dec 2020 00:49:59 +0100 (CET)
+Received: from xtwo70.bingwo.ca (host-104-157-204-209.dyn.295.ca [104.157.204.209])
+        by smtp.infotech.no (Postfix) with ESMTPA id 47D3C204193;
+        Tue, 29 Dec 2020 00:49:58 +0100 (CET)
+From:   Douglas Gilbert <dgilbert@interlog.com>
+To:     linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     martin.petersen@oracle.com, jejb@linux.vnet.ibm.com,
+        bostroesser@gmail.com, bvanassche@acm.org, ddiss@suse.de
+Subject: [PATCH v5 0/4] scatterlist: add new capabilities
+Date:   Mon, 28 Dec 2020 18:49:51 -0500
+Message-Id: <20201228234955.190858-1-dgilbert@interlog.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20201224010907.263125-1-djrscally@gmail.com> <20201224010907.263125-15-djrscally@gmail.com>
- <CAHp75VeXN6PnV7Mzz6UMpD+m-yjPi6XK0kx1=+-M5mci=Vb=YQ@mail.gmail.com>
- <20201228170521.GZ26370@paasikivi.fi.intel.com> <2d37df3d-f04c-6679-6e27-6c7f82e9b158@gmail.com>
- <20201228225544.GH4077@smile.fi.intel.com> <X+plTyUFhfHi7eIE@pendragon.ideasonboard.com>
-In-Reply-To: <X+plTyUFhfHi7eIE@pendragon.ideasonboard.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 29 Dec 2020 01:54:59 +0200
-Message-ID: <CAHp75Vdzk7i+QzkTxLJUUkw3xZot9F7QT8pyu6b5yjkCVzMXEA@mail.gmail.com>
-Subject: Re: [PATCH v3 14/14] ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Daniel Scally <djrscally@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        devel@acpica.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tian Shu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        kieran.bingham+renesas@ideasonboard.com,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        niklas.soderlund+renesas@ragnatech.se,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jordan Hand <jorhand@linux.microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 29, 2020 at 1:08 AM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
->
-> On Tue, Dec 29, 2020 at 12:55:44AM +0200, Andy Shevchenko wrote:
-> > On Mon, Dec 28, 2020 at 10:37:38PM +0000, Daniel Scally wrote:
-> > > On 28/12/2020 17:05, Sakari Ailus wrote:
+Scatter-gather lists (sgl_s) are frequently used as data carriers in
+the block layer. For example the SCSI and NVMe subsystems interchange
+data with the block layer using sgl_s. The sgl API is declared in
+<linux/scatterlist.h>
 
-...
+The author has extended these transient sgl use cases to a store (i.e.
+a ramdisk) in the scsi_debug driver. Other new potential uses of sgl_s
+could be for the target subsystem. When this extra step is taken, the
+need to copy between sgl_s becomes apparent. The patchset adds
+sgl_copy_sgl(), sgl_compare_sgl() and sgl_memset().
 
-> > > Which do you prefer?
-> >
-> > Actually ipu3-cio2.h misses a lot of inclusions (like mutex.h which I
-> > immediately noticed when scrolled over data types).
->
-> Then ipu3-cio2.h should be fixed :-)
+The existing sgl_alloc_order() function can be seen as a replacement
+for vmalloc() for large, long-term allocations.  For what seems like
+no good reason, sgl_alloc_order() currently restricts its total
+allocation to less than or equal to 4 GiB. vmalloc() has no such
+restriction.
 
-Below is a draft patch (it is possible mangled, due to Gmail). Can you
-look at it and tell me what you think?
-I believe some headers can be removed, but I have no idea about header
-inclusion guarantees that v4l2 provides.
+Changes since v3 [posted 20201105]:
+  - rebase on lk 5.11.0-rc2
 
-From 10fa6c7ff66ded35a246677ffe20c677e8453f5b3 Mon Sep 17 00:00:00 2001
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Date: Tue, 29 Dec 2020 01:42:03 +0200
-Subject: [PATCH 1/1] media: ipu3-cio2: Add headers that ipu3-cio2.h is direct
- user of
+Changes since v3 [posted 20201019]:
+  - re-instate check on integer overflow of nent calculation in
+    sgl_alloc_order(). Do it in such a way as to not limit the
+    overall sgl size to 4  GiB
+  - introduce sgl_compare_sgl_idx() helper function that, if
+    requested and if a miscompare is detected, will yield the byte
+    index of the first miscompare.
+  - add Reviewed-by tags from Bodo Stroesser
+  - rebase on lk 5.10.0-rc2 [was on lk 5.9.0]
 
-Add headers that ipu3-cio2.h is direct user of.
+Changes since v2 [posted 20201018]:
+  - remove unneeded lines from sgl_memset() definition.
+  - change sg_zero_buffer() to call sgl_memset() as the former
+    is a subset.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/media/pci/intel/ipu3/ipu3-cio2.h | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+Changes since v1 [posted 20201016]:
+  - Bodo Stroesser pointed out a problem with the nesting of
+    kmap_atomic() [called via sg_miter_next()] and kunmap_atomic()
+    calls [called via sg_miter_stop()] and proposed a solution that
+    simplifies the previous code.
 
-diff --git a/drivers/media/pci/intel/ipu3/ipu3-cio2.h
-b/drivers/media/pci/intel/ipu3/ipu3-cio2.h
-index ccf0b85ae36f..9ea154c50ba1 100644
---- a/drivers/media/pci/intel/ipu3/ipu3-cio2.h
-+++ b/drivers/media/pci/intel/ipu3/ipu3-cio2.h
-@@ -4,8 +4,25 @@
- #ifndef __IPU3_CIO2_H
- #define __IPU3_CIO2_H
+  - the new implementation of the three functions has shorter periods
+    when pre-emption is disabled (but has more them). This should
+    make operations on large sgl_s more pre-emption "friendly" with
+    a relatively small performance hit.
 
-+#include <linux/bits.h>
-+#include <linux/dma-mapping.h>
-+#include <linux/kernel.h>
-+#include <linux/mutex.h>
- #include <linux/types.h>
+  - sgl_memset return type changed from void to size_t and is the
+    number of bytes actually (over)written. That number is needed
+    anyway internally so may as well return it as it may be useful to
+    the caller.
 
-+#include <asm/page.h>
-+
-+#include <linux/videodev2.h>
-+
-+#include <media/media-device.h>
-+#include <media/media-entity.h>
-+#include <media/v4l2-async.h>
-+#include <media/v4l2-dev.h>
-+#include <media/v4l2-device.h>
-+#include <media/v4l2-subdev.h>
-+#include <media/videobuf2-core.h>
-+#include <media/videobuf2-v4l2.h>
-+
- #define CIO2_NAME "ipu3-cio2"
- #define CIO2_DEVICE_NAME "Intel IPU3 CIO2"
- #define CIO2_ENTITY_NAME "ipu3-csi2"
-@@ -325,6 +342,8 @@ struct csi2_bus_info {
-  u32 lanes;
- };
+This patchset is against lk 5.10.0-rc2
 
-+struct cio2_fbpt_entry;
-+
- struct cio2_queue {
-  /* mutex to be used by vb2_queue */
-  struct mutex lock;
-@@ -355,6 +374,8 @@ struct cio2_queue {
-  atomic_t bufs_queued;
- };
+Douglas Gilbert (4):
+  sgl_alloc_order: remove 4 GiB limit, sgl_free() warning
+  scatterlist: add sgl_copy_sgl() function
+  scatterlist: add sgl_compare_sgl() function
+  scatterlist: add sgl_memset()
 
-+struct pci_dev;
-+
- struct cio2_device {
-  struct pci_dev *pci_dev;
-  void __iomem *base;
--- 
-2.29.2
-
+ include/linux/scatterlist.h |  16 +++
+ lib/scatterlist.c           | 244 +++++++++++++++++++++++++++++++++---
+ 2 files changed, 243 insertions(+), 17 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.25.1
+
