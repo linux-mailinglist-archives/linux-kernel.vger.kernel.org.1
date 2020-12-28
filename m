@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00D382E4001
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:48:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 191F92E3B77
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:51:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439250AbgL1OX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:23:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59756 "EHLO mail.kernel.org"
+        id S2406342AbgL1Nua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:50:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51712 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502875AbgL1OXp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:23:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED6E120791;
-        Mon, 28 Dec 2020 14:23:03 +0000 (UTC)
+        id S2406314AbgL1NuW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:50:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C882720715;
+        Mon, 28 Dec 2020 13:50:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165384;
-        bh=dKFIqJAkreP7x4OwIFF3ICRl8vZM4yI8GJOz+q8JmpM=;
+        s=korg; t=1609163407;
+        bh=3kH8G1S0zb0Zmt4rApJclmEE26nhfudDk2YtEQm9L5M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VGKBdZtvTAHf5g0Qqb/997Rs8zyrDcpDHXvAxmhn4foxBZ3vtn8dQFyJUW6FontRU
-         vVallKgODw9tDq7ZxBEiaTCmeKQkDbciMX8SkdmmYI/xgyUVGI4WQB/K5aNqZjBusT
-         L2PTCkm6LoZ7P3KHJw7dTrE0cK+6jp1LjBebMfAc=
+        b=s9uhXhFsOaMYeQOpoepuUyqR+taaphaTt8HDWnZWFa1Q+756goB7L/r0w/nepmHCW
+         zyVX/hI3bh9a69W64dF9HSZXKIpY7x9eGx5iwCtjGHW6ZQ2wTjVxsxGx/lKcvIDHRx
+         Os8m0x6ZQ+GU4MWhdkZP52oQbY6VKH+MXrb2Ct8w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>,
-        Johannes Pointner <johannes.pointner@br-automation.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
+        stable@vger.kernel.org, Vadim Pasternak <vadimp@nvidia.com>,
+        Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 481/717] pwm: imx27: Fix overflow for bigger periods
-Date:   Mon, 28 Dec 2020 13:47:59 +0100
-Message-Id: <20201228125044.013444789@linuxfoundation.org>
+Subject: [PATCH 5.4 244/453] platform/x86: mlx-platform: Fix item counter assignment for MSN2700, MSN24xx systems
+Date:   Mon, 28 Dec 2020 13:48:00 +0100
+Message-Id: <20201228124948.966635631@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,44 +40,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Uwe Kleine-König <uwe@kleine-koenig.org>
+From: Vadim Pasternak <vadimp@nvidia.com>
 
-[ Upstream commit 1ce65396e6b2386b4fd54f87beff0647a772e1cd ]
+[ Upstream commit ba4939f1dd46dde08c2f9b9d7ac86ed3ea7ead86 ]
 
-The second parameter of do_div is an u32 and NSEC_PER_SEC * prescale
-overflows this for bigger periods. Assuming the usual pwm input clk rate
-of 66 MHz this happens starting at requested period > 606060 ns.
+Fix array names to match assignments for data items and data items
+counter in 'mlxplat_mlxcpld_default_items' structure for:
+	.data = mlxplat_mlxcpld_default_pwr_items_data,
+	.count = ARRAY_SIZE(mlxplat_mlxcpld_pwr),
+and
+	.data = mlxplat_mlxcpld_default_fan_items_data,
+	.count = ARRAY_SIZE(mlxplat_mlxcpld_fan),
 
-Splitting the division into two operations doesn't loose any precision.
-It doesn't need to be feared that c / NSEC_PER_SEC doesn't fit into the
-unsigned long variable "duty_cycles" because in this case the assignment
-above to period_cycles would already have been overflowing as
-period >= duty_cycle and then the calculation is moot anyhow.
+Replace:
+- 'mlxplat_mlxcpld_pwr' by 'mlxplat_mlxcpld_default_pwr_items_data' for
+   ARRAY_SIZE() calculation.
+- 'mlxplat_mlxcpld_fan' by 'mlxplat_mlxcpld_default_fan_items_data'
+   for ARRAY_SIZE() calculation.
 
-Fixes: aef1a3799b5c ("pwm: imx27: Fix rounding behavior")
-Signed-off-by: Uwe Kleine-König <uwe@kleine-koenig.org>
-Tested-by: Johannes Pointner <johannes.pointner@br-automation.com>
-Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
+Fixes: c6acad68eb2d ("platform/mellanox: mlxreg-hotplug: Modify to use a regmap interface")
+Signed-off-by: Vadim Pasternak <vadimp@nvidia.com>
+Link: https://lore.kernel.org/r/20201207174745.22889-2-vadimp@nvidia.com
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pwm/pwm-imx27.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/platform/x86/mlx-platform.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/pwm/pwm-imx27.c b/drivers/pwm/pwm-imx27.c
-index c50d453552bd4..86bcafd23e4f6 100644
---- a/drivers/pwm/pwm-imx27.c
-+++ b/drivers/pwm/pwm-imx27.c
-@@ -235,8 +235,9 @@ static int pwm_imx27_apply(struct pwm_chip *chip, struct pwm_device *pwm,
- 
- 	period_cycles /= prescale;
- 	c = clkrate * state->duty_cycle;
--	do_div(c, NSEC_PER_SEC * prescale);
-+	do_div(c, NSEC_PER_SEC);
- 	duty_cycles = c;
-+	duty_cycles /= prescale;
- 
- 	/*
- 	 * according to imx pwm RM, the real period value should be PERIOD
+diff --git a/drivers/platform/x86/mlx-platform.c b/drivers/platform/x86/mlx-platform.c
+index 4b3d94c4a939a..acb094ddf8e61 100644
+--- a/drivers/platform/x86/mlx-platform.c
++++ b/drivers/platform/x86/mlx-platform.c
+@@ -355,7 +355,7 @@ static struct mlxreg_core_item mlxplat_mlxcpld_default_items[] = {
+ 		.aggr_mask = MLXPLAT_CPLD_AGGR_PWR_MASK_DEF,
+ 		.reg = MLXPLAT_CPLD_LPC_REG_PWR_OFFSET,
+ 		.mask = MLXPLAT_CPLD_PWR_MASK,
+-		.count = ARRAY_SIZE(mlxplat_mlxcpld_pwr),
++		.count = ARRAY_SIZE(mlxplat_mlxcpld_default_pwr_items_data),
+ 		.inversed = 0,
+ 		.health = false,
+ 	},
+@@ -364,7 +364,7 @@ static struct mlxreg_core_item mlxplat_mlxcpld_default_items[] = {
+ 		.aggr_mask = MLXPLAT_CPLD_AGGR_FAN_MASK_DEF,
+ 		.reg = MLXPLAT_CPLD_LPC_REG_FAN_OFFSET,
+ 		.mask = MLXPLAT_CPLD_FAN_MASK,
+-		.count = ARRAY_SIZE(mlxplat_mlxcpld_fan),
++		.count = ARRAY_SIZE(mlxplat_mlxcpld_default_fan_items_data),
+ 		.inversed = 1,
+ 		.health = false,
+ 	},
 -- 
 2.27.0
 
