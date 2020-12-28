@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1B922E401A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:48:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 496C42E3DF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:22:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504129AbgL1OsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:48:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58226 "EHLO mail.kernel.org"
+        id S2441691AbgL1OWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:22:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389854AbgL1OWe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:22:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 347F822B2E;
-        Mon, 28 Dec 2020 14:21:52 +0000 (UTC)
+        id S2502618AbgL1OWM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:22:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3C6222B30;
+        Mon, 28 Dec 2020 14:21:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165313;
-        bh=Z33ymT/htmLNfqyeiWzePYAIqRjutd7RXpdwRGEqUpU=;
+        s=korg; t=1609165316;
+        bh=RnWXGoe3rqK+CbVc7vEq6fNA0KGY+rq+NBemDoqYrDw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XJ+aScgmUfnzkeMJ/qrvhjgT8l+xnz9QgFS4hL9/vqHut+qF7QNmz97CqZjObYCx0
-         brrxoEmIl78GBYC7JMQVq1we4pwHPTNfjUUjhk/Wv35TbpRM7ACq6Jp3VO9zvv+RvM
-         3dX93xM91mxctk2w30pWTj2zRSECf/89FLM61Z0w=
+        b=RNSlv7laGr9RWpBcYC7Jo6OdBqZ/LDWgvUaL8ieY7StV5GgjDQcOQviI6bLur5Y4+
+         vXqZvrvwkPu05PPLhWS9HYEgX1j/HaBIU4xWb8rCNuo7UPuFBu4EMUY8rw5CC+ZrlF
+         DdVc4JdsbRAlOJwe2nGgSxsrIgIpRbtMqoWSLR8A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,9 +30,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "Michael S. Tsirkin" <mst@redhat.com>,
         Jason Wang <jasowang@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 489/717] virtio_ring: Cut and paste bugs in vring_create_virtqueue_packed()
-Date:   Mon, 28 Dec 2020 13:48:07 +0100
-Message-Id: <20201228125044.392700333@linuxfoundation.org>
+Subject: [PATCH 5.10 490/717] virtio_net: Fix error code in probe()
+Date:   Mon, 28 Dec 2020 13:48:08 +0100
+Message-Id: <20201228125044.440786954@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
 References: <20201228125020.963311703@linuxfoundation.org>
@@ -46,40 +46,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit ae93d8ea0fa701e84ab9df0db9fb60ec6c80d7b8 ]
+[ Upstream commit 411ea23a76526e6efed0b601abb603d3c981b333 ]
 
-There is a copy and paste bug in the error handling of this code and
-it uses "ring_dma_addr" three times instead of "device_event_dma_addr"
-and "driver_event_dma_addr".
+Set a negative error code intead of returning success if the MTU has
+been changed to something invalid.
 
-Fixes: 1ce9e6055fa0 (" virtio_ring: introduce packed ring support")
+Fixes: fe36cbe0671e ("virtio_net: clear MTU when out of range")
 Reported-by: Robert Buhren <robert.buhren@sect.tu-berlin.de>
 Reported-by: Felicitas Hetzelt <file@sect.tu-berlin.de>
 Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/X8pGRJlEzyn+04u2@mwanda
+Link: https://lore.kernel.org/r/X8pGVJSeeCdII1Ys@mwanda
 Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 Acked-by: Jason Wang <jasowang@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/virtio/virtio_ring.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/virtio_net.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index becc776979602..924b6b85376bd 100644
---- a/drivers/virtio/virtio_ring.c
-+++ b/drivers/virtio/virtio_ring.c
-@@ -1676,9 +1676,9 @@ err_desc_extra:
- err_desc_state:
- 	kfree(vq);
- err_vq:
--	vring_free_queue(vdev, event_size_in_bytes, device, ring_dma_addr);
-+	vring_free_queue(vdev, event_size_in_bytes, device, device_event_dma_addr);
- err_device:
--	vring_free_queue(vdev, event_size_in_bytes, driver, ring_dma_addr);
-+	vring_free_queue(vdev, event_size_in_bytes, driver, driver_event_dma_addr);
- err_driver:
- 	vring_free_queue(vdev, ring_size_in_bytes, ring, ring_dma_addr);
- err_ring:
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index 21b71148c5324..34bb95dd92392 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -3072,6 +3072,7 @@ static int virtnet_probe(struct virtio_device *vdev)
+ 			dev_err(&vdev->dev,
+ 				"device MTU appears to have changed it is now %d < %d",
+ 				mtu, dev->min_mtu);
++			err = -EINVAL;
+ 			goto free;
+ 		}
+ 
 -- 
 2.27.0
 
