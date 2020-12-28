@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6582C2E3773
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:57:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B212E434E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:36:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728591AbgL1Mzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:55:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52092 "EHLO mail.kernel.org"
+        id S2392881AbgL1Pfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:35:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728572AbgL1Mze (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:55:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8ED7208B6;
-        Mon, 28 Dec 2020 12:54:52 +0000 (UTC)
+        id S2407104AbgL1NwY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:52:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D33862078D;
+        Mon, 28 Dec 2020 13:52:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160093;
-        bh=FtP72I1KDnV7xvAsnjQh8CU7bdgkJDotqt1/5LqzBxc=;
+        s=korg; t=1609163523;
+        bh=3HkZ9PXJwfxEQDm5KuWxlZSG6ooTyzHe2hj+hacBDpc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dshhCWJ7xc9lrcTyFQ4vWQnsxAjilquShTrrSbtNFCGEOPI+O9XlNM0mD4hVR+t7k
-         6Sq3iS9Equ+8hkxeE+8Ir2T+bif095aV5agxp7OGiKuA/ZiSk/6YSVT+DskKXNBik0
-         McLDATOPVzs2sqyEEhrzLsIhus1NBiKQg0z4yxs0=
+        b=OR3PKgXSemJTmhpF4BvhB5IaUwDlFmkvhrHKlB4RVC8UsMsOtuHF1livh3P70Y6B2
+         Qy6YKz0bhsegsLtma8iSeU4sgVjX3kwK/JT/Qtbn4A2DSlVPd8sEeZwQIuAabvDuSF
+         6iRb/o1r+kybWxsJ+2EP7JPspjYf7L5/XW8I9RlE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        Mike Snitzer <snitzer@redhat.com>,
+        stable@vger.kernel.org, Felix Kuehling <Felix.Kuehling@amd.com>,
+        Kent Russell <kent.russell@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 067/132] dm ioctl: fix error return code in target_message
-Date:   Mon, 28 Dec 2020 13:49:11 +0100
-Message-Id: <20201228124849.695546946@linuxfoundation.org>
+Subject: [PATCH 5.4 316/453] drm/amdkfd: Fix leak in dmabuf import
+Date:   Mon, 28 Dec 2020 13:49:12 +0100
+Message-Id: <20201228124952.416088441@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,33 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qinglang Miao <miaoqinglang@huawei.com>
+From: Felix Kuehling <Felix.Kuehling@amd.com>
 
-[ Upstream commit 4d7659bfbe277a43399a4a2d90fca141e70f29e1 ]
+[ Upstream commit c897934da15f182ce99536007f8ef61c4748c07e ]
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+Release dmabuf reference before returning from kfd_ioctl_import_dmabuf.
+amdgpu_amdkfd_gpuvm_import_dmabuf takes a reference to the underlying
+GEM BO and doesn't keep the reference to the dmabuf wrapper.
 
-Fixes: 2ca4c92f58f9 ("dm ioctl: prevent empty message")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Signed-off-by: Felix Kuehling <Felix.Kuehling@amd.com>
+Reviewed-by: Kent Russell <kent.russell@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/dm-ioctl.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/amd/amdkfd/kfd_chardev.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/md/dm-ioctl.c b/drivers/md/dm-ioctl.c
-index 9371194677dc3..eab3f7325e310 100644
---- a/drivers/md/dm-ioctl.c
-+++ b/drivers/md/dm-ioctl.c
-@@ -1539,6 +1539,7 @@ static int target_message(struct dm_ioctl *param, size_t param_size)
- 
- 	if (!argc) {
- 		DMWARN("Empty message received.");
-+		r = -EINVAL;
- 		goto out_argv;
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_chardev.c b/drivers/gpu/drm/amd/amdkfd/kfd_chardev.c
+index 1d3cd5c50d5f2..4a0ef9268918c 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_chardev.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_chardev.c
+@@ -1664,6 +1664,7 @@ static int kfd_ioctl_import_dmabuf(struct file *filep,
  	}
+ 
+ 	mutex_unlock(&p->mutex);
++	dma_buf_put(dmabuf);
+ 
+ 	args->handle = MAKE_HANDLE(args->gpu_id, idr_handle);
+ 
+@@ -1673,6 +1674,7 @@ err_free:
+ 	amdgpu_amdkfd_gpuvm_free_memory_of_gpu(dev->kgd, (struct kgd_mem *)mem);
+ err_unlock:
+ 	mutex_unlock(&p->mutex);
++	dma_buf_put(dmabuf);
+ 	return r;
+ }
  
 -- 
 2.27.0
