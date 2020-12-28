@@ -2,37 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4D362E3B5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:49:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94B762E4023
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:49:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406077AbgL1NtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:49:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50660 "EHLO mail.kernel.org"
+        id S2438086AbgL1OV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:21:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406054AbgL1NtH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:49:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 289A220715;
-        Mon, 28 Dec 2020 13:48:25 +0000 (UTC)
+        id S2438007AbgL1OVl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:21:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8ED7220731;
+        Mon, 28 Dec 2020 14:21:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163306;
-        bh=MWqhqV0WAUtwhvrl3yqTNNKtks1ZzA7/SxhcmSY+EG0=;
+        s=korg; t=1609165286;
+        bh=KGRqtiI5xb2QCWAhkMOzJAqSPuxxarizS8R6E19JfFI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MOwfbyaHlY6poHO+zY0aFL5zh1Ke6ZKg74wkscE/b51qEdW0AC1tfF+IL2IHpL+xp
-         smqMi9IXqj/nggdrfFfgDNYJciXoI9aPTO2VXYaCorBUROx1pURytyEaSlRn0eByCn
-         X3vRfM1x54cxnVUg+ZjA8zhe5DXuRgC4k+y0WgUo=
+        b=CDcp+HwAS7IJHQTOwuuC7Jm2Ln+if2OQdcYmrnwboVmLUsStHApKycLcj30E3aqFd
+         jN/usJqcJ2B0crEEbQIdVURPIuG4qpEACtOjrJjEdPOlGdV6v3U75pE/uCQLj29bru
+         1PLjco/h8U/aozRNBHEa7LPkQpu99jta2kBbpSWs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sachin Sant <sachinp@linux.vnet.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Jason Gunthorpe <jgg@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jane Chu <jane.chu@oracle.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 210/453] powerpc/perf: Fix crash with is_sier_available when pmu is not set
+Subject: [PATCH 5.10 448/717] mm/gup: combine put_compound_head() and unpin_user_page()
 Date:   Mon, 28 Dec 2020 13:47:26 +0100
-Message-Id: <20201228124947.323247747@linuxfoundation.org>
+Message-Id: <20201228125042.438862914@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,66 +56,188 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+From: Jason Gunthorpe <jgg@nvidia.com>
 
-[ Upstream commit f75e7d73bdf73f07b0701a6d21c111ef5d9021dd ]
+[ Upstream commit 4509b42c38963f495b49aa50209c34337286ecbe ]
 
-On systems without any specific PMU driver support registered, running
-'perf record' with —intr-regs  will crash ( perf record -I <workload> ).
+These functions accomplish the same thing but have different
+implementations.
 
-The relevant portion from crash logs and Call Trace:
+unpin_user_page() has a bug where it calls mod_node_page_state() after
+calling put_page() which creates a risk that the page could have been
+hot-uplugged from the system.
 
-Unable to handle kernel paging request for data at address 0x00000068
-Faulting instruction address: 0xc00000000013eb18
-Oops: Kernel access of bad area, sig: 11 [#1]
-CPU: 2 PID: 13435 Comm: kill Kdump: loaded Not tainted 4.18.0-193.el8.ppc64le #1
-NIP:  c00000000013eb18 LR: c000000000139f2c CTR: c000000000393d80
-REGS: c0000004a07ab4f0 TRAP: 0300   Not tainted  (4.18.0-193.el8.ppc64le)
-NIP [c00000000013eb18] is_sier_available+0x18/0x30
-LR [c000000000139f2c] perf_reg_value+0x6c/0xb0
-Call Trace:
-[c0000004a07ab770] [c0000004a07ab7c8] 0xc0000004a07ab7c8 (unreliable)
-[c0000004a07ab7a0] [c0000000003aa77c] perf_output_sample+0x60c/0xac0
-[c0000004a07ab840] [c0000000003ab3f0] perf_event_output_forward+0x70/0xb0
-[c0000004a07ab8c0] [c00000000039e208] __perf_event_overflow+0x88/0x1a0
-[c0000004a07ab910] [c00000000039e42c] perf_swevent_hrtimer+0x10c/0x1d0
-[c0000004a07abc50] [c000000000228b9c] __hrtimer_run_queues+0x17c/0x480
-[c0000004a07abcf0] [c00000000022aaf4] hrtimer_interrupt+0x144/0x520
-[c0000004a07abdd0] [c00000000002a864] timer_interrupt+0x104/0x2f0
-[c0000004a07abe30] [c0000000000091c4] decrementer_common+0x114/0x120
+Fix this by using put_compound_head() as the only implementation.
 
-When perf record session is started with "-I" option, capturing registers
-on each sample calls is_sier_available() to check for the
-SIER (Sample Instruction Event Register) availability in the platform.
-This function in core-book3s accesses 'ppmu->flags'. If a platform specific
-PMU driver is not registered, ppmu is set to NULL and accessing its
-members results in a crash. Fix the crash by returning false in
-is_sier_available() if ppmu is not set.
+__unpin_devmap_managed_user_page() and related can be deleted as well in
+favour of the simpler, but slower, version in put_compound_head() that has
+an extra atomic page_ref_sub, but always calls put_page() which internally
+contains the special devmap code.
 
-Fixes: 333804dc3b7a ("powerpc/perf: Update perf_regs structure to include SIER")
-Reported-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
-Signed-off-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/1606185640-1720-1-git-send-email-atrajeev@linux.vnet.ibm.com
+Move put_compound_head() to be directly after try_grab_compound_head() so
+people can find it in future.
+
+Link: https://lkml.kernel.org/r/0-v1-6730d4ee0d32+40e6-gup_combine_put_jgg@nvidia.com
+Fixes: 1970dc6f5226 ("mm/gup: /proc/vmstat: pin_user_pages (FOLL_PIN) reporting")
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+CC: Joao Martins <joao.m.martins@oracle.com>
+CC: Jonathan Corbet <corbet@lwn.net>
+CC: Dan Williams <dan.j.williams@intel.com>
+CC: Dave Chinner <david@fromorbit.com>
+CC: Christoph Hellwig <hch@infradead.org>
+CC: Jane Chu <jane.chu@oracle.com>
+CC: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+CC: Michal Hocko <mhocko@suse.com>
+CC: Mike Kravetz <mike.kravetz@oracle.com>
+CC: Shuah Khan <shuah@kernel.org>
+CC: Muchun Song <songmuchun@bytedance.com>
+CC: Vlastimil Babka <vbabka@suse.cz>
+CC: Matthew Wilcox <willy@infradead.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/perf/core-book3s.c | 3 +++
- 1 file changed, 3 insertions(+)
+ mm/gup.c | 103 +++++++++++++------------------------------------------
+ 1 file changed, 23 insertions(+), 80 deletions(-)
 
-diff --git a/arch/powerpc/perf/core-book3s.c b/arch/powerpc/perf/core-book3s.c
-index f582aa2d98078..7bf1adcdfdaa1 100644
---- a/arch/powerpc/perf/core-book3s.c
-+++ b/arch/powerpc/perf/core-book3s.c
-@@ -133,6 +133,9 @@ static void pmao_restore_workaround(bool ebb) { }
+diff --git a/mm/gup.c b/mm/gup.c
+index 9c6a2f5001c5c..054ff923d3d92 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -123,6 +123,28 @@ static __maybe_unused struct page *try_grab_compound_head(struct page *page,
+ 	return NULL;
+ }
  
- bool is_sier_available(void)
- {
-+	if (!ppmu)
-+		return false;
++static void put_compound_head(struct page *page, int refs, unsigned int flags)
++{
++	if (flags & FOLL_PIN) {
++		mod_node_page_state(page_pgdat(page), NR_FOLL_PIN_RELEASED,
++				    refs);
 +
- 	if (ppmu->flags & PPMU_HAS_SIER)
- 		return true;
++		if (hpage_pincount_available(page))
++			hpage_pincount_sub(page, refs);
++		else
++			refs *= GUP_PIN_COUNTING_BIAS;
++	}
++
++	VM_BUG_ON_PAGE(page_ref_count(page) < refs, page);
++	/*
++	 * Calling put_page() for each ref is unnecessarily slow. Only the last
++	 * ref needs a put_page().
++	 */
++	if (refs > 1)
++		page_ref_sub(page, refs - 1);
++	put_page(page);
++}
++
+ /**
+  * try_grab_page() - elevate a page's refcount by a flag-dependent amount
+  *
+@@ -177,41 +199,6 @@ bool __must_check try_grab_page(struct page *page, unsigned int flags)
+ 	return true;
+ }
  
+-#ifdef CONFIG_DEV_PAGEMAP_OPS
+-static bool __unpin_devmap_managed_user_page(struct page *page)
+-{
+-	int count, refs = 1;
+-
+-	if (!page_is_devmap_managed(page))
+-		return false;
+-
+-	if (hpage_pincount_available(page))
+-		hpage_pincount_sub(page, 1);
+-	else
+-		refs = GUP_PIN_COUNTING_BIAS;
+-
+-	count = page_ref_sub_return(page, refs);
+-
+-	mod_node_page_state(page_pgdat(page), NR_FOLL_PIN_RELEASED, 1);
+-	/*
+-	 * devmap page refcounts are 1-based, rather than 0-based: if
+-	 * refcount is 1, then the page is free and the refcount is
+-	 * stable because nobody holds a reference on the page.
+-	 */
+-	if (count == 1)
+-		free_devmap_managed_page(page);
+-	else if (!count)
+-		__put_page(page);
+-
+-	return true;
+-}
+-#else
+-static bool __unpin_devmap_managed_user_page(struct page *page)
+-{
+-	return false;
+-}
+-#endif /* CONFIG_DEV_PAGEMAP_OPS */
+-
+ /**
+  * unpin_user_page() - release a dma-pinned page
+  * @page:            pointer to page to be released
+@@ -223,28 +210,7 @@ static bool __unpin_devmap_managed_user_page(struct page *page)
+  */
+ void unpin_user_page(struct page *page)
+ {
+-	int refs = 1;
+-
+-	page = compound_head(page);
+-
+-	/*
+-	 * For devmap managed pages we need to catch refcount transition from
+-	 * GUP_PIN_COUNTING_BIAS to 1, when refcount reach one it means the
+-	 * page is free and we need to inform the device driver through
+-	 * callback. See include/linux/memremap.h and HMM for details.
+-	 */
+-	if (__unpin_devmap_managed_user_page(page))
+-		return;
+-
+-	if (hpage_pincount_available(page))
+-		hpage_pincount_sub(page, 1);
+-	else
+-		refs = GUP_PIN_COUNTING_BIAS;
+-
+-	if (page_ref_sub_and_test(page, refs))
+-		__put_page(page);
+-
+-	mod_node_page_state(page_pgdat(page), NR_FOLL_PIN_RELEASED, 1);
++	put_compound_head(compound_head(page), 1, FOLL_PIN);
+ }
+ EXPORT_SYMBOL(unpin_user_page);
+ 
+@@ -2062,29 +2028,6 @@ EXPORT_SYMBOL(get_user_pages_unlocked);
+  * This code is based heavily on the PowerPC implementation by Nick Piggin.
+  */
+ #ifdef CONFIG_HAVE_FAST_GUP
+-
+-static void put_compound_head(struct page *page, int refs, unsigned int flags)
+-{
+-	if (flags & FOLL_PIN) {
+-		mod_node_page_state(page_pgdat(page), NR_FOLL_PIN_RELEASED,
+-				    refs);
+-
+-		if (hpage_pincount_available(page))
+-			hpage_pincount_sub(page, refs);
+-		else
+-			refs *= GUP_PIN_COUNTING_BIAS;
+-	}
+-
+-	VM_BUG_ON_PAGE(page_ref_count(page) < refs, page);
+-	/*
+-	 * Calling put_page() for each ref is unnecessarily slow. Only the last
+-	 * ref needs a put_page().
+-	 */
+-	if (refs > 1)
+-		page_ref_sub(page, refs - 1);
+-	put_page(page);
+-}
+-
+ #ifdef CONFIG_GUP_GET_PTE_LOW_HIGH
+ 
+ /*
 -- 
 2.27.0
 
