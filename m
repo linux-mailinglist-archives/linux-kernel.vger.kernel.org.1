@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A27C2E6461
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:52:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E1D32E411B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:03:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391277AbgL1Nix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:38:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39148 "EHLO mail.kernel.org"
+        id S2408121AbgL1PCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:02:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391211AbgL1Nis (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:38:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D89CB2064B;
-        Mon, 28 Dec 2020 13:38:06 +0000 (UTC)
+        id S2439974AbgL1OMv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:12:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BD8622BF3;
+        Mon, 28 Dec 2020 14:12:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162687;
-        bh=RUQ6/a/KD6+eMtUrSnB4E38U6LQ3EDElnSgw3JLvZag=;
+        s=korg; t=1609164730;
+        bh=mi/DeJzRXz47S3VNF9DlNrEgzgIcmxls+PobV+WzrQE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ULkpfdd6JFCMn1wDuA5FryO4Ty3JSEId29JDmR4C/qFOYPQPXiVNsH4Zh1WeDjKjR
-         LUcLVH6uwm3FzrsKfeq09FODh+ALukR/M/3c8cKQvHHkBCty2YI/yJuQ3XgqjNBg4G
-         oObioMXZiGgE8J/nd5vB/lVMo3eIK2BLOmSOHsIs=
+        b=O8xXIu+4r8CMs9nPangDpCIOJ7qvPqceQkhoqmGPmyA7IMLPr0WkaWwocVbQNNVoi
+         fsTNVxulHP8SePmKh44LP1Tby9Fj964XU54T9Y38oNMBMzNqr3FwAHKfAOAxOw2/+J
+         rRXFKalyJe+u8/HpfQvMO0MHgtcS7Ukyum+kbUtI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
+        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 008/453] ARM: dts: imx6qdl-wandboard-revd1: Remove PAD_GPIO_6 from enetgrp
+Subject: [PATCH 5.10 246/717] soc: amlogic: canvas: add missing put_device() call in meson_canvas_get()
 Date:   Mon, 28 Dec 2020 13:44:04 +0100
-Message-Id: <20201228124937.645247729@linuxfoundation.org>
+Message-Id: <20201228125032.770101033@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabio Estevam <festevam@gmail.com>
+From: Yu Kuai <yukuai3@huawei.com>
 
-[ Upstream commit 58d6bca5efc73235b0f84c0d53321737177c651e ]
+[ Upstream commit 28f851e6afa858f182802e23ac60c3ed7d1c04a1 ]
 
-Since commit 8ad2d1dcce54 ("ARM: dts: imx6qdl-wandboard: Add OV5645 camera
-support") the PAD_GPIO_6 is used for providing the camera sensor clock.
+if of_find_device_by_node() succeed, meson_canvas_get() doesn't have
+a corresponding put_device(). Thus add put_device() to fix the exception
+handling for this function implementation.
 
-Remove it from the enetgrp to fix the following IOMXU conflict:
-
-[    9.972414] imx6q-pinctrl 20e0000.pinctrl: pin MX6Q_PAD_GPIO_6 already requested by 2188000.ethernet; cannot claim for 1-003c
-[    9.983857] imx6q-pinctrl 20e0000.pinctrl: pin-140 (1-003c) status -22
-[    9.990514] imx6q-pinctrl 20e0000.pinctrl: could not request pin 140 (MX6Q_PAD_GPIO_6) from group ov5645grp  on device 20e0000.pinctrl
-
-Fixes: 8ad2d1dcce54 ("ARM: dts: imx6qdl-wandboard: Add OV5645 camera support")
-Signed-off-by: Fabio Estevam <festevam@gmail.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Fixes: 382f8be04551 ("soc: amlogic: canvas: Fix meson_canvas_get when probe failed")
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+Signed-off-by: Kevin Hilman <khilman@baylibre.com>
+Link: https://lore.kernel.org/r/20201117011322.522477-1-yukuai3@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/imx6qdl-wandboard-revd1.dtsi | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/soc/amlogic/meson-canvas.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/imx6qdl-wandboard-revd1.dtsi b/arch/arm/boot/dts/imx6qdl-wandboard-revd1.dtsi
-index 93909796885a0..b9b698f72b261 100644
---- a/arch/arm/boot/dts/imx6qdl-wandboard-revd1.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-wandboard-revd1.dtsi
-@@ -166,7 +166,6 @@
- 				MX6QDL_PAD_RGMII_RD2__RGMII_RD2		0x1b030
- 				MX6QDL_PAD_RGMII_RD3__RGMII_RD3		0x1b030
- 				MX6QDL_PAD_RGMII_RX_CTL__RGMII_RX_CTL	0x1b030
--				MX6QDL_PAD_GPIO_6__ENET_IRQ		0x000b1
- 			>;
- 		};
+diff --git a/drivers/soc/amlogic/meson-canvas.c b/drivers/soc/amlogic/meson-canvas.c
+index c655f5f92b124..d0329ad170d13 100644
+--- a/drivers/soc/amlogic/meson-canvas.c
++++ b/drivers/soc/amlogic/meson-canvas.c
+@@ -72,8 +72,10 @@ struct meson_canvas *meson_canvas_get(struct device *dev)
+ 	 * current state, this driver probe cannot return -EPROBE_DEFER
+ 	 */
+ 	canvas = dev_get_drvdata(&canvas_pdev->dev);
+-	if (!canvas)
++	if (!canvas) {
++		put_device(&canvas_pdev->dev);
+ 		return ERR_PTR(-EINVAL);
++	}
  
+ 	return canvas;
+ }
 -- 
 2.27.0
 
