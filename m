@@ -2,104 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 317472E4273
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:23:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B67162E42B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:27:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440887AbgL1PWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:22:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2440871AbgL1PWq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 10:22:46 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BF18C061796;
-        Mon, 28 Dec 2020 07:22:06 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id 23so24541121lfg.10;
-        Mon, 28 Dec 2020 07:22:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=3VwPLXd6o2GllfI0uMKsQz7w/gWAlkuLi7VEd1eZ0TY=;
-        b=EMO1cnJCWFS6qwYbumAFA8H7EuKG7SSKusBtFt+Ps0LaFUgRVfHKp7kGO3kXoP34/Y
-         TzhupyVe6m5MNl/qhTM8I85/EHh9z8TrOyzxFrbH1QtIA3ur2w/p2VK36Qm7TM/1abLo
-         c+Eogx7DFQPkc4K8ufIkGkxt2gCD/22l8q8Uf+amkbKRSdie4BUQ0QJ1rdJfd8yPIfd1
-         mIRbh0SO+c5LGcf6S8w3rHmk1j/fePyhVPcjWxE1hqQ+O+2cdtpm0j6wFG60wAGZgZdm
-         giO9ivY1pX3O9/gKTeRLfx8gTg66v8noJq1WrhNTxXvrySoo3vGNUAxmQsRgSw0olSXf
-         8v2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=3VwPLXd6o2GllfI0uMKsQz7w/gWAlkuLi7VEd1eZ0TY=;
-        b=L2C8Gju91DDKDDgaoYzsmVsXWvvG9WIsbkfU5lHWeyIMTREtoLx0aiPMdX9AasToUQ
-         ntlw1IosdplrAX/gpth3m1qVBtmGIsCGGootkCvPjBfIWiS/HGyVetLD83zfB11pq9Uf
-         mHf60Qcxn9Oj5bikZE17FL3mh+txc+N79GAvfcHijh0MwBWHYudCKgSX2Y1rIYck2DlS
-         e0VCsdNd2P8eZzHtIImaH/6xPgr7Vxa9ojpH7En1jCuecdp3Q1ecVRp8QNLQLZRXkhtk
-         nzzoyZS4sOaoWXMyuPsjp4NBREE9n87KHmkRkk13vjytcZ0wPKDUoAFyrTAUwIpSKcmj
-         +ziQ==
-X-Gm-Message-State: AOAM533I/DyV+eCCFtUJQmAFuDgwX37enk73DljznH6t+b0F01Jef7Gv
-        xRRJ+9JWrP8WpAooAwnAyA4sDq9tTZEwKjaoMFo=
-X-Google-Smtp-Source: ABdhPJyZzbmnH/Z0aSV8m5ioeqhoj1HhGWUsac24plNU30wOfJKlq/vXLh0xA1UdZ8vQcNzcFY5X48BHvIHVMT9k5nQ=
-X-Received: by 2002:a19:e004:: with SMTP id x4mr15643049lfg.419.1609168924663;
- Mon, 28 Dec 2020 07:22:04 -0800 (PST)
+        id S2392577AbgL1P1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:27:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34618 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2504228AbgL1PZ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 10:25:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D6E5A22472;
+        Mon, 28 Dec 2020 15:25:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609169117;
+        bh=R4iMJC11Whx65fQ+/OHxhLFq9u6boBvRzAZlsJBOZQI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SBmAFpC/eM9LibG1FggIqdnIA+pvCwQExPTtTRBW7qv4vpNhsN8tPbSFmpAwSTYbr
+         TxWwYpQFoCd0DRYck3dDRgrGU1qqQYXzaQFvH9A2kCXzCqGgesCA23IilSMZhW2emi
+         ijbOgb2DRBRVdTk45ddiBBptS6+ngnkMlJ9zf7swif3M6eKbNTPRjWEFDdOy42kGQT
+         VmYDKmC+W7+nTnkem9kN+Io+cTx/O7PEDGOIDU8KA5bBb5Zm6eVnX3M3Ki+VQL5ABj
+         qXD9I6xSHi3w0NaVoP53CrbTtT6bOtf7hT7Af1QgwOqfj3andDwfInan4EtoCua0Mj
+         OvzCHr66AlhYg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 6F048411E9; Mon, 28 Dec 2020 12:25:32 -0300 (-03)
+Date:   Mon, 28 Dec 2020 12:25:32 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Hans-Peter Nilsson <hp@axis.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCH] perf record: Tweak "Lowering..." warning in
+ record_opts__config_freq
+Message-ID: <20201228152532.GE521329@kernel.org>
+References: <20201228031908.B049B203B5@pchp3.se.axis.com>
 MIME-Version: 1.0
-References: <20201216022538.7389-1-vichy.kuo@gmail.com>
-In-Reply-To: <20201216022538.7389-1-vichy.kuo@gmail.com>
-From:   pierre kuo <vichy.kuo@gmail.com>
-Date:   Mon, 28 Dec 2020 23:21:53 +0800
-Message-ID: <CAOVJa8FTyX89MWieV3C+NmmDqS4EWi7Aok-j4_Tti_ZmVS050A@mail.gmail.com>
-Subject: Re: [PATCH 1/1] PM / devfreq: Replace devfreq->dev.parent as dev in devfreq_add_device
-To:     myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
-        cw00.choi@samsung.com
-Cc:     Linux PM list <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201228031908.B049B203B5@pchp3.se.axis.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi myungjoo, kyungmin and cw:
-Would you please help to review this patch?
+Em Mon, Dec 28, 2020 at 04:19:08AM +0100, Hans-Peter Nilsson escreveu:
+> That is, instead of "Lowering default frequency rate to <F>" say
+> "Lowering default frequency rate from <f> to <F>", specifying
+> the overridden default frequency <f>, so you don't have to grep
+> through the source to "remember" that was e.g. 4000.
 
-Thanks a lot.
+Thanks, applied.
 
-pierre Kuo <vichy.kuo@gmail.com> =E6=96=BC 2020=E5=B9=B412=E6=9C=8816=E6=97=
-=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=8810:26=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> In devfreq_add_device, replace devfreq->dev.parent
-> as dev to keep code simple.
->
-> Signed-off-by: pierre Kuo <vichy.kuo@gmail.com>
+- Arnaldo
+
+ 
+> Signed-off-by: Hans-Peter Nilsson <hp@axis.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> Cc: Jiri Olsa <jolsa@redhat.com>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Cc: Adrian Hunter <adrian.hunter@intel.com>
+> Cc: Kan Liang <kan.liang@linux.intel.com>
+> Cc: Ian Rogers <irogers@google.com>
 > ---
->  drivers/devfreq/devfreq.c | 4 ++--
+>  tools/perf/util/record.c | 4 ++--
 >  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
-> index 6aa10de792b3..94cc25fd68da 100644
-> --- a/drivers/devfreq/devfreq.c
-> +++ b/drivers/devfreq/devfreq.c
-> @@ -893,13 +893,13 @@ struct devfreq *devfreq_add_device(struct device *d=
-ev,
->                 goto err_devfreq;
->
->         devfreq->nb_min.notifier_call =3D qos_min_notifier_call;
-> -       err =3D dev_pm_qos_add_notifier(devfreq->dev.parent, &devfreq->nb=
-_min,
-> +       err =3D dev_pm_qos_add_notifier(dev, &devfreq->nb_min,
->                                       DEV_PM_QOS_MIN_FREQUENCY);
->         if (err)
->                 goto err_devfreq;
->
->         devfreq->nb_max.notifier_call =3D qos_max_notifier_call;
-> -       err =3D dev_pm_qos_add_notifier(devfreq->dev.parent, &devfreq->nb=
-_max,
-> +       err =3D dev_pm_qos_add_notifier(dev, &devfreq->nb_max,
->                                       DEV_PM_QOS_MAX_FREQUENCY);
->         if (err)
->                 goto err_devfreq;
-> --
-> 2.17.1
->
+> 
+> diff --git a/tools/perf/util/record.c b/tools/perf/util/record.c
+> index 07e4b96a6625..3b38e7be10da 100644
+> --- a/tools/perf/util/record.c
+> +++ b/tools/perf/util/record.c
+> @@ -202,10 +202,10 @@ static int record_opts__config_freq(struct record_opts *opts)
+>  	 * Default frequency is over current maximum.
+>  	 */
+>  	if (max_rate < opts->freq) {
+> -		pr_warning("Lowering default frequency rate to %u.\n"
+> +		pr_warning("Lowering default frequency rate from %u to %u.\n"
+>  			   "Please consider tweaking "
+>  			   "/proc/sys/kernel/perf_event_max_sample_rate.\n",
+> -			   max_rate);
+> +			   opts->freq, max_rate);
+>  		opts->freq = max_rate;
+>  	}
+>  
+> -- 
+> 2.11.0
+> 
+> brgds, H-P
+
+-- 
+
+- Arnaldo
