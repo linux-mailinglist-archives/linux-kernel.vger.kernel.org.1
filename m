@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD2F12E390A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:19:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6A792E651D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:57:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387472AbgL1NSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:18:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46634 "EHLO mail.kernel.org"
+        id S2633302AbgL1P5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:57:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35044 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387455AbgL1NSG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:18:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E70F5208D5;
-        Mon, 28 Dec 2020 13:17:24 +0000 (UTC)
+        id S2389197AbgL1Neg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:34:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 248352072C;
+        Mon, 28 Dec 2020 13:33:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161445;
-        bh=LUwe1fdi2pE1PUi3MMkn8G1Ehd6si62fatPzfHF8tNk=;
+        s=korg; t=1609162435;
+        bh=4hn+pLi687Q08yitiwgTWR/9lJ2XAeC4138kLyzwCX8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yt4PdFOHYyRHT/Ik21nMzhrsAlqRu1SHF3wR6B0cC+9wq78sI07PkN6sKLgthp3j4
-         1dMnJUZ20wv4mb+I+a42s+ntDep7Zn9OvyuFyc2qp9Yk2dxKrZqN/vYPI6qr+2v3io
-         m4kmb9Ii7xsNozbwdtS6BwJyu84nFCLBa5NHYdvA=
+        b=wXhCLxLizr+RcBQdNgL61xUpXoeCdlD8of5e7p6WjqJ+r+8or/7y9ivqrQyisOiEE
+         zWlNrp06Up+ALsf9RitEbaGCduFzFmSniOaM5J3YvaPy01AmnZl53N2HEnq5cJKZv/
+         o4iBNRa7FFL5PLZxHelynr4F5MiEDronkB0rmMXo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
-        Luis Henriques <lhenriques@suse.de>,
-        Ilya Dryomov <idryomov@gmail.com>
-Subject: [PATCH 4.14 216/242] ceph: fix race in concurrent __ceph_remove_cap invocations
-Date:   Mon, 28 Dec 2020 13:50:21 +0100
-Message-Id: <20201228124915.302292923@linuxfoundation.org>
+        stable@vger.kernel.org, Tyrel Datwyler <tyreld@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 4.19 303/346] powerpc/rtas: Fix typo of ibm,open-errinjct in RTAS filter
+Date:   Mon, 28 Dec 2020 13:50:22 +0100
+Message-Id: <20201228124934.433209104@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,53 +39,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luis Henriques <lhenriques@suse.de>
+From: Tyrel Datwyler <tyreld@linux.ibm.com>
 
-commit e5cafce3ad0f8652d6849314d951459c2bff7233 upstream.
+commit f10881a46f8914428110d110140a455c66bdf27b upstream.
 
-A NULL pointer dereference may occur in __ceph_remove_cap with some of the
-callbacks used in ceph_iterate_session_caps, namely trim_caps_cb and
-remove_session_caps_cb. Those callers hold the session->s_mutex, so they
-are prevented from concurrent execution, but ceph_evict_inode does not.
+Commit bd59380c5ba4 ("powerpc/rtas: Restrict RTAS requests from userspace")
+introduced the following error when invoking the errinjct userspace
+tool:
 
-Since the callers of this function hold the i_ceph_lock, the fix is simply
-a matter of returning immediately if caps->ci is NULL.
+  [root@ltcalpine2-lp5 librtas]# errinjct open
+  [327884.071171] sys_rtas: RTAS call blocked - exploit attempt?
+  [327884.071186] sys_rtas: token=0x26, nargs=0 (called by errinjct)
+  errinjct: Could not open RTAS error injection facility
+  errinjct: librtas: open: Unexpected I/O error
 
+The entry for ibm,open-errinjct in rtas_filter array has a typo where
+the "j" is omitted in the rtas call name. After fixing this typo the
+errinjct tool functions again as expected.
+
+  [root@ltcalpine2-lp5 linux]# errinjct open
+  RTAS error injection facility open, token = 1
+
+Fixes: bd59380c5ba4 ("powerpc/rtas: Restrict RTAS requests from userspace")
 Cc: stable@vger.kernel.org
-URL: https://tracker.ceph.com/issues/43272
-Suggested-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Luis Henriques <lhenriques@suse.de>
-Reviewed-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20201208195434.8289-1-tyreld@linux.ibm.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/ceph/caps.c |   11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ arch/powerpc/kernel/rtas.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/ceph/caps.c
-+++ b/fs/ceph/caps.c
-@@ -929,12 +929,19 @@ void __ceph_remove_cap(struct ceph_cap *
- {
- 	struct ceph_mds_session *session = cap->session;
- 	struct ceph_inode_info *ci = cap->ci;
--	struct ceph_mds_client *mdsc =
--		ceph_sb_to_client(ci->vfs_inode.i_sb)->mdsc;
-+	struct ceph_mds_client *mdsc;
- 	int removed = 0;
- 
-+	/* 'ci' being NULL means the remove have already occurred */
-+	if (!ci) {
-+		dout("%s: cap inode is NULL\n", __func__);
-+		return;
-+	}
-+
- 	dout("__ceph_remove_cap %p from %p\n", cap, &ci->vfs_inode);
- 
-+	mdsc = ceph_inode_to_client(&ci->vfs_inode)->mdsc;
-+
- 	/* remove from inode's cap rbtree, and clear auth cap */
- 	rb_erase(&cap->ci_node, &ci->i_caps);
- 	if (ci->i_auth_cap == cap)
+--- a/arch/powerpc/kernel/rtas.c
++++ b/arch/powerpc/kernel/rtas.c
+@@ -1095,7 +1095,7 @@ static struct rtas_filter rtas_filters[]
+ 	{ "ibm,display-message", -1, 0, -1, -1, -1 },
+ 	{ "ibm,errinjct", -1, 2, -1, -1, -1, 1024 },
+ 	{ "ibm,close-errinjct", -1, -1, -1, -1, -1 },
+-	{ "ibm,open-errinct", -1, -1, -1, -1, -1 },
++	{ "ibm,open-errinjct", -1, -1, -1, -1, -1 },
+ 	{ "ibm,get-config-addr-info2", -1, -1, -1, -1, -1 },
+ 	{ "ibm,get-dynamic-sensor-state", -1, 1, -1, -1, -1 },
+ 	{ "ibm,get-indices", -1, 2, 3, -1, -1 },
 
 
