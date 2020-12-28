@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8597B2E67CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:30:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E112E6691
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:14:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441817AbgL1Q2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:28:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34734 "EHLO mail.kernel.org"
+        id S1732855AbgL1NSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:18:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730745AbgL1NHR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:07:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E3A562242A;
-        Mon, 28 Dec 2020 13:07:01 +0000 (UTC)
+        id S1731163AbgL1NSr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:18:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F309120728;
+        Mon, 28 Dec 2020 13:18:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160822;
-        bh=DmmkrcitPC7QTS2tPwHnuEaW7XBeQ9vxE83FylVSuew=;
+        s=korg; t=1609161511;
+        bh=xCzLdZIJGpDeYRSRaM9qH/0dI37zodJo6aRBYCqnnmg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yNsgvUF7HB5Y0Z9ir69JfCzBgyMjdxfxJWDeShS8U1L3ZbKcIY6nZpqg3s5K+FVIa
-         jLGAmDUC9cNRQPmgZNg8/XLyNe3lGHydalB0fREkACw5NDCS08h2LU0ptY1yYRe4Bk
-         etL9Xt+JT8bPbzRpE+zr5otPrGyi5SwK6iCrjm7U=
+        b=zcBPz4QH1RQyyxdet07d1QBTYOA1DgxdmCka/eOJdsi2TsxtsQMlYcEwT377L749h
+         UqKZsVt/oJ2jJENZFGjhDTUV/WFLtWlBU90pFenN624cxDcGkR9v7jIj/NzYRp9OKz
+         JgK4ynVzVSNOetSvRSCov347FltE7FMRE7iSef+Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dave Kleikamp <dave.kleikamp@oracle.com>,
-        butt3rflyh4ck <butterflyhuangxx@gmail.com>
-Subject: [PATCH 4.9 160/175] jfs: Fix array index bounds check in dbAdjTree
+        stable@vger.kernel.org, Chunguang Xu <brookxu@tencent.com>,
+        Theodore Tso <tytso@mit.edu>, stable@kernel.org
+Subject: [PATCH 4.14 208/242] ext4: fix a memory leak of ext4_free_data
 Date:   Mon, 28 Dec 2020 13:50:13 +0100
-Message-Id: <20201228124900.995141218@linuxfoundation.org>
+Message-Id: <20201228124914.915132835@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,33 +39,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Kleikamp <dave.kleikamp@oracle.com>
+From: Chunguang Xu <brookxu@tencent.com>
 
-commit c61b3e4839007668360ed8b87d7da96d2e59fc6c upstream.
+commit cca415537244f6102cbb09b5b90db6ae2c953bdd upstream.
 
-Bounds checking tools can flag a bug in dbAdjTree() for an array index
-out of bounds in dmt_stree. Since dmt_stree can refer to the stree in
-both structures dmaptree and dmapctl, use the larger array to eliminate
-the false positive.
+When freeing metadata, we will create an ext4_free_data and
+insert it into the pending free list.  After the current
+transaction is committed, the object will be freed.
 
-Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
-Reported-by: butt3rflyh4ck <butterflyhuangxx@gmail.com>
+ext4_mb_free_metadata() will check whether the area to be freed
+overlaps with the pending free list. If true, return directly. At this
+time, ext4_free_data is leaked.  Fortunately, the probability of this
+problem is small, since it only occurs if the file system is corrupted
+such that a block is claimed by more one inode and those inodes are
+deleted within a single jbd2 transaction.
+
+Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+Link: https://lore.kernel.org/r/1604764698-4269-8-git-send-email-brookxu@tencent.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Cc: stable@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/jfs/jfs_dmap.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/ext4/mballoc.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/fs/jfs/jfs_dmap.h
-+++ b/fs/jfs/jfs_dmap.h
-@@ -196,7 +196,7 @@ typedef union dmtree {
- #define	dmt_leafidx	t1.leafidx
- #define	dmt_height	t1.height
- #define	dmt_budmin	t1.budmin
--#define	dmt_stree	t1.stree
-+#define	dmt_stree	t2.stree
- 
- /*
-  *	on-disk aggregate disk allocation map descriptor.
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -4718,6 +4718,7 @@ ext4_mb_free_metadata(handle_t *handle,
+ 				ext4_group_first_block_no(sb, group) +
+ 				EXT4_C2B(sbi, cluster),
+ 				"Block already on to-be-freed list");
++			kmem_cache_free(ext4_free_data_cachep, new_entry);
+ 			return 0;
+ 		}
+ 	}
 
 
