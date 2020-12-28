@@ -2,124 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E24512E3516
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 09:33:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE7232E3518
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 09:34:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726520AbgL1Icz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 03:32:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59378 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726282AbgL1Icy (ORCPT
+        id S1726531AbgL1IeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 03:34:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726371AbgL1IeQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 03:32:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609144288;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=L0irfHFdDSN+gi4QxY+Eyd06TB6TiH/k57Saupd0Qtc=;
-        b=fTwdWk6hknkqzViJTPIJyzTB4kge/tf2KnHH7IE88WbaBiiLM4Hxu7jJ43Hvznh30yYvjc
-        Uj+gz5Inqc61uhWeFYvNJts40UzpAqDZOfvTsNIhNbVkPGyUo6gUsxInW9DsiNcqQvDjql
-        PmrkjHF28rv2/RoO6u2J0Axl0+CELCs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-475-2dg01nSANUGl60BCcEA5eg-1; Mon, 28 Dec 2020 03:31:25 -0500
-X-MC-Unique: 2dg01nSANUGl60BCcEA5eg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 17607107ACF6;
-        Mon, 28 Dec 2020 08:31:24 +0000 (UTC)
-Received: from krava (unknown [10.40.192.84])
-        by smtp.corp.redhat.com (Postfix) with SMTP id AF71E19441;
-        Mon, 28 Dec 2020 08:31:21 +0000 (UTC)
-Date:   Mon, 28 Dec 2020 09:31:20 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>,
-        Andi Kleen <ak@linux.intel.com>
-Subject: Re: [PATCH 2/3] tools/lib/fs: Diet cgroupfs_find_mountpoint()
-Message-ID: <20201228083120.GA450923@krava>
-References: <20201216090556.813996-1-namhyung@kernel.org>
- <20201216090556.813996-2-namhyung@kernel.org>
+        Mon, 28 Dec 2020 03:34:16 -0500
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B847AC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 00:33:35 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by laurent.telenet-ops.be with bizsmtp
+        id 9kZX2400N4C55Sk01kZXcV; Mon, 28 Dec 2020 09:33:32 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1ktny7-000fco-04; Mon, 28 Dec 2020 09:33:31 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1ktny6-00G2mS-DV; Mon, 28 Dec 2020 09:33:30 +0100
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>
+Cc:     openrisc@lists.librecores.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] openrisc: io: Add missing __iomem annotation to iounmap()
+Date:   Mon, 28 Dec 2020 09:33:28 +0100
+Message-Id: <20201228083328.3823431-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201216090556.813996-2-namhyung@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 06:05:55PM +0900, Namhyung Kim wrote:
+With C=1:
 
-SNIP
+    drivers/soc/renesas/rmobile-sysc.c:330:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *addr @@     got void [noderef] __iomem *[assigned] base @@
+    drivers/soc/renesas/rmobile-sysc.c:330:33: sparse:     expected void *addr
+    drivers/soc/renesas/rmobile-sysc.c:330:33: sparse:     got void [noderef] __iomem *[assigned] base
 
-> +		*p++ = '\0';
->  
-> -			while (token != NULL) {
-> -				if (subsys && !strcmp(token, subsys)) {
-> -					/* found */
-> -					fclose(fp);
-> +		/* check filesystem type */
-> +		if (strncmp(p, "cgroup", 6))
-> +			continue;
->  
-> -					if (strlen(mountpoint) < maxlen) {
-> -						strcpy(buf, mountpoint);
-> -						return 0;
-> -					}
-> -					return -1;
-> -				}
-> -				token = strtok_r(NULL, ",", &saved_ptr);
-> -			}
-> +		if (p[6] == '2') {
-> +			/* save cgroup v2 path */
-> +			strcpy(mountpoint, path);
-> +			continue;
->  		}
->  
-> -		if (!strcmp(type, "cgroup2"))
-> -			strcpy(path_v2, mountpoint);
-> +		/* now we have cgroup v1, check the options for subsystem */
-> +		p += 7;
-> +
-> +		p = strstr(p, subsys);
+Fix this by adding the missing __iomem annotation to iounmap().
 
-not sure this is a real problem, but this would mixe up for
-cpu/cpuacct/cpuset no? we are using the function for perf_event
-subsys only, but it's globaly availble
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ arch/openrisc/include/asm/io.h | 2 +-
+ arch/openrisc/mm/ioremap.c     | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-jirka
-
-> +		if (p == NULL)
-> +			continue;
-> +
-> +		/* sanity check: it should be separated by a space or a comma */
-> +		if (!strchr(" ,", p[-1]) || !strchr(" ,", p[strlen(subsys)]))
-> +			continue;
-> +
-> +		strcpy(mountpoint, path);
-> +		break;
->  	}
-> +	free(line);
->  	fclose(fp);
->  
-> -	if (path_v2[0] && strlen(path_v2) < maxlen) {
-> -		strcpy(buf, path_v2);
-> +	if (mountpoint[0] && strlen(mountpoint) < maxlen) {
-> +		strcpy(buf, mountpoint);
->  		return 0;
->  	}
->  	return -1;
-> -- 
-> 2.29.2.684.gfbc64c5ab5-goog
-> 
+diff --git a/arch/openrisc/include/asm/io.h b/arch/openrisc/include/asm/io.h
+index 7d6b4a77b379d8e2..c298061c70a7ee2e 100644
+--- a/arch/openrisc/include/asm/io.h
++++ b/arch/openrisc/include/asm/io.h
+@@ -31,7 +31,7 @@
+ void __iomem *ioremap(phys_addr_t offset, unsigned long size);
+ 
+ #define iounmap iounmap
+-extern void iounmap(void *addr);
++extern void iounmap(void __iomem *addr);
+ 
+ #include <asm-generic/io.h>
+ 
+diff --git a/arch/openrisc/mm/ioremap.c b/arch/openrisc/mm/ioremap.c
+index a978590d802d0c3b..9595be51b100c40e 100644
+--- a/arch/openrisc/mm/ioremap.c
++++ b/arch/openrisc/mm/ioremap.c
+@@ -78,7 +78,7 @@ void __iomem *__ref ioremap(phys_addr_t addr, unsigned long size)
+ }
+ EXPORT_SYMBOL(ioremap);
+ 
+-void iounmap(void *addr)
++void iounmap(void __iomem *addr)
+ {
+ 	/* If the page is from the fixmap pool then we just clear out
+ 	 * the fixmap mapping.
+-- 
+2.25.1
 
