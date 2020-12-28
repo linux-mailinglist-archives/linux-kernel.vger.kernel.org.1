@@ -2,110 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4890B2E69B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 18:28:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9A912E69BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 18:32:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728324AbgL1R1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 12:27:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53480 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728120AbgL1R1M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 12:27:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC428229C4;
-        Mon, 28 Dec 2020 17:26:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609176392;
-        bh=hgBA1LfyhrKRoWwDF0Wxcneeez8y0WSHLlLztvnSU4E=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=mz9odLtQLrpwiYgV4LHUA1Ze47rZ0owsDAH7FAqumJpbrMKvLyF3BvO18L/yejtmN
-         76u8xXbFpSSaj6N6YDEiMqXVqf6Jyel/FVDoF4in/XqGtNpNzsyM5x+DefkyIs1Xbd
-         jL8B1iEY4r9DPID6dTIdhCc0oPmGCik9CUo0dbOFzb6p8cdV3VOcWALu9VFttqDexN
-         UYxH5Idz0Hv7AB2NWoTYwf6GbWDF97dj4JiUCYtnwSDt8sRhzKY7UofJQ2qRU65O+m
-         6rbTb0we5clViYqCCqd+PvnaQzS7pH0jrf6zPOFmfhfeFWbJrKVDEmq1kbXLAssbuE
-         ZSvfYoYAfpLNA==
-Message-ID: <5bc11eb2e02893e7976f89a888221c902c11a2b4.camel@kernel.org>
-Subject: Re: [PATCH 3/3] overlayfs: Report writeback errors on upper
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Amir Goldstein <amir73il@gmail.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>, Jan Kara <jack@suse.cz>,
-        NeilBrown <neilb@suse.com>, Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>,
-        Chengguang Xu <cgxu519@mykernel.net>
-Date:   Mon, 28 Dec 2020 12:26:29 -0500
-In-Reply-To: <20201228155618.GA6211@casper.infradead.org>
-References: <20201223182026.GA9935@ircssh-2.c.rugged-nimbus-611.internal>
-         <20201223185044.GQ874@casper.infradead.org>
-         <20201223192940.GA11012@ircssh-2.c.rugged-nimbus-611.internal>
-         <20201223200746.GR874@casper.infradead.org>
-         <20201223202140.GB11012@ircssh-2.c.rugged-nimbus-611.internal>
-         <20201223204428.GS874@casper.infradead.org>
-         <CAOQ4uxjAeGv8x2hBBzHz5PjSDq0Q+RN-ikgqEvAA+XE_U-U5Nw@mail.gmail.com>
-         <20201224121352.GT874@casper.infradead.org>
-         <CAOQ4uxj5YS9LSPoBZ3uakb6NeBG7g-Zeu+8Vt57tizEH6xu0cw@mail.gmail.com>
-         <1334bba9cefa81f80005f8416680afb29044379c.camel@kernel.org>
-         <20201228155618.GA6211@casper.infradead.org>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.38.2 (3.38.2-1.fc33) 
+        id S1727730AbgL1RcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 12:32:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726848AbgL1RcA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 12:32:00 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D96B7C0613D6;
+        Mon, 28 Dec 2020 09:31:19 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id x16so15082505ejj.7;
+        Mon, 28 Dec 2020 09:31:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=L6jMggetbrrUEJcKxjzuL9oTosulpOnPLZ2l3XhwKRs=;
+        b=sTNImozLG8IUJ7j7UwjMpqjYlF4QAZZpCW/LSq75Vt0RO1PNnl+NlthpsCUNTS+oEY
+         Oji8WEtUKftUwXdtwbJzUQPnMJGy3Jv4UTXDo6EiV5zRGfTHvxEXGd0GtAD2rOKX8c5J
+         Hb+ec3q1e8ssIeDfVC+hOSCnKd/LiTdq5ZP5h0pMDXO9SKgijrI7UZ5fld2y3w48q7Zu
+         jByVPXR06kOSCI7JBI4qkUv+/ASVdjPP6ai0lrfqwJxiRxO9jtHe8mYAzbmh6RlHdJ+M
+         HL8UADYYuHy/ja4ArNgBGG15iWstN9HGqBT7aEtva3IvIKH77bETrMrW+u+s9Q6mS4/B
+         6E3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=L6jMggetbrrUEJcKxjzuL9oTosulpOnPLZ2l3XhwKRs=;
+        b=XHq3H/o4/5aJ/sHFlRuP+6BtmSb+8f1xFpQ7X4gVhfF3VQMpWdSx0dSLerjD1NqPB2
+         a0dKhZFfk2is6ORbon6uMJrZb6qVafBxNQEXxuxTJdgDzoUnqxKWBZVp36LAiWxcJYV2
+         ruY7upC1HTPATrbS1cQgvisiDgYz0WQzWO5yRaLgAay/079mJgwAgMwhJhEZuMDDFXW4
+         4B94JX9ZXiiFhqxqQiqzp+euBAu4yXjCvfFSuNXpK1XATVss7gYk9+L+SKsSkRfKZtdA
+         9abOqys0nr3KLpbMHmoHPmol8WxLgCCKV5Nzp9rqhmAypg4avc22gBVl/PY+SzanNRPI
+         bAIg==
+X-Gm-Message-State: AOAM5309KyWPf2c/znQHbM1JTY1v3k6bL/FtEV7zQfk0Ncx7CwqUsw2e
+        VB45dpT6z5MgGXqH8/g3E1HVduWLCCyL5u5igQQ=
+X-Google-Smtp-Source: ABdhPJwnGEJ77oSQj1FpVI6e1CvKlbyKgsHA+UHCeVILPPWIBeIAH1mKdtiFuhAXf57/MP63eN9cjUHniQLXulXtYgc=
+X-Received: by 2002:a17:906:b04f:: with SMTP id bj15mr41116505ejb.383.1609176677425;
+ Mon, 28 Dec 2020 09:31:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20201227181310.3235210-1-shakeelb@google.com>
+In-Reply-To: <20201227181310.3235210-1-shakeelb@google.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Mon, 28 Dec 2020 09:31:05 -0800
+Message-ID: <CAHbLzkr16NLLLj2QoJRTsVBwvJHcfeHeubnx7sT28J4G3FYx2w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm: memcg: fix memcg file_dirty numa stat
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Muchun Song <songmuchun@bytedance.com>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-12-28 at 15:56 +0000, Matthew Wilcox wrote:
-> On Mon, Dec 28, 2020 at 08:25:50AM -0500, Jeff Layton wrote:
-> > To be clear, the main thing you'll lose with the method above is the
-> > ability to see an unseen error on a newly opened fd, if there was an
-> > overlayfs mount using the same upper sb before your open occurred.
-> > 
-> > IOW, consider two overlayfs mounts using the same upper layer sb:
-> > 
-> > ovlfs1				ovlfs2
-> > ----------------------------------------------------------------------
-> > mount
-> > open fd1
-> > write to fd1
-> > <writeback fails>
-> > 				mount (upper errseq_t SEEN flag marked)
-> > open fd2
-> > syncfs(fd2)
-> > syncfs(fd1)
-> > 
-> > 
-> > On a "normal" (non-overlay) fs, you'd get an error back on both syncfs
-> > calls. The first one has a sample from before the error occurred, and
-> > the second one has a sample of 0, due to the fact that the error was
-> > unseen at open time.
-> > 
-> > On overlayfs, with the intervening mount of ovlfs2, syncfs(fd1) will
-> > return an error and syncfs(fd2) will not. If we split the SEEN flag into
-> > two, then we can ensure that they both still get an error in this
-> > situation.
-> 
-> But do we need to?  If the inode has been evicted we also lose the errno.
-> The guarantee we provide is that a fd that was open before the error
-> occurred will see the error.  An fd that's opened after the error occurred
-> may or may not see the error.
-> 
+On Sun, Dec 27, 2020 at 10:13 AM Shakeel Butt <shakeelb@google.com> wrote:
+>
+> The kernel updates the per-node NR_FILE_DIRTY stats on page migration
+> but not the memcg numa stats. That was not an issue until recently the
+> commit 5f9a4f4a7096 ("mm: memcontrol: add the missing numa_stat interface
+> for cgroup v2") exposed numa stats for the memcg. So fixing the
+> file_dirty per-memcg numa stat.
+>
+> Fixes: 5f9a4f4a7096 ("mm: memcontrol: add the missing numa_stat interface for cgroup v2")
+> Signed-off-by: Shakeel Butt <shakeelb@google.com>
+> Cc: <stable@vger.kernel.org>
 
-In principle, you can lose errors this way (which was the justification
-for making errseq_sample return 0 when there are unseen errors). E.g.,
-if you close fd1 instead of doing a syncfs on it, that error will be
-lost forever.
+Acked-by: Yang Shi <shy828301@gmail.com>
 
-As to whether that's OK, it's hard to say. It is a deviation from how
-this works in a non-containerized situation, and I'd argue that it's
-less than ideal. You may or may not see the error on fd2, but it's
-dependent on events that take place outside the container and that
-aren't observable from within it. That effectively makes the results
-non-deterministic, which is usually a bad thing in computing...
-
---
-Jeff Layton <jlayton@kernel.org>
-
+> ---
+>  mm/migrate.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index ee5e612b4cd8..613794f6a433 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -500,9 +500,9 @@ int migrate_page_move_mapping(struct address_space *mapping,
+>                         __inc_lruvec_state(new_lruvec, NR_SHMEM);
+>                 }
+>                 if (dirty && mapping_can_writeback(mapping)) {
+> -                       __dec_node_state(oldzone->zone_pgdat, NR_FILE_DIRTY);
+> +                       __dec_lruvec_state(old_lruvec, NR_FILE_DIRTY);
+>                         __dec_zone_state(oldzone, NR_ZONE_WRITE_PENDING);
+> -                       __inc_node_state(newzone->zone_pgdat, NR_FILE_DIRTY);
+> +                       __inc_lruvec_state(new_lruvec, NR_FILE_DIRTY);
+>                         __inc_zone_state(newzone, NR_ZONE_WRITE_PENDING);
+>                 }
+>         }
+> --
+> 2.29.2.729.g45daf8777d-goog
+>
+>
