@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 375AD2E3997
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:25:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4451E2E63DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:45:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388878AbgL1NZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:25:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53548 "EHLO mail.kernel.org"
+        id S2406899AbgL1Pnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:43:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388825AbgL1NY7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:24:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D47C20728;
-        Mon, 28 Dec 2020 13:24:18 +0000 (UTC)
+        id S2405155AbgL1Nqj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:46:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96FAD20715;
+        Mon, 28 Dec 2020 13:45:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161859;
-        bh=gBTYxyz9FVCKR/c+SIw2G089LFP/frB1+sQhJj4VgAM=;
+        s=korg; t=1609163158;
+        bh=wddrTEZSFp8tpg3DEI4euQqLtSB2pEiOL2ZO9DJISmI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Mnu2wlMIj7pETDaxBi2RsGsc2Vg7jZiidvnZykCV4NRqoBQ2bCOFluCfckeJ+yncp
-         uotD7rU742/PQH80xQrKa10PgXB+RJJhniJOAgHZzzHPdPoCMhpV7Q/LXNigTaChrs
-         +GdTH8J0oyHL1xAh9uGc32bXXCIjs9IyOxdU5Rac=
+        b=fA82Xce6dkbyZkTjdmefThBnamH4qyeGVwQjmwKOUNNozIhFSk38cEfqCh1qGJ9oD
+         A8izXjwczMblY8EdjwtzZJS/7G035/fwjxjzEhJyT5qLnGFUQr9uex/bJzciB619WO
+         qsRyAvGVMoxAIYsmPnMhbCWEh2LOz4p09qb99Ou4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bob Pearson <rpearson@hpe.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Bharat Gooty <bharat.gooty@broadcom.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 106/346] RDMA/rxe: Compute PSN windows correctly
-Date:   Mon, 28 Dec 2020 13:47:05 +0100
-Message-Id: <20201228124924.909570739@linuxfoundation.org>
+Subject: [PATCH 5.4 190/453] PCI: iproc: Fix out-of-bound array accesses
+Date:   Mon, 28 Dec 2020 13:47:06 +0100
+Message-Id: <20201228124946.354888773@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,41 +40,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Pearson <rpearsonhpe@gmail.com>
+From: Bharat Gooty <bharat.gooty@broadcom.com>
 
-[ Upstream commit bb3ab2979fd69db23328691cb10067861df89037 ]
+[ Upstream commit a3ff529f5d368a17ff35ada8009e101162ebeaf9 ]
 
-The code which limited the number of unacknowledged PSNs was incorrect.
-The PSNs are limited to 24 bits and wrap back to zero from 0x00ffffff.
-The test was computing a 32 bit value which wraps at 32 bits so that
-qp->req.psn can appear smaller than the limit when it is actually larger.
+Declare the full size array for all revisions of PAX register sets
+to avoid potentially out of bound access of the register array
+when they are being initialized in iproc_pcie_rev_init().
 
-Replace '>' test with psn_compare which is used for other PSN comparisons
-and correctly handles the 24 bit size.
-
-Fixes: 8700e3e7c485 ("Soft RoCE driver")
-Link: https://lore.kernel.org/r/20201013170741.3590-1-rpearson@hpe.com
-Signed-off-by: Bob Pearson <rpearson@hpe.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Link: https://lore.kernel.org/r/20201001060054.6616-2-srinath.mannam@broadcom.com
+Fixes: 06324ede76cdf ("PCI: iproc: Improve core register population")
+Signed-off-by: Bharat Gooty <bharat.gooty@broadcom.com>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/sw/rxe/rxe_req.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/pci/controller/pcie-iproc.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-index 1c1eae0ef8c28..63db49144f62b 100644
---- a/drivers/infiniband/sw/rxe/rxe_req.c
-+++ b/drivers/infiniband/sw/rxe/rxe_req.c
-@@ -664,7 +664,8 @@ next_wqe:
- 	}
+diff --git a/drivers/pci/controller/pcie-iproc.c b/drivers/pci/controller/pcie-iproc.c
+index 933a4346ae5d6..c6b1c18165e5c 100644
+--- a/drivers/pci/controller/pcie-iproc.c
++++ b/drivers/pci/controller/pcie-iproc.c
+@@ -307,7 +307,7 @@ enum iproc_pcie_reg {
+ };
  
- 	if (unlikely(qp_type(qp) == IB_QPT_RC &&
--		     qp->req.psn > (qp->comp.psn + RXE_MAX_UNACKED_PSNS))) {
-+		psn_compare(qp->req.psn, (qp->comp.psn +
-+				RXE_MAX_UNACKED_PSNS)) > 0)) {
- 		qp->req.wait_psn = 1;
- 		goto exit;
- 	}
+ /* iProc PCIe PAXB BCMA registers */
+-static const u16 iproc_pcie_reg_paxb_bcma[] = {
++static const u16 iproc_pcie_reg_paxb_bcma[IPROC_PCIE_MAX_NUM_REG] = {
+ 	[IPROC_PCIE_CLK_CTRL]		= 0x000,
+ 	[IPROC_PCIE_CFG_IND_ADDR]	= 0x120,
+ 	[IPROC_PCIE_CFG_IND_DATA]	= 0x124,
+@@ -318,7 +318,7 @@ static const u16 iproc_pcie_reg_paxb_bcma[] = {
+ };
+ 
+ /* iProc PCIe PAXB registers */
+-static const u16 iproc_pcie_reg_paxb[] = {
++static const u16 iproc_pcie_reg_paxb[IPROC_PCIE_MAX_NUM_REG] = {
+ 	[IPROC_PCIE_CLK_CTRL]		= 0x000,
+ 	[IPROC_PCIE_CFG_IND_ADDR]	= 0x120,
+ 	[IPROC_PCIE_CFG_IND_DATA]	= 0x124,
+@@ -334,7 +334,7 @@ static const u16 iproc_pcie_reg_paxb[] = {
+ };
+ 
+ /* iProc PCIe PAXB v2 registers */
+-static const u16 iproc_pcie_reg_paxb_v2[] = {
++static const u16 iproc_pcie_reg_paxb_v2[IPROC_PCIE_MAX_NUM_REG] = {
+ 	[IPROC_PCIE_CLK_CTRL]		= 0x000,
+ 	[IPROC_PCIE_CFG_IND_ADDR]	= 0x120,
+ 	[IPROC_PCIE_CFG_IND_DATA]	= 0x124,
+@@ -363,7 +363,7 @@ static const u16 iproc_pcie_reg_paxb_v2[] = {
+ };
+ 
+ /* iProc PCIe PAXC v1 registers */
+-static const u16 iproc_pcie_reg_paxc[] = {
++static const u16 iproc_pcie_reg_paxc[IPROC_PCIE_MAX_NUM_REG] = {
+ 	[IPROC_PCIE_CLK_CTRL]		= 0x000,
+ 	[IPROC_PCIE_CFG_IND_ADDR]	= 0x1f0,
+ 	[IPROC_PCIE_CFG_IND_DATA]	= 0x1f4,
+@@ -372,7 +372,7 @@ static const u16 iproc_pcie_reg_paxc[] = {
+ };
+ 
+ /* iProc PCIe PAXC v2 registers */
+-static const u16 iproc_pcie_reg_paxc_v2[] = {
++static const u16 iproc_pcie_reg_paxc_v2[IPROC_PCIE_MAX_NUM_REG] = {
+ 	[IPROC_PCIE_MSI_GIC_MODE]	= 0x050,
+ 	[IPROC_PCIE_MSI_BASE_ADDR]	= 0x074,
+ 	[IPROC_PCIE_MSI_WINDOW_SIZE]	= 0x078,
 -- 
 2.27.0
 
