@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EFEF2E684E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:35:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B94E92E6587
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:03:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729992AbgL1NCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:02:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57636 "EHLO mail.kernel.org"
+        id S2393767AbgL1QC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:02:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729880AbgL1NBw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:01:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 98FC2208D5;
-        Mon, 28 Dec 2020 13:01:36 +0000 (UTC)
+        id S2390237AbgL1NaA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:30:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D510E207CF;
+        Mon, 28 Dec 2020 13:29:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160497;
-        bh=BJQzKBsOh1mZWBXbkvzZnT2M0lHggzmFDtlvtFNHVB0=;
+        s=korg; t=1609162159;
+        bh=sDx9sZ+7jBEinEnY8Rl+lvF5nYliEIwOHV9qA5blvpo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a1AbK0ZSWmX6+GaEOweyDA6P7e5gxjwcVle9o2QmdT62/fdmFOONKUFL7QNtICFGW
-         XdEZ9zclPQp+kryi3k3EtNb6ITM3mc9ayfUXbGAw9twMqKKeu/QnWoyU77GDgAuFqR
-         WDxzy2jMg/w/Efg5A21hU9oMArt7fIgPgaBJktug=
+        b=mYlWUbUfCbv1RdZln/NfFU/A/BNmoGfcxx9VK7VWMYjkYMAfaKB0oWoowc+OR7zj4
+         6dRUgB3hHlrEW8lvdAWvNMnVbGRtCtIMQY2CWI5HgC49OPshopMm4jheEqayhmpzUx
+         C41ZDTcqotTFFfRbMDRk2q/0Wq4a9m/BKWGf5CPo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 072/175] crypto: omap-aes - Fix PM disable depth imbalance in omap_aes_probe
-Date:   Mon, 28 Dec 2020 13:48:45 +0100
-Message-Id: <20201228124856.733924429@linuxfoundation.org>
+Subject: [PATCH 4.19 207/346] cpufreq: loongson1: Add missing MODULE_ALIAS
+Date:   Mon, 28 Dec 2020 13:48:46 +0100
+Message-Id: <20201228124929.799721687@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +41,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Pali Rohár <pali@kernel.org>
 
-[ Upstream commit ff8107200367f4abe0e5bce66a245e8d0f2d229e ]
+[ Upstream commit b9acab091842ca8b288882798bb809f7abf5408a ]
 
-The pm_runtime_enable will increase power disable depth.
-Thus a pairing decrement is needed on the error handling
-path to keep it balanced according to context.
+This patch adds missing MODULE_ALIAS for automatic loading of this cpufreq
+driver when it is compiled as an external module.
 
-Fixes: f7b2b5dd6a62a ("crypto: omap-aes - add error check for pm_runtime_get_sync")
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Fixes: a0a22cf14472f ("cpufreq: Loongson1: Add cpufreq driver for Loongson1B")
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/omap-aes.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/cpufreq/loongson1-cpufreq.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/crypto/omap-aes.c b/drivers/crypto/omap-aes.c
-index fe32dd95ae4ff..a2d5ba0a0d5a0 100644
---- a/drivers/crypto/omap-aes.c
-+++ b/drivers/crypto/omap-aes.c
-@@ -1172,7 +1172,7 @@ static int omap_aes_probe(struct platform_device *pdev)
- 	if (err < 0) {
- 		dev_err(dev, "%s: failed to get_sync(%d)\n",
- 			__func__, err);
--		goto err_res;
-+		goto err_pm_disable;
- 	}
+diff --git a/drivers/cpufreq/loongson1-cpufreq.c b/drivers/cpufreq/loongson1-cpufreq.c
+index be89416e2358f..9d902f67f8716 100644
+--- a/drivers/cpufreq/loongson1-cpufreq.c
++++ b/drivers/cpufreq/loongson1-cpufreq.c
+@@ -217,6 +217,7 @@ static struct platform_driver ls1x_cpufreq_platdrv = {
  
- 	omap_aes_dma_stop(dd);
-@@ -1257,6 +1257,7 @@ err_engine:
- 	omap_aes_dma_cleanup(dd);
- err_irq:
- 	tasklet_kill(&dd->done_task);
-+err_pm_disable:
- 	pm_runtime_disable(dev);
- err_res:
- 	dd = NULL;
+ module_platform_driver(ls1x_cpufreq_platdrv);
+ 
++MODULE_ALIAS("platform:ls1x-cpufreq");
+ MODULE_AUTHOR("Kelvin Cheung <keguang.zhang@gmail.com>");
+ MODULE_DESCRIPTION("Loongson1 CPUFreq driver");
+ MODULE_LICENSE("GPL");
 -- 
 2.27.0
 
