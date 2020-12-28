@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C28C42E3F7E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:42:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E92842E3A47
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:35:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503351AbgL1O2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:28:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36690 "EHLO mail.kernel.org"
+        id S2389206AbgL1Nek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:34:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34760 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502554AbgL1O2s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:28:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 615C1221F0;
-        Mon, 28 Dec 2020 14:28:07 +0000 (UTC)
+        id S2389123AbgL1NeU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:34:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C112B20719;
+        Mon, 28 Dec 2020 13:33:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165687;
-        bh=IQ6vgFz9x4ScKW4PKMTUZSzjyHMKBWg0BaUAwIo9Bg0=;
+        s=korg; t=1609162420;
+        bh=isSAkKMBstPr7qdUrp9/6zGpLjU+b3IX4mEHBV7tq7Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XI5esLmJbU5hCEthC5VYwGNxYS9bkcBPtL78RMYyMnkOgCruVcrxg8eSIhJDJtZb0
-         IJq/bIMnwqgrIQvBKqH4Js/wE3xu0AWciNfWrt+qJf39dMTBQWEteJC+ZVk1B/WdwV
-         VUlbQNwZDyod635TJeqqjyDQD5t51zHIwq2tm4hM=
+        b=UUymVS0ZsEXYwI2LWvobIsCxNpqPfoKLz81cMxVc7jSBo0uHSoHPe6pyaAfunhDbR
+         ZiKG/LyJ4bC6zLaG8w05BPF53PhVx7htAHijTji/dHuknEmNE8dalp8cVZKZdwpKV5
+         Yv3tgU5ecItWh30qLN28+wPYhNbDfeDzzLithaIM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Richard Weinberger <richard@nod.at>
-Subject: [PATCH 5.10 620/717] um: Remove use of asprinf in umid.c
+        stable@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Marc Zyngier <maz@kernel.org>
+Subject: [PATCH 4.19 299/346] KVM: arm64: Introduce handling of AArch32 TTBCR2 traps
 Date:   Mon, 28 Dec 2020 13:50:18 +0100
-Message-Id: <20201228125050.632289154@linuxfoundation.org>
+Message-Id: <20201228124934.239041920@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,51 +39,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+From: Marc Zyngier <maz@kernel.org>
 
-commit 97be7ceaf7fea68104824b6aa874cff235333ac1 upstream.
+commit ca4e514774930f30b66375a974b5edcbebaf0e7e upstream.
 
-asprintf is not compatible with the existing uml memory allocation
-mechanism. Its use on the "user" side of UML results in a corrupt slab
-state.
+ARMv8.2 introduced TTBCR2, which shares TCR_EL1 with TTBCR.
+Gracefully handle traps to this register when HCR_EL2.TVM is set.
 
-Fixes: 0d4e5ac7e780 ("um: remove uses of variable length arrays")
 Cc: stable@vger.kernel.org
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Reported-by: James Morse <james.morse@arm.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/um/os-Linux/umid.c |   17 +++++------------
- 1 file changed, 5 insertions(+), 12 deletions(-)
+ arch/arm64/include/asm/kvm_host.h |    1 +
+ arch/arm64/kvm/sys_regs.c         |    1 +
+ 2 files changed, 2 insertions(+)
 
---- a/arch/um/os-Linux/umid.c
-+++ b/arch/um/os-Linux/umid.c
-@@ -137,20 +137,13 @@ static inline int is_umdir_used(char *di
- {
- 	char pid[sizeof("nnnnnnnnn")], *end, *file;
- 	int dead, fd, p, n, err;
--	size_t filelen;
-+	size_t filelen = strlen(dir) + sizeof("/pid") + 1;
- 
--	err = asprintf(&file, "%s/pid", dir);
--	if (err < 0)
--		return 0;
-+	file = malloc(filelen);
-+	if (!file)
-+		return -ENOMEM;
- 
--	filelen = strlen(file);
--
--	n = snprintf(file, filelen, "%s/pid", dir);
--	if (n >= filelen) {
--		printk(UM_KERN_ERR "is_umdir_used - pid filename too long\n");
--		err = -E2BIG;
--		goto out;
--	}
-+	snprintf(file, filelen, "%s/pid", dir);
- 
- 	dead = 0;
- 	fd = open(file, O_RDONLY);
+--- a/arch/arm64/include/asm/kvm_host.h
++++ b/arch/arm64/include/asm/kvm_host.h
+@@ -165,6 +165,7 @@ enum vcpu_sysreg {
+ #define c2_TTBR1	(TTBR1_EL1 * 2)	/* Translation Table Base Register 1 */
+ #define c2_TTBR1_high	(c2_TTBR1 + 1)	/* TTBR1 top 32 bits */
+ #define c2_TTBCR	(TCR_EL1 * 2)	/* Translation Table Base Control R. */
++#define c2_TTBCR2	(c2_TTBCR + 1)	/* Translation Table Base Control R. 2 */
+ #define c3_DACR		(DACR32_EL2 * 2)/* Domain Access Control Register */
+ #define c5_DFSR		(ESR_EL1 * 2)	/* Data Fault Status Register */
+ #define c5_IFSR		(IFSR32_EL2 * 2)/* Instruction Fault Status Register */
+--- a/arch/arm64/kvm/sys_regs.c
++++ b/arch/arm64/kvm/sys_regs.c
+@@ -1661,6 +1661,7 @@ static const struct sys_reg_desc cp15_re
+ 	{ Op1( 0), CRn( 2), CRm( 0), Op2( 0), access_vm_reg, NULL, c2_TTBR0 },
+ 	{ Op1( 0), CRn( 2), CRm( 0), Op2( 1), access_vm_reg, NULL, c2_TTBR1 },
+ 	{ Op1( 0), CRn( 2), CRm( 0), Op2( 2), access_vm_reg, NULL, c2_TTBCR },
++	{ Op1( 0), CRn( 2), CRm( 0), Op2( 3), access_vm_reg, NULL, c2_TTBCR2 },
+ 	{ Op1( 0), CRn( 3), CRm( 0), Op2( 0), access_vm_reg, NULL, c3_DACR },
+ 	{ Op1( 0), CRn( 5), CRm( 0), Op2( 0), access_vm_reg, NULL, c5_DFSR },
+ 	{ Op1( 0), CRn( 5), CRm( 0), Op2( 1), access_vm_reg, NULL, c5_IFSR },
 
 
