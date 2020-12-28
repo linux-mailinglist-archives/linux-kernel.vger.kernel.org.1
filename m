@@ -2,138 +2,450 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A5F72E6A3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 20:05:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DEA62E6A40
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 20:05:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728939AbgL1TDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 14:03:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48514 "EHLO
+        id S1728985AbgL1TDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 14:03:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726420AbgL1TDD (ORCPT
+        with ESMTP id S1728943AbgL1TDd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 14:03:03 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7B9CC0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 11:02:22 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id b5so132586pjl.0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 11:02:22 -0800 (PST)
+        Mon, 28 Dec 2020 14:03:33 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B9E5C061796
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 11:02:53 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id x16so15396079ejj.7
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 11:02:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9L6Dr5sxdezBC4OpmmaOhXe6b4vZdmWSZ6Gdec9tCP8=;
-        b=tlT53lzSTmTG0ty6NL+gXCzXXdyL+uu/gbAAfX6K+KenKLJJZCjRylvCcP578eDjkY
-         XxJ3NryW9DGB81TCMOnkY5Lyoyh5Kdilynm6T0dirZMzeYaoqstXj8S22uyqOWhVE0Lw
-         Fqp5auhuXb+WQrsM1S0l3b7VKx87H6mHWjcSQlZi++XpawjGzGuoj2GoN4uijrEiT6MV
-         009OcYvZWt8BA09v4Aq/pft81pxFIHRwntqUWWg4sa/VPV+Vnz1U8r+gq4U8IUDfsFz8
-         N7kDqHphYHwO4FdFD2PMOYnBRehyut9UrOTLsSJt8In4LGeVFxYJGFRe4QYm9tOjoqo0
-         gevQ==
+        d=gateworks-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/HzG3+Wrxlm1uvlpRJdQ/9SwGbL2ngQgBk55RSigqh8=;
+        b=ZhZY6jiqNdtWOt4+i9RckrGICCET3/MFEdKBQB4rj4dJBLmVtRLvMPbwkbdiKAiWA4
+         +HlUEh6OzjfDIDv/HlD2pjsfu2CvDD4U+otRA3fzdSlfB5J0YFUdZdE4Pk2fIhOe0yoG
+         ZLkHZMrieSA4punb/E6Tp1RGmKjtMU2Eu33ROlMLq/iKMQRghuOeVrNlhJ8pk5QR9Mo3
+         UyTWPP5BHB9VF3eIU0Up2oTOtSMa6g0GjVkswVgqsA0v/Zh66ET/QVZrI9jr6keMnM4B
+         I6ZT77Vh+CHqXjiAZZPq5G1fKNeCb2SOy1t4yr9lkFuiK9c9H7zIYsgwIRf4tmRLGJVL
+         aeZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9L6Dr5sxdezBC4OpmmaOhXe6b4vZdmWSZ6Gdec9tCP8=;
-        b=U5VGNxyIAgY/wunF1/z1JrjFiSs7qgyhhJvlZ1D+jR0zXiL5Zybz97nN4dAU/cqiLz
-         D7qR/lQ2anLivSDz7R8l0m7krz8J2xGbF0pPPaJgqQ3/WkObomnBPr98RtwBuTbMwVfD
-         2XF4DRy8XBAkUwXxhNP3duhdtLI3E2Qqx+cr+HbcabKZw4zNwUZRKJGQpQKJU05vDbBZ
-         Jh8yAfWLnZNcNfpOsgmgH9ouDF+KrbJgJly3y8OZZaC32w/r9O/XWjXoeeD39Jhr+zgr
-         S2VbrE/Fw+QnDOPXnMcVpxXjTPNTNdmPhpsLPxH2ET+bq5wveCEuF1zusTbeztoC0/XR
-         aYYA==
-X-Gm-Message-State: AOAM532I3PREiA0VbTbkGiT9u9bemv0jNoNqeMnIBZuw8LOratNuDdsP
-        6nP7FBsSOn0Wn/WTTyuPUcuZPg==
-X-Google-Smtp-Source: ABdhPJxSxW06v1JsYutv54cB5EFV0+8MEhaqnSGzGgS4+PRrLxsCFBoECynlRw2MapRfxa1mEXYEtw==
-X-Received: by 2002:a17:90b:1a86:: with SMTP id ng6mr323206pjb.12.1609182142087;
-        Mon, 28 Dec 2020 11:02:22 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id a29sm37072233pfr.73.2020.12.28.11.02.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Dec 2020 11:02:21 -0800 (PST)
-Date:   Mon, 28 Dec 2020 11:02:14 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>, x86-ml <x86@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] Documentation/submitting-patches: Add blurb about
- backtraces in commit messages
-Message-ID: <X+ortkgzfCfW6wS3@google.com>
-References: <20201217183756.GE23634@zn.tnic>
- <20201221095425.6da68163@lwn.net>
- <20201222130555.GA13463@zn.tnic>
- <X+JCCqTJkgZASj7T@google.com>
- <20201222192517.GE13463@zn.tnic>
- <X+odFBu+smuDiOcO@google.com>
- <20201228181544.GA20321@zn.tnic>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/HzG3+Wrxlm1uvlpRJdQ/9SwGbL2ngQgBk55RSigqh8=;
+        b=tcKcnvfMLSqFRAr0CE5e/y8J+V1UIPlTyIdW0Gi2oJXiH3ZP/7MMmF+ShesCpWAP55
+         fYqG0NyuRal/RO1lJ9l6EwMc6D82IZsNYyuhu8bA1HQ8WAh2NErnixVItteRRzYrO2y8
+         DF5CgI/oJJnK6/Rj81AHcCXhJXQOMKv+GekK7K63ZsG0TXfCNFarFaukI5/IkCMXUqCa
+         J4N6Nu0i+nEbz7M3vgVmJQerDfI21tTD+MWwW/xkqBMYGz+i1ejxjyWRtVMAQSNqLsFc
+         dFer3OJr9IIEL8nSB+VJim8ZKVv3S8zKQfSEh32Q/dWTseYQiuALc4WRayE4KIdmaEQD
+         5iug==
+X-Gm-Message-State: AOAM531LAnwG8tCddsZ97L1iAJ96PZ6nqdT4H2g6PoQC4T0OV2a+iv1b
+        gabfwDt6U3YqiltaVOBKMrDVjA98Q0z7x3mHbnHtcg==
+X-Google-Smtp-Source: ABdhPJwKRRWujBfKrBmeWi/c/jUnxNm3v7/iJ/ToIvs/EiLA4NlFfJ3NeyT5n84Hi+BboVXOMX5fy3BaCZKrc9NLfWg=
+X-Received: by 2002:a17:906:720e:: with SMTP id m14mr41064601ejk.161.1609182171693;
+ Mon, 28 Dec 2020 11:02:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201228181544.GA20321@zn.tnic>
+References: <1608762196-29871-1-git-send-email-tharvey@gateworks.com>
+ <1608762196-29871-2-git-send-email-tharvey@gateworks.com> <20201224113727.GB15628@kozik-lap>
+In-Reply-To: <20201224113727.GB15628@kozik-lap>
+From:   Tim Harvey <tharvey@gateworks.com>
+Date:   Mon, 28 Dec 2020 11:02:40 -0800
+Message-ID: <CAJ+vNU2NRWx74e94ToFJ+jKgrSveZeGVR8uTOJ+JAaWN3d=PXw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] arm64: dts: imx8mm: Add Gateworks IMX8MM Development Kits
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Device Tree Mailing List <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020, Borislav Petkov wrote:
-> On Mon, Dec 28, 2020 at 09:59:48AM -0800, Sean Christopherson wrote:
-> > Obvious and superfluous for people that are intimately familiar with the code,
-> > but explicit call stacks are extremely helpful when (re)learning code.
-> 
-> Here's an example:
-> 
-> [    2.649874] x86/mm: Checked W+X mappings: passed, no W+X pages found.
-> [    2.651774] ------------[ cut here ]------------
-> [    2.652726] WARNING: CPU: 2 PID: 1 at init/main.c:1436 kernel_init+0x58/0x107
-> [    2.653643] Modules linked in:
-> [    2.654260] CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.11.0-rc1+ #2
-> [    2.654396] usb 1-1: new full-speed USB device number 2 using uhci_hcd
-> [    2.655125] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014
-> [    2.657687] RIP: 0010:kernel_init+0x58/0x107
-> [    2.658391] Code: 5e fc ff eb 0c 48 c7 c7 18 bc 09 82 e8 8a a4 fc ff c7 05 a2 5f b0 07 02 00 00 00 e8 a9 1c 9b ff e8 b4 dc 89 ff e8 2f d3 a6 ff <0f> 0b 48 8b 3d 76 87 9d 00 48 85 ff 74 22 e8 ef 19 fc ff 85 c0 89
-> [    2.660707] RSP: 0018:ffffc90000013f50 EFLAGS: 00010292
-> [    2.661499] RAX: ffff88800ebcdc01 RBX: ffffffff81837b59 RCX: 0000000000000802
-> [    2.662469] RDX: 00000000000007f2 RSI: 05b5d427c1a6d18d RDI: 000000000002d100
-> [    2.663411] RBP: 0000000000000000 R08: 000000000000000d R09: 000000000000000c
-> [    2.664318] R10: 000000000000000d R11: 0000000000000020 R12: 0000000000000000
-> [    2.666458] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-> [    2.667462] FS:  0000000000000000(0000) GS:ffff88807da80000(0000) knlGS:0000000000000000
-> [    2.668472] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [    2.669257] CR2: 0000000000000000 CR3: 000000000220a000 CR4: 00000000003506e0
-> [    2.670183] Call Trace:
-> [    2.670723]  ret_from_fork+0x22/0x30
-> [    2.671340] ---[ end trace 385e10f347736cf9 ]---
-> 
-> Yes, useless. The callstack is not even there.
-> 
-> This is the only line that matters:
-> 
-> [    2.652726] WARNING: CPU: 2 PID: 1 at init/main.c:1436 kernel_init+0x58/0x107
-> 
-> because what caused it is:
-> 
-> diff --git a/init/main.c b/init/main.c
-> index 6feee7f11eaf..aa52355d98ae 100644
-> --- a/init/main.c
-> +++ b/init/main.c
-> @@ -1433,6 +1433,8 @@ static int __ref kernel_init(void *unused)
->  
->         do_sysctl_args();
->  
-> +       WARN_ON_ONCE(1);
-> +
->         if (ramdisk_execute_command) {
->                 ret = run_init_process(ramdisk_execute_command);
->                 if (!ret)
-> 
-> 
-> even if you had a stack trace here, it would be totally useless because
-> you *know* where it came from.
-> 
-> But ok, I can change the formulation that it is up to the committer's
-> judgement to decide whether to remove that blurb. Because I definitely
-> will be removing a useless noise like that before committing.
+On Thu, Dec 24, 2020 at 3:37 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
 
-I 100% agree in this specific case.  What I'm arguing is that cases like this
-where the call stack is completely uninteresting are few and far between.  The
-documentation should focus on the common case where, IMO, the call stack should
-be included, even if it might be obvious for some/many people.  E.g. similar to
-how many kconfig options have something like "If unsure, say Y", I think the
-blurb should encourage including the call stack unless the author is 100% sure
-that it's useless.
+Thanks for the review!
+
+> On Wed, Dec 23, 2020 at 02:23:16PM -0800, Tim Harvey wrote:
+> > The Gateworks Venice GW71xx-0x/GW72xx-0x/GW73xx-0x are development
+> > kits comprised of a GW700x SoM and a Baseboard.
+> >
+> > The GW700x SoM contains:
+> >  - IMX8MM SoC
+>
+> It's i.MX 8M Mini.
+> https://www.nxp.com/products/processors-and-microcontrollers/arm-processors/i-mx-applications-processors/i-mx-8-processors/i-mx-8m-mini-arm-cortex-a53-cortex-m4-audio-voice-video:i.MX8MMINI
+>
+
+ok
+
+> >  - LPDDR4 DRAM
+> >  - eMMC FLASH
+> >  - Gateworks System Controller (eeprom/pushbutton/reset/voltage-monitor)
+> >  - GbE PHY connected to the IMX8MM FEC
+> >  - Power Management IC
+> >
+> > The GW71xx Baseboard contains:
+> >  - 1x MiniPCIe Socket with USB2.0, PCIe, and SIM
+> >  - 1x RJ45 GbE (IMX8MM FEC)
+> >  - PCIe Clock generator
+> >  - GPS and accelerometer
+> >  - 1x USB 2.0 Front Panel connector
+> >  - wide range power supply
+> >
+> > The GW72xx Baseboard contains:
+> >  - 2x MiniPCIe Socket with USB2.0, PCIe, and SIM
+> >  - 2x RJ45 GbE (IMX8MM FEC and LAN743x)
+> >  - 1x MicroSD connector
+> >  - 1x USB 2.0 Front Panel connector
+> >  - 1x SPI connector
+> >  - PCIe Clock generator
+> >  - GPS and accelerometer
+> >  - Media Expansion connector (MIPI-CSI/MIPI-DSI/GPIO/I2S)
+> >  - wide range power supply
+> >
+> > The GW73xx Baseboard contains:
+> >  - 3x MiniPCIe Socket with USB2.0, PCIe, and SIM
+> >  - 2x RJ45 GbE (IMX8MM FEC and LAN743x)
+> >  - 1x MicroSD connector
+> >  - 1x USB 2.0 Front Panel connector
+> >  - 1x SPI connector
+> >  - WiFi/BT
+> >  - PCIe Clock generator
+> >  - GPS and accelerometer
+> >  - Media Expansion connector (MIPI-CSI/MIPI-DSI/GPIO/I2S)
+> >  - wide range power supply
+> >
+> > Signed-off-by: Tim Harvey <tharvey@gateworks.com>
+> > ---
+<snip>
+> > --- /dev/null
+> > +++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw700x.dtsi
+> > @@ -0,0 +1,482 @@
+> > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> > +/*
+> > + * Copyright 2020 Gateworks Corporation
+> > + */
+> > +
+> > +#include <dt-bindings/gpio/gpio.h>
+> > +#include <dt-bindings/input/linux-event-codes.h>
+> > +#include <dt-bindings/net/ti-dp83867.h>
+> > +
+> > +/ {
+> > +     memory@40000000 {
+> > +             device_type = "memory";
+> > +             reg = <0x0 0x40000000 0 0x80000000>;
+> > +     };
+> > +
+> > +     gpio_keys {
+> > +             compatible = "gpio-keys";
+> > +             #address-cells = <1>;
+> > +             #size-cells = <0>;
+> > +
+> > +             user_pb {
+> > +                     label = "user_pb";
+> > +                     gpios = <&gsc_gpio 2 GPIO_ACTIVE_LOW>;
+> > +                     linux,code = <BTN_0>;
+> > +             };
+> > +
+> > +             user_pb1x {
+> > +                     label = "user_pb1x";
+> > +                     linux,code = <BTN_1>;
+> > +                     interrupt-parent = <&gsc>;
+> > +                     interrupts = <0>;
+> > +             };
+> > +
+> > +             key_erased {
+> > +                     label = "key-erased";
+>
+> Above you use underscore, here hyphen. Make it consistent.
+
+ok
+
+>
+> > +                     linux,code = <BTN_2>;
+> > +                     interrupt-parent = <&gsc>;
+> > +                     interrupts = <1>;
+> > +             };
+> > +
+> > +             eeprom_wp {
+> > +                     label = "eeprom_wp";
+> > +                     linux,code = <BTN_3>;
+> > +                     interrupt-parent = <&gsc>;
+> > +                     interrupts = <2>;
+> > +             };
+> > +
+> > +             tamper {
+> > +                     label = "tamper";
+> > +                     linux,code = <BTN_4>;
+> > +                     interrupt-parent = <&gsc>;
+> > +                     interrupts = <5>;
+> > +             };
+> > +
+> > +             switch_hold {
+> > +                     label = "switch_hold";
+> > +                     linux,code = <BTN_5>;
+> > +                     interrupt-parent = <&gsc>;
+> > +                     interrupts = <7>;
+> > +             };
+> > +     };
+> > +};
+> > +
+<snip>
+> > +
+> > +&i2c1 {
+> > +     clock-frequency = <100000>;
+> > +     pinctrl-names = "default";
+> > +     pinctrl-0 = <&pinctrl_i2c1>;
+> > +     status = "okay";
+> > +
+> > +     gsc: gsc@20 {
+>
+> Node name should describe class of a device so maybe
+> "system-controller"?
+>
+
+The node-name here must match 'gsc' due to the bindings. The name
+stands for 'Gateworks System Controller'.
+
+> > +             compatible = "gw,gsc";
+> > +             reg = <0x20>;
+> > +             pinctrl-0 = <&pinctrl_gsc>;
+> > +             interrupt-parent = <&gpio2>;
+> > +             interrupts = <6 GPIO_ACTIVE_LOW>;
+>
+> Wrong flag.
+>
+
+oops... thanks for catching it was supposed to be falling anyway. I
+will change to IRQ_TYPE_EDGE_FALLING
+
+> > +             interrupt-controller;
+> > +             #interrupt-cells = <1>;
+> > +             #address-cells = <1>;
+> > +             #size-cells = <0>;
+> > +
+> > +             adc {
+>
+> Just to be sure - did you build it with W=1 to find any dtc warnings?
+>
+
+I did 'make dtbs_check' but not with W=1... will do that for next submission
+
+> > +                     compatible = "gw,gsc-adc";
+> > +                     #address-cells = <1>;
+> > +                     #size-cells = <0>;
+> > +
+<snip>
+> > +             };
+> > +
+> > +             fan-controller@0 {
+> > +                     #address-cells = <1>;
+> > +                     #size-cells = <0>;
+>
+> These do not seem needed.
+
+They are required per
+Documentation/devicetree/bindings/mfd/gateworks-gsc.yaml but they
+should be inherited from the parent node right? So perhaps
+gateworks-gsc.yaml needs to remove them?
+
+>
+> > +                     compatible = "gw,gsc-fan";
+> > +                     reg = <0x0a>;
+> > +             };
+> > +     };
+> > +
+> > +     gsc_gpio: pca9555@23 {
+>
+> Lookes like gpio-controller, so "gpio". Please run make dtbs_check to be
+> sure your board validate against dt-schema.
+
+Yes, I see these warnings now with 'make dtbs_check W=1'
+
+Note when I do run 'make dtbs_check W=1' I see many warnings which
+seem invalid that I have to skip over:
+/usr/src/linux/arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx-0x.dt.yaml: pi
+nctrl@30330000: fec1grp:fsl,pins:0: [104, 720, 0, 0, 0, 3, 108, 724, 1216, 0, 1,
+ 3, 112, 728, 0, 0, 0, 31, 116, 732, 0, 0, 0, 31, 120, 736, 0, 0, 0,
+31, 124, 740, 0, 0, 0, 31, 156, 772, 0, 0, 0, 145, 152, 768, 0, 0, 0,
+145, 148, 764, 0, 0, 0, 145, 144, 760, 0, 0, 0, 145, 132, 748, 0, 0,
+0, 31, 140, 756, 0, 0, 0, 145, 136, 752, 0, 0, 0, 145, 128, 744, 0, 0,
+0, 31, 244, 860, 0, 5, 0, 25] is too long
+        From schema:
+/usr/src/linux/Documentation/devicetree/bindings/pinctrl/fsl,imx8mm-pinctrl.yaml
+/usr/src/linux/arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx-0x.dt.yaml:
+pinctrl@30330000: fec1grp:fsl,pins:0: Additional items are not allowed
+(108, 724, 1216, 0, 1, 3, 112, 728, 0, 0, 0, 31, 116, 732, 0, 0, 0,
+31, 120, 736, 0, 0, 0, 31, 124, 740, 0, 0, 0, 31, 156, 772, 0, 0, 0,
+145, 152, 768, 0, 0, 0, 145, 148, 764, 0, 0, 0, 145, 144, 760, 0, 0,
+0, 145, 132, 748, 0, 0, 0, 31, 140, 756, 0, 0, 0, 145, 136, 752, 0, 0,
+0, 145, 128, 744, 0, 0, 0, 31, 244, 860, 0, 5, 0, 25 were unexpected)
+^^^ It seems maybe something is too restrictive with
+Documentation/devicetree/bindings/pinctrl/fsl,imx8mm-pinctrl.yaml that
+doesn't allow an array of pins?
+
+I see lots of warnings about imx8mm gpmi as well but they don't have
+anything to do with my dtbs.
+
+>
+> > +             compatible = "nxp,pca9555";
+> > +             reg = <0x23>;
+> > +             gpio-controller;
+> > +             #gpio-cells = <2>;
+> > +             interrupt-parent = <&gsc>;
+> > +             interrupts = <4>;
+> > +     };
+> > +
+<snip>
+> > +
+> > +&iomuxc {
+> > +     pinctrl_fec1: fec1grp {
+> > +             fsl,pins = <
+> > +                     MX8MM_IOMUXC_ENET_MDC_ENET1_MDC                 0x3
+> > +                     MX8MM_IOMUXC_ENET_MDIO_ENET1_MDIO               0x3
+> > +                     MX8MM_IOMUXC_ENET_TD3_ENET1_RGMII_TD3           0x1f
+> > +                     MX8MM_IOMUXC_ENET_TD2_ENET1_RGMII_TD2           0x1f
+> > +                     MX8MM_IOMUXC_ENET_TD1_ENET1_RGMII_TD1           0x1f
+> > +                     MX8MM_IOMUXC_ENET_TD0_ENET1_RGMII_TD0           0x1f
+> > +                     MX8MM_IOMUXC_ENET_RD3_ENET1_RGMII_RD3           0x91
+> > +                     MX8MM_IOMUXC_ENET_RD2_ENET1_RGMII_RD2           0x91
+> > +                     MX8MM_IOMUXC_ENET_RD1_ENET1_RGMII_RD1           0x91
+> > +                     MX8MM_IOMUXC_ENET_RD0_ENET1_RGMII_RD0           0x91
+> > +                     MX8MM_IOMUXC_ENET_TXC_ENET1_RGMII_TXC           0x1f
+> > +                     MX8MM_IOMUXC_ENET_RXC_ENET1_RGMII_RXC           0x91
+> > +                     MX8MM_IOMUXC_ENET_RX_CTL_ENET1_RGMII_RX_CTL     0x91
+> > +                     MX8MM_IOMUXC_ENET_TX_CTL_ENET1_RGMII_TX_CTL     0x1f
+> > +                     MX8MM_IOMUXC_NAND_ALE_GPIO3_IO0                 0x19
+> > +             >;
+> > +     };
+> > +
+> > +     pinctrl_gsc: gscirq {
+>
+> grp suffix. I think dtbs_check should point this out.
+
+ok, I do see this warning with 'make dtbs_check W=1'. I will fix the
+node names for the iomux pin groups
+
+<snip>
+>
+> > diff --git a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx-0x.dts b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx-0x.dts
+> > new file mode 100644
+> > index 00000000..3f88c4a
+> > --- /dev/null
+> > +++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx-0x.dts
+> > @@ -0,0 +1,19 @@
+> > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> > +/*
+> > + * Copyright 2020 Gateworks Corporation
+> > + */
+> > +
+> > +/dts-v1/;
+> > +
+> > +#include "imx8mm.dtsi"
+> > +#include "imx8mm-venice-gw700x.dtsi"
+> > +#include "imx8mm-venice-gw71xx.dtsi"
+> > +
+> > +/ {
+> > +     model = "Gateworks Venice GW71xx-0x i.MX8MM Development Kit";
+> > +     compatible = "gw,imx8mm-gw71xx-0x", "fsl,imx8mm";
+> > +
+> > +     chosen {
+> > +             stdout-path = &uart2;
+> > +     };
+> > +};
+> > diff --git a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx.dtsi
+> > new file mode 100644
+> > index 00000000..a4eeb0d
+> > --- /dev/null
+> > +++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw71xx.dtsi
+>
+> This file is included only once, so it should be directly inside imx8mm-venice-gw71xx-0x.dts. Do not create empty DTS just to include DTSI and nothing more. It's really over-complicating simple hierarchy.
+
+The reason for this is that the '0x' on the end is the SoM and in the
+future there will be a '1x', '2x' SoM so imagine:
+imx8mm-venice-gw71xx-2x.dts being the 'kit' that combines the
+imx8mm-venice-gw71xx.dtsi baseboard and imx8mm-venice-gw702x.dtsi SoM.
+Our numbering scheme has SoM's as gw70xx. I will add something to the
+commit log that explains this.
+
+>
+> > @@ -0,0 +1,186 @@
+> > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> > +/*
+> > + * Copyright 2020 Gateworks Corporation
+> > + */
+> > +
+> > +/ {
+> > +     aliases {
+> > +             usb0 = &usbotg1;
+> > +             usb1 = &usbotg2;
+> > +     };
+> > +
+> > +     leds {
+>
+> led-controller
+
+ok - will fix
+
+>
+> > +             compatible = "gpio-leds";
+> > +             pinctrl-names = "default";
+> > +             pinctrl-0 = <&pinctrl_gpio_leds>;
+> > +
+> > +             user1 { /* GRN */
+>
+> led-0
+
+ok, will fix
+
+>
+> > +                     label = "user1";
+>
+> label is now deprecated. See the common bindings.
+>
+
+ok, will fix by removing deprecated label and adding color/function props
+
+> > +                     gpios = <&gpio5 5 GPIO_ACTIVE_HIGH>;
+> > +                     default-state = "on";
+> > +                     linux,default-trigger = "heartbeat";
+> > +             };
+> > +
+<snip>
+> > +&i2c2 {
+> > +     clock-frequency = <400000>;
+> > +     pinctrl-names = "default";
+> > +     pinctrl-0 = <&pinctrl_i2c2>;
+> > +     status = "okay";
+> > +
+> > +     accel@19 {
+>
+> accelerometer
+>
+
+ok - will fix
+
+You also had asked why ecspi2, i2c3 were enabled (with no child nodes)
+and why uart1/uart3 were enabled on the carrier boards.
+
+The carrier boards have off-board connectors for ecspi2, i2c3 so I
+include them on the baseboard so that the Linux SPI/I2C userspace
+API's could be used.
+
+The carrier boards also have uart1 connected to a GPS, uart2/uart4
+going to a multi-protocol RS232/RS485/RS422 transceiver that has some
+GPIO to configure it, and uart3 going to an offboard I/O connector.
+For this reason I have uart2 basic tx/rx configured on the gw70xx SoM
+and uart1/uart2-gpio/uart4 configures on the carrier board.
+
+I will submit a v2 shortly.
+
+Best regards,
+
+Tim
