@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 694D12E6563
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:01:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 766522E66D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:18:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390697AbgL1QAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:00:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60788 "EHLO mail.kernel.org"
+        id S1731491AbgL1NRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:17:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391016AbgL1NcU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:32:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24260207C9;
-        Mon, 28 Dec 2020 13:32:03 +0000 (UTC)
+        id S1733085AbgL1NQO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:16:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 66754207CF;
+        Mon, 28 Dec 2020 13:15:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162324;
-        bh=FUw9zRbBhFLwZVZhqrKNQZ//AZffMSkPIBgSTm2eN4Q=;
+        s=korg; t=1609161334;
+        bh=Vp37tht4LYIiuS99/4aMDCAyv9doVc/dWN+7hCcm6Kg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yz+0xn2kfQu2LVS7QV3RX6vqQfaEbLZk89enOufGbQulQipA44s3amLLdbeyfsi1a
-         9fDWDCoJ53pz4R+107V7xJTIqV0G65UXboTYH27+9GHfTIL8xjlOFeqb6i7AijxddJ
-         2uS2634SYWoX3BCp3nXGXCWL0VlZ0rGo0a8o7vPs=
+        b=ITj8sferiwbitA8BT9SQIpXuANhRE67QoV4ZMi5T+zTBTtQQtruZTF0G1SHtvvct7
+         IdUaxEtbsg7CP134LiJdZKwWOkVQ5naF7NyZZZW8eaaS5wlYvNf7DbScuJwGwyZ4u9
+         aQ9gIb0aXlDSaMd4qHERnCPQopnxTgLJBRhILZ7M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 4.19 265/346] media: ipu3-cio2: Make the field on subdev format V4L2_FIELD_NONE
-Date:   Mon, 28 Dec 2020 13:49:44 +0100
-Message-Id: <20201228124932.579921295@linuxfoundation.org>
+        stable@vger.kernel.org, Simon Beginn <linux@simonmicro.de>,
+        Bastien Nocera <hadess@hadess.net>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 180/242] Input: goodix - add upside-down quirk for Teclast X98 Pro tablet
+Date:   Mon, 28 Dec 2020 13:49:45 +0100
+Message-Id: <20201228124913.542046828@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,35 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
+From: Simon Beginn <linux@simonmicro.de>
 
-commit 219a8b9c04e54872f9a4d566633fb42f08bcbe2a upstream.
+[ Upstream commit cffdd6d90482316e18d686060a4397902ea04bd2 ]
 
-The ipu3-cio2 doesn't make use of the field and this is reflected in V4L2
-buffers as well as the try format. Do this in active format, too.
+The touchscreen on the Teclast x98 Pro is also mounted upside-down in
+relation to the display orientation.
 
-Fixes: c2a6a07afe4a ("media: intel-ipu3: cio2: add new MIPI-CSI2 driver")
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Reviewed-by: Bingbu Cao <bingbu.cao@intel.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: stable@vger.kernel.org # v4.16 and up
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Simon Beginn <linux@simonmicro.de>
+Signed-off-by: Bastien Nocera <hadess@hadess.net>
+Link: https://lore.kernel.org/r/20201117004253.27A5A27EFD@localhost
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/pci/intel/ipu3/ipu3-cio2.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/input/touchscreen/goodix.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
---- a/drivers/media/pci/intel/ipu3/ipu3-cio2.c
-+++ b/drivers/media/pci/intel/ipu3/ipu3-cio2.c
-@@ -1299,6 +1299,7 @@ static int cio2_subdev_set_fmt(struct v4
- 	fmt->format.width = min_t(u32, fmt->format.width, CIO2_IMAGE_MAX_WIDTH);
- 	fmt->format.height = min_t(u32, fmt->format.height,
- 				   CIO2_IMAGE_MAX_LENGTH);
-+	fmt->format.field = V4L2_FIELD_NONE;
- 
- 	mutex_lock(&q->subdev_lock);
- 	*mbus = fmt->format;
+diff --git a/drivers/input/touchscreen/goodix.c b/drivers/input/touchscreen/goodix.c
+index 777dd5b159d39..87f5722a67829 100644
+--- a/drivers/input/touchscreen/goodix.c
++++ b/drivers/input/touchscreen/goodix.c
+@@ -101,6 +101,18 @@ static const struct dmi_system_id rotated_screen[] = {
+ 			DMI_MATCH(DMI_BIOS_DATE, "12/19/2014"),
+ 		},
+ 	},
++	{
++		.ident = "Teclast X98 Pro",
++		.matches = {
++			/*
++			 * Only match BIOS date, because the manufacturers
++			 * BIOS does not report the board name at all
++			 * (sometimes)...
++			 */
++			DMI_MATCH(DMI_BOARD_VENDOR, "TECLAST"),
++			DMI_MATCH(DMI_BIOS_DATE, "10/28/2015"),
++		},
++	},
+ 	{
+ 		.ident = "WinBook TW100",
+ 		.matches = {
+-- 
+2.27.0
+
 
 
