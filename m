@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D1D02E6678
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:14:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B64752E6636
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:11:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394219AbgL1QM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:12:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51052 "EHLO mail.kernel.org"
+        id S2388412AbgL1NXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:23:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388310AbgL1NWk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:22:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BA9420719;
-        Mon, 28 Dec 2020 13:21:59 +0000 (UTC)
+        id S2387633AbgL1NUw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:20:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A3A422B3A;
+        Mon, 28 Dec 2020 13:20:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161720;
-        bh=ylzqM8KhXK8zCtXRPgixepl+5KPoh8+oPaVmLWVdj4c=;
+        s=korg; t=1609161611;
+        bh=psMJmn0U8LBYlZGjFhl2S4Bx8FPMsq6TB8tL321W/Nk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ebRNEeXJCyEL1jRl1K52+RfiSarPGwAHoaxrU8EoZcXgpDPqwcefCKYcUSPoTT9pq
-         3EAE4bGcuy+6oUUX6o6jWbMV0ctNpZbYXisav+wPQd7fsHK6MEjrf7MHoFmD7CFPJL
-         FpkxLgBk7y+UIbZVzqHryEBd2pyS0b+uZDUS1dSk=
+        b=tZNuGH/t/kxvZFGoJet1UgbW0+Vjy3D/YwwQoc8KVcuNlG4sJ7c5G2VPorwkBqWeu
+         Ofb0fjpIboUScJIkrVrf6bJxr0ZM0LEp8fnMw6l3Kl2ngQQ1qGU1i5c1LjlT87HbsE
+         5VH8FZOkmk5OGGicT5SzV9RG7b0vNx90cJikpaL4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 028/346] mac80211: mesh: fix mesh_pathtbl_init() error path
-Date:   Mon, 28 Dec 2020 13:45:47 +0100
-Message-Id: <20201228124921.139854066@linuxfoundation.org>
+        stable@vger.kernel.org, Fugang Duan <fugang.duan@nxp.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 029/346] net: stmmac: free tx skb buffer in stmmac_resume()
+Date:   Mon, 28 Dec 2020 13:45:48 +0100
+Message-Id: <20201228124921.187857361@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
 References: <20201228124919.745526410@linuxfoundation.org>
@@ -41,91 +40,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Fugang Duan <fugang.duan@nxp.com>
 
-[ Upstream commit 905b2032fa424f253d9126271439cc1db2b01130 ]
+[ Upstream commit 4ec236c7c51f89abb0224a4da4a6b77f9beb6600 ]
 
-If tbl_mpp can not be allocated, we call mesh_table_free(tbl_path)
-while tbl_path rhashtable has not yet been initialized, which causes
-panics.
+When do suspend/resume test, there have WARN_ON() log dump from
+stmmac_xmit() funciton, the code logic:
+	entry = tx_q->cur_tx;
+	first_entry = entry;
+	WARN_ON(tx_q->tx_skbuff[first_entry]);
 
-Simply factorize the rhashtable_init() call into mesh_table_alloc()
+In normal case, tx_q->tx_skbuff[txq->cur_tx] should be NULL because
+the skb should be handled and freed in stmmac_tx_clean().
 
-WARNING: CPU: 1 PID: 8474 at kernel/workqueue.c:3040 __flush_work kernel/workqueue.c:3040 [inline]
-WARNING: CPU: 1 PID: 8474 at kernel/workqueue.c:3040 __cancel_work_timer+0x514/0x540 kernel/workqueue.c:3136
-Modules linked in:
-CPU: 1 PID: 8474 Comm: syz-executor663 Not tainted 5.10.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__flush_work kernel/workqueue.c:3040 [inline]
-RIP: 0010:__cancel_work_timer+0x514/0x540 kernel/workqueue.c:3136
-Code: 5d c3 e8 bf ae 29 00 0f 0b e9 f0 fd ff ff e8 b3 ae 29 00 0f 0b 43 80 3c 3e 00 0f 85 31 ff ff ff e9 34 ff ff ff e8 9c ae 29 00 <0f> 0b e9 dc fe ff ff 89 e9 80 e1 07 80 c1 03 38 c1 0f 8c 7d fd ff
-RSP: 0018:ffffc9000165f5a0 EFLAGS: 00010293
-RAX: ffffffff814b7064 RBX: 0000000000000001 RCX: ffff888021c80000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffff888024039ca0 R08: dffffc0000000000 R09: fffffbfff1dd3e64
-R10: fffffbfff1dd3e64 R11: 0000000000000000 R12: 1ffff920002cbebd
-R13: ffff888024039c88 R14: 1ffff11004807391 R15: dffffc0000000000
-FS:  0000000001347880(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000140 CR3: 000000002cc0a000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- rhashtable_free_and_destroy+0x25/0x9c0 lib/rhashtable.c:1137
- mesh_table_free net/mac80211/mesh_pathtbl.c:69 [inline]
- mesh_pathtbl_init+0x287/0x2e0 net/mac80211/mesh_pathtbl.c:785
- ieee80211_mesh_init_sdata+0x2ee/0x530 net/mac80211/mesh.c:1591
- ieee80211_setup_sdata+0x733/0xc40 net/mac80211/iface.c:1569
- ieee80211_if_add+0xd5c/0x1cd0 net/mac80211/iface.c:1987
- ieee80211_add_iface+0x59/0x130 net/mac80211/cfg.c:125
- rdev_add_virtual_intf net/wireless/rdev-ops.h:45 [inline]
- nl80211_new_interface+0x563/0xb40 net/wireless/nl80211.c:3855
- genl_family_rcv_msg_doit net/netlink/genetlink.c:739 [inline]
- genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
- genl_rcv_msg+0xe4e/0x1280 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x190/0x3a0 net/netlink/af_netlink.c:2494
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x780/0x930 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x9a8/0xd40 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg net/socket.c:671 [inline]
- ____sys_sendmsg+0x519/0x800 net/socket.c:2353
- ___sys_sendmsg net/socket.c:2407 [inline]
- __sys_sendmsg+0x2b1/0x360 net/socket.c:2440
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+But stmmac_resume() reset queue parameters like below, skb buffers
+may not be freed.
+	tx_q->cur_tx = 0;
+	tx_q->dirty_tx = 0;
 
-Fixes: 60854fd94573 ("mac80211: mesh: convert path table to rhashtable")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Reviewed-by: Johannes Berg <johannes@sipsolutions.net>
-Link: https://lore.kernel.org/r/20201204162428.2583119-1-eric.dumazet@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+So free tx skb buffer in stmmac_resume() to avoid warning and
+memory leak.
+
+log:
+[   46.139824] ------------[ cut here ]------------
+[   46.144453] WARNING: CPU: 0 PID: 0 at drivers/net/ethernet/stmicro/stmmac/stmmac_main.c:3235 stmmac_xmit+0x7a0/0x9d0
+[   46.154969] Modules linked in: crct10dif_ce vvcam(O) flexcan can_dev
+[   46.161328] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G           O      5.4.24-2.1.0+g2ad925d15481 #1
+[   46.170369] Hardware name: NXP i.MX8MPlus EVK board (DT)
+[   46.175677] pstate: 80000005 (Nzcv daif -PAN -UAO)
+[   46.180465] pc : stmmac_xmit+0x7a0/0x9d0
+[   46.184387] lr : dev_hard_start_xmit+0x94/0x158
+[   46.188913] sp : ffff800010003cc0
+[   46.192224] x29: ffff800010003cc0 x28: ffff000177e2a100
+[   46.197533] x27: ffff000176ef0840 x26: ffff000176ef0090
+[   46.202842] x25: 0000000000000000 x24: 0000000000000000
+[   46.208151] x23: 0000000000000003 x22: ffff8000119ddd30
+[   46.213460] x21: ffff00017636f000 x20: ffff000176ef0cc0
+[   46.218769] x19: 0000000000000003 x18: 0000000000000000
+[   46.224078] x17: 0000000000000000 x16: 0000000000000000
+[   46.229386] x15: 0000000000000079 x14: 0000000000000000
+[   46.234695] x13: 0000000000000003 x12: 0000000000000003
+[   46.240003] x11: 0000000000000010 x10: 0000000000000010
+[   46.245312] x9 : ffff00017002b140 x8 : 0000000000000000
+[   46.250621] x7 : ffff00017636f000 x6 : 0000000000000010
+[   46.255930] x5 : 0000000000000001 x4 : ffff000176ef0000
+[   46.261238] x3 : 0000000000000003 x2 : 00000000ffffffff
+[   46.266547] x1 : ffff000177e2a000 x0 : 0000000000000000
+[   46.271856] Call trace:
+[   46.274302]  stmmac_xmit+0x7a0/0x9d0
+[   46.277874]  dev_hard_start_xmit+0x94/0x158
+[   46.282056]  sch_direct_xmit+0x11c/0x338
+[   46.285976]  __qdisc_run+0x118/0x5f0
+[   46.289549]  net_tx_action+0x110/0x198
+[   46.293297]  __do_softirq+0x120/0x23c
+[   46.296958]  irq_exit+0xb8/0xd8
+[   46.300098]  __handle_domain_irq+0x64/0xb8
+[   46.304191]  gic_handle_irq+0x5c/0x148
+[   46.307936]  el1_irq+0xb8/0x180
+[   46.311076]  cpuidle_enter_state+0x84/0x360
+[   46.315256]  cpuidle_enter+0x34/0x48
+[   46.318829]  call_cpuidle+0x18/0x38
+[   46.322314]  do_idle+0x1e0/0x280
+[   46.325539]  cpu_startup_entry+0x24/0x40
+[   46.329460]  rest_init+0xd4/0xe0
+[   46.332687]  arch_call_rest_init+0xc/0x14
+[   46.336695]  start_kernel+0x420/0x44c
+[   46.340353] ---[ end trace bc1ee695123cbacd ]---
+
+Fixes: 47dd7a540b8a0 ("net: add support for STMicroelectronics Ethernet controllers.")
+Signed-off-by: Fugang Duan <fugang.duan@nxp.com>
+Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/mac80211/mesh_pathtbl.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c |   14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
---- a/net/mac80211/mesh_pathtbl.c
-+++ b/net/mac80211/mesh_pathtbl.c
-@@ -63,6 +63,7 @@ static struct mesh_table *mesh_table_all
- 	atomic_set(&newtbl->entries,  0);
- 	spin_lock_init(&newtbl->gates_lock);
- 	spin_lock_init(&newtbl->walk_lock);
-+	rhashtable_init(&newtbl->rhead, &mesh_rht_params);
- 
- 	return newtbl;
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -1429,6 +1429,19 @@ static void dma_free_tx_skbufs(struct st
  }
-@@ -786,9 +787,6 @@ int mesh_pathtbl_init(struct ieee80211_s
- 		goto free_path;
- 	}
  
--	rhashtable_init(&tbl_path->rhead, &mesh_rht_params);
--	rhashtable_init(&tbl_mpp->rhead, &mesh_rht_params);
--
- 	sdata->u.mesh.mesh_paths = tbl_path;
- 	sdata->u.mesh.mpp_paths = tbl_mpp;
+ /**
++ * stmmac_free_tx_skbufs - free TX skb buffers
++ * @priv: private structure
++ */
++static void stmmac_free_tx_skbufs(struct stmmac_priv *priv)
++{
++	u32 tx_queue_cnt = priv->plat->tx_queues_to_use;
++	u32 queue;
++
++	for (queue = 0; queue < tx_queue_cnt; queue++)
++		dma_free_tx_skbufs(priv, queue);
++}
++
++/**
+  * free_dma_rx_desc_resources - free RX dma desc resources
+  * @priv: private structure
+  */
+@@ -4591,6 +4604,7 @@ int stmmac_resume(struct device *dev)
  
+ 	stmmac_reset_queues_param(priv);
+ 
++	stmmac_free_tx_skbufs(priv);
+ 	stmmac_clear_descriptors(priv);
+ 
+ 	stmmac_hw_setup(ndev, false);
 
 
