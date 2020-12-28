@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9ADC2E3B74
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:51:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 737DD2E3E0C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:24:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406308AbgL1NuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:50:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51996 "EHLO mail.kernel.org"
+        id S2439206AbgL1OXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:23:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58200 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406280AbgL1NuK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:50:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FA8420791;
-        Mon, 28 Dec 2020 13:49:29 +0000 (UTC)
+        id S2502740AbgL1OWs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:22:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A46D20731;
+        Mon, 28 Dec 2020 14:22:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163370;
-        bh=CjYf9f2XmS3RsLeROuWhottwVogT1E4DeNMNT43GUP8=;
+        s=korg; t=1609165353;
+        bh=NQWHQvaQphVXKPh//J8vr+afTSGvyzyE21jpRPHA51s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DA7tnTqMjqwucaGq35dYOm8O20IrzWweKIC5jazD8jFCZHC6c7HeDrAasq6fxtnv1
-         1w80iE8E2MeMombrEC27uIHGo0zd4rT4M9BduAeCBfkdZgZrSJWvvjNbSJapka/bnv
-         wC8/N4hUTC7+5zaUs4eIcGXwh1cusCYUdKqQlStA=
+        b=JvgvpDxKCL9IUX0CIIFktmc8Cg0GFt51yzWTGhEhkNjI3mo4nfwIMk4ks7ZfsIpvE
+         g/MRGGB44+B08r1EH8o2D+wfpT92WD9P4aCIiHvFLblSZCO0c3GC2no/X1/WVMr0k/
+         RrAi4SKhw1Q4nkxHGdB7BQhyPAsqPYnBEWwPRbUE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leon Romanovsky <leonro@mellanox.com>,
-        Jack Morgenstein <jackm@dev.mellanox.co.il>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 262/453] RDMA/core: Do not indicate device ready when device enablement fails
+Subject: [PATCH 5.10 500/717] kconfig: fix return value of do_error_if()
 Date:   Mon, 28 Dec 2020 13:48:18 +0100
-Message-Id: <20201228124949.832942716@linuxfoundation.org>
+Message-Id: <20201228125044.918338618@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,58 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jack Morgenstein <jackm@dev.mellanox.co.il>
+From: Masahiro Yamada <masahiroy@kernel.org>
 
-[ Upstream commit 779e0bf47632c609c59f527f9711ecd3214dccb0 ]
+[ Upstream commit 135b4957eac43af2aedf8e2a277b9540f33c2558 ]
 
-In procedure ib_register_device, procedure kobject_uevent is called
-(advertising that the device is ready for userspace usage) even when
-device_enable_and_get() returned an error.
+$(error-if,...) is expanded to an empty string. Currently, it relies on
+eval_clause() returning xstrdup("") when all attempts for expansion fail,
+but the correct implementation is to make do_error_if() return xstrdup("").
 
-As a result, various RDMA modules attempted to register for the device
-even while the device driver was preparing to unregister the device.
-
-Fix this by advertising the device availability only after enabling the
-device succeeds.
-
-Fixes: e7a5b4aafd82 ("RDMA/device: Don't fire uevent before device is fully initialized")
-Link: https://lore.kernel.org/r/20201208073545.9723-3-leon@kernel.org
-Suggested-by: Leon Romanovsky <leonro@mellanox.com>
-Signed-off-by: Jack Morgenstein <jackm@dev.mellanox.co.il>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: 1d6272e6fe43 ("kconfig: add 'info', 'warning-if', and 'error-if' built-in functions")
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/device.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ scripts/kconfig/preprocess.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index 59dc9f3cfb376..256d379bba676 100644
---- a/drivers/infiniband/core/device.c
-+++ b/drivers/infiniband/core/device.c
-@@ -1387,9 +1387,6 @@ int ib_register_device(struct ib_device *device, const char *name)
- 	}
+diff --git a/scripts/kconfig/preprocess.c b/scripts/kconfig/preprocess.c
+index 0243086fb1685..0590f86df6e40 100644
+--- a/scripts/kconfig/preprocess.c
++++ b/scripts/kconfig/preprocess.c
+@@ -114,7 +114,7 @@ static char *do_error_if(int argc, char *argv[])
+ 	if (!strcmp(argv[0], "y"))
+ 		pperror("%s", argv[1]);
  
- 	ret = enable_device_and_get(device);
--	dev_set_uevent_suppress(&device->dev, false);
--	/* Mark for userspace that device is ready */
--	kobject_uevent(&device->dev.kobj, KOBJ_ADD);
- 	if (ret) {
- 		void (*dealloc_fn)(struct ib_device *);
+-	return NULL;
++	return xstrdup("");
+ }
  
-@@ -1409,8 +1406,12 @@ int ib_register_device(struct ib_device *device, const char *name)
- 		ib_device_put(device);
- 		__ib_unregister_device(device);
- 		device->ops.dealloc_driver = dealloc_fn;
-+		dev_set_uevent_suppress(&device->dev, false);
- 		return ret;
- 	}
-+	dev_set_uevent_suppress(&device->dev, false);
-+	/* Mark for userspace that device is ready */
-+	kobject_uevent(&device->dev.kobj, KOBJ_ADD);
- 	ib_device_put(device);
- 
- 	return 0;
+ static char *do_filename(int argc, char *argv[])
 -- 
 2.27.0
 
