@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56E212E3E3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:27:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86EDB2E3804
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:04:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439268AbgL1OZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:25:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33588 "EHLO mail.kernel.org"
+        id S1730377AbgL1NEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:04:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503235AbgL1OZl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:25:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 16103221F0;
-        Mon, 28 Dec 2020 14:24:59 +0000 (UTC)
+        id S1730258AbgL1NDj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:03:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4ED9D2242A;
+        Mon, 28 Dec 2020 13:02:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165500;
-        bh=GCqwiNM8CKthXJ1MkSyPy+fQbPxcDeXb+PrvpbBfHwk=;
+        s=korg; t=1609160578;
+        bh=dHrVGVhdnb0DIE9G+GObwxmVoak5xIrJdDOIlchM/o4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BHR5GtBezNceWOrO9CQy081OgFi2PaFLeYmelsH+7C63hV9h4kFmPmSoeOcykPPaf
-         CgUSVkAMZDpiaY48HxIgIN6F+oRTZddCxOOUrr66CzlYDPeer0xDm74AwrTcm8vZvX
-         D2SlDYlec36Gs+YhmII3xGNpv0g8iAe6TIcljekg=
+        b=tZOV5If/kA08y4+h8yZeLgpVN9SuWt5ovqR2gDK0UT8v7EYFrbnhKkevLdxB0/wPy
+         bhIlOZADlU/GbM9NjpiRjzuuxoSAoB2KEoQuqb94T3uoFlSFeX37lnvjk/6H6WJ9GG
+         7p3elvxJnw2fYn/va6v4GHPkTupXYfOVVfkTuMiw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>
-Subject: [PATCH 5.10 554/717] s390/idle: fix accounting with machine checks
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 099/175] cpufreq: st: Add missing MODULE_DEVICE_TABLE
 Date:   Mon, 28 Dec 2020 13:49:12 +0100
-Message-Id: <20201228125047.482308932@linuxfoundation.org>
+Message-Id: <20201228124858.043587571@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,73 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Schnelle <svens@linux.ibm.com>
+From: Pali Rohár <pali@kernel.org>
 
-commit 454efcf82ea17d7efeb86ebaa20775a21ec87d27 upstream.
+[ Upstream commit 183747ab52654eb406fc6b5bfb40806b75d31811 ]
 
-When a machine check interrupt is triggered during idle, the code
-is using the async timer/clock for idle time calculation. It should use
-the machine check enter timer/clock which is passed to the macro.
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this cpufreq driver when it is
+compiled as an external module.
 
-Fixes: 0b0ed657fe00 ("s390: remove critical section cleanup from entry.S")
-Cc: <stable@vger.kernel.org> # 5.8
-Reviewed-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Fixes: ab0ea257fc58d ("cpufreq: st: Provide runtime initialised driver for ST's platforms")
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/kernel/entry.S |   12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/cpufreq/sti-cpufreq.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/arch/s390/kernel/entry.S
-+++ b/arch/s390/kernel/entry.S
-@@ -110,7 +110,7 @@ _LPP_OFFSET	= __LC_LPP
- #endif
- 	.endm
+diff --git a/drivers/cpufreq/sti-cpufreq.c b/drivers/cpufreq/sti-cpufreq.c
+index 2cb3346e82d35..c7f0b2df15cdd 100644
+--- a/drivers/cpufreq/sti-cpufreq.c
++++ b/drivers/cpufreq/sti-cpufreq.c
+@@ -294,6 +294,13 @@ register_cpufreq_dt:
+ }
+ module_init(sti_cpufreq_init);
  
--	.macro	SWITCH_ASYNC savearea,timer
-+	.macro	SWITCH_ASYNC savearea,timer,clock
- 	tmhh	%r8,0x0001		# interrupting from user ?
- 	jnz	4f
- #if IS_ENABLED(CONFIG_KVM)
-@@ -143,8 +143,8 @@ _LPP_OFFSET	= __LC_LPP
- 	la	%r4,8(%r4)
- 	brct	%r1,1b
- 
--2:	mvc	__CLOCK_IDLE_EXIT(8,%r2), __LC_INT_CLOCK
--	mvc	__TIMER_IDLE_EXIT(8,%r2), __LC_ASYNC_ENTER_TIMER
-+2:	mvc	__CLOCK_IDLE_EXIT(8,%r2), \clock
-+	mvc	__TIMER_IDLE_EXIT(8,%r2), \timer
- 	# account system time going idle
- 	ni	__LC_CPU_FLAGS+7,255-_CIF_ENABLED_WAIT
- 
-@@ -761,7 +761,7 @@ ENTRY(io_int_handler)
- 	stmg	%r8,%r15,__LC_SAVE_AREA_ASYNC
- 	lg	%r12,__LC_CURRENT
- 	lmg	%r8,%r9,__LC_IO_OLD_PSW
--	SWITCH_ASYNC __LC_SAVE_AREA_ASYNC,__LC_ASYNC_ENTER_TIMER
-+	SWITCH_ASYNC __LC_SAVE_AREA_ASYNC,__LC_ASYNC_ENTER_TIMER,__LC_INT_CLOCK
- 	stmg	%r0,%r7,__PT_R0(%r11)
- 	# clear user controlled registers to prevent speculative use
- 	xgr	%r0,%r0
-@@ -961,7 +961,7 @@ ENTRY(ext_int_handler)
- 	stmg	%r8,%r15,__LC_SAVE_AREA_ASYNC
- 	lg	%r12,__LC_CURRENT
- 	lmg	%r8,%r9,__LC_EXT_OLD_PSW
--	SWITCH_ASYNC __LC_SAVE_AREA_ASYNC,__LC_ASYNC_ENTER_TIMER
-+	SWITCH_ASYNC __LC_SAVE_AREA_ASYNC,__LC_ASYNC_ENTER_TIMER,__LC_INT_CLOCK
- 	stmg	%r0,%r7,__PT_R0(%r11)
- 	# clear user controlled registers to prevent speculative use
- 	xgr	%r0,%r0
-@@ -1183,7 +1183,7 @@ ENTRY(mcck_int_handler)
- 	TSTMSK	__LC_MCCK_CODE,MCCK_CODE_PSW_IA_VALID
- 	jno	.Lmcck_panic
- 4:	ssm	__LC_PGM_NEW_PSW	# turn dat on, keep irqs off
--	SWITCH_ASYNC __LC_GPREGS_SAVE_AREA+64,__LC_MCCK_ENTER_TIMER
-+	SWITCH_ASYNC __LC_GPREGS_SAVE_AREA+64,__LC_MCCK_ENTER_TIMER,__LC_MCCK_CLOCK
- .Lmcck_skip:
- 	lghi	%r14,__LC_GPREGS_SAVE_AREA+64
- 	stmg	%r0,%r7,__PT_R0(%r11)
++static const struct of_device_id __maybe_unused sti_cpufreq_of_match[] = {
++	{ .compatible = "st,stih407" },
++	{ .compatible = "st,stih410" },
++	{ },
++};
++MODULE_DEVICE_TABLE(of, sti_cpufreq_of_match);
++
+ MODULE_DESCRIPTION("STMicroelectronics CPUFreq/OPP driver");
+ MODULE_AUTHOR("Ajitpal Singh <ajitpal.singh@st.com>");
+ MODULE_AUTHOR("Lee Jones <lee.jones@linaro.org>");
+-- 
+2.27.0
+
 
 
