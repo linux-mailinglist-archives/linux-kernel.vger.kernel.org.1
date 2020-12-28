@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F9492E653B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:59:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA4AC2E3BCE
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:55:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393351AbgL1P6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:58:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34098 "EHLO mail.kernel.org"
+        id S2407463AbgL1NzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:55:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56240 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387922AbgL1Nda (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:33:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DD9722B48;
-        Mon, 28 Dec 2020 13:32:49 +0000 (UTC)
+        id S2405020AbgL1Nyi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:54:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C56722AAA;
+        Mon, 28 Dec 2020 13:54:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162370;
-        bh=g2Zt8DLmwegqzrGW2W4zZDFBNp5yfj7K/uAC3UoCwFo=;
+        s=korg; t=1609163662;
+        bh=89+55hKFibQbgk+yDUMuLzImWQDy8Y78CNoUKnq5LmM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=meEZ14CElO65T10KER7ZTH/VoeHDWVtNjjXsBgylW1flp2dcVuKI71V7LT45O/rCb
-         1TaIfbuFFs0e4oee2j3t9Wvwo+y+MRjh4kFpGYxyJhRRReJXMwRzHDeGqPHOXN6Ee3
-         dR2SZB5qNVKEB3BBN2ZbZCN6MvM9gjNU3u4NqFAk=
+        b=zJBZAQ/Air55wvsf/7pZTjn7OTKCa23K3y/gUY/Yg0yKIOwT4v92nukJLgRogcs5n
+         2FtZeFH21smqIOGO4Z+6fx+G+YRqkHC9YNy0aYMZ9kugvRPPzGVYLCxKY/zzVxzPV8
+         JrFvu5dsMfq5+lXS+QD8qw3VWu+QpH9v5IkmjYQg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Haberland <sth@linux.ibm.com>,
-        Jan Hoeppner <hoeppner@linux.ibm.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 4.19 281/346] s390/dasd: fix hanging device offline processing
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.4 364/453] USB: serial: mos7720: fix parallel-port state restore
 Date:   Mon, 28 Dec 2020 13:50:00 +0100
-Message-Id: <20201228124933.366368327@linuxfoundation.org>
+Message-Id: <20201228124954.718772855@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,58 +38,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Haberland <sth@linux.ibm.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit 658a337a606f48b7ebe451591f7681d383fa115e upstream.
+commit 975323ab8f116667676c30ca3502a6757bd89e8d upstream.
 
-For an LCU update a read unit address configuration IO is required.
-This is started using sleep_on(), which has early exit paths in case the
-device is not usable for IO. For example when it is in offline processing.
+The parallel-port restore operations is called when a driver claims the
+port and is supposed to restore the provided state (e.g. saved when
+releasing the port).
 
-In those cases the LCU update should fail and not be retried.
-Therefore lcu_update_work checks if EOPNOTSUPP is returned or not.
-
-Commit 41995342b40c ("s390/dasd: fix endless loop after read unit address configuration")
-accidentally removed the EOPNOTSUPP return code from
-read_unit_address_configuration(), which in turn might lead to an endless
-loop of the LCU update in offline processing.
-
-Fix by returning EOPNOTSUPP again if the device is not able to perform the
-request.
-
-Fixes: 41995342b40c ("s390/dasd: fix endless loop after read unit address configuration")
-Cc: stable@vger.kernel.org #5.3
-Signed-off-by: Stefan Haberland <sth@linux.ibm.com>
-Reviewed-by: Jan Hoeppner <hoeppner@linux.ibm.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: b69578df7e98 ("USB: usbserial: mos7720: add support for parallel port on moschip 7715")
+Cc: stable <stable@vger.kernel.org>     # 2.6.35
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/s390/block/dasd_alias.c |   10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ drivers/usb/serial/mos7720.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/s390/block/dasd_alias.c
-+++ b/drivers/s390/block/dasd_alias.c
-@@ -462,11 +462,19 @@ static int read_unit_address_configurati
- 	spin_unlock_irqrestore(&lcu->lock, flags);
- 
- 	rc = dasd_sleep_on(cqr);
--	if (rc && !suborder_not_supported(cqr)) {
-+	if (!rc)
-+		goto out;
-+
-+	if (suborder_not_supported(cqr)) {
-+		/* suborder not supported or device unusable for IO */
-+		rc = -EOPNOTSUPP;
-+	} else {
-+		/* IO failed but should be retried */
- 		spin_lock_irqsave(&lcu->lock, flags);
- 		lcu->flags |= NEED_UAC_UPDATE;
- 		spin_unlock_irqrestore(&lcu->lock, flags);
+--- a/drivers/usb/serial/mos7720.c
++++ b/drivers/usb/serial/mos7720.c
+@@ -638,6 +638,8 @@ static void parport_mos7715_restore_stat
+ 		spin_unlock(&release_lock);
+ 		return;
  	}
-+out:
- 	dasd_sfree_request(cqr, cqr->memdev);
- 	return rc;
- }
++	mos_parport->shadowDCR = s->u.pc.ctr;
++	mos_parport->shadowECR = s->u.pc.ecr;
+ 	write_parport_reg_nonblock(mos_parport, MOS7720_DCR,
+ 				   mos_parport->shadowDCR);
+ 	write_parport_reg_nonblock(mos_parport, MOS7720_ECR,
 
 
