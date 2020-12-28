@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AC3E2E3937
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:22:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D4AD2E3AD7
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:43:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387581AbgL1NUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:20:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49122 "EHLO mail.kernel.org"
+        id S2404137AbgL1NmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:42:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41374 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387568AbgL1NUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:20:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4CB620719;
-        Mon, 28 Dec 2020 13:19:49 +0000 (UTC)
+        id S2391795AbgL1NlW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:41:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F7AD2064B;
+        Mon, 28 Dec 2020 13:41:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161590;
-        bh=dlyGwfH0QFLZsFD99YH9yIQQOdWqx53iVHBTc46zppk=;
+        s=korg; t=1609162867;
+        bh=16ofqNDOtTdD+Nbw3rTnBhytlvP13deUuWsiMlij8zo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Hcxa/PWsdYRfOViDKBO2kE1F1LdiyH0R+zlPvl65MsKx9B/5VifTxUCUyG/13mwBN
-         0sfEEAm68nIkBJR7DP8Tob23u8hAmRdPttZpwl4nLniPh2135DZGWQQW8rQLCeew6m
-         v6xE7VHwf4Iu+cNXPjNu6Ts5o6AzbHn0TNGPIfxc=
+        b=CFo4Tq2a2GxPpDkHJc8QrIO84qE6luuuGuUN3nWO/LGLmSgvAoKad/a3BZmpY0EUU
+         pP6rG+34weWU5n+r7vUHEBfbOL3IzitGtcP/zPS5VfaoV0g6VjUfwduAGD8BLka1Ew
+         7uGku38bG4cvHXIHKK2gybSJ0FGR/drdsylwla/E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
-        Mordechay Goodstein <mordechay.goodstein@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Arvind Sankar <nivedita@alum.mit.edu>,
+        Borislav Petkov <bp@suse.de>, Joerg Roedel <jroedel@suse.de>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 005/346] iwlwifi: pcie: limit memory read spin time
+Subject: [PATCH 5.4 088/453] x86/mm/ident_map: Check for errors from ident_pud_init()
 Date:   Mon, 28 Dec 2020 13:45:24 +0100
-Message-Id: <20201228124920.016205812@linuxfoundation.org>
+Message-Id: <20201228124941.467347144@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,92 +41,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Arvind Sankar <nivedita@alum.mit.edu>
 
-[ Upstream commit 04516706bb99889986ddfa3a769ed50d2dc7ac13 ]
+[ Upstream commit 1fcd009102ee02e217f2e7635ab65517d785da8e ]
 
-When we read device memory, we lock a spinlock, write the address we
-want to read from the device and then spin in a loop reading the data
-in 32-bit quantities from another register.
+Commit
 
-As the description makes clear, this is rather inefficient, incurring
-a PCIe bus transaction for every read. In a typical device today, we
-want to read 786k SMEM if it crashes, leading to 192k register reads.
-Occasionally, we've seen the whole loop take over 20 seconds and then
-triggering the soft lockup detector.
+  ea3b5e60ce80 ("x86/mm/ident_map: Add 5-level paging support")
 
-Clearly, it is unreasonable to spin here for such extended periods of
-time.
+added ident_p4d_init() to support 5-level paging, but this function
+doesn't check and return errors from ident_pud_init().
 
-To fix this, break the loop down into an outer and an inner loop, and
-break out of the inner loop if more than half a second elapsed. To
-avoid too much overhead, check for that only every 128 reads, though
-there's no particular reason for that number. Then, unlock and relock
-to obtain NIC access again, reprogram the start address and continue.
+For example, the decompressor stub uses this code to create an identity
+mapping. If it runs out of pages while trying to allocate a PMD
+pagetable, the error will be currently ignored.
 
-This will keep (interrupt) latencies on the CPU down to a reasonable
-time.
+Fix this to propagate errors.
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Mordechay Goodstein <mordechay.goodstein@intel.com>
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/iwlwifi.20201022165103.45878a7e49aa.I3b9b9c5a10002915072312ce75b68ed5b3dc6e14@changeid
+ [ bp: Space out statements for better readability. ]
+
+Fixes: ea3b5e60ce80 ("x86/mm/ident_map: Add 5-level paging support")
+Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Joerg Roedel <jroedel@suse.de>
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Link: https://lkml.kernel.org/r/20201027230648.1885111-1-nivedita@alum.mit.edu
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/wireless/intel/iwlwifi/pcie/trans.c   | 36 ++++++++++++++-----
- 1 file changed, 27 insertions(+), 9 deletions(-)
+ arch/x86/mm/ident_map.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/trans.c b/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
-index 24da496151353..f48c7cac122e9 100644
---- a/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
-+++ b/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
-@@ -2121,18 +2121,36 @@ static int iwl_trans_pcie_read_mem(struct iwl_trans *trans, u32 addr,
- 				   void *buf, int dwords)
+diff --git a/arch/x86/mm/ident_map.c b/arch/x86/mm/ident_map.c
+index fe7a12599d8eb..968d7005f4a72 100644
+--- a/arch/x86/mm/ident_map.c
++++ b/arch/x86/mm/ident_map.c
+@@ -62,6 +62,7 @@ static int ident_p4d_init(struct x86_mapping_info *info, p4d_t *p4d_page,
+ 			  unsigned long addr, unsigned long end)
  {
- 	unsigned long flags;
--	int offs, ret = 0;
-+	int offs = 0;
- 	u32 *vals = buf;
+ 	unsigned long next;
++	int result;
  
--	if (iwl_trans_grab_nic_access(trans, &flags)) {
--		iwl_write32(trans, HBUS_TARG_MEM_RADDR, addr);
--		for (offs = 0; offs < dwords; offs++)
--			vals[offs] = iwl_read32(trans, HBUS_TARG_MEM_RDAT);
--		iwl_trans_release_nic_access(trans, &flags);
--	} else {
--		ret = -EBUSY;
-+	while (offs < dwords) {
-+		/* limit the time we spin here under lock to 1/2s */
-+		ktime_t timeout = ktime_add_us(ktime_get(), 500 * USEC_PER_MSEC);
+ 	for (; addr < end; addr = next) {
+ 		p4d_t *p4d = p4d_page + p4d_index(addr);
+@@ -73,13 +74,20 @@ static int ident_p4d_init(struct x86_mapping_info *info, p4d_t *p4d_page,
+ 
+ 		if (p4d_present(*p4d)) {
+ 			pud = pud_offset(p4d, 0);
+-			ident_pud_init(info, pud, addr, next);
++			result = ident_pud_init(info, pud, addr, next);
++			if (result)
++				return result;
 +
-+		if (iwl_trans_grab_nic_access(trans, &flags)) {
-+			iwl_write32(trans, HBUS_TARG_MEM_RADDR,
-+				    addr + 4 * offs);
+ 			continue;
+ 		}
+ 		pud = (pud_t *)info->alloc_pgt_page(info->context);
+ 		if (!pud)
+ 			return -ENOMEM;
+-		ident_pud_init(info, pud, addr, next);
 +
-+			while (offs < dwords) {
-+				vals[offs] = iwl_read32(trans,
-+							HBUS_TARG_MEM_RDAT);
-+				offs++;
++		result = ident_pud_init(info, pud, addr, next);
++		if (result)
++			return result;
 +
-+				/* calling ktime_get is expensive so
-+				 * do it once in 128 reads
-+				 */
-+				if (offs % 128 == 0 && ktime_after(ktime_get(),
-+								   timeout))
-+					break;
-+			}
-+			iwl_trans_release_nic_access(trans, &flags);
-+		} else {
-+			return -EBUSY;
-+		}
+ 		set_p4d(p4d, __p4d(__pa(pud) | info->kernpg_flag));
  	}
--	return ret;
-+
-+	return 0;
- }
  
- static int iwl_trans_pcie_write_mem(struct iwl_trans *trans, u32 addr,
 -- 
 2.27.0
 
