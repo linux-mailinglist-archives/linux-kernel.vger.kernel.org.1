@@ -2,84 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0BE32E66BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:17:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CACB62E66F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:19:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504355AbgL1QPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:15:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55474 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2504328AbgL1QPf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 11:15:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E64C207C9;
-        Mon, 28 Dec 2020 16:14:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609172094;
-        bh=SjTOfvdTbeT9UQH8q0dC6X35wF/SUQA6aVCDZ1IiYqs=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=JrGt34BYsnLL+jfXvagmnPlLX4n8crGZ2/nbNt6Kd9WoEZo/Dk2yx4KKmcfNctX13
-         Pim8ZxehGMjU0yvQjAdf8oID0eyApEt5EOdCjiR8uf0Qfx8tKmwKHQngcqKQMQlPcz
-         PbdYqH64kC4WBRIKF3vh33GfbvH1ntOQ95Nyjj89ufvEvYRt3n8dJhWxK2iAm1hT4D
-         YV8ZezNNybEzBXhEcanfDf7JNEYaAxhX42iywnpr9wLYajkbBj9iX7s61RFzWoPXL6
-         aRcAmdzwzuW4GoOhQ1i1VDEeQnIwlwbNMLI+iQntKkUGXK0zrWmYuPzYyEkDfgxOgL
-         V7IbQzZBWEFjg==
-From:   Mark Brown <broonie@kernel.org>
-To:     linux-spi@vger.kernel.org,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     robh+dt@kernel.org, dragos.bogdan@analog.com,
-        andy.shevchenko@gmail.com
-In-Reply-To: <20201221152936.53873-1-alexandru.ardelean@analog.com>
-References: <20201221152936.53873-1-alexandru.ardelean@analog.com>
-Subject: Re: [PATCH v6 1/3] spi: uapi: unify SPI modes into a single spi.h header
-Message-Id: <160917206867.51989.3925365729353031411.b4-ty@kernel.org>
-Date:   Mon, 28 Dec 2020 16:14:28 +0000
+        id S2633192AbgL1QSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:18:46 -0500
+Received: from mail-ot1-f52.google.com ([209.85.210.52]:47029 "EHLO
+        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2633046AbgL1QSn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 11:18:43 -0500
+Received: by mail-ot1-f52.google.com with SMTP id w3so9501374otp.13;
+        Mon, 28 Dec 2020 08:18:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3bMFyLrNXYKkHBMjSrQQwVWB5IIqbb7QcW+GHhEb7po=;
+        b=h1qGb8OYn/v9Rhk4BP9XwN8FskTRYNpoDcrb7bXPGf2Lgw0QbA87PRG0pur+wES8Vj
+         Xqr1YRJxlw6OAhLOtgX8ESRKbtYtGMUyGiT1F3SpoMM9yIMaQGRBq3kpH+nZcxWJDbWa
+         gIGOHKXHJDL85I93ZTKjrirQ+aEguHMOG+kKJaTfWqwiPDu5WXTGSBP81rMrWdd3/EMo
+         dimsx4Wu4JyceGJEUMYUNnBIlmK/GxkWRAZK4HlGxnEC2o01C+RLP09XvsA9X4SVgt81
+         4JX84R4NKDNxI4F7TYK4W5wuh8+PTXMrxuzeFStFCDgv3IYgImSBJbw6phyvktQDzy5Q
+         vqzA==
+X-Gm-Message-State: AOAM531aaUL0neV2NhldI1eEliqpyiUqY8he457fRAacsOZuVTjfDWDk
+        TTVjuZH4qYnkhxh6kQ4gAbRDPV9NJBoDlIr3eyO5Xgi5hlg=
+X-Google-Smtp-Source: ABdhPJzoKsz+m5Nt7TMgWgCUitHebt9ovB68151JyGE+slM8gyWz9+7nOPZIbgO7FfX/0pQBXVveUrnuoCpYf8WHOsg=
+X-Received: by 2002:a9d:c01:: with SMTP id 1mr18630563otr.107.1609172282400;
+ Mon, 28 Dec 2020 08:18:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20201212165648.166220-1-aford173@gmail.com> <CAMuHMdUr5MWpa5fhpKgAm7zRgzzJga=pjNSVG3aoTvCmuq5poQ@mail.gmail.com>
+ <CAHCN7x+jm8agBzqDqnkmW1Obtd0zL6EA_xbicvkroZ+kmgEqiA@mail.gmail.com>
+In-Reply-To: <CAHCN7x+jm8agBzqDqnkmW1Obtd0zL6EA_xbicvkroZ+kmgEqiA@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 28 Dec 2020 17:17:51 +0100
+Message-ID: <CAMuHMdU-FY9cHXP2+tbHRShZw52UudQTRNx58Cw9F_JV73pB-A@mail.gmail.com>
+Subject: Re: [RFC] ravb: Add support for optional txc_refclk
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Charles Stevens <charles.stevens@logicpd.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Dec 2020 17:29:34 +0200, Alexandru Ardelean wrote:
-> This change moves all the SPI mode bits into a separate 'spi.h' header in
-> uAPI. This is meant to re-use these definitions inside the kernel as well
-> as export them to userspace (via uAPI).
-> 
-> The SPI mode definitions have usually been duplicated between between
-> 'include/linux/spi/spi.h' and 'include/uapi/linux/spi/spidev.h', so
-> whenever adding a new entry, this would need to be put in both headers.
-> 
-> [...]
+Hi Adam,
 
-Applied to
+CC devicetree
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+On Mon, Dec 28, 2020 at 2:49 PM Adam Ford <aford173@gmail.com> wrote:
+> On Mon, Dec 14, 2020 at 4:05 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Sun, Dec 13, 2020 at 5:18 PM Adam Ford <aford173@gmail.com> wrote:
+> > > The SoC expects the txv_refclk is provided, but if it is provided
+> > > by a programmable clock, there needs to be a way to get and enable
+> > > this clock to operate.  It needs to be optional since it's only
+> > > necessary for those with programmable clocks.
+> > >
+> > > Signed-off-by: Adam Ford <aford173@gmail.com>
+> >
+> > Thanks for your patch!
+> >
+> > > --- a/drivers/net/ethernet/renesas/ravb.h
+> > > +++ b/drivers/net/ethernet/renesas/ravb.h
+> > > @@ -994,6 +994,7 @@ struct ravb_private {
+> > >         struct platform_device *pdev;
+> > >         void __iomem *addr;
+> > >         struct clk *clk;
+> > > +       struct clk *ref_clk;
+> > >         struct mdiobb_ctrl mdiobb;
+> > >         u32 num_rx_ring[NUM_RX_QUEUE];
+> > >         u32 num_tx_ring[NUM_TX_QUEUE];
+> > > diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
+> > > index bd30505fbc57..4c3f95923ef2 100644
+> > > --- a/drivers/net/ethernet/renesas/ravb_main.c
+> > > +++ b/drivers/net/ethernet/renesas/ravb_main.c
+> > > @@ -2148,6 +2148,18 @@ static int ravb_probe(struct platform_device *pdev)
+> > >                 goto out_release;
+> > >         }
+> > >
+> > > +       priv->ref_clk = devm_clk_get(&pdev->dev, "txc_refclk");
+> >
+> > Please also update the DT bindings[1], to document the optional
+> > presence of the clock.
+>
+> I am not all that familiar with the YAML syntax, but right now, the
+> clock-names property isn't in the binding, and the driver doesn't use
+> a name when requesting the single clock it's expecting.
+> Since the txc_refclk is optional, can the clock-names property allow
+> for 0-2 names while the number of clocks be 1-2?
+>
+> clocks:
+>     minItems: 1
+>     maxItems: 2
+>
+>   clock-names:
+>     minItems: 0
+>     maxItems: 2
+>     items:
+>       enum:
+>         - fck # AVB functional clock (optional if it is the only clock)
+>         - txc_refclk # TXC reference clock
 
-Thanks!
+With "enum", it accepts any order. But for compatibility, we want to force
+"fck" first.
 
-[1/3] spi: uapi: unify SPI modes into a single spi.h header
-      commit: f7005142dacea1769fba0152c493aaa61b33205c
-[2/3] spi: Add SPI_NO_TX/RX support
-      commit: d962608ce2188a1d46ec9d356d6fad5cd6fc0341
-[3/3] spi: dt-bindings: document zero value for spi-{rx,tx}-bus-width properties
-      commit: ffe9819b6766b9a623822f3427df4953ab448127
+Something like:
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+  clocks:
+    minItems: 1
+    items:
+      - description: AVB functional clock
+      - description: Optional TXC reference clock
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+  clock-names:
+    items:
+      - const: fck
+      - const: txc_refclk
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> With the above proposal, the clock-names would only be necessary when
+> using the txc_refclk.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+I think that's difficult to express: either make clock-names optional (i.e.
+don't list it under "required"), or make it required in all cases (which need
+fixups for the existing users, and "minItems: 1" for "clock-names", too).
 
-Thanks,
-Mark
+> > > +       if (IS_ERR(priv->ref_clk)) {
+> > > +               if (PTR_ERR(priv->ref_clk) == -EPROBE_DEFER) {
+> > > +                       /* for Probe defer return error */
+> > > +                       error = PTR_ERR(priv->ref_clk);
+> > > +                       goto out_release;
+> > > +               }
+> > > +               /* Ignore other errors since it's optional */
+> > > +       } else {
+> > > +               (void)clk_prepare_enable(priv->ref_clk);
+> >
+> > This can fail.
+> > Does this clock need to be enabled all the time?
+> > At least it should be disabled in the probe failure path, and in
+> > ravb_remove().
+>
+> I'll do that for the next rev.
+>
+> thanks,
+>
+> adam
+> >
+> > [1] Documentation/devicetree/bindings/net/renesas,etheravb.yaml
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
