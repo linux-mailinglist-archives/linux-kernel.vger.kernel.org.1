@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6432E6535
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:59:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1C7E2E37A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:59:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393329AbgL1P6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:58:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33748 "EHLO mail.kernel.org"
+        id S1729246AbgL1M6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:58:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387988AbgL1Ndp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:33:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 311562063A;
-        Mon, 28 Dec 2020 13:33:28 +0000 (UTC)
+        id S1729213AbgL1M6m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:58:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3ED4E21D94;
+        Mon, 28 Dec 2020 12:58:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162410;
-        bh=ATe23Rm/TKgb1NJsGRPJI5SJrqxqys9GsDW0OyV0fIw=;
+        s=korg; t=1609160281;
+        bh=ULK609EFnTBW8KsazZ5uOOaBEPQe7mf2MfJu790YcjI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MmpsiJ4ifGNB77OOM6NgPor/Hn/uNSmpWCXZG/jGxkk5tD2w/ESRctxMvS0Zar8t2
-         vkJcqs/HqfS5DeuH6C4mbaRVz4ASo2R4TmJgFG6Pa8UfaGeZddxj3HXUxPlE92IMQo
-         RfVfTqYyDtDum7KtWTnR3h0JBHxdLYYqvLCAdmU0=
+        b=rmqo7ewBPazxscTdYmttunF6x/mnZCQRH2xj1qNZrdoS1uGaOURLXWfR3QsqmrOJ0
+         9T2aHEsgr/06mkWL0yAKLlcsyLcSgueet4hyxef+gDVq8gnv2bQ2EEn/Xe7zWXXXhg
+         kkVFlWr6wpnWTrcqvgXDCVleNllUcxi5mSRMVjOM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.19 296/346] USB: serial: keyspan_pda: fix write unthrottling
+        stable@vger.kernel.org, SeongJae Park <sjpark@amazon.de>,
+        Michael Kurth <mku@amazon.de>,
+        Pawel Wieczorkiewicz <wipawel@amazon.de>,
+        Juergen Gross <jgross@suse.com>
+Subject: [PATCH 4.4 131/132] xenbus/xenbus_backend: Disallow pending watch messages
 Date:   Mon, 28 Dec 2020 13:50:15 +0100
-Message-Id: <20201228124934.088933229@linuxfoundation.org>
+Message-Id: <20201228124852.745074084@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,104 +41,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: SeongJae Park <sjpark@amazon.de>
 
-commit 320f9028c7873c3c7710e8e93e5c979f4c857490 upstream.
+commit 9996bd494794a2fe393e97e7a982388c6249aa76 upstream.
 
-The driver did not update its view of the available device buffer space
-until write() was called in task context. This meant that write_room()
-would return 0 even after the device had sent a write-unthrottle
-notification, something which could lead to blocked writers not being
-woken up (e.g. when using OPOST).
+'xenbus_backend' watches 'state' of devices, which is writable by
+guests.  Hence, if guests intensively updates it, dom0 will have lots of
+pending events that exhausting memory of dom0.  In other words, guests
+can trigger dom0 memory pressure.  This is known as XSA-349.  However,
+the watch callback of it, 'frontend_changed()', reads only 'state', so
+doesn't need to have the pending events.
 
-Note that we must also request an unthrottle notification is case a
-write() request fills the device buffer exactly.
+To avoid the problem, this commit disallows pending watch messages for
+'xenbus_backend' using the 'will_handle()' watch callback.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Cc: stable <stable@vger.kernel.org>
-Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Johan Hovold <johan@kernel.org>
+This is part of XSA-349
+
+Cc: stable@vger.kernel.org
+Signed-off-by: SeongJae Park <sjpark@amazon.de>
+Reported-by: Michael Kurth <mku@amazon.de>
+Reported-by: Pawel Wieczorkiewicz <wipawel@amazon.de>
+Reviewed-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
----
- drivers/usb/serial/keyspan_pda.c |   29 ++++++++++++++++++++---------
- 1 file changed, 20 insertions(+), 9 deletions(-)
 
---- a/drivers/usb/serial/keyspan_pda.c
-+++ b/drivers/usb/serial/keyspan_pda.c
-@@ -40,6 +40,8 @@
- #define DRIVER_AUTHOR "Brian Warner <warner@lothar.com>"
- #define DRIVER_DESC "USB Keyspan PDA Converter driver"
+---
+ drivers/xen/xenbus/xenbus_probe_backend.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
+
+--- a/drivers/xen/xenbus/xenbus_probe_backend.c
++++ b/drivers/xen/xenbus/xenbus_probe_backend.c
+@@ -181,6 +181,12 @@ static int xenbus_probe_backend(struct x
+ 	return err;
+ }
  
-+#define KEYSPAN_TX_THRESHOLD	16
-+
- struct keyspan_pda_private {
- 	int			tx_room;
- 	int			tx_throttled;
-@@ -110,7 +112,7 @@ static void keyspan_pda_request_unthrott
- 				 7, /* request_unthrottle */
- 				 USB_TYPE_VENDOR | USB_RECIP_INTERFACE
- 				 | USB_DIR_OUT,
--				 16, /* value: threshold */
-+				 KEYSPAN_TX_THRESHOLD,
- 				 0, /* index */
- 				 NULL,
- 				 0,
-@@ -129,6 +131,8 @@ static void keyspan_pda_rx_interrupt(str
- 	int retval;
- 	int status = urb->status;
- 	struct keyspan_pda_private *priv;
-+	unsigned long flags;
-+
- 	priv = usb_get_serial_port_data(port);
- 
- 	switch (status) {
-@@ -171,7 +175,10 @@ static void keyspan_pda_rx_interrupt(str
- 		case 1: /* modemline change */
- 			break;
- 		case 2: /* tx unthrottle interrupt */
-+			spin_lock_irqsave(&port->lock, flags);
- 			priv->tx_throttled = 0;
-+			priv->tx_room = max(priv->tx_room, KEYSPAN_TX_THRESHOLD);
-+			spin_unlock_irqrestore(&port->lock, flags);
- 			/* queue up a wakeup at scheduler time */
- 			usb_serial_port_softint(port);
- 			break;
-@@ -505,7 +512,8 @@ static int keyspan_pda_write(struct tty_
- 			goto exit;
- 		}
- 	}
--	if (count > priv->tx_room) {
-+
-+	if (count >= priv->tx_room) {
- 		/* we're about to completely fill the Tx buffer, so
- 		   we'll be throttled afterwards. */
- 		count = priv->tx_room;
-@@ -560,14 +568,17 @@ static void keyspan_pda_write_bulk_callb
- static int keyspan_pda_write_room(struct tty_struct *tty)
- {
- 	struct usb_serial_port *port = tty->driver_data;
--	struct keyspan_pda_private *priv;
--	priv = usb_get_serial_port_data(port);
--	/* used by n_tty.c for processing of tabs and such. Giving it our
--	   conservative guess is probably good enough, but needs testing by
--	   running a console through the device. */
--	return priv->tx_room;
--}
-+	struct keyspan_pda_private *priv = usb_get_serial_port_data(port);
-+	unsigned long flags;
-+	int room = 0;
-+
-+	spin_lock_irqsave(&port->lock, flags);
-+	if (test_bit(0, &port->write_urbs_free) && !priv->tx_throttled)
-+		room = priv->tx_room;
-+	spin_unlock_irqrestore(&port->lock, flags);
- 
-+	return room;
++static bool frontend_will_handle(struct xenbus_watch *watch,
++				 const char **vec, unsigned int len)
++{
++	return watch->nr_pending == 0;
 +}
- 
- static int keyspan_pda_chars_in_buffer(struct tty_struct *tty)
++
+ static void frontend_changed(struct xenbus_watch *watch,
+ 			    const char **vec, unsigned int len)
  {
+@@ -192,6 +198,7 @@ static struct xen_bus_type xenbus_backen
+ 	.levels = 3,		/* backend/type/<frontend>/<id> */
+ 	.get_bus_id = backend_bus_id,
+ 	.probe = xenbus_probe_backend,
++	.otherend_will_handle = frontend_will_handle,
+ 	.otherend_changed = frontend_changed,
+ 	.bus = {
+ 		.name		= "xen-backend",
 
 
