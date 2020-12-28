@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 162F92E665E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:14:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EB542E6674
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:14:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387551AbgL1NUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:20:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48934 "EHLO mail.kernel.org"
+        id S2394194AbgL1QMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:12:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733160AbgL1NUW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:20:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E218F207CF;
-        Mon, 28 Dec 2020 13:19:40 +0000 (UTC)
+        id S2387549AbgL1NUZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:20:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD82C229EF;
+        Mon, 28 Dec 2020 13:19:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161581;
-        bh=Ihcc4nN+OkEsPNSB38BRCmUphGdB0TEpOMi6Bhbp9OI=;
+        s=korg; t=1609161584;
+        bh=cp5yAWSsmGzTB6HvGKaK6i/WsFk3L5RGH48JWKlLltg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NIKgxpu8TEoxm5Cf2QWS46GBOgZTxBF1bbQtJ08r0B7+EyUqFdjxHOIblTM5002XA
-         TE7JFvmOEfmZOfCpct/ImyV5Gj2G1LQ9Radlo6Be6fGGBK5tw5mGl6ECw50ehVPdDZ
-         AS37EUBrbfUSbZ4EO5+fxeJI+ujp5W6iKggRV03w=
+        b=yWBnzTXr7SuMZxsLiBP6kqRo6BWxIVp7c/7yNj6wCOh6tvsneMQHdZ0xSVrgipNYp
+         qxQn7w3tp6lsgx7yjxC7QwcHbI8MmXjgr97BLJXmD4592gT75tMH+iWFMfiiXd59/8
+         dwTyjSy0+dY9mllTjDGhbogFX20fRdnADh+56nq0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sami Tolvanen <samitolvanen@google.com>,
-        Fangrui Song <maskray@google.com>,
-        Borislav Petkov <bp@suse.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>
-Subject: [PATCH 4.19 002/346] x86/lib: Change .weak to SYM_FUNC_START_WEAK for arch/x86/lib/mem*_64.S
-Date:   Mon, 28 Dec 2020 13:45:21 +0100
-Message-Id: <20201228124919.871342748@linuxfoundation.org>
+        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.19 003/346] spi: bcm2835aux: Fix use-after-free on unbind
+Date:   Mon, 28 Dec 2020 13:45:22 +0100
+Message-Id: <20201228124919.920683667@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
 References: <20201228124919.745526410@linuxfoundation.org>
@@ -42,112 +39,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fangrui Song <maskray@google.com>
+From: Lukas Wunner <lukas@wunner.de>
 
-commit 4d6ffa27b8e5116c0abb318790fd01d4e12d75e6 upstream.
+[ Upstream commit e13ee6cc4781edaf8c7321bee19217e3702ed481 ]
 
-Commit
+bcm2835aux_spi_remove() accesses the driver's private data after calling
+spi_unregister_master() even though that function releases the last
+reference on the spi_master and thereby frees the private data.
 
-  393f203f5fd5 ("x86_64: kasan: add interceptors for memset/memmove/memcpy functions")
+Fix by switching over to the new devm_spi_alloc_master() helper which
+keeps the private data accessible until the driver has unbound.
 
-added .weak directives to arch/x86/lib/mem*_64.S instead of changing the
-existing ENTRY macros to WEAK. This can lead to the assembly snippet
-
-  .weak memcpy
-  ...
-  .globl memcpy
-
-which will produce a STB_WEAK memcpy with GNU as but STB_GLOBAL memcpy
-with LLVM's integrated assembler before LLVM 12. LLVM 12 (since
-https://reviews.llvm.org/D90108) will error on such an overridden symbol
-binding.
-
-Commit
-
-  ef1e03152cb0 ("x86/asm: Make some functions local")
-
-changed ENTRY in arch/x86/lib/memcpy_64.S to SYM_FUNC_START_LOCAL, which
-was ineffective due to the preceding .weak directive.
-
-Use the appropriate SYM_FUNC_START_WEAK instead.
-
-Fixes: 393f203f5fd5 ("x86_64: kasan: add interceptors for memset/memmove/memcpy functions")
-Fixes: ef1e03152cb0 ("x86/asm: Make some functions local")
-Reported-by: Sami Tolvanen <samitolvanen@google.com>
-Signed-off-by: Fangrui Song <maskray@google.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/20201103012358.168682-1-maskray@google.com
-[nd: backport due to missing
-  commit e9b9d020c487 ("x86/asm: Annotate aliases")
-  commit ffedeeb780dc ("linkage: Introduce new macros for assembler symbols")]
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Fixes: b9dd3f6d4172 ("spi: bcm2835aux: Fix controller unregister order")
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Cc: <stable@vger.kernel.org> # v4.4+: 5e844cc37a5c: spi: Introduce device-managed SPI controller allocation
+Cc: <stable@vger.kernel.org> # v4.4+: b9dd3f6d4172: spi: bcm2835aux: Fix controller unregister order
+Cc: <stable@vger.kernel.org> # v4.4+
+Link: https://lore.kernel.org/r/b290b06357d0c0bdee9cecc539b840a90630f101.1605121038.git.lukas@wunner.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/lib/memcpy_64.S  |    6 +++---
- arch/x86/lib/memmove_64.S |    4 ++--
- arch/x86/lib/memset_64.S  |    6 +++---
- 3 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/spi/spi-bcm2835aux.c |   18 ++++++------------
+ 1 file changed, 6 insertions(+), 12 deletions(-)
 
---- a/arch/x86/lib/memcpy_64.S
-+++ b/arch/x86/lib/memcpy_64.S
-@@ -14,8 +14,6 @@
-  * to a jmp to memcpy_erms which does the REP; MOVSB mem copy.
-  */
+--- a/drivers/spi/spi-bcm2835aux.c
++++ b/drivers/spi/spi-bcm2835aux.c
+@@ -407,7 +407,7 @@ static int bcm2835aux_spi_probe(struct p
+ 	unsigned long clk_hz;
+ 	int err;
  
--.weak memcpy
--
- /*
-  * memcpy - Copy a memory block.
-  *
-@@ -28,7 +26,9 @@
-  * rax original destination
-  */
- ENTRY(__memcpy)
--ENTRY(memcpy)
-+.weak memcpy
-+.p2align 4, 0x90
-+memcpy:
- 	ALTERNATIVE_2 "jmp memcpy_orig", "", X86_FEATURE_REP_GOOD, \
- 		      "jmp memcpy_erms", X86_FEATURE_ERMS
+-	master = spi_alloc_master(&pdev->dev, sizeof(*bs));
++	master = devm_spi_alloc_master(&pdev->dev, sizeof(*bs));
+ 	if (!master) {
+ 		dev_err(&pdev->dev, "spi_alloc_master() failed\n");
+ 		return -ENOMEM;
+@@ -439,30 +439,26 @@ static int bcm2835aux_spi_probe(struct p
+ 	/* the main area */
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	bs->regs = devm_ioremap_resource(&pdev->dev, res);
+-	if (IS_ERR(bs->regs)) {
+-		err = PTR_ERR(bs->regs);
+-		goto out_master_put;
+-	}
++	if (IS_ERR(bs->regs))
++		return PTR_ERR(bs->regs);
  
---- a/arch/x86/lib/memmove_64.S
-+++ b/arch/x86/lib/memmove_64.S
-@@ -25,8 +25,8 @@
-  * rax: dest
-  */
- .weak memmove
--
--ENTRY(memmove)
-+.p2align 4, 0x90
-+memmove:
- ENTRY(__memmove)
+ 	bs->clk = devm_clk_get(&pdev->dev, NULL);
+ 	if ((!bs->clk) || (IS_ERR(bs->clk))) {
+-		err = PTR_ERR(bs->clk);
+ 		dev_err(&pdev->dev, "could not get clk: %d\n", err);
+-		goto out_master_put;
++		return PTR_ERR(bs->clk);
+ 	}
  
- 	/* Handle more 32 bytes in loop */
---- a/arch/x86/lib/memset_64.S
-+++ b/arch/x86/lib/memset_64.S
-@@ -6,8 +6,6 @@
- #include <asm/alternative-asm.h>
- #include <asm/export.h>
+ 	bs->irq = platform_get_irq(pdev, 0);
+ 	if (bs->irq <= 0) {
+ 		dev_err(&pdev->dev, "could not get IRQ: %d\n", bs->irq);
+-		err = bs->irq ? bs->irq : -ENODEV;
+-		goto out_master_put;
++		return bs->irq ? bs->irq : -ENODEV;
+ 	}
  
--.weak memset
--
- /*
-  * ISO C memset - set a memory block to a byte value. This function uses fast
-  * string to get better performance than the original function. The code is
-@@ -19,7 +17,9 @@
-  *
-  * rax   original destination
-  */
--ENTRY(memset)
-+.weak memset
-+.p2align 4, 0x90
-+memset:
- ENTRY(__memset)
- 	/*
- 	 * Some CPUs support enhanced REP MOVSB/STOSB feature. It is recommended
+ 	/* this also enables the HW block */
+ 	err = clk_prepare_enable(bs->clk);
+ 	if (err) {
+ 		dev_err(&pdev->dev, "could not prepare clock: %d\n", err);
+-		goto out_master_put;
++		return err;
+ 	}
+ 
+ 	/* just checking if the clock returns a sane value */
+@@ -495,8 +491,6 @@ static int bcm2835aux_spi_probe(struct p
+ 
+ out_clk_disable:
+ 	clk_disable_unprepare(bs->clk);
+-out_master_put:
+-	spi_master_put(master);
+ 	return err;
+ }
+ 
 
 
