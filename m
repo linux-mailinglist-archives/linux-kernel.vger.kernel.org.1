@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 041552E3786
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:57:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F14192E4357
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:36:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728854AbgL1M4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:56:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52904 "EHLO mail.kernel.org"
+        id S2504335AbgL1PgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:36:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56072 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728042AbgL1M4n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:56:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5838C208BA;
-        Mon, 28 Dec 2020 12:56:27 +0000 (UTC)
+        id S2407415AbgL1NyP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:54:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 99C6F20791;
+        Mon, 28 Dec 2020 13:53:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160188;
-        bh=rN1UhIVGmv1kbOBSZbu95fHxVkQe5md3+jf0hDU4j3c=;
+        s=korg; t=1609163615;
+        bh=zhsGXA6SJ+1ImAgzlI7jwTdc5LjYtY66jcdT1t/BwLU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YW7dmpgE5wJItPEkz4ZlgXG6jEU81WkjAZK8cerrZp9YjO6jaYZ7iOVNCs9Fa36ko
-         4mHnqkKbmtDDsffZIZV8B38bIra76N8aO0KDCEx7fHWhVDtH5WQ661pbHbVLTU9TXZ
-         FPekydM1v1trhcJolx84Q/ncYHHA6IsN1ieY3eDA=
+        b=cGJN2JEgNqHkNNqRjADnh/Hoh9FAWkpEVc+3HT/zSqwC/xtIVzqJb5IomyCJrXate
+         PKkgAA4YqFcg4rNFe9QJjIZV0OrvYf3dVmFoClBaIPFLm5owrjK6DVqscBfyhc+KR2
+         Fite403n3pn6u4pFAUSoosi3v1IuaUMOOIq8elvE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Kozlov Sergey <serjk@netup.ru>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.4 099/132] media: netup_unidvb: Dont leak SPI master in probe error path
-Date:   Mon, 28 Dec 2020 13:49:43 +0100
-Message-Id: <20201228124851.196370575@linuxfoundation.org>
+        stable@vger.kernel.org, Philipp Rudo <prudo@linux.ibm.com>,
+        Xiaoying Yan <yiyan@redhat.com>,
+        Lianbo Jiang <lijiang@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>
+Subject: [PATCH 5.4 348/453] s390/kexec_file: fix diag308 subcode when loading crash kernel
+Date:   Mon, 28 Dec 2020 13:49:44 +0100
+Message-Id: <20201228124953.952610394@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,69 +41,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: Philipp Rudo <prudo@linux.ibm.com>
 
-commit e297ddf296de35037fa97f4302782def196d350a upstream.
+commit 613775d62ec60202f98d2c5f520e6e9ba6dd4ac4 upstream.
 
-If the call to spi_register_master() fails on probe of the NetUP
-Universal DVB driver, the spi_master struct is erroneously not freed.
+diag308 subcode 0 performes a clear reset which inlcudes the reset of
+all registers in the system. While this is the preferred behavior when
+loading a normal kernel via kexec it prevents the crash kernel to store
+the register values in the dump. To prevent this use subcode 1 when
+loading a crash kernel instead.
 
-Likewise, if spi_new_device() fails, the spi_controller struct is
-not unregistered.  Plug the leaks.
-
-While at it, fix an ordering issue in netup_spi_release() wherein
-spi_unregister_master() is called after fiddling with the IRQ control
-register.  The correct order is to call spi_unregister_master() *before*
-this teardown step because bus accesses may still be ongoing until that
-function returns.
-
-Fixes: 52b1eaf4c59a ("[media] netup_unidvb: NetUP Universal DVB-S/S2/T/T2/C PCI-E card driver")
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Reviewed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc: <stable@vger.kernel.org> # v4.3+: 5e844cc37a5c: spi: Introduce device-managed SPI controller allocation
-Cc: <stable@vger.kernel.org> # v4.3+
-Cc: Kozlov Sergey <serjk@netup.ru>
-Link: https://lore.kernel.org/r/c4c24f333fc7840f4a3db24789e6e10dd660bede.1607286887.git.lukas@wunner.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: ee337f5469fd ("s390/kexec_file: Add crash support to image loader")
+Cc: <stable@vger.kernel.org> # 4.17
+Signed-off-by: Philipp Rudo <prudo@linux.ibm.com>
+Reported-by: Xiaoying Yan <yiyan@redhat.com>
+Tested-by: Lianbo Jiang <lijiang@redhat.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/media/pci/netup_unidvb/netup_unidvb_spi.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ arch/s390/purgatory/head.S |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
---- a/drivers/media/pci/netup_unidvb/netup_unidvb_spi.c
-+++ b/drivers/media/pci/netup_unidvb/netup_unidvb_spi.c
-@@ -184,7 +184,7 @@ int netup_spi_init(struct netup_unidvb_d
- 	struct spi_master *master;
- 	struct netup_spi *nspi;
+--- a/arch/s390/purgatory/head.S
++++ b/arch/s390/purgatory/head.S
+@@ -62,14 +62,15 @@
+ 	jh	10b
+ .endm
  
--	master = spi_alloc_master(&ndev->pci_dev->dev,
-+	master = devm_spi_alloc_master(&ndev->pci_dev->dev,
- 		sizeof(struct netup_spi));
- 	if (!master) {
- 		dev_err(&ndev->pci_dev->dev,
-@@ -217,6 +217,7 @@ int netup_spi_init(struct netup_unidvb_d
- 		ndev->pci_slot,
- 		ndev->pci_func);
- 	if (!spi_new_device(master, &netup_spi_board)) {
-+		spi_unregister_master(master);
- 		ndev->spi = NULL;
- 		dev_err(&ndev->pci_dev->dev,
- 			"%s(): unable to create SPI device\n", __func__);
-@@ -235,13 +236,13 @@ void netup_spi_release(struct netup_unid
- 	if (!spi)
- 		return;
+-.macro START_NEXT_KERNEL base
++.macro START_NEXT_KERNEL base subcode
+ 	lg	%r4,kernel_entry-\base(%r13)
+ 	lg	%r5,load_psw_mask-\base(%r13)
+ 	ogr	%r4,%r5
+ 	stg	%r4,0(%r0)
  
-+	spi_unregister_master(spi->master);
- 	spin_lock_irqsave(&spi->lock, flags);
- 	reg = readw(&spi->regs->control_stat);
- 	writew(reg | NETUP_SPI_CTRL_IRQ, &spi->regs->control_stat);
- 	reg = readw(&spi->regs->control_stat);
- 	writew(reg & ~NETUP_SPI_CTRL_IMASK, &spi->regs->control_stat);
- 	spin_unlock_irqrestore(&spi->lock, flags);
--	spi_unregister_master(spi->master);
- 	ndev->spi = NULL;
- }
+ 	xgr	%r0,%r0
+-	diag	%r0,%r0,0x308
++	lghi	%r1,\subcode
++	diag	%r0,%r1,0x308
+ .endm
  
+ .text
+@@ -123,7 +124,7 @@ ENTRY(purgatory_start)
+ 	je	.start_crash_kernel
+ 
+ 	/* start normal kernel */
+-	START_NEXT_KERNEL .base_crash
++	START_NEXT_KERNEL .base_crash 0
+ 
+ .return_old_kernel:
+ 	lmg	%r6,%r15,gprregs-.base_crash(%r13)
+@@ -227,7 +228,7 @@ ENTRY(purgatory_start)
+ 	MEMCPY	%r9,%r10,%r11
+ 
+ 	/* start crash kernel */
+-	START_NEXT_KERNEL .base_dst
++	START_NEXT_KERNEL .base_dst 1
+ 
+ 
+ load_psw_mask:
 
 
