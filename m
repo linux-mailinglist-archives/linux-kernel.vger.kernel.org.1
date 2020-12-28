@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 861DF2E40B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:57:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FCE22E394D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:22:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408108AbgL1Ozv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:55:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52136 "EHLO mail.kernel.org"
+        id S2388221AbgL1NWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:22:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441219AbgL1ORB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:17:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C283022AAA;
-        Mon, 28 Dec 2020 14:16:19 +0000 (UTC)
+        id S2388155AbgL1NVs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:21:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D431206ED;
+        Mon, 28 Dec 2020 13:21:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609164980;
-        bh=hBwo5UXRJC0YzTAz3HQDeIVycszqgjZdqb20HN6tMYc=;
+        s=korg; t=1609161667;
+        bh=jnYB1dKbmuQoaPHGqWz+C6l6SG1fHTsBA7QcIb0aQt8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q5fKjzN3NuTuQsa5bWbLWTioYy/8T+gWXinw1Awio7VjIxzGPaDGKoUJfLKGiUXIm
-         GWaFa3O7djSX353o2IhlnF+k7hnXYnmxGHPaR7VNrM0ivCpelXXI6BnUaY2bj0N+91
-         MRfXWY5XCgeNfo8+4JGv92Ss2YLBPHV4/xpOzJZo=
+        b=OIy2TMohDUSCefRzk2+EuY9Rdc9ws9caEUU0usRbjRx7x7dGIf0YzfXcZcAzYLIJK
+         2ad3ZD4sxBUqhn7UZwNh8uYEFrqyuo2KH8iw4MH3stbwNWWUGxw/J0bk3wgdkYfpWP
+         WBxidvSWDwYme9Nl0ZuMbAK5Jp4NVaUDf/bhVyjo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 367/717] drm/mediatek: avoid dereferencing a null hdmi_phy on an error message
+        stable@vger.kernel.org,
+        syzbot+df7dc146ebdd6435eea3@syzkaller.appspotmail.com,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.19 046/346] ALSA: pcm: oss: Fix potential out-of-bounds shift
 Date:   Mon, 28 Dec 2020 13:46:05 +0100
-Message-Id: <20201228125038.589605736@linuxfoundation.org>
+Message-Id: <20201228124922.017286722@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,47 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit b097efba9580d1f7cbc80cda84e768983e3de541 ]
+commit 175b8d89fe292796811fdee87fa39799a5b6b87a upstream.
 
-Currently there is a null pointer check for hdmi_phy that implies it
-may be null, however a dev_err messages dereferences this potential null
-pointer.  Avoid a null pointer dereference by only emitting the dev_err
-message if hdmi_phy is non-null.  It is a moot point if the error message
-needs to be printed at all, but since this is a relatively new piece of
-code it may be useful to keep the message in for the moment in case there
-are unforseen errors that need to be reported.
+syzbot spotted a potential out-of-bounds shift in the PCM OSS layer
+where it calculates the buffer size with the arbitrary shift value
+given via an ioctl.
 
-Fixes: be28b6507c46 ("drm/mediatek: separate hdmi phy to different file")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Addresses-Coverity: ("Dereference after null check")
-Link: https://lore.kernel.org/r/20201207150937.170435-1-colin.king@canonical.com
-[vkoul: fix indent of return call]
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Add a range check for avoiding the undefined behavior.
+As the value can be treated by a signed integer, the max shift should
+be 30.
+
+Reported-by: syzbot+df7dc146ebdd6435eea3@syzkaller.appspotmail.com
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201209084552.17109-2-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/phy/mediatek/phy-mtk-hdmi.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/core/oss/pcm_oss.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/phy/mediatek/phy-mtk-hdmi.c b/drivers/phy/mediatek/phy-mtk-hdmi.c
-index 47c029d4b270b..206cc34687223 100644
---- a/drivers/phy/mediatek/phy-mtk-hdmi.c
-+++ b/drivers/phy/mediatek/phy-mtk-hdmi.c
-@@ -84,8 +84,9 @@ mtk_hdmi_phy_dev_get_ops(const struct mtk_hdmi_phy *hdmi_phy)
- 	    hdmi_phy->conf->hdmi_phy_disable_tmds)
- 		return &mtk_hdmi_phy_dev_ops;
+--- a/sound/core/oss/pcm_oss.c
++++ b/sound/core/oss/pcm_oss.c
+@@ -1949,11 +1949,15 @@ static int snd_pcm_oss_set_subdivide(str
+ static int snd_pcm_oss_set_fragment1(struct snd_pcm_substream *substream, unsigned int val)
+ {
+ 	struct snd_pcm_runtime *runtime;
++	int fragshift;
  
--	dev_err(hdmi_phy->dev, "Failed to get dev ops of phy\n");
--		return NULL;
-+	if (hdmi_phy)
-+		dev_err(hdmi_phy->dev, "Failed to get dev ops of phy\n");
-+	return NULL;
- }
- 
- static void mtk_hdmi_phy_clk_get_data(struct mtk_hdmi_phy *hdmi_phy,
--- 
-2.27.0
-
+ 	runtime = substream->runtime;
+ 	if (runtime->oss.subdivision || runtime->oss.fragshift)
+ 		return -EINVAL;
+-	runtime->oss.fragshift = val & 0xffff;
++	fragshift = val & 0xffff;
++	if (fragshift >= 31)
++		return -EINVAL;
++	runtime->oss.fragshift = fragshift;
+ 	runtime->oss.maxfrags = (val >> 16) & 0xffff;
+ 	if (runtime->oss.fragshift < 4)		/* < 16 */
+ 		runtime->oss.fragshift = 4;
 
 
