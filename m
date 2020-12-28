@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56ACB2E4307
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:34:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 464F62E3780
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:57:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404992AbgL1Nya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:54:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55658 "EHLO mail.kernel.org"
+        id S1728745AbgL1M4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:56:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407361AbgL1Nxu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:53:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F371E206D4;
-        Mon, 28 Dec 2020 13:53:08 +0000 (UTC)
+        id S1728720AbgL1M4Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:56:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 72A542242A;
+        Mon, 28 Dec 2020 12:56:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163589;
-        bh=SGoB8j5yDF3J909SAHZihhflgFYzkjcmdLEJAdoZbjc=;
+        s=korg; t=1609160161;
+        bh=EXlrSnsxqFThazk3c1fA56OuJICu1bPS/aYgSsLEgNc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EiDMUKYgoI8uum7lN4/+xDSEPKEGRyUZ9YX+KQ9S8dISaHenxzXBYEtlaIO0JA+iq
-         2rztZqNF4ff6oceNFKvz3Nmcz4a3ZyxNsHpqv1dyCLIrdb6H5f6eNmn+q6o63x2nM/
-         uNGddxgf7ciVVqpxNXwiBzO6DNhX2+92YRv/1kQ4=
+        b=yE1+nbHzyrJf40t4bqu+m9xgaDw0qN06dDRbQkB/UH+fDUaEdGI68O1/r8lklCiAJ
+         p2fJb96cxRtVjbPxp51YddU+8jehFLQspChyE8ywhjPqgzIxt/X/T1/1obFmB0hw/G
+         8vT+EX3jqwRRmruN9gr+56ZNzmDdJ+NLYZbJPz70=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
-        Maxime Ripard <mripard@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org, Ondrej Mosnacek <omosnace@redhat.com>,
+        Scott Mayhew <smayhew@redhat.com>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 308/453] clk: sunxi-ng: Make sure divider tables have sentinel
+Subject: [PATCH 4.4 060/132] NFSv4.2: condition READDIRs mask for security label based on LSM state
 Date:   Mon, 28 Dec 2020 13:49:04 +0100
-Message-Id: <20201228124952.034517149@linuxfoundation.org>
+Message-Id: <20201228124849.349198754@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,52 +42,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jernej Skrabec <jernej.skrabec@siol.net>
+From: Olga Kornievskaia <kolga@netapp.com>
 
-[ Upstream commit 48f68de00c1405351fa0e7bc44bca067c49cd0a3 ]
+[ Upstream commit 05ad917561fca39a03338cb21fe9622f998b0f9c ]
 
-Two clock divider tables are missing sentinel at the end. Effect of that
-is that clock framework reads past the last entry. Fix that with adding
-sentinel at the end.
+Currently, the client will always ask for security_labels if the server
+returns that it supports that feature regardless of any LSM modules
+(such as Selinux) enforcing security policy. This adds performance
+penalty to the READDIR operation.
 
-Issue was discovered with KASan.
+Client adjusts superblock's support of the security_label based on
+the server's support but also current client's configuration of the
+LSM modules. Thus, prior to using the default bitmask in READDIR,
+this patch checks the server's capabilities and then instructs
+READDIR to remove FATTR4_WORD2_SECURITY_LABEL from the bitmask.
 
-Fixes: 0577e4853bfb ("clk: sunxi-ng: Add H3 clocks")
-Fixes: c6a0637460c2 ("clk: sunxi-ng: Add A64 clocks")
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Link: https://lore.kernel.org/r/20201202203817.438713-1-jernej.skrabec@siol.net
-Acked-by: Maxime Ripard <mripard@kernel.org>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+v5: fixing silly mistakes of the rushed v4
+v4: simplifying logic
+v3: changing label's initialization per Ondrej's comment
+v2: dropping selinux hook and using the sb cap.
+
+Suggested-by: Ondrej Mosnacek <omosnace@redhat.com>
+Suggested-by: Scott Mayhew <smayhew@redhat.com>
+Signed-off-by: Olga Kornievskaia <kolga@netapp.com>
+Fixes: 2b0143b5c986 ("VFS: normal filesystems (and lustre): d_inode() annotations")
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/sunxi-ng/ccu-sun50i-a64.c | 1 +
- drivers/clk/sunxi-ng/ccu-sun8i-h3.c   | 1 +
- 2 files changed, 2 insertions(+)
+ fs/nfs/nfs4proc.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-a64.c b/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
-index 5f66bf8797723..149cfde817cba 100644
---- a/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
-+++ b/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
-@@ -389,6 +389,7 @@ static struct clk_div_table ths_div_table[] = {
- 	{ .val = 1, .div = 2 },
- 	{ .val = 2, .div = 4 },
- 	{ .val = 3, .div = 6 },
-+	{ /* Sentinel */ },
- };
- static const char * const ths_parents[] = { "osc24M" };
- static struct ccu_div ths_clk = {
-diff --git a/drivers/clk/sunxi-ng/ccu-sun8i-h3.c b/drivers/clk/sunxi-ng/ccu-sun8i-h3.c
-index 6b636362379ee..7e629a4493afd 100644
---- a/drivers/clk/sunxi-ng/ccu-sun8i-h3.c
-+++ b/drivers/clk/sunxi-ng/ccu-sun8i-h3.c
-@@ -322,6 +322,7 @@ static struct clk_div_table ths_div_table[] = {
- 	{ .val = 1, .div = 2 },
- 	{ .val = 2, .div = 4 },
- 	{ .val = 3, .div = 6 },
-+	{ /* Sentinel */ },
- };
- static SUNXI_CCU_DIV_TABLE_WITH_GATE(ths_clk, "ths", "osc24M",
- 				     0x074, 0, 2, ths_div_table, BIT(31), 0);
+diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
+index 64d15c2662db6..3c15291ba1aaa 100644
+--- a/fs/nfs/nfs4proc.c
++++ b/fs/nfs/nfs4proc.c
+@@ -4047,12 +4047,12 @@ static int _nfs4_proc_readdir(struct dentry *dentry, struct rpc_cred *cred,
+ 		u64 cookie, struct page **pages, unsigned int count, int plus)
+ {
+ 	struct inode		*dir = d_inode(dentry);
++	struct nfs_server	*server = NFS_SERVER(dir);
+ 	struct nfs4_readdir_arg args = {
+ 		.fh = NFS_FH(dir),
+ 		.pages = pages,
+ 		.pgbase = 0,
+ 		.count = count,
+-		.bitmask = NFS_SERVER(d_inode(dentry))->attr_bitmask,
+ 		.plus = plus,
+ 	};
+ 	struct nfs4_readdir_res res;
+@@ -4067,9 +4067,15 @@ static int _nfs4_proc_readdir(struct dentry *dentry, struct rpc_cred *cred,
+ 	dprintk("%s: dentry = %pd2, cookie = %Lu\n", __func__,
+ 			dentry,
+ 			(unsigned long long)cookie);
++	if (!(server->caps & NFS_CAP_SECURITY_LABEL))
++		args.bitmask = server->attr_bitmask_nl;
++	else
++		args.bitmask = server->attr_bitmask;
++
+ 	nfs4_setup_readdir(cookie, NFS_I(dir)->cookieverf, dentry, &args);
+ 	res.pgbase = args.pgbase;
+-	status = nfs4_call_sync(NFS_SERVER(dir)->client, NFS_SERVER(dir), &msg, &args.seq_args, &res.seq_res, 0);
++	status = nfs4_call_sync(server->client, server, &msg, &args.seq_args,
++			&res.seq_res, 0);
+ 	if (status >= 0) {
+ 		memcpy(NFS_I(dir)->cookieverf, res.verifier.data, NFS4_VERIFIER_SIZE);
+ 		status += args.pgbase;
 -- 
 2.27.0
 
