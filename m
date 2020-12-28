@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 687B82E6601
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:08:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4874B2E65B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:07:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393453AbgL1QIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:08:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54420 "EHLO mail.kernel.org"
+        id S2388999AbgL1NZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:25:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388888AbgL1NZn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:25:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 920EF20728;
-        Mon, 28 Dec 2020 13:25:02 +0000 (UTC)
+        id S2388897AbgL1NZY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:25:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 92D3922B37;
+        Mon, 28 Dec 2020 13:25:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161903;
-        bh=YLxJs9jlFvIrfdpRGceJ1gxYrYoW359VBzcWHuQ2/YI=;
+        s=korg; t=1609161909;
+        bh=32N3iBa7n5TJdAl+gIU8U6PfxFqNxfabR2e5sxFeG04=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=V/Rh9eBcUY/dhbRWfSWEQazm0T4GPW/VSvnGUC8ihm+KR4Czbd1MDjPaqxlda9R7u
-         SBslQ2mZegWyUmimaz7FZ1SXbOYNJp7r2QLW5yWSoWAwQ3zKpk+FnRpmrs4T/qgXyX
-         GhJ4wcqBH/EzEeDFpmsRSHQth/3XJyzAtqf+5iww=
+        b=mQqUOYjOuyVp7Qvd1ozL8PP/tyagVEzqRuxVXCfcK61lR7fnjwD9XcyFzz1yaDpL/
+         EP4sFmiRK32yGexu3iUiH/wAFCehLKcbHJ0xPgtbf5+Dn3PIYii6MqvPEJ+P8LWoJM
+         Dl+/2rQketFVRueEhGufDLgssDRzLevnxrJQFu6s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peilin Ye <yepeilin.cs@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        syzbot+24ebd650e20bd263ca01@syzkaller.appspotmail.com
-Subject: [PATCH 4.19 091/346] Bluetooth: Fix slab-out-of-bounds read in hci_le_direct_adv_report_evt()
-Date:   Mon, 28 Dec 2020 13:46:50 +0100
-Message-Id: <20201228124924.200468197@linuxfoundation.org>
+        stable@vger.kernel.org, Antti Palosaari <crope@iki.fi>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        syzbot+c60ddb60b685777d9d59@syzkaller.appspotmail.com
+Subject: [PATCH 4.19 093/346] media: msi2500: assign SPI bus number dynamically
+Date:   Mon, 28 Dec 2020 13:46:52 +0100
+Message-Id: <20201228124924.296393809@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
 References: <20201228124919.745526410@linuxfoundation.org>
@@ -40,54 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peilin Ye <yepeilin.cs@gmail.com>
+From: Antti Palosaari <crope@iki.fi>
 
-commit f7e0e8b2f1b0a09b527885babda3e912ba820798 upstream.
+commit 9c60cc797cf72e95bb39f32316e9f0e5f85435f9 upstream.
 
-`num_reports` is not being properly checked. A malformed event packet with
-a large `num_reports` number makes hci_le_direct_adv_report_evt() read out
-of bounds. Fix it.
+SPI bus number must be assigned dynamically for each device, otherwise it
+will crash when multiple devices are plugged to system.
+
+Reported-and-tested-by: syzbot+c60ddb60b685777d9d59@syzkaller.appspotmail.com
 
 Cc: stable@vger.kernel.org
-Fixes: 2f010b55884e ("Bluetooth: Add support for handling LE Direct Advertising Report events")
-Reported-and-tested-by: syzbot+24ebd650e20bd263ca01@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?extid=24ebd650e20bd263ca01
-Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Signed-off-by: Antti Palosaari <crope@iki.fi>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/bluetooth/hci_event.c |   12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ drivers/media/usb/msi2500/msi2500.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -5596,21 +5596,19 @@ static void hci_le_direct_adv_report_evt
- 					 struct sk_buff *skb)
- {
- 	u8 num_reports = skb->data[0];
--	void *ptr = &skb->data[1];
-+	struct hci_ev_le_direct_adv_info *ev = (void *)&skb->data[1];
+--- a/drivers/media/usb/msi2500/msi2500.c
++++ b/drivers/media/usb/msi2500/msi2500.c
+@@ -1250,7 +1250,7 @@ static int msi2500_probe(struct usb_inte
+ 	}
  
--	hci_dev_lock(hdev);
-+	if (!num_reports || skb->len < num_reports * sizeof(*ev) + 1)
-+		return;
- 
--	while (num_reports--) {
--		struct hci_ev_le_direct_adv_info *ev = ptr;
-+	hci_dev_lock(hdev);
- 
-+	for (; num_reports; num_reports--, ev++)
- 		process_adv_report(hdev, ev->evt_type, &ev->bdaddr,
- 				   ev->bdaddr_type, &ev->direct_addr,
- 				   ev->direct_addr_type, ev->rssi, NULL, 0,
- 				   false);
- 
--		ptr += sizeof(*ev);
--	}
--
- 	hci_dev_unlock(hdev);
- }
- 
+ 	dev->master = master;
+-	master->bus_num = 0;
++	master->bus_num = -1;
+ 	master->num_chipselect = 1;
+ 	master->transfer_one_message = msi2500_transfer_one_message;
+ 	spi_master_set_devdata(master, dev);
 
 
