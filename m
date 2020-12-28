@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CA6D2E3F8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:42:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A25CA2E3820
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:06:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503990AbgL1O16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:27:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35378 "EHLO mail.kernel.org"
+        id S1729372AbgL1NFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:05:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502308AbgL1O1b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:27:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A752222AEC;
-        Mon, 28 Dec 2020 14:26:50 +0000 (UTC)
+        id S1730639AbgL1NFe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:05:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E0E4A22582;
+        Mon, 28 Dec 2020 13:04:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165611;
-        bh=9AZ72TUaEtN1g9J+gej0QigPOa+ue3PhmJuS5YWN/vY=;
+        s=korg; t=1609160693;
+        bh=cuG2EWNI1cFolkhOiqv8KOvsbGLH9LY64J4Fo3gkaJY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Su/OYkt0J2Q43hTalk48wxxN7MaxDgAFhjXWYpIV+fBux8kXdOKSVvImNQyCI/CDz
-         Z+1ujltsFxjG6n5Ly1XTT7pnAQ1CY4eU7CtwIvz49v+ztsjpBFI8NdyVuSnM4L4mWS
-         DdXvWFAGv8vQw3rG2FZwUmTd0sR7q/daQE1FtBns=
+        b=2f7cqKNjgzflsxL3huHFxuRDHt0HX5rbqJznZDlZ9lZOLuU6S0Nf3bnxW0fYvjP0L
+         RwuF5gudu7vHuTlDMP0xank96r8M0BvcvU3c7uehjfgWh63MnMZH2GZp7air/0EYTI
+         zrOKo4oo+8nyjAqh5T2m36zmOIYg+DbfW3bNp6GA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Andreas Dilger <adilger@dilger.ca>, stable@kernel.org,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 5.10 593/717] ext4: dont remount read-only with errors=continue on reboot
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.9 138/175] ALSA: usb-audio: Disable sample read check if firmware doesnt give back
 Date:   Mon, 28 Dec 2020 13:49:51 +0100
-Message-Id: <20201228125049.321922927@linuxfoundation.org>
+Message-Id: <20201228124859.934142007@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +38,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit b08070eca9e247f60ab39d79b2c25d274750441f upstream.
+commit 9df28edce7c6ab38050235f6f8b43dd7ccd01b6d upstream.
 
-ext4_handle_error() with errors=continue mount option can accidentally
-remount the filesystem read-only when the system is rebooting. Fix that.
+Some buggy firmware don't give the current sample rate but leaves
+zero.  Handle this case more gracefully without warning but just skip
+the current rate verification from the next time.
 
-Fixes: 1dc1097ff60e ("ext4: avoid panic during forced reboot")
-Signed-off-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
-Cc: stable@kernel.org
-Link: https://lore.kernel.org/r/20201127113405.26867-2-jack@suse.cz
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201218145858.2357-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/ext4/super.c |   14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ sound/usb/clock.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -666,19 +666,17 @@ static bool system_going_down(void)
+--- a/sound/usb/clock.c
++++ b/sound/usb/clock.c
+@@ -327,6 +327,12 @@ static int set_sample_rate_v1(struct snd
+ 	}
  
- static void ext4_handle_error(struct super_block *sb)
- {
-+	journal_t *journal = EXT4_SB(sb)->s_journal;
+ 	crate = data[0] | (data[1] << 8) | (data[2] << 16);
++	if (!crate) {
++		dev_info(&dev->dev, "failed to read current rate; disabling the check\n");
++		chip->sample_rate_read_error = 3; /* three strikes, see above */
++		return 0;
++	}
 +
- 	if (test_opt(sb, WARN_ON_ERROR))
- 		WARN_ON_ONCE(1);
- 
--	if (sb_rdonly(sb))
-+	if (sb_rdonly(sb) || test_opt(sb, ERRORS_CONT))
- 		return;
- 
--	if (!test_opt(sb, ERRORS_CONT)) {
--		journal_t *journal = EXT4_SB(sb)->s_journal;
--
--		ext4_set_mount_flag(sb, EXT4_MF_FS_ABORTED);
--		if (journal)
--			jbd2_journal_abort(journal, -EIO);
--	}
-+	ext4_set_mount_flag(sb, EXT4_MF_FS_ABORTED);
-+	if (journal)
-+		jbd2_journal_abort(journal, -EIO);
- 	/*
- 	 * We force ERRORS_RO behavior when system is rebooting. Otherwise we
- 	 * could panic during 'reboot -f' as the underlying device got already
+ 	if (crate != rate) {
+ 		dev_warn(&dev->dev, "current rate %d is different from the runtime rate %d\n", crate, rate);
+ 		// runtime->rate = crate;
 
 
