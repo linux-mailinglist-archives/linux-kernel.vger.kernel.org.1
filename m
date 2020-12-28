@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 801262E38DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:16:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A275F2E653F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:59:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732852AbgL1NQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:16:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44328 "EHLO mail.kernel.org"
+        id S2387883AbgL1NdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:33:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732825AbgL1NP7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:15:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A725208D5;
-        Mon, 28 Dec 2020 13:15:18 +0000 (UTC)
+        id S2390439AbgL1Nam (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:30:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 700562063A;
+        Mon, 28 Dec 2020 13:30:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161318;
-        bh=Dc8TqSxw7FrpSg0OKuwPOKxQNp/mLu0Qs0TY3IujqTk=;
+        s=korg; t=1609162227;
+        bh=g69J1vYUOlnSGrlWdGzCdIsix7tK9GYMkZA/3nkrK9w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=15jUA93mIgM+KKXbN6BUr13zFNHgYftpeND6npOWiv2rJvsH1K35vRtwt5izPnRfO
-         6ZlKwmTlC3crTqy6hNwrt1g0erCvu/1EOUKv71XK4iz7ZWvGp8xo/KMjRNKyUB8Ws6
-         LD2jMhucUyflsNPfOI2dJv7muJGaCvIj/Hm9zIGk=
+        b=yuBz1q3PBJOpzyomU1Im3IufLPsyMKP3tSBUMIoPNDlr++sx+9NJh1Z8U5YmCCZWs
+         toXZXl42VE3Qt+I8BETFZSV61dr+7QRnv5YwFbdAMdNIS+My0xutyBX6rxyTvCXMdy
+         0WuIbdp5oKWpl9EtF0wal6KShQ7FAa+gKqEtuAZw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mike Christie <michael.christie@oracle.com>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Wang Wensheng <wangwensheng4@huawei.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 144/242] scsi: qedi: Fix missing destroy_workqueue() on error in __qedi_probe
-Date:   Mon, 28 Dec 2020 13:49:09 +0100
-Message-Id: <20201228124911.792747810@linuxfoundation.org>
+Subject: [PATCH 4.19 231/346] watchdog: Fix potential dereferencing of null pointer
+Date:   Mon, 28 Dec 2020 13:49:10 +0100
+Message-Id: <20201228124930.941903973@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,45 +41,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qinglang Miao <miaoqinglang@huawei.com>
+From: Wang Wensheng <wangwensheng4@huawei.com>
 
-[ Upstream commit 62eebd5247c4e4ce08826ad5995cf4dd7ce919dd ]
+[ Upstream commit 6f733cb2e7db38f8141b14740bcde577844a03b7 ]
 
-Add the missing destroy_workqueue() before return from __qedi_probe in the
-error handling case when fails to create workqueue qedi->offload_thread.
+A reboot notifier, which stops the WDT by calling the stop hook without
+any check, would be registered when we set WDOG_STOP_ON_REBOOT flag.
 
-Link: https://lore.kernel.org/r/20201109091518.55941-1-miaoqinglang@huawei.com
-Fixes: ace7f46ba5fd ("scsi: qedi: Add QLogic FastLinQ offload iSCSI driver framework.")
-Reviewed-by: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Howerer we allow the WDT driver to omit the stop hook since commit
+"d0684c8a93549" ("watchdog: Make stop function optional") and provide
+a module parameter for user that controls the WDOG_STOP_ON_REBOOT flag
+in commit 9232c80659e94 ("watchdog: Add stop_on_reboot parameter to
+control reboot policy"). Together that commits make user potential to
+insert a watchdog driver that don't provide a stop hook but with the
+stop_on_reboot parameter set, then dereferencing of null pointer occurs
+on system reboot.
+
+Check the stop hook before registering the reboot notifier to fix the
+issue.
+
+Fixes: d0684c8a9354 ("watchdog: Make stop function optional")
+Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/20201109130512.28121-1-wangwensheng4@huawei.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qedi/qedi_main.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/watchdog/watchdog_core.c | 22 +++++++++++++---------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/scsi/qedi/qedi_main.c b/drivers/scsi/qedi/qedi_main.c
-index 24b945b555ba3..a742b88567762 100644
---- a/drivers/scsi/qedi/qedi_main.c
-+++ b/drivers/scsi/qedi/qedi_main.c
-@@ -2387,7 +2387,7 @@ static int __qedi_probe(struct pci_dev *pdev, int mode)
- 			QEDI_ERR(&qedi->dbg_ctx,
- 				 "Unable to start offload thread!\n");
- 			rc = -ENODEV;
--			goto free_cid_que;
-+			goto free_tmf_thread;
+diff --git a/drivers/watchdog/watchdog_core.c b/drivers/watchdog/watchdog_core.c
+index 8b1f37ffb65ac..5c600a3706505 100644
+--- a/drivers/watchdog/watchdog_core.c
++++ b/drivers/watchdog/watchdog_core.c
+@@ -246,15 +246,19 @@ static int __watchdog_register_device(struct watchdog_device *wdd)
+ 	}
+ 
+ 	if (test_bit(WDOG_STOP_ON_REBOOT, &wdd->status)) {
+-		wdd->reboot_nb.notifier_call = watchdog_reboot_notifier;
+-
+-		ret = register_reboot_notifier(&wdd->reboot_nb);
+-		if (ret) {
+-			pr_err("watchdog%d: Cannot register reboot notifier (%d)\n",
+-			       wdd->id, ret);
+-			watchdog_dev_unregister(wdd);
+-			ida_simple_remove(&watchdog_ida, id);
+-			return ret;
++		if (!wdd->ops->stop)
++			pr_warn("watchdog%d: stop_on_reboot not supported\n", wdd->id);
++		else {
++			wdd->reboot_nb.notifier_call = watchdog_reboot_notifier;
++
++			ret = register_reboot_notifier(&wdd->reboot_nb);
++			if (ret) {
++				pr_err("watchdog%d: Cannot register reboot notifier (%d)\n",
++					wdd->id, ret);
++				watchdog_dev_unregister(wdd);
++				ida_simple_remove(&watchdog_ida, id);
++				return ret;
++			}
  		}
+ 	}
  
- 		/* F/w needs 1st task context memory entry for performance */
-@@ -2407,6 +2407,8 @@ static int __qedi_probe(struct pci_dev *pdev, int mode)
- 
- 	return 0;
- 
-+free_tmf_thread:
-+	destroy_workqueue(qedi->tmf_thread);
- free_cid_que:
- 	qedi_release_cid_que(qedi);
- free_uio:
 -- 
 2.27.0
 
