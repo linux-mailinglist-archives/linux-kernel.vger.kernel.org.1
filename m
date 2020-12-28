@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 368062E3E33
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:25:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F08C2E3E40
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:27:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503214AbgL1OZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:25:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60270 "EHLO mail.kernel.org"
+        id S2503317AbgL1OZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:25:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392074AbgL1OZV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:25:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7890920791;
-        Mon, 28 Dec 2020 14:25:05 +0000 (UTC)
+        id S2503304AbgL1OZt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:25:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C5AD22B2E;
+        Mon, 28 Dec 2020 14:25:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165506;
-        bh=68WcUA4SCIq5euYBlkcE9hSO8wqkCfcl9VXdHARhno0=;
+        s=korg; t=1609165508;
+        bh=nZMrMAamCH8fxLv4x7n/eb5SNkknL3x8hgvUN8jEIWo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VjqyHDH9+5+orkt911zLGAFjmxKtWZb0qEiY8Jn/s0MO8W9DLFLz+rMCn6UF+EAEw
-         X+HIxC0yTpsOXuEoibYcM52fK/Q9YC1uBUPYJaPg2vt+KvZ4TdLH3/JmfMIHZFSG5o
-         ddPDpnTO/edF0ue46S3rijZ7KQwVaB7E1fXACJM4=
+        b=0pFNtAubDAOu2ygPfwTmyRuLTsYnwWP02KeVTK2AAw0R9wFmizGk2ygEOAzNyevQ8
+         RmoanEGHh8wN/5d6aWmUC/zwfrWFrIg7SEOYbFcm6PNnHdWbP0TdwRQe3GVoXWTR/Y
+         twioHsW7ZWgeSJruiS86qQGAShesY+reGc5OCph4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Stefan Haberland <sth@linux.ibm.com>,
         Jan Hoeppner <hoeppner@linux.ibm.com>,
         Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.10 556/717] s390/dasd: prevent inconsistent LCU device data
-Date:   Mon, 28 Dec 2020 13:49:14 +0100
-Message-Id: <20201228125047.570920649@linuxfoundation.org>
+Subject: [PATCH 5.10 557/717] s390/dasd: fix list corruption of pavgroup group list
+Date:   Mon, 28 Dec 2020 13:49:15 +0100
+Message-Id: <20201228125047.619220403@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
 References: <20201228125020.963311703@linuxfoundation.org>
@@ -42,14 +42,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Stefan Haberland <sth@linux.ibm.com>
 
-commit a29ea01653493b94ea12bb2b89d1564a265081b6 upstream.
+commit 0ede91f83aa335da1c3ec68eb0f9e228f269f6d8 upstream.
 
-Prevent _lcu_update from adding a device to a pavgroup if the LCU still
-requires an update. The data is not reliable any longer and in parallel
-devices might have been moved on the lists already.
-This might lead to list corruptions or invalid PAV grouping.
-Only add devices to a pavgroup if the LCU is up to date. Additional steps
-are taken by the scheduled lcu update.
+dasd_alias_add_device() moves devices to the active_devices list in case
+of a scheduled LCU update regardless if they have previously been in a
+pavgroup or not.
+
+Example: device A and B are in the same pavgroup.
+
+Device A has already been in a pavgroup and the private->pavgroup pointer
+is set and points to a valid pavgroup. While going through dasd_add_device
+it is moved from the pavgroup to the active_devices list.
+
+In parallel device B might be removed from the same pavgroup in
+remove_device_from_lcu() which in turn checks if the group is empty
+and deletes it accordingly because device A has already been removed from
+there.
+
+When now device A enters remove_device_from_lcu() it is tried to remove it
+from the pavgroup again because the pavgroup pointer is still set and again
+the empty group will be cleaned up which leads to a list corruption.
+
+Fix by setting private->pavgroup to NULL in dasd_add_device.
+
+If the device has been the last device on the pavgroup an empty pavgroup
+remains but this will be cleaned up by the scheduled lcu_update which
+iterates over all existing pavgroups.
 
 Fixes: 8e09f21574ea ("[S390] dasd: add hyper PAV support to DASD device driver, part 1")
 Cc: stable@vger.kernel.org
@@ -59,33 +77,18 @@ Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/s390/block/dasd_alias.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/s390/block/dasd_alias.c |    1 +
+ 1 file changed, 1 insertion(+)
 
 --- a/drivers/s390/block/dasd_alias.c
 +++ b/drivers/s390/block/dasd_alias.c
-@@ -511,6 +511,14 @@ static int _lcu_update(struct dasd_devic
- 		return rc;
- 
- 	spin_lock_irqsave(&lcu->lock, flags);
-+	/*
-+	 * there is another update needed skip the remaining handling
-+	 * the data might already be outdated
-+	 * but especially do not add the device to an LCU with pending
-+	 * update
-+	 */
-+	if (lcu->flags & NEED_UAC_UPDATE)
-+		goto out;
- 	lcu->pav = NO_PAV;
- 	for (i = 0; i < MAX_DEVICES_PER_LCU; ++i) {
- 		switch (lcu->uac->unit[i].ua_type) {
-@@ -529,6 +537,7 @@ static int _lcu_update(struct dasd_devic
- 				 alias_list) {
- 		_add_device_to_lcu(lcu, device, refdev);
+@@ -642,6 +642,7 @@ int dasd_alias_add_device(struct dasd_de
  	}
-+out:
+ 	if (lcu->flags & UPDATE_PENDING) {
+ 		list_move(&device->alias_list, &lcu->active_devices);
++		private->pavgroup = NULL;
+ 		_schedule_lcu_update(lcu, device);
+ 	}
  	spin_unlock_irqrestore(&lcu->lock, flags);
- 	return 0;
- }
 
 
