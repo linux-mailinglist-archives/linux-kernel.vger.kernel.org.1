@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B1052E39F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:30:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 399812E42E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:34:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390327AbgL1NaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:30:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58950 "EHLO mail.kernel.org"
+        id S2406888AbgL1Nv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:51:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390270AbgL1NaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:30:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F28D21D94;
-        Mon, 28 Dec 2020 13:29:27 +0000 (UTC)
+        id S2406787AbgL1NvP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:51:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C1F8205CB;
+        Mon, 28 Dec 2020 13:50:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162168;
-        bh=Dg/zvick+tF/dokWLZVEeBnggQEuMjcf8SJ0u0AdwfE=;
+        s=korg; t=1609163459;
+        bh=LPSr3OeM8MJl3yOVD3DmK3SgQLLLiSkciydMM+9pd8w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aeg1a02kktrOB5QBLMrwGC+RGYFWWFt9fzVSt3VXikBgudlfVq0+t8jEWqA8OhQDO
-         z1f1tL6nt3IiC0/MRpX8jR3iw9Ubh4V0o1ixdp7tNovwFmQra6rGsR4BnXp78+gXsE
-         wDSo7oyoOn4cx3Kfj0jQMtMedFb/IbAYWzjturGQ=
+        b=xsJ4DCF3/0Y5RSBWGOLP1cGQDDG3GrOpcesH9JVGnOaRxj2P2tDH4/NA4mExz4Gb0
+         H2k4VnAZ5jQo5YxYNtvd4DM/5TZmqOm5md607lDSO4ML+hIU7unSW/ykl/Ok1+J+5D
+         5OlqEqbVYVr94/BHiNr9BBBqMKJt93Azl5/i2UXQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jack Wang <jinpu.wang@cloud.ionos.com>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 210/346] scsi: pm80xx: Fix error return in pm8001_pci_probe()
+Subject: [PATCH 5.4 293/453] net: allwinner: Fix some resources leak in the error handling path of the probe and in the remove function
 Date:   Mon, 28 Dec 2020 13:48:49 +0100
-Message-Id: <20201228124929.937122122@linuxfoundation.org>
+Message-Id: <20201228124951.303092806@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +41,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 97031ccffa4f62728602bfea8439dd045cd3aeb2 ]
+[ Upstream commit 322e53d1e2529ae9d501f5e0f20604a79b873aef ]
 
-The driver did not return an error in the case where
-pm8001_configure_phy_settings() failed.
+'irq_of_parse_and_map()' should be balanced by a corresponding
+'irq_dispose_mapping()' call. Otherwise, there is some resources leaks.
 
-Use rc to store the return value of pm8001_configure_phy_settings().
+Add such a call in the error handling path of the probe function and in the
+remove function.
 
-Link: https://lore.kernel.org/r/20201205115551.2079471-1-zhangqilong3@huawei.com
-Fixes: 279094079a44 ("[SCSI] pm80xx: Phy settings support for motherboard controller.")
-Acked-by: Jack Wang <jinpu.wang@cloud.ionos.com>
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: 492205050d77 ("net: Add EMAC ethernet driver found on Allwinner A10 SoC's")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/20201214202117.146293-1-christophe.jaillet@wanadoo.fr
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/pm8001/pm8001_init.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/allwinner/sun4i-emac.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/pm8001/pm8001_init.c b/drivers/scsi/pm8001/pm8001_init.c
-index 7a697ca68501e..1d59d7447a1c8 100644
---- a/drivers/scsi/pm8001/pm8001_init.c
-+++ b/drivers/scsi/pm8001/pm8001_init.c
-@@ -1059,7 +1059,8 @@ static int pm8001_pci_probe(struct pci_dev *pdev,
+diff --git a/drivers/net/ethernet/allwinner/sun4i-emac.c b/drivers/net/ethernet/allwinner/sun4i-emac.c
+index ff318472a3eef..95155a1f9f9dc 100644
+--- a/drivers/net/ethernet/allwinner/sun4i-emac.c
++++ b/drivers/net/ethernet/allwinner/sun4i-emac.c
+@@ -845,13 +845,13 @@ static int emac_probe(struct platform_device *pdev)
+ 	db->clk = devm_clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(db->clk)) {
+ 		ret = PTR_ERR(db->clk);
+-		goto out_iounmap;
++		goto out_dispose_mapping;
+ 	}
  
- 	pm8001_init_sas_add(pm8001_ha);
- 	/* phy setting support for motherboard controller */
--	if (pm8001_configure_phy_settings(pm8001_ha))
-+	rc = pm8001_configure_phy_settings(pm8001_ha);
-+	if (rc)
- 		goto err_out_shost;
+ 	ret = clk_prepare_enable(db->clk);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Error couldn't enable clock (%d)\n", ret);
+-		goto out_iounmap;
++		goto out_dispose_mapping;
+ 	}
  
- 	pm8001_post_sas_ha_init(shost, chip);
+ 	ret = sunxi_sram_claim(&pdev->dev);
+@@ -910,6 +910,8 @@ out_release_sram:
+ 	sunxi_sram_release(&pdev->dev);
+ out_clk_disable_unprepare:
+ 	clk_disable_unprepare(db->clk);
++out_dispose_mapping:
++	irq_dispose_mapping(ndev->irq);
+ out_iounmap:
+ 	iounmap(db->membase);
+ out:
+@@ -928,6 +930,7 @@ static int emac_remove(struct platform_device *pdev)
+ 	unregister_netdev(ndev);
+ 	sunxi_sram_release(&pdev->dev);
+ 	clk_disable_unprepare(db->clk);
++	irq_dispose_mapping(ndev->irq);
+ 	iounmap(db->membase);
+ 	free_netdev(ndev);
+ 
 -- 
 2.27.0
 
