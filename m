@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05BC42E3731
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:52:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 718622E3E19
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:24:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727729AbgL1MwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:52:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49440 "EHLO mail.kernel.org"
+        id S2502907AbgL1OXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:23:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726420AbgL1MwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:52:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 321A0208BA;
-        Mon, 28 Dec 2020 12:51:31 +0000 (UTC)
+        id S2439210AbgL1OXF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:23:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8BE1229C4;
+        Mon, 28 Dec 2020 14:22:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609159891;
-        bh=9WgRmwC+svNSSGYZKUedHSeApEsX6D8kE4E5qIdSyD4=;
+        s=korg; t=1609165344;
+        bh=Lbfd0la89QEGWJh+oYHU8RUqaVQDyY7sMHwdW066inw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AfQeZa+F49kCN+oiwgu+wEZ/o34U16HliH+8ni9l6rC3s2O9y0DfmCI5JRHIn5NKu
-         n96vtJivZLmNfNuAgNsTkYWtKpHnwredQu13XGpRkzL41X5jJWON0+c5EbiLA8o49p
-         BMjm/APtaALFnSa6aPRsXecG2oAdBiebwyopWAkY=
+        b=yp3fuchjRxw4khFgvabISW/BHgevIcl1ffOTL4eycCLF3IxGSFjrPAQ83FYtiucvk
+         L1mEt3QfEty0hCvse84rg1969DqLeZKGR3l7c+aN1a3a7RDRdzTNJkHWRLUqPGdpcv
+         E70l88Ep7a2drbXQsNCyVBKRiE7dMCxuQxb6ZI38=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fugang Duan <fugang.duan@nxp.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 011/132] net: stmmac: delete the eee_ctrl_timer after napi disabled
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 497/717] clk: s2mps11: Fix a resource leak in error handling paths in the probe function
 Date:   Mon, 28 Dec 2020 13:48:15 +0100
-Message-Id: <20201228124846.949676719@linuxfoundation.org>
+Message-Id: <20201228125044.776975691@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,62 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fugang Duan <fugang.duan@nxp.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 5f58591323bf3f342920179f24515935c4b5fd60 ]
+[ Upstream commit d2d94fc567624f96187e8b52083795620f93e69f ]
 
-There have chance to re-enable the eee_ctrl_timer and fire the timer
-in napi callback after delete the timer in .stmmac_release(), which
-introduces to access eee registers in the timer function after clocks
-are disabled then causes system hang. Found this issue when do
-suspend/resume and reboot stress test.
+Some resource should be released in the error handling path of the probe
+function, as already done in the remove function.
 
-It is safe to delete the timer after napi disabled and disable lpi mode.
+The remove function was fixed in commit bf416bd45738 ("clk: s2mps11: Add
+missing of_node_put and of_clk_del_provider")
 
-Fixes: d765955d2ae0b ("stmmac: add the Energy Efficient Ethernet support")
-Signed-off-by: Fugang Duan <fugang.duan@nxp.com>
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 7cc560dea415 ("clk: s2mps11: Add support for s2mps11")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/20201212122818.86195-1-christophe.jaillet@wanadoo.fr
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c |   13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ drivers/clk/clk-s2mps11.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -1897,9 +1897,6 @@ static int stmmac_release(struct net_dev
- {
- 	struct stmmac_priv *priv = netdev_priv(dev);
+diff --git a/drivers/clk/clk-s2mps11.c b/drivers/clk/clk-s2mps11.c
+index aa21371f9104c..a3e883a9f4067 100644
+--- a/drivers/clk/clk-s2mps11.c
++++ b/drivers/clk/clk-s2mps11.c
+@@ -195,6 +195,7 @@ static int s2mps11_clk_probe(struct platform_device *pdev)
+ 	return ret;
  
--	if (priv->eee_enabled)
--		del_timer_sync(&priv->eee_ctrl_timer);
--
- 	/* Stop and disconnect the PHY */
- 	if (priv->phydev) {
- 		phy_stop(priv->phydev);
-@@ -1920,6 +1917,11 @@ static int stmmac_release(struct net_dev
- 	if (priv->lpi_irq > 0)
- 		free_irq(priv->lpi_irq, dev);
+ err_reg:
++	of_node_put(s2mps11_clks[0].clk_np);
+ 	while (--i >= 0)
+ 		clkdev_drop(s2mps11_clks[i].lookup);
  
-+	if (priv->eee_enabled) {
-+		priv->tx_path_in_lpi_mode = false;
-+		del_timer_sync(&priv->eee_ctrl_timer);
-+	}
-+
- 	/* Stop TX/RX DMA and clear the descriptors */
- 	priv->hw->dma->stop_tx(priv->ioaddr);
- 	priv->hw->dma->stop_rx(priv->ioaddr);
-@@ -3068,6 +3070,11 @@ int stmmac_suspend(struct net_device *nd
- 
- 	napi_disable(&priv->napi);
- 
-+	if (priv->eee_enabled) {
-+		priv->tx_path_in_lpi_mode = false;
-+		del_timer_sync(&priv->eee_ctrl_timer);
-+	}
-+
- 	/* Stop TX/RX DMA */
- 	priv->hw->dma->stop_tx(priv->ioaddr);
- 	priv->hw->dma->stop_rx(priv->ioaddr);
+-- 
+2.27.0
+
 
 
