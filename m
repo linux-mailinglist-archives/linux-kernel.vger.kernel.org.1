@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 216A72E37A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:59:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 814A92E3BDD
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:55:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729190AbgL1M6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:58:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54162 "EHLO mail.kernel.org"
+        id S2405307AbgL1Nzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:55:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57338 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728140AbgL1M6Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:58:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FDDB22583;
-        Mon, 28 Dec 2020 12:58:09 +0000 (UTC)
+        id S2405291AbgL1Nzk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:55:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8738D20731;
+        Mon, 28 Dec 2020 13:54:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160290;
-        bh=DmmkrcitPC7QTS2tPwHnuEaW7XBeQ9vxE83FylVSuew=;
+        s=korg; t=1609163700;
+        bh=ZVH6mPmmfFa3nYou8QGvUJ84cqwMDtba7EMR8XuKack=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CmdCWThufnTr+k+ZQmeKrlnbNJLpZLpVtS2R+qI+gAdS6UYz73DOQNu+m/zHnOmQ4
-         9Hz0NybqlGpQu3Y9afbvUFiAV3zGaJ7HxpdbBF9eukZ9XB0+TFKmjgBdgEjqgGnCeb
-         Lc7c252JRRdeMaJcVicli24GXNnPw/OhNnSNCxhE=
+        b=HSmaXsRuVX3piHxnFn02XnBYp3a9gCCCgH/nlXrW8Vgoye/PwHNISAy/HJSUm++XQ
+         ejCJv0AQLPdIKFHPxOiUzcYAaB5Y5X+4cNznNMFxDYUQrJ2yR+n2Nmtr3VI/U+baId
+         JDcNcWVV6X6bFEMDADef5qFAfzG6ZuXVZWOvENdc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dave Kleikamp <dave.kleikamp@oracle.com>,
-        butt3rflyh4ck <butterflyhuangxx@gmail.com>
-Subject: [PATCH 4.4 122/132] jfs: Fix array index bounds check in dbAdjTree
+        stable@vger.kernel.org,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.4 370/453] USB: serial: keyspan_pda: fix tx-unthrottle use-after-free
 Date:   Mon, 28 Dec 2020 13:50:06 +0100
-Message-Id: <20201228124852.314292969@linuxfoundation.org>
+Message-Id: <20201228124955.016539993@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,33 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Kleikamp <dave.kleikamp@oracle.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit c61b3e4839007668360ed8b87d7da96d2e59fc6c upstream.
+commit 49fbb8e37a961396a5b6c82937c70df91de45e9d upstream.
 
-Bounds checking tools can flag a bug in dbAdjTree() for an array index
-out of bounds in dmt_stree. Since dmt_stree can refer to the stree in
-both structures dmaptree and dmapctl, use the larger array to eliminate
-the false positive.
+The driver's transmit-unthrottle work was never flushed on disconnect,
+something which could lead to the driver port data being freed while the
+unthrottle work is still scheduled.
 
-Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
-Reported-by: butt3rflyh4ck <butterflyhuangxx@gmail.com>
+Fix this by cancelling the unthrottle work when shutting down the port.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Cc: stable@vger.kernel.org
+Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/jfs/jfs_dmap.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/serial/keyspan_pda.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/fs/jfs/jfs_dmap.h
-+++ b/fs/jfs/jfs_dmap.h
-@@ -196,7 +196,7 @@ typedef union dmtree {
- #define	dmt_leafidx	t1.leafidx
- #define	dmt_height	t1.height
- #define	dmt_budmin	t1.budmin
--#define	dmt_stree	t1.stree
-+#define	dmt_stree	t2.stree
+--- a/drivers/usb/serial/keyspan_pda.c
++++ b/drivers/usb/serial/keyspan_pda.c
+@@ -647,8 +647,12 @@ error:
+ }
+ static void keyspan_pda_close(struct usb_serial_port *port)
+ {
++	struct keyspan_pda_private *priv = usb_get_serial_port_data(port);
++
+ 	usb_kill_urb(port->write_urb);
+ 	usb_kill_urb(port->interrupt_in_urb);
++
++	cancel_work_sync(&priv->unthrottle_work);
+ }
  
- /*
-  *	on-disk aggregate disk allocation map descriptor.
+ 
 
 
