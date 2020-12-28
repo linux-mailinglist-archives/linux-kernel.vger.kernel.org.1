@@ -2,171 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EA492E6A10
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 19:50:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28AE32E6A1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 19:52:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727244AbgL1Ssj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 13:48:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726832AbgL1Ssi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 13:48:38 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 224A4C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 10:47:58 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id 23so25828587lfg.10
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 10:47:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ul9Q7F+zVW3PAg2S28tHJ0IR0KNP8kk2DEXpGYeIlWk=;
-        b=KMz20JUoK22L486IVp7caAQRxpZ8S38J8Jj8SYjxbV/2agAn1XdkiISquPYQRJW1NZ
-         BzhkpKZWGzoh12IDv+006ZR9bm3NnfFzCFwKPl2CY7Fp4pA9o8KEXdrfYpWns0a6uB5G
-         3IE7VhWsbuQlLRJgfgKehWJwyFvcqT3jWXckU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ul9Q7F+zVW3PAg2S28tHJ0IR0KNP8kk2DEXpGYeIlWk=;
-        b=JC+ES7ZdYH+7xQ221ejRfmASA99mC4meh6wU4xHAMxZ0gcRw7AoRKjTylZO1fBogAb
-         v4fzRn9iZhmZhviahPxgCV5vUbJJ7K9hFEXPQISlBw2+e9HtThdCpXAXbRbZrRuInHC2
-         Gt4j6tu+KOG1/KHb7o8+sT1/unmrMSwtotKZD3FH0nW6xBGOQdjm9BwfGY7Mri0OqpxU
-         GrVaOZo34fU73UkSh5eqdmbpknFz5lEa31R1/hO8Mtg7Q84LuRIn+VHhQtsNKueZX9EW
-         VgJQQuMKYKBNDa7Cy3wxIDdt5HXb/Q4GjhYjOLjyv4jcDQG4SkN7jsvtTf3BBHAkW5kq
-         k/Ow==
-X-Gm-Message-State: AOAM532khV7slUA/iPQFwC2XzsaYJMJNNjbsqeWcwQu4G5223bvjI/ME
-        h8nkn0ezsJzMlWwq1biUo4QzPOJO7LmC7A==
-X-Google-Smtp-Source: ABdhPJyZ63HMe9z62x0RFSUtIJlJFdIBiaYbW7kwVeqLKjkhbYAp8HzfR6O2B+Rtwi1l7sCWWjkJJQ==
-X-Received: by 2002:a19:4148:: with SMTP id o69mr18203076lfa.610.1609181276136;
-        Mon, 28 Dec 2020 10:47:56 -0800 (PST)
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
-        by smtp.gmail.com with ESMTPSA id c7sm5410475lfm.262.2020.12.28.10.47.53
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Dec 2020 10:47:54 -0800 (PST)
-Received: by mail-lf1-f41.google.com with SMTP id x20so25819622lfe.12
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 10:47:53 -0800 (PST)
-X-Received: by 2002:a2e:9d89:: with SMTP id c9mr23613429ljj.220.1609181273408;
- Mon, 28 Dec 2020 10:47:53 -0800 (PST)
+        id S1727450AbgL1SvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 13:51:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37982 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726420AbgL1SvP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 13:51:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4694222B2B
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 18:50:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609181434;
+        bh=6YqwLVWGZ7ybOF3Ak7Rutxzpv/0P68frB/ABbtNRx2A=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=AaTJQGDx58ZoPUwIflwplFjWLnIFD807YZxgy/wYiFKWT1laWnPttoNEf6fcvtHHU
+         +1CZ1iOYgjTejeFWS++DiH29gBHSy8svPa+lVVWyGWKVVVrLK0b4deZrIMXHHkUZav
+         Cbh7w6P49o2HymZPH6nKYAV5V/DIz4ohgdngS6R+6FETrskhWBi87AJduXHvoFDd99
+         f4+7QHkuPbqsmYqNWe6Q41r1iNa231xtvKSnlNbahIH/zwC+CDwxNnAeD2oXFPcWSf
+         M9A+zrh7bnLWxYVHHSprHpra4oKbHl/w+xYPE2jSLv3Y/SWoptfm2qEu1lf6V4xPqh
+         2uJEMxqBjqKBw==
+Received: by mail-wm1-f42.google.com with SMTP id e25so271046wme.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 10:50:34 -0800 (PST)
+X-Gm-Message-State: AOAM533BcUcxTCi1yN6c/YUR1VxWfH0gXeMSVGByfkdrwa9X78RguDtw
+        ruwKQ/uDTodjdZVva6CeaYZUj7ryI/MEoAPOaIgHGA==
+X-Google-Smtp-Source: ABdhPJy2pGQl+qZycpaVqhSpXhzX+qb6KsnFF26UHOwhZZYqp85PUh6OZSCBMuyYlamRKZ+/qeujbpFqUc9sglmMa5s=
+X-Received: by 2002:a7b:c40b:: with SMTP id k11mr257558wmi.36.1609181432795;
+ Mon, 28 Dec 2020 10:50:32 -0800 (PST)
 MIME-Version: 1.0
-References: <20201226204335.dikqkrkezqet6oqf@box> <alpine.LSU.2.11.2012261246450.1629@eggly.anvils>
- <CAHk-=wjesveWEQZ4tqRssSSQvuxx46LqYfME+uxKfghxAe6U_w@mail.gmail.com>
- <20201226224016.dxjmordcfj75xgte@box> <alpine.LSU.2.11.2012261623140.1022@eggly.anvils>
- <alpine.LSU.2.11.2012261816520.1071@eggly.anvils> <CAHk-=wjHvipz5DqWUFP5zuPK-kWM4QD-eokf75V8NGNATnn+BQ@mail.gmail.com>
- <20201227234853.5mjyxcybucts3kbq@box> <CAHk-=wiVrd4R2EVGCGtmybt6+u9LoGgMdnf12zc=sYL=QbvRWQ@mail.gmail.com>
- <alpine.LSU.2.11.2012272233170.24487@eggly.anvils> <20201228125352.phnj2x2ci3kwfld5@box>
-In-Reply-To: <20201228125352.phnj2x2ci3kwfld5@box>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 28 Dec 2020 10:47:36 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wg4bzJ9ugrOp7DBoMjNpHechm4QWb0-HC3A_pN564RU5A@mail.gmail.com>
-Message-ID: <CAHk-=wg4bzJ9ugrOp7DBoMjNpHechm4QWb0-HC3A_pN564RU5A@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mm: Allow architectures to request 'old' entries when prefaulting
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     Hugh Dickins <hughd@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+References: <bf59ecb5487171a852bcc8cdd553ec797aedc485.1609093476.git.luto@kernel.org>
+ <1836294649.3345.1609100294833.JavaMail.zimbra@efficios.com>
+ <CALCETrVdcn2r2Jvd1=-bM=FQ8KbX4aH-v4ytdojL7r7Nb6k8YQ@mail.gmail.com>
+ <20201228102537.GG1551@shell.armlinux.org.uk> <CALCETrWQx0qwthBc5pJBxs2PWAQo-roAz-6g=7HOs+dsiokVsg@mail.gmail.com>
+ <CAG48ez0YZ_iy6qZpdGUj38wqeg_NzLHHhU-mBCBf5hcopYGVPg@mail.gmail.com>
+In-Reply-To: <CAG48ez0YZ_iy6qZpdGUj38wqeg_NzLHHhU-mBCBf5hcopYGVPg@mail.gmail.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Mon, 28 Dec 2020 10:50:20 -0800
+X-Gmail-Original-Message-ID: <CALCETrV_0+1S6PTxY20ex5au8oNz5TVxn+HXvxta-ZVv03nckQ@mail.gmail.com>
+Message-ID: <CALCETrV_0+1S6PTxY20ex5au8oNz5TVxn+HXvxta-ZVv03nckQ@mail.gmail.com>
+Subject: Re: [RFC please help] membarrier: Rewrite sync_core_before_usermode()
+To:     Jann Horn <jannh@google.com>
+Cc:     Andy Lutomirski <luto@kernel.org>, Will Deacon <will@kernel.org>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        x86 <x86@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: multipart/mixed; boundary="0000000000002e6e5605b78ab6d7"
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000002e6e5605b78ab6d7
-Content-Type: text/plain; charset="UTF-8"
-
-On Mon, Dec 28, 2020 at 4:53 AM Kirill A. Shutemov <kirill@shutemov.name> wrote:
+On Mon, Dec 28, 2020 at 10:30 AM Jann Horn <jannh@google.com> wrote:
 >
-> So far I only found one more pin leak and always-true check. I don't see
-> how can it lead to crash or corruption. Keep looking.
+> On Mon, Dec 28, 2020 at 6:14 PM Andy Lutomirski <luto@kernel.org> wrote:
+> > On Mon, Dec 28, 2020 at 2:25 AM Russell King - ARM Linux admin
+> > <linux@armlinux.org.uk> wrote:
+> > >
+> > > On Sun, Dec 27, 2020 at 01:36:13PM -0800, Andy Lutomirski wrote:
+> > > > On Sun, Dec 27, 2020 at 12:18 PM Mathieu Desnoyers
+> > > > <mathieu.desnoyers@efficios.com> wrote:
+> > > > >
+> > > > > ----- On Dec 27, 2020, at 1:28 PM, Andy Lutomirski luto@kernel.org wrote:
+> > > > >
+> > > >
+> > > > > >
+> > > > > > I admit that I'm rather surprised that the code worked at all on arm64,
+> > > > > > and I'm suspicious that it has never been very well tested.  My apologies
+> > > > > > for not reviewing this more carefully in the first place.
+> > > > >
+> > > > > Please refer to Documentation/features/sched/membarrier-sync-core/arch-support.txt
+> > > > >
+> > > > > It clearly states that only arm, arm64, powerpc and x86 support the membarrier
+> > > > > sync core feature as of now:
+> > > >
+> > > > Sigh, I missed arm (32).  Russell or ARM folks, what's the right
+> > > > incantation to make the CPU notice instruction changes initiated by
+> > > > other cores on 32-bit ARM?
+> > >
+> > > You need to call flush_icache_range(), since the changes need to be
+> > > flushed from the data cache to the point of unification (of the Harvard
+> > > I and D), and the instruction cache needs to be invalidated so it can
+> > > then see those updated instructions. This will also take care of the
+> > > necessary barriers that the CPU requires for you.
+> >
+> > With what parameters?   From looking at the header, this is for the
+> > case in which the kernel writes some memory and then intends to
+> > execute it.  That's not what membarrier() does at all.  membarrier()
+> > works like this:
+> >
+> > User thread 1:
+> >
+> > write to RWX memory *or* write to an RW alias of an X region.
+> > membarrier(...);
+> > somehow tell thread 2 that we're ready (with a store release, perhaps,
+> > or even just a relaxed store.)
+> >
+> > User thread 2:
+> >
+> > wait for the indication from thread 1.
+> > barrier();
+> > jump to the code.
+> >
+> > membarrier() is, for better or for worse, not given a range of addresses.
+> >
+> > On x86, the documentation is a bit weak, but a strict reading
+> > indicates that thread 2 must execute a serializing instruction at some
+> > point after thread 1 writes the code and before thread 2 runs it.
+> > membarrier() does this by sending an IPI and ensuring that a
+> > "serializing" instruction (thanks for great terminology, Intel) is
+> > executed.  Note that flush_icache_range() is a no-op on x86, and I've
+> > asked Intel's architects to please clarify their precise rules.  No
+> > response yet.
+> >
+> > On arm64, flush_icache_range() seems to send an IPI, and that's not
+> > what I want.  membarrier() already does an IPI.
+>
+> After chatting with rmk about this (but without claiming that any of
+> this is his opinion), based on the manpage, I think membarrier()
+> currently doesn't really claim to be synchronizing caches? It just
+> serializes cores. So arguably if userspace wants to use membarrier()
+> to synchronize code changes, userspace should first do the code
+> change, then flush icache as appropriate for the architecture, and
+> then do the membarrier() to ensure that the old code is unused?
 
-Well, I noticed that the nommu.c version of filemap_map_pages() needs
-fixing, but that's obviously not the case Hugh sees.
+I haven't the faintest clue what "serializes cores" means.  It seems
+to be a bit of a mishmash of x86 SDM terminology and Linux x86
+"sync_core" terminology.  The latter means very little to me, even as
+an x86 person.
 
-No,m I think the problem is the
+I'm moderately confident that the *intent* is that a multithreaded
+program can write some JIT code to memory, do this membarrier()
+operation, and then execute the code, and it will work.  Maybe it's
+even intended to work cross-architecture without any additional help
+from the program.  But maybe the existing API is simply incorrect for
+this.
 
-        pte_unmap_unlock(vmf->pte, vmf->ptl);
+>
+> For 32-bit arm, rmk pointed out that that would be the cacheflush()
+> syscall. That might cause you to end up with two IPIs instead of one
+> in total, but we probably don't care _that_ much about extra IPIs on
+> 32-bit arm?
+>
+> For arm64, I believe userspace can flush icache across the entire
+> system with some instructions from userspace - "DC CVAU" followed by
+> "DSB ISH", or something like that, I think? (See e.g.
+> compat_arm_syscall(), the arm64 compat code that implements the 32-bit
+> arm cacheflush() syscall.)
 
-at the end of filemap_map_pages().
-
-Why?
-
-Because we've been updating vmf->pte as we go along:
-
-                vmf->pte += xas.xa_index - last_pgoff;
-
-and I think that by the time we get to that "pte_unmap_unlock()",
-vmf->pte potentially points to past the edge of the page directory.
-
-I think that is the bug that Hugh sees - simply because we get
-entirely confused about the page table locking. And it would match the
-latest change, which was all about moving that unlock from the caller
-to filemap_map_pages(), and now it's missing the pte fixup..
-
-I personally think it's wrong to update vmf->pte at all. We should
-just have a local 'ptep' pointer that we update as we walk along. But
-that requires another change to the calling convention, namely to
-"do_set_pte()".
-
-Also, considering how complicated this patch is getting, I think it
-might be good to try to split it up a bit.
-
-In particular, I think the calling convention change for
-"filemap_map_pages()" could be done first and independently. And then
-as a second step, move the VM_FAULT_NOPAGE and "pte_unmap_lock()" from
-the callers to filemap_map_pages().
-
-And then only as the final step, do that nice re-organization with
-first_map_page/next_map_page() and moving the locking from
-alloc_set_pte() into filemap_map_pages()..
-
-How does that sound?
-
-Anyway, Hugh, if it's about overshooting the pte pointer, maybe this
-absolutely horrendous and disgusting patch fixes it without the above
-kinds of more extensive cleanups. Worth testing, perhaps, even if it's
-too ugly for words?
-
-               Linus
-
---0000000000002e6e5605b78ab6d7
-Content-Type: application/octet-stream; name=patch
-Content-Disposition: attachment; filename=patch
-Content-Transfer-Encoding: base64
-Content-ID: <f_kj8wyykk0>
-X-Attachment-Id: f_kj8wyykk0
-
-IG1tL2ZpbGVtYXAuYyB8IDE0ICsrKysrKysrKysrKysrCiAxIGZpbGUgY2hhbmdlZCwgMTQgaW5z
-ZXJ0aW9ucygrKQoKZGlmZiAtLWdpdCBhL21tL2ZpbGVtYXAuYyBiL21tL2ZpbGVtYXAuYwppbmRl
-eCA0MmQ3YTU4ZTNhMTQuLjc0Mzg0ZjlmMTc3NiAxMDA2NDQKLS0tIGEvbW0vZmlsZW1hcC5jCisr
-KyBiL21tL2ZpbGVtYXAuYwpAQCAtMzAyMiw2ICszMDIyLDggQEAgdm1fZmF1bHRfdCBmaWxlbWFw
-X21hcF9wYWdlcyhzdHJ1Y3Qgdm1fZmF1bHQgKnZtZiwgdW5zaWduZWQgbG9uZyBhZGRyZXNzLAog
-CXN0cnVjdCBwYWdlICpoZWFkLCAqcGFnZTsKIAl1bnNpZ25lZCBpbnQgbW1hcF9taXNzID0gUkVB
-RF9PTkNFKGZpbGUtPmZfcmEubW1hcF9taXNzKTsKIAl2bV9mYXVsdF90IHJldCA9IDA7CisJcHRl
-X3QgKm9yaWdfcHRlOworCXVuc2lnbmVkIGxvbmcgb3JpZ19hZGRyZXNzOwogCiAJcmN1X3JlYWRf
-bG9jaygpOwogCWhlYWQgPSBmaXJzdF9tYXBfcGFnZSh2bWYsICZ4YXMsIGVuZF9wZ29mZik7CkBA
-IC0zMDM3LDYgKzMwMzksMTQgQEAgdm1fZmF1bHRfdCBmaWxlbWFwX21hcF9wYWdlcyhzdHJ1Y3Qg
-dm1fZmF1bHQgKnZtZiwgdW5zaWduZWQgbG9uZyBhZGRyZXNzLAogCiAJdm1mLT5wdGUgPSBwdGVf
-b2Zmc2V0X21hcF9sb2NrKHZtYS0+dm1fbW0sIHZtZi0+cG1kLAogCQkJCSAgICAgICB2bWYtPmFk
-ZHJlc3MsICZ2bWYtPnB0bCk7CisKKwkvKgorCSAqIERpc2d1c3RpbmcgLSB3ZSBzaG91bGQgbm90
-IHVwZGF0ZSB2bWYtPnB0ZSBhbmQgLT5hZGRyZXNzLAorCSAqIGJ1dCBkb19zZXRfcHRlKCkgbmVl
-ZHMgaXQKKwkgKi8KKwlvcmlnX3B0ZSA9IHZtZi0+cHRlOworCW9yaWdfYWRkcmVzcyA9IHZtZi0+
-YWRkcmVzczsKKwogCWRvIHsKIAkJcGFnZSA9IGZpbmRfc3VicGFnZShoZWFkLCB4YXMueGFfaW5k
-ZXgpOwogCQlpZiAoUGFnZUhXUG9pc29uKHBhZ2UpKQpAQCAtMzA2Niw2ICszMDc2LDEwIEBAIHZt
-X2ZhdWx0X3QgZmlsZW1hcF9tYXBfcGFnZXMoc3RydWN0IHZtX2ZhdWx0ICp2bWYsIHVuc2lnbmVk
-IGxvbmcgYWRkcmVzcywKIAkJdW5sb2NrX3BhZ2UoaGVhZCk7CiAJCXB1dF9wYWdlKGhlYWQpOwog
-CX0gd2hpbGUgKChoZWFkID0gbmV4dF9tYXBfcGFnZSh2bWYsICZ4YXMsIGVuZF9wZ29mZikpICE9
-IE5VTEwpOworCisJLyogSGFja2V0eSBoYWNrIC0gcmVzZXQgdGhlIHZtZiBzdGF0ZSBiYWNrICov
-CisJdm1mLT5wdGUgPSBvcmlnX3B0ZTsKKwl2bWYtPmFkZHJlc3MgPSBvcmlnX2FkZHJlc3M7CiAJ
-cHRlX3VubWFwX3VubG9jayh2bWYtPnB0ZSwgdm1mLT5wdGwpOwogCXJjdV9yZWFkX3VubG9jaygp
-OwogCVdSSVRFX09OQ0UoZmlsZS0+Zl9yYS5tbWFwX21pc3MsIG1tYXBfbWlzcyk7Cg==
---0000000000002e6e5605b78ab6d7--
+I have no idea what DC anything does.   Based on my very cursory
+reading of the manual, ISB is the right approach, but I don't pretend
+I understand all the details.
