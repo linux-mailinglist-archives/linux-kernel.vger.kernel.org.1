@@ -2,92 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1DEB2E34DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 09:01:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79B4B2E34EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 09:05:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726388AbgL1IBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 03:01:36 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:33242 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726282AbgL1IBf (ORCPT
+        id S1726475AbgL1IF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 03:05:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726292AbgL1IF3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 03:01:35 -0500
-X-UUID: 016ed02e456a490aac99fbae16da5dad-20201228
-X-UUID: 016ed02e456a490aac99fbae16da5dad-20201228
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <walter-zh.wu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1454072719; Mon, 28 Dec 2020 16:00:47 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 28 Dec 2020 16:01:53 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 28 Dec 2020 16:01:53 +0800
-From:   Walter Wu <walter-zh.wu@mediatek.com>
-To:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        Walter Wu <walter-zh.wu@mediatek.com>
-Subject: [PATCH] kasan: fix null pointer dereference in kasan_record_aux_stack
-Date:   Mon, 28 Dec 2020 16:00:18 +0800
-Message-ID: <20201228080018.23041-1-walter-zh.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Mon, 28 Dec 2020 03:05:29 -0500
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8065C061794;
+        Mon, 28 Dec 2020 00:04:48 -0800 (PST)
+Received: by mail-io1-xd2a.google.com with SMTP id o6so8677076iob.10;
+        Mon, 28 Dec 2020 00:04:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=9zWhIOBC+uKtAPWtbV8t8nUwu5LnFjTCjvkYB55rVP8=;
+        b=rgb6Sb8y7lOg3f3Q1735T0BW4xloDAUpOplQmLmEre+w7SmveLwemqiXqVTbeA+HG4
+         jBgPknIL2APgo8/fIAPc3ic1CGwE5CNr4GBQk0VGUlcxSmN5iJPZdQ4xl1LzETRBVN2v
+         2ANK7LHUMeiYbOP+XYhHpfZ8sNT41Jife7GqhJFB1D2Q/9RNhJuge8kSU88GML7w90Dq
+         B7xZXrvqzo0XR23/pw4gdLDfbYzewggI92OT3Payuhb9qPyUfN5eRCJbzI0dlOHJ52W4
+         kIVFFZMbK/5nNN2L5bBzWxMMDUMZf/0/QiHAc57QbvEuXlMLB0meaplMpvErMi5wehy2
+         RWYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=9zWhIOBC+uKtAPWtbV8t8nUwu5LnFjTCjvkYB55rVP8=;
+        b=W54i5a/ujVsrixyV5jbxy3QkgIwRcIl06MeohuuVsmYEjvlUaml42fcIn5TP80Ka9g
+         mvZeJlQvZTHQnA2dcegPK+kTW2hsKEs2gX4cO9DpbW6S/zHX2W9CweFNqu8PjrjD99kn
+         vWfKedssGGc8TDAedezCe8Wugz/yZ57qoes8VNj31IrzO39LVed8rWuz9R5jc2d0CloQ
+         uihmjC4cjWNYExpO7n6wePWyYgzSSecZmgz2wrKqY2VDVYEPJ1L+GYVM5J7IyTStwS43
+         r1ExKW8FMQZ0J4CUjwdg8saakAMuxV6/bxP5wzPMmhytSwzpKYbpxIrwFWy3NV63BJQe
+         RLkA==
+X-Gm-Message-State: AOAM532FWb471yQMvTgO76g0kB7H9VbWHGVG5K8tZOSOrP+K5s3BiZHr
+        x8ooTxEpx4gF6PAhsVP/gDQexDsV+G5kvhtcEiM9W2m+Y63rEQ==
+X-Google-Smtp-Source: ABdhPJx4QcrV8ujH1lxQk4P3Dl094IRBoST06eFFxbqTEjyFrw64FcT0Z//KiZDtY7ylAGTCGMsv/N8h57gNlAkdRts=
+X-Received: by 2002:a05:6638:48:: with SMTP id a8mr37563334jap.138.1609142687661;
+ Mon, 28 Dec 2020 00:04:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+References: <CA+icZUUQRKuZzN0ZbaG6vprRWcKPKYVYTryiMFac7q_PRcBvgA@mail.gmail.com>
+In-Reply-To: <CA+icZUUQRKuZzN0ZbaG6vprRWcKPKYVYTryiMFac7q_PRcBvgA@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Mon, 28 Dec 2020 09:04:36 +0100
+Message-ID: <CA+icZUWHiCu9=+80Z8OV+Q3r-TJ4Vm0t62P_Qgck5bRzjrtaWg@mail.gmail.com>
+Subject: Re: Linux 5.11-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syzbot reported the following [1]:
+On Mon, Dec 28, 2020 at 8:30 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+>
+> [ Please CC me I am not subscribed to LKML and linux-kbuild ML ]
+>
+> Hi Linus, Hi Mashiro,
+>
+> thanks for the Linux v5.11-rc1 release.
+>
+> With a new release I always do my first builds with my distro's
+> default compiler and linker (GCC v10.2.1 and GNU/ld BFD v2.35.1).
+> ( It's approx. 40% faster than LLVM toolchain v11.0.1-rc2 here on
+> Debian/testing AMD64. )
+>
+> The only warning I see for the first time (with v5.10.3 not observed):
+>
+>   sh ./scripts/depmod.sh depmod 5.11.0-rc1-1-amd64-gcc10-bfd
+> Warning: 'make modules_install' requires depmod. Please install it.
+> This is probably in the kmod package.
+>
+> The only change I see in this area is:
+>
+> 436e980e2ed5 kbuild: don't hardcode depmod path
+>
+> depmod from kmod Debian package is placed and I have no /sbin in my
+> user's path (and not before?):
+>
+> $ dpkg -L kmod | grep bin | grep depmod
+> /sbin/depmod
+>
+> $ which depmod
+> [ empty ]
+>
+> $ echo $PATH
+> /opt/proxychains-ng/bin:/home/dileks/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
+>
+> OK, this is a warning, but might confuse other users.
+>
+> Please, let me know if you need further information and keep me CCed.
+>
+> Thanks.
+>
+> Regards,
+> - Sedat -
+>
+> [1] https://git.kernel.org/linus/436e980e2ed526832de822cbf13c317a458b78e1
 
- BUG: kernel NULL pointer dereference, address: 0000000000000008
- #PF: supervisor read access in kernel mode
- #PF: error_code(0x0000) - not-present page
- PGD 2d993067 P4D 2d993067 PUD 19a3c067 PMD 0
- Oops: 0000 [#1] PREEMPT SMP KASAN
- CPU: 1 PID: 3852 Comm: kworker/1:2 Not tainted 5.10.0-syzkaller #0
- Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
- Workqueue: events free_ipc
- RIP: 0010:kasan_record_aux_stack+0x77/0xb0
+[ Correct email-address of linux-kbuild ML ]
 
-Add null checking slab object from kasan_get_alloc_meta()
-in order to avoid null pointer dereference.
+This might be distro-specific:
 
-[1] https://syzkaller.appspot.com/x/log.txt?x=10a82a50d00000
+[ /etc/login.defs ]
 
-Signed-off-by: Walter Wu <walter-zh.wu@mediatek.com>
-Suggested-by: Dmitry Vyukov <dvyukov@google.com>
-Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-CC: Dmitry Vyukov <dvyukov@google.com>
-CC: Andrey Konovalov <andreyknvl@google.com>
-Cc: Alexander Potapenko <glider@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
----
- mm/kasan/generic.c | 2 ++
- 1 file changed, 2 insertions(+)
+99:# *REQUIRED*  The default PATH settings, for superuser and normal users.
+100:#
+101:# (they are minimal, add the rest in the shell startup files)
+102:ENV_SUPATH
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+103:ENV_PATH    PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
 
-diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
-index 1dd5a0f99372..5106b84b07d4 100644
---- a/mm/kasan/generic.c
-+++ b/mm/kasan/generic.c
-@@ -337,6 +337,8 @@ void kasan_record_aux_stack(void *addr)
- 	cache = page->slab_cache;
- 	object = nearest_obj(cache, page, addr);
- 	alloc_meta = kasan_get_alloc_meta(cache, object);
-+	if (!alloc_meta)
-+		return;
- 
- 	alloc_meta->aux_stack[1] = alloc_meta->aux_stack[0];
- 	alloc_meta->aux_stack[0] = kasan_save_stack(GFP_NOWAIT);
--- 
-2.18.0
+What is your recommendation?
 
+- Sedat -
