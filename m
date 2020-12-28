@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FCC72E37FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:04:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11E942E3BAB
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:53:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730269AbgL1NDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:03:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58302 "EHLO mail.kernel.org"
+        id S2407225AbgL1NxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:53:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54650 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729197AbgL1NDR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:03:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 07F9E207C9;
-        Mon, 28 Dec 2020 13:03:00 +0000 (UTC)
+        id S2391525AbgL1Nwr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:52:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFBE820791;
+        Mon, 28 Dec 2020 13:52:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160581;
-        bh=sDx9sZ+7jBEinEnY8Rl+lvF5nYliEIwOHV9qA5blvpo=;
+        s=korg; t=1609163526;
+        bh=8oGGp5xXe/o8MkOEYfYerB3yQG5FjAmtKGpzIWitqTM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JJgYZRPupGfCyEVM34xy0L3D+Hm008NOoW6lYwvL/qqev8caIeZcSDIzXMIfXIibJ
-         3PUWzeLXyGjCdJE3Siko2yYO6uL7XVi5zb+Fx2PRcSBUPZt0Ckdih3vc0Cwjxq8FMb
-         hLqDF0K6BSDa+LXbPefGK4xOKGtb6AoefQnkAxFs=
+        b=eXltDuCTwDkiGG2eVj5tN54gfjBIkPKI9Fpib2/1Gwvi4ajKqc0O3M9upYqd8Cpiw
+         jN2Ydq1Qaf1sbkWLeVGqC8HjG72PSc9qR7PgRzDZlaNWYq6IbjYdYe68QRv6fAtprf
+         cwXz3gCuJtLYFaqlC2/jAKFnGm+p/8wjgzN/wxBI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
+        stable@vger.kernel.org, Rajat Jain <rajatja@google.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 100/175] cpufreq: loongson1: Add missing MODULE_ALIAS
+Subject: [PATCH 5.4 317/453] Input: cros_ec_keyb - send scancodes in addition to key events
 Date:   Mon, 28 Dec 2020 13:49:13 +0100
-Message-Id: <20201228124858.093340184@linuxfoundation.org>
+Message-Id: <20201228124952.464705574@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,33 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-[ Upstream commit b9acab091842ca8b288882798bb809f7abf5408a ]
+[ Upstream commit 80db2a087f425b63f0163bc95217abd01c637cb5 ]
 
-This patch adds missing MODULE_ALIAS for automatic loading of this cpufreq
-driver when it is compiled as an external module.
+To let userspace know what 'scancodes' should be used in EVIOCGKEYCODE
+and EVIOCSKEYCODE ioctls, we should send EV_MSC/MSC_SCAN events in
+addition to EV_KEY/KEY_* events. The driver already declared MSC_SCAN
+capability, so it is only matter of actually sending the events.
 
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Fixes: a0a22cf14472f ("cpufreq: Loongson1: Add cpufreq driver for Loongson1B")
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Link: https://lore.kernel.org/r/X87aOaSptPTvZ3nZ@google.com
+Acked-by: Rajat Jain <rajatja@google.com>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpufreq/loongson1-cpufreq.c | 1 +
+ drivers/input/keyboard/cros_ec_keyb.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/cpufreq/loongson1-cpufreq.c b/drivers/cpufreq/loongson1-cpufreq.c
-index be89416e2358f..9d902f67f8716 100644
---- a/drivers/cpufreq/loongson1-cpufreq.c
-+++ b/drivers/cpufreq/loongson1-cpufreq.c
-@@ -217,6 +217,7 @@ static struct platform_driver ls1x_cpufreq_platdrv = {
+diff --git a/drivers/input/keyboard/cros_ec_keyb.c b/drivers/input/keyboard/cros_ec_keyb.c
+index 8d4d9786cc745..cae262b6ff398 100644
+--- a/drivers/input/keyboard/cros_ec_keyb.c
++++ b/drivers/input/keyboard/cros_ec_keyb.c
+@@ -183,6 +183,7 @@ static void cros_ec_keyb_process(struct cros_ec_keyb *ckdev,
+ 					"changed: [r%d c%d]: byte %02x\n",
+ 					row, col, new_state);
  
- module_platform_driver(ls1x_cpufreq_platdrv);
- 
-+MODULE_ALIAS("platform:ls1x-cpufreq");
- MODULE_AUTHOR("Kelvin Cheung <keguang.zhang@gmail.com>");
- MODULE_DESCRIPTION("Loongson1 CPUFreq driver");
- MODULE_LICENSE("GPL");
++				input_event(idev, EV_MSC, MSC_SCAN, pos);
+ 				input_report_key(idev, keycodes[pos],
+ 						 new_state);
+ 			}
 -- 
 2.27.0
 
