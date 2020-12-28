@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD4B12E38F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:17:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 201912E6520
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:57:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731447AbgL1NRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:17:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44940 "EHLO mail.kernel.org"
+        id S2632730AbgL1P5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:57:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733303AbgL1NQs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:16:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F3291206ED;
-        Mon, 28 Dec 2020 13:16:31 +0000 (UTC)
+        id S2389179AbgL1Ned (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:34:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DEF5A2063A;
+        Mon, 28 Dec 2020 13:33:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161392;
-        bh=RbDcjuJnyl4u7qF5cQy8ysnjkXs0VKIHaADtPawkIe8=;
+        s=korg; t=1609162432;
+        bh=/8ee/wHfIlJuwhmBcBGroCS0Ii8mapdb0sG6eD+PMmM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RqwB5sJ42KlZS5b/fr3LcdRqtP1pcBO8UxIOTl812bNDvzyui6/T4ZznZbNVNHPau
-         xjrDT7A07NvLG0LMv7p5N5IMVR7U4pvH4vONj+Zw4j2ReyNUc8WBQo6Kd41dadpgtI
-         lnyMJEEUFxlQ7J4KfBvp6b3b8BAPFf5AS3oVvjMs=
+        b=BHDEmNz46wwFgb3qLrWQPj/4n+lIa+Kyd8SiGLZNlYi/gndEiK7G0KVenrKra4xrL
+         dZNdE0yKLYWLAZTZqfbAcuF+ahBKEjsuIbbLwnFrBjk8wRuR7r9864GdkqvjyprvHz
+         5aS3L77K0olrxX5es3N0bA0Ko/QH16dodglUBCYk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Borislav Petkov <bp@suse.de>
-Subject: [PATCH 4.14 198/242] EDAC/amd64: Fix PCI component registration
-Date:   Mon, 28 Dec 2020 13:50:03 +0100
-Message-Id: <20201228124914.430606835@linuxfoundation.org>
+        stable@vger.kernel.org, Rostislav Lisovy <lisovy@gmail.com>,
+        Ian Abbott <abbotti@mev.co.uk>
+Subject: [PATCH 4.19 285/346] staging: comedi: mf6x4: Fix AI end-of-conversion detection
+Date:   Mon, 28 Dec 2020 13:50:04 +0100
+Message-Id: <20201228124933.558111985@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,114 +39,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Borislav Petkov <bp@suse.de>
+From: Ian Abbott <abbotti@mev.co.uk>
 
-commit 706657b1febf446a9ba37dc51b89f46604f57ee9 upstream.
+commit 56c90457ebfe9422496aac6ef3d3f0f0ea8b2ec2 upstream.
 
-In order to setup its PCI component, the driver needs any node private
-instance in order to get a reference to the PCI device and hand that
-into edac_pci_create_generic_ctl(). For convenience, it uses the 0th
-memory controller descriptor under the assumption that if any, the 0th
-will be always present.
+I have had reports from two different people that attempts to read the
+analog input channels of the MF624 board fail with an `ETIMEDOUT` error.
 
-However, this assumption goes wrong when the 0th node doesn't have
-memory and the driver doesn't initialize an instance for it:
+After triggering the conversion, the code calls `comedi_timeout()` with
+`mf6x4_ai_eoc()` as the callback function to check if the conversion is
+complete.  The callback returns 0 if complete or `-EBUSY` if not yet
+complete.  `comedi_timeout()` returns `-ETIMEDOUT` if it has not
+completed within a timeout period which is propagated as an error to the
+user application.
 
-  EDAC amd64: F17h detected (node 0).
-  ...
-  EDAC amd64: Node 0: No DIMMs detected.
+The existing code considers the conversion to be complete when the EOLC
+bit is high.  However, according to the user manuals for the MF624 and
+MF634 boards, this test is incorrect because EOLC is an active low
+signal that goes high when the conversion is triggered, and goes low
+when the conversion is complete.  Fix the problem by inverting the test
+of the EOLC bit state.
 
-But looking up node instances is not really needed - all one needs is
-the pointer to the proper device which gets discovered during instance
-init.
-
-So stash that pointer into a variable and use it when setting up the
-EDAC PCI component.
-
-Clear that variable when the driver needs to unwind due to some
-instances failing init to avoid any registration imbalance.
-
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20201122150815.13808-1-bp@alien8.de
+Fixes: 04b565021a83 ("comedi: Humusoft MF634 and MF624 DAQ cards driver")
+Cc: <stable@vger.kernel.org> # v4.4+
+Cc: Rostislav Lisovy <lisovy@gmail.com>
+Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
+Link: https://lore.kernel.org/r/20201207145806.4046-1-abbotti@mev.co.uk
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/edac/amd64_edac.c |   26 ++++++++++++++------------
- 1 file changed, 14 insertions(+), 12 deletions(-)
+ drivers/staging/comedi/drivers/mf6x4.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/edac/amd64_edac.c
-+++ b/drivers/edac/amd64_edac.c
-@@ -18,6 +18,9 @@ static struct msr __percpu *msrs;
- /* Per-node stuff */
- static struct ecc_settings **ecc_stngs;
+--- a/drivers/staging/comedi/drivers/mf6x4.c
++++ b/drivers/staging/comedi/drivers/mf6x4.c
+@@ -112,8 +112,9 @@ static int mf6x4_ai_eoc(struct comedi_de
+ 	struct mf6x4_private *devpriv = dev->private;
+ 	unsigned int status;
  
-+/* Device for the PCI component */
-+static struct device *pci_ctl_dev;
-+
- /*
-  * Valid scrub rates for the K8 hardware memory scrubber. We map the scrubbing
-  * bandwidth to a valid bit pattern. The 'set' operation finds the 'matching-
-@@ -2554,6 +2557,9 @@ reserve_mc_sibling_devs(struct amd64_pvt
- 			return -ENODEV;
- 		}
- 
-+		if (!pci_ctl_dev)
-+			pci_ctl_dev = &pvt->F0->dev;
-+
- 		edac_dbg(1, "F0: %s\n", pci_name(pvt->F0));
- 		edac_dbg(1, "F3: %s\n", pci_name(pvt->F3));
- 		edac_dbg(1, "F6: %s\n", pci_name(pvt->F6));
-@@ -2578,6 +2584,9 @@ reserve_mc_sibling_devs(struct amd64_pvt
- 		return -ENODEV;
- 	}
- 
-+	if (!pci_ctl_dev)
-+		pci_ctl_dev = &pvt->F2->dev;
-+
- 	edac_dbg(1, "F1: %s\n", pci_name(pvt->F1));
- 	edac_dbg(1, "F2: %s\n", pci_name(pvt->F2));
- 	edac_dbg(1, "F3: %s\n", pci_name(pvt->F3));
-@@ -3428,21 +3437,10 @@ static void remove_one_instance(unsigned
- 
- static void setup_pci_device(void)
- {
--	struct mem_ctl_info *mci;
--	struct amd64_pvt *pvt;
--
- 	if (pci_ctl)
- 		return;
- 
--	mci = edac_mc_find(0);
--	if (!mci)
--		return;
--
--	pvt = mci->pvt_info;
--	if (pvt->umc)
--		pci_ctl = edac_pci_create_generic_ctl(&pvt->F0->dev, EDAC_MOD_STR);
--	else
--		pci_ctl = edac_pci_create_generic_ctl(&pvt->F2->dev, EDAC_MOD_STR);
-+	pci_ctl = edac_pci_create_generic_ctl(pci_ctl_dev, EDAC_MOD_STR);
- 	if (!pci_ctl) {
- 		pr_warn("%s(): Unable to create PCI control\n", __func__);
- 		pr_warn("%s(): PCI error report via EDAC not set\n", __func__);
-@@ -3517,6 +3515,8 @@ static int __init amd64_edac_init(void)
- 	return 0;
- 
- err_pci:
-+	pci_ctl_dev = NULL;
-+
- 	msrs_free(msrs);
- 	msrs = NULL;
- 
-@@ -3548,6 +3548,8 @@ static void __exit amd64_edac_exit(void)
- 	kfree(ecc_stngs);
- 	ecc_stngs = NULL;
- 
-+	pci_ctl_dev = NULL;
-+
- 	msrs_free(msrs);
- 	msrs = NULL;
++	/* EOLC goes low at end of conversion. */
+ 	status = ioread32(devpriv->gpioc_reg);
+-	if (status & MF6X4_GPIOC_EOLC)
++	if ((status & MF6X4_GPIOC_EOLC) == 0)
+ 		return 0;
+ 	return -EBUSY;
  }
 
 
