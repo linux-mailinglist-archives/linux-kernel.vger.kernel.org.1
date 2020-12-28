@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F30D2E3F73
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:40:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 859032E390E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:19:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505807AbgL1OkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:40:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36896 "EHLO mail.kernel.org"
+        id S2387488AbgL1NSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:18:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503372AbgL1O3I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:29:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 82BB320731;
-        Mon, 28 Dec 2020 14:28:27 +0000 (UTC)
+        id S1731718AbgL1NSS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:18:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 082FA206ED;
+        Mon, 28 Dec 2020 13:17:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165708;
-        bh=i7OZ7g5EYwwab0/iT21/W9zFYz9gbkRlmjrjXA+IToU=;
+        s=korg; t=1609161457;
+        bh=U8Fj+ddiucHY5sTsAIB4Yu2qi5hTr4vuPIsYSreRKfk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zIki16rlR7gxCMXd7h5hPR3DI2//FRS1ElkTpyA6YIzVZbIZ0VScH21sMracQFYZZ
-         r2gnouYjaM2qeNZoI4Bwb0OZiA74q0cU75oMSrthbZ4dov/Kl1EIDuNMcBBtJ915+5
-         qjhlRLjob1BE1CMJQGkD03406oxg7C9kYw5lTorI=
+        b=g3OkQenCtAWopf41wvMq8CGTAc7V12QXP7/kxcSRybFuoys2h6zPyuj5tHvPZ2J68
+         2ajfqoMEawfLzHM8CIx11e1ieEqxPbjBcJN+SR2ljZ3qGMuEVLMJAt5Qn7CQd0u0g3
+         44WfyfM6gYyq/YZPZXVIMGNjyrPwjUZjOQ2pokhI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhe Li <lizhe67@huawei.com>,
-        Richard Weinberger <richard@nod.at>
-Subject: [PATCH 5.10 627/717] jffs2: Fix GC exit abnormally
+        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
+        Axel Lin <axel.lin@ingics.com>, Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.14 220/242] spi: spi-sh: Fix use-after-free on unbind
 Date:   Mon, 28 Dec 2020 13:50:25 +0100
-Message-Id: <20201228125050.960832948@linuxfoundation.org>
+Message-Id: <20201228124915.504236405@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,76 +39,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhe Li <lizhe67@huawei.com>
+From: Lukas Wunner <lukas@wunner.de>
 
-commit 9afc9a8a4909fece0e911e72b1060614ba2f7969 upstream.
+commit e77df3eca12be4b17f13cf9f215cff248c57d98f upstream.
 
-The log of this problem is:
-jffs2: Error garbage collecting node at 0x***!
-jffs2: No space for garbage collection. Aborting GC thread
+spi_sh_remove() accesses the driver's private data after calling
+spi_unregister_master() even though that function releases the last
+reference on the spi_master and thereby frees the private data.
 
-This is because GC believe that it do nothing, so it abort.
+Fix by switching over to the new devm_spi_alloc_master() helper which
+keeps the private data accessible until the driver has unbound.
 
-After going over the image of jffs2, I find a scene that
-can trigger this problem stably.
-The scene is: there is a normal dirent node at summary-area,
-but abnormal at corresponding not-summary-area with error
-name_crc.
-
-The reason that GC exit abnormally is because it find that
-abnormal dirent node to GC, but when it goes to function
-jffs2_add_fd_to_list, it cannot meet the condition listed
-below:
-
-if ((*prev)->nhash == new->nhash && !strcmp((*prev)->name, new->name))
-
-So no node is marked obsolete, statistical information of
-erase_block do not change, which cause GC exit abnormally.
-
-The root cause of this problem is: we do not check the
-name_crc of the abnormal dirent node with summary is enabled.
-
-Noticed that in function jffs2_scan_dirent_node, we use
-function jffs2_scan_dirty_space to deal with the dirent
-node with error name_crc. So this patch add a checking
-code in function read_direntry to ensure the correctness
-of dirent node. If checked failed, the dirent node will
-be marked obsolete so GC will pass this node and this
-problem will be fixed.
-
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Zhe Li <lizhe67@huawei.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Fixes: 680c1305e259 ("spi/spi_sh: use spi_unregister_master instead of spi_master_put in remove path")
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Cc: <stable@vger.kernel.org> # v3.0+: 5e844cc37a5c: spi: Introduce device-managed SPI controller allocation
+Cc: <stable@vger.kernel.org> # v3.0+
+Cc: Axel Lin <axel.lin@ingics.com>
+Link: https://lore.kernel.org/r/6d97628b536baf01d5e3e39db61108f84d44c8b2.1607286887.git.lukas@wunner.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/jffs2/readinode.c |   16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ drivers/spi/spi-sh.c |   13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
 
---- a/fs/jffs2/readinode.c
-+++ b/fs/jffs2/readinode.c
-@@ -672,6 +672,22 @@ static inline int read_direntry(struct j
- 			jffs2_free_full_dirent(fd);
- 			return -EIO;
- 		}
-+
-+#ifdef CONFIG_JFFS2_SUMMARY
-+		/*
-+		 * we use CONFIG_JFFS2_SUMMARY because without it, we
-+		 * have checked it while mounting
-+		 */
-+		crc = crc32(0, fd->name, rd->nsize);
-+		if (unlikely(crc != je32_to_cpu(rd->name_crc))) {
-+			JFFS2_NOTICE("name CRC failed on dirent node at"
-+			   "%#08x: read %#08x,calculated %#08x\n",
-+			   ref_offset(ref), je32_to_cpu(rd->node_crc), crc);
-+			jffs2_mark_node_obsolete(c, ref);
-+			jffs2_free_full_dirent(fd);
-+			return 0;
-+		}
-+#endif
+--- a/drivers/spi/spi-sh.c
++++ b/drivers/spi/spi-sh.c
+@@ -450,7 +450,7 @@ static int spi_sh_probe(struct platform_
+ 		return irq;
  	}
  
- 	fd->nhash = full_name_hash(NULL, fd->name, rd->nsize);
+-	master = spi_alloc_master(&pdev->dev, sizeof(struct spi_sh_data));
++	master = devm_spi_alloc_master(&pdev->dev, sizeof(struct spi_sh_data));
+ 	if (master == NULL) {
+ 		dev_err(&pdev->dev, "spi_alloc_master error.\n");
+ 		return -ENOMEM;
+@@ -468,16 +468,14 @@ static int spi_sh_probe(struct platform_
+ 		break;
+ 	default:
+ 		dev_err(&pdev->dev, "No support width\n");
+-		ret = -ENODEV;
+-		goto error1;
++		return -ENODEV;
+ 	}
+ 	ss->irq = irq;
+ 	ss->master = master;
+ 	ss->addr = devm_ioremap(&pdev->dev, res->start, resource_size(res));
+ 	if (ss->addr == NULL) {
+ 		dev_err(&pdev->dev, "ioremap error.\n");
+-		ret = -ENOMEM;
+-		goto error1;
++		return -ENOMEM;
+ 	}
+ 	INIT_LIST_HEAD(&ss->queue);
+ 	spin_lock_init(&ss->lock);
+@@ -487,7 +485,7 @@ static int spi_sh_probe(struct platform_
+ 	ret = request_irq(irq, spi_sh_irq, 0, "spi_sh", ss);
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "request_irq error\n");
+-		goto error1;
++		return ret;
+ 	}
+ 
+ 	master->num_chipselect = 2;
+@@ -506,9 +504,6 @@ static int spi_sh_probe(struct platform_
+ 
+  error3:
+ 	free_irq(irq, ss);
+- error1:
+-	spi_master_put(master);
+-
+ 	return ret;
+ }
+ 
 
 
