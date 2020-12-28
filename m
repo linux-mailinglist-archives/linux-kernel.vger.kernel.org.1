@@ -2,107 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D08682E3707
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:13:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 394AA2E370D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:18:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727740AbgL1MMt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 28 Dec 2020 07:12:49 -0500
-Received: from lists.nic.cz ([217.31.204.67]:52734 "EHLO mail.nic.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727234AbgL1MMs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:12:48 -0500
-Received: from localhost (unknown [IPv6:2a0e:b107:ae1:0:3e97:eff:fe61:c680])
-        by mail.nic.cz (Postfix) with ESMTPSA id CBC77140A3F;
-        Mon, 28 Dec 2020 13:12:06 +0100 (CET)
-Date:   Mon, 28 Dec 2020 13:11:49 +0100
-From:   Marek Behun <marek.behun@nic.cz>
-To:     Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Chen <peter.chen@nxp.com>
-Subject: Re: [PATCH] usb: host: xhci: mvebu: make USB 3.0 PHY optional for
- Armada 3720
-Message-ID: <20201228131149.30907b44@nic.cz>
-In-Reply-To: <20201223162403.10897-1-pali@kernel.org>
-References: <20201223162403.10897-1-pali@kernel.org>
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1727635AbgL1MSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:18:17 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:58756 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726847AbgL1MSR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:18:17 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 749891F44439
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kernel@collabora.com, Hans Verkuil <hverkuil@xs4all.nl>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>
+Subject: [PATCH] media: v4l2-async: Put fwnode after last access
+Date:   Mon, 28 Dec 2020 09:17:25 -0300
+Message-Id: <20201228121725.133898-1-ezequiel@collabora.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,
-        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
-        autolearn=disabled version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
-X-Virus-Scanned: clamav-milter 0.102.2 at mail
-X-Virus-Status: Clean
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pali and Miquel,
+fwnode_handle_put() should be called after the fwnode
+is last accessed. Fix it.
 
-On Wed, 23 Dec 2020 17:24:03 +0100
-Pali Rohár <pali@kernel.org> wrote:
+Fixes: b98158d837ef ("media: v4l2-async: Accept endpoints and devices for fwnode matching")
+Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+---
+ drivers/media/v4l2-core/v4l2-async.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
->  int xhci_mvebu_a3700_init_quirk(struct usb_hcd *hcd)
->  {
->  	struct xhci_hcd	*xhci = hcd_to_xhci(hcd);
-> +	struct device *dev = hcd->self.controller;
-> +	struct phy *phy;
-> +	int ret;
->  
->  	/* Without reset on resume, the HC won't work at all */
->  	xhci->quirks |= XHCI_RESET_ON_RESUME;
->  
-> +	/* Old bindings miss the PHY handle */
-> +	phy = of_phy_get(dev->of_node, "usb3-phy");
-> +	if (IS_ERR(phy) && PTR_ERR(phy) == -EPROBE_DEFER)
-> +		return -EPROBE_DEFER;
-> +	else if (IS_ERR(phy))
-> +		goto phy_out;
-> +
-> +	ret = phy_init(phy);
-> +	if (ret)
-> +		goto phy_put;
-> +
-> +	ret = phy_set_mode(phy, PHY_MODE_USB_HOST_SS);
-> +	if (ret)
-> +		goto phy_exit;
-> +
-> +	ret = phy_power_on(phy);
-> +	if (ret == -EOPNOTSUPP) {
-> +		/* Skip initializatin of XHCI PHY when it is unsupported by firmware */
-> +		dev_warn(dev, "PHY unsupported by firmware\n");
-> +		xhci->quirks |= XHCI_SKIP_PHY_INIT;
-> +	}
-> +	if (ret)
-> +		goto phy_exit;
+diff --git a/drivers/media/v4l2-core/v4l2-async.c b/drivers/media/v4l2-core/v4l2-async.c
+index e3ab003a6c85..1303c9b83138 100644
+--- a/drivers/media/v4l2-core/v4l2-async.c
++++ b/drivers/media/v4l2-core/v4l2-async.c
+@@ -78,6 +78,7 @@ static bool match_fwnode(struct v4l2_async_notifier *notifier,
+ 	bool asd_fwnode_is_ep;
+ 	bool sd_fwnode_is_ep;
+ 	struct device *dev;
++	bool match;
+ 
+ 	/*
+ 	 * Both the subdev and the async subdev can provide either an endpoint
+@@ -113,9 +114,10 @@ static bool match_fwnode(struct v4l2_async_notifier *notifier,
+ 		other_fwnode = sd->fwnode;
+ 	}
+ 
+-	fwnode_handle_put(dev_fwnode);
++	match = (dev_fwnode == other_fwnode);
+ 
+-	if (dev_fwnode != other_fwnode)
++	fwnode_handle_put(dev_fwnode);
++	if (!match)
+ 		return false;
+ 
+ 	/*
+-- 
+2.29.2
 
-I am not sure if this is the correct way to check whether PHY_INIT
-should be skipped.
-
-Moreover the subsequent phy_power_off:
-
-> +
-> +	phy_power_off(phy);
-
-won't power off the PHY, because the corresponding handler in ATF is
-currently empty. 
-
-I guess the patch needs to be in kernel if users are unwilling to upgrade
-ATF firmware.
-
-The SMC calls for Marvell's comphy are designed to be generic for
-several Marvell platforms (the constants are the same and so one), but
-we still have different drivers for them anyway.
-
-Maybe it would be better to just not use the ATF implementation at all,
-and implement the comphy driver for A3720 entirely in kernel...
-
-Miquel, what do you think?
-
-Marek
