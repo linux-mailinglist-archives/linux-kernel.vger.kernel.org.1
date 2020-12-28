@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16F5F2E3D66
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:16:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D77B2E392D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:22:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440587AbgL1OPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:15:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49964 "EHLO mail.kernel.org"
+        id S1733130AbgL1NUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:20:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440574AbgL1OPE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:15:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F1633207AB;
-        Mon, 28 Dec 2020 14:14:23 +0000 (UTC)
+        id S1733110AbgL1NUI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:20:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90D7E207F7;
+        Mon, 28 Dec 2020 13:19:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609164864;
-        bh=gTLGYdL02XKs0yupekkeEsMyPVc7aRlL9Kj0z/zmwxA=;
+        s=korg; t=1609161593;
+        bh=ioT6EB0DR9OhI6mzGbumfULpL1uJQLrcRH3BNclv2mg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sbh/KWow4Z5Ih+bY4kcm0Jd9qpUNe71FPr22TPGdf7zOTjM7JzLeXjuXNDBxgK8W2
-         KYtLl83rm4ufJ44y9jA+XNAnMqggisQztowX/xk59BbhBLx/vu5WpmttrQsuKrjj4H
-         S3+bhGpgikrzJ8z9b9VX85c2GAOm4xTNZmA2VQYI=
+        b=N0sD8XxaSVmfJ3n1QlA6oakooxklEji/+3U34ZfMMutylXY9JCG54MIMJvWjbOGSR
+         09yJ7PolLawOoIWJDfOSigzDp8FTeFR/lPGeNu9irsr+ew9b06TGb7T5oEDNSzHSzh
+         wz51H7iqPKELGTH7tMp0eaPlLD1WkW1A/W4AnM+I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
+        stable@vger.kernel.org, Markus Reichl <m.reichl@fivetechno.de>,
+        Douglas Anderson <dianders@chromium.org>,
+        Heiko Stuebner <heiko@sntech.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 327/717] cpufreq: st: Add missing MODULE_DEVICE_TABLE
+Subject: [PATCH 4.19 006/346] arm64: dts: rockchip: Assign a fixed index to mmc devices on rk3399 boards.
 Date:   Mon, 28 Dec 2020 13:45:25 +0100
-Message-Id: <20201228125036.686052143@linuxfoundation.org>
+Message-Id: <20201228124920.064345592@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Markus Reichl <m.reichl@fivetechno.de>
 
-[ Upstream commit 183747ab52654eb406fc6b5bfb40806b75d31811 ]
+[ Upstream commit 0011c6d182774fc781fb9e115ebe8baa356029ae ]
 
-This patch adds missing MODULE_DEVICE_TABLE definition which generates
-correct modalias for automatic loading of this cpufreq driver when it is
-compiled as an external module.
+Recently introduced async probe on mmc devices can shuffle block IDs.
+Pin them to fixed values to ease booting in environments where UUIDs
+are not practical. Use newly introduced aliases for mmcblk devices from [1].
 
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Fixes: ab0ea257fc58d ("cpufreq: st: Provide runtime initialised driver for ST's platforms")
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+[1]
+https://patchwork.kernel.org/patch/11747669/
+
+Signed-off-by: Markus Reichl <m.reichl@fivetechno.de>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Link: https://lore.kernel.org/r/20201104162356.1251-1-m.reichl@fivetechno.de
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpufreq/sti-cpufreq.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/cpufreq/sti-cpufreq.c b/drivers/cpufreq/sti-cpufreq.c
-index 4ac6fb23792a0..c40d3d7d4ea43 100644
---- a/drivers/cpufreq/sti-cpufreq.c
-+++ b/drivers/cpufreq/sti-cpufreq.c
-@@ -292,6 +292,13 @@ register_cpufreq_dt:
- }
- module_init(sti_cpufreq_init);
- 
-+static const struct of_device_id __maybe_unused sti_cpufreq_of_match[] = {
-+	{ .compatible = "st,stih407" },
-+	{ .compatible = "st,stih410" },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, sti_cpufreq_of_match);
-+
- MODULE_DESCRIPTION("STMicroelectronics CPUFreq/OPP driver");
- MODULE_AUTHOR("Ajitpal Singh <ajitpal.singh@st.com>");
- MODULE_AUTHOR("Lee Jones <lee.jones@linaro.org>");
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+index f14e8c5c41acc..f4ee7c4f83b8b 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+@@ -29,6 +29,9 @@
+ 		i2c6 = &i2c6;
+ 		i2c7 = &i2c7;
+ 		i2c8 = &i2c8;
++		mmc0 = &sdio0;
++		mmc1 = &sdmmc;
++		mmc2 = &sdhci;
+ 		serial0 = &uart0;
+ 		serial1 = &uart1;
+ 		serial2 = &uart2;
 -- 
 2.27.0
 
