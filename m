@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3605E2E3A54
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:36:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F33D92E382D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:07:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389355AbgL1Nf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:35:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35674 "EHLO mail.kernel.org"
+        id S1730148AbgL1NGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:06:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34294 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389280AbgL1NfL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:35:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 26C5820719;
-        Mon, 28 Dec 2020 13:34:27 +0000 (UTC)
+        id S1729657AbgL1NGf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:06:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CBD8422583;
+        Mon, 28 Dec 2020 13:05:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162470;
-        bh=01b7Ch6QPeevrNpztEtq35iz9sR+18m5CIqL69O/D5M=;
+        s=korg; t=1609160754;
+        bh=Kb+FOsQMUlU45v7HgtHVomXRIUI2/2di63Cmzi3ur5k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zMGLEamICnz7EUoprr5tGQpTe8/rqjBKFT9jbgEwkTfjBmOOQ2qTGsXBJTuqH9zrG
-         ot8DpnDw7XRfwWSd7txrFM8e0y7b3Wi+Bk5+OVZuQSLV+wcoReLlxTRfs+bdN1ge9Y
-         V3ZtATyyod9F6UfZ4M7AOwpQ/j3upfLKI8CyKzc0=
+        b=MGuCcBqAb71LMNx5M4aZl1mgc7aoh/Vmn4+7l3UxW1/A6V2KPVhvsGqTdIZzoFGx5
+         9YQWiRybKvng9ePgROr1fuCqlqKNK40E4635+7nYiD3sacQDwcMqqGPZFBQKJ8Y2yF
+         2PcztWqkFtHEDbtzF/RyycvSbiSJAe+wlgRqurJs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 4.19 286/346] powerpc/perf: Exclude kernel samples while counting events in user space.
+        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
+        David Sterba <dsterba@suse.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH 4.9 152/175] btrfs: scrub: Dont use inode page cache in scrub_handle_errored_block()
 Date:   Mon, 28 Dec 2020 13:50:05 +0100
-Message-Id: <20201228124933.608598314@linuxfoundation.org>
+Message-Id: <20201228124900.623478349@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +40,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+From: Qu Wenruo <wqu@suse.com>
 
-commit aa8e21c053d72b6639ea5a7f1d3a1d0209534c94 upstream.
+commit 665d4953cde6d9e75c62a07ec8f4f8fd7d396ade upstream
 
-Perf event attritube supports exclude_kernel flag to avoid
-sampling/profiling in supervisor state (kernel). Based on this event
-attr flag, Monitor Mode Control Register bit is set to freeze on
-supervisor state. But sometimes (due to hardware limitation), Sampled
-Instruction Address Register (SIAR) locks on to kernel address even
-when freeze on supervisor is set. Patch here adds a check to drop
-those samples.
+In commit ac0b4145d662 ("btrfs: scrub: Don't use inode pages for device
+replace") we removed the branch of copy_nocow_pages() to avoid
+corruption for compressed nodatasum extents.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/1606289215-1433-1-git-send-email-atrajeev@linux.vnet.ibm.com
+However above commit only solves the problem in scrub_extent(), if
+during scrub_pages() we failed to read some pages,
+sctx->no_io_error_seen will be non-zero and we go to fixup function
+scrub_handle_errored_block().
+
+In scrub_handle_errored_block(), for sctx without csum (no matter if
+we're doing replace or scrub) we go to scrub_fixup_nodatasum() routine,
+which does the similar thing with copy_nocow_pages(), but does it
+without the extra check in copy_nocow_pages() routine.
+
+So for test cases like btrfs/100, where we emulate read errors during
+replace/scrub, we could corrupt compressed extent data again.
+
+This patch will fix it just by avoiding any "optimization" for
+nodatasum, just falls back to the normal fixup routine by try read from
+any good copy.
+
+This also solves WARN_ON() or dead lock caused by lame backref iteration
+in scrub_fixup_nodatasum() routine.
+
+The deadlock or WARN_ON() won't be triggered before commit ac0b4145d662
+("btrfs: scrub: Don't use inode pages for device replace") since
+copy_nocow_pages() have better locking and extra check for data extent,
+and it's already doing the fixup work by try to read data from any good
+copy, so it won't go scrub_fixup_nodatasum() anyway.
+
+This patch disables the faulty code and will be removed completely in a
+followup patch.
+
+Fixes: ac0b4145d662 ("btrfs: scrub: Don't use inode pages for device replace")
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+[sudip: adjust context]
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- arch/powerpc/perf/core-book3s.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ fs/btrfs/scrub.c |   17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
---- a/arch/powerpc/perf/core-book3s.c
-+++ b/arch/powerpc/perf/core-book3s.c
-@@ -2059,6 +2059,16 @@ static void record_and_restart(struct pe
- 	perf_event_update_userpage(event);
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -919,11 +919,6 @@ static int scrub_handle_errored_block(st
+ 	have_csum = sblock_to_check->pagev[0]->have_csum;
+ 	dev = sblock_to_check->pagev[0]->dev;
  
+-	if (sctx->is_dev_replace && !is_metadata && !have_csum) {
+-		sblocks_for_recheck = NULL;
+-		goto nodatasum_case;
+-	}
+-
  	/*
-+	 * Due to hardware limitation, sometimes SIAR could sample a kernel
-+	 * address even when freeze on supervisor state (kernel) is set in
-+	 * MMCR2. Check attr.exclude_kernel and address to drop the sample in
-+	 * these cases.
-+	 */
-+	if (event->attr.exclude_kernel && record)
-+		if (is_kernel_addr(mfspr(SPRN_SIAR)))
-+			record = 0;
-+
+ 	 * read all mirrors one after the other. This includes to
+ 	 * re-read the extent or metadata block that failed (that was
+@@ -1036,13 +1031,19 @@ static int scrub_handle_errored_block(st
+ 		goto out;
+ 	}
+ 
+-	if (!is_metadata && !have_csum) {
 +	/*
- 	 * Finally record data if requested.
- 	 */
- 	if (record) {
++	 * NOTE: Even for nodatasum case, it's still possible that it's a
++	 * compressed data extent, thus scrub_fixup_nodatasum(), which write
++	 * inode page cache onto disk, could cause serious data corruption.
++	 *
++	 * So here we could only read from disk, and hope our recovery could
++	 * reach disk before the newer write.
++	 */
++	if (0 && !is_metadata && !have_csum) {
+ 		struct scrub_fixup_nodatasum *fixup_nodatasum;
+ 
+ 		WARN_ON(sctx->is_dev_replace);
+ 
+-nodatasum_case:
+-
+ 		/*
+ 		 * !is_metadata and !have_csum, this means that the data
+ 		 * might not be COWed, that it might be modified
 
 
