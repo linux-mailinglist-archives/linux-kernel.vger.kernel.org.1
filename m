@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB0D72E6409
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:48:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E13F92E3966
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:25:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408220AbgL1Ppy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:45:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45324 "EHLO mail.kernel.org"
+        id S2388452AbgL1NXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:23:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51464 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404637AbgL1Nol (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:44:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1837720738;
-        Mon, 28 Dec 2020 13:43:59 +0000 (UTC)
+        id S2387639AbgL1NXB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:23:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2727922B37;
+        Mon, 28 Dec 2020 13:22:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163040;
-        bh=tw0e43QpVeMlHeB4V0Mukm4z0BoW8F0ABVJvnt6wqWE=;
+        s=korg; t=1609161740;
+        bh=ZEwHuEGQ+vf2UNUct46rsFOozmqr9HZK0SBkkoaJ5G8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=glYUe/FdxISe48fL9YWl/lutg66IqzlC6RV/gPF93ORK9mKf8SR/WRCYnuJi2E+wo
-         rB0zIJOxVcBCJOfQD3fYNeNgh9TbnrzMu3cQn5rEzPwF4PeJyK/UoPZsb3B2fjCWC8
-         Sh65bDLfXSyMxuiQp84Tzf4omauzqYqVBYmCTv8Y=
+        b=TAE3WqyavfJJMb1a2qfCK0lYlTzFyt4tns/wJQ4eZPhTlSVMWHfPLUTWHIa5f4dbR
+         bMZJfLvhl5m+vdK5D1pKptSn4kJaMXSyKHsFRXJM2svx/NvBTMGgwDNqIp1U14OQTJ
+         esHLPbZZla+bb6+rDq14WjqnBojklJ+pxn2EFFcs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 149/453] powerpc/feature: Fix CPU_FTRS_ALWAYS by removing CPU_FTRS_GENERIC_32
+Subject: [PATCH 4.19 066/346] selftests/bpf/test_offload.py: Reset ethtool features after failed setting
 Date:   Mon, 28 Dec 2020 13:46:25 +0100
-Message-Id: <20201228124944.375872734@linuxfoundation.org>
+Message-Id: <20201228124922.990491256@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,66 +42,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Toke Høiland-Jørgensen <toke@redhat.com>
 
-[ Upstream commit 78665179e569c7e1fe102fb6c21d0f5b6951f084 ]
+[ Upstream commit 766e62b7fcd2cf1d43e6594ba37c659dc48f7ddb ]
 
-On 8xx, we get the following features:
+When setting the ethtool feature flag fails (as expected for the test), the
+kernel now tracks that the feature was requested to be 'off' and refuses to
+subsequently disable it again. So reset it back to 'on' so a subsequent
+disable (that's not supposed to fail) can succeed.
 
-[    0.000000] cpu_features      = 0x0000000000000100
-[    0.000000]   possible        = 0x0000000000000120
-[    0.000000]   always          = 0x0000000000000000
-
-This is not correct. As CONFIG_PPC_8xx is mutually exclusive with all
-other configurations, the three lines should be equal.
-
-The problem is due to CPU_FTRS_GENERIC_32 which is taken when
-CONFIG_BOOK3S_32 is NOT selected. This CPU_FTRS_GENERIC_32 is
-pointless because there is no generic configuration supporting
-all 32 bits but book3s/32.
-
-Remove this pointless generic features definition to unbreak the
-calculation of 'possible' features and 'always' features.
-
-Fixes: 76bc080ef5a3 ("[POWERPC] Make default cputable entries reflect selected CPU family")
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/76a85f30bf981d1aeaae00df99321235494da254.1604426550.git.christophe.leroy@csgroup.eu
+Fixes: 417ec26477a5 ("selftests/bpf: add offload test based on netdevsim")
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Jakub Kicinski <kuba@kernel.org>
+Link: https://lore.kernel.org/bpf/160752226280.110217.10696241563705667871.stgit@toke.dk
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/include/asm/cputable.h | 5 -----
- 1 file changed, 5 deletions(-)
+ tools/testing/selftests/bpf/test_offload.py | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/powerpc/include/asm/cputable.h b/arch/powerpc/include/asm/cputable.h
-index cf00ff0d121de..dc8e8552bd487 100644
---- a/arch/powerpc/include/asm/cputable.h
-+++ b/arch/powerpc/include/asm/cputable.h
-@@ -407,7 +407,6 @@ static inline void cpu_feature_keys_init(void) { }
- 	    CPU_FTR_DBELL | CPU_FTR_POPCNTB | CPU_FTR_POPCNTD | \
- 	    CPU_FTR_DEBUG_LVL_EXC | CPU_FTR_EMB_HV | CPU_FTR_ALTIVEC_COMP | \
- 	    CPU_FTR_CELL_TB_BUG | CPU_FTR_SMT)
--#define CPU_FTRS_GENERIC_32	(CPU_FTR_COMMON | CPU_FTR_NODSISRALIGN)
+diff --git a/tools/testing/selftests/bpf/test_offload.py b/tools/testing/selftests/bpf/test_offload.py
+index d59642e70f562..2229e55216a97 100755
+--- a/tools/testing/selftests/bpf/test_offload.py
++++ b/tools/testing/selftests/bpf/test_offload.py
+@@ -787,6 +787,7 @@ try:
+     start_test("Test disabling TC offloads is rejected while filters installed...")
+     ret, _ = sim.set_ethtool_tc_offloads(False, fail=False)
+     fail(ret == 0, "Driver should refuse to disable TC offloads with filters installed...")
++    sim.set_ethtool_tc_offloads(True)
  
- /* 64-bit CPUs */
- #define CPU_FTRS_PPC970	(CPU_FTR_LWSYNC | \
-@@ -507,8 +506,6 @@ enum {
- 	    CPU_FTRS_7447 | CPU_FTRS_7447A | CPU_FTRS_82XX |
- 	    CPU_FTRS_G2_LE | CPU_FTRS_E300 | CPU_FTRS_E300C2 |
- 	    CPU_FTRS_CLASSIC32 |
--#else
--	    CPU_FTRS_GENERIC_32 |
- #endif
- #ifdef CONFIG_PPC_8xx
- 	    CPU_FTRS_8XX |
-@@ -585,8 +582,6 @@ enum {
- 	    CPU_FTRS_7447 & CPU_FTRS_7447A & CPU_FTRS_82XX &
- 	    CPU_FTRS_G2_LE & CPU_FTRS_E300 & CPU_FTRS_E300C2 &
- 	    CPU_FTRS_CLASSIC32 &
--#else
--	    CPU_FTRS_GENERIC_32 &
- #endif
- #ifdef CONFIG_PPC_8xx
- 	    CPU_FTRS_8XX &
+     start_test("Test qdisc removal frees things...")
+     sim.tc_flush_filters()
 -- 
 2.27.0
 
