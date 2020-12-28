@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64B802E66A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:16:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F45A2E66AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:17:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387520AbgL1NSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:18:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47042 "EHLO mail.kernel.org"
+        id S2394288AbgL1QOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:14:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47142 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387506AbgL1NS1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:18:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B1C022AAA;
-        Mon, 28 Dec 2020 13:17:46 +0000 (UTC)
+        id S1731771AbgL1NSg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:18:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 54005207C9;
+        Mon, 28 Dec 2020 13:17:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161467;
-        bh=aRFtjc0P4kSaBuZtpRKNgR4103VojKbxB7pdrr3GHNA=;
+        s=korg; t=1609161476;
+        bh=3fNXPCLn+df4fHPGcmz0dIT0FYWo1Wbk35m/GDVDrW0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Pd7CtB07ncRrawBI39k44r7Qz21kzmvcVjf9YiSZlcuQEF2bKMVLxx9eMrTSg2u6T
-         4d62QzWTPb0XmPhdPdXqzvz0JAX94B3JaEaVEawgBEe1mwHW8p3lY2I7n9iQ17o2js
-         hSgtAwvgM8cHrWpjNV7+OYI6vGYjFl9lDNmp4J80=
+        b=dBqvTeg9eHhbzgKxf91WUlzTEXs1UOFOA7bgV6aakC/O9HckYvpu67QCPrGd4gm/k
+         zfXv23b8fhuNfSu0SPLoRDxNmHy459quY8GS1YlZG+bPzZ9V68o5sV8x7pQhYg9xtC
+         oj9s8mCNunQb3+2DIreqHoGetS9Qt6YkKI/wxiN8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Purna Chandra Mandal <purna.mandal@microchip.com>,
+        Chuhong Yuan <hslester96@gmail.com>,
         Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.14 222/242] spi: pic32: Dont leak DMA channels in probe error path
-Date:   Mon, 28 Dec 2020 13:50:27 +0100
-Message-Id: <20201228124915.597792510@linuxfoundation.org>
+Subject: [PATCH 4.14 225/242] spi: st-ssc4: Fix unbalanced pm_runtime_disable() in probe error path
+Date:   Mon, 28 Dec 2020 13:50:30 +0100
+Message-Id: <20201228124915.753072800@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
 References: <20201228124904.654293249@linuxfoundation.org>
@@ -42,33 +42,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lukas Wunner <lukas@wunner.de>
 
-commit c575e9113bff5e024d75481613faed5ef9d465b2 upstream.
+commit 5ef76dac0f2c26aeae4ee79eb830280f16d5aceb upstream.
 
-If the calls to devm_request_irq() or devm_spi_register_master() fail
-on probe of the PIC32 SPI driver, the DMA channels requested by
-pic32_spi_dma_prep() are erroneously not released.  Plug the leak.
+If the calls to devm_platform_ioremap_resource(), irq_of_parse_and_map()
+or devm_request_irq() fail on probe of the ST SSC4 SPI driver, the
+runtime PM disable depth is incremented even though it was not
+decremented before.  Fix it.
 
-Fixes: 1bcb9f8ceb67 ("spi: spi-pic32: Add PIC32 SPI master driver")
+Fixes: cd050abeba2a ("spi: st-ssc4: add missed pm_runtime_disable")
 Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Cc: <stable@vger.kernel.org> # v4.7+
-Cc: Purna Chandra Mandal <purna.mandal@microchip.com>
-Link: https://lore.kernel.org/r/9624250e3a7aa61274b38219a62375bac1def637.1604874488.git.lukas@wunner.de
+Cc: <stable@vger.kernel.org> # v5.5+
+Cc: Chuhong Yuan <hslester96@gmail.com>
+Link: https://lore.kernel.org/r/fbe8768c30dc829e2d77eabe7be062ca22f84024.1604874488.git.lukas@wunner.de
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/spi/spi-pic32.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/spi/spi-st-ssc4.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/drivers/spi/spi-pic32.c
-+++ b/drivers/spi/spi-pic32.c
-@@ -839,6 +839,7 @@ static int pic32_spi_probe(struct platfo
+--- a/drivers/spi/spi-st-ssc4.c
++++ b/drivers/spi/spi-st-ssc4.c
+@@ -379,13 +379,14 @@ static int spi_st_probe(struct platform_
+ 	ret = devm_spi_register_master(&pdev->dev, master);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Failed to register master\n");
+-		goto clk_disable;
++		goto rpm_disable;
+ 	}
+ 
  	return 0;
  
- err_bailout:
-+	pic32_spi_dma_unprep(pic32s);
- 	clk_disable_unprepare(pic32s->clk);
- err_master:
+-clk_disable:
++rpm_disable:
+ 	pm_runtime_disable(&pdev->dev);
++clk_disable:
+ 	clk_disable_unprepare(spi_st->clk);
+ put_master:
  	spi_master_put(master);
 
 
