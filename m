@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6A792E651D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:57:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BDF92E4318
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:34:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633302AbgL1P5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:57:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35044 "EHLO mail.kernel.org"
+        id S2392814AbgL1PaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:30:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389197AbgL1Neg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:34:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 248352072C;
-        Mon, 28 Dec 2020 13:33:54 +0000 (UTC)
+        id S2405270AbgL1Nzi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:55:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A89F20738;
+        Mon, 28 Dec 2020 13:55:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162435;
-        bh=4hn+pLi687Q08yitiwgTWR/9lJ2XAeC4138kLyzwCX8=;
+        s=korg; t=1609163722;
+        bh=vKJEEavUqiwWARyaFuY3POU2VLY36L6c7UMlIw4nYdY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wXhCLxLizr+RcBQdNgL61xUpXoeCdlD8of5e7p6WjqJ+r+8or/7y9ivqrQyisOiEE
-         zWlNrp06Up+ALsf9RitEbaGCduFzFmSniOaM5J3YvaPy01AmnZl53N2HEnq5cJKZv/
-         o4iBNRa7FFL5PLZxHelynr4F5MiEDronkB0rmMXo=
+        b=cvvYo0uT29fGkdDEaT8I1YNC+J1+J79MIl0qmrp9OjYnJ6/dc5JBvUA3Qj1A6pQNO
+         klBtBmPxvgBIXte4W4N16snvf/X8JRjnDLAL5SEpapihokBV/+TTt4P79c0fmsFe6p
+         sEIyil4pZNtQKlBoEDp1MbB5H4hj6ZMewuWdwBbo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tyrel Datwyler <tyreld@linux.ibm.com>,
+        stable@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>,
         Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 4.19 303/346] powerpc/rtas: Fix typo of ibm,open-errinjct in RTAS filter
+Subject: [PATCH 5.4 386/453] powerpc/powernv/npu: Do not attempt NPU2 setup on POWER8NVL NPU
 Date:   Mon, 28 Dec 2020 13:50:22 +0100
-Message-Id: <20201228124934.433209104@linuxfoundation.org>
+Message-Id: <20201228124955.776411762@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,48 +39,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tyrel Datwyler <tyreld@linux.ibm.com>
+From: Alexey Kardashevskiy <aik@ozlabs.ru>
 
-commit f10881a46f8914428110d110140a455c66bdf27b upstream.
+commit b1198a88230f2ce50c271e22b82a8b8610b2eea9 upstream.
 
-Commit bd59380c5ba4 ("powerpc/rtas: Restrict RTAS requests from userspace")
-introduced the following error when invoking the errinjct userspace
-tool:
+We execute certain NPU2 setup code (such as mapping an LPID to a device
+in NPU2) unconditionally if an Nvlink bridge is detected. However this
+cannot succeed on POWER8NVL machines and errors appear in dmesg. This is
+harmless as skiboot returns an error and the only place we check it is
+vfio-pci but that code does not get called on P8+ either.
 
-  [root@ltcalpine2-lp5 librtas]# errinjct open
-  [327884.071171] sys_rtas: RTAS call blocked - exploit attempt?
-  [327884.071186] sys_rtas: token=0x26, nargs=0 (called by errinjct)
-  errinjct: Could not open RTAS error injection facility
-  errinjct: librtas: open: Unexpected I/O error
+This adds a check if pnv_npu2_xxx helpers are called on a machine with
+NPU2 which initializes pnv_phb::npu in pnv_npu2_init();
+pnv_phb::npu==NULL on POWER8/NVL (Naples).
 
-The entry for ibm,open-errinjct in rtas_filter array has a typo where
-the "j" is omitted in the rtas call name. After fixing this typo the
-errinjct tool functions again as expected.
+While at this, fix NULL derefencing in pnv_npu_peers_take_ownership/
+pnv_npu_peers_release_ownership which occurs when GPUs on mentioned P8s
+cause EEH which happens if "vfio-pci" disables devices using
+the D3 power state; the vfio-pci's disable_idle_d3 module parameter
+controls this and must be set on Naples. The EEH handling clears
+the entire pnv_ioda_pe struct in pnv_ioda_free_pe() hence
+the NULL derefencing. We cannot recover from that but at least we stop
+crashing.
 
-  [root@ltcalpine2-lp5 linux]# errinjct open
-  RTAS error injection facility open, token = 1
+Tested on
+- POWER9 pvr=004e1201, Ubuntu 19.04 host, Ubuntu 18.04 vm,
+  NVIDIA GV100 10de:1db1 driver 418.39
+- POWER8 pvr=004c0100, RHEL 7.6 host, Ubuntu 16.10 vm,
+  NVIDIA P100 10de:15f9 driver 396.47
 
-Fixes: bd59380c5ba4 ("powerpc/rtas: Restrict RTAS requests from userspace")
-Cc: stable@vger.kernel.org
-Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+Fixes: 1b785611e119 ("powerpc/powernv/npu: Add release_ownership hook")
+Cc: stable@vger.kernel.org # 5.0
+Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20201208195434.8289-1-tyreld@linux.ibm.com
+Link: https://lore.kernel.org/r/20201122073828.15446-1-aik@ozlabs.ru
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/kernel/rtas.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/platforms/powernv/npu-dma.c |   16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
---- a/arch/powerpc/kernel/rtas.c
-+++ b/arch/powerpc/kernel/rtas.c
-@@ -1095,7 +1095,7 @@ static struct rtas_filter rtas_filters[]
- 	{ "ibm,display-message", -1, 0, -1, -1, -1 },
- 	{ "ibm,errinjct", -1, 2, -1, -1, -1, 1024 },
- 	{ "ibm,close-errinjct", -1, -1, -1, -1, -1 },
--	{ "ibm,open-errinct", -1, -1, -1, -1, -1 },
-+	{ "ibm,open-errinjct", -1, -1, -1, -1, -1 },
- 	{ "ibm,get-config-addr-info2", -1, -1, -1, -1, -1 },
- 	{ "ibm,get-dynamic-sensor-state", -1, 1, -1, -1, -1 },
- 	{ "ibm,get-indices", -1, 2, 3, -1, -1 },
+--- a/arch/powerpc/platforms/powernv/npu-dma.c
++++ b/arch/powerpc/platforms/powernv/npu-dma.c
+@@ -384,7 +384,8 @@ static void pnv_npu_peers_take_ownership
+ 	for (i = 0; i < npucomp->pe_num; ++i) {
+ 		struct pnv_ioda_pe *pe = npucomp->pe[i];
+ 
+-		if (!pe->table_group.ops->take_ownership)
++		if (!pe->table_group.ops ||
++		    !pe->table_group.ops->take_ownership)
+ 			continue;
+ 		pe->table_group.ops->take_ownership(&pe->table_group);
+ 	}
+@@ -400,7 +401,8 @@ static void pnv_npu_peers_release_owners
+ 	for (i = 0; i < npucomp->pe_num; ++i) {
+ 		struct pnv_ioda_pe *pe = npucomp->pe[i];
+ 
+-		if (!pe->table_group.ops->release_ownership)
++		if (!pe->table_group.ops ||
++		    !pe->table_group.ops->release_ownership)
+ 			continue;
+ 		pe->table_group.ops->release_ownership(&pe->table_group);
+ 	}
+@@ -560,6 +562,11 @@ int pnv_npu2_map_lpar_dev(struct pci_dev
+ 		return -ENODEV;
+ 
+ 	hose = pci_bus_to_host(npdev->bus);
++	if (hose->npu == NULL) {
++		dev_info_once(&npdev->dev, "Nvlink1 does not support contexts");
++		return 0;
++	}
++
+ 	nphb = hose->private_data;
+ 
+ 	dev_dbg(&gpdev->dev, "Map LPAR opalid=%llu lparid=%u\n",
+@@ -607,6 +614,11 @@ int pnv_npu2_unmap_lpar_dev(struct pci_d
+ 		return -ENODEV;
+ 
+ 	hose = pci_bus_to_host(npdev->bus);
++	if (hose->npu == NULL) {
++		dev_info_once(&npdev->dev, "Nvlink1 does not support contexts");
++		return 0;
++	}
++
+ 	nphb = hose->private_data;
+ 
+ 	dev_dbg(&gpdev->dev, "destroy context opalid=%llu\n",
 
 
