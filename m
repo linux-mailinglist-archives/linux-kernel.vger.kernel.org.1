@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2E872E3851
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:09:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27C052E39A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:27:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730461AbgL1NIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:08:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36316 "EHLO mail.kernel.org"
+        id S2388944AbgL1NZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:25:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730276AbgL1NIg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:08:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F105F22BED;
-        Mon, 28 Dec 2020 13:07:54 +0000 (UTC)
+        id S2388872AbgL1NZO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:25:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 113012072C;
+        Mon, 28 Dec 2020 13:24:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160875;
-        bh=PwJU+LWoKMzrrqcSg5SCHuECKtBSKiHosJWC9FEsgH8=;
+        s=korg; t=1609161873;
+        bh=+AoAnIZZ/9A6WTdD5RGCO12One7qNrVF0qIULMCRCF8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VBZ224FOsMko7DnIXa+hhscC/JNApbcVHcAXAyqRhWZbFp0PX66bnGglhXhcpqbsu
-         wASlQfK1vKrq2rMMnryvlMYpSDn6Ibryblnb3qpiqBG+VObBe0jCoXPFdDQ6A/HxfV
-         jtPUJ1jME1BvXkLUwb5tYBBf1aSThpaNLMM2/7RM=
+        b=Q7yKdiQ+fw4KGtbAdV9rJsBINUtzeuAc6tz6IiybYUusdS7HRfwAm6uyqelTzBd3M
+         i+gu6u0S/dZNyWdMsZiEIxi3Vx3EekXWFwaLNC6Kg80GrtXgUiF+5XkPhexag6zZui
+         yREGktMd95ibEeUfMKZJJooLNYEYns+ok6p7115w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        Bui Quang Minh <minhquangbui99@gmail.com>
-Subject: [PATCH 4.14 025/242] USB: dummy-hcd: Fix uninitialized array use in init()
+        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 111/346] sched: Reenable interrupts in do_sched_yield()
 Date:   Mon, 28 Dec 2020 13:47:10 +0100
-Message-Id: <20201228124905.904471937@linuxfoundation.org>
+Message-Id: <20201228124925.154328017@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,40 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bui Quang Minh <minhquangbui99@gmail.com>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-commit e90cfa813da7a527785033a0b247594c2de93dd8 upstream.
+[ Upstream commit 345a957fcc95630bf5535d7668a59ed983eb49a7 ]
 
-This error path
+do_sched_yield() invokes schedule() with interrupts disabled which is
+not allowed. This goes back to the pre git era to commit a6efb709806c
+("[PATCH] irqlock patch 2.5.27-H6") in the history tree.
 
-	err_add_pdata:
-		for (i = 0; i < mod_data.num; i++)
-			kfree(dum[i]);
+Reenable interrupts and remove the misleading comment which "explains" it.
 
-can be triggered when not all dum's elements are initialized.
-
-Fix this by initializing all dum's elements to NULL.
-
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
-Link: https://lore.kernel.org/r/1607063090-3426-1-git-send-email-minhquangbui99@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/87r1pt7y5c.fsf@nanos.tec.linutronix.de
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/udc/dummy_hcd.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/sched/core.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
---- a/drivers/usb/gadget/udc/dummy_hcd.c
-+++ b/drivers/usb/gadget/udc/dummy_hcd.c
-@@ -2742,7 +2742,7 @@ static int __init init(void)
- {
- 	int	retval = -ENOMEM;
- 	int	i;
--	struct	dummy *dum[MAX_NUM_UDC];
-+	struct	dummy *dum[MAX_NUM_UDC] = {};
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index b166320f7633e..013b1c6cb4ed9 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -4984,12 +4984,8 @@ static void do_sched_yield(void)
+ 	schedstat_inc(rq->yld_count);
+ 	current->sched_class->yield_task(rq);
  
- 	if (usb_disabled())
- 		return -ENODEV;
+-	/*
+-	 * Since we are going to call schedule() anyway, there's
+-	 * no need to preempt or enable interrupts:
+-	 */
+ 	preempt_disable();
+-	rq_unlock(rq, &rf);
++	rq_unlock_irq(rq, &rf);
+ 	sched_preempt_enable_no_resched();
+ 
+ 	schedule();
+-- 
+2.27.0
+
 
 
