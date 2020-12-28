@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 221912E6933
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:47:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4302E6704
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:19:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728542AbgL1Mz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:55:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51624 "EHLO mail.kernel.org"
+        id S2404328AbgL1QTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:19:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728532AbgL1MzY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:55:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2ECAA21D94;
-        Mon, 28 Dec 2020 12:55:08 +0000 (UTC)
+        id S1732477AbgL1NOT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:14:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DD9D206ED;
+        Mon, 28 Dec 2020 13:14:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160108;
-        bh=ci3KWQqG2OE0gpHKegO9G9QEaQ6kaQo8gHt7d04SwKY=;
+        s=korg; t=1609161244;
+        bh=y6ZQLzeaVOvYgTngfNR5QHOnwq4Foe2LejqIuPXYogY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rQY03ivERynW5EJeMFaCNHl5pySc5tGo+/6DTWPIbolzsk+aKwAeBOS/37TiCedj0
-         Unla0IeCUmhy5MUpRlyc+ZVcFjdW4LNeLgnhzk3nSV/jcR+sN3+7/0qR/5m0CXkUu6
-         4Ll+XFIGTQMbZyLqUj9A6NGLOeYwSUmhY+gsHPZU=
+        b=Lc60eVXIAnH5M4niD8p/a+G/Mg7oKpRWlF9E6bt5HZs9ahyrLwBPXHNRD7Ot9NqSu
+         BQV0n5XXEya8ISv1Kf1eU/0Mgjo1X1Dq/wkl4eulAzlmGVv0A8XceNRR6CCGLWv+7H
+         6K8zNd6ysKp5RKvuxDEjz/gWNjD9oYifkU8OPWlg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jack Wang <jinpu.wang@cloud.ionos.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
         Zhang Qilong <zhangqilong3@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 072/132] scsi: pm80xx: Fix error return in pm8001_pci_probe()
+Subject: [PATCH 4.14 151/242] usb: oxu210hp-hcd: Fix memory leak in oxu_create
 Date:   Mon, 28 Dec 2020 13:49:16 +0100
-Message-Id: <20201228124849.928325822@linuxfoundation.org>
+Message-Id: <20201228124912.140077998@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +42,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit 97031ccffa4f62728602bfea8439dd045cd3aeb2 ]
+[ Upstream commit e5548b05631ec3e6bfdaef1cad28c799545b791b ]
 
-The driver did not return an error in the case where
-pm8001_configure_phy_settings() failed.
+usb_create_hcd will alloc memory for hcd, and we should
+call usb_put_hcd to free it when adding fails to prevent
+memory leak.
 
-Use rc to store the return value of pm8001_configure_phy_settings().
-
-Link: https://lore.kernel.org/r/20201205115551.2079471-1-zhangqilong3@huawei.com
-Fixes: 279094079a44 ("[SCSI] pm80xx: Phy settings support for motherboard controller.")
-Acked-by: Jack Wang <jinpu.wang@cloud.ionos.com>
+Fixes: b92a78e582b1a ("usb host: Oxford OXU210HP HCD driver")
+Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Link: https://lore.kernel.org/r/20201123145809.1456541-1-zhangqilong3@huawei.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/pm8001/pm8001_init.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/usb/host/oxu210hp-hcd.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/pm8001/pm8001_init.c b/drivers/scsi/pm8001/pm8001_init.c
-index 062ab34b86f8b..a982701bc3e0c 100644
---- a/drivers/scsi/pm8001/pm8001_init.c
-+++ b/drivers/scsi/pm8001/pm8001_init.c
-@@ -1063,7 +1063,8 @@ static int pm8001_pci_probe(struct pci_dev *pdev,
+diff --git a/drivers/usb/host/oxu210hp-hcd.c b/drivers/usb/host/oxu210hp-hcd.c
+index ed20fb34c897f..1d3a79c2eba2f 100644
+--- a/drivers/usb/host/oxu210hp-hcd.c
++++ b/drivers/usb/host/oxu210hp-hcd.c
+@@ -3732,8 +3732,10 @@ static struct usb_hcd *oxu_create(struct platform_device *pdev,
+ 	oxu->is_otg = otg;
  
- 	pm8001_init_sas_add(pm8001_ha);
- 	/* phy setting support for motherboard controller */
--	if (pm8001_configure_phy_settings(pm8001_ha))
-+	rc = pm8001_configure_phy_settings(pm8001_ha);
-+	if (rc)
- 		goto err_out_shost;
+ 	ret = usb_add_hcd(hcd, irq, IRQF_SHARED);
+-	if (ret < 0)
++	if (ret < 0) {
++		usb_put_hcd(hcd);
+ 		return ERR_PTR(ret);
++	}
  
- 	pm8001_post_sas_ha_init(shost, chip);
+ 	device_wakeup_enable(hcd->self.controller);
+ 	return hcd;
 -- 
 2.27.0
 
