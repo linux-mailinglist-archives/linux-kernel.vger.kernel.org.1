@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 607D12E3922
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:19:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98E612E3C08
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:57:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732892AbgL1NTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:19:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48000 "EHLO mail.kernel.org"
+        id S2405118AbgL1N5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:57:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732862AbgL1NT1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:19:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CBC1C2076D;
-        Mon, 28 Dec 2020 13:18:45 +0000 (UTC)
+        id S2406743AbgL1N5r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:57:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 571D020791;
+        Mon, 28 Dec 2020 13:57:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161526;
-        bh=qP5PmOfyTyIxZ6OcloGXOoA0/snFQLg5hJU14nFi1Pc=;
+        s=korg; t=1609163826;
+        bh=t1gGUelAwP2A+EmHeUClX4L/LHo/xQfFUa6r+6dbcDo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UUWTksLXgiwAVSuuWA93brTG6fuSbrDDLgmeCv6trfLpd37sPQIdYQ3edTMc+1hhU
-         e7XlzQw3k1Jc5LmIhkbguna7/D6zJT8AQBB7x5AsSgVTEuwYJGRamfo6xU1oYC2FdY
-         ol3P5wBvNuX9ue+iQAScUQlTRerjkWLETzpHRYFA=
+        b=Qmzf4aIN/6QGyR1seJzW7mRx38WTECkRBLkSn0XuKyIsGaYQTleabhPOG1zNJ4d4m
+         pM+cXOeR0vhs2R20+mDA9OZqAq/bn3NXNsvVPLyK/nGAFEuLzv515zoeSMZRHXCpGD
+         HMSblJsxHVWQSopKO2CZcRBK3qPc9JyW7qAHtmNY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Olivier Benjamin <oliben@amazon.com>,
-        Pawel Wieczorkiewicz <wipawel@amazon.de>,
-        Julien Grall <jgrall@amazon.com>,
-        Juergen Gross <jgross@suse.com>
-Subject: [PATCH 4.14 235/242] xen-blkback: set ring->xenblkd to NULL after kthread_stop()
+        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.4 404/453] spi: davinci: Fix use-after-free on unbind
 Date:   Mon, 28 Dec 2020 13:50:40 +0100
-Message-Id: <20201228124916.258625227@linuxfoundation.org>
+Message-Id: <20201228124956.651942015@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,52 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pawel Wieczorkiewicz <wipawel@amazon.de>
+From: Lukas Wunner <lukas@wunner.de>
 
-commit 1c728719a4da6e654afb9cc047164755072ed7c9 upstream.
+commit 373afef350a93519b4b8d636b0895da8650b714b upstream.
 
-When xen_blkif_disconnect() is called, the kernel thread behind the
-block interface is stopped by calling kthread_stop(ring->xenblkd).
-The ring->xenblkd thread pointer being non-NULL determines if the
-thread has been already stopped.
-Normally, the thread's function xen_blkif_schedule() sets the
-ring->xenblkd to NULL, when the thread's main loop ends.
+davinci_spi_remove() accesses the driver's private data after it's been
+freed with spi_master_put().
 
-However, when the thread has not been started yet (i.e.
-wake_up_process() has not been called on it), the xen_blkif_schedule()
-function would not be called yet.
+Fix by moving the spi_master_put() to the end of the function.
 
-In such case the kthread_stop() call returns -EINTR and the
-ring->xenblkd remains dangling.
-When this happens, any consecutive call to xen_blkif_disconnect (for
-example in frontend_changed() callback) leads to a kernel crash in
-kthread_stop() (e.g. NULL pointer dereference in exit_creds()).
-
-This is XSA-350.
-
-Cc: <stable@vger.kernel.org> # 4.12
-Fixes: a24fa22ce22a ("xen/blkback: don't use xen_blkif_get() in xen-blkback kthread")
-Reported-by: Olivier Benjamin <oliben@amazon.com>
-Reported-by: Pawel Wieczorkiewicz <wipawel@amazon.de>
-Signed-off-by: Pawel Wieczorkiewicz <wipawel@amazon.de>
-Reviewed-by: Julien Grall <jgrall@amazon.com>
-Reviewed-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Juergen Gross <jgross@suse.com>
+Fixes: fe5fd2540947 ("spi: davinci: Use dma_request_chan() for requesting DMA channel")
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: <stable@vger.kernel.org> # v4.7+
+Link: https://lore.kernel.org/r/412f7eb1cf8990e0a3a2153f4c577298deab623e.1607286887.git.lukas@wunner.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/block/xen-blkback/xenbus.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/spi/spi-davinci.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/block/xen-blkback/xenbus.c
-+++ b/drivers/block/xen-blkback/xenbus.c
-@@ -263,6 +263,7 @@ static int xen_blkif_disconnect(struct x
+--- a/drivers/spi/spi-davinci.c
++++ b/drivers/spi/spi-davinci.c
+@@ -1040,13 +1040,13 @@ static int davinci_spi_remove(struct pla
+ 	spi_bitbang_stop(&dspi->bitbang);
  
- 		if (ring->xenblkd) {
- 			kthread_stop(ring->xenblkd);
-+			ring->xenblkd = NULL;
- 			wake_up(&ring->shutdown_wq);
- 		}
+ 	clk_disable_unprepare(dspi->clk);
+-	spi_master_put(master);
+ 
+ 	if (dspi->dma_rx) {
+ 		dma_release_channel(dspi->dma_rx);
+ 		dma_release_channel(dspi->dma_tx);
+ 	}
+ 
++	spi_master_put(master);
+ 	return 0;
+ }
  
 
 
