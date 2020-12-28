@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AC3A2E38A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:14:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 289E32E3C1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:59:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730829AbgL1NMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:12:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39566 "EHLO mail.kernel.org"
+        id S2407510AbgL1N6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:58:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732060AbgL1NM1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:12:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 467DF22BEA;
-        Mon, 28 Dec 2020 13:12:11 +0000 (UTC)
+        id S2407788AbgL1N6f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:58:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD0252063A;
+        Mon, 28 Dec 2020 13:49:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161131;
-        bh=QQZtdrtNDL2KFOEHs3fB6urx7WxcNySkqdHC+ILRyuc=;
+        s=korg; t=1609163399;
+        bh=STyOaqKNzxE9l0D83R6BIUkvGwDMO1M7fhvcvIOT800=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F03/f9a2uYXIRZpBQuWQpsFOsnXBywuynLsKGvS/5VfzIDiG49klwQBMp00Kk9zG0
-         flY5KJ+kPN+rVRTKTBPsdF+0cgP1vtZvPDjO3jWG2LCxucSro6l/zzq9KIObGOZJGg
-         +s69Nywe9D5em1gVSaYYP2baagozD9JTQQS76Cbs=
+        b=CtGddI/mbl93/tpNBRE0IC1zCgsXGvJSfe/HFf4mC6AT5C9D1q04ptbw3zhLqre1z
+         uGdM0wO+7dAV0rKnliDx6WwXjQHn9iqW5n9iqz6n5Qzr1CKFDSm5bu7h/qeYs4M2JV
+         kbOGv6IP2NvvQRyx9t381fsJ6lmykwoUe8RByahc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicolas Pitre <nico@fluxnic.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
+        stable@vger.kernel.org, Jack Wang <jinpu.wang@cloud.ionos.com>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 072/242] ARM: p2v: fix handling of LPAE translation in BE mode
+Subject: [PATCH 5.4 241/453] scsi: pm80xx: Fix error return in pm8001_pci_probe()
 Date:   Mon, 28 Dec 2020 13:47:57 +0100
-Message-Id: <20201228124908.229667365@linuxfoundation.org>
+Message-Id: <20201228124948.821640141@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,53 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit 4e79f0211b473f8e1eab8211a9fd50cc41a3a061 ]
+[ Upstream commit 97031ccffa4f62728602bfea8439dd045cd3aeb2 ]
 
-When running in BE mode on LPAE hardware with a PA-to-VA translation
-that exceeds 4 GB, we patch bits 39:32 of the offset into the wrong
-byte of the opcode. So fix that, by rotating the offset in r0 to the
-right by 8 bits, which will put the 8-bit immediate in bits 31:24.
+The driver did not return an error in the case where
+pm8001_configure_phy_settings() failed.
 
-Note that this will also move bit #22 in its correct place when
-applying the rotation to the constant #0x400000.
+Use rc to store the return value of pm8001_configure_phy_settings().
 
-Fixes: d9a790df8e984 ("ARM: 7883/1: fix mov to mvn conversion in case of 64 bit phys_addr_t and BE")
-Acked-by: Nicolas Pitre <nico@fluxnic.net>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Link: https://lore.kernel.org/r/20201205115551.2079471-1-zhangqilong3@huawei.com
+Fixes: 279094079a44 ("[SCSI] pm80xx: Phy settings support for motherboard controller.")
+Acked-by: Jack Wang <jinpu.wang@cloud.ionos.com>
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/kernel/head.S | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ drivers/scsi/pm8001/pm8001_init.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/kernel/head.S b/arch/arm/kernel/head.S
-index 6b1148cafffdb..90add5ded3f1f 100644
---- a/arch/arm/kernel/head.S
-+++ b/arch/arm/kernel/head.S
-@@ -674,12 +674,8 @@ ARM_BE8(rev16	ip, ip)
- 	ldrcc	r7, [r4], #4	@ use branch for delay slot
- 	bcc	1b
- 	bx	lr
--#else
--#ifdef CONFIG_CPU_ENDIAN_BE8
--	moveq	r0, #0x00004000	@ set bit 22, mov to mvn instruction
- #else
- 	moveq	r0, #0x400000	@ set bit 22, mov to mvn instruction
--#endif
- 	b	2f
- 1:	ldr	ip, [r7, r3]
- #ifdef CONFIG_CPU_ENDIAN_BE8
-@@ -688,7 +684,7 @@ ARM_BE8(rev16	ip, ip)
- 	tst	ip, #0x000f0000	@ check the rotation field
- 	orrne	ip, ip, r6, lsl #24 @ mask in offset bits 31-24
- 	biceq	ip, ip, #0x00004000 @ clear bit 22
--	orreq	ip, ip, r0      @ mask in offset bits 7-0
-+	orreq	ip, ip, r0, ror #8  @ mask in offset bits 7-0
- #else
- 	bic	ip, ip, #0x000000ff
- 	tst	ip, #0xf00	@ check the rotation field
+diff --git a/drivers/scsi/pm8001/pm8001_init.c b/drivers/scsi/pm8001/pm8001_init.c
+index 3374f553c617a..8882ba33ca87c 100644
+--- a/drivers/scsi/pm8001/pm8001_init.c
++++ b/drivers/scsi/pm8001/pm8001_init.c
+@@ -1040,7 +1040,8 @@ static int pm8001_pci_probe(struct pci_dev *pdev,
+ 
+ 	pm8001_init_sas_add(pm8001_ha);
+ 	/* phy setting support for motherboard controller */
+-	if (pm8001_configure_phy_settings(pm8001_ha))
++	rc = pm8001_configure_phy_settings(pm8001_ha);
++	if (rc)
+ 		goto err_out_shost;
+ 
+ 	pm8001_post_sas_ha_init(shost, chip);
 -- 
 2.27.0
 
