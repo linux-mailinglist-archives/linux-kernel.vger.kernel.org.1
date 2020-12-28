@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82EB12E4349
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:36:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D36D12E3774
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:57:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408623AbgL1PfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:35:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55046 "EHLO mail.kernel.org"
+        id S1728600AbgL1Mzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:55:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51624 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407277AbgL1NxN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:53:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 83CBA2072C;
-        Mon, 28 Dec 2020 13:52:31 +0000 (UTC)
+        id S1727744AbgL1Mzl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:55:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 30B5121D94;
+        Mon, 28 Dec 2020 12:55:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163552;
-        bh=+CvkO08wiDcRQXFR4yilABAA2C9YPLcojWICzMjdGdc=;
+        s=korg; t=1609160125;
+        bh=OrwJrGcTg4tAr/X+3gWrpqUITrvwyGyv8UDuheifhIQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eZZX8rtgp2lT7DNBt5A0APBLLRhzwYB0X90Q2ARtXsx+pEgyS2WYrRNLmVyoYXsbV
-         MI/Sxhzm2HH1cGPaPQYRakexz3fWejcNfnedHj5LEEyClcQVC1nm1gnQuBkDhb/Uwo
-         1Q6QRoSge/nHh1E43Zxc9L9cYaFMceH9u86r5CtQ=
+        b=dd2mB9K3IjpxVoL1qNOXDdYkZeUoy0hksJeT64A/msKM1hAeQaDzK4tvVGzWAMwYk
+         +X2LEdPnJxnXUocBMlzYBM6jpNKFvyy1GlM5xj0exMJYTOr8D0DFopW5ibajI+AKSJ
+         GlL5TVpZCOQCgLhkSNQbncsU5x/JLuVNYQG5XXKA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tsuchiya Yuto <kitakar@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.4 325/453] media: ipu3-cio2: Return actual subdev format
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhang Qilong <zhangqilong3@huawei.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 077/132] usb: oxu210hp-hcd: Fix memory leak in oxu_create
 Date:   Mon, 28 Dec 2020 13:49:21 +0100
-Message-Id: <20201228124952.849449166@linuxfoundation.org>
+Message-Id: <20201228124850.158328654@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,62 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-commit 8160e86702e0807bd36d40f82648f9f9820b9d5a upstream.
+[ Upstream commit e5548b05631ec3e6bfdaef1cad28c799545b791b ]
 
-Return actual subdev format on ipu3-cio2 subdev pads. The earlier
-implementation was based on an infinite recursion that exhausted the
-stack.
+usb_create_hcd will alloc memory for hcd, and we should
+call usb_put_hcd to free it when adding fails to prevent
+memory leak.
 
-Reported-by: Tsuchiya Yuto <kitakar@gmail.com>
-Fixes: c2a6a07afe4a ("media: intel-ipu3: cio2: add new MIPI-CSI2 driver")
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Reviewed-by: Bingbu Cao <bingbu.cao@intel.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: stable@vger.kernel.org # v4.16 and up
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: b92a78e582b1a ("usb host: Oxford OXU210HP HCD driver")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Link: https://lore.kernel.org/r/20201123145809.1456541-1-zhangqilong3@huawei.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/pci/intel/ipu3/ipu3-cio2.c |   24 +++---------------------
- 1 file changed, 3 insertions(+), 21 deletions(-)
+ drivers/usb/host/oxu210hp-hcd.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/media/pci/intel/ipu3/ipu3-cio2.c
-+++ b/drivers/media/pci/intel/ipu3/ipu3-cio2.c
-@@ -1244,29 +1244,11 @@ static int cio2_subdev_get_fmt(struct v4
- 			       struct v4l2_subdev_format *fmt)
- {
- 	struct cio2_queue *q = container_of(sd, struct cio2_queue, subdev);
--	struct v4l2_subdev_format format;
--	int ret;
+diff --git a/drivers/usb/host/oxu210hp-hcd.c b/drivers/usb/host/oxu210hp-hcd.c
+index 1f139d82cee08..d1e0d9d4e7a60 100644
+--- a/drivers/usb/host/oxu210hp-hcd.c
++++ b/drivers/usb/host/oxu210hp-hcd.c
+@@ -3741,8 +3741,10 @@ static struct usb_hcd *oxu_create(struct platform_device *pdev,
+ 	oxu->is_otg = otg;
  
--	if (fmt->which == V4L2_SUBDEV_FORMAT_TRY) {
-+	if (fmt->which == V4L2_SUBDEV_FORMAT_TRY)
- 		fmt->format = *v4l2_subdev_get_try_format(sd, cfg, fmt->pad);
--		return 0;
--	}
--
--	if (fmt->pad == CIO2_PAD_SINK) {
--		format.which = V4L2_SUBDEV_FORMAT_ACTIVE;
--		ret = v4l2_subdev_call(sd, pad, get_fmt, NULL,
--				       &format);
--
--		if (ret)
--			return ret;
--		/* update colorspace etc */
--		q->subdev_fmt.colorspace = format.format.colorspace;
--		q->subdev_fmt.ycbcr_enc = format.format.ycbcr_enc;
--		q->subdev_fmt.quantization = format.format.quantization;
--		q->subdev_fmt.xfer_func = format.format.xfer_func;
--	}
--
--	fmt->format = q->subdev_fmt;
-+	else
-+		fmt->format = q->subdev_fmt;
+ 	ret = usb_add_hcd(hcd, irq, IRQF_SHARED);
+-	if (ret < 0)
++	if (ret < 0) {
++		usb_put_hcd(hcd);
+ 		return ERR_PTR(ret);
++	}
  
- 	return 0;
- }
+ 	device_wakeup_enable(hcd->self.controller);
+ 	return hcd;
+-- 
+2.27.0
+
 
 
