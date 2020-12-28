@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E66F02E3B8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:51:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A20AD2E3E21
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:25:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406915AbgL1Nva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:51:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53110 "EHLO mail.kernel.org"
+        id S2503054AbgL1OYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:24:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60340 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406861AbgL1NvZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:51:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A9CC222583;
-        Mon, 28 Dec 2020 13:50:38 +0000 (UTC)
+        id S2502985AbgL1OYS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:24:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A03A620731;
+        Mon, 28 Dec 2020 14:23:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163439;
-        bh=1nDgGknWBmv1BH/g6hqZLjhfPhhRHpLAfYTIg+dyEIc=;
+        s=korg; t=1609165418;
+        bh=vCOB+yZm0TelJQlcxu+qc+WbuvPbgkkebbfpT6S6mas=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VteA+Uj0Z56A1kVI0Jss3FmdY6ZebyvUUsWZMUn+THCFCKxpY64H7Jv6iVZeJmHPV
-         vBQq8XieKTi1wfQOsbBg5sg6GSfjMQKP12hFFq5bRYtMmOWk6heEYrH92peaD9uGSM
-         pvNS5ltQ7v5vcS+ZPhmQlYN13/4dFRTrmbokqd2A=
+        b=Ivxmf7F3ijGkEkvGuRnHbZNCKACK1mYIvaNf5EWe2VagoP8kN2D8S2LevLT7VTAC2
+         RE/EnbieoCMKX7IaubTaX8YVh04ogBf2SiIB0JaK/rA5Lv6A7N8nF3fpxtFwFSnIHS
+         lmWlr7Zhf52PUK4H3Tcmq/9rilfPnW+1htFXvHrA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Vincent=20Stehl=C3=A9?= <vincent.stehle@laposte.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 287/453] powerpc/ps3: use dma_mapping_error()
+        stable@vger.kernel.org, Tsuchiya Yuto <kitakar@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 5.10 525/717] media: ipu3-cio2: Return actual subdev format
 Date:   Mon, 28 Dec 2020 13:48:43 +0100
-Message-Id: <20201228124951.018034145@linuxfoundation.org>
+Message-Id: <20201228125046.115479846@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,38 +43,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vincent Stehlé <vincent.stehle@laposte.net>
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
 
-[ Upstream commit d0edaa28a1f7830997131cbce87b6c52472825d1 ]
+commit 8160e86702e0807bd36d40f82648f9f9820b9d5a upstream.
 
-The DMA address returned by dma_map_single() should be checked with
-dma_mapping_error(). Fix the ps3stor_setup() function accordingly.
+Return actual subdev format on ipu3-cio2 subdev pads. The earlier
+implementation was based on an infinite recursion that exhausted the
+stack.
 
-Fixes: 80071802cb9c ("[POWERPC] PS3: Storage Driver Core")
-Signed-off-by: Vincent Stehlé <vincent.stehle@laposte.net>
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20201213182622.23047-1-vincent.stehle@laposte.net
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: Tsuchiya Yuto <kitakar@gmail.com>
+Fixes: c2a6a07afe4a ("media: intel-ipu3: cio2: add new MIPI-CSI2 driver")
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Reviewed-by: Bingbu Cao <bingbu.cao@intel.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: stable@vger.kernel.org # v4.16 and up
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/ps3/ps3stor_lib.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/pci/intel/ipu3/ipu3-cio2.c |   24 +++---------------------
+ 1 file changed, 3 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/ps3/ps3stor_lib.c b/drivers/ps3/ps3stor_lib.c
-index 333ba83006e48..a12a1ad9b5fe3 100644
---- a/drivers/ps3/ps3stor_lib.c
-+++ b/drivers/ps3/ps3stor_lib.c
-@@ -189,7 +189,7 @@ int ps3stor_setup(struct ps3_storage_device *dev, irq_handler_t handler)
- 	dev->bounce_lpar = ps3_mm_phys_to_lpar(__pa(dev->bounce_buf));
- 	dev->bounce_dma = dma_map_single(&dev->sbd.core, dev->bounce_buf,
- 					 dev->bounce_size, DMA_BIDIRECTIONAL);
--	if (!dev->bounce_dma) {
-+	if (dma_mapping_error(&dev->sbd.core, dev->bounce_dma)) {
- 		dev_err(&dev->sbd.core, "%s:%u: map DMA region failed\n",
- 			__func__, __LINE__);
- 		error = -ENODEV;
--- 
-2.27.0
-
+--- a/drivers/media/pci/intel/ipu3/ipu3-cio2.c
++++ b/drivers/media/pci/intel/ipu3/ipu3-cio2.c
+@@ -1233,29 +1233,11 @@ static int cio2_subdev_get_fmt(struct v4
+ 			       struct v4l2_subdev_format *fmt)
+ {
+ 	struct cio2_queue *q = container_of(sd, struct cio2_queue, subdev);
+-	struct v4l2_subdev_format format;
+-	int ret;
+ 
+-	if (fmt->which == V4L2_SUBDEV_FORMAT_TRY) {
++	if (fmt->which == V4L2_SUBDEV_FORMAT_TRY)
+ 		fmt->format = *v4l2_subdev_get_try_format(sd, cfg, fmt->pad);
+-		return 0;
+-	}
+-
+-	if (fmt->pad == CIO2_PAD_SINK) {
+-		format.which = V4L2_SUBDEV_FORMAT_ACTIVE;
+-		ret = v4l2_subdev_call(sd, pad, get_fmt, NULL,
+-				       &format);
+-
+-		if (ret)
+-			return ret;
+-		/* update colorspace etc */
+-		q->subdev_fmt.colorspace = format.format.colorspace;
+-		q->subdev_fmt.ycbcr_enc = format.format.ycbcr_enc;
+-		q->subdev_fmt.quantization = format.format.quantization;
+-		q->subdev_fmt.xfer_func = format.format.xfer_func;
+-	}
+-
+-	fmt->format = q->subdev_fmt;
++	else
++		fmt->format = q->subdev_fmt;
+ 
+ 	return 0;
+ }
 
 
