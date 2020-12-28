@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 572482E3912
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:19:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 094EE2E37A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:59:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731790AbgL1NSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:18:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46886 "EHLO mail.kernel.org"
+        id S1729217AbgL1M6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:58:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731778AbgL1NSi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:18:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A2DF3206ED;
-        Mon, 28 Dec 2020 13:18:21 +0000 (UTC)
+        id S1728140AbgL1M6h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:58:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 377B2208BA;
+        Mon, 28 Dec 2020 12:58:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161502;
-        bh=5s+ayH5xSO+3HI4I6eAAxZcKK4J4aqp9MoUjWQlXeIE=;
+        s=korg; t=1609160301;
+        bh=U/rmShT16J06mM0R42BKT9PDN+UC8RCxGEEbHBvPTYo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RiUP2C+q6T4XDWCgh7NS5hhNLNkwZbwuVmJ5QbQEmeuGqPkzFwtkFaedJ2H9MjEv/
-         aM0k6VSHrKYXjqnB5+wUqfnO+k9EuWfTuw3I9q3xUocKzh1J1JkROpO/l5Ke7rtzFx
-         2vM+vTk5j+7WNKAaaInGiuNM66YjmvCHZwdEvilU=
+        b=jWgeLIp9x61JO1Gou7m5vwwtt0qIps9fCCwHh4QkSNuOjtTptS6GgLHWtNUAEW3DL
+         rVn6Kienlp3TCwNmEJ2GjQ+gJQXkSBibcTEa263jK0RvVLcaXYyGFxobTtAhs755SM
+         hPVjGkalorv0nf1Il2hRqHtRfnO3RP7Zp3Gopk8A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.14 205/242] USB: serial: keyspan_pda: fix write unthrottling
+        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Peter Meerwald <pmeerw@pmeerw.net>, Stable@vger.kernel.org
+Subject: [PATCH 4.4 126/132] iio:pressure:mpl3115: Force alignment of buffer
 Date:   Mon, 28 Dec 2020 13:50:10 +0100
-Message-Id: <20201228124914.769521607@linuxfoundation.org>
+Message-Id: <20201228124852.501487166@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,104 +42,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-commit 320f9028c7873c3c7710e8e93e5c979f4c857490 upstream.
+commit 198cf32f0503d2ad60d320b95ef6fb8243db857f upstream.
 
-The driver did not update its view of the available device buffer space
-until write() was called in task context. This meant that write_room()
-would return 0 even after the device had sent a write-unthrottle
-notification, something which could lead to blocked writers not being
-woken up (e.g. when using OPOST).
+Whilst this is another case of the issue Lars reported with
+an array of elements of smaller than 8 bytes being passed
+to iio_push_to_buffers_with_timestamp(), the solution here is
+a bit different from the other cases and relies on __aligned
+working on the stack (true since 4.6?)
 
-Note that we must also request an unthrottle notification is case a
-write() request fills the device buffer exactly.
+This one is unusual.  We have to do an explicit memset() each time
+as we are reading 3 bytes into a potential 4 byte channel which
+may sometimes be a 2 byte channel depending on what is enabled.
+As such, moving the buffer to the heap in the iio_priv structure
+doesn't save us much.  We can't use a nice explicit structure
+on the stack either as the data channels have different storage
+sizes and are all separately controlled.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Cc: stable <stable@vger.kernel.org>
-Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Fixes: cc26ad455f57 ("iio: Add Freescale MPL3115A2 pressure / temperature sensor driver")
+Reported-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Reviewed-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc: Peter Meerwald <pmeerw@pmeerw.net>
+Cc: <Stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200920112742.170751-7-jic23@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/serial/keyspan_pda.c |   29 ++++++++++++++++++++---------
- 1 file changed, 20 insertions(+), 9 deletions(-)
+ drivers/iio/pressure/mpl3115.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/serial/keyspan_pda.c
-+++ b/drivers/usb/serial/keyspan_pda.c
-@@ -44,6 +44,8 @@
- #define DRIVER_AUTHOR "Brian Warner <warner@lothar.com>"
- #define DRIVER_DESC "USB Keyspan PDA Converter driver"
+--- a/drivers/iio/pressure/mpl3115.c
++++ b/drivers/iio/pressure/mpl3115.c
+@@ -139,7 +139,14 @@ static irqreturn_t mpl3115_trigger_handl
+ 	struct iio_poll_func *pf = p;
+ 	struct iio_dev *indio_dev = pf->indio_dev;
+ 	struct mpl3115_data *data = iio_priv(indio_dev);
+-	u8 buffer[16]; /* 32-bit channel + 16-bit channel + padding + ts */
++	/*
++	 * 32-bit channel + 16-bit channel + padding + ts
++	 * Note that it is possible for only one of the first 2
++	 * channels to be enabled. If that happens, the first element
++	 * of the buffer may be either 16 or 32-bits.  As such we cannot
++	 * use a simple structure definition to express this data layout.
++	 */
++	u8 buffer[16] __aligned(8);
+ 	int ret, pos = 0;
  
-+#define KEYSPAN_TX_THRESHOLD	16
-+
- struct keyspan_pda_private {
- 	int			tx_room;
- 	int			tx_throttled;
-@@ -114,7 +116,7 @@ static void keyspan_pda_request_unthrott
- 				 7, /* request_unthrottle */
- 				 USB_TYPE_VENDOR | USB_RECIP_INTERFACE
- 				 | USB_DIR_OUT,
--				 16, /* value: threshold */
-+				 KEYSPAN_TX_THRESHOLD,
- 				 0, /* index */
- 				 NULL,
- 				 0,
-@@ -133,6 +135,8 @@ static void keyspan_pda_rx_interrupt(str
- 	int retval;
- 	int status = urb->status;
- 	struct keyspan_pda_private *priv;
-+	unsigned long flags;
-+
- 	priv = usb_get_serial_port_data(port);
- 
- 	switch (status) {
-@@ -175,7 +179,10 @@ static void keyspan_pda_rx_interrupt(str
- 		case 1: /* modemline change */
- 			break;
- 		case 2: /* tx unthrottle interrupt */
-+			spin_lock_irqsave(&port->lock, flags);
- 			priv->tx_throttled = 0;
-+			priv->tx_room = max(priv->tx_room, KEYSPAN_TX_THRESHOLD);
-+			spin_unlock_irqrestore(&port->lock, flags);
- 			/* queue up a wakeup at scheduler time */
- 			usb_serial_port_softint(port);
- 			break;
-@@ -509,7 +516,8 @@ static int keyspan_pda_write(struct tty_
- 			goto exit;
- 		}
- 	}
--	if (count > priv->tx_room) {
-+
-+	if (count >= priv->tx_room) {
- 		/* we're about to completely fill the Tx buffer, so
- 		   we'll be throttled afterwards. */
- 		count = priv->tx_room;
-@@ -564,14 +572,17 @@ static void keyspan_pda_write_bulk_callb
- static int keyspan_pda_write_room(struct tty_struct *tty)
- {
- 	struct usb_serial_port *port = tty->driver_data;
--	struct keyspan_pda_private *priv;
--	priv = usb_get_serial_port_data(port);
--	/* used by n_tty.c for processing of tabs and such. Giving it our
--	   conservative guess is probably good enough, but needs testing by
--	   running a console through the device. */
--	return priv->tx_room;
--}
-+	struct keyspan_pda_private *priv = usb_get_serial_port_data(port);
-+	unsigned long flags;
-+	int room = 0;
-+
-+	spin_lock_irqsave(&port->lock, flags);
-+	if (test_bit(0, &port->write_urbs_free) && !priv->tx_throttled)
-+		room = priv->tx_room;
-+	spin_unlock_irqrestore(&port->lock, flags);
- 
-+	return room;
-+}
- 
- static int keyspan_pda_chars_in_buffer(struct tty_struct *tty)
- {
+ 	mutex_lock(&data->lock);
 
 
