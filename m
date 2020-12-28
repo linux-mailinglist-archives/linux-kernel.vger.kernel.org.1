@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EBD42E3B3B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:49:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 598182E388D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:13:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404215AbgL1Nrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:47:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48108 "EHLO mail.kernel.org"
+        id S1731443AbgL1NKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:10:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405577AbgL1NrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:47:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E9A6520715;
-        Mon, 28 Dec 2020 13:46:59 +0000 (UTC)
+        id S1729679AbgL1NKk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:10:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D42422AAA;
+        Mon, 28 Dec 2020 13:10:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163220;
-        bh=7iq1jFOVbu7dF/nXyYGnkDMfJPURiuAwBZkAmU03LIY=;
+        s=korg; t=1609161024;
+        bh=eIeAnZ6izoxXlyAWa6UdwaNo4l0ahH+vpR/Z9cdwvp4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AHx+Izs8tcj1C9pd9nsffR9A5R3rchpANhrdd3y3DilWHRzDcxRhUGqzAJxRFUcLi
-         PyVaRs0gUgmG9fkZ/ZlOceJXHOXwiwjsWNzUKRsdlzp//CojwKpeeHJJRldKuUh1Ww
-         Zczf3GalahB8KZ3zBHmw7Y1rmCIdyRePp+lp5oH8=
+        b=C2YgrOSOufYyrcNXJOgvfvRQVSmj5YlkdcQsEOQsfpXIkPL7SkcDCv1JgBiScUX79
+         hkY73Z5weoTsk8sJI8DhgmGtBDKrf5m8eusA8igRE8sIRyR7p/4VzDrDARy1sYZsn1
+         5lM2TeaPOnGQ8o57nEe5KViU15BEOjRyKUsBcalU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        stable@vger.kernel.org, Annika Wickert <annika.wickert@exaring.de>,
+        Sven Eckelmann <sven@narfation.org>,
+        Annika Wickert <aw@awlnx.space>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 212/453] clocksource/drivers/orion: Add missing clk_disable_unprepare() on error path
-Date:   Mon, 28 Dec 2020 13:47:28 +0100
-Message-Id: <20201228124947.420945137@linuxfoundation.org>
+Subject: [PATCH 4.14 044/242] vxlan: Add needed_headroom for lower device
+Date:   Mon, 28 Dec 2020 13:47:29 +0100
+Message-Id: <20201228124906.846772470@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,65 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Sven Eckelmann <sven@narfation.org>
 
-[ Upstream commit c1e6cad00aa2f17845e7270e38ff3cc82c7b022a ]
+[ Upstream commit 0a35dc41fea67ac4495ce7584406bf9557a6e7d0 ]
 
-After calling clk_prepare_enable(), clk_disable_unprepare() need
-be called on error path.
+It was observed that sending data via batadv over vxlan (on top of
+wireguard) reduced the performance massively compared to raw ethernet or
+batadv on raw ethernet. A check of perf data showed that the
+vxlan_build_skb was calling all the time pskb_expand_head to allocate
+enough headroom for:
 
-Fixes: fbe4b3566ddc ("clocksource/drivers/orion: Convert init function...")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20201111064706.3397156-1-yangyingliang@huawei.com
+  min_headroom = LL_RESERVED_SPACE(dst->dev) + dst->header_len
+  		+ VXLAN_HLEN + iphdr_len;
+
+But the vxlan_config_apply only requested needed headroom for:
+
+  lowerdev->hard_header_len + VXLAN6_HEADROOM or VXLAN_HEADROOM
+
+So it completely ignored the needed_headroom of the lower device. The first
+caller of net_dev_xmit could therefore never make sure that enough headroom
+was allocated for the rest of the transmit path.
+
+Cc: Annika Wickert <annika.wickert@exaring.de>
+Signed-off-by: Sven Eckelmann <sven@narfation.org>
+Tested-by: Annika Wickert <aw@awlnx.space>
+Link: https://lore.kernel.org/r/20201126125247.1047977-1-sven@narfation.org
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clocksource/timer-orion.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ drivers/net/vxlan.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/clocksource/timer-orion.c b/drivers/clocksource/timer-orion.c
-index 7d487107e3cd8..32b2563e2ad1b 100644
---- a/drivers/clocksource/timer-orion.c
-+++ b/drivers/clocksource/timer-orion.c
-@@ -149,7 +149,8 @@ static int __init orion_timer_init(struct device_node *np)
- 	irq = irq_of_parse_and_map(np, 1);
- 	if (irq <= 0) {
- 		pr_err("%pOFn: unable to parse timer1 irq\n", np);
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto out_unprep_clk;
- 	}
+diff --git a/drivers/net/vxlan.c b/drivers/net/vxlan.c
+index 82efa5bbf568b..c21f28840f05b 100644
+--- a/drivers/net/vxlan.c
++++ b/drivers/net/vxlan.c
+@@ -3184,6 +3184,7 @@ static void vxlan_config_apply(struct net_device *dev,
+ 		dev->gso_max_segs = lowerdev->gso_max_segs;
  
- 	rate = clk_get_rate(clk);
-@@ -166,7 +167,7 @@ static int __init orion_timer_init(struct device_node *np)
- 				    clocksource_mmio_readl_down);
- 	if (ret) {
- 		pr_err("Failed to initialize mmio timer\n");
--		return ret;
-+		goto out_unprep_clk;
- 	}
+ 		needed_headroom = lowerdev->hard_header_len;
++		needed_headroom += lowerdev->needed_headroom;
  
- 	sched_clock_register(orion_read_sched_clock, 32, rate);
-@@ -175,7 +176,7 @@ static int __init orion_timer_init(struct device_node *np)
- 	ret = setup_irq(irq, &orion_clkevt_irq);
- 	if (ret) {
- 		pr_err("%pOFn: unable to setup irq\n", np);
--		return ret;
-+		goto out_unprep_clk;
- 	}
- 
- 	ticks_per_jiffy = (clk_get_rate(clk) + HZ/2) / HZ;
-@@ -188,5 +189,9 @@ static int __init orion_timer_init(struct device_node *np)
- 	orion_delay_timer_init(rate);
- 
- 	return 0;
-+
-+out_unprep_clk:
-+	clk_disable_unprepare(clk);
-+	return ret;
- }
- TIMER_OF_DECLARE(orion_timer, "marvell,orion-timer", orion_timer_init);
+ 		max_mtu = lowerdev->mtu - (use_ipv6 ? VXLAN6_HEADROOM :
+ 					   VXLAN_HEADROOM);
 -- 
 2.27.0
 
