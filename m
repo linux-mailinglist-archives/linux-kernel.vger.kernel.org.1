@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44CD82E3B60
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:49:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88CCF2E3873
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:11:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406120AbgL1NtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:49:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50704 "EHLO mail.kernel.org"
+        id S1731398AbgL1NK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:10:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406079AbgL1NtP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:49:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D0BD5205CB;
-        Mon, 28 Dec 2020 13:48:28 +0000 (UTC)
+        id S1731359AbgL1NKY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:10:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3513E206ED;
+        Mon, 28 Dec 2020 13:10:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163309;
-        bh=Cmb693dGfu5XqjbxWgjFllW0Sh+XN/ynuZvm/MDpHs0=;
+        s=korg; t=1609161008;
+        bh=nj+NmGE7U71wUz78H1Oy3HfJp5mchXSgi7jywc5oPlg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SIVLgtUHBcJtZIpA8dkt0ojeOuFOmXqg/NNN4V9yQc53Jgh2T+tJqv/QJHWVheNMb
-         RW80kjCFxzIO5VCsAA9NMLHiqLTQhaCS6ZVm8F8n1DgZ3+UzTLEZg3+/aoAHSNYg4e
-         4Op1TDMA7ZmDUwy4uN54cFT/lPtK5c3y60eNAmh8=
+        b=2XHUY5x2IPKk1/l0I/l+S23EQlnLmlvWlsDX51fS/YiU4edo1e6Rd6GqWYqo0/ygY
+         rPhp1ynLoczfJj/JubsnVSOAnSgLPPlOhqAz3IgGIGYMYhOsteggzdJvSc7PWAdTFX
+         IhVGqUNBGNlxVuRV8TXM1n5MYdYJja1q0wq8dbvc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jordan Niethe <jniethe5@gmail.com>,
+        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 211/453] powerpc/64: Fix an EMIT_BUG_ENTRY in head_64.S
+Subject: [PATCH 4.14 042/242] kernel/cpu: add arch override for clear_tasks_mm_cpumask() mm handling
 Date:   Mon, 28 Dec 2020 13:47:27 +0100
-Message-Id: <20201228124947.372918904@linuxfoundation.org>
+Message-Id: <20201228124906.744876546@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +42,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jordan Niethe <jniethe5@gmail.com>
+From: Nicholas Piggin <npiggin@gmail.com>
 
-[ Upstream commit fe18a35e685c9bdabc8b11b3e19deb85a068b75d ]
+[ Upstream commit 8ff00399b153440c1c83e20c43020385b416415b ]
 
-Commit 63ce271b5e37 ("powerpc/prom: convert PROM_BUG() to standard
-trap") added an EMIT_BUG_ENTRY for the trap after the branch to
-start_kernel(). The EMIT_BUG_ENTRY was for the address "0b", however the
-trap was not labeled with "0". Hence the address used for bug is in
-relative_toc() where the previous "0" label is. Label the trap as "0" so
-the correct address is used.
+powerpc/64s keeps a counter in the mm which counts bits set in
+mm_cpumask as well as other things. This means it can't use generic code
+to clear bits out of the mask and doesn't adjust the arch specific
+counter.
 
-Fixes: 63ce271b5e37 ("powerpc/prom: convert PROM_BUG() to standard trap")
-Signed-off-by: Jordan Niethe <jniethe5@gmail.com>
+Add an arch override that allows powerpc/64s to use
+clear_tasks_mm_cpumask().
+
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Reviewed-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20201130004404.30953-1-jniethe5@gmail.com
+Link: https://lore.kernel.org/r/20201126102530.691335-4-npiggin@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/head_64.S | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/cpu.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/kernel/head_64.S b/arch/powerpc/kernel/head_64.S
-index d61b3b13a6ec8..9019f1395d39a 100644
---- a/arch/powerpc/kernel/head_64.S
-+++ b/arch/powerpc/kernel/head_64.S
-@@ -992,7 +992,7 @@ start_here_common:
- 	bl	start_kernel
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index d8c77bfb6e7e4..e1d10629022a5 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -772,6 +772,10 @@ void __init cpuhp_threads_init(void)
+ }
  
- 	/* Not reached */
--	trap
-+0:	trap
- 	EMIT_BUG_ENTRY 0b, __FILE__, __LINE__, 0
- 
- /*
+ #ifdef CONFIG_HOTPLUG_CPU
++#ifndef arch_clear_mm_cpumask_cpu
++#define arch_clear_mm_cpumask_cpu(cpu, mm) cpumask_clear_cpu(cpu, mm_cpumask(mm))
++#endif
++
+ /**
+  * clear_tasks_mm_cpumask - Safely clear tasks' mm_cpumask for a CPU
+  * @cpu: a CPU id
+@@ -807,7 +811,7 @@ void clear_tasks_mm_cpumask(int cpu)
+ 		t = find_lock_task_mm(p);
+ 		if (!t)
+ 			continue;
+-		cpumask_clear_cpu(cpu, mm_cpumask(t->mm));
++		arch_clear_mm_cpumask_cpu(cpu, t->mm);
+ 		task_unlock(t);
+ 	}
+ 	rcu_read_unlock();
 -- 
 2.27.0
 
