@@ -2,139 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C2F02E34B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 08:29:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBFEB2E34BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 08:32:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726452AbgL1H25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 02:28:57 -0500
-Received: from smtp.h3c.com ([60.191.123.50]:29530 "EHLO h3cspam02-ex.h3c.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726282AbgL1H25 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 02:28:57 -0500
-Received: from DAG2EX08-IDC.srv.huawei-3com.com ([10.8.0.71])
-        by h3cspam02-ex.h3c.com with ESMTP id 0BS7QSOe066825;
-        Mon, 28 Dec 2020 15:26:28 +0800 (GMT-8)
-        (envelope-from gao.yanB@h3c.com)
-Received: from localhost.localdomain (10.99.212.201) by
- DAG2EX08-IDC.srv.huawei-3com.com (10.8.0.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 28 Dec 2020 15:26:30 +0800
-From:   Gao Yan <gao.yanB@h3c.com>
-To:     <paulus@samba.org>, <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <linux-ppp@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Gao Yan <gao.yanB@h3c.com>
-Subject: [PATCH] net: remove disc_data_lock in ppp line discipline
-Date:   Mon, 28 Dec 2020 15:15:50 +0800
-Message-ID: <20201228071550.15745-1-gao.yanB@h3c.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726511AbgL1HbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 02:31:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53560 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726487AbgL1HbV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 02:31:21 -0500
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3707C061794;
+        Sun, 27 Dec 2020 23:30:40 -0800 (PST)
+Received: by mail-il1-x12b.google.com with SMTP id 75so8699283ilv.13;
+        Sun, 27 Dec 2020 23:30:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to:cc;
+        bh=PLj3xp/tnzBuICb8JY9cCXsEgsM5eWUgcYLIaAX7RK4=;
+        b=QVbKRq2RaQGz9CPlf7Hrb0fvk/wxTvA1WzFiQzNIGE+k/VUe0vIosTnbDqVG1qS63e
+         dLwXX1akd/EbgWwKIWdklDpyK0Cqgw9G+QEm9TPs4risdP2UnF/LTe6imkGYRL4XenP0
+         5jGUFviJD03Hc9IlFr/F3VaBZRxhNQfOgT5f4V6ss6BKkw+n7Nxkb0MJqJni5pMvHmmw
+         4ZhFWMQzzxUz1idUKCHk6tUY+GBQvbWWrBCllIRqlvLc188a2M9C0RHpv+uA3X3fyOjT
+         jt2PJApiBAOXoM2HjnVJJKeD+MMnbBDJsq7PjDJT/gbeDyMkiGpaUoC/aQDjTAoBVlEQ
+         0C9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=PLj3xp/tnzBuICb8JY9cCXsEgsM5eWUgcYLIaAX7RK4=;
+        b=KDj6skOrtDiTfy7/aMpLCfKRAE1+IXFIzvM7ghoSdLL7aLPZC4deVdTMXX2ifvyHCo
+         Zx0b0LHB6A38F7i76JxdH3vreEXbC3emPhFjQ6SgNWXz2iQBUhPzmQvlnRc28h6pYjAh
+         S4egaDlxHIVHFNrMuXLmFT7MyXIhXFvf1WUsQj2FbybDbE8uXg0/HQTFq0kT3OwlXYTe
+         39ycIPjqdayj4bf3JcksDEbDonful2NfyGRvuRiARfU32WU9osB1VZ3aWR3/JO8R9rKE
+         FyjzUxJbKzngLklP5pI/Ke1o8P+dONctkaeY43S0IECVM+DO3m6SUG0RU88s7UbkHe2T
+         65ZQ==
+X-Gm-Message-State: AOAM532n2nBlrUtSZQrbrRY1zo1BfMcg3C+KkvtJSh+Rus4+POEgP9lG
+        pBV2yVq83/nN4Yij2/onkmKb2xWU5i70r1zv46k=
+X-Google-Smtp-Source: ABdhPJxRZgKrgCXLxaIfm3OWx7j0283r+yW7Sl+eD/d00xWM97Ohyv3Q8b5uSTitI12oARar7RF0mxmOC6m7Tl3V6II=
+X-Received: by 2002:a05:6e02:1a6b:: with SMTP id w11mr43930600ilv.112.1609140640035;
+ Sun, 27 Dec 2020 23:30:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.99.212.201]
-X-ClientProxiedBy: BJSMTP02-EX.srv.huawei-3com.com (10.63.20.133) To
- DAG2EX08-IDC.srv.huawei-3com.com (10.8.0.71)
-X-DNSRBL: 
-X-MAIL: h3cspam02-ex.h3c.com 0BS7QSOe066825
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Mon, 28 Dec 2020 08:30:29 +0100
+Message-ID: <CA+icZUUQRKuZzN0ZbaG6vprRWcKPKYVYTryiMFac7q_PRcBvgA@mail.gmail.com>
+Subject: Re: Linux 5.11-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     inux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In tty layer, it use tty->ldisc_sem to proect tty_ldisc_ops.
-So I think tty->ldisc_sem can also protect tty->disc_data;
-For examlpe,
-When cpu A is running ppp_synctty_ioctl that hold the tty->ldisc_sem,
-at the same time  if cpu B calls ppp_synctty_close, it will wait until
-cpu A release tty->ldisc_sem. So I think it is unnecessary to have the
-disc_data_lock;
+[ Please CC me I am not subscribed to LKML and linux-kbuild ML ]
 
-cpu A                           cpu B
-tty_ioctl                       tty_reopen
- ->hold tty->ldisc_sem            ->hold tty->ldisc_sem(write), failed
- ->ld->ops->ioctl                 ->wait...
- ->release tty->ldisc_sem         ->wait...OK,hold tty->ldisc_sem
-                                    ->tty_ldisc_reinit
-                                      ->tty_ldisc_close
-                                        ->ld->ops->close
+Hi Linus, Hi Mashiro,
 
-Signed-off-by: Gao Yan <gao.yanB@h3c.com>
----
- drivers/net/ppp/ppp_async.c   | 11 ++---------
- drivers/net/ppp/ppp_synctty.c | 12 ++----------
- 2 files changed, 4 insertions(+), 19 deletions(-)
+thanks for the Linux v5.11-rc1 release.
 
-diff --git a/drivers/net/ppp/ppp_async.c b/drivers/net/ppp/ppp_async.c
-index 29a0917a8..20b50facd 100644
---- a/drivers/net/ppp/ppp_async.c
-+++ b/drivers/net/ppp/ppp_async.c
-@@ -127,17 +127,13 @@ static const struct ppp_channel_ops async_ops = {
-  * FIXME: this is no longer true. The _close path for the ldisc is
-  * now guaranteed to be sane.
-  */
--static DEFINE_RWLOCK(disc_data_lock);
- 
- static struct asyncppp *ap_get(struct tty_struct *tty)
- {
--	struct asyncppp *ap;
-+	struct asyncppp *ap = tty->disc_data;
- 
--	read_lock(&disc_data_lock);
--	ap = tty->disc_data;
- 	if (ap != NULL)
- 		refcount_inc(&ap->refcnt);
--	read_unlock(&disc_data_lock);
- 	return ap;
- }
- 
-@@ -214,12 +210,9 @@ ppp_asynctty_open(struct tty_struct *tty)
- static void
- ppp_asynctty_close(struct tty_struct *tty)
- {
--	struct asyncppp *ap;
-+	struct asyncppp *ap = tty->disc_data;
- 
--	write_lock_irq(&disc_data_lock);
--	ap = tty->disc_data;
- 	tty->disc_data = NULL;
--	write_unlock_irq(&disc_data_lock);
- 	if (!ap)
- 		return;
- 
-diff --git a/drivers/net/ppp/ppp_synctty.c b/drivers/net/ppp/ppp_synctty.c
-index 0f338752c..53fb68e29 100644
---- a/drivers/net/ppp/ppp_synctty.c
-+++ b/drivers/net/ppp/ppp_synctty.c
-@@ -129,17 +129,12 @@ ppp_print_buffer (const char *name, const __u8 *buf, int count)
-  *
-  * FIXME: Fixed in tty_io nowadays.
-  */
--static DEFINE_RWLOCK(disc_data_lock);
--
- static struct syncppp *sp_get(struct tty_struct *tty)
- {
--	struct syncppp *ap;
-+	struct syncppp *ap = tty->disc_data;
- 
--	read_lock(&disc_data_lock);
--	ap = tty->disc_data;
- 	if (ap != NULL)
- 		refcount_inc(&ap->refcnt);
--	read_unlock(&disc_data_lock);
- 	return ap;
- }
- 
-@@ -213,12 +208,9 @@ ppp_sync_open(struct tty_struct *tty)
- static void
- ppp_sync_close(struct tty_struct *tty)
- {
--	struct syncppp *ap;
-+	struct syncppp *ap = tty->disc_data;
- 
--	write_lock_irq(&disc_data_lock);
--	ap = tty->disc_data;
- 	tty->disc_data = NULL;
--	write_unlock_irq(&disc_data_lock);
- 	if (!ap)
- 		return;
- 
--- 
-2.17.1
+With a new release I always do my first builds with my distro's
+default compiler and linker (GCC v10.2.1 and GNU/ld BFD v2.35.1).
+( It's approx. 40% faster than LLVM toolchain v11.0.1-rc2 here on
+Debian/testing AMD64. )
 
+The only warning I see for the first time (with v5.10.3 not observed):
+
+  sh ./scripts/depmod.sh depmod 5.11.0-rc1-1-amd64-gcc10-bfd
+Warning: 'make modules_install' requires depmod. Please install it.
+This is probably in the kmod package.
+
+The only change I see in this area is:
+
+436e980e2ed5 kbuild: don't hardcode depmod path
+
+depmod from kmod Debian package is placed and I have no /sbin in my
+user's path (and not before?):
+
+$ dpkg -L kmod | grep bin | grep depmod
+/sbin/depmod
+
+$ which depmod
+[ empty ]
+
+$ echo $PATH
+/opt/proxychains-ng/bin:/home/dileks/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
+
+OK, this is a warning, but might confuse other users.
+
+Please, let me know if you need further information and keep me CCed.
+
+Thanks.
+
+Regards,
+- Sedat -
+
+[1] https://git.kernel.org/linus/436e980e2ed526832de822cbf13c317a458b78e1
