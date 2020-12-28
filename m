@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F3682E39E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:30:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C8672E4012
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:48:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390073AbgL1N3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:29:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57666 "EHLO mail.kernel.org"
+        id S2504088AbgL1Orz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:47:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390010AbgL1N2z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:28:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BC4AD22582;
-        Mon, 28 Dec 2020 13:28:14 +0000 (UTC)
+        id S2439199AbgL1OW7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:22:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F64420791;
+        Mon, 28 Dec 2020 14:22:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162095;
-        bh=X6kk+vmnDN51qBg7Y7eRVjGS7L2G8ywbtoWUCD0tlLc=;
+        s=korg; t=1609165364;
+        bh=gALVSn0/g2Kn0q7dE4xmDwxMhZnrnWAVGmZezn35914=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Negnh7ceerwd7jjoUHfYxH9kOPjWSXGDU8UowFSNIfwMfTpIM2r4TKIHG9wxhlhbr
-         GUa3MUZCgvsJHcmAsebepCU9blbDNJNhSkbn/aHyhWtqmz/Wnq8f1s7J8aP3qJIl51
-         MvGlBjNO9+eCD7jM7uDkXIT2Lo8Fe7AEz9SWE6+g=
+        b=QS6QJqqsPsaYYaK9LFS4+M2wi9DvS7SlsL7r9JXtw1if8wAqcXoxDSEZ5HHj3z7mn
+         TzanqCocR9lpI/YkNYXX8NJpErAAYNjpfZ5Hre2UOmzUA4cEQKHsViQf+1edlC246+
+         /mNub7mAB/NCA07/jAroorGSn4JLGI/gRfuc/9gw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 156/346] soc: ti: knav_qmss: fix reference leak in knav_queue_probe
+Subject: [PATCH 5.10 477/717] watchdog: coh901327: add COMMON_CLK dependency
 Date:   Mon, 28 Dec 2020 13:47:55 +0100
-Message-Id: <20201228124927.327854287@linuxfoundation.org>
+Message-Id: <20201228125043.819226318@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit ec8684847d8062496c4619bc3fcff31c19d56847 ]
+[ Upstream commit 36c47df85ee8e1f8a35366ac11324f8875de00eb ]
 
-pm_runtime_get_sync will increment pm usage counter even it
-failed. Forgetting to pm_runtime_put_noidle will result in
-reference leak in knav_queue_probe, so we should fix it.
+clang produces a build failure in configurations without COMMON_CLK
+when a timeout calculation goes wrong:
 
-Fixes: 41f93af900a20 ("soc: ti: add Keystone Navigator QMSS driver")
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Signed-off-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
+arm-linux-gnueabi-ld: drivers/watchdog/coh901327_wdt.o: in function `coh901327_enable':
+coh901327_wdt.c:(.text+0x50): undefined reference to `__bad_udelay'
+
+Add a Kconfig dependency to only do build testing when COMMON_CLK
+is enabled.
+
+Fixes: da2a68b3eb47 ("watchdog: Enable COMPILE_TEST where possible")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/20201203223358.1269372-1-arnd@kernel.org
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soc/ti/knav_qmss_queue.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/watchdog/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/soc/ti/knav_qmss_queue.c b/drivers/soc/ti/knav_qmss_queue.c
-index ef36acc0e7088..ffd7046caa2ca 100644
---- a/drivers/soc/ti/knav_qmss_queue.c
-+++ b/drivers/soc/ti/knav_qmss_queue.c
-@@ -1799,6 +1799,7 @@ static int knav_queue_probe(struct platform_device *pdev)
- 	pm_runtime_enable(&pdev->dev);
- 	ret = pm_runtime_get_sync(&pdev->dev);
- 	if (ret < 0) {
-+		pm_runtime_put_noidle(&pdev->dev);
- 		dev_err(dev, "Failed to enable QMSS\n");
- 		return ret;
- 	}
+diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+index f8e9be65036ae..db935d6b10c27 100644
+--- a/drivers/watchdog/Kconfig
++++ b/drivers/watchdog/Kconfig
+@@ -632,7 +632,7 @@ config SUNXI_WATCHDOG
+ 
+ config COH901327_WATCHDOG
+ 	bool "ST-Ericsson COH 901 327 watchdog"
+-	depends on ARCH_U300 || (ARM && COMPILE_TEST)
++	depends on ARCH_U300 || (ARM && COMMON_CLK && COMPILE_TEST)
+ 	default y if MACH_U300
+ 	select WATCHDOG_CORE
+ 	help
 -- 
 2.27.0
 
