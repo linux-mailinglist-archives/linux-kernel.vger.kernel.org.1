@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EEDB2E3A40
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:34:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2172E3792
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:59:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388169AbgL1NeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:34:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33846 "EHLO mail.kernel.org"
+        id S1728965AbgL1M53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:57:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387873AbgL1NdQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:33:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A2AF22B37;
-        Mon, 28 Dec 2020 13:32:35 +0000 (UTC)
+        id S1728936AbgL1M5W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:57:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F18A224D2;
+        Mon, 28 Dec 2020 12:57:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162355;
-        bh=pP6rfZ2cRS7erT09Cn5WdaZPaA+bjtQ2YiwKJe5hmwA=;
+        s=korg; t=1609160226;
+        bh=xoS1gGlZGtbQ9H4f3limOVfEYztFpbPBEeiB41h2g8A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LjYPDuqx//97okoaMrQsCVmgd23Rz9I5MGb0laJDeZdZCG/BN0gIWN2kWcOmSds/m
-         5TcZFShKs9wD/OSve/HVGjrLCGKkgjMWdMey2M4O+eHkUaLqoPgENv8VXXnHsVlfkJ
-         xWQ/aC9GrLHIRYOrNjKwwOZSSGA2Xy8VJbZGgyYA=
+        b=GNm7xSUasCDzUxzzqG9Wn0Q36IN2TzACTOhkoWSKuqsq5GXaYiEQ12TYfuwnSBfIq
+         FPHjCzef6mEjACd4dOgIQkKVBCr1jMeN25xGKPO6DyYmXLV6NlU+HyC6ZgJRN7iB56
+         z++wcBm9l2AXcrxV4b30SAWBcCRWfG8S+HqhvMiw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Chiu <chiu@endlessos.org>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.19 276/346] ALSA: hda/realtek: Apply jack fixup for Quanta NL3
+        stable@vger.kernel.org,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.4 111/132] USB: serial: keyspan_pda: fix stalled writes
 Date:   Mon, 28 Dec 2020 13:49:55 +0100
-Message-Id: <20201228124933.119265591@linuxfoundation.org>
+Message-Id: <20201228124851.783454636@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,40 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Chiu <chiu@endlessos.org>
+From: Johan Hovold <johan@kernel.org>
 
-commit 6ca653e3f73a1af0f30dbf9c2c79d2897074989f upstream.
+commit c01d2c58698f710c9e13ba3e2d296328606f74fd upstream.
 
-The Quanta NL3 laptop has both a headphone output jack and a headset
-jack, on the right edge of the chassis.
+Make sure to clear the write-busy flag also in case no new data was
+submitted due to lack of device buffer space so that writing is
+resumed once space again becomes available.
 
-The pin information suggests that both of these are at the Front.
-The PulseAudio is confused to differentiate them so one of the jack
-can neither get the jack sense working nor the audio output.
-
-The ALC269_FIXUP_LIFEBOOK chained with ALC269_FIXUP_QUANTA_MUTE can
-help to differentiate 2 jacks and get the 'Auto-Mute Mode' working
-correctly.
-
-Signed-off-by: Chris Chiu <chiu@endlessos.org>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201222150459.9545-1-chiu@endlessos.org
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: 507ca9bc0476 ("[PATCH] USB: add ability for usb-serial drivers to determine if their write urb is currently being used.")
+Cc: stable <stable@vger.kernel.org>     # 2.6.13
+Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/patch_realtek.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/serial/keyspan_pda.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -7129,6 +7129,7 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x1458, 0xfa53, "Gigabyte BXBT-2807", ALC283_FIXUP_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1462, 0xb120, "MSI Cubi MS-B120", ALC283_FIXUP_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1462, 0xb171, "Cubi N 8GL (MS-B171)", ALC283_FIXUP_HEADSET_MIC),
-+	SND_PCI_QUIRK(0x152d, 0x1082, "Quanta NL3", ALC269_FIXUP_LIFEBOOK),
- 	SND_PCI_QUIRK(0x1558, 0x1323, "Clevo N130ZU", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x1325, "System76 Darter Pro (darp5)", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1558, 0x1401, "Clevo L140[CZ]U", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+--- a/drivers/usb/serial/keyspan_pda.c
++++ b/drivers/usb/serial/keyspan_pda.c
+@@ -552,7 +552,7 @@ static int keyspan_pda_write(struct tty_
+ 
+ 	rc = count;
+ exit:
+-	if (rc < 0)
++	if (rc <= 0)
+ 		set_bit(0, &port->write_urbs_free);
+ 	return rc;
+ }
 
 
