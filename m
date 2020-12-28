@@ -2,29 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1F3F2E3B7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:51:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EC622E3B85
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:51:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406402AbgL1Nuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:50:46 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:10001 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406372AbgL1Num (ORCPT
+        id S2406465AbgL1Nu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:50:58 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9694 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404961AbgL1Nuz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:50:42 -0500
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4D4Jn13SDXzj0MV;
+        Mon, 28 Dec 2020 08:50:55 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4D4Jn16RWXzkxTC;
         Mon, 28 Dec 2020 21:49:09 +0800 (CST)
 Received: from ubuntu.network (10.175.138.68) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 28 Dec 2020 21:49:49 +0800
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 28 Dec 2020 21:49:59 +0800
 From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <rafael.j.wysocki@intel.com>, <linux-acpi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] pnp: pnpbios: Use DEFINE_SPINLOCK() for spinlock
-Date:   Mon, 28 Dec 2020 21:50:26 +0800
-Message-ID: <20201228135026.28343-1-zhengyongjun3@huawei.com>
+To:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <bhelgaas@google.com>, Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH -next] pci: hotplug: Use DEFINE_SPINLOCK() for spinlock
+Date:   Mon, 28 Dec 2020 21:50:38 +0800
+Message-ID: <20201228135038.28401-1-zhengyongjun3@huawei.com>
 X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -40,29 +39,31 @@ rather than explicitly calling spin_lock_init().
 
 Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- drivers/pnp/pnpbios/bioscalls.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/pci/hotplug/cpqphp_nvram.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/pnp/pnpbios/bioscalls.c b/drivers/pnp/pnpbios/bioscalls.c
-index ba5cfc3dbe11..ddc6f2163c8e 100644
---- a/drivers/pnp/pnpbios/bioscalls.c
-+++ b/drivers/pnp/pnpbios/bioscalls.c
-@@ -72,7 +72,7 @@ __visible u32 pnp_bios_fault_esp;
- __visible u32 pnp_bios_fault_eip;
- __visible u32 pnp_bios_is_utter_crap = 0;
+diff --git a/drivers/pci/hotplug/cpqphp_nvram.c b/drivers/pci/hotplug/cpqphp_nvram.c
+index 00cd2b43364f..7a65d427ac11 100644
+--- a/drivers/pci/hotplug/cpqphp_nvram.c
++++ b/drivers/pci/hotplug/cpqphp_nvram.c
+@@ -80,7 +80,7 @@ static u8 evbuffer[1024];
+ static void __iomem *compaq_int15_entry_point;
  
--static spinlock_t pnp_bios_lock;
-+static DEFINE_SPINLOCK(pnp_bios_lock);
+ /* lock for ordering int15_bios_call() */
+-static spinlock_t int15_lock;
++static DEFINE_SPINLOCK(int15_lock);
  
- /*
-  * Support Functions
-@@ -473,7 +473,6 @@ void pnpbios_calls_init(union pnp_bios_install_struct *header)
- {
- 	int i;
  
--	spin_lock_init(&pnp_bios_lock);
- 	pnp_bios_callpoint.offset = header->fields.pm16offset;
- 	pnp_bios_callpoint.segment = PNP_CS16;
+ /* This is a series of function that deals with
+@@ -415,9 +415,6 @@ void compaq_nvram_init(void __iomem *rom_start)
+ 		compaq_int15_entry_point = (rom_start + ROM_INT15_PHY_ADDR - ROM_PHY_ADDR);
+ 
+ 	dbg("int15 entry  = %p\n", compaq_int15_entry_point);
+-
+-	/* initialize our int15 lock */
+-	spin_lock_init(&int15_lock);
+ }
+ 
  
 -- 
 2.22.0
