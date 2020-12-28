@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72DD02E3806
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:04:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 203842E3BA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:53:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730405AbgL1NER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:04:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60070 "EHLO mail.kernel.org"
+        id S2391547AbgL1Nwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:52:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730306AbgL1NDx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:03:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D277421D94;
-        Mon, 28 Dec 2020 13:03:12 +0000 (UTC)
+        id S2407124AbgL1Nwd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:52:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1606621D94;
+        Mon, 28 Dec 2020 13:52:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160593;
-        bh=Q8Jma1sP/c+EfQWsNXNfmNNGb0Xk9HnEbDSWPklweC8=;
+        s=korg; t=1609163537;
+        bh=TBN0Rupb7x2AMhVcEwary34ZDTbkcSxfptAImk294So=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l4Mrqj8zIxLLRMjCCEJDNEGIgU/fJ/3PphKHFFxv+oh71LccZeJUqcb/JJgIMAllo
-         r0MCcEssk52GsFvo6jsOcHChm5im32qJ6a09F0Jm37fP3TyXCMxmlEEMrlS80uzBjG
-         GiXHE292WjmsnpYQejYmvJRdSY0li68eZzzcZsg8=
+        b=oDaVdzx0nSA+tNALvu1bLAgEj+iuwH+hst7zHh1FZiDZ0CDIn/iMlIzf/MLa9/P30
+         0j+prbSGp0mrfYl5ll57EOG42gRq2gss6rir+FxbF1CYjNVXNnYKsrBznZlcjM1CD+
+         tdrNubHA2IIk8caalPUo2nUt3/Js1BgT+eJUGVnI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Karan Tilak Kumar <kartilak@cisco.com>,
-        Zhang Changzhong <zhangchangzhong@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 104/175] scsi: fnic: Fix error return code in fnic_probe()
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        syzbot+44e64397bd81d5e84cba@syzkaller.appspotmail.com
+Subject: [PATCH 5.4 321/453] media: gspca: Fix memory leak in probe
 Date:   Mon, 28 Dec 2020 13:49:17 +0100
-Message-Id: <20201228124858.290905049@linuxfoundation.org>
+Message-Id: <20201228124952.653068350@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,38 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Changzhong <zhangchangzhong@huawei.com>
+From: Alan Stern <stern@rowland.harvard.edu>
 
-[ Upstream commit d4fc94fe65578738ded138e9fce043db6bfc3241 ]
+commit e469d0b09a19496e1972a20974bbf55b728151eb upstream.
 
-Return a negative error code from the error handling case instead of 0 as
-done elsewhere in this function.
+The gspca driver leaks memory when a probe fails.  gspca_dev_probe2()
+calls v4l2_device_register(), which takes a reference to the
+underlying device node (in this case, a USB interface).  But the
+failure pathway neglects to call v4l2_device_unregister(), the routine
+responsible for dropping this reference.  Consequently the memory for
+the USB interface and its device never gets released.
 
-Link: https://lore.kernel.org/r/1607068060-31203-1-git-send-email-zhangchangzhong@huawei.com
-Fixes: 5df6d737dd4b ("[SCSI] fnic: Add new Cisco PCI-Express FCoE HBA")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Reviewed-by: Karan Tilak Kumar <kartilak@cisco.com>
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This patch adds the missing function call.
+
+Reported-and-tested-by: syzbot+44e64397bd81d5e84cba@syzkaller.appspotmail.com
+
+Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
+CC: <stable@vger.kernel.org>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/scsi/fnic/fnic_main.c | 1 +
+ drivers/media/usb/gspca/gspca.c |    1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/scsi/fnic/fnic_main.c b/drivers/scsi/fnic/fnic_main.c
-index 58ce9020d69c5..389c13e1c9788 100644
---- a/drivers/scsi/fnic/fnic_main.c
-+++ b/drivers/scsi/fnic/fnic_main.c
-@@ -735,6 +735,7 @@ static int fnic_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	for (i = 0; i < FNIC_IO_LOCKS; i++)
- 		spin_lock_init(&fnic->io_req_lock[i]);
- 
-+	err = -ENOMEM;
- 	fnic->io_req_pool = mempool_create_slab_pool(2, fnic_io_req_cache);
- 	if (!fnic->io_req_pool)
- 		goto err_out_free_resources;
--- 
-2.27.0
-
+--- a/drivers/media/usb/gspca/gspca.c
++++ b/drivers/media/usb/gspca/gspca.c
+@@ -1575,6 +1575,7 @@ out:
+ 		input_unregister_device(gspca_dev->input_dev);
+ #endif
+ 	v4l2_ctrl_handler_free(gspca_dev->vdev.ctrl_handler);
++	v4l2_device_unregister(&gspca_dev->v4l2_dev);
+ 	kfree(gspca_dev->usb_buf);
+ 	kfree(gspca_dev);
+ 	return ret;
 
 
