@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08F8F2E42D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:29:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66C652E3A5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:36:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392724AbgL1P2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:28:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58378 "EHLO mail.kernel.org"
+        id S2390489AbgL1Nfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:35:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35692 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406793AbgL1N5B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:57:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BBD222072C;
-        Mon, 28 Dec 2020 13:56:45 +0000 (UTC)
+        id S2389434AbgL1Nfr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:35:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DB4820719;
+        Mon, 28 Dec 2020 13:35:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163806;
-        bh=1BSslsqxMy717FWz4yCJakZK4RQeXyjOWZHJDGse5vE=;
+        s=korg; t=1609162532;
+        bh=2mHN5tE8jCHCqxGUnH47ge8cRXer73I2uY6Qh9H0+8U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0u/w2yK8MpDLJfvMAMj8FAc1yAIcibBBNH7xcYynP9oQeXsU+IBxKz8dVOHH2vD4C
-         4jL3HmUwlEzS+ZoyuyC1cMhH0zMJQawe5nNB9Ee/lS2zQWsvEfPfLR+MohATKAMrFP
-         OBQ1GWHq7sBsooOvuO3CIVPXZRNpmztJjrBULfrg=
+        b=cF0I+Szb+eXtYAs9wPYQCFruSwH5tbZmQi9qyv6sPeXB/KX5q3YK0gzF3K+29RptB
+         FZ6SYsugjRcUBLTaKkJ1/+Ur7cToHIRUIEzWSeO9TS5zJyFXx+1KVQRtnOK0ljMIou
+         FT/OSWMjGiRiNOVEnzOlwVtnLC2AfW6xVNXetbh0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Stefan Roese <sr@denx.de>, Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.4 414/453] spi: mt7621: Dont leak SPI master in probe error path
-Date:   Mon, 28 Dec 2020 13:50:50 +0100
-Message-Id: <20201228124957.138636229@linuxfoundation.org>
+        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Peter Meerwald <pmeerw@pmeerw.net>, Stable@vger.kernel.org
+Subject: [PATCH 4.19 332/346] iio:pressure:mpl3115: Force alignment of buffer
+Date:   Mon, 28 Dec 2020 13:50:51 +0100
+Message-Id: <20201228124935.823925345@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,64 +42,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-commit 46b5c4fb87ce8211e0f9b0383dbde72c3652d2ba upstream.
+commit 198cf32f0503d2ad60d320b95ef6fb8243db857f upstream.
 
-If the calls to device_reset() or devm_spi_register_controller() fail on
-probe of the MediaTek MT7621 SPI driver, the spi_controller struct is
-erroneously not freed.  Fix by switching over to the new
-devm_spi_alloc_master() helper.
+Whilst this is another case of the issue Lars reported with
+an array of elements of smaller than 8 bytes being passed
+to iio_push_to_buffers_with_timestamp(), the solution here is
+a bit different from the other cases and relies on __aligned
+working on the stack (true since 4.6?)
 
-Additionally, there's an ordering issue in mt7621_spi_remove() wherein
-the spi_controller is unregistered after disabling the SYS clock.
-The correct order is to call spi_unregister_controller() *before* this
-teardown step because bus accesses may still be ongoing until that
-function returns.
+This one is unusual.  We have to do an explicit memset() each time
+as we are reading 3 bytes into a potential 4 byte channel which
+may sometimes be a 2 byte channel depending on what is enabled.
+As such, moving the buffer to the heap in the iio_priv structure
+doesn't save us much.  We can't use a nice explicit structure
+on the stack either as the data channels have different storage
+sizes and are all separately controlled.
 
-All of these bugs have existed since the driver was first introduced,
-so it seems fair to fix them together in a single commit.
-
-Fixes: 1ab7f2a43558 ("staging: mt7621-spi: add mt7621 support")
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Reviewed-by: Stefan Roese <sr@denx.de>
-Cc: <stable@vger.kernel.org> # v4.17+: 5e844cc37a5c: spi: Introduce device-managed SPI controller allocation
-Cc: <stable@vger.kernel.org> # v4.17+
-Link: https://lore.kernel.org/r/72b680796149f5fcda0b3f530ffb7ee73b04f224.1607286887.git.lukas@wunner.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: cc26ad455f57 ("iio: Add Freescale MPL3115A2 pressure / temperature sensor driver")
+Reported-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Reviewed-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc: Peter Meerwald <pmeerw@pmeerw.net>
+Cc: <Stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200920112742.170751-7-jic23@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/spi/spi-mt7621.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/iio/pressure/mpl3115.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/drivers/spi/spi-mt7621.c
-+++ b/drivers/spi/spi-mt7621.c
-@@ -350,7 +350,7 @@ static int mt7621_spi_probe(struct platf
- 	if (status)
- 		return status;
+--- a/drivers/iio/pressure/mpl3115.c
++++ b/drivers/iio/pressure/mpl3115.c
+@@ -147,7 +147,14 @@ static irqreturn_t mpl3115_trigger_handl
+ 	struct iio_poll_func *pf = p;
+ 	struct iio_dev *indio_dev = pf->indio_dev;
+ 	struct mpl3115_data *data = iio_priv(indio_dev);
+-	u8 buffer[16]; /* 32-bit channel + 16-bit channel + padding + ts */
++	/*
++	 * 32-bit channel + 16-bit channel + padding + ts
++	 * Note that it is possible for only one of the first 2
++	 * channels to be enabled. If that happens, the first element
++	 * of the buffer may be either 16 or 32-bits.  As such we cannot
++	 * use a simple structure definition to express this data layout.
++	 */
++	u8 buffer[16] __aligned(8);
+ 	int ret, pos = 0;
  
--	master = spi_alloc_master(&pdev->dev, sizeof(*rs));
-+	master = devm_spi_alloc_master(&pdev->dev, sizeof(*rs));
- 	if (!master) {
- 		dev_info(&pdev->dev, "master allocation failed\n");
- 		clk_disable_unprepare(clk);
-@@ -382,7 +382,7 @@ static int mt7621_spi_probe(struct platf
- 		return ret;
- 	}
- 
--	ret = devm_spi_register_controller(&pdev->dev, master);
-+	ret = spi_register_controller(master);
- 	if (ret)
- 		clk_disable_unprepare(clk);
- 
-@@ -397,6 +397,7 @@ static int mt7621_spi_remove(struct plat
- 	master = dev_get_drvdata(&pdev->dev);
- 	rs = spi_controller_get_devdata(master);
- 
-+	spi_unregister_controller(master);
- 	clk_disable_unprepare(rs->clk);
- 
- 	return 0;
+ 	mutex_lock(&data->lock);
 
 
