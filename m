@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A17542E4011
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:48:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26E7E2E3B64
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:49:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502833AbgL1Orr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:47:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57978 "EHLO mail.kernel.org"
+        id S2406163AbgL1Nta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:49:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502790AbgL1OX2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:23:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B19D229C4;
-        Mon, 28 Dec 2020 14:23:12 +0000 (UTC)
+        id S2406145AbgL1Nt2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:49:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95C3522AAA;
+        Mon, 28 Dec 2020 13:49:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165392;
-        bh=ZnULBoh5qmZPHWWE9q2VxdVQt5TjHmDwwe8aLxDIELM=;
+        s=korg; t=1609163347;
+        bh=8pJj5VylEn82M58d1HQMYAlDgzFxklt3jqoqtZ53e0w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r9lXR4tSbg4TMa3eIb7q8mcEsvrMdtwz6YfI+RQzYPu2Geo4difDveOWAqFLMF3YR
-         ZfyySzHW9O6ZmNVeYp4xg9EKl+i/aPP+n+CfxZV8de7c8Z3AL1it8RP27fPlKEYi0Y
-         o2iRLQejTUL6/ABF4cmNUHqiMzCfeAkuktSUwltk=
+        b=aOexo/6gpxUyTEYEuh39vQT5Yxb4ytOGdkj03rtlWjkP4okJ/3xIpphYv5k0L439J
+         IHjoJZmveR5RQzAiOFw5kex/XxYFdTqwR3HxD+pW5diALfEFJQy4fEg3LnnS8gjZrO
+         kZacsovJxGW0WmqB9/Xsdqv5wMLc+QhiX7WRdtN4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
-        Dan Williams <dan.j.williams@intel.com>,
+        stable@vger.kernel.org,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Stefan Agner <stefan@agner.ch>,
+        Kevin Hilman <khilman@baylibre.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 474/717] libnvdimm/label: Return -ENXIO for no slot in __blk_label_update
-Date:   Mon, 28 Dec 2020 13:47:52 +0100
-Message-Id: <20201228125043.675191244@linuxfoundation.org>
+Subject: [PATCH 5.4 237/453] arm64: dts: meson: fix PHY deassert timing requirements
+Date:   Mon, 28 Dec 2020 13:47:53 +0100
+Message-Id: <20201228124948.622635107@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +42,155 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Stefan Agner <stefan@agner.ch>
 
-[ Upstream commit 4c46764733c85b82c07e9559b39da4d00a7dd659 ]
+[ Upstream commit c183c406c4321002fe85b345b51bc1a3a04b6d33 ]
 
-Forget to set error code when nd_label_alloc_slot failed, and we
-add it to avoid overwritten error code.
+According to the datasheet (Rev. 1.9) the RTL8211F requires at least
+72ms "for internal circuits settling time" before accessing the PHY
+registers. This fixes an issue seen on ODROID-C2 where the Ethernet
+link doesn't come up when using ip link set down/up:
+  [ 6630.714855] meson8b-dwmac c9410000.ethernet eth0: Link is Down
+  [ 6630.785775] meson8b-dwmac c9410000.ethernet eth0: PHY [stmmac-0:00] driver [RTL8211F Gigabit Ethernet] (irq=36)
+  [ 6630.893071] meson8b-dwmac c9410000.ethernet: Failed to reset the dma
+  [ 6630.893800] meson8b-dwmac c9410000.ethernet eth0: stmmac_hw_setup: DMA engine initialization failed
+  [ 6630.902835] meson8b-dwmac c9410000.ethernet eth0: stmmac_open: Hw setup failed
 
-Fixes: 0ba1c634892b ("libnvdimm: write blk label set")
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201205115056.2076523-1-zhangqilong3@huawei.com
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+Fixes: f29cabf240ed ("arm64: dts: meson: use the generic Ethernet PHY reset GPIO bindings")
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+Signed-off-by: Kevin Hilman <khilman@baylibre.com>
+Link: https://lore.kernel.org/r/4a322c198b86e4c8b3dda015560a683babea4d63.1607363522.git.stefan@agner.ch
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvdimm/label.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/amlogic/meson-gxbb-nanopi-k2.dts  | 2 +-
+ arch/arm64/boot/dts/amlogic/meson-gxbb-odroidc2.dts   | 2 +-
+ arch/arm64/boot/dts/amlogic/meson-gxbb-vega-s95.dtsi  | 2 +-
+ arch/arm64/boot/dts/amlogic/meson-gxbb-wetek.dtsi     | 2 +-
+ arch/arm64/boot/dts/amlogic/meson-gxl-s905d-p230.dts  | 2 +-
+ arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts | 2 +-
+ arch/arm64/boot/dts/amlogic/meson-gxm-nexbox-a1.dts   | 2 +-
+ arch/arm64/boot/dts/amlogic/meson-gxm-q200.dts        | 2 +-
+ arch/arm64/boot/dts/amlogic/meson-gxm-rbox-pro.dts    | 2 +-
+ 9 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/nvdimm/label.c b/drivers/nvdimm/label.c
-index 47a4828b8b310..05c1f186a6be8 100644
---- a/drivers/nvdimm/label.c
-+++ b/drivers/nvdimm/label.c
-@@ -999,8 +999,10 @@ static int __blk_label_update(struct nd_region *nd_region,
- 		if (is_old_resource(res, old_res_list, old_num_resources))
- 			continue; /* carry-over */
- 		slot = nd_label_alloc_slot(ndd);
--		if (slot == UINT_MAX)
-+		if (slot == UINT_MAX) {
-+			rc = -ENXIO;
- 			goto abort;
-+		}
- 		dev_dbg(ndd->dev, "allocated: %d\n", slot);
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxbb-nanopi-k2.dts b/arch/arm64/boot/dts/amlogic/meson-gxbb-nanopi-k2.dts
+index 233eb1cd79671..d94b695916a35 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxbb-nanopi-k2.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxbb-nanopi-k2.dts
+@@ -165,7 +165,7 @@
+ 			reg = <0>;
  
- 		nd_label = to_label(ndd, slot);
+ 			reset-assert-us = <10000>;
+-			reset-deassert-us = <30000>;
++			reset-deassert-us = <80000>;
+ 			reset-gpios = <&gpio GPIOZ_14 GPIO_ACTIVE_LOW>;
+ 
+ 			interrupt-parent = <&gpio_intc>;
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxbb-odroidc2.dts b/arch/arm64/boot/dts/amlogic/meson-gxbb-odroidc2.dts
+index b0b12e3898350..8828acb3fd4c5 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxbb-odroidc2.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxbb-odroidc2.dts
+@@ -138,7 +138,7 @@
+ 			reg = <0>;
+ 
+ 			reset-assert-us = <10000>;
+-			reset-deassert-us = <30000>;
++			reset-deassert-us = <80000>;
+ 			reset-gpios = <&gpio GPIOZ_14 GPIO_ACTIVE_LOW>;
+ 
+ 			interrupt-parent = <&gpio_intc>;
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxbb-vega-s95.dtsi b/arch/arm64/boot/dts/amlogic/meson-gxbb-vega-s95.dtsi
+index 43b11e3dfe119..29976215e1446 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxbb-vega-s95.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-gxbb-vega-s95.dtsi
+@@ -126,7 +126,7 @@
+ 			reg = <0>;
+ 
+ 			reset-assert-us = <10000>;
+-			reset-deassert-us = <30000>;
++			reset-deassert-us = <80000>;
+ 			reset-gpios = <&gpio GPIOZ_14 GPIO_ACTIVE_LOW>;
+ 
+ 			interrupt-parent = <&gpio_intc>;
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxbb-wetek.dtsi b/arch/arm64/boot/dts/amlogic/meson-gxbb-wetek.dtsi
+index 4c539881fbb73..e3d17569d98ad 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxbb-wetek.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-gxbb-wetek.dtsi
+@@ -147,7 +147,7 @@
+ 			reg = <0>;
+ 
+ 			reset-assert-us = <10000>;
+-			reset-deassert-us = <30000>;
++			reset-deassert-us = <80000>;
+ 			reset-gpios = <&gpio GPIOZ_14 GPIO_ACTIVE_LOW>;
+ 		};
+ 	};
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl-s905d-p230.dts b/arch/arm64/boot/dts/amlogic/meson-gxl-s905d-p230.dts
+index b08c4537f260d..b2ab05c220903 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxl-s905d-p230.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxl-s905d-p230.dts
+@@ -82,7 +82,7 @@
+ 
+ 		/* External PHY reset is shared with internal PHY Led signal */
+ 		reset-assert-us = <10000>;
+-		reset-deassert-us = <30000>;
++		reset-deassert-us = <80000>;
+ 		reset-gpios = <&gpio GPIOZ_14 GPIO_ACTIVE_LOW>;
+ 
+ 		interrupt-parent = <&gpio_intc>;
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+index fa8bd0690e89a..c8a4205117f15 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+@@ -251,7 +251,7 @@
+ 		reg = <0>;
+ 
+ 		reset-assert-us = <10000>;
+-		reset-deassert-us = <30000>;
++		reset-deassert-us = <80000>;
+ 		reset-gpios = <&gpio GPIOZ_14 GPIO_ACTIVE_LOW>;
+ 
+ 		interrupt-parent = <&gpio_intc>;
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-nexbox-a1.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-nexbox-a1.dts
+index c2bd4dbbf38c5..8dccf91d68da7 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxm-nexbox-a1.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxm-nexbox-a1.dts
+@@ -112,7 +112,7 @@
+ 		max-speed = <1000>;
+ 
+ 		reset-assert-us = <10000>;
+-		reset-deassert-us = <30000>;
++		reset-deassert-us = <80000>;
+ 		reset-gpios = <&gpio GPIOZ_14 GPIO_ACTIVE_LOW>;
+ 	};
+ };
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-q200.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-q200.dts
+index ea45ae0c71b7f..8edbfe040805c 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxm-q200.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxm-q200.dts
+@@ -64,7 +64,7 @@
+ 
+ 		/* External PHY reset is shared with internal PHY Led signal */
+ 		reset-assert-us = <10000>;
+-		reset-deassert-us = <30000>;
++		reset-deassert-us = <80000>;
+ 		reset-gpios = <&gpio GPIOZ_14 GPIO_ACTIVE_LOW>;
+ 
+ 		interrupt-parent = <&gpio_intc>;
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-rbox-pro.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-rbox-pro.dts
+index 5cd4d35006d09..f72d29e33a9e4 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxm-rbox-pro.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxm-rbox-pro.dts
+@@ -114,7 +114,7 @@
+ 		max-speed = <1000>;
+ 
+ 		reset-assert-us = <10000>;
+-		reset-deassert-us = <30000>;
++		reset-deassert-us = <80000>;
+ 		reset-gpios = <&gpio GPIOZ_14 GPIO_ACTIVE_LOW>;
+ 	};
+ };
 -- 
 2.27.0
 
