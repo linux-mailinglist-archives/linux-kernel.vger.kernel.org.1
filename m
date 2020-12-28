@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A5CC2E65AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:04:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C4FD2E65AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:04:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389925AbgL1N22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:28:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57172 "EHLO mail.kernel.org"
+        id S2389912AbgL1N21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:28:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57200 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389886AbgL1N2W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:28:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D8ED120719;
-        Mon, 28 Dec 2020 13:27:40 +0000 (UTC)
+        id S2389832AbgL1N2Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:28:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EAE7020728;
+        Mon, 28 Dec 2020 13:27:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162061;
-        bh=pKrfSDn53q4p6zHS/6FKMRfvvS+JGk/LNWgBB8Ya1tg=;
+        s=korg; t=1609162064;
+        bh=XqN+R25YosZQ5FWbb5570T593/SZUdje/I/dKAs/bqI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=av2+lL4o4DqGIbVZgr9aVT0OiNLgiQ8AlEWUSzcHkSnV58035ywJEF/zdstqj9QBI
-         OX86jCkRx+tb9Vzy8iLo5oCMpfZbhhOJnZ4f2WXif2ig9eUaIQE0/SF7qdSyyCA+J9
-         YFU4fYEJmtP0J+O10CFE/Hs7mnaibwFMf8KnRHfg=
+        b=i5DnKE+PJcvrNhB+/xhzCucb4dWPC7S7hriSVGzoV1HNV5PSqnWw7+y45N+lhQbJa
+         mkP9xpIc7u4zJ/tneX50GtFdt0hcL/pBr2Za5agyeEkAyOxGNToWSvdbdqu28uJR79
+         znKjFO9QVfH8B5zebs+SRrgB2hiF1QfTiWXJ6fWc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        stable@vger.kernel.org,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 174/346] HSI: omap_ssi: Dont jump to free ID in ssi_add_controller()
-Date:   Mon, 28 Dec 2020 13:48:13 +0100
-Message-Id: <20201228124928.194670935@linuxfoundation.org>
+Subject: [PATCH 4.19 175/346] ARM: dts: Remove non-existent i2c1 from 98dx3236
+Date:   Mon, 28 Dec 2020 13:48:14 +0100
+Message-Id: <20201228124928.245123394@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
 References: <20201228124919.745526410@linuxfoundation.org>
@@ -40,34 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Xiangfeng <jingxiangfeng@huawei.com>
+From: Chris Packham <chris.packham@alliedtelesis.co.nz>
 
-[ Upstream commit 41fff6e19bc8d6d8bca79ea388427c426e72e097 ]
+[ Upstream commit 7f24479ead579459106bb55c2320a000135731f9 ]
 
-In current code, it jumps to ida_simple_remove() when ida_simple_get()
-failes to allocate an ID. Just return to fix it.
+The switches with integrated CPUs have only got a single i2c controller.
+They incorrectly gained one when they were split from the Armada-XP.
 
-Fixes: 0fae198988b8 ("HSI: omap_ssi: built omap_ssi and omap_ssi_port into one module")
-Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Fixes: 43e28ba87708 ("ARM: dts: Use armada-370-xp as a base for armada-xp-98dx3236")
+Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hsi/controllers/omap_ssi_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/armada-xp-98dx3236.dtsi | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/hsi/controllers/omap_ssi_core.c b/drivers/hsi/controllers/omap_ssi_core.c
-index 41a09f506803d..129c5e6bc6547 100644
---- a/drivers/hsi/controllers/omap_ssi_core.c
-+++ b/drivers/hsi/controllers/omap_ssi_core.c
-@@ -389,7 +389,7 @@ static int ssi_add_controller(struct hsi_controller *ssi,
+diff --git a/arch/arm/boot/dts/armada-xp-98dx3236.dtsi b/arch/arm/boot/dts/armada-xp-98dx3236.dtsi
+index 3e7d093d7a9a2..966d9a6c40fca 100644
+--- a/arch/arm/boot/dts/armada-xp-98dx3236.dtsi
++++ b/arch/arm/boot/dts/armada-xp-98dx3236.dtsi
+@@ -266,11 +266,6 @@
+ 	reg = <0x11000 0x100>;
+ };
  
- 	err = ida_simple_get(&platform_omap_ssi_ida, 0, 0, GFP_KERNEL);
- 	if (err < 0)
--		goto out_err;
-+		return err;
- 	ssi->id = err;
- 
- 	ssi->owner = THIS_MODULE;
+-&i2c1 {
+-	compatible = "marvell,mv78230-i2c", "marvell,mv64xxx-i2c";
+-	reg = <0x11100 0x100>;
+-};
+-
+ &mpic {
+ 	reg = <0x20a00 0x2d0>, <0x21070 0x58>;
+ };
 -- 
 2.27.0
 
