@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C7882E3B36
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:49:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 396932E3DC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:20:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405614AbgL1NrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:47:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47038 "EHLO mail.kernel.org"
+        id S2502103AbgL1OTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:19:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405215AbgL1NqT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:46:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EAC4205CB;
-        Mon, 28 Dec 2020 13:46:03 +0000 (UTC)
+        id S2440677AbgL1OT2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:19:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E95620791;
+        Mon, 28 Dec 2020 14:19:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163163;
-        bh=fwBLQeDKWm/gijYIvp7pqIRjCPCBrcfO3wPwOpA3iSk=;
+        s=korg; t=1609165152;
+        bh=C4Vspwt1iBhs04ZgSjdE9/sf0p9HMj2D5pe5BswkYc4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kI6cX9sG+/twXfWOvBn961jp3Z/4qhz/y3BbNIgOmbCJZvWguQnrjEBr+vjUi8WPv
-         Xl3tXWDdDg5g7OLV3c3n3QNhD7X5oM5tECxv10Mkq6L+TOyMzBjeCxSaYxJfYAsvWv
-         oWDIzVS4M6/ZZP8dqAcsKVvyowO0UStJ/WMwU6+E=
+        b=kgPggfKSH6DYieCtMw6lR2nZo4eeHnzuQHWtqC6SxGmo7k6GHzqzAFqCLu8zNhOys
+         rDVbOUoAKYk+8aPwfe/danS9DxcKNgIWA92V/KSlhSRJBvVcLsEPd2drKeS2GpErSg
+         zlrefstXIW1FpXVd8HB73USPOr9RLfROsLT8Y5OM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dongjin Kim <tobetter@gmail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
+        stable@vger.kernel.org, Lingling Xu <ling_ling.xu@unisoc.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 192/453] arm64: dts: meson-sm1: fix typo in opp table
+Subject: [PATCH 5.10 430/717] watchdog: sprd: remove watchdog disable from resume fail path
 Date:   Mon, 28 Dec 2020 13:47:08 +0100
-Message-Id: <20201228124946.451092296@linuxfoundation.org>
+Message-Id: <20201228125041.568891057@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +42,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dongjin Kim <tobetter@gmail.com>
+From: Lingling Xu <ling_ling.xu@unisoc.com>
 
-[ Upstream commit b6a1c8a1eaa73b1e2ae251399308e9445d74cef7 ]
+[ Upstream commit f61a59acb462840bebcc192f754fe71b6a16ff99 ]
 
-The freqency 1512000000 should be 1500000000.
+sprd_wdt_start() would return fail if the loading operation is not completed
+in a certain time, disabling watchdog for that case would probably cause
+the kernel crash when kick watchdog later, that's too bad, so remove the
+watchdog disable operation for the fail case to make sure other parts in
+the kernel can run normally.
 
-Signed-off-by: Dongjin Kim <tobetter@gmail.com>
-Fixes: 3d9e76483049 ("arm64: dts: meson-sm1-sei610: enable DVFS")
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
-Signed-off-by: Kevin Hilman <khilman@baylibre.com>
-Link: https://lore.kernel.org/r/20201130060320.GA30098@anyang-linuxfactory-or-kr
+[ chunyan: Massaged changelog ]
+
+Fixes: 477603467009 ("watchdog: Add Spreadtrum watchdog driver")
+Signed-off-by: Lingling Xu <ling_ling.xu@unisoc.com>
+Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/20201029023933.24548-2-zhang.lyra@gmail.com
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/amlogic/meson-sm1.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/watchdog/sprd_wdt.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi b/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi
-index 521573f3a5bab..8ba3555ca3693 100644
---- a/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi
-@@ -90,7 +90,7 @@
- 			opp-microvolt = <790000>;
- 		};
+diff --git a/drivers/watchdog/sprd_wdt.c b/drivers/watchdog/sprd_wdt.c
+index 65cb55f3916fc..f3c90b4afead1 100644
+--- a/drivers/watchdog/sprd_wdt.c
++++ b/drivers/watchdog/sprd_wdt.c
+@@ -345,15 +345,10 @@ static int __maybe_unused sprd_wdt_pm_resume(struct device *dev)
+ 	if (ret)
+ 		return ret;
  
--		opp-1512000000 {
-+		opp-1500000000 {
- 			opp-hz = /bits/ 64 <1500000000>;
- 			opp-microvolt = <800000>;
- 		};
+-	if (watchdog_active(&wdt->wdd)) {
++	if (watchdog_active(&wdt->wdd))
+ 		ret = sprd_wdt_start(&wdt->wdd);
+-		if (ret) {
+-			sprd_wdt_disable(wdt);
+-			return ret;
+-		}
+-	}
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ static const struct dev_pm_ops sprd_wdt_pm_ops = {
 -- 
 2.27.0
 
