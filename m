@@ -2,68 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFFF82E6C7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:26:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 786AF2E6C86
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:31:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728161AbgL1XZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 18:25:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35982 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726567AbgL1XZM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 18:25:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 75BB0207A6;
-        Mon, 28 Dec 2020 23:24:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609197871;
-        bh=DsdJFN10wM0d2NKyziGy+hEzY0wktj07KQzUt/bFPes=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kw6Sl+ye8P8dTQzHVXw5zfKb1sYRIt4xyoNHjDhGlrx2kDfcw3sqtxOrBhKu6Iwai
-         OtfRImN2FmXD4eZGbLNt9NtxwK8r3txumVMoOh6zTkPDg4sOHk8FOWsRGk8NBQwPQp
-         k7Ti3Nr1f98oWqfJVarVfX04x2jFfn+XR0Nl70Y+nLcnnIekhFRZR3p8eZxT5Rugw4
-         7jW52XEd3it3X/hgZf92QewX5DvYzKb8jJXcUsedSSJSRVJD9+wwVE5K7SrApv2vnA
-         MoMHuN50mbqNRqEJBNvkyLPXCd3shNhQeDcoRduI5nxdrXbegKFJC8diwPnewPxeDY
-         W8+OsN0u4MTFg==
-Date:   Mon, 28 Dec 2020 18:24:30 -0500
-From:   Sasha Levin <sashal@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Vincent Bernat <vincent@bernat.ch>
-Subject: Re: [PATCH 5.10 098/717] net: evaluate
- net.ipvX.conf.all.ignore_routes_with_linkdown
-Message-ID: <20201228232430.GJ2790422@sasha-vm>
-References: <20201228125020.963311703@linuxfoundation.org>
- <20201228125025.671560851@linuxfoundation.org>
- <20201228105058.7c66e522@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S1728786AbgL1X30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 18:29:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728569AbgL1X3Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 18:29:24 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4BD9C061796
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 15:28:43 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id l11so27329156lfg.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 15:28:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XYFP2ulc60ot4/NC1efgeH0hQlOhvsC8IPEDkooBvEs=;
+        b=PnzaIY0WevdN1LX4x77XkAqdCbHnILaK8s5lgAa0OpFX4yGYQetICtSErEbnRqJyF2
+         df1IdnigAMWBVb78TsJfEZX+2u+q70jwsNoCzYhAOeHQSolJsz4xefb3lBQb/IMqWPfX
+         LLsh+emoPQ9elejcOAXkRap3sj2sF/7th9mgE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XYFP2ulc60ot4/NC1efgeH0hQlOhvsC8IPEDkooBvEs=;
+        b=CTUJlicA9aEtteiDy5vX07rWfBq/UB4ZlMzONJnvGQVQP5+V637vbeoPxKxs+z3cKX
+         iLtrY28CbkC+Meq5JTY3sABoCRW4SMrFBQJvHVyYaEnCsN7vGDaOobr1XX1cfEHXJ9IL
+         luUx78mgixq4enW+UdE+J4tw6ewkxDivkEiZ29lOWzBQWqFy3IljbPDf9siKsFrbjc+o
+         QUQZ/v/hX5EPNgND8nKr0fnW5KsGk98UNqwXrkp+9XlB/xweXFyEUUXbD14yJpOVMH9m
+         a0hlhbtQtsNZGb6/AJAqoN6vjaqT+F+GyztsncWkHn17g6Zszaj1c1yLcVQJPOASXHA+
+         RQSA==
+X-Gm-Message-State: AOAM531kBqdvl93CMHMsHQGhzl17I4XdNl9OM7x3pEMkJ+evhOOJIInR
+        EtH34O1wNyhCT2IPlbwr79Mvk4YFVwGEOQ==
+X-Google-Smtp-Source: ABdhPJzLozDg2YWxfLPoq2hIwwnTJfIY59S3f1wl3bMd/c//WISrvoT5F4qF0rGRmblPYfoVDy+xHQ==
+X-Received: by 2002:a2e:98ca:: with SMTP id s10mr21664506ljj.417.1609198122248;
+        Mon, 28 Dec 2020 15:28:42 -0800 (PST)
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
+        by smtp.gmail.com with ESMTPSA id g13sm5461457lfb.43.2020.12.28.15.28.40
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Dec 2020 15:28:40 -0800 (PST)
+Received: by mail-lf1-f46.google.com with SMTP id 23so27198154lfg.10
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 15:28:40 -0800 (PST)
+X-Received: by 2002:a2e:6f17:: with SMTP id k23mr23942779ljc.411.1609198119916;
+ Mon, 28 Dec 2020 15:28:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20201228105058.7c66e522@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <CAHk-=wjesveWEQZ4tqRssSSQvuxx46LqYfME+uxKfghxAe6U_w@mail.gmail.com>
+ <20201226224016.dxjmordcfj75xgte@box> <alpine.LSU.2.11.2012261623140.1022@eggly.anvils>
+ <alpine.LSU.2.11.2012261816520.1071@eggly.anvils> <CAHk-=wjHvipz5DqWUFP5zuPK-kWM4QD-eokf75V8NGNATnn+BQ@mail.gmail.com>
+ <20201227234853.5mjyxcybucts3kbq@box> <CAHk-=wiVrd4R2EVGCGtmybt6+u9LoGgMdnf12zc=sYL=QbvRWQ@mail.gmail.com>
+ <alpine.LSU.2.11.2012272233170.24487@eggly.anvils> <20201228125352.phnj2x2ci3kwfld5@box>
+ <CAHk-=wg4bzJ9ugrOp7DBoMjNpHechm4QWb0-HC3A_pN564RU5A@mail.gmail.com> <20201228220548.57hl32mmrvvefj6q@box>
+In-Reply-To: <20201228220548.57hl32mmrvvefj6q@box>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 28 Dec 2020 15:28:23 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjquk=AxcbqA0UapYsHipa+myB4ayhttm6-Rb1Q5prKMw@mail.gmail.com>
+Message-ID: <CAHk-=wjquk=AxcbqA0UapYsHipa+myB4ayhttm6-Rb1Q5prKMw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm: Allow architectures to request 'old' entries when prefaulting
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 10:50:58AM -0800, Jakub Kicinski wrote:
->On Mon, 28 Dec 2020 13:41:36 +0100 Greg Kroah-Hartman wrote:
->> From: Vincent Bernat <vincent@bernat.ch>
->>
->> [ Upstream commit c0c5a60f0f1311bcf08bbe735122096d6326fb5b ]
->>
->> Introduced in 0eeb075fad73, the "ignore_routes_with_linkdown" sysctl
->> ignores a route whose interface is down. It is provided as a
->> per-interface sysctl. However, while a "all" variant is exposed, it
->> was a noop since it was never evaluated. We use the usual "or" logic
->> for this kind of sysctls.
+On Mon, Dec 28, 2020 at 2:05 PM Kirill A. Shutemov <kirill@shutemov.name> wrote:
 >
->I'd recommend to drop 98 and 99, at least for now.
 >
->The kernel always behaved this way, and it remains to be seen if anyone
->depended on that (mis) behavior.
->
->This needs to hit a real release.
+> But I *think* we should be fine here: do_fault_around() limits start_pgoff
+> and end_pgoff to stay within the page table.
 
-I'll drop it.
+Yeah, but I was thinking it would then update ->pte to just past the edge.
 
--- 
-Thanks,
-Sasha
+But looking at that logic, you're right - it will update ->pte and
+->address only just before installing the pte, so it will never go
+_to_ the edge, it will always stay inside.
+
+So scratch my suspicion. It looked promising mainly because that ->pte
+pointer update was one of the things that changed when you instead
+compared against the address.
+
+         Linus
