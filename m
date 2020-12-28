@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9953A2E3FDC
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:46:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 109222E37E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:04:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506449AbgL1OpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:45:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60340 "EHLO mail.kernel.org"
+        id S1730116AbgL1NCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:02:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503094AbgL1OYf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:24:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7117A20731;
-        Mon, 28 Dec 2020 14:24:19 +0000 (UTC)
+        id S1730074AbgL1NCd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:02:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A459B22573;
+        Mon, 28 Dec 2020 13:02:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165460;
-        bh=J5sCxb/otfwBgWgygE5auJlMJnoZMLXJK9b1f4D41ds=;
+        s=korg; t=1609160538;
+        bh=b3YkWgAGCc8tgJYY2DJD3faZH2Q/m3Lni073ZwViY7g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QGKecVjYj9L5jAAZcGKuzWhReHg1gXsAdIb/ThZJReaHkzF5YN+8rbQBg2PeZ7+yO
-         yjj0L52RTARXkUz8C8T4uJXS4uICXag4rqMPXbjwo7t4RqQlRwz3FJ3xL82E82na85
-         zalZclzqdt/YQzWKQ1N68pgCCS3c08mF90NHd3BE=
+        b=em/a6it6aNuHXOBPurEm01WqutzaS37FpgedSUG5L9CcvN3oG2SUscUb+fCCimwhY
+         b4FS6AnqhBCSe0pDj37BZUuOx7/8Oq20+4NZU4wQfsPRdYMtWYafQQn2sr9djBYG4V
+         ZjtUmvDfIuzym8u2GE/DndM1eEcAu9oiaXpDs8QY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Chiu <chiu@endlessos.org>,
-        Jian-Hong Pan <jhp@endlessos.org>, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.10 538/717] ALSA: hda/realtek - Enable headset mic of ASUS X430UN with ALC256
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 083/175] mips: cdmm: fix use-after-free in mips_cdmm_bus_discover
 Date:   Mon, 28 Dec 2020 13:48:56 +0100
-Message-Id: <20201228125046.734585938@linuxfoundation.org>
+Message-Id: <20201228124857.262943666@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,33 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Chiu <chiu@endlessos.org>
+From: Qinglang Miao <miaoqinglang@huawei.com>
 
-commit 5cfca59604e423f720297e30a9dc493eea623493 upstream.
+[ Upstream commit f0e82242b16826077a2775eacfe201d803bb7a22 ]
 
-The ASUS laptop X430UN with ALC256 can't detect the headset microphone
-until ALC256_FIXUP_ASUS_MIC_NO_PRESENCE quirk applied.
+kfree(dev) has been called inside put_device so anther
+kfree would cause a use-after-free bug/
 
-Signed-off-by: Chris Chiu <chiu@endlessos.org>
-Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201207072755.16210-1-chiu@endlessos.org
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 8286ae03308c ("MIPS: Add CDMM bus support")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+Acked-by: Serge Semin <fancer.lancer@gmail.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_realtek.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/bus/mips_cdmm.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -7958,6 +7958,7 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x1043, 0x10d0, "ASUS X540LA/X540LJ", ALC255_FIXUP_ASUS_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1043, 0x115d, "Asus 1015E", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x1043, 0x11c0, "ASUS X556UR", ALC255_FIXUP_ASUS_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1043, 0x1271, "ASUS X430UN", ALC256_FIXUP_ASUS_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1043, 0x1290, "ASUS X441SA", ALC233_FIXUP_EAPD_COEF_AND_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1043, 0x12a0, "ASUS X441UV", ALC233_FIXUP_EAPD_COEF_AND_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1043, 0x12f0, "ASUS X541UV", ALC256_FIXUP_ASUS_MIC),
+diff --git a/drivers/bus/mips_cdmm.c b/drivers/bus/mips_cdmm.c
+index 1b14256376d24..7c1da45be166e 100644
+--- a/drivers/bus/mips_cdmm.c
++++ b/drivers/bus/mips_cdmm.c
+@@ -544,10 +544,8 @@ static void mips_cdmm_bus_discover(struct mips_cdmm_bus *bus)
+ 		dev_set_name(&dev->dev, "cdmm%u-%u", cpu, id);
+ 		++id;
+ 		ret = device_register(&dev->dev);
+-		if (ret) {
++		if (ret)
+ 			put_device(&dev->dev);
+-			kfree(dev);
+-		}
+ 	}
+ }
+ 
+-- 
+2.27.0
+
 
 
