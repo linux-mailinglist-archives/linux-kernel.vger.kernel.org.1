@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 369612E3DEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:22:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DE192E4055
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:52:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438080AbgL1OV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:21:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56246 "EHLO mail.kernel.org"
+        id S2392214AbgL1OuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:50:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56634 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437902AbgL1OVY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:21:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 899AA2063A;
-        Mon, 28 Dec 2020 14:21:08 +0000 (UTC)
+        id S2437909AbgL1OV1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:21:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E977F206E5;
+        Mon, 28 Dec 2020 14:21:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165269;
-        bh=O/P785hr0xbbym5kCpKjzJy8UPJQsYyr69+MfA5v6b4=;
+        s=korg; t=1609165272;
+        bh=DIZmWbSHImHgbOwk8uonUwZhsA7leVwUkT4rp6JfqDI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g4Jqt2fui5ov8PNoIsLfZElKXIUM2sSPeDA+jREqZsd2NNoidrD2HTGjOk+9zqSYR
-         Dlj+Htza+7/Qf/QHuLMvitCzJwM0Xkb7WK3bBKXPlnxewFNO9grgFIEffvYtU+KRor
-         2pv74URGn5qpBj0F0iDF/C0Y0ZqpMjbg0Gys51Ec=
+        b=iL3icmcJ6AL/rZ20lAlC1pRGU7ECjXUqtuHXliBtNLZq3VFklUbpbRSeFkKlXIZrM
+         IxJOJGP8K1sttHiFjZkjiRit/Fw7wtppeu9NvQUm/WutI3Wlp6NPMveZ3ISKcVn/hJ
+         tm4MfOq6EqheKNCdsRs2jxSiDwe8gHHQ5z1VjsMg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        =?UTF-8?q?Vincent=20Stehl=C3=A9?= <vincent.stehle@laposte.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 471/717] NFS/pNFS: Fix a typo in ff_layout_resend_pnfs_read()
-Date:   Mon, 28 Dec 2020 13:47:49 +0100
-Message-Id: <20201228125043.538601752@linuxfoundation.org>
+Subject: [PATCH 5.10 472/717] net: korina: fix return value
+Date:   Mon, 28 Dec 2020 13:47:50 +0100
+Message-Id: <20201228125043.586654044@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
 References: <20201228125020.963311703@linuxfoundation.org>
@@ -40,32 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Vincent Stehlé <vincent.stehle@laposte.net>
 
-[ Upstream commit 52104f274e2d7f134d34bab11cada8913d4544e2 ]
+[ Upstream commit 7eb000bdbe7c7da811ef51942b356f6e819b13ba ]
 
-Don't bump the index twice.
+The ndo_start_xmit() method must not attempt to free the skb to transmit
+when returning NETDEV_TX_BUSY. Therefore, make sure the
+korina_send_packet() function returns NETDEV_TX_OK when it frees a packet.
 
-Fixes: 563c53e73b8b ("NFS: Fix flexfiles read failover")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Fixes: ef11291bcd5f ("Add support the Korina (IDT RC32434) Ethernet MAC")
+Suggested-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Vincent Stehlé <vincent.stehle@laposte.net>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Link: https://lore.kernel.org/r/20201214220952.19935-1-vincent.stehle@laposte.net
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/flexfilelayout/flexfilelayout.c | 2 +-
+ drivers/net/ethernet/korina.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/nfs/flexfilelayout/flexfilelayout.c b/fs/nfs/flexfilelayout/flexfilelayout.c
-index 24bf5797f88ae..fd0eda328943b 100644
---- a/fs/nfs/flexfilelayout/flexfilelayout.c
-+++ b/fs/nfs/flexfilelayout/flexfilelayout.c
-@@ -1056,7 +1056,7 @@ static void ff_layout_resend_pnfs_read(struct nfs_pgio_header *hdr)
- 	u32 idx = hdr->pgio_mirror_idx + 1;
- 	u32 new_idx = 0;
+diff --git a/drivers/net/ethernet/korina.c b/drivers/net/ethernet/korina.c
+index bf48f0ded9c7d..925161959b9ba 100644
+--- a/drivers/net/ethernet/korina.c
++++ b/drivers/net/ethernet/korina.c
+@@ -219,7 +219,7 @@ static int korina_send_packet(struct sk_buff *skb, struct net_device *dev)
+ 			dev_kfree_skb_any(skb);
+ 			spin_unlock_irqrestore(&lp->lock, flags);
  
--	if (ff_layout_choose_any_ds_for_read(hdr->lseg, idx + 1, &new_idx))
-+	if (ff_layout_choose_any_ds_for_read(hdr->lseg, idx, &new_idx))
- 		ff_layout_send_layouterror(hdr->lseg);
- 	else
- 		pnfs_error_mark_layout_for_return(hdr->inode, hdr->lseg);
+-			return NETDEV_TX_BUSY;
++			return NETDEV_TX_OK;
+ 		}
+ 	}
+ 
 -- 
 2.27.0
 
