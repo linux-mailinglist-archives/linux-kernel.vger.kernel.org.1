@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B50BD2E3DF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:22:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46EEC2E3DD4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:22:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502630AbgL1OWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:22:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57902 "EHLO mail.kernel.org"
+        id S2437771AbgL1OU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:20:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439186AbgL1OWP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:22:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10F79206E5;
-        Mon, 28 Dec 2020 14:21:33 +0000 (UTC)
+        id S2437755AbgL1OUV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:20:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E8BB221F0;
+        Mon, 28 Dec 2020 14:20:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165294;
-        bh=bSlfWckOwMJnm/EAO2K31nscYWvG7pqH5XCo0KjMKzo=;
+        s=korg; t=1609165205;
+        bh=xpHZPIlrxN9j9CZiMSV1kepGwClOp78JERWUjLLzxp8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yvN3dsk+3r/JZVIrtuYosldFgRJFKQW+NTJHCMiMkEhhEdyc0qff7E8IYFoKqzpSG
-         5XbaMvvWVZJqJmxeKRo2SIU47X7ceEQdbcEok1TlV9dlvxB5QYuJ59K4dEMiey2usj
-         OhF4N7CEL4ifv3LClpQcYjBiRA+ZCaTS86qE6zjc=
+        b=bV7WVkXwYcswjwQs3tp4+cCmafo/8MqlfP3TNWJoFibj9tzHfQlZVks9QFAy4tg4X
+         GTRsp1UQ4dW7IJaHuu4jSsMs39l4tVyo04cVyZauSTwZowZARKNFCVPxUZd+3NTDgV
+         i4zovk6iVCLuKNHKKOzzmNNOXLP7xcq8+UGmTlSo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        stable@vger.kernel.org, Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 441/717] drm: mxsfb: Silence -EPROBE_DEFER while waiting for bridge
-Date:   Mon, 28 Dec 2020 13:47:19 +0100
-Message-Id: <20201228125042.097307585@linuxfoundation.org>
+Subject: [PATCH 5.10 442/717] powerpc/perf: Fix Threshold Event Counter Multiplier width for P10
+Date:   Mon, 28 Dec 2020 13:47:20 +0100
+Message-Id: <20201228125042.145791882@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
 References: <20201228125020.963311703@linuxfoundation.org>
@@ -41,60 +41,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guido Günther <agx@sigxcpu.org>
+From: Madhavan Srinivasan <maddy@linux.ibm.com>
 
-[ Upstream commit ee46d16d2e40bebc2aa790fd7b6a056466ff895c ]
+[ Upstream commit ef0e3b650f8ddc54bb70868852f50642ee3ae765 ]
 
-It can take multiple iterations until all components for an attached DSI
-bridge are up leading to several:
+Threshold Event Counter Multiplier (TECM) is part of Monitor Mode
+Control Register A (MMCRA). This field along with Threshold Event
+Counter Exponent (TECE) is used to get threshould counter value.
+In Power10, this is a 8bit field, so patch fixes the
+current code to modify the MMCRA[TECM] extraction macro to
+handle this change. ISA v3.1 says this is a 7 bit field but
+POWER10 it's actually 8 bits which will hopefully be fixed
+in ISA v3.1 update.
 
-[    3.796425] mxsfb 30320000.lcd-controller: Cannot connect bridge: -517
-[    3.816952] mxsfb 30320000.lcd-controller: [drm:mxsfb_probe [mxsfb]] *ERROR* failed to attach bridge: -517
-
-Silence this by checking for -EPROBE_DEFER and using dev_err_probe() so
-we set a deferred reason in case a dependency fails to probe (which
-quickly happens on small config/DT changes due to the rather long probe
-chain which can include bridges, phys, panels, backights, leds, etc.).
-
-This also removes the only DRM_DEV_ERROR() usage, the rest of the driver
-uses dev_err().
-
-Signed-off-by: Guido Günther <agx@sigxcpu.org>
-Fixes: c42001e357f7 ("drm: mxsfb: Use drm_panel_bridge")
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/d5761eb871adde5464ba112b89d966568bc2ff6c.1608020391.git.agx@sigxcpu.org
+Fixes: 170a315f41c6 ("powerpc/perf: Support to export MMCRA[TEC*] field to userspace")
+Signed-off-by: Madhavan Srinivasan <maddy@linux.ibm.com>
+Signed-off-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/1608022578-1532-1-git-send-email-atrajeev@linux.vnet.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/mxsfb/mxsfb_drv.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ arch/powerpc/perf/isa207-common.c | 3 +++
+ arch/powerpc/perf/isa207-common.h | 4 ++++
+ 2 files changed, 7 insertions(+)
 
-diff --git a/drivers/gpu/drm/mxsfb/mxsfb_drv.c b/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-index 35122aef037b4..17f26052e8450 100644
---- a/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-+++ b/drivers/gpu/drm/mxsfb/mxsfb_drv.c
-@@ -134,11 +134,8 @@ static int mxsfb_attach_bridge(struct mxsfb_drm_private *mxsfb)
- 		return -ENODEV;
+diff --git a/arch/powerpc/perf/isa207-common.c b/arch/powerpc/perf/isa207-common.c
+index 0f4983ef41036..e1a21d34c6e49 100644
+--- a/arch/powerpc/perf/isa207-common.c
++++ b/arch/powerpc/perf/isa207-common.c
+@@ -247,6 +247,9 @@ void isa207_get_mem_weight(u64 *weight)
+ 	u64 sier = mfspr(SPRN_SIER);
+ 	u64 val = (sier & ISA207_SIER_TYPE_MASK) >> ISA207_SIER_TYPE_SHIFT;
  
- 	ret = drm_bridge_attach(&mxsfb->encoder, bridge, NULL, 0);
--	if (ret) {
--		DRM_DEV_ERROR(drm->dev,
--			      "failed to attach bridge: %d\n", ret);
--		return ret;
--	}
-+	if (ret)
-+		return dev_err_probe(drm->dev, ret, "Failed to attach bridge\n");
++	if (cpu_has_feature(CPU_FTR_ARCH_31))
++		mantissa = P10_MMCRA_THR_CTR_MANT(mmcra);
++
+ 	if (val == 0 || val == 7)
+ 		*weight = 0;
+ 	else
+diff --git a/arch/powerpc/perf/isa207-common.h b/arch/powerpc/perf/isa207-common.h
+index 42087643c3331..454b32c314406 100644
+--- a/arch/powerpc/perf/isa207-common.h
++++ b/arch/powerpc/perf/isa207-common.h
+@@ -231,6 +231,10 @@
+ #define MMCRA_THR_CTR_EXP(v)		(((v) >> MMCRA_THR_CTR_EXP_SHIFT) &\
+ 						MMCRA_THR_CTR_EXP_MASK)
  
- 	mxsfb->bridge = bridge;
- 
-@@ -212,7 +209,8 @@ static int mxsfb_load(struct drm_device *drm,
- 
- 	ret = mxsfb_attach_bridge(mxsfb);
- 	if (ret) {
--		dev_err(drm->dev, "Cannot connect bridge: %d\n", ret);
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(drm->dev, "Cannot connect bridge: %d\n", ret);
- 		goto err_vblank;
- 	}
++#define P10_MMCRA_THR_CTR_MANT_MASK	0xFFul
++#define P10_MMCRA_THR_CTR_MANT(v)	(((v) >> MMCRA_THR_CTR_MANT_SHIFT) &\
++						P10_MMCRA_THR_CTR_MANT_MASK)
++
+ /* MMCRA Threshold Compare bit constant for power9 */
+ #define p9_MMCRA_THR_CMP_SHIFT	45
  
 -- 
 2.27.0
