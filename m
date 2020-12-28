@@ -2,93 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 337DB2E33CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 04:00:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB2E2E33D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 04:08:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726529AbgL1DAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 22:00:40 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:38126 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726316AbgL1DAd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 22:00:33 -0500
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxHzYdSulfznIGAA--.9S5;
-        Mon, 28 Dec 2020 10:59:45 +0800 (CST)
-From:   Qing Zhang <zhangqing@loongson.cn>
-To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        ThomasBogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-spi@vger.kernel.org, Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>, yangtiezhu@loongson.cn,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v6 4/4] MIPS: Loongson: Enable Loongson LS7A SPI in loongson3_defconfig
-Date:   Mon, 28 Dec 2020 10:59:41 +0800
-Message-Id: <1609124381-9107-4-git-send-email-zhangqing@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1609124381-9107-1-git-send-email-zhangqing@loongson.cn>
-References: <1609124381-9107-1-git-send-email-zhangqing@loongson.cn>
-X-CM-TRANSID: AQAAf9DxHzYdSulfznIGAA--.9S5
-X-Coremail-Antispam: 1UD129KBjvdXoWrKw4UJFW3tw4DJry3tF48tFb_yoWfGwc_Ga
-        y7Kw18Wr48JrW8u3yxXw4rW3yDC3WUuFn5CF17try3Xa4a9rnxtFyqyrWxGw15WasI9rW3
-        ZaykJa429F1IqjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbykFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWwA2048vs2IY02
-        0Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
-        wVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1l84
-        ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr0_GcWl
-        e2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI
-        8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwAC
-        jcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0x
-        kIwI1lc2xSY4AK67AK6r4UMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4U
-        MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67
-        AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z2
-        80aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI
-        43ZEXa7VUbOtxDUUUUU==
-X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
+        id S1726361AbgL1DIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 22:08:13 -0500
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:58521 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726289AbgL1DIN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Dec 2020 22:08:13 -0500
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 0BS32vgo024001;
+        Mon, 28 Dec 2020 11:02:57 +0800 (GMT-8)
+        (envelope-from kuohsiang_chou@aspeedtech.com)
+Received: from localhost.localdomain.com (192.168.2.206) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 28 Dec
+ 2020 11:06:58 +0800
+From:   KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
+To:     <tzimmermann@suse.de>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <airlied@redhat.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
+        <jenmin_yuan@aspeedtech.com>, <kuohsiang_chou@aspeedtech.com>,
+        <arc_sung@aspeedtech.com>, <tommy_huang@aspeedtech.com>
+Subject: [PATCH V3] drm/ast: Fixed CVE for DP501
+Date:   Mon, 28 Dec 2020 11:06:44 +0800
+Message-ID: <20201228030644.294075-1-kuohsiang_chou@aspeedtech.com>
+X-Mailer: git-send-email 2.18.4
+In-Reply-To: <4d9d5c42-842b-1152-1b81-da634fe4f124@suse.de>
+References: <4d9d5c42-842b-1152-1b81-da634fe4f124@suse.de>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [192.168.2.206]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 0BS32vgo024001
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is now supported, enable for Loongson systems.
+[Bug][DP501]
+If ASPEED P2A (PCI to AHB) bridge is disabled and disallowed for
+CVE_2019_6260 item3, and then the monitor's EDID is unable read through
+Parade DP501.
+The reason is the DP501's FW is mapped to BMC addressing space rather
+than Host addressing space.
+The resolution is that using "pci_iomap_range()" maps to DP501's FW that
+stored on the end of FB (Frame Buffer).
+0In this case, FrameBuffer reserves the last 2MB used for the image of
+DP501.
 
-Reviewed-by: Huacai Chen <chenhuacai@kernel.org>
-Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+Signed-off-by: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
+Reported-by: kernel test robot <lkp@intel.com>
 ---
+ drivers/gpu/drm/ast/ast_dp501.c | 139 +++++++++++++++++++++++---------
+ drivers/gpu/drm/ast/ast_drv.h   |  12 +++
+ drivers/gpu/drm/ast/ast_main.c  |   8 ++
+ 3 files changed, 123 insertions(+), 36 deletions(-)
 
-v2:
-- Modify CONFIG_SPI_LOONGSON to CONFIG_SPI_LS7A
+diff --git a/drivers/gpu/drm/ast/ast_dp501.c b/drivers/gpu/drm/ast/ast_dp501.c
+index 88121c0e0d05..cd93c44f2662 100644
+--- a/drivers/gpu/drm/ast/ast_dp501.c
++++ b/drivers/gpu/drm/ast/ast_dp501.c
+@@ -189,6 +189,9 @@ bool ast_backup_fw(struct drm_device *dev, u8 *addr, u32 size)
+ 	u32 i, data;
+ 	u32 boot_address;
 
-v3:
-- No changes
++	if (ast->config_mode != ast_use_p2a)
++		return false;
++
+ 	data = ast_mindwm(ast, 0x1e6e2100) & 0x01;
+ 	if (data) {
+ 		boot_address = get_fw_base(ast);
+@@ -207,6 +210,9 @@ static bool ast_launch_m68k(struct drm_device *dev)
+ 	u8 *fw_addr = NULL;
+ 	u8 jreg;
 
-v4:
-- No changes
++	if (ast->config_mode != ast_use_p2a)
++		return false;
++
+ 	data = ast_mindwm(ast, 0x1e6e2100) & 0x01;
+ 	if (!data) {
 
-v5:
-- No changes
+@@ -271,25 +277,55 @@ u8 ast_get_dp501_max_clk(struct drm_device *dev)
+ 	struct ast_private *ast = to_ast_private(dev);
+ 	u32 boot_address, offset, data;
+ 	u8 linkcap[4], linkrate, linklanes, maxclk = 0xff;
++	u32 *plinkcap;
 
-v6:
-- No changes
+-	boot_address = get_fw_base(ast);
+-
+-	/* validate FW version */
+-	offset = 0xf000;
+-	data = ast_mindwm(ast, boot_address + offset);
+-	if ((data & 0xf0) != 0x10) /* version: 1x */
+-		return maxclk;
+-
+-	/* Read Link Capability */
+-	offset  = 0xf014;
+-	*(u32 *)linkcap = ast_mindwm(ast, boot_address + offset);
+-	if (linkcap[2] == 0) {
+-		linkrate = linkcap[0];
+-		linklanes = linkcap[1];
+-		data = (linkrate == 0x0a) ? (90 * linklanes) : (54 * linklanes);
+-		if (data > 0xff)
+-			data = 0xff;
+-		maxclk = (u8)data;
++	if (ast->config_mode == ast_use_p2a) {
++		boot_address = get_fw_base(ast);
++
++		/* validate FW version */
++		offset = AST_DP501_GBL_VERSION;
++		data = ast_mindwm(ast, boot_address + offset);
++		if ((data & AST_DP501_FW_VERSION_MASK) != AST_DP501_FW_VERSION_1) /* version: 1x */
++			return maxclk;
++
++		/* Read Link Capability */
++		offset  = AST_DP501_LINKRATE;
++		plinkcap = (u32 *)linkcap;
++		*plinkcap  = ast_mindwm(ast, boot_address + offset);
++		if (linkcap[2] == 0) {
++			linkrate = linkcap[0];
++			linklanes = linkcap[1];
++			data = (linkrate == 0x0a) ? (90 * linklanes) : (54 * linklanes);
++			if (data > 0xff)
++				data = 0xff;
++			maxclk = (u8)data;
++		}
++	} else {
++		if (!ast->dp501_fw_buf)
++			return AST_DP501_DEFAULT_DCLK;	/* 1024x768 as default */
++
++		/* dummy read */
++		offset = 0x0000;
++		data = readl(ast->dp501_fw_buf + offset);
++
++		/* validate FW version */
++		offset = AST_DP501_GBL_VERSION;
++		data = readl(ast->dp501_fw_buf + offset);
++		if ((data & AST_DP501_FW_VERSION_MASK) != AST_DP501_FW_VERSION_1) /* version: 1x */
++			return maxclk;
++
++		/* Read Link Capability */
++		offset = AST_DP501_LINKRATE;
++		plinkcap = (u32 *)linkcap;
++		*plinkcap = readl(ast->dp501_fw_buf + offset);
++		if (linkcap[2] == 0) {
++			linkrate = linkcap[0];
++			linklanes = linkcap[1];
++			data = (linkrate == 0x0a) ? (90 * linklanes) : (54 * linklanes);
++			if (data > 0xff)
++				data = 0xff;
++			maxclk = (u8)data;
++		}
+ 	}
+ 	return maxclk;
+ }
+@@ -298,26 +334,57 @@ bool ast_dp501_read_edid(struct drm_device *dev, u8 *ediddata)
+ {
+ 	struct ast_private *ast = to_ast_private(dev);
+ 	u32 i, boot_address, offset, data;
++	u32 *pEDIDidx;
 
----
- arch/mips/configs/loongson3_defconfig | 3 +++
- 1 file changed, 3 insertions(+)
+-	boot_address = get_fw_base(ast);
+-
+-	/* validate FW version */
+-	offset = 0xf000;
+-	data = ast_mindwm(ast, boot_address + offset);
+-	if ((data & 0xf0) != 0x10)
+-		return false;
+-
+-	/* validate PnP Monitor */
+-	offset = 0xf010;
+-	data = ast_mindwm(ast, boot_address + offset);
+-	if (!(data & 0x01))
+-		return false;
++	if (ast->config_mode == ast_use_p2a) {
++		boot_address = get_fw_base(ast);
 
-diff --git a/arch/mips/configs/loongson3_defconfig b/arch/mips/configs/loongson3_defconfig
-index 38a817e..28784cb 100644
---- a/arch/mips/configs/loongson3_defconfig
-+++ b/arch/mips/configs/loongson3_defconfig
-@@ -271,6 +271,9 @@ CONFIG_HW_RANDOM=y
- CONFIG_RAW_DRIVER=m
- CONFIG_I2C_CHARDEV=y
- CONFIG_I2C_PIIX4=y
-+CONFIG_SPI=y
-+CONFIG_SPI_MASTER=y
-+CONFIG_SPI_LS7A=y
- CONFIG_GPIO_LOONGSON=y
- CONFIG_SENSORS_LM75=m
- CONFIG_SENSORS_LM93=m
--- 
-2.1.0
+-	/* Read EDID */
+-	offset = 0xf020;
+-	for (i = 0; i < 128; i += 4) {
+-		data = ast_mindwm(ast, boot_address + offset + i);
+-		*(u32 *)(ediddata + i) = data;
++		/* validate FW version */
++		offset = AST_DP501_GBL_VERSION;
++		data = ast_mindwm(ast, boot_address + offset);
++		if ((data & AST_DP501_FW_VERSION_MASK) != AST_DP501_FW_VERSION_1)
++			return false;
++
++		/* validate PnP Monitor */
++		offset = AST_DP501_PNPMONITOR;
++		data = ast_mindwm(ast, boot_address + offset);
++		if (!(data & AST_DP501_PNP_CONNECTED))
++			return false;
++
++		/* Read EDID */
++		offset = AST_DP501_EDID_DATA;
++		for (i = 0; i < 128; i += 4) {
++			data = ast_mindwm(ast, boot_address + offset + i);
++			pEDIDidx = (u32 *)(ediddata + i);
++			*pEDIDidx = data;
++		}
++	} else {
++		if (!ast->dp501_fw_buf)
++			return false;
++
++		/* dummy read */
++		offset = 0x0000;
++		data = readl(ast->dp501_fw_buf + offset);
++
++		/* validate FW version */
++		offset = AST_DP501_GBL_VERSION;
++		data = readl(ast->dp501_fw_buf + offset);
++		if ((data & AST_DP501_FW_VERSION_MASK) != AST_DP501_FW_VERSION_1)
++			return false;
++
++		/* validate PnP Monitor */
++		offset = AST_DP501_PNPMONITOR;
++		data = readl(ast->dp501_fw_buf + offset);
++		if (!(data & AST_DP501_PNP_CONNECTED))
++			return false;
++
++		/* Read EDID */
++		offset = AST_DP501_EDID_DATA;
++		for (i = 0; i < 128; i += 4) {
++			data = readl(ast->dp501_fw_buf + offset + i);
++			pEDIDidx = (u32 *)(ediddata + i);
++			*pEDIDidx = data;
++		}
+ 	}
+
+ 	return true;
+diff --git a/drivers/gpu/drm/ast/ast_drv.h b/drivers/gpu/drm/ast/ast_drv.h
+index 6b9e3b94a712..da6dfb677540 100644
+--- a/drivers/gpu/drm/ast/ast_drv.h
++++ b/drivers/gpu/drm/ast/ast_drv.h
+@@ -121,6 +121,7 @@ struct ast_private {
+
+ 	void __iomem *regs;
+ 	void __iomem *ioregs;
++	void __iomem *dp501_fw_buf;
+
+ 	enum ast_chip chip;
+ 	bool vga2_clone;
+@@ -299,6 +300,17 @@ int ast_mode_config_init(struct ast_private *ast);
+ #define AST_MM_ALIGN_SHIFT 4
+ #define AST_MM_ALIGN_MASK ((1 << AST_MM_ALIGN_SHIFT) - 1)
+
++#define AST_DP501_FW_VERSION_MASK	GENMASK(7, 4)
++#define AST_DP501_FW_VERSION_1		BIT(4)
++#define AST_DP501_PNP_CONNECTED		BIT(1)
++
++#define AST_DP501_DEFAULT_DCLK	65
++
++#define AST_DP501_GBL_VERSION	0xf000
++#define AST_DP501_PNPMONITOR	0xf010
++#define AST_DP501_LINKRATE	0xf014
++#define AST_DP501_EDID_DATA	0xf020
++
+ int ast_mm_init(struct ast_private *ast);
+
+ /* ast post */
+diff --git a/drivers/gpu/drm/ast/ast_main.c b/drivers/gpu/drm/ast/ast_main.c
+index 4ec6884f6c65..3775fe26f792 100644
+--- a/drivers/gpu/drm/ast/ast_main.c
++++ b/drivers/gpu/drm/ast/ast_main.c
+@@ -449,6 +449,14 @@ struct ast_private *ast_device_create(struct drm_driver *drv,
+ 	if (ret)
+ 		return ERR_PTR(ret);
+
++	/* map reserved buffer */
++	ast->dp501_fw_buf = NULL;
++	if (dev->vram_mm->vram_size < pci_resource_len(dev->pdev, 0)) {
++		ast->dp501_fw_buf = pci_iomap_range(dev->pdev, 0, dev->vram_mm->vram_size, 0);
++		if (!ast->dp501_fw_buf)
++			drm_info(dev, "failed to map reserved buffer!\n");
++	}
++
+ 	ret = ast_mode_config_init(ast);
+ 	if (ret)
+ 		return ERR_PTR(ret);
+--
+2.18.4
 
