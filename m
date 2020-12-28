@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEDB92E3DE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:22:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 204192E3869
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:11:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437861AbgL1OUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:20:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55632 "EHLO mail.kernel.org"
+        id S1731276AbgL1NKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:10:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437843AbgL1OUs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:20:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 08E17207B2;
-        Mon, 28 Dec 2020 14:20:32 +0000 (UTC)
+        id S1731244AbgL1NJ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:09:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CD94207C9;
+        Mon, 28 Dec 2020 13:09:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165233;
-        bh=9z3QhStNbGViDW57q8obpyRWHXlccfZe9wh/heJ9Omg=;
+        s=korg; t=1609160959;
+        bh=Bo8yfNXiHfXgUOHN8hGi8e7wn1liUW8gOAfUwaubMF4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R5teCmd/zN3rRj1ybvoD633r3amgf+vtbVSSIS/vbcYVQWZsOsMteEy4FTYHnJp1u
-         QGMtzbNI6n9ndB1bIwyN3TnUbTAAs5ucWWwUR7GVPqPcNsfABb0t6IIrSmeoqKfzRm
-         M7OwHtMfbVXKE6I+hTMXhSPIBxDIzKNqdwDoG6ZQ=
+        b=ejEBg5WJtVKaJQ9INqVCWlfAF9Qaas3VAvncyze8NiioiaM+9XADAfP4qIkusdA7/
+         yHZXJBDfuuzcVnoTOt46SCPYl3GjCLV5EK0A0VZMJafbuiTamm2aQFafjDeVHfFwKW
+         S/ARAikyr5zZ2v9qN8K02CigTFHkJDGNMH5U91Y8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 460/717] s390/test_unwind: fix CALL_ON_STACK tests
+        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        EJ Hsu <ejh@nvidia.com>, Peter Chen <peter.chen@nxp.com>,
+        Will McVicker <willmcvicker@google.com>
+Subject: [PATCH 4.14 053/242] USB: gadget: f_rndis: fix bitrate for SuperSpeed and above
 Date:   Mon, 28 Dec 2020 13:47:38 +0100
-Message-Id: <20201228125043.007596265@linuxfoundation.org>
+Message-Id: <20201228124907.292264752@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,53 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiko Carstens <hca@linux.ibm.com>
+From: Will McVicker <willmcvicker@google.com>
 
-[ Upstream commit f22b9c219a798e1bf11110a3d2733d883e6da059 ]
+commit b00f444f9add39b64d1943fa75538a1ebd54a290 upstream.
 
-The CALL_ON_STACK tests use the no_dat stack to switch to a different
-stack for unwinding tests. If an interrupt or machine check happens
-while using that stack, and previously being on the async stack, the
-interrupt / machine check entry code (SWITCH_ASYNC) will assume that
-the previous context did not use the async stack and happily use the
-async stack again.
+Align the SuperSpeed Plus bitrate for f_rndis to match f_ncm's ncm_bitrate
+defined by commit 1650113888fe ("usb: gadget: f_ncm: add SuperSpeed descriptors
+for CDC NCM").
 
-This will lead to stack corruption of the previous context.
+Cc: Felipe Balbi <balbi@kernel.org>
+Cc: EJ Hsu <ejh@nvidia.com>
+Cc: Peter Chen <peter.chen@nxp.com>
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Will McVicker <willmcvicker@google.com>
+Reviewed-by: Peter Chen <peter.chen@nxp.com>
+Link: https://lore.kernel.org/r/20201127140559.381351-2-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-To solve this disable both interrupts and machine checks before
-switching to the no_dat stack.
-
-Fixes: 7868249fbbc8 ("s390/test_unwind: add CALL_ON_STACK tests")
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/lib/test_unwind.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/usb/gadget/function/f_rndis.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/s390/lib/test_unwind.c b/arch/s390/lib/test_unwind.c
-index 7c988994931f0..6bad84c372dcb 100644
---- a/arch/s390/lib/test_unwind.c
-+++ b/arch/s390/lib/test_unwind.c
-@@ -205,12 +205,15 @@ static noinline int unwindme_func3(struct unwindme *u)
- /* This function must appear in the backtrace. */
- static noinline int unwindme_func2(struct unwindme *u)
+--- a/drivers/usb/gadget/function/f_rndis.c
++++ b/drivers/usb/gadget/function/f_rndis.c
+@@ -91,8 +91,10 @@ static inline struct f_rndis *func_to_rn
+ /* peak (theoretical) bulk transfer rate in bits-per-second */
+ static unsigned int bitrate(struct usb_gadget *g)
  {
-+	unsigned long flags;
- 	int rc;
- 
- 	if (u->flags & UWM_SWITCH_STACK) {
--		preempt_disable();
-+		local_irq_save(flags);
-+		local_mcck_disable();
- 		rc = CALL_ON_STACK(unwindme_func3, S390_lowcore.nodat_stack, 1, u);
--		preempt_enable();
-+		local_mcck_enable();
-+		local_irq_restore(flags);
- 		return rc;
- 	} else {
- 		return unwindme_func3(u);
--- 
-2.27.0
-
++	if (gadget_is_superspeed(g) && g->speed >= USB_SPEED_SUPER_PLUS)
++		return 4250000000U;
+ 	if (gadget_is_superspeed(g) && g->speed == USB_SPEED_SUPER)
+-		return 13 * 1024 * 8 * 1000 * 8;
++		return 3750000000U;
+ 	else if (gadget_is_dualspeed(g) && g->speed == USB_SPEED_HIGH)
+ 		return 13 * 512 * 8 * 1000 * 8;
+ 	else
 
 
