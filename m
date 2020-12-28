@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FCA42E691D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:47:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BA322E66D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:18:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634650AbgL1Qoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:44:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53308 "EHLO mail.kernel.org"
+        id S2387409AbgL1NQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:16:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45108 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728904AbgL1M5N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:57:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A58322583;
-        Mon, 28 Dec 2020 12:56:57 +0000 (UTC)
+        id S1733304AbgL1NQs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:16:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 99FE420776;
+        Mon, 28 Dec 2020 13:16:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160218;
-        bh=vZLDLd/hTUPshAafKNY7RcLwYleHWBITfHEg2udMb1U=;
+        s=korg; t=1609161368;
+        bh=cuG2EWNI1cFolkhOiqv8KOvsbGLH9LY64J4Fo3gkaJY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v0rEJ8bGDVNu4thhw3BsmET5nphv+sqm7C+OxtpPgq6VRM/6uIXbvJJ1RCrbaIVNM
-         +b1DOzrOxn2p1MKT3AA56xVq9QfWXHDWfmNFbHPTiBs8ghoqpTDx1OH+ZeXfySdpme
-         xxr5qndImiNptAM3YzhzQbkdH61MbXKpSVJaG1aY=
+        b=dvtYTSt9/fKhqu0HPpHoIFUvegT01Xfi58B/RSr5FbNcGVdEOQ/7zLbLx0ULSfkIW
+         /hQJKg8HxjSp7pT+VxEnzAl1TtjMsvx32vVpIdtX/n6W6GazhlNJDlQvz34yH664Os
+         K34w0mp/9jS7ZJQKK80sAe20BgU0Ws1jvgS9LuUg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.4 108/132] USB: serial: mos7720: fix parallel-port state restore
-Date:   Mon, 28 Dec 2020 13:49:52 +0100
-Message-Id: <20201228124851.635088354@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.14 190/242] ALSA: usb-audio: Disable sample read check if firmware doesnt give back
+Date:   Mon, 28 Dec 2020 13:49:55 +0100
+Message-Id: <20201228124914.049127509@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,34 +38,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 975323ab8f116667676c30ca3502a6757bd89e8d upstream.
+commit 9df28edce7c6ab38050235f6f8b43dd7ccd01b6d upstream.
 
-The parallel-port restore operations is called when a driver claims the
-port and is supposed to restore the provided state (e.g. saved when
-releasing the port).
+Some buggy firmware don't give the current sample rate but leaves
+zero.  Handle this case more gracefully without warning but just skip
+the current rate verification from the next time.
 
-Fixes: b69578df7e98 ("USB: usbserial: mos7720: add support for parallel port on moschip 7715")
-Cc: stable <stable@vger.kernel.org>     # 2.6.35
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201218145858.2357-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/serial/mos7720.c |    2 ++
- 1 file changed, 2 insertions(+)
+ sound/usb/clock.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/usb/serial/mos7720.c
-+++ b/drivers/usb/serial/mos7720.c
-@@ -640,6 +640,8 @@ static void parport_mos7715_restore_stat
- 		spin_unlock(&release_lock);
- 		return;
+--- a/sound/usb/clock.c
++++ b/sound/usb/clock.c
+@@ -327,6 +327,12 @@ static int set_sample_rate_v1(struct snd
  	}
-+	mos_parport->shadowDCR = s->u.pc.ctr;
-+	mos_parport->shadowECR = s->u.pc.ecr;
- 	write_parport_reg_nonblock(mos_parport, MOS7720_DCR,
- 				   mos_parport->shadowDCR);
- 	write_parport_reg_nonblock(mos_parport, MOS7720_ECR,
+ 
+ 	crate = data[0] | (data[1] << 8) | (data[2] << 16);
++	if (!crate) {
++		dev_info(&dev->dev, "failed to read current rate; disabling the check\n");
++		chip->sample_rate_read_error = 3; /* three strikes, see above */
++		return 0;
++	}
++
+ 	if (crate != rate) {
+ 		dev_warn(&dev->dev, "current rate %d is different from the runtime rate %d\n", crate, rate);
+ 		// runtime->rate = crate;
 
 
