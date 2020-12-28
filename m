@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4649C2E63ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:45:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1C9E2E3DBC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:20:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404697AbgL1Now (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:44:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45162 "EHLO mail.kernel.org"
+        id S2502079AbgL1OTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:19:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54422 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404587AbgL1No1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:44:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F3A7C205CB;
-        Mon, 28 Dec 2020 13:43:45 +0000 (UTC)
+        id S2441607AbgL1OTR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:19:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 26C0821D94;
+        Mon, 28 Dec 2020 14:18:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163026;
-        bh=718uaZjV8dNsrR/+hDI8u+6rEXV3EMRdfLq49M2Okx8=;
+        s=korg; t=1609165110;
+        bh=1yaKa5VO1YtF2ZXkzQr5k4urAr46ODQChP0oi0Bv8Rg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BjsXhlnwiTT4GDmTo59vZzmxie+yN/m+JgWAur7o81CIp8pgVxKdbT4Y7BaTnaGwa
-         FoG9ZFcXnXl8eA38aQFwaeKU9uckqWHupbw6ed7OUqn5qy1dWf1uST5kpslcMPJ0LB
-         Zh3RLU5fzspwtd5D6ZGBqPn8hHhvn2LqSnVingKc=
+        b=svPXjoO0/1IEGdnKKDq5IRnOgWNWkkLeoq61FNymf7O9rRGKz3ckY5CVrTntJFP/n
+         Vk9dNMmTNXiL9MWbgCHCNSv24vjgwIwpetbGtIBWoSAFK7NVRX+wndyHJhBWHhCzOA
+         zZOyXUSeY2hmWNDM6bfp9UGpuZVpM1ONrAiVMZng=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, kazuo ito <kzpn200@gmail.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 136/453] media: v4l2-fwnode: Return -EINVAL for invalid bus-type
-Date:   Mon, 28 Dec 2020 13:46:12 +0100
-Message-Id: <20201228124943.747974418@linuxfoundation.org>
+Subject: [PATCH 5.10 375/717] nfsd: Fix message level for normal termination
+Date:   Mon, 28 Dec 2020 13:46:13 +0100
+Message-Id: <20201228125038.975981742@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,66 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: kazuo ito <kzpn200@gmail.com>
 
-[ Upstream commit 69baf338fc16a4d55c78da8874ce3f06feb38c78 ]
+[ Upstream commit 4420440c57892779f265108f46f83832a88ca795 ]
 
-Return -EINVAL if invalid bus-type is detected while parsing endpoints.
+The warning message from nfsd terminating normally
+can confuse system adminstrators or monitoring software.
 
-Fixes: 26c1126c9b56 ("media: v4l: fwnode: Use media bus type for bus parser selection")
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Though it's not exactly fair to pin-point a commit where it
+originated, the current form in the current place started
+to appear in:
+
+Fixes: e096bbc6488d ("knfsd: remove special handling for SIGHUP")
+Signed-off-by: kazuo ito <kzpn200@gmail.com>
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/v4l2-core/v4l2-fwnode.c | 6 +++++-
- include/media/v4l2-mediabus.h         | 2 ++
- 2 files changed, 7 insertions(+), 1 deletion(-)
+ fs/nfsd/nfssvc.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/media/v4l2-core/v4l2-fwnode.c b/drivers/media/v4l2-core/v4l2-fwnode.c
-index 3bd1888787eb3..48c3b9f72722a 100644
---- a/drivers/media/v4l2-core/v4l2-fwnode.c
-+++ b/drivers/media/v4l2-core/v4l2-fwnode.c
-@@ -93,7 +93,7 @@ v4l2_fwnode_bus_type_to_mbus(enum v4l2_fwnode_bus_type type)
- 	const struct v4l2_fwnode_bus_conv *conv =
- 		get_v4l2_fwnode_bus_conv_by_fwnode_bus(type);
+diff --git a/fs/nfsd/nfssvc.c b/fs/nfsd/nfssvc.c
+index 27b1ad1361508..9323e30a7eafe 100644
+--- a/fs/nfsd/nfssvc.c
++++ b/fs/nfsd/nfssvc.c
+@@ -527,8 +527,7 @@ static void nfsd_last_thread(struct svc_serv *serv, struct net *net)
+ 		return;
  
--	return conv ? conv->mbus_type : V4L2_MBUS_UNKNOWN;
-+	return conv ? conv->mbus_type : V4L2_MBUS_INVALID;
+ 	nfsd_shutdown_net(net);
+-	printk(KERN_WARNING "nfsd: last server has exited, flushing export "
+-			    "cache\n");
++	pr_info("nfsd: last server has exited, flushing export cache\n");
+ 	nfsd_export_flush(net);
  }
  
- static const char *
-@@ -436,6 +436,10 @@ static int __v4l2_fwnode_endpoint_parse(struct fwnode_handle *fwnode,
- 		 v4l2_fwnode_mbus_type_to_string(vep->bus_type),
- 		 vep->bus_type);
- 	mbus_type = v4l2_fwnode_bus_type_to_mbus(bus_type);
-+	if (mbus_type == V4L2_MBUS_INVALID) {
-+		pr_debug("unsupported bus type %u\n", bus_type);
-+		return -EINVAL;
-+	}
- 
- 	if (vep->bus_type != V4L2_MBUS_UNKNOWN) {
- 		if (mbus_type != V4L2_MBUS_UNKNOWN &&
-diff --git a/include/media/v4l2-mediabus.h b/include/media/v4l2-mediabus.h
-index 45f88f0248c4e..c072ed1418113 100644
---- a/include/media/v4l2-mediabus.h
-+++ b/include/media/v4l2-mediabus.h
-@@ -78,6 +78,7 @@
-  * @V4L2_MBUS_CCP2:	CCP2 (Compact Camera Port 2)
-  * @V4L2_MBUS_CSI2_DPHY: MIPI CSI-2 serial interface, with D-PHY
-  * @V4L2_MBUS_CSI2_CPHY: MIPI CSI-2 serial interface, with C-PHY
-+ * @V4L2_MBUS_INVALID:	invalid bus type (keep as last)
-  */
- enum v4l2_mbus_type {
- 	V4L2_MBUS_UNKNOWN,
-@@ -87,6 +88,7 @@ enum v4l2_mbus_type {
- 	V4L2_MBUS_CCP2,
- 	V4L2_MBUS_CSI2_DPHY,
- 	V4L2_MBUS_CSI2_CPHY,
-+	V4L2_MBUS_INVALID,
- };
- 
- /**
 -- 
 2.27.0
 
