@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A07DE2E660D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:10:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67EF32E6795
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:28:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388845AbgL1NZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:25:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53788 "EHLO mail.kernel.org"
+        id S2633221AbgL1Q0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:26:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36142 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388842AbgL1NZG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:25:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8A7722AAA;
-        Mon, 28 Dec 2020 13:24:24 +0000 (UTC)
+        id S1730408AbgL1NI3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:08:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC1B6207C9;
+        Mon, 28 Dec 2020 13:07:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161865;
-        bh=QQZtdrtNDL2KFOEHs3fB6urx7WxcNySkqdHC+ILRyuc=;
+        s=korg; t=1609160869;
+        bh=6YBKju49kedlPHebqt68JVCos9IWFukPhrbd5V3kEJQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yp36ETcR6HLlysPLCmGHZLUjQV72x/NTYS3gofkOmFyOOtLyl+sTJAicSk/ybZnWJ
-         QpX+rTmdV0Z3Ju3mRNDGjL04b+5wQW63HdGLKWzjircX5v2BMBKO7hAnD1EMgARXX6
-         B9WA+/VgbA0Xz2AbnFxqP2VnzNRWsHreg7ZqoDlw=
+        b=MEkLDXLUvdpPCTjAxe4GUhI3Ej9ib4yAxSs1ImGkeNsKVoVov+bNgOq3cNPmD+8Al
+         8Ac3Agjgy4Pq7tCQQr5uwNnNf9muWXqxW7QNcn/3APGDC1zWtEBjZhR0Kxb4BcMuYw
+         MDpL9EW+WtR7GC8xgIHMQSZSDwn7m0TLAdtuV/to=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicolas Pitre <nico@fluxnic.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 108/346] ARM: p2v: fix handling of LPAE translation in BE mode
-Date:   Mon, 28 Dec 2020 13:47:07 +0100
-Message-Id: <20201228124925.006848754@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.14 023/242] net: bridge: vlan: fix error return code in __vlan_add()
+Date:   Mon, 28 Dec 2020 13:47:08 +0100
+Message-Id: <20201228124905.805854869@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,55 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+From: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-[ Upstream commit 4e79f0211b473f8e1eab8211a9fd50cc41a3a061 ]
+[ Upstream commit ee4f52a8de2c6f78b01f10b4c330867d88c1653a ]
 
-When running in BE mode on LPAE hardware with a PA-to-VA translation
-that exceeds 4 GB, we patch bits 39:32 of the offset into the wrong
-byte of the opcode. So fix that, by rotating the offset in r0 to the
-right by 8 bits, which will put the 8-bit immediate in bits 31:24.
+Fix to return a negative error code from the error handling
+case instead of 0, as done elsewhere in this function.
 
-Note that this will also move bit #22 in its correct place when
-applying the rotation to the constant #0x400000.
-
-Fixes: d9a790df8e984 ("ARM: 7883/1: fix mov to mvn conversion in case of 64 bit phys_addr_t and BE")
-Acked-by: Nicolas Pitre <nico@fluxnic.net>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: f8ed289fab84 ("bridge: vlan: use br_vlan_(get|put)_master to deal with refcounts")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+Acked-by: Nikolay Aleksandrov <nikolay@nvidia.com>
+Link: https://lore.kernel.org/r/1607071737-33875-1-git-send-email-zhangchangzhong@huawei.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/kernel/head.S | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ net/bridge/br_vlan.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/kernel/head.S b/arch/arm/kernel/head.S
-index 6b1148cafffdb..90add5ded3f1f 100644
---- a/arch/arm/kernel/head.S
-+++ b/arch/arm/kernel/head.S
-@@ -674,12 +674,8 @@ ARM_BE8(rev16	ip, ip)
- 	ldrcc	r7, [r4], #4	@ use branch for delay slot
- 	bcc	1b
- 	bx	lr
--#else
--#ifdef CONFIG_CPU_ENDIAN_BE8
--	moveq	r0, #0x00004000	@ set bit 22, mov to mvn instruction
- #else
- 	moveq	r0, #0x400000	@ set bit 22, mov to mvn instruction
--#endif
- 	b	2f
- 1:	ldr	ip, [r7, r3]
- #ifdef CONFIG_CPU_ENDIAN_BE8
-@@ -688,7 +684,7 @@ ARM_BE8(rev16	ip, ip)
- 	tst	ip, #0x000f0000	@ check the rotation field
- 	orrne	ip, ip, r6, lsl #24 @ mask in offset bits 31-24
- 	biceq	ip, ip, #0x00004000 @ clear bit 22
--	orreq	ip, ip, r0      @ mask in offset bits 7-0
-+	orreq	ip, ip, r0, ror #8  @ mask in offset bits 7-0
- #else
- 	bic	ip, ip, #0x000000ff
- 	tst	ip, #0xf00	@ check the rotation field
--- 
-2.27.0
-
+--- a/net/bridge/br_vlan.c
++++ b/net/bridge/br_vlan.c
+@@ -241,8 +241,10 @@ static int __vlan_add(struct net_bridge_
+ 		}
+ 
+ 		masterv = br_vlan_get_master(br, v->vid);
+-		if (!masterv)
++		if (!masterv) {
++			err = -ENOMEM;
+ 			goto out_filt;
++		}
+ 		v->brvlan = masterv;
+ 		v->stats = masterv->stats;
+ 	}
 
 
