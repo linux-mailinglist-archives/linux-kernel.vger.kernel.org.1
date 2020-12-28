@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8391F2E676D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:25:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DAE92E6730
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:22:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633387AbgL1QYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:24:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38716 "EHLO mail.kernel.org"
+        id S1732014AbgL1NMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:12:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730797AbgL1NLZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:11:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B3F7C206ED;
-        Mon, 28 Dec 2020 13:11:09 +0000 (UTC)
+        id S1731898AbgL1NL4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:11:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C18720728;
+        Mon, 28 Dec 2020 13:11:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161070;
-        bh=Fl2siaoJyc8HjAOQguAav/uWtoacuvzIBUcl1LSUC88=;
+        s=korg; t=1609161076;
+        bh=LDUSEzgpQCg/tQ503EdAynkOAI60OzN7LY9fFmOsqNw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N1aJB1jPmyYCs59rqcrVjKqKs0q/JP4KmZiviAyW84OQnGc+AIU8RLqTzJJzjRUpp
-         kEfbAt0JlahPmQaow2+oa65ekzac53U7wfBfKtIL8GgR7/dbUbVuJznsXMQnumMZPH
-         NmugHuingmmEwOYCPhgeI5Cu+TgJx4YZsPKI96Ec=
+        b=RvFCL5Zkv0wLfNVkaUdpdoGUzR5TUnBH9eZhAq/AEElvl8H8UHlTLC0uT55ajMRrz
+         dzObOqjqv8S01SuDqK4Aah4zIdPM4mmhctCo35z7TsNPqGHBa/ZHUC7nVztEW0mnJ1
+         crbTIFxu3y+17H3rgtOr2ifhwmpB+EZtuzA1FXY8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 091/242] MIPS: BCM47XX: fix kconfig dependency bug for BCM47XX_BCMA
-Date:   Mon, 28 Dec 2020 13:48:16 +0100
-Message-Id: <20201228124909.180446652@linuxfoundation.org>
+Subject: [PATCH 4.14 092/242] staging: greybus: codecs: Fix reference counter leak in error handling
+Date:   Mon, 28 Dec 2020 13:48:17 +0100
+Message-Id: <20201228124909.229498820@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
 References: <20201228124904.654293249@linuxfoundation.org>
@@ -41,46 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit 3a5fe2fb9635c43359c9729352f45044f3c8df6b ]
+[ Upstream commit 3952659a6108f77a0d062d8e8487bdbdaf52a66c ]
 
-When BCM47XX_BCMA is enabled and BCMA_DRIVER_PCI is disabled, it results
-in the following Kbuild warning:
+gb_pm_runtime_get_sync has increased the usage counter of the device here.
+Forgetting to call gb_pm_runtime_put_noidle will result in usage counter
+leak in the error branch of (gbcodec_hw_params and gbcodec_prepare). We
+fixed it by adding it.
 
-WARNING: unmet direct dependencies detected for BCMA_DRIVER_PCI_HOSTMODE
-  Depends on [n]: MIPS [=y] && BCMA_DRIVER_PCI [=n] && PCI_DRIVERS_LEGACY [=y] && BCMA [=y]=y
-  Selected by [y]:
-  - BCM47XX_BCMA [=y] && BCM47XX [=y] && PCI [=y]
-
-The reason is that BCM47XX_BCMA selects BCMA_DRIVER_PCI_HOSTMODE without
-depending on or selecting BCMA_DRIVER_PCI while BCMA_DRIVER_PCI_HOSTMODE
-depends on BCMA_DRIVER_PCI. This can also fail building the kernel.
-
-Honor the kconfig dependency to remove unmet direct dependency warnings
-and avoid any potential build failures.
-
-Fixes: c1d1c5d4213e ("bcm47xx: add support for bcma bus")
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=209879
-Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Fixes: c388ae7696992 ("greybus: audio: Update pm runtime support in dai_ops callback")
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Link: https://lore.kernel.org/r/20201109131347.1725288-2-zhangqilong3@huawei.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/bcm47xx/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/staging/greybus/audio_codec.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/mips/bcm47xx/Kconfig b/arch/mips/bcm47xx/Kconfig
-index 29471038d817e..c6b99845fb377 100644
---- a/arch/mips/bcm47xx/Kconfig
-+++ b/arch/mips/bcm47xx/Kconfig
-@@ -27,6 +27,7 @@ config BCM47XX_BCMA
- 	select BCMA
- 	select BCMA_HOST_SOC
- 	select BCMA_DRIVER_MIPS
-+	select BCMA_DRIVER_PCI if PCI
- 	select BCMA_DRIVER_PCI_HOSTMODE if PCI
- 	select BCMA_DRIVER_GPIO
- 	default y
+diff --git a/drivers/staging/greybus/audio_codec.c b/drivers/staging/greybus/audio_codec.c
+index a6d01f0761f32..6ba5a34fcdf29 100644
+--- a/drivers/staging/greybus/audio_codec.c
++++ b/drivers/staging/greybus/audio_codec.c
+@@ -490,6 +490,7 @@ static int gbcodec_hw_params(struct snd_pcm_substream *substream,
+ 	if (ret) {
+ 		dev_err_ratelimited(dai->dev, "%d: Error during set_config\n",
+ 				    ret);
++		gb_pm_runtime_put_noidle(bundle);
+ 		mutex_unlock(&codec->lock);
+ 		return ret;
+ 	}
+@@ -566,6 +567,7 @@ static int gbcodec_prepare(struct snd_pcm_substream *substream,
+ 		break;
+ 	}
+ 	if (ret) {
++		gb_pm_runtime_put_noidle(bundle);
+ 		mutex_unlock(&codec->lock);
+ 		dev_err_ratelimited(dai->dev, "set_data_size failed:%d\n",
+ 				     ret);
 -- 
 2.27.0
 
