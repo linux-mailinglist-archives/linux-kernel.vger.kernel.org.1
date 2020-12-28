@@ -2,30 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CB962E3B92
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:51:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45F2E2E42EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:34:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406986AbgL1Nvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:51:47 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:10370 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406945AbgL1Nvi (ORCPT
+        id S2407017AbgL1NwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:52:00 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:9939 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406981AbgL1Nvr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:51:38 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4D4Jp76KXnz7MGL;
-        Mon, 28 Dec 2020 21:50:07 +0800 (CST)
+        Mon, 28 Dec 2020 08:51:47 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4D4JpV5yKNzhyRP;
+        Mon, 28 Dec 2020 21:50:26 +0800 (CST)
 Received: from ubuntu.network (10.175.138.68) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 28 Dec 2020 21:50:49 +0800
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 28 Dec 2020 21:50:56 +0800
 From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <patrik.r.jakobsson@gmail.com>, <airlied@linux.ie>,
-        <daniel@ffwll.ch>, <dri-devel@lists.freedesktop.org>,
+To:     <mdf@kernel.org>, <linux-fpga@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] gpu: drm: gma500: Use DEFINE_SPINLOCK() for spinlock
-Date:   Mon, 28 Dec 2020 21:51:28 +0800
-Message-ID: <20201228135128.28733-1-zhengyongjun3@huawei.com>
+CC:     <trix@redhat.com>, Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH -next] fpga: Use DEFINE_SPINLOCK() for spinlock
+Date:   Mon, 28 Dec 2020 21:51:35 +0800
+Message-ID: <20201228135135.28788-1-zhengyongjun3@huawei.com>
 X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -41,30 +40,31 @@ rather than explicitly calling spin_lock_init().
 
 Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- drivers/gpu/drm/gma500/power.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/fpga/fpga-bridge.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/gma500/power.c b/drivers/gpu/drm/gma500/power.c
-index b361e41c6acd..cfb0a1906950 100644
---- a/drivers/gpu/drm/gma500/power.c
-+++ b/drivers/gpu/drm/gma500/power.c
-@@ -36,7 +36,7 @@
- #include <linux/pm_runtime.h>
+diff --git a/drivers/fpga/fpga-bridge.c b/drivers/fpga/fpga-bridge.c
+index 2deccacc3aa7..e9266b2a357f 100644
+--- a/drivers/fpga/fpga-bridge.c
++++ b/drivers/fpga/fpga-bridge.c
+@@ -17,7 +17,7 @@ static DEFINE_IDA(fpga_bridge_ida);
+ static struct class *fpga_bridge_class;
  
- static DEFINE_MUTEX(power_mutex);	/* Serialize power ops */
--static spinlock_t power_ctrl_lock;	/* Serialize power claim */
-+static DEFINE_SPINLOCK(power_ctrl_lock);	/* Serialize power claim */
+ /* Lock for adding/removing bridges to linked lists*/
+-static spinlock_t bridge_list_lock;
++static DEFINE_SPINLOCK(bridge_list_lock);
  
  /**
-  *	gma_power_init		-	initialise power manager
-@@ -55,7 +55,6 @@ void gma_power_init(struct drm_device *dev)
- 	dev_priv->display_power = true;	/* We start active */
- 	dev_priv->display_count = 0;	/* Currently no users */
- 	dev_priv->suspended = false;	/* And not suspended */
--	spin_lock_init(&power_ctrl_lock);
+  * fpga_bridge_enable - Enable transactions on the bridge
+@@ -479,8 +479,6 @@ static void fpga_bridge_dev_release(struct device *dev)
  
- 	if (dev_priv->ops->init_pm)
- 		dev_priv->ops->init_pm(dev);
+ static int __init fpga_bridge_dev_init(void)
+ {
+-	spin_lock_init(&bridge_list_lock);
+-
+ 	fpga_bridge_class = class_create(THIS_MODULE, "fpga_bridge");
+ 	if (IS_ERR(fpga_bridge_class))
+ 		return PTR_ERR(fpga_bridge_class);
 -- 
 2.22.0
 
