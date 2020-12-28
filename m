@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E98CB2E3799
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:59:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D77C32E3E70
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:29:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729073AbgL1M6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:58:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54162 "EHLO mail.kernel.org"
+        id S2504013AbgL1O2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:28:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729041AbgL1M5x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:57:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC58922573;
-        Mon, 28 Dec 2020 12:57:11 +0000 (UTC)
+        id S2502253AbgL1O1v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:27:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DD6122B45;
+        Mon, 28 Dec 2020 14:27:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160232;
-        bh=/PTLzEj6cYwZZ5m034J/AABUbzuJX3HoHvn9889b3d0=;
+        s=korg; t=1609165630;
+        bh=9Y+GB9T/BkLl75B8lh9AlbmTY11GfxqCcR4U2fuvGdg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mPPL/NNAaMunzDhSMRwJB+glDNeo3/BdLztM7CBh5mZ2F/F5bFhoWuT5wxrAG8Mok
-         JbqYYWhP9btMT90fkzkQfGdlRhQoVae13HAKevJZ9rNiqjgP13+E3L8IXvKHnnKAEO
-         d3jBNTlc+iXrCWsMA7f0mviAgvw8ugipC0fV3mAs=
+        b=zQi0Da7a2dccsXg6WlGwFyMBX934CTnogO5KFGP3Rt3eHb2jkJqEHjsW+Zx92ZFas
+         m+1b+v5JNeEPeZ+dsWhTzuyY9zmGxCZUem1XpdHnmBs95/gUKIvJcL9odrxwN3XJ5O
+         hNTipJFJ853cp0Xf88AWYnY1YHQu7YU4BGVoPGns=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.4 113/132] USB: serial: keyspan_pda: fix tx-unthrottle use-after-free
+        stable@vger.kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.10 599/717] KVM: SVM: Remove the call to sev_platform_status() during setup
 Date:   Mon, 28 Dec 2020 13:49:57 +0100
-Message-Id: <20201228124851.875909188@linuxfoundation.org>
+Message-Id: <20201228125049.605150382@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,41 +39,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Tom Lendacky <thomas.lendacky@amd.com>
 
-commit 49fbb8e37a961396a5b6c82937c70df91de45e9d upstream.
+commit 9d4747d02376aeb8de38afa25430de79129c5799 upstream.
 
-The driver's transmit-unthrottle work was never flushed on disconnect,
-something which could lead to the driver port data being freed while the
-unthrottle work is still scheduled.
+When both KVM support and the CCP driver are built into the kernel instead
+of as modules, KVM initialization can happen before CCP initialization. As
+a result, sev_platform_status() will return a failure when it is called
+from sev_hardware_setup(), when this isn't really an error condition.
 
-Fix this by cancelling the unthrottle work when shutting down the port.
+Since sev_platform_status() doesn't need to be called at this time anyway,
+remove the invocation from sev_hardware_setup().
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+Message-Id: <618380488358b56af558f2682203786f09a49483.1607620209.git.thomas.lendacky@amd.com>
 Cc: stable@vger.kernel.org
-Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/serial/keyspan_pda.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ arch/x86/kvm/svm/sev.c |   22 +---------------------
+ 1 file changed, 1 insertion(+), 21 deletions(-)
 
---- a/drivers/usb/serial/keyspan_pda.c
-+++ b/drivers/usb/serial/keyspan_pda.c
-@@ -651,8 +651,12 @@ error:
- }
- static void keyspan_pda_close(struct usb_serial_port *port)
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -1127,9 +1127,6 @@ void sev_vm_destroy(struct kvm *kvm)
+ 
+ int __init sev_hardware_setup(void)
  {
-+	struct keyspan_pda_private *priv = usb_get_serial_port_data(port);
-+
- 	usb_kill_urb(port->write_urb);
- 	usb_kill_urb(port->interrupt_in_urb);
-+
-+	cancel_work_sync(&priv->unthrottle_work);
+-	struct sev_user_data_status *status;
+-	int rc;
+-
+ 	/* Maximum number of encrypted guests supported simultaneously */
+ 	max_sev_asid = cpuid_ecx(0x8000001F);
+ 
+@@ -1148,26 +1145,9 @@ int __init sev_hardware_setup(void)
+ 	if (!sev_reclaim_asid_bitmap)
+ 		return 1;
+ 
+-	status = kmalloc(sizeof(*status), GFP_KERNEL);
+-	if (!status)
+-		return 1;
+-
+-	/*
+-	 * Check SEV platform status.
+-	 *
+-	 * PLATFORM_STATUS can be called in any state, if we failed to query
+-	 * the PLATFORM status then either PSP firmware does not support SEV
+-	 * feature or SEV firmware is dead.
+-	 */
+-	rc = sev_platform_status(status, NULL);
+-	if (rc)
+-		goto err;
+-
+ 	pr_info("SEV supported\n");
+ 
+-err:
+-	kfree(status);
+-	return rc;
++	return 0;
  }
  
- 
+ void sev_hardware_teardown(void)
 
 
