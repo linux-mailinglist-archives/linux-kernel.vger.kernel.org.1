@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F05462E39BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:27:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27DBE2E4022
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:49:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388364AbgL1N1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:27:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55060 "EHLO mail.kernel.org"
+        id S2438062AbgL1OVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:21:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730818AbgL1N0x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:26:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1531F2076D;
-        Mon, 28 Dec 2020 13:26:36 +0000 (UTC)
+        id S2502547AbgL1OVV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:21:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2774206D4;
+        Mon, 28 Dec 2020 14:21:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161997;
-        bh=AdlIVIuMH/wrQhiTKrLaswnAVTyohjnFmsy3Buji09Y=;
+        s=korg; t=1609165266;
+        bh=dmCA1ZTHiAWZ1xMo2G0cukPuVJeRhepqlpgejjsNbws=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GN/vuWqCFF8Fkf1UMPcv72utp+AlTGp/qo68OASQrID1B2cvCuAnbLXxA4afAXeWx
-         y28ity/jW7+ECAT4OlhgMutUpcCG7IlDPp+Hn7aJlIFXk7LBIiJgv4eRvVsSDUVxwE
-         lkkllMUeEGCO178qY+TcZFvKm3OvlkXCpoViXgSg=
+        b=iUx9wbQfcnaLouHrOwi3aOYpZMrGn547WpK79XMfMbjQNtLurBpBgAeZ1Y12m10yA
+         Ij3X1sDZpEISlAAX4fKZHSMi9WQtmObk+urCm4u00tQEz+3aYsXli1qsF8owjM/x7X
+         H/E0Dee2afvSqq4koHJ/uMDNHp5f8K+cmv6I+SOs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anmol Karn <anmol.karan123@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Sasha Levin <sashal@kernel.org>,
-        syzbot+0bef568258653cff272f@syzkaller.appspotmail.com
-Subject: [PATCH 4.19 123/346] Bluetooth: Fix null pointer dereference in hci_event_packet()
+        stable@vger.kernel.org, Kajol Jain <kjain@linux.ibm.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 444/717] perf test: Fix metric parsing test
 Date:   Mon, 28 Dec 2020 13:47:22 +0100
-Message-Id: <20201228124925.743222874@linuxfoundation.org>
+Message-Id: <20201228125042.243540131@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,47 +43,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anmol Karn <anmol.karan123@gmail.com>
+From: Kajol Jain <kjain@linux.ibm.com>
 
-[ Upstream commit 6dfccd13db2ff2b709ef60a50163925d477549aa ]
+[ Upstream commit b2ce5dbc15819ea4bef47dbd368239cb1e965158 ]
 
-AMP_MGR is getting derefernced in hci_phy_link_complete_evt(), when called
-from hci_event_packet() and there is a possibility, that hcon->amp_mgr may
-not be found when accessing after initialization of hcon.
+Commit e1c92a7fbbc5 ("perf tests: Add another metric parsing test") add
+another test for metric parsing. The test goes through all metrics
+compiled for arch within pmu events and try to parse them.
 
-- net/bluetooth/hci_event.c:4945
-The bug seems to get triggered in this line:
+Right now this test is failing in powerpc machine.
 
-bredr_hcon = hcon->amp_mgr->l2cap_conn->hcon;
+Result in power9 platform:
 
-Fix it by adding a NULL check for the hcon->amp_mgr before checking the ev-status.
+  [command]# ./perf test 10
+  10: PMU events                                                      :
+  10.1: PMU event table sanity                                        : Ok
+  10.2: PMU event map aliases                                         : Ok
+  10.3: Parsing of PMU event table metrics                            : Skip (some metrics failed)
+  10.4: Parsing of PMU event table metrics with fake PMUs             : FAILED!
 
-Fixes: d5e911928bd8 ("Bluetooth: AMP: Process Physical Link Complete evt")
-Reported-and-tested-by: syzbot+0bef568258653cff272f@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?extid=0bef568258653cff272f
-Signed-off-by: Anmol Karn <anmol.karan123@gmail.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Issue is we are passing different runtime parameter value in
+"expr__find_other" and "expr__parse" function which is called from
+function `metric_parse_fake`.  And because of this parsing of hv-24x7
+metrics is failing.
+
+  [command]# ./perf test 10 -vv
+  .....
+  hv_24x7/pm_mcs01_128b_rd_disp_port01,chip=1/ not found
+  expr__parse failed
+  test child finished with -1
+  ---- end ----
+  PMU events subtest 4: FAILED!
+
+This patch fix this issue and change runtime parameter value to '0' in
+expr__parse function.
+
+Result in power9 platform after this patch:
+
+  [command]# ./perf test 10
+  10: PMU events                                                      :
+  10.1: PMU event table sanity                                        : Ok
+  10.2: PMU event map aliases                                         : Ok
+  10.3: Parsing of PMU event table metrics                            : Skip (some metrics failed)
+  10.4: Parsing of PMU event table metrics with fake PMUs             : Ok
+
+Fixes: e1c92a7fbbc5 ("perf tests: Add another metric parsing test")
+Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+Acked-by: Ian Rogers <irogers@google.com>
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+Cc: Madhavan Srinivasan <maddy@linux.ibm.com>
+Cc: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Link: http://lore.kernel.org/lkml/20201119152411.46041-1-kjain@linux.ibm.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bluetooth/hci_event.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ tools/perf/tests/pmu-events.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index 622898d018f63..b58afd2d5ebf4 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -4672,6 +4672,11 @@ static void hci_phy_link_complete_evt(struct hci_dev *hdev,
- 		return;
+diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
+index d3517a74d95e3..31f987bb7ebba 100644
+--- a/tools/perf/tests/pmu-events.c
++++ b/tools/perf/tests/pmu-events.c
+@@ -561,7 +561,7 @@ static int metric_parse_fake(const char *str)
+ 		}
  	}
  
-+	if (!hcon->amp_mgr) {
-+		hci_dev_unlock(hdev);
-+		return;
-+	}
-+
- 	if (ev->status) {
- 		hci_conn_del(hcon);
- 		hci_dev_unlock(hdev);
+-	if (expr__parse(&result, &ctx, str, 1))
++	if (expr__parse(&result, &ctx, str, 0))
+ 		pr_err("expr__parse failed\n");
+ 	else
+ 		ret = 0;
 -- 
 2.27.0
 
