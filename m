@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 592BC2E68B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:40:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADB132E65D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:07:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441492AbgL1QkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:40:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55560 "EHLO mail.kernel.org"
+        id S2389795AbgL1QEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:04:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729338AbgL1M7w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:59:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17F8622AAD;
-        Mon, 28 Dec 2020 12:59:35 +0000 (UTC)
+        id S2389761AbgL1N1y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:27:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E0DC422472;
+        Mon, 28 Dec 2020 13:27:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160376;
-        bh=p8cUv/oV+lhTaejERzWhoZIIadUeGOr9m1vNrFINw/w=;
+        s=korg; t=1609162033;
+        bh=BTAvjbVVQsa+KD4dezYI2fL5E+Y5760p7NFkr+BtQTQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qQQPbh7k8klgnGIt9PCpFgAQkAWi6W2qKrfU7wvAVAv/laCUVHf/86gn2ekcCMPlY
-         pERKZkrXrpiF15enOVuOGMYOWn2W3KZXa0u8rQky+KvwJJaPObooiHLBUqUjtbHsMg
-         Ewv5bkSDJLXmks0VM2MbyeTDh3STWtU/wPgGfHD4=
+        b=xKDq47EG1igusZ3meSUb57069QMAWeK3Bh3+rJvMKGbTEqVOp04PcImc80TzFmBoY
+         xm5HIlQR3DhoLOapcJv8PHBKqWmLN5YLVECPhYMW25BjNRrVdDsLwrp34pVitDRA+9
+         TZnItLfyAQX4Y/XNzrENN5H4c/Meysu349fOZtUE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 031/175] kernel/cpu: add arch override for clear_tasks_mm_cpumask() mm handling
-Date:   Mon, 28 Dec 2020 13:48:04 +0100
-Message-Id: <20201228124854.768878181@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhihao Cheng <chengzhihao1@huawei.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 166/346] dmaengine: mv_xor_v2: Fix error return code in mv_xor_v2_probe()
+Date:   Mon, 28 Dec 2020 13:48:05 +0100
+Message-Id: <20201228124927.815361274@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,52 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Piggin <npiggin@gmail.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
 
-[ Upstream commit 8ff00399b153440c1c83e20c43020385b416415b ]
+[ Upstream commit c95e6515a8c065862361f7e0e452978ade7f94ec ]
 
-powerpc/64s keeps a counter in the mm which counts bits set in
-mm_cpumask as well as other things. This means it can't use generic code
-to clear bits out of the mask and doesn't adjust the arch specific
-counter.
+Return the corresponding error code when first_msi_entry() returns
+NULL in mv_xor_v2_probe().
 
-Add an arch override that allows powerpc/64s to use
-clear_tasks_mm_cpumask().
-
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-Reviewed-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20201126102530.691335-4-npiggin@gmail.com
+Fixes: 19a340b1a820430 ("dmaengine: mv_xor_v2: new driver")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Link: https://lore.kernel.org/r/20201124010813.1939095-1-chengzhihao1@huawei.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/cpu.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/dma/mv_xor_v2.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index a542b5e583503..e005209f279e1 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -815,6 +815,10 @@ void __unregister_cpu_notifier(struct notifier_block *nb)
- EXPORT_SYMBOL(__unregister_cpu_notifier);
+diff --git a/drivers/dma/mv_xor_v2.c b/drivers/dma/mv_xor_v2.c
+index 8dc0aa4d73ab8..462adf7e4e952 100644
+--- a/drivers/dma/mv_xor_v2.c
++++ b/drivers/dma/mv_xor_v2.c
+@@ -777,8 +777,10 @@ static int mv_xor_v2_probe(struct platform_device *pdev)
+ 		goto disable_clk;
  
- #ifdef CONFIG_HOTPLUG_CPU
-+#ifndef arch_clear_mm_cpumask_cpu
-+#define arch_clear_mm_cpumask_cpu(cpu, mm) cpumask_clear_cpu(cpu, mm_cpumask(mm))
-+#endif
-+
- /**
-  * clear_tasks_mm_cpumask - Safely clear tasks' mm_cpumask for a CPU
-  * @cpu: a CPU id
-@@ -850,7 +854,7 @@ void clear_tasks_mm_cpumask(int cpu)
- 		t = find_lock_task_mm(p);
- 		if (!t)
- 			continue;
--		cpumask_clear_cpu(cpu, mm_cpumask(t->mm));
-+		arch_clear_mm_cpumask_cpu(cpu, t->mm);
- 		task_unlock(t);
- 	}
- 	rcu_read_unlock();
+ 	msi_desc = first_msi_entry(&pdev->dev);
+-	if (!msi_desc)
++	if (!msi_desc) {
++		ret = -ENODEV;
+ 		goto free_msi_irqs;
++	}
+ 	xor_dev->msi_desc = msi_desc;
+ 
+ 	ret = devm_request_irq(&pdev->dev, msi_desc->irq,
 -- 
 2.27.0
 
