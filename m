@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C9AD2E40B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:57:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1C742E3B05
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:44:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408092AbgL1Ozr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:55:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51948 "EHLO mail.kernel.org"
+        id S2404669AbgL1Noq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:44:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44922 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441329AbgL1ORB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:17:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 301C4207B2;
-        Mon, 28 Dec 2020 14:16:44 +0000 (UTC)
+        id S2391971AbgL1NoP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:44:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0367A206D4;
+        Mon, 28 Dec 2020 13:43:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165005;
-        bh=xb0Uv21e94yMnrikOM3ZpNUJhYWgw2Lpwh5CLNix+K8=;
+        s=korg; t=1609163015;
+        bh=SouEUD5BJ3gnnq7AZxzqRsHZ8/JhO+UC3LcNUvWcgog=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y3uCfk5FMKGJuwV9x6FCIi7hK0uHwydQCHNEgxBaEnyex7jMTamqzHKkuStqSO9Hu
-         E1PjZY89J1V31vHAk6l0jPz7gWUWWL8azQtCH9Q9SwOAY4lVTPdOgHzvu7ffr1MzjB
-         qa/7rOKbzegnFrEHQ5vcfqjZn0heNAyjqWPYnNkg=
+        b=zNmn+s24blikvq67CgUfodeeJKQowONqSPUA6LW8p7E+1ieudiOUlybkEtuXdKZD0
+         Ju+PAdxG0NxFs/V1e8BCPteKt+pc3cssedI5dNGPlPi8kHot+GESUykUvfQJ9vSQmN
+         fCBQrz6im2cVbWNqsjiUV1zHe9XrDHrL0OIB+7kA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Michael Walle <michael@walle.cc>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
+        stable@vger.kernel.org, Jaehoon Chung <jh80.chung@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Arend van Spriel <arend.vanspriel@broadcom.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 346/717] mtd: spi-nor: sst: fix BPn bits for the SST25VF064C
-Date:   Mon, 28 Dec 2020 13:45:44 +0100
-Message-Id: <20201228125037.603931498@linuxfoundation.org>
+Subject: [PATCH 5.4 109/453] brcmfmac: Fix memory leak for unpaired brcmf_{alloc/free}
+Date:   Mon, 28 Dec 2020 13:45:45 +0100
+Message-Id: <20201228124942.457670010@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,40 +42,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Walle <michael@walle.cc>
+From: Seung-Woo Kim <sw0312.kim@samsung.com>
 
-[ Upstream commit 989d4b72bae3b05c1564d38e71e18f65b12734fb ]
+[ Upstream commit 9db946284e07bb27309dd546b7fee528664ba82a ]
 
-This flash part actually has 4 block protection bits.
+There are missig brcmf_free() for brcmf_alloc(). Fix memory leak
+by adding missed brcmf_free().
 
-Please note, that this patch is just based on information of the
-datasheet of the datasheet and wasn't tested.
-
-Fixes: 3e0930f109e7 ("mtd: spi-nor: Rework the disabling of block write protection")
-Reported-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-Signed-off-by: Michael Walle <michael@walle.cc>
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-Link: https://lore.kernel.org/r/20201203162959.29589-2-michael@walle.cc
+Reported-by: Jaehoon Chung <jh80.chung@samsung.com>
+Fixes: a1f5aac1765a ("brcmfmac: don't realloc wiphy during PCIe reset")
+Signed-off-by: Seung-Woo Kim <sw0312.kim@samsung.com>
+Reviewed-by: Arend van Spriel <arend.vanspriel@broadcom.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/1603849967-22817-1-git-send-email-sw0312.kim@samsung.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/spi-nor/sst.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c | 6 ++++--
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c | 1 +
+ 2 files changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/sst.c b/drivers/mtd/spi-nor/sst.c
-index e0af6d25d573b..0ab07624fb73f 100644
---- a/drivers/mtd/spi-nor/sst.c
-+++ b/drivers/mtd/spi-nor/sst.c
-@@ -18,7 +18,8 @@ static const struct flash_info sst_parts[] = {
- 			      SECT_4K | SST_WRITE) },
- 	{ "sst25vf032b", INFO(0xbf254a, 0, 64 * 1024, 64,
- 			      SECT_4K | SST_WRITE) },
--	{ "sst25vf064c", INFO(0xbf254b, 0, 64 * 1024, 128, SECT_4K) },
-+	{ "sst25vf064c", INFO(0xbf254b, 0, 64 * 1024, 128,
-+			      SECT_4K | SPI_NOR_4BIT_BP) },
- 	{ "sst25wf512",  INFO(0xbf2501, 0, 64 * 1024,  1,
- 			      SECT_4K | SST_WRITE) },
- 	{ "sst25wf010",  INFO(0xbf2502, 0, 64 * 1024,  2,
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
+index 3be60aef54650..cb68f54a9c56e 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
+@@ -1936,16 +1936,18 @@ brcmf_pcie_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	fwreq = brcmf_pcie_prepare_fw_request(devinfo);
+ 	if (!fwreq) {
+ 		ret = -ENOMEM;
+-		goto fail_bus;
++		goto fail_brcmf;
+ 	}
+ 
+ 	ret = brcmf_fw_get_firmwares(bus->dev, fwreq, brcmf_pcie_setup);
+ 	if (ret < 0) {
+ 		kfree(fwreq);
+-		goto fail_bus;
++		goto fail_brcmf;
+ 	}
+ 	return 0;
+ 
++fail_brcmf:
++	brcmf_free(&devinfo->pdev->dev);
+ fail_bus:
+ 	kfree(bus->msgbuf);
+ 	kfree(bus);
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+index 38e6809f16c75..ef5521b9b3577 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+@@ -4433,6 +4433,7 @@ void brcmf_sdio_remove(struct brcmf_sdio *bus)
+ 		brcmf_sdiod_intr_unregister(bus->sdiodev);
+ 
+ 		brcmf_detach(bus->sdiodev->dev);
++		brcmf_free(bus->sdiodev->dev);
+ 
+ 		cancel_work_sync(&bus->datawork);
+ 		if (bus->brcmf_wq)
 -- 
 2.27.0
 
