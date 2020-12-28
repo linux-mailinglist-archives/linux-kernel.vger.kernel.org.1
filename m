@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D0EA2E3FCC
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:46:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC732E38AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:14:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503102AbgL1OYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:24:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60566 "EHLO mail.kernel.org"
+        id S1729584AbgL1NNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:13:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41280 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503068AbgL1OYY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:24:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 61910221F0;
-        Mon, 28 Dec 2020 14:23:43 +0000 (UTC)
+        id S1732207AbgL1NNP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:13:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DE9D22AAA;
+        Mon, 28 Dec 2020 13:12:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165424;
-        bh=6CxI0oYMukW3gknS1K+e8u/qrECFPRdN1esVcMhONXo=;
+        s=korg; t=1609161154;
+        bh=QfsbsvBUQaN7YX5Yo3V4C7JbuS2Go+0I3tJcw22i5b4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=08TrYlnR5TMiH1JTvL7ikT9Re9HxvmVxY9+rlUb3bX3tG3btw+sthA4Pyqs/xdhfY
-         bJdsd3jDuQFsLUdXApjmP5f0PizvFcxqerZkm+LXpcArCRp0ouxUK40ygZZfT1LfwZ
-         0Y9RRDIsqlvdCMvs8NUqbZA56guWT0K2RP8NglDU=
+        b=Dml43/BpTbvF4UPf/yzwn4c5/kxVIsYstJVZIS0uj8rmrubEFgQizQdap6b7rosSq
+         Fq/AtddcRYfguaJcGi8rac586xnfwU0s8ROFHX0rCn66og2zQs8aB4weDwRw50K/Um
+         KQadHeYk0GhqkVgyQJsSxGEy5T971eraQe2NjhM4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.10 527/717] media: ipu3-cio2: Validate mbus format in setting subdev format
+        stable@vger.kernel.org, Bharat Gooty <bharat.gooty@broadcom.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 120/242] PCI: iproc: Fix out-of-bound array accesses
 Date:   Mon, 28 Dec 2020 13:48:45 +0100
-Message-Id: <20201228125046.214023397@linuxfoundation.org>
+Message-Id: <20201228124910.603364980@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,74 +40,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
+From: Bharat Gooty <bharat.gooty@broadcom.com>
 
-commit a86cf9b29e8b12811cf53c4970eefe0c1d290476 upstream.
+[ Upstream commit a3ff529f5d368a17ff35ada8009e101162ebeaf9 ]
 
-Validate media bus code, width and height when setting the subdev format.
+Declare the full size array for all revisions of PAX register sets
+to avoid potentially out of bound access of the register array
+when they are being initialized in iproc_pcie_rev_init().
 
-This effectively reworks how setting subdev format is implemented in the
-driver.
-
-Fixes: c2a6a07afe4a ("media: intel-ipu3: cio2: add new MIPI-CSI2 driver")
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: stable@vger.kernel.org # v4.16 and up
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Link: https://lore.kernel.org/r/20201001060054.6616-2-srinath.mannam@broadcom.com
+Fixes: 06324ede76cdf ("PCI: iproc: Improve core register population")
+Signed-off-by: Bharat Gooty <bharat.gooty@broadcom.com>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/pci/intel/ipu3/ipu3-cio2.c |   29 ++++++++++++++++++++---------
- 1 file changed, 20 insertions(+), 9 deletions(-)
+ drivers/pci/host/pcie-iproc.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
---- a/drivers/media/pci/intel/ipu3/ipu3-cio2.c
-+++ b/drivers/media/pci/intel/ipu3/ipu3-cio2.c
-@@ -1258,6 +1258,9 @@ static int cio2_subdev_set_fmt(struct v4
- 			       struct v4l2_subdev_format *fmt)
- {
- 	struct cio2_queue *q = container_of(sd, struct cio2_queue, subdev);
-+	struct v4l2_mbus_framefmt *mbus;
-+	u32 mbus_code = fmt->format.code;
-+	unsigned int i;
+diff --git a/drivers/pci/host/pcie-iproc.c b/drivers/pci/host/pcie-iproc.c
+index 8f8dac0155d63..2565abbe1a910 100644
+--- a/drivers/pci/host/pcie-iproc.c
++++ b/drivers/pci/host/pcie-iproc.c
+@@ -306,7 +306,7 @@ enum iproc_pcie_reg {
+ };
  
- 	/*
- 	 * Only allow setting sink pad format;
-@@ -1266,18 +1269,26 @@ static int cio2_subdev_set_fmt(struct v4
- 	if (fmt->pad == CIO2_PAD_SOURCE)
- 		return cio2_subdev_get_fmt(sd, cfg, fmt);
+ /* iProc PCIe PAXB BCMA registers */
+-static const u16 iproc_pcie_reg_paxb_bcma[] = {
++static const u16 iproc_pcie_reg_paxb_bcma[IPROC_PCIE_MAX_NUM_REG] = {
+ 	[IPROC_PCIE_CLK_CTRL]		= 0x000,
+ 	[IPROC_PCIE_CFG_IND_ADDR]	= 0x120,
+ 	[IPROC_PCIE_CFG_IND_DATA]	= 0x124,
+@@ -317,7 +317,7 @@ static const u16 iproc_pcie_reg_paxb_bcma[] = {
+ };
  
--	mutex_lock(&q->subdev_lock);
-+	if (fmt->which == V4L2_SUBDEV_FORMAT_TRY)
-+		mbus = v4l2_subdev_get_try_format(sd, cfg, fmt->pad);
-+	else
-+		mbus = &q->subdev_fmt;
-+
-+	fmt->format.code = formats[0].mbus_code;
+ /* iProc PCIe PAXB registers */
+-static const u16 iproc_pcie_reg_paxb[] = {
++static const u16 iproc_pcie_reg_paxb[IPROC_PCIE_MAX_NUM_REG] = {
+ 	[IPROC_PCIE_CLK_CTRL]		= 0x000,
+ 	[IPROC_PCIE_CFG_IND_ADDR]	= 0x120,
+ 	[IPROC_PCIE_CFG_IND_DATA]	= 0x124,
+@@ -333,7 +333,7 @@ static const u16 iproc_pcie_reg_paxb[] = {
+ };
  
--	if (fmt->which == V4L2_SUBDEV_FORMAT_TRY) {
--		*v4l2_subdev_get_try_format(sd, cfg, fmt->pad) = fmt->format;
--	} else {
--		/* It's the sink, allow changing frame size */
--		q->subdev_fmt.width = fmt->format.width;
--		q->subdev_fmt.height = fmt->format.height;
--		q->subdev_fmt.code = fmt->format.code;
--		fmt->format = q->subdev_fmt;
-+	for (i = 0; i < ARRAY_SIZE(formats); i++) {
-+		if (formats[i].mbus_code == fmt->format.code) {
-+			fmt->format.code = mbus_code;
-+			break;
-+		}
- 	}
+ /* iProc PCIe PAXB v2 registers */
+-static const u16 iproc_pcie_reg_paxb_v2[] = {
++static const u16 iproc_pcie_reg_paxb_v2[IPROC_PCIE_MAX_NUM_REG] = {
+ 	[IPROC_PCIE_CLK_CTRL]		= 0x000,
+ 	[IPROC_PCIE_CFG_IND_ADDR]	= 0x120,
+ 	[IPROC_PCIE_CFG_IND_DATA]	= 0x124,
+@@ -361,7 +361,7 @@ static const u16 iproc_pcie_reg_paxb_v2[] = {
+ };
  
-+	fmt->format.width = min_t(u32, fmt->format.width, CIO2_IMAGE_MAX_WIDTH);
-+	fmt->format.height = min_t(u32, fmt->format.height,
-+				   CIO2_IMAGE_MAX_LENGTH);
-+
-+	mutex_lock(&q->subdev_lock);
-+	*mbus = fmt->format;
- 	mutex_unlock(&q->subdev_lock);
+ /* iProc PCIe PAXC v1 registers */
+-static const u16 iproc_pcie_reg_paxc[] = {
++static const u16 iproc_pcie_reg_paxc[IPROC_PCIE_MAX_NUM_REG] = {
+ 	[IPROC_PCIE_CLK_CTRL]		= 0x000,
+ 	[IPROC_PCIE_CFG_IND_ADDR]	= 0x1f0,
+ 	[IPROC_PCIE_CFG_IND_DATA]	= 0x1f4,
+@@ -370,7 +370,7 @@ static const u16 iproc_pcie_reg_paxc[] = {
+ };
  
- 	return 0;
+ /* iProc PCIe PAXC v2 registers */
+-static const u16 iproc_pcie_reg_paxc_v2[] = {
++static const u16 iproc_pcie_reg_paxc_v2[IPROC_PCIE_MAX_NUM_REG] = {
+ 	[IPROC_PCIE_MSI_GIC_MODE]	= 0x050,
+ 	[IPROC_PCIE_MSI_BASE_ADDR]	= 0x074,
+ 	[IPROC_PCIE_MSI_WINDOW_SIZE]	= 0x078,
+-- 
+2.27.0
+
 
 
