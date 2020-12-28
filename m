@@ -2,86 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 981AE2E33F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 04:59:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A97852E33FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 05:06:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726350AbgL1D6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Dec 2020 22:58:37 -0500
-Received: from m15111.mail.126.com ([220.181.15.111]:57842 "EHLO
-        m15111.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726242AbgL1D6g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Dec 2020 22:58:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=z0RBXr31F2ios8V7Fp
-        YTtcsONT7xFb8GSiDADGswyOk=; b=gycD6y1lGtSW6CsapTcIjnhVgeOQL0z8Ry
-        wRCuSjI5UTifBBQr6VeKjTlpgAA195GAZXyHjfpNIQogNCphJ6yt71u2NjzAPyso
-        6NkhbUDmgy5H+AmPirR7psidac6C6Jeh+6SA3m/3Vo+/2FTFmyY0vItOo0hZfKng
-        1hS+vWQG0=
-Received: from localhost.localdomain (unknown [36.112.86.14])
-        by smtp1 (Coremail) with SMTP id C8mowACXWUmZV+lfp_UtNA--.28418S2;
-        Mon, 28 Dec 2020 11:57:15 +0800 (CST)
-From:   Defang Bo <bodefang@126.com>
-To:     airlied@linux.ie, daniel@ffwll.ch
-Cc:     nicholas.kazlauskas@amd.com, Rodrigo.Siqueira@amd.com,
-        aurabindo.pillai@amd.com, stylon.wang@amd.com,
-        Bhawanpreet.Lakha@amd.com, hersenxs.wu@amd.com, amonakov@ispras.ru,
-        luben.tuikov@amd.com, amd-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Defang Bo <bodefang@126.com>
-Subject: [PATCH] drm/amd/display: avoid null pointer dereference in dm_set_vblank
-Date:   Mon, 28 Dec 2020 11:57:06 +0800
-Message-Id: <1609127826-264749-1-git-send-email-bodefang@126.com>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: C8mowACXWUmZV+lfp_UtNA--.28418S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7CFykXw1kur48JFWrKw18AFb_yoW8XF1fpr
-        s3JFyjqr48ZF1xW3srCF109r98K393Xa48GrW3Cw1aga4UAwn8Cw1rArZ2gw47WFWxC3y7
-        XFy7CFW3Z3Wq9w7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UKQ6XUUUUU=
-X-Originating-IP: [36.112.86.14]
-X-CM-SenderInfo: pergvwxdqjqiyswou0bp/1tbitRIJ11pECvx6lgAAs9
+        id S1726178AbgL1EF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 23:05:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46410 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726167AbgL1EF5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Dec 2020 23:05:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 180E8206D4;
+        Mon, 28 Dec 2020 04:05:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609128316;
+        bh=MdjD7BH+41KU7Oxxv0Urq2PeP/eYK+mpFjsS8iyMIHo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Yd7HBr0ZBUEp/nRAC1TCrR02b2boWh7wSdnwYTFz1kjS2TZkVhHYBClyzzRPiTy74
+         XOgC6LrxYEO1gzprhBfOqMXENxFl2kq8T+0hDqZj/OhRkA9ETsHnpFuvzVHx3AozAA
+         blq1yhrkjPFgRD1/GphflJFFq79laiaOgSTQ2XmSg7hITM8cUQ43WJpR/IPl0e0s/w
+         GKcLRgn1d2r+zbkOv3OomZra5vGy0qmbpblqO1v5F1P7UkY2IyaitYE0Xq/2AY0KH9
+         Mqw5E89rf/a8SpFaoqmPfBBL798GCPZsOvCfOUBRoIMIEKA9nylSVgvF2y/rtNGpBr
+         Phvuf1ee1KF2w==
+Date:   Sun, 27 Dec 2020 22:05:13 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "Kenneth R. Crudup" <kenny@panix.com>
+Cc:     Vidya Sagar <vidyas@nvidia.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Commit 4257f7e0 ("PCI/ASPM: Save/restore L1SS Capability for
+ suspend/resume") causing hibernate resume failures
+Message-ID: <20201228040513.GA611645@bjorn-Precision-5520>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Why]
-Similar to commit<dddc0557e3a0>("drm/amd/display: Guard against null crtc in CRC IRQ"), a null pointer deference can occur if crtc is null in
-dm_set_vblank.
+> From: Kenneth R. Crudup <kenny@panix.com>
+> 
+> I've been running Linus' master branch on my laptop (Dell XPS 13
+> 2-in-1).  With this commit in place, after resuming from hibernate
+> my machine is essentially useless, with a torrent of disk I/O errors
+> on my NVMe device (at least, and possibly other devices affected)
+> until a reboot.
+> 
+> I do use tlp to set the PCIe ASPM to "performance" on AC and
+> "powersupersave" on battery.
 
-[How]
-Check that CRTC is non-null before accessing its fields.
+Thanks a lot for the report, and sorry for the breakage.
 
-Signed-off-by: Defang Bo <bodefang@126.com>
----
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+4257f7e008ea restores PCI_L1SS_CTL1, then PCI_L1SS_CTL2.  I think it
+should do those in the reverse order, since the Enable bits are in
+PCI_L1SS_CTL1.  It also restores L1SS state (potentially enabling
+L1.x) before we restore the PCIe Capability (potentially enabling ASPM
+as a whole).  Those probably should also be in the other order.
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index e2b23486..f820962 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -4875,11 +4875,19 @@ static inline int dm_set_vupdate_irq(struct drm_crtc *crtc, bool enable)
- static inline int dm_set_vblank(struct drm_crtc *crtc, bool enable)
- {
- 	enum dc_irq_source irq_source;
--	struct amdgpu_crtc *acrtc = to_amdgpu_crtc(crtc);
--	struct amdgpu_device *adev = drm_to_adev(crtc->dev);
--	struct dm_crtc_state *acrtc_state = to_dm_crtc_state(crtc->state);
-+	struct amdgpu_crtc *acrtc;
-+	struct amdgpu_device *adev;
-+	struct dm_crtc_state *acrtc_state;
- 	int rc = 0;
+If it's convenient, can you try the patch below?  If the debug patch
+doesn't help:
+
+  - Are you seeing the hibernate/resume problem when on AC or on
+    battery?
+
+  - What if you don't use tlp?  Does hibernate/resume work fine then?
+    If tlp makes a difference, can you collect "sudo lspci -vv" output
+    with and without using tlp (before hibernate)?
+
+  - If you revert 4257f7e008ea, does hibernate/resume work fine?  Both
+    with the tlp tweak and without?
+
+  - Collect "sudo lspci -vv" output before hibernate and (if possible)
+    after resume when you see the problem.
+
+I guess tlp only uses /sys/module/pcie_aspm/parameters/policy, so it
+sets the same ASPM policy system-wide.
+
+Bjorn
+
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index b9fecc25d213..6598b5cd3154 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -1665,9 +1665,8 @@ void pci_restore_state(struct pci_dev *dev)
+ 	 * LTR itself (in the PCIe capability).
+ 	 */
+ 	pci_restore_ltr_state(dev);
+-	pci_restore_aspm_l1ss_state(dev);
+-
+ 	pci_restore_pcie_state(dev);
++	pci_restore_aspm_l1ss_state(dev);
+ 	pci_restore_pasid_state(dev);
+ 	pci_restore_pri_state(dev);
+ 	pci_restore_ats_state(dev);
+diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+index a08e7d6dc248..c4a99274b4bb 100644
+--- a/drivers/pci/pcie/aspm.c
++++ b/drivers/pci/pcie/aspm.c
+@@ -752,8 +752,8 @@ void pci_save_aspm_l1ss_state(struct pci_dev *dev)
+ 		return;
  
-+	if (crtc == NULL)
-+		return -EINVAL;
-+
-+	acrtc = to_amdgpu_crtc(crtc);
-+	adev = drm_to_adev(crtc->dev);
-+	acrtc_state = to_dm_crtc_state(crtc->state);
-+
-+
- 	if (enable) {
- 		/* vblank irq on -> Only need vupdate irq in vrr mode */
- 		if (amdgpu_dm_vrr_active(acrtc_state))
--- 
-2.7.4
-
+ 	cap = (u32 *)&save_state->cap.data[0];
+-	pci_read_config_dword(dev, aspm_l1ss + PCI_L1SS_CTL1, cap++);
+ 	pci_read_config_dword(dev, aspm_l1ss + PCI_L1SS_CTL2, cap++);
++	pci_read_config_dword(dev, aspm_l1ss + PCI_L1SS_CTL1, cap++);
+ }
+ 
+ void pci_restore_aspm_l1ss_state(struct pci_dev *dev)
+@@ -774,8 +774,8 @@ void pci_restore_aspm_l1ss_state(struct pci_dev *dev)
+ 		return;
+ 
+ 	cap = (u32 *)&save_state->cap.data[0];
+-	pci_write_config_dword(dev, aspm_l1ss + PCI_L1SS_CTL1, *cap++);
+ 	pci_write_config_dword(dev, aspm_l1ss + PCI_L1SS_CTL2, *cap++);
++	pci_write_config_dword(dev, aspm_l1ss + PCI_L1SS_CTL1, *cap++);
+ }
+ 
+ static void pcie_config_aspm_dev(struct pci_dev *pdev, u32 val)
