@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 941432E377A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:57:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 781BD2E435E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:38:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728675AbgL1M4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:56:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52368 "EHLO mail.kernel.org"
+        id S2406541AbgL1Pf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:35:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728657AbgL1Mzy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:55:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EA08207C9;
-        Mon, 28 Dec 2020 12:55:13 +0000 (UTC)
+        id S2407230AbgL1NxD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:53:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6176206D4;
+        Mon, 28 Dec 2020 13:52:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160114;
-        bh=Q8Jma1sP/c+EfQWsNXNfmNNGb0Xk9HnEbDSWPklweC8=;
+        s=korg; t=1609163543;
+        bh=oyxHf38LfVs3BMuQZNo6mChDDNivTtpjWazb4r/hZUQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PvxymbtSciFlnHQeBmZwTrl94VOQZWmL3ITRV7/8wnJuXometj2CYq2h/79sjycZe
-         p7gCZJAjxrzshILuVxguc+6lZpMefmkDCNdc7jTQZx7cxsAqtiy5OQoXpew8Mfgh7b
-         If3fsa5piMG3gpdZF0ex8y4meOHPguuPwL3yOUbs=
+        b=gmrFl7s1ERhMC1u3xcCiVP+O6e62sHNKHNrWAR6PtSRKvayQvGhPAnW7hTF8nQaJp
+         uZXFgXKpshUuPMtdGYZ/z1EyLzF2o88Xi2atFX13umHiaxaLi+T6D5gzqfwBVxTAR/
+         N1FYdGWLvesu5YTVUP+kV9+smVdZD3S/j7BXjxo8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Karan Tilak Kumar <kartilak@cisco.com>,
-        Zhang Changzhong <zhangchangzhong@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 074/132] scsi: fnic: Fix error return code in fnic_probe()
+        stable@vger.kernel.org, Hans Verkuil <hverkuil@xs4all.nl>,
+        Maxime Ripard <mripard@kernel.org>, Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 5.4 322/453] media: sunxi-cir: ensure IR is handled when it is continuous
 Date:   Mon, 28 Dec 2020 13:49:18 +0100
-Message-Id: <20201228124850.018852032@linuxfoundation.org>
+Message-Id: <20201228124952.702486385@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,38 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Changzhong <zhangchangzhong@huawei.com>
+From: Sean Young <sean@mess.org>
 
-[ Upstream commit d4fc94fe65578738ded138e9fce043db6bfc3241 ]
+commit 3f56df4c8ffeb120ed41906d3aae71799b7e726a upstream.
 
-Return a negative error code from the error handling case instead of 0 as
-done elsewhere in this function.
+If a user holds a button down on a remote, then no ir idle interrupt will
+be generated until the user releases the button, depending on how quickly
+the remote repeats. No IR is processed until that point, which means that
+holding down a button may not do anything.
 
-Link: https://lore.kernel.org/r/1607068060-31203-1-git-send-email-zhangchangzhong@huawei.com
-Fixes: 5df6d737dd4b ("[SCSI] fnic: Add new Cisco PCI-Express FCoE HBA")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Reviewed-by: Karan Tilak Kumar <kartilak@cisco.com>
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This also resolves an issue on a Cubieboard 1 where the IR receiver is
+picking up ambient infrared as IR and spews out endless
+"rc rc0: IR event FIFO is full!" messages unless you choose to live in
+the dark.
+
+Cc: stable@vger.kernel.org
+Tested-by: Hans Verkuil <hverkuil@xs4all.nl>
+Acked-by: Maxime Ripard <mripard@kernel.org>
+Reported-by: Hans Verkuil <hverkuil@xs4all.nl>
+Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/scsi/fnic/fnic_main.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/media/rc/sunxi-cir.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/scsi/fnic/fnic_main.c b/drivers/scsi/fnic/fnic_main.c
-index 58ce9020d69c5..389c13e1c9788 100644
---- a/drivers/scsi/fnic/fnic_main.c
-+++ b/drivers/scsi/fnic/fnic_main.c
-@@ -735,6 +735,7 @@ static int fnic_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	for (i = 0; i < FNIC_IO_LOCKS; i++)
- 		spin_lock_init(&fnic->io_req_lock[i]);
+--- a/drivers/media/rc/sunxi-cir.c
++++ b/drivers/media/rc/sunxi-cir.c
+@@ -137,6 +137,8 @@ static irqreturn_t sunxi_ir_irq(int irqn
+ 	} else if (status & REG_RXSTA_RPE) {
+ 		ir_raw_event_set_idle(ir->rc, true);
+ 		ir_raw_event_handle(ir->rc);
++	} else {
++		ir_raw_event_handle(ir->rc);
+ 	}
  
-+	err = -ENOMEM;
- 	fnic->io_req_pool = mempool_create_slab_pool(2, fnic_io_req_cache);
- 	if (!fnic->io_req_pool)
- 		goto err_out_free_resources;
--- 
-2.27.0
-
+ 	spin_unlock(&ir->ir_lock);
 
 
