@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19C352E39BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:28:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CE9B2E3B3F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:49:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389637AbgL1N1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:27:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54636 "EHLO mail.kernel.org"
+        id S2405730AbgL1Nrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:47:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389200AbgL1N0I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:26:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B5ABC22472;
-        Mon, 28 Dec 2020 13:25:52 +0000 (UTC)
+        id S2405694AbgL1Nrn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:47:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7715B22AAA;
+        Mon, 28 Dec 2020 13:47:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161953;
-        bh=NyJxix9UlwTf3UE+Z333I0rQe4WgJburj1ZJcyQebMY=;
+        s=korg; t=1609163248;
+        bh=/55/JP/FhZyIUNXvPY1v/rmi6f/wfMoZw5L4P7xXBj0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WKxkwSTuMpWb9O17cEHJ+MGDnz/uFJcTZ61CmZtXtL+RmetF17sUhkHi0jnRYoqXW
-         45C+nf9EHt6WZpCEGJCzdzMY4GLdDgIYepfgM+bjdHmEWoxCIYiJ2h8EYyx/wMTN6W
-         4hrGe3GaykFs71/yLidBJim+5xAA9p7Aj4BaKGF4=
+        b=hE3S6d2HmAOcElB/Ir42dU6l5RDO7UDd3TA0MHc+UKl3hwZteZLAskiCoFLe/a1kd
+         MFMAmH2rJ+9wxEe+Yw/rsryyFfWsNLSdysNvpxegSyZrmCUNtJ+exzP7RV3rzkIhLc
+         OXI3AJjQQz8ih37oliKaG9YJVwCYPsQsWDKF8u8M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
+        stable@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 138/346] staging: greybus: codecs: Fix reference counter leak in error handling
+Subject: [PATCH 5.4 221/453] net/mlx5: Properly convey driver version to firmware
 Date:   Mon, 28 Dec 2020 13:47:37 +0100
-Message-Id: <20201228124926.462859447@linuxfoundation.org>
+Message-Id: <20201228124947.852760547@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,44 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-[ Upstream commit 3952659a6108f77a0d062d8e8487bdbdaf52a66c ]
+[ Upstream commit 907af0f0cab4ee5d5604f182ecec2c5b5119d294 ]
 
-gb_pm_runtime_get_sync has increased the usage counter of the device here.
-Forgetting to call gb_pm_runtime_put_noidle will result in usage counter
-leak in the error branch of (gbcodec_hw_params and gbcodec_prepare). We
-fixed it by adding it.
+mlx5 firmware expects driver version in specific format X.X.X, so
+make it always correct and based on real kernel version aligned with
+the driver.
 
-Fixes: c388ae7696992 ("greybus: audio: Update pm runtime support in dai_ops callback")
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201109131347.1725288-2-zhangqilong3@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 012e50e109fd ("net/mlx5: Set driver version into firmware")
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/greybus/audio_codec.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/ethernet/mellanox/mlx5/core/main.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/staging/greybus/audio_codec.c b/drivers/staging/greybus/audio_codec.c
-index 35acd55ca5ab7..6cbf69a57dfd9 100644
---- a/drivers/staging/greybus/audio_codec.c
-+++ b/drivers/staging/greybus/audio_codec.c
-@@ -489,6 +489,7 @@ static int gbcodec_hw_params(struct snd_pcm_substream *substream,
- 	if (ret) {
- 		dev_err_ratelimited(dai->dev, "%d: Error during set_config\n",
- 				    ret);
-+		gb_pm_runtime_put_noidle(bundle);
- 		mutex_unlock(&codec->lock);
- 		return ret;
- 	}
-@@ -565,6 +566,7 @@ static int gbcodec_prepare(struct snd_pcm_substream *substream,
- 		break;
- 	}
- 	if (ret) {
-+		gb_pm_runtime_put_noidle(bundle);
- 		mutex_unlock(&codec->lock);
- 		dev_err_ratelimited(dai->dev, "set_data_size failed:%d\n",
- 				    ret);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+index 7c0a726277b00..f2657cd3ffa4f 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+@@ -50,6 +50,7 @@
+ #ifdef CONFIG_RFS_ACCEL
+ #include <linux/cpu_rmap.h>
+ #endif
++#include <linux/version.h>
+ #include <net/devlink.h>
+ #include "mlx5_core.h"
+ #include "lib/eq.h"
+@@ -227,7 +228,10 @@ static void mlx5_set_driver_version(struct mlx5_core_dev *dev)
+ 	strncat(string, ",", remaining_size);
+ 
+ 	remaining_size = max_t(int, 0, driver_ver_sz - strlen(string));
+-	strncat(string, DRIVER_VERSION, remaining_size);
++
++	snprintf(string + strlen(string), remaining_size, "%u.%u.%u",
++		 (u8)((LINUX_VERSION_CODE >> 16) & 0xff), (u8)((LINUX_VERSION_CODE >> 8) & 0xff),
++		 (u16)(LINUX_VERSION_CODE & 0xffff));
+ 
+ 	/*Send the command*/
+ 	MLX5_SET(set_driver_version_in, in, opcode,
 -- 
 2.27.0
 
