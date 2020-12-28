@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 358A52E679B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:28:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B13C92E65F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:08:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729659AbgL1Q1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:27:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36046 "EHLO mail.kernel.org"
+        id S2632877AbgL1QHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:07:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730952AbgL1NIi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:08:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC11E2076D;
-        Mon, 28 Dec 2020 13:08:21 +0000 (UTC)
+        id S2389494AbgL1N0b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:26:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A374220728;
+        Mon, 28 Dec 2020 13:25:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160902;
-        bh=VKZZq1lAep4ckvFSXWk1nX6K8L/Guxz5MJjcCRsjij8=;
+        s=korg; t=1609161950;
+        bh=L29C2rA1dyuGhtjDbgne65PWnPns4sq593oj4UkwEus=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wu8ZkdtUtl6/D/fkMjQA8GxHKgzAK1FrhUTLAB7ilCIcxL7pL8oV8n6decuSHliNK
-         9thCBy0kaTTPc/1l9g+HY4HatFgxXWrRHLNB2JFzuAoISorsZcudnooZCUpw8d/mnd
-         K9wFz9FN/eyMGHEjIRE6TO5sK20Y/VVMG9CqHjNw=
+        b=PPdglN8uye48WLxSPZnGliE5Oj3ClnkCdi+SuTE52hqObMeYLp3gkkYA6utxBF2vP
+         GQQJHbPE0GrpJ9Qp+9GDNfXN/53aQfOovQtAU3CyOtf7renvDcl05wuZFy8eqKZ6TS
+         NjSEhNhx8wgIOrCJfsrxKeKijxwOZ9NiHnCHAZro=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Subject: [PATCH 4.14 033/242] serial: 8250_omap: Avoid FIFO corruption caused by MDR1 access
-Date:   Mon, 28 Dec 2020 13:47:18 +0100
-Message-Id: <20201228124906.292663489@linuxfoundation.org>
+        stable@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 120/346] selinux: fix inode_doinit_with_dentry() LABEL_INVALID error handling
+Date:   Mon, 28 Dec 2020 13:47:19 +0100
+Message-Id: <20201228124925.596058220@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,52 +41,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+From: Paul Moore <paul@paul-moore.com>
 
-commit d96f04d347e4011977abdbb4da5d8f303ebd26f8 upstream.
+[ Upstream commit 200ea5a2292dc444a818b096ae6a32ba3caa51b9 ]
 
-It has been observed that once per 300-1300 port openings the first
-transmitted byte is being corrupted on AM3352 ("v" written to FIFO appeared
-as "e" on the wire). It only happened if single byte has been transmitted
-right after port open, which means, DMA is not used for this transfer and
-the corruption never happened afterwards.
+A previous fix, commit 83370b31a915 ("selinux: fix error initialization
+in inode_doinit_with_dentry()"), changed how failures were handled
+before a SELinux policy was loaded.  Unfortunately that patch was
+potentially problematic for two reasons: it set the isec->initialized
+state without holding a lock, and it didn't set the inode's SELinux
+label to the "default" for the particular filesystem.  The later can
+be a problem if/when a later attempt to revalidate the inode fails
+and SELinux reverts to the existing inode label.
 
-Therefore I've carefully re-read the MDR1 errata (link below), which says
-"when accessing the MDR1 registers that causes a dummy under-run condition
-that will freeze the UART in IrDA transmission. In UART mode, this may
-corrupt the transferred data". Strictly speaking,
-omap_8250_mdr1_errataset() performs a read access and if the value is the
-same as should be written, exits without errata-recommended FIFO reset.
+This patch should restore the default inode labeling that existed
+before the original fix, without affecting the LABEL_INVALID marking
+such that revalidation will still be attempted in the future.
 
-A brief check of the serial_omap_mdr1_errataset() from the competing
-omap-serial driver showed it has no read access of MDR1. After removing the
-read access from omap_8250_mdr1_errataset() the data corruption never
-happened any more.
-
-Link: https://www.ti.com/lit/er/sprz360i/sprz360i.pdf
-Fixes: 61929cf0169d ("tty: serial: Add 8250-core based omap driver")
-Cc: stable@vger.kernel.org
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Link: https://lore.kernel.org/r/20201210055257.1053028-1-alexander.sverdlin@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 83370b31a915 ("selinux: fix error initialization in inode_doinit_with_dentry()")
+Reported-by: Sven Schnelle <svens@linux.ibm.com>
+Tested-by: Sven Schnelle <svens@linux.ibm.com>
+Reviewed-by: Ondrej Mosnacek <omosnace@redhat.com>
+Signed-off-by: Paul Moore <paul@paul-moore.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/8250/8250_omap.c |    5 -----
- 1 file changed, 5 deletions(-)
+ security/selinux/hooks.c | 31 +++++++++++++------------------
+ 1 file changed, 13 insertions(+), 18 deletions(-)
 
---- a/drivers/tty/serial/8250/8250_omap.c
-+++ b/drivers/tty/serial/8250/8250_omap.c
-@@ -161,11 +161,6 @@ static void omap_8250_mdr1_errataset(str
- 				     struct omap8250_priv *priv)
- {
- 	u8 timeout = 255;
--	u8 old_mdr1;
--
--	old_mdr1 = serial_in(up, UART_OMAP_MDR1);
--	if (old_mdr1 == priv->mdr1)
--		return;
+diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+index 02afe52a55d0d..08833bbb97aab 100644
+--- a/security/selinux/hooks.c
++++ b/security/selinux/hooks.c
+@@ -1618,13 +1618,7 @@ static int inode_doinit_with_dentry(struct inode *inode, struct dentry *opt_dent
+ 			 * inode_doinit with a dentry, before these inodes could
+ 			 * be used again by userspace.
+ 			 */
+-			isec->initialized = LABEL_INVALID;
+-			/*
+-			 * There is nothing useful to jump to the "out"
+-			 * label, except a needless spin lock/unlock
+-			 * cycle.
+-			 */
+-			return 0;
++			goto out_invalid;
+ 		}
  
- 	serial_out(up, UART_OMAP_MDR1, priv->mdr1);
- 	udelay(2);
+ 		len = INITCONTEXTLEN;
+@@ -1739,15 +1733,8 @@ static int inode_doinit_with_dentry(struct inode *inode, struct dentry *opt_dent
+ 			 * inode_doinit() with a dentry, before these inodes
+ 			 * could be used again by userspace.
+ 			 */
+-			if (!dentry) {
+-				isec->initialized = LABEL_INVALID;
+-				/*
+-				 * There is nothing useful to jump to the "out"
+-				 * label, except a needless spin lock/unlock
+-				 * cycle.
+-				 */
+-				return 0;
+-			}
++			if (!dentry)
++				goto out_invalid;
+ 			rc = selinux_genfs_get_sid(dentry, sclass,
+ 						   sbsec->flags, &sid);
+ 			dput(dentry);
+@@ -1760,11 +1747,10 @@ static int inode_doinit_with_dentry(struct inode *inode, struct dentry *opt_dent
+ out:
+ 	spin_lock(&isec->lock);
+ 	if (isec->initialized == LABEL_PENDING) {
+-		if (!sid || rc) {
++		if (rc) {
+ 			isec->initialized = LABEL_INVALID;
+ 			goto out_unlock;
+ 		}
+-
+ 		isec->initialized = LABEL_INITIALIZED;
+ 		isec->sid = sid;
+ 	}
+@@ -1772,6 +1758,15 @@ out:
+ out_unlock:
+ 	spin_unlock(&isec->lock);
+ 	return rc;
++
++out_invalid:
++	spin_lock(&isec->lock);
++	if (isec->initialized == LABEL_PENDING) {
++		isec->initialized = LABEL_INVALID;
++		isec->sid = sid;
++	}
++	spin_unlock(&isec->lock);
++	return 0;
+ }
+ 
+ /* Convert a Linux signal to an access vector. */
+-- 
+2.27.0
+
 
 
