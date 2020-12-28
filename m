@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A8E2E3870
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:11:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A929B2E37B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:01:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731329AbgL1NKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:10:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37674 "EHLO mail.kernel.org"
+        id S1726606AbgL1M7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:59:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731278AbgL1NKJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:10:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BC451207F7;
-        Mon, 28 Dec 2020 13:09:53 +0000 (UTC)
+        id S1728584AbgL1M7d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:59:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB06522D00;
+        Mon, 28 Dec 2020 12:58:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160994;
-        bh=jWWecCvtWSloin1KklTI0i6RRAy8XgIXFUC1cw82+x0=;
+        s=korg; t=1609160333;
+        bh=LMZyDnsGvgQkL+DovBkrlqbPZ8PfoOXGkxyBxKN6irk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=alK+BizeUsCiVk0H2fVrc/uFnADhO9Ed2UJnF2hRj3199ny7vpIGOu8p/4E9iqieg
-         0eO8a1YaTuRv2NLW8tuIiWgjtkDjWccCshCzpQ1dLY5G4dnRea9JKWNtQw0TbZFggL
-         fHgjw2ynWBDlEomwm64koFkRVsYs6xW87oXHYmf0=
+        b=SYSngHYZ6nq1nwWn2II8CnQxlizm44wkC3pwvp4m5LiTHDQ3mTAmTQ2onqprQAZK2
+         yiJBcxNe02uyWSIqDsyRkyEcf2nR7PLR6kww5iHueneUoI0sYqfHbRySqLHB7Bu6ut
+         6Nr3MrPxhhw5KgitB8TZxHkNwGoeGdxklF//kCR8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peilin Ye <yepeilin.cs@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        syzbot+24ebd650e20bd263ca01@syzkaller.appspotmail.com
-Subject: [PATCH 4.14 064/242] Bluetooth: Fix slab-out-of-bounds read in hci_le_direct_adv_report_evt()
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.9 016/175] net: bridge: vlan: fix error return code in __vlan_add()
 Date:   Mon, 28 Dec 2020 13:47:49 +0100
-Message-Id: <20201228124907.836326064@linuxfoundation.org>
+Message-Id: <20201228124854.046832651@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,53 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peilin Ye <yepeilin.cs@gmail.com>
+From: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-commit f7e0e8b2f1b0a09b527885babda3e912ba820798 upstream.
+[ Upstream commit ee4f52a8de2c6f78b01f10b4c330867d88c1653a ]
 
-`num_reports` is not being properly checked. A malformed event packet with
-a large `num_reports` number makes hci_le_direct_adv_report_evt() read out
-of bounds. Fix it.
+Fix to return a negative error code from the error handling
+case instead of 0, as done elsewhere in this function.
 
-Cc: stable@vger.kernel.org
-Fixes: 2f010b55884e ("Bluetooth: Add support for handling LE Direct Advertising Report events")
-Reported-and-tested-by: syzbot+24ebd650e20bd263ca01@syzkaller.appspotmail.com
-Link: https://syzkaller.appspot.com/bug?extid=24ebd650e20bd263ca01
-Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Fixes: f8ed289fab84 ("bridge: vlan: use br_vlan_(get|put)_master to deal with refcounts")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+Acked-by: Nikolay Aleksandrov <nikolay@nvidia.com>
+Link: https://lore.kernel.org/r/1607071737-33875-1-git-send-email-zhangchangzhong@huawei.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- net/bluetooth/hci_event.c |   12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ net/bridge/br_vlan.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -5141,20 +5141,18 @@ static void hci_le_direct_adv_report_evt
- 					 struct sk_buff *skb)
- {
- 	u8 num_reports = skb->data[0];
--	void *ptr = &skb->data[1];
-+	struct hci_ev_le_direct_adv_info *ev = (void *)&skb->data[1];
+--- a/net/bridge/br_vlan.c
++++ b/net/bridge/br_vlan.c
+@@ -238,8 +238,10 @@ static int __vlan_add(struct net_bridge_
+ 		}
  
--	hci_dev_lock(hdev);
-+	if (!num_reports || skb->len < num_reports * sizeof(*ev) + 1)
-+		return;
- 
--	while (num_reports--) {
--		struct hci_ev_le_direct_adv_info *ev = ptr;
-+	hci_dev_lock(hdev);
- 
-+	for (; num_reports; num_reports--, ev++)
- 		process_adv_report(hdev, ev->evt_type, &ev->bdaddr,
- 				   ev->bdaddr_type, &ev->direct_addr,
- 				   ev->direct_addr_type, ev->rssi, NULL, 0);
- 
--		ptr += sizeof(*ev);
--	}
--
- 	hci_dev_unlock(hdev);
- }
- 
+ 		masterv = br_vlan_get_master(br, v->vid);
+-		if (!masterv)
++		if (!masterv) {
++			err = -ENOMEM;
+ 			goto out_filt;
++		}
+ 		v->brvlan = masterv;
+ 		v->stats = masterv->stats;
+ 	}
 
 
