@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AF562E3A46
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:35:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCE1D2E3E80
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:29:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389192AbgL1Neh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:34:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34738 "EHLO mail.kernel.org"
+        id S2502598AbgL1O2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:28:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36662 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389098AbgL1NeR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:34:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C2A8620867;
-        Mon, 28 Dec 2020 13:33:35 +0000 (UTC)
+        id S2502519AbgL1O2p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:28:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EC31208B6;
+        Mon, 28 Dec 2020 14:28:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162416;
-        bh=bctFitTEeo52VyCh0ydGO5T7uJluqm3P91V+Q30OYy8=;
+        s=korg; t=1609165685;
+        bh=wAAhsgCdQH/YGceVJMG3dh+I4tdKvBIPXAipij5iSCY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RwWt57Dq7523dCuKD62uFFB+c+A+rOdXyzZfb8jyIBI9ZehZ9iFArBCnRCy9llB57
-         8Uh6C1ms9am1gD/UxirLOYWnX+0YF9WK2pJ4XilZS9AJlGxb9tsSBBtAqjPZk6NXTW
-         yk5BW/f1TrlhncF8pow2O5nQJieyfKge6rwR+vE0=
+        b=zZxnIxI7jf/75J7MAWxAxHU8K8q2/FLGyHGLJnxQV2maOrrqklFDglQ+uBsRFM8XI
+         /iLRDcAA2sc7wEceebNzaf6UoETfmcw/aAWVIHbNLnhwGjpJmSQXKI94WLT34VebAO
+         Hhu5O1wvZbfPkPoSxso0xaDilE8R5j+RphhvKEk0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 4.19 298/346] ext4: fix deadlock with fs freezing and EA inodes
+        stable@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Mimi Zohar <zohar@linux.ibm.com>
+Subject: [PATCH 5.10 619/717] ima: Dont modify file descriptor mode on the fly
 Date:   Mon, 28 Dec 2020 13:50:17 +0100
-Message-Id: <20201228124934.188145516@linuxfoundation.org>
+Message-Id: <20201228125050.581685971@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,110 +40,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Kara <jack@suse.cz>
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-commit 46e294efc355c48d1dd4d58501aa56dac461792a upstream.
+commit 207cdd565dfc95a0a5185263a567817b7ebf5467 upstream.
 
-Xattr code using inodes with large xattr data can end up dropping last
-inode reference (and thus deleting the inode) from places like
-ext4_xattr_set_entry(). That function is called with transaction started
-and so ext4_evict_inode() can deadlock against fs freezing like:
+Commit a408e4a86b36b ("ima: open a new file instance if no read
+permissions") already introduced a second open to measure a file when the
+original file descriptor does not allow it. However, it didn't remove the
+existing method of changing the mode of the original file descriptor, which
+is still necessary if the current process does not have enough privileges
+to open a new one.
 
-CPU1					CPU2
+Changing the mode isn't really an option, as the filesystem might need to
+do preliminary steps to make the read possible. Thus, this patch removes
+the code and keeps the second open as the only option to measure a file
+when it is unreadable with the original file descriptor.
 
-removexattr()				freeze_super()
-  vfs_removexattr()
-    ext4_xattr_set()
-      handle = ext4_journal_start()
-      ...
-      ext4_xattr_set_entry()
-        iput(old_ea_inode)
-          ext4_evict_inode(old_ea_inode)
-					  sb->s_writers.frozen = SB_FREEZE_FS;
-					  sb_wait_write(sb, SB_FREEZE_FS);
-					  ext4_freeze()
-					    jbd2_journal_lock_updates()
-					      -> blocks waiting for all
-					         handles to stop
-            sb_start_intwrite()
-	      -> blocks as sb is already in SB_FREEZE_FS state
-
-Generally it is advisable to delete inodes from a separate transaction
-as it can consume quite some credits however in this case it would be
-quite clumsy and furthermore the credits for inode deletion are quite
-limited and already accounted for. So just tweak ext4_evict_inode() to
-avoid freeze protection if we have transaction already started and thus
-it is not really needed anyway.
-
-Cc: stable@vger.kernel.org
-Fixes: dec214d00e0d ("ext4: xattr inode deduplication")
-Signed-off-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
-Link: https://lore.kernel.org/r/20201127110649.24730-1-jack@suse.cz
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Cc: <stable@vger.kernel.org> # 4.20.x: 0014cc04e8ec0 ima: Set file->f_mode
+Fixes: 2fe5d6def1672 ("ima: integrity appraisal extension")
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/ext4/inode.c |   21 +++++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
+ security/integrity/ima/ima_crypto.c |   20 +++++---------------
+ 1 file changed, 5 insertions(+), 15 deletions(-)
 
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -203,6 +203,7 @@ void ext4_evict_inode(struct inode *inod
- 	 */
- 	int extra_credits = 6;
- 	struct ext4_xattr_inode_array *ea_inode_array = NULL;
-+	bool freeze_protected = false;
- 
- 	trace_ext4_evict_inode(inode);
- 
-@@ -250,9 +251,14 @@ void ext4_evict_inode(struct inode *inod
+--- a/security/integrity/ima/ima_crypto.c
++++ b/security/integrity/ima/ima_crypto.c
+@@ -537,7 +537,7 @@ int ima_calc_file_hash(struct file *file
+ 	loff_t i_size;
+ 	int rc;
+ 	struct file *f = file;
+-	bool new_file_instance = false, modified_mode = false;
++	bool new_file_instance = false;
  
  	/*
- 	 * Protect us against freezing - iput() caller didn't have to have any
--	 * protection against it
--	 */
--	sb_start_intwrite(inode->i_sb);
-+	 * protection against it. When we are in a running transaction though,
-+	 * we are already protected against freezing and we cannot grab further
-+	 * protection due to lock ordering constraints.
-+	 */
-+	if (!ext4_journal_current_handle()) {
-+		sb_start_intwrite(inode->i_sb);
-+		freeze_protected = true;
-+	}
- 
- 	if (!IS_NOQUOTA(inode))
- 		extra_credits += EXT4_MAXQUOTAS_DEL_BLOCKS(inode->i_sb);
-@@ -271,7 +277,8 @@ void ext4_evict_inode(struct inode *inod
- 		 * cleaned up.
- 		 */
- 		ext4_orphan_del(NULL, inode);
--		sb_end_intwrite(inode->i_sb);
-+		if (freeze_protected)
-+			sb_end_intwrite(inode->i_sb);
- 		goto no_delete;
+ 	 * For consistency, fail file's opened with the O_DIRECT flag on
+@@ -555,18 +555,10 @@ int ima_calc_file_hash(struct file *file
+ 				O_TRUNC | O_CREAT | O_NOCTTY | O_EXCL);
+ 		flags |= O_RDONLY;
+ 		f = dentry_open(&file->f_path, flags, file->f_cred);
+-		if (IS_ERR(f)) {
+-			/*
+-			 * Cannot open the file again, lets modify f_mode
+-			 * of original and continue
+-			 */
+-			pr_info_ratelimited("Unable to reopen file for reading.\n");
+-			f = file;
+-			f->f_mode |= FMODE_READ;
+-			modified_mode = true;
+-		} else {
+-			new_file_instance = true;
+-		}
++		if (IS_ERR(f))
++			return PTR_ERR(f);
++
++		new_file_instance = true;
  	}
  
-@@ -312,7 +319,8 @@ void ext4_evict_inode(struct inode *inod
- stop_handle:
- 		ext4_journal_stop(handle);
- 		ext4_orphan_del(NULL, inode);
--		sb_end_intwrite(inode->i_sb);
-+		if (freeze_protected)
-+			sb_end_intwrite(inode->i_sb);
- 		ext4_xattr_inode_array_free(ea_inode_array);
- 		goto no_delete;
- 	}
-@@ -341,7 +349,8 @@ stop_handle:
- 	else
- 		ext4_free_inode(handle, inode);
- 	ext4_journal_stop(handle);
--	sb_end_intwrite(inode->i_sb);
-+	if (freeze_protected)
-+		sb_end_intwrite(inode->i_sb);
- 	ext4_xattr_inode_array_free(ea_inode_array);
- 	return;
- no_delete:
+ 	i_size = i_size_read(file_inode(f));
+@@ -581,8 +573,6 @@ int ima_calc_file_hash(struct file *file
+ out:
+ 	if (new_file_instance)
+ 		fput(f);
+-	else if (modified_mode)
+-		f->f_mode &= ~FMODE_READ;
+ 	return rc;
+ }
+ 
 
 
