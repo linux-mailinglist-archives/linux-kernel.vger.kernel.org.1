@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEA8A2E3AB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:41:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77F162E40FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:01:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403978AbgL1Nkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:40:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40824 "EHLO mail.kernel.org"
+        id S2392865AbgL1PBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:01:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403959AbgL1Nkj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:40:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D358D22582;
-        Mon, 28 Dec 2020 13:39:57 +0000 (UTC)
+        id S2440221AbgL1ONh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:13:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BF2920791;
+        Mon, 28 Dec 2020 14:12:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162798;
-        bh=Oa20sEDdC1IawuHUg97xmiqF754hoTkKfQRSveJVtAM=;
+        s=korg; t=1609164777;
+        bh=2j4BhcXHV6IIMii6oXSicMpmDyOckZyxCkkJqERhhq4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uWkJ5ybXF0uBhgGgaAN28pjpzBY/aXFsEDMIUqGIL7pGu8r77kFUXqfNjJqdH5jIz
-         I3m5gUGMMM3WfOpOHevO7kwjwhMHkQ6kAy++FbjRPmnh25yhZgvjXKsu+bprlxv4Oq
-         lxUdx+r1xAcgm+KNESV8vgn86lSMrpa0QsEHbuGw=
+        b=Tyvt21mgNSOdEk4AKew1REjXXjWbcfzProv8tVG7oXw177kEMhtBowglX3POuXtCt
+         E3Zwpv7VIx+rwZbNYKhLWRlj6tMkX0zq6j+aQgppP/jauTn2m8D4Ne7wd+xYkyBh8r
+         YLNzZEhmnS80MUWAIwgPs5viy1N4pSor4O1XjVrE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhang Xiaoxu <zhangxiaoxu5@huawei.com>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 038/453] kernel/cpu: add arch override for clear_tasks_mm_cpumask() mm handling
-Date:   Mon, 28 Dec 2020 13:44:34 +0100
-Message-Id: <20201228124939.089523372@linuxfoundation.org>
+Subject: [PATCH 5.10 277/717] media: tvp5150: Fix wrong return value of tvp5150_parse_dt()
+Date:   Mon, 28 Dec 2020 13:44:35 +0100
+Message-Id: <20201228125034.289135128@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,52 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Piggin <npiggin@gmail.com>
+From: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
 
-[ Upstream commit 8ff00399b153440c1c83e20c43020385b416415b ]
+[ Upstream commit eb08c48132a1f594478ab9fa2b6ee646c3513a49 ]
 
-powerpc/64s keeps a counter in the mm which counts bits set in
-mm_cpumask as well as other things. This means it can't use generic code
-to clear bits out of the mask and doesn't adjust the arch specific
-counter.
+If of_graph_get_endpoint_by_regs() return NULL, it will return 0 rather
+than an errno, because we doesn't initialize the return value.
 
-Add an arch override that allows powerpc/64s to use
-clear_tasks_mm_cpumask().
-
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-Reviewed-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20201126102530.691335-4-npiggin@gmail.com
+Fixes: 0556f1d580d4 ("media: tvp5150: add input source selection of_graph support")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+Reviewed-by: Marco Felsch <m.felsch@pengutronix.de>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/cpu.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/media/i2c/tvp5150.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 7527825ac7daa..fa0e5727b4d9c 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -815,6 +815,10 @@ void __init cpuhp_threads_init(void)
- }
+diff --git a/drivers/media/i2c/tvp5150.c b/drivers/media/i2c/tvp5150.c
+index 7d9401219a3ac..3b3221fd3fe8f 100644
+--- a/drivers/media/i2c/tvp5150.c
++++ b/drivers/media/i2c/tvp5150.c
+@@ -2082,6 +2082,7 @@ static int tvp5150_parse_dt(struct tvp5150 *decoder, struct device_node *np)
  
- #ifdef CONFIG_HOTPLUG_CPU
-+#ifndef arch_clear_mm_cpumask_cpu
-+#define arch_clear_mm_cpumask_cpu(cpu, mm) cpumask_clear_cpu(cpu, mm_cpumask(mm))
-+#endif
-+
- /**
-  * clear_tasks_mm_cpumask - Safely clear tasks' mm_cpumask for a CPU
-  * @cpu: a CPU id
-@@ -850,7 +854,7 @@ void clear_tasks_mm_cpumask(int cpu)
- 		t = find_lock_task_mm(p);
- 		if (!t)
- 			continue;
--		cpumask_clear_cpu(cpu, mm_cpumask(t->mm));
-+		arch_clear_mm_cpumask_cpu(cpu, t->mm);
- 		task_unlock(t);
+ 	ep_np = of_graph_get_endpoint_by_regs(np, TVP5150_PAD_VID_OUT, 0);
+ 	if (!ep_np) {
++		ret = -EINVAL;
+ 		dev_err(dev, "Error no output endpoint available\n");
+ 		goto err_free;
  	}
- 	rcu_read_unlock();
 -- 
 2.27.0
 
