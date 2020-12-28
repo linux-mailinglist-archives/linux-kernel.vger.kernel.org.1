@@ -2,150 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E4D82E34AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 08:17:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C2F02E34B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 08:29:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726361AbgL1HP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 02:15:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726200AbgL1HP2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 02:15:28 -0500
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 990ABC061794
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 23:14:47 -0800 (PST)
-Received: by mail-qv1-xf4a.google.com with SMTP id i20so8547267qvk.18
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 23:14:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:cc;
-        bh=+w8BZ65tjlpdxVh8d2na0pdcvFUUAjnRCf3t4vTPoxA=;
-        b=v05ZhOmzB4jgkv9Mp/LjpdSAk/+B/kUwqpY5Mw+l4+0XqMVdbQo7J9aS0jB+KcWCPB
-         jrA8bunL1xLLcX0S3vx5bQm6xfCHypGU7RYR3eBexx/7SMsChZi5VbXyqKa2oNsilyP9
-         k5EJM/tw4224icKTaKeMNr7mpQLf0NINzBsp26WszuKNtVwObKqXQxvFJmO0Ae3E2Woh
-         VUUs5tyn14tsCtVuzumJb/UDR+c8hYhQb6UWOeXRiajt//70S1kzj1s42wlj6ih3istd
-         5UDYU9e3j6L5l1Yh3yYEm5VaNZJfS/lsBwE1DhT0XNhOamXU0Jyo4t05PbdyHAtbqAGM
-         Y5kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :cc;
-        bh=+w8BZ65tjlpdxVh8d2na0pdcvFUUAjnRCf3t4vTPoxA=;
-        b=ilEjFwTQeMNOH4P0twGqbZ/LNqL86maFsk/15m5bht+X066EEtbWihAO9gXcpmKKvh
-         +cWIV3kZm+6QzS/QlSFR6tzXgvUAaxRCdWRUg3C+7FxswC/v4HCPe4h6PqsWqMLqFu7D
-         0L5zDlCgdZPUwiTxssa8y7OzBkdi9aPwGpIgKois5VNczk+/8E7k0pNE8fxcR3sVe9Yu
-         5og2QZnoQgJy2ybux9IuR7rqqJVLHZJPVnwG1Kpm5ghGevlgDStv8PxnaJBM6nmqB+oh
-         N+p3EykaQsvo+mix4PfODkbJuA2CyNC353JpMe7IivxcCSE4YgEJl5EJ+sud5cpcOcDF
-         p00g==
-X-Gm-Message-State: AOAM532YBsT2EI1VzzrcdE/uYRNbWYzc+1GkCeoeM/FwMKU/eyWBhhoe
-        oO43nKy2woJAQqxE4UFEmvQbf0YtyEz48Q==
-X-Google-Smtp-Source: ABdhPJwYhYXH7IdJV7dMiy+2k7Wa6r+n6ZiCaXAaglrarLLDjIRb1AN6v/I7xiaOhU5MdtB2k6dgZbDAGEARfg==
-Sender: "akailash via sendgmr" <akailash@akailash.c.googlers.com>
-X-Received: from akailash.c.googlers.com ([fda3:e722:ac3:10:7f:e700:c0a8:1e6])
- (user=akailash job=sendgmr) by 2002:a05:6214:1754:: with SMTP id
- dc20mr45736851qvb.7.1609139686600; Sun, 27 Dec 2020 23:14:46 -0800 (PST)
-Date:   Mon, 28 Dec 2020 07:14:07 +0000
-Message-Id: <ecb35731d19b41984dd7157d48661f5297a1b668.1609119545.git.akailash@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
-Subject: [PATCH] dm-snapshot: Flush merged data before committing metadata
-From:   Akilesh Kailash <akailash@google.com>
-Cc:     akailash@google.com, dvander@google.com, kernel-team@android.com,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-To:     unlisted-recipients:; (no To-header on input)
+        id S1726452AbgL1H25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 02:28:57 -0500
+Received: from smtp.h3c.com ([60.191.123.50]:29530 "EHLO h3cspam02-ex.h3c.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726282AbgL1H25 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 02:28:57 -0500
+Received: from DAG2EX08-IDC.srv.huawei-3com.com ([10.8.0.71])
+        by h3cspam02-ex.h3c.com with ESMTP id 0BS7QSOe066825;
+        Mon, 28 Dec 2020 15:26:28 +0800 (GMT-8)
+        (envelope-from gao.yanB@h3c.com)
+Received: from localhost.localdomain (10.99.212.201) by
+ DAG2EX08-IDC.srv.huawei-3com.com (10.8.0.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 28 Dec 2020 15:26:30 +0800
+From:   Gao Yan <gao.yanB@h3c.com>
+To:     <paulus@samba.org>, <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <linux-ppp@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Gao Yan <gao.yanB@h3c.com>
+Subject: [PATCH] net: remove disc_data_lock in ppp line discipline
+Date:   Mon, 28 Dec 2020 15:15:50 +0800
+Message-ID: <20201228071550.15745-1-gao.yanB@h3c.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.99.212.201]
+X-ClientProxiedBy: BJSMTP02-EX.srv.huawei-3com.com (10.63.20.133) To
+ DAG2EX08-IDC.srv.huawei-3com.com (10.8.0.71)
+X-DNSRBL: 
+X-MAIL: h3cspam02-ex.h3c.com 0BS7QSOe066825
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the origin device has a volatile write-back
-cache and the following events occur:
+In tty layer, it use tty->ldisc_sem to proect tty_ldisc_ops.
+So I think tty->ldisc_sem can also protect tty->disc_data;
+For examlpe,
+When cpu A is running ppp_synctty_ioctl that hold the tty->ldisc_sem,
+at the same time  if cpu B calls ppp_synctty_close, it will wait until
+cpu A release tty->ldisc_sem. So I think it is unnecessary to have the
+disc_data_lock;
 
-1: After finishing merge operation of one set of exceptions,
-   merge_callback() is invoked.
-2: Update the metadata in COW device tracking the merge completion.
-   This update to COW device is flushed cleanly.
-3: System crashes and the origin device's cache where the recent
-   merge was completed has not been flushed.
+cpu A                           cpu B
+tty_ioctl                       tty_reopen
+ ->hold tty->ldisc_sem            ->hold tty->ldisc_sem(write), failed
+ ->ld->ops->ioctl                 ->wait...
+ ->release tty->ldisc_sem         ->wait...OK,hold tty->ldisc_sem
+                                    ->tty_ldisc_reinit
+                                      ->tty_ldisc_close
+                                        ->ld->ops->close
 
-During the next cycle when we read the metadata from the COW device,
-we will skip reading those metadata whose merge was completed in
-step (1). This will lead to data loss/corruption.
-
-To address this, flush the origin device post merge IO before
-updating the metadata.
-
-Signed-off-by: Akilesh Kailash <akailash@google.com>
+Signed-off-by: Gao Yan <gao.yanB@h3c.com>
 ---
- drivers/md/dm-snap.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+ drivers/net/ppp/ppp_async.c   | 11 ++---------
+ drivers/net/ppp/ppp_synctty.c | 12 ++----------
+ 2 files changed, 4 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/md/dm-snap.c b/drivers/md/dm-snap.c
-index 4668b2cd98f4..11890db71f3f 100644
---- a/drivers/md/dm-snap.c
-+++ b/drivers/md/dm-snap.c
-@@ -141,6 +141,11 @@ struct dm_snapshot {
- 	 * for them to be committed.
- 	 */
- 	struct bio_list bios_queued_during_merge;
-+
-+	/*
-+	 * Flush data after merge.
-+	 */
-+	struct bio flush_bio;
- };
+diff --git a/drivers/net/ppp/ppp_async.c b/drivers/net/ppp/ppp_async.c
+index 29a0917a8..20b50facd 100644
+--- a/drivers/net/ppp/ppp_async.c
++++ b/drivers/net/ppp/ppp_async.c
+@@ -127,17 +127,13 @@ static const struct ppp_channel_ops async_ops = {
+  * FIXME: this is no longer true. The _close path for the ldisc is
+  * now guaranteed to be sane.
+  */
+-static DEFINE_RWLOCK(disc_data_lock);
  
- /*
-@@ -1121,6 +1126,17 @@ static void snapshot_merge_next_chunks(struct dm_snapshot *s)
- 
- static void error_bios(struct bio *bio);
- 
-+static int flush_data(struct dm_snapshot *s)
-+{
-+	struct bio *flush_bio = &s->flush_bio;
-+
-+	bio_reset(flush_bio);
-+	bio_set_dev(flush_bio, s->origin->bdev);
-+	flush_bio->bi_opf = REQ_OP_WRITE | REQ_PREFLUSH;
-+
-+	return submit_bio_wait(flush_bio);
-+}
-+
- static void merge_callback(int read_err, unsigned long write_err, void *context)
+ static struct asyncppp *ap_get(struct tty_struct *tty)
  {
- 	struct dm_snapshot *s = context;
-@@ -1134,6 +1150,11 @@ static void merge_callback(int read_err, unsigned long write_err, void *context)
- 		goto shut;
- 	}
+-	struct asyncppp *ap;
++	struct asyncppp *ap = tty->disc_data;
  
-+	if (flush_data(s) < 0) {
-+		DMERR("Flush after merge failed: shutting down merge");
-+		goto shut;
-+	}
-+
- 	if (s->store->type->commit_merge(s->store,
- 					 s->num_merging_chunks) < 0) {
- 		DMERR("Write error in exception store: shutting down merge");
-@@ -1318,6 +1339,7 @@ static int snapshot_ctr(struct dm_target *ti, unsigned int argc, char **argv)
- 	s->first_merging_chunk = 0;
- 	s->num_merging_chunks = 0;
- 	bio_list_init(&s->bios_queued_during_merge);
-+	bio_init(&s->flush_bio, NULL, 0);
+-	read_lock(&disc_data_lock);
+-	ap = tty->disc_data;
+ 	if (ap != NULL)
+ 		refcount_inc(&ap->refcnt);
+-	read_unlock(&disc_data_lock);
+ 	return ap;
+ }
  
- 	/* Allocate hash table for COW data */
- 	if (init_hash_tables(s)) {
-@@ -1504,6 +1526,8 @@ static void snapshot_dtr(struct dm_target *ti)
+@@ -214,12 +210,9 @@ ppp_asynctty_open(struct tty_struct *tty)
+ static void
+ ppp_asynctty_close(struct tty_struct *tty)
+ {
+-	struct asyncppp *ap;
++	struct asyncppp *ap = tty->disc_data;
  
- 	dm_exception_store_destroy(s->store);
+-	write_lock_irq(&disc_data_lock);
+-	ap = tty->disc_data;
+ 	tty->disc_data = NULL;
+-	write_unlock_irq(&disc_data_lock);
+ 	if (!ap)
+ 		return;
  
-+	bio_uninit(&s->flush_bio);
-+
- 	dm_put_device(ti, s->cow);
+diff --git a/drivers/net/ppp/ppp_synctty.c b/drivers/net/ppp/ppp_synctty.c
+index 0f338752c..53fb68e29 100644
+--- a/drivers/net/ppp/ppp_synctty.c
++++ b/drivers/net/ppp/ppp_synctty.c
+@@ -129,17 +129,12 @@ ppp_print_buffer (const char *name, const __u8 *buf, int count)
+  *
+  * FIXME: Fixed in tty_io nowadays.
+  */
+-static DEFINE_RWLOCK(disc_data_lock);
+-
+ static struct syncppp *sp_get(struct tty_struct *tty)
+ {
+-	struct syncppp *ap;
++	struct syncppp *ap = tty->disc_data;
  
- 	dm_put_device(ti, s->origin);
+-	read_lock(&disc_data_lock);
+-	ap = tty->disc_data;
+ 	if (ap != NULL)
+ 		refcount_inc(&ap->refcnt);
+-	read_unlock(&disc_data_lock);
+ 	return ap;
+ }
+ 
+@@ -213,12 +208,9 @@ ppp_sync_open(struct tty_struct *tty)
+ static void
+ ppp_sync_close(struct tty_struct *tty)
+ {
+-	struct syncppp *ap;
++	struct syncppp *ap = tty->disc_data;
+ 
+-	write_lock_irq(&disc_data_lock);
+-	ap = tty->disc_data;
+ 	tty->disc_data = NULL;
+-	write_unlock_irq(&disc_data_lock);
+ 	if (!ap)
+ 		return;
+ 
 -- 
-2.29.2.729.g45daf8777d-goog
+2.17.1
 
