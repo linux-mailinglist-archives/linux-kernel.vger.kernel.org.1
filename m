@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C962E398F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:25:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 934CF2E3DB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:20:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388817AbgL1NY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:24:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53400 "EHLO mail.kernel.org"
+        id S2441595AbgL1OTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:19:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388754AbgL1NYq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:24:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6169322583;
-        Mon, 28 Dec 2020 13:24:04 +0000 (UTC)
+        id S2440595AbgL1OTG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:19:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DF57420731;
+        Mon, 28 Dec 2020 14:18:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161845;
-        bh=VadtmX2gIC+KaRA84QBd3FXfFWAFrIlW/3GpavfT9vk=;
+        s=korg; t=1609165130;
+        bh=CRCtOdDamxHN7cTxpI9y41/INOW1ct7uRop5YKntB7Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bKPdAqv0orUl/AwQx9CglAO7IjOfifrhLETvXgEISny8TnCbRf/6P5mkQBQ9m6sG5
-         9h7TmGgRZtZZ6BIdsh6QSWccecQffRCuyN7l1sIAFly03dt0Vs50Vu2bMLiQIL/4DM
-         4R9zqYw27ijioke1P9jE/9j6yEQdXqAoqtdlEmAo=
+        b=eVcvSznlyguLKBP/lj0HYD9AgRS9es7idxll19PA6Z1/Y2iIXfIb4jCo5u5mc//wx
+         GX+Vu+uJipgs4O81qtCOJAG9n28r0awjCe5pFvJjwyeYU52huyPaLPMuyo4u+iyGZC
+         dcoCGOiS4IRVf/t5pzyBaxb5WsOmFX1Sc8GJmJZY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org, Wenpeng Liang <liangwenpeng@huawei.com>,
+        Weihang Li <liweihang@huawei.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 102/346] soc: qcom: geni: More properly switch to DMA mode
+Subject: [PATCH 5.10 423/717] RDMA/hns: Normalization the judgment of some features
 Date:   Mon, 28 Dec 2020 13:47:01 +0100
-Message-Id: <20201228124924.713360847@linuxfoundation.org>
+Message-Id: <20201228125041.230729369@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,108 +41,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Douglas Anderson <dianders@chromium.org>
+From: Wenpeng Liang <liangwenpeng@huawei.com>
 
-[ Upstream commit 4b6ea87be44ef34732846fc71e44c41125f0c4fa ]
+[ Upstream commit 4ddeacf68a3dd05f346b63f4507e1032a15cc3cc ]
 
-On geni-i2c transfers using DMA, it was seen that if you program the
-command (I2C_READ) before calling geni_se_rx_dma_prep() that it could
-cause interrupts to fire.  If we get unlucky, these interrupts can
-just keep firing (and not be handled) blocking further progress and
-hanging the system.
+Whether to enable the these features should better depend on the enable
+flags, not the value of related fields.
 
-In commit 02b9aec59243 ("i2c: i2c-qcom-geni: Fix DMA transfer race")
-we avoided that by making sure we didn't program the command until
-after geni_se_rx_dma_prep() was called.  While that avoided the
-problems, it also turns out to be invalid.  At least in the TX case we
-started seeing sporadic corrupted transfers.  This is easily seen by
-adding an msleep() between the DMA prep and the writing of the
-command, which makes the problem worse.  That means we need to revert
-that commit and find another way to fix the bogus IRQs.
-
-Specifically, after reverting commit 02b9aec59243 ("i2c:
-i2c-qcom-geni: Fix DMA transfer race"), I put some traces in.  I found
-that the when the interrupts were firing like crazy:
-- "m_stat" had bits for M_RX_IRQ_EN, M_RX_FIFO_WATERMARK_EN set.
-- "dma" was set.
-
-Further debugging showed that I could make the problem happen more
-reliably by adding an "msleep(1)" any time after geni_se_setup_m_cmd()
-ran up until geni_se_rx_dma_prep() programmed the length.
-
-A rather simple fix is to change geni_se_select_dma_mode() so it's a
-true inverse of geni_se_select_fifo_mode() and disables all the FIFO
-related interrupts.  Now the problematic interrupts can't fire and we
-can program things in the correct order without worrying.
-
-As part of this, let's also change the writel_relaxed() in the prepare
-function to a writel() so that our DMA is guaranteed to be prepared
-now that we can't rely on geni_se_setup_m_cmd()'s writel().
-
-NOTE: the only current user of GENI_SE_DMA in mainline is i2c.
-
-Fixes: 37692de5d523 ("i2c: i2c-qcom-geni: Add bus driver for the Qualcomm GENI I2C controller")
-Fixes: 02b9aec59243 ("i2c: i2c-qcom-geni: Fix DMA transfer race")
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Reviewed-by: Akash Asthana <akashast@codeaurora.org>
-Tested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Link: https://lore.kernel.org/r/20201013142448.v2.1.Ifdb1b69fa3367b81118e16e9e4e63299980ca798@changeid
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Fixes: 5c1f167af112 ("RDMA/hns: Init SRQ table for hip08")
+Fixes: 3cb2c996c9dc ("RDMA/hns: Add support for SCCC in size of 64 Bytes")
+Link: https://lore.kernel.org/r/1607650657-35992-3-git-send-email-liweihang@huawei.com
+Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
+Signed-off-by: Weihang Li <liweihang@huawei.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soc/qcom/qcom-geni-se.c | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_hem.c  | 4 ++--
+ drivers/infiniband/hw/hns/hns_roce_main.c | 8 ++++----
+ drivers/infiniband/hw/hns/hns_roce_qp.c   | 2 +-
+ 3 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/soc/qcom/qcom-geni-se.c b/drivers/soc/qcom/qcom-geni-se.c
-index ee89ffb6dde84..7369b061929bb 100644
---- a/drivers/soc/qcom/qcom-geni-se.c
-+++ b/drivers/soc/qcom/qcom-geni-se.c
-@@ -275,6 +275,7 @@ static void geni_se_select_fifo_mode(struct geni_se *se)
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hem.c b/drivers/infiniband/hw/hns/hns_roce_hem.c
+index 7487cf3d2c37a..66f9f036ef946 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hem.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hem.c
+@@ -1017,7 +1017,7 @@ void hns_roce_cleanup_hem_table(struct hns_roce_dev *hr_dev,
  
- static void geni_se_select_dma_mode(struct geni_se *se)
+ void hns_roce_cleanup_hem(struct hns_roce_dev *hr_dev)
  {
-+	u32 proto = geni_se_read_proto(se);
- 	u32 val;
+-	if (hr_dev->caps.srqc_entry_sz)
++	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_SRQ)
+ 		hns_roce_cleanup_hem_table(hr_dev,
+ 					   &hr_dev->srq_table.table);
+ 	hns_roce_cleanup_hem_table(hr_dev, &hr_dev->cq_table.table);
+@@ -1027,7 +1027,7 @@ void hns_roce_cleanup_hem(struct hns_roce_dev *hr_dev)
+ 	if (hr_dev->caps.cqc_timer_entry_sz)
+ 		hns_roce_cleanup_hem_table(hr_dev,
+ 					   &hr_dev->cqc_timer_table);
+-	if (hr_dev->caps.sccc_sz)
++	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_QP_FLOW_CTRL)
+ 		hns_roce_cleanup_hem_table(hr_dev,
+ 					   &hr_dev->qp_table.sccc_table);
+ 	if (hr_dev->caps.trrl_entry_sz)
+diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
+index a6277d1c36ba9..ae721fa61e0e4 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_main.c
++++ b/drivers/infiniband/hw/hns/hns_roce_main.c
+@@ -632,7 +632,7 @@ static int hns_roce_init_hem(struct hns_roce_dev *hr_dev)
+ 		goto err_unmap_trrl;
+ 	}
  
- 	writel_relaxed(0, se->base + SE_GSI_EVENT_EN);
-@@ -284,6 +285,18 @@ static void geni_se_select_dma_mode(struct geni_se *se)
- 	writel_relaxed(0xffffffff, se->base + SE_DMA_RX_IRQ_CLR);
- 	writel_relaxed(0xffffffff, se->base + SE_IRQ_EN);
+-	if (hr_dev->caps.srqc_entry_sz) {
++	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_SRQ) {
+ 		ret = hns_roce_init_hem_table(hr_dev, &hr_dev->srq_table.table,
+ 					      HEM_TYPE_SRQC,
+ 					      hr_dev->caps.srqc_entry_sz,
+@@ -644,7 +644,7 @@ static int hns_roce_init_hem(struct hns_roce_dev *hr_dev)
+ 		}
+ 	}
  
-+	val = readl_relaxed(se->base + SE_GENI_M_IRQ_EN);
-+	if (proto != GENI_SE_UART) {
-+		val &= ~(M_CMD_DONE_EN | M_TX_FIFO_WATERMARK_EN);
-+		val &= ~(M_RX_FIFO_WATERMARK_EN | M_RX_FIFO_LAST_EN);
-+	}
-+	writel_relaxed(val, se->base + SE_GENI_M_IRQ_EN);
-+
-+	val = readl_relaxed(se->base + SE_GENI_S_IRQ_EN);
-+	if (proto != GENI_SE_UART)
-+		val &= ~S_CMD_DONE_EN;
-+	writel_relaxed(val, se->base + SE_GENI_S_IRQ_EN);
-+
- 	val = readl_relaxed(se->base + SE_GENI_DMA_MODE_EN);
- 	val |= GENI_DMA_MODE_EN;
- 	writel_relaxed(val, se->base + SE_GENI_DMA_MODE_EN);
-@@ -633,7 +646,7 @@ int geni_se_tx_dma_prep(struct geni_se *se, void *buf, size_t len,
- 	writel_relaxed(lower_32_bits(*iova), se->base + SE_DMA_TX_PTR_L);
- 	writel_relaxed(upper_32_bits(*iova), se->base + SE_DMA_TX_PTR_H);
- 	writel_relaxed(GENI_SE_DMA_EOT_BUF, se->base + SE_DMA_TX_ATTR);
--	writel_relaxed(len, se->base + SE_DMA_TX_LEN);
-+	writel(len, se->base + SE_DMA_TX_LEN);
- 	return 0;
- }
- EXPORT_SYMBOL(geni_se_tx_dma_prep);
-@@ -667,7 +680,7 @@ int geni_se_rx_dma_prep(struct geni_se *se, void *buf, size_t len,
- 	writel_relaxed(upper_32_bits(*iova), se->base + SE_DMA_RX_PTR_H);
- 	/* RX does not have EOT buffer type bit. So just reset RX_ATTR */
- 	writel_relaxed(0, se->base + SE_DMA_RX_ATTR);
--	writel_relaxed(len, se->base + SE_DMA_RX_LEN);
-+	writel(len, se->base + SE_DMA_RX_LEN);
- 	return 0;
- }
- EXPORT_SYMBOL(geni_se_rx_dma_prep);
+-	if (hr_dev->caps.sccc_sz) {
++	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_QP_FLOW_CTRL) {
+ 		ret = hns_roce_init_hem_table(hr_dev,
+ 					      &hr_dev->qp_table.sccc_table,
+ 					      HEM_TYPE_SCCC,
+@@ -688,11 +688,11 @@ err_unmap_qpc_timer:
+ 		hns_roce_cleanup_hem_table(hr_dev, &hr_dev->qpc_timer_table);
+ 
+ err_unmap_ctx:
+-	if (hr_dev->caps.sccc_sz)
++	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_QP_FLOW_CTRL)
+ 		hns_roce_cleanup_hem_table(hr_dev,
+ 					   &hr_dev->qp_table.sccc_table);
+ err_unmap_srq:
+-	if (hr_dev->caps.srqc_entry_sz)
++	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_SRQ)
+ 		hns_roce_cleanup_hem_table(hr_dev, &hr_dev->srq_table.table);
+ 
+ err_unmap_cq:
+diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+index 800141ab643a3..ef1452215b17d 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_qp.c
++++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+@@ -286,7 +286,7 @@ static int alloc_qpc(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
+ 		}
+ 	}
+ 
+-	if (hr_dev->caps.sccc_sz) {
++	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_QP_FLOW_CTRL) {
+ 		/* Alloc memory for SCC CTX */
+ 		ret = hns_roce_table_get(hr_dev, &qp_table->sccc_table,
+ 					 hr_qp->qpn);
 -- 
 2.27.0
 
