@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07F6F2E3964
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:25:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D96FA2E6437
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:50:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388418AbgL1NXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:23:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49224 "EHLO mail.kernel.org"
+        id S2391697AbgL1NmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:42:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387603AbgL1NUj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:20:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A2CE22AAA;
-        Mon, 28 Dec 2020 13:19:58 +0000 (UTC)
+        id S2391880AbgL1Nld (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:41:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD4EB205CB;
+        Mon, 28 Dec 2020 13:41:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161598;
-        bh=j/afZeYiLzschEZvDilLmgz2coIBgbGyKCrDZrtzwZg=;
+        s=korg; t=1609162878;
+        bh=Asm2uZYv0sn/TvZFIlfXU6kLfWFGx1whlTI1b2fsVYM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hHa2Gqg0ds3xmYyB7f9jsjtVWCu3jHFfdamukgQjjNVi3J0hWpAm7h/cvpc8YqhEQ
-         yR3ibTS3N/0BMOkS3dYLdBwGBqBMbfHuvADsWjdrIpV3snNCE/OnfbvjE5LE4VhcPq
-         sm1t6MIzJPA15dKD0MWqkdtKq/wfL77VL50ZXQw4=
+        b=ODym8fZ3W+9iSemNMMB919mrNmhhNqjmEBLkFanmw/Nf/mQr5gU/kRAwFXvIY2yP9
+         0CGnJfIUbFlpzeiCXSpn9U5V32Bw3hCVataxGrdxkfDBKCVkmTp2IVhc8xU7tzwpdw
+         CWsl3ffZGQKRWf+ZQC0+G4luKNg5fSPh8rUpVMkw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?N=C3=A9meth=20M=C3=A1rton?= <nm127@freemail.hu>,
-        kernel test robot <lkp@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Scott Wood <oss@buserror.net>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 008/346] powerpc: Drop -me200 addition to build flags
-Date:   Mon, 28 Dec 2020 13:45:27 +0100
-Message-Id: <20201228124920.164316883@linuxfoundation.org>
+        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 092/453] sched: Reenable interrupts in do_sched_yield()
+Date:   Mon, 28 Dec 2020 13:45:28 +0100
+Message-Id: <20201228124941.661642273@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,46 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Ellerman <mpe@ellerman.id.au>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-[ Upstream commit e02152ba2810f7c88cb54e71cda096268dfa9241 ]
+[ Upstream commit 345a957fcc95630bf5535d7668a59ed983eb49a7 ]
 
-Currently a build with CONFIG_E200=y will fail with:
+do_sched_yield() invokes schedule() with interrupts disabled which is
+not allowed. This goes back to the pre git era to commit a6efb709806c
+("[PATCH] irqlock patch 2.5.27-H6") in the history tree.
 
-  Error: invalid switch -me200
-  Error: unrecognized option -me200
+Reenable interrupts and remove the misleading comment which "explains" it.
 
-Upstream binutils has never supported an -me200 option. Presumably it
-was supported at some point by either a fork or Freescale internal
-binutils.
-
-We can't support code that we can't even build test, so drop the
-addition of -me200 to the build flags, so we can at least build with
-CONFIG_E200=y.
-
-Reported-by: Németh Márton <nm127@freemail.hu>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Acked-by: Scott Wood <oss@buserror.net>
-Link: https://lore.kernel.org/r/20201116120913.165317-1-mpe@ellerman.id.au
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/87r1pt7y5c.fsf@nanos.tec.linutronix.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/Makefile | 1 -
- 1 file changed, 1 deletion(-)
+ kernel/sched/core.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/arch/powerpc/Makefile b/arch/powerpc/Makefile
-index 8954108df4570..f51e21ea53492 100644
---- a/arch/powerpc/Makefile
-+++ b/arch/powerpc/Makefile
-@@ -251,7 +251,6 @@ endif
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 4511532b08b84..7841e738e38f0 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -5679,12 +5679,8 @@ static void do_sched_yield(void)
+ 	schedstat_inc(rq->yld_count);
+ 	current->sched_class->yield_task(rq);
  
- cpu-as-$(CONFIG_4xx)		+= -Wa,-m405
- cpu-as-$(CONFIG_ALTIVEC)	+= $(call as-option,-Wa$(comma)-maltivec)
--cpu-as-$(CONFIG_E200)		+= -Wa,-me200
- cpu-as-$(CONFIG_E500)		+= -Wa,-me500
+-	/*
+-	 * Since we are going to call schedule() anyway, there's
+-	 * no need to preempt or enable interrupts:
+-	 */
+ 	preempt_disable();
+-	rq_unlock(rq, &rf);
++	rq_unlock_irq(rq, &rf);
+ 	sched_preempt_enable_no_resched();
  
- # When using '-many -mpower4' gas will first try and find a matching power4
+ 	schedule();
 -- 
 2.27.0
 
