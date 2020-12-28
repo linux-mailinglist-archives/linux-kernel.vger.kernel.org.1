@@ -2,100 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 395F52E6B29
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:00:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E4352E6B2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:00:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732093AbgL1W43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 17:56:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55820 "EHLO mail.kernel.org"
+        id S1728322AbgL1W4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 17:56:30 -0500
+Received: from elvis.franken.de ([193.175.24.41]:43952 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729630AbgL1WYx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 17:24:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 76BAE20829;
-        Mon, 28 Dec 2020 22:24:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609194252;
-        bh=BRLRmoc86o/lCtC8L20RHhYC6lNGCKS1C8CieN5brmI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=osxvvUn2xazBLXZrNSnH+KTDzibEOLboMXSoDaCx/Aj70xHxif3gpup542baiCHy3
-         s3YKsYr+2UwJUtr3ZGbmHzT5OD1bSVHRnU5Z8sXATK3EszopFycgxUwiwc0IUoJjRs
-         VgBobkOZWR80QCNHHI7RT9CTP6bbFIzOiRTuBAspn7IA5C+nV8jLdAUMcMj3Q/l8F3
-         VUI8aeMDLdKFLO/MHrXUb03KF5MNnHBxf0VK1MegavG3hOnormgifIUczRtRMqxeM8
-         bck/U4152Cz4FWjZkKfd2QlmIG5OAD7BEE6mTNgEGPbKSrVZqPr2w4YRrk53sME6d8
-         +MdEffeSYsYwA==
-Date:   Mon, 28 Dec 2020 14:24:11 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Cc:     netdev@vger.kernel.org,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH net 1/2] net: mrp: fix definitions of MRP test packets
-Message-ID: <20201228142411.1c752b2e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201223144533.4145-2-rasmus.villemoes@prevas.dk>
-References: <20201223144533.4145-1-rasmus.villemoes@prevas.dk>
-        <20201223144533.4145-2-rasmus.villemoes@prevas.dk>
+        id S1729632AbgL1W0V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 17:26:21 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1ku0xP-00069Q-00; Mon, 28 Dec 2020 23:25:39 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 8475EC05C4; Mon, 28 Dec 2020 23:25:32 +0100 (CET)
+Date:   Mon, 28 Dec 2020 23:25:32 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>, od@zcrc.me,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com, stable@vger.kernel.org
+Subject: Re: [PATCH] MIPS: boot: Fix unaligned access with
+ CONFIG_MIPS_RAW_APPENDED_DTB
+Message-ID: <20201228222532.GA24926@alpha.franken.de>
+References: <20201216233956.280068-1-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201216233956.280068-1-paul@crapouillou.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Dec 2020 15:45:32 +0100 Rasmus Villemoes wrote:
-> Wireshark says that the MRP test packets cannot be decoded - and the
-> reason for that is that there's a two-byte hole filled with garbage
-> between the "transitions" and "timestamp" members.
+On Wed, Dec 16, 2020 at 11:39:56PM +0000, Paul Cercueil wrote:
+> The compressed payload is not necesarily 4-byte aligned, at least when
+> compiling with Clang. In that case, the 4-byte value appended to the
+> compressed payload that corresponds to the uncompressed kernel image
+> size must be read using get_unaligned_le().
 > 
-> So Wireshark decodes the two garbage bytes and the top two bytes of
-> the timestamp written by the kernel as the timestamp value (which thus
-> fluctuates wildly), and interprets the lower two bytes of the
-> timestamp as a new (type, length) pair, which is of course broken.
+> This fixes Clang-built kernels not booting on MIPS (tested on a Ingenic
+> JZ4770 board).
 > 
-> While my copy of the MRP standard is still under way [*], I cannot
-> imagine the standard specifying a two-byte hole here, and whoever
-> wrote the Wireshark decoding code seems to agree with that.
-> 
-> The struct definitions live under include/uapi/, but they are not
-> really part of any kernel<->userspace API/ABI, so fixing the
-> definitions by adding the packed attribute should not cause any
-> compatibility issues.
-> 
-> The remaining on-the-wire packet formats likely also don't contain
-> holes, but pahole and manual inspection says the current definitions
-> suffice. So adding the packed attribute to those is not strictly
-> needed, but might be done for good measure.
-> 
-> [*] I will never understand how something hidden behind a +1000$
-> paywall can be called a standard.
-> 
-> Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+> Fixes: b8f54f2cde78 ("MIPS: ZBOOT: copy appended dtb to the end of the kernel")
+> Cc: <stable@vger.kernel.org> # v4.7
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 > ---
->  include/uapi/linux/mrp_bridge.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  arch/mips/boot/compressed/decompress.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/include/uapi/linux/mrp_bridge.h b/include/uapi/linux/mrp_bridge.h
-> index 6aeb13ef0b1e..d1d0cf65916d 100644
-> --- a/include/uapi/linux/mrp_bridge.h
-> +++ b/include/uapi/linux/mrp_bridge.h
-> @@ -96,7 +96,7 @@ struct br_mrp_ring_test_hdr {
->  	__be16 state;
->  	__be16 transitions;
->  	__be32 timestamp;
-> -};
-> +} __attribute__((__packed__));
+> diff --git a/arch/mips/boot/compressed/decompress.c b/arch/mips/boot/compressed/decompress.c
+> index c61c641674e6..47c07990432b 100644
+> --- a/arch/mips/boot/compressed/decompress.c
+> +++ b/arch/mips/boot/compressed/decompress.c
+> @@ -117,7 +117,7 @@ void decompress_kernel(unsigned long boot_heap_start)
+>  		dtb_size = fdt_totalsize((void *)&__appended_dtb);
 >  
->  struct br_mrp_ring_topo_hdr {
->  	__be16 prio;
-> @@ -141,7 +141,7 @@ struct br_mrp_in_test_hdr {
->  	__be16 state;
->  	__be16 transitions;
->  	__be32 timestamp;
-> -};
-> +} __attribute__((__packed__));
->  
->  struct br_mrp_in_topo_hdr {
->  	__u8 sa[ETH_ALEN];
+>  		/* last four bytes is always image size in little endian */
+> -		image_size = le32_to_cpup((void *)&__image_end - 4);
+> +		image_size = get_unaligned_le32((void *)&__image_end - 4);
 
-Can we use this opportunity to move the definitions of these structures
-out of the uAPI to a normal kernel header?
+gives me following error
+
+arch/mips/boot/compressed/decompress.c:120:16: error: implicit declaration of function ‘get_unaligned_le32’ [-Werror=implicit-function-declaration]
+   image_size = get_unaligned_le32((void *)&__image_end - 4);
+
+I've added
+
+#include <asm/unaligned.h>
+
+which fixes the compile error, but I'm wondering why the patch compiled
+for you ?
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
