@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7842E3B4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:49:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AADFA2E633F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:41:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405930AbgL1Nsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:48:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49880 "EHLO mail.kernel.org"
+        id S2408789AbgL1PkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:40:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405848AbgL1Nsd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:48:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BEC0321D94;
-        Mon, 28 Dec 2020 13:47:52 +0000 (UTC)
+        id S2405902AbgL1Nsh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:48:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E9E512078D;
+        Mon, 28 Dec 2020 13:47:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163273;
-        bh=dRFpd2P34wQSPxgxPpmNmQnLi9bdefSO5r+35NisPFI=;
+        s=korg; t=1609163276;
+        bh=Zwks9dkXJlsB70xib3lu+GG87PIEm8VnHExLyAazaWs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=inf1+7bD6x6CBaH+FlDNYilF7OmnA1qLCbZf9/uVhOBL98thJrI7klMRUEkTlaiun
-         40K4GyBY2q1zhITjR1GsT+e1bbwaYDi+xyo8CXKLb9k6zA6Dow+ZjBPrMpXN+0/mgQ
-         J4/rkkm2OK7rqMG8GBmw2xH0Q/a7eBhwAI4jQp3A=
+        b=UgXMaSJsCoUNFF58CvucDm1+JLQH6BNm+r3cGsVhlnTzmoXdT4RGxYgL9aUUE8sFr
+         PfQ2Kl+Et9jABBUJqnXwrt5HLeidJXS0KYl/MxLtdn+5xmY/6oAwp+U21euCnz4jBQ
+         SgHiJgsDk3a8L71nzt2AZDedNill1BmFANhJMGVc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
         Viresh Kumar <viresh.kumar@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 229/453] cpufreq: mediatek: Add missing MODULE_DEVICE_TABLE
-Date:   Mon, 28 Dec 2020 13:47:45 +0100
-Message-Id: <20201228124948.242089789@linuxfoundation.org>
+Subject: [PATCH 5.4 230/453] cpufreq: qcom: Add missing MODULE_DEVICE_TABLE
+Date:   Mon, 28 Dec 2020 13:47:46 +0100
+Message-Id: <20201228124948.289924509@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
 References: <20201228124937.240114599@linuxfoundation.org>
@@ -43,32 +43,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Pali Rohár <pali@kernel.org>
 
-[ Upstream commit af6eca06501118af3e2ad46eee8edab20624b74e ]
+[ Upstream commit a5a6031663bc1dd0a10babd49d1bcb3153a8327f ]
 
 This patch adds missing MODULE_DEVICE_TABLE definition which generates
 correct modalias for automatic loading of this cpufreq driver when it is
 compiled as an external module.
 
 Signed-off-by: Pali Rohár <pali@kernel.org>
-Fixes: 501c574f4e3a5 ("cpufreq: mediatek: Add support of cpufreq to MT2701/MT7623 SoC")
+Fixes: 46e2856b8e188 ("cpufreq: Add Kryo CPU scaling driver")
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpufreq/mediatek-cpufreq.c | 1 +
+ drivers/cpufreq/qcom-cpufreq-nvmem.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/cpufreq/mediatek-cpufreq.c b/drivers/cpufreq/mediatek-cpufreq.c
-index 0c98dd08273d0..927ebc582a385 100644
---- a/drivers/cpufreq/mediatek-cpufreq.c
-+++ b/drivers/cpufreq/mediatek-cpufreq.c
-@@ -540,6 +540,7 @@ static const struct of_device_id mtk_cpufreq_machines[] __initconst = {
- 
- 	{ }
+diff --git a/drivers/cpufreq/qcom-cpufreq-nvmem.c b/drivers/cpufreq/qcom-cpufreq-nvmem.c
+index f0d2d5035413b..1e77d190f19f9 100644
+--- a/drivers/cpufreq/qcom-cpufreq-nvmem.c
++++ b/drivers/cpufreq/qcom-cpufreq-nvmem.c
+@@ -305,6 +305,7 @@ static const struct of_device_id qcom_cpufreq_match_list[] __initconst = {
+ 	{ .compatible = "qcom,qcs404", .data = &match_data_qcs404 },
+ 	{},
  };
-+MODULE_DEVICE_TABLE(of, mtk_cpufreq_machines);
++MODULE_DEVICE_TABLE(of, qcom_cpufreq_match_list);
  
- static int __init mtk_cpufreq_driver_init(void)
- {
+ /*
+  * Since the driver depends on smem and nvmem drivers, which may
 -- 
 2.27.0
 
