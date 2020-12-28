@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD14F2E3B72
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:51:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ABF72E37F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:04:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406276AbgL1NuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:50:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51680 "EHLO mail.kernel.org"
+        id S1730177AbgL1NDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:03:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406237AbgL1Nt4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:49:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 74BB22063A;
-        Mon, 28 Dec 2020 13:49:15 +0000 (UTC)
+        id S1728158AbgL1NAu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:00:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EB21C208D5;
+        Mon, 28 Dec 2020 13:00:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163356;
-        bh=ozsuKk+Lsw1SUCv83Axh3FACLSrWknCXoQQY5Baaj70=;
+        s=korg; t=1609160409;
+        bh=20mV+FVIdTdiqXwcl4mtzCvNrTGudFxrNl3FrEycrTw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sX0RFBbW4SOJs19oejlmjsAs9dqnI026mVTX1hfF2o2doelVpuM1iPCUS297wb/QS
-         ANXiQbUFz3aSKTlbNAh9YVStzReni+0G7jp6fRxXs6laNx2GA4PgpA4GGAo/B70Sa0
-         cXCVKo8rmXFjMqohHkN0+RaHHafy0evRItL8egw4=
+        b=IpyDLweG9B79f11exwawisENG80afd1wpQ64iqzQhjrU9frokk/xYa9Tww//PLkM0
+         TYJ8SmcuMx70XFOEuY6M5azYj5VnTLRY45SSk7ERcx6XvmHKB4ZqYaNI1vXs23Gs/5
+         5fmpW5nES+D7zgjYNpZ+wl4mCL94F15y6soBFqOw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Zhang Changzhong <zhangchangzhong@huawei.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 257/453] bus: fsl-mc: fix error return code in fsl_mc_object_allocate()
-Date:   Mon, 28 Dec 2020 13:48:13 +0100
-Message-Id: <20201228124949.597707876@linuxfoundation.org>
+        stable@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        Peter Chen <peter.chen@nxp.com>
+Subject: [PATCH 4.9 041/175] usb: chipidea: ci_hdrc_imx: Pass DISABLE_DEVICE_STREAMING flag to imx6ul
+Date:   Mon, 28 Dec 2020 13:48:14 +0100
+Message-Id: <20201228124855.242462222@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,42 +39,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Changzhong <zhangchangzhong@huawei.com>
+From: Fabio Estevam <festevam@gmail.com>
 
-[ Upstream commit 3d70fb03711c37bc64e8e9aea5830f498835f6bf ]
+commit c7721e15f434920145c376e8fe77e1c079fc3726 upstream.
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+According to the i.MX6UL Errata document:
+https://www.nxp.com/docs/en/errata/IMX6ULCE.pdf
 
-Fixes: 197f4d6a4a00 ("staging: fsl-mc: fsl-mc object allocator driver")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Acked-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
-Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-Link: https://lore.kernel.org/r/1607068967-31991-1-git-send-email-zhangchangzhong@huawei.com
+ERR007881 also affects i.MX6UL, so pass the
+CI_HDRC_DISABLE_DEVICE_STREAMING flag to workaround the issue.
+
+Fixes: 52fe568e5d71 ("usb: chipidea: imx: add imx6ul usb support")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Fabio Estevam <festevam@gmail.com>
+Signed-off-by: Peter Chen <peter.chen@nxp.com>
+Link: https://lore.kernel.org/r/20201207020909.22483-2-peter.chen@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+
 ---
- drivers/bus/fsl-mc/fsl-mc-allocator.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/usb/chipidea/ci_hdrc_imx.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/bus/fsl-mc/fsl-mc-allocator.c b/drivers/bus/fsl-mc/fsl-mc-allocator.c
-index cc7bb900f5249..95672306d3714 100644
---- a/drivers/bus/fsl-mc/fsl-mc-allocator.c
-+++ b/drivers/bus/fsl-mc/fsl-mc-allocator.c
-@@ -292,8 +292,10 @@ int __must_check fsl_mc_object_allocate(struct fsl_mc_device *mc_dev,
- 		goto error;
+--- a/drivers/usb/chipidea/ci_hdrc_imx.c
++++ b/drivers/usb/chipidea/ci_hdrc_imx.c
+@@ -63,7 +63,8 @@ static const struct ci_hdrc_imx_platform
  
- 	mc_adev = resource->data;
--	if (!mc_adev)
-+	if (!mc_adev) {
-+		error = -EINVAL;
- 		goto error;
-+	}
+ static const struct ci_hdrc_imx_platform_flag imx6ul_usb_data = {
+ 	.flags = CI_HDRC_SUPPORTS_RUNTIME_PM |
+-		CI_HDRC_TURN_VBUS_EARLY_ON,
++		CI_HDRC_TURN_VBUS_EARLY_ON |
++		CI_HDRC_DISABLE_DEVICE_STREAMING,
+ };
  
- 	mc_adev->consumer_link = device_link_add(&mc_dev->dev,
- 						 &mc_adev->dev,
--- 
-2.27.0
-
+ static const struct ci_hdrc_imx_platform_flag imx7d_usb_data = {
 
 
