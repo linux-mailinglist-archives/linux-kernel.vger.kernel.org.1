@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 962B82E3BC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:55:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC4F32E38D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:16:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406400AbgL1Nye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:54:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55686 "EHLO mail.kernel.org"
+        id S1732676AbgL1NPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:15:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43010 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407369AbgL1Nxw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:53:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B97BD2078D;
-        Mon, 28 Dec 2020 13:53:11 +0000 (UTC)
+        id S1732681AbgL1NPY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:15:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DBC622CBB;
+        Mon, 28 Dec 2020 13:15:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163592;
-        bh=NQWHQvaQphVXKPh//J8vr+afTSGvyzyE21jpRPHA51s=;
+        s=korg; t=1609161309;
+        bh=GwNU0oCArP9wD4hGiS8dtxojw14e/YZIN+7zAXewmyA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LA8OVl2QUZSQRfinM5eoPCe2/U9/buAy6OrcuK7Axd8MRRRGyOtZE4EAymst60e0N
-         B2T7whSVSjVRZB3VK/ec3tibQ6UYUHY9/hYv/RLepd0fIwxq7iNEkciXKDR8cwvRVk
-         vCtOLf/IW7/x3EkjCj+ofMO5aRnJihBFFAhmjU7k=
+        b=JIc7bztsCM7Ry4s+CmSl/mJB9Zd2Ah/vofG/hAAeP4WHY9YF2DIsyUe/UYsjYbAx1
+         zBWEFTBy8nKcQrY7y9LtUsvAU6euFY0Vf67r9dXzTrSCVdGAmoLuN9LgJdpk6iYGxc
+         n+mRGoRN7p0YHSe8Btm8S0sNNucrFKylTfpMmgGw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 309/453] kconfig: fix return value of do_error_if()
-Date:   Mon, 28 Dec 2020 13:49:05 +0100
-Message-Id: <20201228124952.082201074@linuxfoundation.org>
+Subject: [PATCH 4.14 141/242] cpufreq: st: Add missing MODULE_DEVICE_TABLE
+Date:   Mon, 28 Dec 2020 13:49:06 +0100
+Message-Id: <20201228124911.643314936@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,34 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masahiro Yamada <masahiroy@kernel.org>
+From: Pali Rohár <pali@kernel.org>
 
-[ Upstream commit 135b4957eac43af2aedf8e2a277b9540f33c2558 ]
+[ Upstream commit 183747ab52654eb406fc6b5bfb40806b75d31811 ]
 
-$(error-if,...) is expanded to an empty string. Currently, it relies on
-eval_clause() returning xstrdup("") when all attempts for expansion fail,
-but the correct implementation is to make do_error_if() return xstrdup("").
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this cpufreq driver when it is
+compiled as an external module.
 
-Fixes: 1d6272e6fe43 ("kconfig: add 'info', 'warning-if', and 'error-if' built-in functions")
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Fixes: ab0ea257fc58d ("cpufreq: st: Provide runtime initialised driver for ST's platforms")
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/kconfig/preprocess.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/cpufreq/sti-cpufreq.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/scripts/kconfig/preprocess.c b/scripts/kconfig/preprocess.c
-index 0243086fb1685..0590f86df6e40 100644
---- a/scripts/kconfig/preprocess.c
-+++ b/scripts/kconfig/preprocess.c
-@@ -114,7 +114,7 @@ static char *do_error_if(int argc, char *argv[])
- 	if (!strcmp(argv[0], "y"))
- 		pperror("%s", argv[1]);
- 
--	return NULL;
-+	return xstrdup("");
+diff --git a/drivers/cpufreq/sti-cpufreq.c b/drivers/cpufreq/sti-cpufreq.c
+index 6b5d241c30b70..2d09960afa591 100644
+--- a/drivers/cpufreq/sti-cpufreq.c
++++ b/drivers/cpufreq/sti-cpufreq.c
+@@ -295,6 +295,13 @@ register_cpufreq_dt:
  }
+ module_init(sti_cpufreq_init);
  
- static char *do_filename(int argc, char *argv[])
++static const struct of_device_id __maybe_unused sti_cpufreq_of_match[] = {
++	{ .compatible = "st,stih407" },
++	{ .compatible = "st,stih410" },
++	{ },
++};
++MODULE_DEVICE_TABLE(of, sti_cpufreq_of_match);
++
+ MODULE_DESCRIPTION("STMicroelectronics CPUFreq/OPP driver");
+ MODULE_AUTHOR("Ajitpal Singh <ajitpal.singh@st.com>");
+ MODULE_AUTHOR("Lee Jones <lee.jones@linaro.org>");
 -- 
 2.27.0
 
