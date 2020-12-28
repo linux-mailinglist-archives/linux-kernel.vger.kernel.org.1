@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BDE22E693C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:47:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8947C2E683B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:35:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634526AbgL1QrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:47:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51560 "EHLO mail.kernel.org"
+        id S2634136AbgL1Qdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:33:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728498AbgL1MzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:55:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F23312242A;
-        Mon, 28 Dec 2020 12:54:58 +0000 (UTC)
+        id S1730272AbgL1NDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:03:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F054C22A84;
+        Mon, 28 Dec 2020 13:03:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160099;
-        bh=iRrV4hdtPk4eKcU5Iq0aDCH+J2vIQi9boaG6kCWLdjY=;
+        s=korg; t=1609160584;
+        bh=YyWkyWuF9tgUxC8gDThyGZ7RnztBkp7dslztdFZuTbg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VY5Mi6aHf8H1nlXwMJZCqJKB8F2e/kRAkujpz0Kf6ya6ZimnV9q7+/cQ0NpUsIFUC
-         jc3UECv3F9QoR8rQh45TrNaWJums6lywV0fjbelXkzukcUVPOb/i8Fi9imlMU2PUTl
-         ARGcWm8ZBtDGcsfzKGQ8X/h1RD9IOamyLaRVZd3I=
+        b=GzTdVZrY9qCAdeOLptO86gtUjxACzdaCi4JnJu/rnlWgzKFizOUKZwXlbVkOjaxqJ
+         BBYHzc1D6kXMjP/zjc3mqrdDvUl8OWCLefxePrpfMGIXB9q0M+/klaF1BwroR4qY1Y
+         Bckqjk4V4XvScltVd6zmgoGnGUxxQ5cVMI+dX50Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,12 +27,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
         Viresh Kumar <viresh.kumar@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 069/132] cpufreq: highbank: Add missing MODULE_DEVICE_TABLE
-Date:   Mon, 28 Dec 2020 13:49:13 +0100
-Message-Id: <20201228124849.776804680@linuxfoundation.org>
+Subject: [PATCH 4.9 101/175] cpufreq: scpi: Add missing MODULE_ALIAS
+Date:   Mon, 28 Dec 2020 13:49:14 +0100
+Message-Id: <20201228124858.142579635@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,38 +43,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Pali Rohár <pali@kernel.org>
 
-[ Upstream commit 9433777a6e0aae27468d3434b75cd51bb88ff711 ]
+[ Upstream commit c0382d049d2def37b81e907a8b22661a4a4a6eb5 ]
 
-This patch adds missing MODULE_DEVICE_TABLE definition which generates
-correct modalias for automatic loading of this cpufreq driver when it is
-compiled as an external module.
+This patch adds missing MODULE_ALIAS for automatic loading of this cpufreq
+driver when it is compiled as an external module.
 
 Signed-off-by: Pali Rohár <pali@kernel.org>
-Fixes: 6754f556103be ("cpufreq / highbank: add support for highbank cpufreq")
+Fixes: 8def31034d033 ("cpufreq: arm_big_little: add SCPI interface driver")
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpufreq/highbank-cpufreq.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/cpufreq/scpi-cpufreq.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/cpufreq/highbank-cpufreq.c b/drivers/cpufreq/highbank-cpufreq.c
-index 1608f7105c9f8..ad743f2f31e78 100644
---- a/drivers/cpufreq/highbank-cpufreq.c
-+++ b/drivers/cpufreq/highbank-cpufreq.c
-@@ -104,6 +104,13 @@ out_put_node:
- }
- module_init(hb_cpufreq_driver_init);
+diff --git a/drivers/cpufreq/scpi-cpufreq.c b/drivers/cpufreq/scpi-cpufreq.c
+index ea7a4e1b68c26..1a45fbb00d877 100644
+--- a/drivers/cpufreq/scpi-cpufreq.c
++++ b/drivers/cpufreq/scpi-cpufreq.c
+@@ -111,6 +111,7 @@ static struct platform_driver scpi_cpufreq_platdrv = {
+ };
+ module_platform_driver(scpi_cpufreq_platdrv);
  
-+static const struct of_device_id __maybe_unused hb_cpufreq_of_match[] = {
-+	{ .compatible = "calxeda,highbank" },
-+	{ .compatible = "calxeda,ecx-2000" },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, hb_cpufreq_of_match);
-+
- MODULE_AUTHOR("Mark Langsdorf <mark.langsdorf@calxeda.com>");
- MODULE_DESCRIPTION("Calxeda Highbank cpufreq driver");
- MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:scpi-cpufreq");
+ MODULE_AUTHOR("Sudeep Holla <sudeep.holla@arm.com>");
+ MODULE_DESCRIPTION("ARM SCPI CPUFreq interface driver");
+ MODULE_LICENSE("GPL v2");
 -- 
 2.27.0
 
