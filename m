@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9414C2E6761
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:24:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC3502E6961
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:49:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437261AbgL1QYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:24:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39480 "EHLO mail.kernel.org"
+        id S1727942AbgL1Qsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:48:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729477AbgL1NLb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:11:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE89121D94;
-        Mon, 28 Dec 2020 13:10:49 +0000 (UTC)
+        id S1728154AbgL1Mx1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:53:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 11AC0208D5;
+        Mon, 28 Dec 2020 12:52:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161050;
-        bh=6ioSoxzL/MJ97AYbqt/OQCyDR+3ndcO5HDNPaBTuN/g=;
+        s=korg; t=1609159932;
+        bh=CAZpmqYhFcjlsXXL+wvpPr150+FymCry+J9YQd151xE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XJzlDSsxxhAahvRbIUGP5VW2wlObXxLf9felFqm6GziN/Qdvi8rJQcNIW0uXvqM+6
-         MnHj0KfKhbjrrovRzckjehNd9NGUApthz7fA8jGyhYoO8otBj+OWLVAVa0hISP4WKS
-         tHOvzkDImus4gemBL1xqK0u6l0rmx+n1VEfVpuzg=
+        b=IErPoC5f4Qm/sQnY3hcrBLT3mWEoLgllGHJvc34ultODFevKaic1uAgzD1Ckra5kd
+         GvymsOjvBjS4eodwmnItbEUoHijhTIKxVv2Utmi9PrgFdBKAMiz40pKrV9+95FGwuC
+         /GbgtmJVG2VKHrNmhIAgrVEHPY95cyFxmCD3DtVg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 084/242] spi: tegra114: fix reference leak in tegra spi ops
-Date:   Mon, 28 Dec 2020 13:48:09 +0100
-Message-Id: <20201228124908.827096034@linuxfoundation.org>
+        stable@vger.kernel.org, Chris Chiu <chiu@endlessos.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: [PATCH 4.4 006/132] Input: i8042 - add Acer laptops to the i8042 reset list
+Date:   Mon, 28 Dec 2020 13:48:10 +0100
+Message-Id: <20201228124846.724160341@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +39,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Chris Chiu <chiu@endlessos.org>
 
-[ Upstream commit a042184c7fb99961ea083d4ec192614bec671969 ]
+commit ce6520b0eafad5962ffc21dc47cd7bd3250e9045 upstream.
 
-pm_runtime_get_sync will increment pm usage counter even it
-failed. Forgetting to pm_runtime_put_noidle will result in
-reference leak in two callers(tegra_spi_setup and
-tegra_spi_resume), so we should fix it.
+The touchpad operates in Basic Mode by default in the Acer BIOS
+setup, but some Aspire/TravelMate models require the i8042 to be
+reset in order to be correctly detected.
 
-Fixes: f333a331adfac ("spi/tegra114: add spi driver")
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201103141306.5607-1-zhangqilong3@huawei.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Chris Chiu <chiu@endlessos.org>
+Link: https://lore.kernel.org/r/20201207071250.15021-1-chiu@endlessos.org
+Cc: stable@vger.kernel.org
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/spi/spi-tegra114.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/input/serio/i8042-x86ia64io.h |   42 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
 
-diff --git a/drivers/spi/spi-tegra114.c b/drivers/spi/spi-tegra114.c
-index 84ff0c507f0b6..0e1a8d7aa3224 100644
---- a/drivers/spi/spi-tegra114.c
-+++ b/drivers/spi/spi-tegra114.c
-@@ -827,6 +827,7 @@ static int tegra_spi_setup(struct spi_device *spi)
- 
- 	ret = pm_runtime_get_sync(tspi->dev);
- 	if (ret < 0) {
-+		pm_runtime_put_noidle(tspi->dev);
- 		dev_err(tspi->dev, "pm runtime failed, e = %d\n", ret);
- 		return ret;
- 	}
-@@ -1252,6 +1253,7 @@ static int tegra_spi_resume(struct device *dev)
- 
- 	ret = pm_runtime_get_sync(dev);
- 	if (ret < 0) {
-+		pm_runtime_put_noidle(dev);
- 		dev_err(dev, "pm runtime failed, e = %d\n", ret);
- 		return ret;
- 	}
--- 
-2.27.0
-
+--- a/drivers/input/serio/i8042-x86ia64io.h
++++ b/drivers/input/serio/i8042-x86ia64io.h
+@@ -688,6 +688,48 @@ static const struct dmi_system_id __init
+ 		},
+ 	},
+ 	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire A114-31"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire A314-31"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire A315-31"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire ES1-132"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire ES1-332"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire ES1-432"),
++		},
++	},
++	{
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "TravelMate Spin B118-RN"),
++		},
++	},
++	{
+ 		/* Advent 4211 */
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "DIXONSXP"),
 
 
