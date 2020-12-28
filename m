@@ -2,67 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 114AB2E3463
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 06:44:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E5342E346E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 07:04:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728004AbgL1Foi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 00:44:38 -0500
-Received: from mailbackend.panix.com ([166.84.1.89]:40765 "EHLO
-        mailbackend.panix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726657AbgL1Foi (ORCPT
+        id S1727988AbgL1GCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 01:02:19 -0500
+Received: from smtprelay0006.hostedemail.com ([216.40.44.6]:53104 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726511AbgL1GCT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 00:44:38 -0500
-Received: from xps-7390 (cpe-23-242-39-94.socal.res.rr.com [23.242.39.94])
-        by mailbackend.panix.com (Postfix) with ESMTPSA id 4D46134tzFzfFY;
-        Mon, 28 Dec 2020 00:43:51 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=panix.com; s=panix;
-        t=1609134232; bh=C49VBnc7b16ypJBbXONSWN2vexJOG7VxxTVZAqMLwJ0=;
-        h=Date:From:Reply-To:To:cc:Subject:In-Reply-To:References;
-        b=Njg6F5jd9B5hah4ch2aWcVebBe1hcTvbJC3JQgN8wPqq5uA5ThYz7aH/Tvin3xIxa
-         f8MHRnYS4/3a3XxSzTFxP6S8xID3CbSpCndpECGjXEyBKUBWZn47zIIEcdPF8uEm8T
-         sT7Qv2q1+ptilFm6A8evL2cefcKiUf0lQ2wQ4BSY=
-Date:   Sun, 27 Dec 2020 21:43:49 -0800 (PST)
-From:   "Kenneth R. Crudup" <kenny@panix.com>
-Reply-To: "Kenneth R. Crudup" <kenny@panix.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-cc:     Vidya Sagar <vidyas@nvidia.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Commit 4257f7e0 ("PCI/ASPM: Save/restore L1SS Capability for
- suspend/resume") causing hibernate resume failures
-In-Reply-To: <20201228040513.GA611645@bjorn-Precision-5520>
-Message-ID: <88d569d8-09c-6bfc-c246-f4989bfbc1@panix.com>
-References: <20201228040513.GA611645@bjorn-Precision-5520>
+        Mon, 28 Dec 2020 01:02:19 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id D875C1802926E;
+        Mon, 28 Dec 2020 06:01:37 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:988:989:1260:1261:1263:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2525:2553:2565:2682:2685:2687:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3871:3872:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:7652:7875:9025:9388:9389:10004:10400:10848:11232:11658:11914:12043:12297:12555:12679:12740:12895:12986:13069:13161:13184:13229:13311:13357:13437:13439:13845:13894:14181:14659:14721:14764:14819:21080:21324:21451:21627:21672:21781:21881:30054:30079:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: dogs21_4b1837427491
+X-Filterd-Recvd-Size: 1828
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf04.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 28 Dec 2020 06:01:36 +0000 (UTC)
+Message-ID: <2822d565280536f36ea6ddd521a7716813ef85a2.camel@perches.com>
+Subject: Re: [PATCH] cpuset: Remove stale URLs in the MAINTAINERS entry
+From:   Joe Perches <joe@perches.com>
+To:     Zefan Li <lizefan@huawei.com>, Tejun Heo <tj@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        Steve Wahl <steve.wahl@hpe.com>
+Date:   Sun, 27 Dec 2020 22:01:35 -0800
+In-Reply-To: <42668f2c-5ea1-da38-918e-ac4c86e3f03d@huawei.com>
+References: <42668f2c-5ea1-da38-918e-ac4c86e3f03d@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 2020-12-28 at 11:17 +0800, Zefan Li wrote:
+> Those URLs are no longer accessable.
+> 
+> Reported-by: Steve Wahl <steve.wahl@hpe.com>
+> Signed-off-by: Zefan Li <lizefan@huawei.com>
+> ---
+>  MAINTAINERS | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index ae9b1dd748c4..2fe8eb54639e 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -4477,8 +4477,6 @@ CONTROL GROUP - CPUSET
+>  M:	Li Zefan <lizefan@huawei.com>
+>  L:	cgroups@vger.kernel.org
+>  S:	Maintained
+> -W:	http://www.bullopensource.org/cpuset/
+> -W:	http://oss.sgi.com/projects/cpusets/
 
-OK, got more info:
+The general argument to avoid removal of these no longer valid links
+is that they may still be available from archive.org.
 
-On Sun, 27 Dec 2020, Bjorn Helgaas wrote:
+For instance:
 
-> If it's convenient, can you try the patch below?  If the debug patch
-> doesn't help:
+https://web.archive.org/web/20170512010721/http://oss.sgi.com/projects/cpusets/
 
->   - Are you seeing the hibernate/resume problem when on AC or on
->     battery?
+It may be appropriate to copy the content into a local Documentation
+file somewhere to avoid the need to lookup old reference links.
 
-OK, so:
 
-- on TLP, before your patch, it panic()s on AC, but not on battery
-- on TLP, with your patch, it panic()s on battery, but NOT on AC
-- if TLP is masked, it still panic()s, but I forget if AC or battery
-- even if I mask TLP, with your commit in place it panic()s
-
->   - If you revert 4257f7e008ea, does hibernate/resume work fine?  Both
->     with the tlp tweak and without?
-
-Definitely with the revert everything works. I'll try your patch after the
-revert and see if anything changes.
-
-	-Kenny
-
--- 
-Kenneth R. Crudup  Sr. SW Engineer, Scott County Consulting, Orange County CA
