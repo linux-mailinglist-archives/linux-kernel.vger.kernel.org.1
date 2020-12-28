@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4901B2E682B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:34:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85FE32E6706
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:19:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730241AbgL1NDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:03:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59348 "EHLO mail.kernel.org"
+        id S1732460AbgL1NOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:14:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42294 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730189AbgL1NDN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:03:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E1455208BA;
-        Mon, 28 Dec 2020 13:02:31 +0000 (UTC)
+        id S1732432AbgL1NON (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:14:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD10320728;
+        Mon, 28 Dec 2020 13:13:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160552;
-        bh=Umn2im3wKL1U3i3xsCfO0vl3cKxcFTZf51tW8yz409Q=;
+        s=korg; t=1609161212;
+        bh=noDZoDl+h9FBLAcMyfJuTNY2SxLgQcSRzut6Y4ZkC+Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ajr4PZIDHUYnyjWdWCnz8+ro5Nme+6d1VZl2+nSjF3zejxRmLHccKeMEFF4sp+RAi
-         QJAhelhbXttBwqAUKGtqvZmyDY0ICI5fp7F2zK9NYWViZT26bdmXrSgTzZ74Be4zqB
-         XMm5MSVuOcUaG9UKq+vMHvQ41rEtojNY87l8Sw34=
+        b=B6ixqs+4ZZK1m5y48rLxas0CkyWdlzKFMK8izzhplp9kYlHIxxM+ltr7rZOCvyRNq
+         qTAWDq1kWUdplxDpTVcJouEcLjtTXfQXffTQCFc9TeZ8rNbVJ2bWd9R9IP9KWM6pp4
+         x/2iAUvBQRg6qkuf/oZx5v7B6Go/P54uylJnAOCA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 060/175] spi: tegra20-sflash: fix reference leak in tegra_sflash_resume
-Date:   Mon, 28 Dec 2020 13:48:33 +0100
-Message-Id: <20201228124856.163817016@linuxfoundation.org>
+Subject: [PATCH 4.14 110/242] orinoco: Move context allocation after processing the skb
+Date:   Mon, 28 Dec 2020 13:48:35 +0100
+Message-Id: <20201228124910.103250765@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +41,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-[ Upstream commit 3482e797ab688da6703fe18d8bad52f94199f4f2 ]
+[ Upstream commit a31eb615646a63370aa1da1053c45439c7653d83 ]
 
-pm_runtime_get_sync will increment pm usage counter even it
-failed. Forgetting to pm_runtime_put_noidle will result in
-reference leak in tegra_sflash_resume, so we should fix it.
+ezusb_xmit() allocates a context which is leaked if
+orinoco_process_xmit_skb() returns an error.
 
-Fixes: 8528547bcc336 ("spi: tegra: add spi driver for sflash controller")
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201103141323.5841-1-zhangqilong3@huawei.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Move ezusb_alloc_ctx() after the invocation of
+orinoco_process_xmit_skb() because the context is not needed so early.
+ezusb_access_ltv() will cleanup the context in case of an error.
+
+Fixes: bac6fafd4d6a0 ("orinoco: refactor xmit path")
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20201113212252.2243570-2-bigeasy@linutronix.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-tegra20-sflash.c | 1 +
- 1 file changed, 1 insertion(+)
+ .../net/wireless/intersil/orinoco/orinoco_usb.c    | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/spi/spi-tegra20-sflash.c b/drivers/spi/spi-tegra20-sflash.c
-index b6558bb6f9dfc..4b9541e1726a5 100644
---- a/drivers/spi/spi-tegra20-sflash.c
-+++ b/drivers/spi/spi-tegra20-sflash.c
-@@ -564,6 +564,7 @@ static int tegra_sflash_resume(struct device *dev)
+diff --git a/drivers/net/wireless/intersil/orinoco/orinoco_usb.c b/drivers/net/wireless/intersil/orinoco/orinoco_usb.c
+index 5a64674a5c8da..74a313e6d98f2 100644
+--- a/drivers/net/wireless/intersil/orinoco/orinoco_usb.c
++++ b/drivers/net/wireless/intersil/orinoco/orinoco_usb.c
+@@ -1237,13 +1237,6 @@ static netdev_tx_t ezusb_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	if (skb->len < ETH_HLEN)
+ 		goto drop;
  
- 	ret = pm_runtime_get_sync(dev);
- 	if (ret < 0) {
-+		pm_runtime_put_noidle(dev);
- 		dev_err(dev, "pm runtime failed, e = %d\n", ret);
- 		return ret;
- 	}
+-	ctx = ezusb_alloc_ctx(upriv, EZUSB_RID_TX, 0);
+-	if (!ctx)
+-		goto busy;
+-
+-	memset(ctx->buf, 0, BULK_BUF_SIZE);
+-	buf = ctx->buf->data;
+-
+ 	tx_control = 0;
+ 
+ 	err = orinoco_process_xmit_skb(skb, dev, priv, &tx_control,
+@@ -1251,6 +1244,13 @@ static netdev_tx_t ezusb_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	if (err)
+ 		goto drop;
+ 
++	ctx = ezusb_alloc_ctx(upriv, EZUSB_RID_TX, 0);
++	if (!ctx)
++		goto drop;
++
++	memset(ctx->buf, 0, BULK_BUF_SIZE);
++	buf = ctx->buf->data;
++
+ 	{
+ 		__le16 *tx_cntl = (__le16 *)buf;
+ 		*tx_cntl = cpu_to_le16(tx_control);
 -- 
 2.27.0
 
