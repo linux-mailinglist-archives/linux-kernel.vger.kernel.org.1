@@ -2,119 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7EBB2E687D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:37:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 637A12E68A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:40:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441797AbgL1QhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:37:17 -0500
-Received: from mga14.intel.com ([192.55.52.115]:36250 "EHLO mga14.intel.com"
+        id S2633782AbgL1QjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:39:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43286 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441103AbgL1QgF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 11:36:05 -0500
-IronPort-SDR: 8elH/iUiOfTs1DIlPIHiCPdiqrUwmwxmeE02PqGVi6exeAcSJR1iGM8/G2yUQF4uF38DNlhzdJ
- V7h6g+oddIZw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9848"; a="175625333"
-X-IronPort-AV: E=Sophos;i="5.78,455,1599548400"; 
-   d="scan'208";a="175625333"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2020 08:34:19 -0800
-IronPort-SDR: b35JriF62zCofJ9ZL8YXIcOBbyZDYqOLX87t5r6MJ5OD/E6aBCqRI65Jbsfmd2sHOqg9Galo8v
- HbMJkot5cJDA==
-X-IronPort-AV: E=Sophos;i="5.78,455,1599548400"; 
-   d="scan'208";a="343785389"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Dec 2020 08:34:12 -0800
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id 84608207BF; Mon, 28 Dec 2020 18:34:10 +0200 (EET)
-Date:   Mon, 28 Dec 2020 18:34:10 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org, yong.zhi@intel.com,
-        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jacopo+renesas@jmondi.org, kieran.bingham+renesas@ideasonboard.com,
-        hverkuil-cisco@xs4all.nl, m.felsch@pengutronix.de,
-        niklas.soderlund+renesas@ragnatech.se, slongerbeam@gmail.com,
-        heikki.krogerus@linux.intel.com, linus.walleij@linaro.org,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH v3 05/14] software_node: unregister software_nodes in
- reverse order
-Message-ID: <20201228163410.GX26370@paasikivi.fi.intel.com>
-References: <20201224010907.263125-1-djrscally@gmail.com>
- <20201224010907.263125-6-djrscally@gmail.com>
+        id S1729523AbgL1Qi7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 11:38:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 87E822245C;
+        Mon, 28 Dec 2020 16:38:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609173498;
+        bh=YV/sRyX1UmvG3GgdJ2m2ftk6FRFQv84QER2+PC7WNP0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=UK5kKQ8TFRZmctDcMCpNwJwPKX+GfRJDqejqbHjLqlfEGLwBX3n8bZVw06xsMmJwR
+         JjKvIRcN6I2rcNK9gh7+SV29hg+EgYWBPEJavUuG0h6Ra0F37O29wffn2NdMjKzj/s
+         rh1frW8ZlXyOSbvX9wbPxFjkpT/f6IlwfQrNVs/KNGhUPwS99KMnLHk+0AWVBPx43i
+         pt0Y7fdU1Q25Fn4Un7lOvEIwUHgNTQkdFEjgigz5z9SQ2xtTP3Xlss94yRHSBm4VEm
+         7tAvCyq6ElkWLMiXTcmGas+bUNAxqzmhn6OPA0tKNyqGvqDeg8ZanAQsu+WtK+gAyv
+         i7agiC8kfw8cw==
+Received: by mail-wr1-f51.google.com with SMTP id 91so11780957wrj.7;
+        Mon, 28 Dec 2020 08:38:18 -0800 (PST)
+X-Gm-Message-State: AOAM533koXx012QVX392Fg1pd/efWqvttBqLVkZQ3NNP3q7XS8YXihFV
+        kmkAMuF8V3Q1a0AIyaV6gtEVC+RzdMRR11gYrQ==
+X-Google-Smtp-Source: ABdhPJyH9luqvq7mDBrXfC//wmYqhVyPNCFSGbrh2c9nlDMvIXGLGHRAotR70G+rGeb+bseslPiYL4Rabit/Z+t8IxA=
+X-Received: by 2002:adf:e84c:: with SMTP id d12mr53775611wrn.382.1609173497206;
+ Mon, 28 Dec 2020 08:38:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201224010907.263125-6-djrscally@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <1609144630-14721-1-git-send-email-yongqiang.niu@mediatek.com> <1609144630-14721-8-git-send-email-yongqiang.niu@mediatek.com>
+In-Reply-To: <1609144630-14721-8-git-send-email-yongqiang.niu@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Tue, 29 Dec 2020 00:38:05 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_9ObwPwKt6nRc_qSu9JE3WbqeRDEpKObnxsfhENbkT+iw@mail.gmail.com>
+Message-ID: <CAAOTY_9ObwPwKt6nRc_qSu9JE3WbqeRDEpKObnxsfhENbkT+iw@mail.gmail.com>
+Subject: Re: [PATCH v3, 7/8] soc: mediatek: mmsys: Use function call for
+ setting mmsys ovl mout register
+To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
+Cc:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        DTML <devicetree@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+Hi, Yongqiang:
 
-On Thu, Dec 24, 2020 at 01:08:58AM +0000, Daniel Scally wrote:
-> To maintain consistency with software_node_unregister_nodes(), reverse
-> the order in which the software_node_unregister_node_group() function
-> unregisters nodes.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Signed-off-by: Daniel Scally <djrscally@gmail.com>
+Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2020=E5=B9=B412=E6=9C=
+=8828=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=884:38=E5=AF=AB=E9=81=93=
+=EF=BC=9A
+>
+> Use function call for setting mmsys ovl mout register
+>
+> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
 > ---
-> Changes in v3
-> 	- Fixed the dereference of the terminating NULL entry
-> 	- Comment cleanup
-> 
->  drivers/base/swnode.c | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
-> index ade49173ff8d..2d07eb04c6c8 100644
-> --- a/drivers/base/swnode.c
-> +++ b/drivers/base/swnode.c
-> @@ -779,16 +779,22 @@ EXPORT_SYMBOL_GPL(software_node_register_node_group);
->   * software_node_unregister_node_group - Unregister a group of software nodes
->   * @node_group: NULL terminated array of software node pointers to be unregistered
->   *
-> - * Unregister multiple software nodes at once.
-> + * Unregister multiple software nodes at once. The array will be unwound in
-> + * reverse order (i.e. last entry first) and thus if any member of the array
-> + * has its .parent member set then they should appear later in the array such
-> + * that they are unregistered first.
->   */
->  void software_node_unregister_node_group(const struct software_node **node_group)
-
-With this line wrapped,
-
-Reviewed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-
->  {
-> -	unsigned int i;
-> +	unsigned int i = 0;
->  
->  	if (!node_group)
->  		return;
->  
-> -	for (i = 0; node_group[i]; i++)
-> +	while (node_group[i])
-> +		i++;
+>  drivers/soc/mediatek/mmsys/mtk-mmsys.c | 20 ++++++++++++++++++++
+>  include/linux/soc/mediatek/mtk-mmsys.h |  3 +++
+>  2 files changed, 23 insertions(+)
+>
+> diff --git a/drivers/soc/mediatek/mmsys/mtk-mmsys.c b/drivers/soc/mediate=
+k/mmsys/mtk-mmsys.c
+> index dae665b..ea36a11 100644
+> --- a/drivers/soc/mediatek/mmsys/mtk-mmsys.c
+> +++ b/drivers/soc/mediatek/mmsys/mtk-mmsys.c
+> @@ -74,6 +74,17 @@ void mtk_mmsys_ddp_connect(struct device *dev,
+>                 reg =3D readl_relaxed(mmsys->regs + addr) | value;
+>                 writel_relaxed(reg, mmsys->regs + addr);
+>         }
 > +
-> +	while (i--)
->  		software_node_unregister(node_group[i]);
+> +       if (!funcs->ovl_mout_en)
+> +               return;
+> +
+> +       if (funcs->ovl_mout_en) {
+> +               value =3D funcs->ovl_mout_en(cur, next, &addr);
+> +               if (value) {
+> +                       reg =3D readl_relaxed(mmsys->regs + addr) | value=
+;
+> +                       writel_relaxed(reg, mmsys->regs + addr);
+> +               }
+> +       }
+
+mtk_mmsys_ddp_mout_en() could write register inside it rather than
+return value and write register in mtk_mmsys_ddp_connect(). So you
+could do ovl_mout_en() in mtk_mmsys_ddp_mout_en().
+
+Regards,
+Chun-Kuang.
+
 >  }
->  EXPORT_SYMBOL_GPL(software_node_unregister_node_group);
-
--- 
-Kind regards,
-
-Sakari Ailus
+>  EXPORT_SYMBOL_GPL(mtk_mmsys_ddp_connect);
+>
+> @@ -99,6 +110,15 @@ void mtk_mmsys_ddp_disconnect(struct device *dev,
+>                 reg =3D readl_relaxed(mmsys->regs + addr) & ~value;
+>                 writel_relaxed(reg, mmsys->regs + addr);
+>         }
+> +
+> +       if (!funcs->ovl_mout_en)
+> +               return;
+> +
+> +       value =3D funcs->ovl_mout_en(cur, next, &addr);
+> +       if (value) {
+> +               reg =3D readl_relaxed(mmsys->regs + addr) & ~value;
+> +               writel_relaxed(reg, mmsys->regs + addr);
+> +       }
+>  }
+>  EXPORT_SYMBOL_GPL(mtk_mmsys_ddp_disconnect);
+>
+> diff --git a/include/linux/soc/mediatek/mtk-mmsys.h b/include/linux/soc/m=
+ediatek/mtk-mmsys.h
+> index aa4f60e..220203d 100644
+> --- a/include/linux/soc/mediatek/mtk-mmsys.h
+> +++ b/include/linux/soc/mediatek/mtk-mmsys.h
+> @@ -49,6 +49,9 @@ struct mtk_mmsys_conn_funcs {
+>         u32 (*mout_en)(enum mtk_ddp_comp_id cur,
+>                        enum mtk_ddp_comp_id next,
+>                        unsigned int *addr);
+> +       u32 (*ovl_mout_en)(enum mtk_ddp_comp_id cur,
+> +                          enum mtk_ddp_comp_id next,
+> +                          unsigned int *addr);
+>         u32 (*sel_in)(enum mtk_ddp_comp_id cur,
+>                       enum mtk_ddp_comp_id next,
+>                       unsigned int *addr);
+> --
+> 1.8.1.1.dirty
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
