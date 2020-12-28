@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 616F52E3BBB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:54:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99F702E3A1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:32:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407381AbgL1Nx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:53:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55548 "EHLO mail.kernel.org"
+        id S2387756AbgL1Ncd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:32:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407334AbgL1Nxi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:53:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 688DB20715;
-        Mon, 28 Dec 2020 13:52:57 +0000 (UTC)
+        id S2387725AbgL1NcZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:32:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0E3C22B37;
+        Mon, 28 Dec 2020 13:31:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163578;
-        bh=wSPhDxRyT4PeZSatzt6FDcS55+Dy8gu93xNK4cWhe0Y=;
+        s=korg; t=1609162304;
+        bh=pxTx6PyFtjISTgUey0+sl+YVLAPFdJ+nASxXyKqrlXY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QrCwNCEM6N4lKlDKXgSwZWWOdL6ZrEW8/KoC8/sLcriBOSpnmTnTRDoDtvgoPpFSm
-         fSP7KYq72/HsE811IsS5dlTvVnXxfotlWaMl6o8/o64obxe9zlm29zJP+ButvBkCZU
-         4BTt7V7v57RkeHkhOQNiPUgx1x9qLf4Bk3qjyftE=
+        b=vB5PKAGqb/UHHQfTFc3L5VCsb6h10ZBD9EgrKkiU7j5055K08BByvQk1YJq8YXroP
+         XTpUCm/BbKHhHMVYX3SiAVd7WxhdCifuDfEEHNZM+fSVxsJsj/1cuVgkixgWclkiaf
+         vx+VBo8dLHD/e0lFCBViocgTe2a+HO5zajo3R8Q0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH 5.4 333/453] ACPI: PNP: compare the string length in the matching_id()
+        stable@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
+        Maxime Ripard <mripard@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 250/346] clk: sunxi-ng: Make sure divider tables have sentinel
 Date:   Mon, 28 Dec 2020 13:49:29 +0100
-Message-Id: <20201228124953.244598715@linuxfoundation.org>
+Message-Id: <20201228124931.867424482@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,48 +41,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Wang <hui.wang@canonical.com>
+From: Jernej Skrabec <jernej.skrabec@siol.net>
 
-commit b08221c40febcbda9309dd70c61cf1b0ebb0e351 upstream.
+[ Upstream commit 48f68de00c1405351fa0e7bc44bca067c49cd0a3 ]
 
-Recently we met a touchscreen problem on some Thinkpad machines, the
-touchscreen driver (i2c-hid) is not loaded and the touchscreen can't
-work.
+Two clock divider tables are missing sentinel at the end. Effect of that
+is that clock framework reads past the last entry. Fix that with adding
+sentinel at the end.
 
-An i2c ACPI device with the name WACF2200 is defined in the BIOS, with
-the current rule in matching_id(), this device will be regarded as
-a PNP device since there is WACFXXX in the acpi_pnp_device_ids[] and
-this PNP device is attached to the acpi device as the 1st
-physical_node, this will make the i2c bus match fail when i2c bus
-calls acpi_companion_match() to match the acpi_id_table in the i2c-hid
-driver.
+Issue was discovered with KASan.
 
-WACF2200 is an i2c device instead of a PNP device, after adding the
-string length comparing, the matching_id() will return false when
-matching WACF2200 and WACFXXX, and it is reasonable to compare the
-string length when matching two IDs.
-
-Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
-Cc: All applicable <stable@vger.kernel.org>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 0577e4853bfb ("clk: sunxi-ng: Add H3 clocks")
+Fixes: c6a0637460c2 ("clk: sunxi-ng: Add A64 clocks")
+Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+Link: https://lore.kernel.org/r/20201202203817.438713-1-jernej.skrabec@siol.net
+Acked-by: Maxime Ripard <mripard@kernel.org>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/acpi_pnp.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/clk/sunxi-ng/ccu-sun50i-a64.c | 1 +
+ drivers/clk/sunxi-ng/ccu-sun8i-h3.c   | 1 +
+ 2 files changed, 2 insertions(+)
 
---- a/drivers/acpi/acpi_pnp.c
-+++ b/drivers/acpi/acpi_pnp.c
-@@ -317,6 +317,9 @@ static bool matching_id(const char *idst
- {
- 	int i;
- 
-+	if (strlen(idstr) != strlen(list_id))
-+		return false;
-+
- 	if (memcmp(idstr, list_id, 3))
- 		return false;
- 
+diff --git a/drivers/clk/sunxi-ng/ccu-sun50i-a64.c b/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
+index 9ac6c299e0744..19304d6b2c05d 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
++++ b/drivers/clk/sunxi-ng/ccu-sun50i-a64.c
+@@ -381,6 +381,7 @@ static struct clk_div_table ths_div_table[] = {
+ 	{ .val = 1, .div = 2 },
+ 	{ .val = 2, .div = 4 },
+ 	{ .val = 3, .div = 6 },
++	{ /* Sentinel */ },
+ };
+ static const char * const ths_parents[] = { "osc24M" };
+ static struct ccu_div ths_clk = {
+diff --git a/drivers/clk/sunxi-ng/ccu-sun8i-h3.c b/drivers/clk/sunxi-ng/ccu-sun8i-h3.c
+index 61e3ba12773ea..d9789378caf55 100644
+--- a/drivers/clk/sunxi-ng/ccu-sun8i-h3.c
++++ b/drivers/clk/sunxi-ng/ccu-sun8i-h3.c
+@@ -328,6 +328,7 @@ static struct clk_div_table ths_div_table[] = {
+ 	{ .val = 1, .div = 2 },
+ 	{ .val = 2, .div = 4 },
+ 	{ .val = 3, .div = 6 },
++	{ /* Sentinel */ },
+ };
+ static SUNXI_CCU_DIV_TABLE_WITH_GATE(ths_clk, "ths", "osc24M",
+ 				     0x074, 0, 2, ths_div_table, BIT(31), 0);
+-- 
+2.27.0
+
 
 
