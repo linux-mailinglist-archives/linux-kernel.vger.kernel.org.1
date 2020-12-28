@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59B922E39B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:27:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04EC82E3E18
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:24:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389541AbgL1N0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:26:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55016 "EHLO mail.kernel.org"
+        id S2502847AbgL1OXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:23:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389487AbgL1N03 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:26:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51D8020719;
-        Mon, 28 Dec 2020 13:26:13 +0000 (UTC)
+        id S2502281AbgL1OVH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:21:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D1B33229C4;
+        Mon, 28 Dec 2020 14:20:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161973;
-        bh=Nt/MzaAIEEJxH5sdzbVHDdFTyFSIOnPo/lyqHov3v/g=;
+        s=korg; t=1609165252;
+        bh=2gy3TOScgNh8m+dTHpP9snc3RqWAPlNwVP1gpSbrAg0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t1jqAGu5JmTKcOtO/nKGZm0wq503+qm7P7Dcyb6SvhXR+dcN8FdSH+NhWM8uEU0tZ
-         RX54rUUWQpYoBI2A6pvXOSo0ni6CB9ejO+yaRQipp9Bmn/D57PYjnZkh8G0Y+Hg5hn
-         JizXvyEZGdEzDfxhDb+KvmO9qegAH4Oe6cTq3aWA=
+        b=NGcV2vyBuG2USJGuFrOu7Vt/0M3eja81PVJQN6hDYv7MSKThH+CLoin5NhHU1q1Bz
+         9YGExFtuKKwY9kBJmLnXYZMmvmApB4JmDatJu+sbQ8ayz8Z0ljslt6gUwbDXoyRibb
+         Iy0VjG4lim9958G86xQsj/GUfGsBreMOxmIar85c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 145/346] video: fbdev: atmel_lcdfb: fix return error code in atmel_lcdfb_of_init()
+Subject: [PATCH 5.10 466/717] net: bcmgenet: Fix a resource leak in an error handling path in the probe functin
 Date:   Mon, 28 Dec 2020 13:47:44 +0100
-Message-Id: <20201228124926.797764598@linuxfoundation.org>
+Message-Id: <20201228125043.297617662@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit ba236455ee750270f33998df57f982433cea4d8e ]
+[ Upstream commit 4375ada01963d1ebf733d60d1bb6e5db401e1ac6 ]
 
-If devm_kzalloc() failed after the first time, atmel_lcdfb_of_init()
-can't return -ENOMEM, fix this by putting the error code in loop.
+If the 'register_netdev()' call fails, we must undo a previous
+'bcmgenet_mii_init()' call.
 
-Fixes: b985172b328a ("video: atmel_lcdfb: add device tree suport")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-Link: https://patchwork.freedesktop.org/patch/msgid/20201117061350.3453742-1-yangyingliang@huawei.com
+Fixes: 1c1008c793fa ("net: bcmgenet: add main driver file")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Link: https://lore.kernel.org/r/20201212182005.120437-1-christophe.jaillet@wanadoo.fr
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/atmel_lcdfb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/broadcom/genet/bcmgenet.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/video/fbdev/atmel_lcdfb.c b/drivers/video/fbdev/atmel_lcdfb.c
-index 4ed55e6bbb840..6d01ae3984c73 100644
---- a/drivers/video/fbdev/atmel_lcdfb.c
-+++ b/drivers/video/fbdev/atmel_lcdfb.c
-@@ -1071,8 +1071,8 @@ static int atmel_lcdfb_of_init(struct atmel_lcdfb_info *sinfo)
- 	}
+diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+index be85dad2e3bc4..fcca023f22e54 100644
+--- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
++++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+@@ -4069,8 +4069,10 @@ static int bcmgenet_probe(struct platform_device *pdev)
+ 	clk_disable_unprepare(priv->clk);
  
- 	INIT_LIST_HEAD(&pdata->pwr_gpios);
--	ret = -ENOMEM;
- 	for (i = 0; i < gpiod_count(dev, "atmel,power-control"); i++) {
-+		ret = -ENOMEM;
- 		gpiod = devm_gpiod_get_index(dev, "atmel,power-control",
- 					     i, GPIOD_ASIS);
- 		if (IS_ERR(gpiod))
+ 	err = register_netdev(dev);
+-	if (err)
++	if (err) {
++		bcmgenet_mii_exit(dev);
+ 		goto err;
++	}
+ 
+ 	return err;
+ 
 -- 
 2.27.0
 
