@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 585A92E3E3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:25:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6582C2E3773
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:57:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503273AbgL1OZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:25:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33572 "EHLO mail.kernel.org"
+        id S1728591AbgL1Mzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:55:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503250AbgL1OZi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:25:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 510F120731;
-        Mon, 28 Dec 2020 14:24:57 +0000 (UTC)
+        id S1728572AbgL1Mze (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:55:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8ED7208B6;
+        Mon, 28 Dec 2020 12:54:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165497;
-        bh=YsNWC9QPj/tB4tfx3OBGJz9UKKByDqFrrZuimQ/Tfko=;
+        s=korg; t=1609160093;
+        bh=FtP72I1KDnV7xvAsnjQh8CU7bdgkJDotqt1/5LqzBxc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Vf/EOlr5TI1TrYAc17gG/5a+qYZhFgEEO/eUqpxHmaDSrprYyrT/xsyPvSLxKLM+4
-         q19Ooq3XVGTXV9kK7VT5fVhSsl7UT3iy166Zz2LDieyztB5pr89Vj579VOv2p438zP
-         YsiNDBnqUUgrbgt20J/ULByGShMWV7eYoqemrVFA=
+        b=dshhCWJ7xc9lrcTyFQ4vWQnsxAjilquShTrrSbtNFCGEOPI+O9XlNM0mD4hVR+t7k
+         6Sq3iS9Equ+8hkxeE+8Ir2T+bif095aV5agxp7OGiKuA/ZiSk/6YSVT+DskKXNBik0
+         McLDATOPVzs2sqyEEhrzLsIhus1NBiKQg0z4yxs0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>
-Subject: [PATCH 5.10 553/717] s390/idle: add missing mt_cycles calculation
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 067/132] dm ioctl: fix error return code in target_message
 Date:   Mon, 28 Dec 2020 13:49:11 +0100
-Message-Id: <20201228125047.431022393@linuxfoundation.org>
+Message-Id: <20201228124849.695546946@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,87 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Schnelle <svens@linux.ibm.com>
+From: Qinglang Miao <miaoqinglang@huawei.com>
 
-commit e259b3fafa7de362b04ecd86e7fa9a9e9273e5fb upstream.
+[ Upstream commit 4d7659bfbe277a43399a4a2d90fca141e70f29e1 ]
 
-During removal of the critical section cleanup the calculation
-of mt_cycles during idle was removed. This causes invalid
-accounting on systems with SMT enabled.
+Fix to return a negative error code from the error handling
+case instead of 0, as done elsewhere in this function.
 
-Fixes: 0b0ed657fe00 ("s390: remove critical section cleanup from entry.S")
-Cc: <stable@vger.kernel.org> # 5.8
-Reviewed-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 2ca4c92f58f9 ("dm ioctl: prevent empty message")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/s390/kernel/entry.S |   34 +++++++++++++++++++++++++---------
- 1 file changed, 25 insertions(+), 9 deletions(-)
+ drivers/md/dm-ioctl.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/s390/kernel/entry.S
-+++ b/arch/s390/kernel/entry.S
-@@ -112,7 +112,7 @@ _LPP_OFFSET	= __LC_LPP
+diff --git a/drivers/md/dm-ioctl.c b/drivers/md/dm-ioctl.c
+index 9371194677dc3..eab3f7325e310 100644
+--- a/drivers/md/dm-ioctl.c
++++ b/drivers/md/dm-ioctl.c
+@@ -1539,6 +1539,7 @@ static int target_message(struct dm_ioctl *param, size_t param_size)
  
- 	.macro	SWITCH_ASYNC savearea,timer
- 	tmhh	%r8,0x0001		# interrupting from user ?
--	jnz	2f
-+	jnz	4f
- #if IS_ENABLED(CONFIG_KVM)
- 	lgr	%r14,%r9
- 	larl	%r13,.Lsie_gmap
-@@ -125,9 +125,25 @@ _LPP_OFFSET	= __LC_LPP
- #endif
- 0:	larl	%r13,.Lpsw_idle_exit
- 	cgr	%r13,%r9
--	jne	1f
-+	jne	3f
+ 	if (!argc) {
+ 		DMWARN("Empty message received.");
++		r = -EINVAL;
+ 		goto out_argv;
+ 	}
  
--	mvc	__CLOCK_IDLE_EXIT(8,%r2), __LC_INT_CLOCK
-+	larl	%r1,smp_cpu_mtid
-+	llgf	%r1,0(%r1)
-+	ltgr	%r1,%r1
-+	jz	2f			# no SMT, skip mt_cycles calculation
-+	.insn	rsy,0xeb0000000017,%r1,5,__SF_EMPTY+80(%r15)
-+	larl	%r3,mt_cycles
-+	ag	%r3,__LC_PERCPU_OFFSET
-+	la	%r4,__SF_EMPTY+16(%r15)
-+1:	lg	%r0,0(%r3)
-+	slg	%r0,0(%r4)
-+	alg	%r0,64(%r4)
-+	stg	%r0,0(%r3)
-+	la	%r3,8(%r3)
-+	la	%r4,8(%r4)
-+	brct	%r1,1b
-+
-+2:	mvc	__CLOCK_IDLE_EXIT(8,%r2), __LC_INT_CLOCK
- 	mvc	__TIMER_IDLE_EXIT(8,%r2), __LC_ASYNC_ENTER_TIMER
- 	# account system time going idle
- 	ni	__LC_CPU_FLAGS+7,255-_CIF_ENABLED_WAIT
-@@ -146,17 +162,17 @@ _LPP_OFFSET	= __LC_LPP
- 	mvc	__LC_LAST_UPDATE_TIMER(8),__TIMER_IDLE_EXIT(%r2)
- 
- 	nihh	%r8,0xfcfd		# clear wait state and irq bits
--1:	lg	%r14,__LC_ASYNC_STACK	# are we already on the target stack?
-+3:	lg	%r14,__LC_ASYNC_STACK	# are we already on the target stack?
- 	slgr	%r14,%r15
- 	srag	%r14,%r14,STACK_SHIFT
--	jnz	3f
-+	jnz	5f
- 	CHECK_STACK \savearea
- 	aghi	%r15,-(STACK_FRAME_OVERHEAD + __PT_SIZE)
--	j	4f
--2:	UPDATE_VTIME %r14,%r15,\timer
-+	j	6f
-+4:	UPDATE_VTIME %r14,%r15,\timer
- 	BPENTER __TI_flags(%r12),_TIF_ISOLATE_BP
--3:	lg	%r15,__LC_ASYNC_STACK	# load async stack
--4:	la	%r11,STACK_FRAME_OVERHEAD(%r15)
-+5:	lg	%r15,__LC_ASYNC_STACK	# load async stack
-+6:	la	%r11,STACK_FRAME_OVERHEAD(%r15)
- 	.endm
- 
- 	.macro UPDATE_VTIME w1,w2,enter_timer
+-- 
+2.27.0
+
 
 
