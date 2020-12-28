@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D1842E3E44
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:27:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18B0F2E3E5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:27:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503744AbgL1O0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:26:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33738 "EHLO mail.kernel.org"
+        id S2503943AbgL1O1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:27:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503331AbgL1OZz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:25:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B8DB022AEC;
-        Mon, 28 Dec 2020 14:25:13 +0000 (UTC)
+        id S2503370AbgL1OZ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:25:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7468122B2C;
+        Mon, 28 Dec 2020 14:25:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165514;
-        bh=R7hPqRPRgIIrkzn0lvGXXPQkYZa7EbjSF48MeX3NhJA=;
+        s=korg; t=1609165517;
+        bh=80Df07jw8u0rPfckof6unHZA8g2+cWiNH7Dx5mLknAM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sUypuMdjJ/m4NQYG1MYkiFhLVMmFUTjjwHU7rowJ3cOFB3izt+fH9dgRZw1oiQbiv
-         WhYCO/NyVRBNlL5nrG0qYs0EAGEDWSHjxGsnSpi4BwQ/WSxBxjyLpezkgdyTcMpgfh
-         ecKUsVPV4sHmtT3ICplCy2Ycr5MmzGxUO9/Nm3ls=
+        b=MdY8Aw0o5qW+2FS4yN3CR8KGQkW1phwOQZA1hZ/D4S4zskAsbTP7qtm9xTwv5XhMO
+         PjCDxdYQO/BD1wNOSwRq2o28I3eMBX6QbID5y5GFjmpMgbgisv4zSR6WwgrLMA5GQQ
+         Cg4l0bRGt2t9lPgj9mrPlgmeo0q/j7klUpJyZxWM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Todd Kjos <tkjos@google.com>
-Subject: [PATCH 5.10 559/717] binder: add flag to clear buffer on txn complete
-Date:   Mon, 28 Dec 2020 13:49:17 +0100
-Message-Id: <20201228125047.705472163@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.10 560/717] ASoC: cx2072x: Fix doubly definitions of Playback and Capture streams
+Date:   Mon, 28 Dec 2020 13:49:18 +0100
+Message-Id: <20201228125047.753708470@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
 References: <20201228125020.963311703@linuxfoundation.org>
@@ -38,146 +39,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Todd Kjos <tkjos@google.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 0f966cba95c78029f491b433ea95ff38f414a761 upstream.
+commit 0d024a8bec084205fdd9fa17479ba91f45f85db3 upstream.
 
-Add a per-transaction flag to indicate that the buffer
-must be cleared when the transaction is complete to
-prevent copies of sensitive data from being preserved
-in memory.
+The cx2072x codec driver defines multiple DAIs with the same stream
+name "Playback" and "Capture".  Although the current code works more
+or less as is as the secondary streams are never used, it still leads
+the error message like:
+ debugfs: File 'Playback' in directory 'dapm' already present!
+ debugfs: File 'Capture' in directory 'dapm' already present!
 
-Signed-off-by: Todd Kjos <tkjos@google.com>
-Link: https://lore.kernel.org/r/20201120233743.3617529-1-tkjos@google.com
-Cc: stable <stable@vger.kernel.org>
+Fix it by renaming the secondary streams to unique names.
+
+Fixes: a497a4363706 ("ASoC: Add support for Conexant CX2072X CODEC")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Link: https://lore.kernel.org/r/20201208135154.9188-1-tiwai@suse.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/android/binder.c            |    1 
- drivers/android/binder_alloc.c      |   48 ++++++++++++++++++++++++++++++++++++
- drivers/android/binder_alloc.h      |    4 ++-
- include/uapi/linux/android/binder.h |    1 
- 4 files changed, 53 insertions(+), 1 deletion(-)
+ sound/soc/codecs/cx2072x.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/android/binder.c
-+++ b/drivers/android/binder.c
-@@ -3146,6 +3146,7 @@ static void binder_transaction(struct bi
- 	t->buffer->debug_id = t->debug_id;
- 	t->buffer->transaction = t;
- 	t->buffer->target_node = target_node;
-+	t->buffer->clear_on_free = !!(t->flags & TF_CLEAR_BUF);
- 	trace_binder_transaction_alloc_buf(t->buffer);
- 
- 	if (binder_alloc_copy_user_to_buffer(
---- a/drivers/android/binder_alloc.c
-+++ b/drivers/android/binder_alloc.c
-@@ -696,6 +696,8 @@ static void binder_free_buf_locked(struc
- 	binder_insert_free_buffer(alloc, buffer);
- }
- 
-+static void binder_alloc_clear_buf(struct binder_alloc *alloc,
-+				   struct binder_buffer *buffer);
- /**
-  * binder_alloc_free_buf() - free a binder buffer
-  * @alloc:	binder_alloc for this proc
-@@ -706,6 +708,18 @@ static void binder_free_buf_locked(struc
- void binder_alloc_free_buf(struct binder_alloc *alloc,
- 			    struct binder_buffer *buffer)
- {
-+	/*
-+	 * We could eliminate the call to binder_alloc_clear_buf()
-+	 * from binder_alloc_deferred_release() by moving this to
-+	 * binder_alloc_free_buf_locked(). However, that could
-+	 * increase contention for the alloc mutex if clear_on_free
-+	 * is used frequently for large buffers. The mutex is not
-+	 * needed for correctness here.
-+	 */
-+	if (buffer->clear_on_free) {
-+		binder_alloc_clear_buf(alloc, buffer);
-+		buffer->clear_on_free = false;
-+	}
- 	mutex_lock(&alloc->mutex);
- 	binder_free_buf_locked(alloc, buffer);
- 	mutex_unlock(&alloc->mutex);
-@@ -802,6 +816,10 @@ void binder_alloc_deferred_release(struc
- 		/* Transaction should already have been freed */
- 		BUG_ON(buffer->transaction);
- 
-+		if (buffer->clear_on_free) {
-+			binder_alloc_clear_buf(alloc, buffer);
-+			buffer->clear_on_free = false;
-+		}
- 		binder_free_buf_locked(alloc, buffer);
- 		buffers++;
- 	}
-@@ -1136,6 +1154,36 @@ static struct page *binder_alloc_get_pag
- }
- 
- /**
-+ * binder_alloc_clear_buf() - zero out buffer
-+ * @alloc: binder_alloc for this proc
-+ * @buffer: binder buffer to be cleared
-+ *
-+ * memset the given buffer to 0
-+ */
-+static void binder_alloc_clear_buf(struct binder_alloc *alloc,
-+				   struct binder_buffer *buffer)
-+{
-+	size_t bytes = binder_alloc_buffer_size(alloc, buffer);
-+	binder_size_t buffer_offset = 0;
-+
-+	while (bytes) {
-+		unsigned long size;
-+		struct page *page;
-+		pgoff_t pgoff;
-+		void *kptr;
-+
-+		page = binder_alloc_get_page(alloc, buffer,
-+					     buffer_offset, &pgoff);
-+		size = min_t(size_t, bytes, PAGE_SIZE - pgoff);
-+		kptr = kmap(page) + pgoff;
-+		memset(kptr, 0, size);
-+		kunmap(page);
-+		bytes -= size;
-+		buffer_offset += size;
-+	}
-+}
-+
-+/**
-  * binder_alloc_copy_user_to_buffer() - copy src user to tgt user
-  * @alloc: binder_alloc for this proc
-  * @buffer: binder buffer to be accessed
---- a/drivers/android/binder_alloc.h
-+++ b/drivers/android/binder_alloc.h
-@@ -23,6 +23,7 @@ struct binder_transaction;
-  * @entry:              entry alloc->buffers
-  * @rb_node:            node for allocated_buffers/free_buffers rb trees
-  * @free:               %true if buffer is free
-+ * @clear_on_free:      %true if buffer must be zeroed after use
-  * @allow_user_free:    %true if user is allowed to free buffer
-  * @async_transaction:  %true if buffer is in use for an async txn
-  * @debug_id:           unique ID for debugging
-@@ -41,9 +42,10 @@ struct binder_buffer {
- 	struct rb_node rb_node; /* free entry by size or allocated entry */
- 				/* by address */
- 	unsigned free:1;
-+	unsigned clear_on_free:1;
- 	unsigned allow_user_free:1;
- 	unsigned async_transaction:1;
--	unsigned debug_id:29;
-+	unsigned debug_id:28;
- 
- 	struct binder_transaction *transaction;
- 
---- a/include/uapi/linux/android/binder.h
-+++ b/include/uapi/linux/android/binder.h
-@@ -248,6 +248,7 @@ enum transaction_flags {
- 	TF_ROOT_OBJECT	= 0x04,	/* contents are the component's root object */
- 	TF_STATUS_CODE	= 0x08,	/* contents are a 32-bit status code */
- 	TF_ACCEPT_FDS	= 0x10,	/* allow replies with file descriptors */
-+	TF_CLEAR_BUF	= 0x20,	/* clear buffer on txn complete */
- };
- 
- struct binder_transaction_data {
+--- a/sound/soc/codecs/cx2072x.c
++++ b/sound/soc/codecs/cx2072x.c
+@@ -1579,7 +1579,7 @@ static struct snd_soc_dai_driver soc_cod
+ 		.id	= CX2072X_DAI_DSP,
+ 		.probe = cx2072x_dsp_dai_probe,
+ 		.playback = {
+-			.stream_name = "Playback",
++			.stream_name = "DSP Playback",
+ 			.channels_min = 2,
+ 			.channels_max = 2,
+ 			.rates = CX2072X_RATES_DSP,
+@@ -1591,7 +1591,7 @@ static struct snd_soc_dai_driver soc_cod
+ 		.name = "cx2072x-aec",
+ 		.id	= 3,
+ 		.capture = {
+-			.stream_name = "Capture",
++			.stream_name = "AEC Capture",
+ 			.channels_min = 2,
+ 			.channels_max = 2,
+ 			.rates = CX2072X_RATES_DSP,
 
 
