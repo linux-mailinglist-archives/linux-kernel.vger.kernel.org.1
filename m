@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39C4E2E6513
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:57:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 140942E42DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:29:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393217AbgL1Pzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:55:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36124 "EHLO mail.kernel.org"
+        id S2406603AbgL1N4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:56:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389436AbgL1Nfr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:35:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 63F4A20867;
-        Mon, 28 Dec 2020 13:35:06 +0000 (UTC)
+        id S2406544AbgL1N4i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:56:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A992207B2;
+        Mon, 28 Dec 2020 13:56:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162507;
-        bh=gUQzAdPCX55oMJ9NUDZLCAt00yC3cJNBAcYgtNs8HK8=;
+        s=korg; t=1609163782;
+        bh=bctFitTEeo52VyCh0ydGO5T7uJluqm3P91V+Q30OYy8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sWXWuvgJr967Za+69Xh2uMC2RAkv4HQanJmnxNJiRvaRRfyLlfAZrgh6lBG9R6BB4
-         ZvXP4nSBfSOxH2dlpx43X3ZjYaLITauUIJtYaAlv0la8jh5kKYYUWcTiMt4J7tPx5x
-         /e0zVY0B3IIsANtuinysdAh+dNOwvUc7CJYvtVHc=
+        b=puPbWxOtYDAUYeVG9tNPoQFhQ4+m4sGZ7RPo8ocpt42M71d92O+AAxhDzhvr1tXnY
+         ZBJQqPnK225QGLPrRmQ8mAd5nkvASGbusYhWJi0Ce21HyZ4tQG4N1W8/xh18fBaaiK
+         n4aJUV5URouXAG4zh3V603Ko2m0OdmmIuCsUkwsg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.19 292/346] USB: serial: keyspan_pda: fix write deadlock
+        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Andreas Dilger <adilger@dilger.ca>,
+        Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 5.4 375/453] ext4: fix deadlock with fs freezing and EA inodes
 Date:   Mon, 28 Dec 2020 13:50:11 +0100
-Message-Id: <20201228124933.893621116@linuxfoundation.org>
+Message-Id: <20201228124955.248188088@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +40,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Jan Kara <jack@suse.cz>
 
-commit 7353cad7ee4deaefc16e94727e69285563e219f6 upstream.
+commit 46e294efc355c48d1dd4d58501aa56dac461792a upstream.
 
-The write() callback can be called in interrupt context (e.g. when used
-as a console) so interrupts must be disabled while holding the port lock
-to prevent a possible deadlock.
+Xattr code using inodes with large xattr data can end up dropping last
+inode reference (and thus deleting the inode) from places like
+ext4_xattr_set_entry(). That function is called with transaction started
+and so ext4_evict_inode() can deadlock against fs freezing like:
 
-Fixes: e81ee637e4ae ("usb-serial: possible irq lock inversion (PPP vs. usb/serial)")
-Fixes: 507ca9bc0476 ("[PATCH] USB: add ability for usb-serial drivers to determine if their write urb is currently being used.")
-Cc: stable <stable@vger.kernel.org>     # 2.6.19
-Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Johan Hovold <johan@kernel.org>
+CPU1					CPU2
+
+removexattr()				freeze_super()
+  vfs_removexattr()
+    ext4_xattr_set()
+      handle = ext4_journal_start()
+      ...
+      ext4_xattr_set_entry()
+        iput(old_ea_inode)
+          ext4_evict_inode(old_ea_inode)
+					  sb->s_writers.frozen = SB_FREEZE_FS;
+					  sb_wait_write(sb, SB_FREEZE_FS);
+					  ext4_freeze()
+					    jbd2_journal_lock_updates()
+					      -> blocks waiting for all
+					         handles to stop
+            sb_start_intwrite()
+	      -> blocks as sb is already in SB_FREEZE_FS state
+
+Generally it is advisable to delete inodes from a separate transaction
+as it can consume quite some credits however in this case it would be
+quite clumsy and furthermore the credits for inode deletion are quite
+limited and already accounted for. So just tweak ext4_evict_inode() to
+avoid freeze protection if we have transaction already started and thus
+it is not really needed anyway.
+
+Cc: stable@vger.kernel.org
+Fixes: dec214d00e0d ("ext4: xattr inode deduplication")
+Signed-off-by: Jan Kara <jack@suse.cz>
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+Link: https://lore.kernel.org/r/20201127110649.24730-1-jack@suse.cz
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/serial/keyspan_pda.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ fs/ext4/inode.c |   21 +++++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
 
---- a/drivers/usb/serial/keyspan_pda.c
-+++ b/drivers/usb/serial/keyspan_pda.c
-@@ -443,6 +443,7 @@ static int keyspan_pda_write(struct tty_
- 	int request_unthrottle = 0;
- 	int rc = 0;
- 	struct keyspan_pda_private *priv;
-+	unsigned long flags;
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -203,6 +203,7 @@ void ext4_evict_inode(struct inode *inod
+ 	 */
+ 	int extra_credits = 6;
+ 	struct ext4_xattr_inode_array *ea_inode_array = NULL;
++	bool freeze_protected = false;
  
- 	priv = usb_get_serial_port_data(port);
- 	/* guess how much room is left in the device's ring buffer, and if we
-@@ -462,13 +463,13 @@ static int keyspan_pda_write(struct tty_
- 	   the TX urb is in-flight (wait until it completes)
- 	   the device is full (wait until it says there is room)
- 	*/
--	spin_lock_bh(&port->lock);
-+	spin_lock_irqsave(&port->lock, flags);
- 	if (!test_bit(0, &port->write_urbs_free) || priv->tx_throttled) {
--		spin_unlock_bh(&port->lock);
-+		spin_unlock_irqrestore(&port->lock, flags);
- 		return 0;
+ 	trace_ext4_evict_inode(inode);
+ 
+@@ -250,9 +251,14 @@ void ext4_evict_inode(struct inode *inod
+ 
+ 	/*
+ 	 * Protect us against freezing - iput() caller didn't have to have any
+-	 * protection against it
+-	 */
+-	sb_start_intwrite(inode->i_sb);
++	 * protection against it. When we are in a running transaction though,
++	 * we are already protected against freezing and we cannot grab further
++	 * protection due to lock ordering constraints.
++	 */
++	if (!ext4_journal_current_handle()) {
++		sb_start_intwrite(inode->i_sb);
++		freeze_protected = true;
++	}
+ 
+ 	if (!IS_NOQUOTA(inode))
+ 		extra_credits += EXT4_MAXQUOTAS_DEL_BLOCKS(inode->i_sb);
+@@ -271,7 +277,8 @@ void ext4_evict_inode(struct inode *inod
+ 		 * cleaned up.
+ 		 */
+ 		ext4_orphan_del(NULL, inode);
+-		sb_end_intwrite(inode->i_sb);
++		if (freeze_protected)
++			sb_end_intwrite(inode->i_sb);
+ 		goto no_delete;
  	}
- 	clear_bit(0, &port->write_urbs_free);
--	spin_unlock_bh(&port->lock);
-+	spin_unlock_irqrestore(&port->lock, flags);
  
- 	/* At this point the URB is in our control, nobody else can submit it
- 	   again (the only sudden transition was the one from EINPROGRESS to
+@@ -312,7 +319,8 @@ void ext4_evict_inode(struct inode *inod
+ stop_handle:
+ 		ext4_journal_stop(handle);
+ 		ext4_orphan_del(NULL, inode);
+-		sb_end_intwrite(inode->i_sb);
++		if (freeze_protected)
++			sb_end_intwrite(inode->i_sb);
+ 		ext4_xattr_inode_array_free(ea_inode_array);
+ 		goto no_delete;
+ 	}
+@@ -341,7 +349,8 @@ stop_handle:
+ 	else
+ 		ext4_free_inode(handle, inode);
+ 	ext4_journal_stop(handle);
+-	sb_end_intwrite(inode->i_sb);
++	if (freeze_protected)
++		sb_end_intwrite(inode->i_sb);
+ 	ext4_xattr_inode_array_free(ea_inode_array);
+ 	return;
+ no_delete:
 
 
