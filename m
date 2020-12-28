@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42DFE2E3E96
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:31:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 838592E37AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:59:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503721AbgL1O3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:29:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37682 "EHLO mail.kernel.org"
+        id S1728576AbgL1M7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:59:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503408AbgL1O3l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:29:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 032572245C;
-        Mon, 28 Dec 2020 14:29:00 +0000 (UTC)
+        id S1728608AbgL1M67 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:58:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 577DA208B6;
+        Mon, 28 Dec 2020 12:58:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165741;
-        bh=WROAuKAvITckqHaZIK0oZSmdCLFJGc8TMKsDsMiIe8M=;
+        s=korg; t=1609160298;
+        bh=EwbaHjiYdirakRAm7vK9y7i/tkDY1rssIIAlLd0Rhds=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J+kGFfXJMRinKVmneUOJeT5X7Ck/4R0q8axX3khHqEVSBINCvabcFSiNXOuql7QML
-         PQ9dZgszej87BrViHdM0n21tyhLcEZDPgI1Yz0CI0zD38VbP3Q5t5Z1YROFTOq42tn
-         4IGKCgohoZ4ocCWlxfYJ85QStmL08yIeU1Q0Hihk=
+        b=YeTWVACOvh76TYmTvPq7mDBhoHXTTnbJWyPjYmp4xFK5XGsrPDOmYBngEb7087y1k
+         HJdaC8u2l/QimiRx5mZfSX062mf/RKaHv/wOmCq1BJUK/ucF6AjpcJ+4zzq5Ny4yQD
+         oH4DoNjOoQouarnsr4npGNIUDRHMzkxTIEq0/s4w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.10 611/717] powerpc/feature: Add CPU_FTR_NOEXECUTE to G2_LE
+        stable@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        Stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH 4.4 125/132] iio: adc: rockchip_saradc: fix missing clk_disable_unprepare() on error in rockchip_saradc_resume
 Date:   Mon, 28 Dec 2020 13:50:09 +0100
-Message-Id: <20201228125050.184583720@linuxfoundation.org>
+Message-Id: <20201228124852.447178861@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,33 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Qinglang Miao <miaoqinglang@huawei.com>
 
-commit 197493af414ee22427be3343637ac290a791925a upstream.
+commit 560c6b914c6ec7d9d9a69fddbb5bf3bf71433e8b upstream.
 
-G2_LE has a 603 core, add CPU_FTR_NOEXECUTE.
+Fix the missing clk_disable_unprepare() of info->pclk
+before return from rockchip_saradc_resume in the error
+handling case when fails to prepare and enable info->clk.
 
-Fixes: 385e89d5b20f ("powerpc/mm: add exec protection on powerpc 603")
-Cc: stable@vger.kernel.org
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/39a530ee41d83f49747ab3af8e39c056450b9b4d.1602489653.git.christophe.leroy@csgroup.eu
+Suggested-by: Robin Murphy <robin.murphy@arm.com>
+Fixes: 44d6f2ef94f9 ("iio: adc: add driver for Rockchip saradc")
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+Cc: <Stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201103120743.110662-1-miaoqinglang@huawei.com
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/include/asm/cputable.h |    2 +-
+ drivers/iio/adc/rockchip_saradc.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/powerpc/include/asm/cputable.h
-+++ b/arch/powerpc/include/asm/cputable.h
-@@ -369,7 +369,7 @@ static inline void cpu_feature_keys_init
- 	    CPU_FTR_PPC_LE | CPU_FTR_NEED_PAIRED_STWCX)
- #define CPU_FTRS_82XX	(CPU_FTR_COMMON | CPU_FTR_MAYBE_CAN_DOZE | CPU_FTR_NOEXECUTE)
- #define CPU_FTRS_G2_LE	(CPU_FTR_COMMON | CPU_FTR_MAYBE_CAN_DOZE | \
--	    CPU_FTR_MAYBE_CAN_NAP)
-+	    CPU_FTR_MAYBE_CAN_NAP | CPU_FTR_NOEXECUTE)
- #define CPU_FTRS_E300	(CPU_FTR_MAYBE_CAN_DOZE | \
- 	    CPU_FTR_MAYBE_CAN_NAP | \
- 	    CPU_FTR_COMMON  | CPU_FTR_NOEXECUTE)
+--- a/drivers/iio/adc/rockchip_saradc.c
++++ b/drivers/iio/adc/rockchip_saradc.c
+@@ -359,7 +359,7 @@ static int rockchip_saradc_resume(struct
+ 
+ 	ret = clk_prepare_enable(info->clk);
+ 	if (ret)
+-		return ret;
++		clk_disable_unprepare(info->pclk);
+ 
+ 	return ret;
+ }
 
 
