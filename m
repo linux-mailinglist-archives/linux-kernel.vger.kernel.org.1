@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 819DE2E674E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:24:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 773C02E688F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:40:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441022AbgL1QXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:23:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39566 "EHLO mail.kernel.org"
+        id S1729760AbgL1NBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:01:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731873AbgL1NLx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:11:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B00C206ED;
-        Mon, 28 Dec 2020 13:11:36 +0000 (UTC)
+        id S1729561AbgL1NA5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:00:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 38EA7207C9;
+        Mon, 28 Dec 2020 13:00:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161097;
-        bh=WF8aRP6p1aUlzCdp0ecf9XIz/Sv0Ovile1e3WDDEPS8=;
+        s=korg; t=1609160441;
+        bh=RAKZPBiKwUYgtMrrN2cjCwOMTfw9vKVB8nQaQndcDxc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u/S7RvulMcwgU9IK5fXlST815ZEK7oIfaFBLhMY/xHmlt4kGynS7Sj6oE7ovPDYUC
-         tt3h1eSXqzwkQRg9tMCybC9ciai04JsHdHXgLlU8cUdpFEYJJhVOpxyNKKLZuX104I
-         Gk7oWv9AOmz1Rm7RZ1XvVHmGN9QCEIdQRSzjZ8q8=
+        b=SbE+T26LLE4BfNDfNlaRb4O3f3BY9Pd0LlvnfW6/SAD0dyjUJaNRDBr6nDnGj/4wd
+         wv9xiMCs6tUZCvIctImdakeJxmdhM9iAUqdAxSXuj6bJFYPyVcbOpDJFgUAj75y9GF
+         8pLRSKKHQzQnUXLJePKqLuiVa2R/ZNw8LCcQL/K0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        stable@vger.kernel.org, Bob Pearson <rpearson@hpe.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 099/242] Input: ads7846 - fix unaligned access on 7845
+Subject: [PATCH 4.9 051/175] RDMA/rxe: Compute PSN windows correctly
 Date:   Mon, 28 Dec 2020 13:48:24 +0100
-Message-Id: <20201228124909.565611099@linuxfoundation.org>
+Message-Id: <20201228124855.731250553@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+From: Bob Pearson <rpearsonhpe@gmail.com>
 
-[ Upstream commit 03e2c9c782f721b661a0e42b1b58f394b5298544 ]
+[ Upstream commit bb3ab2979fd69db23328691cb10067861df89037 ]
 
-req->sample[1] is not naturally aligned at word boundary, and therefore we
-should use get_unaligned_be16() when accessing it.
+The code which limited the number of unacknowledged PSNs was incorrect.
+The PSNs are limited to 24 bits and wrap back to zero from 0x00ffffff.
+The test was computing a 32 bit value which wraps at 32 bits so that
+qp->req.psn can appear smaller than the limit when it is actually larger.
 
-Fixes: 3eac5c7e44f3 ("Input: ads7846 - extend the driver for ads7845 controller support")
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Replace '>' test with psn_compare which is used for other PSN comparisons
+and correctly handles the 24 bit size.
+
+Fixes: 8700e3e7c485 ("Soft RoCE driver")
+Link: https://lore.kernel.org/r/20201013170741.3590-1-rpearson@hpe.com
+Signed-off-by: Bob Pearson <rpearson@hpe.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/touchscreen/ads7846.c | 3 ++-
+ drivers/infiniband/sw/rxe/rxe_req.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/input/touchscreen/ads7846.c b/drivers/input/touchscreen/ads7846.c
-index 7ce0eedaa0e5e..b536768234b7c 100644
---- a/drivers/input/touchscreen/ads7846.c
-+++ b/drivers/input/touchscreen/ads7846.c
-@@ -35,6 +35,7 @@
- #include <linux/regulator/consumer.h>
- #include <linux/module.h>
- #include <asm/irq.h>
-+#include <asm/unaligned.h>
+diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
+index 5a2d7b0050f4c..463c4b3e73661 100644
+--- a/drivers/infiniband/sw/rxe/rxe_req.c
++++ b/drivers/infiniband/sw/rxe/rxe_req.c
+@@ -661,7 +661,8 @@ next_wqe:
+ 	}
  
- /*
-  * This code has been heavily tested on a Nokia 770, and lightly
-@@ -434,7 +435,7 @@ static int ads7845_read12_ser(struct device *dev, unsigned command)
- 
- 	if (status == 0) {
- 		/* BE12 value, then padding */
--		status = be16_to_cpu(*((u16 *)&req->sample[1]));
-+		status = get_unaligned_be16(&req->sample[1]);
- 		status = status >> 3;
- 		status &= 0x0fff;
+ 	if (unlikely(qp_type(qp) == IB_QPT_RC &&
+-		     qp->req.psn > (qp->comp.psn + RXE_MAX_UNACKED_PSNS))) {
++		psn_compare(qp->req.psn, (qp->comp.psn +
++				RXE_MAX_UNACKED_PSNS)) > 0)) {
+ 		qp->req.wait_psn = 1;
+ 		goto exit;
  	}
 -- 
 2.27.0
