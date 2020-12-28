@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DFB62E683D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:35:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CE9B2E670A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:20:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634148AbgL1QeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:34:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59750 "EHLO mail.kernel.org"
+        id S1732431AbgL1NOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:14:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730249AbgL1NDg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:03:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F9F7206ED;
-        Mon, 28 Dec 2020 13:02:55 +0000 (UTC)
+        id S1732388AbgL1NOF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:14:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F8CA2076D;
+        Mon, 28 Dec 2020 13:13:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160576;
-        bh=iRrV4hdtPk4eKcU5Iq0aDCH+J2vIQi9boaG6kCWLdjY=;
+        s=korg; t=1609161230;
+        bh=9/u1tfMPEVt67nmI4SkUXtwtNr5voLRc4WjZV+Ess7c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RJSie41mo+TjWgGYjivs58mJity1GEsYjvAzYIP/O12uTCEClrvVJoKu1MwL6BU/Q
-         zvPuoWIFjumJWXMFVTjcys3rHMygAUQ5OUUnuTwwhrC+iGEenhU2N2DzkEj0tffRy6
-         /SDHbt3UI+ghpkxpSXGJdTYkLx5FJ4dKIVSOt/Dg=
+        b=kiJUsWQX0tp3ZvmGFiQrKwec0YSwMBWay15ASTF+zIrdGNOI0iSb6FrjK+utTgyO4
+         pSk7aO/cld3bOewI0+X0XcHZawqsnubh7dJ9mlxrSlRljLB5efZuukGNLWR1QafAlL
+         zjdGMU8ETt1uHrhAecSBjlPKF3nooggJ2fZPp9yI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 098/175] cpufreq: highbank: Add missing MODULE_DEVICE_TABLE
+Subject: [PATCH 4.14 146/242] seq_buf: Avoid type mismatch for seq_buf_init
 Date:   Mon, 28 Dec 2020 13:49:11 +0100
-Message-Id: <20201228124857.990371427@linuxfoundation.org>
+Message-Id: <20201228124911.891869411@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +42,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Rohár <pali@kernel.org>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 9433777a6e0aae27468d3434b75cd51bb88ff711 ]
+[ Upstream commit d9a9280a0d0ae51dc1d4142138b99242b7ec8ac6 ]
 
-This patch adds missing MODULE_DEVICE_TABLE definition which generates
-correct modalias for automatic loading of this cpufreq driver when it is
-compiled as an external module.
+Building with W=2 prints a number of warnings for one function that
+has a pointer type mismatch:
 
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Fixes: 6754f556103be ("cpufreq / highbank: add support for highbank cpufreq")
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+linux/seq_buf.h: In function 'seq_buf_init':
+linux/seq_buf.h:35:12: warning: pointer targets in assignment from 'unsigned char *' to 'char *' differ in signedness [-Wpointer-sign]
+
+Change the type in the function prototype according to the type in
+the structure.
+
+Link: https://lkml.kernel.org/r/20201026161108.3707783-1-arnd@kernel.org
+
+Fixes: 9a7777935c34 ("tracing: Convert seq_buf fields to be like seq_file fields")
+Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpufreq/highbank-cpufreq.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ include/linux/seq_buf.h   | 2 +-
+ include/linux/trace_seq.h | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/cpufreq/highbank-cpufreq.c b/drivers/cpufreq/highbank-cpufreq.c
-index 1608f7105c9f8..ad743f2f31e78 100644
---- a/drivers/cpufreq/highbank-cpufreq.c
-+++ b/drivers/cpufreq/highbank-cpufreq.c
-@@ -104,6 +104,13 @@ out_put_node:
+diff --git a/include/linux/seq_buf.h b/include/linux/seq_buf.h
+index aa5deb041c25d..7cc952282e8be 100644
+--- a/include/linux/seq_buf.h
++++ b/include/linux/seq_buf.h
+@@ -30,7 +30,7 @@ static inline void seq_buf_clear(struct seq_buf *s)
  }
- module_init(hb_cpufreq_driver_init);
  
-+static const struct of_device_id __maybe_unused hb_cpufreq_of_match[] = {
-+	{ .compatible = "calxeda,highbank" },
-+	{ .compatible = "calxeda,ecx-2000" },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, hb_cpufreq_of_match);
-+
- MODULE_AUTHOR("Mark Langsdorf <mark.langsdorf@calxeda.com>");
- MODULE_DESCRIPTION("Calxeda Highbank cpufreq driver");
- MODULE_LICENSE("GPL");
+ static inline void
+-seq_buf_init(struct seq_buf *s, unsigned char *buf, unsigned int size)
++seq_buf_init(struct seq_buf *s, char *buf, unsigned int size)
+ {
+ 	s->buffer = buf;
+ 	s->size = size;
+diff --git a/include/linux/trace_seq.h b/include/linux/trace_seq.h
+index 6609b39a72326..6db257466af68 100644
+--- a/include/linux/trace_seq.h
++++ b/include/linux/trace_seq.h
+@@ -12,7 +12,7 @@
+  */
+ 
+ struct trace_seq {
+-	unsigned char		buffer[PAGE_SIZE];
++	char			buffer[PAGE_SIZE];
+ 	struct seq_buf		seq;
+ 	int			full;
+ };
+@@ -51,7 +51,7 @@ static inline int trace_seq_used(struct trace_seq *s)
+  * that is about to be written to and then return the result
+  * of that write.
+  */
+-static inline unsigned char *
++static inline char *
+ trace_seq_buffer_ptr(struct trace_seq *s)
+ {
+ 	return s->buffer + seq_buf_used(&s->seq);
 -- 
 2.27.0
 
