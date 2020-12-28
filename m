@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 572A42E3956
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:22:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AD962E40A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:55:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388288AbgL1NWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:22:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50740 "EHLO mail.kernel.org"
+        id S2441364AbgL1ORI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:17:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388259AbgL1NW3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:22:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 901EB207F7;
-        Mon, 28 Dec 2020 13:21:47 +0000 (UTC)
+        id S2441258AbgL1OQu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:16:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2224120731;
+        Mon, 28 Dec 2020 14:16:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161708;
-        bh=WZ5ejJazqMwziMvrVQobP8XfW5cRgG4yrWee5XpHQ2A=;
+        s=korg; t=1609164994;
+        bh=fGdpDe3GdEdKv7k2MsyEgHarQQpAdk+OfVeTJVA5oiM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HKVGfy2Fnhq1wUOKxTxbz5oe4BW/I/ZCDawFqvaW7H87+ga/wak6qPWmQiGtk3MFS
-         BYcbM0Bq2bjBwiCRuKl6MIMwoEvjhA3DdX4VT2eR1tY8TIE2d2naejwfZIhg9/SeVv
-         kqdsZdDtgp18kWIyr2Qv2U+hGjmne3y7EqCM4UCc=
+        b=2rsSAd99zzffjxCgS7247cqmVZlWL0yQBKx/2DahtNL2IZYlw6zdwh+bzD8fcCx6Z
+         WbeTHF5FOI+5nB8ygcweeFXJrcYoxufbPSW/8JgAg+yoEgg1OBnaSm/j2CdCt40w+5
+         f+GktjbAPJCv8tQlJLyvatDDn1VNDbvyYPtD37MI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: [PATCH 4.19 024/346] x86/membarrier: Get rid of a dubious optimization
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 345/717] adm8211: fix error return code in adm8211_probe()
 Date:   Mon, 28 Dec 2020 13:45:43 +0100
-Message-Id: <20201228124920.943092613@linuxfoundation.org>
+Message-Id: <20201228125037.555923763@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,70 +41,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Lutomirski <luto@kernel.org>
+From: Zhang Changzhong <zhangchangzhong@huawei.com>
 
-commit a493d1ca1a03b532871f1da27f8dbda2b28b04c4 upstream.
+[ Upstream commit 05c2a61d69ea306e891884a86486e1ef37c4b78d ]
 
-sync_core_before_usermode() had an incorrect optimization.  If the kernel
-returns from an interrupt, it can get to usermode without IRET. It just has
-to schedule to a different task in the same mm and do SYSRET.  Fortunately,
-there were no callers of sync_core_before_usermode() that could have had
-in_irq() or in_nmi() equal to true, because it's only ever called from the
-scheduler.
+Fix to return a negative error code from the error handling
+case instead of 0, as done elsewhere in this function.
 
-While at it, clarify a related comment.
-
-Fixes: 70216e18e519 ("membarrier: Provide core serializing command, *_SYNC_CORE")
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/5afc7632be1422f91eaf7611aaaa1b5b8580a086.1607058304.git.luto@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: cc0b88cf5ecf ("[PATCH] Add adm8211 802.11b wireless driver")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/1607071638-33619-1-git-send-email-zhangchangzhong@huawei.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/include/asm/sync_core.h |    9 +++++----
- arch/x86/mm/tlb.c                |   10 ++++++++--
- 2 files changed, 13 insertions(+), 6 deletions(-)
+ drivers/net/wireless/admtek/adm8211.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/arch/x86/include/asm/sync_core.h
-+++ b/arch/x86/include/asm/sync_core.h
-@@ -16,12 +16,13 @@ static inline void sync_core_before_user
- 	/* With PTI, we unconditionally serialize before running user code. */
- 	if (static_cpu_has(X86_FEATURE_PTI))
- 		return;
-+
- 	/*
--	 * Return from interrupt and NMI is done through iret, which is core
--	 * serializing.
-+	 * Even if we're in an interrupt, we might reschedule before returning,
-+	 * in which case we could switch to a different thread in the same mm
-+	 * and return using SYSRET or SYSEXIT.  Instead of trying to keep
-+	 * track of our need to sync the core, just sync right away.
- 	 */
--	if (in_irq() || in_nmi())
--		return;
- 	sync_core();
- }
+diff --git a/drivers/net/wireless/admtek/adm8211.c b/drivers/net/wireless/admtek/adm8211.c
+index 5cf2045fadeff..c41e72508d3db 100644
+--- a/drivers/net/wireless/admtek/adm8211.c
++++ b/drivers/net/wireless/admtek/adm8211.c
+@@ -1796,6 +1796,7 @@ static int adm8211_probe(struct pci_dev *pdev,
+ 	if (io_len < 256 || mem_len < 1024) {
+ 		printk(KERN_ERR "%s (adm8211): Too short PCI resources\n",
+ 		       pci_name(pdev));
++		err = -ENOMEM;
+ 		goto err_disable_pdev;
+ 	}
  
---- a/arch/x86/mm/tlb.c
-+++ b/arch/x86/mm/tlb.c
-@@ -321,8 +321,14 @@ void switch_mm_irqs_off(struct mm_struct
- 	/*
- 	 * The membarrier system call requires a full memory barrier and
- 	 * core serialization before returning to user-space, after
--	 * storing to rq->curr. Writing to CR3 provides that full
--	 * memory barrier and core serializing instruction.
-+	 * storing to rq->curr, when changing mm.  This is because
-+	 * membarrier() sends IPIs to all CPUs that are in the target mm
-+	 * to make them issue memory barriers.  However, if another CPU
-+	 * switches to/from the target mm concurrently with
-+	 * membarrier(), it can cause that CPU not to receive an IPI
-+	 * when it really should issue a memory barrier.  Writing to CR3
-+	 * provides that full memory barrier and core serializing
-+	 * instruction.
- 	 */
- 	if (real_prev == next) {
- 		VM_WARN_ON(this_cpu_read(cpu_tlbstate.ctxs[prev_asid].ctx_id) !=
+@@ -1805,6 +1806,7 @@ static int adm8211_probe(struct pci_dev *pdev,
+ 	if (reg != ADM8211_SIG1 && reg != ADM8211_SIG2) {
+ 		printk(KERN_ERR "%s (adm8211): Invalid signature (0x%x)\n",
+ 		       pci_name(pdev), reg);
++		err = -EINVAL;
+ 		goto err_disable_pdev;
+ 	}
+ 
+@@ -1815,8 +1817,8 @@ static int adm8211_probe(struct pci_dev *pdev,
+ 		return err; /* someone else grabbed it? don't disable it */
+ 	}
+ 
+-	if (dma_set_mask(&pdev->dev, DMA_BIT_MASK(32)) ||
+-	    dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(32))) {
++	err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
++	if (err) {
+ 		printk(KERN_ERR "%s (adm8211): No suitable DMA available\n",
+ 		       pci_name(pdev));
+ 		goto err_free_reg;
+-- 
+2.27.0
+
 
 
