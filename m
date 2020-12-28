@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7A702E37C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:01:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3FF32E3DFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:24:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729421AbgL1NAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:00:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55886 "EHLO mail.kernel.org"
+        id S2502643AbgL1OWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:22:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728898AbgL1NAH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:00:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E2FE9208D5;
-        Mon, 28 Dec 2020 12:59:50 +0000 (UTC)
+        id S2441686AbgL1OWO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:22:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D649520731;
+        Mon, 28 Dec 2020 14:21:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160391;
-        bh=qR99icXdOK7HuB957VYZGa+83XTQNyl3hqtIOgs/ch4=;
+        s=korg; t=1609165319;
+        bh=DT+JgyDmWanLqDIAzzZ+1jqPi8DVkBgpjT3FkD4Z/c8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FJsIB5Yraq0xiSOncBHRgBFDh3gBd0b/drN5u2MTv3N4S1hKcNH8oHZwozPUsWr3W
-         EPgV7Cmt/oPfo6Cdj71Muiw7l0lVu25+fjr/E3mZZNqeUM8UO5npmHtoxTNzVAbCRJ
-         9FWNLXP7nyv/K16qzuv3dF6sCo1WK1EMdry2WiCQ=
+        b=SYY/qPjf5qQYwnPY0Bl1qtHc1ITdrfPUwOeRumrVC2bFxTHUK9C1Oyferm+pWXniW
+         1Dx7KKVrYUQ2XgxHU1tkuMvAPSKuOj5qO6Y4bZxd+jplb1QnjL/kza0n6cvIkR8eNX
+         +qJhgG0Q0M9poPSK2yL5dwztKDaDoQgddlLCSb+8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+8881b478dad0a7971f79@syzkaller.appspotmail.com,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.9 036/175] USB: serial: option: add interface-number sanity check to flag handling
+        Robert Buhren <robert.buhren@sect.tu-berlin.de>,
+        Felicitas Hetzelt <file@sect.tu-berlin.de>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 491/717] virtio_ring: Fix two use after free bugs
 Date:   Mon, 28 Dec 2020 13:48:09 +0100
-Message-Id: <20201228124854.993702994@linuxfoundation.org>
+Message-Id: <20201228125044.489456056@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,85 +44,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit a251963f76fa0226d0fdf0c4f989496f18d9ae7f upstream.
+[ Upstream commit e152d8af4220a05c9797591609151d404866beaa ]
 
-Add an interface-number sanity check before testing the device flags to
-avoid relying on undefined behaviour when left shifting in case a device
-uses an interface number greater than or equal to BITS_PER_LONG (i.e. 64
-or 32).
+The "vq" struct is added to the "vdev->vqs" list prematurely.  If we
+encounter an error later in the function then the "vq" is freed, but
+since it is still on the list that could lead to a use after free bug.
 
-Reported-by: syzbot+8881b478dad0a7971f79@syzkaller.appspotmail.com
-Fixes: c3a65808f04a ("USB: serial: option: reimplement interface masking")
-Cc: stable@vger.kernel.org
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: cbeedb72b97a ("virtio_ring: allocate desc state for split ring separately")
+Reported-by: Robert Buhren <robert.buhren@sect.tu-berlin.de>
+Reported-by: Felicitas Hetzelt <file@sect.tu-berlin.de>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/X8pGaG/zkI3jk8mk@mwanda
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/serial/option.c |   23 +++++++++++++++++++++--
- 1 file changed, 21 insertions(+), 2 deletions(-)
+ drivers/virtio/virtio_ring.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -563,6 +563,9 @@ static void option_instat_callback(struc
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index 924b6b85376bd..71e16b53e9c18 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -1608,7 +1608,6 @@ static struct virtqueue *vring_create_virtqueue_packed(
+ 	vq->num_added = 0;
+ 	vq->packed_ring = true;
+ 	vq->use_dma_api = vring_use_dma_api(vdev);
+-	list_add_tail(&vq->vq.list, &vdev->vqs);
+ #ifdef DEBUG
+ 	vq->in_use = false;
+ 	vq->last_add_time_valid = false;
+@@ -1669,6 +1668,7 @@ static struct virtqueue *vring_create_virtqueue_packed(
+ 			cpu_to_le16(vq->packed.event_flags_shadow);
+ 	}
  
- /* Device flags */
++	list_add_tail(&vq->vq.list, &vdev->vqs);
+ 	return &vq->vq;
  
-+/* Highest interface number which can be used with NCTRL() and RSVD() */
-+#define FLAG_IFNUM_MAX	7
-+
- /* Interface does not support modem-control requests */
- #define NCTRL(ifnum)	((BIT(ifnum) & 0xff) << 8)
+ err_desc_extra:
+@@ -2085,7 +2085,6 @@ struct virtqueue *__vring_new_virtqueue(unsigned int index,
+ 	vq->last_used_idx = 0;
+ 	vq->num_added = 0;
+ 	vq->use_dma_api = vring_use_dma_api(vdev);
+-	list_add_tail(&vq->vq.list, &vdev->vqs);
+ #ifdef DEBUG
+ 	vq->in_use = false;
+ 	vq->last_add_time_valid = false;
+@@ -2127,6 +2126,7 @@ struct virtqueue *__vring_new_virtqueue(unsigned int index,
+ 	memset(vq->split.desc_state, 0, vring.num *
+ 			sizeof(struct vring_desc_state_split));
  
-@@ -2086,6 +2089,14 @@ static struct usb_serial_driver * const
- 
- module_usb_serial_driver(serial_drivers, option_ids);
- 
-+static bool iface_is_reserved(unsigned long device_flags, u8 ifnum)
-+{
-+	if (ifnum > FLAG_IFNUM_MAX)
-+		return false;
-+
-+	return device_flags & RSVD(ifnum);
-+}
-+
- static int option_probe(struct usb_serial *serial,
- 			const struct usb_device_id *id)
- {
-@@ -2103,7 +2114,7 @@ static int option_probe(struct usb_seria
- 	 * the same class/subclass/protocol as the serial interfaces.  Look at
- 	 * the Windows driver .INF files for reserved interface numbers.
- 	 */
--	if (device_flags & RSVD(iface_desc->bInterfaceNumber))
-+	if (iface_is_reserved(device_flags, iface_desc->bInterfaceNumber))
- 		return -ENODEV;
- 	/*
- 	 * Don't bind network interface on Samsung GT-B3730, it is handled by
-@@ -2120,6 +2131,14 @@ static int option_probe(struct usb_seria
- 	return 0;
++	list_add_tail(&vq->vq.list, &vdev->vqs);
+ 	return &vq->vq;
  }
- 
-+static bool iface_no_modem_control(unsigned long device_flags, u8 ifnum)
-+{
-+	if (ifnum > FLAG_IFNUM_MAX)
-+		return false;
-+
-+	return device_flags & NCTRL(ifnum);
-+}
-+
- static int option_attach(struct usb_serial *serial)
- {
- 	struct usb_interface_descriptor *iface_desc;
-@@ -2135,7 +2154,7 @@ static int option_attach(struct usb_seri
- 
- 	iface_desc = &serial->interface->cur_altsetting->desc;
- 
--	if (!(device_flags & NCTRL(iface_desc->bInterfaceNumber)))
-+	if (!iface_no_modem_control(device_flags, iface_desc->bInterfaceNumber))
- 		data->use_send_setup = 1;
- 
- 	if (device_flags & ZLP)
+ EXPORT_SYMBOL_GPL(__vring_new_virtqueue);
+-- 
+2.27.0
+
 
 
