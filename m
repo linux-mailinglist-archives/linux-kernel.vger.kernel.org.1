@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90EE62E65B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:04:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83BF02E65DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:07:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389772AbgL1N1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:27:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56220 "EHLO mail.kernel.org"
+        id S2392998AbgL1QFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:05:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55530 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389615AbgL1N1Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:27:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 06AC0207C9;
-        Mon, 28 Dec 2020 13:26:42 +0000 (UTC)
+        id S2389038AbgL1N1D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:27:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C442222472;
+        Mon, 28 Dec 2020 13:26:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162003;
-        bh=4a1WLwjconSttorO5kZy0jvzVdSGwmE11WVe5S+HsDs=;
+        s=korg; t=1609162006;
+        bh=72aZ3cE5St23Eu+A4tMYPMspQtQIOS6Luc8VG2zI4v0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ud5vPElgtPn4Ayr4/Hh+WfaYH99Laooa65rPaR4bvC5IevsWF3TdrjUR/oWkfQMLm
-         QAN5cHD7IfT1SMNAf1YyUkgips1HS2JsHGHK6RKtJQrvKJ1XYstHHay5fOtXp7Pj48
-         8aPfiDisZ945bm9B8bIScfMFV25jId8dMjbyqFB8=
+        b=PuQvmvN6k5WJG726+TXtRmrTRHcq3Dno8HKRGNsiX/LU1sdZM3HoC0clbTDRUTGaT
+         8KaWvxUCyrQp2MydWTyhQAurbFAdnJoe3vdwhNc8wsHMw2l8dKO2Zdkkgf7yE6vgin
+         WJtU35N0gD+SHsvKcJGXFvPezJW0au63WBR+5MzQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 125/346] spi: spi-ti-qspi: fix reference leak in ti_qspi_setup
-Date:   Mon, 28 Dec 2020 13:47:24 +0100
-Message-Id: <20201228124925.833754934@linuxfoundation.org>
+Subject: [PATCH 4.19 126/346] spi: tegra20-slink: fix reference leak in slink ops of tegra20
+Date:   Mon, 28 Dec 2020 13:47:25 +0100
+Message-Id: <20201228124925.883052683@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
 References: <20201228124919.745526410@linuxfoundation.org>
@@ -42,31 +42,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit 45c0cba753641e5d7c3207f04241bd0e7a021698 ]
+[ Upstream commit 763eab7074f6e71babd85d796156f05a675f9510 ]
 
 pm_runtime_get_sync will increment pm usage counter even it
 failed. Forgetting to pm_runtime_put_noidle will result in
-reference leak in ti_qspi_setup, so we should fix it.
+reference leak in two callers(tegra_slink_setup and
+tegra_slink_resume), so we should fix it.
 
-Fixes: 505a14954e2d7 ("spi/qspi: Add qspi flash controller")
+Fixes: dc4dc36056392 ("spi: tegra: add spi driver for SLINK controller")
 Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201103140947.3815-1-zhangqilong3@huawei.com
+Link: https://lore.kernel.org/r/20201103141345.6188-1-zhangqilong3@huawei.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-ti-qspi.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/spi/spi-tegra20-slink.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/spi/spi-ti-qspi.c b/drivers/spi/spi-ti-qspi.c
-index 95c28abaa0272..73a08724034ba 100644
---- a/drivers/spi/spi-ti-qspi.c
-+++ b/drivers/spi/spi-ti-qspi.c
-@@ -183,6 +183,7 @@ static int ti_qspi_setup(struct spi_device *spi)
+diff --git a/drivers/spi/spi-tegra20-slink.c b/drivers/spi/spi-tegra20-slink.c
+index d1187317bb5d7..c6b80a60951b1 100644
+--- a/drivers/spi/spi-tegra20-slink.c
++++ b/drivers/spi/spi-tegra20-slink.c
+@@ -761,6 +761,7 @@ static int tegra_slink_setup(struct spi_device *spi)
  
- 	ret = pm_runtime_get_sync(qspi->dev);
+ 	ret = pm_runtime_get_sync(tspi->dev);
  	if (ret < 0) {
-+		pm_runtime_put_noidle(qspi->dev);
- 		dev_err(qspi->dev, "pm_runtime_get_sync() failed\n");
++		pm_runtime_put_noidle(tspi->dev);
+ 		dev_err(tspi->dev, "pm runtime failed, e = %d\n", ret);
+ 		return ret;
+ 	}
+@@ -1197,6 +1198,7 @@ static int tegra_slink_resume(struct device *dev)
+ 
+ 	ret = pm_runtime_get_sync(dev);
+ 	if (ret < 0) {
++		pm_runtime_put_noidle(dev);
+ 		dev_err(dev, "pm runtime failed, e = %d\n", ret);
  		return ret;
  	}
 -- 
