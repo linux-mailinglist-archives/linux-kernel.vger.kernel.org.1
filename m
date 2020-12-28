@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADCB42E3A1B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:32:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CA952E38CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:16:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391033AbgL1Nc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:32:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60642 "EHLO mail.kernel.org"
+        id S1732651AbgL1NPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:15:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390918AbgL1Nbr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:31:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0627F206ED;
-        Mon, 28 Dec 2020 13:31:05 +0000 (UTC)
+        id S1732626AbgL1NPJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:15:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0492B208D5;
+        Mon, 28 Dec 2020 13:14:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162266;
-        bh=Pfhr6gtaEmtm4tpojp8fahW8fu5iIc3nUB0qyfR5wYs=;
+        s=korg; t=1609161268;
+        bh=LD53EuW78+nIuuED95cWG7ISgb2eJLTE/RViJDF/wkw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RM+P4aK5h7VqHjV/T2nURmr7uFxlLvnR4JqNPr2bsgu7fpi+MVWHrKTuvtnnKPdcR
-         6xTT/gRUG8SGvUkgXbas39EL3rM1Qgam1sl8Zi7VBRNlKd9Z18KZ3ai+ipVJT7xeEb
-         oAA+1Es1ZIXtCcfSE2Io4ZnlxhH3uTGrwxOyTAx8=
+        b=i/DIz+Tm2MNTMahYSi1xVMw3eOCaK8povPbO/jqlc3cazAcisTtpNJPLktqAWlsnR
+         9KcKtu4txGN3/1rYfDBJTO6G5+NAdc0LNOC59RbD8qoGLJr5Tmriwe9zGW/LTXv5aC
+         k5yhCb39ufKoZ143DfXI0gnPwjPKFJbMkn/Ldl9k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 244/346] clk: ti: Fix memleak in ti_fapll_synth_setup
+Subject: [PATCH 4.14 158/242] ASoC: wm_adsp: remove "ctl" from list on error in wm_adsp_create_control()
 Date:   Mon, 28 Dec 2020 13:49:23 +0100
-Message-Id: <20201228124931.568490375@linuxfoundation.org>
+Message-Id: <20201228124912.481993035@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,58 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 8c6239f6e95f583bb763d0228e02d4dd0fb3d492 ]
+[ Upstream commit 85a7555575a0e48f9b73db310d0d762a08a46d63 ]
 
-If clk_register fails, we should goto free branch
-before function returns to prevent memleak.
+The error handling frees "ctl" but it's still on the "dsp->ctl_list"
+list so that could result in a use after free.  Remove it from the list
+before returning.
 
-Fixes: 163152cbbe321 ("clk: ti: Add support for FAPLL on dm816x")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Link: https://lore.kernel.org/r/20201113131623.2098222-1-zhangqilong3@huawei.com
-Acked-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Fixes: 2323736dca72 ("ASoC: wm_adsp: Add basic support for rev 1 firmware file format")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/X9B0keV/02wrx9Xs@mwanda
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/ti/fapll.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/clk/ti/fapll.c b/drivers/clk/ti/fapll.c
-index 071af44b1ba85..e33ce851837e4 100644
---- a/drivers/clk/ti/fapll.c
-+++ b/drivers/clk/ti/fapll.c
-@@ -497,6 +497,7 @@ static struct clk * __init ti_fapll_synth_setup(struct fapll_data *fd,
- {
- 	struct clk_init_data *init;
- 	struct fapll_synth *synth;
-+	struct clk *clk = ERR_PTR(-ENOMEM);
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 158ce68bc9bf3..1516252aa0a53 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -1391,7 +1391,7 @@ static int wm_adsp_create_control(struct wm_adsp *dsp,
+ 	ctl_work = kzalloc(sizeof(*ctl_work), GFP_KERNEL);
+ 	if (!ctl_work) {
+ 		ret = -ENOMEM;
+-		goto err_ctl_cache;
++		goto err_list_del;
+ 	}
  
- 	init = kzalloc(sizeof(*init), GFP_KERNEL);
- 	if (!init)
-@@ -519,13 +520,19 @@ static struct clk * __init ti_fapll_synth_setup(struct fapll_data *fd,
- 	synth->hw.init = init;
- 	synth->clk_pll = pll_clk;
+ 	ctl_work->dsp = dsp;
+@@ -1401,7 +1401,8 @@ static int wm_adsp_create_control(struct wm_adsp *dsp,
  
--	return clk_register(NULL, &synth->hw);
-+	clk = clk_register(NULL, &synth->hw);
-+	if (IS_ERR(clk)) {
-+		pr_err("failed to register clock\n");
-+		goto free;
-+	}
-+
-+	return clk;
+ 	return 0;
  
- free:
- 	kfree(synth);
- 	kfree(init);
- 
--	return ERR_PTR(-ENOMEM);
-+	return clk;
- }
- 
- static void __init ti_fapll_setup(struct device_node *node)
+-err_ctl_cache:
++err_list_del:
++	list_del(&ctl->list);
+ 	kfree(ctl->cache);
+ err_ctl_name:
+ 	kfree(ctl->name);
 -- 
 2.27.0
 
