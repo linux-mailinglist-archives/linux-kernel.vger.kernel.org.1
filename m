@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1DB42E3931
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:22:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 713872E3ADC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:43:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733157AbgL1NUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:20:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48866 "EHLO mail.kernel.org"
+        id S2404252AbgL1Nmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:42:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42760 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732266AbgL1NUQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:20:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17047208D5;
-        Mon, 28 Dec 2020 13:19:34 +0000 (UTC)
+        id S2404216AbgL1Nm2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:42:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DD04208B3;
+        Mon, 28 Dec 2020 13:41:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161575;
-        bh=V5XK7HyuAyfcsA7ABswim+1ASd/M/u1TgwpVCaBgVqE=;
+        s=korg; t=1609162907;
+        bh=83jB+2SiUlnBFwgy4mpZgWFrRPXBFUaLgwxOj7lA4jM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qzuOct48+Uh35CC7XlJPytKd3chA08s0VeqToPP0KctOXD3C3L4cA25Pi4oIlTTr2
-         CEEG0hJCt7NQfFTJ6gRmjwrkstQ6k8inQDOkZ+F1VYFeeelUs4Yjv7mSVYSdZjwM1y
-         jv5cGudw0BPizENJuxqmXLGVvlsrb4PqDwJYJUFM=
+        b=Zwc6vUrCuPAuVxnwrTtyH75ilyXvQNII0tsfdofMMETeifMuUO4wH9Slv1kh0LCkq
+         FNSX+sIbraRKqt+F1NgqfpfHVRrs+wi7wm73iWDfpMDRaC/+YvXcmF0gqK1+qQjga7
+         QdtiL9hUPR9vJ9We4Kr8Vx5MiIs0wEtiwSZw7SBE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        syzbot+150f793ac5bc18eee150@syzkaller.appspotmail.com
-Subject: [PATCH 4.19 017/346] Input: cm109 - do not stomp on control URB
-Date:   Mon, 28 Dec 2020 13:45:36 +0100
-Message-Id: <20201228124920.602458091@linuxfoundation.org>
+        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 101/453] spi: img-spfi: fix reference leak in img_spfi_resume
+Date:   Mon, 28 Dec 2020 13:45:37 +0100
+Message-Id: <20201228124942.076239473@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-commit 82e06090473289ce63e23fdeb8737aad59b10645 upstream.
+[ Upstream commit ee5558a9084584015c8754ffd029ce14a5827fa8 ]
 
-We need to make sure we are not stomping on the control URB that was
-issued when opening the device when attempting to toggle buzzer.
-To do that we need to mark it as pending in cm109_open().
+pm_runtime_get_sync will increment pm usage counter even it
+failed. Forgetting to pm_runtime_put_noidle will result in
+reference leak in img_spfi_resume, so we should fix it.
 
-Reported-and-tested-by: syzbot+150f793ac5bc18eee150@syzkaller.appspotmail.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: deba25800a12b ("spi: Add driver for IMG SPFI controller")
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Link: https://lore.kernel.org/r/20201102145651.3875-1-zhangqilong3@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/misc/cm109.c |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/spi/spi-img-spfi.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/input/misc/cm109.c
-+++ b/drivers/input/misc/cm109.c
-@@ -571,12 +571,15 @@ static int cm109_input_open(struct input
- 	dev->ctl_data->byte[HID_OR2] = dev->keybit;
- 	dev->ctl_data->byte[HID_OR3] = 0x00;
+diff --git a/drivers/spi/spi-img-spfi.c b/drivers/spi/spi-img-spfi.c
+index f4a8f470aecc2..e9ef80983b791 100644
+--- a/drivers/spi/spi-img-spfi.c
++++ b/drivers/spi/spi-img-spfi.c
+@@ -771,8 +771,10 @@ static int img_spfi_resume(struct device *dev)
+ 	int ret;
  
-+	dev->ctl_urb_pending = 1;
- 	error = usb_submit_urb(dev->urb_ctl, GFP_KERNEL);
--	if (error)
-+	if (error) {
-+		dev->ctl_urb_pending = 0;
- 		dev_err(&dev->intf->dev, "%s: usb_submit_urb (urb_ctl) failed %d\n",
- 			__func__, error);
--	else
-+	} else {
- 		dev->open = 1;
+ 	ret = pm_runtime_get_sync(dev);
+-	if (ret)
++	if (ret) {
++		pm_runtime_put_noidle(dev);
+ 		return ret;
 +	}
+ 	spfi_reset(spfi);
+ 	pm_runtime_put(dev);
  
- 	mutex_unlock(&dev->pm_mutex);
- 
+-- 
+2.27.0
+
 
 
