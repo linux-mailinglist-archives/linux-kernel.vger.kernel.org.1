@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C7092E3C28
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:59:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1DC92E3C2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:59:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407589AbgL1N7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:59:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32810 "EHLO mail.kernel.org"
+        id S2407626AbgL1N7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:59:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32850 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407553AbgL1N7F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:59:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 83484206D4;
-        Mon, 28 Dec 2020 13:58:24 +0000 (UTC)
+        id S2436490AbgL1N7I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:59:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 89D8020715;
+        Mon, 28 Dec 2020 13:58:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163905;
-        bh=CUGxBWtO+1hbO3I55fvkeFxJ64S2h7ZiY5J5C4Km5Ro=;
+        s=korg; t=1609163908;
+        bh=2lh3KjgtC180oUH/FoUgxKmPy2AKsKnomUdG+vOBz08=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zS39ef2RirpPeIRhvtT+E4xOZmlYjdLrfQs+D4HqXSDW5c22KQ2D7sKnWIKxcXc8Z
-         7YPjKBkQpB5sDn5uQkrcssTo8eE6o7PZ/YEuTIeJh6XSwxakeeae38LiGrh/Ft2qBG
-         DUQSDNOg2FhIpu5YYz1QudNh+4DYhmWk6ul1Vv88=
+        b=ehDogzlNmigJBhTz+qtkk9xK6IgSCL9DQzFLQ+UNFvvpB6QsrRnAyORgPMzgN2dut
+         ZdRPnGkQ3dcGg+L8LkXTpssyTJ2xJQMYqci+/dtJ3nfgFPk2O0P9efgiEFo+S3SPxK
+         3lxgOUyE6y8MxXjbh2ZR5xIj8ryE5nZOBmCN4JFI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jubin Zhong <zhongjubin@huawei.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 5.4 450/453] PCI: Fix pci_slot_release() NULL pointer dereference
-Date:   Mon, 28 Dec 2020 13:51:26 +0100
-Message-Id: <20201228124958.874660000@linuxfoundation.org>
+        stable@vger.kernel.org, DingHua Ma <dinghua.ma.sz@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.4 451/453] regulator: axp20x: Fix DLDO2 voltage control register mask for AXP22x
+Date:   Mon, 28 Dec 2020 13:51:27 +0100
+Message-Id: <20201228124958.923179526@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
 References: <20201228124937.240114599@linuxfoundation.org>
@@ -39,65 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jubin Zhong <zhongjubin@huawei.com>
+From: DingHua Ma <dinghua.ma.sz@gmail.com>
 
-commit 4684709bf81a2d98152ed6b610e3d5c403f9bced upstream.
+commit 291de1d102fafef0798cdad9666cd4f8da7da7cc upstream.
 
-If kobject_init_and_add() fails, pci_slot_release() is called to delete
-slot->list from parent->slots.  But slot->list hasn't been initialized
-yet, so we dereference a NULL pointer:
+When I use the axp20x chip to power my SDIO device on the 5.4 kernel,
+the output voltage of DLDO2 is wrong. After comparing the register
+manual and source code of the chip, I found that the mask bit of the
+driver register of the port was wrong. I fixed this error by modifying
+the mask register of the source code. This error seems to be a copy
+error of the macro when writing the code. Now the voltage output of
+the DLDO2 port of axp20x is correct. My development environment is
+Allwinner A40I of arm architecture, and the kernel version is 5.4.
 
-  Unable to handle kernel NULL pointer dereference at virtual address
-00000000
-  ...
-  CPU: 10 PID: 1 Comm: swapper/0 Not tainted 4.4.240 #197
-  task: ffffeb398a45ef10 task.stack: ffffeb398a470000
-  PC is at __list_del_entry_valid+0x5c/0xb0
-  LR is at pci_slot_release+0x84/0xe4
-  ...
-  __list_del_entry_valid+0x5c/0xb0
-  pci_slot_release+0x84/0xe4
-  kobject_put+0x184/0x1c4
-  pci_create_slot+0x17c/0x1b4
-  __pci_hp_initialize+0x68/0xa4
-  pciehp_probe+0x1a4/0x2fc
-  pcie_port_probe_service+0x58/0x84
-  driver_probe_device+0x320/0x470
-
-Initialize slot->list before calling kobject_init_and_add() to avoid this.
-
-Fixes: 8a94644b440e ("PCI: Fix pci_create_slot() reference count leak")
-Link: https://lore.kernel.org/r/1606876422-117457-1-git-send-email-zhongjubin@huawei.com
-Signed-off-by: Jubin Zhong <zhongjubin@huawei.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Cc: stable@vger.kernel.org	# v5.9+
+Signed-off-by: DingHua Ma <dinghua.ma.sz@gmail.com>
+Reviewed-by: Chen-Yu Tsai <wens@csie.org>
+Cc: <stable@vger.kernel.org>
+Fixes: db4a555f7c4c ("regulator: axp20x: use defines for masks")
+Link: https://lore.kernel.org/r/20201201001000.22302-1-dinghua.ma.sz@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/pci/slot.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/regulator/axp20x-regulator.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/pci/slot.c
-+++ b/drivers/pci/slot.c
-@@ -308,6 +308,9 @@ placeholder:
- 		goto err;
- 	}
- 
-+	INIT_LIST_HEAD(&slot->list);
-+	list_add(&slot->list, &parent->slots);
-+
- 	err = kobject_init_and_add(&slot->kobj, &pci_slot_ktype, NULL,
- 				   "%s", slot_name);
- 	if (err) {
-@@ -315,9 +318,6 @@ placeholder:
- 		goto err;
- 	}
- 
--	INIT_LIST_HEAD(&slot->list);
--	list_add(&slot->list, &parent->slots);
--
- 	down_read(&pci_bus_sem);
- 	list_for_each_entry(dev, &parent->devices, bus_list)
- 		if (PCI_SLOT(dev->devfn) == slot_nr)
+--- a/drivers/regulator/axp20x-regulator.c
++++ b/drivers/regulator/axp20x-regulator.c
+@@ -596,7 +596,7 @@ static const struct regulator_desc axp22
+ 		 AXP22X_DLDO1_V_OUT, AXP22X_DLDO1_V_OUT_MASK,
+ 		 AXP22X_PWR_OUT_CTRL2, AXP22X_PWR_OUT_DLDO1_MASK),
+ 	AXP_DESC(AXP22X, DLDO2, "dldo2", "dldoin", 700, 3300, 100,
+-		 AXP22X_DLDO2_V_OUT, AXP22X_PWR_OUT_DLDO2_MASK,
++		 AXP22X_DLDO2_V_OUT, AXP22X_DLDO2_V_OUT_MASK,
+ 		 AXP22X_PWR_OUT_CTRL2, AXP22X_PWR_OUT_DLDO2_MASK),
+ 	AXP_DESC(AXP22X, DLDO3, "dldo3", "dldoin", 700, 3300, 100,
+ 		 AXP22X_DLDO3_V_OUT, AXP22X_DLDO3_V_OUT_MASK,
 
 
