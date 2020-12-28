@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE4082E3A3D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:34:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CA6D2E3F8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:42:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388056AbgL1NeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:34:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33748 "EHLO mail.kernel.org"
+        id S2503990AbgL1O16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:27:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390317AbgL1NdH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:33:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F05B22583;
-        Mon, 28 Dec 2020 13:32:26 +0000 (UTC)
+        id S2502308AbgL1O1b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:27:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A752222AEC;
+        Mon, 28 Dec 2020 14:26:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162347;
-        bh=STAq70HSzh8ys+q9xjgGIxuRu4mhl50ONMQngQZxmzE=;
+        s=korg; t=1609165611;
+        bh=9AZ72TUaEtN1g9J+gej0QigPOa+ue3PhmJuS5YWN/vY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oemhUp9Gyrj6uz8RhdBuJ5t/PNEODEqHKGDKrmp2MBto4d9qz4Vqhi5iDvPs2qe08
-         zn50YhKtLJllT6YRXAa0pxPXTHdsHHMmDiT2YREtG12z1PIaJ12K7uFN+Ce5Ygrcv9
-         Ylzb+BIYrFqOwjxymC28HLdRDymj7v57otC9Ptkg=
+        b=Su/OYkt0J2Q43hTalk48wxxN7MaxDgAFhjXWYpIV+fBux8kXdOKSVvImNQyCI/CDz
+         Z+1ujltsFxjG6n5Ly1XTT7pnAQ1CY4eU7CtwIvz49v+ztsjpBFI8NdyVuSnM4L4mWS
+         DdXvWFAGv8vQw3rG2FZwUmTd0sR7q/daQE1FtBns=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Chiu <chiu@endlessos.org>,
-        Jian-Hong Pan <jhp@endlessos.org>, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.19 272/346] ALSA: hda/realtek - Enable headset mic of ASUS X430UN with ALC256
+        stable@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Andreas Dilger <adilger@dilger.ca>, stable@kernel.org,
+        Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 5.10 593/717] ext4: dont remount read-only with errors=continue on reboot
 Date:   Mon, 28 Dec 2020 13:49:51 +0100
-Message-Id: <20201228124932.921919619@linuxfoundation.org>
+Message-Id: <20201228125049.321922927@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,33 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Chiu <chiu@endlessos.org>
+From: Jan Kara <jack@suse.cz>
 
-commit 5cfca59604e423f720297e30a9dc493eea623493 upstream.
+commit b08070eca9e247f60ab39d79b2c25d274750441f upstream.
 
-The ASUS laptop X430UN with ALC256 can't detect the headset microphone
-until ALC256_FIXUP_ASUS_MIC_NO_PRESENCE quirk applied.
+ext4_handle_error() with errors=continue mount option can accidentally
+remount the filesystem read-only when the system is rebooting. Fix that.
 
-Signed-off-by: Chris Chiu <chiu@endlessos.org>
-Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201207072755.16210-1-chiu@endlessos.org
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: 1dc1097ff60e ("ext4: avoid panic during forced reboot")
+Signed-off-by: Jan Kara <jack@suse.cz>
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+Cc: stable@kernel.org
+Link: https://lore.kernel.org/r/20201127113405.26867-2-jack@suse.cz
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/patch_realtek.c |    1 +
- 1 file changed, 1 insertion(+)
+ fs/ext4/super.c |   14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -7084,6 +7084,7 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x1043, 0x10d0, "ASUS X540LA/X540LJ", ALC255_FIXUP_ASUS_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1043, 0x115d, "Asus 1015E", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x1043, 0x11c0, "ASUS X556UR", ALC255_FIXUP_ASUS_MIC_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1043, 0x1271, "ASUS X430UN", ALC256_FIXUP_ASUS_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1043, 0x1290, "ASUS X441SA", ALC233_FIXUP_EAPD_COEF_AND_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1043, 0x12a0, "ASUS X441UV", ALC233_FIXUP_EAPD_COEF_AND_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1043, 0x12f0, "ASUS X541UV", ALC256_FIXUP_ASUS_MIC),
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -666,19 +666,17 @@ static bool system_going_down(void)
+ 
+ static void ext4_handle_error(struct super_block *sb)
+ {
++	journal_t *journal = EXT4_SB(sb)->s_journal;
++
+ 	if (test_opt(sb, WARN_ON_ERROR))
+ 		WARN_ON_ONCE(1);
+ 
+-	if (sb_rdonly(sb))
++	if (sb_rdonly(sb) || test_opt(sb, ERRORS_CONT))
+ 		return;
+ 
+-	if (!test_opt(sb, ERRORS_CONT)) {
+-		journal_t *journal = EXT4_SB(sb)->s_journal;
+-
+-		ext4_set_mount_flag(sb, EXT4_MF_FS_ABORTED);
+-		if (journal)
+-			jbd2_journal_abort(journal, -EIO);
+-	}
++	ext4_set_mount_flag(sb, EXT4_MF_FS_ABORTED);
++	if (journal)
++		jbd2_journal_abort(journal, -EIO);
+ 	/*
+ 	 * We force ERRORS_RO behavior when system is rebooting. Otherwise we
+ 	 * could panic during 'reboot -f' as the underlying device got already
 
 
