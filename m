@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF91D2E67B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:28:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8663F2E661A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:10:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633555AbgL1Q2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:28:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34882 "EHLO mail.kernel.org"
+        id S2393508AbgL1QIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:08:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730785AbgL1NH0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:07:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BA80208B6;
-        Mon, 28 Dec 2020 13:07:10 +0000 (UTC)
+        id S2388176AbgL1NZM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:25:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 996FA229EF;
+        Mon, 28 Dec 2020 13:24:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160831;
-        bh=loO3fcbnZq6yWGDjrMScXV8PinQTGCawLfaIzEjZKRc=;
+        s=korg; t=1609161897;
+        bh=5bGTUm81ag/3S89yN7MpSFV2B8qeibKXJ+LYrlFFpEI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D0B34D6O71FmuUMb9luHkAx3dVwncALe0f7ftbopgzJQashAPq1XWiK6sS6sPiYFe
-         KftzII6HCqTRVapnehfV4gOOVBDkq5sxfAggQA+e8wKZpYG56Lqlo1rwaCq28JKfrn
-         g4GTSr3yqqzl4snDrbVcyDu07MNm34MFIjhRfFBs=
+        b=cZKCo7utfZTZnQ2nemeeET2hN8NKr40Zo4BzggYEIYscZMRioNKpJ20IMWvdMo0PK
+         VieoFRae2N3EFcTaO/sZW1WwIG5YPfvj7fVEQ7hzjmpRn7vfjaMjPU9fee8L4G1cAO
+         wM4FJ3VNq4k/vhw2Fi3PbmYF0g64zfE02SKp3cFg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Lukas Wunner <lukas@wunner.de>
-Subject: [PATCH 4.14 002/242] spi: bcm2835aux: Restore err assignment in bcm2835aux_spi_probe
-Date:   Mon, 28 Dec 2020 13:46:47 +0100
-Message-Id: <20201228124904.777640165@linuxfoundation.org>
+        stable@vger.kernel.org, Julian Sax <jsbc@gmx.de>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Jiri Kosina <jkosina@suse.cz>
+Subject: [PATCH 4.19 089/346] HID: i2c-hid: add Vero K147 to descriptor override
+Date:   Mon, 28 Dec 2020 13:46:48 +0100
+Message-Id: <20201228124924.106616942@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,55 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <natechancellor@gmail.com>
+From: Julian Sax <jsbc@gmx.de>
 
-[ Upstream commit d853b3406903a7dc5b14eb5bada3e8cd677f66a2 ]
+commit c870d50ce387d84b6438211a7044c60afbd5d60a upstream.
 
-Clang warns:
+This device uses the SIPODEV SP1064 touchpad, which does not
+supply descriptors, so it has to be added to the override list.
 
-drivers/spi/spi-bcm2835aux.c:532:50: warning: variable 'err' is
-uninitialized when used here [-Wuninitialized]
-                dev_err(&pdev->dev, "could not get clk: %d\n", err);
-                                                               ^~~
-./include/linux/dev_printk.h:112:32: note: expanded from macro 'dev_err'
-        _dev_err(dev, dev_fmt(fmt), ##__VA_ARGS__)
-                                      ^~~~~~~~~~~
-drivers/spi/spi-bcm2835aux.c:495:9: note: initialize the variable 'err'
-to silence this warning
-        int err;
-               ^
-                = 0
-1 warning generated.
-
-Restore the assignment so that the error value can be used in the
-dev_err statement and there is no uninitialized memory being leaked.
-
-Fixes: e13ee6cc4781 ("spi: bcm2835aux: Fix use-after-free on unbind")
-Link: https://github.com/ClangBuiltLinux/linux/issues/1199
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-Link: https://lore.kernel.org/r/20201113180701.455541-1-natechancellor@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
-[lukas: backport to 4.19-stable, add stable designation]
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Cc: <stable@vger.kernel.org> # v4.4+: e13ee6cc4781: spi: bcm2835aux: Fix use-after-free on unbind
-Cc: <stable@vger.kernel.org> # v4.4+
+Cc: stable@vger.kernel.org
+Signed-off-by: Julian Sax <jsbc@gmx.de>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/spi/spi-bcm2835aux.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/spi/spi-bcm2835aux.c
-+++ b/drivers/spi/spi-bcm2835aux.c
-@@ -444,8 +444,9 @@ static int bcm2835aux_spi_probe(struct p
+---
+ drivers/hid/i2c-hid/i2c-hid-dmi-quirks.c |    8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+--- a/drivers/hid/i2c-hid/i2c-hid-dmi-quirks.c
++++ b/drivers/hid/i2c-hid/i2c-hid-dmi-quirks.c
+@@ -397,6 +397,14 @@ static const struct dmi_system_id i2c_hi
+ 		},
+ 		.driver_data = (void *)&sipodev_desc
+ 	},
++	{
++		.ident = "Vero K147",
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "VERO"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "K147"),
++		},
++		.driver_data = (void *)&sipodev_desc
++	},
+ 	{ }	/* Terminate list */
+ };
  
- 	bs->clk = devm_clk_get(&pdev->dev, NULL);
- 	if ((!bs->clk) || (IS_ERR(bs->clk))) {
-+		err = PTR_ERR(bs->clk);
- 		dev_err(&pdev->dev, "could not get clk: %d\n", err);
--		return PTR_ERR(bs->clk);
-+		return err;
- 	}
- 
- 	bs->irq = platform_get_irq(pdev, 0);
 
 
