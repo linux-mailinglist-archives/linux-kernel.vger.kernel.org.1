@@ -2,38 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B70A2E37E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:04:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 467252E3FE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:46:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730055AbgL1NCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:02:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58042 "EHLO mail.kernel.org"
+        id S2408009AbgL1Opp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:45:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730035AbgL1NCR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:02:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F7EB22583;
-        Mon, 28 Dec 2020 13:02:01 +0000 (UTC)
+        id S1730132AbgL1OYY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:24:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C17D6206D4;
+        Mon, 28 Dec 2020 14:24:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160522;
-        bh=YWnU8QvDzIhKr4Qb2qPC6Jms2L0PaIX72e89p6sK0eA=;
+        s=korg; t=1609165449;
+        bh=mUtCs0MCTTK9O+rzbXF+dLhzq+gEwN4e6MqoQwPhUwA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VZezcrRAeoGa+I5k2oYlaHHu7vFhLcJRipqEilKkuelV/dh5X32A44juPhgwwoVs/
-         7yyEYtrSkM9m5xidbo4AHknA753dr0HSfxXyHRJWqzLkBGGyBJIeujzUbFFVs0qj+c
-         fDrUesBWpmekYU9v9guhvYJjp7F3LO8zCwqgvD3g=
+        b=Ki3TSxhkEc2x0OHiu94p6Yjhhigto+LUQ740hiyGk8iPIoMinn7DRTcNkH1BBA0pv
+         noFzevsLm+4LuRyaMd8OhB3Oq2G4xaVeQ1b+rP3ik/gPnbOQllmb1lsVOxnYqJl/2h
+         TRloB1IDVnVK8DVH3uouocIJozinvg/SdVeJr0Do=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Cristian Birsan <cristian.birsan@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 079/175] ARM: dts: at91: sama5d3_xplained: add pincontrol for USB Host
-Date:   Mon, 28 Dec 2020 13:48:52 +0100
-Message-Id: <20201228124857.061505086@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.10 535/717] ALSA: hda: Fix regressions on clear and reconfig sysfs
+Date:   Mon, 28 Dec 2020 13:48:53 +0100
+Message-Id: <20201228125046.604257626@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,51 +38,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cristian Birsan <cristian.birsan@microchip.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit e1062fa7292f1e3744db0a487c4ac0109e09b03d ]
+commit 2506318e382c4c7daa77bdc48f80a0ee82804588 upstream.
 
-The pincontrol node is needed for USB Host since Linux v5.7-rc1. Without
-it the driver probes but VBus is not powered because of wrong pincontrol
-configuration.
+It seems that the HD-audio clear and reconfig sysfs don't work any
+longer after the recent driver core change.  There are multiple issues
+around that: the linked list corruption and the dead device handling.
+The former issue is fixed by another patch for the driver core itself,
+while the latter patch needs to be addressed in HD-audio side.
 
-Fixes: b7c2b61570798 ("ARM: at91: add Atmel's SAMA5D3 Xplained board")
-Signed-off-by: Cristian Birsan <cristian.birsan@microchip.com>
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Acked-by: Ludovic Desroches <ludovic.desroches@microchip.com>
-Link: https://lore.kernel.org/r/20201118120019.1257580-4-cristian.birsan@microchip.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This patch corresponds to the latter, it recovers those broken
+functions by replacing the device detach and attach actions with the
+standard core API functions, which are almost equivalent with unbind
+and bind actions.
+
+Fixes: 654888327e9f ("driver core: Avoid binding drivers to dead devices")
+Cc: <stable@vger.kernel.org>
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=209207
+Link: https://lore.kernel.org/r/20201209150119.7705-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- arch/arm/boot/dts/at91-sama5d3_xplained.dts | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/pci/hda/hda_codec.c |    2 +-
+ sound/pci/hda/hda_sysfs.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/at91-sama5d3_xplained.dts b/arch/arm/boot/dts/at91-sama5d3_xplained.dts
-index 5a53fcf542abb..07133c5ad2944 100644
---- a/arch/arm/boot/dts/at91-sama5d3_xplained.dts
-+++ b/arch/arm/boot/dts/at91-sama5d3_xplained.dts
-@@ -231,6 +231,11 @@
- 						atmel,pins =
- 							<AT91_PIOE 9 AT91_PERIPH_GPIO AT91_PINCTRL_DEGLITCH>;	/* PE9, conflicts with A9 */
- 					};
-+					pinctrl_usb_default: usb_default {
-+						atmel,pins =
-+							<AT91_PIOE 3 AT91_PERIPH_GPIO AT91_PINCTRL_NONE
-+							 AT91_PIOE 4 AT91_PERIPH_GPIO AT91_PINCTRL_NONE>;
-+					};
- 				};
- 			};
- 		};
-@@ -288,6 +293,8 @@
- 					   &pioE 3 GPIO_ACTIVE_LOW
- 					   &pioE 4 GPIO_ACTIVE_LOW
- 					  >;
-+			pinctrl-names = "default";
-+			pinctrl-0 = <&pinctrl_usb_default>;
- 			status = "okay";
- 		};
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -1803,7 +1803,7 @@ int snd_hda_codec_reset(struct hda_codec
+ 		return -EBUSY;
  
--- 
-2.27.0
-
+ 	/* OK, let it free */
+-	snd_hdac_device_unregister(&codec->core);
++	device_release_driver(hda_codec_dev(codec));
+ 
+ 	/* allow device access again */
+ 	snd_hda_unlock_devices(bus);
+--- a/sound/pci/hda/hda_sysfs.c
++++ b/sound/pci/hda/hda_sysfs.c
+@@ -139,7 +139,7 @@ static int reconfig_codec(struct hda_cod
+ 			   "The codec is being used, can't reconfigure.\n");
+ 		goto error;
+ 	}
+-	err = snd_hda_codec_configure(codec);
++	err = device_reprobe(hda_codec_dev(codec));
+ 	if (err < 0)
+ 		goto error;
+ 	err = snd_card_register(codec->card);
 
 
