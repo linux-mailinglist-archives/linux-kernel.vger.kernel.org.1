@@ -2,124 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6AD72E34A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 08:09:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E4D82E34AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 08:17:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726340AbgL1HBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 02:01:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48044 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726242AbgL1HBQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 02:01:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 75015221F0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 07:00:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609138835;
-        bh=bSXg7RHm7u3Znyw1k3FKLph//gAChgLwpvW706SNkQk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=mujrZ4E8fsQE7rQf+NJWYMBhB0JrZAJpcvJT7XkSALJgnPfO3y/oytFww0Qq4hCIE
-         uVfCMSldF1iknEWogQBOkEKrVjY4N3jTZBzHrR9odao6cKN0uSwtkgGuQYJXtZHtA3
-         HBwHXcdz8yj2Cw16INwnpR97Lbgbzbg+YTswTFN8P2Bdas/iv4hJKZCsULOVnt0QXQ
-         g31sYBiO8FZtGBymVLpgAvn7OgC1qW7T5gOECo33gHEaS/nH0QtnPZPXrw1nDxTtn7
-         BhP5pebWpa9J+EoZKF6b5foeKwi+dZhrgLgLJGDq4lqJGTJlZ9qyBbNemGXa5e5Hbc
-         /D4A+umCU+uaw==
-Received: by mail-oi1-f174.google.com with SMTP id 9so10691250oiq.3
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 23:00:35 -0800 (PST)
-X-Gm-Message-State: AOAM531lycO+H9G74gNL8bqMoa6a03OzONvS5aEEJ8vtljmAR0Nfv+NT
-        rfrkuBCM6Y0DbkgGfHHYYc9C8325np09Ou6a+Xo=
-X-Google-Smtp-Source: ABdhPJy19H8ee/BWya0jA1dYcrbEw7gnzfamcai0Ywm13COPmfE6738raifgksUZ1VzDbgv2pXel29FZjTMQsyz/Fyw=
-X-Received: by 2002:aca:e103:: with SMTP id y3mr10679587oig.11.1609138834791;
- Sun, 27 Dec 2020 23:00:34 -0800 (PST)
-MIME-Version: 1.0
-References: <20201225114458.1334-1-thunder.leizhen@huawei.com>
-In-Reply-To: <20201225114458.1334-1-thunder.leizhen@huawei.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 28 Dec 2020 08:00:00 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1-zTyd9WoWxaqZ3s1ye44t1CUuZaU0a5w9bE+krk2cBA@mail.gmail.com>
-Message-ID: <CAK8P3a1-zTyd9WoWxaqZ3s1ye44t1CUuZaU0a5w9bE+krk2cBA@mail.gmail.com>
-Subject: Re: [PATCH 1/1] ARM: LPAE: use phys_addr_t instead of unsigned long
- in outercache hooks
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Russell King <rmk+kernel@arm.linux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+        id S1726361AbgL1HP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 02:15:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726200AbgL1HP2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 02:15:28 -0500
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 990ABC061794
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 23:14:47 -0800 (PST)
+Received: by mail-qv1-xf4a.google.com with SMTP id i20so8547267qvk.18
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Dec 2020 23:14:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:cc;
+        bh=+w8BZ65tjlpdxVh8d2na0pdcvFUUAjnRCf3t4vTPoxA=;
+        b=v05ZhOmzB4jgkv9Mp/LjpdSAk/+B/kUwqpY5Mw+l4+0XqMVdbQo7J9aS0jB+KcWCPB
+         jrA8bunL1xLLcX0S3vx5bQm6xfCHypGU7RYR3eBexx/7SMsChZi5VbXyqKa2oNsilyP9
+         k5EJM/tw4224icKTaKeMNr7mpQLf0NINzBsp26WszuKNtVwObKqXQxvFJmO0Ae3E2Woh
+         VUUs5tyn14tsCtVuzumJb/UDR+c8hYhQb6UWOeXRiajt//70S1kzj1s42wlj6ih3istd
+         5UDYU9e3j6L5l1Yh3yYEm5VaNZJfS/lsBwE1DhT0XNhOamXU0Jyo4t05PbdyHAtbqAGM
+         Y5kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :cc;
+        bh=+w8BZ65tjlpdxVh8d2na0pdcvFUUAjnRCf3t4vTPoxA=;
+        b=ilEjFwTQeMNOH4P0twGqbZ/LNqL86maFsk/15m5bht+X066EEtbWihAO9gXcpmKKvh
+         +cWIV3kZm+6QzS/QlSFR6tzXgvUAaxRCdWRUg3C+7FxswC/v4HCPe4h6PqsWqMLqFu7D
+         0L5zDlCgdZPUwiTxssa8y7OzBkdi9aPwGpIgKois5VNczk+/8E7k0pNE8fxcR3sVe9Yu
+         5og2QZnoQgJy2ybux9IuR7rqqJVLHZJPVnwG1Kpm5ghGevlgDStv8PxnaJBM6nmqB+oh
+         N+p3EykaQsvo+mix4PfODkbJuA2CyNC353JpMe7IivxcCSE4YgEJl5EJ+sud5cpcOcDF
+         p00g==
+X-Gm-Message-State: AOAM532YBsT2EI1VzzrcdE/uYRNbWYzc+1GkCeoeM/FwMKU/eyWBhhoe
+        oO43nKy2woJAQqxE4UFEmvQbf0YtyEz48Q==
+X-Google-Smtp-Source: ABdhPJwYhYXH7IdJV7dMiy+2k7Wa6r+n6ZiCaXAaglrarLLDjIRb1AN6v/I7xiaOhU5MdtB2k6dgZbDAGEARfg==
+Sender: "akailash via sendgmr" <akailash@akailash.c.googlers.com>
+X-Received: from akailash.c.googlers.com ([fda3:e722:ac3:10:7f:e700:c0a8:1e6])
+ (user=akailash job=sendgmr) by 2002:a05:6214:1754:: with SMTP id
+ dc20mr45736851qvb.7.1609139686600; Sun, 27 Dec 2020 23:14:46 -0800 (PST)
+Date:   Mon, 28 Dec 2020 07:14:07 +0000
+Message-Id: <ecb35731d19b41984dd7157d48661f5297a1b668.1609119545.git.akailash@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
+Subject: [PATCH] dm-snapshot: Flush merged data before committing metadata
+From:   Akilesh Kailash <akailash@google.com>
+Cc:     akailash@google.com, dvander@google.com, kernel-team@android.com,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 25, 2020 at 12:48 PM Zhen Lei <thunder.leizhen@huawei.com> wrote:
->
-> The outercache of some Hisilicon SOCs support physical addresses wider
-> than 32-bits. The unsigned long datatype is not sufficient for mapping
-> physical addresses >= 4GB. The commit ad6b9c9d78b9 ("ARM: 6671/1: LPAE:
-> use phys_addr_t instead of unsigned long in outercache functions") has
-> already modified the outercache functions. But the parameters of the
-> outercache hooks are not changed. This patch use phys_addr_t instead of
-> unsigned long in outercache hooks: inv_range, clean_range, flush_range.
->
-> To ensure the outercache that does not support LPAE works properly, do
-> cast phys_addr_t to unsigned long by adding a middle-tier function.
-> For example:
-> -static void l2c220_inv_range(unsigned long start, unsigned long end)
-> +static void __l2c220_inv_range(unsigned long start, unsigned long end)
->  {
->         ...
->  }
-> +static void l2c220_inv_range(phys_addr_t start, phys_addr_t end)
-> +{
-> +  __l2c220_inv_range(start, end);
-> +}
->
-> Note that the outercache functions have been doing this cast before this
-> patch. So now, the cast is just moved to the middle-tier function.
->
-> No functional change.
->
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+If the origin device has a volatile write-back
+cache and the following events occur:
 
-This looks reasonable in principle, but it would be helpful to
-understand better which SoCs are affected. In which way is
-this specific to Hisilicon implementations, and why would others
-not need this?
+1: After finishing merge operation of one set of exceptions,
+   merge_callback() is invoked.
+2: Update the metadata in COW device tracking the merge completion.
+   This update to COW device is flushed cleanly.
+3: System crashes and the origin device's cache where the recent
+   merge was completed has not been flushed.
 
-Wouldn't this also be needed by an Armada XP that supports
-more than 4GB of RAM but has an outer cache?
+During the next cycle when we read the metadata from the COW device,
+we will skip reading those metadata whose merge was completed in
+step (1). This will lead to data loss/corruption.
 
-I suppose those SoCs using off-the-shelf Arm cores are either
-pre-LPAE and cannot address memory above 4GB, or they do
-not need the outer_cache interfaces.
+To address this, flush the origin device post merge IO before
+updating the metadata.
 
-> diff --git a/arch/arm/mm/cache-feroceon-l2.c b/arch/arm/mm/cache-feroceon-l2.c
-> index 5c1b7a7b9af6300..ab1d8051bf832c9 100644
-> --- a/arch/arm/mm/cache-feroceon-l2.c
-> +++ b/arch/arm/mm/cache-feroceon-l2.c
-> @@ -168,7 +168,7 @@ static unsigned long calc_range_end(unsigned long start, unsigned long end)
->         return range_end;
->  }
->
-> -static void feroceon_l2_inv_range(unsigned long start, unsigned long end)
-> +static void __feroceon_l2_inv_range(unsigned long start, unsigned long end)
->  {
->         /*
->          * Clean and invalidate partial first cache line.
-> @@ -198,7 +198,12 @@ static void feroceon_l2_inv_range(unsigned long start, unsigned long end)
->         dsb();
->  }
->
-> -static void feroceon_l2_clean_range(unsigned long start, unsigned long end)
-> +static void feroceon_l2_inv_range(phys_addr_t start, phys_addr_t end)
-> +{
-> +       __feroceon_l2_inv_range(start, end);
-> +}
-> +
+Signed-off-by: Akilesh Kailash <akailash@google.com>
+---
+ drivers/md/dm-snap.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-What is this indirection for? It looks like you do this for all implementations,
-so the actual address gets truncated here.
+diff --git a/drivers/md/dm-snap.c b/drivers/md/dm-snap.c
+index 4668b2cd98f4..11890db71f3f 100644
+--- a/drivers/md/dm-snap.c
++++ b/drivers/md/dm-snap.c
+@@ -141,6 +141,11 @@ struct dm_snapshot {
+ 	 * for them to be committed.
+ 	 */
+ 	struct bio_list bios_queued_during_merge;
++
++	/*
++	 * Flush data after merge.
++	 */
++	struct bio flush_bio;
+ };
+ 
+ /*
+@@ -1121,6 +1126,17 @@ static void snapshot_merge_next_chunks(struct dm_snapshot *s)
+ 
+ static void error_bios(struct bio *bio);
+ 
++static int flush_data(struct dm_snapshot *s)
++{
++	struct bio *flush_bio = &s->flush_bio;
++
++	bio_reset(flush_bio);
++	bio_set_dev(flush_bio, s->origin->bdev);
++	flush_bio->bi_opf = REQ_OP_WRITE | REQ_PREFLUSH;
++
++	return submit_bio_wait(flush_bio);
++}
++
+ static void merge_callback(int read_err, unsigned long write_err, void *context)
+ {
+ 	struct dm_snapshot *s = context;
+@@ -1134,6 +1150,11 @@ static void merge_callback(int read_err, unsigned long write_err, void *context)
+ 		goto shut;
+ 	}
+ 
++	if (flush_data(s) < 0) {
++		DMERR("Flush after merge failed: shutting down merge");
++		goto shut;
++	}
++
+ 	if (s->store->type->commit_merge(s->store,
+ 					 s->num_merging_chunks) < 0) {
+ 		DMERR("Write error in exception store: shutting down merge");
+@@ -1318,6 +1339,7 @@ static int snapshot_ctr(struct dm_target *ti, unsigned int argc, char **argv)
+ 	s->first_merging_chunk = 0;
+ 	s->num_merging_chunks = 0;
+ 	bio_list_init(&s->bios_queued_during_merge);
++	bio_init(&s->flush_bio, NULL, 0);
+ 
+ 	/* Allocate hash table for COW data */
+ 	if (init_hash_tables(s)) {
+@@ -1504,6 +1526,8 @@ static void snapshot_dtr(struct dm_target *ti)
+ 
+ 	dm_exception_store_destroy(s->store);
+ 
++	bio_uninit(&s->flush_bio);
++
+ 	dm_put_device(ti, s->cow);
+ 
+ 	dm_put_device(ti, s->origin);
+-- 
+2.29.2.729.g45daf8777d-goog
 
-       Arnd
