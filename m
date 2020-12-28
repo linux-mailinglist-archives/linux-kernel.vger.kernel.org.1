@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A7772E3904
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:19:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD8CD2E3F89
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:42:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731632AbgL1NRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:17:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45890 "EHLO mail.kernel.org"
+        id S2506124AbgL1Olg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:41:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731571AbgL1NRb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:17:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7469322AAD;
-        Mon, 28 Dec 2020 13:16:50 +0000 (UTC)
+        id S2502448AbgL1O2b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:28:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 771CC20715;
+        Mon, 28 Dec 2020 14:27:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161411;
-        bh=6H5pjMjHihSttCdD9uwYDZanw03bglRNU90wlsoq1jY=;
+        s=korg; t=1609165671;
+        bh=gUQzAdPCX55oMJ9NUDZLCAt00yC3cJNBAcYgtNs8HK8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sj1nO9C9I6pjLtbKm7F6dISnhHeTOHkQkjq/w1hkFn5anYMvt4N8BKFhj+FZfWZ+n
-         txnNBHKzSkghHOqIJDkN/Xk0SMQlxtrMLtURRzCuLKmTd5Ny3KmlDX4C1lw/MwqUzv
-         3nPIiQoF1SZzaY4hWpvjOvNyANiI2nfDPWPg1AN4=
+        b=HXborXoh9y6WYXE36XafFvxafh+Qw2u9HJljhWIzvNKEtg6gTKYMGcgw/Z0pwMaBd
+         +9hvr/U31cxiwZB1BlQ+GPBodJ3yhIyO9XAJUiRlKKcC6coQsCrN6hqJ55T165UL06
+         d/ZB6RrzXno4gIMyA0AsLLT7P5PYwsizh1SGmoFg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 175/242] clk: s2mps11: Fix a resource leak in error handling paths in the probe function
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.10 582/717] USB: serial: keyspan_pda: fix write deadlock
 Date:   Mon, 28 Dec 2020 13:49:40 +0100
-Message-Id: <20201228124913.317558443@linuxfoundation.org>
+Message-Id: <20201228125048.802622732@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,40 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Johan Hovold <johan@kernel.org>
 
-[ Upstream commit d2d94fc567624f96187e8b52083795620f93e69f ]
+commit 7353cad7ee4deaefc16e94727e69285563e219f6 upstream.
 
-Some resource should be released in the error handling path of the probe
-function, as already done in the remove function.
+The write() callback can be called in interrupt context (e.g. when used
+as a console) so interrupts must be disabled while holding the port lock
+to prevent a possible deadlock.
 
-The remove function was fixed in commit bf416bd45738 ("clk: s2mps11: Add
-missing of_node_put and of_clk_del_provider")
+Fixes: e81ee637e4ae ("usb-serial: possible irq lock inversion (PPP vs. usb/serial)")
+Fixes: 507ca9bc0476 ("[PATCH] USB: add ability for usb-serial drivers to determine if their write urb is currently being used.")
+Cc: stable <stable@vger.kernel.org>     # 2.6.19
+Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Fixes: 7cc560dea415 ("clk: s2mps11: Add support for s2mps11")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/20201212122818.86195-1-christophe.jaillet@wanadoo.fr
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/clk-s2mps11.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/serial/keyspan_pda.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/clk/clk-s2mps11.c b/drivers/clk/clk-s2mps11.c
-index f5d74e8db4327..1803af6230b27 100644
---- a/drivers/clk/clk-s2mps11.c
-+++ b/drivers/clk/clk-s2mps11.c
-@@ -211,6 +211,7 @@ static int s2mps11_clk_probe(struct platform_device *pdev)
- 	return ret;
+--- a/drivers/usb/serial/keyspan_pda.c
++++ b/drivers/usb/serial/keyspan_pda.c
+@@ -443,6 +443,7 @@ static int keyspan_pda_write(struct tty_
+ 	int request_unthrottle = 0;
+ 	int rc = 0;
+ 	struct keyspan_pda_private *priv;
++	unsigned long flags;
  
- err_reg:
-+	of_node_put(s2mps11_clks[0].clk_np);
- 	while (--i >= 0)
- 		clkdev_drop(s2mps11_clks[i].lookup);
+ 	priv = usb_get_serial_port_data(port);
+ 	/* guess how much room is left in the device's ring buffer, and if we
+@@ -462,13 +463,13 @@ static int keyspan_pda_write(struct tty_
+ 	   the TX urb is in-flight (wait until it completes)
+ 	   the device is full (wait until it says there is room)
+ 	*/
+-	spin_lock_bh(&port->lock);
++	spin_lock_irqsave(&port->lock, flags);
+ 	if (!test_bit(0, &port->write_urbs_free) || priv->tx_throttled) {
+-		spin_unlock_bh(&port->lock);
++		spin_unlock_irqrestore(&port->lock, flags);
+ 		return 0;
+ 	}
+ 	clear_bit(0, &port->write_urbs_free);
+-	spin_unlock_bh(&port->lock);
++	spin_unlock_irqrestore(&port->lock, flags);
  
--- 
-2.27.0
-
+ 	/* At this point the URB is in our control, nobody else can submit it
+ 	   again (the only sudden transition was the one from EINPROGRESS to
 
 
