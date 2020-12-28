@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97EBA2E3B10
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:46:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFEDE2E396F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:25:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404840AbgL1NpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:45:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46016 "EHLO mail.kernel.org"
+        id S2388536AbgL1NXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:23:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404818AbgL1NpP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:45:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AF172064B;
-        Mon, 28 Dec 2020 13:44:34 +0000 (UTC)
+        id S1732941AbgL1NXg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:23:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 47FFC207CF;
+        Mon, 28 Dec 2020 13:22:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163075;
-        bh=nxCszQ/aXyTvDe3xf/Pz//V2TQyfD+hlBVUEGLZBiwg=;
+        s=korg; t=1609161775;
+        bh=E/Z9LZvYqn6ru0ZTP8p5p0hAmmDNU8np5PX/xj12fY4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1C4SOFJstG/oPFsi075xA5QimmYEQ3ql52KhWJ9mpgRNOOYYKHAulNvFOcwZId/O3
-         vUh8FsjxjA93LTCdtkG43E7l/VI9vqOjOU+rBzkFxaWjYGr9YF6gz37YASbSgOgyFD
-         fA+VNbPtMpW8KOUtjZa58DifX6ICnegCvn7qS+Yc=
+        b=FHG9nTYcCND2uUwcW9c1NQoYsoSjV4GNxFI3BiHiK7v+2UGkAO44rF/f5VEzfE3RE
+         NsyUc2akEua0+denqVHnCgqp98yi4Z2jM5nImp+qs73VwH4Z0XpfMCn1U1TI23adsZ
+         3N+spaPtkxRiBHjKS1o4wWNtTvZWgEtkcv6NcFUA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 160/453] memstick: fix a double-free bug in memstick_check
+        stable@vger.kernel.org, Nicolin Chen <nicoleotsuka@gmail.com>,
+        Thierry Reding <treding@nvidia.com>
+Subject: [PATCH 4.19 077/346] soc/tegra: fuse: Fix index bug in get_process_id
 Date:   Mon, 28 Dec 2020 13:46:36 +0100
-Message-Id: <20201228124944.907642084@linuxfoundation.org>
+Message-Id: <20201228124923.519471255@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qinglang Miao <miaoqinglang@huawei.com>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
 
-[ Upstream commit e3e9ced5c93803d5b2ea1942c4bf0192622531d6 ]
+commit b9ce9b0f83b536a4ac7de7567a265d28d13e5bea upstream.
 
-kfree(host->card) has been called in put_device so that
-another kfree would raise cause a double-free bug.
+This patch simply fixes a bug of referencing speedos[num] in every
+for-loop iteration in get_process_id function.
 
-Fixes: 0193383a5833 ("memstick: core: fix device_register() error handling")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-Link: https://lore.kernel.org/r/20201120074846.31322-1-miaoqinglang@huawei.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 0dc5a0d83675 ("soc/tegra: fuse: Add Tegra210 support")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/memstick/core/memstick.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/soc/tegra/fuse/speedo-tegra210.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/memstick/core/memstick.c b/drivers/memstick/core/memstick.c
-index ef03d6fafc5ce..12bc3f5a6cbbd 100644
---- a/drivers/memstick/core/memstick.c
-+++ b/drivers/memstick/core/memstick.c
-@@ -468,7 +468,6 @@ static void memstick_check(struct work_struct *work)
- 			host->card = card;
- 			if (device_register(&card->dev)) {
- 				put_device(&card->dev);
--				kfree(host->card);
- 				host->card = NULL;
- 			}
- 		} else
--- 
-2.27.0
-
+--- a/drivers/soc/tegra/fuse/speedo-tegra210.c
++++ b/drivers/soc/tegra/fuse/speedo-tegra210.c
+@@ -105,7 +105,7 @@ static int get_process_id(int value, con
+ 	unsigned int i;
+ 
+ 	for (i = 0; i < num; i++)
+-		if (value < speedos[num])
++		if (value < speedos[i])
+ 			return i;
+ 
+ 	return -EINVAL;
 
 
