@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E55932E6772
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:25:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC65C2E68B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:40:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441035AbgL1QYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:24:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37920 "EHLO mail.kernel.org"
+        id S1729326AbgL1M7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:59:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731296AbgL1NKI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:10:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 203EF22B3A;
-        Mon, 28 Dec 2020 13:09:26 +0000 (UTC)
+        id S1728898AbgL1M7l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:59:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 958EE22AAA;
+        Mon, 28 Dec 2020 12:59:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160967;
-        bh=1DKUcyuuGjk0ZLK2zckVHV4YP3EywcRPMhynTZVpuFY=;
+        s=korg; t=1609160365;
+        bh=FwRUHDdPGtpKSW/WBJ6ArrHLmmHoqdAXZgw0/96+PxY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZRVtBS5ZR5VESzxGlKp+v4tGa08pPqac+9Vp9SVAqusk8o8lj+TvEV51TwRVOKZse
-         2lLy9GtknlT1MBw6MxajcVHMOf0/6/6dptv9NaF6GfICziGdnsq7NMY0dwcAv/jIof
-         YRCgo6YXsOVznFT7+/OzXgyjezOz5Uvw307uyQEA=
+        b=0nSiA2KcZ2o/QwmISzbJdpIUttQGYgDfIhFynjqmUbo+e8Tmzc6kFtaHIspzxLdZ0
+         FHgEskAAVfHUDoiEsChRcM2mhLIp8tviZ2z2Wkt6Wm5IN97AB5KM3u+GdHQ1ciQRIP
+         W0844zV8Qw/2HlNueygOWDZivZR9qzsogaOZDm3s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Gabriel Ribba Esteva <gabriel.ribbae@gmail.com>
-Subject: [PATCH 4.14 056/242] ARM: dts: exynos: fix USB 3.0 VBUS control and over-current pins on Exynos5410
-Date:   Mon, 28 Dec 2020 13:47:41 +0100
-Message-Id: <20201228124907.438782268@linuxfoundation.org>
+        stable@vger.kernel.org, Coiby Xu <coiby.xu@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH 4.9 009/175] pinctrl: amd: remove debounce filter setting in IRQ type setting
+Date:   Mon, 28 Dec 2020 13:47:42 +0100
+Message-Id: <20201228124853.700206948@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,89 +42,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Coiby Xu <coiby.xu@gmail.com>
 
-commit 3d992fd8f4e0f09c980726308d2f2725587b32d6 upstream.
+commit 47a0001436352c9853d72bf2071e85b316d688a2 upstream.
 
-The VBUS control (PWREN) and over-current pins of USB 3.0 DWC3
-controllers are on Exynos5410 regular GPIOs.  This is different than for
-example on Exynos5422 where these are special ETC pins with proper reset
-values (pulls, functions).
+Debounce filter setting should be independent from IRQ type setting
+because according to the ACPI specs, there are separate arguments for
+specifying debounce timeout and IRQ type in GpioIo() and GpioInt().
 
-Therefore these pins should be configured to enable proper USB 3.0
-peripheral and host modes.  This also fixes over-current warning:
+Together with commit 06abe8291bc31839950f7d0362d9979edc88a666
+("pinctrl: amd: fix incorrect way to disable debounce filter") and
+Andy's patch "gpiolib: acpi: Take into account debounce settings" [1],
+this will fix broken touchpads for laptops whose BIOS set the
+debounce timeout to a relatively large value. For example, the BIOS
+of Lenovo AMD gaming laptops including Legion-5 15ARH05 (R7000),
+Legion-5P (R7000P) and IdeaPad Gaming 3 15ARH05, set the debounce
+timeout to 124.8ms. This led to the kernel receiving only ~7 HID
+reports per second from the Synaptics touchpad
+(MSFT0001:00 06CB:7F28).
 
-    [    6.024658] usb usb4-port1: over-current condition
-    [    6.028271] usb usb3-port1: over-current condition
+Existing touchpads like [2][3] are not troubled by this bug because
+the debounce timeout has been set to 0 by the BIOS before enabling
+the debounce filter in setting IRQ type.
 
-Fixes: cb0896562228 ("ARM: dts: exynos: Add USB to Exynos5410")
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201015182044.480562-2-krzk@kernel.org
-Tested-by: Gabriel Ribba Esteva <gabriel.ribbae@gmail.com>
+[1] https://lore.kernel.org/linux-gpio/20201111222008.39993-11-andriy.shevchenko@linux.intel.com/
+    8dcb7a15a585 ("gpiolib: acpi: Take into account debounce settings")
+[2] https://github.com/Syniurge/i2c-amd-mp2/issues/11#issuecomment-721331582
+[3] https://forum.manjaro.org/t/random-short-touchpad-freezes/30832/28
+
+Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Hans de Goede <hdegoede@redhat.com>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/linux-gpio/CAHp75VcwiGREBUJ0A06EEw-SyabqYsp%2Bdqs2DpSrhaY-2GVdAA%40mail.gmail.com/
+BugLink: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1887190
+Link: https://lore.kernel.org/r/20201125130320.311059-1-coiby.xu@gmail.com
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm/boot/dts/exynos5410-pinctrl.dtsi |   28 ++++++++++++++++++++++++++++
- arch/arm/boot/dts/exynos5410.dtsi         |    4 ++++
- 2 files changed, 32 insertions(+)
+ drivers/pinctrl/pinctrl-amd.c |    7 -------
+ 1 file changed, 7 deletions(-)
 
---- a/arch/arm/boot/dts/exynos5410-pinctrl.dtsi
-+++ b/arch/arm/boot/dts/exynos5410-pinctrl.dtsi
-@@ -563,6 +563,34 @@
- 		interrupt-controller;
- 		#interrupt-cells = <2>;
- 	};
-+
-+	usb3_1_oc: usb3-1-oc {
-+		samsung,pins = "gpk2-4", "gpk2-5";
-+		samsung,pin-function = <EXYNOS_PIN_FUNC_2>;
-+		samsung,pin-pud = <EXYNOS_PIN_PULL_UP>;
-+		samsung,pin-drv = <EXYNOS5420_PIN_DRV_LV1>;
-+	};
-+
-+	usb3_1_vbusctrl: usb3-1-vbusctrl {
-+		samsung,pins = "gpk2-6", "gpk2-7";
-+		samsung,pin-function = <EXYNOS_PIN_FUNC_2>;
-+		samsung,pin-pud = <EXYNOS_PIN_PULL_DOWN>;
-+		samsung,pin-drv = <EXYNOS5420_PIN_DRV_LV1>;
-+	};
-+
-+	usb3_0_oc: usb3-0-oc {
-+		samsung,pins = "gpk3-0", "gpk3-1";
-+		samsung,pin-function = <EXYNOS_PIN_FUNC_2>;
-+		samsung,pin-pud = <EXYNOS_PIN_PULL_UP>;
-+		samsung,pin-drv = <EXYNOS5420_PIN_DRV_LV1>;
-+	};
-+
-+	usb3_0_vbusctrl: usb3-0-vbusctrl {
-+		samsung,pins = "gpk3-2", "gpk3-3";
-+		samsung,pin-function = <EXYNOS_PIN_FUNC_2>;
-+		samsung,pin-pud = <EXYNOS_PIN_PULL_DOWN>;
-+		samsung,pin-drv = <EXYNOS5420_PIN_DRV_LV1>;
-+	};
- };
+--- a/drivers/pinctrl/pinctrl-amd.c
++++ b/drivers/pinctrl/pinctrl-amd.c
+@@ -404,7 +404,6 @@ static int amd_gpio_irq_set_type(struct
+ 		pin_reg &= ~BIT(LEVEL_TRIG_OFF);
+ 		pin_reg &= ~(ACTIVE_LEVEL_MASK << ACTIVE_LEVEL_OFF);
+ 		pin_reg |= ACTIVE_HIGH << ACTIVE_LEVEL_OFF;
+-		pin_reg |= DB_TYPE_REMOVE_GLITCH << DB_CNTRL_OFF;
+ 		irq_set_handler_locked(d, handle_edge_irq);
+ 		break;
  
- &pinctrl_2 {
---- a/arch/arm/boot/dts/exynos5410.dtsi
-+++ b/arch/arm/boot/dts/exynos5410.dtsi
-@@ -381,6 +381,8 @@
- &usbdrd3_0 {
- 	clocks = <&clock CLK_USBD300>;
- 	clock-names = "usbdrd30";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&usb3_0_oc>, <&usb3_0_vbusctrl>;
- };
+@@ -412,7 +411,6 @@ static int amd_gpio_irq_set_type(struct
+ 		pin_reg &= ~BIT(LEVEL_TRIG_OFF);
+ 		pin_reg &= ~(ACTIVE_LEVEL_MASK << ACTIVE_LEVEL_OFF);
+ 		pin_reg |= ACTIVE_LOW << ACTIVE_LEVEL_OFF;
+-		pin_reg |= DB_TYPE_REMOVE_GLITCH << DB_CNTRL_OFF;
+ 		irq_set_handler_locked(d, handle_edge_irq);
+ 		break;
  
- &usbdrd_phy0 {
-@@ -392,6 +394,8 @@
- &usbdrd3_1 {
- 	clocks = <&clock CLK_USBD301>;
- 	clock-names = "usbdrd30";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&usb3_1_oc>, <&usb3_1_vbusctrl>;
- };
+@@ -420,7 +418,6 @@ static int amd_gpio_irq_set_type(struct
+ 		pin_reg &= ~BIT(LEVEL_TRIG_OFF);
+ 		pin_reg &= ~(ACTIVE_LEVEL_MASK << ACTIVE_LEVEL_OFF);
+ 		pin_reg |= BOTH_EADGE << ACTIVE_LEVEL_OFF;
+-		pin_reg |= DB_TYPE_REMOVE_GLITCH << DB_CNTRL_OFF;
+ 		irq_set_handler_locked(d, handle_edge_irq);
+ 		break;
  
- &usbdrd_dwc3_1 {
+@@ -428,8 +425,6 @@ static int amd_gpio_irq_set_type(struct
+ 		pin_reg |= LEVEL_TRIGGER << LEVEL_TRIG_OFF;
+ 		pin_reg &= ~(ACTIVE_LEVEL_MASK << ACTIVE_LEVEL_OFF);
+ 		pin_reg |= ACTIVE_HIGH << ACTIVE_LEVEL_OFF;
+-		pin_reg &= ~(DB_CNTRl_MASK << DB_CNTRL_OFF);
+-		pin_reg |= DB_TYPE_PRESERVE_LOW_GLITCH << DB_CNTRL_OFF;
+ 		irq_set_handler_locked(d, handle_level_irq);
+ 		break;
+ 
+@@ -437,8 +432,6 @@ static int amd_gpio_irq_set_type(struct
+ 		pin_reg |= LEVEL_TRIGGER << LEVEL_TRIG_OFF;
+ 		pin_reg &= ~(ACTIVE_LEVEL_MASK << ACTIVE_LEVEL_OFF);
+ 		pin_reg |= ACTIVE_LOW << ACTIVE_LEVEL_OFF;
+-		pin_reg &= ~(DB_CNTRl_MASK << DB_CNTRL_OFF);
+-		pin_reg |= DB_TYPE_PRESERVE_HIGH_GLITCH << DB_CNTRL_OFF;
+ 		irq_set_handler_locked(d, handle_level_irq);
+ 		break;
+ 
 
 
