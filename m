@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB3B2E3FAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:44:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CD482E3828
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:07:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506335AbgL1Omx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:42:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35058 "EHLO mail.kernel.org"
+        id S1729630AbgL1NGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:06:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33806 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502297AbgL1O12 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:27:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BFCCE22B47;
-        Mon, 28 Dec 2020 14:27:12 +0000 (UTC)
+        id S1729592AbgL1NF5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:05:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E721F22A84;
+        Mon, 28 Dec 2020 13:05:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165633;
-        bh=SMCuzkho3iONEHA+ypwyjYM27vyyE6C+l++XRAgkjs8=;
+        s=korg; t=1609160716;
+        bh=r9xCeAMs5iAVd1Tko00oM32AUvZdGbhJW/nO/a7uMbc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XQGJFesucOBxMnJQpF+i0K3Yt9cZ2hFpwwIO7iVdENVZ5tpd+OMi0I0V7kiil0gdO
-         p1LaqzGlEXc89n/CPXvHhcpX927l7TiJU3y70Pfb3Oex1XmqhnqfJrO8Ux+7wk/X4T
-         RkM415hnWqWrRoI3X1yuR2OSEfaQpJSIcNe9+l28=
+        b=PQlswl1pstoINSAHI67Ft712cJybMqQqRPr4oxIm4YkB43rD9i9jpK2rN9NGixY/O
+         chLORpgEjEL1t7GpJrR8t0/9v03HhrGdEnvCS+uPWtkUOqvf52DeV5Sr323v+DXGce
+         rUecUDrB419bVSSBIBSZ1ZPbV3alJOD+pWIN9rWQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>
-Subject: [PATCH 5.10 600/717] iommu/arm-smmu: Allow implementation specific write_s2cr
-Date:   Mon, 28 Dec 2020 13:49:58 +0100
-Message-Id: <20201228125049.652618236@linuxfoundation.org>
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.9 146/175] USB: serial: keyspan_pda: fix write deadlock
+Date:   Mon, 28 Dec 2020 13:49:59 +0100
+Message-Id: <20201228124900.327629405@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
+References: <20201228124853.216621466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,63 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
+From: Johan Hovold <johan@kernel.org>
 
-commit 56b75b51ed6d5e7bffda59440404409bca2dff00 upstream.
+commit 7353cad7ee4deaefc16e94727e69285563e219f6 upstream.
 
-The firmware found in some Qualcomm platforms intercepts writes to the
-S2CR register in order to replace the BYPASS type with FAULT. Further
-more it treats faults at this level as catastrophic and restarts the
-device.
+The write() callback can be called in interrupt context (e.g. when used
+as a console) so interrupts must be disabled while holding the port lock
+to prevent a possible deadlock.
 
-Add support for providing implementation specific versions of the S2CR
-write function, to allow the Qualcomm driver to work around this
-behavior.
-
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Tested-by: Steev Klimaszewski <steev@kali.org>
-Reviewed-by: Robin Murphy <robin.murphy@arm.com>
-Link: https://lore.kernel.org/r/20201019182323.3162386-2-bjorn.andersson@linaro.org
-Signed-off-by: Will Deacon <will@kernel.org>
+Fixes: e81ee637e4ae ("usb-serial: possible irq lock inversion (PPP vs. usb/serial)")
+Fixes: 507ca9bc0476 ("[PATCH] USB: add ability for usb-serial drivers to determine if their write urb is currently being used.")
+Cc: stable <stable@vger.kernel.org>     # 2.6.19
+Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/iommu/arm/arm-smmu/arm-smmu.c |   13 ++++++++++---
- drivers/iommu/arm/arm-smmu/arm-smmu.h |    1 +
- 2 files changed, 11 insertions(+), 3 deletions(-)
+ drivers/usb/serial/keyspan_pda.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-@@ -929,9 +929,16 @@ static void arm_smmu_write_smr(struct ar
- static void arm_smmu_write_s2cr(struct arm_smmu_device *smmu, int idx)
- {
- 	struct arm_smmu_s2cr *s2cr = smmu->s2crs + idx;
--	u32 reg = FIELD_PREP(ARM_SMMU_S2CR_TYPE, s2cr->type) |
--		  FIELD_PREP(ARM_SMMU_S2CR_CBNDX, s2cr->cbndx) |
--		  FIELD_PREP(ARM_SMMU_S2CR_PRIVCFG, s2cr->privcfg);
-+	u32 reg;
-+
-+	if (smmu->impl && smmu->impl->write_s2cr) {
-+		smmu->impl->write_s2cr(smmu, idx);
-+		return;
-+	}
-+
-+	reg = FIELD_PREP(ARM_SMMU_S2CR_TYPE, s2cr->type) |
-+	      FIELD_PREP(ARM_SMMU_S2CR_CBNDX, s2cr->cbndx) |
-+	      FIELD_PREP(ARM_SMMU_S2CR_PRIVCFG, s2cr->privcfg);
+--- a/drivers/usb/serial/keyspan_pda.c
++++ b/drivers/usb/serial/keyspan_pda.c
+@@ -447,6 +447,7 @@ static int keyspan_pda_write(struct tty_
+ 	int request_unthrottle = 0;
+ 	int rc = 0;
+ 	struct keyspan_pda_private *priv;
++	unsigned long flags;
  
- 	if (smmu->features & ARM_SMMU_FEAT_EXIDS && smmu->smrs &&
- 	    smmu->smrs[idx].valid)
---- a/drivers/iommu/arm/arm-smmu/arm-smmu.h
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu.h
-@@ -436,6 +436,7 @@ struct arm_smmu_impl {
- 	int (*alloc_context_bank)(struct arm_smmu_domain *smmu_domain,
- 				  struct arm_smmu_device *smmu,
- 				  struct device *dev, int start);
-+	void (*write_s2cr)(struct arm_smmu_device *smmu, int idx);
- };
+ 	priv = usb_get_serial_port_data(port);
+ 	/* guess how much room is left in the device's ring buffer, and if we
+@@ -466,13 +467,13 @@ static int keyspan_pda_write(struct tty_
+ 	   the TX urb is in-flight (wait until it completes)
+ 	   the device is full (wait until it says there is room)
+ 	*/
+-	spin_lock_bh(&port->lock);
++	spin_lock_irqsave(&port->lock, flags);
+ 	if (!test_bit(0, &port->write_urbs_free) || priv->tx_throttled) {
+-		spin_unlock_bh(&port->lock);
++		spin_unlock_irqrestore(&port->lock, flags);
+ 		return 0;
+ 	}
+ 	clear_bit(0, &port->write_urbs_free);
+-	spin_unlock_bh(&port->lock);
++	spin_unlock_irqrestore(&port->lock, flags);
  
- #define INVALID_SMENDX			-1
+ 	/* At this point the URB is in our control, nobody else can submit it
+ 	   again (the only sudden transition was the one from EINPROGRESS to
 
 
