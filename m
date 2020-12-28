@@ -2,82 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71C522E3505
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 09:24:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E5F12E33C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 03:47:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726547AbgL1IWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 03:22:22 -0500
-Received: from m15113.mail.126.com ([220.181.15.113]:49687 "EHLO
-        m15113.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726328AbgL1IWW (ORCPT
+        id S1726392AbgL1CrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Dec 2020 21:47:06 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:4124 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726286AbgL1CrG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 03:22:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=kR7LsGQMcBZUF10Xfd
-        CEdaJ3jGd0gRg41YQhRD78f9s=; b=peIfPa56K5rFNIkPG8ED515puQ9JYRT0rb
-        0Mg0SaQwN9L9l6US8MK1B+QAheN22sIjK1MGWKBNSmMdHwjJX6CxisPzsa9Tq9K8
-        wEpRQhIbaB/RUjvfHspEv8ApsaOMMPy9b4zutgMtD30mAdQ0ziI6tmucYfza2JNK
-        4/BV53MvU=
-Received: from localhost.localdomain (unknown [36.112.86.14])
-        by smtp3 (Coremail) with SMTP id DcmowACXzgUAR+lffFgTNQ--.5617S2;
-        Mon, 28 Dec 2020 10:46:25 +0800 (CST)
-From:   Defang Bo <bodefang@126.com>
-To:     tomi.valkeinen@ti.com, airlied@linux.ie, daniel@ffwll.ch
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Defang Bo <bodefang@126.com>
-Subject: [PATCH] drm/omapdrm: don't deref error pointer in the omap_fbdev_create error path
-Date:   Mon, 28 Dec 2020 10:46:13 +0800
-Message-Id: <1609123573-227288-1-git-send-email-bodefang@126.com>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: DcmowACXzgUAR+lffFgTNQ--.5617S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrKF45trWfur1UGw17Zw13Jwb_yoWkKrc_Wa
-        4v9wn3J3W2kF1UuFnxC3yqvr97K3Z3Zr4rJw48tan3Gry3Wa4rXFWfZrnrXrWrWF42gr95
-        Cwn7JrZ8J34xKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUUq2MUUUUUU==
-X-Originating-IP: [36.112.86.14]
-X-CM-SenderInfo: pergvwxdqjqiyswou0bp/1tbiYwEJ11x5bW4KXwAAsP
+        Sun, 27 Dec 2020 21:47:06 -0500
+Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4D423S3XW4zXsl4;
+        Mon, 28 Dec 2020 10:45:40 +0800 (CST)
+Received: from [10.174.187.128] (10.174.187.128) by
+ dggeme752-chm.china.huawei.com (10.3.19.98) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Mon, 28 Dec 2020 10:46:22 +0800
+Subject: Re: [PATCH v2 0/3] RFC: Solve several problems in stage 2 translation
+To:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Gavin Shan <gshan@redhat.com>,
+        Quentin Perret <qperret@google.com>
+CC:     <wanghaibin.wang@huawei.com>, <yezengruan@huawei.com>,
+        <zhukeqian1@huawei.com>, <yuzenghui@huawei.com>
+References: <20201216122844.25092-1-wangyanan55@huawei.com>
+From:   "wangyanan (Y)" <wangyanan55@huawei.com>
+Message-ID: <fe7d6cbd-b8ec-f1f9-1163-004aeca94d49@huawei.com>
+Date:   Mon, 28 Dec 2020 10:46:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
+MIME-Version: 1.0
+In-Reply-To: <20201216122844.25092-1-wangyanan55@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.187.128]
+X-ClientProxiedBy: dggeme702-chm.china.huawei.com (10.1.199.98) To
+ dggeme752-chm.china.huawei.com (10.3.19.98)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Similar to commit<789d4c300e10>("drm/msm: don't deref error pointer in the msm_fbdev_create error path"),
-the error pointer returned by omap_framebuffer_init() gets passed to drm_framebuffer_remove.
-The latter handles only Null pointers,thus a nasty crash will occur.
-Drop the unnecessary checks in label fail.
+Hi Will, Marc,
 
-Signed-off-by: Defang Bo <bodefang@126.com>
----
- drivers/gpu/drm/omapdrm/omap_fbdev.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+Gently Ping.
 
-diff --git a/drivers/gpu/drm/omapdrm/omap_fbdev.c b/drivers/gpu/drm/omapdrm/omap_fbdev.c
-index 3f6cfc2..7ba07c8 100644
---- a/drivers/gpu/drm/omapdrm/omap_fbdev.c
-+++ b/drivers/gpu/drm/omapdrm/omap_fbdev.c
-@@ -141,8 +141,7 @@ static int omap_fbdev_create(struct drm_fb_helper *helper,
- 		 * to unref the bo:
- 		 */
- 		drm_gem_object_put(fbdev->bo);
--		ret = PTR_ERR(fb);
--		goto fail;
-+		return PTR_ERR(fb);
- 	}
- 
- 	/* note: this keeps the bo pinned.. which is perhaps not ideal,
-@@ -199,12 +198,7 @@ static int omap_fbdev_create(struct drm_fb_helper *helper,
- 	return 0;
- 
- fail:
--
--	if (ret) {
--		if (fb)
--			drm_framebuffer_remove(fb);
--	}
--
-+	drm_framebuffer_remove(fb);
- 	return ret;
- }
- 
--- 
-2.7.4
+Is there any comments about this V2 series?
 
+
+Many thanks,
+
+Yanan.
+
+On 2020/12/16 20:28, Yanan Wang wrote:
+> Hi, this is the second version, thanks for reading.
+>
+> PATCH1/3:
+> Procedures of hyp stage 1 mapping and guest stage 2 mapping are different, but
+> they are tied closely by function kvm_set_valid_leaf_pte(). So separate them by
+> rewriting kvm_set_valid_leaf_pte().
+>
+> PATCH2/3:
+> To avoid unnecessary update and small loops, add prejudgement in the translation
+> fault handler: Skip updating the PTE with break-before-make if we are trying to
+> recreate the exact same mapping or only change the access permissions. Actually,
+> change of permissions will be handled through the relax_perms path next time if
+> necessary.
+>
+> (1) If there are some vCPUs accessing the same GPA at the same time and the leaf
+> PTE is not set yet, then they will all cause translation faults and the first vCPU
+> holding mmu_lock will set valid leaf PTE, and the others will later update the old
+> PTE with a new one if they are different.
+>
+> (2) When changing a leaf entry or a table entry with break-before-make, if there
+> are some vCPUs accessing the same GPA just catch the moment when the target PTE
+> is set invalid in a BBM procedure coincidentally, they will all cause translation
+> faults and will later update the old PTE with a new one if they are different.
+>
+> The worst case can be like this: vCPU A causes a translation fault with RW prot and
+> sets the leaf PTE with RW permissions, and then the next vCPU B with RO prot updates
+> the PTE back to RO permissions with break-before-make. And the BBM-invalid moment
+> may trigger more unnecessary translation faults, then some useless small loops might
+> occur which could lead to vCPU stuck.
+>
+> PATCH3/3:
+> We now mark the page dirty and set the bitmap before calling fault handlers in
+> user_mem_abort(), and we might end up having spurious dirty pages if update of
+> permissions or mapping has failed. So, mark the page dirty only if the fault is
+> handled successfully.
+>
+> Let the guest directly enter again but not return to userspace if we were trying
+> to recreate the same mapping or only change access permissions with BBM, which is
+> not permitted in the mapping path.
+>
+> Changes from v1:
+> - Make part of the diff as an independent patch (PATCH1/3),
+>    and add Will's Signed-off-by.
+> - Use *return -EPERM* way when changing permissions only in the mapping path.
+> - Add a new patch (PATCH3/3).
+>
+> Yanan Wang (3):
+>    KVM: arm64: Decouple partial code of hyp stage 1 mapping and guest
+>      stage 2 mapping
+>    KVM: arm64: Add prejudgement for relaxing permissions only case in
+>      stage2 translation fault handler
+>    KVM: arm64: Mark the page dirty only if the fault is handled
+>      successfully
+>
+>   arch/arm64/kvm/hyp/pgtable.c | 78 ++++++++++++++++++++----------------
+>   arch/arm64/kvm/mmu.c         | 18 +++++++--
+>   2 files changed, 58 insertions(+), 38 deletions(-)
+>
