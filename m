@@ -2,177 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C4772E6A6F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 20:26:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 789D22E6A73
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 20:26:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729234AbgL1TZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 14:25:35 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:54778 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729210AbgL1TZe (ORCPT
+        id S1729158AbgL1T0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 14:26:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728212AbgL1T0f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 14:25:34 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BSJ3HAl020536;
-        Mon, 28 Dec 2020 14:24:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=7V4YeQXdsmcZPKQv7IFaraIHdpd8Fb4NJFtVcaQWcN8=;
- b=GVpZ0hxDg4U6b11XoIfbm5jEwd4MQvSzVqDJIn9tdapxn5IjecfknA5P07b+RveiTN+l
- 7GBmH5d8kOfrAK7t55QDTZnLzC/iaJM9sobrVpXRF/H1iR6L5z9aFCdvNk3JMHjYTEjE
- 9muaQDEgsXBFUwgxFhA96ar/jN3ie5ChaSiGg6vrPMAqXlY8rxvo6Biur+Kf+T7qLKG5
- gR7HmQAzgApd+Sbu7saohSDSYB4rfjirvJm1M88wtFOTERguNn7fubt84L4WE5q29ANM
- S/Zh2EZrAIl9CR8SNs8zyEwLMrVdRkE5Y+IfUY5b3Wb9o5s3ie/m7VjQDg4DnqJhiXUE EA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35qn0h8m7a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Dec 2020 14:24:44 -0500
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BSJ3SPD021989;
-        Mon, 28 Dec 2020 14:24:43 -0500
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35qn0h8m6s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Dec 2020 14:24:43 -0500
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BSJHgUK017631;
-        Mon, 28 Dec 2020 19:24:41 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma01fra.de.ibm.com with ESMTP id 35nvt7s5b1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 28 Dec 2020 19:24:41 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BSJOcu329032788
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 28 Dec 2020 19:24:38 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B5023AE04D;
-        Mon, 28 Dec 2020 19:24:38 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BBB5EAE045;
-        Mon, 28 Dec 2020 19:24:35 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.72.172])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 28 Dec 2020 19:24:35 +0000 (GMT)
-Message-ID: <b0e154a0db21fcb42303c7549fd44135e571ab00.camel@linux.ibm.com>
-Subject: Re: [PATCH v23 02/23] LSM: Create and manage the lsmblob data
- structure.
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Casey Schaufler <casey@schaufler-ca.com>,
-        casey.schaufler@intel.com, jmorris@namei.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org
-Cc:     linux-audit@redhat.com, keescook@chromium.org,
-        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
-        paul@paul-moore.com, sds@tycho.nsa.gov,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Date:   Mon, 28 Dec 2020 14:24:34 -0500
-In-Reply-To: <20201120201507.11993-3-casey@schaufler-ca.com>
-References: <20201120201507.11993-1-casey@schaufler-ca.com>
-         <20201120201507.11993-3-casey@schaufler-ca.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-28_17:2020-12-28,2020-12-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
- malwarescore=0 impostorscore=0 mlxscore=0 spamscore=0 priorityscore=1501
- mlxlogscore=999 suspectscore=0 adultscore=0 bulkscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012280115
+        Mon, 28 Dec 2020 14:26:35 -0500
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66ADDC061796
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 11:25:55 -0800 (PST)
+Received: by mail-io1-xd34.google.com with SMTP id y5so10262797iow.5
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 11:25:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sargun.me; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/nOHULSFy60FT+2em7J7OYQMxQyHIY7jUtPb874hlfY=;
+        b=X44sptDyBjDo7Fmfh69zd2cXOO3bKdRIJm8eh0l8IIcytCkAv80h2Gz0xw56kaQVbG
+         3qB4LlWGBBDdk2vj+xhlj/qjSLyNi6ZZsWrh9bp1+qXoh5vYWZYmtrSYe01KB9X64N6g
+         VM63QPWOHcxIfrnutXwU4sUo1dNjYZYjlCuI4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/nOHULSFy60FT+2em7J7OYQMxQyHIY7jUtPb874hlfY=;
+        b=a9zGNBfMfuNQDwllUJ4uIG216N1YWR+dgt3pKY9UV5yylkv09L8jp+1q7UIdfmJJVQ
+         4T57agjhyXD44uDYyi/MN7MI0jCJxbQWcxHuEWAB0WFuW14slQk2fIwpgCxe75Bpst1T
+         J42Uh3lTzulMfYt89rj9VsdgNnsSVltVTdbQ33MO2Vo1JGjj+UEyNvsRgm0gF8tj2M70
+         XhABxAokv+aXwpRLi8H4HYtDNmQn1OUuRcXDtLJy8sHfUMF6c2OQ4jMss+uooVGzM3jZ
+         5c9xlx8NNDW8JxrxvxwioQltRY7T18dUgzOKM4HPMI6EHMviCU408ScP4IssWsvj+r3z
+         QdGw==
+X-Gm-Message-State: AOAM531FOCYt41qOtBsIlowTBuCIwiqmZepnYJW//CmM6MwAL9YkpgSa
+        H5PLYwFaqn9D9l1w/SWmXo5oLlUujsO+NildzYGAMQ==
+X-Google-Smtp-Source: ABdhPJxSDFz9qtx2zDzz0V4rwDXS3Bqf+8r+uF6knARBRLYg2CSyYUclaw5Kvp2mKllpYfrz4WigvFxj3FEwByAFghE=
+X-Received: by 2002:a6b:e704:: with SMTP id b4mr14476477ioh.114.1609183554526;
+ Mon, 28 Dec 2020 11:25:54 -0800 (PST)
+MIME-Version: 1.0
+References: <20201223182026.GA9935@ircssh-2.c.rugged-nimbus-611.internal>
+ <20201223185044.GQ874@casper.infradead.org> <20201223192940.GA11012@ircssh-2.c.rugged-nimbus-611.internal>
+ <20201223200746.GR874@casper.infradead.org> <20201223202140.GB11012@ircssh-2.c.rugged-nimbus-611.internal>
+ <20201223204428.GS874@casper.infradead.org> <CAOQ4uxjAeGv8x2hBBzHz5PjSDq0Q+RN-ikgqEvAA+XE_U-U5Nw@mail.gmail.com>
+ <20201224121352.GT874@casper.infradead.org> <CAOQ4uxj5YS9LSPoBZ3uakb6NeBG7g-Zeu+8Vt57tizEH6xu0cw@mail.gmail.com>
+ <1334bba9cefa81f80005f8416680afb29044379c.camel@kernel.org>
+ <20201228155618.GA6211@casper.infradead.org> <5bc11eb2e02893e7976f89a888221c902c11a2b4.camel@kernel.org>
+In-Reply-To: <5bc11eb2e02893e7976f89a888221c902c11a2b4.camel@kernel.org>
+From:   Sargun Dhillon <sargun@sargun.me>
+Date:   Mon, 28 Dec 2020 11:25:18 -0800
+Message-ID: <CAMp4zn92-WLFkDPVCUX=e+oyHb--7thDDwFEqyvBTGm64biyDw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] overlayfs: Report writeback errors on upper
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>, Jan Kara <jack@suse.cz>,
+        NeilBrown <neilb@suse.com>, Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>,
+        Chengguang Xu <cgxu519@mykernel.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Casey,
+On Mon, Dec 28, 2020 at 9:26 AM Jeff Layton <jlayton@kernel.org> wrote:
+>
+> On Mon, 2020-12-28 at 15:56 +0000, Matthew Wilcox wrote:
+> > On Mon, Dec 28, 2020 at 08:25:50AM -0500, Jeff Layton wrote:
+> > > To be clear, the main thing you'll lose with the method above is the
+> > > ability to see an unseen error on a newly opened fd, if there was an
+> > > overlayfs mount using the same upper sb before your open occurred.
+> > >
+> > > IOW, consider two overlayfs mounts using the same upper layer sb:
+> > >
+> > > ovlfs1                              ovlfs2
+> > > ----------------------------------------------------------------------
+> > > mount
+> > > open fd1
+> > > write to fd1
+> > > <writeback fails>
+> > >                             mount (upper errseq_t SEEN flag marked)
+> > > open fd2
+> > > syncfs(fd2)
+> > > syncfs(fd1)
+> > >
+> > >
+> > > On a "normal" (non-overlay) fs, you'd get an error back on both syncfs
+> > > calls. The first one has a sample from before the error occurred, and
+> > > the second one has a sample of 0, due to the fact that the error was
+> > > unseen at open time.
+> > >
+> > > On overlayfs, with the intervening mount of ovlfs2, syncfs(fd1) will
+> > > return an error and syncfs(fd2) will not. If we split the SEEN flag into
+> > > two, then we can ensure that they both still get an error in this
+> > > situation.
+> >
+> > But do we need to?  If the inode has been evicted we also lose the errno.
+> > The guarantee we provide is that a fd that was open before the error
+> > occurred will see the error.  An fd that's opened after the error occurred
+> > may or may not see the error.
+> >
+>
+> In principle, you can lose errors this way (which was the justification
+> for making errseq_sample return 0 when there are unseen errors). E.g.,
+> if you close fd1 instead of doing a syncfs on it, that error will be
+> lost forever.
+>
+> As to whether that's OK, it's hard to say. It is a deviation from how
+> this works in a non-containerized situation, and I'd argue that it's
+> less than ideal. You may or may not see the error on fd2, but it's
+> dependent on events that take place outside the container and that
+> aren't observable from within it. That effectively makes the results
+> non-deterministic, which is usually a bad thing in computing...
+>
+> --
+> Jeff Layton <jlayton@kernel.org>
+>
 
-On Fri, 2020-11-20 at 12:14 -0800, Casey Schaufler wrote:
-> diff --git a/security/security.c b/security/security.c
-> index 5da8b3643680..d01363cb0082 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> 
-> @@ -2510,7 +2526,24 @@ int security_key_getsecurity(struct key *key, char **_buffer)
-> 
->  int security_audit_rule_init(u32 field, u32 op, char *rulestr, void **lsmrule)
->  {
-> -       return call_int_hook(audit_rule_init, 0, field, op, rulestr, lsmrule);
-> +       struct security_hook_list *hp;
-> +       bool one_is_good = false;
-> +       int rc = 0;
-> +       int trc;
-> +
-> +       hlist_for_each_entry(hp, &security_hook_heads.audit_rule_init, list) {
-> +               if (WARN_ON(hp->lsmid->slot < 0 || hp->lsmid->slot >= lsm_slot))
-> +                       continue;
-> +               trc = hp->hook.audit_rule_init(field, op, rulestr,
-> +                                              &lsmrule[hp->lsmid->slot]);
-> +               if (trc == 0)
-> +                       one_is_good = true;
-> +               else
-> +                       rc = trc;
-> +       }
-> +       if (one_is_good)
-> +               return 0;
-> +       return rc;
->  }
-
-So the same string may be defined by multiple LSMs.
-> 
->  int security_audit_rule_known(struct audit_krule *krule)
-> @@ -2518,14 +2551,31 @@ int security_audit_rule_known(struct audit_krule *krule)
->         return call_int_hook(audit_rule_known, 0, krule);
->  }
-> 
-> -void security_audit_rule_free(void *lsmrule)
-> +void security_audit_rule_free(void **lsmrule)
->  {
-> -       call_void_hook(audit_rule_free, lsmrule);
-> +       struct security_hook_list *hp;
-> +
-> +       hlist_for_each_entry(hp, &security_hook_heads.audit_rule_free, list) {
-> +               if (WARN_ON(hp->lsmid->slot < 0 || hp->lsmid->slot >= lsm_slot))
-> +                       continue;
-> +               hp->hook.audit_rule_free(lsmrule[hp->lsmid->slot]);
-> +       }
->  }
-> 
-
-If one LSM frees the string, then the string is deleted from all LSMs. 
-I don't understand how this safe.
-
-> -int security_audit_rule_match(u32 secid, u32 field, u32 op, void *lsmrule)
-> +int security_audit_rule_match(u32 secid, u32 field, u32 op, void **lsmrule)
->  {
-> -       return call_int_hook(audit_rule_match, 0, secid, field, op, lsmrule);
-> +       struct security_hook_list *hp;
-> +       int rc;
-> +
-> +       hlist_for_each_entry(hp, &security_hook_heads.audit_rule_match, list) {
-> +               if (WARN_ON(hp->lsmid->slot < 0 || hp->lsmid->slot >= lsm_slot))
-> +                       continue;
-> +               rc = hp->hook.audit_rule_match(secid, field, op,
-> +                                              &lsmrule[hp->lsmid->slot]);
-> +               if (rc)
-> +                       return rc;
-
-Suppose that there is an IMA dont_measure or dont_appraise rule, if one
-LSM matches, then this returns true, causing any measurement or
-integrity verification to be skipped.  
-
-Sample policy rules:
-dont_measure obj_type=foo_log
-dont_appraise obj_type=foo_log
-
-Are there any plans to prevent label collisions or at least notify of a
-label collision?
-
-Mimi
-
-> +       }
-> +       return 0;
->  }
->  #endif /* CONFIG_AUDIT */
-
+I agree that predictable behaviour outweighs any benefit of complexity
+cutting we might do here.
