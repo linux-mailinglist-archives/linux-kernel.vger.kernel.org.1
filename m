@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BDF92E4318
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:34:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A8AA2E3E7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:29:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392814AbgL1PaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:30:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56998 "EHLO mail.kernel.org"
+        id S2502526AbgL1O2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:28:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36226 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405270AbgL1Nzi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:55:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A89F20738;
-        Mon, 28 Dec 2020 13:55:22 +0000 (UTC)
+        id S2502477AbgL1O2f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:28:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8F4F22583;
+        Mon, 28 Dec 2020 14:28:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163722;
-        bh=vKJEEavUqiwWARyaFuY3POU2VLY36L6c7UMlIw4nYdY=;
+        s=korg; t=1609165699;
+        bh=2eT1tiFrlrdnQyphbP6Kozpy3B250w82TeHZUqxlaJY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cvvYo0uT29fGkdDEaT8I1YNC+J1+J79MIl0qmrp9OjYnJ6/dc5JBvUA3Qj1A6pQNO
-         klBtBmPxvgBIXte4W4N16snvf/X8JRjnDLAL5SEpapihokBV/+TTt4P79c0fmsFe6p
-         sEIyil4pZNtQKlBoEDp1MbB5H4hj6ZMewuWdwBbo=
+        b=qfGxchV9Sd3J3Bc/HeGzCFPFTm+vrrHvCvFCxN9cjD9NTJCS1DxHxyCSRLggDjuk+
+         rb+OWeObHudOV9hiNU7+mcHCsPq8JyXbJEILA3kTL/C9fEtuwSSp3MwoCWmi2kiiVh
+         9TB8jaarKX3nFjTIQnmMuKL0Vo4Nb6P1tfuGsm+U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.4 386/453] powerpc/powernv/npu: Do not attempt NPU2 setup on POWER8NVL NPU
+        stable@vger.kernel.org, Pavel Shilovsky <pshilov@microsoft.com>,
+        Steve French <stfrench@microsoft.com>
+Subject: [PATCH 5.10 624/717] SMB3.1.1: remove confusing mount warning when no SPNEGO info on negprot rsp
 Date:   Mon, 28 Dec 2020 13:50:22 +0100
-Message-Id: <20201228124955.776411762@linuxfoundation.org>
+Message-Id: <20201228125050.815411013@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,91 +39,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexey Kardashevskiy <aik@ozlabs.ru>
+From: Steve French <stfrench@microsoft.com>
 
-commit b1198a88230f2ce50c271e22b82a8b8610b2eea9 upstream.
+commit bc7c4129d4cdc56d1b5477c1714246f27df914dd upstream.
 
-We execute certain NPU2 setup code (such as mapping an LPID to a device
-in NPU2) unconditionally if an Nvlink bridge is detected. However this
-cannot succeed on POWER8NVL machines and errors appear in dmesg. This is
-harmless as skiboot returns an error and the only place we check it is
-vfio-pci but that code does not get called on P8+ either.
+Azure does not send an SPNEGO blob in the negotiate protocol response,
+so we shouldn't assume that it is there when validating the location
+of the first negotiate context.  This avoids the potential confusing
+mount warning:
 
-This adds a check if pnv_npu2_xxx helpers are called on a machine with
-NPU2 which initializes pnv_phb::npu in pnv_npu2_init();
-pnv_phb::npu==NULL on POWER8/NVL (Naples).
+   CIFS: Invalid negotiate context offset
 
-While at this, fix NULL derefencing in pnv_npu_peers_take_ownership/
-pnv_npu_peers_release_ownership which occurs when GPUs on mentioned P8s
-cause EEH which happens if "vfio-pci" disables devices using
-the D3 power state; the vfio-pci's disable_idle_d3 module parameter
-controls this and must be set on Naples. The EEH handling clears
-the entire pnv_ioda_pe struct in pnv_ioda_free_pe() hence
-the NULL derefencing. We cannot recover from that but at least we stop
-crashing.
-
-Tested on
-- POWER9 pvr=004e1201, Ubuntu 19.04 host, Ubuntu 18.04 vm,
-  NVIDIA GV100 10de:1db1 driver 418.39
-- POWER8 pvr=004c0100, RHEL 7.6 host, Ubuntu 16.10 vm,
-  NVIDIA P100 10de:15f9 driver 396.47
-
-Fixes: 1b785611e119 ("powerpc/powernv/npu: Add release_ownership hook")
-Cc: stable@vger.kernel.org # 5.0
-Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20201122073828.15446-1-aik@ozlabs.ru
+CC: Stable <stable@vger.kernel.org>
+Reviewed-by: Pavel Shilovsky <pshilov@microsoft.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/platforms/powernv/npu-dma.c |   16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ fs/cifs/smb2misc.c |   16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
---- a/arch/powerpc/platforms/powernv/npu-dma.c
-+++ b/arch/powerpc/platforms/powernv/npu-dma.c
-@@ -384,7 +384,8 @@ static void pnv_npu_peers_take_ownership
- 	for (i = 0; i < npucomp->pe_num; ++i) {
- 		struct pnv_ioda_pe *pe = npucomp->pe[i];
+--- a/fs/cifs/smb2misc.c
++++ b/fs/cifs/smb2misc.c
+@@ -94,6 +94,8 @@ static const __le16 smb2_rsp_struct_size
+ 	/* SMB2_OPLOCK_BREAK */ cpu_to_le16(24)
+ };
  
--		if (!pe->table_group.ops->take_ownership)
-+		if (!pe->table_group.ops ||
-+		    !pe->table_group.ops->take_ownership)
- 			continue;
- 		pe->table_group.ops->take_ownership(&pe->table_group);
- 	}
-@@ -400,7 +401,8 @@ static void pnv_npu_peers_release_owners
- 	for (i = 0; i < npucomp->pe_num; ++i) {
- 		struct pnv_ioda_pe *pe = npucomp->pe[i];
- 
--		if (!pe->table_group.ops->release_ownership)
-+		if (!pe->table_group.ops ||
-+		    !pe->table_group.ops->release_ownership)
- 			continue;
- 		pe->table_group.ops->release_ownership(&pe->table_group);
- 	}
-@@ -560,6 +562,11 @@ int pnv_npu2_map_lpar_dev(struct pci_dev
- 		return -ENODEV;
- 
- 	hose = pci_bus_to_host(npdev->bus);
-+	if (hose->npu == NULL) {
-+		dev_info_once(&npdev->dev, "Nvlink1 does not support contexts");
-+		return 0;
-+	}
++#define SMB311_NEGPROT_BASE_SIZE (sizeof(struct smb2_sync_hdr) + sizeof(struct smb2_negotiate_rsp))
 +
- 	nphb = hose->private_data;
+ static __u32 get_neg_ctxt_len(struct smb2_sync_hdr *hdr, __u32 len,
+ 			      __u32 non_ctxlen)
+ {
+@@ -109,11 +111,17 @@ static __u32 get_neg_ctxt_len(struct smb
  
- 	dev_dbg(&gpdev->dev, "Map LPAR opalid=%llu lparid=%u\n",
-@@ -607,6 +614,11 @@ int pnv_npu2_unmap_lpar_dev(struct pci_d
- 		return -ENODEV;
+ 	/* Make sure that negotiate contexts start after gss security blob */
+ 	nc_offset = le32_to_cpu(pneg_rsp->NegotiateContextOffset);
+-	if (nc_offset < non_ctxlen) {
+-		pr_warn_once("Invalid negotiate context offset\n");
++	if (nc_offset + 1 < non_ctxlen) {
++		pr_warn_once("Invalid negotiate context offset %d\n", nc_offset);
+ 		return 0;
+-	}
+-	size_of_pad_before_neg_ctxts = nc_offset - non_ctxlen;
++	} else if (nc_offset + 1 == non_ctxlen) {
++		cifs_dbg(FYI, "no SPNEGO security blob in negprot rsp\n");
++		size_of_pad_before_neg_ctxts = 0;
++	} else if (non_ctxlen == SMB311_NEGPROT_BASE_SIZE)
++		/* has padding, but no SPNEGO blob */
++		size_of_pad_before_neg_ctxts = nc_offset - non_ctxlen + 1;
++	else
++		size_of_pad_before_neg_ctxts = nc_offset - non_ctxlen;
  
- 	hose = pci_bus_to_host(npdev->bus);
-+	if (hose->npu == NULL) {
-+		dev_info_once(&npdev->dev, "Nvlink1 does not support contexts");
-+		return 0;
-+	}
-+
- 	nphb = hose->private_data;
- 
- 	dev_dbg(&gpdev->dev, "destroy context opalid=%llu\n",
+ 	/* Verify that at least minimal negotiate contexts fit within frame */
+ 	if (len < nc_offset + (neg_count * sizeof(struct smb2_neg_context))) {
 
 
