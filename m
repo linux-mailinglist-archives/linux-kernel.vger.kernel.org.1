@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A225C2E6821
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:33:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1C82E6697
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:16:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633323AbgL1Qc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:32:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33336 "EHLO mail.kernel.org"
+        id S1731663AbgL1NR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:17:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46160 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730620AbgL1NFb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:05:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AD36208BA;
-        Mon, 28 Dec 2020 13:04:49 +0000 (UTC)
+        id S1731597AbgL1NRn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:17:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E36F7207F7;
+        Mon, 28 Dec 2020 13:17:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160690;
-        bh=tMxKk1dA9zroC0Ot3nMh5RXMEalN7FryCBJZmPAqsSk=;
+        s=korg; t=1609161423;
+        bh=iLYMcQBwitkX9mE9n7XKOk4UMtd6LaR0JtVOcPrOQiA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kXdBXouq6+NsuWu9aesPRizOLAfMlsZWbobl8dGqTvqWCFAlkddlNtrUUy9NQ+p9i
-         GmYoqowYNg95BdCadebs70eGUFPoIzu2ipRpTFEOyHzcnEpPpKrN+YvX9tjnZ8UsjB
-         ZJIJEkGcA3bQ7o8BFiaopUBmsXEpgQ25ZGR7QpK8=
+        b=h1yL9L+lGGXFdOa/PMI3fAbbVlKwErxQR1YufwCVEHZ8SxReii4rqDypiXaDc90tt
+         dJqnZAFEFEUgEqUckfzRQlg/FgY5/jxyTMwcTA0GTJEFx+LNMIGl9edyzGUGelhLM5
+         2hW71p/NOKX+AkY7EhrkS3ewTmwdbeN1DVsr1ULQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 120/175] net: bcmgenet: Fix a resource leak in an error handling path in the probe functin
-Date:   Mon, 28 Dec 2020 13:49:33 +0100
-Message-Id: <20201228124859.072412064@linuxfoundation.org>
+Subject: [PATCH 4.14 169/242] watchdog: coh901327: add COMMON_CLK dependency
+Date:   Mon, 28 Dec 2020 13:49:34 +0100
+Message-Id: <20201228124913.018110163@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,39 +41,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 4375ada01963d1ebf733d60d1bb6e5db401e1ac6 ]
+[ Upstream commit 36c47df85ee8e1f8a35366ac11324f8875de00eb ]
 
-If the 'register_netdev()' call fails, we must undo a previous
-'bcmgenet_mii_init()' call.
+clang produces a build failure in configurations without COMMON_CLK
+when a timeout calculation goes wrong:
 
-Fixes: 1c1008c793fa ("net: bcmgenet: add main driver file")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Link: https://lore.kernel.org/r/20201212182005.120437-1-christophe.jaillet@wanadoo.fr
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+arm-linux-gnueabi-ld: drivers/watchdog/coh901327_wdt.o: in function `coh901327_enable':
+coh901327_wdt.c:(.text+0x50): undefined reference to `__bad_udelay'
+
+Add a Kconfig dependency to only do build testing when COMMON_CLK
+is enabled.
+
+Fixes: da2a68b3eb47 ("watchdog: Enable COMPILE_TEST where possible")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/20201203223358.1269372-1-arnd@kernel.org
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/genet/bcmgenet.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/watchdog/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-index 5d4189c94718c..2921ae13db283 100644
---- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-+++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-@@ -3433,8 +3433,10 @@ static int bcmgenet_probe(struct platform_device *pdev)
- 	clk_disable_unprepare(priv->clk);
+diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+index 529b0527bf2e2..de228669a2c8b 100644
+--- a/drivers/watchdog/Kconfig
++++ b/drivers/watchdog/Kconfig
+@@ -495,7 +495,7 @@ config SUNXI_WATCHDOG
  
- 	err = register_netdev(dev);
--	if (err)
-+	if (err) {
-+		bcmgenet_mii_exit(dev);
- 		goto err;
-+	}
- 
- 	return err;
- 
+ config COH901327_WATCHDOG
+ 	bool "ST-Ericsson COH 901 327 watchdog"
+-	depends on ARCH_U300 || (ARM && COMPILE_TEST)
++	depends on ARCH_U300 || (ARM && COMMON_CLK && COMPILE_TEST)
+ 	default y if MACH_U300
+ 	select WATCHDOG_CORE
+ 	help
 -- 
 2.27.0
 
