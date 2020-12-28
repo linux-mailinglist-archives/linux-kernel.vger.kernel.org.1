@@ -2,105 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08D432E6B37
+	by mail.lfdr.de (Postfix) with ESMTP id E43E32E6B39
 	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:02:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731709AbgL1W4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 17:56:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43422 "EHLO
+        id S1731737AbgL1W4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 17:56:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729528AbgL1Vdf (ORCPT
+        with ESMTP id S1729535AbgL1Vg5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 16:33:35 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C97CBC06179A;
-        Mon, 28 Dec 2020 13:32:43 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id b9so15904723ejy.0;
-        Mon, 28 Dec 2020 13:32:43 -0800 (PST)
+        Mon, 28 Dec 2020 16:36:57 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF086C0613D6;
+        Mon, 28 Dec 2020 13:36:16 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id 190so559219wmz.0;
+        Mon, 28 Dec 2020 13:36:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=I2WBbrkH2ONKXlEDHonkPj8AaAP1q8vzoVqaiWZLsUg=;
-        b=veLKfrSGWbd3LTDOY5lt4PaP9PCYEgPTlIz7EUcvX42ydY/0lOFux5IcfuXUUiCf3d
-         CQmpJn8IWQb5uhTloPCLp1XDkrdLUGCLWAVrS3UcoJy+B4HJ+DIoEyc8jz3eToiojC8u
-         xE7Tavg902Qm9pudVd65nwEOfozvvnK1gDo0qxWZM/3lWZI9erklKix71m8qWH3yuDGW
-         UNbJVaqORU1hMGPcKOq7Rzmcnn58RNzzTx9GxnCAV3vmylUTTVFSZFmVNs4gtS0R3QNb
-         NKOK+806eu/RExhwim19mLzDir/YB7c/mGy+/CCImBwkFIbm1j9+azL0qusKQrbPlNIn
-         FB+A==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=YHAv31qp/16efOwdB+fQqGsAagQD2Y+LO34KSznV4Rg=;
+        b=XVJEE4443tNtSX9ZZyPo2QVDypcgctKGPngBDD4Ho64pNOIgYscOlBV60MhMSxWhD4
+         JJA8xL77ZIMl+Y8O5INdC7qct9mWqjqDtCWqJx73JFQxX4y+2HYzxndiLeNKCzh07QOa
+         TjtoJ7oRuNBeuw/qF1xrLdF73sDtR+LgFIXYE8YbFOIiEP04gtTHGsCasQdfNiKOqQE6
+         mGZDZLHEy+HdLtCumX2CxRsVPUtNovu2uh7iNKQf9SCs130zEw+AqQqPmUhxn5tEkauZ
+         m4dhxQaavJKjB9F5zaCtX7syg2dj5jPdDlwQ1/cKRxrwLIYlYI3W15WVCq12guK00pIm
+         Q5xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=I2WBbrkH2ONKXlEDHonkPj8AaAP1q8vzoVqaiWZLsUg=;
-        b=a4PR3Pw02QlV4fxTHX0bk+48ryI3KHxOFwExgduA4q/59kRgPM46ff2j28aI1GVxjx
-         G5pvwJSKk9bESlG3WjjJyqyHm0kEInzXT6dRM2yHvZkpDyvE9RvpnSFtYJSxYA9eadhp
-         u9c6T4wEdHhe0adsSuei4zqrJrF/sWntVJz8Q+2wER0fDZfyLj7h9irp+u3j/owVkmdG
-         Gvt+oIsqJAI8k5BtTeSZEHJS/i3WE+/2P4pqRnGe509naAr7L0jUhGRklNqRCPEuqDs+
-         CaftUZHAdQz09YjWHlllQtwDDppGaky7t692Y5H7rEEF5QxASuArO/QvX+O+rw+9rr4f
-         4AhA==
-X-Gm-Message-State: AOAM531V0qBBY4D6xjMxhXH4YUQiXC3xzAn7F0XleeWnvIAm+ExnMstm
-        ABR6LTmLHPCaJsXFqCP0YPE=
-X-Google-Smtp-Source: ABdhPJxt3v098h+osXmQY1LyoTMKKWPimAzb7g00fZLrEQdCMwrw5lSl3gm4oc39Np0J8+Q2c8SyGw==
-X-Received: by 2002:a17:906:e94c:: with SMTP id jw12mr44293726ejb.56.1609191162587;
-        Mon, 28 Dec 2020 13:32:42 -0800 (PST)
-Received: from localhost (178-169-161-196.razgrad.ddns.bulsat.com. [178.169.161.196])
-        by smtp.gmail.com with ESMTPSA id dg10sm14625072edb.63.2020.12.28.13.32.41
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YHAv31qp/16efOwdB+fQqGsAagQD2Y+LO34KSznV4Rg=;
+        b=W5HlmNwCr/3Y+PBUI3tnWE+vZNluen4uhfixQWt2V6I9BnAJphhNBfzBYIhWl/DO9y
+         0d2hXGe+QhdU3G+ZhtIBLRBig34GGRtB9HJGqtBVrMtIYZxSaIPZXp6/E8G6ZDLPfr5l
+         m64vbYOWVGGlOyV54irbkPp7TVQQ4JcFDe3zjoeIMMZ6U6oY12VZxy+vTSOBJHH3eVIi
+         a31I5p1NmWNbHdk6La29utODi9Kfkhh06dugOH3k0bjReD69uPCRVjpl9s1tIeitlxGb
+         oOXTFwJUnQHqVEM/PMuvSJZgbISVn38KZqHQLNIZ39hs1gCixzS/cMcgEJeDIDDwvWk2
+         vo6g==
+X-Gm-Message-State: AOAM533qW6ZO/NH6Hj39aM1xc4wZk5imm2lSLXuHf0AJMCe9fzbRimNn
+        7cprnkB0ZhkYhOo11jdbFEs=
+X-Google-Smtp-Source: ABdhPJxR6XebnXJVSGq90TAT8Dh3I/nUgx46Nvb7RNCV/f98FfsdMmRNwciduPOvaFZBwjoYusQrug==
+X-Received: by 2002:a7b:c198:: with SMTP id y24mr670964wmi.151.1609191375582;
+        Mon, 28 Dec 2020 13:36:15 -0800 (PST)
+Received: from [192.168.1.158] ([2.31.224.116])
+        by smtp.gmail.com with ESMTPSA id a14sm56165919wrn.3.2020.12.28.13.36.14
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Dec 2020 13:32:42 -0800 (PST)
-From:   Iskren Chernev <iskren.chernev@gmail.com>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Kristian H . Kristensen" <hoegsberg@google.com>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Iskren Chernev <iskren.chernev@gmail.com>
-Subject: [PATCH 2/2] drm/msm: Ensure get_pages is called when locked
-Date:   Mon, 28 Dec 2020 23:31:31 +0200
-Message-Id: <20201228213131.2316293-2-iskren.chernev@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228213131.2316293-1-iskren.chernev@gmail.com>
-References: <20201228213131.2316293-1-iskren.chernev@gmail.com>
+        Mon, 28 Dec 2020 13:36:14 -0800 (PST)
+Subject: Re: [PATCH v3 06/14] include: fwnode.h: Define format macros for
+ ports and endpoints
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
+        lenb@kernel.org, gregkh@linuxfoundation.org, yong.zhi@intel.com,
+        bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
+        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
+        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
+        andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jacopo+renesas@jmondi.org, kieran.bingham+renesas@ideasonboard.com,
+        hverkuil-cisco@xs4all.nl, m.felsch@pengutronix.de,
+        niklas.soderlund+renesas@ragnatech.se, slongerbeam@gmail.com,
+        heikki.krogerus@linux.intel.com, linus.walleij@linaro.org
+References: <20201224010907.263125-1-djrscally@gmail.com>
+ <20201224010907.263125-7-djrscally@gmail.com>
+ <20201228163024.GW26370@paasikivi.fi.intel.com>
+ <20201228171150.GA26370@paasikivi.fi.intel.com>
+From:   Daniel Scally <djrscally@gmail.com>
+Message-ID: <d5c489fb-5b6e-cc9f-2294-7bc7e3640362@gmail.com>
+Date:   Mon, 28 Dec 2020 21:36:13 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201228171150.GA26370@paasikivi.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-get_pages is only called in a locked context. Add a WARN_ON to make sure
-it stays that way.
+Hi Sakari
 
-Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
----
- drivers/gpu/drm/msm/msm_gem.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+On 28/12/2020 17:11, Sakari Ailus wrote:
+> On Mon, Dec 28, 2020 at 06:30:24PM +0200, Sakari Ailus wrote:
+>> Hi Daniel, Andy,
+>>
+>> On Thu, Dec 24, 2020 at 01:08:59AM +0000, Daniel Scally wrote:
+>>> OF, ACPI and software_nodes all implement graphs including nodes for ports
+>>> and endpoints. These are all intended to be named with a common schema,
+>>> as "port@n" and "endpoint@n" where n is an unsigned int representing the
+>>> index of the node. To ensure commonality across the subsystems, provide a
+>>> set of macros to define the format.
+>>>
+>>> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>>> Signed-off-by: Daniel Scally <djrscally@gmail.com>
+>>> ---
+>>> Changes in v3
+>>> 	- Patch introduced
+>>>
+>>>  include/linux/fwnode.h | 13 +++++++++++++
+>>>  1 file changed, 13 insertions(+)
+>>>
+>>> diff --git a/include/linux/fwnode.h b/include/linux/fwnode.h
+>>> index 9506f8ec0974..52889efceb7d 100644
+>>> --- a/include/linux/fwnode.h
+>>> +++ b/include/linux/fwnode.h
+>>> @@ -32,6 +32,19 @@ struct fwnode_endpoint {
+>>>  	const struct fwnode_handle *local_fwnode;
+>>>  };
+>>>  
+>>> +/*
+>>> + * ports and endpoints defined in OF, ACPI and as software_nodes should all
+>>> + * follow a common naming scheme; use these macros to ensure commonality across
+>>> + * the subsystems.
+>>> + *
+>>> + * The *PREFIX_LEN macros refer to the length of the "port@" and "endpoint@"
+>>> + * sections of the naming scheme.
+>>> + */
+>>> +#define FWNODE_GRAPH_PORT_NAME_FORMAT		"port@%u"
+>>> +#define FWNODE_GRAPH_PORT_NAME_PREFIX_LEN	5
+>>> +#define FWNODE_GRAPH_ENDPOINT_NAME_FORMAT	"endpoint@%u"
+>>> +#define FWNODE_GRAPH_ENDPOINT_PREFIX_LEN	9
+>>> +
+>>>  #define NR_FWNODE_REFERENCE_ARGS	8
+>>
+>> I'd keep such definitions local to the swnode implementation as neither
+>> ACPI nor DT have an apparent need for them. They do use the naming, but
+>> don't appear to format such strings.
+> 
+> Ah, I noticed these are used by the later patches. Please ignore that
+> comment then.
+> 
+> But these are still definitions, so I'd use SWNODE prefix rather than
+> FWNODE. That should also be reflected in the comment.
 
-diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
-index c658deb31eb5d..9d10739c4eb2d 100644
---- a/drivers/gpu/drm/msm/msm_gem.c
-+++ b/drivers/gpu/drm/msm/msm_gem.c
-@@ -96,6 +96,8 @@ static struct page **get_pages(struct drm_gem_object *obj)
- {
- 	struct msm_gem_object *msm_obj = to_msm_bo(obj);
- 
-+	WARN_ON(!msm_gem_is_locked(obj));
-+
- 	if (!msm_obj->pages) {
- 		struct drm_device *dev = obj->dev;
- 		struct page **p;
-@@ -1129,8 +1131,9 @@ static struct drm_gem_object *_msm_gem_new(struct drm_device *dev,
- 
- 		to_msm_bo(obj)->vram_node = &vma->node;
- 
--
-+		msm_gem_lock(obj);
- 		pages = get_pages(obj);
-+		msm_gem_unlock(obj);
- 		if (IS_ERR(pages)) {
- 			ret = PTR_ERR(pages);
- 			goto fail;
--- 
-2.29.2
+Fine by me; I shall change that.
 
+> ACPI does not have a format port concept so the definitions that are being
+> used can be said to be specific to Linux.
+> 
