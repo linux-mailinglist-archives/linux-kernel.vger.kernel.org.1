@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C3272E37CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:01:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 495712E3B73
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:51:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729521AbgL1NAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:00:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56402 "EHLO mail.kernel.org"
+        id S2406298AbgL1NuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:50:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729459AbgL1NA1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:00:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D6B9022A84;
-        Mon, 28 Dec 2020 13:00:11 +0000 (UTC)
+        id S2406271AbgL1NuI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:50:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4036C2072C;
+        Mon, 28 Dec 2020 13:49:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160412;
-        bh=oWJXZo+0BclQizMraScsx3nBU4Nn0LYmt4uqg1UzAbU=;
+        s=korg; t=1609163361;
+        bh=BF+6ngjyPcB3uVAVQ+yjQ1Cd7mL3NavrHj1pEmuLVS8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UNN0/IDU2vKaSSxoJy11uR8pFvGPUDV3SOl4zuRj5JVMFp+UkSiSqX5QxSbhSE94a
-         iG3psVVbuTnkihybkN8flmCudxraJ8aLwvVwIwNhN09IX2uJn3rKFb9ZVRC+rk2oTy
-         w+TbKnJXlugRekXhOvIJpf73i3xY2U8DVzk6toTo=
+        b=AtK1f87da37eHJX0WmGwt0bh+Uj0qmg9UWqqgU/uO782HAzZiJUeuII/yW/gWSOMa
+         QRXSP6q2zfnfId8Z+eeKw/xp4R3MT17KPIZYDfN8ZNp7D2AbDGO7vhFpSqaxDZX5Dp
+         iQw5MOxwY0xhF6S5nodwACamUcrFpkMJiG5e+OH8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
-        Gabriel Ribba Esteva <gabriel.ribbae@gmail.com>
-Subject: [PATCH 4.9 042/175] ARM: dts: exynos: fix roles of USB 3.0 ports on Odroid XU
+        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 259/453] iwlwifi: mvm: hook up missing RX handlers
 Date:   Mon, 28 Dec 2020 13:48:15 +0100
-Message-Id: <20201228124855.290195717@linuxfoundation.org>
+Message-Id: <20201228124949.691347087@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,40 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Johannes Berg <johannes.berg@intel.com>
 
-commit ecc1ff532b499d20304a4f682247137025814c34 upstream.
+[ Upstream commit 8a59d39033c35bb484f6bd91891db86ebe07fdc2 ]
 
-On Odroid XU board the USB3-0 port is a microUSB and USB3-1 port is USB
-type A (host).  The roles were copied from Odroid XU3 (Exynos5422)
-design which has it reversed.
+The RX handlers for probe response data and channel switch weren't
+hooked up properly, fix that.
 
-Fixes: 8149afe4dbf9 ("ARM: dts: exynos: Add initial support for Odroid XU board")
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201015182044.480562-1-krzk@kernel.org
-Tested-by: Gabriel Ribba Esteva <gabriel.ribbae@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 86e177d80ff7 ("iwlwifi: mvm: add NOA and CSA to a probe response")
+Fixes: d3a108a48dc6 ("iwlwifi: mvm: Support CSA countdown offloading")
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Link: https://lore.kernel.org/r/iwlwifi.20201209231352.2d07dcee0d35.I07a61b5d734478db57d9434ff303e4c90bf6c32b@changeid
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/exynos5410-odroidxu.dts |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/wireless/intel/iwlwifi/mvm/ops.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/arch/arm/boot/dts/exynos5410-odroidxu.dts
-+++ b/arch/arm/boot/dts/exynos5410-odroidxu.dts
-@@ -560,11 +560,11 @@
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/ops.c b/drivers/net/wireless/intel/iwlwifi/mvm/ops.c
+index 3acbd5b7ab4b2..b04cc6214bac8 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/ops.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/ops.c
+@@ -316,6 +316,12 @@ static const struct iwl_rx_handlers iwl_mvm_rx_handlers[] = {
+ 		       iwl_mvm_mu_mimo_grp_notif, RX_HANDLER_SYNC),
+ 	RX_HANDLER_GRP(DATA_PATH_GROUP, STA_PM_NOTIF,
+ 		       iwl_mvm_sta_pm_notif, RX_HANDLER_SYNC),
++	RX_HANDLER_GRP(MAC_CONF_GROUP, PROBE_RESPONSE_DATA_NOTIF,
++		       iwl_mvm_probe_resp_data_notif,
++		       RX_HANDLER_ASYNC_LOCKED),
++	RX_HANDLER_GRP(MAC_CONF_GROUP, CHANNEL_SWITCH_NOA_NOTIF,
++		       iwl_mvm_channel_switch_noa_notif,
++		       RX_HANDLER_SYNC),
  };
- 
- &usbdrd_dwc3_0 {
--	dr_mode = "host";
-+	dr_mode = "peripheral";
- };
- 
- &usbdrd_dwc3_1 {
--	dr_mode = "peripheral";
-+	dr_mode = "host";
- };
- 
- &usbdrd3_0 {
+ #undef RX_HANDLER
+ #undef RX_HANDLER_GRP
+-- 
+2.27.0
+
 
 
