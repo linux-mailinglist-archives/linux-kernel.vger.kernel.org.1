@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 296222E3B89
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:51:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 922EC2E38BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:16:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406835AbgL1NvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:51:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52814 "EHLO mail.kernel.org"
+        id S1732476AbgL1NOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:14:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406476AbgL1Nu7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:50:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 16C3220791;
-        Mon, 28 Dec 2020 13:50:17 +0000 (UTC)
+        id S1732475AbgL1NOS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:14:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B6F0721D94;
+        Mon, 28 Dec 2020 13:13:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163418;
-        bh=kD1KJvfZabHqHTEzjZ43wMKSV+u8GPIAS9zryJIfk4c=;
+        s=korg; t=1609161218;
+        bh=q7SCyNDGjsqalBlUadLCiYrHq+LW1BvNMrDbAsufqrA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RKkYIyx4iO88NJb8+wn+btdBplLdLfn3r6QAj95ZwGxd/voJLGpD8153pbyucNiPO
-         fDiec+fw74AkCP2eBmnz6W55lGp0Q8MFwZbd+ioCe7p3jw+Eqlg9RSfaCwm1H0Dbvo
-         osjx3qxs9AhMPiDsuaDpmMot1TDswfpanjTtQbmw=
+        b=h2L0Ug9UTB/j/jYQaTKaILipd+6c3pr+f+38ejCxYmGgu6mHyIe2J8NrXg1qv4BUB
+         Htzb5oqiyemWCYGndDOOJMxlHuVWFpmSe8xgMjJHU+Gruf+EdMjWrH045orK01IJfa
+         4LX+y3buiGr6wGdgyGQMngyc92DWq5uhulhzplyU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wang ShaoBo <bobo.shaobowang@huawei.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Richard Weinberger <richard@nod.at>,
+        stable@vger.kernel.org,
+        Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>,
+        Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 280/453] ubifs: Fix error return code in ubifs_init_authentication()
-Date:   Mon, 28 Dec 2020 13:48:36 +0100
-Message-Id: <20201228124950.684089150@linuxfoundation.org>
+Subject: [PATCH 4.14 112/242] media: siano: fix memory leak of debugfs members in smsdvb_hotplug
+Date:   Mon, 28 Dec 2020 13:48:37 +0100
+Message-Id: <20201228124910.202140634@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +42,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang ShaoBo <bobo.shaobowang@huawei.com>
+From: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
 
-[ Upstream commit 3cded66330591cfd2554a3fd5edca8859ea365a2 ]
+[ Upstream commit abf287eeff4c6da6aa804bbd429dfd9d0dfb6ea7 ]
 
-Fix to return PTR_ERR() error code from the error handling case where
-ubifs_hash_get_desc() failed instead of 0 in ubifs_init_authentication(),
-as done elsewhere in this function.
+When dvb_create_media_graph fails, the debugfs kept inside client should
+be released. However, the current implementation does not release them.
 
-Fixes: 49525e5eecca5 ("ubifs: Add helper functions for authentication support")
-Signed-off-by: Wang ShaoBo <bobo.shaobowang@huawei.com>
-Reviewed-by: Sascha Hauer <s.hauer@pengutronix.de>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Fix this by adding a new goto label to call smsdvb_debugfs_release.
+
+Fixes: 0d3ab8410dcb ("[media] dvb core: must check dvb_create_media_graph()")
+Signed-off-by: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
+Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ubifs/auth.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/media/common/siano/smsdvb-main.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ubifs/auth.c b/fs/ubifs/auth.c
-index f985a3fbbb36a..b10418b5fb719 100644
---- a/fs/ubifs/auth.c
-+++ b/fs/ubifs/auth.c
-@@ -352,8 +352,10 @@ int ubifs_init_authentication(struct ubifs_info *c)
- 	c->authenticated = true;
+diff --git a/drivers/media/common/siano/smsdvb-main.c b/drivers/media/common/siano/smsdvb-main.c
+index affde1426b7a2..15e895c9f2e0b 100644
+--- a/drivers/media/common/siano/smsdvb-main.c
++++ b/drivers/media/common/siano/smsdvb-main.c
+@@ -1180,12 +1180,15 @@ static int smsdvb_hotplug(struct smscore_device_t *coredev,
+ 	rc = dvb_create_media_graph(&client->adapter, true);
+ 	if (rc < 0) {
+ 		pr_err("dvb_create_media_graph failed %d\n", rc);
+-		goto client_error;
++		goto media_graph_error;
+ 	}
  
- 	c->log_hash = ubifs_hash_get_desc(c);
--	if (IS_ERR(c->log_hash))
-+	if (IS_ERR(c->log_hash)) {
-+		err = PTR_ERR(c->log_hash);
- 		goto out_free_hmac;
-+	}
+ 	pr_info("DVB interface registered.\n");
+ 	return 0;
  
- 	err = 0;
++media_graph_error:
++	smsdvb_debugfs_release(client);
++
+ client_error:
+ 	dvb_unregister_frontend(&client->frontend);
  
 -- 
 2.27.0
