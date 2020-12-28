@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64F672E63AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:43:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C39E2E398D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:25:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405095AbgL1NrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:47:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47490 "EHLO mail.kernel.org"
+        id S2388800AbgL1NYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:24:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405208AbgL1NqS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:46:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D3E61206D4;
-        Mon, 28 Dec 2020 13:45:37 +0000 (UTC)
+        id S2388778AbgL1NYm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:24:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0C6320719;
+        Mon, 28 Dec 2020 13:24:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163138;
-        bh=Uu4vy0t4k3zbbvshgI9vZztzSbsaLquTXVeFy6tWv4c=;
+        s=korg; t=1609161842;
+        bh=H+4vj7ofXrwo4F/JSe/g8dUAV3F9/NP1aIxW60Tzgwk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hZJhKttw3cf58VraUor2aBQKNVfzrwAggQK3JYq+FP9lRj4oTiHYgWX3FPP4Stx9s
-         jjnmqoWf7Gr3l4IBXi/2tb2WEu7mORHzdvBlK6gzcCCndgOup4y+VgnBBmoNgjtqp8
-         fDtTdtwUqIWnsR0V23WI/z02WhdzFD3Eou/ppoSI=
+        b=r2BR221Fvn28wB0RhyUn2PVNKTz71HBP02BdvsazmxQIm7mgSRQYIVfJhkjbPVYko
+         j1BTCMrGYI8CDwiOh5rlyH0GWwqshN/hIB30vUCDwIT0/mZCdYVMH4mFOnRcs99j/k
+         ae4sn1hukKjHwj0MjYut6lKWyxUAzfpO5o2MQlBw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        stable@vger.kernel.org, Nicolas Boichat <drinkcat@chromium.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 184/453] power: supply: bq24190_charger: fix reference leak
+Subject: [PATCH 4.19 101/346] soc: mediatek: Check if power domains can be powered on at boot time
 Date:   Mon, 28 Dec 2020 13:47:00 +0100
-Message-Id: <20201228124946.062707282@linuxfoundation.org>
+Message-Id: <20201228124924.666064778@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,89 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Qilong <zhangqilong3@huawei.com>
+From: Nicolas Boichat <drinkcat@chromium.org>
 
-[ Upstream commit b2f6cb78eaa1cad57dd3fe11d0458cd4fae9a584 ]
+[ Upstream commit 4007844b05815717f522c7ea9914e24ad0ff6c79 ]
 
-pm_runtime_get_sync will increment pm usage counter even it
-failed. Forgetting to call pm_runtime_put_noidle will result
-in reference leak in callers(bq24190_sysfs_show,
-bq24190_charger_get_property, bq24190_charger_set_property,
-bq24190_battery_get_property, bq24190_battery_set_property),
-so we should fix it.
+In the error case, where a power domain cannot be powered on
+successfully at boot time (in mtk_register_power_domains),
+pm_genpd_init would still be called with is_off=false, and the
+system would later try to disable the power domain again, triggering
+warnings as disabled clocks are disabled again (and other potential
+issues).
 
-Fixes: f385e6e2a1532 ("power: bq24190_charger: Use PM runtime autosuspend")
-Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Also print a warning splat in that case, as this should never
+happen.
+
+Fixes: c84e358718a66f7 ("soc: Mediatek: Add SCPSYS power domain driver")
+Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+Link: https://lore.kernel.org/r/20200928113107.v2.1.I5e6f8c262031d0451fe7241b744f4f3111c1ce71@changeid
+Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/bq24190_charger.c | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+ drivers/soc/mediatek/mtk-scpsys.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/power/supply/bq24190_charger.c b/drivers/power/supply/bq24190_charger.c
-index 453d6332d43a7..1ae5d6d42c9e3 100644
---- a/drivers/power/supply/bq24190_charger.c
-+++ b/drivers/power/supply/bq24190_charger.c
-@@ -448,8 +448,10 @@ static ssize_t bq24190_sysfs_show(struct device *dev,
- 		return -EINVAL;
+diff --git a/drivers/soc/mediatek/mtk-scpsys.c b/drivers/soc/mediatek/mtk-scpsys.c
+index 5b24bb4bfbf66..ef54f1638d207 100644
+--- a/drivers/soc/mediatek/mtk-scpsys.c
++++ b/drivers/soc/mediatek/mtk-scpsys.c
+@@ -454,6 +454,7 @@ static void mtk_register_power_domains(struct platform_device *pdev,
+ 	for (i = 0; i < num; i++) {
+ 		struct scp_domain *scpd = &scp->domains[i];
+ 		struct generic_pm_domain *genpd = &scpd->genpd;
++		bool on;
  
- 	ret = pm_runtime_get_sync(bdi->dev);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(bdi->dev);
- 		return ret;
-+	}
+ 		/*
+ 		 * Initially turn on all domains to make the domains usable
+@@ -461,9 +462,9 @@ static void mtk_register_power_domains(struct platform_device *pdev,
+ 		 * software.  The unused domains will be switched off during
+ 		 * late_init time.
+ 		 */
+-		genpd->power_on(genpd);
++		on = !WARN_ON(genpd->power_on(genpd) < 0);
  
- 	ret = bq24190_read_mask(bdi, info->reg, info->mask, info->shift, &v);
- 	if (ret)
-@@ -1075,8 +1077,10 @@ static int bq24190_charger_get_property(struct power_supply *psy,
- 	dev_dbg(bdi->dev, "prop: %d\n", psp);
+-		pm_genpd_init(genpd, NULL, false);
++		pm_genpd_init(genpd, NULL, !on);
+ 	}
  
- 	ret = pm_runtime_get_sync(bdi->dev);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(bdi->dev);
- 		return ret;
-+	}
- 
- 	switch (psp) {
- 	case POWER_SUPPLY_PROP_CHARGE_TYPE:
-@@ -1147,8 +1151,10 @@ static int bq24190_charger_set_property(struct power_supply *psy,
- 	dev_dbg(bdi->dev, "prop: %d\n", psp);
- 
- 	ret = pm_runtime_get_sync(bdi->dev);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(bdi->dev);
- 		return ret;
-+	}
- 
- 	switch (psp) {
- 	case POWER_SUPPLY_PROP_ONLINE:
-@@ -1408,8 +1414,10 @@ static int bq24190_battery_get_property(struct power_supply *psy,
- 	dev_dbg(bdi->dev, "prop: %d\n", psp);
- 
- 	ret = pm_runtime_get_sync(bdi->dev);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(bdi->dev);
- 		return ret;
-+	}
- 
- 	switch (psp) {
- 	case POWER_SUPPLY_PROP_STATUS:
-@@ -1454,8 +1462,10 @@ static int bq24190_battery_set_property(struct power_supply *psy,
- 	dev_dbg(bdi->dev, "prop: %d\n", psp);
- 
- 	ret = pm_runtime_get_sync(bdi->dev);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(bdi->dev);
- 		return ret;
-+	}
- 
- 	switch (psp) {
- 	case POWER_SUPPLY_PROP_ONLINE:
+ 	/*
 -- 
 2.27.0
 
