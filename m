@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C68692E388E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:13:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 651922E63D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:45:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731870AbgL1NLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:11:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39148 "EHLO mail.kernel.org"
+        id S2406549AbgL1Pmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:42:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731617AbgL1NLO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:11:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F11B520728;
-        Mon, 28 Dec 2020 13:10:32 +0000 (UTC)
+        id S2405571AbgL1Nrc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:47:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 01F732063A;
+        Mon, 28 Dec 2020 13:47:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161033;
-        bh=nMf3gnOx6eJxxED5MzzNT844IXb6sTEqjQRbZaVsyUs=;
+        s=korg; t=1609163235;
+        bh=7QYv8oJtyx/FMSfi9dcyS8Tpx2rmOdUqHgJGIugiPC0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DF4rKMx2gs7Eq55bVKYcGiUg/1gGgRNTrozKBjnRaRvaq9DCT59yzKgFMQ6aFH9pA
-         zzb56glHHe79PNyOrk7cKE7dt5QuOl2cFyI6Dhw+6MLG/yDy4bEpTzpg/hbFJ9XJhA
-         5yNvrYwqjgAE3mDpRCUpszoql/jZ5xI+rWMw7gh4=
+        b=lLbWHOMragnZMksReXFewgHAW71LxqWRDRYXnNsCq9Ocbd1aijIc3NH5ssfUQ92qj
+         2uVD841xC9zUzHPM3Ukr3L8FV9kpLM0r+euYIuHwCNa3X/dAkezyaI+6DMyc2pq1DV
+         OIKe7Wkci0QKv9NyOvlnq4HfiKNvaxN2KpJ1L+7g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Mike Snitzer <snitzer@redhat.com>,
+        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 047/242] dm table: Remove BUG_ON(in_interrupt())
-Date:   Mon, 28 Dec 2020 13:47:32 +0100
-Message-Id: <20201228124906.996140747@linuxfoundation.org>
+Subject: [PATCH 5.4 217/453] pinctrl: falcon: add missing put_device() call in pinctrl_falcon_probe()
+Date:   Mon, 28 Dec 2020 13:47:33 +0100
+Message-Id: <20201228124947.660517676@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,43 +40,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Yu Kuai <yukuai3@huawei.com>
 
-[ Upstream commit e7b624183d921b49ef0a96329f21647d38865ee9 ]
+[ Upstream commit 89cce2b3f247a434ee174ab6803698041df98014 ]
 
-The BUG_ON(in_interrupt()) in dm_table_event() is a historic leftover from
-a rework of the dm table code which changed the calling context.
+if of_find_device_by_node() succeed, pinctrl_falcon_probe() doesn't have
+a corresponding put_device(). Thus add put_device() to fix the exception
+handling for this function implementation.
 
-Issuing a BUG for a wrong calling context is frowned upon and
-in_interrupt() is deprecated and only covering parts of the wrong
-contexts. The sanity check for the context is covered by
-CONFIG_DEBUG_ATOMIC_SLEEP and other debug facilities already.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Fixes: e316cb2b16bb ("OF: pinctrl: MIPS: lantiq: adds support for FALCON SoC")
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Link: https://lore.kernel.org/r/20201119011219.2248232-1-yukuai3@huawei.com
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/dm-table.c | 6 ------
- 1 file changed, 6 deletions(-)
+ drivers/pinctrl/pinctrl-falcon.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
-index 777343cff5f1e..78d4e7347e2f3 100644
---- a/drivers/md/dm-table.c
-+++ b/drivers/md/dm-table.c
-@@ -1295,12 +1295,6 @@ void dm_table_event_callback(struct dm_table *t,
+diff --git a/drivers/pinctrl/pinctrl-falcon.c b/drivers/pinctrl/pinctrl-falcon.c
+index 62c02b969327f..7521a924dffb0 100644
+--- a/drivers/pinctrl/pinctrl-falcon.c
++++ b/drivers/pinctrl/pinctrl-falcon.c
+@@ -431,24 +431,28 @@ static int pinctrl_falcon_probe(struct platform_device *pdev)
  
- void dm_table_event(struct dm_table *t)
- {
--	/*
--	 * You can no longer call dm_table_event() from interrupt
--	 * context, use a bottom half instead.
--	 */
--	BUG_ON(in_interrupt());
--
- 	mutex_lock(&_event_lock);
- 	if (t->event_fn)
- 		t->event_fn(t->event_context);
+ 	/* load and remap the pad resources of the different banks */
+ 	for_each_compatible_node(np, NULL, "lantiq,pad-falcon") {
+-		struct platform_device *ppdev = of_find_device_by_node(np);
+ 		const __be32 *bank = of_get_property(np, "lantiq,bank", NULL);
+ 		struct resource res;
++		struct platform_device *ppdev;
+ 		u32 avail;
+ 		int pins;
+ 
+ 		if (!of_device_is_available(np))
+ 			continue;
+ 
+-		if (!ppdev) {
+-			dev_err(&pdev->dev, "failed to find pad pdev\n");
+-			continue;
+-		}
+ 		if (!bank || *bank >= PORTS)
+ 			continue;
+ 		if (of_address_to_resource(np, 0, &res))
+ 			continue;
++
++		ppdev = of_find_device_by_node(np);
++		if (!ppdev) {
++			dev_err(&pdev->dev, "failed to find pad pdev\n");
++			continue;
++		}
++
+ 		falcon_info.clk[*bank] = clk_get(&ppdev->dev, NULL);
++		put_device(&ppdev->dev);
+ 		if (IS_ERR(falcon_info.clk[*bank])) {
+ 			dev_err(&ppdev->dev, "failed to get clock\n");
+ 			of_node_put(np);
 -- 
 2.27.0
 
