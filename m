@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EEFC2E39F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:30:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FB7F2E3E29
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:25:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390356AbgL1NaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:30:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58864 "EHLO mail.kernel.org"
+        id S2503156AbgL1OYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:24:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60270 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390331AbgL1NaS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:30:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 48EB220728;
-        Mon, 28 Dec 2020 13:30:02 +0000 (UTC)
+        id S2503131AbgL1OYq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:24:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2707C20791;
+        Mon, 28 Dec 2020 14:24:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162203;
-        bh=TXc+Zv+opd6KQlMPsKfCTSVRnpENJXCwob/Fxjh8H5s=;
+        s=korg; t=1609165471;
+        bh=EWLUgXL++eCggRttILvYyI17z+cKJUg0l/kJ0Nht58E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dNLOysDWg2CyiZcZiqga/uXme9rzxUGjVVhKIRuBWDPzClFVWrbof7DNTTSTfbgSI
-         MNlYn/jkxZaJIjGXeAnHsDBbRKIsZorMGNrywmgf5hXkWZa0CweEgTNHIqxPlPVlq1
-         vki7kujqowJDHFElzkbUjmji+qRFpxgexn2qTekA=
+        b=YySZkF4a+RXdimG0ac7ZxWi41dAb1oCL9W5GFWZOlFJ3Q6WoChla+Hcpjw6ndmgeB
+         YGUBk7zJY8e0RjSdQvNa0vDXD8bQeXrdDSjT3z3BWgzGjCMaWMVnc8rmq3TPQUK1wZ
+         5757chbHKxMkPoYetFuqBfPJJ/UZ7v8m8+bTCs3E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, NeilBrown <neilb@suse.de>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 192/346] NFS: switch nfsiod to be an UNBOUND workqueue.
+        stable@vger.kernel.org, Eric Auger <eric.auger@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>
+Subject: [PATCH 5.10 513/717] vfio/pci: Move dummy_resources_list init in vfio_pci_probe()
 Date:   Mon, 28 Dec 2020 13:48:31 +0100
-Message-Id: <20201228124929.070322534@linuxfoundation.org>
+Message-Id: <20201228125045.549457581@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: NeilBrown <neilb@suse.de>
+From: Eric Auger <eric.auger@redhat.com>
 
-[ Upstream commit bf701b765eaa82dd164d65edc5747ec7288bb5c3 ]
+commit 16b8fe4caf499ae8e12d2ab1b1324497e36a7b83 upstream.
 
-nfsiod is currently a concurrency-managed workqueue (CMWQ).
-This means that workitems scheduled to nfsiod on a given CPU are queued
-behind all other work items queued on any CMWQ on the same CPU.  This
-can introduce unexpected latency.
+In case an error occurs in vfio_pci_enable() before the call to
+vfio_pci_probe_mmaps(), vfio_pci_disable() will  try to iterate
+on an uninitialized list and cause a kernel panic.
 
-Occaionally nfsiod can even cause excessive latency.  If the work item
-to complete a CLOSE request calls the final iput() on an inode, the
-address_space of that inode will be dismantled.  This takes time
-proportional to the number of in-memory pages, which on a large host
-working on large files (e.g..  5TB), can be a large number of pages
-resulting in a noticable number of seconds.
+Lets move to the initialization to vfio_pci_probe() to fix the
+issue.
 
-We can avoid these latency problems by switching nfsiod to WQ_UNBOUND.
-This causes each concurrent work item to gets a dedicated thread which
-can be scheduled to an idle CPU.
+Signed-off-by: Eric Auger <eric.auger@redhat.com>
+Fixes: 05f0c03fbac1 ("vfio-pci: Allow to mmap sub-page MMIO BARs if the mmio page is exclusive")
+CC: Stable <stable@vger.kernel.org> # v4.7+
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-There is precedent for this as several other filesystems use WQ_UNBOUND
-workqueue for handling various async events.
-
-Signed-off-by: NeilBrown <neilb@suse.de>
-Fixes: ada609ee2ac2 ("workqueue: use WQ_MEM_RECLAIM instead of WQ_RESCUER")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/inode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/vfio/pci/vfio_pci.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/fs/nfs/inode.c b/fs/nfs/inode.c
-index e4cd3a2fe6989..aee66d8f13305 100644
---- a/fs/nfs/inode.c
-+++ b/fs/nfs/inode.c
-@@ -2142,7 +2142,7 @@ static int nfsiod_start(void)
- {
- 	struct workqueue_struct *wq;
- 	dprintk("RPC:       creating workqueue nfsiod\n");
--	wq = alloc_workqueue("nfsiod", WQ_MEM_RECLAIM, 0);
-+	wq = alloc_workqueue("nfsiod", WQ_MEM_RECLAIM | WQ_UNBOUND, 0);
- 	if (wq == NULL)
- 		return -ENOMEM;
- 	nfsiod_workqueue = wq;
--- 
-2.27.0
-
+--- a/drivers/vfio/pci/vfio_pci.c
++++ b/drivers/vfio/pci/vfio_pci.c
+@@ -161,8 +161,6 @@ static void vfio_pci_probe_mmaps(struct
+ 	int i;
+ 	struct vfio_pci_dummy_resource *dummy_res;
+ 
+-	INIT_LIST_HEAD(&vdev->dummy_resources_list);
+-
+ 	for (i = 0; i < PCI_STD_NUM_BARS; i++) {
+ 		int bar = i + PCI_STD_RESOURCES;
+ 
+@@ -1966,6 +1964,7 @@ static int vfio_pci_probe(struct pci_dev
+ 	mutex_init(&vdev->igate);
+ 	spin_lock_init(&vdev->irqlock);
+ 	mutex_init(&vdev->ioeventfds_lock);
++	INIT_LIST_HEAD(&vdev->dummy_resources_list);
+ 	INIT_LIST_HEAD(&vdev->ioeventfds_list);
+ 	mutex_init(&vdev->vma_lock);
+ 	INIT_LIST_HEAD(&vdev->vma_list);
 
 
