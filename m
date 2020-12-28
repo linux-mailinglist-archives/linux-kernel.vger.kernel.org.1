@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 174832E3F56
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:40:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB9B2E64F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:55:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505676AbgL1Oir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:38:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39952 "EHLO mail.kernel.org"
+        id S2390583AbgL1NgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:36:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392093AbgL1Obo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:31:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 26E9820715;
-        Mon, 28 Dec 2020 14:31:02 +0000 (UTC)
+        id S2391342AbgL1NgH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:36:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0B76206ED;
+        Mon, 28 Dec 2020 13:35:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165863;
-        bh=LOnALXAwccCD9RXii7ICJ5jy51cug5E67HC3V0KiZps=;
+        s=korg; t=1609162526;
+        bh=A62BzNAEG3QD8Ns32oFi/Og+zphtgr6XcCjfSz6IDV4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=08+NItALbpZjAf/OcZqrbbg6EyuV7UAfUnVdzjrkswTp9Tb+aAgUDGyp6Xf95lvUV
-         Wkb1jc7c/iE025GV2CvJNILU3k9aNFj3Q5ST9WSHjxoelwIGf90qYVQhAgLPq8YqwU
-         gCC1PE4lP3xrY25E0R1GOQICwRuZueOXEFmtHD5k=
+        b=AQYE9Ai35f4rOdkk/S6cK2ynW5nSOmM1RWp0AYJLfFrig5o53zdv/nat80dcINPbE
+         RSCAVqeRK1pSppLqehwUNhZddPHO1o3Z2YMa9UWR3djfyzmPbYTkpAH6qMCYs9Hrhz
+         xJZhgstGSae0F5iszK1gFwnT685eLl/NoBPHbfEc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 5.10 650/717] spi: npcm-fiu: Disable clock in probe error path
-Date:   Mon, 28 Dec 2020 13:50:48 +0100
-Message-Id: <20201228125052.090332666@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Mikko Koivunen <mikko.koivunen@fi.rohmeurope.com>,
+        Stable@vger.kernel.org
+Subject: [PATCH 4.19 330/346] iio:light:rpr0521: Fix timestamp alignment and prevent data leak.
+Date:   Mon, 28 Dec 2020 13:50:49 +0100
+Message-Id: <20201228124935.728053862@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,49 +42,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-commit 234266a5168bbe8220d263e3aa7aa80cf921c483 upstream.
+commit a61817216bcc755eabbcb1cf281d84ccad267ed1 upstream.
 
-If the call to devm_spi_register_master() fails on probe of the NPCM FIU
-SPI driver, the clock "fiu->clk" is erroneously not unprepared and
-disabled.  Fix it.
+One of a class of bugs pointed out by Lars in a recent review.
+iio_push_to_buffers_with_timestamp() assumes the buffer used is aligned
+to the size of the timestamp (8 bytes).  This is not guaranteed in
+this driver which uses an array of smaller elements on the stack.
+As Lars also noted this anti pattern can involve a leak of data to
+userspace and that indeed can happen here.  We close both issues by
+moving to a suitable structure in the iio_priv().
+This data is allocated with kzalloc() so no data can leak apart
+from previous readings and in this case the status byte from the device.
 
-Fixes: ace55c411b11 ("spi: npcm-fiu: add NPCM FIU controller driver")
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Cc: <stable@vger.kernel.org> # v5.4+
-Cc: Tomer Maimon <tmaimon77@gmail.com>
-Link: https://lore.kernel.org/r/9ae62f4e1cfe542bec57ac2743e6fca9f9548f55.1607286887.git.lukas@wunner.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
+The forced alignment of ts is not necessary in this case but it
+potentially makes the code less fragile.
+
+>From personal communications with Mikko:
+
+We could probably split the reading of the int register, but it
+would mean a significant performance cost of 20 i2c clock cycles.
+
+Fixes: e12ffd241c00 ("iio: light: rpr0521 triggered buffer")
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc: Mikko Koivunen <mikko.koivunen@fi.rohmeurope.com>
+Cc: <Stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200920112742.170751-2-jic23@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/spi/spi-npcm-fiu.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/iio/light/rpr0521.c |   17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
---- a/drivers/spi/spi-npcm-fiu.c
-+++ b/drivers/spi/spi-npcm-fiu.c
-@@ -677,7 +677,7 @@ static int npcm_fiu_probe(struct platfor
- 	struct npcm_fiu_spi *fiu;
- 	void __iomem *regbase;
- 	struct resource *res;
--	int id;
-+	int id, ret;
+--- a/drivers/iio/light/rpr0521.c
++++ b/drivers/iio/light/rpr0521.c
+@@ -197,6 +197,17 @@ struct rpr0521_data {
+ 	bool pxs_need_dis;
  
- 	ctrl = devm_spi_alloc_master(dev, sizeof(*fiu));
- 	if (!ctrl)
-@@ -735,7 +735,11 @@ static int npcm_fiu_probe(struct platfor
- 	ctrl->num_chipselect = fiu->info->max_cs;
- 	ctrl->dev.of_node = dev->of_node;
- 
--	return devm_spi_register_master(dev, ctrl);
-+	ret = devm_spi_register_master(dev, ctrl);
-+	if (ret)
-+		clk_disable_unprepare(fiu->clk);
+ 	struct regmap *regmap;
 +
-+	return ret;
- }
++	/*
++	 * Ensure correct naturally aligned timestamp.
++	 * Note that the read will put garbage data into
++	 * the padding but this should not be a problem
++	 */
++	struct {
++		__le16 channels[3];
++		u8 garbage;
++		s64 ts __aligned(8);
++	} scan;
+ };
  
- static int npcm_fiu_remove(struct platform_device *pdev)
+ static IIO_CONST_ATTR(in_intensity_scale_available, RPR0521_ALS_SCALE_AVAIL);
+@@ -452,8 +463,6 @@ static irqreturn_t rpr0521_trigger_consu
+ 	struct rpr0521_data *data = iio_priv(indio_dev);
+ 	int err;
+ 
+-	u8 buffer[16]; /* 3 16-bit channels + padding + ts */
+-
+ 	/* Use irq timestamp when reasonable. */
+ 	if (iio_trigger_using_own(indio_dev) && data->irq_timestamp) {
+ 		pf->timestamp = data->irq_timestamp;
+@@ -464,11 +473,11 @@ static irqreturn_t rpr0521_trigger_consu
+ 		pf->timestamp = iio_get_time_ns(indio_dev);
+ 
+ 	err = regmap_bulk_read(data->regmap, RPR0521_REG_PXS_DATA,
+-		&buffer,
++		data->scan.channels,
+ 		(3 * 2) + 1);	/* 3 * 16-bit + (discarded) int clear reg. */
+ 	if (!err)
+ 		iio_push_to_buffers_with_timestamp(indio_dev,
+-						   buffer, pf->timestamp);
++						   &data->scan, pf->timestamp);
+ 	else
+ 		dev_err(&data->client->dev,
+ 			"Trigger consumer can't read from sensor.\n");
 
 
