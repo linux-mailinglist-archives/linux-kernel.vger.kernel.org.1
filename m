@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACC3F2E379F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:59:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC372E3BD6
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:55:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729146AbgL1M6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:58:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54554 "EHLO mail.kernel.org"
+        id S2405230AbgL1Nz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:55:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57034 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729116AbgL1M6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:58:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 557BD208BA;
-        Mon, 28 Dec 2020 12:57:35 +0000 (UTC)
+        id S2405213AbgL1NzX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:55:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F0352078D;
+        Mon, 28 Dec 2020 13:54:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160255;
-        bh=vB7QqCi5gwbyjbnoJx4bsAs4Q5iXfaQCVz+ZvX+hwJA=;
+        s=korg; t=1609163682;
+        bh=Y9hoCFoMDxo/rlkjSclVCBZB1V2luJRX7R9mD2GvbVU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ORGabjzh12DkosJcr4WEaptnLCgPFlgBaVZ2LDjFLZbrFzLqSzqX8HA4vhSf77FdE
-         asnb1niVHgOjNbY7JxOO2guEg3lMTdmtukwlFxVcEGQIH5NjxgfcFkhXSDkFB7S8pq
-         2eaf1EdtdPaJZ3zqRMIMcwI4R9tTQNJ9CO/P1eDU=
+        b=erRuCi9UazWX5BNYXxT5deeZc4qKOgj4zCPtVs89YBQ0aWSe2QN3p2C239ks1tskB
+         ZSsZ3zsvDTPeQuRzxWKOQ50t723dkOUeBoO9fiUdBSbNNNOENTHHDXQ3C31m+1VfGp
+         /PdOJ8g+/rnDPl9LQSbYTX7CZRE+Hh8t72BQM5ag=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 092/132] qlcnic: Fix error code in probe
+        stable@vger.kernel.org,
+        syzbot+33ef0b6639a8d2d42b4c@syzkaller.appspotmail.com,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.4 340/453] ALSA: pcm: oss: Fix a few more UBSAN fixes
 Date:   Mon, 28 Dec 2020 13:49:36 +0100
-Message-Id: <20201228124850.876672233@linuxfoundation.org>
+Message-Id: <20201228124953.580178883@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +40,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 0d52848632a357948028eab67ff9b7cc0c12a0fb ]
+commit 11cb881bf075cea41092a20236ba708b18e1dbb2 upstream.
 
-Return -EINVAL if we can't find the correct device.  Currently it
-returns success.
+There are a few places that call round{up|down}_pow_of_two() with the
+value zero, and this causes undefined behavior warnings.  Avoid
+calling those macros if such a nonsense value is passed; it's a minor
+optimization as well, as we handle it as either an error or a value to
+be skipped, instead.
 
-Fixes: 13159183ec7a ("qlcnic: 83xx base driver")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/X9nHbMqEyI/xPfGd@mwanda
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reported-by: syzbot+33ef0b6639a8d2d42b4c@syzkaller.appspotmail.com
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201218161730.26596-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/core/oss/pcm_oss.c |   22 ++++++++++++++--------
+ 1 file changed, 14 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
-index 1205f6f9c9417..a4b10776f8346 100644
---- a/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
-+++ b/drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c
-@@ -2506,6 +2506,7 @@ qlcnic_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		qlcnic_sriov_vf_register_map(ahw);
- 		break;
- 	default:
-+		err = -EINVAL;
- 		goto err_out_free_hw_res;
- 	}
+--- a/sound/core/oss/pcm_oss.c
++++ b/sound/core/oss/pcm_oss.c
+@@ -693,6 +693,8 @@ static int snd_pcm_oss_period_size(struc
  
--- 
-2.27.0
-
+ 	oss_buffer_size = snd_pcm_plug_client_size(substream,
+ 						   snd_pcm_hw_param_value_max(slave_params, SNDRV_PCM_HW_PARAM_BUFFER_SIZE, NULL)) * oss_frame_size;
++	if (!oss_buffer_size)
++		return -EINVAL;
+ 	oss_buffer_size = rounddown_pow_of_two(oss_buffer_size);
+ 	if (atomic_read(&substream->mmap_count)) {
+ 		if (oss_buffer_size > runtime->oss.mmap_bytes)
+@@ -728,17 +730,21 @@ static int snd_pcm_oss_period_size(struc
+ 
+ 	min_period_size = snd_pcm_plug_client_size(substream,
+ 						   snd_pcm_hw_param_value_min(slave_params, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, NULL));
+-	min_period_size *= oss_frame_size;
+-	min_period_size = roundup_pow_of_two(min_period_size);
+-	if (oss_period_size < min_period_size)
+-		oss_period_size = min_period_size;
++	if (min_period_size) {
++		min_period_size *= oss_frame_size;
++		min_period_size = roundup_pow_of_two(min_period_size);
++		if (oss_period_size < min_period_size)
++			oss_period_size = min_period_size;
++	}
+ 
+ 	max_period_size = snd_pcm_plug_client_size(substream,
+ 						   snd_pcm_hw_param_value_max(slave_params, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, NULL));
+-	max_period_size *= oss_frame_size;
+-	max_period_size = rounddown_pow_of_two(max_period_size);
+-	if (oss_period_size > max_period_size)
+-		oss_period_size = max_period_size;
++	if (max_period_size) {
++		max_period_size *= oss_frame_size;
++		max_period_size = rounddown_pow_of_two(max_period_size);
++		if (oss_period_size > max_period_size)
++			oss_period_size = max_period_size;
++	}
+ 
+ 	oss_periods = oss_buffer_size / oss_period_size;
+ 
 
 
