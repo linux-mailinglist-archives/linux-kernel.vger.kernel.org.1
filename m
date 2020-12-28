@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB84F2E382F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:07:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 349AA2E4337
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:34:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729590AbgL1NF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:05:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33474 "EHLO mail.kernel.org"
+        id S2408290AbgL1PeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:34:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730661AbgL1NFp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:05:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C17A22583;
-        Mon, 28 Dec 2020 13:05:04 +0000 (UTC)
+        id S2404230AbgL1NyX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:54:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 136B3206D4;
+        Mon, 28 Dec 2020 13:54:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160704;
-        bh=Ed7G+Ve7B0rvQklr6MqKHAeDjIyVTNfHzgYEmp4xBl0=;
+        s=korg; t=1609163648;
+        bh=C4Xx29pfeW0Sm72GZwO45w63PsyaxlpmUCXJGWfKUyo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KPAkIgkYyV5CI4d3cjIKzuecXYILXH5B6X6s5BjWKHezkK83c/JDwvn6LZ0XxeAnS
-         N4gFvo0nn6zMDXaKs20S+CyrYUTxtJqzDNQz+BfJTdJpmflmq+3lGSK8IozGPITQ6e
-         YLNgGYNn9S8IDHbzTncO2v/6HBER33NoqklRzHIU=
+        b=GGfHd7I7CzfQlso2+AFxWg5F+gs2HAMPaTQe+HGAwif19Igg4vMxGTtfmhr1s22s5
+         dwgR+oeCuoW99LWWFXNCj3fCcZKI2j1v2AU6fZ60ujLuZkjUjkEDlVK6g073MbGkZT
+         q0efK1Vv35b4FRYHdV8tF1p4gxFjdY2przt/kbMA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rostislav Lisovy <lisovy@gmail.com>,
-        Ian Abbott <abbotti@mev.co.uk>
-Subject: [PATCH 4.9 142/175] staging: comedi: mf6x4: Fix AI end-of-conversion detection
+        stable@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: [PATCH 5.4 359/453] crypto: ecdh - avoid unaligned accesses in ecdh_set_secret()
 Date:   Mon, 28 Dec 2020 13:49:55 +0100
-Message-Id: <20201228124900.134917491@linuxfoundation.org>
+Message-Id: <20201228124954.484259579@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,50 +39,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ian Abbott <abbotti@mev.co.uk>
+From: Ard Biesheuvel <ardb@kernel.org>
 
-commit 56c90457ebfe9422496aac6ef3d3f0f0ea8b2ec2 upstream.
+commit 17858b140bf49961b71d4e73f1c3ea9bc8e7dda0 upstream.
 
-I have had reports from two different people that attempts to read the
-analog input channels of the MF624 board fail with an `ETIMEDOUT` error.
+ecdh_set_secret() casts a void* pointer to a const u64* in order to
+feed it into ecc_is_key_valid(). This is not generally permitted by
+the C standard, and leads to actual misalignment faults on ARMv6
+cores. In some cases, these are fixed up in software, but this still
+leads to performance hits that are entirely avoidable.
 
-After triggering the conversion, the code calls `comedi_timeout()` with
-`mf6x4_ai_eoc()` as the callback function to check if the conversion is
-complete.  The callback returns 0 if complete or `-EBUSY` if not yet
-complete.  `comedi_timeout()` returns `-ETIMEDOUT` if it has not
-completed within a timeout period which is propagated as an error to the
-user application.
+So let's copy the key into the ctx buffer first, which we will do
+anyway in the common case, and which guarantees correct alignment.
 
-The existing code considers the conversion to be complete when the EOLC
-bit is high.  However, according to the user manuals for the MF624 and
-MF634 boards, this test is incorrect because EOLC is an active low
-signal that goes high when the conversion is triggered, and goes low
-when the conversion is complete.  Fix the problem by inverting the test
-of the EOLC bit state.
-
-Fixes: 04b565021a83 ("comedi: Humusoft MF634 and MF624 DAQ cards driver")
-Cc: <stable@vger.kernel.org> # v4.4+
-Cc: Rostislav Lisovy <lisovy@gmail.com>
-Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
-Link: https://lore.kernel.org/r/20201207145806.4046-1-abbotti@mev.co.uk
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/staging/comedi/drivers/mf6x4.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ crypto/ecdh.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
---- a/drivers/staging/comedi/drivers/mf6x4.c
-+++ b/drivers/staging/comedi/drivers/mf6x4.c
-@@ -121,8 +121,9 @@ static int mf6x4_ai_eoc(struct comedi_de
- 	struct mf6x4_private *devpriv = dev->private;
- 	unsigned int status;
+--- a/crypto/ecdh.c
++++ b/crypto/ecdh.c
+@@ -53,12 +53,13 @@ static int ecdh_set_secret(struct crypto
+ 		return ecc_gen_privkey(ctx->curve_id, ctx->ndigits,
+ 				       ctx->private_key);
  
-+	/* EOLC goes low at end of conversion. */
- 	status = ioread32(devpriv->gpioc_reg);
--	if (status & MF6X4_GPIOC_EOLC)
-+	if ((status & MF6X4_GPIOC_EOLC) == 0)
- 		return 0;
- 	return -EBUSY;
+-	if (ecc_is_key_valid(ctx->curve_id, ctx->ndigits,
+-			     (const u64 *)params.key, params.key_size) < 0)
+-		return -EINVAL;
+-
+ 	memcpy(ctx->private_key, params.key, params.key_size);
+ 
++	if (ecc_is_key_valid(ctx->curve_id, ctx->ndigits,
++			     ctx->private_key, params.key_size) < 0) {
++		memzero_explicit(ctx->private_key, params.key_size);
++		return -EINVAL;
++	}
+ 	return 0;
  }
+ 
 
 
