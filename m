@@ -2,58 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4455E2E3EFE
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:35:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46B912E3EEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:35:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505286AbgL1OfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:35:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43016 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2505254AbgL1OfD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:35:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 450D7223E8;
-        Mon, 28 Dec 2020 14:34:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609166062;
-        bh=Is9XbTyMnMpitr/me80eTOa4UNjGDk+Wd80fgtYldQ4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tPoiBHW7srGkxORxbM7TK7a5ex8WPPKpJrx4I5G7I2z40mOwgIhNk8NhDN62iw7+5
-         v34g7D3GJPQlvh5OptOaGxZLvXWvOjS8mLnWL5+zER/kgmto4vPFHS6U/+YVrmFA3Q
-         22CgJMOdfhwQoDYFYKhUnBWI3klip+UBoOAGn0vg=
-Date:   Mon, 28 Dec 2020 15:30:03 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Ikjoon Jang <ikjn@chromium.org>
-Cc:     linux-mediatek@lists.infradead.org, linux-usb@vger.kernel.org,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Zhanyong Wang <zhanyong.wang@mediatek.com>,
-        Tianping Fang <tianping.fang@mediatek.com>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] usb: xhci-mtk: fix unreleased bandwidth data
-Message-ID: <X+nr65vhINCw8fCL@kroah.com>
-References: <20201214131640.v3.1.Id0d31b5f3ddf5e734d2ab11161ac5821921b1e1e@changeid>
- <20201214163945.v4.1.Id0d31b5f3ddf5e734d2ab11161ac5821921b1e1e@changeid>
+        id S2505159AbgL1OeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:34:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392138AbgL1OeN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:34:13 -0500
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 959BCC061794;
+        Mon, 28 Dec 2020 06:33:33 -0800 (PST)
+Received: by mail-qv1-xf2b.google.com with SMTP id a13so5010951qvv.0;
+        Mon, 28 Dec 2020 06:33:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1ierPRC6nwVyKGRAu13wlHhtdFpPWvdfztnJfDJ7P5k=;
+        b=va2DRmSEXgN4RERvddEc0LUIi0aJ2is7ykW9emcWUQX3DQyUptlLMgP0Bea93irTYn
+         GUNY+yNwBfUcC06TK70sP364qt6UJ0dMoK/+oYiVunlfYs5rDzclAbVJlZLTiFOAAv7Y
+         zImRtB6Riffr8DbKUXQM0M7UjIrnkHXZHPhY2YkurjNfW54/qzpFSRS8/uAOuxOryPSN
+         gy2hDuIsFEu9ROYAYzojZ50JFm+zlGultGM9IWu9tY+bPjpyfFO5qaDlssa7u0UyNUXH
+         WxVPI2ZynCr7Hn6mXxkbbcQB3bl4W1nmQ3ZHYfE4kOI2tXQOuHBFRtUXFsmRGVnS8Yf4
+         UP1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1ierPRC6nwVyKGRAu13wlHhtdFpPWvdfztnJfDJ7P5k=;
+        b=o6abMvJVWTJ+9wxVBmdoUHYsaW5kfX1S2X4kAAoi0V0mdD9bjFgw/eLj4PdgGT8lQs
+         2W9Zdx7dqvqE8y4fdc9Lh9uVRUeogTFIM4qdtFRokHsj+wRsTXkIm5yCWAkadhSxZH3H
+         C1LK8cdyc0Ce+/kNXi+jyWaWUwGVJwuq21Mn2M5Xf1YeTKS8h3uKSVFdqYVLARFSeptK
+         2E1ZbwDvxkifi6B9bKbJqhY5Q7X0Df40Tbesq9YlgQ/5W80Gquy4PBveWPXPl0heIXcD
+         gkexWQKAdFh1gx/G5S0YUL/6jq7Ss1nuGAceUyLJkps76hCkNKAhPFa6KxK+j78vJCTW
+         C/Xw==
+X-Gm-Message-State: AOAM5311Xp+tQ2fcK8maclA/zfj4W+9VA7vZcCarUOa2TtX20acwqAFt
+        glAQ9mTC9P9idv57d4vNM+LUgU8h/nwUJA==
+X-Google-Smtp-Source: ABdhPJz0IbZ8X0oYIXV2iC2NMeWRmuwGBjxlk7CI6xetX/5FXgaY6nXvJlB7M8Tk76pOFM76GaP2rQ==
+X-Received: by 2002:a0c:dc13:: with SMTP id s19mr47650134qvk.26.1609166012656;
+        Mon, 28 Dec 2020 06:33:32 -0800 (PST)
+Received: from rockpro64.hsd1.md.comcast.net ([2601:153:900:7730::20])
+        by smtp.gmail.com with ESMTPSA id j142sm24361024qke.117.2020.12.28.06.33.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Dec 2020 06:33:31 -0800 (PST)
+From:   Peter Geis <pgwipeout@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+Cc:     devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peter Geis <pgwipeout@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>
+Subject: [PATCH] ARM: tegra: fix emmc on specific bootloaders
+Date:   Mon, 28 Dec 2020 14:33:20 +0000
+Message-Id: <20201228143321.1863250-1-pgwipeout@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201214163945.v4.1.Id0d31b5f3ddf5e734d2ab11161ac5821921b1e1e@changeid>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 04:39:53PM +0800, Ikjoon Jang wrote:
-> xhci-mtk has hooks on add_endpoint() and drop_endpoint() from xhci
-> to handle its own sw bandwidth managements and stores bandwidth data
-> into internal table every time add_endpoint() is called,
-> so when bandwidth allocation fails at one endpoint, all earlier
-> allocation from the same interface could still remain at the table.
-> 
-> This patch adds two more hooks from check_bandwidth() and
-> reset_bandwidth(), and make mtk-xhci to releases all failed endpoints
-> from reset_bandwidth().
-> 
-> Fixes: 4b0f7a77fb3c ("usb: xhci-mtk: supports bandwidth scheduling with multi-TT")
+Ouya fails to detect the emmc module when booting from specific bootloaders.
+Fastboot and hard-kexec bootloaders have observed failures while u-boot does not have this issue.
+It was discovered that if the sdmmc4 alternate configuration clock pin is input disabled the issue manifests.
+Ouya uses sdmmc4 in the primary pin configuration so it is unknown why this occurs.
+It is likely related to the other emmc limitations we have on Ouya.
 
-This is not a git commit id that is in Linus's tree :(
+For now, fix it by enabling input on cam_mclk_pcc0.
+
+Fixes: d7195ac5c9c5 ("ARM: tegra: Add device-tree for Ouya")
+Signed-off-by: Peter Geis <pgwipeout@gmail.com>
+Reported-by: Matt Merhar <mattmerhar@protonmail.com>
+Tested-by: Matt Merhar <mattmerhar@protonmail.com>
+---
+ arch/arm/boot/dts/tegra30-ouya.dts | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/boot/dts/tegra30-ouya.dts b/arch/arm/boot/dts/tegra30-ouya.dts
+index 74da1360d297..0368b3b816ef 100644
+--- a/arch/arm/boot/dts/tegra30-ouya.dts
++++ b/arch/arm/boot/dts/tegra30-ouya.dts
+@@ -4352,8 +4352,8 @@ cam_mclk_pcc0 {
+ 		nvidia,pins = "cam_mclk_pcc0";
+ 		nvidia,function = "vi_alt3";
+ 		nvidia,pull = <TEGRA_PIN_PULL_NONE>;
+-		nvidia,tristate = <TEGRA_PIN_ENABLE>;
+-		nvidia,enable-input = <TEGRA_PIN_DISABLE>;
++		nvidia,tristate = <TEGRA_PIN_DISABLE>;
++		nvidia,enable-input = <TEGRA_PIN_ENABLE>;
+ 	};
+ 	pcc1 {
+ 		nvidia,pins = "pcc1";
+-- 
+2.25.1
 
