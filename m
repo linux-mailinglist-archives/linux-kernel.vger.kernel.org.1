@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BDB52E65A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:04:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D74692E6746
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:23:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393830AbgL1QD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:03:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57558 "EHLO mail.kernel.org"
+        id S2633488AbgL1QWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:22:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40082 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389981AbgL1N2q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:28:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B963B2084D;
-        Mon, 28 Dec 2020 13:28:05 +0000 (UTC)
+        id S1729404AbgL1NMI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:12:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D02D208D5;
+        Mon, 28 Dec 2020 13:11:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162086;
-        bh=UgTDsomvO5pVjVr2vbcUZrE11dadQ4DwqVuwRyB5cyA=;
+        s=korg; t=1609161087;
+        bh=bkRVZh4L/0zl8Z1PpqZxV5SMXxYeLyL0llq0dAeRNJo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n5WLPgKmJNxpZRb5V8RABzql9VUmOk+HSPMZ9PxuULlOd137KVACSYiBjXgcysuji
-         eX05bBMUoO1EXNkfPy6P8Ig1G8QtVeP6N/+fQ6z0MSX48GdCfoQ45N4DJGM8k3iWOi
-         u+4QhlFlBINVoahNm++yvZ0un2oHd2Skd0zpShuE=
+        b=Qncih+fZvG6NLwS7QkmFGcB36b6B7Axw7OuqoCsXhe14dy/rAmaGgayWbhXzMY12l
+         XJpGTBJre820sgYgJtKdvinRLyLvTk19WKkdUtYyO+ACSKXwnL1t635bWYbwdmryEw
+         E9hp4hBtQa+sD1cAy9RGSG+sVzjwLC11N1xC2rbM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 181/346] PCI: Fix overflow in command-line resource alignment requests
-Date:   Mon, 28 Dec 2020 13:48:20 +0100
-Message-Id: <20201228124928.538881592@linuxfoundation.org>
+Subject: [PATCH 4.14 096/242] drm/omap: dmm_tiler: fix return error code in omap_dmm_probe()
+Date:   Mon, 28 Dec 2020 13:48:21 +0100
+Message-Id: <20201228124909.413258806@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit cc73eb321d246776e5a9f7723d15708809aa3699 ]
+[ Upstream commit 723ae803218da993143387bf966042eccefac077 ]
 
-The shift of 1 by align_order is evaluated using 32 bit arithmetic and the
-result is assigned to a resource_size_t type variable that is a 64 bit
-unsigned integer on 64 bit platforms. Fix an overflow before widening issue
-by making the 1 a ULL.
+Return -ENOMEM when allocating refill memory failed.
 
-Addresses-Coverity: ("Unintentional integer overflow")
-Fixes: 32a9a682bef2 ("PCI: allow assignment of memory resources with a specified alignment")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+Fixes: 71e8831f6407 ("drm/omap: DMM/TILER support for OMAP4+ platform")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+Link: https://patchwork.freedesktop.org/patch/msgid/20201117061045.3452287-1-yangyingliang@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/pci.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/omapdrm/omap_dmm_tiler.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index 5103d4b140ee3..cd628dd73719b 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -5854,7 +5854,7 @@ static resource_size_t pci_specified_resource_alignment(struct pci_dev *dev,
- 		ret = pci_dev_str_match(dev, p, &p);
- 		if (ret == 1) {
- 			*resize = true;
--			align = 1 << align_order;
-+			align = 1ULL << align_order;
- 			break;
- 		} else if (ret < 0) {
- 			pr_err("PCI: Can't parse resource_alignment parameter: %s\n",
+diff --git a/drivers/gpu/drm/omapdrm/omap_dmm_tiler.c b/drivers/gpu/drm/omapdrm/omap_dmm_tiler.c
+index 32901c6fe3dfc..6d0c0405e736d 100644
+--- a/drivers/gpu/drm/omapdrm/omap_dmm_tiler.c
++++ b/drivers/gpu/drm/omapdrm/omap_dmm_tiler.c
+@@ -751,6 +751,7 @@ static int omap_dmm_probe(struct platform_device *dev)
+ 					   &omap_dmm->refill_pa, GFP_KERNEL);
+ 	if (!omap_dmm->refill_va) {
+ 		dev_err(&dev->dev, "could not allocate refill memory\n");
++		ret = -ENOMEM;
+ 		goto fail;
+ 	}
+ 
 -- 
 2.27.0
 
