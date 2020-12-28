@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F0F2E3812
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:06:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B8FD2E3785
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:57:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730521AbgL1NEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:04:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60740 "EHLO mail.kernel.org"
+        id S1728793AbgL1M4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:56:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730463AbgL1NEe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:04:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB5772245C;
-        Mon, 28 Dec 2020 13:03:52 +0000 (UTC)
+        id S1728762AbgL1M4c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:56:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E59021D94;
+        Mon, 28 Dec 2020 12:55:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160633;
-        bh=4jLqyF3EjFvGTRYAS3QjW9dDV4q6T3QEhnp5c8bsMhY=;
+        s=korg; t=1609160152;
+        bh=UAFTBRjOWayQArKHk2ibWenA7R1IHmPQWIiHUJtUm0M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R5lyglrAMplPiShTvTTAFg8Vf8/GPg1av48B16AyxTMxqUEWbJ1mnTTN1GbocifVX
-         w/6vPKkUhY9VBVEtwdUMdriGI25qraN7Nw9JChynyofGPSJmlRp4pvvvI/uEyaGDIL
-         jV1QePoiNGp1fDWjLSiImFx1RBoN4Su1wYTtZscQ=
+        b=1H1zgwj1mqmlH94FYDB7gw2PHQ2oo0UzWj47y1R/ElcfTDkVzAaPp0r21TVLwVG5Q
+         AWZfBrz8LW+vkgXuZ4yjHau8DKZafY3MkeGcIlxkPEKwkO/2pKzTK3KQ3CcinK7ZBI
+         K4Eu220iIVOYvlci+gXAiuJWmDjD1sEGmPQ/Ffr0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Richard Weinberger <richard@nod.at>,
+        =?UTF-8?q?Vincent=20Stehl=C3=A9?= <vincent.stehle@laposte.net>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 116/175] um: chan_xterm: Fix fd leak
+Subject: [PATCH 4.4 085/132] powerpc/ps3: use dma_mapping_error()
 Date:   Mon, 28 Dec 2020 13:49:29 +0100
-Message-Id: <20201228124858.874477091@linuxfoundation.org>
+Message-Id: <20201228124850.545097076@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,64 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+From: Vincent Stehlé <vincent.stehle@laposte.net>
 
-[ Upstream commit 9431f7c199ab0d02da1482d62255e0b4621cb1b5 ]
+[ Upstream commit d0edaa28a1f7830997131cbce87b6c52472825d1 ]
 
-xterm serial channel was leaking a fd used in setting up the
-port helper
+The DMA address returned by dma_map_single() should be checked with
+dma_mapping_error(). Fix the ps3stor_setup() function accordingly.
 
-This bug is prehistoric - it predates switching to git. The "fixes"
-header here is really just to mark all the versions we would like this to
-apply to which is "Anything from the Cretaceous period onwards".
-
-No dinosaurs were harmed in fixing this bug.
-
-Fixes: b40997b872cd ("um: drivers/xterm.c: fix a file descriptor leak")
-Signed-off-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Fixes: 80071802cb9c ("[POWERPC] PS3: Storage Driver Core")
+Signed-off-by: Vincent Stehlé <vincent.stehle@laposte.net>
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20201213182622.23047-1-vincent.stehle@laposte.net
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/drivers/xterm.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/ps3/ps3stor_lib.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/um/drivers/xterm.c b/arch/um/drivers/xterm.c
-index 20e30be44795b..e3b422ebce09f 100644
---- a/arch/um/drivers/xterm.c
-+++ b/arch/um/drivers/xterm.c
-@@ -18,6 +18,7 @@
- struct xterm_chan {
- 	int pid;
- 	int helper_pid;
-+	int chan_fd;
- 	char *title;
- 	int device;
- 	int raw;
-@@ -33,6 +34,7 @@ static void *xterm_init(char *str, int device, const struct chan_opts *opts)
- 		return NULL;
- 	*data = ((struct xterm_chan) { .pid 		= -1,
- 				       .helper_pid 	= -1,
-+				       .chan_fd		= -1,
- 				       .device 		= device,
- 				       .title 		= opts->xterm_title,
- 				       .raw  		= opts->raw } );
-@@ -149,6 +151,7 @@ static int xterm_open(int input, int output, int primary, void *d,
- 		goto out_kill;
- 	}
- 
-+	data->chan_fd = fd;
- 	new = xterm_fd(fd, &data->helper_pid);
- 	if (new < 0) {
- 		err = new;
-@@ -206,6 +209,8 @@ static void xterm_close(int fd, void *d)
- 		os_kill_process(data->helper_pid, 0);
- 	data->helper_pid = -1;
- 
-+	if (data->chan_fd != -1)
-+		os_close_file(data->chan_fd);
- 	os_close_file(fd);
- }
- 
+diff --git a/drivers/ps3/ps3stor_lib.c b/drivers/ps3/ps3stor_lib.c
+index 8c3f5adf1bc65..2d76183756626 100644
+--- a/drivers/ps3/ps3stor_lib.c
++++ b/drivers/ps3/ps3stor_lib.c
+@@ -201,7 +201,7 @@ int ps3stor_setup(struct ps3_storage_device *dev, irq_handler_t handler)
+ 	dev->bounce_lpar = ps3_mm_phys_to_lpar(__pa(dev->bounce_buf));
+ 	dev->bounce_dma = dma_map_single(&dev->sbd.core, dev->bounce_buf,
+ 					 dev->bounce_size, DMA_BIDIRECTIONAL);
+-	if (!dev->bounce_dma) {
++	if (dma_mapping_error(&dev->sbd.core, dev->bounce_dma)) {
+ 		dev_err(&dev->sbd.core, "%s:%u: map DMA region failed\n",
+ 			__func__, __LINE__);
+ 		error = -ENODEV;
 -- 
 2.27.0
 
