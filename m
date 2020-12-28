@@ -2,36 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D562E3889
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:11:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB7C02E402E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:49:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731828AbgL1NLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:11:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38820 "EHLO mail.kernel.org"
+        id S2439279AbgL1Osk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:48:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731483AbgL1NLC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:11:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 42BCC2076D;
-        Mon, 28 Dec 2020 13:10:20 +0000 (UTC)
+        id S2441675AbgL1OWM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:22:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E80F229C4;
+        Mon, 28 Dec 2020 14:21:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161021;
-        bh=e3mAGGGpbxSs7Un8er1DvHsBcDpuXcSYNhx/KPdubXE=;
+        s=korg; t=1609165291;
+        bh=gDMSkKdkI6DuwgGljiqXB6oVSHWFOZH1OMuzsX0sd3U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e7Z5dVdHt80Ys33DGr2FI6IXTFO85hDfYvN25MVXfM3QURL7IETkoefH/xzfL+3cQ
-         HVDsHyZWbyrB+EjxdscHzaPMXFyv9YmKEzaKVCHlB7f9IRYBPh5Udf5oUSHv9ZVvDI
-         Ex4q7apjT/E1KhQ4bDcVjVouLzvNogAkUT/Tkxak=
+        b=TxcLn54tm+T52zNvjH3fXEpVmF24GHvwZZu6s0f7CPjngvyU1AkLf8097kMuG0bFr
+         PgTWwyK/xP2MkaF0ekyWSa0vcSbB/aifXweFlE3Y+bolRfRmL1ICDY086tvzPMX5pL
+         AwyCT0a9zqAcIpnSMOaQ+lnFLdS6EK6LBOGSnAS8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qinglang Miao <miaoqinglang@huawei.com>,
-        Thierry Reding <treding@nvidia.com>,
+        stable@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Chris Down <chris@chrisdown.name>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 043/242] drm/tegra: sor: Disable clocks on error in tegra_sor_init()
+Subject: [PATCH 5.10 450/717] mm: memcg/slab: fix use after free in obj_cgroup_charge
 Date:   Mon, 28 Dec 2020 13:47:28 +0100
-Message-Id: <20201228124906.797490959@linuxfoundation.org>
+Message-Id: <20201228125042.539219061@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,50 +50,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qinglang Miao <miaoqinglang@huawei.com>
+From: Muchun Song <songmuchun@bytedance.com>
 
-[ Upstream commit bf3a3cdcad40e5928a22ea0fd200d17fd6d6308d ]
+[ Upstream commit eefbfa7fd678805b38a46293e78543f98f353d3e ]
 
-Fix the missing clk_disable_unprepare() before return from
-tegra_sor_init() in the error handling case.
+The rcu_read_lock/unlock only can guarantee that the memcg will not be
+freed, but it cannot guarantee the success of css_get to memcg.
 
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
+If the whole process of a cgroup offlining is completed between reading a
+objcg->memcg pointer and bumping the css reference on another CPU, and
+there are exactly 0 external references to this memory cgroup (how we get
+to the obj_cgroup_charge() then?), css_get() can change the ref counter
+from 0 back to 1.
+
+Link: https://lkml.kernel.org/r/20201028035013.99711-2-songmuchun@bytedance.com
+Fixes: bf4f059954dc ("mm: memcg/slab: obj_cgroup API")
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Acked-by: Roman Gushchin <guro@fb.com>
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Yafang Shao <laoar.shao@gmail.com>
+Cc: Chris Down <chris@chrisdown.name>
+Cc: Christian Brauner <christian.brauner@ubuntu.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/tegra/sor.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ mm/memcontrol.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/tegra/sor.c b/drivers/gpu/drm/tegra/sor.c
-index 7ab1d1dc7cd73..352ae52be3418 100644
---- a/drivers/gpu/drm/tegra/sor.c
-+++ b/drivers/gpu/drm/tegra/sor.c
-@@ -2378,17 +2378,23 @@ static int tegra_sor_init(struct host1x_client *client)
- 		if (err < 0) {
- 			dev_err(sor->dev, "failed to deassert SOR reset: %d\n",
- 				err);
-+			clk_disable_unprepare(sor->clk);
- 			return err;
- 		}
- 	}
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 74b85077f89ad..a717728cc7b4a 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -3247,8 +3247,10 @@ int obj_cgroup_charge(struct obj_cgroup *objcg, gfp_t gfp, size_t size)
+ 	 * independently later.
+ 	 */
+ 	rcu_read_lock();
++retry:
+ 	memcg = obj_cgroup_memcg(objcg);
+-	css_get(&memcg->css);
++	if (unlikely(!css_tryget(&memcg->css)))
++		goto retry;
+ 	rcu_read_unlock();
  
- 	err = clk_prepare_enable(sor->clk_safe);
--	if (err < 0)
-+	if (err < 0) {
-+		clk_disable_unprepare(sor->clk);
- 		return err;
-+	}
- 
- 	err = clk_prepare_enable(sor->clk_dp);
--	if (err < 0)
-+	if (err < 0) {
-+		clk_disable_unprepare(sor->clk_safe);
-+		clk_disable_unprepare(sor->clk);
- 		return err;
-+	}
- 
- 	return 0;
- }
+ 	nr_pages = size >> PAGE_SHIFT;
 -- 
 2.27.0
 
