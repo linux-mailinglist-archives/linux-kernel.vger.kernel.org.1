@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEE2E2E67B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:28:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 186482E66B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:17:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633540AbgL1Q2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:28:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35072 "EHLO mail.kernel.org"
+        id S2633153AbgL1QPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:15:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46694 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730788AbgL1NH2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:07:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 302AA22583;
-        Mon, 28 Dec 2020 13:06:46 +0000 (UTC)
+        id S1732488AbgL1NS3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:18:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D871520728;
+        Mon, 28 Dec 2020 13:18:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160807;
-        bh=WqeBf+0gRV4f9nEONl65QhiqwZ98zrNRUDdjurFhngc=;
+        s=korg; t=1609161493;
+        bh=/PTLzEj6cYwZZ5m034J/AABUbzuJX3HoHvn9889b3d0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LWteKYCGGvN5H7TnRRdkqIbl1jys8jH5Iyh7JWPqyYNrRpacjt/J0ZElNpxhWmXjA
-         JasD4Aqmn/T9QK1jj3fktZXHQuS40o6ve9lCFYEVf8f+f1PCuPcNkgbOPPOmZZ5jh8
-         HA3188ldu4xWd60VK0Rr+5wgIchvDy2lc6c9FBoI=
+        b=Ec8Mr3y6XcH4FHai4KcKnHlIXScAKOnnYTUvp9DT3iXycynXnoqQEtQ8Q0XOT4QRO
+         b+JfkvdB4/FvCBjvmsmbbygfpL0gfecCrmttZerh4Av4KnMfvvfh/le1vImViZ+3NH
+         9t4nAWhLz61lVeYgvCPXQNiWqP02hKAF7RoF1QJ4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chunguang Xu <brookxu@tencent.com>,
-        Theodore Tso <tytso@mit.edu>, stable@kernel.org
-Subject: [PATCH 4.9 155/175] ext4: fix a memory leak of ext4_free_data
-Date:   Mon, 28 Dec 2020 13:50:08 +0100
-Message-Id: <20201228124900.762235727@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.14 204/242] USB: serial: keyspan_pda: fix tx-unthrottle use-after-free
+Date:   Mon, 28 Dec 2020 13:50:09 +0100
+Message-Id: <20201228124914.727564931@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,40 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunguang Xu <brookxu@tencent.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit cca415537244f6102cbb09b5b90db6ae2c953bdd upstream.
+commit 49fbb8e37a961396a5b6c82937c70df91de45e9d upstream.
 
-When freeing metadata, we will create an ext4_free_data and
-insert it into the pending free list.  After the current
-transaction is committed, the object will be freed.
+The driver's transmit-unthrottle work was never flushed on disconnect,
+something which could lead to the driver port data being freed while the
+unthrottle work is still scheduled.
 
-ext4_mb_free_metadata() will check whether the area to be freed
-overlaps with the pending free list. If true, return directly. At this
-time, ext4_free_data is leaked.  Fortunately, the probability of this
-problem is small, since it only occurs if the file system is corrupted
-such that a block is claimed by more one inode and those inodes are
-deleted within a single jbd2 transaction.
+Fix this by cancelling the unthrottle work when shutting down the port.
 
-Signed-off-by: Chunguang Xu <brookxu@tencent.com>
-Link: https://lore.kernel.org/r/1604764698-4269-8-git-send-email-brookxu@tencent.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Cc: stable@kernel.org
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Cc: stable@vger.kernel.org
+Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/ext4/mballoc.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/serial/keyspan_pda.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -4650,6 +4650,7 @@ ext4_mb_free_metadata(handle_t *handle,
- 				ext4_group_first_block_no(sb, group) +
- 				EXT4_C2B(sbi, cluster),
- 				"Block already on to-be-freed list");
-+			kmem_cache_free(ext4_free_data_cachep, new_entry);
- 			return 0;
- 		}
- 	}
+--- a/drivers/usb/serial/keyspan_pda.c
++++ b/drivers/usb/serial/keyspan_pda.c
+@@ -651,8 +651,12 @@ error:
+ }
+ static void keyspan_pda_close(struct usb_serial_port *port)
+ {
++	struct keyspan_pda_private *priv = usb_get_serial_port_data(port);
++
+ 	usb_kill_urb(port->write_urb);
+ 	usb_kill_urb(port->interrupt_in_urb);
++
++	cancel_work_sync(&priv->unthrottle_work);
+ }
+ 
+ 
 
 
