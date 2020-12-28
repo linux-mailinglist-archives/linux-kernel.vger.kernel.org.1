@@ -2,95 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0BB42E6B4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:04:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EF0E2E6B4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Dec 2020 00:04:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731462AbgL1W4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 17:56:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729484AbgL1VHj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 16:07:39 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3534C0613D6;
-        Mon, 28 Dec 2020 13:06:58 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id f14so279229pju.4;
-        Mon, 28 Dec 2020 13:06:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=nJ5sqR0HFrrpP8VODHPa/STLCx17P5kOSNJVjY/F3jY=;
-        b=TFv8Q4oj0hrMK90UI1iMuYcnETqYM0PlOsZ2NxMBX5py+hJIR+N6BTtXlAvha5VBtZ
-         tmoK6QOvCXfUr5JDtn4oToIrpPFtnVfRl2F8Z5c23c6aNxDC8n8RtPCOtWSJNEx4dfn6
-         fW3lNg00KsK6OAUS77YsR78XZhLKKWzpMcNJSo7W0gVEncuJokwYIyo9gjuFwNyZ6FP4
-         wPTN4AIESongPfmkyUm4vwzTS4uU4ksl5GN2dm3fqDysEoSDNM1RnF3bsWrF04YpdZNp
-         LhTvD0D87HUgf9dcWeDg9dXGCKPj/2BAMm8Q+nVv2QaP6XupkMB6qNmNxBg4nQ3i9XIL
-         V5oQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=nJ5sqR0HFrrpP8VODHPa/STLCx17P5kOSNJVjY/F3jY=;
-        b=MLwYJA8WchE+Q7NBgi1eG0tMBCZ8d6Q+WYfV5I4nwoV5MOd7Buvxd6MbsxPJBOHCxE
-         rPltI8gjLghV1TJLM5obHJFopeXmIoeT1hb2By1dn7Y+n6f58/aE562K7an6SxMrogTX
-         QE758DN34LQ0ykyt0VpUTl/EwnpdpyKqCW8GaDv04f2P4VN+dfwzwfoVT9YLobk26T15
-         DJc9H3WC65AAF1o2uarRoRw1Q+fcemymKuOmq4wQVirjLG/B1JU8pBdri9KWD5f8SXrF
-         iFh61RCGhbQ2yb/QQCJqx4pL10JMm5i/PEZS2BYJjfROHLIdVc3lrn5oJqcFBgcIMKb5
-         Mm8A==
-X-Gm-Message-State: AOAM531r312FqcLM2gjAe9SaEAWGSCEUnJ2YVfzipXrayxG94erEd4WQ
-        XeICPMoBn4q3bKGVGhT9EY0=
-X-Google-Smtp-Source: ABdhPJzGb5+rfvqdiTMT7ceeWIm7Jk6ra4y+shJ+cMwhcgMiGkADJf/6ute3mXb7Y0HzRaISyKOZEw==
-X-Received: by 2002:a17:902:8a88:b029:dc:f3:6db2 with SMTP id p8-20020a1709028a88b02900dc00f36db2mr22385056plo.2.1609189618507;
-        Mon, 28 Dec 2020 13:06:58 -0800 (PST)
-Received: from [10.230.29.27] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id q15sm26820960pgk.11.2020.12.28.13.06.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Dec 2020 13:06:57 -0800 (PST)
-Subject: Re: [PATCH v3 1/5] dt-bindings: net: dwmac-meson: use picoseconds for
- the RGMII RX delay
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
-        andrew@lunn.ch, jianxin.pan@amlogic.com, narmstrong@baylibre.com,
-        khilman@baylibre.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, jbrunet@baylibre.com
-References: <20201223232905.2958651-1-martin.blumenstingl@googlemail.com>
- <20201223232905.2958651-2-martin.blumenstingl@googlemail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <b6bfb849-3d68-59aa-1e75-201a978702f3@gmail.com>
-Date:   Mon, 28 Dec 2020 13:06:55 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.6.0
+        id S1731475AbgL1W4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 17:56:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49452 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729486AbgL1VHu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 16:07:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 30F5A225AB
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 21:07:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609189629;
+        bh=27KIURwqt1RL2uI90GMMltkVqkqP6J5+DLiEDUmWBQU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=DtQTxCxMN4G6UUHNKgX6MwbZUqPdjE6JjBxXZPdj0zWdX7gsZSDdo/C8xwp+lQL54
+         NBzKb3iMOLLl+ooPPX+uDCXfGSGiAJGCyGuQPPxE89gl/uIHrwh/HV+RGF5/LVTpQ4
+         7xR85q4ojktFqvTOuAoTFu5ysSy5NRBPttYeK643j5DLOtPQanqRbL339jIUFnX7Uj
+         1TsfvHMwMFcF8emTrLa4I9yh+VeQmGSVkWzMHIJyvLWndSC3wqlRmenlposPQkFlCJ
+         HR+88klPTEYBgGF6Bk68JJRI3iceniZzpHlfVMC5fiuZLPwxWw3g3WHtjhCwtsI+b5
+         TdxMw2v6zY+xg==
+Received: by mail-wr1-f54.google.com with SMTP id t16so12538252wra.3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Dec 2020 13:07:09 -0800 (PST)
+X-Gm-Message-State: AOAM531M66HSOGt5rBPY84iMEMCylvKnwxbuJ73ZZ2WExCe43VVokpp0
+        Q1bjuhWsmhOgqu35kJ1gIZ5rr/tH+xqn8tWfGOJAjA==
+X-Google-Smtp-Source: ABdhPJzLxjROX7Kr2gE7TOhHSUuU+1LZHqFzLu9v1+05RcKic1KF5QVniGH4/+FdCVG2zacKFF1YcGM3iKhXVViXwfc=
+X-Received: by 2002:a5d:62c7:: with SMTP id o7mr846007wrv.257.1609189627549;
+ Mon, 28 Dec 2020 13:07:07 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201223232905.2958651-2-martin.blumenstingl@googlemail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <bf59ecb5487171a852bcc8cdd553ec797aedc485.1609093476.git.luto@kernel.org>
+ <1836294649.3345.1609100294833.JavaMail.zimbra@efficios.com>
+ <CALCETrVdcn2r2Jvd1=-bM=FQ8KbX4aH-v4ytdojL7r7Nb6k8YQ@mail.gmail.com>
+ <20201228102537.GG1551@shell.armlinux.org.uk> <CALCETrWQx0qwthBc5pJBxs2PWAQo-roAz-6g=7HOs+dsiokVsg@mail.gmail.com>
+ <CAG48ez0YZ_iy6qZpdGUj38wqeg_NzLHHhU-mBCBf5hcopYGVPg@mail.gmail.com>
+ <20201228190852.GI1551@shell.armlinux.org.uk> <CALCETrVpvrBufrJgXNY=ogtZQLo7zgxQmD7k9eVCFjcdcvarmA@mail.gmail.com>
+ <1086654515.3607.1609187556216.JavaMail.zimbra@efficios.com>
+In-Reply-To: <1086654515.3607.1609187556216.JavaMail.zimbra@efficios.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Mon, 28 Dec 2020 13:06:55 -0800
+X-Gmail-Original-Message-ID: <CALCETrXx3Xe+4Y6WM-mp0cTUU=r3bW6PV2b25yA8bm1Gvak6wQ@mail.gmail.com>
+Message-ID: <CALCETrXx3Xe+4Y6WM-mp0cTUU=r3bW6PV2b25yA8bm1Gvak6wQ@mail.gmail.com>
+Subject: Re: [RFC please help] membarrier: Rewrite sync_core_before_usermode()
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Andy Lutomirski <luto@kernel.org>, paulmck <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Russell King, ARM Linux" <linux@armlinux.org.uk>,
+        Jann Horn <jannh@google.com>, Will Deacon <will@kernel.org>,
+        x86 <x86@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Dec 28, 2020 at 12:32 PM Mathieu Desnoyers
+<mathieu.desnoyers@efficios.com> wrote:
+>
+> ----- On Dec 28, 2020, at 2:44 PM, Andy Lutomirski luto@kernel.org wrote:
+>
+> > On Mon, Dec 28, 2020 at 11:09 AM Russell King - ARM Linux admin
+> > <linux@armlinux.org.uk> wrote:
+> >>
+> >> On Mon, Dec 28, 2020 at 07:29:34PM +0100, Jann Horn wrote:
+> >> > After chatting with rmk about this (but without claiming that any of
+> >> > this is his opinion), based on the manpage, I think membarrier()
+> >> > currently doesn't really claim to be synchronizing caches? It just
+> >> > serializes cores. So arguably if userspace wants to use membarrier()
+> >> > to synchronize code changes, userspace should first do the code
+> >> > change, then flush icache as appropriate for the architecture, and
+> >> > then do the membarrier() to ensure that the old code is unused?
+>
+> ^ exactly, yes.
+>
+> >> >
+> >> > For 32-bit arm, rmk pointed out that that would be the cacheflush()
+> >> > syscall. That might cause you to end up with two IPIs instead of one
+> >> > in total, but we probably don't care _that_ much about extra IPIs on
+> >> > 32-bit arm?
+>
+> This was the original thinking, yes. The cacheflush IPI will flush specific
+> regions of code, and the membarrier IPI issues context synchronizing
+> instructions.
+>
+> Architectures with coherent i/d caches don't need the cacheflush step.
 
+There are different levels of coherency -- VIVT architectures may have
+differing requirements compared to PIPT, etc.
 
-On 12/23/2020 3:29 PM, Martin Blumenstingl wrote:
-> Amlogic Meson G12A, G12B and SM1 SoCs have a more advanced RGMII RX
-> delay register which allows picoseconds precision. Deprecate the old
-> "amlogic,rx-delay-ns" in favour of the generic "rx-internal-delay-ps"
-> property.
-> 
-> For older SoCs the only known supported values were 0ns and 2ns. The new
-> SoCs have support for RGMII RX delays between 0ps and 3000ps in 200ps
-> steps.
-> 
-> Don't carry over the description for the "rx-internal-delay-ps" property
-> and inherit that from ethernet-controller.yaml instead.
-> 
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+In any case, I feel like the approach taken by the documentation is
+fundamentally confusing.  Architectures don't all speak the same
+language  How about something like:
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+The SYNC_CORE operation causes all threads in the caller's address
+space (including the caller) to execute an architecture-defined
+barrier operation.  membarrier() will ensure that this barrier is
+executed at a time such that all data writes done by the calling
+thread before membarrier() are made visible by the barrier.
+Additional architecture-dependent cache management operations may be
+required to use this for JIT code.
+
+x86: SYNC_CORE executes a barrier that will cause subsequent
+instruction fetches to observe prior writes.  Currently this will be a
+"serializing" instruction, but, if future improved CPU documentation
+becomes available and relaxes this requirement, the barrier may
+change.  The kernel guarantees that writing new or modified
+instructions to normal memory (and issuing SFENCE if the writes were
+non-temporal) then doing a membarrier SYNC_CORE operation is
+sufficient to cause all threads in the caller's address space to
+execute the new or modified instructions.  This is true regardless of
+whether or not those instructions are written at the same virtual
+address from which they are subsequently executed.  No additional
+cache management is required on x86.
+
+arm: Something about the cache management syscalls.
+
+arm64: Ditto
+
+powerpc: I have no idea.
