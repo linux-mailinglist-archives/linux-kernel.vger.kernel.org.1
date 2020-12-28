@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 841A62E657A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:03:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0B4B2E672A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:22:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390291AbgL1NaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:30:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58734 "EHLO mail.kernel.org"
+        id S2387549AbgL1QVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:21:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390264AbgL1NaG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:30:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB98522B3A;
-        Mon, 28 Dec 2020 13:29:50 +0000 (UTC)
+        id S1731979AbgL1NMc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:12:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F0F622AAD;
+        Mon, 28 Dec 2020 13:11:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162191;
-        bh=waV4/zyCcsTYaqm0wBqC73lPK4M+tQcsB5fXUOYMaZM=;
+        s=korg; t=1609161112;
+        bh=rrjyuu1a81qFMjw0tQpoLJWGqdWaC2DZyQqDUlSfIWk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u95/ZMo6OTodXRKvcrN8vxUoRgWHFd/gzVi2hhep8MS+dmwR0bg6SYnCab3p3svNJ
-         kjmlwm2Cm8Jk5a0qa4FxkmpQcNGl50GOGikyIAAnpsBoZOmJVvHJiPWzBqC1QovbTS
-         kQ5CGshzKnBEJwFPER59Pr9CDu7XItPgfa3dTrR8=
+        b=R0QMsaSd8lxWYIWNJlUdFLn3TnOmJfydJO7YX0wgK3o6ygMGmv0pGuKrSb6tdSzPZ
+         Ih/etr/PQ3M5xp8J5QjcVICWmNwkvaDzoKbExtStaAmXRBdmnosrnnXCLtawylQ8VW
+         dH3Zx4nhF0cjvBEU0EQ4QmufUxVtehQ1StqyqYW0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Zhang Qilong <zhangqilong3@huawei.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 188/346] ath10k: Release some resources in an error handling path
-Date:   Mon, 28 Dec 2020 13:48:27 +0100
-Message-Id: <20201228124928.875918249@linuxfoundation.org>
+Subject: [PATCH 4.14 103/242] soc: ti: Fix reference imbalance in knav_dma_probe
+Date:   Mon, 28 Dec 2020 13:48:28 +0100
+Message-Id: <20201228124909.762988531@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,45 +40,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Zhang Qilong <zhangqilong3@huawei.com>
 
-[ Upstream commit 6364e693f4a7a89a2fb3dd2cbd6cc06d5fd6e26d ]
+[ Upstream commit b4fa73358c306d747a2200aec6f7acb97e5750e6 ]
 
-Should an error occur after calling 'ath10k_usb_create()', it should be
-undone by a corresponding 'ath10k_usb_destroy()' call
+The patch fix two reference leak.
 
-Fixes: 4db66499df91 ("ath10k: add initial USB support")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20201122170358.1346065-1-christophe.jaillet@wanadoo.fr
+  1) pm_runtime_get_sync will increment pm usage counter even it
+     failed. Forgetting to call put operation will result in
+     reference leak.
+
+  2) The pm_runtime_enable will increase power disable depth. Thus
+     a pairing decrement is needed on the error handling path to
+     keep it balanced.
+
+We fix it by: 1) adding call pm_runtime_put_noidle or
+pm_runtime_put_sync in error handling. 2) adding pm_runtime_disable
+in error handling, to keep usage counter and disable depth balanced.
+
+Fixes: 88139ed030583 ("soc: ti: add Keystone Navigator DMA support")
+Signed-off-by: Zhang Qilong <zhangqilong3@huawei.com>
+Signed-off-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/usb.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/soc/ti/knav_dma.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/usb.c b/drivers/net/wireless/ath/ath10k/usb.c
-index f4e6d84bfb91c..16d5fe6d1e2e4 100644
---- a/drivers/net/wireless/ath/ath10k/usb.c
-+++ b/drivers/net/wireless/ath/ath10k/usb.c
-@@ -1032,7 +1032,7 @@ static int ath10k_usb_probe(struct usb_interface *interface,
- 	ret = ath10k_core_register(ar, chip_id);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to register driver core: %d\n", ret);
--		goto err;
-+		goto err_usb_destroy;
+diff --git a/drivers/soc/ti/knav_dma.c b/drivers/soc/ti/knav_dma.c
+index 026182d3b27c1..6d137b1f43ae5 100644
+--- a/drivers/soc/ti/knav_dma.c
++++ b/drivers/soc/ti/knav_dma.c
+@@ -752,8 +752,9 @@ static int knav_dma_probe(struct platform_device *pdev)
+ 	pm_runtime_enable(kdev->dev);
+ 	ret = pm_runtime_get_sync(kdev->dev);
+ 	if (ret < 0) {
++		pm_runtime_put_noidle(kdev->dev);
+ 		dev_err(kdev->dev, "unable to enable pktdma, err %d\n", ret);
+-		return ret;
++		goto err_pm_disable;
  	}
  
- 	/* TODO: remove this once USB support is fully implemented */
-@@ -1040,6 +1040,9 @@ static int ath10k_usb_probe(struct usb_interface *interface,
+ 	/* Initialise all packet dmas */
+@@ -767,13 +768,21 @@ static int knav_dma_probe(struct platform_device *pdev)
  
- 	return 0;
+ 	if (list_empty(&kdev->list)) {
+ 		dev_err(dev, "no valid dma instance\n");
+-		return -ENODEV;
++		ret = -ENODEV;
++		goto err_put_sync;
+ 	}
  
-+err_usb_destroy:
-+	ath10k_usb_destroy(ar);
+ 	debugfs_create_file("knav_dma", S_IFREG | S_IRUGO, NULL, NULL,
+ 			    &knav_dma_debug_ops);
+ 
+ 	return ret;
 +
- err:
- 	ath10k_core_destroy(ar);
++err_put_sync:
++	pm_runtime_put_sync(kdev->dev);
++err_pm_disable:
++	pm_runtime_disable(kdev->dev);
++
++	return ret;
+ }
  
+ static int knav_dma_remove(struct platform_device *pdev)
 -- 
 2.27.0
 
