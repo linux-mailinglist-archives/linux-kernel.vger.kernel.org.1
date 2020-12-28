@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48DC12E64E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:55:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DE122E42AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:27:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393095AbgL1PyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:54:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37432 "EHLO mail.kernel.org"
+        id S2504267AbgL1PZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:25:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390663AbgL1NhN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:37:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8509120719;
-        Mon, 28 Dec 2020 13:36:32 +0000 (UTC)
+        id S2407010AbgL1N6G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:58:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F0AE20791;
+        Mon, 28 Dec 2020 13:57:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162593;
-        bh=3zC6EWdok2I3DAvM5fV1Ahd3MB2We0PH0OBlRlqky0I=;
+        s=korg; t=1609163870;
+        bh=RY9Qnt/0RU1dRpdrlVRKYMRHOZBkGKGeYO75dlCVQLY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LjLjwj4Cv4Y+2F6o4iMT0hWJecs93BM5t6Z1BPAncLvRPIhm5c5LaWAnR3JgsRtyP
-         4fXLjmTBJFVgPiazClFFNc4vkBJ2w1e9VoGDQcr/UBID0g9oZ2BkCkLy6t1zwta7i8
-         D791zu6RX4oBfaQiEAjHzRORPsXQ5NsKYW1BErkM=
+        b=gAJUN/zOOCUPVvAweMfXAxfsmIJoUeX3oU5d4EhiJ0ZINljKazQ4Z1X4C2QQsjXjy
+         bHmLutzdP/HZq/OajeS07pv72+17FbRBXgeBJhAffm+YekrmTOOME90FnqJOe+fsVJ
+         OXeG//eZYHzeF1irpcLH6QrkTy+r1XQKMKc3KcQ8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ron Minnich <rminnich@google.com>,
-        Sven Eckelmann <sven@narfation.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 4.19 324/346] mtd: parser: cmdline: Fix parsing of part-names with colons
+        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
+        Mason Yang <masonccyang@mxic.com.tw>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.4 407/453] spi: mxic: Dont leak SPI master in probe error path
 Date:   Mon, 28 Dec 2020 13:50:43 +0100
-Message-Id: <20201228124935.445949358@linuxfoundation.org>
+Message-Id: <20201228124956.799172277@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,75 +40,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sven Eckelmann <sven@narfation.org>
+From: Lukas Wunner <lukas@wunner.de>
 
-commit 639a82434f16a6df0ce0e7c8595976f1293940fd upstream.
+commit cc53711b2191cf3b3210283ae89bf0abb98c70a3 upstream.
 
-Some devices (especially QCA ones) are already using hardcoded partition
-names with colons in it. The OpenMesh A62 for example provides following
-mtd relevant information via cmdline:
+If the calls to devm_clk_get() or devm_ioremap_resource() fail on probe
+of the Macronix SPI driver, the spi_master struct is erroneously not freed.
 
-  root=31:11 mtdparts=spi0.0:256k(0:SBL1),128k(0:MIBIB),384k(0:QSEE),64k(0:CDT),64k(0:DDRPARAMS),64k(0:APPSBLENV),512k(0:APPSBL),64k(0:ART),64k(custom),64k(0:KEYS),0x002b0000(kernel),0x00c80000(rootfs),15552k(inactive) rootfsname=rootfs rootwait
+Fix by switching over to the new devm_spi_alloc_master() helper.
 
-The change to split only on the last colon between mtd-id and partitions
-will cause newpart to see following string for the first partition:
-
-  KEYS),0x002b0000(kernel),0x00c80000(rootfs),15552k(inactive)
-
-Such a partition list cannot be parsed and thus the device fails to boot.
-
-Avoid this behavior by making sure that the start of the first part-name
-("(") will also be the last byte the mtd-id split algorithm is using for
-its colon search.
-
-Fixes: eb13fa022741 ("mtd: parser: cmdline: Support MTD names containing one or more colons")
-Cc: stable@vger.kernel.org
-Cc: Ron Minnich <rminnich@google.com>
-Signed-off-by: Sven Eckelmann <sven@narfation.org>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20201124062506.185392-1-sven@narfation.org
+Fixes: b942d80b0a39 ("spi: Add MXIC controller driver")
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Cc: <stable@vger.kernel.org> # v5.0+: 5e844cc37a5c: spi: Introduce device-managed SPI controller allocation
+Cc: <stable@vger.kernel.org> # v5.0+
+Cc: Mason Yang <masonccyang@mxic.com.tw>
+Link: https://lore.kernel.org/r/4fa6857806e7e75741c05d057ac9df3564460114.1607286887.git.lukas@wunner.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mtd/cmdlinepart.c |   14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ drivers/spi/spi-mxic.c |   10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
---- a/drivers/mtd/cmdlinepart.c
-+++ b/drivers/mtd/cmdlinepart.c
-@@ -231,7 +231,7 @@ static int mtdpart_setup_real(char *s)
- 		struct cmdline_mtd_partition *this_mtd;
- 		struct mtd_partition *parts;
- 		int mtd_id_len, num_parts;
--		char *p, *mtd_id, *semicol;
-+		char *p, *mtd_id, *semicol, *open_parenth;
+--- a/drivers/spi/spi-mxic.c
++++ b/drivers/spi/spi-mxic.c
+@@ -528,7 +528,7 @@ static int mxic_spi_probe(struct platfor
+ 	struct mxic_spi *mxic;
+ 	int ret;
  
- 		/*
- 		 * Replace the first ';' by a NULL char so strrchr can work
-@@ -241,6 +241,14 @@ static int mtdpart_setup_real(char *s)
- 		if (semicol)
- 			*semicol = '\0';
+-	master = spi_alloc_master(&pdev->dev, sizeof(struct mxic_spi));
++	master = devm_spi_alloc_master(&pdev->dev, sizeof(struct mxic_spi));
+ 	if (!master)
+ 		return -ENOMEM;
  
-+		/*
-+		 * make sure that part-names with ":" will not be handled as
-+		 * part of the mtd-id with an ":"
-+		 */
-+		open_parenth = strchr(s, '(');
-+		if (open_parenth)
-+			*open_parenth = '\0';
-+
- 		mtd_id = s;
+@@ -573,15 +573,9 @@ static int mxic_spi_probe(struct platfor
+ 	ret = spi_register_master(master);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "spi_register_master failed\n");
+-		goto err_put_master;
++		pm_runtime_disable(&pdev->dev);
+ 	}
  
- 		/*
-@@ -250,6 +258,10 @@ static int mtdpart_setup_real(char *s)
- 		 */
- 		p = strrchr(s, ':');
+-	return 0;
+-
+-err_put_master:
+-	spi_master_put(master);
+-	pm_runtime_disable(&pdev->dev);
+-
+ 	return ret;
+ }
  
-+		/* Restore the '(' now. */
-+		if (open_parenth)
-+			*open_parenth = '(';
-+
- 		/* Restore the ';' now. */
- 		if (semicol)
- 			*semicol = ';';
 
 
