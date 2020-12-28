@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2467E2E68B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:40:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 825D12E65BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:07:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2633814AbgL1QkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:40:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56030 "EHLO mail.kernel.org"
+        id S2389286AbgL1N0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:26:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728568AbgL1M7s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:59:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F409C208D5;
-        Mon, 28 Dec 2020 12:59:06 +0000 (UTC)
+        id S2389120AbgL1N0C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:26:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADE2A22A84;
+        Mon, 28 Dec 2020 13:25:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160347;
-        bh=g7Sk3kitM9XQWi6MRdIh2UffTECyyzRKym6NMdbl9n4=;
+        s=korg; t=1609161947;
+        bh=OsXEu+1bLjL7vCoVVfeanmBzQ/qMtk8V3PeEXvPDxHk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KSOw5P3FU/v2rDUtwNeTluMDdOG6Fak/1MqXbabmC2l73UCfGkmpQBATDIieVPFvX
-         GBn2YkFx0PyKbHurDA5ucCH9V/a6Sd6vrImD585wonTcDYbaYRSAKaCAxTd+LwMLDh
-         KCAwqBV/YRKrdGaX22NUSNGStSFMlFhUFxlSJ6vo=
+        b=luWAMQshLhuAMzRxHmaAVoT7f2K/jgfCWxamduyZPkK2Xc/HNZjJI3hEm8vEpG48j
+         R+RTKFi5wgudEmEHsM6/pBqEDBXb3p8q0x1gsx45APG0kLgnoutDOKA9oYKa/8HOgb
+         XfrY8XiWtF6Dk3ZDnf/T5A/AFPHEx2NIbtahXNIE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
-        Mordechay Goodstein <mordechay.goodstein@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Jack Xu <jack.xu@intel.com>,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Fiona Trahe <fiona.trahe@intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 003/175] iwlwifi: pcie: limit memory read spin time
+Subject: [PATCH 4.19 137/346] crypto: qat - fix status check in qat_hal_put_rel_rd_xfer()
 Date:   Mon, 28 Dec 2020 13:47:36 +0100
-Message-Id: <20201228124853.400932464@linuxfoundation.org>
+Message-Id: <20201228124926.414690448@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,92 +42,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Jack Xu <jack.xu@intel.com>
 
-[ Upstream commit 04516706bb99889986ddfa3a769ed50d2dc7ac13 ]
+[ Upstream commit 3b5c130fb2e4c045369791c33c83b59f6e84f7d6 ]
 
-When we read device memory, we lock a spinlock, write the address we
-want to read from the device and then spin in a loop reading the data
-in 32-bit quantities from another register.
+The return value of qat_hal_rd_ae_csr() is always a CSR value and never
+a status and should not be stored in the status variable of
+qat_hal_put_rel_rd_xfer().
 
-As the description makes clear, this is rather inefficient, incurring
-a PCIe bus transaction for every read. In a typical device today, we
-want to read 786k SMEM if it crashes, leading to 192k register reads.
-Occasionally, we've seen the whole loop take over 20 seconds and then
-triggering the soft lockup detector.
+This removes the assignment as qat_hal_rd_ae_csr() is not expected to
+fail.
+A more comprehensive handling of the theoretical corner case which could
+result in a fail will be submitted in a separate patch.
 
-Clearly, it is unreasonable to spin here for such extended periods of
-time.
-
-To fix this, break the loop down into an outer and an inner loop, and
-break out of the inner loop if more than half a second elapsed. To
-avoid too much overhead, check for that only every 128 reads, though
-there's no particular reason for that number. Then, unlock and relock
-to obtain NIC access again, reprogram the start address and continue.
-
-This will keep (interrupt) latencies on the CPU down to a reasonable
-time.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Mordechay Goodstein <mordechay.goodstein@intel.com>
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/iwlwifi.20201022165103.45878a7e49aa.I3b9b9c5a10002915072312ce75b68ed5b3dc6e14@changeid
+Fixes: 8c9478a400b7 ("crypto: qat - reduce stack size with KASAN")
+Signed-off-by: Jack Xu <jack.xu@intel.com>
+Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Reviewed-by: Fiona Trahe <fiona.trahe@intel.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/wireless/intel/iwlwifi/pcie/trans.c   | 36 ++++++++++++++-----
- 1 file changed, 27 insertions(+), 9 deletions(-)
+ drivers/crypto/qat/qat_common/qat_hal.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/trans.c b/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
-index e7b873018dca6..e1287c3421165 100644
---- a/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
-+++ b/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
-@@ -1904,18 +1904,36 @@ static int iwl_trans_pcie_read_mem(struct iwl_trans *trans, u32 addr,
- 				   void *buf, int dwords)
- {
- 	unsigned long flags;
--	int offs, ret = 0;
-+	int offs = 0;
- 	u32 *vals = buf;
+diff --git a/drivers/crypto/qat/qat_common/qat_hal.c b/drivers/crypto/qat/qat_common/qat_hal.c
+index ff149e176f649..dac130bb807ae 100644
+--- a/drivers/crypto/qat/qat_common/qat_hal.c
++++ b/drivers/crypto/qat/qat_common/qat_hal.c
+@@ -1189,7 +1189,7 @@ static int qat_hal_put_rel_rd_xfer(struct icp_qat_fw_loader_handle *handle,
+ 	unsigned short mask;
+ 	unsigned short dr_offset = 0x10;
  
--	if (iwl_trans_grab_nic_access(trans, &flags)) {
--		iwl_write32(trans, HBUS_TARG_MEM_RADDR, addr);
--		for (offs = 0; offs < dwords; offs++)
--			vals[offs] = iwl_read32(trans, HBUS_TARG_MEM_RDAT);
--		iwl_trans_release_nic_access(trans, &flags);
--	} else {
--		ret = -EBUSY;
-+	while (offs < dwords) {
-+		/* limit the time we spin here under lock to 1/2s */
-+		ktime_t timeout = ktime_add_us(ktime_get(), 500 * USEC_PER_MSEC);
-+
-+		if (iwl_trans_grab_nic_access(trans, &flags)) {
-+			iwl_write32(trans, HBUS_TARG_MEM_RADDR,
-+				    addr + 4 * offs);
-+
-+			while (offs < dwords) {
-+				vals[offs] = iwl_read32(trans,
-+							HBUS_TARG_MEM_RDAT);
-+				offs++;
-+
-+				/* calling ktime_get is expensive so
-+				 * do it once in 128 reads
-+				 */
-+				if (offs % 128 == 0 && ktime_after(ktime_get(),
-+								   timeout))
-+					break;
-+			}
-+			iwl_trans_release_nic_access(trans, &flags);
-+		} else {
-+			return -EBUSY;
-+		}
- 	}
--	return ret;
-+
-+	return 0;
- }
- 
- static int iwl_trans_pcie_write_mem(struct iwl_trans *trans, u32 addr,
+-	status = ctx_enables = qat_hal_rd_ae_csr(handle, ae, CTX_ENABLES);
++	ctx_enables = qat_hal_rd_ae_csr(handle, ae, CTX_ENABLES);
+ 	if (CE_INUSE_CONTEXTS & ctx_enables) {
+ 		if (ctx & 0x1) {
+ 			pr_err("QAT: bad 4-ctx mode,ctx=0x%x\n", ctx);
 -- 
 2.27.0
 
