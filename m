@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1C742E3B05
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:44:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA2EA2E395B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:25:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404669AbgL1Noq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:44:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44922 "EHLO mail.kernel.org"
+        id S2388302AbgL1NWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:22:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391971AbgL1NoP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:44:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0367A206D4;
-        Mon, 28 Dec 2020 13:43:33 +0000 (UTC)
+        id S2388291AbgL1NWf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:22:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A057208BA;
+        Mon, 28 Dec 2020 13:21:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609163015;
-        bh=SouEUD5BJ3gnnq7AZxzqRsHZ8/JhO+UC3LcNUvWcgog=;
+        s=korg; t=1609161714;
+        bh=LIoN4sHjZ9CILxxIIUYHgb99RMJPp6BZLGeWeHf3D/k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zNmn+s24blikvq67CgUfodeeJKQowONqSPUA6LW8p7E+1ieudiOUlybkEtuXdKZD0
-         Ju+PAdxG0NxFs/V1e8BCPteKt+pc3cssedI5dNGPlPi8kHot+GESUykUvfQJ9vSQmN
-         fCBQrz6im2cVbWNqsjiUV1zHe9XrDHrL0OIB+7kA=
+        b=wrVZQAYnSltSg2Hp4jsDbRzxG4niqRIzWP4C6ZHQLaGBvcb9QpFCuuCpr7Bm0roiO
+         Q6tuj9mizApnP+D3muktBDnXRMgCI7huNuR9i8nWpnFDTeTMrwAHYm31bsJ+kH4+K2
+         0548Zc44nocqYaVBeymB7dR+Adl1LN8yNdL7Nj2M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jaehoon Chung <jh80.chung@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Arend van Spriel <arend.vanspriel@broadcom.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 109/453] brcmfmac: Fix memory leak for unpaired brcmf_{alloc/free}
+        stable@vger.kernel.org, Arvind Sankar <nivedita@alum.mit.edu>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.19 026/346] compiler.h: fix barrier_data() on clang
 Date:   Mon, 28 Dec 2020 13:45:45 +0100
-Message-Id: <20201228124942.457670010@linuxfoundation.org>
+Message-Id: <20201228124921.041082673@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
-References: <20201228124937.240114599@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,64 +43,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Seung-Woo Kim <sw0312.kim@samsung.com>
+From: Arvind Sankar <nivedita@alum.mit.edu>
 
-[ Upstream commit 9db946284e07bb27309dd546b7fee528664ba82a ]
+commit 3347acc6fcd4ee71ad18a9ff9d9dac176b517329 upstream.
 
-There are missig brcmf_free() for brcmf_alloc(). Fix memory leak
-by adding missed brcmf_free().
+Commit 815f0ddb346c ("include/linux/compiler*.h: make compiler-*.h
+mutually exclusive") neglected to copy barrier_data() from
+compiler-gcc.h into compiler-clang.h.
 
-Reported-by: Jaehoon Chung <jh80.chung@samsung.com>
-Fixes: a1f5aac1765a ("brcmfmac: don't realloc wiphy during PCIe reset")
-Signed-off-by: Seung-Woo Kim <sw0312.kim@samsung.com>
-Reviewed-by: Arend van Spriel <arend.vanspriel@broadcom.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1603849967-22817-1-git-send-email-sw0312.kim@samsung.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The definition in compiler-gcc.h was really to work around clang's more
+aggressive optimization, so this broke barrier_data() on clang, and
+consequently memzero_explicit() as well.
+
+For example, this results in at least the memzero_explicit() call in
+lib/crypto/sha256.c:sha256_transform() being optimized away by clang.
+
+Fix this by moving the definition of barrier_data() into compiler.h.
+
+Also move the gcc/clang definition of barrier() into compiler.h,
+__memory_barrier() is icc-specific (and barrier() is already defined
+using it in compiler-intel.h) and doesn't belong in compiler.h.
+
+[rdunlap@infradead.org: fix ALPHA builds when SMP is not enabled]
+
+Link: https://lkml.kernel.org/r/20201101231835.4589-1-rdunlap@infradead.org
+Fixes: 815f0ddb346c ("include/linux/compiler*.h: make compiler-*.h mutually exclusive")
+Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/20201014212631.207844-1-nivedita@alum.mit.edu
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+[nd: backport to account for missing
+  commit e506ea451254a ("compiler.h: Split {READ,WRITE}_ONCE definitions out into rwonce.h")
+  commit d08b9f0ca6605 ("scs: Add support for Clang's Shadow Call Stack (SCS)")
+  commit a3f8a30f3f00 ("Compiler Attributes: use feature checks instead of version checks")]
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c | 6 ++++--
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c | 1 +
- 2 files changed, 5 insertions(+), 2 deletions(-)
+ include/linux/compiler-clang.h |    1 -
+ include/linux/compiler-gcc.h   |   19 -------------------
+ include/linux/compiler.h       |   18 ++++++++++++++++--
+ 3 files changed, 16 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
-index 3be60aef54650..cb68f54a9c56e 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
-@@ -1936,16 +1936,18 @@ brcmf_pcie_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	fwreq = brcmf_pcie_prepare_fw_request(devinfo);
- 	if (!fwreq) {
- 		ret = -ENOMEM;
--		goto fail_bus;
-+		goto fail_brcmf;
- 	}
+--- a/include/linux/compiler-clang.h
++++ b/include/linux/compiler-clang.h
+@@ -39,7 +39,6 @@
+  * and may be redefined here because they should not be shared with other
+  * compilers, like ICC.
+  */
+-#define barrier() __asm__ __volatile__("" : : : "memory")
+ #define __must_be_array(a) BUILD_BUG_ON_ZERO(__same_type((a), &(a)[0]))
+ #define __assume_aligned(a, ...)	\
+ 	__attribute__((__assume_aligned__(a, ## __VA_ARGS__)))
+--- a/include/linux/compiler-gcc.h
++++ b/include/linux/compiler-gcc.h
+@@ -14,25 +14,6 @@
+ # error Sorry, your compiler is too old - please upgrade it.
+ #endif
  
- 	ret = brcmf_fw_get_firmwares(bus->dev, fwreq, brcmf_pcie_setup);
- 	if (ret < 0) {
- 		kfree(fwreq);
--		goto fail_bus;
-+		goto fail_brcmf;
- 	}
- 	return 0;
+-/* Optimization barrier */
+-
+-/* The "volatile" is due to gcc bugs */
+-#define barrier() __asm__ __volatile__("": : :"memory")
+-/*
+- * This version is i.e. to prevent dead stores elimination on @ptr
+- * where gcc and llvm may behave differently when otherwise using
+- * normal barrier(): while gcc behavior gets along with a normal
+- * barrier(), llvm needs an explicit input variable to be assumed
+- * clobbered. The issue is as follows: while the inline asm might
+- * access any memory it wants, the compiler could have fit all of
+- * @ptr into memory registers instead, and since @ptr never escaped
+- * from that, it proved that the inline asm wasn't touching any of
+- * it. This version works well with both compilers, i.e. we're telling
+- * the compiler that the inline asm absolutely may see the contents
+- * of @ptr. See also: https://llvm.org/bugs/show_bug.cgi?id=15495
+- */
+-#define barrier_data(ptr) __asm__ __volatile__("": :"r"(ptr) :"memory")
+-
+ /*
+  * This macro obfuscates arithmetic on a variable address so that gcc
+  * shouldn't recognize the original var, and make assumptions about it.
+--- a/include/linux/compiler.h
++++ b/include/linux/compiler.h
+@@ -79,11 +79,25 @@ void ftrace_likely_update(struct ftrace_
  
-+fail_brcmf:
-+	brcmf_free(&devinfo->pdev->dev);
- fail_bus:
- 	kfree(bus->msgbuf);
- 	kfree(bus);
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
-index 38e6809f16c75..ef5521b9b3577 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
-@@ -4433,6 +4433,7 @@ void brcmf_sdio_remove(struct brcmf_sdio *bus)
- 		brcmf_sdiod_intr_unregister(bus->sdiodev);
+ /* Optimization barrier */
+ #ifndef barrier
+-# define barrier() __memory_barrier()
++/* The "volatile" is due to gcc bugs */
++# define barrier() __asm__ __volatile__("": : :"memory")
+ #endif
  
- 		brcmf_detach(bus->sdiodev->dev);
-+		brcmf_free(bus->sdiodev->dev);
+ #ifndef barrier_data
+-# define barrier_data(ptr) barrier()
++/*
++ * This version is i.e. to prevent dead stores elimination on @ptr
++ * where gcc and llvm may behave differently when otherwise using
++ * normal barrier(): while gcc behavior gets along with a normal
++ * barrier(), llvm needs an explicit input variable to be assumed
++ * clobbered. The issue is as follows: while the inline asm might
++ * access any memory it wants, the compiler could have fit all of
++ * @ptr into memory registers instead, and since @ptr never escaped
++ * from that, it proved that the inline asm wasn't touching any of
++ * it. This version works well with both compilers, i.e. we're telling
++ * the compiler that the inline asm absolutely may see the contents
++ * of @ptr. See also: https://llvm.org/bugs/show_bug.cgi?id=15495
++ */
++# define barrier_data(ptr) __asm__ __volatile__("": :"r"(ptr) :"memory")
+ #endif
  
- 		cancel_work_sync(&bus->datawork);
- 		if (bus->brcmf_wq)
--- 
-2.27.0
-
+ /* workaround for GCC PR82365 if needed */
 
 
