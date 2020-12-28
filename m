@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD5A62E6711
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:22:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31A452E6722
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:22:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732285AbgL1NNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:13:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41832 "EHLO mail.kernel.org"
+        id S2393659AbgL1QUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:20:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41874 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732227AbgL1NNl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:13:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CCFDA22AAD;
-        Mon, 28 Dec 2020 13:12:59 +0000 (UTC)
+        id S1732287AbgL1NNo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:13:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9429206ED;
+        Mon, 28 Dec 2020 13:13:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161180;
-        bh=1b/fIMg3IWYi4cQ4mqSoGTUdKQFkfICjXpcA5uI8n5s=;
+        s=korg; t=1609161183;
+        bh=eIVMUBNkTv4M0R1fszy82xARhHHZegL4HKM13ZAbDIQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hwMZUFam2JwpGkHvsZNC/P2eUkIu0BgcT1no64TnpjP23wF0YrG13zxGtF6NW59dF
-         GMKqHuCKs5bKPQa/THrvM/HYCtCWhf/41XjVVVgp4QZJF5v9tgc9PDDoZRluDXhdsU
-         6Xi2CIU2TmuAg/+S0ES+W7qB62M2AzElo90ggUtU=
+        b=tLn12beDGqanOe4fOp221dMGFM6Au8id+G+eHazQYfGds5BWpD1kvoWTZ/GHzMdPP
+         l/MPSswAeRVv7Nz4NV9GoDNaPOCurYTESQFQ5dSu5T4ibbBagkjopevFXFHNr5Giy4
+         wZnyx4ic8tJTR3Eu3A/Kh2mDjCS2LMfdQKwY1Fmg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jason Gunthorpe <jgg@nvidia.com>,
-        Peter Xu <peterx@redhat.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 128/242] vfio-pci: Use io_remap_pfn_range() for PCI IO memory
-Date:   Mon, 28 Dec 2020 13:48:53 +0100
-Message-Id: <20201228124910.999527634@linuxfoundation.org>
+Subject: [PATCH 4.14 129/242] media: saa7146: fix array overflow in vidioc_s_audio()
+Date:   Mon, 28 Dec 2020 13:48:54 +0100
+Message-Id: <20201228124911.049823128@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
 References: <20201228124904.654293249@linuxfoundation.org>
@@ -42,44 +41,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@nvidia.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 7b06a56d468b756ad6bb43ac21b11e474ebc54a0 ]
+[ Upstream commit 8e4d86e241cf035d6d3467cd346e7ce490681937 ]
 
-commit f8f6ae5d077a ("mm: always have io_remap_pfn_range() set
-pgprot_decrypted()") allows drivers using mmap to put PCI memory mapped
-BAR space into userspace to work correctly on AMD SME systems that default
-to all memory encrypted.
+The "a->index" value comes from the user via the ioctl.  The problem is
+that the shift can wrap resulting in setting "mxb->cur_audinput" to an
+invalid value, which later results in an array overflow.
 
-Since vfio_pci_mmap_fault() is working with PCI memory mapped BAR space it
-should be calling io_remap_pfn_range() otherwise it will not work on SME
-systems.
-
-Fixes: 11c4cd07ba11 ("vfio-pci: Fault mmaps to enable vma tracking")
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Acked-by: Peter Xu <peterx@redhat.com>
-Tested-by: Tom Lendacky <thomas.lendacky@amd.com>
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+Fixes: 6680427791c9 ("[media] mxb: fix audio handling")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vfio/pci/vfio_pci.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/media/pci/saa7146/mxb.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-index ac1c54bcfe8fb..6fceefcab81db 100644
---- a/drivers/vfio/pci/vfio_pci.c
-+++ b/drivers/vfio/pci/vfio_pci.c
-@@ -1380,8 +1380,8 @@ static int vfio_pci_mmap_fault(struct vm_fault *vmf)
+diff --git a/drivers/media/pci/saa7146/mxb.c b/drivers/media/pci/saa7146/mxb.c
+index 930218cc2de19..2e7bd82282caa 100644
+--- a/drivers/media/pci/saa7146/mxb.c
++++ b/drivers/media/pci/saa7146/mxb.c
+@@ -652,16 +652,17 @@ static int vidioc_s_audio(struct file *file, void *fh, const struct v4l2_audio *
+ 	struct mxb *mxb = (struct mxb *)dev->ext_priv;
  
- 	mutex_unlock(&vdev->vma_lock);
+ 	DEB_D("VIDIOC_S_AUDIO %d\n", a->index);
+-	if (mxb_inputs[mxb->cur_input].audioset & (1 << a->index)) {
+-		if (mxb->cur_audinput != a->index) {
+-			mxb->cur_audinput = a->index;
+-			tea6420_route(mxb, a->index);
+-			if (mxb->cur_audinput == 0)
+-				mxb_update_audmode(mxb);
+-		}
+-		return 0;
++	if (a->index >= 32 ||
++	    !(mxb_inputs[mxb->cur_input].audioset & (1 << a->index)))
++		return -EINVAL;
++
++	if (mxb->cur_audinput != a->index) {
++		mxb->cur_audinput = a->index;
++		tea6420_route(mxb, a->index);
++		if (mxb->cur_audinput == 0)
++			mxb_update_audmode(mxb);
+ 	}
+-	return -EINVAL;
++	return 0;
+ }
  
--	if (remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff,
--			    vma->vm_end - vma->vm_start, vma->vm_page_prot))
-+	if (io_remap_pfn_range(vma, vma->vm_start, vma->vm_pgoff,
-+			       vma->vm_end - vma->vm_start, vma->vm_page_prot))
- 		ret = VM_FAULT_SIGBUS;
- 
- up_out:
+ #ifdef CONFIG_VIDEO_ADV_DEBUG
 -- 
 2.27.0
 
