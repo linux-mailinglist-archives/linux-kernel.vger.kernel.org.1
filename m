@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 496C42E3DF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:22:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 647C22E3741
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:54:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441691AbgL1OWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:22:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57454 "EHLO mail.kernel.org"
+        id S1728062AbgL1MxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 07:53:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502618AbgL1OWM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:22:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F3C6222B30;
-        Mon, 28 Dec 2020 14:21:55 +0000 (UTC)
+        id S1728013AbgL1MxC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 07:53:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CF1122B2A;
+        Mon, 28 Dec 2020 12:52:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165316;
-        bh=RnWXGoe3rqK+CbVc7vEq6fNA0KGY+rq+NBemDoqYrDw=;
+        s=korg; t=1609159927;
+        bh=y83sAJ3Is1xrklf1O2hNLhvCDjnjRU8zGUNWeQw0rKs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RNSlv7laGr9RWpBcYC7Jo6OdBqZ/LDWgvUaL8ieY7StV5GgjDQcOQviI6bLur5Y4+
-         vXqZvrvwkPu05PPLhWS9HYEgX1j/HaBIU4xWb8rCNuo7UPuFBu4EMUY8rw5CC+ZrlF
-         DdVc4JdsbRAlOJwe2nGgSxsrIgIpRbtMqoWSLR8A=
+        b=ytgUgnhL6TLIqOHy0xnkj+ELmBdApFfvjsd5J9rbmQjydoGmTdECsorF0Lwcdgpbg
+         uuGUH67+o3/8zkVH4y5YDkaiDZEd1vQgCv0Od6eXMc1uTUOHpNpu/ljiw+kUEDEEby
+         iyPdjoUXn69zw/M3ap/Yq3aP2aAlVS2bjU6AUpX0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Robert Buhren <robert.buhren@sect.tu-berlin.de>,
-        Felicitas Hetzelt <file@sect.tu-berlin.de>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
+        stable@vger.kernel.org, Timo Witte <timo.witte@gmail.com>,
+        "Lee, Chun-Yi" <jlee@suse.com>,
+        Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 490/717] virtio_net: Fix error code in probe()
+Subject: [PATCH 4.4 004/132] platform/x86: acer-wmi: add automatic keyboard background light toggle key as KEY_LIGHTS_TOGGLE
 Date:   Mon, 28 Dec 2020 13:48:08 +0100
-Message-Id: <20201228125044.440786954@linuxfoundation.org>
+Message-Id: <20201228124846.633460236@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
+References: <20201228124846.409999325@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,37 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Timo Witte <timo.witte@gmail.com>
 
-[ Upstream commit 411ea23a76526e6efed0b601abb603d3c981b333 ]
+[ Upstream commit 9e7a005ad56aa7d6ea5830c5ffcc60bf35de380b ]
 
-Set a negative error code intead of returning success if the MTU has
-been changed to something invalid.
+Got a dmesg message on my AMD Renoir based Acer laptop:
+"acer_wmi: Unknown key number - 0x84" when toggling keyboard
+background light
 
-Fixes: fe36cbe0671e ("virtio_net: clear MTU when out of range")
-Reported-by: Robert Buhren <robert.buhren@sect.tu-berlin.de>
-Reported-by: Felicitas Hetzelt <file@sect.tu-berlin.de>
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/X8pGVJSeeCdII1Ys@mwanda
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
+Signed-off-by: Timo Witte <timo.witte@gmail.com>
+Reviewed-by: "Lee, Chun-Yi" <jlee@suse.com>
+Link: https://lore.kernel.org/r/20200804001423.36778-1-timo.witte@gmail.com
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/virtio_net.c | 1 +
+ drivers/platform/x86/acer-wmi.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 21b71148c5324..34bb95dd92392 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -3072,6 +3072,7 @@ static int virtnet_probe(struct virtio_device *vdev)
- 			dev_err(&vdev->dev,
- 				"device MTU appears to have changed it is now %d < %d",
- 				mtu, dev->min_mtu);
-+			err = -EINVAL;
- 			goto free;
- 		}
- 
+diff --git a/drivers/platform/x86/acer-wmi.c b/drivers/platform/x86/acer-wmi.c
+index 5c169a837ebdf..b336f2620f9dc 100644
+--- a/drivers/platform/x86/acer-wmi.c
++++ b/drivers/platform/x86/acer-wmi.c
+@@ -124,6 +124,7 @@ static const struct key_entry acer_wmi_keymap[] __initconst = {
+ 	{KE_KEY, 0x64, {KEY_SWITCHVIDEOMODE} },	/* Display Switch */
+ 	{KE_IGNORE, 0x81, {KEY_SLEEP} },
+ 	{KE_KEY, 0x82, {KEY_TOUCHPAD_TOGGLE} },	/* Touch Pad Toggle */
++	{KE_IGNORE, 0x84, {KEY_KBDILLUMTOGGLE} }, /* Automatic Keyboard background light toggle */
+ 	{KE_KEY, KEY_TOUCHPAD_ON, {KEY_TOUCHPAD_ON} },
+ 	{KE_KEY, KEY_TOUCHPAD_OFF, {KEY_TOUCHPAD_OFF} },
+ 	{KE_IGNORE, 0x83, {KEY_TOUCHPAD_TOGGLE} },
 -- 
 2.27.0
 
