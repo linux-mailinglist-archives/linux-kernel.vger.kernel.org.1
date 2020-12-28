@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4942E37D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:01:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A4A12E388F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:13:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729541AbgL1NAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:00:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56982 "EHLO mail.kernel.org"
+        id S1731897AbgL1NL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:11:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729505AbgL1NAk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:00:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BE4C207C9;
-        Mon, 28 Dec 2020 12:59:59 +0000 (UTC)
+        id S1731657AbgL1NLR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:11:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 22C8C20776;
+        Mon, 28 Dec 2020 13:11:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609160400;
-        bh=Bo8yfNXiHfXgUOHN8hGi8e7wn1liUW8gOAfUwaubMF4=;
+        s=korg; t=1609161061;
+        bh=KEl7a0v7/VsWcOnw1uYWHi/NQyARYMBIfAdhmwLWU78=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vdmNfxREW2FBfgzeHzPhksvAV2KKBJ/+aK4qUy9oOTGxpXOFg1XJ3rMvqf1PGNFVV
-         ecm253iwnTElbK5wBH3yFueAYYwTNf1vbE4TYUsjHsgwCqVSGrNy3vi1uJJWhhZuDg
-         Vfr1HHQyuI0Lb1siyFpduy3aBAG5nfGON2knPHh4=
+        b=cOtF0a/974/1t8hN3YxCRv0WJDtUeYTUts4ftM47UFBNPRuN/yC4+OCQkmrSNSA71
+         ZHZ3+Mm4QS7RNAu7T4eaI0QaHKZUetJZbLffmfW5guouhYFpUzqpo3ysq5GyA7nBI9
+         Mp/tJgbDnXMOk/2cG/F4vAmYyMODFo1bOGBV9904=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        EJ Hsu <ejh@nvidia.com>, Peter Chen <peter.chen@nxp.com>,
-        Will McVicker <willmcvicker@google.com>
-Subject: [PATCH 4.9 039/175] USB: gadget: f_rndis: fix bitrate for SuperSpeed and above
-Date:   Mon, 28 Dec 2020 13:48:12 +0100
-Message-Id: <20201228124855.142881208@linuxfoundation.org>
+        stable@vger.kernel.org, Vincent Bernat <vincent@bernat.ch>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 088/242] net: evaluate net.ipv4.conf.all.proxy_arp_pvlan
+Date:   Mon, 28 Dec 2020 13:48:13 +0100
+Message-Id: <20201228124909.029415053@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124853.216621466@linuxfoundation.org>
-References: <20201228124853.216621466@linuxfoundation.org>
+In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
+References: <20201228124904.654293249@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Will McVicker <willmcvicker@google.com>
+From: Vincent Bernat <vincent@bernat.ch>
 
-commit b00f444f9add39b64d1943fa75538a1ebd54a290 upstream.
+[ Upstream commit 1af5318c00a8acc33a90537af49b3f23f72a2c4b ]
 
-Align the SuperSpeed Plus bitrate for f_rndis to match f_ncm's ncm_bitrate
-defined by commit 1650113888fe ("usb: gadget: f_ncm: add SuperSpeed descriptors
-for CDC NCM").
+Introduced in 65324144b50b, the "proxy_arp_vlan" sysctl is a
+per-interface sysctl to tune proxy ARP support for private VLANs.
+While the "all" variant is exposed, it was a noop and never evaluated.
+We use the usual "or" logic for this kind of sysctls.
 
-Cc: Felipe Balbi <balbi@kernel.org>
-Cc: EJ Hsu <ejh@nvidia.com>
-Cc: Peter Chen <peter.chen@nxp.com>
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Will McVicker <willmcvicker@google.com>
-Reviewed-by: Peter Chen <peter.chen@nxp.com>
-Link: https://lore.kernel.org/r/20201127140559.381351-2-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 65324144b50b ("net: RFC3069, private VLAN proxy arp support")
+Signed-off-by: Vincent Bernat <vincent@bernat.ch>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/function/f_rndis.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ include/linux/inetdevice.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/gadget/function/f_rndis.c
-+++ b/drivers/usb/gadget/function/f_rndis.c
-@@ -91,8 +91,10 @@ static inline struct f_rndis *func_to_rn
- /* peak (theoretical) bulk transfer rate in bits-per-second */
- static unsigned int bitrate(struct usb_gadget *g)
- {
-+	if (gadget_is_superspeed(g) && g->speed >= USB_SPEED_SUPER_PLUS)
-+		return 4250000000U;
- 	if (gadget_is_superspeed(g) && g->speed == USB_SPEED_SUPER)
--		return 13 * 1024 * 8 * 1000 * 8;
-+		return 3750000000U;
- 	else if (gadget_is_dualspeed(g) && g->speed == USB_SPEED_HIGH)
- 		return 13 * 512 * 8 * 1000 * 8;
- 	else
+diff --git a/include/linux/inetdevice.h b/include/linux/inetdevice.h
+index ff876bf66cf25..52e1230cfe1b4 100644
+--- a/include/linux/inetdevice.h
++++ b/include/linux/inetdevice.h
+@@ -102,7 +102,7 @@ static inline void ipv4_devconf_setall(struct in_device *in_dev)
+ 
+ #define IN_DEV_LOG_MARTIANS(in_dev)	IN_DEV_ORCONF((in_dev), LOG_MARTIANS)
+ #define IN_DEV_PROXY_ARP(in_dev)	IN_DEV_ORCONF((in_dev), PROXY_ARP)
+-#define IN_DEV_PROXY_ARP_PVLAN(in_dev)	IN_DEV_CONF_GET(in_dev, PROXY_ARP_PVLAN)
++#define IN_DEV_PROXY_ARP_PVLAN(in_dev)	IN_DEV_ORCONF((in_dev), PROXY_ARP_PVLAN)
+ #define IN_DEV_SHARED_MEDIA(in_dev)	IN_DEV_ORCONF((in_dev), SHARED_MEDIA)
+ #define IN_DEV_TX_REDIRECTS(in_dev)	IN_DEV_ORCONF((in_dev), SEND_REDIRECTS)
+ #define IN_DEV_SEC_REDIRECTS(in_dev)	IN_DEV_ORCONF((in_dev), \
+-- 
+2.27.0
+
 
 
