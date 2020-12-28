@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D02932E66D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:18:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E99702E66D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 17:18:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440924AbgL1QRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 11:17:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45380 "EHLO mail.kernel.org"
+        id S2440867AbgL1QRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 11:17:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45408 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731501AbgL1NRE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:17:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9435E2076D;
-        Mon, 28 Dec 2020 13:16:22 +0000 (UTC)
+        id S1731502AbgL1NRG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:17:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C18E7207C9;
+        Mon, 28 Dec 2020 13:16:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161383;
-        bh=Ed7G+Ve7B0rvQklr6MqKHAeDjIyVTNfHzgYEmp4xBl0=;
+        s=korg; t=1609161386;
+        bh=flFALhujOsQ/SdUfxgVQE78tjaNosgiy4sL9SMFY8oY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0TP7bnuzKn0vu+8GDlGxlJu5YZlL74pUaPnnyEsfP7b1rMIgDfTseUFBfjJcXVqx8
-         8g1yoTqnfswNeAWkgD8/7OPGu9hGvgTYFca40G6hDSbgn8mDgGe/6VP84/HpyEkCHb
-         VSyWZ6XEKHSXU0zuBAE+YI64dN4jeQSLyjLlUgpo=
+        b=ntS1r7dZiAvFy+He3D93PjcT+7kVxCtNyvCR6+E5zGrElmobVOYcG7HLFcI+aJh3H
+         LXM6KZhihNbfoPfSXJS7+vH+BJKI44qYP9x+uBSveYPPoWvbPZhCUSFeYNsEuVcde/
+         AgrjI1jc3yQFwgDj0pBcJTR//JSSUmjl5hqim+eE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rostislav Lisovy <lisovy@gmail.com>,
-        Ian Abbott <abbotti@mev.co.uk>
-Subject: [PATCH 4.14 195/242] staging: comedi: mf6x4: Fix AI end-of-conversion detection
-Date:   Mon, 28 Dec 2020 13:50:00 +0100
-Message-Id: <20201228124914.281252068@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 4.14 196/242] powerpc/perf: Exclude kernel samples while counting events in user space.
+Date:   Mon, 28 Dec 2020 13:50:01 +0100
+Message-Id: <20201228124914.329789714@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
 References: <20201228124904.654293249@linuxfoundation.org>
@@ -39,50 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ian Abbott <abbotti@mev.co.uk>
+From: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
 
-commit 56c90457ebfe9422496aac6ef3d3f0f0ea8b2ec2 upstream.
+commit aa8e21c053d72b6639ea5a7f1d3a1d0209534c94 upstream.
 
-I have had reports from two different people that attempts to read the
-analog input channels of the MF624 board fail with an `ETIMEDOUT` error.
+Perf event attritube supports exclude_kernel flag to avoid
+sampling/profiling in supervisor state (kernel). Based on this event
+attr flag, Monitor Mode Control Register bit is set to freeze on
+supervisor state. But sometimes (due to hardware limitation), Sampled
+Instruction Address Register (SIAR) locks on to kernel address even
+when freeze on supervisor is set. Patch here adds a check to drop
+those samples.
 
-After triggering the conversion, the code calls `comedi_timeout()` with
-`mf6x4_ai_eoc()` as the callback function to check if the conversion is
-complete.  The callback returns 0 if complete or `-EBUSY` if not yet
-complete.  `comedi_timeout()` returns `-ETIMEDOUT` if it has not
-completed within a timeout period which is propagated as an error to the
-user application.
-
-The existing code considers the conversion to be complete when the EOLC
-bit is high.  However, according to the user manuals for the MF624 and
-MF634 boards, this test is incorrect because EOLC is an active low
-signal that goes high when the conversion is triggered, and goes low
-when the conversion is complete.  Fix the problem by inverting the test
-of the EOLC bit state.
-
-Fixes: 04b565021a83 ("comedi: Humusoft MF634 and MF624 DAQ cards driver")
-Cc: <stable@vger.kernel.org> # v4.4+
-Cc: Rostislav Lisovy <lisovy@gmail.com>
-Signed-off-by: Ian Abbott <abbotti@mev.co.uk>
-Link: https://lore.kernel.org/r/20201207145806.4046-1-abbotti@mev.co.uk
+Cc: stable@vger.kernel.org
+Signed-off-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/1606289215-1433-1-git-send-email-atrajeev@linux.vnet.ibm.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/staging/comedi/drivers/mf6x4.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/powerpc/perf/core-book3s.c |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
---- a/drivers/staging/comedi/drivers/mf6x4.c
-+++ b/drivers/staging/comedi/drivers/mf6x4.c
-@@ -121,8 +121,9 @@ static int mf6x4_ai_eoc(struct comedi_de
- 	struct mf6x4_private *devpriv = dev->private;
- 	unsigned int status;
+--- a/arch/powerpc/perf/core-book3s.c
++++ b/arch/powerpc/perf/core-book3s.c
+@@ -2068,6 +2068,16 @@ static void record_and_restart(struct pe
+ 	perf_event_update_userpage(event);
  
-+	/* EOLC goes low at end of conversion. */
- 	status = ioread32(devpriv->gpioc_reg);
--	if (status & MF6X4_GPIOC_EOLC)
-+	if ((status & MF6X4_GPIOC_EOLC) == 0)
- 		return 0;
- 	return -EBUSY;
- }
+ 	/*
++	 * Due to hardware limitation, sometimes SIAR could sample a kernel
++	 * address even when freeze on supervisor state (kernel) is set in
++	 * MMCR2. Check attr.exclude_kernel and address to drop the sample in
++	 * these cases.
++	 */
++	if (event->attr.exclude_kernel && record)
++		if (is_kernel_addr(mfspr(SPRN_SIAR)))
++			record = 0;
++
++	/*
+ 	 * Finally record data if requested.
+ 	 */
+ 	if (record) {
 
 
