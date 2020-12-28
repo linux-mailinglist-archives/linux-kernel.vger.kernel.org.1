@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC7532E3915
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:19:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFF7E2E3A44
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:34:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730147AbgL1NSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:18:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47042 "EHLO mail.kernel.org"
+        id S2391128AbgL1NeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:34:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34624 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731803AbgL1NSo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:18:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD8112076D;
-        Mon, 28 Dec 2020 13:18:27 +0000 (UTC)
+        id S2388074AbgL1NeE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:34:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F350020728;
+        Mon, 28 Dec 2020 13:33:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609161508;
-        bh=P3raXtEBSIH6/xIGEVgeFVA6AX+u3JpnQit2IEx/KWg=;
+        s=korg; t=1609162403;
+        bh=HgdXahm1Zzqe7TN4Ff96NVdu2PDMzEhyVy3av+zvSio=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h5JA/aEa8ZnnygAZSuZKHtA9CHNT9urNoSSFnDsEZMhgUKh7B+YKf72wG1O70uxtg
-         pr1qVrThrx3q7vB0707jg6zfiXbkZa+/ApKBzvU8OHCDxCUL3g5Wx7KEX+VxPrJ9WI
-         bXzynk8tnMEYIWX1XFJD+uluklyjHmxSXQncGfWI=
+        b=EOmQHwcmj1B8ZESOPAdSGsUSV2Rf++z11CTjcV57eykGb456Ex0uXB06IXpOCX8bK
+         FV1NghQ5hY/Vo4RCHyWJcDMlrhDYvYS/5retcdAJXLUV21KULu8IN8Se8jlYArrrFY
+         a0hxV0mPN6T4DXSoxxuE8UIK6uMvv682huYQPips=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>,
-        "Pavel Machek (CIP)" <pavel@denx.de>,
-        David Sterba <dsterba@suse.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.14 207/242] btrfs: fix return value mixup in btrfs_get_extent
-Date:   Mon, 28 Dec 2020 13:50:12 +0100
-Message-Id: <20201228124914.864168544@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.19 294/346] USB: serial: keyspan_pda: fix write-wakeup use-after-free
+Date:   Mon, 28 Dec 2020 13:50:13 +0100
+Message-Id: <20201228124933.992647020@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124904.654293249@linuxfoundation.org>
-References: <20201228124904.654293249@linuxfoundation.org>
+In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
+References: <20201228124919.745526410@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +40,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Machek <pavel@denx.de>
+From: Johan Hovold <johan@kernel.org>
 
-commit 881a3a11c2b858fe9b69ef79ac5ee9978a266dc9 upstream
+commit 37faf50615412947868c49aee62f68233307f4e4 upstream.
 
-btrfs_get_extent() sets variable ret, but out: error path expect error
-to be in variable err so the error code is lost.
+The driver's deferred write wakeup was never flushed on disconnect,
+something which could lead to the driver port data being freed while the
+wakeup work is still scheduled.
 
-Fixes: 6bf9e4bd6a27 ("btrfs: inode: Verify inode mode to avoid NULL pointer dereference")
-CC: stable@vger.kernel.org # 5.4+
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Fix this by using the usb-serial write wakeup which gets cancelled
+properly on disconnect.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Cc: stable@vger.kernel.org
+Acked-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- fs/btrfs/inode.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -7179,7 +7179,7 @@ again:
- 	    found_type == BTRFS_FILE_EXTENT_PREALLOC) {
- 		/* Only regular file could have regular/prealloc extent */
- 		if (!S_ISREG(inode->vfs_inode.i_mode)) {
--			ret = -EUCLEAN;
-+			err = -EUCLEAN;
- 			btrfs_crit(fs_info,
- 		"regular/prealloc extent found for non-regular inode %llu",
- 				   btrfs_ino(inode));
+---
+ drivers/usb/serial/keyspan_pda.c |   17 +++--------------
+ 1 file changed, 3 insertions(+), 14 deletions(-)
+
+--- a/drivers/usb/serial/keyspan_pda.c
++++ b/drivers/usb/serial/keyspan_pda.c
+@@ -43,8 +43,7 @@
+ struct keyspan_pda_private {
+ 	int			tx_room;
+ 	int			tx_throttled;
+-	struct work_struct			wakeup_work;
+-	struct work_struct			unthrottle_work;
++	struct work_struct	unthrottle_work;
+ 	struct usb_serial	*serial;
+ 	struct usb_serial_port	*port;
+ };
+@@ -97,15 +96,6 @@ static const struct usb_device_id id_tab
+ };
+ #endif
+ 
+-static void keyspan_pda_wakeup_write(struct work_struct *work)
+-{
+-	struct keyspan_pda_private *priv =
+-		container_of(work, struct keyspan_pda_private, wakeup_work);
+-	struct usb_serial_port *port = priv->port;
+-
+-	tty_port_tty_wakeup(&port->port);
+-}
+-
+ static void keyspan_pda_request_unthrottle(struct work_struct *work)
+ {
+ 	struct keyspan_pda_private *priv =
+@@ -183,7 +173,7 @@ static void keyspan_pda_rx_interrupt(str
+ 		case 2: /* tx unthrottle interrupt */
+ 			priv->tx_throttled = 0;
+ 			/* queue up a wakeup at scheduler time */
+-			schedule_work(&priv->wakeup_work);
++			usb_serial_port_softint(port);
+ 			break;
+ 		default:
+ 			break;
+@@ -563,7 +553,7 @@ static void keyspan_pda_write_bulk_callb
+ 	priv = usb_get_serial_port_data(port);
+ 
+ 	/* queue up a wakeup at scheduler time */
+-	schedule_work(&priv->wakeup_work);
++	usb_serial_port_softint(port);
+ }
+ 
+ 
+@@ -716,7 +706,6 @@ static int keyspan_pda_port_probe(struct
+ 	if (!priv)
+ 		return -ENOMEM;
+ 
+-	INIT_WORK(&priv->wakeup_work, keyspan_pda_wakeup_write);
+ 	INIT_WORK(&priv->unthrottle_work, keyspan_pda_request_unthrottle);
+ 	priv->serial = port->serial;
+ 	priv->port = port;
 
 
