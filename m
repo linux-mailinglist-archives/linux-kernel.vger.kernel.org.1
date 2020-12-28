@@ -2,33 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8EA32E6432
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:48:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FD5E2E3ADE
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:43:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408250AbgL1Psj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 10:48:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42838 "EHLO mail.kernel.org"
+        id S2404279AbgL1Nmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:42:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391182AbgL1Nmd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:42:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE67320719;
-        Mon, 28 Dec 2020 13:41:52 +0000 (UTC)
+        id S2404243AbgL1Nmh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:42:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D3A3206ED;
+        Mon, 28 Dec 2020 13:41:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162913;
-        bh=2F97PjpBxv8ni2wf+R3/ZB1bNVeDSGnnX4os8s/5AVA=;
+        s=korg; t=1609162916;
+        bh=EtrtNzjBt/6SdUvBKWT3J6QUlTOr5G5BUP1dzuw7Zzk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZhS3FJIXYTLdt2yajJD4btGTPGyCiHpXp4spci6NwSTuYH2AiTfLvcoTHd6MJxVpH
-         87un4lEIK8VbXy1tV2znYiEfSIkQZp9bXHydKEZ9/XBqt0WKWrSEDAAaD8/OXywSjs
-         PCNQl9gIwhDaGQXnKbskFViSP32X0U7VePEVM47E=
+        b=W9Hbt6CGEeRgRGC7sOEcl1fKYfm3KL6vmf27FVhWF0c/R9jciQfTzztLzPrpCYwap
+         svTjROuJL2Czg8ZD8merVXid54sqMJSwCnEdwJxdQFNinamSta7+LJ+rv7gpjonnu/
+         kIcuRIAUrlmicll0eE2l0e/FUAHye7rH2mwk+0/Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
         Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 073/453] drm/gma500: fix double free of gma_connector
-Date:   Mon, 28 Dec 2020 13:45:09 +0100
-Message-Id: <20201228124940.752518203@linuxfoundation.org>
+        Michal Simek <monstr@monstr.eu>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, linux-mm@kvack.org,
+        linux-aspeed@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 074/453] drm/aspeed: Fix Kconfig warning & subsequent build errors
+Date:   Mon, 28 Dec 2020 13:45:10 +0100
+Message-Id: <20201228124940.799406977@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
 References: <20201228124937.240114599@linuxfoundation.org>
@@ -40,43 +49,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 4e19d51ca5b28a1d435a844c7b2a8e1b1b6fa237 ]
+[ Upstream commit bf296b35489b46780b73b74ad984d06750ed5479 ]
 
-clang static analysis reports this problem:
+Kernel test robot reported build errors (undefined references)
+that didn't make much sense. After reproducing them, there is also
+a Kconfig warning that is the root cause of the build errors, so
+fix that Kconfig problem.
 
-cdv_intel_dp.c:2101:2: warning: Attempt to free released memory
-        kfree(gma_connector);
-        ^~~~~~~~~~~~~~~~~~~~
+Fixes this Kconfig warning:
+WARNING: unmet direct dependencies detected for CMA
+  Depends on [n]: MMU [=n]
+  Selected by [m]:
+  - DRM_ASPEED_GFX [=m] && HAS_IOMEM [=y] && DRM [=m] && OF [=y] && (COMPILE_TEST [=y] || ARCH_ASPEED) && HAVE_DMA_CONTIGUOUS [=y]
 
-In cdv_intel_dp_init() when the call to cdv_intel_edp_panel_vdd_off()
-fails, the handler calls cdv_intel_dp_destroy(connector) which does
-the first free of gma_connector. So adjust the goto label and skip
-the second free.
+and these dependent build errors:
+(.text+0x10c8c): undefined reference to `start_isolate_page_range'
+microblaze-linux-ld: (.text+0x10f14): undefined reference to `test_pages_isolated'
+microblaze-linux-ld: (.text+0x10fd0): undefined reference to `undo_isolate_page_range'
 
-Fixes: d112a8163f83 ("gma500/cdv: Add eDP support")
-Signed-off-by: Tom Rix <trix@redhat.com>
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20201003193928.18869-1-trix@redhat.com
+Fixes: 76356a966e33 ("drm: aspeed: Clean up Kconfig options")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reviewed-by: Joel Stanley <joel@jms.id.au>
+Cc: Joel Stanley <joel@jms.id.au>
+Cc: Andrew Jeffery <andrew@aj.id.au>
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc: Michal Simek <monstr@monstr.eu>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Mike Rapoport <rppt@linux.ibm.com>
+Cc: linux-mm@kvack.org
+Cc: linux-aspeed@lists.ozlabs.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: David Airlie <airlied@linux.ie>
+Cc: dri-devel@lists.freedesktop.org
+Signed-off-by: Joel Stanley <joel@jms.id.au>
+Link: https://patchwork.freedesktop.org/patch/msgid/20201011230131.4922-1-rdunlap@infradead.org
+Signed-off-by: Joel Stanley <joel@jms.id.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/gma500/cdv_intel_dp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/aspeed/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/gma500/cdv_intel_dp.c b/drivers/gpu/drm/gma500/cdv_intel_dp.c
-index 2ff4b35151bf8..87738650dd90b 100644
---- a/drivers/gpu/drm/gma500/cdv_intel_dp.c
-+++ b/drivers/gpu/drm/gma500/cdv_intel_dp.c
-@@ -2125,7 +2125,7 @@ cdv_intel_dp_init(struct drm_device *dev, struct psb_intel_mode_device *mode_dev
- 			DRM_INFO("failed to retrieve link info, disabling eDP\n");
- 			cdv_intel_dp_encoder_destroy(encoder);
- 			cdv_intel_dp_destroy(connector);
--			goto err_priv;
-+			goto err_connector;
- 		} else {
-         		DRM_DEBUG_KMS("DPCD: Rev=%x LN_Rate=%x LN_CNT=%x LN_DOWNSP=%x\n",
- 				intel_dp->dpcd[0], intel_dp->dpcd[1], 
+diff --git a/drivers/gpu/drm/aspeed/Kconfig b/drivers/gpu/drm/aspeed/Kconfig
+index 018383cfcfa79..5e95bcea43e92 100644
+--- a/drivers/gpu/drm/aspeed/Kconfig
++++ b/drivers/gpu/drm/aspeed/Kconfig
+@@ -3,6 +3,7 @@ config DRM_ASPEED_GFX
+ 	tristate "ASPEED BMC Display Controller"
+ 	depends on DRM && OF
+ 	depends on (COMPILE_TEST || ARCH_ASPEED)
++	depends on MMU
+ 	select DRM_KMS_HELPER
+ 	select DRM_KMS_CMA_HELPER
+ 	select DMA_CMA if HAVE_DMA_CONTIGUOUS
 -- 
 2.27.0
 
