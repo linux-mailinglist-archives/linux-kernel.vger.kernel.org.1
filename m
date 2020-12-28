@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C492E3A43
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:34:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 968A52E3F96
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:42:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391133AbgL1NeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 08:34:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34406 "EHLO mail.kernel.org"
+        id S2506318AbgL1OmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 09:42:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35216 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390196AbgL1Nd5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 08:33:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B096205CB;
-        Mon, 28 Dec 2020 13:33:16 +0000 (UTC)
+        id S2502456AbgL1O1p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 09:27:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D73CB207B2;
+        Mon, 28 Dec 2020 14:27:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609162396;
-        bh=hZO3f+sU8DLpmWcx9RIoRxYScZUiG1znp4VtXoefxS8=;
+        s=korg; t=1609165650;
+        bh=Z0h+6bmR7wNimKkpK7ZfJsCK9K1YgiLPBioUdJ2aJFg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ym3wKp1YEBhvY6bZ7MvLwTV1RpjjWHNjwWtWx51sBR2T/VqlUbBXJm/zoSo1QMo5G
-         Q0aClyolWUDHKCeUnoIToXQhQ6kpIlZ4y9q26PqpgGCuDLc0JAapsBpVgDG3x1S9/4
-         of0SnnVQIKhSb62pucV/3UXT2/EYWMiWccHUgqnE=
+        b=BtulNGZYR1irNX4mwg06A047Dk1Zk+cUWVijh/sK6PXlYdPGk6XHOlZ3X8+yHdP2W
+         UEE88DwqtBsctqslFqSyE31WwV4sGTI8M9o4Yqds5SfNbFbi0ewyb+/s8d4LYUzhB8
+         e46h9cp06sDl7nwDjWVPa4EdovrCi1xF6sag+j6Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefan Haberland <sth@linux.ibm.com>,
-        Jan Hoeppner <hoeppner@linux.ibm.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 4.19 284/346] s390/dasd: fix list corruption of lcu list
+        stable@vger.kernel.org, Jon Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <treding@nvidia.com>
+Subject: [PATCH 5.10 605/717] ARM: tegra: Populate OPP table for Tegra20 Ventana
 Date:   Mon, 28 Dec 2020 13:50:03 +0100
-Message-Id: <20201228124933.508133620@linuxfoundation.org>
+Message-Id: <20201228125049.895071844@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124919.745526410@linuxfoundation.org>
-References: <20201228124919.745526410@linuxfoundation.org>
+In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
+References: <20201228125020.963311703@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,53 +39,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Haberland <sth@linux.ibm.com>
+From: Jon Hunter <jonathanh@nvidia.com>
 
-commit 53a7f655834c7c335bf683f248208d4fbe4b47bc upstream.
+commit bd7cd7e05a42491469ca19861da44abc3168cf5f upstream.
 
-In dasd_alias_disconnect_device_from_lcu the device is removed from any
-list on the LCU. Afterwards the LCU is removed from the lcu list if it
-does not contain devices any longer.
+Commit 9ce274630495 ("cpufreq: tegra20: Use generic cpufreq-dt driver
+(Tegra30 supported now)") update the Tegra20 CPUFREQ driver to use the
+generic CPUFREQ device-tree driver. Since this change CPUFREQ support
+on the Tegra20 Ventana platform has been broken because the necessary
+device-tree nodes with the operating point information are not populated
+for this platform. Fix this by updating device-tree for Venata to
+include the operating point informration for Tegra20.
 
-The lcu->lock protects the lcu from parallel updates. But to cancel all
-workers and wait for completion the lcu->lock has to be unlocked.
-
-If two devices are removed in parallel and both are removed from the LCU
-the first device that takes the lcu->lock again will delete the LCU because
-it is already empty but the second device also tries to free the LCU which
-leads to a list corruption of the lcu list.
-
-Fix by removing the device right before the lcu is checked without
-unlocking the lcu->lock in between.
-
-Fixes: 8e09f21574ea ("[S390] dasd: add hyper PAV support to DASD device driver, part 1")
+Fixes: 9ce274630495 ("cpufreq: tegra20: Use generic cpufreq-dt driver (Tegra30 supported now)")
 Cc: stable@vger.kernel.org
-Signed-off-by: Stefan Haberland <sth@linux.ibm.com>
-Reviewed-by: Jan Hoeppner <hoeppner@linux.ibm.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/s390/block/dasd_alias.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/tegra20-ventana.dts |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
---- a/drivers/s390/block/dasd_alias.c
-+++ b/drivers/s390/block/dasd_alias.c
-@@ -256,7 +256,6 @@ void dasd_alias_disconnect_device_from_l
- 		return;
- 	device->discipline->get_uid(device, &uid);
- 	spin_lock_irqsave(&lcu->lock, flags);
--	list_del_init(&device->alias_list);
- 	/* make sure that the workers don't use this device */
- 	if (device == lcu->suc_data.device) {
- 		spin_unlock_irqrestore(&lcu->lock, flags);
-@@ -283,6 +282,7 @@ void dasd_alias_disconnect_device_from_l
+--- a/arch/arm/boot/dts/tegra20-ventana.dts
++++ b/arch/arm/boot/dts/tegra20-ventana.dts
+@@ -3,6 +3,7 @@
  
- 	spin_lock_irqsave(&aliastree.lock, flags);
- 	spin_lock(&lcu->lock);
-+	list_del_init(&device->alias_list);
- 	if (list_empty(&lcu->grouplist) &&
- 	    list_empty(&lcu->active_devices) &&
- 	    list_empty(&lcu->inactive_devices)) {
+ #include <dt-bindings/input/input.h>
+ #include "tegra20.dtsi"
++#include "tegra20-cpu-opp.dtsi"
+ 
+ / {
+ 	model = "NVIDIA Tegra20 Ventana evaluation board";
+@@ -592,6 +593,16 @@
+ 		#clock-cells = <0>;
+ 	};
+ 
++	cpus {
++		cpu0: cpu@0 {
++			operating-points-v2 = <&cpu0_opp_table>;
++		};
++
++		cpu@1 {
++			operating-points-v2 = <&cpu0_opp_table>;
++		};
++	};
++
+ 	gpio-keys {
+ 		compatible = "gpio-keys";
+ 
 
 
