@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0D802E3D9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 15:18:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F0992E642B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 16:48:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439143AbgL1ORh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 09:17:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52738 "EHLO mail.kernel.org"
+        id S2407872AbgL1PsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 10:48:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2501882AbgL1ORf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 09:17:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4790F20731;
-        Mon, 28 Dec 2020 14:16:53 +0000 (UTC)
+        id S2404012AbgL1Nmy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:42:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 81985207C9;
+        Mon, 28 Dec 2020 13:42:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609165013;
-        bh=4ZAjtiNhyy67T3/NhtzWs5anx1Ee+dBA71kE24FTrVY=;
+        s=korg; t=1609162934;
+        bh=mBBkQV3NfvSkS5Jk6QXjpzw4M/wS0DwkY6cMxo2LbQ4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y5c+J2Q2LfFXeGg5h+On68nEE2P0IE+PpuC5mAwcQzpBQnTtaomt5R8PE/4J/GkZ9
-         rIRakSXLRyEOPdilgl9qedvT4RdYCnpcmJBzBFS9O3UbX0CnPjwkXHg4lNqjMhrof6
-         NOrVmCUxmW2h7+pv0LtnSN46Uo8Eck9yyGun1f7E=
+        b=zjebaQ2VvavJa9WKnpDDn9RBPfg+izwa6rb9J9dAbPM8NstsaV+dO1uah9ejZJpGj
+         DugahCNI9k8FJEhaa/1DoHP8uIgYbJ4T5n9ssGqGeV35d9yHQCQ7TmHGQlITgUHyG0
+         rXl68/jSvjxrqZld1X4/caEUT4r83Yw8LWK1ULDY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Walle <michael@walle.cc>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 349/717] mtd: spi-nor: atmel: fix unlock_all() for AT25FS010/040
-Date:   Mon, 28 Dec 2020 13:45:47 +0100
-Message-Id: <20201228125037.749614123@linuxfoundation.org>
+        stable@vger.kernel.org, Anmol Karn <anmol.karan123@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Sasha Levin <sashal@kernel.org>,
+        syzbot+0bef568258653cff272f@syzkaller.appspotmail.com
+Subject: [PATCH 5.4 112/453] Bluetooth: Fix null pointer dereference in hci_event_packet()
+Date:   Mon, 28 Dec 2020 13:45:48 +0100
+Message-Id: <20201228124942.601892327@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228125020.963311703@linuxfoundation.org>
-References: <20201228125020.963311703@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,117 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Walle <michael@walle.cc>
+From: Anmol Karn <anmol.karan123@gmail.com>
 
-[ Upstream commit 8c174d1511d235ed6c049dcb2b704777ad0df7a5 ]
+[ Upstream commit 6dfccd13db2ff2b709ef60a50163925d477549aa ]
 
-These flashes have some weird BP bits mapping which aren't supported in
-the current locking code. Just add a simple unlock op to unprotect the
-entire flash array which is needed for legacy behavior.
+AMP_MGR is getting derefernced in hci_phy_link_complete_evt(), when called
+from hci_event_packet() and there is a possibility, that hcon->amp_mgr may
+not be found when accessing after initialization of hcon.
 
-Fixes: 3e0930f109e7 ("mtd: spi-nor: Rework the disabling of block write protection")
-Signed-off-by: Michael Walle <michael@walle.cc>
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-Link: https://lore.kernel.org/r/20201203162959.29589-7-michael@walle.cc
+- net/bluetooth/hci_event.c:4945
+The bug seems to get triggered in this line:
+
+bredr_hcon = hcon->amp_mgr->l2cap_conn->hcon;
+
+Fix it by adding a NULL check for the hcon->amp_mgr before checking the ev-status.
+
+Fixes: d5e911928bd8 ("Bluetooth: AMP: Process Physical Link Complete evt")
+Reported-and-tested-by: syzbot+0bef568258653cff272f@syzkaller.appspotmail.com
+Link: https://syzkaller.appspot.com/bug?extid=0bef568258653cff272f
+Signed-off-by: Anmol Karn <anmol.karan123@gmail.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/spi-nor/atmel.c | 53 +++++++++++++++++++++++++++++++++++--
- drivers/mtd/spi-nor/core.c  |  2 +-
- drivers/mtd/spi-nor/core.h  |  1 +
- 3 files changed, 53 insertions(+), 3 deletions(-)
+ net/bluetooth/hci_event.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/atmel.c b/drivers/mtd/spi-nor/atmel.c
-index 49d392c6c8bc5..deacf87a68a06 100644
---- a/drivers/mtd/spi-nor/atmel.c
-+++ b/drivers/mtd/spi-nor/atmel.c
-@@ -8,10 +8,59 @@
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index ada778bbbec97..0a88645f103f0 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -4791,6 +4791,11 @@ static void hci_phy_link_complete_evt(struct hci_dev *hdev,
+ 		return;
+ 	}
  
- #include "core.h"
- 
-+/*
-+ * The Atmel AT25FS010/AT25FS040 parts have some weird configuration for the
-+ * block protection bits. We don't support them. But legacy behavior in linux
-+ * is to unlock the whole flash array on startup. Therefore, we have to support
-+ * exactly this operation.
-+ */
-+static int atmel_at25fs_lock(struct spi_nor *nor, loff_t ofs, uint64_t len)
-+{
-+	return -EOPNOTSUPP;
-+}
++	if (!hcon->amp_mgr) {
++		hci_dev_unlock(hdev);
++		return;
++	}
 +
-+static int atmel_at25fs_unlock(struct spi_nor *nor, loff_t ofs, uint64_t len)
-+{
-+	int ret;
-+
-+	/* We only support unlocking the whole flash array */
-+	if (ofs || len != nor->params->size)
-+		return -EINVAL;
-+
-+	/* Write 0x00 to the status register to disable write protection */
-+	ret = spi_nor_write_sr_and_check(nor, 0);
-+	if (ret)
-+		dev_dbg(nor->dev, "unable to clear BP bits, WP# asserted?\n");
-+
-+	return ret;
-+}
-+
-+static int atmel_at25fs_is_locked(struct spi_nor *nor, loff_t ofs, uint64_t len)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
-+static const struct spi_nor_locking_ops atmel_at25fs_locking_ops = {
-+	.lock = atmel_at25fs_lock,
-+	.unlock = atmel_at25fs_unlock,
-+	.is_locked = atmel_at25fs_is_locked,
-+};
-+
-+static void atmel_at25fs_default_init(struct spi_nor *nor)
-+{
-+	nor->params->locking_ops = &atmel_at25fs_locking_ops;
-+}
-+
-+static const struct spi_nor_fixups atmel_at25fs_fixups = {
-+	.default_init = atmel_at25fs_default_init,
-+};
-+
- static const struct flash_info atmel_parts[] = {
- 	/* Atmel -- some are (confusingly) marketed as "DataFlash" */
--	{ "at25fs010",  INFO(0x1f6601, 0, 32 * 1024,   4, SECT_4K | SPI_NOR_HAS_LOCK) },
--	{ "at25fs040",  INFO(0x1f6604, 0, 64 * 1024,   8, SECT_4K | SPI_NOR_HAS_LOCK) },
-+	{ "at25fs010",  INFO(0x1f6601, 0, 32 * 1024,   4, SECT_4K | SPI_NOR_HAS_LOCK)
-+		.fixups = &atmel_at25fs_fixups },
-+	{ "at25fs040",  INFO(0x1f6604, 0, 64 * 1024,   8, SECT_4K | SPI_NOR_HAS_LOCK)
-+		.fixups = &atmel_at25fs_fixups },
- 
- 	{ "at25df041a", INFO(0x1f4401, 0, 64 * 1024,   8, SECT_4K | SPI_NOR_HAS_LOCK) },
- 	{ "at25df321",  INFO(0x1f4700, 0, 64 * 1024,  64, SECT_4K | SPI_NOR_HAS_LOCK) },
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 61b00d4965475..ad6c79d9a7f86 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -906,7 +906,7 @@ static int spi_nor_write_16bit_cr_and_check(struct spi_nor *nor, u8 cr)
-  *
-  * Return: 0 on success, -errno otherwise.
-  */
--static int spi_nor_write_sr_and_check(struct spi_nor *nor, u8 sr1)
-+int spi_nor_write_sr_and_check(struct spi_nor *nor, u8 sr1)
- {
- 	if (nor->flags & SNOR_F_HAS_16BIT_SR)
- 		return spi_nor_write_16bit_sr_and_check(nor, sr1);
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 6f2f6b27173fd..6f62ee861231a 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -409,6 +409,7 @@ void spi_nor_unlock_and_unprep(struct spi_nor *nor);
- int spi_nor_sr1_bit6_quad_enable(struct spi_nor *nor);
- int spi_nor_sr2_bit1_quad_enable(struct spi_nor *nor);
- int spi_nor_sr2_bit7_quad_enable(struct spi_nor *nor);
-+int spi_nor_write_sr_and_check(struct spi_nor *nor, u8 sr1);
- 
- int spi_nor_xread_sr(struct spi_nor *nor, u8 *sr);
- ssize_t spi_nor_read_data(struct spi_nor *nor, loff_t from, size_t len,
+ 	if (ev->status) {
+ 		hci_conn_del(hcon);
+ 		hci_dev_unlock(hdev);
 -- 
 2.27.0
 
