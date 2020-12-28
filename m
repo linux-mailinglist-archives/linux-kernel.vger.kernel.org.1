@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC7512E3742
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 13:54:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85A432E3B6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Dec 2020 14:51:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728078AbgL1MxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Dec 2020 07:53:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49752 "EHLO mail.kernel.org"
+        id S2406224AbgL1Ntx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Dec 2020 08:49:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51258 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728049AbgL1MxC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Dec 2020 07:53:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 238B0208B6;
-        Mon, 28 Dec 2020 12:52:08 +0000 (UTC)
+        id S2406211AbgL1Nts (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Dec 2020 08:49:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 14DFC208B3;
+        Mon, 28 Dec 2020 13:49:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609159929;
-        bh=0Mgz45b/m6wkk2VL5RG5jTqPpg0ff7aJZjix0UxXSjI=;
+        s=korg; t=1609163341;
+        bh=5h16ZCx7Qhv8wGHAFqhxjy79CIfTYPfRVRf15QgHFdg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CNDaNZ4vOVRCTvqHl+lbbChlZw70a6sy3bEjvvCWmNk/4rQZh8BtR/chycvviZC03
-         fwLqYDza3QajosXDukDR0ylIy+bSFBh/keLCvNbUOUiI1/r+Exs3ke6i/EVXZqqhVe
-         pI2lJpWEqEOJLCwpQW2tx+GkQQc6UVqDvt9kO+KA=
+        b=IGtqEp36bVLJiPobtQDMWM+EfBnkgj3HIn7cS9Xc3uP+AsyXvs0b0CV5K3aNwiq/F
+         RnoGk9cSiCHqu49cc/6GLnzmy1RRBT9e3Ps3eyLdox/0wMR2RGO+nOd72Il6jDWoGV
+         mWN1Oxyiz/pWDscOvLgyQaQZBJFFnfRCxowJwD7Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        syzbot+150f793ac5bc18eee150@syzkaller.appspotmail.com
-Subject: [PATCH 4.4 005/132] Input: cm109 - do not stomp on control URB
+        stable@vger.kernel.org, kazuo ito <kzpn200@gmail.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 253/453] nfsd: Fix message level for normal termination
 Date:   Mon, 28 Dec 2020 13:48:09 +0100
-Message-Id: <20201228124846.682341600@linuxfoundation.org>
+Message-Id: <20201228124949.401311111@linuxfoundation.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201228124846.409999325@linuxfoundation.org>
-References: <20201228124846.409999325@linuxfoundation.org>
+In-Reply-To: <20201228124937.240114599@linuxfoundation.org>
+References: <20201228124937.240114599@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+From: kazuo ito <kzpn200@gmail.com>
 
-commit 82e06090473289ce63e23fdeb8737aad59b10645 upstream.
+[ Upstream commit 4420440c57892779f265108f46f83832a88ca795 ]
 
-We need to make sure we are not stomping on the control URB that was
-issued when opening the device when attempting to toggle buzzer.
-To do that we need to mark it as pending in cm109_open().
+The warning message from nfsd terminating normally
+can confuse system adminstrators or monitoring software.
 
-Reported-and-tested-by: syzbot+150f793ac5bc18eee150@syzkaller.appspotmail.com
-Cc: stable@vger.kernel.org
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Though it's not exactly fair to pin-point a commit where it
+originated, the current form in the current place started
+to appear in:
 
+Fixes: e096bbc6488d ("knfsd: remove special handling for SIGHUP")
+Signed-off-by: kazuo ito <kzpn200@gmail.com>
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/misc/cm109.c |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ fs/nfsd/nfssvc.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/drivers/input/misc/cm109.c
-+++ b/drivers/input/misc/cm109.c
-@@ -546,12 +546,15 @@ static int cm109_input_open(struct input
- 	dev->ctl_data->byte[HID_OR2] = dev->keybit;
- 	dev->ctl_data->byte[HID_OR3] = 0x00;
+diff --git a/fs/nfsd/nfssvc.c b/fs/nfsd/nfssvc.c
+index e8bee8ff30c59..155a4e43b24ee 100644
+--- a/fs/nfsd/nfssvc.c
++++ b/fs/nfsd/nfssvc.c
+@@ -516,8 +516,7 @@ static void nfsd_last_thread(struct svc_serv *serv, struct net *net)
+ 		return;
  
-+	dev->ctl_urb_pending = 1;
- 	error = usb_submit_urb(dev->urb_ctl, GFP_KERNEL);
--	if (error)
-+	if (error) {
-+		dev->ctl_urb_pending = 0;
- 		dev_err(&dev->intf->dev, "%s: usb_submit_urb (urb_ctl) failed %d\n",
- 			__func__, error);
--	else
-+	} else {
- 		dev->open = 1;
-+	}
+ 	nfsd_shutdown_net(net);
+-	printk(KERN_WARNING "nfsd: last server has exited, flushing export "
+-			    "cache\n");
++	pr_info("nfsd: last server has exited, flushing export cache\n");
+ 	nfsd_export_flush(net);
+ }
  
- 	mutex_unlock(&dev->pm_mutex);
- 
+-- 
+2.27.0
+
 
 
